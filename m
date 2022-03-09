@@ -2,168 +2,221 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FE8AC433EF
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Mar 2022 09:07:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A40DEC433F5
+	for <linux-m68k@archiver.kernel.org>; Wed,  9 Mar 2022 11:31:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241250AbiCHJH6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 8 Mar 2022 04:07:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59916 "EHLO
+        id S232209AbiCILcQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 9 Mar 2022 06:32:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233897AbiCHJHp (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 8 Mar 2022 04:07:45 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A233FBE0;
-        Tue,  8 Mar 2022 01:06:49 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id g39so30951063lfv.10;
-        Tue, 08 Mar 2022 01:06:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=ZSSqssguaqD2tjMmjJKfil49rhUxKlYemuYgWRJDFc4=;
-        b=i8KUKVpplsOozfpS14HotNRNIdGXHN1AJwMaWOsj/7F1Z/kamP4qLBs1oQDWZJFPQp
-         IjgvlodAyvdg4SoaDmaGyc+bxGAuQUi3+QsWoG7ibRCJN+/hUy/CwnDceCejBmQfuwYd
-         fe9E7f1yKxtRd30ECx58R64okM17jy8ojVQcvuUxAGPYcpkNfKUQjM8AP2tMV7cVA1FZ
-         UW6+c6/e5A9PdwjoykmWlafGXizCSH6U1CcDMu7qSQhl/po96hOnF6wGaaVpChd8s0r0
-         zHy3iLteMOKwp8mJCqEFLjU7La0luzdqGLLByI6GgBoGEn1GRP6suqma9mi7yNp7Uc7N
-         aB/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=ZSSqssguaqD2tjMmjJKfil49rhUxKlYemuYgWRJDFc4=;
-        b=xejnvqwttB317hl/WQ2wGQo0lt7kL/3SUdFvxY63RnxKi8L7+3MR6P1aa59qG1gU30
-         mbQjcEmdV5dWP1SIC7kx9TNcuA73IiNiTASB/LK/7yskrtfaBR89IgmJOz/5/TP63rzt
-         fo7dDeo5uc5Ziha5FgNZEmDQv+nHeoPAjx/tJJ1WALMhQYaF2c8GJaYti3SY4ec+SwFP
-         +YeN9B1aC+iB4RdTscBRB+5X3rRKmrQD7GPLYFU84XBsd1f0/5TNS0AB4j088Tgx5YxV
-         ix5afYfGJvfyDgQ7aV8j9F2IosmLuD9bpxQ3sem9hQBf9mjJaQeyjdhQhyYILlRZGl3z
-         EPLQ==
-X-Gm-Message-State: AOAM532DXCzAecIH0HhPHiSwPXS0s03kyTI5jiax4HzitBVuO2jgof9w
-        vJzlGYYYqq5TmJ06mxYEgxU=
-X-Google-Smtp-Source: ABdhPJw9TP6u4KkztcCyk+LiyHCv0kAMZ0i30SGTKsh3ic6MF4I9uJqKFnh7OrKajZI+ONY2va6a6Q==
-X-Received: by 2002:a05:6512:b19:b0:446:f1c6:81bd with SMTP id w25-20020a0565120b1900b00446f1c681bdmr10299826lfu.320.1646730407178;
-        Tue, 08 Mar 2022 01:06:47 -0800 (PST)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id f21-20020ac251b5000000b004478fa4a744sm2871298lfk.56.2022.03.08.01.06.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Mar 2022 01:06:46 -0800 (PST)
-Date:   Tue, 8 Mar 2022 11:06:43 +0200
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Sam Ravnborg <sam@ravnborg.org>, Helge Deller <deller@gmx.de>,
-        linux-fbdev@vger.kernel.org, linux-m68k@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 RFC 08/10] drm/fourcc: Document that single-channel
- "red" can be any color
-Message-ID: <20220308110643.5220f8ae@eldfell>
-In-Reply-To: <585dc03acb4016bba910e7d15fec3ef4f0aec5b0.1646683502.git.geert@linux-m68k.org>
-References: <cover.1646683502.git.geert@linux-m68k.org>
-        <585dc03acb4016bba910e7d15fec3ef4f0aec5b0.1646683502.git.geert@linux-m68k.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        with ESMTP id S229743AbiCILcO (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 9 Mar 2022 06:32:14 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D461414FFD8
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  9 Mar 2022 03:31:15 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 233BF1655;
+        Wed,  9 Mar 2022 03:31:15 -0800 (PST)
+Received: from [10.163.33.203] (unknown [10.163.33.203])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EFA443FA4D;
+        Wed,  9 Mar 2022 03:31:03 -0800 (PST)
+Message-ID: <f1b4dbb5-7cd4-7513-4b18-169b97745a0a@arm.com>
+Date:   Wed, 9 Mar 2022 17:01:02 +0530
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/hJXpHsxaCnYZ11VUzvhv1th";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH V3 05/30] arm64/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Content-Language: en-US
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, geert@linux-m68k.org,
+        Christoph Hellwig <hch@infradead.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, sparclinux@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-s390@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-alpha@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linux-parisc@vger.kernel.org,
+        openrisc@lists.librecores.org, linux-um@lists.infradead.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-arch@vger.kernel.org, Will Deacon <will@kernel.org>
+References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
+ <1646045273-9343-6-git-send-email-anshuman.khandual@arm.com>
+ <YiDessYDSt060Euc@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <YiDessYDSt060Euc@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
---Sig_/hJXpHsxaCnYZ11VUzvhv1th
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-On Mon,  7 Mar 2022 21:52:43 +0100
-Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-
-> Traditionally, the first channel has been called the "red" channel, but
-> the fourcc values for single-channel "red" formats can also be used for
-> other light-on-dark displays, like grayscale.
->=20
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
-> RFC, as I have no immediate need for these formats.
->=20
-> v2:
->   - New.
-> ---
->  include/uapi/drm/drm_fourcc.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->=20
-> diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
-> index 457ed39cc48f08e1..f0187cf20e4619d2 100644
-> --- a/include/uapi/drm/drm_fourcc.h
-> +++ b/include/uapi/drm/drm_fourcc.h
-> @@ -104,16 +104,16 @@ extern "C" {
->  #define DRM_FORMAT_C4		fourcc_code('C', '4', ' ', ' ') /* [7:0] C0:C1 4:=
-4 two pixels/byte */
->  #define DRM_FORMAT_C8		fourcc_code('C', '8', ' ', ' ') /* [7:0] C 8 one =
-pixel/byte */
-> =20
-> -/* 8 bpp Red */
-> +/* 8 bpp Red (or generic light-on-dark) */
->  #define DRM_FORMAT_R8		fourcc_code('R', '8', ' ', ' ') /* [7:0] R */
-> =20
-> -/* 10 bpp Red */
-> +/* 10 bpp Red (or generic light-on-dark) */
->  #define DRM_FORMAT_R10		fourcc_code('R', '1', '0', ' ') /* [15:0] x:R 6:=
-10 little endian */
-> =20
-> -/* 12 bpp Red */
-> +/* 12 bpp Red (or generic light-on-dark) */
->  #define DRM_FORMAT_R12		fourcc_code('R', '1', '2', ' ') /* [15:0] x:R 4:=
-12 little endian */
-> =20
-> -/* 16 bpp Red */
-> +/* 16 bpp Red (or generic light-on-dark) */
->  #define DRM_FORMAT_R16		fourcc_code('R', '1', '6', ' ') /* [15:0] R litt=
-le endian */
-> =20
->  /* 16 bpp RG */
-
-Hi Geert,
-
-this is a good idea. I just wonder whether light-on-dark is an accurate
-description. To me, light-on-dark means things like bright characters
-on a dark background, but that is a property of the image as a whole and
-not a property of the pixel format. What I think you are after here is
-that increasing channel value mean increasing brightness.
-
-How to word that concisely...
-
-Direct relationship to brightness (vs. inverse relationship to brightness)?
-
-This does not imply a linear relationship, and I'd also use
-"brightness" to denote that it is a qualitative factor relating to
-human observation.
 
 
-Thanks,
-pq
+On 3/3/22 20:58, Catalin Marinas wrote:
+> Hi Anshuman,
+> 
+> On Mon, Feb 28, 2022 at 04:17:28PM +0530, Anshuman Khandual wrote:
+>> +static inline pgprot_t __vm_get_page_prot(unsigned long vm_flags)
+>> +{
+>> +	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
+>> +	case VM_NONE:
+>> +		return PAGE_NONE;
+>> +	case VM_READ:
+>> +	case VM_WRITE:
+>> +	case VM_WRITE | VM_READ:
+>> +		return PAGE_READONLY;
+>> +	case VM_EXEC:
+>> +		return PAGE_EXECONLY;
+>> +	case VM_EXEC | VM_READ:
+>> +	case VM_EXEC | VM_WRITE:
+>> +	case VM_EXEC | VM_WRITE | VM_READ:
+>> +		return PAGE_READONLY_EXEC;
+>> +	case VM_SHARED:
+>> +		return PAGE_NONE;
+>> +	case VM_SHARED | VM_READ:
+>> +		return PAGE_READONLY;
+>> +	case VM_SHARED | VM_WRITE:
+>> +	case VM_SHARED | VM_WRITE | VM_READ:
+>> +		return PAGE_SHARED;
+>> +	case VM_SHARED | VM_EXEC:
+>> +		return PAGE_EXECONLY;
+>> +	case VM_SHARED | VM_EXEC | VM_READ:
+>> +		return PAGE_READONLY_EXEC;
+>> +	case VM_SHARED | VM_EXEC | VM_WRITE:
+>> +	case VM_SHARED | VM_EXEC | VM_WRITE | VM_READ:
+>> +		return PAGE_SHARED_EXEC;
+>> +	default:
+>> +		BUILD_BUG();
+>> +	}
+>> +}
+> 
+> I'd say ack for trying to get of the extra arch_vm_get_page_prot() and
+> arch_filter_pgprot() but, TBH, I'm not so keen on the outcome. I haven't
+> built the code to see what's generated but I suspect it's no significant
+> improvement. As for the code readability, the arm64 parts don't look
+> much better either. The only advantage with this patch is that all
+> functions have been moved under arch/arm64.
 
---Sig_/hJXpHsxaCnYZ11VUzvhv1th
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Got it.
 
------BEGIN PGP SIGNATURE-----
+> 
+> I'd keep most architectures that don't have own arch_vm_get_page_prot()
+> or arch_filter_pgprot() unchanged and with a generic protection_map[]
+> array. For architectures that need fancier stuff, add a
+> CONFIG_ARCH_HAS_VM_GET_PAGE_PROT (as you do) and allow them to define
+> vm_get_page_prot() while getting rid of arch_vm_get_page_prot() and
+> arch_filter_pgprot(). I think you could also duplicate protection_map[]
+> for architectures with own vm_get_page_prot() (make it static) and
+> #ifdef it out in mm/mmap.c.
+> 
+> If later you have more complex needs or a switch statement generates
+> better code, go for it, but for this series I'd keep things simple, only
+> focus on getting rid of arch_vm_get_page_prot() and
+> arch_filter_pgprot().
 
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmInHKMACgkQI1/ltBGq
-qqe1FhAAhV61IfBbTfh9T9cYYsQ6Hh2uefFJl1NqodXNWfd7nLXNxgkcTZ5YeMYY
-WvKAbNrIX24tS4ZJWjQWK0o/L+TPilrKph0QgB7qeAsPL/uXomH0YJI3YQ70/eCF
-JHFt3aQH8ne8VTN5IwGdDh+4vpyO/S5924QbxyXG8yVRAnKL1e0dfGFmNM8luQd+
-4ON5X2Fw2jwC61bZfvPVo2lO+2Osw84nrgkMOpCqJLxjPzxjBRH8V4UPi6UPru+Z
-7BkXVAqoSby15cM2fsSGEd4OnTRbsdkCX9uptsPaqVenhM6pzE6pN9E9plzckmjW
-mWGwxsUPT5AHRCQPxRPak6ClYCIpmg9AA8aMngRmcUjXuPqH1/s6q0tPFPCDkbbL
-brrvRgUYtBVdwKeJ1uUsfsAbqRl2rDIlCu3MdrrOlMthDx4llBJ89gmrYgemvqbV
-ZuPg5fx/n5sQfROyU9HFboaFyBkP6t7xsc8Wdp/3tsDuPZiwCNzmfOy0qTes4pya
-craCaUJf9VXE2F8ZBOOIgYzAlt/nso4JZE/Dzt2bUb86FWOQhP79qo6qSZSxqfEY
-NKPKGiWEqnpe8q26KTSgbV5ACiy3rW/o/H7Rz0sdmkwm0j3pcWYqcSyLnwvJdmCl
-SsiBN+ZkqdxpjnVc2uvYaJc5Vw6t6lTzE+sPyTp6/1aEFlIFFvw=
-=nrsn
------END PGP SIGNATURE-----
+Got it.
 
---Sig_/hJXpHsxaCnYZ11VUzvhv1th--
+> 
+> If I grep'ed correctly, there are only 4 architectures that have own
+> arch_vm_get_page_prot() (arm64, powerpc, sparc, x86) and 2 that have own
+> arch_filter_pgprot() (arm64, x86). Try to only change these for the time
+> being, together with the other generic mm cleanups you have in this
+> series. I think there are a couple more that touch protection_map[]
+> (arm, m68k). You can leave the generic protection_map[] global if the
+> arch does not select ARCH_HAS_VM_GET_PAGE_PROT.
+
+Okay, I will probably split the series into two parts.
+
+-  Drop arch_vm_get_page_prot() and arch_filter_pgprot() on relevant
+   platforms i.e arm64, powerpc, sparc and x86 via this new config
+   ARCH_HAS_VM_GET_PAGE_PROT, keeping the generic protection_map[]
+   since platform __SXXX/__PXX macros would be still around.
+
+-  Drop __SXXX/__PXXX across all platforms via just initializing
+   protection_map[] early during boot in the platform OR moving
+   both vm_get_page_prot() via ARCH_HAS_VM_GET_PAGE_PROT and the
+   generic protection_map[] inside the platform.
+
+   There were some objections with respect to switch case code in
+   comparison to the array based table look up.
+
+> 
+>> +static pgprot_t arm64_arch_filter_pgprot(pgprot_t prot)
+>> +{
+>> +	if (cpus_have_const_cap(ARM64_HAS_EPAN))
+>> +		return prot;
+>> +
+>> +	if (pgprot_val(prot) != pgprot_val(PAGE_EXECONLY))
+>> +		return prot;
+>> +
+>> +	return PAGE_READONLY_EXEC;
+>> +}
+>> +
+>> +static pgprot_t arm64_arch_vm_get_page_prot(unsigned long vm_flags)
+>> +{
+>> +	pteval_t prot = 0;
+>> +
+>> +	if (vm_flags & VM_ARM64_BTI)
+>> +		prot |= PTE_GP;
+>> +
+>> +	/*
+>> +	 * There are two conditions required for returning a Normal Tagged
+>> +	 * memory type: (1) the user requested it via PROT_MTE passed to
+>> +	 * mmap() or mprotect() and (2) the corresponding vma supports MTE. We
+>> +	 * register (1) as VM_MTE in the vma->vm_flags and (2) as
+>> +	 * VM_MTE_ALLOWED. Note that the latter can only be set during the
+>> +	 * mmap() call since mprotect() does not accept MAP_* flags.
+>> +	 * Checking for VM_MTE only is sufficient since arch_validate_flags()
+>> +	 * does not permit (VM_MTE & !VM_MTE_ALLOWED).
+>> +	 */
+>> +	if (vm_flags & VM_MTE)
+>> +		prot |= PTE_ATTRINDX(MT_NORMAL_TAGGED);
+>> +
+>> +	return __pgprot(prot);
+>> +}
+>> +
+>> +pgprot_t vm_get_page_prot(unsigned long vm_flags)
+>> +{
+>> +	pgprot_t ret = __pgprot(pgprot_val(__vm_get_page_prot(vm_flags)) |
+>> +			pgprot_val(arm64_arch_vm_get_page_prot(vm_flags)));
+>> +
+>> +	return arm64_arch_filter_pgprot(ret);
+>> +}
+> 
+> If we kept the array, we can have everything in a single function
+> (untested and with my own comments for future changes):
+
+Got it.
+
+> 
+> pgprot_t vm_get_page_prot(unsigned long vm_flags)
+> {
+> 	pgprot_t prot = __pgprot(pgprot_val(protection_map[vm_flags &
+> 				(VM_READ|VM_WRITE|VM_EXEC|VM_SHARED)]));
+> 
+> 	/*
+> 	 * We could get rid of this test if we updated protection_map[]
+> 	 * to turn exec-only into read-exec during boot.
+> 	 */
+> 	if (!cpus_have_const_cap(ARM64_HAS_EPAN) &&
+> 	    pgprot_val(prot) == pgprot_val(PAGE_EXECONLY))
+> 		prot = PAGE_READONLY_EXEC;
+> 
+> 	if (vm_flags & VM_ARM64_BTI)
+> 		prot != PTE_GP;
+> 
+> 	/*
+> 	 * We can get rid of the requirement for PROT_NORMAL to be 0
+> 	 * since here we can mask out PTE_ATTRINDX_MASK.
+> 	 */
+> 	if (vm_flags & VM_MTE) {
+> 		prot &= ~PTE_ATTRINDX_MASK;
+> 		prot |= PTE_ATTRINDX(MT_NORMAL_TAGGED);
+> 	}
+> 
+> 	return prot;
+> }
+> 
