@@ -2,262 +2,103 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D80B5C433F5
-	for <linux-m68k@archiver.kernel.org>; Wed,  9 Mar 2022 11:33:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98AD4C433EF
+	for <linux-m68k@archiver.kernel.org>; Wed,  9 Mar 2022 12:47:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232333AbiCILel (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 9 Mar 2022 06:34:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47384 "EHLO
+        id S232083AbiCIMr7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 9 Mar 2022 07:47:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232308AbiCILej (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 9 Mar 2022 06:34:39 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8009D723F3
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  9 Mar 2022 03:33:40 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C45AC1655;
-        Wed,  9 Mar 2022 03:33:39 -0800 (PST)
-Received: from [10.163.33.203] (unknown [10.163.33.203])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A3A213FA4D;
-        Wed,  9 Mar 2022 03:33:29 -0800 (PST)
-Message-ID: <70a99f28-ea69-58e3-f919-85551943c0a3@arm.com>
-Date:   Wed, 9 Mar 2022 17:03:28 +0530
+        with ESMTP id S232839AbiCIMr5 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 9 Mar 2022 07:47:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 21C1017129F
+        for <linux-m68k@vger.kernel.org>; Wed,  9 Mar 2022 04:46:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1646830018;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oIOQIxDPG94ZGWbVYq8GHTXPCYDThRtLt2a1oXRhNkM=;
+        b=PwYdTD/D8sN6aXeGDhvVIOpUuZERH3GkrXJY7gool/TY0ySOJP7R5LhbVxadn6kMimkXAl
+        glfZtXAH0OWuOX4r2qbCHu+tybEtCRp+LAEz89mi+aufUjb4wb4EPqjIjdcqem9NGJ9zwg
+        a178CORN9BFi5l7lPiIo5UiRjaj7kzo=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-300-ijCwApB_NcCD5FcDVKMzTg-1; Wed, 09 Mar 2022 07:46:55 -0500
+X-MC-Unique: ijCwApB_NcCD5FcDVKMzTg-1
+Received: by mail-wm1-f72.google.com with SMTP id d8-20020a05600c34c800b0037e3cd6225eso751250wmq.6
+        for <linux-m68k@vger.kernel.org>; Wed, 09 Mar 2022 04:46:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=oIOQIxDPG94ZGWbVYq8GHTXPCYDThRtLt2a1oXRhNkM=;
+        b=YJGVAcx5ORV3GdOjT+8JIXTs3hEhiuqYTX7Eln7Ht1bzN0cxdw0QhImptToCQFd4Y4
+         hZgeJDmy66Le/CMf6dsEkuEO4rVh3+8p8b2dGUU2hyHKDpr2sP4PYJ94RW7egMzCAiXw
+         UxUpk9lOAbPMm49tXJUDFBnVu7GGc+VGrCx0I2Y8OFaePnopZKz4U6tZlXilxjGbFDIM
+         SQB8T3qTVV+GTXqah5Nh2bQSZl9F3Z7LeMmxNnQiuZTxUuHyPhMW19qpRU9T1OmiZ3Dd
+         5KN44qCy4xZDks/ZViGd0Trd2+RIpRuI7fpT0OZKcf7KvyBo0oyBwwUbz7jK1mmDSQD4
+         C3/A==
+X-Gm-Message-State: AOAM533BNv/Du8Ns+VFvIjPll3MCvUPfHWTevZuZnPxCa63/pX6XrWs/
+        m7DIMWujgNTgrIVC96zCdO2jdYtGfOUmOEVNggv1XI7udKBGPvmcWL/ssHt68zbO86Vr4o/IF/p
+        efysrG8pBq+vHGAPwzQhu6w==
+X-Received: by 2002:a5d:5986:0:b0:1f1:f971:f02 with SMTP id n6-20020a5d5986000000b001f1f9710f02mr10080746wri.578.1646830013677;
+        Wed, 09 Mar 2022 04:46:53 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzYK8FPaxzfg7PUDh96l/6CFuHhsdjJQ1VHODD7GNxUOFUkDD6tWylERnxyi/EG6sZs8v7gEQ==
+X-Received: by 2002:a5d:5986:0:b0:1f1:f971:f02 with SMTP id n6-20020a5d5986000000b001f1f9710f02mr10080724wri.578.1646830013470;
+        Wed, 09 Mar 2022 04:46:53 -0800 (PST)
+Received: from [192.168.1.102] ([92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id j7-20020a5d5647000000b0020372c969d9sm1673557wrw.29.2022.03.09.04.46.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Mar 2022 04:46:53 -0800 (PST)
+Message-ID: <f6186885-5bcf-01a8-56f5-b87ad0b53e3e@redhat.com>
+Date:   Wed, 9 Mar 2022 13:46:51 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.0
-Subject: Re: [PATCH V3 09/30] arm/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Subject: Re: [PATCH v2 01/10] drm/fourcc: Add drm_format_info_bpp() helper
 Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>,
-        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>,
-        "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
- <1646045273-9343-10-git-send-email-anshuman.khandual@arm.com>
- <Yhyqjo/4bozJB6j5@shell.armlinux.org.uk>
- <542fa048-131e-240b-cc3a-fd4fff7ce4ba@arm.com>
- <Yh1pYAOiskEQes3p@shell.armlinux.org.uk>
- <dc3c95a4-de06-9889-ce1e-f660fc9fbb95@csgroup.eu>
- <c3b60de0-38cd-160a-aa15-831349e07e23@arm.com>
- <52866c88-59f9-2d1c-6f5a-5afcaf23f2bb@csgroup.eu>
- <9caa90f5-c10d-75dd-b403-1388b7a3d296@arm.com>
- <CAMuHMdU11kaOzanhHZRH+mLTJzaz-i=PnKdK7NF9V-qx6kp8wg@mail.gmail.com>
- <b1eca2cd-36e6-3a9a-9fe7-70fc0caed7a9@arm.com>
- <CAMuHMdUPw_yBMe9XxQHHuf40it3V5mGuOA10KnMpXt124Ay8Tw@mail.gmail.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <CAMuHMdUPw_yBMe9XxQHHuf40it3V5mGuOA10KnMpXt124Ay8Tw@mail.gmail.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>, Helge Deller <deller@gmx.de>
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1646683502.git.geert@linux-m68k.org>
+ <eab1fe866c0ffd4ac097e66ff48725dd39893105.1646683502.git.geert@linux-m68k.org>
+From:   Javier Martinez Canillas <javierm@redhat.com>
+In-Reply-To: <eab1fe866c0ffd4ac097e66ff48725dd39893105.1646683502.git.geert@linux-m68k.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+Hello Geert,
 
+On 3/7/22 21:52, Geert Uytterhoeven wrote:
+> Add a helper to retrieve the actual number of bits per pixel for a
+> plane, taking into account the number of characters and pixels per
+> block for tiled formats.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
 
-On 3/2/22 16:44, Geert Uytterhoeven wrote:
-> Hi Anshuman,
-> 
-> On Wed, Mar 2, 2022 at 12:07 PM Anshuman Khandual
-> <anshuman.khandual@arm.com> wrote:
->> On 3/2/22 3:35 PM, Geert Uytterhoeven wrote:
->>> On Wed, Mar 2, 2022 at 10:51 AM Anshuman Khandual
->>> <anshuman.khandual@arm.com> wrote:
->>>> On 3/2/22 12:35 PM, Christophe Leroy wrote:
->>>>> Le 02/03/2022 à 04:22, Anshuman Khandual a écrit :
->>>>>> On 3/1/22 1:46 PM, Christophe Leroy wrote:
->>>>>>> Le 01/03/2022 à 01:31, Russell King (Oracle) a écrit :
->>>>>>>> On Tue, Mar 01, 2022 at 05:30:41AM +0530, Anshuman Khandual wrote:
->>>>>>>>> On 2/28/22 4:27 PM, Russell King (Oracle) wrote:
->>>>>>>>>> On Mon, Feb 28, 2022 at 04:17:32PM +0530, Anshuman Khandual wrote:
->>>>>>>>>>> This defines and exports a platform specific custom vm_get_page_prot() via
->>>>>>>>>>> subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
->>>>>>>>>>> macros can be dropped which are no longer needed.
->>>>>>>>>>
->>>>>>>>>> What I would really like to know is why having to run _code_ to work out
->>>>>>>>>> what the page protections need to be is better than looking it up in a
->>>>>>>>>> table.
->>>>>>>>>>
->>>>>>>>>> Not only is this more expensive in terms of CPU cycles, it also brings
->>>>>>>>>> additional code size with it.
->>>>>>>>>>
->>>>>>>>>> I'm struggling to see what the benefit is.
->>>>>>>>>
->>>>>>>>> Currently vm_get_page_prot() is also being _run_ to fetch required page
->>>>>>>>> protection values. Although that is being run in the core MM and from a
->>>>>>>>> platform perspective __SXXX, __PXXX are just being exported for a table.
->>>>>>>>> Looking it up in a table (and applying more constructs there after) is
->>>>>>>>> not much different than a clean switch case statement in terms of CPU
->>>>>>>>> usage. So this is not more expensive in terms of CPU cycles.
->>>>>>>>
->>>>>>>> I disagree.
->>>>>>>
->>>>>>> So do I.
->>>>>>>
->>>>>>>>
->>>>>>>> However, let's base this disagreement on some evidence. Here is the
->>>>>>>> present 32-bit ARM implementation:
->>>>>>>>
->>>>>>>> 00000048 <vm_get_page_prot>:
->>>>>>>>         48:       e200000f        and     r0, r0, #15
->>>>>>>>         4c:       e3003000        movw    r3, #0
->>>>>>>>                           4c: R_ARM_MOVW_ABS_NC   .LANCHOR1
->>>>>>>>         50:       e3403000        movt    r3, #0
->>>>>>>>                           50: R_ARM_MOVT_ABS      .LANCHOR1
->>>>>>>>         54:       e7930100        ldr     r0, [r3, r0, lsl #2]
->>>>>>>>         58:       e12fff1e        bx      lr
->>>>>>>>
->>>>>>>> That is five instructions long.
->>>>>>>
->>>>>>> On ppc32 I get:
->>>>>>>
->>>>>>> 00000094 <vm_get_page_prot>:
->>>>>>>         94: 3d 20 00 00     lis     r9,0
->>>>>>>                     96: R_PPC_ADDR16_HA     .data..ro_after_init
->>>>>>>         98: 54 84 16 ba     rlwinm  r4,r4,2,26,29
->>>>>>>         9c: 39 29 00 00     addi    r9,r9,0
->>>>>>>                     9e: R_PPC_ADDR16_LO     .data..ro_after_init
->>>>>>>         a0: 7d 29 20 2e     lwzx    r9,r9,r4
->>>>>>>         a4: 91 23 00 00     stw     r9,0(r3)
->>>>>>>         a8: 4e 80 00 20     blr
->>>>>>>
->>>>>>>
->>>>>>>>
->>>>>>>> Please show that your new implementation is not more expensive on
->>>>>>>> 32-bit ARM. Please do so by building a 32-bit kernel, and providing
->>>>>>>> the disassembly.
->>>>>>>
->>>>>>> With your series I get:
->>>>>>>
->>>>>>> 00000000 <vm_get_page_prot>:
->>>>>>>      0:     3d 20 00 00     lis     r9,0
->>>>>>>                     2: R_PPC_ADDR16_HA      .rodata
->>>>>>>      4:     39 29 00 00     addi    r9,r9,0
->>>>>>>                     6: R_PPC_ADDR16_LO      .rodata
->>>>>>>      8:     54 84 16 ba     rlwinm  r4,r4,2,26,29
->>>>>>>      c:     7d 49 20 2e     lwzx    r10,r9,r4
->>>>>>>     10:     7d 4a 4a 14     add     r10,r10,r9
->>>>>>>     14:     7d 49 03 a6     mtctr   r10
->>>>>>>     18:     4e 80 04 20     bctr
->>>>>>>     1c:     39 20 03 15     li      r9,789
->>>>>>>     20:     91 23 00 00     stw     r9,0(r3)
->>>>>>>     24:     4e 80 00 20     blr
->>>>>>>     28:     39 20 01 15     li      r9,277
->>>>>>>     2c:     91 23 00 00     stw     r9,0(r3)
->>>>>>>     30:     4e 80 00 20     blr
->>>>>>>     34:     39 20 07 15     li      r9,1813
->>>>>>>     38:     91 23 00 00     stw     r9,0(r3)
->>>>>>>     3c:     4e 80 00 20     blr
->>>>>>>     40:     39 20 05 15     li      r9,1301
->>>>>>>     44:     91 23 00 00     stw     r9,0(r3)
->>>>>>>     48:     4e 80 00 20     blr
->>>>>>>     4c:     39 20 01 11     li      r9,273
->>>>>>>     50:     4b ff ff d0     b       20 <vm_get_page_prot+0x20>
->>>>>>>
->>>>>>>
->>>>>>> That is definitely more expensive, it implements a table of branches.
->>>>>>
->>>>>> Okay, will split out the PPC32 implementation that retains existing
->>>>>> table look up method. Also planning to keep that inside same file
->>>>>> (arch/powerpc/mm/mmap.c), unless you have a difference preference.
->>>>>
->>>>> My point was not to get something specific for PPC32, but to amplify on
->>>>> Russell's objection.
->>>>>
->>>>> As this is bad for ARM and bad for PPC32, do we have any evidence that
->>>>> your change is good for any other architecture ?
->>>>>
->>>>> I checked PPC64 and there is exactly the same drawback. With the current
->>>>> implementation it is a small function performing table read then a few
->>>>> adjustment. After your change it is a bigger function implementing a
->>>>> table of branches.
->>>>
->>>> I am wondering if this would not be the case for any other switch case
->>>> statement on the platform ? Is there something specific/different just
->>>> on vm_get_page_prot() implementation ? Are you suggesting that switch
->>>> case statements should just be avoided instead ?
->>>>
->>>>>
->>>>> So, as requested by Russell, could you look at the disassembly for other
->>>>> architectures and show us that ARM and POWERPC are the only ones for
->>>>> which your change is not optimal ?
->>>>
->>>> But the primary purpose of this series is not to guarantee optimized
->>>> code on platform by platform basis, while migrating from a table based
->>>> look up method into a switch case statement.
->>>>
->>>> But instead, the purposes is to remove current levels of unnecessary
->>>> abstraction while converting a vm_flags access combination into page
->>>> protection. The switch case statement for platform implementation of
->>>> vm_get_page_prot() just seemed logical enough. Christoph's original
->>>> suggestion patch for x86 had the same implementation as well.
->>>>
->>>> But if the table look up is still better/preferred method on certain
->>>> platforms like arm or ppc32, will be happy to preserve that.
->>>
->>> I doubt the switch() variant would give better code on any platform.
->>>
->>> What about using tables everywhere, using designated initializers
->>> to improve readability?
->>
->> Designated initializers ? Could you please be more specific. A table look
->> up on arm platform would be something like this and arm_protection_map[]
->> needs to be updated with user_pgprot like before. Just wondering how a
->> designated initializer will help here.
-> 
-> It's more readable than the original:
-> 
->     pgprot_t protection_map[16] __ro_after_init = {
->             __P000, __P001, __P010, __P011, __P100, __P101, __P110, __P111,
->             __S000, __S001, __S010, __S011, __S100, __S101, __S110, __S111
->     };
-> 
->>
->> static pgprot_t arm_protection_map[16] __ro_after_init = {
->>        [VM_NONE]                                       = __PAGE_NONE,
->>        [VM_READ]                                       = __PAGE_READONLY,
->>        [VM_WRITE]                                      = __PAGE_COPY,
->>        [VM_WRITE | VM_READ]                            = __PAGE_COPY,
->>        [VM_EXEC]                                       = __PAGE_READONLY_EXEC,
->>        [VM_EXEC | VM_READ]                             = __PAGE_READONLY_EXEC,
->>        [VM_EXEC | VM_WRITE]                            = __PAGE_COPY_EXEC,
->>        [VM_EXEC | VM_WRITE | VM_READ]                  = __PAGE_COPY_EXEC,
->>        [VM_SHARED]                                     = __PAGE_NONE,
->>        [VM_SHARED | VM_READ]                           = __PAGE_READONLY,
->>        [VM_SHARED | VM_WRITE]                          = __PAGE_SHARED,
->>        [VM_SHARED | VM_WRITE | VM_READ]                = __PAGE_SHARED,
->>        [VM_SHARED | VM_EXEC]                           = __PAGE_READONLY_EXEC,
->>        [VM_SHARED | VM_EXEC | VM_READ]                 = __PAGE_READONLY_EXEC,
->>        [VM_SHARED | VM_EXEC | VM_WRITE]                = __PAGE_SHARED_EXEC,
->>        [VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]      = __PAGE_SHARED_EXEC
->> };
-> 
-> Yeah, like that.
-> 
-> Seems like you already made such a conversion in
-> https://lore.kernel.org/all/1645425519-9034-3-git-send-email-anshuman.khandual@arm.com/
+Patch looks good to me.
 
-Will rework the series in two different phases as mentioned on the other thread.
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Linux Engineering
+Red Hat
+
