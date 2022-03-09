@@ -2,111 +2,93 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E375C433F5
-	for <linux-m68k@archiver.kernel.org>; Wed,  9 Mar 2022 22:02:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C204C433F5
+	for <linux-m68k@archiver.kernel.org>; Wed,  9 Mar 2022 22:05:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231637AbiCIWDp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 9 Mar 2022 17:03:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47090 "EHLO
+        id S236653AbiCIWGQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 9 Mar 2022 17:06:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234113AbiCIWDn (ORCPT
+        with ESMTP id S236636AbiCIWGP (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 9 Mar 2022 17:03:43 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE6F793A2
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  9 Mar 2022 14:02:43 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id bc27so3098075pgb.4
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 09 Mar 2022 14:02:43 -0800 (PST)
+        Wed, 9 Mar 2022 17:06:15 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1DF011EF2C
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  9 Mar 2022 14:05:15 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id h5so1799290plf.7
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 09 Mar 2022 14:05:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kIXYEUsuLw4gUV3Ye5W7fihUmUGOrEx3hL1+RzhXlG8=;
-        b=bs24caSe7zitzg4jbU/q8aXnhwx/uHyi8ILJqPPNQ5jn5FaIUoVSvL+NODGsYgtby2
-         3b+Pd1L5hDPPmOxSd2qT/cGuCbpDZvcricQkN87pTMG509EosJVCmGhFq13Te0xA67h1
-         2iNFVdRcMImXI2Z3rTAveuFvrhCUhZfqpRpFU=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Ol07yB2pc4Hx2YpjxX8IDkmGa1Ut0RXCUKHI0BlLywM=;
+        b=N5JXehWwWuC4FwbhbSiMdnv1JqdJYcNh+IKME6/AwQDzvtCfK61grGuRwv3x+0S504
+         OZfzislLftIUuu+eTY0ij+1lpxA96FHcWXljVoqByHuVKUNSJO6hendZ8xihqIDFaALK
+         IitMl2Rq4/Oj2paqCMYhmSF5W893FOI5l0cPs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kIXYEUsuLw4gUV3Ye5W7fihUmUGOrEx3hL1+RzhXlG8=;
-        b=bie8rOS+VZO688vUZGmEHnEb7PIYD1h8F8nlTmM5PGy2DSfNBKBiaxmmTHA/KU8W5S
-         VryQFV+QZW2yYZX0Y11Cl102AYJpqeONJhY/Zp23A6lMv0Z44wExyru78L0Tw1i7GFoA
-         dI3EMLMoTov/kWk60ytK0+XSS5JciYeeYsLCOYmZrdztDwwlAJBVQBxpk3bD5gCptHYv
-         jVwCph7zNZlOk6V9i/NFfXPb+MG9zoJDxyEbLxBBfx9ZfSooz8eaQQICU3wyptToo4p4
-         xKFkPtzYOBmcajtZVnEnCGprkj3RjTUmTaz5SQs7pcpgoUKoOMzh577sxUU7BnSmLaKl
-         Q+tQ==
-X-Gm-Message-State: AOAM532s2OSZ2Qxnb3ykmFY6k08ml/rRXzvQt42SJ+q6QDZgq7qeXF3X
-        sm1w/D2+UN/Jh9OywfpsmUKrXQ==
-X-Google-Smtp-Source: ABdhPJwhBIULkR9tfZfecnMcrauNNaqm7/Z9pC57rjh/s2FPJW7pv6NuJJ+zWVoTnDZkUx0Y2/U/ng==
-X-Received: by 2002:a63:894a:0:b0:380:b14c:db14 with SMTP id v71-20020a63894a000000b00380b14cdb14mr1490573pgd.116.1646863363071;
-        Wed, 09 Mar 2022 14:02:43 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Ol07yB2pc4Hx2YpjxX8IDkmGa1Ut0RXCUKHI0BlLywM=;
+        b=lSY1VkQLTVMajD+xoFhZk+rFVHvthcUJowz9H7fT9loVv6nTWjM74tk9gum/VvEqkq
+         K3gazAlruQ8P1jFuFiYv5mLb8vfR6tgEBT+zOpT/xt95xA0EuMVcfsN1ABNJ4anHKb1t
+         ncmTxbNbqOQt/S2N7D9lMmXGEYQCRydSuJ+AXSeU68zzpnLJaGg3aQxLB5OUaHAz/jq1
+         Xz9eYGP6/QLFKyuqltO0C7kQUc+8pT58zAKkHo/ZrTZxhL49xxzzPirIRAMLFvxGH1Rc
+         pDvHT6jFfcThBc3mYRMTONEFzDki7Ai+Vqu2svOqHDnFXdXN/huThVMJOl1qlx8uMAXG
+         +Tlg==
+X-Gm-Message-State: AOAM533KKLpWc6uhrtYESyDCh2z7tw52TtLzzpqV0u2wSEawf+HnytaI
+        k58ExMk9T9g9f/oHsO8FVSjtMQ==
+X-Google-Smtp-Source: ABdhPJyGPublwuLOMOVGGkAn+uCqEykbtEDrUSKkIin3o3/MXyEy6lr28SGfex4fbL3/1BVSE2KwoA==
+X-Received: by 2002:a17:902:c745:b0:153:b0e:8586 with SMTP id q5-20020a170902c74500b001530b0e8586mr1643074plq.9.1646863515178;
+        Wed, 09 Mar 2022 14:05:15 -0800 (PST)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s8-20020a056a0008c800b004f664655937sm4441024pfu.157.2022.03.09.14.02.42
+        by smtp.gmail.com with ESMTPSA id i11-20020a056a00004b00b004f6907b2cd3sm4173818pfk.122.2022.03.09.14.05.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Mar 2022 14:02:42 -0800 (PST)
-Date:   Wed, 9 Mar 2022 14:02:42 -0800
+        Wed, 09 Mar 2022 14:05:14 -0800 (PST)
 From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Theodore Ts'o <tytso@mit.edu>, X86 ML <x86@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Kees Cook <keescook@chromium.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Matt Turner <mattst88@gmail.com>,
-        =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>,
-        Michael Cree <mcree@orcon.net.nz>,
-        linux-arch <linux-arch@vger.kernel.org>,
+        =?UTF-8?q?M=C3=A5ns=20Rullg=C3=A5rd?= <mans@mansr.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Michael Cree <mcree@orcon.net.nz>, linux-arch@vger.kernel.org,
         Richard Henderson <rth@twiddle.net>,
+        linux-m68k@lists.linux-m68k.org, Borislav Petkov <bp@alien8.de>,
+        Arnd Bergmann <arnd@arndb.de>,
         Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        X86 ML <x86@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Matt Turner <mattst88@gmail.com>
 Subject: Re: [PATCH] a.out: Stop building a.out/osf1 support on alpha and m68k
-Message-ID: <202203091358.775E158C@keescook>
-References: <YeBzxuO0wLn/B2Ew@mit.edu>
- <YeCuNapJLK4M5sat@zn.tnic>
- <CAMuHMdUbTNNr16YY1TFe=-uRLjg6yGzgw_RqtAFpyhnOMM5Pvw@mail.gmail.com>
- <YeHLIDsjGB944GSP@zn.tnic>
- <CAMuHMdUBr+gpF6Z5nPadjHFYJwgGd+LGoNTV=Sxty+yaY5EWxg@mail.gmail.com>
- <YeHQmbMYyy92AbBp@zn.tnic>
- <YeKyBP5rac8sVvWw@zn.tnic>
- <b40d1377-51d5-4ba3-ab3f-b40626c229ad@physik.fu-berlin.de>
- <87ilsmdhb5.fsf_-_@email.froward.int.ebiederm.org>
- <CAHk-=wg+TYsns5JvNds6BVG7ezdg8uM_z9m8uJBcRDANdd7csw@mail.gmail.com>
+Date:   Wed,  9 Mar 2022 14:04:59 -0800
+Message-Id: <164686349541.391760.11942525130947458475.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <87ilsmdhb5.fsf_-_@email.froward.int.ebiederm.org>
+References: <20220113160115.5375-1-bp@alien8.de> <YeBzxuO0wLn/B2Ew@mit.edu> <YeCuNapJLK4M5sat@zn.tnic> <CAMuHMdUbTNNr16YY1TFe=-uRLjg6yGzgw_RqtAFpyhnOMM5Pvw@mail.gmail.com> <YeHLIDsjGB944GSP@zn.tnic> <CAMuHMdUBr+gpF6Z5nPadjHFYJwgGd+LGoNTV=Sxty+yaY5EWxg@mail.gmail.com> <YeHQmbMYyy92AbBp@zn.tnic> <YeKyBP5rac8sVvWw@zn.tnic> <b40d1377-51d5-4ba3-ab3f-b40626c229ad@physik.fu-berlin.de> <87ilsmdhb5.fsf_-_@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wg+TYsns5JvNds6BVG7ezdg8uM_z9m8uJBcRDANdd7csw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Mar 09, 2022 at 12:37:54PM -0800, Linus Torvalds wrote:
-> On Wed, Mar 9, 2022 at 12:04 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> >
-> > Let's see if anyone cares about a.out support on the last two
-> > architectures that build it, by disabling the build of the support in
-> > Kconfig.
+On Wed, 09 Mar 2022 14:03:42 -0600, Eric W. Biederman wrote:
+> There has been repeated discussion on removing a.out support, the most
+> recent was[1].  Having read through a bunch of the discussion it looks
+> like no one has see any reason why we need to keep a.out support.
+> 
+> The m68k maintainer has even come out in favor of removing a.out
+> support[2].
+> 
 > [...]
-> But sure, it would be interesting to know if any alpha people care - I
-> just have this suspicion that we can't drop it that easily because of
-> the non-Linux legacy.
 
-It looks like the only distro supporting Alpha is Gentoo. I pulled
-down the installation media, and everything is ELF except for firmware
-COFF files:
+Applied to for-next/execve, thanks!
 
-$ find . -type f | xargs file | grep -Ei ':.*(out|coff)'
-./lib/firmware/meson/vdec/g12a_hevc_mmu.bin: MIPSEB MIPS-III ECOFF executable not stripped - version 0.0
-./lib/firmware/meson/vdec/g12a_vp9.bin: MIPSEB MIPS-III ECOFF executable not stripped - version 0.0
-./lib/firmware/meson/vdec/gxl_hevc_mmu.bin: MIPSEB MIPS-III ECOFF executable not stripped - version 0.0
-./lib/firmware/meson/vdec/gxl_vp9.bin: MIPSEB MIPS-III ECOFF executable not stripped - version 0.0
-./lib/firmware/meson/vdec/sm1_hevc_mmu.bin: MIPSEB MIPS-III ECOFF executable not stripped - version 0.0
-./lib/firmware/meson/vdec/sm1_vp9_mmu.bin: MIPSEB MIPS-III ECOFF executable not stripped - version 0.0
-./lib/firmware/qca/crbtfw32.tlv: mc68k COFF object not stripped
-
-So, since it's an easy revert, sure. Let's do it.
+[1/1] a.out: Stop building a.out/osf1 support on alpha and m68k
+      https://git.kernel.org/kees/c/f451569b9da8
 
 -- 
 Kees Cook
+
