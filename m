@@ -2,65 +2,66 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98AD4C433EF
-	for <linux-m68k@archiver.kernel.org>; Wed,  9 Mar 2022 12:47:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 049F8C433FE
+	for <linux-m68k@archiver.kernel.org>; Wed,  9 Mar 2022 12:50:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232083AbiCIMr7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 9 Mar 2022 07:47:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40570 "EHLO
+        id S232841AbiCIMvL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 9 Mar 2022 07:51:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232839AbiCIMr5 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 9 Mar 2022 07:47:57 -0500
+        with ESMTP id S232583AbiCIMvK (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 9 Mar 2022 07:51:10 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 21C1017129F
-        for <linux-m68k@vger.kernel.org>; Wed,  9 Mar 2022 04:46:59 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E58A16E342
+        for <linux-m68k@vger.kernel.org>; Wed,  9 Mar 2022 04:50:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1646830018;
+        s=mimecast20190719; t=1646830210;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oIOQIxDPG94ZGWbVYq8GHTXPCYDThRtLt2a1oXRhNkM=;
-        b=PwYdTD/D8sN6aXeGDhvVIOpUuZERH3GkrXJY7gool/TY0ySOJP7R5LhbVxadn6kMimkXAl
-        glfZtXAH0OWuOX4r2qbCHu+tybEtCRp+LAEz89mi+aufUjb4wb4EPqjIjdcqem9NGJ9zwg
-        a178CORN9BFi5l7lPiIo5UiRjaj7kzo=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=qK37FEIB2OXNuraDrBny1GHU3Ir9ESnwpP2fxsHmqQE=;
+        b=IORNELAuboanEmFE7N3JnCdbPcsEgKb3zU8rLyUHGzj7AaYzYtgRn/LwmKADYdNOpBIK4M
+        9THJvNW0p4FxR8DSqyUA9HTC4x/hEbK2kcBv2R3pAbu47fVZliKnKMiK1Bu5f8/V+gsrJx
+        5ptxSFxA9Zq8N5cpJxix7eVikuA7UyM=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-300-ijCwApB_NcCD5FcDVKMzTg-1; Wed, 09 Mar 2022 07:46:55 -0500
-X-MC-Unique: ijCwApB_NcCD5FcDVKMzTg-1
-Received: by mail-wm1-f72.google.com with SMTP id d8-20020a05600c34c800b0037e3cd6225eso751250wmq.6
-        for <linux-m68k@vger.kernel.org>; Wed, 09 Mar 2022 04:46:54 -0800 (PST)
+ us-mta-568-hCQxGjPxPhmBiviAVg21lw-1; Wed, 09 Mar 2022 07:50:08 -0500
+X-MC-Unique: hCQxGjPxPhmBiviAVg21lw-1
+Received: by mail-wr1-f72.google.com with SMTP id l10-20020a05600012ca00b001f1e4669c98so722537wrx.23
+        for <linux-m68k@vger.kernel.org>; Wed, 09 Mar 2022 04:50:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=oIOQIxDPG94ZGWbVYq8GHTXPCYDThRtLt2a1oXRhNkM=;
-        b=YJGVAcx5ORV3GdOjT+8JIXTs3hEhiuqYTX7Eln7Ht1bzN0cxdw0QhImptToCQFd4Y4
-         hZgeJDmy66Le/CMf6dsEkuEO4rVh3+8p8b2dGUU2hyHKDpr2sP4PYJ94RW7egMzCAiXw
-         UxUpk9lOAbPMm49tXJUDFBnVu7GGc+VGrCx0I2Y8OFaePnopZKz4U6tZlXilxjGbFDIM
-         SQB8T3qTVV+GTXqah5Nh2bQSZl9F3Z7LeMmxNnQiuZTxUuHyPhMW19qpRU9T1OmiZ3Dd
-         5KN44qCy4xZDks/ZViGd0Trd2+RIpRuI7fpT0OZKcf7KvyBo0oyBwwUbz7jK1mmDSQD4
-         C3/A==
-X-Gm-Message-State: AOAM533BNv/Du8Ns+VFvIjPll3MCvUPfHWTevZuZnPxCa63/pX6XrWs/
-        m7DIMWujgNTgrIVC96zCdO2jdYtGfOUmOEVNggv1XI7udKBGPvmcWL/ssHt68zbO86Vr4o/IF/p
-        efysrG8pBq+vHGAPwzQhu6w==
-X-Received: by 2002:a5d:5986:0:b0:1f1:f971:f02 with SMTP id n6-20020a5d5986000000b001f1f9710f02mr10080746wri.578.1646830013677;
-        Wed, 09 Mar 2022 04:46:53 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzYK8FPaxzfg7PUDh96l/6CFuHhsdjJQ1VHODD7GNxUOFUkDD6tWylERnxyi/EG6sZs8v7gEQ==
-X-Received: by 2002:a5d:5986:0:b0:1f1:f971:f02 with SMTP id n6-20020a5d5986000000b001f1f9710f02mr10080724wri.578.1646830013470;
-        Wed, 09 Mar 2022 04:46:53 -0800 (PST)
+        bh=qK37FEIB2OXNuraDrBny1GHU3Ir9ESnwpP2fxsHmqQE=;
+        b=Q3SPC+/PCAfa8Wta8ll0WONOD3VapzP5RfXTD/tTeVisOYogVD6F3qNeRtNHWuEIAE
+         htRDCLEx5UHMIl92O/nWIRWg6ofY2Tc6qoP91czJ4pJGlcecfAKcdVeCupvehKKAYF2I
+         UPPbHUXe/qRFRI9B1efeFb6yPdecvwePZJ3Ws6Y2p0MAN54YEoEkMqCkim3MiwTfkP5L
+         phknsuhTGJoUF2gKM9rOwuOuhxKXwRga2TMSbCVglad3Ysol+yMrcanyeRjfuhFeXmh1
+         xu8APMbpHbsBLCmo0eY9CRGHrr3DduwVV7mLMsfhPMH8u/NE31s/uJqHX1fZyoC9pgzb
+         5Q7g==
+X-Gm-Message-State: AOAM5325eepskNB+eEaxKAqdDLv6WQZ5V7Q6K6mmQ/DP8eMDBJDQsnDD
+        VA3zjA5npBPAddZw7H1+pXe1njHF6kQ2k3IlaV2SQn+bqOPFCACSQbTxt3hSFiLYBZpC4K0iBPx
+        b4LHsCBP7V/pS/QE3c9OiHA==
+X-Received: by 2002:a05:600c:3391:b0:389:9c6e:c248 with SMTP id o17-20020a05600c339100b003899c6ec248mr7533661wmp.97.1646830207220;
+        Wed, 09 Mar 2022 04:50:07 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzeXHfCV/JaoT7fJMQEXpLGuGsq/2+i1HVZtyXeMJ9Df4V6oPcBL176FigUDbOU4N/swo1uMA==
+X-Received: by 2002:a05:600c:3391:b0:389:9c6e:c248 with SMTP id o17-20020a05600c339100b003899c6ec248mr7533636wmp.97.1646830206986;
+        Wed, 09 Mar 2022 04:50:06 -0800 (PST)
 Received: from [192.168.1.102] ([92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id j7-20020a5d5647000000b0020372c969d9sm1673557wrw.29.2022.03.09.04.46.52
+        by smtp.gmail.com with ESMTPSA id f18-20020a5d6652000000b001e669ebd528sm1715420wrw.91.2022.03.09.04.50.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Mar 2022 04:46:53 -0800 (PST)
-Message-ID: <f6186885-5bcf-01a8-56f5-b87ad0b53e3e@redhat.com>
-Date:   Wed, 9 Mar 2022 13:46:51 +0100
+        Wed, 09 Mar 2022 04:50:06 -0800 (PST)
+Message-ID: <d0c795a7-6379-fa95-7487-982e668df27d@redhat.com>
+Date:   Wed, 9 Mar 2022 13:50:05 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.0
-Subject: Re: [PATCH v2 01/10] drm/fourcc: Add drm_format_info_bpp() helper
+Subject: Re: [PATCH v2 02/10] drm/fourcc: Add drm_format_info.is_color_indexed
+ flag
 Content-Language: en-US
 To:     Geert Uytterhoeven <geert@linux-m68k.org>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -72,27 +73,24 @@ To:     Geert Uytterhoeven <geert@linux-m68k.org>,
 Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
         linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <cover.1646683502.git.geert@linux-m68k.org>
- <eab1fe866c0ffd4ac097e66ff48725dd39893105.1646683502.git.geert@linux-m68k.org>
+ <c0a11d8203d58dbaa5f22479c48504dabdd9b4e1.1646683502.git.geert@linux-m68k.org>
 From:   Javier Martinez Canillas <javierm@redhat.com>
-In-Reply-To: <eab1fe866c0ffd4ac097e66ff48725dd39893105.1646683502.git.geert@linux-m68k.org>
+In-Reply-To: <c0a11d8203d58dbaa5f22479c48504dabdd9b4e1.1646683502.git.geert@linux-m68k.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hello Geert,
-
 On 3/7/22 21:52, Geert Uytterhoeven wrote:
-> Add a helper to retrieve the actual number of bits per pixel for a
-> plane, taking into account the number of characters and pixels per
-> block for tiled formats.
+> Add a flag to struct drm_format_info to indicate if a format is
+> color-indexed, similar to the existing .is_yuv flag.
+> 
+> This way generic code and drivers can just check this flag, instead of
+> checking against a list of fourcc formats.
 > 
 > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 > ---
-
-Patch looks good to me.
-
 Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
 
 -- 
