@@ -2,66 +2,66 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61730C433EF
-	for <linux-m68k@archiver.kernel.org>; Wed,  9 Mar 2022 12:52:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAA39C433F5
+	for <linux-m68k@archiver.kernel.org>; Wed,  9 Mar 2022 12:53:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbiCIMxD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 9 Mar 2022 07:53:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56554 "EHLO
+        id S232877AbiCIMyc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 9 Mar 2022 07:54:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232967AbiCIMxC (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 9 Mar 2022 07:53:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4A170177D07
-        for <linux-m68k@vger.kernel.org>; Wed,  9 Mar 2022 04:52:04 -0800 (PST)
+        with ESMTP id S232827AbiCIMyb (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 9 Mar 2022 07:54:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A4D00CD33F
+        for <linux-m68k@vger.kernel.org>; Wed,  9 Mar 2022 04:53:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1646830323;
+        s=mimecast20190719; t=1646830411;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=MVrNBje8P4Tjl99yqsqfstxvyHvyJTjfoJ0XzHjnkFs=;
-        b=YBu+lGxlOvH8L+YVlsBFtbhqqZmvA084VweXW+9ABzUF5IPsBxegCC4S+rzl1qKAFRF1PH
-        xXFOLRv1pcL1Brmys842q9LWK54JJTrXoc3D/gdmwusLEK3g+gLnrouMVX2Sg3aF9FK3cc
-        MM0FJJoJjrxX+9VpRzfe35Vjm3arL/s=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=bHT0karyGRRNCWlLhVHNQSuvHWxMwLXpGfkux8ifP78=;
+        b=R2VUHs2NCk94AHnPYs7LPS6DP7hfg+Eo/SwlLkxtCkB776QPvmj3F6DLNFnN6QSUPSC0Mu
+        5GkRLx5WY9KJkWtwkriZVbt0vWmkV9EuGoaU2GB8ZFUqx+Y9POXktNPmhiO0zNIh0Gj10W
+        u2tpn8hzGf/ZFJ4KSXmthCA6hTpXHEc=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-656-YvZpgXFoMsSLGCuYazxLvA-1; Wed, 09 Mar 2022 07:52:00 -0500
-X-MC-Unique: YvZpgXFoMsSLGCuYazxLvA-1
-Received: by mail-wr1-f72.google.com with SMTP id h11-20020a5d430b000000b001f01a35a86fso730158wrq.4
-        for <linux-m68k@vger.kernel.org>; Wed, 09 Mar 2022 04:52:00 -0800 (PST)
+ us-mta-637-5Yvujg7iPDmBEDQqYRx9JQ-1; Wed, 09 Mar 2022 07:53:29 -0500
+X-MC-Unique: 5Yvujg7iPDmBEDQqYRx9JQ-1
+Received: by mail-wm1-f72.google.com with SMTP id 187-20020a1c19c4000000b0037cc0d56524so2561549wmz.2
+        for <linux-m68k@vger.kernel.org>; Wed, 09 Mar 2022 04:53:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=MVrNBje8P4Tjl99yqsqfstxvyHvyJTjfoJ0XzHjnkFs=;
-        b=5e5h6Pc2GIQ1HGGPhzSfQHJ6LkS2fQi/4O2xtb+RX1AXDbzWvv26hUifNVkE7AAxJ5
-         EyxvTrYqJJ81HYkKsmKQOPL/gXUCxa4a9GpII0FFX+hKcvBQLt/9rPULmzdosA8fv4AI
-         inzrHlyNhBadFjyGbcTi15TiQir1I34gz9rTKiaPFZCVy+sgzE2+5zooj5iXFzC6BgV4
-         xnjy4rXwRqWn3jNdMwpOvdVsdllfSu1kH+0/Ug9ad3uvlPdNMvwlAuYVfYliamAPJ22X
-         VJf+wnolCVDGu0wHBtzswDzBFofG6z7LSaOlhrRXA66HuRSHuPHDg9BVeoVEX2QXCssc
-         RCAA==
-X-Gm-Message-State: AOAM533rTvxpzN11nYsKZHOoqo6b5vx6YYxjoScABZnyk/Pa9JxbjlF2
-        2BpS4HSp1iWkr6fzzVlPSwZ3c8iuwfiUgny97m1UycXHDBQvxG/N0OaVoLVz6oR7iMg4w8uzjmr
-        635joHQBY+FLcRcdnPxomPQ==
-X-Received: by 2002:adf:8b9e:0:b0:1f0:25ca:6d81 with SMTP id o30-20020adf8b9e000000b001f025ca6d81mr15523230wra.247.1646830319032;
-        Wed, 09 Mar 2022 04:51:59 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJznCED2hDWfMPlEh09LTikM9n8nFo++5o/PkgFE4Sete3s/9brY/cGIrZsveiDmJHMiONU+4Q==
-X-Received: by 2002:adf:8b9e:0:b0:1f0:25ca:6d81 with SMTP id o30-20020adf8b9e000000b001f025ca6d81mr15523208wra.247.1646830318754;
-        Wed, 09 Mar 2022 04:51:58 -0800 (PST)
+        bh=bHT0karyGRRNCWlLhVHNQSuvHWxMwLXpGfkux8ifP78=;
+        b=NK6da4o6NskU7KZFIqg8ytYcU7DrXlIfs0cNlaFBlztTRhKtNAnKJb32WgMyoXU14b
+         Sjco0eyU/ku8ULsKdHdnxnJwMSBrAcJQCjzt6QY8/lu5mLe4OBvU35XkoLpI18O3C0EN
+         O8bDtUoBWc6h8Xe7b9JGAXA18eNnMYIYoCvLa96h7UGwqOTnbxa8Abh5MD3sV6gdCkTB
+         Xdv0YYwe6EETrXi1kzD4bdd2z0YT+WLBZ/I4qGDPo5Ycz6+zqrbhEAKDxkPvCFSSi5l+
+         fa8UE/L3LxpXDI9Xm2ZpNz64+5bZcQHVlOyXMahRhXLYWxATQVVpYgELfTqjdJ8q36wP
+         GWEw==
+X-Gm-Message-State: AOAM531+9ozL8aGiPTCdExxwlirGpOgM6Nl4w5YWx0Fy+HnDQ5WHgOOU
+        PyOVpQVdk+zQdx5uku/wE+kI5RH/0T/j4sSQbbzOATWQbbr5kuh5oqZsZ/zXgWFqpfPuo8Lo8vD
+        T8FF/jSDAFgfObDCSa+Y2Kw==
+X-Received: by 2002:a05:600c:4f8f:b0:383:d0b:3706 with SMTP id n15-20020a05600c4f8f00b003830d0b3706mr3328424wmq.117.1646830407593;
+        Wed, 09 Mar 2022 04:53:27 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwhA94T4hLNZGfPp9ZlHTC1cFNUMD4hfeN8kfLp3ziXcsrKaa2MDMubqSWEOGZcY5C6vhou4g==
+X-Received: by 2002:a05:600c:4f8f:b0:383:d0b:3706 with SMTP id n15-20020a05600c4f8f00b003830d0b3706mr3328411wmq.117.1646830407398;
+        Wed, 09 Mar 2022 04:53:27 -0800 (PST)
 Received: from [192.168.1.102] ([92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id n2-20020a056000170200b001f1e16f3c53sm1643997wrc.51.2022.03.09.04.51.57
+        by smtp.gmail.com with ESMTPSA id l25-20020a1c7919000000b0038999b380e9sm1663075wme.38.2022.03.09.04.53.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Mar 2022 04:51:58 -0800 (PST)
-Message-ID: <d7a8d183-fe2b-99b1-9730-eddb040f6d1e@redhat.com>
-Date:   Wed, 9 Mar 2022 13:51:57 +0100
+        Wed, 09 Mar 2022 04:53:27 -0800 (PST)
+Message-ID: <7d9b2035-13d6-5d58-e21c-52bbb9282796@redhat.com>
+Date:   Wed, 9 Mar 2022 13:53:25 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.0
-Subject: Re: [PATCH v2 03/10] drm/client: Use actual bpp when allocating frame
- buffers
+Subject: Re: [PATCH v2 04/10] drm/framebuffer: Use actual bpp for
+ DRM_IOCTL_MODE_GETFB
 Content-Language: en-US
 To:     Geert Uytterhoeven <geert@linux-m68k.org>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -73,9 +73,9 @@ To:     Geert Uytterhoeven <geert@linux-m68k.org>,
 Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
         linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <cover.1646683502.git.geert@linux-m68k.org>
- <8f29a983d42d9d68bd8cae2f9481d3c139f8750a.1646683502.git.geert@linux-m68k.org>
+ <d87068fd1e2cc6f772a64ba9306350a31baeae58.1646683502.git.geert@linux-m68k.org>
 From:   Javier Martinez Canillas <javierm@redhat.com>
-In-Reply-To: <8f29a983d42d9d68bd8cae2f9481d3c139f8750a.1646683502.git.geert@linux-m68k.org>
+In-Reply-To: <d87068fd1e2cc6f772a64ba9306350a31baeae58.1646683502.git.geert@linux-m68k.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -83,16 +83,13 @@ List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
 On 3/7/22 21:52, Geert Uytterhoeven wrote:
-> When allocating a frame buffer, the number of bits per pixel needed is
-> derived from the deprecated drm_format_info.cpp[] field.  While this
-> works for formats using less than 8 bits per pixel, it does lead to a
-> large overallocation.
+> When userspace queries the properties of a frame buffer, the number of
+> bits per pixel is derived from the deprecated drm_format_info.cpp[]
+> field, which does not take into account block sizes.
 > 
-> Reduce memory consumption by using the actual number of bits per pixel
-> instead.
+> Fix this by using the actual number of bits per pixel instead.
 > 
 > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
 > ---
 
 Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
