@@ -2,93 +2,118 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C204C433F5
-	for <linux-m68k@archiver.kernel.org>; Wed,  9 Mar 2022 22:05:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A8EBC433F5
+	for <linux-m68k@archiver.kernel.org>; Thu, 10 Mar 2022 08:10:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236653AbiCIWGQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 9 Mar 2022 17:06:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57338 "EHLO
+        id S232557AbiCJILG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 10 Mar 2022 03:11:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236636AbiCIWGP (ORCPT
+        with ESMTP id S240215AbiCJILA (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 9 Mar 2022 17:06:15 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1DF011EF2C
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  9 Mar 2022 14:05:15 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id h5so1799290plf.7
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 09 Mar 2022 14:05:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Ol07yB2pc4Hx2YpjxX8IDkmGa1Ut0RXCUKHI0BlLywM=;
-        b=N5JXehWwWuC4FwbhbSiMdnv1JqdJYcNh+IKME6/AwQDzvtCfK61grGuRwv3x+0S504
-         OZfzislLftIUuu+eTY0ij+1lpxA96FHcWXljVoqByHuVKUNSJO6hendZ8xihqIDFaALK
-         IitMl2Rq4/Oj2paqCMYhmSF5W893FOI5l0cPs=
+        Thu, 10 Mar 2022 03:11:00 -0500
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF77013396D
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 10 Mar 2022 00:09:59 -0800 (PST)
+Received: by mail-qt1-f173.google.com with SMTP id 11so3979557qtt.9
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 10 Mar 2022 00:09:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Ol07yB2pc4Hx2YpjxX8IDkmGa1Ut0RXCUKHI0BlLywM=;
-        b=lSY1VkQLTVMajD+xoFhZk+rFVHvthcUJowz9H7fT9loVv6nTWjM74tk9gum/VvEqkq
-         K3gazAlruQ8P1jFuFiYv5mLb8vfR6tgEBT+zOpT/xt95xA0EuMVcfsN1ABNJ4anHKb1t
-         ncmTxbNbqOQt/S2N7D9lMmXGEYQCRydSuJ+AXSeU68zzpnLJaGg3aQxLB5OUaHAz/jq1
-         Xz9eYGP6/QLFKyuqltO0C7kQUc+8pT58zAKkHo/ZrTZxhL49xxzzPirIRAMLFvxGH1Rc
-         pDvHT6jFfcThBc3mYRMTONEFzDki7Ai+Vqu2svOqHDnFXdXN/huThVMJOl1qlx8uMAXG
-         +Tlg==
-X-Gm-Message-State: AOAM533KKLpWc6uhrtYESyDCh2z7tw52TtLzzpqV0u2wSEawf+HnytaI
-        k58ExMk9T9g9f/oHsO8FVSjtMQ==
-X-Google-Smtp-Source: ABdhPJyGPublwuLOMOVGGkAn+uCqEykbtEDrUSKkIin3o3/MXyEy6lr28SGfex4fbL3/1BVSE2KwoA==
-X-Received: by 2002:a17:902:c745:b0:153:b0e:8586 with SMTP id q5-20020a170902c74500b001530b0e8586mr1643074plq.9.1646863515178;
-        Wed, 09 Mar 2022 14:05:15 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i11-20020a056a00004b00b004f6907b2cd3sm4173818pfk.122.2022.03.09.14.05.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Mar 2022 14:05:14 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HfibjxXpSiDUQkdsSWqfUL3zPU0FxzAokd4WU1kLbJM=;
+        b=b7rR2vbhewlT/tp/nid7uWlY7YrE4zqvQNaTEFnIhxOdTLMkp/SzC6Ew5oq/tnBFGW
+         fvknjvwfruMjZp0bN35ea5K7m3p1kyQx81ig2HRxFTnCObiBEEH105bLUfLhjnqpXlMc
+         A9Hd8KBsIoZwcds7rwI6ndAlTMWnBamnrbeUMcfyjm1GtJjRQolJl5QNregvE+iVrBRO
+         L7b7Asl888jmH+MXfKKIZBkfRSYQ+8GicX4A84kQXsiqpvoe1gp1+dX+Iyvy57ZspwUh
+         kizmECVESehJeioIPd1efxtuiO08hX5BObmc/cWkVqczvdpFSZ3XyNANKiOkWfHgjLTc
+         6w+Q==
+X-Gm-Message-State: AOAM533d3NTnwN+ziIZIUFcKA9w2CpgIDwYXpCRRMGhqt01y1jqSdqjV
+        mO3tpwddJl2AzLBqVYVCXyQkgIpb5aEFyQ==
+X-Google-Smtp-Source: ABdhPJxLAw1DZYLXGuPg0YDQz9p/0wZ0dHKNpIo874mWpGT3U7EK0yBjvUUdIA7obD9EygGCDvo+0w==
+X-Received: by 2002:a05:622a:cf:b0:2e1:a68e:6793 with SMTP id p15-20020a05622a00cf00b002e1a68e6793mr2916675qtw.603.1646899798014;
+        Thu, 10 Mar 2022 00:09:58 -0800 (PST)
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
+        by smtp.gmail.com with ESMTPSA id r64-20020a37a843000000b0067b0cf40b18sm1996779qke.69.2022.03.10.00.09.56
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Mar 2022 00:09:56 -0800 (PST)
+Received: by mail-yb1-f173.google.com with SMTP id l2so9352325ybe.8
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 10 Mar 2022 00:09:56 -0800 (PST)
+X-Received: by 2002:a5b:5d0:0:b0:623:c68d:d473 with SMTP id
+ w16-20020a5b05d0000000b00623c68dd473mr2923471ybp.506.1646899795891; Thu, 10
+ Mar 2022 00:09:55 -0800 (PST)
+MIME-Version: 1.0
+References: <20220113160115.5375-1-bp@alien8.de> <YeBzxuO0wLn/B2Ew@mit.edu>
+ <YeCuNapJLK4M5sat@zn.tnic> <CAMuHMdUbTNNr16YY1TFe=-uRLjg6yGzgw_RqtAFpyhnOMM5Pvw@mail.gmail.com>
+ <YeHLIDsjGB944GSP@zn.tnic> <CAMuHMdUBr+gpF6Z5nPadjHFYJwgGd+LGoNTV=Sxty+yaY5EWxg@mail.gmail.com>
+ <YeHQmbMYyy92AbBp@zn.tnic> <YeKyBP5rac8sVvWw@zn.tnic> <b40d1377-51d5-4ba3-ab3f-b40626c229ad@physik.fu-berlin.de>
+ <87ilsmdhb5.fsf_-_@email.froward.int.ebiederm.org>
+In-Reply-To: <87ilsmdhb5.fsf_-_@email.froward.int.ebiederm.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 10 Mar 2022 09:09:44 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVLyu6LNONJa1QcMGv__bWSCRvVq9haD7=fOm1k5O3Pnw@mail.gmail.com>
+Message-ID: <CAMuHMdVLyu6LNONJa1QcMGv__bWSCRvVq9haD7=fOm1k5O3Pnw@mail.gmail.com>
+Subject: Re: [PATCH] a.out: Stop building a.out/osf1 support on alpha and m68k
 To:     "Eric W. Biederman" <ebiederm@xmission.com>
 Cc:     Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        =?UTF-8?q?M=C3=A5ns=20Rullg=C3=A5rd?= <mans@mansr.com>,
-        Theodore Ts'o <tytso@mit.edu>,
         John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Michael Cree <mcree@orcon.net.nz>, linux-arch@vger.kernel.org,
-        Richard Henderson <rth@twiddle.net>,
-        linux-m68k@lists.linux-m68k.org, Borislav Petkov <bp@alien8.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "Theodore Ts'o" <tytso@mit.edu>, X86 ML <x86@kernel.org>,
         Arnd Bergmann <arnd@arndb.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Matt Turner <mattst88@gmail.com>,
+        =?UTF-8?B?TcOlbnMgUnVsbGfDpXJk?= <mans@mansr.com>,
+        Michael Cree <mcree@orcon.net.nz>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
         Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        X86 ML <x86@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Matt Turner <mattst88@gmail.com>
-Subject: Re: [PATCH] a.out: Stop building a.out/osf1 support on alpha and m68k
-Date:   Wed,  9 Mar 2022 14:04:59 -0800
-Message-Id: <164686349541.391760.11942525130947458475.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <87ilsmdhb5.fsf_-_@email.froward.int.ebiederm.org>
-References: <20220113160115.5375-1-bp@alien8.de> <YeBzxuO0wLn/B2Ew@mit.edu> <YeCuNapJLK4M5sat@zn.tnic> <CAMuHMdUbTNNr16YY1TFe=-uRLjg6yGzgw_RqtAFpyhnOMM5Pvw@mail.gmail.com> <YeHLIDsjGB944GSP@zn.tnic> <CAMuHMdUBr+gpF6Z5nPadjHFYJwgGd+LGoNTV=Sxty+yaY5EWxg@mail.gmail.com> <YeHQmbMYyy92AbBp@zn.tnic> <YeKyBP5rac8sVvWw@zn.tnic> <b40d1377-51d5-4ba3-ab3f-b40626c229ad@physik.fu-berlin.de> <87ilsmdhb5.fsf_-_@email.froward.int.ebiederm.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, 09 Mar 2022 14:03:42 -0600, Eric W. Biederman wrote:
+On Wed, Mar 9, 2022 at 9:04 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
 > There has been repeated discussion on removing a.out support, the most
 > recent was[1].  Having read through a bunch of the discussion it looks
 > like no one has see any reason why we need to keep a.out support.
-> 
+>
 > The m68k maintainer has even come out in favor of removing a.out
 > support[2].
-> 
-> [...]
+>
+> At a practical level with only two rarely used architectures building
+> a.out support, it gets increasingly hard to test and to care about.
+> Which means the code will almost certainly bit-rot.
+>
+> Let's see if anyone cares about a.out support on the last two
+> architectures that build it, by disabling the build of the support in
+> Kconfig.  If anyone cares, this can be easily reverted, and we can then
+> have a discussion about what it is going to take to support a.out
+> binaries in the long term.
+>
+> Cc: Richard Henderson <rth@twiddle.net>
+> Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+> Cc: Matt Turner <mattst88@gmail.com>
+> Cc: linux-alpha@vger.kernel.org
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: linux-m68k@lists.linux-m68k.org
+> [1] https://lkml.kernel.org/r/20220113160115.5375-1-bp@alien8.de
+> [2] https://lkml.kernel.org/r/CAMuHMdUbTNNr16YY1TFe=-uRLjg6yGzgw_RqtAFpyhnOMM5Pvw@mail.gmail.com
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
-Applied to for-next/execve, thanks!
+>  arch/m68k/Kconfig  | 1 -
 
-[1/1] a.out: Stop building a.out/osf1 support on alpha and m68k
-      https://git.kernel.org/kees/c/f451569b9da8
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
--- 
-Kees Cook
+Gr{oetje,eeting}s,
 
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
