@@ -2,118 +2,84 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A8EBC433F5
-	for <linux-m68k@archiver.kernel.org>; Thu, 10 Mar 2022 08:10:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26641C433F5
+	for <linux-m68k@archiver.kernel.org>; Thu, 10 Mar 2022 08:15:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232557AbiCJILG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 10 Mar 2022 03:11:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59048 "EHLO
+        id S236398AbiCJIQi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 10 Mar 2022 03:16:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240215AbiCJILA (ORCPT
+        with ESMTP id S232411AbiCJIQg (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 10 Mar 2022 03:11:00 -0500
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF77013396D
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 10 Mar 2022 00:09:59 -0800 (PST)
-Received: by mail-qt1-f173.google.com with SMTP id 11so3979557qtt.9
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 10 Mar 2022 00:09:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HfibjxXpSiDUQkdsSWqfUL3zPU0FxzAokd4WU1kLbJM=;
-        b=b7rR2vbhewlT/tp/nid7uWlY7YrE4zqvQNaTEFnIhxOdTLMkp/SzC6Ew5oq/tnBFGW
-         fvknjvwfruMjZp0bN35ea5K7m3p1kyQx81ig2HRxFTnCObiBEEH105bLUfLhjnqpXlMc
-         A9Hd8KBsIoZwcds7rwI6ndAlTMWnBamnrbeUMcfyjm1GtJjRQolJl5QNregvE+iVrBRO
-         L7b7Asl888jmH+MXfKKIZBkfRSYQ+8GicX4A84kQXsiqpvoe1gp1+dX+Iyvy57ZspwUh
-         kizmECVESehJeioIPd1efxtuiO08hX5BObmc/cWkVqczvdpFSZ3XyNANKiOkWfHgjLTc
-         6w+Q==
-X-Gm-Message-State: AOAM533d3NTnwN+ziIZIUFcKA9w2CpgIDwYXpCRRMGhqt01y1jqSdqjV
-        mO3tpwddJl2AzLBqVYVCXyQkgIpb5aEFyQ==
-X-Google-Smtp-Source: ABdhPJxLAw1DZYLXGuPg0YDQz9p/0wZ0dHKNpIo874mWpGT3U7EK0yBjvUUdIA7obD9EygGCDvo+0w==
-X-Received: by 2002:a05:622a:cf:b0:2e1:a68e:6793 with SMTP id p15-20020a05622a00cf00b002e1a68e6793mr2916675qtw.603.1646899798014;
-        Thu, 10 Mar 2022 00:09:58 -0800 (PST)
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
-        by smtp.gmail.com with ESMTPSA id r64-20020a37a843000000b0067b0cf40b18sm1996779qke.69.2022.03.10.00.09.56
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Mar 2022 00:09:56 -0800 (PST)
-Received: by mail-yb1-f173.google.com with SMTP id l2so9352325ybe.8
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 10 Mar 2022 00:09:56 -0800 (PST)
-X-Received: by 2002:a5b:5d0:0:b0:623:c68d:d473 with SMTP id
- w16-20020a5b05d0000000b00623c68dd473mr2923471ybp.506.1646899795891; Thu, 10
- Mar 2022 00:09:55 -0800 (PST)
+        Thu, 10 Mar 2022 03:16:36 -0500
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58CD71342E2;
+        Thu, 10 Mar 2022 00:15:35 -0800 (PST)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1nSDxM-003GVI-FY; Thu, 10 Mar 2022 09:15:32 +0100
+Received: from p57bd9552.dip0.t-ipconnect.de ([87.189.149.82] helo=[192.168.178.81])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1nSDxK-002u5d-Gv; Thu, 10 Mar 2022 09:15:32 +0100
+Message-ID: <1b9a5ec6-dd9f-c452-4abf-eb6d8f1dafc8@physik.fu-berlin.de>
+Date:   Thu, 10 Mar 2022 09:15:29 +0100
 MIME-Version: 1.0
-References: <20220113160115.5375-1-bp@alien8.de> <YeBzxuO0wLn/B2Ew@mit.edu>
- <YeCuNapJLK4M5sat@zn.tnic> <CAMuHMdUbTNNr16YY1TFe=-uRLjg6yGzgw_RqtAFpyhnOMM5Pvw@mail.gmail.com>
- <YeHLIDsjGB944GSP@zn.tnic> <CAMuHMdUBr+gpF6Z5nPadjHFYJwgGd+LGoNTV=Sxty+yaY5EWxg@mail.gmail.com>
- <YeHQmbMYyy92AbBp@zn.tnic> <YeKyBP5rac8sVvWw@zn.tnic> <b40d1377-51d5-4ba3-ab3f-b40626c229ad@physik.fu-berlin.de>
- <87ilsmdhb5.fsf_-_@email.froward.int.ebiederm.org>
-In-Reply-To: <87ilsmdhb5.fsf_-_@email.froward.int.ebiederm.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 10 Mar 2022 09:09:44 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVLyu6LNONJa1QcMGv__bWSCRvVq9haD7=fOm1k5O3Pnw@mail.gmail.com>
-Message-ID: <CAMuHMdVLyu6LNONJa1QcMGv__bWSCRvVq9haD7=fOm1k5O3Pnw@mail.gmail.com>
-Subject: Re: [PATCH] a.out: Stop building a.out/osf1 support on alpha and m68k
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "Theodore Ts'o" <tytso@mit.edu>, X86 ML <x86@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Matt Turner <mattst88@gmail.com>,
-        =?UTF-8?B?TcOlbnMgUnVsbGfDpXJk?= <mans@mansr.com>,
-        Michael Cree <mcree@orcon.net.nz>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Subject: Re: [PATCH v14 4/5] clocksource/drivers: Add a goldfish-timer
+ clocksource
+Content-Language: en-US
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Laurent Vivier <laurent@vivier.eu>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-rtc@vger.kernel.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+References: <20220130143333.552646-1-laurent@vivier.eu>
+ <20220130143333.552646-5-laurent@vivier.eu>
+ <1a0f23f2-361a-25d1-b371-7a229758d248@vivier.eu>
+ <2e56d310-65a9-e910-98e0-c7c51b88b7f6@linaro.org>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+In-Reply-To: <2e56d310-65a9-e910-98e0-c7c51b88b7f6@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.149.82
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Mar 9, 2022 at 9:04 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> There has been repeated discussion on removing a.out support, the most
-> recent was[1].  Having read through a bunch of the discussion it looks
-> like no one has see any reason why we need to keep a.out support.
->
-> The m68k maintainer has even come out in favor of removing a.out
-> support[2].
->
-> At a practical level with only two rarely used architectures building
-> a.out support, it gets increasingly hard to test and to care about.
-> Which means the code will almost certainly bit-rot.
->
-> Let's see if anyone cares about a.out support on the last two
-> architectures that build it, by disabling the build of the support in
-> Kconfig.  If anyone cares, this can be easily reverted, and we can then
-> have a discussion about what it is going to take to support a.out
-> binaries in the long term.
->
-> Cc: Richard Henderson <rth@twiddle.net>
-> Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-> Cc: Matt Turner <mattst88@gmail.com>
-> Cc: linux-alpha@vger.kernel.org
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: linux-m68k@lists.linux-m68k.org
-> [1] https://lkml.kernel.org/r/20220113160115.5375-1-bp@alien8.de
-> [2] https://lkml.kernel.org/r/CAMuHMdUbTNNr16YY1TFe=-uRLjg6yGzgw_RqtAFpyhnOMM5Pvw@mail.gmail.com
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Hi Laurent!
 
->  arch/m68k/Kconfig  | 1 -
+On 2/28/22 11:27, Daniel Lezcano wrote:
+>>>    https://android.googlesource.com/platform/external/qemu/+/master/docs/GOLDFISH-VIRTUAL-HARDWARE.TXT
+> Please do not add pointer in the changelog as this one will stay forever but no guarantee for the url.
+> 
+> A description of the timer is enough:
+> 
+> eg.
+> commit 625022a5f1606
+> commit a7ad38b0dd3c1
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Just a reminder we're still missing this particular change.
 
-Gr{oetje,eeting}s,
+Adrian
 
-                        Geert
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
