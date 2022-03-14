@@ -2,76 +2,132 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 874AFC433F5
-	for <linux-m68k@archiver.kernel.org>; Fri, 11 Mar 2022 10:03:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C554FC433F5
+	for <linux-m68k@archiver.kernel.org>; Mon, 14 Mar 2022 13:30:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237881AbiCKKEu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 11 Mar 2022 05:04:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52320 "EHLO
+        id S230349AbiCNNbn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 14 Mar 2022 09:31:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232723AbiCKKEu (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 11 Mar 2022 05:04:50 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 202AE151D21
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 11 Mar 2022 02:03:45 -0800 (PST)
-Received: from zn.tnic (p200300ea9719388a4988cf4d8129e469.dip0.t-ipconnect.de [IPv6:2003:ea:9719:388a:4988:cf4d:8129:e469])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9DCB01EC02DD;
-        Fri, 11 Mar 2022 11:03:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1646993019;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=OUaGFHp5NKVe5CJxdIfOHD2DfGuKxPuZDH1EuX/Bg7c=;
-        b=coGnfFSEJZLXZjFG3kj9PChLAyiTWAqvojdKLNOzywngKhEAYepgoyd/pwLA9YyOoSdNmJ
-        axkLi0rXa2SG6A28BZ/5SH6a4NPXmzJWGcjXRiUZAYwzGjvugLcq/wowQHhP7h1VBSffBv
-        oF/ommKcvdUlX5m76cTJ6wq/ToBSaok=
-Date:   Fri, 11 Mar 2022 11:03:45 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        =?utf-8?B?TcOlbnMgUnVsbGfDpXJk?= <mans@mansr.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Michael Cree <mcree@orcon.net.nz>, linux-arch@vger.kernel.org,
-        Richard Henderson <rth@twiddle.net>,
-        linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        X86 ML <x86@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Matt Turner <mattst88@gmail.com>
-Subject: Re: [PATCH] x86: Remove a.out support
-Message-ID: <YisegQyTNi02Iq4s@zn.tnic>
-References: <YeCuNapJLK4M5sat@zn.tnic>
- <CAMuHMdUbTNNr16YY1TFe=-uRLjg6yGzgw_RqtAFpyhnOMM5Pvw@mail.gmail.com>
- <YeHLIDsjGB944GSP@zn.tnic>
- <CAMuHMdUBr+gpF6Z5nPadjHFYJwgGd+LGoNTV=Sxty+yaY5EWxg@mail.gmail.com>
- <YeHQmbMYyy92AbBp@zn.tnic>
- <YeKyBP5rac8sVvWw@zn.tnic>
- <b40d1377-51d5-4ba3-ab3f-b40626c229ad@physik.fu-berlin.de>
- <87ilsmdhb5.fsf_-_@email.froward.int.ebiederm.org>
- <164686349541.391760.11942525130947458475.b4-ty@chromium.org>
- <87czit4cae.fsf_-_@email.froward.int.ebiederm.org>
+        with ESMTP id S233166AbiCNNbn (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 14 Mar 2022 09:31:43 -0400
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B7A13D73;
+        Mon, 14 Mar 2022 06:30:32 -0700 (PDT)
+Received: by mail-qk1-f176.google.com with SMTP id q4so12660482qki.11;
+        Mon, 14 Mar 2022 06:30:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7ESmoGYKvForOfgnFNNl3bul8J0TvzMfyrdSY3ncE6E=;
+        b=uO+Um3ZMkaOLd27w4397t+Fkci9z8p3BGpG5jW0zNEyNevdQQ3tfMYRQx9pNG+RhSO
+         QAsxZlkwXCeoTcUeUAe1swxy98G/HDfoZh//jGFz/JX6ZKfggiHzqsgI+1hKpkYMkCLA
+         Xq1e6uM7YUAZmXhnNKlGjDNL+YA4lkbjb05Rb4WQ+9jzlcWCsd7NdS5v+Yovyyq+B6Xt
+         HauZd5YXzbkC71oZgaILvTVBcKFwPBMBzjYNbXUuvK4uP/8H+VVg4nMW9Y/R9aeqq3o0
+         wjayk+HwknTMqAXIUBrL3IFro1AQ69neLCqIjCTYulhrVSLFgMyMk2CNKgUWwxUTlhEO
+         vUpw==
+X-Gm-Message-State: AOAM530oWWKWLE09SRWpWTbka181do3MQbbMp7Uj40CiL+jDxlcKW9b/
+        XefFAtyX4Fne666Zy+onTgYoCxKduszn7w==
+X-Google-Smtp-Source: ABdhPJzO94wE27iqfcTwnmSWUlJLQydrjBgOPb1Wr0PywBgDqz56YNMacz/XufAKVIYWUsYJQWs5Aw==
+X-Received: by 2002:a05:620a:4085:b0:67b:315b:a09f with SMTP id f5-20020a05620a408500b0067b315ba09fmr14881685qko.334.1647264631247;
+        Mon, 14 Mar 2022 06:30:31 -0700 (PDT)
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
+        by smtp.gmail.com with ESMTPSA id h8-20020ac87d48000000b002e1c6faae9csm5564977qtb.28.2022.03.14.06.30.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Mar 2022 06:30:30 -0700 (PDT)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-2db2add4516so163661667b3.1;
+        Mon, 14 Mar 2022 06:30:30 -0700 (PDT)
+X-Received: by 2002:a0d:f1c7:0:b0:2db:d2bc:be11 with SMTP id
+ a190-20020a0df1c7000000b002dbd2bcbe11mr18928111ywf.62.1647264630398; Mon, 14
+ Mar 2022 06:30:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87czit4cae.fsf_-_@email.froward.int.ebiederm.org>
+References: <cover.1646683502.git.geert@linux-m68k.org> <8d3c0cc370b0214244b01a64c588e5e506531716.1646683502.git.geert@linux-m68k.org>
+In-Reply-To: <8d3c0cc370b0214244b01a64c588e5e506531716.1646683502.git.geert@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 14 Mar 2022 14:30:18 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVq19wpA_7nKKTm-G2EmK3cMxxP6nbR_u=vkazqCZ=KhQ@mail.gmail.com>
+Message-ID: <CAMuHMdVq19wpA_7nKKTm-G2EmK3cMxxP6nbR_u=vkazqCZ=KhQ@mail.gmail.com>
+Subject: Re: [PATCH v2 05/10] drm/fourcc: Add DRM_FORMAT_C[124]
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Sam Ravnborg <sam@ravnborg.org>, Helge Deller <deller@gmx.de>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        "Linux/m68k" <linux-m68k@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Mar 10, 2022 at 05:29:13PM -0600, Eric W. Biederman wrote:
-> Kees can you pick this one up in for-next/execve as well?
+On Mon, Mar 7, 2022 at 9:53 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> Introduce fourcc codes for color-indexed frame buffer formats with two,
+> four, and sixteen colors, and provide a mapping from bit per pixel and
+> depth to fourcc codes.
+>
+> As the number of bits per pixel is less than eight, these rely on proper
+> block handling for the calculation of bits per pixel and pitch.
+>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-I can carry it through tip, no probs.
+> --- a/include/uapi/drm/drm_fourcc.h
+> +++ b/include/uapi/drm/drm_fourcc.h
+> @@ -99,7 +99,10 @@ extern "C" {
+>  #define DRM_FORMAT_INVALID     0
+>
+>  /* color index */
+> -#define DRM_FORMAT_C8          fourcc_code('C', '8', ' ', ' ') /* [7:0] C */
+> +#define DRM_FORMAT_C1          fourcc_code('C', '1', ' ', ' ') /* [7:0] C0:C1:C2:C3:C4:C5:C6:C7 1:1:1:1:1:1:1:1 eight pixels/byte */
+> +#define DRM_FORMAT_C2          fourcc_code('C', '2', ' ', ' ') /* [7:0] C0:C1:C2:C3 2:2:2:2 four pixels/byte */
+> +#define DRM_FORMAT_C4          fourcc_code('C', '4', ' ', ' ') /* [7:0] C0:C1 4:4 two pixels/byte */
+> +#define DRM_FORMAT_C8          fourcc_code('C', '8', ' ', ' ') /* [7:0] C 8 one pixel/byte */
+>
+>  /* 8 bpp Red */
+>  #define DRM_FORMAT_R8          fourcc_code('R', '8', ' ', ' ') /* [7:0] R */
 
--- 
-Regards/Gruss,
-    Boris.
+After replying to Ilia's comment[1], I realized the CFB drawing
+operations use native byte and bit ordering, unless
+FBINFO_FOREIGN_ENDIAN is set.
+While Amiga, Atari, and Sun-3 use big-endian bit ordering,
+e.g. Acorn VIDC[2] uses little endian, and SH7760[3] is configurable
+(sh7760fb configures ordering to match host order).
+BTW, ssd130{7fb,x}_update_rect() both assume little-endian, so I
+guess they are broken on big-endian.
+Fbtest uses big-endian bit ordering, so < 8 bpp is probably broken
+on little-endian.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Hence the above should become:
+
+    #define DRM_FORMAT_C1          fourcc_code('C', '1', ' ', ' ') /*
+[7:0] C7:C6:C5:C4:C3:C2:C1:C0 1:1:1:1:1:1:1:1 eight pixels/byte */
+    #define DRM_FORMAT_C2          fourcc_code('C', '2', ' ', ' ') /*
+[7:0] C3:C2:C1:C0 2:2:2:2 four pixels/byte */
+    #define DRM_FORMAT_C4          fourcc_code('C', '4', ' ', ' ') /*
+[7:0] C1:C0 4:4 two pixels/byte */
+
+The same changes should be made for DRM_FORMAT_[RD][124].
+
+The fbdev emulation code should gain support for these with and without
+DRM_FORMAT_BIG_ENDIAN, the latter perhaps only on big-endian platforms?
+
+[1] https://lore.kernel.org/r/CAKb7UvgEdm9U=+RyRwL0TGRfA_Qc7NbhCWoZOft2DKdXggtKYw@mail.gmail.com/
+[2] See p.30 of the VIDC datasheet
+    http://chrisacorns.computinghistory.org.uk/docs/Acorn/Misc/Acorn_VIDC_Datasheet.pdf
+[3] See p.1178 of the SH7660 datasheet
+    https://datasheet.octopart.com/HD6417760BL200AV-Renesas-datasheet-14105759.pdf
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
