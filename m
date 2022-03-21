@@ -2,95 +2,112 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97502C433EF
-	for <linux-m68k@archiver.kernel.org>; Wed, 16 Mar 2022 13:36:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1A5EC433F5
+	for <linux-m68k@archiver.kernel.org>; Mon, 21 Mar 2022 09:14:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232706AbiCPNhh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 16 Mar 2022 09:37:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41740 "EHLO
+        id S1345758AbiCUJQR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 21 Mar 2022 05:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230172AbiCPNhg (ORCPT
+        with ESMTP id S244214AbiCUJQQ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 16 Mar 2022 09:37:36 -0400
-Received: from out02.mta.xmission.com (out02.mta.xmission.com [166.70.13.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33DB447075;
-        Wed, 16 Mar 2022 06:36:22 -0700 (PDT)
-Received: from in01.mta.xmission.com ([166.70.13.51]:35184)
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        Mon, 21 Mar 2022 05:16:16 -0400
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D7E734B81
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 21 Mar 2022 02:14:51 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:f1f2:313b:fe05:3e70])
+        by baptiste.telenet-ops.be with bizsmtp
+        id 8xEo2700F0qZUsV01xEopp; Mon, 21 Mar 2022 10:14:49 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1nUTp6-00BMHf-2H; Wed, 16 Mar 2022 07:36:20 -0600
-Received: from ip68-227-174-4.om.om.cox.net ([68.227.174.4]:37920 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1nUTp4-00Bptv-1e; Wed, 16 Mar 2022 07:36:19 -0600
-From:   "Eric W. Biederman" <ebiederm@xmission.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Yang Li <yang.lee@linux.alibaba.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Abaci Robot <abaci@linux.alibaba.com>
-References: <20220315235148.54253-1-yang.lee@linux.alibaba.com>
-        <CAMuHMdXvgXAnZTGxBWyQ78LPko1f1uUhQRT6TxE1ZDHhRiT2Zw@mail.gmail.com>
-Date:   Wed, 16 Mar 2022 08:35:59 -0500
-In-Reply-To: <CAMuHMdXvgXAnZTGxBWyQ78LPko1f1uUhQRT6TxE1ZDHhRiT2Zw@mail.gmail.com>
-        (Geert Uytterhoeven's message of "Wed, 16 Mar 2022 08:20:09 +0100")
-Message-ID: <87pmmm58ao.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1nWE7k-005nvc-F8; Mon, 21 Mar 2022 10:14:48 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1nWE7k-00Ewuz-3D; Mon, 21 Mar 2022 10:14:48 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for v5.18
+Date:   Mon, 21 Mar 2022 10:14:43 +0100
+Message-Id: <20220321091443.3563010-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1nUTp4-00Bptv-1e;;;mid=<87pmmm58ao.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.174.4;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18H+qCfF1DyV5JF2Ghckp/00rukoXyHPSg=
-X-SA-Exim-Connect-IP: 68.227.174.4
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-Subject: Re: [PATCH -next] ptrace: Remove duplicated include in ptrace.c
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+	Hi Linus,
 
-> Hi Yang,
->
-> CC Eric
->
-> On Wed, Mar 16, 2022 at 12:52 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
->> Fix following includecheck warning:
->> ./arch/m68k/kernel/ptrace.c: linux/ptrace.h is included more than once.
->>
->> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
->> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
->
-> Thanks for your patch!
->
-> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
->
->> --- a/arch/m68k/kernel/ptrace.c
->> +++ b/arch/m68k/kernel/ptrace.c
->> @@ -19,7 +19,6 @@
->>  #include <linux/ptrace.h>
->>  #include <linux/user.h>
->>  #include <linux/signal.h>
->> -#include <linux/ptrace.h>
->>
->>  #include <linux/uaccess.h>
->>  #include <asm/page.h>
->
-> This is due to commit 153474ba1a4aed0a ("ptrace: Create
-> ptrace_report_syscall_{entry,exit} in ptrace.h"), which is not yet
-> in the m68k tree, but only in next-20220315, so I cannot do anything
-> about it before v5.18-rc1.
->
-> Eric: Can you still fix this in the original commit?
+The following changes since commit dfd42facf1e4ada021b939b4e19c935dcdd55566:
 
-Not unless it is something very serious.  Replacing the commit means invalidating
-testing and review.  Which I would rather not do.
+  Linux 5.17-rc3 (2022-02-06 12:20:50 -0800)
 
-In this case I can merge a trivial fix to remove the duplicate.  Let me
-find Lang Li's patch and merge that.
+are available in the Git repository at:
 
-Eric
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.18-tag1
+
+for you to fetch changes up to 0d52a01a266ba21840c7cb02e1de39c503759dda:
+
+  m68k: defconfig: Disable fbdev on Sun3/3x (2022-02-28 12:00:16 +0100)
+
+----------------------------------------------------------------
+m68k updates for v5.18
+
+  - Fix frame buffers backed by deferred I/O,
+  - Defconfig updates,
+  - Minor fixes and improvements.
+
+----------------------------------------------------------------
+Geert Uytterhoeven (3):
+      m68k: mm: Remove check for VM_IO to fix deferred I/O
+      m68k: defconfig: Update defconfigs for v5.17-rc3
+      m68k: defconfig: Disable fbdev on Sun3/3x
+
+Laurent Vivier (1):
+      m68k: Add asm/config.h
+
+ arch/m68k/amiga/config.c             |  1 +
+ arch/m68k/apollo/config.c            |  1 +
+ arch/m68k/atari/config.c             |  1 +
+ arch/m68k/bvme6000/config.c          |  1 +
+ arch/m68k/configs/amiga_defconfig    |  6 ++----
+ arch/m68k/configs/apollo_defconfig   |  6 ++----
+ arch/m68k/configs/atari_defconfig    |  5 +----
+ arch/m68k/configs/bvme6000_defconfig |  5 +----
+ arch/m68k/configs/hp300_defconfig    |  6 ++----
+ arch/m68k/configs/mac_defconfig      |  5 +----
+ arch/m68k/configs/multi_defconfig    |  6 ++----
+ arch/m68k/configs/mvme147_defconfig  |  5 +----
+ arch/m68k/configs/mvme16x_defconfig  |  5 +----
+ arch/m68k/configs/q40_defconfig      |  5 +----
+ arch/m68k/configs/sun3_defconfig     |  8 +-------
+ arch/m68k/configs/sun3x_defconfig    |  8 +-------
+ arch/m68k/hp300/config.c             |  1 +
+ arch/m68k/include/asm/config.h       | 33 +++++++++++++++++++++++++++++++++
+ arch/m68k/kernel/setup_mm.c          | 23 +----------------------
+ arch/m68k/mac/config.c               |  1 +
+ arch/m68k/mm/fault.c                 |  2 --
+ arch/m68k/mvme147/config.c           |  1 +
+ arch/m68k/mvme16x/config.c           |  1 +
+ arch/m68k/q40/config.c               |  1 +
+ 24 files changed, 59 insertions(+), 78 deletions(-)
+ create mode 100644 arch/m68k/include/asm/config.h
+
+Thanks for pulling!
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
