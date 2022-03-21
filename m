@@ -2,112 +2,71 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1A5EC433F5
-	for <linux-m68k@archiver.kernel.org>; Mon, 21 Mar 2022 09:14:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 412F3C4332F
+	for <linux-m68k@archiver.kernel.org>; Mon, 21 Mar 2022 19:18:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345758AbiCUJQR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 21 Mar 2022 05:16:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57728 "EHLO
+        id S1352725AbiCUTUM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 21 Mar 2022 15:20:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244214AbiCUJQQ (ORCPT
+        with ESMTP id S1352684AbiCUTUD (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 21 Mar 2022 05:16:16 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D7E734B81
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 21 Mar 2022 02:14:51 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:f1f2:313b:fe05:3e70])
-        by baptiste.telenet-ops.be with bizsmtp
-        id 8xEo2700F0qZUsV01xEopp; Mon, 21 Mar 2022 10:14:49 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1nWE7k-005nvc-F8; Mon, 21 Mar 2022 10:14:48 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1nWE7k-00Ewuz-3D; Mon, 21 Mar 2022 10:14:48 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mon, 21 Mar 2022 15:20:03 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C7C340CE
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 21 Mar 2022 12:18:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 7D407CE1B5D;
+        Mon, 21 Mar 2022 19:18:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B0877C36AEA;
+        Mon, 21 Mar 2022 19:18:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647890313;
+        bh=sdquPTFPTkWf8jvZG9WnFTSfuJF6ECNv47jEUFOqaa0=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=sNebh0BkxsWd+24CwiSFs89FPufMTHoVON/6pOBAjsFeV4ZI1cC2u9b4Ht1wrPClh
+         vzYRloW1L6lv9KLLkPq5fvCuIffxOZ4BDdPyDW2zce0b5JCK7F9rqzUS8qeibLB5Ki
+         soBioqJ7UHtcopIicslRHDizyokGWHlmqt4LIxwFaLYbAAMkJ8xKIKgeMRVjD1EXLn
+         pwK9Umh9BmNek1DaGty4px3epFW3ueZksTM0AoVPzu9UKOwLVf5lBB6WXLWoDCw9D9
+         M6ClHWlzZv2cgEGdp/IrGRdWdksmSUWacZlacgtth5xLAWk5OcRnLLLIxyBEfiAXXz
+         gswB7tFkAHjQQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9F0B1E6D44B;
+        Mon, 21 Mar 2022 19:18:33 +0000 (UTC)
+Subject: Re: [GIT PULL] m68k updates for v5.18
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20220321091443.3563010-1-geert@linux-m68k.org>
+References: <20220321091443.3563010-1-geert@linux-m68k.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20220321091443.3563010-1-geert@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.18-tag1
+X-PR-Tracked-Commit-Id: 0d52a01a266ba21840c7cb02e1de39c503759dda
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 1b74b4600d0318fd81aceb5a7b7d10432bc2306b
+Message-Id: <164789031364.24158.14506912834558426905.pr-tracker-bot@kernel.org>
+Date:   Mon, 21 Mar 2022 19:18:33 +0000
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Greg Ungerer <gerg@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [GIT PULL] m68k updates for v5.18
-Date:   Mon, 21 Mar 2022 10:14:43 +0100
-Message-Id: <20220321091443.3563010-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-	Hi Linus,
+The pull request you sent on Mon, 21 Mar 2022 10:14:43 +0100:
 
-The following changes since commit dfd42facf1e4ada021b939b4e19c935dcdd55566:
+> git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.18-tag1
 
-  Linux 5.17-rc3 (2022-02-06 12:20:50 -0800)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/1b74b4600d0318fd81aceb5a7b7d10432bc2306b
 
-are available in the Git repository at:
+Thank you!
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.18-tag1
-
-for you to fetch changes up to 0d52a01a266ba21840c7cb02e1de39c503759dda:
-
-  m68k: defconfig: Disable fbdev on Sun3/3x (2022-02-28 12:00:16 +0100)
-
-----------------------------------------------------------------
-m68k updates for v5.18
-
-  - Fix frame buffers backed by deferred I/O,
-  - Defconfig updates,
-  - Minor fixes and improvements.
-
-----------------------------------------------------------------
-Geert Uytterhoeven (3):
-      m68k: mm: Remove check for VM_IO to fix deferred I/O
-      m68k: defconfig: Update defconfigs for v5.17-rc3
-      m68k: defconfig: Disable fbdev on Sun3/3x
-
-Laurent Vivier (1):
-      m68k: Add asm/config.h
-
- arch/m68k/amiga/config.c             |  1 +
- arch/m68k/apollo/config.c            |  1 +
- arch/m68k/atari/config.c             |  1 +
- arch/m68k/bvme6000/config.c          |  1 +
- arch/m68k/configs/amiga_defconfig    |  6 ++----
- arch/m68k/configs/apollo_defconfig   |  6 ++----
- arch/m68k/configs/atari_defconfig    |  5 +----
- arch/m68k/configs/bvme6000_defconfig |  5 +----
- arch/m68k/configs/hp300_defconfig    |  6 ++----
- arch/m68k/configs/mac_defconfig      |  5 +----
- arch/m68k/configs/multi_defconfig    |  6 ++----
- arch/m68k/configs/mvme147_defconfig  |  5 +----
- arch/m68k/configs/mvme16x_defconfig  |  5 +----
- arch/m68k/configs/q40_defconfig      |  5 +----
- arch/m68k/configs/sun3_defconfig     |  8 +-------
- arch/m68k/configs/sun3x_defconfig    |  8 +-------
- arch/m68k/hp300/config.c             |  1 +
- arch/m68k/include/asm/config.h       | 33 +++++++++++++++++++++++++++++++++
- arch/m68k/kernel/setup_mm.c          | 23 +----------------------
- arch/m68k/mac/config.c               |  1 +
- arch/m68k/mm/fault.c                 |  2 --
- arch/m68k/mvme147/config.c           |  1 +
- arch/m68k/mvme16x/config.c           |  1 +
- arch/m68k/q40/config.c               |  1 +
- 24 files changed, 59 insertions(+), 78 deletions(-)
- create mode 100644 arch/m68k/include/asm/config.h
-
-Thanks for pulling!
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
