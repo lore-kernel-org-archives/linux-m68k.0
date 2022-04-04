@@ -2,54 +2,54 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3818DC4332F
-	for <linux-m68k@archiver.kernel.org>; Mon,  4 Apr 2022 23:32:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 703A3C433EF
+	for <linux-m68k@archiver.kernel.org>; Mon,  4 Apr 2022 23:34:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231646AbiDDXer (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 4 Apr 2022 19:34:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41322 "EHLO
+        id S231171AbiDDXgb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 4 Apr 2022 19:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231633AbiDDXej (ORCPT
+        with ESMTP id S232187AbiDDXga (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 4 Apr 2022 19:34:39 -0400
-Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C01653E34
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Apr 2022 16:32:40 -0700 (PDT)
+        Mon, 4 Apr 2022 19:36:30 -0400
+Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB87213FA7
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Apr 2022 16:34:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1649115160; x=1680651160;
+  t=1649115270; x=1680651270;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=pLgGUw+vPL0f2qNaYJgXPaqC3PncPyo5PXkVMywvCnI=;
-  b=BFVEM6l9p+yXQCfzIkA1icVhzWNdqLNKmWdvIs57UXwuXntVQMu2v51L
-   vYFgwmET4NUPRjVYZ2T7Q2r1uTgL6IbFY/+5J3TeIkIBerqVWS38nclQb
-   J4QCkyBDXKuPLPrkPM9AQmhOxvJsJenCkK0rYfqjKXadzUmct6KpwG4qi
-   qN3lnpkw/3x1H37B3N3r4M2f68bjKetpEXOkZTexOddhq9a4WzYyFNxzl
-   E9BoPy8Ej9fOvvUKhlDAnZ2gIbPMRh89y7yzYZpPhPzT2HoMEiZ/Av1HC
-   FbV2D8e1CnBAEAgSJEiXOYncU2Nd3Ur+LX6qKo2SPuzhITUfKnff6dxxI
+  bh=+5MMmPyU6ZJJ0lTiy81U+nJ/FsY36S456cHlcxHKPSc=;
+  b=mJWyRjYFbc/VyZM6MyYXc9lGHn9T1eSwjcf6CeCcrJSet+b6+rI5TdYl
+   0viSP3sPTKOyep4m+yMLPZHt4CIigzvtXwl2C3shtDYafyKAwMM1OKy/+
+   yBc+idoXOqrZ5pCCwTIBxah5RGGnkR5DpVNwMo1WWNBApk2WuaEaZLxmW
+   yY30Xh0xznYS6/U6oD951M+fiE5kRWVREr54jVvccqNxP5jJkNhgNfBXp
+   Quli4W+N/hJ2YVujJTNGdUEOQvc6hULwHxUz9bwAmMvdRmhhC4rHTiHws
+   U8qeEbQ3kBMZ0Rlj3PEdRY3EblId11G/g76rYMtmUies8FGlh2y8Ac3oG
    g==;
 X-IronPort-AV: E=Sophos;i="5.90,235,1643644800"; 
-   d="scan'208";a="201924449"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 05 Apr 2022 07:32:39 +0800
-IronPort-SDR: MkxFXu3FeToeOwiIsNxrh8hgAmxa9mfmJ29/WX312aB6HAOZp3MufJuk83/6jVdBAjJK5m/gaQ
- QSkHEXQWkiuvG0K6rtiTTnJ1S3N/CHraKm7Qvr7TPSUQzYdb1UEHSkKV9UcMR/ND2lNsvoy1Ly
- gB8NHZ/i/8iCRRNATt347XOqLrxcditKJ8TEeGXjWyCQfSYGLOZQEYlyUfk7oWTIqk5z/3LWLT
- lp02Sc6DtDq1hLG8G3WSirHvnStwGCdcUcloIWlDOC3xnWwvG+XIYPYJ/Z+4hTEo1PhtpbWMW1
- KwiBP1ckzM4V1sg7acI2xxyf
+   d="scan'208";a="195955916"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 05 Apr 2022 07:34:29 +0800
+IronPort-SDR: Bhc65ljymq9snCJzCB21r8prSyhubyuCXykSgtKraxp7OYt/J6oCpQ0P/1cCap3j7Cg5oGKZCv
+ LTr63If5RLhlqb02GQUfqEdRQRYf66t7ED+V1Ss4vfBL+KGBx0AgxTMs+ClzAlx7XVsXgKag+O
+ 1TCcWl8rwdoltsWrrDBnZo443DFnE3k4aDZqIiDwNnJ5w7ohhv0Bd6rLZYZa0stnaDnt4Kzlb6
+ H3efnW6z5iQxzlYmgQNFHVypLma/3vaHR5ER777Zh5PeUyw62brAcLwq08rsTzg7wf2dAM81yH
+ 5VbpWFlb6imd/BnzBvvcSMVi
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Apr 2022 16:04:13 -0700
-IronPort-SDR: lRTCHydmeNg71neptHJeNBmcuC9J4W6/EyG90K6rEARkf3W7l3GdaAW/HdxiqHeMW0bY1tuN7G
- fXaEda44yLKLRalFdE1mtjpT1OwCWlhCGojsf6Y7eK4wCTE+6fBsxv+z6UGbeWgOyLNq53juUi
- 4nkiIrQii66UzQpWfp8VkqaAkEs+2jGEq5Cvp/02tFnCqkDRPzQ4CJZrF05P99pzCyqNwH5cXw
- WLgeIYkEIHaFAADiXb81+xYMqo/4qKKnypAxvwTgqqM+Nd+DBDaDRvbUA/z95FP3ELAVOTkLGT
- 8dM=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Apr 2022 16:05:09 -0700
+IronPort-SDR: P0PDpjPftysbVMczAmtUlEoaRzaNIqhlRQFBsAn/2pKRzFE9HsGmVOjP/bmlAdIUNYJTr15S0O
+ CWKcOCQECHtT8UB53CRdeH/FJedTctk/8915pILAIBPYUt4uBZPPXQIQA75erujQBRUre6UKkA
+ 6NBFx/R/agWOmSi121+LDEkzQ7iXuqEVrkIU/z0acjtpLKDslBUE0sLmUIp7jpQGyy8VcnTM5s
+ HCgyWohcjbC58a/WnTXTOl8uvmE8OkgDwRBx9mYOT9nNPB+0TBPg77hoi9Bn1C3zfyeu8Xl46h
+ seY=
 WDCIronportException: Internal
 Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Apr 2022 16:32:40 -0700
+  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Apr 2022 16:34:26 -0700
 Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4KXRs32NZkz1SVny
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Apr 2022 16:32:39 -0700 (PDT)
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4KXRv55MjHz1SVp5
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Apr 2022 16:34:25 -0700 (PDT)
 Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
         reason="pass (just generated, assumed good)"
         header.d=opensource.wdc.com
@@ -57,31 +57,32 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
         opensource.wdc.com; h=content-transfer-encoding:content-type
         :in-reply-to:organization:from:references:to:content-language
         :subject:user-agent:mime-version:date:message-id; s=dkim; t=
-        1649115158; x=1651707159; bh=pLgGUw+vPL0f2qNaYJgXPaqC3PncPyo5PXk
-        VMywvCnI=; b=DsQwEUOHxmoyYjbqt0O4dSEqkX6mn74teU8i5hG7gGn19np5Ssm
-        GIE656sjlT9QTO3LfPnL96yX2h8GQmo+jZkabPUKMYyiiamMchLR0GjFhoTnbt7g
-        oIbfU5S45I5mjqIj61A0TuY78vyQxp1vqMtubbVkB1juisa1031oQi7wbhIxApAP
-        PAG5Yx1VSgEoWuALJtCtcayHafDyEFR7YD5eTEJWmU5Zgj3mZHTH6jhqQd6FYPZD
-        9a6e2IhJLN5XGMJ3eK+8g5G1VN/EUfgvifjiux9bfsgE6vdYi3pLEjjvCVIGM7+X
-        i6X8v1nLKnVL1NVU/Sr+/ilU+zfNKL956BA==
+        1649115264; x=1651707265; bh=+5MMmPyU6ZJJ0lTiy81U+nJ/FsY36S456cH
+        lcxHKPSc=; b=NmXGSpihtKJypsJDwlOSBugs5bzoYpMuuBDgh/oBqIn+/Eb8mMq
+        lI6D/MptbIBjXUVDl/UMgUaRdw4yZZvwum/7IJjbVyOrmgTT+k/7Pf/TIW2Szu6k
+        gc7mfbb8PoLSzmV7Wh2r1w3TskdGFURxSc8XADmTZENiyab6u+3Ep2eTIOdqdSF6
+        NWkS2OD25F1vSAjy1UWzi5Cy3L1OuNi1q6ge7xGAumKL2x02HwBUCiLi9eXMfRNm
+        SiZfFUOR8TizSU1svfJKmtFfvy1CHmvgomNA5aLGazPZojpQLhdHYFwFf34/zQHz
+        XYUG2Wmpho9kURuveUVhewHi9fGM2cECXOw==
 X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
 Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
         by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id qdFUa8A5JrMM for <linux-m68k@lists.linux-m68k.org>;
-        Mon,  4 Apr 2022 16:32:38 -0700 (PDT)
+        with ESMTP id Ewt_grj3tMep for <linux-m68k@lists.linux-m68k.org>;
+        Mon,  4 Apr 2022 16:34:24 -0700 (PDT)
 Received: from [10.225.163.2] (unknown [10.225.163.2])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4KXRs01Sxyz1Rvlx;
-        Mon,  4 Apr 2022 16:32:36 -0700 (PDT)
-Message-ID: <ff20532f-7399-5fcb-d867-772a3e0fc8f1@opensource.wdc.com>
-Date:   Tue, 5 Apr 2022 08:32:35 +0900
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4KXRv20dN1z1Rvlx;
+        Mon,  4 Apr 2022 16:34:21 -0700 (PDT)
+Message-ID: <5245096f-6003-39a9-6e5e-db2fc4f567fd@opensource.wdc.com>
+Date:   Tue, 5 Apr 2022 08:34:20 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.7.0
 Subject: Re: [RFC PULL] remove arch/h8300
 Content-Language: en-US
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Yoshinori Sato <ysato@users.sourceforge.jp>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         linux-arch <linux-arch@vger.kernel.org>,
@@ -93,74 +94,61 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
         Greg Ungerer <gerg@linux-m68k.org>,
         Damien Le Moal <damien.lemoal@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Rich Felker <dalias@libc.org>
 References: <Yib9F5SqKda/nH9c@infradead.org>
  <CAK8P3a1dUVsZzhAe81usLSkvH29zHgiV9fhEkWdq7_W+nQBWbg@mail.gmail.com>
  <YkmWh2tss8nXKqc5@infradead.org>
  <CAK8P3a0QdFOJbM72geYTWOKumeKPSCVD8Nje5pBpZWazX0GEnQ@mail.gmail.com>
+ <CAMuHMdWcg+171ggdVC4gwbQ=RUf+cYrX3o9uSpDxo-XXEJ5Qgw@mail.gmail.com>
 From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
 Organization: Western Digital Research
-In-Reply-To: <CAK8P3a0QdFOJbM72geYTWOKumeKPSCVD8Nje5pBpZWazX0GEnQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdWcg+171ggdVC4gwbQ=RUf+cYrX3o9uSpDxo-XXEJ5Qgw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 4/4/22 22:07, Arnd Bergmann wrote:
-> On Sun, Apr 3, 2022 at 2:43 PM Christoph Hellwig <hch@infradead.org> wrote:
+On 4/4/22 22:22, Geert Uytterhoeven wrote:
+> Hi Arnd,
+> 
+> On Mon, Apr 4, 2022 at 3:09 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>> On Sun, Apr 3, 2022 at 2:43 PM Christoph Hellwig <hch@infradead.org> wrote:
+>>> On Tue, Mar 08, 2022 at 09:19:16AM +0100, Arnd Bergmann wrote:
+>>>> If there are no other objections, I'll just queue this up for 5.18 in
+>>>> the asm-generic
+>>>> tree along with the nds32 removal.
+>>>
+>>> So it is the last day of te merge window and arch/h8300 is till there.
+>>> And checking nw the removal has also not made it to linux-next.  Looks
+>>> like it is so stale that even the removal gets ignored :(
 >>
->> On Tue, Mar 08, 2022 at 09:19:16AM +0100, Arnd Bergmann wrote:
->>> If there are no other objections, I'll just queue this up for 5.18 in
->>> the asm-generic
->>> tree along with the nds32 removal.
->>
->> So it is the last day of te merge window and arch/h8300 is till there.
->> And checking nw the removal has also not made it to linux-next.  Looks
->> like it is so stale that even the removal gets ignored :(
+>> I was really hoping that someone else would at least comment.
 > 
-> I was really hoping that someone else would at least comment.
-> I've queued it up now for 5.19.
+> Doh, I hadn't seen this patch before ;-)
+> Nevertheless, I do not have access to H8/300 hardware.
 > 
-> Should we garbage-collect some of the other nommu platforms where
-> we're here? Some of them are just as stale:
+>> 3. arch/sh j2 support was added in 2016 and doesn't see a lot of
+>> changes, but I think
+>>     Rich still cares about it and wants to add J32 support (with MMU)
+>> in the future
 > 
-> 1. xtensa nommu has does not compile in mainline and as far as I can
-> tell never did
->    (there was https://github.com/jcmvbkbc/linux-xtensa/tree/xtensa-5.6-esp32,
-> which
->    worked at some point, but I don't think there was enough interest
-> to get in merged)
+> Yep, when the SH4 patents will have expired.
+> I believe that's planned for 2016 (Islamic calendar? ;-)
 > 
-> 2. arch/sh Hitachi/Renesas sh2 (non-j2) support appears to be in a similar state
->     to h8300, I don't think anyone would miss it
+> BTW, the unresponsiveness of the SH maintainers is also annoying.
+> Patches are sent to the list (sometimes multiple people are solving
+> the same recurring issue), but ignored.
 > 
-> 8<----- This may we where we want to draw the line ----
+> Anyway, I do regular boot tests on SH4.
 > 
-> 3. arch/sh j2 support was added in 2016 and doesn't see a lot of
-> changes, but I think
->     Rich still cares about it and wants to add J32 support (with MMU)
-> in the future
+>> 5. K210 was added in 2020. I assume you still want to keep it.
 > 
-> 4. m68k Dragonball, Coldfire v2 and Coldfire v3 are just as obsolete as SH2 as
->    hardware is concerned, but Greg Ungerer keeps maintaining it, along with the
->    newer Coldfire v4 (with MMU)
-> 
-> 5. K210 was added in 2020. I assume you still want to keep it.
+> FTR, I do regular boot tests on K210.
 
-Still working on this one, I would like to keep it.
-
-> 
-> 7. Arm32 has several Cortex-M based platforms that are mainly kept for
->     legacy users (in particular stm32) or educational value.
-> 
-> 
->        Arnd
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+FYI, we identified the problem that makes userspace execution unreliable.
+Working on a fix.
 
 
 -- 
