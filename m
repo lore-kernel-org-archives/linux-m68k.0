@@ -2,340 +2,209 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 682DDC433EF
-	for <linux-m68k@archiver.kernel.org>; Fri,  1 Apr 2022 10:20:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8408C433F5
+	for <linux-m68k@archiver.kernel.org>; Mon,  4 Apr 2022 08:26:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245383AbiDAKWa (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 1 Apr 2022 06:22:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44984 "EHLO
+        id S231286AbiDDI2U (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 4 Apr 2022 04:28:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245363AbiDAKW3 (ORCPT
+        with ESMTP id S1354979AbiDDI14 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 1 Apr 2022 06:22:29 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B6F1C9B4B;
-        Fri,  1 Apr 2022 03:20:38 -0700 (PDT)
-Received: from [192.168.100.1] ([82.142.17.26]) by mrelayeu.kundenserver.de
- (mreue010 [213.165.67.103]) with ESMTPSA (Nemesis) id
- 1MwQGj-1nqnji0vn3-00sLP0; Fri, 01 Apr 2022 12:20:19 +0200
-Message-ID: <f87deb83-7f1f-5acf-b6c6-040fcd02c0be@vivier.eu>
-Date:   Fri, 1 Apr 2022 12:20:17 +0200
+        Mon, 4 Apr 2022 04:27:56 -0400
+X-Greylist: delayed 580 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 04 Apr 2022 01:26:00 PDT
+Received: from gauss.telenet-ops.be (gauss.telenet-ops.be [195.130.132.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 182F633A36
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Apr 2022 01:25:59 -0700 (PDT)
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by gauss.telenet-ops.be (Postfix) with ESMTPS id 4KX3Wj4v8Pz4wx6K
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Apr 2022 10:16:17 +0200 (CEST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:6d4d:d9ec:3c70:7c2c])
+        by baptiste.telenet-ops.be with bizsmtp
+        id EYG82700R40M8zK01YG8cT; Mon, 04 Apr 2022 10:16:17 +0200
+Received: from geert (helo=localhost)
+        by ramsan.of.borg with local-esmtp (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1nbHse-0089Aj-Eu; Mon, 04 Apr 2022 10:16:08 +0200
+Date:   Mon, 4 Apr 2022 10:16:08 +0200 (CEST)
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+X-X-Sender: geert@ramsan.of.borg
+To:     linux-kernel@vger.kernel.org
+cc:     linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        linux-rdma@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-media@vger.kernel.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-xfs@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-s390@vger.kernel.org
+Subject: Re: Build regressions/improvements in v5.18-rc1
+In-Reply-To: <20220404074734.1092959-1-geert@linux-m68k.org>
+Message-ID: <alpine.DEB.2.22.394.2204041006230.1941618@ramsan.of.borg>
+References: <CAHk-=wg6FWL1xjVyHx7DdjD2dHZETA5_=FqqW17Z19X-WTfWSg@mail.gmail.com> <20220404074734.1092959-1-geert@linux-m68k.org>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH v15 4/5] clocksource/drivers: Add a goldfish-timer
- clocksource
-Content-Language: fr
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-m68k@lists.linux-m68k.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <john.stultz@linaro.org>,
-        linux-kernel@vger.kernel.org
-References: <20220310090048.1933020-1-laurent@vivier.eu>
- <20220310090048.1933020-5-laurent@vivier.eu>
-From:   Laurent Vivier <laurent@vivier.eu>
-In-Reply-To: <20220310090048.1933020-5-laurent@vivier.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:u2d6Fo0vt2+bqXskDLHjOPdixCX4zsXvINJ2Jn19xWXsGKxPOxq
- 1XwntdfcPDTYVDrUzFjrILOv9jflp2j4a2oGsERZp+9tejRjCaycJ6O1Yycab2p5EowcobN
- T0u13sSkliObBT2/RnxUQzbB5k29damx0RxX+L9maHub8YvDC0cTgYOz96FnnKPeB3x6dYz
- EzHq5M4WG9LvBfStI4OcQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:81TbQ8LjB+A=:iWBIL0/kInar3gnkCke+Zr
- 1hCIlIlVcC9UMnvtMboWe8CGwxV0DUo7GT+iu7F8u2TdHo7z0jL5B2326hwgeun/hAW4ez8wy
- 4jZTWBArzyxChrRsmpsYwJWTuMqVB+9kruwFMnMMS5CWn0fo3f6wAxDCPV/yYIzSyMwZuy6f9
- ZiwY5tFgKgC/l73lMi5ZLYj4L5n0VcPTpsqVlB06EcxaZ/YRZe0KP5uBOhFC334sgAkum6nx7
- YqFgjlBONKLnqrara0ioZHauDHM2poIJ49KvtW35/3VQ+bIYZ914ymGUOZy/6LcbMbNTeL56o
- WDZDj/w2KaUp/uOnjBpM9N2mR8vsGszDcKb2ykCR5tPu3O44h9qNP+c1OHDn7SDw8qb3ekpqv
- QFRntqOEPVZqf21H3Um3A1G3+hmTY3nUxO4XLxCZ6Z9Uma2aGl46mQfAL2jQY8MxC8wPxwZQM
- xuPEdlTXyqS4Z2YzomRE+NNUDYN9cK1QVrQFYMzZn3Zkwg58GJArNxmUmvxRxf3q7PKLrrJoZ
- Ezw+YeX0pCkg94UBgOp4r2KtlKesysuI49SW/Wv7906ycsK4NGIRMXpYRiTyHpb8jBvvuooli
- ++TCDGbUuUdX5C7iXTiNvDZFhb8EHPE9SkUAluE45BcKrvEZctyo4Q0JEbkQxxSRJ+spVgkwK
- cLjmWNJSO/uuyAyj1IimeCkbWjqInmMvfbc/7TWdXINYKtauckME7QXwAlldSmmas3BI=
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+On Mon, 4 Apr 2022, Geert Uytterhoeven wrote:
+> Below is the list of build error/warning regressions/improvements in
+> v5.18-rc1[1] compared to v5.17[2].
+>
+> Summarized:
+>  - build errors: +36/-15
+>  - build warnings: +5/-38
+>
+> Happy fixing! ;-)
+>
+> Thanks to the linux-next team for providing the build service.
+>
+> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/3123109284176b1532874591f7c81f3837bbdc17/ (all 96 configs)
+> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/f443e374ae131c168a065ea1748feac6b2e76613/ (all 96 configs)
+>
+>
+> *** ERRORS ***
+>
+> 36 error regressions:
+>  + /kisskb/src/arch/m68k/include/asm/bitops.h: error: array subscript 2 is above array bounds of 'long unsigned int[1]' [-Werror=array-bounds]:  => 329:20
 
-Daniel ?
+m68k-gcc8/m68k-allmodconfig (assumed gcc8 bug)
 
-Thanks,
-Laurent
+>  + /kisskb/src/arch/parisc/kernel/vdso32/restart_syscall.S: Error: .cfi_endproc without corresponding .cfi_startproc:  => 32
+>  + /kisskb/src/arch/parisc/kernel/vdso32/restart_syscall.S: Error: bad or irreducible absolute expression:  => 16
+>  + /kisskb/src/arch/parisc/kernel/vdso32/restart_syscall.S: Error: junk at end of line, first unrecognized character is `:':  => 16
+>  + /kisskb/src/arch/parisc/kernel/vdso32/restart_syscall.S: Error: no such instruction: `be 0x100(%sr2,%r0)':  => 29
+>  + /kisskb/src/arch/parisc/kernel/vdso32/restart_syscall.S: Error: no such instruction: `ldi 0,%r20':  => 30
+>  + /kisskb/src/arch/parisc/kernel/vdso32/restart_syscall.S: Error: no such instruction: `ldw 0(%sp),%r31':  => 26
+>  + /kisskb/src/arch/parisc/kernel/vdso32/sigtramp.S: Error: no such instruction: `ble 0x100(%sr2,%r0)':  => 51, 46
+>  + /kisskb/src/arch/parisc/kernel/vdso32/sigtramp.S: Error: no such instruction: `ldi 0,%r25':  => 44
+>  + /kisskb/src/arch/parisc/kernel/vdso32/sigtramp.S: Error: no such instruction: `ldi 1,%r25':  => 49
+>  + /kisskb/src/arch/parisc/kernel/vdso32/sigtramp.S: Error: no such instruction: `ldi 173,%r20':  => 45, 50
+>  + /kisskb/src/arch/parisc/kernel/vdso32/sigtramp.S: Error: unknown pseudo-op: `.callinfo':  => 40
+>  + /kisskb/src/arch/parisc/kernel/vdso32/sigtramp.S: Error: unknown pseudo-op: `.entry':  => 41
+>  + /kisskb/src/arch/parisc/kernel/vdso32/sigtramp.S: Error: unknown pseudo-op: `.exit':  => 54
+>  + /kisskb/src/arch/parisc/kernel/vdso32/sigtramp.S: Error: unknown pseudo-op: `.proc':  => 39
+>  + /kisskb/src/arch/parisc/kernel/vdso32/sigtramp.S: Error: unknown pseudo-op: `.procend':  => 55
+>  + /kisskb/src/arch/parisc/kernel/vdso32/sigtramp.S: Error: unknown pseudo-op: `.stringz':  => 76
 
-Le 10/03/2022 à 10:00, Laurent Vivier a écrit :
-> Add a clocksource based on the goldfish-rtc device.
-> 
-> Move the timer register definition to <clocksource/timer-goldfish.h>
-> 
-> This kernel implementation is based on the QEMU upstream implementation:
-> 
->     https://git.qemu.org/?p=qemu.git;a=blob_plain;f=hw/rtc/goldfish_rtc.c
-> 
-> goldfish-timer is a high-precision signed 64-bit nanosecond timer.
-> It is part of the 'goldfish' virtual hardware platform used to run
-> some emulated Android systems under QEMU.
-> This timer only supports oneshot event.
-> 
-> Signed-off-by: Laurent Vivier <laurent@vivier.eu>
-> ---
->   drivers/clocksource/Kconfig          |   7 ++
->   drivers/clocksource/Makefile         |   1 +
->   drivers/clocksource/timer-goldfish.c | 153 +++++++++++++++++++++++++++
->   drivers/rtc/rtc-goldfish.c           |  13 +--
->   include/clocksource/timer-goldfish.h |  31 ++++++
->   5 files changed, 193 insertions(+), 12 deletions(-)
->   create mode 100644 drivers/clocksource/timer-goldfish.c
->   create mode 100644 include/clocksource/timer-goldfish.h
-> 
-> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-> index cfb8ea0df3b1..94f00374cebb 100644
-> --- a/drivers/clocksource/Kconfig
-> +++ b/drivers/clocksource/Kconfig
-> @@ -721,4 +721,11 @@ config MICROCHIP_PIT64B
->   	  modes and high resolution. It is used as a clocksource
->   	  and a clockevent.
->   
-> +config GOLDFISH_TIMER
-> +	bool "Clocksource using goldfish-rtc"
-> +	depends on M68K || COMPILE_TEST
-> +	depends on RTC_DRV_GOLDFISH
-> +	help
-> +	  Support for the timer/counter of goldfish-rtc
-> +
->   endmenu
-> diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
-> index fa5f624eadb6..12f5d7e8cc2d 100644
-> --- a/drivers/clocksource/Makefile
-> +++ b/drivers/clocksource/Makefile
-> @@ -89,3 +89,4 @@ obj-$(CONFIG_GX6605S_TIMER)		+= timer-gx6605s.o
->   obj-$(CONFIG_HYPERV_TIMER)		+= hyperv_timer.o
->   obj-$(CONFIG_MICROCHIP_PIT64B)		+= timer-microchip-pit64b.o
->   obj-$(CONFIG_MSC313E_TIMER)		+= timer-msc313e.o
-> +obj-$(CONFIG_GOLDFISH_TIMER)		+= timer-goldfish.o
-> diff --git a/drivers/clocksource/timer-goldfish.c b/drivers/clocksource/timer-goldfish.c
-> new file mode 100644
-> index 000000000000..0512d5eabc82
-> --- /dev/null
-> +++ b/drivers/clocksource/timer-goldfish.c
-> @@ -0,0 +1,153 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/interrupt.h>
-> +#include <linux/ioport.h>
-> +#include <linux/clocksource.h>
-> +#include <linux/clockchips.h>
-> +#include <linux/module.h>
-> +#include <linux/slab.h>
-> +#include <linux/goldfish.h>
-> +#include <clocksource/timer-goldfish.h>
-> +
-> +struct goldfish_timer {
-> +	struct clocksource cs;
-> +	struct clock_event_device ced;
-> +	struct resource res;
-> +	void __iomem *base;
-> +};
-> +
-> +static struct goldfish_timer *ced_to_gf(struct clock_event_device *ced)
-> +{
-> +	return container_of(ced, struct goldfish_timer, ced);
-> +}
-> +
-> +static struct goldfish_timer *cs_to_gf(struct clocksource *cs)
-> +{
-> +	return container_of(cs, struct goldfish_timer, cs);
-> +}
-> +
-> +static u64 goldfish_timer_read(struct clocksource *cs)
-> +{
-> +	struct goldfish_timer *timerdrv = cs_to_gf(cs);
-> +	void __iomem *base = timerdrv->base;
-> +	u32 time_low, time_high;
-> +	u64 ticks;
-> +
-> +	/*
-> +	 * time_low: get low bits of current time and update time_high
-> +	 * time_high: get high bits of time at last time_low read
-> +	 */
-> +	time_low = gf_ioread32(base + TIMER_TIME_LOW);
-> +	time_high = gf_ioread32(base + TIMER_TIME_HIGH);
-> +
-> +	ticks = ((u64)time_high << 32) | time_low;
-> +
-> +	return ticks;
-> +}
-> +
-> +static int goldfish_timer_set_oneshot(struct clock_event_device *evt)
-> +{
-> +	struct goldfish_timer *timerdrv = ced_to_gf(evt);
-> +	void __iomem *base = timerdrv->base;
-> +
-> +	gf_iowrite32(0, base + TIMER_ALARM_HIGH);
-> +	gf_iowrite32(0, base + TIMER_ALARM_LOW);
-> +	gf_iowrite32(1, base + TIMER_IRQ_ENABLED);
-> +
-> +	return 0;
-> +}
-> +
-> +static int goldfish_timer_shutdown(struct clock_event_device *evt)
-> +{
-> +	struct goldfish_timer *timerdrv = ced_to_gf(evt);
-> +	void __iomem *base = timerdrv->base;
-> +
-> +	gf_iowrite32(0, base + TIMER_IRQ_ENABLED);
-> +
-> +	return 0;
-> +}
-> +
-> +static int goldfish_timer_next_event(unsigned long delta,
-> +				     struct clock_event_device *evt)
-> +{
-> +	struct goldfish_timer *timerdrv = ced_to_gf(evt);
-> +	void __iomem *base = timerdrv->base;
-> +	u64 now;
-> +
-> +	now = goldfish_timer_read(&timerdrv->cs);
-> +
-> +	now += delta;
-> +
-> +	gf_iowrite32(upper_32_bits(now), base + TIMER_ALARM_HIGH);
-> +	gf_iowrite32(lower_32_bits(now), base + TIMER_ALARM_LOW);
-> +
-> +	return 0;
-> +}
-> +
-> +static irqreturn_t goldfish_timer_irq(int irq, void *dev_id)
-> +{
-> +	struct goldfish_timer *timerdrv = dev_id;
-> +	struct clock_event_device *evt = &timerdrv->ced;
-> +	void __iomem *base = timerdrv->base;
-> +
-> +	gf_iowrite32(1, base + TIMER_CLEAR_INTERRUPT);
-> +
-> +	evt->event_handler(evt);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +int __init goldfish_timer_init(int irq, void __iomem *base)
-> +{
-> +	struct goldfish_timer *timerdrv;
-> +	int ret;
-> +
-> +	timerdrv = kzalloc(sizeof(*timerdrv), GFP_KERNEL);
-> +	if (!timerdrv)
-> +		return -ENOMEM;
-> +
-> +	timerdrv->base = base;
-> +
-> +	timerdrv->ced = (struct clock_event_device){
-> +		.name			= "goldfish_timer",
-> +		.features		= CLOCK_EVT_FEAT_ONESHOT,
-> +		.set_state_shutdown	= goldfish_timer_shutdown,
-> +		.set_state_oneshot      = goldfish_timer_set_oneshot,
-> +		.set_next_event		= goldfish_timer_next_event,
-> +	};
-> +
-> +	timerdrv->res = (struct resource){
-> +		.name  = "goldfish_timer",
-> +		.start = (unsigned long)base,
-> +		.end   = (unsigned long)base + 0xfff,
-> +	};
-> +
-> +	ret = request_resource(&iomem_resource, &timerdrv->res);
-> +	if (ret) {
-> +		pr_err("Cannot allocate '%s' resource\n", timerdrv->res.name);
-> +		return ret;
-> +	}
-> +
-> +	timerdrv->cs = (struct clocksource){
-> +		.name		= "goldfish_timer",
-> +		.rating		= 400,
-> +		.read		= goldfish_timer_read,
-> +		.mask		= CLOCKSOURCE_MASK(64),
-> +		.flags		= 0,
-> +		.max_idle_ns	= LONG_MAX,
-> +	};
-> +
-> +	clocksource_register_hz(&timerdrv->cs, NSEC_PER_SEC);
-> +
-> +	ret = request_irq(irq, goldfish_timer_irq, IRQF_TIMER,
-> +			  "goldfish_timer", timerdrv);
-> +	if (ret) {
-> +		pr_err("Couldn't register goldfish-timer interrupt\n");
-> +		return ret;
-> +	}
-> +
-> +	clockevents_config_and_register(&timerdrv->ced, NSEC_PER_SEC,
-> +					1, 0xffffffff);
-> +
-> +	return 0;
-> +}
-> diff --git a/drivers/rtc/rtc-goldfish.c b/drivers/rtc/rtc-goldfish.c
-> index eb1929b0cbb6..59c0f38cc08d 100644
-> --- a/drivers/rtc/rtc-goldfish.c
-> +++ b/drivers/rtc/rtc-goldfish.c
-> @@ -11,18 +11,7 @@
->   #include <linux/platform_device.h>
->   #include <linux/rtc.h>
->   #include <linux/goldfish.h>
-> -
-> -#define TIMER_TIME_LOW		0x00	/* get low bits of current time  */
-> -					/*   and update TIMER_TIME_HIGH  */
-> -#define TIMER_TIME_HIGH	0x04	/* get high bits of time at last */
-> -					/*   TIMER_TIME_LOW read         */
-> -#define TIMER_ALARM_LOW	0x08	/* set low bits of alarm and     */
-> -					/*   activate it                 */
-> -#define TIMER_ALARM_HIGH	0x0c	/* set high bits of next alarm   */
-> -#define TIMER_IRQ_ENABLED	0x10
-> -#define TIMER_CLEAR_ALARM	0x14
-> -#define TIMER_ALARM_STATUS	0x18
-> -#define TIMER_CLEAR_INTERRUPT	0x1c
-> +#include <clocksource/timer-goldfish.h>
->   
->   struct goldfish_rtc {
->   	void __iomem *base;
-> diff --git a/include/clocksource/timer-goldfish.h b/include/clocksource/timer-goldfish.h
-> new file mode 100644
-> index 000000000000..d39097729b1d
-> --- /dev/null
-> +++ b/include/clocksource/timer-goldfish.h
-> @@ -0,0 +1,31 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * goldfish-timer clocksource
-> + * Registers definition for the goldfish-timer device
-> + */
-> +
-> +#ifndef _CLOCKSOURCE_TIMER_GOLDFISH_H
-> +#define _CLOCKSOURCE_TIMER_GOLDFISH_H
-> +
-> +/*
-> + * TIMER_TIME_LOW	 get low bits of current time and update TIMER_TIME_HIGH
-> + * TIMER_TIME_HIGH	 get high bits of time at last TIMER_TIME_LOW read
-> + * TIMER_ALARM_LOW	 set low bits of alarm and activate it
-> + * TIMER_ALARM_HIGH	 set high bits of next alarm
-> + * TIMER_IRQ_ENABLED	 enable alarm interrupt
-> + * TIMER_CLEAR_ALARM	 disarm an existin alarm
-> + * TIMER_ALARM_STATUS	 alarm status (running or not)
-> + * TIMER_CLEAR_INTERRUPT clear interrupt
-> + */
-> +#define TIMER_TIME_LOW		0x00
-> +#define TIMER_TIME_HIGH		0x04
-> +#define TIMER_ALARM_LOW		0x08
-> +#define TIMER_ALARM_HIGH	0x0c
-> +#define TIMER_IRQ_ENABLED	0x10
-> +#define TIMER_CLEAR_ALARM	0x14
-> +#define TIMER_ALARM_STATUS	0x18
-> +#define TIMER_CLEAR_INTERRUPT	0x1c
-> +
-> +extern int goldfish_timer_init(int irq, void __iomem *base);
-> +
-> +#endif /* _CLOCKSOURCE_TIMER_GOLDFISH_H */
+parisc64-gcc8/generic-64bit_defconfig
+parisc-gcc8/generic-32bit_defconfig
+parisc-gcc8/parisc-allmodconfig
+parisc-gcc8/parisc-allnoconfig
 
+>  + /kisskb/src/arch/sparc/kernel/irq_32.c: error: array subscript [16, 79] is outside array bounds of 'struct tt_entry[1]' [-Werror=array-bounds]:  => 262:14, 261:46, 259:14, 258:14, 263:14
+
+sparc64-gcc11/sparc-allmodconfig
+
+>  + /kisskb/src/drivers/gpu/drm/r128/r128_cce.c: error: case label does not reduce to an integer constant:  => 417:2, 418:2
+
+arm64-gcc5.4/arm64-allmodconfig
+mipsel/mips-allmodconfig
+powerpc-gcc5/powerpc-allmodconfig
+powerpc-gcc5/powerpc-allyesconfig
+powerpc-gcc5/ppc32_allmodconfig
+powerpc-gcc5/ppc64_book3e_allmodconfig
+powerpc-gcc5/ppc64le_allmodconfig
+
+>  + /kisskb/src/drivers/infiniband/hw/qib/qib_wc_x86_64.c: error: 'X86_VENDOR_AMD' undeclared (first use in this function):  => 149:37
+>  + /kisskb/src/drivers/infiniband/hw/qib/qib_wc_x86_64.c: error: 'struct cpuinfo_um' has no member named 'x86_vendor':  => 149:22
+>  + /kisskb/src/drivers/infiniband/hw/qib/qib_wc_x86_64.c: error: control reaches end of non-void function [-Werror=return-type]:  => 150:1
+>  + /kisskb/src/drivers/infiniband/sw/rdmavt/qp.c: error: 'struct cpuinfo_um' has no member named 'x86_cache_size':  => 88:22
+>  + /kisskb/src/drivers/infiniband/sw/rdmavt/qp.c: error: control reaches end of non-void function [-Werror=return-type]:  => 89:1
+>  + /kisskb/src/drivers/infiniband/sw/rdmavt/qp.c: error: implicit declaration of function '__copy_user_nocache' [-Werror=implicit-function-declaration]:  => 100:2
+
+um-x86_64/um-allmodconfig
+um-x86_64/um-allyesconfig
+
+>  + /kisskb/src/drivers/media/platform/nxp/imx-pxp.h: error: initializer element is not constant:  => 582:38
+
+arm64-gcc5.4/arm64-allmodconfig
+powerpc-gcc5/powerpc-allmodconfig
+
+>  + /kisskb/src/drivers/misc/habanalabs/common/memory.c: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]:  => 153:49, 153:7
+
+mipsel/mips-allmodconfig
+mips-gcc8/mips-allmodconfig
+sparc64/sparc-allmodconfig
+xtensa-gcc11/xtensa-allmodconfig
+
+>  + /kisskb/src/drivers/net/ethernet/broadcom/bnx2x/bnx2x_main.c: error: case label does not reduce to an integer constant:  => 4917:4
+>  + /kisskb/src/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c: error: case label does not reduce to an integer constant:  => 3798:2, 3809:2
+
+arm64-gcc5.4/arm64-allmodconfig
+powerpc-gcc5/powerpc-allmodconfig
+powerpc-gcc5/ppc64_book3e_allmodconfig
+
+>  + /kisskb/src/drivers/scsi/aacraid/commsup.c: error: case label does not reduce to an integer constant:  => 1983:2
+
+arm64-gcc5.4/arm64-allmodconfig
+powerpc-gcc5/powerpc-allmodconfig
+powerpc-gcc5/ppc64_book3e_allmodconfig
+powerpc-gcc5/ppc64le_allmodconfig
+
+>  + /kisskb/src/drivers/tty/serial/mpc52xx_uart.c: error: initialization from incompatible pointer type [-Werror=incompatible-pointer-types]:  => 1004:12, 1005:12, 1006:14, 970:12, 968:16, 971:14, 969:12, 1002:16, 1003:16, 967:16
+
+powerpc-gcc5/ppc32_allmodconfig
+
+>  + /kisskb/src/drivers/usb/typec/tcpm/tcpm.c: error: case label does not reduce to an integer constant:  => 4724:3
+
+arm64-gcc5.4/arm64-allmodconfig
+powerpc-gcc5/powerpc-allmodconfig
+powerpc-gcc5/ppc64_book3e_allmodconfig
+
+>  + /kisskb/src/fs/xfs/xfs_buf.h: error: initializer element is not constant:  => 46:23
+>  + /kisskb/src/sound/usb/midi.c: error: case label does not reduce to an integer constant:  => 1389:2
+
+arm64-gcc5.4/arm64-allmodconfig
+mipsel/mips-allmodconfig
+powerpc-gcc5/powerpc-allmodconfig
+powerpc-gcc5/powerpc-allyesconfig
+powerpc-gcc5/ppc32_allmodconfig
+powerpc-gcc5/ppc64_book3e_allmodconfig
+powerpc-gcc5/ppc64le_allmodconfig
+
+>  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_402' declared with attribute error: FIELD_PREP: mask is not constant:  => 352:38
+>  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_404' declared with attribute error: FIELD_PREP: mask is not constant:  => 352:38
+
+powerpc-gcc5/powerpc-allmodconfig
+
+
+> *** WARNINGS ***
+>
+> 5 warning regressions:
+>  + /kisskb/src/arch/m68k/include/asm/string.h: warning: '__builtin_memset' offset [0, 11] is out of the bounds [0, 0] [-Warray-bounds]:  => 68:25
+
+m68k-gcc11/sun3_defconfig
+
+>  + /kisskb/src/arch/s390/kernel/machine_kexec.c: warning: 'memcpy' offset [0, 511] is out of the bounds [0, 0] [-Warray-bounds]:  => 57:9
+
+s390x-gcc11/s390-defconfig
+
+>  + /kisskb/src/drivers/net/ethernet/i825xx/sun3_82586.c: warning: array subscript 1 is above array bounds of 'volatile struct transmit_cmd_struct *[1]' [-Warray-bounds]:  => 989:108, 989:122
+
+m68k-gcc11/sun3_defconfig
+m68k-gcc8/sun3_defconfig
+
+>  + /kisskb/src/drivers/scsi/mpt3sas/mpt3sas_base.c: warning: array subscript 'Mpi2SasIOUnitPage1_t {aka struct _MPI2_CONFIG_PAGE_SASIOUNIT_1}[0]' is partly outside array bounds of 'unsigned char[20]' [-Warray-bounds]:  => 5400:40, 5403:43, 5396:40
+
+powerpc-gcc11/skiroot_defconfig
+
+>  + modpost: WARNING: modpost: EXPORT symbol "_mcount" [vmlinux] version generation failed, symbol will not be versioned.:  => N/A
+
+sparc64-gcc11/sparc64-defconfig
+sparc64/sparc64-defconfig
+
+Gr{oetje,eeting}s,
+
+ 						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+ 							    -- Linus Torvalds
