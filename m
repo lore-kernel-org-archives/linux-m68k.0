@@ -2,593 +2,344 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E35BC433F5
-	for <linux-m68k@archiver.kernel.org>; Mon,  4 Apr 2022 10:12:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C12A8C4332F
+	for <linux-m68k@archiver.kernel.org>; Mon,  4 Apr 2022 11:12:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbiDDKOB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 4 Apr 2022 06:14:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55606 "EHLO
+        id S1359392AbiDDLOd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 4 Apr 2022 07:14:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355346AbiDDKNz (ORCPT
+        with ESMTP id S1359282AbiDDLOc (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 4 Apr 2022 06:13:55 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BBCA27B2B
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Apr 2022 03:11:50 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:6d4d:d9ec:3c70:7c2c])
-        by baptiste.telenet-ops.be with bizsmtp
-        id EaBp2700240M8zK01aBpRd; Mon, 04 Apr 2022 12:11:49 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1nbJga-008HMT-MP; Mon, 04 Apr 2022 12:11:48 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1nbJga-00C5v8-1H; Mon, 04 Apr 2022 12:11:48 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-m68k@lists.linux-m68k.org
-Cc:     linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: defconfig: Update defconfigs for v5.18-rc1
-Date:   Mon,  4 Apr 2022 12:11:46 +0200
-Message-Id: <2ca38d8de70fc9fad5ad17fb81d04736effa181d.1649066720.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 4 Apr 2022 07:14:32 -0400
+Received: from mail-ej1-x64a.google.com (mail-ej1-x64a.google.com [IPv6:2a00:1450:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D8C3B56C
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Apr 2022 04:12:34 -0700 (PDT)
+Received: by mail-ej1-x64a.google.com with SMTP id 13-20020a170906328d00b006982d0888a4so4286134ejw.9
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 04 Apr 2022 04:12:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=uhLLYDnsUK5GPlq+K1PIEo3r9jI08L/J2t2NRzzrt3o=;
+        b=K24G7ugHngSfHRNZg9Op3WvkP4n/BpoMNSNsXTGiJVWl9FljEj9Jzawt7HtSa6+ADs
+         bmNSzrJzVqVc04yaJBRrWMZIV6V1eSJpHw3dIKvrm2HXg62TV5AaD3KZVkJrh7MPpho/
+         w829+ltNDzubVc4oPDAjTMi7buXL5A1CiJR6yQ+qtAXzpBNI4bi5CuihMAaxP2vPPPFe
+         TNjuhBb+nrvoQy//dRsdit6f8XB8+sToxXPbl8eWZqs42a6YZqV2PyrR5yfLq9B8Rps7
+         my5Ee8pMavMV3+UKulpyU5Gey7zRQQDPFpxRRlVXSxLqobXsU9t2BwgJNsrj2W5arV09
+         wnfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=uhLLYDnsUK5GPlq+K1PIEo3r9jI08L/J2t2NRzzrt3o=;
+        b=mx1OYbKUzcnDehoWCEj3nGaNky21ne3zlJ24mBn7B7fKh1zpEgx/TwEtDWJiHSX0nt
+         OpqVYjDDwYzsvU5W8aVuvHXnU3Dijs24eMkjka0pK20W0X7SoYmEGF+ucAb8tPNRHHBY
+         VjspG98yVTov+zMVfYvQL/aqUfNg29ovt2aF7vMz9W2esmQHbkOL4q04ZsdQX3KTVNDy
+         avRmMl2YwWZi4/Bzk+BmW2Cxo/GUvIzcmt4NEygdmOgH2d6hR/Pb6FZ5owOL49toTD2e
+         HPGZyCULjMdTmpZ+YD4cA2Mtr4I+qym9C3/Nx8qexZpo+xKicHyKTkR9tgoYQEeI/t+s
+         aDBg==
+X-Gm-Message-State: AOAM531t1GROWgsko3cN8dsZda8ynVpkEkrhhoUFMZLqF3ZLemgDHDSf
+        e78AiT+BSbh5fRMnsdRYS83lia0Y+w==
+X-Google-Smtp-Source: ABdhPJzqIuSd+RwxELgg57Fsz88c6oDNti0xgejcPxLj1l0+SopB+BjTxKkBMbARWjRQFI+3ymWmFjqDcQ==
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:8bc1:e5e5:97b1:783])
+ (user=elver job=sendgmr) by 2002:a17:907:1b09:b0:6d8:faa8:4a06 with SMTP id
+ mp9-20020a1709071b0900b006d8faa84a06mr10090795ejc.701.1649070752716; Mon, 04
+ Apr 2022 04:12:32 -0700 (PDT)
+Date:   Mon,  4 Apr 2022 13:12:04 +0200
+Message-Id: <20220404111204.935357-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.35.1.1094.g7c7d902a7c-goog
+Subject: [PATCH] signal: Deliver SIGTRAP on perf event asynchronously if blocked
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, Peter Zijlstra <peterz@infradead.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, sparclinux@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        Dmitry Vyukov <dvyukov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-  - Drop CONFIG_BINFMT_AOUT=m (no longer available since commit
-    19e8b701e258701b ("a.out: Stop building a.out/osf1 support on alpha
-    and m68k")),
-  - Enable modular build of the SM3 digest algorithm (no longer
-    auto-selected since commit 114004696bf23499 ("crypto: sm2 - make
-    dependent on sm3 library")),
-  - Drop CONFIG_CRC64=m (auto-selected since commit a7d4383f17e10f33
-    ("block: add pi for extended integrity")),
-  - Drop CONFIG_TEST_OVERFLOW=m (replaced by auto-modular
-    CONFIG_OVERFLOW_KUNIT_TEST in commit 617f55e20743fc50 ("lib:
-    overflow: Convert to Kunit")),
-  - Drop CONFIG_TEST_STACKINIT=m (replaced by auto-modular
-    CONFIG_STACKINIT_KUNIT_TEST in commit 02788ebcf521fe78 ("lib:
-    stackinit: Convert to KUnit")).
+With SIGTRAP on perf events, we have encountered termination of
+processes due to user space attempting to block delivery of SIGTRAP.
+Consider this case:
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+    <set up SIGTRAP on a perf event>
+    ...
+    sigset_t s;
+    sigemptyset(&s);
+    sigaddset(&s, SIGTRAP | <and others>);
+    sigprocmask(SIG_BLOCK, &s, ...);
+    ...
+    <perf event triggers>
+
+When the perf event triggers, while SIGTRAP is blocked, force_sig_perf()
+will force the signal, but revert back to the default handler, thus
+terminating the task.
+
+This makes sense for error conditions, but not so much for explicitly
+requested monitoring. However, the expectation is still that signals
+generated by perf events are synchronous, which will no longer be the
+case if the signal is blocked and delivered later.
+
+To give user space the ability to clearly distinguish synchronous from
+asynchronous signals, introduce siginfo_t::si_perf_flags and
+TRAP_PERF_FLAG_ASYNC (opted for flags in case more binary information is
+required in future).
+
+The resolution to the problem is then to (a) no longer force the signal
+(avoiding the terminations), but (b) tell user space via si_perf_flags
+if the signal was synchronous or not, so that such signals can be
+handled differently (e.g. let user space decide to ignore or consider
+the data imprecise).
+
+The alternative of making the kernel ignore SIGTRAP on perf events if
+the signal is blocked may work for some usecases, but likely causes
+issues in others that then have to revert back to interception of
+sigprocmask() (which we want to avoid). [ A concrete example: when using
+breakpoint perf events to track data-flow, in a region of code where
+signals are blocked, data-flow can no longer be tracked accurately.
+When a relevant asynchronous signal is received after unblocking the
+signal, the data-flow tracking logic needs to know its state is
+imprecise. ]
+
+Link: https://lore.kernel.org/all/Yjmn%2FkVblV3TdoAq@elver.google.com/
+Fixes: 97ba62b27867 ("perf: Add support for SIGTRAP on perf events")
+Reported-by: Dmitry Vyukov <dvyukov@google.com>
+Signed-off-by: Marco Elver <elver@google.com>
 ---
-To be queued in the m68k for-v5.19 branch.
+ arch/arm/kernel/signal.c           |  1 +
+ arch/arm64/kernel/signal.c         |  1 +
+ arch/arm64/kernel/signal32.c       |  1 +
+ arch/m68k/kernel/signal.c          |  1 +
+ arch/sparc/kernel/signal32.c       |  1 +
+ arch/sparc/kernel/signal_64.c      |  1 +
+ arch/x86/kernel/signal_compat.c    |  2 ++
+ include/linux/compat.h             |  1 +
+ include/linux/sched/signal.h       |  2 +-
+ include/uapi/asm-generic/siginfo.h |  7 +++++++
+ kernel/events/core.c               |  4 ++--
+ kernel/signal.c                    | 18 ++++++++++++++++--
+ 12 files changed, 35 insertions(+), 5 deletions(-)
 
- arch/m68k/configs/amiga_defconfig    | 5 +----
- arch/m68k/configs/apollo_defconfig   | 5 +----
- arch/m68k/configs/atari_defconfig    | 5 +----
- arch/m68k/configs/bvme6000_defconfig | 5 +----
- arch/m68k/configs/hp300_defconfig    | 5 +----
- arch/m68k/configs/mac_defconfig      | 5 +----
- arch/m68k/configs/multi_defconfig    | 5 +----
- arch/m68k/configs/mvme147_defconfig  | 5 +----
- arch/m68k/configs/mvme16x_defconfig  | 5 +----
- arch/m68k/configs/q40_defconfig      | 5 +----
- arch/m68k/configs/sun3_defconfig     | 5 +----
- arch/m68k/configs/sun3x_defconfig    | 5 +----
- 12 files changed, 12 insertions(+), 48 deletions(-)
-
-diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
-index 114aaa3f955a387d..c181030218bf29db 100644
---- a/arch/m68k/configs/amiga_defconfig
-+++ b/arch/m68k/configs/amiga_defconfig
-@@ -42,7 +42,6 @@ CONFIG_MQ_IOSCHED_DEADLINE=m
- CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
--CONFIG_BINFMT_AOUT=m
- CONFIG_BINFMT_MISC=m
- # CONFIG_COMPACTION is not set
- CONFIG_ZPOOL=m
-@@ -581,6 +580,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -613,7 +613,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
--CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
- CONFIG_GLOB_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
-@@ -638,7 +637,6 @@ CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
--CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_SIPHASH=m
- CONFIG_TEST_IDA=m
-@@ -659,6 +657,5 @@ CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
- CONFIG_TEST_MEMCAT_P=m
--CONFIG_TEST_STACKINIT=m
- CONFIG_TEST_MEMINIT=m
- CONFIG_TEST_FREE_PAGES=m
-diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
-index 30b9d932b930bc27..40755648fb6ce7a7 100644
---- a/arch/m68k/configs/apollo_defconfig
-+++ b/arch/m68k/configs/apollo_defconfig
-@@ -38,7 +38,6 @@ CONFIG_MQ_IOSCHED_DEADLINE=m
- CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
--CONFIG_BINFMT_AOUT=m
- CONFIG_BINFMT_MISC=m
- # CONFIG_COMPACTION is not set
- CONFIG_ZPOOL=m
-@@ -538,6 +537,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -570,7 +570,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
--CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-@@ -594,7 +593,6 @@ CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
--CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_SIPHASH=m
- CONFIG_TEST_IDA=m
-@@ -615,6 +613,5 @@ CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
- CONFIG_TEST_MEMCAT_P=m
--CONFIG_TEST_STACKINIT=m
- CONFIG_TEST_MEMINIT=m
- CONFIG_TEST_FREE_PAGES=m
-diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
-index a5031375c029fce9..48320e3786ddab5f 100644
---- a/arch/m68k/configs/atari_defconfig
-+++ b/arch/m68k/configs/atari_defconfig
-@@ -45,7 +45,6 @@ CONFIG_MQ_IOSCHED_DEADLINE=m
- CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
--CONFIG_BINFMT_AOUT=m
- CONFIG_BINFMT_MISC=m
- # CONFIG_COMPACTION is not set
- CONFIG_ZPOOL=m
-@@ -569,6 +568,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -601,7 +601,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
--CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
- CONFIG_GLOB_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
-@@ -626,7 +625,6 @@ CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
--CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_SIPHASH=m
- CONFIG_TEST_IDA=m
-@@ -647,6 +645,5 @@ CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
- CONFIG_TEST_MEMCAT_P=m
--CONFIG_TEST_STACKINIT=m
- CONFIG_TEST_MEMINIT=m
- CONFIG_TEST_FREE_PAGES=m
-diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
-index 7d95ca4366e4d30d..9af0e2d0d153be63 100644
---- a/arch/m68k/configs/bvme6000_defconfig
-+++ b/arch/m68k/configs/bvme6000_defconfig
-@@ -35,7 +35,6 @@ CONFIG_MQ_IOSCHED_DEADLINE=m
- CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
--CONFIG_BINFMT_AOUT=m
- CONFIG_BINFMT_MISC=m
- # CONFIG_COMPACTION is not set
- CONFIG_ZPOOL=m
-@@ -530,6 +529,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -562,7 +562,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
--CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-@@ -586,7 +585,6 @@ CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
--CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_SIPHASH=m
- CONFIG_TEST_IDA=m
-@@ -607,6 +605,5 @@ CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
- CONFIG_TEST_MEMCAT_P=m
--CONFIG_TEST_STACKINIT=m
- CONFIG_TEST_MEMINIT=m
- CONFIG_TEST_FREE_PAGES=m
-diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
-index e306e38136071962..49341d66feb6a6b5 100644
---- a/arch/m68k/configs/hp300_defconfig
-+++ b/arch/m68k/configs/hp300_defconfig
-@@ -37,7 +37,6 @@ CONFIG_MQ_IOSCHED_DEADLINE=m
- CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
--CONFIG_BINFMT_AOUT=m
- CONFIG_BINFMT_MISC=m
- # CONFIG_COMPACTION is not set
- CONFIG_ZPOOL=m
-@@ -540,6 +539,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -572,7 +572,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
--CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-@@ -596,7 +595,6 @@ CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
--CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_SIPHASH=m
- CONFIG_TEST_IDA=m
-@@ -617,6 +615,5 @@ CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
- CONFIG_TEST_MEMCAT_P=m
--CONFIG_TEST_STACKINIT=m
- CONFIG_TEST_MEMINIT=m
- CONFIG_TEST_FREE_PAGES=m
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index 41316cf0244121aa..92b33d5ffab190f7 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -36,7 +36,6 @@ CONFIG_MQ_IOSCHED_DEADLINE=m
- CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
--CONFIG_BINFMT_AOUT=m
- CONFIG_BINFMT_MISC=m
- # CONFIG_COMPACTION is not set
- CONFIG_ZPOOL=m
-@@ -560,6 +559,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -592,7 +592,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
--CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
- CONFIG_GLOB_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
-@@ -617,7 +616,6 @@ CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
--CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_SIPHASH=m
- CONFIG_TEST_IDA=m
-@@ -638,6 +636,5 @@ CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
- CONFIG_TEST_MEMCAT_P=m
--CONFIG_TEST_STACKINIT=m
- CONFIG_TEST_MEMINIT=m
- CONFIG_TEST_FREE_PAGES=m
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index 2fc3f0df6d434f2f..6aaa947bc8491a58 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -56,7 +56,6 @@ CONFIG_MQ_IOSCHED_DEADLINE=m
- CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
--CONFIG_BINFMT_AOUT=m
- CONFIG_BINFMT_MISC=m
- # CONFIG_COMPACTION is not set
- CONFIG_ZPOOL=m
-@@ -646,6 +645,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -678,7 +678,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
--CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
- CONFIG_GLOB_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
-@@ -703,7 +702,6 @@ CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
--CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_SIPHASH=m
- CONFIG_TEST_IDA=m
-@@ -724,6 +722,5 @@ CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
- CONFIG_TEST_MEMCAT_P=m
--CONFIG_TEST_STACKINIT=m
- CONFIG_TEST_MEMINIT=m
- CONFIG_TEST_FREE_PAGES=m
-diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
-index 9603f4396469d198..b62d65e5993838aa 100644
---- a/arch/m68k/configs/mvme147_defconfig
-+++ b/arch/m68k/configs/mvme147_defconfig
-@@ -34,7 +34,6 @@ CONFIG_MQ_IOSCHED_DEADLINE=m
- CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
--CONFIG_BINFMT_AOUT=m
- CONFIG_BINFMT_MISC=m
- # CONFIG_COMPACTION is not set
- CONFIG_ZPOOL=m
-@@ -529,6 +528,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -561,7 +561,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
--CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-@@ -585,7 +584,6 @@ CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
--CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_SIPHASH=m
- CONFIG_TEST_IDA=m
-@@ -606,6 +604,5 @@ CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
- CONFIG_TEST_MEMCAT_P=m
--CONFIG_TEST_STACKINIT=m
- CONFIG_TEST_MEMINIT=m
- CONFIG_TEST_FREE_PAGES=m
-diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
-index c9cabd3344df8537..8ecf261487d4262e 100644
---- a/arch/m68k/configs/mvme16x_defconfig
-+++ b/arch/m68k/configs/mvme16x_defconfig
-@@ -35,7 +35,6 @@ CONFIG_MQ_IOSCHED_DEADLINE=m
- CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
--CONFIG_BINFMT_AOUT=m
- CONFIG_BINFMT_MISC=m
- # CONFIG_COMPACTION is not set
- CONFIG_ZPOOL=m
-@@ -530,6 +529,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -562,7 +562,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
--CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-@@ -586,7 +585,6 @@ CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
--CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_SIPHASH=m
- CONFIG_TEST_IDA=m
-@@ -607,6 +605,5 @@ CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
- CONFIG_TEST_MEMCAT_P=m
--CONFIG_TEST_STACKINIT=m
- CONFIG_TEST_MEMINIT=m
- CONFIG_TEST_FREE_PAGES=m
-diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
-index 5f994bf44fb8353b..7540d908897bca83 100644
---- a/arch/m68k/configs/q40_defconfig
-+++ b/arch/m68k/configs/q40_defconfig
-@@ -36,7 +36,6 @@ CONFIG_MQ_IOSCHED_DEADLINE=m
- CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
--CONFIG_BINFMT_AOUT=m
- CONFIG_BINFMT_MISC=m
- # CONFIG_COMPACTION is not set
- CONFIG_ZPOOL=m
-@@ -547,6 +546,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -579,7 +579,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
--CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
- CONFIG_GLOB_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
-@@ -604,7 +603,6 @@ CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
--CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_SIPHASH=m
- CONFIG_TEST_IDA=m
-@@ -625,6 +623,5 @@ CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
- CONFIG_TEST_MEMCAT_P=m
--CONFIG_TEST_STACKINIT=m
- CONFIG_TEST_MEMINIT=m
- CONFIG_TEST_FREE_PAGES=m
-diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
-index 183e33f7d4a07b74..832b45944617c6c3 100644
---- a/arch/m68k/configs/sun3_defconfig
-+++ b/arch/m68k/configs/sun3_defconfig
-@@ -32,7 +32,6 @@ CONFIG_MQ_IOSCHED_DEADLINE=m
- CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
--CONFIG_BINFMT_AOUT=m
- CONFIG_BINFMT_MISC=m
- # CONFIG_COMPACTION is not set
- CONFIG_ZPOOL=m
-@@ -529,6 +528,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -561,7 +561,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
--CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-@@ -584,7 +583,6 @@ CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
--CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_SIPHASH=m
- CONFIG_TEST_IDA=m
-@@ -605,6 +603,5 @@ CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
- CONFIG_TEST_MEMCAT_P=m
--CONFIG_TEST_STACKINIT=m
- CONFIG_TEST_MEMINIT=m
- CONFIG_TEST_FREE_PAGES=m
-diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
-index 8214263b9ab8dc4b..9171b687e565e2f1 100644
---- a/arch/m68k/configs/sun3x_defconfig
-+++ b/arch/m68k/configs/sun3x_defconfig
-@@ -32,7 +32,6 @@ CONFIG_MQ_IOSCHED_DEADLINE=m
- CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
--CONFIG_BINFMT_AOUT=m
- CONFIG_BINFMT_MISC=m
- # CONFIG_COMPACTION is not set
- CONFIG_ZPOOL=m
-@@ -528,6 +527,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
-+CONFIG_CRYPTO_SM3=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -560,7 +560,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- # CONFIG_CRYPTO_HW is not set
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC32_SELFTEST=m
--CONFIG_CRC64=m
- CONFIG_XZ_DEC_TEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-@@ -584,7 +583,6 @@ CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_TEST_UUID=m
- CONFIG_TEST_XARRAY=m
--CONFIG_TEST_OVERFLOW=m
- CONFIG_TEST_RHASHTABLE=m
- CONFIG_TEST_SIPHASH=m
- CONFIG_TEST_IDA=m
-@@ -605,6 +603,5 @@ CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
- CONFIG_TEST_MEMCAT_P=m
--CONFIG_TEST_STACKINIT=m
- CONFIG_TEST_MEMINIT=m
- CONFIG_TEST_FREE_PAGES=m
+diff --git a/arch/arm/kernel/signal.c b/arch/arm/kernel/signal.c
+index 459abc5d1819..ea128e32e8ca 100644
+--- a/arch/arm/kernel/signal.c
++++ b/arch/arm/kernel/signal.c
+@@ -708,6 +708,7 @@ static_assert(offsetof(siginfo_t, si_upper)	== 0x18);
+ static_assert(offsetof(siginfo_t, si_pkey)	== 0x14);
+ static_assert(offsetof(siginfo_t, si_perf_data)	== 0x10);
+ static_assert(offsetof(siginfo_t, si_perf_type)	== 0x14);
++static_assert(offsetof(siginfo_t, si_perf_flags) == 0x18);
+ static_assert(offsetof(siginfo_t, si_band)	== 0x0c);
+ static_assert(offsetof(siginfo_t, si_fd)	== 0x10);
+ static_assert(offsetof(siginfo_t, si_call_addr)	== 0x0c);
+diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
+index 4a4122ef6f39..41b5d9d3672a 100644
+--- a/arch/arm64/kernel/signal.c
++++ b/arch/arm64/kernel/signal.c
+@@ -1011,6 +1011,7 @@ static_assert(offsetof(siginfo_t, si_upper)	== 0x28);
+ static_assert(offsetof(siginfo_t, si_pkey)	== 0x20);
+ static_assert(offsetof(siginfo_t, si_perf_data)	== 0x18);
+ static_assert(offsetof(siginfo_t, si_perf_type)	== 0x20);
++static_assert(offsetof(siginfo_t, si_perf_flags) == 0x24);
+ static_assert(offsetof(siginfo_t, si_band)	== 0x10);
+ static_assert(offsetof(siginfo_t, si_fd)	== 0x18);
+ static_assert(offsetof(siginfo_t, si_call_addr)	== 0x10);
+diff --git a/arch/arm64/kernel/signal32.c b/arch/arm64/kernel/signal32.c
+index d984282b979f..4700f8522d27 100644
+--- a/arch/arm64/kernel/signal32.c
++++ b/arch/arm64/kernel/signal32.c
+@@ -487,6 +487,7 @@ static_assert(offsetof(compat_siginfo_t, si_upper)	== 0x18);
+ static_assert(offsetof(compat_siginfo_t, si_pkey)	== 0x14);
+ static_assert(offsetof(compat_siginfo_t, si_perf_data)	== 0x10);
+ static_assert(offsetof(compat_siginfo_t, si_perf_type)	== 0x14);
++static_assert(offsetof(compat_siginfo_t, si_perf_flags)	== 0x18);
+ static_assert(offsetof(compat_siginfo_t, si_band)	== 0x0c);
+ static_assert(offsetof(compat_siginfo_t, si_fd)		== 0x10);
+ static_assert(offsetof(compat_siginfo_t, si_call_addr)	== 0x0c);
+diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
+index 49533f65958a..b9f6908a31bc 100644
+--- a/arch/m68k/kernel/signal.c
++++ b/arch/m68k/kernel/signal.c
+@@ -625,6 +625,7 @@ static inline void siginfo_build_tests(void)
+ 	/* _sigfault._perf */
+ 	BUILD_BUG_ON(offsetof(siginfo_t, si_perf_data) != 0x10);
+ 	BUILD_BUG_ON(offsetof(siginfo_t, si_perf_type) != 0x14);
++	BUILD_BUG_ON(offsetof(siginfo_t, si_perf_flags) != 0x18);
+ 
+ 	/* _sigpoll */
+ 	BUILD_BUG_ON(offsetof(siginfo_t, si_band)   != 0x0c);
+diff --git a/arch/sparc/kernel/signal32.c b/arch/sparc/kernel/signal32.c
+index f9fe502b81c6..dad38960d1a8 100644
+--- a/arch/sparc/kernel/signal32.c
++++ b/arch/sparc/kernel/signal32.c
+@@ -779,5 +779,6 @@ static_assert(offsetof(compat_siginfo_t, si_upper)	== 0x18);
+ static_assert(offsetof(compat_siginfo_t, si_pkey)	== 0x14);
+ static_assert(offsetof(compat_siginfo_t, si_perf_data)	== 0x10);
+ static_assert(offsetof(compat_siginfo_t, si_perf_type)	== 0x14);
++static_assert(offsetof(compat_siginfo_t, si_perf_flags)	== 0x18);
+ static_assert(offsetof(compat_siginfo_t, si_band)	== 0x0c);
+ static_assert(offsetof(compat_siginfo_t, si_fd)		== 0x10);
+diff --git a/arch/sparc/kernel/signal_64.c b/arch/sparc/kernel/signal_64.c
+index 8b9fc76cd3e0..570e43e6fda5 100644
+--- a/arch/sparc/kernel/signal_64.c
++++ b/arch/sparc/kernel/signal_64.c
+@@ -590,5 +590,6 @@ static_assert(offsetof(siginfo_t, si_upper)	== 0x28);
+ static_assert(offsetof(siginfo_t, si_pkey)	== 0x20);
+ static_assert(offsetof(siginfo_t, si_perf_data)	== 0x18);
+ static_assert(offsetof(siginfo_t, si_perf_type)	== 0x20);
++static_assert(offsetof(siginfo_t, si_perf_flags) == 0x24);
+ static_assert(offsetof(siginfo_t, si_band)	== 0x10);
+ static_assert(offsetof(siginfo_t, si_fd)	== 0x14);
+diff --git a/arch/x86/kernel/signal_compat.c b/arch/x86/kernel/signal_compat.c
+index b52407c56000..879ef8c72f5c 100644
+--- a/arch/x86/kernel/signal_compat.c
++++ b/arch/x86/kernel/signal_compat.c
+@@ -149,8 +149,10 @@ static inline void signal_compat_build_tests(void)
+ 
+ 	BUILD_BUG_ON(offsetof(siginfo_t, si_perf_data) != 0x18);
+ 	BUILD_BUG_ON(offsetof(siginfo_t, si_perf_type) != 0x20);
++	BUILD_BUG_ON(offsetof(siginfo_t, si_perf_flags) != 0x24);
+ 	BUILD_BUG_ON(offsetof(compat_siginfo_t, si_perf_data) != 0x10);
+ 	BUILD_BUG_ON(offsetof(compat_siginfo_t, si_perf_type) != 0x14);
++	BUILD_BUG_ON(offsetof(compat_siginfo_t, si_perf_flags) != 0x18);
+ 
+ 	CHECK_CSI_OFFSET(_sigpoll);
+ 	CHECK_CSI_SIZE  (_sigpoll, 2*sizeof(int));
+diff --git a/include/linux/compat.h b/include/linux/compat.h
+index 1c758b0e0359..01fddf72a81f 100644
+--- a/include/linux/compat.h
++++ b/include/linux/compat.h
+@@ -235,6 +235,7 @@ typedef struct compat_siginfo {
+ 				struct {
+ 					compat_ulong_t _data;
+ 					u32 _type;
++					u32 _flags;
+ 				} _perf;
+ 			};
+ 		} _sigfault;
+diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+index 3c8b34876744..bab7cc56b13a 100644
+--- a/include/linux/sched/signal.h
++++ b/include/linux/sched/signal.h
+@@ -320,7 +320,7 @@ int send_sig_mceerr(int code, void __user *, short, struct task_struct *);
+ 
+ int force_sig_bnderr(void __user *addr, void __user *lower, void __user *upper);
+ int force_sig_pkuerr(void __user *addr, u32 pkey);
+-int force_sig_perf(void __user *addr, u32 type, u64 sig_data);
++int send_sig_perf(void __user *addr, u32 type, u64 sig_data);
+ 
+ int force_sig_ptrace_errno_trap(int errno, void __user *addr);
+ int force_sig_fault_trapno(int sig, int code, void __user *addr, int trapno);
+diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
+index 3ba180f550d7..ffbe4cec9f32 100644
+--- a/include/uapi/asm-generic/siginfo.h
++++ b/include/uapi/asm-generic/siginfo.h
+@@ -99,6 +99,7 @@ union __sifields {
+ 			struct {
+ 				unsigned long _data;
+ 				__u32 _type;
++				__u32 _flags;
+ 			} _perf;
+ 		};
+ 	} _sigfault;
+@@ -164,6 +165,7 @@ typedef struct siginfo {
+ #define si_pkey		_sifields._sigfault._addr_pkey._pkey
+ #define si_perf_data	_sifields._sigfault._perf._data
+ #define si_perf_type	_sifields._sigfault._perf._type
++#define si_perf_flags	_sifields._sigfault._perf._flags
+ #define si_band		_sifields._sigpoll._band
+ #define si_fd		_sifields._sigpoll._fd
+ #define si_call_addr	_sifields._sigsys._call_addr
+@@ -270,6 +272,11 @@ typedef struct siginfo {
+  * that are of the form: ((PTRACE_EVENT_XXX << 8) | SIGTRAP)
+  */
+ 
++/*
++ * Flags for si_perf_flags if SIGTRAP si_code is TRAP_PERF.
++ */
++#define TRAP_PERF_FLAG_ASYNC (1u << 0)
++
+ /*
+  * SIGCHLD si_codes
+  */
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index cfde994ce61c..6eafb1b0ad4a 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -6533,8 +6533,8 @@ static void perf_sigtrap(struct perf_event *event)
+ 	if (current->flags & PF_EXITING)
+ 		return;
+ 
+-	force_sig_perf((void __user *)event->pending_addr,
+-		       event->attr.type, event->attr.sig_data);
++	send_sig_perf((void __user *)event->pending_addr,
++		      event->attr.type, event->attr.sig_data);
+ }
+ 
+ static void perf_pending_event_disable(struct perf_event *event)
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 30cd1ca43bcd..e43bc2a692f5 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -1805,7 +1805,7 @@ int force_sig_pkuerr(void __user *addr, u32 pkey)
+ }
+ #endif
+ 
+-int force_sig_perf(void __user *addr, u32 type, u64 sig_data)
++int send_sig_perf(void __user *addr, u32 type, u64 sig_data)
+ {
+ 	struct kernel_siginfo info;
+ 
+@@ -1817,7 +1817,18 @@ int force_sig_perf(void __user *addr, u32 type, u64 sig_data)
+ 	info.si_perf_data = sig_data;
+ 	info.si_perf_type = type;
+ 
+-	return force_sig_info(&info);
++	/*
++	 * Signals generated by perf events should not terminate the whole
++	 * process if SIGTRAP is blocked, however, delivering the signal
++	 * asynchronously is better than not delivering at all. But tell user
++	 * space if the signal was asynchronous, so it can clearly be
++	 * distinguished from normal synchronous ones.
++	 */
++	info.si_perf_flags = sigismember(&current->blocked, info.si_signo) ?
++				     TRAP_PERF_FLAG_ASYNC :
++				     0;
++
++	return send_sig_info(info.si_signo, &info, current);
+ }
+ 
+ /**
+@@ -3432,6 +3443,7 @@ void copy_siginfo_to_external32(struct compat_siginfo *to,
+ 		to->si_addr = ptr_to_compat(from->si_addr);
+ 		to->si_perf_data = from->si_perf_data;
+ 		to->si_perf_type = from->si_perf_type;
++		to->si_perf_flags = from->si_perf_flags;
+ 		break;
+ 	case SIL_CHLD:
+ 		to->si_pid = from->si_pid;
+@@ -3509,6 +3521,7 @@ static int post_copy_siginfo_from_user32(kernel_siginfo_t *to,
+ 		to->si_addr = compat_ptr(from->si_addr);
+ 		to->si_perf_data = from->si_perf_data;
+ 		to->si_perf_type = from->si_perf_type;
++		to->si_perf_flags = from->si_perf_flags;
+ 		break;
+ 	case SIL_CHLD:
+ 		to->si_pid    = from->si_pid;
+@@ -4722,6 +4735,7 @@ static inline void siginfo_buildtime_checks(void)
+ 	CHECK_OFFSET(si_pkey);
+ 	CHECK_OFFSET(si_perf_data);
+ 	CHECK_OFFSET(si_perf_type);
++	CHECK_OFFSET(si_perf_flags);
+ 
+ 	/* sigpoll */
+ 	CHECK_OFFSET(si_band);
 -- 
-2.25.1
+2.35.1.1094.g7c7d902a7c-goog
 
