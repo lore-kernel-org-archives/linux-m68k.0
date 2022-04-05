@@ -2,98 +2,119 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B61B3C4332F
-	for <linux-m68k@archiver.kernel.org>; Tue,  5 Apr 2022 03:23:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CF12C433F5
+	for <linux-m68k@archiver.kernel.org>; Tue,  5 Apr 2022 06:46:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbiDEDZu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 4 Apr 2022 23:25:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35486 "EHLO
+        id S230426AbiDEGsU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 5 Apr 2022 02:48:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbiDEDZt (ORCPT
+        with ESMTP id S229719AbiDEGsT (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 4 Apr 2022 23:25:49 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A7DB4474E
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Apr 2022 20:23:50 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id t7so9449371qta.10
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 04 Apr 2022 20:23:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qApr9GrihVbOuWIYXrsrRfMhvE7Z9/nCtDMkcpQr1HA=;
-        b=OUL2erKbptx3OSEXn+FNiSDEclLx26+4Q9s4Yc0HFFg2NowwbEnAZPwFjtfFoQXFSD
-         HGr3WZcWj0bwCYYGq+VQH3lNm19kHiCLCcgHpy3MWFLUkJdqXzzsA6T3FCzHLz4UT2GP
-         u+NVUKCBFvqmXaoDydp6uOSzgkS3i+tqmaGAQ=
+        Tue, 5 Apr 2022 02:48:19 -0400
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FD3757147
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Apr 2022 23:46:20 -0700 (PDT)
+Received: by mail-qt1-f174.google.com with SMTP id a11so9660173qtb.12
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 04 Apr 2022 23:46:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qApr9GrihVbOuWIYXrsrRfMhvE7Z9/nCtDMkcpQr1HA=;
-        b=fZbYAkLayaypeV49+cYftVYb+kMB2B3fK6m3Y0W25eQ9IVVZwCisr4l1lGMdBTIVU/
-         c2b8+1oZi2M6NjRKWEpsb4x+NsKV0h7zNFGXmLkSNnumb27YFwAdS5VL/O3lbRlsmum6
-         qhgP6cUVYwWejznyskhhtfPMA0VhFqi9fWaHCVWPDD2AAjvmDuLqeZFo9bffNpQM+bFN
-         OwZtIW1oaRyY7M7Cvecj3ikvT2Sbg1P3ie4Z5h8M9ZRJFaUCq3rh/gGu/NceP3SzYlHD
-         U0LFOyYpnypxoBMU9TWUWc/AFm5XZt9e27G6hDHWsRVPZYQkb7nZI/hSOK825Vfvu6pz
-         qcqA==
-X-Gm-Message-State: AOAM530DdpLm/8YnOqHzMVBsN9EGkkXZoSEL8bU1SaCNVPdMoCsrO9L5
-        UV4fbJpafsE4FoJUEGZufUTT7HwCCUyCko5bgg73qg==
-X-Google-Smtp-Source: ABdhPJwynqhZqs8C04npxIC6XvYVeW6E//MMWg7Ai+dGctLoCRwKSkiHu3j/uCEqqA2vWJ4U1/uhkuomufhsrlhjYio=
-X-Received: by 2002:a05:622a:110c:b0:2e1:fe6b:2f26 with SMTP id
- e12-20020a05622a110c00b002e1fe6b2f26mr1251546qty.201.1649129029903; Mon, 04
- Apr 2022 20:23:49 -0700 (PDT)
+        bh=UuWjfy1DmKGBwxecHn9QW28Mp8RGeP8Fe6idp3HhRGs=;
+        b=8QkR1sFNy5qVz2rHKNJFFxNzeCYebJauClh7zJiETtG5ULfjpPWFOs8KT1AOaJ2vCW
+         lZOj2rF/dTAWoaDticeWVaBoOwU5NM9KCkfMkjlLTQZTc3sdZeutT+N/lQt00xtkrIRV
+         G5l3fmzTfvw3MZp7By+pA1G4+5T88Mv2RUY9jO0fSZXMd2OSqcbv6Qkdl8k5dn7pO2Kq
+         naGOf0/TlQOFOgauwDLCyf+bfRXrIJ27tmBbv9INo1FCqIn+cX3rQQr03jUdoj4aZPGB
+         udOUaISi75jFsVP6/GnvfrykhPHyOFVvcAF6iUtJPrZLLLCt7TuhAg0zuv8XpuIY7Fdw
+         GJcA==
+X-Gm-Message-State: AOAM530fNizpOLH6ZqxxRcDCkVMggPfXSJZ+lFQZMiG/N6dpn3W9Hseu
+        c8N1M2XCuNWzd6ejZuiLCIdPeoKpbiSYNQ==
+X-Google-Smtp-Source: ABdhPJydD4bEMH4oesmBtTN77Da4FD/erdNmA9qI9Foge2QLRLcytgNpxclSd0thgu8tKoGEIFR3Pw==
+X-Received: by 2002:ac8:5ac8:0:b0:2e1:df01:1a4b with SMTP id d8-20020ac85ac8000000b002e1df011a4bmr1614318qtd.675.1649141178895;
+        Mon, 04 Apr 2022 23:46:18 -0700 (PDT)
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com. [209.85.219.180])
+        by smtp.gmail.com with ESMTPSA id 78-20020a370551000000b0067e3a58c090sm7489664qkf.82.2022.04.04.23.46.18
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Apr 2022 23:46:18 -0700 (PDT)
+Received: by mail-yb1-f180.google.com with SMTP id j2so21794497ybu.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 04 Apr 2022 23:46:18 -0700 (PDT)
+X-Received: by 2002:a25:45:0:b0:633:96e2:2179 with SMTP id 66-20020a250045000000b0063396e22179mr1490905yba.393.1649141178137;
+ Mon, 04 Apr 2022 23:46:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <Yib9F5SqKda/nH9c@infradead.org> <CAK8P3a1dUVsZzhAe81usLSkvH29zHgiV9fhEkWdq7_W+nQBWbg@mail.gmail.com>
- <YkmWh2tss8nXKqc5@infradead.org> <CAK8P3a0QdFOJbM72geYTWOKumeKPSCVD8Nje5pBpZWazX0GEnQ@mail.gmail.com>
- <6a38e8b8-7ccc-afba-6826-cb6e4f92af83@linux-m68k.org>
-In-Reply-To: <6a38e8b8-7ccc-afba-6826-cb6e4f92af83@linux-m68k.org>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Tue, 5 Apr 2022 12:23:39 +0900
-Message-ID: <CAFr9PXkk=8HOxPwVvFRzqHZteRREWxSOOcdjrcOPe0d=9AW2yQ@mail.gmail.com>
-Subject: Re: [RFC PULL] remove arch/h8300
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "moderated list:H8/300 ARCHITECTURE" 
-        <uclinux-h8-devel@lists.sourceforge.jp>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>, Max Filippov <jcmvbkbc@gmail.com>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
+References: <CAHk-=wg6FWL1xjVyHx7DdjD2dHZETA5_=FqqW17Z19X-WTfWSg@mail.gmail.com>
+ <20220404074734.1092959-1-geert@linux-m68k.org> <alpine.DEB.2.22.394.2204041006230.1941618@ramsan.of.borg>
+ <874k38u20c.fsf@tynnyri.adurom.net>
+In-Reply-To: <874k38u20c.fsf@tynnyri.adurom.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 5 Apr 2022 08:46:06 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdV_-3TOHYehUsHeqwHjQtzN1Ot886K7vwPr4P-4u8eehw@mail.gmail.com>
+Message-ID: <CAMuHMdV_-3TOHYehUsHeqwHjQtzN1Ot886K7vwPr4P-4u8eehw@mail.gmail.com>
+Subject: Re: Build regressions/improvements in v5.18-rc1
+To:     Kalle Valo <kvalo@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>
+        Parisc List <linux-parisc@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        scsi <linux-scsi@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        linux-xfs@vger.kernel.org,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        linux-s390 <linux-s390@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Greg,
+Hi Kalle,
 
-On Mon, 4 Apr 2022 at 22:42, Greg Ungerer <gerg@linux-m68k.org> wrote:
-> But we could consider the Dragonball support for removal. I keep it compiling,
-> but I don't use it and can't test that it actually works. Not sure that it
-> has been used for a very long time now. And I didn't even realize but its
-> serial driver (68328serial.c) was removed in 2015. No one seems too have
-> noticed and complained.
+On Mon, Apr 4, 2022 at 8:39 PM Kalle Valo <kvalo@kernel.org> wrote:
+> Geert Uytterhoeven <geert@linux-m68k.org> writes:
+> >> /kisskb/src/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c:
+> >> error: case label does not reduce to an integer constant: => 3798:2,
+> >> 3809:2
+> >
+> > arm64-gcc5.4/arm64-allmodconfig
+> > powerpc-gcc5/powerpc-allmodconfig
+> > powerpc-gcc5/ppc64_book3e_allmodconfig
+>
+> After v5.17 there were two commits to brcmfmac/sdio.c:
+>
+> $ git log --oneline v5.17.. drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+> ed26edf7bfd9 brcmfmac: Add BCM43454/6 support
+> 6d766d8cb505 brcmfmac: pcie: Declare missing firmware files in pcie.c
+>
+> I can't see how either of them could cause this warning. Could something
+> else cause this or am I missing something?
 
-I noticed this and I am working on fixing it up for a new Dragonball
-homebrew machine.
-I'm trying to add a 68000 machine to QEMU to make the development
-easier because I'm currently waiting an hour or more for a kernel to
-load over serial.
-It might be a few months.
+Doh, I should not have reduced the CC list in the xfs subthread...
 
-It looked like 68328serial.c was removed because someone tried to
-clean it up and it was decided that no one was using it and it was
-best to delete it.
-My plan was to at some point send a series to fix up the issues with
-the Dragonball support, revert removing the serial driver and adding
-the patch that cleaned it up.
+The builds above are all gcc-5 builds, so they are affected by the same
+issue as XFS: unsigned constants that don't fit in int are lacking a
+"U" suffix.
 
-Cheers,
+I assume Arnd's patch for
+drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+fixes this?
+https://lore.kernel.org/all/CAK8P3a0wRiS03imdXk2WbGONkSSczEGdE-ue5ubF6UyyDE9dQg@mail.gmail.com
 
-Daniel
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
