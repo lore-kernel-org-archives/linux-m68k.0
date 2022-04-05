@@ -2,135 +2,88 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 725CCC4321E
-	for <linux-m68k@archiver.kernel.org>; Tue,  5 Apr 2022 11:08:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC3FEC43219
+	for <linux-m68k@archiver.kernel.org>; Tue,  5 Apr 2022 15:23:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232516AbiDELI4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 5 Apr 2022 07:08:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58698 "EHLO
+        id S244410AbiDEPZW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 5 Apr 2022 11:25:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357939AbiDEK1a (ORCPT
+        with ESMTP id S1385696AbiDEOSr (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 5 Apr 2022 06:27:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E718F9A1
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  5 Apr 2022 03:11:23 -0700 (PDT)
+        Tue, 5 Apr 2022 10:18:47 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E156037A00
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  5 Apr 2022 06:07:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A71606167E;
-        Tue,  5 Apr 2022 10:11:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90121C385A0;
-        Tue,  5 Apr 2022 10:11:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1649153482;
-        bh=MV1itl6rqfL9cQ+0uC0MpvC4tCW7XXeVrtbCRx+bwZE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dV7bXOc155cHJiJ3gqHIXjHFhGI2R6pvwxxDYFf9/K6gnOcxtYlortLB5kQplUkZm
-         mN1DIE06hiTtj6hRa97W8BeKfEOv/PnFUEIAqatPlCzIn1ZvjSMGpCIAUVW0hEPCrC
-         ptIeFesUzovf2HEqTU+B21GrX2MTqwF0V3WPcO3c=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Angelo Dureghello <angelo@sysam.it>,
-        Greg Ungerer <gerg@kernel.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 236/599] m68k: coldfire/device.c: only build for MCF_EDMA when h/w macros are defined
-Date:   Tue,  5 Apr 2022 09:28:50 +0200
-Message-Id: <20220405070305.863022487@linuxfoundation.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220405070258.802373272@linuxfoundation.org>
-References: <20220405070258.802373272@linuxfoundation.org>
-User-Agent: quilt/0.66
+        by ams.source.kernel.org (Postfix) with ESMTPS id 8459CB81D5C;
+        Tue,  5 Apr 2022 13:07:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA18DC385A1;
+        Tue,  5 Apr 2022 13:07:11 +0000 (UTC)
+Message-ID: <5b7687d4-8ba5-ad79-8a74-33fc2496a3db@linux-m68k.org>
+Date:   Tue, 5 Apr 2022 23:07:10 +1000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [RFC PULL] remove arch/h8300
+Content-Language: en-US
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "moderated list:H8/300 ARCHITECTURE" 
+        <uclinux-h8-devel@lists.sourceforge.jp>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>, Max Filippov <jcmvbkbc@gmail.com>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+References: <Yib9F5SqKda/nH9c@infradead.org>
+ <CAK8P3a1dUVsZzhAe81usLSkvH29zHgiV9fhEkWdq7_W+nQBWbg@mail.gmail.com>
+ <YkmWh2tss8nXKqc5@infradead.org>
+ <CAK8P3a0QdFOJbM72geYTWOKumeKPSCVD8Nje5pBpZWazX0GEnQ@mail.gmail.com>
+ <6a38e8b8-7ccc-afba-6826-cb6e4f92af83@linux-m68k.org>
+ <CAFr9PXkk=8HOxPwVvFRzqHZteRREWxSOOcdjrcOPe0d=9AW2yQ@mail.gmail.com>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <CAFr9PXkk=8HOxPwVvFRzqHZteRREWxSOOcdjrcOPe0d=9AW2yQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+Hi Daniel,
 
-[ Upstream commit e6e1e7b19fa132d23d09c465942aab4c110d3da9 ]
+On 5/4/22 13:23, Daniel Palmer wrote:
+> On Mon, 4 Apr 2022 at 22:42, Greg Ungerer <gerg@linux-m68k.org> wrote:
+>> But we could consider the Dragonball support for removal. I keep it compiling,
+>> but I don't use it and can't test that it actually works. Not sure that it
+>> has been used for a very long time now. And I didn't even realize but its
+>> serial driver (68328serial.c) was removed in 2015. No one seems too have
+>> noticed and complained.
+> 
+> I noticed this and I am working on fixing it up for a new Dragonball
+> homebrew machine.
+> I'm trying to add a 68000 machine to QEMU to make the development
+> easier because I'm currently waiting an hour or more for a kernel to
+> load over serial.
+> It might be a few months.
+> 
+> It looked like 68328serial.c was removed because someone tried to
+> clean it up and it was decided that no one was using it and it was
+> best to delete it.
+> My plan was to at some point send a series to fix up the issues with
+> the Dragonball support, revert removing the serial driver and adding
+> the patch that cleaned it up.
 
-When CONFIG_MCF_EDMA is set (due to COMPILE_TEST, not due to
-CONFIG_M5441x), coldfire/device.c has compile errors due to
-missing MCFEDMA_* symbols. In the .config file that was provided,
-CONFIG_M5206=y, not CONFIG_M5441x, so <asm/m5441xsim.h> is not
-included in coldfire/device.c.
+Nice. I will leave all the 68000/68328 code alone for now then.
 
-Only build the MCF_EDMA code in coldfire/device.c if the MCFEDMA_*
-hardware macros are defined.
-
-Fixes these build errors:
-
-../arch/m68k/coldfire/device.c:512:35: error: 'MCFEDMA_BASE' undeclared here (not in a function); did you mean 'MCFDMA_BASE1'?
-  512 |                 .start          = MCFEDMA_BASE,
-../arch/m68k/coldfire/device.c:513:50: error: 'MCFEDMA_SIZE' undeclared here (not in a function)
-  513 |                 .end            = MCFEDMA_BASE + MCFEDMA_SIZE - 1,
-../arch/m68k/coldfire/device.c:517:35: error: 'MCFEDMA_IRQ_INTR0' undeclared here (not in a function)
-  517 |                 .start          = MCFEDMA_IRQ_INTR0,
-../arch/m68k/coldfire/device.c:523:35: error: 'MCFEDMA_IRQ_INTR16' undeclared here (not in a function)
-  523 |                 .start          = MCFEDMA_IRQ_INTR16,
-../arch/m68k/coldfire/device.c:529:35: error: 'MCFEDMA_IRQ_INTR56' undeclared here (not in a function)
-  529 |                 .start          = MCFEDMA_IRQ_INTR56,
-../arch/m68k/coldfire/device.c:535:35: error: 'MCFEDMA_IRQ_ERR' undeclared here (not in a function)
-  535 |                 .start          = MCFEDMA_IRQ_ERR,
-
-Fixes: d7e9d01ac292 ("m68k: add ColdFire mcf5441x eDMA platform support")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Link: lore.kernel.org/r/202203030252.P752DK46-lkp@intel.com
-Cc: Angelo Dureghello <angelo@sysam.it>
-Cc: Greg Ungerer <gerg@kernel.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: uclinux-dev@uclinux.org
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/m68k/coldfire/device.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
-index 59f7dfe50a4d..a055616942a1 100644
---- a/arch/m68k/coldfire/device.c
-+++ b/arch/m68k/coldfire/device.c
-@@ -480,7 +480,7 @@ static struct platform_device mcf_i2c5 = {
- #endif /* MCFI2C_BASE5 */
- #endif /* IS_ENABLED(CONFIG_I2C_IMX) */
- 
--#if IS_ENABLED(CONFIG_MCF_EDMA)
-+#ifdef MCFEDMA_BASE
- 
- static const struct dma_slave_map mcf_edma_map[] = {
- 	{ "dreq0", "rx-tx", MCF_EDMA_FILTER_PARAM(0) },
-@@ -552,7 +552,7 @@ static struct platform_device mcf_edma = {
- 		.platform_data = &mcf_edma_data,
- 	}
- };
--#endif /* IS_ENABLED(CONFIG_MCF_EDMA) */
-+#endif /* MCFEDMA_BASE */
- 
- #ifdef MCFSDHC_BASE
- static struct mcf_esdhc_platform_data mcf_esdhc_data = {
-@@ -610,7 +610,7 @@ static struct platform_device *mcf_devices[] __initdata = {
- 	&mcf_i2c5,
- #endif
- #endif
--#if IS_ENABLED(CONFIG_MCF_EDMA)
-+#ifdef MCFEDMA_BASE
- 	&mcf_edma,
- #endif
- #ifdef MCFSDHC_BASE
--- 
-2.34.1
-
-
+Regards
+Greg
 
