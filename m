@@ -2,108 +2,135 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC211C4321E
-	for <linux-m68k@archiver.kernel.org>; Tue,  5 Apr 2022 06:52:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 284F9C433F5
+	for <linux-m68k@archiver.kernel.org>; Tue,  5 Apr 2022 08:03:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231164AbiDEGyr (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 5 Apr 2022 02:54:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60272 "EHLO
+        id S233259AbiDEIFi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 5 Apr 2022 04:05:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231167AbiDEGyn (ORCPT
+        with ESMTP id S235771AbiDEIAU (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 5 Apr 2022 02:54:43 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E2838FE4C
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Apr 2022 23:52:44 -0700 (PDT)
+        Tue, 5 Apr 2022 04:00:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE9053EA9C
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  5 Apr 2022 00:58:22 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id AFA87B81B9C;
-        Tue,  5 Apr 2022 06:52:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5887BC340F3;
-        Tue,  5 Apr 2022 06:52:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649141561;
-        bh=sfI+F1qddgBQPEPVyPm4UsT8iPzrWXdjhWe583jbPNo=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=V/qs96FwacDoAwIb3AYjsXmHxIyAPgkVCDF70o06rl9Kv/EU36wYnE2B+iVWmFDuY
-         9yuhSTxtp1RApbos0thzGGcgBcYzB4OUjwwadhMoCk9ddnMLEKl7z5ojHVyxLNPTxe
-         fkI47UjfZEnf1/Ud4Zb2n1JXmLeINpIf17so9GlwWdiyUMNfRV7wQ5S+MxBnAEYklV
-         Y8YdKnoXbq3CdeKDF/1PwekiJc2XNSMWQ0QvtapOIX7H8ZI+dMggm5cQNjfN6CVOOX
-         7Pm2r4QROcmMfAGlnaeACUWbHHdwgaBx6T+/ZTGZ0SVcsrXuQJQPOhC5ncYhaHg04Y
-         CE7JnbN9mYeEw==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        scsi <linux-scsi@vger.kernel.org>,
-        "open list\:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        linux-xfs@vger.kernel.org,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        linux-s390 <linux-s390@vger.kernel.org>
-Subject: Re: Build regressions/improvements in v5.18-rc1
-In-Reply-To: <CAMuHMdV_-3TOHYehUsHeqwHjQtzN1Ot886K7vwPr4P-4u8eehw@mail.gmail.com>
-        (Geert Uytterhoeven's message of "Tue, 5 Apr 2022 08:46:06 +0200")
-References: <CAHk-=wg6FWL1xjVyHx7DdjD2dHZETA5_=FqqW17Z19X-WTfWSg@mail.gmail.com>
-        <20220404074734.1092959-1-geert@linux-m68k.org>
-        <alpine.DEB.2.22.394.2204041006230.1941618@ramsan.of.borg>
-        <874k38u20c.fsf@tynnyri.adurom.net>
-        <CAMuHMdV_-3TOHYehUsHeqwHjQtzN1Ot886K7vwPr4P-4u8eehw@mail.gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-Date:   Tue, 05 Apr 2022 09:52:33 +0300
-Message-ID: <87czhwrphq.fsf@kernel.org>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 41F8061722;
+        Tue,  5 Apr 2022 07:58:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24771C340EE;
+        Tue,  5 Apr 2022 07:58:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1649145501;
+        bh=g/yUqTevTV8GciHyd7YeKtTHAieQUSEzbtaW7BPaBVs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=X8bTP8DnXRe0N8Vd27sC9R+baH/FVuo8KH2j/kEeMFYD4hGz4pGdl77/z7pps89A0
+         0CJnRmQM8fdT1MN8KTofx1AHnjWhzW0zcPDr2AbwJ9le/nzJpyqc6gOrQ9Ry6fOzXB
+         pVqw0SuRJD/mzXKBoRSQ9UFwgjz5gSQ5seiRbuM4=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Angelo Dureghello <angelo@sysam.it>,
+        Greg Ungerer <gerg@kernel.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.17 0390/1126] m68k: coldfire/device.c: only build for MCF_EDMA when h/w macros are defined
+Date:   Tue,  5 Apr 2022 09:18:57 +0200
+Message-Id: <20220405070419.074480989@linuxfoundation.org>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220405070407.513532867@linuxfoundation.org>
+References: <20220405070407.513532867@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+From: Randy Dunlap <rdunlap@infradead.org>
 
-> On Mon, Apr 4, 2022 at 8:39 PM Kalle Valo <kvalo@kernel.org> wrote:
->> Geert Uytterhoeven <geert@linux-m68k.org> writes:
->> >> /kisskb/src/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c:
->> >> error: case label does not reduce to an integer constant: => 3798:2,
->> >> 3809:2
->> >
->> > arm64-gcc5.4/arm64-allmodconfig
->> > powerpc-gcc5/powerpc-allmodconfig
->> > powerpc-gcc5/ppc64_book3e_allmodconfig
->>
->> After v5.17 there were two commits to brcmfmac/sdio.c:
->>
->> $ git log --oneline v5.17.. drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
->> ed26edf7bfd9 brcmfmac: Add BCM43454/6 support
->> 6d766d8cb505 brcmfmac: pcie: Declare missing firmware files in pcie.c
->>
->> I can't see how either of them could cause this warning. Could something
->> else cause this or am I missing something?
->
-> Doh, I should not have reduced the CC list in the xfs subthread...
->
-> The builds above are all gcc-5 builds, so they are affected by the same
-> issue as XFS: unsigned constants that don't fit in int are lacking a
-> "U" suffix.
->
-> I assume Arnd's patch for
-> drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-> fixes this?
-> https://lore.kernel.org/all/CAK8P3a0wRiS03imdXk2WbGONkSSczEGdE-ue5ubF6UyyDE9dQg@mail.gmail.com
+[ Upstream commit e6e1e7b19fa132d23d09c465942aab4c110d3da9 ]
 
-Great, thanks. I assume Arnd will submit it officially at some point.
+When CONFIG_MCF_EDMA is set (due to COMPILE_TEST, not due to
+CONFIG_M5441x), coldfire/device.c has compile errors due to
+missing MCFEDMA_* symbols. In the .config file that was provided,
+CONFIG_M5206=y, not CONFIG_M5441x, so <asm/m5441xsim.h> is not
+included in coldfire/device.c.
 
+Only build the MCF_EDMA code in coldfire/device.c if the MCFEDMA_*
+hardware macros are defined.
+
+Fixes these build errors:
+
+../arch/m68k/coldfire/device.c:512:35: error: 'MCFEDMA_BASE' undeclared here (not in a function); did you mean 'MCFDMA_BASE1'?
+  512 |                 .start          = MCFEDMA_BASE,
+../arch/m68k/coldfire/device.c:513:50: error: 'MCFEDMA_SIZE' undeclared here (not in a function)
+  513 |                 .end            = MCFEDMA_BASE + MCFEDMA_SIZE - 1,
+../arch/m68k/coldfire/device.c:517:35: error: 'MCFEDMA_IRQ_INTR0' undeclared here (not in a function)
+  517 |                 .start          = MCFEDMA_IRQ_INTR0,
+../arch/m68k/coldfire/device.c:523:35: error: 'MCFEDMA_IRQ_INTR16' undeclared here (not in a function)
+  523 |                 .start          = MCFEDMA_IRQ_INTR16,
+../arch/m68k/coldfire/device.c:529:35: error: 'MCFEDMA_IRQ_INTR56' undeclared here (not in a function)
+  529 |                 .start          = MCFEDMA_IRQ_INTR56,
+../arch/m68k/coldfire/device.c:535:35: error: 'MCFEDMA_IRQ_ERR' undeclared here (not in a function)
+  535 |                 .start          = MCFEDMA_IRQ_ERR,
+
+Fixes: d7e9d01ac292 ("m68k: add ColdFire mcf5441x eDMA platform support")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Link: lore.kernel.org/r/202203030252.P752DK46-lkp@intel.com
+Cc: Angelo Dureghello <angelo@sysam.it>
+Cc: Greg Ungerer <gerg@kernel.org>
+Cc: Greg Ungerer <gerg@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: uclinux-dev@uclinux.org
+Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/m68k/coldfire/device.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
+index 0386252e9d04..4218750414bb 100644
+--- a/arch/m68k/coldfire/device.c
++++ b/arch/m68k/coldfire/device.c
+@@ -480,7 +480,7 @@ static struct platform_device mcf_i2c5 = {
+ #endif /* MCFI2C_BASE5 */
+ #endif /* IS_ENABLED(CONFIG_I2C_IMX) */
+ 
+-#if IS_ENABLED(CONFIG_MCF_EDMA)
++#ifdef MCFEDMA_BASE
+ 
+ static const struct dma_slave_map mcf_edma_map[] = {
+ 	{ "dreq0", "rx-tx", MCF_EDMA_FILTER_PARAM(0) },
+@@ -552,7 +552,7 @@ static struct platform_device mcf_edma = {
+ 		.platform_data = &mcf_edma_data,
+ 	}
+ };
+-#endif /* IS_ENABLED(CONFIG_MCF_EDMA) */
++#endif /* MCFEDMA_BASE */
+ 
+ #ifdef MCFSDHC_BASE
+ static struct mcf_esdhc_platform_data mcf_esdhc_data = {
+@@ -651,7 +651,7 @@ static struct platform_device *mcf_devices[] __initdata = {
+ 	&mcf_i2c5,
+ #endif
+ #endif
+-#if IS_ENABLED(CONFIG_MCF_EDMA)
++#ifdef MCFEDMA_BASE
+ 	&mcf_edma,
+ #endif
+ #ifdef MCFSDHC_BASE
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+2.34.1
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+
