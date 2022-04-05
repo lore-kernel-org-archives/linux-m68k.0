@@ -2,199 +2,98 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DFA3C433F5
-	for <linux-m68k@archiver.kernel.org>; Tue,  5 Apr 2022 02:57:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B61B3C4332F
+	for <linux-m68k@archiver.kernel.org>; Tue,  5 Apr 2022 03:23:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbiDEC7R (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 4 Apr 2022 22:59:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49892 "EHLO
+        id S230226AbiDEDZu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 4 Apr 2022 23:25:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbiDEC7K (ORCPT
+        with ESMTP id S230197AbiDEDZt (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 4 Apr 2022 22:59:10 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 751D8A56DA
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Apr 2022 19:10:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1649124632; x=1680660632;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=d/L3xrfkN7lpSfDrqUrtE4FbHwmT/greWRiRjuP+hPc=;
-  b=mUaQV6haOLKn0L8qrP0S4AVFD3A4GjEPDEOKUCvG8AUkN7bnN2KJ4nCz
-   IOGZ5Lj0PmrLd0/RKyWg/8PiHRIhoGMQ3ocjqWcEcP9jqOHht3QoXXHlW
-   zP+9lF6BHifWc7dZCJoOGVkgnUdwSYnei50mroOww8S31rOI7qQITQ4G9
-   g+dtvyKQdj3pmdzqfQftwtsfnYQmqDTDo16UEqx5WqL8cSt1l0HTR3ABR
-   sKKIpOozgp4rJ9dV4pPpiGaWYTteDM+c8vG+lsYIXTDfsegJeJ8ezo3nB
-   FoHKI6fcdgV8m+wdqozgzjmZxkEoK9M4qxbE4vYXttmEU2KOw3c2GeJ+n
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10307"; a="259463725"
-X-IronPort-AV: E=Sophos;i="5.90,235,1643702400"; 
-   d="scan'208";a="259463725"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2022 16:57:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,235,1643702400"; 
-   d="scan'208";a="721840780"
-Received: from lkp-server02.sh.intel.com (HELO a44fdfb70b94) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 04 Apr 2022 16:57:38 -0700
-Received: from kbuild by a44fdfb70b94 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1nbWZm-0002SD-8u;
-        Mon, 04 Apr 2022 23:57:38 +0000
-Date:   Tue, 05 Apr 2022 07:57:34 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 412ed8f7fe7544bd92457711b4f992793655f88c
-Message-ID: <624b85ee.6yp6/dEFAFI9H8+n%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        Mon, 4 Apr 2022 23:25:49 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A7DB4474E
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Apr 2022 20:23:50 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id t7so9449371qta.10
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 04 Apr 2022 20:23:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qApr9GrihVbOuWIYXrsrRfMhvE7Z9/nCtDMkcpQr1HA=;
+        b=OUL2erKbptx3OSEXn+FNiSDEclLx26+4Q9s4Yc0HFFg2NowwbEnAZPwFjtfFoQXFSD
+         HGr3WZcWj0bwCYYGq+VQH3lNm19kHiCLCcgHpy3MWFLUkJdqXzzsA6T3FCzHLz4UT2GP
+         u+NVUKCBFvqmXaoDydp6uOSzgkS3i+tqmaGAQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qApr9GrihVbOuWIYXrsrRfMhvE7Z9/nCtDMkcpQr1HA=;
+        b=fZbYAkLayaypeV49+cYftVYb+kMB2B3fK6m3Y0W25eQ9IVVZwCisr4l1lGMdBTIVU/
+         c2b8+1oZi2M6NjRKWEpsb4x+NsKV0h7zNFGXmLkSNnumb27YFwAdS5VL/O3lbRlsmum6
+         qhgP6cUVYwWejznyskhhtfPMA0VhFqi9fWaHCVWPDD2AAjvmDuLqeZFo9bffNpQM+bFN
+         OwZtIW1oaRyY7M7Cvecj3ikvT2Sbg1P3ie4Z5h8M9ZRJFaUCq3rh/gGu/NceP3SzYlHD
+         U0LFOyYpnypxoBMU9TWUWc/AFm5XZt9e27G6hDHWsRVPZYQkb7nZI/hSOK825Vfvu6pz
+         qcqA==
+X-Gm-Message-State: AOAM530DdpLm/8YnOqHzMVBsN9EGkkXZoSEL8bU1SaCNVPdMoCsrO9L5
+        UV4fbJpafsE4FoJUEGZufUTT7HwCCUyCko5bgg73qg==
+X-Google-Smtp-Source: ABdhPJwynqhZqs8C04npxIC6XvYVeW6E//MMWg7Ai+dGctLoCRwKSkiHu3j/uCEqqA2vWJ4U1/uhkuomufhsrlhjYio=
+X-Received: by 2002:a05:622a:110c:b0:2e1:fe6b:2f26 with SMTP id
+ e12-20020a05622a110c00b002e1fe6b2f26mr1251546qty.201.1649129029903; Mon, 04
+ Apr 2022 20:23:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <Yib9F5SqKda/nH9c@infradead.org> <CAK8P3a1dUVsZzhAe81usLSkvH29zHgiV9fhEkWdq7_W+nQBWbg@mail.gmail.com>
+ <YkmWh2tss8nXKqc5@infradead.org> <CAK8P3a0QdFOJbM72geYTWOKumeKPSCVD8Nje5pBpZWazX0GEnQ@mail.gmail.com>
+ <6a38e8b8-7ccc-afba-6826-cb6e4f92af83@linux-m68k.org>
+In-Reply-To: <6a38e8b8-7ccc-afba-6826-cb6e4f92af83@linux-m68k.org>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Tue, 5 Apr 2022 12:23:39 +0900
+Message-ID: <CAFr9PXkk=8HOxPwVvFRzqHZteRREWxSOOcdjrcOPe0d=9AW2yQ@mail.gmail.com>
+Subject: Re: [RFC PULL] remove arch/h8300
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "moderated list:H8/300 ARCHITECTURE" 
+        <uclinux-h8-devel@lists.sourceforge.jp>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>, Max Filippov <jcmvbkbc@gmail.com>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 412ed8f7fe7544bd92457711b4f992793655f88c  Merge tag 'v5.18-rc1'
+Hi Greg,
 
-elapsed time: 738m
+On Mon, 4 Apr 2022 at 22:42, Greg Ungerer <gerg@linux-m68k.org> wrote:
+> But we could consider the Dragonball support for removal. I keep it compiling,
+> but I don't use it and can't test that it actually works. Not sure that it
+> has been used for a very long time now. And I didn't even realize but its
+> serial driver (68328serial.c) was removed in 2015. No one seems too have
+> noticed and complained.
 
-configs tested: 121
-configs skipped: 3
+I noticed this and I am working on fixing it up for a new Dragonball
+homebrew machine.
+I'm trying to add a 68000 machine to QEMU to make the development
+easier because I'm currently waiting an hour or more for a kernel to
+load over serial.
+It might be a few months.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+It looked like 68328serial.c was removed because someone tried to
+clean it up and it was decided that no one was using it and it was
+best to delete it.
+My plan was to at some point send a series to fix up the issues with
+the Dragonball support, revert removing the serial driver and adding
+the patch that cleaned it up.
 
-gcc tested configs:
-arm64                               defconfig
-arm64                            allyesconfig
-arm                              allmodconfig
-arm                                 defconfig
-arm                              allyesconfig
-i386                 randconfig-c001-20220404
-arm                      integrator_defconfig
-arm                        realview_defconfig
-arm                     eseries_pxa_defconfig
-ia64                            zx1_defconfig
-arc                        nsimosci_defconfig
-m68k                          sun3x_defconfig
-sh                                  defconfig
-xtensa                              defconfig
-alpha                            alldefconfig
-powerpc                        cell_defconfig
-sh                          rsk7203_defconfig
-sh                            shmin_defconfig
-sh                          rsk7264_defconfig
-arm                        mini2440_defconfig
-sh                           se7780_defconfig
-m68k                          hp300_defconfig
-powerpc                      ep88xc_defconfig
-sh                               j2_defconfig
-arc                      axs103_smp_defconfig
-arm                       multi_v4t_defconfig
-m68k                            q40_defconfig
-arc                 nsimosci_hs_smp_defconfig
-arm                  randconfig-c002-20220404
-x86_64               randconfig-c001-20220404
-ia64                             allmodconfig
-ia64                             allyesconfig
-ia64                                defconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-csky                                defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-arc                                 defconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-s390                                defconfig
-s390                             allmodconfig
-parisc                              defconfig
-parisc64                            defconfig
-parisc                           allyesconfig
-s390                             allyesconfig
-sparc                               defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-powerpc                          allyesconfig
-x86_64               randconfig-a015-20220404
-x86_64               randconfig-a011-20220404
-x86_64               randconfig-a014-20220404
-x86_64               randconfig-a016-20220404
-x86_64               randconfig-a012-20220404
-x86_64               randconfig-a013-20220404
-i386                 randconfig-a014-20220404
-i386                 randconfig-a013-20220404
-i386                 randconfig-a016-20220404
-i386                 randconfig-a015-20220404
-i386                 randconfig-a011-20220404
-i386                 randconfig-a012-20220404
-arc                  randconfig-r043-20220404
-s390                 randconfig-r044-20220404
-riscv                randconfig-r042-20220404
-riscv                            allmodconfig
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-riscv                            allyesconfig
-riscv                               defconfig
-x86_64                    rhel-8.3-kselftests
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                         rhel-8.3-kunit
-x86_64                               rhel-8.3
+Cheers,
 
-clang tested configs:
-i386                 randconfig-c001-20220404
-x86_64               randconfig-c007-20220404
-powerpc              randconfig-c003-20220404
-riscv                randconfig-c006-20220404
-mips                 randconfig-c004-20220404
-arm                  randconfig-c002-20220404
-arm                          moxart_defconfig
-mips                   sb1250_swarm_defconfig
-powerpc                     pseries_defconfig
-s390                             alldefconfig
-powerpc                     mpc512x_defconfig
-arm                        multi_v5_defconfig
-powerpc                        icon_defconfig
-arm                        magician_defconfig
-powerpc                   microwatt_defconfig
-x86_64               randconfig-a006-20220404
-x86_64               randconfig-a002-20220404
-x86_64               randconfig-a001-20220404
-x86_64               randconfig-a005-20220404
-x86_64               randconfig-a003-20220404
-x86_64               randconfig-a004-20220404
-i386                 randconfig-a001-20220404
-i386                 randconfig-a006-20220404
-i386                 randconfig-a002-20220404
-i386                 randconfig-a004-20220404
-i386                 randconfig-a003-20220404
-i386                 randconfig-a005-20220404
-hexagon              randconfig-r045-20220404
-hexagon              randconfig-r041-20220404
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Daniel
