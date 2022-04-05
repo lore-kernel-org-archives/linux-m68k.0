@@ -2,33 +2,33 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89B23C433F5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 725CCC4321E
 	for <linux-m68k@archiver.kernel.org>; Tue,  5 Apr 2022 11:08:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237930AbiDELIz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 5 Apr 2022 07:08:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
+        id S232516AbiDELI4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 5 Apr 2022 07:08:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232516AbiDEJrw (ORCPT
+        with ESMTP id S1357939AbiDEK1a (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 5 Apr 2022 05:47:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B43CDC
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  5 Apr 2022 02:34:04 -0700 (PDT)
+        Tue, 5 Apr 2022 06:27:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E718F9A1
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  5 Apr 2022 03:11:23 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D65E2616D4;
-        Tue,  5 Apr 2022 09:34:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0F89C385A3;
-        Tue,  5 Apr 2022 09:34:02 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A71606167E;
+        Tue,  5 Apr 2022 10:11:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90121C385A0;
+        Tue,  5 Apr 2022 10:11:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1649151243;
-        bh=g/yUqTevTV8GciHyd7YeKtTHAieQUSEzbtaW7BPaBVs=;
+        s=korg; t=1649153482;
+        bh=MV1itl6rqfL9cQ+0uC0MpvC4tCW7XXeVrtbCRx+bwZE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WIky5rH09kW9WaRUayObFmHUlesS4DFLu97ryPPnJvWpGJ+raXX9uFhyeoXi2prWX
-         k4kTTsgMJc5trNz3ZFTEMwctK3B7unBtsT9wueJ3BeKA2ro+k0vzNEOuL4dVmD5otL
-         CmHsL72yU3ckjPN/FeLIm3Tji85Y+Pw9ItgUNc4s=
+        b=dV7bXOc155cHJiJ3gqHIXjHFhGI2R6pvwxxDYFf9/K6gnOcxtYlortLB5kQplUkZm
+         mN1DIE06hiTtj6hRa97W8BeKfEOv/PnFUEIAqatPlCzIn1ZvjSMGpCIAUVW0hEPCrC
+         ptIeFesUzovf2HEqTU+B21GrX2MTqwF0V3WPcO3c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -40,12 +40,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 346/913] m68k: coldfire/device.c: only build for MCF_EDMA when h/w macros are defined
-Date:   Tue,  5 Apr 2022 09:23:28 +0200
-Message-Id: <20220405070350.216701790@linuxfoundation.org>
+Subject: [PATCH 5.10 236/599] m68k: coldfire/device.c: only build for MCF_EDMA when h/w macros are defined
+Date:   Tue,  5 Apr 2022 09:28:50 +0200
+Message-Id: <20220405070305.863022487@linuxfoundation.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220405070339.801210740@linuxfoundation.org>
-References: <20220405070339.801210740@linuxfoundation.org>
+In-Reply-To: <20220405070258.802373272@linuxfoundation.org>
+References: <20220405070258.802373272@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -99,7 +99,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
-index 0386252e9d04..4218750414bb 100644
+index 59f7dfe50a4d..a055616942a1 100644
 --- a/arch/m68k/coldfire/device.c
 +++ b/arch/m68k/coldfire/device.c
 @@ -480,7 +480,7 @@ static struct platform_device mcf_i2c5 = {
@@ -120,7 +120,7 @@ index 0386252e9d04..4218750414bb 100644
  
  #ifdef MCFSDHC_BASE
  static struct mcf_esdhc_platform_data mcf_esdhc_data = {
-@@ -651,7 +651,7 @@ static struct platform_device *mcf_devices[] __initdata = {
+@@ -610,7 +610,7 @@ static struct platform_device *mcf_devices[] __initdata = {
  	&mcf_i2c5,
  #endif
  #endif
