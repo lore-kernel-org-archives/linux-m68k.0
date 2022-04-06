@@ -2,122 +2,261 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44E78C4332F
-	for <linux-m68k@archiver.kernel.org>; Wed,  6 Apr 2022 06:06:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B06F9C4332F
+	for <linux-m68k@archiver.kernel.org>; Wed,  6 Apr 2022 09:49:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230098AbiDFGCP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 6 Apr 2022 02:02:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56098 "EHLO
+        id S235207AbiDFJvC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 6 Apr 2022 05:51:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2361765AbiDFEcG (ORCPT
+        with ESMTP id S1444189AbiDFJtT (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 6 Apr 2022 00:32:06 -0400
-X-Greylist: delayed 1471 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Apr 2022 17:36:47 PDT
-Received: from gateway22.websitewelcome.com (gateway22.websitewelcome.com [192.185.47.228])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 640C01BA441
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  5 Apr 2022 17:36:46 -0700 (PDT)
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway22.websitewelcome.com (Postfix) with ESMTP id 5E91114442
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  5 Apr 2022 19:12:14 -0500 (CDT)
-Received: from 162-215-252-75.unifiedlayer.com ([208.91.199.152])
-        by cmsmtp with SMTP
-        id btHSnmuk622u3btHSnrU2y; Tue, 05 Apr 2022 19:12:14 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=roeck-us.net; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:Subject:From:References:Cc:To:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=V34eNda++WlmGe+ZWCeqNhmRnpIlO8Tl6u7MFmXbztQ=; b=EbiyndnK4uoLFl5VhRQPS09z1S
-        /yRo1ynqYNlThAxczGu1FqKJTEXcc6AlPe6vEEB8L3UVFwZAS9dtqH7Jnyvy/mwSfokN2SkZGR/WH
-        A9JnbadYt3+rk4viOgIydnS0VTdSrBCt1CQFKo+FlZTvhcxjmneFzuATMeBe2BP4IpqDXacIFqK3W
-        lzKjDTRgLJaD+jht1thLujSL4f3L5cH29a1ZqfO6TsXeNhqkAMo1tfbdhxVkjzJ5Bs4XamjDKoC4G
-        QJzf5JMTZ9GE9dR2FWF4iun9VTKFbPPCAGFbHWTKAHHkNrt0BqRy2St1XGwRQlzmHx6Xr01d9Jpev
-        Ot3jyP4A==;
-Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:54732)
-        by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@roeck-us.net>)
-        id 1nbtHR-000mos-4N; Wed, 06 Apr 2022 00:12:13 +0000
-Message-ID: <53e24114-fe48-91aa-1b76-78b12dfcdf4e@roeck-us.net>
-Date:   Tue, 5 Apr 2022 17:12:10 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Content-Language: en-US
+        Wed, 6 Apr 2022 05:49:19 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98CB730CF3E
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  5 Apr 2022 23:22:30 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id n19-20020a9d7113000000b005cd9cff76c3so1128255otj.1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 05 Apr 2022 23:22:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=yiBEe+9/yoFS8QNsq6W7R4IU+UE1TYnjoeST9R9+qNE=;
+        b=KUT/9NgMmzw9YQOEqgdiz670pyxDVPMbjQx3otCmSMt/gdzMHcoLFm2T972RH9JEEJ
+         wzNHJBqSYPoYUG9rbbh+wEnWgQz2amBs1F824UgSA/7sEZRbiWnAt5T/e4pKu9i+sJPu
+         VIlArAJUfWGx8iav+WnwxfS8HQRxOf1Sb95eTUgxXjP78YPWXlpAgJq3PJYqs9VFWk4Y
+         GPWom4esroTnLycQhVNIiHLZxKlkmBZZ/hOXoLKhxBA0FRZhxpg2jMKcBK1CsEOQbRc6
+         I8RDZCVDIKuXUTS8kRhVn5wEBq0KFWZTuzTAB19k2VtQez5WFi8D9mCEuQPI8dkDMAfm
+         LTqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=yiBEe+9/yoFS8QNsq6W7R4IU+UE1TYnjoeST9R9+qNE=;
+        b=l2+g61rTqMfuAsJ4bUi2mXVqgFBVRs0HKEEa2u9yY1UlKIk66v9R6EBdy7X2DaLHtf
+         JdH7vtrfyEwH59QYKavjv5PJwaSS4egbAfNbfY4h6Y8Bjo2tSIVxW05D0lbscZ/DHlof
+         48HKdvmPG6tc+YCFL1nhn/dpXEhVQn0TTBqYTd3ktWwdd48Z2otSxyo+c1P5uF8kUALn
+         dsnO+pF7658lUMbPqF371OJt45jWD5et4jySrjKiEeKBpzgDH7iVTwEGvPJ2OE/sDrs6
+         TUiYHmBjZPVu5YJxDbkA9JRFnF7GfR/t9xkCf5PbJUEFlLtYjP5kCEfUqYuXgMdASyJY
+         p8rg==
+X-Gm-Message-State: AOAM531PGfpVjdfkUkNURf5MY5JmCo9f7tUSr+5VSrB/3MEPRYW7sWR/
+        33uz4MWp5XvFBKJoMRnxJWW7cA==
+X-Google-Smtp-Source: ABdhPJxM2+O1/dslWgPqHrxOi+Em6zSBu8nEJlKSSUqBOQa0w/3S7eEJuGm4nvupcGs+sNGkQQKeCA==
+X-Received: by 2002:a9d:426:0:b0:5cb:5837:bfc0 with SMTP id 35-20020a9d0426000000b005cb5837bfc0mr2509606otc.305.1649226149595;
+        Tue, 05 Apr 2022 23:22:29 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id s125-20020acaa983000000b002ecdbaf98fesm6067819oie.34.2022.04.05.23.22.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Apr 2022 23:22:29 -0700 (PDT)
+Date:   Tue, 5 Apr 2022 23:22:10 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
 To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "moderated list:H8/300 ARCHITECTURE" 
-        <uclinux-h8-devel@lists.sourceforge.jp>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>, Max Filippov <jcmvbkbc@gmail.com>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+cc:     Patrice CHOTARD <patrice.chotard@foss.st.com>,
+        Hugh Dickins <hughd@googl.com>, mpatocka@redhat.com,
+        lczerner@redhat.com, djwong@kernel.org, hch@lst.de,
+        zkabelac@redhat.com, miklos@szeredi.hu, bp@suse.de,
+        akpm@linux-foundation.org,
+        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
+        Valentin CARON - foss <valentin.caron@foss.st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Greg Ungerer <gerg@linux-m68k.org>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-References: <Yib9F5SqKda/nH9c@infradead.org>
- <CAK8P3a1dUVsZzhAe81usLSkvH29zHgiV9fhEkWdq7_W+nQBWbg@mail.gmail.com>
- <YkmWh2tss8nXKqc5@infradead.org>
- <CAK8P3a0QdFOJbM72geYTWOKumeKPSCVD8Nje5pBpZWazX0GEnQ@mail.gmail.com>
- <20220405212653.GA2482665@roeck-us.net>
- <CAK8P3a396EkfQtmkwo80eB9i7F37S=mvrHtCLXhGDhHBczYK3g@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [RFC PULL] remove arch/h8300
-In-Reply-To: <CAK8P3a396EkfQtmkwo80eB9i7F37S=mvrHtCLXhGDhHBczYK3g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
-X-AntiAbuse: Original Domain - lists.linux-m68k.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roeck-us.net
-X-BWhitelist: no
-X-Source-IP: 108.223.40.66
-X-Source-L: No
-X-Exim-ID: 1nbtHR-000mos-4N
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net [108.223.40.66]:54732
-X-Source-Auth: linux@roeck-us.net
-X-Email-Count: 4
-X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Russell King <linux@armlinux.org.uk>
+Subject: Re: Regression with v5.18-rc1 tag on STM32F7 and STM32H7 based
+ boards
+In-Reply-To: <95a0d1dd-bcce-76c7-97b9-8374c9913321@google.com>
+Message-ID: <7f2993a9-adc5-2b90-9218-c4ca8239c3e@google.com>
+References: <481a13f8-d339-f726-0418-ab4258228e91@foss.st.com> <95a0d1dd-bcce-76c7-97b9-8374c9913321@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 4/5/22 15:01, Arnd Bergmann wrote:
-> On Tue, Apr 5, 2022 at 11:26 PM Guenter Roeck <linux@roeck-us.net> wrote:
->> On Mon, Apr 04, 2022 at 03:07:06PM +0200, Arnd Bergmann wrote:
->>>
->>> Should we garbage-collect some of the other nommu platforms where
->>> we're here? Some of them are just as stale:
->>>
->>> 1. xtensa nommu has does not compile in mainline and as far as I can
->>> tell never did
->>>     (there was https://github.com/jcmvbkbc/linux-xtensa/tree/xtensa-5.6-esp32,
->>> which
->>>     worked at some point, but I don't think there was enough interest
->>> to get in merged)
->>
->> Hmm, I build and test nommu_kc705_defconfig in my test system.
-> 
-> What toolchain do you use for this? Max already pointed out my mistake
-> regarding xtensa, which I thought does not build at all, but just needs
-> a toolchain specific to the cpu.
-> 
+Asking Arnd and others below: should noMMU arches have a good ZERO_PAGE?
 
-Home-built using buildroot. I have three different xtensa toolchains
-(de212, dc232b, and dc233c). The toolchain for kc705_nommu needs the
-de212 overlay; I think Max pointed to to the information needed
-to build the compiler. Buildroot has the "XTENSA_OVERLAY_FILE"
-option to specify the compiler overlay file for the target.
+On Tue, 5 Apr 2022, Hugh Dickins wrote:
+> On Tue, 5 Apr 2022, Patrice CHOTARD wrote:
+> > 
+> > We found an issue with last kernel tag v5.18-rc1 on stm32f746-disco and 
+> > stm32h743-disco boards (ARMV7-M SoCs).
+> > 
+> > Kernel hangs when executing SetPageUptodate(ZERO_PAGE(0)); in mm/filemap.c.
+> > 
+> > By reverting commit 56a8c8eb1eaf ("tmpfs: do not allocate pages on read"), 
+> > kernel boots without any issue.
+> 
+> Sorry about that, thanks a lot for finding.
+> 
+> I see that arch/arm/configs/stm32_defconfig says CONFIG_MMU is not set:
+> please confirm that is the case here.
+> 
+> Yes, it looks as if NOMMU platforms are liable to have a bogus (that's my
+> reading, but it may be unfair) definition for ZERO_PAGE(vaddr), and I was
+> walking on ice to touch it without regard for !CONFIG_MMU.
+> 
+> CONFIG_SHMEM depends on CONFIG_MMU, so that PageUptodate is only needed
+> when CONFIG_MMU.
+> 
+> Easily fixed by an #ifdef CONFIG_MMU there in mm/filemap.c, but I'll hunt
+> around (again) for a better place to do it - though I won't want to touch
+> all the architectures for it.  I'll post later today.
 
-Guenter
+I could put #ifdef CONFIG_MMU around the SetPageUptodate(ZERO_PAGE(0))
+added to pagecache_init(); or if that's considered distasteful, I could
+skip making it potentially useful to other filesystems, revert the change
+to pagecache_init(), and just do it in mm/shmem.c's CONFIG_SHMEM (hence
+CONFIG_MMU) instance of shmem_init().
+
+But I wonder if it's safe for noMMU architectures to go on without a
+working ZERO_PAGE(0).  It has uses scattered throughout the tree, in
+drivers, fs, crypto and more, and it's not at all obvious (to me) that
+they all depend on CONFIG_MMU.  Some might cause (unreported) crashes,
+some might use an unzeroed page in place of a pageful of zeroes.
+
+arm noMMU and h8300 noMMU and m68k noMMU each has
+#define ZERO_PAGE(vaddr)	(virt_to_page(0))
+which seems riskily wrong to me.
+
+h8300 and m68k actually go to the trouble of allocating an empty_zero_page
+for this, but then forget to link it up to the ZERO_PAGE(vaddr) definition,
+which is what all the common code uses.
+
+arm noMMU does not presently allocate such a page; and I do not feel
+entitled to steal a page from arm noMMU platforms, for a hypothetical
+case, without agreement.
+
+But here's an unbuilt and untested patch for consideration - which of
+course should be split in three if agreed (and perhaps the h8300 part
+quietly forgotten if h8300 is already on its way out).
+
+(Yes, arm uses empty_zero_page in a different way from all the other
+architectures; but that's okay, and I think arm's way, with virt_to_page()
+already baked in, is better than the others; but I've no wish to get into
+changing them.)
+
+Patrice, does this patch build and run for you? I have no appreciation
+of arm early startup issues, and may have got it horribly wrong.
+
+Thanks,
+Hugh
+
+ arch/arm/include/asm/pgtable-nommu.h |    3 ++-
+ arch/arm/mm/nommu.c                  |   16 ++++++++++++++++
+ arch/h8300/include/asm/pgtable.h     |    6 +++++-
+ arch/h8300/mm/init.c                 |    5 +++--
+ arch/m68k/include/asm/pgtable_no.h   |    5 ++++-
+ 5 files changed, 30 insertions(+), 5 deletions(-)
+
+--- a/arch/arm/include/asm/pgtable-nommu.h
++++ b/arch/arm/include/asm/pgtable-nommu.h
+@@ -48,7 +48,8 @@ typedef pte_t *pte_addr_t;
+  * ZERO_PAGE is a global shared page that is always zero: used
+  * for zero-mapped memory areas etc..
+  */
+-#define ZERO_PAGE(vaddr)	(virt_to_page(0))
++extern struct page *empty_zero_page;
++#define ZERO_PAGE(vaddr)	(empty_zero_page)
+ 
+ /*
+  * Mark the prot value as uncacheable and unbufferable.
+--- a/arch/arm/mm/nommu.c
++++ b/arch/arm/mm/nommu.c
+@@ -24,6 +24,13 @@
+ 
+ #include "mm.h"
+ 
++/*
++ * empty_zero_page is a special page that is used for
++ * zero-initialized data and COW.
++ */
++struct page *empty_zero_page;
++EXPORT_SYMBOL(empty_zero_page);
++
+ unsigned long vectors_base;
+ 
+ #ifdef CONFIG_ARM_MPU
+@@ -148,9 +155,18 @@ void __init adjust_lowmem_bounds(void)
+  */
+ void __init paging_init(const struct machine_desc *mdesc)
+ {
++	void *zero_page;
++
+ 	early_trap_init((void *)vectors_base);
+ 	mpu_setup();
+ 	bootmem_init();
++
++	zero_page = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
++	if (!zero_page)
++		panic("%s: Failed to allocate %lu bytes align=0x%lx\n",
++		      __func__, PAGE_SIZE, PAGE_SIZE);
++	empty_zero_page = virt_to_page(zero_page);
++	flush_dcache_page(empty_zero_page);
+ }
+ 
+ /*
+--- a/arch/h8300/include/asm/pgtable.h
++++ b/arch/h8300/include/asm/pgtable.h
+@@ -19,11 +19,15 @@ extern void paging_init(void);
+ 
+ static inline int pte_file(pte_t pte) { return 0; }
+ #define swapper_pg_dir ((pgd_t *) 0)
++
++/* zero page used for uninitialized stuff */
++extern void *empty_zero_page;
++
+ /*
+  * ZERO_PAGE is a global shared page that is always zero: used
+  * for zero-mapped memory areas etc..
+  */
+-#define ZERO_PAGE(vaddr)	(virt_to_page(0))
++#define ZERO_PAGE(vaddr)	(virt_to_page(empty_zero_page))
+ 
+ /*
+  * These would be in other places but having them here reduces the diffs.
+--- a/arch/h8300/mm/init.c
++++ b/arch/h8300/mm/init.c
+@@ -41,7 +41,8 @@
+  * ZERO_PAGE is a special page that is used for zero-initialized
+  * data and COW.
+  */
+-unsigned long empty_zero_page;
++void *empty_zero_page;
++EXPORT_SYMBOL(empty_zero_page);
+ 
+ /*
+  * paging_init() continues the virtual memory environment setup which
+@@ -65,7 +66,7 @@ void __init paging_init(void)
+ 	 * Initialize the bad page table and bad page to point
+ 	 * to a couple of allocated pages.
+ 	 */
+-	empty_zero_page = (unsigned long)memblock_alloc(PAGE_SIZE, PAGE_SIZE);
++	empty_zero_page = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
+ 	if (!empty_zero_page)
+ 		panic("%s: Failed to allocate %lu bytes align=0x%lx\n",
+ 		      __func__, PAGE_SIZE, PAGE_SIZE);
+--- a/arch/m68k/include/asm/pgtable_no.h
++++ b/arch/m68k/include/asm/pgtable_no.h
+@@ -38,11 +38,14 @@ extern void paging_init(void);
+ #define __pte_to_swp_entry(pte)	((swp_entry_t) { pte_val(pte) })
+ #define __swp_entry_to_pte(x)	((pte_t) { (x).val })
+ 
++/* zero page used for uninitialized stuff */
++extern void *empty_zero_page;
++
+ /*
+  * ZERO_PAGE is a global shared page that is always zero: used
+  * for zero-mapped memory areas etc..
+  */
+-#define ZERO_PAGE(vaddr)	(virt_to_page(0))
++#define ZERO_PAGE(vaddr)	(virt_to_page(empty_zero_page))
+ 
+ /*
+  * All 32bit addresses are effectively valid for vmalloc...
