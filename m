@@ -2,272 +2,244 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9A06C433F5
-	for <linux-m68k@archiver.kernel.org>; Wed,  6 Apr 2022 11:51:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E745EC433EF
+	for <linux-m68k@archiver.kernel.org>; Wed,  6 Apr 2022 14:21:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230129AbiDFLx1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 6 Apr 2022 07:53:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55048 "EHLO
+        id S229541AbiDFOXA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 6 Apr 2022 10:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230487AbiDFLw1 (ORCPT
+        with ESMTP id S234557AbiDFOWY (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 6 Apr 2022 07:52:27 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4E41578D9
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  6 Apr 2022 00:02:05 -0700 (PDT)
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 2361wpMD012380;
-        Wed, 6 Apr 2022 09:01:19 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=PdnnQJRXavXSh3CmzKzX/kx5oqJ1f3QD+6IefacJ2r0=;
- b=w/H69w7mAuCvvoP9FW0DmISJg6T2wcSTdeCf2aKfpS+Eu6cNrdxe5ctmWuHoEX2dlqMF
- Rb7d7JcvxFLUy1ZFas6e2NdNizvpStG9lLIvmhJAm2ahv8i61mlr52hnGNWSAz/lSD5z
- PbiUkApo3yn2ZUmp6No2Yq1sDZi0Y7LEMpB3/hygQfwqYbplNKKKrniwiSAwnu9qdev+
- zQies66XuPIHQIpUG/MidMlvbZkjpLVQzZ9g2PmnKJkxnda1nInqaeY/5O3M7lHkWu6X
- JOoqqyrwuNR1maXyA/lpLOwWc1SVP3p60Hi9kWt9aNRl6EKMrojMks3p4CDTBg238NvP lw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3f6du0uh1x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Apr 2022 09:01:19 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5CE6110002A;
-        Wed,  6 Apr 2022 09:01:15 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4ED00222227;
-        Wed,  6 Apr 2022 09:01:15 +0200 (CEST)
-Received: from [10.201.21.201] (10.75.127.48) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.20; Wed, 6 Apr
- 2022 09:01:14 +0200
-Message-ID: <3695dc2a-7518-dee4-a647-821c7cda4a0f@foss.st.com>
-Date:   Wed, 6 Apr 2022 09:01:13 +0200
+        Wed, 6 Apr 2022 10:22:24 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BDE3919C4
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  6 Apr 2022 03:27:55 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id w4so2463441wrg.12
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 06 Apr 2022 03:27:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=BwJ8SAExrW9RROE3H/KoFKcCEjo9fX//swBP0z59ayk=;
+        b=DJsXVuR9LnT4MsrQXyeJ1YXGm1NrYFUF/KXlDFJg0R5rzk9CzQZcmR3jlrF8manMtp
+         ASXneeEVMU4q6+Jap7hwKjd4Be+CLYwPoowyh44dFBJkGy8S4RY19sE1wUe9r62ycByT
+         HOYz/2vRmbkG1CR3+hZqB0h4vUVzlT+OUXPMLAfbeK8tMrsozQf93/f8Xnd16/eMX8BO
+         YHOGa//5Dl8yEeXXBuZTnzd5FH35Qcy0XRDxYTtyvrKUJ2GQNOlSLgAdOJSTyVqCgeQb
+         qDTlMkoSMtO0BwzvIICzlSHb7wRbClWSNEOn12+h1VwnTWM7bReTHIV53mTDlmUbJuMU
+         fMqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=BwJ8SAExrW9RROE3H/KoFKcCEjo9fX//swBP0z59ayk=;
+        b=FlVy8VJZ05nDr4WvpJLaax9SiNER5jR+Bd/CurggkCB6PdBnQrdaW4+qn61oIFHax1
+         +q+YObrciOvnk84aDwqTbfLOc2xsVwo2kl3pyyFDUty4jCu5+k+B//8WXPPdvFlBMvPE
+         kd1aTfqgG2YsVRB4fsWOSQ0O4Uv7rRsh7cvcpjfPosKaXZaIPIVsPc/LAbIttkmRDmIc
+         C0TV3TmfOF0M/UHuj79kaMJ/npKjfvFFEWYfZBFpLZcdSrmhpW0JC88+9J2HMDbI8k1P
+         pCqEipPR0uZ7zdQYObttIaNt9RvNTItvOjjWQxEbCilfLtJ1NxJ9WEHRtmIGCT/3Nr7v
+         plSQ==
+X-Gm-Message-State: AOAM532SJz/AYOrQxnbob3i+uOMDbUCfwfybajEo6bjBE+ESMUtqdXXF
+        nyQAk1GTUz9cAVWzbOdZ0d41Vw==
+X-Google-Smtp-Source: ABdhPJxjZWm6A/FkxhLV3pL1XPdURvb/xkERbt+nv44rDcPej9lBzoqljxAT2Qz0N+zvvuec3B4ykA==
+X-Received: by 2002:a5d:6dad:0:b0:204:182a:e601 with SMTP id u13-20020a5d6dad000000b00204182ae601mr6018322wrs.262.1649240874318;
+        Wed, 06 Apr 2022 03:27:54 -0700 (PDT)
+Received: from ?IPV6:2a01:e34:ed2f:f020:261f:c14c:d23b:d177? ([2a01:e34:ed2f:f020:261f:c14c:d23b:d177])
+        by smtp.googlemail.com with ESMTPSA id bg20-20020a05600c3c9400b0037fa5c422c8sm5011797wmb.48.2022.04.06.03.27.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Apr 2022 03:27:52 -0700 (PDT)
+Message-ID: <768c4fe5-fd36-8e4a-a9c2-1c799af3ed44@linaro.org>
+Date:   Wed, 6 Apr 2022 12:27:48 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.7.0
-Subject: Re: Regression with v5.18-rc1 tag on STM32F7 and STM32H7 based boards
+Subject: Re: [PATCH v15 4/5] clocksource/drivers: Add a goldfish-timer
+ clocksource
 Content-Language: en-US
-To:     Hugh Dickins <hughd@google.com>, Arnd Bergmann <arnd@arndb.de>
-CC:     Hugh Dickins <hughd@googl.com>, <mpatocka@redhat.com>,
-        <lczerner@redhat.com>, <djwong@kernel.org>, <hch@lst.de>,
-        <zkabelac@redhat.com>, <miklos@szeredi.hu>, <bp@suse.de>,
-        <akpm@linux-foundation.org>,
-        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
-        Valentin CARON - foss <valentin.caron@foss.st.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-arch@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <uclinux-h8-devel@lists.sourceforge.jp>,
-        <linux-m68k@lists.linux-m68k.org>,
+To:     Laurent Vivier <laurent@vivier.eu>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-m68k@lists.linux-m68k.org,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Russell King <linux@armlinux.org.uk>
-References: <481a13f8-d339-f726-0418-ab4258228e91@foss.st.com>
- <95a0d1dd-bcce-76c7-97b9-8374c9913321@google.com>
- <7f2993a9-adc5-2b90-9218-c4ca8239c3e@google.com>
-From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
-In-Reply-To: <7f2993a9-adc5-2b90-9218-c4ca8239c3e@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-04-06_02,2022-04-05_01,2022-02-23_01
+        Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <john.stultz@linaro.org>,
+        linux-kernel@vger.kernel.org
+References: <20220310090048.1933020-1-laurent@vivier.eu>
+ <20220310090048.1933020-5-laurent@vivier.eu>
+ <f87deb83-7f1f-5acf-b6c6-040fcd02c0be@vivier.eu>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <f87deb83-7f1f-5acf-b6c6-040fcd02c0be@vivier.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hugh, 
 
-On 4/6/22 08:22, Hugh Dickins wrote:
-> Asking Arnd and others below: should noMMU arches have a good ZERO_PAGE?
-> 
-> On Tue, 5 Apr 2022, Hugh Dickins wrote:
->> On Tue, 5 Apr 2022, Patrice CHOTARD wrote:
->>>
->>> We found an issue with last kernel tag v5.18-rc1 on stm32f746-disco and 
->>> stm32h743-disco boards (ARMV7-M SoCs).
->>>
->>> Kernel hangs when executing SetPageUptodate(ZERO_PAGE(0)); in mm/filemap.c.
->>>
->>> By reverting commit 56a8c8eb1eaf ("tmpfs: do not allocate pages on read"), 
->>> kernel boots without any issue.
->>
->> Sorry about that, thanks a lot for finding.
->>
->> I see that arch/arm/configs/stm32_defconfig says CONFIG_MMU is not set:
->> please confirm that is the case here.
->>
->> Yes, it looks as if NOMMU platforms are liable to have a bogus (that's my
->> reading, but it may be unfair) definition for ZERO_PAGE(vaddr), and I was
->> walking on ice to touch it without regard for !CONFIG_MMU.
->>
->> CONFIG_SHMEM depends on CONFIG_MMU, so that PageUptodate is only needed
->> when CONFIG_MMU.
->>
->> Easily fixed by an #ifdef CONFIG_MMU there in mm/filemap.c, but I'll hunt
->> around (again) for a better place to do it - though I won't want to touch
->> all the architectures for it.  I'll post later today.
-> 
-> I could put #ifdef CONFIG_MMU around the SetPageUptodate(ZERO_PAGE(0))
-> added to pagecache_init(); or if that's considered distasteful, I could
-> skip making it potentially useful to other filesystems, revert the change
-> to pagecache_init(), and just do it in mm/shmem.c's CONFIG_SHMEM (hence
-> CONFIG_MMU) instance of shmem_init().
-> 
-> But I wonder if it's safe for noMMU architectures to go on without a
-> working ZERO_PAGE(0).  It has uses scattered throughout the tree, in
-> drivers, fs, crypto and more, and it's not at all obvious (to me) that
-> they all depend on CONFIG_MMU.  Some might cause (unreported) crashes,
-> some might use an unzeroed page in place of a pageful of zeroes.
-> 
-> arm noMMU and h8300 noMMU and m68k noMMU each has
-> #define ZERO_PAGE(vaddr)	(virt_to_page(0))
-> which seems riskily wrong to me.
-> 
-> h8300 and m68k actually go to the trouble of allocating an empty_zero_page
-> for this, but then forget to link it up to the ZERO_PAGE(vaddr) definition,
-> which is what all the common code uses.
-> 
-> arm noMMU does not presently allocate such a page; and I do not feel
-> entitled to steal a page from arm noMMU platforms, for a hypothetical
-> case, without agreement.
-> 
-> But here's an unbuilt and untested patch for consideration - which of
-> course should be split in three if agreed (and perhaps the h8300 part
-> quietly forgotten if h8300 is already on its way out).
-> 
-> (Yes, arm uses empty_zero_page in a different way from all the other
-> architectures; but that's okay, and I think arm's way, with virt_to_page()
-> already baked in, is better than the others; but I've no wish to get into
-> changing them.)
-> 
-> Patrice, does this patch build and run for you? I have no appreciation
-> of arm early startup issues, and may have got it horribly wrong.
+Hi Laurent,
 
-This patch is okay on my side on both boards (STM32F7 and STM32H7), boot are OK.
 
-Thanks for your reactivity ;-)
-Patrice
-
+On 01/04/2022 12:20, Laurent Vivier wrote:
+> 
+> Daniel ?
 > 
 > Thanks,
-> Hugh
+> Laurent
 > 
->  arch/arm/include/asm/pgtable-nommu.h |    3 ++-
->  arch/arm/mm/nommu.c                  |   16 ++++++++++++++++
->  arch/h8300/include/asm/pgtable.h     |    6 +++++-
->  arch/h8300/mm/init.c                 |    5 +++--
->  arch/m68k/include/asm/pgtable_no.h   |    5 ++++-
->  5 files changed, 30 insertions(+), 5 deletions(-)
-> 
-> --- a/arch/arm/include/asm/pgtable-nommu.h
-> +++ b/arch/arm/include/asm/pgtable-nommu.h
-> @@ -48,7 +48,8 @@ typedef pte_t *pte_addr_t;
->   * ZERO_PAGE is a global shared page that is always zero: used
->   * for zero-mapped memory areas etc..
->   */
-> -#define ZERO_PAGE(vaddr)	(virt_to_page(0))
-> +extern struct page *empty_zero_page;
-> +#define ZERO_PAGE(vaddr)	(empty_zero_page)
->  
->  /*
->   * Mark the prot value as uncacheable and unbufferable.
-> --- a/arch/arm/mm/nommu.c
-> +++ b/arch/arm/mm/nommu.c
-> @@ -24,6 +24,13 @@
->  
->  #include "mm.h"
->  
-> +/*
-> + * empty_zero_page is a special page that is used for
-> + * zero-initialized data and COW.
-> + */
-> +struct page *empty_zero_page;
-> +EXPORT_SYMBOL(empty_zero_page);
-> +
->  unsigned long vectors_base;
->  
->  #ifdef CONFIG_ARM_MPU
-> @@ -148,9 +155,18 @@ void __init adjust_lowmem_bounds(void)
->   */
->  void __init paging_init(const struct machine_desc *mdesc)
->  {
-> +	void *zero_page;
-> +
->  	early_trap_init((void *)vectors_base);
->  	mpu_setup();
->  	bootmem_init();
-> +
-> +	zero_page = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
-> +	if (!zero_page)
-> +		panic("%s: Failed to allocate %lu bytes align=0x%lx\n",
-> +		      __func__, PAGE_SIZE, PAGE_SIZE);
-> +	empty_zero_page = virt_to_page(zero_page);
-> +	flush_dcache_page(empty_zero_page);
->  }
->  
->  /*
-> --- a/arch/h8300/include/asm/pgtable.h
-> +++ b/arch/h8300/include/asm/pgtable.h
-> @@ -19,11 +19,15 @@ extern void paging_init(void);
->  
->  static inline int pte_file(pte_t pte) { return 0; }
->  #define swapper_pg_dir ((pgd_t *) 0)
-> +
-> +/* zero page used for uninitialized stuff */
-> +extern void *empty_zero_page;
-> +
->  /*
->   * ZERO_PAGE is a global shared page that is always zero: used
->   * for zero-mapped memory areas etc..
->   */
-> -#define ZERO_PAGE(vaddr)	(virt_to_page(0))
-> +#define ZERO_PAGE(vaddr)	(virt_to_page(empty_zero_page))
->  
->  /*
->   * These would be in other places but having them here reduces the diffs.
-> --- a/arch/h8300/mm/init.c
-> +++ b/arch/h8300/mm/init.c
-> @@ -41,7 +41,8 @@
->   * ZERO_PAGE is a special page that is used for zero-initialized
->   * data and COW.
->   */
-> -unsigned long empty_zero_page;
-> +void *empty_zero_page;
-> +EXPORT_SYMBOL(empty_zero_page);
->  
->  /*
->   * paging_init() continues the virtual memory environment setup which
-> @@ -65,7 +66,7 @@ void __init paging_init(void)
->  	 * Initialize the bad page table and bad page to point
->  	 * to a couple of allocated pages.
->  	 */
-> -	empty_zero_page = (unsigned long)memblock_alloc(PAGE_SIZE, PAGE_SIZE);
-> +	empty_zero_page = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
->  	if (!empty_zero_page)
->  		panic("%s: Failed to allocate %lu bytes align=0x%lx\n",
->  		      __func__, PAGE_SIZE, PAGE_SIZE);
-> --- a/arch/m68k/include/asm/pgtable_no.h
-> +++ b/arch/m68k/include/asm/pgtable_no.h
-> @@ -38,11 +38,14 @@ extern void paging_init(void);
->  #define __pte_to_swp_entry(pte)	((swp_entry_t) { pte_val(pte) })
->  #define __swp_entry_to_pte(x)	((pte_t) { (x).val })
->  
-> +/* zero page used for uninitialized stuff */
-> +extern void *empty_zero_page;
-> +
->  /*
->   * ZERO_PAGE is a global shared page that is always zero: used
->   * for zero-mapped memory areas etc..
->   */
-> -#define ZERO_PAGE(vaddr)	(virt_to_page(0))
-> +#define ZERO_PAGE(vaddr)	(virt_to_page(empty_zero_page))
->  
->  /*
->   * All 32bit addresses are effectively valid for vmalloc...
+> Le 10/03/2022 à 10:00, Laurent Vivier a écrit :
+>> Add a clocksource based on the goldfish-rtc device.
+>>
+>> Move the timer register definition to <clocksource/timer-goldfish.h>
+>>
+>> This kernel implementation is based on the QEMU upstream implementation:
+>>
+>>     https://git.qemu.org/?p=qemu.git;a=blob_plain;f=hw/rtc/goldfish_rtc.c
+>>
+>> goldfish-timer is a high-precision signed 64-bit nanosecond timer.
+>> It is part of the 'goldfish' virtual hardware platform used to run
+>> some emulated Android systems under QEMU.
+>> This timer only supports oneshot event.
+>>
+>> Signed-off-by: Laurent Vivier <laurent@vivier.eu>
+>> ---
+>>   drivers/clocksource/Kconfig          |   7 ++
+>>   drivers/clocksource/Makefile         |   1 +
+>>   drivers/clocksource/timer-goldfish.c | 153 +++++++++++++++++++++++++++
+>>   drivers/rtc/rtc-goldfish.c           |  13 +--
+>>   include/clocksource/timer-goldfish.h |  31 ++++++
+>>   5 files changed, 193 insertions(+), 12 deletions(-)
+>>   create mode 100644 drivers/clocksource/timer-goldfish.c
+>>   create mode 100644 include/clocksource/timer-goldfish.h
+>>
+>> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+>> index cfb8ea0df3b1..94f00374cebb 100644
+>> --- a/drivers/clocksource/Kconfig
+>> +++ b/drivers/clocksource/Kconfig
+>> @@ -721,4 +721,11 @@ config MICROCHIP_PIT64B
+>>         modes and high resolution. It is used as a clocksource
+>>         and a clockevent.
+>> +config GOLDFISH_TIMER
+>> +    bool "Clocksource using goldfish-rtc"
+>> +    depends on M68K || COMPILE_TEST
+>> +    depends on RTC_DRV_GOLDFISH
+>> +    help
+>> +      Support for the timer/counter of goldfish-rtc
+>> +
+>>   endmenu
+>> diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
+>> index fa5f624eadb6..12f5d7e8cc2d 100644
+>> --- a/drivers/clocksource/Makefile
+>> +++ b/drivers/clocksource/Makefile
+>> @@ -89,3 +89,4 @@ obj-$(CONFIG_GX6605S_TIMER)        += timer-gx6605s.o
+>>   obj-$(CONFIG_HYPERV_TIMER)        += hyperv_timer.o
+>>   obj-$(CONFIG_MICROCHIP_PIT64B)        += timer-microchip-pit64b.o
+>>   obj-$(CONFIG_MSC313E_TIMER)        += timer-msc313e.o
+>> +obj-$(CONFIG_GOLDFISH_TIMER)        += timer-goldfish.o
+>> diff --git a/drivers/clocksource/timer-goldfish.c 
+>> b/drivers/clocksource/timer-goldfish.c
+>> new file mode 100644
+>> index 000000000000..0512d5eabc82
+>> --- /dev/null
+>> +++ b/drivers/clocksource/timer-goldfish.c
+>> @@ -0,0 +1,153 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +
+>> +#include <linux/interrupt.h>
+>> +#include <linux/ioport.h>
+>> +#include <linux/clocksource.h>
+>> +#include <linux/clockchips.h>
+>> +#include <linux/module.h>
+>> +#include <linux/slab.h>
+>> +#include <linux/goldfish.h>
+
+Not related to this patch: would it make sense to move it to linux/soc/... ?
+
+
+>> +#include <clocksource/timer-goldfish.h>
+>> +
+>> +struct goldfish_timer {
+>> +    struct clocksource cs;
+>> +    struct clock_event_device ced;
+>> +    struct resource res;
+>> +    void __iomem *base;
+>> +};
+>> +
+>> +static struct goldfish_timer *ced_to_gf(struct clock_event_device *ced)
+>> +{
+>> +    return container_of(ced, struct goldfish_timer, ced);
+>> +}
+>> +
+>> +static struct goldfish_timer *cs_to_gf(struct clocksource *cs)
+>> +{
+>> +    return container_of(cs, struct goldfish_timer, cs);
+>> +}
+>> +
+>> +static u64 goldfish_timer_read(struct clocksource *cs)
+>> +{
+>> +    struct goldfish_timer *timerdrv = cs_to_gf(cs);
+>> +    void __iomem *base = timerdrv->base;
+>> +    u32 time_low, time_high;
+>> +    u64 ticks;
+>> +
+>> +    /*
+>> +     * time_low: get low bits of current time and update time_high
+>> +     * time_high: get high bits of time at last time_low read
+>> +     */
+>> +    time_low = gf_ioread32(base + TIMER_TIME_LOW);
+>> +    time_high = gf_ioread32(base + TIMER_TIME_HIGH);
+
+There is a risk here to have the counter rolling over between low and 
+high reading, no ?
+
+If it is the case, you may consider using 32bits instead of 64bits, 
+otherwise handle the counter wrapping around.
+
+>> +    ticks = ((u64)time_high << 32) | time_low;
+>> +
+>> +    return ticks;
+>> +}
+>> +
+
+[ ... ]
+
+>> +/*
+>> + * TIMER_TIME_LOW     get low bits of current time and update 
+>> TIMER_TIME_HIGH
+>> + * TIMER_TIME_HIGH     get high bits of time at last TIMER_TIME_LOW read
+>> + * TIMER_ALARM_LOW     set low bits of alarm and activate it
+>> + * TIMER_ALARM_HIGH     set high bits of next alarm
+>> + * TIMER_IRQ_ENABLED     enable alarm interrupt
+>> + * TIMER_CLEAR_ALARM     disarm an existin alarm
+
+typo: s/existin/existing/
+
+>> + * TIMER_ALARM_STATUS     alarm status (running or not)
+>> + * TIMER_CLEAR_INTERRUPT clear interrupt
+>> + */
+>> +#define TIMER_TIME_LOW        0x00
+>> +#define TIMER_TIME_HIGH        0x04
+>> +#define TIMER_ALARM_LOW        0x08
+>> +#define TIMER_ALARM_HIGH    0x0c
+>> +#define TIMER_IRQ_ENABLED    0x10
+>> +#define TIMER_CLEAR_ALARM    0x14
+>> +#define TIMER_ALARM_STATUS    0x18
+>> +#define TIMER_CLEAR_INTERRUPT    0x1c
+>> +
+>> +extern int goldfish_timer_init(int irq, void __iomem *base);
+>> +
+>> +#endif /* _CLOCKSOURCE_TIMER_GOLDFISH_H */
+
+
+
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
