@@ -2,89 +2,93 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A44A2C433FE
-	for <linux-m68k@archiver.kernel.org>; Thu,  7 Apr 2022 06:18:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16148C4332F
+	for <linux-m68k@archiver.kernel.org>; Thu,  7 Apr 2022 07:17:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240961AbiDGGUl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 7 Apr 2022 02:20:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35192 "EHLO
+        id S241670AbiDGHTi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 7 Apr 2022 03:19:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239120AbiDGGUk (ORCPT
+        with ESMTP id S241679AbiDGHTe (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 7 Apr 2022 02:20:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ADB41AC731
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  6 Apr 2022 23:18:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BB67861CD3;
-        Thu,  7 Apr 2022 06:18:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DB1AC385A0;
-        Thu,  7 Apr 2022 06:18:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1649312320;
-        bh=WNjt/W0EC5NHsxTNHptluiTrADyC31f+9oWaPnEp5d0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HYerDy/KYCFxq39gnJ4RAqvZZ3raYPvCXbukjYlfWMfdsehpkjbkcRJoWGFl8Qv/K
-         Jc3iEUV7A/EAEiqc1uacaPN04am8D5R3JmocyWfL5fkyjLY/ShDRa8KeBmTGJYrhed
-         GSvUer54e2rVTaXRQqVnoMl2kZifHYi6YCgYhJQY=
-Date:   Thu, 7 Apr 2022 08:18:35 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Laurent Vivier <laurent@vivier.eu>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-m68k@lists.linux-m68k.org,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-rtc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Alessandro Zummo <a.zummo@towertech.it>, stable@vger.kernel.org
-Subject: Re: [PATCH v16 1/4] tty: goldfish: introduce
- gf_ioread32()/gf_iowrite32()
-Message-ID: <Yk6CO11wyo86ylee@kroah.com>
-References: <20220406201523.243733-1-laurent@vivier.eu>
- <20220406201523.243733-2-laurent@vivier.eu>
- <Yk5tNOPE4b2QbHLG@kroah.com>
- <198be9ea-a8c2-0f9e-6ae5-a7358035def4@vivier.eu>
+        Thu, 7 Apr 2022 03:19:34 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302511B6954
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Apr 2022 00:17:34 -0700 (PDT)
+Received: from mail-wr1-f50.google.com ([209.85.221.50]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1M89bP-1ngTGg1FWV-005Lsq for <linux-m68k@lists.linux-m68k.org>; Thu, 07 Apr
+ 2022 09:17:33 +0200
+Received: by mail-wr1-f50.google.com with SMTP id j12so6448827wrb.5
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 07 Apr 2022 00:17:33 -0700 (PDT)
+X-Gm-Message-State: AOAM532LlF+WS2psXlGZCn1B/Yy3OlGd+OMETmfc+8khsqnMg9q0DDlX
+        R/I4JsDhLzV+0N4TG14HbqJtGpdqbSbqP1hDJsE=
+X-Google-Smtp-Source: ABdhPJwmNfPDNFMCTxQF72bGloQ9R7ixTS1WuENFc4sxAk/2DHt8y1oYiTEoK7GHAg/mvQl2A58Tcb9T0D1qJhBrXSI=
+X-Received: by 2002:a5d:6505:0:b0:205:9a98:e184 with SMTP id
+ x5-20020a5d6505000000b002059a98e184mr8948149wru.317.1649315852910; Thu, 07
+ Apr 2022 00:17:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <198be9ea-a8c2-0f9e-6ae5-a7358035def4@vivier.eu>
+References: <Yib9F5SqKda/nH9c@infradead.org> <CAK8P3a1dUVsZzhAe81usLSkvH29zHgiV9fhEkWdq7_W+nQBWbg@mail.gmail.com>
+ <YkmWh2tss8nXKqc5@infradead.org> <CAK8P3a0QdFOJbM72geYTWOKumeKPSCVD8Nje5pBpZWazX0GEnQ@mail.gmail.com>
+ <CAMuHMdWcg+171ggdVC4gwbQ=RUf+cYrX3o9uSpDxo-XXEJ5Qgw@mail.gmail.com> <c3e7ee64-68fc-ed53-4a90-9f9296583d7c@landley.net>
+In-Reply-To: <c3e7ee64-68fc-ed53-4a90-9f9296583d7c@landley.net>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 7 Apr 2022 09:17:17 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a14b6djqPw8Dea5uW2PPEABbe0pNXV5EX0529oDrW1ZAg@mail.gmail.com>
+Message-ID: <CAK8P3a14b6djqPw8Dea5uW2PPEABbe0pNXV5EX0529oDrW1ZAg@mail.gmail.com>
+Subject: Re: [RFC PULL] remove arch/h8300
+To:     Rob Landley <rob@landley.net>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "moderated list:H8/300 ARCHITECTURE" 
+        <uclinux-h8-devel@lists.sourceforge.jp>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>, Max Filippov <jcmvbkbc@gmail.com>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Rich Felker <dalias@libc.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:2D++nRaDkTdMLHSAYQCZSvQ9OQ5Q9A1xI9VQNOjHwTAqK8BUqPo
+ Do/hQ3tdBQgwxrM118Fg5T29/4sngF60nLDs2BHWIeL/YzvaiKC34ZWAtyXIYNTRok741S7
+ Vl4smDm2j0spCaFwab7mY9j0l/hEIUuInlBM7rkQMBd3HF4fa67afWlCkdx+jpuq3/BKZFF
+ N9793n2YLtMs8i01c7HIA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:SmjPkQnFAwM=:bjK/MMIaHXTxhAcVqK3/yv
+ grXedsCoKJxL/l/anAzHBWvfnb9XiO5Wwr802F4k3W0ztgHiGutzNQL3kCEzvuR+1ZeZNV33A
+ Rfr/2R9h5LNVDIKmcdMQ1FOD6vZWMhxC94FwnMs5f44xtCmAX8278HW0jb8/vWQXN4/Dk6vg3
+ cHyUpOL7D4NNfsXU/GWLtWaHkN4EU9rAhueGwXQWECKQSjTeeBL5HlU/HXOt+91HOc9L/v6/a
+ SzxMgmwAHb+xecWXkbwXnA8BkQscpHXuSbsrlzf1BbDaaiNxUd4b0cCkHxHnEcqg1zNjHWhhu
+ +aQy7vlqU5hdize0LSENjIQDjiTBJMdyVySI1pZQdmpHYtFBDEB2EZjorpWYeJvZT6YLV9Yfs
+ ElT1KP5DMkJUyFar2hLz4SQZ6EPquB4iyFEVhXv7QOZZleiftygcxajpcc7zKh6yIV7adNKig
+ T+51HQjDeGl/S5+Ja7JvXjCbLuN+Wcre74malQsodC2PaNLGojZ5Nb2jmludPz7SsmXxM/C6V
+ I1aXu1rlST9Iu1c6YKLgWpQ9EQcEBNZKDHz0MnLTu3JMApG3Z/SVi3m75+qccg2cu5u14g1bl
+ lCFccT14zG4e/76eD1adk4ORzxZRbGh6b9awFhwjWiWA2R2TKjlqH0puub1tQZdREZZy7U6Wf
+ pNoscE3aCrzzRFo8ayvWbnAv8EB4/It4vBQ1OvsbJ7HAJAzJ5ccfp49HCFmEdSxZ14O/toZiK
+ HGaGu3nVeVhXWiTRSzbDRFISY7aCBOxdEjl8tET6EOXyzv9esWqURjx4GfZDpeh2zPtcBYMIc
+ giGBuuhljMlzG+3VLR/v3S+bd9XdsvJMBnB8ga25q0S5XXywBI=
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Apr 07, 2022 at 08:00:08AM +0200, Laurent Vivier wrote:
-> Le 07/04/2022 à 06:48, Greg KH a écrit :
-> > On Wed, Apr 06, 2022 at 10:15:20PM +0200, Laurent Vivier wrote:
-> > > Revert
-> > > commit da31de35cd2f ("tty: goldfish: use __raw_writel()/__raw_readl()")
-> > > 
-> > > and define gf_ioread32()/gf_iowrite32() to be able to use accessors
-> > > defined by the architecture.
-> > > 
-> > > Cc: stable@vger.kernel.org # v5.11+
-> > > Fixes: da31de35cd2f ("tty: goldfish: use __raw_writel()/__raw_readl()")
-> > > Signed-off-by: Laurent Vivier <laurent@vivier.eu>
-> > > Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > > ---
-> > >   drivers/tty/goldfish.c   | 20 ++++++++++----------
-> > >   include/linux/goldfish.h | 15 +++++++++++----
-> > >   2 files changed, 21 insertions(+), 14 deletions(-)
-> > > 
-> > 
-> > Why is this a commit for the stable trees?  What bug does it fix?  You
-> > did not describe the problem in the changelog text at all, this looks
-> > like a housekeeping change only.
-> 
-> Arnd asked for that in:
-> 
->   Re: [PATCH v11 2/5] tty: goldfish: introduce gf_ioread32()/gf_iowrite32()
->   https://lore.kernel.org/lkml/CAK8P3a1oN8NrUjkh2X8jHQbyz42Xo6GSa=5n0gD6vQcXRjmq1Q@mail.gmail.com/
+On Wed, Apr 6, 2022 at 11:25 PM Rob Landley <rob@landley.net> wrote:
 
-You did not provide a reason in this changelog to explain any of that :(
+> I'm interested in H8300 because it's a tiny architecture (under 6k lines total,
+> in 93 files) and thus a good way to see what a minimal Linux port looks like. If
+> somebody would like to suggest a different one for that...
+
+Anything that is maintained is usually a better example, and it helps when the
+code is not old enough to have accumulated a lot of historic baggage.
+
+The arch/riscv/ code is generally a good example base for others to copy.
+It's not nearly as small, but that is mostly because it implements optional
+features that could be left out. csky is a smaller example that is also
+fairly clean and new, but less featureful.
+
+         Arnd
