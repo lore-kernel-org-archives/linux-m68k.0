@@ -2,105 +2,198 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D309C4332F
-	for <linux-m68k@archiver.kernel.org>; Thu,  7 Apr 2022 08:34:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C583FC43217
+	for <linux-m68k@archiver.kernel.org>; Fri,  8 Apr 2022 18:22:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243162AbiDGIg3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 7 Apr 2022 04:36:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52174 "EHLO
+        id S238560AbiDHSYS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 8 Apr 2022 14:24:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234459AbiDGIg0 (ORCPT
+        with ESMTP id S238554AbiDHSYR (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 7 Apr 2022 04:36:26 -0400
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C35524A74F
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Apr 2022 01:34:24 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id A93533201D51;
-        Thu,  7 Apr 2022 04:34:20 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Thu, 07 Apr 2022 04:34:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=OrAVdtI06jlWzu77P
-        ZjIBfUVfDfo5qupQAsNYfVHmic=; b=REyfza793XvLwCmAbyDR3j41ku76wmjj9
-        t8ZPCQN8csyCmQMKvB42XV1AmWwt4wNNrxmwPC81RF5b8fAADR0pQalFI8qXYPT0
-        7/q14rkEhdtYWx6Ir/coc19eP4KQ2iDLO5MNs9cjC74Tfci0AMnCeGRILehn1Tbg
-        zdS1YIVs1JnZtUmSbl0qDXyVGx7RDN2AtppERAi3Ke56NSptXrFZhqEyJaH0jf/o
-        R7Q19bQDBPRh9KMpteNmIHQXlpkVdxrVY6aYJfkMqCrUCBayiLSBrdr/ZXf3zR2b
-        tu/TkEybMrURbop9YitH5hmy4TK32Gu+HMKnytWHiS9lprsHPdZhg==
-X-ME-Sender: <xms:C6JOYtK2DPSocN3KHcYO1iOuhmb_8QucNUitWsEdflBe5SjkWL3z7w>
-    <xme:C6JOYpKfOENfQGi6p5TQEf0B56wNDQN0OEWecppa37hMLlUM4UeTRwUsN7v5_uWR_
-    gdivHGWAWTeZwKzFeM>
-X-ME-Received: <xmr:C6JOYlt1cSyCTnjfVsxU4pZWO98PYUdKI639jzGKmXtOWFI39-wzOshV4dfyZO2-z4mumNSVWnPG-KabALraSf6EYOe47AA-Ns0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrudejkedgtdehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
-    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
-    htvghrnhepffduhfegfedvieetudfgleeugeehkeekfeevfffhieevteelvdfhtdevffet
-    uedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
-    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
-X-ME-Proxy: <xmx:C6JOYuYlhjomGYyc5L-B0gj8YiRk3ocqfwcnhRXyBdTdBjBsqf4E2Q>
-    <xmx:C6JOYkaLdhGJWMS4ZendpX0uu_pT9copGfWauEd59dUXQNsKrfWXUA>
-    <xmx:C6JOYiDNCIq3SX3-pZu8JnT1DvO4ImNd48uhrFtgNYCkYCD6b3A6Qg>
-    <xmx:DKJOYhL6uTbYkgTwgpQB8D8qsnBrmU8mlCw4mwAwA48dlrIgR419LQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 7 Apr 2022 04:34:17 -0400 (EDT)
-Date:   Thu, 7 Apr 2022 18:34:15 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-cc:     Arnd Bergmann <arnd@arndb.de>, Rob Landley <rob@landley.net>,
+        Fri, 8 Apr 2022 14:24:17 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D700B36DDB7
+        for <linux-m68k@lists.linux-m68k.org>; Fri,  8 Apr 2022 11:22:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7F727B82CDA;
+        Fri,  8 Apr 2022 18:22:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1447C385A3;
+        Fri,  8 Apr 2022 18:22:06 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="dfKB5qQm"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1649442124;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ZAwWpf2mSTFfhh0jtk2ioJcnGUl1ovRW108xPWCiP1A=;
+        b=dfKB5qQmsNNVKpwxv9Cbr2s7qEWtNQzkgJC2RD/cQl+Kg5yaPqQUUxVrp4hQsx7Gr34f8r
+        QDaPPI2uQBsYvxEeqkoO1FDW72vygWpLLLY0z7DPDI7fQP2fMh2qAq13X+NIGhh5UufkXE
+        UHg7p8K+xKHRdLFGuG+/VvaayEztZPI=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 4b54fd79 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Fri, 8 Apr 2022 18:22:04 +0000 (UTC)
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        arnd@arndb.de
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "moderated list:H8/300 ARCHITECTURE" 
-        <uclinux-h8-devel@lists.sourceforge.jp>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>, Max Filippov <jcmvbkbc@gmail.com>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Rich Felker <dalias@libc.org>
-Subject: Re: [RFC PULL] remove arch/h8300
-In-Reply-To: <04c0374f-0044-c84d-1820-d743a4061906@physik.fu-berlin.de>
-Message-ID: <ca79546d-4e64-b8a-b63a-dfd0ebce8fed@linux-m68k.org>
-References: <Yib9F5SqKda/nH9c@infradead.org> <CAK8P3a1dUVsZzhAe81usLSkvH29zHgiV9fhEkWdq7_W+nQBWbg@mail.gmail.com> <YkmWh2tss8nXKqc5@infradead.org> <CAK8P3a0QdFOJbM72geYTWOKumeKPSCVD8Nje5pBpZWazX0GEnQ@mail.gmail.com> <CAMuHMdWcg+171ggdVC4gwbQ=RUf+cYrX3o9uSpDxo-XXEJ5Qgw@mail.gmail.com>
- <c3e7ee64-68fc-ed53-4a90-9f9296583d7c@landley.net> <CAK8P3a14b6djqPw8Dea5uW2PPEABbe0pNXV5EX0529oDrW1ZAg@mail.gmail.com> <04c0374f-0044-c84d-1820-d743a4061906@physik.fu-berlin.de>
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "David S . Miller" <davem@davemloft.net>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, x86@kernel.org,
+        linux-xtensa@linux-xtensa.org
+Subject: [PATCH RFC v1 00/10] archs/random: fallback to using sched_clock() if no cycle counter
+Date:   Fri,  8 Apr 2022 20:21:35 +0200
+Message-Id: <20220408182145.142506-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, 7 Apr 2022, John Paul Adrian Glaubitz wrote:
+Hi folks,
 
-> On 4/7/22 09:17, Arnd Bergmann wrote:
-> > On Wed, Apr 6, 2022 at 11:25 PM Rob Landley wrote:
-> > 
-> >> I'm interested in H8300 because it's a tiny architecture (under 6k 
-> >> lines total, in 93 files) and thus a good way to see what a minimal 
-> >> Linux port looks like. If somebody would like to suggest a different 
-> >> one for that...
-> > 
-> > Anything that is maintained is usually a better example, and it helps 
-> > when the code is not old enough to have accumulated a lot of historic 
-> > baggage.
-> 
-> But if it's not a lot of code, would it really accumulate a lot of 
-> cruft?
-> 
+The RNG uses a function called random_get_entropy() basically anytime
+that it needs to timestamp an event. For example, an interrupt comes in,
+and we mix a random_get_entropy() into the entropy pool somehow.
+Somebody mashes their keyboard or moves their mouse around? We mix a
+random_get_entropy() into the entropy pool. It's one of the main
+varieties of input.
 
-Where you see "TODO" in Documentation/features/*/*/arch-support.txt it may 
-mean that an architecture is preventing the removal of an old API.
+Unfortunately, it's always 0 on a few platforms. The RNG has accumulated
+various hacks to deal with this, but in general it's not great. Surely
+we can do better than 0. In fact, *anything* that's not the same exact
+value all the time would be better than 0. Even a counter that
+increments once per hour would be better than 0! I think you get the
+idea.
 
-You're quite right, though, it is incorrect to call this an "accumulation" 
-of baggage. It is actually the failure to remove cruft. (OTOH, shiny new 
-things can be said to "accumulate". That's how cruft gets made.)
+On most platforms, random_get_entropy() is aliased to get_cycles(),
+which makes sense for platforms where get_cycles() is defined. RDTSC,
+for example, has all the characteristics we care about for this
+function: it's fast to acquire (i.e. acceptable in an irq handler),
+pretty high precision, available, forms a 2-monotone distribution, etc.
+But for platforms without that, what is the next best thing?
+
+Sometimes the next best thing is architecture-defined. For example,
+really old MIPS has the CP0 random register, which isn't a cycle
+counter, but is at least something. However, some platforms don't even
+have an architecture-defined fallback. In that case, what are we left
+with?
+
+By my first guess, we have ktime_get_boottime_ns(), jiffies, and
+sched_clock(). It seems like sched_clock() has already done a lot of
+work in being always available with some incrementing value, falling
+back to jiffies as necessary. So this series goes with that as a
+fallback, for when the architecture doesn't define random_get_entropy in
+its own way and when there's no working cycle counter.
+
+Another option would be falling back to different things on different
+platforms. For example, Arnd mentioned to me that on m68k,
+ktime_get_ns() might be better than sched_clock(), because it doesn't
+use CONFIG_GENERIC_SCHED_CLOCK and therefore is only as good as jiffies.
+Maybe there are other considerations there as well.
+
+This is a bit involved with plumbing asm/ headers, which is why this is
+an RFC. There are a few ways of skinning that cat. The patchset also
+tries to fill in the various cases where an arch only sometimes has a
+cycle counter and sometimes doesn't. When possible, it tries to make the
+decisions at compile time, but sometimes runtime decisions are
+necessary.
+
+Please let me know if you think this is sane. And if you have a
+different candidate than sched_clock(), I'd be interested to learn about
+that. In particular, I'd value input here from Thomas or somebody else
+who has looked at timekeeping across less common platforms.
+
+Finally, note that this series isn't about "jitter entropy" or other
+ways of initializing the RNG. That's a different topic for a different
+thread. Please don't let this discussion veer off into that. Here, I'm
+just trying to find a good fallback counter/timer for platforms without
+get_cycles(), a question with limited scope.
+
+Thanks,
+Jason
+
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: Dominik Brodowski <linux@dominikbrodowski.net>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Chris Zankel <chris@zankel.net>
+Cc: Max Filippov <jcmvbkbc@gmail.com>
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-riscv@lists.infradead.org
+Cc: sparclinux@vger.kernel.org
+Cc: linux-um@lists.infradead.org
+Cc: x86@kernel.org
+Cc: linux-xtensa@linux-xtensa.org
+
+Jason A. Donenfeld (10):
+  random: use sched_clock() for random_get_entropy() if no get_cycles()
+  m68k: use sched_clock() for random_get_entropy() instead of zero
+  riscv: use sched_clock() for random_get_entropy() instead of zero
+  mips: use sched_clock() for random_get_entropy() instead of zero
+  arm: use sched_clock() for random_get_entropy() instead of zero
+  x86: use sched_clock() for random_get_entropy() instead of zero
+  arm64: use sched_clock() for random_get_entropy() instead of zero
+  um: use sched_clock() for random_get_entropy() instead of zero
+  sparc: use sched_clock() for random_get_entropy() instead of zero
+  xtensa: use sched_clock() for random_get_entropy() instead of zero
+
+ arch/arm/include/asm/timex.h      | 11 +++++++++++
+ arch/arm64/include/asm/timex.h    |  9 +++++++++
+ arch/m68k/include/asm/timex.h     |  4 +++-
+ arch/mips/include/asm/timex.h     |  3 ++-
+ arch/riscv/include/asm/timex.h    |  3 ++-
+ arch/sparc/include/asm/timex_32.h |  4 +---
+ arch/um/include/asm/timex.h       |  9 ++-------
+ arch/x86/include/asm/tsc.h        | 11 +++++++++++
+ arch/xtensa/include/asm/timex.h   |  6 ++----
+ include/linux/timex.h             |  6 ++++++
+ 10 files changed, 49 insertions(+), 17 deletions(-)
+
+-- 
+2.35.1
+
