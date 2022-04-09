@@ -2,131 +2,145 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E35EEC433F5
-	for <linux-m68k@archiver.kernel.org>; Sat,  9 Apr 2022 04:18:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BEF0C43217
+	for <linux-m68k@archiver.kernel.org>; Sat,  9 Apr 2022 23:29:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240794AbiDIEVD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 9 Apr 2022 00:21:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36520 "EHLO
+        id S232986AbiDIXbp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 9 Apr 2022 19:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239274AbiDIEVB (ORCPT
+        with ESMTP id S231341AbiDIXbo (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 9 Apr 2022 00:21:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A01DCA92
-        for <linux-m68k@lists.linux-m68k.org>; Fri,  8 Apr 2022 21:18:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B1DCC60B40;
-        Sat,  9 Apr 2022 04:18:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 662C1C385A8;
-        Sat,  9 Apr 2022 04:18:50 +0000 (UTC)
-Message-ID: <147dc6cc-1fbb-558f-8e6d-29d4327d54b4@linux-m68k.org>
-Date:   Sat, 9 Apr 2022 14:18:48 +1000
+        Sat, 9 Apr 2022 19:31:44 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF4D63B2
+        for <linux-m68k@lists.linux-m68k.org>; Sat,  9 Apr 2022 16:29:36 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1649546972;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ht/BjZKfEwbNRvmZyePyMT+aylBpF12k4dVD0rKNtw8=;
+        b=AuRq0wCtYXKcm0ryJ67Fp/GBt6cO3SpVd7CkUPfzGNUT87YnBYIl6wooRCxo0V2LKVufAe
+        WruAMWs3kz06ZmLlyY2BfPNF+Mn3kMGDmBnqUAIeDdyFzC3xXyK9l5c1+wSdGQ03tVQfPJ
+        RV4AhVLGmS0YZcCYNSYMlG1vu/XcNd7tscR4pyhRiCZYkA/IYnCAHheqwKo1LRtrkVRuS0
+        9WKJUAPO4GRrNkF5PYwAo6aRPKyz3ID7dl7/kd4fGzDwHM3O+aAEkPYVddEU86X1kEeGN7
+        ochLJcl/0cW+kNW7GARWG+dZDnaeEFAyMnCOj52aFtVrAyVaSbB6B5xsdlKXaQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1649546972;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ht/BjZKfEwbNRvmZyePyMT+aylBpF12k4dVD0rKNtw8=;
+        b=vUyIxyQVS1fiHfbV4PIICFMXMOmWDlpsE1+vbv1Qj49gakWkhrvZAc3R+9XH7ZlvihGyvm
+        qbHedOcHogR2iNAA==
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        arnd@arndb.de
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "David S . Miller" <davem@davemloft.net>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, x86@kernel.org,
+        linux-xtensa@linux-xtensa.org
+Subject: Re: [PATCH RFC v1 00/10] archs/random: fallback to using
+ sched_clock() if no cycle counter
+In-Reply-To: <20220408182145.142506-1-Jason@zx2c4.com>
+References: <20220408182145.142506-1-Jason@zx2c4.com>
+Date:   Sun, 10 Apr 2022 01:29:32 +0200
+Message-ID: <87wnfxhm3n.ffs@tglx>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [RFC PULL] remove arch/h8300
-Content-Language: en-US
-To:     Finn Thain <fthain@linux-m68k.org>, Rob Landley <rob@landley.net>
-Cc:     Daniel Palmer <daniel@0x0f.com>, Arnd Bergmann <arnd@arndb.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "moderated list:H8/300 ARCHITECTURE" 
-        <uclinux-h8-devel@lists.sourceforge.jp>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>, Max Filippov <jcmvbkbc@gmail.com>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-References: <Yib9F5SqKda/nH9c@infradead.org>
- <CAK8P3a1dUVsZzhAe81usLSkvH29zHgiV9fhEkWdq7_W+nQBWbg@mail.gmail.com>
- <YkmWh2tss8nXKqc5@infradead.org>
- <CAK8P3a0QdFOJbM72geYTWOKumeKPSCVD8Nje5pBpZWazX0GEnQ@mail.gmail.com>
- <6a38e8b8-7ccc-afba-6826-cb6e4f92af83@linux-m68k.org>
- <CAFr9PXkk=8HOxPwVvFRzqHZteRREWxSOOcdjrcOPe0d=9AW2yQ@mail.gmail.com>
- <5b7687d4-8ba5-ad79-8a74-33fc2496a3db@linux-m68k.org>
- <8f9be869-7244-d92a-4683-f9c53da97755@landley.net>
- <3d5cf48c-94f1-2948-1683-4a2a87f4c697@linux-m68k.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <3d5cf48c-94f1-2948-1683-4a2a87f4c697@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+Jason,
 
-On 9/4/22 11:59, Finn Thain wrote:
-> On Fri, 8 Apr 2022, Rob Landley wrote:
-> 
->> On 4/5/22 08:07, Greg Ungerer wrote:
->>> On 5/4/22 13:23, Daniel Palmer wrote:
->>>> On Mon, 4 Apr 2022 at 22:42, Greg Ungerer <gerg@linux-m68k.org> wrote:
->>>>> But we could consider the Dragonball support for removal. I keep it
->>>>> compiling, but I don't use it and can't test that it actually works.
->>>>> Not sure that it has been used for a very long time now. And I
->>>>> didn't even realize but its serial driver (68328serial.c) was
->>>>> removed in 2015. No one seems too have noticed and complained.
->>>>
->>>> I noticed this and I am working on fixing it up for a new Dragonball
->>>> homebrew machine. I'm trying to add a 68000 machine to QEMU to make
->>>> the development easier because I'm currently waiting an hour or more
->>>> for a kernel to load over serial. It might be a few months.
->>
->> I've been booting Linux on qemu-system-m68k -M q800 for a couple years
->> now? (The CROSS=m68k target of mkroot in toybox?)
->>
->> # cat /proc/cpuinfo
->> CPU:		68040
->> MMU:		68040
->> FPU:		68040
->> Clocking:	1261.9MHz
->> BogoMips:	841.31
->> Calibration:	4206592 loops
->>
->> It certainly THINKS it's got m68000...
->>
-> 
-> Most 68040 processor variants have a built-in MMU and the m68k "nommu"
-> Linux port doesn't support them. The nommu port covers processors like
-> 68000, Dragonball etc. whereas the m68k "mmu" port covers 680x0 where x is
-> one of 2,3,4,6 with MMU.
-> 
->> $ qemu-system-m68k -cpu ?
->> cfv4e
->> m5206
->> m5208
->> m68000
->> m68010
->> m68020
->> m68030
->> m68040
->> m68060
->> any
->>
->> (I'd love to get an m68k nommu system working but never sat down and
->> worked out a kernel .config qemu agreed to run, plus compiler and libc.
->> Musl added m68k support but I dunno if that includes coldfire?)
->>
-> 
-> I could never figure out how to boot a coldfire machine in qemu either.
-> There was no documentation about that back when I attempted it but maybe
-> things have improved since.
+On Fri, Apr 08 2022 at 20:21, Jason A. Donenfeld wrote:
+> Sometimes the next best thing is architecture-defined. For example,
+> really old MIPS has the CP0 random register, which isn't a cycle
+> counter, but is at least something. However, some platforms don't even
+> have an architecture-defined fallback. In that case, what are we left
+> with?
+>
+> By my first guess, we have ktime_get_boottime_ns(), jiffies, and
+> sched_clock(). It seems like sched_clock() has already done a lot of
+> work in being always available with some incrementing value, falling
+> back to jiffies as necessary. So this series goes with that as a
+> fallback, for when the architecture doesn't define random_get_entropy in
+> its own way and when there's no working cycle counter.
 
-FWIW this will do it:
+sched_clock() is a halfways sane option, but yes as Arnd pointed out:
 
-     qemu-system-m68k -nographic -machine mcf5208evb -kernel vmlinux
+> Another option would be falling back to different things on different
+> platforms. For example, Arnd mentioned to me that on m68k,
+> ktime_get_ns() might be better than sched_clock(), because it doesn't
+> use CONFIG_GENERIC_SCHED_CLOCK and therefore is only as good as
+> jiffies.
 
-That will boot an m5208evb_defconfig generated vmlinux.
-But you will need a user space to get a full boot to login/shell.
+ktime_get_ns() or the slightly faster variant ktime_get_mono_fast_ns()
+are usable. In the worst case they are jiffies driven too, but systems
+with jiffies clocksource are pretty much museum pieces.
 
-Regards
-Greg
+It's slightly slower than get_cycles() and a get_cyles() based
+sched_clock(), but you get the most granular clock of the platform
+automatically, which has it's charm too :)
+
+The bad news is that depending on the clocksource frequency the lower
+bits might never change. Always true for clocksource jiffies.
+sched_clock() has the same issue.
+
+But the below uncompiled hack gives you access to the 'best' clocksource
+of a machine, i.e. the one which the platform decided to be the one
+which is giving the best resolution. The minimal bitwidth of that is
+AFAICT 20 bits. In the jiffies case this will at least advance every
+tick.
+
+The price, e.g. on x86 would be that RDTSC would be invoked via an
+indirect function call. Not the end of the world...
+
+Thanks,
+
+        tglx
+---
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -646,6 +646,11 @@ static void halt_fast_timekeeper(const s
+ 	update_fast_timekeeper(&tkr_dummy, &tk_fast_raw);
+ }
+ 
++u32 ktime_read_raw_clock(void)
++{
++	return tk_clock_read(&tk_core.timekeeper.tkr_mono);
++}
++
+ static RAW_NOTIFIER_HEAD(pvclock_gtod_chain);
+ 
+ static void update_pvclock_gtod(struct timekeeper *tk, bool was_set)
+
+
+
 
 
