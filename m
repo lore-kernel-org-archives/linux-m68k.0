@@ -2,105 +2,149 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E175C433F5
-	for <linux-m68k@archiver.kernel.org>; Fri,  8 Apr 2022 18:41:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E94B7C433EF
+	for <linux-m68k@archiver.kernel.org>; Sat,  9 Apr 2022 00:20:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230125AbiDHSnG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 8 Apr 2022 14:43:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50886 "EHLO
+        id S232481AbiDIAWV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 8 Apr 2022 20:22:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236618AbiDHSm2 (ORCPT
+        with ESMTP id S240143AbiDIAWU (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 8 Apr 2022 14:42:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD72B181159
-        for <linux-m68k@lists.linux-m68k.org>; Fri,  8 Apr 2022 11:40:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6810760B21;
-        Fri,  8 Apr 2022 18:40:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37DAEC385A3;
-        Fri,  8 Apr 2022 18:40:19 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="hw7ZM3DK"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1649443217;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5p8HbWxOv/2pCcrFRIk5uy5GvnZxVWWqGCXEJeAr/VI=;
-        b=hw7ZM3DKXNV/PCbZ27tOsMmXRTiv/fRiwXtCpNB0Y95WzzR8bK+prKfASznhrt+sI6VYcP
-        JgT9H5GtkoA+jROggAq+JYownqGfREZ8MSGOuZKcJzf+CHaADipObRJFEs60xwyHJ1+hny
-        xsJ6FQ5svtLEpIhYOh3ZMRBXxb2C+BU=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 6baee431 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Fri, 8 Apr 2022 18:40:17 +0000 (UTC)
-Date:   Fri, 8 Apr 2022 20:40:08 +0200
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        arnd@arndb.de, Theodore Ts'o <tytso@mit.edu>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "David S . Miller" <davem@davemloft.net>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, x86@kernel.org,
-        linux-xtensa@linux-xtensa.org
-Subject: Re: [PATCH RFC v1 07/10] arm64: use sched_clock() for
- random_get_entropy() instead of zero
-Message-ID: <YlCBiLIh5ZFqMr6X@zx2c4.com>
-References: <20220408182145.142506-1-Jason@zx2c4.com>
- <20220408182145.142506-8-Jason@zx2c4.com>
- <YlCAEaG4i/OuMKet@lakrids>
+        Fri, 8 Apr 2022 20:22:20 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F65DFD77
+        for <linux-m68k@lists.linux-m68k.org>; Fri,  8 Apr 2022 17:20:14 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id j83so10447276oih.6
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 08 Apr 2022 17:20:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=landley-net.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=kku2i+uKWNnFd73jChiOeIEKCfjIgc7cEViNkZfQ8l0=;
+        b=MvmX4LKI4DyQDgAaqj6D5BFwEshu/LnG+BxDPDDz7Qeqpx5yulnQb0cgGdCjkR9q36
+         VpaPcgCUj3yaOiquaSfgEX4IdXJwB8lNNAtJixiKalOPG8IS2v7x1kbXjIxsFVr+IpDH
+         2Mk4wxROIpeQzkoWtnHQzZd/qwCsaaE2lOuS+0lsC0gpWLI8Tv/e6/QWMrf74Q0KZ1jC
+         3QlmXnTkrUpepdAe0RQZHwbtqfSsFVN6YNfuTxXtvuiHZ61SuiyOHGYBcG4eoXYJXOCQ
+         sATmsP+kQl2mRatJE+nSXCnEagEoc6G6ci0p1uOhU3T5aOwSiYys6MaO7qWhJNngpGSk
+         PtHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=kku2i+uKWNnFd73jChiOeIEKCfjIgc7cEViNkZfQ8l0=;
+        b=vMtlSrXa2uqjvG6//sB4o6N3cgUkMHxHppYi+KbBSF6yxsF6rKHjX8cIC1Z9sWnR5g
+         TEJ3gCrIGuUDlnugcAwfz0xS4wtcXg3Vi7LbPxnJgzAbRGBihEgbFN2piTTU/1rnzjoU
+         ukpC6nLNfWNPcCU0Bkwi/VXCrL2yTINJLWiHNdU8zMPFGw+ZU8RYVxNGZzKG92ysEnAR
+         f8yt3Boiv3ddQ3fVf6WkM6GkNhtwGH4l0Q3L3NI/8kfSX1Ofnilhxm28viYWGrGPWbT8
+         IpD110YbdhatBX6kjc4nzIQ6eIK7QwdvjKGrdbQZvlUUqi/K5iv/q9q4Cbx3YLFI7G8M
+         BI9A==
+X-Gm-Message-State: AOAM530r6eOiaJ2ff7UJ31YqV7vpAXkCSl/gQ7DG6rq33Kp1OLs/N5Rd
+        MUDfCDeXJJk9fYFIyjGLIfb/Dg==
+X-Google-Smtp-Source: ABdhPJzZe++rWaqfq9aV2dHyOIwxVl53YuTt+2x8aiaE6fJ5qXUhiElHKi0cEmeQsIJ8z1Fpr0L9uA==
+X-Received: by 2002:a05:6808:616:b0:2ef:3773:44d5 with SMTP id y22-20020a056808061600b002ef377344d5mr989393oih.156.1649463613856;
+        Fri, 08 Apr 2022 17:20:13 -0700 (PDT)
+Received: from [192.168.86.187] ([136.62.4.88])
+        by smtp.gmail.com with ESMTPSA id b25-20020a0568301df900b005cf87029ee8sm9164623otj.67.2022.04.08.17.20.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Apr 2022 17:20:12 -0700 (PDT)
+Message-ID: <8f9be869-7244-d92a-4683-f9c53da97755@landley.net>
+Date:   Fri, 8 Apr 2022 19:24:17 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YlCAEaG4i/OuMKet@lakrids>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.2
+Subject: Re: [RFC PULL] remove arch/h8300
+Content-Language: en-US
+To:     Greg Ungerer <gerg@linux-m68k.org>, Daniel Palmer <daniel@0x0f.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "moderated list:H8/300 ARCHITECTURE" 
+        <uclinux-h8-devel@lists.sourceforge.jp>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>, Max Filippov <jcmvbkbc@gmail.com>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+References: <Yib9F5SqKda/nH9c@infradead.org>
+ <CAK8P3a1dUVsZzhAe81usLSkvH29zHgiV9fhEkWdq7_W+nQBWbg@mail.gmail.com>
+ <YkmWh2tss8nXKqc5@infradead.org>
+ <CAK8P3a0QdFOJbM72geYTWOKumeKPSCVD8Nje5pBpZWazX0GEnQ@mail.gmail.com>
+ <6a38e8b8-7ccc-afba-6826-cb6e4f92af83@linux-m68k.org>
+ <CAFr9PXkk=8HOxPwVvFRzqHZteRREWxSOOcdjrcOPe0d=9AW2yQ@mail.gmail.com>
+ <5b7687d4-8ba5-ad79-8a74-33fc2496a3db@linux-m68k.org>
+From:   Rob Landley <rob@landley.net>
+In-Reply-To: <5b7687d4-8ba5-ad79-8a74-33fc2496a3db@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Mark,
-
-On Fri, Apr 08, 2022 at 07:33:53PM +0100, Mark Rutland wrote:
-> On Fri, Apr 08, 2022 at 08:21:42PM +0200, Jason A. Donenfeld wrote:
-> > In the event that random_get_entropy() can't access a cycle counter or
-> > similar, falling back to returning 0 is really not the best we can do.
-> > Instead, at least calling sched_clock() would be preferable, because
-> > that always needs to return _something_, even falling back to jiffies
-> > eventually. It's not as though sched_clock() is super high precision or
-> > guaranteed to be entropic, but basically anything that's not zero all
-> > the time is better than returning zero all the time.
-> > 
-> > If CONFIG_ARM_ARCH_TIMER=n, then get_cycles() will return 0, so we only
-> > need the fallback code for that case.
+On 4/5/22 08:07, Greg Ungerer wrote:
+> Hi Daniel,
 > 
-> In arch/arm64/Kconfig we unconditionally select CONFIG_ARM_ARCH_TIMER,
-> so that configuration shouldn't be possible, and I don't think this
-> patch is necessary.
+> On 5/4/22 13:23, Daniel Palmer wrote:
+>> On Mon, 4 Apr 2022 at 22:42, Greg Ungerer <gerg@linux-m68k.org> wrote:
+>>> But we could consider the Dragonball support for removal. I keep it compiling,
+>>> but I don't use it and can't test that it actually works. Not sure that it
+>>> has been used for a very long time now. And I didn't even realize but its
+>>> serial driver (68328serial.c) was removed in 2015. No one seems too have
+>>> noticed and complained.
+>> 
+>> I noticed this and I am working on fixing it up for a new Dragonball
+>> homebrew machine.
+>> I'm trying to add a 68000 machine to QEMU to make the development
+>> easier because I'm currently waiting an hour or more for a kernel to
+>> load over serial.
+>> It might be a few months.
+
+I've been booting Linux on qemu-system-m68k -M q800 for a couple years now? (The
+CROSS=m68k target of mkroot in toybox?)
+
+# cat /proc/cpuinfo
+CPU:		68040
+MMU:		68040
+FPU:		68040
+Clocking:	1261.9MHz
+BogoMips:	841.31
+Calibration:	4206592 loops
+
+It certainly THINKS it's got m68000...
+
+$ qemu-system-m68k -cpu ?
+cfv4e
+m5206
+m5208
+m68000
+m68010
+m68020
+m68030
+m68040
+m68060
+any
+
+(I'd love to get an m68k nommu system working but never sat down and worked out
+a kernel .config qemu agreed to run, plus compiler and libc. Musl added m68k
+support but I dunno if that includes coldfire?)
+
+>> It looked like 68328serial.c was removed because someone tried to
+>> clean it up and it was decided that no one was using it and it was
+>> best to delete it.
+>> My plan was to at some point send a series to fix up the issues with
+>> the Dragonball support, revert removing the serial driver and adding
+>> the patch that cleaned it up.
 > 
-> On arm64 we depend on the architected timer in a bunch of places, so
-> anyone hacking that out has bigger problems.
+> Nice. I will leave all the 68000/68328 code alone for now then.
 
-Thanks for the tip. I'll drop this patch from the series.
+The q800 config uses CONFIG_SERIAL_PMACZILOG. Seems to work fine?
 
-Jason
+> Regards
+> Greg
+
+Rob
