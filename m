@@ -2,42 +2,40 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C719AC433F5
-	for <linux-m68k@archiver.kernel.org>; Sun, 10 Apr 2022 14:26:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57269C433EF
+	for <linux-m68k@archiver.kernel.org>; Sun, 10 Apr 2022 20:57:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236346AbiDJO2Y (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 10 Apr 2022 10:28:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43502 "EHLO
+        id S234484AbiDJU7W (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 10 Apr 2022 16:59:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234730AbiDJO2W (ORCPT
+        with ESMTP id S243976AbiDJU7T (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 10 Apr 2022 10:28:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4007625C6B
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 10 Apr 2022 07:26:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 12ED66097C;
-        Sun, 10 Apr 2022 14:26:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C1C7C385A4;
-        Sun, 10 Apr 2022 14:26:06 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="Xd0Enayl"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1649600764;
+        Sun, 10 Apr 2022 16:59:19 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EBC45F8DF
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 10 Apr 2022 13:57:04 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1649624223;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ACW34jCdChesB8O9mr3A3gFQd+fZkgemUpW2KIQGTs8=;
-        b=Xd0Enayl8UdMOLK8hb+p9ElFGR/nkOk182JQ3t/5PAWGrTN3GF03N95qlf3rrZl/Mt+RZI
-        7g+OoLToQKHdL9+kdXKajZ1a3hsadEW5sVaIiDYC9L5V8y9LrnjV28ZvqwgrOh6rFPazES
-        NrUCO3Ev2CsBJg7e3SN1A3lzDB/MMQU=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 8a808d78 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Sun, 10 Apr 2022 14:26:04 +0000 (UTC)
-Date:   Sun, 10 Apr 2022 16:25:52 +0200
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
+        bh=hE+Xcw0JizEU8Wnq0ZP70KLvw79L4CjFSDQ+JeFdg1E=;
+        b=wcxdyIRUujqol7xM6/jNUaTiJK9LjQ2TxNswzkFqW9IdoCXdLl06LKnKcZu+/PhgcujoFD
+        4BL6UvqV2KyZxKcXAHyaYhKgWh+hW7kmtVsrR50bN2kEyItTRS4qenN4xdW+pqDVD/EBQJ
+        FRBUDZAXAnKdCAGLESQsbxyitf9btYLvPr88J6g6SWQULeVv1+BpRryz8V4vlo0Sxn5A1B
+        B7jn62NOZrsua6pLpW1KUXCpCdbVHaodhuhDNbeQMQoqpedjr6x5wCT5mekwEWTjKpLkBQ
+        ZhVOGqfjVtVh2uqjxiB4TKZirCwCtL5e55pMSWAO2Ry+8zKLnyd7j8EtVVFiMg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1649624223;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hE+Xcw0JizEU8Wnq0ZP70KLvw79L4CjFSDQ+JeFdg1E=;
+        b=WYkLY0CPXnB/0QIxOUzf7pdAwpOuVx9Tljat/8ZOy+GrRKgqIku37SjusWmBW3We4uxu9x
+        QGtzsFUk86/12iAg==
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
 Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
         arnd@arndb.de, Theodore Ts'o <tytso@mit.edu>,
         Dominik Brodowski <linux@dominikbrodowski.net>,
@@ -66,48 +64,60 @@ Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
         linux-xtensa@linux-xtensa.org
 Subject: Re: [PATCH RFC v1 00/10] archs/random: fallback to using
  sched_clock() if no cycle counter
-Message-ID: <YlLo8JVOS6FDmWUM@zx2c4.com>
-References: <20220408182145.142506-1-Jason@zx2c4.com>
- <87wnfxhm3n.ffs@tglx>
+In-Reply-To: <YlLo8JVOS6FDmWUM@zx2c4.com>
+References: <20220408182145.142506-1-Jason@zx2c4.com> <87wnfxhm3n.ffs@tglx>
+ <YlLo8JVOS6FDmWUM@zx2c4.com>
+Date:   Sun, 10 Apr 2022 22:57:02 +0200
+Message-ID: <877d7whd29.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87wnfxhm3n.ffs@tglx>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Thomas,
+Jason,
 
-On Sun, Apr 10, 2022 at 01:29:32AM +0200, Thomas Gleixner wrote:
-> But the below uncompiled hack gives you access to the 'best' clocksource
-> of a machine, i.e. the one which the platform decided to be the one
-> which is giving the best resolution. The minimal bitwidth of that is
-> AFAICT 20 bits. In the jiffies case this will at least advance every
-> tick.
+On Sun, Apr 10 2022 at 16:25, Jason A. Donenfeld wrote:
+> On Sun, Apr 10, 2022 at 01:29:32AM +0200, Thomas Gleixner wrote:
+>> But the below uncompiled hack gives you access to the 'best' clocksource
+>> of a machine, i.e. the one which the platform decided to be the one
+>> which is giving the best resolution. The minimal bitwidth of that is
+>> AFAICT 20 bits. In the jiffies case this will at least advance every
+>> tick.
+>
+> Oh, huh, that's pretty cool. I can try to make a commit out of that. Are
+> you suggesting I use this as the fallback for all platforms that
+> currently return zero, or just for m68k per Arnd's suggestion, and then
+> use sched_clock() for the others? It sounds to me like you're saying
+> this would be best for all of them. If so, that'd be quite nice.
 
-Oh, huh, that's pretty cool. I can try to make a commit out of that. Are
-you suggesting I use this as the fallback for all platforms that
-currently return zero, or just for m68k per Arnd's suggestion, and then
-use sched_clock() for the others? It sounds to me like you're saying
-this would be best for all of them. If so, that'd be quite nice.
+It's the best in terms of timekeeping. Not the fastest :)
 
+>> The price, e.g. on x86 would be that RDTSC would be invoked via an
+>> indirect function call. Not the end of the world...
+>
+> Well on x86, random_get_entropy() is overridden in the arch/ code to
+> call get_cycles(). So this would really just be for 486 and for other
+> architectures with no cycle counter that are currently returning zero.
+> However, this brings up a good point: if your proposed
+> ktime_read_raw_clock() function really is so nice, should it be used
+> everywhere unconditionally with no arch-specific overrides? On x86, is
+> it really guaranteed to be RDTSC, and not, say, some off-core HPET
+> situation? And is this acceptable to call from the hard irq handler?
 
-> The price, e.g. on x86 would be that RDTSC would be invoked via an
-> indirect function call. Not the end of the world...
+No, that's the sad part. On system where TSC is unstable (for whatever
+reason) this might fallback to some off-core clock (HPET, PMTIMER).
+The good news is that this is mostly affecting older systems. After 20+
+years of complaining the hardware people seem to have figured out that a
+fast accessible and realiable clocksource is something useful. :)
 
-Well on x86, random_get_entropy() is overridden in the arch/ code to
-call get_cycles(). So this would really just be for 486 and for other
-architectures with no cycle counter that are currently returning zero.
-However, this brings up a good point: if your proposed
-ktime_read_raw_clock() function really is so nice, should it be used
-everywhere unconditionally with no arch-specific overrides? On x86, is
-it really guaranteed to be RDTSC, and not, say, some off-core HPET
-situation? And is this acceptable to call from the hard irq handler?
+> Not yet having too much knowledge, I'm tentatively leaning toward the
+> safe side, of just using ktime_read_raw_clock() in the current places
+> that return zero all the time -- that is, for the purpose this patchset
+> has.
 
-Not yet having too much knowledge, I'm tentatively leaning toward the
-safe side, of just using ktime_read_raw_clock() in the current places
-that return zero all the time -- that is, for the purpose this patchset
-has.
+That's probably a good approach and it's init/runtime discoverable.
 
-Jason
+Thanks,
+
+        tglx
