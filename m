@@ -2,40 +2,40 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8300BC4332F
-	for <linux-m68k@archiver.kernel.org>; Sun, 10 Apr 2022 21:51:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D93A8C433FE
+	for <linux-m68k@archiver.kernel.org>; Sun, 10 Apr 2022 21:51:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243993AbiDJVyC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 10 Apr 2022 17:54:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43138 "EHLO
+        id S242800AbiDJVyE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 10 Apr 2022 17:54:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244020AbiDJVxm (ORCPT
+        with ESMTP id S244078AbiDJVxT (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 10 Apr 2022 17:53:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5778C19C0D
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 10 Apr 2022 14:51:09 -0700 (PDT)
+        Sun, 10 Apr 2022 17:53:19 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3951B784
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 10 Apr 2022 14:51:07 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 79DD260C8B;
-        Sun, 10 Apr 2022 21:51:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F5A8C385A4;
+        by sin.source.kernel.org (Postfix) with ESMTPS id 382C3CE1157;
         Sun, 10 Apr 2022 21:51:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FECAC385A5;
+        Sun, 10 Apr 2022 21:51:00 +0000 (UTC)
 Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="oK1G66UK"
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="Df8ZdRHB"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1649627464;
+        t=1649627459;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=C1ufLrONysCe3yEQR0EDgg6+4J7GIerx7v+cUIeDJoo=;
-        b=oK1G66UKLQjisT2dZxHPb7eiQBb5LINqc5DrHQew1fp5uC96tVgAxXsU3uDN5LoBwvFOTm
-        S28h0ZByMgUKvgHs+QYLek1FYfCRt1ZeOmNdOM5rt3/n+i5UDEqjb9HogOfuXe8TY+jcXJ
-        SdLf2gX1e9o1Q+cykNqxXlo/2kXiymU=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 02e0bab8 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Sun, 10 Apr 2022 21:51:04 +0000 (UTC)
+        bh=v0GuQCNGwq3fJUQ7IzqmuEoFgX5zC7G7ODjmQAKE6bw=;
+        b=Df8ZdRHBX2SvbUp8tw7wPXpPXDlU6kDTCmgYGh41kIe3ddHm2qqZ8mqMClMRW10+/kz+yS
+        qS0hW7UHDa2CXwgazmm3LHTSLWGxFjdBnwNGAQrJxvZyp2ZtjtH27tB3vmNiu0HI07+LaL
+        gOF3/i/LKf0evowuQUKO1D4BSxkJvIQ=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id a59763bf (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Sun, 10 Apr 2022 21:50:59 +0000 (UTC)
 From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
 To:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
         tglx@linutronix.de, arnd@arndb.de
@@ -66,9 +66,9 @@ Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
         linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org,
         linux-um@lists.infradead.org, x86@kernel.org,
         linux-xtensa@linux-xtensa.org
-Subject: [PATCH v2 10/11] sparc: use ktime_read_raw_clock() for random_get_entropy() instead of zero
-Date:   Sun, 10 Apr 2022 23:49:50 +0200
-Message-Id: <20220410214951.55294-11-Jason@zx2c4.com>
+Subject: [PATCH v2 09/11] um: use ktime_read_raw_clock() for random_get_entropy() instead of zero
+Date:   Sun, 10 Apr 2022 23:49:49 +0200
+Message-Id: <20220410214951.55294-10-Jason@zx2c4.com>
 In-Reply-To: <20220410214951.55294-1-Jason@zx2c4.com>
 References: <20220410214951.55294-1-Jason@zx2c4.com>
 MIME-Version: 1.0
@@ -91,25 +91,33 @@ function here.
 
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: David S. Miller <davem@davemloft.net>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
 Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 ---
- arch/sparc/include/asm/timex_32.h | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ arch/um/include/asm/timex.h | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/arch/sparc/include/asm/timex_32.h b/arch/sparc/include/asm/timex_32.h
-index 542915b46209..f86326a6f89e 100644
---- a/arch/sparc/include/asm/timex_32.h
-+++ b/arch/sparc/include/asm/timex_32.h
-@@ -9,8 +9,6 @@
+diff --git a/arch/um/include/asm/timex.h b/arch/um/include/asm/timex.h
+index e392a9a5bc9b..9f27176adb26 100644
+--- a/arch/um/include/asm/timex.h
++++ b/arch/um/include/asm/timex.h
+@@ -2,13 +2,8 @@
+ #ifndef __UM_TIMEX_H
+ #define __UM_TIMEX_H
  
- #define CLOCK_TICK_RATE	1193180 /* Underlying HZ */
- 
--/* XXX Maybe do something better at some point... -DaveM */
 -typedef unsigned long cycles_t;
--#define get_cycles()	(0)
-+#include <asm-generic/timex.h>
+-
+-static inline cycles_t get_cycles (void)
+-{
+-	return 0;
+-}
+-
+ #define CLOCK_TICK_RATE (HZ)
  
++#include <asm-generic/timex.h>
++
  #endif
 -- 
 2.35.1
