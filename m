@@ -2,32 +2,32 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA0EAC433F5
-	for <linux-m68k@archiver.kernel.org>; Mon, 11 Apr 2022 23:41:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F1EDC433EF
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 Apr 2022 23:41:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234580AbiDKXn7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 11 Apr 2022 19:43:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51118 "EHLO
+        id S238400AbiDKXoB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 11 Apr 2022 19:44:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236263AbiDKXmI (ORCPT
+        with ESMTP id S242661AbiDKXnP (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 11 Apr 2022 19:42:08 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6AA4220EE
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Apr 2022 16:39:41 -0700 (PDT)
+        Mon, 11 Apr 2022 19:43:15 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19BA429822
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Apr 2022 16:40:18 -0700 (PDT)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: dmitry.osipenko)
-        with ESMTPSA id 909861F43D1D
+        with ESMTPSA id ECBE41F43D65
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1649720380;
-        bh=AnjrhaHENsX+9TktlKasoiUkGDZC8u25pvM/oDIQuBM=;
+        s=mail; t=1649720416;
+        bh=iYfrEabh/hAGujUdJ+A/I+DmpedLWQ8gHOkzzfFNwA8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mCs0xXKXBGwKhSNizz+CrsN6ijBgTwnfXqn6tYSvyJZmHSD5olRTei4LE/G7coxYf
-         CdB+dreJDhlfyN9XCDD4SviS0SmWim/cg7mtN04vs2oHnCtGBVPT6ckS3CZtoWmbEA
-         I/gc8aKseKuzeqxAjIsqUT+GOOhAiTI3UhnDIbn6WTaQ5HgsqbEwXHY1aJyLFAveRz
-         nKPagL8xhkJk3dLCpGc+JnYLWLB19jnsaWShwat50U3lRK/VSm8lo8REWhKYt0uv5+
-         WvePNPqDKrlZanfab8M+cTo/qPdH4ci3OwDczmWuAhAKwJRpU2wR8ZAyEQyeG2SlI6
-         aILbZj82gIeeQ==
+        b=c1svoiAR7m0K6n7FtQj4RQRVEfLDNf+rwLT3neRX08SjGxKJYiC6HyM61WH9D/o3y
+         vAJO3f/Ys3tCCGTE9bmhQwmmHvzdi+chCvJXp1Npd/GlWrZMZHyViOEgNhsLyOJzTk
+         WaypFbLIoOXzHL4B5nWZOTZInVtzuAgZL1HRm6zaAYZPbJVUGS8V4EJ2Mc0SPMy0Sw
+         qJHgIWiLSIgASKFu7wMg0n4w6xwajTCa/N/m8HFcI9swRLPhXyd9bPMTdXw6j07VZa
+         h6Rg8HGTvAD0gX8doiBfJ8Letk7TvBw7eZK4sZ4E0EPUScPBbaZsR1J8aceqd22he4
+         YaYXWDOj7297Q==
 From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -79,9 +79,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v7 11/20] powerpc: Use do_kernel_power_off()
-Date:   Tue, 12 Apr 2022 02:38:23 +0300
-Message-Id: <20220411233832.391817-12-dmitry.osipenko@collabora.com>
+Subject: [PATCH v7 20/20] reboot: Remove pm_power_off_prepare()
+Date:   Tue, 12 Apr 2022 02:38:32 +0300
+Message-Id: <20220411233832.391817-21-dmitry.osipenko@collabora.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220411233832.391817-1-dmitry.osipenko@collabora.com>
 References: <20220411233832.391817-1-dmitry.osipenko@collabora.com>
@@ -91,47 +91,56 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Kernel now supports chained power-off handlers. Use do_kernel_power_off()
-that invokes chained power-off handlers. It also invokes legacy
-pm_power_off() for now, which will be removed once all drivers will
-be converted to the new power-off API.
+All pm_power_off_prepare() users were converted to sys-off handler API.
+Remove the obsolete callback.
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au>
 Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 ---
- arch/powerpc/kernel/setup-common.c | 4 +---
- arch/powerpc/xmon/xmon.c           | 3 +--
- 2 files changed, 2 insertions(+), 5 deletions(-)
+ include/linux/pm.h |  1 -
+ kernel/reboot.c    | 11 -----------
+ 2 files changed, 12 deletions(-)
 
-diff --git a/arch/powerpc/kernel/setup-common.c b/arch/powerpc/kernel/setup-common.c
-index 518ae5aa9410..1b586577e75b 100644
---- a/arch/powerpc/kernel/setup-common.c
-+++ b/arch/powerpc/kernel/setup-common.c
-@@ -161,9 +161,7 @@ void machine_restart(char *cmd)
- void machine_power_off(void)
- {
- 	machine_shutdown();
--	if (pm_power_off)
--		pm_power_off();
--
-+	do_kernel_power_off();
- 	smp_send_stop();
- 	machine_hang();
- }
-diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
-index fd72753e8ad5..c916bf250796 100644
---- a/arch/powerpc/xmon/xmon.c
-+++ b/arch/powerpc/xmon/xmon.c
-@@ -1243,8 +1243,7 @@ static void bootcmds(void)
- 	} else if (cmd == 'h') {
- 		ppc_md.halt();
- 	} else if (cmd == 'p') {
--		if (pm_power_off)
--			pm_power_off();
-+		do_kernel_power_off();
- 	}
- }
+diff --git a/include/linux/pm.h b/include/linux/pm.h
+index ffe941958501..6cdf279c7f2f 100644
+--- a/include/linux/pm.h
++++ b/include/linux/pm.h
+@@ -21,7 +21,6 @@
+  * Callbacks for platform drivers to implement.
+  */
+ extern void (*pm_power_off)(void);
+-extern void (*pm_power_off_prepare)(void);
  
+ struct device; /* we have a circular dep with device.h */
+ #ifdef CONFIG_VT_CONSOLE_SLEEP
+diff --git a/kernel/reboot.c b/kernel/reboot.c
+index e76e2570dcf5..f2f5c9d7caa0 100644
+--- a/kernel/reboot.c
++++ b/kernel/reboot.c
+@@ -48,13 +48,6 @@ int reboot_cpu;
+ enum reboot_type reboot_type = BOOT_ACPI;
+ int reboot_force;
+ 
+-/*
+- * If set, this is used for preparing the system to power off.
+- */
+-
+-void (*pm_power_off_prepare)(void);
+-EXPORT_SYMBOL_GPL(pm_power_off_prepare);
+-
+ /**
+  *	emergency_restart - reboot the system
+  *
+@@ -877,10 +870,6 @@ void do_kernel_power_off(void)
+ 
+ static void do_kernel_power_off_prepare(void)
+ {
+-	/* legacy pm_power_off_prepare() is unchained and has highest priority */
+-	if (pm_power_off_prepare)
+-		return pm_power_off_prepare();
+-
+ 	blocking_notifier_call_chain(&power_off_handler_list, POWEROFF_PREPARE,
+ 				     NULL);
+ }
 -- 
 2.35.1
 
