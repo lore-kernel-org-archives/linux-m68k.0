@@ -2,32 +2,32 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F686C433FE
-	for <linux-m68k@archiver.kernel.org>; Mon, 11 Apr 2022 23:39:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E772CC4332F
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 Apr 2022 23:39:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234424AbiDKXlV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 11 Apr 2022 19:41:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50460 "EHLO
+        id S236199AbiDKXlf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 11 Apr 2022 19:41:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234350AbiDKXlR (ORCPT
+        with ESMTP id S235442AbiDKXl3 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 11 Apr 2022 19:41:17 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 281C71EAEB
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Apr 2022 16:39:00 -0700 (PDT)
+        Mon, 11 Apr 2022 19:41:29 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C00D35F7E
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Apr 2022 16:39:08 -0700 (PDT)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: dmitry.osipenko)
-        with ESMTPSA id ADD321F42D86
+        with ESMTPSA id C95061F42D8E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1649720339;
-        bh=kCYEDdovCVMqMqsKDmHApZZjAvEttkamvjOxDRb8Y/s=;
+        s=mail; t=1649720347;
+        bh=rE0gdUKO6u30HOCK7SRHP3k8mtmvbpif5A95yZ2p3PY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nx08HokVCqLuQkUWX3rv2fv4uikfMucJnDiwNH7NGzpcW8362/JzsFA+T8pnB9rNP
-         Nh2tUIEYoUm4h2VGRFzMQLXuy7mgTy+c0khut3jaDscDSqMMvUMEsukDJLG8tD4MDL
-         vj4ggPnYxoa3v867GyElYDQzvBgZSBXa3mIdsCHhXm+tguMql+U+E5xj8wPXMcK7A6
-         0uh9uoi/rCbMu8A/I2IZxr0lSB4su90p49BTCC/554FnGngEacX7JTRv7MVDZF7lqU
-         cVn2/2/romM/vCOmLU+jii/LndRccn1z1q7pRnyFpKcq7XTRFlJuAGp/K99F3f919c
-         C0mZWcTbiCkjQ==
+        b=SJSmU6oKbkFC6qk9sybOhccgA1atA5HyHj9VJAk88lQAsecmxdmA17ulTzp9683gp
+         3vvsylERM3jM7PfChQeyikquTNyomgu9L0dM6z5jWDLf7AkJde6s6TIy7519BeSnHm
+         vWXb0a9E/FmK1dCJ+iVzrWJQVpDkGXV6OZj6kwjzy0WpVHQGVPdlJ0erRQKcEEVLzZ
+         NMX8OnKdNZXojrijEe5Kotjsc4Lw48okU7YRg9wdcDqBKaKTiihn+rofo2Thu68Mgf
+         h+j91GOmW1cnm2aInltn36l/ppfnQj/Gy1giIPmB2j1gIxRgkUPlkMmqWU4NySu1Bf
+         8/zXD+vGFWRdQ==
 From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -79,9 +79,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v7 01/20] notifier: Add blocking_notifier_call_chain_is_empty()
-Date:   Tue, 12 Apr 2022 02:38:13 +0300
-Message-Id: <20220411233832.391817-2-dmitry.osipenko@collabora.com>
+Subject: [PATCH v7 03/20] reboot: Print error message if restart handler has duplicated priority
+Date:   Tue, 12 Apr 2022 02:38:15 +0300
+Message-Id: <20220411233832.391817-4-dmitry.osipenko@collabora.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220411233832.391817-1-dmitry.osipenko@collabora.com>
 References: <20220411233832.391817-1-dmitry.osipenko@collabora.com>
@@ -91,52 +91,42 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Add blocking_notifier_call_chain_is_empty() that returns true if call
-chain is empty.
+Add sanity check which ensures that there are no two restart handlers
+registered using the same priority. This requirement will become mandatory
+once all drivers will be converted to the new API and such errors will be
+fixed.
 
 Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 ---
- include/linux/notifier.h |  2 ++
- kernel/notifier.c        | 13 +++++++++++++
- 2 files changed, 15 insertions(+)
+ kernel/reboot.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/include/linux/notifier.h b/include/linux/notifier.h
-index 87069b8459af..d4717bc0ab85 100644
---- a/include/linux/notifier.h
-+++ b/include/linux/notifier.h
-@@ -173,6 +173,8 @@ extern int blocking_notifier_call_chain_robust(struct blocking_notifier_head *nh
- extern int raw_notifier_call_chain_robust(struct raw_notifier_head *nh,
- 		unsigned long val_up, unsigned long val_down, void *v);
- 
-+extern bool blocking_notifier_call_chain_is_empty(struct blocking_notifier_head *nh);
+diff --git a/kernel/reboot.c b/kernel/reboot.c
+index ed4e6dfb7d44..acdae4e95061 100644
+--- a/kernel/reboot.c
++++ b/kernel/reboot.c
+@@ -182,6 +182,21 @@ static ATOMIC_NOTIFIER_HEAD(restart_handler_list);
+  */
+ int register_restart_handler(struct notifier_block *nb)
+ {
++	int ret;
 +
- #define NOTIFY_DONE		0x0000		/* Don't care */
- #define NOTIFY_OK		0x0001		/* Suits me */
- #define NOTIFY_STOP_MASK	0x8000		/* Don't call further */
-diff --git a/kernel/notifier.c b/kernel/notifier.c
-index ba005ebf4730..4ed6bda8f127 100644
---- a/kernel/notifier.c
-+++ b/kernel/notifier.c
-@@ -323,6 +323,19 @@ int blocking_notifier_call_chain(struct blocking_notifier_head *nh,
++	ret = atomic_notifier_chain_register_unique_prio(&restart_handler_list, nb);
++	if (ret != -EBUSY)
++		return ret;
++
++	/*
++	 * Handler must have unique priority. Otherwise call order is
++	 * determined by registration order, which is unreliable.
++	 *
++	 * This requirement will become mandatory once all drivers
++	 * will be converted to use new sys-off API.
++	 */
++	pr_err("failed to register restart handler using unique priority\n");
++
+ 	return atomic_notifier_chain_register(&restart_handler_list, nb);
  }
- EXPORT_SYMBOL_GPL(blocking_notifier_call_chain);
- 
-+/**
-+ *	blocking_notifier_call_chain_is_empty - Check whether notifier chain is empty
-+ *	@nh: Pointer to head of the blocking notifier chain
-+ *
-+ *	Checks whether notifier chain is empty.
-+ *
-+ *	Returns true is notifier chain is empty, false otherwise.
-+ */
-+bool blocking_notifier_call_chain_is_empty(struct blocking_notifier_head *nh)
-+{
-+	return !rcu_access_pointer(nh->head);
-+}
-+
- /*
-  *	Raw notifier chain routines.  There is no protection;
-  *	the caller must provide it.  Use at your own risk!
+ EXPORT_SYMBOL(register_restart_handler);
 -- 
 2.35.1
 
