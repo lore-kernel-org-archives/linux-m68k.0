@@ -2,198 +2,145 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2E12C433EF
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Apr 2022 02:08:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8423C433F5
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Apr 2022 09:50:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242379AbiDLCKS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 11 Apr 2022 22:10:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33126 "EHLO
+        id S232691AbiDLJwA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 12 Apr 2022 05:52:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343690AbiDLCKM (ORCPT
+        with ESMTP id S1355075AbiDLH1H (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 11 Apr 2022 22:10:12 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D68AE340C5
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Apr 2022 19:07:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1649729274; x=1681265274;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=C2Nj3T17mUYuatl1qS6xBEwHEgJKci804zLj7x75NqM=;
-  b=gQRTPY9eKlnvPbhk5+EPSwM1lysqG7ANZHchZn90dOg0Rz1LuO4LkjXK
-   UhQ6QEbeqZSWzzRjOODO6odcfnf3d1B4XJTJDy8sMN59xHyOdJl0/EPl6
-   pb+KKl40c+DSE6DS7fwrAvq1zDtDg32YhWOT/9rzr1ZzVHLjLkY2Xjsje
-   3wJKBrqoElh/jpZ/Hsu+tVaynEofAqiR2f8/5Suzw30Yo/OUHbd4L0Day
-   jCtoNhtsGG18H4x8NKalUc1A7v8gQxEqccatkBea4Hp1w87wEbMwuJwF/
-   +KeJpJBLAZuhiCPL0ZhDqzKaZju1wYpjgOYppOV2sKtApJgsA65SIX5qc
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10314"; a="262438047"
-X-IronPort-AV: E=Sophos;i="5.90,252,1643702400"; 
-   d="scan'208";a="262438047"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2022 19:07:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,252,1643702400"; 
-   d="scan'208";a="660286662"
-Received: from lkp-server02.sh.intel.com (HELO d3fc50ef50de) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 11 Apr 2022 19:07:51 -0700
-Received: from kbuild by d3fc50ef50de with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1ne5wc-0002Qo-UV;
-        Tue, 12 Apr 2022 02:07:50 +0000
-Date:   Tue, 12 Apr 2022 10:07:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 8841e027aa6b5d10b98b5cf67bf705e363917c00
-Message-ID: <6254dec8.oOx89gedPch3AXjG%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        Tue, 12 Apr 2022 03:27:07 -0400
+Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9F7B48313
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Apr 2022 00:07:07 -0700 (PDT)
+Received: by mail-qv1-f47.google.com with SMTP id a10so4142264qvm.8
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Apr 2022 00:07:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G5mglcYZA42FcZWexfT//Na3N8U+QShWNDx9HhSMVxo=;
+        b=a5iNLogjJgbaQTiHPz4l8xuCAXGg3UYc26fOHOkiZDb2+KtV8bC8Teoh476LBe6AnR
+         s+es86Qlk47BwaEYfk93U8ZRcH5vflp6UbbJr/gTidXSW5Cdmu/HKlK1tP5Yf/vUE7ei
+         Cg/niPyUtQpYeQ5TYQk5/JGxPoL3FdeJN5BA1G7c4XA8rx891WRAHmQsntCXu8V2Xq+T
+         9PSZZADxxwZQBYko8kR2btrF0cWXewFZ8HL5E3r0uX6UKWwYegvOu7GFGnfJS2JRYi1J
+         pebnuAVrwamUREvlMA9Jef8cvi/5bSF4gRfUO2Ib8eOb3g6Yu4nnwjJZJIiIORb2VV0E
+         qizQ==
+X-Gm-Message-State: AOAM533UCjPmPkl0iayNEAJckscuHk4taeN8sXW0kfh4rMJFM77zcz2B
+        JB11gOg1oVodjRF9waBKN35URWvh1Vcr08pd
+X-Google-Smtp-Source: ABdhPJz1kk+eBT6J2CPf1B0VQrIxXA36nYhJLgxiAU0QKEs0RqMJmBKKwlruTjrE+NI98Me8Mm+48A==
+X-Received: by 2002:a05:6214:29c2:b0:444:9d4f:4ed0 with SMTP id gh2-20020a05621429c200b004449d4f4ed0mr1028533qvb.90.1649747226043;
+        Tue, 12 Apr 2022 00:07:06 -0700 (PDT)
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
+        by smtp.gmail.com with ESMTPSA id bk18-20020a05620a1a1200b00680c72b7bf4sm22890633qkb.93.2022.04.12.00.07.05
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Apr 2022 00:07:05 -0700 (PDT)
+Received: by mail-yb1-f181.google.com with SMTP id j2so31620474ybu.0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Apr 2022 00:07:05 -0700 (PDT)
+X-Received: by 2002:a25:c049:0:b0:634:6751:e8d2 with SMTP id
+ c70-20020a25c049000000b006346751e8d2mr25945732ybf.6.1649747214062; Tue, 12
+ Apr 2022 00:06:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20220411233832.391817-1-dmitry.osipenko@collabora.com>
+In-Reply-To: <20220411233832.391817-1-dmitry.osipenko@collabora.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 12 Apr 2022 09:06:42 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVfOpGvF5FR6vFD-3a1h-7Kc_yAKQzWV71PD6mDy6BmZw@mail.gmail.com>
+Message-ID: <CAMuHMdVfOpGvF5FR6vFD-3a1h-7Kc_yAKQzWV71PD6mDy6BmZw@mail.gmail.com>
+Subject: Re: [PATCH v7 00/20] Introduce power-off+restart call chain API
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee.jones@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        xen-devel@lists.xenproject.org,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 8841e027aa6b5d10b98b5cf67bf705e363917c00  m68k: Introduce a virtual m68k machine
+Hi Dmitry,
 
-elapsed time: 866m
+On Tue, Apr 12, 2022 at 1:38 AM Dmitry Osipenko
+<dmitry.osipenko@collabora.com> wrote:
+> Problem
+> -------
+>
+> SoC devices require power-off call chaining functionality from kernel.
+> We have a widely used restart chaining provided by restart notifier API,
+> but nothing for power-off.
 
-configs tested: 122
-configs skipped: 3
+> Changelog:
+>
+> v7: - Rebased on a recent linux-next. Dropped the recently removed
+>       NDS32 architecture. Only SH and x86 arches left un-acked.
+>
+>     - Added acks from Thomas Bogendoerfer and Krzysztof Kozlowski
+>       to the MIPS and memory/emif patches respectively.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Looks like you forgot to add the actual acks?
 
-gcc tested configs:
-arm                              allyesconfig
-arm                                 defconfig
-arm64                               defconfig
-arm                              allmodconfig
-arm64                            allyesconfig
-i386                 randconfig-c001-20220411
-arm                            lart_defconfig
-arc                           tb10x_defconfig
-arm                          gemini_defconfig
-sh                               alldefconfig
-i386                                defconfig
-arm                      footbridge_defconfig
-powerpc                     tqm8548_defconfig
-sh                          rsk7269_defconfig
-mips                        vocore2_defconfig
-um                             i386_defconfig
-arm                     eseries_pxa_defconfig
-powerpc                      mgcoge_defconfig
-mips                  decstation_64_defconfig
-arm                       imx_v6_v7_defconfig
-arm                          pxa3xx_defconfig
-m68k                       m5475evb_defconfig
-sh                 kfr2r09-romimage_defconfig
-xtensa                          iss_defconfig
-arm                      jornada720_defconfig
-powerpc                      makalu_defconfig
-arc                          axs103_defconfig
-arm                         lpc18xx_defconfig
-arm                         nhk8815_defconfig
-arm                          simpad_defconfig
-powerpc                      ppc40x_defconfig
-ia64                      gensparse_defconfig
-powerpc                 mpc837x_rdb_defconfig
-openrisc                         alldefconfig
-arm                  randconfig-c002-20220411
-x86_64               randconfig-c001-20220411
-ia64                             allmodconfig
-ia64                             allyesconfig
-ia64                                defconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-csky                                defconfig
-nios2                            allyesconfig
-h8300                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                                defconfig
-s390                             allmodconfig
-parisc                              defconfig
-parisc64                            defconfig
-parisc                           allyesconfig
-s390                             allyesconfig
-sparc                               defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a016-20220411
-x86_64               randconfig-a012-20220411
-x86_64               randconfig-a013-20220411
-x86_64               randconfig-a014-20220411
-x86_64               randconfig-a015-20220411
-x86_64               randconfig-a011-20220411
-i386                 randconfig-a015-20220411
-i386                 randconfig-a011-20220411
-i386                 randconfig-a014-20220411
-i386                 randconfig-a016-20220411
-i386                 randconfig-a012-20220411
-i386                 randconfig-a013-20220411
-i386                          randconfig-a012
-i386                          randconfig-a014
-i386                          randconfig-a016
-arc                  randconfig-r043-20220411
-s390                 randconfig-r044-20220411
-riscv                randconfig-r042-20220411
-riscv                            allmodconfig
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                           x86_64_defconfig
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                                  kexec
-x86_64                          rhel-8.3-func
-x86_64                               rhel-8.3
-x86_64                         rhel-8.3-kunit
-x86_64                    rhel-8.3-kselftests
+Gr{oetje,eeting}s,
 
-clang tested configs:
-powerpc                       ebony_defconfig
-powerpc                     akebono_defconfig
-arm                              alldefconfig
-powerpc                 mpc832x_rdb_defconfig
-arm                          imote2_defconfig
-arm                          pxa168_defconfig
-arm                           sama7_defconfig
-i386                 randconfig-a004-20220411
-i386                 randconfig-a001-20220411
-i386                 randconfig-a003-20220411
-i386                 randconfig-a005-20220411
-i386                 randconfig-a006-20220411
-i386                 randconfig-a002-20220411
-x86_64               randconfig-a003-20220411
-x86_64               randconfig-a001-20220411
-x86_64               randconfig-a002-20220411
-x86_64               randconfig-a005-20220411
-x86_64               randconfig-a004-20220411
-x86_64               randconfig-a006-20220411
-hexagon              randconfig-r041-20220411
-hexagon              randconfig-r045-20220411
+                        Geert
 
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
