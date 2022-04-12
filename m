@@ -2,61 +2,46 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8423C433F5
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Apr 2022 09:50:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 602BDC433F5
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Apr 2022 11:08:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232691AbiDLJwA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 12 Apr 2022 05:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42878 "EHLO
+        id S1344317AbiDLLK3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 12 Apr 2022 07:10:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355075AbiDLH1H (ORCPT
+        with ESMTP id S1354098AbiDLLFC (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 12 Apr 2022 03:27:07 -0400
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9F7B48313
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Apr 2022 00:07:07 -0700 (PDT)
-Received: by mail-qv1-f47.google.com with SMTP id a10so4142264qvm.8
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Apr 2022 00:07:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G5mglcYZA42FcZWexfT//Na3N8U+QShWNDx9HhSMVxo=;
-        b=a5iNLogjJgbaQTiHPz4l8xuCAXGg3UYc26fOHOkiZDb2+KtV8bC8Teoh476LBe6AnR
-         s+es86Qlk47BwaEYfk93U8ZRcH5vflp6UbbJr/gTidXSW5Cdmu/HKlK1tP5Yf/vUE7ei
-         Cg/niPyUtQpYeQ5TYQk5/JGxPoL3FdeJN5BA1G7c4XA8rx891WRAHmQsntCXu8V2Xq+T
-         9PSZZADxxwZQBYko8kR2btrF0cWXewFZ8HL5E3r0uX6UKWwYegvOu7GFGnfJS2JRYi1J
-         pebnuAVrwamUREvlMA9Jef8cvi/5bSF4gRfUO2Ib8eOb3g6Yu4nnwjJZJIiIORb2VV0E
-         qizQ==
-X-Gm-Message-State: AOAM533UCjPmPkl0iayNEAJckscuHk4taeN8sXW0kfh4rMJFM77zcz2B
-        JB11gOg1oVodjRF9waBKN35URWvh1Vcr08pd
-X-Google-Smtp-Source: ABdhPJz1kk+eBT6J2CPf1B0VQrIxXA36nYhJLgxiAU0QKEs0RqMJmBKKwlruTjrE+NI98Me8Mm+48A==
-X-Received: by 2002:a05:6214:29c2:b0:444:9d4f:4ed0 with SMTP id gh2-20020a05621429c200b004449d4f4ed0mr1028533qvb.90.1649747226043;
-        Tue, 12 Apr 2022 00:07:06 -0700 (PDT)
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
-        by smtp.gmail.com with ESMTPSA id bk18-20020a05620a1a1200b00680c72b7bf4sm22890633qkb.93.2022.04.12.00.07.05
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Apr 2022 00:07:05 -0700 (PDT)
-Received: by mail-yb1-f181.google.com with SMTP id j2so31620474ybu.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Apr 2022 00:07:05 -0700 (PDT)
-X-Received: by 2002:a25:c049:0:b0:634:6751:e8d2 with SMTP id
- c70-20020a25c049000000b006346751e8d2mr25945732ybf.6.1649747214062; Tue, 12
- Apr 2022 00:06:54 -0700 (PDT)
+        Tue, 12 Apr 2022 07:05:02 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 139836579E
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Apr 2022 02:56:54 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: dmitry.osipenko)
+        with ESMTPSA id B9CA61F444DB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1649757412;
+        bh=ta29d4wnkNjIs8vxiW+spXtMVlKSVX42O2OgeMWUE4M=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=kvhz7L+WR7F9HsP7+DAE1iJ09kPWZRmi5f2q6+wTFMWAjrPkNWY3Jzpgqp30kF162
+         9ej87DkBRElok2belFURZJE+6KAffcONlx+uSragUy+EKLYmrLe+OmnInaVU38Utnj
+         oGDfaSbiVVHQL6Yf2olT656ydNf9P6W4M76WukTbNC94PbuWprXpn8hcs1neMp19bi
+         iNzDzyCfCh2mIdCCNxP2XuZopGSbEx58bF1q1D3kWpmOuMeUlqToTVLTBXzlWDyGYS
+         beMdM6XO+lz1xQI7S8U0f+hcwzSbrlRYbQ5mvoaXJTg3bPRXH5hIYNcxpGgH7YbXoc
+         9fEZqqnyfRE+w==
+Message-ID: <2b603d3d-c6c1-13d7-8f77-042317a41d00@collabora.com>
+Date:   Tue, 12 Apr 2022 12:56:46 +0300
 MIME-Version: 1.0
-References: <20220411233832.391817-1-dmitry.osipenko@collabora.com>
-In-Reply-To: <20220411233832.391817-1-dmitry.osipenko@collabora.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 12 Apr 2022 09:06:42 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVfOpGvF5FR6vFD-3a1h-7Kc_yAKQzWV71PD6mDy6BmZw@mail.gmail.com>
-Message-ID: <CAMuHMdVfOpGvF5FR6vFD-3a1h-7Kc_yAKQzWV71PD6mDy6BmZw@mail.gmail.com>
-Subject: Re: [PATCH v7 00/20] Introduce power-off+restart call chain API
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH v7 17/20] memory: emif: Use kernel_can_power_off()
+Content-Language: en-US
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
         Russell King <linux@armlinux.org.uk>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Greg Ungerer <gerg@linux-m68k.org>,
         Joshua Thompson <funaho@jurai.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -65,7 +50,7 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Philipp Zabel <p.zabel@pengutronix.de>,
         Greentime Hu <green.hu@gmail.com>,
         Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
         Helge Deller <deller@gmx.de>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
@@ -77,8 +62,7 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Rich Felker <dalias@libc.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
         "H. Peter Anvin" <hpa@zytor.com>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Juergen Gross <jgross@suse.com>,
@@ -95,52 +79,47 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Ulf Hansson <ulf.hansson@linaro.org>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        xen-devel@lists.xenproject.org,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <20220411233832.391817-1-dmitry.osipenko@collabora.com>
+ <20220411233832.391817-18-dmitry.osipenko@collabora.com>
+In-Reply-To: <20220411233832.391817-18-dmitry.osipenko@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Dmitry,
 
-On Tue, Apr 12, 2022 at 1:38 AM Dmitry Osipenko
-<dmitry.osipenko@collabora.com> wrote:
-> Problem
-> -------
->
-> SoC devices require power-off call chaining functionality from kernel.
-> We have a widely used restart chaining provided by restart notifier API,
-> but nothing for power-off.
+On 4/12/22 02:38, Dmitry Osipenko wrote:
+> Replace legacy pm_power_off with kernel_can_power_off() helper that
+> is aware about chained power-off handlers.
+> 
+> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> ---
+>  drivers/memory/emif.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/memory/emif.c b/drivers/memory/emif.c
+> index edf3ba7447ed..fa6845313a43 100644
+> --- a/drivers/memory/emif.c
+> +++ b/drivers/memory/emif.c
+> @@ -630,7 +630,7 @@ static irqreturn_t emif_threaded_isr(int irq, void *dev_id)
+>  		dev_emerg(emif->dev, "SDRAM temperature exceeds operating limit.. Needs shut down!!!\n");
+>  
+>  		/* If we have Power OFF ability, use it, else try restarting */
+> -		if (pm_power_off) {
+> +		if (kernel_can_power_off()) {
+>  			kernel_power_off();
+>  		} else {
+>  			WARN(1, "FIXME: NO pm_power_off!!! trying restart\n");
 
-> Changelog:
->
-> v7: - Rebased on a recent linux-next. Dropped the recently removed
->       NDS32 architecture. Only SH and x86 arches left un-acked.
->
->     - Added acks from Thomas Bogendoerfer and Krzysztof Kozlowski
->       to the MIPS and memory/emif patches respectively.
+Adding ack from Krzysztof that he gave to v6. It's missing in v7 by
+accident.
 
-Looks like you forgot to add the actual acks?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
