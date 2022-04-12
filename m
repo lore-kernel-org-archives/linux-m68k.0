@@ -2,134 +2,204 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 49953C433FE
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Apr 2022 12:03:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CAA82C433FE
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Apr 2022 17:29:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346920AbiDLMFV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 12 Apr 2022 08:05:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41982 "EHLO
+        id S1358192AbiDLRcF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 12 Apr 2022 13:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352415AbiDLMC6 (ORCPT
+        with ESMTP id S244625AbiDLRbu (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 12 Apr 2022 08:02:58 -0400
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D3DE8023E
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Apr 2022 04:00:09 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-2ec04a2ebadso76993677b3.12
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Apr 2022 04:00:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v2zi2giavZdO2HMDfrc7yK4A4aR/ngLsqIJD3W77LNs=;
-        b=b4v6GqYxeJjlJ1RbEQauF9GEIWimtem9DfI/ea+58BboREvflEEq0M6jErAnAoE93B
-         tYuy5mJ/r4ba02CczLRQd8TmQ7CK9KY/1RfIbv6VC/vU5FzAIsre+zMd2kHi6JeMfPOF
-         4fBT0F6bq2XsYtIaWNClXMgBpjhBJ9AS7/1/3qS47r77iP3+bY4fHCX9/uoSi8DAvTqG
-         k/jDnzm69qk4dXs/N7H146ttsPkrszUV5cVSdNFLc0OGWTX1yWcUZvfGu8L3L3E878+9
-         LZbWbMEWL706ypWKJhQXFIcNT9lcoZhbr2KfSuGPorip9ZdCMOWb/sRTFpPLw/dEIfsz
-         NCSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v2zi2giavZdO2HMDfrc7yK4A4aR/ngLsqIJD3W77LNs=;
-        b=d7dgviCA/ZhRuOG0gZQLo76pPWCxeDAM4zbyq4AvkcxOXaTtZWhgGX0ygibeadBgk1
-         DLdQIbUgbsTq5mAfCqxL8oeGqkX8TnkuCMzHUzz6PBhc7TkDOc5+PbuchQmXIODfDdBU
-         QhY1+UBTkYHp/ByDUPRugLBNdbgz80oN/yak5ECva2yw8N4HvOo7PSdlfCsZSOW4P4Xz
-         8M4SDkmN/LNjnVNS/+8M+lbHlh2KNSsS8wXCQbFgo85h18XWgcxd0N2kJ+BqoCFV21Jm
-         gNwd/no79861fdhJvHdYkDglCn95Ax5vD1h1339o5h7wQ5JTGHAkti8GU+jqo4yyuoYY
-         dSxw==
-X-Gm-Message-State: AOAM533SkaZE4v4Li96O0jt+xgCwR7pPYyE8WYNZ6sKMproa+J07ZSYm
-        nF1PXesGqJgMO41xDL7zS9tcOG3WiM0oH/Kg/2Coxw==
-X-Google-Smtp-Source: ABdhPJwwqPNdGAbIJgV8Tw3Kjk4tMF7wq4HRILrI/52e/kefI6BLXOkH7KMdW6Q3t6UkDG+3QNDDwa3vKedsVrgXFAE=
-X-Received: by 2002:a0d:e743:0:b0:2eb:3106:9b32 with SMTP id
- q64-20020a0de743000000b002eb31069b32mr30496791ywe.512.1649761208158; Tue, 12
- Apr 2022 04:00:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220404111204.935357-1-elver@google.com> <CACT4Y+YiDhmKokuqD3dhtj67HxZpTumiQvvRp35X-sR735qjqQ@mail.gmail.com>
-In-Reply-To: <CACT4Y+YiDhmKokuqD3dhtj67HxZpTumiQvvRp35X-sR735qjqQ@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 12 Apr 2022 13:00:00 +0200
-Message-ID: <CANpmjNPQ9DWzPRx4QWDnZatKGU96xLhb2qN-wgbD84zyZ6_Mig@mail.gmail.com>
-Subject: Re: [PATCH] signal: Deliver SIGTRAP on perf event asynchronously if blocked
-To:     Dmitry Vyukov <dvyukov@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Tue, 12 Apr 2022 13:31:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BE74631F
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Apr 2022 10:29:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 48B59619FA;
+        Tue, 12 Apr 2022 17:29:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F2DAC385A5;
+        Tue, 12 Apr 2022 17:29:06 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="ZbW8euRP"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1649784544;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=4VTpQMB6FPkc9MfFhDmCuhLparbR0CcHVnNxwSqiAkQ=;
+        b=ZbW8euRPWSiaKBuJacJ8+ZTX0gthq1mBuxj+4d079R3slGuBehd1GNvnixSfFTw+9RRV8/
+        Lf8UmDxB2StOfSrsXmpDuV5zTO+YGC1PywJ+SHTMEnuJSZMy6SLJiTOfO/heSCdbnRWlO+
+        zgjakwT8Hd8n3HcHvqKdq54xw1mF2wg=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id c1694ffd (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Tue, 12 Apr 2022 17:29:03 +0000 (UTC)
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        tglx@linutronix.de, arnd@arndb.de
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "David S . Miller" <davem@davemloft.net>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
         linux-arm-kernel@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org, sparclinux@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, x86@kernel.org,
+        linux-xtensa@linux-xtensa.org
+Subject: [PATCH v3 00/10] archs/random: fallback to best raw ktime when no cycle counter
+Date:   Tue, 12 Apr 2022 19:27:44 +0200
+Message-Id: <20220412172754.149498-1-Jason@zx2c4.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, 5 Apr 2022 at 15:30, Dmitry Vyukov <dvyukov@google.com> wrote:
-> On Mon, 4 Apr 2022 at 13:12, Marco Elver <elver@google.com> wrote:
-> > With SIGTRAP on perf events, we have encountered termination of
-> > processes due to user space attempting to block delivery of SIGTRAP.
-> > Consider this case:
-> >
-> >     <set up SIGTRAP on a perf event>
-> >     ...
-> >     sigset_t s;
-> >     sigemptyset(&s);
-> >     sigaddset(&s, SIGTRAP | <and others>);
-> >     sigprocmask(SIG_BLOCK, &s, ...);
-> >     ...
-> >     <perf event triggers>
-> >
-> > When the perf event triggers, while SIGTRAP is blocked, force_sig_perf()
-> > will force the signal, but revert back to the default handler, thus
-> > terminating the task.
-> >
-> > This makes sense for error conditions, but not so much for explicitly
-> > requested monitoring. However, the expectation is still that signals
-> > generated by perf events are synchronous, which will no longer be the
-> > case if the signal is blocked and delivered later.
-> >
-> > To give user space the ability to clearly distinguish synchronous from
-> > asynchronous signals, introduce siginfo_t::si_perf_flags and
-> > TRAP_PERF_FLAG_ASYNC (opted for flags in case more binary information is
-> > required in future).
-> >
-> > The resolution to the problem is then to (a) no longer force the signal
-> > (avoiding the terminations), but (b) tell user space via si_perf_flags
-> > if the signal was synchronous or not, so that such signals can be
-> > handled differently (e.g. let user space decide to ignore or consider
-> > the data imprecise).
-> >
-> > The alternative of making the kernel ignore SIGTRAP on perf events if
-> > the signal is blocked may work for some usecases, but likely causes
-> > issues in others that then have to revert back to interception of
-> > sigprocmask() (which we want to avoid). [ A concrete example: when using
-> > breakpoint perf events to track data-flow, in a region of code where
-> > signals are blocked, data-flow can no longer be tracked accurately.
-> > When a relevant asynchronous signal is received after unblocking the
-> > signal, the data-flow tracking logic needs to know its state is
-> > imprecise. ]
-> >
-> > Link: https://lore.kernel.org/all/Yjmn%2FkVblV3TdoAq@elver.google.com/
-> > Fixes: 97ba62b27867 ("perf: Add support for SIGTRAP on perf events")
-> > Reported-by: Dmitry Vyukov <dvyukov@google.com>
-> > Signed-off-by: Marco Elver <elver@google.com>
->
-> Tested-by: Dmitry Vyukov <dvyukov@google.com>
->
-> I've tested delivery of SIGTRAPs when it's blocked with sigprocmask,
-> it does not kill the process now.
->
-> And tested the case where previously I was getting infinite recursion
-> and stack overflow (SIGTRAP handler causes another SIGTRAP recursively
-> before being able to detect recursion and return). With this patch it
-> can be handled by blocking recursive SIGTRAPs (!SA_NODEFER).
+Hi folks,
 
-Thanks!
+The RNG uses a function called random_get_entropy() basically anytime
+that it needs to timestamp an event. For example, an interrupt comes in,
+and we mix a random_get_entropy() into the entropy pool somehow.
+Somebody mashes their keyboard or moves their mouse around? We mix a
+random_get_entropy() into the entropy pool. It's one of the main
+varieties of input.
 
+Unfortunately, it's always 0 on a few platforms. The RNG has accumulated
+various hacks to deal with this, but in general it's not great. Surely
+we can do better than 0. In fact, *anything* that's not the same exact
+value all the time would be better than 0. Even a counter that
+increments once per hour would be better than 0! I think you get the
+idea.
 
-Should there be any further comments, please shout.
+On most platforms, random_get_entropy() is aliased to get_cycles(),
+which makes sense for platforms where get_cycles() is defined. RDTSC,
+for example, has all the characteristics we care about for this
+function: it's fast to acquire (i.e. acceptable in an irq handler),
+pretty high precision, available, forms a 2-monotone distribution, etc.
+But for platforms without that, what is the next best thing?
+
+Sometimes the next best thing is architecture-defined. For example,
+really old MIPS has the CP0 random register, which isn't a cycle
+counter, but is at least something. However, some platforms don't even
+have an architecture-defined fallback.
+
+Fortunately, the timekeeping subsystem has already solved this problem
+of trying to determine what the least bad clock is on constrained
+systems, falling back to jiffies in the worst case. By exporting the raw
+clock, we can get a decent fallback function for when there's no cycle
+counter or architecture-specific function.
+
+This series makes the RNG more useful on: m68k, RISC-V, MIPS, ARM32,
+NIOS II, SPARC32, Xtensa, and Usermode Linux. Previously these platforms
+would, in certain circumstances, but out of luck with regards to having
+any type of event timestamping source in the RNG.
+
+Finally, note that this series isn't about "jitter entropy" or other
+ways of initializing the RNG. That's a different topic for a different
+thread. Please don't let this discussion veer off into that. Here, I'm
+just trying to find a good fallback counter/timer for platforms without
+get_cycles(), a question with limited scope.
+
+If this (or a future revision) looks good to you all and receives the
+requisite acks, my plan was to take these through the random.git tree
+for 5.19, so that I can then build on top of it. Alternatively, maybe
+Thomas wants to take it through his timekeeping tree? Or something else.
+If anybody has strong preferences, please pipe up.
 
 Thanks,
--- Marco
+Jason
+
+Changes v2->v3:
+- Name the fallback function random_get_entropy_fallback(), so that it
+  can be changed out as needed.
+- Include header with prototype in timekeeping.c to avoid compiler
+  warning.
+- Export fallback function symbol.
+
+Changes v1->v2:
+- Use ktime_read_raw_clock() instead of sched_clock(), per Thomas'
+  suggestion.
+- Drop arm64 change.
+- Cleanup header inclusion ordering problem.
+
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: Dominik Brodowski <linux@dominikbrodowski.net>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Chris Zankel <chris@zankel.net>
+Cc: Max Filippov <jcmvbkbc@gmail.com>
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Dinh Nguyen <dinguyen@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-riscv@lists.infradead.org
+Cc: sparclinux@vger.kernel.org
+Cc: linux-um@lists.infradead.org
+Cc: x86@kernel.org
+Cc: linux-xtensa@linux-xtensa.org
+
+Jason A. Donenfeld (10):
+  timekeeping: add raw clock fallback for random_get_entropy()
+  m68k: use fallback for random_get_entropy() instead of zero
+  riscv: use fallback for random_get_entropy() instead of zero
+  mips: use fallback for random_get_entropy() instead of zero
+  arm: use fallback for random_get_entropy() instead of zero
+  nios2: use fallback for random_get_entropy() instead of zero
+  x86: use fallback for random_get_entropy() instead of zero
+  um: use fallback for random_get_entropy() instead of zero
+  sparc: use fallback for random_get_entropy() instead of zero
+  xtensa: use fallback for random_get_entropy() instead of zero
+
+ arch/arm/include/asm/timex.h      |  1 +
+ arch/m68k/include/asm/timex.h     |  2 +-
+ arch/mips/include/asm/timex.h     |  2 +-
+ arch/nios2/include/asm/timex.h    |  2 ++
+ arch/riscv/include/asm/timex.h    |  2 +-
+ arch/sparc/include/asm/timex_32.h |  4 +---
+ arch/um/include/asm/timex.h       |  9 ++-------
+ arch/x86/include/asm/tsc.h        | 10 ++++++++++
+ arch/xtensa/include/asm/timex.h   |  6 ++----
+ include/linux/timex.h             |  8 ++++++++
+ kernel/time/timekeeping.c         | 10 ++++++++++
+ 11 files changed, 39 insertions(+), 17 deletions(-)
+
+-- 
+2.35.1
+
