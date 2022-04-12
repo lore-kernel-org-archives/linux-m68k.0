@@ -2,40 +2,40 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13F18C433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B944AC433FE
 	for <linux-m68k@archiver.kernel.org>; Tue, 12 Apr 2022 17:30:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358161AbiDLRc7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 12 Apr 2022 13:32:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38082 "EHLO
+        id S1356122AbiDLRdB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 12 Apr 2022 13:33:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358191AbiDLRcF (ORCPT
+        with ESMTP id S1358353AbiDLRci (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 12 Apr 2022 13:32:05 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50FBE35ABA
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Apr 2022 10:29:34 -0700 (PDT)
+        Tue, 12 Apr 2022 13:32:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB07B1FCDC
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Apr 2022 10:30:19 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4484BB81F44;
-        Tue, 12 Apr 2022 17:29:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DFACC385A1;
-        Tue, 12 Apr 2022 17:29:25 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2066A619FD;
+        Tue, 12 Apr 2022 17:30:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 305D4C385A5;
+        Tue, 12 Apr 2022 17:30:15 +0000 (UTC)
 Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="kwym9DFU"
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="a/VkboCe"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1649784564;
+        t=1649784614;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=F/xwjrN5Sy/VqJmqKMJGlK6klLVet3R4Vpqg98rhpIo=;
-        b=kwym9DFUCtkPPoN83u64+PVUppDkqvQgpoC5sS/NzEkdVYTOju2Q+GjceVXRaEads1zc9/
-        tcYQgq7yIYEFkdH6SxAUy+K0UgxTWaYk6kucBOiaR9UePeuG9DtsLsDSg7tDfvdKsYtriE
-        bTj7A8jWVZcPWo4rhJnt6sD2PVFfLmc=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id e6a0d3d9 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Tue, 12 Apr 2022 17:29:23 +0000 (UTC)
+        bh=1SCIlaTYECgCpPXVpMnwLBKZKJGtzqWWNHI4gd2ZOSg=;
+        b=a/VkboCe/k1cVlopYhrrJ6yShHwylQZttXCjnmEtvoNkiEsDZIFKcyzYVxWRxnqSXAaeI9
+        k1pFOaUvyNCpuZLEywkyL/kqLsCWBQW7cKGXTQco42uwN77QqaY0qqY0RXw3d1vd33X5iU
+        5hCOmJb0CRuPzJtWKIeRhTsoZ6jzW3I=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 75d81832 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Tue, 12 Apr 2022 17:30:13 +0000 (UTC)
 From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
 To:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
         tglx@linutronix.de, arnd@arndb.de
@@ -66,9 +66,9 @@ Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
         linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org,
         linux-um@lists.infradead.org, x86@kernel.org,
         linux-xtensa@linux-xtensa.org
-Subject: [PATCH v3 02/10] m68k: use fallback for random_get_entropy() instead of zero
-Date:   Tue, 12 Apr 2022 19:27:46 +0200
-Message-Id: <20220412172754.149498-3-Jason@zx2c4.com>
+Subject: [PATCH v3 07/10] x86: use fallback for random_get_entropy() instead of zero
+Date:   Tue, 12 Apr 2022 19:27:51 +0200
+Message-Id: <20220412172754.149498-8-Jason@zx2c4.com>
 In-Reply-To: <20220412172754.149498-1-Jason@zx2c4.com>
 References: <20220412172754.149498-1-Jason@zx2c4.com>
 MIME-Version: 1.0
@@ -86,26 +86,37 @@ random_get_entropy_fallback() is super high precision or guaranteed to
 be entropic, but basically anything that's not zero all the time is
 better than returning zero all the time.
 
+If CONFIG_X86_TSC=n, then it's possible that we're running on a 486 with
+no RDTSC, so we only need the fallback code for that case.
+
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: x86@kernel.org
 Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 ---
- arch/m68k/include/asm/timex.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/include/asm/tsc.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/arch/m68k/include/asm/timex.h b/arch/m68k/include/asm/timex.h
-index 6a21d9358280..f4a7a340f4ca 100644
---- a/arch/m68k/include/asm/timex.h
-+++ b/arch/m68k/include/asm/timex.h
-@@ -35,7 +35,7 @@ static inline unsigned long random_get_entropy(void)
- {
- 	if (mach_random_get_entropy)
- 		return mach_random_get_entropy();
--	return 0;
-+	return random_get_entropy_fallback();
+diff --git a/arch/x86/include/asm/tsc.h b/arch/x86/include/asm/tsc.h
+index 01a300a9700b..194dc1e3f77c 100644
+--- a/arch/x86/include/asm/tsc.h
++++ b/arch/x86/include/asm/tsc.h
+@@ -28,6 +28,16 @@ static inline cycles_t get_cycles(void)
+ 	return rdtsc();
  }
- #define random_get_entropy	random_get_entropy
+ 
++static inline unsigned long random_get_entropy(void)
++{
++#ifndef CONFIG_X86_TSC
++	if (!boot_cpu_has(X86_FEATURE_TSC))
++		return random_get_entropy_fallback();
++#endif
++	return rdtsc();
++}
++#define random_get_entropy random_get_entropy
++
+ extern struct system_counterval_t convert_art_to_tsc(u64 art);
+ extern struct system_counterval_t convert_art_ns_to_tsc(u64 art_ns);
  
 -- 
 2.35.1
