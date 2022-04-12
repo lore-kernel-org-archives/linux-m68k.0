@@ -2,127 +2,134 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6D21C433EF
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Apr 2022 11:08:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49953C433FE
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Apr 2022 12:03:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344707AbiDLLKe (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 12 Apr 2022 07:10:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55498 "EHLO
+        id S1346920AbiDLMFV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 12 Apr 2022 08:05:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353862AbiDLLFA (ORCPT
+        with ESMTP id S1352415AbiDLMC6 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 12 Apr 2022 07:05:00 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A1E6548C
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Apr 2022 02:55:39 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: dmitry.osipenko)
-        with ESMTPSA id 1E1521F43F0C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1649757337;
-        bh=L7sIocVMVJFFf6pt5kvonBwHJBi8ufG5aawNMHgSOk0=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=S7aa0qukIEifv3VA3CuUR35b2mrfJnR/HsoJXzpmjRJMCbhxox8PyYd3y4yAh2cci
-         fkdP6WhWpX2fTNoSalTPD6PO9LosH8R/uIddoXqmSbAGkyMpOv7gtxoyhkm7Vdt7Po
-         VE+FMV4P/sBi8qGDGbVNV7G1cE0QQC1Psgi2NgDN4gF7AuPhmOvrPWztAg0OKxrhYx
-         ZY0kqCMPGfjI965JP3tWKRvKNwoFqex5VZBw8ei+llxHp+CnMQUlR0C0Mb9omyZuyR
-         pQwj21iO0qbnTtEuCeKQh+DA2pdqBpS/Tpsp0jFVlk3igIjJYKAd36t5EZ0tHXKfa6
-         Nz+EAW2F2/bCw==
-Message-ID: <24a38d79-b52e-387b-5ef2-954aef05a49d@collabora.com>
-Date:   Tue, 12 Apr 2022 12:55:30 +0300
+        Tue, 12 Apr 2022 08:02:58 -0400
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D3DE8023E
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Apr 2022 04:00:09 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-2ec04a2ebadso76993677b3.12
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Apr 2022 04:00:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v2zi2giavZdO2HMDfrc7yK4A4aR/ngLsqIJD3W77LNs=;
+        b=b4v6GqYxeJjlJ1RbEQauF9GEIWimtem9DfI/ea+58BboREvflEEq0M6jErAnAoE93B
+         tYuy5mJ/r4ba02CczLRQd8TmQ7CK9KY/1RfIbv6VC/vU5FzAIsre+zMd2kHi6JeMfPOF
+         4fBT0F6bq2XsYtIaWNClXMgBpjhBJ9AS7/1/3qS47r77iP3+bY4fHCX9/uoSi8DAvTqG
+         k/jDnzm69qk4dXs/N7H146ttsPkrszUV5cVSdNFLc0OGWTX1yWcUZvfGu8L3L3E878+9
+         LZbWbMEWL706ypWKJhQXFIcNT9lcoZhbr2KfSuGPorip9ZdCMOWb/sRTFpPLw/dEIfsz
+         NCSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v2zi2giavZdO2HMDfrc7yK4A4aR/ngLsqIJD3W77LNs=;
+        b=d7dgviCA/ZhRuOG0gZQLo76pPWCxeDAM4zbyq4AvkcxOXaTtZWhgGX0ygibeadBgk1
+         DLdQIbUgbsTq5mAfCqxL8oeGqkX8TnkuCMzHUzz6PBhc7TkDOc5+PbuchQmXIODfDdBU
+         QhY1+UBTkYHp/ByDUPRugLBNdbgz80oN/yak5ECva2yw8N4HvOo7PSdlfCsZSOW4P4Xz
+         8M4SDkmN/LNjnVNS/+8M+lbHlh2KNSsS8wXCQbFgo85h18XWgcxd0N2kJ+BqoCFV21Jm
+         gNwd/no79861fdhJvHdYkDglCn95Ax5vD1h1339o5h7wQ5JTGHAkti8GU+jqo4yyuoYY
+         dSxw==
+X-Gm-Message-State: AOAM533SkaZE4v4Li96O0jt+xgCwR7pPYyE8WYNZ6sKMproa+J07ZSYm
+        nF1PXesGqJgMO41xDL7zS9tcOG3WiM0oH/Kg/2Coxw==
+X-Google-Smtp-Source: ABdhPJwwqPNdGAbIJgV8Tw3Kjk4tMF7wq4HRILrI/52e/kefI6BLXOkH7KMdW6Q3t6UkDG+3QNDDwa3vKedsVrgXFAE=
+X-Received: by 2002:a0d:e743:0:b0:2eb:3106:9b32 with SMTP id
+ q64-20020a0de743000000b002eb31069b32mr30496791ywe.512.1649761208158; Tue, 12
+ Apr 2022 04:00:08 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH v7 00/20] Introduce power-off+restart call chain API
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Lee Jones <lee.jones@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        xen-devel@lists.xenproject.org,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-References: <20220411233832.391817-1-dmitry.osipenko@collabora.com>
- <CAMuHMdVfOpGvF5FR6vFD-3a1h-7Kc_yAKQzWV71PD6mDy6BmZw@mail.gmail.com>
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <CAMuHMdVfOpGvF5FR6vFD-3a1h-7Kc_yAKQzWV71PD6mDy6BmZw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20220404111204.935357-1-elver@google.com> <CACT4Y+YiDhmKokuqD3dhtj67HxZpTumiQvvRp35X-sR735qjqQ@mail.gmail.com>
+In-Reply-To: <CACT4Y+YiDhmKokuqD3dhtj67HxZpTumiQvvRp35X-sR735qjqQ@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 12 Apr 2022 13:00:00 +0200
+Message-ID: <CANpmjNPQ9DWzPRx4QWDnZatKGU96xLhb2qN-wgbD84zyZ6_Mig@mail.gmail.com>
+Subject: Re: [PATCH] signal: Deliver SIGTRAP on perf event asynchronously if blocked
+To:     Dmitry Vyukov <dvyukov@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, sparclinux@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 4/12/22 10:06, Geert Uytterhoeven wrote:
-> Hi Dmitry,
-> 
-> On Tue, Apr 12, 2022 at 1:38 AM Dmitry Osipenko
-> <dmitry.osipenko@collabora.com> wrote:
->> Problem
->> -------
->>
->> SoC devices require power-off call chaining functionality from kernel.
->> We have a widely used restart chaining provided by restart notifier API,
->> but nothing for power-off.
-> 
->> Changelog:
->>
->> v7: - Rebased on a recent linux-next. Dropped the recently removed
->>       NDS32 architecture. Only SH and x86 arches left un-acked.
->>
->>     - Added acks from Thomas Bogendoerfer and Krzysztof Kozlowski
->>       to the MIPS and memory/emif patches respectively.
-> 
-> Looks like you forgot to add the actual acks?
+On Tue, 5 Apr 2022 at 15:30, Dmitry Vyukov <dvyukov@google.com> wrote:
+> On Mon, 4 Apr 2022 at 13:12, Marco Elver <elver@google.com> wrote:
+> > With SIGTRAP on perf events, we have encountered termination of
+> > processes due to user space attempting to block delivery of SIGTRAP.
+> > Consider this case:
+> >
+> >     <set up SIGTRAP on a perf event>
+> >     ...
+> >     sigset_t s;
+> >     sigemptyset(&s);
+> >     sigaddset(&s, SIGTRAP | <and others>);
+> >     sigprocmask(SIG_BLOCK, &s, ...);
+> >     ...
+> >     <perf event triggers>
+> >
+> > When the perf event triggers, while SIGTRAP is blocked, force_sig_perf()
+> > will force the signal, but revert back to the default handler, thus
+> > terminating the task.
+> >
+> > This makes sense for error conditions, but not so much for explicitly
+> > requested monitoring. However, the expectation is still that signals
+> > generated by perf events are synchronous, which will no longer be the
+> > case if the signal is blocked and delivered later.
+> >
+> > To give user space the ability to clearly distinguish synchronous from
+> > asynchronous signals, introduce siginfo_t::si_perf_flags and
+> > TRAP_PERF_FLAG_ASYNC (opted for flags in case more binary information is
+> > required in future).
+> >
+> > The resolution to the problem is then to (a) no longer force the signal
+> > (avoiding the terminations), but (b) tell user space via si_perf_flags
+> > if the signal was synchronous or not, so that such signals can be
+> > handled differently (e.g. let user space decide to ignore or consider
+> > the data imprecise).
+> >
+> > The alternative of making the kernel ignore SIGTRAP on perf events if
+> > the signal is blocked may work for some usecases, but likely causes
+> > issues in others that then have to revert back to interception of
+> > sigprocmask() (which we want to avoid). [ A concrete example: when using
+> > breakpoint perf events to track data-flow, in a region of code where
+> > signals are blocked, data-flow can no longer be tracked accurately.
+> > When a relevant asynchronous signal is received after unblocking the
+> > signal, the data-flow tracking logic needs to know its state is
+> > imprecise. ]
+> >
+> > Link: https://lore.kernel.org/all/Yjmn%2FkVblV3TdoAq@elver.google.com/
+> > Fixes: 97ba62b27867 ("perf: Add support for SIGTRAP on perf events")
+> > Reported-by: Dmitry Vyukov <dvyukov@google.com>
+> > Signed-off-by: Marco Elver <elver@google.com>
+>
+> Tested-by: Dmitry Vyukov <dvyukov@google.com>
+>
+> I've tested delivery of SIGTRAPs when it's blocked with sigprocmask,
+> it does not kill the process now.
+>
+> And tested the case where previously I was getting infinite recursion
+> and stack overflow (SIGTRAP handler causes another SIGTRAP recursively
+> before being able to detect recursion and return). With this patch it
+> can be handled by blocking recursive SIGTRAPs (!SA_NODEFER).
 
-Good catch, thank you! Indeed, I sent out the version without the acks,
-but luckily it's only the acks that are missing, the code is fine.
+Thanks!
+
+
+Should there be any further comments, please shout.
+
+Thanks,
+-- Marco
