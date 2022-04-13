@@ -2,57 +2,58 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B92B6C433EF
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 Apr 2022 22:39:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DABAC433F5
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 Apr 2022 22:40:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238017AbiDMWlk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 13 Apr 2022 18:41:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45112 "EHLO
+        id S238131AbiDMWnR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 13 Apr 2022 18:43:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237972AbiDMWlj (ORCPT
+        with ESMTP id S238150AbiDMWnO (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 13 Apr 2022 18:41:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 967204D9CA
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Apr 2022 15:39:16 -0700 (PDT)
+        Wed, 13 Apr 2022 18:43:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20937424A4
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Apr 2022 15:40:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A7AFE61FAA
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Apr 2022 22:39:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8AACC385A6
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Apr 2022 22:39:14 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 141D161FA8
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Apr 2022 22:40:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AE0CC385A6
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Apr 2022 22:40:47 +0000 (UTC)
 Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="A4OcutCA"
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="BSJd+Rof"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1649889552;
+        t=1649889642;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=EXr0AZpcPcnbl6qsjtJM2/w/Togs9os9zG2LD36s86Y=;
-        b=A4OcutCARta+p7eWzod5lNhQSi3kXd6bvC6QeMGVDMJimFl3Lu/EMO8YPSjU+3TUj0Rqwe
-        bjwyNKtCHUoJeSjJurLNnAa62rLGxSGmfzrE2Zmb5b+aig4ebINo5LNqGMtRWZoFwz0VZr
-        pZDjE0jmwQyM1/6zIg+jAinjD2gFeXU=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 79c98e0a (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO)
+        bh=sy2u2tLdcOJ2AL1/09I7fdj8Xfid/ZIpX9etCksgmJY=;
+        b=BSJd+Rof/hfsoPaotpV4AYazZyioeJj4eRh60bzrGewccL6HZavCjE/0qUBhIWSnl9Lr0B
+        kQi5II1nZVYOr2KbT139aOcQTk6c/B8Sfy91vY6uvDkOhsSaqX9xKk6ijYU2z9azJYsSh1
+        +GLVM5IZiGoQPm1J+dkkrAmgOSRHU4s=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 5b26f254 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO)
         for <linux-m68k@lists.linux-m68k.org>;
-        Wed, 13 Apr 2022 22:39:12 +0000 (UTC)
-Received: by mail-yb1-f176.google.com with SMTP id z33so6356094ybh.5
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Apr 2022 15:39:11 -0700 (PDT)
-X-Gm-Message-State: AOAM530VfUTW0Blesvo/AWZN99QP7vssidqp1WsOc/W/uzo6wrZ+5wKq
-        nG2jdufyHM1EmnN34RG32tpixStYtQiiiYylrFo=
-X-Google-Smtp-Source: ABdhPJxXSf7GaLqdLU3LGxvJFMW4JvQbew20C3o4QQN4FpKqfaroqjsmiNxIHcc1vWzN4Jl4A9L3Loy9Cv7VCY2OIqY=
-X-Received: by 2002:a81:6a84:0:b0:2ec:c59:9d22 with SMTP id
- f126-20020a816a84000000b002ec0c599d22mr1034376ywc.499.1649889540445; Wed, 13
- Apr 2022 15:39:00 -0700 (PDT)
+        Wed, 13 Apr 2022 22:40:42 +0000 (UTC)
+Received: by mail-yb1-f178.google.com with SMTP id f17so6317380ybj.10
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Apr 2022 15:40:41 -0700 (PDT)
+X-Gm-Message-State: AOAM531563xsnChvfnSDNwn1n0ixfiezE6fFsqR+4f1MI/DFhJ6cZdvV
+        YCdm087pZ9IDz4jVEEC13gO1IppXn79rjSYMTr4=
+X-Google-Smtp-Source: ABdhPJx9INm5zW7sTrV4774xD6IRq7PzslZw6I75g3UsN7iIIGechqL3/0SrrUeqYX9XZja0QUvWBULi93OT13Yuj6E=
+X-Received: by 2002:a5b:6cf:0:b0:61e:1371:3cda with SMTP id
+ r15-20020a5b06cf000000b0061e13713cdamr955062ybq.235.1649889630599; Wed, 13
+ Apr 2022 15:40:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220413115411.21489-1-Jason@zx2c4.com> <20220413115411.21489-2-Jason@zx2c4.com>
- <CAL_JsqJYq5Oe_zBbcwYNMpfpqGLGCyaSfGqOrPjZ_Pj=nF73mA@mail.gmail.com>
-In-Reply-To: <CAL_JsqJYq5Oe_zBbcwYNMpfpqGLGCyaSfGqOrPjZ_Pj=nF73mA@mail.gmail.com>
+References: <20220413115411.21489-1-Jason@zx2c4.com> <20220413115411.21489-4-Jason@zx2c4.com>
+ <CAL_JsqJ86vZKZQO+9_Kva-EbZrRPMbcgDm+UvjJdnR=GL-qHSw@mail.gmail.com>
+In-Reply-To: <CAL_JsqJ86vZKZQO+9_Kva-EbZrRPMbcgDm+UvjJdnR=GL-qHSw@mail.gmail.com>
 From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Thu, 14 Apr 2022 00:38:49 +0200
-X-Gmail-Original-Message-ID: <CAHmME9pn++c0qHzq39YWyXogcKRbn2XK=yA3kFqch0wH7qPcAg@mail.gmail.com>
-Message-ID: <CAHmME9pn++c0qHzq39YWyXogcKRbn2XK=yA3kFqch0wH7qPcAg@mail.gmail.com>
-Subject: Re: [PATCH v4 01/11] timekeeping: add raw clock fallback for random_get_entropy()
+Date:   Thu, 14 Apr 2022 00:40:19 +0200
+X-Gmail-Original-Message-ID: <CAHmME9qGzW1+dWLvObjQ4ofGcCU1tOwTB+qJTVs2ufEmAEhbrA@mail.gmail.com>
+Message-ID: <CAHmME9qGzW1+dWLvObjQ4ofGcCU1tOwTB+qJTVs2ufEmAEhbrA@mail.gmail.com>
+Subject: Re: [PATCH v4 03/11] riscv: use fallback for random_get_entropy()
+ instead of zero
 To:     Rob Herring <robh@kernel.org>
 Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
@@ -93,23 +94,13 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 Hi Rob,
 
-On Wed, Apr 13, 2022 at 4:32 PM Rob Herring <robh@kernel.org> wrote:
-> 'does not have a usable get_cycles(), ...' as clearly some arches have
-> get_cycles() and yet still need a fallback.
->
-> Why not handle the 'if get_cycles() returns 0 do the fallback' within
-> a weak random_get_entropy() function? Then more arches don't need any
-> random_get_entropy() implementation.
+On Wed, Apr 13, 2022 at 4:40 PM Rob Herring <robh@kernel.org> wrote:
+> Moving this check to get_cycles() implementation would eliminate the
+> RiscV implementation of random_get_entropy() if you follow my other
+> suggestion.
 
-No, this doesn't really work. Actually, most archs don't need a
-random_get_entropy() function, because it exists in asm-generic doing
-the thing we want. So that's taken care of. But weak functions as you
-suggested would be quite suboptimal, because on, e.g. x86, what we
-have now gets inlined into a single rdtsc instruction. Also, the
-relation between get_cycles() and random_get_entropy() doesn't always
-hold; some archs may not have a working get_cycles() function but do
-have a path for a random_get_entropy(). Etc, etc. So I'm pretty sure
-that this commit is really the most simple and optimal thing to do. I
-really don't want to go the weak functions route.
+Not an option. random_get_entropy() != get_cycles(). Sometimes these
+are different functions. Returning random_get_entropy_fallback() from
+get_cycles(), for example, wouldn't make any sense.
 
 Jason
