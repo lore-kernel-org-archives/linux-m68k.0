@@ -2,40 +2,40 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8481DC43217
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 Apr 2022 11:55:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07DC9C43219
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 Apr 2022 11:55:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233646AbiDML6H (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 13 Apr 2022 07:58:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53356 "EHLO
+        id S235328AbiDML6J (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 13 Apr 2022 07:58:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235392AbiDML5n (ORCPT
+        with ESMTP id S235404AbiDML5o (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 13 Apr 2022 07:57:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54FB2326DD
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Apr 2022 04:55:11 -0700 (PDT)
+        Wed, 13 Apr 2022 07:57:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 368C857158
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Apr 2022 04:55:20 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9767561E02;
-        Wed, 13 Apr 2022 11:55:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27237C385A4;
-        Wed, 13 Apr 2022 11:55:06 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9A4F561DF4;
+        Wed, 13 Apr 2022 11:55:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC30EC385A4;
+        Wed, 13 Apr 2022 11:55:15 +0000 (UTC)
 Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="C2i/j6CO"
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="D5e/yTI7"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1649850905;
+        t=1649850915;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=IHzRJmPvA7OgZjJx+ZTbqcYHIM/uCZIijqXsNo6FZ2U=;
-        b=C2i/j6COYrH2Ir/9YfejGPtCEir9fLD3flKTNzWxM3qtFKGfSSvDfd7Id1ygvKepoM/pol
-        Ki+JEztNXLkml4iO4CuGyueab/W/2Sh2YlsHRyldHvXhCd9zlKZyZklBEK6Qj8S9W7+Lc6
-        9hBIabkwBgsudPJcl+vU3Bd5hRFaD68=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 5b8e3e5e (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Wed, 13 Apr 2022 11:55:04 +0000 (UTC)
+        bh=cpbrBqankh2fsmUUGS4FsleJ1lhokYXdTSW/sLYtQ34=;
+        b=D5e/yTI77svJu04JIIjLX82w3iBK/JOVg1ljd/NgD71+MEVGUawTHPrI/BFOPvLvWG8Wf3
+        EP3di+4XmI7O76waLn1Peh1SZYlB2jTwofk7LU4MewLiWUwjVG7FyzXx4veEIRZSCFjedR
+        ecKuQIgp+9QRKAF+A0jUarIeVNSUPno=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id db9488e4 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Wed, 13 Apr 2022 11:55:14 +0000 (UTC)
 From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
 To:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
         tglx@linutronix.de, arnd@arndb.de
@@ -66,9 +66,9 @@ Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
         linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org,
         linux-um@lists.infradead.org, x86@kernel.org,
         linux-xtensa@linux-xtensa.org
-Subject: [PATCH v4 04/11] mips: use fallback for random_get_entropy() instead of zero
-Date:   Wed, 13 Apr 2022 13:54:04 +0200
-Message-Id: <20220413115411.21489-5-Jason@zx2c4.com>
+Subject: [PATCH v4 05/11] arm: use fallback for random_get_entropy() instead of zero
+Date:   Wed, 13 Apr 2022 13:54:05 +0200
+Message-Id: <20220413115411.21489-6-Jason@zx2c4.com>
 In-Reply-To: <20220413115411.21489-1-Jason@zx2c4.com>
 References: <20220413115411.21489-1-Jason@zx2c4.com>
 MIME-Version: 1.0
@@ -88,25 +88,23 @@ better than returning zero all the time.
 
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Russell King <linux@armlinux.org.uk>
 Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 ---
- arch/mips/include/asm/timex.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/include/asm/timex.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/include/asm/timex.h b/arch/mips/include/asm/timex.h
-index b05bb70a2e46..abc60a6395e3 100644
---- a/arch/mips/include/asm/timex.h
-+++ b/arch/mips/include/asm/timex.h
-@@ -94,7 +94,7 @@ static inline unsigned long random_get_entropy(void)
- 	else if (likely(imp != PRID_IMP_R6000 && imp != PRID_IMP_R6000A))
- 		return read_c0_random();
- 	else
--		return 0;	/* no usable register */
-+		return random_get_entropy_fallback();	/* no usable register */
- }
- #define random_get_entropy random_get_entropy
+diff --git a/arch/arm/include/asm/timex.h b/arch/arm/include/asm/timex.h
+index 7c3b3671d6c2..6d1337c169cd 100644
+--- a/arch/arm/include/asm/timex.h
++++ b/arch/arm/include/asm/timex.h
+@@ -11,5 +11,6 @@
  
+ typedef unsigned long cycles_t;
+ #define get_cycles()	({ cycles_t c; read_current_timer(&c) ? 0 : c; })
++#define random_get_entropy() (((unsigned long)get_cycles()) ?: random_get_entropy_fallback())
+ 
+ #endif
 -- 
 2.35.1
 
