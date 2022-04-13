@@ -2,130 +2,151 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66DCBC433EF
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 Apr 2022 14:40:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0640DC4167E
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 Apr 2022 18:48:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236177AbiDMOnA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 13 Apr 2022 10:43:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57570 "EHLO
+        id S237826AbiDMSu4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 13 Apr 2022 14:50:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236175AbiDMOm7 (ORCPT
+        with ESMTP id S236061AbiDMSuy (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 13 Apr 2022 10:42:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E97315A08
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Apr 2022 07:40:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BD08861C44
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Apr 2022 14:40:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F32C6C385AE
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Apr 2022 14:40:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649860836;
-        bh=78m64rXl3BqnnR/vfXtui5J5LLZFfkI1NSRN1fS+Ck0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=UdYkQwPhoNddQfTABeK6UIc+V/M7mn4WxZ1zCemfSAapYmV611+X19CYTMnU2gKdd
-         eQt4hWHmIcMOjH9ufURNjYOJh/PS4SNm8ToPymJJxdX2Y+siJMCN6U8FaCymHshH52
-         9Qbm/df+6HnaqLrkFj7NJrAzy1UFXN9sN8f1HAQYyRuM1/L9lP2u81DAQc9gDyiL15
-         GxcwTUdup2r4cYDYxPhPENDnOwSBqAg1BzmDvM7XgNSXP1YfqdhXRlni/r3U3AsxZL
-         YKsH5TnN0Ss7PjDCjxtxuBreLBZNXZa6kdNB32qJJqL+LxCQAGFJBr1WpNKN77362P
-         +a1RQ7JOIh2Zw==
-Received: by mail-io1-f50.google.com with SMTP id p21so2120290ioj.4
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Apr 2022 07:40:35 -0700 (PDT)
-X-Gm-Message-State: AOAM531KErMBDF4OCVVCmoPy8uUZD5nU9DGtFF41JPX0W/ljXmDUNSdv
-        NL6MhD/gw+T1PjE5FSqtKDcxO66SMUJRI8pMkg==
-X-Google-Smtp-Source: ABdhPJwPF0VHE9D8w/oeESIlTTrvwO1gVXfb+xfx+0hNhkJEN+zqgaOI+EWicwhkoM5T8fMAkoGBIRO6Tom03sqTu+o=
-X-Received: by 2002:a92:dd86:0:b0:2bc:805c:23c7 with SMTP id
- g6-20020a92dd86000000b002bc805c23c7mr17523118iln.279.1649860824300; Wed, 13
- Apr 2022 07:40:24 -0700 (PDT)
+        Wed, 13 Apr 2022 14:50:54 -0400
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E27CF5E173
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Apr 2022 11:48:32 -0700 (PDT)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-2ebf3746f87so32638817b3.6
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Apr 2022 11:48:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=J1rErWVySlUxlEFN2u18NGS5Qm0qvXYHGlMsYpGhhEY=;
+        b=qmKCvVzi870hQBCPFLSLMGkI57ypsDdoEaOiNidu6tZ+tYz7RqTLnC9H+z9nRPY2Kf
+         2a8zdYqYpSI0FZTk6w3f4D/uuwUzBYlnCAWwVzk2SoERUBISwUiH7bVVIIcsHaRlE4TB
+         /78nngeZPoJhOneSWJH+kZExweD+5FMatLIH3B9ueUckgKjn+wJEdU/TJLexpZ47ZG0y
+         JIllRLZPELXFiw71sOpOM1ZS4JL/FOpbD1Rw/tGy0xbSJ5gXEy76vqTJjRXuj7VpVOGN
+         S3tqS8Sia3Ae2PAfpR69txxNpGNGZSk808hOczvTSuiSGoyuvQ3oL9JfsgQyLSEzeD2J
+         xA7w==
+X-Gm-Message-State: AOAM531VpCHDgl/f+0nghPVFYVX9SEl7M42FuG6SwoLZOFjaDlFVf4Wc
+        ktcdVoMB3ZbpzgRozhTCFPVO9QZbgZdKslQYtQg=
+X-Google-Smtp-Source: ABdhPJz9BfsA7QIGi43YRDlzzrWhVjbeGEMJOs01j9nA3vXXWXOOPKhq5d8EhdtGHqqQ5dYXQmK91VGL/RQnfnI1jKs=
+X-Received: by 2002:a81:7c45:0:b0:2eb:4759:cc32 with SMTP id
+ x66-20020a817c45000000b002eb4759cc32mr224284ywc.515.1649875711933; Wed, 13
+ Apr 2022 11:48:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220413115411.21489-1-Jason@zx2c4.com> <20220413115411.21489-4-Jason@zx2c4.com>
-In-Reply-To: <20220413115411.21489-4-Jason@zx2c4.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 13 Apr 2022 09:40:13 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJ86vZKZQO+9_Kva-EbZrRPMbcgDm+UvjJdnR=GL-qHSw@mail.gmail.com>
-Message-ID: <CAL_JsqJ86vZKZQO+9_Kva-EbZrRPMbcgDm+UvjJdnR=GL-qHSw@mail.gmail.com>
-Subject: Re: [PATCH v4 03/11] riscv: use fallback for random_get_entropy()
- instead of zero
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>, "Theodore Ts'o" <tytso@mit.edu>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
+References: <20220411233832.391817-1-dmitry.osipenko@collabora.com> <20220411233832.391817-4-dmitry.osipenko@collabora.com>
+In-Reply-To: <20220411233832.391817-4-dmitry.osipenko@collabora.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 13 Apr 2022 20:48:20 +0200
+Message-ID: <CAJZ5v0gf1J+yPW14TAdLGLGfO+-2s=r0DDP7d+Rgop3=dB0gaQ@mail.gmail.com>
+Subject: Re: [PATCH v7 03/20] reboot: Print error message if restart handler
+ has duplicated priority
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
         Russell King <linux@armlinux.org.uk>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Albert Ou <aou@eecs.berkeley.edu>,
-        "David S . Miller" <davem@davemloft.net>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee.jones@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
         linux-m68k@lists.linux-m68k.org,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-um@lists.infradead.org, X86 ML <x86@kernel.org>,
-        linux-xtensa@linux-xtensa.org
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        xen-devel@lists.xenproject.org,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Apr 13, 2022 at 6:56 AM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+On Tue, Apr 12, 2022 at 1:39 AM Dmitry Osipenko
+<dmitry.osipenko@collabora.com> wrote:
 >
-> In the event that random_get_entropy() can't access a cycle counter or
-> similar, falling back to returning 0 is really not the best we can do.
-> Instead, at least calling random_get_entropy_fallback() would be
-> preferable, because that always needs to return _something_, even
-> falling back to jiffies eventually. It's not as though
-> random_get_entropy_fallback() is super high precision or guaranteed to
-> be entropic, but basically anything that's not zero all the time is
-> better than returning zero all the time.
+> Add sanity check which ensures that there are no two restart handlers
+> registered using the same priority. This requirement will become mandatory
+> once all drivers will be converted to the new API and such errors will be
+> fixed.
 >
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+
+The first two patches in the series are fine with me and there's only
+one minor nit regarding this one (below).
+
 > ---
->  arch/riscv/include/asm/timex.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  kernel/reboot.c | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
 >
-> diff --git a/arch/riscv/include/asm/timex.h b/arch/riscv/include/asm/timex.h
-> index 507cae273bc6..d6a7428f6248 100644
-> --- a/arch/riscv/include/asm/timex.h
-> +++ b/arch/riscv/include/asm/timex.h
-> @@ -41,7 +41,7 @@ static inline u32 get_cycles_hi(void)
->  static inline unsigned long random_get_entropy(void)
+> diff --git a/kernel/reboot.c b/kernel/reboot.c
+> index ed4e6dfb7d44..acdae4e95061 100644
+> --- a/kernel/reboot.c
+> +++ b/kernel/reboot.c
+> @@ -182,6 +182,21 @@ static ATOMIC_NOTIFIER_HEAD(restart_handler_list);
+>   */
+>  int register_restart_handler(struct notifier_block *nb)
 >  {
->         if (unlikely(clint_time_val == NULL))
+> +       int ret;
+> +
+> +       ret = atomic_notifier_chain_register_unique_prio(&restart_handler_list, nb);
+> +       if (ret != -EBUSY)
+> +               return ret;
+> +
+> +       /*
+> +        * Handler must have unique priority. Otherwise call order is
+> +        * determined by registration order, which is unreliable.
+> +        *
+> +        * This requirement will become mandatory once all drivers
+> +        * will be converted to use new sys-off API.
+> +        */
+> +       pr_err("failed to register restart handler using unique priority\n");
 
-Moving this check to get_cycles() implementation would eliminate the
-RiscV implementation of random_get_entropy() if you follow my other
-suggestion.
+I would use pr_info() here, because this is not a substantial error AFAICS.
 
-I guess there's some advantage to skipping a NULL check every time for
-get_cycles(), but really the register read time will be much slower
-than an added check.
-
-> -               return 0;
-> +               return random_get_entropy_fallback();
->         return get_cycles();
+> +
+>         return atomic_notifier_chain_register(&restart_handler_list, nb);
 >  }
->  #define random_get_entropy()   random_get_entropy()
+>  EXPORT_SYMBOL(register_restart_handler);
+> --
