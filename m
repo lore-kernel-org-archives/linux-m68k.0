@@ -2,28 +2,43 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF128C433FE
-	for <linux-m68k@archiver.kernel.org>; Thu, 14 Apr 2022 01:16:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1762BC433FE
+	for <linux-m68k@archiver.kernel.org>; Thu, 14 Apr 2022 09:27:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239304AbiDNBSn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 13 Apr 2022 21:18:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52318 "EHLO
+        id S241726AbiDNJaB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 14 Apr 2022 05:30:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232466AbiDNBSn (ORCPT
+        with ESMTP id S235625AbiDNJ37 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 13 Apr 2022 21:18:43 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 226CE4D620
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Apr 2022 18:16:20 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id D411B92009C; Thu, 14 Apr 2022 03:16:18 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id C508F92009B;
-        Thu, 14 Apr 2022 02:16:18 +0100 (BST)
-Date:   Thu, 14 Apr 2022 02:16:18 +0100 (BST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thu, 14 Apr 2022 05:29:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9546852B18
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 14 Apr 2022 02:27:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8293D61CAB;
+        Thu, 14 Apr 2022 09:27:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F941C385A1;
+        Thu, 14 Apr 2022 09:27:29 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="iCKw8U+B"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1649928448;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jitaCCQ2e/PpJGSBhLHWsevtZEgEekS1b3Wk73klyKA=;
+        b=iCKw8U+BX0unZDHdCqu1WEQPpDnLVael4IDVYgWvfW7w0XcoPFz96Q+X7Oh/HXcBDfoQgf
+        relkkKJiqLUs0hWWbJBeLDEdKmFO5iYlsrmp12SxDsveaByJUqA4gI9QfV6k/NrhryczGl
+        YX1t4UDjk8/egPtL7ZCNgWMOfE4aDFg=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id ff3c9dc5 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Thu, 14 Apr 2022 09:27:27 +0000 (UTC)
+Date:   Thu, 14 Apr 2022 11:27:22 +0200
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         LKML <linux-kernel@vger.kernel.org>,
         Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -55,54 +70,60 @@ cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         X86 ML <x86@kernel.org>, linux-xtensa@linux-xtensa.org
 Subject: Re: [PATCH v4 04/11] mips: use fallback for random_get_entropy()
  instead of zero
-In-Reply-To: <CAHmME9pQ4xdeTUDxAdrOu=S9NRTonYzJVk50fa0Zfz4knZt5WA@mail.gmail.com>
-Message-ID: <alpine.DEB.2.21.2204140014580.9383@angie.orcam.me.uk>
-References: <20220413115411.21489-1-Jason@zx2c4.com> <20220413115411.21489-5-Jason@zx2c4.com> <20220413122546.GA11860@alpha.franken.de> <alpine.DEB.2.21.2204131331450.9383@angie.orcam.me.uk>
+Message-ID: <YlfoeGRM6w2O+eXA@zx2c4.com>
+References: <20220413115411.21489-1-Jason@zx2c4.com>
+ <20220413115411.21489-5-Jason@zx2c4.com>
+ <20220413122546.GA11860@alpha.franken.de>
+ <alpine.DEB.2.21.2204131331450.9383@angie.orcam.me.uk>
  <CAHmME9pQ4xdeTUDxAdrOu=S9NRTonYzJVk50fa0Zfz4knZt5WA@mail.gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+ <alpine.DEB.2.21.2204140014580.9383@angie.orcam.me.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.2204140014580.9383@angie.orcam.me.uk>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Jason,
+Hi Maciej,
 
-> However, one thing that I've been thinking about is that the c0 random
-> register is actually kind of garbage. In my fuzzy decade-old memory of
-> MIPS, I believe the c0 random register starts at the maximum number of
-> TLB entries (16?), and then counts down cyclically, decrementing once
-> per CPU cycle. Is that right?
+On Thu, Apr 14, 2022 at 02:16:18AM +0100, Maciej W. Rozycki wrote:
+>  Yes, for the relevant CPUs the range is 63-8 << 8 for R3k machines and 
+> 47-0 (the lower bound can be higher if wired entries are used, which I 
+> think we occasionally do) for R4k machines with a buggy CP0 counter.  So 
+> there are either 56 or up to 48 distinct CP0 Random register values.
 
- Yes, for the relevant CPUs the range is 63-8 << 8 for R3k machines and 
-47-0 (the lower bound can be higher if wired entries are used, which I 
-think we occasionally do) for R4k machines with a buggy CP0 counter.  So 
-there are either 56 or up to 48 distinct CP0 Random register values.
+Ahh interesting, so it varies a bit, but it remains rather small.
 
-> If it is, there are some real pros and cons here to consider:
-> - Pro: decrementing each CPU cycle means pretty good granularity
-> - Con: wrapping at, like, 16 or something really is very limited, to
-> the point of being almost bad
-> 
-> Meanwhile, on systems without the c0 cycles counter, what is the
-> actual resolution of random_get_entropy_fallback()? Is this just
-> falling back to jiffies?
+>  It depends on the exact system.  Some have a 32-bit high-resolution 
+> counter in the chipset (arch/mips/kernel/csrc-ioasic.c) giving like 25MHz 
+> resolution, some have nothing but jiffies.
 
- It depends on the exact system.  Some have a 32-bit high-resolution 
-counter in the chipset (arch/mips/kernel/csrc-ioasic.c) giving like 25MHz 
-resolution, some have nothing but jiffies.
+Alright, so there _are_ machines with no c0 cycles but with a good
+clock. Yet, 25MHz is still less than the cpu cycle, so this c0 random
+ORing trick remains useful perhaps.
 
-> IF (a) the fallback is jiffies AND (b) c0 wraps at 16, then actually,
-> what would be really nice would be something like:
-> 
->     return (jiffies << 4) | read_c0_random();
-> 
-> It seems like that would give us something somewhat more ideal than
-> the status quo. Still crap, of course, but undoubtedly better.
+>  It seems like a reasonable idea to me, but the details would have to be 
+> sorted out, because where a chipset high-resolution counter is available 
+> we want to factor it in, and otherwise we need to extract the right bits 
+> from the CP0 Random register, either 13:8 for the R3k or 5:0 for the R4k.
 
- It seems like a reasonable idea to me, but the details would have to be 
-sorted out, because where a chipset high-resolution counter is available 
-we want to factor it in, and otherwise we need to extract the right bits 
-from the CP0 Random register, either 13:8 for the R3k or 5:0 for the R4k.
+One thing we could do here that would seemingly cover all the cases
+without losing _that_ much would be:
 
-  Maciej
+    return (random_get_entropy_fallback() << 13) | ((1<<13) - read_c0_random());
+
+Or in case the 13 turns out to be wrong on some hardware, we could
+mitigate the effect with:
+
+    return (random_get_entropy_fallback() << 13) ^ ((1<<13) - read_c0_random());
+
+As mentioned in the 1/xx patch of this series,
+random_get_entropy_fallback() should call the highest resolution thing.
+We then shave off the least-changing bits and stuff in the
+faster-changing bits from read_c0_random(). Then, in order to keep it
+counting up instead of down, we do the subtraction there.
+
+What do you think of this plan?
+
+Jason
