@@ -2,112 +2,130 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0664C433F5
-	for <linux-m68k@archiver.kernel.org>; Thu, 14 Apr 2022 18:18:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3870C4332F
+	for <linux-m68k@archiver.kernel.org>; Thu, 14 Apr 2022 20:41:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344428AbiDNSUk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 14 Apr 2022 14:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46684 "EHLO
+        id S244543AbiDNUoJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 14 Apr 2022 16:44:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244046AbiDNSUj (ORCPT
+        with ESMTP id S235422AbiDNUoI (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 14 Apr 2022 14:20:39 -0400
-X-Greylist: delayed 508 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 14 Apr 2022 11:18:14 PDT
-Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C1CE9CB9
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 14 Apr 2022 11:18:14 -0700 (PDT)
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4KfSCW69gWz4X;
-        Thu, 14 Apr 2022 20:09:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1649959782; bh=dFgq80ZhVmCzh8EszsBqFZFG3IVVYvOIEvlGI0Tq4bM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M6meHZrwxDyeU2pD3ZmxqrGIOzrLBQXdCeqnbtwDtUq7d8NQ4FnteJZa5YFykZ6e+
-         X355Jw6iEC8xz5YVcTjA7IGBOIrhJJnO2gyLkF37nJHv3MgLZmJqPn2G0I5dDKnrg4
-         F4lkBza7OIX6WAPVjLgmrFFU3bI2WDyTsmq3yRNaX+0PJysAXwkYCJl0nPOwBhBgob
-         8slrsU1NRKlCWPtWM49DA1EczNJlhcfy1OC/YVXW0ILmdWA2Y4HIWMLSnQstsdxWpp
-         LxCcPEO0wf/x0jtEuJ4NrLpxwq+b047xHqknUEqc50McWrzi2dQf66NZb5+xCwTgL8
-         LJAaOowB2v/uQ==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.5 at mail
-Date:   Thu, 14 Apr 2022 20:09:26 +0200
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
+        Thu, 14 Apr 2022 16:44:08 -0400
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D993C4AF
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 14 Apr 2022 13:41:41 -0700 (PDT)
+Received: by mail-oi1-f180.google.com with SMTP id z8so6676652oix.3
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 14 Apr 2022 13:41:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kQ16bevC74v8j9hP5RJfq+tF3CIcALFbt9dd1uaIG9E=;
+        b=V5KqN83vxe2TyWDcRasI9R4f/zN/N3BXhK0IF9tSXUtAjBUO3d18Eun0ICz/j7aGgw
+         dSXMPmm0Ione/ng5XRoljdQIrdXCHf+IGKJFs7qrmnw9TLamXzcDHND9h4BCWq/2aBv6
+         oopnEsX1KDQWjEYThKJepKxDNcD3d7lvAMhOs/dFemXMdpWU4a0pW5myxuHckCTkOfYK
+         4Qk+PDGNWLvSEhFDvnLthnd2/QVI2H+JmQEk7F0VpzZ/MckaHHwRMqYq2dVrYL3bD0bv
+         xh27Y0s4gTJgr2A0RGD553YgeKHU/2vTNmx2VXiuWVs/9kJIVgdLv/aQP5Ux+jMd498F
+         9QDA==
+X-Gm-Message-State: AOAM533xeSmBjSL2SLKeej0URYR2VVL149HEyNQD8VLHzcWGcA6tNN2T
+        IBLnMNKa35jd9jspinrQbQ==
+X-Google-Smtp-Source: ABdhPJwC/Cf4MTxpznrthxydqEHpaVveVGXAK2ei0no2VM/vDG7BZn3PRSgiAWYQ1YAehWtlLvX6JQ==
+X-Received: by 2002:a05:6808:1a1c:b0:2fa:6c17:5c07 with SMTP id bk28-20020a0568081a1c00b002fa6c175c07mr210417oib.80.1649968900860;
+        Thu, 14 Apr 2022 13:41:40 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id lw19-20020a0568708e1300b000e2f7602666sm1038088oab.15.2022.04.14.13.41.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Apr 2022 13:41:40 -0700 (PDT)
+Received: (nullmailer pid 2666253 invoked by uid 1000);
+        Thu, 14 Apr 2022 20:41:38 -0000
+Date:   Thu, 14 Apr 2022 15:41:38 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>, "Theodore Ts'o" <tytso@mit.edu>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
         Russell King <linux@armlinux.org.uk>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Will Deacon <will@kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Lee Jones <lee.jones@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v7 00/20] Introduce power-off+restart call chain API
-Message-ID: <YlhjVqStJJoL01v9@qmqm.qmqm.pl>
-References: <20220411233832.391817-1-dmitry.osipenko@collabora.com>
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-um@lists.infradead.org, X86 ML <x86@kernel.org>,
+        linux-xtensa@linux-xtensa.org
+Subject: Re: [PATCH v4 01/11] timekeeping: add raw clock fallback for
+ random_get_entropy()
+Message-ID: <YliHAl0XpQ57FSGy@robh.at.kernel.org>
+References: <20220413115411.21489-1-Jason@zx2c4.com>
+ <20220413115411.21489-2-Jason@zx2c4.com>
+ <CAL_JsqJYq5Oe_zBbcwYNMpfpqGLGCyaSfGqOrPjZ_Pj=nF73mA@mail.gmail.com>
+ <CAHmME9pn++c0qHzq39YWyXogcKRbn2XK=yA3kFqch0wH7qPcAg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220411233832.391817-1-dmitry.osipenko@collabora.com>
+In-Reply-To: <CAHmME9pn++c0qHzq39YWyXogcKRbn2XK=yA3kFqch0wH7qPcAg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Apr 12, 2022 at 02:38:12AM +0300, Dmitry Osipenko wrote:
-> Problem
-> -------
+On Thu, Apr 14, 2022 at 12:38:49AM +0200, Jason A. Donenfeld wrote:
+> Hi Rob,
 > 
-> SoC devices require power-off call chaining functionality from kernel.
-> We have a widely used restart chaining provided by restart notifier API,
-> but nothing for power-off.
+> On Wed, Apr 13, 2022 at 4:32 PM Rob Herring <robh@kernel.org> wrote:
+> > 'does not have a usable get_cycles(), ...' as clearly some arches have
+> > get_cycles() and yet still need a fallback.
+> >
+> > Why not handle the 'if get_cycles() returns 0 do the fallback' within
+> > a weak random_get_entropy() function? Then more arches don't need any
+> > random_get_entropy() implementation.
 > 
-> Solution
-> --------
-> 
-> Introduce new API that provides both restart and power-off call chains.
-[...]
+> No, this doesn't really work. Actually, most archs don't need a
+> random_get_entropy() function, because it exists in asm-generic doing
+> the thing we want. So that's taken care of. But weak functions as you
+> suggested would be quite suboptimal, because on, e.g. x86, what we
+> have now gets inlined into a single rdtsc instruction. Also, the
+> relation between get_cycles() and random_get_entropy() doesn't always
+> hold; some archs may not have a working get_cycles() function but do
+> have a path for a random_get_entropy(). Etc, etc. So I'm pretty sure
+> that this commit is really the most simple and optimal thing to do. I
+> really don't want to go the weak functions route.
 
-For the series:
+Is random_get_entropy() a hot path?
 
-Reviewed-by: Micha³ Miros³aw <mirq-linux@rere.qmqm.pl>
+
+It doesn't have to be a weak function, but look at it this way. We have 
+the following possibilities for what random_get_entropy() does:
+
+- get_cycles()
+- get_cycles() but returns 0 sometimes
+- returns 0
+- something else
+
+You're handling the 3rd case.
+
+For the 2nd case, that's riscv, arm, nios2, and x86. That's not a lot, 
+but is 2 or 3 of the most widely used architectures. Is it really too 
+much to ask to support the 2nd case in the generic code/header?
+
+Rob
