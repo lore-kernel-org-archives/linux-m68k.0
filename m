@@ -2,105 +2,157 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DABAC433F5
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 Apr 2022 22:40:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C10EC433EF
+	for <linux-m68k@archiver.kernel.org>; Thu, 14 Apr 2022 00:50:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238131AbiDMWnR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 13 Apr 2022 18:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49970 "EHLO
+        id S231419AbiDNAwV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 13 Apr 2022 20:52:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238150AbiDMWnO (ORCPT
+        with ESMTP id S239227AbiDNAwN (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 13 Apr 2022 18:43:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20937424A4
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Apr 2022 15:40:48 -0700 (PDT)
+        Wed, 13 Apr 2022 20:52:13 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC3915A3F
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Apr 2022 17:49:50 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 141D161FA8
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Apr 2022 22:40:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AE0CC385A6
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Apr 2022 22:40:47 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="BSJd+Rof"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1649889642;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sy2u2tLdcOJ2AL1/09I7fdj8Xfid/ZIpX9etCksgmJY=;
-        b=BSJd+Rof/hfsoPaotpV4AYazZyioeJj4eRh60bzrGewccL6HZavCjE/0qUBhIWSnl9Lr0B
-        kQi5II1nZVYOr2KbT139aOcQTk6c/B8Sfy91vY6uvDkOhsSaqX9xKk6ijYU2z9azJYsSh1
-        +GLVM5IZiGoQPm1J+dkkrAmgOSRHU4s=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 5b26f254 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO)
-        for <linux-m68k@lists.linux-m68k.org>;
-        Wed, 13 Apr 2022 22:40:42 +0000 (UTC)
-Received: by mail-yb1-f178.google.com with SMTP id f17so6317380ybj.10
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Apr 2022 15:40:41 -0700 (PDT)
-X-Gm-Message-State: AOAM531563xsnChvfnSDNwn1n0ixfiezE6fFsqR+4f1MI/DFhJ6cZdvV
-        YCdm087pZ9IDz4jVEEC13gO1IppXn79rjSYMTr4=
-X-Google-Smtp-Source: ABdhPJx9INm5zW7sTrV4774xD6IRq7PzslZw6I75g3UsN7iIIGechqL3/0SrrUeqYX9XZja0QUvWBULi93OT13Yuj6E=
-X-Received: by 2002:a5b:6cf:0:b0:61e:1371:3cda with SMTP id
- r15-20020a5b06cf000000b0061e13713cdamr955062ybq.235.1649889630599; Wed, 13
- Apr 2022 15:40:30 -0700 (PDT)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D0CBBB818F1;
+        Thu, 14 Apr 2022 00:49:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4E38C385A3;
+        Thu, 14 Apr 2022 00:49:43 +0000 (UTC)
+Message-ID: <7a26156e-1f06-b0b1-2859-432a75e9e0d4@linux-m68k.org>
+Date:   Thu, 14 Apr 2022 10:49:40 +1000
 MIME-Version: 1.0
-References: <20220413115411.21489-1-Jason@zx2c4.com> <20220413115411.21489-4-Jason@zx2c4.com>
- <CAL_JsqJ86vZKZQO+9_Kva-EbZrRPMbcgDm+UvjJdnR=GL-qHSw@mail.gmail.com>
-In-Reply-To: <CAL_JsqJ86vZKZQO+9_Kva-EbZrRPMbcgDm+UvjJdnR=GL-qHSw@mail.gmail.com>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Thu, 14 Apr 2022 00:40:19 +0200
-X-Gmail-Original-Message-ID: <CAHmME9qGzW1+dWLvObjQ4ofGcCU1tOwTB+qJTVs2ufEmAEhbrA@mail.gmail.com>
-Message-ID: <CAHmME9qGzW1+dWLvObjQ4ofGcCU1tOwTB+qJTVs2ufEmAEhbrA@mail.gmail.com>
-Subject: Re: [PATCH v4 03/11] riscv: use fallback for random_get_entropy()
- instead of zero
-To:     Rob Herring <robh@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>, "Theodore Ts'o" <tytso@mit.edu>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "David S . Miller" <davem@davemloft.net>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [RFC PULL] remove arch/h8300
+Content-Language: en-US
+To:     Rob Landley <rob@landley.net>, Finn Thain <fthain@linux-m68k.org>
+Cc:     Daniel Palmer <daniel@0x0f.com>, Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "moderated list:H8/300 ARCHITECTURE" 
+        <uclinux-h8-devel@lists.sourceforge.jp>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>, Max Filippov <jcmvbkbc@gmail.com>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-um@lists.infradead.org, X86 ML <x86@kernel.org>,
-        linux-xtensa@linux-xtensa.org
-Content-Type: text/plain; charset="UTF-8"
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+References: <Yib9F5SqKda/nH9c@infradead.org>
+ <CAK8P3a1dUVsZzhAe81usLSkvH29zHgiV9fhEkWdq7_W+nQBWbg@mail.gmail.com>
+ <YkmWh2tss8nXKqc5@infradead.org>
+ <CAK8P3a0QdFOJbM72geYTWOKumeKPSCVD8Nje5pBpZWazX0GEnQ@mail.gmail.com>
+ <6a38e8b8-7ccc-afba-6826-cb6e4f92af83@linux-m68k.org>
+ <CAFr9PXkk=8HOxPwVvFRzqHZteRREWxSOOcdjrcOPe0d=9AW2yQ@mail.gmail.com>
+ <5b7687d4-8ba5-ad79-8a74-33fc2496a3db@linux-m68k.org>
+ <8f9be869-7244-d92a-4683-f9c53da97755@landley.net>
+ <3d5cf48c-94f1-2948-1683-4a2a87f4c697@linux-m68k.org>
+ <147dc6cc-1fbb-558f-8e6d-29d4327d54b4@linux-m68k.org>
+ <ae4125f5-e725-43ed-d05b-b1f88c0cd50c@landley.net>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <ae4125f5-e725-43ed-d05b-b1f88c0cd50c@landley.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Rob,
 
-On Wed, Apr 13, 2022 at 4:40 PM Rob Herring <robh@kernel.org> wrote:
-> Moving this check to get_cycles() implementation would eliminate the
-> RiscV implementation of random_get_entropy() if you follow my other
-> suggestion.
 
-Not an option. random_get_entropy() != get_cycles(). Sometimes these
-are different functions. Returning random_get_entropy_fallback() from
-get_cycles(), for example, wouldn't make any sense.
+On 10/4/22 17:26, Rob Landley wrote:
+> 
+> 
+> On 4/8/22 23:18, Greg Ungerer wrote:
+>>
+>> On 9/4/22 11:59, Finn Thain wrote:
+>>> On Fri, 8 Apr 2022, Rob Landley wrote:
+>>>
+>>>> On 4/5/22 08:07, Greg Ungerer wrote:
+>>>>> On 5/4/22 13:23, Daniel Palmer wrote:
+>>>>>> On Mon, 4 Apr 2022 at 22:42, Greg Ungerer <gerg@linux-m68k.org> wrote:
+>>>>>>> But we could consider the Dragonball support for removal. I keep it
+>>>>>>> compiling, but I don't use it and can't test that it actually works.
+>>>>>>> Not sure that it has been used for a very long time now. And I
+>>>>>>> didn't even realize but its serial driver (68328serial.c) was
+>>>>>>> removed in 2015. No one seems too have noticed and complained.
+>>>>>>
+>>>>>> I noticed this and I am working on fixing it up for a new Dragonball
+>>>>>> homebrew machine. I'm trying to add a 68000 machine to QEMU to make
+>>>>>> the development easier because I'm currently waiting an hour or more
+>>>>>> for a kernel to load over serial. It might be a few months.
+>>>>
+>>>> I've been booting Linux on qemu-system-m68k -M q800 for a couple years
+>>>> now? (The CROSS=m68k target of mkroot in toybox?)
+>>>>
+>>>> # cat /proc/cpuinfo
+>>>> CPU:		68040
+>>>> MMU:		68040
+>>>> FPU:		68040
+>>>> Clocking:	1261.9MHz
+>>>> BogoMips:	841.31
+>>>> Calibration:	4206592 loops
+>>>>
+>>>> It certainly THINKS it's got m68000...
+>>>>
+>>>
+>>> Most 68040 processor variants have a built-in MMU and the m68k "nommu"
+>>> Linux port doesn't support them. The nommu port covers processors like
+>>> 68000, Dragonball etc. whereas the m68k "mmu" port covers 680x0 where x is
+>>> one of 2,3,4,6 with MMU.
+> 
+> In theory you can switch the MMU off. (Or at least give it a NOP page table that
+> maps all the physical memory into one big contiguous block 1:1 with the physical
+> address and leave it there.)
+> 
+> Doesn't mean anybody's bothered to implement and add a config option to stub
+> that out in the kernel yet. But presumably you could have a bootloader shim do it...
+> 
+>>>> (I'd love to get an m68k nommu system working but never sat down and
+>>>> worked out a kernel .config qemu agreed to run, plus compiler and libc.
+>>>> Musl added m68k support but I dunno if that includes coldfire?)
+>>>>
+>>>
+>>> I could never figure out how to boot a coldfire machine in qemu either.
+>>> There was no documentation about that back when I attempted it but maybe
+>>> things have improved since.
+>>
+>> FWIW this will do it:
+>>
+>>       qemu-system-m68k -nographic -machine mcf5208evb -kernel vmlinux
+>>
+>> That will boot an m5208evb_defconfig generated vmlinux.
+>> But you will need a user space to get a full boot to login/shell.
+> 
+> No FDPIC support. :(
+> 
+> I had a binflt toolchain working with uClibc in 2015 or so, but I end of lifed
+> https://landley.net/aboriginal in 2017 (five years ago now). Multiple reasons,
+> but one was the old "last GPLv2 release" toolchain was getting painful to force
+> the kernel to build with.
+> 
+> These days there's articles on lwn.net about yanking a.out support, which fdpic
+> is a buggy variant of that didn't actually have a maintained elf2flt repository
+> when I was assembling my toolchain. (I vaguely recall I poked enough people that
+> somebody picked it up and stuck a repository on github, but Jeff Dionne
+> explained some fundamental design flaw that had been introduced having to do
+> with register offsets being calculated in the wrong framework or something?
+> 
+> I don't remember, I lost interest because it's _conceptually_ obsolete. FDPIC is
+> ELF with a little extra header info, it's clean and potentially even useful on
+> with-MMU systems as extra ASLR. BINFLT is a.out run through a postprocessing
+> tool that nominally converts ELF files into the new format but actually needs .o
+> files from earlier in the process and is kind of an alternate linker except it
+> doesn't replace the linker... It's layers of ugly.
 
-Jason
+FLAT format has nothing to do with a.out.
+Removing a.out support from the kernel will have no impact on binfmt_flat.
+
+Regards
+Greg
+
