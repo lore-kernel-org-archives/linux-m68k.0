@@ -2,279 +2,157 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B660C4321E
-	for <linux-m68k@archiver.kernel.org>; Sat, 16 Apr 2022 02:07:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04F45C433FE
+	for <linux-m68k@archiver.kernel.org>; Sat, 16 Apr 2022 11:09:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229608AbiDPCJZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 15 Apr 2022 22:09:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34858 "EHLO
+        id S231681AbiDPLMZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 16 Apr 2022 07:12:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229728AbiDPCGc (ORCPT
+        with ESMTP id S231674AbiDPLMY (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 15 Apr 2022 22:06:32 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E977C6370
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 15 Apr 2022 19:02:47 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id t2so6904424qtw.9
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 15 Apr 2022 19:02:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=m8a3d/+EJKjumbouQ4BS4OJBYwQ9PXyRdMOc5wTu4no=;
-        b=OccracmQRr3AObUnWo+vytfXwM36YQSXp5f1NitmWWTrhydFzF+jmDRLiuvSEktYeM
-         ETugzDjDRKcDd2dRghecDdWqu3ORwhU4yyxK5YLO6vNTUXTy8j/WzQhtpXJLC2CBc0c+
-         KJpSSvofwpUhKxJiOcH36d+09fP/OvcjWzUvBYxCpx9FWCP+QiafBJ1RiI4kmT+LZsFN
-         9jzt6t+sm6IWOVT6+cpl0zBebonYR6jpmQiU0y8bT11pwn3pPAnbMmjDGYMGT+KYRLIe
-         UBGezGgcV3tAVtfwR7aF7g9+VVHEtp47YVEpT/dbl0unB+ZGsb0SQ4UDlVAVW1RetY7E
-         nNhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=m8a3d/+EJKjumbouQ4BS4OJBYwQ9PXyRdMOc5wTu4no=;
-        b=LGl1VaSAnSG8AvSxPO9QjQiELfgeYiyF7FTlAZ3AtWdBHY01Vb8qkISF0UkUQPIqAw
-         hujIgeV4SBwyGLfzwps3DgQFhgOLl8yDB0CpRJbBpuI8FAfwtinWIfMXI+13VZPtnE8Y
-         ZHIfq7iK2cumJqBQHM9TLkkJqTxcE3dVE1V2VH9UEDjveHgIKiwFqJ66EljHnCpe1d7k
-         6jFSAJ7EOkHfSZlb8N1wzf+wGHLv3IyvPRWMnl/7Rw508DUmzrbcZEk0EXZSO1cZLzH9
-         jKybnoEdr2fH/W+Gsvl8j8+coRaOYVjWP+D79p/4UOZ2bsbLYTeIRlZT5h9RG0be5ZSY
-         vK7A==
-X-Gm-Message-State: AOAM532LQTyyLC9+8gWY1A7umeXYBawzXM1tgdHojsi7rKNR+ppP5VUQ
-        y/x7cjkaheUj7df/R6APNCPGaIRuoUUIQIsc
-X-Google-Smtp-Source: ABdhPJz3V2UwBFP2I7rWW4vLSDGW6uxWjN6Ux/8EGsfQfvs78nOTAYQLNfd162mQMoEePad1dry++Q==
-X-Received: by 2002:a05:620a:25cd:b0:699:c467:fab0 with SMTP id y13-20020a05620a25cd00b00699c467fab0mr884453qko.395.1650070740000;
-        Fri, 15 Apr 2022 17:59:00 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id w3-20020a05622a190300b002f1d63a13fdsm3673901qtc.22.2022.04.15.17.58.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Apr 2022 17:58:59 -0700 (PDT)
-Date:   Fri, 15 Apr 2022 17:58:45 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Patrice CHOTARD <patrice.chotard@foss.st.com>
-cc:     Hugh Dickins <hughd@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        mpatocka@redhat.com, lczerner@redhat.com, djwong@kernel.org,
-        hch@lst.de, zkabelac@redhat.com, miklos@szeredi.hu, bp@suse.de,
-        akpm@linux-foundation.org,
-        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
-        Valentin CARON - foss <valentin.caron@foss.st.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        linux-m68k@lists.linux-m68k.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Russell King <linux@armlinux.org.uk>
-Subject: Re: Regression with v5.18-rc1 tag on STM32F7 and STM32H7 based
- boards
-In-Reply-To: <3695dc2a-7518-dee4-a647-821c7cda4a0f@foss.st.com>
-Message-ID: <2a462b23-5b8e-bbf4-ec7d-778434a3b9d7@google.com>
-References: <481a13f8-d339-f726-0418-ab4258228e91@foss.st.com> <95a0d1dd-bcce-76c7-97b9-8374c9913321@google.com> <7f2993a9-adc5-2b90-9218-c4ca8239c3e@google.com> <3695dc2a-7518-dee4-a647-821c7cda4a0f@foss.st.com>
+        Sat, 16 Apr 2022 07:12:24 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE591BEAF
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 16 Apr 2022 04:09:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 54B7BB81222
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 16 Apr 2022 11:09:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC922C385A1
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 16 Apr 2022 11:09:48 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="g+btqVRC"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1650107386;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BWpDj5fGUy3iYp41L7HbRmBg65jO9i+zxCcxvQs/HHk=;
+        b=g+btqVRChHnHyGUICbjeqfe5YYjRiqyygKZLwxXjYPkaA5j3jW4vmX8m+7+du8kxhPFXcW
+        IfyanKqdIdz9DqEEmt85mKS49ttxCFc+55nLassRWonxBnW2i6ND7MrcLkL69UCU9Ygmwz
+        cKV5lnWwHDWzY9i7byD5B0GlOzHNEwU=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 73e0702c (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO)
+        for <linux-m68k@lists.linux-m68k.org>;
+        Sat, 16 Apr 2022 11:09:46 +0000 (UTC)
+Received: by mail-yb1-f180.google.com with SMTP id x200so18119660ybe.13
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 16 Apr 2022 04:09:46 -0700 (PDT)
+X-Gm-Message-State: AOAM533p7/4piMhyFX3oSpXBZH76w3whnfJefTqtyAGRtwYv2XmxPuLR
+        Z9AhIcr/tH+hRP4H+KDRBLa/5PRkcD1Zhp0AJA8=
+X-Google-Smtp-Source: ABdhPJyAY5xi4OGR681ypI25l7Liwu41MbRbYQFXrT4jbAkvhI1v7BitiVeDW4TLYpgWqNVatNZXdBjODAZ+DfSqjbM=
+X-Received: by 2002:a5b:782:0:b0:634:683f:310e with SMTP id
+ b2-20020a5b0782000000b00634683f310emr2707608ybq.398.1650107375189; Sat, 16
+ Apr 2022 04:09:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20220413115411.21489-1-Jason@zx2c4.com> <20220413115411.21489-5-Jason@zx2c4.com>
+ <20220413122546.GA11860@alpha.franken.de> <alpine.DEB.2.21.2204131331450.9383@angie.orcam.me.uk>
+ <CAHmME9pQ4xdeTUDxAdrOu=S9NRTonYzJVk50fa0Zfz4knZt5WA@mail.gmail.com>
+ <alpine.DEB.2.21.2204140014580.9383@angie.orcam.me.uk> <YlfoeGRM6w2O+eXA@zx2c4.com>
+ <alpine.DEB.2.21.2204142349180.9383@angie.orcam.me.uk>
+In-Reply-To: <alpine.DEB.2.21.2204142349180.9383@angie.orcam.me.uk>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Sat, 16 Apr 2022 13:09:24 +0200
+X-Gmail-Original-Message-ID: <CAHmME9qzkZqkGntLn--XfMKzyR=tYiCaZu1uFpoQBzAzCipZ-A@mail.gmail.com>
+Message-ID: <CAHmME9qzkZqkGntLn--XfMKzyR=tYiCaZu1uFpoQBzAzCipZ-A@mail.gmail.com>
+Subject: Re: [PATCH v4 04/11] mips: use fallback for random_get_entropy()
+ instead of zero
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>, "Theodore Ts'o" <tytso@mit.edu>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "David S . Miller" <davem@davemloft.net>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-um@lists.infradead.org, X86 ML <x86@kernel.org>,
+        linux-xtensa@linux-xtensa.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, 6 Apr 2022, Patrice CHOTARD wrote:
-> On 4/6/22 08:22, Hugh Dickins wrote:
-> > Asking Arnd and others below: should noMMU arches have a good ZERO_PAGE?
-> > 
-> > On Tue, 5 Apr 2022, Hugh Dickins wrote:
-> >> On Tue, 5 Apr 2022, Patrice CHOTARD wrote:
-> >>>
-> >>> We found an issue with last kernel tag v5.18-rc1 on stm32f746-disco and 
-> >>> stm32h743-disco boards (ARMV7-M SoCs).
-> >>>
-> >>> Kernel hangs when executing SetPageUptodate(ZERO_PAGE(0)); in mm/filemap.c.
-> >>>
-> >>> By reverting commit 56a8c8eb1eaf ("tmpfs: do not allocate pages on read"), 
-> >>> kernel boots without any issue.
-> >>
-> >> Sorry about that, thanks a lot for finding.
-> >>
-> >> I see that arch/arm/configs/stm32_defconfig says CONFIG_MMU is not set:
-> >> please confirm that is the case here.
-> >>
-> >> Yes, it looks as if NOMMU platforms are liable to have a bogus (that's my
-> >> reading, but it may be unfair) definition for ZERO_PAGE(vaddr), and I was
-> >> walking on ice to touch it without regard for !CONFIG_MMU.
-> >>
-> >> CONFIG_SHMEM depends on CONFIG_MMU, so that PageUptodate is only needed
-> >> when CONFIG_MMU.
-> >>
-> >> Easily fixed by an #ifdef CONFIG_MMU there in mm/filemap.c, but I'll hunt
-> >> around (again) for a better place to do it - though I won't want to touch
-> >> all the architectures for it.  I'll post later today.
-> > 
-> > I could put #ifdef CONFIG_MMU around the SetPageUptodate(ZERO_PAGE(0))
-> > added to pagecache_init(); or if that's considered distasteful, I could
-> > skip making it potentially useful to other filesystems, revert the change
-> > to pagecache_init(), and just do it in mm/shmem.c's CONFIG_SHMEM (hence
-> > CONFIG_MMU) instance of shmem_init().
-> > 
-> > But I wonder if it's safe for noMMU architectures to go on without a
-> > working ZERO_PAGE(0).  It has uses scattered throughout the tree, in
-> > drivers, fs, crypto and more, and it's not at all obvious (to me) that
-> > they all depend on CONFIG_MMU.  Some might cause (unreported) crashes,
-> > some might use an unzeroed page in place of a pageful of zeroes.
-> > 
-> > arm noMMU and h8300 noMMU and m68k noMMU each has
-> > #define ZERO_PAGE(vaddr)	(virt_to_page(0))
-> > which seems riskily wrong to me.
-> > 
-> > h8300 and m68k actually go to the trouble of allocating an empty_zero_page
-> > for this, but then forget to link it up to the ZERO_PAGE(vaddr) definition,
-> > which is what all the common code uses.
-> > 
-> > arm noMMU does not presently allocate such a page; and I do not feel
-> > entitled to steal a page from arm noMMU platforms, for a hypothetical
-> > case, without agreement.
-> > 
-> > But here's an unbuilt and untested patch for consideration - which of
-> > course should be split in three if agreed (and perhaps the h8300 part
-> > quietly forgotten if h8300 is already on its way out).
-> > 
-> > (Yes, arm uses empty_zero_page in a different way from all the other
-> > architectures; but that's okay, and I think arm's way, with virt_to_page()
-> > already baked in, is better than the others; but I've no wish to get into
-> > changing them.)
-> > 
-> > Patrice, does this patch build and run for you? I have no appreciation
-> > of arm early startup issues, and may have got it horribly wrong.
-> 
-> This patch is okay on my side on both boards (STM32F7 and STM32H7), boot are OK.
-> 
-> Thanks for your reactivity ;-)
-> Patrice
+Hi Maciej,
 
-Just to wrap up this thread: the tentative arch/ patches below did not
-go into 5.18-rc2, but 5.18-rc3 will contain
-1bdec44b1eee ("tmpfs: fix regressions from wider use of ZERO_PAGE")
-which fixes a further issue, and deletes the line which gave you trouble.
+On Fri, Apr 15, 2022 at 2:26 PM Maciej W. Rozycki <macro@orcam.me.uk> wrote=
+:
+>     return (random_get_entropy_fallback() << 14) | ((1<<14) - read_c0_ran=
+dom());
+>
+> of course, as bit 13 is still one of the active ones in the R3k CP0 Rando=
+m
+> register.
 
-With arch/h8300 removed from linux-next, and arch/arm losing a page by
-the patch below, I don't think it's worth my arguing for those changes.
-I'd still prefer arch/m68k to expose its empty_zero_page in ZERO_PAGE(),
-or else not allocate it; but I won't be pursuing this further.
+Ah, thanks, will do that.
 
-Thanks for reporting!
-Hugh
+>  There are two variants only of the CP0 Random register that we can ever
+> encounter, as it's been de-facto standardised in early 1990s already and
+> then written down in the MIPSr1 architecture specification ~2000.  So I
+> think it may make sense to actually handle them both explictitly with
+> individual calculations, possibly conditionalised on a CONFIG setting or
+> `cpu_has_3kex', because kernels that support the two variants of the MMU
+> architecture are mutually incompatible.
 
-> > 
-> >  arch/arm/include/asm/pgtable-nommu.h |    3 ++-
-> >  arch/arm/mm/nommu.c                  |   16 ++++++++++++++++
-> >  arch/h8300/include/asm/pgtable.h     |    6 +++++-
-> >  arch/h8300/mm/init.c                 |    5 +++--
-> >  arch/m68k/include/asm/pgtable_no.h   |    5 ++++-
-> >  5 files changed, 30 insertions(+), 5 deletions(-)
-> > 
-> > --- a/arch/arm/include/asm/pgtable-nommu.h
-> > +++ b/arch/arm/include/asm/pgtable-nommu.h
-> > @@ -48,7 +48,8 @@ typedef pte_t *pte_addr_t;
-> >   * ZERO_PAGE is a global shared page that is always zero: used
-> >   * for zero-mapped memory areas etc..
-> >   */
-> > -#define ZERO_PAGE(vaddr)	(virt_to_page(0))
-> > +extern struct page *empty_zero_page;
-> > +#define ZERO_PAGE(vaddr)	(empty_zero_page)
-> >  
-> >  /*
-> >   * Mark the prot value as uncacheable and unbufferable.
-> > --- a/arch/arm/mm/nommu.c
-> > +++ b/arch/arm/mm/nommu.c
-> > @@ -24,6 +24,13 @@
-> >  
-> >  #include "mm.h"
-> >  
-> > +/*
-> > + * empty_zero_page is a special page that is used for
-> > + * zero-initialized data and COW.
-> > + */
-> > +struct page *empty_zero_page;
-> > +EXPORT_SYMBOL(empty_zero_page);
-> > +
-> >  unsigned long vectors_base;
-> >  
-> >  #ifdef CONFIG_ARM_MPU
-> > @@ -148,9 +155,18 @@ void __init adjust_lowmem_bounds(void)
-> >   */
-> >  void __init paging_init(const struct machine_desc *mdesc)
-> >  {
-> > +	void *zero_page;
-> > +
-> >  	early_trap_init((void *)vectors_base);
-> >  	mpu_setup();
-> >  	bootmem_init();
-> > +
-> > +	zero_page = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
-> > +	if (!zero_page)
-> > +		panic("%s: Failed to allocate %lu bytes align=0x%lx\n",
-> > +		      __func__, PAGE_SIZE, PAGE_SIZE);
-> > +	empty_zero_page = virt_to_page(zero_page);
-> > +	flush_dcache_page(empty_zero_page);
-> >  }
-> >  
-> >  /*
-> > --- a/arch/h8300/include/asm/pgtable.h
-> > +++ b/arch/h8300/include/asm/pgtable.h
-> > @@ -19,11 +19,15 @@ extern void paging_init(void);
-> >  
-> >  static inline int pte_file(pte_t pte) { return 0; }
-> >  #define swapper_pg_dir ((pgd_t *) 0)
-> > +
-> > +/* zero page used for uninitialized stuff */
-> > +extern void *empty_zero_page;
-> > +
-> >  /*
-> >   * ZERO_PAGE is a global shared page that is always zero: used
-> >   * for zero-mapped memory areas etc..
-> >   */
-> > -#define ZERO_PAGE(vaddr)	(virt_to_page(0))
-> > +#define ZERO_PAGE(vaddr)	(virt_to_page(empty_zero_page))
-> >  
-> >  /*
-> >   * These would be in other places but having them here reduces the diffs.
-> > --- a/arch/h8300/mm/init.c
-> > +++ b/arch/h8300/mm/init.c
-> > @@ -41,7 +41,8 @@
-> >   * ZERO_PAGE is a special page that is used for zero-initialized
-> >   * data and COW.
-> >   */
-> > -unsigned long empty_zero_page;
-> > +void *empty_zero_page;
-> > +EXPORT_SYMBOL(empty_zero_page);
-> >  
-> >  /*
-> >   * paging_init() continues the virtual memory environment setup which
-> > @@ -65,7 +66,7 @@ void __init paging_init(void)
-> >  	 * Initialize the bad page table and bad page to point
-> >  	 * to a couple of allocated pages.
-> >  	 */
-> > -	empty_zero_page = (unsigned long)memblock_alloc(PAGE_SIZE, PAGE_SIZE);
-> > +	empty_zero_page = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
-> >  	if (!empty_zero_page)
-> >  		panic("%s: Failed to allocate %lu bytes align=0x%lx\n",
-> >  		      __func__, PAGE_SIZE, PAGE_SIZE);
-> > --- a/arch/m68k/include/asm/pgtable_no.h
-> > +++ b/arch/m68k/include/asm/pgtable_no.h
-> > @@ -38,11 +38,14 @@ extern void paging_init(void);
-> >  #define __pte_to_swp_entry(pte)	((swp_entry_t) { pte_val(pte) })
-> >  #define __swp_entry_to_pte(x)	((pte_t) { (x).val })
-> >  
-> > +/* zero page used for uninitialized stuff */
-> > +extern void *empty_zero_page;
-> > +
-> >  /*
-> >   * ZERO_PAGE is a global shared page that is always zero: used
-> >   * for zero-mapped memory areas etc..
-> >   */
-> > -#define ZERO_PAGE(vaddr)	(virt_to_page(0))
-> > +#define ZERO_PAGE(vaddr)	(virt_to_page(empty_zero_page))
-> >  
-> >  /*
-> >   * All 32bit addresses are effectively valid for vmalloc...
-> 
+Okay, I can give this a shot, but this certainly isn't my fort=C3=A9. It
+may ultimately wind up being simpler for you to just send some code of
+what you envision for this, but if I understand your idea correctly,
+what you're saying is something like:
+
+static inline unsigned long random_get_entropy(void)
+{
+        unsigned int prid =3D read_c0_prid();
+        unsigned int imp =3D prid & PRID_IMP_MASK;
+        unsigned int c0_random;
+
+        if (can_use_mips_counter(prid))
+                return read_c0_count();
+
+        if (cpu_has_3kex)
+                c0_random =3D (read_c0_random() >> 8) & 0x3f;
+        else
+                c0_random =3D read_c0_random() & 0x3f;
+        return (random_get_entropy_fallback() << 6) | (0x3f - c0_random);
+}
+
+What do you think of that? Some tweak I'm missing?
+
+>  Isn't it going to be an issue for an entropy source that the distributio=
+n
+> of values obtained from the CP0 Random bit-field is not even, that is som=
+e
+> values from the 6-bit range will never appear?
+
+It's the same situation without inverting the order: instead of some
+bits on the top never happening, some bits on the bottom never happen
+instead. In general, counters don't form uniform distributions anyway,
+since the lower bits change faster, and neither are they independent,
+since one sample in large part depends on the previous. This is just
+sort of the nature of the beast, and the code that calls
+random_get_entropy() deals with this appropriately (by, at the moment,
+just hashing all the bits).
+
+Jason
