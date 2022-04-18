@@ -2,230 +2,183 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E38F0C433F5
-	for <linux-m68k@archiver.kernel.org>; Sat, 16 Apr 2022 22:55:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8AA1C433EF
+	for <linux-m68k@archiver.kernel.org>; Mon, 18 Apr 2022 01:29:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233036AbiDPW5l (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 16 Apr 2022 18:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42768 "EHLO
+        id S235571AbiDRBcU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 17 Apr 2022 21:32:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233085AbiDPW5h (ORCPT
+        with ESMTP id S229944AbiDRBcR (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 16 Apr 2022 18:57:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52512140B2
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 16 Apr 2022 15:55:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0C20860FFE;
-        Sat, 16 Apr 2022 22:55:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED602C385A1;
-        Sat, 16 Apr 2022 22:54:57 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="Ke3CzabD"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1650149696;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+2nP+VdPEpPNPoKQqSrgbL4ZK7I/c4P/cLhbUMeqeEs=;
-        b=Ke3CzabDCTCN7z1X+blAnwmP5mSkY04Aqwf/G5fDtQU6WM6tPriviP3rwnh0y2BbiEiSI5
-        kxvqYG3bXaLOy2oV1jIUlAv1SxvW/krAz60U3oZjY/ozmULtrXkPvuBaIxrnDhhjiRe7WK
-        DiZ/+FwTFNQXboYw4FOs1PNDoMoDXRw=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id cef1d983 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Sat, 16 Apr 2022 22:54:56 +0000 (UTC)
-Date:   Sun, 17 Apr 2022 00:54:49 +0200
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>, Theodore Ts'o <tytso@mit.edu>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Sun, 17 Apr 2022 21:32:17 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10E9217E30
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 17 Apr 2022 18:29:38 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: dmitry.osipenko)
+        with ESMTPSA id 77A9B1F44320
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1650245376;
+        bh=Ajn7d9ehxuO5NknWvmo0k/aIhgzNt/YPk9MMAC0rgK4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=H6wbrzdvBv8/q0QMxBBTynYiA8MocDKNi6pPzdbeah1TBS0sfobjoYMeVHdywDKJa
+         YOMseWFehs7fKiS1bqLxpLaRV3E2gVJ6NGmAk/kK7Tkj7SOk+d7kIA+pVboML+0znZ
+         oBB6ZdZaJe8q4CuDbVjC8i5gSLP4M7dhUJeJhWywSpYx0y55HsGlo0NSg/sn82x813
+         XAZwVlD5NoEcUOWKl8ezQsrDqxJrPlOK3xiszEQs//fITbMqaQ95IAUW03Xr4Fzay/
+         IWbATXa2Chl0Jy2VqKMQd994g2oQEgzNvPwVOvB9VgKGF8p+Y8PjFoazCNalTfgpXO
+         TGCe7ZBTJXzKg==
+Message-ID: <fa20ae2f-e265-c713-493d-5b2ebcdf7f0a@collabora.com>
+Date:   Mon, 18 Apr 2022 04:29:30 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH v7 03/20] reboot: Print error message if restart handler
+ has duplicated priority
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
         Russell King <linux@armlinux.org.uk>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Albert Ou <aou@eecs.berkeley.edu>,
-        "David S . Miller" <davem@davemloft.net>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee.jones@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org,
         "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-um@lists.infradead.org, X86 ML <x86@kernel.org>,
-        linux-xtensa@linux-xtensa.org
-Subject: Re: [PATCH v4 04/11] mips: use fallback for random_get_entropy()
- instead of zero
-Message-ID: <YltJOfEylRC0rhKv@zx2c4.com>
-References: <20220413115411.21489-1-Jason@zx2c4.com>
- <20220413115411.21489-5-Jason@zx2c4.com>
- <20220413122546.GA11860@alpha.franken.de>
- <alpine.DEB.2.21.2204131331450.9383@angie.orcam.me.uk>
- <CAHmME9pQ4xdeTUDxAdrOu=S9NRTonYzJVk50fa0Zfz4knZt5WA@mail.gmail.com>
- <alpine.DEB.2.21.2204140014580.9383@angie.orcam.me.uk>
- <YlfoeGRM6w2O+eXA@zx2c4.com>
- <alpine.DEB.2.21.2204142349180.9383@angie.orcam.me.uk>
- <CAHmME9qzkZqkGntLn--XfMKzyR=tYiCaZu1uFpoQBzAzCipZ-A@mail.gmail.com>
- <alpine.DEB.2.21.2204161533420.9383@angie.orcam.me.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <alpine.DEB.2.21.2204161533420.9383@angie.orcam.me.uk>
+        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        xen-devel@lists.xenproject.org,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+References: <20220411233832.391817-1-dmitry.osipenko@collabora.com>
+ <20220411233832.391817-4-dmitry.osipenko@collabora.com>
+ <CAJZ5v0gf1J+yPW14TAdLGLGfO+-2s=r0DDP7d+Rgop3=dB0gaQ@mail.gmail.com>
+ <af51d9d0-26ba-fc66-05f1-d92ef7172730@collabora.com>
+ <CAJZ5v0jFQi1x1Fnfk04n+HTTirz19-_xW2NgJtpOYyPgVh3Afw@mail.gmail.com>
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <CAJZ5v0jFQi1x1Fnfk04n+HTTirz19-_xW2NgJtpOYyPgVh3Afw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Maciej,
-
-On Sat, Apr 16, 2022 at 03:44:53PM +0100, Maciej W. Rozycki wrote:
-> > Okay, I can give this a shot, but this certainly isn't my forté. It
-> > may ultimately wind up being simpler for you to just send some code of
-> > what you envision for this, but if I understand your idea correctly,
-> > what you're saying is something like:
-> > 
-> > static inline unsigned long random_get_entropy(void)
-> > {
-> >         unsigned int prid = read_c0_prid();
-> >         unsigned int imp = prid & PRID_IMP_MASK;
-> >         unsigned int c0_random;
-> > 
-> >         if (can_use_mips_counter(prid))
-> >                 return read_c0_count();
-> > 
-> >         if (cpu_has_3kex)
-> >                 c0_random = (read_c0_random() >> 8) & 0x3f;
-> >         else
-> >                 c0_random = read_c0_random() & 0x3f;
-> >         return (random_get_entropy_fallback() << 6) | (0x3f - c0_random);
-> > }
-> > 
-> > What do you think of that? Some tweak I'm missing?
+On 4/14/22 14:19, Rafael J. Wysocki wrote:
+> On Thu, Apr 14, 2022 at 12:24 AM Dmitry Osipenko
+> <dmitry.osipenko@collabora.com> wrote:
+>>
+>> On 4/13/22 21:48, Rafael J. Wysocki wrote:
+>>> On Tue, Apr 12, 2022 at 1:39 AM Dmitry Osipenko
+>>> <dmitry.osipenko@collabora.com> wrote:
+>>>>
+>>>> Add sanity check which ensures that there are no two restart handlers
+>>>> registered using the same priority. This requirement will become mandatory
+>>>> once all drivers will be converted to the new API and such errors will be
+>>>> fixed.
+>>>>
+>>>> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+>>>
+>>> The first two patches in the series are fine with me and there's only
+>>> one minor nit regarding this one (below).
+>>>
+>>>> ---
+>>>>  kernel/reboot.c | 15 +++++++++++++++
+>>>>  1 file changed, 15 insertions(+)
+>>>>
+>>>> diff --git a/kernel/reboot.c b/kernel/reboot.c
+>>>> index ed4e6dfb7d44..acdae4e95061 100644
+>>>> --- a/kernel/reboot.c
+>>>> +++ b/kernel/reboot.c
+>>>> @@ -182,6 +182,21 @@ static ATOMIC_NOTIFIER_HEAD(restart_handler_list);
+>>>>   */
+>>>>  int register_restart_handler(struct notifier_block *nb)
+>>>>  {
+>>>> +       int ret;
+>>>> +
+>>>> +       ret = atomic_notifier_chain_register_unique_prio(&restart_handler_list, nb);
+>>>> +       if (ret != -EBUSY)
+>>>> +               return ret;
+>>>> +
+>>>> +       /*
+>>>> +        * Handler must have unique priority. Otherwise call order is
+>>>> +        * determined by registration order, which is unreliable.
+>>>> +        *
+>>>> +        * This requirement will become mandatory once all drivers
+>>>> +        * will be converted to use new sys-off API.
+>>>> +        */
+>>>> +       pr_err("failed to register restart handler using unique priority\n");
+>>>
+>>> I would use pr_info() here, because this is not a substantial error AFAICS.
+>>
+>> It's indeed not a substantial error so far, but it will become
+>> substantial later on once only unique priorities will be allowed. The
+>> pr_warn() could be a good compromise here, pr_info() is too mild, IMO.
 > 
->  It certainly looks good to me.  Do you have a way I could verify how this 
-> function performs?  If so, then I could put it through my systems as I can 
-> cover all the cases handled here.
+> Well, I'm still unconvinced about requiring all of the users of this
+> interface to use unique priorities.
+> 
+> Arguably, there are some of them who don't really care about the
+> ordering, so could there be an option for them to specify the lack of
+> care by, say, passing 0 as the priority that would be regarded as a
+> special case?
+> 
+> IOW, if you pass 0, you'll be run along the others who've also passed
+> 0, but if you pass anything different from 0, it must be unique.  What
+> do you think?
 
-Oh, awesome about the test rig. Below is a little patch that adds some
-printf code to init, calling the above sequence 70 times in a busy loop
-and then 30 times after that with a scheduler 1 ms delay in there,
-printing lots of various about the above calculation. Hopefully that's
-enough information that it'll be possible to notice if something looks
-really off when we squint at it.
+There are indeed cases where ordering is unimportant. Like a case of
+PMIC and watchdog restart handlers for example, both handlers will
+produce equal effect from a user's perspective. Perhaps indeed it's more
+practical to have at least one shared level.
 
-Jason
+In this patchset the level 0 is specified as an alias to the default
+level 128. If one user registers handler using unique level 128 and the
+other user uses non-unique level 0, then we have ambiguity.
 
--------------------8<-----------------------------------------------------
-
-diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 3a293f919af9..0b32203aa47f 100644
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -48,6 +48,7 @@
- #include <linux/ptrace.h>
- #include <linux/workqueue.h>
- #include <linux/irq.h>
-+#include <linux/delay.h>
- #include <linux/ratelimit.h>
- #include <linux/syscalls.h>
- #include <linux/completion.h>
-@@ -1781,6 +1782,26 @@ static struct ctl_table random_table[] = {
-  */
- static int __init random_sysctls_init(void)
- {
-+
-+	int i;
-+	for (i = 0; i < 100; ++i) {
-+		if (can_use_mips_counter(read_c0_prid()))
-+			pr_err("SARU %d c0 count: %08x\n", i, read_c0_count());
-+		else {
-+			unsigned int c0_random = read_c0_random(), c0_random_mask;
-+			unsigned long fallback = random_get_entropy_fallback(), out;
-+			if (cpu_has_3kex)
-+				c0_random_mask = (c0_random >> 8) & 0x3f;
-+			else
-+				c0_random_mask = c0_random & 0x3f;
-+			out = (fallback << 6) | (0x3f - c0_random_mask);
-+			pr_err("SARU: %d (%08x >> n) & 0x3f = %08x, inverted = %08x, fallback = %08lx, fallback << 6 = %08lx, combined = %08lx\n",
-+			       i, c0_random, c0_random_mask, 0x3f - c0_random_mask, fallback, fallback << 6, out);
-+		}
-+		if (i > 70)
-+			msleep(1);
-+	}
-+
- 	register_sysctl_init("kernel/random", random_table);
- 	return 0;
- }
-diff --git a/include/linux/timex.h b/include/linux/timex.h
-index 5745c90c8800..3871b06bd302 100644
---- a/include/linux/timex.h
-+++ b/include/linux/timex.h
-@@ -62,6 +62,8 @@
- #include <linux/types.h>
- #include <linux/param.h>
-
-+unsigned long random_get_entropy_fallback(void);
-+
- #include <asm/timex.h>
-
- #ifndef random_get_entropy
-@@ -74,8 +76,14 @@
-  *
-  * By default we use get_cycles() for this purpose, but individual
-  * architectures may override this in their asm/timex.h header file.
-+ * If a given arch does not have get_cycles(), then we fallback to
-+ * using random_get_entropy_fallback().
-  */
-+#ifdef get_cycles
- #define random_get_entropy()	((unsigned long)get_cycles())
-+#else
-+#define random_get_entropy()	random_get_entropy_fallback()
-+#endif
- #endif
-
- /*
-diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
-index dcdcb85121e4..7cd2ec239cae 100644
---- a/kernel/time/timekeeping.c
-+++ b/kernel/time/timekeeping.c
-@@ -17,6 +17,7 @@
- #include <linux/clocksource.h>
- #include <linux/jiffies.h>
- #include <linux/time.h>
-+#include <linux/timex.h>
- #include <linux/tick.h>
- #include <linux/stop_machine.h>
- #include <linux/pvclock_gtod.h>
-@@ -2380,6 +2381,15 @@ static int timekeeping_validate_timex(const struct __kernel_timex *txc)
- 	return 0;
- }
-
-+/**
-+ * random_get_entropy_fallback - Returns the raw clock source value,
-+ * used by random.c for platforms with no valid random_get_entropy().
-+ */
-+unsigned long random_get_entropy_fallback(void)
-+{
-+	return tk_clock_read(&tk_core.timekeeper.tkr_mono);
-+}
-+EXPORT_SYMBOL_GPL(random_get_entropy_fallback);
-
- /**
-  * do_adjtimex() - Accessor function to NTP __do_adjtimex function
-
+One potential option is to make the whole default level 128 non-unique.
+This will allow users to not care about the uniqueness by default like
+they always did it previously, but it will hide potential problems for
+users who actually need unique level and don't know about it yet due to
+a lucky registration ordering that they have today. Are you okay with
+this option?
