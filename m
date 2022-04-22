@@ -2,106 +2,123 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1BF1C433F5
-	for <linux-m68k@archiver.kernel.org>; Fri, 22 Apr 2022 09:01:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AEACC4332F
+	for <linux-m68k@archiver.kernel.org>; Fri, 22 Apr 2022 10:26:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1445842AbiDVJEm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 22 Apr 2022 05:04:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55762 "EHLO
+        id S1446514AbiDVK3S (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 22 Apr 2022 06:29:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1445918AbiDVJEU (ORCPT
+        with ESMTP id S233923AbiDVK3R (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 22 Apr 2022 05:04:20 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D0953737
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 22 Apr 2022 02:01:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 479A5B82A8A
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 22 Apr 2022 09:01:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DCF7C385AA
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 22 Apr 2022 09:01:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650618081;
-        bh=/m9HtiXeSolu5qrg2Hq80k+3cr1LM6XYLdAbp3oTHTc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jBBBgfxNw8Qg5UPzBjmDTjT+E3APsjuWTMVt+hprqOwS6DIxRVDImGrZN7wMEx+rx
-         86vdIpshLw/2xvYq9EXVD6U2UdmQg2jRX0+t8216G1sy5tFLNYTW6io3yJaCI0QPDi
-         +fH/z8A5Z81qWD80aniD3CFr9+DcQ5t/+T4FsFJZDyW+Lf8LBXr2ZWf8iswYK9yKfa
-         i6FRRqnzC3GECksp/PEHUWBaSiEgEAKgocxi6UKsOOgJj2oKl2WyGacfZfbT6muE++
-         R+suLf2CeI5uMPJbWVzOPVsVKgB0U5HrVu/hHPwlJEySlo+e+tm5dGIoX+20rq6n6I
-         1LbvJa+916YEg==
-Received: by mail-wm1-f53.google.com with SMTP id 17-20020a05600c021100b00393a19f8f98so1974992wmi.4
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 22 Apr 2022 02:01:20 -0700 (PDT)
-X-Gm-Message-State: AOAM533aZifE/f8grnUH24hpbyPkPB1BQt5gBTpvK+1EV1yVtwmmdAqv
-        zTZYj1riIKuE+d53zuQhvbXFB3ez1RQxcIP7ChA=
-X-Google-Smtp-Source: ABdhPJyXx4ILSyW4olBWclzAEyhWJERXMp826335O4ZspD2rq64GVKddYaqSWtWZief/QyASpmBJtJchA9yTbG1sWmU=
-X-Received: by 2002:a7b:ce15:0:b0:38e:b7b0:79be with SMTP id
- m21-20020a7bce15000000b0038eb7b079bemr3134739wmc.71.1650618079284; Fri, 22
- Apr 2022 02:01:19 -0700 (PDT)
+        Fri, 22 Apr 2022 06:29:17 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E2D1854BC2
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 22 Apr 2022 03:26:24 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 37DEF1477;
+        Fri, 22 Apr 2022 03:26:24 -0700 (PDT)
+Received: from [10.57.12.164] (unknown [10.57.12.164])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5C18F3F766;
+        Fri, 22 Apr 2022 03:26:18 -0700 (PDT)
+Message-ID: <91c64a80-3892-944d-4178-5b57a4f2899d@arm.com>
+Date:   Fri, 22 Apr 2022 11:26:46 +0100
 MIME-Version: 1.0
-References: <20220421082040.2866638-1-arnd@kernel.org> <2d2c0c14-461b-985b-ebf1-3c03fe97f332@gmail.com>
-In-Reply-To: <2d2c0c14-461b-985b-ebf1-3c03fe97f332@gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 22 Apr 2022 11:01:03 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1PvZUV9MDNqLWUZGT6Bb18SoPEv-j1V6RTEziKV74Z0A@mail.gmail.com>
-Message-ID: <CAK8P3a1PvZUV9MDNqLWUZGT6Bb18SoPEv-j1V6RTEziKV74Z0A@mail.gmail.com>
-Subject: Re: [PATCH] [v4] m68k: coldfire: drop ISA_DMA_API support
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Greg Ungerer <gerg@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: [PATCH] binfmt_flat: Remove shared library support
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Greg Ungerer <gerg@linux-m68k.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Niklas Cassel <Niklas.Cassel@wdc.com>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Mike Frysinger <vapier@gentoo.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>
-Content-Type: text/plain; charset="UTF-8"
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Jesse Taube <Mr.Bossman075@gmail.com>,
+        Giulio Benetti <giulio.benetti@benettiengineering.com>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Pierre-Yves MORDRET <pierre-yves.mordret@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+References: <20220414091018.896737-1-niklas.cassel@wdc.com>
+ <f379cb56-6ff5-f256-d5f2-3718a47e976d@opensource.wdc.com>
+ <Yli8voX7hw3EZ7E/@x1-carbon>
+ <81788b56-5b15-7308-38c7-c7f2502c4e15@linux-m68k.org>
+ <87levzzts4.fsf_-_@email.froward.int.ebiederm.org>
+ <01b063d7-d5c2-8af0-ad90-ed6c069252c5@linux-m68k.org>
+ <CAMuHMdXd94L=766usN4WG-hK2MpQLy50mJZ=9G9NGv03kx8V8Q@mail.gmail.com>
+ <CAK8P3a3Cjna7H_YxFvg6UEOqQf9ZqLp9EVOCFFewzWBHVT4nWg@mail.gmail.com>
+From:   Vladimir Murzin <vladimir.murzin@arm.com>
+In-Reply-To: <CAK8P3a3Cjna7H_YxFvg6UEOqQf9ZqLp9EVOCFFewzWBHVT4nWg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Apr 22, 2022 at 9:48 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> Am 21.04.2022 um 20:20 schrieb Arnd Bergmann:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > After a build regression report, I took a look at possible users of
-> > CONFIG_ISA_DMA_API on m68k and found none, which Greg confirmed. The
-> > CONFIG_GENERIC_ISA_DMA option in turn is only needed to implement
-> > ISA_DMA_API, and is clearly not used on the platforms with ISA support.
-> >
-> > The CONFIG_ISA support for AMIGA_PCMCIA is probably also unneeded,
-> > but this is less clear. Unlike other PCMCIA implementations, this one
-> > does not use the drivers/pcmcia subsystem at all and just supports
-> > the "apne" network driver. When it was first added, one could use
-> > ISA drivers on it as well, but this probably broke at some point.
->
-> Hoping to clarify some of this:
->
-> For the Amiga PCMCIA "apne" driver, both the definitions of
-> isa_type/isa_sex and the definitions of the low-level accessor and
-> address translation functions are protected by CONFIG_ISA (see
-> arch/m68k/kernel/setup_mm.c and arch/m68k/include/asm/io_mm.h for details).
->
-> This could conceivably be changed (only AMIGA_PCMCIA and Q40 do use
-> these definitions, aside from ATARI_ROM_ISA), but as things are right
-> now, neither Q40 ISA nor Amiga PCMCIA will work without CONFIG_ISA defined.
+On 4/21/22 8:12 AM, Arnd Bergmann wrote:
+> On Thu, Apr 21, 2022 at 8:52 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>> On Thu, Apr 21, 2022 at 1:53 AM Greg Ungerer <gerg@linux-m68k.org> wrote:
+>>> On 21/4/22 00:58, Eric W. Biederman wrote:
+>>>> In a recent discussion[1] it was reported that the binfmt_flat library
+>>>> support was only ever used on m68k and even on m68k has not been used
+>>>> in a very long time.
+>>>>
+>>>> The structure of binfmt_flat is different from all of the other binfmt
+>>>> implementations becasue of this shared library support and it made
+>>>> life and code review more effort when I refactored the code in fs/exec.c.
+>>>>
+>>>> Since in practice the code is dead remove the binfmt_flat shared libarary
+>>>> support and make maintenance of the code easier.
+>>>>
+>>>> [1] https://lkml.kernel.org/r/81788b56-5b15-7308-38c7-c7f2502c4e15@linux-m68k.org
+>>>> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+>>>> ---
+>>>>
+>>>> Can the binfmt_flat folks please verify that the shared library support
+>>>> really isn't used?
+>>>
+>>> I can definitely confirm I don't use it on m68k. And I don't know of
+>>> anyone that has used it in many years.
+>>>
+>>>
+>>>> Was binfmt_flat being enabled on arm and sh the mistake it looks like?
+>>
+>> I think the question was intended to be
+>>
+>>      Was *binfmt_flat_shared_flat* being enabled on arm and sh the
+>>      mistake it looks like?
+>>
+>>>>
+>>>>    arch/arm/configs/lpc18xx_defconfig |   1 -
+>>>>    arch/arm/configs/mps2_defconfig    |   1 -
+>>>>    arch/arm/configs/stm32_defconfig   |   1 -
+>>>>    arch/arm/configs/vf610m4_defconfig |   1 -
+> 
+> Adding stm32, mps2 and imxrt maintainers to Cc, they are the most active
+> armv7-m users and should know if the shared library support is used anywhere.
 
-Ok, thanks for clarifying that, this makes a lot more sense now. I was wondering
-what ISA devices one can actually use without DMA, but it turns out that a
-lot of the older storage (pata_legacy, pata_isapnp, aha152x) and network
-(3c509, 8390, cs89x0, smc9194) devices work in PIO mode, aside from
-a couple of oddball special-purpose stuff (speech, busmouse, comedi,
-appletalk, wan, ...).
+Never seen shared library in use for flat format, so FWIW
 
-> Regarding the Amiga PCMCIA driver's use of the drivers/pcmcia subsystem,
-> I have a patch in limbo at netdev that makes use of the cftable parser
-> code from drivers/pcmcia, but as far as I can recall, none of this
-> depends on CONFIG_ISA.
+Acked-by: Vladimir Murzin <vladimir.murzin@arm.com> # ARM
 
-Yes, Geert mentioned that on IRC already. Note that Dominik Brodowski
-has said in the past that he would plan to eventually drop PCMCIA
-support from the kernel, but I think if that happens, the cftable
-parser can just be moved into the amiga_pcmcia code.
 
-       Arnd
+> 
+>       Arnd
+
