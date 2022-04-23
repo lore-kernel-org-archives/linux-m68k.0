@@ -2,98 +2,86 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36774C433EF
-	for <linux-m68k@archiver.kernel.org>; Sat, 23 Apr 2022 02:24:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE73DC433F5
+	for <linux-m68k@archiver.kernel.org>; Sat, 23 Apr 2022 08:06:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232096AbiDWC1T (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 22 Apr 2022 22:27:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58862 "EHLO
+        id S234149AbiDWIJC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 23 Apr 2022 04:09:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231921AbiDWC1S (ORCPT
+        with ESMTP id S231787AbiDWIJB (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 22 Apr 2022 22:27:18 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D0761B530C
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 22 Apr 2022 19:24:22 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id ks6so19621482ejb.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 22 Apr 2022 19:24:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qqZdE0u9CYPlQ6MQcqOeN4oZEKzgzl5ZlEVKxJ+FAHk=;
-        b=OE7s3CPe37nMb1dGmVaIey7JbUtRJ7f6vav2gncQroL5ziOpNrqKAczdsVbRdftZTp
-         lvDGoua7DfR0a3ih2mXvBGp/pr8YIwFWvJ7rYtm1KItJ7lzb7bsnCbr0XO6Al/bLSqmY
-         wShQ3Q4PeDbaGhthAQmvyUaYMWSIREyHdWzLfIHLlO4xqjeROrsWMsY/13vozvUovkD1
-         TOAKaEV8j7EP/9ImivPEP7f9+9yBUR0jy0QdxfQqm1cDoP57+Iq+yV30nc+nepkuJNn4
-         1e6bTF9LZV27/+Lsu7KDZ5aSI6QmdhEq2BG3Q9STkKqaymG9HXWUrXc+hO38EBpNkLCd
-         yQnQ==
+        Sat, 23 Apr 2022 04:09:01 -0400
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D42B64720
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 23 Apr 2022 01:06:05 -0700 (PDT)
+Received: by mail-qk1-f170.google.com with SMTP id s4so7457216qkh.0
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 23 Apr 2022 01:06:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qqZdE0u9CYPlQ6MQcqOeN4oZEKzgzl5ZlEVKxJ+FAHk=;
-        b=UORXib4ii3ULs3pPlkXCEIJsighqd+lPYVXB0Ny8pDeYhn9x7cuBJIYTyU6g6IK6QQ
-         dHGqFr+mFbgtC9QkIDbe2ajlgnWZSQf9QfK521ERdcg+5jWRXSP++cVyaUzI9Sm8L5Qe
-         EU9BuY5w7tHTUMgQ14cLZGlt5+7L8m3JX1lqN/o/LEP8PlNLzfi1w0+tzCLreKCWjiMn
-         TaTeqgQ6wjmUspwwA5lvk7/my1e1Z/uiMoxm2Sunua7vF5Y4azfA7V25G+lRuXlagM/a
-         ZA1M8Evnv18P34PHN7AK3Vk3QifB2UwVhZSkVtHtpBQFNFG0zqwygW9ZBE20JKICNO3T
-         2GVw==
-X-Gm-Message-State: AOAM533osWgwhOrKSBSOnIU9qj6MqFEJTXIdKSc3o+CzkYw18SuUp++H
-        GRs+ljnCD+Nzpy+7X1fIeewDMAeo/UMxXgbRv9Q=
-X-Google-Smtp-Source: ABdhPJzcIFiqsw8tqvA51BF/kojpRX8faca/GR9O0BKNi3Ttrspe1sgBeJ1OHPMIBfTzzBlAO8IBPBsJXGKx+2s4Z5Y=
-X-Received: by 2002:a17:906:d108:b0:6e8:7765:a70b with SMTP id
- b8-20020a170906d10800b006e87765a70bmr6585155ejz.436.1650680660905; Fri, 22
- Apr 2022 19:24:20 -0700 (PDT)
+        bh=MnsKeIXdOWL+qzKGmeKdJ+/k4zo4q4coagprsKaIqao=;
+        b=yc+2ZH/U9dWgpqBLexOSw7HVeKeJRO1DkfA0klO4hlwbhMXbCT4VaCtJTXSRk5yNFf
+         I6oTRGqh/aM8PhBKgSLeXx4IFDJndMaXU31XNcYqjNZV19I2pm/2sOnGDYrZdKC9CLWx
+         NWdSYelQEDakd098JtZk4gAUOR1K285ZXwsGe+5xlMZ84qUTYprVYiQghUqLn/MT0C2W
+         fZSv5RFugY4eYEQcRfEh+0+TsiOU09whmesx4OR04lwTTZDhi59/TYPcu2OVYyhNTN2g
+         eNzPjSz4sv7/8cQvHoiLF2PAO+toFiBxRBrP6fcfOsfuLB8tSN7wA/TPl5xvBA64yXEt
+         6gNg==
+X-Gm-Message-State: AOAM530WO16//HttpBBXoJl2xIpSPIK20r1zmKK1N/3lt8keMHp0j5Qj
+        my3OfSWm039pBT5jFtp0a7szpPTEugXRSg==
+X-Google-Smtp-Source: ABdhPJxfRH7GlVTpHrXfE/VXfyjtB2c4bOA1w0V1enwK5J2nhCXSQuMm8CoQDPKbdOXMdPVW1uNxRA==
+X-Received: by 2002:a05:620a:444e:b0:69e:d240:9cd2 with SMTP id w14-20020a05620a444e00b0069ed2409cd2mr5015581qkp.72.1650701164288;
+        Sat, 23 Apr 2022 01:06:04 -0700 (PDT)
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
+        by smtp.gmail.com with ESMTPSA id d22-20020a05622a101600b002f1f139d83bsm2384083qte.84.2022.04.23.01.06.03
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 23 Apr 2022 01:06:03 -0700 (PDT)
+Received: by mail-yb1-f178.google.com with SMTP id b95so18391785ybi.1
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 23 Apr 2022 01:06:03 -0700 (PDT)
+X-Received: by 2002:a5b:984:0:b0:63f:8c38:676c with SMTP id
+ c4-20020a5b0984000000b0063f8c38676cmr8029426ybq.393.1650701163360; Sat, 23
+ Apr 2022 01:06:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220419111650.1582274-1-Jason@zx2c4.com> <20220419111650.1582274-12-Jason@zx2c4.com>
-In-Reply-To: <20220419111650.1582274-12-Jason@zx2c4.com>
-From:   Sandy Harris <sandyinchina@gmail.com>
-Date:   Sat, 23 Apr 2022 10:24:07 +0800
-Message-ID: <CACXcFmksd3cw+xa-c2gEdd4=96PO8GCCMF6q2d6JHnJum2LjiA@mail.gmail.com>
-Subject: Re: [PATCH v5 11/11] random: insist on random_get_entropy() existing
- in order to simplify
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>, "Theodore Ts'o" <tytso@mit.edu>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "David S . Miller" <davem@davemloft.net>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, x86@kernel.org,
-        linux-xtensa@linux-xtensa.org
+References: <20220421070440.1282704-1-hch@lst.de>
+In-Reply-To: <20220421070440.1282704-1-hch@lst.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sat, 23 Apr 2022 10:05:51 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUw6c-dEOJUyZaQqOj=udmk9X8pxyd-nyph4K4at7iaDQ@mail.gmail.com>
+Message-ID: <CAMuHMdUw6c-dEOJUyZaQqOj=udmk9X8pxyd-nyph4K4at7iaDQ@mail.gmail.com>
+Subject: Re: [PATCH] net: unexport csum_and_copy_{from,to}_user
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sat, Apr 23, 2022 at 6:37 AM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+On Fri, Apr 22, 2022 at 11:14 PM Christoph Hellwig <hch@lst.de> wrote:
+> csum_and_copy_from_user and csum_and_copy_to_user are exported by
+> a few architectures, but not actually used in modular code.  Drop
+> the exports.
 >
-> All platforms are now guaranteed to provide some value for
-> random_get_entropy(). In case some bug leads to this not being so, we
-> print a warning, ...
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Would it make sense to test at compile time? If there is no hardware
-RNG nor a cycle counter, then the kernel should be compiled with
-the gcc latent entropy plugin. Generate a warning suggesting that,
-or even an error insisting on it.
+>  arch/m68k/lib/checksum.c             | 2 --
+
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
