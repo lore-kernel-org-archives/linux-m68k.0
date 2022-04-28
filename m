@@ -2,53 +2,53 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8D98C433FE
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 Apr 2022 07:17:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5F0AC433F5
+	for <linux-m68k@archiver.kernel.org>; Thu, 28 Apr 2022 07:20:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239728AbiD1HUP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 28 Apr 2022 03:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38286 "EHLO
+        id S233948AbiD1HX6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 28 Apr 2022 03:23:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245121AbiD1HUF (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 28 Apr 2022 03:20:05 -0400
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24AD79A9A6;
-        Thu, 28 Apr 2022 00:16:52 -0700 (PDT)
-Received: by mail-qv1-f41.google.com with SMTP id r8so2637087qvx.10;
-        Thu, 28 Apr 2022 00:16:52 -0700 (PDT)
+        with ESMTP id S245030AbiD1HXr (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 28 Apr 2022 03:23:47 -0400
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F9731D0C0;
+        Thu, 28 Apr 2022 00:20:32 -0700 (PDT)
+Received: by mail-qk1-f179.google.com with SMTP id 126so2027949qkm.4;
+        Thu, 28 Apr 2022 00:20:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=iXSujVifP/z3b+O+ilWfsSDwJrRw0iyDOa/QgmjI+PI=;
-        b=NQN7QQB3p13bT2AJ2KDhaBE3uFg8paE/oHBttNHZIzkdGndMorUZW0a9T5WzlrlEW8
-         BMpu0tE8D8RWnfYw/0J/hwCTxQpNxOvl3/E/BvJYiY6kZzi9+xCh7t4uezVBL+0sY+C+
-         tJpGvPDWnDVjggi1lhWdYXiYW6sX4Paf58nqXLHG5gp9ijjJNTFcUsP8R8LaWk+hnCTo
-         l9+1KWzMqx+s/FW2KT6JtyTmv/C8hTecHuZAGwtn+t/GxWURSS0MUX6XRP2jdiqsUavj
-         uLSl7aqR+/T+NEzHjV7zmZ2XRIYFI1rctEcvVy7vnNVJgzVbIK90i5olLI2e71xpAAae
-         6Gag==
-X-Gm-Message-State: AOAM531zVh9feuYc07t9zEUHFlAXbsI+mMyNEdebMtJOMUQGE7hNmDYP
-        4Z3PcazvC3JQ51lAwSxLMsMShnfJsEcfVA==
-X-Google-Smtp-Source: ABdhPJxIHWRaLKpw9aH1yXOAUrvcH7eZsqdTKN61SLT8MRqE+iXIygHqgchY/bZ86VcfSlSEsV5b6Q==
-X-Received: by 2002:ad4:5ba1:0:b0:443:cd52:782d with SMTP id 1-20020ad45ba1000000b00443cd52782dmr22701336qvq.25.1651130211184;
-        Thu, 28 Apr 2022 00:16:51 -0700 (PDT)
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
-        by smtp.gmail.com with ESMTPSA id b11-20020ac85bcb000000b002f374e12069sm4873483qtb.18.2022.04.28.00.16.50
+        bh=nFnxkytxiDV9tiNmv6YagpRIo9s4lkmQusqhamT+HGQ=;
+        b=G/CzdR9QHg5mcxFVTP48SfLDMvUhuHqWdJcrlxCV31FQzp36YVZHSqiA0Wifg3PAXU
+         kYqTfFzYQ0usySiDyzt0HJw7g9Xb9Jc4J01EKkM+ULGPzB3l+uatuGNudhSNa3Nh66q+
+         cJDslCry/zOWu4dlz34STFH1LqOtMwRlf4O6NtLDk7JkIB3lEN1fp/wrtjI/fQi/o3VL
+         nDSxjVCdAhw2aAxd7vH44bp5U05Cf2N54d4qxw0nnJvgzhU/jlfU1jtHbEooaIieBc6o
+         J5Zwe8HQ1IyCD5A0bo5eo3mZP9ayhYlqfdH0Vh9UdsfeOz7N/pbGkk4C+sp6HTjqaP5H
+         zRbA==
+X-Gm-Message-State: AOAM533LmKSckYwLX3fBbfHEI30uYJ0r2Sq2wYQlQPl/4tlikuU070pu
+        fgKd7Zd/NbSeJQs8e2MBZTLRivIbXZ4uJg==
+X-Google-Smtp-Source: ABdhPJyQMz5aOdIq6hdBTX6N03j/WFlNhbmH+3it5hAsQvopFgp8SFr25q8n/fKF3dpOyJcaU51Zxg==
+X-Received: by 2002:a05:620a:4625:b0:69f:6a9a:ccd5 with SMTP id br37-20020a05620a462500b0069f6a9accd5mr9472795qkb.626.1651130431552;
+        Thu, 28 Apr 2022 00:20:31 -0700 (PDT)
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id i19-20020a05620a249300b0069f805534d3sm3766066qkn.89.2022.04.28.00.20.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Apr 2022 00:16:51 -0700 (PDT)
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-2f7d7e3b5bfso43033727b3.5;
-        Thu, 28 Apr 2022 00:16:50 -0700 (PDT)
-X-Received: by 2002:a81:1cd5:0:b0:2f4:c3fc:2174 with SMTP id
- c204-20020a811cd5000000b002f4c3fc2174mr31954120ywc.512.1651130210567; Thu, 28
- Apr 2022 00:16:50 -0700 (PDT)
+        Thu, 28 Apr 2022 00:20:31 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id d12so7439083ybc.4;
+        Thu, 28 Apr 2022 00:20:30 -0700 (PDT)
+X-Received: by 2002:a25:8087:0:b0:641:dd06:577d with SMTP id
+ n7-20020a258087000000b00641dd06577dmr29182800ybk.207.1651130430756; Thu, 28
+ Apr 2022 00:20:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220428033319.239341-1-gerg@linux-m68k.org> <20220428033319.239341-2-gerg@linux-m68k.org>
-In-Reply-To: <20220428033319.239341-2-gerg@linux-m68k.org>
+References: <20220428033319.239341-1-gerg@linux-m68k.org> <20220428033319.239341-5-gerg@linux-m68k.org>
+In-Reply-To: <20220428033319.239341-5-gerg@linux-m68k.org>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 28 Apr 2022 09:16:39 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVieXvj-BnLiuv=TEw_2ZcyMF+EyzmFOqRM=MzszTmTuQ@mail.gmail.com>
-Message-ID: <CAMuHMdVieXvj-BnLiuv=TEw_2ZcyMF+EyzmFOqRM=MzszTmTuQ@mail.gmail.com>
-Subject: Re: [PATCH 1/4] m68knommu: use asm-generic/mmu.h for nommu setups
+Date:   Thu, 28 Apr 2022 09:20:19 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXtj+ncYOhc3GcNdBuWxMe+0rP1aYCEKMP0yL3aJ_WH3w@mail.gmail.com>
+Message-ID: <CAMuHMdXtj+ncYOhc3GcNdBuWxMe+0rP1aYCEKMP0yL3aJ_WH3w@mail.gmail.com>
+Subject: Re: [PATCH 4/4] m68knommu: allow elf_fdpic loader to be selected
 To:     Greg Ungerer <gerg@linux-m68k.org>
 Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>,
         Linux MM <linux-mm@kvack.org>,
@@ -59,19 +59,33 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Apr 28, 2022 at 8:24 AM Greg Ungerer <gerg@linux-m68k.org> wrote:
-> The nommu case defines its own local mm_context_t structure. There is
-> nothing special or different about the m68knommu version of this and it
-> can easily use the common asm-generic version.
->
-> Remove the local mmu_context struct and include the asm-generic version
-> instead. This will also make it easier to support ELF format executables
-> in the future (since the asm-generic version has support for this
-> already).
+Hi Greg,
+
+On Thu, Apr 28, 2022 at 7:05 AM Greg Ungerer <gerg@linux-m68k.org> wrote:
+> The m68k architecture code is capable of supporting the binfmt_elf_fdpic
+> loader, so allow it to be configured. It is restricted to nommu
+> configurations at this time due to the MMU context structures/code not
+> supporting everything elf_fdpic needs when MMU is enabled.
 >
 > Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 
 Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+> --- a/fs/Kconfig.binfmt
+> +++ b/fs/Kconfig.binfmt
+> @@ -58,7 +58,7 @@ config ARCH_USE_GNU_PROPERTY
+>  config BINFMT_ELF_FDPIC
+>         bool "Kernel support for FDPIC ELF binaries"
+>         default y if !BINFMT_ELF
+> -       depends on (ARM || (SUPERH && !MMU))
+> +       depends on (ARM || ((M68K || SUPERH) && !MMU))
+
+While at it, you may want to drop the unneeded outer parentheses,
+as they make the expression harder to round, IMHO.
+
+>         select ELFCORE
+>         help
+>           ELF FDPIC binaries are based on ELF, but allow the individual load
 
 Gr{oetje,eeting}s,
 
