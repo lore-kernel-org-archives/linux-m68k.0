@@ -2,64 +2,84 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16C1EC433EF
-	for <linux-m68k@archiver.kernel.org>; Thu, 28 Apr 2022 03:35:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8D98C433FE
+	for <linux-m68k@archiver.kernel.org>; Thu, 28 Apr 2022 07:17:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242278AbiD1Dic (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 27 Apr 2022 23:38:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48130 "EHLO
+        id S239728AbiD1HUP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 28 Apr 2022 03:20:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242342AbiD1DiW (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 27 Apr 2022 23:38:22 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B24C11167;
-        Wed, 27 Apr 2022 20:35:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 915A9B82AEB;
-        Thu, 28 Apr 2022 03:35:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CE6CC385A9;
-        Thu, 28 Apr 2022 03:35:04 +0000 (UTC)
-From:   Greg Ungerer <gerg@linux-m68k.org>
-To:     linux-m68k@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org, dalias@libc.org,
-        Greg Ungerer <gerg@linux-m68k.org>
-Subject: [PATCH 4/4] m68knommu: allow elf_fdpic loader to be selected
-Date:   Thu, 28 Apr 2022 13:33:19 +1000
-Message-Id: <20220428033319.239341-5-gerg@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220428033319.239341-1-gerg@linux-m68k.org>
-References: <20220428033319.239341-1-gerg@linux-m68k.org>
+        with ESMTP id S245121AbiD1HUF (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 28 Apr 2022 03:20:05 -0400
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24AD79A9A6;
+        Thu, 28 Apr 2022 00:16:52 -0700 (PDT)
+Received: by mail-qv1-f41.google.com with SMTP id r8so2637087qvx.10;
+        Thu, 28 Apr 2022 00:16:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iXSujVifP/z3b+O+ilWfsSDwJrRw0iyDOa/QgmjI+PI=;
+        b=NQN7QQB3p13bT2AJ2KDhaBE3uFg8paE/oHBttNHZIzkdGndMorUZW0a9T5WzlrlEW8
+         BMpu0tE8D8RWnfYw/0J/hwCTxQpNxOvl3/E/BvJYiY6kZzi9+xCh7t4uezVBL+0sY+C+
+         tJpGvPDWnDVjggi1lhWdYXiYW6sX4Paf58nqXLHG5gp9ijjJNTFcUsP8R8LaWk+hnCTo
+         l9+1KWzMqx+s/FW2KT6JtyTmv/C8hTecHuZAGwtn+t/GxWURSS0MUX6XRP2jdiqsUavj
+         uLSl7aqR+/T+NEzHjV7zmZ2XRIYFI1rctEcvVy7vnNVJgzVbIK90i5olLI2e71xpAAae
+         6Gag==
+X-Gm-Message-State: AOAM531zVh9feuYc07t9zEUHFlAXbsI+mMyNEdebMtJOMUQGE7hNmDYP
+        4Z3PcazvC3JQ51lAwSxLMsMShnfJsEcfVA==
+X-Google-Smtp-Source: ABdhPJxIHWRaLKpw9aH1yXOAUrvcH7eZsqdTKN61SLT8MRqE+iXIygHqgchY/bZ86VcfSlSEsV5b6Q==
+X-Received: by 2002:ad4:5ba1:0:b0:443:cd52:782d with SMTP id 1-20020ad45ba1000000b00443cd52782dmr22701336qvq.25.1651130211184;
+        Thu, 28 Apr 2022 00:16:51 -0700 (PDT)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
+        by smtp.gmail.com with ESMTPSA id b11-20020ac85bcb000000b002f374e12069sm4873483qtb.18.2022.04.28.00.16.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Apr 2022 00:16:51 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-2f7d7e3b5bfso43033727b3.5;
+        Thu, 28 Apr 2022 00:16:50 -0700 (PDT)
+X-Received: by 2002:a81:1cd5:0:b0:2f4:c3fc:2174 with SMTP id
+ c204-20020a811cd5000000b002f4c3fc2174mr31954120ywc.512.1651130210567; Thu, 28
+ Apr 2022 00:16:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20220428033319.239341-1-gerg@linux-m68k.org> <20220428033319.239341-2-gerg@linux-m68k.org>
+In-Reply-To: <20220428033319.239341-2-gerg@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 28 Apr 2022 09:16:39 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVieXvj-BnLiuv=TEw_2ZcyMF+EyzmFOqRM=MzszTmTuQ@mail.gmail.com>
+Message-ID: <CAMuHMdVieXvj-BnLiuv=TEw_2ZcyMF+EyzmFOqRM=MzszTmTuQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] m68knommu: use asm-generic/mmu.h for nommu setups
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rich Felker <dalias@libc.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The m68k architecture code is capable of supporting the binfmt_elf_fdpic
-loader, so allow it to be configured. It is restricted to nommu
-configurations at this time due to the MMU context structures/code not
-supporting everything elf_fdpic needs when MMU is enabled.
+On Thu, Apr 28, 2022 at 8:24 AM Greg Ungerer <gerg@linux-m68k.org> wrote:
+> The nommu case defines its own local mm_context_t structure. There is
+> nothing special or different about the m68knommu version of this and it
+> can easily use the common asm-generic version.
+>
+> Remove the local mmu_context struct and include the asm-generic version
+> instead. This will also make it easier to support ELF format executables
+> in the future (since the asm-generic version has support for this
+> already).
+>
+> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
----
- fs/Kconfig.binfmt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-diff --git a/fs/Kconfig.binfmt b/fs/Kconfig.binfmt
-index 21c6332fa785..2666398120c4 100644
---- a/fs/Kconfig.binfmt
-+++ b/fs/Kconfig.binfmt
-@@ -58,7 +58,7 @@ config ARCH_USE_GNU_PROPERTY
- config BINFMT_ELF_FDPIC
- 	bool "Kernel support for FDPIC ELF binaries"
- 	default y if !BINFMT_ELF
--	depends on (ARM || (SUPERH && !MMU))
-+	depends on (ARM || ((M68K || SUPERH) && !MMU))
- 	select ELFCORE
- 	help
- 	  ELF FDPIC binaries are based on ELF, but allow the individual load
--- 
-2.25.1
+Gr{oetje,eeting}s,
 
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
