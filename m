@@ -2,101 +2,80 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A08FCC433F5
-	for <linux-m68k@archiver.kernel.org>; Sun,  1 May 2022 22:40:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D08C9C433F5
+	for <linux-m68k@archiver.kernel.org>; Mon,  2 May 2022 08:37:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377166AbiEAWoL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 1 May 2022 18:44:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60462 "EHLO
+        id S1383793AbiEBIlU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 2 May 2022 04:41:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355832AbiEAWoH (ORCPT
+        with ESMTP id S1382649AbiEBIlT (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 1 May 2022 18:44:07 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E92351409F
-        for <linux-m68k@lists.linux-m68k.org>; Sun,  1 May 2022 15:40:40 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 2E01592009C; Mon,  2 May 2022 00:40:39 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 2645D92009B;
-        Sun,  1 May 2022 23:40:39 +0100 (BST)
-Date:   Sun, 1 May 2022 23:40:39 +0100 (BST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Niklas Schnelle <schnelle@linux.ibm.com>
-cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-pci@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "open list:ALPHA PORT" <linux-alpha@vger.kernel.org>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        "open list:IA64 (Itanium) PLATFORM" <linux-ia64@vger.kernel.org>,
-        "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "open list:PARISC ARCHITECTURE" <linux-parisc@vger.kernel.org>,
-        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        "open list:RISC-V ARCHITECTURE" <linux-riscv@lists.infradead.org>,
-        "open list:SUPERH" <linux-sh@vger.kernel.org>,
-        "open list:SPARC + UltraSPARC (sparc/sparc64)" 
-        <sparclinux@vger.kernel.org>
-Subject: Re: [RFC v2 01/39] Kconfig: introduce HAS_IOPORT option and select
- it as necessary
-In-Reply-To: <20220429135108.2781579-2-schnelle@linux.ibm.com>
-Message-ID: <alpine.DEB.2.21.2205012335020.9383@angie.orcam.me.uk>
-References: <20220429135108.2781579-1-schnelle@linux.ibm.com> <20220429135108.2781579-2-schnelle@linux.ibm.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Mon, 2 May 2022 04:41:19 -0400
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A9E183AB
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  2 May 2022 01:37:51 -0700 (PDT)
+Received: by mail-qt1-f180.google.com with SMTP id h3so6016246qtn.4
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 02 May 2022 01:37:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GfOGQBmuow0XJRSClS83s9wqJs62SvttChLLjbwtT1k=;
+        b=EGc5unuyHLKT3Kjoui+48XB1urSapZyFqrD2e1f+lWk4V3rGjljkYJkRzHyeMBi/TA
+         TWJdbbw++lbJDvIdVbcsyljLcjpR0OHC0zix2Z4OQDOx8RChTpXsTeR3uX7B9SC0N5wF
+         Lp69fOMaQoaMYBNyJaZgzn85Cfcf30TdVb/fqiWuZsahdZSnGtsKxCVtOyhuW9gHYrmF
+         UOo+RAr0oNyx9ahVv76cqjZwgswjySPPgdJ5J/Y1nGIV01XTxsfrk9wC+aq2jhE00s9V
+         Uw3Ey5PANQjcYIh7sJub1mEFOCWEqjutpDnE+Itaklvrn/g76ALe4AbxJtqzEbKgPTEY
+         gTyg==
+X-Gm-Message-State: AOAM533OOXQ357PcIw6LwOJ/03GyUi2Ql83/MRjONHHKfb8l4D6Nw7+T
+        xeCVt/TaKH9k9KVQwuYSMA6C7BB/bwgf2g==
+X-Google-Smtp-Source: ABdhPJx4bCMTp3DaXtpc4mZZHjrNXfXFQBpXEBCJNt+rbqag/inZ7//YQg9Kpc0CLSKUjVCbCSu+RA==
+X-Received: by 2002:ac8:7d8c:0:b0:2f3:707e:650b with SMTP id c12-20020ac87d8c000000b002f3707e650bmr9195131qtd.499.1651480670559;
+        Mon, 02 May 2022 01:37:50 -0700 (PDT)
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com. [209.85.128.176])
+        by smtp.gmail.com with ESMTPSA id h9-20020ae9ec09000000b0069fc13ce246sm3991918qkg.119.2022.05.02.01.37.50
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 May 2022 01:37:50 -0700 (PDT)
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-2ebf4b91212so140403167b3.8
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 02 May 2022 01:37:50 -0700 (PDT)
+X-Received: by 2002:a0d:d953:0:b0:2f7:d5ce:f204 with SMTP id
+ b80-20020a0dd953000000b002f7d5cef204mr10194780ywe.502.1651480669896; Mon, 02
+ May 2022 01:37:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20220430191122.8667-7-Julia.Lawall@inria.fr>
+In-Reply-To: <20220430191122.8667-7-Julia.Lawall@inria.fr>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 2 May 2022 10:37:38 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdX03F0zbGHik4zqqHZEu4Xwu7679HO9HHNcLRdr=0T9Bw@mail.gmail.com>
+Message-ID: <CAMuHMdX03F0zbGHik4zqqHZEu4Xwu7679HO9HHNcLRdr=0T9Bw@mail.gmail.com>
+Subject: Re: [PATCH] m68k/math-emu: fix typos in comments
+To:     Julia Lawall <Julia.Lawall@inria.fr>
+Cc:     kernel-janitors@vger.kernel.org,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, 29 Apr 2022, Niklas Schnelle wrote:
+On Sat, Apr 30, 2022 at 9:11 PM Julia Lawall <Julia.Lawall@inria.fr> wrote:
+> Various spelling mistakes in comments.
+> Detected with the help of Coccinelle.
+>
+> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
-> We introduce a new HAS_IOPORT Kconfig option to indicate support for
-> I/O Port access. In a future patch HAS_IOPORT=n will disable compilation
-> of the I/O accessor functions inb()/outb() and friends on architectures
-> which can not meaningfully support legacy I/O spaces such as s390 or
-> where such support is optional. The "depends on" relations on HAS_IOPORT
-> in drivers as well as ifdefs for HAS_IOPORT specific sections will be
-> added in subsequent patches on a per subsystem basis.
-[...]
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index de3b32a507d2..4c55df08d6f1 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -47,6 +47,7 @@ config MIPS
->  	select GENERIC_SMP_IDLE_THREAD
->  	select GENERIC_TIME_VSYSCALL
->  	select GUP_GET_PTE_LOW_HIGH if CPU_MIPS32 && PHYS_ADDR_T_64BIT
-> +	select HAS_IOPORT
->  	select HAVE_ARCH_COMPILER_H
->  	select HAVE_ARCH_JUMP_LABEL
->  	select HAVE_ARCH_KGDB if MIPS_FP_SUPPORT
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k for-v5.19 branch.
 
- NAK, not all MIPS systems have the port I/O space, and we have it already 
-handled via the NO_IOPORT_MAP option.  We'll need to have HAS_IOPORT set 
-to !NO_IOPORT_MAP (or vice versa) for the MIPS architecture.
+Gr{oetje,eeting}s,
 
-  Maciej
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
