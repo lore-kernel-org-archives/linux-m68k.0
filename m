@@ -2,111 +2,76 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D74C4C433F5
-	for <linux-m68k@archiver.kernel.org>; Mon,  2 May 2022 21:01:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09AA6C43219
+	for <linux-m68k@archiver.kernel.org>; Tue,  3 May 2022 14:59:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387524AbiEBVEn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 2 May 2022 17:04:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47212 "EHLO
+        id S237614AbiECPCt convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 3 May 2022 11:02:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1387532AbiEBVEm (ORCPT
+        with ESMTP id S232927AbiECPCt (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 2 May 2022 17:04:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E5326FD
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  2 May 2022 14:01:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 41A6160EB1;
-        Mon,  2 May 2022 21:01:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 870B7C385AC;
-        Mon,  2 May 2022 21:01:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1651525271;
-        bh=Lyb/THiP6nQ3Mo8jxRN/sSN4cFqT+f2qfN1gi8EaInQ=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=UgDF9QfxgCwmucPUKdWp6T3JzrWJrh7DEK/6p23+8Lk9YKDw7W5gWJOHDCu/7PiJz
-         eMEchDEaqya/pd5f/LF2LhVxtyt5SClI551Z4z6Cw/O9ZdC6wNgqENCQkiZwJc7sB6
-         88vbNGfTEAeeQTlsJN5IjcdqwYjGdUobCRI/IZqLmVUPjH5JBHprkvVS/hDkXenk+K
-         U7KvfrL95cqTOsgCmSDYmW1LWzW+qqvUQm4gFRIPC3hKIycONxi9Jo2zI01FcGsGCH
-         dOJ8i6y8MNrsBSJjFbaPbVvwEljbBzysOCcF6QVWefh6kCQQOM2byLdZ0eEGA2xiYy
-         ag4YeJvL+W2gQ==
-Message-ID: <3dee9e8f-45c5-49a0-a19e-d67917fd6bb3@kernel.org>
-Date:   Mon, 2 May 2022 16:01:05 -0500
+        Tue, 3 May 2022 11:02:49 -0400
+X-Greylist: delayed 569 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 03 May 2022 07:59:16 PDT
+Received: from mail.megasoftsol.com (mail.megasoftsol.com [43.231.250.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9356439808
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  3 May 2022 07:59:16 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.megasoftsol.com (Postfix) with ESMTP id 15D989046A6
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  3 May 2022 20:16:46 +0530 (IST)
+Received: from mail.megasoftsol.com ([127.0.0.1])
+        by localhost (mail.megasoftsol.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id hmng60AWj3h3 for <linux-m68k@lists.linux-m68k.org>;
+        Tue,  3 May 2022 20:16:45 +0530 (IST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.megasoftsol.com (Postfix) with ESMTP id 8AA1C9044FB
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  3 May 2022 20:16:45 +0530 (IST)
+X-Virus-Scanned: amavisd-new at megasoftsol.com
+Received: from mail.megasoftsol.com ([127.0.0.1])
+        by localhost (mail.megasoftsol.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id s4g-b6x1euxk for <linux-m68k@lists.linux-m68k.org>;
+        Tue,  3 May 2022 20:16:45 +0530 (IST)
+Received: from asda.co.uk (unknown [20.97.211.134])
+        (Authenticated sender: admin)
+        by mail.megasoftsol.com (Postfix) with ESMTPSA id AFE629044DC
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  3 May 2022 20:16:44 +0530 (IST)
+Reply-To: sales@asdaa.uk
+From:   ASDA Stores Limited <Hanes.Thomas23877@asda.co.uk>
+To:     linux-m68k@lists.linux-m68k.org
+Subject: 2nd Quater puchase request
+Date:   03 May 2022 14:49:13 +0000
+Message-ID: <20220503092157.A70DEBF037D1FFE6@asda.co.uk>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH v5 06/11] nios2: use fallback for random_get_entropy()
- instead of zero
-Content-Language: en-US
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        tglx@linutronix.de, arnd@arndb.de
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "David S . Miller" <davem@davemloft.net>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, x86@kernel.org,
-        linux-xtensa@linux-xtensa.org
-References: <20220419111650.1582274-1-Jason@zx2c4.com>
- <20220419111650.1582274-7-Jason@zx2c4.com>
-From:   Dinh Nguyen <dinguyen@kernel.org>
-In-Reply-To: <20220419111650.1582274-7-Jason@zx2c4.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+Dear linux-m68k
 
-
-On 4/19/22 06:16, Jason A. Donenfeld wrote:
-> In the event that random_get_entropy() can't access a cycle counter or
-> similar, falling back to returning 0 is really not the best we can do.
-> Instead, at least calling random_get_entropy_fallback() would be
-> preferable, because that always needs to return _something_, even
-> falling back to jiffies eventually. It's not as though
-> random_get_entropy_fallback() is super high precision or guaranteed to
-> be entropic, but basically anything that's not zero all the time is
-> better than returning zero all the time.
-> 
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Dinh Nguyen <dinguyen@kernel.org>
-> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-> ---
->   arch/nios2/include/asm/timex.h | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/nios2/include/asm/timex.h b/arch/nios2/include/asm/timex.h
-> index a769f871b28d..d9a3f426cdda 100644
-> --- a/arch/nios2/include/asm/timex.h
-> +++ b/arch/nios2/include/asm/timex.h
-> @@ -9,4 +9,6 @@ typedef unsigned long cycles_t;
->   
->   extern cycles_t get_cycles(void);
->   
-> +#define random_get_entropy() (((unsigned long)get_cycles()) ?: random_get_entropy_fallback())
-> +
->   #endif
-
-Acked-by: Dinh Nguyen <dinguyen@kernel.org>
+We are interested in having some of your hot selling product in 
+our stores and outlets spread all over United Kingdom, Northern 
+Island and Africa. ASDA Stores Limited is one of the highest-
+ranking Wholesale & Retail outlets in the United Kingdom. 
+  
+We shall furnish our detailed company profile in our next 
+correspondent. However, it would be appreciated if you can send 
+us your catalog through email to learn more about your company's 
+products and wholesale quote. It is hopeful that we can start a 
+viable long-lasting business relationship (partnership) with you.  
+  
+  
+Your prompt response would be delightfully appreciated. 
+  
+Best Wishes 
+  
+  
+Hanes S. Thomas 
+Procurement Office. 
+ASDA Stores Limited 
+Tel:  + 44 - 7451271650 
+WhatsApp: + 44 – 7441440360 
+Website: www.asda.co.uk
