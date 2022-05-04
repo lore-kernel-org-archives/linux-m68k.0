@@ -2,75 +2,105 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 917EDC433F5
-	for <linux-m68k@archiver.kernel.org>; Tue,  3 May 2022 21:53:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10948C433F5
+	for <linux-m68k@archiver.kernel.org>; Wed,  4 May 2022 21:08:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243242AbiECV5W (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 3 May 2022 17:57:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41568 "EHLO
+        id S1378492AbiEDVMW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 4 May 2022 17:12:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbiECV5V (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 3 May 2022 17:57:21 -0400
-Received: from out03.mta.xmission.com (out03.mta.xmission.com [166.70.13.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A423A731
-        for <linux-m68k@vger.kernel.org>; Tue,  3 May 2022 14:53:48 -0700 (PDT)
-Received: from in02.mta.xmission.com ([166.70.13.52]:55348)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1nm0So-00As80-3f; Tue, 03 May 2022 15:53:46 -0600
-Received: from ip68-227-174-4.om.om.cox.net ([68.227.174.4]:36832 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1nm0Sn-009WoI-06; Tue, 03 May 2022 15:53:45 -0600
-From:   "Eric W. Biederman" <ebiederm@xmission.com>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org,
-        viro@zeniv.linux.org.uk, glaubitz@physik.fu-berlin.de
-References: <20220127074158.25888-1-schmitzmic@gmail.com>
-Date:   Tue, 03 May 2022 16:53:21 -0500
-In-Reply-To: <20220127074158.25888-1-schmitzmic@gmail.com> (Michael Schmitz's
-        message of "Thu, 27 Jan 2022 20:41:55 +1300")
-Message-ID: <87r15ajnam.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        with ESMTP id S1357725AbiEDVMU (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 4 May 2022 17:12:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 052C94F9CE
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  4 May 2022 14:08:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DE761616A3;
+        Wed,  4 May 2022 21:08:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F213FC385A4;
+        Wed,  4 May 2022 21:08:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1651698522;
+        bh=y1eZ0VyTuh3OSu3SZE5hnm+6Lqgi7WUL9wuM4x9LDoU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=OV+zeMEqAJx67x4OYYs/T+PwaB9EPFjKfNsjZzrWwMVM3NvLvNFpPf0wDtRgV6hPg
+         C/vW0RHXE+D3VHZkPbIlT7vV9H8IzZjwKHGMG7joXJdlZZ7WJg8oDJqQBcpyc4rw/O
+         yxAB78m6HEpQDrzbacEayJr8iiRcV1EWi7mSGZxb5IDhBXSg0dvOB0Jpz0xpdKT8q1
+         53W71wtG3ZAAJTFq4C2Bw331IYIMqmF+azzr+0ky2kC+20quz/B/hGbW52VPMkvf2m
+         sc7xISbNbAO/Ktfv/RlrnLm3f7ClaHPrrdpfMsEfr0tf1mKOlzAyEBnIbIHem9sEJj
+         ZVekgou/eHQhA==
+Date:   Wed, 4 May 2022 16:08:40 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-pci@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "open list:ALPHA PORT" <linux-alpha@vger.kernel.org>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        "open list:IA64 (Itanium) PLATFORM" <linux-ia64@vger.kernel.org>,
+        "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:PARISC ARCHITECTURE" <linux-parisc@vger.kernel.org>,
+        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        "open list:RISC-V ARCHITECTURE" <linux-riscv@lists.infradead.org>,
+        "open list:SUPERH" <linux-sh@vger.kernel.org>,
+        "open list:SPARC + UltraSPARC (sparc/sparc64)" 
+        <sparclinux@vger.kernel.org>
+Subject: Re: [RFC v2 01/39] Kconfig: introduce HAS_IOPORT option and select
+ it as necessary
+Message-ID: <20220504210840.GA469916@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1nm0Sn-009WoI-06;;;mid=<87r15ajnam.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.174.4;;;frm=ebiederm@xmission.com;;;spf=softfail
-X-XM-AID: U2FsdGVkX19fZRfSSHkXkMFfCcC9FJog6dqCZkOqsBQ=
-X-SA-Exim-Connect-IP: 68.227.174.4
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-Subject: Re: [PATCH v10 0/3] Add kernel seccomp support for m68k
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220429135108.2781579-2-schnelle@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Michael Schmitz <schmitzmic@gmail.com> writes:
+On Fri, Apr 29, 2022 at 03:49:59PM +0200, Niklas Schnelle wrote:
+> We introduce a new HAS_IOPORT Kconfig option to indicate support for
+> I/O Port access. In a future patch HAS_IOPORT=n will disable compilation
+> of the I/O accessor functions inb()/outb() and friends on architectures
+> which can not meaningfully support legacy I/O spaces such as s390 or
+> where such support is optional. 
 
-> Patch 3 adds the test for TIF_SECCOMP thread info flag to call
-> into syscall_trace_enter() when seccomp syscall filtering
-> is active, which was missing from earlier versions (classic
-> MMU m68k only - need some help with the test for 68000 and
-> coldfire).
->
-> The previous version required the TIF_SYSCALL_TRACE
-> flag to be set for syscall filtering to work
->
-> The rest of the series remains unchanged from v9. 
->
-> Tested on ARAnyM, 63 out of 89 seccomp_bpf tests now pass
-> (33 with the old version).
->
-> I hope you didn't waste too much effort on testing v8/v9, Adrian.
-> Should have a suitably large brown paper bag somewhere yet :-(
+So you plan to drop inb()/outb() on architectures where I/O port space
+is optional?  So even platforms that have I/O port space may not be
+able to use it?
 
-Has any progress been made on testing or merging this patch series?
+This feels like a lot of work where the main benefit is to keep
+Kconfig from offering drivers that aren't of interest on s390.
 
-I was just thinking it might be nice if the only callers of
-ptrace_report_syscall were ptrace_report_syscall_entry and
-ptrace_report_syscall_exit.
+Granted, there may be issues where inb()/outb() does the wrong thing
+such as dereferencing null pointers when I/O port space isn't
+implemented.  I think that's a defect in inb()/outb() and could be
+fixed there.
 
-
-Eric
+Bjorn
