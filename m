@@ -2,227 +2,134 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51EAAC433F5
-	for <linux-m68k@archiver.kernel.org>; Thu,  5 May 2022 14:28:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E516C433EF
+	for <linux-m68k@archiver.kernel.org>; Thu,  5 May 2022 16:10:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378188AbiEEOcJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 5 May 2022 10:32:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56710 "EHLO
+        id S237746AbiEEQO2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 5 May 2022 12:14:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbiEEOcH (ORCPT
+        with ESMTP id S1382330AbiEEQOU (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 5 May 2022 10:32:07 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E01F019C25
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  5 May 2022 07:28:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1651760907; x=1683296907;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=BELR3Oo3IIG8k3OryeAW3XQv9I2nq2kRq5YVGFFW2DQ=;
-  b=Eg+XzFIErT+Hifg1nBE3GpRw+M+LXk0B0cHg0I92WoXOCxZXcPqTvW4X
-   uEL3rXOfWDfgTGSCrCbMKiAK8V1QbUNOBR4ZzotEl761Eh5HMZlNEnzXm
-   Q7v2sgadMaFYhHD6kLnmrQ5yZtctiT4FyvLvVMwW8w0akLwp/wD6oxe5B
-   toK4UrbTXDqo8MsPhcKMdKwG6aDl+M2aA89AWC6wmqzGKNZu5jaAr3Gdy
-   FgoEFRRD2Vri50YPHe55xFssiukbvYH1QhjyZAHmQ0m3ytLCVS2Hsekvh
-   isuVvYVaqChhRIlgpqO0JShyUb2yrDty8oHNPaSyxpeCIFxceR/OViUWp
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10338"; a="268272916"
-X-IronPort-AV: E=Sophos;i="5.91,201,1647327600"; 
-   d="scan'208";a="268272916"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2022 07:28:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,201,1647327600"; 
-   d="scan'208";a="600060170"
-Received: from lkp-server01.sh.intel.com (HELO 5056e131ad90) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 05 May 2022 07:28:23 -0700
-Received: from kbuild by 5056e131ad90 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1nmcSs-000CTH-RI;
-        Thu, 05 May 2022 14:28:22 +0000
-Date:   Thu, 05 May 2022 22:28:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- f3f50e32949fa00ca6517073ebaabe47eb23ed3a
-Message-ID: <6273defb.kZTZFLBqA1+xqdWz%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        Thu, 5 May 2022 12:14:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 528B31D0FF
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  5 May 2022 09:10:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7E1DA61DCF;
+        Thu,  5 May 2022 16:10:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FE18C385A8;
+        Thu,  5 May 2022 16:10:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1651767031;
+        bh=y1bm/ePw6qN7M+uAMLXPbjzr3hDC7iN+2T5U5hZp75c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=V+TiGeXpnpx8QAPISZ/tFZ1vgqt07jnZ/e8UGsZFjYbSOIbxjOaFyb/UjHBhqn5hx
+         Z64n0P5wnIuaGgxiRpF7HUD9ziSD/Vy04koyZ+3OiNayjnxjzS0fZIDvEf4IlnjJDh
+         ZFqZNchd+Rmh0D+frE/gcDMj07LtCQDi4bliOoYzYtwBViRsBNVzjXBMPmC2/Yp3+O
+         avJDoEKTBRLhRLGuv5dd4ZPPntedsmPSHGr9oDetkDU8rgxRb4BichpG/ijCid5diK
+         e/q4W6AYEDDk6fNQ6Z+JXpgOmkNdUU12Kp4sKoGZvuLv591DrEpNAjn9EHl9SCvfts
+         lHbL5gffrnaQA==
+Date:   Thu, 5 May 2022 11:10:28 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Niklas Schnelle <schnelle@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "open list:ALPHA PORT" <linux-alpha@vger.kernel.org>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        "open list:IA64 (Itanium) PLATFORM" <linux-ia64@vger.kernel.org>,
+        "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:PARISC ARCHITECTURE" <linux-parisc@vger.kernel.org>,
+        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        "open list:RISC-V ARCHITECTURE" <linux-riscv@lists.infradead.org>,
+        "open list:SUPERH" <linux-sh@vger.kernel.org>,
+        "open list:SPARC + UltraSPARC (sparc/sparc64)" 
+        <sparclinux@vger.kernel.org>
+Subject: Re: [RFC v2 01/39] Kconfig: introduce HAS_IOPORT option and select
+ it as necessary
+Message-ID: <20220505161028.GA492600@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a0sJgMSpZB_Butx2gO0hapYZy-Dm_QH-hG5rOaq_ZgsXg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: f3f50e32949fa00ca6517073ebaabe47eb23ed3a  Merge tag 'v5.18-rc5'
+On Wed, May 04, 2022 at 11:31:28PM +0200, Arnd Bergmann wrote:
+> On Wed, May 4, 2022 at 11:08 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > On Fri, Apr 29, 2022 at 03:49:59PM +0200, Niklas Schnelle wrote:
+> > > We introduce a new HAS_IOPORT Kconfig option to indicate support for
+> > > I/O Port access. In a future patch HAS_IOPORT=n will disable compilation
+> > > of the I/O accessor functions inb()/outb() and friends on architectures
+> > > which can not meaningfully support legacy I/O spaces such as s390 or
+> > > where such support is optional.
+> >
+> > So you plan to drop inb()/outb() on architectures where I/O port space
+> > is optional?  So even platforms that have I/O port space may not be
+> > able to use it?
+> >
+> > This feels like a lot of work where the main benefit is to keep
+> > Kconfig from offering drivers that aren't of interest on s390.
+> >
+> > Granted, there may be issues where inb()/outb() does the wrong thing
+> > such as dereferencing null pointers when I/O port space isn't
+> > implemented.  I think that's a defect in inb()/outb() and could be
+> > fixed there.
+> 
+> The current implementation in asm-generic/io.h implements inb()/outb()
+> using readb()/writeb() with a fixed architecture specific offset.
+> 
+> There are three possible things that can happen here:
+> 
+> a) there is a host bridge driver that maps its I/O ports to this window,
+>     and everything works
+> b) the address range is reserved and accessible but no host bridge
+>    driver has mapped its registers there, so an access causes a
+>    page fault
+> c) the architecture does not define an offset, and accessing low I/O
+>     ports ends up as a NULL pointer dereference
+> 
+> The main goal is to avoid c), which is what happens on s390, but
+> can also happen elsewhere. Catching b) would be nice as well,
+> but is much harder to do from generic code as you'd need an
+> architecture specific inline asm statement to insert a ex_table
+> fixup, or a runtime conditional on each access.
 
-elapsed time: 4611m
+Or s390 could implement its own inb().
 
-configs tested: 147
-configs skipped: 4
+I'm hearing that generic powerpc kernels have to run both on machines
+that have I/O port space and those that don't.  That makes me think
+s390 could do something similar.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm64                               defconfig
-arm64                            allyesconfig
-arm                              allmodconfig
-arm                                 defconfig
-arm                              allyesconfig
-i386                          randconfig-c001
-sh                            shmin_defconfig
-mips                  maltasmvp_eva_defconfig
-powerpc                         ps3_defconfig
-arc                     haps_hs_smp_defconfig
-arc                            hsdk_defconfig
-arm                         vf610m4_defconfig
-sh                        sh7763rdp_defconfig
-h8300                    h8300h-sim_defconfig
-arm                        oxnas_v6_defconfig
-powerpc                     redwood_defconfig
-parisc                generic-64bit_defconfig
-alpha                            alldefconfig
-arc                     nsimosci_hs_defconfig
-powerpc                       ppc64_defconfig
-sh                           sh2007_defconfig
-mips                         cobalt_defconfig
-sh                             sh03_defconfig
-powerpc                    sam440ep_defconfig
-powerpc                           allnoconfig
-m68k                          amiga_defconfig
-mips                         db1xxx_defconfig
-xtensa                    xip_kc705_defconfig
-mips                     decstation_defconfig
-powerpc                         wii_defconfig
-powerpc                 mpc8540_ads_defconfig
-s390                             allyesconfig
-h8300                            alldefconfig
-m68k                          atari_defconfig
-arm                            zeus_defconfig
-arm                            mps2_defconfig
-xtensa                  audio_kc705_defconfig
-sh                   sh7770_generic_defconfig
-riscv             nommu_k210_sdcard_defconfig
-sh                         ecovec24_defconfig
-xtensa                         virt_defconfig
-powerpc                    amigaone_defconfig
-sh                        sh7785lcr_defconfig
-sh                           se7721_defconfig
-sh                           se7705_defconfig
-arm                  randconfig-c002-20220501
-x86_64                        randconfig-c001
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-csky                                defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                                defconfig
-s390                             allmodconfig
-parisc                              defconfig
-parisc64                            defconfig
-parisc                           allyesconfig
-sparc                               defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-x86_64                        randconfig-a006
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-i386                 randconfig-a004-20220502
-i386                 randconfig-a006-20220502
-i386                 randconfig-a002-20220502
-i386                 randconfig-a003-20220502
-i386                 randconfig-a001-20220502
-i386                 randconfig-a005-20220502
-x86_64               randconfig-a006-20220502
-x86_64               randconfig-a002-20220502
-x86_64               randconfig-a001-20220502
-x86_64               randconfig-a004-20220502
-x86_64               randconfig-a005-20220502
-x86_64               randconfig-a003-20220502
-i386                          randconfig-a012
-i386                          randconfig-a014
-i386                          randconfig-a016
-arc                  randconfig-r043-20220501
-arc                  randconfig-r043-20220502
-s390                 randconfig-r044-20220501
-riscv                randconfig-r042-20220501
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                    nommu_k210_defconfig
-riscv                             allnoconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                          rhel-8.3-func
-x86_64                           rhel-8.3-syz
-x86_64                                  kexec
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                         rhel-8.3-kunit
-x86_64                               rhel-8.3
-
-clang tested configs:
-powerpc              randconfig-c003-20220501
-x86_64                        randconfig-c007
-mips                 randconfig-c004-20220501
-i386                          randconfig-c001
-arm                  randconfig-c002-20220501
-riscv                randconfig-c006-20220501
-s390                 randconfig-c005-20220501
-arm                           spitz_defconfig
-mips                      maltaaprp_defconfig
-arm                         palmz72_defconfig
-arm                         socfpga_defconfig
-riscv                    nommu_virt_defconfig
-powerpc                  mpc866_ads_defconfig
-mips                           mtx1_defconfig
-powerpc                     kilauea_defconfig
-arm                       aspeed_g4_defconfig
-powerpc                     ksi8560_defconfig
-arm                            dove_defconfig
-riscv                          rv32_defconfig
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-x86_64               randconfig-a011-20220502
-x86_64               randconfig-a014-20220502
-x86_64               randconfig-a012-20220502
-x86_64               randconfig-a013-20220502
-x86_64               randconfig-a016-20220502
-x86_64               randconfig-a015-20220502
-i386                          randconfig-a011
-i386                          randconfig-a013
-i386                          randconfig-a015
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Bjorn
