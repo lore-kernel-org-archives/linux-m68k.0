@@ -2,110 +2,152 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE3D6C433F5
-	for <linux-m68k@archiver.kernel.org>; Fri,  6 May 2022 08:37:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36861C433F5
+	for <linux-m68k@archiver.kernel.org>; Fri,  6 May 2022 09:21:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1390180AbiEFIky (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 6 May 2022 04:40:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57790 "EHLO
+        id S245109AbiEFJYn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 6 May 2022 05:24:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238317AbiEFIkv (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 6 May 2022 04:40:51 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E74651FA4A
-        for <linux-m68k@vger.kernel.org>; Fri,  6 May 2022 01:37:09 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id x18so6766837plg.6
-        for <linux-m68k@vger.kernel.org>; Fri, 06 May 2022 01:37:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=2OvWfU1yoJydoeFxwFqx41FSLqWpA99A6Qzffh14UxE=;
-        b=lOQUNMl5f9HeF9vN69CrFmZURcHvFiCbzYVC7UCCODl0WzqxAiOiKrAoG1G9sdU5Om
-         q9V4OoUeB5eRt51AqSh4WfKSB5KY/oV600i+irZAZl+kxAXm/qs8LqKvZu4M0GPjFGY3
-         HbKJapWaOrcHLz3FMNjvhh9Fol0FYRowulqIITIdTDIksRsk/t97xxyB+OiSValBQU2U
-         LmpXOjxJaXnbiX7FxtB3/3Pb8BqQyTAi3akgvvo3G/+iNrPrFW/MjuDdjwVGmFs79H21
-         hY68pCiAsQ2WkjfTSIL9rD/+HT5Osw17IdrecOuI4X3VJ0NulPINEcPaZXvH2wjhJM13
-         RgMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=2OvWfU1yoJydoeFxwFqx41FSLqWpA99A6Qzffh14UxE=;
-        b=QVIJY3wkGDBa0q/gWG6faz9WoPgYT8R3lz8YTZfa1rUqb5yr7e8mseF3wzbZ/Ltekv
-         mDx0/dzUDF4AJtoge0fTvYyqL/pRp8ECL4aqPJI68rgmtAgu6imBO5qSR0JdejdL4mG2
-         fduvZWgboZDUNAQpfKtMrZphETJBwodv2WZLBADqXtaKtY7BPQO8sEL3fX4q76oN/GsO
-         n+PqxHOIiflfg3vaj1voOFiTMVBqPrzeEVzFu8Trg4WwBb0Q5gI4Fj7wNf/a0ElL6z19
-         x9WAf3cK/631XMPN6QnzhPHQbH7bhjgjUozDIxhwk5TEW3IttV3+kd/J0M89RhGJuU8e
-         fLkA==
-X-Gm-Message-State: AOAM531vYMu+10I9ozMqepOOeEcsdQiruh5uFqzCYPqZGqt/J/HnuIga
-        3LMjo6LPnWt9b0bQQAROoorlOkCESfc=
-X-Google-Smtp-Source: ABdhPJzFwlWly43okTlOidMdDbxri7X/q3wzKXN5ejQPDKns5MMm9akt8W0sD1gt3/fjJM9Cq26+rA==
-X-Received: by 2002:a17:902:710c:b0:15e:e759:c907 with SMTP id a12-20020a170902710c00b0015ee759c907mr2435279pll.140.1651826229428;
-        Fri, 06 May 2022 01:37:09 -0700 (PDT)
-Received: from [10.1.1.24] (222-152-175-142-fibre.sparkbb.co.nz. [222.152.175.142])
-        by smtp.gmail.com with ESMTPSA id y2-20020a17090322c200b0015e8d4eb1f6sm1124454plg.64.2022.05.06.01.37.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 06 May 2022 01:37:08 -0700 (PDT)
-Subject: Re: [PATCH v10 0/3] Add kernel seccomp support for m68k
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-References: <20220127074158.25888-1-schmitzmic@gmail.com>
- <87r15ajnam.fsf@email.froward.int.ebiederm.org>
-Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org,
-        viro@zeniv.linux.org.uk, glaubitz@physik.fu-berlin.de
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <0955ca4b-bbe8-7978-4ac3-c6accac9d203@gmail.com>
-Date:   Fri, 6 May 2022 20:37:03 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        with ESMTP id S234528AbiEFJYm (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 6 May 2022 05:24:42 -0400
+X-Greylist: delayed 518 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 06 May 2022 02:20:59 PDT
+Received: from wnew3-smtp.messagingengine.com (wnew3-smtp.messagingengine.com [64.147.123.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 081916472A
+        for <linux-m68k@lists.linux-m68k.org>; Fri,  6 May 2022 02:20:53 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 93A8D2B0562D;
+        Fri,  6 May 2022 05:12:13 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 06 May 2022 05:12:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1651828333; x=
+        1651835533; bh=G6gyLdn77rvfE254bKTLUge+Op3KXd37yTLdohreqqM=; b=v
+        QKeAQx1x9oi9rnTQnxWzQZ3vTa1sCKU3qAfK8BUdnTNglj/iKAYlugS8ZO/zk5fZ
+        DfF7J1EiEgVn1bVYrjCqLYS3iirT+M/yZbaX7X/uei2Gb3LNEQ7gNa/6aO4lyi6K
+        Tt7s1lCuwd/NrqgJIxoWaYMl29GOUzitCCOr5c2z9gRbiPjvVQLp/zABVxIqq2ZK
+        AaY9nkTVzG/mRRGYLVAR8bBcR5nX8PaiHT4MAiZq+H0Xwj5TbLVla4dy88/3+1AN
+        1wI0EAxFufJY3W8/p05bkAWVyXVer+YeXe+Ib7meLr1qgWB/FfkXpkAKjyHMQsJ3
+        7g4mWCiNAG2aqihJux0IA==
+X-ME-Sender: <xms:YuZ0YjLV7ehbq11Iew8UcQGjF5dzNVZmWTCB44jSQAUnrEzMUanDNw>
+    <xme:YuZ0YnLO3AhBi-8UDTh2IshOkP29SbDuTpdLzRv7EABfM46yVxKyoWYDYhcgeRQCS
+    77vC9WxTNt6pMrOhv0>
+X-ME-Received: <xmr:YuZ0Yruq9kszH8K6PStFW0G6vBqLXoDlJzZGTzPxfq_14sas55UK-gUHN-Zh2nfpt0s4gg2KHxVH05i8KORm6pMmTETF2ks5atM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeefgdduudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
+    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
+    htvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedvueeh
+    ueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
+    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:YuZ0YsYfsshGe5L3c7ZGNomVPUHUMo_s6qgakvJ4OzSu-3gGhre-ZQ>
+    <xmx:YuZ0YqYvL7cbpdbLSaNh38uTGj9Rc92MFhzYVkQe0DbODJiFYPgAcA>
+    <xmx:YuZ0YgAK1cXBpunCnPwlHEy_DcU5yqhXavJmM9Za0lR2vtG4vS6RVA>
+    <xmx:beZ0YvPqIgZVZC0ItH0ne5dg6_12BUITfxVdxuoceofiAb6SMND9K6LMeBg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 6 May 2022 05:11:59 -0400 (EDT)
+Date:   Fri, 6 May 2022 19:12:06 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+cc:     Arnd Bergmann <arnd@kernel.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "open list:ALPHA PORT" <linux-alpha@vger.kernel.org>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        "open list:IA64 (Itanium) PLATFORM" <linux-ia64@vger.kernel.org>,
+        "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:PARISC ARCHITECTURE" <linux-parisc@vger.kernel.org>,
+        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        "open list:RISC-V ARCHITECTURE" <linux-riscv@lists.infradead.org>,
+        "open list:SUPERH" <linux-sh@vger.kernel.org>,
+        "open list:SPARC + UltraSPARC (sparc/sparc64)" 
+        <sparclinux@vger.kernel.org>
+Subject: Re: [RFC v2 01/39] Kconfig: introduce HAS_IOPORT option and select
+ it as necessary
+In-Reply-To: <20220505195342.GA509942@bhelgaas>
+Message-ID: <22bec167-241f-2cbe-829f-a3f65e40e71@linux-m68k.org>
+References: <20220505195342.GA509942@bhelgaas>
 MIME-Version: 1.0
-In-Reply-To: <87r15ajnam.fsf@email.froward.int.ebiederm.org>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Eric,
-
-Am 04.05.2022 um 09:53 schrieb Eric W. Biederman:
-> Michael Schmitz <schmitzmic@gmail.com> writes:
->
->> Patch 3 adds the test for TIF_SECCOMP thread info flag to call
->> into syscall_trace_enter() when seccomp syscall filtering
->> is active, which was missing from earlier versions (classic
->> MMU m68k only - need some help with the test for 68000 and
->> coldfire).
->>
->> The previous version required the TIF_SYSCALL_TRACE
->> flag to be set for syscall filtering to work
->>
->> The rest of the series remains unchanged from v9.
->>
->> Tested on ARAnyM, 63 out of 89 seccomp_bpf tests now pass
->> (33 with the old version).
->>
->> I hope you didn't waste too much effort on testing v8/v9, Adrian.
->> Should have a suitably large brown paper bag somewhere yet :-(
->
-> Has any progress been made on testing or merging this patch series?
-
-This series totally dropped off my radar, sorry. I had run out of 
-options to test, and have been too busy to do much about that.
-
-> I was just thinking it might be nice if the only callers of
-> ptrace_report_syscall were ptrace_report_syscall_entry and
-> ptrace_report_syscall_exit.
-
-Just merging patch 1 would be enough there AFAICS. Any reason not to do 
-that, Geert?
-
-Cheers,
-
-	Michael
 
 
->
->
-> Eric
->
+On Thu, 5 May 2022, Bjorn Helgaas wrote:
+
+> On Thu, May 05, 2022 at 07:39:42PM +0200, Arnd Bergmann wrote:
+> > On Thu, May 5, 2022 at 6:10 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > > On Wed, May 04, 2022 at 11:31:28PM +0200, Arnd Bergmann wrote:
+> > > >
+> > > > The main goal is to avoid c), which is what happens on s390, but
+> > > > can also happen elsewhere. Catching b) would be nice as well,
+> > > > but is much harder to do from generic code as you'd need an
+> > > > architecture specific inline asm statement to insert a ex_table
+> > > > fixup, or a runtime conditional on each access.
+> > >
+> > > Or s390 could implement its own inb().
+> > >
+> > > I'm hearing that generic powerpc kernels have to run both on machines
+> > > that have I/O port space and those that don't.  That makes me think
+> > > s390 could do something similar.
+> > 
+> > No, this is actually the current situation, and it makes absolutely no
+> > sense. s390 has no way of implementing inb()/outb() because there
+> > are no instructions for it and it cannot tunnel them through a virtual
+> > address mapping like on most of the other architectures. (it has special
+> > instructions for accessing memory space, which is not the same as
+> > a pointer dereference here).
+> > 
+> > The existing implementation gets flagged as a NULL pointer dereference
+> > by a compiler warning because it effectively is.
+> 
+> I think s390 currently uses the inb() in asm-generic/io.h, i.e.,
+> "__raw_readb(PCI_IOBASE + addr)".  I understand that's a NULL pointer
+> dereference because the default PCI_IOBASE is 0.
+> 
+> I mooted a s390 inb() implementation like "return ~0" because that's
+> what happens on most arches when there's no device to respond to the
+> inb().
+> 
+> The HAS_IOPORT dependencies are fairly ugly IMHO, and they clutter
+> drivers that use I/O ports in some cases but not others.  But maybe
+> it's the most practical way.
+> 
+
+Do you mean, "the most practical way to avoid a compiler warning on s390"? 
+What about "#pragma GCC diagnostic ignored"?
