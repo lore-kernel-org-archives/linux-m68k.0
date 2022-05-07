@@ -2,72 +2,104 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60B3EC433F5
-	for <linux-m68k@archiver.kernel.org>; Fri,  6 May 2022 22:35:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AB42C433F5
+	for <linux-m68k@archiver.kernel.org>; Sat,  7 May 2022 00:10:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444803AbiEFWjb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 6 May 2022 18:39:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47340 "EHLO
+        id S1445021AbiEGAOf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 6 May 2022 20:14:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356804AbiEFWja (ORCPT
+        with ESMTP id S235557AbiEGAOe (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 6 May 2022 18:39:30 -0400
-Received: from wnew3-smtp.messagingengine.com (wnew3-smtp.messagingengine.com [64.147.123.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 535FA19C12
-        for <linux-m68k@lists.linux-m68k.org>; Fri,  6 May 2022 15:35:45 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 2BEDB2B01226;
-        Fri,  6 May 2022 18:35:40 -0400 (EDT)
+        Fri, 6 May 2022 20:14:34 -0400
+X-Greylist: delayed 537 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 06 May 2022 17:10:49 PDT
+Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com [66.111.4.230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17AD8192BC
+        for <linux-m68k@lists.linux-m68k.org>; Fri,  6 May 2022 17:10:48 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 08A20581367;
+        Fri,  6 May 2022 20:01:49 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 06 May 2022 18:35:42 -0400
+  by compute5.internal (MEProxy); Fri, 06 May 2022 20:01:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1651876539; x=
-        1651883739; bh=2PEZYJ6H5NjwlOLCSF/znMhdRyqXIjEm8KXJigOw1Vg=; b=R
-        hSA51niVEy5JxE00UFlfNdR1m/Gsve1HXbIJ8aDQJGiiDIk1ooDHCLTCwwpYrvlQ
-        YR1enxc9lWl3vJfhQqA1K4Q69QNVad/yA9aERbbeMMv3zopodqrUwIGQ4MVLvTPP
-        S3DQ/Xspu7Gd5d76rMpzSMJlZZRVG9srnSziZ6HQfkiVCo9cgHbhK6UDCVf1YQHk
-        NjGvL/5k8tq22gbV9F9JZPOsfXQsPTClBCp3lb8H2nm7WOcpbBnjT9SO+hQibBoW
-        5rj5nh7Hhh+8opf2Xw7dGZ54ujIRFcf9yGhLGAqlqWBuJqwmuWNNCDE8Xsd7SUIU
-        +I3tHsGhsfTPCSbp9zezg==
-X-ME-Sender: <xms:uaJ1Yos7Sa-TdFVIL7sWpOzedzlxyq2DMlWgYStdttrEfWJ3KBkw2g>
-    <xme:uaJ1YldYxyOSV54bosQ1N7kY8T6WyeiFEwEWKCF4kl6GNo0mkckoMVtTeYZVKy2jR
-    i-Ik7VsQzHrRoP6TQg>
-X-ME-Received: <xmr:uaJ1Yjwf0y7CxAbgwS6EjNm7kxQQ7k6dJXwmGC25H9vJCI22UA2ENQMtoqlN8B5G3zXMjLnD6SAVkOZs6SO88vQ8YvGcQKN-8LU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeeggddtlecutefuodetggdotefrodftvf
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1651881709; x=
+        1651888909; bh=hJxEFAuP3W0ocRuq9vLXjN5OlZEUnHk8AMHl1pdwrIw=; b=C
+        xRLkEfhUbEyE90JzCIIfMF0OZav1zcZBYtpgecP8ApnTN4fdlBb3TWucKtiiLVnd
+        phR+z33NIKiN5vvoQl4oIZhk8c/stiSlc7YKhqnLniKgN7mh6i4gdLlpwMgXN8Jx
+        e7Ktbm6oij1Rve4npuV/JXnd7tlkfyM/0Bz3txW/0SUizxpE/JN1o4B4fiIigl5B
+        ODk4g+2AMO40GC7n/7n0pEgUnXqDIMz17cgAN6FmIv1e9zegzqwaJ0I+kStibxBe
+        g4XBZSsTbqspbyCFDBCsvGdO+loAMO92OKfZTh/4kTG2uqmiuWrZjJm45yvGLmba
+        KNmSVM+dKifWafpBnnHDw==
+X-ME-Sender: <xms:4rZ1Ytzfx8dyKZqHQrV2iYrMdgRUVRPJ5uUwNS7astnHeUoPA5JP-Q>
+    <xme:4rZ1YtQUABIDxMMBtegJM8AXkRrr-tzXbMdH0cN7W3yw1nTwwmuUilavkeuJbaLH-
+    jiXIcpKb_V12BfL3wo>
+X-ME-Received: <xmr:4rZ1YnWuj7-Y-n3U8_P9SrVRCen9EuBDcbjR5eG7oX-EXFUmoFKaghxcC96Gl5aI4_7s5rHGeJqG5FVCSZIPe5G--o2Z8oFtO20>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeeggddviecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhepfffhvfevufgjkfhfgggtsehttdertd
-    dttddvnecuhfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidq
-    mheikehkrdhorhhgqeenucggtffrrghtthgvrhhnpeelueehleehkefgueevtdevteejke
-    fhffekfeffffdtgfejveekgeefvdeuheeuleenucevlhhushhtvghrufhiiigvpedtnecu
-    rfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorh
-    hg
-X-ME-Proxy: <xmx:uqJ1YrOgJ7Ze4Tm5sUhhN1T4TBROjdwpfjC0NrBBv86stC8ojlcEOg>
-    <xmx:uqJ1Yo8CiMR8elzazfYvgRY28ArT41bU7Z1aLYW88WZhNYRb4XETHA>
-    <xmx:uqJ1YjUt8L4tCAlZl4mc0t_BcLXtfQ_9QlDXab0dP4mdmLz3tBn5MA>
-    <xmx:u6J1YsTZjm5Ryket5HJxDr66Tv0cB-EH5IyGfEPbAY-9E02TbqMI2DWsmrw>
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
+    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
+    htvghrnhepfeeiheejvdetgfeitddutefhkeeilefhveehgfdvtdekkedvkeehffdtkeev
+    vdeunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehk
+    rdhorhhg
+X-ME-Proxy: <xmx:4rZ1YvjRqTV1kqzGfEZqExc-y3C87C0PjwUsUwS-om8USnmpQPRsXQ>
+    <xmx:4rZ1YvD61kgrS-YFzaAD5iTYUCb5iH6iosfkwZGmHVIza5eNfoZf5Q>
+    <xmx:4rZ1YoIUIx-XKteSS56qWnxoAmafmX5tikXV710a88-2E5zTPDOJsg>
+    <xmx:7bZ1Yh30nOThnpoXJeJtrRg9vb4kwFxuUl_bN4rVDjV8z-IxFV2paA>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 6 May 2022 18:35:36 -0400 (EDT)
-Date:   Sat, 7 May 2022 08:35:43 +1000 (AEST)
+ 6 May 2022 20:01:37 -0400 (EDT)
+Date:   Sat, 7 May 2022 10:01:39 +1000 (AEST)
 From:   Finn Thain <fthain@linux-m68k.org>
-To:     lizhe <sensor1010@163.com>
-cc:     lee.jones@linaro.org, akrowiak@linux.ibm.com, pasic@linux.ibm.com,
-        jjherne@linux.ibm.com, freude@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com,
-        borntraeger@linux.ibm.com, svens@linux.ibm.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, zbr@ioremap.net, perex@perex.cz,
-        tiwai@suse.com, bvanassche@acm.org, dan.j.williams@intel.com,
-        srinivas.kandagatla@linaro.org, wens@csie.org,
-        colin.king@intel.com, u.kleine-koenig@pengutronix.de, hare@suse.de,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH] kernel/drivers: Remove redundant driver match function
-In-Reply-To: <20220506045952.136290-1-sensor1010@163.com>
-Message-ID: <fe632997-be40-55f2-96c0-e79a7aece197@linux-m68k.org>
-References: <20220506045952.136290-1-sensor1010@163.com>
+To:     Niklas Schnelle <schnelle@linux.ibm.com>
+cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "open list:ALPHA PORT" <linux-alpha@vger.kernel.org>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        "open list:IA64 (Itanium) PLATFORM" <linux-ia64@vger.kernel.org>,
+        "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:PARISC ARCHITECTURE" <linux-parisc@vger.kernel.org>,
+        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        "open list:RISC-V ARCHITECTURE" <linux-riscv@lists.infradead.org>,
+        "open list:SUPERH" <linux-sh@vger.kernel.org>,
+        "open list:SPARC + UltraSPARC (sparc/sparc64)" 
+        <sparclinux@vger.kernel.org>
+Subject: Re: [RFC v2 01/39] Kconfig: introduce HAS_IOPORT option and select
+ it as necessary
+In-Reply-To: <105ccec439f709846e82b69cb854ac825d7a6a49.camel@linux.ibm.com>
+Message-ID: <7dfa7578-039-e132-c573-ad89bd3215@linux-m68k.org>
+References: <20220505195342.GA509942@bhelgaas>  <22bec167-241f-2cbe-829f-a3f65e40e71@linux-m68k.org> <105ccec439f709846e82b69cb854ac825d7a6a49.camel@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
@@ -75,179 +107,69 @@ List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
 
-On Thu, 5 May 2022, lizhe wrote:
+On Fri, 6 May 2022, Niklas Schnelle wrote:
 
-> If there is no driver match function, the driver core assumes that each
-> candidate pair (driver, device) matches, see driver_match_device().
+> On Fri, 2022-05-06 at 19:12 +1000, Finn Thain wrote:
+> > 
+> > On Thu, 5 May 2022, Bjorn Helgaas wrote:
+> > 
+> > > On Thu, May 05, 2022 at 07:39:42PM +0200, Arnd Bergmann wrote:
+> > > > On Thu, May 5, 2022 at 6:10 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > > > > On Wed, May 04, 2022 at 11:31:28PM +0200, Arnd Bergmann wrote:
+> > > > > > The main goal is to avoid c), which is what happens on s390, 
+> > > > > > but can also happen elsewhere. Catching b) would be nice as 
+> > > > > > well, but is much harder to do from generic code as you'd need 
+> > > > > > an architecture specific inline asm statement to insert a 
+> > > > > > ex_table fixup, or a runtime conditional on each access.
+> > > > > 
+> > > > > Or s390 could implement its own inb().
+> > > > > 
+> > > > > I'm hearing that generic powerpc kernels have to run both on 
+> > > > > machines that have I/O port space and those that don't.  That 
+> > > > > makes me think s390 could do something similar.
+> > > > 
+> > > > No, this is actually the current situation, and it makes 
+> > > > absolutely no sense. s390 has no way of implementing inb()/outb() 
+> > > > because there are no instructions for it and it cannot tunnel them 
+> > > > through a virtual address mapping like on most of the other 
+> > > > architectures. (it has special instructions for accessing memory 
+> > > > space, which is not the same as a pointer dereference here).
+> > > > 
+> > > > The existing implementation gets flagged as a NULL pointer 
+> > > > dereference by a compiler warning because it effectively is.
+> > > 
+> > > I think s390 currently uses the inb() in asm-generic/io.h, i.e., 
+> > > "__raw_readb(PCI_IOBASE + addr)".  I understand that's a NULL 
+> > > pointer dereference because the default PCI_IOBASE is 0.
+> > > 
+> > > I mooted a s390 inb() implementation like "return ~0" because that's 
+> > > what happens on most arches when there's no device to respond to the 
+> > > inb().
+> > > 
+> > > The HAS_IOPORT dependencies are fairly ugly IMHO, and they clutter 
+> > > drivers that use I/O ports in some cases but not others.  But maybe 
+> > > it's the most practical way.
+> > > 
+> > 
+> > Do you mean, "the most practical way to avoid a compiler warning on 
+> > s390"? What about "#pragma GCC diagnostic ignored"?
 > 
-> Signed-off-by: lizhe <sensor1010@163.com>
+> This actually happens with clang.
 
-Acked-by: Finn Thain <fthain@linux-m68k.org>
-for the nubus changes.
+That suggests a clang bug to me. If you believe GCC should behave like 
+clang, then I guess the pragma above really is the one you want. If you 
+somehow feel that the kernel should cater to gcc and clang even where they 
+disagree then you would have to use "#pragma clang diagnostic ignored".
 
-> ---
->  drivers/mfd/mcp-core.c             |  6 ------
->  drivers/nubus/bus.c                |  6 ------
->  drivers/s390/crypto/vfio_ap_drv.c  |  6 ------
->  drivers/scsi/scsi_debug.c          |  7 -------
->  drivers/target/loopback/tcm_loop.c |  7 -------
->  drivers/w1/w1.c                    |  6 ------
->  sound/ac97_bus.c                   | 11 -----------
->  7 files changed, 49 deletions(-)
+> Apart from that, I think this would also fall under the same argument as 
+> the original patch Linus unpulled. We would just paint over someting 
+> that we know at compile time won't work:
 > 
-> diff --git a/drivers/mfd/mcp-core.c b/drivers/mfd/mcp-core.c
-> index 2fa592c37c6f..281a9369f2b3 100644
-> --- a/drivers/mfd/mcp-core.c
-> +++ b/drivers/mfd/mcp-core.c
-> @@ -20,11 +20,6 @@
->  #define to_mcp(d)		container_of(d, struct mcp, attached_device)
->  #define to_mcp_driver(d)	container_of(d, struct mcp_driver, drv)
->  
-> -static int mcp_bus_match(struct device *dev, struct device_driver *drv)
-> -{
-> -	return 1;
-> -}
-> -
->  static int mcp_bus_probe(struct device *dev)
->  {
->  	struct mcp *mcp = to_mcp(dev);
-> @@ -43,7 +38,6 @@ static void mcp_bus_remove(struct device *dev)
->  
->  static struct bus_type mcp_bus_type = {
->  	.name		= "mcp",
-> -	.match		= mcp_bus_match,
->  	.probe		= mcp_bus_probe,
->  	.remove		= mcp_bus_remove,
->  };
-> diff --git a/drivers/nubus/bus.c b/drivers/nubus/bus.c
-> index 17fad660032c..72921e4f35f6 100644
-> --- a/drivers/nubus/bus.c
-> +++ b/drivers/nubus/bus.c
-> @@ -14,11 +14,6 @@
->  #define to_nubus_board(d)       container_of(d, struct nubus_board, dev)
->  #define to_nubus_driver(d)      container_of(d, struct nubus_driver, driver)
->  
-> -static int nubus_bus_match(struct device *dev, struct device_driver *driver)
-> -{
-> -	return 1;
-> -}
-> -
->  static int nubus_device_probe(struct device *dev)
->  {
->  	struct nubus_driver *ndrv = to_nubus_driver(dev->driver);
-> @@ -39,7 +34,6 @@ static void nubus_device_remove(struct device *dev)
->  
->  struct bus_type nubus_bus_type = {
->  	.name		= "nubus",
-> -	.match		= nubus_bus_match,
->  	.probe		= nubus_device_probe,
->  	.remove		= nubus_device_remove,
->  };
-> diff --git a/drivers/s390/crypto/vfio_ap_drv.c b/drivers/s390/crypto/vfio_ap_drv.c
-> index 29ebd54f8919..0a662c451f2a 100644
-> --- a/drivers/s390/crypto/vfio_ap_drv.c
-> +++ b/drivers/s390/crypto/vfio_ap_drv.c
-> @@ -172,14 +172,8 @@ static void vfio_ap_matrix_dev_release(struct device *dev)
->  	kfree(matrix_dev);
->  }
->  
-> -static int matrix_bus_match(struct device *dev, struct device_driver *drv)
-> -{
-> -	return 1;
-> -}
-> -
->  static struct bus_type matrix_bus = {
->  	.name = "matrix",
-> -	.match = &matrix_bus_match,
->  };
->  
->  static struct device_driver matrix_driver = {
-> diff --git a/drivers/scsi/scsi_debug.c b/drivers/scsi/scsi_debug.c
-> index 592a290e6cfa..8107489b36e8 100644
-> --- a/drivers/scsi/scsi_debug.c
-> +++ b/drivers/scsi/scsi_debug.c
-> @@ -7844,15 +7844,8 @@ static void sdebug_driver_remove(struct device *dev)
->  	scsi_host_put(sdbg_host->shost);
->  }
->  
-> -static int pseudo_lld_bus_match(struct device *dev,
-> -				struct device_driver *dev_driver)
-> -{
-> -	return 1;
-> -}
-> -
->  static struct bus_type pseudo_lld_bus = {
->  	.name = "pseudo",
-> -	.match = pseudo_lld_bus_match,
->  	.probe = sdebug_driver_probe,
->  	.remove = sdebug_driver_remove,
->  	.drv_groups = sdebug_drv_groups,
-> diff --git a/drivers/target/loopback/tcm_loop.c b/drivers/target/loopback/tcm_loop.c
-> index 4407b56aa6d1..eeb63deff94f 100644
-> --- a/drivers/target/loopback/tcm_loop.c
-> +++ b/drivers/target/loopback/tcm_loop.c
-> @@ -83,15 +83,8 @@ static int tcm_loop_show_info(struct seq_file *m, struct Scsi_Host *host)
->  static int tcm_loop_driver_probe(struct device *);
->  static void tcm_loop_driver_remove(struct device *);
->  
-> -static int pseudo_lld_bus_match(struct device *dev,
-> -				struct device_driver *dev_driver)
-> -{
-> -	return 1;
-> -}
-> -
->  static struct bus_type tcm_loop_lld_bus = {
->  	.name			= "tcm_loop_bus",
-> -	.match			= pseudo_lld_bus_match,
->  	.probe			= tcm_loop_driver_probe,
->  	.remove			= tcm_loop_driver_remove,
->  };
-> diff --git a/drivers/w1/w1.c b/drivers/w1/w1.c
-> index f2ae2e563dc5..a6ecfa1b3417 100644
-> --- a/drivers/w1/w1.c
-> +++ b/drivers/w1/w1.c
-> @@ -58,11 +58,6 @@ MODULE_PARM_DESC(slave_ttl,
->  DEFINE_MUTEX(w1_mlock);
->  LIST_HEAD(w1_masters);
->  
-> -static int w1_master_match(struct device *dev, struct device_driver *drv)
-> -{
-> -	return 1;
-> -}
-> -
->  static int w1_master_probe(struct device *dev)
->  {
->  	return -ENODEV;
-> @@ -174,7 +169,6 @@ static int w1_uevent(struct device *dev, struct kobj_uevent_env *env);
->  
->  static struct bus_type w1_bus_type = {
->  	.name = "w1",
-> -	.match = w1_master_match,
->  	.uevent = w1_uevent,
->  };
->  
-> diff --git a/sound/ac97_bus.c b/sound/ac97_bus.c
-> index b4685c53ff11..c7aee8c42c55 100644
-> --- a/sound/ac97_bus.c
-> +++ b/sound/ac97_bus.c
-> @@ -75,19 +75,8 @@ int snd_ac97_reset(struct snd_ac97 *ac97, bool try_warm, unsigned int id,
->  }
->  EXPORT_SYMBOL_GPL(snd_ac97_reset);
->  
-> -/*
-> - * Let drivers decide whether they want to support given codec from their
-> - * probe method. Drivers have direct access to the struct snd_ac97
-> - * structure and may  decide based on the id field amongst other things.
-> - */
-> -static int ac97_bus_match(struct device *dev, struct device_driver *drv)
-> -{
-> -	return 1;
-> -}
-> -
->  struct bus_type ac97_bus_type = {
->  	.name		= "ac97",
-> -	.match		= ac97_bus_match,
->  };
->  
->  static int __init ac97_bus_init(void)
+> https://lore.kernel.org/lkml/CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com/
 > 
+
+I wasn't advocating adding any warnings.
+
+If you know at compile time that a driver won't work, the usual solution 
+is scripts/config -d CONFIG_SOME_UNDESIRED_DRIVER. Why is that no 
+longer appropriate for drivers that use IO ports?
