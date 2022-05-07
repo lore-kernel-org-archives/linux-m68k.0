@@ -2,83 +2,154 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 809E2C433F5
-	for <linux-m68k@archiver.kernel.org>; Sat,  7 May 2022 08:33:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4B7AC433EF
+	for <linux-m68k@archiver.kernel.org>; Sat,  7 May 2022 13:14:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446098AbiEGIhT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 7 May 2022 04:37:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55236 "EHLO
+        id S1446407AbiEGNSm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 7 May 2022 09:18:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1446096AbiEGIhR (ORCPT
+        with ESMTP id S1357403AbiEGNSe (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 7 May 2022 04:37:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F21AC53714
-        for <linux-m68k@lists.linux-m68k.org>; Sat,  7 May 2022 01:33:30 -0700 (PDT)
+        Sat, 7 May 2022 09:18:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944BC4832D
+        for <linux-m68k@lists.linux-m68k.org>; Sat,  7 May 2022 06:14:47 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5E9C161007;
-        Sat,  7 May 2022 08:33:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BA8AC385AC;
-        Sat,  7 May 2022 08:33:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1651912409;
-        bh=eieCeE9Fdh+mCSq7kvDqUtqD4dWmttb7ZzhtYGZmMhA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=02sb1bav56AqxmyArlrAX21IGgeG1DopOeTzyubuc25nQZRtkFcUnmmwdZwUUUUPs
-         OY63D6KlNDo8TblbXBPoRpa4TpHokrst1y0/x2OVYqK8/uFCBbASkg07cBIFpC+Db9
-         L0Uue1gdqUxJvOVbFKRQqTVTEHKgTDmQXZaK/0+k=
-Date:   Sat, 7 May 2022 10:33:25 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     lizhe <sensor1010@163.com>, lee.jones@linaro.org,
-        fthain@linux-m68k.org, akrowiak@linux.ibm.com, pasic@linux.ibm.com,
-        jjherne@linux.ibm.com, freude@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com,
-        borntraeger@linux.ibm.com, svens@linux.ibm.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, zbr@ioremap.net, perex@perex.cz,
-        tiwai@suse.com, bvanassche@acm.org, dan.j.williams@intel.com,
-        srinivas.kandagatla@linaro.org, wens@csie.org,
-        colin.king@intel.com, hare@suse.de, linux-kernel@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH] kernel/drivers: Remove redundant driver match function
-Message-ID: <YnYu1XGeyRvMn77g@kroah.com>
-References: <20220506045952.136290-1-sensor1010@163.com>
- <20220507082137.i23gbxkbjwt36ggd@pengutronix.de>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1ABE761234
+        for <linux-m68k@lists.linux-m68k.org>; Sat,  7 May 2022 13:14:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70EBBC385A6
+        for <linux-m68k@lists.linux-m68k.org>; Sat,  7 May 2022 13:14:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1651929285;
+        bh=9uTgmNAvlTbzN50Cu5IwNYqzF7atwTKQUljfe2kjZUc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=iDB5qYBiUdSDJDY3O1arHfq2ckrvDBaDIMlb7N58i6l8UufbIQONCWG8ZbwlwTljF
+         KyZo/hhehnk7kRManj/hXE/Xf6ablwp6uaz3H+cBB4vBVPeAgH732SRJbXPv9Dr4k0
+         S7zoxMWxBPrPYWsEJfLjGVmZbARPc6NzJX2LtXm+eLiMebx1S4KIEnelXP2SHvorOM
+         eK4JRw+FZBI1rgbtWeqvQmurUOzyYr1JkAmvNV2ZlZyNux/dZ4x1R7e4c8ddbBifDP
+         oQqQITpYOOXmUtpX0yuTadeMaMIgc907CguayKPAWLawKbG0wnf2Tss7SLDlp09t3c
+         SAr9UQSbLHl0Q==
+Received: by mail-yb1-f170.google.com with SMTP id i38so17266509ybj.13
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 07 May 2022 06:14:45 -0700 (PDT)
+X-Gm-Message-State: AOAM5302MKLdKPQVaAaHhBVaHihC7BX7SHUL/FaL6F+jhsOagmmnxkiV
+        B39v4tnhGd/mX6nZAcBJg5eHn8Q/S59BH1OaA1Y=
+X-Google-Smtp-Source: ABdhPJxbpJWGFV6icMBoxijo70JK/8WaaDtoVIOoN93PiTf8ADZqw87+hT03oX7HblceCPV66kg3inBF049Gp/XoA2E=
+X-Received: by 2002:a81:1697:0:b0:2fa:32f9:78c8 with SMTP id
+ 145-20020a811697000000b002fa32f978c8mr6670913yww.135.1651929273816; Sat, 07
+ May 2022 06:14:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220507082137.i23gbxkbjwt36ggd@pengutronix.de>
+References: <20220505195342.GA509942@bhelgaas> <22bec167-241f-2cbe-829f-a3f65e40e71@linux-m68k.org>
+ <105ccec439f709846e82b69cb854ac825d7a6a49.camel@linux.ibm.com> <7dfa7578-039-e132-c573-ad89bd3215@linux-m68k.org>
+In-Reply-To: <7dfa7578-039-e132-c573-ad89bd3215@linux-m68k.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Sat, 7 May 2022 15:14:16 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3tds8O+Gg2nF3MfrVVcmtLbtdQ2TnCJaDYz28cyhhWkg@mail.gmail.com>
+Message-ID: <CAK8P3a3tds8O+Gg2nF3MfrVVcmtLbtdQ2TnCJaDYz28cyhhWkg@mail.gmail.com>
+Subject: Re: [RFC v2 01/39] Kconfig: introduce HAS_IOPORT option and select it
+ as necessary
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     Niklas Schnelle <schnelle@linux.ibm.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "open list:ALPHA PORT" <linux-alpha@vger.kernel.org>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        "open list:IA64 (Itanium) PLATFORM" <linux-ia64@vger.kernel.org>,
+        "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:PARISC ARCHITECTURE" <linux-parisc@vger.kernel.org>,
+        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        "open list:RISC-V ARCHITECTURE" <linux-riscv@lists.infradead.org>,
+        "open list:SUPERH" <linux-sh@vger.kernel.org>,
+        "open list:SPARC + UltraSPARC (sparc/sparc64)" 
+        <sparclinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sat, May 07, 2022 at 10:21:37AM +0200, Uwe Kleine-König wrote:
-> Hello,
-> 
-> On Thu, May 05, 2022 at 09:59:52PM -0700, lizhe wrote:
-> > If there is no driver match function, the driver core assumes that each
-> > candidate pair (driver, device) matches, see driver_match_device().
-> 
-> I wonder who is supposed to apply this patch. Either it should be split
-> by file and go in via the respective maintainers, or it goes in via
-> Greg's tree? I added Greg to To: for him to chime in.
+On Sat, May 7, 2022 at 2:01 AM Finn Thain <fthain@linux-m68k.org> wrote:
+> On Fri, 6 May 2022, Niklas Schnelle wrote:
+> > On Fri, 2022-05-06 at 19:12 +1000, Finn Thain wrote:
+> > > On Thu, 5 May 2022, Bjorn Helgaas wrote:
+> > > >
+> > > > I mooted a s390 inb() implementation like "return ~0" because that's
+> > > > what happens on most arches when there's no device to respond to the
+> > > > inb().
+> > > >
+> > > > The HAS_IOPORT dependencies are fairly ugly IMHO, and they clutter
+> > > > drivers that use I/O ports in some cases but not others.  But maybe
+> > > > it's the most practical way.
+> > > >
+> > >
+> > > Do you mean, "the most practical way to avoid a compiler warning on
+> > > s390"? What about "#pragma GCC diagnostic ignored"?
+> >
+> > This actually happens with clang.
+>
+> That suggests a clang bug to me. If you believe GCC should behave like
+> clang, then I guess the pragma above really is the one you want. If you
+> somehow feel that the kernel should cater to gcc and clang even where they
+> disagree then you would have to use "#pragma clang diagnostic ignored".
 
-It should be split up into each subsystem patch and submitted that way.
+I don't see how you can blame the compiler for this. On architectures
+with a zero PCI_IOBASE, an inb(0x2f8) literally becomes
 
-> Best regards
-> Uwe
->  
-> > Signed-off-by: lizhe <sensor1010@163.com>
+        var = *(u8*)((NULL + 0x2f8);
 
-We also need a "real name" here that is used to sign legal documents.  I
-doubt an all-lower-case name is used that way, so I have to ask.
+If you run a driver that does this, the kernel gets a page fault for
+the NULL page
+and reports an Oops. clang tells you 'warning: performing pointer
+arithmetic on a null pointer has undefined behavior', which is not exactly
+spot on, but close enough to warn you that you probably shouldn't do this. gcc
+doesn't warn here, but it does warn about an array out-of-bounds access when
+you pass such a pointer into memcpy or another string function.
 
-thanks,
+> > Apart from that, I think this would also fall under the same argument as
+> > the original patch Linus unpulled. We would just paint over someting
+> > that we know at compile time won't work:
+> >
+> > https://lore.kernel.org/lkml/CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com/
+> >
+>
+> I wasn't advocating adding any warnings.
+>
+> If you know at compile time that a driver won't work, the usual solution
+> is scripts/config -d CONFIG_SOME_UNDESIRED_DRIVER. Why is that no
+> longer appropriate for drivers that use IO ports?
 
-greg k-h
+This was never an option, we rely on 'make allmodconfig' to build without
+warnings on all architectures for finding regressions. Any driver that depends
+on architecture specific interfaces must not get selected on architectures that
+don't have those interfaces.
+
+         Arnd
