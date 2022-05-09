@@ -2,32 +2,32 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AE2CC38162
-	for <linux-m68k@archiver.kernel.org>; Mon,  9 May 2022 23:34:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F83EC433F5
+	for <linux-m68k@archiver.kernel.org>; Mon,  9 May 2022 23:34:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232550AbiEIXiD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 9 May 2022 19:38:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
+        id S233228AbiEIXiZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 9 May 2022 19:38:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232575AbiEIXhP (ORCPT
+        with ESMTP id S232917AbiEIXh7 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 9 May 2022 19:37:15 -0400
+        Mon, 9 May 2022 19:37:59 -0400
 Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8CB521B168
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  9 May 2022 16:33:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5573E250EB9
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  9 May 2022 16:33:55 -0700 (PDT)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: dmitry.osipenko)
-        with ESMTPSA id 17BD61F41D8C
+        with ESMTPSA id 777391F441DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1652139198;
-        bh=95ioqXFiu/sMhB4rC2pN2mOqsgk/IiTVsJJFignNnOY=;
+        s=mail; t=1652139234;
+        bh=CZQ7QwYyjXyLiPmx1jEp6oFdo06Stqavz0Fvz+iublM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kd6IbYNbTMtYO8XHzDROg022CiuVMjD14vclGIX2y/UPqQJTY83k+AAQHlzWmnvvY
-         DIbOq+AJ+ca0dm9KVPtIZY6LIwJR0dvHVODvj+gWmFv2rrA23tSPFfLb/Ld7WXpuF/
-         H2du8HyPkBmRsP8eQLukPdey+A1NM1blJJ0oKFmsjrsM19cx1w60DHdJiFj+BNJHgA
-         CT2Gw205sJVKh3AqToaLUeLHth6M3pyFt+gPqA8mU19vHxX0uyWcQDKqZ8zNR9Nmqu
-         cRtxZ2gdReA9506AcmJOJiJA6+rn1NttYLHyho2AlivK1XjmQN+dXmlaF9eF72LNY1
-         oD4iLEbpsl5mw==
+        b=SDwxSlJbQCiHJPQR1lFxat/dNwe8Cw95mO18xUWrblUCwDvptuIvvEihxQgGpz5lE
+         v2+pPQDPfEo3nnjLdmECYiEfCheycMmmwveoEMSaWwJXDRf8e887FYh72xXKEegajp
+         QaQcT3OCtuH2kjObn8s3MAYD2oH9anmXSqs9c04hn+AcRFQ/mX1WKGwRGep7JOFA4H
+         C4Kw1/Eunfbvp/ckKUJxjBvsJXFMHtbcJothUCcVahPvTLvth5UGn5EftS+9NNh38M
+         HjrUmzlEFiFFJMInbk7G2giz3tbBsMgkXr4iYVpbDdzeOedK37AnhRRRKckmNr0O4x
+         VvnSrMrlH5ppw==
 From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -79,89 +79,53 @@ Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v8 04/27] kernel/reboot: Wrap legacy power-off callbacks into sys-off handlers
-Date:   Tue, 10 May 2022 02:32:12 +0300
-Message-Id: <20220509233235.995021-5-dmitry.osipenko@collabora.com>
+Subject: [PATCH v8 13/27] parisc: Use do_kernel_power_off()
+Date:   Tue, 10 May 2022 02:32:21 +0300
+Message-Id: <20220509233235.995021-14-dmitry.osipenko@collabora.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220509233235.995021-1-dmitry.osipenko@collabora.com>
 References: <20220509233235.995021-1-dmitry.osipenko@collabora.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Wrap legacy power-off callbacks into sys-off handlers in order to
-support co-existence of both legacy and new callbacks while we're
-in process of upgrading legacy callbacks to the new API.
+Kernel now supports chained power-off handlers. Use do_kernel_power_off()
+that invokes chained power-off handlers. It also invokes legacy
+pm_power_off() for now, which will be removed once all drivers will
+be converted to the new sys-off API.
 
+Acked-by: Helge Deller <deller@gmx.de> # parisc
+Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 ---
- kernel/reboot.c | 44 ++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 42 insertions(+), 2 deletions(-)
+ arch/parisc/kernel/process.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/reboot.c b/kernel/reboot.c
-index 672a658f21ee..2fb0357d9483 100644
---- a/kernel/reboot.c
-+++ b/kernel/reboot.c
-@@ -463,6 +463,47 @@ int devm_register_sys_off_handler(struct device *dev,
- }
- EXPORT_SYMBOL_GPL(devm_register_sys_off_handler);
+diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
+index a6a2a558fc5b..7c37e09c92da 100644
+--- a/arch/parisc/kernel/process.c
++++ b/arch/parisc/kernel/process.c
+@@ -26,6 +26,7 @@
+ #include <linux/module.h>
+ #include <linux/personality.h>
+ #include <linux/ptrace.h>
++#include <linux/reboot.h>
+ #include <linux/sched.h>
+ #include <linux/sched/debug.h>
+ #include <linux/sched/task.h>
+@@ -116,8 +117,7 @@ void machine_power_off(void)
+ 	pdc_chassis_send_status(PDC_CHASSIS_DIRECT_SHUTDOWN);
  
-+static int legacy_pm_power_off_prepare(struct sys_off_data *data)
-+{
-+	if (pm_power_off_prepare)
-+		pm_power_off_prepare();
-+
-+	return NOTIFY_DONE;
-+}
-+
-+static int legacy_pm_power_off(struct sys_off_data *data)
-+{
-+	if (pm_power_off)
-+		pm_power_off();
-+
-+	return NOTIFY_DONE;
-+}
-+
-+/*
-+ * Register sys-off handlers for legacy PM callbacks. This allows legacy
-+ * PM callbacks co-exist with the new sys-off API.
-+ *
-+ * TODO: Remove legacy handlers once all legacy PM users will be switched
-+ *       to the sys-off based APIs.
-+ */
-+static int __init legacy_pm_init(void)
-+{
-+	register_sys_off_handler(SYS_OFF_MODE_POWER_OFF_PREPARE,
-+				 SYS_OFF_PRIO_DEFAULT,
-+				 legacy_pm_power_off_prepare, NULL);
-+
-+	register_sys_off_handler(SYS_OFF_MODE_POWER_OFF, SYS_OFF_PRIO_DEFAULT,
-+				 legacy_pm_power_off, NULL);
-+
-+	return 0;
-+}
-+core_initcall(legacy_pm_init);
-+
-+static void do_kernel_power_off_prepare(void)
-+{
-+	blocking_notifier_call_chain(&power_off_prep_handler_list, 0, NULL);
-+}
-+
- /**
-  *	kernel_power_off - power_off the system
-  *
-@@ -471,8 +512,7 @@ EXPORT_SYMBOL_GPL(devm_register_sys_off_handler);
- void kernel_power_off(void)
- {
- 	kernel_shutdown_prepare(SYSTEM_POWER_OFF);
--	if (pm_power_off_prepare)
--		pm_power_off_prepare();
-+	do_kernel_power_off_prepare();
- 	migrate_to_reboot_cpu();
- 	syscore_shutdown();
- 	pr_emerg("Power down\n");
+ 	/* ipmi_poweroff may have been installed. */
+-	if (pm_power_off)
+-		pm_power_off();
++	do_kernel_power_off();
+ 		
+ 	/* It seems we have no way to power the system off via
+ 	 * software. The user has to press the button himself. */
 -- 
 2.35.1
 
