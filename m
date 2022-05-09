@@ -2,32 +2,32 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11BCDC433F5
-	for <linux-m68k@archiver.kernel.org>; Mon,  9 May 2022 23:35:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 899B2C433FE
+	for <linux-m68k@archiver.kernel.org>; Mon,  9 May 2022 23:35:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232754AbiEIXi7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 9 May 2022 19:38:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43964 "EHLO
+        id S232776AbiEIXjC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 9 May 2022 19:39:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232779AbiEIXhz (ORCPT
+        with ESMTP id S232853AbiEIXh6 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 9 May 2022 19:37:55 -0400
+        Mon, 9 May 2022 19:37:58 -0400
 Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC4124FD9E
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  9 May 2022 16:33:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE93250E92
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  9 May 2022 16:33:43 -0700 (PDT)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: dmitry.osipenko)
-        with ESMTPSA id C21B61F430BF
+        with ESMTPSA id 959D61F441CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1652139214;
-        bh=hTMdSPi0zN4MGEkpm7fbCDxWpGgYrC/cc+PuY565mHY=;
+        s=mail; t=1652139222;
+        bh=6s0maqcEZmA2YXgu3K4UCDPu+D53/76G+RW0Zx9hW8k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Sk8pDCwXSAwTQ9cVTZlPz8a8ySrGY3hGrPt+VGDskV6R+uCOw9LADMc/JKfeftNPo
-         asFxJcHbxHiK/3w91N3jvIgWMJgwCq+N4MlCfsgguAazqG3J0kdIxL0enJF0AIFfvB
-         qrj4DZBOnMGXRehw13w/Gqu1lXja85Nu7DH8kFwOkMscD0FBV8ggmpXlUuebyAbpd6
-         13JtTCF+jbP9cTENV6T22N6ht/UOp/jY7vlhjRhQskgAm5LbyaAdU+aqJl1oWzNotR
-         zhh4iJ4DmsyzvGmL9Z1V2DZh2YCAdFZhUlWdl4dlLp7iND0uYa6NncprgcDCwwXRCN
-         BwArMJ/2esCeg==
+        b=h4OvUVSAAn8ONu+FqbmPB/ZUg1Qkbk6CMBh2JL9wBLZZNByEx452+sfFnsAzbrW5g
+         WobsFtZ/ugKUfeWEuu8gKnblyxG7kr6RGNcK/DuRUjgE7VnPsIPzVT6BWE/ogkwXcM
+         ZEa6zQM9Ud51zEudJ43wylNsHR/LBoT0+ycy6T0RzK3M4I3LXqeJ068zrXIUjA3hEU
+         FWiFVtYOTuHH+O/MM14WQytKXOng1sNd/DkdhgtmsB0Ohc4IKE/Ry6rNzouXX33NP9
+         PLUYHYobr5c/gP/EBTkVk4jNp31Iu2OSNaJdJc28/R7zEnpy6HkG+xlpPc3bqWbG1U
+         Qw6/DNrpVeC/A==
 From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -79,108 +79,54 @@ Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v8 08/27] kernel/reboot: Add register_platform_power_off()
-Date:   Tue, 10 May 2022 02:32:16 +0300
-Message-Id: <20220509233235.995021-9-dmitry.osipenko@collabora.com>
+Subject: [PATCH v8 10/27] csky: Use do_kernel_power_off()
+Date:   Tue, 10 May 2022 02:32:18 +0300
+Message-Id: <20220509233235.995021-11-dmitry.osipenko@collabora.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220509233235.995021-1-dmitry.osipenko@collabora.com>
 References: <20220509233235.995021-1-dmitry.osipenko@collabora.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Add platform-level registration helpers that will ease transition of the
-arch/platform power-off callbacks to the new sys-off based API, allowing
-us to remove the global pm_power_off variable in the future.
+Kernel now supports chained power-off handlers. Use do_kernel_power_off()
+that invokes chained power-off handlers. It also invokes legacy
+pm_power_off() for now, which will be removed once all drivers will
+be converted to the new sys-off API.
 
+Acked-by: Guo Ren <guoren@kernel.org>
+Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 ---
- include/linux/reboot.h |  3 +++
- kernel/reboot.c        | 55 ++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 58 insertions(+)
+ arch/csky/kernel/power.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/reboot.h b/include/linux/reboot.h
-index c52f77ee4ddd..f185b64faae0 100644
---- a/include/linux/reboot.h
-+++ b/include/linux/reboot.h
-@@ -141,6 +141,9 @@ int devm_register_sys_off_handler(struct device *dev,
- 				  int (*callback)(struct sys_off_data *data),
- 				  void *cb_data);
- 
-+int register_platform_power_off(void (*power_off)(void));
-+void unregister_platform_power_off(void (*power_off)(void));
-+
- /*
-  * Architecture independent implemenations of sys_reboot commands.
-  */
-diff --git a/kernel/reboot.c b/kernel/reboot.c
-index 982e58c11ce8..e74103f2a801 100644
---- a/kernel/reboot.c
-+++ b/kernel/reboot.c
-@@ -469,6 +469,61 @@ int devm_register_sys_off_handler(struct device *dev,
- }
- EXPORT_SYMBOL_GPL(devm_register_sys_off_handler);
- 
-+static struct sys_off_handler *platform_power_off_handler;
-+
-+static int platform_power_off_notify(struct sys_off_data *data)
-+{
-+	void (*platform_power_power_off_cb)(void) = data->cb_data;
-+
-+	platform_power_power_off_cb();
-+
-+	return NOTIFY_DONE;
-+}
-+
-+/**
-+ *	register_platform_power_off - Register platform-level power-off callback
-+ *	@power_off: Power-off callback
-+ *
-+ *	Registers power-off callback that will be called as last step
-+ *	of the power-off sequence. This callback is expected to be invoked
-+ *	for the last resort. Only one platform power-off callback is allowed
-+ *	to be registered at a time.
-+ *
-+ *	Returns zero on success, or error code on failure.
-+ */
-+int register_platform_power_off(void (*power_off)(void))
-+{
-+	struct sys_off_handler *handler;
-+
-+	handler = register_sys_off_handler(SYS_OFF_MODE_POWER_OFF,
-+					   SYS_OFF_PRIO_PLATFORM,
-+					   platform_power_off_notify,
-+					   power_off);
-+	if (IS_ERR(handler))
-+		return PTR_ERR(handler);
-+
-+	platform_power_off_handler = handler;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(register_platform_power_off);
-+
-+/**
-+ *	unregister_platform_power_off - Unregister platform-level power-off callback
-+ *	@power_off: Power-off callback
-+ *
-+ *	Unregisters previously registered platform power-off callback.
-+ */
-+void unregister_platform_power_off(void (*power_off)(void))
-+{
-+	if (platform_power_off_handler &&
-+	    platform_power_off_handler->cb_data == power_off) {
-+		unregister_sys_off_handler(platform_power_off_handler);
-+		platform_power_off_handler = NULL;
-+	}
-+}
-+EXPORT_SYMBOL_GPL(unregister_platform_power_off);
-+
- static int legacy_pm_power_off_prepare(struct sys_off_data *data)
+diff --git a/arch/csky/kernel/power.c b/arch/csky/kernel/power.c
+index 923ee4e381b8..86ee202906f8 100644
+--- a/arch/csky/kernel/power.c
++++ b/arch/csky/kernel/power.c
+@@ -9,16 +9,14 @@ EXPORT_SYMBOL(pm_power_off);
+ void machine_power_off(void)
  {
- 	if (pm_power_off_prepare)
+ 	local_irq_disable();
+-	if (pm_power_off)
+-		pm_power_off();
++	do_kernel_power_off();
+ 	asm volatile ("bkpt");
+ }
+ 
+ void machine_halt(void)
+ {
+ 	local_irq_disable();
+-	if (pm_power_off)
+-		pm_power_off();
++	do_kernel_power_off();
+ 	asm volatile ("bkpt");
+ }
+ 
 -- 
 2.35.1
 
