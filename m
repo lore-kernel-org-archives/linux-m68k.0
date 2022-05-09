@@ -2,32 +2,32 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 765F4C43219
-	for <linux-m68k@archiver.kernel.org>; Mon,  9 May 2022 23:34:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F3FAC4167B
+	for <linux-m68k@archiver.kernel.org>; Mon,  9 May 2022 23:34:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232322AbiEIXic (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 9 May 2022 19:38:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44432 "EHLO
+        id S232808AbiEIXie (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 9 May 2022 19:38:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232946AbiEIXh7 (ORCPT
+        with ESMTP id S232818AbiEIXiG (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 9 May 2022 19:37:59 -0400
+        Mon, 9 May 2022 19:38:06 -0400
 Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD1521E305
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  9 May 2022 16:34:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5CDC21E30B
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  9 May 2022 16:34:10 -0700 (PDT)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: dmitry.osipenko)
-        with ESMTPSA id 45B061F441E2
+        with ESMTPSA id 0C7481F441F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1652139242;
-        bh=BNiJLGjWIzGOPAZM2z9DxroGBpHA3jtv2OqTTX3KfaQ=;
+        s=mail; t=1652139249;
+        bh=Py3C74Fq8ylx1e5iD4JoOoDZdx6Zp6SNSGp+S5YdLlo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MmRFtkxF0t/0s1mqVHp01wCQk0mHdGbFnJOLd8QQOIiCDNKQBR758oQ+y5MhaYpyf
-         Vy0KMBI+NogV4y1/lztnyP+eWOumRqyH/7Ud9zokUK3YMWpbn23Wfky/48H0Ts7zw/
-         LCGnhPuXyGu+uCO0m//ObCybeeRvhsNMjOPEqXyRR4OPYBnLFRbLOegI5pqM7s690n
-         5ToJOQerGy3mdVzfhdHyV6ukfnLe4tSg+adT21ugi4lX7Uump+8xi7Rl2MDO9ayAQi
-         9kS2NkEPO6JPciRSBzlS4TWGKPWFABJNEIrYzWa+p9T3AxEnGi+vCuMmKT1EaAokkK
-         XUhEqjDRDlmfg==
+        b=lNksTBbv27hDu8EEkAEQj5GgsoEmm7+0+sHXFCTDwyFiMFRucGT2C4NwrUODWnqgr
+         ker012zTH+ctY/bp/DvwLFYX0BnRgZndrr/ZRjink8umONJEtYCTtZ06hu9J7zZfp+
+         tPWTki3zd/xPgsYlgiwfh4bnzqB4jl+L8lmX11KCP90ezvUibrmiKuFylcYpZC9yxM
+         3zLDLP7la9iYLOj7OJwr2On2lvE0/j+wGY2Uu+4im/JyIWDAWttXWW119bvaCzZOTH
+         P4wdljiq4jUyZlUuMy51pkx0/V6VzS5/w46i2URtlgrHZ77oWiTkKDRAuW0/bxBj0C
+         uupvU5EOk7DKg==
 From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -79,9 +79,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v8 15/27] powerpc: Use do_kernel_power_off()
-Date:   Tue, 10 May 2022 02:32:23 +0300
-Message-Id: <20220509233235.995021-16-dmitry.osipenko@collabora.com>
+Subject: [PATCH v8 17/27] sh: Use do_kernel_power_off()
+Date:   Tue, 10 May 2022 02:32:25 +0300
+Message-Id: <20220509233235.995021-18-dmitry.osipenko@collabora.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220509233235.995021-1-dmitry.osipenko@collabora.com>
 References: <20220509233235.995021-1-dmitry.osipenko@collabora.com>
@@ -97,43 +97,26 @@ that invokes chained power-off handlers. It also invokes legacy
 pm_power_off() for now, which will be removed once all drivers will
 be converted to the new sys-off API.
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au>
 Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 ---
- arch/powerpc/kernel/setup-common.c | 4 +---
- arch/powerpc/xmon/xmon.c           | 3 +--
- 2 files changed, 2 insertions(+), 5 deletions(-)
+ arch/sh/kernel/reboot.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/kernel/setup-common.c b/arch/powerpc/kernel/setup-common.c
-index 518ae5aa9410..1b586577e75b 100644
---- a/arch/powerpc/kernel/setup-common.c
-+++ b/arch/powerpc/kernel/setup-common.c
-@@ -161,9 +161,7 @@ void machine_restart(char *cmd)
- void machine_power_off(void)
+diff --git a/arch/sh/kernel/reboot.c b/arch/sh/kernel/reboot.c
+index 5c33f036418b..e8eeedc9b182 100644
+--- a/arch/sh/kernel/reboot.c
++++ b/arch/sh/kernel/reboot.c
+@@ -46,8 +46,7 @@ static void native_machine_shutdown(void)
+ 
+ static void native_machine_power_off(void)
  {
- 	machine_shutdown();
 -	if (pm_power_off)
 -		pm_power_off();
--
 +	do_kernel_power_off();
- 	smp_send_stop();
- 	machine_hang();
- }
-diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
-index b423812e94e0..0300bdfa20d5 100644
---- a/arch/powerpc/xmon/xmon.c
-+++ b/arch/powerpc/xmon/xmon.c
-@@ -1243,8 +1243,7 @@ static void bootcmds(void)
- 	} else if (cmd == 'h') {
- 		ppc_md.halt();
- 	} else if (cmd == 'p') {
--		if (pm_power_off)
--			pm_power_off();
-+		do_kernel_power_off();
- 	}
  }
  
+ static void native_machine_halt(void)
 -- 
 2.35.1
 
