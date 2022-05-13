@@ -2,92 +2,81 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62C4AC433F5
-	for <linux-m68k@archiver.kernel.org>; Fri, 13 May 2022 12:50:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11E47C433F5
+	for <linux-m68k@archiver.kernel.org>; Fri, 13 May 2022 12:59:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380450AbiEMMui (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 13 May 2022 08:50:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32916 "EHLO
+        id S1356039AbiEMM7q (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 13 May 2022 08:59:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358336AbiEMMuh (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 13 May 2022 08:50:37 -0400
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0643E50076
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 13 May 2022 05:50:35 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed30:898f:2cf1:a787:bce8])
-        by andre.telenet-ops.be with bizsmtp
-        id WCqW2700i4dF7tN01CqWBS; Fri, 13 May 2022 14:50:33 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1npUkY-0008XA-Cs; Fri, 13 May 2022 14:50:30 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1npUkX-0011on-En; Fri, 13 May 2022 14:50:29 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     kernel test robot <lkp@intel.com>, linux-m68k@lists.linux-m68k.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2] m68k: math-emu: Fix dependencies of math emulation support
-Date:   Fri, 13 May 2022 14:50:28 +0200
-Message-Id: <18c34695b7c95107f60ccca82a4ff252f3edf477.1652446117.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S1350313AbiEMM7p (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 13 May 2022 08:59:45 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A8AB9B1A0;
+        Fri, 13 May 2022 05:59:44 -0700 (PDT)
+Received: from mail-yw1-f176.google.com ([209.85.128.176]) by
+ mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MOzGc-1nQ7LG255Y-00PO9u; Fri, 13 May 2022 14:59:42 +0200
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-2f83983782fso89329807b3.6;
+        Fri, 13 May 2022 05:59:42 -0700 (PDT)
+X-Gm-Message-State: AOAM533ugw1vXDnFh1qGExbIEyR+Jg9QOQXm8TfspTOepPSqmivxzwtU
+        VHrOLwMlrf7XfQ89Th6o8BCa6uETB3KQ6XXqfTo=
+X-Google-Smtp-Source: ABdhPJwYgUxxwmOQBskkgrSY98ay2sDS+relT7TQw7BSt1pRcJYA5LmibAoQ6URJ51h0bdNcPeYCvyzSc/JJjPUle9M=
+X-Received: by 2002:a0d:cd06:0:b0:2f8:f39c:4cfc with SMTP id
+ p6-20020a0dcd06000000b002f8f39c4cfcmr5470076ywd.495.1652446781234; Fri, 13
+ May 2022 05:59:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20220513064952.3610672-1-gerg@linux-m68k.org> <CAMuHMdVWRM7U9_SxbtDUE0a-sB5_PDiO2009Cu3QKMP3wNc=yw@mail.gmail.com>
+ <2532419a-812b-c2de-ef56-849ec7dc16bc@linux-m68k.org>
+In-Reply-To: <2532419a-812b-c2de-ef56-849ec7dc16bc@linux-m68k.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 13 May 2022 14:59:24 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3RuOTidFpW7diHekJ6POV20SBb5PhSF943Ju1xAtOxNw@mail.gmail.com>
+Message-ID: <CAK8P3a3RuOTidFpW7diHekJ6POV20SBb5PhSF943Ju1xAtOxNw@mail.gmail.com>
+Subject: Re: [PATCH] m68knommu: fix undefined reference to `mach_get_rtc_pll'
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Linux/m68k" <linux-m68k@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:ojNKheXrGo0PVLfpCW4RkjBA3RA0otnmOfR40UZjp6IBeVMQBY7
+ 0yA8w4l9Xp444yabuT9q2lQzgTFEJyG9Egyu8mmthskbOgMqnTAt+9xyg4LVSwes7a+oTC5
+ wxKuySmqKy84b2GoVnzauhNblpPNNbRX495Jl/EPP22Biz9weDpuJpx5O6BSnghUgdPJYxZ
+ I9EdSONgYMwmTaPgl7NKQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:dn9NnXkhSC0=:rDLp5BdeTdajLI0gsH49Pn
+ VeeoyZM4/KwPdFzXfvfzUl2qh2ppKD/RaWXkbYDcePZBC2cUFlfmqcq+NZ/t1bK27sudnh/0d
+ ZKK+kWh9Ye042b9mq5IbEdcNzfVL6mZih5EMolx9qQceibZ3+y75JA6CcjriOXSTsS5Ze6ftb
+ T3cJU687MpiLHqSLc2+T+y1WzD8upPuzK210OVeySo1btrL7nHPc8oYmxKtdFeVLTJAY1ztlT
+ aCgP0UlN1eC8Xm/PFrK8p4kHMND16eUZGm755/ekwKnhsLrqHlMhCy4yMVzMhucT2MwKGof8Q
+ zhoPxmFtfrSzkWtjH+DwC8VbTOzBGFBgBmcGVH8ebiaidwBa05VPVzwHr6y5BfbexqIGRKqaS
+ yxHWCo4E3TVNRlFadnaANKJBtoz6eMPW8NLLy9J5gcgI9Euz3x7ha7BOyIbT2s8CaynF70Tg+
+ oqOegRm/VUUdwm+GBtygoJDnTrsP0FyFryWjOSsGzhNB38WRITxgG/Lj2Hu/F9mHOe8UOLlkU
+ gpXXAQNjdnTdGihlnkhrDHF6ejIVJj18RSh70hCu04srPecovLe8wL4s/hVvJF5iN3v7DcKX7
+ 4gEqWZmFeyYG+z8pmeb+CdjAAsk1PA9IpGWYE2qLFIH9yLox912Rstwa21+bqDXdGTkX+eJSP
+ FXI0I02tsKlJ6du5g1WTGZ50W0lqqDGnHqf3JnvYARegU9Ocf8XJIeXOG3uqt6Wm0/7Q=
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-If CONFIG_M54xx=y, CONFIG_MMU=y, and CONFIG_M68KFPU_EMU=y:
+On Fri, May 13, 2022 at 2:25 PM Greg Ungerer <gerg@linux-m68k.org> wrote:
+> On 13/5/22 17:12, Geert Uytterhoeven wrote:
+> > read_persistent_clock64() uses mach_hwclk(), which is provided by
+> > both setup_mm.c and setup_no.c, so it's always available?> Albeit not populated by coldfire or nommu platform code, so I see
+> > the point in depending on MMU (no nommu Amiga support yet ;-).
+>
+> Yes, exactly. And even worse is that on ColdFire platforms it
+> is never set, so will be the startup value of NULL. It is called
+> without checking for NULL in both of rtc_generic_get_time() and
+> rtc_generic_set_time().
 
-    {standard input}:272: Error: invalid instruction for this architecture; needs 68000 or higher (68000 [68ec000, 68hc000, 68hc001, 68008, 68302, 68306, 68307, 68322, 68356], 68010, 68020 [68k, 68ec020], 68030 [68ec030], 68040 [68ec040], 68060 [68ec060], cpu32 [68330, 68331, 68332, 68333, 68334, 68336, 68340, 68341, 68349, 68360], fidoa [fido]) -- statement `sub.b %d1,%d3' ignored
-    {standard input}:609: Error: invalid instruction for this architecture; needs 68020 or higher (68020 [68k, 68ec020], 68030 [68ec030], 68040 [68ec040], 68060 [68ec060]) -- statement `bfextu 4(%a1){%d0,#8},%d0' ignored
-    {standard input}:752: Error: operands mismatch -- statement `mulu.l 4(%a0),%d3:%d0' ignored
-    {standard input}:1155: Error: operands mismatch -- statement `divu.l %d0,%d3:%d7' ignored
+I think that's ok because rtc_generic_{get,set}_time is only called
+from the rtc_generic driver, but that is not registered when mach_hwclk()
+is NULL.
 
-The math emulation support code is intended for 68020 and higher, and
-uses several instructions or instruction modes not available on coldfire
-or 68000.
+With your patch to add the CONFIG_MMU check, you can actually
+remove the mach_hwclk() symbol from setup_no.c, and move the
+remaining RTC related symbols from setup_mm.c into the #ifdef.
 
-Originally, the dependency of M68KFPU_EMU on MMU was fine, as MMU
-support was only available on 68020 or higher.  But this assumption
-was broken by the introduction of MMU support for M547x and M548x.
-
-Drop the dependency on MMU, as the code should work fine on 68020 and up
-without MMU (which are not yet supported by Linux, though).
-Add dependencies on M68KCLASSIC (to rule out Coldfire) and FPU (kernel
-has some type of floating-point support --- be it hardware or software
-emulated, to rule out anything below 68020).
-
-Fixes: 1f7034b9616e6f14 ("m68k: allow ColdFire 547x and 548x CPUs to be built with MMU enabled")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-To be queued in the m68k for-v5.19 branch.
-
-v2:
-  - Fix typo in M68KCLASSIC,
-  - Improve rationale behind FPU dependency.
----
- arch/m68k/Kconfig.cpu | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-index 16ea9a67723c09dc..3d5da25c73b5af8a 100644
---- a/arch/m68k/Kconfig.cpu
-+++ b/arch/m68k/Kconfig.cpu
-@@ -327,7 +327,7 @@ comment "Processor Specific Options"
- 
- config M68KFPU_EMU
- 	bool "Math emulation support"
--	depends on MMU
-+	depends on M68KCLASSIC && FPU
- 	help
- 	  At some point in the future, this will cause floating-point math
- 	  instructions to be emulated by the kernel on machines that lack a
--- 
-2.25.1
-
+       Arnd
