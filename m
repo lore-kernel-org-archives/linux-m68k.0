@@ -2,101 +2,160 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 49C8DC433F5
-	for <linux-m68k@archiver.kernel.org>; Mon, 16 May 2022 07:16:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2469CC433EF
+	for <linux-m68k@archiver.kernel.org>; Mon, 16 May 2022 22:13:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240834AbiEPHPx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 16 May 2022 03:15:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47232 "EHLO
+        id S229667AbiEPWNA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 16 May 2022 18:13:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240848AbiEPHPv (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 16 May 2022 03:15:51 -0400
-Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D34591180E;
-        Mon, 16 May 2022 00:15:49 -0700 (PDT)
-Received: by mail-qk1-f180.google.com with SMTP id k8so11642023qki.8;
-        Mon, 16 May 2022 00:15:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gKXNI3Zjy78U+ofmRrxvJNCYBgPtz8fzKvkASRSdlaE=;
-        b=UKLX3FT3sCG/8qDrhem4Ev7QA9RRMEy05hY0L1GBCElVWJP+Rj2hZdh/OQb+LiJhh4
-         b5A30TIAmzCp6Whxrx2S9iU+Lg8hdJoOMVsyUu+0liicRrLSFqaAtHpI7gEj6JGrZI62
-         6Bnk1QDdAH1wY7a77y8Z0pdWoX1sNCfP5UXbWOq6gSnkR70OAkrvs5UiBL6evAClm4vd
-         qImk1MAU0XrLUUDq7GUDgk8jVtC/3004lc+9wb6bemGFRLT7HK8ep7RV66r+qOPnVoRZ
-         NK+vohG/2iPUoFeK4UXEcgjQ6KEx2ogsybfXvYIO22pmTcVzRhKE+cwijd/VJ+RNeSjS
-         6YSQ==
-X-Gm-Message-State: AOAM53038CPdBanyz9dEY80xfTYLGOh1TtorMlqDy1LYhyGIZFzQGB4T
-        QRvOTqkA6SadzXUpWYjczbWJ+D3g4CDxKg==
-X-Google-Smtp-Source: ABdhPJzxTDQACrWXU5Pt/gAt+77vQxpG0pvauTm4JCosfAAl4bgTNuNB8NFot82GXYk5E4UPRTdurg==
-X-Received: by 2002:a05:620a:458b:b0:6a0:3399:c9dd with SMTP id bp11-20020a05620a458b00b006a03399c9ddmr11162882qkb.630.1652685348737;
-        Mon, 16 May 2022 00:15:48 -0700 (PDT)
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
-        by smtp.gmail.com with ESMTPSA id x2-20020a05620a14a200b0069fc13ce20fsm5452409qkj.64.2022.05.16.00.15.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 May 2022 00:15:48 -0700 (PDT)
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-2fee9fe48c2so21003927b3.3;
-        Mon, 16 May 2022 00:15:48 -0700 (PDT)
-X-Received: by 2002:a0d:f002:0:b0:2fe:cfba:d597 with SMTP id
- z2-20020a0df002000000b002fecfbad597mr9720916ywe.502.1652685347986; Mon, 16
- May 2022 00:15:47 -0700 (PDT)
+        with ESMTP id S239454AbiEPWM7 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 16 May 2022 18:12:59 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 177E92A729
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 May 2022 15:12:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1652739178; x=1684275178;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=tEgqhPMC9WsFfCklFSOD4e9LNXZhVXT/rN+3Qw2yYSc=;
+  b=FP3/SptnBCWerdE8x/alpNTDTtD35M49S9UxvHjYdVcqErRKGgTnfWKy
+   cXBGpVa97U1MkWQQGNAncg8p4Enqdw9KjTMrwTH7hY6PWXg9aXQNZwMg2
+   rWEeIMTwjwHTdXZuBdQC8a2FvSDjBxK350iTf9ltOqTPdmsyiUlC2vNrh
+   j2CfcgPJ0N0KwygyqDg4a+QNPjj4Ij2n+Omeb9iae+BBtInSfern/qhho
+   BWY+XEK5LzDU9RxPlUc5v57vvuhfSPv9djm6RZgUzjh9yZcNxau+5230w
+   mOEJ6TJtfSzMi1WaNasQHyenOpOpQY2iSzob6Kvr/8trFiOXWQMrTnXq1
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10349"; a="270920745"
+X-IronPort-AV: E=Sophos;i="5.91,231,1647327600"; 
+   d="scan'208";a="270920745"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 May 2022 15:12:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,231,1647327600"; 
+   d="scan'208";a="605056981"
+Received: from lkp-server02.sh.intel.com (HELO 242b25809ac7) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 16 May 2022 15:12:52 -0700
+Received: from kbuild by 242b25809ac7 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nqixP-0000NB-Ob;
+        Mon, 16 May 2022 22:12:51 +0000
+Date:   Tue, 17 May 2022 06:12:26 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 5b566ef5f7d6a0c31a512bfe4eefcce31771cf12
+Message-ID: <6282cc4a.qr3eeZwWFq7lfjol%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20220513064952.3610672-1-gerg@linux-m68k.org> <CAMuHMdVWRM7U9_SxbtDUE0a-sB5_PDiO2009Cu3QKMP3wNc=yw@mail.gmail.com>
- <2532419a-812b-c2de-ef56-849ec7dc16bc@linux-m68k.org> <CAK8P3a3RuOTidFpW7diHekJ6POV20SBb5PhSF943Ju1xAtOxNw@mail.gmail.com>
- <5d546c21-169c-cacc-6ca3-becf54876f7f@linux-m68k.org>
-In-Reply-To: <5d546c21-169c-cacc-6ca3-becf54876f7f@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 16 May 2022 09:15:36 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVdWhKJ4Lwr1RaDXsc1b6_J0Hnjv4d+r1q=Fd3qhQ_WLQ@mail.gmail.com>
-Message-ID: <CAMuHMdVdWhKJ4Lwr1RaDXsc1b6_J0Hnjv4d+r1q=Fd3qhQ_WLQ@mail.gmail.com>
-Subject: Re: [PATCH] m68knommu: fix undefined reference to `mach_get_rtc_pll'
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "Linux/m68k" <linux-m68k@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, May 16, 2022 at 8:08 AM Greg Ungerer <gerg@linux-m68k.org> wrote:
-> On 13/5/22 22:59, Arnd Bergmann wrote:
-> > On Fri, May 13, 2022 at 2:25 PM Greg Ungerer <gerg@linux-m68k.org> wrote:
-> >> On 13/5/22 17:12, Geert Uytterhoeven wrote:
-> >>> read_persistent_clock64() uses mach_hwclk(), which is provided by
-> >>> both setup_mm.c and setup_no.c, so it's always available?> Albeit not populated by coldfire or nommu platform code, so I see
-> >>> the point in depending on MMU (no nommu Amiga support yet ;-).
-> >>
-> >> Yes, exactly. And even worse is that on ColdFire platforms it
-> >> is never set, so will be the startup value of NULL. It is called
-> >> without checking for NULL in both of rtc_generic_get_time() and
-> >> rtc_generic_set_time().
-> >
-> > I think that's ok because rtc_generic_{get,set}_time is only called
-> > from the rtc_generic driver, but that is not registered when mach_hwclk()
-> > is NULL.
-> >
-> > With your patch to add the CONFIG_MMU check, you can actually
-> > remove the mach_hwclk() symbol from setup_no.c, and move the
-> > remaining RTC related symbols from setup_mm.c into the #ifdef.
->
-> Yes, I think that would be a good idea.
-> Tidies thins up a little.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 5b566ef5f7d6a0c31a512bfe4eefcce31771cf12  Merge tag 'v5.18-rc7'
 
-Let's fix the build error first.
+elapsed time: 728m
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+configs tested: 84
+configs skipped: 3
 
-Gr{oetje,eeting}s,
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-                        Geert
+gcc tested configs:
+arm                              allmodconfig
+arm                              allyesconfig
+arm                                 defconfig
+arm64                               defconfig
+arm64                            allyesconfig
+ia64                                defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+csky                                defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+parisc64                            defconfig
+s390                                defconfig
+s390                             allyesconfig
+sparc                               defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+powerpc                          allyesconfig
+x86_64               randconfig-a012-20220516
+x86_64               randconfig-a011-20220516
+x86_64               randconfig-a013-20220516
+x86_64               randconfig-a014-20220516
+x86_64               randconfig-a016-20220516
+x86_64               randconfig-a015-20220516
+i386                 randconfig-a011-20220516
+i386                 randconfig-a013-20220516
+i386                 randconfig-a012-20220516
+i386                 randconfig-a014-20220516
+i386                 randconfig-a015-20220516
+i386                 randconfig-a016-20220516
+s390                 randconfig-r044-20220516
+riscv                randconfig-r042-20220516
+arc                  randconfig-r043-20220516
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+riscv                            allmodconfig
+riscv                            allyesconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                                  kexec
+x86_64                          rhel-8.3-func
+x86_64                               rhel-8.3
+x86_64                         rhel-8.3-kunit
+x86_64                           rhel-8.3-syz
+x86_64                    rhel-8.3-kselftests
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+clang tested configs:
+x86_64               randconfig-a002-20220516
+x86_64               randconfig-a001-20220516
+x86_64               randconfig-a004-20220516
+x86_64               randconfig-a003-20220516
+x86_64               randconfig-a005-20220516
+x86_64               randconfig-a006-20220516
+i386                 randconfig-a003-20220516
+i386                 randconfig-a001-20220516
+i386                 randconfig-a002-20220516
+i386                 randconfig-a004-20220516
+i386                 randconfig-a005-20220516
+i386                 randconfig-a006-20220516
+hexagon              randconfig-r045-20220516
+hexagon              randconfig-r041-20220516
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
