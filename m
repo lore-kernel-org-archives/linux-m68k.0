@@ -2,84 +2,74 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EBEABC433F5
-	for <linux-m68k@archiver.kernel.org>; Wed, 18 May 2022 08:38:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87476C433F5
+	for <linux-m68k@archiver.kernel.org>; Wed, 18 May 2022 08:39:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233372AbiERIiV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 18 May 2022 04:38:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40812 "EHLO
+        id S233419AbiERIju (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 18 May 2022 04:39:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233316AbiERIiT (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 18 May 2022 04:38:19 -0400
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F00AB8CB30;
-        Wed, 18 May 2022 01:38:17 -0700 (PDT)
-Received: by mail-qt1-f171.google.com with SMTP id x22so1111669qto.2;
-        Wed, 18 May 2022 01:38:17 -0700 (PDT)
+        with ESMTP id S233410AbiERIjr (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 18 May 2022 04:39:47 -0400
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 686B91F62A;
+        Wed, 18 May 2022 01:39:46 -0700 (PDT)
+Received: by mail-qk1-f180.google.com with SMTP id a76so940065qkg.12;
+        Wed, 18 May 2022 01:39:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cqP3rX70nNLfHywlN+OLLWN2SShnMZ8noQpRFjy348k=;
-        b=Mn5AfLuIRaEUlS4xYxIPEySUgZnC6oBWnO5fNvpudsaOISRuESfQcNY1YKMhxDfjVF
-         iU9Qwd/KqBwandq4ag2e1nQhx4SQrjlycdP1rTdg6XPl834tLMXAU6hBTGtJmZF2HqwD
-         uVRHc0KKqlUDY2SXaqoX+guWhjCUyWm3ayvLP9kzbifhPF3wvKFgqCtevFEsRfknXFoE
-         L8d5xVi9vNfOmW+QIRI94xyzL1MA5K/vw9rJ22NTHGF8o5izOdnAwRVzHQ3VqFgb0f/N
-         ILPnKTpJFnEut+Z/OnMXPEHDinn+8dwHWfZtdDRjX50Q6Q8lP7WRsQBNZ3tzRKZqI3Ws
-         Xplg==
-X-Gm-Message-State: AOAM531N9XK2EPeDqHdHXMSu0z+CAwvRPzh3AEW0m4FC/i8oGPcq47ha
-        1XhuyzXn0WIRg9u/8AnyNOL53fvwijAQmw==
-X-Google-Smtp-Source: ABdhPJzctBhc0soTVGp2gj5kxHZtE2tvy8OlkaZFgoTSGz72qO+3ueLORx1xOWUvtQ28r+Z0VgRGNA==
-X-Received: by 2002:a05:622a:38b:b0:2f3:dcce:a7a3 with SMTP id j11-20020a05622a038b00b002f3dccea7a3mr22989381qtx.439.1652863096963;
-        Wed, 18 May 2022 01:38:16 -0700 (PDT)
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com. [209.85.219.180])
-        by smtp.gmail.com with ESMTPSA id n7-20020ac81e07000000b002f39b99f6bfsm922296qtl.89.2022.05.18.01.38.16
+        bh=sIQU7p2ddRP23ZVcbOH+vqsGdR+AZ+Y5lRt/vXJkT38=;
+        b=sDGn8KUY7E/Ex4kXjg2hTbY7T79HvccZEi8ZFXd80Z9E7C4nZ6j2P8uJarsuIUta3D
+         wlyWixCaHS0k6Cx1ux6tkGjW7A3wz3f+UVXECG2PSaEf3HaOCoBajZBYur7+v3HWs2qF
+         h4GTcwA89FrnxqmdZw0khDS8kbk5Asg9xHEyT0D89QipAlFS80lyscedJofnsC3ME7i2
+         JJvNodofk3FmMR2DrNBIYMkmrReOSSrHcbq2sGk/3Iryyb0zkoAoVEfp5lZje6iypSoa
+         1FniCeS/wC9C5JAIIfwfv58X2WYfq4lFS4Omhn72wkd3DWU++p+VZRfnk8VjCXyc14bg
+         lVzQ==
+X-Gm-Message-State: AOAM531EPYiBonzwn4vVgX5imSyTRc+7TiC4oNHBsG5lpW1TR5CHKKNY
+        Z2sWcwDG6WUuwD/6rDzoxAa8O032CmLYnQ==
+X-Google-Smtp-Source: ABdhPJwOhnuSTqxs7mHRQQza0kR4i3jLi39tD802CY0K4NMBzt0aebaubdXi4FltuNILUzUnz0zN0g==
+X-Received: by 2002:a05:620a:254c:b0:6a2:e7dc:25e3 with SMTP id s12-20020a05620a254c00b006a2e7dc25e3mr10932837qko.63.1652863185443;
+        Wed, 18 May 2022 01:39:45 -0700 (PDT)
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com. [209.85.128.169])
+        by smtp.gmail.com with ESMTPSA id g12-20020ac8070c000000b002f39b99f69csm825426qth.54.2022.05.18.01.39.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 May 2022 01:38:16 -0700 (PDT)
-Received: by mail-yb1-f180.google.com with SMTP id o80so2497089ybg.1;
-        Wed, 18 May 2022 01:38:16 -0700 (PDT)
-X-Received: by 2002:a25:e7ce:0:b0:64d:6028:96b9 with SMTP id
- e197-20020a25e7ce000000b0064d602896b9mr18846478ybh.365.1652863095784; Wed, 18
- May 2022 01:38:15 -0700 (PDT)
+        Wed, 18 May 2022 01:39:44 -0700 (PDT)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-2ff39b44b06so16079137b3.13;
+        Wed, 18 May 2022 01:39:44 -0700 (PDT)
+X-Received: by 2002:a0d:f002:0:b0:2fe:cfba:d597 with SMTP id
+ z2-20020a0df002000000b002fecfbad597mr21222453ywe.502.1652863184044; Wed, 18
+ May 2022 01:39:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220518065639.2432213-1-gerg@linux-m68k.org> <20220518065639.2432213-2-gerg@linux-m68k.org>
-In-Reply-To: <20220518065639.2432213-2-gerg@linux-m68k.org>
+References: <20220518065639.2432213-1-gerg@linux-m68k.org> <20220518065639.2432213-3-gerg@linux-m68k.org>
+In-Reply-To: <20220518065639.2432213-3-gerg@linux-m68k.org>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 18 May 2022 10:38:03 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUookR3LVSEYxc6XBt5aDWQ7NR=7s35Qh5ONbaSaQ-MMA@mail.gmail.com>
-Message-ID: <CAMuHMdUookR3LVSEYxc6XBt5aDWQ7NR=7s35Qh5ONbaSaQ-MMA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] m68knommu: fix undefined reference to `mach_get_rtc_pll'
+Date:   Wed, 18 May 2022 10:39:32 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVWDgwOkA7vydeytRViigr82bMSAEPVQ=r-qsgF=hs_RQ@mail.gmail.com>
+Message-ID: <CAMuHMdVWDgwOkA7vydeytRViigr82bMSAEPVQ=r-qsgF=hs_RQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] m68k: removed unused "mach_get_ss"
 To:     Greg Ungerer <gerg@linux-m68k.org>
 Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        kernel test robot <lkp@intel.com>
+        Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
 On Wed, May 18, 2022 at 8:56 AM Greg Ungerer <gerg@linux-m68k.org> wrote:
-> Configuring for a nommu classic m68k target and enabling the generic rtc
-> driver (CONFIG_RTC_DRV_GENERIC) will result in the following compile
-> error:
+> The m68k machine helper function "mach_get_ss" function pointer is
+> set for some machines, but ultimately never used anywhere. Remove it.
 >
->    m68k-linux-ld: arch/m68k/kernel/time.o: in function `rtc_ioctl':
->    time.c:(.text+0x82): undefined reference to `mach_get_rtc_pll'
->    m68k-linux-ld: time.c:(.text+0xbc): undefined reference to `mach_set_rtc_pll'
->    m68k-linux-ld: time.c:(.text+0xf4): undefined reference to `mach_set_rtc_pll'
->
-> There is no definitions of "mach_set_rtc_pll" and "mach_get_rtc_pll" in the
-> nommu code paths. Move these definitions and the associated "mach_hwclk",
-> so that they are around their use case in time.c. This means they will
-> always be defined on the builds that require them, and not on those that
-> cannot use them - such as ColdFire (both with and without MMU enabled).
->
-> Reported-by: kernel test robot <lkp@intel.com>
 > Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+
+Yep, this became unused since commit 084b3600e2d98ebb ("char/genrtc:
+remove m68k support").
 
 Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
 
 Gr{oetje,eeting}s,
 
