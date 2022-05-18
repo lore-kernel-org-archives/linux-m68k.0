@@ -2,119 +2,72 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C675C433FE
-	for <linux-m68k@archiver.kernel.org>; Wed, 18 May 2022 09:20:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94FE0C433EF
+	for <linux-m68k@archiver.kernel.org>; Wed, 18 May 2022 12:35:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234084AbiERJUn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 18 May 2022 05:20:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52760 "EHLO
+        id S237177AbiERMe5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 18 May 2022 08:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234081AbiERJUm (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 18 May 2022 05:20:42 -0400
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B8614A273;
-        Wed, 18 May 2022 02:20:40 -0700 (PDT)
-Received: by mail-qv1-f50.google.com with SMTP id j3so1094183qvn.0;
-        Wed, 18 May 2022 02:20:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pk6C9SrDQ3eeugkFD/p41tFZX2e6B2Jxpeux48HKyjk=;
-        b=txygStwlYzljOucCJZDWHrYPe2S90mdB6G6H35gZk+ggu88Fm4ov4HY50BIBKX5tXj
-         t5pfPyI1rs8vfhWp0MO5ujqQmHKKXGdNAcgRN97F86Fs2hX//0b+lcqw/P5ebeBMugXl
-         +u9D3BXraVAuBllAQu/omkx1YnNqxvS+6IdOBfzmcqa3HoOMEXePT1IuqcTpP4e1v6Nm
-         5CZq8+GYu+cIhE+Nr9GZTV+h5bSyAxD81Cn2dEscpE0wLIx0BLU/aHSCrR1TlKCY+ypp
-         hJlKwWqYofIGaXgUGvsui5rko9PZA9pXZwXfjaq9DkUmCy/9Uoj2wUXrtHS7sf7dt7ce
-         f4og==
-X-Gm-Message-State: AOAM533EEShWSkZ12vJQWGGxoWjIbGEzeecZmm903i/VbIIgjSX6Xx2A
-        RWW9mTzHDjo5lTVN3p9VosT1C+77Fx8MUA==
-X-Google-Smtp-Source: ABdhPJzL9mKxNsJYRdeyMnlRDcSOLImMy6jmoiFs3WXk8FIPEEUQtdz5MA/fVE9TSAfB1bHVCn6X/A==
-X-Received: by 2002:a0c:b392:0:b0:461:e7fa:2c0f with SMTP id t18-20020a0cb392000000b00461e7fa2c0fmr2222224qve.114.1652865639862;
-        Wed, 18 May 2022 02:20:39 -0700 (PDT)
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
-        by smtp.gmail.com with ESMTPSA id c2-20020ae9ed02000000b006a04256022bsm1184189qkg.107.2022.05.18.02.20.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 May 2022 02:20:39 -0700 (PDT)
-Received: by mail-yb1-f173.google.com with SMTP id f16so2646417ybk.2;
-        Wed, 18 May 2022 02:20:39 -0700 (PDT)
-X-Received: by 2002:a25:4289:0:b0:64d:746f:5311 with SMTP id
- p131-20020a254289000000b0064d746f5311mr16654046yba.89.1652865639143; Wed, 18
- May 2022 02:20:39 -0700 (PDT)
+        with ESMTP id S237167AbiERMea (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 18 May 2022 08:34:30 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFBD195BC7;
+        Wed, 18 May 2022 05:30:02 -0700 (PDT)
+Received: from mail-yw1-f178.google.com ([209.85.128.178]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1N5FxN-1nhQlJ2bp7-011BPq; Wed, 18 May 2022 14:24:48 +0200
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-2ef5380669cso22085547b3.9;
+        Wed, 18 May 2022 05:24:48 -0700 (PDT)
+X-Gm-Message-State: AOAM5338/s/qHA3UKNQFolakTnjREpT0yWd1L53JIUD9VgvzOjXDe+CQ
+        VF2bavNxYvWWJJ6wFDNC8LEeVmvFWmFc7ViQPaY=
+X-Google-Smtp-Source: ABdhPJxZRkGXRvX53ymOSUVaooG3HpMXOKVV13GaKLQVQtT/IdcwmlHH1YBCPp9l/07/fkfwXAFHJLin8SwdOcL4H+U=
+X-Received: by 2002:a81:456:0:b0:2fe:dee5:fbbc with SMTP id
+ 83-20020a810456000000b002fedee5fbbcmr20659765ywe.249.1652876687402; Wed, 18
+ May 2022 05:24:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220518065639.2432213-1-gerg@linux-m68k.org> <20220518065639.2432213-4-gerg@linux-m68k.org>
-In-Reply-To: <20220518065639.2432213-4-gerg@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 18 May 2022 11:20:27 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWADK4d-OxKYdnRvbtVsGtbZ_+vF2D70S-5hXNt0rqg9w@mail.gmail.com>
-Message-ID: <CAMuHMdWADK4d-OxKYdnRvbtVsGtbZ_+vF2D70S-5hXNt0rqg9w@mail.gmail.com>
-Subject: Re: [PATCH 3/3] m68knommu: fix 68000 CPU link with no platform selected
+References: <20220518065639.2432213-1-gerg@linux-m68k.org> <20220518065639.2432213-3-gerg@linux-m68k.org>
+In-Reply-To: <20220518065639.2432213-3-gerg@linux-m68k.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 18 May 2022 13:24:50 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2DNKEj2T9fr_tch=WGWvVT0rG5Pbi8J04dAAxtwEZj7w@mail.gmail.com>
+Message-ID: <CAK8P3a2DNKEj2T9fr_tch=WGWvVT0rG5Pbi8J04dAAxtwEZj7w@mail.gmail.com>
+Subject: Re: [PATCH 2/3] m68k: removed unused "mach_get_ss"
 To:     Greg Ungerer <gerg@linux-m68k.org>
 Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:mkFA0VxBtWgHqqY2a8Z1cBSEYRjG9fUF5O9c/Y3vHbkiETmf2/+
+ JTbY5ziAptpkM6nHfC4uXHwKGN9cKKDX3rUTLjscXyW818j704TsgxyNKGZnr2rU4hOuXG2
+ knxebAYyuvoNqpjsa0KqjU3btasyUwxJ1DWo+pb9bCHf8U2G9Mn7CsCEh5SGQicrJI8sFWO
+ xoYRtaXTE/vJ21L1+qxsw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:elFAfiDWLBs=:9whmihggJ4h6kYZB2znNdn
+ ZUyxM9J2Uy3PkOw7ozqRJ3zY6mPjAX38FSFQWkqjeBZbbDtNOOPzfvisgOaJ5j1dF1k5Jl5mq
+ nSbMisOe4I7g9T9wj5YUPPfXSYfSYVcLcgFob9yHDXD7jutYgDaYmAkTJy+X2auJprhtRSS7T
+ uhJMXIpL3jb246P3ySYsViVIuh8xHLC0k5i8IJwEMVRu2rv5I4fAc2+1iIDCqwsxd4HoQJgF/
+ ZODOBSWhXp8FdDXckpkViAxnYvkzcH6duHtr7f9Uj+RZmMcyJGr0h2uJt6UIltfp1tYgKrtNv
+ 44vJN76rGtv4HIu5TuD6LuwInDJKYdmxB6Ude5IxSuCOcOWjVKb6BY+9ND4BPFPDcg2v5Wath
+ e+KCYj+D62yQ56O1hCFAGIGL4bM3CNkuLyvvi/L7ijOZvrk2zOXv0re4n3yQAFxdGbniFtsnT
+ /Og0N+hFwl2yoT7QEAdHhUJvy5wQJlfmV6A70qTpop/OEeWgaCwQFKFTGENL7AnAKtdBWgJhf
+ F9IykRFLl/y1xISgXIX+udSXMoDqf+XIeZP5DejQVi6HgFaZd/7sdTGRBXmKfyLtyjtYmTz9b
+ Ya4IsrsRVAo2fTsCNeilJbzu2hMZC9NRF3CROjfrRJ2LMmkShIbSPuB4uYn+4LgpOXGa83JGj
+ wZOIYeTq6HcyHkzP3hcPMnt6TXzpyfCqyZ3Av2HWH9pRwpvQtMSqSGVZb/PzWjJyDZDb3tfD2
+ 0xDh+ygETdvGQkON+VBytRtNFzla3HXMhQvkFU51HiTuM66oTsbJRbfhvnP314keTafJ12e1v
+ f1AQWCMcrv3otEX7B5007rDmIAHPhq1GGpFj6k8R0lZOYH73nxj4gpEr/IjAxgTGmE/hNIxLB
+ xooDDk0st5ahNM+TCKGQ==
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Greg.
-
-On Wed, May 18, 2022 at 8:56 AM Greg Ungerer <gerg@linux-m68k.org> wrote:
-> If building for a nommu m68k classic CPU and no platform (board) is
-> selected then the final link fails with:
+On Wed, May 18, 2022 at 7:56 AM Greg Ungerer <gerg@linux-m68k.org> wrote:
 >
->      LD      vmlinux.o
->    m68k-linux-ld: cannot find arch/m68k/kernel/head.o: No such file or directory
->    make: *** [Makefile:1158: vmlinux] Error 1
->
-> Not selecting a platform is ok, that is a generic 68000 system build.
-> All of the platform selections are for 68328 variants.
->
-> The underlying problem is that the CPU config option (CONFIG_M68000)
-> ends up not being set, it is currently only selected by one of the
-> platform choices.
->
-> Change CONFIG_M68000 so that it is always enabled for the nommu m68k
-> classic configuration.
+> The m68k machine helper function "mach_get_ss" function pointer is
+> set for some machines, but ultimately never used anywhere. Remove it.
 >
 > Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 
-Thanks for your patch!
+Good catch!
 
-> --- a/arch/m68k/Kconfig.cpu
-> +++ b/arch/m68k/Kconfig.cpu
-> @@ -37,7 +37,7 @@ endchoice
->  if M68KCLASSIC
->
->  config M68000
-> -       bool
-> +       def_bool y
-
-And then the selects can be removed, too, as the symbol is now always
-enabled?
-
-I'm wondering how to handle this when another nommu-m68k-classic
-platform shows up (again, cfr. the removed 68360 support) , that
-would need a different head.S?  Of course that's something to be
-solved later...
-
->         depends on !MMU
->         select CPU_HAS_NO_BITFIELDS
->         select CPU_HAS_NO_CAS
-
-Note that mmu-m68k-classic (e.g. CONFIG_MMU=y + allnonfig) has the
-same problem.  That config does need other fixes too.  E.g. I have
-a local patch to make sure NR_IRQS is never zero, but never got to
-solve the missing head.o problem in an acceptable way.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
