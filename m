@@ -2,124 +2,92 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9823C433FE
-	for <linux-m68k@archiver.kernel.org>; Wed, 18 May 2022 06:57:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EBEABC433F5
+	for <linux-m68k@archiver.kernel.org>; Wed, 18 May 2022 08:38:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231772AbiERG5M (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 18 May 2022 02:57:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33812 "EHLO
+        id S233372AbiERIiV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 18 May 2022 04:38:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231754AbiERG4y (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 18 May 2022 02:56:54 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F5DE12772;
-        Tue, 17 May 2022 23:56:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BE86EB81E9B;
-        Wed, 18 May 2022 06:56:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13932C385A9;
-        Wed, 18 May 2022 06:56:48 +0000 (UTC)
-From:   Greg Ungerer <gerg@linux-m68k.org>
-To:     linux-m68k@vger.kernel.org
-Cc:     geert@linux-m68k.org, linux-kernel@vger.kernel.org, arnd@arndb.de,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH 1/3] m68knommu: fix undefined reference to `mach_get_rtc_pll'
-Date:   Wed, 18 May 2022 16:56:37 +1000
-Message-Id: <20220518065639.2432213-2-gerg@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220518065639.2432213-1-gerg@linux-m68k.org>
-References: <20220518065639.2432213-1-gerg@linux-m68k.org>
+        with ESMTP id S233316AbiERIiT (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 18 May 2022 04:38:19 -0400
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F00AB8CB30;
+        Wed, 18 May 2022 01:38:17 -0700 (PDT)
+Received: by mail-qt1-f171.google.com with SMTP id x22so1111669qto.2;
+        Wed, 18 May 2022 01:38:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cqP3rX70nNLfHywlN+OLLWN2SShnMZ8noQpRFjy348k=;
+        b=Mn5AfLuIRaEUlS4xYxIPEySUgZnC6oBWnO5fNvpudsaOISRuESfQcNY1YKMhxDfjVF
+         iU9Qwd/KqBwandq4ag2e1nQhx4SQrjlycdP1rTdg6XPl834tLMXAU6hBTGtJmZF2HqwD
+         uVRHc0KKqlUDY2SXaqoX+guWhjCUyWm3ayvLP9kzbifhPF3wvKFgqCtevFEsRfknXFoE
+         L8d5xVi9vNfOmW+QIRI94xyzL1MA5K/vw9rJ22NTHGF8o5izOdnAwRVzHQ3VqFgb0f/N
+         ILPnKTpJFnEut+Z/OnMXPEHDinn+8dwHWfZtdDRjX50Q6Q8lP7WRsQBNZ3tzRKZqI3Ws
+         Xplg==
+X-Gm-Message-State: AOAM531N9XK2EPeDqHdHXMSu0z+CAwvRPzh3AEW0m4FC/i8oGPcq47ha
+        1XhuyzXn0WIRg9u/8AnyNOL53fvwijAQmw==
+X-Google-Smtp-Source: ABdhPJzctBhc0soTVGp2gj5kxHZtE2tvy8OlkaZFgoTSGz72qO+3ueLORx1xOWUvtQ28r+Z0VgRGNA==
+X-Received: by 2002:a05:622a:38b:b0:2f3:dcce:a7a3 with SMTP id j11-20020a05622a038b00b002f3dccea7a3mr22989381qtx.439.1652863096963;
+        Wed, 18 May 2022 01:38:16 -0700 (PDT)
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com. [209.85.219.180])
+        by smtp.gmail.com with ESMTPSA id n7-20020ac81e07000000b002f39b99f6bfsm922296qtl.89.2022.05.18.01.38.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 May 2022 01:38:16 -0700 (PDT)
+Received: by mail-yb1-f180.google.com with SMTP id o80so2497089ybg.1;
+        Wed, 18 May 2022 01:38:16 -0700 (PDT)
+X-Received: by 2002:a25:e7ce:0:b0:64d:6028:96b9 with SMTP id
+ e197-20020a25e7ce000000b0064d602896b9mr18846478ybh.365.1652863095784; Wed, 18
+ May 2022 01:38:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20220518065639.2432213-1-gerg@linux-m68k.org> <20220518065639.2432213-2-gerg@linux-m68k.org>
+In-Reply-To: <20220518065639.2432213-2-gerg@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 18 May 2022 10:38:03 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUookR3LVSEYxc6XBt5aDWQ7NR=7s35Qh5ONbaSaQ-MMA@mail.gmail.com>
+Message-ID: <CAMuHMdUookR3LVSEYxc6XBt5aDWQ7NR=7s35Qh5ONbaSaQ-MMA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] m68knommu: fix undefined reference to `mach_get_rtc_pll'
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Configuring for a nommu classic m68k target and enabling the generic rtc
-driver (CONFIG_RTC_DRV_GENERIC) will result in the following compile
-error:
+On Wed, May 18, 2022 at 8:56 AM Greg Ungerer <gerg@linux-m68k.org> wrote:
+> Configuring for a nommu classic m68k target and enabling the generic rtc
+> driver (CONFIG_RTC_DRV_GENERIC) will result in the following compile
+> error:
+>
+>    m68k-linux-ld: arch/m68k/kernel/time.o: in function `rtc_ioctl':
+>    time.c:(.text+0x82): undefined reference to `mach_get_rtc_pll'
+>    m68k-linux-ld: time.c:(.text+0xbc): undefined reference to `mach_set_rtc_pll'
+>    m68k-linux-ld: time.c:(.text+0xf4): undefined reference to `mach_set_rtc_pll'
+>
+> There is no definitions of "mach_set_rtc_pll" and "mach_get_rtc_pll" in the
+> nommu code paths. Move these definitions and the associated "mach_hwclk",
+> so that they are around their use case in time.c. This means they will
+> always be defined on the builds that require them, and not on those that
+> cannot use them - such as ColdFire (both with and without MMU enabled).
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 
-   m68k-linux-ld: arch/m68k/kernel/time.o: in function `rtc_ioctl':
-   time.c:(.text+0x82): undefined reference to `mach_get_rtc_pll'
-   m68k-linux-ld: time.c:(.text+0xbc): undefined reference to `mach_set_rtc_pll'
-   m68k-linux-ld: time.c:(.text+0xf4): undefined reference to `mach_set_rtc_pll'
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-There is no definitions of "mach_set_rtc_pll" and "mach_get_rtc_pll" in the
-nommu code paths. Move these definitions and the associated "mach_hwclk",
-so that they are around their use case in time.c. This means they will
-always be defined on the builds that require them, and not on those that
-cannot use them - such as ColdFire (both with and without MMU enabled).
+Gr{oetje,eeting}s,
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
----
- arch/m68k/kernel/setup_mm.c | 7 -------
- arch/m68k/kernel/setup_no.c | 1 -
- arch/m68k/kernel/time.c     | 9 +++++++++
- 3 files changed, 9 insertions(+), 8 deletions(-)
+                        Geert
 
-diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-index 8f94feed969c..07317367ead8 100644
---- a/arch/m68k/kernel/setup_mm.c
-+++ b/arch/m68k/kernel/setup_mm.c
-@@ -87,15 +87,8 @@ void (*mach_sched_init) (void) __initdata = NULL;
- void (*mach_init_IRQ) (void) __initdata = NULL;
- void (*mach_get_model) (char *model);
- void (*mach_get_hardware_list) (struct seq_file *m);
--/* machine dependent timer functions */
--int (*mach_hwclk) (int, struct rtc_time*);
--EXPORT_SYMBOL(mach_hwclk);
- unsigned int (*mach_get_ss)(void);
--int (*mach_get_rtc_pll)(struct rtc_pll_info *);
--int (*mach_set_rtc_pll)(struct rtc_pll_info *);
- EXPORT_SYMBOL(mach_get_ss);
--EXPORT_SYMBOL(mach_get_rtc_pll);
--EXPORT_SYMBOL(mach_set_rtc_pll);
- void (*mach_reset)( void );
- void (*mach_halt)( void );
- void (*mach_power_off)( void );
-diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
-index 5e4104f07a44..19eea73d3c17 100644
---- a/arch/m68k/kernel/setup_no.c
-+++ b/arch/m68k/kernel/setup_no.c
-@@ -50,7 +50,6 @@ char __initdata command_line[COMMAND_LINE_SIZE];
- 
- /* machine dependent timer functions */
- void (*mach_sched_init)(void) __initdata = NULL;
--int (*mach_hwclk) (int, struct rtc_time*);
- 
- /* machine dependent reboot functions */
- void (*mach_reset)(void);
-diff --git a/arch/m68k/kernel/time.c b/arch/m68k/kernel/time.c
-index 340ffeea0a9d..97a5438562cd 100644
---- a/arch/m68k/kernel/time.c
-+++ b/arch/m68k/kernel/time.c
-@@ -63,6 +63,10 @@ void timer_heartbeat(void)
- #endif /* CONFIG_HEARTBEAT */
- 
- #ifdef CONFIG_M68KCLASSIC
-+/* machine dependent timer functions */
-+int (*mach_hwclk) (int, struct rtc_time*);
-+EXPORT_SYMBOL(mach_hwclk);
-+
- #if !IS_BUILTIN(CONFIG_RTC_DRV_GENERIC)
- void read_persistent_clock64(struct timespec64 *ts)
- {
-@@ -82,6 +86,11 @@ void read_persistent_clock64(struct timespec64 *ts)
- #endif
- 
- #if IS_ENABLED(CONFIG_RTC_DRV_GENERIC)
-+int (*mach_get_rtc_pll)(struct rtc_pll_info *);
-+int (*mach_set_rtc_pll)(struct rtc_pll_info *);
-+EXPORT_SYMBOL(mach_get_rtc_pll);
-+EXPORT_SYMBOL(mach_set_rtc_pll);
-+
- static int rtc_generic_get_time(struct device *dev, struct rtc_time *tm)
- {
- 	mach_hwclk(0, tm);
--- 
-2.25.1
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
