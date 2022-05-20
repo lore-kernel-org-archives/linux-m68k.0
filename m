@@ -2,112 +2,145 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6708C433EF
-	for <linux-m68k@archiver.kernel.org>; Fri, 20 May 2022 15:08:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90C39C433F5
+	for <linux-m68k@archiver.kernel.org>; Fri, 20 May 2022 15:52:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350636AbiETPIa convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 20 May 2022 11:08:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57632 "EHLO
+        id S1349859AbiETPw3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 20 May 2022 11:52:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350707AbiETPIY (ORCPT
+        with ESMTP id S236811AbiETPw2 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 20 May 2022 11:08:24 -0400
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 522C51796EB
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 20 May 2022 08:08:10 -0700 (PDT)
-Received: by mail-qt1-f170.google.com with SMTP id v14so7118002qtc.3
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 20 May 2022 08:08:10 -0700 (PDT)
+        Fri, 20 May 2022 11:52:28 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F1C15EA41
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 20 May 2022 08:52:27 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id p12-20020a9d4e0c000000b00606b40860a3so5769799otf.11
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 20 May 2022 08:52:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:message-id:date:mime-version:user-agent:content-language:to
+         :cc:references:from:subject:in-reply-to:content-transfer-encoding;
+        bh=EhB/lv0xrW5Gf8DJlfv+KquZ+GUpeG3dg1zB16zvTWY=;
+        b=QnVwIWj338v0R9Yd4Lfmvj9Ay7nt1uNCKkpcLOoISy5VgilCmjqCAWQglpNwtSQAa8
+         CCDWDWsBE9iOGzDN10EUuWazb0nKKu8fw7ogTqXFDt4BYz9KtrEJHSgFtHRis1Je82PA
+         7VWrx0oPQf2L04S5h8I65b+vif08qSVT9Wj8yNcpJqBYSZ/O/JesHxJ/47AKqsM9apCE
+         mhZld7fAqIx+ra7agM6xCCNOy2qzEgQV4qxSzopSekQ/93F9i9YbZGcL9JRJsbukmlb6
+         U4Q57XgMzguK9BhALYV7mVXe8NsSxNKyOxyTz5d7G5zMY/Nbg64LlTYBOXTFny1e3Skt
+         nVJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=pEvlCe4V/em2drNfzpLbMhZO2cZ4QaTzSiWNKrAJWLg=;
-        b=G85dcZl9VXS6gAmB7nKcasnAB4lxWgyRDrCIAM26kLO2cTCDOKYfuaGkTfMOnhp46t
-         36XjVgxeV8RjCh9hdd4rM6NOV+JtkXParzAOdmuclaXyyQnH/myHBEQ5kN8xqqCuAjR1
-         58+Wn4UuQydZ/ipmpxb0AbA6TVhVgmfkXcUrPgOa7fJPLdo5BRwKc3V6zyoyiZDIVtjA
-         xkhCdErLC+2AGs4CK9uaNOBLcEtlbNOMofV4axlVu7+Ixc/64c+JSNmukcB9XfkXUWtd
-         wBsgjkSp7ozektvCA3HUbSi++KhzgdRbo2aDUiIfKT3pPeyd8Di8j3aR8CZeGtg7OCA+
-         639A==
-X-Gm-Message-State: AOAM530sVU6WEl7dKtHDtsoDrFP4guGJm3PVnQ0fV1p/MK9W1Nj0mJXP
-        k0SUfCfKSXk0QogOQ0p3GDF10mMRT2nZXw==
-X-Google-Smtp-Source: ABdhPJzytOkIyP6vIvJENoqONEP64HI7sMR+WF467Kr0Rl0+9P7PrZdMa0OtyFAOc4kraoYy5VB8Mg==
-X-Received: by 2002:a05:622a:487:b0:2f3:cb77:b19c with SMTP id p7-20020a05622a048700b002f3cb77b19cmr8165815qtx.352.1653059288962;
-        Fri, 20 May 2022 08:08:08 -0700 (PDT)
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
-        by smtp.gmail.com with ESMTPSA id v20-20020ac85794000000b002f914fa980bsm2910313qta.79.2022.05.20.08.08.08
-        for <linux-m68k@lists.linux-m68k.org>
+        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:subject:in-reply-to
+         :content-transfer-encoding;
+        bh=EhB/lv0xrW5Gf8DJlfv+KquZ+GUpeG3dg1zB16zvTWY=;
+        b=CxLXfGwSlH7jro8A8txKk8MRTYkkoo/OSgmocFtNsyMWpEbLVV1xHTsACDIuY+ou8V
+         UHIAHvC4cIHkm4CufkZ+qTTk+56QkI2qSAhN+IDQfa4PiI1P2sXh2/EftP10JTwUdpbS
+         kfH7BCQ38t+gzNBuv/Heseq+Est7JZweKE7quhIhtQgRz0SlRt8qRRJPRPzljgCRxmf5
+         g0QeITP70fG5xC/rQ/wlZ9AWCcDapTUpgrblCEAcAiAhGokFJBd21MgTPm6Tju5P+C9Z
+         W5v2XD9OQQvqZxZnhKGVfEgC7sPLyOhBRCrbJqL0y7R49d/vZsAJfYPXuyvhXpGYqkPK
+         ZBrA==
+X-Gm-Message-State: AOAM530gCCUS9bMy+gu/Hctxt3G7Z3EqqYgjDk0F4Y6WwhdJC83sOy5W
+        Go+r3IzMLilNKxHy29BKOy4=
+X-Google-Smtp-Source: ABdhPJzPQhsZNAvqPlF3cf7RihR+hJJzn6iTUSxKphaDRW0SDUR1FHp1DQqSM9ckZ6xXySN15vPBgQ==
+X-Received: by 2002:a9d:6e5:0:b0:60a:efd6:96b8 with SMTP id 92-20020a9d06e5000000b0060aefd696b8mr1555198otx.11.1653061946398;
+        Fri, 20 May 2022 08:52:26 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id h1-20020a056870a3c100b000ee3fdcb51esm1069146oak.8.2022.05.20.08.52.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 May 2022 08:08:08 -0700 (PDT)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-2fee9fe48c2so90541597b3.3
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 20 May 2022 08:08:08 -0700 (PDT)
-X-Received: by 2002:a81:9b0c:0:b0:2f4:c522:7d3c with SMTP id
- s12-20020a819b0c000000b002f4c5227d3cmr10719893ywg.316.1653059288103; Fri, 20
- May 2022 08:08:08 -0700 (PDT)
+        Fri, 20 May 2022 08:52:24 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <e253a579-1388-7c23-6425-13b692815a38@roeck-us.net>
+Date:   Fri, 20 May 2022 08:52:22 -0700
 MIME-Version: 1.0
-References: <c15bedc83d90a14fffcd5b1b6bfb32b8a80282c5.1653057096.git.geert@linux-m68k.org>
- <286a1eef-e857-a31f-839b-00a4c835dfa9@roeck-us.net>
-In-Reply-To: <286a1eef-e857-a31f-839b-00a4c835dfa9@roeck-us.net>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 20 May 2022 17:07:56 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdX3EYrGPPUEZ3_YPyr6zHnV-xEW3mYB_QyFYaqg_grF-w@mail.gmail.com>
-Message-ID: <CAMuHMdX3EYrGPPUEZ3_YPyr6zHnV-xEW3mYB_QyFYaqg_grF-w@mail.gmail.com>
-Subject: Re: [PATCH] m68k: atari: Make Atari ROM port I/O write macros return void
-To:     Guenter Roeck <linux@roeck-us.net>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+References: <c15bedc83d90a14fffcd5b1b6bfb32b8a80282c5.1653057096.git.geert@linux-m68k.org>
+ <286a1eef-e857-a31f-839b-00a4c835dfa9@roeck-us.net>
+ <CAMuHMdX3EYrGPPUEZ3_YPyr6zHnV-xEW3mYB_QyFYaqg_grF-w@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH] m68k: atari: Make Atari ROM port I/O write macros return
+ void
+In-Reply-To: <CAMuHMdX3EYrGPPUEZ3_YPyr6zHnV-xEW3mYB_QyFYaqg_grF-w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Günter,
+On 5/20/22 08:07, Geert Uytterhoeven wrote:
+> Hi Günter,
+> 
+> On Fri, May 20, 2022 at 4:52 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>> On 5/20/22 07:32, Geert Uytterhoeven wrote:
+>>> The macros implementing Atari ROM port I/O writes do not cast away their
+>>> output, unlike similar implementations for other I/O buses.
+>>> When they are combined using conditional expressions in the definitions of
+>>> outb() and friends, this triggers sparse warnings like:
+>>>
+>>>       drivers/net/appletalk/cops.c:382:17: error: incompatible types in conditional expression (different base types):
+>>>       drivers/net/appletalk/cops.c:382:17:    unsigned char
+>>>       drivers/net/appletalk/cops.c:382:17:    void
+>>>
+>>> Fix this by adding casts to "void".
+>>>
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>> Reported-by: Guenter Roeck <linux@roeck-us.net>
+>>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>>
+>> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> 
+> Thanks!
+> 
+>>> Removing the casts instead causes issues with functions propagating void
+>>> return values (return expression in void function), which BTW sparse
+>>> complains about, too.
+>>
+>> We live and learn. I didn't even know that this was valid syntax.
+> 
+> I knew about the syntax, but didn't realize immediately why it was
+> done that way.
+> 
+> Initially I thought it was some relic from the "always cast to void
+> to make it clear you do not care about the return value"-frenzy, which
+> are inside Linux visible mostly in the various "(void)acpi_<foo>(...);"
+> calls.  AFAIK these are checked by some external tools.
+> In Linux, we have __must_check to annotate the important cases.
+> 
 
-On Fri, May 20, 2022 at 4:52 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> On 5/20/22 07:32, Geert Uytterhoeven wrote:
-> > The macros implementing Atari ROM port I/O writes do not cast away their
-> > output, unlike similar implementations for other I/O buses.
-> > When they are combined using conditional expressions in the definitions of
-> > outb() and friends, this triggers sparse warnings like:
-> >
-> >      drivers/net/appletalk/cops.c:382:17: error: incompatible types in conditional expression (different base types):
-> >      drivers/net/appletalk/cops.c:382:17:    unsigned char
-> >      drivers/net/appletalk/cops.c:382:17:    void
-> >
-> > Fix this by adding casts to "void".
-> >
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Reported-by: Guenter Roeck <linux@roeck-us.net>
-> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->
-> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+I looked at the output of my coccinelle script. To me it looks like
+(almost ?) all of the code with "return f(...)" in a function returning
+void is just sloppy programming.
 
-Thanks!
+In case someone is interested, I attached the script I used below.
 
-> > Removing the casts instead causes issues with functions propagating void
-> > return values (return expression in void function), which BTW sparse
-> > complains about, too.
->
-> We live and learn. I didn't even know that this was valid syntax.
+Guenter
 
-I knew about the syntax, but didn't realize immediately why it was
-done that way.
+---
+virtual report
 
-Initially I thought it was some relic from the "always cast to void
-to make it clear you do not care about the return value"-frenzy, which
-are inside Linux visible mostly in the various "(void)acpi_<foo>(...);"
-calls.  AFAIK these are checked by some external tools.
-In Linux, we have __must_check to annotate the important cases.
+@d@
+function f;
+expression e;
+position p;
+@@
 
-Gr{oetje,eeting}s,
+void f(...)
+{
+     <...
+     return e@p;
+     ...>
+}
 
-                        Geert
+@script:python depends on report@
+p << d.p;
+f << d.f;
+e << d.e;
+@@
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+print "Return in void function %s() at %s:%s: %s" % (f, p[0].file, p[0].line, e)
