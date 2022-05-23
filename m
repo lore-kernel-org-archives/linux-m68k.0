@@ -2,99 +2,188 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A11D9C433EF
-	for <linux-m68k@archiver.kernel.org>; Mon, 23 May 2022 20:11:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16BEFC433F5
+	for <linux-m68k@archiver.kernel.org>; Mon, 23 May 2022 22:14:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232426AbiEWUKw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 23 May 2022 16:10:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40254 "EHLO
+        id S229823AbiEWWOH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 23 May 2022 18:14:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231876AbiEWUKv (ORCPT
+        with ESMTP id S229697AbiEWWOH (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 23 May 2022 16:10:51 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A44985B3;
-        Mon, 23 May 2022 13:10:50 -0700 (PDT)
-Received: from [192.168.100.1] ([82.142.8.70]) by mrelayeu.kundenserver.de
- (mreue010 [213.165.67.103]) with ESMTPSA (Nemesis) id
- 1McGp2-1nInAW3hzo-00cgOT; Mon, 23 May 2022 22:10:37 +0200
-Message-ID: <5caac943-5435-8603-9e84-a4da3792df1b@vivier.eu>
-Date:   Mon, 23 May 2022 22:10:31 +0200
+        Mon, 23 May 2022 18:14:07 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CCD6E8F7
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 23 May 2022 15:14:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1653344046; x=1684880046;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=bNUv16OWqdaHM6iDjHJExfOikFQGYdL/36yNw56fw4w=;
+  b=SBrKos6M1dnetWmK8YaOOzyKUeYvvpjN4EJ81Xt2f/AEAjPElmhH3XQL
+   hWe+VJGGp080o/sOZEvFJIR5kdsK1PGYGbW0/T708xj9ItTORtO+9PP2B
+   UzFAs3LpNXQobRxa3cq+MLCmRYw3hFmPd4l8CkMlgyS8dkZ2WqKvHFyYk
+   eTgT1uHlOg5JJwNSI8qQSHsaRPY9DeXJ42DsbAUZwCl80oCffJB+mATgQ
+   FH3HZxkhH28/3J0kxxWpXtx9RU1t5LgaUR4yh7ZizNW5Fx2umxZokp4Iw
+   FbAhfr1L9LXgzqRPbjByS5Zn+2UKTHIeIIft2dFmqVvKkDH6dORPbbYRw
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10356"; a="273367196"
+X-IronPort-AV: E=Sophos;i="5.91,247,1647327600"; 
+   d="scan'208";a="273367196"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 May 2022 15:14:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,247,1647327600"; 
+   d="scan'208";a="608424912"
+Received: from lkp-server01.sh.intel.com (HELO db63a1be7222) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 23 May 2022 15:14:04 -0700
+Received: from kbuild by db63a1be7222 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1ntGJP-0001TY-FI;
+        Mon, 23 May 2022 22:14:03 +0000
+Date:   Tue, 24 May 2022 06:13:58 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 67e3a731eab11bc68822924b983a6a981138c47c
+Message-ID: <628c0726.zJDViL/r9Zzp7UXn%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH next] m68k: virt: Switch to new sys-off handler API
-Content-Language: fr
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        noreply@ellerman.id.au
-References: <20220523175520.949681-1-geert@linux-m68k.org>
-From:   Laurent Vivier <laurent@vivier.eu>
-In-Reply-To: <20220523175520.949681-1-geert@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:vn8NH23Al85GwMr6Orne2SQ3M7HJm/sUBeSE1AA3PXgBPLDBX+z
- lXy44bkYTekDYTqhi1KFHzjdUoNH3rZF1O619QP1qbhLnloVV9HdTcfXGqtWOfsGEc8zWWy
- v8hcImjvtyU+ohKFTO9m6TclEdIRy1iAw4PY+mqFF7cubJ68bKYtg+/im/kaC+RQKXoUDhi
- +ibXUVxkpmTbOGWRpOUKQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:AZ3WBmima6M=:Yv9KISoh5uRE5Qe7VoRdff
- LBYWvxWz07+au4lExyKwj4l2H21xF4iB/toMXmhElxfg3BJc2VEZRB2d84DttKX1Z0ouwn025
- qdnYbkmYnb8nRoL4OUHBJwUMRnfcnU2arkmWes3IxHs5+5ldUPmufCqzf1085wvpd7Khiyl7p
- irEOvD/wU3SyNH5/MmWsjvOubsCxidSDZKmU70hWxkyYlOqrZpoFz4NMAHyPjsEvzG4+f67Y9
- 7Kimju9mtc4xK4xodOLmSUCHoAYZvpy3H9v0mz24C3gZc8zGy2bnn4h/pF6+ergzG/SSui85X
- zsyfftoL/aw4Yto1kaDbeY7TUo6WpfHi9CppiRjJYSJlkNvFSUmTRa0CSD4G2M09izaKivI0B
- zZ3vARxb0sAOPquZiAuEFh5EMhe+zaSirq0o0pnELcRo7LRjuCURfaPgoQgIIM0cF4DASMwwu
- 8gY2mvBg5E19e9X5W5y6bSCf1Yhqr5sr/RLbio6g40iCgQOTfXIWmKgycWRSXM0n2zQf+6Nfg
- /r40fDBXNELdSzrEbVJEHaktkYX3aKRCqE/L3W34h2iAkny3CSo/2qPqkX7Z7eovb0iPATalk
- 9I+L/7U4Nl/tsG0fkUKP4aSwoaH3Zwxqlw2Qdl7fDPYpylp9Kqw2kzK3GoXkFf2QquZHYtllM
- mD3iVFeHLsRspcK8frQXbLvB+idL6zQQD/vzHDq5BxsXzDoiU1785Djm+exIyylJr0pZ3TXM5
- V+XkITzbA1byz7JwwGi/K54aP59IcbCMlKJF5Q==
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Le 23/05/2022 à 19:55, Geert Uytterhoeven a écrit :
-> On m68k with CONFIG_VIRT=y (e.g. virt_defconfig or allmodconfig):
-> 
->      arch/m68k/virt/config.c: In function ‘config_virt’:
->      arch/m68k/virt/config.c:129:2: error: ‘mach_power_off’ undeclared (first use in this function); did you mean ‘pm_power_off’?
->        129 |  mach_power_off = virt_halt;
-> 	  |  ^~~~~~~~~~~~~~
-> 	  |  pm_power_off
-> 
-> Commit 05d51e42df06f021 ("m68k: Introduce a virtual m68k machine")
-> introduced a new user of mach_power_off.
-> Convert it to the new sys-off handler API, too.
-> 
-> Reported-by: noreply@ellerman.id.au
-> Fixes: f0f7e5265b3b37b0 ("m68k: Switch to new sys-off handler API")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
->   arch/m68k/virt/config.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/m68k/virt/config.c b/arch/m68k/virt/config.c
-> index 68d29c8b87e18840..632ba200ad425245 100644
-> --- a/arch/m68k/virt/config.c
-> +++ b/arch/m68k/virt/config.c
-> @@ -1,5 +1,6 @@
->   // SPDX-License-Identifier: GPL-2.0
->   
-> +#include <linux/reboot.h>
->   #include <linux/serial_core.h>
->   #include <clocksource/timer-goldfish.h>
->   
-> @@ -126,5 +127,6 @@ void __init config_virt(void)
->   	mach_get_model = virt_get_model;
->   	mach_reset = virt_reset;
->   	mach_halt = virt_halt;
-> -	mach_power_off = virt_halt;
-> +
-> +	register_platform_power_off(virt_halt);
->   }
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 67e3a731eab11bc68822924b983a6a981138c47c  Merge tag 'v5.18'
 
+elapsed time: 726m
 
-Reviewed-by: Laurent Vivier <laurent@vivier.eu>
+configs tested: 112
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm64                               defconfig
+arm64                            allyesconfig
+arm                              allmodconfig
+arm                                 defconfig
+arm                              allyesconfig
+mips                     decstation_defconfig
+sh                          r7785rp_defconfig
+sh                          lboxre2_defconfig
+um                               alldefconfig
+arm                        realview_defconfig
+sh                            titan_defconfig
+arc                        nsimosci_defconfig
+xtensa                           alldefconfig
+sh                          polaris_defconfig
+csky                             alldefconfig
+arm                        shmobile_defconfig
+ia64                                defconfig
+ia64                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+nios2                               defconfig
+arc                              allyesconfig
+csky                                defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                                defconfig
+s390                             allmodconfig
+parisc                              defconfig
+parisc64                            defconfig
+parisc                           allyesconfig
+s390                             allyesconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+i386                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+x86_64               randconfig-a003-20220523
+x86_64               randconfig-a006-20220523
+x86_64               randconfig-a001-20220523
+x86_64               randconfig-a004-20220523
+x86_64               randconfig-a002-20220523
+x86_64               randconfig-a005-20220523
+i386                 randconfig-a001-20220523
+i386                 randconfig-a006-20220523
+i386                 randconfig-a002-20220523
+i386                 randconfig-a005-20220523
+i386                 randconfig-a003-20220523
+i386                 randconfig-a004-20220523
+arc                  randconfig-r043-20220523
+s390                 randconfig-r044-20220522
+riscv                randconfig-r042-20220522
+arc                  randconfig-r043-20220522
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+riscv                            allmodconfig
+riscv                            allyesconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                                  kexec
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+x86_64                         rhel-8.3-kunit
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
+x86_64                           rhel-8.3-syz
+
+clang tested configs:
+arm                             mxs_defconfig
+powerpc                    ge_imp3a_defconfig
+powerpc                 mpc8560_ads_defconfig
+arm                        magician_defconfig
+arm                         orion5x_defconfig
+arm                        mvebu_v5_defconfig
+powerpc                     kmeter1_defconfig
+x86_64               randconfig-a014-20220523
+x86_64               randconfig-a013-20220523
+x86_64               randconfig-a012-20220523
+x86_64               randconfig-a015-20220523
+x86_64               randconfig-a011-20220523
+x86_64               randconfig-a016-20220523
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+i386                 randconfig-a014-20220523
+i386                 randconfig-a011-20220523
+i386                 randconfig-a013-20220523
+i386                 randconfig-a016-20220523
+i386                 randconfig-a012-20220523
+i386                 randconfig-a015-20220523
+hexagon              randconfig-r045-20220523
+hexagon              randconfig-r045-20220522
+hexagon              randconfig-r041-20220523
+hexagon              randconfig-r041-20220522
+riscv                randconfig-r042-20220523
+s390                 randconfig-r044-20220523
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
