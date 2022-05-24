@@ -2,115 +2,126 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A79AC433EF
-	for <linux-m68k@archiver.kernel.org>; Tue, 24 May 2022 07:49:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5365DC433EF
+	for <linux-m68k@archiver.kernel.org>; Tue, 24 May 2022 07:59:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235097AbiEXHtn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 24 May 2022 03:49:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48958 "EHLO
+        id S235046AbiEXH7I (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 24 May 2022 03:59:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbiEXHtm (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 24 May 2022 03:49:42 -0400
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F797994CF;
-        Tue, 24 May 2022 00:49:41 -0700 (PDT)
-Received: by mail-qt1-f175.google.com with SMTP id g3so14203828qtb.7;
-        Tue, 24 May 2022 00:49:41 -0700 (PDT)
+        with ESMTP id S235509AbiEXH6z (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 24 May 2022 03:58:55 -0400
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4116487A05
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 24 May 2022 00:58:54 -0700 (PDT)
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 11BFF3F1EB
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 24 May 2022 07:58:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1653379133;
+        bh=KqPEz/cb0PgfDboCOUqKrulSScR7EnJ4x+RLTF0OlLc=;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version;
+        b=npxNaCP1s5d5QtY4o4enA5b/sj1svKoH/x9xoC7q68Z1Ff7991uBQ7ag8klIBCgO7
+         ejoxdTvAeQzPI32fkc79/r0NtqXP7qLUMkEkidboIBt/UJ1eg1sr43RL4PPBXYyp2i
+         iYd5HDHbrj63yCQA8bM2JQR8pHUehpoK7QclZjbJAl6QUYfx8UQObj/ejanBTrfhln
+         7JOOrrhhZmzEJRsXqoZzSaHG5//9MouPoS13FiMi5BdnUmbqmq9tP53KOr+vlYVu1g
+         wL0wH2FGYZO0Zm8QxDG6AGPhI6nwG+nnKHX8HSkTXOJst8Gv/Uh154wewqXkX7z8/p
+         Q7VRj9/OEYs5A==
+Received: by mail-ed1-f72.google.com with SMTP id p13-20020aa7c4cd000000b0042ab847aba8so12204730edr.0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 24 May 2022 00:58:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eFuesu4eXOzVy5OiyTe49D1dgIorHEfZWrHJUHl/IrQ=;
-        b=5moe+8LIVlj0hQKkYp8fdAtqM2S3lgWdW/pw7q2djMV1xtEUqwInMtxpjWG0EaGgZK
-         87P3d7ixl3cAwB8kyXd7xOI1wKVsmdvCrgeV6s+HxRl+m5C76zJbTtB3hRmfUIIW+l8g
-         BygAzeEtubjjBIAebV0Rw0oHyUghXlYiXYHGMT3vYDGhLNgEidK7q7k52xnKDgFg2Bxx
-         0dlvD3u4SBqqmZgpOXnFk7kC3y5K+KIqCi/bt9ZoDowQ4/cty5+k1UUg3sfg1qvT2Jgl
-         +zx6qDRIPNNlXxDaXyAxxGCJX7YKOcEr7Fg3H+lniAqmiw8s1/iUbVlhGRU3u/ajIzJh
-         NDkQ==
-X-Gm-Message-State: AOAM533f0gy/FHs7Sws2drAoSV2uTcMOoeP/oDmUhtfrE2/CHbQMjD5Q
-        /AvcJs7CYnrMgrEKpYV26Y4IhFkaOoCLkP7o
-X-Google-Smtp-Source: ABdhPJwF2Akp7K9TnywwQv70mnuOh+hFX8SnrDepWBxlTKCf70T+3+cPUlmlVGq+s04YURznEvnKIQ==
-X-Received: by 2002:a05:622a:1389:b0:2f9:46b4:2990 with SMTP id o9-20020a05622a138900b002f946b42990mr217397qtk.237.1653378580567;
-        Tue, 24 May 2022 00:49:40 -0700 (PDT)
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
-        by smtp.gmail.com with ESMTPSA id g1-20020a379d01000000b0069fc13ce1fesm5623169qke.47.2022.05.24.00.49.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 May 2022 00:49:40 -0700 (PDT)
-Received: by mail-yb1-f177.google.com with SMTP id z7so8208377ybf.7;
-        Tue, 24 May 2022 00:49:40 -0700 (PDT)
-X-Received: by 2002:a05:6902:120e:b0:634:6f29:6b84 with SMTP id
- s14-20020a056902120e00b006346f296b84mr25491340ybu.604.1653378579929; Tue, 24
- May 2022 00:49:39 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=KqPEz/cb0PgfDboCOUqKrulSScR7EnJ4x+RLTF0OlLc=;
+        b=o6Q6nw2L0k9vRulV0HucB+aNBGnfV0HkL2xPKFXD6K774nO3pbC7W+RjGm4y58rGSI
+         fGFfk4tZ0QtLQGx6Oi/UM3AHcyOM4ASKlZVJOrQxZxM1QrXSAcb/Zuf47U5Fqd/sS88e
+         vSvpuWhyV3tXuehOulzg/eaBOxkmU3utmYgrlcLOndc9ImsY9moOOd07HNZL2AEg/04h
+         t8KgyZdJEeuAgfnjUwZOGtFJmHEOCh6mciwyiaiEgGeVwj2Fz5y7w8fNFdBXiHvEITvU
+         sjZS6/feoEVOOggv80HdUIuHGzw7pK3/j2tZ84SuWeCRObmGbSZ+GecDa1aFQMt5ysWp
+         yIFw==
+X-Gm-Message-State: AOAM531nv6wMHaPtlogHxX+oaWsE2XBn8x93rkHLN08d71XkS0kf2F+x
+        VLjGZiuaeHNcUqWbdb5IM9mKjO9bNs4Xx5GxnksHZ8HKt/jKuJT0UWQ1WH+P9CmcuBgs7KsPIBm
+        +fFCCo7a6znnKcW4PmRGXktd3od2vliaT7FJv6uFTmDhw+g==
+X-Received: by 2002:a17:907:60cf:b0:6f4:4240:849 with SMTP id hv15-20020a17090760cf00b006f442400849mr24064770ejc.566.1653379132699;
+        Tue, 24 May 2022 00:58:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzab5I+L4D1VCmrKk/hMk+0LVcWlgoH6zQPNB5toxX1/vqvgTzC/mMfYpUMFmZxRqH/bwzTmA==
+X-Received: by 2002:a17:907:60cf:b0:6f4:4240:849 with SMTP id hv15-20020a17090760cf00b006f442400849mr24064756ejc.566.1653379132439;
+        Tue, 24 May 2022 00:58:52 -0700 (PDT)
+Received: from gollum.fritz.box ([194.191.244.86])
+        by smtp.gmail.com with ESMTPSA id r17-20020a056402019100b0042abf2affebsm9142442edv.67.2022.05.24.00.58.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 May 2022 00:58:52 -0700 (PDT)
+From:   Juerg Haefliger <juerg.haefliger@canonical.com>
+X-Google-Original-From: Juerg Haefliger <juergh@canonical.com>
+To:     geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org
+Cc:     linux-kernel@vger.kernel.org,
+        Juerg Haefliger <juergh@canonical.com>
+Subject: [PATCH 1/3] m68k: Kconfig.cpu: Fix indentation and add endif comments
+Date:   Tue, 24 May 2022 09:58:46 +0200
+Message-Id: <20220524075848.21684-2-juergh@canonical.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20220524075848.21684-1-juergh@canonical.com>
+References: <20220524075848.21684-1-juergh@canonical.com>
 MIME-Version: 1.0
-References: <20220518065639.2432213-1-gerg@linux-m68k.org> <20220518065639.2432213-2-gerg@linux-m68k.org>
- <CAMuHMdXTn6ysmjg5cr2RvYG=8f3azC1B4v=via0ePua_hv6TgA@mail.gmail.com>
-In-Reply-To: <CAMuHMdXTn6ysmjg5cr2RvYG=8f3azC1B4v=via0ePua_hv6TgA@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 24 May 2022 09:49:28 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdV+k4kGv+vKSGNnwhKCk3eYv5uQd=UgNJQ1HVYxuOUv5g@mail.gmail.com>
-Message-ID: <CAMuHMdV+k4kGv+vKSGNnwhKCk3eYv5uQd=UgNJQ1HVYxuOUv5g@mail.gmail.com>
-Subject: Re: [PATCH 1/3] m68knommu: fix undefined reference to `mach_get_rtc_pll'
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Greg,
+The convention for indentation seems to be a single tab. Help text is
+further indented by an additional two whitespaces. Fix the lines that
+violate these rules.
 
-On Tue, May 24, 2022 at 9:46 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Wed, May 18, 2022 at 8:56 AM Greg Ungerer <gerg@linux-m68k.org> wrote:
-> > Configuring for a nommu classic m68k target and enabling the generic rtc
-> > driver (CONFIG_RTC_DRV_GENERIC) will result in the following compile
-> > error:
-> >
-> >    m68k-linux-ld: arch/m68k/kernel/time.o: in function `rtc_ioctl':
-> >    time.c:(.text+0x82): undefined reference to `mach_get_rtc_pll'
-> >    m68k-linux-ld: time.c:(.text+0xbc): undefined reference to `mach_set_rtc_pll'
-> >    m68k-linux-ld: time.c:(.text+0xf4): undefined reference to `mach_set_rtc_pll'
-> >
-> > There is no definitions of "mach_set_rtc_pll" and "mach_get_rtc_pll" in the
-> > nommu code paths. Move these definitions and the associated "mach_hwclk",
-> > so that they are around their use case in time.c. This means they will
-> > always be defined on the builds that require them, and not on those that
-> > cannot use them - such as ColdFire (both with and without MMU enabled).
-> >
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
->
-> > --- a/arch/m68k/kernel/time.c
-> > +++ b/arch/m68k/kernel/time.c
-> > @@ -82,6 +86,11 @@ void read_persistent_clock64(struct timespec64 *ts)
-> >  #endif
-> >
-> >  #if IS_ENABLED(CONFIG_RTC_DRV_GENERIC)
-> > +int (*mach_get_rtc_pll)(struct rtc_pll_info *);
-> > +int (*mach_set_rtc_pll)(struct rtc_pll_info *);
-> > +EXPORT_SYMBOL(mach_get_rtc_pll);
-> > +EXPORT_SYMBOL(mach_set_rtc_pll);
->
-> Oops, this causes build failures for Q40 with CONFIG_RTC_DRV_GENERIC=n,
-> as arch/m68k/q40/config.c uses mach_]gs]et_rtc_pll() unconditionally.
+While add it, add missing trailing endif comments and squeeze multiple
+empty lines.
 
-I think the simplest solution is to move these up, next to mach_hwclk.
+Signed-off-by: Juerg Haefliger <juergh@canonical.com>
+---
+ arch/m68k/Kconfig.cpu | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
->
-> > +
-> >  static int rtc_generic_get_time(struct device *dev, struct rtc_time *tm)
-> >  {
-> >         mach_hwclk(0, tm);
+diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+index 16ea9a67723c..6f2ec6f07897 100644
+--- a/arch/m68k/Kconfig.cpu
++++ b/arch/m68k/Kconfig.cpu
+@@ -155,7 +155,7 @@ config M520x
+ 	select COLDFIRE_PIT_TIMER
+ 	select HAVE_CACHE_SPLIT
+ 	help
+-	   Freescale Coldfire 5207/5208 processor support.
++	  Freescale Coldfire 5207/5208 processor support.
+ 
+ config M523x
+ 	bool "MCF523x"
+@@ -322,7 +322,6 @@ config COLDFIRE_SLTIMERS
+ 
+ endif # COLDFIRE
+ 
+-
+ comment "Processor Specific Options"
+ 
+ config M68KFPU_EMU
+@@ -522,7 +521,7 @@ config CACHE_BOTH
+ 	  Split the ColdFire CPU cache, and use half as an instruction cache
+ 	  and half as a data cache.
+ endchoice
+-endif
++endif # HAVE_CACHE_SPLIT
+ 
+ if HAVE_CACHE_CB
+ choice
+@@ -539,4 +538,4 @@ config CACHE_COPYBACK
+ 	help
+ 	  The ColdFire CPU cache is set into Copy-back mode.
+ endchoice
+-endif
++endif # HAVE_CACHE_CB
+-- 
+2.32.0
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
