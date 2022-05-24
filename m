@@ -2,140 +2,110 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E023C433FE
-	for <linux-m68k@archiver.kernel.org>; Tue, 24 May 2022 13:43:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1909FC433F5
+	for <linux-m68k@archiver.kernel.org>; Tue, 24 May 2022 14:02:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237897AbiEXNna (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 24 May 2022 09:43:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59530 "EHLO
+        id S238033AbiEXOCK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 24 May 2022 10:02:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236080AbiEXNn0 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 24 May 2022 09:43:26 -0400
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF3077F11
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 24 May 2022 06:43:26 -0700 (PDT)
-Received: by mail-yb1-f179.google.com with SMTP id q184so2069546ybg.11
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 24 May 2022 06:43:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gF0TUV/f1EYPh7LzpbylOlyjLRvO0rS2Z8aSd7vESdM=;
-        b=VqEwWxQZ3LYuqgKZyUHzQdKYWShdT6SgmwIzAZqQHIXtzq+ANe0KAPptQwlrF4HenS
-         Dgzt63ukfMOat4OzDigrz9tTyUThi7C1A5eLmqdjBaNDo56Nh9rCu3VXCDCbJmlGIIms
-         PH1DlXApzXEdoht7XhJZBL/hA2+f3XMBd8ADwK2EU3dZt99tx5KdzsEJaDywDIGIMqB1
-         All9EuhdC88kgzaGIcWqcJVBbH5Njcy0ItrCOkXQf9TKE5fOSaiGiKFopLLcSFA5r0Ue
-         0DJTy276ZZjRgdFXkIvuLuNk+9wloWLkdjQC2C2dow2isgG56OUxURcobo1ra7pRAZab
-         0OwA==
-X-Gm-Message-State: AOAM531X+8o8JQar8AvbNFvzS/QB6i8vWbpnnQiOKDsCWw6SKlIZKj4K
-        EYzcfyaxeaNsKZK52WpFiwqTCSEeINCy0HRLLrw=
-X-Google-Smtp-Source: ABdhPJxrx+4PyTpojs6STJF90N5O3lVotlMS1F5ewlefJhltMPRleCLQ6INTFZNdlhzglSskVKU04pl4oHllKVWle+Q=
-X-Received: by 2002:a05:6902:100a:b0:64f:44ec:13ff with SMTP id
- w10-20020a056902100a00b0064f44ec13ffmr24477246ybt.137.1653399805346; Tue, 24
- May 2022 06:43:25 -0700 (PDT)
+        with ESMTP id S231281AbiEXOCH (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 24 May 2022 10:02:07 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718503FBCA;
+        Tue, 24 May 2022 07:02:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1877AB818C4;
+        Tue, 24 May 2022 14:02:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0B8CC385AA;
+        Tue, 24 May 2022 14:02:02 +0000 (UTC)
+Message-ID: <3206237b-4ee2-8707-6de9-87cfb226c87f@linux-m68k.org>
+Date:   Wed, 25 May 2022 00:01:59 +1000
 MIME-Version: 1.0
-References: <20220509233235.995021-1-dmitry.osipenko@collabora.com>
- <CAJZ5v0jhWs-8ChHddebTZcaH6kA05sLEMsXM9Op7kHWAQDxeYA@mail.gmail.com> <CAMuHMdVbWpgubaA0V_tau3O=czAb3RQV9AwJsoQ+LWjf-wjMkA@mail.gmail.com>
-In-Reply-To: <CAMuHMdVbWpgubaA0V_tau3O=czAb3RQV9AwJsoQ+LWjf-wjMkA@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 24 May 2022 15:43:14 +0200
-Message-ID: <CAJZ5v0jar8GONkAZfLuRpKHuYRu1Y_0AecmGxayM00AHCJkYVg@mail.gmail.com>
-Subject: Re: [PATCH v8 00/27] Introduce power-off+restart call chain API
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH 1/3] m68knommu: fix undefined reference to
+ `mach_get_rtc_pll'
+Content-Language: en-US
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Lee Jones <lee.jones@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+Cc:     Linux/m68k <linux-m68k@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        xen-devel@lists.xenproject.org,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Arnd Bergmann <arnd@arndb.de>,
+        kernel test robot <lkp@intel.com>
+References: <20220518065639.2432213-1-gerg@linux-m68k.org>
+ <20220518065639.2432213-2-gerg@linux-m68k.org>
+ <CAMuHMdXTn6ysmjg5cr2RvYG=8f3azC1B4v=via0ePua_hv6TgA@mail.gmail.com>
+ <CAMuHMdV+k4kGv+vKSGNnwhKCk3eYv5uQd=UgNJQ1HVYxuOUv5g@mail.gmail.com>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <CAMuHMdV+k4kGv+vKSGNnwhKCk3eYv5uQd=UgNJQ1HVYxuOUv5g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
 Hi Geert,
 
-On Mon, May 23, 2022 at 8:08 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Rafael,
->
-> On Wed, May 18, 2022 at 4:46 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> > On Tue, May 10, 2022 at 1:33 AM Dmitry Osipenko
-> > <dmitry.osipenko@collabora.com> wrote:
->
-> > >   m68k: Switch to new sys-off handler API
->
-> Sorry, I didn't realize this was going to interact with the new m68k
-> virtual machine support, which is included in the m68k pull request
-> for v5.19.
->
-> > However, I'm going to send a pull request with it in the second half
-> > of the merge window, after the majority of the other changes in the
-> > subsystems touched by it have been integrated.
->
-> And presumably you will have to merge in v5.19-rc1, too?
+On 24/5/22 17:49, Geert Uytterhoeven wrote:
+> Hi Greg,
+> 
+> On Tue, May 24, 2022 at 9:46 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>> On Wed, May 18, 2022 at 8:56 AM Greg Ungerer <gerg@linux-m68k.org> wrote:
+>>> Configuring for a nommu classic m68k target and enabling the generic rtc
+>>> driver (CONFIG_RTC_DRV_GENERIC) will result in the following compile
+>>> error:
+>>>
+>>>     m68k-linux-ld: arch/m68k/kernel/time.o: in function `rtc_ioctl':
+>>>     time.c:(.text+0x82): undefined reference to `mach_get_rtc_pll'
+>>>     m68k-linux-ld: time.c:(.text+0xbc): undefined reference to `mach_set_rtc_pll'
+>>>     m68k-linux-ld: time.c:(.text+0xf4): undefined reference to `mach_set_rtc_pll'
+>>>
+>>> There is no definitions of "mach_set_rtc_pll" and "mach_get_rtc_pll" in the
+>>> nommu code paths. Move these definitions and the associated "mach_hwclk",
+>>> so that they are around their use case in time.c. This means they will
+>>> always be defined on the builds that require them, and not on those that
+>>> cannot use them - such as ColdFire (both with and without MMU enabled).
+>>>
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+>>
+>>> --- a/arch/m68k/kernel/time.c
+>>> +++ b/arch/m68k/kernel/time.c
+>>> @@ -82,6 +86,11 @@ void read_persistent_clock64(struct timespec64 *ts)
+>>>   #endif
+>>>
+>>>   #if IS_ENABLED(CONFIG_RTC_DRV_GENERIC)
+>>> +int (*mach_get_rtc_pll)(struct rtc_pll_info *);
+>>> +int (*mach_set_rtc_pll)(struct rtc_pll_info *);
+>>> +EXPORT_SYMBOL(mach_get_rtc_pll);
+>>> +EXPORT_SYMBOL(mach_set_rtc_pll);
+>>
+>> Oops, this causes build failures for Q40 with CONFIG_RTC_DRV_GENERIC=n,
+>> as arch/m68k/q40/config.c uses mach_]gs]et_rtc_pll() unconditionally.
+> 
+> I think the simplest solution is to move these up, next to mach_hwclk.
 
-I will merge this series on top of the Linus' merges of my pull
-requests sent yesterday (assuming that he pulls them, that is).
+Yes, that looks to be the easiest solution.
+New patch coming up.
 
-> I've sent a fix.  It should appear at
-> https://lore.kernel.org/r/20220523175520.949681-1-geert@linux-m68k.org
-> soon.
->
-> Can you please include that in your PR?
+Regards
+Greg
 
-I will.
 
-Thanks!
+>>> +
+>>>   static int rtc_generic_get_time(struct device *dev, struct rtc_time *tm)
+>>>   {
+>>>          mach_hwclk(0, tm);
+> 
+> Gr{oetje,eeting}s,
+> 
+>                          Geert
+> 
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                  -- Linus Torvalds
