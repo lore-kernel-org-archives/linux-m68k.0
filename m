@@ -2,59 +2,44 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B0AFC433EF
-	for <linux-m68k@archiver.kernel.org>; Wed, 25 May 2022 08:04:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CDEEFC433F5
+	for <linux-m68k@archiver.kernel.org>; Wed, 25 May 2022 11:11:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbiEYIEL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 25 May 2022 04:04:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41300 "EHLO
+        id S239019AbiEYLLs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 25 May 2022 07:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbiEYIEK (ORCPT
+        with ESMTP id S236920AbiEYLLq (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 25 May 2022 04:04:10 -0400
-Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 632FB762A4
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 25 May 2022 01:04:09 -0700 (PDT)
-Received: by mail-qv1-f43.google.com with SMTP id e20so15902647qvr.6
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 25 May 2022 01:04:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AP6YAmjuideizUL7mupGqzQ5PgkASmXHUBF+HT7ISso=;
-        b=Jh+PDeUY4aDVxi1oYRRC7ZV3gboswVxx4cKS4cSB7qMdPYwFze3tobueas2p9AWA1N
-         pcToSXNaacmqDUEopMltUkWk4QHhTe9e3aBPj7g3rdnrc+xoE33oM3KbNs7BfyHe4R7a
-         ewlVFJ0uJG2jMf3HaBesmABlzFRwNtyAb5R03MiaqnkZxbMbloxe99x6qn0fBMTtwjJZ
-         mm1HJ1aj2DW5pmhmrZ+YMbrdLXz8kvXS6f77fyQqRfS1QgfCXrC4DrLGC7TtdwfBu+Uj
-         nFlqwQuI/QHwCXzguqKyPSn2youbHvsEEHCADQYEvdcqDoGI1LEyOKRoUAQc3XVM+uhp
-         RPOw==
-X-Gm-Message-State: AOAM532YqzIln6LzfAcNpY5Ygdpxvpy9b25MbvHhuXqliL4rU/W8/NtW
-        R1NoCbJMt3kAKeje0gEx+fnWnvFTqX6pRg==
-X-Google-Smtp-Source: ABdhPJw6pqwJABYzi7nwdldLFxoEJywA3UvAppr/MxNmoNOBJp72F8V4Be6HoFvZmhrNMDIpHJ1mlQ==
-X-Received: by 2002:a05:6214:29e4:b0:45b:f666:d3d3 with SMTP id jv4-20020a05621429e400b0045bf666d3d3mr25369722qvb.120.1653465848217;
-        Wed, 25 May 2022 01:04:08 -0700 (PDT)
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
-        by smtp.gmail.com with ESMTPSA id a4-20020ac844a4000000b002f8f406338fsm922545qto.42.2022.05.25.01.04.05
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 May 2022 01:04:06 -0700 (PDT)
-Received: by mail-yb1-f176.google.com with SMTP id i11so34930847ybq.9
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 25 May 2022 01:04:05 -0700 (PDT)
-X-Received: by 2002:a05:6902:120e:b0:634:6f29:6b84 with SMTP id
- s14-20020a056902120e00b006346f296b84mr30228977ybu.604.1653465845434; Wed, 25
- May 2022 01:04:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220524234531.1949-1-peterx@redhat.com>
-In-Reply-To: <20220524234531.1949-1-peterx@redhat.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 25 May 2022 10:03:53 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWpCUGXn=KzfpfZqResRR41XkBKZiQQVo_O_Hq+KMcDKg@mail.gmail.com>
-Message-ID: <CAMuHMdWpCUGXn=KzfpfZqResRR41XkBKZiQQVo_O_Hq+KMcDKg@mail.gmail.com>
-Subject: Re: [PATCH v3] mm: Avoid unnecessary page fault retires on shared
- memory types
+        Wed, 25 May 2022 07:11:46 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A3CF25C46
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 25 May 2022 04:11:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=TTSfncRF4bwVxkeR+S4pHa2NuE5vU7NkHqU52imXoeo=; b=AZ7NLjulpP1WzqY4jAw9CJ6mzn
+        eNxn6mITLdAkzreesFIusYyJANkaOvbZVslHzJxDDqo/jW9prJ6mSOYajnNAsWgSTZTPCGe4Y+H+t
+        Q7b5K2i3OxODvn+feDcYZuuvagMcqlznlm2xJ6e8wPUzB4c/WkijGr50Z8D32ZlBmwWuMwGQbue1E
+        mrsCyjPGVmj7xf/0/rnV0zIseeyVAHCeyTCYTi0ZFmZwkk1CWC0IMPFglArv51u64lwHpRP8/QuNm
+        TypGtB34O3uGaPoduTA8k7e4jOZswva+y2onGqiOIb4Z5GAtPEnJDGpyLSzDy3ZlKvUO8MvNVaZm2
+        4u9mbK6A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ntouF-001b5f-PS; Wed, 25 May 2022 11:10:25 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5B9C13002AF;
+        Wed, 25 May 2022 13:10:17 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 374CD207688E7; Wed, 25 May 2022 13:10:17 +0200 (CEST)
+Date:   Wed, 25 May 2022 13:10:17 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
 To:     Peter Xu <peterx@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         Richard Henderson <rth@twiddle.net>,
         David Hildenbrand <david@redhat.com>,
         Matt Turner <mattst88@gmail.com>,
@@ -62,7 +47,7 @@ Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Michal Simek <monstr@monstr.eu>,
         Russell King <linux@armlinux.org.uk>,
         Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-riscv@lists.infradead.org,
         Alexander Gordeev <agordeev@linux.ibm.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         Jonas Bonn <jonas@southpole.se>, Will Deacon <will@kernel.org>,
@@ -75,7 +60,6 @@ Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Heiko Carstens <hca@linux.ibm.com>,
         Chris Zankel <chris@zankel.net>,
-        Peter Zijlstra <peterz@infradead.org>,
         Alistair Popple <apopple@nvidia.com>,
         linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
         Vlastimil Babka <vbabka@suse.cz>,
@@ -101,8 +85,9 @@ Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
         linux-um@lists.infradead.org, linux-alpha@vger.kernel.org,
         Johannes Berg <johannes@sipsolutions.net>,
-        linux-ia64@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
-        Guo Ren <guoren@kernel.org>,
+        linux-ia64@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Dinh Nguyen <dinguyen@kernel.org>, Guo Ren <guoren@kernel.org>,
         linux-snps-arc@lists.infradead.org,
         Hugh Dickins <hughd@google.com>, Rich Felker <dalias@libc.org>,
         Andy Lutomirski <luto@kernel.org>,
@@ -113,73 +98,67 @@ Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
         linux-parisc@vger.kernel.org,
         "David S . Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v3] mm: Avoid unnecessary page fault retires on shared
+ memory types
+Message-ID: <Yo4OmaNW5YUrGE0S@hirez.programming.kicks-ass.net>
+References: <20220524234531.1949-1-peterx@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220524234531.1949-1-peterx@redhat.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, May 25, 2022 at 1:45 AM Peter Xu <peterx@redhat.com> wrote:
+On Tue, May 24, 2022 at 07:45:31PM -0400, Peter Xu wrote:
 > I observed that for each of the shared file-backed page faults, we're very
 > likely to retry one more time for the 1st write fault upon no page.  It's
 > because we'll need to release the mmap lock for dirty rate limit purpose
 > with balance_dirty_pages_ratelimited() (in fault_dirty_shared_page()).
->
+> 
 > Then after that throttling we return VM_FAULT_RETRY.
->
+> 
 > We did that probably because VM_FAULT_RETRY is the only way we can return
 > to the fault handler at that time telling it we've released the mmap lock.
->
+> 
 > However that's not ideal because it's very likely the fault does not need
 > to be retried at all since the pgtable was well installed before the
 > throttling, so the next continuous fault (including taking mmap read lock,
 > walk the pgtable, etc.) could be in most cases unnecessary.
->
+> 
 > It's not only slowing down page faults for shared file-backed, but also add
 > more mmap lock contention which is in most cases not needed at all.
->
+> 
 > To observe this, one could try to write to some shmem page and look at
 > "pgfault" value in /proc/vmstat, then we should expect 2 counts for each
 > shmem write simply because we retried, and vm event "pgfault" will capture
 > that.
->
+> 
 > To make it more efficient, add a new VM_FAULT_COMPLETED return code just to
 > show that we've completed the whole fault and released the lock.  It's also
 > a hint that we should very possibly not need another fault immediately on
 > this page because we've just completed it.
->
+> 
 > This patch provides a ~12% perf boost on my aarch64 test VM with a simple
 > program sequentially dirtying 400MB shmem file being mmap()ed and these are
 > the time it needs:
->
+> 
 >   Before: 650.980 ms (+-1.94%)
 >   After:  569.396 ms (+-1.38%)
->
+> 
 > I believe it could help more than that.
->
+> 
 > We need some special care on GUP and the s390 pgfault handler (for gmap
 > code before returning from pgfault), the rest changes in the page fault
 > handlers should be relatively straightforward.
->
+> 
 > Another thing to mention is that mm_account_fault() does take this new
 > fault as a generic fault to be accounted, unlike VM_FAULT_RETRY.
->
+> 
 > I explicitly didn't touch hmm_vma_fault() and break_ksm() because they do
 > not handle VM_FAULT_RETRY even with existing code, so I'm literally keeping
 > them as-is.
->
+> 
 > Signed-off-by: Peter Xu <peterx@redhat.com>
 
->  arch/m68k/mm/fault.c          |  4 ++++
-
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
