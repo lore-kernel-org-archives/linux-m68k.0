@@ -2,172 +2,101 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55AD0C433F5
-	for <linux-m68k@archiver.kernel.org>; Fri, 27 May 2022 10:46:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78EBFC4167D
+	for <linux-m68k@archiver.kernel.org>; Fri, 27 May 2022 12:07:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351160AbiE0Kqw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 27 May 2022 06:46:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50764 "EHLO
+        id S1352345AbiE0MHN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 27 May 2022 08:07:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344388AbiE0Kqi (ORCPT
+        with ESMTP id S1352605AbiE0MD4 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 27 May 2022 06:46:38 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F14F140DE
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 27 May 2022 03:46:37 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id q21so8023376ejm.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 27 May 2022 03:46:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VEAekRrz/FSY4pk4QnV3m6H5QVjhz8BFDYr0EcpVw1E=;
-        b=nXTl96gpCDbYy3bbmZHUFxanwBKanpTD5T3ye91nNt0S5DzRS50X+C3V5calou/Tbd
-         W3tp+Pa5ui5nyk/J9IilzxqUhKzX+QyGcukjZk0ELfa/RtKrZMaq9i+yE1j0RcYeHGEH
-         V+4RtLXDWPxnAymJMfcVpu0JZEZoxenwNXkmgyYKMQXGnN1Ls7NkOSx9TgW4IEazH0HS
-         TOy4lNsQjFRd71dz5D/Ux8BGGU+UgNurAc7P2zcBMC8bJFwbS5pJWekOq461oc+DsRDd
-         eh87WbfBiCTIu2NxwA+S3LoC7J0WxrnESI1Jt77XHjKjToAke3bka2tT28oXpFfiDYxk
-         GFbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=VEAekRrz/FSY4pk4QnV3m6H5QVjhz8BFDYr0EcpVw1E=;
-        b=OSaVrRWC6nCnPSTnzNd1CBIXYjyfz3hNJG5DZMB/BkdsGGyhAKc7rRI3pwnW/gPIG2
-         hjmJu7MwGjZebuyu5Up854qhW4n35RCy4jEoWN4ZQ/onN5v2GcIVt8Xd34BWRuKslGmY
-         jPAqiSOtv9lORwjFfYPoTHe3aLLxeJ5IkAaWxPoT3rG/BBFCR1Z8+nGBukNoN16Shuy3
-         ucNp8es9zGaBfDEXUD2mFxw8FhLIkkH0YCNJu2L3yep5keYoOtZn8XpcxoJPjzOCzzuj
-         XPTo+vNA/90xoVtoM9lcMl0B6P2CFSZlzXm0LnUOo4q7qXtunfSAX5KEqELq2JsJg+Xa
-         zB0g==
-X-Gm-Message-State: AOAM531yhZ4wx4E1P5UvL76yB6Pksf9ReeDofenX3FR/CeB88N5B8Osr
-        eDgVmLyH/v9mJci9xeks2N4=
-X-Google-Smtp-Source: ABdhPJyWn7wVchQLELsEVq6TA/gUzEaBn19VUAXtFTYBInhQr0sSQqMx29HcpQwhBHqmmOM8Z+iT0g==
-X-Received: by 2002:a17:907:7baa:b0:6fe:b3dc:2378 with SMTP id ne42-20020a1709077baa00b006feb3dc2378mr30766036ejc.266.1653648395645;
-        Fri, 27 May 2022 03:46:35 -0700 (PDT)
-Received: from gmail.com (563BA16F.dsl.pool.telekom.hu. [86.59.161.111])
-        by smtp.gmail.com with ESMTPSA id i20-20020a17090639d400b006fec1a73e48sm1320742eje.64.2022.05.27.03.46.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 May 2022 03:46:34 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Fri, 27 May 2022 12:46:31 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Richard Henderson <rth@twiddle.net>,
-        David Hildenbrand <david@redhat.com>,
-        Matt Turner <mattst88@gmail.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michal Simek <monstr@monstr.eu>,
-        Russell King <linux@armlinux.org.uk>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        linux-riscv@lists.infradead.org,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jonas Bonn <jonas@southpole.se>, Will Deacon <will@kernel.org>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        openrisc@lists.librecores.org, linux-s390@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-m68k@lists.linux-m68k.org,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Chris Zankel <chris@zankel.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        sparclinux@vger.kernel.org,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Stafford Horne <shorne@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>, x86@kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        linux-xtensa@linux-xtensa.org, Nicholas Piggin <npiggin@gmail.com>,
-        linux-sh@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
-        Borislav Petkov <bp@alien8.de>, linux-mips@vger.kernel.org,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Helge Deller <deller@gmx.de>, Vineet Gupta <vgupta@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-um@lists.infradead.org, linux-alpha@vger.kernel.org,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-ia64@vger.kernel.org,
+        Fri, 27 May 2022 08:03:56 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43571149166
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 27 May 2022 04:53:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1653652415; x=1685188415;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=ZtvwdBswObarSG+JCXhEU2uLIuCFq0FhxZEUfuA19u0=;
+  b=JkHtmSU14EYPemC5M4HQJJx9j/G/ZQU1yT9zaveePaTwWc4O0JWdDAfE
+   pneG/5C1mO8ytIuuErHVG38kE/5YSAmTd1cyRxVOQnH1cGnP0SRaJcvy9
+   4bmtMBYJh/TrOX2CZbwGEzsrdX6gJ3Rr9HK1E+0BRP0JuyEmD1Xfp3KC/
+   SBS0wo2jKbrM01rHxFjjLnbGI1bWGnhT7jh9R8tQHmif8jGwpLlziZhn3
+   ibq/JsMOPngsC7jiWfBdxat8is/o/NXi+7kI4hOIxE37mqZ13Snptdd42
+   M/t0RMrK8v2Okg5GdBlWKz6+0yhtbi5BFhAHW0BmmezFgRzEptFL17fRE
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10359"; a="337504383"
+X-IronPort-AV: E=Sophos;i="5.91,255,1647327600"; 
+   d="scan'208";a="337504383"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2022 04:53:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,255,1647327600"; 
+   d="scan'208";a="746889599"
+Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
+  by orsmga005.jf.intel.com with ESMTP; 27 May 2022 04:53:32 -0700
+From:   =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
+        <amadeuszx.slawinski@linux.intel.com>
+To:     Vineet Gupta <vgupta@kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Dinh Nguyen <dinguyen@kernel.org>, Guo Ren <guoren@kernel.org>,
-        linux-snps-arc@lists.infradead.org,
-        Hugh Dickins <hughd@google.com>, Rich Felker <dalias@libc.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        linuxppc-dev@lists.ozlabs.org, Brian Cain <bcain@quicinc.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        linux-parisc@vger.kernel.org,
         "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v3] mm: Avoid unnecessary page fault retires on shared
- memory types
-Message-ID: <YpCsBwFArieTpvg2@gmail.com>
-References: <20220524234531.1949-1-peterx@redhat.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        linux-snps-arc@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, sparclinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
+        <amadeuszx.slawinski@linux.intel.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: [PATCH v2 1/3] ARC: bitops: Change __fls to return unsigned long
+Date:   Fri, 27 May 2022 13:53:43 +0200
+Message-Id: <20220527115345.2588775-2-amadeuszx.slawinski@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220527115345.2588775-1-amadeuszx.slawinski@linux.intel.com>
+References: <20220527115345.2588775-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220524234531.1949-1-peterx@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+As per asm-generic definition and other architectures __fls should
+return unsigned long.
 
-* Peter Xu <peterx@redhat.com> wrote:
+No functional change is expected as return value should fit in unsigned
+long.
 
-> This patch provides a ~12% perf boost on my aarch64 test VM with a simple
-> program sequentially dirtying 400MB shmem file being mmap()ed and these are
-> the time it needs:
->
->   Before: 650.980 ms (+-1.94%)
->   After:  569.396 ms (+-1.38%)
+Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+---
+ arch/arc/include/asm/bitops.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Nice!
+diff --git a/arch/arc/include/asm/bitops.h b/arch/arc/include/asm/bitops.h
+index bdb7e190a294..f5a936496f06 100644
+--- a/arch/arc/include/asm/bitops.h
++++ b/arch/arc/include/asm/bitops.h
+@@ -82,7 +82,7 @@ static inline __attribute__ ((const)) int fls(unsigned int x)
+ /*
+  * __fls: Similar to fls, but zero based (0-31)
+  */
+-static inline __attribute__ ((const)) int __fls(unsigned long x)
++static inline __attribute__ ((const)) unsigned long __fls(unsigned long x)
+ {
+ 	if (!x)
+ 		return 0;
+@@ -131,7 +131,7 @@ static inline __attribute__ ((const)) int fls(unsigned int x)
+ /*
+  * __fls: Similar to fls, but zero based (0-31). Also 0 if no bit set
+  */
+-static inline __attribute__ ((const)) int __fls(unsigned long x)
++static inline __attribute__ ((const)) unsigned long __fls(unsigned long x)
+ {
+ 	/* FLS insn has exactly same semantics as the API */
+ 	return	__builtin_arc_fls(x);
+-- 
+2.25.1
 
->  arch/x86/mm/fault.c           |  4 ++++
-
-Reviewed-by: Ingo Molnar <mingo@kernel.org>
-
-Minor comment typo:
-
-> +		/*
-> +		 * We should do the same as VM_FAULT_RETRY, but let's not
-> +		 * return -EBUSY since that's not reflecting the reality on
-> +		 * what has happened - we've just fully completed a page
-> +		 * fault, with the mmap lock released.  Use -EAGAIN to show
-> +		 * that we want to take the mmap lock _again_.
-> +		 */
-
-s/reflecting the reality on what has happened
- /reflecting the reality of what has happened
-
->  	ret = handle_mm_fault(vma, address, fault_flags, NULL);
-> +
-> +	if (ret & VM_FAULT_COMPLETED) {
-> +		/*
-> +		 * NOTE: it's a pity that we need to retake the lock here
-> +		 * to pair with the unlock() in the callers. Ideally we
-> +		 * could tell the callers so they do not need to unlock.
-> +		 */
-> +		mmap_read_lock(mm);
-> +		*unlocked = true;
-> +		return 0;
-
-Indeed that's a pity - I guess more performance could be gained here, 
-especially in highly parallel threaded workloads?
-
-Thanks,
-
-	Ingo
