@@ -2,106 +2,117 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4950C433EF
-	for <linux-m68k@archiver.kernel.org>; Mon, 30 May 2022 13:39:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EEC30C4332F
+	for <linux-m68k@archiver.kernel.org>; Mon, 30 May 2022 13:47:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237588AbiE3Ni7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 30 May 2022 09:38:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56372 "EHLO
+        id S235971AbiE3Nrk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 30 May 2022 09:47:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237636AbiE3Nhz (ORCPT
+        with ESMTP id S238005AbiE3Nne (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 30 May 2022 09:37:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4581B8B09E
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 May 2022 06:31:12 -0700 (PDT)
+        Mon, 30 May 2022 09:43:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5083B9AE50
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 May 2022 06:32:10 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4669160F17;
-        Mon, 30 May 2022 13:31:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34392C36AE9;
-        Mon, 30 May 2022 13:31:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653917471;
-        bh=y268Ia38mDcy8oVClEGS/uTeQtbK8P1DKzIAcwjQsRk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hmn+5G/bEW4x7X7gIM6CefiT4UHx7y/t15qJH3jMnFgwsd1cG6i2TypOYD618RPFc
-         PymGfFs8Lc+/A8COBVGbz6fGwZiHn/VgA6v4+AGFYOb+rirbT6TlPvFTLdZKXClgA7
-         wSyT9krj1hVasqoh8zwAqgP5nf7or5BDCmR2LQzx7C9SiYog051DVrZZ2efSoraJL6
-         2TR3lLUWLwor5JvattVUVuv579iW3/HbAA6nnYEwXTKumBHy2h+zIALf472We8torv
-         gAlXwB+Eay72u855Oz/iSKKisrKFOjYpgB9kJGW9zTet5wjKxtNXyFlYeJylE9jhaY
-         rPmMslQoUU/mw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        kernel test robot <lkp@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 5.18 149/159] m68k: atari: Make Atari ROM port I/O write macros return void
-Date:   Mon, 30 May 2022 09:24:14 -0400
-Message-Id: <20220530132425.1929512-149-sashal@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220530132425.1929512-1-sashal@kernel.org>
-References: <20220530132425.1929512-1-sashal@kernel.org>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B4F0960F74;
+        Mon, 30 May 2022 13:32:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83CBBC385B8;
+        Mon, 30 May 2022 13:31:55 +0000 (UTC)
+Date:   Mon, 30 May 2022 14:31:52 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Will Deacon <will@kernel.org>,
+        Matt Turner <mattst88@gmail.com>, linux-s390@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Brian Cain <bcain@quicinc.com>, Borislav Petkov <bp@alien8.de>,
+        linux-alpha@vger.kernel.org, Alistair Popple <apopple@nvidia.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        linux-snps-arc@lists.infradead.org,
+        Vineet Gupta <vgupta@kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Rich Felker <dalias@libc.org>, sparclinux@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        David Hildenbrand <david@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        linux-xtensa@linux-xtensa.org, linux-sh@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org,
+        Richard Henderson <rth@twiddle.net>,
+        Guo Ren <guoren@kernel.org>, linux-parisc@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Helge Deller <deller@gmx.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-um@lists.infradead.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        openrisc@lists.librecores.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-hexagon@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Stafford Horne <shorne@gmail.com>, linux-csky@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-mips@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Hugh Dickins <hughd@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-riscv@lists.infradead.org, Max Filippov <jcmvbkbc@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Chris Zankel <chris@zankel.net>,
+        Michal Simek <monstr@monstr.eu>, x86@kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Richard Weinberger <richard@nod.at>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH v4] mm: Avoid unnecessary page fault retires on shared
+ memory types
+Message-ID: <YpTHSNQxzQxwJ4vQ@arm.com>
+References: <20220527193936.30678-1-peterx@redhat.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220527193936.30678-1-peterx@redhat.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+On Fri, May 27, 2022 at 03:39:36PM -0400, Peter Xu wrote:
+> diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+> index 77341b160aca..e401d416bbd6 100644
+> --- a/arch/arm64/mm/fault.c
+> +++ b/arch/arm64/mm/fault.c
+> @@ -607,6 +607,10 @@ static int __kprobes do_page_fault(unsigned long far, unsigned int esr,
+>  		return 0;
+>  	}
+>  
+> +	/* The fault is fully completed (including releasing mmap lock) */
+> +	if (fault & VM_FAULT_COMPLETED)
+> +		return 0;
+> +
+>  	if (fault & VM_FAULT_RETRY) {
+>  		mm_flags |= FAULT_FLAG_TRIED;
+>  		goto retry;
 
-[ Upstream commit 30b5e6ef4a32ea4985b99200e06d6660a69f9246 ]
+For arm64:
 
-The macros implementing Atari ROM port I/O writes do not cast away their
-output, unlike similar implementations for other I/O buses.
-When they are combined using conditional expressions in the definitions of
-outb() and friends, this triggers sparse warnings like:
-
-    drivers/net/appletalk/cops.c:382:17: error: incompatible types in conditional expression (different base types):
-    drivers/net/appletalk/cops.c:382:17:    unsigned char
-    drivers/net/appletalk/cops.c:382:17:    void
-
-Fix this by adding casts to "void".
-
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
-Link: https://lore.kernel.org/r/c15bedc83d90a14fffcd5b1b6bfb32b8a80282c5.1653057096.git.geert@linux-m68k.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/m68k/include/asm/raw_io.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/m68k/include/asm/raw_io.h b/arch/m68k/include/asm/raw_io.h
-index 80eb2396d01e..3ba40bc1dfaa 100644
---- a/arch/m68k/include/asm/raw_io.h
-+++ b/arch/m68k/include/asm/raw_io.h
-@@ -80,14 +80,14 @@
- 	({ u16 __v = le16_to_cpu(*(__force volatile u16 *) (addr)); __v; })
- 
- #define rom_out_8(addr, b)	\
--	({u8 __maybe_unused __w, __v = (b);  u32 _addr = ((u32) (addr)); \
-+	(void)({u8 __maybe_unused __w, __v = (b);  u32 _addr = ((u32) (addr)); \
- 	__w = ((*(__force volatile u8 *)  ((_addr | 0x10000) + (__v<<1)))); })
- #define rom_out_be16(addr, w)	\
--	({u16 __maybe_unused __w, __v = (w); u32 _addr = ((u32) (addr)); \
-+	(void)({u16 __maybe_unused __w, __v = (w); u32 _addr = ((u32) (addr)); \
- 	__w = ((*(__force volatile u16 *) ((_addr & 0xFFFF0000UL) + ((__v & 0xFF)<<1)))); \
- 	__w = ((*(__force volatile u16 *) ((_addr | 0x10000) + ((__v >> 8)<<1)))); })
- #define rom_out_le16(addr, w)	\
--	({u16 __maybe_unused __w, __v = (w); u32 _addr = ((u32) (addr)); \
-+	(void)({u16 __maybe_unused __w, __v = (w); u32 _addr = ((u32) (addr)); \
- 	__w = ((*(__force volatile u16 *) ((_addr & 0xFFFF0000UL) + ((__v >> 8)<<1)))); \
- 	__w = ((*(__force volatile u16 *) ((_addr | 0x10000) + ((__v & 0xFF)<<1)))); })
- 
--- 
-2.35.1
-
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
