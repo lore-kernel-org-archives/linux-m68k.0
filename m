@@ -2,36 +2,36 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6033C4167B
-	for <linux-m68k@archiver.kernel.org>; Mon, 30 May 2022 13:57:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96498C433EF
+	for <linux-m68k@archiver.kernel.org>; Mon, 30 May 2022 14:23:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238239AbiE3N5X (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 30 May 2022 09:57:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57508 "EHLO
+        id S241329AbiE3OWb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 30 May 2022 10:22:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239043AbiE3Nzh (ORCPT
+        with ESMTP id S241417AbiE3ORe (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 30 May 2022 09:55:37 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E003D954B4
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 May 2022 06:38:07 -0700 (PDT)
+        Mon, 30 May 2022 10:17:34 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E204A33351
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 May 2022 06:46:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 75888B80DB8;
-        Mon, 30 May 2022 13:38:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DBC5C385B8;
-        Mon, 30 May 2022 13:38:03 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 90B32B80D89;
+        Mon, 30 May 2022 13:46:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6492FC385B8;
+        Mon, 30 May 2022 13:46:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653917884;
+        s=k20201202; t=1653918406;
         bh=y268Ia38mDcy8oVClEGS/uTeQtbK8P1DKzIAcwjQsRk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rUbQNiCS0R9tu2kAhdpQIrTorVEGQftcLIbw/MwRJ1UY35SXRbOnJhNzTdbsBRGsF
-         8v4+x6Dbyd1aolZRus3wWH49b4W8wRSYeiEIARRBuqeuP0PkIcoiCj28vbh/7zpvGY
-         YFOTatkfbyX76OGVBYnoNMBi0Y4QYTWPW79XYiRTW4FdpnQt5ODHI6spoBXJlcVBqB
-         obheVm2/F0RZq9JEtpnBMqgfD7OL9o2EG9xvclNh87H0T8XBPYmyfDVovnEPSz/7nw
-         wVfgvbagBnjEpuV8K8yEMAH9Pq6PHT5wmkqIQrDb3ZCc1giHMFF1W7AnAE10aKMvaD
-         6ODS0OfblqZQw==
+        b=rWetuKyXsyKD7dScVLKxc3Mr/X/2yGgRJiWtK+qAW04KtBPl1iFxWfkCjoxz0pn0l
+         o0ouuImNJlIGH/CvE7bLk59UcIskrmfwqKYxhXEwsbM7dbz3DMqmeUx1Piog3dD5ZL
+         EBL/OMd6Wn0uuJuWo+OJuzZHMZs1ZRmGjDZJhyy3Qz88ofC4kig4sie7pydykIOgWO
+         E7Z+SOPA4c85J4/VcdQty+WoBL68WapfEtG5zvuzcggOhR2yFyJaNFlBrJ6zUjuxgv
+         Y3r5pDpqobgWwFctIUKZTFVN/L/8WUxD+IbHcnE6OZ9+G5FwNdCYi251rokUmNJde0
+         1ZVlcNPM0aFVw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
@@ -40,12 +40,12 @@ Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
         Michael Schmitz <schmitzmic@gmail.com>,
         Sasha Levin <sashal@kernel.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 5.17 127/135] m68k: atari: Make Atari ROM port I/O write macros return void
-Date:   Mon, 30 May 2022 09:31:25 -0400
-Message-Id: <20220530133133.1931716-127-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 70/76] m68k: atari: Make Atari ROM port I/O write macros return void
+Date:   Mon, 30 May 2022 09:44:00 -0400
+Message-Id: <20220530134406.1934928-70-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220530133133.1931716-1-sashal@kernel.org>
-References: <20220530133133.1931716-1-sashal@kernel.org>
+In-Reply-To: <20220530134406.1934928-1-sashal@kernel.org>
+References: <20220530134406.1934928-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
