@@ -2,59 +2,59 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7D11C433EF
-	for <linux-m68k@archiver.kernel.org>; Mon, 30 May 2022 16:01:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1CF7C433F5
+	for <linux-m68k@archiver.kernel.org>; Mon, 30 May 2022 16:02:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240081AbiE3QBH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 30 May 2022 12:01:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51950 "EHLO
+        id S242562AbiE3QC0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 30 May 2022 12:02:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242886AbiE3QAV (ORCPT
+        with ESMTP id S240957AbiE3QCO (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 30 May 2022 12:00:21 -0400
+        Mon, 30 May 2022 12:02:14 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8E39F33A3B
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 May 2022 08:53:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CAE0EBAA
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 May 2022 09:01:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1653925982;
+        s=mimecast20190719; t=1653926460;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=bDYue/Afd3VGZHzU7tYF7qy5xBeBUpqe85rLuoAiRcE=;
-        b=AkXHNJKvAQRHb5OqI+OhXnw4AlFTHU7SQ25I25r8DrkTB9nwXx2U3S7uy3yWEhfxPKMgZ0
-        MCHoCCU4ElbTk7DKNd2mXmRpWE6tOdwsDRWpn7scMraYzymGuve2EYFM1vMWpJYkKpJQS0
-        OjtcJUf23O2R/uhMV8v3cei4In0oe2Y=
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com
- [209.85.166.197]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=9ZWphZRcK3afyDhn+H8+iYAM34Y/wtF11YrAt0KXpqo=;
+        b=OAlzTeE5V8IDemnaydPys11/ZrVI/qBW1DOX6CPplb5qXISrVW1Skgh7NUzAUpdX2Yqw/p
+        pHKMJG+8Mdx/ufIWFXE5y5I8riDML3OEKL/xpQCxyErsRfUKjW22PRJZPOar4KJ4zfDQ61
+        nAJEfPCcXlXGS1LH0+N1yZAXk2j7fts=
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
+ [209.85.166.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-495-VOKE5mijNXqiypiynB81iQ-1; Mon, 30 May 2022 11:53:01 -0400
-X-MC-Unique: VOKE5mijNXqiypiynB81iQ-1
-Received: by mail-il1-f197.google.com with SMTP id g8-20020a92cda8000000b002d15f63967eso8563092ild.21
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 May 2022 08:53:01 -0700 (PDT)
+ us-mta-41-FlZVLxu3Po6Cioq5clmPkQ-1; Mon, 30 May 2022 12:01:00 -0400
+X-MC-Unique: FlZVLxu3Po6Cioq5clmPkQ-1
+Received: by mail-io1-f70.google.com with SMTP id 129-20020a6b0187000000b00660cf61c6e8so5673361iob.4
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 May 2022 09:00:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=bDYue/Afd3VGZHzU7tYF7qy5xBeBUpqe85rLuoAiRcE=;
-        b=05vhowmTUur0wI/FUdcDsXSodEjVEoYtSe43vDdrkRneLsajNdp83JJqdtMmIxEc3j
-         /yXHJiKiiAtxcAHSe5890odFO0kxZ6BuCtx5eZWjiPqmSmT/wYkt+j0Qc5+4PLOuY7IG
-         bHdGRgA9FDhLJnmZtZxESJXid+1k5yr+4BXBMBwS23iYR5SIbNdaqIwUlSc3QXWgAlm/
-         UMaO22Uo6uYdoSL3UF03h7K2+l6w8Cy2EJAARg8AWV4+uyPnBr5fsLrUILljjWl6Lgg4
-         FAgv3eoXL5yeOVkht3wPfHlFbKwNVXshW9q1i8/PVfbxEkU63k0/zU8nY76DlV9NsFMo
-         C+gQ==
-X-Gm-Message-State: AOAM5335j6tTg3VTsO/uSWf4mfFxGiNDqPFl2X8cUby5dRNPl9auDDuO
-        1gOKU3X8CFWM56ZWny5ExnwPRr9cAFZLAS5a9HmnH1uxaQsTMjcSd4B7q191M/xJFBst7/0mALE
-        FBPU8O0OX4qrIGzVjH7jF6PNKjUFb
-X-Received: by 2002:a5d:9cc8:0:b0:663:2899:4b8 with SMTP id w8-20020a5d9cc8000000b00663289904b8mr16857417iow.192.1653925980625;
-        Mon, 30 May 2022 08:53:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyKQIoyyqGc41UCjMUnObS0GZ5Lh8IPSVLY8KDGIOa5YRMfMwdzANPXLWIG/1E7oUnwvcvO1w==
-X-Received: by 2002:a5d:9cc8:0:b0:663:2899:4b8 with SMTP id w8-20020a5d9cc8000000b00663289904b8mr16857337iow.192.1653925980357;
-        Mon, 30 May 2022 08:53:00 -0700 (PDT)
+        bh=9ZWphZRcK3afyDhn+H8+iYAM34Y/wtF11YrAt0KXpqo=;
+        b=ussu+qtkSo+DyVjZv7nMRQ4iUzQt6dzfMZ1r3A1OafBVIIcauCyGEDjguOtXZIjhO3
+         vx1hDNrvNvfSrqtCnTZyyifAgJuai/3ClHcUssvqssMiwAVCxL7d7eeOIEWuR2MVX4cd
+         8OqI2+8ANc92gA05YmrGP8Hv7zZDyiI4LC+nUljP+kQhX5ca4GXYVm5iiZgI7DVL2UCs
+         sQ9Gxe0JGnXkiPGfPAmm7rOexgtBWnzeVamCWSMGqArpF4gp+51aNuSPO0j0nAIE/rQN
+         pivTuEqkxl06FUBtEe31deZd2T3i2H4eEnXJTq8WtWOuAL8cDkvKa7QzI1ODA0g/nVJd
+         J/0A==
+X-Gm-Message-State: AOAM5336d7bn24q32qrkYorMh8eoiUqTII6/4AlzylDvGcNyMcG3SGhk
+        stpBOJYlR9OSuGOd8epu5q/RG5Xpl4yl6Qet1o7PDFBcNVGNfiKoL5Pw7pAE/hB7Q7ASGIAysaV
+        9tOQ7Q2SU4k3GPn9IwM/3DZObDlqZ
+X-Received: by 2002:a05:6e02:1648:b0:2cd:fe43:39db with SMTP id v8-20020a056e02164800b002cdfe4339dbmr30191737ilu.172.1653926458624;
+        Mon, 30 May 2022 09:00:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz0UxFyFLwjW1ZOMQsp2rrmtoQtqcFmY+n0cdYYM503zYLjoFDoHLhs+0Zam5Eh/FIDylo0ew==
+X-Received: by 2002:a05:6e02:1648:b0:2cd:fe43:39db with SMTP id v8-20020a056e02164800b002cdfe4339dbmr30191721ilu.172.1653926458383;
+        Mon, 30 May 2022 09:00:58 -0700 (PDT)
 Received: from xz-m1.local (cpec09435e3e0ee-cmc09435e3e0ec.cpe.net.cable.rogers.com. [99.241.198.116])
-        by smtp.gmail.com with ESMTPSA id 66-20020a021d45000000b0032e75bfe344sm2781109jaj.171.2022.05.30.08.52.55
+        by smtp.gmail.com with ESMTPSA id b16-20020a926710000000b002cde6e352e5sm3863762ilc.47.2022.05.30.09.00.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 May 2022 08:52:59 -0700 (PDT)
-Date:   Mon, 30 May 2022 11:52:54 -0400
+        Mon, 30 May 2022 09:00:57 -0700 (PDT)
+Date:   Mon, 30 May 2022 12:00:52 -0400
 From:   Peter Xu <peterx@redhat.com>
 To:     Christian Borntraeger <borntraeger@linux.ibm.com>
 Cc:     Heiko Carstens <hca@linux.ibm.com>, linux-kernel@vger.kernel.org,
@@ -117,12 +117,13 @@ Cc:     Heiko Carstens <hca@linux.ibm.com>, linux-kernel@vger.kernel.org,
         Ingo Molnar <mingo@kernel.org>
 Subject: Re: [PATCH v4] mm: Avoid unnecessary page fault retires on shared
  memory types
-Message-ID: <YpToVpjXmdFqGOpY@xz-m1.local>
+Message-ID: <YpTqNKMTt8PoA41n@xz-m1.local>
 References: <20220527193936.30678-1-peterx@redhat.com>
  <YpPYkzbrQmy4FjrI@osiris>
  <33fd4731-9765-d78b-bdc3-f8243c98e81f@linux.ibm.com>
+ <YpToVpjXmdFqGOpY@xz-m1.local>
 MIME-Version: 1.0
-In-Reply-To: <33fd4731-9765-d78b-bdc3-f8243c98e81f@linux.ibm.com>
+In-Reply-To: <YpToVpjXmdFqGOpY@xz-m1.local>
 Authentication-Results: relay.mimecast.com;
         auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=peterx@redhat.com
 X-Mimecast-Spam-Score: 0
@@ -133,40 +134,42 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, May 30, 2022 at 11:35:10AM +0200, Christian Borntraeger wrote:
-> 
-> 
-> Am 29.05.22 um 22:33 schrieb Heiko Carstens:
-> [...]
+On Mon, May 30, 2022 at 11:52:54AM -0400, Peter Xu wrote:
+> On Mon, May 30, 2022 at 11:35:10AM +0200, Christian Borntraeger wrote:
 > > 
-> > Guess the patch below on top of your patch is what we want.
-> > Just for clarification: if gmap is not NULL then the process is a kvm
-> > process. So, depending on the workload, this optimization makes sense.
 > > 
-> > diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
-> > index 4608cc962ecf..e1d40ca341b7 100644
-> > --- a/arch/s390/mm/fault.c
-> > +++ b/arch/s390/mm/fault.c
-> > @@ -436,12 +436,11 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
-> >   	/* The fault is fully completed (including releasing mmap lock) */
-> >   	if (fault & VM_FAULT_COMPLETED) {
-> > -		/*
-> > -		 * Gmap will need the mmap lock again, so retake it.  TODO:
-> > -		 * only conditionally take the lock when CONFIG_PGSTE set.
-> > -		 */
-> > -		mmap_read_lock(mm);
-> > -		goto out_gmap;
-> > +		if (gmap) {
-> > +			mmap_read_lock(mm);
-> > +			goto out_gmap;
-> > +		}
-> > +		goto out;
-> 
-> Yes, that makes sense. With that
-> 
-> Acked-by: Christian Borntraeger <borntraeger@linux.ibm.com>
+> > Am 29.05.22 um 22:33 schrieb Heiko Carstens:
+> > [...]
+> > > 
+> > > Guess the patch below on top of your patch is what we want.
+> > > Just for clarification: if gmap is not NULL then the process is a kvm
+> > > process. So, depending on the workload, this optimization makes sense.
+> > > 
+> > > diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
+> > > index 4608cc962ecf..e1d40ca341b7 100644
+> > > --- a/arch/s390/mm/fault.c
+> > > +++ b/arch/s390/mm/fault.c
+> > > @@ -436,12 +436,11 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
+> > >   	/* The fault is fully completed (including releasing mmap lock) */
+> > >   	if (fault & VM_FAULT_COMPLETED) {
+> > > -		/*
+> > > -		 * Gmap will need the mmap lock again, so retake it.  TODO:
+> > > -		 * only conditionally take the lock when CONFIG_PGSTE set.
+> > > -		 */
+> > > -		mmap_read_lock(mm);
+> > > -		goto out_gmap;
+> > > +		if (gmap) {
+> > > +			mmap_read_lock(mm);
+> > > +			goto out_gmap;
+> > > +		}
+> > > +		goto out;
 
-Looks sane, thanks Heiko, Christian.  I'll cook another one.
+Hmm, right after I replied I found "goto out" could be problematic, since
+all s390 callers of do_exception() will assume it an error condition (side
+note: "goto out_gmap" contains one step to clear "fault" to 0).  I'll
+replace this with "return 0" instead if it looks good to both of you.
+
+I'll wait for a confirmation before reposting.  Thanks,
 
 -- 
 Peter Xu
