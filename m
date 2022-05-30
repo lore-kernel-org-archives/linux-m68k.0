@@ -2,36 +2,36 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96498C433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6B8FC433FE
 	for <linux-m68k@archiver.kernel.org>; Mon, 30 May 2022 14:23:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241329AbiE3OWb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 30 May 2022 10:22:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44828 "EHLO
+        id S241335AbiE3OWe (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 30 May 2022 10:22:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241417AbiE3ORe (ORCPT
+        with ESMTP id S240986AbiE3OQl (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 30 May 2022 10:17:34 -0400
+        Mon, 30 May 2022 10:16:41 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E204A33351
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 May 2022 06:46:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0478210EA63
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 May 2022 06:44:24 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 90B32B80D89;
-        Mon, 30 May 2022 13:46:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6492FC385B8;
-        Mon, 30 May 2022 13:46:45 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 43487B80DBB;
+        Mon, 30 May 2022 13:43:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2A88C385B8;
+        Mon, 30 May 2022 13:43:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653918406;
+        s=k20201202; t=1653918226;
         bh=y268Ia38mDcy8oVClEGS/uTeQtbK8P1DKzIAcwjQsRk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rWetuKyXsyKD7dScVLKxc3Mr/X/2yGgRJiWtK+qAW04KtBPl1iFxWfkCjoxz0pn0l
-         o0ouuImNJlIGH/CvE7bLk59UcIskrmfwqKYxhXEwsbM7dbz3DMqmeUx1Piog3dD5ZL
-         EBL/OMd6Wn0uuJuWo+OJuzZHMZs1ZRmGjDZJhyy3Qz88ofC4kig4sie7pydykIOgWO
-         E7Z+SOPA4c85J4/VcdQty+WoBL68WapfEtG5zvuzcggOhR2yFyJaNFlBrJ6zUjuxgv
-         Y3r5pDpqobgWwFctIUKZTFVN/L/8WUxD+IbHcnE6OZ9+G5FwNdCYi251rokUmNJde0
-         1ZVlcNPM0aFVw==
+        b=qnH4krE4P409q9CVZ0tRU/Kl07n7SrP8/jkBvkqiMzOlzEWDXKj8UYnBxxeoIGxi7
+         JZM2WEz4BnOe+5VybMAn4TYFE+9V1QErsRRVb7lmHXGzEw61xgV2tDEZKFWjLX+1tl
+         Awp2kST1izfR9rwL90Zu89ex3uWad54KXVSpUfPvSAHsPN2EMv+Eg3Ifz1phV2jooa
+         3ADOAHvCLehtgmotLee6tEmhjGHNdlzzOO7OisMmhOckfWU44SsGxJ1tK9m4kpXWAY
+         HxKnRX2dNZ8CRp0A/H+VKxy2gjqIr/Nap5gfl6MO/X+lDeOagUbabGo4pr0QnZbt6v
+         ebu9MgFKvY/IA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
@@ -40,12 +40,12 @@ Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
         Michael Schmitz <schmitzmic@gmail.com>,
         Sasha Levin <sashal@kernel.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 5.10 70/76] m68k: atari: Make Atari ROM port I/O write macros return void
-Date:   Mon, 30 May 2022 09:44:00 -0400
-Message-Id: <20220530134406.1934928-70-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 101/109] m68k: atari: Make Atari ROM port I/O write macros return void
+Date:   Mon, 30 May 2022 09:38:17 -0400
+Message-Id: <20220530133825.1933431-101-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220530134406.1934928-1-sashal@kernel.org>
-References: <20220530134406.1934928-1-sashal@kernel.org>
+In-Reply-To: <20220530133825.1933431-1-sashal@kernel.org>
+References: <20220530133825.1933431-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
