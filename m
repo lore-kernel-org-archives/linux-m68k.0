@@ -2,69 +2,179 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D428C433EF
-	for <linux-m68k@archiver.kernel.org>; Mon, 30 May 2022 18:28:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F0D1C43217
+	for <linux-m68k@archiver.kernel.org>; Mon, 30 May 2022 18:29:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242772AbiE3S21 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 30 May 2022 14:28:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45106 "EHLO
+        id S242766AbiE3S3n (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 30 May 2022 14:29:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242658AbiE3S2Z (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 30 May 2022 14:28:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6848E59089;
-        Mon, 30 May 2022 11:28:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 03DE460AFB;
-        Mon, 30 May 2022 18:28:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6BC44C385B8;
-        Mon, 30 May 2022 18:28:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653935303;
-        bh=JmUf2/MjiGdTyYlimB3p5TQ3BXKEJ10GBR8WKJ12xSE=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=P5e1mFEiDH5rYfoehOanPcEBp31xtpGmMhmh3Ioget2iU79Kvto0oMbgrpqtdelfU
-         IYtGIlheNiKf8HRHABjbsBwUr5V9K7I9g6ap3x0c6BqP3i6jvNhyLpRHARdw1Ja3gX
-         5NiR6x2JI5a3Ho9tTnZeJJiDrFP1Icxtvw0362+AOkUZfyXM1vEreQM0+7fOgfHjrd
-         uceue2qTEmR5CZnKGGtU0BwaIJeG11k8R64os2NfmKAFn2jptK4xI84zBP0g2inoLm
-         pxRB/e5JG3PDxfyVIlfaRLwShmkK8u4672yShf6HXDb6AWen8PbmdxHGjH8WnNruNx
-         bwNa3PBWIz/5w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 51471F0383D;
-        Mon, 30 May 2022 18:28:23 +0000 (UTC)
-Subject: Re: [git pull] m68knommu changes for v5.19
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <707bdfb5-a6d5-df4b-4b47-735bde4ec8fd@linux-m68k.org>
-References: <707bdfb5-a6d5-df4b-4b47-735bde4ec8fd@linux-m68k.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <707bdfb5-a6d5-df4b-4b47-735bde4ec8fd@linux-m68k.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.19
-X-PR-Tracked-Commit-Id: 6b8be804ff376f6657ccdf6b29974e7c793d88c4
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 2d2da475ac0eebfbf40e5c5ca8c0409d62d23424
-Message-Id: <165393530332.32021.4768153658173767437.pr-tracker-bot@kernel.org>
-Date:   Mon, 30 May 2022 18:28:23 +0000
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     torvalds@linux-foundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
+        with ESMTP id S242736AbiE3S3l (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 30 May 2022 14:29:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2006860D9D
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 May 2022 11:29:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1653935379;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+ALrzFnb0YEuDamJlOSrZjOy/DY+2J0hn9MNRn5A9C4=;
+        b=HbBF2ajaufZl9/WUtxyDJxCGJ9BcRQz/emu2qDiECh2i5UBkeWh6TtnQT3PjvYY6l7es4L
+        3G/Q11/CJkMBZz1hC5mVhwu/tKZIJ5EMd75pJNM4heYAIld/c/yvBrPTjjfZZIlZEMTa+c
+        wzKHAMoIoP3+DAvw0soTcPl5tm37JoM=
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
+ [209.85.166.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-110-YH4CtP55Mx2WXcDzcPI-_A-1; Mon, 30 May 2022 14:29:37 -0400
+X-MC-Unique: YH4CtP55Mx2WXcDzcPI-_A-1
+Received: by mail-il1-f200.google.com with SMTP id g8-20020a92cda8000000b002d15f63967eso8750279ild.21
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 May 2022 11:29:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+ALrzFnb0YEuDamJlOSrZjOy/DY+2J0hn9MNRn5A9C4=;
+        b=kBpoK44pgQnpBOIwtXuglQ2c96/x5RhDuIg1fklUxn2wdf8aCczYzvZbw1IhGqZvKR
+         wiT/mPlr6yFEQ6ERq7SuLhw4I/wB3fZXeg64nux5hmDPevB+SlXSd7+bKyWy9wvkQd/f
+         Rd95auWxgJCjlBk+ZkaMyX9RqXd+DvV4Z/EjKDLcmj98JUSVL3IIhiL/oFJn4bF4N6nb
+         9AqhYdFAFTY9uPc9MPgG5WqKzhsbLc3hFzduupq1dTpf1K/CTkzY+U1VYsAmrI/iPBGm
+         OuNmWAD0imxGTXLmOA2WQ5PLD03+inZC8F5vyZCjZ8Lq87pkDwbkreGF1PV+i2gI7zLg
+         l1pQ==
+X-Gm-Message-State: AOAM533N6p02IQMCx+QVB83m3l42AKW1hkbLCx2JIzN5GaO0FRaUPEOi
+        Ex2CzM0g1/MNWkCNWWnGU54qjPxPxLn+PH+3GSBQfv3VDTvF/qaxmfNcpfe+OWCB4nU9OybPOKv
+        SgFzn4ek+r1Mg7o3hbt4kGxi0X8kJ
+X-Received: by 2002:a92:d785:0:b0:2d1:7ce6:b834 with SMTP id d5-20020a92d785000000b002d17ce6b834mr25171869iln.207.1653935377084;
+        Mon, 30 May 2022 11:29:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy3wrc9ZuPCRdn+Dbnr8a7+sDY/SXALiOk3qZ3Cm9Rs8SSVa+bj9UHR0EABkWjwoIvWxsPXBw==
+X-Received: by 2002:a92:d785:0:b0:2d1:7ce6:b834 with SMTP id d5-20020a92d785000000b002d17ce6b834mr25171841iln.207.1653935376794;
+        Mon, 30 May 2022 11:29:36 -0700 (PDT)
+Received: from xz-m1.local (cpec09435e3e0ee-cmc09435e3e0ec.cpe.net.cable.rogers.com. [99.241.198.116])
+        by smtp.gmail.com with ESMTPSA id cn9-20020a0566383a0900b003313b7a5731sm183095jab.178.2022.05.30.11.29.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 May 2022 11:29:36 -0700 (PDT)
+Date:   Mon, 30 May 2022 14:29:31 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     Christian Borntraeger <borntraeger@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Will Deacon <will@kernel.org>,
+        Matt Turner <mattst88@gmail.com>, linux-s390@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Brian Cain <bcain@quicinc.com>, Borislav Petkov <bp@alien8.de>,
+        linux-alpha@vger.kernel.org, Alistair Popple <apopple@nvidia.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        linux-snps-arc@lists.infradead.org,
+        Vineet Gupta <vgupta@kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Rich Felker <dalias@libc.org>, sparclinux@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        David Hildenbrand <david@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        linux-xtensa@linux-xtensa.org, linux-sh@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org,
+        Richard Henderson <rth@twiddle.net>,
+        Guo Ren <guoren@kernel.org>, linux-parisc@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Helge Deller <deller@gmx.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-um@lists.infradead.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        openrisc@lists.librecores.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-hexagon@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Stafford Horne <shorne@gmail.com>, linux-csky@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-mips@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Hugh Dickins <hughd@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-riscv@lists.infradead.org, Max Filippov <jcmvbkbc@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Chris Zankel <chris@zankel.net>,
+        Michal Simek <monstr@monstr.eu>, x86@kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Richard Weinberger <richard@nod.at>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH v4] mm: Avoid unnecessary page fault retires on shared
+ memory types
+Message-ID: <YpUNC6iGrZRlWMyA@xz-m1.local>
+References: <20220527193936.30678-1-peterx@redhat.com>
+ <YpPYkzbrQmy4FjrI@osiris>
+ <33fd4731-9765-d78b-bdc3-f8243c98e81f@linux.ibm.com>
+ <YpToVpjXmdFqGOpY@xz-m1.local>
+ <YpTqNKMTt8PoA41n@xz-m1.local>
+ <YpT443jVZtM6p9OD@osiris>
+MIME-Version: 1.0
+In-Reply-To: <YpT443jVZtM6p9OD@osiris>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=peterx@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The pull request you sent on Mon, 30 May 2022 14:57:24 +1000:
+On Mon, May 30, 2022 at 07:03:31PM +0200, Heiko Carstens wrote:
+> On Mon, May 30, 2022 at 12:00:52PM -0400, Peter Xu wrote:
+> > On Mon, May 30, 2022 at 11:52:54AM -0400, Peter Xu wrote:
+> > > On Mon, May 30, 2022 at 11:35:10AM +0200, Christian Borntraeger wrote:
+> > > > > diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
+> > > > > index 4608cc962ecf..e1d40ca341b7 100644
+> > > > > --- a/arch/s390/mm/fault.c
+> > > > > +++ b/arch/s390/mm/fault.c
+> > > > > @@ -436,12 +436,11 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
+> > > > >   	/* The fault is fully completed (including releasing mmap lock) */
+> > > > >   	if (fault & VM_FAULT_COMPLETED) {
+> > > > > -		/*
+> > > > > -		 * Gmap will need the mmap lock again, so retake it.  TODO:
+> > > > > -		 * only conditionally take the lock when CONFIG_PGSTE set.
+> > > > > -		 */
+> > > > > -		mmap_read_lock(mm);
+> > > > > -		goto out_gmap;
+> > > > > +		if (gmap) {
+> > > > > +			mmap_read_lock(mm);
+> > > > > +			goto out_gmap;
+> > > > > +		}
+> 			fault = 0;  <----
+> > > > > +		goto out;
+> > 
+> > Hmm, right after I replied I found "goto out" could be problematic, since
+> > all s390 callers of do_exception() will assume it an error condition (side
+> > note: "goto out_gmap" contains one step to clear "fault" to 0).  I'll
+> > replace this with "return 0" instead if it looks good to both of you.
+> > 
+> > I'll wait for a confirmation before reposting.  Thanks,
+> 
+> Right, that was stupid. Thanks for double checking!
+> 
+> However could you please add "fault = 0" just in front of the goto out
+> like above? I'd like to avoid having returns and gotos mixed.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.19
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/2d2da475ac0eebfbf40e5c5ca8c0409d62d23424
-
-Thank you!
+Sure thing.
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Peter Xu
+
