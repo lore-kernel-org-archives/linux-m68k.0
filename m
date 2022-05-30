@@ -2,127 +2,96 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F04EAC433F5
-	for <linux-m68k@archiver.kernel.org>; Mon, 30 May 2022 04:57:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9687BC433F5
+	for <linux-m68k@archiver.kernel.org>; Mon, 30 May 2022 07:12:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232388AbiE3E5g (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 30 May 2022 00:57:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53322 "EHLO
+        id S229930AbiE3HMO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 30 May 2022 03:12:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232295AbiE3E5f (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 30 May 2022 00:57:35 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E76712FFD9;
-        Sun, 29 May 2022 21:57:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A1C18B80B6F;
-        Mon, 30 May 2022 04:57:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28294C3411A;
-        Mon, 30 May 2022 04:57:28 +0000 (UTC)
-Message-ID: <707bdfb5-a6d5-df4b-4b47-735bde4ec8fd@linux-m68k.org>
-Date:   Mon, 30 May 2022 14:57:24 +1000
+        with ESMTP id S233370AbiE3HML (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 30 May 2022 03:12:11 -0400
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A8F1010
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 May 2022 00:12:09 -0700 (PDT)
+Received: by mail-qk1-f179.google.com with SMTP id b200so10742475qkc.7
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 May 2022 00:12:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BdhRdmYpzSaLyDZukxciTRFSwXlW7RAhZsMxh7fK1iA=;
+        b=M9LbicVeDHwNjO0TMG8QAceHm3Hmg48WWMZE8Be0jAb6OuQd6Pccip7DVNmoIyHQZy
+         s4vTmskf8IQYoEjOHIJW75/lExYBlipoGfDTAaSxmJz7mHvCWaZCWHcVrBt1mfisU9pG
+         LfwEjzNZA5Wcq4Ndzn6W3/Sj5yY6jbBZOuJ0y7uUTmYcub6B54f/DTHWz6mYxD7EuWUp
+         5Z2Y+XOBpup0hOV/PDbwHHhk/3aQXAWh2PGTEz0a+87Upy/8wel8oe2s0uR01gZPBC5V
+         t4bEr3/CqHDlE1bJYb97tHEw4QpGoITrzIeOO5NJLUmFXaJQ3bX7pB5RTUV36kamzr4x
+         ol4A==
+X-Gm-Message-State: AOAM533+HHX4oVkSh83b5HwUT71KH6zRIMAc6lcUPmdXgX+Ya8scHlre
+        r1z/ALqTbNcTiR7f/jnWGfBhu6hOVpI=
+X-Google-Smtp-Source: ABdhPJyYksSNhidhLRD+pcgUZ8ulY12f9NgThr5KVUCWTr6gtq9niDON/Y+hT76zfavucC8bxZp0Kg==
+X-Received: by 2002:ae9:e90d:0:b0:6a3:28eb:1a4f with SMTP id x13-20020ae9e90d000000b006a328eb1a4fmr36990233qkf.21.1653894728375;
+        Mon, 30 May 2022 00:12:08 -0700 (PDT)
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
+        by smtp.gmail.com with ESMTPSA id l3-20020a37f503000000b006a5c0dce590sm6522784qkk.79.2022.05.30.00.12.07
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 May 2022 00:12:07 -0700 (PDT)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-30c2f288f13so25390647b3.7
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 May 2022 00:12:07 -0700 (PDT)
+X-Received: by 2002:a0d:f745:0:b0:2fe:e903:b0f8 with SMTP id
+ h66-20020a0df745000000b002fee903b0f8mr58276985ywf.383.1653894726993; Mon, 30
+ May 2022 00:12:06 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Subject: [git pull] m68knommu changes for v5.19
-To:     torvalds@linux-foundation.org
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20220530025312.55057-1-wangxiang@cdjrlc.com>
+In-Reply-To: <20220530025312.55057-1-wangxiang@cdjrlc.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 30 May 2022 09:11:54 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVk+RStP90cmuWzAY+3tLEJwaaOPR-h=xrLahmCZ_CDOg@mail.gmail.com>
+Message-ID: <CAMuHMdVk+RStP90cmuWzAY+3tLEJwaaOPR-h=xrLahmCZ_CDOg@mail.gmail.com>
+Subject: Re: [PATCH] m68k: coldfire:Add const to clk_ops
+To:     Xiang wangx <wangxiang@cdjrlc.com>
+Cc:     Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Linus,
+Hi Xiang,
 
-Please pull the m68knommu changes for v5.19.
+On Mon, May 30, 2022 at 4:53 AM Xiang wangx <wangxiang@cdjrlc.com> wrote:
+> Struct clk_ops should normally be const.
+>
+> Signed-off-by: Xiang wangx <wangxiang@cdjrlc.com>
 
-There is a collection of changes to add elf-fdpic loader support for m68k.
-Also a collection of various fixes. They include typo corrections, undefined
-symbol compilation fixes, removal of the ISA_DMA_API support and removal of
-unused code.
+Thanks for your patch!
 
-I expect you will get a merge conflict in arch/m68k/kernel/ptrace.c.
-The change to add some regset support conflicts with recent changes to
-syscall_trace_enter/leave. The changes themselves don't interfere with
-each other, just the diff context. Remove the conflicting line
-"#endif /* CONFIG_COLDFIRE */" to resolve.
+> --- a/arch/m68k/coldfire/clk.c
+> +++ b/arch/m68k/coldfire/clk.c
+> @@ -50,7 +50,7 @@ static void __clk_disable0(struct clk *clk)
+>         __raw_writeb(clk->slot, MCFPM_PPMSR0);
+>  }
+>
+> -struct clk_ops clk_ops0 = {
+> +struct const clk_ops clk_ops0 = {
 
-Regards
-Greg
+The "const" should be first on the line.
+Please test-compile your patches before submitting them.
 
+>         .enable         = __clk_enable0,
+>         .disable        = __clk_disable0,
+>  };
 
+Gr{oetje,eeting}s,
 
-The following changes since commit 42226c989789d8da4af1de0c31070c96726d990c:
+                        Geert
 
-   Linux 5.18-rc7 (2022-05-15 18:08:58 -0700)
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.19
-
-for you to fetch changes up to 6b8be804ff376f6657ccdf6b29974e7c793d88c4:
-
-   m68knommu: fix 68000 CPU link with no platform selected (2022-05-25 00:04:11 +1000)
-
-----------------------------------------------------------------
-m68knommu: changes for linux 5.19
-
-. correctly set up ZERO_PAGE pointer
-. drop ISA_DMA_API support
-. fix comment typos
-. fixes for undefined symbols
-. remove unused code and variables
-. elf-fdpic loader support for m68k
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-       m68k: coldfire: drop ISA_DMA_API support
-
-Greg Ungerer (9):
-       m68knommu: set ZERO_PAGE() to the allocated zeroed page
-       m68knommu: use asm-generic/mmu.h for nommu setups
-       m68knommu: implement minimal regset support
-       m68knommu: add definitions to support elf_fdpic program loader
-       m68knommu: allow elf_fdpic loader to be selected
-       m68knommu: fix undefined reference to `_init_sp'
-       m68knommu: fix undefined reference to `mach_get_rtc_pll'
-       m68k: removed unused "mach_get_ss"
-       m68knommu: fix 68000 CPU link with no platform selected
-
-Julia Lawall (1):
-       m68k: fix typos in comments
-
-  arch/m68k/Kconfig.bus               |  10 -
-  arch/m68k/Kconfig.cpu               |   2 +-
-  arch/m68k/Kconfig.machine           |   1 +
-  arch/m68k/coldfire/Makefile         |   2 +-
-  arch/m68k/coldfire/dma.c            |  43 ----
-  arch/m68k/coldfire/intc.c           |   2 +-
-  arch/m68k/coldfire/m53xx.c          |   2 +-
-  arch/m68k/coldfire/pci.c            |   2 +-
-  arch/m68k/hp300/config.c            |   7 -
-  arch/m68k/include/asm/dma.h         | 483 ------------------------------------
-  arch/m68k/include/asm/elf.h         |   9 +
-  arch/m68k/include/asm/machdep.h     |   1 -
-  arch/m68k/include/asm/mmu.h         |   4 +-
-  arch/m68k/include/asm/pgtable_no.h  |   3 +-
-  arch/m68k/include/uapi/asm/ptrace.h |   5 +
-  arch/m68k/kernel/ptrace.c           |  58 +++++
-  arch/m68k/kernel/setup_mm.c         |   9 -
-  arch/m68k/kernel/setup_no.c         |   1 -
-  arch/m68k/kernel/time.c             |   9 +
-  arch/m68k/mm/motorola.c             |   1 -
-  arch/m68k/q40/config.c              |   7 -
-  drivers/mmc/host/Kconfig            |   2 +-
-  fs/Kconfig.binfmt                   |   2 +-
-  sound/core/Makefile                 |   2 -
-  sound/isa/Kconfig                   |   2 +-
-  25 files changed, 93 insertions(+), 576 deletions(-)
-  delete mode 100644 arch/m68k/coldfire/dma.c
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
