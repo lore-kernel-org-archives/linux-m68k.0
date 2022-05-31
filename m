@@ -2,57 +2,40 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11CB2C4332F
-	for <linux-m68k@archiver.kernel.org>; Tue, 31 May 2022 19:04:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2BB6C433EF
+	for <linux-m68k@archiver.kernel.org>; Tue, 31 May 2022 21:25:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347230AbiEaTEj convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 31 May 2022 15:04:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43914 "EHLO
+        id S1347997AbiEaVZG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 31 May 2022 17:25:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234487AbiEaTEi (ORCPT
+        with ESMTP id S1347988AbiEaVZC (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 31 May 2022 15:04:38 -0400
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3D56CF63
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 31 May 2022 12:04:37 -0700 (PDT)
-Received: by mail-qt1-f169.google.com with SMTP id ew15so3235550qtb.2
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 31 May 2022 12:04:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1ZeGJTUXZPxAO5jhONwtVhilmc3GtYxBhVB9MqXOe9g=;
-        b=QI5JH1H2hJekNaIiO+WZAAcR+2gwZmPqNoA4V1STAX5j0EgzbdLr8DaIiRp6+Imvf+
-         HPMyTMa7S+MmSSyu5fCGM7lKDx/2/XBaf1SjRj/egfR3hWKyQpLT7N7tflWvMp4sOiLq
-         BlYqV2AOkXotm3nUHP6y8YicqEGoVoJ5RWiSSEWwX8ZaFDWMx7QCYCjFEpiKOoRQL7Tl
-         yvlcPTijpw4EujrDKc510QMM8QAPDbNnkzzHa/9a9zBk4fbV7nwBUfm7eRshcPFytQKh
-         SG3Z17tjrVtj33fo7uDHrANRWU/oYphIAeYT5HAhvlFg+61peOHGW8esjMY0qKRGPrRl
-         1n8A==
-X-Gm-Message-State: AOAM530LnmG4N04OCFpwQVnjzIQgeBWRAWxnjZWVh3hn7DUZ2qiUKuae
-        RdsNoLmcaYwCZwf3OX+D0vvpV/JiwwCNbw==
-X-Google-Smtp-Source: ABdhPJxIGBM3ZOxeYPAEd6F/+UTLJ/9BcJDDwOzLew8YmFrpddPwWCulXxgzSvwnDQY5+vkPOts+8A==
-X-Received: by 2002:ac8:5f4c:0:b0:301:4cd2:7ddd with SMTP id y12-20020ac85f4c000000b003014cd27dddmr13151260qta.187.1654023876059;
-        Tue, 31 May 2022 12:04:36 -0700 (PDT)
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com. [209.85.219.180])
-        by smtp.gmail.com with ESMTPSA id cp8-20020a05622a420800b002f39b99f6a4sm9420981qtb.62.2022.05.31.12.04.35
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 May 2022 12:04:35 -0700 (PDT)
-Received: by mail-yb1-f180.google.com with SMTP id g4so11874109ybf.12
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 31 May 2022 12:04:35 -0700 (PDT)
-X-Received: by 2002:a05:6902:905:b0:64a:2089:f487 with SMTP id
- bu5-20020a056902090500b0064a2089f487mr61384058ybb.202.1654023864081; Tue, 31
- May 2022 12:04:24 -0700 (PDT)
+        Tue, 31 May 2022 17:25:02 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C50459A9A8
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 31 May 2022 14:25:00 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: dmitry.osipenko)
+        with ESMTPSA id 4C9F21F43F0B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1654032299;
+        bh=dWPjJiUcTEsCTwSVeYSxHnF1/ruJ13+dt9/M97DHXpY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=iw1cl93DawB1wUr9b6KkZdHCFs5+L/GBohLHlROEAOks05zME/v6MXMPk6D7ui5Yi
+         RNRHdZFdzCLwhRjjb38P9M6JexB3Wbp2yKOPr5eeU8sVg/8ntyHzURiHlZSY6J8Cm9
+         q6oV/gJyO14M2ElVzYwoEuvi7LeAOBJpJO7JVAQIQbIk2iZISrAGCD8WEks6N0mo8W
+         PABIM3KRc5wMYvZgEpozGR6zO7yQLUE2dke3U5CmMfjFhmLTkzt3Ddgs0XBxEfDRJn
+         c+JlwyAdHThzhqLupTWaB45a5dOVfxT+a6WiHu8uAbSXS41ExvvXWl05U0ZRpjuSZP
+         ldNnEXKzwDRFg==
+Message-ID: <a41c323a-5d69-0ff1-d0da-38eb55e1e4db@collabora.com>
+Date:   Wed, 1 Jun 2022 00:24:49 +0300
 MIME-Version: 1.0
-References: <20220509233235.995021-1-dmitry.osipenko@collabora.com> <20220509233235.995021-17-dmitry.osipenko@collabora.com>
-In-Reply-To: <20220509233235.995021-17-dmitry.osipenko@collabora.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 31 May 2022 21:04:12 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUFqf58F31EAGnhp_cu9k-G4Sx1cmwx-PGb3mU+6bjRnQ@mail.gmail.com>
-Message-ID: <CAMuHMdUFqf58F31EAGnhp_cu9k-G4Sx1cmwx-PGb3mU+6bjRnQ@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
 Subject: Re: [PATCH v8 16/27] m68k: Switch to new sys-off handler API
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
         Russell King <linux@armlinux.org.uk>,
@@ -79,7 +62,7 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
         "H. Peter Anvin" <hpa@zytor.com>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Juergen Gross <jgross@suse.com>,
@@ -109,102 +92,184 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
         Linux PM list <linux-pm@vger.kernel.org>,
         linux-tegra <linux-tegra@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+References: <20220509233235.995021-1-dmitry.osipenko@collabora.com>
+ <20220509233235.995021-17-dmitry.osipenko@collabora.com>
+ <CAMuHMdUFqf58F31EAGnhp_cu9k-G4Sx1cmwx-PGb3mU+6bjRnQ@mail.gmail.com>
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <CAMuHMdUFqf58F31EAGnhp_cu9k-G4Sx1cmwx-PGb3mU+6bjRnQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Dmitry,
+On 5/31/22 22:04, Geert Uytterhoeven wrote:
+> Hi Dmitry,
+> 
+> On Tue, May 10, 2022 at 1:34 AM Dmitry Osipenko
+> <dmitry.osipenko@collabora.com> wrote:
+>> Kernel now supports chained power-off handlers. Use
+>> register_power_off_handler() that registers power-off handlers and
+>> do_kernel_power_off() that invokes chained power-off handlers. Legacy
+>> pm_power_off() will be removed once all drivers will be converted to
+>> the new sys-off API.
+>>
+>> Normally arch code should adopt only the do_kernel_power_off() at first,
+>> but m68k is a special case because it uses pm_power_off() "inside out",
+>> i.e. pm_power_off() invokes machine_power_off() [in fact it does nothing],
+>> while it's machine_power_off() that should invoke the pm_power_off(), and
+>> thus, we can't convert platforms to the new API separately. There are only
+>> two platforms changed here, so it's not a big deal.
+>>
+>> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>> Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+>> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> 
+> Thanks for your patch, which is now commit f0f7e5265b3b37b0
+> ("m68k: Switch to new sys-off handler API") upstream.
+> 
+>> --- a/arch/m68k/emu/natfeat.c
+>> +++ b/arch/m68k/emu/natfeat.c
+>> @@ -15,6 +15,7 @@
+>>  #include <linux/string.h>
+>>  #include <linux/kernel.h>
+>>  #include <linux/module.h>
+>> +#include <linux/reboot.h>
+>>  #include <linux/io.h>
+>>  #include <asm/machdep.h>
+>>  #include <asm/natfeat.h>
+>> @@ -90,5 +91,5 @@ void __init nf_init(void)
+>>         pr_info("NatFeats found (%s, %lu.%lu)\n", buf, version >> 16,
+>>                 version & 0xffff);
+>>
+>> -       mach_power_off = nf_poweroff;
+>> +       register_platform_power_off(nf_poweroff);
+> 
+> Unfortunately nothing is registered, as this is called very early
+> (from setup_arch(), before the memory allocator is available.
+> Hence register_sys_off_handler() fails with -ENOMEM, and poweroff
+> stops working.
+> 
+> Possible solutions:
+>   - As at most one handler can be registered,
+>     register_platform_power_off() could use a static struct sys_off_handler
+>     instance,
+>   - Keep mach_power_off, and call register_platform_power_off() later.
+> 
+> Anything else?
+> Thanks!
+> 
+>> --- a/arch/m68k/mac/config.c
+>> +++ b/arch/m68k/mac/config.c
+>> @@ -12,6 +12,7 @@
+>>
+>>  #include <linux/errno.h>
+>>  #include <linux/module.h>
+>> +#include <linux/reboot.h>
+>>  #include <linux/types.h>
+>>  #include <linux/mm.h>
+>>  #include <linux/tty.h>
+>> @@ -140,7 +141,6 @@ void __init config_mac(void)
+>>         mach_hwclk = mac_hwclk;
+>>         mach_reset = mac_reset;
+>>         mach_halt = mac_poweroff;
+>> -       mach_power_off = mac_poweroff;
+>>  #if IS_ENABLED(CONFIG_INPUT_M68K_BEEP)
+>>         mach_beep = mac_mksound;
+>>  #endif
+>> @@ -160,6 +160,8 @@ void __init config_mac(void)
+>>
+>>         if (macintosh_config->ident == MAC_MODEL_IICI)
+>>                 mach_l2_flush = via_l2_flush;
+>> +
+>> +       register_platform_power_off(mac_poweroff);
+>>  }
+> 
+> This must have the same problem.
 
-On Tue, May 10, 2022 at 1:34 AM Dmitry Osipenko
-<dmitry.osipenko@collabora.com> wrote:
-> Kernel now supports chained power-off handlers. Use
-> register_power_off_handler() that registers power-off handlers and
-> do_kernel_power_off() that invokes chained power-off handlers. Legacy
-> pm_power_off() will be removed once all drivers will be converted to
-> the new sys-off API.
->
-> Normally arch code should adopt only the do_kernel_power_off() at first,
-> but m68k is a special case because it uses pm_power_off() "inside out",
-> i.e. pm_power_off() invokes machine_power_off() [in fact it does nothing],
-> while it's machine_power_off() that should invoke the pm_power_off(), and
-> thus, we can't convert platforms to the new API separately. There are only
-> two platforms changed here, so it's not a big deal.
->
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+The static variant should be better, IMO. I'm not sure whether other platforms won't face the same problem once they will start using register_platform_power_off(). I'll send the fix, thank you for the testing!
 
-Thanks for your patch, which is now commit f0f7e5265b3b37b0
-("m68k: Switch to new sys-off handler API") upstream.
+--- >8 ---
 
-> --- a/arch/m68k/emu/natfeat.c
-> +++ b/arch/m68k/emu/natfeat.c
-> @@ -15,6 +15,7 @@
->  #include <linux/string.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
-> +#include <linux/reboot.h>
->  #include <linux/io.h>
->  #include <asm/machdep.h>
->  #include <asm/natfeat.h>
-> @@ -90,5 +91,5 @@ void __init nf_init(void)
->         pr_info("NatFeats found (%s, %lu.%lu)\n", buf, version >> 16,
->                 version & 0xffff);
->
-> -       mach_power_off = nf_poweroff;
-> +       register_platform_power_off(nf_poweroff);
-
-Unfortunately nothing is registered, as this is called very early
-(from setup_arch(), before the memory allocator is available.
-Hence register_sys_off_handler() fails with -ENOMEM, and poweroff
-stops working.
-
-Possible solutions:
-  - As at most one handler can be registered,
-    register_platform_power_off() could use a static struct sys_off_handler
-    instance,
-  - Keep mach_power_off, and call register_platform_power_off() later.
-
-Anything else?
-Thanks!
-
-> --- a/arch/m68k/mac/config.c
-> +++ b/arch/m68k/mac/config.c
-> @@ -12,6 +12,7 @@
->
->  #include <linux/errno.h>
->  #include <linux/module.h>
-> +#include <linux/reboot.h>
->  #include <linux/types.h>
->  #include <linux/mm.h>
->  #include <linux/tty.h>
-> @@ -140,7 +141,6 @@ void __init config_mac(void)
->         mach_hwclk = mac_hwclk;
->         mach_reset = mac_reset;
->         mach_halt = mac_poweroff;
-> -       mach_power_off = mac_poweroff;
->  #if IS_ENABLED(CONFIG_INPUT_M68K_BEEP)
->         mach_beep = mac_mksound;
->  #endif
-> @@ -160,6 +160,8 @@ void __init config_mac(void)
->
->         if (macintosh_config->ident == MAC_MODEL_IICI)
->                 mach_l2_flush = via_l2_flush;
-> +
-> +       register_platform_power_off(mac_poweroff);
->  }
-
-This must have the same problem.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/kernel/reboot.c b/kernel/reboot.c
+index a091145ee710..4fea05d387dc 100644
+--- a/kernel/reboot.c
++++ b/kernel/reboot.c
+@@ -315,6 +315,37 @@ static int sys_off_notify(struct notifier_block *nb,
+ 	return handler->sys_off_cb(&data);
+ }
+ 
++static struct sys_off_handler platform_sys_off_handler;
++
++static struct sys_off_handler *alloc_sys_off_handler(int priority)
++{
++	struct sys_off_handler *handler;
++
++	/*
++	 * Platforms like m68k can't allocate sys_off handler dynamically
++	 * at the early boot time.
++	 */
++	if (priority == SYS_OFF_PRIO_PLATFORM) {
++		handler = &platform_sys_off_handler;
++		if (handler->cb_data)
++			return ERR_PTR(-EBUSY);
++	} else {
++		handler = kzalloc(sizeof(*handler), GFP_KERNEL);
++		if (!handler)
++			return ERR_PTR(-ENOMEM);
++	}
++
++	return handler;
++}
++
++static void free_sys_off_handler(struct sys_off_handler *handler)
++{
++	if (handler == &platform_sys_off_handler)
++		memset(handler, 0, sizeof(*handler));
++	else
++		kfree(handler);
++}
++
+ /**
+  *	register_sys_off_handler - Register sys-off handler
+  *	@mode: Sys-off mode
+@@ -345,9 +376,9 @@ register_sys_off_handler(enum sys_off_mode mode,
+ 	struct sys_off_handler *handler;
+ 	int err;
+ 
+-	handler = kzalloc(sizeof(*handler), GFP_KERNEL);
+-	if (!handler)
+-		return ERR_PTR(-ENOMEM);
++	handler = alloc_sys_off_handler(priority);
++	if (IS_ERR(handler))
++		return handler;
+ 
+ 	switch (mode) {
+ 	case SYS_OFF_MODE_POWER_OFF_PREPARE:
+@@ -364,7 +395,7 @@ register_sys_off_handler(enum sys_off_mode mode,
+ 		break;
+ 
+ 	default:
+-		kfree(handler);
++		free_sys_off_handler(handler);
+ 		return ERR_PTR(-EINVAL);
+ 	}
+ 
+@@ -391,7 +422,7 @@ register_sys_off_handler(enum sys_off_mode mode,
+ 	}
+ 
+ 	if (err) {
+-		kfree(handler);
++		free_sys_off_handler(handler);
+ 		return ERR_PTR(err);
+ 	}
+ 
+@@ -422,7 +453,7 @@ void unregister_sys_off_handler(struct sys_off_handler *handler)
+ 	/* sanity check, shall never happen */
+ 	WARN_ON(err);
+ 
+-	kfree(handler);
++	free_sys_off_handler(handler);
+ }
+ EXPORT_SYMBOL_GPL(unregister_sys_off_handler);
+ 
