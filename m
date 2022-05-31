@@ -2,103 +2,127 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2925EC433EF
-	for <linux-m68k@archiver.kernel.org>; Tue, 31 May 2022 02:17:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E82E2C433F5
+	for <linux-m68k@archiver.kernel.org>; Tue, 31 May 2022 06:05:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242796AbiEaCR2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 30 May 2022 22:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39640 "EHLO
+        id S244054AbiEaGFq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 31 May 2022 02:05:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234705AbiEaCR1 (ORCPT
+        with ESMTP id S238360AbiEaGFo (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 30 May 2022 22:17:27 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A46163BE8;
-        Mon, 30 May 2022 19:17:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=cZUqmeJtYaU0Pqny7S69e3JuJrm04akOK2P4y4OgcwE=; b=KTJFqrY68DyuaDw7XIfCJ8VDvb
-        ZeMfOdBkH74O6PPoKFTVEJHvd7l9Mcr+F/Lrjpj7BmmXo9Ai7PHyMCtNb4zHe4coDHxX0/F4cMj6M
-        bGoR9SUNy+azShmvFGVuroQChJfMegkGXWcRl/aH7+lh4oKpVfcI96UPxfBqFGjT4GDSJxOkb5PYL
-        3YS04a4Z5M2Zcj+pS54GlyBr6A9SG9Q44016A/pWHFsex5rjaaTnboTSJv/8lAY+hhaQZAZEdwBbk
-        yqBce6yzH+2gAy3c+LGA3oRtBZgiVkHiRHrbUSNrQhBth7/bzsc5xt1LS9/QgdfX3cSRfblKwkbQ1
-        eNCdg0Lg==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=casper.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nvrRe-004xy5-22; Tue, 31 May 2022 02:17:18 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org,
-        Angelo Dureghello <angelo@kernel-space.org>
-Subject: [PATCH] m68k: coldfire/device.c: protect FLEXCAN blocks
-Date:   Mon, 30 May 2022 19:17:12 -0700
-Message-Id: <20220531021712.6050-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.35.3
+        Tue, 31 May 2022 02:05:44 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7513915BB;
+        Mon, 30 May 2022 23:05:42 -0700 (PDT)
+Received: from [192.168.100.1] ([82.142.8.70]) by mrelayeu.kundenserver.de
+ (mreue106 [213.165.67.119]) with ESMTPSA (Nemesis) id
+ 1MOzfO-1oAHYT2AcG-00PPL4; Tue, 31 May 2022 08:05:05 +0200
+Message-ID: <64ce78bf-b81b-1eec-74f3-650a72f2874b@vivier.eu>
+Date:   Tue, 31 May 2022 08:05:03 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Content-Language: fr
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-m68k@lists.linux-m68k.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-rtc@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Alessandro Zummo <a.zummo@towertech.it>
+References: <20220406201523.243733-1-laurent@vivier.eu>
+ <20220406201523.243733-5-laurent@vivier.eu>
+ <3b783435-e734-5391-e758-d709e0462839@infradead.org>
+From:   Laurent Vivier <laurent@vivier.eu>
+Subject: Re: [PATCH v16 4/4] m68k: introduce a virtual m68k machine
+In-Reply-To: <3b783435-e734-5391-e758-d709e0462839@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:2M69cKCgAGhvU4Z/bGcKhkLwEhWFsUmCE+MqAJdvr4dlqoONtTU
+ RQJBHeLTTXHZA94FtxY0BElJEHXoWFuWGF7AmwZeiT25mssQi3qwVl/Mc/E+oDDtaqZB0yU
+ XMLrr6zRhptT4gnGp4SrefTG/+GiovC4VAvB3ox0Us0OUswiObaSU86t1A7+IDhEUtDA9X8
+ 6LPvQaAmK28DZIKRpkxTA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:MBqzMUNXwxg=:rU6kous+bRw+MQsAtRJA8m
+ nguTb1stmOwoWhTdm9ZIogkdZI9TAbqfP+/caTcVZ0f/gnGCFTciomaSvjbTtPKdsGboL939E
+ 5LEcgT2Ri7qDpMrLt+NoIYz1nqQmwRZLWRrnoG0vJKFWzq4b3nF71SJDbPTswQcKZFoQ4i7Rf
+ WZoy1BSfVD8qoj3LKxFxEjazY51pN7RC/dxRj0kxvg9w6Be8FQdq35IqRiSSqTvTqdlLK99N3
+ Hn/UAgQUW+wQuqWpEmc8DL8qQ3ARL5Ylj291NxAmUO57RG+LlzqPQ5gVhIgGt8vkq6QWcvVzF
+ bpvvWx4aPxPpe/eYA/8YSLs3cZKX18jZArsNpHb7XtY8MMOMaBBt7fi5gXRVjV/OGp9ttX2Bb
+ Nz8Z8+kghshRk+4Tfe91Rj5xyM16qAm3k1r0/mC4uEuGMlFpPH5i/xpuSkczImfWqOau/dwhC
+ drDZdNj500mFuoAaaH6xHsbDuOv8ZjotL/80jfpAUEzCfoqAq1xqrHTg4SXok8jk2wzUz8IEz
+ X86ZiVPLBaKE+IRfPyv+3i1n1fhu/7SZGRVGf7qHwiPT2kg3PjcCZFrBtoxxfGOM329lXb4jf
+ IywZ+9kYGexGheEdCl1OoZdLUEF2mTT0dKQAsyFKZYHkNZlhUh47qqcYETKstteYJvDrw/5FA
+ 3h5Wox2FY4uBhYq9z1Fmwfe6dUIBXDdU1ylf497DcWhootrFeWfPz56wI0+oD5RxC2s9CP3Xo
+ Zd4eTBiO60ZnJSPn30PBWhKMYdfi6DhUdUIBzA==
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-When CAN_FLEXCAN=y and M5441x is not set/enabled, there are build
-errors in coldfire/device.c:
+Le 31/05/2022 à 03:14, Randy Dunlap a écrit :
+> Hi--
 
-../arch/m68k/coldfire/device.c:595:26: error: 'MCFFLEXCAN_BASE0' undeclared here (not in a function); did you mean 'MCFDMA_BASE0'?
-  595 |                 .start = MCFFLEXCAN_BASE0,
-../arch/m68k/coldfire/device.c:596:43: error: 'MCFFLEXCAN_SIZE' undeclared here (not in a function)
-  596 |                 .end = MCFFLEXCAN_BASE0 + MCFFLEXCAN_SIZE,
-../arch/m68k/coldfire/device.c:600:26: error: 'MCF_IRQ_IFL0' undeclared here (not in a function); did you mean 'MCF_IRQ_I2C0'?
-  600 |                 .start = MCF_IRQ_IFL0,
-../arch/m68k/coldfire/device.c:605:26: error: 'MCF_IRQ_BOFF0' undeclared here (not in a function); did you mean 'MCF_IRQ_I2C0'?
-  605 |                 .start = MCF_IRQ_BOFF0,
-../arch/m68k/coldfire/device.c:610:26: error: 'MCF_IRQ_ERR0' undeclared here (not in a function); did you mean 'MCF_IRQ_I2C0'?
-  610 |                 .start = MCF_IRQ_ERR0,
+Hi,
 
-Protect the FLEXCAN code blocks by checking if MCFFLEXCAN_SIZE
-is defined.
+> On 4/6/22 13:15, Laurent Vivier wrote:
+>> diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
+>> index eeab4f3e6c19..188a8f8a0104 100644
+>> --- a/arch/m68k/Kconfig.machine
+>> +++ b/arch/m68k/Kconfig.machine
+>> @@ -149,6 +149,23 @@ config SUN3
+>>   
+>>   	  If you don't want to compile a kernel exclusively for a Sun 3, say N.
+>>   
+>> +config VIRT
+>> +	bool "Virtual M68k Machine support"
+>> +	depends on MMU
+>> +	select GENERIC_CLOCKEVENTS
+>> +	select GOLDFISH
+>> +	select GOLDFISH_TIMER
+>> +	select GOLDFISH_TTY
+>> +	select M68040
+>> +	select MMU_MOTOROLA if MMU
+>> +	select RTC_CLASS
+>> +	select RTC_DRV_GOLDFISH
+>> +	select TTY
+>> +	select VIRTIO_MMIO
+> 
+> This select VIRTIO_MMIO can cause a kconfig warning:
+> 
+> WARNING: unmet direct dependencies detected for VIRTIO_MMIO
+>    Depends on [n]: VIRTIO_MENU [=n] && HAS_IOMEM [=y] && HAS_DMA [=y]
 
-Fixes: 35a9f9363a89 ("m68k: m5441x: add flexcan support")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: uclinux-dev@uclinux.org
-Cc: Angelo Dureghello <angelo@kernel-space.org>
----
- arch/m68k/coldfire/device.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+In my repo, VIRTIO_MMIO has no dependency on VIRTIO_MENU:
 
---- a/arch/m68k/coldfire/device.c
-+++ b/arch/m68k/coldfire/device.c
-@@ -581,7 +581,7 @@ static struct platform_device mcf_esdhc
- };
- #endif /* MCFSDHC_BASE */
- 
--#if IS_ENABLED(CONFIG_CAN_FLEXCAN)
-+#ifdef MCFFLEXCAN_SIZE
- 
- #include <linux/can/platform/flexcan.h>
- 
-@@ -620,7 +620,7 @@ static struct platform_device mcf_flexca
- 	.resource = mcf5441x_flexcan0_resource,
- 	.dev.platform_data = &mcf5441x_flexcan_info,
- };
--#endif /* IS_ENABLED(CONFIG_CAN_FLEXCAN) */
-+#endif /* MCFFLEXCAN_SIZE */
- 
- static struct platform_device *mcf_devices[] __initdata = {
- 	&mcf_uart,
-@@ -657,7 +657,7 @@ static struct platform_device *mcf_devic
- #ifdef MCFSDHC_BASE
- 	&mcf_esdhc,
- #endif
--#if IS_ENABLED(CONFIG_CAN_FLEXCAN)
-+#ifdef MCFFLEXCAN_SIZE
- 	&mcf_flexcan0,
- #endif
- };
+./drivers/virtio/Kconfig
+config VIRTIO_MMIO
+         tristate "Platform bus driver for memory mapped virtio devices"
+         depends on HAS_IOMEM && HAS_DMA
+
+>    Selected by [y]:
+>    - VIRT [=y] && M68KCLASSIC [=y] && MMU [=y]
+
+How do you generate this warning?
+
+The first version of my patch added the VIRTIO_MENU but Geert said it's not necessary because 
+VIRTIO_MENU defaults to y.
+
+https://lore.kernel.org/lkml/CAMuHMdUFh2W-bY5Ez1aOTZQjq0=THvmOf22JdxWoNNtFLskSzw@mail.gmail.com/
+
+> 
+>> +	help
+>> +	  This options enable a pure virtual machine based on m68k,
+>> +	  VIRTIO MMIO devices and GOLDFISH interfaces (TTY, RTC, PIC)
+> 
+> The sentence above needs an ending period ('.').
+> 
+
+I agree.
+
+Thanks,
+Laurent
+
