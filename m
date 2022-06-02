@@ -2,132 +2,67 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91B35C43334
-	for <linux-m68k@archiver.kernel.org>; Thu,  2 Jun 2022 13:50:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D0AEC43334
+	for <linux-m68k@archiver.kernel.org>; Thu,  2 Jun 2022 18:09:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235153AbiFBNu3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 2 Jun 2022 09:50:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52650 "EHLO
+        id S237864AbiFBSJt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 2 Jun 2022 14:09:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235570AbiFBNu2 (ORCPT
+        with ESMTP id S237863AbiFBSJt (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 2 Jun 2022 09:50:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B122B29C107
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  2 Jun 2022 06:50:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 086C561770;
-        Thu,  2 Jun 2022 13:50:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10D5CC385A5;
-        Thu,  2 Jun 2022 13:50:21 +0000 (UTC)
-Message-ID: <25e89d5b-f3b1-1fe1-96d1-745de3c2998a@linux-m68k.org>
-Date:   Thu, 2 Jun 2022 23:50:19 +1000
+        Thu, 2 Jun 2022 14:09:49 -0400
+Received: from smtpbg.qq.com (smtpbg136.qq.com [106.55.201.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D5C29C80
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  2 Jun 2022 11:09:45 -0700 (PDT)
+X-QQ-mid: bizesmtp75t1654193368t3ree0vg
+Received: from localhost.localdomain ( [117.176.187.31])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Fri, 03 Jun 2022 02:09:21 +0800 (CST)
+X-QQ-SSF: 01000000002000B0G000B00A0000000
+X-QQ-FEAT: ddlUhmC0HYuUgOt6BCAn3RkrdkLk7QCyCdnsP2jd2sDr9WVqgjwkffivrXMrN
+        Q6HEe9zsISwvxFesHcdZrvT3zTyF6GhJ5XHNXiefGZR0Yklpd2/1q7gGIMDPIBzAbDp5WxV
+        o5xPILjYpiy4SzW9Hjk3pmDREVsjqsr0td84ba4jrgk3FLLEvNBHYZYZ+5yCuDGR1GsSOX0
+        gAEqYfRxiaejE8tjoqa4eTS74yc4F0WX5QtwmDg1v8NgWdzH9GvxJ8ynzDzSHLRkCUmW+zt
+        ZLx7Wu1ijBW7GavXfDL2ZOiAy08/A5zhKdIwo3fdVPYqMrgGNQzZDYjnWJDnZdFpVjYngCh
+        AwjPP907aN4Xuz7lWY=
+X-QQ-GoodBg: 0
+From:   Xiang wangx <wangxiang@cdjrlc.com>
+To:     gerg@linux-m68k.org
+Cc:     geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org,
+        linux-kernel@vger.kernel.org, Xiang wangx <wangxiang@cdjrlc.com>
+Subject: [PATCH] m68k: Fix syntax errors in comments
+Date:   Fri,  3 Jun 2022 02:09:19 +0800
+Message-Id: <20220602180919.4856-1-wangxiang@cdjrlc.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: arch/m68k/68000/ints.c:82:30: error: 'ISR' undeclared
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-References: <202205310707.ppwnnzce-lkp@intel.com>
- <CAMuHMdWvE=TtqHLOgcdpKGzYgg4JeBcB7YGRBq0qubFxYepULg@mail.gmail.com>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <CAMuHMdWvE=TtqHLOgcdpKGzYgg4JeBcB7YGRBq0qubFxYepULg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam7
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
+Delete the redundant word 'the'.
 
-On 2/6/22 17:23, Geert Uytterhoeven wrote:
-> On Tue, May 31, 2022 at 5:44 PM kernel test robot <lkp@intel.com> wrote:
->> First bad commit (maybe != root cause):
->>
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->> head:   8ab2afa23bd197df47819a87f0265c0ac95c5b6a
->> commit: 6b8be804ff376f6657ccdf6b29974e7c793d88c4 m68knommu: fix 68000 CPU link with no platform selected
->> date:   6 days ago
->> config: m68k-buildonly-randconfig-r004-20220530 (https://download.01.org/0day-ci/archive/20220531/202205310707.ppwnnzce-lkp@intel.com/config)
->> compiler: m68k-linux-gcc (GCC) 11.3.0
->> reproduce (this is a W=1 build):
->>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>          chmod +x ~/bin/make.cross
->>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6b8be804ff376f6657ccdf6b29974e7c793d88c4
->>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>          git fetch --no-tags linus master
->>          git checkout 6b8be804ff376f6657ccdf6b29974e7c793d88c4
->>          # save the config file
->>          mkdir build_dir && cp config build_dir/.config
->>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0 make.cross W=1 O=build_dir ARCH=m68k SHELL=/bin/bash arch/m68k/68000/
->>
->> If you fix the issue, kindly add following tag where applicable
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All errors (new ones prefixed by >>):
->>
->>     arch/m68k/68000/ints.c:77:6: warning: no previous prototype for 'process_int' [-Wmissing-prototypes]
->>        77 | void process_int(int vec, struct pt_regs *fp)
->>           |      ^~~~~~~~~~~
->>     arch/m68k/68000/ints.c: In function 'process_int':
->>>> arch/m68k/68000/ints.c:82:30: error: 'ISR' undeclared (first use in this function)
->>        82 |         unsigned long pend = ISR;
->>           |                              ^~~
->>     arch/m68k/68000/ints.c:82:30: note: each undeclared identifier is reported only once for each function it appears in
->>     arch/m68k/68000/ints.c: In function 'intc_irq_unmask':
->>>> arch/m68k/68000/ints.c:135:9: error: 'IMR' undeclared (first use in this function)
->>       135 |         IMR &= ~(1 << d->irq);
->>           |         ^~~
->>     arch/m68k/68000/ints.c: In function 'intc_irq_mask':
->>     arch/m68k/68000/ints.c:140:9: error: 'IMR' undeclared (first use in this function)
->>       140 |         IMR |= (1 << d->irq);
->>           |         ^~~
->>     arch/m68k/68000/ints.c: At top level:
->>     arch/m68k/68000/ints.c:153:13: warning: no previous prototype for 'trap_init' [-Wmissing-prototypes]
->>       153 | void __init trap_init(void)
->>           |             ^~~~~~~~~
->>     arch/m68k/68000/ints.c:172:13: warning: no previous prototype for 'init_IRQ' [-Wmissing-prototypes]
->>       172 | void __init init_IRQ(void)
->>           |             ^~~~~~~~
->>     arch/m68k/68000/ints.c: In function 'init_IRQ':
->>>> arch/m68k/68000/ints.c:176:9: error: 'IVR' undeclared (first use in this function)
->>       176 |         IVR = 0x40; /* Set DragonBall IVR (interrupt base) to 64 */
->>           |         ^~~
->>     arch/m68k/68000/ints.c:179:9: error: 'IMR' undeclared (first use in this function)
->>       179 |         IMR = ~0;
->>           |         ^~~
-> 
-> If M68000=y, but none of M68{,EZ,VZ}328 are enabled, ISR and IMR are
-> not defined. Most of the code in arch/m68k/68000/ints.c is specific
-> to the '328 series, and does not apply to plain 68000, but we can't
-> just not compile ints.c, as we do need definitions of trap_init()
-> and init_IRQ().
-> Factor out the '328 parts in dragonball.o, and keep a __weak dummy
-> init_IRQ() in ints.c?
+Signed-off-by: Xiang wangx <wangxiang@cdjrlc.com>
+---
+ arch/m68k/coldfire/intc-2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Seems like a reasonable approach. I think the 68000/m68328.c might be
-an appropriate place to put the '328 specific parts.
+diff --git a/arch/m68k/coldfire/intc-2.c b/arch/m68k/coldfire/intc-2.c
+index 995093357c59..376e37855ebd 100644
+--- a/arch/m68k/coldfire/intc-2.c
++++ b/arch/m68k/coldfire/intc-2.c
+@@ -7,7 +7,7 @@
+  * family, the 5270, 5271, 5274, 5275, and the 528x family which have two such
+  * controllers, and the 547x and 548x families which have only one of them.
+  *
+- * The external 7 fixed interrupts are part the the Edge Port unit of these
++ * The external 7 fixed interrupts are part the Edge Port unit of these
+  * ColdFire parts. They can be configured as level or edge triggered.
+  *
+  * (C) Copyright 2009-2011, Greg Ungerer <gerg@snapgear.com>
+-- 
+2.36.1
 
-I will put a patch together.
-
-Regards
-Greg
-
-
-
-> Gr{oetje,eeting}s,
-> 
->                          Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                  -- Linus Torvalds
