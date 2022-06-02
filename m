@@ -2,75 +2,127 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D74DC433EF
-	for <linux-m68k@archiver.kernel.org>; Thu,  2 Jun 2022 07:13:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CCD45C43334
+	for <linux-m68k@archiver.kernel.org>; Thu,  2 Jun 2022 07:24:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbiFBHNf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 2 Jun 2022 03:13:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44708 "EHLO
+        id S231693AbiFBHYM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 2 Jun 2022 03:24:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229935AbiFBHNb (ORCPT
+        with ESMTP id S231679AbiFBHYL (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 2 Jun 2022 03:13:31 -0400
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD42B4E
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  2 Jun 2022 00:13:27 -0700 (PDT)
-Received: by mail-qv1-f53.google.com with SMTP id i19so3011311qvu.13
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 02 Jun 2022 00:13:27 -0700 (PDT)
+        Thu, 2 Jun 2022 03:24:11 -0400
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B791F98D1
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  2 Jun 2022 00:24:10 -0700 (PDT)
+Received: by mail-qv1-f46.google.com with SMTP id i19so3022509qvu.13
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 02 Jun 2022 00:24:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=DTx4+fJmVhIyXMyNirvzWdPuJKhlL8UJzLpiO+xxcus=;
-        b=YvrgGMB+aU7yNko4KxtfQWHyy9qEN8xZ6/AmZ+XrgcSjh1MvVB8KNAqKafoieaF7pk
-         nn9pZZvj5+c505XDC32XUy3hxLiMpPMD1JpzncKnYxQwZtzCBFtzkxLAnNpSXbJi+qRN
-         gSte+6agxdOo/aKrVkCgKZbuJ3RwxF+8y5cRulAgB9CPoQBmdjmI5Bj6CXYzUOI2g+Lw
-         54MFuGJOXVCQ3Tvo2bLiW+NzOk/cFuqJAoD84RNwKmHPqMIFzR+dV4eiwNz75NNmk4kp
-         1rAAvTP+4hOM3XppMlBIQ8iEMCktNWlkQuR2vcgVGdsrtG8AQtmOVd9GJ75VgHRygBUp
-         4Qog==
-X-Gm-Message-State: AOAM532ET0mBbG2T809PAeb96hP1D8HlZar/KFjwizjUQS86o/TPVY5w
-        MQKVDzWSEU4hxRVaAtgJQVKKIN16I6181g==
-X-Google-Smtp-Source: ABdhPJzI+Y1eoZJIwhaNTBSNf/c87Eb4c0PZH6rR31eJiXxzEvPSl7BtsCIlQXygTPNc8eSECiiKig==
-X-Received: by 2002:a05:6214:5005:b0:461:c843:98e7 with SMTP id jo5-20020a056214500500b00461c84398e7mr2441596qvb.16.1654154006661;
-        Thu, 02 Jun 2022 00:13:26 -0700 (PDT)
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
-        by smtp.gmail.com with ESMTPSA id u26-20020a05620a121a00b0069fd21d0b09sm2686615qkj.0.2022.06.02.00.13.26
+        bh=4ttVAIF+wGdlpO6DJPONxYdz8jQOa/xA/mWMkzgLc+k=;
+        b=DzGx3elCnjBCThtiBBA+ddmuO5ClI7y0zVgtC/BzQTY/T6R4BfcVkyfzJwt7SJTcyF
+         rbcEqYXnov1uUsHEciY9lsToYtqSM3jF0YUDTUnL5m2xui57pGnSySoGzwfckXtmWB3C
+         ZDhPRaChFLq8wy2fUjyNtMqBs13uum0ZlulhXPKGwJGxf6eg4aIsHlXrlB2JzaNmxsQU
+         I63+I5IwSR+8t9I0eJbRncnZarSJUAy8cp0fHFCTw39xqIcJZN6NwczCV6ERf7k2jDO3
+         W66dU5e7COumrnuQ0dxoX5n84Pts/HcnAN2lcRPV8x3N2W7AoVzrsEzGvZz8xgu/K/2H
+         1VIw==
+X-Gm-Message-State: AOAM533su+4cl7jAoV4S39KuYnNYBOwaPRwzxDv34BKDHNm6JMsNepSA
+        wyOEFm6VbIuMh9dLNfbXIOFHCBeFHWdC4A==
+X-Google-Smtp-Source: ABdhPJwI/gF6A7kguaJCwPUO8jlnaSAuAtjwV30mykfOV9qLMLWdjjwR9jve2IefiDO6ibwr9O6TLA==
+X-Received: by 2002:ad4:5c42:0:b0:464:44d2:783c with SMTP id a2-20020ad45c42000000b0046444d2783cmr19518939qva.97.1654154649579;
+        Thu, 02 Jun 2022 00:24:09 -0700 (PDT)
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
+        by smtp.gmail.com with ESMTPSA id g19-20020ac87753000000b00304b74ae3a2sm2296538qtu.83.2022.06.02.00.24.09
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Jun 2022 00:13:26 -0700 (PDT)
-Received: by mail-yb1-f174.google.com with SMTP id h75so6840084ybg.4
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 02 Jun 2022 00:13:26 -0700 (PDT)
-X-Received: by 2002:a05:6902:905:b0:64a:2089:f487 with SMTP id
- bu5-20020a056902090500b0064a2089f487mr3810398ybb.202.1654154006045; Thu, 02
- Jun 2022 00:13:26 -0700 (PDT)
+        Thu, 02 Jun 2022 00:24:09 -0700 (PDT)
+Received: by mail-yb1-f178.google.com with SMTP id g4so6833989ybf.12
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 02 Jun 2022 00:24:09 -0700 (PDT)
+X-Received: by 2002:a25:cc53:0:b0:65c:b19c:fac1 with SMTP id
+ l80-20020a25cc53000000b0065cb19cfac1mr3588936ybf.89.1654154648804; Thu, 02
+ Jun 2022 00:24:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220531174514.1586248-1-laurent@vivier.eu>
-In-Reply-To: <20220531174514.1586248-1-laurent@vivier.eu>
+References: <202205310707.ppwnnzce-lkp@intel.com>
+In-Reply-To: <202205310707.ppwnnzce-lkp@intel.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 2 Jun 2022 09:13:14 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUbUZU3YA6nDC_LDAfUYQVmHTuCzrCfxDqwF=ZZyR5fqw@mail.gmail.com>
-Message-ID: <CAMuHMdUbUZU3YA6nDC_LDAfUYQVmHTuCzrCfxDqwF=ZZyR5fqw@mail.gmail.com>
-Subject: Re: [PATCH] m68k: virt: Kconfig minor fixes
-To:     Laurent Vivier <laurent@vivier.eu>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 2 Jun 2022 09:23:57 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWvE=TtqHLOgcdpKGzYgg4JeBcB7YGRBq0qubFxYepULg@mail.gmail.com>
+Message-ID: <CAMuHMdWvE=TtqHLOgcdpKGzYgg4JeBcB7YGRBq0qubFxYepULg@mail.gmail.com>
+Subject: Re: arch/m68k/68000/ints.c:82:30: error: 'ISR' undeclared
+To:     kernel test robot <lkp@intel.com>
+Cc:     Greg Ungerer <gerg@linux-m68k.org>, kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, May 31, 2022 at 7:45 PM Laurent Vivier <laurent@vivier.eu> wrote:
-> Select VIRTIO_MENU as it is needed by VIRTIO_MMIO.
+On Tue, May 31, 2022 at 5:44 PM kernel test robot <lkp@intel.com> wrote:
+> First bad commit (maybe != root cause):
 >
-> Add an ending period at the end the virt machine help message.
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   8ab2afa23bd197df47819a87f0265c0ac95c5b6a
+> commit: 6b8be804ff376f6657ccdf6b29974e7c793d88c4 m68knommu: fix 68000 CPU link with no platform selected
+> date:   6 days ago
+> config: m68k-buildonly-randconfig-r004-20220530 (https://download.01.org/0day-ci/archive/20220531/202205310707.ppwnnzce-lkp@intel.com/config)
+> compiler: m68k-linux-gcc (GCC) 11.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6b8be804ff376f6657ccdf6b29974e7c793d88c4
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 6b8be804ff376f6657ccdf6b29974e7c793d88c4
+>         # save the config file
+>         mkdir build_dir && cp config build_dir/.config
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0 make.cross W=1 O=build_dir ARCH=m68k SHELL=/bin/bash arch/m68k/68000/
 >
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Laurent Vivier <laurent@vivier.eu>
+> If you fix the issue, kindly add following tag where applicable
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>    arch/m68k/68000/ints.c:77:6: warning: no previous prototype for 'process_int' [-Wmissing-prototypes]
+>       77 | void process_int(int vec, struct pt_regs *fp)
+>          |      ^~~~~~~~~~~
+>    arch/m68k/68000/ints.c: In function 'process_int':
+> >> arch/m68k/68000/ints.c:82:30: error: 'ISR' undeclared (first use in this function)
+>       82 |         unsigned long pend = ISR;
+>          |                              ^~~
+>    arch/m68k/68000/ints.c:82:30: note: each undeclared identifier is reported only once for each function it appears in
+>    arch/m68k/68000/ints.c: In function 'intc_irq_unmask':
+> >> arch/m68k/68000/ints.c:135:9: error: 'IMR' undeclared (first use in this function)
+>      135 |         IMR &= ~(1 << d->irq);
+>          |         ^~~
+>    arch/m68k/68000/ints.c: In function 'intc_irq_mask':
+>    arch/m68k/68000/ints.c:140:9: error: 'IMR' undeclared (first use in this function)
+>      140 |         IMR |= (1 << d->irq);
+>          |         ^~~
+>    arch/m68k/68000/ints.c: At top level:
+>    arch/m68k/68000/ints.c:153:13: warning: no previous prototype for 'trap_init' [-Wmissing-prototypes]
+>      153 | void __init trap_init(void)
+>          |             ^~~~~~~~~
+>    arch/m68k/68000/ints.c:172:13: warning: no previous prototype for 'init_IRQ' [-Wmissing-prototypes]
+>      172 | void __init init_IRQ(void)
+>          |             ^~~~~~~~
+>    arch/m68k/68000/ints.c: In function 'init_IRQ':
+> >> arch/m68k/68000/ints.c:176:9: error: 'IVR' undeclared (first use in this function)
+>      176 |         IVR = 0x40; /* Set DragonBall IVR (interrupt base) to 64 */
+>          |         ^~~
+>    arch/m68k/68000/ints.c:179:9: error: 'IMR' undeclared (first use in this function)
+>      179 |         IMR = ~0;
+>          |         ^~~
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v5.20 branch.
+If M68000=y, but none of M68{,EZ,VZ}328 are enabled, ISR and IMR are
+not defined. Most of the code in arch/m68k/68000/ints.c is specific
+to the '328 series, and does not apply to plain 68000, but we can't
+just not compile ints.c, as we do need definitions of trap_init()
+and init_IRQ().
+Factor out the '328 parts in dragonball.o, and keep a __weak dummy
+init_IRQ() in ints.c?
 
 Gr{oetje,eeting}s,
 
