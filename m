@@ -2,110 +2,190 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30E4FC433EF
-	for <linux-m68k@archiver.kernel.org>; Mon,  6 Jun 2022 03:37:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00A32CCA473
+	for <linux-m68k@archiver.kernel.org>; Mon,  6 Jun 2022 08:42:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbiFFDhV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 5 Jun 2022 23:37:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42654 "EHLO
+        id S232280AbiFFImD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 6 Jun 2022 04:42:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230081AbiFFDhT (ORCPT
+        with ESMTP id S232343AbiFFIlb (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 5 Jun 2022 23:37:19 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DEC8554B5
-        for <linux-m68k@lists.linux-m68k.org>; Sun,  5 Jun 2022 20:37:17 -0700 (PDT)
+        Mon, 6 Jun 2022 04:41:31 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB87DE33C
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Jun 2022 01:41:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B0E5AB80E80;
-        Mon,  6 Jun 2022 03:37:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35278C385A9;
-        Mon,  6 Jun 2022 03:37:13 +0000 (UTC)
-Message-ID: <6f553593-2dc5-a631-628b-51ecbdd0290a@linux-m68k.org>
-Date:   Mon, 6 Jun 2022 13:37:10 +1000
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2227CB8123D;
+        Mon,  6 Jun 2022 08:41:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35532C34119;
+        Mon,  6 Jun 2022 08:41:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654504884;
+        bh=sDOLXYQR0wOt3J1gNTtbMOI7sGHc/kgPyuM8RXutK6o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SkDVuZeDrFJ5adNIjdWczP7EVnrZrEp+b8yU8nbse1AbBTmXLuujgQXqukIPdpKP3
+         jSZ31jnOZ/+J/T/tRB28RAeo8NGiBd/TKqQnFCLbG+oG/dtT3GCqi/W3IS2bDK+hNi
+         i0jDa5e9iaXrvGUPpvloldIKntp4YGFDBwTdkXFsEdbaMrGtGPlL0fuvuGwxCMBdVV
+         76gpV0DFczhbrMGSff3e/ZOmlqAnKy+kOhfKLgF12HFzcDvn0yARasaaVFnbObBUAl
+         uX74CL7XSW/CloOp4Tr2E8Z8nhD9gE9XMoP2apFoo0WvB+vAsfa8d7hBmEvkZ2XDcE
+         aSXARa3ZlYuZg==
+From:   Arnd Bergmann <arnd@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jakub Kicinski <kuba@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux-foundation.org,
+        Khalid Aziz <khalid@gonehiking.org>,
+        linux-scsi@vger.kernel.org,
+        Manohar Vanga <manohar.vanga@gmail.com>,
+        Martyn Welch <martyn@welchs.me.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-arch@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-parisc@vger.kernel.org, Denis Efremov <efremov@linux.com>
+Subject: [PATCH 0/6] phase out CONFIG_VIRT_TO_BUS
+Date:   Mon,  6 Jun 2022 10:41:03 +0200
+Message-Id: <20220606084109.4108188-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH] m68k: coldfire/device.c: protect FLEXCAN blocks
-Content-Language: en-US
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org,
-        Angelo Dureghello <angelo@kernel-space.org>
-References: <20220531021712.6050-1-rdunlap@infradead.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <20220531021712.6050-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Randy,
+From: Arnd Bergmann <arnd@arndb.de>
 
-On 31/5/22 12:17, Randy Dunlap wrote:
-> When CAN_FLEXCAN=y and M5441x is not set/enabled, there are build
-> errors in coldfire/device.c:
-> 
-> ../arch/m68k/coldfire/device.c:595:26: error: 'MCFFLEXCAN_BASE0' undeclared here (not in a function); did you mean 'MCFDMA_BASE0'?
->    595 |                 .start = MCFFLEXCAN_BASE0,
-> ../arch/m68k/coldfire/device.c:596:43: error: 'MCFFLEXCAN_SIZE' undeclared here (not in a function)
->    596 |                 .end = MCFFLEXCAN_BASE0 + MCFFLEXCAN_SIZE,
-> ../arch/m68k/coldfire/device.c:600:26: error: 'MCF_IRQ_IFL0' undeclared here (not in a function); did you mean 'MCF_IRQ_I2C0'?
->    600 |                 .start = MCF_IRQ_IFL0,
-> ../arch/m68k/coldfire/device.c:605:26: error: 'MCF_IRQ_BOFF0' undeclared here (not in a function); did you mean 'MCF_IRQ_I2C0'?
->    605 |                 .start = MCF_IRQ_BOFF0,
-> ../arch/m68k/coldfire/device.c:610:26: error: 'MCF_IRQ_ERR0' undeclared here (not in a function); did you mean 'MCF_IRQ_I2C0'?
->    610 |                 .start = MCF_IRQ_ERR0,
-> 
-> Protect the FLEXCAN code blocks by checking if MCFFLEXCAN_SIZE
-> is defined.
-> 
-> Fixes: 35a9f9363a89 ("m68k: m5441x: add flexcan support")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Greg Ungerer <gerg@linux-m68k.org>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: uclinux-dev@uclinux.org
-> Cc: Angelo Dureghello <angelo@kernel-space.org>
+The virt_to_bus/bus_to_virt interface has been deprecated for
+decades. After Jakub Kicinski put a lot of work into cleaning out the
+network drivers using them, there are only a couple of other drivers
+left, which can all be removed or otherwise cleaned up, to remove the
+old interface for good.
 
-Thanks. Added to the m68knommu git tree, for-next branch.
+Any out of tree drivers using virt_to_bus() should be converted to
+using the dma-mapping interfaces, typically dma_alloc_coherent()
+or dma_map_single()).
 
-Regards
-Greg
+There are a few m68k and ppc32 specific drivers that keep using the
+interfaces, but these are all guarded with architecture-specific
+Kconfig dependencies, and are not actually broken.
 
+There are still a number of drivers that are using virt_to_phys()
+and phys_to_virt() in place of dma-mapping operations, and these
+are often broken, but they are out of scope for this series.
 
-> ---
->   arch/m68k/coldfire/device.c |    6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> --- a/arch/m68k/coldfire/device.c
-> +++ b/arch/m68k/coldfire/device.c
-> @@ -581,7 +581,7 @@ static struct platform_device mcf_esdhc
->   };
->   #endif /* MCFSDHC_BASE */
->   
-> -#if IS_ENABLED(CONFIG_CAN_FLEXCAN)
-> +#ifdef MCFFLEXCAN_SIZE
->   
->   #include <linux/can/platform/flexcan.h>
->   
-> @@ -620,7 +620,7 @@ static struct platform_device mcf_flexca
->   	.resource = mcf5441x_flexcan0_resource,
->   	.dev.platform_data = &mcf5441x_flexcan_info,
->   };
-> -#endif /* IS_ENABLED(CONFIG_CAN_FLEXCAN) */
-> +#endif /* MCFFLEXCAN_SIZE */
->   
->   static struct platform_device *mcf_devices[] __initdata = {
->   	&mcf_uart,
-> @@ -657,7 +657,7 @@ static struct platform_device *mcf_devic
->   #ifdef MCFSDHC_BASE
->   	&mcf_esdhc,
->   #endif
-> -#if IS_ENABLED(CONFIG_CAN_FLEXCAN)
-> +#ifdef MCFFLEXCAN_SIZE
->   	&mcf_flexcan0,
->   #endif
->   };
+      Arnd
+
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Christoph Hellwig <hch@infradead.org> # dma-mapping
+Cc: Marek Szyprowski <m.szyprowski@samsung.com> # dma-mapping
+Cc: Robin Murphy <robin.murphy@arm.com> # dma-mapping
+Cc: iommu@lists.linux-foundation.org
+Cc: Khalid Aziz <khalid@gonehiking.org> # buslogic
+Cc: linux-scsi@vger.kernel.org
+Cc: Manohar Vanga <manohar.vanga@gmail.com> # vme
+Cc: Martyn Welch <martyn@welchs.me.uk> # vme
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org> # vme
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-arch@vger.kernel.org
+Cc: linux-alpha@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-parisc@vger.kernel.org
+Cc: Denis Efremov <efremov@linux.com> # floppy
+
+Arnd Bergmann (6):
+  vme: remove ca91cx42 Universe-II support
+  vme: move back to staging
+  media: sta2x11: remove VIRT_TO_BUS dependency
+  scsi: dpt_i2o: drop stale VIRT_TO_BUS dependency
+  scsi: remove stale BusLogic driver
+  arch/*/: remove CONFIG_VIRT_TO_BUS
+
+ .../core-api/bus-virt-phys-mapping.rst        |  220 -
+ Documentation/core-api/dma-api-howto.rst      |   14 -
+ Documentation/core-api/index.rst              |    1 -
+ Documentation/driver-api/vme.rst              |    4 +-
+ Documentation/scsi/BusLogic.rst               |  581 --
+ Documentation/scsi/FlashPoint.rst             |  176 -
+ .../translations/zh_CN/core-api/index.rst     |    1 -
+ MAINTAINERS                                   |   11 +-
+ arch/alpha/Kconfig                            |    1 -
+ arch/alpha/include/asm/floppy.h               |    2 +-
+ arch/alpha/include/asm/io.h                   |    8 +-
+ arch/ia64/Kconfig                             |    1 -
+ arch/ia64/include/asm/io.h                    |    8 -
+ arch/m68k/Kconfig                             |    1 -
+ arch/m68k/include/asm/virtconvert.h           |    4 +-
+ arch/microblaze/Kconfig                       |    1 -
+ arch/microblaze/include/asm/io.h              |    2 -
+ arch/mips/Kconfig                             |    1 -
+ arch/mips/include/asm/io.h                    |    9 -
+ arch/parisc/Kconfig                           |    1 -
+ arch/parisc/include/asm/floppy.h              |    4 +-
+ arch/parisc/include/asm/io.h                  |    2 -
+ arch/powerpc/Kconfig                          |    1 -
+ arch/powerpc/include/asm/io.h                 |    2 -
+ arch/riscv/include/asm/page.h                 |    1 -
+ arch/x86/Kconfig                              |    1 -
+ arch/x86/include/asm/io.h                     |    9 -
+ arch/xtensa/Kconfig                           |    1 -
+ arch/xtensa/include/asm/io.h                  |    3 -
+ drivers/Kconfig                               |    2 -
+ drivers/Makefile                              |    1 -
+ drivers/media/pci/sta2x11/Kconfig             |    2 +-
+ drivers/scsi/BusLogic.c                       | 3727 --------
+ drivers/scsi/BusLogic.h                       | 1284 ---
+ drivers/scsi/FlashPoint.c                     | 7560 -----------------
+ drivers/scsi/Kconfig                          |   26 +-
+ drivers/scsi/dpt_i2o.c                        |    4 +-
+ drivers/staging/vme_user/Kconfig              |   27 +
+ drivers/staging/vme_user/Makefile             |    3 +
+ drivers/{vme => staging/vme_user}/vme.c       |    2 +-
+ .../linux => drivers/staging/vme_user}/vme.h  |    0
+ .../{vme => staging/vme_user}/vme_bridge.h    |    2 +-
+ .../bridges => staging/vme_user}/vme_fake.c   |    4 +-
+ .../bridges => staging/vme_user}/vme_tsi148.c |    4 +-
+ .../bridges => staging/vme_user}/vme_tsi148.h |    0
+ drivers/staging/vme_user/vme_user.c           |    2 +-
+ drivers/vme/Kconfig                           |   18 -
+ drivers/vme/Makefile                          |    8 -
+ drivers/vme/boards/Kconfig                    |   10 -
+ drivers/vme/boards/Makefile                   |    6 -
+ drivers/vme/boards/vme_vmivme7805.c           |  106 -
+ drivers/vme/boards/vme_vmivme7805.h           |   33 -
+ drivers/vme/bridges/Kconfig                   |   24 -
+ drivers/vme/bridges/Makefile                  |    4 -
+ drivers/vme/bridges/vme_ca91cx42.c            | 1928 -----
+ drivers/vme/bridges/vme_ca91cx42.h            |  579 --
+ include/asm-generic/io.h                      |   14 -
+ mm/Kconfig                                    |    8 -
+ 58 files changed, 54 insertions(+), 16405 deletions(-)
+ delete mode 100644 Documentation/core-api/bus-virt-phys-mapping.rst
+ delete mode 100644 Documentation/scsi/BusLogic.rst
+ delete mode 100644 Documentation/scsi/FlashPoint.rst
+ delete mode 100644 drivers/scsi/BusLogic.c
+ delete mode 100644 drivers/scsi/BusLogic.h
+ delete mode 100644 drivers/scsi/FlashPoint.c
+ rename drivers/{vme => staging/vme_user}/vme.c (99%)
+ rename {include/linux => drivers/staging/vme_user}/vme.h (100%)
+ rename drivers/{vme => staging/vme_user}/vme_bridge.h (99%)
+ rename drivers/{vme/bridges => staging/vme_user}/vme_fake.c (99%)
+ rename drivers/{vme/bridges => staging/vme_user}/vme_tsi148.c (99%)
+ rename drivers/{vme/bridges => staging/vme_user}/vme_tsi148.h (100%)
+ delete mode 100644 drivers/vme/Kconfig
+ delete mode 100644 drivers/vme/Makefile
+ delete mode 100644 drivers/vme/boards/Kconfig
+ delete mode 100644 drivers/vme/boards/Makefile
+ delete mode 100644 drivers/vme/boards/vme_vmivme7805.c
+ delete mode 100644 drivers/vme/boards/vme_vmivme7805.h
+ delete mode 100644 drivers/vme/bridges/Kconfig
+ delete mode 100644 drivers/vme/bridges/Makefile
+ delete mode 100644 drivers/vme/bridges/vme_ca91cx42.c
+ delete mode 100644 drivers/vme/bridges/vme_ca91cx42.h
+
+-- 
+2.29.2
+
