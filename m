@@ -2,95 +2,110 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80D8BC433EF
-	for <linux-m68k@archiver.kernel.org>; Thu,  2 Jun 2022 19:10:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30E4FC433EF
+	for <linux-m68k@archiver.kernel.org>; Mon,  6 Jun 2022 03:37:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238416AbiFBTKm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 2 Jun 2022 15:10:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57190 "EHLO
+        id S229961AbiFFDhV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 5 Jun 2022 23:37:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238427AbiFBTKm (ORCPT
+        with ESMTP id S230081AbiFFDhT (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 2 Jun 2022 15:10:42 -0400
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EE0B2706
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  2 Jun 2022 12:10:41 -0700 (PDT)
-Received: by mail-qt1-f180.google.com with SMTP id x7so4070680qta.6
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 02 Jun 2022 12:10:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XtWDo4MTVxUub0OsqsFcXGlMn8SJu8w5e+LETPN1X5w=;
-        b=xHyVLEkYU/GVFq/95e6UI2xO4fGgGUULrDZowHZrhCO+V9AF6YXYAWHOTcXYlNVXzv
-         qRDdo9Y0fthm9MOSpJMiXdC0QVtl3lcOrNxZP+eWYUkIJ8kXl9tYh/0LwBQvFsPuIL6P
-         Xaor7UaRFmoy4zAd8wSrycFF8hfV8jBlr5y+hNkG2sY8tXHx+GRvHrgLWw195i+t7l/j
-         vKdVEaa+HZIO5MKr9WoF+5dbyVgHRR/syADahZR5lMB6y1ujshTVTZS+Xk6uCZCsXe5T
-         wETYNd0zj8G6SCxpojTPCL9qmHeBSTJjN9oxqtj/w/m5xJJMRw0PWWlIKmKcp9yCRzQF
-         WtnA==
-X-Gm-Message-State: AOAM531kZfY8E/5pL0VVi6UDXul6fZSiUk8arL/XFi2J6MK6Hkez4Roi
-        26/WVsguS65IpmWI/stOim1mmaR1Yzq4RA==
-X-Google-Smtp-Source: ABdhPJx9mAwlcWcjVhPLMZaz5Dvlpdb8PLBEy5rZHGrm/BXie4Z6xhPil4zLjuIkDD7T6nZ4aLV8xA==
-X-Received: by 2002:a05:622a:a:b0:304:da33:ef45 with SMTP id x10-20020a05622a000a00b00304da33ef45mr1939196qtw.411.1654197039879;
-        Thu, 02 Jun 2022 12:10:39 -0700 (PDT)
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
-        by smtp.gmail.com with ESMTPSA id x16-20020a376310000000b0069fc13ce209sm3865023qkb.58.2022.06.02.12.10.39
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Jun 2022 12:10:39 -0700 (PDT)
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-30ce6492a60so61247077b3.8
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 02 Jun 2022 12:10:39 -0700 (PDT)
-X-Received: by 2002:a0d:f801:0:b0:30f:f716:2950 with SMTP id
- i1-20020a0df801000000b0030ff7162950mr3084004ywf.358.1654197038940; Thu, 02
- Jun 2022 12:10:38 -0700 (PDT)
+        Sun, 5 Jun 2022 23:37:19 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DEC8554B5
+        for <linux-m68k@lists.linux-m68k.org>; Sun,  5 Jun 2022 20:37:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B0E5AB80E80;
+        Mon,  6 Jun 2022 03:37:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35278C385A9;
+        Mon,  6 Jun 2022 03:37:13 +0000 (UTC)
+Message-ID: <6f553593-2dc5-a631-628b-51ecbdd0290a@linux-m68k.org>
+Date:   Mon, 6 Jun 2022 13:37:10 +1000
 MIME-Version: 1.0
-References: <20220602180919.4856-1-wangxiang@cdjrlc.com>
-In-Reply-To: <20220602180919.4856-1-wangxiang@cdjrlc.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 2 Jun 2022 21:10:27 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWroxsXvgon34voezjW5HE8mcqB_FEZY5DXi0z_CBpfWg@mail.gmail.com>
-Message-ID: <CAMuHMdWroxsXvgon34voezjW5HE8mcqB_FEZY5DXi0z_CBpfWg@mail.gmail.com>
-Subject: Re: [PATCH] m68k: Fix syntax errors in comments
-To:     Xiang wangx <wangxiang@cdjrlc.com>
-Cc:     Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH] m68k: coldfire/device.c: protect FLEXCAN blocks
+Content-Language: en-US
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org,
+        Angelo Dureghello <angelo@kernel-space.org>
+References: <20220531021712.6050-1-rdunlap@infradead.org>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <20220531021712.6050-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Xiang,
+Hi Randy,
 
-On Thu, Jun 2, 2022 at 8:09 PM Xiang wangx <wangxiang@cdjrlc.com> wrote:
-> Delete the redundant word 'the'.
->
-> Signed-off-by: Xiang wangx <wangxiang@cdjrlc.com>
+On 31/5/22 12:17, Randy Dunlap wrote:
+> When CAN_FLEXCAN=y and M5441x is not set/enabled, there are build
+> errors in coldfire/device.c:
+> 
+> ../arch/m68k/coldfire/device.c:595:26: error: 'MCFFLEXCAN_BASE0' undeclared here (not in a function); did you mean 'MCFDMA_BASE0'?
+>    595 |                 .start = MCFFLEXCAN_BASE0,
+> ../arch/m68k/coldfire/device.c:596:43: error: 'MCFFLEXCAN_SIZE' undeclared here (not in a function)
+>    596 |                 .end = MCFFLEXCAN_BASE0 + MCFFLEXCAN_SIZE,
+> ../arch/m68k/coldfire/device.c:600:26: error: 'MCF_IRQ_IFL0' undeclared here (not in a function); did you mean 'MCF_IRQ_I2C0'?
+>    600 |                 .start = MCF_IRQ_IFL0,
+> ../arch/m68k/coldfire/device.c:605:26: error: 'MCF_IRQ_BOFF0' undeclared here (not in a function); did you mean 'MCF_IRQ_I2C0'?
+>    605 |                 .start = MCF_IRQ_BOFF0,
+> ../arch/m68k/coldfire/device.c:610:26: error: 'MCF_IRQ_ERR0' undeclared here (not in a function); did you mean 'MCF_IRQ_I2C0'?
+>    610 |                 .start = MCF_IRQ_ERR0,
+> 
+> Protect the FLEXCAN code blocks by checking if MCFFLEXCAN_SIZE
+> is defined.
+> 
+> Fixes: 35a9f9363a89 ("m68k: m5441x: add flexcan support")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Greg Ungerer <gerg@linux-m68k.org>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: linux-m68k@lists.linux-m68k.org
+> Cc: uclinux-dev@uclinux.org
+> Cc: Angelo Dureghello <angelo@kernel-space.org>
 
-Thanks for your patch!
+Thanks. Added to the m68knommu git tree, for-next branch.
 
-> --- a/arch/m68k/coldfire/intc-2.c
-> +++ b/arch/m68k/coldfire/intc-2.c
-> @@ -7,7 +7,7 @@
->   * family, the 5270, 5271, 5274, 5275, and the 528x family which have two such
->   * controllers, and the 547x and 548x families which have only one of them.
->   *
-> - * The external 7 fixed interrupts are part the the Edge Port unit of these
-> + * The external 7 fixed interrupts are part the Edge Port unit of these
+Regards
+Greg
 
-I think "the the" should be replaced by "of the" instead.
 
->   * ColdFire parts. They can be configured as level or edge triggered.
->   *
->   * (C) Copyright 2009-2011, Greg Ungerer <gerg@snapgear.com>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> ---
+>   arch/m68k/coldfire/device.c |    6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> --- a/arch/m68k/coldfire/device.c
+> +++ b/arch/m68k/coldfire/device.c
+> @@ -581,7 +581,7 @@ static struct platform_device mcf_esdhc
+>   };
+>   #endif /* MCFSDHC_BASE */
+>   
+> -#if IS_ENABLED(CONFIG_CAN_FLEXCAN)
+> +#ifdef MCFFLEXCAN_SIZE
+>   
+>   #include <linux/can/platform/flexcan.h>
+>   
+> @@ -620,7 +620,7 @@ static struct platform_device mcf_flexca
+>   	.resource = mcf5441x_flexcan0_resource,
+>   	.dev.platform_data = &mcf5441x_flexcan_info,
+>   };
+> -#endif /* IS_ENABLED(CONFIG_CAN_FLEXCAN) */
+> +#endif /* MCFFLEXCAN_SIZE */
+>   
+>   static struct platform_device *mcf_devices[] __initdata = {
+>   	&mcf_uart,
+> @@ -657,7 +657,7 @@ static struct platform_device *mcf_devic
+>   #ifdef MCFSDHC_BASE
+>   	&mcf_esdhc,
+>   #endif
+> -#if IS_ENABLED(CONFIG_CAN_FLEXCAN)
+> +#ifdef MCFFLEXCAN_SIZE
+>   	&mcf_flexcan0,
+>   #endif
+>   };
