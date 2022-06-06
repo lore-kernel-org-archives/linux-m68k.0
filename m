@@ -2,121 +2,144 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCB9AC433EF
-	for <linux-m68k@archiver.kernel.org>; Mon,  6 Jun 2022 17:19:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E9B3EC433EF
+	for <linux-m68k@archiver.kernel.org>; Mon,  6 Jun 2022 20:59:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbiFFRTH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 6 Jun 2022 13:19:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53692 "EHLO
+        id S233100AbiFFU7z (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 6 Jun 2022 16:59:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbiFFRSy (ORCPT
+        with ESMTP id S230009AbiFFU7s (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 6 Jun 2022 13:18:54 -0400
-Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F7E151316
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Jun 2022 10:17:53 -0700 (PDT)
-Received: by mail-il1-f182.google.com with SMTP id u2so11467073iln.2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 06 Jun 2022 10:17:53 -0700 (PDT)
+        Mon, 6 Jun 2022 16:59:48 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE02939F0
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Jun 2022 13:48:58 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id 15so6617177qki.6
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 06 Jun 2022 13:48:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=g2dcvEx5ujIfq/vGwsQoEKMbkEYSqcC+pGjcA0dBu1c=;
+        b=f7b0v5dv8hmLnBlzL8WyYq5cOW64Y5WX7Dmpl69JKaPauL++ld78WKF8ntff7E3FD9
+         /EFPnKoGaHbNkPIgpiRh5FlgefHuwLc1yxNkOW+bHut9SVnVZCbu/JkykiPElo5zPWjp
+         nCuHLbsnuv21eFXD2iNnywm2Hbn427FK25GFy6T1JFuumczjXmgtp3nChf3HO/XhNBhM
+         NXjSU4JD0/Av3t8AAMTU1yL794U7NXS8pa6qxIcfy7ouTJCp/SF65MboQcoKMXA5+/fk
+         R0q5tIVK+/ksEV405xlxflOCs1qdnp/FFVTP6I8k8VtwErnFZfCokgUB0civbDGx+Ib2
+         7GIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=HOgnxEn2ntmtyghL8kOb8yKeTcYGElnyCDEZZ25iRQw=;
-        b=COiKh8PUeAr3CK/7kv70rydEIEyGCCadgVJ/sBovz4FT4THvIVc7B0nALuQyEZCbyl
-         wm1In06nbUERnItZIgnc0jyCZySl6Sr6n36R0vt1h9RezW87Ib46NtKFVYrwdR3ZAGM+
-         UlZaSOFYfZQyL6ed+eFJ7Etf39IPXlsRiN4a/i5JNVa97y9VS9QHkQp/0aqEDCgRacmE
-         1B4Y1JxlDA3lVfCBSYDEmBCdI5brS6DJBNCznM1Xo3LHwm/kw/NkHB4OFWzUo76yKbY9
-         Cc2VSNG413Mp7FXOicxrXcPfp8qaaDCTAMS3IpD+J8/4xPJLsRw+o4exasxdv2HTcpTF
-         YFwg==
-X-Gm-Message-State: AOAM532gN0Kd9fSXCgPXyhesOropx60J7zRV2ySpmBA7OeC3R39s7Tvg
-        gbov3OnE+GJdo/V4RbottQ==
-X-Google-Smtp-Source: ABdhPJxXRz8rpxHVMQETrBoM9cb8XJJozkw5PJACTm4qK/vhBn8tviwY3PyY58j2eoaPB/u3qpK33w==
-X-Received: by 2002:a05:6e02:184f:b0:2d3:d0c2:d56a with SMTP id b15-20020a056e02184f00b002d3d0c2d56amr13953839ilv.174.1654535872910;
-        Mon, 06 Jun 2022 10:17:52 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.251])
-        by smtp.gmail.com with ESMTPSA id t17-20020a92c0d1000000b002d3da8e4af5sm6121750ilf.23.2022.06.06.10.17.49
+        bh=g2dcvEx5ujIfq/vGwsQoEKMbkEYSqcC+pGjcA0dBu1c=;
+        b=QETrCLInkPdxqQZOB7R2N5yf5Ii/ql2u/3V69Zls/lWgCbowUN1gBAAf1MqJq4+JQS
+         hEz6PcGdkHa5q0MlBE36jjQmyps+0l81ah253IHD+OWZV5GN21VtshFw9M3uUX6wYsHH
+         hQFrknRLskHTCP+3BevfW6hsqTSbpitjNMz3ifG6UGdrYz4J6MU4t8yIGYPgDSleM9gX
+         D7QAAlIlUvYv2oYZmckNN3uJbJbyNL3mlkiNuK/2eDsYAAA8bbc4spAFf8p8SYiX3zSx
+         XEQYv+hmuS/0uYWn81uK8tTTIJh2vzRIxJFVY6ULOxTF96WW4z3eQZKBgxfmMdIQzrtb
+         yMnQ==
+X-Gm-Message-State: AOAM531VBFr1rHULcZ3kG0ON4rgnweHAxvv4xirlamQkx1GuhKeUtgWX
+        44zhQmHYz2C0zf6K29xvcJ4=
+X-Google-Smtp-Source: ABdhPJy6iWrSjhT1+WPfkKbI1gHvATNgUCtpwq8y3JhsiD76yT4Gvelb8RZZw4VB5N3/itiqM6ja8g==
+X-Received: by 2002:a05:620a:14ad:b0:6a6:b8ab:9c3f with SMTP id x13-20020a05620a14ad00b006a6b8ab9c3fmr5227234qkj.410.1654548537353;
+        Mon, 06 Jun 2022 13:48:57 -0700 (PDT)
+Received: from localhost ([2601:4c1:c100:1230:be9c:b2d9:3353:7a73])
+        by smtp.gmail.com with ESMTPSA id bm32-20020a05620a19a000b006a6d20386f6sm900223qkb.42.2022.06.06.13.48.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jun 2022 10:17:52 -0700 (PDT)
-Received: (nullmailer pid 911134 invoked by uid 1000);
-        Mon, 06 Jun 2022 17:17:47 -0000
-Date:   Mon, 6 Jun 2022 12:17:47 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Federico Vaga <federico.vaga@vaga.pv.it>,
+        Mon, 06 Jun 2022 13:48:56 -0700 (PDT)
+Date:   Mon, 6 Jun 2022 13:48:50 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Matt Turner <mattst88@gmail.com>,
+        Brian Cain <bcain@quicinc.com>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Markus Mayer <mmayer@broadcom.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        keyrings@vger.kernel.org, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-cachefs@redhat.com,
-        linux-gpio@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mmc@vger.kernel.org,
-        linux-phy@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-usb@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH 00/23] Update Documentation/ cross-references
-Message-ID: <20220606171747.GB899329-robh@kernel.org>
-References: <cover.1654529011.git.mchehab@kernel.org>
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Kees Cook <keescook@chromium.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Marco Elver <elver@google.com>, Borislav Petkov <bp@suse.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/6] bitops: unify non-atomic bitops prototypes across
+ architectures
+Message-ID: <Yp5oMmzNlq+Ut4So@yury-laptop>
+References: <20220606114908.962562-1-alexandr.lobakin@intel.com>
+ <20220606114908.962562-5-alexandr.lobakin@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1654529011.git.mchehab@kernel.org>
+In-Reply-To: <20220606114908.962562-5-alexandr.lobakin@intel.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Jun 06, 2022 at 04:25:22PM +0100, Mauro Carvalho Chehab wrote:
-> Hi John,
+On Mon, Jun 06, 2022 at 01:49:05PM +0200, Alexander Lobakin wrote:
+> Currently, there is a mess with the prototypes of the non-atomic
+> bitops across the different architectures:
 > 
-> There were a number of DT binding conversions and other docs change that
-> were not updated. Address them, in order to keep the cross-references on
-> a sane state.
+> ret	bool, int, unsigned long
+> nr	int, long, unsigned int, unsigned long
+> addr	volatile unsigned long *, volatile void *
 > 
-> Patch series is against v5.19-rc1 (and applies cleanly on the top of
-> today's -next).
+> Thankfully, it doesn't provoke any bugs, but can sometimes make
+> the compiler angry when it's not handy at all.
+> Adjust all the prototypes to the following standard:
 > 
-> Mauro Carvalho Chehab (23):
->   dt-bindings: mfd: bd9571mwv: update rohm,bd9571mwv.yaml reference
->   dt-bindings: interrupt-controller: update brcm,l2-intc.yaml reference
->   dt-bindings: arm: update vexpress-config.yaml references
->   dt-bindings: reset: update st,stih407-powerdown.yaml references
->   dt-bindings: mfd: rk808: update rockchip,rk808.yaml reference
->   dt-bindings: mmc: exynos-dw-mshc: update samsung,pinctrl.yaml
->     reference
->   docs: netdev: update maintainer-netdev.rst reference
->   docs: filesystems: update netfs-api.rst reference
->   Documentation: update watch_queue.rst references
->   Documentation: KVM: update s390-pv.rst reference
->   Documentation: KVM: update amd-memory-encryption.rst references
->   Documentation: KVM: update msr.rst reference
->   Documentation: KVM: update s390-diag.rst reference
->   MAINTAINERS: update arm,hdlcd.yaml reference
->   MAINTAINERS: update arm,komeda.yaml reference
->   MAINTAINERS: update arm,malidp.yaml reference
->   MAINTAINERS: update cortina,gemini-ethernet.yaml reference
->   MAINTAINERS: update dongwoon,dw9807-vcm.yaml reference
->   MAINTAINERS: update maxim,max77693.yaml reference
->   MAINTAINERS: update snps,axs10x-reset.yaml reference
->   objtool: update objtool.txt references
->   ASoC: wm8731: update wlf,wm8731.yaml reference
->   arch: m68k: q40: README: drop references to IDE driver
+> ret	bool				retval can be only 0 or 1
+> nr	unsigned long			native; signed makes no sense
+> addr	volatile unsigned long *	bitmaps are arrays of ulongs
+> 
+> Finally, add some static assertions in order to prevent people from
+> making a mess in this room again.
+> I also used the %__always_inline attribute consistently they always
+> get resolved to the actual operations.
+> 
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+> ---
 
-Applied patches 1-5,17,18,20
+Reviewed-by: Yury Norov <yury.norov@gmail.com>
+
+[...]
+
+> diff --git a/include/linux/bitops.h b/include/linux/bitops.h
+> index 7aaed501f768..5520ac9b1c24 100644
+> --- a/include/linux/bitops.h
+> +++ b/include/linux/bitops.h
+> @@ -26,12 +26,25 @@ extern unsigned int __sw_hweight16(unsigned int w);
+>  extern unsigned int __sw_hweight32(unsigned int w);
+>  extern unsigned long __sw_hweight64(__u64 w);
+>  
+> +#include <asm-generic/bitops/generic-non-atomic.h>
+> +
+>  /*
+>   * Include this here because some architectures need generic_ffs/fls in
+>   * scope
+>   */
+>  #include <asm/bitops.h>
+>  
+> +/* Check that the bitops prototypes are sane */
+> +#define __check_bitop_pr(name)	static_assert(__same_type(name, gen_##name))
+> +__check_bitop_pr(__set_bit);
+> +__check_bitop_pr(__clear_bit);
+> +__check_bitop_pr(__change_bit);
+> +__check_bitop_pr(__test_and_set_bit);
+> +__check_bitop_pr(__test_and_clear_bit);
+> +__check_bitop_pr(__test_and_change_bit);
+> +__check_bitop_pr(test_bit);
+> +#undef __check_bitop_pr
+
+This one is amazing trick! And the series is good overall. Do you want me to
+take it in bitmap tree, when it's ready, or you'll move it somehow else?
+
+Thanks,
+Yury
