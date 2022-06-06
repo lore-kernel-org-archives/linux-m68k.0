@@ -2,93 +2,96 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16106CCA473
-	for <linux-m68k@archiver.kernel.org>; Mon,  6 Jun 2022 16:08:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29138C43334
+	for <linux-m68k@archiver.kernel.org>; Mon,  6 Jun 2022 16:20:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241198AbiFFQIF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 6 Jun 2022 12:08:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53088 "EHLO
+        id S241429AbiFFQUU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 6 Jun 2022 12:20:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241208AbiFFQID (ORCPT
+        with ESMTP id S241672AbiFFQUC (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 6 Jun 2022 12:08:03 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED945FDD;
-        Mon,  6 Jun 2022 09:08:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=BTkBGPOQBnugqSzn8eLuGd4rM1iSDLOsvnLCslHwyGE=; b=hgTPHiBYlfwkGkI63QfFhvMbyB
-        4srPt4mfRmF1EbDrRBueAz1xHa22G14lX1rbiaVLA6TsVxzTZ2XoHL1V2Zlz+uqFHhw5CtNCsIGyo
-        j6cxzassqK2CA+vFfaQrxGnW+HXBV/L3Chcl7a52m9igHcVSp3NkOTsdTLiJVFVEYP64v13fU7fFY
-        JCe5M8MxG5WhrZFaLvlHPqefR+NQkgfCs87WAgKzJ5nymVNXZpVyM9Q2jXnfYxcc5EQEH65ScSm+8
-        XUKA/QWDplvvXv3kyo/4rmT8xqxSfwAO2Jcke8TQCXR55m1LA3Ul9hqZvW+Muc3xqDJ9LRzsCIMC9
-        DBgsmWzg==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nyFGl-005Ue0-RQ; Mon, 06 Jun 2022 16:07:56 +0000
-Message-ID: <d4de59db-62ba-22c3-3fc4-c69aa46b5c7a@infradead.org>
-Date:   Mon, 6 Jun 2022 09:07:51 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH 23/23] arch: m68k: q40: README: drop references to IDE
- driver
-Content-Language: en-US
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Mon, 6 Jun 2022 12:20:02 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ADD4024AED9
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Jun 2022 09:19:58 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AF11E1595;
+        Mon,  6 Jun 2022 09:19:57 -0700 (PDT)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.37.128])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 79FB63F73B;
+        Mon,  6 Jun 2022 09:19:54 -0700 (PDT)
+Date:   Mon, 6 Jun 2022 17:19:42 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Matt Turner <mattst88@gmail.com>,
+        Brian Cain <bcain@quicinc.com>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org
-References: <cover.1654529011.git.mchehab@kernel.org>
- <39b24f99f5b71eb5ac025b438b7eb2a0df2258a1.1654529011.git.mchehab@kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <39b24f99f5b71eb5ac025b438b7eb2a0df2258a1.1654529011.git.mchehab@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Kees Cook <keescook@chromium.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Marco Elver <elver@google.com>, Borislav Petkov <bp@suse.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/6] bitops: define gen_test_bit() the same way as the
+ rest of functions
+Message-ID: <Yp4pEULDFq13A9Wp@FVFF77S0Q05N.cambridge.arm.com>
+References: <20220606114908.962562-1-alexandr.lobakin@intel.com>
+ <20220606114908.962562-4-alexandr.lobakin@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220606114908.962562-4-alexandr.lobakin@intel.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-
-
-On 6/6/22 08:25, Mauro Carvalho Chehab wrote:
-> Since IDE support was deleted by Christoph Hellwig <hch@lst.de>,
-> Jun 16 2021, drop the left-over from README file.
+On Mon, Jun 06, 2022 at 01:49:04PM +0200, Alexander Lobakin wrote:
+> Currently, the generic test_bit() function is defined as a one-liner
+> and in case with constant bitmaps the compiler is unable to optimize
+> it to a constant. At the same time, gen_test_and_*_bit() are being
+> optimized pretty good.
+> Define gen_test_bit() the same way as they are defined.
 > 
-> Fixes: b7fb14d3ac63 ("ide: remove the legacy ide driver")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Regardless of whether compilers prefer this, I think it's nicer to have the
+structure consistent with the rest of the functions, so FWIW:
 
-Thanks.
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+
+Mark.
 
 > ---
+>  include/asm-generic/bitops/generic-non-atomic.h | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 > 
-> To avoid mailbombing on a large number of people, only mailing lists were C/C on the cover.
-> See [PATCH 00/23] at: https://lore.kernel.org/all/cover.1654529011.git.mchehab@kernel.org/
+> diff --git a/include/asm-generic/bitops/generic-non-atomic.h b/include/asm-generic/bitops/generic-non-atomic.h
+> index 7a60adfa6e7d..202d8a3b40e1 100644
+> --- a/include/asm-generic/bitops/generic-non-atomic.h
+> +++ b/include/asm-generic/bitops/generic-non-atomic.h
+> @@ -118,7 +118,11 @@ gen___test_and_change_bit(unsigned int nr, volatile unsigned long *addr)
+>  static __always_inline int
+>  gen_test_bit(unsigned int nr, const volatile unsigned long *addr)
+>  {
+> -	return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
+> +	const unsigned long *p = (const unsigned long *)addr + BIT_WORD(nr);
+> +	unsigned long mask = BIT_MASK(nr);
+> +	unsigned long val = *p;
+> +
+> +	return !!(val & mask);
+>  }
+>  
+>  #endif /* __ASM_GENERIC_BITOPS_GENERIC_NON_ATOMIC_H */
+> -- 
+> 2.36.1
 > 
->  arch/m68k/q40/README | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/arch/m68k/q40/README b/arch/m68k/q40/README
-> index a4991d2d8af6..4db6db54d57a 100644
-> --- a/arch/m68k/q40/README
-> +++ b/arch/m68k/q40/README
-> @@ -30,9 +30,7 @@ drivers used by the Q40, apart from the very obvious (console etc.):
->  		     genrtc.c		# RTC
->  		char/joystick/*		# most of this should work, not
->  				        # in default config.in
-> -	        block/q40ide.c		# startup for ide
-> -		      ide*		# see Documentation/ide/ide.rst
-> -		      floppy.c		# normal PC driver, DMA emu in asm/floppy.h
-> +	        block/floppy.c		# normal PC driver, DMA emu in asm/floppy.h
->  					# and arch/m68k/kernel/entry.S
->  					# see drivers/block/README.fd
->  		net/ne.c
-
--- 
-~Randy
