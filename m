@@ -2,83 +2,88 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 136F4C43334
-	for <linux-m68k@archiver.kernel.org>; Mon,  6 Jun 2022 15:02:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1E72C43334
+	for <linux-m68k@archiver.kernel.org>; Mon,  6 Jun 2022 15:25:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240213AbiFFPCJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 6 Jun 2022 11:02:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
+        id S240635AbiFFPZz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 6 Jun 2022 11:25:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240149AbiFFPCH (ORCPT
+        with ESMTP id S240612AbiFFPZy (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 6 Jun 2022 11:02:07 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBFC2629
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Jun 2022 08:02:06 -0700 (PDT)
+        Mon, 6 Jun 2022 11:25:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3A81CD370
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Jun 2022 08:25:52 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 42CCCCE1BEF
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Jun 2022 15:02:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24D8BC36B01
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Jun 2022 15:02:02 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A0AE66154F;
+        Mon,  6 Jun 2022 15:25:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EFB2C341E8;
+        Mon,  6 Jun 2022 15:25:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654527722;
-        bh=q53e8R7rif+9VorkencnO96O5zseGyAcQ5tiTh4wb5o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Apz8+ZKOfRfLg28N7czbQCp5u1APChOU6nUGQX9FaMmYF1sAaX/E+Ib6PkoNMTzP7
-         8jDO0yt1/l7zDqKQc6tX4/clq/6HkX/3W3KZ8nM3wihQ+jMlDOK9ZA4eyqtiXknfW8
-         nDehGJBGcME9NWhLnKjuKwi1RHsvWVfiUTSGjzwMBXLmNypEOY8dRiUMaB2ZPKhMqN
-         +sCEMynb2DFl+FqYA+WAgVaik3iEnEQyHuNJCcowrCU57ufs9pWJIioY3E4DJJPNzW
-         kpZWUqqFJEO2bKuHGgUG6lR6HDAoCyo7pL/NzPacNwyF3UCEA3Cxsbw6IvBn5Rr2+E
-         lkYasSc/0weOA==
-Received: by mail-yb1-f174.google.com with SMTP id g24so5772301ybe.9
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 06 Jun 2022 08:02:02 -0700 (PDT)
-X-Gm-Message-State: AOAM532KSslW2ZpKfCef3+MUQ2OAsu48if+a9XnhraYlaRTXD1+4j0nP
-        /MOZwlMNLr6GnMGp8uRT8N9FrYs/DIAJx+Mx4B0=
-X-Google-Smtp-Source: ABdhPJzbUSlIedBRNZiWpM9ElJ4TvjZNZhTiqJfwPbhlO6M7rgoOI9pHprJDL1o+SM/GSywwOf+ElbD7ZGPkUhXAozo=
-X-Received: by 2002:a25:db8a:0:b0:65c:b04a:f612 with SMTP id
- g132-20020a25db8a000000b0065cb04af612mr24920915ybf.106.1654527721136; Mon, 06
- Jun 2022 08:02:01 -0700 (PDT)
+        s=k20201202; t=1654529149;
+        bh=P/ZZQJbpLLBjuQh2G6MF/T6nwAhbQfPWvBqgMsptpx4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Ko5+VusQxc88bi5bLZkz9C30n0GqVEWwi7lPqyCxMEfS/5Lxu+WyJ0VpF6r65BQDX
+         qtn661HpXY3EA4IdaR5thgiryc0rKlBC6axQoiCvV32js/gPV16tk9NxhIc78lRUxk
+         iI50i60mrZNkaNJWyNxg7zWJlZDOgbCdJw5zIVb1wqDd3xnK3smmzpItKxvbqffY5f
+         et/sLiJYChTb4jOOP90CXxzpavDcC31r8kMUxHLEqfMB5kpE0mjSEngFywuK+nHr1t
+         NVdEAjjQdFYcwWGH3ejTLFckd9zf1RuXsXWDbfR28au5aoFCB3Jzj2wMLrA8r//Kvn
+         qm5uA9pEoIQGA==
+Received: from mchehab by mail.kernel.org with local (Exim 4.95)
+        (envelope-from <mchehab@kernel.org>)
+        id 1nyEby-0012Q9-GE;
+        Mon, 06 Jun 2022 16:25:46 +0100
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "Mauro Carvalho Chehab" <mchehab+huawei@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org
+Subject: [PATCH 23/23] arch: m68k: q40: README: drop references to IDE driver
+Date:   Mon,  6 Jun 2022 16:25:45 +0100
+Message-Id: <39b24f99f5b71eb5ac025b438b7eb2a0df2258a1.1654529011.git.mchehab@kernel.org>
+X-Mailer: git-send-email 2.36.1
+In-Reply-To: <cover.1654529011.git.mchehab@kernel.org>
+References: <cover.1654529011.git.mchehab@kernel.org>
 MIME-Version: 1.0
-References: <20220606084109.4108188-1-arnd@kernel.org> <Yp3ID86TBFxl7qyL@kroah.com>
-In-Reply-To: <Yp3ID86TBFxl7qyL@kroah.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 6 Jun 2022 17:01:44 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a15RuR3VOPLPV3SfdBAGuoyor6o7JMs3kC5dNB5nfDuKA@mail.gmail.com>
-Message-ID: <CAK8P3a15RuR3VOPLPV3SfdBAGuoyor6o7JMs3kC5dNB5nfDuKA@mail.gmail.com>
-Subject: Re: [PATCH 0/6] phase out CONFIG_VIRT_TO_BUS
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jakub Kicinski <kuba@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Khalid Aziz <khalid@gonehiking.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        Manohar Vanga <manohar.vanga@gmail.com>,
-        Martyn Welch <martyn@welchs.me.uk>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        Denis Efremov <efremov@linux.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Jun 6, 2022 at 11:25 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> I'll take patches 1 and 2 right now through my staging tree if that's
-> ok.
+Since IDE support was deleted by Christoph Hellwig <hch@lst.de>,
+Jun 16 2021, drop the left-over from README file.
 
-Yes, that's perfect, as there are no actual interdependencies with the
-other drivers -- applying the last patch first would just hide the driver
-I'm removing here.
+Fixes: b7fb14d3ac63 ("ide: remove the legacy ide driver")
+Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+---
 
-Thanks,
+To avoid mailbombing on a large number of people, only mailing lists were C/C on the cover.
+See [PATCH 00/23] at: https://lore.kernel.org/all/cover.1654529011.git.mchehab@kernel.org/
 
-      Arnd
+ arch/m68k/q40/README | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/arch/m68k/q40/README b/arch/m68k/q40/README
+index a4991d2d8af6..4db6db54d57a 100644
+--- a/arch/m68k/q40/README
++++ b/arch/m68k/q40/README
+@@ -30,9 +30,7 @@ drivers used by the Q40, apart from the very obvious (console etc.):
+ 		     genrtc.c		# RTC
+ 		char/joystick/*		# most of this should work, not
+ 				        # in default config.in
+-	        block/q40ide.c		# startup for ide
+-		      ide*		# see Documentation/ide/ide.rst
+-		      floppy.c		# normal PC driver, DMA emu in asm/floppy.h
++	        block/floppy.c		# normal PC driver, DMA emu in asm/floppy.h
+ 					# and arch/m68k/kernel/entry.S
+ 					# see drivers/block/README.fd
+ 		net/ne.c
+-- 
+2.36.1
+
