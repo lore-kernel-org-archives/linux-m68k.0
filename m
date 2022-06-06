@@ -2,37 +2,36 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D365ECCA473
-	for <linux-m68k@archiver.kernel.org>; Mon,  6 Jun 2022 08:48:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB7D2CCA483
+	for <linux-m68k@archiver.kernel.org>; Mon,  6 Jun 2022 09:25:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232314AbiFFIsx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 6 Jun 2022 04:48:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58038 "EHLO
+        id S232852AbiFFJZn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 6 Jun 2022 05:25:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232206AbiFFIl5 (ORCPT
+        with ESMTP id S232850AbiFFJZk (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 6 Jun 2022 04:41:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E98EFC4FB
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Jun 2022 01:41:48 -0700 (PDT)
+        Mon, 6 Jun 2022 05:25:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F17A939F8
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Jun 2022 02:25:39 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 667916125D;
-        Mon,  6 Jun 2022 08:41:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DA3DC34119;
-        Mon,  6 Jun 2022 08:41:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654504897;
-        bh=D+RdnsGxCjpna2nFhDsPH8yn1kQWXeuteyiCbSjG4Ok=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nqkhvRnQT5TdcQzFwYUC5t6BbcwuV7Wpx2G1o5hTpanlR8yXaV4ODVU7ew7jL8DvO
-         l3JTVw7DKobxXEKQZ3heVLvDfhUmjB940bcalu6UvoP2LwHrYPpKg12kYzTLQS6pKT
-         kf317YxZeSp6jD/5DgCpKbSN6CjRhym31MHdvdZtORbIwmeGN1epari6VDm6Zv3KZl
-         sRRdHvKbw8lAF0HX5L+i6MurK8fE/6XIhEVBIspfhVP5cePJ7g5c65vcGINxSZpFqa
-         vlwgUpxU3YlmZrSSRp2xN6dqcrwPKgCERmeHhrZ2pBVMMXljYfaBR5K2rCGXZ4IYSq
-         D/00l/vISah5w==
-From:   Arnd Bergmann <arnd@kernel.org>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9E9DF61316;
+        Mon,  6 Jun 2022 09:25:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84FA8C385A9;
+        Mon,  6 Jun 2022 09:25:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1654507538;
+        bh=SGyOc8QTUXhFBU0FK2dbWFATxGIrz/5ZeL4pH3h6UnI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o5+R3V8oO4+EAgAGTpyjUIQqB3KNAeJts/jhrJSGEBRzH1PN9a+gCBfvBwaJfsi0j
+         S+xDAbHwdHZEgYXeWMOFMcC/5op2p7s+cMgBf8QSuvMTb6YuVTYwduPx5uxc+DOYFd
+         fr4c0yZ5gapUx5x3IKS7vTtcG+YZNWc9Hh4gX5Rc=
+Date:   Mon, 6 Jun 2022 11:25:35 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Arnd Bergmann <arnd@kernel.org>
 Cc:     Arnd Bergmann <arnd@arndb.de>, Jakub Kicinski <kuba@kernel.org>,
         Christoph Hellwig <hch@infradead.org>,
         Marek Szyprowski <m.szyprowski@samsung.com>,
@@ -42,57 +41,44 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Jakub Kicinski <kuba@kernel.org>,
         linux-scsi@vger.kernel.org,
         Manohar Vanga <manohar.vanga@gmail.com>,
         Martyn Welch <martyn@welchs.me.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linuxppc-dev@lists.ozlabs.org, linux-arch@vger.kernel.org,
         linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         linux-parisc@vger.kernel.org, Denis Efremov <efremov@linux.com>
-Subject: [PATCH 3/6] media: sta2x11: remove VIRT_TO_BUS dependency
-Date:   Mon,  6 Jun 2022 10:41:06 +0200
-Message-Id: <20220606084109.4108188-4-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20220606084109.4108188-1-arnd@kernel.org>
+Subject: Re: [PATCH 0/6] phase out CONFIG_VIRT_TO_BUS
+Message-ID: <Yp3ID86TBFxl7qyL@kroah.com>
 References: <20220606084109.4108188-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220606084109.4108188-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Jun 06, 2022 at 10:41:03AM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The virt_to_bus/bus_to_virt interface has been deprecated for
+> decades. After Jakub Kicinski put a lot of work into cleaning out the
+> network drivers using them, there are only a couple of other drivers
+> left, which can all be removed or otherwise cleaned up, to remove the
+> old interface for good.
+> 
+> Any out of tree drivers using virt_to_bus() should be converted to
+> using the dma-mapping interfaces, typically dma_alloc_coherent()
+> or dma_map_single()).
+> 
+> There are a few m68k and ppc32 specific drivers that keep using the
+> interfaces, but these are all guarded with architecture-specific
+> Kconfig dependencies, and are not actually broken.
+> 
+> There are still a number of drivers that are using virt_to_phys()
+> and phys_to_virt() in place of dma-mapping operations, and these
+> are often broken, but they are out of scope for this series.
 
-This driver does not use the virt_to_bus() function, though it
-depends on x86 specific fixups in the swiotlb code, which was
-last rewritten in commit e380a0394c36 ("x86/PCI: sta2x11: use
-default DMA address translation").
+I'll take patches 1 and 2 right now through my staging tree if that's
+ok.
 
-It is possible that the driver still fails to build on some
-architectures that are missing CONFIG_VIRT_TO_BUS, but it is
-always set on x86 machines with the STA2X11 platform enabled.
+thanks,
 
-More likely though is that it was never meant to depend on
-CONFIG_VIRT_TO_BUS, and the Kconfig dependency was kept from
-an out-of-tree version when the driver was originally merged.
-
-Fixes: efeb98b4e2b2 ("[media] STA2X11 VIP: new V4L2 driver")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/media/pci/sta2x11/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/media/pci/sta2x11/Kconfig b/drivers/media/pci/sta2x11/Kconfig
-index a96e170ab04e..118b922c08c3 100644
---- a/drivers/media/pci/sta2x11/Kconfig
-+++ b/drivers/media/pci/sta2x11/Kconfig
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config STA2X11_VIP
- 	tristate "STA2X11 VIP Video For Linux"
--	depends on PCI && VIDEO_DEV && VIRT_TO_BUS && I2C
-+	depends on PCI && VIDEO_DEV && I2C
- 	depends on STA2X11 || COMPILE_TEST
- 	select GPIOLIB if MEDIA_SUBDRV_AUTOSELECT
- 	select VIDEO_ADV7180 if MEDIA_SUBDRV_AUTOSELECT
--- 
-2.29.2
-
+greg k-h
