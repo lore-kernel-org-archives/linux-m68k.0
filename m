@@ -2,168 +2,137 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66983C43334
-	for <linux-m68k@archiver.kernel.org>; Tue,  7 Jun 2022 12:53:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82D81CCA47F
+	for <linux-m68k@archiver.kernel.org>; Tue,  7 Jun 2022 13:44:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235033AbiFGMxV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 7 Jun 2022 08:53:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48888 "EHLO
+        id S241604AbiFGNoD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 7 Jun 2022 09:44:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242548AbiFGMxU (ORCPT
+        with ESMTP id S244863AbiFGNn7 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 7 Jun 2022 08:53:20 -0400
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C66EE2CDE5
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Jun 2022 05:53:18 -0700 (PDT)
-Received: by mail-qv1-f50.google.com with SMTP id el14so12239432qvb.7
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 07 Jun 2022 05:53:18 -0700 (PDT)
+        Tue, 7 Jun 2022 09:43:59 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F7AAE266
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Jun 2022 06:43:57 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id q15so16209489wrc.11
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 07 Jun 2022 06:43:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=x4IJbeSPwqHNNzv96I29/orNZTpYQPQuyaBORkJUAzg=;
+        b=XlTRtdAks6FyNUJd2ckhu1c5pagq2qIDjS5WoYMfF8F/GzNkTOGIRee+NWovA3egqG
+         FLKHASNpirn/UlLG3ZAyDRDYJRzLIoqPa2VOSQsO/pnUIRKTo2FatbwU5AN+8a98G+bI
+         rILYCsPCDfbhcAaQTDUz6Z0bpVEwrjjd678IOahbAX1ktBr2VBSVvT4Q22Zq/oJ0gIvB
+         gLFBcHndCp7mXuXnrTrJ5ol0TaqYaNK1yM+q+L+MLEFH7U9tjlgO9MMK7/IQqfI6vNk3
+         XKf5sJfrUYjASIsJfQuT+NOtyQD4MTgpt1oQl38IcOdgvDLq5htBD62P6yCDZtdjrpI/
+         Nk9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i2nmQNF/3gAoxeluRHoOdJNgK2z7f54HL004Ai8ZD6Y=;
-        b=S/CqF7atUHMGWkMAryTC0VbgmYzqS7FYyldDxOGLqwu9RUixpOUb6r+HxbW9sT6xxg
-         uCIij9EJmmJjwa8Ylr3pSd+iMVCeyyomztcr+b2iVxzDyCYk7KOdUQQDQfhs21FRLZwZ
-         MTNVmfzH9XpGyiy7AfI+3tJL3fFnZmww6/MAlfbH8RPfmSDWCU9KU8ZAFSlyyzMa+oth
-         WuyjTyTwWD+oEzp6RILnjFCZ7OUcuKWuftxtTpBSZpkqNYnXxR06IYhNZ8/ruw6dsfjd
-         zy6V5hIOivdPguh/0sJEscHQIo33NVJxVSbGZWqo4KxDKJ0HqI4wCYCXSU9dImMTkgb3
-         DpeA==
-X-Gm-Message-State: AOAM531tvAsfCOqvE2r2TfpDCcYc1a3uwcLA47yFBjc4sAXoCo8Oxrp9
-        dtTQxGP2uc4k/Opzkoxm4a3ehQjexiNVMw==
-X-Google-Smtp-Source: ABdhPJzNM3/mcNv05BLOJZrOAA5BP8Np2BowljA87O3G/OkLwygSz5GSYuijRvDBR5F93cV7tPKgtg==
-X-Received: by 2002:ad4:5c84:0:b0:464:5827:c6a7 with SMTP id o4-20020ad45c84000000b004645827c6a7mr32212275qvh.37.1654606397546;
-        Tue, 07 Jun 2022 05:53:17 -0700 (PDT)
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
-        by smtp.gmail.com with ESMTPSA id i8-20020a05620a404800b006a69aba9f19sm10793073qko.80.2022.06.07.05.53.17
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Jun 2022 05:53:17 -0700 (PDT)
-Received: by mail-yb1-f173.google.com with SMTP id p13so30979776ybm.1
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 07 Jun 2022 05:53:17 -0700 (PDT)
-X-Received: by 2002:a81:4811:0:b0:30c:8021:4690 with SMTP id
- v17-20020a814811000000b0030c80214690mr31329554ywa.47.1654605952647; Tue, 07
- Jun 2022 05:45:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220606114908.962562-1-alexandr.lobakin@intel.com>
-In-Reply-To: <20220606114908.962562-1-alexandr.lobakin@intel.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 7 Jun 2022 14:45:41 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXR0Nu+RENB8rFnJFiW=T0P7Kq_XAG7t1MF=fdyD6pUGw@mail.gmail.com>
-Message-ID: <CAMuHMdXR0Nu+RENB8rFnJFiW=T0P7Kq_XAG7t1MF=fdyD6pUGw@mail.gmail.com>
-Subject: Re: [PATCH 0/6] bitops: let optimize out non-atomic bitops on
- compile-time constants
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=x4IJbeSPwqHNNzv96I29/orNZTpYQPQuyaBORkJUAzg=;
+        b=1bsfPASe2HeP8RpJxjTPrTgksV0Q4noyxu9ZKjBNV/AeHg05hESWBuVZFFFooTtE5E
+         N6xFMsMd0n2mzuHk1lRGlq1UA3l+ZLZNHBB8gYWxMCpcn33gHoBAkNXvas6r2BpmZTL1
+         x24BlVrwLGOTAIq2f2c5R9Qizb7OGRtxshWo1rqW6Le0TI2e0DG93p7EzccnZIpuNz/X
+         zZC36Ggl2HzO024giykLQkfbKI3mAPD+sw0r3jKfw08Rj9xoUOefS2StW2eNW7hiu4pP
+         7wzNtOTUgZa8i3GODyeApzY0/Y/PsIbzEe0kdpZrDHyGvL2sziDE8pefjyyu9dP2SFWl
+         6iQQ==
+X-Gm-Message-State: AOAM530HWkMLheDW/1/KpdzWM6RpHdfGDYwOpFM14vEp48H7+Mx6nOzi
+        5CBjQGbtXcnhwKD52zwUFfABeg==
+X-Google-Smtp-Source: ABdhPJzV/rczdwKiQFWRaJo7rMbHUKT0bXbfMPoGXdv8T0Fj/pZ6hEfQLyACkUiu9UuxvjPxgKjstQ==
+X-Received: by 2002:adf:eb42:0:b0:20f:ebc5:cb0f with SMTP id u2-20020adfeb42000000b0020febc5cb0fmr27945814wrn.355.1654609436139;
+        Tue, 07 Jun 2022 06:43:56 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:9c:201:cd40:f1bd:cd2c:953c])
+        by smtp.gmail.com with ESMTPSA id k2-20020a5d5182000000b0020c5253d8fcsm17787769wrv.72.2022.06.07.06.43.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jun 2022 06:43:55 -0700 (PDT)
+Date:   Tue, 7 Jun 2022 15:43:49 +0200
+From:   Marco Elver <elver@google.com>
 To:     Alexander Lobakin <alexandr.lobakin@intel.com>
 Cc:     Arnd Bergmann <arnd@arndb.de>, Yury Norov <yury.norov@gmail.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Richard Henderson <rth@twiddle.net>,
         Matt Turner <mattst88@gmail.com>,
         Brian Cain <bcain@quicinc.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Yoshinori Sato <ysato@users.sourceforge.jp>,
         Rich Felker <dalias@libc.org>,
         "David S. Miller" <davem@davemloft.net>,
         Kees Cook <keescook@chromium.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Marco Elver <elver@google.com>, Borislav Petkov <bp@suse.de>,
-        Tony Luck <tony.luck@intel.com>,
+        Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/6] bitops: define gen_test_bit() the same way as the
+ rest of functions
+Message-ID: <Yp9WFREfdfkho0hm@elver.google.com>
+References: <20220606114908.962562-1-alexandr.lobakin@intel.com>
+ <20220606114908.962562-4-alexandr.lobakin@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220606114908.962562-4-alexandr.lobakin@intel.com>
+User-Agent: Mutt/2.1.4 (2021-12-11)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Alexander,
+On Mon, Jun 06, 2022 at 01:49PM +0200, Alexander Lobakin wrote:
+> Currently, the generic test_bit() function is defined as a one-liner
+> and in case with constant bitmaps the compiler is unable to optimize
+> it to a constant. At the same time, gen_test_and_*_bit() are being
+> optimized pretty good.
+> Define gen_test_bit() the same way as they are defined.
+> 
+> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+> ---
+>  include/asm-generic/bitops/generic-non-atomic.h | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/asm-generic/bitops/generic-non-atomic.h b/include/asm-generic/bitops/generic-non-atomic.h
+> index 7a60adfa6e7d..202d8a3b40e1 100644
+> --- a/include/asm-generic/bitops/generic-non-atomic.h
+> +++ b/include/asm-generic/bitops/generic-non-atomic.h
+> @@ -118,7 +118,11 @@ gen___test_and_change_bit(unsigned int nr, volatile unsigned long *addr)
+>  static __always_inline int
+>  gen_test_bit(unsigned int nr, const volatile unsigned long *addr)
+>  {
+> -	return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
+> +	const unsigned long *p = (const unsigned long *)addr + BIT_WORD(nr);
+> +	unsigned long mask = BIT_MASK(nr);
+> +	unsigned long val = *p;
+> +
+> +	return !!(val & mask);
 
-On Mon, Jun 6, 2022 at 1:50 PM Alexander Lobakin
-<alexandr.lobakin@intel.com> wrote:
-> While I was working on converting some structure fields from a fixed
-> type to a bitmap, I started observing code size increase not only in
-> places where the code works with the converted structure fields, but
-> also where the converted vars were on the stack. That said, the
-> following code:
->
->         DECLARE_BITMAP(foo, BITS_PER_LONG) = { }; // -> unsigned long foo[1];
->         unsigned long bar = BIT(BAR_BIT);
->         unsigned long baz = 0;
->
->         __set_bit(FOO_BIT, foo);
->         baz |= BIT(BAZ_BIT);
->
->         BUILD_BUG_ON(!__builtin_constant_p(test_bit(FOO_BIT, foo));
->         BUILD_BUG_ON(!__builtin_constant_p(bar & BAR_BIT));
->         BUILD_BUG_ON(!__builtin_constant_p(baz & BAZ_BIT));
->
-> triggers the first assertion on x86_64, which means that the
-> compiler is unable to evaluate it to a compile-time initializer
-> when the architecture-specific bitop is used even if it's obvious.
-> I found that this is due to that many architecture-specific
-> non-atomic bitop implementations use inline asm or other hacks which
-> are faster or more robust when working with "real" variables (i.e.
-> fields from the structures etc.), but the compilers have no clue how
-> to optimize them out when called on compile-time constants.
->
-> So, in order to let the compiler optimize out such cases, expand the
-> test_bit() and __*_bit() definitions with a compile-time condition
-> check, so that they will pick the generic C non-atomic bitop
-> implementations when all of the arguments passed are compile-time
-> constants, which means that the result will be a compile-time
-> constant as well and the compiler will produce more efficient and
-> simple code in 100% cases (no changes when there's at least one
-> non-compile-time-constant argument).
-> The condition itself:
->
-> if (
-> __builtin_constant_p(nr) &&     /* <- bit position is constant */
-> __builtin_constant_p(!!addr) && /* <- compiler knows bitmap addr is
->                                       always either NULL or not */
-> addr &&                         /* <- bitmap addr is not NULL */
-> __builtin_constant_p(*addr)     /* <- compiler knows the value of
->                                       the target bitmap */
-> )
->         /* then pick the generic C variant
-> else
->         /* old code path, arch-specific
->
-> I also tried __is_constexpr() as suggested by Andy, but it was
-> always returning 0 ('not a constant') for the 2,3 and 4th
-> conditions.
->
-> The savings on x86_64 with LLVM are insane (.text):
->
-> $ scripts/bloat-o-meter -c vmlinux.{base,test}
-> add/remove: 72/75 grow/shrink: 182/518 up/down: 53925/-137810 (-83885)
->
-> $ scripts/bloat-o-meter -c vmlinux.{base,mod}
-> add/remove: 7/1 grow/shrink: 1/19 up/down: 1135/-4082 (-2947)
->
-> $ scripts/bloat-o-meter -c vmlinux.{base,all}
-> add/remove: 79/76 grow/shrink: 184/537 up/down: 55076/-141892 (-86816)
+Unfortunately this makes the dereference of 'addr' non-volatile, and
+effectively weakens test_bit() to the point where I'd no longer consider
+it atomic. Per atomic_bitops.txt, test_bit() is atomic.
 
-Thank you!
+The generic version has been using a volatile access to make it atomic
+(akin to generic READ_ONCE() casting to volatile). The volatile is also
+the reason the compiler can't optimize much, because volatile forces a
+real memory access.
 
-I gave it a try on m68k, and am a bit disappointed seeing an increase
-in code size:
+Yes, confusingly, test_bit() lives in non-atomic.h, and this had caused
+confusion before, but the decision was made that moving it will cause
+headaches for ppc so it was left alone:
+https://lore.kernel.org/all/87a78xgu8o.fsf@dja-thinkpad.axtens.net/T/#u
 
-    add/remove: 49/13 grow/shrink: 279/138 up/down: 6434/-3342 (3092)
+As for how to make test_bit() more compiler-optimization friendly, I'm
+guessing that test_bit() needs some special casing where even the
+generic arch_test_bit() is different from the gen_test_bit().
+gen_test_bit() should probably assert that whatever it is called with
+can actually be evaluated at compile-time so it is never accidentally
+used otherwise.
 
-This is atari_defconfig on a tree based on v5.19-rc1, with
-m68k-linux-gnu-gcc (Ubuntu 9.4.0-1ubuntu1~20.04) 9.4.0, GNU ld (GNU
-Binutils for Ubuntu) 2.34).
+I would also propose adding a comment close to the deref that test_bit()
+is atomic and the deref needs to remain volatile, so future people will
+not try to do the same optimization.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks,
+-- Marco
