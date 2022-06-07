@@ -2,137 +2,100 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82D81CCA47F
-	for <linux-m68k@archiver.kernel.org>; Tue,  7 Jun 2022 13:44:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E1E4C433EF
+	for <linux-m68k@archiver.kernel.org>; Tue,  7 Jun 2022 14:11:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241604AbiFGNoD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 7 Jun 2022 09:44:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45672 "EHLO
+        id S245142AbiFGOLw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 7 Jun 2022 10:11:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244863AbiFGNn7 (ORCPT
+        with ESMTP id S245179AbiFGOLq (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 7 Jun 2022 09:43:59 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F7AAE266
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Jun 2022 06:43:57 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id q15so16209489wrc.11
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 07 Jun 2022 06:43:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=x4IJbeSPwqHNNzv96I29/orNZTpYQPQuyaBORkJUAzg=;
-        b=XlTRtdAks6FyNUJd2ckhu1c5pagq2qIDjS5WoYMfF8F/GzNkTOGIRee+NWovA3egqG
-         FLKHASNpirn/UlLG3ZAyDRDYJRzLIoqPa2VOSQsO/pnUIRKTo2FatbwU5AN+8a98G+bI
-         rILYCsPCDfbhcAaQTDUz6Z0bpVEwrjjd678IOahbAX1ktBr2VBSVvT4Q22Zq/oJ0gIvB
-         gLFBcHndCp7mXuXnrTrJ5ol0TaqYaNK1yM+q+L+MLEFH7U9tjlgO9MMK7/IQqfI6vNk3
-         XKf5sJfrUYjASIsJfQuT+NOtyQD4MTgpt1oQl38IcOdgvDLq5htBD62P6yCDZtdjrpI/
-         Nk9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=x4IJbeSPwqHNNzv96I29/orNZTpYQPQuyaBORkJUAzg=;
-        b=1bsfPASe2HeP8RpJxjTPrTgksV0Q4noyxu9ZKjBNV/AeHg05hESWBuVZFFFooTtE5E
-         N6xFMsMd0n2mzuHk1lRGlq1UA3l+ZLZNHBB8gYWxMCpcn33gHoBAkNXvas6r2BpmZTL1
-         x24BlVrwLGOTAIq2f2c5R9Qizb7OGRtxshWo1rqW6Le0TI2e0DG93p7EzccnZIpuNz/X
-         zZC36Ggl2HzO024giykLQkfbKI3mAPD+sw0r3jKfw08Rj9xoUOefS2StW2eNW7hiu4pP
-         7wzNtOTUgZa8i3GODyeApzY0/Y/PsIbzEe0kdpZrDHyGvL2sziDE8pefjyyu9dP2SFWl
-         6iQQ==
-X-Gm-Message-State: AOAM530HWkMLheDW/1/KpdzWM6RpHdfGDYwOpFM14vEp48H7+Mx6nOzi
-        5CBjQGbtXcnhwKD52zwUFfABeg==
-X-Google-Smtp-Source: ABdhPJzV/rczdwKiQFWRaJo7rMbHUKT0bXbfMPoGXdv8T0Fj/pZ6hEfQLyACkUiu9UuxvjPxgKjstQ==
-X-Received: by 2002:adf:eb42:0:b0:20f:ebc5:cb0f with SMTP id u2-20020adfeb42000000b0020febc5cb0fmr27945814wrn.355.1654609436139;
-        Tue, 07 Jun 2022 06:43:56 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:9c:201:cd40:f1bd:cd2c:953c])
-        by smtp.gmail.com with ESMTPSA id k2-20020a5d5182000000b0020c5253d8fcsm17787769wrv.72.2022.06.07.06.43.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jun 2022 06:43:55 -0700 (PDT)
-Date:   Tue, 7 Jun 2022 15:43:49 +0200
-From:   Marco Elver <elver@google.com>
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Matt Turner <mattst88@gmail.com>,
-        Brian Cain <bcain@quicinc.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kees Cook <keescook@chromium.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/6] bitops: define gen_test_bit() the same way as the
- rest of functions
-Message-ID: <Yp9WFREfdfkho0hm@elver.google.com>
-References: <20220606114908.962562-1-alexandr.lobakin@intel.com>
- <20220606114908.962562-4-alexandr.lobakin@intel.com>
+        Tue, 7 Jun 2022 10:11:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD31BBF8B5
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Jun 2022 07:11:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E794A61579;
+        Tue,  7 Jun 2022 14:11:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31A53C385A5;
+        Tue,  7 Jun 2022 14:11:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654611104;
+        bh=letTzTlIdmYyCQr3t4i/4sQ++BrVupVi397GE8M9uvI=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=ZmrXJqh5VhK6LBrkWuZLcZPb6LB/aKqB7VgbxKHQ5EKdRZGn1B/UtUl37J/VZlncM
+         XaKVqUs9/CrLhurHZmfQE4ZHromAzF5QHFhfcePHGAZt6gJN4oXn1Jgu9OhytNBGsZ
+         Dpp8c39jiY4Y6vji5iZNzY0BkjvDT9oCjsHIgHSItTWWl1ZaFW8x1MWtKzh54+Jsmx
+         MgLY2ScRWCz28NxqLMnfdu2v0uWPvoMrX/y8LVhRzTo8e9BmO+8kP0GacNDIRYfLCx
+         +YjXzNg0JjEvKZfsqCZP5oIjyElXDN9wiUZpKQTLYg3m4X5qyHVoxoSHYehWp506BX
+         a+HtETwbE/zkg==
+From:   Mark Brown <broonie@kernel.org>
+To:     linux-doc@vger.kernel.org, corbet@lwn.net, mchehab@kernel.org
+Cc:     linux@roeck-us.net, linux-cachefs@redhat.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dave.hansen@linux.intel.com, linux-samsung-soc@vger.kernel.org,
+        geert@linux-m68k.org, ulf.hansson@linaro.org, hpa@zytor.com,
+        alsa-devel@alsa-project.org, linux-m68k@lists.linux-m68k.org,
+        krzysztof.kozlowski+dt@linaro.org,
+        bcm-kernel-feedback-list@broadcom.com, kvm@vger.kernel.org,
+        mingo@redhat.com, mchehab+huawei@kernel.org, jdelvare@suse.com,
+        robh+dt@kernel.org, linux-gpio@vger.kernel.org, rafael@kernel.org,
+        linux-mmc@vger.kernel.org, federico.vaga@vaga.pv.it, bp@alien8.de,
+        linux-phy@lists.infradead.org, mmayer@broadcom.com,
+        keyrings@vger.kernel.org, x86@kernel.org,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        alim.akhtar@samsung.com, Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-pm@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        jarkko@kernel.org, tglx@linutronix.de, linus.walleij@linaro.org
+In-Reply-To: <cover.1654529011.git.mchehab@kernel.org>
+References: <cover.1654529011.git.mchehab@kernel.org>
+Subject: Re: (subset) [PATCH 00/23] Update Documentation/ cross-references
+Message-Id: <165461109692.1597191.11390741473240531333.b4-ty@kernel.org>
+Date:   Tue, 07 Jun 2022 15:11:36 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220606114908.962562-4-alexandr.lobakin@intel.com>
-User-Agent: Mutt/2.1.4 (2021-12-11)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Jun 06, 2022 at 01:49PM +0200, Alexander Lobakin wrote:
-> Currently, the generic test_bit() function is defined as a one-liner
-> and in case with constant bitmaps the compiler is unable to optimize
-> it to a constant. At the same time, gen_test_and_*_bit() are being
-> optimized pretty good.
-> Define gen_test_bit() the same way as they are defined.
+On Mon, 6 Jun 2022 16:25:22 +0100, Mauro Carvalho Chehab wrote:
+> There were a number of DT binding conversions and other docs change that
+> were not updated. Address them, in order to keep the cross-references on
+> a sane state.
 > 
-> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-> ---
->  include/asm-generic/bitops/generic-non-atomic.h | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+> Patch series is against v5.19-rc1 (and applies cleanly on the top of
+> today's -next).
 > 
-> diff --git a/include/asm-generic/bitops/generic-non-atomic.h b/include/asm-generic/bitops/generic-non-atomic.h
-> index 7a60adfa6e7d..202d8a3b40e1 100644
-> --- a/include/asm-generic/bitops/generic-non-atomic.h
-> +++ b/include/asm-generic/bitops/generic-non-atomic.h
-> @@ -118,7 +118,11 @@ gen___test_and_change_bit(unsigned int nr, volatile unsigned long *addr)
->  static __always_inline int
->  gen_test_bit(unsigned int nr, const volatile unsigned long *addr)
->  {
-> -	return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
-> +	const unsigned long *p = (const unsigned long *)addr + BIT_WORD(nr);
-> +	unsigned long mask = BIT_MASK(nr);
-> +	unsigned long val = *p;
-> +
-> +	return !!(val & mask);
+> [...]
 
-Unfortunately this makes the dereference of 'addr' non-volatile, and
-effectively weakens test_bit() to the point where I'd no longer consider
-it atomic. Per atomic_bitops.txt, test_bit() is atomic.
+Applied to
 
-The generic version has been using a volatile access to make it atomic
-(akin to generic READ_ONCE() casting to volatile). The volatile is also
-the reason the compiler can't optimize much, because volatile forces a
-real memory access.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Yes, confusingly, test_bit() lives in non-atomic.h, and this had caused
-confusion before, but the decision was made that moving it will cause
-headaches for ppc so it was left alone:
-https://lore.kernel.org/all/87a78xgu8o.fsf@dja-thinkpad.axtens.net/T/#u
+Thanks!
 
-As for how to make test_bit() more compiler-optimization friendly, I'm
-guessing that test_bit() needs some special casing where even the
-generic arch_test_bit() is different from the gen_test_bit().
-gen_test_bit() should probably assert that whatever it is called with
-can actually be evaluated at compile-time so it is never accidentally
-used otherwise.
+[22/23] ASoC: wm8731: update wlf,wm8731.yaml reference
+        commit: 69c8027c5ff43d68449fda4510a8cce70e8578b0
 
-I would also propose adding a comment close to the deref that test_bit()
-is atomic and the deref needs to remain volatile, so future people will
-not try to do the same optimization.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
--- Marco
+Mark
