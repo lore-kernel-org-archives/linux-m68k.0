@@ -2,820 +2,115 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14374C43334
-	for <linux-m68k@archiver.kernel.org>; Tue,  7 Jun 2022 07:13:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 016E2C433EF
+	for <linux-m68k@archiver.kernel.org>; Tue,  7 Jun 2022 07:30:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237167AbiFGHND (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 7 Jun 2022 03:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39666 "EHLO
+        id S237652AbiFGHaT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 7 Jun 2022 03:30:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237277AbiFGHNC (ORCPT
+        with ESMTP id S237671AbiFGH3z (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 7 Jun 2022 03:13:02 -0400
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8622DEC8
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Jun 2022 00:12:58 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed30:cdfc:db4e:9c0d:9c0])
-        by xavier.telenet-ops.be with bizsmtp
-        id g7Cw2700D15h48a017Cw01; Tue, 07 Jun 2022 09:12:56 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1nyTOZ-0031pY-Uu; Tue, 07 Jun 2022 09:12:55 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1nyTOY-003aZv-VJ; Tue, 07 Jun 2022 09:12:55 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-m68k@lists.linux-m68k.org
-Cc:     linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: defconfig: Update defconfigs for v5.19-rc1
-Date:   Tue,  7 Jun 2022 09:12:53 +0200
-Message-Id: <96e3b5c2b7f253449229993c8783478e6b7a9c5c.1654584908.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Tue, 7 Jun 2022 03:29:55 -0400
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65DA953E19
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Jun 2022 00:29:52 -0700 (PDT)
+Received: by mail-qt1-f182.google.com with SMTP id y15so12044703qtx.4
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 07 Jun 2022 00:29:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/vvSp91df5DXi30Fd3pExmyOkjiZTMAg5zYSvB9bVbM=;
+        b=4BSH/oYgzlib9x5wuQKAW0mL7CjpFXxhkHAb5qeVAcDo7rqz6z4eJvOi20A3/C6k/F
+         b+Q57c4maC880iVR5v1402o3PKZwS4GtAvZZwb+YukZgb+iWzN6Km/LsDrJKutuq33je
+         Aua4iQZQSU/rJ81b2JBNn5kXnwgWybJFQgnCIeo1NoZvoTITNCw8BKYgsHbzclWpqz0W
+         GhtKEvt03FMCR66aLJr0bPD9cXesTcgr1+o7l1Zzk7UX0LVZ6f4AibVZXoq4JVEgfAJ4
+         FfQlX12R1b2f0OpsuKN1rx4skj6Sf6NFKS42MPnzpqAjaaNmu+JeOMg5JZna6118OHv7
+         ew5w==
+X-Gm-Message-State: AOAM532W9vZ8J7NyLSrOHgIPU2mb0XmsrpcjpWM2LaPrA4FeVZgHkzgp
+        JnQZ/a9ARDXzeTFNaJtJB5a0opDfVFMqag==
+X-Google-Smtp-Source: ABdhPJxRX4jwGMAYNFIXHwSMRZQfnveHLT4fc9sWCqBDVb5EvJyXS7TzT29hoN9c9I7bsK7qkaTbug==
+X-Received: by 2002:ac8:7d8e:0:b0:304:eed1:d6ec with SMTP id c14-20020ac87d8e000000b00304eed1d6ecmr5532237qtd.590.1654586991213;
+        Tue, 07 Jun 2022 00:29:51 -0700 (PDT)
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
+        by smtp.gmail.com with ESMTPSA id d19-20020a05620a241300b006a6c230f5e0sm4034204qkn.31.2022.06.07.00.29.49
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Jun 2022 00:29:50 -0700 (PDT)
+Received: by mail-yb1-f173.google.com with SMTP id r82so29639574ybc.13
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 07 Jun 2022 00:29:49 -0700 (PDT)
+X-Received: by 2002:a25:7307:0:b0:65c:b98a:f592 with SMTP id
+ o7-20020a257307000000b0065cb98af592mr28407064ybc.380.1654586989616; Tue, 07
+ Jun 2022 00:29:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20220606084109.4108188-1-arnd@kernel.org> <20220606084109.4108188-7-arnd@kernel.org>
+In-Reply-To: <20220606084109.4108188-7-arnd@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 7 Jun 2022 09:29:38 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXi2LkrWSs9=D9tSfhz+YDHB+638F6JdmgQ7V8Gj1ehqQ@mail.gmail.com>
+Message-ID: <CAMuHMdXi2LkrWSs9=D9tSfhz+YDHB+638F6JdmgQ7V8Gj1ehqQ@mail.gmail.com>
+Subject: Re: [PATCH 6/6] arch/*/: remove CONFIG_VIRT_TO_BUS
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jakub Kicinski <kuba@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        Khalid Aziz <khalid@gonehiking.org>,
+        scsi <linux-scsi@vger.kernel.org>,
+        Manohar Vanga <manohar.vanga@gmail.com>,
+        Martyn Welch <martyn@welchs.me.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        Denis Efremov <efremov@linux.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-  - Move CONFIG_USERFAULTFD=y (moved in commit 430529b5c6317493
-    ("mm/uffd: move USERFAULTFD configs into mm/")),
-  - Move CONFIG_SLAB=y (moved in commit 7b42f1041c98f5d7 ("mm: Kconfig:
-    move swap and slab config options to the MM section")),
-  - Replace CONFIG_ZPOOL=m by CONFIG_ZRAM=m (cfr. commit
-    b3fbd58fcbb10725 ("mm: Kconfig: simplify zswap configuration")),
-  - Replace CONFIG_CRYPTO_SM[34]=m by CONFIG_CRYPTO_SM[34]_GENERIC=m
-    (cfr. commit d2825fa9365d0101 ("crypto: sm3,sm4 - move into crypto
-    directory")),
-  - Drop CONFIG_BITFIELD_KUNIT=m, CONFIG_BITS_TEST=m,
-    CONFIG_CMDLINE_KUNIT_TEST=m, and CONFIG_RESOURCE_KUNIT_TEST=m
-    (auto-modular since commit dcbb2ee24601fabb ("lib/Kconfig.debug:
-    change KUnit tests to default to KUNIT_ALL_TESTS")).
+On Mon, Jun 6, 2022 at 11:10 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> All architecture-independent users of virt_to_bus() and bus_to_virt()
+> have been fixed to use the dma mapping interfaces or have been
+> removed now.  This means the definitions on most architectures, and the
+> CONFIG_VIRT_TO_BUS symbol are now obsolete and can be removed.
+>
+> The only exceptions to this are a few network and scsi drivers for m68k
+> Amiga and VME machines and ppc32 Macintosh. These drivers work correctly
+> with the old interfaces and are probably not worth changing.
+>
+> On alpha and parisc, virt_to_bus() were still used in asm/floppy.h.
+> alpha can use isa_virt_to_bus() like x86 does, and parisc can just
+> open-code the virt_to_phys() here, as this is architecture specific
+> code.
+>
+> I tried updating the bus-virt-phys-mapping.rst documentation, which
+> started as an email from Linus to explain some details of the Linux-2.0
+> driver interfaces. The bits about virt_to_bus() were declared obsolete
+> backin 2000, and the rest is not all that relevant any more, so in the
+> end I just decided to remove the file completely.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-To be queued in the m68k tree for v5.20.
+>  arch/m68k/Kconfig                             |   1 -
+>  arch/m68k/include/asm/virtconvert.h           |   4 +-
 
- arch/m68k/configs/amiga_defconfig    | 14 +++++---------
- arch/m68k/configs/apollo_defconfig   | 14 +++++---------
- arch/m68k/configs/atari_defconfig    | 14 +++++---------
- arch/m68k/configs/bvme6000_defconfig | 14 +++++---------
- arch/m68k/configs/hp300_defconfig    | 14 +++++---------
- arch/m68k/configs/mac_defconfig      | 14 +++++---------
- arch/m68k/configs/multi_defconfig    | 14 +++++---------
- arch/m68k/configs/mvme147_defconfig  | 14 +++++---------
- arch/m68k/configs/mvme16x_defconfig  | 14 +++++---------
- arch/m68k/configs/q40_defconfig      | 14 +++++---------
- arch/m68k/configs/sun3_defconfig     | 14 +++++---------
- arch/m68k/configs/sun3x_defconfig    | 14 +++++---------
- 12 files changed, 60 insertions(+), 108 deletions(-)
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
-index c181030218bf29db..a6a886a89be28382 100644
---- a/arch/m68k/configs/amiga_defconfig
-+++ b/arch/m68k/configs/amiga_defconfig
-@@ -10,8 +10,6 @@ CONFIG_LOG_BUF_SHIFT=16
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
- CONFIG_CC_OPTIMIZE_FOR_SIZE=y
--CONFIG_USERFAULTFD=y
--CONFIG_SLAB=y
- CONFIG_KEXEC=y
- CONFIG_BOOTINFO_PROC=y
- CONFIG_M68020=y
-@@ -43,8 +41,9 @@ CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
- CONFIG_BINFMT_MISC=m
-+CONFIG_SLAB=y
- # CONFIG_COMPACTION is not set
--CONFIG_ZPOOL=m
-+CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_PACKET_DIAG=m
-@@ -310,6 +309,7 @@ CONFIG_PARPORT_MFC3=m
- CONFIG_PARPORT_1284=y
- CONFIG_AMIGA_FLOPPY=y
- CONFIG_AMIGA_Z2RAM=y
-+CONFIG_ZRAM=m
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_DRBD=m
- CONFIG_BLK_DEV_NBD=m
-@@ -580,7 +580,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
--CONFIG_CRYPTO_SM3=m
-+CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -595,7 +595,7 @@ CONFIG_CRYPTO_FCRYPT=m
- CONFIG_CRYPTO_KHAZAD=m
- CONFIG_CRYPTO_SEED=m
- CONFIG_CRYPTO_SERPENT=m
--CONFIG_CRYPTO_SM4=m
-+CONFIG_CRYPTO_SM4_GENERIC=m
- CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_LZO=m
-@@ -648,11 +648,7 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
--CONFIG_RESOURCE_KUNIT_TEST=m
- CONFIG_LINEAR_RANGES_TEST=m
--CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
-index 40755648fb6ce7a7..bffd24c2755e7117 100644
---- a/arch/m68k/configs/apollo_defconfig
-+++ b/arch/m68k/configs/apollo_defconfig
-@@ -10,8 +10,6 @@ CONFIG_LOG_BUF_SHIFT=16
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
- CONFIG_CC_OPTIMIZE_FOR_SIZE=y
--CONFIG_USERFAULTFD=y
--CONFIG_SLAB=y
- CONFIG_KEXEC=y
- CONFIG_BOOTINFO_PROC=y
- CONFIG_M68020=y
-@@ -39,8 +37,9 @@ CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
- CONFIG_BINFMT_MISC=m
-+CONFIG_SLAB=y
- # CONFIG_COMPACTION is not set
--CONFIG_ZPOOL=m
-+CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_PACKET_DIAG=m
-@@ -300,6 +299,7 @@ CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_TEST_ASYNC_DRIVER_PROBE=m
- CONFIG_CONNECTOR=m
-+CONFIG_ZRAM=m
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_DRBD=m
- CONFIG_BLK_DEV_NBD=m
-@@ -537,7 +537,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
--CONFIG_CRYPTO_SM3=m
-+CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -552,7 +552,7 @@ CONFIG_CRYPTO_FCRYPT=m
- CONFIG_CRYPTO_KHAZAD=m
- CONFIG_CRYPTO_SEED=m
- CONFIG_CRYPTO_SERPENT=m
--CONFIG_CRYPTO_SM4=m
-+CONFIG_CRYPTO_SM4_GENERIC=m
- CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_LZO=m
-@@ -604,11 +604,7 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
--CONFIG_RESOURCE_KUNIT_TEST=m
- CONFIG_LINEAR_RANGES_TEST=m
--CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
-index 48320e3786ddab5f..97a6df6822f0f23f 100644
---- a/arch/m68k/configs/atari_defconfig
-+++ b/arch/m68k/configs/atari_defconfig
-@@ -10,8 +10,6 @@ CONFIG_LOG_BUF_SHIFT=16
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
- CONFIG_CC_OPTIMIZE_FOR_SIZE=y
--CONFIG_USERFAULTFD=y
--CONFIG_SLAB=y
- CONFIG_KEXEC=y
- CONFIG_BOOTINFO_PROC=y
- CONFIG_M68020=y
-@@ -46,8 +44,9 @@ CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
- CONFIG_BINFMT_MISC=m
-+CONFIG_SLAB=y
- # CONFIG_COMPACTION is not set
--CONFIG_ZPOOL=m
-+CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_PACKET_DIAG=m
-@@ -311,6 +310,7 @@ CONFIG_PARPORT=m
- CONFIG_PARPORT_ATARI=m
- CONFIG_PARPORT_1284=y
- CONFIG_ATARI_FLOPPY=y
-+CONFIG_ZRAM=m
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_DRBD=m
- CONFIG_BLK_DEV_NBD=m
-@@ -568,7 +568,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
--CONFIG_CRYPTO_SM3=m
-+CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -583,7 +583,7 @@ CONFIG_CRYPTO_FCRYPT=m
- CONFIG_CRYPTO_KHAZAD=m
- CONFIG_CRYPTO_SEED=m
- CONFIG_CRYPTO_SERPENT=m
--CONFIG_CRYPTO_SM4=m
-+CONFIG_CRYPTO_SM4_GENERIC=m
- CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_LZO=m
-@@ -636,11 +636,7 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
--CONFIG_RESOURCE_KUNIT_TEST=m
- CONFIG_LINEAR_RANGES_TEST=m
--CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
-index 9af0e2d0d153be63..42d969697f7f0352 100644
---- a/arch/m68k/configs/bvme6000_defconfig
-+++ b/arch/m68k/configs/bvme6000_defconfig
-@@ -10,8 +10,6 @@ CONFIG_LOG_BUF_SHIFT=16
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
- CONFIG_CC_OPTIMIZE_FOR_SIZE=y
--CONFIG_USERFAULTFD=y
--CONFIG_SLAB=y
- CONFIG_KEXEC=y
- CONFIG_BOOTINFO_PROC=y
- CONFIG_M68040=y
-@@ -36,8 +34,9 @@ CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
- CONFIG_BINFMT_MISC=m
-+CONFIG_SLAB=y
- # CONFIG_COMPACTION is not set
--CONFIG_ZPOOL=m
-+CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_PACKET_DIAG=m
-@@ -297,6 +296,7 @@ CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_TEST_ASYNC_DRIVER_PROBE=m
- CONFIG_CONNECTOR=m
-+CONFIG_ZRAM=m
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_DRBD=m
- CONFIG_BLK_DEV_NBD=m
-@@ -529,7 +529,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
--CONFIG_CRYPTO_SM3=m
-+CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -544,7 +544,7 @@ CONFIG_CRYPTO_FCRYPT=m
- CONFIG_CRYPTO_KHAZAD=m
- CONFIG_CRYPTO_SEED=m
- CONFIG_CRYPTO_SERPENT=m
--CONFIG_CRYPTO_SM4=m
-+CONFIG_CRYPTO_SM4_GENERIC=m
- CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_LZO=m
-@@ -596,11 +596,7 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
--CONFIG_RESOURCE_KUNIT_TEST=m
- CONFIG_LINEAR_RANGES_TEST=m
--CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
-index 49341d66feb6a6b5..97d6d9acb39520ab 100644
---- a/arch/m68k/configs/hp300_defconfig
-+++ b/arch/m68k/configs/hp300_defconfig
-@@ -10,8 +10,6 @@ CONFIG_LOG_BUF_SHIFT=16
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
- CONFIG_CC_OPTIMIZE_FOR_SIZE=y
--CONFIG_USERFAULTFD=y
--CONFIG_SLAB=y
- CONFIG_KEXEC=y
- CONFIG_BOOTINFO_PROC=y
- CONFIG_M68020=y
-@@ -38,8 +36,9 @@ CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
- CONFIG_BINFMT_MISC=m
-+CONFIG_SLAB=y
- # CONFIG_COMPACTION is not set
--CONFIG_ZPOOL=m
-+CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_PACKET_DIAG=m
-@@ -299,6 +298,7 @@ CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_TEST_ASYNC_DRIVER_PROBE=m
- CONFIG_CONNECTOR=m
-+CONFIG_ZRAM=m
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_DRBD=m
- CONFIG_BLK_DEV_NBD=m
-@@ -539,7 +539,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
--CONFIG_CRYPTO_SM3=m
-+CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -554,7 +554,7 @@ CONFIG_CRYPTO_FCRYPT=m
- CONFIG_CRYPTO_KHAZAD=m
- CONFIG_CRYPTO_SEED=m
- CONFIG_CRYPTO_SERPENT=m
--CONFIG_CRYPTO_SM4=m
-+CONFIG_CRYPTO_SM4_GENERIC=m
- CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_LZO=m
-@@ -606,11 +606,7 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
--CONFIG_RESOURCE_KUNIT_TEST=m
- CONFIG_LINEAR_RANGES_TEST=m
--CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index 92b33d5ffab190f7..8cbfc1c659a311b6 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -10,8 +10,6 @@ CONFIG_LOG_BUF_SHIFT=16
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
- CONFIG_CC_OPTIMIZE_FOR_SIZE=y
--CONFIG_USERFAULTFD=y
--CONFIG_SLAB=y
- CONFIG_KEXEC=y
- CONFIG_BOOTINFO_PROC=y
- CONFIG_M68020=y
-@@ -37,8 +35,9 @@ CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
- CONFIG_BINFMT_MISC=m
-+CONFIG_SLAB=y
- # CONFIG_COMPACTION is not set
--CONFIG_ZPOOL=m
-+CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_PACKET_DIAG=m
-@@ -302,6 +301,7 @@ CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_TEST_ASYNC_DRIVER_PROBE=m
- CONFIG_CONNECTOR=m
- CONFIG_BLK_DEV_SWIM=m
-+CONFIG_ZRAM=m
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_DRBD=m
- CONFIG_BLK_DEV_NBD=m
-@@ -559,7 +559,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
--CONFIG_CRYPTO_SM3=m
-+CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -574,7 +574,7 @@ CONFIG_CRYPTO_FCRYPT=m
- CONFIG_CRYPTO_KHAZAD=m
- CONFIG_CRYPTO_SEED=m
- CONFIG_CRYPTO_SERPENT=m
--CONFIG_CRYPTO_SM4=m
-+CONFIG_CRYPTO_SM4_GENERIC=m
- CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_LZO=m
-@@ -627,11 +627,7 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
--CONFIG_RESOURCE_KUNIT_TEST=m
- CONFIG_LINEAR_RANGES_TEST=m
--CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index 6aaa947bc8491a58..9f45fe60757fab1c 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -10,8 +10,6 @@ CONFIG_LOG_BUF_SHIFT=16
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
- CONFIG_CC_OPTIMIZE_FOR_SIZE=y
--CONFIG_USERFAULTFD=y
--CONFIG_SLAB=y
- CONFIG_KEXEC=y
- CONFIG_BOOTINFO_PROC=y
- CONFIG_M68020=y
-@@ -57,8 +55,9 @@ CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
- CONFIG_BINFMT_MISC=m
-+CONFIG_SLAB=y
- # CONFIG_COMPACTION is not set
--CONFIG_ZPOOL=m
-+CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_PACKET_DIAG=m
-@@ -331,6 +330,7 @@ CONFIG_AMIGA_FLOPPY=y
- CONFIG_ATARI_FLOPPY=y
- CONFIG_BLK_DEV_SWIM=m
- CONFIG_AMIGA_Z2RAM=y
-+CONFIG_ZRAM=m
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_DRBD=m
- CONFIG_BLK_DEV_NBD=m
-@@ -645,7 +645,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
--CONFIG_CRYPTO_SM3=m
-+CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -660,7 +660,7 @@ CONFIG_CRYPTO_FCRYPT=m
- CONFIG_CRYPTO_KHAZAD=m
- CONFIG_CRYPTO_SEED=m
- CONFIG_CRYPTO_SERPENT=m
--CONFIG_CRYPTO_SM4=m
-+CONFIG_CRYPTO_SM4_GENERIC=m
- CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_LZO=m
-@@ -713,11 +713,7 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
--CONFIG_RESOURCE_KUNIT_TEST=m
- CONFIG_LINEAR_RANGES_TEST=m
--CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
-index b62d65e5993838aa..4736cfacf6a2801c 100644
---- a/arch/m68k/configs/mvme147_defconfig
-+++ b/arch/m68k/configs/mvme147_defconfig
-@@ -10,8 +10,6 @@ CONFIG_LOG_BUF_SHIFT=16
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
- CONFIG_CC_OPTIMIZE_FOR_SIZE=y
--CONFIG_USERFAULTFD=y
--CONFIG_SLAB=y
- CONFIG_KEXEC=y
- CONFIG_BOOTINFO_PROC=y
- CONFIG_M68030=y
-@@ -35,8 +33,9 @@ CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
- CONFIG_BINFMT_MISC=m
-+CONFIG_SLAB=y
- # CONFIG_COMPACTION is not set
--CONFIG_ZPOOL=m
-+CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_PACKET_DIAG=m
-@@ -296,6 +295,7 @@ CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_TEST_ASYNC_DRIVER_PROBE=m
- CONFIG_CONNECTOR=m
-+CONFIG_ZRAM=m
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_DRBD=m
- CONFIG_BLK_DEV_NBD=m
-@@ -528,7 +528,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
--CONFIG_CRYPTO_SM3=m
-+CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -543,7 +543,7 @@ CONFIG_CRYPTO_FCRYPT=m
- CONFIG_CRYPTO_KHAZAD=m
- CONFIG_CRYPTO_SEED=m
- CONFIG_CRYPTO_SERPENT=m
--CONFIG_CRYPTO_SM4=m
-+CONFIG_CRYPTO_SM4_GENERIC=m
- CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_LZO=m
-@@ -595,11 +595,7 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
--CONFIG_RESOURCE_KUNIT_TEST=m
- CONFIG_LINEAR_RANGES_TEST=m
--CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
-index 8ecf261487d4262e..638cd38aa7d27303 100644
---- a/arch/m68k/configs/mvme16x_defconfig
-+++ b/arch/m68k/configs/mvme16x_defconfig
-@@ -10,8 +10,6 @@ CONFIG_LOG_BUF_SHIFT=16
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
- CONFIG_CC_OPTIMIZE_FOR_SIZE=y
--CONFIG_USERFAULTFD=y
--CONFIG_SLAB=y
- CONFIG_KEXEC=y
- CONFIG_BOOTINFO_PROC=y
- CONFIG_M68040=y
-@@ -36,8 +34,9 @@ CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
- CONFIG_BINFMT_MISC=m
-+CONFIG_SLAB=y
- # CONFIG_COMPACTION is not set
--CONFIG_ZPOOL=m
-+CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_PACKET_DIAG=m
-@@ -297,6 +296,7 @@ CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_TEST_ASYNC_DRIVER_PROBE=m
- CONFIG_CONNECTOR=m
-+CONFIG_ZRAM=m
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_DRBD=m
- CONFIG_BLK_DEV_NBD=m
-@@ -529,7 +529,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
--CONFIG_CRYPTO_SM3=m
-+CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -544,7 +544,7 @@ CONFIG_CRYPTO_FCRYPT=m
- CONFIG_CRYPTO_KHAZAD=m
- CONFIG_CRYPTO_SEED=m
- CONFIG_CRYPTO_SERPENT=m
--CONFIG_CRYPTO_SM4=m
-+CONFIG_CRYPTO_SM4_GENERIC=m
- CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_LZO=m
-@@ -596,11 +596,7 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
--CONFIG_RESOURCE_KUNIT_TEST=m
- CONFIG_LINEAR_RANGES_TEST=m
--CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
-index 7540d908897bca83..ec8b6bb70ebdcaf3 100644
---- a/arch/m68k/configs/q40_defconfig
-+++ b/arch/m68k/configs/q40_defconfig
-@@ -10,8 +10,6 @@ CONFIG_LOG_BUF_SHIFT=16
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
- CONFIG_CC_OPTIMIZE_FOR_SIZE=y
--CONFIG_USERFAULTFD=y
--CONFIG_SLAB=y
- CONFIG_KEXEC=y
- CONFIG_BOOTINFO_PROC=y
- CONFIG_M68040=y
-@@ -37,8 +35,9 @@ CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
- CONFIG_BINFMT_MISC=m
-+CONFIG_SLAB=y
- # CONFIG_COMPACTION is not set
--CONFIG_ZPOOL=m
-+CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_PACKET_DIAG=m
-@@ -301,6 +300,7 @@ CONFIG_CONNECTOR=m
- CONFIG_PARPORT=m
- CONFIG_PARPORT_PC=m
- CONFIG_PARPORT_1284=y
-+CONFIG_ZRAM=m
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_DRBD=m
- CONFIG_BLK_DEV_NBD=m
-@@ -546,7 +546,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
--CONFIG_CRYPTO_SM3=m
-+CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -561,7 +561,7 @@ CONFIG_CRYPTO_FCRYPT=m
- CONFIG_CRYPTO_KHAZAD=m
- CONFIG_CRYPTO_SEED=m
- CONFIG_CRYPTO_SERPENT=m
--CONFIG_CRYPTO_SM4=m
-+CONFIG_CRYPTO_SM4_GENERIC=m
- CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_LZO=m
-@@ -614,11 +614,7 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
--CONFIG_RESOURCE_KUNIT_TEST=m
- CONFIG_LINEAR_RANGES_TEST=m
--CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
-index 832b45944617c6c3..7d8dc578d59c6ffb 100644
---- a/arch/m68k/configs/sun3_defconfig
-+++ b/arch/m68k/configs/sun3_defconfig
-@@ -10,8 +10,6 @@ CONFIG_LOG_BUF_SHIFT=16
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
- CONFIG_CC_OPTIMIZE_FOR_SIZE=y
--CONFIG_USERFAULTFD=y
--CONFIG_SLAB=y
- CONFIG_KEXEC=y
- CONFIG_BOOTINFO_PROC=y
- CONFIG_SUN3=y
-@@ -33,8 +31,9 @@ CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
- CONFIG_BINFMT_MISC=m
-+CONFIG_SLAB=y
- # CONFIG_COMPACTION is not set
--CONFIG_ZPOOL=m
-+CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_PACKET_DIAG=m
-@@ -294,6 +293,7 @@ CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_TEST_ASYNC_DRIVER_PROBE=m
- CONFIG_CONNECTOR=m
-+CONFIG_ZRAM=m
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_DRBD=m
- CONFIG_BLK_DEV_NBD=m
-@@ -528,7 +528,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
--CONFIG_CRYPTO_SM3=m
-+CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -543,7 +543,7 @@ CONFIG_CRYPTO_FCRYPT=m
- CONFIG_CRYPTO_KHAZAD=m
- CONFIG_CRYPTO_SEED=m
- CONFIG_CRYPTO_SERPENT=m
--CONFIG_CRYPTO_SM4=m
-+CONFIG_CRYPTO_SM4_GENERIC=m
- CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_LZO=m
-@@ -594,11 +594,7 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
--CONFIG_RESOURCE_KUNIT_TEST=m
- CONFIG_LINEAR_RANGES_TEST=m
--CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
-index 9171b687e565e2f1..96290aee530211e3 100644
---- a/arch/m68k/configs/sun3x_defconfig
-+++ b/arch/m68k/configs/sun3x_defconfig
-@@ -10,8 +10,6 @@ CONFIG_LOG_BUF_SHIFT=16
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
- CONFIG_CC_OPTIMIZE_FOR_SIZE=y
--CONFIG_USERFAULTFD=y
--CONFIG_SLAB=y
- CONFIG_KEXEC=y
- CONFIG_BOOTINFO_PROC=y
- CONFIG_SUN3X=y
-@@ -33,8 +31,9 @@ CONFIG_MQ_IOSCHED_KYBER=m
- CONFIG_IOSCHED_BFQ=m
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
- CONFIG_BINFMT_MISC=m
-+CONFIG_SLAB=y
- # CONFIG_COMPACTION is not set
--CONFIG_ZPOOL=m
-+CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_PACKET_DIAG=m
-@@ -294,6 +293,7 @@ CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_TEST_ASYNC_DRIVER_PROBE=m
- CONFIG_CONNECTOR=m
-+CONFIG_ZRAM=m
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_DRBD=m
- CONFIG_BLK_DEV_NBD=m
-@@ -527,7 +527,7 @@ CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
- CONFIG_CRYPTO_SHA3=m
--CONFIG_CRYPTO_SM3=m
-+CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_AES=y
- CONFIG_CRYPTO_AES_TI=m
-@@ -542,7 +542,7 @@ CONFIG_CRYPTO_FCRYPT=m
- CONFIG_CRYPTO_KHAZAD=m
- CONFIG_CRYPTO_SEED=m
- CONFIG_CRYPTO_SERPENT=m
--CONFIG_CRYPTO_SM4=m
-+CONFIG_CRYPTO_SM4_GENERIC=m
- CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_LZO=m
-@@ -594,11 +594,7 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
--CONFIG_RESOURCE_KUNIT_TEST=m
- CONFIG_LINEAR_RANGES_TEST=m
--CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
--- 
-2.25.1
+Gr{oetje,eeting}s,
 
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
