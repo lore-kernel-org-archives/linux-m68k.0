@@ -2,43 +2,43 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D9B7CCA486
-	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jun 2022 14:51:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C680C43334
+	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jun 2022 14:51:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242816AbiFHOvI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 8 Jun 2022 10:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57930 "EHLO
+        id S242668AbiFHOvG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 8 Jun 2022 10:51:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242598AbiFHOrU (ORCPT
+        with ESMTP id S242801AbiFHOri (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 8 Jun 2022 10:47:20 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2092025445C
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Jun 2022 07:47:12 -0700 (PDT)
+        Wed, 8 Jun 2022 10:47:38 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B1720872A
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Jun 2022 07:47:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=+nBTmu8be4dn87X4h4i4v5hXqWi/FDQJ2e0V2G49JnI=; b=c0sBpB4EJtpUlMJmM1BtzQg1jI
-        4PcdDgJzYOowDoMnmKAFYhNbpvRYzsV7kRFyLJf62+ZuPqPEFAxeBvm38jC9EIzinrmdPRpzRnIth
-        ZjcGrFN3FC2OLDiPw1MQ9GiO/ueu64sxGeUIVMfNNGZ1I6IAzUSGlYS50yZYH/qpVkumUW9sz9ylw
-        NiQ4O2XB8H8Hk/RXSmU/7i/042dpY1RsaqJxDbzJ3hgd+h+vW2daHvNujHxeLDb2O3c/EAvt6fmpH
-        /CT3Hd5fJEQuF8uryywQG23Lx98/8viggcr1njgwvu2L7IHYIVv/w/rdZa7aTRE+XIf9ro7DYS6a3
-        okJs1Mxg==;
+        bh=T8wRwm6eLEEe+d6prOVCLJdHQ0FxyXLfs5ZoW8qxROY=; b=qz2/QcW+8oRBpx5oORnEf+GtM8
+        q1YrQyf1tmyPcNQqEPrXFmduaozueI1j9rg8SJ6zBna7Uz8lvnEwB+B+wyKCf5pGe3lOvB4F+TeAD
+        F9tyHNLVtk1V2IJAmR3uomZgujNpMa70W2bEyEOoERgoVaups+pxLymddoQIwXqrmFio0yWVivIGv
+        IsqY6h6gyND3FQXvxxlKKrgtcZk2R0bnOmFFyBY0qQH0BnYniwDC01FuURzwOyZMFoXutRSidDScS
+        SGPdVyuHTbrYBEgBLfjjxHu+bvwr+Z2Livrdq6BQDnc77vplqPh7z9gL7QwK+/3eqINZJiDgrTyxM
+        zjRENbJA==;
 Received: from dhcp-077-249-017-003.chello.nl ([77.249.17.3] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nywx3-00ChYC-JV; Wed, 08 Jun 2022 14:46:29 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nywx6-0066Da-9x; Wed, 08 Jun 2022 14:46:33 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A3BE9302EEA;
-        Wed,  8 Jun 2022 16:46:23 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0452B302F4F;
+        Wed,  8 Jun 2022 16:46:24 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 9DB8020C10EDE; Wed,  8 Jun 2022 16:46:18 +0200 (CEST)
-Message-ID: <20220608144517.507286638@infradead.org>
+        id C421820C119B8; Wed,  8 Jun 2022 16:46:18 +0200 (CEST)
+Message-ID: <20220608144518.073801916@infradead.org>
 User-Agent: quilt/0.66
-Date:   Wed, 08 Jun 2022 16:27:48 +0200
+Date:   Wed, 08 Jun 2022 16:27:57 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     peterz@infradead.org
 Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
@@ -99,7 +99,7 @@ Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
         linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org,
         rcu@vger.kernel.org
-Subject: [PATCH 25/36] time/tick-broadcast: Remove RCU_NONIDLE usage
+Subject: [PATCH 34/36] cpuidle,omap3: Push RCU-idle into omap_sram_idle()
 References: <20220608142723.103523089@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -107,52 +107,89 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-No callers left that have already disabled RCU.
+OMAP3 uses full SoC suspend modes as idle states, as such it needs the
+whole power-domain and clock-domain code from the idle path.
+
+All that code is not suitable to run with RCU disabled, as such push
+RCU-idle deeper still.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/time/tick-broadcast-hrtimer.c |   29 ++++++++++++-----------------
- 1 file changed, 12 insertions(+), 17 deletions(-)
+ arch/arm/mach-omap2/cpuidle34xx.c |    4 +---
+ arch/arm/mach-omap2/pm.h          |    2 +-
+ arch/arm/mach-omap2/pm34xx.c      |   12 ++++++++++--
+ 3 files changed, 12 insertions(+), 6 deletions(-)
 
---- a/kernel/time/tick-broadcast-hrtimer.c
-+++ b/kernel/time/tick-broadcast-hrtimer.c
-@@ -56,25 +56,20 @@ static int bc_set_next(ktime_t expires,
- 	 * hrtimer callback function is currently running, then
- 	 * hrtimer_start() cannot move it and the timer stays on the CPU on
- 	 * which it is assigned at the moment.
-+	 */
-+	hrtimer_start(&bctimer, expires, HRTIMER_MODE_ABS_PINNED_HARD);
-+	/*
-+	 * The core tick broadcast mode expects bc->bound_on to be set
-+	 * correctly to prevent a CPU which has the broadcast hrtimer
-+	 * armed from going deep idle.
- 	 *
--	 * As this can be called from idle code, the hrtimer_start()
--	 * invocation has to be wrapped with RCU_NONIDLE() as
--	 * hrtimer_start() can call into tracing.
-+	 * As tick_broadcast_lock is held, nothing can change the cpu
-+	 * base which was just established in hrtimer_start() above. So
-+	 * the below access is safe even without holding the hrtimer
-+	 * base lock.
- 	 */
--	RCU_NONIDLE( {
--		hrtimer_start(&bctimer, expires, HRTIMER_MODE_ABS_PINNED_HARD);
--		/*
--		 * The core tick broadcast mode expects bc->bound_on to be set
--		 * correctly to prevent a CPU which has the broadcast hrtimer
--		 * armed from going deep idle.
--		 *
--		 * As tick_broadcast_lock is held, nothing can change the cpu
--		 * base which was just established in hrtimer_start() above. So
--		 * the below access is safe even without holding the hrtimer
--		 * base lock.
--		 */
--		bc->bound_on = bctimer.base->cpu_base->cpu;
--	} );
-+	bc->bound_on = bctimer.base->cpu_base->cpu;
-+
+--- a/arch/arm/mach-omap2/cpuidle34xx.c
++++ b/arch/arm/mach-omap2/cpuidle34xx.c
+@@ -133,9 +133,7 @@ static int omap3_enter_idle(struct cpuid
+ 	}
+ 
+ 	/* Execute ARM wfi */
+-	cpuidle_rcu_enter();
+-	omap_sram_idle();
+-	cpuidle_rcu_exit();
++	omap_sram_idle(true);
+ 
+ 	/*
+ 	 * Call idle CPU PM enter notifier chain to restore
+--- a/arch/arm/mach-omap2/pm.h
++++ b/arch/arm/mach-omap2/pm.h
+@@ -29,7 +29,7 @@ static inline int omap4_idle_init(void)
+ 
+ extern void *omap3_secure_ram_storage;
+ extern void omap3_pm_off_mode_enable(int);
+-extern void omap_sram_idle(void);
++extern void omap_sram_idle(bool rcuidle);
+ extern int omap_pm_clkdms_setup(struct clockdomain *clkdm, void *unused);
+ 
+ #if defined(CONFIG_PM_OPP)
+--- a/arch/arm/mach-omap2/pm34xx.c
++++ b/arch/arm/mach-omap2/pm34xx.c
+@@ -26,6 +26,7 @@
+ #include <linux/delay.h>
+ #include <linux/slab.h>
+ #include <linux/of.h>
++#include <linux/cpuidle.h>
+ 
+ #include <trace/events/power.h>
+ 
+@@ -174,7 +175,7 @@ static int omap34xx_do_sram_idle(unsigne
  	return 0;
  }
  
+-void omap_sram_idle(void)
++void omap_sram_idle(bool rcuidle)
+ {
+ 	/* Variable to tell what needs to be saved and restored
+ 	 * in omap_sram_idle*/
+@@ -254,11 +255,18 @@ void omap_sram_idle(void)
+ 	 */
+ 	if (save_state)
+ 		omap34xx_save_context(omap3_arm_context);
++
++	if (rcuidle)
++		cpuidle_rcu_enter();
++
+ 	if (save_state == 1 || save_state == 3)
+ 		cpu_suspend(save_state, omap34xx_do_sram_idle);
+ 	else
+ 		omap34xx_do_sram_idle(save_state);
+ 
++	if (rcuidle)
++		rcuidle_rcu_exit();
++
+ 	/* Restore normal SDRC POWER settings */
+ 	if (cpu_is_omap3430() && omap_rev() >= OMAP3430_REV_ES3_0 &&
+ 	    (omap_type() == OMAP2_DEVICE_TYPE_EMU ||
+@@ -316,7 +324,7 @@ static int omap3_pm_suspend(void)
+ 
+ 	omap3_intc_suspend();
+ 
+-	omap_sram_idle();
++	omap_sram_idle(false);
+ 
+ restore:
+ 	/* Restore next_pwrsts */
 
 
