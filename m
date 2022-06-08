@@ -2,43 +2,43 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 49EDFCCA488
-	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jun 2022 14:51:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44E02CCA48A
+	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jun 2022 14:51:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243710AbiFHOvS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        id S243745AbiFHOvS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
         Wed, 8 Jun 2022 10:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57932 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242520AbiFHOrR (ORCPT
+        with ESMTP id S242684AbiFHOr2 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 8 Jun 2022 10:47:17 -0400
+        Wed, 8 Jun 2022 10:47:28 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA80A258B68
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Jun 2022 07:47:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F7D02584FC
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Jun 2022 07:47:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=1usWiRWR4uttba39otUsN6OqB3IXu4/S2NHARc2LOVI=; b=FwGsX6HqAEWrIDIwqSsLl+2rn+
-        jxtc/+7Q73QoS/5n4U2sAOL0VlfaYMGCWkilbboinFeB59SIcUo3UpH4a5CtYGWmPThbsscblAnH4
-        PSS71rXa70D7UmJtRK8HWOujM8sLBbHEPGPYqLVKvfZP62p3cW80pTaY4XSX5yfYbfkdrHxiUG5Wz
-        T0edzqMYifaS2QyjulPfkPqxRE0jrOsPGKKpMpJYlly7Zipb93HlY74okg/8Mb1f3Kbt7PF9GRF4I
-        xfQiX+7/KU3X93vRF1S+bG52Qv3PZIAkNXLJYuCETihI1/nFsTHWt4NnKd/O4/6se7YsYY89QZ1rA
-        qO/mDSKA==;
+        bh=zScd4cADrYcj3rMhEyHUI7u7RAFkUNduwGg8qRRyi/k=; b=lMeZtUCMmLelJdq3AWi7ufvFy9
+        zlr0j5q30DieJ7hrCz8do1dwuurdkRTVZkClv5qAsNNY34C5+J1MisafZfl5mqNbyVj29S2tZDxtK
+        LEpTKomujvoW1TCLYxlDbZt43UH74WE9L7Lh3HKWRXe6UR3tN8vTT5ffsmmFmxd0VHkpTlLfEISj7
+        1YiC/dMdRcaQcaLa3hWd6i2S9Ph6nB4hTbaK6IoI8FUNQvFYBexxYiq+T8SJikPxMDFN+B/sZWVMO
+        b9LXaI8a06LKzZOZDbTdvz+wlt156y7IT5OCrJlji47mznjmSKwwwdv64p++NrqDV4Nf5RRQ6f3GK
+        cjl+uyVg==;
 Received: from dhcp-077-249-017-003.chello.nl ([77.249.17.3] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nywx3-00ChYK-L3; Wed, 08 Jun 2022 14:46:29 +0000
+        id 1nywwz-00ChWi-PN; Wed, 08 Jun 2022 14:46:25 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A3BDD302EE7;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2A2ED302E59;
         Wed,  8 Jun 2022 16:46:23 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 981A220C10EDC; Wed,  8 Jun 2022 16:46:18 +0200 (CEST)
-Message-ID: <20220608144517.444659212@infradead.org>
+        id 7DA0620C10EC7; Wed,  8 Jun 2022 16:46:18 +0200 (CEST)
+Message-ID: <20220608144516.998681585@infradead.org>
 User-Agent: quilt/0.66
-Date:   Wed, 08 Jun 2022 16:27:47 +0200
+Date:   Wed, 08 Jun 2022 16:27:40 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     peterz@infradead.org
 Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
@@ -99,7 +99,7 @@ Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
         linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org,
         rcu@vger.kernel.org
-Subject: [PATCH 24/36] printk: Remove trace_.*_rcuidle() usage
+Subject: [PATCH 17/36] acpi_idle: Remove tracing
 References: <20220608142723.103523089@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -107,27 +107,73 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The problem, per commit fc98c3c8c9dc ("printk: use rcuidle console
-tracepoint"), was printk usage from the cpuidle path where RCU was
-already disabled.
-
-Per the patches earlier in this series, this is no longer the case.
+All the idle routines are called with RCU disabled, as such there must
+not be any tracing inside.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/printk/printk.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/acpi/processor_idle.c |   24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -2238,7 +2238,7 @@ static u16 printk_sprint(char *text, u16
- 		}
+--- a/drivers/acpi/processor_idle.c
++++ b/drivers/acpi/processor_idle.c
+@@ -108,8 +108,8 @@ static const struct dmi_system_id proces
+ static void __cpuidle acpi_safe_halt(void)
+ {
+ 	if (!tif_need_resched()) {
+-		safe_halt();
+-		local_irq_disable();
++		raw_safe_halt();
++		raw_local_irq_disable();
+ 	}
+ }
+ 
+@@ -524,16 +524,21 @@ static int acpi_idle_bm_check(void)
+ 	return bm_status;
+ }
+ 
+-static void wait_for_freeze(void)
++static __cpuidle void io_idle(unsigned long addr)
+ {
++	/* IO port based C-state */
++	inb(addr);
++
+ #ifdef	CONFIG_X86
+ 	/* No delay is needed if we are in guest */
+ 	if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
+ 		return;
+ #endif
+-	/* Dummy wait op - must do something useless after P_LVL2 read
+-	   because chipsets cannot guarantee that STPCLK# signal
+-	   gets asserted in time to freeze execution properly. */
++	/*
++	 * Dummy wait op - must do something useless after P_LVL2 read
++	 * because chipsets cannot guarantee that STPCLK# signal
++	 * gets asserted in time to freeze execution properly.
++	 */
+ 	inl(acpi_gbl_FADT.xpm_timer_block.address);
+ }
+ 
+@@ -553,9 +558,7 @@ static void __cpuidle acpi_idle_do_entry
+ 	} else if (cx->entry_method == ACPI_CSTATE_HALT) {
+ 		acpi_safe_halt();
+ 	} else {
+-		/* IO port based C-state */
+-		inb(cx->address);
+-		wait_for_freeze();
++		io_idle(cx->address);
  	}
  
--	trace_console_rcuidle(text, text_len);
-+	trace_console(text, text_len);
+ 	perf_lopwr_cb(false);
+@@ -577,8 +580,7 @@ static int acpi_idle_play_dead(struct cp
+ 		if (cx->entry_method == ACPI_CSTATE_HALT)
+ 			safe_halt();
+ 		else if (cx->entry_method == ACPI_CSTATE_SYSTEMIO) {
+-			inb(cx->address);
+-			wait_for_freeze();
++			io_idle(cx->address);
+ 		} else
+ 			return -ENODEV;
  
- 	return text_len;
- }
 
 
