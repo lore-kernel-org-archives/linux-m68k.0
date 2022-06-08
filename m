@@ -2,43 +2,43 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88F25CCA489
-	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jun 2022 14:51:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63DFBC43334
+	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jun 2022 14:51:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242705AbiFHOv0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 8 Jun 2022 10:51:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60794 "EHLO
+        id S243778AbiFHOv1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 8 Jun 2022 10:51:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242773AbiFHOrf (ORCPT
+        with ESMTP id S242774AbiFHOrg (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 8 Jun 2022 10:47:35 -0400
+        Wed, 8 Jun 2022 10:47:36 -0400
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3997525BC19
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Jun 2022 07:47:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B53254EDE
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Jun 2022 07:47:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=5naerUzcbldjXRb10QYbs7+/pM4Ur6B2nPLePdbzHOg=; b=rhgD+2PcLe5JBDMlblYneku2pt
-        sdXli9DhMYdDhGWlEZGfdH33pA1vxt2/I6b1j6EXLWZWbJKzwmGTw5dQ1MmGgZUXFXCjmqjyi7Cj0
-        RDEeMRhRx462t65vhBmJxF3B2p6UkTTvXKi94yWM8bZ08fR0lDh+Y4pYwx1LnZArZ4GjMKpZDddEp
-        x8xSvPeIQZbvtL3deY5Q/Os9xDxH0nwk7Kl+yc43Zl8sk4PIGyqEmr5VJo8LA2u3JPyOV7lFHyHMX
-        QOljdOyxCUAilPhGGsAmgB+8n8H2M0DXrQgHdXFz3ZS+VW69bh5LQomhK8O36eqaPNPg9koIFunZF
-        REK2rFOw==;
+        bh=lz2MUgDITA4yYb0U+PMz5bsqmEWyVbYbLXt1grP5wdc=; b=E4ma1UJky4lYLkF7WsmuwBiBAR
+        ZNOCNP37EHcDipS0h5pGpc7Z83q2l0F9r1qoT2IwS4JaVORLNk9Y8kD1/G4PQ/WPrdROyQRafl+bw
+        8kEHexR7OAoHvsHpcXrvfDNKNmCb7vZaRmG5jCMjvkiVnlyjOoCZYPiCN2YUEe0s+KCLCMKw1lusn
+        c//k/ch+ZMfy68BfHEU9q/SBuHFmKkFeZQNGD+V4Ey9G51j7RCAyIzKlUBl1/EhiN9VFEuwMKKqHS
+        exZwnsJXFjdzNoY07XCZXRHpvxrUSpp80Ad7Sk+AHygZ2w1HtBhHyFFImsUsvO1nkQsZm+y1UkgzW
+        W9tgnQAA==;
 Received: from dhcp-077-249-017-003.chello.nl ([77.249.17.3] helo=noisy.programming.kicks-ass.net)
         by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nywww-0066AZ-G5; Wed, 08 Jun 2022 14:46:22 +0000
+        id 1nywx6-0066Do-Kq; Wed, 08 Jun 2022 14:46:33 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A2545302D40;
-        Wed,  8 Jun 2022 16:46:20 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0CE1C302F57;
+        Wed,  8 Jun 2022 16:46:24 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 40FBE20C0F9AF; Wed,  8 Jun 2022 16:46:18 +0200 (CEST)
-Message-ID: <20220608144516.109792837@infradead.org>
+        id CB17620C119BB; Wed,  8 Jun 2022 16:46:18 +0200 (CEST)
+Message-ID: <20220608144518.199614455@infradead.org>
 User-Agent: quilt/0.66
-Date:   Wed, 08 Jun 2022 16:27:26 +0200
+Date:   Wed, 08 Jun 2022 16:27:59 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     peterz@infradead.org
 Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
@@ -99,7 +99,7 @@ Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
         linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org,
         rcu@vger.kernel.org
-Subject: [PATCH 03/36] cpuidle/poll: Ensure IRQ state is invariant
+Subject: [PATCH 36/36] cpuidle,clk: Remove trace_.*_rcuidle()
 References: <20220608142723.103523089@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -107,32 +107,44 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-cpuidle_state::enter() methods should be IRQ invariant
+OMAP was the one and only user.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- drivers/cpuidle/poll_state.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/clk/clk.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/cpuidle/poll_state.c
-+++ b/drivers/cpuidle/poll_state.c
-@@ -17,7 +17,7 @@ static int __cpuidle poll_idle(struct cp
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -978,12 +978,12 @@ static void clk_core_disable(struct clk_
+ 	if (--core->enable_count > 0)
+ 		return;
  
- 	dev->poll_time_limit = false;
+-	trace_clk_disable_rcuidle(core);
++	trace_clk_disable(core);
  
--	local_irq_enable();
-+	raw_local_irq_enable();
- 	if (!current_set_polling_and_test()) {
- 		unsigned int loop_count = 0;
- 		u64 limit;
-@@ -36,6 +36,8 @@ static int __cpuidle poll_idle(struct cp
- 			}
- 		}
- 	}
-+	raw_local_irq_disable();
-+
- 	current_clr_polling();
+ 	if (core->ops->disable)
+ 		core->ops->disable(core->hw);
  
- 	return index;
+-	trace_clk_disable_complete_rcuidle(core);
++	trace_clk_disable_complete(core);
+ 
+ 	clk_core_disable(core->parent);
+ }
+@@ -1037,12 +1037,12 @@ static int clk_core_enable(struct clk_co
+ 		if (ret)
+ 			return ret;
+ 
+-		trace_clk_enable_rcuidle(core);
++		trace_clk_enable(core);
+ 
+ 		if (core->ops->enable)
+ 			ret = core->ops->enable(core->hw);
+ 
+-		trace_clk_enable_complete_rcuidle(core);
++		trace_clk_enable_complete(core);
+ 
+ 		if (ret) {
+ 			clk_core_disable(core->parent);
 
 
