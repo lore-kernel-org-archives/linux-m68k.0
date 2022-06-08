@@ -2,43 +2,43 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5424ACCA47F
-	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jun 2022 14:50:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7860DC433EF
+	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jun 2022 14:51:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242875AbiFHOuz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 8 Jun 2022 10:50:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60000 "EHLO
+        id S242719AbiFHOu5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 8 Jun 2022 10:50:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242719AbiFHOrb (ORCPT
+        with ESMTP id S242836AbiFHOrm (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 8 Jun 2022 10:47:31 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86CBA2584F6
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Jun 2022 07:47:18 -0700 (PDT)
+        Wed, 8 Jun 2022 10:47:42 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 297482574D2
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Jun 2022 07:47:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=72Sb3LM19KDQn37emviwOKsQWcEROOYn6vEWI6g4O0g=; b=EIStTNEvIWCOhCtVS6i/K7y72k
-        Z2/y8QVivxbrQMzv70rV/xYI1TqoeKXswIk5VnUpw0+4RhgOORQAEqSaWWFcpGN/Ozze52Ug5i0sI
-        TleRT/9YHz6wiGFbGNdRNWgltUsVvJQ/VjZwME/1FoaZpc7a2ndwOU/eD8GtMnigWvtYOtoQbNZbT
-        YAEGoBE1YPDvgKLkfYqGdKYI7530FqsneWIVYclJ5CEXvPE38a9eC2TbKb0SOYjj+vs7v40/yoQE7
-        k4NN68jbT7q4/PIwEPV2vzemhXOOO98Uy9H+Lq6ErhVJIdH1jDJG5a7zOOPhARBO9XvArNFyyMFwC
-        hXw9kkBw==;
+        bh=Ae56F2/vHSxAMY+0KpLDtlvNNteu31Pblave+ocppBw=; b=K8Ynm/svRXkkOXUoDfBvEs9ZFK
+        qWXYZy+/5CqUIjZ31FPJ7xPNOIntKDH8NSfrS8D9IkyLAoFrHvJMHJIL/IcnOIM7nqISgd0gcoDeE
+        M8QwoOkYRBsSJ6LT9EQT7VUIsk+Z6r7wIXAFTOjV+qSGSdym/gNXacQGPlu5y6oCjnxUFjzOxnG6i
+        Qnh3s+Cj3bWdVkKJ0fKWJQJeEH2PS1tbGo8HnFfis2/BavxNxwTBZTq7iTayiBsKwAc/kQ4fijj9Z
+        RSxzjU7orl0A9t/vtgrMCy+RX4IT1VlY5omzQIH8HgAO6TFwqNP7RiyW7pf7sKmhryRMbaaQJQ5W8
+        0pAFiEvA==;
 Received: from dhcp-077-249-017-003.chello.nl ([77.249.17.3] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nywx6-00ChZS-6w; Wed, 08 Jun 2022 14:46:32 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nywwz-0066Bg-PM; Wed, 08 Jun 2022 14:46:26 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E2347302F4B;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0F8EC302E4E;
         Wed,  8 Jun 2022 16:46:23 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id C09F920C119B6; Wed,  8 Jun 2022 16:46:18 +0200 (CEST)
-Message-ID: <20220608144518.010587032@infradead.org>
+        id 7A4C620C10EC5; Wed,  8 Jun 2022 16:46:18 +0200 (CEST)
+Message-ID: <20220608144516.935970247@infradead.org>
 User-Agent: quilt/0.66
-Date:   Wed, 08 Jun 2022 16:27:56 +0200
+Date:   Wed, 08 Jun 2022 16:27:39 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     peterz@infradead.org
 Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
@@ -99,7 +99,7 @@ Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
         linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org,
         rcu@vger.kernel.org
-Subject: [PATCH 33/36] cpuidle,omap3: Use WFI for omap3_pm_idle()
+Subject: [PATCH 16/36] rcu: Fix rcu_idle_exit()
 References: <20220608142723.103523089@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -107,29 +107,44 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-arch_cpu_idle() is a very simple idle interface and exposes only a
-single idle state and is expected to not require RCU and not do any
-tracing/instrumentation.
+Current rcu_idle_exit() is terminally broken because it uses
+local_irq_{save,restore}(), which are traced which uses RCU.
 
-As such, omap_sram_idle() is not a valid implementation. Replace it
-with the simple (shallow) omap3_do_wfi() call. Leaving the more
-complicated idle states for the cpuidle driver.
+However, now that all the callers are sure to have IRQs disabled, we
+can remove these calls.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- arch/arm/mach-omap2/pm34xx.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/tree.c |    9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
---- a/arch/arm/mach-omap2/pm34xx.c
-+++ b/arch/arm/mach-omap2/pm34xx.c
-@@ -294,7 +294,7 @@ static void omap3_pm_idle(void)
- 	if (omap_irq_pending())
- 		return;
- 
--	omap_sram_idle();
-+	omap3_do_wfi();
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -659,7 +659,7 @@ static noinstr void rcu_eqs_enter(bool u
+  * If you add or remove a call to rcu_idle_enter(), be sure to test with
+  * CONFIG_RCU_EQS_DEBUG=y.
+  */
+-void rcu_idle_enter(void)
++void noinstr rcu_idle_enter(void)
+ {
+ 	lockdep_assert_irqs_disabled();
+ 	rcu_eqs_enter(false);
+@@ -896,13 +896,10 @@ static void noinstr rcu_eqs_exit(bool us
+  * If you add or remove a call to rcu_idle_exit(), be sure to test with
+  * CONFIG_RCU_EQS_DEBUG=y.
+  */
+-void rcu_idle_exit(void)
++void noinstr rcu_idle_exit(void)
+ {
+-	unsigned long flags;
+-
+-	local_irq_save(flags);
++	lockdep_assert_irqs_disabled();
+ 	rcu_eqs_exit(false);
+-	local_irq_restore(flags);
  }
+ EXPORT_SYMBOL_GPL(rcu_idle_exit);
  
- #ifdef CONFIG_SUSPEND
 
 
