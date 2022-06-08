@@ -2,43 +2,43 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A67E6CCA48F
-	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jun 2022 14:51:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 309ECCCA47B
+	for <linux-m68k@archiver.kernel.org>; Wed,  8 Jun 2022 14:51:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242684AbiFHOvT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 8 Jun 2022 10:51:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59008 "EHLO
+        id S243767AbiFHOvW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 8 Jun 2022 10:51:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242649AbiFHOrX (ORCPT
+        with ESMTP id S242694AbiFHOr3 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 8 Jun 2022 10:47:23 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A89D25913F
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Jun 2022 07:47:13 -0700 (PDT)
+        Wed, 8 Jun 2022 10:47:29 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E83253306
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Jun 2022 07:47:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=rYkYazBjkfDgerhAXoQmSQo0bqbhUZdR/pxZJBUI/ng=; b=vu07N0jdKUpflmoXw9ffNL6Z73
-        erDS9h9Rs2elipxuuO4E6oiZH+Xt8Kduq8uIy0K8+Ab0UB0Ng85EAEgq7IePggGQkxci90i2DCS1y
-        8hasm97zpwVR42qXyoEVcdAAXC0o1yjBEf2zXDXzDeV7u6KYIrksdlid9J/WVIYBdEcU6d6Gvdj7E
-        u0DN3Ge62DOP6wTTVj2hf27+jjO+Ouhx1rAS3CxarHAIYXw+7tlexjGWTNw7nu0E3iu6Ok6OCplMs
-        JoqeWWF7u27G3D9d8dvjFXenflW76lfCYePvRuxdlq/eC0M85xlj/iHefoDUVMnKfItqMCLHKrmNd
-        qd303QFw==;
+        bh=VIZr4C1ndt5VeFEZaPlCUg+5Hz4QhdyspUVrjQe3s0Q=; b=kqq4L3g1QhZht/evh2l5s39qps
+        jnBmYIZTu4x4BpY6GPBYny1gorePfmz6gw7CvGZUUJ45UgB+3ZNOnUmDTa3XgcsU+AliBRJfiL13t
+        KoZXJ4YmKkyUiI8J1DUyBTQtQ6SVAlRBjd2lYrcQy3VMZs1753vYk1wEdi55HMURyDlMTLnIp2/DG
+        MGr0nky4kAarfcUiOqeOkLaYDyaA2nmZrRDB481pz0z3AmobbTQyJi9vcmXREbRCThBWV4zvIbtlx
+        7V9kx4NPTBy1ipdrxzrHOS+OsGpY03vNc7rSx1DlzzyZ2hAby7AX1FdAQjZ3DF1PF+uzX0/EndUAP
+        yetT9Drg==;
 Received: from dhcp-077-249-017-003.chello.nl ([77.249.17.3] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nywx6-00ChZm-Gu; Wed, 08 Jun 2022 14:46:32 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nywwx-0066BG-Ju; Wed, 08 Jun 2022 14:46:24 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D3A8C302F34;
-        Wed,  8 Jun 2022 16:46:23 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 90828302D84;
+        Wed,  8 Jun 2022 16:46:22 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id B3C6F20C119AC; Wed,  8 Jun 2022 16:46:18 +0200 (CEST)
-Message-ID: <20220608144517.822208471@infradead.org>
+        id 4854A20C0F9B4; Wed,  8 Jun 2022 16:46:18 +0200 (CEST)
+Message-ID: <20220608144516.235041924@infradead.org>
 User-Agent: quilt/0.66
-Date:   Wed, 08 Jun 2022 16:27:53 +0200
+Date:   Wed, 08 Jun 2022 16:27:28 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     peterz@infradead.org
 Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
@@ -99,7 +99,7 @@ Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
         linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org,
         rcu@vger.kernel.org
-Subject: [PATCH 30/36] cpuidle,nospec: Make noinstr clean
+Subject: [PATCH 05/36] cpuidle: Move IRQ state validation
 References: <20220608142723.103523089@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -107,27 +107,41 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-vmlinux.o: warning: objtool: mwait_idle+0x47: call to mds_idle_clear_cpu_buffers() leaves .noinstr.text section
-vmlinux.o: warning: objtool: acpi_processor_ffh_cstate_enter+0xa2: call to mds_idle_clear_cpu_buffers() leaves .noinstr.text section
-vmlinux.o: warning: objtool: intel_idle+0x91: call to mds_idle_clear_cpu_buffers() leaves .noinstr.text section
-vmlinux.o: warning: objtool: intel_idle_s2idle+0x8c: call to mds_idle_clear_cpu_buffers() leaves .noinstr.text section
-vmlinux.o: warning: objtool: intel_idle_irq+0xaa: call to mds_idle_clear_cpu_buffers() leaves .noinstr.text section
+Make cpuidle_enter_state() consistent with the s2idle variant and
+verify ->enter() always returns with interrupts disabled.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/include/asm/nospec-branch.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/cpuidle/cpuidle.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/arch/x86/include/asm/nospec-branch.h
-+++ b/arch/x86/include/asm/nospec-branch.h
-@@ -310,7 +310,7 @@ static __always_inline void mds_user_cle
-  *
-  * Clear CPU buffers if the corresponding static key is enabled
-  */
--static inline void mds_idle_clear_cpu_buffers(void)
-+static __always_inline void mds_idle_clear_cpu_buffers(void)
- {
- 	if (static_branch_likely(&mds_idle_clear))
- 		mds_clear_cpu_buffers();
+--- a/drivers/cpuidle/cpuidle.c
++++ b/drivers/cpuidle/cpuidle.c
+@@ -234,7 +234,11 @@ int cpuidle_enter_state(struct cpuidle_d
+ 	stop_critical_timings();
+ 	if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
+ 		rcu_idle_enter();
++
+ 	entered_state = target_state->enter(dev, drv, index);
++	if (WARN_ONCE(!irqs_disabled(), "%ps leaked IRQ state", target_state->enter))
++		raw_local_irq_disable();
++
+ 	if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
+ 		rcu_idle_exit();
+ 	start_critical_timings();
+@@ -246,12 +250,8 @@ int cpuidle_enter_state(struct cpuidle_d
+ 	/* The cpu is no longer idle or about to enter idle. */
+ 	sched_idle_set_state(NULL);
+ 
+-	if (broadcast) {
+-		if (WARN_ON_ONCE(!irqs_disabled()))
+-			local_irq_disable();
+-
++	if (broadcast)
+ 		tick_broadcast_exit();
+-	}
+ 
+ 	if (!cpuidle_state_is_coupled(drv, index))
+ 		local_irq_enable();
 
 
