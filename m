@@ -2,72 +2,77 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52B8DC433EF
-	for <linux-m68k@archiver.kernel.org>; Fri, 10 Jun 2022 01:49:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 742FDC433EF
+	for <linux-m68k@archiver.kernel.org>; Fri, 10 Jun 2022 08:26:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbiFJBtl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 9 Jun 2022 21:49:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52430 "EHLO
+        id S1346743AbiFJI0y (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 10 Jun 2022 04:26:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241443AbiFJBtk (ORCPT
+        with ESMTP id S233755AbiFJI0h (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 9 Jun 2022 21:49:40 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E04DF5
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  9 Jun 2022 18:49:39 -0700 (PDT)
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LK3ht2vXFzRhZl;
-        Fri, 10 Jun 2022 09:46:22 +0800 (CST)
-Received: from kwepemm600017.china.huawei.com (7.193.23.234) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 10 Jun 2022 09:49:36 +0800
-Received: from zelda.huawei.com (10.175.103.14) by
- kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 10 Jun 2022 09:49:35 +0800
-From:   Wang Jingjin <wangjingjin1@huawei.com>
-To:     <gerg@linux-m68k.org>, <geert@linux-m68k.org>,
-        <linux-m68k@lists.linux-m68k.org>, <linux-kernel@vger.kernel.org>
-CC:     <zhengbin13@huawei.com>, <gaochao49@huawei.com>
-Subject: [PATCH -next] m68k: coldfire: make symbol m523x_clk_lookup static
-Date:   Fri, 10 Jun 2022 10:07:55 +0800
-Message-ID: <20220610020755.187733-1-wangjingjin1@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 10 Jun 2022 04:26:37 -0400
+Received: from smtpbg.qq.com (smtpbg138.qq.com [106.55.201.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5235E6C560
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Jun 2022 01:22:32 -0700 (PDT)
+X-QQ-mid: bizesmtp78t1654849322teff790j
+Received: from localhost.localdomain ( [182.148.15.124])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Fri, 10 Jun 2022 16:21:57 +0800 (CST)
+X-QQ-SSF: 01000000002000C0H000B00A0000000
+X-QQ-FEAT: IBzvWsVKsbiz2eu4BK/wnJ8fyZnzf/4qSyLzCSJ7lxl8O6S4hjP26FXoVmW9s
+        E2AvUUEhXeDUZIQZoj+oX0Tz8RCLRXb1HFSiUwkXfWlJe5FY3+pu4YwtRHiBFqrcl32PKsJ
+        Y0BW63fKM2qzIW9VC6WiS6wGlZjG216HVN5rKxKFmc3HfhAyFu1Ljxpp/yvMKbCXEpCBDV3
+        1pNfQ7UXY0vtZoDWMiu4unU7yMVef/JlihvKHnTIUAJuaP7C6uZqUAFPa9oLqHd9Xj3fHRk
+        bC+JJFfAFMSJ7TyatFovSnkzQrLQD0vjJ45xqX89lnt3j/lDCJn5Hx0SxiTKHPGn2GQJz13
+        9jdpsDzs9QqxJ7YWvnrJZN6L7NKlg==
+X-QQ-GoodBg: 0
+From:   Xiang wangx <wangxiang@cdjrlc.com>
+To:     geert@linux-m68k.org
+Cc:     funaho@jurai.org, linux-m68k@lists.linux-m68k.org,
+        linux-kernel@vger.kernel.org, Xiang wangx <wangxiang@cdjrlc.com>
+Subject: [PATCH] m68k: mac: Fix typo in comment
+Date:   Fri, 10 Jun 2022 16:21:50 +0800
+Message-Id: <20220610082150.23677-1-wangxiang@cdjrlc.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.14]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600017.china.huawei.com (7.193.23.234)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam10
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Fix sparse warnings:
+Delete the redundant word 'an'.
+Delete the redundant word 'and'.
 
-arch/m68k/coldfire/m523x.c:31:19: sparse: sparse: symbol 'm523x_clk_lookup' was not declared. Should it be static?
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Jingjin <wangjingjin1@huawei.com>
+Signed-off-by: Xiang wangx <wangxiang@cdjrlc.com>
 ---
- arch/m68k/coldfire/m523x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/m68k/mac/iop.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/m68k/coldfire/m523x.c b/arch/m68k/coldfire/m523x.c
-index 193c178162c1..83a997313393 100644
---- a/arch/m68k/coldfire/m523x.c
-+++ b/arch/m68k/coldfire/m523x.c
-@@ -28,7 +28,7 @@
- DEFINE_CLK(pll, "pll.0", MCF_CLK);
- DEFINE_CLK(sys, "sys.0", MCF_BUSCLK);
-
--struct clk_lookup m523x_clk_lookup[] = {
-+static struct clk_lookup m523x_clk_lookup[] = {
- 	CLKDEV_INIT(NULL, "pll.0", &clk_pll),
- 	CLKDEV_INIT(NULL, "sys.0", &clk_sys),
- 	CLKDEV_INIT("mcfpit.0", NULL, &clk_pll),
---
-2.25.1
+diff --git a/arch/m68k/mac/iop.c b/arch/m68k/mac/iop.c
+index de156a027f5b..b0e1db19f45f 100644
+--- a/arch/m68k/mac/iop.c
++++ b/arch/m68k/mac/iop.c
+@@ -25,7 +25,7 @@
+  *		  check this.)
+  * 990605 (jmt) - Rearranged things a bit wrt IOP detection; iop_present is
+  *		  gone, IOP base addresses are now in an array and the
+- *		  globally-visible functions take an IOP number instead of an
++ *		  globally-visible functions take an IOP number instead of
+  *		  an actual base address.
+  * 990610 (jmt) - Finished the message passing framework and it seems to work.
+  *		  Sending _definitely_ works; my adb-bus.c mods can send
+@@ -66,7 +66,7 @@
+  * a shared memory area in the IOP RAM. Each IOP has seven "channels"; each
+  * channel is connected to a specific software driver on the IOP. For example
+  * on the SCC IOP there is one channel for each serial port. Each channel has
+- * an incoming and and outgoing message queue with a depth of one.
++ * an incoming and outgoing message queue with a depth of one.
+  *
+  * A message is 32 bytes plus a state byte for the channel (MSG_IDLE, MSG_NEW,
+  * MSG_RCVD, MSG_COMPLETE). To send a message you copy the message into the
+-- 
+2.36.1
 
