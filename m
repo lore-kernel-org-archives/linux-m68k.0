@@ -2,45 +2,45 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A0CBC433EF
-	for <linux-m68k@archiver.kernel.org>; Fri, 10 Jun 2022 11:36:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B74B2CCA47B
+	for <linux-m68k@archiver.kernel.org>; Fri, 10 Jun 2022 11:36:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349379AbiFJLgA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 10 Jun 2022 07:36:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46054 "EHLO
+        id S1348768AbiFJLgB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 10 Jun 2022 07:36:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349320AbiFJLfi (ORCPT
+        with ESMTP id S1346749AbiFJLfz (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 10 Jun 2022 07:35:38 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54400703DE
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Jun 2022 04:35:37 -0700 (PDT)
+        Fri, 10 Jun 2022 07:35:55 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65B6370921
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Jun 2022 04:35:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1654860937; x=1686396937;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=lB5zlFU8ozw7+6CLJK8PifBqONusbCYHzssMxh4LrsQ=;
-  b=nzQphamvi2/R98E+JrLt/KWoG3pgdaUKLpzPRteBZjKP1dCN273DO3df
-   H8rDj7UmucsJvawqjljgS1AwLUSsiHpIuwlNci55F2YyJ6e1nXYeOIaqT
-   mjlOtxlkC9/vSJ1zvE7dA8OKqc3MV6vcc4QStJUDAJnFoHp+AOfrEf2uV
-   68B3e/xcpZAMTzdDpMVoNzncXbgEBk7fkFCI5mB+2zBAb9X3220qXvXrp
-   a5NEEW8/S+HOGvIAoFu4SN1moaqX7Fq5Vb4RZoaXaynhd3rS0x8bJTe6/
-   UpbVEVrMtf5TpYy3HAnuM17ulGPSPMeQGGbKbSqnE17S0HlB8XIJ20ilQ
+  t=1654860938; x=1686396938;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=7c74IH5zXtMHvz1DnqxXwajlv0u5rM/yQqyI4XwsmRY=;
+  b=ilu6GbUZdx5qVj4QUW0SLHZzUjKOLFjAgbDl1809DlW11YOO2hnx8r+n
+   iIPtG5DvW6JxVeqQd+x3jAaginoizKv1M9+gUwWQpYczS5NgEIsgQH8oS
+   FEzdHsmut5t2+ewtJ62473/djSeENd9L4duZphQupML25w2dU/o1JhSzs
+   EKTzWRhO4jh6Zyh/cioa00WesdGdiwjRgCSYHv0hQHrZUpnt3IxExw7hk
+   Kzy9Rv/PfUnFxrGWQ4hl9erlZvEAT1bDg7Tw+v7x1kBbGFRQLclEoM9Tu
+   yQU9m6Du9cLymRLfiOGuBAJ+EVI1a32Qz+Bfx1GHBgrhIFTW/8GC8fVbf
    Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="278739783"
+X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="278402975"
 X-IronPort-AV: E=Sophos;i="5.91,290,1647327600"; 
-   d="scan'208";a="278739783"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2022 04:35:28 -0700
+   d="scan'208";a="278402975"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2022 04:35:37 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.91,290,1647327600"; 
-   d="scan'208";a="710903621"
+   d="scan'208";a="556339717"
 Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by orsmga004.jf.intel.com with ESMTP; 10 Jun 2022 04:35:22 -0700
+  by orsmga006.jf.intel.com with ESMTP; 10 Jun 2022 04:35:31 -0700
 Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 25ABZKig030333;
-        Fri, 10 Jun 2022 12:35:20 +0100
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 25ABZKim030333;
+        Fri, 10 Jun 2022 12:35:29 +0100
 From:   Alexander Lobakin <alexandr.lobakin@intel.com>
 To:     Arnd Bergmann <arnd@arndb.de>, Yury Norov <yury.norov@gmail.com>
 Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
@@ -61,20 +61,23 @@ Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
         linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/6] bitops: let optimize out non-atomic bitops on compile-time constants
-Date:   Fri, 10 Jun 2022 13:34:21 +0200
-Message-Id: <20220610113427.908751-1-alexandr.lobakin@intel.com>
+Subject: [PATCH v2 6/6] bitops: let optimize out non-atomic bitops on compile-time constants
+Date:   Fri, 10 Jun 2022 13:34:27 +0200
+Message-Id: <20220610113427.908751-7-alexandr.lobakin@intel.com>
 X-Mailer: git-send-email 2.36.1
+In-Reply-To: <20220610113427.908751-1-alexandr.lobakin@intel.com>
+References: <20220610113427.908751-1-alexandr.lobakin@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-While I was working on converting some structure fields from a fixed
-type to a bitmap, I started observing code size increase not only in
-places where the code works with the converted structure fields, but
-also where the converted vars were on the stack. That said, the
+Currently, many architecture-specific non-atomic bitop
+implementations use inline asm or other hacks which are faster or
+more robust when working with "real" variables (i.e. fields from
+the structures etc.), but the compilers have no clue how to optimize
+them out when called on compile-time constants. That said, the
 following code:
 
 	DECLARE_BITMAP(foo, BITS_PER_LONG) = { }; // -> unsigned long foo[1];
@@ -91,37 +94,13 @@ following code:
 triggers the first assertion on x86_64, which means that the
 compiler is unable to evaluate it to a compile-time initializer
 when the architecture-specific bitop is used even if it's obvious.
-I found that this is due to that many architecture-specific
-non-atomic bitop implementations use inline asm or other hacks which
-are faster or more robust when working with "real" variables (i.e.
-fields from the structures etc.), but the compilers have no clue how
-to optimize them out when called on compile-time constants.
-
-So, in order to let the compiler optimize out such cases, expand the
-test_bit() and __*_bit() definitions with a compile-time condition
-check, so that they will pick the generic C non-atomic bitop
+In order to let the compiler optimize out such cases, expand the
+bitop() macro to use the "constant" C non-atomic bitop
 implementations when all of the arguments passed are compile-time
 constants, which means that the result will be a compile-time
-constant as well and the compiler will produce more efficient and
-simple code in 100% cases (no changes when there's at least one
-non-compile-time-constant argument).
-The condition itself:
-
-if (
-__builtin_constant_p(nr) &&	/* <- bit position is constant */
-__builtin_constant_p(!!addr) &&	/* <- compiler knows bitmap addr is
-				      always either NULL or not */
-addr &&				/* <- bitmap addr is not NULL */
-__builtin_constant_p(*addr)	/* <- compiler knows the value of
-				      the target bitmap */
-)
-	/* then pick the generic C variant
-else
-	/* old code path, arch-specific
-
-I also tried __is_constexpr() as suggested by Andy, but it was
-always returning 0 ('not a constant') for the 2,3 and 4th
-conditions.
+constant as well, so that it produces more efficient and simple
+code in 100% cases, comparing to the architecture-specific
+counterparts.
 
 The savings are architecture, compiler and compiler flags dependent,
 for example, on x86_64 -O2:
@@ -130,74 +109,47 @@ GCC 12: add/remove: 78/29 grow/shrink: 332/525 up/down: 31325/-61560 (-30235)
 LLVM 13: add/remove: 79/76 grow/shrink: 184/537 up/down: 55076/-141892 (-86816)
 LLVM 14: add/remove: 10/3 grow/shrink: 93/138 up/down: 3705/-6992 (-3287)
 
-and ARM64 (courtesy of Mark[0]):
+and ARM64 (courtesy of Mark):
 
 GCC 11: add/remove: 92/29 grow/shrink: 933/2766 up/down: 39340/-82580 (-43240)
 LLVM 14: add/remove: 21/11 grow/shrink: 620/651 up/down: 12060/-15824 (-3764)
 
-And the following:
+Cc: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+---
+ include/linux/bitops.h | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-	DECLARE_BITMAP(flags, __IP_TUNNEL_FLAG_NUM) = { };
-	__be16 flags;
-
-	__set_bit(IP_TUNNEL_CSUM_BIT, flags);
-
-	tun_flags = cpu_to_be16(*flags & U16_MAX);
-
-	if (test_bit(IP_TUNNEL_VTI_BIT, flags))
-		tun_flags |= VTI_ISVTI;
-
-	BUILD_BUG_ON(!__builtin_constant_p(tun_flags));
-
-doesn't blow up anymore, so that we now can e.g. use fixed bitmaps
-in compile-time assertions etc.
-
-The series has been in intel-next for a while with no reported issues.
-
-From v1[1]:
-* change 'gen_' prefixes to '_generic' to disambiguate from
-  'generated' etc. (Mark);
-* define a separate 'const_' set to use in the optimization to keep
-  the generic test_bit() atomic-safe (Marco);
-* unify arch_{test,__*}_bit() as well and include them in the type
-  check;
-* add more relevant and up-to-date bloat-o-meter results, including
-  ARM64 (me, Mark);
-* pick a couple '*-by' tags (Mark, Yury).
-
-Also available on my open GH[2].
-
-[0] https://lore.kernel.org/all/Yp4GQFQYD32Rs9Cw@FVFF77S0Q05N
-[1] https://lore.kernel.org/all/20220606114908.962562-1-alexandr.lobakin@intel.com
-[2] https://github.com/alobakin/linux/commits/bitops
-
-Alexander Lobakin (6):
-  ia64, processor: fix -Wincompatible-pointer-types in ia64_get_irr()
-  bitops: always define asm-generic non-atomic bitops
-  bitops: unify non-atomic bitops prototypes across architectures
-  bitops: define const_*() versions of the non-atomics
-  bitops: wrap non-atomic bitops with a transparent macro
-  bitops: let optimize out non-atomic bitops on compile-time constants
-
- arch/alpha/include/asm/bitops.h               |  28 ++--
- arch/hexagon/include/asm/bitops.h             |  23 ++-
- arch/ia64/include/asm/bitops.h                |  40 ++---
- arch/ia64/include/asm/processor.h             |   2 +-
- arch/m68k/include/asm/bitops.h                |  47 ++++--
- arch/sh/include/asm/bitops-op32.h             |  32 ++--
- arch/sparc/include/asm/bitops_32.h            |  18 +-
- arch/sparc/lib/atomic32.c                     |  12 +-
- arch/x86/include/asm/bitops.h                 |  22 +--
- .../asm-generic/bitops/generic-non-atomic.h   | 155 ++++++++++++++++++
- .../bitops/instrumented-non-atomic.h          |  35 ++--
- include/asm-generic/bitops/non-atomic.h       | 123 ++------------
- include/linux/bitops.h                        |  50 ++++++
- tools/include/asm-generic/bitops/non-atomic.h |  34 ++--
- tools/include/linux/bitops.h                  |  16 ++
- 15 files changed, 407 insertions(+), 230 deletions(-)
- create mode 100644 include/asm-generic/bitops/generic-non-atomic.h
-
-base-commit: 874c8ca1e60b2c564a48f7e7acc40d328d5c8733
+diff --git a/include/linux/bitops.h b/include/linux/bitops.h
+index 753f98e0dcf5..364bdc3606b4 100644
+--- a/include/linux/bitops.h
++++ b/include/linux/bitops.h
+@@ -33,8 +33,24 @@ extern unsigned long __sw_hweight64(__u64 w);
+ 
+ #include <asm-generic/bitops/generic-non-atomic.h>
+ 
++/*
++ * Many architecture-specific non-atomic bitops contain inline asm code and due
++ * to that the compiler can't optimize them to compile-time expressions or
++ * constants. In contrary, gen_*() helpers are defined in pure C and compilers
++ * optimize them just well.
++ * Therefore, to make `unsigned long foo = 0; __set_bit(BAR, &foo)` effectively
++ * equal to `unsigned long foo = BIT(BAR)`, pick the generic C alternative when
++ * the arguments can be resolved at compile time. That expression itself is a
++ * constant and doesn't bring any functional changes to the rest of cases.
++ * The casts to `uintptr_t` are needed to mitigate `-Waddress` warnings when
++ * passing a bitmap from .bss or .data (-> `!!addr` is always true).
++ */
+ #define bitop(op, nr, addr)						\
+-	op(nr, addr)
++	((__builtin_constant_p(nr) &&					\
++	  __builtin_constant_p((uintptr_t)(addr) != (uintptr_t)NULL) &&	\
++	  (uintptr_t)(addr) != (uintptr_t)NULL &&			\
++	  __builtin_constant_p(*(const unsigned long *)(addr))) ?	\
++	 const##op(nr, addr) : op(nr, addr))
+ 
+ #define __set_bit(nr, addr)		bitop(___set_bit, nr, addr)
+ #define __clear_bit(nr, addr)		bitop(___clear_bit, nr, addr)
 -- 
 2.36.1
 
