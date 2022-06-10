@@ -2,45 +2,45 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BDD24C433EF
-	for <linux-m68k@archiver.kernel.org>; Fri, 10 Jun 2022 11:35:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 628D5C43334
+	for <linux-m68k@archiver.kernel.org>; Fri, 10 Jun 2022 11:35:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349358AbiFJLf4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        id S1349364AbiFJLf4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
         Fri, 10 Jun 2022 07:35:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45582 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347541AbiFJLfc (ORCPT
+        with ESMTP id S1347504AbiFJLfc (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Fri, 10 Jun 2022 07:35:32 -0400
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73D56FD34
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Jun 2022 04:35:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00BDE70343
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Jun 2022 04:35:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1654860930; x=1686396930;
+  t=1654860931; x=1686396931;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=kpXQSPJsxGLIgDOesYIS3ySn14rfToMglxz4weFAJww=;
-  b=cQW7tF9TQ24UmzxS9yTZmq7oPtWS1FAyD/js0stopoT3qaaoPH3NmSkg
-   wCJNdzdef5iK2YuN8c+CSU0pt71efhgoDPs3VftE34/L07FjVJP3WM8uB
-   34NCwUHPW69kE4P01mH1WASnmul3O0lYidZD+tseMtHd+snVpqOcx+ue6
-   jG9pw248gjL6O2BqQiB9PYxk+6W1oGs0SNCw/QMQaVLJ9AoHrydtAchPP
-   em0/xgQMmCBT/QddM2B9p7Pk5KyL2z/wpsFe46dtSfH9v3DI5tigxje90
-   JQdVZRpxAeFBAy6bt5EF8eX8MYMRCxJeK0rn7P4xMd+gJ8UrUZDprLpF2
-   Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="257435212"
+  bh=EP/q3BpkKuv5ghz239YVbqCv+Vx9xOSl1Auz3qdiFgw=;
+  b=WfarbxKMVwOcwPdixXiG7PzqsTpKiaBuhEU2USwsyUPdHI9DED4y6urs
+   xI9M8dFGAAuPc0K3extRzwu0czuE/UoBChfNnI2jfBaLdK0ULJSTfU5Ez
+   VK0K+5i8rNhW+zElV0zegX8hc0f7zcpDmVrAD/YiKFxvq+71jTRavwbzo
+   ygkFNX7JcxZDrOyMesl6zczECV4lyXhymI9SNchN/kHXlApxwcpKZYxY6
+   Pgd4AMVP1YZBPkUXok5kniDURHV2oy1H8hMdYwfu3kQWaB2qLwfQkX/Rq
+   Lo2zr1rs6Xx8aMOs2CkFmZAPST4tdbsW1tlvLbpTCdGqxIODhr/j6rL4E
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="257435211"
 X-IronPort-AV: E=Sophos;i="5.91,290,1647327600"; 
-   d="scan'208";a="257435212"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+   d="scan'208";a="257435211"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
   by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2022 04:35:30 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.91,290,1647327600"; 
-   d="scan'208";a="638092925"
+   d="scan'208";a="610688292"
 Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by fmsmga008.fm.intel.com with ESMTP; 10 Jun 2022 04:35:25 -0700
+  by orsmga008.jf.intel.com with ESMTP; 10 Jun 2022 04:35:24 -0700
 Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 25ABZKii030333;
-        Fri, 10 Jun 2022 12:35:23 +0100
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 25ABZKih030333;
+        Fri, 10 Jun 2022 12:35:22 +0100
 From:   Alexander Lobakin <alexandr.lobakin@intel.com>
 To:     Arnd Bergmann <arnd@arndb.de>, Yury Norov <yury.norov@gmail.com>
 Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
@@ -60,10 +60,11 @@ Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org,
         linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/6] bitops: always define asm-generic non-atomic bitops
-Date:   Fri, 10 Jun 2022 13:34:23 +0200
-Message-Id: <20220610113427.908751-3-alexandr.lobakin@intel.com>
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: [PATCH v2 1/6] ia64, processor: fix -Wincompatible-pointer-types in ia64_get_irr()
+Date:   Fri, 10 Jun 2022 13:34:22 +0200
+Message-Id: <20220610113427.908751-2-alexandr.lobakin@intel.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220610113427.908751-1-alexandr.lobakin@intel.com>
 References: <20220610113427.908751-1-alexandr.lobakin@intel.com>
@@ -73,282 +74,39 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Move generic non-atomic bitops from the asm-generic header which
-gets included only when there are no architecture-specific
-alternatives, to a separate independent file to make them always
-available.
+test_bit(), as any other bitmap op, takes `unsigned long *` as a
+second argument (pointer to the actual bitmap), as any bitmap
+itself is an array of unsigned longs. However, the ia64_get_irr()
+code passes a ref to `u64` as a second argument.
+This works with the ia64 bitops implementation due to that they
+have `void *` as the second argument and then cast it later on.
+This works with the bitmap API itself due to that `unsigned long`
+has the same size on ia64 as `u64` (`unsigned long long`), but
+from the compiler PoV those two are different.
+Define @irr as `unsigned long` to fix that. That implies no
+functional changes. Has been hidden for 16 years!
 
+Fixes: a58786917ce2 ("[IA64] avoid broken SAL_CACHE_FLUSH implementations")
+Cc: stable@vger.kernel.org # 2.6.16+
+Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
 ---
- .../asm-generic/bitops/generic-non-atomic.h   | 124 ++++++++++++++++++
- include/asm-generic/bitops/non-atomic.h       | 109 ++-------------
- 2 files changed, 132 insertions(+), 101 deletions(-)
- create mode 100644 include/asm-generic/bitops/generic-non-atomic.h
+ arch/ia64/include/asm/processor.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/asm-generic/bitops/generic-non-atomic.h b/include/asm-generic/bitops/generic-non-atomic.h
-new file mode 100644
-index 000000000000..808bc4469886
---- /dev/null
-+++ b/include/asm-generic/bitops/generic-non-atomic.h
-@@ -0,0 +1,124 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+#ifndef __ASM_GENERIC_BITOPS_GENERIC_NON_ATOMIC_H
-+#define __ASM_GENERIC_BITOPS_GENERIC_NON_ATOMIC_H
-+
-+#include <linux/bits.h>
-+
-+#ifndef _LINUX_BITOPS_H
-+#error only <linux/bitops.h> can be included directly
-+#endif
-+
-+/*
-+ * Generic definitions for bit operations, should not be used in regular code
-+ * directly.
-+ */
-+
-+/**
-+ * generic___set_bit - Set a bit in memory
-+ * @nr: the bit to set
-+ * @addr: the address to start counting from
-+ *
-+ * Unlike set_bit(), this function is non-atomic and may be reordered.
-+ * If it's called on the same region of memory simultaneously, the effect
-+ * may be that only one operation succeeds.
-+ */
-+static __always_inline void
-+generic___set_bit(unsigned int nr, volatile unsigned long *addr)
-+{
-+	unsigned long mask = BIT_MASK(nr);
-+	unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
-+
-+	*p  |= mask;
-+}
-+
-+static __always_inline void
-+generic___clear_bit(unsigned int nr, volatile unsigned long *addr)
-+{
-+	unsigned long mask = BIT_MASK(nr);
-+	unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
-+
-+	*p &= ~mask;
-+}
-+
-+/**
-+ * generic___change_bit - Toggle a bit in memory
-+ * @nr: the bit to change
-+ * @addr: the address to start counting from
-+ *
-+ * Unlike change_bit(), this function is non-atomic and may be reordered.
-+ * If it's called on the same region of memory simultaneously, the effect
-+ * may be that only one operation succeeds.
-+ */
-+static __always_inline
-+void generic___change_bit(unsigned int nr, volatile unsigned long *addr)
-+{
-+	unsigned long mask = BIT_MASK(nr);
-+	unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
-+
-+	*p ^= mask;
-+}
-+
-+/**
-+ * generic___test_and_set_bit - Set a bit and return its old value
-+ * @nr: Bit to set
-+ * @addr: Address to count from
-+ *
-+ * This operation is non-atomic and can be reordered.
-+ * If two examples of this operation race, one can appear to succeed
-+ * but actually fail.  You must protect multiple accesses with a lock.
-+ */
-+static __always_inline int
-+generic___test_and_set_bit(unsigned int nr, volatile unsigned long *addr)
-+{
-+	unsigned long mask = BIT_MASK(nr);
-+	unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
-+	unsigned long old = *p;
-+
-+	*p = old | mask;
-+	return (old & mask) != 0;
-+}
-+
-+/**
-+ * generic___test_and_clear_bit - Clear a bit and return its old value
-+ * @nr: Bit to clear
-+ * @addr: Address to count from
-+ *
-+ * This operation is non-atomic and can be reordered.
-+ * If two examples of this operation race, one can appear to succeed
-+ * but actually fail.  You must protect multiple accesses with a lock.
-+ */
-+static __always_inline int
-+generic___test_and_clear_bit(unsigned int nr, volatile unsigned long *addr)
-+{
-+	unsigned long mask = BIT_MASK(nr);
-+	unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
-+	unsigned long old = *p;
-+
-+	*p = old & ~mask;
-+	return (old & mask) != 0;
-+}
-+
-+/* WARNING: non atomic and it can be reordered! */
-+static __always_inline int
-+generic___test_and_change_bit(unsigned int nr, volatile unsigned long *addr)
-+{
-+	unsigned long mask = BIT_MASK(nr);
-+	unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
-+	unsigned long old = *p;
-+
-+	*p = old ^ mask;
-+	return (old & mask) != 0;
-+}
-+
-+/**
-+ * generic_test_bit - Determine whether a bit is set
-+ * @nr: bit number to test
-+ * @addr: Address to start counting from
-+ */
-+static __always_inline int
-+generic_test_bit(unsigned int nr, const volatile unsigned long *addr)
-+{
-+	return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
-+}
-+
-+#endif /* __ASM_GENERIC_BITOPS_GENERIC_NON_ATOMIC_H */
-diff --git a/include/asm-generic/bitops/non-atomic.h b/include/asm-generic/bitops/non-atomic.h
-index 078cc68be2f1..a05bc090a6a3 100644
---- a/include/asm-generic/bitops/non-atomic.h
-+++ b/include/asm-generic/bitops/non-atomic.h
-@@ -2,121 +2,28 @@
- #ifndef _ASM_GENERIC_BITOPS_NON_ATOMIC_H_
- #define _ASM_GENERIC_BITOPS_NON_ATOMIC_H_
+diff --git a/arch/ia64/include/asm/processor.h b/arch/ia64/include/asm/processor.h
+index 7cbce290f4e5..757c2f6d8d4b 100644
+--- a/arch/ia64/include/asm/processor.h
++++ b/arch/ia64/include/asm/processor.h
+@@ -538,7 +538,7 @@ ia64_get_irr(unsigned int vector)
+ {
+ 	unsigned int reg = vector / 64;
+ 	unsigned int bit = vector % 64;
+-	u64 irr;
++	unsigned long irr;
  
-+#include <asm-generic/bitops/generic-non-atomic.h>
- #include <asm/types.h>
- 
--/**
-- * arch___set_bit - Set a bit in memory
-- * @nr: the bit to set
-- * @addr: the address to start counting from
-- *
-- * Unlike set_bit(), this function is non-atomic and may be reordered.
-- * If it's called on the same region of memory simultaneously, the effect
-- * may be that only one operation succeeds.
-- */
--static __always_inline void
--arch___set_bit(unsigned int nr, volatile unsigned long *addr)
--{
--	unsigned long mask = BIT_MASK(nr);
--	unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
--
--	*p  |= mask;
--}
-+#define arch___set_bit generic___set_bit
- #define __set_bit arch___set_bit
- 
--static __always_inline void
--arch___clear_bit(unsigned int nr, volatile unsigned long *addr)
--{
--	unsigned long mask = BIT_MASK(nr);
--	unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
--
--	*p &= ~mask;
--}
-+#define arch___clear_bit generic___clear_bit
- #define __clear_bit arch___clear_bit
- 
--/**
-- * arch___change_bit - Toggle a bit in memory
-- * @nr: the bit to change
-- * @addr: the address to start counting from
-- *
-- * Unlike change_bit(), this function is non-atomic and may be reordered.
-- * If it's called on the same region of memory simultaneously, the effect
-- * may be that only one operation succeeds.
-- */
--static __always_inline
--void arch___change_bit(unsigned int nr, volatile unsigned long *addr)
--{
--	unsigned long mask = BIT_MASK(nr);
--	unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
--
--	*p ^= mask;
--}
-+#define arch___change_bit generic___change_bit
- #define __change_bit arch___change_bit
- 
--/**
-- * arch___test_and_set_bit - Set a bit and return its old value
-- * @nr: Bit to set
-- * @addr: Address to count from
-- *
-- * This operation is non-atomic and can be reordered.
-- * If two examples of this operation race, one can appear to succeed
-- * but actually fail.  You must protect multiple accesses with a lock.
-- */
--static __always_inline int
--arch___test_and_set_bit(unsigned int nr, volatile unsigned long *addr)
--{
--	unsigned long mask = BIT_MASK(nr);
--	unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
--	unsigned long old = *p;
--
--	*p = old | mask;
--	return (old & mask) != 0;
--}
-+#define arch___test_and_set_bit generic___test_and_set_bit
- #define __test_and_set_bit arch___test_and_set_bit
- 
--/**
-- * arch___test_and_clear_bit - Clear a bit and return its old value
-- * @nr: Bit to clear
-- * @addr: Address to count from
-- *
-- * This operation is non-atomic and can be reordered.
-- * If two examples of this operation race, one can appear to succeed
-- * but actually fail.  You must protect multiple accesses with a lock.
-- */
--static __always_inline int
--arch___test_and_clear_bit(unsigned int nr, volatile unsigned long *addr)
--{
--	unsigned long mask = BIT_MASK(nr);
--	unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
--	unsigned long old = *p;
--
--	*p = old & ~mask;
--	return (old & mask) != 0;
--}
-+#define arch___test_and_clear_bit generic___test_and_clear_bit
- #define __test_and_clear_bit arch___test_and_clear_bit
- 
--/* WARNING: non atomic and it can be reordered! */
--static __always_inline int
--arch___test_and_change_bit(unsigned int nr, volatile unsigned long *addr)
--{
--	unsigned long mask = BIT_MASK(nr);
--	unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
--	unsigned long old = *p;
--
--	*p = old ^ mask;
--	return (old & mask) != 0;
--}
-+#define arch___test_and_change_bit generic___test_and_change_bit
- #define __test_and_change_bit arch___test_and_change_bit
- 
--/**
-- * arch_test_bit - Determine whether a bit is set
-- * @nr: bit number to test
-- * @addr: Address to start counting from
-- */
--static __always_inline int
--arch_test_bit(unsigned int nr, const volatile unsigned long *addr)
--{
--	return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
--}
-+#define arch_test_bit generic_test_bit
- #define test_bit arch_test_bit
- 
- #endif /* _ASM_GENERIC_BITOPS_NON_ATOMIC_H_ */
+ 	switch (reg) {
+ 	case 0: irr = ia64_getreg(_IA64_REG_CR_IRR0); break;
 -- 
 2.36.1
 
