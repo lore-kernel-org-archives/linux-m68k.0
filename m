@@ -2,38 +2,38 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EA6FCCA47E
-	for <linux-m68k@archiver.kernel.org>; Fri, 10 Jun 2022 08:39:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB5F2C433EF
+	for <linux-m68k@archiver.kernel.org>; Fri, 10 Jun 2022 08:42:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233984AbiFJIjB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 10 Jun 2022 04:39:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59822 "EHLO
+        id S239779AbiFJImS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 10 Jun 2022 04:42:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347837AbiFJIiS (ORCPT
+        with ESMTP id S243932AbiFJImN (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 10 Jun 2022 04:38:18 -0400
+        Fri, 10 Jun 2022 04:42:13 -0400
 Received: from smtpbg.qq.com (smtpbg138.qq.com [106.55.201.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 592CF3BA5F
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Jun 2022 01:35:57 -0700 (PDT)
-X-QQ-mid: bizesmtp68t1654850070tsk9ifn1
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2E01FA6C
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Jun 2022 01:42:09 -0700 (PDT)
+X-QQ-mid: bizesmtp63t1654850386tif11fbf
 Received: from localhost.localdomain ( [182.148.15.124])
         by bizesmtp.qq.com (ESMTP) with 
-        id ; Fri, 10 Jun 2022 16:34:27 +0800 (CST)
+        id ; Fri, 10 Jun 2022 16:39:31 +0800 (CST)
 X-QQ-SSF: 01000000002000C0H000B00A0000000
-X-QQ-FEAT: F3yR32iATbgOB8wqhUV9BP/WtpcdVhsEfUxADbPpeAa1mrfAo0aemA8czVNVN
-        +82aspKj6Y/HwxXonqJYZtcnewc+iOWKcASMeVoEG06sLCjxYoOFllLG4r/1uYKnX04jmHj
-        D08f53306nE3Ili9cMG9SA3le0+wL5r1ZsmCnDzrl6I0PmGXq0HA0YGiMlMvgk6bVVy9Znl
-        kgv1lwS/0eE1ytBQhIEbV2cIXc2tlKn2ZjBNkg9AHpQJd+8M9LVOorGLc8NcZhCt84yjSsQ
-        w8LYoQ5QFSPXuny37Nb0eH8YtWnR8B7QzqZs0GrO78qONOTj7BdCnAG/pO+TZRFtyC+0K1I
-        Lltim1yGex1F04g9AXu2769nbnrag==
+X-QQ-FEAT: ZHWZeLXy+8cOxDPLyuwRmzpNsjh1fQNcUTozYbxsddqVmpR3yZs0SiudcbKuW
+        RztaTflJn89M1v+BOmlBdDa67Dqc3AM2U+2aTwLZZQr7fS6zQBwKnW8Ev/oqeRt8fx55g3l
+        drXo36cmFGxsaESEYQSBJ1zLmie7lS+WoJ7w1cTWRItUSFh8DpAy0eh3H0S4mBtOlQj/2Cl
+        TSZkVfcfVDmyeVcqjDGSNCFWG7C6c5IaxlzEwRFzEE88l0VI80XJN3BysvO23HZ4tVJgZQb
+        Bsi7KGinRDb4BnuRYehbOqQCJJ8KuhFHI12Xw8OcQkDsHVVJWficNWXYJF1zFKmJEERi2in
+        ih7HJyubBOsb0/Q0EAV33Tpp0QN4WANMIimkTg7
 X-QQ-GoodBg: 0
 From:   Xiang wangx <wangxiang@cdjrlc.com>
 To:     geert@linux-m68k.org
 Cc:     funaho@jurai.org, linux-m68k@lists.linux-m68k.org,
         linux-kernel@vger.kernel.org, Xiang wangx <wangxiang@cdjrlc.com>
-Subject: [PATCH v2] m68k: Fix syntax errors in comments
-Date:   Fri, 10 Jun 2022 16:34:20 +0800
-Message-Id: <20220610083420.30214-1-wangxiang@cdjrlc.com>
+Subject: [PATCH v2] m68k: mac: Fix typo in comment
+Date:   Fri, 10 Jun 2022 16:39:24 +0800
+Message-Id: <20220610083924.32877-1-wangxiang@cdjrlc.com>
 X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -43,29 +43,39 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-comments "the the" should be replaced by "of the" instead.
+Delete the redundant word 'an'.
+The second "and" should not be deleted, but replaced by "an".
 
 Signed-off-by: Xiang wangx <wangxiang@cdjrlc.com>
 ---
 Changes since v1
-*Change comments "the the" to "of the"
+*Change comments "and and" to "and an"
 
- arch/m68k/coldfire/intc-2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/m68k/mac/iop.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/m68k/coldfire/intc-2.c b/arch/m68k/coldfire/intc-2.c
-index 995093357c59..f74f0e473119 100644
---- a/arch/m68k/coldfire/intc-2.c
-+++ b/arch/m68k/coldfire/intc-2.c
-@@ -7,7 +7,7 @@
-  * family, the 5270, 5271, 5274, 5275, and the 528x family which have two such
-  * controllers, and the 547x and 548x families which have only one of them.
+diff --git a/arch/m68k/mac/iop.c b/arch/m68k/mac/iop.c
+index de156a027f5b..010b3b5ae8e8 100644
+--- a/arch/m68k/mac/iop.c
++++ b/arch/m68k/mac/iop.c
+@@ -25,7 +25,7 @@
+  *		  check this.)
+  * 990605 (jmt) - Rearranged things a bit wrt IOP detection; iop_present is
+  *		  gone, IOP base addresses are now in an array and the
+- *		  globally-visible functions take an IOP number instead of an
++ *		  globally-visible functions take an IOP number instead of
+  *		  an actual base address.
+  * 990610 (jmt) - Finished the message passing framework and it seems to work.
+  *		  Sending _definitely_ works; my adb-bus.c mods can send
+@@ -66,7 +66,7 @@
+  * a shared memory area in the IOP RAM. Each IOP has seven "channels"; each
+  * channel is connected to a specific software driver on the IOP. For example
+  * on the SCC IOP there is one channel for each serial port. Each channel has
+- * an incoming and and outgoing message queue with a depth of one.
++ * an incoming and an outgoing message queue with a depth of one.
   *
-- * The external 7 fixed interrupts are part the the Edge Port unit of these
-+ * The external 7 fixed interrupts are part of the Edge Port unit of these
-  * ColdFire parts. They can be configured as level or edge triggered.
-  *
-  * (C) Copyright 2009-2011, Greg Ungerer <gerg@snapgear.com>
+  * A message is 32 bytes plus a state byte for the channel (MSG_IDLE, MSG_NEW,
+  * MSG_RCVD, MSG_COMPLETE). To send a message you copy the message into the
 -- 
 2.36.1
 
