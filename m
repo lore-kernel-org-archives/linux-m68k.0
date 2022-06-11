@@ -2,125 +2,186 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29B0CCCA47B
-	for <linux-m68k@archiver.kernel.org>; Fri, 10 Jun 2022 16:33:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17FB3C433EF
+	for <linux-m68k@archiver.kernel.org>; Sat, 11 Jun 2022 00:23:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349688AbiFJQdy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 10 Jun 2022 12:33:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55952 "EHLO
+        id S236683AbiFKAXC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 10 Jun 2022 20:23:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349689AbiFJQde (ORCPT
+        with ESMTP id S229693AbiFKAXB (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 10 Jun 2022 12:33:34 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 409705710C
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Jun 2022 09:33:15 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id t32so3372516ybt.12
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Jun 2022 09:33:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bhv02q67MOioDvIeN4y+a/ybeIh94RUFpBdk0EW721Q=;
-        b=gTSqAdTJjftykkKV3LvI3BgIEdnFPO1tIX2Ja3yrYtQNH7qkYO5md+ofkXUFp0r5AW
-         G6gcWOkM0lg+gYk1xVlJLK69IVjiD2uEY/paaLVpsJSAUJr3ix3CnTM3jTjnVHIGrITZ
-         8qOTeStSyYFo4Xt1uIWq/JcAZJafn7HdU8yhoSTqaMMSwSE/odkOqaPLeyUKWL5sO4fY
-         YvCEOzFgGYsioj0kFMpYKr9Y6KDxyzq/x30hfjgDctRhz4XpICUW+ZTe11KlQpTSKF0Q
-         MmwpTmp6Vj4zz6mr/A1YZvGF2iMEYWObj9GWEHshf9njpmcmcbzr60kAblJRSOIE1DnE
-         +7SA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bhv02q67MOioDvIeN4y+a/ybeIh94RUFpBdk0EW721Q=;
-        b=tkfOvCxMxDQFXgcFhexfttUPofawM/IZt6xbdW0pEe4j7AfyFsfYNBuBKxpf3EMiZ2
-         T+K0pL3hsx0hsRWTmYkTyu/O0e/0mukxwoSqxESzSdvT/A2Z7o5CubwABcGXFZpleVCS
-         ymqptQUa5eOQhdX+vlEXgj8dx4lYHCdZXvKpJOJz5BvCJ89PdzM53ZyxszbzlaAOlfTU
-         hAby9SW7Oai707Ah+fvYSIx145fAZ74nGeNyupCCzw5R+FUK88j953kddHAhxdAxhMsq
-         kAaaeC7pLo0UAfEfGoNRKh9QvohVFnvmIIXhshy8z+jYviLE3MuFdX5sSZa8WvXG9d2h
-         Kkrg==
-X-Gm-Message-State: AOAM531zdG5rCM2rj+176pwHKNqTFRZgy87mLaVmgBUrIb7qdkV+S8f6
-        HBtqOdl+aNnDAkw6lxQ/tD9b1S5YVpPOmS0g/XVWRQ==
-X-Google-Smtp-Source: ABdhPJyJqY4ELta1f6MtdpBF9FmmN+1Swnl8abwrpU7Envy5QN/0+FxiY8CXqHJVU09kzIn9KX5saZ7waQDwoeJx/U8=
-X-Received: by 2002:a05:6902:102c:b0:663:32b8:4b24 with SMTP id
- x12-20020a056902102c00b0066332b84b24mr37019234ybt.1.1654878793763; Fri, 10
- Jun 2022 09:33:13 -0700 (PDT)
+        Fri, 10 Jun 2022 20:23:01 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CEB81AA16F
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Jun 2022 17:22:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1654906979; x=1686442979;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=CR9rU83z/SrUNX8KqiuKqhZMVPpC8Umm4qDbadIplM8=;
+  b=KnyHroaBM0prV5LipHrpYCrjq10+OFSpSgbnlu9dW+ZsDiGCYsYHMJQp
+   yj5sXy6bVAswRvTR9m3A/5hucry2LyYtPPxCY8qPmJEJCjvUmkJU1UQew
+   5QrCl+0b3dCZwZReU3HnakX/JJOfHhBCqoKdhSR27jhEKSpZEvOeRiVIP
+   OifuA8OaR3H1JkEEB/59O16a+6ibKyEoTJJchvnFSLu0DPnwSarzEmwMF
+   uhxVEakc6GlcVLc3wvdmZxObX87/czx1TJcVTlcGGxlRwBqbaGQih+wlf
+   lg/xTyDpkoZXk81/ecjffvxbxsVmgAzoJtTmwG+Hab7O6YpHeqTzZIW1N
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10374"; a="275319967"
+X-IronPort-AV: E=Sophos;i="5.91,292,1647327600"; 
+   d="scan'208";a="275319967"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2022 17:22:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,292,1647327600"; 
+   d="scan'208";a="650105854"
+Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 10 Jun 2022 17:22:57 -0700
+Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nzou0-000IOn-LI;
+        Sat, 11 Jun 2022 00:22:56 +0000
+Date:   Sat, 11 Jun 2022 08:21:56 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 4d2c0584c35d51a24eb79c1c170c0efd0656a87b
+Message-ID: <62a3e024.7Xp252CjIQPBwYwx%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20220610113427.908751-1-alexandr.lobakin@intel.com>
- <20220610113427.908751-3-alexandr.lobakin@intel.com> <YqNMO0ioGzJ1IkoA@smile.fi.intel.com>
- <22042c14bc6a437d9c6b235fbfa32c8a@intel.com>
-In-Reply-To: <22042c14bc6a437d9c6b235fbfa32c8a@intel.com>
-From:   Marco Elver <elver@google.com>
-Date:   Fri, 10 Jun 2022 18:32:36 +0200
-Message-ID: <CANpmjNNZAeMQjzNyXLeKY4cp_m-xJBU1vs7PgT+7_sJwxtEEAg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/6] bitops: always define asm-generic non-atomic bitops
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Lobakin, Alexandr" <alexandr.lobakin@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Yury Norov <yury.norov@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matt Turner <mattst88@gmail.com>,
-        Brian Cain <bcain@quicinc.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kees Cook <keescook@chromium.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Borislav Petkov <bp@suse.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, 10 Jun 2022 at 18:02, Luck, Tony <tony.luck@intel.com> wrote:
->
-> > > +/**
-> > > + * generic_test_bit - Determine whether a bit is set
-> > > + * @nr: bit number to test
-> > > + * @addr: Address to start counting from
-> > > + */
-> >
-> > Shouldn't we add in this or in separate patch a big NOTE to explain that this
-> > is actually atomic and must be kept as a such?
->
-> "atomic" isn't really the right word. The volatile access makes sure that the
-> compiler does the test at the point that the source code asked, and doesn't
-> move it before/after other operations.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 4d2c0584c35d51a24eb79c1c170c0efd0656a87b  m68k: virt: Kconfig minor fixes
 
-It's listed in Documentation/atomic_bitops.txt.
+elapsed time: 5292m
 
-It is as "atomic" as READ_ONCE() or atomic_read() is. Though you are
-right that the "atomicity" of reading one bit is almost a given,
-because we can't really read half a bit.
-The main thing is that the compiler keeps it "atomic" and e.g. doesn't
-fuse the load with another or elide it completely, and then transforms
-the code in concurrency-unfriendly ways.
+configs tested: 108
+configs skipped: 4
 
-Like READ_ONCE() and friends, test_bit(), unlike non-atomic bitops,
-may also be used to dependency-order some subsequent marked (viz.
-atomic) operations.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> But there is no such thing as an atomic test_bit() operation:
->
->         if (test_bit(5, addr)) {
->                 /* some other CPU nukes bit 5 */
->
->                 /* I know it was set when I looked, but now, could be anything */
+gcc tested configs:
+arm                                 defconfig
+arm                              allmodconfig
+arm                              allyesconfig
+arm64                               defconfig
+arm64                            allyesconfig
+i386                          randconfig-c001
+m68k                           virt_defconfig
+powerpc                      mgcoge_defconfig
+arm                          pxa910_defconfig
+arm                            qcom_defconfig
+xtensa                    smp_lx200_defconfig
+arm                       omap2plus_defconfig
+sh                                  defconfig
+xtensa                  audio_kc705_defconfig
+mips                           gcw0_defconfig
+arm                            hisi_defconfig
+arm                        keystone_defconfig
+openrisc                  or1klitex_defconfig
+sh                         apsh4a3a_defconfig
+ia64                         bigsur_defconfig
+arm                           viper_defconfig
+h8300                            alldefconfig
+arm                            zeus_defconfig
+arm                            pleb_defconfig
+sh                         ecovec24_defconfig
+powerpc                      makalu_defconfig
+mips                         tb0226_defconfig
+sh                          urquell_defconfig
+arc                            hsdk_defconfig
+parisc                              defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+arc                              allyesconfig
+nios2                            allyesconfig
+alpha                               defconfig
+csky                                defconfig
+alpha                            allyesconfig
+nios2                               defconfig
+arc                                 defconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+sh                               allmodconfig
+s390                                defconfig
+s390                             allmodconfig
+parisc64                            defconfig
+parisc                           allyesconfig
+s390                             allyesconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+i386                                defconfig
+i386                             allyesconfig
+sparc                               defconfig
+sparc                            allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+riscv                             allnoconfig
+riscv                            allyesconfig
+riscv                    nommu_k210_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+powerpc                           allnoconfig
+um                             i386_defconfig
+powerpc                          allyesconfig
+um                           x86_64_defconfig
+powerpc                          allmodconfig
+x86_64                        randconfig-a015
+x86_64                        randconfig-a013
+i386                          randconfig-a001
+x86_64                        randconfig-a004
+i386                          randconfig-a003
+i386                          randconfig-a005
+x86_64                        randconfig-a011
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+x86_64                        randconfig-a002
+riscv                            allmodconfig
+x86_64                          rhel-8.3-func
+x86_64                           rhel-8.3-syz
+x86_64                    rhel-8.3-kselftests
+x86_64                         rhel-8.3-kunit
+x86_64                           allyesconfig
+x86_64                                  kexec
+x86_64                              defconfig
+x86_64                               rhel-8.3
 
-The operation itself is atomic, because reading half a bit is
-impossible. Whether or not that bit is modified concurrently is a
-different problem.
+clang tested configs:
+powerpc                 mpc8313_rdb_defconfig
+arm                       netwinder_defconfig
+arm                                 defconfig
+powerpc                      obs600_defconfig
+mips                      bmips_stb_defconfig
+arm                          moxart_defconfig
+mips                          ath79_defconfig
+riscv                             allnoconfig
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a011
+i386                          randconfig-a004
+x86_64                        randconfig-a012
+hexagon              randconfig-r045-20220609
+s390                 randconfig-r044-20220609
+riscv                randconfig-r042-20220609
+hexagon              randconfig-r041-20220609
 
-Thanks,
--- Marco
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
