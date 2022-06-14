@@ -2,28 +2,43 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BC37CCA47F
-	for <linux-m68k@archiver.kernel.org>; Tue, 14 Jun 2022 16:29:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97E04C433EF
+	for <linux-m68k@archiver.kernel.org>; Tue, 14 Jun 2022 16:41:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244494AbiFNQ3T (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 14 Jun 2022 12:29:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43060 "EHLO
+        id S234749AbiFNQll (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 14 Jun 2022 12:41:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343911AbiFNQ2Z (ORCPT
+        with ESMTP id S1344454AbiFNQlj (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 14 Jun 2022 12:28:25 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B4F631E3CC
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Jun 2022 09:28:24 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D221916F3;
-        Tue, 14 Jun 2022 09:28:23 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.41.154])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EEF753F66F;
-        Tue, 14 Jun 2022 09:28:05 -0700 (PDT)
-Date:   Tue, 14 Jun 2022 17:28:02 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
+        Tue, 14 Jun 2022 12:41:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 058EC396A0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Jun 2022 09:41:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rwYFO4jRp4ZmBbbpQ/dlmC/s4443nixCio2KC7D4yLw=; b=V4CcOtoya4fx7a+TewbwfbMpHX
+        S0U58dFbvhEs4+z6vlti2b1yaN2nHZdtpLUhV6b26DfB0W9QaiXCJNgWY1iLqP6JemwxKD8If1zXi
+        Dc58dnvyG/zHW9b8hYkgX3+ltwbe4kfS6mygL93PVj25PQUAkTI43bgkav/UP2phwqaLH6Jmg4htB
+        +7dwsqbHSMo9jJy12dA4V5J1yPFkpBzcClSfYYGQs5HHmF9AKeJnyxvwMhdlvB0wf7ej1fwQvbSdj
+        +cGoUoQpbmvkdPfLd6lFQZf+8q0srIdNcxJPdxc0YJaBq/7VVmZ25B5dD+OpzZBdLGRfiZRDfHRqR
+        AHE5YJ2g==;
+Received: from dhcp-077-249-017-003.chello.nl ([77.249.17.3] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1o19b8-000KNd-ML; Tue, 14 Jun 2022 16:40:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C5DF9300372;
+        Tue, 14 Jun 2022 18:40:53 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A4FD82868A9BF; Tue, 14 Jun 2022 18:40:53 +0200 (CEST)
+Date:   Tue, 14 Jun 2022 18:40:53 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mark Rutland <mark.rutland@arm.com>
 Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
         vgupta@kernel.org, linux@armlinux.org.uk,
         ulli.kroll@googlemail.com, linus.walleij@linaro.org,
@@ -35,7 +50,7 @@ Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
         sammy@sammy.net, monstr@monstr.eu, tsbogend@alpha.franken.de,
         dinguyen@kernel.org, jonas@southpole.se,
         stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
-        James.Bottomley@HansenPartnership.com, deller@gmx.de,
+        James.Bottomley@hansenpartnership.com, deller@gmx.de,
         mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
         paul.walmsley@sifive.com, palmer@dabbelt.com,
         aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com,
@@ -82,70 +97,42 @@ Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
         linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org,
         rcu@vger.kernel.org
-Subject: Re: [PATCH 25/36] time/tick-broadcast: Remove RCU_NONIDLE usage
-Message-ID: <Yqi3EmHbuvf3ItMI@FVFF77S0Q05N>
+Subject: Re: [PATCH 14/36] cpuidle: Fix rcu_idle_*() usage
+Message-ID: <Yqi6Fd38ZCsDUnQG@hirez.programming.kicks-ass.net>
 References: <20220608142723.103523089@infradead.org>
- <20220608144517.507286638@infradead.org>
+ <20220608144516.808451191@infradead.org>
+ <YqiB6YpVqq4wuDtO@FVFF77S0Q05N>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220608144517.507286638@infradead.org>
+In-Reply-To: <YqiB6YpVqq4wuDtO@FVFF77S0Q05N>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Jun 08, 2022 at 04:27:48PM +0200, Peter Zijlstra wrote:
-> No callers left that have already disabled RCU.
+On Tue, Jun 14, 2022 at 01:41:13PM +0100, Mark Rutland wrote:
+> On Wed, Jun 08, 2022 at 04:27:37PM +0200, Peter Zijlstra wrote:
+> > --- a/kernel/time/tick-broadcast.c
+> > +++ b/kernel/time/tick-broadcast.c
+> > @@ -622,9 +622,13 @@ struct cpumask *tick_get_broadcast_onesh
+> >   * to avoid a deep idle transition as we are about to get the
+> >   * broadcast IPI right away.
+> >   */
+> > -int tick_check_broadcast_expired(void)
+> > +noinstr int tick_check_broadcast_expired(void)
+> >  {
+> > +#ifdef _ASM_GENERIC_BITOPS_INSTRUMENTED_NON_ATOMIC_H
+> > +	return arch_test_bit(smp_processor_id(), cpumask_bits(tick_broadcast_force_mask));
+> > +#else
+> >  	return cpumask_test_cpu(smp_processor_id(), tick_broadcast_force_mask);
+> > +#endif
+> >  }
 > 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> This is somewhat not-ideal. :/
 
-Acked-by: Mark Rutland <mark.rutland@arm.com>
+I'll say.
 
-Mark.
+> Could we unconditionally do the arch_test_bit() variant, with a comment, or
+> does that not exist in some cases?
 
-> ---
->  kernel/time/tick-broadcast-hrtimer.c |   29 ++++++++++++-----------------
->  1 file changed, 12 insertions(+), 17 deletions(-)
-> 
-> --- a/kernel/time/tick-broadcast-hrtimer.c
-> +++ b/kernel/time/tick-broadcast-hrtimer.c
-> @@ -56,25 +56,20 @@ static int bc_set_next(ktime_t expires,
->  	 * hrtimer callback function is currently running, then
->  	 * hrtimer_start() cannot move it and the timer stays on the CPU on
->  	 * which it is assigned at the moment.
-> +	 */
-> +	hrtimer_start(&bctimer, expires, HRTIMER_MODE_ABS_PINNED_HARD);
-> +	/*
-> +	 * The core tick broadcast mode expects bc->bound_on to be set
-> +	 * correctly to prevent a CPU which has the broadcast hrtimer
-> +	 * armed from going deep idle.
->  	 *
-> -	 * As this can be called from idle code, the hrtimer_start()
-> -	 * invocation has to be wrapped with RCU_NONIDLE() as
-> -	 * hrtimer_start() can call into tracing.
-> +	 * As tick_broadcast_lock is held, nothing can change the cpu
-> +	 * base which was just established in hrtimer_start() above. So
-> +	 * the below access is safe even without holding the hrtimer
-> +	 * base lock.
->  	 */
-> -	RCU_NONIDLE( {
-> -		hrtimer_start(&bctimer, expires, HRTIMER_MODE_ABS_PINNED_HARD);
-> -		/*
-> -		 * The core tick broadcast mode expects bc->bound_on to be set
-> -		 * correctly to prevent a CPU which has the broadcast hrtimer
-> -		 * armed from going deep idle.
-> -		 *
-> -		 * As tick_broadcast_lock is held, nothing can change the cpu
-> -		 * base which was just established in hrtimer_start() above. So
-> -		 * the below access is safe even without holding the hrtimer
-> -		 * base lock.
-> -		 */
-> -		bc->bound_on = bctimer.base->cpu_base->cpu;
-> -	} );
-> +	bc->bound_on = bctimer.base->cpu_base->cpu;
-> +
->  	return 0;
->  }
->  
-> 
-> 
+Loads of build errors ensued, which is how I ended up with this mess ...
