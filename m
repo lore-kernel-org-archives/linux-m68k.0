@@ -2,53 +2,53 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DBBCCCA47C
-	for <linux-m68k@archiver.kernel.org>; Wed, 15 Jun 2022 02:59:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D58F2C433EF
+	for <linux-m68k@archiver.kernel.org>; Wed, 15 Jun 2022 03:27:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345395AbiFOC74 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 14 Jun 2022 22:59:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46166 "EHLO
+        id S1351025AbiFOD1B (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 14 Jun 2022 23:27:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345773AbiFOC7z (ORCPT
+        with ESMTP id S242783AbiFOD1A (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 14 Jun 2022 22:59:55 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E73F46B10
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Jun 2022 19:59:53 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id c144so7821640qkg.11
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Jun 2022 19:59:53 -0700 (PDT)
+        Tue, 14 Jun 2022 23:27:00 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2B0139835
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Jun 2022 20:26:56 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id w13so6674468qts.6
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Jun 2022 20:26:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=C3J+GQznuUXQiI93tyU1L6VthWT10VpFAq9aJ2OnWJU=;
-        b=VxJHgVuTjo2QD8B+BMaw/XmEu/z4sSdLVz7HNg6xmOpYjwn3pGdVQI7lQCwRks73/I
-         1KjHe0NB2gRsWl4+hPX4OhKVJyktyBMLnd2LT8juToOmEO5i3rvmtB+++fza7ToBxrQt
-         5NeeJ5cakoQNoZB12wMYgYTCIU19/FDw+LH9tWV9R5EIoFyFTsq55nWj2KBAIR3OI5H+
-         79r9rrjnDPyu+IV8GJFsAIqE0Y6pADHlW6V4fwV5Vqk202mKvPwPgl/GwMyZE34t3EmT
-         QBZP0ntWkjGNdPep+XEH5HuL1rvtQ2KtDtr4AaudCmLcNdAcis2BQv5b5fLr4f7hSY1U
-         NrGQ==
+        bh=Q2BMd5PQI/AN3W5kxMglFR7hp5GiYxPCuJsRFhG3zU0=;
+        b=NrbTIj9uosp/fBmWwEhojKx49KKtr/6VlileB+SXfC0XY9lv7WwMdRcn1I5aVe3RGK
+         gAQ0iuYC5bbbg4b/hH0sxr/MGzujxQVNhV95YeupbmAHDJbTdhJ32sR/jqLzx0agtx8U
+         aewJifOXqdx8EMaDoN0W3fDFSltOtXmH51jePLoIPjx2+65IO15qNBGRLnT2GtU9Frsf
+         2t/SGUNsUbqEdHPREitJ/RGJ2Nr4o8hnTBn9EeloM1gR65GNF2ZaTLq1aBGWtKVIJtjL
+         NPuDrE90hwtb5AM8LI6bV9w7PjIPnDYbOTddZk24Hm6V7v/v4bgH0LybLN6nQXLXqdJ9
+         tH4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=C3J+GQznuUXQiI93tyU1L6VthWT10VpFAq9aJ2OnWJU=;
-        b=1GS2/31jjejVEBElDwY9lRIJCR5Khl3bhIrIaNoRfOopBqxB7JEFLIPjQV7iWM1qlu
-         YqpfJDI/LkHvSMJha/AYQsGPGt9DSsj1mQ5gZ4eo2VLbwFVOEXO4nYWmaUkNlvSyf6rQ
-         bQV8xRjRBXjZooFKIM0OaqrtJTNa4ZSpKmjeavzj7CYFbXrfAwPw3Q4E+7wVq6C6LUK1
-         Yg7kObiImd/T2qBa4S7Mrgy+0POIjwWYYW+UH/HnDY1Os+Gc7gJcW4sj1lF+CL3msROT
-         ad9SBtsb3rhzeajtJE6IzxgDL2WCKcqRFAPCwDBSXV4KKeLT9EyLb9K0pE9KYn29GCet
-         Cobg==
-X-Gm-Message-State: AOAM532EebuuatdtEjt0lKurF9vCxhQcIU2n3/A65usa3AQ3HAY6GaBN
-        wTvVDHE6AoQ8t1+mbVpHbjw=
-X-Google-Smtp-Source: ABdhPJzU8UAXP0IkfOy4H9sUURlLpB9LpqUnFHG7i620UZ67oCnA8AaZDn3plz6a+1qNFEgF+ryr8g==
-X-Received: by 2002:a05:620a:2910:b0:6a6:bb03:ade0 with SMTP id m16-20020a05620a291000b006a6bb03ade0mr6544520qkp.655.1655261992417;
-        Tue, 14 Jun 2022 19:59:52 -0700 (PDT)
+        bh=Q2BMd5PQI/AN3W5kxMglFR7hp5GiYxPCuJsRFhG3zU0=;
+        b=BqsC0YHWrvO2U0yI9Naz/fXfelYi8J+BRn0cPNlXVmuDaOzOs1KDi/QThL/TiQHuH2
+         WZTVeGX4dAb2+OP2b1ku/GmnV25zA6HycQRrP/j6sz7y/I2AdmcoP36W6zGgOPLJj25F
+         CxuAId9sO9A+3fnq11sG9zB6c5X7ZOgDafFNh7P4QYmzJJ+2dWpHddFfcLu5Eik+nm71
+         10IiCE2fAIvuNOksJ7tiA7xWcam5uf8RzJyqeSFdZANLSnHVpPsflPWXyLsA9Ylk/b+4
+         2P4sV66n7ag/W2mPDRlRL3yZDtEO/SMWk++0RkA96NfNgYV6WtAROFkGJXuXNm4VDgiN
+         gF7A==
+X-Gm-Message-State: AOAM530LWneV3DLhoIM79VZNezqm2A637t4mYO0C1yhw6W/+6CzlIIOQ
+        sRSSv2EQiG5ye6bJZc8KCug=
+X-Google-Smtp-Source: ABdhPJzV0mHnB4jH1W9MDP6SaV/TVsZlCcXhe7YLdHSDXFUJdxPer0qWeEW1SiIyIyuPLut0Lz7xVg==
+X-Received: by 2002:ac8:5a50:0:b0:305:20c4:791d with SMTP id o16-20020ac85a50000000b0030520c4791dmr7221901qta.437.1655263615762;
+        Tue, 14 Jun 2022 20:26:55 -0700 (PDT)
 Received: from localhost ([2601:4c1:c100:1230:6d39:b768:5789:ec2a])
-        by smtp.gmail.com with ESMTPSA id t16-20020ac87390000000b00304edcfa109sm8239554qtp.33.2022.06.14.19.59.51
+        by smtp.gmail.com with ESMTPSA id j5-20020a05620a410500b006a787380a5csm7875637qko.67.2022.06.14.20.26.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jun 2022 19:59:52 -0700 (PDT)
-Date:   Tue, 14 Jun 2022 19:59:51 -0700
+        Tue, 14 Jun 2022 20:26:55 -0700 (PDT)
+Date:   Tue, 14 Jun 2022 20:26:54 -0700
 From:   Yury Norov <yury.norov@gmail.com>
 To:     Alexander Lobakin <alexandr.lobakin@intel.com>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
@@ -68,57 +68,104 @@ Cc:     Arnd Bergmann <arnd@arndb.de>,
         linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org,
         linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v2 1/6] ia64, processor: fix -Wincompatible-pointer-types
- in ia64_get_irr()
-Message-ID: <YqlLJ2IHAIn4kv8Z@yury-laptop>
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 6/6] bitops: let optimize out non-atomic bitops on
+ compile-time constants
+Message-ID: <YqlRfoB5+VBIw8gJ@yury-laptop>
 References: <20220610113427.908751-1-alexandr.lobakin@intel.com>
- <20220610113427.908751-2-alexandr.lobakin@intel.com>
+ <20220610113427.908751-7-alexandr.lobakin@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220610113427.908751-2-alexandr.lobakin@intel.com>
+In-Reply-To: <20220610113427.908751-7-alexandr.lobakin@intel.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Jun 10, 2022 at 01:34:22PM +0200, Alexander Lobakin wrote:
-> test_bit(), as any other bitmap op, takes `unsigned long *` as a
-> second argument (pointer to the actual bitmap), as any bitmap
-> itself is an array of unsigned longs. However, the ia64_get_irr()
-> code passes a ref to `u64` as a second argument.
-> This works with the ia64 bitops implementation due to that they
-> have `void *` as the second argument and then cast it later on.
-> This works with the bitmap API itself due to that `unsigned long`
-> has the same size on ia64 as `u64` (`unsigned long long`), but
-> from the compiler PoV those two are different.
-> Define @irr as `unsigned long` to fix that. That implies no
-> functional changes. Has been hidden for 16 years!
+Hi Alexander,
+
+On Fri, Jun 10, 2022 at 01:34:27PM +0200, Alexander Lobakin wrote:
+> Currently, many architecture-specific non-atomic bitop
+> implementations use inline asm or other hacks which are faster or
+> more robust when working with "real" variables (i.e. fields from
+> the structures etc.), but the compilers have no clue how to optimize
+> them out when called on compile-time constants. That said, the
+> following code:
 > 
-> Fixes: a58786917ce2 ("[IA64] avoid broken SAL_CACHE_FLUSH implementations")
-> Cc: stable@vger.kernel.org # 2.6.16+
-> Reported-by: kernel test robot <lkp@intel.com>
+> 	DECLARE_BITMAP(foo, BITS_PER_LONG) = { }; // -> unsigned long foo[1];
+> 	unsigned long bar = BIT(BAR_BIT);
+> 	unsigned long baz = 0;
+> 
+> 	__set_bit(FOO_BIT, foo);
+> 	baz |= BIT(BAZ_BIT);
+> 
+> 	BUILD_BUG_ON(!__builtin_constant_p(test_bit(FOO_BIT, foo));
+> 	BUILD_BUG_ON(!__builtin_constant_p(bar & BAR_BIT));
+> 	BUILD_BUG_ON(!__builtin_constant_p(baz & BAZ_BIT));
+
+Can you put this snippet into lib/test_bitops.c?
+
+Thanks,
+Yury
+
+> triggers the first assertion on x86_64, which means that the
+> compiler is unable to evaluate it to a compile-time initializer
+> when the architecture-specific bitop is used even if it's obvious.
+> In order to let the compiler optimize out such cases, expand the
+> bitop() macro to use the "constant" C non-atomic bitop
+> implementations when all of the arguments passed are compile-time
+> constants, which means that the result will be a compile-time
+> constant as well, so that it produces more efficient and simple
+> code in 100% cases, comparing to the architecture-specific
+> counterparts.
+> 
+> The savings are architecture, compiler and compiler flags dependent,
+> for example, on x86_64 -O2:
+> 
+> GCC 12: add/remove: 78/29 grow/shrink: 332/525 up/down: 31325/-61560 (-30235)
+> LLVM 13: add/remove: 79/76 grow/shrink: 184/537 up/down: 55076/-141892 (-86816)
+> LLVM 14: add/remove: 10/3 grow/shrink: 93/138 up/down: 3705/-6992 (-3287)
+> 
+> and ARM64 (courtesy of Mark):
+> 
+> GCC 11: add/remove: 92/29 grow/shrink: 933/2766 up/down: 39340/-82580 (-43240)
+> LLVM 14: add/remove: 21/11 grow/shrink: 620/651 up/down: 12060/-15824 (-3764)
+> 
+> Cc: Mark Rutland <mark.rutland@arm.com>
 > Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-
-Reviewed-by: Yury Norov <yury.norov@gmail.com>
-
 > ---
->  arch/ia64/include/asm/processor.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  include/linux/bitops.h | 18 +++++++++++++++++-
+>  1 file changed, 17 insertions(+), 1 deletion(-)
 > 
-> diff --git a/arch/ia64/include/asm/processor.h b/arch/ia64/include/asm/processor.h
-> index 7cbce290f4e5..757c2f6d8d4b 100644
-> --- a/arch/ia64/include/asm/processor.h
-> +++ b/arch/ia64/include/asm/processor.h
-> @@ -538,7 +538,7 @@ ia64_get_irr(unsigned int vector)
->  {
->  	unsigned int reg = vector / 64;
->  	unsigned int bit = vector % 64;
-> -	u64 irr;
-> +	unsigned long irr;
+> diff --git a/include/linux/bitops.h b/include/linux/bitops.h
+> index 753f98e0dcf5..364bdc3606b4 100644
+> --- a/include/linux/bitops.h
+> +++ b/include/linux/bitops.h
+> @@ -33,8 +33,24 @@ extern unsigned long __sw_hweight64(__u64 w);
 >  
->  	switch (reg) {
->  	case 0: irr = ia64_getreg(_IA64_REG_CR_IRR0); break;
+>  #include <asm-generic/bitops/generic-non-atomic.h>
+>  
+> +/*
+> + * Many architecture-specific non-atomic bitops contain inline asm code and due
+> + * to that the compiler can't optimize them to compile-time expressions or
+> + * constants. In contrary, gen_*() helpers are defined in pure C and compilers
+> + * optimize them just well.
+> + * Therefore, to make `unsigned long foo = 0; __set_bit(BAR, &foo)` effectively
+> + * equal to `unsigned long foo = BIT(BAR)`, pick the generic C alternative when
+> + * the arguments can be resolved at compile time. That expression itself is a
+> + * constant and doesn't bring any functional changes to the rest of cases.
+> + * The casts to `uintptr_t` are needed to mitigate `-Waddress` warnings when
+> + * passing a bitmap from .bss or .data (-> `!!addr` is always true).
+> + */
+>  #define bitop(op, nr, addr)						\
+> -	op(nr, addr)
+> +	((__builtin_constant_p(nr) &&					\
+> +	  __builtin_constant_p((uintptr_t)(addr) != (uintptr_t)NULL) &&	\
+> +	  (uintptr_t)(addr) != (uintptr_t)NULL &&			\
+> +	  __builtin_constant_p(*(const unsigned long *)(addr))) ?	\
+> +	 const##op(nr, addr) : op(nr, addr))
+>  
+>  #define __set_bit(nr, addr)		bitop(___set_bit, nr, addr)
+>  #define __clear_bit(nr, addr)		bitop(___clear_bit, nr, addr)
 > -- 
 > 2.36.1
