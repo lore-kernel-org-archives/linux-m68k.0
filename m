@@ -2,161 +2,74 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7CC2C43334
-	for <linux-m68k@archiver.kernel.org>; Thu, 16 Jun 2022 21:22:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 835D6C43334
+	for <linux-m68k@archiver.kernel.org>; Fri, 17 Jun 2022 10:02:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229482AbiFPVWy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 16 Jun 2022 17:22:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42702 "EHLO
+        id S235280AbiFQKCv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 17 Jun 2022 06:02:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379018AbiFPVWx (ORCPT
+        with ESMTP id S232020AbiFQKCu (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 16 Jun 2022 17:22:53 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72661F2E3
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 16 Jun 2022 14:22:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1655414572; x=1686950572;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=eIVB2Wcg0d4KNkOlM5BOJs0iOIDhUm5jxxQVobMAAIM=;
-  b=RP2YCFWJTKa74eNpADc52RfwyjDAvZ8LbqtQ+29QXXL8TwRbvjSWS7Ba
-   pq99M69aIQ9JNjTvJTyVDW//G+jY7TSkumi1VWip/2CpHCCXM6c6TDOdt
-   ovkJ3Yi3iryHnvVyD2y26qw2tMuSleKA/emETgYWmPoT1kmV2lQAziBjw
-   O3q86x2LyuYnnhk+Vs+DKTvFCxrgF97TC4OmRtb6/SSLEM/JP4XfqNzIy
-   uBWpPFsIMbGc2UKu+E2AO9bfY2POAwfylNkeUEpgS6fQsCe6X4buSH60h
-   /gpL6lhB831yaHj1bisym9RyaHXfKLRndrfm290x2hFX1FL/TzwTh4/0s
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="280069491"
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; 
-   d="scan'208";a="280069491"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2022 14:22:51 -0700
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; 
-   d="scan'208";a="560027674"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.198.157])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2022 14:22:51 -0700
-Date:   Thu, 16 Jun 2022 14:26:56 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
-        vgupta@kernel.org, linux@armlinux.org.uk,
-        ulli.kroll@googlemail.com, linus.walleij@linaro.org,
-        shawnguo@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        tony@atomide.com, khilman@kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, guoren@kernel.org, bcain@quicinc.com,
-        chenhuacai@kernel.org, kernel@xen0n.name, geert@linux-m68k.org,
-        sammy@sammy.net, monstr@monstr.eu, tsbogend@alpha.franken.de,
-        dinguyen@kernel.org, jonas@southpole.se,
-        stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
-        James.Bottomley@hansenpartnership.com, deller@gmx.de,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com,
-        agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
-        svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org,
-        davem@davemloft.net, richard@nod.at,
-        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, jgross@suse.com, srivatsa@csail.mit.edu,
-        amakhalov@vmware.com, pv-drivers@vmware.com,
-        boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com,
-        rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz,
-        gregkh@linuxfoundation.org, mturquette@baylibre.com,
-        sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org,
-        sudeep.holla@arm.com, agross@kernel.org,
-        bjorn.andersson@linaro.org, anup@brainfault.org,
-        thierry.reding@gmail.com, jonathanh@nvidia.com,
-        Arnd Bergmann <arnd@arndb.de>, yury.norov@gmail.com,
-        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
-        rostedt@goodmis.org, pmladek@suse.com, senozhatsky@chromium.org,
-        john.ogness@linutronix.de, paulmck@kernel.org, frederic@kernel.org,
-        quic_neeraju@quicinc.com, josh@joshtriplett.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-        vschneid@redhat.com, jpoimboe@kernel.org,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org,
-        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org,
-        rcu@vger.kernel.org, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH 04/36] cpuidle,intel_idle: Fix CPUIDLE_FLAG_IRQ_ENABLE
-Message-ID: <20220616142656.4b1acc4a@jacob-builder>
-In-Reply-To: <Yqb45vclY2KVL0wZ@hirez.programming.kicks-ass.net>
-References: <20220608142723.103523089@infradead.org>
-        <20220608144516.172460444@infradead.org>
-        <20220609164921.5e61711d@jacob-builder>
-        <Yqb45vclY2KVL0wZ@hirez.programming.kicks-ass.net>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Fri, 17 Jun 2022 06:02:50 -0400
+Received: from jari.cn (unknown [218.92.28.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5B430EE3F
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 17 Jun 2022 03:02:44 -0700 (PDT)
+Received: by ajax-webmail-localhost.localdomain (Coremail) ; Fri, 17 Jun
+ 2022 17:57:21 +0800 (GMT+08:00)
+X-Originating-IP: [182.148.14.60]
+Date:   Fri, 17 Jun 2022 17:57:21 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   "XueBing Chen" <chenxuebing@jari.cn>
+To:     sammy@sammy.net, geert@linux-m68k.org
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] m68k/sun3: use __func__ to get funcion's name in an output
+ message
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT6.0.1 build 20210329(c53f3fee)
+ Copyright (c) 2002-2022 www.mailtech.cn
+ mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <3461c09c.be8.1817118854e.Coremail.chenxuebing@jari.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: AQAAfwAHEW8BUKxi1atBAA--.765W
+X-CM-SenderInfo: hfkh05pxhex0nj6mt2flof0/1tbiAQAACmFEYxssuAACsA
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Peter,
-
-On Mon, 13 Jun 2022 10:44:22 +0200, Peter Zijlstra <peterz@infradead.org>
-wrote:
-
-> On Thu, Jun 09, 2022 at 04:49:21PM -0700, Jacob Pan wrote:
-> > Hi Peter,
-> > 
-> > On Wed, 08 Jun 2022 16:27:27 +0200, Peter Zijlstra
-> > <peterz@infradead.org> wrote:
-> >   
-> > > Commit c227233ad64c ("intel_idle: enable interrupts before C1 on
-> > > Xeons") wrecked intel_idle in two ways:
-> > > 
-> > >  - must not have tracing in idle functions
-> > >  - must return with IRQs disabled
-> > > 
-> > > Additionally, it added a branch for no good reason.
-> > > 
-> > > Fixes: c227233ad64c ("intel_idle: enable interrupts before C1 on
-> > > Xeons") Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > > ---
-> > >  drivers/idle/intel_idle.c |   48
-> > > +++++++++++++++++++++++++++++++++++----------- 1 file changed, 37
-> > > insertions(+), 11 deletions(-)
-> > > 
-> > > --- a/drivers/idle/intel_idle.c
-> > > +++ b/drivers/idle/intel_idle.c
-> > > @@ -129,21 +137,37 @@ static unsigned int mwait_substates __in
-> > >   *
-> > >   * Must be called under local_irq_disable().
-> > >   */  
-> > nit: this comment is no long true, right?  
-> 
-> It still is, all the idle routines are called with interrupts disabled,
-> but must also exit with interrupts disabled.
-> 
-> If the idle method requires interrupts to be enabled, it must be sure to
-> disable them again before returning. Given all the RCU/tracing concerns
-> it must use raw_local_irq_*() for this though.
-Makes sense, it is just little confusing when the immediate caller does
-raw_local_irq_enable() which does not cancel out local_irq_disable().
-
-Thanks,
-
-Jacob
+ClByZWZlciB1c2luZyAnIiVzLi4uIiwgX19mdW5jX18nIHRvIGdldCBjdXJyZW50IGZ1bmN0aW9u
+J3MgbmFtZSBpbgphbiBvdXRwdXQgbWVzc2FnZS4KClNpZ25lZC1vZmYtYnk6IFh1ZUJpbmcgQ2hl
+biA8Y2hlbnh1ZWJpbmdAamFyaS5jbj4KLS0tCiBhcmNoL202OGsvc3VuMy9tbXVfZW11LmMgfCA4
+ICsrKystLS0tCiAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygt
+KQoKZGlmZiAtLWdpdCBhL2FyY2gvbTY4ay9zdW4zL21tdV9lbXUuYyBiL2FyY2gvbTY4ay9zdW4z
+L21tdV9lbXUuYwppbmRleCA3ZWMyMDgxN2MwYzkuLjUxNDgwZjcwM2RjOCAxMDA2NDQKLS0tIGEv
+YXJjaC9tNjhrL3N1bjMvbW11X2VtdS5jCisrKyBiL2FyY2gvbTY4ay9zdW4zL21tdV9lbXUuYwpA
+QCAtMjExLDcgKzIxMSw3IEBAIHZvaWQgY2xlYXJfY29udGV4dCh1bnNpZ25lZCBsb25nIGNvbnRl
+eHQpCiAKICAgICAgaWYoY29udGV4dCkgewogCSAgICAgaWYoIWN0eF9hbGxvY1tjb250ZXh0XSkK
+LQkJICAgICBwYW5pYygiY2xlYXJfY29udGV4dDogY29udGV4dCBub3QgYWxsb2NhdGVkXG4iKTsK
+KwkJICAgICBwYW5pYygiJXM6IGNvbnRleHQgbm90IGFsbG9jYXRlZFxuIiwgX19mdW5jX18pOwog
+CiAJICAgICBjdHhfYWxsb2NbY29udGV4dF0tPmNvbnRleHQgPSBTVU4zX0lOVkFMSURfQ09OVEVY
+VDsKIAkgICAgIGN0eF9hbGxvY1tjb250ZXh0XSA9IChzdHJ1Y3QgbW1fc3RydWN0ICopMDsKQEAg
+LTI2MSw3ICsyNjEsNyBAQCB1bnNpZ25lZCBsb25nIGdldF9mcmVlX2NvbnRleHQoc3RydWN0IG1t
+X3N0cnVjdCAqbW0pCiAJCX0KIAkJLy8gY2hlY2sgdG8gbWFrZSBzdXJlIG9uZSB3YXMgcmVhbGx5
+IGZyZWUuLi4KIAkJaWYobmV3ID09IENPTlRFWFRTX05VTSkKLQkJCXBhbmljKCJnZXRfZnJlZV9j
+b250ZXh0OiBmYWlsZWQgdG8gZmluZCBmcmVlIGNvbnRleHQiKTsKKwkJCXBhbmljKCIlczogZmFp
+bGVkIHRvIGZpbmQgZnJlZSBjb250ZXh0IiwgX19mdW5jX18pOwogCX0KIAogCWN0eF9hbGxvY1tu
+ZXddID0gbW07CkBAIC0zNjksNyArMzY5LDcgQEAgaW50IG1tdV9lbXVfaGFuZGxlX2ZhdWx0ICh1
+bnNpZ25lZCBsb25nIHZhZGRyLCBpbnQgcmVhZF9mbGFnLCBpbnQga2VybmVsX2ZhdWx0KQogCX0K
+IAogI2lmZGVmIERFQlVHX01NVV9FTVUKLQlwcl9pbmZvKCJtbXVfZW11X2hhbmRsZV9mYXVsdDog
+dmFkZHI9JWx4IHR5cGU9JXMgY3JwPSVwXG4iLAorCXByX2luZm8oIiVzOiB2YWRkcj0lbHggdHlw
+ZT0lcyBjcnA9JXBcbiIsIF9fZnVuY19fLAogCQl2YWRkciwgcmVhZF9mbGFnID8gInJlYWQiIDog
+IndyaXRlIiwgY3JwKTsKICNlbmRpZgogCkBAIC0zNzcsNyArMzc3LDcgQEAgaW50IG1tdV9lbXVf
+aGFuZGxlX2ZhdWx0ICh1bnNpZ25lZCBsb25nIHZhZGRyLCBpbnQgcmVhZF9mbGFnLCBpbnQga2Vy
+bmVsX2ZhdWx0KQogCW9mZnNldCAgPSAodmFkZHIgPj4gU1VOM19QVEVfU0laRV9CSVRTKSAmIDB4
+RjsKIAogI2lmZGVmIERFQlVHX01NVV9FTVUKLQlwcl9pbmZvKCJtbXVfZW11X2hhbmRsZV9mYXVs
+dDogc2VnbWVudD0lbHggb2Zmc2V0PSVseFxuIiwgc2VnbWVudCwKKwlwcl9pbmZvKCIlczogc2Vn
+bWVudD0lbHggb2Zmc2V0PSVseFxuIiwgX19mdW5jX18sIHNlZ21lbnQsCiAJCW9mZnNldCk7CiAj
+ZW5kaWYKIAotLSAKMi4zNi4xCgoKCg==
