@@ -2,45 +2,45 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26127C433EF
-	for <linux-m68k@archiver.kernel.org>; Fri, 17 Jun 2022 17:18:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A3F1C43334
+	for <linux-m68k@archiver.kernel.org>; Fri, 17 Jun 2022 17:21:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382793AbiFQRSu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 17 Jun 2022 13:18:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55854 "EHLO
+        id S1383211AbiFQRVS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 17 Jun 2022 13:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234049AbiFQRSn (ORCPT
+        with ESMTP id S1383224AbiFQRVR (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 17 Jun 2022 13:18:43 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD8B2AE04
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 17 Jun 2022 10:18:41 -0700 (PDT)
+        Fri, 17 Jun 2022 13:21:17 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC9F8369D2
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 17 Jun 2022 10:21:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1655486321; x=1687022321;
+  t=1655486476; x=1687022476;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=cKDaIk+tyuEQhyGKnxAqlVtiqCqt8rLzZ/7eP9mJcAA=;
-  b=HUEMXxIrqel2hDR+s8crGyEaik/ZK+iKg27Pqe7qcdl9qnmVDrasZrO4
-   g/fe20EixXpZM6b2/LRDLVOz6zkEMucvTnvgYx3vWowEgw7TH5YFH1CWK
-   QXVW03cbiC5MhImOELArS98qzcUfxSL5W9DVLlMemJJo6cLsZGlrCzOa7
-   Q5ErnuEAfrlNCxvGa3j4fZx6kgRxgliA5uhvzIaYLT9ZjoV4zsx7PWVkw
-   JcCIkP1upg9mNCj0eggvqKjE3pI2iCvOwrFag6EQxGAoUqjtsonvsrkj9
-   Z7Zm5JEFLOjmEVn9Kjp2v5scgpI3qGiIIpGeXuELislsDinT45z33sSpa
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="341193600"
+  bh=THeq/t7OeFGS7kF1qxlxBPZVHuRcSkjtN1FGjFL0hbM=;
+  b=Ye8dJHSBSDuLPoH7Lex6frifxt8Z07hT6WXqgjFylvNpz7npjjdGC1tJ
+   /Ev5/L47z9BYaCLj4mOTD7kO6i5kpqw1j0LJIqkxqHdlq1W7THceJDWj2
+   EOb1KuQZGqQJJPXww4sRU+8LRllEt5eZtBtHSNrkEp7WX7cxRU91TSdF+
+   1EZOpuWSEdmWNtt8GImxiDz4xVUFixRcOL2OfJxmcYMXs7NYeMnGJt95N
+   d8+7VwCBgxPfGDxAnmY7kvPCi9oET/q0GNkYe19rhEAGR5loMqqIT9IEh
+   MdLAm2yLA6PY5la6tZn1BrG3tZGccyM3s/CEGMjO77lPR+IGZJIIJIaYx
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="277057060"
 X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; 
-   d="scan'208";a="341193600"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2022 07:40:53 -0700
+   d="scan'208";a="277057060"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2022 07:40:55 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; 
-   d="scan'208";a="590137376"
+   d="scan'208";a="763274890"
 Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by fmsmga007.fm.intel.com with ESMTP; 17 Jun 2022 07:40:47 -0700
+  by orsmga005.jf.intel.com with ESMTP; 17 Jun 2022 07:40:49 -0700
 Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 25HEeXl8024161;
-        Fri, 17 Jun 2022 15:40:45 +0100
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 25HEeXl9024161;
+        Fri, 17 Jun 2022 15:40:47 +0100
 From:   Alexander Lobakin <alexandr.lobakin@intel.com>
 To:     Arnd Bergmann <arnd@arndb.de>, Yury Norov <yury.norov@gmail.com>
 Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
@@ -63,9 +63,9 @@ Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
         linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 6/7] bitops: let optimize out non-atomic bitops on compile-time constants
-Date:   Fri, 17 Jun 2022 16:40:30 +0200
-Message-Id: <20220617144031.2549432-7-alexandr.lobakin@intel.com>
+Subject: [PATCH v3 7/7] lib: test_bitmap: add compile-time optimization/evaluations assertions
+Date:   Fri, 17 Jun 2022 16:40:31 +0200
+Message-Id: <20220617144031.2549432-8-alexandr.lobakin@intel.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220617144031.2549432-1-alexandr.lobakin@intel.com>
 References: <20220617144031.2549432-1-alexandr.lobakin@intel.com>
@@ -75,83 +75,84 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Currently, many architecture-specific non-atomic bitop
-implementations use inline asm or other hacks which are faster or
-more robust when working with "real" variables (i.e. fields from
-the structures etc.), but the compilers have no clue how to optimize
-them out when called on compile-time constants. That said, the
-following code:
+Add a function to the bitmap test suite, which will ensure that
+compilers are able to evaluate operations performed by the
+bitops/bitmap helpers to compile-time constants when all of the
+arguments are compile-time constants as well, or trigger a build
+bug otherwise. This should work on all architectures and all the
+optimization levels supported by Kbuild.
+The function doesn't perform any runtime tests and gets optimized
+out to nothing after passing the build assertions.
 
-	DECLARE_BITMAP(foo, BITS_PER_LONG) = { }; // -> unsigned long foo[1];
-	unsigned long bar = BIT(BAR_BIT);
-	unsigned long baz = 0;
-
-	__set_bit(FOO_BIT, foo);
-	baz |= BIT(BAZ_BIT);
-
-	BUILD_BUG_ON(!__builtin_constant_p(test_bit(FOO_BIT, foo));
-	BUILD_BUG_ON(!__builtin_constant_p(bar & BAR_BIT));
-	BUILD_BUG_ON(!__builtin_constant_p(baz & BAZ_BIT));
-
-triggers the first assertion on x86_64, which means that the
-compiler is unable to evaluate it to a compile-time initializer
-when the architecture-specific bitop is used even if it's obvious.
-In order to let the compiler optimize out such cases, expand the
-bitop() macro to use the "constant" C non-atomic bitop
-implementations when all of the arguments passed are compile-time
-constants, which means that the result will be a compile-time
-constant as well, so that it produces more efficient and simple
-code in 100% cases, comparing to the architecture-specific
-counterparts.
-
-The savings are architecture, compiler and compiler flags dependent,
-for example, on x86_64 -O2:
-
-GCC 12: add/remove: 78/29 grow/shrink: 332/525 up/down: 31325/-61560 (-30235)
-LLVM 13: add/remove: 79/76 grow/shrink: 184/537 up/down: 55076/-141892 (-86816)
-LLVM 14: add/remove: 10/3 grow/shrink: 93/138 up/down: 3705/-6992 (-3287)
-
-and ARM64 (courtesy of Mark):
-
-GCC 11: add/remove: 92/29 grow/shrink: 933/2766 up/down: 39340/-82580 (-43240)
-LLVM 14: add/remove: 21/11 grow/shrink: 620/651 up/down: 12060/-15824 (-3764)
-
-Cc: Mark Rutland <mark.rutland@arm.com>
+Suggested-by: Yury Norov <yury.norov@gmail.com>
 Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
 ---
- include/linux/bitops.h | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ lib/test_bitmap.c | 45 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-index 3c3afbae1533..26a43360c4ae 100644
---- a/include/linux/bitops.h
-+++ b/include/linux/bitops.h
-@@ -33,8 +33,24 @@ extern unsigned long __sw_hweight64(__u64 w);
+diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
+index d5923a640457..3a7b09b82794 100644
+--- a/lib/test_bitmap.c
++++ b/lib/test_bitmap.c
+@@ -869,6 +869,50 @@ static void __init test_bitmap_print_buf(void)
+ 	}
+ }
  
- #include <asm-generic/bitops/generic-non-atomic.h>
++static void __init test_bitmap_const_eval(void)
++{
++	DECLARE_BITMAP(bitmap, BITS_PER_LONG);
++	unsigned long initvar = BIT(2);
++	unsigned long bitopvar = 0;
++	unsigned long var = 0;
++	int res;
++
++	/*
++	 * Compilers must be able to optimize all of those to compile-time
++	 * constants on any supported optimization level (-O2, -Os) and any
++	 * architecture. Otherwise, trigger a build bug.
++	 * The whole function gets optimized out then, there's nothing to do
++	 * in runtime.
++	 */
++
++	/* Equals to `unsigned long bitmap[1] = { BIT(5), }` */
++	bitmap_clear(bitmap, 0, BITS_PER_LONG);
++	if (!test_bit(7, bitmap))
++		bitmap_set(bitmap, 5, 1);
++
++	/* Equals to `unsigned long bitopvar = BIT(20)` */
++	__change_bit(31, &bitopvar);
++	bitmap_shift_right(&bitopvar, &bitopvar, 11, BITS_PER_LONG);
++
++	/* Equals to `unsigned long var = BIT(25)` */
++	var |= BIT(25);
++	if (var & BIT(0))
++		var ^= GENMASK(9, 6);
++
++	/* __const_hweight<32|64>(BIT(5)) == 1 */
++	res = bitmap_weight(bitmap, 20);
++	BUILD_BUG_ON(!__builtin_constant_p(res));
++
++	/* !(BIT(31) & BIT(18)) == 1 */
++	res = !test_bit(18, &bitopvar);
++	BUILD_BUG_ON(!__builtin_constant_p(res));
++
++	/* BIT(2) & GENMASK(14, 8) == 0 */
++	BUILD_BUG_ON(!__builtin_constant_p(initvar & GENMASK(14, 8)));
++	/* ~BIT(25) */
++	BUILD_BUG_ON(!__builtin_constant_p(~var));
++}
++
+ static void __init selftest(void)
+ {
+ 	test_zero_clear();
+@@ -884,6 +928,7 @@ static void __init selftest(void)
+ 	test_for_each_set_clump8();
+ 	test_bitmap_cut();
+ 	test_bitmap_print_buf();
++	test_bitmap_const_eval();
+ }
  
-+/*
-+ * Many architecture-specific non-atomic bitops contain inline asm code and due
-+ * to that the compiler can't optimize them to compile-time expressions or
-+ * constants. In contrary, gen_*() helpers are defined in pure C and compilers
-+ * optimize them just well.
-+ * Therefore, to make `unsigned long foo = 0; __set_bit(BAR, &foo)` effectively
-+ * equal to `unsigned long foo = BIT(BAR)`, pick the generic C alternative when
-+ * the arguments can be resolved at compile time. That expression itself is a
-+ * constant and doesn't bring any functional changes to the rest of cases.
-+ * The casts to `uintptr_t` are needed to mitigate `-Waddress` warnings when
-+ * passing a bitmap from .bss or .data (-> `!!addr` is always true).
-+ */
- #define bitop(op, nr, addr)						\
--	op(nr, addr)
-+	((__builtin_constant_p(nr) &&					\
-+	  __builtin_constant_p((uintptr_t)(addr) != (uintptr_t)NULL) &&	\
-+	  (uintptr_t)(addr) != (uintptr_t)NULL &&			\
-+	  __builtin_constant_p(*(const unsigned long *)(addr))) ?	\
-+	 const##op(nr, addr) : op(nr, addr))
- 
- #define __set_bit(nr, addr)		bitop(___set_bit, nr, addr)
- #define __clear_bit(nr, addr)		bitop(___clear_bit, nr, addr)
+ KSTM_MODULE_LOADERS(test_bitmap);
 -- 
 2.36.1
 
