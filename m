@@ -2,74 +2,150 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 835D6C43334
-	for <linux-m68k@archiver.kernel.org>; Fri, 17 Jun 2022 10:02:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B36B3CCA479
+	for <linux-m68k@archiver.kernel.org>; Fri, 17 Jun 2022 12:58:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235280AbiFQKCv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 17 Jun 2022 06:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48016 "EHLO
+        id S1381953AbiFQM6G (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 17 Jun 2022 08:58:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232020AbiFQKCu (ORCPT
+        with ESMTP id S1381982AbiFQM6G (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 17 Jun 2022 06:02:50 -0400
-Received: from jari.cn (unknown [218.92.28.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5B430EE3F
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 17 Jun 2022 03:02:44 -0700 (PDT)
-Received: by ajax-webmail-localhost.localdomain (Coremail) ; Fri, 17 Jun
- 2022 17:57:21 +0800 (GMT+08:00)
-X-Originating-IP: [182.148.14.60]
-Date:   Fri, 17 Jun 2022 17:57:21 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "XueBing Chen" <chenxuebing@jari.cn>
-To:     sammy@sammy.net, geert@linux-m68k.org
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] m68k/sun3: use __func__ to get funcion's name in an output
- message
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT6.0.1 build 20210329(c53f3fee)
- Copyright (c) 2002-2022 www.mailtech.cn
- mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Fri, 17 Jun 2022 08:58:06 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A8120BC6
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 17 Jun 2022 05:58:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1724FB8282F;
+        Fri, 17 Jun 2022 12:58:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3CBDC3411B;
+        Fri, 17 Jun 2022 12:57:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1655470682;
+        bh=cLraNpkEnCzF/4zKCRGjwHG57BoDqUlRiy0OHq9zjK0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oH4x2PycGtrhhz35364UaeAzZu23iN71evljdxuntEZ1VsVln0947L4kgXWuEzLrC
+         OLWEWoJhN8r14vT4yHg3QQ8tQZDKO4OIba+kSPV417/BH7s5oxSh7c9Yljg6Gr1afz
+         xj6FbXz6U/9X2aXj04KSLFiOeD9C/zZoF0JfQi5Xj9zHHyGlm4nv/8XJxqnfGaiKhC
+         xU+lb1e94omoeQ0C4aaO2uCUV9m066p1W0G5moNKShM55uVOSpn4kV7bLBshwrY4Rp
+         NgxDokayeZJhS/Gn+T5DZpIazOVqwZSNsiUx9537mSMzxTSIGDTQ6H1nn5bxhvpiW3
+         g1++SMPFn7Evg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jakub Kicinski <kuba@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux-foundation.org,
+        Khalid Aziz <khalid@gonehiking.org>,
+        "Maciej W . Rozycki" <macro@orcam.me.uk>,
+        Matt Wang <wwentao@vmware.com>,
+        Miquel van Smoorenburg <mikevs@xs4all.net>,
+        Mark Salyzyn <salyzyn@android.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-arch@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-parisc@vger.kernel.org, Denis Efremov <efremov@linux.com>
+Subject: [PATCH v2 0/3] phase out CONFIG_VIRT_TO_BUS
+Date:   Fri, 17 Jun 2022 14:57:47 +0200
+Message-Id: <20220617125750.728590-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Message-ID: <3461c09c.be8.1817118854e.Coremail.chenxuebing@jari.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAfwAHEW8BUKxi1atBAA--.765W
-X-CM-SenderInfo: hfkh05pxhex0nj6mt2flof0/1tbiAQAACmFEYxssuAACsA
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-ClByZWZlciB1c2luZyAnIiVzLi4uIiwgX19mdW5jX18nIHRvIGdldCBjdXJyZW50IGZ1bmN0aW9u
-J3MgbmFtZSBpbgphbiBvdXRwdXQgbWVzc2FnZS4KClNpZ25lZC1vZmYtYnk6IFh1ZUJpbmcgQ2hl
-biA8Y2hlbnh1ZWJpbmdAamFyaS5jbj4KLS0tCiBhcmNoL202OGsvc3VuMy9tbXVfZW11LmMgfCA4
-ICsrKystLS0tCiAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygt
-KQoKZGlmZiAtLWdpdCBhL2FyY2gvbTY4ay9zdW4zL21tdV9lbXUuYyBiL2FyY2gvbTY4ay9zdW4z
-L21tdV9lbXUuYwppbmRleCA3ZWMyMDgxN2MwYzkuLjUxNDgwZjcwM2RjOCAxMDA2NDQKLS0tIGEv
-YXJjaC9tNjhrL3N1bjMvbW11X2VtdS5jCisrKyBiL2FyY2gvbTY4ay9zdW4zL21tdV9lbXUuYwpA
-QCAtMjExLDcgKzIxMSw3IEBAIHZvaWQgY2xlYXJfY29udGV4dCh1bnNpZ25lZCBsb25nIGNvbnRl
-eHQpCiAKICAgICAgaWYoY29udGV4dCkgewogCSAgICAgaWYoIWN0eF9hbGxvY1tjb250ZXh0XSkK
-LQkJICAgICBwYW5pYygiY2xlYXJfY29udGV4dDogY29udGV4dCBub3QgYWxsb2NhdGVkXG4iKTsK
-KwkJICAgICBwYW5pYygiJXM6IGNvbnRleHQgbm90IGFsbG9jYXRlZFxuIiwgX19mdW5jX18pOwog
-CiAJICAgICBjdHhfYWxsb2NbY29udGV4dF0tPmNvbnRleHQgPSBTVU4zX0lOVkFMSURfQ09OVEVY
-VDsKIAkgICAgIGN0eF9hbGxvY1tjb250ZXh0XSA9IChzdHJ1Y3QgbW1fc3RydWN0ICopMDsKQEAg
-LTI2MSw3ICsyNjEsNyBAQCB1bnNpZ25lZCBsb25nIGdldF9mcmVlX2NvbnRleHQoc3RydWN0IG1t
-X3N0cnVjdCAqbW0pCiAJCX0KIAkJLy8gY2hlY2sgdG8gbWFrZSBzdXJlIG9uZSB3YXMgcmVhbGx5
-IGZyZWUuLi4KIAkJaWYobmV3ID09IENPTlRFWFRTX05VTSkKLQkJCXBhbmljKCJnZXRfZnJlZV9j
-b250ZXh0OiBmYWlsZWQgdG8gZmluZCBmcmVlIGNvbnRleHQiKTsKKwkJCXBhbmljKCIlczogZmFp
-bGVkIHRvIGZpbmQgZnJlZSBjb250ZXh0IiwgX19mdW5jX18pOwogCX0KIAogCWN0eF9hbGxvY1tu
-ZXddID0gbW07CkBAIC0zNjksNyArMzY5LDcgQEAgaW50IG1tdV9lbXVfaGFuZGxlX2ZhdWx0ICh1
-bnNpZ25lZCBsb25nIHZhZGRyLCBpbnQgcmVhZF9mbGFnLCBpbnQga2VybmVsX2ZhdWx0KQogCX0K
-IAogI2lmZGVmIERFQlVHX01NVV9FTVUKLQlwcl9pbmZvKCJtbXVfZW11X2hhbmRsZV9mYXVsdDog
-dmFkZHI9JWx4IHR5cGU9JXMgY3JwPSVwXG4iLAorCXByX2luZm8oIiVzOiB2YWRkcj0lbHggdHlw
-ZT0lcyBjcnA9JXBcbiIsIF9fZnVuY19fLAogCQl2YWRkciwgcmVhZF9mbGFnID8gInJlYWQiIDog
-IndyaXRlIiwgY3JwKTsKICNlbmRpZgogCkBAIC0zNzcsNyArMzc3LDcgQEAgaW50IG1tdV9lbXVf
-aGFuZGxlX2ZhdWx0ICh1bnNpZ25lZCBsb25nIHZhZGRyLCBpbnQgcmVhZF9mbGFnLCBpbnQga2Vy
-bmVsX2ZhdWx0KQogCW9mZnNldCAgPSAodmFkZHIgPj4gU1VOM19QVEVfU0laRV9CSVRTKSAmIDB4
-RjsKIAogI2lmZGVmIERFQlVHX01NVV9FTVUKLQlwcl9pbmZvKCJtbXVfZW11X2hhbmRsZV9mYXVs
-dDogc2VnbWVudD0lbHggb2Zmc2V0PSVseFxuIiwgc2VnbWVudCwKKwlwcl9pbmZvKCIlczogc2Vn
-bWVudD0lbHggb2Zmc2V0PSVseFxuIiwgX19mdW5jX18sIHNlZ21lbnQsCiAJCW9mZnNldCk7CiAj
-ZW5kaWYKIAotLSAKMi4zNi4xCgoKCg==
+From: Arnd Bergmann <arnd@arndb.de>
+
+The virt_to_bus/bus_to_virt interface has been deprecated for
+decades. After Jakub Kicinski put a lot of work into cleaning out the
+network drivers using them, there are only a couple of other drivers
+left, which can all be removed or otherwise cleaned up, to remove the
+old interface for good.
+
+Any out of tree drivers using virt_to_bus() should be converted to
+using the dma-mapping interfaces, typically dma_alloc_coherent()
+or dma_map_single()).
+
+There are a few m68k and ppc32 specific drivers that keep using the
+interfaces, but these are all guarded with architecture-specific
+Kconfig dependencies, and are not actually broken.
+
+There are still a number of drivers that are using virt_to_phys()
+and phys_to_virt() in place of dma-mapping operations, and these
+are often broken, but they are out of scope for this series.
+
+I would like the first two patches to either get merged through
+the SCSI tree, or get an Ack from the SCSI maintainers so I can
+merge them through the asm-generic tree
+
+      Arnd
+
+---
+Changes since v1:
+ - dropped VME patches that are already in staging-next
+ - dropped media patch that gets merged independently
+ - added a networking patch and dropped it again after it got merged
+ - replace BusLogic removal with a workaround
+
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Christoph Hellwig <hch@infradead.org> # dma-mapping
+Cc: Marek Szyprowski <m.szyprowski@samsung.com> # dma-mapping
+Cc: Robin Murphy <robin.murphy@arm.com> # dma-mapping
+Cc: iommu@lists.linux-foundation.org
+Cc: Khalid Aziz <khalid@gonehiking.org> # buslogic
+Cc: Maciej W. Rozycki <macro@orcam.me.uk> # buslogic
+Cc: Matt Wang <wwentao@vmware.com> # buslogic
+Cc: Miquel van Smoorenburg <mikevs@xs4all.net> # dpt_i2o
+Cc: Mark Salyzyn <salyzyn@android.com> # dpt_i2o
+Cc: linux-scsi@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-arch@vger.kernel.org
+Cc: linux-alpha@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-parisc@vger.kernel.org
+Cc: Denis Efremov <efremov@linux.com> # floppy
+
+Arnd Bergmann (3):
+  scsi: dpt_i2o: drop stale VIRT_TO_BUS dependency
+  scsi: BusLogic remove bus_to_virt
+  arch/*/: remove CONFIG_VIRT_TO_BUS
+
+ .../core-api/bus-virt-phys-mapping.rst        | 220 ------------------
+ Documentation/core-api/dma-api-howto.rst      |  14 --
+ Documentation/core-api/index.rst              |   1 -
+ .../translations/zh_CN/core-api/index.rst     |   1 -
+ arch/alpha/Kconfig                            |   1 -
+ arch/alpha/include/asm/floppy.h               |   2 +-
+ arch/alpha/include/asm/io.h                   |   8 +-
+ arch/ia64/Kconfig                             |   1 -
+ arch/ia64/include/asm/io.h                    |   8 -
+ arch/m68k/Kconfig                             |   1 -
+ arch/m68k/include/asm/virtconvert.h           |   4 +-
+ arch/microblaze/Kconfig                       |   1 -
+ arch/microblaze/include/asm/io.h              |   2 -
+ arch/mips/Kconfig                             |   1 -
+ arch/mips/include/asm/io.h                    |   9 -
+ arch/parisc/Kconfig                           |   1 -
+ arch/parisc/include/asm/floppy.h              |   4 +-
+ arch/parisc/include/asm/io.h                  |   2 -
+ arch/powerpc/Kconfig                          |   1 -
+ arch/powerpc/include/asm/io.h                 |   2 -
+ arch/riscv/include/asm/page.h                 |   1 -
+ arch/x86/Kconfig                              |   1 -
+ arch/x86/include/asm/io.h                     |   9 -
+ arch/xtensa/Kconfig                           |   1 -
+ arch/xtensa/include/asm/io.h                  |   3 -
+ drivers/scsi/BusLogic.c                       |  27 ++-
+ drivers/scsi/Kconfig                          |   4 +-
+ drivers/scsi/dpt_i2o.c                        |   4 +-
+ include/asm-generic/io.h                      |  14 --
+ mm/Kconfig                                    |   8 -
+ 30 files changed, 30 insertions(+), 326 deletions(-)
+ delete mode 100644 Documentation/core-api/bus-virt-phys-mapping.rst
+
+-- 
+2.29.2
+
