@@ -2,62 +2,201 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9EC4C43334
-	for <linux-m68k@archiver.kernel.org>; Mon, 20 Jun 2022 11:39:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28C78CCA47C
+	for <linux-m68k@archiver.kernel.org>; Mon, 20 Jun 2022 12:13:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241975AbiFTLj1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 20 Jun 2022 07:39:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56994 "EHLO
+        id S242410AbiFTMNi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 20 Jun 2022 08:13:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241956AbiFTLj0 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 20 Jun 2022 07:39:26 -0400
-X-Greylist: delayed 1844 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 20 Jun 2022 04:39:25 PDT
-Received: from imablier.rawalpindihotel.com (imablier.rawalpindihotel.com [45.130.138.4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6DEA16591
-        for <linux-m68k@vger.kernel.org>; Mon, 20 Jun 2022 04:39:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=dkim; d=rawalpindihotel.com;
- h=Reply-To:From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding; i=cor.car@rawalpindihotel.com;
- bh=Nyf5OaNLvLP6QtC9iHPCmZ9OukM=;
- b=o8KE4l1QZC9Fky3id9bQQTXOWE2WYH/b6E58IzwBayF1dNJC1dvCczw6Vw1klG0rM25nNZ/ULSIW
-   q/ClOdv6WrVk2na2PNY4TAycuZ//or86Q7HbPrMAymuEqu69sTKzXyqeYO4lkv9sFgaum0DJ5Q3Q
-   epoFc0TcVGqPtWLSBP5MOaPkPxW2a/VuFBLdggUSEnvH56EnQLNz3oXeieWEfc+UiMqNJX0mjW/5
-   uEd6hS7MmYc8n8Hhmvhzk8vTNFkjR/LWEx7nqJxqwN6GHMO495sCB4tr07em5aDAS4rW8jnl6eKm
-   EWSb6BOcSa0sdQlvwuN4i/Eg4J2NxoYwkvcnOw==
-DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns; s=dkim; d=rawalpindihotel.com;
- b=fmP5sr/cGPImOp3T0nxk0Gd9OdzQ1iP1mbTJ1dF6grBXJARig5vZIunwd7GD+c77xB/1WvUYxICP
-   OxykV2QSnyitDfYbm6jNoYlqoZuMhA8dwU4LHVgpYk52kGfvZLnSGNbO3Oi2ivV4Zzj50dKNvk47
-   SEuGF5UXBAoZbGqLXZTzFUBt2aMZBRGlADLR+kSC6Yi1/Aty/yh8ZB0cwiBgdSAD1AG3RyeLYlob
-   BjqnhT5ZP4ZyAPG3Oa5I3+7sRd2YK5eETcTi23oe6GavdpS0k7gT5HqRJhFhhZg/ufbosGjXJDIN
-   1IYRur3N77yFyWqBnBJDpFYS4V1Mt4sI6eCelw==;
-Reply-To: lloydhoffman@dr.com
-From:   Lloyd <cor.car@rawalpindihotel.com>
-To:     linux-m68k@vger.kernel.org
-Subject: Business Capital Funding.
-Date:   20 Jun 2022 04:08:19 -0700
-Message-ID: <20220620040819.013CFBAAA4C2CD69@rawalpindihotel.com>
+        with ESMTP id S242733AbiFTMNX (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 20 Jun 2022 08:13:23 -0400
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0145C12AB6
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 20 Jun 2022 05:13:08 -0700 (PDT)
+Received: by mail-ot1-f47.google.com with SMTP id e67-20020a9d01c9000000b0060c221b1420so8219664ote.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 20 Jun 2022 05:13:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VHEiLoE3snLtuRhA2iQpp+77mHRn3s1DhVsEbxED6Ng=;
+        b=Ji8nVR/PGfHiYQqS5XsHEzEOTOnegJwlLJP+f08ldjiNaybRFnjKwfAMM1tE2U8ReU
+         dI1keNIzWzmmCTvUGHbGxUdp9PaOBt9K5xPacG8NrDfMOgtz6MjcjrzLA1n2LKUn1FZx
+         3ZquHYfO/4hEvFgBV8BzUJlETQl+GeUMA93P3MM3jzIabDkoQFzIs/JOZ8A6jv3DLMcE
+         TFG2zqtRRKwch7fwJQtoUHJzHYiPadcBrdNQuMBMKY/Wlwtn0/25kgzV3rD4k4WOTFvp
+         Z1im21QmOtQ8f+OoDaZcodZ7t4f98gGGUuMzYj8gZdActnIg1CjWeQMJAEQS4q7EBUvu
+         /zKg==
+X-Gm-Message-State: AJIora9JxNczHHrSpdjnKG5x2D/XUbjweZLWTFZQOvIX6524RG/rItuk
+        OV04PhmFH4/X9YUSlfoVXiV6Kgq5SAe1lQ==
+X-Google-Smtp-Source: AGRyM1sCHQdKH/kQaogqrvIQ9gGwwPFAnLrLgSsY7qLwjpHfCxovb8I6s2rEVDW2TZ6snALu32YWcg==
+X-Received: by 2002:a9d:6081:0:b0:60b:c8f7:272e with SMTP id m1-20020a9d6081000000b0060bc8f7272emr9586867otj.11.1655727187892;
+        Mon, 20 Jun 2022 05:13:07 -0700 (PDT)
+Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com. [209.85.210.41])
+        by smtp.gmail.com with ESMTPSA id z4-20020a4ac204000000b0041c1e1c5652sm7652922oop.47.2022.06.20.05.13.07
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Jun 2022 05:13:07 -0700 (PDT)
+Received: by mail-ot1-f41.google.com with SMTP id 111-20020a9d0378000000b0060c2db66d44so8193758otv.6
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 20 Jun 2022 05:13:07 -0700 (PDT)
+X-Received: by 2002:a81:2401:0:b0:317:ce48:cf95 with SMTP id
+ k1-20020a812401000000b00317ce48cf95mr5997207ywk.502.1655726858487; Mon, 20
+ Jun 2022 05:07:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+References: <20220617144031.2549432-1-alexandr.lobakin@intel.com>
+In-Reply-To: <20220617144031.2549432-1-alexandr.lobakin@intel.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 20 Jun 2022 14:07:27 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXYmtTf=e++fArH4K=vUtRxFd6=toD8An5KxrkRDkkOwg@mail.gmail.com>
+Message-ID: <CAMuHMdXYmtTf=e++fArH4K=vUtRxFd6=toD8An5KxrkRDkkOwg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/7] bitops: let optimize out non-atomic bitops on
+ compile-time constants
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matt Turner <mattst88@gmail.com>,
+        Brian Cain <bcain@quicinc.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Kees Cook <keescook@chromium.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Marco Elver <elver@google.com>, Borislav Petkov <bp@suse.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hello,
- 
+Hi Olek,
 
-We are expanding our global presence by investing in viable=20
-projects across the globe.
-=20
-We will be willing to inject upto $5 Billion and more into a=20
-viable project(s) We grant our funding at a 3.95% ROI per annum=20
-for 10 years and 12 months moratorium.
-=20
-If you have a viable project that needs funding, kindly revert=20
-with your business plan and executive summary for our review and=20
-possible funding.
-=20
-In Anticipation of your reply
-Lloyd Hoffman .
-Client Executive.
+On Fri, Jun 17, 2022 at 6:51 PM Alexander Lobakin
+<alexandr.lobakin@intel.com> wrote:
+> While I was working on converting some structure fields from a fixed
+> type to a bitmap, I started observing code size increase not only in
+> places where the code works with the converted structure fields, but
+> also where the converted vars were on the stack. That said, the
+> following code:
+>
+>         DECLARE_BITMAP(foo, BITS_PER_LONG) = { }; // -> unsigned long foo[1];
+>         unsigned long bar = BIT(BAR_BIT);
+>         unsigned long baz = 0;
+>
+>         __set_bit(FOO_BIT, foo);
+>         baz |= BIT(BAZ_BIT);
+>
+>         BUILD_BUG_ON(!__builtin_constant_p(test_bit(FOO_BIT, foo));
+>         BUILD_BUG_ON(!__builtin_constant_p(bar & BAR_BIT));
+>         BUILD_BUG_ON(!__builtin_constant_p(baz & BAZ_BIT));
+>
+> triggers the first assertion on x86_64, which means that the
+> compiler is unable to evaluate it to a compile-time initializer
+> when the architecture-specific bitop is used even if it's obvious.
+> I found that this is due to that many architecture-specific
+> non-atomic bitop implementations use inline asm or other hacks which
+> are faster or more robust when working with "real" variables (i.e.
+> fields from the structures etc.), but the compilers have no clue how
+> to optimize them out when called on compile-time constants.
+>
+> So, in order to let the compiler optimize out such cases, expand the
+> test_bit() and __*_bit() definitions with a compile-time condition
+> check, so that they will pick the generic C non-atomic bitop
+> implementations when all of the arguments passed are compile-time
+> constants, which means that the result will be a compile-time
+> constant as well and the compiler will produce more efficient and
+> simple code in 100% cases (no changes when there's at least one
+> non-compile-time-constant argument).
+> The condition itself:
+>
+> if (
+> __builtin_constant_p(nr) &&     /* <- bit position is constant */
+> __builtin_constant_p(!!addr) && /* <- compiler knows bitmap addr is
+>                                       always either NULL or not */
+> addr &&                         /* <- bitmap addr is not NULL */
+> __builtin_constant_p(*addr)     /* <- compiler knows the value of
+>                                       the target bitmap */
+> )
+>         /* then pick the generic C variant
+> else
+>         /* old code path, arch-specific
+>
+> I also tried __is_constexpr() as suggested by Andy, but it was
+> always returning 0 ('not a constant') for the 2,3 and 4th
+> conditions.
+>
+> The savings are architecture, compiler and compiler flags dependent,
+> for example, on x86_64 -O2:
+>
+> GCC 12: add/remove: 78/29 grow/shrink: 332/525 up/down: 31325/-61560 (-30235)
+> LLVM 13: add/remove: 79/76 grow/shrink: 184/537 up/down: 55076/-141892 (-86816)
+> LLVM 14: add/remove: 10/3 grow/shrink: 93/138 up/down: 3705/-6992 (-3287)
+>
+> and ARM64 (courtesy of Mark[0]):
+>
+> GCC 11: add/remove: 92/29 grow/shrink: 933/2766 up/down: 39340/-82580 (-43240)
+> LLVM 14: add/remove: 21/11 grow/shrink: 620/651 up/down: 12060/-15824 (-3764)
+>
+> And the following:
+>
+>         DECLARE_BITMAP(flags, __IP_TUNNEL_FLAG_NUM) = { };
+>         __be16 flags;
+>
+>         __set_bit(IP_TUNNEL_CSUM_BIT, flags);
+>
+>         tun_flags = cpu_to_be16(*flags & U16_MAX);
+>
+>         if (test_bit(IP_TUNNEL_VTI_BIT, flags))
+>                 tun_flags |= VTI_ISVTI;
+>
+>         BUILD_BUG_ON(!__builtin_constant_p(tun_flags));
+>
+> doesn't blow up anymore (which is being checked now at build time),
+> so that we can now e.g. use fixed bitmaps in compile-time assertions
+> etc.
+>
+> The series has been in intel-next for a while with no reported issues.
+>
+> From v2[1]:
+> * collect several Reviewed-bys (Andy, Yury);
+> * add a comment to generic_test_bit() that it is atomic-safe and
+>   must always stay like that (the first version of this series
+>   errorneously tried to change this) (Andy, Marco);
+> * unify the way how architectures define platform-specific bitops,
+>   both supporting instrumentation and not: now they define only
+>   'arch_' versions and asm-generic includes take care of the rest;
+> * micro-optimize the diffstat of 0004/0007 (__check_bitop_pr())
+>   (Andy);
+> * add compile-time tests to lib/test_bitmap to make sure everything
+>   works as expected on any setup (Yury).
 
+Thanks for the update!
+
+Still seeing
+add/remove: 49/13 grow/shrink: 280/137 up/down: 6464/-3328 (3136)
+
+on m68k atari_defconfig (i.e.CONFIG_CC_OPTIMIZE_FOR_SIZE=y)
+with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04).
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
