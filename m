@@ -2,45 +2,45 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F6EECCA483
-	for <linux-m68k@archiver.kernel.org>; Tue, 21 Jun 2022 19:17:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A6C7C43334
+	for <linux-m68k@archiver.kernel.org>; Tue, 21 Jun 2022 19:17:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353531AbiFUTRO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 21 Jun 2022 15:17:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36110 "EHLO
+        id S1353226AbiFUTRP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 21 Jun 2022 15:17:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353226AbiFUTQ1 (ORCPT
+        with ESMTP id S1353286AbiFUTRL (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 21 Jun 2022 15:16:27 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 291992B273
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Jun 2022 12:16:23 -0700 (PDT)
+        Tue, 21 Jun 2022 15:17:11 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41FA72BB07
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Jun 2022 12:16:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1655838983; x=1687374983;
+  t=1655838985; x=1687374985;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=s360D3xYaquXVMD9j2K4GnltsFnSLS9FIRReSmtxs5o=;
-  b=bWBCbcVDu9BpI6OAmbzzRhykGATLIb8cT8VTPraI7qQuKk5aRo41C8yu
-   nIIx2Mgqape77WTZ5slyODpcWIHvXmvEo56Tb2eiYhbrxEqsaqRjugli+
-   ozcCDEzy5t/QWyKfagCt+nklG0ReWNCVEHDJlgApCbWgk+Tfr7xbDUvil
-   e+FwpUdatSt3FVYu4xg6foltlcIvm0x0aowBTQKVABBTYVsn1e+D0yR9N
-   P6f+b+jtJFJiNj98ToHoqVRXleyq9cq6+lmyJBVOO7FSaIdy0oXd4LtPY
-   4U5PF+xHuNOSxs8fZk4LB1R+O67EUJjUpkINyWq2aJnNSMcFoui9xIr62
+  bh=UwGnL3cKrVpIYdUCZi0g8IIvLiuF1HHfK1nv3YKvvvI=;
+  b=h9b+dDtp9D+Yw0W6jITQsZJJNg/AorV9FbplYNYFZndU9HtqrGQtgcjQ
+   SaYCFjWDqHcez6ic+yuJrFt6tuZwX4RBc5nu+scLWeUB3Skw7DfnlSU8V
+   9mV0GWyqfxkCHyvzvWGBwduvQEUEE/BPJxSeGFl1a3diCFVaTzhkFHUGr
+   P6jBAy7H7YhThAe45ra5KZe6yy1gtD1YDyJvDQEOg2ktWvYInoj4MiMqC
+   MIg3sav81zP0ptUdYwBszeidKUpDs80KRVO/z+3LCQKF3wMqaY4Lmzq6w
+   wnPpiWOZmHGwMoOPxCEDfo39hJ3TEiScFv+WsxtOAGOsw4a2Lr0oMxhtw
    g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10385"; a="277763971"
+X-IronPort-AV: E=McAfee;i="6400,9594,10385"; a="366537590"
 X-IronPort-AV: E=Sophos;i="5.92,210,1650956400"; 
-   d="scan'208";a="277763971"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2022 12:16:22 -0700
+   d="scan'208";a="366537590"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2022 12:16:24 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.92,210,1650956400"; 
-   d="scan'208";a="690091872"
+   d="scan'208";a="833723127"
 Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by fmsmga002.fm.intel.com with ESMTP; 21 Jun 2022 12:16:15 -0700
+  by fmsmga006.fm.intel.com with ESMTP; 21 Jun 2022 12:16:19 -0700
 Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 25LJG7oD012650;
-        Tue, 21 Jun 2022 20:16:13 +0100
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 25LJG7oG012650;
+        Tue, 21 Jun 2022 20:16:17 +0100
 From:   Alexander Lobakin <alexandr.lobakin@intel.com>
 To:     Arnd Bergmann <arnd@arndb.de>, Yury Norov <yury.norov@gmail.com>
 Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
@@ -63,9 +63,9 @@ Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
         linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 4/8] bitops: define const_*() versions of the non-atomics
-Date:   Tue, 21 Jun 2022 21:15:49 +0200
-Message-Id: <20220621191553.69455-5-alexandr.lobakin@intel.com>
+Subject: [PATCH v4 7/8] bitmap: don't assume compiler evaluates small mem*() builtins calls
+Date:   Tue, 21 Jun 2022 21:15:52 +0200
+Message-Id: <20220621191553.69455-8-alexandr.lobakin@intel.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220621191553.69455-1-alexandr.lobakin@intel.com>
 References: <20220621191553.69455-1-alexandr.lobakin@intel.com>
@@ -75,77 +75,111 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Define const_*() variants of the non-atomic bitops to be used when
-the input arguments are compile-time constants, so that the compiler
-will be always able to resolve those to compile-time constants as
-well. Those are mostly direct aliases for generic_*() with one
-exception for const_test_bit(): the original one is declared
-atomic-safe and thus doesn't discard the `volatile` qualifier, so
-in order to let optimize code, define it separately disregarding
-the qualifier.
-Add them to the compile-time type checks as well just in case.
+Intel kernel bot triggered the build bug on ARC architecture that
+in fact is as follows:
 
-Suggested-by: Marco Elver <elver@google.com>
+	DECLARE_BITMAP(bitmap, BITS_PER_LONG);
+
+	bitmap_clear(bitmap, 0, BITS_PER_LONG);
+	BUILD_BUG_ON(!__builtin_constant_p(*bitmap));
+
+which can be expanded to:
+
+	unsigned long bitmap[1];
+
+	memset(bitmap, 0, sizeof(*bitmap));
+	BUILD_BUG_ON(!__builtin_constant_p(*bitmap));
+
+In most cases, a compiler is able to expand small/simple mem*()
+calls to simple assignments or bitops, in this case that would mean:
+
+	unsigned long bitmap[1] = { 0 };
+
+	BUILD_BUG_ON(!__builtin_constant_p(*bitmap));
+
+and on most architectures this works, but not on ARC, despite having
+-O3 for every build.
+So, to make this work, in case when the last bit to modify is still
+within the first long (small_const_nbits()), just use plain
+assignments for the rest of bitmap_*() functions which still use
+mem*(), but didn't receive such compile-time optimizations yet.
+This doesn't have the same coverage as compilers provide, but at
+least something to start:
+
+text: add/remove: 3/7 grow/shrink: 43/78 up/down: 1848/-3370 (-1546)
+data: add/remove: 1/11 grow/shrink: 0/8 up/down: 4/-356 (-352)
+
+notably cpumask_*() family when NR_CPUS <= BITS_PER_LONG:
+
+netif_get_num_default_rss_queues              38       4     -34
+cpumask_copy                                  90       -     -90
+cpumask_clear                                146       -    -146
+
+and the abovementioned assertion started passing.
+
 Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-Reviewed-by: Marco Elver <elver@google.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- .../asm-generic/bitops/generic-non-atomic.h   | 31 +++++++++++++++++++
- include/linux/bitops.h                        |  1 +
- 2 files changed, 32 insertions(+)
+ include/linux/bitmap.h | 22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
 
-diff --git a/include/asm-generic/bitops/generic-non-atomic.h b/include/asm-generic/bitops/generic-non-atomic.h
-index b85b8a2ac239..3d5ebd24652b 100644
---- a/include/asm-generic/bitops/generic-non-atomic.h
-+++ b/include/asm-generic/bitops/generic-non-atomic.h
-@@ -127,4 +127,35 @@ generic_test_bit(unsigned long nr, const volatile unsigned long *addr)
- 	return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
+diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+index 2e6cd5681040..a0f4f3af8d30 100644
+--- a/include/linux/bitmap.h
++++ b/include/linux/bitmap.h
+@@ -238,20 +238,32 @@ extern int bitmap_print_list_to_buf(char *buf, const unsigned long *maskp,
+ static inline void bitmap_zero(unsigned long *dst, unsigned int nbits)
+ {
+ 	unsigned int len = BITS_TO_LONGS(nbits) * sizeof(unsigned long);
+-	memset(dst, 0, len);
++
++	if (small_const_nbits(nbits))
++		*dst = 0;
++	else
++		memset(dst, 0, len);
  }
  
-+/*
-+ * const_*() definitions provide good compile-time optimizations when
-+ * the passed arguments can be resolved at compile time.
-+ */
-+#define const___set_bit			generic___set_bit
-+#define const___clear_bit		generic___clear_bit
-+#define const___change_bit		generic___change_bit
-+#define const___test_and_set_bit	generic___test_and_set_bit
-+#define const___test_and_clear_bit	generic___test_and_clear_bit
-+#define const___test_and_change_bit	generic___test_and_change_bit
+ static inline void bitmap_fill(unsigned long *dst, unsigned int nbits)
+ {
+ 	unsigned int len = BITS_TO_LONGS(nbits) * sizeof(unsigned long);
+-	memset(dst, 0xff, len);
 +
-+/**
-+ * const_test_bit - Determine whether a bit is set
-+ * @nr: bit number to test
-+ * @addr: Address to start counting from
-+ *
-+ * A version of generic_test_bit() which discards the `volatile` qualifier to
-+ * allow a compiler to optimize code harder. Non-atomic and to be called only
-+ * for testing compile-time constants, e.g. by the corresponding macros, not
-+ * directly from "regular" code.
-+ */
-+static __always_inline bool
-+const_test_bit(unsigned long nr, const volatile unsigned long *addr)
-+{
-+	const unsigned long *p = (const unsigned long *)addr + BIT_WORD(nr);
-+	unsigned long mask = BIT_MASK(nr);
-+	unsigned long val = *p;
-+
-+	return !!(val & mask);
-+}
-+
- #endif /* __ASM_GENERIC_BITOPS_GENERIC_NON_ATOMIC_H */
-diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-index 87087454a288..d393297287d5 100644
---- a/include/linux/bitops.h
-+++ b/include/linux/bitops.h
-@@ -37,6 +37,7 @@ extern unsigned long __sw_hweight64(__u64 w);
- /* Check that the bitops prototypes are sane */
- #define __check_bitop_pr(name)						\
- 	static_assert(__same_type(arch_##name, generic_##name) &&	\
-+		      __same_type(const_##name, generic_##name) &&	\
- 		      __same_type(name, generic_##name))
++	if (small_const_nbits(nbits))
++		*dst = ~0UL;
++	else
++		memset(dst, 0xff, len);
+ }
  
- __check_bitop_pr(__set_bit);
+ static inline void bitmap_copy(unsigned long *dst, const unsigned long *src,
+ 			unsigned int nbits)
+ {
+ 	unsigned int len = BITS_TO_LONGS(nbits) * sizeof(unsigned long);
+-	memcpy(dst, src, len);
++
++	if (small_const_nbits(nbits))
++		*dst = *src;
++	else
++		memcpy(dst, src, len);
+ }
+ 
+ /*
+@@ -431,6 +443,8 @@ static __always_inline void bitmap_set(unsigned long *map, unsigned int start,
+ {
+ 	if (__builtin_constant_p(nbits) && nbits == 1)
+ 		__set_bit(start, map);
++	else if (small_const_nbits(start + nbits))
++		*map |= GENMASK(start + nbits - 1, start);
+ 	else if (__builtin_constant_p(start & BITMAP_MEM_MASK) &&
+ 		 IS_ALIGNED(start, BITMAP_MEM_ALIGNMENT) &&
+ 		 __builtin_constant_p(nbits & BITMAP_MEM_MASK) &&
+@@ -445,6 +459,8 @@ static __always_inline void bitmap_clear(unsigned long *map, unsigned int start,
+ {
+ 	if (__builtin_constant_p(nbits) && nbits == 1)
+ 		__clear_bit(start, map);
++	else if (small_const_nbits(start + nbits))
++		*map &= ~GENMASK(start + nbits - 1, start);
+ 	else if (__builtin_constant_p(start & BITMAP_MEM_MASK) &&
+ 		 IS_ALIGNED(start, BITMAP_MEM_ALIGNMENT) &&
+ 		 __builtin_constant_p(nbits & BITMAP_MEM_MASK) &&
 -- 
 2.36.1
 
