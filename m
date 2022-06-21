@@ -2,157 +2,204 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88FE6C43334
-	for <linux-m68k@archiver.kernel.org>; Tue, 21 Jun 2022 19:17:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 180DFC43334
+	for <linux-m68k@archiver.kernel.org>; Tue, 21 Jun 2022 21:57:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353422AbiFUTRv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 21 Jun 2022 15:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36782 "EHLO
+        id S1354456AbiFUV5D (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 21 Jun 2022 17:57:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353434AbiFUTRN (ORCPT
+        with ESMTP id S243597AbiFUV5D (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 21 Jun 2022 15:17:13 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B83A2C10B
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Jun 2022 12:16:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1655839002; x=1687375002;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=d4n4bpeLU/xxyAn3xewKoNW5SgouPORmr+EyOlcGZbU=;
-  b=ikoOToQvB6+3+GFpt9nQsOzcy88xHKUprf2zA9CX2X/WeMhglP0GEXrY
-   WkR8piyKVN6xHywWwC2GFMlPbyyGpFLeNcXvr7DqrqyQgerqIEfL09l9p
-   Q64O2eD4x0TRskZcjbXjiG6Z73PQ8s/jqPMdMHNh9BN2l5vt0RHqecSAE
-   x+gDixwOFKCBnUi0azO+z3nBKVRr6rFKNFesGqX2iqmJ1IIV6r+/a+bV9
-   PyPVRhsQm3Q4osa/dZVmdhYLh5VmBF0zcdXQFD9cOhH8BsoWvw3/Shk+7
-   cGjx+HucuItY2OQZpk/Z5SOTqZqsZMUEVZrCSei1FTigWrChSojpyoXCq
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10385"; a="263247270"
-X-IronPort-AV: E=Sophos;i="5.92,210,1650956400"; 
-   d="scan'208";a="263247270"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2022 12:16:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,210,1650956400"; 
-   d="scan'208";a="715097944"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by orsmga004.jf.intel.com with ESMTP; 21 Jun 2022 12:16:18 -0700
-Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 25LJG7oF012650;
-        Tue, 21 Jun 2022 20:16:16 +0100
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Arnd Bergmann <arnd@arndb.de>, Yury Norov <yury.norov@gmail.com>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matt Turner <mattst88@gmail.com>,
-        Brian Cain <bcain@quicinc.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kees Cook <keescook@chromium.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Marco Elver <elver@google.com>, Borislav Petkov <bp@suse.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 6/8] bitops: let optimize out non-atomic bitops on compile-time constants
-Date:   Tue, 21 Jun 2022 21:15:51 +0200
-Message-Id: <20220621191553.69455-7-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220621191553.69455-1-alexandr.lobakin@intel.com>
-References: <20220621191553.69455-1-alexandr.lobakin@intel.com>
+        Tue, 21 Jun 2022 17:57:03 -0400
+Received: from mailout.easymail.ca (mailout.easymail.ca [64.68.200.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88AEC1EED1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Jun 2022 14:57:01 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mailout.easymail.ca (Postfix) with ESMTP id C97F261DF6;
+        Tue, 21 Jun 2022 21:56:59 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at emo09-pco.easydns.vpn
+Received: from mailout.easymail.ca ([127.0.0.1])
+        by localhost (emo09-pco.easydns.vpn [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id FLc2uL2Ic0RZ; Tue, 21 Jun 2022 21:56:59 +0000 (UTC)
+Received: from mail.gonehiking.org (unknown [38.15.45.1])
+        by mailout.easymail.ca (Postfix) with ESMTPA id 45ED161DF5;
+        Tue, 21 Jun 2022 21:56:59 +0000 (UTC)
+Received: from [192.168.1.4] (internal [192.168.1.4])
+        by mail.gonehiking.org (Postfix) with ESMTP id C716D3EF14;
+        Tue, 21 Jun 2022 15:56:58 -0600 (MDT)
+Message-ID: <7a6df2da-95e8-b2fd-7565-e4b7a51c5b63@gonehiking.org>
+Date:   Tue, 21 Jun 2022 15:56:58 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Reply-To: khalid@gonehiking.org
+Subject: Re: [PATCH v2 2/3] scsi: BusLogic remove bus_to_virt
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@kernel.org>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jakub Kicinski <kuba@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux-foundation.org,
+        "Maciej W . Rozycki" <macro@orcam.me.uk>,
+        Matt Wang <wwentao@vmware.com>,
+        Miquel van Smoorenburg <mikevs@xs4all.net>,
+        Mark Salyzyn <salyzyn@android.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-arch@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-parisc@vger.kernel.org, Denis Efremov <efremov@linux.com>
+References: <20220617125750.728590-1-arnd@kernel.org>
+ <20220617125750.728590-3-arnd@kernel.org>
+From:   Khalid Aziz <khalid@gonehiking.org>
+In-Reply-To: <20220617125750.728590-3-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Currently, many architecture-specific non-atomic bitop
-implementations use inline asm or other hacks which are faster or
-more robust when working with "real" variables (i.e. fields from
-the structures etc.), but the compilers have no clue how to optimize
-them out when called on compile-time constants. That said, the
-following code:
+On 6/17/22 06:57, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The BusLogic driver is the last remaining driver that relies on the
+> deprecated bus_to_virt() function, which in turn only works on a few
+> architectures, and is incompatible with both swiotlb and iommu support.
+> 
+> Before commit 391e2f25601e ("[SCSI] BusLogic: Port driver to 64-bit."),
+> the driver had a dependency on x86-32, presumably because of this
+> problem. However, the change introduced another bug that made it still
+> impossible to use the driver on any 64-bit machine.
+> 
+> This was in turn fixed in commit 56f396146af2 ("scsi: BusLogic: Fix
+> 64-bit system enumeration error for Buslogic"), 8 years later, which
+> shows that there are not a lot of users.
+> 
+> Maciej is still using the driver on 32-bit hardware, and Khalid mentioned
+> that the driver works with the device emulation used in VirtualBox
+> and VMware. Both of those only emulate it for Windows 2000 and older
+> operating systems that did not ship with the better LSI logic driver.
+> 
+> Do a minimum fix that searches through the list of descriptors to find
+> one that matches the bus address. This is clearly as inefficient as
+> was indicated in the code comment about the lack of a bus_to_virt()
+> replacement. A better fix would likely involve changing out the entire
+> descriptor allocation for a simpler one, but that would be much
+> more invasive.
+> 
+> Cc: Maciej W. Rozycki <macro@orcam.me.uk>
+> Cc: Matt Wang <wwentao@vmware.com>
+> Cc: Khalid Aziz <khalid@gonehiking.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   drivers/scsi/BusLogic.c | 27 ++++++++++++++++-----------
+>   drivers/scsi/Kconfig    |  2 +-
+>   2 files changed, 17 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/scsi/BusLogic.c b/drivers/scsi/BusLogic.c
+> index a897c8f914cf..d057abfcdd5c 100644
+> --- a/drivers/scsi/BusLogic.c
+> +++ b/drivers/scsi/BusLogic.c
+> @@ -2515,12 +2515,26 @@ static int blogic_resultcode(struct blogic_adapter *adapter,
+>   	return (hoststatus << 16) | tgt_status;
+>   }
+>   
+> +/*
+> + * turn the dma address from an inbox into a ccb pointer
+> + * This is rather inefficient.
+> + */
+> +static struct blogic_ccb *
+> +blogic_inbox_to_ccb(struct blogic_adapter *adapter, struct blogic_inbox *inbox)
+> +{
+> +	struct blogic_ccb *ccb;
+> +
+> +	for (ccb = adapter->all_ccbs; ccb; ccb = ccb->next_all)
+> +		if (inbox->ccb == ccb->dma_handle)
+> +			break;
+> +
+> +	return ccb;
+> +}
+>   
+>   /*
+>     blogic_scan_inbox scans the Incoming Mailboxes saving any
+>     Incoming Mailbox entries for completion processing.
+>   */
+> -
+>   static void blogic_scan_inbox(struct blogic_adapter *adapter)
+>   {
+>   	/*
+> @@ -2540,16 +2554,7 @@ static void blogic_scan_inbox(struct blogic_adapter *adapter)
+>   	enum blogic_cmplt_code comp_code;
+>   
+>   	while ((comp_code = next_inbox->comp_code) != BLOGIC_INBOX_FREE) {
+> -		/*
+> -		   We are only allowed to do this because we limit our
+> -		   architectures we run on to machines where bus_to_virt(
+> -		   actually works.  There *needs* to be a dma_addr_to_virt()
+> -		   in the new PCI DMA mapping interface to replace
+> -		   bus_to_virt() or else this code is going to become very
+> -		   innefficient.
+> -		 */
+> -		struct blogic_ccb *ccb =
+> -			(struct blogic_ccb *) bus_to_virt(next_inbox->ccb);
+> +		struct blogic_ccb *ccb = blogic_inbox_to_ccb(adapter, adapter->next_inbox);
 
-	DECLARE_BITMAP(foo, BITS_PER_LONG) = { }; // -> unsigned long foo[1];
-	unsigned long bar = BIT(BAR_BIT);
-	unsigned long baz = 0;
+This change looks good enough as workaround to not use bus_to_virt() for 
+now. There are two problems I see though. One, I do worry about 
+blogic_inbox_to_ccb() returning NULL for ccb which should not happen 
+unless the mailbox pointer was corrupted which would indicate a bigger 
+problem. Nevertheless a NULL pointer causing kernel panic concerns me. 
+How about adding a check before we dereference ccb?
 
-	__set_bit(FOO_BIT, foo);
-	baz |= BIT(BAZ_BIT);
+Second, with this patch applied, I am seeing errors from the driver:
 
-	BUILD_BUG_ON(!__builtin_constant_p(test_bit(FOO_BIT, foo));
-	BUILD_BUG_ON(!__builtin_constant_p(bar & BAR_BIT));
-	BUILD_BUG_ON(!__builtin_constant_p(baz & BAZ_BIT));
+=====================
+[ 1623.902685]  sdb: sdb1 sdb2
+[ 1623.903245] sd 2:0:0:0: [sdb] Attached SCSI disk
+[ 1623.911000] scsi2: Illegal CCB #76 status 2 in Incoming Mailbox
+[ 1623.911005] scsi2: Illegal CCB #76 status 2 in Incoming Mailbox
+[ 1623.911070] scsi2: Illegal CCB #79 status 2 in Incoming Mailbox
+[ 1651.458008] scsi2: Warning: Partition Table appears to have Geometry 
+256/63 which is
+[ 1651.458013] scsi2: not compatible with current BusLogic Host Adapter 
+Geometry 255/63
+[ 1658.797609] scsi2: Resetting BusLogic BT-958D Failed
+[ 1659.533208] sd 2:0:0:0: Device offlined - not ready after error recovery
+[ 1659.533331] sd 2:0:0:0: Device offlined - not ready after error recovery
+[ 1659.533333] sd 2:0:0:0: Device offlined - not ready after error recovery
+[ 1659.533342] sd 2:0:0:0: [sdb] tag#101 FAILED Result: 
+hostbyte=DID_TIME_OUT driverbyte=DRIVER_OK cmd_age=35s
+[ 1659.533345] sd 2:0:0:0: [sdb] tag#101 CDB: Read(10) 28 00 00 00 00 28 
+00 00 10 00
+[ 1659.533346] I/O error, dev sdb, sector 40 op 0x0:(READ) flags 0x80700 
+phys_seg 1 prio class 0
 
-triggers the first assertion on x86_64, which means that the
-compiler is unable to evaluate it to a compile-time initializer
-when the architecture-specific bitop is used even if it's obvious.
-In order to let the compiler optimize out such cases, expand the
-bitop() macro to use the "constant" C non-atomic bitop
-implementations when all of the arguments passed are compile-time
-constants, which means that the result will be a compile-time
-constant as well, so that it produces more efficient and simple
-code in 100% cases, comparing to the architecture-specific
-counterparts.
+=================
 
-The savings are architecture, compiler and compiler flags dependent,
-for example, on x86_64 -O2:
+This is on VirtualBox using emulated BusLogic adapter.
 
-GCC 12: add/remove: 78/29 grow/shrink: 332/525 up/down: 31325/-61560 (-30235)
-LLVM 13: add/remove: 79/76 grow/shrink: 184/537 up/down: 55076/-141892 (-86816)
-LLVM 14: add/remove: 10/3 grow/shrink: 93/138 up/down: 3705/-6992 (-3287)
+This patch needs more refinement.
 
-and ARM64 (courtesy of Mark):
+Thanks,
+Khalid
 
-GCC 11: add/remove: 92/29 grow/shrink: 933/2766 up/down: 39340/-82580 (-43240)
-LLVM 14: add/remove: 21/11 grow/shrink: 620/651 up/down: 12060/-15824 (-3764)
 
-Cc: Mark Rutland <mark.rutland@arm.com>
-Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-Reviewed-by: Marco Elver <elver@google.com>
----
- include/linux/bitops.h | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-index 3c3afbae1533..cf9bf65039f2 100644
---- a/include/linux/bitops.h
-+++ b/include/linux/bitops.h
-@@ -33,8 +33,24 @@ extern unsigned long __sw_hweight64(__u64 w);
- 
- #include <asm-generic/bitops/generic-non-atomic.h>
- 
-+/*
-+ * Many architecture-specific non-atomic bitops contain inline asm code and due
-+ * to that the compiler can't optimize them to compile-time expressions or
-+ * constants. In contrary, generic_*() helpers are defined in pure C and
-+ * compilers optimize them just well.
-+ * Therefore, to make `unsigned long foo = 0; __set_bit(BAR, &foo)` effectively
-+ * equal to `unsigned long foo = BIT(BAR)`, pick the generic C alternative when
-+ * the arguments can be resolved at compile time. That expression itself is a
-+ * constant and doesn't bring any functional changes to the rest of cases.
-+ * The casts to `uintptr_t` are needed to mitigate `-Waddress` warnings when
-+ * passing a bitmap from .bss or .data (-> `!!addr` is always true).
-+ */
- #define bitop(op, nr, addr)						\
--	op(nr, addr)
-+	((__builtin_constant_p(nr) &&					\
-+	  __builtin_constant_p((uintptr_t)(addr) != (uintptr_t)NULL) &&	\
-+	  (uintptr_t)(addr) != (uintptr_t)NULL &&			\
-+	  __builtin_constant_p(*(const unsigned long *)(addr))) ?	\
-+	 const##op(nr, addr) : op(nr, addr))
- 
- #define __set_bit(nr, addr)		bitop(___set_bit, nr, addr)
- #define __clear_bit(nr, addr)		bitop(___clear_bit, nr, addr)
--- 
-2.36.1
+>   		if (comp_code != BLOGIC_Cn erroneousMD_NOTFOUND) {
+>   			if (ccb->status == BLOGIC_CCB_ACTIVE ||
+>   					ccb->status == BLOGIC_CCB_RESET) {
+> diff --git a/drivers/scsi/Kconfig b/drivers/scsi/Kconfig
+> index cf75588a2587..56bdc08d0b77 100644
+> --- a/drivers/scsi/Kconfig
+> +++ b/drivers/scsi/Kconfig
+> @@ -513,7 +513,7 @@ config SCSI_HPTIOP
+>   
+>   config SCSI_BUSLOGIC
+>   	tristate "BusLogic SCSI support"
+> -	depends on PCI && SCSI && VIRT_TO_BUS
+> +	depends on PCI && SCSI
+>   	help
+>   	  This is support for BusLogic MultiMaster and FlashPoint SCSI Host
+>   	  Adapters. Consult the SCSI-HOWTO, available from
 
