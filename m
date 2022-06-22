@@ -2,55 +2,54 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84826C43334
-	for <linux-m68k@archiver.kernel.org>; Wed, 22 Jun 2022 14:37:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39DCBC43334
+	for <linux-m68k@archiver.kernel.org>; Wed, 22 Jun 2022 16:05:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358342AbiFVOhw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 22 Jun 2022 10:37:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37006 "EHLO
+        id S1376324AbiFVQFI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 22 Jun 2022 12:05:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358249AbiFVOhv (ORCPT
+        with ESMTP id S1376372AbiFVQEx (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 22 Jun 2022 10:37:51 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D41E93CA53
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 22 Jun 2022 07:37:50 -0700 (PDT)
+        Wed, 22 Jun 2022 12:04:53 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3E7A3F8B9
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 22 Jun 2022 09:04:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1655908670; x=1687444670;
+  t=1655913868; x=1687449868;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=xA+AX77vbPPnWCLAuym9yD93ebv8XWnin6EN1d9z6Y0=;
-  b=Ebul5HJ6tzZzJqE+O+8CvVfxZ6NSsLcMocEAIJU1YAbom+hzmhuxSD91
-   QqAU2WUMzEM71hIe+h4pUWlN1heGvz6mHuAKPgnkIvhFuaPs9hhL2pxoZ
-   jpyTViF1esxDoFiAR1PBJYG2zK0Ytq0Ulj2e0E1sRgJfTH63lrMjm4BJ7
-   nx2ixlUwDNs/q6zbxAsjLmNQppUXwO7O25UWoAnPR9hQT7sv0lAOKW0z4
-   BXG6BpHIwR9XTbAP+oq4EUooWYjxt9VBZDNRvWa6S9LGVVElpC0gQGJjF
-   pIiKfQL077l3f5nvhLhEuDGnhwwS3s9rTO+ZIlulA1Y0KfPqoiwtW+bQa
+  bh=eG4q6c4UvYGtzxug36fSTUwHXCGqtjeRSHre942YGGg=;
+  b=f4HALTIJHzTUe+vyEev6ujB3KqMor2a2QouSLx6V0SrZDrSF6+nKA1AT
+   ZrY9Z3DdILKDKIde4qsL0X2JdDnQ+V8Oa9fJxasgyupPbT+FFQYBygkWu
+   fFRiUgSe/fsPNFHGyxx5KktBk86hdpvghWCsLcqmPsDU/AoZ4/hvcA9mc
+   vLJX5ldoyX55w+HeKDQVwDPvPkMi+ZtDq6Y7tLgFw5uEoduwaR6VZNl7f
+   0wZItBxrZG2aa6+Aa/Km4i1N2cBtqz4brpDv2MJr9yO0NLDm5nf2Wtn6O
+   oJNCtpdyrs3hf+179oTqZIBp2TM5T+bG/oc82bCAW0YqIp7swgcnEkqDP
    w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10385"; a="366755287"
+X-IronPort-AV: E=McAfee;i="6400,9594,10386"; a="269181957"
 X-IronPort-AV: E=Sophos;i="5.92,212,1650956400"; 
-   d="scan'208";a="366755287"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2022 07:37:50 -0700
+   d="scan'208";a="269181957"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2022 09:04:27 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.92,212,1650956400"; 
-   d="scan'208";a="715428449"
+   d="scan'208";a="764940851"
 Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by orsmga004.jf.intel.com with ESMTP; 22 Jun 2022 07:37:43 -0700
+  by orsmga005.jf.intel.com with ESMTP; 22 Jun 2022 09:04:20 -0700
 Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 25MEbfrW014711;
-        Wed, 22 Jun 2022 15:37:41 +0100
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 25MG4Ip9006187;
+        Wed, 22 Jun 2022 17:04:18 +0100
 From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Arnd Bergmann <arnd@arndb.de>, Yury Norov <yury.norov@gmail.com>
 Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Yury Norov <yury.norov@gmail.com>,
-        "Mark Rutland" <mark.rutland@arm.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
         Matt Turner <mattst88@gmail.com>,
         Brian Cain <bcain@quicinc.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Yoshinori Sato" <ysato@users.sourceforge.jp>,
+        "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
         Rich Felker <dalias@libc.org>,
         "David S. Miller" <davem@davemloft.net>,
         Kees Cook <keescook@chromium.org>,
@@ -60,64 +59,141 @@ Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         "Maciej Fijalkowski" <maciej.fijalkowski@intel.com>,
         Jesse Brandeburg <jesse.brandeburg@intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH v4 0/8] bitops: let optimize out non-atomic bitops on compile-time constants
-Date:   Wed, 22 Jun 2022 16:37:39 +0200
-Message-Id: <20220622143739.291698-1-alexandr.lobakin@intel.com>
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-alpha@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH v4 8/8] lib: test_bitmap: add compile-time optimization/evaluations assertions
+Date:   Wed, 22 Jun 2022 18:04:15 +0200
+Message-Id: <20220622160415.589430-1-alexandr.lobakin@intel.com>
 X-Mailer: git-send-email 2.36.1
-In-Reply-To: <YrMlrjbue7twWLk1@smile.fi.intel.com>
-References: <20220621191553.69455-1-alexandr.lobakin@intel.com> <20220622122440.87087-1-alexandr.lobakin@intel.com> <YrMlrjbue7twWLk1@smile.fi.intel.com>
+In-Reply-To: <20220621191553.69455-9-alexandr.lobakin@intel.com>
+References: <20220621191553.69455-1-alexandr.lobakin@intel.com> <20220621191553.69455-9-alexandr.lobakin@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Date: Wed, 22 Jun 2022 17:22:38 +0300
+From: Alexander Lobakin <alexandr.lobakin@intel.com>
+Date: Tue, 21 Jun 2022 21:15:53 +0200
 
-> On Wed, Jun 22, 2022 at 02:24:40PM +0200, Alexander Lobakin wrote:
-> > From: Alexander Lobakin <alexandr.lobakin@intel.com>
-> > Date: Tue, 21 Jun 2022 21:15:45 +0200
-> > 
-> > > While I was working on converting some structure fields from a fixed
-> > > type to a bitmap, I started observing code size increase not only in
-> > > places where the code works with the converted structure fields, but
-> > > also where the converted vars were on the stack. That said, the
-> > > following code:
-> > 
-> > [...]
-> > 
-> > Oh gosh, now s390 failed and 7/8 revealed one existing code flaw in
-> > the ice driver.
-> > I'll fix those, then will try to test more platforms (to not spam
-> > series again) and send v5 soon (mentioning this as bots CCs only
-> > myself).
+> Add a function to the bitmap test suite, which will ensure that
+> compilers are able to evaluate operations performed by the
+> bitops/bitmap helpers to compile-time constants when all of the
+> arguments are compile-time constants as well, or trigger a build
+> bug otherwise. This should work on all architectures and all the
+> optimization levels supported by Kbuild.
+> The function doesn't perform any runtime tests and gets optimized
+> out to nothing after passing the build assertions.
 > 
-> One mail per person? Because I also got a report.
-
-From the headers:
-
-From: kernel test robot <lkp@intel.com>
-To: Alexander Lobakin <alexandr.lobakin@intel.com>
-Cc: <llvm@lists.linux.dev>,
- <kbuild-all@lists.01.org>,
- <linux-kernel@vger.kernel.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-I guess it's due to your Reviewed-by in the commit message, no one
-else from the original CCs list is present.
-
+> Suggested-by: Yury Norov <yury.norov@gmail.com>
+> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  lib/test_bitmap.c | 45 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 45 insertions(+)
 > 
+> diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
+> index d5923a640457..3a7b09b82794 100644
+> --- a/lib/test_bitmap.c
+> +++ b/lib/test_bitmap.c
+> @@ -869,6 +869,50 @@ static void __init test_bitmap_print_buf(void)
+>  	}
+>  }
+>  
+> +static void __init test_bitmap_const_eval(void)
+> +{
+> +	DECLARE_BITMAP(bitmap, BITS_PER_LONG);
+> +	unsigned long initvar = BIT(2);
+> +	unsigned long bitopvar = 0;
+> +	unsigned long var = 0;
+> +	int res;
+> +
+> +	/*
+> +	 * Compilers must be able to optimize all of those to compile-time
+> +	 * constants on any supported optimization level (-O2, -Os) and any
+> +	 * architecture. Otherwise, trigger a build bug.
+> +	 * The whole function gets optimized out then, there's nothing to do
+> +	 * in runtime.
+> +	 */
+> +
+> +	/* Equals to `unsigned long bitmap[1] = { BIT(5), }` */
+> +	bitmap_clear(bitmap, 0, BITS_PER_LONG);
+> +	if (!test_bit(7, bitmap))
+> +		bitmap_set(bitmap, 5, 1);
+
+So for now, when building for s390, Clang (up to the latest Git
+snapshot) generates some incorrect code here.
+It does expand both test_bit() and bitmap_set() to const_test_bit()
+and const___set_bit(), but at the same time thinks that starting
+from this point, @bitmap and @bitopvar (???) are *not* constants
+and fails the assertions below, which is not true and weird.
+Any other architecture + compiler couples work fine, including
+s390 on GCC.
+So would it be acceptable for now to do:
+
+	/* Equals to `unsigned long bitmap[1] = { BIT(5), }` */
+	bitmap_clear(bitmap, 0, BITS_PER_LONG);
+	/*
+	 * Some comment saying that this is currently broken
+	 * on s390 + Clang
+	 */
+#if !(defined(__s390__) && defined(__clang__))
+	if (!test_bit(7, bitmap))
+		bitmap_set(bitmap, 5, 1);
+#endif
+
+	/* Equals to `unsigned long bitopvar = BIT(20)` */
+	__change_bit(31, &bitopvar);
+	bitmap_shift_right(&bitopvar, &bitopvar, 11, BITS_PER_LONG);
+
+[...]
+
+or there could be any better solutions?
+
+(+Cc LLVM folks)
+
+> +
+> +	/* Equals to `unsigned long bitopvar = BIT(20)` */
+> +	__change_bit(31, &bitopvar);
+> +	bitmap_shift_right(&bitopvar, &bitopvar, 11, BITS_PER_LONG);
+> +
+> +	/* Equals to `unsigned long var = BIT(25)` */
+> +	var |= BIT(25);
+> +	if (var & BIT(0))
+> +		var ^= GENMASK(9, 6);
+> +
+> +	/* __const_hweight<32|64>(BIT(5)) == 1 */
+> +	res = bitmap_weight(bitmap, 20);
+> +	BUILD_BUG_ON(!__builtin_constant_p(res));
+> +
+> +	/* !(BIT(31) & BIT(18)) == 1 */
+> +	res = !test_bit(18, &bitopvar);
+> +	BUILD_BUG_ON(!__builtin_constant_p(res));
+> +
+> +	/* BIT(2) & GENMASK(14, 8) == 0 */
+> +	BUILD_BUG_ON(!__builtin_constant_p(initvar & GENMASK(14, 8)));
+> +	/* ~BIT(25) */
+> +	BUILD_BUG_ON(!__builtin_constant_p(~var));
+> +}
+> +
+>  static void __init selftest(void)
+>  {
+>  	test_zero_clear();
+> @@ -884,6 +928,7 @@ static void __init selftest(void)
+>  	test_for_each_set_clump8();
+>  	test_bitmap_cut();
+>  	test_bitmap_print_buf();
+> +	test_bitmap_const_eval();
+>  }
+>  
+>  KSTM_MODULE_LOADERS(test_bitmap);
 > -- 
-> With Best Regards,
-> Andy Shevchenko
+> 2.36.1
 
 Thanks,
 Olek
