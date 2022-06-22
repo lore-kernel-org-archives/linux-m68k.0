@@ -2,78 +2,98 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08181C433EF
-	for <linux-m68k@archiver.kernel.org>; Wed, 22 Jun 2022 07:46:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58499C43334
+	for <linux-m68k@archiver.kernel.org>; Wed, 22 Jun 2022 12:25:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353765AbiFVHqo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 22 Jun 2022 03:46:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47150 "EHLO
+        id S235156AbiFVMZC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 22 Jun 2022 08:25:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351628AbiFVHqo (ORCPT
+        with ESMTP id S229923AbiFVMZA (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 22 Jun 2022 03:46:44 -0400
-Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917F01EEC3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 22 Jun 2022 00:46:43 -0700 (PDT)
-Received: by mail-qv1-f51.google.com with SMTP id o43so23996565qvo.4
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 22 Jun 2022 00:46:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dmGPFZPTP5s26NzZgE/CmdswraC7MuQTQKrQzx6Alt0=;
-        b=UjIyDc8gqYriuRrjdVvPg6o9bEo86C2fXw79julevw23HSYw11VQZ1b0mzFWytvKPJ
-         wqE5tjSICF5QlS+pQubbv8x37bNxuA05qqoo5vwOY186iF5Whu5p2LDqEb9/00nP75EX
-         fYA1WTFPnhJSq1dxQyv46FS0Ke6Z35+iqcD+DXsvobMRg0jrltp8pYCsXlUP1Sbm4+PO
-         b64lFMtmpjJG/Ac2rv4hkp+Wk3JABQ4Sqok0RQ9GcrsXtw1Zgij63bHDutYVuIBYX9a1
-         BoSBcfre/5bHe6+coRuUFg0RuHi9EGVgiYz7jAStGSA3C7KK8ZfpgOdb/zmrg5z2gjoA
-         JBJw==
-X-Gm-Message-State: AJIora9i/B0C+5kb5uQPxQEiURwis2roG0z+Z66uUcHvf7VyPlOY98vB
-        1cBDmMU3dgXJfZLtTVBgipD4mtNNV3Ybpg==
-X-Google-Smtp-Source: AGRyM1sn5xgXFoqd3I0aL30Jiz9uVQjUsYoMCq4nN7dNuE6m9vL6xhLQIorYDe4e725euu8TrDOwyQ==
-X-Received: by 2002:a05:6214:ccd:b0:46b:b0ee:bece with SMTP id 13-20020a0562140ccd00b0046bb0eebecemr26482354qvx.114.1655884002284;
-        Wed, 22 Jun 2022 00:46:42 -0700 (PDT)
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
-        by smtp.gmail.com with ESMTPSA id r10-20020ae9d60a000000b006a73cb957dasm15910704qkk.20.2022.06.22.00.46.41
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Jun 2022 00:46:41 -0700 (PDT)
-Received: by mail-yb1-f171.google.com with SMTP id v81so28792931ybe.0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 22 Jun 2022 00:46:41 -0700 (PDT)
-X-Received: by 2002:a05:6902:120e:b0:634:6f29:6b84 with SMTP id
- s14-20020a056902120e00b006346f296b84mr2322150ybu.604.1655884001424; Wed, 22
- Jun 2022 00:46:41 -0700 (PDT)
+        Wed, 22 Jun 2022 08:25:00 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD412FE72
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 22 Jun 2022 05:25:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1655900700; x=1687436700;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=nRwykYNWJOMVjV6KXtUwB8jzGM4hq74AzeD0f7K2mG8=;
+  b=oA4zzjp38HoavGgm25b3i5YBxG5ycm5OwmmkeqlAIAfAosMhtMhw+C88
+   nD39BBEJ8P4v06p/wPJlHvVipcVYhVhpPlLtBbwIL0OqLjvs6+nbEzOj9
+   clrf9HCk/2zZepmtkxkDQmyV3eJGaQS4Kv3nu0SiopBEVtY5Xg7GNX9e1
+   RSOv/aVaeeq0OjjYI2lr6TpRNu+y7P3wOkJzRggPLxLMuDLNkAPBjELTZ
+   5RueQINTxsbsdEw/Uued6PvM1+Lij2X3dRmK8hjp28xgxkoQb7UBd3Dkj
+   FSF/ayGdwVJHemUmznwW7oM5m4iXMY69updWPv7ryRhoc3xd13q3fZ9VF
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10385"; a="260832174"
+X-IronPort-AV: E=Sophos;i="5.92,212,1650956400"; 
+   d="scan'208";a="260832174"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2022 05:24:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,212,1650956400"; 
+   d="scan'208";a="620892409"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by orsmga001.jf.intel.com with ESMTP; 22 Jun 2022 05:24:53 -0700
+Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 25MCOp8S011366;
+        Wed, 22 Jun 2022 13:24:51 +0100
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     Arnd Bergmann <arnd@arndb.de>, Yury Norov <yury.norov@gmail.com>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matt Turner <mattst88@gmail.com>,
+        Brian Cain <bcain@quicinc.com>,
+        "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Kees Cook <keescook@chromium.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Marco Elver <elver@google.com>, Borislav Petkov <bp@suse.de>,
+        Tony Luck <tony.luck@intel.com>,
+        "Maciej Fijalkowski" <maciej.fijalkowski@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/8] bitops: let optimize out non-atomic bitops on compile-time constants
+Date:   Wed, 22 Jun 2022 14:24:40 +0200
+Message-Id: <20220622122440.87087-1-alexandr.lobakin@intel.com>
+X-Mailer: git-send-email 2.36.1
+In-Reply-To: <20220621191553.69455-1-alexandr.lobakin@intel.com>
+References: <20220621191553.69455-1-alexandr.lobakin@intel.com>
 MIME-Version: 1.0
-References: <20220622073553.64991-1-yuanjilin@cdjrlc.com>
-In-Reply-To: <20220622073553.64991-1-yuanjilin@cdjrlc.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 22 Jun 2022 09:46:30 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUjsSwMwKjuKQ+h-ki_SwUThNJksALXK5cNoOikY0M-Fw@mail.gmail.com>
-Message-ID: <CAMuHMdUjsSwMwKjuKQ+h-ki_SwUThNJksALXK5cNoOikY0M-Fw@mail.gmail.com>
-Subject: Re: [PATCH] m68k:coldfire:Fix typos in comments
-To:     yuanjilin@cdjrlc.com
-Cc:     Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Jun 22, 2022 at 9:36 AM Jilin Yuan <yuanjilin@cdjrlc.com> wrote:
-> The "the" should be replaced by "of" instead.
->
-> Signed-off-by: Jilin Yuan <yuanjilin@cdjrlc.com>
+From: Alexander Lobakin <alexandr.lobakin@intel.com>
+Date: Tue, 21 Jun 2022 21:15:45 +0200
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> While I was working on converting some structure fields from a fixed
+> type to a bitmap, I started observing code size increase not only in
+> places where the code works with the converted structure fields, but
+> also where the converted vars were on the stack. That said, the
+> following code:
 
-Gr{oetje,eeting}s,
+[...]
 
-                        Geert
+Oh gosh, now s390 failed and 7/8 revealed one existing code flaw in
+the ice driver.
+I'll fix those, then will try to test more platforms (to not spam
+series again) and send v5 soon (mentioning this as bots CCs only
+myself).
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> -- 
+> 2.36.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks,
+Olek
