@@ -2,98 +2,73 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58499C43334
-	for <linux-m68k@archiver.kernel.org>; Wed, 22 Jun 2022 12:25:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41188C433EF
+	for <linux-m68k@archiver.kernel.org>; Wed, 22 Jun 2022 13:40:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235156AbiFVMZC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 22 Jun 2022 08:25:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58476 "EHLO
+        id S232464AbiFVNkT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 22 Jun 2022 09:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbiFVMZA (ORCPT
+        with ESMTP id S1352469AbiFVNkQ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 22 Jun 2022 08:25:00 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD412FE72
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 22 Jun 2022 05:25:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1655900700; x=1687436700;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=nRwykYNWJOMVjV6KXtUwB8jzGM4hq74AzeD0f7K2mG8=;
-  b=oA4zzjp38HoavGgm25b3i5YBxG5ycm5OwmmkeqlAIAfAosMhtMhw+C88
-   nD39BBEJ8P4v06p/wPJlHvVipcVYhVhpPlLtBbwIL0OqLjvs6+nbEzOj9
-   clrf9HCk/2zZepmtkxkDQmyV3eJGaQS4Kv3nu0SiopBEVtY5Xg7GNX9e1
-   RSOv/aVaeeq0OjjYI2lr6TpRNu+y7P3wOkJzRggPLxLMuDLNkAPBjELTZ
-   5RueQINTxsbsdEw/Uued6PvM1+Lij2X3dRmK8hjp28xgxkoQb7UBd3Dkj
-   FSF/ayGdwVJHemUmznwW7oM5m4iXMY69updWPv7ryRhoc3xd13q3fZ9VF
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10385"; a="260832174"
-X-IronPort-AV: E=Sophos;i="5.92,212,1650956400"; 
-   d="scan'208";a="260832174"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2022 05:24:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,212,1650956400"; 
-   d="scan'208";a="620892409"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by orsmga001.jf.intel.com with ESMTP; 22 Jun 2022 05:24:53 -0700
-Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 25MCOp8S011366;
-        Wed, 22 Jun 2022 13:24:51 +0100
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Arnd Bergmann <arnd@arndb.de>, Yury Norov <yury.norov@gmail.com>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matt Turner <mattst88@gmail.com>,
-        Brian Cain <bcain@quicinc.com>,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kees Cook <keescook@chromium.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Marco Elver <elver@google.com>, Borislav Petkov <bp@suse.de>,
-        Tony Luck <tony.luck@intel.com>,
-        "Maciej Fijalkowski" <maciej.fijalkowski@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/8] bitops: let optimize out non-atomic bitops on compile-time constants
-Date:   Wed, 22 Jun 2022 14:24:40 +0200
-Message-Id: <20220622122440.87087-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220621191553.69455-1-alexandr.lobakin@intel.com>
-References: <20220621191553.69455-1-alexandr.lobakin@intel.com>
+        Wed, 22 Jun 2022 09:40:16 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B625A3702A
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 22 Jun 2022 06:40:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3DFC0B81F29;
+        Wed, 22 Jun 2022 13:40:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19A54C34114;
+        Wed, 22 Jun 2022 13:40:11 +0000 (UTC)
+Message-ID: <489a9048-6559-dca6-a4a1-50cba7105820@linux-m68k.org>
+Date:   Wed, 22 Jun 2022 23:40:09 +1000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH] m68k:coldfire:Fix typos in comments
+Content-Language: en-US
+To:     Jilin Yuan <yuanjilin@cdjrlc.com>, geert@linux-m68k.org
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+References: <20220622073553.64991-1-yuanjilin@cdjrlc.com>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <20220622073553.64991-1-yuanjilin@cdjrlc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Alexander Lobakin <alexandr.lobakin@intel.com>
-Date: Tue, 21 Jun 2022 21:15:45 +0200
+Hi Jilin,
 
-> While I was working on converting some structure fields from a fixed
-> type to a bitmap, I started observing code size increase not only in
-> places where the code works with the converted structure fields, but
-> also where the converted vars were on the stack. That said, the
-> following code:
+This same change was recently submitted by Xiang wangx, and that has
+been added to the m68knommu git tree (for-next branch). See:
 
-[...]
+     https://lore.kernel.org/lkml/6fe2468a-9664-30f7-7f17-9093289eb4b6@linux-m68k.org/T/
 
-Oh gosh, now s390 failed and 7/8 revealed one existing code flaw in
-the ice driver.
-I'll fix those, then will try to test more platforms (to not spam
-series again) and send v5 soon (mentioning this as bots CCs only
-myself).
+Regards
+Greg
 
-> -- 
-> 2.36.1
 
-Thanks,
-Olek
+On 22/6/22 17:35, Jilin Yuan wrote:
+> The "the" should be replaced by "of" instead.
+> 
+> Signed-off-by: Jilin Yuan <yuanjilin@cdjrlc.com>
+> ---
+>   arch/m68k/coldfire/intc-2.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/m68k/coldfire/intc-2.c b/arch/m68k/coldfire/intc-2.c
+> index 995093357c59..f74f0e473119 100644
+> --- a/arch/m68k/coldfire/intc-2.c
+> +++ b/arch/m68k/coldfire/intc-2.c
+> @@ -7,7 +7,7 @@
+>    * family, the 5270, 5271, 5274, 5275, and the 528x family which have two such
+>    * controllers, and the 547x and 548x families which have only one of them.
+>    *
+> - * The external 7 fixed interrupts are part the the Edge Port unit of these
+> + * The external 7 fixed interrupts are part of the Edge Port unit of these
+>    * ColdFire parts. They can be configured as level or edge triggered.
+>    *
+>    * (C) Copyright 2009-2011, Greg Ungerer <gerg@snapgear.com>
