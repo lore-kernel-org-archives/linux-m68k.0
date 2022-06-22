@@ -2,67 +2,95 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55370C433EF
-	for <linux-m68k@archiver.kernel.org>; Wed, 22 Jun 2022 06:29:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB893C43334
+	for <linux-m68k@archiver.kernel.org>; Wed, 22 Jun 2022 07:19:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234275AbiFVG3V (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 22 Jun 2022 02:29:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45444 "EHLO
+        id S1352133AbiFVHTo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 22 Jun 2022 03:19:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351000AbiFVG3R (ORCPT
+        with ESMTP id S1349773AbiFVHTn (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 22 Jun 2022 02:29:17 -0400
-Received: from smtpbg.qq.com (smtpbg123.qq.com [175.27.65.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BE5E13E9A
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Jun 2022 23:29:12 -0700 (PDT)
-X-QQ-mid: bizesmtp90t1655879336tbj1o6i1
-Received: from localhost.localdomain ( [125.70.163.206])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Wed, 22 Jun 2022 14:28:44 +0800 (CST)
-X-QQ-SSF: 0100000000200020B000B00A0000000
-X-QQ-FEAT: HoyAXBWgsklVvob0kjHjkPepFLnQrxhtfvdDLL6RxEdYS0fYuJCAo0sqkm9Hx
-        d8ipVibSteWdQDAPhONQrlk7kUQz3sd9W4X/wqEXcIk8ymH26SedI9fxLa7EH3tParpoYt1
-        J7tdHWn4UBqFzwjZPRC2B1IbVrna7GwSVx2PzvaQ/9R320s1OZocuHV+G5zZ179oOVPBBUG
-        4tKTSiYFrRt+6WlEPaS0zPYlJwgsM9aTEO7yFUBzDO9wi23uo3dKq3zR62Am+h2l5CTgeoT
-        +rAKKmtLkeU0HoYYV8afEdTtUmkW7q7zVlzxGAvwRrAsPgOIELmc081apgumQV6EzqaUqnS
-        7MxplLKRwK6snyn+xk=
-X-QQ-GoodBg: 0
-From:   Jilin Yuan <yuanjilin@cdjrlc.com>
-To:     gerg@linux-m68k.org, geert@linux-m68k.org
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Jilin Yuan <yuanjilin@cdjrlc.com>
-Subject: [PATCH] m68k:coldfire:Fix typos in comments
-Date:   Wed, 22 Jun 2022 14:28:35 +0800
-Message-Id: <20220622062835.53980-1-yuanjilin@cdjrlc.com>
-X-Mailer: git-send-email 2.36.1
+        Wed, 22 Jun 2022 03:19:43 -0400
+Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54BE21B7B1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 22 Jun 2022 00:19:43 -0700 (PDT)
+Received: by mail-qk1-f174.google.com with SMTP id 63so924547qkk.0
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 22 Jun 2022 00:19:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7zp9khTmqchqs4KxBcL6aqCiADcBm5j8vu+OxsZyaeM=;
+        b=EAgeS4pAFyR9UGbW99LfLMU7VcOjtugk0HDVBT7I/XpbYUFw+MjKeiRfsj9G/IJwSQ
+         PVfpYpGhJxT8LdlUVLI2jrr2AKNl2klpv8WDuL+PzYzL7xVors6drq0tlhOITK7R0P15
+         1nvz4A+PTCjiTZcYAiJXLbmYNc71Rfk2d8DOMZnBEZLKPG+58NXqhoGFrY/yKC1OAmIJ
+         454U7mrWFfhV/gTri5UzroEhjTfYJ4sh5SIdwjPKpgdwch7TS2baQ3bXA/iQNJthembK
+         /pdTyD8/3hrqWb2flUj3+Gx/o/LBnAUUlp6P0izl01Jg09yeofsoN917kbRixgCqG+f+
+         4WZA==
+X-Gm-Message-State: AJIora+PXJEZ44oEB/QGUgs9tYu8jxPq+1/qwkCudg7JHep4cM7SY3YK
+        P71ZQwP7CAIeYaCWxkS0ahOX+EebYsFEvg==
+X-Google-Smtp-Source: AGRyM1txJsR4HxQOkFX8/InTv3dus+HRXQALHu1lPrSBPQ/zTELWM2Na4kVrlul3H8JiEWKyiqTOyw==
+X-Received: by 2002:a05:620a:8009:b0:6a6:c552:7351 with SMTP id ee9-20020a05620a800900b006a6c5527351mr1145671qkb.517.1655882381877;
+        Wed, 22 Jun 2022 00:19:41 -0700 (PDT)
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
+        by smtp.gmail.com with ESMTPSA id d8-20020ac85d88000000b00304edcfa109sm14895004qtx.33.2022.06.22.00.19.41
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Jun 2022 00:19:41 -0700 (PDT)
+Received: by mail-yb1-f179.google.com with SMTP id 23so28642707ybe.8
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 22 Jun 2022 00:19:41 -0700 (PDT)
+X-Received: by 2002:a05:6902:1141:b0:669:3f2a:c6bb with SMTP id
+ p1-20020a056902114100b006693f2ac6bbmr2180101ybu.365.1655882381103; Wed, 22
+ Jun 2022 00:19:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam8
+References: <20220622061018.37575-1-yuanjilin@cdjrlc.com>
+In-Reply-To: <20220622061018.37575-1-yuanjilin@cdjrlc.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 22 Jun 2022 09:19:29 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWwqKyvtxkvdng0EVFfKjz9iOjK3Dhfd+iru-j731azTw@mail.gmail.com>
+Message-ID: <CAMuHMdWwqKyvtxkvdng0EVFfKjz9iOjK3Dhfd+iru-j731azTw@mail.gmail.com>
+Subject: Re: [PATCH] m68k:mac:Fix syntax errors in comments
+To:     yuanjilin@cdjrlc.com
+Cc:     Joshua Thompson <funaho@jurai.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Delete the redundant word 'the'.
+Hi Jilin,
 
-Signed-off-by: Jilin Yuan <yuanjilin@cdjrlc.com>
----
- arch/m68k/coldfire/intc-2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed, Jun 22, 2022 at 8:10 AM Jilin Yuan <yuanjilin@cdjrlc.com> wrote:
+> Delete the redundant word 'in'.
+>
+> Signed-off-by: Jilin Yuan <yuanjilin@cdjrlc.com>
 
-diff --git a/arch/m68k/coldfire/intc-2.c b/arch/m68k/coldfire/intc-2.c
-index 995093357c59..376e37855ebd 100644
---- a/arch/m68k/coldfire/intc-2.c
-+++ b/arch/m68k/coldfire/intc-2.c
-@@ -7,7 +7,7 @@
-  * family, the 5270, 5271, 5274, 5275, and the 528x family which have two such
-  * controllers, and the 547x and 548x families which have only one of them.
-  *
-- * The external 7 fixed interrupts are part the the Edge Port unit of these
-+ * The external 7 fixed interrupts are part the Edge Port unit of these
-  * ColdFire parts. They can be configured as level or edge triggered.
-  *
-  * (C) Copyright 2009-2011, Greg Ungerer <gerg@snapgear.com>
--- 
-2.36.1
+Thanks for your patch!
 
+> --- a/arch/m68k/mac/misc.c
+> +++ b/arch/m68k/mac/misc.c
+> @@ -126,7 +126,7 @@ static void via_rtc_send(__u8 data)
+>
+>         reg = via1[vBufB] & ~(VIA1B_vRTCClk | VIA1B_vRTCData);
+>
+> -       /* The bits of the byte go in in MSB order */
+> +       /* The bits of the byte go in MSB order */
+
+The original is actually correct: "to go in", "in MSB order".
+
+>
+>         for (i = 0 ; i < 8 ; i++) {
+>                 bit = data & 0x80? 1 : 0;
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
