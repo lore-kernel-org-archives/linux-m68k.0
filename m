@@ -2,45 +2,45 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4052CCA47F
-	for <linux-m68k@archiver.kernel.org>; Fri, 24 Jun 2022 12:14:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8C18C433EF
+	for <linux-m68k@archiver.kernel.org>; Fri, 24 Jun 2022 12:15:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232166AbiFXMOX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 24 Jun 2022 08:14:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35108 "EHLO
+        id S232118AbiFXMPM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 24 Jun 2022 08:15:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232089AbiFXMN6 (ORCPT
+        with ESMTP id S232119AbiFXMOA (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 24 Jun 2022 08:13:58 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE0F2981D
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Jun 2022 05:13:38 -0700 (PDT)
+        Fri, 24 Jun 2022 08:14:00 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95BF94EDF6
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Jun 2022 05:13:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1656072819; x=1687608819;
+  t=1656072830; x=1687608830;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=w9jL8NMkwUoLyGdxlrOaxo4xSZkgTsdTKbiPOLXLDqI=;
-  b=YNQCERsDf/K1JB7qK3JUbMNW5zIE8F6lHWRASRsEd4TY0posRZ5hoKkB
-   nBxPan+zdn4bkdmbvPb5MrUP6qVrUMMt3o6x69F1eejQp73lO0524NphN
-   c6asKNQIcf55cFtQmEj2GLe/tg8JyyqzK1/XilVpSaCQbjxH+M55fVBlH
-   7jeZTmkxa3v552eRZC5Ih5kOmpgdXMHucrzFIR+HwOx45Of6xBF/V60ql
-   kyqTiG+NRW1shvUxK+ReEOXsLrGiOerFskFcD7GMzMrwIvJjiti/fX1zJ
-   aWewNn9QyuNgEZV2iWm074f7zy6+2FbpuNcKeXCheKGM0NO63428yUm2k
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10387"; a="281722742"
+  bh=A1zzpdfJLbGPP5uEwMaw/RHBA/HUWtG2WXRsHiWWAyc=;
+  b=bZg6NoVkRMtzrsRthCxuL2ZZdIy66ByyKDy6XTXOTXZ+vwKebSNmicA/
+   7tvdODjj0vkdo52/NTfu613AIQ5cBbRrkYnMS62oJyLtNLa0k07+dRWVA
+   dldjFZMiUkj231GlLww/BRV8EeOkjDpK/JpqeyVsTwwQlbQtr1zx4HjS4
+   JaSTSdLYYbn4TOg9n9dvcw8rq1oSSMDINrwadHPhMqjsxYUcvfMORtJuT
+   VSE3Ui3AZ4HDTd5u9LI22ETLmTVS0WcREIK0ppjxyLJ042woicff8vJO2
+   ap3I9qEJZFcusApq1JlWeKf8FbDB3L8QjcJnAPX4aEUEDN/7vkAtUNecb
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10387"; a="282072558"
 X-IronPort-AV: E=Sophos;i="5.92,218,1650956400"; 
-   d="scan'208";a="281722742"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2022 05:13:38 -0700
+   d="scan'208";a="282072558"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2022 05:13:34 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.92,218,1650956400"; 
-   d="scan'208";a="563831558"
+   d="scan'208";a="678522227"
 Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by orsmga006.jf.intel.com with ESMTP; 24 Jun 2022 05:13:32 -0700
+  by FMSMGA003.fm.intel.com with ESMTP; 24 Jun 2022 05:13:28 -0700
 Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 25OCDEo9014999;
-        Fri, 24 Jun 2022 13:13:29 +0100
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 25OCDEo7014999;
+        Fri, 24 Jun 2022 13:13:26 +0100
 From:   Alexander Lobakin <alexandr.lobakin@intel.com>
 To:     Arnd Bergmann <arnd@arndb.de>, Yury Norov <yury.norov@gmail.com>
 Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
@@ -67,9 +67,9 @@ Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
         linux-arch@vger.kernel.org, llvm@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v5 9/9] lib: test_bitmap: add compile-time optimization/evaluations assertions
-Date:   Fri, 24 Jun 2022 14:13:13 +0200
-Message-Id: <20220624121313.2382500-10-alexandr.lobakin@intel.com>
+Subject: [PATCH v5 7/9] net/ice: fix initializing the bitmap in the switch code
+Date:   Fri, 24 Jun 2022 14:13:11 +0200
+Message-Id: <20220624121313.2382500-8-alexandr.lobakin@intel.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220624121313.2382500-1-alexandr.lobakin@intel.com>
 References: <20220624121313.2382500-1-alexandr.lobakin@intel.com>
@@ -79,106 +79,60 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Add a function to the bitmap test suite, which will ensure that
-compilers are able to evaluate operations performed by the
-bitops/bitmap helpers to compile-time constants when all of the
-arguments are compile-time constants as well, or trigger a build
-bug otherwise. This should work on all architectures and all the
-optimization levels supported by Kbuild.
-The function doesn't perform any runtime tests and gets optimized
-out to nothing after passing the build assertions.
-Unfortunately, Clang for s390 is currently broken (up to the latest
-Git snapshots) -- see the comment in the code -- so for now there's
-a small workaround for it which doesn't alter the logics. Hope we'll
-be able to remove it one day (bugreport is on its way).
+Kbuild spotted the following bug during the testing of one of
+the optimizations:
 
-Suggested-by: Yury Norov <yury.norov@gmail.com>
+In file included from include/linux/cpumask.h:12,
+[...]
+                from drivers/net/ethernet/intel/ice/ice_switch.c:4:
+drivers/net/ethernet/intel/ice/ice_switch.c: In function 'ice_find_free_recp_res_idx.constprop':
+include/linux/bitmap.h:447:22: warning: 'possible_idx[0]' is used uninitialized [-Wuninitialized]
+  447 |                 *map |= GENMASK(start + nbits - 1, start);
+      |                      ^~
+In file included from drivers/net/ethernet/intel/ice/ice.h:7,
+                 from drivers/net/ethernet/intel/ice/ice_lib.h:7,
+                 from drivers/net/ethernet/intel/ice/ice_switch.c:4:
+drivers/net/ethernet/intel/ice/ice_switch.c:4929:24: note: 'possible_idx[0]' was declared here
+ 4929 |         DECLARE_BITMAP(possible_idx, ICE_MAX_FV_WORDS);
+      |                        ^~~~~~~~~~~~
+include/linux/types.h:11:23: note: in definition of macro 'DECLARE_BITMAP'
+   11 |         unsigned long name[BITS_TO_LONGS(bits)]
+      |                       ^~~~
+
+%ICE_MAX_FV_WORDS is 48, so bitmap_set() here was initializing only
+48 bits, leaving a junk in the rest 16.
+It was previously hidden due to that filling 48 bits makes
+bitmap_set() call external __bitmap_set(), but after making it use
+plain bit arithmetics on small bitmaps, compilers started seeing
+the issue. It was still working because those 16 weren't used
+anywhere anyhow.
+bitmap_{clear,set}() are not really intended to initialize bitmaps,
+rather to modify already initialized ones, as they don't do anything
+past the passed number of bits. The correct function to do this in
+that particular case is bitmap_fill(), so use it here. It will do
+`*possible_idx = ~0UL` instead of `*possible_idx |= GENMASK(47, 0)`,
+not leaving anything in an undefined state.
+
+Fixes: fd2a6b71e300 ("ice: create advanced switch recipe")
+Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- lib/test_bitmap.c | 62 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 62 insertions(+)
+ drivers/net/ethernet/intel/ice/ice_switch.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
-index d5923a640457..25967cfa4ab2 100644
---- a/lib/test_bitmap.c
-+++ b/lib/test_bitmap.c
-@@ -869,6 +869,67 @@ static void __init test_bitmap_print_buf(void)
- 	}
- }
+diff --git a/drivers/net/ethernet/intel/ice/ice_switch.c b/drivers/net/ethernet/intel/ice/ice_switch.c
+index 8d8f3eec79ee..9b2872e89151 100644
+--- a/drivers/net/ethernet/intel/ice/ice_switch.c
++++ b/drivers/net/ethernet/intel/ice/ice_switch.c
+@@ -4934,7 +4934,7 @@ ice_find_free_recp_res_idx(struct ice_hw *hw, const unsigned long *profiles,
+ 	bitmap_zero(recipes, ICE_MAX_NUM_RECIPES);
+ 	bitmap_zero(used_idx, ICE_MAX_FV_WORDS);
  
-+static void __init test_bitmap_const_eval(void)
-+{
-+	DECLARE_BITMAP(bitmap, BITS_PER_LONG);
-+	unsigned long initvar = BIT(2);
-+	unsigned long bitopvar = 0;
-+	unsigned long var = 0;
-+	int res;
-+
-+	/*
-+	 * Compilers must be able to optimize all of those to compile-time
-+	 * constants on any supported optimization level (-O2, -Os) and any
-+	 * architecture. Otherwise, trigger a build bug.
-+	 * The whole function gets optimized out then, there's nothing to do
-+	 * in runtime.
-+	 */
-+
-+	/*
-+	 * Equals to `unsigned long bitmap[1] = { GENMASK(6, 5), }`.
-+	 * Clang on s390 optimizes bitops at compile-time as intended, but at
-+	 * the same time stops treating @bitmap and @bitopvar as compile-time
-+	 * constants after regular test_bit() is executed, thus triggering the
-+	 * build bugs below. So, call const_test_bit() there directly until
-+	 * the compiler is fixed.
-+	 */
-+	bitmap_clear(bitmap, 0, BITS_PER_LONG);
-+#if defined(__s390__) && defined(__clang__)
-+	if (!const_test_bit(7, bitmap))
-+#else
-+	if (!test_bit(7, bitmap))
-+#endif
-+		bitmap_set(bitmap, 5, 2);
-+
-+	/* Equals to `unsigned long bitopvar = BIT(20)` */
-+	__change_bit(31, &bitopvar);
-+	bitmap_shift_right(&bitopvar, &bitopvar, 11, BITS_PER_LONG);
-+
-+	/* Equals to `unsigned long var = BIT(25)` */
-+	var |= BIT(25);
-+	if (var & BIT(0))
-+		var ^= GENMASK(9, 6);
-+
-+	/* __const_hweight<32|64>(GENMASK(6, 5)) == 2 */
-+	res = bitmap_weight(bitmap, 20);
-+	BUILD_BUG_ON(!__builtin_constant_p(res));
-+	BUILD_BUG_ON(res != 2);
-+
-+	/* !(BIT(31) & BIT(18)) == 1 */
-+	res = !test_bit(18, &bitopvar);
-+	BUILD_BUG_ON(!__builtin_constant_p(res));
-+	BUILD_BUG_ON(!res);
-+
-+	/* BIT(2) & GENMASK(14, 8) == 0 */
-+	res = initvar & GENMASK(14, 8);
-+	BUILD_BUG_ON(!__builtin_constant_p(res));
-+	BUILD_BUG_ON(res);
-+
-+	/* ~BIT(25) */
-+	BUILD_BUG_ON(!__builtin_constant_p(~var));
-+	BUILD_BUG_ON(~var != ~BIT(25));
-+}
-+
- static void __init selftest(void)
- {
- 	test_zero_clear();
-@@ -884,6 +945,7 @@ static void __init selftest(void)
- 	test_for_each_set_clump8();
- 	test_bitmap_cut();
- 	test_bitmap_print_buf();
-+	test_bitmap_const_eval();
- }
+-	bitmap_set(possible_idx, 0, ICE_MAX_FV_WORDS);
++	bitmap_fill(possible_idx, ICE_MAX_FV_WORDS);
  
- KSTM_MODULE_LOADERS(test_bitmap);
+ 	/* For each profile we are going to associate the recipe with, add the
+ 	 * recipes that are associated with that profile. This will give us
 -- 
 2.36.1
 
