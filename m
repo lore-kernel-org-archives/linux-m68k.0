@@ -2,181 +2,89 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E599C433EF
-	for <linux-m68k@archiver.kernel.org>; Fri, 24 Jun 2022 16:38:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15015C433EF
+	for <linux-m68k@archiver.kernel.org>; Fri, 24 Jun 2022 17:08:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230181AbiFXQie (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 24 Jun 2022 12:38:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36064 "EHLO
+        id S230333AbiFXRIn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 24 Jun 2022 13:08:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230433AbiFXQic (ORCPT
+        with ESMTP id S231767AbiFXRIn (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 24 Jun 2022 12:38:32 -0400
-Received: from mailout.easymail.ca (mailout.easymail.ca [64.68.200.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A52A640E4A
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Jun 2022 09:38:30 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mailout.easymail.ca (Postfix) with ESMTP id C4F2161F23;
-        Fri, 24 Jun 2022 16:38:28 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at emo09-pco.easydns.vpn
-Received: from mailout.easymail.ca ([127.0.0.1])
-        by localhost (emo09-pco.easydns.vpn [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id LmDe4WjxX0Jc; Fri, 24 Jun 2022 16:38:28 +0000 (UTC)
-Received: from mail.gonehiking.org (unknown [38.15.45.1])
-        by mailout.easymail.ca (Postfix) with ESMTPA id 3B92B6198B;
-        Fri, 24 Jun 2022 16:38:28 +0000 (UTC)
-Received: from [192.168.1.4] (internal [192.168.1.4])
-        by mail.gonehiking.org (Postfix) with ESMTP id A845B3EE4C;
-        Fri, 24 Jun 2022 10:38:27 -0600 (MDT)
-Message-ID: <1cf8b5c7-36f4-7d04-9718-50e9f9790e2b@gonehiking.org>
-Date:   Fri, 24 Jun 2022 10:38:27 -0600
+        Fri, 24 Jun 2022 13:08:43 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B718651E4A
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Jun 2022 10:08:39 -0700 (PDT)
+Received: from mail-yw1-f182.google.com ([209.85.128.182]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MV5G4-1oCvUh3JkE-00S54E for <linux-m68k@lists.linux-m68k.org>; Fri, 24
+ Jun 2022 19:08:38 +0200
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-3176d94c236so31082377b3.3
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Jun 2022 10:08:37 -0700 (PDT)
+X-Gm-Message-State: AJIora8xfy9WB9e45WJBzrbYUfyWtimdptM1jXYK5jWcoGFKl058s/Af
+        TMY6oPzg9HHl76ExF3r2Mdhen0RYjCmGH+mwEjw=
+X-Google-Smtp-Source: AGRyM1tBSdPwbFq9GZSjizWzVuAB7giujhHzzt55cTqkntbPy6yauQrkbaXTZ2eocC/Zbg06KphUioMdhsic93kqOWE=
+X-Received: by 2002:a81:b93:0:b0:317:791f:3c0 with SMTP id 141-20020a810b93000000b00317791f03c0mr17394782ywl.42.1656090516599;
+ Fri, 24 Jun 2022 10:08:36 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Reply-To: khalid@gonehiking.org
-Subject: Re: [PATCH v3 1/3] scsi: BusLogic remove bus_to_virt
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@kernel.org>, linux-scsi@vger.kernel.org
+References: <20220624155226.2889613-1-arnd@kernel.org>
+In-Reply-To: <20220624155226.2889613-1-arnd@kernel.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 24 Jun 2022 19:08:19 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a04C+ZavWb2nnYs-02CKZq10OA8rDE7QHMFF5qZzb6t9g@mail.gmail.com>
+Message-ID: <CAK8P3a04C+ZavWb2nnYs-02CKZq10OA8rDE7QHMFF5qZzb6t9g@mail.gmail.com>
+Subject: Re: [PATCH v3 0/3] phase out CONFIG_VIRT_TO_BUS
+To:     linux-scsi <linux-scsi@vger.kernel.org>
 Cc:     Arnd Bergmann <arnd@arndb.de>, Jakub Kicinski <kuba@kernel.org>,
         Christoph Hellwig <hch@infradead.org>,
         Marek Szyprowski <m.szyprowski@samsung.com>,
         Robin Murphy <robin.murphy@arm.com>,
-        iommu@lists.linux-foundation.org,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Khalid Aziz <khalid@gonehiking.org>,
         "Maciej W . Rozycki" <macro@orcam.me.uk>,
         Matt Wang <wwentao@vmware.com>,
         Miquel van Smoorenburg <mikevs@xs4all.net>,
         Mark Salyzyn <salyzyn@android.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-arch@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-parisc@vger.kernel.org, Denis Efremov <efremov@linux.com>,
-        Hannes Reinecke <hare@suse.de>
-References: <20220624155226.2889613-1-arnd@kernel.org>
- <20220624155226.2889613-2-arnd@kernel.org>
-From:   Khalid Aziz <khalid@gonehiking.org>
-In-Reply-To: <20220624155226.2889613-2-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        Denis Efremov <efremov@linux.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:Gl6GbYLTTRbW8haxssB+Oee7ROItj6anuoIeyFC24V7JFP2iPBX
+ BXk1Z35aUt224IBKcSiX4MxOyWX9fFWRaiv/LHBELPVu6vpQaXFYs+ww67ibtWMhtW+kFmr
+ 8QlWLwnKjlOVPL/kEkaotHipf4kFPgZDRR9Y4/+qmvORtZPEUvye+25/a7/kH1eNqRrPjQe
+ poMI8VNjfAv1nut2jid/Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ZkXhGPdprgU=:tWFasDDBzntafdECErZ0U3
+ lVojytLWoALVF6czHYxHCM/fNc8UZsXrqdhrWwoXwgTPU6Yr5DqD466VkyVdo8X0e+qlVFnXT
+ T9473qTPs6tL0gSlTxSIPEMCZtm592ngAFKnNZqXpe4kuzYY/51uBrlgIWhtcGfjXm8FZwtPt
+ l030UXcFfZycSxipx9UYLp1RaOJzEk+/PZHtKYbICLGCa2XbLLf9nZh2tsigODJMUUyt6ZbuW
+ euwe7WsHJmLpWvp6FSmkGX0aeFufXwzjT6MWJW3UU4KgHuEwaXjZeOu26YZ/XG4Lh9XQya7EF
+ B8d/GGTPmZlabWtJXYTb6FN9VdbFZgIv0ADRkxsRIhxwybImxZdX4AakpX97t+q9kOXB7K6zb
+ V8pctK/Od4oxOCafbwHcbG5p5KmYGssbko5hONsk6U3OFO+vBERq99t0QgWn85J7mufWXzKFU
+ ogPRS8btrlnG/TvgCz50Nln0ZNU5rSV9Mjq4FQ1zc2TO5Rb846Lj75t56HTInSrUfi24bVm92
+ obbLlWjwZzoRgZsBtW7i9dGB8+OwTjzE4o9QMlytDLgRRtUlsurQMqByr1DIS0mvpMwXIdO5e
+ f50DPznJa+LYfqh/4hMo3ujaIUsKlVJTS0auUw/L0cXVsRkBVNgAezm9SBMn7VUjb++yRXKbe
+ r/xVqEaQ6ZgBJ/5spg6M3s7WLIOQmZmtwnZHxLsMwWiXe1isv1KK97+Ok5ND+lAIQFljgF8yv
+ FPTjaHZXZh5jRHXs52GEULqlLeCWpCYwAlioO9hkZmvwARsJz/sGJ+S6X6DFm+OE/oNe9u8dF
+ vsXSe6wEtogfzkAkkqE7vlEdkFhztEk3rodmTMxlyb4vjyZg/LEAQSFzlfMgU7VAYxiloOfbX
+ Ta/e02QEIDq9Mg5sRmIw==
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 6/24/22 09:52, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The BusLogic driver is the last remaining driver that relies on the
-> deprecated bus_to_virt() function, which in turn only works on a few
-> architectures, and is incompatible with both swiotlb and iommu support.
-> 
-> Before commit 391e2f25601e ("[SCSI] BusLogic: Port driver to 64-bit."),
-> the driver had a dependency on x86-32, presumably because of this
-> problem. However, the change introduced another bug that made it still
-> impossible to use the driver on any 64-bit machine.
-> 
-> This was in turn fixed in commit 56f396146af2 ("scsi: BusLogic: Fix
-> 64-bit system enumeration error for Buslogic"), 8 years later, which
-> shows that there are not a lot of users.
-> 
-> Maciej is still using the driver on 32-bit hardware, and Khalid mentioned
-> that the driver works with the device emulation used in VirtualBox
-> and VMware. Both of those only emulate it for Windows 2000 and older
-> operating systems that did not ship with the better LSI logic driver.
-> 
-> Do a minimum fix that searches through the list of descriptors to find
-> one that matches the bus address. This is clearly as inefficient as
-> was indicated in the code comment about the lack of a bus_to_virt()
-> replacement. A better fix would likely involve changing out the entire
-> descriptor allocation for a simpler one, but that would be much
-> more invasive.
-> 
-> Cc: Maciej W. Rozycki <macro@orcam.me.uk>
-> Cc: Matt Wang <wwentao@vmware.com>
-> Tested-by: Khalid Aziz <khalid@gonehiking.org>
-> Reviewed-by: Robin Murphy <robin.murphy@arm.com>
-> Reviewed-by: Hannes Reinecke <hare@suse.de>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> v3: Address issues pointed out by Khalid Aziz
-> v2: Attempt to fix the driver instead of removing it
-> ---
->   drivers/scsi/BusLogic.c | 35 +++++++++++++++++++++++------------
->   drivers/scsi/Kconfig    |  2 +-
->   2 files changed, 24 insertions(+), 13 deletions(-)
-> 
+On Fri, Jun 24, 2022 at 5:52 PM Arnd Bergmann <arnd@kernel.org> wrote:
 
-This looks good.
+> Arnd Bergmann (3):
+>   scsi: BusLogic remove bus_to_virt
+>   scsi: dpt_i2o: remove obsolete driver
 
-Acked-by: Khalid Aziz <khalid@gonehiking.org>
+The dpt_i2o removal is overly large and got dropped by some of the
+mailing lists,
+if anyone wants to see the full patch, it did make it through to the linux-scsi
+list at least:
 
+https://lore.kernel.org/all/20220624155226.2889613-3-arnd@kernel.org/
 
-> diff --git a/drivers/scsi/BusLogic.c b/drivers/scsi/BusLogic.c
-> index a897c8f914cf..f2abffce2659 100644
-> --- a/drivers/scsi/BusLogic.c
-> +++ b/drivers/scsi/BusLogic.c
-> @@ -2515,12 +2515,26 @@ static int blogic_resultcode(struct blogic_adapter *adapter,
->   	return (hoststatus << 16) | tgt_status;
->   }
->   
-> +/*
-> + * turn the dma address from an inbox into a ccb pointer
-> + * This is rather inefficient.
-> + */
-> +static struct blogic_ccb *
-> +blogic_inbox_to_ccb(struct blogic_adapter *adapter, struct blogic_inbox *inbox)
-> +{
-> +	struct blogic_ccb *ccb;
-> +
-> +	for (ccb = adapter->all_ccbs; ccb; ccb = ccb->next_all)
-> +		if (inbox->ccb == ccb->dma_handle)
-> +			break;
-> +
-> +	return ccb;
-> +}
->   
->   /*
->     blogic_scan_inbox scans the Incoming Mailboxes saving any
->     Incoming Mailbox entries for completion processing.
->   */
-> -
->   static void blogic_scan_inbox(struct blogic_adapter *adapter)
->   {
->   	/*
-> @@ -2540,17 +2554,14 @@ static void blogic_scan_inbox(struct blogic_adapter *adapter)
->   	enum blogic_cmplt_code comp_code;
->   
->   	while ((comp_code = next_inbox->comp_code) != BLOGIC_INBOX_FREE) {
-> -		/*
-> -		   We are only allowed to do this because we limit our
-> -		   architectures we run on to machines where bus_to_virt(
-> -		   actually works.  There *needs* to be a dma_addr_to_virt()
-> -		   in the new PCI DMA mapping interface to replace
-> -		   bus_to_virt() or else this code is going to become very
-> -		   innefficient.
-> -		 */
-> -		struct blogic_ccb *ccb =
-> -			(struct blogic_ccb *) bus_to_virt(next_inbox->ccb);
-> -		if (comp_code != BLOGIC_CMD_NOTFOUND) {
-> +		struct blogic_ccb *ccb = blogic_inbox_to_ccb(adapter, next_inbox);
-> +		if (!ccb) {
-> +			/*
-> +			 * This should never happen, unless the CCB list is
-> +			 * corrupted in memory.
-> +			 */
-> +			blogic_warn("Could not find CCB for dma address %x\n", adapter, next_inbox->ccb);
-> +		} else if (comp_code != BLOGIC_CMD_NOTFOUND) {
->   			if (ccb->status == BLOGIC_CCB_ACTIVE ||
->   					ccb->status == BLOGIC_CCB_RESET) {
->   				/*
-> diff --git a/drivers/scsi/Kconfig b/drivers/scsi/Kconfig
-> index 6e3a04107bb6..689186f3a908 100644
-> --- a/drivers/scsi/Kconfig
-> +++ b/drivers/scsi/Kconfig
-> @@ -514,7 +514,7 @@ config SCSI_HPTIOP
->   
->   config SCSI_BUSLOGIC
->   	tristate "BusLogic SCSI support"
-> -	depends on PCI && SCSI && VIRT_TO_BUS
-> +	depends on PCI && SCSI
->   	help
->   	  This is support for BusLogic MultiMaster and FlashPoint SCSI Host
->   	  Adapters. Consult the SCSI-HOWTO, available from
-
+         Arnd
