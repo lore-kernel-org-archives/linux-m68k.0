@@ -2,145 +2,118 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 103C6C433EF
-	for <linux-m68k@archiver.kernel.org>; Fri, 24 Jun 2022 09:12:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64EADCCA481
+	for <linux-m68k@archiver.kernel.org>; Fri, 24 Jun 2022 12:14:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbiFXJMH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 24 Jun 2022 05:12:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56682 "EHLO
+        id S230380AbiFXMOA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 24 Jun 2022 08:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbiFXJLg (ORCPT
+        with ESMTP id S232050AbiFXMNc (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 24 Jun 2022 05:11:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9133D74E7E
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Jun 2022 02:11:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 084C362095
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Jun 2022 09:11:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80BAAC341CE
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Jun 2022 09:11:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656061867;
-        bh=QZAJaXcIRADU/xKJ+9ztqTuLJLuzfPWx4kL+CXKUusE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DujAp35gBkJI0ojh8Z4cz2WNMnPVa8X09AjvGzpyvg1W3zpRtikVU8S1p5YzkeFQn
-         lyqUI2IK/TRwsZ6Fphm5Gnrx8o8G+PE51sAvsFnYOkkSigRwkL7Ti34QY5mgrVlD4K
-         q87W/nor5rNmj3N+qIRXTKGiC0CtdvN0KmhO4zeDIsbYYD8QC1BFTaduxwig96j3Pp
-         tKSojB4iYnI/xdxLhYubiYytYTgX6J2RKt1/59qilMZK37CJaHmf49rGGpZzrmzm5C
-         vXPE3OAWpxbhgHGBmdLEkg9vKAPO5+PD+s0ZO+euAV2nmh7i/+PPY0rPFj46LXVDDi
-         0tE0Cc0wwED0w==
-Received: by mail-yb1-f178.google.com with SMTP id x38so3438427ybd.9
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Jun 2022 02:11:07 -0700 (PDT)
-X-Gm-Message-State: AJIora84plEEp9G7zTZpxF7RpstnB5PknCfvHZWmjG2hhxL6/oo3fWv7
-        ki168Ppw+Y7imzj5FXlrx8eZjoDB91xc/CGgHR8=
-X-Google-Smtp-Source: AGRyM1thOWm6xvviAmnNqulTm+G1aNh8sMElBL34hFaSX/cB93p4OtnA8uz/osirQ5xn1zAs3G7Hy/thW2fsxExc9gs=
-X-Received: by 2002:a05:6902:120f:b0:668:2228:9627 with SMTP id
- s15-20020a056902120f00b0066822289627mr14111407ybu.134.1656061866469; Fri, 24
- Jun 2022 02:11:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220617125750.728590-1-arnd@kernel.org> <20220617125750.728590-4-arnd@kernel.org>
- <6ba86afe-bf9f-1aca-7af1-d0d348d75ffc@gmail.com>
-In-Reply-To: <6ba86afe-bf9f-1aca-7af1-d0d348d75ffc@gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 24 Jun 2022 11:10:49 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1XfwkTOV7qOs1fTxf4vthNBRXKNu8A5V7TWnHT081NGA@mail.gmail.com>
-Message-ID: <CAK8P3a1XfwkTOV7qOs1fTxf4vthNBRXKNu8A5V7TWnHT081NGA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] arch/*/: remove CONFIG_VIRT_TO_BUS
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Khalid Aziz <khalid@gonehiking.org>,
-        "Maciej W . Rozycki" <macro@orcam.me.uk>,
-        Matt Wang <wwentao@vmware.com>,
-        Miquel van Smoorenburg <mikevs@xs4all.net>,
-        Mark Salyzyn <salyzyn@android.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        Denis Efremov <efremov@linux.com>,
+        Fri, 24 Jun 2022 08:13:32 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F96A1DA4B
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Jun 2022 05:13:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1656072810; x=1687608810;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=7oB2+/tAQ0YbLfBu8lpkzq06X+Z13qiz2lNUmx1L1VE=;
+  b=Qr4kZHj8zPdzE6NNcgPUHE6Vtj/HQQ3nijCwJdI2LKrlTcHjf6tBCFfC
+   CBqN/w+uwQ5kPo78YZ9YDV5AXVHYiEOEUM5zXKICMD7wq0Y++Y2FlDkxQ
+   7jIFeGDw0rbMtzxryO6CzUzkl5jBUT/u5OnRpeD6prTQdiVym2j2Zn6nO
+   Dc8glu+/qWHTNQVoU3nmMBKvKkQMGFSJ7Zo2IEs8xx4DWjPqJSVQNpizy
+   2kld+treQUsjohP4J6M7bFIy7p/sznBRY8tcpH9jsYU7sENRtUPil0but
+   toqlHCYMzlXAiAIQKHZrA3ZD+fiG2LlC5doYBng27051s/H9bSKeDujMU
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10387"; a="278536264"
+X-IronPort-AV: E=Sophos;i="5.92,218,1650956400"; 
+   d="scan'208";a="278536264"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2022 05:13:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,218,1650956400"; 
+   d="scan'208";a="678522188"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by FMSMGA003.fm.intel.com with ESMTP; 24 Jun 2022 05:13:19 -0700
+Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 25OCDEo1014999;
+        Fri, 24 Jun 2022 13:13:16 +0100
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     Arnd Bergmann <arnd@arndb.de>, Yury Norov <yury.norov@gmail.com>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matt Turner <mattst88@gmail.com>,
+        Brian Cain <bcain@quicinc.com>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Content-Type: text/plain; charset="UTF-8"
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Kees Cook <keescook@chromium.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Marco Elver <elver@google.com>, Borislav Petkov <bp@suse.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, kernel test robot <lkp@intel.com>,
+        linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch@vger.kernel.org, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: [PATCH v5 1/9] ia64, processor: fix -Wincompatible-pointer-types in ia64_get_irr()
+Date:   Fri, 24 Jun 2022 14:13:05 +0200
+Message-Id: <20220624121313.2382500-2-alexandr.lobakin@intel.com>
+X-Mailer: git-send-email 2.36.1
+In-Reply-To: <20220624121313.2382500-1-alexandr.lobakin@intel.com>
+References: <20220624121313.2382500-1-alexandr.lobakin@intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sat, Jun 18, 2022 at 3:06 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> Am 18.06.2022 um 00:57 schrieb Arnd Bergmann:
-> >
-> > All architecture-independent users of virt_to_bus() and bus_to_virt()
-> > have been fixed to use the dma mapping interfaces or have been
-> > removed now.  This means the definitions on most architectures, and the
-> > CONFIG_VIRT_TO_BUS symbol are now obsolete and can be removed.
-> >
-> > The only exceptions to this are a few network and scsi drivers for m68k
-> > Amiga and VME machines and ppc32 Macintosh. These drivers work correctly
-> > with the old interfaces and are probably not worth changing.
->
-> The Amiga SCSI drivers are all old WD33C93 ones, and replacing
-> virt_to_bus by virt_to_phys in the dma_setup() function there would
-> cause no functional change at all.
+test_bit(), as any other bitmap op, takes `unsigned long *` as a
+second argument (pointer to the actual bitmap), as any bitmap
+itself is an array of unsigned longs. However, the ia64_get_irr()
+code passes a ref to `u64` as a second argument.
+This works with the ia64 bitops implementation due to that they
+have `void *` as the second argument and then cast it later on.
+This works with the bitmap API itself due to that `unsigned long`
+has the same size on ia64 as `u64` (`unsigned long long`), but
+from the compiler PoV those two are different.
+Define @irr as `unsigned long` to fix that. That implies no
+functional changes. Has been hidden for 16 years!
 
-Ok, thanks for taking a look here.
+Fixes: a58786917ce2 ("[IA64] avoid broken SAL_CACHE_FLUSH implementations")
+Cc: stable@vger.kernel.org # 2.6.16+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Yury Norov <yury.norov@gmail.com>
+---
+ arch/ia64/include/asm/processor.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> drivers/vme/bridges/vme_ca91cx42.c hasn't been used at all on m68k (it
-> is a PCI-to-VME bridge chipset driver that would be needed on
-> architectures that natively use a PCI bus). I haven't found anything
-> that selects that driver, so not sure it is even still in use??
+diff --git a/arch/ia64/include/asm/processor.h b/arch/ia64/include/asm/processor.h
+index 7cbce290f4e5..757c2f6d8d4b 100644
+--- a/arch/ia64/include/asm/processor.h
++++ b/arch/ia64/include/asm/processor.h
+@@ -538,7 +538,7 @@ ia64_get_irr(unsigned int vector)
+ {
+ 	unsigned int reg = vector / 64;
+ 	unsigned int bit = vector % 64;
+-	u64 irr;
++	unsigned long irr;
+ 
+ 	switch (reg) {
+ 	case 0: irr = ia64_getreg(_IA64_REG_CR_IRR0); break;
+-- 
+2.36.1
 
-It's gone now, Greg has already taken my patches for this through
-the staging tree.
-
-> That would allow you to drop the remaining virt_to_bus define from
-> arch/m68k/include/asm/virtconvert.h.
->
-> I could submit a patch to convert the Amiga SCSI drivers to use
-> virt_to_phys if Geert and the SCSI maintainers think it's worth the churn.
-
-I don't think using virt_to_phys() is an improvement here, as
-virt_to_bus() was originally meant as a better abstraction to
-replace the use of virt_to_phys() to make drivers portable, before
-it got replaced by the dma-mapping interface in turn.
-
-It looks like the Amiga SCSI drivers have an open-coded version of
-what dma_map_single() does, to do bounce buffering and cache
-management. The ideal solution would be to convert the drivers
-actually use the appropriate dma-mapping interfaces and remove
-this custom code.
-
-The same could be done for the two vme drivers (scsi/mvme147.c
-and ethernet/82596.c), which do the cache management but
-apparently don't need swiotlb bounce buffering.
-
-Rewriting the drivers to modern APIs is of course non-trivial,
-and if you want a shortcut here, I would suggest introducing
-platform specific helpers similar to isa_virt_to_bus() and call
-them amiga_virt_to_bus() and vme_virt_to_bus, respectively.
-
-Putting these into a platform specific header file at least helps
-clarify that both the helper functions and the drivers using them
-are non-portable.
-
-> 32bit powerpc is a different matter though.
-
-It's similar, but unrelated. The two apple ethernet drivers
-(bmac and mace) can again either get changed to use the
-dma-mapping interfaces, or get a custom pmac_virt_to_bus()/
-pmac_bus_to_virt() helper.
-
-There is also drivers/tty/serial/cpm_uart/cpm_uart_cpm2.c,
-which I think just needs a trivial change, but I'm not sure
-how to do it correctly.
-
-      Arnd
