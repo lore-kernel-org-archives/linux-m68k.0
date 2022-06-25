@@ -2,24 +2,24 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E6B2C43334
-	for <linux-m68k@archiver.kernel.org>; Sat, 25 Jun 2022 15:51:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D260C43334
+	for <linux-m68k@archiver.kernel.org>; Sat, 25 Jun 2022 16:08:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232827AbiFYPvb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 25 Jun 2022 11:51:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32810 "EHLO
+        id S233283AbiFYQIs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 25 Jun 2022 12:08:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbiFYPvb (ORCPT
+        with ESMTP id S233257AbiFYQIq (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 25 Jun 2022 11:51:31 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EAD016597;
-        Sat, 25 Jun 2022 08:51:27 -0700 (PDT)
+        Sat, 25 Jun 2022 12:08:46 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F3A11C13;
+        Sat, 25 Jun 2022 09:08:42 -0700 (PDT)
 Received: from [192.168.100.1] ([82.142.8.70]) by mrelayeu.kundenserver.de
  (mreue108 [213.165.67.119]) with ESMTPSA (Nemesis) id
- 1Ma1sQ-1o8TYO2sJI-00VzSn; Sat, 25 Jun 2022 17:51:24 +0200
-Message-ID: <2ef8eb4f-5ef6-5de1-9f42-3430ad3f1b7c@vivier.eu>
-Date:   Sat, 25 Jun 2022 17:51:23 +0200
+ 1MDykM-1nvCiY21HI-009u7Q; Sat, 25 Jun 2022 18:08:38 +0200
+Message-ID: <512bdf97-5468-e2d2-75bd-24107aaf8a34@vivier.eu>
+Date:   Sat, 25 Jun 2022 18:08:37 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.10.0
@@ -32,22 +32,22 @@ From:   Laurent Vivier <laurent@vivier.eu>
 In-Reply-To: <20220625153841.143928-1-Jason@zx2c4.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:4r1yxypdNmR+o3p9w42sYOpK5rc0j4YdOC+Q2h8qGKpBzjOQ6WC
- uh6zVeN9+GHsLkoOtJGy1KFOwLk7HpRMPkkfHC/Mdt7bmYJZU8s/Rsi9M8vLQGTfUhEUGH/
- dUmEIK2ikIAmUoej0xMSNijJkpnEcRehHk6NLMbR3l+J4wRPpiEFmlNaDa0oFfi2gquXqgz
- ItXtcVfF0s5Bknj1xBayw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Z2x8sN76nes=:aTdghihhRuySMM1AjQQwyd
- 2RmSkuYi1hbgfLYzs5acTyyXawtJ/efw0vPJ7WPo4LrfK5OJFyfQG4A6CD0EPpyzSRc+e4xlC
- wb36o14yvJplYixzFJgeX0Dhs5v8DXX7RUEv92VqCODqfPYpVjTN7+o0LLAPNOKkl8ezUSAqH
- lsjkksQ/6RsSw67IgsXAt0pqUcrmsVpSE/0Ha4oJJuPOImbz/6GcqJmsYHM/Llh0XkenRP1Dd
- JLhQZeZEpfK71Zu3qogk/fC6zHaFQpVtr6NbrUmeETSLYYucsWsnXISwkyigTYAOc/ag0erzi
- 1gPP1Ow6N4dxMQUHrzpr1pPBA76I8e/fkTEChROshKLYFCTzLVeS46hNdpZANTSKUn9D2Otag
- UQGAf6v9ydXKLdwhzbbdkZgGpVCld1NCMRAFVFTwBT9Q4DUkYsnYImEi+6jCs60TbhGQXCaoy
- +5g2eRqQNm7HLoi7pyyew0EQCwMK5cMv/e4jzpPKXSzETsQxPJB9Yu+95LuaE/y+o+dje1At+
- YqVjJjwJW0xZSXZ/NYz+lYyBv7q0YZfkGlVBrJp0AhRUlk937WzWGmiHUrrR0bVAK4KFU+rVC
- cX8ZiBhdOSdCThOGd857LHV7gOS63QoPPbpJqF/9nfMV8iVDX0B8phBnEvAN8bG/LfO0rWsiY
- fD2umc5z2LMgmVoMp6yZWR8rQ09cNAr95KKEVz5M5eRh5oGU6cbTche4ioGHOTw1xW72m6ZcH
- 2rSGOxp/HiN5jRIycm/omapaSXpTfBJoWlwIvw==
+X-Provags-ID: V03:K1:KNWZiu1ukqEzAce7MwcSCmmFI0pnOOc8l+k87+T6c9xfCBk/Orz
+ USKTSf35nfLUSjST2Ynfi7p10EEmAjVdLi5bk9+MDluRHjrpMLUATrLNlQ2OnnClL9anCo0
+ 5gPpqQng+fWB9lPYblQDI3mIHl9lXRp+V5WQGbxf+4YS2CjNl3RynSJSJt/OsDcV4KnfLTm
+ HH0uPCtF8UDmNvVrf05+Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:dqbI77Xgor4=:2PeAc6SwiCBNLL2uasPH0x
+ pg5+F9TkN3WZRKFs+DUMXfWb7/4e0Sz4nnp7QDBNUEPaS5fGiWQT5a2KrYo6MWgGLJ1xMgDoJ
+ TjKPqaK6hzIr9gBi26kGkgoHB3wQaF3vmfz99HyUkf2J21oD7ep9/66IOA4SI8sk6Mlg5np7b
+ 1KhxG1C4pBKpOz27aL05c+oZqKp56eijJw1IO/UBKPt8lFUexKKhW4c7I3pO4zFCjshU3VSPe
+ oAFj7LAgtEgwjRrhI1UdYXxkAjt0uTN1BZPc6CdAcg52CP6g/39q+pmWhSxs2y2cwSYXMU+iQ
+ RS5T4Dal+HQQ4joSgVIjKxuA+G8IMuG+P427xeITig3X+syXaQWFb4AD4Z8oq8okNoeJr8xMX
+ rx+U3i1yAdt0HiPhhVOeDaG29RSzN3sFgr4QJ3a6KflFd0OW05wVNVn7Rapb/YoqtXTRJHt/e
+ /Qa4XJn0P55J3wtS3eP71Nk3+FPEu7pQ5gfgKjLCQcZ4S2tkqM2IbJZjhKKYMK0qr+Z4IwAI0
+ YzoP948e9heOxg6Ij9zrNHJBNO9WYhhhJ5XhL/YrXXDYomc0ZioCvmjypogEajPOaSmFEe4BF
+ qxcuJXjRFUj89mdmaGX5PATx3Tsigk4CEnqGcx5i8gKbOfxT9TDH5VoOEIHOve0WcYULemzEL
+ OpRkyVUcX4UxzrcydauRhTrqIguxoanRyrjJA6VpDCmjuHYV6aDOQnMZmVZb1EDa/7egVuaBy
+ 320PN51PveN7RMU1zwuDCJzUkF3vua0s1shLBQ==
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -95,9 +95,11 @@ Le 25/06/2022 à 17:38, Jason A. Donenfeld a écrit :
 >   		break;
 > +	case BI_VIRT_RNG_SEED:
 > +		add_bootloader_randomness(data + 4, be32_to_cpup(data));
-> +		break;
->   	default:
->   		unknown = 1;
->   		break;
 
-Reviewed-by: Laurent Vivier <laurent@vivier.eu>
+In fact, why don't you use the record->size to get the size of the buffer?
+
+It seems useless to encode twice the length of the buffer, the second time on a 32bit while the 
+length cannot exceed a 16bit value.
+
+Thanks,
+Laurent
