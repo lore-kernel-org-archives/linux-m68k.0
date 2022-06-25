@@ -2,167 +2,98 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C85C3CCA483
-	for <linux-m68k@archiver.kernel.org>; Sat, 25 Jun 2022 04:05:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA8FBC43334
+	for <linux-m68k@archiver.kernel.org>; Sat, 25 Jun 2022 15:38:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231892AbiFYEFC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 25 Jun 2022 00:05:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53546 "EHLO
+        id S233145AbiFYPi4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 25 Jun 2022 11:38:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbiFYEE7 (ORCPT
+        with ESMTP id S233065AbiFYPiz (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 25 Jun 2022 00:04:59 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9947DE8F
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Jun 2022 21:04:58 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id w6so4159415pfw.5
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Jun 2022 21:04:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WBt/btUb8fidp7Od3hgblEREGwTCWyy1gmQjOCfY3fU=;
-        b=U/9jOhfyin/xPm7/lhb3QQD5hUeqWoso3ZUE4nrDpj+uCxrVZoUa6Nd3Ck/My6d0yi
-         uppYCT29YGR4+ED265rzl5CvHaPa9jAGrevS8NrjQCL2swa/6jIuJFW7ijxN5Kwk3kBm
-         JV3zRaXX17ljjVxLWEmEYneBMjkOzcbgPwAATblJGSLPQW9zrru3NcHlbevjvxhjXf2X
-         4fZUXrqKoxs5SGRwhMih22jCYG6mLHxDBQ9QA+V/Ap/ZmZMWhJBLgf3cIDLH/WvFpZqO
-         6XUFzNOC5pd+9LH1sxuFUCYfWolIKgEMvYZ3auh92ECWjOyrr+qjV1d2Dawwr5UE8zHy
-         fSYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WBt/btUb8fidp7Od3hgblEREGwTCWyy1gmQjOCfY3fU=;
-        b=wD9VfuoF0PgHafHj229lI8m7fMSQJ5jvxHKU20MSop++vz05y8IbQs/W53s+5DGCwS
-         6HjD3tcT1ovoCeyIXmI4bEccq2n3kL+8QxPwBbeMDjeSoptSjJAxbTHFaSP1XqtyG3el
-         6bwVlDaZTAyBJkqjo0sSF8uCbfP6RvFikUDPMJQlr6QYRJp91pCVr6d02pYzsiBlVJa2
-         lSwx8X3sLBkxZ+8TDwuHuo+Vl2o4BSdsRv+EYr1yKYq/lS9kyakeHNk1rSzo/SqsNcsq
-         FwZOYBRBWsvgamWUvaIBbcAiS27W8sSCo0ZDacEl9WzXhZHDcV/8Dv5qGJKaWAQ8uHO1
-         e5qg==
-X-Gm-Message-State: AJIora9sDwamIJpHrrXLShd1RTEEBMppEHjeb7MSLYLD3kG2XsIg2rS7
-        ZnrAGvKTZlkve7uDYxui7Ws=
-X-Google-Smtp-Source: AGRyM1vLmqY6wDucr+TwoJMOmf3PJcPGDXbsAVQaOC2Ok2+1xpNGLbPuxQdolETx+44LH2D87vYqmw==
-X-Received: by 2002:a63:44:0:b0:40c:9f98:a172 with SMTP id 65-20020a630044000000b0040c9f98a172mr1947422pga.65.1656129897973;
-        Fri, 24 Jun 2022 21:04:57 -0700 (PDT)
-Received: from localhost ([2409:10:24a0:4700:e8ad:216a:2a9d:6d0c])
-        by smtp.gmail.com with ESMTPSA id n1-20020a170902e54100b00168adae4eb2sm2579898plf.262.2022.06.24.21.04.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jun 2022 21:04:57 -0700 (PDT)
-Date:   Sat, 25 Jun 2022 13:04:55 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-mm@kvack.org, linux-ia64@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-riscv@lists.infradead.org, Jonas Bonn <jonas@southpole.se>,
-        linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org,
-        linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org,
-        openrisc@lists.librecores.org,
-        linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH V4 10/26] openrisc/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Message-ID: <YraJZ7OahapN5Y6z@antec>
-References: <20220624044339.1533882-1-anshuman.khandual@arm.com>
- <20220624044339.1533882-11-anshuman.khandual@arm.com>
+        Sat, 25 Jun 2022 11:38:55 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2DD715A27
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 25 Jun 2022 08:38:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 303B2B80B7F;
+        Sat, 25 Jun 2022 15:38:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1C0FC341C0;
+        Sat, 25 Jun 2022 15:38:50 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="HboEAv4t"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1656171529;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=W2HeGFQgLk1e9Km3S9SfOn5rxYkH34TUlnLdSzu3vHk=;
+        b=HboEAv4t1+dldljw8zw4CRuDJan78kdT6RlYYm3yLsRG8wrC5hq+7eEhaV1vZyNckoqiLy
+        974QqWVyyC0fp/wtP3RfYuzSM01ITLpT62ECXLDnprxwsx8Oy4ZiWvZlgRokbzUsk65A6H
+        2zcmdShZGeBqmXeWMKwd3FAJAmzP8No=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id c2029b86 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Sat, 25 Jun 2022 15:38:49 +0000 (UTC)
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     geert@linux-m68k.org, laurent@vivier.eu,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [PATCH] m68k: virt: pass RNG seed via bootinfo block
+Date:   Sat, 25 Jun 2022 17:38:41 +0200
+Message-Id: <20220625153841.143928-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220624044339.1533882-11-anshuman.khandual@arm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Jun 24, 2022 at 10:13:23AM +0530, Anshuman Khandual wrote:
-> This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
-> vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
-> up a private and static protection_map[] array. Subsequently all __SXXX and
-> __PXXX macros can be dropped which are no longer needed.
-> 
-> Cc: Jonas Bonn <jonas@southpole.se>
-> Cc: openrisc@lists.librecores.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  arch/openrisc/Kconfig               |  1 +
->  arch/openrisc/include/asm/pgtable.h | 18 ------------------
->  arch/openrisc/mm/init.c             | 20 ++++++++++++++++++++
->  3 files changed, 21 insertions(+), 18 deletions(-)
-> 
-> diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
-> index e814df4c483c..fe0dfb50eb86 100644
-> --- a/arch/openrisc/Kconfig
-> +++ b/arch/openrisc/Kconfig
-> @@ -10,6 +10,7 @@ config OPENRISC
->  	select ARCH_HAS_DMA_SET_UNCACHED
->  	select ARCH_HAS_DMA_CLEAR_UNCACHED
->  	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
-> +	select ARCH_HAS_VM_GET_PAGE_PROT
->  	select COMMON_CLK
->  	select OF
->  	select OF_EARLY_FLATTREE
-> diff --git a/arch/openrisc/include/asm/pgtable.h b/arch/openrisc/include/asm/pgtable.h
-> index c3abbf71e09f..dcae8aea132f 100644
-> --- a/arch/openrisc/include/asm/pgtable.h
-> +++ b/arch/openrisc/include/asm/pgtable.h
-> @@ -176,24 +176,6 @@ extern void paging_init(void);
->  	__pgprot(_PAGE_ALL | _PAGE_SRE | _PAGE_SWE \
->  		 | _PAGE_SHARED | _PAGE_DIRTY | _PAGE_EXEC | _PAGE_CI)
->  
-> -#define __P000	PAGE_NONE
-> -#define __P001	PAGE_READONLY_X
-> -#define __P010	PAGE_COPY
-> -#define __P011	PAGE_COPY_X
-> -#define __P100	PAGE_READONLY
-> -#define __P101	PAGE_READONLY_X
-> -#define __P110	PAGE_COPY
-> -#define __P111	PAGE_COPY_X
-> -
-> -#define __S000	PAGE_NONE
-> -#define __S001	PAGE_READONLY_X
-> -#define __S010	PAGE_SHARED
-> -#define __S011	PAGE_SHARED_X
-> -#define __S100	PAGE_READONLY
-> -#define __S101	PAGE_READONLY_X
-> -#define __S110	PAGE_SHARED
-> -#define __S111	PAGE_SHARED_X
-> -
->  /* zero page used for uninitialized stuff */
->  extern unsigned long empty_zero_page[2048];
->  #define ZERO_PAGE(vaddr) (virt_to_page(empty_zero_page))
-> diff --git a/arch/openrisc/mm/init.c b/arch/openrisc/mm/init.c
-> index 3a021ab6f1ae..a654b9dcba91 100644
-> --- a/arch/openrisc/mm/init.c
-> +++ b/arch/openrisc/mm/init.c
-> @@ -208,3 +208,23 @@ void __init mem_init(void)
->  	mem_init_done = 1;
->  	return;
->  }
-> +
-> +static pgprot_t protection_map[16] __ro_after_init = {
-> +	[VM_NONE]					= PAGE_NONE,
-> +	[VM_READ]					= PAGE_READONLY_X,
-> +	[VM_WRITE]					= PAGE_COPY,
-> +	[VM_WRITE | VM_READ]				= PAGE_COPY_X,
-> +	[VM_EXEC]					= PAGE_READONLY,
-> +	[VM_EXEC | VM_READ]				= PAGE_READONLY_X,
-> +	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
-> +	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY_X,
-> +	[VM_SHARED]					= PAGE_NONE,
-> +	[VM_SHARED | VM_READ]				= PAGE_READONLY_X,
-> +	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
-> +	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED_X,
-> +	[VM_SHARED | VM_EXEC]				= PAGE_READONLY,
-> +	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY_X,
-> +	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED,
-> +	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED_X
-> +};
-> +DECLARE_VM_GET_PAGE_PROT
+Other virt VMs can pass RNG seeds via the "rng-seed" device tree
+property or via UEFI, but m68k doesn't have either. Instead it has its
+own bootinfo protocol. So this commit adds support for receiving a RNG
+seed from it, which will be used at the earliest possible time in boot,
+just like device tree.
 
-Looks good.
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+---
+ arch/m68k/include/uapi/asm/bootinfo-virt.h | 1 +
+ arch/m68k/virt/config.c                    | 4 ++++
+ 2 files changed, 5 insertions(+)
 
-Acked-by: Stafford Horne <shorne@gmail.com>
+diff --git a/arch/m68k/include/uapi/asm/bootinfo-virt.h b/arch/m68k/include/uapi/asm/bootinfo-virt.h
+index e4db7e2213ab..7c3044acdf4a 100644
+--- a/arch/m68k/include/uapi/asm/bootinfo-virt.h
++++ b/arch/m68k/include/uapi/asm/bootinfo-virt.h
+@@ -12,6 +12,7 @@
+ #define BI_VIRT_GF_TTY_BASE	0x8003
+ #define BI_VIRT_VIRTIO_BASE	0x8004
+ #define BI_VIRT_CTRL_BASE	0x8005
++#define BI_VIRT_RNG_SEED	0x8006
+ 
+ #define VIRT_BOOTI_VERSION	MK_BI_VERSION(2, 0)
+ 
+diff --git a/arch/m68k/virt/config.c b/arch/m68k/virt/config.c
+index 632ba200ad42..ad71af8273ec 100644
+--- a/arch/m68k/virt/config.c
++++ b/arch/m68k/virt/config.c
+@@ -2,6 +2,7 @@
+ 
+ #include <linux/reboot.h>
+ #include <linux/serial_core.h>
++#include <linux/random.h>
+ #include <clocksource/timer-goldfish.h>
+ 
+ #include <asm/bootinfo.h>
+@@ -92,6 +93,9 @@ int __init virt_parse_bootinfo(const struct bi_record *record)
+ 		data += 4;
+ 		virt_bi_data.virtio.irq = be32_to_cpup(data);
+ 		break;
++	case BI_VIRT_RNG_SEED:
++		add_bootloader_randomness(data + 4, be32_to_cpup(data));
++		break;
+ 	default:
+ 		unknown = 1;
+ 		break;
+-- 
+2.35.1
 
