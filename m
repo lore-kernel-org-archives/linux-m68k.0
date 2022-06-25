@@ -2,89 +2,180 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15015C433EF
-	for <linux-m68k@archiver.kernel.org>; Fri, 24 Jun 2022 17:08:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C8B4C433EF
+	for <linux-m68k@archiver.kernel.org>; Sat, 25 Jun 2022 03:08:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230333AbiFXRIn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 24 Jun 2022 13:08:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60582 "EHLO
+        id S231672AbiFYDIP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 24 Jun 2022 23:08:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231767AbiFXRIn (ORCPT
+        with ESMTP id S232355AbiFYDHj (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 24 Jun 2022 13:08:43 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B718651E4A
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Jun 2022 10:08:39 -0700 (PDT)
-Received: from mail-yw1-f182.google.com ([209.85.128.182]) by
- mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MV5G4-1oCvUh3JkE-00S54E for <linux-m68k@lists.linux-m68k.org>; Fri, 24
- Jun 2022 19:08:38 +0200
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-3176d94c236so31082377b3.3
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Jun 2022 10:08:37 -0700 (PDT)
-X-Gm-Message-State: AJIora8xfy9WB9e45WJBzrbYUfyWtimdptM1jXYK5jWcoGFKl058s/Af
-        TMY6oPzg9HHl76ExF3r2Mdhen0RYjCmGH+mwEjw=
-X-Google-Smtp-Source: AGRyM1tBSdPwbFq9GZSjizWzVuAB7giujhHzzt55cTqkntbPy6yauQrkbaXTZ2eocC/Zbg06KphUioMdhsic93kqOWE=
-X-Received: by 2002:a81:b93:0:b0:317:791f:3c0 with SMTP id 141-20020a810b93000000b00317791f03c0mr17394782ywl.42.1656090516599;
- Fri, 24 Jun 2022 10:08:36 -0700 (PDT)
+        Fri, 24 Jun 2022 23:07:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A2868012
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Jun 2022 20:07:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6F40E62099
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 25 Jun 2022 03:07:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2C0DC34114
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 25 Jun 2022 03:07:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1656126456;
+        bh=oXHgCaP4HoPf+EWVcl07MPhIxJZH52Q6LkxiX0QDRik=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=FU+dZqhPCI7WaKDA+AjLnOS95m8QPJ0z8ReiNhcC2P4NI+ZrmxNZzDJ5YJTkaoQPc
+         SatgzVUTcSgwyHrsucOh+GM4g3/1+h+GgSSKqGqW1IBs4BT6j/vgsdecXBdHRGrd/2
+         AqxR5wuq64YrbhfjN2MwpcKf3vhLfmFGvSGSPpQJKPSvpHYebZMLXmOJS28s2TD7Ve
+         tSI/XbxbVWusqsHNpvvUVuXqKWV5X3nWDwd3AKdS2EZyyoyoyyVia9ScMoTkLyaHef
+         IZZEeQ2fgwO8fwjgwOcJcINmgNazhx1HiRXE5XjDpGoZob6l6d4Fa9hcpl/FGH0gH1
+         y2/GNgWsUtZKQ==
+Received: by mail-vs1-f45.google.com with SMTP id t127so3933115vsb.8
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Jun 2022 20:07:36 -0700 (PDT)
+X-Gm-Message-State: AJIora/v+WEu2QdqWE5FEGZSdGy3p33l94XhNEZgc0Ee63dGGmtVVGts
+        oTofx4gFdVjyBWk6oJO9hUIA7OutGJy/s26e7qU=
+X-Google-Smtp-Source: AGRyM1vKaBnKP+OKs0X53+qz3soArX9HkvW+CKQD7jqShPo7H3ehVP4Gjy9lyocTRtcrWI2zFmWCsaDUISHvTXAw0RU=
+X-Received: by 2002:a05:6102:3e93:b0:353:a8fb:e922 with SMTP id
+ m19-20020a0561023e9300b00353a8fbe922mr711833vsv.51.1656126455677; Fri, 24 Jun
+ 2022 20:07:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220624155226.2889613-1-arnd@kernel.org>
-In-Reply-To: <20220624155226.2889613-1-arnd@kernel.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 24 Jun 2022 19:08:19 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a04C+ZavWb2nnYs-02CKZq10OA8rDE7QHMFF5qZzb6t9g@mail.gmail.com>
-Message-ID: <CAK8P3a04C+ZavWb2nnYs-02CKZq10OA8rDE7QHMFF5qZzb6t9g@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] phase out CONFIG_VIRT_TO_BUS
-To:     linux-scsi <linux-scsi@vger.kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jakub Kicinski <kuba@kernel.org>,
+References: <20220624044339.1533882-1-anshuman.khandual@arm.com> <20220624044339.1533882-18-anshuman.khandual@arm.com>
+In-Reply-To: <20220624044339.1533882-18-anshuman.khandual@arm.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Sat, 25 Jun 2022 11:07:24 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQXpYggbN8vbv+XVkORDEBbUAJJaJsbN2ZtSbjGfem1Tg@mail.gmail.com>
+Message-ID: <CAJF2gTQXpYggbN8vbv+XVkORDEBbUAJJaJsbN2ZtSbjGfem1Tg@mail.gmail.com>
+Subject: Re: [PATCH V4 17/26] csky/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     Linux-MM <linux-mm@kvack.org>,
         Christoph Hellwig <hch@infradead.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Khalid Aziz <khalid@gonehiking.org>,
-        "Maciej W . Rozycki" <macro@orcam.me.uk>,
-        Matt Wang <wwentao@vmware.com>,
-        Miquel van Smoorenburg <mikevs@xs4all.net>,
-        Mark Salyzyn <salyzyn@android.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Andrew Morton <akpm@linux-foundation.org>,
         linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Openrisc <openrisc@lists.librecores.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org,
         Parisc List <linux-parisc@vger.kernel.org>,
-        Denis Efremov <efremov@linux.com>
+        linux-alpha@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        linux-ia64@vger.kernel.org,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-m68k@lists.linux-m68k.org,
+        linux-snps-arc@lists.infradead.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-um@lists.infradead.org, linux-sh@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:Gl6GbYLTTRbW8haxssB+Oee7ROItj6anuoIeyFC24V7JFP2iPBX
- BXk1Z35aUt224IBKcSiX4MxOyWX9fFWRaiv/LHBELPVu6vpQaXFYs+ww67ibtWMhtW+kFmr
- 8QlWLwnKjlOVPL/kEkaotHipf4kFPgZDRR9Y4/+qmvORtZPEUvye+25/a7/kH1eNqRrPjQe
- poMI8VNjfAv1nut2jid/Q==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ZkXhGPdprgU=:tWFasDDBzntafdECErZ0U3
- lVojytLWoALVF6czHYxHCM/fNc8UZsXrqdhrWwoXwgTPU6Yr5DqD466VkyVdo8X0e+qlVFnXT
- T9473qTPs6tL0gSlTxSIPEMCZtm592ngAFKnNZqXpe4kuzYY/51uBrlgIWhtcGfjXm8FZwtPt
- l030UXcFfZycSxipx9UYLp1RaOJzEk+/PZHtKYbICLGCa2XbLLf9nZh2tsigODJMUUyt6ZbuW
- euwe7WsHJmLpWvp6FSmkGX0aeFufXwzjT6MWJW3UU4KgHuEwaXjZeOu26YZ/XG4Lh9XQya7EF
- B8d/GGTPmZlabWtJXYTb6FN9VdbFZgIv0ADRkxsRIhxwybImxZdX4AakpX97t+q9kOXB7K6zb
- V8pctK/Od4oxOCafbwHcbG5p5KmYGssbko5hONsk6U3OFO+vBERq99t0QgWn85J7mufWXzKFU
- ogPRS8btrlnG/TvgCz50Nln0ZNU5rSV9Mjq4FQ1zc2TO5Rb846Lj75t56HTInSrUfi24bVm92
- obbLlWjwZzoRgZsBtW7i9dGB8+OwTjzE4o9QMlytDLgRRtUlsurQMqByr1DIS0mvpMwXIdO5e
- f50DPznJa+LYfqh/4hMo3ujaIUsKlVJTS0auUw/L0cXVsRkBVNgAezm9SBMn7VUjb++yRXKbe
- r/xVqEaQ6ZgBJ/5spg6M3s7WLIOQmZmtwnZHxLsMwWiXe1isv1KK97+Ok5ND+lAIQFljgF8yv
- FPTjaHZXZh5jRHXs52GEULqlLeCWpCYwAlioO9hkZmvwARsJz/sGJ+S6X6DFm+OE/oNe9u8dF
- vsXSe6wEtogfzkAkkqE7vlEdkFhztEk3rodmTMxlyb4vjyZg/LEAQSFzlfMgU7VAYxiloOfbX
- Ta/e02QEIDq9Mg5sRmIw==
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Jun 24, 2022 at 5:52 PM Arnd Bergmann <arnd@kernel.org> wrote:
+For csky part.
 
-> Arnd Bergmann (3):
->   scsi: BusLogic remove bus_to_virt
->   scsi: dpt_i2o: remove obsolete driver
+Acked-by: Guo Ren <guoren@kernel.org>
 
-The dpt_i2o removal is overly large and got dropped by some of the
-mailing lists,
-if anyone wants to see the full patch, it did make it through to the linux-scsi
-list at least:
 
-https://lore.kernel.org/all/20220624155226.2889613-3-arnd@kernel.org/
+On Fri, Jun 24, 2022 at 12:48 PM Anshuman Khandual
+<anshuman.khandual@arm.com> wrote:
+>
+> This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
+> vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
+> up a private and static protection_map[] array. Subsequently all __SXXX and
+> __PXXX macros can be dropped which are no longer needed.
+>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: linux-csky@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>  arch/csky/Kconfig               |  1 +
+>  arch/csky/include/asm/pgtable.h | 18 ------------------
+>  arch/csky/mm/init.c             | 20 ++++++++++++++++++++
+>  3 files changed, 21 insertions(+), 18 deletions(-)
+>
+> diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
+> index 21d72b078eef..588b8a9c68ed 100644
+> --- a/arch/csky/Kconfig
+> +++ b/arch/csky/Kconfig
+> @@ -6,6 +6,7 @@ config CSKY
+>         select ARCH_HAS_GCOV_PROFILE_ALL
+>         select ARCH_HAS_SYNC_DMA_FOR_CPU
+>         select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+> +       select ARCH_HAS_VM_GET_PAGE_PROT
+>         select ARCH_USE_BUILTIN_BSWAP
+>         select ARCH_USE_QUEUED_RWLOCKS
+>         select ARCH_WANT_FRAME_POINTERS if !CPU_CK610 && $(cc-option,-mbacktrace)
+> diff --git a/arch/csky/include/asm/pgtable.h b/arch/csky/include/asm/pgtable.h
+> index bbe245117777..229a5f4ad7fc 100644
+> --- a/arch/csky/include/asm/pgtable.h
+> +++ b/arch/csky/include/asm/pgtable.h
+> @@ -77,24 +77,6 @@
+>  #define MAX_SWAPFILES_CHECK() \
+>                 BUILD_BUG_ON(MAX_SWAPFILES_SHIFT != 5)
+>
+> -#define __P000 PAGE_NONE
+> -#define __P001 PAGE_READ
+> -#define __P010 PAGE_READ
+> -#define __P011 PAGE_READ
+> -#define __P100 PAGE_READ
+> -#define __P101 PAGE_READ
+> -#define __P110 PAGE_READ
+> -#define __P111 PAGE_READ
+> -
+> -#define __S000 PAGE_NONE
+> -#define __S001 PAGE_READ
+> -#define __S010 PAGE_WRITE
+> -#define __S011 PAGE_WRITE
+> -#define __S100 PAGE_READ
+> -#define __S101 PAGE_READ
+> -#define __S110 PAGE_WRITE
+> -#define __S111 PAGE_WRITE
+> -
+>  extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
+>  #define ZERO_PAGE(vaddr)       (virt_to_page(empty_zero_page))
+>
+> diff --git a/arch/csky/mm/init.c b/arch/csky/mm/init.c
+> index bf2004aa811a..1bf7b2a748fd 100644
+> --- a/arch/csky/mm/init.c
+> +++ b/arch/csky/mm/init.c
+> @@ -197,3 +197,23 @@ void __init fixaddr_init(void)
+>         vaddr = __fix_to_virt(__end_of_fixed_addresses - 1) & PMD_MASK;
+>         fixrange_init(vaddr, vaddr + PMD_SIZE, swapper_pg_dir);
+>  }
+> +
+> +static pgprot_t protection_map[16] __ro_after_init = {
+> +       [VM_NONE]                                       = PAGE_NONE,
+> +       [VM_READ]                                       = PAGE_READ,
+> +       [VM_WRITE]                                      = PAGE_READ,
+> +       [VM_WRITE | VM_READ]                            = PAGE_READ,
+> +       [VM_EXEC]                                       = PAGE_READ,
+> +       [VM_EXEC | VM_READ]                             = PAGE_READ,
+> +       [VM_EXEC | VM_WRITE]                            = PAGE_READ,
+> +       [VM_EXEC | VM_WRITE | VM_READ]                  = PAGE_READ,
+> +       [VM_SHARED]                                     = PAGE_NONE,
+> +       [VM_SHARED | VM_READ]                           = PAGE_READ,
+> +       [VM_SHARED | VM_WRITE]                          = PAGE_WRITE,
+> +       [VM_SHARED | VM_WRITE | VM_READ]                = PAGE_WRITE,
+> +       [VM_SHARED | VM_EXEC]                           = PAGE_READ,
+> +       [VM_SHARED | VM_EXEC | VM_READ]                 = PAGE_READ,
+> +       [VM_SHARED | VM_EXEC | VM_WRITE]                = PAGE_WRITE,
+> +       [VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]      = PAGE_WRITE
+> +};
+> +DECLARE_VM_GET_PAGE_PROT
+> --
+> 2.25.1
+>
 
-         Arnd
+
+--
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
