@@ -2,144 +2,94 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0371CCCA483
-	for <linux-m68k@archiver.kernel.org>; Sun, 26 Jun 2022 09:11:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CB04CCA47C
+	for <linux-m68k@archiver.kernel.org>; Sun, 26 Jun 2022 09:11:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234160AbiFZJLQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        id S229817AbiFZJLQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
         Sun, 26 Jun 2022 05:11:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46304 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234136AbiFZJLP (ORCPT
+        with ESMTP id S234145AbiFZJLP (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Sun, 26 Jun 2022 05:11:15 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B29EA12AAF
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC7D12AB9
         for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Jun 2022 02:11:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 904076119B;
-        Sun, 26 Jun 2022 09:11:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D65F3C341D0;
-        Sun, 26 Jun 2022 09:11:10 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5AFA361113;
+        Sun, 26 Jun 2022 09:11:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A882C36AEC;
+        Sun, 26 Jun 2022 09:11:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1656234671;
-        bh=PhI7xlCBz8s4EqXsemcBzFaZLbSNGrNWFqcVvz20FLU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=HhAf8IklB9OEeSwUHmvWxlXncEZMnsUL3ruxIFgodyPNv9p+IrCpMlJ2Ee1QRPg4Y
-         hcLQjIGJsa57ccuYyM9Yyy/ROtPClfozh4WxentR1FyhgZLpBjfJOGg0x+KF4uJ/xK
-         kJvya0UqPXI61UML+5xdxeC865OaTGDrndLJQhHMXq2RYO88lEbM26jWxoanedVi+e
-         mtQoMumgkipZ4Bxf/XC3su3ouzdbhmQdJsOcFrbZpKeXoPTd+pXhJvNl4aEKmUZnEX
-         5AkPirLrYw/XgJk3fQoIdoqyPnzuUz7+aN/pwnstjak/isdyfdJp2rwGOaiGtxsqlk
-         h/pj4xfQ6G59g==
+        bh=IZ7UQBiFTK6+EQSreXzAvegFb5Jyj+NzY1U3aaiZ3co=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=oLeod4uCDPfXHCuGZ+Xs15+FPpKxlYQ6PptWyOc4JHTIC1lzjo+abOgBIfUlK07T+
+         Dwjrg3iqV8oXSERBz7SdOcGX6xA+hXktGsP3pcpHCNiL+q+3p6eT59Cs/Urd9cxVJw
+         Md10WdtEcxez2ccxZeSYpb7UCdG5S7BmNCWFezpKgttNT1uuMgbbnC5idy5EfWSx9S
+         1XsSjU4dr39/qBXoMe4Lygsduxg0IRzGEb7VZraGenyazagw0cq9dOGTTOAYybzJqh
+         sqmyb3Bb2QICG7qWkqWIQfvtTg5UWd+Vk+2H+G2+lwNNOu4UkIHDZ+C4Qwq0UB9V9Z
+         zsBQQXpQ9Qf4A==
 Received: from mchehab by mail.kernel.org with local (Exim 4.95)
         (envelope-from <mchehab@kernel.org>)
-        id 1o5OIN-001coA-Qi;
-        Sun, 26 Jun 2022 10:11:07 +0100
+        id 1o5OIO-001cp6-5Y;
+        Sun, 26 Jun 2022 10:11:08 +0100
 From:   Mauro Carvalho Chehab <mchehab@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        "H. Peter Anvin" <hpa@zytor.com>, Alex Shi <alexs@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dipen Patel <dipenp@nvidia.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Federico Vaga <federico.vaga@vaga.pv.it>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Mauro Carvalho Chehab" <mchehab+huawei@kernel.org>,
+        Finn Thain <fthain@linux-m68k.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Yanteng Si <siyanteng@loongson.cn>, devicetree@vger.kernel.org,
-        keyrings@vger.kernel.org, kvm@vger.kernel.org,
-        linux-cachefs@redhat.com, linux-input@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-riscv@lists.infradead.org,
-        linux-tegra@vger.kernel.org, rust-for-linux@vger.kernel.org,
-        x86@kernel.org
-Subject: [PATCH v2 00/20] Update Documentation/ cross-references
-Date:   Sun, 26 Jun 2022 10:10:46 +0100
-Message-Id: <cover.1656234456.git.mchehab@kernel.org>
+        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org
+Subject: [PATCH v2 16/20] arch: m68k: q40: README: drop references to IDE driver
+Date:   Sun, 26 Jun 2022 10:11:02 +0100
+Message-Id: <d6e3482ed622b6953db69cddb70f20c55c96e4da.1656234456.git.mchehab@kernel.org>
 X-Mailer: git-send-email 2.36.1
+In-Reply-To: <cover.1656234456.git.mchehab@kernel.org>
+References: <cover.1656234456.git.mchehab@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Fix most broken documentation file cross references on next-20220624.
+Since IDE support was deleted by Christoph Hellwig <hch@lst.de>,
+Jun 16 2021, drop the left-over from README file, updating the
+documentation to point to ata/pata_falcon.c.
 
-After this series, only 3 references will be broken:
+Fixes: 44b1fbc0f5f3 ("m68k/q40: Replace q40ide driver with pata_falcon and falconide")
+Fixes: b7fb14d3ac63 ("ide: remove the legacy ide driver")
+Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+---
 
-Warning: Documentation/dev-tools/kunit/run_wrapper.rst references a file that doesn't exist: Documentation/dev-tools/kunit/non_uml.rst
-Warning: Documentation/devicetree/bindings/regulator/siliconmitus,sm5703-regulator.yaml references a file that doesn't exist: Documentation/devicetree/bindings/mfd/siliconmitus,sm5703.yaml
-Warning: drivers/acpi/device_pm.c references a file that doesn't exist: Documentation/firmware-guide/acpi/low-power-probe.rst
+To avoid mailbombing on a large number of people, only mailing lists were C/C on the cover.
+See [PATCH v2 00/20] at: https://lore.kernel.org/all/cover.1656234456.git.mchehab@kernel.org/
 
-All of them seem to be due to the lack of a patch actually adding the
-documentation. Maybe the document file is still under review?
+ arch/m68k/q40/README | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Regards,
-Mauro
-
-Mauro Carvalho Chehab (20):
-  docs: netdev: update maintainer-netdev.rst reference
-  docs: filesystems: update netfs-api.rst reference
-  docs: zh_CN: page_frags.rst: fix a broken reference
-  docs: zh_CN/riscv/pmu.rst: remove old docuementation
-  docs: zh_CN/devicetree: fix typos
-  docs: zh_CN: fix a broken reference
-  docs: zh_CN/vm: fix a typo for page reporting ReST file
-  docs: zh_CN/vm/zsmalloc.rst: fix a typo
-  docs: zh_CN/vm/index.rst: fix a broken reference
-  Documentation: update watch_queue.rst references
-  Documentation: KVM: update s390-pv.rst reference
-  Documentation: KVM: update amd-memory-encryption.rst references
-  Documentation: KVM: update msr.rst reference
-  Documentation: KVM: update s390-diag.rst reference
-  objtool: update objtool.txt references
-  arch: m68k: q40: README: drop references to IDE driver
-  tegra194-hte.rst: fix reference to its binding
-  dt-bindings: mfd: update dlg,da9063.yaml reference
-  MAINTAINERS: update nvidia,tegra20-host1x.yaml reference
-  MAINTAINERS: fix cross references to mfd/dlg,da9063.yaml
-
- .../admin-guide/kernel-parameters.txt         |   2 +-
- .../bindings/input/da9062-onkey.txt           |   2 +-
- Documentation/driver-api/hte/tegra194-hte.rst |   2 +-
- Documentation/security/keys/core.rst          |   2 +-
- Documentation/security/secrets/coco.rst       |   2 +-
- .../it_IT/networking/netdev-FAQ.rst           |   2 +-
- .../translations/zh_CN/devicetree/index.rst   |   2 +-
- .../zh_CN/devicetree/of_unittest.rst          |   2 +-
- .../zh_CN/devicetree/usage-model.rst          |   2 +-
- .../zh_CN/doc-guide/kernel-doc.rst            |   2 +-
- .../translations/zh_CN/riscv/index.rst        |   1 -
- .../translations/zh_CN/riscv/pmu.rst          | 235 ------------------
- .../zh_CN/vm/free_page_reporting.rst          |   2 +-
- .../translations/zh_CN/vm/frontswap.rst       |   2 +-
- Documentation/translations/zh_CN/vm/index.rst |   2 +-
- .../translations/zh_CN/vm/page_frags.rst      |   2 +-
- .../translations/zh_CN/vm/zsmalloc.rst        |   2 +-
- Documentation/virt/kvm/api.rst                |   4 +-
- Documentation/virt/kvm/s390/s390-pv-boot.rst  |   2 +-
- Documentation/virt/kvm/x86/hypercalls.rst     |   2 +-
- Documentation/x86/orc-unwinder.rst            |   2 +-
- MAINTAINERS                                   |   6 +-
- arch/m68k/q40/README                          |   5 +-
- include/linux/fscache.h                       |   2 +-
- include/linux/objtool.h                       |   2 +-
- include/linux/watch_queue.h                   |   2 +-
- init/Kconfig                                  |   2 +-
- kernel/watch_queue.c                          |   2 +-
- lib/Kconfig.debug                             |   2 +-
- tools/include/linux/objtool.h                 |   2 +-
- tools/objtool/check.c                         |   2 +-
- 31 files changed, 33 insertions(+), 270 deletions(-)
- delete mode 100644 Documentation/translations/zh_CN/riscv/pmu.rst
-
+diff --git a/arch/m68k/q40/README b/arch/m68k/q40/README
+index a4991d2d8af6..9760e9081f6f 100644
+--- a/arch/m68k/q40/README
++++ b/arch/m68k/q40/README
+@@ -30,11 +30,10 @@ drivers used by the Q40, apart from the very obvious (console etc.):
+ 		     genrtc.c		# RTC
+ 		char/joystick/*		# most of this should work, not
+ 				        # in default config.in
+-	        block/q40ide.c		# startup for ide
+-		      ide*		# see Documentation/ide/ide.rst
+-		      floppy.c		# normal PC driver, DMA emu in asm/floppy.h
++	        block/floppy.c		# normal PC driver, DMA emu in asm/floppy.h
+ 					# and arch/m68k/kernel/entry.S
+ 					# see drivers/block/README.fd
++		ata/pata_falcon.c
+ 		net/ne.c
+ 		video/q40fb.c
+ 		parport/*
 -- 
 2.36.1
-
 
