@@ -2,80 +2,155 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61943C43334
-	for <linux-m68k@archiver.kernel.org>; Sun, 26 Jun 2022 09:14:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19DB5C43334
+	for <linux-m68k@archiver.kernel.org>; Sun, 26 Jun 2022 09:40:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234304AbiFZJOu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 26 Jun 2022 05:14:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51868 "EHLO
+        id S234164AbiFZJkB convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 26 Jun 2022 05:40:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234307AbiFZJOu (ORCPT
+        with ESMTP id S229782AbiFZJkA (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 26 Jun 2022 05:14:50 -0400
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0237025E2
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Jun 2022 02:14:49 -0700 (PDT)
-Received: by mail-qk1-f177.google.com with SMTP id b125so5005982qkg.11
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Jun 2022 02:14:48 -0700 (PDT)
+        Sun, 26 Jun 2022 05:40:00 -0400
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0DE19FD6
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Jun 2022 02:39:59 -0700 (PDT)
+Received: by mail-qk1-f179.google.com with SMTP id v6so5118035qkh.2
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Jun 2022 02:39:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jbPraZXafoS9hoTYKTZ34AOWnSsSx8JmOQi+FZJXy5o=;
-        b=oSv+//XHMWudUXB/E3tdGQ35t4bhMtXqeqQS56enHaFMMLd40IXyMrZuTfImRH1f2W
-         kQGh4302eVs0rgfI4vtp6u9jFOeTKPXVMwW2Hp2sDsZ0a4Lrtc3wL5WExqGZS7TKfjTB
-         Qg0dliVTGbyPNc7NMgeHr3EsF5S9E6DU3+OjBuxJETZIVtbORV96cVCGUdzPiB16FITE
-         d1KRvkpKcK7U/gx3hoxXv45aFBTmTPh9M942UhtKul5MW4av+cAijzxwTKv07wvH3A+e
-         IFWuqFNhqY9rvbYgKz99rty7/P/v2UnZAcfZFW0YndzHyxp07QJBzfVoBqmBg2ebAPEy
-         HPfg==
-X-Gm-Message-State: AJIora/bn+XCBCmVu9iZ0cUc0ygqN/LLvrYM/NXyo1XPzW07wocz3mYu
-        AaxVg+23gQSWjCBRLCZ+AreMdXq8FFcRAg==
-X-Google-Smtp-Source: AGRyM1svRnaMCJ/8KcJY4M+y2sYyDDhm2DD19qLEJGqwKPjMSzOmG2Ed3n+CzgqSatEVHAUw5umnng==
-X-Received: by 2002:a05:620a:2556:b0:6a7:9f07:602 with SMTP id s22-20020a05620a255600b006a79f070602mr4778204qko.207.1656234887674;
-        Sun, 26 Jun 2022 02:14:47 -0700 (PDT)
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id g19-20020a37e213000000b006a6bd7028d5sm5867629qki.18.2022.06.26.02.14.47
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=q5mJwFzFEr8kIw19EwrMxHT8BpAf4UimcTMy2tL5P0E=;
+        b=gn3vH16DNEFMrb7MH6wJxX7C4iFyuoCchNnzM57B29W+tTUws2pZ/rycdc2OsOUMqe
+         Cit5ZNGio/3GoeC5rnqotOTxU01RZDPoBWRPlpbSJ6EQFetN9Es779QM9r14TvD0/yNr
+         OYyEINTdFUlTX89X77ALoYhb9VLb6HqL8Qz/v3FuZFpbvGXAFMPGpY8ISBCrgFftIPH7
+         Fdzwg8HBsoYXO6ikNhcCndvAZScU+m+LRkEc2E9oaNb+WitNhzRT476pd5zNEy3b2k2o
+         j5n6Ll4RIXy5Lpu8l1VswO9AGnLmM0GF9ZKxDiu8wP9w9m9Ew4t2D5aCmUY7jAFg2EB3
+         qYxQ==
+X-Gm-Message-State: AJIora8WmIqxgpzxWsaskrG3gdmy3ZElUxad7L/U73xW6uqOIrkbT/8H
+        spMyV4l/uA4ZUjEek7etrBb5eZdfIY9r8g==
+X-Google-Smtp-Source: AGRyM1tkQZEPQyqm4uLYt/lE42Y1xRf0FhwvXST/ixXEbOq4G/dv46zZOjTUDAcJE42E6T0mVwM23g==
+X-Received: by 2002:a05:620a:2849:b0:6a6:5998:f743 with SMTP id h9-20020a05620a284900b006a65998f743mr4892857qkp.757.1656236398902;
+        Sun, 26 Jun 2022 02:39:58 -0700 (PDT)
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
+        by smtp.gmail.com with ESMTPSA id bq32-20020a05620a46a000b006a785ba0c25sm5956149qkb.77.2022.06.26.02.39.58
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 26 Jun 2022 02:14:47 -0700 (PDT)
-Received: by mail-yb1-f169.google.com with SMTP id p136so5664841ybg.4
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Jun 2022 02:14:47 -0700 (PDT)
-X-Received: by 2002:a05:6902:120e:b0:634:6f29:6b84 with SMTP id
- s14-20020a056902120e00b006346f296b84mr7820984ybu.604.1656234886883; Sun, 26
- Jun 2022 02:14:46 -0700 (PDT)
+        Sun, 26 Jun 2022 02:39:58 -0700 (PDT)
+Received: by mail-yb1-f171.google.com with SMTP id p7so10508484ybm.7
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Jun 2022 02:39:58 -0700 (PDT)
+X-Received: by 2002:a25:3288:0:b0:66c:8a91:74bb with SMTP id
+ y130-20020a253288000000b0066c8a9174bbmr6631769yby.89.1656236398270; Sun, 26
+ Jun 2022 02:39:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1656234456.git.mchehab@kernel.org> <d6e3482ed622b6953db69cddb70f20c55c96e4da.1656234456.git.mchehab@kernel.org>
-In-Reply-To: <d6e3482ed622b6953db69cddb70f20c55c96e4da.1656234456.git.mchehab@kernel.org>
+References: <20220625153841.143928-1-Jason@zx2c4.com> <512bdf97-5468-e2d2-75bd-24107aaf8a34@vivier.eu>
+ <CAHmME9qKkL8r7QSwq+2DA54mpMHzqpnq=pi5f0DhKOcB-qezoQ@mail.gmail.com>
+ <fa4f2fba-ad77-e5a9-a78a-680ed5137157@vivier.eu> <CAHmME9oGOduYbw_-=0QeKzW6Lj07S6tevssvUpyWLgutuxE+UA@mail.gmail.com>
+In-Reply-To: <CAHmME9oGOduYbw_-=0QeKzW6Lj07S6tevssvUpyWLgutuxE+UA@mail.gmail.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sun, 26 Jun 2022 11:14:35 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXu_v28veaFva_VSKMKWjCYSosSr6pGpj5W3kj-MXfzsg@mail.gmail.com>
-Message-ID: <CAMuHMdXu_v28veaFva_VSKMKWjCYSosSr6pGpj5W3kj-MXfzsg@mail.gmail.com>
-Subject: Re: [PATCH v2 16/20] arch: m68k: q40: README: drop references to IDE driver
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Finn Thain <fthain@linux-m68k.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Date:   Sun, 26 Jun 2022 11:39:46 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVKpmN=Cp6zTe7=JO=5GoAhrfhoKT=pqszNR8iUkEv9Rw@mail.gmail.com>
+Message-ID: <CAMuHMdVKpmN=Cp6zTe7=JO=5GoAhrfhoKT=pqszNR8iUkEv9Rw@mail.gmail.com>
+Subject: Re: [PATCH] m68k: virt: pass RNG seed via bootinfo block
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     Laurent Vivier <laurent@vivier.eu>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sun, Jun 26, 2022 at 11:11 AM Mauro Carvalho Chehab
-<mchehab@kernel.org> wrote:
-> Since IDE support was deleted by Christoph Hellwig <hch@lst.de>,
-> Jun 16 2021, drop the left-over from README file, updating the
-> documentation to point to ata/pata_falcon.c.
->
-> Fixes: 44b1fbc0f5f3 ("m68k/q40: Replace q40ide driver with pata_falcon and falconide")
-> Fixes: b7fb14d3ac63 ("ide: remove the legacy ide driver")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+Hi Jason,
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Thanks for your patch!
+
+On Sat, Jun 25, 2022 at 6:26 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+> On Sat, Jun 25, 2022 at 6:24 PM Laurent Vivier <laurent@vivier.eu> wrote:
+> > Le 25/06/2022 à 18:19, Jason A. Donenfeld a écrit :
+> > > On Sat, Jun 25, 2022 at 6:08 PM Laurent Vivier <laurent@vivier.eu> wrote:
+> > >> Le 25/06/2022 à 17:38, Jason A. Donenfeld a écrit :
+> > >>> Other virt VMs can pass RNG seeds via the "rng-seed" device tree
+
+FTR, "rng-seed" does not seem to be documented anywhere, not under
+Documentation/devicetree/bindings/, and not in the Devicetree
+Specification?
+
+> > >>> property or via UEFI, but m68k doesn't have either. Instead it has its
+> > >>> own bootinfo protocol. So this commit adds support for receiving a RNG
+> > >>> seed from it, which will be used at the earliest possible time in boot,
+> > >>> just like device tree.
+> > >>>
+> > >>> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> > >>> --- a/arch/m68k/include/uapi/asm/bootinfo-virt.h
+> > >>> +++ b/arch/m68k/include/uapi/asm/bootinfo-virt.h
+> > >>> @@ -12,6 +12,7 @@
+> > >>>    #define BI_VIRT_GF_TTY_BASE 0x8003
+> > >>>    #define BI_VIRT_VIRTIO_BASE 0x8004
+> > >>>    #define BI_VIRT_CTRL_BASE   0x8005
+> > >>> +#define BI_VIRT_RNG_SEED     0x8006
+
+Please add a comment documenting the record format.
+
+Laurent: Would be nice if you could add this for the other BI_*, too.
+
+> > >>>
+> > >>>    #define VIRT_BOOTI_VERSION  MK_BI_VERSION(2, 0)
+> > >>>
+> > >>> diff --git a/arch/m68k/virt/config.c b/arch/m68k/virt/config.c
+> > >>> index 632ba200ad42..ad71af8273ec 100644
+> > >>> --- a/arch/m68k/virt/config.c
+> > >>> +++ b/arch/m68k/virt/config.c
+> > >>> @@ -2,6 +2,7 @@
+> > >>>
+> > >>>    #include <linux/reboot.h>
+> > >>>    #include <linux/serial_core.h>
+> > >>> +#include <linux/random.h>
+> > >>>    #include <clocksource/timer-goldfish.h>
+> > >>>
+> > >>>    #include <asm/bootinfo.h>
+> > >>> @@ -92,6 +93,9 @@ int __init virt_parse_bootinfo(const struct bi_record *record)
+> > >>>                data += 4;
+> > >>>                virt_bi_data.virtio.irq = be32_to_cpup(data);
+> > >>>                break;
+> > >>> +     case BI_VIRT_RNG_SEED:
+> > >>> +             add_bootloader_randomness(data + 4, be32_to_cpup(data));
+> > >>
+> > >> In fact, why don't you use the record->size to get the size of the buffer?
+> > >>
+> > >> It seems useless to encode twice the length of the buffer, the second time on a 32bit while the
+> > >> length cannot exceed a 16bit value.
+> > >
+> > > Doesn't that make the length ambiguous because of required alignment?
+> >
+> > I agree, it's why I understand reviewing the QEMU part of your patch.
+> >
+> > > Would rather keep this general. As is, it's also much more like the
+> > > others and more uniform to keep it that way. You were able to review
+> > > it and see that it was right after glancing for a second. That seems
+> > > superior to any imaginary gains we'd get by overloading the record
+> > > size.
+> >
+> > And what about using a 16bit field rather than a 32bit field as the encoded length cannot be greater
+> > than the record length?
+>
+> I guess but that's different from all other length fields, and means
+> we can't expand past 65k if somebody wants to use this for something
+> more interesting later. Again I wonder what stinginess here gets us.
+> This is just a boot parameter... No need to go crazy optimizing it.
+
+You cannot extend this past (64 KiB - sizeof(struct bi_record))
+anyway, as the total record size is limited to 64 KiB, regardless of
+the additional buffer size you try to encode inside your own 32-bit
+size field.
+
+So either just store the data inside the record, rely on bi_record.size,
+and live with random data that must be a number of even bytes (does
+it really hurt to drop the last byte, or add a dummy byte?), or store
+a pointer/size, like is done for e.g. BI_RAMDISK.
 
 Gr{oetje,eeting}s,
 
