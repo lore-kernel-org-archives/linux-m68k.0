@@ -2,94 +2,88 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CB04CCA47C
-	for <linux-m68k@archiver.kernel.org>; Sun, 26 Jun 2022 09:11:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61943C43334
+	for <linux-m68k@archiver.kernel.org>; Sun, 26 Jun 2022 09:14:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbiFZJLQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 26 Jun 2022 05:11:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46270 "EHLO
+        id S234304AbiFZJOu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 26 Jun 2022 05:14:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234145AbiFZJLP (ORCPT
+        with ESMTP id S234307AbiFZJOu (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 26 Jun 2022 05:11:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC7D12AB9
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Jun 2022 02:11:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5AFA361113;
-        Sun, 26 Jun 2022 09:11:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A882C36AEC;
-        Sun, 26 Jun 2022 09:11:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656234671;
-        bh=IZ7UQBiFTK6+EQSreXzAvegFb5Jyj+NzY1U3aaiZ3co=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oLeod4uCDPfXHCuGZ+Xs15+FPpKxlYQ6PptWyOc4JHTIC1lzjo+abOgBIfUlK07T+
-         Dwjrg3iqV8oXSERBz7SdOcGX6xA+hXktGsP3pcpHCNiL+q+3p6eT59Cs/Urd9cxVJw
-         Md10WdtEcxez2ccxZeSYpb7UCdG5S7BmNCWFezpKgttNT1uuMgbbnC5idy5EfWSx9S
-         1XsSjU4dr39/qBXoMe4Lygsduxg0IRzGEb7VZraGenyazagw0cq9dOGTTOAYybzJqh
-         sqmyb3Bb2QICG7qWkqWIQfvtTg5UWd+Vk+2H+G2+lwNNOu4UkIHDZ+C4Qwq0UB9V9Z
-         zsBQQXpQ9Qf4A==
-Received: from mchehab by mail.kernel.org with local (Exim 4.95)
-        (envelope-from <mchehab@kernel.org>)
-        id 1o5OIO-001cp6-5Y;
-        Sun, 26 Jun 2022 10:11:08 +0100
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Mauro Carvalho Chehab" <mchehab+huawei@kernel.org>,
-        Finn Thain <fthain@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org
-Subject: [PATCH v2 16/20] arch: m68k: q40: README: drop references to IDE driver
-Date:   Sun, 26 Jun 2022 10:11:02 +0100
-Message-Id: <d6e3482ed622b6953db69cddb70f20c55c96e4da.1656234456.git.mchehab@kernel.org>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <cover.1656234456.git.mchehab@kernel.org>
-References: <cover.1656234456.git.mchehab@kernel.org>
+        Sun, 26 Jun 2022 05:14:50 -0400
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0237025E2
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Jun 2022 02:14:49 -0700 (PDT)
+Received: by mail-qk1-f177.google.com with SMTP id b125so5005982qkg.11
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Jun 2022 02:14:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jbPraZXafoS9hoTYKTZ34AOWnSsSx8JmOQi+FZJXy5o=;
+        b=oSv+//XHMWudUXB/E3tdGQ35t4bhMtXqeqQS56enHaFMMLd40IXyMrZuTfImRH1f2W
+         kQGh4302eVs0rgfI4vtp6u9jFOeTKPXVMwW2Hp2sDsZ0a4Lrtc3wL5WExqGZS7TKfjTB
+         Qg0dliVTGbyPNc7NMgeHr3EsF5S9E6DU3+OjBuxJETZIVtbORV96cVCGUdzPiB16FITE
+         d1KRvkpKcK7U/gx3hoxXv45aFBTmTPh9M942UhtKul5MW4av+cAijzxwTKv07wvH3A+e
+         IFWuqFNhqY9rvbYgKz99rty7/P/v2UnZAcfZFW0YndzHyxp07QJBzfVoBqmBg2ebAPEy
+         HPfg==
+X-Gm-Message-State: AJIora/bn+XCBCmVu9iZ0cUc0ygqN/LLvrYM/NXyo1XPzW07wocz3mYu
+        AaxVg+23gQSWjCBRLCZ+AreMdXq8FFcRAg==
+X-Google-Smtp-Source: AGRyM1svRnaMCJ/8KcJY4M+y2sYyDDhm2DD19qLEJGqwKPjMSzOmG2Ed3n+CzgqSatEVHAUw5umnng==
+X-Received: by 2002:a05:620a:2556:b0:6a7:9f07:602 with SMTP id s22-20020a05620a255600b006a79f070602mr4778204qko.207.1656234887674;
+        Sun, 26 Jun 2022 02:14:47 -0700 (PDT)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id g19-20020a37e213000000b006a6bd7028d5sm5867629qki.18.2022.06.26.02.14.47
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 26 Jun 2022 02:14:47 -0700 (PDT)
+Received: by mail-yb1-f169.google.com with SMTP id p136so5664841ybg.4
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Jun 2022 02:14:47 -0700 (PDT)
+X-Received: by 2002:a05:6902:120e:b0:634:6f29:6b84 with SMTP id
+ s14-20020a056902120e00b006346f296b84mr7820984ybu.604.1656234886883; Sun, 26
+ Jun 2022 02:14:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1656234456.git.mchehab@kernel.org> <d6e3482ed622b6953db69cddb70f20c55c96e4da.1656234456.git.mchehab@kernel.org>
+In-Reply-To: <d6e3482ed622b6953db69cddb70f20c55c96e4da.1656234456.git.mchehab@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sun, 26 Jun 2022 11:14:35 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXu_v28veaFva_VSKMKWjCYSosSr6pGpj5W3kj-MXfzsg@mail.gmail.com>
+Message-ID: <CAMuHMdXu_v28veaFva_VSKMKWjCYSosSr6pGpj5W3kj-MXfzsg@mail.gmail.com>
+Subject: Re: [PATCH v2 16/20] arch: m68k: q40: README: drop references to IDE driver
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Finn Thain <fthain@linux-m68k.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Since IDE support was deleted by Christoph Hellwig <hch@lst.de>,
-Jun 16 2021, drop the left-over from README file, updating the
-documentation to point to ata/pata_falcon.c.
+On Sun, Jun 26, 2022 at 11:11 AM Mauro Carvalho Chehab
+<mchehab@kernel.org> wrote:
+> Since IDE support was deleted by Christoph Hellwig <hch@lst.de>,
+> Jun 16 2021, drop the left-over from README file, updating the
+> documentation to point to ata/pata_falcon.c.
+>
+> Fixes: 44b1fbc0f5f3 ("m68k/q40: Replace q40ide driver with pata_falcon and falconide")
+> Fixes: b7fb14d3ac63 ("ide: remove the legacy ide driver")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
 
-Fixes: 44b1fbc0f5f3 ("m68k/q40: Replace q40ide driver with pata_falcon and falconide")
-Fixes: b7fb14d3ac63 ("ide: remove the legacy ide driver")
-Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
----
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-To avoid mailbombing on a large number of people, only mailing lists were C/C on the cover.
-See [PATCH v2 00/20] at: https://lore.kernel.org/all/cover.1656234456.git.mchehab@kernel.org/
+Gr{oetje,eeting}s,
 
- arch/m68k/q40/README | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+                        Geert
 
-diff --git a/arch/m68k/q40/README b/arch/m68k/q40/README
-index a4991d2d8af6..9760e9081f6f 100644
---- a/arch/m68k/q40/README
-+++ b/arch/m68k/q40/README
-@@ -30,11 +30,10 @@ drivers used by the Q40, apart from the very obvious (console etc.):
- 		     genrtc.c		# RTC
- 		char/joystick/*		# most of this should work, not
- 				        # in default config.in
--	        block/q40ide.c		# startup for ide
--		      ide*		# see Documentation/ide/ide.rst
--		      floppy.c		# normal PC driver, DMA emu in asm/floppy.h
-+	        block/floppy.c		# normal PC driver, DMA emu in asm/floppy.h
- 					# and arch/m68k/kernel/entry.S
- 					# see drivers/block/README.fd
-+		ata/pata_falcon.c
- 		net/ne.c
- 		video/q40fb.c
- 		parport/*
--- 
-2.36.1
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
