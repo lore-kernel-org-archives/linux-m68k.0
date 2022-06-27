@@ -2,132 +2,110 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EECDDCCA473
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Jun 2022 08:10:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57D9CCCA47E
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Jun 2022 08:26:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233308AbiF0IKM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 27 Jun 2022 04:10:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43846 "EHLO
+        id S233530AbiF0I0z (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 27 Jun 2022 04:26:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233344AbiF0IKI (ORCPT
+        with ESMTP id S233518AbiF0I0y (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 27 Jun 2022 04:10:08 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E2E614A
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Jun 2022 01:10:08 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id c205so8266268pfc.7
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Jun 2022 01:10:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=Kp9FmTyX7dGRB9FFbW8qRxYhCrBAW1WHUiTJLo4/9H4=;
-        b=K613IOtiRm08GX4X7oLeBesl1pBHqqYHcDPxV7/3JEOF5n76WCWDPXYNIgN0NseE0r
-         8bhO3DE3uflpJFhEfLuanvcY7ac1lLtGB/8aZNJ1w8d3jV6V1SXnxHfkCRZIkH+m60fi
-         ilVcVdkV5hD1+m3AzPdKtBDW9iqf+vzUo0E9kO/Oxbv+90q0xA8uOJhRB2Gz3SW5oEWi
-         yKk2yydgdryqRmqfaDuIl43PVHCXytxBCYpQ5I2V4y5AEhtLIR3BDFYDUcWk3s24zyZI
-         ERJQUFowl0fWdYSG/t8vSvdCVgNdMU6LggXDVdbEtT+SZx0p1RxJ0xGekYMy+MddZSUr
-         wYaA==
+        Mon, 27 Jun 2022 04:26:54 -0400
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E168B6178
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Jun 2022 01:26:53 -0700 (PDT)
+Received: by mail-qv1-f48.google.com with SMTP id y14so13699742qvs.10
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Jun 2022 01:26:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=Kp9FmTyX7dGRB9FFbW8qRxYhCrBAW1WHUiTJLo4/9H4=;
-        b=Artu69ymIU2sm9tVo8SQRX/lZlIoDB3Ws+vHVCUzf9qH4q4QUm+leNHDWFtTSHZlaQ
-         P7A5TOAApWjGe8MSKq5w1F39eb8u1khI/7VN8WA6xaCTOyIrTHQbsHBomM+sUqFbY6lH
-         SarwgELrFKjlPpucMQ+elmEEesiYAnSMBOSt7Q4HcfTGEQDRySz2U2dIlIcrglNgDnTy
-         jqsN8tEMYrSzJpHuTouDwa1TmlYy0iOldehKBXr2TDktLhgH5q3AtSrrMlSEO+JlC335
-         Kj6PrHKqzAdQw8I4tF5zrO8Hyq5abLYNqlvqwPi+FrFzo6KO2ZzV4c7s7D09EyCpVS0R
-         qNyA==
-X-Gm-Message-State: AJIora/4WD9DJ3SIxKZ1S+df0eypLewGmPgZKYT7wz6xG+wr3ECIlpoS
-        8vHpcc2FeEiFDZswrrWhiIY=
-X-Google-Smtp-Source: AGRyM1sg7iF/y7vKHgXwujHvRSIecgmir4U7fRrNlW+Dv0GKekuR9SBw+l3PLY+27c36Xro7hy0FTA==
-X-Received: by 2002:a63:794e:0:b0:40d:99b:bb4 with SMTP id u75-20020a63794e000000b0040d099b0bb4mr11868551pgc.133.1656317407267;
-        Mon, 27 Jun 2022 01:10:07 -0700 (PDT)
-Received: from [10.1.1.24] (222-155-0-244-adsl.sparkbb.co.nz. [222.155.0.244])
-        by smtp.gmail.com with ESMTPSA id y3-20020a17090ad70300b001ecdd9507b9sm6536341pju.26.2022.06.27.01.09.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 27 Jun 2022 01:10:06 -0700 (PDT)
-Subject: Re: [PATCH v2 3/3] arch/*/: remove CONFIG_VIRT_TO_BUS
-To:     Arnd Bergmann <arnd@kernel.org>
-References: <20220617125750.728590-1-arnd@kernel.org>
- <20220617125750.728590-4-arnd@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ir7A3VG3rQ4e3U1bE1FV/pPr5VS7k4YiEaqfUpRXgys=;
+        b=R/MtfpyM815NDN4RwAnXjktw4AlxTNOjXVXA8KuPdtSTtW1P4cjv82jwmC1rKoLXIu
+         dQzZ8W9NOdQbFY0ud/pb8KV+TnCyqZ30ZhjI01EowKXh9vAnI/K+fucl0BNTebegf1UP
+         L8/OwbBg73n/3nWlPld39j3tQYEEiWjwaxzw9MLwPjI9b+jM9aWMct1zZVC2txjKuoaz
+         rpGJqlnqlxZkODwBXxM7ycoX1iAtSm/Ae/V8J4bAIIiIGK8iSrvG1ANhW7mq/zasd59J
+         Y1JvtKSi4XvSGJkjsoYjhLBiwmnqGC6MNpCTzTrgrxnDV7hpK0PBr1hfBQAkaXrkHlr9
+         OIMQ==
+X-Gm-Message-State: AJIora9ZXHvMDUdxoSlbnEI5Eph9RTzgGAyO/nC1OfxpB5MJLeRzY+iP
+        XSPCABYEHqolV0mzDQIDRc7y2m5KcmOEsg==
+X-Google-Smtp-Source: AGRyM1tEh0tijeiDNbOMQR6IzrTK3r3u1k/C1dhO3tHqz4jkleB7rCpLdDS/Ya8vgYzNTdf0SlHQgw==
+X-Received: by 2002:ac8:5ad1:0:b0:305:864:2eb0 with SMTP id d17-20020ac85ad1000000b0030508642eb0mr8335599qtd.168.1656318411577;
+        Mon, 27 Jun 2022 01:26:51 -0700 (PDT)
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com. [209.85.128.178])
+        by smtp.gmail.com with ESMTPSA id fb10-20020a05622a480a00b00304e2e4bf1esm6690157qtb.88.2022.06.27.01.26.50
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Jun 2022 01:26:51 -0700 (PDT)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-31780ad7535so77778557b3.8
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Jun 2022 01:26:50 -0700 (PDT)
+X-Received: by 2002:a81:a092:0:b0:318:5c89:a935 with SMTP id
+ x140-20020a81a092000000b003185c89a935mr14193176ywg.383.1656318410280; Mon, 27
+ Jun 2022 01:26:50 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220617125750.728590-1-arnd@kernel.org> <20220617125750.728590-4-arnd@kernel.org>
  <6ba86afe-bf9f-1aca-7af1-d0d348d75ffc@gmail.com>
- <CAK8P3a1XfwkTOV7qOs1fTxf4vthNBRXKNu8A5V7TWnHT081NGA@mail.gmail.com>
- <6d1d88ee-1cf6-c735-1e6d-bafd2096e322@gmail.com>
- <CAK8P3a1KKPXr0ews9po_xjmnGYUWf18gBaZYYmnC+DvtxTKLmQ@mail.gmail.com>
-Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+In-Reply-To: <6ba86afe-bf9f-1aca-7af1-d0d348d75ffc@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 27 Jun 2022 10:26:37 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVewn0OYA9oJfStk0-+vCKAUou+4Mvd5H2kmrSks1p5jg@mail.gmail.com>
+Message-ID: <CAMuHMdVewn0OYA9oJfStk0-+vCKAUou+4Mvd5H2kmrSks1p5jg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] arch/*/: remove CONFIG_VIRT_TO_BUS
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>, scsi <linux-scsi@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Arnd Bergmann <arnd@arndb.de>,
         Jakub Kicinski <kuba@kernel.org>,
         Christoph Hellwig <hch@infradead.org>,
         Marek Szyprowski <m.szyprowski@samsung.com>,
         Robin Murphy <robin.murphy@arm.com>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
         Khalid Aziz <khalid@gonehiking.org>,
         "Maciej W . Rozycki" <macro@orcam.me.uk>,
         Matt Wang <wwentao@vmware.com>,
         Miquel van Smoorenburg <mikevs@xs4all.net>,
         Mark Salyzyn <salyzyn@android.com>,
         linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
         alpha <linux-alpha@vger.kernel.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>,
         Parisc List <linux-parisc@vger.kernel.org>,
         Denis Efremov <efremov@linux.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
         Michael Ellerman <mpe@ellerman.id.au>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <1fa7f932-ed3d-974c-dccb-de628191993d@gmail.com>
-Date:   Mon, 27 Jun 2022 20:09:46 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
-MIME-Version: 1.0
-In-Reply-To: <CAK8P3a1KKPXr0ews9po_xjmnGYUWf18gBaZYYmnC+DvtxTKLmQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Arnd,
+Hi Michael,
 
-Am 26.06.2022 um 20:36 schrieb Arnd Bergmann:
->> There are no platform specific header files other than asm/amigahw.h and
->> asm/mvme147hw.h, currently only holding register address definitions.
->> Would it be OK to add m68k_virt_to_bus() in there if it can't remain in
->> asm/virtconvert.h, Geert?
+On Sat, Jun 18, 2022 at 3:06 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> Am 18.06.2022 um 00:57 schrieb Arnd Bergmann:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > All architecture-independent users of virt_to_bus() and bus_to_virt()
+> > have been fixed to use the dma mapping interfaces or have been
+> > removed now.  This means the definitions on most architectures, and the
+> > CONFIG_VIRT_TO_BUS symbol are now obsolete and can be removed.
+> >
+> > The only exceptions to this are a few network and scsi drivers for m68k
+> > Amiga and VME machines and ppc32 Macintosh. These drivers work correctly
+> > with the old interfaces and are probably not worth changing.
 >
-> In that case, I would just leave it under the current name and not change
-> m68k at all. I don't like the m68k_virt_to_bus() name because there is
-> not anything CPU specific in what it does, and keeping it in a common
-> header does nothing to prevent it from being used on other platforms
-> either.
+> The Amiga SCSI drivers are all old WD33C93 ones, and replacing
+> virt_to_bus by virt_to_phys in the dma_setup() function there would
+> cause no functional change at all.
 
-Fair enough.
+FTR, the sgiwd93 driver use dma_map_single().
 
->>>> 32bit powerpc is a different matter though.
->>>
->>> It's similar, but unrelated. The two apple ethernet drivers
->>> (bmac and mace) can again either get changed to use the
->>> dma-mapping interfaces, or get a custom pmac_virt_to_bus()/
->>> pmac_bus_to_virt() helper.
->>
->> Hmmm - I see Finn had done the DMA API conversion on macmace.c which
->> might give some hints on what to do about mace.c ... no idea about
->> bmac.c though. And again, haven't got hardware to test, so custom
->> helpers is it, then.
->
-> Ok.
+Gr{oetje,eeting}s,
 
-Again, no platform specific headers to shift renamed helpers to, so may 
-as well keep this as-is.
+                        Geert
 
-Cheers,
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-	Michael
-
-
->
->           Arnd
->
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
