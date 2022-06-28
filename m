@@ -2,103 +2,160 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE706C43334
-	for <linux-m68k@archiver.kernel.org>; Tue, 28 Jun 2022 18:44:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BDA02CCA479
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Jun 2022 21:03:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232853AbiF1SoM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 28 Jun 2022 14:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44812 "EHLO
+        id S229897AbiF1VDz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 28 Jun 2022 17:03:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232921AbiF1SoK (ORCPT
+        with ESMTP id S230004AbiF1VDt (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 28 Jun 2022 14:44:10 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D87C23BFC
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Jun 2022 11:44:07 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id u14so18720437qvv.2
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Jun 2022 11:44:06 -0700 (PDT)
+        Tue, 28 Jun 2022 17:03:49 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0565387A1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Jun 2022 14:03:48 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d5so12132335plo.12
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Jun 2022 14:03:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=srd0vxfduo9pXREXizXvQ1Gwi/kEACFP1rdXcY0Aglg=;
-        b=QDfPPT0fYl+zbzIvYII9znFGb4s02ZWc7rdJXgoVlQii3pb6MPHXUbo2NQcshGpobE
-         dWlWXPBgu4AcM4BoWih7Z1Nr6ImLeGEz2FZoCblM4qyf8MsycIzs6ej4nXX7nwNpGP6Q
-         WS2wAoLm7tunOmWFHsCTXENR5aJ2dwangh3Hiy+KajaZLCQ31/GJ39i5LG+HlW0f/4Yp
-         DzCT3gMR3JvAVHruRt3NJZXTCo87e7XIf3RRiCTD40KLgGYQ8Oy9U016RK3fPhyNykEI
-         VcI+7whSObzV9gDqoR9iwpi6V1hWpQPbHnX1dl7fE5ec/owdsM9r7W03JXKpNXxaLmSi
-         lJng==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=LLK2uhNNvPadjp2Oh/1lKQPTCLeKdmpKaTeJ3RDCHv0=;
+        b=Plf/V32RTHjAIcY0bkPGhJbIRr6v2P2QgRVB8+7eP0P4RsyHw26WFtNVMjh4450VSL
+         X8EowJeUAPv65bojUQi/l4q/mcLgIz1TUZop7B8mMf4UYeSMN97O5PhtCWd4P5KjohDY
+         ALLie3yLHIm0bsPU/TnBkkd6JuMbBayFBbZiLBvLd2yar7+HLEz7eMmp19DAOWF3IuTH
+         PHvtCurN4N9bl0vEQmQzWlMPAd2VaDMz3hbsjPHd4Xm7SbhJbAT/RBX6xYjOUAqBtWrm
+         FLKt/ZIKzNjI8UX/5SZnYKO15W+v0GW/s3+FFXv5IZLkJGau9LvwFj0fBmt76ie2MA/E
+         v/wQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=srd0vxfduo9pXREXizXvQ1Gwi/kEACFP1rdXcY0Aglg=;
-        b=olxhGePalWDjppWQldW2W3bu4iqRYKjZc73RIBkAVwa062LVIJsaJJoEd0PmM+7emH
-         of+iBDdfKt5TQq+tKIym0iI+DLf7+c1yQ2HiVdgwfrGiAp7ZP7XnIGHJLeT/kuqvVgLS
-         Ol+86oyD0h1p3pOvz/lEkvWq4W88miYG/qXGkAXt1MlQ2LiU+/41ammHc6YqWFP/VeuU
-         jzdjj8TTlUulILbO7/FvsBH1uWTtynv+tiD+GfeNJIWakNiIQoW9q9qUV/WUGfBi3vhb
-         9GJJiQJByMbXhAV5Buyw9YtzAo/S47mpn/ICnxGKgu6MgYMcmtwltWmWEhQrOlbs61Wv
-         DCFA==
-X-Gm-Message-State: AJIora9iyo5TpZQ4tHv8uzZ1hchEg/oKKrqgBZHR9+jg2iRXJUPwnrxq
-        GrMy+VR3FnpOEB7z6Sm+ydS1cA==
-X-Google-Smtp-Source: AGRyM1uBRJ6m7mmrK5Ju1JW1doBHC+UzIgAGX/xwYqaVx3XSmh4juFCDP3TjiYp7BZ5iZ3elpoeXxg==
-X-Received: by 2002:a05:622a:7:b0:31b:74bd:1597 with SMTP id x7-20020a05622a000700b0031b74bd1597mr6494688qtw.677.1656441846052;
-        Tue, 28 Jun 2022 11:44:06 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id h9-20020ac85149000000b003050bd1f7c9sm9708477qtn.76.2022.06.28.11.44.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jun 2022 11:44:05 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1o6GBw-0035y2-Fs; Tue, 28 Jun 2022 15:44:04 -0300
-Date:   Tue, 28 Jun 2022 15:44:04 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org, dm-devel@redhat.com,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        linux1394-devel@lists.sourceforge.net, io-uring@vger.kernel.org,
-        lvs-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        kasan-dev@googlegroups.com, linux-mmc@vger.kernel.org,
-        nvdimm@lists.linux.dev, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, linux-perf-users@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-usb@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        v9fs-developer@lists.sourceforge.net, linux-rdma@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] treewide: uapi: Replace zero-length arrays with
- flexible-array members
-Message-ID: <20220628184404.GS23621@ziepe.ca>
-References: <20220627180432.GA136081@embeddedor>
- <6bc1e94c-ce1d-a074-7d0c-8dbe6ce22637@iogearbox.net>
- <20220628004052.GM23621@ziepe.ca>
- <202206281009.4332AA33@keescook>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=LLK2uhNNvPadjp2Oh/1lKQPTCLeKdmpKaTeJ3RDCHv0=;
+        b=q9y2+nM7/ttgEI+M3+3FyyKBT+FhaMsG2OlX3xsJGX0U6TwaFC8QFk0OrFvdsRdOSZ
+         uvPlo1XF5bN41WPgyrOQjr8ymCCv+hgkNl7UaijlxHdPq+70DjvKShfaUndr3/+o2ORq
+         0HGGTJkoF2+deW2xpNdrW4oFJ21pKeFw/elsVqu2DaSIEJbPTIqg40Mo3gdVYWuV1eQt
+         02IOIadIkYHahz8CYPBG95gktdF4cveH0gJMJx2k6uzXb2KTIxW13WFh6J1c5p7lA+me
+         AV07OrIk/SjP/b/whQ6tRoLAA/5OJQnDz3G9STqJPWcRqZqLUb0lwDOZMkipklAvLyjG
+         GqvQ==
+X-Gm-Message-State: AJIora8alR2HTlcABO2efR9aDIZRk3a9fCjS3bS9JAKrdFwN7FhBHa6m
+        x4M7k2L8cv5u5+VexcbQ97M=
+X-Google-Smtp-Source: AGRyM1s3Nd/my/4+QoWL+yZMzu+YZKCug56iAjfd8RAtHTbgADBf9oHlpjvJ/8KE0n/2rDkR0+nsiw==
+X-Received: by 2002:a17:90a:1485:b0:1ec:788e:a053 with SMTP id k5-20020a17090a148500b001ec788ea053mr1707919pja.16.1656450227992;
+        Tue, 28 Jun 2022 14:03:47 -0700 (PDT)
+Received: from ?IPV6:2001:df0:0:200c:75aa:d6ca:4354:6033? ([2001:df0:0:200c:75aa:d6ca:4354:6033])
+        by smtp.gmail.com with ESMTPSA id a14-20020aa795ae000000b005259d99ccffsm6254097pfk.8.2022.06.28.14.03.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Jun 2022 14:03:47 -0700 (PDT)
+Message-ID: <c30bc9b6-6ccd-8856-dc6b-4e16450dad6f@gmail.com>
+Date:   Wed, 29 Jun 2022 09:03:37 +1200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202206281009.4332AA33@keescook>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v2 3/3] arch/*/: remove CONFIG_VIRT_TO_BUS
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>, scsi <linux-scsi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        Khalid Aziz <khalid@gonehiking.org>,
+        "Maciej W . Rozycki" <macro@orcam.me.uk>,
+        Matt Wang <wwentao@vmware.com>,
+        Miquel van Smoorenburg <mikevs@xs4all.net>,
+        Mark Salyzyn <salyzyn@android.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        Denis Efremov <efremov@linux.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+References: <20220617125750.728590-1-arnd@kernel.org>
+ <20220617125750.728590-4-arnd@kernel.org>
+ <6ba86afe-bf9f-1aca-7af1-d0d348d75ffc@gmail.com>
+ <CAMuHMdVewn0OYA9oJfStk0-+vCKAUou+4Mvd5H2kmrSks1p5jg@mail.gmail.com>
+ <b4e5a1c9-e375-63fb-ec7c-abb7384a6d59@gmail.com>
+ <9289fd82-285c-035f-5355-4d70ce4f87b0@gmail.com>
+ <CAMuHMdXUihTPD9A9hs__Xr2ErfOqkZ5KgCHqm+9HvRf39uS5kA@mail.gmail.com>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+In-Reply-To: <CAMuHMdXUihTPD9A9hs__Xr2ErfOqkZ5KgCHqm+9HvRf39uS5kA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Jun 28, 2022 at 10:54:58AM -0700, Kees Cook wrote:
+Hi Geert,
 
- 
-> which must also be assuming it's a header. So probably better to just
-> drop the driver_data field? I don't see anything using it (that I can
-> find) besides as a sanity-check that the field exists and is at the end
-> of the struct.
+On 28/06/22 19:03, Geert Uytterhoeven wrote:
+>
+>> Leaving the bounce buffer handling in place, and taking a few other
+>> liberties - this is what converting the easiest case (a3000 SCSI) might
+>> look like. Any obvious mistakes? The mvme147 driver would be very
+>> similar to handle (after conversion to a platform device).
+> Thanks, looks reasonable.
+Thanks, I'll take care of Arnd's comments and post a corrected version 
+later.
+>> The driver allocates bounce buffers using kmalloc if it hits an
+>> unaligned data buffer - can such buffers still even happen these days?
+> No idea.
+Hmmm - I think I'll stick a WARN_ONCE() in there so we know whether this 
+code path is still being used.
+>
+>> If I understand dma_map_single() correctly, the resulting dma handle
+>> would be equally misaligned?
+>>
+>> To allocate a bounce buffer, would it be OK to use dma_alloc_coherent()
+>> even though AFAIU memory used for DMA buffers generally isn't consistent
+>> on m68k?
+>>
+>> Thinking ahead to the other two Amiga drivers - I wonder whether
+>> allocating a static bounce buffer or a DMA pool at driver init is likely
+>> to succeed if the kernel runs from the low 16 MB RAM chunk? It certainly
+>> won't succeed if the kernel runs from a higher memory address, so the
+>> present bounce buffer logic around amiga_chip_alloc() might still need
+>> to be used here.
+>>
+>> Leaves the question whether converting the gvp11 and a2091 drivers is
+>> actually worth it, if bounce buffers still have to be handled explicitly.
+> A2091 should be straight-forward, as A3000 is basically A2091 on the
+> motherboard (comparing the two drivers, looks like someone's been
+> sprinkling mb()s over the A3000 driver).
 
-The field is guaranteeing alignment of the following structure. IIRC
-there are a few cases that we don't have a u64 already to force this.
+Yep, and at least the ones in the dma_setup() function are there for no 
+reason (the compiler won't reorder stores around the cache flush calls, 
+I hope?).
 
-Jason
+Just leaves the 24 bit DMA mask there (and likely need for bounce buffers).
+
+> I don't have any of these SCSI host adapters (not counting the A590
+> (~A2091) expansion of the old A500, which is not Linux-capable, and
+>   hasn't been powered on for 20 years).
+
+I wonder whether kullervo has survived - that one was an A3000. Should 
+have gone to Adrian a few years ago...
+
+Cheers,
+
+     Michael
+
+
+>
+> Gr{oetje,eeting}s,
+>
+>                          Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                  -- Linus Torvalds
