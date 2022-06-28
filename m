@@ -2,62 +2,63 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BDA02CCA479
-	for <linux-m68k@archiver.kernel.org>; Tue, 28 Jun 2022 21:03:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86F02C43334
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Jun 2022 21:38:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbiF1VDz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 28 Jun 2022 17:03:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49114 "EHLO
+        id S229878AbiF1ViN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 28 Jun 2022 17:38:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbiF1VDt (ORCPT
+        with ESMTP id S229510AbiF1ViN (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 28 Jun 2022 17:03:49 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0565387A1
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Jun 2022 14:03:48 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d5so12132335plo.12
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Jun 2022 14:03:48 -0700 (PDT)
+        Tue, 28 Jun 2022 17:38:13 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B08B66
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Jun 2022 14:38:10 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id v126so9242300pgv.11
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Jun 2022 14:38:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=message-id:date:mime-version:user-agent:subject:content-language:to
          :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=LLK2uhNNvPadjp2Oh/1lKQPTCLeKdmpKaTeJ3RDCHv0=;
-        b=Plf/V32RTHjAIcY0bkPGhJbIRr6v2P2QgRVB8+7eP0P4RsyHw26WFtNVMjh4450VSL
-         X8EowJeUAPv65bojUQi/l4q/mcLgIz1TUZop7B8mMf4UYeSMN97O5PhtCWd4P5KjohDY
-         ALLie3yLHIm0bsPU/TnBkkd6JuMbBayFBbZiLBvLd2yar7+HLEz7eMmp19DAOWF3IuTH
-         PHvtCurN4N9bl0vEQmQzWlMPAd2VaDMz3hbsjPHd4Xm7SbhJbAT/RBX6xYjOUAqBtWrm
-         FLKt/ZIKzNjI8UX/5SZnYKO15W+v0GW/s3+FFXv5IZLkJGau9LvwFj0fBmt76ie2MA/E
-         v/wQ==
+        bh=WjW+6GW3ETFm2JU8jE79XhUoTv6z3/GSxYftllUP/xs=;
+        b=Hl4POJee6IPPulGeCkhFVzmaewHFoLW/+/aEoDQjxUpbODhZ1oymIgaTqZ81qNcby5
+         tayUWDYOl9MImX18J8dQD7IqMr+zmUU1bqZHU+pNimB587Iq3zDvd9733Lpd08PJ3ZqN
+         hCcDuWiBdimpZlnAS7LXz+VIQLfHxUzeRmXR/DhhOL+83rGT7oCb0qCs+I3LD5qbJUOY
+         Z7gwLbNztnnB2BuHaZLhgR2hoazBRvaRufJfP7NUdv99H5O/s5nLD+ERJ1SZjBEJ5o3/
+         g1yNYiH51zSIYiit2licB5Pp4Mw6FaB2n5sZmRFysJGeMTkqmhnQmnjN1azWYVr/4Saz
+         dDKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=LLK2uhNNvPadjp2Oh/1lKQPTCLeKdmpKaTeJ3RDCHv0=;
-        b=q9y2+nM7/ttgEI+M3+3FyyKBT+FhaMsG2OlX3xsJGX0U6TwaFC8QFk0OrFvdsRdOSZ
-         uvPlo1XF5bN41WPgyrOQjr8ymCCv+hgkNl7UaijlxHdPq+70DjvKShfaUndr3/+o2ORq
-         0HGGTJkoF2+deW2xpNdrW4oFJ21pKeFw/elsVqu2DaSIEJbPTIqg40Mo3gdVYWuV1eQt
-         02IOIadIkYHahz8CYPBG95gktdF4cveH0gJMJx2k6uzXb2KTIxW13WFh6J1c5p7lA+me
-         AV07OrIk/SjP/b/whQ6tRoLAA/5OJQnDz3G9STqJPWcRqZqLUb0lwDOZMkipklAvLyjG
-         GqvQ==
-X-Gm-Message-State: AJIora8alR2HTlcABO2efR9aDIZRk3a9fCjS3bS9JAKrdFwN7FhBHa6m
-        x4M7k2L8cv5u5+VexcbQ97M=
-X-Google-Smtp-Source: AGRyM1s3Nd/my/4+QoWL+yZMzu+YZKCug56iAjfd8RAtHTbgADBf9oHlpjvJ/8KE0n/2rDkR0+nsiw==
-X-Received: by 2002:a17:90a:1485:b0:1ec:788e:a053 with SMTP id k5-20020a17090a148500b001ec788ea053mr1707919pja.16.1656450227992;
-        Tue, 28 Jun 2022 14:03:47 -0700 (PDT)
+        bh=WjW+6GW3ETFm2JU8jE79XhUoTv6z3/GSxYftllUP/xs=;
+        b=AQQO/GIRrRvdM2cINNf01HMnbiPppmTj2F+pkS1Lw52XZSKWLmDjv6b3ntorUVvS3v
+         vJDXWrvHFVMvdeCSE7kO0rPTu27poU4zbage8mq52KnKKBEmd3j5QLY4I7EthaCzl0Jz
+         g9q9KQw6K0zHhoFcO0XXglu0b+6hSyzT14RcRuSTtOCWO4ab5yibQCBTpD9zQleJnQOX
+         cIvlXmXyiVFrU4vI/oXNnubIIL2rNWeRYl6eDW+WhHdm/U1Mo/Fkm/vqGxhgcCm9zuR0
+         aYc72w0QFvN58qFiTc6rGpEMni8ZVf4fQV/yI9qSVUO3ruINaOQ5bneEbTE03hKWDknM
+         qMNw==
+X-Gm-Message-State: AJIora+nSjnLePh1dNX5w+J3uFr7+MFQuT+jNXOLC4huqo+RgzU4DbRf
+        6FC14BopXjaGiZBOx48OS0o=
+X-Google-Smtp-Source: AGRyM1sFO6YgYAr9GnaRe8/Ve8aBPD9B79jMLNzzxljl0q+mxUt4Mwk0qg0QIVqzTJY3FgSvSPWrFw==
+X-Received: by 2002:a63:3545:0:b0:40c:95f7:d114 with SMTP id c66-20020a633545000000b0040c95f7d114mr5443pga.150.1656452290295;
+        Tue, 28 Jun 2022 14:38:10 -0700 (PDT)
 Received: from ?IPV6:2001:df0:0:200c:75aa:d6ca:4354:6033? ([2001:df0:0:200c:75aa:d6ca:4354:6033])
-        by smtp.gmail.com with ESMTPSA id a14-20020aa795ae000000b005259d99ccffsm6254097pfk.8.2022.06.28.14.03.39
+        by smtp.gmail.com with ESMTPSA id b8-20020a170902650800b00168a651316csm9770467plk.270.2022.06.28.14.38.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Jun 2022 14:03:47 -0700 (PDT)
-Message-ID: <c30bc9b6-6ccd-8856-dc6b-4e16450dad6f@gmail.com>
-Date:   Wed, 29 Jun 2022 09:03:37 +1200
+        Tue, 28 Jun 2022 14:38:09 -0700 (PDT)
+Message-ID: <b1edec96-ccb2-49d6-323b-1abc0dc37a50@gmail.com>
+Date:   Wed, 29 Jun 2022 09:38:00 +1200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.9.1
 Subject: Re: [PATCH v2 3/3] arch/*/: remove CONFIG_VIRT_TO_BUS
 Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>, scsi <linux-scsi@vger.kernel.org>,
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        scsi <linux-scsi@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Arnd Bergmann <arnd@arndb.de>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -84,64 +85,72 @@ References: <20220617125750.728590-1-arnd@kernel.org>
  <CAMuHMdVewn0OYA9oJfStk0-+vCKAUou+4Mvd5H2kmrSks1p5jg@mail.gmail.com>
  <b4e5a1c9-e375-63fb-ec7c-abb7384a6d59@gmail.com>
  <9289fd82-285c-035f-5355-4d70ce4f87b0@gmail.com>
- <CAMuHMdXUihTPD9A9hs__Xr2ErfOqkZ5KgCHqm+9HvRf39uS5kA@mail.gmail.com>
+ <CAK8P3a1ivqYB38c_QTjG8e85ZBnCB6HEa-6LR1HDc8shG1Pwmw@mail.gmail.com>
 From:   Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <CAMuHMdXUihTPD9A9hs__Xr2ErfOqkZ5KgCHqm+9HvRf39uS5kA@mail.gmail.com>
+In-Reply-To: <CAK8P3a1ivqYB38c_QTjG8e85ZBnCB6HEa-6LR1HDc8shG1Pwmw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
+Hi Arnd,
 
-On 28/06/22 19:03, Geert Uytterhoeven wrote:
->
+On 28/06/22 19:08, Arnd Bergmann wrote:
+> On Tue, Jun 28, 2022 at 5:25 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+>> Am 28.06.2022 um 09:12 schrieb Michael Schmitz:
+>>
 >> Leaving the bounce buffer handling in place, and taking a few other
 >> liberties - this is what converting the easiest case (a3000 SCSI) might
 >> look like. Any obvious mistakes? The mvme147 driver would be very
 >> similar to handle (after conversion to a platform device).
-> Thanks, looks reasonable.
-Thanks, I'll take care of Arnd's comments and post a corrected version 
-later.
+>>
 >> The driver allocates bounce buffers using kmalloc if it hits an
 >> unaligned data buffer - can such buffers still even happen these days?
-> No idea.
-Hmmm - I think I'll stick a WARN_ONCE() in there so we know whether this 
-code path is still being used.
->
 >> If I understand dma_map_single() correctly, the resulting dma handle
 >> would be equally misaligned?
 >>
 >> To allocate a bounce buffer, would it be OK to use dma_alloc_coherent()
 >> even though AFAIU memory used for DMA buffers generally isn't consistent
 >> on m68k?
->>
->> Thinking ahead to the other two Amiga drivers - I wonder whether
->> allocating a static bounce buffer or a DMA pool at driver init is likely
->> to succeed if the kernel runs from the low 16 MB RAM chunk? It certainly
->> won't succeed if the kernel runs from a higher memory address, so the
->> present bounce buffer logic around amiga_chip_alloc() might still need
->> to be used here.
->>
->> Leaves the question whether converting the gvp11 and a2091 drivers is
->> actually worth it, if bounce buffers still have to be handled explicitly.
-> A2091 should be straight-forward, as A3000 is basically A2091 on the
-> motherboard (comparing the two drivers, looks like someone's been
-> sprinkling mb()s over the A3000 driver).
+> I think it makes sense to skip the bounce buffering as you do here:
+> the only standardized way we have for integrating that part is to
+> use the swiotlb infrastructure, but as you mentioned earlier that
+> part is probably too resource-heavy here for Amiga.
+OK, leaving the old custom logic in place allows to convert the 24 bit 
+DMA drivers more easily.
+>
+> I see two other problems with your patch though:
+>
+> a) you still duplicate the cache handling: the cache_clear()/cache_push()
+> is supposed to already be done by dma_map_single() when the device
+> is not cache-coherent.
 
-Yep, and at least the ones in the dma_setup() function are there for no 
-reason (the compiler won't reorder stores around the cache flush calls, 
-I hope?).
+That's one of the 'liberties' I alluded to. The reason I left these in 
+is that I'm none too certain what device feature the DMA API uses to 
+decide a device isn't cache-coherent. If it's dev->coherent_dma_mask, 
+the way I set up the device in the a3000 driver should leave the 
+coherent mask unchanged. For the Zorro drivers, devices are set up to 
+use the same storage to store normal and coherent masks - something we 
+most likely want to change. I need to think about the ramifications of 
+that.
 
-Just leaves the 24 bit DMA mask there (and likely need for bounce buffers).
+Note that zorro_esp.c uses dma_sync_single_for_device() and uses a 32 
+bit coherent DMA mask which does work OK. I might  ask Adrian to test a 
+change to only set dev->dma_mask, and drop the 
+dma_sync_single_for_device() calls if there's any doubt on this aspect.
 
-> I don't have any of these SCSI host adapters (not counting the A590
-> (~A2091) expansion of the old A500, which is not Linux-capable, and
->   hasn't been powered on for 20 years).
+> b) The bounce buffer is never mapped here, instead you have the
+> virt_to_phys() here, which is not the same. I think you need to map
+> the pointer that actually gets passed down to the device after deciding
+> to use a bouce buffer or not.
 
-I wonder whether kullervo has survived - that one was an A3000. Should 
-have gone to Adrian a few years ago...
+I hadn't realized that I can map the bounce buffer just as it's done for 
+the SCp data buffer. Should have been obvious, but I'm still learning 
+about the DMA API.
+
+I've updated the patch now, will re-send as part of a complete series 
+once done.
 
 Cheers,
 
@@ -149,13 +158,4 @@ Cheers,
 
 
 >
-> Gr{oetje,eeting}s,
->
->                          Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                  -- Linus Torvalds
+>       Arnd
