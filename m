@@ -2,169 +2,162 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F70DCCA47B
-	for <linux-m68k@archiver.kernel.org>; Tue, 28 Jun 2022 02:23:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64FE3C433EF
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Jun 2022 02:59:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244110AbiF1CXB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 27 Jun 2022 22:23:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33362 "EHLO
+        id S243968AbiF1C7f (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 27 Jun 2022 22:59:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243614AbiF1CWA (ORCPT
+        with ESMTP id S243971AbiF1C7e (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 27 Jun 2022 22:22:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C19C9248ED
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Jun 2022 19:21:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 11460617BC;
-        Tue, 28 Jun 2022 02:21:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3298C341CB;
-        Tue, 28 Jun 2022 02:21:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656382894;
-        bh=pqPD6qoEi8JT199in7jg5DAol4iF8DjKFPgIGYlvQoc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GyqsByaDXQg5yOq6smuSw5cw5zuxTHl+rHrYo/OlHMZ1OuAvd9ONI8/jqrzLdImbD
-         VTWK7UP5itlkHBzyKuMpIHQb6qIkgBzcX3Jxv+GaaOi42Ij7zVfd0aNVRCj/2kEQLZ
-         O6R0SdzzjedD8BThjNur1AhOSXcjIOf8wUfiJdziqd597shekW5NqBhdePKYvvXsYS
-         oJiSFkiCFnaZl7loW+605mJuFv8NTwWJO3O6z94S5MRsftmK5FPbSEThNMZ5b+uoVL
-         ifMihZ1oD6Ug5EuhwczB9HuCayJu7LpnnMklqlMLvNn/Nf3BKVwwKkKVP3/5TDDlCW
-         d3gJG/ZMvv/2g==
-Date:   Tue, 28 Jun 2022 04:21:29 +0200
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org, dm-devel@redhat.com,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        linux1394-devel@lists.sourceforge.net, io-uring@vger.kernel.org,
-        lvs-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        kasan-dev@googlegroups.com, linux-mmc@vger.kernel.org,
-        nvdimm@lists.linux.dev, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, linux-perf-users@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-usb@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        v9fs-developer@lists.sourceforge.net, linux-rdma@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] treewide: uapi: Replace zero-length arrays with
- flexible-array members
-Message-ID: <20220628022129.GA8452@embeddedor>
-References: <20220627180432.GA136081@embeddedor>
- <6bc1e94c-ce1d-a074-7d0c-8dbe6ce22637@iogearbox.net>
- <20220628004052.GM23621@ziepe.ca>
- <20220628005825.GA161566@embeddedor>
+        Mon, 27 Jun 2022 22:59:34 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F3CE57
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Jun 2022 19:59:34 -0700 (PDT)
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25S1p8pw020672;
+        Tue, 28 Jun 2022 02:59:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=wMamLpDb+BRSMzdaF++yecs649QCHZ3DOgROwQe3Bpc=;
+ b=jYq/aY1sqUjt53/It8QrvnGHbksfYg0vkY27bXmC2aouAPvdZPMFYotmYsvQA3HwaTM0
+ nOGwnY6e2YmQLwwm1Os56Fyt9OiMzDhqgMyd5CP1TttXBjSva1+SudstztZvZpiRiiWf
+ NQeYDvz35LLmRqkpxCvys4KaOBPqMs7CK0UZhD1NUcc4d86VeCxxetSzimF9by7EsK9D
+ c4Dmb5bv+xU37YZ700HFacoQ3QKnAgu1EOLTrfsdG7NM8p4nIR/oWAVhf+KuMtQe3nNX
+ 1RtmiR8urxRP7d74RwhP1KlFeHgS8vpjuyEQ+97mZf4ZGad6T50Nict57F8nqlAG+HIR pQ== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3gwt89vrbe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Jun 2022 02:59:17 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.16.1.2/8.16.1.2) with SMTP id 25S2t1HG032517;
+        Tue, 28 Jun 2022 02:59:15 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2047.outbound.protection.outlook.com [104.47.66.47])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com with ESMTP id 3gwrt7j601-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Jun 2022 02:59:15 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GvtE1IluxXRxNRAdXj+qFrHZoAM3IRtNbDnRYlNUxSSv1k4ltXnN24SJG+3iKrA2WdUu8YSn5nPUzubHkcf29mgsNiIbjnx0QSUdqcOB0ZDvgeSN4s5HIPxtb3CjF7D4dceObk+Xi2o6L//+aA6fjYaalrcg7QVI9/zavvbi/K7ygetsmUigDJo18ztgBb91OcqrRgHXKbzgb8x2gVEg6CX2nxoxBc3RCMNYcyfnM1N6YMnzjS8sXmghZnc5Vv3fVbMWyr2dei1vQm6XkwF+tr9f6Xzl3Wj1oSEjQEjn2sGvaj7p9ipueXDhSILYmccHRGBhCKVfOZWPH/wcGJ3NwA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wMamLpDb+BRSMzdaF++yecs649QCHZ3DOgROwQe3Bpc=;
+ b=InUGp7rGX1unmBFP0RxlfGt5G8DzuZTxAOjDKSztS0X3yu1sEQXRuks4vys4S6ywdQxOZMIlzQDcVusM3XCeN77/pnNOipp9wPDWPtMRnlxnf20vanF1BBn5xPfrQE4cX1YU3N9kTspFTMhdy4NentGl4ag0eN9Oa7RH82ApocKautzIEBL3XbaiTB+lnryjW6DleJk3rWol2GnMZEMvlv5H/PwvacVnhj9wzx5st2Vuh8OoMXmWLb2Ah38X6m6EsCogQCts29qeoPw2aPRE6iPxGUCXWk5tdVQwkO9AskoM7zM9UjLGw9oZW6DEt2KLLSZSM2tuf+T7FVvKRBSI/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wMamLpDb+BRSMzdaF++yecs649QCHZ3DOgROwQe3Bpc=;
+ b=I9XQ0jhF1X4CeHVVFET+PdKQLm9Namx8Svditd958QPAlpc3pKSMK6eaFJqbv2Rfa0xi09qDZRc5v3LPKhphrZdC9/0gqWQ95AaolsH8WHCHU+E8qwEuJ1QHRHh6+2QG2uijrpfgqAnm+zOWuqHIZiEF1GweR0OtnGZVXv1WSlQ=
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4790.namprd10.prod.outlook.com (2603:10b6:510:3f::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5373.16; Tue, 28 Jun
+ 2022 02:59:13 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::6516:e908:d2bd:ca45]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::6516:e908:d2bd:ca45%5]) with mapi id 15.20.5373.018; Tue, 28 Jun 2022
+ 02:59:13 +0000
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-scsi@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux-foundation.org,
+        Khalid Aziz <khalid@gonehiking.org>,
+        "Maciej W . Rozycki" <macro@orcam.me.uk>,
+        Matt Wang <wwentao@vmware.com>,
+        Miquel van Smoorenburg <mikevs@xs4all.net>,
+        Mark Salyzyn <salyzyn@android.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-arch@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-parisc@vger.kernel.org, Denis Efremov <efremov@linux.com>
+Subject: Re: [PATCH v3 0/3] phase out CONFIG_VIRT_TO_BUS
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1bkudh4va.fsf@ca-mkp.ca.oracle.com>
+References: <20220624155226.2889613-1-arnd@kernel.org>
+Date:   Mon, 27 Jun 2022 22:59:08 -0400
+In-Reply-To: <20220624155226.2889613-1-arnd@kernel.org> (Arnd Bergmann's
+        message of "Fri, 24 Jun 2022 17:52:23 +0200")
+Content-Type: text/plain
+X-ClientProxiedBy: DM6PR11CA0005.namprd11.prod.outlook.com
+ (2603:10b6:5:190::18) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220628005825.GA161566@embeddedor>
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b0eddaa0-0a3c-49d6-e44b-08da58b22e24
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4790:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: p4KHyljA+8Z4xiHfUb5lVwRtPt8Osb39c4XVCLviyhjlN0h7hl0nYUd4peL01XITkHdahCs0KSLb9nJEYrMlh14sVy5eGncN2fe6iPcfZ2yreMrp2E/uMdW+d+Pah2QvgDcujX2XZkXzSZZvsWHBjHX5/US4IZstRVFWXaFJ37zIvWwoiTLWRvO5yloORDND/DAISk7xk1E4bPdrzYf7FB8IeGHww8bzCSwiJkh8O2Jh3CIuRKbVMDxkCzwsIywhYtcssT82I3vuaHbK6QfSdzqVqjE1wTJ2rVvEiX60SZ7uxtEzfGj9gcKBvf1rH0enF/Kz0ebXmaOVZRIU593AiFatCQbcDDGm6wiMBAfjDq6bfLY0WRogDUSFXbcqtLBeP3tl7wTRgb2N0Q4BFjYJdIffHfcMsDJlWylfJYmjJ8EZEvlet+Byrh6Uh9D+YmLD0L4fwXjM604RA8lfJLi0ubjccNt+cF0HqLIHimsq9MfCuuXPUZdDJSPDrv04/vU6veJt5MKe9m7SFdxSQx1M7rB3bxkRSJ8sj2mJ3Ps8Bn0p5OVzrg2qxdAQrJn2Zy4iUEQt8BUPJoIE33CrwfEVWie+MLZEqGL8x4AhqhiCzKPWxoLLzcvK0L6csvKumdj4iE1nYqds1creOSKYOVHUcW01NvwwLFiFgzl5IHQPBSDoauIDJ3lvhd1Ud01cIsXiwAToaOehlPeZGiLmXHR/GCqWyus3ZrG/x+TLrmqiV0b03qTg7r0MZrraK12hbh4criYxXRcO8iF8QUdYH4YpnjgsxyShBXeu6bRMpmQDz48=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(136003)(396003)(346002)(39860400002)(366004)(376002)(6512007)(38100700002)(41300700001)(8936002)(86362001)(2906002)(26005)(7416002)(38350700002)(4744005)(316002)(6506007)(6486002)(66946007)(8676002)(478600001)(66476007)(52116002)(5660300002)(4326008)(54906003)(66556008)(6916009)(186003)(36916002)(6666004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Ogi8FfaCr20aXP5D0AeBliPkBoOfl3e5M2wOGI0c4ztz/AvyEfzVnHcH5rRp?=
+ =?us-ascii?Q?dyXRZiG2D0FOwmCCh4q5a2/xl4GYGtTvv12cw5s02p/6tgGOkNNgBkvSt1c0?=
+ =?us-ascii?Q?5wB1v7fdkezPG9iElRMEIJdjUwksmLFLX1r4slXo28/SSlJPpD9j5IpZ+jXH?=
+ =?us-ascii?Q?vvx/OUcnmQEhXxDOtC/3pXzbQEG57qj9z9MRZ+PjTGShfCmdF12KAHweMM6K?=
+ =?us-ascii?Q?ZRGkLhkDu4T6PrWSEdgmoj6UUTsEYdNzF61Ifi7pcJtD02G2eibMy5lbcJo3?=
+ =?us-ascii?Q?ya5EY9GRclL1w5opXZVDzL2h69sUvCaLieYk91yQuv47Yy4lWDUOr60oZfsI?=
+ =?us-ascii?Q?u6w6vmnmiXv3MPwOjMCJ5/d5iaShV0a94hpDESFENw+hAMkJelrNm+B3x62p?=
+ =?us-ascii?Q?X9p/HwV/HgX9V13dpmmxcypOTZTDXlof93BC2BBKS83A+QTly6pAfA9G5dAZ?=
+ =?us-ascii?Q?jNiK0alRsCN2Zxwa3+2BRYq6YDAUKkOvq8pntEpb5fQYN07fTyPz79yFVcgx?=
+ =?us-ascii?Q?oA24FSRpqK/45LrrEyDS0oUeMqqeKsOQU/NZWRFRBVAHN/ZvlRZsE3d1xBVG?=
+ =?us-ascii?Q?80Qc5CZ9gVol1VRtqI3262yS2HLYfhdMoqyIi2UH6RsGZlFrztqernXnhSBZ?=
+ =?us-ascii?Q?xT7yMVK4XSiLqDa0VHa/d6Ps7ogo1gPJb9SH5VrTqRndeXZ8phk1pkHHrizR?=
+ =?us-ascii?Q?1lj2Ozw+SRPpbKg87+EZX3A0kTl4bJXiw9MGPrrlWMJt413eSC3b63CZMVa2?=
+ =?us-ascii?Q?lO4tCKmszDzNVT3UoRfZD5qZMYy5T/9JwgEG8Tf73ikG7rd+7Ic2fquhU2xA?=
+ =?us-ascii?Q?WGmyHpVKUZqEbhrFt29cMFkQpnQn/2eW0QMbGCcVE7a0NyDrvaNSkANZ4lB4?=
+ =?us-ascii?Q?xb2Fi+ElxAEKxf8Yc/TmuqlRSibCXDHas83O4OCNL9BreDeMxkPPo8CvbPyd?=
+ =?us-ascii?Q?0ww3ZKpWJndL03XBIRr2deB3XpuPVzqoZ0kYwuWfwnc84HQKFQunoNDb7jEQ?=
+ =?us-ascii?Q?nL7/LFrlA0AvDWgTj4UQUI1yVIIGDgF8Eq8okPHHVEusY6ksl1IU8ZZWyXND?=
+ =?us-ascii?Q?ZqjfGsMWcv1wBSh3i3YEPTFjvDziQIr/AcXPBrMKW+jGWPfmCrWMip1v0E21?=
+ =?us-ascii?Q?FG4H90dS1paXvHufqLxPsmFhCrj0smTDTqZHA+ApCTDTF+zL7GMh80pBv4Rk?=
+ =?us-ascii?Q?8/Pp1FYI7kLdizN5t6WQddApPMKBwDWb/3fhhsLNY14nWN2spBn4zCwfNxU0?=
+ =?us-ascii?Q?HRqzWrFAk0gu0ra8taFagqJoJm+GbmXe4qPET9hT6jqHNCpVJayg4N/dAOxg?=
+ =?us-ascii?Q?QeuE6LB6B2ed37RkPzs4OoKjJQtBl07Q/qBK14FlhlTcZ9rjKNGnfvqoXzpC?=
+ =?us-ascii?Q?Tl3Ckr2/mBUe3O7mcvrmEZdeCyc2/K66s7Jc2Rp8QvHEEfX/0vgO61HeWKSU?=
+ =?us-ascii?Q?QbDkr7WnovC/Vo/daWD64mYv7brLLZVfcUfPEgd3uaXzVZRDN6HlFQLMrXxW?=
+ =?us-ascii?Q?dj0YEqzB3WHLg3hrhTzOUDlUz/FIwvkW6PGgVhv7sIhVCxgz4ghOC55nnXeB?=
+ =?us-ascii?Q?JyQ9PLyP0yEgU4QfMBiNzKhi7YZCWlcrZDvd0EidUVbmpkxBHKe55GwEW65Y?=
+ =?us-ascii?Q?iA=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b0eddaa0-0a3c-49d6-e44b-08da58b22e24
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2022 02:59:13.1219
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zrNNVYlCJEUe2GlQS/SUgboR0K7cd1A8xqCcC9y4F5e/LCSlzQFxkr5DuOQ0MkXbxw4vCXPVIyE+apv27xcBVKtOOhhIFzXrpckfB0DR/ZI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4790
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.517,18.0.883
+ definitions=2022-06-27_06:2022-06-24,2022-06-27 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=879 suspectscore=0
+ mlxscore=0 phishscore=0 malwarescore=0 adultscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2204290000 definitions=main-2206280011
+X-Proofpoint-ORIG-GUID: 1dFk_RKS9mTueJWMTx8745vB7FgPTCzA
+X-Proofpoint-GUID: 1dFk_RKS9mTueJWMTx8745vB7FgPTCzA
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Jun 28, 2022 at 02:58:25AM +0200, Gustavo A. R. Silva wrote:
-> On Mon, Jun 27, 2022 at 09:40:52PM -0300, Jason Gunthorpe wrote:
-> > On Mon, Jun 27, 2022 at 08:27:37PM +0200, Daniel Borkmann wrote:
-> > > On 6/27/22 8:04 PM, Gustavo A. R. Silva wrote:
-> > > > There is a regular need in the kernel to provide a way to declare
-> > > > having a dynamically sized set of trailing elements in a structure.
-> > > > Kernel code should always use “flexible array members”[1] for these
-> > > > cases. The older style of one-element or zero-length arrays should
-> > > > no longer be used[2].
-> > > > 
-> > > > This code was transformed with the help of Coccinelle:
-> > > > (linux-5.19-rc2$ spatch --jobs $(getconf _NPROCESSORS_ONLN) --sp-file script.cocci --include-headers --dir . > output.patch)
-> > > > 
-> > > > @@
-> > > > identifier S, member, array;
-> > > > type T1, T2;
-> > > > @@
-> > > > 
-> > > > struct S {
-> > > >    ...
-> > > >    T1 member;
-> > > >    T2 array[
-> > > > - 0
-> > > >    ];
-> > > > };
-> > > > 
-> > > > -fstrict-flex-arrays=3 is coming and we need to land these changes
-> > > > to prevent issues like these in the short future:
-> > > > 
-> > > > ../fs/minix/dir.c:337:3: warning: 'strcpy' will always overflow; destination buffer has size 0,
-> > > > but the source string has length 2 (including NUL byte) [-Wfortify-source]
-> > > > 		strcpy(de3->name, ".");
-> > > > 		^
-> > > > 
-> > > > Since these are all [0] to [] changes, the risk to UAPI is nearly zero. If
-> > > > this breaks anything, we can use a union with a new member name.
-> > > > 
-> > > > [1] https://en.wikipedia.org/wiki/Flexible_array_member
-> > > > [2] https://www.kernel.org/doc/html/v5.16/process/deprecated.html#zero-length-and-one-element-arrays
-> > > > 
-> > > > Link: https://github.com/KSPP/linux/issues/78
-> > > > Build-tested-by: https://lore.kernel.org/lkml/62b675ec.wKX6AOZ6cbE71vtF%25lkp@intel.com/
-> > > > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > > > ---
-> > > > Hi all!
-> > > > 
-> > > > JFYI: I'm adding this to my -next tree. :)
-> > > 
-> > > Fyi, this breaks BPF CI:
-> > > 
-> > > https://github.com/kernel-patches/bpf/runs/7078719372?check_suite_focus=true
-> > > 
-> > >   [...]
-> > >   progs/map_ptr_kern.c:314:26: error: field 'trie_key' with variable sized type 'struct bpf_lpm_trie_key' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
-> > >           struct bpf_lpm_trie_key trie_key;
-> > >                                   ^
-> > 
-> > This will break the rdma-core userspace as well, with a similar
-> > error:
-> > 
-> > /usr/bin/clang-13 -DVERBS_DEBUG -Dibverbs_EXPORTS -Iinclude -I/usr/include/libnl3 -I/usr/include/drm -g -O2 -fdebug-prefix-map=/__w/1/s=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -Wmissing-prototypes -Wmissing-declarations -Wwrite-strings -Wformat=2 -Wcast-function-type -Wformat-nonliteral -Wdate-time -Wnested-externs -Wshadow -Wstrict-prototypes -Wold-style-definition -Werror -Wredundant-decls -g -fPIC   -std=gnu11 -MD -MT libibverbs/CMakeFiles/ibverbs.dir/cmd_flow.c.o -MF libibverbs/CMakeFiles/ibverbs.dir/cmd_flow.c.o.d -o libibverbs/CMakeFiles/ibverbs.dir/cmd_flow.c.o   -c ../libibverbs/cmd_flow.c
-> > In file included from ../libibverbs/cmd_flow.c:33:
-> > In file included from include/infiniband/cmd_write.h:36:
-> > In file included from include/infiniband/cmd_ioctl.h:41:
-> > In file included from include/infiniband/verbs.h:48:
-> > In file included from include/infiniband/verbs_api.h:66:
-> > In file included from include/infiniband/ib_user_ioctl_verbs.h:38:
-> > include/rdma/ib_user_verbs.h:436:34: error: field 'base' with variable sized type 'struct ib_uverbs_create_cq_resp' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
-> >         struct ib_uverbs_create_cq_resp base;
-> >                                         ^
-> > include/rdma/ib_user_verbs.h:644:34: error: field 'base' with variable sized type 'struct ib_uverbs_create_qp_resp' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
-> >         struct ib_uverbs_create_qp_resp base;
-> > 
-> > Which is why I gave up trying to change these..
-> > 
-> > Though maybe we could just switch off -Wgnu-variable-sized-type-not-at-end  during configuration ?
-> 
-> No. I think now we can easily workaround these sorts of problems with
-> something like this:
-> 
-> 	struct flex {
-> 		any_type any_member;
-> 		union {
-> 			type array[0];
-> 			__DECLARE_FLEX_ARRAY(type, array_flex);
-> 		};
-> 	};
 
-Mmmh... nope; this doesn't work[1].
+Hi Arnd!
 
-We need to think in a different strategy.
+> If there are no more issues identified with this series, I'll merge it
+> through the asm-generic tree. The SCSI patches can also get merged
+> separately through the SCSI maintainers' tree if they prefer.
 
---
-Gustavo
+I put patches 1 and 2 in scsi-staging to see if anything breaks...
 
-[1] https://godbolt.org/z/av79Pqbfz
+-- 
+Martin K. Petersen	Oracle Linux Engineering
