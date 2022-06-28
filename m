@@ -2,177 +2,155 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B820DC43334
-	for <linux-m68k@archiver.kernel.org>; Tue, 28 Jun 2022 00:58:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01535C43334
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Jun 2022 02:08:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242455AbiF1A6d (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 27 Jun 2022 20:58:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54296 "EHLO
+        id S243327AbiF1CIb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 27 Jun 2022 22:08:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241666AbiF1A6c (ORCPT
+        with ESMTP id S243099AbiF1CI3 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 27 Jun 2022 20:58:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C631CB02
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Jun 2022 17:58:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B6EC2616BE;
-        Tue, 28 Jun 2022 00:58:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBEABC341C8;
-        Tue, 28 Jun 2022 00:58:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656377910;
-        bh=x4KMhmowxPAczUMJ6x4nBeCjlIDio89Zlndd34Eza5Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rmtqPrxs/EakAnLyUZ+T1Y6Y2PuUVWE1p/lPmqQBXiapPC1WBd92tcHfgEnTJibSz
-         8Cqh6wp+mGRPQenFwVH/ncudi5b7Tg0x4DYK6LYwUDkNgU3v8Yk/6Or0HzPxa5QXgF
-         OYkHqjzJwOTAIzA6m0DkNzWrhG6StDZ8wiRdHVw+Wnp/Deq+bcAy4GlTPygKnkBgqV
-         sUW1DRx9UPn831OT0MRefhs1kf7ZlvXFnW9s3XTKUzsS60aUSNGKPAXfxyQi7QqZvQ
-         a8VxNxF80uRWuCVjsLU3WaCLAUnTapHIuQJvInOf0IrcXvC7dKlHhnQt1FhIxUdbDj
-         Qy7qblTn3AnuA==
-Date:   Tue, 28 Jun 2022 02:58:25 +0200
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org, dm-devel@redhat.com,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        linux1394-devel@lists.sourceforge.net, io-uring@vger.kernel.org,
-        lvs-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        kasan-dev@googlegroups.com, linux-mmc@vger.kernel.org,
-        nvdimm@lists.linux.dev, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, linux-perf-users@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-usb@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        v9fs-developer@lists.sourceforge.net, linux-rdma@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] treewide: uapi: Replace zero-length arrays with
- flexible-array members
-Message-ID: <20220628005825.GA161566@embeddedor>
-References: <20220627180432.GA136081@embeddedor>
- <6bc1e94c-ce1d-a074-7d0c-8dbe6ce22637@iogearbox.net>
- <20220628004052.GM23621@ziepe.ca>
+        Mon, 27 Jun 2022 22:08:29 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 828ED13E2C
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Jun 2022 19:08:27 -0700 (PDT)
+Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LX7Fz4qq4zSh8T;
+        Tue, 28 Jun 2022 10:04:55 +0800 (CST)
+Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
+ dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 28 Jun 2022 10:08:22 +0800
+Received: from huawei.com (10.175.103.91) by dggpemm500007.china.huawei.com
+ (7.185.36.183) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Tue, 28 Jun
+ 2022 10:08:21 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-m68k@lists.linux-m68k.org>
+CC:     <laurent@vivier.eu>, <geert@linux-m68k.org>
+Subject: [PATCH -next] m68k: virt: platform: fix missing platform_device_unregister() on error in virt_platform_init()
+Date:   Tue, 28 Jun 2022 10:18:02 +0800
+Message-ID: <20220628021802.4102976-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220628004052.GM23621@ziepe.ca>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500007.china.huawei.com (7.185.36.183)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Jun 27, 2022 at 09:40:52PM -0300, Jason Gunthorpe wrote:
-> On Mon, Jun 27, 2022 at 08:27:37PM +0200, Daniel Borkmann wrote:
-> > On 6/27/22 8:04 PM, Gustavo A. R. Silva wrote:
-> > > There is a regular need in the kernel to provide a way to declare
-> > > having a dynamically sized set of trailing elements in a structure.
-> > > Kernel code should always use “flexible array members”[1] for these
-> > > cases. The older style of one-element or zero-length arrays should
-> > > no longer be used[2].
-> > > 
-> > > This code was transformed with the help of Coccinelle:
-> > > (linux-5.19-rc2$ spatch --jobs $(getconf _NPROCESSORS_ONLN) --sp-file script.cocci --include-headers --dir . > output.patch)
-> > > 
-> > > @@
-> > > identifier S, member, array;
-> > > type T1, T2;
-> > > @@
-> > > 
-> > > struct S {
-> > >    ...
-> > >    T1 member;
-> > >    T2 array[
-> > > - 0
-> > >    ];
-> > > };
-> > > 
-> > > -fstrict-flex-arrays=3 is coming and we need to land these changes
-> > > to prevent issues like these in the short future:
-> > > 
-> > > ../fs/minix/dir.c:337:3: warning: 'strcpy' will always overflow; destination buffer has size 0,
-> > > but the source string has length 2 (including NUL byte) [-Wfortify-source]
-> > > 		strcpy(de3->name, ".");
-> > > 		^
-> > > 
-> > > Since these are all [0] to [] changes, the risk to UAPI is nearly zero. If
-> > > this breaks anything, we can use a union with a new member name.
-> > > 
-> > > [1] https://en.wikipedia.org/wiki/Flexible_array_member
-> > > [2] https://www.kernel.org/doc/html/v5.16/process/deprecated.html#zero-length-and-one-element-arrays
-> > > 
-> > > Link: https://github.com/KSPP/linux/issues/78
-> > > Build-tested-by: https://lore.kernel.org/lkml/62b675ec.wKX6AOZ6cbE71vtF%25lkp@intel.com/
-> > > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > > ---
-> > > Hi all!
-> > > 
-> > > JFYI: I'm adding this to my -next tree. :)
-> > 
-> > Fyi, this breaks BPF CI:
-> > 
-> > https://github.com/kernel-patches/bpf/runs/7078719372?check_suite_focus=true
-> > 
-> >   [...]
-> >   progs/map_ptr_kern.c:314:26: error: field 'trie_key' with variable sized type 'struct bpf_lpm_trie_key' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
-> >           struct bpf_lpm_trie_key trie_key;
-> >                                   ^
-> 
-> This will break the rdma-core userspace as well, with a similar
-> error:
-> 
-> /usr/bin/clang-13 -DVERBS_DEBUG -Dibverbs_EXPORTS -Iinclude -I/usr/include/libnl3 -I/usr/include/drm -g -O2 -fdebug-prefix-map=/__w/1/s=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -Wmissing-prototypes -Wmissing-declarations -Wwrite-strings -Wformat=2 -Wcast-function-type -Wformat-nonliteral -Wdate-time -Wnested-externs -Wshadow -Wstrict-prototypes -Wold-style-definition -Werror -Wredundant-decls -g -fPIC   -std=gnu11 -MD -MT libibverbs/CMakeFiles/ibverbs.dir/cmd_flow.c.o -MF libibverbs/CMakeFiles/ibverbs.dir/cmd_flow.c.o.d -o libibverbs/CMakeFiles/ibverbs.dir/cmd_flow.c.o   -c ../libibverbs/cmd_flow.c
-> In file included from ../libibverbs/cmd_flow.c:33:
-> In file included from include/infiniband/cmd_write.h:36:
-> In file included from include/infiniband/cmd_ioctl.h:41:
-> In file included from include/infiniband/verbs.h:48:
-> In file included from include/infiniband/verbs_api.h:66:
-> In file included from include/infiniband/ib_user_ioctl_verbs.h:38:
-> include/rdma/ib_user_verbs.h:436:34: error: field 'base' with variable sized type 'struct ib_uverbs_create_cq_resp' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
->         struct ib_uverbs_create_cq_resp base;
->                                         ^
-> include/rdma/ib_user_verbs.h:644:34: error: field 'base' with variable sized type 'struct ib_uverbs_create_qp_resp' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
->         struct ib_uverbs_create_qp_resp base;
-> 
-> Which is why I gave up trying to change these..
-> 
-> Though maybe we could just switch off -Wgnu-variable-sized-type-not-at-end  during configuration ?
+Add the missing platform_device_unregister() before return
+from virt_platform_init() in the error handling case.
 
-No. I think now we can easily workaround these sorts of problems with
-something like this:
+Fixes: 05d51e42df06 ("m68k: Introduce a virtual m68k machine")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ arch/m68k/virt/platform.c | 58 ++++++++++++++++++++++-----------------
+ 1 file changed, 33 insertions(+), 25 deletions(-)
 
-	struct flex {
-		any_type any_member;
-		union {
-			type array[0];
-			__DECLARE_FLEX_ARRAY(type, array_flex);
-		};
-	};
+diff --git a/arch/m68k/virt/platform.c b/arch/m68k/virt/platform.c
+index cb820f19a221..64236364a3ec 100644
+--- a/arch/m68k/virt/platform.c
++++ b/arch/m68k/virt/platform.c
+@@ -8,20 +8,15 @@
+ 
+ #define VIRTIO_BUS_NB	128
+ 
+-static int __init virt_virtio_init(unsigned int id)
++static struct platform_device * __init virt_virtio_init(unsigned int id)
+ {
+ 	const struct resource res[] = {
+ 		DEFINE_RES_MEM(virt_bi_data.virtio.mmio + id * 0x200, 0x200),
+ 		DEFINE_RES_IRQ(virt_bi_data.virtio.irq + id),
+ 	};
+-	struct platform_device *pdev;
+ 
+-	pdev = platform_device_register_simple("virtio-mmio", id,
++	return platform_device_register_simple("virtio-mmio", id,
+ 					       res, ARRAY_SIZE(res));
+-	if (IS_ERR(pdev))
+-		return PTR_ERR(pdev);
+-
+-	return 0;
+ }
+ 
+ static int __init virt_platform_init(void)
+@@ -35,8 +30,10 @@ static int __init virt_platform_init(void)
+ 		DEFINE_RES_MEM(virt_bi_data.rtc.mmio + 0x1000, 0x1000),
+ 		DEFINE_RES_IRQ(virt_bi_data.rtc.irq + 1),
+ 	};
+-	struct platform_device *pdev;
++	struct platform_device *pdev1, *pdev2;
++	struct platform_device *pdevs[VIRTIO_BUS_NB];
+ 	unsigned int i;
++	int ret = 0;
+ 
+ 	if (!MACH_IS_VIRT)
+ 		return -ENODEV;
+@@ -44,29 +41,40 @@ static int __init virt_platform_init(void)
+ 	/* We need this to have DMA'able memory provided to goldfish-tty */
+ 	min_low_pfn = 0;
+ 
+-	pdev = platform_device_register_simple("goldfish_tty",
+-					       PLATFORM_DEVID_NONE,
+-					       goldfish_tty_res,
+-					       ARRAY_SIZE(goldfish_tty_res));
+-	if (IS_ERR(pdev))
+-		return PTR_ERR(pdev);
++	pdev1 = platform_device_register_simple("goldfish_tty",
++						PLATFORM_DEVID_NONE,
++						goldfish_tty_res,
++						ARRAY_SIZE(goldfish_tty_res));
++	if (IS_ERR(pdev1))
++		return PTR_ERR(pdev1);
+ 
+-	pdev = platform_device_register_simple("goldfish_rtc",
+-					       PLATFORM_DEVID_NONE,
+-					       goldfish_rtc_res,
+-					       ARRAY_SIZE(goldfish_rtc_res));
+-	if (IS_ERR(pdev))
+-		return PTR_ERR(pdev);
++	pdev2 = platform_device_register_simple("goldfish_rtc",
++						PLATFORM_DEVID_NONE,
++						goldfish_rtc_res,
++						ARRAY_SIZE(goldfish_rtc_res));
++	if (IS_ERR(pdev2)) {
++		ret = PTR_ERR(pdev2);
++		goto err_unregister_tty;
++	}
+ 
+ 	for (i = 0; i < VIRTIO_BUS_NB; i++) {
+-		int err;
+-
+-		err = virt_virtio_init(i);
+-		if (err)
+-			return err;
++		pdevs[i] = virt_virtio_init(i);
++		if (IS_ERR(pdevs[i])) {
++			ret = PTR_ERR(pdevs[i]);
++			goto err_unregister_rtc_virtio;
++		}
+ 	}
+ 
+ 	return 0;
++
++err_unregister_rtc_virtio:
++	for (--i; (int)i >= 0; i--)
++		platform_device_unregister(pdevs[i]);
++	platform_device_unregister(pdev2);
++err_unregister_tty:
++	platform_device_unregister(pdev1);
++
++	return ret;
+ }
+ 
+ arch_initcall(virt_platform_init);
+-- 
+2.25.1
 
-and use array_flex in kernel-space.
-
-The same for the one-elment arrays in UAPI:
-
-        struct flex {
-                any_type any_member;
-                union {
-                        type array[1];
-                        __DECLARE_FLEX_ARRAY(type, array_flex);
-                };
-        };
-
-I'll use the idiom above to resolve all these warnings in a follow-up
-patch. :)
-
-Thanks
---
-Gustavo
