@@ -2,169 +2,91 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84E0BC433EF
-	for <linux-m68k@archiver.kernel.org>; Tue, 28 Jun 2022 10:46:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1280CC43334
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Jun 2022 11:31:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbiF1KqA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 28 Jun 2022 06:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46074 "EHLO
+        id S1345137AbiF1Lbv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 28 Jun 2022 07:31:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234570AbiF1Kp7 (ORCPT
+        with ESMTP id S1344071AbiF1Lbu (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 28 Jun 2022 06:45:59 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E2331371;
-        Tue, 28 Jun 2022 03:45:56 -0700 (PDT)
-Received: from [192.168.100.1] ([82.142.8.70]) by mrelayeu.kundenserver.de
- (mreue109 [213.165.67.119]) with ESMTPSA (Nemesis) id
- 1MxUfn-1nhyxm1aHp-00xq4l; Tue, 28 Jun 2022 12:45:47 +0200
-Message-ID: <0be5b3e4-8aed-8f38-e7bd-f00c2323f78d@vivier.eu>
-Date:   Tue, 28 Jun 2022 12:45:46 +0200
+        Tue, 28 Jun 2022 07:31:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04ABE2253F
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Jun 2022 04:31:50 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6B90361AB2
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Jun 2022 11:31:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52F07C341D2
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Jun 2022 11:31:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1656415908;
+        bh=mGQ17FxEruXP1Se/YhPh1NXTTafvPHopAQxVYAQOAng=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=S9ev2a8N8YQmk0FkOdWFCB7fzksaF3TDIqbfcHvGcwSqAPQBjVarw4vw9M3l6HHmL
+         ssCxgmsI8FHt9fG0XtnHdMUgr0QiYRCSQ79IVVpF+/C1G6eLSjq//dde0lc2VRCRaS
+         1FOEBaNxnclo7b2FYkWs82psE+DIlzk94a+i0CS0kc4yOVpaZiit6FGLCMgT4MtfTp
+         CwGZaSPgvhkEFi/ozVYkEbtrBOACwSSrasTZCqcPAk1+8mx2bwdjGw8Jo6F9FVGxwT
+         aWToqKSq2ntJ+svOn8tdm9iL+aJ6hyyGwGM/YXBZrhOMDyTMuQVPNXGFsy/i9skP/1
+         Bv9FMX2w5oSmA==
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-31780ad7535so113494507b3.8
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Jun 2022 04:31:48 -0700 (PDT)
+X-Gm-Message-State: AJIora/9zZVF6DG6TAWB+glb5k/FSO05CecKGqWqCI5P8nOe/81TsdpM
+        7GQDEwZ6Im+gC6X3S3NPD45HYcwmgR8+r7K+WAs=
+X-Google-Smtp-Source: AGRyM1u6alRW6DNpLAw2CjiZONF/08UESoBCXDxfJxZHbJGIZ8WIqxSBVa0RkxHHh4KQrTbwBfw484vqcSO7R67ID6s=
+X-Received: by 2002:a81:230c:0:b0:31b:f368:d0b0 with SMTP id
+ j12-20020a81230c000000b0031bf368d0b0mr4904055ywj.249.1656415907046; Tue, 28
+ Jun 2022 04:31:47 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH -next v2] m68k: virt: platform: fix missing
- platform_device_unregister() on error in virt_platform_init()
-Content-Language: fr
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Cc:     geert@linux-m68k.org
-References: <20220628084903.3147123-1-yangyingliang@huawei.com>
-From:   Laurent Vivier <laurent@vivier.eu>
-In-Reply-To: <20220628084903.3147123-1-yangyingliang@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:16N2p5BCoxXRnFIMT7blwU+msYe1BcV2uxPrkDvlCebuKsW1MvV
- HNYGK5RNBu00qBWVb8qLoAn/1MSQdek8bj4EIRigOZmBpakGpnP485vqySgU/hWGUzVjE1u
- 9l0I7tZ9POk1ieUBEygXa619y3FVnq0ISCuH95j3pvX66WcA464HSra6kxf+8eFidh0Hpx4
- D+yrrej5eDWTl5d3mzMSA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:gL+oB0fIR4U=:QkeiBnIANig+DmoEvh6AIn
- R2fzBDd/8lFA0v6J98USj+bkLl4sI3UOh1kbal76H/BjXO1qTr7rrqdbRSCNi9WfQt7/7d476
- eBtRcV5HiF/0j7A459K8nRClyfL6VaxePKJSwQI68b4mGYwfEAt9xPx60DTD794208WTP7Ul2
- ozDq5eH5BZ7KpQFKnuewyrKaDmBzjdC1aharX5C6OGFXcdzXBXJAnrEEtmzz4nozCYUvBvKiy
- Q2b947A+iBP60q++vcSszM5W0TFN/6I9U84SvnulNSIRNqawu+MAGPEimExxZ153+2heaYYJ6
- Jj/+dVbKtj8UdARIg9JnUoqCLa8nr2HCoUkuWRRa/tyU1fwh3WRs5yDM71PzdMwfZ3wH9wKKO
- bylakCM0mFPVrz7nEhExDFo9D4vh1b5o2zgCyOjs6gXQ9SytgFNk6XVkEHTSeLZHobesspLn7
- jSxxcI9jj2+Bn33WoMZ6gfHpvlKgxcSa4tKnFjsVPo7TKXAgbGHpKhvesvLrY+xRFJ8t7yTvX
- shVpZ/ScU8/Org+XD5BYqpXMYevIv4B84U8v6wIDyEcKaN3iiBASgV7SZ1HJFsuhZtOu7ODjK
- 6n+1V/K+lMK5oZyYA/wNl94er9a9LjoaqUwLhYmlHk9AdwRWyuKxWqpA7dvnKe1PpKYKi0S34
- Ft0slWTfmaMqKl4r5HRUNf8ecmuf4KxfhOaiL2dnBfz9SEO1hSeExVgq9C7VD0oLlJC7ybRfp
- elNrTplExWNVKhB4uQCcqO/LE4+ZjnZid2JyuQ==
+References: <20220624155226.2889613-1-arnd@kernel.org> <yq1bkudh4va.fsf@ca-mkp.ca.oracle.com>
+In-Reply-To: <yq1bkudh4va.fsf@ca-mkp.ca.oracle.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 28 Jun 2022 13:31:30 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3-D_Ct1jBpKzv7OPZ3Mfkx4iD1QG8ELuib02aGXUAS6A@mail.gmail.com>
+Message-ID: <CAK8P3a3-D_Ct1jBpKzv7OPZ3Mfkx4iD1QG8ELuib02aGXUAS6A@mail.gmail.com>
+Subject: Re: [PATCH v3 0/3] phase out CONFIG_VIRT_TO_BUS
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Khalid Aziz <khalid@gonehiking.org>,
+        "Maciej W . Rozycki" <macro@orcam.me.uk>,
+        Matt Wang <wwentao@vmware.com>,
+        Miquel van Smoorenburg <mikevs@xs4all.net>,
+        Mark Salyzyn <salyzyn@android.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        Denis Efremov <efremov@linux.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Le 28/06/2022 à 10:49, Yang Yingliang a écrit :
-> Add the missing platform_device_unregister() before return
-> from virt_platform_init() in the error handling case.
-> 
-> Fixes: 05d51e42df06 ("m68k: Introduce a virtual m68k machine")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
-> v2:
->    change for loop to while at lable err_unregister_rtc_virtio.
-> ---
->   arch/m68k/virt/platform.c | 58 ++++++++++++++++++++++-----------------
->   1 file changed, 33 insertions(+), 25 deletions(-)
-> 
-> diff --git a/arch/m68k/virt/platform.c b/arch/m68k/virt/platform.c
-> index cb820f19a221..1560c4140ab9 100644
-> --- a/arch/m68k/virt/platform.c
-> +++ b/arch/m68k/virt/platform.c
-> @@ -8,20 +8,15 @@
->   
->   #define VIRTIO_BUS_NB	128
->   
-> -static int __init virt_virtio_init(unsigned int id)
-> +static struct platform_device * __init virt_virtio_init(unsigned int id)
->   {
->   	const struct resource res[] = {
->   		DEFINE_RES_MEM(virt_bi_data.virtio.mmio + id * 0x200, 0x200),
->   		DEFINE_RES_IRQ(virt_bi_data.virtio.irq + id),
->   	};
-> -	struct platform_device *pdev;
->   
-> -	pdev = platform_device_register_simple("virtio-mmio", id,
-> +	return platform_device_register_simple("virtio-mmio", id,
->   					       res, ARRAY_SIZE(res));
-> -	if (IS_ERR(pdev))
-> -		return PTR_ERR(pdev);
-> -
-> -	return 0;
->   }
->   
->   static int __init virt_platform_init(void)
-> @@ -35,8 +30,10 @@ static int __init virt_platform_init(void)
->   		DEFINE_RES_MEM(virt_bi_data.rtc.mmio + 0x1000, 0x1000),
->   		DEFINE_RES_IRQ(virt_bi_data.rtc.irq + 1),
->   	};
-> -	struct platform_device *pdev;
-> +	struct platform_device *pdev1, *pdev2;
-> +	struct platform_device *pdevs[VIRTIO_BUS_NB];
->   	unsigned int i;
-> +	int ret = 0;
->   
->   	if (!MACH_IS_VIRT)
->   		return -ENODEV;
-> @@ -44,29 +41,40 @@ static int __init virt_platform_init(void)
->   	/* We need this to have DMA'able memory provided to goldfish-tty */
->   	min_low_pfn = 0;
->   
-> -	pdev = platform_device_register_simple("goldfish_tty",
-> -					       PLATFORM_DEVID_NONE,
-> -					       goldfish_tty_res,
-> -					       ARRAY_SIZE(goldfish_tty_res));
-> -	if (IS_ERR(pdev))
-> -		return PTR_ERR(pdev);
-> +	pdev1 = platform_device_register_simple("goldfish_tty",
-> +						PLATFORM_DEVID_NONE,
-> +						goldfish_tty_res,
-> +						ARRAY_SIZE(goldfish_tty_res));
-> +	if (IS_ERR(pdev1))
-> +		return PTR_ERR(pdev1);
->   
-> -	pdev = platform_device_register_simple("goldfish_rtc",
-> -					       PLATFORM_DEVID_NONE,
-> -					       goldfish_rtc_res,
-> -					       ARRAY_SIZE(goldfish_rtc_res));
-> -	if (IS_ERR(pdev))
-> -		return PTR_ERR(pdev);
-> +	pdev2 = platform_device_register_simple("goldfish_rtc",
-> +						PLATFORM_DEVID_NONE,
-> +						goldfish_rtc_res,
-> +						ARRAY_SIZE(goldfish_rtc_res));
-> +	if (IS_ERR(pdev2)) {
-> +		ret = PTR_ERR(pdev2);
-> +		goto err_unregister_tty;
-> +	}
->   
->   	for (i = 0; i < VIRTIO_BUS_NB; i++) {
-> -		int err;
-> -
-> -		err = virt_virtio_init(i);
-> -		if (err)
-> -			return err;
-> +		pdevs[i] = virt_virtio_init(i);
-> +		if (IS_ERR(pdevs[i])) {
-> +			ret = PTR_ERR(pdevs[i]);
-> +			goto err_unregister_rtc_virtio;
-> +		}
->   	}
->   
->   	return 0;
-> +
-> +err_unregister_rtc_virtio:
-> +	while (i > 0)
-> +		platform_device_unregister(pdevs[--i]);
-> +	platform_device_unregister(pdev2);
-> +err_unregister_tty:
-> +	platform_device_unregister(pdev1);
-> +
-> +	return ret;
->   }
->   
->   arch_initcall(virt_platform_init);
+On Tue, Jun 28, 2022 at 4:59 AM Martin K. Petersen
+<martin.petersen@oracle.com> wrote:
+> Hi Arnd!
+>
+> > If there are no more issues identified with this series, I'll merge it
+> > through the asm-generic tree. The SCSI patches can also get merged
+> > separately through the SCSI maintainers' tree if they prefer.
+>
+> I put patches 1 and 2 in scsi-staging to see if anything breaks...
 
-Reviewed-by: Laurent Vivier <laurent@vivier.eu>
+Ok, thanks!
 
+I have just the third patch in the asm-generic tree now. As long as it all
+make it into the merge window, this should work out fine without build
+issues, though there is a small bisection window during which the buslogic
+driver becomes hidden. I think that's ok here.
+
+       Arnd
