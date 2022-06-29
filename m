@@ -2,92 +2,141 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC904C433EF
-	for <linux-m68k@archiver.kernel.org>; Wed, 29 Jun 2022 06:25:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42264C43334
+	for <linux-m68k@archiver.kernel.org>; Wed, 29 Jun 2022 07:27:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231429AbiF2GZs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 29 Jun 2022 02:25:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36122 "EHLO
+        id S231430AbiF2H1B (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 29 Jun 2022 03:27:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229972AbiF2GZr (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 29 Jun 2022 02:25:47 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FD3C23BF1;
-        Tue, 28 Jun 2022 23:25:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hGxicrNA0Ky21SHQ+zvPyQeSEbMbEJ671RYnbrPw0JA=; b=qbFJAtMX0xKPZ1ARuRDdID37q4
-        owWkofTOSGtlKKGTJhARtkYpPKzHltLGhkndQA87MkODaY6KyO3cK4q808MkXZcOU40psAis3jQba
-        hIlFNsykvnaIIUvqvKn2j1RZrQIeveQo7JYMztumkKhMbvD1zMb+mAEHnE6ESPqZza5WuXR5gF7PV
-        n41lGSXcUPlvzAaeQHQhfM7f39UWgRCFoNb11FKul4UW/Ow1CvhldL3c1YOUP0JDldI562o45tZwg
-        o0wAWuANXSfL/2mp0QfYSlqVUMbLFqDf0nTTu2Vp3DOLQ3j8ak5hAwUNMCSyw4o2Ir79RVMA1BFMh
-        i++X3W8g==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1o6R8w-009lUE-5F; Wed, 29 Jun 2022 06:25:42 +0000
-Date:   Tue, 28 Jun 2022 23:25:42 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        scsi <linux-scsi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        Khalid Aziz <khalid@gonehiking.org>,
-        "Maciej W . Rozycki" <macro@orcam.me.uk>,
-        Matt Wang <wwentao@vmware.com>,
-        Miquel van Smoorenburg <mikevs@xs4all.net>,
-        Mark Salyzyn <salyzyn@android.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Subject: Re: [PATCH v2 3/3] arch/*/: remove CONFIG_VIRT_TO_BUS
-Message-ID: <YrvwZi9NQSpFjStX@infradead.org>
-References: <20220617125750.728590-1-arnd@kernel.org>
- <20220617125750.728590-4-arnd@kernel.org>
- <6ba86afe-bf9f-1aca-7af1-d0d348d75ffc@gmail.com>
- <CAMuHMdVewn0OYA9oJfStk0-+vCKAUou+4Mvd5H2kmrSks1p5jg@mail.gmail.com>
- <b4e5a1c9-e375-63fb-ec7c-abb7384a6d59@gmail.com>
- <9289fd82-285c-035f-5355-4d70ce4f87b0@gmail.com>
- <CAK8P3a1ivqYB38c_QTjG8e85ZBnCB6HEa-6LR1HDc8shG1Pwmw@mail.gmail.com>
- <b1edec96-ccb2-49d6-323b-1abc0dc37a50@gmail.com>
+        with ESMTP id S231338AbiF2H1B (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 29 Jun 2022 03:27:01 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C0C252AB;
+        Wed, 29 Jun 2022 00:27:00 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id m14-20020a17090a668e00b001ee6ece8368so9186039pjj.3;
+        Wed, 29 Jun 2022 00:27:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=p0NOM3tOvTu9tYu9Jo91fNZhl1btdoLw3G3+FzLKArM=;
+        b=n3j8GaQHuO3/QxhfJ8CTdhl1hlcudhq0b3DYg6UiXzzSaeo95kmbbOAgNKGpVh6xqy
+         C+xVMyOxJiUJ1ywhyHBR1P6e2BRACnegWrkT2jHwU44FgrnSeddVLTBk8ne2jO2MCyuz
+         thu1Rif8QuRvEQ3d5z/UXeh3d3nrgUnLN+ixbahcLuXF3mrvGO0lGDLNHX19mxbkXosq
+         qhALpOpHNWdG6IdzSXn91l0Tml3mIYg5QL3t472ECb6hXMGVdv3iWybyRdsc5g97Ne6B
+         UmwgG5YMR7UDjLv4sXXH1UZQ0C0a7ZxcJq5dwE2RtmnEavc3y6SNXT3htbQ8adBi2rUJ
+         c4zQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=p0NOM3tOvTu9tYu9Jo91fNZhl1btdoLw3G3+FzLKArM=;
+        b=ypryCuYIVSaIf71w+cIP7rsiQHJkfRjtg74rquJDV+Egxk+TzhiC8CMnIRKrfQ8UIr
+         z4kdZUPehyGEHLqNvymnRXN1fgj+SgSR8FWvAGNKRa0ij/jitABXRKEE35F+9wP26UMP
+         kRNCATJP8vwnnYi1CvirUJZVTyqRBOWINBMCmHPu5wIII8Y9AKa2+xV/MMjfz1XUKNmF
+         NgWLP8OcttYd8n0r9UFHUDjkxhXBbkMvaQlPYu+78ScVpXj/fOBSA76qNiCYvA3iEVBF
+         O+2ZqbDPNcK429MiDYiJQAOgn9aTJQGTFXyOCCMuqTezBg0g/9qLAghgiZk4t7bf2S0I
+         /GJg==
+X-Gm-Message-State: AJIora916vQy3nhI3y+dlxy7dOqHP2NxD5vJfpARiPqOfddWi1DGYJ7I
+        SuADsHyyehIfqP/WG0z/Frk=
+X-Google-Smtp-Source: AGRyM1sSZVLEMQBl3VyNMSf7sn9exiAxLXQ76/IGAArZslL7bpjz6wMRSDDWVgMeipgE9vaiQNy73A==
+X-Received: by 2002:a17:90b:3a8f:b0:1ec:93d4:f955 with SMTP id om15-20020a17090b3a8f00b001ec93d4f955mr4230251pjb.23.1656487619990;
+        Wed, 29 Jun 2022 00:26:59 -0700 (PDT)
+Received: from [10.1.1.24] (222-155-0-244-adsl.sparkbb.co.nz. [222.155.0.244])
+        by smtp.gmail.com with ESMTPSA id a4-20020a170902710400b00162037fbb68sm10525024pll.215.2022.06.29.00.26.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 29 Jun 2022 00:26:59 -0700 (PDT)
+Subject: Re: [PATCH v1 2/3] scsi - a2091.c: convert m68k WD33C93 drivers to
+ DMA API
+To:     Arnd Bergmann <arnd@kernel.org>
+References: <20220629011638.21783-1-schmitzmic@gmail.com>
+ <20220629011638.21783-3-schmitzmic@gmail.com>
+ <CAK8P3a2yx7dgU8xnhOLsyeD0eq5q+wSOOzJPmNDdG1kWkiG3-g@mail.gmail.com>
+Cc:     Linux/m68k <linux-m68k@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <554d6fa7-01b7-d3c8-a72a-6474e9c5038e@gmail.com>
+Date:   Wed, 29 Jun 2022 19:26:53 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b1edec96-ccb2-49d6-323b-1abc0dc37a50@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <CAK8P3a2yx7dgU8xnhOLsyeD0eq5q+wSOOzJPmNDdG1kWkiG3-g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Jun 29, 2022 at 09:38:00AM +1200, Michael Schmitz wrote:
-> That's one of the 'liberties' I alluded to. The reason I left these in is
-> that I'm none too certain what device feature the DMA API uses to decide a
-> device isn't cache-coherent.
+Hi Arnd,
 
-The DMA API does not look at device features at all.  It needs to be
-told so by the platform code.  Once an architecture implements the
-hooks to support non-coherent DMA all devices are treated as
-non-coherent by default unless overriden by the architecture either
-globally (using the global dma_default_coherent variable) or per-device
-(using the dev->dma_coherent field, usually set by arch_setup_dma_ops).
+thanks for your review!
 
-> If it's dev->coherent_dma_mask, the way I set
-> up the device in the a3000 driver should leave the coherent mask unchanged.
-> For the Zorro drivers, devices are set up to use the same storage to store
-> normal and coherent masks - something we most likely want to change. I need
-> to think about the ramifications of that.
+Am 29.06.2022 um 18:06 schrieb Arnd Bergmann:
+> On Wed, Jun 29, 2022 at 3:16 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+>>
+>> Use dma_map_single() for a2091 driver (leave bounce buffer
+>> logic unchanged).
+>>
+>> Use dma_set_mask_and_coherent() to avoid explicit cache
+>> flushes.
+>>
+>> Compile-tested only.
+>>
+>> CC: linux-scsi@vger.kernel.org
+>> Link: https://lore.kernel.org/r/6d1d88ee-1cf6-c735-1e6d-bafd2096e322@gmail.com
+>> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+>
+> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+>
+>> +
+>> +       addr = dma_map_single(hdata->dev, scsi_pointer->ptr,
+>> +                             len, DMA_DIR(dir_in));
+>> +       if (dma_mapping_error(hdata->dev, addr)) {
+>> +               dev_warn(hdata->dev, "cannot map SCSI data block %p\n",
+>> +                        scsi_pointer->ptr);
+>> +               return 1;
+>> +       }
+>> +       scsi_pointer->dma_handle = addr;
+>>
+>>         /* don't allow DMA if the physical address is bad */
+>>         if (addr & A2091_XFER_MASK) {
+>> +               /* drop useless mapping */
+>> +               dma_unmap_single(hdata->dev, scsi_pointer->dma_handle,
+>> +                                scsi_pointer->this_residual,
+>> +                                DMA_DIR(dir_in));
+>
+> I think you could save the extra map/unmap here if you wanted, but that
+> would risk introducing bugs since it requires a larger rework.
 
-No, the coherent mask is slightly misnamed amd not actually related.
+Not sure how to do that ...
+
+>> +               scsi_pointer->dma_handle = (dma_addr_t) NULL;
+>> +
+>>                 wh->dma_bounce_len = (scsi_pointer->this_residual + 511) & ~0x1ff;
+>>                 wh->dma_bounce_buffer = kmalloc(wh->dma_bounce_len,
+>>                                                 GFP_KERNEL);
+>
+> Not your bug, but if there is memory above the A2091_XFER_MASK limit,
+> this would need to use GFP_DMA instead of GFP_KERNEL.
+
+Same argument goes for gvp11 - though last time I checked (and certainly 
+at the time these drivers were written), there really was no difference 
+between using GFP_DMA and GFP_KERNEL on m68k, hence the need to check 
+the allocated buffer is indeed suitable for DMA, and perhaps revert to 
+chip RAM (slow, useless for most other purposes but definitely below 16 
+MB) if that fails (as the gvp11 driver does).
+
+Most users will opt for loading the kernel to a RAM chunk at a higher 
+physical address, making the lower chunk unusable (except as chip RAM), 
+meaning allocating a bounce buffer within the first 16 MB will most 
+likely fail anyway AIUI (but Geert would know that for sure).
+
+Cheers,
+
+	Michael
+
+>
+>          Arnd
+>
