@@ -2,60 +2,61 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB1DFCCA481
-	for <linux-m68k@archiver.kernel.org>; Wed, 29 Jun 2022 00:01:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1517C433EF
+	for <linux-m68k@archiver.kernel.org>; Wed, 29 Jun 2022 00:14:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230120AbiF2ABn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 28 Jun 2022 20:01:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38580 "EHLO
+        id S229714AbiF2AOy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 28 Jun 2022 20:14:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbiF2ABl (ORCPT
+        with ESMTP id S229573AbiF2AOx (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 28 Jun 2022 20:01:41 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17BBE33E9E
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Jun 2022 17:01:41 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id g4so6774663pgc.1
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Jun 2022 17:01:41 -0700 (PDT)
+        Tue, 28 Jun 2022 20:14:53 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D9522BDE
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Jun 2022 17:14:52 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id g7so9010250pjj.2
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Jun 2022 17:14:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=0kpjfuIly1nOW0q2ELB2CmN7oIQ7HX+3B2PaKKHsB78=;
-        b=D7i2NgedY/bHyI8emNN+y0jr/G9IOYRWkIjlIhVn6DbWgwRG2UARyfZk3UwO7T2V+D
-         ESqmy18MQo7RMsisYmEMOTQj203NqQOZVs7qiFGDUYY81Hru7Iv0ADFCQgagZlaKMdVq
-         xung15+Nlj1soULvCk9mS+bfRYyJ9ltpn9UcH1mz1cQDWfJ2ax2IcuBr2SQ3tsjHpoK1
-         NeL3oeSuqVVYbcSBohKZ73kauU8T3VpyxipPF6h/oJ8e2qxtdKJwYj9HlUbwfye7QPMt
-         PuFn7aX0KOb+qDfsVshvX0sC/38kqLR1JFdKMTuOuvGx8cb2fuTFMwQneoiKRpnAUU2m
-         4Xkg==
+        h=message-id:date:mime-version:user-agent:subject:content-language
+         :from:to:cc:references:in-reply-to:content-transfer-encoding;
+        bh=05ASLe35KlS/635AYkr9ttdQBevoBXGVkR7t9AbxzS8=;
+        b=dzzx4WtXS/WkHpvykE0Ug4pI7IQoDYpxYcwT22eGTgXydtRyVau06KToMULz4WZ85p
+         grc9sV1BmBI096bjPV6AYIg+FD5hBe5gj3092gLAqIoDR6Usno3qkCUxW0him8f4Kt+7
+         5Uf02V1S6CU9QXgRzjHroyahVKDiR/lHNsV044fz9JWOwGa1zg1AbzobwrAmZjbW8zFF
+         NJWZj5bNSbN92/C5/1fpmT4IbOePFpLv8AN2psJq3YvTqAwnlZ6jrlyHQy1YHFlzFM4V
+         6GGIoWoQqCmV+YlWQVYdo/a8/uHvejllTjqLg43Sy9OxgGuiI2LvtGtvLWOWEwxpHjVI
+         SvDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+         :content-language:from:to:cc:references:in-reply-to
          :content-transfer-encoding;
-        bh=0kpjfuIly1nOW0q2ELB2CmN7oIQ7HX+3B2PaKKHsB78=;
-        b=ckJn+loWisBjRcaOgHmWwxL+8TdhmK3/2XH50I9zQNVSl8fA4q72zSjjFNBYGAJ6Jf
-         Fy0i+c/xYpUXuLM9GWnQxjszFUDN8gAi64c0z6eGAK4fG/UPETbqi4VWEoKw9SSAZhPF
-         WItL6AQpAhNXdKHSchf/BFKSCQntJdlxsw6U0h2vWsDtIuREKyUdkZtgzm2imhHMN9NL
-         IzV7rLFd9+rXLUAx1tX6aJuW6zVQLEShnGartIUU47xWs+8P8rHhwE81MdezFXUKXZdw
-         0ogUJTHryxbvfbqkLLEA5ZQXVkAGcPnl1Hb0fo/r85XtW6MiqyTz/gyrqhmoCykYujkq
-         dndQ==
-X-Gm-Message-State: AJIora/lGIQ1wvmxQkE2ejZ++dNu0xuXvkrK7K5OaAHV0JsWQGWd/kJP
-        BUz8rgC9vw+L7AzCDriSYN4=
-X-Google-Smtp-Source: AGRyM1uB9qD4Z15I0Lke4zy2AkjVbLhbeqqf5QXYDPBQAVzl/v0z9XhcHbOncWmuxVZyAGIQBi5g6Q==
-X-Received: by 2002:a63:2b16:0:b0:3fa:faf9:e6d7 with SMTP id r22-20020a632b16000000b003fafaf9e6d7mr446010pgr.325.1656460900460;
-        Tue, 28 Jun 2022 17:01:40 -0700 (PDT)
+        bh=05ASLe35KlS/635AYkr9ttdQBevoBXGVkR7t9AbxzS8=;
+        b=fjAfsGOPzA69qFbUwv8ca0UCDjOXqLvwYYWWBBtaBnsCBBOVit5ZKwd4qB9v74Ik7y
+         wXBKivGicLmIPt5FFvzwBjoDGcf66MaC9UXjfYsT57fvQCwG1IOKhc5988aaz84wzYwB
+         CPApD1Rvtk+uQC0Vs6iEuCvi6Tdfh8lVD5JS6VX5Go/EqbtxPOlm1WJkkCqOvQMsgSe5
+         2goh1LfFa2CHoo1T80ja8Qzgf+MQdxyUXVaF79HglfGBn8JAUaT7I5oCawGYt1eW1xe2
+         Du/GNZUBBTfIqQLYjmbeZbu0pwKNhVB8c8Yr64HK5ivZx0fcPiLuOp8nl5B3ahVuxtvn
+         TVcA==
+X-Gm-Message-State: AJIora8b8p7OD0BWaMsBEJHRB/M7U4JaeEKM9YDzekO6GU0CmbZoiNj0
+        +ql7OeKDWmREV0ILRVSZNvI=
+X-Google-Smtp-Source: AGRyM1s6BvhKknOd3DGT0QQr5uB83fgcSZ645ndGItCzAFy4UPsuv2Gt9Oy4n8CrGTj/IyliMMkT6Q==
+X-Received: by 2002:a17:903:240e:b0:168:ea13:f9e0 with SMTP id e14-20020a170903240e00b00168ea13f9e0mr7684101plo.6.1656461692074;
+        Tue, 28 Jun 2022 17:14:52 -0700 (PDT)
 Received: from ?IPV6:2001:df0:0:200c:75aa:d6ca:4354:6033? ([2001:df0:0:200c:75aa:d6ca:4354:6033])
-        by smtp.gmail.com with ESMTPSA id cd21-20020a056a00421500b0051b32c2a5a7sm9863096pfb.138.2022.06.28.17.01.32
+        by smtp.gmail.com with ESMTPSA id c13-20020a170902c1cd00b0016a276aada7sm9950167plc.20.2022.06.28.17.14.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Jun 2022 17:01:39 -0700 (PDT)
-Message-ID: <859c2adc-d3cb-64e8-faba-06e1ac5eddaf@gmail.com>
-Date:   Wed, 29 Jun 2022 12:01:24 +1200
+        Tue, 28 Jun 2022 17:14:51 -0700 (PDT)
+Message-ID: <2402062b-aae6-a247-06a8-3775c2909bdb@gmail.com>
+Date:   Wed, 29 Jun 2022 12:14:42 +1200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.9.1
 Subject: Re: [PATCH v2 3/3] arch/*/: remove CONFIG_VIRT_TO_BUS
 Content-Language: en-US
+From:   Michael Schmitz <schmitzmic@gmail.com>
 To:     Bart Van Assche <bvanassche@acm.org>,
         Arnd Bergmann <arnd@kernel.org>
 Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
@@ -91,8 +92,8 @@ References: <20220617125750.728590-1-arnd@kernel.org>
  <CAK8P3a1rxEVwVF5U-PO6pQkfURU5Tro1Qp8SPUfHEV9jjWOmCQ@mail.gmail.com>
  <9f812d3d-0fcd-46e6-6d7e-6d4bf66f24ab@gmail.com>
  <fc47e8da-81d3-e563-0a17-4eb23db015cc@acm.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <fc47e8da-81d3-e563-0a17-4eb23db015cc@acm.org>
+ <859c2adc-d3cb-64e8-faba-06e1ac5eddaf@gmail.com>
+In-Reply-To: <859c2adc-d3cb-64e8-faba-06e1ac5eddaf@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -101,48 +102,24 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 Hi Bart,
 
-On 29/06/22 11:50, Bart Van Assche wrote:
-> On 6/28/22 16:09, Michael Schmitz wrote:
->> On 29/06/22 09:50, Arnd Bergmann wrote:
->>> On Tue, Jun 28, 2022 at 11:03 PM Michael Schmitz 
->>> <schmitzmic@gmail.com> wrote:
->>>> On 28/06/22 19:03, Geert Uytterhoeven wrote:
->>>>>> The driver allocates bounce buffers using kmalloc if it hits an
->>>>>> unaligned data buffer - can such buffers still even happen these 
->>>>>> days?
->>>>> No idea.
->>>> Hmmm - I think I'll stick a WARN_ONCE() in there so we know whether 
->>>> this
->>>> code path is still being used.
->>> kmalloc() guarantees alignment to the next power-of-two size or
->>> KMALLOC_MIN_ALIGN, whichever is bigger. On m68k this means it
->>> is cacheline aligned.
->>
->> And all SCSI buffers are allocated using kmalloc? No way at all for 
->> user space to pass unaligned data?
->>
->> (SCSI is a weird beast - I have used a SCSI DAT tape driver many many 
->> years ago, which broke all sorts of assumptions about transfer block 
->> sizes ... but that might actually have been in the v0.99 days, many 
->> rewrites of SCSI midlevel ago).
->>
->> Just being cautious, as getting any of this tested will be a stretch.
+On 29/06/22 12:01, Michael Schmitz wrote:
 >
-> An example of a user space application that passes an SG I/O data 
-> buffer to the kernel that is aligned to a four byte boundary but not 
-> to an eight byte boundary if the -s (scattered) command line option is 
-> used: 
-> https://github.com/osandov/blktests/blob/master/src/discontiguous-io.cpp
-
-Thanks - four byte alignment actually wouldn't be an issue for me. It's 
-two byte or smaller that would trip up the SCSI DMA.
-
-While I'm sure such an even more pathological test case could be 
-written, I was rather worried about st.c and sr.c input ...
+>> An example of a user space application that passes an SG I/O data 
+>> buffer to the kernel that is aligned to a four byte boundary but not 
+>> to an eight byte boundary if the -s (scattered) command line option 
+>> is used: 
+>> https://github.com/osandov/blktests/blob/master/src/discontiguous-io.cpp
+>
+> Thanks - four byte alignment actually wouldn't be an issue for me. 
+> It's two byte or smaller that would trip up the SCSI DMA.
+>
+> While I'm sure such an even more pathological test case could be 
+> written, I was rather worried about st.c and sr.c input ...
+Nevermind - I just see m68k defines ARCH_DMA_MINALIGN to be four bytes. 
+Should be safe for all that matters, then.
 
 Cheers,
 
      Michael
 
->
-> Bart.
+
