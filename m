@@ -2,128 +2,106 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44F51CCA473
-	for <linux-m68k@archiver.kernel.org>; Thu, 30 Jun 2022 19:26:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DF78C43334
+	for <linux-m68k@archiver.kernel.org>; Thu, 30 Jun 2022 19:43:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236257AbiF3T0R (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 30 Jun 2022 15:26:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57974 "EHLO
+        id S236891AbiF3TnC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 30 Jun 2022 15:43:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232887AbiF3T0Q (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 30 Jun 2022 15:26:16 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E90F042EED
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Jun 2022 12:26:15 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id z14so315966pgh.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Jun 2022 12:26:15 -0700 (PDT)
+        with ESMTP id S236883AbiF3TnC (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 30 Jun 2022 15:43:02 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE0243AF1;
+        Thu, 30 Jun 2022 12:43:01 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id d129so287245pgc.9;
+        Thu, 30 Jun 2022 12:43:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=message-id:date:mime-version:user-agent:subject:content-language:to
          :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=BGB9eQ8ZjliFMgcRVKHE6urD7afsm+Bb1aKDYwW5Jfo=;
-        b=iWoDQJ/dSdAde8AnIfDLxTdgiCOtOm+79LF23IYKQzTSvSChn0RKCEgkrj6yW/aq/L
-         Ng7bKjXng0gluiBq2N+qXVNpXYJtqS/oCtHvj7VFuOyHwQQMfGgLnLNQOCJAEJPkpiFz
-         k9OtgFn1UYqtdFU3SJ6Burv7HN7xACp19dipB8UXOnRrfrcJd6leCbIArojfXdQMEk7Y
-         dmdguQ+pTW3/V2p6m9x2fWOO9yUsbTxLRRBRVk14fYaRWck/UzINDGudetShPegD8vs/
-         9UYWZVqajm4CeiChNVdfJ+MpdaPqsySivwBLzVcXqDzRte+YXhoifrJyNvp0EqNB047u
-         BQTQ==
+        bh=xvEaFA6L9X7f6lr8BSnAnlsPZYQCBWZ+D/OUmyYmQxQ=;
+        b=azwPIg8iyvR2TPyzC4A8BLZI4a2l3sXTgXC+acBdrYmHdSkJ9DQxZK+Yv378EXfjVg
+         u3f6abTQURR0zB24WV/pO0H2P7lg9olJWCsGfFL0AizvGLIxqbMa803F/KAQJKtz8Pds
+         PQNOfQpesTQ7jjN0HQM4GM/ZXmiI2QzFY7lRQnkhWFwkk9L6Jxry50QLbknDlT4K0xd7
+         kbngKnhkgTVTiUDu8xAF/+KSZAy7LfMLr2WWkAKPkqtnTHj36OvWO/t3cIjMdmt6kkKj
+         P+qkwiGhrV8NWs/6X8qNitjWbirY7GvcHnVsGfnvVHLfo2kuLraQVIcpefykM4mYAQJv
+         1C4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=BGB9eQ8ZjliFMgcRVKHE6urD7afsm+Bb1aKDYwW5Jfo=;
-        b=SSpdZBEJ1xHQ3Sr6weaGkTeJeWjtox2Lo6VyinuBGi48SLxaHcGkk6X72AmSDJMxvt
-         05v7PdXCCCkUBpBm1/CClz9qMRYxBJrRpMKZHxVix9OlWEWBIcEdXnrRiGhs8FHNQeet
-         n+qXfMioVWcVZYKIjzHywoP8fpwgfFmeEebLv0OuBGCUkk9tX+dViA3adBhVpsFyquVo
-         X1p1WOzKQBj2vSf7Sasm0bgY1ldpbwqZYiwXrj6NULJsGjxZobx3nQOo1wbDSI+nVEJA
-         8cTf4kHBIL37CJ2IUuX3L6HCmow5dJ9iFz0CuoNcPyDTCwp652AKi8KHzUFJ9dBlJZVE
-         4OMQ==
-X-Gm-Message-State: AJIora+CvqRbsHuGQS/YOdDrnncZkMEH4dDbAGkJyfajbJuwpLiP/5SH
-        rETotbw9fHKFfGDwI57paU8=
-X-Google-Smtp-Source: AGRyM1tk83J3rH/OFTSOHRQYyzuFUGQ/lxtqXLEqqvb1V70fRLzAxXraPK8BYuQ19iCr74oVBVR7bQ==
-X-Received: by 2002:a63:4a0b:0:b0:40d:d4c1:131f with SMTP id x11-20020a634a0b000000b0040dd4c1131fmr8603747pga.242.1656617175475;
-        Thu, 30 Jun 2022 12:26:15 -0700 (PDT)
+        bh=xvEaFA6L9X7f6lr8BSnAnlsPZYQCBWZ+D/OUmyYmQxQ=;
+        b=ma0fOX0u7gQFhKWbfwm+ISfaLB686qoTZoqVpFBgmLeG1vbE9loewhOnx+bb32tscD
+         cyTdpusbDhCnHMCcAMZKG8pfQMW8DlrT/O4X4EL9tou1XPF/ARv6xnK7BwrjI0TtT4Zd
+         qP6c+UUtyT7ciO5xRCdRK/Rav/QaOd6nFA0XeCdVl9JQJQs9gi6X8kxZQ7toYn9RgwoU
+         X8R2BR358grcHgqIE7135DFtVoU2oWhaexAWNDn4CD72PO3MrRtwZ1AIaejBre35Peda
+         5yNlklCewgWSMVuaUnS56w3RVHz4J8AA22hkhV8n5Rcd19tGK71h0KH7JATAvxXBFPcR
+         2Xmw==
+X-Gm-Message-State: AJIora9Ows7ILxmRJ5EouhI5pgcitvwAuolqAjPSEtz1lL4uQ/HRqZfx
+        dwG8h/4GPV98ncZpbkUfj/M=
+X-Google-Smtp-Source: AGRyM1vO/U7arIww3Inj3VCTepUIpgFTkb8ftK56K/9/R2rIm4lO9B0tbU5dzbdgga/sgCgRX4p8PA==
+X-Received: by 2002:a63:b1e:0:b0:3fd:43d9:5354 with SMTP id 30-20020a630b1e000000b003fd43d95354mr9126450pgl.294.1656618181101;
+        Thu, 30 Jun 2022 12:43:01 -0700 (PDT)
 Received: from ?IPV6:2001:df0:0:200c:b411:35d2:9458:bbe5? ([2001:df0:0:200c:b411:35d2:9458:bbe5])
-        by smtp.gmail.com with ESMTPSA id c18-20020a621c12000000b0051bbd79fc9csm13969994pfc.57.2022.06.30.12.26.07
+        by smtp.gmail.com with ESMTPSA id b1-20020a1709027e0100b001641b2d61d4sm14009820plm.30.2022.06.30.12.42.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Jun 2022 12:26:14 -0700 (PDT)
-Message-ID: <13e45965-4e55-11b1-bfdc-59efaad27464@gmail.com>
-Date:   Fri, 1 Jul 2022 07:26:05 +1200
+        Thu, 30 Jun 2022 12:43:00 -0700 (PDT)
+Message-ID: <8bbac75c-dd77-6fc9-3755-bd640816fb79@gmail.com>
+Date:   Fri, 1 Jul 2022 07:42:56 +1200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.9.1
-Subject: Re: [PATCH v2 3/3] arch/*/: remove CONFIG_VIRT_TO_BUS
+Subject: Re: [PATCH v1 2/3] scsi - a2091.c: convert m68k WD33C93 drivers to
+ DMA API
 Content-Language: en-US
-To:     Christoph Hellwig <hch@infradead.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        scsi <linux-scsi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        Khalid Aziz <khalid@gonehiking.org>,
-        "Maciej W . Rozycki" <macro@orcam.me.uk>,
-        Matt Wang <wwentao@vmware.com>,
-        Miquel van Smoorenburg <mikevs@xs4all.net>,
-        Mark Salyzyn <salyzyn@android.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-References: <20220617125750.728590-1-arnd@kernel.org>
- <20220617125750.728590-4-arnd@kernel.org>
- <6ba86afe-bf9f-1aca-7af1-d0d348d75ffc@gmail.com>
- <CAMuHMdVewn0OYA9oJfStk0-+vCKAUou+4Mvd5H2kmrSks1p5jg@mail.gmail.com>
- <b4e5a1c9-e375-63fb-ec7c-abb7384a6d59@gmail.com>
- <9289fd82-285c-035f-5355-4d70ce4f87b0@gmail.com>
- <CAK8P3a1ivqYB38c_QTjG8e85ZBnCB6HEa-6LR1HDc8shG1Pwmw@mail.gmail.com>
- <b1edec96-ccb2-49d6-323b-1abc0dc37a50@gmail.com>
- <YrvwZi9NQSpFjStX@infradead.org>
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>
+References: <20220629011638.21783-1-schmitzmic@gmail.com>
+ <20220629011638.21783-3-schmitzmic@gmail.com>
+ <CAK8P3a2yx7dgU8xnhOLsyeD0eq5q+wSOOzJPmNDdG1kWkiG3-g@mail.gmail.com>
+ <554d6fa7-01b7-d3c8-a72a-6474e9c5038e@gmail.com>
+ <CAMuHMdX0x3nL5fhmv2T01o8=H6Gp1jog_MZt9gjFe2A7YyMAuQ@mail.gmail.com>
+ <39114583-9c4a-7b19-54d5-516feb556fac@gmail.com>
+ <CAMuHMdVFYNc5TPxqjo-NxOPEpVgJ8SkuB-Mb4curd731Z4NE5Q@mail.gmail.com>
 From:   Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <YrvwZi9NQSpFjStX@infradead.org>
+In-Reply-To: <CAMuHMdVFYNc5TPxqjo-NxOPEpVgJ8SkuB-Mb4curd731Z4NE5Q@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Christoph,
+Hi Geert,
 
-On 29/06/22 18:25, Christoph Hellwig wrote:
-> On Wed, Jun 29, 2022 at 09:38:00AM +1200, Michael Schmitz wrote:
->> That's one of the 'liberties' I alluded to. The reason I left these in is
->> that I'm none too certain what device feature the DMA API uses to decide a
->> device isn't cache-coherent.
-> The DMA API does not look at device features at all.  It needs to be
-> told so by the platform code.  Once an architecture implements the
-> hooks to support non-coherent DMA all devices are treated as
-> non-coherent by default unless overriden by the architecture either
-> globally (using the global dma_default_coherent variable) or per-device
-> (using the dev->dma_coherent field, usually set by arch_setup_dma_ops).
-Haven't got any of that, so non-coherent DMA is all we can use (even 
-though some of the RAM used for bounce buffers may actually be coherent 
-due to the page table cache bits).
+On 30/06/22 21:27, Geert Uytterhoeven wrote:
 >
->> If it's dev->coherent_dma_mask, the way I set
->> up the device in the a3000 driver should leave the coherent mask unchanged.
->> For the Zorro drivers, devices are set up to use the same storage to store
->> normal and coherent masks - something we most likely want to change. I need
->> to think about the ramifications of that.
-> No, the coherent mask is slightly misnamed amd not actually related.
+>>> Note that you can use it as a bounce buffer, by looking for and marking
+>>> free chunks in the zorro_unused_z2ram bitmap.
+>> That would be similar to what amiga_chip_alloc() does, right? Any
+>> advantages over using chip RAM (faster, perhaps)?
+> Yes, Z2RAM is faster, as Amiga custom chip DMA does not steal cycles
+> from Z2RAM.
 
-Thanks, that had me confused.
+OK, would make sense to use that, but that's well outside scope for this 
+series.
 
 Cheers,
 
      Michael
 
 
+>
+> Gr{oetje,eeting}s,
+>
+>                          Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                  -- Linus Torvalds
