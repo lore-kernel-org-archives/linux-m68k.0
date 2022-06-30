@@ -2,72 +2,127 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C88C8C433EF
-	for <linux-m68k@archiver.kernel.org>; Thu, 30 Jun 2022 15:33:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0175AC43334
+	for <linux-m68k@archiver.kernel.org>; Thu, 30 Jun 2022 16:57:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235914AbiF3Pdg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 30 Jun 2022 11:33:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41768 "EHLO
+        id S235808AbiF3Q5g (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 30 Jun 2022 12:57:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235942AbiF3Pd2 (ORCPT
+        with ESMTP id S235979AbiF3Q5f (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 30 Jun 2022 11:33:28 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F6346547
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Jun 2022 08:33:25 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id q9so27876688wrd.8
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Jun 2022 08:33:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:from:to:subject
-         :content-transfer-encoding;
-        bh=TFGxfKfYNc6FX30F9sKmEL18XnIK/Iwh98w/L1TSaX4=;
-        b=n1Dxpt1D0qY0J7JZFkzFDrqE7uaaauX+yivx1RFxbf/KpjONvUaeLNzMzwAC6O05E1
-         gRPqV/46WOYB5QyvTtWL/itlLGAV20REW/Qu5HJdwgL9073I9ffO0/4ydIElYsWFfeyS
-         qX9Y/sYHUMp8CAYPcAr/cKOVbOvNstBb1depSct+KHLmHvOxVKAhc2dFvlzMesPVBGiS
-         p+aFum+z2wjKJrxQFgL8me1gAf711zEKHtoYIdE3wnM977Mnvj1PquPq64VKxZxUWvBH
-         K6cDpQl964P7c1C1cnpavE6gdbL7joiogCzwOSFHYT/CTZxXswYwhG9TbPypCPw/jRF2
-         Bovw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:from:to:subject
-         :content-transfer-encoding;
-        bh=TFGxfKfYNc6FX30F9sKmEL18XnIK/Iwh98w/L1TSaX4=;
-        b=jdV+9dnwDKtMQZYLDCwHxaZVJLdnTxpdy3neID40B6D5fskyIz89OQxi49usXwQhhT
-         MAWmuZ3KJAw45fiMOeSWkcAz4JHS30SnxtA+9qLHRkU6Cq4lCJ09OIOGvz0IP7SsF2Vr
-         3KiBKJQ8/dDPEmk+JSIYHTr7326IfjX3Gd2/u9e9yqybjS15XeakB48jW3O7sUHwO/ex
-         An6f8RNT3AjihQKnz3IrLxvUfvLK7Jgl7+y6Du5/J+FSxogriHAS1R0BDqgCAue02hKs
-         pHqVzxWLA6Pj5tmbVeE9VXLgUNqlQO2l3DlfkU8gGxIEOs5/FWong5Q1jeUG4yZCPbXc
-         /3SA==
-X-Gm-Message-State: AJIora92Q8zZfXxe32FDILuDATee8KbHvC/E4z6c8J2SPd9kQvwsTaYY
-        9cJyJ63iGrL6iB+XJPOuCe5WeUrPT80=
-X-Google-Smtp-Source: AGRyM1tfbHV+Xy9SWSa+v+uYpY2UKH0cxmUrza1NNrNTqjG9CgihjxQ1HGNEfuc1HuIC6kLcC+NP7g==
-X-Received: by 2002:a5d:6b06:0:b0:21b:902e:5727 with SMTP id v6-20020a5d6b06000000b0021b902e5727mr9038930wrw.86.1656603203467;
-        Thu, 30 Jun 2022 08:33:23 -0700 (PDT)
-Received: from DESKTOP-L1U6HLH ([39.53.244.205])
-        by smtp.gmail.com with ESMTPSA id e2-20020adfdbc2000000b0021b9f126fd3sm20118400wrj.14.2022.06.30.08.33.22
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 30 Jun 2022 08:33:23 -0700 (PDT)
-Message-ID: <62bdc243.1c69fb81.aec93.6df4@mx.google.com>
-Date:   Thu, 30 Jun 2022 08:33:23 -0700 (PDT)
-X-Google-Original-Date: 30 Jun 2022 11:33:24 -0400
+        Thu, 30 Jun 2022 12:57:35 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10ED23E5CB
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Jun 2022 09:57:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1656608255; x=1688144255;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=bL9nkQHpWXRcPQiclQNvTJObFea+2bIOo5Icywa3vMA=;
+  b=XCXaskJpx435fd8X0ww0cbguDNb7IDkQMntX0oLZE1LOprbpoGi3nOIX
+   oHo5NNBWGpxL0aGHG2IroL1/pavnagTDkh56cBFDo+Y6OzXoOfYojWEyW
+   v16psDP0m3TCOT/ONdJ4JJoWGfhkGAxSIe6lR++9IMuUDVk+JXU/BeO02
+   oYUP5EItETFmy2Qzl07VLWXDyBNkqHFhR4bn/vfqtKmiSlsYt87p+jaz7
+   IDpzmTbnO5UEEKbuJxUKlqcne5Hdku2QDfpU8AXFWQjC/vObIfM4Icrc4
+   Ampwnx7Q7ELMYw+7xAYjhsdNo3qMu+5xWol6na+efrvn9SRP6bvCRQCT3
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10394"; a="283139355"
+X-IronPort-AV: E=Sophos;i="5.92,234,1650956400"; 
+   d="scan'208";a="283139355"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2022 09:57:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,234,1650956400"; 
+   d="scan'208";a="623800223"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by orsmga001.jf.intel.com with ESMTP; 30 Jun 2022 09:57:02 -0700
+Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 25UGv0GF022621;
+        Thu, 30 Jun 2022 17:57:00 +0100
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matt Turner <mattst88@gmail.com>,
+        Brian Cain <bcain@quicinc.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Kees Cook <keescook@chromium.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Marco Elver <elver@google.com>, Borislav Petkov <bp@suse.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, kernel test robot <lkp@intel.com>,
+        linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch@vger.kernel.org, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 0/9] bitops: let optimize out non-atomic bitops on compile-time constants
+Date:   Thu, 30 Jun 2022 18:56:11 +0200
+Message-Id: <20220630165611.1551808-1-alexandr.lobakin@intel.com>
+X-Mailer: git-send-email 2.36.1
+In-Reply-To: <20220624121313.2382500-1-alexandr.lobakin@intel.com>
+References: <20220624121313.2382500-1-alexandr.lobakin@intel.com>
 MIME-Version: 1.0
-From:   bryce.dreamlamdestimation@gmail.com
-To:     linux-m68k@lists.linux-m68k.org
-Subject: Estimating Services
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi,=0D=0A=0D=0AWe provide estimation & quantities takeoff service=
-s. We are providing 98-100 accuracy in our estimates and take-off=
-s. Please tell us if you need any estimating services regarding y=
-our projects.=0D=0A=0D=0ASend over the plans and mention the exac=
-t scope of work and shortly we will get back with a proposal on w=
-hich our charges and turnaround time will be mentioned=0D=0A=0D=0A=
-You may ask for sample estimates and take-offs. Thanks.=0D=0A=0D=0A=
-Kind Regards=0D=0ABryce Weems=0D=0ADreamland Estimation, LLC
+From: Alexander Lobakin <alexandr.lobakin@intel.com>
+Date: Fri, 24 Jun 2022 14:13:04 +0200
 
+> While I was working on converting some structure fields from a fixed
+> type to a bitmap, I started observing code size increase not only in
+> places where the code works with the converted structure fields, but
+> also where the converted vars were on the stack. That said, the
+> following code:
+
+Hey,
+
+Seems like everything is fine this time. I got some reports, but
+those aren't caused by any of the changes from the series.
+Maybe we can take it to -next and see how it goes?
+
+[...]
+
+>  arch/alpha/include/asm/bitops.h               |  32 ++--
+>  arch/hexagon/include/asm/bitops.h             |  24 ++-
+>  arch/ia64/include/asm/bitops.h                |  42 ++---
+>  arch/ia64/include/asm/processor.h             |   2 +-
+>  arch/m68k/include/asm/bitops.h                |  49 ++++--
+>  arch/s390/include/asm/bitops.h                |  61 +++----
+>  arch/sh/include/asm/bitops-op32.h             |  34 ++--
+>  arch/sparc/include/asm/bitops_32.h            |  18 +-
+>  arch/sparc/lib/atomic32.c                     |  12 +-
+>  arch/x86/include/asm/bitops.h                 |  22 +--
+>  drivers/net/ethernet/intel/ice/ice_switch.c   |   2 +-
+>  .../asm-generic/bitops/generic-non-atomic.h   | 161 ++++++++++++++++++
+>  .../bitops/instrumented-non-atomic.h          |  35 ++--
+>  include/asm-generic/bitops/non-atomic.h       | 121 +------------
+>  .../bitops/non-instrumented-non-atomic.h      |  16 ++
+>  include/linux/bitmap.h                        |  22 ++-
+>  include/linux/bitops.h                        |  50 ++++++
+>  lib/test_bitmap.c                             |  62 +++++++
+>  tools/include/asm-generic/bitops/non-atomic.h |  34 ++--
+>  tools/include/linux/bitops.h                  |  16 ++
+>  20 files changed, 544 insertions(+), 271 deletions(-)
+>  create mode 100644 include/asm-generic/bitops/generic-non-atomic.h
+>  create mode 100644 include/asm-generic/bitops/non-instrumented-non-atomic.h
+> 
+> -- 
+> 2.36.1
+
+Thanks,
+Olek
