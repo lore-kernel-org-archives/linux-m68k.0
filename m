@@ -2,106 +2,108 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DF78C43334
-	for <linux-m68k@archiver.kernel.org>; Thu, 30 Jun 2022 19:43:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57B7EC433EF
+	for <linux-m68k@archiver.kernel.org>; Fri,  1 Jul 2022 02:58:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236891AbiF3TnC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 30 Jun 2022 15:43:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42414 "EHLO
+        id S233629AbiGAC6S (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 30 Jun 2022 22:58:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236883AbiF3TnC (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 30 Jun 2022 15:43:02 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE0243AF1;
-        Thu, 30 Jun 2022 12:43:01 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id d129so287245pgc.9;
-        Thu, 30 Jun 2022 12:43:01 -0700 (PDT)
+        with ESMTP id S233167AbiGAC6Q (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 30 Jun 2022 22:58:16 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C28C68
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Jun 2022 19:58:13 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id c1so2641002qvi.11
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Jun 2022 19:58:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=xvEaFA6L9X7f6lr8BSnAnlsPZYQCBWZ+D/OUmyYmQxQ=;
-        b=azwPIg8iyvR2TPyzC4A8BLZI4a2l3sXTgXC+acBdrYmHdSkJ9DQxZK+Yv378EXfjVg
-         u3f6abTQURR0zB24WV/pO0H2P7lg9olJWCsGfFL0AizvGLIxqbMa803F/KAQJKtz8Pds
-         PQNOfQpesTQ7jjN0HQM4GM/ZXmiI2QzFY7lRQnkhWFwkk9L6Jxry50QLbknDlT4K0xd7
-         kbngKnhkgTVTiUDu8xAF/+KSZAy7LfMLr2WWkAKPkqtnTHj36OvWO/t3cIjMdmt6kkKj
-         P+qkwiGhrV8NWs/6X8qNitjWbirY7GvcHnVsGfnvVHLfo2kuLraQVIcpefykM4mYAQJv
-         1C4Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lOvmRX5TfFX/UtEGzQDHuFSxkP0i5beuEIqtb7CEA/w=;
+        b=WelpAaI3njYPrQSfHDzi8D3Dc8rtvD01QTHIWuSTBpUCspUSZA5CiPOn1FmsBxK2d1
+         n+NvrQ429oVmXtDqyobXXKenmqQR1H4B2ygsgygEyJJsgDS7yFbtnMTx/Yat7tla7IGb
+         f81YC5UvSkGSiC8iaxaum9eibqhYQJgbGxT2mCiuwPfUJl9ROYkck29M4SFGJ5LzsLJP
+         VMJvj4NIDqtL/H8VtZGuM3kOpVqOTkedC07tTTX3LXleA88NKqFOJjONifGSPFrF1T5M
+         MZBE+oi0zJaomy+MpwcjtkMzDFGUMj1gM3gdD0ksFZaravUlIe1wlA6yFdxpI1+5Wu8A
+         05kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=xvEaFA6L9X7f6lr8BSnAnlsPZYQCBWZ+D/OUmyYmQxQ=;
-        b=ma0fOX0u7gQFhKWbfwm+ISfaLB686qoTZoqVpFBgmLeG1vbE9loewhOnx+bb32tscD
-         cyTdpusbDhCnHMCcAMZKG8pfQMW8DlrT/O4X4EL9tou1XPF/ARv6xnK7BwrjI0TtT4Zd
-         qP6c+UUtyT7ciO5xRCdRK/Rav/QaOd6nFA0XeCdVl9JQJQs9gi6X8kxZQ7toYn9RgwoU
-         X8R2BR358grcHgqIE7135DFtVoU2oWhaexAWNDn4CD72PO3MrRtwZ1AIaejBre35Peda
-         5yNlklCewgWSMVuaUnS56w3RVHz4J8AA22hkhV8n5Rcd19tGK71h0KH7JATAvxXBFPcR
-         2Xmw==
-X-Gm-Message-State: AJIora9Ows7ILxmRJ5EouhI5pgcitvwAuolqAjPSEtz1lL4uQ/HRqZfx
-        dwG8h/4GPV98ncZpbkUfj/M=
-X-Google-Smtp-Source: AGRyM1vO/U7arIww3Inj3VCTepUIpgFTkb8ftK56K/9/R2rIm4lO9B0tbU5dzbdgga/sgCgRX4p8PA==
-X-Received: by 2002:a63:b1e:0:b0:3fd:43d9:5354 with SMTP id 30-20020a630b1e000000b003fd43d95354mr9126450pgl.294.1656618181101;
-        Thu, 30 Jun 2022 12:43:01 -0700 (PDT)
-Received: from ?IPV6:2001:df0:0:200c:b411:35d2:9458:bbe5? ([2001:df0:0:200c:b411:35d2:9458:bbe5])
-        by smtp.gmail.com with ESMTPSA id b1-20020a1709027e0100b001641b2d61d4sm14009820plm.30.2022.06.30.12.42.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Jun 2022 12:43:00 -0700 (PDT)
-Message-ID: <8bbac75c-dd77-6fc9-3755-bd640816fb79@gmail.com>
-Date:   Fri, 1 Jul 2022 07:42:56 +1200
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lOvmRX5TfFX/UtEGzQDHuFSxkP0i5beuEIqtb7CEA/w=;
+        b=k7uWLFQQFfOXqJf2KRzDkS8NhrsUrtmJjyau/wmyjP+htz5LncugujcplYarnOWTyZ
+         x+x5Siwns4u1VG8MMB7R1y946G5TJFMcQxG6lB0Z36IDDSg5Gw5raRUQJkXYh2zKnNsA
+         hsneJy7CotEnpgTLbxe0vS1+tk0nOwSv/6k4J+oD/1FGhUqSruhjSNk9kscPuLQaKz2b
+         baySG9U8vlD8dfIoR0f/MYjoHRTei7mWY6OqamFBdJEQ1F8GtdFEvOLRylgEIM2iDhI/
+         gCk5D5OolSa+suP1PXK5trbDxKWb0DoLM6ItHX3sUKPaIiVYdOpST80zt3doo32HFBQW
+         7GFg==
+X-Gm-Message-State: AJIora+Sj3mJyXJn1JBF0sRh43v+sU8RmLNQDtIPbZw0lBj1mjC9xZbu
+        s8GIwj9hjmWP85Bup3iqrTQ=
+X-Google-Smtp-Source: AGRyM1svRdiqfGdo6Px/LVasHA2ZAF5HGNiftP14Jt+t+yFx39TVmlT99mhU8zn9HSKzlmMDUj7R+Q==
+X-Received: by 2002:a05:6214:27ed:b0:470:90a3:6b9e with SMTP id jt13-20020a05621427ed00b0047090a36b9emr14298448qvb.114.1656644292944;
+        Thu, 30 Jun 2022 19:58:12 -0700 (PDT)
+Received: from localhost ([2601:4c1:c100:1230:1dde:deb7:a57c:900d])
+        by smtp.gmail.com with ESMTPSA id w4-20020a05620a424400b006af08c26774sm15988491qko.47.2022.06.30.19.58.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jun 2022 19:58:12 -0700 (PDT)
+Date:   Thu, 30 Jun 2022 19:58:11 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matt Turner <mattst88@gmail.com>,
+        Brian Cain <bcain@quicinc.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Kees Cook <keescook@chromium.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Marco Elver <elver@google.com>, Borislav Petkov <bp@suse.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, kernel test robot <lkp@intel.com>,
+        linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch@vger.kernel.org, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 0/9] bitops: let optimize out non-atomic bitops on
+ compile-time constants
+Message-ID: <Yr5iw9Ruj+LdlB+R@yury-laptop>
+References: <20220624121313.2382500-1-alexandr.lobakin@intel.com>
+ <20220630165611.1551808-1-alexandr.lobakin@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v1 2/3] scsi - a2091.c: convert m68k WD33C93 drivers to
- DMA API
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>
-References: <20220629011638.21783-1-schmitzmic@gmail.com>
- <20220629011638.21783-3-schmitzmic@gmail.com>
- <CAK8P3a2yx7dgU8xnhOLsyeD0eq5q+wSOOzJPmNDdG1kWkiG3-g@mail.gmail.com>
- <554d6fa7-01b7-d3c8-a72a-6474e9c5038e@gmail.com>
- <CAMuHMdX0x3nL5fhmv2T01o8=H6Gp1jog_MZt9gjFe2A7YyMAuQ@mail.gmail.com>
- <39114583-9c4a-7b19-54d5-516feb556fac@gmail.com>
- <CAMuHMdVFYNc5TPxqjo-NxOPEpVgJ8SkuB-Mb4curd731Z4NE5Q@mail.gmail.com>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <CAMuHMdVFYNc5TPxqjo-NxOPEpVgJ8SkuB-Mb4curd731Z4NE5Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220630165611.1551808-1-alexandr.lobakin@intel.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
+On Thu, Jun 30, 2022 at 06:56:11PM +0200, Alexander Lobakin wrote:
+> From: Alexander Lobakin <alexandr.lobakin@intel.com>
+> Date: Fri, 24 Jun 2022 14:13:04 +0200
+> 
+> > While I was working on converting some structure fields from a fixed
+> > type to a bitmap, I started observing code size increase not only in
+> > places where the code works with the converted structure fields, but
+> > also where the converted vars were on the stack. That said, the
+> > following code:
+> 
+> Hey,
+> 
+> Seems like everything is fine this time. I got some reports, but
+> those aren't caused by any of the changes from the series.
+> Maybe we can take it to -next and see how it goes?
 
-On 30/06/22 21:27, Geert Uytterhoeven wrote:
->
->>> Note that you can use it as a bounce buffer, by looking for and marking
->>> free chunks in the zorro_unused_z2ram bitmap.
->> That would be similar to what amiga_chip_alloc() does, right? Any
->> advantages over using chip RAM (faster, perhaps)?
-> Yes, Z2RAM is faster, as Amiga custom chip DMA does not steal cycles
-> from Z2RAM.
+Applied on github.com:/norov/linux.git branch bitmap-for-next
 
-OK, would make sense to use that, but that's well outside scope for this 
-series.
-
-Cheers,
-
-     Michael
-
-
->
-> Gr{oetje,eeting}s,
->
->                          Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                  -- Linus Torvalds
+Thanks!
