@@ -2,87 +2,128 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86D6BC43334
-	for <linux-m68k@archiver.kernel.org>; Mon,  4 Jul 2022 07:35:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45630C43334
+	for <linux-m68k@archiver.kernel.org>; Tue,  5 Jul 2022 07:05:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230444AbiGDHfU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 4 Jul 2022 03:35:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57204 "EHLO
+        id S231331AbiGEHFv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 5 Jul 2022 03:05:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbiGDHfT (ORCPT
+        with ESMTP id S229727AbiGEHFk (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 4 Jul 2022 03:35:19 -0400
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2255C23
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Jul 2022 00:35:18 -0700 (PDT)
-Received: by mail-qt1-f179.google.com with SMTP id z13so8845204qts.12
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 04 Jul 2022 00:35:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4uTcz29t3pg1C4YGaeQ71ecfCeed2MNypmoCrMjlf/c=;
-        b=sJabsFzM0P6Dz5g3Pc/DW1Z/uNarptdKZAyGO9i0DmngIQ9xpED3DpEfRX1DVa+WWt
-         GOhNpNUqDYJmttsr/l0TjZuX1CgOKjeZN4WSNAp5rH28OZoR54aPEUjBvXwTVxrytGTg
-         MBYXjTXSz98QgEl+rO4dYwhl+q2X5VM9MzrT3WIl3WhK3CprSBOtvIVeDjrjn2T4zLYB
-         m3i/TlO4wQ5D3D1PGHRWg1X832LZV5+5CfbzCG2dTOMznqKFD2BPUjpjJjU2kkozgOIb
-         cfnm9xQ9zzphE/KCxb+N0OiDdI+5ZqF0r9GuB/wNM/2g9zX66n/k8UwzkEXjEAnkI0Bi
-         49UA==
-X-Gm-Message-State: AJIora9PqszYFCzfI3FS4kssKbriWdPBIhOdEcE8fesRVJTqczKoDHa4
-        uRmoxVp5SwTmTKmcx05oOYQGMm8zKMqyvQ==
-X-Google-Smtp-Source: AGRyM1t3TN/vNMugWiqaNnXexlCjZ56IP6PwUpy6T0JZr9CDJNmaAIgrTMgI99HleqdeM3HZBKQO/g==
-X-Received: by 2002:ad4:5dcd:0:b0:470:3909:fc4c with SMTP id m13-20020ad45dcd000000b004703909fc4cmr27644945qvh.87.1656920117609;
-        Mon, 04 Jul 2022 00:35:17 -0700 (PDT)
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
-        by smtp.gmail.com with ESMTPSA id l6-20020a37bb06000000b006a981a2c483sm23177548qkf.39.2022.07.04.00.35.17
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Jul 2022 00:35:17 -0700 (PDT)
-Received: by mail-yb1-f171.google.com with SMTP id e69so8813744ybh.2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 04 Jul 2022 00:35:17 -0700 (PDT)
-X-Received: by 2002:a05:6902:a:b0:65c:b38e:6d9f with SMTP id
- l10-20020a056902000a00b0065cb38e6d9fmr31448190ybh.36.1656920116950; Mon, 04
- Jul 2022 00:35:16 -0700 (PDT)
+        Tue, 5 Jul 2022 03:05:40 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED88513CE7
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  5 Jul 2022 00:05:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1657004734; x=1688540734;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=cA1id20EGQHjV/yqpQg1lpnEciTzwKiX8nMv2gjYof8=;
+  b=Pny1HUNLiUz8NkaHNXxnAX3duLn0E11yB1F4U6fMqZGavpy3HxX3LF+0
+   I9snj/9K7Vi+QPL2zfWb50ToC6tPp+j5h3243xyiaiYeLL/Xn+r2T2r63
+   EmTG7ivRofpwRbeUQ8uZAepXb5wtkfMjOrOvsghzWKZ1ew34imx74YpN4
+   iw2xJumfRyJtAhDrKAmRmE1FyfkZAAEAJYPveXZDn36NqYgz/UXeTpGt1
+   2ktbwLfxA4XsExrY1X8wetDT5wrpeNEl7Q5S/UQwbCLPh8QswuYrA4349
+   zrojjNLBC5FaCcKcPejsIsf51X+8DlSY94bj+ytpp/0CbXxaXXEGIeb8j
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10398"; a="272048226"
+X-IronPort-AV: E=Sophos;i="5.92,245,1650956400"; 
+   d="scan'208";a="272048226"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2022 00:05:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,245,1650956400"; 
+   d="scan'208";a="682409239"
+Received: from lkp-server01.sh.intel.com (HELO 68b931ab7ac1) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 05 Jul 2022 00:05:31 -0700
+Received: from kbuild by 68b931ab7ac1 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1o8ccl-000Ipc-7p;
+        Tue, 05 Jul 2022 07:05:31 +0000
+Date:   Tue, 05 Jul 2022 15:04:32 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ dd9ab4734e4802b64911299764b9834f0296166b
+Message-ID: <62c3e280.yRmszKMooOpW2uxe%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20220704073644.2384999-1-yangyingliang@huawei.com>
-In-Reply-To: <20220704073644.2384999-1-yangyingliang@huawei.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 4 Jul 2022 09:35:05 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUeCV9th=yc7d1OQ72wPUiSxrUFniyV4tJkVrNmRNcMaQ@mail.gmail.com>
-Message-ID: <CAMuHMdUeCV9th=yc7d1OQ72wPUiSxrUFniyV4tJkVrNmRNcMaQ@mail.gmail.com>
-Subject: Re: [PATCH] m68k/amiga: fix missing platform_device_unregister() on
- error in amiga_init_devices()
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Yang,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: dd9ab4734e4802b64911299764b9834f0296166b  m68k: q40: Align '*' in comments
 
-On Mon, Jul 4, 2022 at 9:27 AM Yang Yingliang <yangyingliang@huawei.com> wrote:
-> Add the missing platform_device_unregister() before return
-> from amiga_init_devices() in the error handling case.
->
-> Fixes: eeed227966da ("m68k/amiga: Add error checks when registering platform devices")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+elapsed time: 721m
 
-Thanks for your patch!
+configs tested: 52
+configs skipped: 2
 
-TBH, I don't think it's worth adding this code: this happens during early
-kernel startup.  If any of these devices fail to register, that must happen
-because the system ran out of memory, and thus won't work anyway.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Gr{oetje,eeting}s,
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+ia64                             allmodconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+powerpc                           allnoconfig
+sh                               allmodconfig
+mips                             allyesconfig
+powerpc                          allmodconfig
+i386                                defconfig
+i386                             allyesconfig
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+x86_64                        randconfig-a006
+i386                          randconfig-a001
+i386                          randconfig-a003
+i386                          randconfig-a005
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+x86_64                        randconfig-a015
+i386                          randconfig-a014
+i386                          randconfig-a012
+i386                          randconfig-a016
+arc                  randconfig-r043-20220703
+riscv                randconfig-r042-20220703
+s390                 randconfig-r044-20220703
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                           allyesconfig
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
+x86_64                           rhel-8.3-syz
+x86_64                         rhel-8.3-kunit
 
-                        Geert
+clang tested configs:
+x86_64                        randconfig-a005
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+i386                          randconfig-a002
+i386                          randconfig-a004
+i386                          randconfig-a006
+x86_64                        randconfig-a012
+x86_64                        randconfig-a016
+x86_64                        randconfig-a014
+i386                          randconfig-a013
+i386                          randconfig-a011
+i386                          randconfig-a015
+hexagon              randconfig-r041-20220703
+hexagon              randconfig-r045-20220703
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
