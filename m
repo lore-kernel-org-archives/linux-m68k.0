@@ -2,45 +2,45 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07867C433EF
-	for <linux-m68k@archiver.kernel.org>; Wed,  6 Jul 2022 13:51:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7B89CCA473
+	for <linux-m68k@archiver.kernel.org>; Wed,  6 Jul 2022 13:54:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232345AbiGFNvY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 6 Jul 2022 09:51:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51034 "EHLO
+        id S232572AbiGFNyx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 6 Jul 2022 09:54:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232924AbiGFNvX (ORCPT
+        with ESMTP id S231800AbiGFNyq (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 6 Jul 2022 09:51:23 -0400
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA0611F638
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  6 Jul 2022 06:51:21 -0700 (PDT)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-31c9b70c382so78190587b3.6
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 06 Jul 2022 06:51:21 -0700 (PDT)
+        Wed, 6 Jul 2022 09:54:46 -0400
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD25167EA
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  6 Jul 2022 06:54:43 -0700 (PDT)
+Received: by mail-yb1-f178.google.com with SMTP id o2so22170592yba.7
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 06 Jul 2022 06:54:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5SiPC3jj492VC8TfaG5lxiX62rjLNKysidcQlbSYqow=;
-        b=Kh3myYRqAlp/YXnc1JYH3eUukioWuBtLragEjkSUSYu/L9NlfQFu5L+QYCKHnMcTOe
-         3BD/8HSVkRDSzW+7E/6xWk9qdmjwKTOLBHCZIdFGZRdvBiQnAnB2o8v7X/hVwwf82Kxt
-         Py4akzHgnjscGPmWXd0sEKSnTliZHiF7ulxMujdJ/hiv+t1niM0Ke5IXuqdVEGk9ETlZ
-         UiglWNaG3S5xMjl4UvdQtx7+yedpbU9p4vQhkJLKEQtp/uKuAZ61qaTSVvBF9N0CqP1F
-         bXkDcA0IBy15/CpUeqHj34IB3slHo3cTiBWWREactLwMlHb/W/YYt1vRmXmchmd+qJzo
-         UO1A==
-X-Gm-Message-State: AJIora9NgpYzibsV8cv+nd+Ofl/o5sP5jgyDoSoTk2RGP/+CNsq74JjU
-        rdCot8w8G1iEw0b1u324fC0Jwic8vhOQLafErPw=
-X-Google-Smtp-Source: AGRyM1t2zFLeLAi3TOz/3FKNOaozLIghzMJavy2698E42fvxt6d4SsTob1/anQx1a1kTDZPSEUZEInHEN/JL2sa2rXc=
-X-Received: by 2002:a81:1b97:0:b0:2db:640f:49d8 with SMTP id
- b145-20020a811b97000000b002db640f49d8mr45075306ywb.326.1657115480888; Wed, 06
- Jul 2022 06:51:20 -0700 (PDT)
+        bh=nGlq0tAOl9peVDy+2hDU8oij0psSLrDezDLIhvJH3CU=;
+        b=EJLvlinJ1TW2Ocon60gZ8GuD7EKW/a7WpPnEkkhnbJb8x9lJoZNf+5YjGKwjVNvO9A
+         +8kPG5rfybbTmSHy+8gfooUxDTDM/Zxl8fmirMdePcaPW3NH+vyPql9YVP9M+IoFKQme
+         kwc2uBytNtEV3tA/JI91SONKwy9UIcQ2IPBhbSOgpO3evQtqmO9lYQc+q3Uc8r0Zs0xR
+         eFcQeR2FdHd2vplQC4mNsow1wevRcEdYdevB64IFxgr69G8LyB3mMm12cIhGHkbLWOeG
+         XvJQg6x/orM+NZcf7awLBBqn6y8Oyn7KkyJf566PNv//JvWrRehvvkWYP6ns7hrpIJ0p
+         nvXA==
+X-Gm-Message-State: AJIora+674x55KwlKybmbVpfvwgSvdxr020n4XdBA74M14wSHXHEPxbq
+        wGnLUgupmRg9F7BaUDVweTZ+wID3R9Si4tcrO18=
+X-Google-Smtp-Source: AGRyM1tDetZqwrRScub6Y4Pn1s0tSkry0FvKlyTlHU1qOUr14WujFHx6NLxGPd7DkQtOavHEbmevSefDFcyAl6P8ZZY=
+X-Received: by 2002:a25:fb02:0:b0:66e:3db9:5d49 with SMTP id
+ j2-20020a25fb02000000b0066e3db95d49mr20145358ybe.137.1657115683016; Wed, 06
+ Jul 2022 06:54:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220608142723.103523089@infradead.org> <20220608144516.109792837@infradead.org>
-In-Reply-To: <20220608144516.109792837@infradead.org>
+References: <20220608142723.103523089@infradead.org> <20220608144516.235041924@infradead.org>
+In-Reply-To: <20220608144516.235041924@infradead.org>
 From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 6 Jul 2022 15:51:09 +0200
-Message-ID: <CAJZ5v0jO9+jRSm3d58K15JaO3=kgM2Ueo7W+Smi3WCBPR_VM5Q@mail.gmail.com>
-Subject: Re: [PATCH 03/36] cpuidle/poll: Ensure IRQ state is invariant
+Date:   Wed, 6 Jul 2022 15:54:32 +0200
+Message-ID: <CAJZ5v0g0fCNxsc1mg9aL+ieQ1uMVS+RWqesHKoZ_zeL7cx655A@mail.gmail.com>
+Subject: Re: [PATCH 05/36] cpuidle: Move IRQ state validation
 To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
         vgupta@kernel.org,
@@ -160,35 +160,49 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 On Wed, Jun 8, 2022 at 4:47 PM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> cpuidle_state::enter() methods should be IRQ invariant
+> Make cpuidle_enter_state() consistent with the s2idle variant and
+> verify ->enter() always returns with interrupts disabled.
 >
 > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-
-Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
 > ---
->  drivers/cpuidle/poll_state.c |    4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  drivers/cpuidle/cpuidle.c |   10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 >
-> --- a/drivers/cpuidle/poll_state.c
-> +++ b/drivers/cpuidle/poll_state.c
-> @@ -17,7 +17,7 @@ static int __cpuidle poll_idle(struct cp
->
->         dev->poll_time_limit = false;
->
-> -       local_irq_enable();
-> +       raw_local_irq_enable();
->         if (!current_set_polling_and_test()) {
->                 unsigned int loop_count = 0;
->                 u64 limit;
-> @@ -36,6 +36,8 @@ static int __cpuidle poll_idle(struct cp
->                         }
->                 }
->         }
-> +       raw_local_irq_disable();
+> --- a/drivers/cpuidle/cpuidle.c
+> +++ b/drivers/cpuidle/cpuidle.c
+> @@ -234,7 +234,11 @@ int cpuidle_enter_state(struct cpuidle_d
+>         stop_critical_timings();
+>         if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
+>                 rcu_idle_enter();
 > +
->         current_clr_polling();
+>         entered_state = target_state->enter(dev, drv, index);
+> +       if (WARN_ONCE(!irqs_disabled(), "%ps leaked IRQ state", target_state->enter))
+
+I'm not sure if dumping a call trace here is really useful and
+WARN_ON() often gets converted to panic().
+
+I would print an error message with pr_warn_once().
+
+Otherwise LGTM.
+
+> +               raw_local_irq_disable();
+> +
+>         if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
+>                 rcu_idle_exit();
+>         start_critical_timings();
+> @@ -246,12 +250,8 @@ int cpuidle_enter_state(struct cpuidle_d
+>         /* The cpu is no longer idle or about to enter idle. */
+>         sched_idle_set_state(NULL);
 >
->         return index;
+> -       if (broadcast) {
+> -               if (WARN_ON_ONCE(!irqs_disabled()))
+> -                       local_irq_disable();
+> -
+> +       if (broadcast)
+>                 tick_broadcast_exit();
+> -       }
+>
+>         if (!cpuidle_state_is_coupled(drv, index))
+>                 local_irq_enable();
 >
 >
