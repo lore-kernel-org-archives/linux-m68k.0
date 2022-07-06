@@ -2,220 +2,130 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F5A3CCA489
-	for <linux-m68k@archiver.kernel.org>; Wed,  6 Jul 2022 14:05:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECFE4C43334
+	for <linux-m68k@archiver.kernel.org>; Wed,  6 Jul 2022 14:08:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232117AbiGFOE7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 6 Jul 2022 10:04:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34526 "EHLO
+        id S231799AbiGFOIi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 6 Jul 2022 10:08:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233854AbiGFOE6 (ORCPT
+        with ESMTP id S231446AbiGFOIf (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 6 Jul 2022 10:04:58 -0400
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F6CCC8
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  6 Jul 2022 07:04:54 -0700 (PDT)
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-31c89653790so89963277b3.13
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 06 Jul 2022 07:04:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UBE539EKjjJ8zkn99yLgr6sf0hQeHTgO/l2k1f9VAKg=;
-        b=MF6qZOc2I/aC7U78KSxLfT8kvRqzNlzXN59lv2MiqYrHQydE7fxCdfOup78DuKIukI
-         yT3RQazInjd/ncfCx9GN3GD6L1uu9iS1mU2mhu12MMNPtiOVFFioAlt/pkWdKbmVBy79
-         n/KYCULsG8wxSSjugyNznYtKe0MLc7b9jyHKZq6ssZnpUsE0Ni1hQ0CmijD33wgv15/o
-         MlSVWuViedwxQrh3x5XYwePwm7BzpcD4a4yANcon6ruasdc8S7msy+SezezAqb8+Tz0F
-         ggqwaOJGHg23sgs+6vAmzynwfNRC2iePosBTJldN/wQms9lBrFVmRjzDAP1zQwZhRDJf
-         S5xg==
-X-Gm-Message-State: AJIora/8dinESH8AxjQra2VxMc+BOoSDE+bqW2d1vAiLDdnSaKoLFEjD
-        NkEqYiEi3hw32RLz/PG//8JMZ/NV2NKLwM4p+Gk=
-X-Google-Smtp-Source: AGRyM1tzweDvK/HpOTrEcMtuYgu75xJlbU4wLmWYqVeEsIhNId5gL4a/NC1jAK4t+CVNf/Oa7/ufr1ZdqBFMCfc4FVA=
-X-Received: by 2002:a81:24c7:0:b0:314:1e60:a885 with SMTP id
- k190-20020a8124c7000000b003141e60a885mr46512506ywk.301.1657116293184; Wed, 06
- Jul 2022 07:04:53 -0700 (PDT)
+        Wed, 6 Jul 2022 10:08:35 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C71101B;
+        Wed,  6 Jul 2022 07:08:30 -0700 (PDT)
+Received: from [192.168.100.1] ([82.142.8.70]) by mrelayeu.kundenserver.de
+ (mreue012 [213.165.67.103]) with ESMTPSA (Nemesis) id
+ 1MCXhr-1oICFt3vt5-009i0R; Wed, 06 Jul 2022 16:08:27 +0200
+Message-ID: <8d952be9-8ea4-7ffa-107d-d73d5f08889c@vivier.eu>
+Date:   Wed, 6 Jul 2022 16:08:26 +0200
 MIME-Version: 1.0
-References: <20220608142723.103523089@infradead.org> <20220608144517.885263942@infradead.org>
-In-Reply-To: <20220608144517.885263942@infradead.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 6 Jul 2022 16:04:42 +0200
-Message-ID: <CAJZ5v0j6=x-u3dorwQNd6Sihaa1rx1-uaFXbL1Kc37Hu-fcH3A@mail.gmail.com>
-Subject: Re: [PATCH 31/36] cpuidle,acpi: Make noinstr clean
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
-        vgupta@kernel.org,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        ulli.kroll@googlemail.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Kevin Hilman <khilman@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        bcain@quicinc.com, Huacai Chen <chenhuacai@kernel.org>,
-        kernel@xen0n.name, Geert Uytterhoeven <geert@linux-m68k.org>,
-        sammy@sammy.net, Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        dinguyen@kernel.org, jonas@southpole.se,
-        stefan.kristiansson@saunalahti.fi,
-        Stafford Horne <shorne@gmail.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        David Miller <davem@davemloft.net>,
-        Richard Weinberger <richard@nod.at>,
-        anton.ivanov@cambridgegreys.com,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, acme@kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        jolsa@kernel.org, namhyung@kernel.org,
-        Juergen Gross <jgross@suse.com>, srivatsa@csail.mit.edu,
-        amakhalov@vmware.com, pv-drivers@vmware.com,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Chris Zankel <chris@zankel.net>, jcmvbkbc@gmail.com,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Anup Patel <anup@brainfault.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Petr Mladek <pmladek@suse.com>, senozhatsky@chromium.org,
-        John Ogness <john.ogness@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        quic_neeraju@quicinc.com, Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        vschneid@redhat.com, jpoimboe@kernel.org,
-        linux-alpha@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-snps-arc@lists.infradead.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        openrisc@lists.librecores.org,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-s390@vger.kernel.org,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-perf-users@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH] m68k: Add forward declaration for show_registers()
+Content-Language: fr
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Finn Thain <fthain@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+References: <d5b6a7f9af3e82f0ccb67edac09d9ee45d457932.1657114791.git.geert@linux-m68k.org>
+From:   Laurent Vivier <laurent@vivier.eu>
+In-Reply-To: <d5b6a7f9af3e82f0ccb67edac09d9ee45d457932.1657114791.git.geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:yUkA2TeWWfPuZf5nJv8cRVPiE4yBE0sIqwehpUpZpd/uefhryRJ
+ 0qk9Z1mkX4Y20RPySif0caci8yas/uqjZbtWFsJc8a83REsicJxlHWVIMGzEstudXj1eDAE
+ odvsoi5rvqJA4+aVDPtxlopdZzV5p7yeD2W6b+rKdCXOCuzlaE5eBcJrsLLrhJjr3hZyxF1
+ 4MnKII0IVuIH9/fmV8hJQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Nx65Dcr3efc=:8689rSaWT/mZREixusj7TM
+ 0MmMm/EPwzTwDNUY9p8OKGaU7GxQKImimoSafHVltUETbxduPAWLl2NT2hY05y/4kNmDX6NiX
+ egJOWgUNsqKXtqknYYEiEU1y1y1Hl1UVMyGH+iBkXGkkNWos4jO6XCeJPu/OK4T9Qd0X0xUT1
+ 9uNJ05jGQ/xt6+jhoMfvzKmGOguoNuGtLZCGWDcVl1OeDM/+Z6PvIh0Db2ZUVEEJSIBMXNxJW
+ 0ZLb34rgwz/G8pEY4nVIMDyTHmRW9Inl7c59WEUAindXjky9KCwfM8n2PrejddSyoNoVVg/y6
+ 6dABkuu/m8mBTy0Lc51hxJTeUQtB79zFHbela2RAsV4k4gmLNRSPbc5rnqWk/IzpL9L14zVPW
+ JNuX30kdqIFPMo3z4qRhr5OIwLULXXEK+7zeiXtEFKCVCjCyn9oYTksg3ZWwbL0tRzOIMJ+fi
+ v1Sa3QheSoK6TiCj5ozikOecX5OnzYC35VpuW4j0MOTL4ZaBHxH1I8B29sQAYLL8lwsAO1XPX
+ qfD78a9Ul44lDWBmHrQ1fSaKPOkS5QagXYOlF/9xk8fSHs8X6hzXKPLLZgRFDYMFe4O8283ld
+ +rtg1ML2Z9aAsLIdVlRsY89e+rKpkcjpzJUFKun2Tlon5CzA6v71Fecote27Yw/Mn/6Wy4mJP
+ yR1Zrq3IFoeoZf2DyKkAawoRuI5gDVq3QlP2i1KDGDwYzwuAi8FBG7UphbQFVnETACGswphKI
+ 6rMNP29JpEJhqUo/YitblP5SkTGSbiypCE8fNQ==
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Jun 8, 2022 at 4:47 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> vmlinux.o: warning: objtool: io_idle+0xc: call to __inb.isra.0() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: acpi_idle_enter+0xfe: call to num_online_cpus() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: acpi_idle_enter+0x115: call to acpi_idle_fallback_to_c1.isra.0() leaves .noinstr.text section
->
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
+Le 06/07/2022 à 15:48, Geert Uytterhoeven a écrit :
+> There are several forward declarations for show_registers() in C source
+> files.  Replace these by a single common forward declaration in
+> <asm/processor.h>, and include <asm/processor.h> where needed.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 > ---
->  arch/x86/include/asm/shared/io.h |    4 ++--
->  drivers/acpi/processor_idle.c    |    2 +-
->  include/linux/cpumask.h          |    4 ++--
->  3 files changed, 5 insertions(+), 5 deletions(-)
->
-> --- a/arch/x86/include/asm/shared/io.h
-> +++ b/arch/x86/include/asm/shared/io.h
-> @@ -5,13 +5,13 @@
->  #include <linux/types.h>
->
->  #define BUILDIO(bwl, bw, type)                                         \
-> -static inline void __out##bwl(type value, u16 port)                    \
-> +static __always_inline void __out##bwl(type value, u16 port)           \
->  {                                                                      \
->         asm volatile("out" #bwl " %" #bw "0, %w1"                       \
->                      : : "a"(value), "Nd"(port));                       \
->  }                                                                      \
->                                                                         \
-> -static inline type __in##bwl(u16 port)                                 \
-> +static __always_inline type __in##bwl(u16 port)                                \
->  {                                                                      \
->         type value;                                                     \
->         asm volatile("in" #bwl " %w1, %" #bw "0"                        \
-> --- a/drivers/acpi/processor_idle.c
-> +++ b/drivers/acpi/processor_idle.c
-> @@ -593,7 +593,7 @@ static int acpi_idle_play_dead(struct cp
->         return 0;
->  }
->
-> -static bool acpi_idle_fallback_to_c1(struct acpi_processor *pr)
-> +static __always_inline bool acpi_idle_fallback_to_c1(struct acpi_processor *pr)
->  {
->         return IS_ENABLED(CONFIG_HOTPLUG_CPU) && !pr->flags.has_cst &&
->                 !(acpi_gbl_FADT.flags & ACPI_FADT_C2_MP_SUPPORTED);
-> --- a/include/linux/cpumask.h
-> +++ b/include/linux/cpumask.h
-> @@ -908,9 +908,9 @@ static inline const struct cpumask *get_
->   * concurrent CPU hotplug operations unless invoked from a cpuhp_lock held
->   * region.
->   */
-> -static inline unsigned int num_online_cpus(void)
-> +static __always_inline unsigned int num_online_cpus(void)
->  {
-> -       return atomic_read(&__num_online_cpus);
-> +       return arch_atomic_read(&__num_online_cpus);
->  }
->  #define num_possible_cpus()    cpumask_weight(cpu_possible_mask)
->  #define num_present_cpus()     cpumask_weight(cpu_present_mask)
->
->
+> To be queued in the m68k tree for v5.20.
+> 
+>   arch/m68k/include/asm/processor.h | 1 +
+>   arch/m68k/kernel/traps.c          | 1 +
+>   arch/m68k/mac/macints.c           | 3 +--
+>   arch/m68k/virt/ints.c             | 3 +--
+>   4 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/m68k/include/asm/processor.h b/arch/m68k/include/asm/processor.h
+> index ffeda9aa526a5420..d86b4009880b4e79 100644
+> --- a/arch/m68k/include/asm/processor.h
+> +++ b/arch/m68k/include/asm/processor.h
+> @@ -151,6 +151,7 @@ static inline void release_thread(struct task_struct *dead_task)
+>   }
+>   
+>   unsigned long __get_wchan(struct task_struct *p);
+> +void show_registers(struct pt_regs *regs);
+>   
+>   #define	KSTK_EIP(tsk)	\
+>       ({			\
+> diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
+> index 59fc63feb0dcce8a..5c8cba0efc63e580 100644
+> --- a/arch/m68k/kernel/traps.c
+> +++ b/arch/m68k/kernel/traps.c
+> @@ -36,6 +36,7 @@
+>   #include <linux/uaccess.h>
+>   #include <asm/traps.h>
+>   #include <asm/machdep.h>
+> +#include <asm/processor.h>
+>   #include <asm/siginfo.h>
+>   #include <asm/tlbflush.h>
+>   
+> diff --git a/arch/m68k/mac/macints.c b/arch/m68k/mac/macints.c
+> index 883e48230f87a187..5cbaf6e9497c698a 100644
+> --- a/arch/m68k/mac/macints.c
+> +++ b/arch/m68k/mac/macints.c
+> @@ -126,8 +126,7 @@
+>   #include <asm/mac_baboon.h>
+>   #include <asm/hwtest.h>
+>   #include <asm/irq_regs.h>
+> -
+> -extern void show_registers(struct pt_regs *);
+> +#include <asm/processor.h>
+>   
+>   static unsigned int mac_irq_startup(struct irq_data *);
+>   static void mac_irq_shutdown(struct irq_data *);
+> diff --git a/arch/m68k/virt/ints.c b/arch/m68k/virt/ints.c
+> index 95818f901ebe322d..896aa6eb8bcc6f3d 100644
+> --- a/arch/m68k/virt/ints.c
+> +++ b/arch/m68k/virt/ints.c
+> @@ -12,6 +12,7 @@
+>   #include <asm/hwtest.h>
+>   #include <asm/irq.h>
+>   #include <asm/irq_regs.h>
+> +#include <asm/processor.h>
+>   #include <asm/virt.h>
+>   
+>   #define GFPIC_REG_IRQ_PENDING           0x04
+> @@ -19,8 +20,6 @@
+>   #define GFPIC_REG_IRQ_DISABLE           0x0c
+>   #define GFPIC_REG_IRQ_ENABLE            0x10
+>   
+> -extern void show_registers(struct pt_regs *regs);
+> -
+>   static struct resource picres[6];
+>   static const char *picname[6] = {
+>   	"goldfish_pic.0",
+
+Reviewed-by: Laurent Vivier <laurent@vivier.eu>
