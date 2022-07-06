@@ -2,45 +2,45 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15A46C43334
-	for <linux-m68k@archiver.kernel.org>; Wed,  6 Jul 2022 13:59:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B39FCC433EF
+	for <linux-m68k@archiver.kernel.org>; Wed,  6 Jul 2022 14:00:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232584AbiGFN7j (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 6 Jul 2022 09:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57046 "EHLO
+        id S233391AbiGFOAs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 6 Jul 2022 10:00:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233015AbiGFN7i (ORCPT
+        with ESMTP id S231454AbiGFOAo (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 6 Jul 2022 09:59:38 -0400
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3591B192BC
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  6 Jul 2022 06:59:33 -0700 (PDT)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-31c8a1e9e33so88626897b3.5
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 06 Jul 2022 06:59:33 -0700 (PDT)
+        Wed, 6 Jul 2022 10:00:44 -0400
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6512417599
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  6 Jul 2022 07:00:40 -0700 (PDT)
+Received: by mail-yb1-f174.google.com with SMTP id b85so14219576yba.8
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 06 Jul 2022 07:00:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Onduqp6mjVbUTy8onn0jWt/mqpI9kGBQEYh+QUeZcBU=;
-        b=EktATZE5LxvJGgfPRha8V+DyJrBYeuMW32buOhZtKkud7CKInXkFgDJQ6eE8AqMuZG
-         5shatgUNyyPFE0pkUJKqa5sICyZsuZe+AbI7/JsJVIkwpXN4JJAtKcJuR7+qGm8sMRHJ
-         D7IvRWIaNxVTQWsFgIjd1YOdloEmolSsLdhNbSyyZ931xbd7fXJROcRkyzlq3WCVtwRD
-         ZgaBOLUSIBq4E0f8v8t1lChf2uDVxc5tsZJwQXkwfJ3gqEvtMJDnzS1b6eGH44m7GvmH
-         zZYZBqNniezKwR+Ovd0MOO6I1gbByXPphAMGhaQLduyKArYlJoN8ZqZSBr10wbiS6Eec
-         LqXA==
-X-Gm-Message-State: AJIora971iNpFPBTXA4h4z2Iuq8sQ1zLkyT2Ca/UVUAA81juB35Ivajz
-        kpc9OT7vvwl762pidHAcEukDNDPOJ9VhunlyYKo=
-X-Google-Smtp-Source: AGRyM1tNbC/Hml4tsQcA7xFkjwPTBe4V9sculTi4g4WqVg8ltnNA+flCFfg0CHpb2ZdV5OvqewQ30xyxgoEo0qXCWHo=
-X-Received: by 2002:a81:1b97:0:b0:2db:640f:49d8 with SMTP id
- b145-20020a811b97000000b002db640f49d8mr45117410ywb.326.1657115972382; Wed, 06
- Jul 2022 06:59:32 -0700 (PDT)
+        bh=Lln/3deL7qOtLziJcXYPqqy6CqnXU6Vj8A13Rxsyfck=;
+        b=s9pZ0zDjgRW+sQmVy+2NUiTH2hivg3PpPDB4SkzGfWV1E8SSpQ3E5FXiZt4Cm+m15s
+         9AzObVqHCBr7Q916xDoD8PET+H4LKzxiCMvy8BgihquSVrAypBaG8IuVXYfRdA5XzPkx
+         nI62QH47I5RO855GSumlUrTPBXk8NjvClTAqdLy9JVAtkcpEQzuuO8rfBPBCXawCPBq2
+         Y1nxhQ5J8TTpmog5GEU9LekYoe9ZkipGuh/VwE8tBnfrwrvpuTCLLB5N9vbWGoNx1Xis
+         xlqN+4MbYFPjP3Ftv6rEkZsEN0YBz4566ky8F9I9g+jPyQwwTu7JWr6PqbIVPIlTbrNR
+         LqgQ==
+X-Gm-Message-State: AJIora8gDWDqkZRxNy2RT3XY2AnWgudLyk9MmZ4Py6usLNBe1EOT7Q2/
+        Bat9wV2Nd/dOA93mlghhEwLb+Et3fmY4W/zJhio=
+X-Google-Smtp-Source: AGRyM1vGBIO6ejUezqbzrzuaUC5etUaxh8lxWDh293Sam2Jc/zFfeBj4g08hdYpvSA8zzuIj5u2PxdHOfRWqZSWT82c=
+X-Received: by 2002:a05:6902:50e:b0:66e:7f55:7a66 with SMTP id
+ x14-20020a056902050e00b0066e7f557a66mr7763507ybs.365.1657116039561; Wed, 06
+ Jul 2022 07:00:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220608142723.103523089@infradead.org> <20220608144516.998681585@infradead.org>
-In-Reply-To: <20220608144516.998681585@infradead.org>
+References: <20220608142723.103523089@infradead.org> <20220608144517.061583457@infradead.org>
+In-Reply-To: <20220608144517.061583457@infradead.org>
 From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 6 Jul 2022 15:59:21 +0200
-Message-ID: <CAJZ5v0jSfvUoReFHjA5A+brExnnEKidak-GnjTbY0CKoaWpGVQ@mail.gmail.com>
-Subject: Re: [PATCH 17/36] acpi_idle: Remove tracing
+Date:   Wed, 6 Jul 2022 16:00:28 +0200
+Message-ID: <CAJZ5v0iBAt7xyBzrFwgVSOk7dLx017X_naLZAjnDuwi=oUmREg@mail.gmail.com>
+Subject: Re: [PATCH 18/36] cpuidle: Annotate poll_idle()
 To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
         vgupta@kernel.org,
@@ -158,82 +158,40 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Jun 8, 2022 at 4:47 PM Peter Zijlstra <peterz@infradead.org> wrote:
+On Wed, Jun 8, 2022 at 4:46 PM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> All the idle routines are called with RCU disabled, as such there must
-> not be any tracing inside.
+> The __cpuidle functions will become a noinstr class, as such they need
+> explicit annotations.
 >
 > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-This actually does some additional code duplication cleanup which
-would be good to mention in the changelog.  Or even move to a separate
-patch for that matter.
-
-Otherwise LGTM.
+Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
 > ---
->  drivers/acpi/processor_idle.c |   24 +++++++++++++-----------
->  1 file changed, 13 insertions(+), 11 deletions(-)
+>  drivers/cpuidle/poll_state.c |    6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 >
-> --- a/drivers/acpi/processor_idle.c
-> +++ b/drivers/acpi/processor_idle.c
-> @@ -108,8 +108,8 @@ static const struct dmi_system_id proces
->  static void __cpuidle acpi_safe_halt(void)
+> --- a/drivers/cpuidle/poll_state.c
+> +++ b/drivers/cpuidle/poll_state.c
+> @@ -13,7 +13,10 @@
+>  static int __cpuidle poll_idle(struct cpuidle_device *dev,
+>                                struct cpuidle_driver *drv, int index)
 >  {
->         if (!tif_need_resched()) {
-> -               safe_halt();
-> -               local_irq_disable();
-> +               raw_safe_halt();
-> +               raw_local_irq_disable();
->         }
->  }
->
-> @@ -524,16 +524,21 @@ static int acpi_idle_bm_check(void)
->         return bm_status;
->  }
->
-> -static void wait_for_freeze(void)
-> +static __cpuidle void io_idle(unsigned long addr)
->  {
-> +       /* IO port based C-state */
-> +       inb(addr);
+> -       u64 time_start = local_clock();
+> +       u64 time_start;
 > +
->  #ifdef CONFIG_X86
->         /* No delay is needed if we are in guest */
->         if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
->                 return;
->  #endif
-> -       /* Dummy wait op - must do something useless after P_LVL2 read
-> -          because chipsets cannot guarantee that STPCLK# signal
-> -          gets asserted in time to freeze execution properly. */
-> +       /*
-> +        * Dummy wait op - must do something useless after P_LVL2 read
-> +        * because chipsets cannot guarantee that STPCLK# signal
-> +        * gets asserted in time to freeze execution properly.
-> +        */
->         inl(acpi_gbl_FADT.xpm_timer_block.address);
+> +       instrumentation_begin();
+> +       time_start = local_clock();
+>
+>         dev->poll_time_limit = false;
+>
+> @@ -39,6 +42,7 @@ static int __cpuidle poll_idle(struct cp
+>         raw_local_irq_disable();
+>
+>         current_clr_polling();
+> +       instrumentation_end();
+>
+>         return index;
 >  }
->
-> @@ -553,9 +558,7 @@ static void __cpuidle acpi_idle_do_entry
->         } else if (cx->entry_method == ACPI_CSTATE_HALT) {
->                 acpi_safe_halt();
->         } else {
-> -               /* IO port based C-state */
-> -               inb(cx->address);
-> -               wait_for_freeze();
-> +               io_idle(cx->address);
->         }
->
->         perf_lopwr_cb(false);
-> @@ -577,8 +580,7 @@ static int acpi_idle_play_dead(struct cp
->                 if (cx->entry_method == ACPI_CSTATE_HALT)
->                         safe_halt();
->                 else if (cx->entry_method == ACPI_CSTATE_SYSTEMIO) {
-> -                       inb(cx->address);
-> -                       wait_for_freeze();
-> +                       io_idle(cx->address);
->                 } else
->                         return -ENODEV;
->
 >
 >
