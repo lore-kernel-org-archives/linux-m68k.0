@@ -2,146 +2,100 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FDFDC43334
-	for <linux-m68k@archiver.kernel.org>; Tue,  5 Jul 2022 07:07:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85821CCA481
+	for <linux-m68k@archiver.kernel.org>; Wed,  6 Jul 2022 05:58:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbiGEHHR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 5 Jul 2022 03:07:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39990 "EHLO
+        id S230480AbiGFF6N (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 6 Jul 2022 01:58:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231132AbiGEHHC (ORCPT
+        with ESMTP id S229809AbiGFF6L (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 5 Jul 2022 03:07:02 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D5FB13D1B
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  5 Jul 2022 00:06:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1657004795; x=1688540795;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Cf0ZxiGXmbdYJU92RmbpAaaX2pwcKioAwBTWFD3IlQ4=;
-  b=ArFDLHRBU6WYVO9SjWCV6dqPqNWC8caBeR+hbHYsa0vfsf5ef5GkhMcF
-   3pp0K1pD/VMAdsHsh3ZOK/ON0SQucxjD2hntqTgMMXOBpdq6ky1mrOu6n
-   c6wyUKkupjL8wPqIr3RlKRT6vDQxiqO8uYcWbWtu4c+ZPNwpRPor3cWTQ
-   a9YPyCaiWoP08s7Ab0B547UhXJb50Ue8l0/mIKkmDoliDwNQ7ZcH0UrQA
-   k0SS7z42AwNa69ER4qs6/PPoMuiwLTkerDAfKRgx3OdS30iVF83SMfbVA
-   9Zh1GPlqAyNrNKnNvPYi9bCNceTYgWfpwDkAw04h2SBZd20QndV4YCpOS
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10398"; a="347252570"
-X-IronPort-AV: E=Sophos;i="5.92,245,1650956400"; 
-   d="scan'208";a="347252570"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2022 00:06:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,245,1650956400"; 
-   d="scan'208";a="695551672"
-Received: from lkp-server01.sh.intel.com (HELO 68b931ab7ac1) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 05 Jul 2022 00:06:32 -0700
-Received: from kbuild by 68b931ab7ac1 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1o8cdj-000Ipw-Cn;
-        Tue, 05 Jul 2022 07:06:31 +0000
-Date:   Tue, 05 Jul 2022 15:05:33 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:for-v5.20] BUILD SUCCESS
- 4977636d44b8d02cab7d04616283005b733477d7
-Message-ID: <62c3e2bd.ezD7nZP3d/IsgTPU%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        Wed, 6 Jul 2022 01:58:11 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9D03021E3C
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  5 Jul 2022 22:58:10 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EBF5A1570;
+        Tue,  5 Jul 2022 22:58:09 -0700 (PDT)
+Received: from [10.163.43.16] (unknown [10.163.43.16])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3C01D3F70D;
+        Tue,  5 Jul 2022 22:58:01 -0700 (PDT)
+Message-ID: <8a6ccbae-7d7c-6e08-cc28-eeb649f86112@arm.com>
+Date:   Wed, 6 Jul 2022 11:27:59 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH V6 00/26] mm/mmap: Drop __SXXX/__PXXX macros from across
+ platforms
+Content-Language: en-US
+To:     linux-mm@kvack.org, akpm@linux-foundation.org
+Cc:     hch@infradead.org, christophe.leroy@csgroup.eu,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        x86@kernel.org, openrisc@lists.librecores.org,
+        linux-xtensa@linux-xtensa.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-um@lists.infradead.org,
+        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20220630051630.1718927-1-anshuman.khandual@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <20220630051630.1718927-1-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-v5.20
-branch HEAD: 4977636d44b8d02cab7d04616283005b733477d7  m68k: q40: Align '*' in comments
 
-elapsed time: 723m
 
-configs tested: 69
-configs skipped: 103
+On 6/30/22 10:46, Anshuman Khandual wrote:
+> __SXXX/__PXXX macros is an unnecessary abstraction layer in creating the
+> generic protection_map[] array which is used for vm_get_page_prot(). This
+> abstraction layer can be avoided, if the platforms just define the array
+> protection_map[] for all possible vm_flags access permission combinations
+> and also export vm_get_page_prot() implementation.
+> 
+> This series drops __SXXX/__PXXX macros from across platforms in the tree.
+> First it build protects generic protection_map[] array with '#ifdef __P000'
+> and moves it inside platforms which enable ARCH_HAS_VM_GET_PAGE_PROT. Later
+> this build protects same array with '#ifdef ARCH_HAS_VM_GET_PAGE_PROT' and
+> moves inside remaining platforms while enabling ARCH_HAS_VM_GET_PAGE_PROT.
+> This adds a new macro DECLARE_VM_GET_PAGE_PROT defining the current generic
+> vm_get_page_prot(), in order for it to be reused on platforms that do not
+> require custom implementation. Finally, ARCH_HAS_VM_GET_PAGE_PROT can just
+> be dropped, as all platforms now define and export vm_get_page_prot(), via
+> looking up a private and static protection_map[] array. protection_map[]
+> data type has been changed as 'static const' on all platforms that do not
+> change it during boot.
+> 
+> This series applies on v5.19-rc4 and has been build tested for multiple
+> platforms. While here it has dropped off all previous tags from folks after
+> the current restructuring. Series common CC list has been expanded to cover
+> all impacted platforms for wider reach.
+> 
+> - Anshuman
+> 
+> Changes in V6:
+> 
+> - Converted protection_map[] array as 'static const' on sparc32 platform
+> - Rebased on v5.19-rc4
+> - Collected tags
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+There are two linux-next based build fixes for this series (listed below), when
+vm_get_page_prot() gets redefined with !CONFIG_MMU. Platform vm_get_page_prot()
+is required only with CONFIG_MMU enabled, otherwise there is a generic fallback
+stub in include/linux/mm.h
 
-gcc tested configs:
-arm64                            allyesconfig
-arm                                 defconfig
-arm                              allyesconfig
-i386                          randconfig-c001
-powerpc                         wii_defconfig
-powerpc                      tqm8xx_defconfig
-powerpc                       maple_defconfig
-sh                        dreamcast_defconfig
-powerpc                 mpc834x_mds_defconfig
-sh                   secureedge5410_defconfig
-arm                      integrator_defconfig
-sh                   rts7751r2dplus_defconfig
-arm                         cm_x300_defconfig
-m68k                        stmark2_defconfig
-powerpc                       ppc64_defconfig
-powerpc                 linkstation_defconfig
-arm                            xcep_defconfig
-powerpc                     tqm8548_defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                    nommu_k210_defconfig
-riscv                             allnoconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-m68k                             allyesconfig
-m68k                             allmodconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-i386                             allyesconfig
-i386                                defconfig
-x86_64                        randconfig-a006
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-x86_64                        randconfig-a011
-x86_64                        randconfig-a013
-x86_64                        randconfig-a015
-i386                          randconfig-a012
-i386                          randconfig-a014
-i386                          randconfig-a016
-riscv                randconfig-r042-20220703
-arc                  randconfig-r043-20220703
-s390                 randconfig-r044-20220703
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                           rhel-8.3-syz
-x86_64                         rhel-8.3-kunit
+https://lore.kernel.org/all/20220705221411.3381797-1-jcmvbkbc@gmail.com/	[xtensa]
+https://lore.kernel.org/all/20220706054002.1936820-1-anshuman.khandual@arm.com/ [sh]
 
-clang tested configs:
-riscv                             allnoconfig
-arm                          collie_defconfig
-mips                          ath79_defconfig
-powerpc                 mpc832x_rdb_defconfig
-arm                              alldefconfig
-arm                         hackkit_defconfig
-powerpc                    ge_imp3a_defconfig
-powerpc                     mpc5200_defconfig
-mips                          ath25_defconfig
-arm                         orion5x_defconfig
-mips                         tb0287_defconfig
-mips                     loongson2k_defconfig
-x86_64                        randconfig-k001
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-hexagon              randconfig-r045-20220703
-hexagon              randconfig-r041-20220703
+It does not seem CONFIG_MMU can be disabled on other platforms thus exposing a build
+failure. But just to be on the safer side, should all vm_get_page_prot() be wrapped
+around with #ifdef CONFIG_MMU ? In that case will resend the series with above build
+fixes folded back in as well. Please do suggest. Thank you.
 
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+- Anshuman
