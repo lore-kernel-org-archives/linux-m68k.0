@@ -2,130 +2,144 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ECFE4C43334
-	for <linux-m68k@archiver.kernel.org>; Wed,  6 Jul 2022 14:08:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09E68C43334
+	for <linux-m68k@archiver.kernel.org>; Thu,  7 Jul 2022 02:11:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231799AbiGFOIi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 6 Jul 2022 10:08:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37256 "EHLO
+        id S234781AbiGGCLd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 6 Jul 2022 22:11:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231446AbiGFOIf (ORCPT
+        with ESMTP id S234779AbiGGCLd (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 6 Jul 2022 10:08:35 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C71101B;
-        Wed,  6 Jul 2022 07:08:30 -0700 (PDT)
-Received: from [192.168.100.1] ([82.142.8.70]) by mrelayeu.kundenserver.de
- (mreue012 [213.165.67.103]) with ESMTPSA (Nemesis) id
- 1MCXhr-1oICFt3vt5-009i0R; Wed, 06 Jul 2022 16:08:27 +0200
-Message-ID: <8d952be9-8ea4-7ffa-107d-d73d5f08889c@vivier.eu>
-Date:   Wed, 6 Jul 2022 16:08:26 +0200
+        Wed, 6 Jul 2022 22:11:33 -0400
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7290E2F010
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  6 Jul 2022 19:11:31 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 3760C320014C;
+        Wed,  6 Jul 2022 22:11:28 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Wed, 06 Jul 2022 22:11:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; t=1657159887; x=1657246287; bh=Oqjo7bte1PnK+DaOS4Pw+4uzHzG8
+        H+vyhDqlF6sLUXU=; b=jNedMEQdn3OAOPkBqKQgVB50yYJJlF49ciekBr04fdy4
+        4T+sJoQCUFY5dEj8/8go2nuWOHibfv3jiM2IdGDDskvR+g3jd32+J8i/iiDipJ8h
+        LLtIIM0bsmLg9RCmKMMqkMbFs3LCisOMztECRR5H4gCPSgR0wJ6w/D5a6Sx007Kw
+        xBpM5PEteepeGfN2z8XdRp9mfA8t7yL9DLU1Pw9C1ZXrV43tWFg4phBLwtjrlg1Y
+        Wdg5HaqzIRtCNAVcCLBS6Og1QiWseyWES4QqW3Yi2dma8uGti0PTaE3LN7ZoObOZ
+        rSSvXxSS9mBLcuhXAlhkM0BjQU9WqRCuod6RQOIGiQ==
+X-ME-Sender: <xms:z0DGYk4CArNTJy9hZ086z0pnX3f6MbA51YjT0Fs6ubKLZ-OEz6xVNw>
+    <xme:z0DGYl4ryxEEZb79GeTO2wTogOvpA0mav1q05JcBdg34yhP6YrGyNzB9cUIBtMyit
+    4A2Um4hQEnbBH9aVPI>
+X-ME-Received: <xmr:z0DGYjdDgJLlDIJLXQGU2xnlfmXxHRrKx56twGXlB3MrqERf-DF76RQhx1VJ64Be8CGh6dtjhgRbnnj8zxtpOPl0Nl53GeWrTeo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudeigedgheejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
+    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
+    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
+    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:z0DGYpJ0l4od_6M_8G6SIiEBq11i9AvufHtSFqlz35rRo6QvogxLSw>
+    <xmx:z0DGYoKSE2RZQMQOArKh056lOol1w127UQA7FMZtnlQl0-cocHanAw>
+    <xmx:z0DGYqzJtH54cOkoTdpaWcNkRYKK3As3RuY_82PWGnXNNVjxBDnzTA>
+    <xmx:z0DGYizwh5TT_rtTRJkHSGE3WyfIZWnhdly8jAuoASaOnVsuTCFuCA>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 6 Jul 2022 22:11:24 -0400 (EDT)
+Date:   Thu, 7 Jul 2022 12:11:33 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] m68k: mac: Remove forward declaration for
+ mac_nmi_handler()
+In-Reply-To: <fa48394ecba7c29a2da354d13c1017b37237f25b.1657114783.git.geert@linux-m68k.org>
+Message-ID: <181e93f-9830-75db-a088-6cbff0de27da@linux-m68k.org>
+References: <fa48394ecba7c29a2da354d13c1017b37237f25b.1657114783.git.geert@linux-m68k.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH] m68k: Add forward declaration for show_registers()
-Content-Language: fr
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Finn Thain <fthain@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-References: <d5b6a7f9af3e82f0ccb67edac09d9ee45d457932.1657114791.git.geert@linux-m68k.org>
-From:   Laurent Vivier <laurent@vivier.eu>
-In-Reply-To: <d5b6a7f9af3e82f0ccb67edac09d9ee45d457932.1657114791.git.geert@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:yUkA2TeWWfPuZf5nJv8cRVPiE4yBE0sIqwehpUpZpd/uefhryRJ
- 0qk9Z1mkX4Y20RPySif0caci8yas/uqjZbtWFsJc8a83REsicJxlHWVIMGzEstudXj1eDAE
- odvsoi5rvqJA4+aVDPtxlopdZzV5p7yeD2W6b+rKdCXOCuzlaE5eBcJrsLLrhJjr3hZyxF1
- 4MnKII0IVuIH9/fmV8hJQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Nx65Dcr3efc=:8689rSaWT/mZREixusj7TM
- 0MmMm/EPwzTwDNUY9p8OKGaU7GxQKImimoSafHVltUETbxduPAWLl2NT2hY05y/4kNmDX6NiX
- egJOWgUNsqKXtqknYYEiEU1y1y1Hl1UVMyGH+iBkXGkkNWos4jO6XCeJPu/OK4T9Qd0X0xUT1
- 9uNJ05jGQ/xt6+jhoMfvzKmGOguoNuGtLZCGWDcVl1OeDM/+Z6PvIh0Db2ZUVEEJSIBMXNxJW
- 0ZLb34rgwz/G8pEY4nVIMDyTHmRW9Inl7c59WEUAindXjky9KCwfM8n2PrejddSyoNoVVg/y6
- 6dABkuu/m8mBTy0Lc51hxJTeUQtB79zFHbela2RAsV4k4gmLNRSPbc5rnqWk/IzpL9L14zVPW
- JNuX30kdqIFPMo3z4qRhr5OIwLULXXEK+7zeiXtEFKCVCjCyn9oYTksg3ZWwbL0tRzOIMJ+fi
- v1Sa3QheSoK6TiCj5ozikOecX5OnzYC35VpuW4j0MOTL4ZaBHxH1I8B29sQAYLL8lwsAO1XPX
- qfD78a9Ul44lDWBmHrQ1fSaKPOkS5QagXYOlF/9xk8fSHs8X6hzXKPLLZgRFDYMFe4O8283ld
- +rtg1ML2Z9aAsLIdVlRsY89e+rKpkcjpzJUFKun2Tlon5CzA6v71Fecote27Yw/Mn/6Wy4mJP
- yR1Zrq3IFoeoZf2DyKkAawoRuI5gDVq3QlP2i1KDGDwYzwuAi8FBG7UphbQFVnETACGswphKI
- 6rMNP29JpEJhqUo/YitblP5SkTGSbiypCE8fNQ==
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Le 06/07/2022 à 15:48, Geert Uytterhoeven a écrit :
-> There are several forward declarations for show_registers() in C source
-> files.  Replace these by a single common forward declaration in
-> <asm/processor.h>, and include <asm/processor.h> where needed.
+On Wed, 6 Jul 2022, Geert Uytterhoeven wrote:
+
+> Move mac_nmi_handler() before its caller, so its forward declaration can
+> be dropped.  While at it, make the function static, and absorb the
+> variable in_nmi, which is only used inside the function.
 > 
 > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Reviewed-by: Finn Thain <fthain@linux-m68k.org>
+
+BTW, this code needs the race condition fixed but I think that would 
+require CONFIG_ADVANCED && CONFIG_RMW_INSNS, and arch/m68k/Kconfig.cpu 
+advises against it. There is some discussion of Amiga and Atari in 
+relation to RMW and it's claimed "it is also said to destabilize other 
+machines" which may be true but doesn't help much.
+
 > ---
 > To be queued in the m68k tree for v5.20.
 > 
->   arch/m68k/include/asm/processor.h | 1 +
->   arch/m68k/kernel/traps.c          | 1 +
->   arch/m68k/mac/macints.c           | 3 +--
->   arch/m68k/virt/ints.c             | 3 +--
->   4 files changed, 4 insertions(+), 4 deletions(-)
+>  arch/m68k/mac/macints.c | 32 +++++++++++++++-----------------
+>  1 file changed, 15 insertions(+), 17 deletions(-)
 > 
-> diff --git a/arch/m68k/include/asm/processor.h b/arch/m68k/include/asm/processor.h
-> index ffeda9aa526a5420..d86b4009880b4e79 100644
-> --- a/arch/m68k/include/asm/processor.h
-> +++ b/arch/m68k/include/asm/processor.h
-> @@ -151,6 +151,7 @@ static inline void release_thread(struct task_struct *dead_task)
->   }
->   
->   unsigned long __get_wchan(struct task_struct *p);
-> +void show_registers(struct pt_regs *regs);
->   
->   #define	KSTK_EIP(tsk)	\
->       ({			\
-> diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
-> index 59fc63feb0dcce8a..5c8cba0efc63e580 100644
-> --- a/arch/m68k/kernel/traps.c
-> +++ b/arch/m68k/kernel/traps.c
-> @@ -36,6 +36,7 @@
->   #include <linux/uaccess.h>
->   #include <asm/traps.h>
->   #include <asm/machdep.h>
-> +#include <asm/processor.h>
->   #include <asm/siginfo.h>
->   #include <asm/tlbflush.h>
->   
 > diff --git a/arch/m68k/mac/macints.c b/arch/m68k/mac/macints.c
-> index 883e48230f87a187..5cbaf6e9497c698a 100644
+> index e3575388cd05a8cc..883e48230f87a187 100644
 > --- a/arch/m68k/mac/macints.c
 > +++ b/arch/m68k/mac/macints.c
-> @@ -126,8 +126,7 @@
->   #include <asm/mac_baboon.h>
->   #include <asm/hwtest.h>
->   #include <asm/irq_regs.h>
+> @@ -129,8 +129,6 @@
+>  
+>  extern void show_registers(struct pt_regs *);
+>  
+> -irqreturn_t mac_nmi_handler(int, void *);
 > -
-> -extern void show_registers(struct pt_regs *);
-> +#include <asm/processor.h>
->   
->   static unsigned int mac_irq_startup(struct irq_data *);
->   static void mac_irq_shutdown(struct irq_data *);
-> diff --git a/arch/m68k/virt/ints.c b/arch/m68k/virt/ints.c
-> index 95818f901ebe322d..896aa6eb8bcc6f3d 100644
-> --- a/arch/m68k/virt/ints.c
-> +++ b/arch/m68k/virt/ints.c
-> @@ -12,6 +12,7 @@
->   #include <asm/hwtest.h>
->   #include <asm/irq.h>
->   #include <asm/irq_regs.h>
-> +#include <asm/processor.h>
->   #include <asm/virt.h>
->   
->   #define GFPIC_REG_IRQ_PENDING           0x04
-> @@ -19,8 +20,6 @@
->   #define GFPIC_REG_IRQ_DISABLE           0x0c
->   #define GFPIC_REG_IRQ_ENABLE            0x10
->   
-> -extern void show_registers(struct pt_regs *regs);
+>  static unsigned int mac_irq_startup(struct irq_data *);
+>  static void mac_irq_shutdown(struct irq_data *);
+>  
+> @@ -142,6 +140,21 @@ static struct irq_chip mac_irq_chip = {
+>  	.irq_shutdown	= mac_irq_shutdown,
+>  };
+>  
+> +static irqreturn_t mac_nmi_handler(int irq, void *dev_id)
+> +{
+> +	static volatile int in_nmi;
+> +
+> +	if (in_nmi)
+> +		return IRQ_HANDLED;
+> +	in_nmi = 1;
+> +
+> +	pr_info("Non-Maskable Interrupt\n");
+> +	show_registers(get_irq_regs());
+> +
+> +	in_nmi = 0;
+> +	return IRQ_HANDLED;
+> +}
+> +
+>  void __init mac_init_IRQ(void)
+>  {
+>  	m68k_setup_irq_controller(&mac_irq_chip, handle_simple_irq, IRQ_USER,
+> @@ -254,18 +267,3 @@ static void mac_irq_shutdown(struct irq_data *data)
+>  	else
+>  		mac_irq_disable(data);
+>  }
 > -
->   static struct resource picres[6];
->   static const char *picname[6] = {
->   	"goldfish_pic.0",
-
-Reviewed-by: Laurent Vivier <laurent@vivier.eu>
+> -static volatile int in_nmi;
+> -
+> -irqreturn_t mac_nmi_handler(int irq, void *dev_id)
+> -{
+> -	if (in_nmi)
+> -		return IRQ_HANDLED;
+> -	in_nmi = 1;
+> -
+> -	pr_info("Non-Maskable Interrupt\n");
+> -	show_registers(get_irq_regs());
+> -
+> -	in_nmi = 0;
+> -	return IRQ_HANDLED;
+> -}
+> 
