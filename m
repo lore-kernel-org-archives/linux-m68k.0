@@ -2,136 +2,85 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB380C43334
-	for <linux-m68k@archiver.kernel.org>; Fri,  8 Jul 2022 18:21:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2D58CCA47B
+	for <linux-m68k@archiver.kernel.org>; Fri,  8 Jul 2022 18:21:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239113AbiGHSVh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 8 Jul 2022 14:21:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41046 "EHLO
+        id S239301AbiGHSVr (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 8 Jul 2022 14:21:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239153AbiGHSVQ (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 8 Jul 2022 14:21:16 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2AD83F1A
-        for <linux-m68k@vger.kernel.org>; Fri,  8 Jul 2022 11:21:11 -0700 (PDT)
+        with ESMTP id S239198AbiGHSVc (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 8 Jul 2022 14:21:32 -0400
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A18537D1EB
+        for <linux-m68k@vger.kernel.org>; Fri,  8 Jul 2022 11:21:30 -0700 (PDT)
 Received: from ramsan.of.borg ([84.195.186.194])
-        by michel.telenet-ops.be with bizsmtp
-        id siM72700P4C55Sk06iM7fl; Fri, 08 Jul 2022 20:21:09 +0200
+        by xavier.telenet-ops.be with bizsmtp
+        id siMU270024C55Sk01iMU6C; Fri, 08 Jul 2022 20:21:30 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1o9sbD-002fGk-0M; Fri, 08 Jul 2022 20:21:07 +0200
+        id 1o9sbX-002fJc-Ez; Fri, 08 Jul 2022 20:21:27 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1o9sbC-00BtJb-EA; Fri, 08 Jul 2022 20:21:06 +0200
+        id 1o9sbW-00BtNQ-Kk; Fri, 08 Jul 2022 20:21:26 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
         Thomas Zimmermann <tzimmermann@suse.de>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?q?Noralf=20Tr=C3=B8nnes?= <noralf@tronnes.org>,
+        Gerd Hoffmann <kraxel@redhat.com>
 Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
         linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Javier Martinez Canillas <javierm@redhat.com>
-Subject: [PATCH v3 05/10] drm/fourcc: Add DRM_FORMAT_C[124]
-Date:   Fri,  8 Jul 2022 20:20:50 +0200
-Message-Id: <3d88ca7ad32ff3ff3469c10f0b36c312ea233a33.1657294931.git.geert@linux-m68k.org>
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 0/3] drm: Endianness fixes
+Date:   Fri,  8 Jul 2022 20:21:06 +0200
+Message-Id: <cover.1657300532.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1657294931.git.geert@linux-m68k.org>
-References: <cover.1657294931.git.geert@linux-m68k.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Introduce fourcc codes for color-indexed frame buffer formats with two,
-four, and sixteen colors, and provide a mapping from bits per pixel and
-depth to fourcc codes.
+	Hi all,
 
-As the number of bits per pixel is less than eight, these rely on proper
-block handling for the calculation of bits per pixel and pitch.
+This patch series contains several endianness fixes for the DRM
+subsystem.
 
-The fill order (the order in which multiple pixels are packed in a byte)
-is the same order as used for indexed-color (2, 4, and 16 colors) images
-in the PNG specification, Version 1.2.
-This order is also the recommended and default order (FillOrder = 1) for
-palette-color (16 colors) images in the TIFF 6.0 Specification, and is
-also used for 16-color Linux frame buffer logos.
+This has been tested on ARAnyM using a work-in-progress Atari DRM
+driver, which supports (a.o.) big-endian RGB565 (more info and related
+patches can be found in [1]).
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reviewed-by: Pekka Paalanen <pekka.paalanen@collabora.com>
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
----
-v3:
-  - Add Reviewed-by,
-  - Document fill order,
+Thanks for your comments!
 
-v2:
-  - Improve pixel description,
-  - Require depth to match bpp in drm_mode_legacy_fb_format(),
-  - Set .is_color_indexed flag.
----
- drivers/gpu/drm/drm_fourcc.c  | 21 +++++++++++++++++++++
- include/uapi/drm/drm_fourcc.h |  3 +++
- 2 files changed, 24 insertions(+)
+[1] "[PATCH v3 00/10] drm: Add support for low-color frame buffer formats"
+    https://lore.kernel.org/r/cover.1657294931.git.geert@linux-m68k.org
 
-diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
-index 6c76bd821d17e7c7..29f4fe199c4ddcf0 100644
---- a/drivers/gpu/drm/drm_fourcc.c
-+++ b/drivers/gpu/drm/drm_fourcc.c
-@@ -43,6 +43,21 @@ uint32_t drm_mode_legacy_fb_format(uint32_t bpp, uint32_t depth)
- 	uint32_t fmt = DRM_FORMAT_INVALID;
- 
- 	switch (bpp) {
-+	case 1:
-+		if (depth == 1)
-+			fmt = DRM_FORMAT_C1;
-+		break;
-+
-+	case 2:
-+		if (depth == 2)
-+			fmt = DRM_FORMAT_C2;
-+		break;
-+
-+	case 4:
-+		if (depth == 4)
-+			fmt = DRM_FORMAT_C4;
-+		break;
-+
- 	case 8:
- 		if (depth == 8)
- 			fmt = DRM_FORMAT_C8;
-@@ -132,6 +147,12 @@ EXPORT_SYMBOL(drm_driver_legacy_fb_format);
- const struct drm_format_info *__drm_format_info(u32 format)
- {
- 	static const struct drm_format_info formats[] = {
-+		{ .format = DRM_FORMAT_C1,		.depth = 1,  .num_planes = 1,
-+		  .char_per_block = { 1, }, .block_w = { 8, }, .block_h = { 1, }, .hsub = 1, .vsub = 1, .is_color_indexed = true },
-+		{ .format = DRM_FORMAT_C2,		.depth = 2,  .num_planes = 1,
-+		  .char_per_block = { 1, }, .block_w = { 4, }, .block_h = { 1, }, .hsub = 1, .vsub = 1, .is_color_indexed = true },
-+		{ .format = DRM_FORMAT_C4,		.depth = 4,  .num_planes = 1,
-+		  .char_per_block = { 1, }, .block_w = { 2, }, .block_h = { 1, }, .hsub = 1, .vsub = 1, .is_color_indexed = true },
- 		{ .format = DRM_FORMAT_C8,		.depth = 8,  .num_planes = 1, .cpp = { 1, 0, 0 }, .hsub = 1, .vsub = 1, .is_color_indexed = true },
- 		{ .format = DRM_FORMAT_R8,		.depth = 8,  .num_planes = 1, .cpp = { 1, 0, 0 }, .hsub = 1, .vsub = 1 },
- 		{ .format = DRM_FORMAT_R10,		.depth = 10, .num_planes = 1, .cpp = { 2, 0, 0 }, .hsub = 1, .vsub = 1 },
-diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
-index 0980678d502dc784..e18de6f258302673 100644
---- a/include/uapi/drm/drm_fourcc.h
-+++ b/include/uapi/drm/drm_fourcc.h
-@@ -99,6 +99,9 @@ extern "C" {
- #define DRM_FORMAT_INVALID	0
- 
- /* color index */
-+#define DRM_FORMAT_C1		fourcc_code('C', '1', ' ', ' ') /* [7:0] C0:C1:C2:C3:C4:C5:C6:C7 1:1:1:1:1:1:1:1 eight pixels/byte */
-+#define DRM_FORMAT_C2		fourcc_code('C', '2', ' ', ' ') /* [7:0] C0:C1:C2:C3 2:2:2:2 four pixels/byte */
-+#define DRM_FORMAT_C4		fourcc_code('C', '4', ' ', ' ') /* [7:0] C0:C1 4:4 two pixels/byte */
- #define DRM_FORMAT_C8		fourcc_code('C', '8', ' ', ' ') /* [7:0] C */
- 
- /* 8 bpp Red */
+Geert Uytterhoeven (3):
+  drm/fourcc: Add missing big-endian XRGB1555 and RGB565 formats
+  drm/format-helper: Fix endianness in drm_fb_*_to_*() conversion
+    helpers
+  drm/gud: Fix endianness in gud_xrgb8888_to_color() helper
+
+ drivers/gpu/drm/drm_format_helper.c | 80 +++++++++++++++++------------
+ drivers/gpu/drm/drm_fourcc.c        |  4 ++
+ drivers/gpu/drm/gud/gud_pipe.c      | 14 ++---
+ 3 files changed, 58 insertions(+), 40 deletions(-)
+
 -- 
 2.25.1
 
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
