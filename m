@@ -2,87 +2,145 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DBADC433EF
-	for <linux-m68k@archiver.kernel.org>; Fri,  8 Jul 2022 08:50:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4992C43334
+	for <linux-m68k@archiver.kernel.org>; Fri,  8 Jul 2022 12:17:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237432AbiGHIuD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 8 Jul 2022 04:50:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48136 "EHLO
+        id S238383AbiGHMRz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 8 Jul 2022 08:17:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237254AbiGHIuD (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 8 Jul 2022 04:50:03 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D09823B7;
-        Fri,  8 Jul 2022 01:50:02 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id y141so22988472pfb.7;
-        Fri, 08 Jul 2022 01:50:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=cm1LB66MmDD8EmwUS6z+lWnw11bNSlxHjmWpghPAHzM=;
-        b=JwNmXtIQZ+R6XuLQ4EpKmk0z/gxvYCIhxWBJNaK/mN9gUw8o0Xqt/aM+b2pNSpfVZm
-         do1JvlZEqQy2iK2E1T8jubfV3aOMc5r8ScZAfSuslwOPrjiHHOgRyzZ/OiUrxtHZlUiZ
-         gjNQMPmPDcqSiRJ2F75xsmgSh26YdLFMb9nCWWIxP+HT5uBae43NaV9YHSxE6z+NWvD/
-         T3C5ynQZdAMXMQ4THL219cOWSirCMV/oJEMM2fw+rDCJSqrYv8Cfxnt05pn+fp9u90xl
-         uSGv9qI2YDbP1voCkz+NaEmiD3v4rfaA/sdTSG7/jhk4SIYezH5p0RW/yEGVvJ8Gf/Ir
-         2KFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=cm1LB66MmDD8EmwUS6z+lWnw11bNSlxHjmWpghPAHzM=;
-        b=fBOLUcaSEmU1ZgYeYRS53ClOCqzmUTtbYiwtnZ8nV6ZZJoSx+cmAMB9q0Z/3VRrqLU
-         FDChBHtt75aEmsJP7QhBpnJlGiW0NubL0GMF1ggRtXQNYVPas+niRat08lY9/WM/5L1u
-         hNw9CmSlrAnII8ZF8CzzavmOiwLAgCvQCFExGrqsC8cPkTTQl4YywqW0l3NnUo5ajiLC
-         zri5yOZRdTv9W7lsAqbQilsQQMeGkvYiCU9tX2iqHyo/N8mckUm9teduJ9vFDqwIC8BQ
-         CmV8mQ+nAJkFUCUMvw3m32QuUWypuq+l98smtoRVAz0+1Eij98ubc/a59l9Qli49OrU+
-         8UDw==
-X-Gm-Message-State: AJIora8DCr3kE8+6Etkue0dq7169dnWdiGwBcYSBxWnGrzYG2eQ5dgdA
-        iU9iep8hlbtQmlgHW/PTreE=
-X-Google-Smtp-Source: AGRyM1u5OybdFjCdVZuX3bTD2Q2hdEbPmrGWOEjYD9cbK4PQrsV5GgrKiIpaZOxIBPnt9M2G52pQIA==
-X-Received: by 2002:a63:1259:0:b0:411:f92b:8e6c with SMTP id 25-20020a631259000000b00411f92b8e6cmr2327841pgs.108.1657270201849;
-        Fri, 08 Jul 2022 01:50:01 -0700 (PDT)
-Received: from [10.1.1.24] (222-155-0-244-adsl.sparkbb.co.nz. [222.155.0.244])
-        by smtp.gmail.com with ESMTPSA id x2-20020a170902ec8200b0016be3d7c3basm10685550plg.60.2022.07.08.01.49.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 08 Jul 2022 01:50:01 -0700 (PDT)
-Subject: Re: [PATCH v2 0/3] Converting m68k WD33C93 drivers to DMA API
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-References: <20220630033302.3183-1-schmitzmic@gmail.com>
- <yq1zghk63iv.fsf@ca-mkp.ca.oracle.com>
-Cc:     linux-m68k@vger.kernel.org, arnd@kernel.org,
-        linux-scsi@vger.kernel.org, geert@linux-m68k.org
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <da7bc74d-ff2d-5052-7703-e87e1e21b964@gmail.com>
-Date:   Fri, 8 Jul 2022 20:49:55 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        with ESMTP id S238370AbiGHMRz (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 8 Jul 2022 08:17:55 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E545A47D
+        for <linux-m68k@lists.linux-m68k.org>; Fri,  8 Jul 2022 05:17:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1657282670; x=1688818670;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=8S0rzRQA2BUxiTwGUL7gX6AOqoRLNeIl8BEePutlzuI=;
+  b=ODeL5SrFBXGxeSYbl7RRA68oK129r8BlzMKquZy6d0jhYp4S95DxjAui
+   EfTXFQrpHg+8F01NMa9njxQabSURQXqcQUlkq418kcAbKX22rHojwXB8x
+   aJ67L1HDaLC4nRpsLkrx7LC5WSx28k1zKOHyHhoubNIL9KfrBpqwRnP5+
+   hkl1vGploog5lBzPha8lwrs9K5dye9GWhXtZnDeE3i/YAHXGaH7pVBnnV
+   CoVjAOrDG2W+VrW33AIQPFl57BNEwoX3YpeOMBUqm3xLEBc447xVBPwqW
+   yvijkBAaRsBfNMhuUsL6SWXo/lvKlJmew0gAczT6zLthRzB5/Z6tQqEQA
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10401"; a="345956426"
+X-IronPort-AV: E=Sophos;i="5.92,255,1650956400"; 
+   d="scan'208";a="345956426"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2022 05:17:49 -0700
+X-IronPort-AV: E=Sophos;i="5.92,255,1650956400"; 
+   d="scan'208";a="683644812"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2022 05:17:44 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1o9mvU-00183D-2w;
+        Fri, 08 Jul 2022 15:17:40 +0300
+Date:   Fri, 8 Jul 2022 15:17:40 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-arch@vger.kernel.org, lkp@lists.01.org, lkp@intel.com
+Subject: Re: [bitops]  0e862838f2:
+ BUG:KASAN:wild-memory-access_in_dmar_parse_one_rhsa
+Message-ID: <YsggZNUQcsKIU9xU@smile.fi.intel.com>
+References: <YsbpTNmDaam8pl+f@xsang-OptiPlex-9020>
 MIME-Version: 1.0
-In-Reply-To: <yq1zghk63iv.fsf@ca-mkp.ca.oracle.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YsbpTNmDaam8pl+f@xsang-OptiPlex-9020>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Martin,
+On Thu, Jul 07, 2022 at 10:10:20PM +0800, kernel test robot wrote:
+> 
+> (please be noted we reported
+> "[bitops]  001bea109d: BUG:KASAN:wild-memory-access_in_dmar_parse_one_rhsa"
+> on
+> https://lore.kernel.org/all/YrnGLtDXAveqXGok@xsang-OptiPlex-9020/
+> now we noticed this commit has already been merged into linux-next/master,
+> and the issue is still existing. report again FYI)
+> 
+> Greeting,
+> 
+> FYI, we noticed the following commit (built with gcc-11):
+> 
+> commit: 0e862838f290147ea9c16db852d8d494b552d38d ("bitops: unify non-atomic bitops prototypes across architectures")
+> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+> 
+> in testcase: xfstests
+> version: xfstests-x86_64-c1144bf-1_20220627
+> with following parameters:
+> 
+> 	disk: 2pmem
+> 	fs: ext4
+> 	test: ext4-dax
+> 	ucode: 0x700001c
+> 
+> test-description: xfstests is a regression test suite for xfs and other files ystems.
+> test-url: git://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git
+> 
+> 
+> on test machine: 16 threads 1 sockets Intel(R) Xeon(R) CPU D-1541 @ 2.10GHz with 48G memory
+> 
+> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> 
+> 
+> 
+> If you fix the issue, kindly add following tag
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> 
+> 
+> [ 4.668325][ T0] BUG: KASAN: wild-memory-access in dmar_parse_one_rhsa (arch/x86/include/asm/bitops.h:214 arch/x86/include/asm/bitops.h:226 include/asm-generic/bitops/instrumented-non-atomic.h:142 include/linux/nodemask.h:415 drivers/iommu/intel/dmar.c:497) 
+> [    4.676149][    T0] Read of size 8 at addr 1fffffff85115558 by task swapper/0/0
+> [    4.683454][    T0]
+> [    4.685638][    T0] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.19.0-rc3-00004-g0e862838f290 #1
+> [    4.694331][    T0] Hardware name: Supermicro SYS-5018D-FN4T/X10SDV-8C-TLN4F, BIOS 1.1 03/02/2016
+> [    4.703196][    T0] Call Trace:
+> [    4.706334][    T0]  <TASK>
+> [ 4.709133][ T0] ? dmar_parse_one_rhsa (arch/x86/include/asm/bitops.h:214 arch/x86/include/asm/bitops.h:226 include/asm-generic/bitops/instrumented-non-atomic.h:142 include/linux/nodemask.h:415 drivers/iommu/intel/dmar.c:497) 
+> [ 4.714272][ T0] dump_stack_lvl (lib/dump_stack.c:107 (discriminator 1)) 
+> [ 4.718632][ T0] kasan_report (mm/kasan/report.c:162 mm/kasan/report.c:493) 
+> [ 4.722903][ T0] ? dmar_parse_one_rhsa (arch/x86/include/asm/bitops.h:214 arch/x86/include/asm/bitops.h:226 include/asm-generic/bitops/instrumented-non-atomic.h:142 include/linux/nodemask.h:415 drivers/iommu/intel/dmar.c:497) 
+> [ 4.728042][ T0] kasan_check_range (mm/kasan/generic.c:190) 
+> [ 4.732750][ T0] dmar_parse_one_rhsa (arch/x86/include/asm/bitops.h:214 arch/x86/include/asm/bitops.h:226 include/asm-generic/bitops/instrumented-non-atomic.h:142 include/linux/nodemask.h:415 drivers/iommu/intel/dmar.c:497) 
+> [ 4.737715][ T0] dmar_walk_remapping_entries (drivers/iommu/intel/dmar.c:609) 
+> [ 4.743375][ T0] parse_dmar_table (drivers/iommu/intel/dmar.c:671) 
+> [ 4.748079][ T0] ? dmar_table_detect (drivers/iommu/intel/dmar.c:633) 
+> [ 4.752872][ T0] ? dmar_free_dev_scope (drivers/iommu/intel/dmar.c:408) 
+> [ 4.758010][ T0] ? init_dmars (drivers/iommu/intel/iommu.c:3359) 
+> [ 4.762370][ T0] ? iommu_resume (drivers/iommu/intel/iommu.c:3419) 
+> [ 4.766903][ T0] ? dmar_walk_dsm_resource+0x300/0x300 
+> [ 4.772909][ T0] ? dmar_acpi_insert_dev_scope (drivers/iommu/intel/dmar.c:466) 
+> [ 4.778655][ T0] ? dmar_check_one_atsr (drivers/iommu/intel/iommu.c:3521) 
+> [ 4.783795][ T0] dmar_table_init (drivers/iommu/intel/dmar.c:846) 
+> [ 4.788239][ T0] intel_prepare_irq_remapping (drivers/iommu/intel/irq_remapping.c:742) 
+> [ 4.793811][ T0] irq_remapping_prepare (drivers/iommu/irq_remapping.c:102) 
+> [ 4.798778][ T0] enable_IR_x2apic (arch/x86/kernel/apic/apic.c:1928) 
+> [ 4.803395][ T0] default_setup_apic_routing (arch/x86/kernel/apic/probe_64.c:25 (discriminator 1)) 
+> [ 4.808883][ T0] apic_intr_mode_init (arch/x86/kernel/apic/apic.c:1446) 
+> [ 4.813761][ T0] x86_late_time_init (arch/x86/kernel/time.c:101) 
+> [ 4.818467][ T0] start_kernel (init/main.c:1101) 
+> [ 4.822827][ T0] secondary_startup_64_no_verify (arch/x86/kernel/head_64.S:358) 
 
-Am 08.07.2022 um 09:01 schrieb Martin K. Petersen:
->
-> Michael,
->
->> This series was precipitated by Arnd removing CONFIG_VIRT_TO_BUS. The
->> m68k WD33C93 still used virt_to_bus to convert virtual addresses to
->> physical addresses suitable for the DMA engines (note m68k does not
->> have an IOMMU and uses a direct mapping for DMA addresses).
->
-> Applied to 5.20/scsi-staging, thanks!
+Seems like related to nodemask APIs.
 
-Thanks - I'll have the mvme147_scsi conversion out for review shortly.
-
-Cheers,
-
-	Michael
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
