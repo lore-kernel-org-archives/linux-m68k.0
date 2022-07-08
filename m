@@ -2,29 +2,29 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4833C433EF
-	for <linux-m68k@archiver.kernel.org>; Fri,  8 Jul 2022 18:21:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DE34CCA486
+	for <linux-m68k@archiver.kernel.org>; Fri,  8 Jul 2022 18:21:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239208AbiGHSVd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 8 Jul 2022 14:21:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41086 "EHLO
+        id S238772AbiGHSVe (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 8 Jul 2022 14:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238772AbiGHSVT (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 8 Jul 2022 14:21:19 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 160AD564FF
-        for <linux-m68k@vger.kernel.org>; Fri,  8 Jul 2022 11:21:17 -0700 (PDT)
+        with ESMTP id S239150AbiGHSVQ (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 8 Jul 2022 14:21:16 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECBCD7E02C
+        for <linux-m68k@vger.kernel.org>; Fri,  8 Jul 2022 11:21:10 -0700 (PDT)
 Received: from ramsan.of.borg ([84.195.186.194])
-        by albert.telenet-ops.be with bizsmtp
-        id siM72700Q4C55Sk06iM7W4; Fri, 08 Jul 2022 20:21:09 +0200
+        by laurent.telenet-ops.be with bizsmtp
+        id siM7270094C55Sk01iM7mo; Fri, 08 Jul 2022 20:21:08 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1o9sbD-002fGu-4u; Fri, 08 Jul 2022 20:21:07 +0200
+        id 1o9sbC-002fGb-Lh; Fri, 08 Jul 2022 20:21:06 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1o9sbC-00BtKA-Ld; Fri, 08 Jul 2022 20:21:06 +0200
+        id 1o9sbC-00BtJ3-7L; Fri, 08 Jul 2022 20:21:06 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
@@ -33,103 +33,135 @@ To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Daniel Vetter <daniel@ffwll.ch>
 Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
         linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Javier Martinez Canillas <javierm@redhat.com>
-Subject: [PATCH/RFC v3 10/10] drm/fourcc: Add DRM_FORMAT_D[1248]
-Date:   Fri,  8 Jul 2022 20:20:55 +0200
-Message-Id: <6119f3abeda9baaa88652843960adc032da276b4.1657294931.git.geert@linux-m68k.org>
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v3 00/10] drm: Add support for low-color frame buffer formats
+Date:   Fri,  8 Jul 2022 20:20:45 +0200
+Message-Id: <cover.1657294931.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1657294931.git.geert@linux-m68k.org>
-References: <cover.1657294931.git.geert@linux-m68k.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-As Rn covers single-channel formats with a direct relationship between
-channel value and brightness, and Cn can be any colors, there are
-currently no fourcc codes to describe single-channel formats with an
-inverse relationship between channel value and brightness.
+	Hi all,
 
-Introduce fourcc codes for a single-channel frame buffer format with
-two, four, sixteen, or 256 brightness ("darkness") levels, where there
-is an inverse relationship between channel value and brightness.
+A long outstanding issue with the DRM subsystem has been the lack of
+support for low-color displays, as used typically on older desktop
+systems, and on small embedded displays.
 
-As the number of bits per pixel may be less than eight, some of these
-formats rely on proper block handling for the calculation of bits per
-pixel and pitch.
+This patch series adds support for color-indexed frame buffer formats
+with 2, 4, and 16 colors.  It has been tested on ARAnyM using a
+work-in-progress Atari DRM driver supporting 2, 4, 16, 256, and 65536
+colors, with text console operation, fbtest, and modetest.
 
-The fill order (the order in which multiple pixels are packed in a byte)
-is the same order as used for grayscale (2, 4, and 16 levels) images in
-the PNG specification, Version 1.2.
-This order is also the recommended and default order (FillOrder = 1) for
-bilevel and grayscale (16 levels) images in the TIFF 6.0 Specification,
-and is also used for monochrome images in the PBM file format,
-monochrome Linux frame buffer logos, and BDF and PSF (Linux kernel) font
-files.
+Overview:
+  - Patch 1 introduces a helper, to be used by later patches in the
+    series,
+  - Patch 2 introduces a flag to indicate color-indexed formats,
+  - Patches 3 and 4 correct calculations of bits per pixel for sub-byte
+    pixel formats,
+  - Patches 5 and 6 introduce the new C[124] formats,
+  - Patch 7 fixes an untested code path,
+  - Patch 8 documents the use of "red" for light-on-dark displays,
+  - Patches 9 and 10 add more fourcc codes for light-on-dark and
+    dark-on-light frame buffer formats, which may be useful for e.g. the
+    ssd130x and repaper drivers.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
----
-RFC, as I have no immediate need for these formats.
-
-v3:
+Changes compared to v2[1]:
   - Add Reviewed-by,
   - Document fill order,
+  - Fix FB_VISUAL_TRUECOLOR,
   - Replace light-on-dark/dark-on-light by direct/inverse relationship
-    between channel value and brightness,
+    between channel value and brightness.
 
-v2:
+Changes compared to v1[2]:
+  - Reshuffle patches,
+  - New patch "[PATCH v2 02/10] drm/fourcc: Add
+    drm_format_info.is_color_indexed flag",
+  - Improve pixel descriptions,
+  - Require depth to match bpp in drm_mode_legacy_fb_format(),
+  - Set .is_color_indexed flag.
+  - Use drm_format_info_bpp() helper instead of deprecated .depth field
+    or format-dependent calculations,
+  - Use new .is_color_indexed field instead of checking against a list
+    of formats,
+  - Add Acked-by,
+  - Replace FIXME by TODO comment,
+  - New patch "[PATCH v2 08/10] [RFC] drm/fourcc: Document that
+    single-channel "red" can be any color",
   - Add rationale for adding new formats,
-  - Improve pixel description,
   - Add D[248] for completeness.
----
- drivers/gpu/drm/drm_fourcc.c  |  7 +++++++
- include/uapi/drm/drm_fourcc.h | 12 ++++++++++++
- 2 files changed, 19 insertions(+)
 
-diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
-index 05e65e9ab0c69c6a..e09331bb3bc73f21 100644
---- a/drivers/gpu/drm/drm_fourcc.c
-+++ b/drivers/gpu/drm/drm_fourcc.c
-@@ -154,6 +154,13 @@ const struct drm_format_info *__drm_format_info(u32 format)
- 		{ .format = DRM_FORMAT_C4,		.depth = 4,  .num_planes = 1,
- 		  .char_per_block = { 1, }, .block_w = { 2, }, .block_h = { 1, }, .hsub = 1, .vsub = 1, .is_color_indexed = true },
- 		{ .format = DRM_FORMAT_C8,		.depth = 8,  .num_planes = 1, .cpp = { 1, 0, 0 }, .hsub = 1, .vsub = 1, .is_color_indexed = true },
-+		{ .format = DRM_FORMAT_D1,		.depth = 1,  .num_planes = 1,
-+		  .char_per_block = { 1, }, .block_w = { 8, }, .block_h = { 1, }, .hsub = 1, .vsub = 1 },
-+		{ .format = DRM_FORMAT_D2,		.depth = 2,  .num_planes = 1,
-+		  .char_per_block = { 1, }, .block_w = { 4, }, .block_h = { 1, }, .hsub = 1, .vsub = 1 },
-+		{ .format = DRM_FORMAT_D4,		.depth = 4,  .num_planes = 1,
-+		  .char_per_block = { 1, }, .block_w = { 2, }, .block_h = { 1, }, .hsub = 1, .vsub = 1 },
-+		{ .format = DRM_FORMAT_D8,		.depth = 8,  .num_planes = 1, .cpp = { 1, 0, 0 }, .hsub = 1, .vsub = 1 },
- 		{ .format = DRM_FORMAT_R1,		.depth = 1,  .num_planes = 1,
- 		  .char_per_block = { 1, }, .block_w = { 8, }, .block_h = { 1, }, .hsub = 1, .vsub = 1 },
- 		{ .format = DRM_FORMAT_R2,		.depth = 2,  .num_planes = 1,
-diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
-index 6db4f195d6a15129..7eff27eca7ce707f 100644
---- a/include/uapi/drm/drm_fourcc.h
-+++ b/include/uapi/drm/drm_fourcc.h
-@@ -104,6 +104,18 @@ extern "C" {
- #define DRM_FORMAT_C4		fourcc_code('C', '4', ' ', ' ') /* [7:0] C0:C1 4:4 two pixels/byte */
- #define DRM_FORMAT_C8		fourcc_code('C', '8', ' ', ' ') /* [7:0] C */
- 
-+/* 1 bpp Darkness (inverse relationship between channel value and brightness) */
-+#define DRM_FORMAT_D1		fourcc_code('D', '1', ' ', ' ') /* [7:0] D0:D1:D2:D3:D4:D5:D6:D7 1:1:1:1:1:1:1:1 eight pixels/byte */
-+
-+/* 2 bpp Darkness (inverse relationship between channel value and brightness) */
-+#define DRM_FORMAT_D2		fourcc_code('D', '2', ' ', ' ') /* [7:0] D0:D1:D2:D3 2:2:2:2 four pixels/byte */
-+
-+/* 4 bpp Darkness (inverse relationship between channel value and brightness) */
-+#define DRM_FORMAT_D4		fourcc_code('D', '4', ' ', ' ') /* [7:0] D0:D1 4:4 two pixels/byte */
-+
-+/* 8 bpp Darkness (inverse relationship between channel value and brightness) */
-+#define DRM_FORMAT_D8		fourcc_code('D', '8', ' ', ' ') /* [7:0] D */
-+
- /* 1 bpp Red (direct relationship between channel value and brightness) */
- #define DRM_FORMAT_R1		fourcc_code('R', '1', ' ', ' ') /* [7:0] R0:R1:R2:R3:R4:R5:R6:R7 1:1:1:1:1:1:1:1 eight pixels/byte */
- 
+Notes:
+  - This is the first patch series in a series of 3:
+      - To make high-color modes work on big-endian, you also need [3],
+      - To make mode selection on the command line work for Atari video
+	modes, you need [4].
+  - There is also a related series of 3 patch series for modetest:
+      - Using modetest with low-color formats (C[124]) requires [5],
+      - Using modetest with high-color formats (RG16, XR24) requires
+	[6],
+      - Using modetest with video mode names containing dashes requires
+	[7].
+  - As this was used on emulated hardware only, and I do not have Atari
+    hardware, I do not have performance figures to compare with fbdev.
+    I hope to do proper measuring with an Amiga DRM driver, eventually.
+  - While the Atari DRM driver is not fit for submission yet, you can
+    find it at [8], if you are adventurous.
+
+Thanks for your comments!
+
+[1] "[PATCH v2 00/10] drm: Add support for low-color frame buffer
+    formats"
+    https://lore.kernel.org/r/cover.1646683502.git.geert@linux-m68k.org/
+[2] "[PATCH 0/8] drm: Add support for low-color frame buffer formats"
+    https://lore.kernel.org/r/20220215165226.2738568-1-geert@linux-m68k.org/
+[3] "[PATCH 0/3] drm: Endianness fixes"
+    https://lore.kernel.org/r/cover.1657300532.git.geert@linux-m68k.org
+[4] "[PATCH 0/5] drm/modes: Command line mode selection fixes and
+    improvements"
+    https://lore.kernel.org/r/cover.1657301107.git.geert@linux-m68k.org
+[5] "[PATCH libdrm v2 00/10] Add support for low-color frame buffer
+    formats"
+    https://lore.kernel.org/r/cover.1657302034.git.geert@linux-m68k.org
+[6] "[PATCH libdrm v2 00/10] Big-endian fixes"
+    https://lore.kernel.org/r/cover.1657302103.git.geert@linux-m68k.org
+[7] "[PATCH libdrm] modetest: Add support for named modes containing
+    dashes"
+[8] https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git/log/?h=atari-drm-wip
+
+Geert Uytterhoeven (10):
+  drm/fourcc: Add drm_format_info_bpp() helper
+  drm/fourcc: Add drm_format_info.is_color_indexed flag
+  drm/client: Use actual bpp when allocating frame buffers
+  drm/framebuffer: Use actual bpp for DRM_IOCTL_MODE_GETFB
+  drm/fourcc: Add DRM_FORMAT_C[124]
+  drm/fb-helper: Add support for DRM_FORMAT_C[124]
+  drm/gem-fb-helper: Use actual bpp for size calculations
+  drm/fourcc: Clarify the meaning of single-channel "red"
+  [RFC] drm/fourcc: Add DRM_FORMAT_R[124]
+  [RFC] drm/fourcc: Add DRM_FORMAT_D[1248]
+
+ drivers/gpu/drm/drm_client.c                 |   4 +-
+ drivers/gpu/drm/drm_fb_helper.c              | 101 ++++++++++++++-----
+ drivers/gpu/drm/drm_fourcc.c                 |  55 +++++++++-
+ drivers/gpu/drm/drm_framebuffer.c            |   2 +-
+ drivers/gpu/drm/drm_gem_framebuffer_helper.c |  12 +--
+ include/drm/drm_fourcc.h                     |   4 +
+ include/uapi/drm/drm_fourcc.h                |  32 +++++-
+ 7 files changed, 167 insertions(+), 43 deletions(-)
+
 -- 
 2.25.1
 
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
