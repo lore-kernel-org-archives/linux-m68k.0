@@ -2,100 +2,78 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB952C43334
-	for <linux-m68k@archiver.kernel.org>; Thu,  7 Jul 2022 21:47:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90CE2C433EF
+	for <linux-m68k@archiver.kernel.org>; Fri,  8 Jul 2022 01:25:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236218AbiGGVrr (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 7 Jul 2022 17:47:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53336 "EHLO
+        id S236950AbiGHBZD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 7 Jul 2022 21:25:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236580AbiGGVrn (ORCPT
+        with ESMTP id S236947AbiGHBZD (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 7 Jul 2022 17:47:43 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20867326ED
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Jul 2022 14:47:43 -0700 (PDT)
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 267KCRZY003652;
-        Thu, 7 Jul 2022 21:47:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2021-07-09;
- bh=mYUReDqAAtD2Mc/Slejp/JsQFVi9e1ncghZX3Vavmh0=;
- b=xnJ9jBf8Ufq6J0JVjaiWi0JryS/PVZ3dV0d11TbTkdML8UPIRmyHYhNMlt6sUKGAbpGU
- k64Gx9anLLCmwum/I538ASOgU7UbRmo0/u29MVFnQku7yXhDpqdJGknQJgZIIC+7PFfP
- 6qYda/BRPr3r6+vj493eF+dScvU9YM4s8t2JLgWLYQl/zXR8xZlQ8D3ZS3wKx1kMJb2F
- Wuvi0Du4suhANFR9tbfeGAiD3ULI9Pz2yiGidy2GDPuTmHeR5W5sEf3iPLZfq0hS05mS
- g2ODR6pqBet/WF8GYQOzJ13vdtCxaIsKTlR+/B8gSHDywC5rA0KruYY4lScx0RauYNvz yQ== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3h4ubye73u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 Jul 2022 21:47:28 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.16.1.2/8.16.1.2) with SMTP id 267LjM4l030275;
-        Thu, 7 Jul 2022 21:47:27 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com with ESMTP id 3h4ud7c5bw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 Jul 2022 21:47:27 +0000
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 267LlRsY033607;
-        Thu, 7 Jul 2022 21:47:27 GMT
-Received: from ca-mkp.mkp.ca.oracle.com (ca-mkp.ca.oracle.com [10.156.108.201])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com with ESMTP id 3h4ud7c5ag-1;
-        Thu, 07 Jul 2022 21:47:27 +0000
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     linux-scsi@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-parisc@vger.kernel.org,
-        Miquel van Smoorenburg <mikevs@xs4all.net>,
-        linuxppc-dev@lists.ozlabs.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Matt Wang <wwentao@vmware.com>,
-        Khalid Aziz <khalid@gonehiking.org>,
-        linux-alpha@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-arch@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        "Maciej W . Rozycki" <macro@orcam.me.uk>,
-        Jakub Kicinski <kuba@kernel.org>,
-        iommu@lists.linux-foundation.org,
-        Denis Efremov <efremov@linux.com>,
-        Mark Salyzyn <salyzyn@android.com>,
-        linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH v3 0/3] phase out CONFIG_VIRT_TO_BUS
-Date:   Thu,  7 Jul 2022 17:47:20 -0400
-Message-Id: <165723020283.18731.6642678816129479253.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220624155226.2889613-1-arnd@kernel.org>
-References: <20220624155226.2889613-1-arnd@kernel.org>
+        Thu, 7 Jul 2022 21:25:03 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AFB772EE5
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Jul 2022 18:25:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 826F6B823CF;
+        Fri,  8 Jul 2022 01:25:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 876FDC3411E;
+        Fri,  8 Jul 2022 01:24:58 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="oT8QKgA6"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1657243496;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jLW50yiQl4S5ZAgqtQsUJi4rrChTHAzX5WUrzwZlz6E=;
+        b=oT8QKgA63i8mYNfn5cryjQHjd82+LLx4Fmn9vZpq095O4HuOoAdGpfDHGrbMVVKhtpJups
+        ioeMjpr5qHZIEHNnh+DsWO9YoSznEKqNCCvJ65H1p9SohHEfYPZn8PW7GJIggp6C4Xyd2E
+        /Hl6y5FlHyvPjoG+5n8EzIBbfucgdW4=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id dacab3a7 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Fri, 8 Jul 2022 01:24:56 +0000 (UTC)
+Date:   Fri, 8 Jul 2022 03:24:54 +0200
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Laurent Vivier <laurent@vivier.eu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] m68k: virt: Kconfig minor fixes
+Message-ID: <YseHZq/u9OkVltxW@zx2c4.com>
+References: <20220531174514.1586248-1-laurent@vivier.eu>
+ <CAMuHMdUbUZU3YA6nDC_LDAfUYQVmHTuCzrCfxDqwF=ZZyR5fqw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: HrfrZsc4HaH6Tm6et7M--Pti1gCHS_F-
-X-Proofpoint-ORIG-GUID: HrfrZsc4HaH6Tm6et7M--Pti1gCHS_F-
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdUbUZU3YA6nDC_LDAfUYQVmHTuCzrCfxDqwF=ZZyR5fqw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, 24 Jun 2022 17:52:23 +0200, Arnd Bergmann wrote:
+Hi Geert,
 
-> From: Arnd Bergmann <arnd@arndb.de>
+On Thu, Jun 02, 2022 at 09:13:14AM +0200, Geert Uytterhoeven wrote:
+> On Tue, May 31, 2022 at 7:45 PM Laurent Vivier <laurent@vivier.eu> wrote:
+> > Select VIRTIO_MENU as it is needed by VIRTIO_MMIO.
+> >
+> > Add an ending period at the end the virt machine help message.
+> >
+> > Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> > Signed-off-by: Laurent Vivier <laurent@vivier.eu>
 > 
-> The virt_to_bus/bus_to_virt interface has been deprecated for
-> decades. After Jakub Kicinski put a lot of work into cleaning out the
-> network drivers using them, there are only a couple of other drivers
-> left, which can all be removed or otherwise cleaned up, to remove the
-> old interface for good.
-> 
-> [...]
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> i.e. will queue in the m68k for-v5.20 branch.
 
-Applied to 5.20/scsi-queue, thanks!
+Shouldn't this fix make it for 5.19? It causes Kconfig warnings during
+builds. So this seems like a ordinary mid-cycle bug that can be fixed.
 
-[1/3] scsi: BusLogic remove bus_to_virt
-      https://git.kernel.org/mkp/scsi/c/9f7c2232e131
-[2/3] scsi: dpt_i2o: remove obsolete driver
-      https://git.kernel.org/mkp/scsi/c/b04e75a4a8a8
+For example, if you ctrl+f for "unmet direct" in this log, you'll see
+this splat in the wireguard CI:
+https://build.wireguard.com/random/108f4fea7b6053dfd09039af74c0ac0c32c956be/m68k.log
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Jason
