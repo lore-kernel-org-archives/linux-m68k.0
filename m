@@ -2,29 +2,29 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96A60CCA47F
-	for <linux-m68k@archiver.kernel.org>; Fri,  8 Jul 2022 18:21:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E909DCCA47F
+	for <linux-m68k@archiver.kernel.org>; Fri,  8 Jul 2022 18:21:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239128AbiGHSVU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 8 Jul 2022 14:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41042 "EHLO
+        id S239202AbiGHSVc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 8 Jul 2022 14:21:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239135AbiGHSVQ (ORCPT
+        with ESMTP id S239141AbiGHSVQ (ORCPT
         <rfc822;linux-m68k@vger.kernel.org>); Fri, 8 Jul 2022 14:21:16 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E76823B0
-        for <linux-m68k@vger.kernel.org>; Fri,  8 Jul 2022 11:21:10 -0700 (PDT)
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D59823B8
+        for <linux-m68k@vger.kernel.org>; Fri,  8 Jul 2022 11:21:11 -0700 (PDT)
 Received: from ramsan.of.borg ([84.195.186.194])
-        by albert.telenet-ops.be with bizsmtp
-        id siM7270084C55Sk06iM7Vz; Fri, 08 Jul 2022 20:21:08 +0200
+        by xavier.telenet-ops.be with bizsmtp
+        id siM8270024C55Sk01iM83J; Fri, 08 Jul 2022 20:21:09 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1o9sbC-002fGd-Lc; Fri, 08 Jul 2022 20:21:06 +0200
+        id 1o9sbD-002fGp-Dc; Fri, 08 Jul 2022 20:21:07 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1o9sbC-00BtJG-9J; Fri, 08 Jul 2022 20:21:06 +0200
+        id 1o9sbC-00BtJv-IB; Fri, 08 Jul 2022 20:21:06 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
@@ -35,9 +35,9 @@ Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
         linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Javier Martinez Canillas <javierm@redhat.com>
-Subject: [PATCH v3 02/10] drm/fourcc: Add drm_format_info.is_color_indexed flag
-Date:   Fri,  8 Jul 2022 20:20:47 +0200
-Message-Id: <90cd390b2b4d481661f966de7b504f1702d80dfd.1657294931.git.geert@linux-m68k.org>
+Subject: [PATCH v3 08/10] drm/fourcc: Clarify the meaning of single-channel "red"
+Date:   Fri,  8 Jul 2022 20:20:53 +0200
+Message-Id: <31d1792f26707a7270347e9916b4103470d2b192.1657294931.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1657294931.git.geert@linux-m68k.org>
 References: <cover.1657294931.git.geert@linux-m68k.org>
@@ -47,52 +47,50 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Add a flag to struct drm_format_info to indicate if a format is
-color-indexed, similar to the existing .is_yuv flag.
-
-This way generic code and drivers can just check this flag, instead of
-checking against a list of fourcc formats.
+Traditionally, the first channel has been called the "red" channel, but
+the fourcc values for single-channel "red" formats can also be used for
+other single-channel formats with a direct relationship between channel
+value and brightness, like grayscale.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
 ---
 v3:
   - Add Reviewed-by,
+  - Replace light-on-dark by direct relationship between channel value
+    and brightness,
 
 v2:
   - New.
 ---
- drivers/gpu/drm/drm_fourcc.c | 2 +-
- include/drm/drm_fourcc.h     | 3 +++
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ include/uapi/drm/drm_fourcc.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
-index cf48ea0b2cb70ba8..6c76bd821d17e7c7 100644
---- a/drivers/gpu/drm/drm_fourcc.c
-+++ b/drivers/gpu/drm/drm_fourcc.c
-@@ -132,7 +132,7 @@ EXPORT_SYMBOL(drm_driver_legacy_fb_format);
- const struct drm_format_info *__drm_format_info(u32 format)
- {
- 	static const struct drm_format_info formats[] = {
--		{ .format = DRM_FORMAT_C8,		.depth = 8,  .num_planes = 1, .cpp = { 1, 0, 0 }, .hsub = 1, .vsub = 1 },
-+		{ .format = DRM_FORMAT_C8,		.depth = 8,  .num_planes = 1, .cpp = { 1, 0, 0 }, .hsub = 1, .vsub = 1, .is_color_indexed = true },
- 		{ .format = DRM_FORMAT_R8,		.depth = 8,  .num_planes = 1, .cpp = { 1, 0, 0 }, .hsub = 1, .vsub = 1 },
- 		{ .format = DRM_FORMAT_R10,		.depth = 10, .num_planes = 1, .cpp = { 2, 0, 0 }, .hsub = 1, .vsub = 1 },
- 		{ .format = DRM_FORMAT_R12,		.depth = 12, .num_planes = 1, .cpp = { 2, 0, 0 }, .hsub = 1, .vsub = 1 },
-diff --git a/include/drm/drm_fourcc.h b/include/drm/drm_fourcc.h
-index 3800a7ad7f0cda7a..532ae78ca747e6c4 100644
---- a/include/drm/drm_fourcc.h
-+++ b/include/drm/drm_fourcc.h
-@@ -138,6 +138,9 @@ struct drm_format_info {
+diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
+index e18de6f258302673..dff5072fccaaf65c 100644
+--- a/include/uapi/drm/drm_fourcc.h
++++ b/include/uapi/drm/drm_fourcc.h
+@@ -104,16 +104,16 @@ extern "C" {
+ #define DRM_FORMAT_C4		fourcc_code('C', '4', ' ', ' ') /* [7:0] C0:C1 4:4 two pixels/byte */
+ #define DRM_FORMAT_C8		fourcc_code('C', '8', ' ', ' ') /* [7:0] C */
  
- 	/** @is_yuv: Is it a YUV format? */
- 	bool is_yuv;
-+
-+	/** @is_color_indexed: Is it a color-indexed format? */
-+	bool is_color_indexed;
- };
+-/* 8 bpp Red */
++/* 8 bpp Red (direct relationship between channel value and brightness) */
+ #define DRM_FORMAT_R8		fourcc_code('R', '8', ' ', ' ') /* [7:0] R */
  
- /**
+-/* 10 bpp Red */
++/* 10 bpp Red (direct relationship between channel value and brightness) */
+ #define DRM_FORMAT_R10		fourcc_code('R', '1', '0', ' ') /* [15:0] x:R 6:10 little endian */
+ 
+-/* 12 bpp Red */
++/* 12 bpp Red (direct relationship between channel value and brightness) */
+ #define DRM_FORMAT_R12		fourcc_code('R', '1', '2', ' ') /* [15:0] x:R 4:12 little endian */
+ 
+-/* 16 bpp Red */
++/* 16 bpp Red (direct relationship between channel value and brightness) */
+ #define DRM_FORMAT_R16		fourcc_code('R', '1', '6', ' ') /* [15:0] R little endian */
+ 
+ /* 16 bpp RG */
 -- 
 2.25.1
 
