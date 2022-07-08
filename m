@@ -2,29 +2,29 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E3B7CCA47B
-	for <linux-m68k@archiver.kernel.org>; Fri,  8 Jul 2022 18:21:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96A60CCA47F
+	for <linux-m68k@archiver.kernel.org>; Fri,  8 Jul 2022 18:21:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238738AbiGHSVU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        id S239128AbiGHSVU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
         Fri, 8 Jul 2022 14:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41038 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239128AbiGHSVP (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 8 Jul 2022 14:21:15 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDDDD814BF
+        with ESMTP id S239135AbiGHSVQ (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 8 Jul 2022 14:21:16 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E76823B0
         for <linux-m68k@vger.kernel.org>; Fri,  8 Jul 2022 11:21:10 -0700 (PDT)
 Received: from ramsan.of.borg ([84.195.186.194])
-        by laurent.telenet-ops.be with bizsmtp
-        id siM72700B4C55Sk01iM7mp; Fri, 08 Jul 2022 20:21:08 +0200
+        by albert.telenet-ops.be with bizsmtp
+        id siM7270084C55Sk06iM7Vz; Fri, 08 Jul 2022 20:21:08 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1o9sbC-002fGf-QL; Fri, 08 Jul 2022 20:21:06 +0200
+        id 1o9sbC-002fGd-Lc; Fri, 08 Jul 2022 20:21:06 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1o9sbC-00BtJU-Ca; Fri, 08 Jul 2022 20:21:06 +0200
+        id 1o9sbC-00BtJG-9J; Fri, 08 Jul 2022 20:21:06 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
@@ -35,9 +35,9 @@ Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
         linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Javier Martinez Canillas <javierm@redhat.com>
-Subject: [PATCH v3 04/10] drm/framebuffer: Use actual bpp for DRM_IOCTL_MODE_GETFB
-Date:   Fri,  8 Jul 2022 20:20:49 +0200
-Message-Id: <b612780feef200b7f914a674db28ed227e7cdc64.1657294931.git.geert@linux-m68k.org>
+Subject: [PATCH v3 02/10] drm/fourcc: Add drm_format_info.is_color_indexed flag
+Date:   Fri,  8 Jul 2022 20:20:47 +0200
+Message-Id: <90cd390b2b4d481661f966de7b504f1702d80dfd.1657294931.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1657294931.git.geert@linux-m68k.org>
 References: <cover.1657294931.git.geert@linux-m68k.org>
@@ -47,11 +47,11 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-When userspace queries the properties of a frame buffer, the number of
-bits per pixel is derived from the deprecated drm_format_info.cpp[]
-field, which does not take into account block sizes.
+Add a flag to struct drm_format_info to indicate if a format is
+color-indexed, similar to the existing .is_yuv flag.
 
-Fix this by using the actual number of bits per pixel instead.
+This way generic code and drivers can just check this flag, instead of
+checking against a list of fourcc formats.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
@@ -60,24 +60,39 @@ v3:
   - Add Reviewed-by,
 
 v2:
-  - No changes.
+  - New.
 ---
- drivers/gpu/drm/drm_framebuffer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/drm_fourcc.c | 2 +-
+ include/drm/drm_fourcc.h     | 3 +++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/drm_framebuffer.c b/drivers/gpu/drm/drm_framebuffer.c
-index 4562a8b865792456..9899bf1485b299ad 100644
---- a/drivers/gpu/drm/drm_framebuffer.c
-+++ b/drivers/gpu/drm/drm_framebuffer.c
-@@ -530,7 +530,7 @@ int drm_mode_getfb(struct drm_device *dev,
- 	r->height = fb->height;
- 	r->width = fb->width;
- 	r->depth = fb->format->depth;
--	r->bpp = fb->format->cpp[0] * 8;
-+	r->bpp = drm_format_info_bpp(fb->format, 0);
- 	r->pitch = fb->pitches[0];
+diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
+index cf48ea0b2cb70ba8..6c76bd821d17e7c7 100644
+--- a/drivers/gpu/drm/drm_fourcc.c
++++ b/drivers/gpu/drm/drm_fourcc.c
+@@ -132,7 +132,7 @@ EXPORT_SYMBOL(drm_driver_legacy_fb_format);
+ const struct drm_format_info *__drm_format_info(u32 format)
+ {
+ 	static const struct drm_format_info formats[] = {
+-		{ .format = DRM_FORMAT_C8,		.depth = 8,  .num_planes = 1, .cpp = { 1, 0, 0 }, .hsub = 1, .vsub = 1 },
++		{ .format = DRM_FORMAT_C8,		.depth = 8,  .num_planes = 1, .cpp = { 1, 0, 0 }, .hsub = 1, .vsub = 1, .is_color_indexed = true },
+ 		{ .format = DRM_FORMAT_R8,		.depth = 8,  .num_planes = 1, .cpp = { 1, 0, 0 }, .hsub = 1, .vsub = 1 },
+ 		{ .format = DRM_FORMAT_R10,		.depth = 10, .num_planes = 1, .cpp = { 2, 0, 0 }, .hsub = 1, .vsub = 1 },
+ 		{ .format = DRM_FORMAT_R12,		.depth = 12, .num_planes = 1, .cpp = { 2, 0, 0 }, .hsub = 1, .vsub = 1 },
+diff --git a/include/drm/drm_fourcc.h b/include/drm/drm_fourcc.h
+index 3800a7ad7f0cda7a..532ae78ca747e6c4 100644
+--- a/include/drm/drm_fourcc.h
++++ b/include/drm/drm_fourcc.h
+@@ -138,6 +138,9 @@ struct drm_format_info {
  
- 	/* GET_FB() is an unprivileged ioctl so we must not return a
+ 	/** @is_yuv: Is it a YUV format? */
+ 	bool is_yuv;
++
++	/** @is_color_indexed: Is it a color-indexed format? */
++	bool is_color_indexed;
+ };
+ 
+ /**
 -- 
 2.25.1
 
