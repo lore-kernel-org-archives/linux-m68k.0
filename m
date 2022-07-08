@@ -2,106 +2,133 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7561C433EF
-	for <linux-m68k@archiver.kernel.org>; Fri,  8 Jul 2022 18:23:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88AF6CCA47F
+	for <linux-m68k@archiver.kernel.org>; Fri,  8 Jul 2022 19:28:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239555AbiGHSXM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 8 Jul 2022 14:23:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41606 "EHLO
+        id S239819AbiGHT2w (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 8 Jul 2022 15:28:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239360AbiGHSVz (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 8 Jul 2022 14:21:55 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71DEB84EC1
-        for <linux-m68k@vger.kernel.org>; Fri,  8 Jul 2022 11:21:46 -0700 (PDT)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by albert.telenet-ops.be with bizsmtp
-        id siMk2700F4C55Sk06iMkay; Fri, 08 Jul 2022 20:21:46 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1o9sbg-002fKo-MX; Fri, 08 Jul 2022 20:21:36 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1o9sbg-00BtPq-6k; Fri, 08 Jul 2022 20:21:36 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        with ESMTP id S239841AbiGHT2q (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 8 Jul 2022 15:28:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 39C5724941
+        for <linux-m68k@vger.kernel.org>; Fri,  8 Jul 2022 12:28:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1657308516;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=x1DAicwEAPXBRBMe3z1xdAg47wBYVrbByTqaE+qHnm8=;
+        b=WoYx4/IUSp/Xz5ON3UXG7AHNt7zUshD6+AesLMGbAmEhoBXxwv1RUC7dESICrq1BnwyL7V
+        rRK9rDQH0YchL+292/jRWAZVDjSFNmiWeYvSMUC8m3y66F0T96pg+oCtOwYUml+KdjgYaH
+        gC7EKG7+gtTdW83YAo+4UNZ1vJXC568=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-25--kxpSP0zMuKATI22m9_yvQ-1; Fri, 08 Jul 2022 15:28:35 -0400
+X-MC-Unique: -kxpSP0zMuKATI22m9_yvQ-1
+Received: by mail-ej1-f70.google.com with SMTP id nb10-20020a1709071c8a00b006e8f89863ceso5962280ejc.18
+        for <linux-m68k@vger.kernel.org>; Fri, 08 Jul 2022 12:28:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=x1DAicwEAPXBRBMe3z1xdAg47wBYVrbByTqaE+qHnm8=;
+        b=YuDb8nrqDJd8vR6mnDJo8hz+rIQnctumCJzwxtZwoOakvcWBax4pWHCRN1fS0xdxHf
+         IG8NwMJVeJSt0PJsGwbT5TJHkdpD+fdwunmDB5qh28Qfl7MPrlGqUJ9SeRCwsUa0b969
+         d/ZMfz/wAeCRmjmUs5hUaDLGyTsHgUOziclJFr1L5zwvEW/P99738gIjfPCPJefuhY/B
+         kDfwBH0whohjOe+xeRy+smTxFlFHUgPUD8tixzZBcEgEOo0h6OKDE8ztrDeJf2zYNmPN
+         q4dS8ft1c8JP/NT6PRhfLXMoLUj2JYZ7nHMiXpkQRQF1m812AfHrWX8b2q5RPfWkFozF
+         GIJQ==
+X-Gm-Message-State: AJIora9tKn8gL6pPjOToAWmlxbBfz+K2cbyArxjG/xrp4GVuUpaL0MNE
+        HKXwS1h9Es2qnqt4zYRxAGiUj9h93UHiCD+/xKLsqSme9L74oRU/69NCP5L5iF+5MTyyJ6Lkg5h
+        Z/jrfFNqRgbWl8ytIcM9raw==
+X-Received: by 2002:a17:907:86ac:b0:72a:fc15:98cf with SMTP id qa44-20020a17090786ac00b0072afc1598cfmr5087114ejc.474.1657308513962;
+        Fri, 08 Jul 2022 12:28:33 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1tkr+qWhrSzebZjZZfUfQqb4WSOleYalB7Ps0X+jp4B93iKsB3HUIVAIpQMdnYN+LbhqwjjIg==
+X-Received: by 2002:a17:907:86ac:b0:72a:fc15:98cf with SMTP id qa44-20020a17090786ac00b0072afc1598cfmr5087099ejc.474.1657308513789;
+        Fri, 08 Jul 2022 12:28:33 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:d69d:5353:dba5:ee81? (2001-1c00-0c1e-bf00-d69d-5353-dba5-ee81.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:d69d:5353:dba5:ee81])
+        by smtp.gmail.com with ESMTPSA id h17-20020a1709060f5100b00705cdfec71esm20550294ejj.7.2022.07.08.12.28.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Jul 2022 12:28:33 -0700 (PDT)
+Message-ID: <b7d937bc-d7c3-6f7a-047c-fc6e5756a5a0@redhat.com>
+Date:   Fri, 8 Jul 2022 21:28:32 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH 1/5] drm/modes: parse_cmdline: Handle empty mode name part
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
         Thomas Zimmermann <tzimmermann@suse.de>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hans de Goede <hdegoede@redhat.com>
+        Daniel Vetter <daniel@ffwll.ch>
 Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 3/5] drm/modes: parse_cmdline: Make mode->*specified handling more uniform
-Date:   Fri,  8 Jul 2022 20:21:27 +0200
-Message-Id: <4bd5f539b686fbcd097fa07cff2eb6f60ca9bec1.1657301107.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1657301107.git.geert@linux-m68k.org>
+        linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <cover.1657301107.git.geert@linux-m68k.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ <64e2e9b14c26df28908789374253fd12072c26c2.1657301107.git.geert@linux-m68k.org>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <64e2e9b14c26df28908789374253fd12072c26c2.1657301107.git.geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The various mode->*specified flags are not handled in an uniform way:
-some flags are set by the corresponding drm_mode_parse_cmdline_*()
-function, some flags by the caller of the function, and some flags by
-both.
+Hi Geert,
 
-Make this uniform by making this the responsibility of the various
-parsing helpers, i.e.
-  - Move the setting of mode->specified from caller to callee,
-  - Drop the duplicate setting of mode->bpp_specified and
-    mode->refresh_specified from callers.
+On 7/8/22 20:21, Geert Uytterhoeven wrote:
+> If no mode name part was specified, mode_end is zero, and the "ret ==
+> mode_end" check does the wrong thing.
+> 
+> Fix this by checking for a non-zero return value instead.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/gpu/drm/drm_modes.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+Which is wrong to do, since now if you have e.g. a mode list
+with:
 
-diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_modes.c
-index 434383469e9d984d..9ce275fbda566b7c 100644
---- a/drivers/gpu/drm/drm_modes.c
-+++ b/drivers/gpu/drm/drm_modes.c
-@@ -1599,6 +1599,7 @@ static int drm_mode_parse_cmdline_res_mode(const char *str, unsigned int length,
- 	mode->yres = yres;
- 	mode->cvt = cvt;
- 	mode->rb = rb;
-+	mode->specified = true;
- 
- 	return 0;
- }
-@@ -1862,8 +1863,6 @@ bool drm_mode_parse_command_line_for_connector(const char *mode_option,
- 						      mode);
- 		if (ret)
- 			return false;
--
--		mode->specified = true;
- 	}
- 
- 	/* No mode? Check for freestanding extras and/or options */
-@@ -1885,8 +1884,6 @@ bool drm_mode_parse_command_line_for_connector(const char *mode_option,
- 		ret = drm_mode_parse_cmdline_bpp(bpp_ptr, &bpp_end_ptr, mode);
- 		if (ret)
- 			return false;
--
--		mode->bpp_specified = true;
- 	}
- 
- 	if (refresh_ptr) {
-@@ -1894,8 +1891,6 @@ bool drm_mode_parse_command_line_for_connector(const char *mode_option,
- 						     &refresh_end_ptr, mode);
- 		if (ret)
- 			return false;
--
--		mode->refresh_specified = true;
- 	}
- 
- 	/*
--- 
-2.25.1
+"dblntsc",
+"dblntsc-ff"
+
+in there and the cmdline contains "dblntsc-ff" then you
+will already stop with a (wrong!) match at "dblntsc".
+
+> While at it, skip all named mode handling when mode_end is zero, as it
+> is futile.
+
+AFAICT, this is actually what needs to be done to fix this, while keeping
+the ret == mode_end check.
+
+Regards,
+
+Hans
+
+
+> 
+> Fixes: 7b1cce760afe38b4 ("drm/modes: parse_cmdline: Allow specifying stand-alone options")
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>  drivers/gpu/drm/drm_modes.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_modes.c
+> index 14b746f7ba975954..30a7be97707bfb16 100644
+> --- a/drivers/gpu/drm/drm_modes.c
+> +++ b/drivers/gpu/drm/drm_modes.c
+> @@ -1823,9 +1823,9 @@ bool drm_mode_parse_command_line_for_connector(const char *mode_option,
+>  	}
+>  
+>  	/* First check for a named mode */
+> -	for (i = 0; i < ARRAY_SIZE(drm_named_modes_whitelist); i++) {
+> +	for (i = 0; mode_end && i < ARRAY_SIZE(drm_named_modes_whitelist); i++) {
+>  		ret = str_has_prefix(name, drm_named_modes_whitelist[i]);
+> -		if (ret == mode_end) {
+> +		if (ret) {
+>  			if (refresh_ptr)
+>  				return false; /* named + refresh is invalid */
+>  
 
