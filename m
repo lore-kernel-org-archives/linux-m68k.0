@@ -2,93 +2,117 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AEE1C433EF
-	for <linux-m68k@archiver.kernel.org>; Sat,  9 Jul 2022 00:11:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9419DCCA47C
+	for <linux-m68k@archiver.kernel.org>; Sat,  9 Jul 2022 05:29:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbiGIALI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 8 Jul 2022 20:11:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33138 "EHLO
+        id S229544AbiGIF3b (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 9 Jul 2022 01:29:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229984AbiGIALB (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 8 Jul 2022 20:11:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D055868AD
-        for <linux-m68k@lists.linux-m68k.org>; Fri,  8 Jul 2022 17:10:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8619362338;
-        Sat,  9 Jul 2022 00:10:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3004FC341C0;
-        Sat,  9 Jul 2022 00:10:57 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="i8NPtiG5"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1657325454;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9TCNIFIV8W3sMrW57L4833aHR/fFDCVNdSdZO5zn3lw=;
-        b=i8NPtiG5zpJwnD6G6u2BkQRBMfzAo3bftZc4tO81qziuINFhgPv5Ged46rNFXuI3Czz2VK
-        SnJY8KM4+9Rd2AZ6MLyL2C/xnNma5KiWc40wnAH87LJIoaubVC6LHmtNcNAbLnLGyL27LF
-        +d/5mvjhkFXl58+nP6BI3XcWhynE1t8=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id a9822d4c (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Sat, 9 Jul 2022 00:10:54 +0000 (UTC)
-Date:   Sat, 9 Jul 2022 02:10:49 +0200
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Laurent Vivier <laurent@vivier.eu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] m68k: virt: Kconfig minor fixes
-Message-ID: <YsjHiZeUxo7RXxAu@zx2c4.com>
-References: <20220531174514.1586248-1-laurent@vivier.eu>
- <CAMuHMdUbUZU3YA6nDC_LDAfUYQVmHTuCzrCfxDqwF=ZZyR5fqw@mail.gmail.com>
- <YseHZq/u9OkVltxW@zx2c4.com>
- <CAMuHMdX7JPKJbth9xw4MbPbi29fgQNSva0r394JX-etEZiUJ_A@mail.gmail.com>
+        with ESMTP id S229448AbiGIF3a (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sat, 9 Jul 2022 01:29:30 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C039F88752;
+        Fri,  8 Jul 2022 22:29:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1657344568; x=1688880568;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=GwKMGDgEQOTMZAJyEWQoKSVfa5JoZEAuPF4dI30gQw0=;
+  b=YZopXBC2PpZfYD4wM52Zg+AkBzty8tzAEsiG7z5aNVATInmiunCrd9bI
+   TkzalQr8wm7gAPG1TgWg/3Ty4k7jdBQWr3WXE8/izKwXdAsKY+0U4QSiM
+   n6OeaPWsWtUVraX5IQo07XBrr55iXW+8FM7f0o+zXS1FqvxAuRjDzJtzI
+   wC9t9akd6m3fu5mkJrQeKMHdcatWqLJWPPZjhHhPLgU4WGkHYOiEF73xe
+   nNyLXyfb9OxRQRe228xqWKLgHUMLyh5UaFBZiE0hImZhuJWL1uICX8+rA
+   0DelXGfjSHFzF36RJSBLLp4jnuAZ40u7xxLoMqPKDxyEnB+Q+TdpML9sb
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10402"; a="346095872"
+X-IronPort-AV: E=Sophos;i="5.92,256,1650956400"; 
+   d="scan'208";a="346095872"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2022 22:29:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,256,1650956400"; 
+   d="scan'208";a="921219431"
+Received: from lkp-server01.sh.intel.com (HELO 68b931ab7ac1) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 08 Jul 2022 22:29:25 -0700
+Received: from kbuild by 68b931ab7ac1 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1oA31w-000OLq-BB;
+        Sat, 09 Jul 2022 05:29:24 +0000
+Date:   Sat, 9 Jul 2022 13:29:04 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org,
+        arnd@kernel.org
+Cc:     kbuild-all@lists.01.org, linux-scsi@vger.kernel.org,
+        geert@linux-m68k.org, Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [PATCH v1 2/4] m68k - set up platform device for mvme147_scsi
+Message-ID: <202207091359.WPLQuHhB-lkp@intel.com>
+References: <20220709001019.11149-3-schmitzmic@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdX7JPKJbth9xw4MbPbi29fgQNSva0r394JX-etEZiUJ_A@mail.gmail.com>
+In-Reply-To: <20220709001019.11149-3-schmitzmic@gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
+Hi Michael,
 
-On Fri, Jul 08, 2022 at 09:24:59AM +0200, Geert Uytterhoeven wrote:
-> Hi Jason,
-> 
-> On Fri, Jul 8, 2022 at 3:25 AM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
-> > On Thu, Jun 02, 2022 at 09:13:14AM +0200, Geert Uytterhoeven wrote:
-> > > On Tue, May 31, 2022 at 7:45 PM Laurent Vivier <laurent@vivier.eu> wrote:
-> > > > Select VIRTIO_MENU as it is needed by VIRTIO_MMIO.
-> > > >
-> > > > Add an ending period at the end the virt machine help message.
-> > > >
-> > > > Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> > > > Signed-off-by: Laurent Vivier <laurent@vivier.eu>
-> > >
-> > > Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > > i.e. will queue in the m68k for-v5.20 branch.
-> >
-> > Shouldn't this fix make it for 5.19? It causes Kconfig warnings during
-> > builds. So this seems like a ordinary mid-cycle bug that can be fixed.
-> >
-> > For example, if you ctrl+f for "unmet direct" in this log, you'll see
-> > this splat in the wireguard CI:
-> > https://build.wireguard.com/random/108f4fea7b6053dfd09039af74c0ac0c32c956be/m68k.log
-> 
-> These are merely configuration warnings, there is no build or runtime
-> failure.
-> I reverted this patch, disabled CONFIG_VIRTIO_MENU (which BTW defaults
-> to y), built and booted a kernel fine, and could login on the console.
-> 
-> So IMHO it can wait.
+I love your patch! Perhaps something to improve:
 
-Okay, no problem. I suppose 5.19 isn't likely to be an LTS anyway.
+[auto build test WARNING on geert-m68k/for-next]
+[also build test WARNING on mkp-scsi/for-next jejb-scsi/for-next linus/master v5.19-rc5 next-20220708]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Jason
+url:    https://github.com/intel-lab-lkp/linux/commits/Michael-Schmitz/Convert-m68k-MVME147-WD33C93-SCSI-driver-to-DMA-API/20220709-081556
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-next
+config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20220709/202207091359.WPLQuHhB-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 11.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/3a5e770e42ebe8984096d0cd1d93a95a1d7b67e7
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Michael-Schmitz/Convert-m68k-MVME147-WD33C93-SCSI-driver-to-DMA-API/20220709-081556
+        git checkout 3a5e770e42ebe8984096d0cd1d93a95a1d7b67e7
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0 make.cross W=1 O=build_dir ARCH=m68k SHELL=/bin/bash arch/m68k/mvme147/
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+   arch/m68k/mvme147/config.c:77:13: warning: no previous prototype for 'mvme147_init_IRQ' [-Wmissing-prototypes]
+      77 | void __init mvme147_init_IRQ(void)
+         |             ^~~~~~~~~~~~~~~~
+>> arch/m68k/mvme147/config.c:198:12: warning: no previous prototype for 'mvme147_platform_init' [-Wmissing-prototypes]
+     198 | int __init mvme147_platform_init(void)
+         |            ^~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/mvme147_platform_init +198 arch/m68k/mvme147/config.c
+
+   197	
+ > 198	int __init mvme147_platform_init(void)
+   199	{
+   200		struct platform_device *pdev;
+   201		int rv = 0;
+   202	
+   203		pdev = platform_device_register_simple("mvme147-scsi", -1,
+   204			mvme147_scsi_rsrc, ARRAY_SIZE(mvme147_scsi_rsrc));
+   205		if (IS_ERR(pdev))
+   206			rv = PTR_ERR(pdev);
+   207	
+   208		return rv;
+   209	}
+   210	
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
