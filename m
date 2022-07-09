@@ -2,152 +2,93 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E132C43334
-	for <linux-m68k@archiver.kernel.org>; Sat,  9 Jul 2022 00:10:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AEE1C433EF
+	for <linux-m68k@archiver.kernel.org>; Sat,  9 Jul 2022 00:11:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbiGIAKe (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 8 Jul 2022 20:10:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59966 "EHLO
+        id S229829AbiGIALI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 8 Jul 2022 20:11:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbiGIAKc (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 8 Jul 2022 20:10:32 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D800B7CB50;
-        Fri,  8 Jul 2022 17:10:29 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id g4so283862pgc.1;
-        Fri, 08 Jul 2022 17:10:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ufXk8FbbGAqNsL++C+ffXL+0StpdtfyJkwi67F2ahYw=;
-        b=Rq/GFAsLj8kSzJYEU2j8mS+M5B69zt5z8Zctz9L0pLE4sGqBuvhOLlcEWjcf3SKmqQ
-         PoGuBOdmF/Ap+eM6yTangUVgJRwm8FPV7n0509PdAt/rkhHihqttz7IJz3pN/lUi/w+X
-         nk2qE/8EBwLndEYcEJUKK0pboHEnKBodFAP42f0+9FPeP2xGBAxwcUKZRsZF4Yeqa8//
-         UwxQ34ndwTFaq0pLtwm/srAYwSTpAPkbHDsULSdDj6j840j/XEuTA89xAW6VR5VJUS1U
-         roiFFbDUx4sHckbVgAEYPnTs2BRlSnVZHY6haLowGMJoS3brLxQ6slpPX5zqh0nO1meB
-         X6nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=ufXk8FbbGAqNsL++C+ffXL+0StpdtfyJkwi67F2ahYw=;
-        b=Ec4SJUXyM2PzNTkrHnywrpX6RXHTpq1fBCgjL7Memz92RA4j+uA8FqKS/jNrHK85AE
-         kVWJJ2ZxkdFKxQ/5HyctrhnwdLht7cRq4iQdXM9i8eEeHDeaU8wtuRlJQxcUzBbUtXw5
-         BlCqD42IJ4mSmyXfA67ntwdxcuJnWMvIAtuYs77Ldg/w4p9O80ao7Lt+n0/yTWl7OECV
-         ZLsRAQ4ic0U8ajehSnlWqzwfQJ7CFEUHu+w80gdwSfvPPJpk5q1kYKQ22HFea+wsPWZT
-         +t/loJ2IPwQrYahR0kukj2g6FE8Z1Mooo987H99Ohj9E1wnH4GsnPCgzOVQLMG+By5mY
-         JpZg==
-X-Gm-Message-State: AJIora/ouj4s4T+e4ATwzwRV83TmY7dw9dq0nNwuBfJvAfdXDb27q9ET
-        hjQFRlNIWIRetebOgu9M590utaUMfq8=
-X-Google-Smtp-Source: AGRyM1tCDgyLLNh5+7wuKqZxI7GFhu6lVWZpMqphcumkOhPn5wiEtChcUN+PVc0rhtIyJhx4ieAXIg==
-X-Received: by 2002:a05:6a02:113:b0:412:a7c0:da8e with SMTP id bg19-20020a056a02011300b00412a7c0da8emr5646066pgb.113.1657325428257;
-        Fri, 08 Jul 2022 17:10:28 -0700 (PDT)
-Received: from xplor.waratah.dyndns.org (222-155-0-244-adsl.sparkbb.co.nz. [222.155.0.244])
-        by smtp.gmail.com with ESMTPSA id e25-20020aa79819000000b00528d580cb45sm157054pfl.127.2022.07.08.17.10.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jul 2022 17:10:27 -0700 (PDT)
-Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-        id B1FDD3603FB; Sat,  9 Jul 2022 12:10:24 +1200 (NZST)
-From:   Michael Schmitz <schmitzmic@gmail.com>
-To:     linux-m68k@vger.kernel.org, arnd@kernel.org
-Cc:     linux-scsi@vger.kernel.org, geert@linux-m68k.org,
-        Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH v1 4/4] scsi - convert mvme147_scsi driver to DMA API
-Date:   Sat,  9 Jul 2022 12:10:19 +1200
-Message-Id: <20220709001019.11149-5-schmitzmic@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20220709001019.11149-1-schmitzmic@gmail.com>
-References: <20220709001019.11149-1-schmitzmic@gmail.com>
+        with ESMTP id S229984AbiGIALB (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 8 Jul 2022 20:11:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D055868AD
+        for <linux-m68k@lists.linux-m68k.org>; Fri,  8 Jul 2022 17:10:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8619362338;
+        Sat,  9 Jul 2022 00:10:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3004FC341C0;
+        Sat,  9 Jul 2022 00:10:57 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="i8NPtiG5"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1657325454;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9TCNIFIV8W3sMrW57L4833aHR/fFDCVNdSdZO5zn3lw=;
+        b=i8NPtiG5zpJwnD6G6u2BkQRBMfzAo3bftZc4tO81qziuINFhgPv5Ged46rNFXuI3Czz2VK
+        SnJY8KM4+9Rd2AZ6MLyL2C/xnNma5KiWc40wnAH87LJIoaubVC6LHmtNcNAbLnLGyL27LF
+        +d/5mvjhkFXl58+nP6BI3XcWhynE1t8=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id a9822d4c (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Sat, 9 Jul 2022 00:10:54 +0000 (UTC)
+Date:   Sat, 9 Jul 2022 02:10:49 +0200
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Laurent Vivier <laurent@vivier.eu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] m68k: virt: Kconfig minor fixes
+Message-ID: <YsjHiZeUxo7RXxAu@zx2c4.com>
+References: <20220531174514.1586248-1-laurent@vivier.eu>
+ <CAMuHMdUbUZU3YA6nDC_LDAfUYQVmHTuCzrCfxDqwF=ZZyR5fqw@mail.gmail.com>
+ <YseHZq/u9OkVltxW@zx2c4.com>
+ <CAMuHMdX7JPKJbth9xw4MbPbi29fgQNSva0r394JX-etEZiUJ_A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdX7JPKJbth9xw4MbPbi29fgQNSva0r394JX-etEZiUJ_A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Convert mvme147_scsi to DMA API to eliminate one of the last
-usages of virt_to_bus().
+Hi Geert,
 
-CC: linux-scsi@vger.kernel.org
-Link: https://lore.kernel.org/r/6d1d88ee-1cf6-c735-1e6d-bafd2096e322@gmail.com
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
----
- drivers/scsi/mvme147.c | 33 ++++++++++++++++++++++++---------
- 1 file changed, 24 insertions(+), 9 deletions(-)
+On Fri, Jul 08, 2022 at 09:24:59AM +0200, Geert Uytterhoeven wrote:
+> Hi Jason,
+> 
+> On Fri, Jul 8, 2022 at 3:25 AM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+> > On Thu, Jun 02, 2022 at 09:13:14AM +0200, Geert Uytterhoeven wrote:
+> > > On Tue, May 31, 2022 at 7:45 PM Laurent Vivier <laurent@vivier.eu> wrote:
+> > > > Select VIRTIO_MENU as it is needed by VIRTIO_MMIO.
+> > > >
+> > > > Add an ending period at the end the virt machine help message.
+> > > >
+> > > > Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> > > > Signed-off-by: Laurent Vivier <laurent@vivier.eu>
+> > >
+> > > Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > > i.e. will queue in the m68k for-v5.20 branch.
+> >
+> > Shouldn't this fix make it for 5.19? It causes Kconfig warnings during
+> > builds. So this seems like a ordinary mid-cycle bug that can be fixed.
+> >
+> > For example, if you ctrl+f for "unmet direct" in this log, you'll see
+> > this splat in the wireguard CI:
+> > https://build.wireguard.com/random/108f4fea7b6053dfd09039af74c0ac0c32c956be/m68k.log
+> 
+> These are merely configuration warnings, there is no build or runtime
+> failure.
+> I reverted this patch, disabled CONFIG_VIRTIO_MENU (which BTW defaults
+> to y), built and booted a kernel fine, and could login on the console.
+> 
+> So IMHO it can wait.
 
-diff --git a/drivers/scsi/mvme147.c b/drivers/scsi/mvme147.c
-index aa6476c3e70c..6ffd15f08629 100644
---- a/drivers/scsi/mvme147.c
-+++ b/drivers/scsi/mvme147.c
-@@ -21,6 +21,8 @@
- #include "wd33c93.h"
- #include "mvme147.h"
- 
-+#define DMA_DIR(d)   ((d == DATA_OUT_DIR) ? DMA_TO_DEVICE : DMA_FROM_DEVICE)
-+
- static irqreturn_t mvme147_intr(int irq, void *data)
- {
- 	struct Scsi_Host *instance = data;
-@@ -35,10 +37,20 @@ static irqreturn_t mvme147_intr(int irq, void *data)
- static int dma_setup(struct scsi_cmnd *cmd, int dir_in)
- {
- 	struct scsi_pointer *scsi_pointer = WD33C93_scsi_pointer(cmd);
-+	unsigned long len = scsi_pointer->this_residual;
- 	struct Scsi_Host *instance = cmd->device->host;
- 	struct WD33C93_hostdata *hdata = shost_priv(instance);
- 	unsigned char flags = 0x01;
--	unsigned long addr = virt_to_bus(scsi_pointer->ptr);
-+	dma_addr_t addr;
-+
-+	addr = dma_map_single(instance->dma_dev, scsi_pointer->ptr,
-+			      len, DMA_DIR(dir_in));
-+	if (dma_mapping_error(instance->dma_dev, addr)) {
-+		dev_warn(instance->dma_dev, "cannot map SCSI data block %p\n",
-+			 scsi_pointer->ptr);
-+		return 1;
-+	}
-+	scsi_pointer->dma_handle = addr;
- 
- 	/* setup dma direction */
- 	if (!dir_in)
-@@ -47,14 +59,6 @@ static int dma_setup(struct scsi_cmnd *cmd, int dir_in)
- 	/* remember direction */
- 	hdata->dma_dir = dir_in;
- 
--	if (dir_in) {
--		/* invalidate any cache */
--		cache_clear(addr, scsi_pointer->this_residual);
--	} else {
--		/* push any dirty cache */
--		cache_push(addr, scsi_pointer->this_residual);
--	}
--
- 	/* start DMA */
- 	m147_pcc->dma_bcr = scsi_pointer->this_residual | (1 << 24);
- 	m147_pcc->dma_dadr = addr;
-@@ -67,7 +71,13 @@ static int dma_setup(struct scsi_cmnd *cmd, int dir_in)
- static void dma_stop(struct Scsi_Host *instance, struct scsi_cmnd *SCpnt,
- 		     int status)
- {
-+	struct scsi_pointer *scsi_pointer = WD33C93_scsi_pointer(SCpnt);
-+	struct WD33C93_hostdata *hdata = shost_priv(instance);
-+
- 	m147_pcc->dma_cntrl = 0;
-+	dma_unmap_single(instance->dma_dev, scsi_pointer->dma_handle,
-+			 scsi_pointer->this_residual,
-+			 DMA_DIR(hdata->dma_dir));
- }
- 
- static struct scsi_host_template mvme147_host_template = {
-@@ -94,6 +104,11 @@ static int __init mvme147_scsi_probe(struct platform_device *pdev)
- 	struct WD33C93_hostdata *hdata;
- 	int error = -ENOMEM;
- 
-+	if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32))) {
-+		dev_warn(&pdev->dev, "cannot use 32 bit DMA\n");
-+		return -ENODEV;
-+	}
-+
- 	mres = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!mres)
- 		return -ENODEV;
--- 
-2.17.1
+Okay, no problem. I suppose 5.19 isn't likely to be an LTS anyway.
 
+Jason
