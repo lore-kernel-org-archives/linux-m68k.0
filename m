@@ -2,86 +2,113 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C73EC433EF
-	for <linux-m68k@archiver.kernel.org>; Sat,  9 Jul 2022 00:10:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23538CCA483
+	for <linux-m68k@archiver.kernel.org>; Sat,  9 Jul 2022 00:10:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbiGIAKc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 8 Jul 2022 20:10:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59880 "EHLO
+        id S229586AbiGIAKd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 8 Jul 2022 20:10:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbiGIAKa (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 8 Jul 2022 20:10:30 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C6B17AB34;
-        Fri,  8 Jul 2022 17:10:27 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id y18so105751plb.2;
-        Fri, 08 Jul 2022 17:10:27 -0700 (PDT)
+        with ESMTP id S229785AbiGIAKb (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 8 Jul 2022 20:10:31 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6887CB43;
+        Fri,  8 Jul 2022 17:10:28 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id g4so283827pgc.1;
+        Fri, 08 Jul 2022 17:10:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=Znnh5yc4eACm6GbvMKNRyMYBShbC5U9fFWv3XrkdJpA=;
-        b=NQt4zr6/Vl+VeP3WhN2Za8K2BgSe9VezvRg0bNt4nvKOzscNgiAoX44NIycpeV5FCH
-         k0ZprtiB5bIjVB07b0nsDLpsP/J3uJC3PwVh9xfwKtULlPiwFN0ZcFgasEmiZ37w9ztm
-         vHoF0h8DUw8lVQx+pqwTW4btsE64A2kgk5Gi0Nc4Xh6WnbuwlKGNJFn+IQNwKZ2gt9wt
-         tuo44BXe/yguDw8od3CQLRedVizQVi3lsDk72ckmCTB0Ps52UuhfiiwbSnSyLLUYsUbO
-         SCE3Iv8ToIGhFFNru78aRTMP6K0FvX+D4goQy7PumGDb2JLI/4TPWp2ktKLIUvgjBLVc
-         P7hg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=llxMpF9nJlCaL45HHzQOxFiHqiNr+0CVyGM12/RbJls=;
+        b=Hdgmru4azIMCHkiN7WWiKRHznIdDne2GBhYrDXJ89u8nbvR1APuC4Kf4ifKi2Ed/MW
+         NOb/b2juQIHSw6VWfzi4qE83Y7a0OwoSF6wK5DxbhiNc5Fy5X56BrM0hF+rxwyl0QdRZ
+         QysmeBSEFy9hjb9bEJlOdMnuo+KXniu+uS1H9ePzv+UiLmgeB5qJATN5k6FET7gaOt10
+         AtRBrcY2fVENx2WRPxsOjuPyDdPXFG98NXfITJ/rnNNsjN29mC6wMW55QPSCm/hlnCyV
+         BJ7Cllef+SL0O3GLi57Q4sFTsxSsc/6oeBNIOzeHPRA7w3paTWlronus2w4Opy6jGmj8
+         ii0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Znnh5yc4eACm6GbvMKNRyMYBShbC5U9fFWv3XrkdJpA=;
-        b=7WNX0NBnLkrZH02qikjB4Qjz23iT5WyK0KO6ax1fvEyCcX1XskaYrg0poH5VEQJUiI
-         sW0B8DaEu2DucddXo6TRmOEGgxvTmrzhOQdnADHtd6+D3SHTnXehJCsr942xk3jfqL0h
-         p3vkKD/X0nsYV1rrNXGPlN2ib/2aeWddm03TVL8gT7CbRo96IKzgR7eisxiz+bVz+7KN
-         6zq8ByxhZf0+VVCO7TcufZP4IMrFPwW8czJmMVRHwCAygR0kHoMSzItBEwh6qEWqQn0h
-         YqmzQPCGNnu4TkKCWglT5UkOoOB+6FLguawHDTpW0hcWc1eJ6U6twkRmyQadX81KUsBH
-         vbLw==
-X-Gm-Message-State: AJIora97flIKITO5TMi+S7m+3S8eXgqkkQoUOOxrYvBdtjB1JsmKXEno
-        FXt4pkpMrApGYRXhvp+GE5sDf3ciH1s=
-X-Google-Smtp-Source: AGRyM1ulmKuOy2iOcGYgz7mHLp1YssxuXaqBkKoZZPmuz0xIPd42wTbdK2qRvqIGVVoHhEmqTM67jA==
-X-Received: by 2002:a17:903:228b:b0:16b:edb1:a609 with SMTP id b11-20020a170903228b00b0016bedb1a609mr5976840plh.77.1657325425750;
-        Fri, 08 Jul 2022 17:10:25 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=llxMpF9nJlCaL45HHzQOxFiHqiNr+0CVyGM12/RbJls=;
+        b=tvnNKatjEWgxHhDzB/cacNBTYR6lqBLGbCxX+cYidA2VXkHK8xsKEiLhvvhaJ3f6f4
+         Hd235D+cb80gyndLucxgDY3u9/aIYcmNPbG11Gl1xo4rc7Motrf5/5kHFTjR3+bYnn/F
+         X+HSXj7e5qIDWbk2tw0Wi4YYxzHQP7nLiumK0rUXvAmU72jOc0buFfzDK60gfigOVrXH
+         qaQlu1TGBojxt/WJhJJ5M5vGdupbPpjZVeOjfH38l5Y+qXtb1d+8YQqEH/d4/J9NLUAw
+         JiZRnD6Q9LiG6bb0SmyEmiHk9mrE6dpxG20cOGumkNrX4/ZHP1/HancXmiwvsaY8mHa7
+         icCw==
+X-Gm-Message-State: AJIora8cf22cctPd4ZGZZhhM+BXicJwhkn7NysRq6WDBrj1Vwb6JdZsd
+        fvhx1C9aP39vZiVCDiEqpwo=
+X-Google-Smtp-Source: AGRyM1s2vof3t0moifI8p42i6NgbdqmXAsLOiroR+B91T6gAajr8uSb2d1SJdxCgF12VpE+fi+5J+A==
+X-Received: by 2002:a05:6a00:c92:b0:525:8782:71f2 with SMTP id a18-20020a056a000c9200b00525878271f2mr6509820pfv.50.1657325426791;
+        Fri, 08 Jul 2022 17:10:26 -0700 (PDT)
 Received: from xplor.waratah.dyndns.org (222-155-0-244-adsl.sparkbb.co.nz. [222.155.0.244])
-        by smtp.gmail.com with ESMTPSA id t123-20020a625f81000000b0052842527052sm146393pfb.189.2022.07.08.17.10.24
+        by smtp.gmail.com with ESMTPSA id a10-20020aa78e8a000000b00528c22038f5sm179850pfr.14.2022.07.08.17.10.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jul 2022 17:10:25 -0700 (PDT)
+        Fri, 08 Jul 2022 17:10:26 -0700 (PDT)
 Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-        id 690D7360325; Sat,  9 Jul 2022 12:10:21 +1200 (NZST)
+        id D07F4360333; Sat,  9 Jul 2022 12:10:22 +1200 (NZST)
 From:   Michael Schmitz <schmitzmic@gmail.com>
 To:     linux-m68k@vger.kernel.org, arnd@kernel.org
-Cc:     linux-scsi@vger.kernel.org, geert@linux-m68k.org
-Subject: [PATCH v1 0/4] Convert m68k MVME147 WD33C93 SCSI driver to DMA API
-Date:   Sat,  9 Jul 2022 12:10:15 +1200
-Message-Id: <20220709001019.11149-1-schmitzmic@gmail.com>
+Cc:     linux-scsi@vger.kernel.org, geert@linux-m68k.org,
+        Michael Schmitz <schmitzmic@gmail.com>
+Subject: [PATCH v1 2/4] m68k - set up platform device for mvme147_scsi
+Date:   Sat,  9 Jul 2022 12:10:17 +1200
+Message-Id: <20220709001019.11149-3-schmitzmic@gmail.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20220709001019.11149-1-schmitzmic@gmail.com>
+References: <20220709001019.11149-1-schmitzmic@gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-This series was precipitated by Arnd removing CONFIG_VIRT_TO_BUS. The
-m68k WD33C93 still used virt_to_bus to convert virtual addresses to
-physical addresses suitable for the DMA engines (note m68k does not
-have an IOMMU and uses a direct mapping for DMA addresses). 
+Set up a platform device for the mvme147_scsi driver. The
+platform device is required for conversion of the driver to
+the DMA API.
 
-Arnd suggested to use dma_map_single() to set up dma mappings instead
-of open-coding much the same in every driver dma_setup() function. An
-earlier patch series has converted the three Amiga WD33C93 drivers,
-this series now takes care of the sole remaining m68k WD33C93 driver.
+CC: linux-scsi@vger.kernel.org
+Link: https://lore.kernel.org/r/6d1d88ee-1cf6-c735-1e6d-bafd2096e322@gmail.com
+Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+---
+ arch/m68k/mvme147/config.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-The m68k VME mvme147 driver has no DMA addressing or alignment
-restrictions and can be converted in the same way as the Amiga a3000
-one in my previous series, but requires conversion to a platform
-device driver first.
-
-Only compile tested so far, and hardware testing might be hard to do.
-I'd appreciate someone giving this a thorough review.
-
-The first two patches shoukd be taken through Geert's tree before the other
-two can be applied by the SCSI maintainers. Please advise should you prefer
-this to be split into two separate series.
-
-Cheers,
-
-   Michael
-
+diff --git a/arch/m68k/mvme147/config.c b/arch/m68k/mvme147/config.c
+index 4e6218115f43..c6e7dfe3eb54 100644
+--- a/arch/m68k/mvme147/config.c
++++ b/arch/m68k/mvme147/config.c
+@@ -21,6 +21,7 @@
+ #include <linux/console.h>
+ #include <linux/linkage.h>
+ #include <linux/init.h>
++#include <linux/platform_device.h>
+ #include <linux/major.h>
+ #include <linux/rtc.h>
+ #include <linux/interrupt.h>
+@@ -188,3 +189,23 @@ int mvme147_hwclk(int op, struct rtc_time *t)
+ 	}
+ 	return 0;
+ }
++
++static const struct resource mvme147_scsi_rsrc[] __initconst = {
++	DEFINE_RES_MEM(MVME147_SCSI_BASE, 0xff),
++	DEFINE_RES_IRQ(MVME147_IRQ_SCSI_PORT),
++};
++
++int __init mvme147_platform_init(void)
++{
++	struct platform_device *pdev;
++	int rv = 0;
++
++	pdev = platform_device_register_simple("mvme147-scsi", -1,
++		mvme147_scsi_rsrc, ARRAY_SIZE(mvme147_scsi_rsrc));
++	if (IS_ERR(pdev))
++		rv = PTR_ERR(pdev);
++
++	return rv;
++}
++
++arch_initcall(mvme147_platform_init);
+-- 
+2.17.1
 
