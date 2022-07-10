@@ -2,95 +2,69 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB260C43334
-	for <linux-m68k@archiver.kernel.org>; Sat,  9 Jul 2022 13:39:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 500CEC43334
+	for <linux-m68k@archiver.kernel.org>; Sun, 10 Jul 2022 15:56:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229491AbiGINjh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 9 Jul 2022 09:39:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51890 "EHLO
+        id S229549AbiGJP4l (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 10 Jul 2022 11:56:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbiGINjg (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sat, 9 Jul 2022 09:39:36 -0400
-X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 09 Jul 2022 06:39:35 PDT
-Received: from mailrelay3-1.pub.mailoutpod1-cph3.one.com (mailrelay3-1.pub.mailoutpod1-cph3.one.com [46.30.210.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FDA6193C7
-        for <linux-m68k@vger.kernel.org>; Sat,  9 Jul 2022 06:39:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ravnborg.org; s=rsa1;
-        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-         from:date:from;
-        bh=XmkcfsDh57jd1J2jvUdL+BZKRd9qAe04YaTvDGQ4b5o=;
-        b=Zo5LqVUaSgfH1W5v9cXv82HIf2UTJGKnsGbh9Q5tzQ5DCQVt79EHEiPIYgGqC+LE6cN0xxGkryJDx
-         Sp02VZSmTBldxoUo61et9Qo2JEd9uUmzNkIIKYq559XURbuO8uDvFwZs+u32a+rWhq/PQyS+SnSw89
-         HimmnJkdp5Ju4TTcVkXNMc+L2IeyHNsCPV2femt6bvayQs9DetIkw6DnJsrkIu6ezP+gWpDC4pnLst
-         MmlDrPUqgq5sjtMzIVIKVwzsiOI0OI5XKk+7BUokSL7RTJio7Y5RPlUoZCByQ+PeVKO4Mp7rt24cRZ
-         p4HI8rrjcytPKML9EX1DQLjkw3fSQDg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
-        d=ravnborg.org; s=ed1;
-        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-         from:date:from;
-        bh=XmkcfsDh57jd1J2jvUdL+BZKRd9qAe04YaTvDGQ4b5o=;
-        b=6o3gycdRpEHGoNrAwURicgyEGwLg1iuyxseqGoOk4kRzw82swxTrUITH5wBxDFk1KMBrTPUNWvZOh
-         dt2Z1nrAQ==
-X-HalOne-Cookie: aedeed65c7618423d082425d94c8b2f248725526
-X-HalOne-ID: 6b4eb816-ff8c-11ec-be7e-d0431ea8bb03
-Received: from mailproxy2.cst.dirpod3-cph3.one.com (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
-        by mailrelay3.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
-        id 6b4eb816-ff8c-11ec-be7e-d0431ea8bb03;
-        Sat, 09 Jul 2022 13:38:30 +0000 (UTC)
-Date:   Sat, 9 Jul 2022 15:38:28 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-fbdev@vger.kernel.org,
-        linux-m68k@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 00/10] drm: Add support for low-color frame buffer
- formats
-Message-ID: <YsmE1D8lGp4XKs99@ravnborg.org>
-References: <cover.1657294931.git.geert@linux-m68k.org>
+        with ESMTP id S229450AbiGJP4l (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 10 Jul 2022 11:56:41 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7597D7650;
+        Sun, 10 Jul 2022 08:56:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id C8794CE0BA1;
+        Sun, 10 Jul 2022 15:56:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C926FC3411E;
+        Sun, 10 Jul 2022 15:56:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1657468596;
+        bh=tjM2xPoSgOWWofhRatDW9b1gOjkRlx12ysYaWXMf2Tw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MRJtfx/U4MUJvYgqTiEs+iaux6phaCW5lbaNpM4IoBlxNQONqNLh+a5SAbJuFbM+C
+         CD/yM/SPvRFF4h0Ka+EUtPxDHHGF4ilsIULQyRiH9gmgLSp3Qp5QHRpZtDOfXzL969
+         ixTr0KSxh9a2ptmwsSwvweoQgF1mXTtYTcVLC7dbfnY8oF7UezgkukIoAOCpjyPcyx
+         lBCQ6I+/8qnnRnbS8mZTh6f6C2nytSsH3LkcDynFHi7RZ4B+DULheaw5wKffxwnx10
+         pcFNPy5haRkxPF1n3mIvkYNuuOfVXzeQphJU9LSbbxi6y2KLgVFSmj9X6NmFRdry5Y
+         XjTDDftS+Kk7A==
+Received: by mail-yb1-f169.google.com with SMTP id 136so5240631ybl.5;
+        Sun, 10 Jul 2022 08:56:36 -0700 (PDT)
+X-Gm-Message-State: AJIora9b/L/eCy9n1BwacFcuKiEa/HJUuwTkVQ7MI8vqKnFZQbGrWvsI
+        sgxtqiALPWOKXCnaWX1MD85uBLQLpcF2ux9UNss=
+X-Google-Smtp-Source: AGRyM1tExm7udUQG57/VpqlX6xxfv4UcD72soelchuSVhZ4ARvOPe2vWriTjXMOLsOWAH+gKeg6ZF2gjKV98hL4PE74=
+X-Received: by 2002:a25:8b8b:0:b0:669:b37d:f9cd with SMTP id
+ j11-20020a258b8b000000b00669b37df9cdmr13714559ybl.394.1657468595913; Sun, 10
+ Jul 2022 08:56:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1657294931.git.geert@linux-m68k.org>
+References: <20220709001019.11149-1-schmitzmic@gmail.com> <20220709001019.11149-3-schmitzmic@gmail.com>
+In-Reply-To: <20220709001019.11149-3-schmitzmic@gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Sun, 10 Jul 2022 17:56:19 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0fisnrP0tO94Fy6ugvrw-KkCmDOpqraK4LC=GfV24rAg@mail.gmail.com>
+Message-ID: <CAK8P3a0fisnrP0tO94Fy6ugvrw-KkCmDOpqraK4LC=GfV24rAg@mail.gmail.com>
+Subject: Re: [PATCH v1 2/4] m68k - set up platform device for mvme147_scsi
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
+On Sat, Jul 9, 2022 at 2:10 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> +
+> +static const struct resource mvme147_scsi_rsrc[] __initconst = {
+> +       DEFINE_RES_MEM(MVME147_SCSI_BASE, 0xff),
+> +       DEFINE_RES_IRQ(MVME147_IRQ_SCSI_PORT),
+> +};
 
-On Fri, Jul 08, 2022 at 08:20:45PM +0200, Geert Uytterhoeven wrote:
-> 	Hi all,
-> 
-> A long outstanding issue with the DRM subsystem has been the lack of
-> support for low-color displays, as used typically on older desktop
-> systems, and on small embedded displays.
+The size should almost certainly be 0x100, not 0xff here.
 
-IT is super to have this addressed - thanks!
+Otherwise this looks good to me.
 
-> 
-> This patch series adds support for color-indexed frame buffer formats
-> with 2, 4, and 16 colors.  It has been tested on ARAnyM using a
-> work-in-progress Atari DRM driver supporting 2, 4, 16, 256, and 65536
-> colors, with text console operation, fbtest, and modetest.
-> 
-> Overview:
->   - Patch 1 introduces a helper, to be used by later patches in the
->     series,
->   - Patch 2 introduces a flag to indicate color-indexed formats,
->   - Patches 3 and 4 correct calculations of bits per pixel for sub-byte
->     pixel formats,
->   - Patches 5 and 6 introduce the new C[124] formats,
->   - Patch 7 fixes an untested code path,
->   - Patch 8 documents the use of "red" for light-on-dark displays,
->   - Patches 9 and 10 add more fourcc codes for light-on-dark and
->     dark-on-light frame buffer formats, which may be useful for e.g. the
->     ssd130x and repaper drivers.
-
-Applied all patches to drm-misc (drm-misc-next), including the last two
-RFC patches as we then have the formats ready when a user pops up.
-
-	Sam
+       Arnd
