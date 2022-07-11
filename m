@@ -2,91 +2,95 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70F1AC433EF
-	for <linux-m68k@archiver.kernel.org>; Sun, 10 Jul 2022 16:12:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E730C433EF
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 Jul 2022 04:11:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229495AbiGJQMS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 10 Jul 2022 12:12:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33622 "EHLO
+        id S229579AbiGKEL5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 11 Jul 2022 00:11:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbiGJQMR (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 10 Jul 2022 12:12:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0374ED107;
-        Sun, 10 Jul 2022 09:12:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8DF74612ED;
-        Sun, 10 Jul 2022 16:12:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0CEAC341C8;
-        Sun, 10 Jul 2022 16:12:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657469535;
-        bh=1a8RhVZhJAlIic8t7LTAfzOJRsi+xvs2HaEgv/F0dkk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oYi9pda2FFd0icYDw41L5sFJQe6n5HgqyhFkU1qBqqTHDnEd1rOz/96bq7qDhHkYM
-         oyzvy4KLznRi99MbVwYYbxlrN+vByAUOpNaLS/Tv/aHTya4TZYSToiFud6V1nNRgH7
-         JYQ9gKQW2IPfZQPoViUJlt1jZZkJyXIvKifUesg0SggLw25sMWFFAE4ZZ4uCSs7fo6
-         8qxfLOe1SPK/k/bXN+0e0tZKFtcqrpC2OzjkDag/zxTs5NzNNXOyrUu+4CxXGeA7xd
-         QZhDiuRgQrDqYGVimMiQOP6g6Fx1UMYtIHt+s6/BhU267Y+d4e6A/yjWLZJGaFWf/6
-         rSFZoEk0TyNJA==
-Received: by mail-yb1-f172.google.com with SMTP id h62so2646882ybb.11;
-        Sun, 10 Jul 2022 09:12:15 -0700 (PDT)
-X-Gm-Message-State: AJIora9ucD/797uZsHW0mEHIPpIX6poIXj+cQn0eJh14inY/n35UBdU+
-        ktCSo5bPZBYsu5Uuqu98dtqVUN0jGm50huOoaWE=
-X-Google-Smtp-Source: AGRyM1vugHkWVEUPS9DZ1imxiik9ydOWucgh7hpEd285tATMbswYIdcAYZ5l8z+6yShYi02bc1XhQpAWqxujPHA8kvs=
-X-Received: by 2002:a25:9f87:0:b0:669:4345:a8c0 with SMTP id
- u7-20020a259f87000000b006694345a8c0mr13864683ybq.472.1657469534931; Sun, 10
- Jul 2022 09:12:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220709001019.11149-1-schmitzmic@gmail.com> <20220709001019.11149-4-schmitzmic@gmail.com>
-In-Reply-To: <20220709001019.11149-4-schmitzmic@gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sun, 10 Jul 2022 18:11:58 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0FndsCkCrgXdai8=2oX5yWrMLArDHN5mA90AL4N7pmRw@mail.gmail.com>
-Message-ID: <CAK8P3a0FndsCkCrgXdai8=2oX5yWrMLArDHN5mA90AL4N7pmRw@mail.gmail.com>
-Subject: Re: [PATCH v1 3/4] scsi - convert mvme146_scsi.c to platform device
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>,
+        with ESMTP id S229592AbiGKELx (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Jul 2022 00:11:53 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCFA8186C7;
+        Sun, 10 Jul 2022 21:11:52 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id g16-20020a17090a7d1000b001ea9f820449so7140281pjl.5;
+        Sun, 10 Jul 2022 21:11:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=W/JFVuKNzZiqMBQi1p4ww29Ay2ETSokEw0yXEePEWoU=;
+        b=fhQcyRbnxRxpm3f2eOxuKekaZ8QWFe2XYz1LIpr7CREzFnDd1jx5FNbAoNP7TL/DQF
+         pbWdJfxk3aj6+ShIZLdOteip84Y3Ed9Z1Tq0eqCDISdhEmkz709wUxcO76Oowp1pOjsD
+         CpS5ZWjPRcIc3Mbj9r5nb9uZVz0s85yh1q91KYSnBnP8sHL3tkE6go91VSUCWCgW/jDC
+         8iHTCeZV5/s/pHVeVvxlj8yFUqwY+Vge88ZtG3ZQBdRb+rGugcNauyw8Y9kZtG3UuBFY
+         OUVs2lj8k1NQ00nmXjyCsC8ecnVYlh92fXlHel9Oor66B0INoM0A+KgHU7pu6u66a69N
+         kkFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=W/JFVuKNzZiqMBQi1p4ww29Ay2ETSokEw0yXEePEWoU=;
+        b=PaYZslUo9p0+/vrO2/zrBRFBz28A6/9OEJmi/uXiT8cxCZpr2D208Ei3C7KTHtDZvz
+         zfMWbga3AsnPrENGrv8gh7wHo4jKKNO0jZDeF5YU/oFhjVEpoaQTEx3G974Xrd7JJXvg
+         A44VQOJ4YMv7g59PJea1VzzeVDSkj6CKI7ZMIJEsgWsQAD+qoTBGbRbhv9lsZEkWsZCn
+         LVqdDpC/ZWqfV2yMjbhE+A9tnEMYJFcYZzl5vqNggSGRkb5ZyC87fCmJrxQROCDS3kjP
+         siM/DfcOYiFdY6q7AltagjMHsJfqjHtABbhPpS+Rfyw8s5a+r17bjAncxoq+uDZDActQ
+         GH/g==
+X-Gm-Message-State: AJIora9aI4O9OET6EixGDHJMBeYlNMv2gEr40tLZ7802FUpkxnjPexrf
+        rDUUzFsJi6Pgtij06cmpMjEVRzA/0Do=
+X-Google-Smtp-Source: AGRyM1u6V6WarwnPD8oaAwlInpzem1ovfj6nUjRSJWq75wdF+cJhGPkxYHUWmL5EGJZTRoDS+0FhGA==
+X-Received: by 2002:a17:902:ccc7:b0:16c:484f:4c69 with SMTP id z7-20020a170902ccc700b0016c484f4c69mr3887520ple.118.1657512712410;
+        Sun, 10 Jul 2022 21:11:52 -0700 (PDT)
+Received: from [10.1.1.24] (222-155-0-244-adsl.sparkbb.co.nz. [222.155.0.244])
+        by smtp.gmail.com with ESMTPSA id c76-20020a624e4f000000b0052592a8ef62sm3616710pfb.110.2022.07.10.21.11.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 10 Jul 2022 21:11:51 -0700 (PDT)
+Subject: Re: [PATCH v1 2/4] m68k - set up platform device for mvme147_scsi
+To:     Arnd Bergmann <arnd@kernel.org>
+References: <20220709001019.11149-1-schmitzmic@gmail.com>
+ <20220709001019.11149-3-schmitzmic@gmail.com>
+ <CAK8P3a0fisnrP0tO94Fy6ugvrw-KkCmDOpqraK4LC=GfV24rAg@mail.gmail.com>
+Cc:     Linux/m68k <linux-m68k@vger.kernel.org>,
         linux-scsi <linux-scsi@vger.kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <98997c5b-6efd-b2bb-ccad-e9d7428c62d2@gmail.com>
+Date:   Mon, 11 Jul 2022 16:11:46 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
+MIME-Version: 1.0
+In-Reply-To: <CAK8P3a0fisnrP0tO94Fy6ugvrw-KkCmDOpqraK4LC=GfV24rAg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sat, Jul 9, 2022 at 2:10 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+Hi Arnd,
+
+thanks for your review!
+
+Am 11.07.2022 um 03:56 schrieb Arnd Bergmann:
+> On Sat, Jul 9, 2022 at 2:10 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+>> +
+>> +static const struct resource mvme147_scsi_rsrc[] __initconst = {
+>> +       DEFINE_RES_MEM(MVME147_SCSI_BASE, 0xff),
+>> +       DEFINE_RES_IRQ(MVME147_IRQ_SCSI_PORT),
+>> +};
 >
-> Convert the mvme147_scsi driver to a platform device driver.
-> This is required for conversion of the driver to the DMA API.
+> The size should almost certainly be 0x100, not 0xff here.
+
+OK, will fix that. The resource size is taken from one of the Amiga 
+drivers and might be excessive for mvme147, but 0xff is certainly odd.
+
+Cheers,
+
+	Michael
+
+
+> Otherwise this looks good to me.
 >
-> CC: linux-scsi@vger.kernel.org
-> Link: https://lore.kernel.org/r/6d1d88ee-1cf6-c735-1e6d-bafd2096e322@gmail.com
-> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-
-The patch looks correct to me, but the type cast for the address doesn't
-seem right:
-
-> -       regs.SASR = (volatile unsigned char *)0xfffe4000;
-> -       regs.SCMD = (volatile unsigned char *)0xfffe4001;
+>        Arnd
 >
-> -       hdata = shost_priv(mvme147_shost);
-> +       mvme147_inst->base = mres->start;
-> +       mvme147_inst->irq = ires->start;
-> +
-> +       regs.SASR = (volatile unsigned char *)mres->start;
-> +       regs.SCMD = (volatile unsigned char *)(mres->start)+0x1;
-
-A resource would pass a phys_addr_t token, but the driver expects a
-virtual address that should be an __iomem pointer. The MMIO area
-already gets mapped into virtual addresses in arch/m68k/kernel/head.S,
-so it makes sense to skip the extra ioremap() and just use the address,
-but then you can't pass it as an IORESOUCRE_MEM token and should
-use platform_data with the pointer instead.
-
-The alternative is to do it the normal way and pass the physical address
-as a resource, that you can pass into devm_platform_ioremap_resource()
-or a similar helper.
-
-       Arnd
