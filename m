@@ -2,92 +2,194 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90D7DC433EF
-	for <linux-m68k@archiver.kernel.org>; Mon, 11 Jul 2022 11:43:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E6D6C433EF
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 Jul 2022 11:45:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229477AbiGKLnY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 11 Jul 2022 07:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58080 "EHLO
+        id S229916AbiGKLpr (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 11 Jul 2022 07:45:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231159AbiGKLmz (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Jul 2022 07:42:55 -0400
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29B9FCC
-        for <linux-m68k@vger.kernel.org>; Mon, 11 Jul 2022 04:38:10 -0700 (PDT)
-Received: by mail-qv1-f48.google.com with SMTP id cw12so150905qvb.12
-        for <linux-m68k@vger.kernel.org>; Mon, 11 Jul 2022 04:38:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=fLh0Zcth9yobdbqPcPHWmXTtQH4g0b9Q2v2bOxrOEDg=;
-        b=KYXfkU2KCKSLZ2EtKT3g/PE+J0LPPxSS0iNaWUnhy1o5Xty0bTBlfgxpFDPKWClGDa
-         SYBF3tcNZPfvHpNJnbyBjKjyoO13F1kbe9FNzmdNcp6uk/M2GnEuXgi6vPDTuWM+wEQN
-         cQ35ej6oSMklHRlrUi1H6gluKuy0kJQ9GFOTWdfwl9HdxxB886ZJzo9nn77ULWCgpnkZ
-         6O6PmgbPUS7MTreuT8t9VGq4Z9coJm6egz2prXbXkHgvrE1fMte8e/pl9/vvKLlsm4/2
-         i1XVLfo1BtnbFklQ8D6MhbFJt5wgHUUIsqfTLIu3iSDantRd2lEjrWNAXoo50jwffEn2
-         neLQ==
-X-Gm-Message-State: AJIora+MFxoWLoiUcloUxUtBmUYUMZ/mFPHrtjzaRBE3aPkYGdKvnXMf
-        Q8ocKB5seMSK+KOxnXRc2lSbcsS6ofadqA==
-X-Google-Smtp-Source: AGRyM1tEans4VEBhaEato7RFaGneoRmzCoo33XGRh91K3lzZKz3XlspKCkdTFcq50L3PoukKlZ1HqA==
-X-Received: by 2002:ad4:5ba7:0:b0:473:6654:f727 with SMTP id 7-20020ad45ba7000000b004736654f727mr4513762qvq.95.1657539489184;
-        Mon, 11 Jul 2022 04:38:09 -0700 (PDT)
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
-        by smtp.gmail.com with ESMTPSA id i11-20020a05622a08cb00b00319dc953432sm5186261qte.77.2022.07.11.04.38.09
-        for <linux-m68k@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jul 2022 04:38:09 -0700 (PDT)
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-31c8bb90d09so45604557b3.8
-        for <linux-m68k@vger.kernel.org>; Mon, 11 Jul 2022 04:38:09 -0700 (PDT)
-X-Received: by 2002:a81:1090:0:b0:31c:9be5:6c95 with SMTP id
- 138-20020a811090000000b0031c9be56c95mr19175430ywq.384.1657539488673; Mon, 11
- Jul 2022 04:38:08 -0700 (PDT)
+        with ESMTP id S230376AbiGKLp3 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Jul 2022 07:45:29 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 848831B7B9;
+        Mon, 11 Jul 2022 04:42:14 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 8E1955C013B;
+        Mon, 11 Jul 2022 07:42:10 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Mon, 11 Jul 2022 07:42:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=cc
+        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1657539730; x=1657626130; bh=65xJGGrqgx
+        njVVpdic5sDfiZGfil8T9lrpxrDrPHf8g=; b=HH/oTqjkcgrCHZYQXcX34oNi2K
+        v2nwKLFL6z8ieVJvkDHC2/65uCw4GqEi7rfDiBQ3+va/U9slT9f18Y9zKOXK9X4k
+        9ilYU46tQruBfK6Xa8pn+UjeoQcKPU2/g+30tOimqCTZJcSBxvKnGA1bFLSmBw6L
+        TTvBjWDvx6ACJuzhc/sU6BRTVbi/vQcTb0mrgzv1xEP5sxZ+xByigzyuXEOgv/2q
+        98qc7V1d8rglqZkngnrnkqzkLPqhADyQo8qYPojZGFwpUg5eue2yZ7H//bReDeJF
+        KerxiCkE1e3uUMCRN0RkLEuGrpXZD7q85BBVCg/rWUsqogj40QxrWGO7vrkQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; t=1657539730; x=1657626130; bh=65xJGGrqgxnjVVpdic5sDfiZGfil
+        8T9lrpxrDrPHf8g=; b=SM3pwVw/xvpwPzEDiqdckW7A4Y+apqrkRj2qxW2dHpSr
+        W32C+6Yr2aW6lEClvZgzLSa1dl9T5s9zuMPQTe4YLAJx/vBroR3Cyh+KgyouUSr9
+        u/2ZxyXhLxXPQg1nw1tlfcZ3FIQQ3kdQgA12znOPg1+JntdJnKEKz5dgWDwAFnvN
+        qxS5A9piswC9OdTwScnXKKTQRXAHPTV9gsx0CWiCsu3nKrLBXPirWAMq9chKxJKj
+        hg3ekMROL5/X0H2YoMHV7IduIkpNI8KV+sCvL0T3fUgxNJvvG+EEgDHk44/c3/TN
+        tprAeyYSU6CSa+R8OpFx1gcstGWKeR8F9rzQnvZOoA==
+X-ME-Sender: <xms:kQzMYv6aGsTlyGCWJj2O8_3HBbowEcshnFvorQPQMXV1g3wE_HGc5A>
+    <xme:kQzMYk5OstTLK1E3FOtat7kPi8KBy7NhDj2vRdj5pbZxFRQTmXRGHlUL6kFLXIW2N
+    gwGgaV2XmP1motf3ow>
+X-ME-Received: <xmr:kQzMYmfDjY1o2XAncdq2l8XzWaTHY9aRFocnAQmF76LGF-pGByeWRxy-5eL45gp1k2LOBEVLwJCJTyqqSSonyaKQrpdeLdKaZ9AaUc8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudejfedgfeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpefgkeevueetgffhueeujefhgeejiefgiedtveefgfdugefhteejgedufedv
+    geeukeenucffohhmrghinhepsghoohhtlhhinhdrtghomhdpfihikhhiphgvughirgdroh
+    hrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehm
+    rgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:kQzMYgIpwlyetzGyREVDazqmlrNxuxwjsUwYDYiCSpoMUYI5JiyNrA>
+    <xmx:kQzMYjIGn7UY-kdG9RPUgDecNKS9Q7x8WOGXiSR47xexBommMXEiig>
+    <xmx:kQzMYpwrRcfOhPv-CTR3BPIAulKFPs98dXVR_JaA-0cffCl8IX0X6A>
+    <xmx:kgzMYq9T4G60-J4BnJWcyTtUCNNfVlt7Nhz10dG_BXN6yCUelZWuaA>
+Feedback-ID: i8771445c:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 11 Jul 2022 07:42:09 -0400 (EDT)
+Date:   Mon, 11 Jul 2022 13:42:06 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hans de Goede <hdegoede@redhat.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/5] drm/modes: Add support for driver-specific named
+ modes
+Message-ID: <20220711114206.sawqdl54ibuxsxp4@houat>
+References: <cover.1657301107.git.geert@linux-m68k.org>
+ <68923c8a129b6c2a70b570103679a1cf7876bbc2.1657301107.git.geert@linux-m68k.org>
+ <ef2aada2-96e4-c2e4-645f-39bc9094e93a@suse.de>
+ <20220711093513.wilv6e6aqcuyg52w@houat>
+ <43d75dce-988a-0a95-cb0a-0d0a7c81ca63@suse.de>
 MIME-Version: 1.0
-References: <AANLkTimZ4q3mGhy27qVo5gQHMCM2U8jrc_fNPH4YUXev@mail.gmail.com>
-In-Reply-To: <AANLkTimZ4q3mGhy27qVo5gQHMCM2U8jrc_fNPH4YUXev@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 11 Jul 2022 13:37:57 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdV=ovE6e9TSvsYS7givuEGCcBNAhk3byWUEPdMJ11xEzg@mail.gmail.com>
-Message-ID: <CAMuHMdV=ovE6e9TSvsYS7givuEGCcBNAhk3byWUEPdMJ11xEzg@mail.gmail.com>
-Subject: Re: Atari console corruption
-To:     "Linux/m68k" <linux-m68k@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ochmvmz2mndf2rso"
+Content-Disposition: inline
+In-Reply-To: <43d75dce-988a-0a95-cb0a-0d0a7c81ca63@suse.de>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Oct 13, 2010 at 9:10 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> If your shell command line looks like:
->
-> sh-3.1# abcd
->
-> Then insert another 'b' in front of the existing 'b'. The 'c' will
-> become corrupted.
-> The actual characters don't matter, except that the inserted character must be
-> the same as the existing one.
-> It happens in all even columns, so if your prompt is different, just try it at
-> a different even position.
->
-> It happens in frame buffer depths 2, 4, and 8. In monochrome mode the corruption
-> is different. In 16 bpp, when it uses the cfb code, there's no
-> corruption, so the bug
-> must be in the Atari-specific code.
->
-> I could not reproduce it in vi, only in bash.
->
-> Tested on ARAnyM only.
 
-FTR, this was "fixed" in commit 81732c3b2fede049 ("tty vt: Fix line
-garbage in virtual console on command line edition") in v3.7, followed
-by a few fixes for the regressions introduced by this fix.
+--ochmvmz2mndf2rso
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Gr{oetje,eeting}s,
+On Mon, Jul 11, 2022 at 01:11:14PM +0200, Thomas Zimmermann wrote:
+> Hi Maxime
+>=20
+> Am 11.07.22 um 11:35 schrieb Maxime Ripard:
+> > Hi Thomas,
+> >=20
+> > On Mon, Jul 11, 2022 at 11:03:38AM +0200, Thomas Zimmermann wrote:
+> > > Am 08.07.22 um 20:21 schrieb Geert Uytterhoeven:
+> > > > The mode parsing code recognizes named modes only if they are expli=
+citly
+> > > > listed in the internal whitelist, which is currently limited to "NT=
+SC"
+> > > > and "PAL".
+> > > >=20
+> > > > Provide a mechanism for drivers to override this list to support cu=
+stom
+> > > > mode names.
+> > > >=20
+> > > > Ideally, this list should just come from the driver's actual list of
+> > > > modes, but connector->probed_modes is not yet populated at the time=
+ of
+> > > > parsing.
+> > >=20
+> > > I've looked for code that uses these names, couldn't find any. How is=
+ this
+> > > being used in practice? For example, if I say "PAL" on the command li=
+ne, is
+> > > there DRM code that fills in the PAL mode parameters?
+> >=20
+> > We have some code to deal with this in sun4i:
+> > https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/sun4i/su=
+n4i_tv.c#L292
+> >=20
+> > It's a bit off topic, but for TV standards, I'm still not sure what the
+> > best course of action is. There's several interactions that make this a
+> > bit troublesome:
+> >=20
+> >    * Some TV standards differ by their mode (ie, PAL vs NSTC), but some
+> >      other differ by parameters that are not part of drm_display_mode
+> >      (NTSC vs NSTC-J where the only difference is the black and blanking
+> >      signal levels for example).
+> >=20
+> >    * The mode names allow to provide a fairly convenient way to add that
+> >      extra information, but the userspace is free to create its own mode
+> >      and might omit the mode name entirely.
+> >=20
+> > So in the code above, if the name has been preserved we match by name,
+> > but we fall back to matching by mode if it hasn't been, which in this
+> > case means that we have no way to differentiate between NTSC, NTSC-J,
+> > PAL-M in this case.
+> >=20
+> > We have some patches downstream for the RaspberryPi that has the TV
+> > standard as a property. There's a few extra logic required for the
+> > userspace (like setting the PAL property, with the NTSC mode) so I'm not
+> > sure it's preferable.
+> >=20
+> > Or we could do something like a property to try that standard, and
+> > another that reports the one we actually chose.
+> >=20
+> > > And another question I have is whether this whitelist belongs into the
+> > > driver at all. Standard modes exist independent from drivers or hardw=
+are.
+> > > Shouldn't there simply be a global list of all possible mode names? D=
+rivers
+> > > would filter out the unsupported modes anyway.
+> >=20
+> > We should totally do something like that, yeah
+>=20
+> That sun code already looks like sometihng the DRM core/helpers should be
+> doing. And if we want to support named modes well, there's a long list of
+> modes in Wikipedia.
+>
+> https://en.wikipedia.org/wiki/Video_Graphics_Array#/media/File:Vector_Vid=
+eo_Standards2.svg
 
-                        Geert
+Yeah, and NTSC is missing :)
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Thinking about this some more, I'm not sure how we would do that. Like I
+said, we would need some extra parameters to drm_display_mode (like
+blanking levels) that the core would need to pass to the driver.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+If we go through the property route, I think the core could just look at
+the name, with the new mode and state, and the driver should deal with
+it. I'm not sure we can do more than that.
+
+Maxime
+
+--ochmvmz2mndf2rso
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYswMjgAKCRDj7w1vZxhR
+xVEnAP9X1YCEDZqn7PwDG4wC6RHwW3pwln90ztgI5n66WY0ckgEA3+Owyei3UCjf
+z4cZW6l3/ZzQj6xt4UxCXTf9Cd2AVAo=
+=2IFI
+-----END PGP SIGNATURE-----
+
+--ochmvmz2mndf2rso--
