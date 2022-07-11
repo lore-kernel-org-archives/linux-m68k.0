@@ -2,29 +2,29 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B5CECCA485
-	for <linux-m68k@archiver.kernel.org>; Mon, 11 Jul 2022 15:51:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5761CCA480
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 Jul 2022 15:51:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231234AbiGKPvC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 11 Jul 2022 11:51:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44252 "EHLO
+        id S231670AbiGKPvD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 11 Jul 2022 11:51:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230255AbiGKPut (ORCPT
+        with ESMTP id S231281AbiGKPut (ORCPT
         <rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Jul 2022 11:50:49 -0400
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A684232BB6
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE87877A5A
         for <linux-m68k@vger.kernel.org>; Mon, 11 Jul 2022 08:50:40 -0700 (PDT)
 Received: from ramsan.of.borg ([84.195.186.194])
-        by xavier.telenet-ops.be with bizsmtp
-        id trqe270124C55Sk01rqe4s; Mon, 11 Jul 2022 17:50:38 +0200
+        by andre.telenet-ops.be with bizsmtp
+        id trqe2700J4C55Sk01rqe5Y; Mon, 11 Jul 2022 17:50:38 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1oAvgD-0036xD-Vl; Mon, 11 Jul 2022 17:50:37 +0200
+        id 1oAvgD-0036xI-Rt; Mon, 11 Jul 2022 17:50:37 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1oAvgD-006shx-2d; Mon, 11 Jul 2022 17:50:37 +0200
+        id 1oAvgD-006siC-6A; Mon, 11 Jul 2022 17:50:37 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     Helge Deller <deller@gmx.de>
 Cc:     Michael Schmitz <schmitzmic@gmail.com>,
@@ -32,47 +32,56 @@ Cc:     Michael Schmitz <schmitzmic@gmail.com>,
         linux-doc@vger.kernel.org, dri-devel@lists.freedesktop.org,
         linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 08/10] video: fbdev: atari: Fix VGA modes
-Date:   Mon, 11 Jul 2022 17:50:32 +0200
-Message-Id: <d4366ec393e7b69a579d9aaf972d2d36734f1422.1657554353.git.geert@linux-m68k.org>
+Subject: [PATCH 10/10] [RFC] video: fbdev: atari: Remove backward bug-compatibility
+Date:   Mon, 11 Jul 2022 17:50:34 +0200
+Message-Id: <52d52566a80bfd00acdcfc28a24799d3fbf638f6.1657554353.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1657554353.git.geert@linux-m68k.org>
 References: <cover.1657554353.git.geert@linux-m68k.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The pixclock values in the vga and vga70 modes are wrong, as they should
-use the 25.175 MHz clock instead of the 32 MHz clock.
-Swap the left and right margins to match f25.{right,left} (struct
-pixel_clock declares them in a different order), and update the hsync
-lengths to match what the driver programs by default.
-Correct the (wrong) floating-point vrefresh value for the vga mode.
+As of v2.1.0, falcon_decode_var() contains a quirk to fix a rounding
+error, as explained by Günther Kelleter on Fri, 30 Aug 1996:
+
+    This diff removes the now obsolete Falcon video option "pwrsave", and
+    fixes a rounding error that is triggered by the resolution switching X
+    server (those who use the pixel clock value 39722 in their /etc/fb.modes
+    should change it to 39721).
+
+However, this causes the modified video mode returned by
+falcon_decode_var() to not match the video mode returned by
+falcon_encode_var().  Fix this by dropping the quirk.
+
+Unfortunately /etc/fb.modes in fbset was never updated, so the
+"640x480-60" mode still contains the wrong pixclock.
+Hence this change may introduce a regression.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- drivers/video/fbdev/atafb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Any comments?
+---
+ drivers/video/fbdev/atafb.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
 diff --git a/drivers/video/fbdev/atafb.c b/drivers/video/fbdev/atafb.c
-index 528478f6f30857ef..46a00e0ad5e785ac 100644
+index e8b178e732e2c785..2bc4089865e60ac2 100644
 --- a/drivers/video/fbdev/atafb.c
 +++ b/drivers/video/fbdev/atafb.c
-@@ -494,11 +494,11 @@ static struct fb_videomode atafb_modedb[] __initdata = {
+@@ -1008,10 +1008,6 @@ static int falcon_decode_var(struct fb_var_screeninfo *var,
+ 	else if (yres_virtual < yres)
+ 		yres_virtual = yres;
  
- 	{
- 		/* 640x480, 31 kHz, 60 Hz (VGA) */
--		"vga", 63.5, 640, 480, 32000, 18, 42, 31, 11, 96, 3,
-+		"vga", 60, 640, 480, 39721, 42, 18, 31, 11, 100, 3,
- 		0, FB_VMODE_NONINTERLACED
- 	}, {
- 		/* 640x400, 31 kHz, 70 Hz (VGA) */
--		"vga70", 70, 640, 400, 32000, 18, 42, 31, 11, 96, 3,
-+		"vga70", 70, 640, 400, 39721, 42, 18, 31, 11, 100, 3,
- 		FB_SYNC_VERT_HIGH_ACT | FB_SYNC_COMP_HIGH_ACT, FB_VMODE_NONINTERLACED
- 	},
+-	/* backward bug-compatibility */
+-	if (var->pixclock > 1)
+-		var->pixclock -= 1;
+-
+ 	par->hw.falcon.line_width = bpp * xres / 16;
+ 	par->hw.falcon.line_offset = bpp * (xres_virtual - xres) / 16;
  
 -- 
 2.25.1
