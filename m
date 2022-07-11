@@ -2,122 +2,51 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9519BC433EF
-	for <linux-m68k@archiver.kernel.org>; Mon, 11 Jul 2022 21:21:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 311A8C43334
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 Jul 2022 23:15:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231934AbiGKVVN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 11 Jul 2022 17:21:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38946 "EHLO
+        id S230126AbiGKXPe (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 11 Jul 2022 19:15:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229832AbiGKVVL (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Jul 2022 17:21:11 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A26C12A71A;
-        Mon, 11 Jul 2022 14:21:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1657574465;
-        bh=pulbl6ZVMF89zqi4FCDK9+iI1hZBrDJ8HumaDHMz+4s=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=AxTWPobAALVtt6qz0PnEwWDJhaQKiIIYYtayCZo8Ee+NdMHNcKnVmSKaACz3nugzy
-         HetiOTydYhFfpK20CqdQJhDexwMD9UQ5ul4bMyCi3g3RqW3id/cifYXpo2UW3PA1XC
-         BvQUZBgMyDa8KnWSuHA0T0aQZhJ8MfK7rMxnHgkc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.184.221]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MVN6t-1o22Xn3SKt-00SKrM; Mon, 11
- Jul 2022 23:21:04 +0200
-Message-ID: <681e1739-d251-661a-a46f-9412f3b6e165@gmx.de>
-Date:   Mon, 11 Jul 2022 23:20:27 +0200
+        with ESMTP id S229754AbiGKXPd (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Jul 2022 19:15:33 -0400
+X-Greylist: delayed 2142 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 11 Jul 2022 16:15:33 PDT
+Received: from cynthia.allandria.com (cynthia.allandria.com [50.242.82.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37B0785D70
+        for <linux-m68k@vger.kernel.org>; Mon, 11 Jul 2022 16:15:33 -0700 (PDT)
+Received: from flar by cynthia.allandria.com with local (Exim 4.84_2)
+        (envelope-from <flar@allandria.com>)
+        id 1oB24B-0006MM-Ok; Mon, 11 Jul 2022 15:39:47 -0700
+Date:   Mon, 11 Jul 2022 15:39:47 -0700
+From:   Brad Boyer <flar@allandria.com>
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v1 1/4] m68k - add MVME147 SCSI base address to
+ mvme147hw.h
+Message-ID: <20220711223947.GA22820@allandria.com>
+References: <20220709001019.11149-1-schmitzmic@gmail.com>
+ <20220709001019.11149-2-schmitzmic@gmail.com>
+ <CAK8P3a2kwg56-UTv275GJ1r_SDsfoX2fMcmXrvNURN+L3UHoSA@mail.gmail.com>
+ <89f0efa9-9626-2380-49dc-432ac04fe6f2@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH] video: fbdev: amiga: Simplify amifb_pan_display()
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <b803f10a2b3b85386b25a2e25b98fb4e59413ea9.1657553681.git.geert@linux-m68k.org>
-From:   Helge Deller <deller@gmx.de>
-In-Reply-To: <b803f10a2b3b85386b25a2e25b98fb4e59413ea9.1657553681.git.geert@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:nVTr6BBwsWtnZx2aandyv+fUBwA/rXHQ6laYCVuq5K6BMshiorz
- oSUQh06r/DOmXqzDdd5MVI7jLmIlTNgzFGwmwDnAR2OzyUN2qCk2pjlhQH6V4Wl+skQ/cq2
- 1poDea8TEluhigguiyqt+Ash7248Rhgqdb6x25clkWzCQUlwIr/oUuE5umGLWMaz82xDURS
- 50wroyX+c1Zo0C2Dtrf9A==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:NZ4kLPOUqWI=:ddtZJMwIk26PDP1AFeNs1I
- CK9cdRIKjSuTZTp1SQ8KYb/TLEpyJQfas9W/uqwufPJgcZyDeOmyK0QOFEOxd/BngpwArrQIE
- c6Ru/c4/rDTsanux1uA/krsBHHCkXGL9QJVw6MuAhlP1sisi/iN/AF4MGwEGmyDGsS1PfVwuZ
- GhC9iwzbxs12fzBjG6++qyDiFJHMwHSLfAJ+ZPwQJkbRiCpLQbRfMxNhyIYDi2iPkpnbsKfKk
- zFj41bGRf+TwVjpwhaSsN3ChpuNgxUEHRxxgTEK2ZIvbaEZ5jFQdngNVJQ4AN79eou+GuUL53
- vjQnWxknd/UpgIGIgQ7Y/1kl/wiiTKAd43W32IcdiZDO95JVKp8oD595IFgHmwl/lcKLXDfld
- qdX//ZJBrqBwL7d9dsCtQ1aQs8A50MYWtJT9AcrAZVXAup4eJO9p2hc27L9ijE7rl43XWFQ5n
- UdN2okVmidi/HEWbBqlyg8Fg5b63I+sf0Bj7e0Pav4/heM0Gk83OL2axdVJdmB3wuX4tPoD87
- zuFAMP7S0U2IetH8GckowCnU5qmgxQMDxbqbF97T+zduYczc6p+dHbPv83HSBgO9OY9bK4Pef
- oJnfIH1FgdySEhD1QuZ7LvMpX16RodLvbXuj2u/NlU7N72DEgXGmc2ZsL/ClFJKGUmGGAVLtw
- v6c7YepDyAIxLnIKxsRU37MWT+yGaTf2NqNiPxXuuuHaZJ3NfyWysn2lko9ThNXkuHJ0WvcZn
- g63SJB+apu0mgvrEIUXQiD+70i8roxHz2gZGzWow8doisq945ActjgeVRyWLRztPlEG7UWuZC
- st9LRE+wGnEp5S7TYMAaM4eaQYMwdfI0EoQyFZSu04mo0F6l/uYV056R6uR/dZUHeFFf/eT0c
- VofMUn0GKy2BcAuJDYBnyKJOi0nSaNFwwM6wFGI1mmvBluksLL1lM51qMC5U4EwxvYk5w/jy+
- pweCuDF4U9xow9b+XF2M7LOmKLCuiH00wfSoeVp5+PJFTFl5SNWnG4uGKHRetPXFzi0vW+tUJ
- 1yq2HC+N3Nbw9+7fqknLNIJLssDMPxGsdcT7/G/EPRIWNunhLGMyfjzJH4G5KzilESJUDrhJH
- r5+1ci5/NfJFG26RzRLFY6F1qGN/DLMsPbyHSfacItYZnZ/bFdkIsTTmA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <89f0efa9-9626-2380-49dc-432ac04fe6f2@gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 7/11/22 17:35, Geert Uytterhoeven wrote:
-> The fb_pan_display() function in the core already takes care of
-> validating most panning parameters before calling the driver's
-> .fb_pan_display() callback, and of updating the panning state
-> afterwards, so there is no need to repeat that in the driver.
->
-> Remove the duplicate code.
->
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+On Mon, Jul 11, 2022 at 04:16:17PM +1200, Michael Schmitz wrote:
+> Found no other wd33c93 drivers...
 
-I've applied this and the other 3 patches to the fbdev git tree.
+If it matters, I have a wd33c93 based NuBus card. I've just never
+found the time to write a driver for it. To be honest, I haven't
+even put it in a system to see if it works.
 
-Thanks!
-Helge
-
-
-> ---
->  drivers/video/fbdev/amifb.c | 15 ++-------------
->  1 file changed, 2 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/video/fbdev/amifb.c b/drivers/video/fbdev/amifb.c
-> index 6e07a97bbd31a1dd..d88265dbebf4cb19 100644
-> --- a/drivers/video/fbdev/amifb.c
-> +++ b/drivers/video/fbdev/amifb.c
-> @@ -2540,27 +2540,16 @@ static int amifb_blank(int blank, struct fb_info=
- *info)
->  static int amifb_pan_display(struct fb_var_screeninfo *var,
->  			     struct fb_info *info)
->  {
-> -	if (var->vmode & FB_VMODE_YWRAP) {
-> -		if (var->yoffset < 0 ||
-> -			var->yoffset >=3D info->var.yres_virtual || var->xoffset)
-> -				return -EINVAL;
-> -	} else {
-> +	if (!(var->vmode & FB_VMODE_YWRAP)) {
->  		/*
->  		 * TODO: There will be problems when xpan!=3D1, so some columns
->  		 * on the right side will never be seen
->  		 */
->  		if (var->xoffset + info->var.xres >
-> -		    upx(16 << maxfmode, info->var.xres_virtual) ||
-> -		    var->yoffset + info->var.yres > info->var.yres_virtual)
-> +		    upx(16 << maxfmode, info->var.xres_virtual))
->  			return -EINVAL;
->  	}
->  	ami_pan_var(var, info);
-> -	info->var.xoffset =3D var->xoffset;
-> -	info->var.yoffset =3D var->yoffset;
-> -	if (var->vmode & FB_VMODE_YWRAP)
-> -		info->var.vmode |=3D FB_VMODE_YWRAP;
-> -	else
-> -		info->var.vmode &=3D ~FB_VMODE_YWRAP;
->  	return 0;
->  }
->
+	Brad Boyer
+	flar@allandria.com
 
