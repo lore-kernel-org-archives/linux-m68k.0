@@ -2,151 +2,122 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8459FCCA482
-	for <linux-m68k@archiver.kernel.org>; Mon, 11 Jul 2022 20:43:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9519BC433EF
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 Jul 2022 21:21:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231714AbiGKUn5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 11 Jul 2022 16:43:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39142 "EHLO
+        id S231934AbiGKVVN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 11 Jul 2022 17:21:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231271AbiGKUn4 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 11 Jul 2022 16:43:56 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E3FB86C
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Jul 2022 13:43:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E4E43B81217;
-        Mon, 11 Jul 2022 20:43:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C5BBC341C0;
-        Mon, 11 Jul 2022 20:43:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657572232;
-        bh=cp41t+VP5zpzqWweFhXlDmnM1wrue4Oj0YaNSsnkppo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=aRG3qlu8UFv6GCt770R2iC1Nn/k2d2ZZkq8YVXrKOSkRIGx/97W21I2Zdpp2kvQZZ
-         KuyKHJSCwX7fmQ/aRk1bnlNJ8KyGBKAIf6wfLoaj+ZGY/r7YC8F4ZXLbCSIXay8S3U
-         KO1cCVQmcGHIuoeCVWpgDm8SLn2+onrydiOidsSYmIF+WPeB57GMcSRa0c2AOerTEx
-         8wJNGlnRymBpEln9x5KoLhRbmS/nGaKmk+GXs/cnV0NfNmMTv8Jcr5e9ZRfkzStYWA
-         a4l5nSOt+INBze/1hqe2LjRwOeBcCIZslW2jmgjdP8uyldi4q1iH8r9vF36qh/SNmy
-         6vhOBCbduXcxQ==
-Message-ID: <88328a82-7275-608e-46f2-4203df9d9fe6@kernel.org>
-Date:   Mon, 11 Jul 2022 15:43:45 -0500
+        with ESMTP id S229832AbiGKVVL (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Jul 2022 17:21:11 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A26C12A71A;
+        Mon, 11 Jul 2022 14:21:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1657574465;
+        bh=pulbl6ZVMF89zqi4FCDK9+iI1hZBrDJ8HumaDHMz+4s=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=AxTWPobAALVtt6qz0PnEwWDJhaQKiIIYYtayCZo8Ee+NdMHNcKnVmSKaACz3nugzy
+         HetiOTydYhFfpK20CqdQJhDexwMD9UQ5ul4bMyCi3g3RqW3id/cifYXpo2UW3PA1XC
+         BvQUZBgMyDa8KnWSuHA0T0aQZhJ8MfK7rMxnHgkc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.184.221]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MVN6t-1o22Xn3SKt-00SKrM; Mon, 11
+ Jul 2022 23:21:04 +0200
+Message-ID: <681e1739-d251-661a-a46f-9412f3b6e165@gmx.de>
+Date:   Mon, 11 Jul 2022 23:20:27 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH V7 15/26] nios2/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+ Thunderbird/91.11.0
+Subject: Re: [PATCH] video: fbdev: amiga: Simplify amifb_pan_display()
 Content-Language: en-US
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
-        akpm@linux-foundation.org
-Cc:     hch@infradead.org, christophe.leroy@csgroup.eu,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        x86@kernel.org, openrisc@lists.librecores.org,
-        linux-xtensa@linux-xtensa.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-um@lists.infradead.org,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20220711070600.2378316-1-anshuman.khandual@arm.com>
- <20220711070600.2378316-16-anshuman.khandual@arm.com>
-From:   Dinh Nguyen <dinguyen@kernel.org>
-In-Reply-To: <20220711070600.2378316-16-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <b803f10a2b3b85386b25a2e25b98fb4e59413ea9.1657553681.git.geert@linux-m68k.org>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <b803f10a2b3b85386b25a2e25b98fb4e59413ea9.1657553681.git.geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:nVTr6BBwsWtnZx2aandyv+fUBwA/rXHQ6laYCVuq5K6BMshiorz
+ oSUQh06r/DOmXqzDdd5MVI7jLmIlTNgzFGwmwDnAR2OzyUN2qCk2pjlhQH6V4Wl+skQ/cq2
+ 1poDea8TEluhigguiyqt+Ash7248Rhgqdb6x25clkWzCQUlwIr/oUuE5umGLWMaz82xDURS
+ 50wroyX+c1Zo0C2Dtrf9A==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:NZ4kLPOUqWI=:ddtZJMwIk26PDP1AFeNs1I
+ CK9cdRIKjSuTZTp1SQ8KYb/TLEpyJQfas9W/uqwufPJgcZyDeOmyK0QOFEOxd/BngpwArrQIE
+ c6Ru/c4/rDTsanux1uA/krsBHHCkXGL9QJVw6MuAhlP1sisi/iN/AF4MGwEGmyDGsS1PfVwuZ
+ GhC9iwzbxs12fzBjG6++qyDiFJHMwHSLfAJ+ZPwQJkbRiCpLQbRfMxNhyIYDi2iPkpnbsKfKk
+ zFj41bGRf+TwVjpwhaSsN3ChpuNgxUEHRxxgTEK2ZIvbaEZ5jFQdngNVJQ4AN79eou+GuUL53
+ vjQnWxknd/UpgIGIgQ7Y/1kl/wiiTKAd43W32IcdiZDO95JVKp8oD595IFgHmwl/lcKLXDfld
+ qdX//ZJBrqBwL7d9dsCtQ1aQs8A50MYWtJT9AcrAZVXAup4eJO9p2hc27L9ijE7rl43XWFQ5n
+ UdN2okVmidi/HEWbBqlyg8Fg5b63I+sf0Bj7e0Pav4/heM0Gk83OL2axdVJdmB3wuX4tPoD87
+ zuFAMP7S0U2IetH8GckowCnU5qmgxQMDxbqbF97T+zduYczc6p+dHbPv83HSBgO9OY9bK4Pef
+ oJnfIH1FgdySEhD1QuZ7LvMpX16RodLvbXuj2u/NlU7N72DEgXGmc2ZsL/ClFJKGUmGGAVLtw
+ v6c7YepDyAIxLnIKxsRU37MWT+yGaTf2NqNiPxXuuuHaZJ3NfyWysn2lko9ThNXkuHJ0WvcZn
+ g63SJB+apu0mgvrEIUXQiD+70i8roxHz2gZGzWow8doisq945ActjgeVRyWLRztPlEG7UWuZC
+ st9LRE+wGnEp5S7TYMAaM4eaQYMwdfI0EoQyFZSu04mo0F6l/uYV056R6uR/dZUHeFFf/eT0c
+ VofMUn0GKy2BcAuJDYBnyKJOi0nSaNFwwM6wFGI1mmvBluksLL1lM51qMC5U4EwxvYk5w/jy+
+ pweCuDF4U9xow9b+XF2M7LOmKLCuiH00wfSoeVp5+PJFTFl5SNWnG4uGKHRetPXFzi0vW+tUJ
+ 1yq2HC+N3Nbw9+7fqknLNIJLssDMPxGsdcT7/G/EPRIWNunhLGMyfjzJH4G5KzilESJUDrhJH
+ r5+1ci5/NfJFG26RzRLFY6F1qGN/DLMsPbyHSfacItYZnZ/bFdkIsTTmA==
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+On 7/11/22 17:35, Geert Uytterhoeven wrote:
+> The fb_pan_display() function in the core already takes care of
+> validating most panning parameters before calling the driver's
+> .fb_pan_display() callback, and of updating the panning state
+> afterwards, so there is no need to repeat that in the driver.
+>
+> Remove the duplicate code.
+>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+I've applied this and the other 3 patches to the fbdev git tree.
+
+Thanks!
+Helge
 
 
-On 7/11/22 02:05, Anshuman Khandual wrote:
-> This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
-> vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
-> up a private and static protection_map[] array. Subsequently all __SXXX and
-> __PXXX macros can be dropped which are no longer needed.
-> 
-> Cc: Dinh Nguyen <dinguyen@kernel.org>
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 > ---
->   arch/nios2/Kconfig               |  1 +
->   arch/nios2/include/asm/pgtable.h | 16 ----------------
->   arch/nios2/mm/init.c             | 20 ++++++++++++++++++++
->   3 files changed, 21 insertions(+), 16 deletions(-)
-> 
-> diff --git a/arch/nios2/Kconfig b/arch/nios2/Kconfig
-> index 4167f1eb4cd8..e0459dffd218 100644
-> --- a/arch/nios2/Kconfig
-> +++ b/arch/nios2/Kconfig
-> @@ -6,6 +6,7 @@ config NIOS2
->   	select ARCH_HAS_SYNC_DMA_FOR_CPU
->   	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
->   	select ARCH_HAS_DMA_SET_UNCACHED
-> +	select ARCH_HAS_VM_GET_PAGE_PROT
->   	select ARCH_NO_SWAP
->   	select COMMON_CLK
->   	select TIMER_OF
-> diff --git a/arch/nios2/include/asm/pgtable.h b/arch/nios2/include/asm/pgtable.h
-> index 262d0609268c..470516d4555e 100644
-> --- a/arch/nios2/include/asm/pgtable.h
-> +++ b/arch/nios2/include/asm/pgtable.h
-> @@ -40,24 +40,8 @@ struct mm_struct;
->    */
->   
->   /* Remove W bit on private pages for COW support */
-> -#define __P000	MKP(0, 0, 0)
-> -#define __P001	MKP(0, 0, 1)
-> -#define __P010	MKP(0, 0, 0)	/* COW */
-> -#define __P011	MKP(0, 0, 1)	/* COW */
-> -#define __P100	MKP(1, 0, 0)
-> -#define __P101	MKP(1, 0, 1)
-> -#define __P110	MKP(1, 0, 0)	/* COW */
-> -#define __P111	MKP(1, 0, 1)	/* COW */
->   
->   /* Shared pages can have exact HW mapping */
-> -#define __S000	MKP(0, 0, 0)
-> -#define __S001	MKP(0, 0, 1)
-> -#define __S010	MKP(0, 1, 0)
-> -#define __S011	MKP(0, 1, 1)
-> -#define __S100	MKP(1, 0, 0)
-> -#define __S101	MKP(1, 0, 1)
-> -#define __S110	MKP(1, 1, 0)
-> -#define __S111	MKP(1, 1, 1)
->   
->   /* Used all over the kernel */
->   #define PAGE_KERNEL __pgprot(_PAGE_PRESENT | _PAGE_CACHED | _PAGE_READ | \
-> diff --git a/arch/nios2/mm/init.c b/arch/nios2/mm/init.c
-> index 613fcaa5988a..ae24687d12ad 100644
-> --- a/arch/nios2/mm/init.c
-> +++ b/arch/nios2/mm/init.c
-> @@ -124,3 +124,23 @@ const char *arch_vma_name(struct vm_area_struct *vma)
->   {
->   	return (vma->vm_start == KUSER_BASE) ? "[kuser]" : NULL;
->   }
-> +
-> +static const pgprot_t protection_map[16] = {
-> +	[VM_NONE]					= MKP(0, 0, 0),
-> +	[VM_READ]					= MKP(0, 0, 1),
-> +	[VM_WRITE]					= MKP(0, 0, 0),
-> +	[VM_WRITE | VM_READ]				= MKP(0, 0, 1),
-> +	[VM_EXEC]					= MKP(1, 0, 0),
-> +	[VM_EXEC | VM_READ]				= MKP(1, 0, 1),
-> +	[VM_EXEC | VM_WRITE]				= MKP(1, 0, 0),
-> +	[VM_EXEC | VM_WRITE | VM_READ]			= MKP(1, 0, 1),
-> +	[VM_SHARED]					= MKP(0, 0, 0),
-> +	[VM_SHARED | VM_READ]				= MKP(0, 0, 1),
-> +	[VM_SHARED | VM_WRITE]				= MKP(0, 1, 0),
-> +	[VM_SHARED | VM_WRITE | VM_READ]		= MKP(0, 1, 1),
-> +	[VM_SHARED | VM_EXEC]				= MKP(1, 0, 0),
-> +	[VM_SHARED | VM_EXEC | VM_READ]			= MKP(1, 0, 1),
-> +	[VM_SHARED | VM_EXEC | VM_WRITE]		= MKP(1, 1, 0),
-> +	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= MKP(1, 1, 1)
-> +};
-> +DECLARE_VM_GET_PAGE_PROT
+>  drivers/video/fbdev/amifb.c | 15 ++-------------
+>  1 file changed, 2 insertions(+), 13 deletions(-)
+>
+> diff --git a/drivers/video/fbdev/amifb.c b/drivers/video/fbdev/amifb.c
+> index 6e07a97bbd31a1dd..d88265dbebf4cb19 100644
+> --- a/drivers/video/fbdev/amifb.c
+> +++ b/drivers/video/fbdev/amifb.c
+> @@ -2540,27 +2540,16 @@ static int amifb_blank(int blank, struct fb_info=
+ *info)
+>  static int amifb_pan_display(struct fb_var_screeninfo *var,
+>  			     struct fb_info *info)
+>  {
+> -	if (var->vmode & FB_VMODE_YWRAP) {
+> -		if (var->yoffset < 0 ||
+> -			var->yoffset >=3D info->var.yres_virtual || var->xoffset)
+> -				return -EINVAL;
+> -	} else {
+> +	if (!(var->vmode & FB_VMODE_YWRAP)) {
+>  		/*
+>  		 * TODO: There will be problems when xpan!=3D1, so some columns
+>  		 * on the right side will never be seen
+>  		 */
+>  		if (var->xoffset + info->var.xres >
+> -		    upx(16 << maxfmode, info->var.xres_virtual) ||
+> -		    var->yoffset + info->var.yres > info->var.yres_virtual)
+> +		    upx(16 << maxfmode, info->var.xres_virtual))
+>  			return -EINVAL;
+>  	}
+>  	ami_pan_var(var, info);
+> -	info->var.xoffset =3D var->xoffset;
+> -	info->var.yoffset =3D var->yoffset;
+> -	if (var->vmode & FB_VMODE_YWRAP)
+> -		info->var.vmode |=3D FB_VMODE_YWRAP;
+> -	else
+> -		info->var.vmode &=3D ~FB_VMODE_YWRAP;
+>  	return 0;
+>  }
+>
 
-Acked-by: Dinh Nguyen <dinguyen@kernel.org>
