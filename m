@@ -2,181 +2,117 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA4B4C43334
-	for <linux-m68k@archiver.kernel.org>; Mon, 11 Jul 2022 16:15:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1D08C433EF
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 Jul 2022 16:29:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229799AbiGKQPB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 11 Jul 2022 12:15:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39498 "EHLO
+        id S231962AbiGKQ3G (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 11 Jul 2022 12:29:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229594AbiGKQPA (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 11 Jul 2022 12:15:00 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC8377A6B
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Jul 2022 09:14:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1657556099; x=1689092099;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=95nOb3V1KKqq1c3e8OArM4orPLvj7Ko/hX8oKXIFz4k=;
-  b=FJOYnrTLIEab8X8DaA3KkhEnRnd7PaJkVC4WKdgUIwNmvEgoMmITH/6B
-   cIxuli8o3ynv6PKr6YZ+3YvT0rY2blK/rUDy4GxecWLc+OgL0hb017vB7
-   coiGbL1V+u7g25veKEsEC2qFaa5WOeTbC2h9x+ykTtR/E1DuKw70G72jf
-   HnOct+NSZsldt06oKscvbBOblpB36IqvdsdFWYzIEQ3uvSjIDOiu0q+JD
-   G3L5Ic2eOH3rzVa8eZMxu8QiS+BniU4ELFaR3UZ7+kLyo0ZZzDWaTqr0N
-   t+3QvLclZpa7Uwr60dzwBqwQe29hkdz6WxPrxtcfEPntxVD9i+WKA7bkS
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10405"; a="284729016"
-X-IronPort-AV: E=Sophos;i="5.92,263,1650956400"; 
-   d="scan'208";a="284729016"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jul 2022 09:14:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,263,1650956400"; 
-   d="scan'208";a="652517910"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by fmsmga008.fm.intel.com with ESMTP; 11 Jul 2022 09:14:55 -0700
-Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 26BGErbR005796;
-        Mon, 11 Jul 2022 17:14:54 +0100
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-arch@vger.kernel.org, lkp@lists.01.org, lkp@intel.com
-Subject: Re: [bitops]  0e862838f2: BUG:KASAN:wild-memory-access_in_dmar_parse_one_rhsa
-Date:   Mon, 11 Jul 2022 18:13:41 +0200
-Message-Id: <20220711161341.21605-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <YsggZNUQcsKIU9xU@smile.fi.intel.com>
-References: <YsbpTNmDaam8pl+f@xsang-OptiPlex-9020> <YsggZNUQcsKIU9xU@smile.fi.intel.com>
+        with ESMTP id S230442AbiGKQ26 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Jul 2022 12:28:58 -0400
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C6E252AC;
+        Mon, 11 Jul 2022 09:28:55 -0700 (PDT)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4LhTpq4n5Pz9sc5;
+        Mon, 11 Jul 2022 18:28:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1657556931;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=h0Ew8vbJofZiPTnLGbAIznC2oE+zfCyp3d/IQXhvecc=;
+        b=rcoAD+Bs62GqPvCNjiEGidlJpdRBXoEBlje7Y9vABleFkDiJLxNqThyTi4EFd51BtU3YWz
+        ZPzrRXtF9atPnrgz5i2Mlb7USqMaRMUChdpXzhczAeMRDB1M2BunGUW87Dvrnf2nydwiHw
+        0oGij+ZZqVAED2m69wDjRXs+eFVqP3EC24ifAHkfGgiM4+7MH8dA3g0sUT3oCl4L2WLDIy
+        f62L/iLIxxO4pksmxpiGSXniLBdOsEiFIEE3EmFHTtRbDpREKBc1NTPX40P5eqmlBlhOTU
+        5VNUwkvdSAVas3LWvcmpMEGMaHJOjfwiGcq2IOnLsWeMCsGYXC5jmmVSB0hqIg==
+Message-ID: <a1249136-ac01-c873-f61b-0c8e812909bd@mailbox.org>
+Date:   Mon, 11 Jul 2022 18:28:50 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
+Subject: Re: [PATCH 1/3] drm/fourcc: Add missing big-endian XRGB1555 and
+ RGB565 formats
+Content-Language: en-CA
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Noralf_Tr=c3=b8nnes?= <noralf@tronnes.org>,
+        Gerd Hoffmann <kraxel@redhat.com>
+References: <cover.1657300532.git.geert@linux-m68k.org>
+ <0744671ac096a12f0d538906bd324efa71b11400.1657300532.git.geert@linux-m68k.org>
+ <96a87833-d878-dde9-e335-9ea51a4ba406@mailbox.org>
+ <CAMuHMdUgdbZeoFLFL8+Hm-6fG9cg5Wzq++JED3KR5P9YZtRQ4A@mail.gmail.com>
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel.daenzer@mailbox.org>
+In-Reply-To: <CAMuHMdUgdbZeoFLFL8+Hm-6fG9cg5Wzq++JED3KR5P9YZtRQ4A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-MBO-RS-ID: 2b4b7a29c4e7fa0b9d9
+X-MBO-RS-META: 979tt788gbjputer4sjzcn38y86iouji
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Date: Fri, 8 Jul 2022 15:17:40 +0300
-
-> On Thu, Jul 07, 2022 at 10:10:20PM +0800, kernel test robot wrote:
-> > 
-> > (please be noted we reported
-> > "[bitops]  001bea109d: BUG:KASAN:wild-memory-access_in_dmar_parse_one_rhsa"
-> > on
-> > https://lore.kernel.org/all/YrnGLtDXAveqXGok@xsang-OptiPlex-9020/
-> > now we noticed this commit has already been merged into linux-next/master,
-> > and the issue is still existing. report again FYI)
-> > 
-> > Greeting,
-> > 
-> > FYI, we noticed the following commit (built with gcc-11):
-> > 
-> > commit: 0e862838f290147ea9c16db852d8d494b552d38d ("bitops: unify non-atomic bitops prototypes across architectures")
-> > https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
-> > 
-> > in testcase: xfstests
-> > version: xfstests-x86_64-c1144bf-1_20220627
-> > with following parameters:
-> > 
-> > 	disk: 2pmem
-> > 	fs: ext4
-> > 	test: ext4-dax
-> > 	ucode: 0x700001c
-> > 
-> > test-description: xfstests is a regression test suite for xfs and other files ystems.
-> > test-url: git://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git
-> > 
-> > 
-> > on test machine: 16 threads 1 sockets Intel(R) Xeon(R) CPU D-1541 @ 2.10GHz with 48G memory
-> > 
-> > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> > 
-> > 
-> > 
-> > If you fix the issue, kindly add following tag
-> > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > 
-> > 
-> > [ 4.668325][ T0] BUG: KASAN: wild-memory-access in dmar_parse_one_rhsa (arch/x86/include/asm/bitops.h:214 arch/x86/include/asm/bitops.h:226 include/asm-generic/bitops/instrumented-non-atomic.h:142 include/linux/nodemask.h:415 drivers/iommu/intel/dmar.c:497) 
-> > [    4.676149][    T0] Read of size 8 at addr 1fffffff85115558 by task swapper/0/0
-> > [    4.683454][    T0]
-> > [    4.685638][    T0] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.19.0-rc3-00004-g0e862838f290 #1
-> > [    4.694331][    T0] Hardware name: Supermicro SYS-5018D-FN4T/X10SDV-8C-TLN4F, BIOS 1.1 03/02/2016
-> > [    4.703196][    T0] Call Trace:
-> > [    4.706334][    T0]  <TASK>
-> > [ 4.709133][ T0] ? dmar_parse_one_rhsa (arch/x86/include/asm/bitops.h:214 arch/x86/include/asm/bitops.h:226 include/asm-generic/bitops/instrumented-non-atomic.h:142 include/linux/nodemask.h:415 drivers/iommu/intel/dmar.c:497) 
-> > [ 4.714272][ T0] dump_stack_lvl (lib/dump_stack.c:107 (discriminator 1)) 
-> > [ 4.718632][ T0] kasan_report (mm/kasan/report.c:162 mm/kasan/report.c:493) 
-> > [ 4.722903][ T0] ? dmar_parse_one_rhsa (arch/x86/include/asm/bitops.h:214 arch/x86/include/asm/bitops.h:226 include/asm-generic/bitops/instrumented-non-atomic.h:142 include/linux/nodemask.h:415 drivers/iommu/intel/dmar.c:497) 
-> > [ 4.728042][ T0] kasan_check_range (mm/kasan/generic.c:190) 
-> > [ 4.732750][ T0] dmar_parse_one_rhsa (arch/x86/include/asm/bitops.h:214 arch/x86/include/asm/bitops.h:226 include/asm-generic/bitops/instrumented-non-atomic.h:142 include/linux/nodemask.h:415 drivers/iommu/intel/dmar.c:497) 
-> > [ 4.737715][ T0] dmar_walk_remapping_entries (drivers/iommu/intel/dmar.c:609) 
-> > [ 4.743375][ T0] parse_dmar_table (drivers/iommu/intel/dmar.c:671) 
-> > [ 4.748079][ T0] ? dmar_table_detect (drivers/iommu/intel/dmar.c:633) 
-> > [ 4.752872][ T0] ? dmar_free_dev_scope (drivers/iommu/intel/dmar.c:408) 
-> > [ 4.758010][ T0] ? init_dmars (drivers/iommu/intel/iommu.c:3359) 
-> > [ 4.762370][ T0] ? iommu_resume (drivers/iommu/intel/iommu.c:3419) 
-> > [ 4.766903][ T0] ? dmar_walk_dsm_resource+0x300/0x300 
-> > [ 4.772909][ T0] ? dmar_acpi_insert_dev_scope (drivers/iommu/intel/dmar.c:466) 
-> > [ 4.778655][ T0] ? dmar_check_one_atsr (drivers/iommu/intel/iommu.c:3521) 
-> > [ 4.783795][ T0] dmar_table_init (drivers/iommu/intel/dmar.c:846) 
-> > [ 4.788239][ T0] intel_prepare_irq_remapping (drivers/iommu/intel/irq_remapping.c:742) 
-> > [ 4.793811][ T0] irq_remapping_prepare (drivers/iommu/irq_remapping.c:102) 
-> > [ 4.798778][ T0] enable_IR_x2apic (arch/x86/kernel/apic/apic.c:1928) 
-> > [ 4.803395][ T0] default_setup_apic_routing (arch/x86/kernel/apic/probe_64.c:25 (discriminator 1)) 
-> > [ 4.808883][ T0] apic_intr_mode_init (arch/x86/kernel/apic/apic.c:1446) 
-> > [ 4.813761][ T0] x86_late_time_init (arch/x86/kernel/time.c:101) 
-> > [ 4.818467][ T0] start_kernel (init/main.c:1101) 
-> > [ 4.822827][ T0] secondary_startup_64_no_verify (arch/x86/kernel/head_64.S:358) 
+On 2022-07-11 17:30, Geert Uytterhoeven wrote:
+> Hi Michel,
 > 
-> Seems like related to nodemask APIs.
-
-It points to arch_test_bit() (node_online() -> test_bit()),
-converted from a macro to a function, more precisely, to
-variable_test_bit(), which I didn't touch.
-
-...oh ok I got it!
-
-pxm_to_node() can return %NUMA_NO_NODE which equals to -1. The
-mentioned commit converts the macro to the function which now takes
-`unsigned long` as @nr (bit number). So I guess it gets converted to
-%ULONG_MAX - 1.
-
-Now the question is: what should a bitop do if we have negative bit
-number? Because there are 2 solutions:
-
-1. (I prefer it) A caller must check that bitop arguments are valid.
-   UB for negative (== too big) bit numbers.
-   dmar_parse_one_rhsa() must be fixed so that it will check return
-   value of pxm_to_node():
-
- 			int node = pxm_to_node(rhsa->proximity_domain);
- 
--			if (!node_online(node))
-+			if (node != NUMA_NO_NODE && !node_online(node))
- 				node = NUMA_NO_NODE;
-
-2. My code is broken, I shouldn't change `long` to `unsigned long`
-   or should change it for {constant,variable}_test_bit() as well
-   or do something else and let it behave as it was previously
-   (it wasn't crashing probably due to a good luck or...).
-
+> On Mon, Jul 11, 2022 at 5:23 PM Michel Dänzer
+> <michel.daenzer@mailbox.org> wrote:
+>> On 2022-07-08 20:21, Geert Uytterhoeven wrote:
+>>> As of commit eae06120f1974e1a ("drm: refuse ADDFB2 ioctl for broken
+>>> bigendian drivers"), drivers must set the
+>>> quirk_addfb_prefer_host_byte_order quirk to make the drm_mode_addfb()
+>>> compat code work correctly on big-endian machines.
+>>>
+>>> While that works fine for big-endian XRGB8888 and ARGB8888, which are
+>>> mapped to the existing little-endian BGRX8888 and BGRA8888 formats, it
+>>> does not work for big-endian XRGB1555 and RGB565, as the latter are not
+>>> listed in the format database.
+>>>
+>>> Fix this by adding the missing formats.  Limit this to big-endian
+>>> platforms, as there is currently no need to support these formats on
+>>> little-endian platforms.
+>>>
+>>> Fixes: 6960e6da9cec3f66 ("drm: fix drm_mode_addfb() on big endian machines.")
+>>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>>> ---
+>>> Cirrus is the only driver setting quirk_addfb_prefer_host_byte_order
+>>> and supporting RGB565 or XRGB1555, but no one tried that on big-endian?
+>>> Cirrus does not support DRM_FORMAT_RGB565 | DRM_FORMAT_BIG_ENDIAN
+>>> in cirrus_fb_create, so you cannot get a graphical text console.
+>>>
+>>> Do we need these definitions on little-endian platforms, too?
+>>> Would it be better to use "DRM_FORMAT_{XRGB1555,RGB565} |
+>>> DRM_FORMAT_BIG_ENDIAN" instead of "DRM_FORMAT_HOST_{XRGB1555,RGB565}" in
+>>> formats[]?
+>>
+>> The intention of DRM_FORMAT_HOST_* is that they are macros in include/drm/drm_fourcc.h which just map to little endian formats defined in drivers/gpu/drm/drm_fourcc.c. Since this is not possible for big endian hosts for XRGB1555 or RGB565 (or any other format with non-8-bit components), this isn't applicable here.
 > 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
+> I read that as that you prefer to write
+> "DRM_FORMAT_{XRGB1555,RGB565} | DRM_FORMAT_BIG_ENDIAN" in formats[]?
 
-Thanks,
-Olek
+In other drivers for hardware which can access these formats as big endian, yes.
+
+Note that AFAIK little if any user-space code uses DRM_FORMAT_BIG_ENDIAN yet though.
+
+
+>> It's also doubtful that Cirrus hardware would access these formats as big endian (drivers/gpu/drm/tiny/cirrus.c has no endianness references at all, and the hardware was surely designed for x86 first and foremost).
+>>
+>> Instead, fbcon (and user space) needs to convert to little endian when using DRM_FORMAT_HOST_{XRGB1555,RGB565} with the cirrus driver on big endian hosts.
+> 
+> Yeah, probably the cirrus driver can use some fixes...
+
+I suspect the fix here would rather need to be in the DRM glue code for fbcon than in the driver. Or maybe some kind of byte-swapping helper(s) which can be used by drivers.
+
+
+-- 
+Earthling Michel Dänzer            |                  https://redhat.com
+Libre software enthusiast          |         Mesa and Xwayland developer
