@@ -2,155 +2,83 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1876C43334
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jul 2022 08:28:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DEB3C433EF
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jul 2022 08:32:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232392AbiGLI2o (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 12 Jul 2022 04:28:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59838 "EHLO
+        id S232783AbiGLIci (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 12 Jul 2022 04:32:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232358AbiGLI2m (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 12 Jul 2022 04:28:42 -0400
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1ABF2618
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Jul 2022 01:28:41 -0700 (PDT)
-Received: by mail-qk1-f176.google.com with SMTP id p22so5720747qkj.4
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Jul 2022 01:28:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9+RlgqyNyozIyqu+u+nphr5l00NXcM+jNZnu9YO/k+k=;
-        b=jv+CyUg0E7JLaUAQykWxSLXzRLin3v/g0K7B60v9YTlk7ikMX6l6EAjAPH9+a0WMsR
-         u7Ffhn2VrliOJAQ66rlvU/VsjCS9lzfwJoG22Hw5pa1jN6HLFOWCS+DdW5VIWVEIy0KN
-         fsxe5aDSPbpKaVM3YV8Bl/G61ZPOlXtPQRtlvKSFABAYneUGuHWfOpE2m0F/p1dxlbU7
-         9QrhZwHHWQB3QFGRrmUR4oCJ0WmNADOLGCvAWgsBY9xXrRgLiC7/Aw9VVBIDBxpyv8pH
-         PO+236u8Dhr0T57jCx6xMaqU4m6ivm4Zgt8kEro8lirQ2zMrAEByCAmEPXw6DHb1KrNn
-         vmsw==
-X-Gm-Message-State: AJIora9lBpc5Pt77VwAMsg/qQnfuUVWuFn/gwuiTDjQPGaJ+cHssoK7R
-        NFT+rZGkWgfnaTKPzWuWGvliAo+ottlaMA==
-X-Google-Smtp-Source: AGRyM1v+7wvSGGyLsJFSzXcTTZ7KbnRPL2w6vuen0BepaVgNDa3uxFDO36HodbhWZ+ym621xETOZzA==
-X-Received: by 2002:a05:620a:1786:b0:6af:6e0f:596c with SMTP id ay6-20020a05620a178600b006af6e0f596cmr14175110qkb.227.1657614520638;
-        Tue, 12 Jul 2022 01:28:40 -0700 (PDT)
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com. [209.85.128.176])
-        by smtp.gmail.com with ESMTPSA id u18-20020a05620a455200b006a75a0ffc97sm3221838qkp.3.2022.07.12.01.28.36
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jul 2022 01:28:39 -0700 (PDT)
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-31d85f82f0bso37524237b3.7
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Jul 2022 01:28:36 -0700 (PDT)
-X-Received: by 2002:a0d:c787:0:b0:31b:a963:e1de with SMTP id
- j129-20020a0dc787000000b0031ba963e1demr23492652ywd.283.1657614516494; Tue, 12
- Jul 2022 01:28:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220712075255.1345991-1-chenhuacai@loongson.cn> <20220712075255.1345991-3-chenhuacai@loongson.cn>
-In-Reply-To: <20220712075255.1345991-3-chenhuacai@loongson.cn>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 12 Jul 2022 10:28:25 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUazqHLbc80vpZ+Msg9A3j5aPJ3fx+CdCG3kuWDSf8WSw@mail.gmail.com>
-Message-ID: <CAMuHMdUazqHLbc80vpZ+Msg9A3j5aPJ3fx+CdCG3kuWDSf8WSw@mail.gmail.com>
-Subject: Re: [PATCH 3/6] M68K: cpuinfo: Fix a warning for CONFIG_CPUMASK_OFFSTACK
-To:     Huacai Chen <chenhuacai@loongson.cn>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michal Simek <monstr@monstr.eu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        loongarch@lists.linux.dev, Linux-Arch <linux-arch@vger.kernel.org>,
+        with ESMTP id S232654AbiGLIca (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Jul 2022 04:32:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AB5E5A5E5A
+        for <linux-m68k@vger.kernel.org>; Tue, 12 Jul 2022 01:32:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1657614730;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tQxIBj6PcKC66/v1neohOf1D/KG+opt9mK5QyhmwE5w=;
+        b=CxAaV4F+UiILSbm0KizmV3RKm0iCZhWm43i4m0yREAIL6tJE5LHZ+nDfzWFvn78auURMKY
+        zgGMYk5UHhSroMYWslZwVis4a5qDXtY1u/VxNgY7smqcVPSPMak6KPeRoD/obRycnpzpT9
+        PFj7gw0NRrLWUi1m2h1T+y1Jx6W0w7U=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-16-97XA7a_IMQmseuEGgQzkuw-1; Tue, 12 Jul 2022 04:32:00 -0400
+X-MC-Unique: 97XA7a_IMQmseuEGgQzkuw-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 087E1185A7B2;
+        Tue, 12 Jul 2022 08:32:00 +0000 (UTC)
+Received: from sirius.home.kraxel.org (unknown [10.39.192.39])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C06E8492C3B;
+        Tue, 12 Jul 2022 08:31:59 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id EF3FC18000A9; Tue, 12 Jul 2022 10:31:57 +0200 (CEST)
+Date:   Tue, 12 Jul 2022 10:31:57 +0200
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Michel =?utf-8?Q?D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
+        David Airlie <airlied@linux.ie>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Noralf =?utf-8?Q?Tr=C3=B8nnes?= <noralf@tronnes.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>
+Subject: Re: [PATCH 1/3] drm/fourcc: Add missing big-endian XRGB1555 and
+ RGB565 formats
+Message-ID: <20220712083157.wtujadjcyboerxcl@sirius.home.kraxel.org>
+References: <cover.1657300532.git.geert@linux-m68k.org>
+ <0744671ac096a12f0d538906bd324efa71b11400.1657300532.git.geert@linux-m68k.org>
+ <96a87833-d878-dde9-e335-9ea51a4ba406@mailbox.org>
+ <CAMuHMdUgdbZeoFLFL8+Hm-6fG9cg5Wzq++JED3KR5P9YZtRQ4A@mail.gmail.com>
+ <20220712074715.kopstlvz4q6npaye@sirius.home.kraxel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220712074715.kopstlvz4q6npaye@sirius.home.kraxel.org>
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.10
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Huacai,
+  Hi,
 
-Thanks for your patch!
+> So adding support for bigendian formats to the driver shouldn't be
+> much of a problem.  The vram will continue to run in little endian
+> RGB565, the shadow will be big endian RGB565, and the driver must
+> byteswap when copying.
 
-On Tue, Jul 12, 2022 at 9:53 AM Huacai Chen <chenhuacai@loongson.cn> wrote:
-> When CONFIG_CPUMASK_OFFSTACK and CONFIG_DEBUG_PER_CPU_MAPS is selected,
+For completeness: The other obvious option (for fbcon) would be to
+handle the byteswapping in the generic drm fbdev emulation, which
+would have the advantage that it would be more generic and would
+not depend on the drm driver supporting the bigendian rgb565
+formats ...
 
-DEBUG_PER_CPU_MAPS depends on SMP, which is not supported on m68k,
-and thus cannot be enabled.
+take care,
+  Gerd
 
-> cpu_max_bits_warn() generates a runtime warning similar as below while
-> we show /proc/cpuinfo. Fix this by using nr_cpu_ids (the runtime limit)
-> instead of NR_CPUS to iterate CPUs.
->
-> [    3.052463] ------------[ cut here ]------------
-> [    3.059679] WARNING: CPU: 3 PID: 1 at include/linux/cpumask.h:108 show_cpuinfo+0x5e8/0x5f0
-> [    3.070072] Modules linked in: efivarfs autofs4
-
-efivarfs on m68k?
-
-EFIVAR_FS depends on EFI depends on !CPU_BIG_ENDIAN
-
-> [    3.076257] CPU: 0 PID: 1 Comm: systemd Not tainted 5.19-rc5+ #1052
-> [    3.099465] Stack : 9000000100157b08 9000000000f18530 9000000000cf846c 9000000100154000
-> [    3.109127]         9000000100157a50 0000000000000000 9000000100157a58 9000000000ef7430
-> [    3.118774]         90000001001578e8 0000000000000040 0000000000000020 ffffffffffffffff
-> [    3.128412]         0000000000aaaaaa 1ab25f00eec96a37 900000010021de80 900000000101c890
-> [    3.138056]         0000000000000000 0000000000000000 0000000000000000 0000000000aaaaaa
-> [    3.147711]         ffff8000339dc220 0000000000000001 0000000006ab4000 0000000000000000
-> [    3.157364]         900000000101c998 0000000000000004 9000000000ef7430 0000000000000000
-> [    3.167012]         0000000000000009 000000000000006c 0000000000000000 0000000000000000
-> [    3.176641]         9000000000d3de08 9000000001639390 90000000002086d8 00007ffff0080286
-> [    3.186260]         00000000000000b0 0000000000000004 0000000000000000 0000000000071c1c
-> [    3.195868]         ...
-> [    3.199917] Call Trace:
-> [    3.203941] [<90000000002086d8>] show_stack+0x38/0x14c
-> [    3.210666] [<9000000000cf846c>] dump_stack_lvl+0x60/0x88
-> [    3.217625] [<900000000023d268>] __warn+0xd0/0x100
-> [    3.223958] [<9000000000cf3c90>] warn_slowpath_fmt+0x7c/0xcc
-> [    3.231150] [<9000000000210220>] show_cpuinfo+0x5e8/0x5f0
-> [    3.238080] [<90000000004f578c>] seq_read_iter+0x354/0x4b4
-> [    3.245098] [<90000000004c2e90>] new_sync_read+0x17c/0x1c4
-> [    3.252114] [<90000000004c5174>] vfs_read+0x138/0x1d0
-> [    3.258694] [<90000000004c55f8>] ksys_read+0x70/0x100
-> [    3.265265] [<9000000000cfde9c>] do_syscall+0x7c/0x94
-> [    3.271820] [<9000000000202fe4>] handle_syscall+0xc4/0x160
-> [    3.281824] ---[ end trace 8b484262b4b8c24c ]---
->
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-
-Does this need a Fixes tag, so we know when the problem was introduced?
-
-> --- a/arch/m68k/kernel/setup_no.c
-> +++ b/arch/m68k/kernel/setup_no.c
-> @@ -201,7 +201,7 @@ static int show_cpuinfo(struct seq_file *m, void *v)
->
->  static void *c_start(struct seq_file *m, loff_t *pos)
->  {
-> -       return *pos < NR_CPUS ? ((void *) 0x12345678) : NULL;
-> +       return *pos < nr_cpu_ids ? ((void *) 0x12345678) : NULL;
->  }
-
-include/linux/cpumask.h has:
-
-    #if NR_CPUS == 1
-    #define nr_cpu_ids              1U
-
-so on m68k, both evaluate to the same value?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
