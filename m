@@ -2,120 +2,133 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74CD4C433EF
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jul 2022 09:13:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81E06CCA47C
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jul 2022 09:28:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229621AbiGLJNn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 12 Jul 2022 05:13:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41132 "EHLO
+        id S232754AbiGLJ2a (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 12 Jul 2022 05:28:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbiGLJNm (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 12 Jul 2022 05:13:42 -0400
-Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DBDE025
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Jul 2022 02:13:41 -0700 (PDT)
-Received: by mail-qk1-f181.google.com with SMTP id 20so5774719qky.5
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Jul 2022 02:13:41 -0700 (PDT)
+        with ESMTP id S231147AbiGLJ23 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Jul 2022 05:28:29 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BBA09E443;
+        Tue, 12 Jul 2022 02:28:28 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id v7so4941368pfb.0;
+        Tue, 12 Jul 2022 02:28:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=xdlLsXcXr4pB8OtKr+yvxyVmFWoAJCk6OqnB3IKUIm0=;
+        b=Jr4eekZpAsbACqB4sswYbvoqxW7qIs7bC8Xvy5fWKWpbZp1KnUPw4dTuWpNQAG9OlC
+         BxYnlk/8mnlAhc42zpL0t00244TWdT5pzsYXc6jd6UpM8nsh36DpgBhEFFE4P7r6K/tQ
+         VOP7hv1BA9mcXgs4Kv2Okgnnpz/Vb7MOjX8a4BeYBbC230tErX1wucl4LwJmINnExNZH
+         ifkEkLTnvIw8tIPQq6Fzx7B39NIRzJ30L4KMj/ICvb0avFy0AJeQNeC3Eq82qyPdzxWS
+         nPUTi9MYZ7sW+kBzkwOEPQQW3mlsweAd35QsnIhFndIgFwMoLovJd/8mPYhflx2y5Hmv
+         KUHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qbAwHtAb/u/Ek/RuPM5JbYjzEl/C/Q4rkrYxQHQ2tOE=;
-        b=m2p8/2hYth0JBD+NSDuyPRZfeo/Dq+SKbWWVzl2b70z0g03W+ZFBDEWwF3SW+cokg7
-         yW8EmArO9OhMF0T7ETheZMlX7ZM+mAT34KvCcD0Dd6bjQcdV8V2ai07hWGKsiuwHqApS
-         wtTzDj27KHQ4LRCXS4jDGtvfkinArCIuABnxPHQW06J7Uf7ea90AvxgdlvY28TcEZHH+
-         6RNGreDODpELbXvL5uGtIw8rpVertKFFBCPcdgHVpYFV+qO1yIXL7+It88dudJYd9l22
-         zapopzDCaQmZHCSmvCic/PwB6mz7lJcYIJdJdC/opzS/iMI8ZLf7K4ZwyahOEAJnD0KJ
-         qBBg==
-X-Gm-Message-State: AJIora8D5ZgPTyxQWEL8h1wYGgUf+emoDbsV12azQX6m4Mx7y45C3gCX
-        1bL8rITyKbZy+dpRxJOlIA5N4TD0Cdcplw==
-X-Google-Smtp-Source: AGRyM1vzutgEScM+WfId9KDMWMbnxZ3h3UPeHbSb5AXaKoza31JyEqRFSa9+oMKrQ55mbDkSGH3ZZw==
-X-Received: by 2002:a05:620a:28c9:b0:6b5:768d:aee0 with SMTP id l9-20020a05620a28c900b006b5768daee0mr9683787qkp.456.1657617220091;
-        Tue, 12 Jul 2022 02:13:40 -0700 (PDT)
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
-        by smtp.gmail.com with ESMTPSA id s8-20020a05620a29c800b006a67eb4610fsm9505679qkp.116.2022.07.12.02.13.36
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jul 2022 02:13:37 -0700 (PDT)
-Received: by mail-yb1-f170.google.com with SMTP id f73so12866567yba.10
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Jul 2022 02:13:36 -0700 (PDT)
-X-Received: by 2002:a25:2b48:0:b0:668:3b7d:326c with SMTP id
- r69-20020a252b48000000b006683b7d326cmr20912003ybr.380.1657617216068; Tue, 12
- Jul 2022 02:13:36 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=xdlLsXcXr4pB8OtKr+yvxyVmFWoAJCk6OqnB3IKUIm0=;
+        b=weu2J5NEnzwHHGtyLGalR94qoO+RxmUxGmdl6fvmcwBkEwaavODvbodXrrCijBbSC+
+         Bf+pEL3c7ojFyKkB8Oe2OOg4P3PBuEjSgCAZVcbTISWxIeOYghzw15yJWXbayChhtLdO
+         nxk/7H9Gmx5Q9CrRMVmcQ7Buznd9L95wBPsNV0c8k5AX3AJdOz5obdMA4vyxsiS3sN6Q
+         1kC1g6gc8OiovmNKvxkOX+HUF3TSUlM3e0w+DPf88ckUJeijlqXQhvCm7Ygsf376k6iY
+         0/N31GtGLdCgNSV9Ayi72a14zUy8vVmn92DjceKH/vjfqtrWT73nXxDkh/VWZbsf0ltc
+         EMRw==
+X-Gm-Message-State: AJIora9wCqzlH0Atqg0AxU++92/5nfw2UrJ1gKDqPwVvPDKgPhyPd5Go
+        PVWQb/+R0GtN9ONg1h3KVpU=
+X-Google-Smtp-Source: AGRyM1v5KtRVt03pirfRDPvDZsebDF9ed56r5b2YIvJIHY3Ug8SQvQDxXcHfaSPBnKaS6Oo83dGH9A==
+X-Received: by 2002:a62:a516:0:b0:505:722e:15d5 with SMTP id v22-20020a62a516000000b00505722e15d5mr23151184pfm.52.1657618107861;
+        Tue, 12 Jul 2022 02:28:27 -0700 (PDT)
+Received: from [10.1.1.24] (222-155-0-244-adsl.sparkbb.co.nz. [222.155.0.244])
+        by smtp.gmail.com with ESMTPSA id b8-20020a17090a488800b001f02a72f29csm4608578pjh.8.2022.07.12.02.28.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 12 Jul 2022 02:28:27 -0700 (PDT)
+Subject: Re: [PATCH v2 2/5] m68k - set up platform device for mvme147_scsi
+To:     Arnd Bergmann <arnd@kernel.org>
+References: <20220712075832.23793-1-schmitzmic@gmail.com>
+ <20220712075832.23793-3-schmitzmic@gmail.com>
+ <CAK8P3a2ptjH3VyCjuwQROw8GuOs8CxuhX8dMBxMa5m-Q93yZ_g@mail.gmail.com>
+ <7b652abd-3094-e0c8-d8fb-087c60c51fa2@gmail.com>
+Cc:     Linux/m68k <linux-m68k@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <4faebfc0-4fc4-aff6-a507-293d755893ba@gmail.com>
+Date:   Tue, 12 Jul 2022 21:28:23 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 MIME-Version: 1.0
-References: <20220712075255.1345991-1-chenhuacai@loongson.cn>
- <20220712075255.1345991-3-chenhuacai@loongson.cn> <CAMuHMdUazqHLbc80vpZ+Msg9A3j5aPJ3fx+CdCG3kuWDSf8WSw@mail.gmail.com>
- <CAAhV-H775jXMbcR9j=oLBuHo1PfFziZSUQWttJAEw20sUt+GAA@mail.gmail.com>
- <CAMuHMdUHbepd974u5iox3BcOyo_Q2ZgT-znruk+WCt+HMQ_Lgw@mail.gmail.com> <CAAhV-H78Fi0aE-h5MOgRa5L+Jt7D0wG0nLcYzx45jVney8T1BQ@mail.gmail.com>
-In-Reply-To: <CAAhV-H78Fi0aE-h5MOgRa5L+Jt7D0wG0nLcYzx45jVney8T1BQ@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 12 Jul 2022 11:13:24 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVXFmKR4LuXHYRrSk3Q0VRqATGbsM512DxayWCPCE-wvg@mail.gmail.com>
-Message-ID: <CAMuHMdVXFmKR4LuXHYRrSk3Q0VRqATGbsM512DxayWCPCE-wvg@mail.gmail.com>
-Subject: Re: [PATCH 3/6] M68K: cpuinfo: Fix a warning for CONFIG_CPUMASK_OFFSTACK
-To:     Huacai Chen <chenhuacai@gmail.com>
-Cc:     Huacai Chen <chenhuacai@loongson.cn>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michal Simek <monstr@monstr.eu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        loongarch@lists.linux.dev, Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <7b652abd-3094-e0c8-d8fb-087c60c51fa2@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Huacai,
+Hi Arnd,
 
-On Tue, Jul 12, 2022 at 11:08 AM Huacai Chen <chenhuacai@gmail.com> wrote:
-> On Tue, Jul 12, 2022 at 5:01 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Tue, Jul 12, 2022 at 10:53 AM Huacai Chen <chenhuacai@gmail.com> wrote:
-> > > On Tue, Jul 12, 2022 at 4:33 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > On Tue, Jul 12, 2022 at 9:53 AM Huacai Chen <chenhuacai@loongson.cn> wrote:
-> > > > > When CONFIG_CPUMASK_OFFSTACK and CONFIG_DEBUG_PER_CPU_MAPS is selected,
-> > > >
-> > > > DEBUG_PER_CPU_MAPS depends on SMP, which is not supported on m68k,
-> > > > and thus cannot be enabled.
-> > > This patch is derived from MIPS and LoongArch, I search all
-> > > architectures and change those that look the same as MIPS and
-> > > LoongArch.
-> > > And the warning message below is also a copy-paste from LoongArch, sorry.
-> > >
-> > > Since M68K doesn't support SMP, then this patch seems to make no
-> > > difference, but does it make sense to keep consistency across all
-> > > architectures?
-> >
-> > Yes, having consistency is good.  But that should be mentioned in the
-> > patch description, instead of a scary warning CCed to stable ;-)
-> >
-> > BTW, you probably want to update the other copy of c_start() in
-> > arch/m68k/kernel/setup_mm.c, too.
-> For no-SMP architectures, it seems c_start() in
-> arch/m68k/kernel/setup_mm.c is more reasonable (just use 1, neither
-> NR_CPUS, nor nr_cpu_ids)?
+Am 12.07.2022 um 21:07 schrieb Michael Schmitz:
+> Hi Arnd,
+>
+> Am 12.07.2022 um 20:12 schrieb Arnd Bergmann:
+>> On Tue, Jul 12, 2022 at 9:58 AM Michael Schmitz <schmitzmic@gmail.com>
+>> wrote:
+>>> +
+>>> +static const struct resource mvme147_scsi_rsrc[] __initconst = {
+>>> +       DEFINE_RES_MEM(MVME147_SCSI_BASE, 0xff),
+>>
+>> Still the wrong size?
+>
+> Too true - forgot to fix that, sorry.
+>
+>>
+>>> +       DEFINE_RES_IRQ(MVME147_IRQ_SCSI_PORT),
+>>> +};
+>>> +
+>>> +int __init mvme147_platform_init(void)
+>>> +{
+>>> +       struct platform_device *pdev;
+>>> +       int rv = 0;
+>>> +
+>>> +       pdev = platform_device_register_simple("mvme147-scsi", -1,
+>>> +               mvme147_scsi_rsrc, ARRAY_SIZE(mvme147_scsi_rsrc));
+>>
+>> I think you actually have to use platform_device_register_full() to pass
+>> a DMA mask here: As I understand it, the dma_set_mask_and_coherent()
+>> call in the driver fails if the device is not already marked as dma
+>> capable by having an initial mask set.
+>
+> I'll take a look at that - if true, this requires the amiga-a3000-scsi
+> platform device set-up be changed in the same way (the gvp11 and a2091
+> drivers inherit the DMA mask from the Zorro bus default, so ought to
+> work OK).
 
-The advantage of using nr_cpu_ids() is that this is one place less
-to update when adding SMP support later...
+I think we are good with using platform_device_register_simple():
 
-Gr{oetje,eeting}s,
+setup_pdev_dma_masks() sets the DMA mask to 32 bit when allocating a new 
+platform device, and platform_device_register_full() only changes that 
+when passed in a non-zero mask in pdevinfo.
 
-                        Geert
+platform_device_register_simple() leaves the pdevinfo mask zero, so the 
+32 bit default set in setup_pdev_dma_masks() survives.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Cheers,
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+	Michael
+
+>
+> Cheers,
+>
+>     Michael
+>
+>> The way this normally works is that the device gets created with a mask
+>> that reflects the capabilities of the bus, while the driver sets a mask
+>> based on what it wants to program into the device, and the dma-mapping
+>> interfaces ensure that we only use the intersection of those.
+>>
+>>         Arnd
+>>
