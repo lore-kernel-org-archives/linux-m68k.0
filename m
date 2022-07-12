@@ -2,108 +2,155 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 134A2C43334
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jul 2022 08:19:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1876C43334
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jul 2022 08:28:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232599AbiGLITm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 12 Jul 2022 04:19:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49908 "EHLO
+        id S232392AbiGLI2o (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 12 Jul 2022 04:28:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232276AbiGLITl (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Jul 2022 04:19:41 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6792DA239A;
-        Tue, 12 Jul 2022 01:19:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1657613970;
-        bh=RZ/EJL3btc+F2hOcvq6PS/02fzcVymHrhmlsl8ctjeY=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=ZKKgHdk4YaFMgbMsNvVaXiLVHZksVveStccelbYwLSAO1e60A3khV/PVh8Fyic56X
-         KSPUwZaRxPi0sQ4Sf4NJfzBa2Dq3rWeKxNuzDQP7FxyzXS/bKOHakYMaYeLaPQJ9F9
-         xIMoioRu8swxC4Edn1/oCg67AVuoNgG4idDOwRFE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.185.115]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M4JmN-1oAu8J1HJh-000MJo; Tue, 12
- Jul 2022 10:19:30 +0200
-Message-ID: <6e1095c7-5a7b-c71d-7d67-321214106126@gmx.de>
-Date:   Tue, 12 Jul 2022 10:18:53 +0200
+        with ESMTP id S232358AbiGLI2m (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 12 Jul 2022 04:28:42 -0400
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1ABF2618
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Jul 2022 01:28:41 -0700 (PDT)
+Received: by mail-qk1-f176.google.com with SMTP id p22so5720747qkj.4
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Jul 2022 01:28:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9+RlgqyNyozIyqu+u+nphr5l00NXcM+jNZnu9YO/k+k=;
+        b=jv+CyUg0E7JLaUAQykWxSLXzRLin3v/g0K7B60v9YTlk7ikMX6l6EAjAPH9+a0WMsR
+         u7Ffhn2VrliOJAQ66rlvU/VsjCS9lzfwJoG22Hw5pa1jN6HLFOWCS+DdW5VIWVEIy0KN
+         fsxe5aDSPbpKaVM3YV8Bl/G61ZPOlXtPQRtlvKSFABAYneUGuHWfOpE2m0F/p1dxlbU7
+         9QrhZwHHWQB3QFGRrmUR4oCJ0WmNADOLGCvAWgsBY9xXrRgLiC7/Aw9VVBIDBxpyv8pH
+         PO+236u8Dhr0T57jCx6xMaqU4m6ivm4Zgt8kEro8lirQ2zMrAEByCAmEPXw6DHb1KrNn
+         vmsw==
+X-Gm-Message-State: AJIora9lBpc5Pt77VwAMsg/qQnfuUVWuFn/gwuiTDjQPGaJ+cHssoK7R
+        NFT+rZGkWgfnaTKPzWuWGvliAo+ottlaMA==
+X-Google-Smtp-Source: AGRyM1v+7wvSGGyLsJFSzXcTTZ7KbnRPL2w6vuen0BepaVgNDa3uxFDO36HodbhWZ+ym621xETOZzA==
+X-Received: by 2002:a05:620a:1786:b0:6af:6e0f:596c with SMTP id ay6-20020a05620a178600b006af6e0f596cmr14175110qkb.227.1657614520638;
+        Tue, 12 Jul 2022 01:28:40 -0700 (PDT)
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com. [209.85.128.176])
+        by smtp.gmail.com with ESMTPSA id u18-20020a05620a455200b006a75a0ffc97sm3221838qkp.3.2022.07.12.01.28.36
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Jul 2022 01:28:39 -0700 (PDT)
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-31d85f82f0bso37524237b3.7
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Jul 2022 01:28:36 -0700 (PDT)
+X-Received: by 2002:a0d:c787:0:b0:31b:a963:e1de with SMTP id
+ j129-20020a0dc787000000b0031ba963e1demr23492652ywd.283.1657614516494; Tue, 12
+ Jul 2022 01:28:36 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH 00/10] video: fbdev: atari: Miscellaneous fixes and
- cleanups
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Michael Schmitz <schmitzmic@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-fbdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1657554353.git.geert@linux-m68k.org>
-From:   Helge Deller <deller@gmx.de>
-In-Reply-To: <cover.1657554353.git.geert@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:y6OTXSI/vDD0Tc+MGb9ohXJ9PmVo6065zAfD2JiW8O6WIvwH4b+
- qyV6iWgCcllYv3nDjW391uFKSwN/tSYAjMmG0DEyUgfMhp/mt8CcPUC32UsqUzmrI6NDW39
- ZjZ/YJXukVlZwLU1QQoZEjlhycryINuOzFlQD+1RIxgd8iSXwFw9iO+so/ZOoLJNdDNrIAk
- QTEiETWTcvvApQkisUssg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Gaa+xL1Kbec=:MZVxjw3JJRvAEL1HmzeYQF
- utKKkEXMIWs6985XNF4x510rfnNbKU8K9TGo9ckn4IMZnUadKi6nSOdTv/ZeZSMJQB1W46mM7
- +BL3IBgDiaVdLCtMHqwNDIDnktQVZYrELG5mbVx1XMw7lwe7vxZiW1Ag2cOIyL/it9VXSx3ua
- iXXM4iV1ZaSgAASszGPJaGZnoEGjbunL7nGouTxF66/NdjXMacDg/zpNnxKv8uf6hlk9Y9PSi
- XTVMxKq+JWHp9oIvcRjk0p5B2hHtsY/x6R7BBpHnYsvjegqRiVDOqxsxWlE65miJNwvNkHQlc
- ss97i/JIrtmQ14X2LBFl532JjhFy8LPS8qBEq/FzbKRFthdhzVxbNvYbrBaj6+p0yI8umhTrp
- Te/tEn7VrBqx5zy/k8DYALlKlRXzyeADo5W2EK/0B29aBmz4hw3lmk1HkjWlF/GqWF2Z6k1vH
- sQtkCLAFVeftwSQBi3bcm6BhMwta8jU8T5SO/3fH/mXeu/dBzyMrtg14w1M4BrSvYIbyH0Num
- vwbAhdagvvStKtrpkrwHI51jfWe2seSykqJYikkmSUgVGMQNtTI1uiCzzaigfIqMHaxxKCjdV
- 8E+j5joAD3CDi7vjSFkHfDZ0KLVM+cQVmvmvzCkow6K6PkGtc+9vJH4GSuDpg5iJm829R3kPZ
- Fc6UE/g8Wfs8Dvd3t322tunBsVABi1oWKm3lbvpPvAADomTfqGIN7Emar0bFTQMgPKhb44ekN
- UdMnC2jeCe+XXJnrGmIXCNPgvg+vOmP1AhzMNTSzZPMLT/jSkZB4y3wtr/bl9GKPnsrT8Lh9z
- ZWZjnFQxnbIep8AJL+YGTaN+Q7RN8snv16uhieEMbVXVQSLEfdKfVyk/RI+9ER6/mhwcmrvmX
- z7nUN+5YKBEE9e4e9cTTH7lhrdm4D3m2Bcxk6dZIha6L4UdpWKM7HMw5YXUJVU1qJGiX9T2cz
- siEmGeZe8Wnl/IYuJrt0/zj2/S/6/JqLnpvcWfk/mcHvvz5ntig9ejp5zlc3yLRZfbYqaJmdk
- Yw/C+7hdm1N71OeCS2n8tP8/TOPMlFpTwcNvIsPkRdgrBDQo83kx1UF0hXWIERyXMOMRSyWYT
- 9+uXkXiv/g8KAfP5XkEFClBFJgdRlQ0t7hQKTE8XOSn/GZX5TPZYSQxPA==
+References: <20220712075255.1345991-1-chenhuacai@loongson.cn> <20220712075255.1345991-3-chenhuacai@loongson.cn>
+In-Reply-To: <20220712075255.1345991-3-chenhuacai@loongson.cn>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 12 Jul 2022 10:28:25 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUazqHLbc80vpZ+Msg9A3j5aPJ3fx+CdCG3kuWDSf8WSw@mail.gmail.com>
+Message-ID: <CAMuHMdUazqHLbc80vpZ+Msg9A3j5aPJ3fx+CdCG3kuWDSf8WSw@mail.gmail.com>
+Subject: Re: [PATCH 3/6] M68K: cpuinfo: Fix a warning for CONFIG_CPUMASK_OFFSTACK
+To:     Huacai Chen <chenhuacai@loongson.cn>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michal Simek <monstr@monstr.eu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        loongarch@lists.linux.dev, Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 7/11/22 17:50, Geert Uytterhoeven wrote:
-> 	Hi all,
->
-> This patch series contains miscellaneous fixes and cleanups for the
-> Atari frame buffer device driver, which were identified while working on
-> the Atari DRM driver.
->
-> Most of them have been tested on ARAnyM, and should be safe to apply,
+Hi Huacai,
 
-I've applied patches 1-9 to fbdev for-next git tree....
+Thanks for your patch!
 
-> except perhaps for the last one, which is marked RFC.
+On Tue, Jul 12, 2022 at 9:53 AM Huacai Chen <chenhuacai@loongson.cn> wrote:
+> When CONFIG_CPUMASK_OFFSTACK and CONFIG_DEBUG_PER_CPU_MAPS is selected,
 
-... and would like to see some thoughts/feedback from others on this one .=
-..
+DEBUG_PER_CPU_MAPS depends on SMP, which is not supported on m68k,
+and thus cannot be enabled.
 
-Thanks,
-Helge
-
+> cpu_max_bits_warn() generates a runtime warning similar as below while
+> we show /proc/cpuinfo. Fix this by using nr_cpu_ids (the runtime limit)
+> instead of NR_CPUS to iterate CPUs.
 >
-> Thanks for your comments!
->
-> Geert Uytterhoeven (10):
->   video: fbdev: atari: Simplify atafb_pan_display()
->   video: fbdev: atari: Remove bogus FB_VMODE_YWRAP flags
->   video: fbdev: atari: Fix inverse handling
->   video: fbdev: atari: Fix ext_setcolreg()
->   video: fbdev: atari: Remove unneeded casts from void *
->   video: fbdev: atari: Remove unneeded casts to void *
->   video: fbdev: atari: Fix TT High video mode vertical refresh
->   video: fbdev: atari: Fix VGA modes
->   video: fbdev: atari: Remove unused definitions and variables
->   [RFC] video: fbdev: atari: Remove backward bug-compatibility
->
->  Documentation/m68k/kernel-options.rst |   4 +-
->  drivers/video/fbdev/atafb.c           | 101 +++++++-------------------
->  2 files changed, 29 insertions(+), 76 deletions(-)
->
+> [    3.052463] ------------[ cut here ]------------
+> [    3.059679] WARNING: CPU: 3 PID: 1 at include/linux/cpumask.h:108 show_cpuinfo+0x5e8/0x5f0
+> [    3.070072] Modules linked in: efivarfs autofs4
 
+efivarfs on m68k?
+
+EFIVAR_FS depends on EFI depends on !CPU_BIG_ENDIAN
+
+> [    3.076257] CPU: 0 PID: 1 Comm: systemd Not tainted 5.19-rc5+ #1052
+> [    3.099465] Stack : 9000000100157b08 9000000000f18530 9000000000cf846c 9000000100154000
+> [    3.109127]         9000000100157a50 0000000000000000 9000000100157a58 9000000000ef7430
+> [    3.118774]         90000001001578e8 0000000000000040 0000000000000020 ffffffffffffffff
+> [    3.128412]         0000000000aaaaaa 1ab25f00eec96a37 900000010021de80 900000000101c890
+> [    3.138056]         0000000000000000 0000000000000000 0000000000000000 0000000000aaaaaa
+> [    3.147711]         ffff8000339dc220 0000000000000001 0000000006ab4000 0000000000000000
+> [    3.157364]         900000000101c998 0000000000000004 9000000000ef7430 0000000000000000
+> [    3.167012]         0000000000000009 000000000000006c 0000000000000000 0000000000000000
+> [    3.176641]         9000000000d3de08 9000000001639390 90000000002086d8 00007ffff0080286
+> [    3.186260]         00000000000000b0 0000000000000004 0000000000000000 0000000000071c1c
+> [    3.195868]         ...
+> [    3.199917] Call Trace:
+> [    3.203941] [<90000000002086d8>] show_stack+0x38/0x14c
+> [    3.210666] [<9000000000cf846c>] dump_stack_lvl+0x60/0x88
+> [    3.217625] [<900000000023d268>] __warn+0xd0/0x100
+> [    3.223958] [<9000000000cf3c90>] warn_slowpath_fmt+0x7c/0xcc
+> [    3.231150] [<9000000000210220>] show_cpuinfo+0x5e8/0x5f0
+> [    3.238080] [<90000000004f578c>] seq_read_iter+0x354/0x4b4
+> [    3.245098] [<90000000004c2e90>] new_sync_read+0x17c/0x1c4
+> [    3.252114] [<90000000004c5174>] vfs_read+0x138/0x1d0
+> [    3.258694] [<90000000004c55f8>] ksys_read+0x70/0x100
+> [    3.265265] [<9000000000cfde9c>] do_syscall+0x7c/0x94
+> [    3.271820] [<9000000000202fe4>] handle_syscall+0xc4/0x160
+> [    3.281824] ---[ end trace 8b484262b4b8c24c ]---
+>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+
+Does this need a Fixes tag, so we know when the problem was introduced?
+
+> --- a/arch/m68k/kernel/setup_no.c
+> +++ b/arch/m68k/kernel/setup_no.c
+> @@ -201,7 +201,7 @@ static int show_cpuinfo(struct seq_file *m, void *v)
+>
+>  static void *c_start(struct seq_file *m, loff_t *pos)
+>  {
+> -       return *pos < NR_CPUS ? ((void *) 0x12345678) : NULL;
+> +       return *pos < nr_cpu_ids ? ((void *) 0x12345678) : NULL;
+>  }
+
+include/linux/cpumask.h has:
+
+    #if NR_CPUS == 1
+    #define nr_cpu_ids              1U
+
+so on m68k, both evaluate to the same value?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
