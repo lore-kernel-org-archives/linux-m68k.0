@@ -2,114 +2,123 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8287C43334
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jul 2022 09:07:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2810C43334
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jul 2022 09:09:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbiGLJHL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 12 Jul 2022 05:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36390 "EHLO
+        id S232386AbiGLJJD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 12 Jul 2022 05:09:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229783AbiGLJHK (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Jul 2022 05:07:10 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC08132B91;
-        Tue, 12 Jul 2022 02:07:09 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id l124so6952428pfl.8;
-        Tue, 12 Jul 2022 02:07:09 -0700 (PDT)
+        with ESMTP id S232349AbiGLJJA (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 12 Jul 2022 05:09:00 -0400
+Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C702F20F61
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Jul 2022 02:08:55 -0700 (PDT)
+Received: by mail-vk1-xa2e.google.com with SMTP id m30so3210250vkl.4
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Jul 2022 02:08:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=faNUdVwfi83DLJgtsRVpRUnKNkRdra8kpC3G7WPuHGY=;
-        b=odLvA5ycaJvyOtSwCtCCcoft1Z7PwBN4qlM59/l1W/1omkTACPBpDBw8HX7xmqfBnf
-         wR7o92smwaJnFLifdaF4pDX4QQtOvLYem2RPQpsKOC4shlWh+8LpIiHVyH/sE8NYeyM9
-         HTilfzdvFrLsbuVWGPz51WY8fCZn8z48KuZnsJtEaJ8zbNi5Ktl5ecPj+6NhkFUqcn3E
-         pFm7qbOKZxpnby02ClrF3ZJKNsCGAu72Qo22634Gc4j7f9RU/SRdrFE7T7kBirEKHNGI
-         yWnIV1GSA2/rYdNePTsDMUvf/UF5iphIA+KtjO03T8zmAsIWl2JbG0O3igERfaX4GLCP
-         O38A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8LCnmqawoxVB9pxtCcgy2mIAwh3oOWcQhV+5PBd2TbI=;
+        b=enqrt2lHLNU6D6nQ9VF2kaC4miDYEOanWmFv4N80cBCOxeLlgW1IG5ADsfmSM5q3lf
+         0QjRDockErrhscAvix2Fh0/eUqtaRlN5yWHn+IHyMpVj1si1Abebe1hz2XxOkC0CAY1j
+         ozgSgxHnaBfna3vODMxnR+FAS6neU1lDjdCAwxkuHyiTILTOqEc9QJTDRjYXEpuE2JGG
+         TjPhsRBx4eWZrMvrLROpp7s4Jdj0xkImd0p5Cbog3ZuDle4ohPluXh1uMAog2lNjD/7b
+         x7PiNsVOWg1reZIIFLxjuOoan0BcjjZhmQ//s9hvDElOGabvrza0p+EOivVVJJsdwUW/
+         7mjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=faNUdVwfi83DLJgtsRVpRUnKNkRdra8kpC3G7WPuHGY=;
-        b=b13jxKN8tkHMTjanZ6EzS4djCGd4bZayD0yeuSajYcAyYuKmB4rBwav2bcZEbvb1ry
-         X2+n12F3tElFa1jrmx7hfPpoGuUs6nwRPuFVirjI1icOkRyOLjpB+Q4AEwK9yO5qBOaP
-         SdPZcXODG0YhHLZLjWZIIDEM3J4YtLyEBh5HqcLRChONESk/5dUWw11o8PhDvkt7Gald
-         w1bRtn+b3nj03W86PqB9FovutwAl9bt3ZpHfN45YKAPgrPhx7Dq84xuc6lYKJi82Bk72
-         2gV+D3kl5hmdj2zDXUa6Mfir8ph/KonA8dyFGFZE3glb8Yz/ot0f3LPwoeQqylROu3tA
-         6NRA==
-X-Gm-Message-State: AJIora/413/WF1hdpa7jtnkUD/UrB0cMO4ygT3mob9hDhlC/9qnx8F+9
-        WHo9ciCIuDsKzy/MONGg4MKl4toIMyc=
-X-Google-Smtp-Source: AGRyM1u/6z3Si73nX/j2hIjzQZlX4Mm1+euIQQwpYBoPogK1zCXJO4TEdGfFyRAm4gfiq1TwTfWQMQ==
-X-Received: by 2002:a63:4d0e:0:b0:412:1877:9820 with SMTP id a14-20020a634d0e000000b0041218779820mr19694397pgb.177.1657616829430;
-        Tue, 12 Jul 2022 02:07:09 -0700 (PDT)
-Received: from [10.1.1.24] (222-155-0-244-adsl.sparkbb.co.nz. [222.155.0.244])
-        by smtp.gmail.com with ESMTPSA id pi4-20020a17090b1e4400b001df264610c4sm2313292pjb.0.2022.07.12.02.07.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 12 Jul 2022 02:07:09 -0700 (PDT)
-Subject: Re: [PATCH v2 2/5] m68k - set up platform device for mvme147_scsi
-To:     Arnd Bergmann <arnd@kernel.org>
-References: <20220712075832.23793-1-schmitzmic@gmail.com>
- <20220712075832.23793-3-schmitzmic@gmail.com>
- <CAK8P3a2ptjH3VyCjuwQROw8GuOs8CxuhX8dMBxMa5m-Q93yZ_g@mail.gmail.com>
-Cc:     Linux/m68k <linux-m68k@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <7b652abd-3094-e0c8-d8fb-087c60c51fa2@gmail.com>
-Date:   Tue, 12 Jul 2022 21:07:04 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8LCnmqawoxVB9pxtCcgy2mIAwh3oOWcQhV+5PBd2TbI=;
+        b=GagHy+S09ndeRtfxH50QCdqaIP0tUJjtT+vFrp+CiVGgTZc0aStRqxO1BIFMVtJAE1
+         X5f1VEB7YS4k4DAAV8fB+V0N2N5Fmmx6JstrB+rCs1lsvTKfLnuCcZ1ms7i/QuUOPUHB
+         A8OjIsTi+V41exSjI9XyTHpGOhknsX2lJb79xln8wMoVBc/O7EGJjJRayLr3ZQCDrsLq
+         mYVyUntqHvY3AyPxOSDbHxntjK92odgrTrT7A7frWEDxH4WWQcmmbEtaH8zPW5smde7I
+         Ecr5/WgPhqV2gl3LSblD0fx3lSZgWfn6WwUMnLhT/cJx/NgoYPs+2kpKCz8TffmUBylS
+         nmyA==
+X-Gm-Message-State: AJIora+3Q4vYFa64xsmuUImWK7DxCwndug8YAbr/TzyFBA7+4ueLZghe
+        ELdB4pSOHiWfI0QQkkw/NkvbsXa8EKGli+Frwts=
+X-Google-Smtp-Source: AGRyM1s7DoUrXJ3UCbxk29LSvgF6KCyVjntLOc/ifHlk282ATGGUjKAX0if60sD5fn1JEfua2KT0kPziS6VKLLaH3a8=
+X-Received: by 2002:a1f:340f:0:b0:374:7b8a:378 with SMTP id
+ b15-20020a1f340f000000b003747b8a0378mr6995690vka.37.1657616934836; Tue, 12
+ Jul 2022 02:08:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a2ptjH3VyCjuwQROw8GuOs8CxuhX8dMBxMa5m-Q93yZ_g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20220712075255.1345991-1-chenhuacai@loongson.cn>
+ <20220712075255.1345991-3-chenhuacai@loongson.cn> <CAMuHMdUazqHLbc80vpZ+Msg9A3j5aPJ3fx+CdCG3kuWDSf8WSw@mail.gmail.com>
+ <CAAhV-H775jXMbcR9j=oLBuHo1PfFziZSUQWttJAEw20sUt+GAA@mail.gmail.com> <CAMuHMdUHbepd974u5iox3BcOyo_Q2ZgT-znruk+WCt+HMQ_Lgw@mail.gmail.com>
+In-Reply-To: <CAMuHMdUHbepd974u5iox3BcOyo_Q2ZgT-znruk+WCt+HMQ_Lgw@mail.gmail.com>
+From:   Huacai Chen <chenhuacai@gmail.com>
+Date:   Tue, 12 Jul 2022 17:08:42 +0800
+Message-ID: <CAAhV-H78Fi0aE-h5MOgRa5L+Jt7D0wG0nLcYzx45jVney8T1BQ@mail.gmail.com>
+Subject: Re: [PATCH 3/6] M68K: cpuinfo: Fix a warning for CONFIG_CPUMASK_OFFSTACK
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Huacai Chen <chenhuacai@loongson.cn>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michal Simek <monstr@monstr.eu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        loongarch@lists.linux.dev, Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Arnd,
+Hi, Geert,
 
-Am 12.07.2022 um 20:12 schrieb Arnd Bergmann:
-> On Tue, Jul 12, 2022 at 9:58 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
->> +
->> +static const struct resource mvme147_scsi_rsrc[] __initconst = {
->> +       DEFINE_RES_MEM(MVME147_SCSI_BASE, 0xff),
+On Tue, Jul 12, 2022 at 5:01 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 >
-> Still the wrong size?
-
-Too true - forgot to fix that, sorry.
-
+> Hi Huacai,
 >
->> +       DEFINE_RES_IRQ(MVME147_IRQ_SCSI_PORT),
->> +};
->> +
->> +int __init mvme147_platform_init(void)
->> +{
->> +       struct platform_device *pdev;
->> +       int rv = 0;
->> +
->> +       pdev = platform_device_register_simple("mvme147-scsi", -1,
->> +               mvme147_scsi_rsrc, ARRAY_SIZE(mvme147_scsi_rsrc));
+> On Tue, Jul 12, 2022 at 10:53 AM Huacai Chen <chenhuacai@gmail.com> wrote:
+> > On Tue, Jul 12, 2022 at 4:33 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > On Tue, Jul 12, 2022 at 9:53 AM Huacai Chen <chenhuacai@loongson.cn> wrote:
+> > > > When CONFIG_CPUMASK_OFFSTACK and CONFIG_DEBUG_PER_CPU_MAPS is selected,
+> > >
+> > > DEBUG_PER_CPU_MAPS depends on SMP, which is not supported on m68k,
+> > > and thus cannot be enabled.
+> > This patch is derived from MIPS and LoongArch, I search all
+> > architectures and change those that look the same as MIPS and
+> > LoongArch.
+> > And the warning message below is also a copy-paste from LoongArch, sorry.
+> >
+> > Since M68K doesn't support SMP, then this patch seems to make no
+> > difference, but does it make sense to keep consistency across all
+> > architectures?
 >
-> I think you actually have to use platform_device_register_full() to pass
-> a DMA mask here: As I understand it, the dma_set_mask_and_coherent()
-> call in the driver fails if the device is not already marked as dma
-> capable by having an initial mask set.
-
-I'll take a look at that - if true, this requires the amiga-a3000-scsi 
-platform device set-up be changed in the same way (the gvp11 and a2091 
-drivers inherit the DMA mask from the Zorro bus default, so ought to 
-work OK).
-
-Cheers,
-
-	Michael
-
-> The way this normally works is that the device gets created with a mask
-> that reflects the capabilities of the bus, while the driver sets a mask
-> based on what it wants to program into the device, and the dma-mapping
-> interfaces ensure that we only use the intersection of those.
+> Yes, having consistency is good.  But that should be mentioned in the
+> patch description, instead of a scary warning CCed to stable ;-)
 >
->         Arnd
+> BTW, you probably want to update the other copy of c_start() in
+> arch/m68k/kernel/setup_mm.c, too.
+For no-SMP architectures, it seems c_start() in
+arch/m68k/kernel/setup_mm.c is more reasonable (just use 1, neither
+NR_CPUS, nor nr_cpu_ids)?
+
+Huacai
 >
+> Thanks!
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
