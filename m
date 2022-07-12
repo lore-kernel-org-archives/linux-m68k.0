@@ -2,82 +2,128 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C5C8C43334
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jul 2022 06:57:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF448C433EF
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jul 2022 07:47:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229529AbiGLG5n (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 12 Jul 2022 02:57:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41796 "EHLO
+        id S231980AbiGLHr3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 12 Jul 2022 03:47:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229889AbiGLG5l (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Jul 2022 02:57:41 -0400
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D2F397485;
-        Mon, 11 Jul 2022 23:57:40 -0700 (PDT)
-Received: by mail-qk1-f169.google.com with SMTP id x17so5589427qkh.11;
-        Mon, 11 Jul 2022 23:57:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3uLizQBOgw3ria9ktcfW+7uku2VEsdPuYJ1TFmbFXVM=;
-        b=FNSQljt+XYfh1kkyz4xwlhhvEPQPAobQ0Tc/J0tpOOGIj/7IdH+myDK454OhWD+J4u
-         Me2bvOi6AujlVXvMDDefSLXwnnfHZh0JDusHKcgwFua7asZmTzfYpGvGS/cMppVNb5PC
-         ZM7FzSJbPnBcDFhsRi7UCv0X/iDQRDz7SHi/9jJgF88kKW1dBm08oKwCYxE7MXiBTTUt
-         ApO2CwzGzPmZU5bNMlIz0OmFDnK62BFOuXd3pYOthwzG5nOAjVzH0FhULWNNLaI9G9xp
-         SAgPXFll0S3uhGgLuRuOJ1uxB3zhWUvMlpD5K15EqC9iy7HqvJAl45C96Hu34lCSfzvt
-         oV7Q==
-X-Gm-Message-State: AJIora8Kgoyl6tNbprB6d6JZOQV37yZthtDBp9XsT8wes/Dq9bwsqJPk
-        8BgElEaZCmr2tRN6B2lJ0AJA7EnFg+gD0w==
-X-Google-Smtp-Source: AGRyM1seeApahIj0sjy2RmX9T8TnHb0hwKlNeKcBrv+PFgQ5Aiqi5cTFaJjVxtETj+5g/OeSbU0uqQ==
-X-Received: by 2002:a37:620f:0:b0:6b5:7487:cc20 with SMTP id w15-20020a37620f000000b006b57487cc20mr9423568qkb.95.1657609059509;
-        Mon, 11 Jul 2022 23:57:39 -0700 (PDT)
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
-        by smtp.gmail.com with ESMTPSA id x13-20020a05620a258d00b006a8b6848556sm8540228qko.7.2022.07.11.23.57.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jul 2022 23:57:39 -0700 (PDT)
-Received: by mail-yb1-f172.google.com with SMTP id r3so12445678ybr.6;
-        Mon, 11 Jul 2022 23:57:39 -0700 (PDT)
-X-Received: by 2002:a5b:6c1:0:b0:669:a7c3:4c33 with SMTP id
- r1-20020a5b06c1000000b00669a7c34c33mr20687151ybq.543.1657609058868; Mon, 11
- Jul 2022 23:57:38 -0700 (PDT)
+        with ESMTP id S232418AbiGLHr2 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Jul 2022 03:47:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6C5E49C267
+        for <linux-m68k@vger.kernel.org>; Tue, 12 Jul 2022 00:47:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1657612046;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IwKfKFbx4WwviqtMMacQ0C+SYHYAOQOV85TH5GU4PBI=;
+        b=HppLi+ovCv7tetk0F5IB7oqXq0DfincsnIn+Bt2wyHRzwCO7ROv/N2DpxXN/JaNEwHkitL
+        RT2/93i38r34+ZkOvxVDSzx642bfLUzz4yYgyV+T1lVkYDrmYo3kLNCUZH7c15x6xUR2xA
+        ucKCyHPfE/fxiKeI5KFuZr5Cz+oQNwk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-486-lWqTc9k-NwOQ2KkLNRlK6g-1; Tue, 12 Jul 2022 03:47:18 -0400
+X-MC-Unique: lWqTc9k-NwOQ2KkLNRlK6g-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 736ED8037AA;
+        Tue, 12 Jul 2022 07:47:17 +0000 (UTC)
+Received: from sirius.home.kraxel.org (unknown [10.39.192.39])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 08618C15D58;
+        Tue, 12 Jul 2022 07:47:17 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id A946318000A9; Tue, 12 Jul 2022 09:47:15 +0200 (CEST)
+Date:   Tue, 12 Jul 2022 09:47:15 +0200
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Michel =?utf-8?Q?D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Noralf =?utf-8?Q?Tr=C3=B8nnes?= <noralf@tronnes.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] drm/fourcc: Add missing big-endian XRGB1555 and
+ RGB565 formats
+Message-ID: <20220712074715.kopstlvz4q6npaye@sirius.home.kraxel.org>
+References: <cover.1657300532.git.geert@linux-m68k.org>
+ <0744671ac096a12f0d538906bd324efa71b11400.1657300532.git.geert@linux-m68k.org>
+ <96a87833-d878-dde9-e335-9ea51a4ba406@mailbox.org>
+ <CAMuHMdUgdbZeoFLFL8+Hm-6fG9cg5Wzq++JED3KR5P9YZtRQ4A@mail.gmail.com>
 MIME-Version: 1.0
-References: <20220709001019.11149-1-schmitzmic@gmail.com> <20220709001019.11149-4-schmitzmic@gmail.com>
- <CAK8P3a0FndsCkCrgXdai8=2oX5yWrMLArDHN5mA90AL4N7pmRw@mail.gmail.com>
- <CAMuHMdXapPSOBzSNTLy_RJV=RLq-6hcf-XFtvfSe-g=PrcAhEw@mail.gmail.com>
- <fb5f0f5d-e144-3f5b-9e46-6e22d8a3ca60@gmail.com> <CAMuHMdVYpQCVhti34y-bNwn-nOFaN7w-xM-SBZbHh+oDwbRndw@mail.gmail.com>
- <a4a3908a-29c5-fe2e-4c58-eed59133d39f@gmail.com> <f565782c-6463-d962-13ce-01c5f0d160e7@gmail.com>
-In-Reply-To: <f565782c-6463-d962-13ce-01c5f0d160e7@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 12 Jul 2022 08:57:27 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXMvQ+c=zm8W2AFnSfqxHUGbDEBXNUYBYx1CXH7GTBGpg@mail.gmail.com>
-Message-ID: <CAMuHMdXMvQ+c=zm8W2AFnSfqxHUGbDEBXNUYBYx1CXH7GTBGpg@mail.gmail.com>
-Subject: Re: [PATCH v1 3/4] scsi - convert mvme146_scsi.c to platform device
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        "Linux/m68k" <linux-m68k@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdUgdbZeoFLFL8+Hm-6fG9cg5Wzq++JED3KR5P9YZtRQ4A@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.8
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael,
+On Mon, Jul 11, 2022 at 05:30:30PM +0200, Geert Uytterhoeven wrote:
+> Hi Michel,
+> 
+> > > Cirrus is the only driver setting quirk_addfb_prefer_host_byte_order
+> > > and supporting RGB565 or XRGB1555, but no one tried that on big-endian?
+> > > Cirrus does not support DRM_FORMAT_RGB565 | DRM_FORMAT_BIG_ENDIAN
+> > > in cirrus_fb_create, so you cannot get a graphical text console.
+> > >
+> > > Do we need these definitions on little-endian platforms, too?
+> > > Would it be better to use "DRM_FORMAT_{XRGB1555,RGB565} |
+> > > DRM_FORMAT_BIG_ENDIAN" instead of "DRM_FORMAT_HOST_{XRGB1555,RGB565}" in
+> > > formats[]?
+> >
+> > The intention of DRM_FORMAT_HOST_* is that they are macros in
+> > include/drm/drm_fourcc.h which just map to little endian formats
+> > defined in drivers/gpu/drm/drm_fourcc.c. Since this is not possible
+> > for big endian hosts for XRGB1555 or RGB565 (or any other format
+> > with non-8-bit components), this isn't applicable here.
 
-On Tue, Jul 12, 2022 at 5:27 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> I just realized the commit message subject for this patch needs
-> correcting. Will that mess up your workflow (assuming I retain the
-> subject line for the announcement mail)?
+It IMHO is not applicable to any physical hardware.  It's used by
+virtio-gpu where the supported format depends on the byte order
+(it is argb8888 in native byte order).  Only virtual hardware can
+have that kind of behavior.
 
-Np, I'm used to editing subject lines all the time ;-)
+And we can probably drop the DRM_FORMAT_HOST_* variants for 1555 and
+565, they are not used anywhere.
 
-Gr{oetje,eeting}s,
+> I read that as that you prefer to write "DRM_FORMAT_{XRGB1555,RGB565}
+> | DRM_FORMAT_BIG_ENDIAN" in formats[]?
 
-                        Geert
+Agree.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> > It's also doubtful that Cirrus hardware would access these formats
+> > as big endian (drivers/gpu/drm/tiny/cirrus.c has no endianness
+> > references at all, and the hardware was surely designed for x86
+> > first and foremost).
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Yes.  qemu mimics physical cirrus hardware which uses little endian.
+
+> > Instead, fbcon (and user space) needs to convert to little endian
+> > when using DRM_FORMAT_HOST_{XRGB1555,RGB565} with the cirrus driver
+> > on big endian hosts.
+
+Well, the cirrus driver uses shadow framebuffers anyway (the only
+workable approach given it has 4M vram only), and it also supports
+converting formats on-the-fly when copying from shadow to vram.
+
+So adding support for bigendian formats to the driver shouldn't be
+much of a problem.  The vram will continue to run in little endian
+RGB565, the shadow will be big endian RGB565, and the driver must
+byteswap when copying.
+
+> Yeah, probably the cirrus driver can use some fixes...
+
+I'd call it improvements.  It's not like the cirrus driver is broken.
+
+take care,
+  Gerd
+
