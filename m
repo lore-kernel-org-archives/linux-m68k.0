@@ -2,86 +2,108 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 550E5C43334
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jul 2022 08:13:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 134A2C43334
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jul 2022 08:19:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbiGLINL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 12 Jul 2022 04:13:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44072 "EHLO
+        id S232599AbiGLITm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 12 Jul 2022 04:19:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232366AbiGLINF (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Jul 2022 04:13:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E60FF9F069;
-        Tue, 12 Jul 2022 01:13:03 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 71B57615F8;
-        Tue, 12 Jul 2022 08:13:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEF99C385A2;
-        Tue, 12 Jul 2022 08:13:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657613582;
-        bh=5gFlyz4GTdrW2qOIcMlideR6XOBHM7ZqjMqzi905iZE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=P9735ohxW+cjkZzMPF2z08nphvep4A9RBNStM2CIdjar4BTOIixETdq10MwpMu1i7
-         d7333xsXxGJoTA70syr9aAhxrJxlJzarBoABtIloZpqxfc5QXxrxX6qM7aViwHN+2Q
-         1+abSmhDvEk0+mg+k2lzMzoKVpEpTeXM4wgVAhh4hb77yAljjkjiInOi26QhYkAMx/
-         FyqMxP/Gaj7iG5ekEMp3EM7ZXPUmCT9MspAXY+Afu80Jwrwhqg6d+mzKl7bp6Hy3tm
-         MT6cUtxdFQRDvP9dSs5t4DXtCjgZi5vXtqNT6Jv6+OTXEQNAeibNgOKiUXKDygQvcC
-         ppl0zREr56Tdg==
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-31c8bb90d09so73085027b3.8;
-        Tue, 12 Jul 2022 01:13:02 -0700 (PDT)
-X-Gm-Message-State: AJIora+wtuBpUlIKIszLIIR3B2dgS2KYmAFkg5xJt+9BvzFxQ9rWoiXh
-        +Y8urIFxSwh8Ly6vZfw7jcELx/43kJt1Qoj6utY=
-X-Google-Smtp-Source: AGRyM1v/qLuIWrQCKqd0NOX72fp/jkb29ce6mfVosuWC4V9hDmFWcsI3rRQdcPifXx5yGEvoNdbq8CY3Mv9FA2md0O4=
-X-Received: by 2002:a81:9b02:0:b0:31c:9ae4:99ec with SMTP id
- s2-20020a819b02000000b0031c9ae499ecmr23743830ywg.495.1657613581808; Tue, 12
- Jul 2022 01:13:01 -0700 (PDT)
+        with ESMTP id S232276AbiGLITl (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Jul 2022 04:19:41 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6792DA239A;
+        Tue, 12 Jul 2022 01:19:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1657613970;
+        bh=RZ/EJL3btc+F2hOcvq6PS/02fzcVymHrhmlsl8ctjeY=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=ZKKgHdk4YaFMgbMsNvVaXiLVHZksVveStccelbYwLSAO1e60A3khV/PVh8Fyic56X
+         KSPUwZaRxPi0sQ4Sf4NJfzBa2Dq3rWeKxNuzDQP7FxyzXS/bKOHakYMaYeLaPQJ9F9
+         xIMoioRu8swxC4Edn1/oCg67AVuoNgG4idDOwRFE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.185.115]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M4JmN-1oAu8J1HJh-000MJo; Tue, 12
+ Jul 2022 10:19:30 +0200
+Message-ID: <6e1095c7-5a7b-c71d-7d67-321214106126@gmx.de>
+Date:   Tue, 12 Jul 2022 10:18:53 +0200
 MIME-Version: 1.0
-References: <20220712075832.23793-1-schmitzmic@gmail.com> <20220712075832.23793-3-schmitzmic@gmail.com>
-In-Reply-To: <20220712075832.23793-3-schmitzmic@gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 12 Jul 2022 10:12:45 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2ptjH3VyCjuwQROw8GuOs8CxuhX8dMBxMa5m-Q93yZ_g@mail.gmail.com>
-Message-ID: <CAK8P3a2ptjH3VyCjuwQROw8GuOs8CxuhX8dMBxMa5m-Q93yZ_g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] m68k - set up platform device for mvme147_scsi
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH 00/10] video: fbdev: atari: Miscellaneous fixes and
+ cleanups
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Michael Schmitz <schmitzmic@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-fbdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1657554353.git.geert@linux-m68k.org>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <cover.1657554353.git.geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:y6OTXSI/vDD0Tc+MGb9ohXJ9PmVo6065zAfD2JiW8O6WIvwH4b+
+ qyV6iWgCcllYv3nDjW391uFKSwN/tSYAjMmG0DEyUgfMhp/mt8CcPUC32UsqUzmrI6NDW39
+ ZjZ/YJXukVlZwLU1QQoZEjlhycryINuOzFlQD+1RIxgd8iSXwFw9iO+so/ZOoLJNdDNrIAk
+ QTEiETWTcvvApQkisUssg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Gaa+xL1Kbec=:MZVxjw3JJRvAEL1HmzeYQF
+ utKKkEXMIWs6985XNF4x510rfnNbKU8K9TGo9ckn4IMZnUadKi6nSOdTv/ZeZSMJQB1W46mM7
+ +BL3IBgDiaVdLCtMHqwNDIDnktQVZYrELG5mbVx1XMw7lwe7vxZiW1Ag2cOIyL/it9VXSx3ua
+ iXXM4iV1ZaSgAASszGPJaGZnoEGjbunL7nGouTxF66/NdjXMacDg/zpNnxKv8uf6hlk9Y9PSi
+ XTVMxKq+JWHp9oIvcRjk0p5B2hHtsY/x6R7BBpHnYsvjegqRiVDOqxsxWlE65miJNwvNkHQlc
+ ss97i/JIrtmQ14X2LBFl532JjhFy8LPS8qBEq/FzbKRFthdhzVxbNvYbrBaj6+p0yI8umhTrp
+ Te/tEn7VrBqx5zy/k8DYALlKlRXzyeADo5W2EK/0B29aBmz4hw3lmk1HkjWlF/GqWF2Z6k1vH
+ sQtkCLAFVeftwSQBi3bcm6BhMwta8jU8T5SO/3fH/mXeu/dBzyMrtg14w1M4BrSvYIbyH0Num
+ vwbAhdagvvStKtrpkrwHI51jfWe2seSykqJYikkmSUgVGMQNtTI1uiCzzaigfIqMHaxxKCjdV
+ 8E+j5joAD3CDi7vjSFkHfDZ0KLVM+cQVmvmvzCkow6K6PkGtc+9vJH4GSuDpg5iJm829R3kPZ
+ Fc6UE/g8Wfs8Dvd3t322tunBsVABi1oWKm3lbvpPvAADomTfqGIN7Emar0bFTQMgPKhb44ekN
+ UdMnC2jeCe+XXJnrGmIXCNPgvg+vOmP1AhzMNTSzZPMLT/jSkZB4y3wtr/bl9GKPnsrT8Lh9z
+ ZWZjnFQxnbIep8AJL+YGTaN+Q7RN8snv16uhieEMbVXVQSLEfdKfVyk/RI+9ER6/mhwcmrvmX
+ z7nUN+5YKBEE9e4e9cTTH7lhrdm4D3m2Bcxk6dZIha6L4UdpWKM7HMw5YXUJVU1qJGiX9T2cz
+ siEmGeZe8Wnl/IYuJrt0/zj2/S/6/JqLnpvcWfk/mcHvvz5ntig9ejp5zlc3yLRZfbYqaJmdk
+ Yw/C+7hdm1N71OeCS2n8tP8/TOPMlFpTwcNvIsPkRdgrBDQo83kx1UF0hXWIERyXMOMRSyWYT
+ 9+uXkXiv/g8KAfP5XkEFClBFJgdRlQ0t7hQKTE8XOSn/GZX5TPZYSQxPA==
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Jul 12, 2022 at 9:58 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> +
-> +static const struct resource mvme147_scsi_rsrc[] __initconst = {
-> +       DEFINE_RES_MEM(MVME147_SCSI_BASE, 0xff),
+On 7/11/22 17:50, Geert Uytterhoeven wrote:
+> 	Hi all,
+>
+> This patch series contains miscellaneous fixes and cleanups for the
+> Atari frame buffer device driver, which were identified while working on
+> the Atari DRM driver.
+>
+> Most of them have been tested on ARAnyM, and should be safe to apply,
 
-Still the wrong size?
+I've applied patches 1-9 to fbdev for-next git tree....
 
-> +       DEFINE_RES_IRQ(MVME147_IRQ_SCSI_PORT),
-> +};
-> +
-> +int __init mvme147_platform_init(void)
-> +{
-> +       struct platform_device *pdev;
-> +       int rv = 0;
-> +
-> +       pdev = platform_device_register_simple("mvme147-scsi", -1,
-> +               mvme147_scsi_rsrc, ARRAY_SIZE(mvme147_scsi_rsrc));
+> except perhaps for the last one, which is marked RFC.
 
-I think you actually have to use platform_device_register_full() to pass
-a DMA mask here: As I understand it, the dma_set_mask_and_coherent()
-call in the driver fails if the device is not already marked as dma
-capable by having an initial mask set.
+... and would like to see some thoughts/feedback from others on this one .=
+..
 
-The way this normally works is that the device gets created with a mask
-that reflects the capabilities of the bus, while the driver sets a mask
-based on what it wants to program into the device, and the dma-mapping
-interfaces ensure that we only use the intersection of those.
+Thanks,
+Helge
 
-        Arnd
+>
+> Thanks for your comments!
+>
+> Geert Uytterhoeven (10):
+>   video: fbdev: atari: Simplify atafb_pan_display()
+>   video: fbdev: atari: Remove bogus FB_VMODE_YWRAP flags
+>   video: fbdev: atari: Fix inverse handling
+>   video: fbdev: atari: Fix ext_setcolreg()
+>   video: fbdev: atari: Remove unneeded casts from void *
+>   video: fbdev: atari: Remove unneeded casts to void *
+>   video: fbdev: atari: Fix TT High video mode vertical refresh
+>   video: fbdev: atari: Fix VGA modes
+>   video: fbdev: atari: Remove unused definitions and variables
+>   [RFC] video: fbdev: atari: Remove backward bug-compatibility
+>
+>  Documentation/m68k/kernel-options.rst |   4 +-
+>  drivers/video/fbdev/atafb.c           | 101 +++++++-------------------
+>  2 files changed, 29 insertions(+), 76 deletions(-)
+>
+
