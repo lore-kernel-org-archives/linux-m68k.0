@@ -2,66 +2,128 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E863DCCA483
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jul 2022 02:40:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8319FC43334
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jul 2022 03:11:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231396AbiGLCkI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 11 Jul 2022 22:40:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43736 "EHLO
+        id S229500AbiGLDLG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 11 Jul 2022 23:11:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbiGLCkF (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 11 Jul 2022 22:40:05 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 608458CCA2;
-        Mon, 11 Jul 2022 19:40:04 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5600415DB;
-        Mon, 11 Jul 2022 19:40:04 -0700 (PDT)
-Received: from [10.162.42.8] (unknown [10.162.42.8])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 840C13F792;
-        Mon, 11 Jul 2022 19:39:56 -0700 (PDT)
-Message-ID: <48ab9e36-48be-916e-2ce7-03ef59d67dae@arm.com>
-Date:   Tue, 12 Jul 2022 08:09:53 +0530
+        with ESMTP id S231145AbiGLDK6 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 11 Jul 2022 23:10:58 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2633A509CB
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Jul 2022 20:10:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1657595456; x=1689131456;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=PKVtfxbwAwZfziXJMhcKwVzO5nsOTjsg9wU3l40j8nk=;
+  b=DtEluh/3Q2msKXkxXKLHc/G3g5S8o4AzshOsiERTsWKrhN8qEthEPYPA
+   G2/7ROamWDjKqzHBKGwP1bAXRv7CqRVl63bz7Q3qcJtv0hd/x67UhfUSo
+   czGUIw+jf1jfAXhQ8N2u0s2PKwPvGgGhbA5IE+1Ip/Cm4ZLVJ3mhH3iMF
+   +hRboRB8NpD7Rl+mJfB00nnA0OITrtkHyAGO4RJ3/EPOPHIHxlddmYQi/
+   B2X7C2xxbLqHIa/yXBMo2DWeVL7o+apnFlx29l11UDdnT3GglSpYEXMFD
+   a9NW7svAiLnLLEPlXp/rBozyAxH0klvxDCZSSQPr3zutAM+twWzLuPU+0
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10405"; a="284851321"
+X-IronPort-AV: E=Sophos;i="5.92,264,1650956400"; 
+   d="scan'208";a="284851321"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jul 2022 20:10:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,264,1650956400"; 
+   d="scan'208";a="922033597"
+Received: from lkp-server02.sh.intel.com (HELO 8708c84be1ad) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 11 Jul 2022 20:10:54 -0700
+Received: from kbuild by 8708c84be1ad with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1oB6IX-0001bL-KQ;
+        Tue, 12 Jul 2022 03:10:53 +0000
+Date:   Tue, 12 Jul 2022 11:09:55 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ c74f6f033e9b10e89a71b4923b737412226cd24d
+Message-ID: <62cce603.85SCrqZg9m9FNmpL%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH V7 00/26] mm/mmap: Drop __SXXX/__PXXX macros from across
- platforms
-Content-Language: en-US
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, hch@infradead.org, christophe.leroy@csgroup.eu,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        x86@kernel.org, openrisc@lists.librecores.org,
-        linux-xtensa@linux-xtensa.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-m68k@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-um@lists.infradead.org,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20220711070600.2378316-1-anshuman.khandual@arm.com>
- <20220711131417.9cac57d9b88eea8bbd7d8616@linux-foundation.org>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20220711131417.9cac57d9b88eea8bbd7d8616@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: c74f6f033e9b10e89a71b4923b737412226cd24d  m68k: Add common forward declaration for show_registers()
 
+elapsed time: 723m
 
-On 7/12/22 01:44, Andrew Morton wrote:
-> On Mon, 11 Jul 2022 12:35:34 +0530 Anshuman Khandual <anshuman.khandual@arm.com> wrote:
-> 
->> This series drops __SXXX/__PXXX macros from across platforms in the tree.
-> 
-> I've updated mm-unstable to this version, thanks.  I skipped the added-to-mm
-> emails to avoid wearing out people's inboxes.
-> 
-> Reissuing a 26-patch series N times is rather noisy.  Please prefer to send incremental
-> fixes when changes are minor.  It makes it so much easier for reviewers to see what
-> happened.
+configs tested: 52
+configs skipped: 2
 
-Sure, got it, will follow next time.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm                              allyesconfig
+arm64                            allyesconfig
+ia64                             allmodconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+mips                             allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+sh                               allmodconfig
+i386                                defconfig
+i386                             allyesconfig
+i386                          randconfig-a001
+i386                          randconfig-a003
+i386                          randconfig-a005
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+x86_64                        randconfig-a015
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+x86_64                        randconfig-a002
+x86_64                        randconfig-a004
+x86_64                        randconfig-a006
+arc                  randconfig-r043-20220710
+s390                 randconfig-r044-20220710
+riscv                randconfig-r042-20220710
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                          rhel-8.3-func
+x86_64                         rhel-8.3-kunit
+x86_64                    rhel-8.3-kselftests
+x86_64                           rhel-8.3-syz
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                           allyesconfig
+
+clang tested configs:
+i386                          randconfig-a002
+i386                          randconfig-a004
+i386                          randconfig-a006
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+x86_64                        randconfig-a012
+i386                          randconfig-a013
+i386                          randconfig-a011
+i386                          randconfig-a015
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+x86_64                        randconfig-a005
+hexagon              randconfig-r041-20220710
+hexagon              randconfig-r045-20220710
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
