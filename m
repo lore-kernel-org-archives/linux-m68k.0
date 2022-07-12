@@ -2,26 +2,26 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28692C433EF
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jul 2022 07:53:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D26EBCCA482
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Jul 2022 07:54:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231608AbiGLHxk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 12 Jul 2022 03:53:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55114 "EHLO
+        id S232496AbiGLHy2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 12 Jul 2022 03:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232388AbiGLHxg (ORCPT
+        with ESMTP id S232366AbiGLHy0 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 12 Jul 2022 03:53:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0910B10B2
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Jul 2022 00:53:35 -0700 (PDT)
+        Tue, 12 Jul 2022 03:54:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D35A029C8B
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Jul 2022 00:54:20 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 621F1614AD;
-        Tue, 12 Jul 2022 07:53:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDBFAC341CA;
-        Tue, 12 Jul 2022 07:53:28 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 47393615DA;
+        Tue, 12 Jul 2022 07:54:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDED8C3411E;
+        Tue, 12 Jul 2022 07:54:13 +0000 (UTC)
 From:   Huacai Chen <chenhuacai@loongson.cn>
 To:     Arnd Bergmann <arnd@arndb.de>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -38,9 +38,9 @@ Cc:     loongarch@lists.linux.dev, linux-arch@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
         Huacai Chen <chenhuacai@loongson.cn>, stable@vger.kernel.org
-Subject: [PATCH 3/6] M68K: cpuinfo: Fix a warning for CONFIG_CPUMASK_OFFSTACK
-Date:   Tue, 12 Jul 2022 15:52:52 +0800
-Message-Id: <20220712075255.1345991-3-chenhuacai@loongson.cn>
+Subject: [PATCH 4/6] MicroBlaze: cpuinfo: Fix a warning for CONFIG_CPUMASK_OFFSTACK
+Date:   Tue, 12 Jul 2022 15:52:53 +0800
+Message-Id: <20220712075255.1345991-4-chenhuacai@loongson.cn>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220712075255.1345991-1-chenhuacai@loongson.cn>
 References: <20220712075255.1345991-1-chenhuacai@loongson.cn>
@@ -87,19 +87,19 @@ instead of NR_CPUS to iterate CPUs.
 Cc: stable@vger.kernel.org
 Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 ---
- arch/m68k/kernel/setup_no.c | 2 +-
+ arch/microblaze/kernel/cpu/mb.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
-index 19eea73d3c17..ee03287a386c 100644
---- a/arch/m68k/kernel/setup_no.c
-+++ b/arch/m68k/kernel/setup_no.c
-@@ -201,7 +201,7 @@ static int show_cpuinfo(struct seq_file *m, void *v)
- 
- static void *c_start(struct seq_file *m, loff_t *pos)
+diff --git a/arch/microblaze/kernel/cpu/mb.c b/arch/microblaze/kernel/cpu/mb.c
+index 9581d194d9e4..689de7f75614 100644
+--- a/arch/microblaze/kernel/cpu/mb.c
++++ b/arch/microblaze/kernel/cpu/mb.c
+@@ -137,7 +137,7 @@ static void *c_start(struct seq_file *m, loff_t *pos)
  {
--	return *pos < NR_CPUS ? ((void *) 0x12345678) : NULL;
-+	return *pos < nr_cpu_ids ? ((void *) 0x12345678) : NULL;
+ 	int i = *pos;
+ 
+-	return i < NR_CPUS ? (void *) (i + 1) : NULL;
++	return i < nr_cpu_ids ? (void *) (i + 1) : NULL;
  }
  
  static void *c_next(struct seq_file *m, void *v, loff_t *pos)
