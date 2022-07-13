@@ -2,157 +2,110 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA8FDCCA480
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 Jul 2022 02:56:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 994FCC43334
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 Jul 2022 07:49:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233370AbiGMC4R (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 12 Jul 2022 22:56:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59112 "EHLO
+        id S234297AbiGMHty (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 13 Jul 2022 03:49:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232206AbiGMC4L (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 12 Jul 2022 22:56:11 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 539C54D161;
-        Tue, 12 Jul 2022 19:56:10 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id a15so10147110pjs.0;
-        Tue, 12 Jul 2022 19:56:10 -0700 (PDT)
+        with ESMTP id S234820AbiGMHte (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 13 Jul 2022 03:49:34 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04CA6275;
+        Wed, 13 Jul 2022 00:49:23 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id b8so9495889pjo.5;
+        Wed, 13 Jul 2022 00:49:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=+Zpq1dA4b/bWeDb/wHl+mZq9dvDvGdVdXynjpr6pFIQ=;
-        b=mJSvvHc39MHXNzcKhSK8Tj0WjoObwFgFhapHI2zHtc3reyJQRvYhKD4SRI3Me2koTa
-         6KBQoYG0PnXMtNmxZJWINC0OSkwSiUxCTGIax/6mGHO+BeRCIvA8uhFrMqjdSL7caBLd
-         njvu9s6slLKiubbxUFF+h7ESZ6ZkjkCtKllh3+D+vdgzDuMzdMp3hAo5MU0uDoiGgJvZ
-         zT4V7jy/OSavTd0r1SHQnQ+Hsta0BtjorE1M8oUu2WrfpUJV/XbhbSwXcyKu3PP4tmp5
-         dRdNM8HHq7dQxAwzDpl+TDsashfXSz7m4YleKUjzYJ3oK8kX1subZ8iHq7FUdxdI/NTo
-         xDNg==
+        h=from:to:cc:subject:date:message-id;
+        bh=CrQsD7k2TGNgMpuMXvFQ6UJMpTWk7vqzcPn/bAxF6gM=;
+        b=qujboVQv/GAXjx8T4a1mPg35RSjntq/W7Kk59w68Rf66kihbKNrAgGb6LdEeylGlqM
+         jVOq6xzNLqZpyrCCRzmBN/gdEC30y1vqeG8Ow98FMUsssOh4VOTFPTyd749YSh6Hemk6
+         b+o2n2TisuDoJwH9h+2MB08bzPce43qpMbbTUojh5OCTJmiSbjXSa538YVeAMfIjAGXh
+         In3K90FhOtyJaR54UKtzbeFHAiJRnHjsUeoAeXLxl4Vkw5pBNYk9tuVod/PSp74kL49L
+         9dNho8WKcwhu3dAwJUz99L3aFgbQ59/3S2xdi5ir8Drts1L2xC7gSwclyM9x39ysJ7PJ
+         rfdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=+Zpq1dA4b/bWeDb/wHl+mZq9dvDvGdVdXynjpr6pFIQ=;
-        b=medJcToGnXSVsCLXBPXwisy8wZDWRwCCfRXaz8dyeEA/iQdVDxVB2U/aPL3cUnx4G2
-         SWFVBOQ6qAytg11M4nrg3Zcjm55T8Es2BkYdpeBcOiqiSVkiO83Izl6/HANqeedjg2S8
-         EhdQ7vTgVtD61K4wt9a0Pvn5Q5/Ix0vutgMoCoITgrifoi2rom/2Ah5Llm2qe+Af+BCL
-         O18kiSjrEI8uKqHVe/S7dbxjqPxjTEypr/vEsp+tWM3q/tnB8uCnERe7FBgMlcPcPNnP
-         7dBXD4AazrdES1yFtHAfpOJMit16wD/uk/nz2tPIvs0Y6DtGDYezpNHabG7pb8H8bEMj
-         jhww==
-X-Gm-Message-State: AJIora+nvcBwCWZXyBE7X8PoeQpNcyUhsddm8z9gnkoEt8LuoreTeulA
-        qA/6bbxZS5Z7CdjPDBq4Fa8=
-X-Google-Smtp-Source: AGRyM1uUGTq2NGSF5y4IZb/Y7ILIj1aqH0dn+3bOoyF7pOOKtieQCQnflnRoWKdjDgAlA55ql2emlQ==
-X-Received: by 2002:a17:902:d591:b0:16b:a170:8586 with SMTP id k17-20020a170902d59100b0016ba1708586mr1037093plh.91.1657680970071;
-        Tue, 12 Jul 2022 19:56:10 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=CrQsD7k2TGNgMpuMXvFQ6UJMpTWk7vqzcPn/bAxF6gM=;
+        b=yqC/bWxhKpe/WCsPJ0lAOIE4zedL/TbmuS0dIklVLPY4qUO3mTptc9Ta/CjV9oBQDr
+         ZCV0iO9qtX+ddj2+dzmv6BDh6+5/nxNxM1cisj8jj9sDwLXtGujCp1JdSOGOOF/QhdEG
+         YxvNFglkA5pOBSvsKP0LtxKvC+bt9+Czt58aRX5wRQHq2bGkXQbiZbPCQRFSRdzsr53p
+         etukfcPbVg6SGWvsBUX8R5b4XtHZwjCYTEYU9q/8P74FHPUVG4tUIvaoI5rFwWDMuxij
+         3XpadzFqFUi5nJL8vWTKDXNdSPQhXGf6p5UcL+oo002Efy7Bbj6XMEEKADlvq6T+sCcn
+         mc0w==
+X-Gm-Message-State: AJIora+Qr1dWFiC03dduzOfvKfSQnCfGkKhGDiFKiTXEE4cpyVDDwgAm
+        ereo4dsB8NlpFa4JUPdGQL3OG//8q/w=
+X-Google-Smtp-Source: AGRyM1ssVKpBfS/TmLe3l/dcTqoOvy80xaFXUvZf0au5gj4E8amKjhwBvqMNPOReGzC7GFXJzxssvQ==
+X-Received: by 2002:a17:902:f708:b0:153:839f:bf2c with SMTP id h8-20020a170902f70800b00153839fbf2cmr1950221plo.113.1657698563483;
+        Wed, 13 Jul 2022 00:49:23 -0700 (PDT)
 Received: from xplor.waratah.dyndns.org (222-155-0-244-adsl.sparkbb.co.nz. [222.155.0.244])
-        by smtp.gmail.com with ESMTPSA id h131-20020a628389000000b00527bb6fff6csm7513375pfe.119.2022.07.12.19.56.09
+        by smtp.gmail.com with ESMTPSA id d1-20020aa797a1000000b005259578e8fcsm8094979pfq.181.2022.07.13.00.49.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jul 2022 19:56:09 -0700 (PDT)
+        Wed, 13 Jul 2022 00:49:23 -0700 (PDT)
 Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-        id 799DC360403; Wed, 13 Jul 2022 14:56:05 +1200 (NZST)
+        id EDDA536031B; Wed, 13 Jul 2022 19:49:19 +1200 (NZST)
 From:   Michael Schmitz <schmitzmic@gmail.com>
 To:     linux-m68k@vger.kernel.org, arnd@kernel.org
 Cc:     linux-scsi@vger.kernel.org, geert@linux-m68k.org,
         Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH v3 5/5] scsi - convert mvme147.c driver to DMA API
-Date:   Wed, 13 Jul 2022 14:56:01 +1200
-Message-Id: <20220713025601.22584-6-schmitzmic@gmail.com>
+Subject: [PATCH] scsi - gvp11.c: fix DMA mask calculation error
+Date:   Wed, 13 Jul 2022 19:49:13 +1200
+Message-Id: <20220713074913.7873-1-schmitzmic@gmail.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20220713025601.22584-1-schmitzmic@gmail.com>
-References: <20220713025601.22584-1-schmitzmic@gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Convert mvme147.c to DMA API to eliminate one of the last
-usages of virt_to_bus().
+DMA masks given in the Zorro ID table don't contain the 2 byte
+alignment quirk seen in the GVP11_XFER_MASK macro from gvp11.h
+so no need to account for that.
+
+DMA masks passed to dma_set_mask_and_coherent() must be 64 bit,
+add the missing cast in the TO_DMA_MASK macro used to convert
+driver DMA masks to DMA API masks.
 
 CC: linux-scsi@vger.kernel.org
 Link: https://lore.kernel.org/r/6d1d88ee-1cf6-c735-1e6d-bafd2096e322@gmail.com
+Fixes: f4a09e5a3a36 ("scsi - gvp11.c: convert m68k WD33C93 drivers to DMA API")
 Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-
---
-
-Changes from v1:
-- change patch index from 4 to 5 (due to insertion of m68k kmap patch)
 ---
- drivers/scsi/mvme147.c | 33 ++++++++++++++++++++++++---------
- 1 file changed, 24 insertions(+), 9 deletions(-)
+ drivers/scsi/gvp11.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/mvme147.c b/drivers/scsi/mvme147.c
-index ea8afeec8e56..166248bef6cf 100644
---- a/drivers/scsi/mvme147.c
-+++ b/drivers/scsi/mvme147.c
-@@ -21,6 +21,8 @@
- #include "wd33c93.h"
- #include "mvme147.h"
+diff --git a/drivers/scsi/gvp11.c b/drivers/scsi/gvp11.c
+index e8b7a09eb8c7..7d56a236a011 100644
+--- a/drivers/scsi/gvp11.c
++++ b/drivers/scsi/gvp11.c
+@@ -30,7 +30,7 @@ struct gvp11_hostdata {
+ };
  
-+#define DMA_DIR(d)   ((d == DATA_OUT_DIR) ? DMA_TO_DEVICE : DMA_FROM_DEVICE)
-+
- static irqreturn_t mvme147_intr(int irq, void *data)
+ #define DMA_DIR(d)   ((d == DATA_OUT_DIR) ? DMA_TO_DEVICE : DMA_FROM_DEVICE)
+-#define TO_DMA_MASK(m)	((~(m & 0xfffffff0))-1)
++#define TO_DMA_MASK(m)	(~((unsigned long long)m & 0xffffffff))
+ 
+ static irqreturn_t gvp11_intr(int irq, void *data)
  {
- 	struct Scsi_Host *instance = data;
-@@ -35,10 +37,20 @@ static irqreturn_t mvme147_intr(int irq, void *data)
- static int dma_setup(struct scsi_cmnd *cmd, int dir_in)
- {
- 	struct scsi_pointer *scsi_pointer = WD33C93_scsi_pointer(cmd);
-+	unsigned long len = scsi_pointer->this_residual;
- 	struct Scsi_Host *instance = cmd->device->host;
- 	struct WD33C93_hostdata *hdata = shost_priv(instance);
- 	unsigned char flags = 0x01;
--	unsigned long addr = virt_to_bus(scsi_pointer->ptr);
-+	dma_addr_t addr;
-+
-+	addr = dma_map_single(instance->dma_dev, scsi_pointer->ptr,
-+			      len, DMA_DIR(dir_in));
-+	if (dma_mapping_error(instance->dma_dev, addr)) {
-+		dev_warn(instance->dma_dev, "cannot map SCSI data block %p\n",
-+			 scsi_pointer->ptr);
-+		return 1;
-+	}
-+	scsi_pointer->dma_handle = addr;
+@@ -334,7 +334,7 @@ static int gvp11_probe(struct zorro_dev *z, const struct zorro_device_id *ent)
  
- 	/* setup dma direction */
- 	if (!dir_in)
-@@ -47,14 +59,6 @@ static int dma_setup(struct scsi_cmnd *cmd, int dir_in)
- 	/* remember direction */
- 	hdata->dma_dir = dir_in;
- 
--	if (dir_in) {
--		/* invalidate any cache */
--		cache_clear(addr, scsi_pointer->this_residual);
--	} else {
--		/* push any dirty cache */
--		cache_push(addr, scsi_pointer->this_residual);
--	}
--
- 	/* start DMA */
- 	m147_pcc->dma_bcr = scsi_pointer->this_residual | (1 << 24);
- 	m147_pcc->dma_dadr = addr;
-@@ -67,7 +71,13 @@ static int dma_setup(struct scsi_cmnd *cmd, int dir_in)
- static void dma_stop(struct Scsi_Host *instance, struct scsi_cmnd *SCpnt,
- 		     int status)
- {
-+	struct scsi_pointer *scsi_pointer = WD33C93_scsi_pointer(SCpnt);
-+	struct WD33C93_hostdata *hdata = shost_priv(instance);
-+
- 	m147_pcc->dma_cntrl = 0;
-+	dma_unmap_single(instance->dma_dev, scsi_pointer->dma_handle,
-+			 scsi_pointer->this_residual,
-+			 DMA_DIR(hdata->dma_dir));
- }
- 
- static struct scsi_host_template mvme147_host_template = {
-@@ -95,6 +105,11 @@ static int __init mvme147_scsi_probe(struct platform_device *pdev)
- 	void __iomem *base;
- 	int error = -ENOMEM;
- 
-+	if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32))) {
-+		dev_warn(&pdev->dev, "cannot use 32 bit DMA\n");
-+		return -ENODEV;
-+	}
-+
- 	mres = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!mres)
+ 	if (dma_set_mask_and_coherent(&z->dev,
+ 		TO_DMA_MASK(default_dma_xfer_mask))) {
+-		dev_warn(&z->dev, "cannot use DMA mask %x\n",
++		dev_warn(&z->dev, "cannot use DMA mask %llx\n",
+ 			 TO_DMA_MASK(default_dma_xfer_mask));
  		return -ENODEV;
+ 	}
+@@ -383,7 +383,7 @@ static int gvp11_probe(struct zorro_dev *z, const struct zorro_device_id *ent)
+ 		hdata->wh.dma_xfer_mask = gvp11_xfer_mask;
+ 		if (dma_set_mask_and_coherent(&z->dev,
+ 			TO_DMA_MASK(gvp11_xfer_mask))) {
+-			dev_warn(&z->dev, "cannot use DMA mask %x\n",
++			dev_warn(&z->dev, "cannot use DMA mask %llx\n",
+ 				 TO_DMA_MASK(gvp11_xfer_mask));
+ 			error = -ENODEV;
+ 			goto fail_check_or_alloc;
 -- 
 2.17.1
 
