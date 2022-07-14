@@ -2,113 +2,219 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8669EC43334
-	for <linux-m68k@archiver.kernel.org>; Thu, 14 Jul 2022 07:39:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D227FCCA47B
+	for <linux-m68k@archiver.kernel.org>; Thu, 14 Jul 2022 08:43:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232204AbiGNHj2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 14 Jul 2022 03:39:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38814 "EHLO
+        id S235985AbiGNInO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 14 Jul 2022 04:43:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbiGNHj2 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 14 Jul 2022 03:39:28 -0400
-Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361D31F63D
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 14 Jul 2022 00:39:27 -0700 (PDT)
-Received: by mail-vk1-xa34.google.com with SMTP id q194so444286vkb.6
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 14 Jul 2022 00:39:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uGTKzeprnwSXnbqHhlClhWNOVWDQWwVH82y8HTb0lvE=;
-        b=cgUr0qoPFsYBx9z1B5gVXD5cyyb9a3Pzt3fzi4Uq8BT65Hz9RmzgG4qEHO/VpAeFpb
-         BTGRaPlN5jMqUj9XSkP01TM2zhSDii5r5Z1mXIls5ho6yE059/wGZ57dDqRI9LFz8P2q
-         SFZRhw+JHOVjXf/rYgGMjw1lZyJoLdwjq8jAi2xXmD8NDQu1thff1XIeE5VqlX6uzpLt
-         Ss4YvsF+MjSMQ5f0Ym7qnDmuNNEBvowm5wN5zJrp+zkUvvpKtVb2ttLFuqne5xfHxR1B
-         vEsGvJ8Gnc/9eggFbEz0Pa1QkioINAHtFen2cObZqaDgzIuNpoVYcPv+XkkfuNwIjsb/
-         wV9A==
+        with ESMTP id S235704AbiGNInL (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 14 Jul 2022 04:43:11 -0400
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B31D813EA2;
+        Thu, 14 Jul 2022 01:43:09 -0700 (PDT)
+Received: by mail-qk1-f177.google.com with SMTP id o21so725601qkm.10;
+        Thu, 14 Jul 2022 01:43:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=uGTKzeprnwSXnbqHhlClhWNOVWDQWwVH82y8HTb0lvE=;
-        b=fdNuIjGhRvuvWF74v2ZhiJiV1H2vwKHJmPDAbzdd7y5CC54mE7ZuXpFOP16WJi2WVf
-         aY0gB6RVAqu9V3pkkTnpXwFxtq4Qbe1+CMl5ViCWPsHamkGzmWpQgMR8YgR9HE/+adl9
-         xchgqZt3W7ZWTwjt620qy6CtiDtIR1FvWx+Qd397Zr6PNJHxEyvzJcPeGGfGlUYKH/pb
-         K05GTd7vVnEd8+qoReq5eJQd0e5Nq4SxITpt+Vh9vw3MbkiDYgt7zgMicpCYb3U4D2zc
-         o/Ylt0Yb8jKHYI0aV5SM0HtPXlGM/4YvoLOdPX3rWMa0q2czZ1+5cyW0r8J+W4TWsHxm
-         rrLg==
-X-Gm-Message-State: AJIora89nSaiijC23va86GodJMsVnfKSP1mrP6AThxFh+9YWx+jDz4Op
-        HuBR87n6GsdxZiY7GKkacYvz2ry5YvyXeCoMLHY=
-X-Google-Smtp-Source: AGRyM1u8HgMpLBGFlzWUoYrgyz3sUFJPCzXmEfT1RMJWmGvdyIwnC2L2iEpEVAs/u389/0VMLd9tL1nfwpyTee6Wm+8=
-X-Received: by 2002:a1f:a887:0:b0:36c:8458:b061 with SMTP id
- r129-20020a1fa887000000b0036c8458b061mr2831184vke.19.1657784365859; Thu, 14
- Jul 2022 00:39:25 -0700 (PDT)
+        bh=AxN0KXqSzVzIHaBApKEyHk1NU3/+nmlgLRu8+vYeWQg=;
+        b=m4m55LAxVa5lf4zFKLGkrbi8QG1/BYWJW0kr2veik/w2Cq6uHbgcfv3jI57UAwUuU9
+         ws9BjL4nXsHbwK49F/NV/LyBH/w9di4+3QKyfievPfOHIAYl32sBsqC54LpZVgzSzG6+
+         +qHsZz6r6IgwikzsTBr9Uyn7YcktL8mvaX18H8AJPcLtdzyOm25l2zzyabkUKWw0jdmb
+         JNxrwsAIpA08l1nrXWcXVNhdC3zHLcW5+GiC3GMSl6W1S/kk8Adig6MDoK79CHpMAch7
+         wdyOuB+u9ZaIs0f+cmL2D/ovfs/dJcP6WnXhRLLW4du262GGEULkAnxgaTHLqXrW40W3
+         44kw==
+X-Gm-Message-State: AJIora8ZUvDPIjLR1qm7HX5lKeFRXVoJxndg3kDhlzbsvqGvmfE/Hrvu
+        pANhj65kwc3+qoAeZ/6UFkYWu035NdIJBQ==
+X-Google-Smtp-Source: AGRyM1ve0skPA/T8ThcEcseW2YsoT/zpZLPuegOXZUVPMJtvYPgWJv7g1ObFvsvxE3+UKYdaR5XDVQ==
+X-Received: by 2002:a05:620a:254f:b0:6a6:313:3ccc with SMTP id s15-20020a05620a254f00b006a603133cccmr5296830qko.716.1657788188643;
+        Thu, 14 Jul 2022 01:43:08 -0700 (PDT)
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
+        by smtp.gmail.com with ESMTPSA id bq44-20020a05620a46ac00b006a6edbbca84sm868178qkb.94.2022.07.14.01.43.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Jul 2022 01:43:08 -0700 (PDT)
+Received: by mail-yb1-f182.google.com with SMTP id r3so2051035ybr.6;
+        Thu, 14 Jul 2022 01:43:08 -0700 (PDT)
+X-Received: by 2002:a05:6902:154f:b0:66e:e2d3:ce1 with SMTP id
+ r15-20020a056902154f00b0066ee2d30ce1mr6988768ybu.365.1657788187837; Thu, 14
+ Jul 2022 01:43:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220712075255.1345991-1-chenhuacai@loongson.cn>
- <20220712075255.1345991-3-chenhuacai@loongson.cn> <CAMuHMdUazqHLbc80vpZ+Msg9A3j5aPJ3fx+CdCG3kuWDSf8WSw@mail.gmail.com>
- <CAAhV-H775jXMbcR9j=oLBuHo1PfFziZSUQWttJAEw20sUt+GAA@mail.gmail.com>
- <CAMuHMdUHbepd974u5iox3BcOyo_Q2ZgT-znruk+WCt+HMQ_Lgw@mail.gmail.com>
- <CAAhV-H78Fi0aE-h5MOgRa5L+Jt7D0wG0nLcYzx45jVney8T1BQ@mail.gmail.com>
- <CAMuHMdVXFmKR4LuXHYRrSk3Q0VRqATGbsM512DxayWCPCE-wvg@mail.gmail.com>
- <c8c959fa-f17d-f0dd-6a8d-e0b0ce622f3a@xen0n.name> <CAAhV-H6g5nLGJMz0ZsZqC5-73VSGffVdc6r0=3HHBo3Z8PQOBg@mail.gmail.com>
- <CAK8P3a0GUPSYBai3Z9vzw0wrXGLFiik6hdY3zc6nQ6mQs7yHvQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a0GUPSYBai3Z9vzw0wrXGLFiik6hdY3zc6nQ6mQs7yHvQ@mail.gmail.com>
-From:   Huacai Chen <chenhuacai@gmail.com>
-Date:   Thu, 14 Jul 2022 15:39:13 +0800
-Message-ID: <CAAhV-H43QWXdaQuKvk+=BXA7LA6_p1aJb0qyXdhPhR_so_S0dA@mail.gmail.com>
-Subject: Re: [PATCH 3/6] M68K: cpuinfo: Fix a warning for CONFIG_CPUMASK_OFFSTACK
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     WANG Xuerui <kernel@xen0n.name>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michal Simek <monstr@monstr.eu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        loongarch@lists.linux.dev, Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Guo Ren <guoren@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        stable <stable@vger.kernel.org>
+References: <cover.1657301107.git.geert@linux-m68k.org> <68923c8a129b6c2a70b570103679a1cf7876bbc2.1657301107.git.geert@linux-m68k.org>
+ <ef2aada2-96e4-c2e4-645f-39bc9094e93a@suse.de> <20220711093513.wilv6e6aqcuyg52w@houat>
+ <43d75dce-988a-0a95-cb0a-0d0a7c81ca63@suse.de> <20220711114206.sawqdl54ibuxsxp4@houat>
+ <CAMuHMdXbFHWWQoryXihVsSrC5ZzHEV-YYR_eLvNmSAw8Y61TQg@mail.gmail.com>
+ <20220711120243.v6lwoynqigle2aot@houat> <CAMuHMdXhmf5TudQ6a1PUVV8KXff6JjgMmZOmOWVb2qW6eXF7Ow@mail.gmail.com>
+ <20220713093708.jaa3og2fablqr723@houat>
+In-Reply-To: <20220713093708.jaa3og2fablqr723@houat>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 14 Jul 2022 10:42:55 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWGmxo6B2EWbygi1ncKe9SBTDvyzPSw1f32P_+TMot36Q@mail.gmail.com>
+Message-ID: <CAMuHMdWGmxo6B2EWbygi1ncKe9SBTDvyzPSw1f32P_+TMot36Q@mail.gmail.com>
+Subject: Re: [PATCH 4/5] drm/modes: Add support for driver-specific named modes
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hans de Goede <hdegoede@redhat.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        "Linux/m68k" <linux-m68k@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi, Arnd,
+Hi Maxime,
 
-On Thu, Jul 14, 2022 at 2:59 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Thu, Jul 14, 2022 at 4:07 AM Huacai Chen <chenhuacai@gmail.com> wrote:
-> > On Tue, Jul 12, 2022 at 6:15 PM WANG Xuerui <kernel@xen0n.name> wrote:
-> > > On 2022/7/12 17:13, Geert Uytterhoeven wrote:
+On Wed, Jul 13, 2022 at 11:37 AM Maxime Ripard <maxime@cerno.tech> wrote:
+> On Mon, Jul 11, 2022 at 02:08:06PM +0200, Geert Uytterhoeven wrote:
+> > On Mon, Jul 11, 2022 at 2:02 PM Maxime Ripard <maxime@cerno.tech> wrote:
+> > > On Mon, Jul 11, 2022 at 01:59:28PM +0200, Geert Uytterhoeven wrote:
+> > > > On Mon, Jul 11, 2022 at 1:42 PM Maxime Ripard <maxime@cerno.tech> wrote:
+> > > > > On Mon, Jul 11, 2022 at 01:11:14PM +0200, Thomas Zimmermann wrote:
+> > > > > > Am 11.07.22 um 11:35 schrieb Maxime Ripard:
+> > > > > > > On Mon, Jul 11, 2022 at 11:03:38AM +0200, Thomas Zimmermann wrote:
+> > > > > > > > Am 08.07.22 um 20:21 schrieb Geert Uytterhoeven:
+> > > > > > > > > The mode parsing code recognizes named modes only if they are explicitly
+> > > > > > > > > listed in the internal whitelist, which is currently limited to "NTSC"
+> > > > > > > > > and "PAL".
+> > > > > > > > >
+> > > > > > > > > Provide a mechanism for drivers to override this list to support custom
+> > > > > > > > > mode names.
+> > > > > > > > >
+> > > > > > > > > Ideally, this list should just come from the driver's actual list of
+> > > > > > > > > modes, but connector->probed_modes is not yet populated at the time of
+> > > > > > > > > parsing.
+> > > > > > > >
+> > > > > > > > I've looked for code that uses these names, couldn't find any. How is this
+> > > > > > > > being used in practice? For example, if I say "PAL" on the command line, is
+> > > > > > > > there DRM code that fills in the PAL mode parameters?
+> > > > > > >
+> > > > > > > We have some code to deal with this in sun4i:
+> > > > > > > https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/sun4i/sun4i_tv.c#L292
+> > > > > > >
+> > > > > > > It's a bit off topic, but for TV standards, I'm still not sure what the
+> > > > > > > best course of action is. There's several interactions that make this a
+> > > > > > > bit troublesome:
+> > > > > > >
+> > > > > > >    * Some TV standards differ by their mode (ie, PAL vs NSTC), but some
+> > > > > > >      other differ by parameters that are not part of drm_display_mode
+> > > > > > >      (NTSC vs NSTC-J where the only difference is the black and blanking
+> > > > > > >      signal levels for example).
+> > > > > > >
+> > > > > > >    * The mode names allow to provide a fairly convenient way to add that
+> > > > > > >      extra information, but the userspace is free to create its own mode
+> > > > > > >      and might omit the mode name entirely.
+> > > > > > >
+> > > > > > > So in the code above, if the name has been preserved we match by name,
+> > > > > > > but we fall back to matching by mode if it hasn't been, which in this
+> > > > > > > case means that we have no way to differentiate between NTSC, NTSC-J,
+> > > > > > > PAL-M in this case.
+> > > > > > >
+> > > > > > > We have some patches downstream for the RaspberryPi that has the TV
+> > > > > > > standard as a property. There's a few extra logic required for the
+> > > > > > > userspace (like setting the PAL property, with the NTSC mode) so I'm not
+> > > > > > > sure it's preferable.
+> > > > > > >
+> > > > > > > Or we could do something like a property to try that standard, and
+> > > > > > > another that reports the one we actually chose.
+> > > > > > >
+> > > > > > > > And another question I have is whether this whitelist belongs into the
+> > > > > > > > driver at all. Standard modes exist independent from drivers or hardware.
+> > > > > > > > Shouldn't there simply be a global list of all possible mode names? Drivers
+> > > > > > > > would filter out the unsupported modes anyway.
+> > > > > > >
+> > > > > > > We should totally do something like that, yeah
+> > > > > >
+> > > > > > That sun code already looks like sometihng the DRM core/helpers should be
+> > > > > > doing. And if we want to support named modes well, there's a long list of
+> > > > > > modes in Wikipedia.
+> > > > > >
+> > > > > > https://en.wikipedia.org/wiki/Video_Graphics_Array#/media/File:Vector_Video_Standards2.svg
+> > > > >
+> > > > > Yeah, and NTSC is missing :)
+> > > >
+> > > > And that diagram is about the "digital" variant of PAL.
+> > > > If you go the analog route, the only fixed parts are vfreq/hfreq,
+> > > > number of lines, and synchronization. Other parameters like overscan
+> > > > can vary.  The actual dot clock can vary wildly: while there is an
+> > > > upper limit due to bandwidth limitations, you can come up with an
+> > > > almost infinite number of video modes that can be called PAL, which
+> > > > is one of the reasons why I don't want hardware-specific variants to
+> > > > end up in a global video mode database.
 > > >
-> > > But judging from the intent of this patch series (fixing WARNs on
-> > > certain configs), and that the triggering condition is currently
-> > > impossible on m68k (and other non-SMP) platforms, I think cleanups for
-> > > such arches could come as a separate patch series later. I think the
-> > > m68k refactoring is reasonable after all, due to my observation above,
-> > > but for the other non-SMP arches we may want to wait for the respective
-> > > maintainers' opinions.
+> > > Do you have an example of what that would look like?
 > >
-> > It seems that the best solution is only fix architectures with SMP
-> > support and leave others (m68k, microblaze, um) as is. :)
+> > You mean a PAL mode that does not use 768x576?
 >
-> I think it probably makes sense to do this as a combined cleanup patch,
-> which I can merge through the asm-generic tree, for all architectures
-> whose maintainer does not pick it up directly. For SMP architectures,
-> it's a bugfix that we probably want backported into stable kernels, while
-> for non-SMP targets it is just a minor cleanup for consistency.
-OK, I will send V2 later.
+> I meant what the almost infinite number of video modes that can be
+> called PAL and would have to be defined in drivers
+>
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/video/fbdev/amifb.c#n834
+>
+> But that works :)
+>
+> I don't see what really is troublesome if we go with the mode + property
+> setup here.
+>
+> We can deal easily with the interlaced vs non-interlaced variants
+> already with DRM_MODE_FLAG_INTERLACE, and the ff variants can be dealt
+> with DRM_MODE_FLAG_DBLCLK.
 
-Huacai
+Sure. Interlace and doublescan are the easy parts.
+(actually "ff" is not PAL, but a 31 kHz mode with the same resolution of
+ the corresponding PAL mode).
+
+
+> We still need something to differentiate between, say, PAL-M and NTSC-J
+> where the differences are between things not exposed by the mode itself
+> (black and blanking levels differ from NSTC for NTSC-J, and the color
+> carrier frequency is PAL's for PAL-M)
 >
->         Arnd
+> Am I missing something?
+>
+> > (TAG_HIRES is replaced by the actual dot clock at runtime, as it
+> >  depends on the crystal present on the mainboard).
+>
+> If we have the crystal frequency in the kernel somehow, we could filter
+> them out from the driver (or fill them in) depending on that frequency.
+>
+> I still think the mode + property is the way to go, possibly with some
+> generic component that would take the mode name from the command line
+> and create that initial state depending on the value for backward
+> compatibility.
+>
+> What do you think?
+
+The difficulty is the wild variety of resolutions supported by devices
+that can be connected to a standard (legacy) analog PAL TV or monitor,
+and thus are all called "PAL".  These range from 160x228 (Atari 2600)
+over 176x184 (VIC-20), 256x192 (e.g. ZX Spectrum), 320x200 (Atari ST),
+640x256/512i (Amiga) (I'm not saying we should support old 8-bit
+machines, though ;-)
+A longer list can be found at [1].  Most of the resolutions lower
+than 0.3 Mpixels can be shown on a TV.
+
+IMHO, only the modes backed by digital standards of PAL (and NTSC [2])
+should be in a common mode database.  The rest is to be detained
+to the individual drivers, as they are highly driver-specific, and
+unlikely to be used with more than one driver or hardware platform.
+
+[1] https://en.wikipedia.org/wiki/List_of_common_resolutions
+[2] https://en.wikipedia.org/wiki/List_of_common_resolutions#Digital_Standards
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
