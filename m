@@ -2,111 +2,122 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41570CCA47B
-	for <linux-m68k@archiver.kernel.org>; Thu, 14 Jul 2022 10:39:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75AA4CCA480
+	for <linux-m68k@archiver.kernel.org>; Thu, 14 Jul 2022 12:05:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238003AbiGNKjM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 14 Jul 2022 06:39:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47844 "EHLO
+        id S230220AbiGNMFL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 14 Jul 2022 08:05:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237871AbiGNKjC (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 14 Jul 2022 06:39:02 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3DF02B62E
-        for <linux-m68k@vger.kernel.org>; Thu, 14 Jul 2022 03:39:00 -0700 (PDT)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by laurent.telenet-ops.be with bizsmtp
-        id uyex270084C55Sk01yexDE; Thu, 14 Jul 2022 12:38:58 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1oBvwx-003The-2S; Thu, 14 Jul 2022 12:20:03 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1oBulZ-00Bf1n-I5; Thu, 14 Jul 2022 11:04:13 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
+        with ESMTP id S229822AbiGNMFJ (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 14 Jul 2022 08:05:09 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E31F5C372;
+        Thu, 14 Jul 2022 05:05:07 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 9BA655C0114;
+        Thu, 14 Jul 2022 08:05:04 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Thu, 14 Jul 2022 08:05:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=cc
+        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1657800304; x=1657886704; bh=m30tQ4rO6J
+        cxVKQX3c4vUbcVqVnZtqCNGR90qL2rgJ0=; b=A4c5jD4STW1WQeSMFTdb0X7QKs
+        WTim9GfmyycLprwmdqM4qiHI4REeW287xo4zlJ5hP6wREpNsCkDZTq+yByRmWDRL
+        EgFauqXthrvZl33JpMhBsI0GAqc36Alv3DwzzAjUDcZCBjWkvoggbsn11JJmOpCC
+        W+eMH9PiFW6rdmgxXkq6g5zgjvrmeoEbUCJOVYix8J247n7MPym1Tb3jKQNFdIK5
+        G5Zg0DnFyMhGTBUirfrBWYXemOKQgOP/gmAP+6ek+SFyjRBAgSZFgMgEozIJWb/t
+        1a1c9WFlf+R+BTs7RYd6g5QJl8TVhJPDvNBPJrCaQd2swIjXszdocaXR5wrQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; t=1657800304; x=1657886704; bh=m30tQ4rO6JcxVKQX3c4vUbcVqVnZ
+        tqCNGR90qL2rgJ0=; b=pacqNrBm8LplaBP3Opxlrog92i+HsxBK2UsIZ9/KtDYf
+        0Ehg6k4PV5GCkuhnk2Cw8tuRgcbfvecKZ5OZLJ/3EuOMr5xi/KmEbNlQ3AQEGdK0
+        02tH9PPV0q85ivM32KVQGYxB+fwdTbC9LO8L6puqALF2R0YWGgpEpg3n6sPCAlQb
+        qS8FamH9thtkids97dx3BFcxvcpMz9snjumNSkQY0uCRYtZqMVjhJrT1GCizQfXa
+        goyNZRJqCQhQNIcLSzLo4xGpK2JemM+DKGXSbDTmFXNOs1lQL4TgdgaFwey7V6Xv
+        b6P5CX0BP09gvmf6zBT6rtHRGzL1HKB6qNHGA5trLw==
+X-ME-Sender: <xms:bwbQYkWnnpPxS0zKj8jBPhbuvXsFP71xKalqf0i0shFibFoMNL7wjw>
+    <xme:bwbQYolSZ7bZqtZfoliqhFuAyySpQGB7F4kJ87J2jSugr9jxSPvShQZ4ZOm2OHvUM
+    ZpvjxEt0YiQX1wF2Q4>
+X-ME-Received: <xmr:bwbQYoaS0VlkJNqlZ1X6KfZCG8DrX8xzeWPQspfw_FEYNTx-6NSQoxqkQdEQlZhG3YsWrZkLA-AGTihIm9Itpj5e1tbYtQId2i2zL2s>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudejledggeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpeetfefffefgkedtfefgledugfdtjeefjedvtddtkeetieffjedvgfehheff
+    hfevudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:bwbQYjUzSxQlaLAvc0xbeKZkXaIt--AtMuz7a2G_SPqRsYBvXjf58w>
+    <xmx:bwbQYukvJpv17SGiXPBjZbUalf1uEe2Gx-SdEkyQddoiTx993aApkA>
+    <xmx:bwbQYodYABj2OUIt9qU0VKIVb8GXQ636O-D8W0vIfyIZ6ekRhWnDSw>
+    <xmx:cAbQYo4owk1kUQ0i96VUc6bYJw3kXFvIJmLIF0GbLlI03YKuvH0OvA>
+Feedback-ID: i8771445c:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 14 Jul 2022 08:05:03 -0400 (EDT)
+Date:   Thu, 14 Jul 2022 14:05:00 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Thomas Zimmermann <tzimmermann@suse.de>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Hans de Goede <hdegoede@redhat.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 3/5] drm/modes: parse_cmdline: Make mode->*specified handling more uniform
-Date:   Thu, 14 Jul 2022 11:04:08 +0200
-Message-Id: <3696bcbf95fa1ae98f452c7ea32072642b46caa7.1657788997.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1657788997.git.geert@linux-m68k.org>
+        Hans de Goede <hdegoede@redhat.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] drm/modes: parse_cmdline: Handle empty mode name
+ part
+Message-ID: <20220714120500.miufhnkzaomaqxyp@houat>
 References: <cover.1657788997.git.geert@linux-m68k.org>
+ <302d0737539daa2053134e8f24fdf37e3d939e1e.1657788997.git.geert@linux-m68k.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cphgueiqg6ec2b5x"
+Content-Disposition: inline
+In-Reply-To: <302d0737539daa2053134e8f24fdf37e3d939e1e.1657788997.git.geert@linux-m68k.org>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The various mode->*specified flags are not handled in an uniform way:
-some flags are set by the corresponding drm_mode_parse_cmdline_*()
-function, some flags by the caller of the function, and some flags by
-both.
 
-Make this uniform by making this the responsibility of the various
-parsing helpers, i.e.
-  - Move the setting of mode->specified from caller to callee,
-  - Drop the duplicate setting of mode->bpp_specified and
-    mode->refresh_specified from callers.
+--cphgueiqg6ec2b5x
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
----
-v2:
-  - Add Reviewed-by, Acked-by.
----
- drivers/gpu/drm/drm_modes.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+Hi,
 
-diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_modes.c
-index a3df18fccb31fa77..0cbf0467f263b30a 100644
---- a/drivers/gpu/drm/drm_modes.c
-+++ b/drivers/gpu/drm/drm_modes.c
-@@ -1599,6 +1599,7 @@ static int drm_mode_parse_cmdline_res_mode(const char *str, unsigned int length,
- 	mode->yres = yres;
- 	mode->cvt = cvt;
- 	mode->rb = rb;
-+	mode->specified = true;
- 
- 	return 0;
- }
-@@ -1861,8 +1862,6 @@ bool drm_mode_parse_command_line_for_connector(const char *mode_option,
- 						      mode);
- 		if (ret)
- 			return false;
--
--		mode->specified = true;
- 	}
- 
- 	/* No mode? Check for freestanding extras and/or options */
-@@ -1884,8 +1883,6 @@ bool drm_mode_parse_command_line_for_connector(const char *mode_option,
- 		ret = drm_mode_parse_cmdline_bpp(bpp_ptr, &bpp_end_ptr, mode);
- 		if (ret)
- 			return false;
--
--		mode->bpp_specified = true;
- 	}
- 
- 	if (refresh_ptr) {
-@@ -1893,8 +1890,6 @@ bool drm_mode_parse_command_line_for_connector(const char *mode_option,
- 						     &refresh_end_ptr, mode);
- 		if (ret)
- 			return false;
--
--		mode->refresh_specified = true;
- 	}
- 
- 	/*
--- 
-2.25.1
+On Thu, Jul 14, 2022 at 11:04:06AM +0200, Geert Uytterhoeven wrote:
+> If no mode name part was specified, mode_end is zero, and the "ret =3D=3D
+> mode_end" check does the wrong thing.
+>=20
+> Fix this by skipping all named mode handling when mode_end is zero.
+>=20
+> Fixes: 7b1cce760afe38b4 ("drm/modes: parse_cmdline: Allow specifying stan=
+d-alone options")
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
 
+We should add a test for that in drivers/gpu/drm/tests/drm_cmdline_parser_t=
+est.c
+
+Maxime
+
+--cphgueiqg6ec2b5x
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYtAGbAAKCRDj7w1vZxhR
+xeI7AP4t2KrerCg+30mJU05ZCc7OVEHw7n2y2IWFX+d6zWDDSgEA1c8eVVk9fxHg
+VdcJ0SwbZdaPq1KmT2RLi+IuImnDggM=
+=WpoD
+-----END PGP SIGNATURE-----
+
+--cphgueiqg6ec2b5x--
