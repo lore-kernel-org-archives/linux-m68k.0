@@ -2,57 +2,55 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2848EC43334
-	for <linux-m68k@archiver.kernel.org>; Fri, 15 Jul 2022 01:45:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 835A4CCA47B
+	for <linux-m68k@archiver.kernel.org>; Fri, 15 Jul 2022 02:27:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233017AbiGOBp3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 14 Jul 2022 21:45:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39652 "EHLO
+        id S241289AbiGOC1p (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 14 Jul 2022 22:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232185AbiGOBp3 (ORCPT
+        with ESMTP id S232406AbiGOC1p (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 14 Jul 2022 21:45:29 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23BC666B86
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 14 Jul 2022 18:45:28 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id x91so4577853ede.1
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 14 Jul 2022 18:45:28 -0700 (PDT)
+        Thu, 14 Jul 2022 22:27:45 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 131F27538D
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 14 Jul 2022 19:27:44 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id c3so2559809pfb.13
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 14 Jul 2022 19:27:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sKJrgib6NlReGRP7CDPUE/smLyqBXa9C7wMlxNQsBTA=;
-        b=qReu0qeW9uesDP35O40Ak1r8idK4O9CgbEfPz8c7sbqOOC4g19rgOwc7Y7Nf0cMJve
-         VHwud/zZzm5annCADY978tvLQA29IgL5uKARrzb7nA7Kp/u9ohAHU/Uoc3laFfeyFv82
-         3NvE6Fr+IPR9MFSUs+KYaXTLE4npBFJ2Vcj4F42Mz6qv3HaC4MCx+ag8MrpcmkWW+LoD
-         A8pexKC8qY5puSe0QuRx1/diSs17MAvOjpvCEI7jRLHU+cirQYK6oQpe7bjOxKMCXwV4
-         h3T37BG2LAfhfJKirkYm4c6biwPu6itaR0LZe1EIroqmoe0m+x1vrKsTKeSrtgYQAI2e
-         A1DQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2PHQEHiPUK5/kMXd0Tiaa/2KkMXqEO7YBVcbpRdWkzU=;
+        b=IEJMJOhzDLt+yfASXyPdeXR1oGGTsGDx3vl/pKDJYU0fM7xGoEYifRYmndgoDBn8V+
+         8KaH2UOTKaWNm2bcmSVrDZgCQRS5bZdc/JErVv0oiKI4D779tqf8qqqo8Y4iLSedLKu6
+         KJvBrd7MyyR0lBJJ++sR+EsLWE8c5/Kb5Z0fTJPJtZS1NwarGIQrRHk8mNKtsfmdVnsk
+         DdHkjkVUI3Go5QJOuWJ7tFYeVZyOTWJ1DVFRKCXBlPEbNV+fVinpn4yVP5n1HJQodgh9
+         gnwtaOMTLLw/5pbt9rN0/tXbYqausx/cGWYNWZ3PmgEiWfJZrxEj2bcNKssaqRx0mKTs
+         9LaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sKJrgib6NlReGRP7CDPUE/smLyqBXa9C7wMlxNQsBTA=;
-        b=ZkMERa1Yv+xj26FXNH4Ion2NnhFB33ClQVrzWJ2XBMIGeoIlHVm30MpyoYncmMOJwW
-         MSNjVfF1oVgBdtqJ0IHHoFAjPtrOfdrxTPKj2qzCH0/JKj/ti1pgxtcnq/jSPajvutsv
-         jojv8ftEEcHAEPxAgCvinTHTBzIDsxZt3x58pfXl9hZ8yfSKRBt4i5cQ4A42vY1nlUlX
-         glLYu5xV6zaPHbu5bnfNHfzZTUB/F8dZi6BV3UV9eonM3D6nBz4qXd3C+ajA6t3+oOj5
-         7hcQKgo/PaW/50Cp5LHtrDbLMsjyVbxRFvojoeKInwEOZhb+8gHCSVcgKPfWuw3gBdAb
-         BSBw==
-X-Gm-Message-State: AJIora+s4WCBIKoSORnuv6q8729WVYWjhqgeyUWRt4+zQ7z8Ro04sHvc
-        EewqI4bxceGOxR7RlCXlg4zZCqFDvE6uowBMaC4=
-X-Google-Smtp-Source: AGRyM1tepyPfDbQ4UhlRvunVyrzw1+yZr5IvnNlxW7Dt+XzNG9dCJyVfB1/RFmHMmXMFxtwby6G/IhCp+VsAA17XQ40=
-X-Received: by 2002:a05:6402:2714:b0:43a:c8ff:e319 with SMTP id
- y20-20020a056402271400b0043ac8ffe319mr16158414edd.33.1657849526605; Thu, 14
- Jul 2022 18:45:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220714214657.2402250-1-shorne@gmail.com> <20220714214657.2402250-2-shorne@gmail.com>
-In-Reply-To: <20220714214657.2402250-2-shorne@gmail.com>
-From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Thu, 14 Jul 2022 18:45:27 -0700
-Message-ID: <CAMo8BfKkGRHiFq1vu1ZKkURkUqC+Ee7D42yuKrCeDF+578s9cw@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/2] asm-generic: Remove pci.h copying code out to architectures
-To:     Stafford Horne <shorne@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2PHQEHiPUK5/kMXd0Tiaa/2KkMXqEO7YBVcbpRdWkzU=;
+        b=KCmBg454ARTRrwTgReyApBIyJ++rE7jWS2wELnRw2x1HsHEX6zjEqwyZ5+KJSdGM//
+         nQIrdD2O4EFUuadhJ470PQ5txVvCevuwYbBz+/xPcaRSAX+aJsjfuc2m9PT4XwLBMJJg
+         COLzMExlZOhUGgqL6OZXy+hOQHUCHeFOl2NrEN9WI82okTZ96SL2O1zq2AzDVmeyk/Ug
+         NhCAishW7KN5aMggWxGDHhL6d4+tJp/rE9YriNgripQ6sw7baFci8tGUo8334Y52B1uc
+         /eB+2XRT1LMpWiB4twFMG/aaNyOjiZ4O5KR+3vB5+fBPi9vPTZSngJ39Ypmz6pBf/EIT
+         xIbw==
+X-Gm-Message-State: AJIora8ppZGNoVCaQjX6FYd08nRZH6kNRoydkQMwHR4KdWbhFTtemvOd
+        NjGG2wO2JuLMcFUqRUCJlv0=
+X-Google-Smtp-Source: AGRyM1tFpAPO14ibbARmvlyA7Dm2i3y8ihIra24Y5oG5D9v2V9oCrT80IZwFQQ8AdtfnaIGZOBL3gA==
+X-Received: by 2002:a63:9547:0:b0:408:be53:b599 with SMTP id t7-20020a639547000000b00408be53b599mr10179125pgn.463.1657852063244;
+        Thu, 14 Jul 2022 19:27:43 -0700 (PDT)
+Received: from localhost ([2409:10:24a0:4700:e8ad:216a:2a9d:6d0c])
+        by smtp.gmail.com with ESMTPSA id v22-20020a631516000000b0040caab35e5bsm1998257pgl.89.2022.07.14.19.27.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jul 2022 19:27:42 -0700 (PDT)
+Date:   Fri, 15 Jul 2022 11:27:41 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Max Filippov <jcmvbkbc@gmail.com>
 Cc:     LKML <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
         Richard Henderson <rth@twiddle.net>,
         Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
@@ -92,60 +90,71 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
         <linux-xtensa@linux-xtensa.org>, linux-pci@vger.kernel.org,
         Linux-Arch <linux-arch@vger.kernel.org>,
         linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [RFC PATCH 1/2] asm-generic: Remove pci.h copying code out to
+ architectures
+Message-ID: <YtDQnQOeDF6RID4g@antec>
+References: <20220714214657.2402250-1-shorne@gmail.com>
+ <20220714214657.2402250-2-shorne@gmail.com>
+ <CAMo8BfKkGRHiFq1vu1ZKkURkUqC+Ee7D42yuKrCeDF+578s9cw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMo8BfKkGRHiFq1vu1ZKkURkUqC+Ee7D42yuKrCeDF+578s9cw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Jul 14, 2022 at 2:47 PM Stafford Horne <shorne@gmail.com> wrote:
->
-> The generic pci.h header provides a definition of pci_get_legacy_ide_irq
-> which is used by architectures that use PC-style interrupt numbers.
->
-> This patch removes the old pci.h in order to make room for a new
-> pci.h to be used by arm64, riscv, openrisc, etc.
->
-> The existing code in pci.h is moved out to architectures.
->
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> Link: https://lore.kernel.org/lkml/CAK8P3a0JmPeczfmMBE__vn=Jbvf=nkbpVaZCycyv40pZNCJJXQ@mail.gmail.com/
-> Signed-off-by: Stafford Horne <shorne@gmail.com>
-> ---
->  arch/alpha/include/asm/pci.h   |  1 -
->  arch/ia64/include/asm/pci.h    |  1 -
->  arch/m68k/include/asm/pci.h    |  7 +++++--
->  arch/powerpc/include/asm/pci.h |  1 -
->  arch/s390/include/asm/pci.h    |  6 +++++-
->  arch/sparc/include/asm/pci.h   |  5 ++++-
->  arch/x86/include/asm/pci.h     |  6 ++++--
->  arch/xtensa/include/asm/pci.h  |  6 ++++--
->  include/asm-generic/pci.h      | 17 -----------------
->  9 files changed, 22 insertions(+), 28 deletions(-)
->  delete mode 100644 include/asm-generic/pci.h
+On Thu, Jul 14, 2022 at 06:45:27PM -0700, Max Filippov wrote:
+> On Thu, Jul 14, 2022 at 2:47 PM Stafford Horne <shorne@gmail.com> wrote:
+> >
+> > The generic pci.h header provides a definition of pci_get_legacy_ide_irq
+> > which is used by architectures that use PC-style interrupt numbers.
+> >
+> > This patch removes the old pci.h in order to make room for a new
+> > pci.h to be used by arm64, riscv, openrisc, etc.
+> >
+> > The existing code in pci.h is moved out to architectures.
+> >
+> > Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> > Link: https://lore.kernel.org/lkml/CAK8P3a0JmPeczfmMBE__vn=Jbvf=nkbpVaZCycyv40pZNCJJXQ@mail.gmail.com/
+> > Signed-off-by: Stafford Horne <shorne@gmail.com>
+> > ---
+> >  arch/alpha/include/asm/pci.h   |  1 -
+> >  arch/ia64/include/asm/pci.h    |  1 -
+> >  arch/m68k/include/asm/pci.h    |  7 +++++--
+> >  arch/powerpc/include/asm/pci.h |  1 -
+> >  arch/s390/include/asm/pci.h    |  6 +++++-
+> >  arch/sparc/include/asm/pci.h   |  5 ++++-
+> >  arch/x86/include/asm/pci.h     |  6 ++++--
+> >  arch/xtensa/include/asm/pci.h  |  6 ++++--
+> >  include/asm-generic/pci.h      | 17 -----------------
+> >  9 files changed, 22 insertions(+), 28 deletions(-)
+> >  delete mode 100644 include/asm-generic/pci.h
+> 
+> [...]
+> 
+> > diff --git a/arch/xtensa/include/asm/pci.h b/arch/xtensa/include/asm/pci.h
+> > index 8e2b48a268db..f57ede61f5db 100644
+> > --- a/arch/xtensa/include/asm/pci.h
+> > +++ b/arch/xtensa/include/asm/pci.h
+> > @@ -43,7 +43,9 @@
+> >  #define ARCH_GENERIC_PCI_MMAP_RESOURCE 1
+> >  #define arch_can_pci_mmap_io()         1
+> >
+> > -/* Generic PCI */
+> > -#include <asm-generic/pci.h>
+> 
+> Ok.
+> 
+> > +static inline int pci_get_legacy_ide_irq(struct pci_dev *dev, int channel)
+> > +{
+> > +       return channel ? 15 : 14;
+> > +}
+> 
+> This addition does not make sense for the xtensa as it isn't even possible
+> to enable PNP support (the only user of this function) on xtensa.
 
-[...]
+Thanks for your feedback, this is the kind of feedback I was hoping to fish out
+with this patch.  I will look into completely removing this then.
 
-> diff --git a/arch/xtensa/include/asm/pci.h b/arch/xtensa/include/asm/pci.h
-> index 8e2b48a268db..f57ede61f5db 100644
-> --- a/arch/xtensa/include/asm/pci.h
-> +++ b/arch/xtensa/include/asm/pci.h
-> @@ -43,7 +43,9 @@
->  #define ARCH_GENERIC_PCI_MMAP_RESOURCE 1
->  #define arch_can_pci_mmap_io()         1
->
-> -/* Generic PCI */
-> -#include <asm-generic/pci.h>
-
-Ok.
-
-> +static inline int pci_get_legacy_ide_irq(struct pci_dev *dev, int channel)
-> +{
-> +       return channel ? 15 : 14;
-> +}
-
-This addition does not make sense for the xtensa as it isn't even possible
-to enable PNP support (the only user of this function) on xtensa.
-
--- 
-Thanks.
--- Max
+-Stafford
