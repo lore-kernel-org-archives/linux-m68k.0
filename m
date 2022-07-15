@@ -2,145 +2,173 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3C3AC433EF
-	for <linux-m68k@archiver.kernel.org>; Fri, 15 Jul 2022 07:40:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90D5CC43334
+	for <linux-m68k@archiver.kernel.org>; Fri, 15 Jul 2022 13:27:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbiGOHkv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 15 Jul 2022 03:40:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40848 "EHLO
+        id S229436AbiGON1h (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 15 Jul 2022 09:27:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232038AbiGOHko (ORCPT
+        with ESMTP id S234625AbiGON1d (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 15 Jul 2022 03:40:44 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8F27C1B8
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 15 Jul 2022 00:40:40 -0700 (PDT)
-Received: from mail-ot1-f51.google.com ([209.85.210.51]) by
- mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MI4cT-1oI3Ll3i2Z-00FEhv for <linux-m68k@lists.linux-m68k.org>; Fri, 15
- Jul 2022 09:40:39 +0200
-Received: by mail-ot1-f51.google.com with SMTP id y10-20020a9d634a000000b006167f7ce0c5so3003866otk.0
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 15 Jul 2022 00:40:38 -0700 (PDT)
-X-Gm-Message-State: AJIora/t1N3OnOWu+/1EMSQT39iUvwPtEssEguljdpEa0tDiaa9FoRkj
-        /3my4zeWnkoTsDTipRghodM255qrQj8k/08fQsk=
-X-Google-Smtp-Source: AGRyM1uqN7hbJWu1Kc45V1df/TuEhLpRBy0jFrUgJKDcJEoO7ehMJuFR6t3QFdid1eQbrmQCLxECRTpajxA3X2Ob8Ys=
-X-Received: by 2002:a81:1e4d:0:b0:31c:86f1:95b1 with SMTP id
- e74-20020a811e4d000000b0031c86f195b1mr14141207ywe.42.1657870826723; Fri, 15
- Jul 2022 00:40:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220714214657.2402250-1-shorne@gmail.com> <20220714214657.2402250-2-shorne@gmail.com>
- <CAMo8BfKkGRHiFq1vu1ZKkURkUqC+Ee7D42yuKrCeDF+578s9cw@mail.gmail.com>
-In-Reply-To: <CAMo8BfKkGRHiFq1vu1ZKkURkUqC+Ee7D42yuKrCeDF+578s9cw@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 15 Jul 2022 09:40:10 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3S5crDdUcO0kAgOLVGYgXnkU9D3uo44Wrcu5LdAWCGoQ@mail.gmail.com>
-Message-ID: <CAK8P3a3S5crDdUcO0kAgOLVGYgXnkU9D3uo44Wrcu5LdAWCGoQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/2] asm-generic: Remove pci.h copying code out to architectures
-To:     Max Filippov <jcmvbkbc@gmail.com>
-Cc:     Stafford Horne <shorne@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
+        Fri, 15 Jul 2022 09:27:33 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7152C78DDF
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 15 Jul 2022 06:27:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1657891652; x=1689427652;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=MuD9J6xLfZe+36EwcjDB1aMvs+O7CntqPJd8E9s8qzc=;
+  b=Y7v/kWTDjlSldvBNcckMo+Oqy3LksXLprc/i8JTZbSrOFna/ESFFUhLm
+   irEMH7B0VgazIZoPVQXrod5cgYbX8nL0M1RiCTjVONQcud0alRmMPeSEU
+   3XxL3RmulIB4VlIeiu34v5oWoJprNqrd9A1XhbY52hbpTznqfkefCu7Dg
+   YVD9ecQftPEMTP8Yjv+tvQND1BCiGsRgJ0ZPFIHGGV1/U0ooC5KmyAYbY
+   9boQ3ZKU/jE76+4j7iIaB2vEOluxXJLShxbgWAce8J2QwHC23I7agRooF
+   o/J/YomBqXYI41b2a5CZX5/ZJdl5AtiySEayVFi567RRFPhVaZHgczYxI
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10408"; a="349755876"
+X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; 
+   d="scan'208";a="349755876"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2022 06:27:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; 
+   d="scan'208";a="654332878"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by fmsmga008.fm.intel.com with ESMTP; 15 Jul 2022 06:27:25 -0700
+Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 26FDRMdI020138;
+        Fri, 15 Jul 2022 14:27:22 +0100
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         Arnd Bergmann <arnd@arndb.de>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
         Matt Turner <mattst88@gmail.com>,
+        Brian Cain <bcain@quicinc.com>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
         "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "maintainer:X86 ARCHITECTURE..." <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Nick Child <nick.child@ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Pierre Morel <pmorel@linux.ibm.com>,
         Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "open list:ALPHA PORT" <linux-alpha@vger.kernel.org>,
-        "open list:IA64 (Itanium) PL..." <linux-ia64@vger.kernel.org>,
-        "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        "open list:SPARC + UltraSPAR..." <sparclinux@vger.kernel.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:YRpzCqhgJ+2LejSmkHvGTnizd88DiEwRqe+DLr9afNrwbxG6uyh
- NCgl6FqHIdWTy4YjbMjsNRN6dWE2o9OO7g8FUvLMDMWPXH+Y9K0itEQ4FMSwrrITpeidf2K
- HL4sojlhOYgNg+Z+p4TamvGpI55C8icgVCfo8Bivxz6xoMfcAaQi4yD2qRiUrGWKVSb0/V8
- 747R2lNfrv/c9Wx7JUoEA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:sxJOtiBz4CE=:NGZyTopLTD8Zx4mU2Ck8VL
- v3DzhD1SakvPqCUfqJ3PqljV93DyhDBWyuvJSbvV7k2AbDlGzkG8xeq2fyK/1SQjE0Pq4dPvL
- 0tQjUGYDfJg+3KToKVAnZIbMDlUEiyAUngmSD9MPVSHqApnDl5A7BZCdBnEGj6+jQTnWNoGHk
- jOYg18RpAh0xs0pNx0PKP1tzA86gFxubEzvzKPanX711xVVNVjBTLrBcX4k6ZDq5w6WdDHj/r
- 1ySrF6vxHjz75Z1SBrJ536sVXyjDpIMwssqCfOnHeqE+P/NmXYWdRdaV/5x4mRUEu4mGbEG3K
- ka3k2Oo0GDujBDmGNqXCgP/HXCG+u5NaxKjZJM/8sUfJjIynCmYGqQ6EXE7sL+juccHTASOcO
- RRsKrGeIJ/VjPsZGxTknsfqd/0GvOUQxJjzbAfPE2lI6YxXX+CurKET64Y3iwes1+X5JNIVWL
- Sm9T0y0U+FGT5gAkir18HxtP2n2ZPU8LyJS4oLqDmaewWzuivkyGd2p2Nw4gmNgo+jt/8wUtj
- 8y5zmd2A0WqjbeTc+qOUzip33vpjClslrIHntO7Ave8EvIt6/JQsqUCTMZU+IyJlVlsvXQwtQ
- RNOV2Z3L/1wJxaQwfthwOgiMCeAaUPldU2HararGOtrb+zk7NmTnlNqS30b5l8aUMYgss9/v3
- dkvLQnoNKiMUDfBYfb2IMYy2PM5tG3nwqSxPeD3x4iUB1/XHiiKoGPVXVt2+CzBU8+9D4vlc3
- 8j6YbDYa5Te5rO39COpgMdnqDzi64w7jcFych/aWgmaMX16E0KjkTYGQqOro7oj09JuDsBn9F
- 0bHijKmo0oyUNezZZwWbkKT15GmlX8nSyw79+EkfLj17fafeLojFNXgGf+aPMMOwxZrpsTVBv
- 6ZKOomOuICgcKUydyjtQ==
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Marco Elver <elver@google.com>, Borislav Petkov <bp@suse.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, kernel test robot <lkp@intel.com>,
+        linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch@vger.kernel.org, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 6/9] bitops: let optimize out non-atomic bitops on compile-time constants
+Date:   Fri, 15 Jul 2022 15:26:33 +0200
+Message-Id: <20220715132633.61480-1-alexandr.lobakin@intel.com>
+X-Mailer: git-send-email 2.36.1
+In-Reply-To: <20220715000402.GA512558@roeck-us.net>
+References: <20220624121313.2382500-1-alexandr.lobakin@intel.com> <20220624121313.2382500-7-alexandr.lobakin@intel.com> <20220715000402.GA512558@roeck-us.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Jul 15, 2022 at 3:45 AM Max Filippov <jcmvbkbc@gmail.com> wrote:
-> On Thu, Jul 14, 2022 at 2:47 PM Stafford Horne <shorne@gmail.com> wrote:
->
-> > +static inline int pci_get_legacy_ide_irq(struct pci_dev *dev, int channel)
-> > +{
-> > +       return channel ? 15 : 14;
-> > +}
->
-> This addition does not make sense for the xtensa as it isn't even possible
-> to enable PNP support (the only user of this function) on xtensa.
+From: Guenter Roeck <linux@roeck-us.net>
+Date: Thu, 14 Jul 2022 17:04:02 -0700
 
-Nice catch! I had looked at this function earlier and only tried to infer
-which architectures might have this based on who has those interrupt
-numbers reserved for ISA devices, but looking at CONFIG_PNP is clearly
-better here.
+> On Fri, Jun 24, 2022 at 02:13:10PM +0200, Alexander Lobakin wrote:
+> > Currently, many architecture-specific non-atomic bitop
+> > implementations use inline asm or other hacks which are faster or
 
-PNP depends on "ISA || ACPI", and this already rules out most
-architectures. The remaining ones are:
+[...]
 
-* x86, ia64, alpha: These clearly use PNP based on-board devices on
-   common machines, and use PC-style interrupts
+> > Cc: Mark Rutland <mark.rutland@arm.com>
+> > Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+> > Reviewed-by: Marco Elver <elver@google.com>
+> 
+> Building i386:allyesconfig ... failed
+> --------------
+> Error log:
+> arch/x86/platform/olpc/olpc-xo1-sci.c: In function 'send_ebook_state':
+> arch/x86/platform/olpc/olpc-xo1-sci.c:83:63: error: logical not is only applied to the left hand side of comparison
 
-* arm64, loongarch: These select PNP when ACPI is enabled. I don't
-   think they actually use PNP, but for the moment the function needs to
-  be defined, probably returning 0. Loongarch still lacks PCI support
-  though, so asm/pci.h is not yet there.
+Looks like a trigger, not a cause... Anyway, this construct:
 
-* arm, mips, powerpc: Only a few older machines in each of these
-  support ISA devices, and the function is probably machine specific.
-  These all have a custom pci.h already and don't use the asm-generic
-  version.
+	unsigned char state;
 
-* m68k: there are two that enable CONFIG_ISA and one that enables
-  CONFIG_PCI, but nothing that has both, so we don't need this
-  function.
+	[...]
 
-In summary, I think only x86 actually uses this function, and it is
-correct there, everything else either has its own implementation
-or does not need it, so the existing asm-generic/pci.h file can
-just be folded into the x86 asm/pci.h. That is a great cleanup.
+	if (!!test_bit(SW_TABLET_MODE, ebook_switch_idev->sw) == state)
 
-        Arnd
+doesn't look legit enough.
+That redundant double-negation [of boolean value], together with
+comparing boolean to char, provokes compilers to think the author
+made logical mistakes here, although it works as expected.
+Could you please try (if it's not automated build which you can't
+modify) the following:
+
+--- a/arch/x86/platform/olpc/olpc-xo1-sci.c
++++ b/arch/x86/platform/olpc/olpc-xo1-sci.c
+@@ -80,7 +80,7 @@ static void send_ebook_state(void)
+ 		return;
+ 	}
+ 
+-	if (!!test_bit(SW_TABLET_MODE, ebook_switch_idev->sw) == state)
++	if (test_bit(SW_TABLET_MODE, ebook_switch_idev->sw) == !!state)
+ 		return; /* Nothing new to report. */
+ 
+ 	input_report_switch(ebook_switch_idev, SW_TABLET_MODE, state);
+---
+
+We'd take it into the bitmap tree then. The series revealed
+a fistful of existing code issues already :)
+
+> 
+> Bisect log attached.
+> 
+> Guenter
+> 
+> ---
+> # bad: [4662b7adea50bb62e993a67f611f3be625d3df0d] Add linux-next specific files for 20220713
+> # good: [32346491ddf24599decca06190ebca03ff9de7f8] Linux 5.19-rc6
+> git bisect start 'HEAD' 'v5.19-rc6'
+> # good: [8b7e002d8bc6e17c94092d25e7261db4e6e5f2cc] Merge branch 'drm-next' of git://git.freedesktop.org/git/drm/drm.git
+> git bisect good 8b7e002d8bc6e17c94092d25e7261db4e6e5f2cc
+> # good: [07f6d21d6e33c1e28e24ae84e9d26e4e7d4853f5] Merge branch 'next' of git://git.kernel.org/pub/scm/linux/kernel/git/kvms390/linux.git
+> git bisect good 07f6d21d6e33c1e28e24ae84e9d26e4e7d4853f5
+> # good: [5ff085e5d4f6700e03635d5e700f52163a6dc2a7] Merge branch 'staging-next' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git
+> git bisect good 5ff085e5d4f6700e03635d5e700f52163a6dc2a7
+> # good: [eb9e3fdbdd8b61ef0f4bee23259fe6ab69e463ab] Merge branch 'master' of git://git.kernel.org/pub/scm/linux/kernel/git/crng/random.git
+> git bisect good eb9e3fdbdd8b61ef0f4bee23259fe6ab69e463ab
+> # good: [9f2183cd961e5ddb7954eafb6bb01a495c6a9c7b] hexagon/mm: enable ARCH_HAS_VM_GET_PAGE_PROT
+> git bisect good 9f2183cd961e5ddb7954eafb6bb01a495c6a9c7b
+> # bad: [e878aa5faf9ac8c0b5d0c3f293389c194c250fff] Merge branch 'mm-nonmm-stable' of git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
+> git bisect bad e878aa5faf9ac8c0b5d0c3f293389c194c250fff
+> # good: [cf95d50205f62c4f5f538676def847292cf39fa9] fs: don't call ->writepage from __mpage_writepage
+> git bisect good cf95d50205f62c4f5f538676def847292cf39fa9
+> # good: [5103cbfd92d3587713476f94f9485b96e02f0146] Merge branch 'for-next/execve' of git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git
+> git bisect good 5103cbfd92d3587713476f94f9485b96e02f0146
+> # good: [ee56c3e8eec166f4e4a2ca842b7804d14f3a0208] Merge branch 'master' into mm-nonmm-stable
+> git bisect good ee56c3e8eec166f4e4a2ca842b7804d14f3a0208
+> # bad: [dc34d5036692c614eef23c1130ee42a201c316bf] lib: test_bitmap: add compile-time optimization/evaluations assertions
+> git bisect bad dc34d5036692c614eef23c1130ee42a201c316bf
+> # good: [bb7379bfa680bd48b468e856475778db2ad866c1] bitops: define const_*() versions of the non-atomics
+> git bisect good bb7379bfa680bd48b468e856475778db2ad866c1
+> # bad: [b03fc1173c0c2bb8fad61902a862985cecdc4b1b] bitops: let optimize out non-atomic bitops on compile-time constants
+> git bisect bad b03fc1173c0c2bb8fad61902a862985cecdc4b1b
+> # good: [e69eb9c460f128b71c6b995d75a05244e4b6cc3e] bitops: wrap non-atomic bitops with a transparent macro
+> git bisect good e69eb9c460f128b71c6b995d75a05244e4b6cc3e
+> # first bad commit: [b03fc1173c0c2bb8fad61902a862985cecdc4b1b] bitops: let optimize out non-atomic bitops on compile-time constants
+
+Thanks,
+Olek
