@@ -2,159 +2,111 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 835A4CCA47B
-	for <linux-m68k@archiver.kernel.org>; Fri, 15 Jul 2022 02:27:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F531CCA47C
+	for <linux-m68k@archiver.kernel.org>; Fri, 15 Jul 2022 04:50:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241289AbiGOC1p (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 14 Jul 2022 22:27:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39318 "EHLO
+        id S229943AbiGOEut (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 15 Jul 2022 00:50:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232406AbiGOC1p (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 14 Jul 2022 22:27:45 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 131F27538D
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 14 Jul 2022 19:27:44 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id c3so2559809pfb.13
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 14 Jul 2022 19:27:44 -0700 (PDT)
+        with ESMTP id S230061AbiGOEuc (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 15 Jul 2022 00:50:32 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88C13785AF;
+        Thu, 14 Jul 2022 21:50:30 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id y9so3674428pff.12;
+        Thu, 14 Jul 2022 21:50:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2PHQEHiPUK5/kMXd0Tiaa/2KkMXqEO7YBVcbpRdWkzU=;
-        b=IEJMJOhzDLt+yfASXyPdeXR1oGGTsGDx3vl/pKDJYU0fM7xGoEYifRYmndgoDBn8V+
-         8KaH2UOTKaWNm2bcmSVrDZgCQRS5bZdc/JErVv0oiKI4D779tqf8qqqo8Y4iLSedLKu6
-         KJvBrd7MyyR0lBJJ++sR+EsLWE8c5/Kb5Z0fTJPJtZS1NwarGIQrRHk8mNKtsfmdVnsk
-         DdHkjkVUI3Go5QJOuWJ7tFYeVZyOTWJ1DVFRKCXBlPEbNV+fVinpn4yVP5n1HJQodgh9
-         gnwtaOMTLLw/5pbt9rN0/tXbYqausx/cGWYNWZ3PmgEiWfJZrxEj2bcNKssaqRx0mKTs
-         9LaA==
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=kRLhZzbGYGaRDYFSzzNmS4CySIoJIiXGprjd8sj9K/0=;
+        b=V+hoi62i9rmotV7C9un25P6iuXZO0dEMik9ZBz3EVv9NVFcXJN95QkPmfBncsjI/Ao
+         FCxOTAqa8wvTsmNa1AOwYKeX3C3rL7cY5bTQBsQJUlcVD/Pkzfv/BmgwYTtEqzlYEqvK
+         CY5SN2DJ0kyd6PoEAxwAOH5Zq2JwJEObsYuI7yoR08OxaaYfAYOE0lTxfzI5VYFrLJAh
+         Ags94LXbQBlnBepEDdYxl8tpSLRTpMcG4ZTbO43dOwIoD56IHTdEMnPGbVG32oDhp5oZ
+         a27iAGk2eDZeSJGEI7gP30qOS/i2Hti3D6xeHqSZ6Na1K9JIY/GvwP3QFrzHEgqACVQj
+         ZSKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2PHQEHiPUK5/kMXd0Tiaa/2KkMXqEO7YBVcbpRdWkzU=;
-        b=KCmBg454ARTRrwTgReyApBIyJ++rE7jWS2wELnRw2x1HsHEX6zjEqwyZ5+KJSdGM//
-         nQIrdD2O4EFUuadhJ470PQ5txVvCevuwYbBz+/xPcaRSAX+aJsjfuc2m9PT4XwLBMJJg
-         COLzMExlZOhUGgqL6OZXy+hOQHUCHeFOl2NrEN9WI82okTZ96SL2O1zq2AzDVmeyk/Ug
-         NhCAishW7KN5aMggWxGDHhL6d4+tJp/rE9YriNgripQ6sw7baFci8tGUo8334Y52B1uc
-         /eB+2XRT1LMpWiB4twFMG/aaNyOjiZ4O5KR+3vB5+fBPi9vPTZSngJ39Ypmz6pBf/EIT
-         xIbw==
-X-Gm-Message-State: AJIora8ppZGNoVCaQjX6FYd08nRZH6kNRoydkQMwHR4KdWbhFTtemvOd
-        NjGG2wO2JuLMcFUqRUCJlv0=
-X-Google-Smtp-Source: AGRyM1tFpAPO14ibbARmvlyA7Dm2i3y8ihIra24Y5oG5D9v2V9oCrT80IZwFQQ8AdtfnaIGZOBL3gA==
-X-Received: by 2002:a63:9547:0:b0:408:be53:b599 with SMTP id t7-20020a639547000000b00408be53b599mr10179125pgn.463.1657852063244;
-        Thu, 14 Jul 2022 19:27:43 -0700 (PDT)
-Received: from localhost ([2409:10:24a0:4700:e8ad:216a:2a9d:6d0c])
-        by smtp.gmail.com with ESMTPSA id v22-20020a631516000000b0040caab35e5bsm1998257pgl.89.2022.07.14.19.27.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jul 2022 19:27:42 -0700 (PDT)
-Date:   Fri, 15 Jul 2022 11:27:41 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Max Filippov <jcmvbkbc@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "maintainer:X86 ARCHITECTURE..." <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Nick Child <nick.child@ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "open list:ALPHA PORT" <linux-alpha@vger.kernel.org>,
-        "open list:IA64 (Itanium) PL..." <linux-ia64@vger.kernel.org>,
-        "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        "open list:SPARC + UltraSPAR..." <sparclinux@vger.kernel.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>, linux-pci@vger.kernel.org,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Subject: Re: [RFC PATCH 1/2] asm-generic: Remove pci.h copying code out to
- architectures
-Message-ID: <YtDQnQOeDF6RID4g@antec>
-References: <20220714214657.2402250-1-shorne@gmail.com>
- <20220714214657.2402250-2-shorne@gmail.com>
- <CAMo8BfKkGRHiFq1vu1ZKkURkUqC+Ee7D42yuKrCeDF+578s9cw@mail.gmail.com>
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=kRLhZzbGYGaRDYFSzzNmS4CySIoJIiXGprjd8sj9K/0=;
+        b=oL1us/M3kjElaTWFVbmBQDXaypBEIbX2OJDRC7/Z4aLjSUIPOzbTbtNElmNrBPPnzv
+         OVpbQWYWztjzEFesGFYU6vEWP4bGfuXkoUJWC1cviJCv80L/wcVn0QEe5iNkTilJePPu
+         +njIogTjgnu0lyktujf3AW2Cq4y1K617grdF2FbsNNIAyyUIH7KnWQZRno1Z4inX5rct
+         Mo5gOfuPb0b77E87XIzny2xCw30gytf+ATF0ohdTG84R58Gpo+CmEWtweD8Lmy/PQE9F
+         PAnrO5Y0AO0B9D1CPSCLoSXUzpW6SDd12g0BtGM81xDgWL5J2Xni2Q/WgBOTQzUgm4T6
+         Ml6A==
+X-Gm-Message-State: AJIora+0FyUUDrbcF50GbHLwSSmiDMEB2l+WywqEApU0ShzA64kg0X0Y
+        UdHvSt89DAvtsLnaThSlE2/af6sC4Ns=
+X-Google-Smtp-Source: AGRyM1u/RDFN0eyZrhqFr7v6lAykVv06aI/n1+Es6yulIiuzxUGnR3jVZSsEy1EL8D33z18/mQCqtA==
+X-Received: by 2002:a05:6a00:8c5:b0:510:6eae:6fa1 with SMTP id s5-20020a056a0008c500b005106eae6fa1mr12333545pfu.12.1657860629806;
+        Thu, 14 Jul 2022 21:50:29 -0700 (PDT)
+Received: from [10.1.1.24] (222-155-0-244-adsl.sparkbb.co.nz. [222.155.0.244])
+        by smtp.gmail.com with ESMTPSA id c18-20020a170902c2d200b0015e8d4eb1dbsm2389411pla.37.2022.07.14.21.50.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 14 Jul 2022 21:50:28 -0700 (PDT)
+Subject: Re: [PATCH 00/10] video: fbdev: atari: Miscellaneous fixes and
+ cleanups
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Helge Deller <deller@gmx.de>
+References: <cover.1657554353.git.geert@linux-m68k.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-fbdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <d9af62bf-09f2-cfca-eeda-92dcb539b56e@gmail.com>
+Date:   Fri, 15 Jul 2022 16:50:21 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMo8BfKkGRHiFq1vu1ZKkURkUqC+Ee7D42yuKrCeDF+578s9cw@mail.gmail.com>
+In-Reply-To: <cover.1657554353.git.geert@linux-m68k.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Jul 14, 2022 at 06:45:27PM -0700, Max Filippov wrote:
-> On Thu, Jul 14, 2022 at 2:47 PM Stafford Horne <shorne@gmail.com> wrote:
-> >
-> > The generic pci.h header provides a definition of pci_get_legacy_ide_irq
-> > which is used by architectures that use PC-style interrupt numbers.
-> >
-> > This patch removes the old pci.h in order to make room for a new
-> > pci.h to be used by arm64, riscv, openrisc, etc.
-> >
-> > The existing code in pci.h is moved out to architectures.
-> >
-> > Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> > Link: https://lore.kernel.org/lkml/CAK8P3a0JmPeczfmMBE__vn=Jbvf=nkbpVaZCycyv40pZNCJJXQ@mail.gmail.com/
-> > Signed-off-by: Stafford Horne <shorne@gmail.com>
-> > ---
-> >  arch/alpha/include/asm/pci.h   |  1 -
-> >  arch/ia64/include/asm/pci.h    |  1 -
-> >  arch/m68k/include/asm/pci.h    |  7 +++++--
-> >  arch/powerpc/include/asm/pci.h |  1 -
-> >  arch/s390/include/asm/pci.h    |  6 +++++-
-> >  arch/sparc/include/asm/pci.h   |  5 ++++-
-> >  arch/x86/include/asm/pci.h     |  6 ++++--
-> >  arch/xtensa/include/asm/pci.h  |  6 ++++--
-> >  include/asm-generic/pci.h      | 17 -----------------
-> >  9 files changed, 22 insertions(+), 28 deletions(-)
-> >  delete mode 100644 include/asm-generic/pci.h
-> 
-> [...]
-> 
-> > diff --git a/arch/xtensa/include/asm/pci.h b/arch/xtensa/include/asm/pci.h
-> > index 8e2b48a268db..f57ede61f5db 100644
-> > --- a/arch/xtensa/include/asm/pci.h
-> > +++ b/arch/xtensa/include/asm/pci.h
-> > @@ -43,7 +43,9 @@
-> >  #define ARCH_GENERIC_PCI_MMAP_RESOURCE 1
-> >  #define arch_can_pci_mmap_io()         1
-> >
-> > -/* Generic PCI */
-> > -#include <asm-generic/pci.h>
-> 
-> Ok.
-> 
-> > +static inline int pci_get_legacy_ide_irq(struct pci_dev *dev, int channel)
-> > +{
-> > +       return channel ? 15 : 14;
-> > +}
-> 
-> This addition does not make sense for the xtensa as it isn't even possible
-> to enable PNP support (the only user of this function) on xtensa.
+Hi Geert,
 
-Thanks for your feedback, this is the kind of feedback I was hoping to fish out
-with this patch.  I will look into completely removing this then.
+somehow this series slipped into my spam folder ... only saw it now.
 
--Stafford
+Am 12.07.2022 um 03:50 schrieb Geert Uytterhoeven:
+> 	Hi all,
+>
+> This patch series contains miscellaneous fixes and cleanups for the
+> Atari frame buffer device driver, which were identified while working on
+> the Atari DRM driver.
+>
+> Most of them have been tested on ARAnyM, and should be safe to apply,
+> except perhaps for the last one, which is marked RFC.
+>
+> Thanks for your comments!
+>
+> Geert Uytterhoeven (10):
+>   video: fbdev: atari: Simplify atafb_pan_display()
+>   video: fbdev: atari: Remove bogus FB_VMODE_YWRAP flags
+>   video: fbdev: atari: Fix inverse handling
+>   video: fbdev: atari: Fix ext_setcolreg()
+>   video: fbdev: atari: Remove unneeded casts from void *
+>   video: fbdev: atari: Remove unneeded casts to void *
+>   video: fbdev: atari: Fix TT High video mode vertical refresh
+>   video: fbdev: atari: Fix VGA modes
+>   video: fbdev: atari: Remove unused definitions and variables
+>   [RFC] video: fbdev: atari: Remove backward bug-compatibility
+>
+>  Documentation/m68k/kernel-options.rst |   4 +-
+>  drivers/video/fbdev/atafb.c           | 101 +++++++-------------------
+>  2 files changed, 29 insertions(+), 76 deletions(-)
+>
+
+Looks good to me. (I'll still try to test it on hardware this weekend.)
+
+I'd suggest the last one be applied as well - if the regression can only 
+be triggered by a X server resolution switch, I doubt it'll matter in 
+practice.
+
+Cheers,
+
+	Michael
