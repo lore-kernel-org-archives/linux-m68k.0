@@ -2,99 +2,107 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7588CC433EF
-	for <linux-m68k@archiver.kernel.org>; Sun, 17 Jul 2022 10:19:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C7F1CCA481
+	for <linux-m68k@archiver.kernel.org>; Sun, 17 Jul 2022 23:02:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229739AbiGQKTv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 17 Jul 2022 06:19:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36252 "EHLO
+        id S232775AbiGQXCn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 17 Jul 2022 19:02:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbiGQKTu (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 17 Jul 2022 06:19:50 -0400
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05AF14018
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 17 Jul 2022 03:19:49 -0700 (PDT)
-Received: by mail-qk1-f169.google.com with SMTP id m16so2551948qka.12
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 17 Jul 2022 03:19:49 -0700 (PDT)
+        with ESMTP id S229535AbiGQXCn (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 17 Jul 2022 19:02:43 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9260312618;
+        Sun, 17 Jul 2022 16:02:42 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id p9so10196109pjd.3;
+        Sun, 17 Jul 2022 16:02:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=9duI1rSpswAXnRq3urEW1hM9QxHEE1skc8fMorpNRtM=;
+        b=Bx419kWJ5uk7pbzZCokXEhQ7DRPh7mtVCaztg7LXosqvEYYqxHD/NfuIYwQfJpz/4i
+         lqPECExSYKWZ9/9zx0mxoHwPZv2d4MtmTZTJEd42aqZQ0fkkWHVogmEXWAjN2sqIvGUk
+         A8b9mCQcU5RUfk+Ln51//K+Sz2mthahh1rAdzDKJVrwYnKGqoNgHuDVmPP/yb50zYnm0
+         GvNLc7XqQkhi0xZaS0+OWmAb6NPRasw5DSnyUcVsYFiv3RQ/qklRt5gDTPIDM0dkPa7h
+         kMHKBIC0F+AozCbKsaGvdsOGOjbbnfqskEYMG1qjgoExvS/sES1Vu+qEajndEYcOq4Ox
+         UXRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R5GgPVzsMxt+e0S7DosYyDp0pAuJJBY0N6Q+Mj0afOs=;
-        b=yTu0LxoHmWMgRJMyz14j/5HtlTjYFTtUmgmOHfhMMfZGUza6opsZ6D1JFemjzv0D+r
-         pXyMgStRHXIAGDq7sFekUZ+k5+M2JIKyJDspMwUWEJBeH40SdiP7YvyeUAaKJIowh9vO
-         mCIY2pUTBl++Kb8JMktbv1JELJDEwleg4bU/DqqiMayuImIn9iiwqV0Uf8iC2Cb8/cKK
-         Sz/zTPY+ObFKWX6HBWTmmhU8WKvWe0n1mXFrMYzVR1BmnFFUB6ooyvxiF5314QoQFbfp
-         QCG+GzMAyWsSxv90qda42DySGB1tWn971+VALcp2Zi/uNzODHtKt1PoGVvzP/gk39utg
-         HYOQ==
-X-Gm-Message-State: AJIora+VyQ+hH4dBhZnxKblo4J0zl2800EaxCj+htG4CXv3WqHKqh3qS
-        0IQCwKWZaIxOZNtz9hniRmC/jZ2Jlg79Sg==
-X-Google-Smtp-Source: AGRyM1u5X1O0pcCztNmg3pETNBzwUelhW5ERNQlPFZrER7/erwzB+hgmf64d9LOcbBmIDCPPa6cQ8Q==
-X-Received: by 2002:a05:620a:25c9:b0:6b2:7409:892e with SMTP id y9-20020a05620a25c900b006b27409892emr13953374qko.367.1658053188598;
-        Sun, 17 Jul 2022 03:19:48 -0700 (PDT)
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
-        by smtp.gmail.com with ESMTPSA id bp41-20020a05620a45a900b006b5bbd8cb92sm8166180qkb.55.2022.07.17.03.19.48
-        for <linux-m68k@lists.linux-m68k.org>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=9duI1rSpswAXnRq3urEW1hM9QxHEE1skc8fMorpNRtM=;
+        b=YhUXjkOMGh97xVG5nN+05q310g220CgXvaDMvBNRWDNHK3MOJqoMxV6iRXZNxgkwzH
+         gV+4RsKl6cTAYGe2ngRT5poZjM/fPFw8GjaXKHQOYgU5PRE/wFgVujwG2BuD7A0O3JGY
+         Q6p9okAqUJeP2uq0ZDhUDlXQXCknzmGV0Cts4w5wg2PMDoHMQoXaYx3Xa9zY1CpZQwaf
+         svBgUsQREP0cN+2DCtPIySBYFesYLdhtxYmbD7AAWkRWRfBmjjxz+dPTehCdHaOjwSGG
+         A1cmZpNnbsTggA7suLrBg7GPKJbUJjj7lADihJxyiDjK/Ems0HkOSbkgMEpnMavYbhIU
+         lXeQ==
+X-Gm-Message-State: AJIora9cbfXBhQHl/8nJQFXP+m8dClbnvadbnf9tMVaz7aQjY2lfD9/s
+        kWGqEVXmsq9UsVAfvPI1Pdo=
+X-Google-Smtp-Source: AGRyM1s2OwobGDzORrPZHucygkybI/3hmpBr8Ni1Lah7murhJ3EfiGFcUanLyWGjdHC/P7DK+DlDgA==
+X-Received: by 2002:a17:90b:3502:b0:1f0:986:e36b with SMTP id ls2-20020a17090b350200b001f00986e36bmr35970479pjb.154.1658098962056;
+        Sun, 17 Jul 2022 16:02:42 -0700 (PDT)
+Received: from ?IPV6:2001:df0:0:200c:6c17:ca15:3733:a6a1? ([2001:df0:0:200c:6c17:ca15:3733:a6a1])
+        by smtp.gmail.com with ESMTPSA id b3-20020a170902650300b0016be96e07d1sm7766371plk.121.2022.07.17.16.02.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Jul 2022 03:19:48 -0700 (PDT)
-Received: by mail-yb1-f170.google.com with SMTP id f73so15999169yba.10
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 17 Jul 2022 03:19:48 -0700 (PDT)
-X-Received: by 2002:a05:6902:1246:b0:66e:ea31:8d05 with SMTP id
- t6-20020a056902124600b0066eea318d05mr23135445ybu.89.1658053187859; Sun, 17
- Jul 2022 03:19:47 -0700 (PDT)
+        Sun, 17 Jul 2022 16:02:41 -0700 (PDT)
+Message-ID: <77ecffbd-7568-f653-5273-1f3dffb17891@gmail.com>
+Date:   Mon, 18 Jul 2022 11:02:36 +1200
 MIME-Version: 1.0
-References: <20220716161022.16902-1-dengshaomin@cdjrlc.com>
- <CAMuHMdUhGHXnd=tzLNKT-_enBfs_YZgAHNv6jeNTQ=c_e63urw@mail.gmail.com> <87edykrs7l.fsf@igel.home>
-In-Reply-To: <87edykrs7l.fsf@igel.home>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sun, 17 Jul 2022 12:19:36 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWoY+nCpSDjAUQ8vvz-CMRVis1Pf2W1VKty35BJ8+dKOA@mail.gmail.com>
-Message-ID: <CAMuHMdWoY+nCpSDjAUQ8vvz-CMRVis1Pf2W1VKty35BJ8+dKOA@mail.gmail.com>
-Subject: Re: [PATCH] mm:%Lx is non-standard C
-To:     Andreas Schwab <schwab@linux-m68k.org>
-Cc:     dengshaomin@cdjrlc.com, Sam Creasey <sammy@sammy.net>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH 00/10] video: fbdev: atari: Miscellaneous fixes and
+ cleanups
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Helge Deller <deller@gmx.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-fbdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1657554353.git.geert@linux-m68k.org>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+In-Reply-To: <cover.1657554353.git.geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sun, Jul 17, 2022 at 12:03 PM Andreas Schwab <schwab@linux-m68k.org> wrote:
-> On Jul 17 2022, Geert Uytterhoeven wrote:
-> > CC linux-m68k.
-> >
-> > On Sat, Jul 16, 2022 at 6:10 PM shaom Deng <dengshaomin@cdjrlc.com> wrote:
-> >> replace %Lx with %lx, because %Lx is not standard
-> >>
-> >> Signed-off-by: shaom Deng <dengshaomin@cdjrlc.com>
-> >
-> > Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > i.e. will queue in the m68k for-v5.20 branch.
-> >
-> >> --- a/arch/m68k/sun3/sun3dvma.c
-> >> +++ b/arch/m68k/sun3/sun3dvma.c
-> >> @@ -77,7 +77,7 @@ static void print_use(void)
-> >>         pr_info("%d entries in use total\n", j);
-> >>
-> >>         pr_info("allocation/free calls: %lu/%lu\n", dvma_allocs, dvma_frees);
-> >> -       pr_info("allocation/free bytes: %Lx/%Lx\n", dvma_alloc_bytes,
-> >> +       pr_info("allocation/free bytes: %lx/%lx\n", dvma_alloc_bytes,
-> >>                 dvma_free_bytes);
+Hi Geert,
+
+On 12/07/22 03:50, Geert Uytterhoeven wrote:
+> 	Hi all,
 >
-> Does that actually work?  The L modifier is equivalent to `ll', not `l',
-> and dvma_alloc_bytes and dvma_free_bytes are in fact of type unsigned
-> long long.
+> This patch series contains miscellaneous fixes and cleanups for the
+> Atari frame buffer device driver, which were identified while working on
+> the Atari DRM driver.
+>
+> Most of them have been tested on ARAnyM, and should be sa<fe to apply,
+> except perhaps for the last one, which is marked RFC.
+>
+> Thanks for your comments!
+>
+> Geert Uytterhoeven (10):
+>    video: fbdev: atari: Simplify atafb_pan_display()
+>    video: fbdev: atari: Remove bogus FB_VMODE_YWRAP flags
+>    video: fbdev: atari: Fix inverse handling
+>    video: fbdev: atari: Fix ext_setcolreg()
+>    video: fbdev: atari: Remove unneeded casts from void *
+>    video: fbdev: atari: Remove unneeded casts to void *
+>    video: fbdev: atari: Fix TT High video mode vertical refresh
+>    video: fbdev: atari: Fix VGA modes
+>    video: fbdev: atari: Remove unused definitions and variables
+>    [RFC] video: fbdev: atari: Remove backward bug-compatibility
+>
+>   Documentation/m68k/kernel-options.rst |   4 +-
+>   drivers/video/fbdev/atafb.c           | 101 +++++++-------------------
+>   2 files changed, 29 insertions(+), 76 deletions(-)
+>
+Works OK on my Falcon (except for the falh* modes, but that is not a 
+regression - might be something I miscoded in these modes, ages ago).
 
-You're absolutely right.  More coffee needed....
+Tested-by: Michael Schmitz <schmitzmic@gmail.com>
 
-Gr{oetje,eeting}s,
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
