@@ -2,154 +2,70 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07833C433EF
-	for <linux-m68k@archiver.kernel.org>; Mon, 18 Jul 2022 09:04:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DCA3C433EF
+	for <linux-m68k@archiver.kernel.org>; Mon, 18 Jul 2022 10:56:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234068AbiGRJEb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 18 Jul 2022 05:04:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38100 "EHLO
+        id S234180AbiGRK4X (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 18 Jul 2022 06:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234026AbiGRJE3 (ORCPT
+        with ESMTP id S234119AbiGRK4W (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 18 Jul 2022 05:04:29 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B2F1A05A
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Jul 2022 02:04:24 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id ss3so19968197ejc.11
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Jul 2022 02:04:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=3y6mB0hrnaV46VnRdVCEKqtLVV2m+vYW81yoBr+fw0w=;
-        b=lazb5AJju1MIZiojh4ugOqp3SpUeeN4m9pS4gWOOnJbgrHukSBCMpnqykr4R6rEOKM
-         po8QLW0Y+VzxM3g1dOM7i/6BAjT9Q9BlTiTVmrac89YvdKky0kmYJSAp/0HX4drLUcFc
-         L41YTwau745fy7DAYoCjPMWpCEEOgB5YsZnp05gpatqBMCwI1wZeO9eylWprvWs6OY00
-         cqoSUOmPUNMqhMS1tjqK0Ax6pFAhDGVEAVwrgkC1jZ9cXJo9Yxzy3mi/WgjQ8ny0z9Ii
-         BHOPafrZBMcQWqNHyW1SIPdatfxNXyzNbBUOiCILDiq+iys5YIJoEne7lul8CoZkG7Qp
-         1dLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=3y6mB0hrnaV46VnRdVCEKqtLVV2m+vYW81yoBr+fw0w=;
-        b=sdUpOmXnVjwje6tREAIolOuQaVqtoyVQMUo4HbEvQSPtchbvccZJ1c/f2tH/6OhvsM
-         aJy9MnvVBRVAAd9aWJwc2xjFY8CsJ+45WgE1Q8BhC+NW4EapNpKL3ywHRQVxlKz8V0/M
-         I8p6NIL0E8tcekPPomEebzhA4Tx1CNtAiBrbg54A32E0pkesJG6QcSOBsFuCboWW4msZ
-         bqlOEm60HanIt0m0EnhV2wCexJ07HVm/7FxpvdLaNW5FvHYIujTdMTDtUzAyZfNke9Rc
-         uEJ0C934zM6SXsWXB8SNwgrL56g6CCiO3nOna9MLieLtOVcwKdsDNaOmcRiLfA5R4lEw
-         igSQ==
-X-Gm-Message-State: AJIora+pN8rET6nvicTjHL4ve4hre2PrDfcOl2JkVQzlexvTYeTiqETU
-        38QFDIy28B98qTAUm/53rTTQXw==
-X-Google-Smtp-Source: AGRyM1shiX+UWsxgu56aWSxDBQiM5H9sYKjZglHKR9uDIypb1Ru+e71R8EEH25Apr7Yq430Wp4Nzhg==
-X-Received: by 2002:a17:907:2d2b:b0:72b:546a:bd03 with SMTP id gs43-20020a1709072d2b00b0072b546abd03mr25807330ejc.149.1658135062709;
-        Mon, 18 Jul 2022 02:04:22 -0700 (PDT)
-Received: from ?IPV6:2a02:768:2307:40d6::f9e? ([2a02:768:2307:40d6::f9e])
-        by smtp.gmail.com with ESMTPSA id u15-20020a056402064f00b0043a6c538047sm8259072edx.70.2022.07.18.02.04.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jul 2022 02:04:21 -0700 (PDT)
-Message-ID: <9cc11fd0-28c7-fd0d-fe55-cce0bb5e92a7@monstr.eu>
-Date:   Mon, 18 Jul 2022 11:04:19 +0200
+        Mon, 18 Jul 2022 06:56:22 -0400
+Received: from smtpbg.qq.com (unknown [43.155.67.158])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0ABFDF60
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Jul 2022 03:56:18 -0700 (PDT)
+X-QQ-mid: bizesmtp88t1658141759ta2aiv9i
+Received: from harry-jrlc.. ( [182.148.15.157])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Mon, 18 Jul 2022 18:55:55 +0800 (CST)
+X-QQ-SSF: 0100000000600010C000B00A0000020
+X-QQ-FEAT: CmYupcol+WfxU1mjklTmx7HSTiwA6Q6Z5IcXBORdbcBbOYU3Rg0oGAh/Vsamb
+        5WxON2dbYuCHZhrt0dC/ys4QN/37pSaitIG18zcVm48WbCVkfq2A3xQkmLAtZkpGCY2QUS+
+        szjstlvr78UAlR+gNCpIs2CaxhqMntRslFU35tBG3Ew9CJ5r9kOcXJ4OjD9xjwUcHvB2r1m
+        VT5I49HhTwfGUVynyfXoKVNboS0diVOCJeEx98ASRAjMR0RwSFT+B/uxxQtw1vYCq2kv9EU
+        2xmTO+I0qn26kg1/WSl74VFzjJWD6AyRGQD8mHk1Uidu4NTDc5a5pb3c1/yHsNYHFc9JgY7
+        wXQiti6+Tw/ioa5hrZtMy2b31Fo4cVSbuza1aso
+X-QQ-GoodBg: 0
+From:   Xin Gao <gaoxin@cdjrlc.com>
+To:     geert@linux-m68k.org
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Xin Gao <gaoxin@cdjrlc.com>
+Subject: [PATCH] m68k:do not initialise statics to 0.
+Date:   Mon, 18 Jul 2022 18:55:53 +0800
+Message-Id: <20220718105553.6529-1-gaoxin@cdjrlc.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH 4/6] MicroBlaze: cpuinfo: Fix a warning for
- CONFIG_CPUMASK_OFFSTACK
-Content-Language: en-US
-To:     Huacai Chen <chenhuacai@loongson.cn>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc:     loongarch@lists.linux.dev, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@gmail.com>,
-        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
-        stable@vger.kernel.org
-References: <20220712075255.1345991-1-chenhuacai@loongson.cn>
- <20220712075255.1345991-4-chenhuacai@loongson.cn>
-From:   Michal Simek <monstr@monstr.eu>
-In-Reply-To: <20220712075255.1345991-4-chenhuacai@loongson.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybglogicsvr:qybglogicsvr6
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+Delete static variables initialized to 0.
 
+Signed-off-by: Xin Gao <gaoxin@cdjrlc.com>
+---
+ arch/m68k/q40/q40ints.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On 7/12/22 09:52, Huacai Chen wrote:
-> When CONFIG_CPUMASK_OFFSTACK and CONFIG_DEBUG_PER_CPU_MAPS is selected,
-> cpu_max_bits_warn() generates a runtime warning similar as below while
-> we show /proc/cpuinfo. Fix this by using nr_cpu_ids (the runtime limit)
-> instead of NR_CPUS to iterate CPUs.
-> 
-> [    3.052463] ------------[ cut here ]------------
-> [    3.059679] WARNING: CPU: 3 PID: 1 at include/linux/cpumask.h:108 show_cpuinfo+0x5e8/0x5f0
-> [    3.070072] Modules linked in: efivarfs autofs4
-> [    3.076257] CPU: 0 PID: 1 Comm: systemd Not tainted 5.19-rc5+ #1052
-> [    3.099465] Stack : 9000000100157b08 9000000000f18530 9000000000cf846c 9000000100154000
-> [    3.109127]         9000000100157a50 0000000000000000 9000000100157a58 9000000000ef7430
-> [    3.118774]         90000001001578e8 0000000000000040 0000000000000020 ffffffffffffffff
-> [    3.128412]         0000000000aaaaaa 1ab25f00eec96a37 900000010021de80 900000000101c890
-> [    3.138056]         0000000000000000 0000000000000000 0000000000000000 0000000000aaaaaa
-> [    3.147711]         ffff8000339dc220 0000000000000001 0000000006ab4000 0000000000000000
-> [    3.157364]         900000000101c998 0000000000000004 9000000000ef7430 0000000000000000
-> [    3.167012]         0000000000000009 000000000000006c 0000000000000000 0000000000000000
-> [    3.176641]         9000000000d3de08 9000000001639390 90000000002086d8 00007ffff0080286
-> [    3.186260]         00000000000000b0 0000000000000004 0000000000000000 0000000000071c1c
-> [    3.195868]         ...
-> [    3.199917] Call Trace:
-> [    3.203941] [<90000000002086d8>] show_stack+0x38/0x14c
-> [    3.210666] [<9000000000cf846c>] dump_stack_lvl+0x60/0x88
-> [    3.217625] [<900000000023d268>] __warn+0xd0/0x100
-> [    3.223958] [<9000000000cf3c90>] warn_slowpath_fmt+0x7c/0xcc
-> [    3.231150] [<9000000000210220>] show_cpuinfo+0x5e8/0x5f0
-> [    3.238080] [<90000000004f578c>] seq_read_iter+0x354/0x4b4
-> [    3.245098] [<90000000004c2e90>] new_sync_read+0x17c/0x1c4
-> [    3.252114] [<90000000004c5174>] vfs_read+0x138/0x1d0
-> [    3.258694] [<90000000004c55f8>] ksys_read+0x70/0x100
-> [    3.265265] [<9000000000cfde9c>] do_syscall+0x7c/0x94
-> [    3.271820] [<9000000000202fe4>] handle_syscall+0xc4/0x160
-> [    3.281824] ---[ end trace 8b484262b4b8c24c ]---
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> ---
->   arch/microblaze/kernel/cpu/mb.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/microblaze/kernel/cpu/mb.c b/arch/microblaze/kernel/cpu/mb.c
-> index 9581d194d9e4..689de7f75614 100644
-> --- a/arch/microblaze/kernel/cpu/mb.c
-> +++ b/arch/microblaze/kernel/cpu/mb.c
-> @@ -137,7 +137,7 @@ static void *c_start(struct seq_file *m, loff_t *pos)
->   {
->   	int i = *pos;
->   
-> -	return i < NR_CPUS ? (void *) (i + 1) : NULL;
-> +	return i < nr_cpu_ids ? (void *) (i + 1) : NULL;
->   }
->   
->   static void *c_next(struct seq_file *m, void *v, loff_t *pos)
-
-As was said in m68k thread commit message should be fixed. MB upstream in not 
-SMP. We have SMP configuration in soc vendor tree but upstream we can't enable 
-DEBUG_PER_CPU_MAPS which depends on SMP. But definitely worth to fix it.
-
-Thanks,
-Michal
-
+diff --git a/arch/m68k/q40/q40ints.c b/arch/m68k/q40/q40ints.c
+index 6886a5d0007b..dfb307ba1185 100644
+--- a/arch/m68k/q40/q40ints.c
++++ b/arch/m68k/q40/q40ints.c
+@@ -201,8 +201,8 @@ static int ccleirq=60;    /* ISA dev IRQs*/
+ #define DEBUG_Q40INT
+ /*#define IP_USE_DISABLE *//* would be nice, but crashes ???? */
+ 
+-static int mext_disabled=0;  /* ext irq disabled by master chip? */
+-static int aliased_irq=0;  /* how many times inside handler ?*/
++static int mext_disabled;  /* ext irq disabled by master chip? */
++static int aliased_irq;  /* how many times inside handler ?*/
+ 
+ 
+ /* got interrupt, dispatch to ISA or keyboard/timer IRQs */
 -- 
-Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
-w: www.monstr.eu p: +42-0-721842854
-Maintainer of Linux kernel - Xilinx Microblaze
-Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
-U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
+2.30.2
+
 
