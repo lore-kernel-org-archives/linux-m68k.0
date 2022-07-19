@@ -2,132 +2,164 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B4F3C43334
-	for <linux-m68k@archiver.kernel.org>; Tue, 19 Jul 2022 09:12:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77352C433EF
+	for <linux-m68k@archiver.kernel.org>; Tue, 19 Jul 2022 10:51:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233865AbiGSJMp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 19 Jul 2022 05:12:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42984 "EHLO
+        id S237356AbiGSKvu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 19 Jul 2022 06:51:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbiGSJMo (ORCPT
+        with ESMTP id S237323AbiGSKvs (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 19 Jul 2022 05:12:44 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4119B23BC6
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 19 Jul 2022 02:12:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1658221964; x=1689757964;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=3tWOpo39CrXFSPwLvdx9z0QBTqAlwUp+5v0hw6tJMLI=;
-  b=LShtgnO8UP0EOkpwuzhMAddKGmuc7BDJUIfmglUGndXgYqGGAAtgQtMK
-   BKX4zSskjf6yTXzVLQ2ZtSxXaWcHMcKsWbaJ21biMXsPU7on0TkT9396l
-   PN15JTZHoqIUlB/YyY//z//g5Zn0a5vW5MF9/abPr0e2Ir2+dwfl4Hz7W
-   CnSh5HRqF95C+4ZpvbRWWOJwtSv1bSfTe4fniZ250ruk3EWdPO8/GG4wT
-   kG9yQwq4W7FN9XaikZ/4gIlIM3KRxgaWmBqfPDyCi+1dRiAR6Of8Zpr8y
-   Z/ZhvA0oD16b90gRGf0QUFsskn5aM0+8Wdtf3EpiPybPHTtTDVIY2YElR
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10412"; a="266842947"
-X-IronPort-AV: E=Sophos;i="5.92,283,1650956400"; 
-   d="scan'208";a="266842947"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2022 02:12:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,283,1650956400"; 
-   d="scan'208";a="739795422"
-Received: from lkp-server02.sh.intel.com (HELO ff137eb26ff1) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 19 Jul 2022 02:12:42 -0700
-Received: from kbuild by ff137eb26ff1 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1oDjHV-0005T6-Jt;
-        Tue, 19 Jul 2022 09:12:41 +0000
-Date:   Tue, 19 Jul 2022 17:12:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 6f6ecd46902059f00e1191a5d2adc8cac066bbf1
-Message-ID: <62d6756b.2wZaban4RJ3dwsUo%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        Tue, 19 Jul 2022 06:51:48 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E94AB371BE
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 19 Jul 2022 03:51:46 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id p8so1839540plq.13
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 19 Jul 2022 03:51:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9r5Q68sSonSuFNnUgS5s5Aq4lQPVRc3ftjUkjt5E+/U=;
+        b=BOnJQHOrKNukFMXMC1nU6y4ArvL3vrbcOB435U/Vzx1k1fn6r436k543OFDgaWokoN
+         tDErjZCkEJHwVO1H9RQMX6lk34fHev+Aj5/gKGFjtSnH8f4W9B86s0nsqJfg9JeN8ml2
+         JpIehp+Baf/hC0iEenp4Vlpui6EBPFyHuw5pyeahpcXpOlX6hXba88BFS6CklcADGLsD
+         uF4jiHQM1YmdN8VkpQPyWmk/8xJ0QlGm1a4CTd/3gGsmLRaK9WiL+TrM3sZCWwiys/37
+         kJ3jZOnmNy/5GCMbwcqkClcv2x5+kayzRqwLIi+9L4ewDsXPITUTBKitxHlTC+mUPCTq
+         HiqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9r5Q68sSonSuFNnUgS5s5Aq4lQPVRc3ftjUkjt5E+/U=;
+        b=Ry48JdojOVIpscAw7fkbKWJv3IkrondBcg4Sg0ot9nkI2WSNhj9VH5XbtcOjDsCIlY
+         /9gBriJzDCV3e3KoTqDHUP/Rdgw4iqaDt8niKRGyR73fmZyWSGE/zTHSgf5Ju9/yCHdX
+         1xs63DxoRQT0F5379yvHBO/70nKgUY5p8P3epm/QA+i4TWK6RqHAuM7UGgneWCTyNoQ6
+         DkAIOO+7QzdBjlf0HGG8eJOPUnMEEA8ehvcT/Tfth11Aif0wqoeTRkv1nkVDztzglkmb
+         fKp+SUcTdn0qs97Rxlkucmo+P8kwceYdyJgyZ/990UH+4RJ5/vJBhUalTvPH+6PYnHFB
+         L+zg==
+X-Gm-Message-State: AJIora9z3ugNw8i/iaT/JC9PxQc+t3fmqeGf7sSSNctgouHzLl5cJVxM
+        SJk/h28xC2/qPpTJ/k9Ze7Y=
+X-Google-Smtp-Source: AGRyM1vZ9IAj9wB2om7mrxhh/fUk9aNQMH63dmua/3Emg6xcerZ0EDmPY1xKNwyujRSIvj70HenApQ==
+X-Received: by 2002:a17:90b:3e89:b0:1f0:4233:b20e with SMTP id rj9-20020a17090b3e8900b001f04233b20emr37808145pjb.0.1658227905897;
+        Tue, 19 Jul 2022 03:51:45 -0700 (PDT)
+Received: from localhost ([2409:10:24a0:4700:e8ad:216a:2a9d:6d0c])
+        by smtp.gmail.com with ESMTPSA id x23-20020a1709027c1700b001696751796asm11299184pll.139.2022.07.19.03.51.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jul 2022 03:51:45 -0700 (PDT)
+Date:   Tue, 19 Jul 2022 19:51:43 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Nick Child <nick.child@ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        "open list:IA64 (Itanium) PLATFORM" <linux-ia64@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Subject: Re: [PATCH v2 1/2] asm-generic: Remove pci.h copying remaining code
+ to x86
+Message-ID: <YtaMv2kfdxFyDsis@antec>
+References: <20220717033453.2896843-1-shorne@gmail.com>
+ <20220717033453.2896843-2-shorne@gmail.com>
+ <YtTif+vNq+gkfqsc@infradead.org>
+ <CAK8P3a02R651U9Md8DHT33FgSp56Baiw4sNCWCFBPcMi0bB1-g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a02R651U9Md8DHT33FgSp56Baiw4sNCWCFBPcMi0bB1-g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 6f6ecd46902059f00e1191a5d2adc8cac066bbf1  Merge tag 'v5.19-rc7'
+On Mon, Jul 18, 2022 at 10:40:34AM +0200, Arnd Bergmann wrote:
+> On Mon, Jul 18, 2022 at 6:33 AM Christoph Hellwig <hch@infradead.org> wrote:
+> >
+> > On Sun, Jul 17, 2022 at 12:34:52PM +0900, Stafford Horne wrote:
+> > > The generic pci.h header now only provides a definition of
+> > > pci_get_legacy_ide_irq which is used by architectures that support PNP.
+> > > Of the architectures that use asm-generic/pci.h this is only x86.
+> >
+> > Please move this into a separate header, ike legacy-ide.h.  It doens't
+> > have anyting to do with actual PCI support.
+> 
+> It looks like asm/libata-portmap.h is meant to have this information already,
+> and this is what libata uses, while drivers/ide used the
+> pci_get_legacy_ide_irq()
+> function for the same purpose.
+> 
+> Only ia64 and powerpc have interesting definitions of both, and they
+> return the same thing, so I think this is sufficient to remove the last caller:
+> 
+> diff --git a/drivers/pnp/resource.c b/drivers/pnp/resource.c
+> index 2fa0f7d55259..d7a6250589d6 100644
+> --- a/drivers/pnp/resource.c
+> +++ b/drivers/pnp/resource.c
+> @@ -16,7 +16,7 @@
+>  #include <asm/io.h>
+>  #include <asm/dma.h>
+>  #include <asm/irq.h>
+> -#include <linux/pci.h>
+> +#include <linux/libata.h>
+>  #include <linux/ioport.h>
+>  #include <linux/init.h>
+> 
+> @@ -322,8 +322,8 @@ static int pci_dev_uses_irq(struct pnp_dev *pnp,
+> struct pci_dev *pci,
+>                  * treat the compatibility IRQs as busy.
+>                  */
+>                 if ((progif & 0x5) != 0x5)
+> -                       if (pci_get_legacy_ide_irq(pci, 0) == irq ||
+> -                           pci_get_legacy_ide_irq(pci, 1) == irq) {
+> +                       if (ATA_PRIMARY_IRQ(pci) == irq ||
+> +                           ATA_SECONDARY_IRQ(pci) == irq) {
+>                                 pnp_dbg(&pnp->dev, "  legacy IDE device %s "
+>                                         "using irq %d\n", pci_name(pci), irq);
+>                                 return 1;
+> 
+> This is fine on the architectures that currently return an error from
+> pci_get_legacy_ide_irq() but will change to returning 15/14 instead,
+> because they do not support ISA devices, so pci_dev_uses_irq()
+> will never be called either.
 
-elapsed time: 728m
+I like this, I didn't know about the ATA_PRIMARY_IRQ/ATA_SECONDARY_IRQ macro.
+Let me add this to the series before 1/2.  I will keep you as the author via
+Signed-off-by annotation.
 
-configs tested: 56
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm                              allyesconfig
-arm64                            allyesconfig
-ia64                             allmodconfig
-arc                               allnoconfig
-alpha                             allnoconfig
-riscv                             allnoconfig
-csky                              allnoconfig
-m68k                             allmodconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-m68k                             allyesconfig
-powerpc                          allmodconfig
-mips                             allyesconfig
-powerpc                           allnoconfig
-sh                               allmodconfig
-i386                                defconfig
-i386                             allyesconfig
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-x86_64                        randconfig-a006
-x86_64               randconfig-a013-20220718
-x86_64               randconfig-a012-20220718
-x86_64               randconfig-a015-20220718
-x86_64               randconfig-a014-20220718
-x86_64               randconfig-a016-20220718
-x86_64               randconfig-a011-20220718
-i386                          randconfig-a014
-i386                          randconfig-a012
-i386                          randconfig-a016
-arc                  randconfig-r043-20220718
-riscv                randconfig-r042-20220718
-s390                 randconfig-r044-20220718
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                           allyesconfig
-x86_64                          rhel-8.3-func
-x86_64                         rhel-8.3-kunit
-x86_64                    rhel-8.3-kselftests
-x86_64                           rhel-8.3-syz
-
-clang tested configs:
-x86_64                        randconfig-a005
-x86_64                        randconfig-a001
-x86_64                        randconfig-a003
-i386                 randconfig-a003-20220718
-i386                 randconfig-a005-20220718
-i386                 randconfig-a001-20220718
-i386                 randconfig-a002-20220718
-i386                 randconfig-a006-20220718
-i386                 randconfig-a004-20220718
-i386                          randconfig-a013
-i386                          randconfig-a011
-i386                          randconfig-a015
-hexagon              randconfig-r041-20220718
-hexagon              randconfig-r045-20220718
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+-Stafford
