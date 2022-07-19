@@ -2,228 +2,133 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EDD6C43334
-	for <linux-m68k@archiver.kernel.org>; Tue, 19 Jul 2022 12:02:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FAACCCA486
+	for <linux-m68k@archiver.kernel.org>; Tue, 19 Jul 2022 14:44:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237730AbiGSMCw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 19 Jul 2022 08:02:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39844 "EHLO
+        id S239229AbiGSOoj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 19 Jul 2022 10:44:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237884AbiGSMC1 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 19 Jul 2022 08:02:27 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3600A474C0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 19 Jul 2022 04:58:59 -0700 (PDT)
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26JBhBZS010624;
-        Tue, 19 Jul 2022 11:58:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=1bpmIwvLzc5rcXgHQnnpEZ/Q/uGD8Ks+HgDZHU3a1oU=;
- b=XsGGcQhgQqeaBTDby6kBDSnY3UWfeOhcYCvhv1wB6ujJcxJiGxS0MZNEpZpP82C7GxFD
- qy0fOIgAnaZwSxQsme0oU2OpnkxYpE+uDH15E6VZ9FqoTPk7uueHM+xVjuA9H19obp0k
- s6iB/AuopbdOfFuRs3T2itJljC8cZmRau6vqNPrTRTAxzfHZyritEJt69CrO+tr2fYk/
- a5TusVt3iaTwjyfbAiIDSIJqvsZkWlSpdU3F1bDpC3b6TgQn/5VHYn1uIF65z9GqayDx
- YdNoMbE1y4UxcJQu+DMYqVGDiinlaBUTWkz8lq6RHrSk8VDZR7Xjb4CnhDZwmjv11EvB 1g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3hdv01gdw7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Jul 2022 11:58:04 +0000
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 26JBhkdX012906;
-        Tue, 19 Jul 2022 11:58:03 GMT
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3hdv01gduu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Jul 2022 11:58:03 +0000
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 26JBoeWj007350;
-        Tue, 19 Jul 2022 11:58:00 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma01fra.de.ibm.com with ESMTP id 3hbmy8v4fv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Jul 2022 11:58:00 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 26JBvvjl21299544
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Jul 2022 11:57:57 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2952D4C040;
-        Tue, 19 Jul 2022 11:57:57 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3ABB34C044;
-        Tue, 19 Jul 2022 11:57:54 +0000 (GMT)
-Received: from [9.171.46.191] (unknown [9.171.46.191])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 19 Jul 2022 11:57:54 +0000 (GMT)
-Message-ID: <38027ee9-bc70-6a2c-202c-1b4d2c9bdc74@linux.ibm.com>
-Date:   Tue, 19 Jul 2022 14:02:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH v3 1/2] asm-generic: Remove pci.h copying remaining code
- to x86
-Content-Language: en-US
-To:     Stafford Horne <shorne@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Nick Child <nick.child@ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kees Cook <keescook@chromium.org>, linux-alpha@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-pci@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-References: <20220718004114.3925745-1-shorne@gmail.com>
- <20220718004114.3925745-2-shorne@gmail.com>
-From:   Pierre Morel <pmorel@linux.ibm.com>
-In-Reply-To: <20220718004114.3925745-2-shorne@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: QgXJydNrlCCOif_CNKu_BbM2Q3VZjQ3W
-X-Proofpoint-GUID: cwEMgAD_v6m2Yb1ImP5KSKWCOkQJrtGO
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S239813AbiGSOoL (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 19 Jul 2022 10:44:11 -0400
+X-Greylist: delayed 165 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 19 Jul 2022 07:42:38 PDT
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D4BAFCB;
+        Tue, 19 Jul 2022 07:42:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tronnes.org
+        ; s=ds202112; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=2ud6nsluqSsKTO9Z0i1MLYe01IcSu66ta8TyQvTI8QI=; b=FDYK2qx4o9VfiSKX4kjtfYaK5d
+        CuD34rsqF62M3zMoNqL8juQGVRzEcrLAIraI4aeB1HMVVtlyYKga86QnXJOREm7oSq+j0WLFtD5Zs
+        L5HyL2l1RuRLjJbrhHNW3oUF8ytDTnYjhBi9Rc0DN5VoIAugUh0iSrq2O/crqeBL2OmO2s6ELWB1h
+        N9V3Gtd5kfj8uZT9etsQ6MMoAAsvk5S9KgTe3dJIFW9Mn4Aib7nsPrlfA5kzNA99tTpoiCuWOkxAm
+        afxAmnw+oCgm/4cViLsIstPfylUadQt6qYCFWW4woG80X02NwBHp15NZRPIaA/hSwMPugvNka1r+L
+        OVQXiPnA==;
+Received: from [2a01:799:961:d200:4408:c06b:bee8:b0a3] (port=52255)
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <noralf@tronnes.org>)
+        id 1oDoO6-0003Mu-Dz; Tue, 19 Jul 2022 16:39:50 +0200
+Message-ID: <59b18586-f53f-9ad3-02a7-d629e4c19b81@tronnes.org>
+Date:   Tue, 19 Jul 2022 16:39:46 +0200
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-07-18_22,2022-07-19_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 spamscore=0 mlxscore=0 lowpriorityscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 clxscore=1011 phishscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2206140000 definitions=main-2207190048
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH 3/3] drm/gud: Fix endianness in gud_xrgb8888_to_color()
+ helper
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Gerd Hoffmann <kraxel@redhat.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1657300532.git.geert@linux-m68k.org>
+ <b47589ed5d8ca44e0956684412e3f16f3227f887.1657300532.git.geert@linux-m68k.org>
+From:   =?UTF-8?Q?Noralf_Tr=c3=b8nnes?= <noralf@tronnes.org>
+In-Reply-To: <b47589ed5d8ca44e0956684412e3f16f3227f887.1657300532.git.geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
 
 
-On 7/18/22 02:41, Stafford Horne wrote:
-> The generic pci.h header now only provides a definition of
-> pci_get_legacy_ide_irq which is used by architectures that support PNP.
-> Of the architectures that use asm-generic/pci.h this is only x86.
+Den 08.07.2022 20.21, skrev Geert Uytterhoeven:
+> DRM formats are defined to be little-endian, unless the
+> DRM_FORMAT_BIG_ENDIAN flag is set.  Hence when converting from one
+> format to another, multi-byte pixel values loaded from memory must be
+> converted from little-endian to host-endian.  Conversely, multi-byte
+> pixel values written to memory must be converted from host-endian to
+> little-endian.  Currently only drm_fb_xrgb8888_to_rgb332_line() includes
+> endianness handling.
 > 
-> This patch removes the old pci.h in order to make room for a new
-> pci.h to be used by arm64, riscv, openrisc, etc.
+> Fix gud_xrgb8888_to_color() on big-endian platforms by adding the
+> missing endianness handling.
 > 
-> The existing code in pci.h is moved out to x86.  On other architectures
-> we clean up any outstanding references.
-> 
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> Link: https://lore.kernel.org/lkml/CAK8P3a0JmPeczfmMBE__vn=Jbvf=nkbpVaZCycyv40pZNCJJXQ@mail.gmail.com/
-> Signed-off-by: Stafford Horne <shorne@gmail.com>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 > ---
-> Since v2:
->   - Remove pci_get_legacy_ide_irq in m68k
-> Since v1:
->   - Remove pci_get_legacy_ide_irq for most architectures as its not needed.
+> Compile-tested only.
 > 
->   arch/alpha/include/asm/pci.h   |  1 -
->   arch/ia64/include/asm/pci.h    |  1 -
->   arch/m68k/include/asm/pci.h    |  2 --
->   arch/powerpc/include/asm/pci.h |  1 -
->   arch/s390/include/asm/pci.h    |  1 -
->   arch/sparc/include/asm/pci.h   |  9 ---------
->   arch/x86/include/asm/pci.h     |  6 ++++--
->   arch/xtensa/include/asm/pci.h  |  3 ---
->   include/asm-generic/pci.h      | 17 -----------------
->   9 files changed, 4 insertions(+), 37 deletions(-)
->   delete mode 100644 include/asm-generic/pci.h
+> Interestingly, drm_fb_xrgb8888_to_rgb332() was introduced for GUD,
+> and always had correct endiannes handling...
+
+RGB332 support was added later and by that time I had understood that
+the framebuffer was little endian and not host endian as I first assumed
+(there's a fixme comment in gud_pipe.c that BE is probably broken but I
+haven't got any hw to test on so I haven't tried to fix it).
+
+Thanks for fixing this, pathces 2 and 3 tested on drm/gud and applied to
+drm-misc-next.
+
+Noralf.
+
+> ---
+>  drivers/gpu/drm/gud/gud_pipe.c | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
 > 
-> diff --git a/arch/alpha/include/asm/pci.h b/arch/alpha/include/asm/pci.h
-> index cf6bc1e64d66..8ac5af0fc4da 100644
-> --- a/arch/alpha/include/asm/pci.h
-> +++ b/arch/alpha/include/asm/pci.h
-> @@ -56,7 +56,6 @@ struct pci_controller {
->   
->   /* IOMMU controls.  */
->   
-> -/* TODO: integrate with include/asm-generic/pci.h ? */
->   static inline int pci_get_legacy_ide_irq(struct pci_dev *dev, int channel)
->   {
->   	return channel ? 15 : 14;
-> diff --git a/arch/ia64/include/asm/pci.h b/arch/ia64/include/asm/pci.h
-> index 8c163d1d0189..218412d963c2 100644
-> --- a/arch/ia64/include/asm/pci.h
-> +++ b/arch/ia64/include/asm/pci.h
-> @@ -63,7 +63,6 @@ static inline int pci_proc_domain(struct pci_bus *bus)
->   	return (pci_domain_nr(bus) != 0);
->   }
->   
-> -#define HAVE_ARCH_PCI_GET_LEGACY_IDE_IRQ
->   static inline int pci_get_legacy_ide_irq(struct pci_dev *dev, int channel)
->   {
->   	return channel ? isa_irq_to_vector(15) : isa_irq_to_vector(14);
-> diff --git a/arch/m68k/include/asm/pci.h b/arch/m68k/include/asm/pci.h
-> index 5a4bc223743b..ccdfa0dc8413 100644
-> --- a/arch/m68k/include/asm/pci.h
-> +++ b/arch/m68k/include/asm/pci.h
-> @@ -2,8 +2,6 @@
->   #ifndef _ASM_M68K_PCI_H
->   #define _ASM_M68K_PCI_H
->   
-> -#include <asm-generic/pci.h>
-> -
->   #define	pcibios_assign_all_busses()	1
->   
->   #define	PCIBIOS_MIN_IO		0x00000100
-> diff --git a/arch/powerpc/include/asm/pci.h b/arch/powerpc/include/asm/pci.h
-> index 915d6ee4b40a..f9da506751bb 100644
-> --- a/arch/powerpc/include/asm/pci.h
-> +++ b/arch/powerpc/include/asm/pci.h
-> @@ -39,7 +39,6 @@
->   #define pcibios_assign_all_busses() \
->   	(pci_has_flag(PCI_REASSIGN_ALL_BUS))
->   
-> -#define HAVE_ARCH_PCI_GET_LEGACY_IDE_IRQ
->   static inline int pci_get_legacy_ide_irq(struct pci_dev *dev, int channel)
->   {
->   	if (ppc_md.pci_get_legacy_ide_irq)
-> diff --git a/arch/s390/include/asm/pci.h b/arch/s390/include/asm/pci.h
-> index fdb9745ee998..5889ddcbc374 100644
-> --- a/arch/s390/include/asm/pci.h
-> +++ b/arch/s390/include/asm/pci.h
-> @@ -6,7 +6,6 @@
->   #include <linux/mutex.h>
->   #include <linux/iommu.h>
->   #include <linux/pci_hotplug.h>
-> -#include <asm-generic/pci.h>
->   #include <asm/pci_clp.h>
->   #include <asm/pci_debug.h>
->   #include <asm/sclp.h>
-
-Did not notice any problem for S390.
-
-Acked-by: Pierre Morel <pmorel@linux.ibm.com>
-
-
-
--- 
-Pierre Morel
-IBM Lab Boeblingen
+> diff --git a/drivers/gpu/drm/gud/gud_pipe.c b/drivers/gpu/drm/gud/gud_pipe.c
+> index 4873f9799f412e04..d42592f6daab8b2a 100644
+> --- a/drivers/gpu/drm/gud/gud_pipe.c
+> +++ b/drivers/gpu/drm/gud/gud_pipe.c
+> @@ -105,7 +105,8 @@ static size_t gud_xrgb8888_to_color(u8 *dst, const struct drm_format_info *forma
+>  	unsigned int bits_per_pixel = 8 / block_width;
+>  	u8 r, g, b, pix, *block = dst; /* Assign to silence compiler warning */
+>  	unsigned int x, y, width;
+> -	u32 *pix32;
+> +	__le32 *sbuf32;
+> +	u32 pix32;
+>  	size_t len;
+>  
+>  	/* Start on a byte boundary */
+> @@ -114,8 +115,8 @@ static size_t gud_xrgb8888_to_color(u8 *dst, const struct drm_format_info *forma
+>  	len = drm_format_info_min_pitch(format, 0, width) * drm_rect_height(rect);
+>  
+>  	for (y = rect->y1; y < rect->y2; y++) {
+> -		pix32 = src + (y * fb->pitches[0]);
+> -		pix32 += rect->x1;
+> +		sbuf32 = src + (y * fb->pitches[0]);
+> +		sbuf32 += rect->x1;
+>  
+>  		for (x = 0; x < width; x++) {
+>  			unsigned int pixpos = x % block_width; /* within byte from the left */
+> @@ -126,9 +127,10 @@ static size_t gud_xrgb8888_to_color(u8 *dst, const struct drm_format_info *forma
+>  				*block = 0;
+>  			}
+>  
+> -			r = *pix32 >> 16;
+> -			g = *pix32 >> 8;
+> -			b = *pix32++;
+> +			pix32 = le32_to_cpu(*sbuf32++);
+> +			r = pix32 >> 16;
+> +			g = pix32 >> 8;
+> +			b = pix32;
+>  
+>  			switch (format->format) {
+>  			case GUD_DRM_FORMAT_XRGB1111:
