@@ -2,137 +2,86 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14131C433EF
-	for <linux-m68k@archiver.kernel.org>; Mon, 25 Jul 2022 21:27:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C54CEC43334
+	for <linux-m68k@archiver.kernel.org>; Mon, 25 Jul 2022 23:03:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237339AbiGYV1a (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 25 Jul 2022 17:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48420 "EHLO
+        id S236967AbiGYXDa (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 25 Jul 2022 19:03:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237338AbiGYV1O (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 25 Jul 2022 17:27:14 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D590248EF
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 25 Jul 2022 14:27:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1658784430; x=1690320430;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=gb6DRhVRDg1J0Tx6sRoB1pbO51tahyIzpH8o1gug+PA=;
-  b=L7k+bokxwx6+LekAriCNs7nU2jUmYyAqrV4VtZ0p//1XtXxRnocm8wHG
-   IVPvU+l6TevlelozX+SnPoUoyjgTiu7VI5TX6l1+VEd/STrS0/YRPSDWQ
-   j1VQuoACnBKQz4E9J6MR7RdWRvEsp0slcbQzWnlqABJUnVkufJqkhfMEL
-   hEeFCRlKuw7qJK6TPv0FQUzMVBysPK7ZdUriulHKWc/57ctIE92o+SqVn
-   wi6TtD7npGdayXKTNu17ofXsa0tlq5C5/KVIyyEYoi/s5ortd3S3hfoPq
-   fbqhgpiWOLDymXsT8F9jC9CZgHurJvm0EJOMP13iCsisjPwU8kSYun/o1
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10419"; a="267569421"
-X-IronPort-AV: E=Sophos;i="5.93,193,1654585200"; 
-   d="scan'208";a="267569421"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2022 14:27:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,193,1654585200"; 
-   d="scan'208";a="550143353"
-Received: from lkp-server01.sh.intel.com (HELO e0eace57cfef) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 25 Jul 2022 14:27:07 -0700
-Received: from kbuild by e0eace57cfef with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oG5bW-0005ZQ-37;
-        Mon, 25 Jul 2022 21:27:06 +0000
-Date:   Tue, 26 Jul 2022 05:26:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 503e5c2d112afc7ba1293f9b2a2b0af413828b28
-Message-ID: <62df0a94.WWhxNzj5FWh/oGuk%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S231249AbiGYXD3 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 25 Jul 2022 19:03:29 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E0FE248EB
+        for <linux-m68k@vger.kernel.org>; Mon, 25 Jul 2022 16:03:29 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id y15so11728777plp.10
+        for <linux-m68k@vger.kernel.org>; Mon, 25 Jul 2022 16:03:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=36JOAjybUSod044G0QfI5n3jIsSoBN97E8qwTQreEjA=;
+        b=UHY+jHPHHlr2yw9V7UVU1z0upDvKrEIaSQzpa4gcRN0eAea7jTWN3MDSek/qu+iIKT
+         04KvwN9Nqh1UMmMCTrnP0BKdxy0cJGAjp65nLuJEj85DGBDgGYVYFf2ipxG9CGIR5c6d
+         guBxCpSr7sbPZz2cPCev/OTJaDcL+yfAp8Pt+ucL17yjndPHyg1DXDDzVHXRu6qRvF/J
+         VS1iBKXGsyFAFlY1IZFZfwhlYGaUPVX+gOuaXhTdN/V6Ulj39IXdVX3zcqU+vdOsg50o
+         iTvWkfOvvqdIgf9BTadPi9MebSXiQsZXfBZtSKojTo1d5Ocu7RniqOdYGAgcFjKrutrq
+         zViw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=36JOAjybUSod044G0QfI5n3jIsSoBN97E8qwTQreEjA=;
+        b=rErCZ7XWFvmOseHQ4m+Hg2diqC13/D7VU2sZrQHADJ4XIhncAE34hvm7v/GNAPl9C/
+         gyqxi6JXCnk4sQ+DL34l8D66p+kQroUBtXnKTTKAYySo0HEKlHgb9bIsrXeg9oNvhuCJ
+         zM+ZoBLxZ0qPsKqDry5V7kxe5U29uXVjfzt6Knp9A6EkZAZBGbw8yfvOMX6GNHjJCi8b
+         5k1vgQeoPpyc2zd5iC/1gMd8v9YYDc7JnGTGFtf4tHcWwgOKuvBC2GoPAdukkgFCvbgK
+         UJUFZAtTtj37Z0cCIlxQGceH6c2u7o52BhzMdW1xY2JXF9nnnVmHbbolvZs1gqbLGXKE
+         DCtA==
+X-Gm-Message-State: AJIora+1U7M2k6x8f0JL6UHAfljR40+NlsUnhh3Ziv82pLrbIh3etjCm
+        sxWGgZtQ6pE4gxGt0r9IaMWrNA==
+X-Google-Smtp-Source: AGRyM1ueCZKXhVMNIQiBakAJ1qIntesYP3rgTNvkT7KMjfdGpaTs03KnhCfzLI2+hs3CO56NJtAyhQ==
+X-Received: by 2002:a17:902:b198:b0:16c:1c13:cd8d with SMTP id s24-20020a170902b19800b0016c1c13cd8dmr14000111plr.92.1658790208572;
+        Mon, 25 Jul 2022 16:03:28 -0700 (PDT)
+Received: from [192.168.1.100] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id n1-20020a170902d2c100b0016a565f3f34sm9888467plc.168.2022.07.25.16.03.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Jul 2022 16:03:27 -0700 (PDT)
+Message-ID: <5e45c2a8-b35e-9a15-18e6-2e3a7ad00f5f@kernel.dk>
+Date:   Mon, 25 Jul 2022 17:03:26 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH v7 2/2] block: add overflow checks for Amiga partition
+ support
+Content-Language: en-US
+To:     Martin Steigerwald <martin@lichtvoll.de>,
+        linux-block@vger.kernel.org, Michael Schmitz <schmitzmic@gmail.com>
+Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org
+References: <1539570747-19906-1-git-send-email-schmitzmic@gmail.com>
+ <1539570747-19906-3-git-send-email-schmitzmic@gmail.com>
+ <2265295.ElGaqSPkdT@ananda>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <2265295.ElGaqSPkdT@ananda>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 503e5c2d112afc7ba1293f9b2a2b0af413828b28  Merge tag 'v5.19-rc8'
+On 7/25/22 6:36 AM, Martin Steigerwald wrote:
+> Michael Schmitz - 15.10.18, 04:32:27 CEST:
+>> The Amiga partition parser module uses signed int for partition sector
+>> address and count, which will overflow for disks larger than 1 TB.
+> 
+> Did this go in? I did not find anything in git log. I wonder whether I 
+> can close the bug report mentioned below.
 
-elapsed time: 726m
-
-configs tested: 61
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm                              allyesconfig
-arm64                            allyesconfig
-sh                        sh7763rdp_defconfig
-mips                     loongson1b_defconfig
-powerpc                     ep8248e_defconfig
-ia64                             allmodconfig
-arc                               allnoconfig
-alpha                             allnoconfig
-riscv                             allnoconfig
-csky                              allnoconfig
-m68k                             allmodconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-m68k                             allyesconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-mips                             allyesconfig
-sh                               allmodconfig
-i386                                defconfig
-i386                             allyesconfig
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-x86_64                        randconfig-a006
-i386                          randconfig-a001
-i386                          randconfig-a005
-i386                          randconfig-a003
-x86_64                        randconfig-a013
-x86_64                        randconfig-a011
-x86_64                        randconfig-a015
-i386                          randconfig-a014
-i386                          randconfig-a012
-i386                          randconfig-a016
-s390                 randconfig-r044-20220724
-arc                  randconfig-r043-20220724
-riscv                randconfig-r042-20220724
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                           allyesconfig
-x86_64                           rhel-8.3-kvm
-x86_64                    rhel-8.3-kselftests
-x86_64                           rhel-8.3-syz
-x86_64                          rhel-8.3-func
-x86_64                         rhel-8.3-kunit
-
-clang tested configs:
-mips                         tb0287_defconfig
-x86_64                        randconfig-a005
-x86_64                        randconfig-a001
-x86_64                        randconfig-a003
-i386                          randconfig-a002
-i386                          randconfig-a004
-i386                          randconfig-a006
-x86_64                        randconfig-a016
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-i386                          randconfig-a013
-i386                          randconfig-a011
-i386                          randconfig-a015
-hexagon              randconfig-r041-20220724
-hexagon              randconfig-r045-20220724
+Looking at the history (2018!), doesn't like they ever got reviewed or
+went upstream. Looks like they are still needed, however they no longer
+apply as-is.
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Jens Axboe
+
