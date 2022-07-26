@@ -2,138 +2,72 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74151C00144
-	for <linux-m68k@archiver.kernel.org>; Tue, 26 Jul 2022 22:28:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67825C00144
+	for <linux-m68k@archiver.kernel.org>; Tue, 26 Jul 2022 23:58:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbiGZW2P (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 26 Jul 2022 18:28:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38264 "EHLO
+        id S240014AbiGZX6T (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 26 Jul 2022 19:58:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbiGZW2P (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 26 Jul 2022 18:28:15 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7720E275F2;
-        Tue, 26 Jul 2022 15:28:14 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id e8-20020a17090a280800b001f2fef7886eso317042pjd.3;
-        Tue, 26 Jul 2022 15:28:14 -0700 (PDT)
+        with ESMTP id S240024AbiGZX6S (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 26 Jul 2022 19:58:18 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A96FC3AB08;
+        Tue, 26 Jul 2022 16:58:16 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 12so14266430pga.1;
+        Tue, 26 Jul 2022 16:58:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=cUakA031uAGu8Qe1zvGTpC9ti0G9n32ARq56hwimi+k=;
-        b=Om+qM1FEpuSbNmSbFvVze5NdmtUYdZBdkRttycVxJm+9guJzRMmRUuWjfWcusPv54j
-         oTqcEJ6nZ1CR6O3KuKr08FcCm92NOf6k46WnpQncvXwhmQI4IJCkCfaaZSvi0B1ZlSin
-         Y1l84BsiWY+uLUKxHRKTY69XHAp739L3+uOmO6DV357sFnEUNYwdgJBEK8Feg/7FVDts
-         jFc0pVHY2Soln6MZITpfd1BCIvRCEBS0lQKEHOCxb82jwUJM6HjB47IGqlBbjtkTHUQU
-         FjjNX7+eKHgfzkA8eOfgImfkSNchl0ZVmq7B19Ea9KKOAOi57jEJ+BUp6DuA87++xENl
-         qqGg==
+        h=from:to:cc:subject:date:message-id;
+        bh=tMv9j7W/oMj++3at+j+rDnYFnyNKWJlUFVNInGsG7RA=;
+        b=aBfbcRJZ+Jw954t/Ml7rA1YCDj2TyCuBsMErzqJN07epLOv4tOfmWZCzugwfzvuK0w
+         075uo7HuN08P1Ov707mSrfQnxI+ODXymIx0idUIEGNGj2Sg6ajevbvu/VdYfapJ7VYd6
+         yU8GdMNBPIz4h+mCqAORZYWA1TBQ+fYYYEH6H8oPLAId5vC45Vp6k0T4rdWbda4ZCcV7
+         F0rSKodMKqXa0TaE8PM6DurJ0FytyjgbduDd92zWPy/0w/8Mh+V9DGa0sQ5uorwILEHg
+         vQmkktSV6IYP8becVo+rSlFVXOb+M732PRYW4x56WsmFWBry5UVF0JhDYqZTX5YpXy5Q
+         QCCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=cUakA031uAGu8Qe1zvGTpC9ti0G9n32ARq56hwimi+k=;
-        b=anqfeJDGF9sOOp5zUiWynVw6arwPmj5rJUkc4G7fmmzACkIuKwPnKi5uSKfcYiWydT
-         VB0oNz1CtwNZaYUPlZRKWQwtL6IGIM3C0KnesWr13PkJk8p7ac7+hpAciN1ss3gkJPFB
-         rRHToMbyFNmLNL2kyEgPp52UveVGg2m+IIAXQvUiZQgoxmuFpnJ+o3k2xisKNt9T1DOk
-         WyycfRI3BHBboNB1eVe+lyeJqUYG2M8Fm3v/UV+fH382ulWjRD+yzcAygZFW8Ztv4HN7
-         vneX+W/S3uhHUvuV2IZUWwZiXcmbyEaY3yfXOq0rnUGr17MbXdyb3H7yP4amYgKVS4ch
-         CKPQ==
-X-Gm-Message-State: AJIora/0XGSvdtqwxjt7HFY4Lhb7ud1sdmHFjqpF2Hjp9C6SWYG440Zv
-        JX8M70vbifrPBBvdo4lF+LKc7vw23Pg=
-X-Google-Smtp-Source: AGRyM1tQpmi7LswiniSLvv3ky+C0mF2WQ6FyvOdentniXQrQPQ6x6AgVAkt7PuFH6C7kZEWyxj96Yw==
-X-Received: by 2002:a17:90b:681:b0:1f2:147a:5e55 with SMTP id m1-20020a17090b068100b001f2147a5e55mr1174109pjz.159.1658874493899;
-        Tue, 26 Jul 2022 15:28:13 -0700 (PDT)
-Received: from ?IPV6:2001:df0:0:200c:a0c2:b058:643a:c5f9? ([2001:df0:0:200c:a0c2:b058:643a:c5f9])
-        by smtp.gmail.com with ESMTPSA id 1-20020a630d41000000b00412a708f38asm10479254pgn.35.2022.07.26.15.28.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jul 2022 15:28:13 -0700 (PDT)
-Message-ID: <c0911dfc-2ece-e7de-640d-2b4c010569ac@gmail.com>
-Date:   Wed, 27 Jul 2022 10:28:08 +1200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v8 2/2] block: add overflow checks for Amiga partition
- support
-Content-Language: en-US
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-block@vger.kernel.org, axboe@kernel.dk,
-        linux-m68k@vger.kernel.org, geert@linux-m68k.org
-References: <20220726045747.4779-1-schmitzmic@gmail.com>
- <20220726045747.4779-3-schmitzmic@gmail.com> <Yt/TQOJQZEhZE+2p@infradead.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=tMv9j7W/oMj++3at+j+rDnYFnyNKWJlUFVNInGsG7RA=;
+        b=dEZxyfV8YdNOJYlWoUq/Z5NZRIj5VuLprlLxmuOGGso9W/UStvXz6zS04r2TsBK5jL
+         KTcR1UHw1hHEZR8AXYK+64DDj0MvSSK0svy7mxODVIpUM+xtZHoINvyFDFgqmRMGrifk
+         AtCdkZQhSmhcFGNM8NB7YewtZQNGsmYiLfJlUCxErN1NxAuqGhwcvQONq7mTNhTnyKc6
+         l3g0O9ghsRTVH6OFR/t39iTmiqcyu/o5eKNl0yIhMrJoI2J4ZD4FglP9hgZMjbu1VWlB
+         FAp4RfYICYbcDn6KJw6zWRXR+NXTp7li/GnCDQfmE2oQITMZYFczHmpU9fc8/D+W51OQ
+         vMrA==
+X-Gm-Message-State: AJIora9Qc3fqNOtQnL1GZlj+XnluPXwx+FfCMFWTEEgBRq3r6II2VciU
+        pz9d/AI27paNVuKvvBrLWvkfqWcWCZw=
+X-Google-Smtp-Source: AGRyM1tbXQEBcfrJwrmUS744n1ZETvr7umtc42DBFNPrTkvlqIbJ6EZ98I/mP862ojuYT2DcWf/n4A==
+X-Received: by 2002:a63:8841:0:b0:412:b40b:cfb5 with SMTP id l62-20020a638841000000b00412b40bcfb5mr17233453pgd.197.1658879896121;
+        Tue, 26 Jul 2022 16:58:16 -0700 (PDT)
+Received: from xplor.waratah.dyndns.org (222-155-0-244-adsl.sparkbb.co.nz. [222.155.0.244])
+        by smtp.gmail.com with ESMTPSA id e12-20020a17090301cc00b0016d10267927sm12218421plh.203.2022.07.26.16.58.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jul 2022 16:58:15 -0700 (PDT)
+Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
+        id 296F436020D; Wed, 27 Jul 2022 11:58:12 +1200 (NZST)
 From:   Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <Yt/TQOJQZEhZE+2p@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To:     linux-block@vger.kernel.org, axboe@kernel.dk
+Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org, hch@lst.de
+Subject: [PATCH v9 0/2] Amiga RDB partition support fixes
+Date:   Wed, 27 Jul 2022 11:58:07 +1200
+Message-Id: <20220726235809.15215-1-schmitzmic@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Christoph,
+The simple fix still leaves ample room for overflows in calculating start
+address and size of a RDB partition, though such overflows should only be 
+seen in rather unusual cases. To address these potential overflows, checks
+are added in the second patch of this series. Comments by Geert have been   
+addressed in full. 
 
-On 26/07/22 23:42, Christoph Hellwig wrote:
-> On Tue, Jul 26, 2022 at 04:57:47PM +1200, Michael Schmitz wrote:
->> The Amiga partition parser module uses signed int for partition sector
->> address and count, which will overflow for disks larger than 1 TB.
->>
->> Use u64 as type for sector address and size to allow using disks up to
->> 2 TB without LBD support, and disks larger than 2 TB with LBD. The RBD
->> format allows to specify disk sizes up to 2^128 bytes (though native
->> OS limitations reduce this somewhat, to max 2^68 bytes), so check for
->> u64 overflow carefully to protect against overflowing sector_t.
->>
->> Bail out if sector addresses overflow 32 bits on kernels without LBD
->> support.
->>
->> This bug was reported originally in 2012, and the fix was created by
->> the RDB author, Joanne Dow <jdow@earthlink.net>. A patch had been
->> discussed and reviewed on linux-m68k at that time but never officially
->> submitted (now resubmitted as separate patch).
->> This patch adds additional error checking and warning messages.
->>
->> Fixes: https://bugzilla.kernel.org/show_bug.cgi?id=43511
->> Reported-by: Martin Steigerwald <Martin@lichtvoll.de>
->> Message-ID: <201206192146.09327.Martin@lichtvoll.de>
->> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
->> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
->> ---
->>   block/partitions/amiga.c | 111 +++++++++++++++++++++++++++++++--------
->>   1 file changed, 89 insertions(+), 22 deletions(-)
->>
->> diff --git a/block/partitions/amiga.c b/block/partitions/amiga.c
->> index f98191545d9a..7356b39cbe10 100644
->> --- a/block/partitions/amiga.c
->> +++ b/block/partitions/amiga.c
->> @@ -11,10 +11,18 @@
->>   #define pr_fmt(fmt) fmt
->>   
->>   #include <linux/types.h>
->> +#include <linux/mm_types.h>
->> +#include <linux/overflow.h>
->>   #include <linux/affs_hardblocks.h>
->>   
->>   #include "check.h"
->>   
->> +/* magic offsets in partition DosEnvVec */
->> +#define NR_HD	3
->> +#define NR_SECT	5
->> +#define LO_CYL	9
->> +#define	HI_CYL	10
-> The last line has a tab after the #define while the previous three
-> don't.  Pick one style and stick to it for the others.
->
->>   		if (!data) {
->> -			pr_err("Dev %s: unable to read RDB block %d\n",
->> -			       state->disk->disk_name, blk);
->> +			pr_err("Dev %s: unable to read RDB block %llu\n",
->> +			       state->disk->disk_name, (u64) blk);
-> No need for the various printk casts, a sector_t is always an
-> unsigned long long.
-
-Thanks, wil fix (and address the other issues raised).
+Reviewed-by tags by Geert and Christoph (patch 1 only) added. 
 
 Cheers,
 
-     Michael
+        Michael
 
 
