@@ -2,101 +2,139 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FF6DC00140
-	for <linux-m68k@archiver.kernel.org>; Tue, 26 Jul 2022 18:36:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA6E9C04A68
+	for <linux-m68k@archiver.kernel.org>; Tue, 26 Jul 2022 19:44:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239539AbiGZSgn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 26 Jul 2022 14:36:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52336 "EHLO
+        id S230287AbiGZTor (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 26 Jul 2022 15:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233382AbiGZSgm (ORCPT
+        with ESMTP id S239592AbiGZToq (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 26 Jul 2022 14:36:42 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D4B413F62
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Jul 2022 11:36:41 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id l23so27744711ejr.5
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Jul 2022 11:36:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XaLMCBsCDvWTi9/iULkdHwQgKcBgvkSR9TjQnyfmggo=;
-        b=RiFLWIrPzZnN+X+JPvKwY2y1+frWBSLdbh11cpd503I5uiDZy880x5bQgnJKNnMioM
-         I0UPwWgzlZmo8LPMCrgYhibsLxH48Pu9ZwzbkFoPQzRzqbgaQwFHnvkrStgyBilwuD2A
-         W5oC8UgCQQaq2OtWUdVzVzngUtXnxq1E5ZGBk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XaLMCBsCDvWTi9/iULkdHwQgKcBgvkSR9TjQnyfmggo=;
-        b=ulcb0qMXPyRM305K2vFQpR9LhLef2j+9RAfIslJtwiMwdfiJ6+D7AVyidjtu4UnDzu
-         C64hRO0/ifelUtoPyNFxRDoru+85KvFLAUe7sswlv+sSzcLUiu6poDv7JkLP+2C6nF4c
-         1N5/r88VYx9LKxJC0N8GQMRhfMcwzxQ5LAC025+PkKjMcP4OW+JlbJP4umCzFO3stDcZ
-         mGVEPbX6uavTv3GTDGEEBxQ0eZhwMUBPbS+nqmiBf/rHKvUwluso3as0XolumJml/XFW
-         IhZE026VtuaW8mHpufDN4tVWLD5rq4vuCWwpzshoWjJcNBPXMzD2OKSr/mStFj1/5XGc
-         4UKw==
-X-Gm-Message-State: AJIora87A1m7lVkCnKhzkRjCvg5JmjQwjBHa0fYEGYUFh6entc3vpEp3
-        kHfHMw37vtyrIQ7Hy/61fydm7Tk2AfA28YsG
-X-Google-Smtp-Source: AGRyM1sKLVrkKv5OV/N+c3HYCIFzPafsm88ax6e+aTr/miP1tUqHT9y7LWlQ1n3gZorMAltipGubaA==
-X-Received: by 2002:a17:907:6e0f:b0:72e:d066:dfe5 with SMTP id sd15-20020a1709076e0f00b0072ed066dfe5mr15301893ejc.558.1658860599429;
-        Tue, 26 Jul 2022 11:36:39 -0700 (PDT)
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com. [209.85.221.43])
-        by smtp.gmail.com with ESMTPSA id f20-20020a17090631d400b00722e4bab163sm6766438ejf.200.2022.07.26.11.36.38
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jul 2022 11:36:38 -0700 (PDT)
-Received: by mail-wr1-f43.google.com with SMTP id u5so21328245wrm.4
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Jul 2022 11:36:38 -0700 (PDT)
-X-Received: by 2002:a05:6000:1a88:b0:21d:aa97:cb16 with SMTP id
- f8-20020a0560001a8800b0021daa97cb16mr11925079wry.97.1658860597963; Tue, 26
- Jul 2022 11:36:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAHk-=wiWwDYxNhnStS0e+p-NTFAQSHvab=2-8LwxunCVuY5-2A@mail.gmail.com>
- <20220725161141.GA1306881@roeck-us.net> <CAHk-=whtGUwJwHUSNsXd4g7cok=n0Zwje7nACp8skh1fa2NtJA@mail.gmail.com>
- <YuAm5h1B6bsrR/9q@fedora> <CAHk-=wgYpJTMMxmfbpqc=JVtSK0Zj4b15G=AvEYk6vPNySDSsA@mail.gmail.com>
- <YuAv+lV324G7pmlk@yury-laptop>
-In-Reply-To: <YuAv+lV324G7pmlk@yury-laptop>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 26 Jul 2022 11:36:21 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg2-j8zocUjurAeg_bimNz7C5h5HDEXKK6PxDmR+DaHRg@mail.gmail.com>
-Message-ID: <CAHk-=wg2-j8zocUjurAeg_bimNz7C5h5HDEXKK6PxDmR+DaHRg@mail.gmail.com>
-Subject: Re: Linux 5.19-rc8
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Dennis Zhou <dennis@kernel.org>,
+        Tue, 26 Jul 2022 15:44:46 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA33D3122B
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Jul 2022 12:44:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=TGq8QP1oBJLa4d9eMw2KLoD7AcNO8P4iv3iIuufPVq4=; b=DoPmG1X4azqFAa9TxUU9xSoQO4
+        PtjPwk2cEf59HghYi6McmmrULab2qwjdhs8xG2upOd4P/QQDDFZsZfvM1Vye8fVqAFmsfXpKwPSCt
+        A7HH24z8qsPdm/WEI/1S14aw2cQKaV9yQUNI7GTtpv0LbHdAnIOPj1lwjEzczETDanFiIJ3Olzhrg
+        u+HvoSF4Dw/bulkDWQ90cLky6Pjfh7faZaj51p23r/xRXMqcbbRi4fVygESlq1h6v1ZlMiahLrfhI
+        FVhZeEb+JeR9p8nGfPm/gbSmwYuJmDr2biZphi4DDy2FSpkkeQv/m2Jqlcj6wae2cH2quNuqwOfk2
+        jYAUJ0hA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33578)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1oGQTt-0004YI-Cr; Tue, 26 Jul 2022 20:44:37 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1oGQTq-0001UV-AR; Tue, 26 Jul 2022 20:44:34 +0100
+Date:   Tue, 26 Jul 2022 20:44:34 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Yury Norov <yury.norov@gmail.com>, Dennis Zhou <dennis@kernel.org>,
         Guenter Roeck <linux@roeck-us.net>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: Linux 5.19-rc8
+Message-ID: <YuBEIiLL1xZVyEFl@shell.armlinux.org.uk>
+References: <CAHk-=wiWwDYxNhnStS0e+p-NTFAQSHvab=2-8LwxunCVuY5-2A@mail.gmail.com>
+ <20220725161141.GA1306881@roeck-us.net>
+ <CAHk-=whtGUwJwHUSNsXd4g7cok=n0Zwje7nACp8skh1fa2NtJA@mail.gmail.com>
+ <YuAm5h1B6bsrR/9q@fedora>
+ <CAHk-=wgYpJTMMxmfbpqc=JVtSK0Zj4b15G=AvEYk6vPNySDSsA@mail.gmail.com>
+ <YuAv+lV324G7pmlk@yury-laptop>
+ <CAHk-=wg2-j8zocUjurAeg_bimNz7C5h5HDEXKK6PxDmR+DaHRg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wg2-j8zocUjurAeg_bimNz7C5h5HDEXKK6PxDmR+DaHRg@mail.gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Jul 26, 2022 at 11:18 AM Yury Norov <yury.norov@gmail.com> wrote:
->
-> We have find_bit_benchmark to check how it works in practice. Would
-> be great if someone with access to the hardware can share numbers.
+On Tue, Jul 26, 2022 at 11:36:21AM -0700, Linus Torvalds wrote:
+> On Tue, Jul 26, 2022 at 11:18 AM Yury Norov <yury.norov@gmail.com> wrote:
+> >
+> > We have find_bit_benchmark to check how it works in practice. Would
+> > be great if someone with access to the hardware can share numbers.
+> 
+> Honestly, I doubt benchmarking find_bit in a loop is all that sensible.
 
-Honestly, I doubt benchmarking find_bit in a loop is all that sensible.
+Yes, that's what I was thinking - I've never seen it crop up in any of
+the perf traces I've seen.
 
-These are helper functions that are probably seldom super-hot in
-cache, and as with so many of these things, I suspect the cool-I$
-numbers are the ones that matter most in real life.
+Nevertheless, here's some numbers from a single run of the
+find_bit_benchmark module, kernel built with:
+arm-linux-gnueabihf-gcc (Debian 10.2.1-6) 10.2.1 20210110
 
-When some filesystem ends up searching for a free block or similar, it
-will probably have done other things before that that means that the
-L1 I$ has been long flushed, and branch history is quite possibly
-entirely gone too.
+Current native implementation:
 
-The same is quite possibly true for the bitmap itself in D$ too.
+[   46.184565]
+               Start testing find_bit() with random-filled bitmap
+[   46.195127] find_next_bit:                 2440833 ns, 163112 iterations
+[   46.204226] find_next_zero_bit:            2372128 ns, 164569 iterations
+[   46.213152] find_last_bit:                 2199779 ns, 163112 iterations
+[   46.299398] find_first_bit:               79526013 ns,  16234 iterations
+[   46.684026] find_first_and_bit:          377912990 ns,  32617 iterations
+[   46.692020] find_next_and_bit:             1269071 ns,  73562 iterations
+[   46.698745]
+               Start testing find_bit() with sparse bitmap
+[   46.705711] find_next_bit:                  118652 ns,    656 iterations
+[   46.716621] find_next_zero_bit:            4183472 ns, 327025 iterations
+[   46.723395] find_last_bit:                   50448 ns,    656 iterations
+[   46.762308] find_first_bit:               32190802 ns,    656 iterations
+[   46.769093] find_first_and_bit:              52129 ns,      1 iterations
+[   46.775882] find_next_and_bit:               62522 ns,      1 iterations
 
-That said, looking at the x86 code generation (not only because I have
-the build environment, but where I can actually read make sense of the
-asm), the only thing that looks bad is the conditional bswap.
+Generic implementation:
 
-So the code gen looks fairly good,
+[   25.149238]
+               Start testing find_bit() with random-filled bitmap
+[   25.160002] find_next_bit:                 2640943 ns, 163537 iterations
+[   25.169567] find_next_zero_bit:            2838485 ns, 164144 iterations
+[   25.178595] find_last_bit:                 2302372 ns, 163538 iterations
+[   25.204016] find_first_bit:               18697630 ns,  16373 iterations
+[   25.602571] find_first_and_bit:          391841480 ns,  32555 iterations
+[   25.610563] find_next_and_bit:             1260306 ns,  73587 iterations
+[   25.617295]
+               Start testing find_bit() with sparse bitmap
+[   25.624222] find_next_bit:                   70289 ns,    656 iterations
+[   25.636478] find_next_zero_bit:            5527050 ns, 327025 iterations
+[   25.643253] find_last_bit:                   52147 ns,    656 iterations
+[   25.657304] find_first_bit:                7328573 ns,    656 iterations
+[   25.664087] find_first_and_bit:              48518 ns,      1 iterations
+[   25.670871] find_next_and_bit:               59750 ns,      1 iterations
 
-                 Linus
+Overall, I would say it's pretty similar (some generic perform
+marginally better, some native perform marginally better) with the
+exception of find_first_bit() being much better with the generic
+implementation, but find_next_zero_bit() being noticably worse.
+
+So, pretty much nothing of any relevance between them, which may
+come as a surprise given the byte vs word access differences between
+the two implementations.
+
+I suspect the reason behind that may be because the native
+implementation code is smaller than the generic implementation,
+outweighing the effects of the by-byte rather than by-word. I would
+also suspect that, because of the smaller implementation, the native
+version performs better in a I$-cool situation than the generic. Lastly,
+I would suspect if we fixed the bug in the native version, and converted
+it to use word loads, it would probably be better than the generic
+version. I haven't anything to base that on other than gut feeling at
+the moment, but I can make the changes to the native implementation and
+see what effect that has, possibly tomorrow.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
