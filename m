@@ -2,277 +2,288 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DF2FC2BB43
-	for <linux-m68k@archiver.kernel.org>; Sat, 30 Jul 2022 19:52:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0E7EC19F2A
+	for <linux-m68k@archiver.kernel.org>; Sat, 30 Jul 2022 21:38:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235814AbiG3Twy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 30 Jul 2022 15:52:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58682 "EHLO
+        id S234387AbiG3Vio (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 30 Jul 2022 17:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbiG3Tws (ORCPT
+        with ESMTP id S233302AbiG3Vio (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 30 Jul 2022 15:52:48 -0400
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0172F13F45
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 30 Jul 2022 12:52:46 -0700 (PDT)
-Received: by mail-yb1-f175.google.com with SMTP id i62so11402085yba.5
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 30 Jul 2022 12:52:46 -0700 (PDT)
+        Sat, 30 Jul 2022 17:38:44 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BCAA13FA1
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 30 Jul 2022 14:38:41 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id p132so9250914oif.9
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 30 Jul 2022 14:38:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc;
+        bh=Xdhvm8eoxX7grhuuFM3KV4xBso8uFJNDgg1YEG9heJE=;
+        b=LfUKbRfyShP6qvVKYq4O8RuV5HzIMOODqi22vj4x0/WStZYM8jHZsASt2zLfs6Ne0Z
+         RLpHnNK8f8AJfBH60M6bziRV3lYIV2atepwoes5GYQ0viKygkPA+2RaDVrTUMkt9BLFK
+         RR1iHnIKf5JrFeQbBg47oEjG3aNbVTyrizqGamcA0b+788zZWROIaLHJvMCcSMM7hKFD
+         IGhAqaOC9af58W6AtvoU0lRXoGkLDFvwp2Oaqj7cwAtZ4Px22icm0w6Udix1NsAIIS8q
+         9+aMmwTtiiqihl2NO7oLmxtp09g16nyDJD64ycZQmXtT82BlKzQwpJce43e7GQ2Ht1mA
+         uY3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=0QwwjVOIVs4sR9ljVmsJX6Xu2S4+tvcr+oBVAjM+ePA=;
-        b=X7HSP8pdnI1Xcv8r4nbvyyp25YGVvAFkDEzMWqw2kUXHK3k3FGyf6N8d+6X5aFXj9n
-         DZ7u2WlplBDxnW4T12gCon6hAKwrU6tNvLGVe71UPQXEMYU49IiFuSgVk2NeFttaFO0l
-         yImXZ6o31a1PIx1v0mx2yPNoB2nmldvLaz4aov/yNYFY/AQKv5zGXyR3770tK88FfCgB
-         ph5zA3OCfklmZa3oYsS20XSNgmEnfPZ9N/Uzwnw/rMdzE1IqVkVMXbXftqQFRiI+Ux/2
-         9k4Z47487GyY9BoQoe2Qnzf3krhJMoUzPSmu+d71SjCSuD9AI/2rdBi19s+SjAt9NlRP
-         HJCA==
-X-Gm-Message-State: ACgBeo3SsRXi8f4ulIN1SCKsUllwrr0gm7Mq1QPGLrQTMI5LlG9ZpfTR
-        EYCQdcujFiqPjCnLFMaZhw3iZWu/M4uz0soMapg=
-X-Google-Smtp-Source: AA6agR5p+lnEO42NEIBehm6hZLFrmXewKv2ogwUWOYz3LvGYShyipeAc9YxoFpIxLibrvw9Jcl6WeqKY+cLq4G0/mNE=
-X-Received: by 2002:a25:3458:0:b0:673:5bca:3b45 with SMTP id
- b85-20020a253458000000b006735bca3b45mr6304433yba.633.1659210766011; Sat, 30
- Jul 2022 12:52:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220608142723.103523089@infradead.org> <20220608144516.172460444@infradead.org>
- <20220725194306.GA14746@lespinasse.org> <20220728172053.GA3607379@paulmck-ThinkPad-P17-Gen-1>
- <20220729102458.GA1695@lespinasse.org> <CAJZ5v0gyPtX=ksCibo2ZN_BztCqUn9KRtRu+gsJ5KetB_1MwEQ@mail.gmail.com>
- <20220730094800.GB1587@lespinasse.org>
-In-Reply-To: <20220730094800.GB1587@lespinasse.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Sat, 30 Jul 2022 21:52:34 +0200
-Message-ID: <CAJZ5v0hXVjsWab=qYZfXBTqcjkpWV0CFT9_oQBKQ28rFG3_VLw@mail.gmail.com>
-Subject: Re: [PATCH 04/36] cpuidle,intel_idle: Fix CPUIDLE_FLAG_IRQ_ENABLE
-To:     Michel Lespinasse <michel@lespinasse.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, vgupta@kernel.org,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        ulli.kroll@googlemail.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Kevin Hilman <khilman@kernel.org>,
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
+        bh=Xdhvm8eoxX7grhuuFM3KV4xBso8uFJNDgg1YEG9heJE=;
+        b=fF4Iu2yfqU9eNwx7vNc1V/WP5CmfXcjl8gAhwaopKcLcAr1KgjYfln15TNnNoayYnH
+         ZxdGqKS7HEzzYVc0tEFMI7yGInzh0VzGF5AY7FYPmvM7bpfpvKDGDCUDGBsnMr0S6DL/
+         aVjdX74lp4KIBkI1ItU8IU6InlWPIPFBTQM0w1q7q4m50EA1d6J6s2hATUAy7xcTBzT4
+         vlEtv4oFcOMqhnMBKi8UpkQg8GcPYPjd63Cr9hIJZ/nR1Lc56BFhe23vblf9T8Hjokfc
+         VYOOJLm/xLnAmrDXHaxpFhwpI+A1ICF/928HsjCNzp7odFbe8Pr6eV/K/MmjzMmvJ8DX
+         G1+Q==
+X-Gm-Message-State: AJIora8pVOtj3+OW4CdfntrjERfHgIveiY8XsHtR1bWbh8uU4UwwQKzn
+        9ycNsebttnuhDgNkr7KSxRI=
+X-Google-Smtp-Source: AGRyM1s2GfAEsz2vkcTj8XfjilrYJ/E0QXGKhCToRFsM55nJpT/ufYldCRXmAHKNGig+AUW11CuVdQ==
+X-Received: by 2002:a05:6808:1442:b0:33b:29f0:b89d with SMTP id x2-20020a056808144200b0033b29f0b89dmr3589089oiv.65.1659217120031;
+        Sat, 30 Jul 2022 14:38:40 -0700 (PDT)
+Received: from localhost ([12.97.180.36])
+        by smtp.gmail.com with ESMTPSA id e19-20020a544f13000000b0033b2f70ccc4sm772358oiy.16.2022.07.30.14.38.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Jul 2022 14:38:39 -0700 (PDT)
+Date:   Sat, 30 Jul 2022 14:38:38 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Dennis Zhou <dennis@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        bcain@quicinc.com, Huacai Chen <chenhuacai@kernel.org>,
-        kernel@xen0n.name, Geert Uytterhoeven <geert@linux-m68k.org>,
-        sammy@sammy.net, Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        dinguyen@kernel.org, jonas@southpole.se,
-        stefan.kristiansson@saunalahti.fi,
-        Stafford Horne <shorne@gmail.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        David Miller <davem@davemloft.net>,
-        Richard Weinberger <richard@nod.at>,
-        anton.ivanov@cambridgegreys.com,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, acme@kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        jolsa@kernel.org, namhyung@kernel.org,
-        Juergen Gross <jgross@suse.com>, srivatsa@csail.mit.edu,
-        amakhalov@vmware.com, pv-drivers@vmware.com,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, Len Brown <lenb@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Anup Patel <anup@brainfault.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Petr Mladek <pmladek@suse.com>, senozhatsky@chromium.org,
-        John Ogness <john.ogness@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        quic_neeraju@quicinc.com, Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        vschneid@redhat.com, jpoimboe@kernel.org,
-        linux-alpha@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-snps-arc@lists.infradead.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        openrisc@lists.librecores.org,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-s390@vger.kernel.org,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-perf-users@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>, rcu@vger.kernel.org,
-        rh0@fb.com
-Content-Type: text/plain; charset="UTF-8"
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Alexey Klimov <klimov.linux@gmail.com>,
+        linux-m68k@lists.linux-m68k.org
+Subject: Re: Linux 5.19-rc8
+Message-ID: <YuWk3titnOiQACzC@yury-laptop>
+References: <CAHk-=whtGUwJwHUSNsXd4g7cok=n0Zwje7nACp8skh1fa2NtJA@mail.gmail.com>
+ <YuAm5h1B6bsrR/9q@fedora>
+ <CAHk-=wgYpJTMMxmfbpqc=JVtSK0Zj4b15G=AvEYk6vPNySDSsA@mail.gmail.com>
+ <YuAv+lV324G7pmlk@yury-laptop>
+ <CAHk-=wg2-j8zocUjurAeg_bimNz7C5h5HDEXKK6PxDmR+DaHRg@mail.gmail.com>
+ <YuBEIiLL1xZVyEFl@shell.armlinux.org.uk>
+ <CAHk-=wjpYLLoi1m0VRfVoyzGgmMiNwBhQ0XXG0VWwjskcz5Cug@mail.gmail.com>
+ <YuCDscyJotkjNQcH@shell.armlinux.org.uk>
+ <CAAH8bW-BNfhuXF_2cO+x2Qc51G-DFskFmKw8hzDHhC+3Rn1ZUA@mail.gmail.com>
+ <YuDsmmAnOsgNDuWQ@shell.armlinux.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YuDsmmAnOsgNDuWQ@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sat, Jul 30, 2022 at 11:48 AM Michel Lespinasse
-<michel@lespinasse.org> wrote:
->
-> On Fri, Jul 29, 2022 at 04:59:50PM +0200, Rafael J. Wysocki wrote:
-> > On Fri, Jul 29, 2022 at 12:25 PM Michel Lespinasse
-> > <michel@lespinasse.org> wrote:
+On Wed, Jul 27, 2022 at 08:43:22AM +0100, Russell King (Oracle) wrote:
+> On Tue, Jul 26, 2022 at 06:33:55PM -0700, Yury Norov wrote:
+> > On Tue, Jul 26, 2022 at 5:15 PM Russell King (Oracle)
+> > <linux@armlinux.org.uk> wrote:
 > > >
-> > > On Thu, Jul 28, 2022 at 10:20:53AM -0700, Paul E. McKenney wrote:
-> > > > On Mon, Jul 25, 2022 at 12:43:06PM -0700, Michel Lespinasse wrote:
-> > > > > On Wed, Jun 08, 2022 at 04:27:27PM +0200, Peter Zijlstra wrote:
-> > > > > > Commit c227233ad64c ("intel_idle: enable interrupts before C1 on
-> > > > > > Xeons") wrecked intel_idle in two ways:
-> > > > > >
-> > > > > >  - must not have tracing in idle functions
-> > > > > >  - must return with IRQs disabled
-> > > > > >
-> > > > > > Additionally, it added a branch for no good reason.
-> > > > > >
-> > > > > > Fixes: c227233ad64c ("intel_idle: enable interrupts before C1 on Xeons")
-> > > > > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > > On Tue, Jul 26, 2022 at 01:20:23PM -0700, Linus Torvalds wrote:
+> > > > On Tue, Jul 26, 2022 at 12:44 PM Russell King (Oracle)
+> > > > <linux@armlinux.org.uk> wrote:
 > > > > >
-> > > > > After this change was introduced, I am seeing "WARNING: suspicious RCU
-> > > > > usage" when booting a kernel with debug options compiled in. Please
-> > > > > see the attached dmesg output. The issue starts with commit 32d4fd5751ea
-> > > > > and is still present in v5.19-rc8.
-> > > > >
-> > > > > I'm not sure, is this too late to fix or revert in v5.19 final ?
+> > > > > Overall, I would say it's pretty similar (some generic perform
+> > > > > marginally better, some native perform marginally better) with the
+> > > > > exception of find_first_bit() being much better with the generic
+> > > > > implementation, but find_next_zero_bit() being noticably worse.
 > > > >
-> > > > I finally got a chance to take a quick look at this.
+> > > > The generic _find_first_bit() code is actually sane and simple. It
+> > > > loops over words until it finds a non-zero one, and then does trivial
+> > > > calculations on that last word.
 > > > >
-> > > > The rcu_eqs_exit() function is making a lockdep complaint about
-> > > > being invoked with interrupts enabled.  This function is called from
-> > > > rcu_idle_exit(), which is an expected code path from cpuidle_enter_state()
-> > > > via its call to rcu_idle_exit().  Except that rcu_idle_exit() disables
-> > > > interrupts before invoking rcu_eqs_exit().
+> > > > That explains why the generic code does so much better than your byte-wise asm.
 > > > >
-> > > > The only other call to rcu_idle_exit() does not disable interrupts,
-> > > > but it is via rcu_user_exit(), which would be a very odd choice for
-> > > > cpuidle_enter_state().
+> > > > In contrast, the generic _find_next_bit() I find almost offensively
+> > > > silly - which in turn explains why your byte-wide asm does better.
 > > > >
-> > > > It seems unlikely, but it might be that it is the use of local_irq_save()
-> > > > instead of raw_local_irq_save() within rcu_idle_exit() that is causing
-> > > > the trouble.  If this is the case, then the commit shown below would
-> > > > help.  Note that this commit removes the warning from lockdep, so it
-> > > > is necessary to build the kernel with CONFIG_RCU_EQS_DEBUG=y to enable
-> > > > equivalent debugging.
+> > > > I think the generic _find_next_bit() should actually do what the m68k
+> > > > find_next_bit code does: handle the first special word itself, and
+> > > > then just call find_first_bit() on the rest of it.
 > > > >
-> > > > Could you please try your test with the -rce commit shown below applied?
+> > > > And it should *not* try to handle the dynamic "bswap and/or bit sense
+> > > > invert" thing at all. That should be just four different (trivial)
+> > > > cases for the first word.
 > > >
-> > > Thanks for looking into it.
+> > > Here's the results for the native version converted to use word loads:
 > > >
-> > > After checking out Peter's commit 32d4fd5751ea,
-> > > cherry picking your commit ed4ae5eff4b3,
-> > > and setting CONFIG_RCU_EQS_DEBUG=y in addition of my usual debug config,
-> > > I am now seeing this a few seconds into the boot:
+> > > [   37.319937]
+> > >                Start testing find_bit() with random-filled bitmap
+> > > [   37.330289] find_next_bit:                 2222703 ns, 163781 iterations
+> > > [   37.339186] find_next_zero_bit:            2154375 ns, 163900 iterations
+> > > [   37.348118] find_last_bit:                 2208104 ns, 163780 iterations
+> > > [   37.372564] find_first_bit:               17722203 ns,  16370 iterations
+> > > [   37.737415] find_first_and_bit:          358135191 ns,  32453 iterations
+> > > [   37.745420] find_next_and_bit:             1280537 ns,  73644 iterations
+> > > [   37.752143]
+> > >                Start testing find_bit() with sparse bitmap
+> > > [   37.759032] find_next_bit:                   41256 ns,    655 iterations
+> > > [   37.769905] find_next_zero_bit:            4148410 ns, 327026 iterations
+> > > [   37.776675] find_last_bit:                   48742 ns,    655 iterations
+> > > [   37.790961] find_first_bit:                7562371 ns,    655 iterations
+> > > [   37.797743] find_first_and_bit:              47366 ns,      1 iterations
+> > > [   37.804527] find_next_and_bit:               59924 ns,      1 iterations
 > > >
-> > > [    3.010650] ------------[ cut here ]------------
-> > > [    3.010651] WARNING: CPU: 0 PID: 0 at kernel/sched/clock.c:397 sched_clock_tick+0x27/0x60
-> > > [    3.010657] Modules linked in:
-> > > [    3.010660] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.19.0-rc1-test-00005-g1be22fea0611 #1
-> > > [    3.010662] Hardware name: LENOVO 30BFS44D00/1036, BIOS S03KT51A 01/17/2022
-> > > [    3.010663] RIP: 0010:sched_clock_tick+0x27/0x60
-> > > [    3.010665] Code: 1f 40 00 53 eb 02 5b c3 66 90 8b 05 2f c3 40 01 85 c0 74 18 65 8b 05 60 88 8f 4e 85 c0 75 0d 65 8b 05 a9 85 8f 4e 85 c0 74 02 <0f> 0b e8 e2 6c 89 00 48 c7 c3 40 d5 02 00
-> > >  89 c0 48 03 1c c5 c0 98
-> > > [    3.010667] RSP: 0000:ffffffffb2803e28 EFLAGS: 00010002
-> > > [    3.010670] RAX: 0000000000000001 RBX: ffffc8ce7fa07060 RCX: 0000000000000001
-> > > [    3.010671] RDX: 0000000000000000 RSI: ffffffffb268dd21 RDI: ffffffffb269ab13
-> > > [    3.010673] RBP: 0000000000000001 R08: ffffffffffc300d5 R09: 000000000002be80
-> > > [    3.010674] R10: 000003625b53183a R11: ffffa012b802b7a4 R12: ffffffffb2aa9e80
-> > > [    3.010675] R13: ffffffffb2aa9e00 R14: 0000000000000001 R15: 0000000000000000
-> > > [    3.010677] FS:  0000000000000000(0000) GS:ffffa012b8000000(0000) knlGS:0000000000000000
-> > > [    3.010678] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > [    3.010680] CR2: ffffa012f81ff000 CR3: 0000000c99612001 CR4: 00000000003706f0
-> > > [    3.010681] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > [    3.010682] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > > [    3.010683] Call Trace:
-> > > [    3.010685]  <TASK>
-> > > [    3.010688]  cpuidle_enter_state+0xb7/0x4b0
-> > > [    3.010694]  cpuidle_enter+0x29/0x40
-> > > [    3.010697]  do_idle+0x1d4/0x210
-> > > [    3.010702]  cpu_startup_entry+0x19/0x20
-> > > [    3.010704]  rest_init+0x117/0x1a0
-> > > [    3.010708]  arch_call_rest_init+0xa/0x10
-> > > [    3.010711]  start_kernel+0x6d8/0x6ff
-> > > [    3.010716]  secondary_startup_64_no_verify+0xce/0xdb
-> > > [    3.010728]  </TASK>
-> > > [    3.010729] irq event stamp: 44179
-> > > [    3.010730] hardirqs last  enabled at (44179): [<ffffffffb2000ccb>] asm_sysvec_apic_timer_interrupt+0x1b/0x20
-> > > [    3.010734] hardirqs last disabled at (44177): [<ffffffffb22003f0>] __do_softirq+0x3f0/0x498
-> > > [    3.010736] softirqs last  enabled at (44178): [<ffffffffb2200332>] __do_softirq+0x332/0x498
-> > > [    3.010738] softirqs last disabled at (44171): [<ffffffffb16c760b>] irq_exit_rcu+0xab/0xf0
-> > > [    3.010741] ---[ end trace 0000000000000000 ]---
-> >
-> > Can you please give this patch a go:
-> > https://patchwork.kernel.org/project/linux-pm/patch/Yt/AxPFi88neW7W5@e126311.manchester.arm.com/
-> > ?
->
-> I tried, but it didn't change the picture for me.
->
-> I'm not sure if that was the patch you meant to send though, as it
-> seems it's only adding a tracepoint so shouldn't make any difference
-> if I'm not actually using the tracepoint ?
+> > > which is generally faster than the generic version, with the exception
+> > > of the sparse find_first_bit (generic was:
+> > > [   25.657304] find_first_bit:                7328573 ns,    656 iterations)
+> > >
+> > > find_next_{,zero_}bit() in the sparse case are quite a bit faster than
+> > > the generic code.
+> > 
+> > Look at find_{first,next}_and_bit results. Those two have no arch version
+> > and in both cases use generic code. In theory they should be equally fast
+> > before and after, but your testing says that generic case is slower even
+> > for them, and the difference is comparable with real arch functions numbers.
+> > It makes me feel like:
+> >  - there's something unrelated, like governor/throttling that affect results;
+> >  - the numbers are identical, taking the dispersion into account.
+> > 
+> > If the difference really concerns you, I'd suggest running the test
+> > several times
+> > to measure confidence intervals.
+> 
+> Given that the benchmark is run against random bitmaps and with
+> interrupts enabled, there is going to be noise in the results.
+> 
+> Here's the second run:
+> 
+> [26234.429389]
+>                Start testing find_bit() with random-filled bitmap
+> [26234.439722] find_next_bit:                 2206687 ns, 164277 iterations
+> [26234.448664] find_next_zero_bit:            2188368 ns, 163404 iterations
+> [26234.457612] find_last_bit:                 2223742 ns, 164278 iterations
+> [26234.482056] find_first_bit:               17720726 ns,  16384 iterations
+> [26234.859374] find_first_and_bit:          370602019 ns,  32877 iterations
+> [26234.867379] find_next_and_bit:             1280651 ns,  74091 iterations
+> [26234.874107]
+>                Start testing find_bit() with sparse bitmap
+> [26234.881014] find_next_bit:                   46142 ns,    656 iterations
+> [26234.891900] find_next_zero_bit:            4158987 ns, 327025 iterations
+> [26234.898672] find_last_bit:                   49727 ns,    656 iterations
+> [26234.912504] find_first_bit:                7107862 ns,    656 iterations
+> [26234.919290] find_first_and_bit:              52092 ns,      1 iterations
+> [26234.926076] find_next_and_bit:               60856 ns,      1 iterations
+> 
+> And a third run:
+> 
+> [26459.679524]
+>                Start testing find_bit() with random-filled bitmap
+> [26459.689871] find_next_bit:                 2199418 ns, 163311 iterations
+> [26459.698798] find_next_zero_bit:            2181289 ns, 164370 iterations
+> [26459.707738] find_last_bit:                 2213638 ns, 163311 iterations
+> [26459.732224] find_first_bit:               17764152 ns,  16429 iterations
+> [26460.133823] find_first_and_bit:          394886375 ns,  32672 iterations
+> [26460.141818] find_next_and_bit:             1269693 ns,  73485 iterations
+> [26460.148545]
+>                Start testing find_bit() with sparse bitmap
+> [26460.155433] find_next_bit:                   40753 ns,    653 iterations
+> [26460.166307] find_next_zero_bit:            4148211 ns, 327028 iterations
+> [26460.173078] find_last_bit:                   50017 ns,    653 iterations
+> [26460.187007] find_first_bit:                7205325 ns,    653 iterations
+> [26460.193790] find_first_and_bit:              49358 ns,      1 iterations
+> [26460.200577] find_next_and_bit:               62332 ns,      1 iterations
+> 
+> My gut feeling is that yes, there is some variance, but not on an
+> order that is significant that would allow us to say "there's no
+> difference".
+> 
+> find_next_bit results for random are: 2222703, 2206687, 2199418,
+> which is an average of 2209603 and a variance of around 0.5%.
+> The difference between this and the single generic figure I have
+> is on the order of 20%.
+> 
+> I'll do the same with find_first_bit for random: 17722203, 17720726,
+> and 17764152. Average is 17735694. Variance is around 0.1% or 0.2%.
+> The difference between this and the single generic figure I have is
+> on the order of 5%. Not so large, but still quite a big difference
+> compared to the variance.
+> 
+> find_first_bit for sparse: 7562371, 7107862, 7205325. Average is
+> 7291853. Variance is higher at about 4%. Difference between this and
+> the generic figure is 0.5%, so this one is not significantly
+> different.
+> 
+> The best result looks to be find_next_zero_bit for the sparse bitmap
+> case. The generic code measures 5.5ms, the native code is sitting
+> around 4.1ms. That's a difference of around 34%, and by just looking
+> at the range in the figures above we can see this is a significant
+> result without needing to do the calculations. Similar is true of
+> find_next_bit for the sparse bitmap.
+> 
+> So, I think the results are significant in most cases and variance
+> doesn't account for the differences. The only one which isn't is
+> find_first_bit for the sparse case.
 
-You are right, it looks like I pasted a link to a different patch by
-mistake.  Sorry about that.
+Hi Russel,
 
-I meant this one:
++ Alexey Klimov <klimov.linux@gmail.com>
 
-https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git/commit/?h=pm&id=d295ad34f236c3518634fb6403d4c0160456e470
+This is my testings for native vs generic find_bit operations on a15
+and 17.
 
-which will appear in the final 5.19.
+The raw numbers are collected by Alexey Klimov on Odroid-xu3. All cpu
+frequencies were fixed at 1000Mhz. (Thanks a lot!)
+
+For each native/generic @ a15/a7 configuration, the find_bit_benchmark 
+was run 5 times, and the results are summarized below:
+
+A15                      Native     Generic       Difference
+Dense                        ns          ns       %   sigmas
+find_next_bit:          3746929     3231641      14      8.3
+find_next_zero_bit:     3935354     3202608      19     10.4
+find_last_bit:          3134713     3129717       0      0.1
+find_first_bit:        85626542    20498669      76    172.4
+find_first_and_bit:   409252997   414820417      -1     -0.2
+find_next_and_bit:      1678706     1654420       1      0.4
+                                              
+Sparse                                        
+find_next_bit:          143208        77924      46     29.4
+find_next_zero_bit:    6893375      6059177      12     14.3
+find_last_bit:           67174        68616      -2     -1.0
+find_first_bit:       33689256      8151493      76     47.8
+find_first_and_bit:     124758       156974     -26     -1.3
+find_next_and_bit:       53391        56716      -6     -0.2
+
+A7                      Native      Generic       Difference
+Dense                       ns           ns       %   sigmas
+find_next_bit:         4207627      5532764     -31    -14.9
+find_next_zero_bit:    4259961      5236880     -23    -10.0
+find_last_bit:         4281386      4201025       2      1.5
+find_first_bit:      236913620     50970424      78    163.3
+find_first_and_bit:  728069762    750580781      -3     -0.7
+find_next_and_bit:     2696263      2766077      -3     -0.9
+
+Sparse
+find_next_bit:          327241       143776      56     40.7
+find_next_zero_bit:    6987249     10235989     -46    -21.8
+find_last_bit:           97758        94725       3      0.6
+find_first_bit:       94628040     21051964      78     41.8
+find_first_and_bit:     248133       241267       3      0.3
+find_next_and_bit:      136475       154000     -13     -0.5
+
+The last column is the difference between native and generic code
+performance normalized to a standard deviation:
+        (mean(native) - mean(generic)) / max(std(native), std(generic))
+
+The results look consistent to me because 'and' subtests that are always
+generic differ by less than one sigma.
+
+On A15 generic code is a clear winner. On A7 results are inconsistent
+although significant. Maybe it's worth to retest on A7.
+ 
+Regarding the choice between native and generic core - I would prefer
+generic version even if it's slightly slower because it is tested and
+maintained better. And because the results of the test are at least on
+par, to me it's a no-brainer.
+
+Would be really interesting to compare performance of your LDRB->LDR
+patch with the generic code using the same procedure.
+
+Thanks,
+Yury
