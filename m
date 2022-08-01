@@ -2,193 +2,137 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87732C19F28
-	for <linux-m68k@archiver.kernel.org>; Sat, 30 Jul 2022 23:45:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FDB2C19F29
+	for <linux-m68k@archiver.kernel.org>; Mon,  1 Aug 2022 12:47:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235814AbiG3Xpe (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 30 Jul 2022 19:45:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52206 "EHLO
+        id S231295AbiHAMrR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 1 Aug 2022 08:47:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230500AbiG3Xpc (ORCPT
+        with ESMTP id S232363AbiHAMrB (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 30 Jul 2022 19:45:32 -0400
-Received: from server.lespinasse.org (server.lespinasse.org [63.205.204.226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC53DF6D
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 30 Jul 2022 16:45:30 -0700 (PDT)
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
- d=lespinasse.org; i=@lespinasse.org; q=dns/txt; s=srv-79-ed;
- t=1659224730; h=date : from : to : cc : subject : message-id :
- references : mime-version : content-type : in-reply-to : from;
- bh=nAVqtDkPyoGTnjQOsobKhENqaeU5rNiWFfP8mKVev5k=;
- b=HFFhCK7R4iKO9dp7xadnNvlJ3TFgnIFCD+mWF8YiQOWKhEk/dwPTWNRYWGC9XfN1WRDf2
- g306xaRkvMw+dqoAw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lespinasse.org;
- i=@lespinasse.org; q=dns/txt; s=srv-79-rsa; t=1659224730; h=date :
- from : to : cc : subject : message-id : references : mime-version :
- content-type : in-reply-to : from;
- bh=nAVqtDkPyoGTnjQOsobKhENqaeU5rNiWFfP8mKVev5k=;
- b=xEm4vrS+nhrfg16KlTSOz6xKHVgl2anxivbQOaQ8iyITrSIXx3k7S+7DNm3/9PE3/hP5/
- weBfs5WCmns8PrJOUh5+LyucC170rSw2K/NgNrAjDpputAJGflo+dG36LsXYxD+GZSSZKbP
- Pj/N5DYITgz/J3aBedmEOjvEEcNa6ityOyI32KA+gNj6htWosOb+QOsIsRx/2q9SXnXOMQE
- CoO7nRU+J2kcBx1HiMTnfjr/eN+QixQZGT0tRp8own4vN9hl237pUBRGLyuycFtncUUh4v4
- MsO6ge1ke2qwlIabxdvLZxjhahuiQC5BaBfCoCYkudJkUo4tS5HM55MrUsVw==
-Received: by server.lespinasse.org (Postfix, from userid 1000)
-        id F117B160977; Sat, 30 Jul 2022 16:45:29 -0700 (PDT)
-Date:   Sat, 30 Jul 2022 16:45:29 -0700
-From:   Michel Lespinasse <michel@lespinasse.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Michel Lespinasse <michel@lespinasse.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, vgupta@kernel.org,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        ulli.kroll@googlemail.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Kevin Hilman <khilman@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        bcain@quicinc.com, Huacai Chen <chenhuacai@kernel.org>,
-        kernel@xen0n.name, Geert Uytterhoeven <geert@linux-m68k.org>,
-        sammy@sammy.net, Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        dinguyen@kernel.org, jonas@southpole.se,
-        stefan.kristiansson@saunalahti.fi,
-        Stafford Horne <shorne@gmail.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        David Miller <davem@davemloft.net>,
-        Richard Weinberger <richard@nod.at>,
-        anton.ivanov@cambridgegreys.com,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, acme@kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        jolsa@kernel.org, namhyung@kernel.org,
-        Juergen Gross <jgross@suse.com>, srivatsa@csail.mit.edu,
-        amakhalov@vmware.com, pv-drivers@vmware.com,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, Len Brown <lenb@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Anup Patel <anup@brainfault.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Petr Mladek <pmladek@suse.com>, senozhatsky@chromium.org,
-        John Ogness <john.ogness@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        quic_neeraju@quicinc.com, Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        vschneid@redhat.com, jpoimboe@kernel.org,
-        linux-alpha@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-snps-arc@lists.infradead.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        openrisc@lists.librecores.org,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-s390@vger.kernel.org,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-perf-users@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>, rcu@vger.kernel.org,
-        rh0@fb.com
-Subject: Re: [PATCH 04/36] cpuidle,intel_idle: Fix CPUIDLE_FLAG_IRQ_ENABLE
-Message-ID: <20220730234529.GC1587@lespinasse.org>
-References: <20220608142723.103523089@infradead.org>
- <20220608144516.172460444@infradead.org>
- <20220725194306.GA14746@lespinasse.org>
- <20220728172053.GA3607379@paulmck-ThinkPad-P17-Gen-1>
- <20220729102458.GA1695@lespinasse.org>
- <CAJZ5v0gyPtX=ksCibo2ZN_BztCqUn9KRtRu+gsJ5KetB_1MwEQ@mail.gmail.com>
- <20220730094800.GB1587@lespinasse.org>
- <CAJZ5v0hXVjsWab=qYZfXBTqcjkpWV0CFT9_oQBKQ28rFG3_VLw@mail.gmail.com>
+        Mon, 1 Aug 2022 08:47:01 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91128DFED
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  1 Aug 2022 05:38:29 -0700 (PDT)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by albert.telenet-ops.be with bizsmtp
+        id 2CeS280064C55Sk06CeSqv; Mon, 01 Aug 2022 14:38:26 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1oIUgj-005kjs-RQ; Mon, 01 Aug 2022 14:38:25 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1oIUgj-008Vk2-B6; Mon, 01 Aug 2022 14:38:25 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for v5.20
+Date:   Mon,  1 Aug 2022 14:38:21 +0200
+Message-Id: <20220801123821.2028594-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0hXVjsWab=qYZfXBTqcjkpWV0CFT9_oQBKQ28rFG3_VLw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sat, Jul 30, 2022 at 09:52:34PM +0200, Rafael J. Wysocki wrote:
-> On Sat, Jul 30, 2022 at 11:48 AM Michel Lespinasse
-> <michel@lespinasse.org> wrote:
-> > I'm not sure if that was the patch you meant to send though, as it
-> > seems it's only adding a tracepoint so shouldn't make any difference
-> > if I'm not actually using the tracepoint ?
-> 
-> You are right, it looks like I pasted a link to a different patch by
-> mistake.  Sorry about that.
-> 
-> I meant this one:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git/commit/?h=pm&id=d295ad34f236c3518634fb6403d4c0160456e470
-> 
-> which will appear in the final 5.19.
+	Hi Linus,
 
-Thanks. I can confirm that this patch fixes the boot time debug
-warnings for me. And I see that linus already merged it, nice!
+The following changes since commit f2906aa863381afb0015a9eb7fefad885d4e5a56:
+
+  Linux 5.19-rc1 (2022-06-05 17:18:54 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.20-tag1
+
+for you to fetch changes up to b508128bb0d1e243beb56cca5d819bcbb5c269b1:
+
+  m68k: defconfig: Update defconfigs for v5.19-rc1 (2022-07-12 10:48:21 +0200)
+
+----------------------------------------------------------------
+m68k updates for v5.20
+
+  - Use RNG seed from bootinfo block on virt platform,
+  - Defconfig updates,
+  - Minor fixes and improvements.
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+Amadeusz Sławiński (1):
+      m68k: bitops: Change __fls to return and accept unsigned long
+
+Geert Uytterhoeven (3):
+      m68k: mac: Remove forward declaration for mac_nmi_handler()
+      m68k: Add common forward declaration for show_registers()
+      m68k: defconfig: Update defconfigs for v5.19-rc1
+
+Jason A. Donenfeld (1):
+      m68k: virt: Use RNG seed from bootinfo block
+
+Jiang Jian (1):
+      m68k: q40: Align '*' in comments
+
+Juerg Haefliger (3):
+      m68k: Kconfig.cpu: Fix indentation and add endif comments
+      m68k: Kconfig.debug: Replace single quotes
+      m68k: Kconfig.machine: Add endif comment
+
+Laurent Vivier (1):
+      m68k: virt: Kconfig minor fixes
+
+Xiang wangx (1):
+      m68k: mac: Fix typos in comments
+
+XueBing Chen (1):
+      m68k: sun3: Use __func__ to get function's name in an output message
+
+Yang Yingliang (1):
+      m68k: virt: Fix missing platform_device_unregister() on error in virt_platform_init()
+
+ arch/m68k/Kconfig.cpu                      |  7 ++--
+ arch/m68k/Kconfig.debug                    |  6 ++--
+ arch/m68k/Kconfig.machine                  |  5 +--
+ arch/m68k/configs/amiga_defconfig          | 14 +++-----
+ arch/m68k/configs/apollo_defconfig         | 14 +++-----
+ arch/m68k/configs/atari_defconfig          | 14 +++-----
+ arch/m68k/configs/bvme6000_defconfig       | 14 +++-----
+ arch/m68k/configs/hp300_defconfig          | 14 +++-----
+ arch/m68k/configs/mac_defconfig            | 14 +++-----
+ arch/m68k/configs/multi_defconfig          | 14 +++-----
+ arch/m68k/configs/mvme147_defconfig        | 14 +++-----
+ arch/m68k/configs/mvme16x_defconfig        | 14 +++-----
+ arch/m68k/configs/q40_defconfig            | 14 +++-----
+ arch/m68k/configs/sun3_defconfig           | 14 +++-----
+ arch/m68k/configs/sun3x_defconfig          | 14 +++-----
+ arch/m68k/include/asm/bitops.h             |  2 +-
+ arch/m68k/include/asm/processor.h          |  1 +
+ arch/m68k/include/uapi/asm/bootinfo-virt.h |  8 +++++
+ arch/m68k/kernel/traps.c                   |  1 +
+ arch/m68k/mac/iop.c                        |  4 +--
+ arch/m68k/mac/macints.c                    | 35 +++++++++---------
+ arch/m68k/q40/q40ints.c                    |  2 +-
+ arch/m68k/sun3/mmu_emu.c                   | 11 +++---
+ arch/m68k/virt/config.c                    | 11 ++++++
+ arch/m68k/virt/ints.c                      |  3 +-
+ arch/m68k/virt/platform.c                  | 58 +++++++++++++++++-------------
+ 26 files changed, 149 insertions(+), 173 deletions(-)
+
+Gr{oetje,eeting}s,
+
+						Geert
 
 --
-Michel "walken" Lespinasse.
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
