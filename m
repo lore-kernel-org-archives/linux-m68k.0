@@ -2,81 +2,71 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 712D0C19F2A
-	for <linux-m68k@archiver.kernel.org>; Mon,  1 Aug 2022 15:55:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EED8C00144
+	for <linux-m68k@archiver.kernel.org>; Mon,  1 Aug 2022 17:51:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232724AbiHAPzB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 1 Aug 2022 11:55:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54686 "EHLO
+        id S233608AbiHARvb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 1 Aug 2022 13:51:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233724AbiHAPy7 (ORCPT
+        with ESMTP id S234352AbiHARvS (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 1 Aug 2022 11:54:59 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CCBB3DF38
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  1 Aug 2022 08:54:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=dHrWhCMfYLqzOiWjtXMitaQEVxQ2mnXrE1TT3YaAhKA=; b=Vjq8qoEp3iFqxLPYDnFnXbZcOx
-        VnItroiiw0SwQj57Vx6tLKt/LoNv4X8EEmmsGX9OEgZxj3yNn3XIZ8+oN+Z9K/m9tVlW3Ry+t2J8l
-        bE5zLoWa1ovKlIMZlV/Uv1MBfMTxc7HYSBVjrHZMGvdyoZe54Ue88BYWOMZ9Lnxx9t/xTobcd8ElV
-        VuZWchNBz7fiNaInE0FaJg4qQtmB0XYlF0+vdZ+0lPvPUwYfxl1AuFGSDm81LFtJcV7OdVdCAht8t
-        2Panm34vY2x83CWXT7xiuvo2GTUkI/nYdzOiGwXjSJBGZBZPvQD4h9pAsm+41cMjtvpRByXf3Wnjd
-        g1dPKyIQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33654)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1oIXkp-00027E-Lg; Mon, 01 Aug 2022 16:54:51 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1oIXko-0007Ac-CE; Mon, 01 Aug 2022 16:54:50 +0100
-Date:   Mon, 1 Aug 2022 16:54:50 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Yury Norov <yury.norov@gmail.com>
+        Mon, 1 Aug 2022 13:51:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93D8A18E01
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  1 Aug 2022 10:51:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C4DDF6091B;
+        Mon,  1 Aug 2022 17:51:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2FD8DC433C1;
+        Mon,  1 Aug 2022 17:51:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1659376276;
+        bh=Tvn0t7qwl3tw2AoLSiwAcq6yzHSPiv3Bi1lJMu+ZcWQ=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=sXIH1uIBdQNXwGgDCK0kRRv2FYHkFMr96rwBjpgMHkcTXi0493FIg1yjrvdrRzHgB
+         Nvbap+lYKqmppM+4B4RGkgEpxQdVV77StzErpwU6Q74kGsOxPy3yoSP9b7nGD5+KEt
+         8QiFqTOQOb8o4bzzeda2q8pLb7LfKxs2fE9Jb3r4UPOT7ysAOXd8FdQ9MSY0hbzmXO
+         9cQihy6ZF5uDnafyG0dCcd8T99mHNNT/Wu+98rM1c3+zIhEWN7k1I7cxqh0UzVC7/u
+         mJZjKmP24ZQKWjGcwZ1E0tDOlpPdWabZTEl0V966EYyNC7AsrqB+vjeZyggmczikyr
+         IH9PblfYqKekw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1D559C43142;
+        Mon,  1 Aug 2022 17:51:16 +0000 (UTC)
+Subject: Re: [GIT PULL] m68k updates for v5.20
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20220801123821.2028594-1-geert@linux-m68k.org>
+References: <20220801123821.2028594-1-geert@linux-m68k.org>
+X-PR-Tracked-List-Id: <linux-m68k.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20220801123821.2028594-1-geert@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.20-tag1
+X-PR-Tracked-Commit-Id: b508128bb0d1e243beb56cca5d819bcbb5c269b1
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: a82c58cf1a5560988d8b9b8abcd982e90a5fdaa4
+Message-Id: <165937627610.8149.12880111163955388117.pr-tracker-bot@kernel.org>
+Date:   Mon, 01 Aug 2022 17:51:16 +0000
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Dennis Zhou <dennis@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Alexey Klimov <klimov.linux@gmail.com>,
-        linux-m68k@lists.linux-m68k.org
-Subject: Re: Linux 5.19-rc8
-Message-ID: <Yuf3Sg57kbwO9jHa@shell.armlinux.org.uk>
-References: <CAHk-=wgYpJTMMxmfbpqc=JVtSK0Zj4b15G=AvEYk6vPNySDSsA@mail.gmail.com>
- <YuAv+lV324G7pmlk@yury-laptop>
- <CAHk-=wg2-j8zocUjurAeg_bimNz7C5h5HDEXKK6PxDmR+DaHRg@mail.gmail.com>
- <YuBEIiLL1xZVyEFl@shell.armlinux.org.uk>
- <CAHk-=wjpYLLoi1m0VRfVoyzGgmMiNwBhQ0XXG0VWwjskcz5Cug@mail.gmail.com>
- <YuCDscyJotkjNQcH@shell.armlinux.org.uk>
- <CAAH8bW-BNfhuXF_2cO+x2Qc51G-DFskFmKw8hzDHhC+3Rn1ZUA@mail.gmail.com>
- <YuDsmmAnOsgNDuWQ@shell.armlinux.org.uk>
- <YuWk3titnOiQACzC@yury-laptop>
- <Yuf1xYLAhCMjwCYT@shell.armlinux.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yuf1xYLAhCMjwCYT@shell.armlinux.org.uk>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Aug 01, 2022 at 04:48:21PM +0100, Russell King (Oracle) wrote:
-> Oh FFS.
-> 
-> I see you decided off your own back to remove the ARM version of the
-> find_bit functions, with NO agreement from the arch maintainer. This
-> is not on.
+The pull request you sent on Mon,  1 Aug 2022 14:38:21 +0200:
 
-Sorry, my mistake, I'm getting confused with git over conflicts which
-aren't making much sense.
+> git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.20-tag1
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/a82c58cf1a5560988d8b9b8abcd982e90a5fdaa4
+
+Thank you!
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
