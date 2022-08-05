@@ -2,99 +2,41 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5138FC19F28
-	for <linux-m68k@archiver.kernel.org>; Wed,  3 Aug 2022 08:48:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32244C00140
+	for <linux-m68k@archiver.kernel.org>; Fri,  5 Aug 2022 12:37:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231671AbiHCIsH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 3 Aug 2022 04:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45760 "EHLO
+        id S237972AbiHEMhr (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 5 Aug 2022 08:37:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbiHCIsG (ORCPT
+        with ESMTP id S229829AbiHEMhr (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 3 Aug 2022 04:48:06 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 073201A80E
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  3 Aug 2022 01:48:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1659516485; x=1691052485;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=+qvKUwqmQKAYYrLXg2GV2+q+xTQp35oEGWNYLkPBXjQ=;
-  b=eVXxiXVRBlghl14uriO3/0A7OYAP5mP7CBJ2hFSj3E/+xdRcc3X1hXt8
-   RkZnMkIU5IXJGfJCyw4wcOkZJCsBqULshqJAz11KIO+o0ZPWwpqvhKr2D
-   tBUC+8X6eUfmIftBqpR/Q2jDntBw4Kuh7Sx0cprtHm5WndMxdipVFNr3j
-   MQv1JD9TuIG0pwTalFwwJ1gu75OAxVZZHaLrJFfChHdKRqbqarhL2prDC
-   lvgQHuO4lng56KimDexgqzZPEGfrGZmkmByz7sRPEuZkzn+vh4iF9Oxv7
-   TNmjERU5Y+vjQxickkmhNGym6i9iHAmEmhvcoEpInInMABzBw4dtzKP3P
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10427"; a="269391836"
-X-IronPort-AV: E=Sophos;i="5.93,213,1654585200"; 
-   d="scan'208";a="269391836"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2022 01:48:05 -0700
-X-IronPort-AV: E=Sophos;i="5.93,213,1654585200"; 
-   d="scan'208";a="661991747"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.99.241.118]) ([10.99.241.118])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2022 01:48:03 -0700
-Message-ID: <2d4fac14-eaf8-c899-dba2-b2ffb484358d@linux.intel.com>
-Date:   Wed, 3 Aug 2022 10:48:01 +0200
+        Fri, 5 Aug 2022 08:37:47 -0400
+X-Greylist: delayed 1517 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 05 Aug 2022 05:37:45 PDT
+Received: from ns4004258.ip-142-4-213.net (unknown [IPv6:2607:5300:60:12d4::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A203265645
+        for <linux-m68k@lists.linux-m68k.org>; Fri,  5 Aug 2022 05:37:45 -0700 (PDT)
+Received: by ns4004258.ip-142-4-213.net (Postfix, from userid 1002)
+        id 2EE5B2AD41; Fri,  5 Aug 2022 07:46:07 -0400 (EDT)
+To:     linux-m68k@lists.linux-m68k.org
+Subject: Copie de : A QUICK AND EFFECTIVE WAY TO GET RICH
+X-PHP-Originating-Script: 1002:phpmailer.php
+Date:   Fri, 5 Aug 2022 07:46:07 -0400
+From:   CGT Spectacle Languedoc-Roussillon <yvan@cgtspectaclelr.org>
+Message-ID: <06350c854d55b807d79dd44bb526e5ac@yvangodard.me>
+X-Priority: 3
+X-Mailer: PHPMailer (phpmailer.sourceforge.net) [version 2.0.4]
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH v2 3/3] sparc64: bitops: Change __fls to return unsigned
- long
-Content-Language: en-US
-To:     Vineet Gupta <vgupta@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "David S . Miller" <davem@davemloft.net>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        linux-snps-arc@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org, sparclinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Cezary Rojewski <cezary.rojewski@intel.com>
-References: <20220527115345.2588775-1-amadeuszx.slawinski@linux.intel.com>
- <20220527115345.2588775-4-amadeuszx.slawinski@linux.intel.com>
-From:   =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?= 
-        <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <20220527115345.2588775-4-amadeuszx.slawinski@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 5/27/2022 1:53 PM, Amadeusz Sławiński wrote:
-> As per asm-generic definition and other architectures __fls should
-> return unsigned long.
-> 
-> No functional change is expected as return value should fit in unsigned
-> long.
-> 
-> Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
-> Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-> ---
->   arch/sparc/include/asm/bitops_64.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/sparc/include/asm/bitops_64.h b/arch/sparc/include/asm/bitops_64.h
-> index 005a8ae858f1..cdac39bd7b32 100644
-> --- a/arch/sparc/include/asm/bitops_64.h
-> +++ b/arch/sparc/include/asm/bitops_64.h
-> @@ -24,7 +24,7 @@ void clear_bit(unsigned long nr, volatile unsigned long *addr);
->   void change_bit(unsigned long nr, volatile unsigned long *addr);
->   
->   int fls(unsigned int word);
-> -int __fls(unsigned long word);
-> +unsigned long __fls(unsigned long word);
->   
->   #include <asm-generic/bitops/non-atomic.h>
->   
+Copie de :
 
-Hi,
+Une demande de contact a été formulée par e-mail via http://yvangodard.me/ de la part de :
+Charleskix <linux-m68k@lists.linux-m68k.org>
 
-any chance this one could also get merged? Other two patches are already 
-in linux-next and I would like to remove it from list of things I have 
-to remember ;)
+FINANCIAL CRISIS CAN MAKE YOU RICH! https://telegra.ph/Cryptocurrency-makes-people-millionaires-at-15-people-per-hour---Page-376733-08-02
 
-Amadeusz
