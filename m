@@ -2,37 +2,69 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 825EEC25B06
-	for <linux-m68k@archiver.kernel.org>; Tue,  9 Aug 2022 06:51:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6AF7C19F2D
+	for <linux-m68k@archiver.kernel.org>; Tue,  9 Aug 2022 17:03:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236184AbiHIGvi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 9 Aug 2022 02:51:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56148 "EHLO
+        id S245273AbiHIRDA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 9 Aug 2022 13:03:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236094AbiHIGvg (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 9 Aug 2022 02:51:36 -0400
-Received: from server.ikt-service.com (server.ikt-service.com [62.116.165.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE23205C1
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  8 Aug 2022 23:51:35 -0700 (PDT)
-Received: by server.ikt-service.com (Postfix, from userid 10064)
-        id CDCD7110259; Tue,  9 Aug 2022 08:51:33 +0200 (CEST)
-To:     linux-m68k@lists.linux-m68k.org
-Subject: =?UTF-8?Q?AQV_Personalleasing_=E2=80=9EKryptowahrung_macht_S?=  =?UTF-8?Q?ie_zum_Milliardar=E2=80=9C?=
-Date:   Tue, 9 Aug 2022 06:51:33 +0000
-From:   AQV Personalleasing <wordpress@aqv-personal.de>
-Reply-To: holger.czerwonka@ikt-service.com
-Message-ID: <65rrg3YwVDsdIs8MfY59MB4u7vRawxP30uE5Yi88w@aqv-personal.de>
-X-Mailer: PHPMailer 6.6.0 (https://github.com/PHPMailer/PHPMailer)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        with ESMTP id S245523AbiHIRCp (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 9 Aug 2022 13:02:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 085472BCF;
+        Tue,  9 Aug 2022 10:02:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9680E60B31;
+        Tue,  9 Aug 2022 17:02:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 062ABC43470;
+        Tue,  9 Aug 2022 17:02:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1660064559;
+        bh=mQDt0npPXNFoZ3KBEh4dScC/zr0s5mbBmqrzC+Hxpr4=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=aJH/ue90JxRWZTJpBScyYjh8lwsX1EBOAb3p3Ene1fOMQI12zHsHvjL0HGwTeCXvK
+         AWiPiklNNuQwblrEQVowSxS0pR+YwiVNAAMTMuP17L9fbARk+SrZS0qfuZPd0p/eQi
+         NHjRiFPcLj5YknIHF6MQP3Z4Ph5c2CuEl0NEUfW0fh5vwF/7mDb+YrD5iJnqn1DSjb
+         MMVplSawq8VSBRJk3hpvfTvooWtDDWza+5hEv+mcjwoXcbVRDQPYp/d2hbSz6MFSAR
+         E3qlHipZP1/7NlC38G3DO8O6gzp9PCsqT3/+4/7i0vejHIBk1QiQGePtXedJeFfJlo
+         v2W3TPzrgyiFg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E9B41C43142;
+        Tue,  9 Aug 2022 17:02:38 +0000 (UTC)
+Subject: Re: [git pull] m68knommu changes for v5.20
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <c42ca36d-3535-bd31-e965-2b86840a03f7@linux-m68k.org>
+References: <c42ca36d-3535-bd31-e965-2b86840a03f7@linux-m68k.org>
+X-PR-Tracked-List-Id: <linux-m68k.vger.kernel.org>
+X-PR-Tracked-Message-Id: <c42ca36d-3535-bd31-e965-2b86840a03f7@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.20
+X-PR-Tracked-Commit-Id: 472e68df4a5eacdbe4fd07cffef1b5ffdd95516b
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 15886321a426c7f4f1a0ff788f5b48e49230c0f3
+Message-Id: <166006455895.27167.16373185895979067980.pr-tracker-bot@kernel.org>
+Date:   Tue, 09 Aug 2022 17:02:38 +0000
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     torvalds@linux-foundation.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Nachrichtentext:
-Kryptowahrung macht Sie zum Millionar https://telegra.ph/Deutschland-hat-eine-neue-Einnahmequelle-von-535686-Euro-pro-Woche-08-07
+The pull request you sent on Tue, 9 Aug 2022 10:33:27 +1000:
+
+> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.20
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/15886321a426c7f4f1a0ff788f5b48e49230c0f3
+
+Thank you!
 
 -- 
-Diese E-Mail wurde von einem Kontaktformular von AQV Personalleasing (https://aqv-personal.de) gesendet
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
