@@ -2,159 +2,141 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 003C1C00140
-	for <linux-m68k@archiver.kernel.org>; Wed, 10 Aug 2022 15:59:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC095C00140
+	for <linux-m68k@archiver.kernel.org>; Wed, 10 Aug 2022 16:02:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230492AbiHJP7S (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 10 Aug 2022 11:59:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54756 "EHLO
+        id S232657AbiHJQCf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 10 Aug 2022 12:02:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232159AbiHJP7J (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 10 Aug 2022 11:59:09 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEAF352E46
-        for <linux-m68k@vger.kernel.org>; Wed, 10 Aug 2022 08:59:07 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id s23so841509wmj.4
-        for <linux-m68k@vger.kernel.org>; Wed, 10 Aug 2022 08:59:07 -0700 (PDT)
+        with ESMTP id S233110AbiHJQCQ (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 10 Aug 2022 12:02:16 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B80B647FB
+        for <linux-m68k@vger.kernel.org>; Wed, 10 Aug 2022 09:02:15 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id p12-20020a7bcc8c000000b003a5360f218fso1235279wma.3
+        for <linux-m68k@vger.kernel.org>; Wed, 10 Aug 2022 09:02:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=in-reply-to:content-disposition:mime-version:references
          :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc;
-        bh=5J/+lzEP3tSd3WPCvbjczX9ZLB61OBoGBALKUmRBw5s=;
-        b=ObbzQmaiZonvgZXM6vJSd38JNEFOl1Gu5gzz2JK4cCiW02dTTl9lARpq5+KEgkwx5t
-         cZJhbJXz1x3QyfajbDqIBIK4mbujsEdG9ys1inAOUjcSj9Wthi41cGYBetIvCKmHUnmo
-         XO09Qv92NvVrVC0xszkX26ZJeWoeHIRqb67s8=
+        bh=l8/2lnja9nL6p7OH6ZMKU6YrHDC9nL9IFx4bCiysLJE=;
+        b=SoMYGdDBirjwK82ZiHhEwxiAU2LXgo/qmYKwj25kGDmr/2HQjxmBszjBG+ULV6eN/7
+         +LPICEEUIULROP4JVJdX8Fw5tdWWZcrRdnATTDyJxvXDXn3OTvsv8XTktqud9gtj8wc7
+         +y9+jUTHVYAuXJCsCx8wvPIMnMJVqxt22+liQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references
          :mail-followup-to:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc;
-        bh=5J/+lzEP3tSd3WPCvbjczX9ZLB61OBoGBALKUmRBw5s=;
-        b=ZDHfJoalb2o3SaijQg/HdLZb3xlsbQ7g9FxkkALS1npZG8Y0G1XRgYepSAhfvD3RQe
-         Yy7BqvUjwMZYEEEjOw8z/4rsyjuAZVwynaMtvrC6le56JjD8ZWFAeLbUD3WBhR+mu6jw
-         MeY/TaMnPbUispfF3ZLhxJzu0c5fL537C1dkiitKvDTLoU9eXcGL6Fpm5IaJHbVW7ocg
-         07q+FXklOW7jwEOvwr0SZ9JkxTvZgaw7lWqkCCVpdujE8O/rKbxsyYvNFxwzGwUYzGxR
-         lZX23Us7C25CVOXUdcE+GtgApz6HPBoh3PVhe0grmg+NmHEUfZnJQrBXIfR4bC7XEzmd
-         O4xA==
-X-Gm-Message-State: ACgBeo2RNulNxTGpmrtQgP8Dp2qM25LtPqBqM2foQe94nsBkoQtOmLEq
-        211OBrIPQ5Hrgl46uOALwpH+DQ==
-X-Google-Smtp-Source: AA6agR7HY0wQU3y5yY6Kddj9MwzCY8wYP5mk/EVfoL8kIoQTc3N+5GNg+l+pO2qUm7O0zYD6sEsViQ==
-X-Received: by 2002:a05:600c:4f44:b0:3a5:6de3:8375 with SMTP id m4-20020a05600c4f4400b003a56de38375mr2992173wmq.198.1660147146409;
-        Wed, 10 Aug 2022 08:59:06 -0700 (PDT)
+        bh=l8/2lnja9nL6p7OH6ZMKU6YrHDC9nL9IFx4bCiysLJE=;
+        b=i/etUlgR6TZedVQCOmjNNbvhiVgEjJURwtZ/bM633cMFksQMCF6X4UMTGScWuR92gX
+         fljZMFcoRo5QHdQ1/N93KiBZfJR7AvbBDXVfaM83Qtr3awGiZC61T01IRlp8/pLZ1SOq
+         FFoWPcfGX5I+mki6SX2ZPwMkFKRVddPBzetP6emVej4vQpTRg905BsI3v8C6VUTY9yyP
+         xlyIelVhRtN1eK6tDnSTJE3j6MT+7dKWSHDg3NtR1xhuhJRMSLIMdaKtaMudYwpoUpe8
+         xc3l/63MLmmA7ZSEsRx1zY4P7mHFyJ4LdyrdxXIzhmqofLQMdTrN/6VdYcM95G41UFCl
+         Ua8A==
+X-Gm-Message-State: ACgBeo3NFm47YsQ8SVG+uDuEhBLnifZBlHJY/tyZap4xPMyXhngG8IFz
+        l4uCXMOZNx5/AnZ/JKTELMjmTg==
+X-Google-Smtp-Source: AA6agR6ZnGhaEqcnZ+/Gihz1HN0O86s73EJ4JBla34lVdwPmBl6ZdnsId1glDTd6IlfJ2YXJxSqa2w==
+X-Received: by 2002:a1c:f710:0:b0:394:1960:e8a1 with SMTP id v16-20020a1cf710000000b003941960e8a1mr2999393wmh.154.1660147333609;
+        Wed, 10 Aug 2022 09:02:13 -0700 (PDT)
 Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id e5-20020a05600c4e4500b003a32251c3f9sm3033032wmq.5.2022.08.10.08.59.05
+        by smtp.gmail.com with ESMTPSA id i5-20020a1c3b05000000b003a503a64e5esm2973492wma.15.2022.08.10.09.02.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Aug 2022 08:59:05 -0700 (PDT)
-Date:   Wed, 10 Aug 2022 17:59:03 +0200
+        Wed, 10 Aug 2022 09:02:12 -0700 (PDT)
+Date:   Wed, 10 Aug 2022 18:02:10 +0200
 From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Javier Martinez Canillas <javierm@redhat.com>
-Subject: Re: [PATCH v3 01/10] drm/fourcc: Add drm_format_info_bpp() helper
-Message-ID: <YvPVxy4kYKdzWgT8@phenom.ffwll.local>
-Mail-Followup-To: Geert Uytterhoeven <geert@linux-m68k.org>,
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-fbdev@vger.kernel.org,
+        linux-m68k@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 00/10] drm: Add support for low-color frame buffer
+ formats
+Message-ID: <YvPWghWg/+rmc5nx@phenom.ffwll.local>
+Mail-Followup-To: Sam Ravnborg <sam@ravnborg.org>,
         Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@linux.ie>,
         linux-fbdev@vger.kernel.org, linux-m68k@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Javier Martinez Canillas <javierm@redhat.com>
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
 References: <cover.1657294931.git.geert@linux-m68k.org>
- <1cae5ebc28513ec1c91c66b00647ce3ca23bfba7.1657294931.git.geert@linux-m68k.org>
+ <YsmE1D8lGp4XKs99@ravnborg.org>
+ <d6e5204e-5bbb-fe51-fd29-5452198bf368@suse.de>
+ <Ysvpk4fzef6caO5y@ravnborg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1cae5ebc28513ec1c91c66b00647ce3ca23bfba7.1657294931.git.geert@linux-m68k.org>
+In-Reply-To: <Ysvpk4fzef6caO5y@ravnborg.org>
 X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Jul 08, 2022 at 08:20:46PM +0200, Geert Uytterhoeven wrote:
-> Add a helper to retrieve the actual number of bits per pixel for a
-> plane, taking into account the number of characters and pixels per
-> block for tiled formats.
+On Mon, Jul 11, 2022 at 11:12:51AM +0200, Sam Ravnborg wrote:
+> Hi Thomas,
 > 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
-> ---
-> v3:
->   - Add Reviewed-by,
+> On Mon, Jul 11, 2022 at 10:50:00AM +0200, Thomas Zimmermann wrote:
+> > Hi
+> > 
+> > Am 09.07.22 um 15:38 schrieb Sam Ravnborg:
+> > > Hi Geert,
+> > > 
+> > > On Fri, Jul 08, 2022 at 08:20:45PM +0200, Geert Uytterhoeven wrote:
+> > > > 	Hi all,
+> > > > 
+> > > > A long outstanding issue with the DRM subsystem has been the lack of
+> > > > support for low-color displays, as used typically on older desktop
+> > > > systems, and on small embedded displays.
+> > 
+> > For the patchset
+> > 
+> > Acked-by: Thomas Zimemrmann <tzimmermann@suse.de>
+> > 
+> > > 
+> > > IT is super to have this addressed - thanks!
+> > > 
+> > > > 
+> > > > This patch series adds support for color-indexed frame buffer formats
+> > > > with 2, 4, and 16 colors.  It has been tested on ARAnyM using a
+> > > > work-in-progress Atari DRM driver supporting 2, 4, 16, 256, and 65536
+> > > > colors, with text console operation, fbtest, and modetest.
+> > > > 
+> > > > Overview:
+> > > >    - Patch 1 introduces a helper, to be used by later patches in the
+> > > >      series,
+> > > >    - Patch 2 introduces a flag to indicate color-indexed formats,
+> > > >    - Patches 3 and 4 correct calculations of bits per pixel for sub-byte
+> > > >      pixel formats,
+> > > >    - Patches 5 and 6 introduce the new C[124] formats,
+> > > >    - Patch 7 fixes an untested code path,
+> > > >    - Patch 8 documents the use of "red" for light-on-dark displays,
+> > > >    - Patches 9 and 10 add more fourcc codes for light-on-dark and
+> > > >      dark-on-light frame buffer formats, which may be useful for e.g. the
+> > > >      ssd130x and repaper drivers.
+> > > 
+> > > Applied all patches to drm-misc (drm-misc-next), including the last two
+> > > RFC patches as we then have the formats ready when a user pops up.
+> > 
+> > I know it's v3 already, but give people at least a workday for reviewing
+> > before merging patches of this size and impact. Friday-evening patches are
+> > not supposed to be merged on Saturday afternoons.
 > 
-> v2:
->   - Move up.
-> ---
->  drivers/gpu/drm/drm_fourcc.c | 19 +++++++++++++++++++
->  include/drm/drm_fourcc.h     |  1 +
->  2 files changed, 20 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
-> index 07741b678798b0f1..cf48ea0b2cb70ba8 100644
-> --- a/drivers/gpu/drm/drm_fourcc.c
-> +++ b/drivers/gpu/drm/drm_fourcc.c
-> @@ -370,6 +370,25 @@ unsigned int drm_format_info_block_height(const struct drm_format_info *info,
->  }
->  EXPORT_SYMBOL(drm_format_info_block_height);
->  
-> +/**
-> + * drm_format_info_bpp - number of bits per pixel
-> + * @info: pixel format info
-> + * @plane: plane index
-> + *
-> + * Returns:
-> + * The actual number of bits per pixel, depending on the plane index.
-> + */
-> +unsigned int drm_format_info_bpp(const struct drm_format_info *info, int plane)
-> +{
-> +	if (!info || plane < 0 || plane >= info->num_planes)
-> +		return 0;
-> +
-> +	return info->char_per_block[plane] * 8 /
-> +	       (drm_format_info_block_width(info, plane) *
-> +		drm_format_info_block_height(info, plane));
+> Sorry for being too enthusiastic on this one.
+> Will wait a bit more in the future for these kind of patches.
 
-Do we really needs this for blocky formats where this is potentially
-ill-defined? I think if there's no need then this should also return 0
-when block_width/height != 1, it doesn't make much sense to compute bpp
-when it's not really bits per _pixel_.
+Took me a bit longer to unburry and get to this, and lgtm except patch 1
+where I have a semantic concern. Can you pls do the quick patch to adjust
+that? Since this is all about the Cx/Rx/Dx formats I don't think it'll
+matter really.
 
-Minimally this needs to check whether the division actually makes sense or
-whether there's a reminder, and if there's  reminder, then fail. But that
-feels like a bad hack and I think we should avoid it if it's not
-absolutely necessary.
-
-Otherwise lgtm.
--Daniel
-
-> +}
-> +EXPORT_SYMBOL(drm_format_info_bpp);
-> +
->  /**
->   * drm_format_info_min_pitch - computes the minimum required pitch in bytes
->   * @info: pixel format info
-> diff --git a/include/drm/drm_fourcc.h b/include/drm/drm_fourcc.h
-> index 22aa64d07c7905e2..3800a7ad7f0cda7a 100644
-> --- a/include/drm/drm_fourcc.h
-> +++ b/include/drm/drm_fourcc.h
-> @@ -313,6 +313,7 @@ unsigned int drm_format_info_block_width(const struct drm_format_info *info,
->  					 int plane);
->  unsigned int drm_format_info_block_height(const struct drm_format_info *info,
->  					  int plane);
-> +unsigned int drm_format_info_bpp(const struct drm_format_info *info, int plane);
->  uint64_t drm_format_info_min_pitch(const struct drm_format_info *info,
->  				   int plane, unsigned int buffer_width);
->  
-> -- 
-> 2.25.1
-> 
-
+Thanks, Daniel
 -- 
 Daniel Vetter
 Software Engineer, Intel Corporation
