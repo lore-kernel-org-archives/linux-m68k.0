@@ -2,69 +2,160 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6AF7C19F2D
-	for <linux-m68k@archiver.kernel.org>; Tue,  9 Aug 2022 17:03:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 003C1C00140
+	for <linux-m68k@archiver.kernel.org>; Wed, 10 Aug 2022 15:59:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245273AbiHIRDA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 9 Aug 2022 13:03:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43504 "EHLO
+        id S230492AbiHJP7S (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 10 Aug 2022 11:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245523AbiHIRCp (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 9 Aug 2022 13:02:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 085472BCF;
-        Tue,  9 Aug 2022 10:02:40 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9680E60B31;
-        Tue,  9 Aug 2022 17:02:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 062ABC43470;
-        Tue,  9 Aug 2022 17:02:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660064559;
-        bh=mQDt0npPXNFoZ3KBEh4dScC/zr0s5mbBmqrzC+Hxpr4=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=aJH/ue90JxRWZTJpBScyYjh8lwsX1EBOAb3p3Ene1fOMQI12zHsHvjL0HGwTeCXvK
-         AWiPiklNNuQwblrEQVowSxS0pR+YwiVNAAMTMuP17L9fbARk+SrZS0qfuZPd0p/eQi
-         NHjRiFPcLj5YknIHF6MQP3Z4Ph5c2CuEl0NEUfW0fh5vwF/7mDb+YrD5iJnqn1DSjb
-         MMVplSawq8VSBRJk3hpvfTvooWtDDWza+5hEv+mcjwoXcbVRDQPYp/d2hbSz6MFSAR
-         E3qlHipZP1/7NlC38G3DO8O6gzp9PCsqT3/+4/7i0vejHIBk1QiQGePtXedJeFfJlo
-         v2W3TPzrgyiFg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E9B41C43142;
-        Tue,  9 Aug 2022 17:02:38 +0000 (UTC)
-Subject: Re: [git pull] m68knommu changes for v5.20
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <c42ca36d-3535-bd31-e965-2b86840a03f7@linux-m68k.org>
-References: <c42ca36d-3535-bd31-e965-2b86840a03f7@linux-m68k.org>
-X-PR-Tracked-List-Id: <linux-m68k.vger.kernel.org>
-X-PR-Tracked-Message-Id: <c42ca36d-3535-bd31-e965-2b86840a03f7@linux-m68k.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.20
-X-PR-Tracked-Commit-Id: 472e68df4a5eacdbe4fd07cffef1b5ffdd95516b
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 15886321a426c7f4f1a0ff788f5b48e49230c0f3
-Message-Id: <166006455895.27167.16373185895979067980.pr-tracker-bot@kernel.org>
-Date:   Tue, 09 Aug 2022 17:02:38 +0000
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     torvalds@linux-foundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
+        with ESMTP id S232159AbiHJP7J (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 10 Aug 2022 11:59:09 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEAF352E46
+        for <linux-m68k@vger.kernel.org>; Wed, 10 Aug 2022 08:59:07 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id s23so841509wmj.4
+        for <linux-m68k@vger.kernel.org>; Wed, 10 Aug 2022 08:59:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc;
+        bh=5J/+lzEP3tSd3WPCvbjczX9ZLB61OBoGBALKUmRBw5s=;
+        b=ObbzQmaiZonvgZXM6vJSd38JNEFOl1Gu5gzz2JK4cCiW02dTTl9lARpq5+KEgkwx5t
+         cZJhbJXz1x3QyfajbDqIBIK4mbujsEdG9ys1inAOUjcSj9Wthi41cGYBetIvCKmHUnmo
+         XO09Qv92NvVrVC0xszkX26ZJeWoeHIRqb67s8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc;
+        bh=5J/+lzEP3tSd3WPCvbjczX9ZLB61OBoGBALKUmRBw5s=;
+        b=ZDHfJoalb2o3SaijQg/HdLZb3xlsbQ7g9FxkkALS1npZG8Y0G1XRgYepSAhfvD3RQe
+         Yy7BqvUjwMZYEEEjOw8z/4rsyjuAZVwynaMtvrC6le56JjD8ZWFAeLbUD3WBhR+mu6jw
+         MeY/TaMnPbUispfF3ZLhxJzu0c5fL537C1dkiitKvDTLoU9eXcGL6Fpm5IaJHbVW7ocg
+         07q+FXklOW7jwEOvwr0SZ9JkxTvZgaw7lWqkCCVpdujE8O/rKbxsyYvNFxwzGwUYzGxR
+         lZX23Us7C25CVOXUdcE+GtgApz6HPBoh3PVhe0grmg+NmHEUfZnJQrBXIfR4bC7XEzmd
+         O4xA==
+X-Gm-Message-State: ACgBeo2RNulNxTGpmrtQgP8Dp2qM25LtPqBqM2foQe94nsBkoQtOmLEq
+        211OBrIPQ5Hrgl46uOALwpH+DQ==
+X-Google-Smtp-Source: AA6agR7HY0wQU3y5yY6Kddj9MwzCY8wYP5mk/EVfoL8kIoQTc3N+5GNg+l+pO2qUm7O0zYD6sEsViQ==
+X-Received: by 2002:a05:600c:4f44:b0:3a5:6de3:8375 with SMTP id m4-20020a05600c4f4400b003a56de38375mr2992173wmq.198.1660147146409;
+        Wed, 10 Aug 2022 08:59:06 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id e5-20020a05600c4e4500b003a32251c3f9sm3033032wmq.5.2022.08.10.08.59.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Aug 2022 08:59:05 -0700 (PDT)
+Date:   Wed, 10 Aug 2022 17:59:03 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Javier Martinez Canillas <javierm@redhat.com>
+Subject: Re: [PATCH v3 01/10] drm/fourcc: Add drm_format_info_bpp() helper
+Message-ID: <YvPVxy4kYKdzWgT8@phenom.ffwll.local>
+Mail-Followup-To: Geert Uytterhoeven <geert@linux-m68k.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-m68k@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Javier Martinez Canillas <javierm@redhat.com>
+References: <cover.1657294931.git.geert@linux-m68k.org>
+ <1cae5ebc28513ec1c91c66b00647ce3ca23bfba7.1657294931.git.geert@linux-m68k.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1cae5ebc28513ec1c91c66b00647ce3ca23bfba7.1657294931.git.geert@linux-m68k.org>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The pull request you sent on Tue, 9 Aug 2022 10:33:27 +1000:
+On Fri, Jul 08, 2022 at 08:20:46PM +0200, Geert Uytterhoeven wrote:
+> Add a helper to retrieve the actual number of bits per pixel for a
+> plane, taking into account the number of characters and pixels per
+> block for tiled formats.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+> ---
+> v3:
+>   - Add Reviewed-by,
+> 
+> v2:
+>   - Move up.
+> ---
+>  drivers/gpu/drm/drm_fourcc.c | 19 +++++++++++++++++++
+>  include/drm/drm_fourcc.h     |  1 +
+>  2 files changed, 20 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
+> index 07741b678798b0f1..cf48ea0b2cb70ba8 100644
+> --- a/drivers/gpu/drm/drm_fourcc.c
+> +++ b/drivers/gpu/drm/drm_fourcc.c
+> @@ -370,6 +370,25 @@ unsigned int drm_format_info_block_height(const struct drm_format_info *info,
+>  }
+>  EXPORT_SYMBOL(drm_format_info_block_height);
+>  
+> +/**
+> + * drm_format_info_bpp - number of bits per pixel
+> + * @info: pixel format info
+> + * @plane: plane index
+> + *
+> + * Returns:
+> + * The actual number of bits per pixel, depending on the plane index.
+> + */
+> +unsigned int drm_format_info_bpp(const struct drm_format_info *info, int plane)
+> +{
+> +	if (!info || plane < 0 || plane >= info->num_planes)
+> +		return 0;
+> +
+> +	return info->char_per_block[plane] * 8 /
+> +	       (drm_format_info_block_width(info, plane) *
+> +		drm_format_info_block_height(info, plane));
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.20
+Do we really needs this for blocky formats where this is potentially
+ill-defined? I think if there's no need then this should also return 0
+when block_width/height != 1, it doesn't make much sense to compute bpp
+when it's not really bits per _pixel_.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/15886321a426c7f4f1a0ff788f5b48e49230c0f3
+Minimally this needs to check whether the division actually makes sense or
+whether there's a reminder, and if there's  reminder, then fail. But that
+feels like a bad hack and I think we should avoid it if it's not
+absolutely necessary.
 
-Thank you!
+Otherwise lgtm.
+-Daniel
+
+> +}
+> +EXPORT_SYMBOL(drm_format_info_bpp);
+> +
+>  /**
+>   * drm_format_info_min_pitch - computes the minimum required pitch in bytes
+>   * @info: pixel format info
+> diff --git a/include/drm/drm_fourcc.h b/include/drm/drm_fourcc.h
+> index 22aa64d07c7905e2..3800a7ad7f0cda7a 100644
+> --- a/include/drm/drm_fourcc.h
+> +++ b/include/drm/drm_fourcc.h
+> @@ -313,6 +313,7 @@ unsigned int drm_format_info_block_width(const struct drm_format_info *info,
+>  					 int plane);
+>  unsigned int drm_format_info_block_height(const struct drm_format_info *info,
+>  					  int plane);
+> +unsigned int drm_format_info_bpp(const struct drm_format_info *info, int plane);
+>  uint64_t drm_format_info_min_pitch(const struct drm_format_info *info,
+>  				   int plane, unsigned int buffer_width);
+>  
+> -- 
+> 2.25.1
+> 
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
