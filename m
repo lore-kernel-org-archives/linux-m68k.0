@@ -2,119 +2,69 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9D53C19F2A
-	for <linux-m68k@archiver.kernel.org>; Thu, 11 Aug 2022 19:30:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A54E3C19F2D
+	for <linux-m68k@archiver.kernel.org>; Sat, 13 Aug 2022 20:08:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234978AbiHKTa0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 11 Aug 2022 15:30:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40268 "EHLO
+        id S233786AbiHMUIb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 13 Aug 2022 16:08:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233918AbiHKTaY (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 11 Aug 2022 15:30:24 -0400
-Received: from mailrelay4-1.pub.mailoutpod1-cph3.one.com (mailrelay4-1.pub.mailoutpod1-cph3.one.com [46.30.210.185])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDF89B08
-        for <linux-m68k@vger.kernel.org>; Thu, 11 Aug 2022 12:30:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ravnborg.org; s=rsa1;
-        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-         from:date:from;
-        bh=PiIxReYkxtBzv66jtBR4FROfX82syegstNTwPa+ySR0=;
-        b=J4WnXA650B9xrqJFOUNC99f85fvYDJAQp733iypsjAv6EqqJCkAK7OOrj2HmV44IcKdnV3v+7OM2Q
-         VBI5UDXOx9WDYcqqlqUYamwCxt9veZ0xDP0M1tZNhzKtiTJk3LKqmoJvowc6jzgVcl1XbWbLHnWGaj
-         prL9zk8v75TMw3wvqpIdOSgv8OKdHSseFmbRB9/hcaUaQsxV1ggShec0sc4PVydd3U/hZl73hVvHxr
-         y/LkQkCaLbhyFGuCCwyE98HrhJ5vXM2lzB//fk+kRnBtI4dkJsF4/Qd47/hCwSJohfSbz0YxDuEoJO
-         R1XE1Hodc/OUYnY5cMcYNsOsE7lki1Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
-        d=ravnborg.org; s=ed1;
-        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-         from:date:from;
-        bh=PiIxReYkxtBzv66jtBR4FROfX82syegstNTwPa+ySR0=;
-        b=lud6DSUj9xxo1AbujB4/Ho0gbti2rokDDTZkDXnKk5P5Gu4jnxPiTtmV5CE+z6T/r+e1iMKDNB/Wp
-         EGowbZsDQ==
-X-HalOne-Cookie: 52a4d43754f5de879c648bea03fabce90926a481
-X-HalOne-ID: 07f25d33-19ac-11ed-8245-d0431ea8bb10
-Received: from mailproxy4.cst.dirpod4-cph3.one.com (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
-        by mailrelay4.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
-        id 07f25d33-19ac-11ed-8245-d0431ea8bb10;
-        Thu, 11 Aug 2022 19:30:17 +0000 (UTC)
-Date:   Thu, 11 Aug 2022 21:30:16 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Javier Martinez Canillas <javierm@redhat.com>
-Subject: Re: [PATCH v3 01/10] drm/fourcc: Add drm_format_info_bpp() helper
-Message-ID: <YvVYyKZNDGfhGjb5@ravnborg.org>
-References: <cover.1657294931.git.geert@linux-m68k.org>
- <1cae5ebc28513ec1c91c66b00647ce3ca23bfba7.1657294931.git.geert@linux-m68k.org>
- <YvPVxy4kYKdzWgT8@phenom.ffwll.local>
- <CAMuHMdVMuuXgYW-AkyB+G77Wsjkm715u1ifDvaY=5DufXjryRA@mail.gmail.com>
- <YvUqPL5l8/+XbvaQ@phenom.ffwll.local>
- <YvVKe72jYBjucmkz@ravnborg.org>
- <CAMuHMdVD37MCXau4w87=x_jk9j-NMJCmu0d9qPuMqmHA_vPQRQ@mail.gmail.com>
+        with ESMTP id S229787AbiHMUIa (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sat, 13 Aug 2022 16:08:30 -0400
+X-Greylist: delayed 5163 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 13 Aug 2022 13:08:28 PDT
+Received: from vps-298678.festclick.com (vps-298678.festclick.com [162.214.164.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C1C4140D3
+        for <linux-m68k@vger.kernel.org>; Sat, 13 Aug 2022 13:08:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=proycom.cl;
+        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:
+        Reply-To:From:Date:Subject:To:Sender:Cc:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=YWb58z0byCtVH0KtthUrNXKWrv3OmDh5CmyXNuNq8F8=; b=GeJj+h04O+88x7YkjnzsUR8vs/
+        HhwEmcW4gUKL9Oht0WgehOi904la1bv7KLA/bsqSN4tfWhWmwht5D9TT9OUIzoC2exhtgmovhMVBI
+        YEGu3ZG8VFb8fyTBUY28yxz3C0ERFpBHKekyt0PiFtvwJZTKgsmE9SQIRPcFS2wmhmvQi1qzfDPv2
+        SFtwECNk0B1rVI5iihmyzwK0Hrt2Y2l9jGPng0sej97+54/1QhrfGV1YWY/ipRSzMPnI0CxBPBb9R
+        kWIro5a2f1kbxAfR/FLD+Gzuui4gVRFWjzVefbE5SH0ybTvKBvR30kGFPZ8X3NfhpebDtqC3y9RT2
+        IZm4dhFQ==;
+Received: from proycom by vps-298678.festclick.com with local (Exim 4.95)
+        (envelope-from <proycom@vps-298678.festclick.com>)
+        id 1oMw5V-0006bn-OX;
+        Sat, 13 Aug 2022 14:42:21 -0400
+To:     info@proycom.cl, linux-m68k@vger.kernel.org
+Subject: =?us-ascii?Q?Robinhood_Crypto:_Investing_in_Cryptocurrency_M?=  =?us-ascii?Q?akes_Many_People_Millionaires?=
+X-PHP-Script: proycom.cl/index.php for 181.214.218.36
+X-PHP-Originating-Script: 1018:PHPMailer.php
+Date:   Sat, 13 Aug 2022 18:42:21 +0000
+From:   CharlesoWest <wordpress@proycom.cl>
+Reply-To: linux-m68k@vger.kernel.org
+Message-ID: <PELEquRTjUI1bXZTy9RkA4cEHZw5hJMfZJ1XYKcHOMA@proycom.cl>
+X-Mailer: PHPMailer 6.5.3 (https://github.com/PHPMailer/PHPMailer)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdVD37MCXau4w87=x_jk9j-NMJCmu0d9qPuMqmHA_vPQRQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vps-298678.festclick.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [1018 991] / [47 12]
+X-AntiAbuse: Sender Address Domain - vps-298678.festclick.com
+X-Get-Message-Sender-Via: vps-298678.festclick.com: authenticated_id: proycom/from_h
+X-Authenticated-Sender: vps-298678.festclick.com: wordpress@proycom.cl
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert.
+De: CharlesoWest 
+Mail: linux-m68k@vger.kernel.org
+Asunto: Robinhood Crypto: Investing in Cryptocurrency Makes Many People Millionaires
+Propósito: Consultas Generales
 
-> > >
-> > > Yeah I don't think we should describe these with bpp or cpp or anything
-> > > like that. bpp < 8 makes sense since that's how this has been done since
-> > > decades, but trying to extend these to funny new formats is a bad idea.
-> > > This is also why cpp and depth refuse to compute these (or at least
-> > > should).
-> >
-> > Daniel and I discussed this on irc. Let me try to recap here.
-> > Using the bits per pixel info from drm_format_info is something we shall
-> > try to avoid as this is often a sign of the wrong abstraction/design (my
-> > words based on the irc talk).
-> > So we shall limit the use of drm_format_info_bpp() to what we need now,
-> > thus blocky formats should not be supported - to try to avoid seeing
-> > this used more than necessary.
-> >
-> > Daniel suggested a rename to drm_format_info_legacy_bpp() to make it
-> > obvious that this is often/always the wrong solution. I did not jump on
-> > doing the rename as I do not know stuff good enough to tell people what
-> > to use when this is not the right solution. The rename is simple, it is
-> > the follow-up that keep me away.
-> >
-> > On top of this there is a few formats in drm_drourcc that has a depth
-> > field set which should be dropped. .depth is only for the few legacy
-> > formats where it is used today.
-> >
-> > We would also like to convert the fbdev helpers to drm_format_info,
-> > and doing so will likely teach us a bit more what we need and what we
-> > can drop.
-> >
-> > Geert - can you give drm_format_info_bpp() a spin so it is limited to
-> > the formats used now (not the blocky ones).
-> 
-> You mean return 0 if char_per_block[] > 1?
-if char_per_block[] > 1 AND block_w[] > 0 AND block_h[] > 0 should be
-enough.
+Mensaje:
+eToro: $250 for 5 minutes on cryptocurrency >>>>>>>>>>>>>>>>>>>>>>>>>>> http://putin-news.donerbank.com/bild-news-6352 <<<<<<<<<<<<<<<<<<<<<<<<
 
-> I'm not sure it's actually safe to do so (and make this change this late
-> in the development cycle), as this is used in drm_client_buffer_create(),
-> drm_client_buffer_addfb(), and drm_mode_getfb().
+--
+This e-mail was sent from PROYCOM
 
-drm_client_buffer_create() and drm_client_buffer_addfb() both get their
-format from  drm_mode_legacy_fb_format() which do not produce any blocky
-formats - so they are good.
-
-drm_mode_getfb() looks up a framebuffer originally created using one of
-the above (I think), so here it should also be fine.
-I do not see the need to push this to fixes, so it has a full cycle to
-mature if it causes issues.
-
-	Sam
