@@ -2,83 +2,66 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C32A9C19F2C
-	for <linux-m68k@archiver.kernel.org>; Tue, 16 Aug 2022 06:05:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 48DB6C2BB41
+	for <linux-m68k@archiver.kernel.org>; Tue, 16 Aug 2022 08:14:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229516AbiHPGFA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 16 Aug 2022 02:05:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37696 "EHLO
+        id S232525AbiHPIOI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 16 Aug 2022 04:14:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbiHPGEq (ORCPT
+        with ESMTP id S232505AbiHPINa (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 16 Aug 2022 02:04:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00333151767
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Aug 2022 16:37:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E006F61207;
-        Mon, 15 Aug 2022 23:37:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A2D3C433C1;
-        Mon, 15 Aug 2022 23:37:22 +0000 (UTC)
-Message-ID: <4ae72d0b-b197-f9d8-5cbe-ce7cfaf3affc@linux-m68k.org>
-Date:   Tue, 16 Aug 2022 09:37:19 +1000
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
+        Tue, 16 Aug 2022 04:13:30 -0400
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B0969F60;
+        Mon, 15 Aug 2022 23:24:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5mwKLMlqlsmYbtuyi4aXzonUQ8/kmoqLmUhmFoodlO8=; b=GkbwgdirZZUpz61FCNvNhgX3h3
+        DKSv0OCJl9yp0v8E0fujD4t5nvp2H1W2rgPEr91bf9OgOjMFA61W0Sh7UFRD04UmFW7noRpyBv6os
+        xyjJ7UFbttn0qzhLBJvUuU0ZVpF6bmTjai84VJ9G3D3kKMx1EavmJczinX87urxPcx5dviIoTmANa
+        2S+1ftsCuZ5QcH3nVcKYt+KWXZU/x1cOeRmivadO2KmvkENapsnz2CpUcpLKqDSPVZTFtLkP/EUEV
+        V9Cc1sOmUCs0jEWRFgK2Uny39YVOQcAt/aVzyAA3FZnoiPPSR5w77IPnhBYjPnGDvOP5LOzKM6TpS
+        nCk9byzQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.95 #2 (Red Hat Linux))
+        id 1oNpzt-004wki-P2;
+        Tue, 16 Aug 2022 06:24:17 +0000
+Date:   Tue, 16 Aug 2022 07:24:17 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     Xin Gao <gaoxin@cdjrlc.com>, geert@linux-m68k.org,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] m68k: Complete variable type
-Content-Language: en-US
-To:     Xin Gao <gaoxin@cdjrlc.com>, geert@linux-m68k.org
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Message-ID: <Yvs4EUfVUdOgEW4f@ZenIV>
 References: <20220815194806.3487-1-gaoxin@cdjrlc.com>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <20220815194806.3487-1-gaoxin@cdjrlc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+ <4ae72d0b-b197-f9d8-5cbe-ce7cfaf3affc@linux-m68k.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4ae72d0b-b197-f9d8-5cbe-ce7cfaf3affc@linux-m68k.org>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-
-On 16/8/22 05:48, Xin Gao wrote:
-> Complete the variable type of line 109.
+On Tue, Aug 16, 2022 at 09:37:19AM +1000, Greg Ungerer wrote:
+> On 16/8/22 05:48, Xin Gao wrote:
+> > @@ -169,7 +169,7 @@ void q40_sched_init (void)
+> >    *
+> >   */
+> > -struct IRQ_TABLE{ unsigned int mask; int irq ;};
+> > +struct IRQ_TABLE{ unsigned int mask; int irq };
+> >   #if 0
+> >   static struct IRQ_TABLE iirqs[]={
+> >     {Q40_IRQ_FRAME_MASK,Q40_IRQ_FRAME},
 > 
-> Signed-off-by: Xin Gao <gaoxin@cdjrlc.com>
-> ---
->   arch/m68k/coldfire/m520x.c | 2 +-
->   arch/m68k/q40/q40ints.c    | 2 +-
->   2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/m68k/coldfire/m520x.c b/arch/m68k/coldfire/m520x.c
-> index d2f96b40aee1..dca89214bbc6 100644
-> --- a/arch/m68k/coldfire/m520x.c
-> +++ b/arch/m68k/coldfire/m520x.c
-> @@ -106,7 +106,7 @@ static struct clk * const disable_clks[] __initconst = {
->   
->   static void __init m520x_clk_init(void)
->   {
-> -	unsigned i;
-> +	unsigned int i;
->   
->   	/* make sure these clocks are enabled */
->   	for (i = 0; i < ARRAY_SIZE(enable_clks); ++i)
-> diff --git a/arch/m68k/q40/q40ints.c b/arch/m68k/q40/q40ints.c
-> index 100c05544c6a..fdac8a0cb75f 100644
-> --- a/arch/m68k/q40/q40ints.c
-> +++ b/arch/m68k/q40/q40ints.c
-> @@ -169,7 +169,7 @@ void q40_sched_init (void)
->    *
->   */
->   
-> -struct IRQ_TABLE{ unsigned int mask; int irq ;};
-> +struct IRQ_TABLE{ unsigned int mask; int irq };
->   #if 0
->   static struct IRQ_TABLE iirqs[]={
->     {Q40_IRQ_FRAME_MASK,Q40_IRQ_FRAME},
+> This last change doesn't match the commit message.
+> It should be a separate patch.
 
-This last change doesn't match the commit message.
-It should be a separate patch.
+	The last change is not a valid C.  Never had been.
+In C semicolon is *NOT* a separator - it's a part of declaration.
 
-Regards
-Greg
+-- 
+improve the kernel quality - git rm scripts/checkpatch.pl
