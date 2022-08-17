@@ -2,98 +2,156 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54674C3F6B0
-	for <linux-m68k@archiver.kernel.org>; Wed, 17 Aug 2022 06:37:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9927EC32772
+	for <linux-m68k@archiver.kernel.org>; Wed, 17 Aug 2022 12:57:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238541AbiHQGhP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 17 Aug 2022 02:37:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48008 "EHLO
+        id S239280AbiHQM5X (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 17 Aug 2022 08:57:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229687AbiHQGhO (ORCPT
+        with ESMTP id S236727AbiHQM5W (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 17 Aug 2022 02:37:14 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C620678BCC
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 Aug 2022 23:37:13 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4M6ywr2Fflz4x3w;
-        Wed, 17 Aug 2022 16:36:59 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1660718232;
-        bh=5lvMCowArwqyA9jSE0Pt5Ze40kYbuyRJPhxadHGIwKI=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=V5KRJdowJmJQRJnS7vKpdn3ZRXD54gk+olJ2P9NPfjmi7kMUASVQ2UXCdDQyrJ2l4
-         iCeFUua0EzB2yY0V/Z2I6yNQvrzfQPnJW1W5hxs27Vmfkv+k2UjzPlcs8lpiwhfw0s
-         rXEgyRzix9FElmstXFR+laxsxOuSRDwwsndo9tYxJEmh/ZBPqWv8VEb8et3MiTTUHN
-         x10j5udzl/wNVZu2HvSBSJ+AMCucLU+aGNDpNcmlYlO+lqwPbmi66mdTVNq3+seiCv
-         ALvJpMs3moLPQf8qL2I07gi/1+uKcpDS0UK8SnIKfeX71p9KEinWWl/Ojv6Y5XtZQh
-         hNA8dcj2NpgRA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Zi Yan <zi.yan@sent.com>, linux-mm@kvack.org
-Cc:     Zi Yan <ziy@nvidia.com>, David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Yang Shi <shy828301@gmail.com>,
-        David Rientjes <rientjes@google.com>,
-        James Houghton <jthoughton@google.com>,
-        Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Taichi Sugaya <sugaya.taichi@socionext.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Qin Jian <qinjian@cqplus1.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Guo Ren <guoren@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        "David S. Miller" <davem@davemloft.net>,
-        Chris Zankel <chris@zankel.net>, Arnd Bergmann <arnd@arndb.de>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-oxnas@groups.io,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org
-Subject: Re: [PATCH] arch: mm: rename FORCE_MAX_ZONEORDER to
- ARCH_FORCE_MAX_ORDER
-In-Reply-To: <20220815143959.1511278-1-zi.yan@sent.com>
-References: <20220815143959.1511278-1-zi.yan@sent.com>
-Date:   Wed, 17 Aug 2022 16:36:57 +1000
-Message-ID: <87tu6bv0ja.fsf@mpe.ellerman.id.au>
+        Wed, 17 Aug 2022 08:57:22 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD4494C629
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 17 Aug 2022 05:57:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1660741041; x=1692277041;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=gGvQk8xFeEmpv0nXW5obr1EDDK798Me5zo7icMHQssw=;
+  b=c9/lC2x79u+k9TexzRBZ1TghD36dvuQ8si+mXG59ZmimNRm8DFspwCIW
+   S0zw7I1YbgY/v4gHU2HxJM8VgjRe8SxHc2C/2u7HYJS5ZshURoz6Lpq/z
+   AT/Ald2Y4+a3/lPLyyzGPm7lG4ubztRRmklVdM+KP1XaIbwkDf4Eo3l9a
+   CQt69hpR++GyatV4epPeuBGFRmBikNPFUQ71SqqsqWI60E1PD8GXfp0pB
+   HxVTneCPgS4eHB2xKzmQ0K788PrVCTyyYotFyV8W0JhVDyKVYcy/5jwmB
+   I+uEkrRMFsBmXYq1G9uLua73TA+ErIEGsWgPuB1KELUp/RsV5LyI6hrVg
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10442"; a="378775331"
+X-IronPort-AV: E=Sophos;i="5.93,243,1654585200"; 
+   d="scan'208";a="378775331"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2022 05:57:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,243,1654585200"; 
+   d="scan'208";a="558115505"
+Received: from lkp-server02.sh.intel.com (HELO 81d7e1ade3ba) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 17 Aug 2022 05:57:19 -0700
+Received: from kbuild by 81d7e1ade3ba with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oOIbm-0000vo-28;
+        Wed, 17 Aug 2022 12:57:18 +0000
+Date:   Wed, 17 Aug 2022 20:56:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-hardening@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: [linux-next:pending-fixes] BUILD SUCCESS WITH WARNING
+ 5ca89432fef1fe21d205e71455a40b6b97459a12
+Message-ID: <62fce58c.9A5vnRh+2zBuRSbk%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Zi Yan <zi.yan@sent.com> writes:
-> From: Zi Yan <ziy@nvidia.com>
->
-> This Kconfig option is used by individual arch to set its desired
-> MAX_ORDER. Rename it to reflect its actual use.
->
-> Acked-by: Mike Rapoport <rppt@linux.ibm.com>
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
-...
->  arch/powerpc/Kconfig                         | 2 +-
->  arch/powerpc/configs/85xx/ge_imp3a_defconfig | 2 +-
->  arch/powerpc/configs/fsl-emb-nonhw.config    | 2 +-
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git pending-fixes
+branch HEAD: 5ca89432fef1fe21d205e71455a40b6b97459a12  Merge branch 'for-linux-next-fixes' of git://anongit.freedesktop.org/drm/drm-misc
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+Warning reports:
 
-cheers
+https://lore.kernel.org/linux-mm/202208110453.zEneXTnn-lkp@intel.com
+
+Warning: (recently discovered and may have been fixed)
+
+arch/m68k/include/asm/string.h:64:25: warning: '__builtin_memcmp' specified bound 6 exceeds source size 0 [-Wstringop-overread]
+include/linux/fortify-string.h:44:33: warning: '__builtin_memcmp' specified bound 6 exceeds source size 0 [-Wstringop-overread]
+include/net/bluetooth/bluetooth.h:347:16: warning: 'memcmp' specified bound 6 exceeds source size 0 [-Wstringop-overread]
+
+Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- m68k-allyesconfig
+|   `-- arch-m68k-include-asm-string.h:warning:__builtin_memcmp-specified-bound-exceeds-source-size
+|-- m68k-randconfig-r003-20220816
+|   `-- arch-m68k-include-asm-string.h:warning:__builtin_memcmp-specified-bound-exceeds-source-size
+|-- mips-allyesconfig
+|   `-- include-linux-fortify-string.h:warning:__builtin_memcmp-specified-bound-exceeds-source-size
+`-- openrisc-randconfig-r021-20220815
+    `-- include-net-bluetooth-bluetooth.h:warning:memcmp-specified-bound-exceeds-source-size
+
+elapsed time: 803m
+
+configs tested: 59
+configs skipped: 2
+
+gcc tested configs:
+arc                  randconfig-r043-20220815
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              defconfig
+i386                 randconfig-a003-20220815
+arm                                 defconfig
+i386                                defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                         rhel-8.3-kunit
+x86_64               randconfig-a001-20220815
+arc                              allyesconfig
+x86_64                    rhel-8.3-kselftests
+i386                 randconfig-a002-20220815
+x86_64               randconfig-a003-20220815
+i386                 randconfig-a001-20220815
+x86_64                           rhel-8.3-kvm
+x86_64                           rhel-8.3-syz
+x86_64                           allyesconfig
+x86_64               randconfig-a002-20220815
+alpha                            allyesconfig
+i386                 randconfig-a004-20220815
+m68k                             allyesconfig
+i386                 randconfig-a006-20220815
+x86_64               randconfig-a006-20220815
+x86_64               randconfig-a005-20220815
+arm64                            allyesconfig
+i386                 randconfig-a005-20220815
+x86_64               randconfig-a004-20220815
+arm                              allyesconfig
+mips                             allyesconfig
+i386                             allyesconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+sh                               allmodconfig
+ia64                             allmodconfig
+csky                              allnoconfig
+arc                               allnoconfig
+alpha                             allnoconfig
+riscv                             allnoconfig
+i386                 randconfig-c001-20220815
+m68k                             allmodconfig
+
+clang tested configs:
+hexagon              randconfig-r041-20220815
+hexagon              randconfig-r045-20220815
+riscv                randconfig-r042-20220815
+s390                 randconfig-r044-20220815
+x86_64               randconfig-a013-20220815
+x86_64               randconfig-a012-20220815
+x86_64               randconfig-a011-20220815
+x86_64               randconfig-a015-20220815
+x86_64               randconfig-a014-20220815
+x86_64               randconfig-a016-20220815
+i386                 randconfig-a012-20220815
+i386                 randconfig-a011-20220815
+i386                 randconfig-a013-20220815
+i386                 randconfig-a014-20220815
+i386                 randconfig-a015-20220815
+i386                 randconfig-a016-20220815
+x86_64                          rhel-8.3-rust
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
