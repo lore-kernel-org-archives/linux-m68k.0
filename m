@@ -2,55 +2,55 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9927EC32772
-	for <linux-m68k@archiver.kernel.org>; Wed, 17 Aug 2022 12:57:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9066FC00140
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Aug 2022 12:02:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239280AbiHQM5X (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 17 Aug 2022 08:57:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55482 "EHLO
+        id S244467AbiHRMCu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 18 Aug 2022 08:02:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236727AbiHQM5W (ORCPT
+        with ESMTP id S244216AbiHRMCu (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 17 Aug 2022 08:57:22 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD4494C629
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 17 Aug 2022 05:57:21 -0700 (PDT)
+        Thu, 18 Aug 2022 08:02:50 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4348984EF0
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 18 Aug 2022 05:02:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1660741041; x=1692277041;
+  t=1660824169; x=1692360169;
   h=date:from:to:cc:subject:message-id:mime-version:
    content-transfer-encoding;
-  bh=gGvQk8xFeEmpv0nXW5obr1EDDK798Me5zo7icMHQssw=;
-  b=c9/lC2x79u+k9TexzRBZ1TghD36dvuQ8si+mXG59ZmimNRm8DFspwCIW
-   S0zw7I1YbgY/v4gHU2HxJM8VgjRe8SxHc2C/2u7HYJS5ZshURoz6Lpq/z
-   AT/Ald2Y4+a3/lPLyyzGPm7lG4ubztRRmklVdM+KP1XaIbwkDf4Eo3l9a
-   CQt69hpR++GyatV4epPeuBGFRmBikNPFUQ71SqqsqWI60E1PD8GXfp0pB
-   HxVTneCPgS4eHB2xKzmQ0K788PrVCTyyYotFyV8W0JhVDyKVYcy/5jwmB
-   I+uEkrRMFsBmXYq1G9uLua73TA+ErIEGsWgPuB1KELUp/RsV5LyI6hrVg
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10442"; a="378775331"
-X-IronPort-AV: E=Sophos;i="5.93,243,1654585200"; 
-   d="scan'208";a="378775331"
+  bh=6twQQ5L7960+uNl0KcmdGE2Ed2A3YzdgfJUxFWVxd6s=;
+  b=TqmeVWP+NXosIb9Mp2Sa9FujYveiGXzOHWsdEosSgnA/W/6fqv98K11l
+   V9dMwcEVmEViOD0TNCpLxXMwfeHHPJpkgazlkvuh9nCXiIX0XCoAlYCgT
+   3chUKtnVK0uKUvUGJTTL9W+f5AQPCd0JZ1eiDFq8sMZ2SPtSDn/rWXMYZ
+   maqnQRhpQgdbPRloWOixViPvp0wwc9JfQBgxdgYcACSddh0gie+sQithF
+   uD+QweA+ZvShdCGgilBiBl9SOz82+fjU415uQTNo4PugH2WfUwEOizin+
+   8472WJkjJd5F8VEjEf6i4zyE0mubPyrxQgnGZgbWb5aUOwZq6u2LVFrR0
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10442"; a="292738471"
+X-IronPort-AV: E=Sophos;i="5.93,246,1654585200"; 
+   d="scan'208";a="292738471"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2022 05:57:21 -0700
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2022 05:02:48 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,243,1654585200"; 
-   d="scan'208";a="558115505"
-Received: from lkp-server02.sh.intel.com (HELO 81d7e1ade3ba) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 17 Aug 2022 05:57:19 -0700
-Received: from kbuild by 81d7e1ade3ba with local (Exim 4.96)
+X-IronPort-AV: E=Sophos;i="5.93,246,1654585200"; 
+   d="scan'208";a="558503024"
+Received: from lkp-server01.sh.intel.com (HELO 6cc724e23301) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 18 Aug 2022 05:02:46 -0700
+Received: from kbuild by 6cc724e23301 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1oOIbm-0000vo-28;
-        Wed, 17 Aug 2022 12:57:18 +0000
-Date:   Wed, 17 Aug 2022 20:56:44 +0800
+        id 1oOeEX-0000Td-1a;
+        Thu, 18 Aug 2022 12:02:45 +0000
+Date:   Thu, 18 Aug 2022 20:02:26 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     linux-m68k@lists.linux-m68k.org, linux-hardening@vger.kernel.org,
         linux-bluetooth@vger.kernel.org,
         Linux Memory Management List <linux-mm@kvack.org>
 Subject: [linux-next:pending-fixes] BUILD SUCCESS WITH WARNING
- 5ca89432fef1fe21d205e71455a40b6b97459a12
-Message-ID: <62fce58c.9A5vnRh+2zBuRSbk%lkp@intel.com>
+ bb8b9a4857726b532eaaa9d31c8acfb451227fbf
+Message-ID: <62fe2a52.MDlOyFV1+MFSyOaw%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -60,7 +60,7 @@ List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
 tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git pending-fixes
-branch HEAD: 5ca89432fef1fe21d205e71455a40b6b97459a12  Merge branch 'for-linux-next-fixes' of git://anongit.freedesktop.org/drm/drm-misc
+branch HEAD: bb8b9a4857726b532eaaa9d31c8acfb451227fbf  Merge branch 'for-linux-next-fixes' of git://anongit.freedesktop.org/drm/drm-misc
 
 Warning reports:
 
@@ -75,81 +75,82 @@ include/net/bluetooth/bluetooth.h:347:16: warning: 'memcmp' specified bound 6 ex
 Warning ids grouped by kconfigs:
 
 gcc_recent_errors
+|-- m68k-allmodconfig
+|   `-- arch-m68k-include-asm-string.h:warning:__builtin_memcmp-specified-bound-exceeds-source-size
 |-- m68k-allyesconfig
 |   `-- arch-m68k-include-asm-string.h:warning:__builtin_memcmp-specified-bound-exceeds-source-size
-|-- m68k-randconfig-r003-20220816
+|-- m68k-randconfig-r031-20220818
 |   `-- arch-m68k-include-asm-string.h:warning:__builtin_memcmp-specified-bound-exceeds-source-size
 |-- mips-allyesconfig
 |   `-- include-linux-fortify-string.h:warning:__builtin_memcmp-specified-bound-exceeds-source-size
-`-- openrisc-randconfig-r021-20220815
+`-- openrisc-randconfig-r013-20220818
     `-- include-net-bluetooth-bluetooth.h:warning:memcmp-specified-bound-exceeds-source-size
 
-elapsed time: 803m
+elapsed time: 722m
 
-configs tested: 59
+configs tested: 58
 configs skipped: 2
 
 gcc tested configs:
-arc                  randconfig-r043-20220815
-um                             i386_defconfig
+x86_64                        randconfig-a004
+arc                              allyesconfig
+x86_64                        randconfig-a002
+i386                                defconfig
+arm                                 defconfig
+alpha                            allyesconfig
 um                           x86_64_defconfig
 x86_64                              defconfig
-i386                 randconfig-a003-20220815
-arm                                 defconfig
-i386                                defconfig
+m68k                             allyesconfig
+um                             i386_defconfig
+m68k                             allmodconfig
+x86_64                        randconfig-a006
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+arm                              allyesconfig
 x86_64                               rhel-8.3
+arm64                            allyesconfig
+x86_64                        randconfig-a015
+i386                          randconfig-a001
+i386                          randconfig-a003
 x86_64                          rhel-8.3-func
 x86_64                         rhel-8.3-kunit
-x86_64               randconfig-a001-20220815
-arc                              allyesconfig
 x86_64                    rhel-8.3-kselftests
-i386                 randconfig-a002-20220815
-x86_64               randconfig-a003-20220815
-i386                 randconfig-a001-20220815
-x86_64                           rhel-8.3-kvm
+arc                  randconfig-r043-20220818
+i386                          randconfig-a005
 x86_64                           rhel-8.3-syz
-x86_64                           allyesconfig
-x86_64               randconfig-a002-20220815
-alpha                            allyesconfig
-i386                 randconfig-a004-20220815
-m68k                             allyesconfig
-i386                 randconfig-a006-20220815
-x86_64               randconfig-a006-20220815
-x86_64               randconfig-a005-20220815
-arm64                            allyesconfig
-i386                 randconfig-a005-20220815
-x86_64               randconfig-a004-20220815
-arm                              allyesconfig
-mips                             allyesconfig
 i386                             allyesconfig
+x86_64                           rhel-8.3-kvm
+x86_64                           allyesconfig
+s390                 randconfig-r044-20220818
 powerpc                           allnoconfig
 powerpc                          allmodconfig
+riscv                randconfig-r042-20220818
+mips                             allyesconfig
+i386                          randconfig-a014
 sh                               allmodconfig
+i386                          randconfig-a012
+i386                          randconfig-a016
 ia64                             allmodconfig
-csky                              allnoconfig
 arc                               allnoconfig
 alpha                             allnoconfig
+csky                              allnoconfig
 riscv                             allnoconfig
-i386                 randconfig-c001-20220815
-m68k                             allmodconfig
 
 clang tested configs:
-hexagon              randconfig-r041-20220815
-hexagon              randconfig-r045-20220815
-riscv                randconfig-r042-20220815
-s390                 randconfig-r044-20220815
-x86_64               randconfig-a013-20220815
-x86_64               randconfig-a012-20220815
-x86_64               randconfig-a011-20220815
-x86_64               randconfig-a015-20220815
-x86_64               randconfig-a014-20220815
-x86_64               randconfig-a016-20220815
-i386                 randconfig-a012-20220815
-i386                 randconfig-a011-20220815
-i386                 randconfig-a013-20220815
-i386                 randconfig-a014-20220815
-i386                 randconfig-a015-20220815
-i386                 randconfig-a016-20220815
+x86_64                        randconfig-a005
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+x86_64                        randconfig-a012
+x86_64                        randconfig-a016
+x86_64                        randconfig-a014
+i386                          randconfig-a002
+i386                          randconfig-a004
+i386                          randconfig-a006
+hexagon              randconfig-r041-20220818
+hexagon              randconfig-r045-20220818
+i386                          randconfig-a013
+i386                          randconfig-a011
+i386                          randconfig-a015
 x86_64                          rhel-8.3-rust
 
 -- 
