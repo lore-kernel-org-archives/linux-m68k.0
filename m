@@ -2,157 +2,67 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9066FC00140
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 Aug 2022 12:02:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D4E8C00140
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 Aug 2022 20:59:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244467AbiHRMCu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 18 Aug 2022 08:02:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53340 "EHLO
+        id S1346132AbiHRU7x (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 18 Aug 2022 16:59:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244216AbiHRMCu (ORCPT
+        with ESMTP id S1345790AbiHRU7o (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 18 Aug 2022 08:02:50 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4348984EF0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 18 Aug 2022 05:02:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1660824169; x=1692360169;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=6twQQ5L7960+uNl0KcmdGE2Ed2A3YzdgfJUxFWVxd6s=;
-  b=TqmeVWP+NXosIb9Mp2Sa9FujYveiGXzOHWsdEosSgnA/W/6fqv98K11l
-   V9dMwcEVmEViOD0TNCpLxXMwfeHHPJpkgazlkvuh9nCXiIX0XCoAlYCgT
-   3chUKtnVK0uKUvUGJTTL9W+f5AQPCd0JZ1eiDFq8sMZ2SPtSDn/rWXMYZ
-   maqnQRhpQgdbPRloWOixViPvp0wwc9JfQBgxdgYcACSddh0gie+sQithF
-   uD+QweA+ZvShdCGgilBiBl9SOz82+fjU415uQTNo4PugH2WfUwEOizin+
-   8472WJkjJd5F8VEjEf6i4zyE0mubPyrxQgnGZgbWb5aUOwZq6u2LVFrR0
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10442"; a="292738471"
-X-IronPort-AV: E=Sophos;i="5.93,246,1654585200"; 
-   d="scan'208";a="292738471"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2022 05:02:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,246,1654585200"; 
-   d="scan'208";a="558503024"
-Received: from lkp-server01.sh.intel.com (HELO 6cc724e23301) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 18 Aug 2022 05:02:46 -0700
-Received: from kbuild by 6cc724e23301 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oOeEX-0000Td-1a;
-        Thu, 18 Aug 2022 12:02:45 +0000
-Date:   Thu, 18 Aug 2022 20:02:26 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-hardening@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: [linux-next:pending-fixes] BUILD SUCCESS WITH WARNING
- bb8b9a4857726b532eaaa9d31c8acfb451227fbf
-Message-ID: <62fe2a52.MDlOyFV1+MFSyOaw%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        Thu, 18 Aug 2022 16:59:44 -0400
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F21139AF87
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 18 Aug 2022 13:59:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=k1; bh=+uEFMpnvquJHyLZzwS5tS5zdX9I
+        OGYbVSYKYhXG4Bbk=; b=VR6HwAMTn6Fq3YFYUS3Y/TN34XsGNTbivHK02wTSEVr
+        GI9PUMMVYg/NAqYBI5Q/VdMVRdFVhn5iXGaHY9r5YcDj6KmmBPFNJFujlw5QQz94
+        P28+lSY1vrJSHN5jbXu/nbJZIq2+9ssXEPgcF/fiHBrWR1gkAQKV4+zLYOe2B114
+        =
+Received: (qmail 3959005 invoked from network); 18 Aug 2022 22:59:42 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 18 Aug 2022 22:59:42 +0200
+X-UD-Smtp-Session: l3s3148p1@9aWlQormIogucref
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org
+Subject: [PATCH] m68k: move from strlcpy with unused retval to strscpy
+Date:   Thu, 18 Aug 2022 22:59:41 +0200
+Message-Id: <20220818205941.6240-1-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git pending-fixes
-branch HEAD: bb8b9a4857726b532eaaa9d31c8acfb451227fbf  Merge branch 'for-linux-next-fixes' of git://anongit.freedesktop.org/drm/drm-misc
+Follow the advice of the below link and prefer 'strscpy' in this
+subsystem. Conversion is 1:1 because the return value is not used.
+Generated by a coccinelle script.
 
-Warning reports:
+Link: https://lore.kernel.org/r/CAHk-=wgfRnXz0W3D37d01q3JFkr_i_uTL=V6A6G1oUZcprmknw@mail.gmail.com/
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+---
+ arch/m68k/kernel/setup_mm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-https://lore.kernel.org/linux-mm/202208110453.zEneXTnn-lkp@intel.com
-
-Warning: (recently discovered and may have been fixed)
-
-arch/m68k/include/asm/string.h:64:25: warning: '__builtin_memcmp' specified bound 6 exceeds source size 0 [-Wstringop-overread]
-include/linux/fortify-string.h:44:33: warning: '__builtin_memcmp' specified bound 6 exceeds source size 0 [-Wstringop-overread]
-include/net/bluetooth/bluetooth.h:347:16: warning: 'memcmp' specified bound 6 exceeds source size 0 [-Wstringop-overread]
-
-Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- m68k-allmodconfig
-|   `-- arch-m68k-include-asm-string.h:warning:__builtin_memcmp-specified-bound-exceeds-source-size
-|-- m68k-allyesconfig
-|   `-- arch-m68k-include-asm-string.h:warning:__builtin_memcmp-specified-bound-exceeds-source-size
-|-- m68k-randconfig-r031-20220818
-|   `-- arch-m68k-include-asm-string.h:warning:__builtin_memcmp-specified-bound-exceeds-source-size
-|-- mips-allyesconfig
-|   `-- include-linux-fortify-string.h:warning:__builtin_memcmp-specified-bound-exceeds-source-size
-`-- openrisc-randconfig-r013-20220818
-    `-- include-net-bluetooth-bluetooth.h:warning:memcmp-specified-bound-exceeds-source-size
-
-elapsed time: 722m
-
-configs tested: 58
-configs skipped: 2
-
-gcc tested configs:
-x86_64                        randconfig-a004
-arc                              allyesconfig
-x86_64                        randconfig-a002
-i386                                defconfig
-arm                                 defconfig
-alpha                            allyesconfig
-um                           x86_64_defconfig
-x86_64                              defconfig
-m68k                             allyesconfig
-um                             i386_defconfig
-m68k                             allmodconfig
-x86_64                        randconfig-a006
-x86_64                        randconfig-a013
-x86_64                        randconfig-a011
-arm                              allyesconfig
-x86_64                               rhel-8.3
-arm64                            allyesconfig
-x86_64                        randconfig-a015
-i386                          randconfig-a001
-i386                          randconfig-a003
-x86_64                          rhel-8.3-func
-x86_64                         rhel-8.3-kunit
-x86_64                    rhel-8.3-kselftests
-arc                  randconfig-r043-20220818
-i386                          randconfig-a005
-x86_64                           rhel-8.3-syz
-i386                             allyesconfig
-x86_64                           rhel-8.3-kvm
-x86_64                           allyesconfig
-s390                 randconfig-r044-20220818
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-riscv                randconfig-r042-20220818
-mips                             allyesconfig
-i386                          randconfig-a014
-sh                               allmodconfig
-i386                          randconfig-a012
-i386                          randconfig-a016
-ia64                             allmodconfig
-arc                               allnoconfig
-alpha                             allnoconfig
-csky                              allnoconfig
-riscv                             allnoconfig
-
-clang tested configs:
-x86_64                        randconfig-a005
-x86_64                        randconfig-a001
-x86_64                        randconfig-a003
-x86_64                        randconfig-a012
-x86_64                        randconfig-a016
-x86_64                        randconfig-a014
-i386                          randconfig-a002
-i386                          randconfig-a004
-i386                          randconfig-a006
-hexagon              randconfig-r041-20220818
-hexagon              randconfig-r045-20220818
-i386                          randconfig-a013
-i386                          randconfig-a011
-i386                          randconfig-a015
-x86_64                          rhel-8.3-rust
-
+diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+index e62fa8f2149b..06ee394db610 100644
+--- a/arch/m68k/kernel/setup_mm.c
++++ b/arch/m68k/kernel/setup_mm.c
+@@ -148,7 +148,7 @@ static void __init m68k_parse_bootinfo(const struct bi_record *record)
+ 			break;
+ 
+ 		case BI_COMMAND_LINE:
+-			strlcpy(m68k_command_line, data,
++			strscpy(m68k_command_line, data,
+ 				sizeof(m68k_command_line));
+ 			break;
+ 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.35.1
+
