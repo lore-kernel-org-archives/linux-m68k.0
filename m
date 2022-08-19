@@ -2,117 +2,155 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC169C32773
-	for <linux-m68k@archiver.kernel.org>; Fri, 19 Aug 2022 14:57:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75537C28B2B
+	for <linux-m68k@archiver.kernel.org>; Fri, 19 Aug 2022 17:33:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349172AbiHSO50 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 19 Aug 2022 10:57:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39522 "EHLO
+        id S1349864AbiHSRdF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 19 Aug 2022 13:33:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349620AbiHSO5W (ORCPT
+        with ESMTP id S1354588AbiHSRcs (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 19 Aug 2022 10:57:22 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4404DF242F
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 19 Aug 2022 07:57:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=SYqd0jVvSqn0LYdbb0mNobM+NLD0i8990uNItjrpJW0=; b=p8X1gMssAFqz7Cj5E1IU3EN3xz
-        t/snbLEyJv1XAdu4J+MpAgDpW86NPkUeqqsmS64YxuYIDoz1/0nSwGnJ4A7MRHs6v4/DfY13yylRH
-        yTpJ3gDO1i4G6ew5SrDgljBdNE61ShqeAK0joibG/N9CQrD4C5DO+D+oHobsM0kWRo/T88yRl68DM
-        ivZpQK7KoicNncKbbL3cMwzclIbdo4NBfFt8WVkYbV7Yt9Ti+iBnKi0iAa3qakANtULKlnjVs0VPW
-        qMm4R7XYp2iFBesGctz7KWjgzPu53WYvs3CSQtaYwSCE20OErGTcffzJDbyUtNOmEl2QCsbCVzRVd
-        fg0lrl+g==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33852)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1oP3PW-0007vG-Sl; Fri, 19 Aug 2022 15:55:47 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1oP3PE-0007s8-Jr; Fri, 19 Aug 2022 15:55:28 +0100
-Date:   Fri, 19 Aug 2022 15:55:28 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Brian Cain <bcain@quicinc.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        akpm@linux-foundation.org
-Subject: Re: [PATCH] kernel: exit: cleanup release_thread()
-Message-ID: <Yv+kYPnf8c6rLXgN@shell.armlinux.org.uk>
-References: <20220819014406.32266-1-wangkefeng.wang@huawei.com>
+        Fri, 19 Aug 2022 13:32:48 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C1C108B24
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 19 Aug 2022 09:51:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1660927896; x=1692463896;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=iOcJREqHTGsAdb5AEkq4hDue4vu5yHBzF6n06gYH86E=;
+  b=h8y0wyLN8mD2XefTud8gtqMvEfIO7C9DKsRkjmw0OGvWi6cNd87V2CmF
+   Ta08oVVQAz38qVTtHTakQwIzrXFFzK29sj6dQApr1wCuJS/Sf0MPDentt
+   DNxCw5BYA6yTLWth7ZEOs5kZYk3i1BaQ/T7D96fe1Sj66lTnLKBQsdpXV
+   ozbHfY7zOMYavROQsnBcKUhzwpdxBSHKIX1UNjih7EtAKkY3Ho/RsW24c
+   WOkdshJ3wzetNU8uJPY9gWd23Y5U2fwx2lV7ox/aP9y/GVx+h14ROHEwg
+   okey6fn+8W1xY4nCTIgySBkg4inlsp0BNv+qzLcBCy0dEEOCiwCkKuABt
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10444"; a="272824592"
+X-IronPort-AV: E=Sophos;i="5.93,248,1654585200"; 
+   d="scan'208";a="272824592"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2022 09:50:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,248,1654585200"; 
+   d="scan'208";a="936280065"
+Received: from lkp-server01.sh.intel.com (HELO 44b6dac04a33) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 19 Aug 2022 09:50:05 -0700
+Received: from kbuild by 44b6dac04a33 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oP5C8-0001e9-1d;
+        Fri, 19 Aug 2022 16:50:04 +0000
+Date:   Sat, 20 Aug 2022 00:49:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-hardening@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: [linux-next:pending-fixes] BUILD SUCCESS WITH WARNING
+ e68b4a7c00f99b319b84be8849addb8fddf9629b
+Message-ID: <62ffbf32.qqqMdIxDQRBJomQ+%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220819014406.32266-1-wangkefeng.wang@huawei.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Aug 19, 2022 at 09:44:06AM +0800, Kefeng Wang wrote:
-> Only x86 has own release_thread(), introduce a new weak
-> release_thread() function to clean empty definitions in
-> other ARCHs.
-> 
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-...
->  arch/arm/include/asm/processor.h        | 3 ---
->  arch/arm/kernel/process.c               | 4 ----
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git pending-fixes
+branch HEAD: e68b4a7c00f99b319b84be8849addb8fddf9629b  Merge branch 'for-linux-next-fixes' of git://anongit.freedesktop.org/drm/drm-misc
 
-Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Warning reports:
 
-Thanks!
+https://lore.kernel.org/linux-mm/202208110453.zEneXTnn-lkp@intel.com
+
+Warning: (recently discovered and may have been fixed)
+
+arch/m68k/include/asm/string.h:64:25: warning: '__builtin_memcmp' specified bound 6 exceeds source size 0 [-Wstringop-overread]
+drivers/usb/dwc3/dwc3-qcom.c:313:25: warning: variable 'hcd' set but not used [-Wunused-but-set-variable]
+include/linux/fortify-string.h:44:33: warning: '__builtin_memcmp' specified bound 6 exceeds source size 0 [-Wstringop-overread]
+
+Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- m68k-allmodconfig
+|   `-- arch-m68k-include-asm-string.h:warning:__builtin_memcmp-specified-bound-exceeds-source-size
+|-- m68k-allyesconfig
+|   `-- arch-m68k-include-asm-string.h:warning:__builtin_memcmp-specified-bound-exceeds-source-size
+|-- mips-allyesconfig
+|   `-- include-linux-fortify-string.h:warning:__builtin_memcmp-specified-bound-exceeds-source-size
+`-- mips-randconfig-r014-20220819
+    `-- drivers-usb-dwc3-dwc3-qcom.c:warning:variable-hcd-set-but-not-used
+
+elapsed time: 728m
+
+configs tested: 58
+configs skipped: 2
+
+gcc tested configs:
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                              defconfig
+i386                                defconfig
+i386                          randconfig-a001
+i386                          randconfig-a003
+arm                                 defconfig
+arc                              allyesconfig
+i386                          randconfig-a005
+arc                  randconfig-r043-20220819
+alpha                            allyesconfig
+m68k                             allmodconfig
+ia64                             allmodconfig
+x86_64                               rhel-8.3
+x86_64                    rhel-8.3-kselftests
+m68k                             allyesconfig
+x86_64                          rhel-8.3-func
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+x86_64                         rhel-8.3-kunit
+x86_64                        randconfig-a006
+x86_64                           allyesconfig
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+x86_64                           rhel-8.3-syz
+i386                          randconfig-a014
+x86_64                           rhel-8.3-kvm
+powerpc                          allmodconfig
+i386                          randconfig-a012
+mips                             allyesconfig
+arm                              allyesconfig
+powerpc                           allnoconfig
+i386                          randconfig-a016
+sh                               allmodconfig
+arm64                            allyesconfig
+x86_64                        randconfig-a015
+i386                             allyesconfig
+csky                              allnoconfig
+arc                               allnoconfig
+alpha                             allnoconfig
+riscv                             allnoconfig
+
+clang tested configs:
+i386                          randconfig-a002
+i386                          randconfig-a004
+hexagon              randconfig-r041-20220819
+riscv                randconfig-r042-20220819
+hexagon              randconfig-r045-20220819
+i386                          randconfig-a006
+x86_64                        randconfig-a005
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+s390                 randconfig-r044-20220819
+i386                          randconfig-a013
+x86_64                        randconfig-a012
+i386                          randconfig-a011
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+i386                          randconfig-a015
+x86_64                          rhel-8.3-rust
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+0-DAY CI Kernel Test Service
+https://01.org/lkp
