@@ -2,37 +2,61 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05D3EC28D13
-	for <linux-m68k@archiver.kernel.org>; Sun, 21 Aug 2022 11:55:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9E16C00140
+	for <linux-m68k@archiver.kernel.org>; Sun, 21 Aug 2022 14:58:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230185AbiHULy6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 21 Aug 2022 07:54:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44206 "EHLO
+        id S230281AbiHUO6Y (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 21 Aug 2022 10:58:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbiHULy5 (ORCPT
+        with ESMTP id S230231AbiHUO6X (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 21 Aug 2022 07:54:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B42413E9F
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 21 Aug 2022 04:54:56 -0700 (PDT)
+        Sun, 21 Aug 2022 10:58:23 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157D1765E
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 21 Aug 2022 07:58:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6CA2660DFB;
-        Sun, 21 Aug 2022 11:54:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D09E1C433B5;
-        Sun, 21 Aug 2022 11:54:30 +0000 (UTC)
-Date:   Sun, 21 Aug 2022 12:54:22 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Richard Henderson <richard.henderson@linaro.org>,
+        by ams.source.kernel.org (Postfix) with ESMTPS id B24A7B80D89
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 21 Aug 2022 14:58:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A753BC43146
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 21 Aug 2022 14:58:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661093897;
+        bh=GzHlPdU+t+7DtU8s+ZQkqJLPYJa2D5QllpBgFvrmGaw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=f/InbUJweAfp1LwZGHesZqt6a4G8zsWb4eQ8hwBY+fB8ZNzuv2+o+WZHLNeTfA4WO
+         tP4Obzfca17jnLVlGgFOFqxNd6GFR4jnIKswxHiVPRByKR0FyyfEjvUWSnMKafFXQ4
+         QOr40w20RSDAD9EvrDPFMMrXNqdtlQCXpnGEoCR3w5CIY8AdxOD/JFzlCAcvspGNEm
+         DVW630OZ50JWDkTiPs1UE7dtpdaCNgkS+cAO/JlCROhsav5Fnx6kPk1iKt/dCeUOfS
+         RZB0YxyQZs+ZabqVHYJ21sh7i3kcM3kQyE6cLB3Q80qen46LSIsGqGB9qTe2iH9WI3
+         DNgxHvxgpF3Bw==
+Received: by mail-pj1-f53.google.com with SMTP id f21so8709198pjt.2
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 21 Aug 2022 07:58:17 -0700 (PDT)
+X-Gm-Message-State: ACgBeo1oQvPlA5kbb7WvyatAMh8Yt7PaGACzmukGpdl2S04WmgW4NkA7
+        +bAc2g3nHnSfnOcI0/rTK9XFP9ZNDZHdmLr11i4=
+X-Google-Smtp-Source: AA6agR5Jfm9mVjshWjpFq8OKc54hNg+6T+J3SLoca3TFw2LF4khEc2uAuPslbwwXSbPSAHiGS5rHKpQKorBBpPqiG2g=
+X-Received: by 2002:a05:6102:390d:b0:387:78b9:bf9c with SMTP id
+ e13-20020a056102390d00b0038778b9bf9cmr6025080vsu.43.1661093886384; Sun, 21
+ Aug 2022 07:58:06 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220819014406.32266-1-wangkefeng.wang@huawei.com> <YwIc7qbCWpIVKR2j@arm.com>
+In-Reply-To: <YwIc7qbCWpIVKR2j@arm.com>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Sun, 21 Aug 2022 22:57:53 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H4qffsU0Tmb7_b0iQh7x3Bks2vVrmmvL+0Z0CVaVggsYg@mail.gmail.com>
+Message-ID: <CAAhV-H4qffsU0Tmb7_b0iQh7x3Bks2vVrmmvL+0Z0CVaVggsYg@mail.gmail.com>
+Subject: Re: [PATCH] kernel: exit: cleanup release_thread()
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
         Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
         Matt Turner <mattst88@gmail.com>,
         Vineet Gupta <vgupta@kernel.org>,
         Russell King <linux@armlinux.org.uk>,
         Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
         Brian Cain <bcain@quicinc.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
         WANG Xuerui <kernel@xen0n.name>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Michal Simek <monstr@monstr.eu>,
@@ -64,35 +88,41 @@ Cc:     Richard Henderson <richard.henderson@linaro.org>,
         Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
         Chris Zankel <chris@zankel.net>,
         Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        akpm@linux-foundation.org
-Subject: Re: [PATCH] kernel: exit: cleanup release_thread()
-Message-ID: <YwIc7qbCWpIVKR2j@arm.com>
-References: <20220819014406.32266-1-wangkefeng.wang@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220819014406.32266-1-wangkefeng.wang@huawei.com>
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-s390@vger.kernel.org,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        sparclinux@vger.kernel.org,
+        linux-um <linux-um@lists.infradead.org>,
+        linux-xtensa@linux-xtensa.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Aug 19, 2022 at 09:44:06AM +0800, Kefeng Wang wrote:
-> Only x86 has own release_thread(), introduce a new weak
-> release_thread() function to clean empty definitions in
-> other ARCHs.
-> 
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-[...]
->  arch/arm64/include/asm/processor.h      | 3 ---
->  arch/arm64/kernel/process.c             | 4 ----
+For LoongArch parts:
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Acked-by: Huacai Chen <chenhuacai@kernel.org>
+
+On Sun, Aug 21, 2022 at 7:54 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+>
+> On Fri, Aug 19, 2022 at 09:44:06AM +0800, Kefeng Wang wrote:
+> > Only x86 has own release_thread(), introduce a new weak
+> > release_thread() function to clean empty definitions in
+> > other ARCHs.
+> >
+> > Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> [...]
+> >  arch/arm64/include/asm/processor.h      | 3 ---
+> >  arch/arm64/kernel/process.c             | 4 ----
+>
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
