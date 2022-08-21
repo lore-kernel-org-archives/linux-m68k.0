@@ -2,61 +2,64 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9E16C00140
-	for <linux-m68k@archiver.kernel.org>; Sun, 21 Aug 2022 14:58:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E338AC28D13
+	for <linux-m68k@archiver.kernel.org>; Sun, 21 Aug 2022 17:42:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbiHUO6Y (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 21 Aug 2022 10:58:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37920 "EHLO
+        id S229924AbiHURm4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 21 Aug 2022 13:42:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbiHUO6X (ORCPT
+        with ESMTP id S229690AbiHURmz (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 21 Aug 2022 10:58:23 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157D1765E
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 21 Aug 2022 07:58:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B24A7B80D89
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 21 Aug 2022 14:58:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A753BC43146
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 21 Aug 2022 14:58:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661093897;
-        bh=GzHlPdU+t+7DtU8s+ZQkqJLPYJa2D5QllpBgFvrmGaw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=f/InbUJweAfp1LwZGHesZqt6a4G8zsWb4eQ8hwBY+fB8ZNzuv2+o+WZHLNeTfA4WO
-         tP4Obzfca17jnLVlGgFOFqxNd6GFR4jnIKswxHiVPRByKR0FyyfEjvUWSnMKafFXQ4
-         QOr40w20RSDAD9EvrDPFMMrXNqdtlQCXpnGEoCR3w5CIY8AdxOD/JFzlCAcvspGNEm
-         DVW630OZ50JWDkTiPs1UE7dtpdaCNgkS+cAO/JlCROhsav5Fnx6kPk1iKt/dCeUOfS
-         RZB0YxyQZs+ZabqVHYJ21sh7i3kcM3kQyE6cLB3Q80qen46LSIsGqGB9qTe2iH9WI3
-         DNgxHvxgpF3Bw==
-Received: by mail-pj1-f53.google.com with SMTP id f21so8709198pjt.2
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 21 Aug 2022 07:58:17 -0700 (PDT)
-X-Gm-Message-State: ACgBeo1oQvPlA5kbb7WvyatAMh8Yt7PaGACzmukGpdl2S04WmgW4NkA7
-        +bAc2g3nHnSfnOcI0/rTK9XFP9ZNDZHdmLr11i4=
-X-Google-Smtp-Source: AA6agR5Jfm9mVjshWjpFq8OKc54hNg+6T+J3SLoca3TFw2LF4khEc2uAuPslbwwXSbPSAHiGS5rHKpQKorBBpPqiG2g=
-X-Received: by 2002:a05:6102:390d:b0:387:78b9:bf9c with SMTP id
- e13-20020a056102390d00b0038778b9bf9cmr6025080vsu.43.1661093886384; Sun, 21
- Aug 2022 07:58:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220819014406.32266-1-wangkefeng.wang@huawei.com> <YwIc7qbCWpIVKR2j@arm.com>
-In-Reply-To: <YwIc7qbCWpIVKR2j@arm.com>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Sun, 21 Aug 2022 22:57:53 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H4qffsU0Tmb7_b0iQh7x3Bks2vVrmmvL+0Z0CVaVggsYg@mail.gmail.com>
-Message-ID: <CAAhV-H4qffsU0Tmb7_b0iQh7x3Bks2vVrmmvL+0Z0CVaVggsYg@mail.gmail.com>
-Subject: Re: [PATCH] kernel: exit: cleanup release_thread()
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
+        Sun, 21 Aug 2022 13:42:55 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE36121255
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 21 Aug 2022 10:42:53 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id h24so10667751wrb.8
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 21 Aug 2022 10:42:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc;
+        bh=7Nrg8mvlqxFEJfzKh/tw2+dBWE8D/s98GD2ZnmZvMl4=;
+        b=F0ptjTbxLv2NJaVf2gvBlBshDMfCokLJPPMsIV35UHBlxVECPPma43FPvPitouEYuo
+         8dgtnhsmPRFBvIO948wmtVOueVdGaHu/6efegZ+eBz+dquE2oOi9XMsurik6HL7oB6MX
+         jV8pUVxH3f1RrwF0NH6pncq2tH6AwoMHlp65ZDTNCyiT6v1mar/Hou3sFmBJRov6RKag
+         O1el0UDp9u/+GhEvUUZhnnL+z+SJXn9IfDfG4Dlp/Iuz3gqoHz6wEPHD+abHkg+f2q3v
+         w/lO0XWXR94cHio73ZqXyXjLv1uGE7J2Xgag56CksB4nH92y765Uk+pyJbn+nJIZ5N3k
+         uDSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
+        bh=7Nrg8mvlqxFEJfzKh/tw2+dBWE8D/s98GD2ZnmZvMl4=;
+        b=emDiX8LMIgDwwxbccJrIVemCYAJTgNDgTN8AHrave4wMb1te59oJ/frDB3kVERTuXk
+         AYIe3rYVewS/qe21MajfzvHUb+sgFUuwp5LkvMgcR467SCKPbDu6D65WMZtldSA+Sekc
+         iFFlHrm4ANoCL1rFAhfvR4OckZfvl09NAmXuc9S1k8LVzmQ039uKSM7ad/JDwGjN7kz9
+         zF02LGxkwSvAOOEPYb0aJUtCFDVfc26GpLvubyg65Ppia6O4/xOxv/n1wcqOsccSOwkK
+         aGkvkZz1FsOminkualyiKa00OVRMWELoACd9lL7mO+8ttJ2SU816gGtDFnpiEVCP+vH/
+         bSBw==
+X-Gm-Message-State: ACgBeo1PbSnR3/plaLWF6cyLc9GMohc2ShqIl8SclDZL557ilUVf2DVc
+        Ray+qQPXC5+F/+mwmJsAmzM=
+X-Google-Smtp-Source: AA6agR6ii5ETBOVbnXGvrEQ2XHp9wCOCZjRgmUsSrgmsT/hEBxdRm1IL0twc5nHL0nICTG/92OzUKA==
+X-Received: by 2002:a05:6000:993:b0:222:d509:4b5b with SMTP id by19-20020a056000099300b00222d5094b5bmr9262211wrb.52.1661103772368;
+        Sun, 21 Aug 2022 10:42:52 -0700 (PDT)
+Received: from localhost ([2a03:b0c0:1:d0::dee:c001])
+        by smtp.gmail.com with ESMTPSA id t24-20020a1c7718000000b003a643ac2b08sm6876286wmi.8.2022.08.21.10.42.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Aug 2022 10:42:51 -0700 (PDT)
+Date:   Sun, 21 Aug 2022 17:42:51 +0000
+From:   Stafford Horne <shorne@gmail.com>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Richard Henderson <richard.henderson@linaro.org>,
         Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
         Matt Turner <mattst88@gmail.com>,
         Vineet Gupta <vgupta@kernel.org>,
         Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
         Brian Cain <bcain@quicinc.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
         WANG Xuerui <kernel@xen0n.name>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Michal Simek <monstr@monstr.eu>,
@@ -64,7 +67,6 @@ Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
         Dinh Nguyen <dinguyen@kernel.org>,
         Jonas Bonn <jonas@southpole.se>,
         Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
         "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
         Helge Deller <deller@gmx.de>,
         Michael Ellerman <mpe@ellerman.id.au>,
@@ -88,41 +90,66 @@ Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
         Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
         Chris Zankel <chris@zankel.net>,
         Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-s390@vger.kernel.org,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        sparclinux@vger.kernel.org,
-        linux-um <linux-um@lists.infradead.org>,
-        linux-xtensa@linux-xtensa.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH] kernel: exit: cleanup release_thread()
+Message-ID: <YwJum2c1I8JhY0B8@oscomms1>
+References: <20220819014406.32266-1-wangkefeng.wang@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220819014406.32266-1-wangkefeng.wang@huawei.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-For LoongArch parts:
+On Fri, Aug 19, 2022 at 09:44:06AM +0800, Kefeng Wang wrote:
+> Only x86 has own release_thread(), introduce a new weak
+> release_thread() function to clean empty definitions in
+> other ARCHs.
+> 
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
 
-Acked-by: Huacai Chen <chenhuacai@kernel.org>
+>  arch/openrisc/include/asm/processor.h   | 1 -
+>  arch/openrisc/kernel/process.c          | 4 ----
 
-On Sun, Aug 21, 2022 at 7:54 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Fri, Aug 19, 2022 at 09:44:06AM +0800, Kefeng Wang wrote:
-> > Only x86 has own release_thread(), introduce a new weak
-> > release_thread() function to clean empty definitions in
-> > other ARCHs.
-> >
-> > Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> [...]
-> >  arch/arm64/include/asm/processor.h      | 3 ---
-> >  arch/arm64/kernel/process.c             | 4 ----
->
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> diff --git a/arch/openrisc/include/asm/processor.h b/arch/openrisc/include/asm/processor.h
+> index aa1699c18add..ed9efb430afa 100644
+> --- a/arch/openrisc/include/asm/processor.h
+> +++ b/arch/openrisc/include/asm/processor.h
+> @@ -72,7 +72,6 @@ struct thread_struct {
+>  
+>  
+>  void start_thread(struct pt_regs *regs, unsigned long nip, unsigned long sp);
+> -void release_thread(struct task_struct *);
+>  unsigned long __get_wchan(struct task_struct *p);
+>  
+>  #define cpu_relax()     barrier()
+> diff --git a/arch/openrisc/kernel/process.c b/arch/openrisc/kernel/process.c
+> index 52dc983ddeba..f94b5ec06786 100644
+> --- a/arch/openrisc/kernel/process.c
+> +++ b/arch/openrisc/kernel/process.c
+> @@ -125,10 +125,6 @@ void show_regs(struct pt_regs *regs)
+>  	show_registers(regs);
+>  }
+>  
+> -void release_thread(struct task_struct *dead_task)
+> -{
+> -}
+> -
+>  /*
+>   * Copy the thread-specific (arch specific) info from the current
+>   * process to the new one p
+
+For OpenRISC bits.
+
+Acked-by: Stafford Horne <shorne@gmail.com>
