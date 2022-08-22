@@ -2,111 +2,135 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EC63C28D13
-	for <linux-m68k@archiver.kernel.org>; Mon, 22 Aug 2022 13:57:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D62B1C28D13
+	for <linux-m68k@archiver.kernel.org>; Mon, 22 Aug 2022 20:38:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233496AbiHVN5F (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 22 Aug 2022 09:57:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42956 "EHLO
+        id S237572AbiHVUik (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 22 Aug 2022 16:38:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232195AbiHVN5E (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 22 Aug 2022 09:57:04 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 613C339B86
-        for <linux-m68k@vger.kernel.org>; Mon, 22 Aug 2022 06:57:03 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id b142so8324585iof.10
-        for <linux-m68k@vger.kernel.org>; Mon, 22 Aug 2022 06:57:03 -0700 (PDT)
+        with ESMTP id S232020AbiHVUij (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 22 Aug 2022 16:38:39 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9605D13D22;
+        Mon, 22 Aug 2022 13:38:38 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id r14-20020a17090a4dce00b001faa76931beso15150996pjl.1;
+        Mon, 22 Aug 2022 13:38:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc;
-        bh=ib/uMymF5+XNmj9CnV9csDPHB6vvJCiiK11Zzs0//Jo=;
-        b=EDuQ4buGleTcKfvCw23coExOvCbUAzI8sUpMSc4dQ611CttUzIghSxMgt73tGKhS8D
-         6pvoGLZmgOPxftVCyWqsCgyG3O4mnwSiM5U0KN56tQuPWD+VjtCwlJTUVxhJm2C+AF9N
-         66HmhomZXPeJQPwRyvekEEf2WVaRct9lHVYdjjsReInfbrBgqdPCmaV8JvufpFzrzoi1
-         iCSU1a3bzQzTN65fdZPL/yBNLpjAGZ5AtEMJp7LIFo4hkBaKVkLxj+Anf3aiPgzcRyG+
-         vxKb2KRVqDnLAGhzxaoBViA6uiPS4h1z2UG3i5OIBoeFS7JETiC8+E3lQzmfqFrCQg6/
-         EjmA==
+        bh=8+bbzyZJBA3STFYzhSS/rUuL8EtOuxDK7o0s5W9SIzk=;
+        b=T3YrQWR1c83tFgmgmkexx1hcRmJLZ6l9aGjFRHH2JngMTvJ0nGH6F2/hy+pZZJJDhI
+         eOzsBvUQY3dfosIQhZoD5GhSjh1xiYeADOrOQ0tuJt3n0nOZlOFqzDEWMdJmI3jSBDtS
+         tNDCvSwtJIvcXpCr8V+iSH47iy27+MFzugdBFt/AjbR5+jJtPUCpCQBPmMxFqHChygia
+         FSjCsvHaOpOy8Elvq8Jyc2UmfYqPT1Gyk4haVbzXWydpNVvWXW6oBbieRJED8lbcdsT5
+         qjS2/G2r+szKMnrTHjkqjo6qmmssPhVC95YZh+mS1Idb3F7aAavSbJ8hkxbEdVUl4iGJ
+         3QaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc;
-        bh=ib/uMymF5+XNmj9CnV9csDPHB6vvJCiiK11Zzs0//Jo=;
-        b=xiolBT6EfYA7LTLwXKTDCQn7iL9l7iNYqMFQpES/amjtgETWiVsnqgeUuQCc1UlZH/
-         HvdktPiPuUZXMwJUOgMAYmPNGb+v+FtPxwb3mEgFR1mmilL0aGslHEzxBMvxlXve2F9x
-         rgwtHisC85hjEHdQJ1ZqO9/Pj1pHs3RrenthECQYy+FCFoaX8lE3mHANd/jHGlAm2+ZI
-         QOr1zgFNjRdtOPFWhBwIF2pC7GKPY86eXcUkFpwRqovWzSg/IYoJU7KyBmg8bCC2lKbv
-         BsH7l2s2EjVlytozKbj5hMO5JPC2hpFzd0dL7eFHpf6NYCYHb5jELP6rBdGa1qwHwW/F
-         1bYw==
-X-Gm-Message-State: ACgBeo1gibBYESX/glg1FHoMfQ1GisWHv4Y/0Tz3bYQsDTe+iMRUR/yv
-        nHYgc5ex2ff9Twzs0tpB3T/5RA==
-X-Google-Smtp-Source: AA6agR4GjGKcDPdckeO5eL5nzbL557wMJa/3RRxLuXSRhxI4wUMIsTWmjqOnMzKW5fVgalt/4DO2ow==
-X-Received: by 2002:a05:6638:440b:b0:344:c317:82e6 with SMTP id bp11-20020a056638440b00b00344c31782e6mr9258900jab.21.1661176622733;
-        Mon, 22 Aug 2022 06:57:02 -0700 (PDT)
-Received: from [192.168.1.94] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id z16-20020a05660217d000b0067c47eb46desm5931177iox.47.2022.08.22.06.57.01
+        bh=8+bbzyZJBA3STFYzhSS/rUuL8EtOuxDK7o0s5W9SIzk=;
+        b=IUGGDJ1qhjuHUUb/rqnvGG8PDJL2s1K5t+TEGHN9qUT0CEP9h97wSDUlOn+6YIzBdo
+         PU2JbHe7+Z0xkHc0Xde49fva0RbFzXhLKZ9Qt0/VtEtjiaV6Or1gRQv01Tzy7lLOaTdV
+         Crdro17ia207ZUMZWmHhp13AUCURxe1EgRuz9DcCSSxWfYDJ+D1froFlcJB/m9Q7dVF7
+         6IKVk2Z0LpVofLjY+mhVivQtcDtKLoehUAKCc9tjteVGR9tGWVS3LhgW/QXzDBcOCJ37
+         Gmxu4rKzHoSwF8ZnKMkQl+/9nI030VjMpIBomPsF+E0QbeeNWx9zp+aGmrHBlg9gqzmh
+         NLsA==
+X-Gm-Message-State: ACgBeo1C7XklQdMMJ0eBWQhwmOrFh23HwrAW/diOXx5v8zZXNX8YOE0i
+        7YRZDeJkqI93CL/IICiLaTt32To8r4c=
+X-Google-Smtp-Source: AA6agR786402sCYAz5zihq7rt7I3AziqCmMLoJRBciesipL+5ImGHp46yGBBYpdLgYcthhr0cN8xmg==
+X-Received: by 2002:a17:902:cec1:b0:172:e677:553b with SMTP id d1-20020a170902cec100b00172e677553bmr7525994plg.99.1661200718077;
+        Mon, 22 Aug 2022 13:38:38 -0700 (PDT)
+Received: from ?IPV6:2001:df0:0:200c:642a:8878:46a3:c3df? ([2001:df0:0:200c:642a:8878:46a3:c3df])
+        by smtp.gmail.com with ESMTPSA id 2-20020a17090a0a8200b001fb08830742sm4581804pjw.44.2022.08.22.13.38.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Aug 2022 06:57:02 -0700 (PDT)
-Message-ID: <023b3e08-8782-cde9-4eda-ea419d461bf4@kernel.dk>
-Date:   Mon, 22 Aug 2022 07:57:01 -0600
+        Mon, 22 Aug 2022 13:38:37 -0700 (PDT)
+Message-ID: <81e8bd2a-bb3f-6da0-ed39-b522a6b822be@gmail.com>
+Date:   Tue, 23 Aug 2022 08:38:32 +1200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH v7 2/2] block: add overflow checks for Amiga partition
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v8 2/2] block: add overflow checks for Amiga partition
  support
 Content-Language: en-US
-To:     Michael Schmitz <schmitzmic@gmail.com>,
-        Martin Steigerwald <martin@lichtvoll.de>,
-        linux-block@vger.kernel.org
-Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org,
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
         Christoph Hellwig <hch@infradead.org>
-References: <1539570747-19906-1-git-send-email-schmitzmic@gmail.com>
- <71d9f2fe-42d1-2a09-a860-702b42a3a733@kernel.dk>
- <0bf2e4f9-a1c1-3847-a2b5-d9b9eaaa783a@gmail.com>
- <2669426.mvXUDI8C0e@lichtvoll.de>
- <6fa2c159-e7c7-2d2c-04b5-54c2b2c9a24e@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <6fa2c159-e7c7-2d2c-04b5-54c2b2c9a24e@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Cc:     linux-block <linux-block@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+References: <20220726045747.4779-1-schmitzmic@gmail.com>
+ <20220726045747.4779-3-schmitzmic@gmail.com> <Yt/TQOJQZEhZE+2p@infradead.org>
+ <CAMuHMdWW1=kXC14H6iUFF61sMOnsbfXodKS=mpdNbCtvgvjqKA@mail.gmail.com>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+In-Reply-To: <CAMuHMdWW1=kXC14H6iUFF61sMOnsbfXodKS=mpdNbCtvgvjqKA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 8/21/22 5:46 AM, Michael Schmitz wrote:
-> Martin,
-> 
-> Am 22.08.2022 um 08:59 schrieb Martin Steigerwald:
->> Michael Schmitz - 26.07.22, 05:58:40 CEST:
->>> Am 26.07.2022 um 15:40 schrieb Jens Axboe:
->>>> On 7/25/22 7:53 PM, Michael Schmitz wrote:
->>>>> Hi Jens,
->>>>>
->>>>> there's been quite a bit of review on this patch series back in the
->>>>> day (most of that would have been on linux-m68k IIRC; see Geert's
->>>>> Reviewed-By tag), and I addressed the issues raised but as you say,
->>>>> it did never get merged.
->>>>>
->>>>> I've found a copy of the linux-block repo that has these patches,
->>>>> will see if I can get them updated to apply to current
->>>>> linux-block.>
->>>> Thanks, please do resend them and we can get them applied.
+Hi Geert,
+
+On 11/08/22 23:40, Geert Uytterhoeven wrote:
+> Hi Christoph,
+>
+> On Tue, Jul 26, 2022 at 1:43 PM Christoph Hellwig <hch@infradead.org> wrote:
+>> On Tue, Jul 26, 2022 at 04:57:47PM +1200, Michael Schmitz wrote:
+>>> The Amiga partition parser module uses signed int for partition sector
+>>> address and count, which will overflow for disks larger than 1 TB.
 >>>
->>> Will do - running final compile tests.
->>
->> Just reminding. Did this go in meanwhile?
-> 
-> Not yet, at last count.
-> 
-> Christoph had reviewed v8 and I've addressed his comments in v9.
-> Should have added his Reviewed-by tag for both patches perhaps, not
-> just patch 1.
-> 
-> Shall I resend v9 with that omission rectified, Jens?
+>>> Use u64 as type for sector address and size to allow using disks up to
+>>> 2 TB without LBD support, and disks larger than 2 TB with LBD. The RBD
+>>> format allows to specify disk sizes up to 2^128 bytes (though native
+>>> OS limitations reduce this somewhat, to max 2^68 bytes), so check for
+>>> u64 overflow carefully to protect against overflowing sector_t.
+>>>
+>>> Bail out if sector addresses overflow 32 bits on kernels without LBD
+>>> support.
+>>>
+>>> This bug was reported originally in 2012, and the fix was created by
+>>> the RDB author, Joanne Dow <jdow@earthlink.net>. A patch had been
+>>> discussed and reviewed on linux-m68k at that time but never officially
+>>> submitted (now resubmitted as separate patch).
+>>> This patch adds additional error checking and warning messages.
+>>>
+>>> Fixes: https://bugzilla.kernel.org/show_bug.cgi?id=43511
+>>> Reported-by: Martin Steigerwald <Martin@lichtvoll.de>
+>>> Message-ID: <201206192146.09327.Martin@lichtvoll.de>
+>>> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+>>> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>>> --- a/block/partitions/amiga.c
+>>> +++ b/block/partitions/amiga.c
+>>>                if (!data) {
+>>> -                     pr_err("Dev %s: unable to read RDB block %d\n",
+>>> -                            state->disk->disk_name, blk);
+>>> +                     pr_err("Dev %s: unable to read RDB block %llu\n",
+>>> +                            state->disk->disk_name, (u64) blk);
+>> No need for the various printk casts, a sector_t is always an
+>> unsigned long long.
+> That is true, as of commit 72deb455b5ec619f
+> ("block: remove CONFIG_LBDAF") in v5.2.
+> Since 4.9, 4.14, and 4.19 are still receiving stable updates, the
+> cast should be re-added when this is backported.
 
-Yes please, thanks.
+Does this require a note in the commit message, or explicit CC to Greg?
 
--- 
-Jens Axboe
+Cheers,
+
+     Michael
+
+> Gr{oetje,eeting}s,
+>
+>                          Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                  -- Linus Torvalds
