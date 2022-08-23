@@ -2,33 +2,33 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 195EFC32789
-	for <linux-m68k@archiver.kernel.org>; Tue, 23 Aug 2022 08:17:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D310CC32774
+	for <linux-m68k@archiver.kernel.org>; Tue, 23 Aug 2022 09:57:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241841AbiHWIR3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 23 Aug 2022 04:17:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39994 "EHLO
+        id S242073AbiHWJ5W (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 23 Aug 2022 05:57:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242350AbiHWIOT (ORCPT
+        with ESMTP id S243790AbiHWJwy (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 23 Aug 2022 04:14:19 -0400
+        Tue, 23 Aug 2022 05:52:54 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB06247B81
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Aug 2022 01:09:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF816A488
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Aug 2022 01:46:14 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F0F3A612A1;
-        Tue, 23 Aug 2022 08:09:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61FD4C43151;
-        Tue, 23 Aug 2022 08:09:36 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D491461257;
+        Tue, 23 Aug 2022 08:45:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8AFAC433D6;
+        Tue, 23 Aug 2022 08:45:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1661242176;
-        bh=fzEwDqQnyvof+zgJDXrldKEzkZj1Amf9g0JJlC0VsSA=;
+        s=korg; t=1661244332;
+        bh=noez/ZkmF/rf36ZF4kOxe89YB9P/7CZvBLY6FVVeh3I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gof6QOYNa7JsQBRExzWTywuiE+1IiSAFVVyQFQt4u+NY0D97ltyAvUFPV8HkBHCSa
-         M5HNAm1FCgkzlJbvwuCg+y0l+M9L28Z1tMRHuGIzt+UmfbaMM8NPaW32SY75Enfe6W
-         JHl6uKGhYLuYZK101WC67l2U6WEV5KTW5XUyKyPo=
+        b=h3aQzwIeyQFD9qRiu0GTB4LzxZtBX0UXxFviFEFSnY8L/nhs3Rpsvx+12xOEfQrSi
+         wQwPf/Ai2YOM+S6igGioJG8O+XdnUiZyX9/Rziv+GNP8UKXIRZ+tUC5s67o7F6tQUf
+         /4oXJq5GvT6pQRKhjTWICJ0aO0mdPKi4vzwRhewU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -37,12 +37,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org,
         Angelo Dureghello <angelo@kernel-space.org>
-Subject: [PATCH 5.19 072/365] m68k: coldfire/device.c: protect FLEXCAN blocks
-Date:   Tue, 23 Aug 2022 09:59:33 +0200
-Message-Id: <20220823080121.207289114@linuxfoundation.org>
+Subject: [PATCH 5.15 052/244] m68k: coldfire/device.c: protect FLEXCAN blocks
+Date:   Tue, 23 Aug 2022 10:23:31 +0200
+Message-Id: <20220823080100.798237693@linuxfoundation.org>
 X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20220823080118.128342613@linuxfoundation.org>
-References: <20220823080118.128342613@linuxfoundation.org>
+In-Reply-To: <20220823080059.091088642@linuxfoundation.org>
+References: <20220823080059.091088642@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -82,12 +82,14 @@ Cc: Angelo Dureghello <angelo@kernel-space.org>
 Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/m68k/coldfire/device.c |    6 +++---
+ arch/m68k/coldfire/device.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
+diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
+index 4218750414bb..7dab46728aed 100644
 --- a/arch/m68k/coldfire/device.c
 +++ b/arch/m68k/coldfire/device.c
-@@ -581,7 +581,7 @@ static struct platform_device mcf_esdhc
+@@ -581,7 +581,7 @@ static struct platform_device mcf_esdhc = {
  };
  #endif /* MCFSDHC_BASE */
  
@@ -96,7 +98,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  #include <linux/can/platform/flexcan.h>
  
-@@ -620,7 +620,7 @@ static struct platform_device mcf_flexca
+@@ -620,7 +620,7 @@ static struct platform_device mcf_flexcan0 = {
  	.resource = mcf5441x_flexcan0_resource,
  	.dev.platform_data = &mcf5441x_flexcan_info,
  };
@@ -105,7 +107,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  static struct platform_device *mcf_devices[] __initdata = {
  	&mcf_uart,
-@@ -657,7 +657,7 @@ static struct platform_device *mcf_devic
+@@ -657,7 +657,7 @@ static struct platform_device *mcf_devices[] __initdata = {
  #ifdef MCFSDHC_BASE
  	&mcf_esdhc,
  #endif
@@ -114,5 +116,8 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	&mcf_flexcan0,
  #endif
  };
+-- 
+2.37.2
+
 
 
