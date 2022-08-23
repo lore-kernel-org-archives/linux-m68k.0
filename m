@@ -2,232 +2,196 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2C6CC3F6B0
-	for <linux-m68k@archiver.kernel.org>; Mon, 22 Aug 2022 22:13:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B30CC32789
+	for <linux-m68k@archiver.kernel.org>; Tue, 23 Aug 2022 05:22:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238395AbiHVWNS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 22 Aug 2022 18:13:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33318 "EHLO
+        id S239919AbiHWFWg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 23 Aug 2022 01:22:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238391AbiHVWNQ (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 22 Aug 2022 18:13:16 -0400
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC25B19
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 Aug 2022 15:13:13 -0700 (PDT)
+        with ESMTP id S239904AbiHWFWf (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 23 Aug 2022 01:22:35 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A6451A2C;
+        Mon, 22 Aug 2022 22:22:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1661206393; x=1692742393;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=+KF37sAYlpkq3HgZSSRrOoWm/D0euXDR7YfpwkWhmVg=;
-  b=evRHI4wIMPVrsgUgUOCw97cji++wfRnJgmHHOMk6bUVlKCVp16QSbN7x
-   ArBXxODjGeYJu+B7NnMaVukfU/sAGVW17hs5QDFfCo+MoFccidfRJl7MG
-   Jr250SXHVx4ny6UBVRg3wWeOlHF+26PxY8z5OikkRQ/KT0J4AgkWSi2gy
-   tLentJDJLjZyOcYMBClCHs5GUaba4y3DOr7XTPoCq2J7/nuqjpt5McKag
-   TH/XLY7nmT+W4s8kf0g9/gRqaof2b6TY8vrsjDpT7w0H/CLoJaONOBIEe
-   ayqFMHGR8IdLceAm042rBe4l78S4W9GGSKF6UKVdpJluMbFOm1TeOZS6H
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10447"; a="280505351"
-X-IronPort-AV: E=Sophos;i="5.93,255,1654585200"; 
-   d="scan'208";a="280505351"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2022 15:13:13 -0700
+  t=1661232154; x=1692768154;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=wy6WE4BSFS1ZfWH9ztxUHavzMVRtvmcIr8EplprCa+8=;
+  b=emZz3Cmo4G1mjQFdjJxfvVxAFlkyUB2Gh5ARZILw/N26uyiXiuiKvAJv
+   yMyMkRihkQWkNJu33MtD0BszngoXPluD5cAjvtjJ3a3H3MGDA47Ro00sO
+   +4hL/2nrBSnX2y7VSfkgiOAnp+YruoG8CaN/Ok7n3d81fAmmynHuPTbUu
+   KdMQWr9x0EdEULuW6PTrUzFi/Wev6r0Hh+UD34xO3Ple6VKs6UvT83ub9
+   DkVbYS9Paj7NDBUHkigdrSgAcySc+sIL4PJOTNs9IYMtVfs5oVeYvf5AJ
+   yzb4nGDVX2W4/t8RYTny6hMvrvGtLqWEPQ4zAgXmUtPs4vA+DBHiR8ixh
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10447"; a="294383553"
+X-IronPort-AV: E=Sophos;i="5.93,256,1654585200"; 
+   d="scan'208";a="294383553"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2022 22:22:34 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,255,1654585200"; 
-   d="scan'208";a="559917307"
+X-IronPort-AV: E=Sophos;i="5.93,256,1654585200"; 
+   d="scan'208";a="642307329"
 Received: from lkp-server01.sh.intel.com (HELO dd9b29378baa) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 22 Aug 2022 15:13:11 -0700
+  by orsmga001.jf.intel.com with ESMTP; 22 Aug 2022 22:22:31 -0700
 Received: from kbuild by dd9b29378baa with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1oQFfT-0000mz-0k;
-        Mon, 22 Aug 2022 22:13:11 +0000
-Date:   Tue, 23 Aug 2022 06:12:37 +0800
+        id 1oQMMx-0001DV-02;
+        Tue, 23 Aug 2022 05:22:31 +0000
+Date:   Tue, 23 Aug 2022 13:22:17 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:for-next] BUILD SUCCESS
- 1afdc013672b70ee124e669078b0e3740db2a3f8
-Message-ID: <6303ff55.mcmlQ2RC1GwXA0Xd%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+To:     Michael Schmitz <schmitzmic@gmail.com>,
+        linux-block@vger.kernel.org, axboe@kernel.dk
+Cc:     kbuild-all@lists.01.org, linux-m68k@vger.kernel.org,
+        geert@linux-m68k.org, hch@lst.de,
+        Michael Schmitz <schmitzmic@gmail.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v9 RESEND #2 2/2] block: add overflow checks for Amiga
+ partition support
+Message-ID: <202208231319.Ng5RTzzg-lkp@intel.com>
+References: <20220822211236.9023-3-schmitzmic@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20220822211236.9023-3-schmitzmic@gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-next
-branch HEAD: 1afdc013672b70ee124e669078b0e3740db2a3f8  m68k: Move from strlcpy with unused retval to strscpy
+Hi Michael,
 
-elapsed time: 727m
+I love your patch! Perhaps something to improve:
 
-configs tested: 157
-configs skipped: 117
+[auto build test WARNING on axboe-block/for-next]
+[also build test WARNING on linus/master v6.0-rc2 next-20220822]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+url:    https://github.com/intel-lab-lkp/linux/commits/Michael-Schmitz/Amiga-RDB-partition-support-fixes/20220823-051457
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git for-next
+config: i386-randconfig-s002 (https://download.01.org/0day-ci/archive/20220823/202208231319.Ng5RTzzg-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-5) 11.3.0
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.4-39-gce1a6720-dirty
+        # https://github.com/intel-lab-lkp/linux/commit/6b86551e8891f07839a8c3ad19e3f770b0f738e9
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Michael-Schmitz/Amiga-RDB-partition-support-fixes/20220823-051457
+        git checkout 6b86551e8891f07839a8c3ad19e3f770b0f738e9
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=i386 SHELL=/bin/bash block/partitions/
 
-gcc tested configs:
-m68k                             allyesconfig
-m68k                             allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-csky                              allnoconfig
-alpha                             allnoconfig
-arc                               allnoconfig
-riscv                             allnoconfig
-x86_64               randconfig-a013-20220822
-x86_64               randconfig-a014-20220822
-x86_64               randconfig-a011-20220822
-x86_64               randconfig-a016-20220822
-x86_64               randconfig-a012-20220822
-x86_64               randconfig-a015-20220822
-arm64                            allyesconfig
-arm                                 defconfig
-arm                              allyesconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-i386                             allyesconfig
-i386                                defconfig
-x86_64                           rhel-8.3-kvm
-x86_64                          rhel-8.3-func
-x86_64                           rhel-8.3-syz
-x86_64                    rhel-8.3-kselftests
-x86_64                         rhel-8.3-kunit
-i386                 randconfig-a015-20220822
-i386                 randconfig-a016-20220822
-i386                 randconfig-a011-20220822
-i386                 randconfig-a013-20220822
-i386                 randconfig-a014-20220822
-i386                 randconfig-a012-20220822
-powerpc                           allnoconfig
-mips                             allyesconfig
-powerpc                          allmodconfig
-sh                               allmodconfig
-loongarch                           defconfig
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                               rhel-8.3
-powerpc                    adder875_defconfig
-arm                         s3c6400_defconfig
-arm                        cerfcube_defconfig
-powerpc                      arches_defconfig
-powerpc                      ppc6xx_defconfig
-riscv                randconfig-r042-20220822
-s390                 randconfig-r044-20220822
-arc                  randconfig-r043-20220822
-arc                  randconfig-r043-20220821
-arm                           sunxi_defconfig
-sh                   sh7770_generic_defconfig
-alpha                               defconfig
-sh                         ecovec24_defconfig
-sh                   sh7724_generic_defconfig
-sh                            titan_defconfig
-s390                             allmodconfig
-sh                           se7343_defconfig
-parisc                              defconfig
-sparc                             allnoconfig
-arm                        keystone_defconfig
-mips                            ar7_defconfig
-powerpc                  storcenter_defconfig
-sh                 kfr2r09-romimage_defconfig
-sh                                  defconfig
-sh                          rsk7201_defconfig
-powerpc                 canyonlands_defconfig
-arm                          badge4_defconfig
-i386                          randconfig-c001
-loongarch                         allnoconfig
-sh                            migor_defconfig
-x86_64                        randconfig-a006
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-sh                          rsk7264_defconfig
-arc                     haps_hs_smp_defconfig
-arm                          exynos_defconfig
-xtensa                  nommu_kc705_defconfig
-mips                            gpr_defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                    nommu_k210_defconfig
-arm                         lubbock_defconfig
-parisc                generic-32bit_defconfig
-arm                      footbridge_defconfig
-arm                         axm55xx_defconfig
-powerpc                 mpc85xx_cds_defconfig
-loongarch                 loongson3_defconfig
-mips                           xway_defconfig
-arc                              alldefconfig
-arc                                 defconfig
-sparc                               defconfig
-sh                          rsk7269_defconfig
-ia64                            zx1_defconfig
-arm                        oxnas_v6_defconfig
-i386                          debian-10.3-kvm
-i386                        debian-10.3-kunit
-powerpc                        cell_defconfig
-arm                             pxa_defconfig
-mips                    maltaup_xpa_defconfig
-mips                          rb532_defconfig
-x86_64                        randconfig-a011
-x86_64                        randconfig-a013
-x86_64                        randconfig-a015
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-nios2                               defconfig
-parisc64                            defconfig
-parisc                           allyesconfig
-powerpc                    amigaone_defconfig
-arc                           tb10x_defconfig
-arc                 nsimosci_hs_smp_defconfig
-m68k                          amiga_defconfig
-sh                               j2_defconfig
-powerpc                     taishan_defconfig
-powerpc                mpc7448_hpc2_defconfig
-i386                         debian-10.3-func
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
 
-clang tested configs:
-i386                 randconfig-a002-20220822
-i386                 randconfig-a005-20220822
-i386                 randconfig-a001-20220822
-i386                 randconfig-a006-20220822
-i386                 randconfig-a003-20220822
-i386                 randconfig-a004-20220822
-powerpc                      katmai_defconfig
-arm                        neponset_defconfig
-mips                      maltaaprp_defconfig
-x86_64               randconfig-a002-20220822
-x86_64               randconfig-a005-20220822
-x86_64               randconfig-a006-20220822
-x86_64               randconfig-a003-20220822
-x86_64               randconfig-a001-20220822
-x86_64               randconfig-a004-20220822
-arm                         s5pv210_defconfig
-powerpc                 mpc8315_rdb_defconfig
-arm                          moxart_defconfig
-arm                         bcm2835_defconfig
-hexagon              randconfig-r045-20220821
-riscv                randconfig-r042-20220821
-hexagon              randconfig-r041-20220821
-s390                 randconfig-r044-20220821
-x86_64                        randconfig-k001
-arm                     am200epdkit_defconfig
-powerpc                 mpc8313_rdb_defconfig
-powerpc                     mpc5200_defconfig
-x86_64                        randconfig-a005
-x86_64                        randconfig-a003
-x86_64                        randconfig-a001
-powerpc                        fsp2_defconfig
-arm                          sp7021_defconfig
-powerpc                 mpc832x_mds_defconfig
-powerpc                    gamecube_defconfig
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-arm                         palmz72_defconfig
-i386                          randconfig-a011
-i386                          randconfig-a013
-i386                          randconfig-a015
+sparse warnings: (new ones prefixed by >>)
+>> block/partitions/amiga.c:132:30: sparse: sparse: cast to restricted __be32
+   block/partitions/amiga.c:133:25: sparse: sparse: cast to restricted __be32
+
+vim +132 block/partitions/amiga.c
+
+    35	
+    36	int amiga_partition(struct parsed_partitions *state)
+    37	{
+    38		Sector sect;
+    39		unsigned char *data;
+    40		struct RigidDiskBlock *rdb;
+    41		struct PartitionBlock *pb;
+    42		u64 start_sect, nr_sects;
+    43		sector_t blk, end_sect;
+    44		u32 cylblk;		/* rdb_CylBlocks = nr_heads*sect_per_track */
+    45		u32 nr_hd, nr_sect, lo_cyl, hi_cyl;
+    46		int part, res = 0;
+    47		unsigned int blksize = 1;	/* Multiplier for disk block size */
+    48		int slot = 1;
+    49	
+    50		for (blk = 0; ; blk++, put_dev_sector(sect)) {
+    51			if (blk == RDB_ALLOCATION_LIMIT)
+    52				goto rdb_done;
+    53			data = read_part_sector(state, blk, &sect);
+    54			if (!data) {
+    55				pr_err("Dev %s: unable to read RDB block %llu\n",
+    56				       state->disk->disk_name, blk);
+    57				res = -1;
+    58				goto rdb_done;
+    59			}
+    60			if (*(__be32 *)data != cpu_to_be32(IDNAME_RIGIDDISK))
+    61				continue;
+    62	
+    63			rdb = (struct RigidDiskBlock *)data;
+    64			if (checksum_block((__be32 *)data, be32_to_cpu(rdb->rdb_SummedLongs) & 0x7F) == 0)
+    65				break;
+    66			/* Try again with 0xdc..0xdf zeroed, Windows might have
+    67			 * trashed it.
+    68			 */
+    69			*(__be32 *)(data+0xdc) = 0;
+    70			if (checksum_block((__be32 *)data,
+    71					be32_to_cpu(rdb->rdb_SummedLongs) & 0x7F)==0) {
+    72				pr_err("Trashed word at 0xd0 in block %llu ignored in checksum calculation\n",
+    73				       blk);
+    74				break;
+    75			}
+    76	
+    77			pr_err("Dev %s: RDB in block %llu has bad checksum\n",
+    78			       state->disk->disk_name, blk);
+    79		}
+    80	
+    81		/* blksize is blocks per 512 byte standard block */
+    82		blksize = be32_to_cpu( rdb->rdb_BlockBytes ) / 512;
+    83	
+    84		{
+    85			char tmp[7 + 10 + 1 + 1];
+    86	
+    87			/* Be more informative */
+    88			snprintf(tmp, sizeof(tmp), " RDSK (%d)", blksize * 512);
+    89			strlcat(state->pp_buf, tmp, PAGE_SIZE);
+    90		}
+    91		blk = be32_to_cpu(rdb->rdb_PartitionList);
+    92		put_dev_sector(sect);
+    93		for (part = 1; blk>0 && part<=16; part++, put_dev_sector(sect)) {
+    94			/* Read in terms partition table understands */
+    95			if (check_mul_overflow(blk, (sector_t) blksize, &blk)) {
+    96				pr_err("Dev %s: overflow calculating partition block %llu! Skipping partitions %u and beyond\n",
+    97					state->disk->disk_name, blk, part);
+    98				break;
+    99			}
+   100			data = read_part_sector(state, blk, &sect);
+   101			if (!data) {
+   102				pr_err("Dev %s: unable to read partition block %llu\n",
+   103				       state->disk->disk_name, blk);
+   104				res = -1;
+   105				goto rdb_done;
+   106			}
+   107			pb  = (struct PartitionBlock *)data;
+   108			blk = be32_to_cpu(pb->pb_Next);
+   109			if (pb->pb_ID != cpu_to_be32(IDNAME_PARTITION))
+   110				continue;
+   111			if (checksum_block((__be32 *)pb, be32_to_cpu(pb->pb_SummedLongs) & 0x7F) != 0 )
+   112				continue;
+   113	
+   114			/* RDB gives us more than enough rope to hang ourselves with,
+   115			 * many times over (2^128 bytes if all fields max out).
+   116			 * Some careful checks are in order, so check for potential
+   117			 * overflows.
+   118			 * We are multiplying four 32 bit numbers to one sector_t!
+   119			 */
+   120	
+   121			nr_hd   = be32_to_cpu(pb->pb_Environment[NR_HD]);
+   122			nr_sect = be32_to_cpu(pb->pb_Environment[NR_SECT]);
+   123	
+   124			/* CylBlocks is total number of blocks per cylinder */
+   125			if (check_mul_overflow(nr_hd, nr_sect, &cylblk)) {
+   126				pr_err("Dev %s: heads*sects %u overflows u32, skipping partition!\n",
+   127					state->disk->disk_name, cylblk);
+   128				continue;
+   129			}
+   130	
+   131			/* check for consistency with RDB defined CylBlocks */
+ > 132			if (cylblk > be32_to_cpu((__be32)rdb->rdb_CylBlocks)) {
 
 -- 
 0-DAY CI Kernel Test Service
