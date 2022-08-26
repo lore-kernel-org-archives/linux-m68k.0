@@ -2,100 +2,159 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA514ECAAD6
-	for <linux-m68k@archiver.kernel.org>; Fri, 26 Aug 2022 07:45:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB67EECAAA3
+	for <linux-m68k@archiver.kernel.org>; Fri, 26 Aug 2022 13:03:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245518AbiHZHo7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 26 Aug 2022 03:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44854 "EHLO
+        id S235235AbiHZNDs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 26 Aug 2022 09:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245584AbiHZHoq (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 26 Aug 2022 03:44:46 -0400
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C6DD3471
-        for <linux-m68k@vger.kernel.org>; Fri, 26 Aug 2022 00:44:40 -0700 (PDT)
-Received: by mail-qk1-f175.google.com with SMTP id a15so563887qko.4
-        for <linux-m68k@vger.kernel.org>; Fri, 26 Aug 2022 00:44:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=XA55eR0DqX3Ru4hxlZ5ChYWGLWwogeAjdman3X1DUMk=;
-        b=CMrJExiimVyLz/avS03zMZkfjsYQLA/wGoNPw1SVyQdHfKqovCHCngPmaedv032BaK
-         RRISyB9s/Y+sT/ix8SfqE8tedtawD4r4dNKC/hK3b91xE8arXOPd1VuKcchga5RnKSxC
-         j51y64Z0/XleABjsTcjhFkFEqVaMECGA3u7IPhlxQ7yr69TmPsOEOwtd5arQR0e9bE7Y
-         Wi9LTLwX5NobhPmStBiQFZuCCd5PDPk6aomu7Hn/tDKtRa783FOMojuILThNrUIpSBRd
-         ea0EKmqSPuNZdx5j78D8L9Mc/AjWa4ed+KL7loPf6BdVHRs3v1F9dfpZ7QzDdkRJ73Wf
-         Ibqw==
-X-Gm-Message-State: ACgBeo04VIjtp7aBhnsW9SDTg7NqOtnc6pvdV6DKRQXhIVGRpFWVcFfo
-        4QpQqcdXdvuN4lkrqfnHfdFTK/t/qriDWA==
-X-Google-Smtp-Source: AA6agR4wD8rucTosf47i7tD5j29r5mk5X+ST2t2xv8Z+fyWnSozo95VlwHNecb/G19ega93AgDSeGA==
-X-Received: by 2002:a05:620a:101a:b0:6bb:13a6:9d81 with SMTP id z26-20020a05620a101a00b006bb13a69d81mr5744454qkj.565.1661499879601;
-        Fri, 26 Aug 2022 00:44:39 -0700 (PDT)
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com. [209.85.128.169])
-        by smtp.gmail.com with ESMTPSA id z8-20020a05622a060800b0034490214788sm872565qta.49.2022.08.26.00.44.39
-        for <linux-m68k@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Aug 2022 00:44:39 -0700 (PDT)
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-334dc616f86so16246467b3.8
-        for <linux-m68k@vger.kernel.org>; Fri, 26 Aug 2022 00:44:39 -0700 (PDT)
-X-Received: by 2002:a05:690c:830:b0:33d:794b:e66c with SMTP id
- by16-20020a05690c083000b0033d794be66cmr7354846ywb.502.1661499879152; Fri, 26
- Aug 2022 00:44:39 -0700 (PDT)
+        with ESMTP id S229484AbiHZNDr (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 26 Aug 2022 09:03:47 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87041CCE12
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 26 Aug 2022 06:03:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1661519026; x=1693055026;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=TKNYoX/RJCSPsPbxhKRDTfjKPP71dcfvWmqA6HAkbsU=;
+  b=ia4UOKy8SrBwLetp89Prnv945a5mZy/eP84oOiyUOyJ8xs+dVEwwsg74
+   rzjhr/DxPVlc2ANhC0jbdRofwAQCQvV0qwp0fHvDNZ7VqVbnGYl7hOZlM
+   NGL69+1fdMl+hBtI7UUQWvmKTdwlDBPa60zjDMQsPQwSZFLIIhT/h19AM
+   82OPZU68dUriVeEyhKKlI2m1GyDFL5bPTfBEL/AxzY5z6WsurvESMGp4p
+   uW5bulZkosAbWOORWcSc5Jha2QV8O+qfISV6baerVgxGwM3F+2dlQg6OY
+   1Coo2Kk5aV0jVaWSY7akpId3HytjLf11op2RyR/raYkVP9joARJfs2pWh
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10450"; a="356214907"
+X-IronPort-AV: E=Sophos;i="5.93,265,1654585200"; 
+   d="scan'208";a="356214907"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2022 06:03:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,265,1654585200"; 
+   d="scan'208";a="561431584"
+Received: from lkp-server02.sh.intel.com (HELO 34e741d32628) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 26 Aug 2022 06:03:41 -0700
+Received: from kbuild by 34e741d32628 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oRYzt-00048U-0H;
+        Fri, 26 Aug 2022 13:03:41 +0000
+Date:   Fri, 26 Aug 2022 21:02:55 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-hardening@vger.kernel.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: [linux-next:pending-fixes] BUILD SUCCESS WITH WARNING
+ fe2c49524eb3863b526782620be347bcbecbd2d8
+Message-ID: <6308c47f.6Aqe9XBuWYUM/2nd%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20220826040302.3455339-1-gerg@linux-m68k.org> <20220826040302.3455339-3-gerg@linux-m68k.org>
-In-Reply-To: <20220826040302.3455339-3-gerg@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 26 Aug 2022 09:44:27 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWRjG6n9MpLG+rZtyrTPdj6sGLt7LehHo+i0P9aHach+Q@mail.gmail.com>
-Message-ID: <CAMuHMdWRjG6n9MpLG+rZtyrTPdj6sGLt7LehHo+i0P9aHach+Q@mail.gmail.com>
-Subject: Re: [PATCH 3/3] m68k: allow kexec on all MMU enabled CPUs
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     "Linux/m68k" <linux-m68k@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Greg,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git pending-fixes
+branch HEAD: fe2c49524eb3863b526782620be347bcbecbd2d8  Merge branch 'for-linux-next-fixes' of git://anongit.freedesktop.org/drm/drm-misc
 
-On Fri, Aug 26, 2022 at 6:08 AM Greg Ungerer <gerg@linux-m68k.org> wrote:
-> The configuration setting for 68k kexec support limits it to only
-> the classic 68k CPU types (so no ColdFire). However the underlying
-> support can handle any 68k CPU that is MMU enabled - and that includes
-> ColdFire. (Of course that support is only as good as mentioned in
-> the current configuration help).
->
-> None of the no-MMU CPU types (classic or ColdFire) have support for
-> kexec yet, so the configuration as it stands is not quite right, and
-> it will fail to compile on them.
->
-> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+Warning reports:
 
-Thanks for your patch!
+https://lore.kernel.org/linux-mm/202208110453.zEneXTnn-lkp@intel.com
 
-> --- a/arch/m68k/Kconfig
-> +++ b/arch/m68k/Kconfig
-> @@ -87,7 +87,7 @@ config MMU_SUN3
->
->  config KEXEC
->         bool "kexec system call"
-> -       depends on M68KCLASSIC
-> +       depends on MMU
->         select KEXEC_CORE
->         help
->           kexec is a system call that implements the ability to shutdown your
+Warning: (recently discovered and may have been fixed)
 
-Don't you need changes to arch/m68k/kernel/relocate_kernel.S,
-which supports 68020+ only?
+arch/m68k/include/asm/string.h:64:25: warning: '__builtin_memcmp' specified bound 6 exceeds source size 0 [-Wstringop-overread]
+include/linux/fortify-string.h:44:33: warning: '__builtin_memcmp' specified bound 6 exceeds source size 0 [-Wstringop-overread]
 
-Gr{oetje,eeting}s,
+Warning ids grouped by kconfigs:
 
-                        Geert
+gcc_recent_errors
+|-- m68k-allmodconfig
+|   `-- arch-m68k-include-asm-string.h:warning:__builtin_memcmp-specified-bound-exceeds-source-size
+|-- m68k-allyesconfig
+|   `-- arch-m68k-include-asm-string.h:warning:__builtin_memcmp-specified-bound-exceeds-source-size
+`-- mips-allyesconfig
+    `-- include-linux-fortify-string.h:warning:__builtin_memcmp-specified-bound-exceeds-source-size
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+elapsed time: 725m
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+configs tested: 66
+configs skipped: 2
+
+gcc tested configs:
+arc                                 defconfig
+loongarch                         allnoconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+alpha                               defconfig
+loongarch                           defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                        randconfig-a002
+i386                                defconfig
+s390                                defconfig
+x86_64                        randconfig-a013
+i386                          randconfig-a001
+powerpc                          allmodconfig
+x86_64                           allyesconfig
+s390                             allmodconfig
+x86_64                        randconfig-a006
+x86_64                        randconfig-a011
+i386                          randconfig-a003
+arm                                 defconfig
+s390                             allyesconfig
+x86_64                        randconfig-a015
+x86_64                        randconfig-a004
+mips                             allyesconfig
+i386                          randconfig-a005
+powerpc                           allnoconfig
+sh                               allmodconfig
+m68k                             allmodconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+arc                  randconfig-r043-20220824
+riscv                randconfig-r042-20220824
+m68k                             allyesconfig
+s390                 randconfig-r044-20220824
+arc                  randconfig-r043-20220825
+i386                          randconfig-a014
+i386                          randconfig-a012
+x86_64                    rhel-8.3-kselftests
+i386                          randconfig-a016
+x86_64                          rhel-8.3-func
+i386                             allyesconfig
+x86_64                         rhel-8.3-kunit
+x86_64                           rhel-8.3-kvm
+x86_64                           rhel-8.3-syz
+arm                              allyesconfig
+arm64                            allyesconfig
+ia64                             allmodconfig
+
+clang tested configs:
+x86_64                        randconfig-a014
+x86_64                        randconfig-a001
+x86_64                        randconfig-a016
+x86_64                        randconfig-a012
+x86_64                        randconfig-a003
+i386                          randconfig-a002
+x86_64                        randconfig-a005
+i386                          randconfig-a006
+i386                          randconfig-a004
+hexagon              randconfig-r041-20220825
+hexagon              randconfig-r045-20220825
+hexagon              randconfig-r041-20220824
+hexagon              randconfig-r045-20220824
+riscv                randconfig-r042-20220825
+s390                 randconfig-r044-20220825
+i386                          randconfig-a013
+i386                          randconfig-a011
+i386                          randconfig-a015
+x86_64                          rhel-8.3-rust
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
