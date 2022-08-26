@@ -2,159 +2,92 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB67EECAAA3
-	for <linux-m68k@archiver.kernel.org>; Fri, 26 Aug 2022 13:03:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E01DECAAD5
+	for <linux-m68k@archiver.kernel.org>; Fri, 26 Aug 2022 14:57:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235235AbiHZNDs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 26 Aug 2022 09:03:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33346 "EHLO
+        id S240331AbiHZO5Z (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 26 Aug 2022 10:57:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbiHZNDr (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 26 Aug 2022 09:03:47 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87041CCE12
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 26 Aug 2022 06:03:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1661519026; x=1693055026;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=TKNYoX/RJCSPsPbxhKRDTfjKPP71dcfvWmqA6HAkbsU=;
-  b=ia4UOKy8SrBwLetp89Prnv945a5mZy/eP84oOiyUOyJ8xs+dVEwwsg74
-   rzjhr/DxPVlc2ANhC0jbdRofwAQCQvV0qwp0fHvDNZ7VqVbnGYl7hOZlM
-   NGL69+1fdMl+hBtI7UUQWvmKTdwlDBPa60zjDMQsPQwSZFLIIhT/h19AM
-   82OPZU68dUriVeEyhKKlI2m1GyDFL5bPTfBEL/AxzY5z6WsurvESMGp4p
-   uW5bulZkosAbWOORWcSc5Jha2QV8O+qfISV6baerVgxGwM3F+2dlQg6OY
-   1Coo2Kk5aV0jVaWSY7akpId3HytjLf11op2RyR/raYkVP9joARJfs2pWh
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10450"; a="356214907"
-X-IronPort-AV: E=Sophos;i="5.93,265,1654585200"; 
-   d="scan'208";a="356214907"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2022 06:03:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,265,1654585200"; 
-   d="scan'208";a="561431584"
-Received: from lkp-server02.sh.intel.com (HELO 34e741d32628) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 26 Aug 2022 06:03:41 -0700
-Received: from kbuild by 34e741d32628 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oRYzt-00048U-0H;
-        Fri, 26 Aug 2022 13:03:41 +0000
-Date:   Fri, 26 Aug 2022 21:02:55 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-hardening@vger.kernel.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: [linux-next:pending-fixes] BUILD SUCCESS WITH WARNING
- fe2c49524eb3863b526782620be347bcbecbd2d8
-Message-ID: <6308c47f.6Aqe9XBuWYUM/2nd%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S232338AbiHZO5Y (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 26 Aug 2022 10:57:24 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81A16D99C5
+        for <linux-m68k@vger.kernel.org>; Fri, 26 Aug 2022 07:57:21 -0700 (PDT)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by laurent.telenet-ops.be with bizsmtp
+        id CExG2800E4C55Sk01ExGiB; Fri, 26 Aug 2022 16:57:19 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1oRalo-002kip-10; Fri, 26 Aug 2022 16:57:16 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1oRZgQ-005y1H-Vu; Fri, 26 Aug 2022 15:47:38 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?q?Noralf=20Tr=C3=B8nnes?= <noralf@tronnes.org>,
+        Gerd Hoffmann <kraxel@redhat.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v2] drm/fourcc: Add missing big-endian XRGB1555 and RGB565 formats
+Date:   Fri, 26 Aug 2022 15:47:37 +0200
+Message-Id: <6e9fb733354fbf6af1531095d9230bad802c064c.1661521401.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git pending-fixes
-branch HEAD: fe2c49524eb3863b526782620be347bcbecbd2d8  Merge branch 'for-linux-next-fixes' of git://anongit.freedesktop.org/drm/drm-misc
+As of commit eae06120f1974e1a ("drm: refuse ADDFB2 ioctl for broken
+bigendian drivers"), drivers must set the
+quirk_addfb_prefer_host_byte_order quirk to make the drm_mode_addfb()
+compat code work correctly on big-endian machines.
 
-Warning reports:
+While that works fine for big-endian XRGB8888 and ARGB8888, which are
+mapped to the existing little-endian BGRX8888 and BGRA8888 formats, it
+does not work for big-endian XRGB1555 and RGB565, as the latter are not
+listed in the format database.
 
-https://lore.kernel.org/linux-mm/202208110453.zEneXTnn-lkp@intel.com
+Fix this by adding the missing formats.  Limit this to big-endian
+platforms, as there is currently no need to support these formats on
+little-endian platforms.
 
-Warning: (recently discovered and may have been fixed)
+Fixes: 6960e6da9cec3f66 ("drm: fix drm_mode_addfb() on big endian machines.")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+v2:
+  - Use "DRM_FORMAT_foo | DRM_FORMAT_BIG_ENDIAN" instead of
+    "DRM_FORMAT_HOST_foo",
+  - Turn into a lone patch, as all other patches from series
+    https://lore.kernel.org/r/cover.1657300532.git.geert@linux-m68k.org
+    were applied to drm-misc/for-linux-next.
+---
+ drivers/gpu/drm/drm_fourcc.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-arch/m68k/include/asm/string.h:64:25: warning: '__builtin_memcmp' specified bound 6 exceeds source size 0 [-Wstringop-overread]
-include/linux/fortify-string.h:44:33: warning: '__builtin_memcmp' specified bound 6 exceeds source size 0 [-Wstringop-overread]
-
-Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- m68k-allmodconfig
-|   `-- arch-m68k-include-asm-string.h:warning:__builtin_memcmp-specified-bound-exceeds-source-size
-|-- m68k-allyesconfig
-|   `-- arch-m68k-include-asm-string.h:warning:__builtin_memcmp-specified-bound-exceeds-source-size
-`-- mips-allyesconfig
-    `-- include-linux-fortify-string.h:warning:__builtin_memcmp-specified-bound-exceeds-source-size
-
-elapsed time: 725m
-
-configs tested: 66
-configs skipped: 2
-
-gcc tested configs:
-arc                                 defconfig
-loongarch                         allnoconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-alpha                               defconfig
-loongarch                           defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                        randconfig-a002
-i386                                defconfig
-s390                                defconfig
-x86_64                        randconfig-a013
-i386                          randconfig-a001
-powerpc                          allmodconfig
-x86_64                           allyesconfig
-s390                             allmodconfig
-x86_64                        randconfig-a006
-x86_64                        randconfig-a011
-i386                          randconfig-a003
-arm                                 defconfig
-s390                             allyesconfig
-x86_64                        randconfig-a015
-x86_64                        randconfig-a004
-mips                             allyesconfig
-i386                          randconfig-a005
-powerpc                           allnoconfig
-sh                               allmodconfig
-m68k                             allmodconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-arc                  randconfig-r043-20220824
-riscv                randconfig-r042-20220824
-m68k                             allyesconfig
-s390                 randconfig-r044-20220824
-arc                  randconfig-r043-20220825
-i386                          randconfig-a014
-i386                          randconfig-a012
-x86_64                    rhel-8.3-kselftests
-i386                          randconfig-a016
-x86_64                          rhel-8.3-func
-i386                             allyesconfig
-x86_64                         rhel-8.3-kunit
-x86_64                           rhel-8.3-kvm
-x86_64                           rhel-8.3-syz
-arm                              allyesconfig
-arm64                            allyesconfig
-ia64                             allmodconfig
-
-clang tested configs:
-x86_64                        randconfig-a014
-x86_64                        randconfig-a001
-x86_64                        randconfig-a016
-x86_64                        randconfig-a012
-x86_64                        randconfig-a003
-i386                          randconfig-a002
-x86_64                        randconfig-a005
-i386                          randconfig-a006
-i386                          randconfig-a004
-hexagon              randconfig-r041-20220825
-hexagon              randconfig-r045-20220825
-hexagon              randconfig-r041-20220824
-hexagon              randconfig-r045-20220824
-riscv                randconfig-r042-20220825
-s390                 randconfig-r044-20220825
-i386                          randconfig-a013
-i386                          randconfig-a011
-i386                          randconfig-a015
-x86_64                          rhel-8.3-rust
-
+diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
+index e09331bb3bc73f21..265671a7f9134c1f 100644
+--- a/drivers/gpu/drm/drm_fourcc.c
++++ b/drivers/gpu/drm/drm_fourcc.c
+@@ -190,6 +190,10 @@ const struct drm_format_info *__drm_format_info(u32 format)
+ 		{ .format = DRM_FORMAT_BGRA5551,	.depth = 15, .num_planes = 1, .cpp = { 2, 0, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+ 		{ .format = DRM_FORMAT_RGB565,		.depth = 16, .num_planes = 1, .cpp = { 2, 0, 0 }, .hsub = 1, .vsub = 1 },
+ 		{ .format = DRM_FORMAT_BGR565,		.depth = 16, .num_planes = 1, .cpp = { 2, 0, 0 }, .hsub = 1, .vsub = 1 },
++#ifdef __BIG_ENDIAN
++		{ .format = DRM_FORMAT_XRGB1555 | DRM_FORMAT_BIG_ENDIAN, .depth = 15, .num_planes = 1, .cpp = { 2, 0, 0 }, .hsub = 1, .vsub = 1 },
++		{ .format = DRM_FORMAT_RGB565 | DRM_FORMAT_BIG_ENDIAN, .depth = 16, .num_planes = 1, .cpp = { 2, 0, 0 }, .hsub = 1, .vsub = 1 },
++#endif
+ 		{ .format = DRM_FORMAT_RGB888,		.depth = 24, .num_planes = 1, .cpp = { 3, 0, 0 }, .hsub = 1, .vsub = 1 },
+ 		{ .format = DRM_FORMAT_BGR888,		.depth = 24, .num_planes = 1, .cpp = { 3, 0, 0 }, .hsub = 1, .vsub = 1 },
+ 		{ .format = DRM_FORMAT_XRGB8888,	.depth = 24, .num_planes = 1, .cpp = { 4, 0, 0 }, .hsub = 1, .vsub = 1 },
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.25.1
+
