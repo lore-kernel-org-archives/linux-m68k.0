@@ -2,92 +2,66 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E01DECAAD5
-	for <linux-m68k@archiver.kernel.org>; Fri, 26 Aug 2022 14:57:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EA19ECAAA2
+	for <linux-m68k@archiver.kernel.org>; Mon, 29 Aug 2022 00:56:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240331AbiHZO5Z (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 26 Aug 2022 10:57:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45232 "EHLO
+        id S229462AbiH2A4W (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 28 Aug 2022 20:56:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232338AbiHZO5Y (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 26 Aug 2022 10:57:24 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81A16D99C5
-        for <linux-m68k@vger.kernel.org>; Fri, 26 Aug 2022 07:57:21 -0700 (PDT)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by laurent.telenet-ops.be with bizsmtp
-        id CExG2800E4C55Sk01ExGiB; Fri, 26 Aug 2022 16:57:19 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1oRalo-002kip-10; Fri, 26 Aug 2022 16:57:16 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1oRZgQ-005y1H-Vu; Fri, 26 Aug 2022 15:47:38 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?q?Noralf=20Tr=C3=B8nnes?= <noralf@tronnes.org>,
-        Gerd Hoffmann <kraxel@redhat.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2] drm/fourcc: Add missing big-endian XRGB1555 and RGB565 formats
-Date:   Fri, 26 Aug 2022 15:47:37 +0200
-Message-Id: <6e9fb733354fbf6af1531095d9230bad802c064c.1661521401.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S229447AbiH2A4V (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sun, 28 Aug 2022 20:56:21 -0400
+Received: from vps43012.public.cloudvps.com (vps43012.public.cloudvps.com [79.170.88.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E4D91BE81
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Aug 2022 17:56:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=nutritionhealthsupport.nl; s=default; h=Content-Type:MIME-Version:
+        Message-ID:Reply-To:From:Date:Subject:To:Sender:Cc:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Bw3fGF6UcVvZtJopFb2FtWb4/9klj/S2ACPUDjnBfUs=; b=o1OV3EyJKmBcPi3cdIOPn1qrOJ
+        Hn6qRxdtmf+D0AKUQY8TCtJFXm68r7SdsO2ATVH2oT2CCNMGl85DBhRXdRBvEyZ9Tw4xtlgwN+CEJ
+        6Tw1Ksvck0XDyYsLsAXMvMUgMGByWCPSKg2YXjrdM3hiJ0sik6xkPTayxD4WcwIlSjj/U2sYpckuf
+        3eRwihYsGCqXDu98gKZRRLvsa0RquxnmFSKavqvZUoe6YYAJSgP6zpxTggQOzyppabzHdbyBt9jfa
+        g/wkoUWC9iyseFYCTveTEYQYtgyHgIA3MflzxhxczfGvV9C4esRgxvx5syMROuxw5F6BLvlP8gzbL
+        Z8cshGfQ==;
+Received: from nutrition1 by server1.tuliphost.nl with local (Exim 4.95)
+        (envelope-from <nutrition1@server1.tuliphost.nl>)
+        id 1oST4W-0004hR-9o
+        for linux-m68k@lists.linux-m68k.org;
+        Mon, 29 Aug 2022 02:56:12 +0200
+To:     linux-m68k@lists.linux-m68k.org
+Subject: =?us-ascii?Q?Nutrition_Health_Support:_Bild:_Werden_Sie_in_e?=  =?us-ascii?Q?inem_Monat_einer_der_Krypto-Millionare?=
+X-PHP-Script: nutrition-hs.nl/index.php for 156.146.63.135
+X-PHP-Originating-Script: 1012:PHPMailer.php
+Date:   Mon, 29 Aug 2022 00:56:12 +0000
+From:   Nutrition Health Support <info@nutritionhealthsupport.nl>
+Reply-To: info@nutritionhealthsupport.nl
+Message-ID: <1shHBR1UCdZk09Yo5cdx8fuQgbxIjDz0dGFOAnBodg@nutrition-hs.nl>
+X-Mailer: PHPMailer 6.1.6 (https://github.com/PHPMailer/PHPMailer)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+X-tulip-MailScanner-Information: Please contact the ISP for more information
+X-tulip-MailScanner-ID: 1oST4W-0004hR-9o
+X-tulip-MailScanner: Found to be clean
+X-tulip-MailScanner-SpamCheck: 
+X-tulip-MailScanner-From: nutrition1@server1.tuliphost.nl
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - server1.tuliphost.nl
+X-AntiAbuse: Original Domain - lists.linux-m68k.org
+X-AntiAbuse: Originator/Caller UID/GID - [1012 1013] / [47 12]
+X-AntiAbuse: Sender Address Domain - server1.tuliphost.nl
+X-Get-Message-Sender-Via: server1.tuliphost.nl: authenticated_id: nutrition1/from_h
+X-Authenticated-Sender: server1.tuliphost.nl: info@nutritionhealthsupport.nl
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-As of commit eae06120f1974e1a ("drm: refuse ADDFB2 ioctl for broken
-bigendian drivers"), drivers must set the
-quirk_addfb_prefer_host_byte_order quirk to make the drm_mode_addfb()
-compat code work correctly on big-endian machines.
+Bericht inhoud:
+Werden Sie in einem Monat einer der Krypto-Millionare http://xm-bitcoin.krislaczynski.com/dayli-news-2101
 
-While that works fine for big-endian XRGB8888 and ARGB8888, which are
-mapped to the existing little-endian BGRX8888 and BGRA8888 formats, it
-does not work for big-endian XRGB1555 and RGB565, as the latter are not
-listed in the format database.
-
-Fix this by adding the missing formats.  Limit this to big-endian
-platforms, as there is currently no need to support these formats on
-little-endian platforms.
-
-Fixes: 6960e6da9cec3f66 ("drm: fix drm_mode_addfb() on big endian machines.")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-v2:
-  - Use "DRM_FORMAT_foo | DRM_FORMAT_BIG_ENDIAN" instead of
-    "DRM_FORMAT_HOST_foo",
-  - Turn into a lone patch, as all other patches from series
-    https://lore.kernel.org/r/cover.1657300532.git.geert@linux-m68k.org
-    were applied to drm-misc/for-linux-next.
----
- drivers/gpu/drm/drm_fourcc.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
-index e09331bb3bc73f21..265671a7f9134c1f 100644
---- a/drivers/gpu/drm/drm_fourcc.c
-+++ b/drivers/gpu/drm/drm_fourcc.c
-@@ -190,6 +190,10 @@ const struct drm_format_info *__drm_format_info(u32 format)
- 		{ .format = DRM_FORMAT_BGRA5551,	.depth = 15, .num_planes = 1, .cpp = { 2, 0, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
- 		{ .format = DRM_FORMAT_RGB565,		.depth = 16, .num_planes = 1, .cpp = { 2, 0, 0 }, .hsub = 1, .vsub = 1 },
- 		{ .format = DRM_FORMAT_BGR565,		.depth = 16, .num_planes = 1, .cpp = { 2, 0, 0 }, .hsub = 1, .vsub = 1 },
-+#ifdef __BIG_ENDIAN
-+		{ .format = DRM_FORMAT_XRGB1555 | DRM_FORMAT_BIG_ENDIAN, .depth = 15, .num_planes = 1, .cpp = { 2, 0, 0 }, .hsub = 1, .vsub = 1 },
-+		{ .format = DRM_FORMAT_RGB565 | DRM_FORMAT_BIG_ENDIAN, .depth = 16, .num_planes = 1, .cpp = { 2, 0, 0 }, .hsub = 1, .vsub = 1 },
-+#endif
- 		{ .format = DRM_FORMAT_RGB888,		.depth = 24, .num_planes = 1, .cpp = { 3, 0, 0 }, .hsub = 1, .vsub = 1 },
- 		{ .format = DRM_FORMAT_BGR888,		.depth = 24, .num_planes = 1, .cpp = { 3, 0, 0 }, .hsub = 1, .vsub = 1 },
- 		{ .format = DRM_FORMAT_XRGB8888,	.depth = 24, .num_planes = 1, .cpp = { 4, 0, 0 }, .hsub = 1, .vsub = 1 },
 -- 
-2.25.1
+Deze e-mail is verzonden vanuit het contactformulier op Nutrition Health Support http://nutritionhealthsupport.nl
 
