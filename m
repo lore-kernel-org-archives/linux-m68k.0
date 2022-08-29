@@ -2,66 +2,210 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EA19ECAAA2
-	for <linux-m68k@archiver.kernel.org>; Mon, 29 Aug 2022 00:56:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7652ECAAD2
+	for <linux-m68k@archiver.kernel.org>; Mon, 29 Aug 2022 10:00:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229462AbiH2A4W (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 28 Aug 2022 20:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43392 "EHLO
+        id S229946AbiH2KAt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 29 Aug 2022 06:00:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbiH2A4V (ORCPT
+        with ESMTP id S229841AbiH2KAq (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 28 Aug 2022 20:56:21 -0400
-Received: from vps43012.public.cloudvps.com (vps43012.public.cloudvps.com [79.170.88.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E4D91BE81
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Aug 2022 17:56:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=nutritionhealthsupport.nl; s=default; h=Content-Type:MIME-Version:
-        Message-ID:Reply-To:From:Date:Subject:To:Sender:Cc:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Bw3fGF6UcVvZtJopFb2FtWb4/9klj/S2ACPUDjnBfUs=; b=o1OV3EyJKmBcPi3cdIOPn1qrOJ
-        Hn6qRxdtmf+D0AKUQY8TCtJFXm68r7SdsO2ATVH2oT2CCNMGl85DBhRXdRBvEyZ9Tw4xtlgwN+CEJ
-        6Tw1Ksvck0XDyYsLsAXMvMUgMGByWCPSKg2YXjrdM3hiJ0sik6xkPTayxD4WcwIlSjj/U2sYpckuf
-        3eRwihYsGCqXDu98gKZRRLvsa0RquxnmFSKavqvZUoe6YYAJSgP6zpxTggQOzyppabzHdbyBt9jfa
-        g/wkoUWC9iyseFYCTveTEYQYtgyHgIA3MflzxhxczfGvV9C4esRgxvx5syMROuxw5F6BLvlP8gzbL
-        Z8cshGfQ==;
-Received: from nutrition1 by server1.tuliphost.nl with local (Exim 4.95)
-        (envelope-from <nutrition1@server1.tuliphost.nl>)
-        id 1oST4W-0004hR-9o
-        for linux-m68k@lists.linux-m68k.org;
-        Mon, 29 Aug 2022 02:56:12 +0200
+        Mon, 29 Aug 2022 06:00:46 -0400
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B6ABDFBB
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Aug 2022 03:00:44 -0700 (PDT)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by xavier.telenet-ops.be with bizsmtp
+        id DN0h2800E4C55Sk01N0iWy; Mon, 29 Aug 2022 12:00:42 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1oSbZR-0036s9-I1; Mon, 29 Aug 2022 12:00:41 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1oSbZQ-000IaT-VG; Mon, 29 Aug 2022 12:00:40 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
-Subject: =?us-ascii?Q?Nutrition_Health_Support:_Bild:_Werden_Sie_in_e?=  =?us-ascii?Q?inem_Monat_einer_der_Krypto-Millionare?=
-X-PHP-Script: nutrition-hs.nl/index.php for 156.146.63.135
-X-PHP-Originating-Script: 1012:PHPMailer.php
-Date:   Mon, 29 Aug 2022 00:56:12 +0000
-From:   Nutrition Health Support <info@nutritionhealthsupport.nl>
-Reply-To: info@nutritionhealthsupport.nl
-Message-ID: <1shHBR1UCdZk09Yo5cdx8fuQgbxIjDz0dGFOAnBodg@nutrition-hs.nl>
-X-Mailer: PHPMailer 6.1.6 (https://github.com/PHPMailer/PHPMailer)
+Cc:     linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: defconfig: Update defconfigs for v6.0-rc2
+Date:   Mon, 29 Aug 2022 12:00:39 +0200
+Message-Id: <1fbe623e5d69bdce0352445c06e1b2c9fb8d123e.1661767119.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-tulip-MailScanner-Information: Please contact the ISP for more information
-X-tulip-MailScanner-ID: 1oST4W-0004hR-9o
-X-tulip-MailScanner: Found to be clean
-X-tulip-MailScanner-SpamCheck: 
-X-tulip-MailScanner-From: nutrition1@server1.tuliphost.nl
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - server1.tuliphost.nl
-X-AntiAbuse: Original Domain - lists.linux-m68k.org
-X-AntiAbuse: Originator/Caller UID/GID - [1012 1013] / [47 12]
-X-AntiAbuse: Sender Address Domain - server1.tuliphost.nl
-X-Get-Message-Sender-Via: server1.tuliphost.nl: authenticated_id: nutrition1/from_h
-X-Authenticated-Sender: server1.tuliphost.nl: info@nutritionhealthsupport.nl
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Bericht inhoud:
-Werden Sie in einem Monat einer der Krypto-Millionare http://xm-bitcoin.krislaczynski.com/dayli-news-2101
+  - Drop CONFIG_NF_CONNTRACK_PROCFS=n (no longer auto-enabled since
+    commit aa5762c34213aba7 ("netfilter: conntrack: NF_CONNTRACK_PROCFS
+    should no longer default to y").
 
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+To be combined with "m68k: defconfig: Update defconfigs for v6.0-rc1".
+---
+ arch/m68k/configs/amiga_defconfig    | 1 -
+ arch/m68k/configs/apollo_defconfig   | 1 -
+ arch/m68k/configs/atari_defconfig    | 1 -
+ arch/m68k/configs/bvme6000_defconfig | 1 -
+ arch/m68k/configs/hp300_defconfig    | 1 -
+ arch/m68k/configs/mac_defconfig      | 1 -
+ arch/m68k/configs/multi_defconfig    | 1 -
+ arch/m68k/configs/mvme147_defconfig  | 1 -
+ arch/m68k/configs/mvme16x_defconfig  | 1 -
+ arch/m68k/configs/q40_defconfig      | 1 -
+ arch/m68k/configs/sun3_defconfig     | 1 -
+ arch/m68k/configs/sun3x_defconfig    | 1 -
+ 12 files changed, 12 deletions(-)
+
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index 1e545592ece66309..e2038d9499e479cd 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -84,7 +84,6 @@ CONFIG_NETFILTER=y
+ CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+-# CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+ CONFIG_NF_CONNTRACK_AMANDA=m
+ CONFIG_NF_CONNTRACK_FTP=m
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index 8b3c02455f13e1c3..ddd201259e43a95a 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -80,7 +80,6 @@ CONFIG_NETFILTER=y
+ CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+-# CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+ CONFIG_NF_CONNTRACK_AMANDA=m
+ CONFIG_NF_CONNTRACK_FTP=m
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index 217e286c2a760607..66a5dbd8bd428a33 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -87,7 +87,6 @@ CONFIG_NETFILTER=y
+ CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+-# CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+ CONFIG_NF_CONNTRACK_AMANDA=m
+ CONFIG_NF_CONNTRACK_FTP=m
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index 083cbb179e708e1b..68957c6bcff1a1be 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -77,7 +77,6 @@ CONFIG_NETFILTER=y
+ CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+-# CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+ CONFIG_NF_CONNTRACK_AMANDA=m
+ CONFIG_NF_CONNTRACK_FTP=m
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index 291e250d843deefe..825c6a02fa9d102f 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -79,7 +79,6 @@ CONFIG_NETFILTER=y
+ CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+-# CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+ CONFIG_NF_CONNTRACK_AMANDA=m
+ CONFIG_NF_CONNTRACK_FTP=m
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index 815ff8d9a65e4240..17f64c562bf119e8 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -78,7 +78,6 @@ CONFIG_NETFILTER=y
+ CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+-# CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+ CONFIG_NF_CONNTRACK_AMANDA=m
+ CONFIG_NF_CONNTRACK_FTP=m
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index 5c84db94f9e11153..f5f4c572b6949698 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -98,7 +98,6 @@ CONFIG_NETFILTER=y
+ CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+-# CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+ CONFIG_NF_CONNTRACK_AMANDA=m
+ CONFIG_NF_CONNTRACK_FTP=m
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index 0a2df9102b8e8404..b4a0bbef7e39b490 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -76,7 +76,6 @@ CONFIG_NETFILTER=y
+ CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+-# CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+ CONFIG_NF_CONNTRACK_AMANDA=m
+ CONFIG_NF_CONNTRACK_FTP=m
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index 951d37effb0cedff..c6a6d59267934021 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -77,7 +77,6 @@ CONFIG_NETFILTER=y
+ CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+-# CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+ CONFIG_NF_CONNTRACK_AMANDA=m
+ CONFIG_NF_CONNTRACK_FTP=m
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index 258001e059baac3a..49c9c89f0caf76ee 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -78,7 +78,6 @@ CONFIG_NETFILTER=y
+ CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+-# CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+ CONFIG_NF_CONNTRACK_AMANDA=m
+ CONFIG_NF_CONNTRACK_FTP=m
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index eea582f0e4dc57f1..9b44eeb9c07f7aa9 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -74,7 +74,6 @@ CONFIG_NETFILTER=y
+ CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+-# CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+ CONFIG_NF_CONNTRACK_AMANDA=m
+ CONFIG_NF_CONNTRACK_FTP=m
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index d2c857cf74b8c99f..d2ffb0a65b44ac47 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -74,7 +74,6 @@ CONFIG_NETFILTER=y
+ CONFIG_NETFILTER_NETLINK_HOOK=m
+ CONFIG_NF_CONNTRACK=m
+ CONFIG_NF_CONNTRACK_ZONES=y
+-# CONFIG_NF_CONNTRACK_PROCFS is not set
+ # CONFIG_NF_CT_PROTO_DCCP is not set
+ CONFIG_NF_CONNTRACK_AMANDA=m
+ CONFIG_NF_CONNTRACK_FTP=m
 -- 
-Deze e-mail is verzonden vanuit het contactformulier op Nutrition Health Support http://nutritionhealthsupport.nl
+2.25.1
 
