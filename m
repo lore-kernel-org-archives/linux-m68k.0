@@ -2,105 +2,65 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7E8BECAAD1
-	for <linux-m68k@archiver.kernel.org>; Tue, 30 Aug 2022 15:56:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EA09ECAAA1
+	for <linux-m68k@archiver.kernel.org>; Wed, 31 Aug 2022 01:25:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbiH3P4l (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 30 Aug 2022 11:56:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41614 "EHLO
+        id S229899AbiHaBZv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 30 Aug 2022 21:25:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbiH3P4k (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 30 Aug 2022 11:56:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF28FB6031
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 30 Aug 2022 08:56:39 -0700 (PDT)
+        with ESMTP id S229645AbiHaBZv (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 30 Aug 2022 21:25:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A7A19C2FA
+        for <linux-m68k@vger.kernel.org>; Tue, 30 Aug 2022 18:25:50 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0E8B8615EB;
-        Tue, 30 Aug 2022 15:56:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47D16C433D6;
-        Tue, 30 Aug 2022 15:56:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661874998;
-        bh=4MfZ2CCn8fhHH/Gt5iirr/AOGINTw9QezerOet2l08g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H4kEIIWyxgOlguNNyyYoVWW9S5KnAAsJ+EbiyQQErMIK+stft/vi0m5cy1LomDk2L
-         h5VpgDwrWcXRd4Kt0Zxcu2QUgkZMPebEozFNt2ciI5hxfGK3QTONM94Bj8y4E8W0sM
-         qtONO/KZG8Gj4rAIvh084ZaWbp0KzPNvMyEkfPXcOXV9s+UfPa7REHR7Yq7sq5VSC/
-         c7CYrs0CM8tDqKQ9StIutf7uJEc2kqU+da1fxdoD3dMgrpTIk7JWsIPNpn/gNfah2C
-         nfj89MpvCJbSx2PXt9/k3zsgkUpcS5N1U6vsKmV8rNeKNQFs6rFZ+Y4VIwNRB6hra8
-         PeEiQsd2EITXw==
-Date:   Tue, 30 Aug 2022 17:56:22 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Christian =?utf-8?B?R8O2dHRzY2hl?= <cgzones@googlemail.com>
-Cc:     selinux@vger.kernel.org,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        =?utf-8?B?QW5kcsOp?= Almeida <andrealmeid@igalia.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Guo Ren <guoren@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Wang Haojun <jiangliuer01@gmail.com>,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-fsdevel@vger.kernel.org, linux-audit@redhat.com,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: [RFC PATCH 2/2] fs/xattr: wire up syscalls
-Message-ID: <20220830155622.4hcj6dka5jswydrg@wittgenstein>
-References: <20220830152858.14866-1-cgzones@googlemail.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 79B2961828
+        for <linux-m68k@vger.kernel.org>; Wed, 31 Aug 2022 01:25:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E516C433C1;
+        Wed, 31 Aug 2022 01:25:48 +0000 (UTC)
+From:   Greg Ungerer <gerg@linux-m68k.org>
+To:     linux-m68k@vger.kernel.org
+Cc:     Greg Ungerer <gerg@linux-m68k.org>
+Subject: [PATCHv2 3/3] m68k: allow kexec on M68KCLASSIC with MMU enabled only
+Date:   Wed, 31 Aug 2022 11:25:39 +1000
+Message-Id: <20220831012539.3416470-1-gerg@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220830152858.14866-1-cgzones@googlemail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Aug 30, 2022 at 05:28:38PM +0200, Christian Göttsche wrote:
-> Enable the new added extended attribute related syscalls.
-> 
-> Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
-> ---
+None of the no-MMU CPU types (classic or ColdFire) or ColdFire with
+MMU enabled have support for kexec yet, so the configuration as it
+stands is not quite right, and it will fail to compile on them.
 
-Fwiw, I think a while ago it was pointed out that for most syscall
-additions you can just fold the hookup patch in. It probably also
-wouldn't hurt to trim that Cc list significantly down to mostly the
-lists...
+Make CONFIG_KEXEC depend on both CONFIG_M68KCLASSIC and CONFIG_MMU.
+
+Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+---
+
+v2: disable kexec for ColdFire MMU as well
+
+ arch/m68k/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index b06faf6c0b27..7bff88118507 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -87,7 +87,7 @@ config MMU_SUN3
+ 
+ config KEXEC
+ 	bool "kexec system call"
+-	depends on M68KCLASSIC
++	depends on M68KCLASSIC && MMU
+ 	select KEXEC_CORE
+ 	help
+ 	  kexec is a system call that implements the ability to shutdown your
+-- 
+2.25.1
+
