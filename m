@@ -2,43 +2,43 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43643C6FD2C
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F40D3C6FD33
 	for <linux-m68k@archiver.kernel.org>; Mon, 19 Sep 2022 10:25:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230472AbiISKXm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 19 Sep 2022 06:23:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52636 "EHLO
+        id S229795AbiISKZp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 19 Sep 2022 06:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231192AbiISKTP (ORCPT
+        with ESMTP id S229881AbiISKXf (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 19 Sep 2022 06:19:15 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EE052250B
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 19 Sep 2022 03:17:56 -0700 (PDT)
+        Mon, 19 Sep 2022 06:23:35 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A903D27DD4
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 19 Sep 2022 03:18:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=KSLnjMu353Hxa4O11Me8JnVia/sjgKM0LDIwoSdP0MI=; b=Ick7cd7MD8jj+jy/FoOvcOldv4
-        BXzqJ9/zYCWxDMBoaCpMKWTDlkrsjm+ciYbDhTzmEduHgIHGZFU8eu/9UCVWqxQV5DHTA1YUSp8Tx
-        faKa0oJE6mpLjVarzv5uwBfakpGivkUsYKynKrWjgGyaJKHf7nQ9405HsIrOCwT0Hbb/sk63vSfvE
-        BnxzmNvGwkIXkzdN929OghR8ABtTQgm7zoz4WiUA1zH89oWT84eGaf1f8VAx4krcpDtLRD5v1HZmI
-        M9aENqhsFuSeArxTtlOkUckCjONRAV+wT1xYhtyTytfY6G6hBn+L1OC7ifjz0W0zmPKhKL2PE+41m
-        nB7zCSpw==;
+        bh=wztoayxqdaRhc3fzwYQuz0RAh5ZT6y7bJFX0CXMuNy8=; b=ADXtthd/kB2UkNVNsBZX3mcAgx
+        eb1wSA1egq4M07Od+XfETtj3lhd4iMNEvYwcU9NzeS13eZKp+mowXOQTzEFZK7CeroXVfNcUNAucm
+        DFEs4ENnbXNf93/JuDzTXaj8dDvpaoObTItrP5rfAcPTaGTUO9u17CB7M9lBwSzhZqApt31copOyD
+        THHS1zzgB7BqCqSJl0DeM5JLgmoPtje3pC9taSIf0jDAy3NiwNozoFE6k7Aa6gH0axWhSw0Ae2Kln
+        k7+RKfh2KfpdBiXJ6godhy6Y1cfSrmD10KmQxJ5TbTEnSM6kxy+r95TYqIDfTireSwql4ofArgV57
+        wDOwI0dQ==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oaDq3-00E2Aj-LY; Mon, 19 Sep 2022 10:17:21 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oaDpF-004ahk-Dm; Mon, 19 Sep 2022 10:16:29 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 18466302F09;
-        Mon, 19 Sep 2022 12:16:25 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 99768302218;
+        Mon, 19 Sep 2022 12:16:24 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 2E67C2BAB86FF; Mon, 19 Sep 2022 12:16:22 +0200 (CEST)
-Message-ID: <20220919101521.676713943@infradead.org>
+        id D336C2BA49039; Mon, 19 Sep 2022 12:16:21 +0200 (CEST)
+Message-ID: <20220919101520.602636221@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 19 Sep 2022 11:59:59 +0200
+Date:   Mon, 19 Sep 2022 11:59:43 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     peterz@infradead.org
 Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
@@ -100,7 +100,7 @@ Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
         linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
         linux-arch@vger.kernel.org, kasan-dev@googlegroups.com
-Subject: [PATCH v2 20/44] cpuidle,intel_idle: Fix CPUIDLE_FLAG_IBRS
+Subject: [PATCH v2 04/44] cpuidle: Move IRQ state validation
 References: <20220919095939.761690562@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -108,42 +108,41 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-vmlinux.o: warning: objtool: intel_idle_ibrs+0x17: call to spec_ctrl_current() leaves .noinstr.text section
-vmlinux.o: warning: objtool: intel_idle_ibrs+0x27: call to wrmsrl.constprop.0() leaves .noinstr.text section
+Make cpuidle_enter_state() consistent with the s2idle variant and
+verify ->enter() always returns with interrupts disabled.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/kernel/cpu/bugs.c |    2 +-
- drivers/idle/intel_idle.c  |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/cpuidle/cpuidle.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -79,7 +79,7 @@ void write_spec_ctrl_current(u64 val, bo
- 		wrmsrl(MSR_IA32_SPEC_CTRL, val);
- }
+--- a/drivers/cpuidle/cpuidle.c
++++ b/drivers/cpuidle/cpuidle.c
+@@ -236,7 +236,11 @@ int cpuidle_enter_state(struct cpuidle_d
+ 	stop_critical_timings();
+ 	if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
+ 		ct_idle_enter();
++
+ 	entered_state = target_state->enter(dev, drv, index);
++	if (WARN_ONCE(!irqs_disabled(), "%ps leaked IRQ state", target_state->enter))
++		raw_local_irq_disable();
++
+ 	if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
+ 		ct_idle_exit();
+ 	start_critical_timings();
+@@ -248,12 +252,8 @@ int cpuidle_enter_state(struct cpuidle_d
+ 	/* The cpu is no longer idle or about to enter idle. */
+ 	sched_idle_set_state(NULL);
  
--u64 spec_ctrl_current(void)
-+noinstr u64 spec_ctrl_current(void)
- {
- 	return this_cpu_read(x86_spec_ctrl_current);
- }
---- a/drivers/idle/intel_idle.c
-+++ b/drivers/idle/intel_idle.c
-@@ -181,12 +181,12 @@ static __cpuidle int intel_idle_ibrs(str
- 	int ret;
+-	if (broadcast) {
+-		if (WARN_ON_ONCE(!irqs_disabled()))
+-			local_irq_disable();
+-
++	if (broadcast)
+ 		tick_broadcast_exit();
+-	}
  
- 	if (smt_active)
--		wrmsrl(MSR_IA32_SPEC_CTRL, 0);
-+		native_wrmsrl(MSR_IA32_SPEC_CTRL, 0);
- 
- 	ret = __intel_idle(dev, drv, index);
- 
- 	if (smt_active)
--		wrmsrl(MSR_IA32_SPEC_CTRL, spec_ctrl);
-+		native_wrmsrl(MSR_IA32_SPEC_CTRL, spec_ctrl);
- 
- 	return ret;
- }
+ 	if (!cpuidle_state_is_coupled(drv, index))
+ 		local_irq_enable();
 
 
