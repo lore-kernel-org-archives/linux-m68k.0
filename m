@@ -2,228 +2,159 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 544A7ECAAA1
-	for <linux-m68k@archiver.kernel.org>; Thu, 15 Sep 2022 19:08:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11BC7C83010
+	for <linux-m68k@archiver.kernel.org>; Mon, 19 Sep 2022 10:18:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbiIOTIq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 15 Sep 2022 15:08:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41162 "EHLO
+        id S230315AbiISKR4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 19 Sep 2022 06:17:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbiIOTIp (ORCPT
+        with ESMTP id S230153AbiISKRO (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 15 Sep 2022 15:08:45 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E891885FF0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Sep 2022 12:08:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1663268925; x=1694804925;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=1iuDUReQ5aZ4Di20M9vvIKBhcc8BXBB1AR1RFh4ui9E=;
-  b=WFaYM8Xi7s7vyP3N2okn6NyBTpy32sSls8WuHN35prPQW7jLQ8/NR3fP
-   N4HTryqprl5CPS8DcMtWNkqqTn8v+Q4AYGa1T+MFGYpQluJqyAp7kF3cZ
-   IMEzb4Dw/axgId4yZCDoxp5rXAkXAfKqulC1Y3pGdJfrXr88LdMqXlU5Y
-   qW17ZiWcRsW3PkSyDpxRQsiAZt+g7UhScPlzeAzTBYRtaoLVnhD2uT8FB
-   wO0zhOQxtXALbrhvz5SRazR4i0ZIs8Qw9qD5ZhSFTa7Hht7cgOB7ZvsNv
-   5lSa6MShbYbweRYNPH0qHTR+Gld+cPdte6R/kwHJ8zkjv+DpoItA9H005
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10471"; a="299640092"
-X-IronPort-AV: E=Sophos;i="5.93,318,1654585200"; 
-   d="scan'208";a="299640092"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2022 12:08:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,318,1654585200"; 
-   d="scan'208";a="594956270"
-Received: from lkp-server02.sh.intel.com (HELO 41300c7200ea) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 15 Sep 2022 12:08:41 -0700
-Received: from kbuild by 41300c7200ea with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oYuE5-0000uT-0h;
-        Thu, 15 Sep 2022 19:08:41 +0000
-Date:   Fri, 16 Sep 2022 03:08:00 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Greg Ungerer <gerg@uclinux.org>
-Cc:     kbuild-all@lists.01.org, linux-m68k@lists.linux-m68k.org,
-        uclinux-dev@uclinux.org, linux-kernel@vger.kernel.org
-Subject: [gerg-m68knommu:armnommu 3/3]
- arch/arm/include/asm/glue-cache.h:126:2: error: #error Unknown cache
- maintenance model
-Message-ID: <202209160332.S6pQG1wV-lkp@intel.com>
+        Mon, 19 Sep 2022 06:17:14 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739CAF594
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 19 Sep 2022 03:17:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To;
+        bh=oZwbrkDz2YxQ2tCMIP+SsyU178fWwXoNNNkzTKP67NE=; b=KweB4P8d5D7zkwnL4EDlpnZYcN
+        a9E5xKCTRFYcTufTdlClTGA3iDArhS2rXRQxTKlrXXlrj0UpFCMBatcGTn5dPeA+O4C2MMnypMOxO
+        5v2si5huymLU8WeP2fVE7BDJzihOP+9J3kc2xjZv42l6rH6S36237oq0Fd+r9PUqoyjp+xxFFpIHO
+        +0LT+KJAgXQRKmewdBNUpCB6GardBaz99pO4SDUmqaat0xpyL/RD1zXk0smpZADkhrnDQ8EGTDY6w
+        VPHghONnzwfMVAWRBRjATrTLZKECEJxso7CGz23vtaOidDm2gFnFt6vHX8G+IsOsJbZb9RAt1bDBu
+        aILnL3hQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oaDpF-004ahl-E9; Mon, 19 Sep 2022 10:16:29 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A301A302D54;
+        Mon, 19 Sep 2022 12:16:24 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id D7B952BA4903A; Mon, 19 Sep 2022 12:16:21 +0200 (CEST)
+Message-ID: <20220919101520.669962810@infradead.org>
+User-Agent: quilt/0.66
+Date:   Mon, 19 Sep 2022 11:59:44 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     peterz@infradead.org
+Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
+        mattst88@gmail.com, vgupta@kernel.org, linux@armlinux.org.uk,
+        ulli.kroll@googlemail.com, linus.walleij@linaro.org,
+        shawnguo@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        tony@atomide.com, khilman@kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, guoren@kernel.org, bcain@quicinc.com,
+        chenhuacai@kernel.org, kernel@xen0n.name, geert@linux-m68k.org,
+        sammy@sammy.net, monstr@monstr.eu, tsbogend@alpha.franken.de,
+        dinguyen@kernel.org, jonas@southpole.se,
+        stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
+        James.Bottomley@HansenPartnership.com, deller@gmx.de,
+        mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com,
+        agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
+        svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org,
+        davem@davemloft.net, richard@nod.at,
+        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, jgross@suse.com, srivatsa@csail.mit.edu,
+        amakhalov@vmware.com, pv-drivers@vmware.com,
+        boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com,
+        rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz,
+        gregkh@linuxfoundation.org, mturquette@baylibre.com,
+        sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org,
+        sudeep.holla@arm.com, agross@kernel.org,
+        bjorn.andersson@linaro.org, konrad.dybcio@somainline.org,
+        anup@brainfault.org, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, jacob.jun.pan@linux.intel.com,
+        atishp@atishpatra.org, Arnd Bergmann <arnd@arndb.de>,
+        yury.norov@gmail.com, andriy.shevchenko@linux.intel.com,
+        linux@rasmusvillemoes.dk, dennis@kernel.org, tj@kernel.org,
+        cl@linux.com, rostedt@goodmis.org, pmladek@suse.com,
+        senozhatsky@chromium.org, john.ogness@linutronix.de,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, fweisbec@gmail.com,
+        ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
+        dvyukov@google.com, vincenzo.frascino@arm.com,
+        Andrew Morton <akpm@linux-foundation.org>, jpoimboe@kernel.org,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-perf-users@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-xtensa@linux-xtensa.org, linux-acpi@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-arch@vger.kernel.org, kasan-dev@googlegroups.com
+Subject: [PATCH v2 05/44] cpuidle,riscv: Push RCU-idle into driver
+References: <20220919095939.761690562@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git armnommu
-head:   253950b08a4d5f947c38fc64a13c376831e4040b
-commit: 253950b08a4d5f947c38fc64a13c376831e4040b [3/3] ARM: versatile: support configuring versatile machine for no-MMU
-config: arm-randconfig-c003-20220915 (https://download.01.org/0day-ci/archive/20220916/202209160332.S6pQG1wV-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git/commit/?id=253950b08a4d5f947c38fc64a13c376831e4040b
-        git remote add gerg-m68knommu https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git
-        git fetch --no-tags gerg-m68knommu armnommu
-        git checkout 253950b08a4d5f947c38fc64a13c376831e4040b
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=arm prepare
+Doing RCU-idle outside the driver, only to then temporarily enable it
+again, at least twice, before going idle is daft.
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ drivers/cpuidle/cpuidle-riscv-sbi.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-All errors (new ones prefixed by >>):
-
-         |       ^~~~~~~~~~~~~~~~~~
-   In file included from include/linux/list.h:11,
-                    from include/linux/rculist.h:10,
-                    from include/linux/pid.h:5,
-                    from include/linux/sched.h:14:
-   arch/arm/include/asm/barrier.h: At top level:
-   arch/arm/include/asm/barrier.h:9:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
-       9 | #if __LINUX_ARM_ARCH__ >= 7 ||          \
-         |     ^~~~~~~~~~~~~~~~~~
-   arch/arm/include/asm/barrier.h:10:10: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
-      10 |         (__LINUX_ARM_ARCH__ == 6 && defined(CONFIG_CPU_32v6K))
-         |          ^~~~~~~~~~~~~~~~~~
-   arch/arm/include/asm/barrier.h:18:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
-      18 | #if __LINUX_ARM_ARCH__ >= 7
-         |     ^~~~~~~~~~~~~~~~~~
-   arch/arm/include/asm/barrier.h:28:35: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
-      28 | #elif defined(CONFIG_CPU_XSC3) || __LINUX_ARM_ARCH__ == 6
-         |                                   ^~~~~~~~~~~~~~~~~~
-   In file included from arch/arm/include/asm/processor.h:17,
-                    from include/linux/prefetch.h:15,
-                    from arch/arm/include/asm/atomic.h:12,
-                    from include/linux/atomic.h:7,
-                    from include/linux/rcupdate.h:25,
-                    from include/linux/rculist.h:11:
-   arch/arm/include/asm/vdso/processor.h:10:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
-      10 | #if __LINUX_ARM_ARCH__ == 6 || defined(CONFIG_ARM_ERRATA_754327)
-         |     ^~~~~~~~~~~~~~~~~~
-   arch/arm/include/asm/processor.h:110:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
-     110 | #if __LINUX_ARM_ARCH__ >= 5
-         |     ^~~~~~~~~~~~~~~~~~
-   In file included from include/linux/irqflags.h:16,
-                    from arch/arm/include/asm/atomic.h:14:
-   arch/arm/include/asm/irqflags.h:22:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
-      22 | #if __LINUX_ARM_ARCH__ >= 6
-         |     ^~~~~~~~~~~~~~~~~~
-   In file included from arch/arm/include/asm/atomic.h:16:
-   arch/arm/include/asm/cmpxchg.h: In function '__xchg':
-   arch/arm/include/asm/cmpxchg.h:35:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
-      35 | #if __LINUX_ARM_ARCH__ >= 6
-         |     ^~~~~~~~~~~~~~~~~~
-   arch/arm/include/asm/cmpxchg.h:42:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
-      42 | #if __LINUX_ARM_ARCH__ >= 6
-         |     ^~~~~~~~~~~~~~~~~~
-   arch/arm/include/asm/cmpxchg.h: At top level:
-   arch/arm/include/asm/cmpxchg.h:124:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
-     124 | #if __LINUX_ARM_ARCH__ < 6
-         |     ^~~~~~~~~~~~~~~~~~
-   arch/arm/include/asm/atomic.h:28:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
-      28 | #if __LINUX_ARM_ARCH__ >= 6
-         |     ^~~~~~~~~~~~~~~~~~
-   In file included from arch/arm/include/asm/swab.h:19,
-                    from include/uapi/linux/swab.h:8,
-                    from include/linux/swab.h:5,
-                    from arch/arm/include/asm/opcodes.h:86,
-                    from arch/arm/include/asm/bug.h:7,
-                    from include/linux/bug.h:5,
-                    from include/linux/thread_info.h:13,
-                    from include/asm-generic/preempt.h:5,
-                    from ./arch/arm/include/generated/asm/preempt.h:1,
-                    from include/linux/preempt.h:78,
-                    from include/linux/rcupdate.h:27:
-   arch/arm/include/uapi/asm/swab.h:27:29: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
-      27 | #if !defined(__KERNEL__) || __LINUX_ARM_ARCH__ < 6
-         |                             ^~~~~~~~~~~~~~~~~~
-   arch/arm/include/asm/swab.h:21:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
-      21 | #if __LINUX_ARM_ARCH__ >= 6
-         |     ^~~~~~~~~~~~~~~~~~
-   In file included from include/linux/bitops.h:68,
-                    from include/linux/thread_info.h:27:
-   arch/arm/include/asm/bitops.h:218:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
-     218 | #if __LINUX_ARM_ARCH__ < 5
-         |     ^~~~~~~~~~~~~~~~~~
-   In file included from arch/arm/include/asm/thread_info.h:13,
-                    from include/linux/thread_info.h:60:
-   arch/arm/include/asm/fpstate.h:29:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
-      29 | #if __LINUX_ARM_ARCH__ < 6
-         |     ^~~~~~~~~~~~~~~~~~
-   In file included from include/linux/uaccess.h:11,
-                    from include/linux/sched/task.h:11,
-                    from include/linux/sched/signal.h:9,
-                    from include/linux/rcuwait.h:6,
-                    from include/linux/percpu-rwsem.h:7,
-                    from include/linux/fs.h:33,
-                    from include/linux/huge_mm.h:8,
-                    from include/linux/mm.h:703,
-                    from arch/arm/kernel/asm-offsets.c:12:
-   arch/arm/include/asm/uaccess.h:302:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
-     302 | #if __LINUX_ARM_ARCH__ >= 6
-         |     ^~~~~~~~~~~~~~~~~~
-   arch/arm/include/asm/uaccess.h:404:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
-     404 | #if __LINUX_ARM_ARCH__ >= 6
-         |     ^~~~~~~~~~~~~~~~~~
-   In file included from include/linux/scatterlist.h:9,
-                    from include/linux/dma-mapping.h:10,
-                    from arch/arm/kernel/asm-offsets.c:13:
-   arch/arm/include/asm/io.h:53:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
-      53 | #if __LINUX_ARM_ARCH__ < 6
-         |     ^~~~~~~~~~~~~~~~~~
-   In file included from arch/arm/include/asm/cacheflush.h:12,
-                    from arch/arm/kernel/asm-offsets.c:14:
->> arch/arm/include/asm/glue-cache.h:126:2: error: #error Unknown cache maintenance model
-     126 | #error Unknown cache maintenance model
-         |  ^~~~~
-   In file included from arch/arm/include/asm/cacheflush.h:14:
-   arch/arm/include/asm/cachetype.h:29:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
-      29 | #if __LINUX_ARM_ARCH__ >= 7
-         |     ^~~~~~~~~~~~~~~~~~
-   arch/arm/include/asm/cachetype.h:34:7: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
-      34 | #elif __LINUX_ARM_ARCH__ >= 6
-         |       ^~~~~~~~~~~~~~~~~~
-   arch/arm/include/asm/cacheflush.h:197:7: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
-     197 | #elif __LINUX_ARM_ARCH__ >= 7 && defined(CONFIG_SMP)
-         |       ^~~~~~~~~~~~~~~~~~
-   arch/arm/include/asm/cacheflush.h:199:7: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
-     199 | #elif __LINUX_ARM_ARCH__ == 6 && defined(CONFIG_ARM_ERRATA_411920)
-         |       ^~~~~~~~~~~~~~~~~~
-   In file included from arch/arm/kernel/asm-offsets.c:16:
->> arch/arm/include/asm/glue-df.h:96:2: error: #error Unknown data abort handler type
-      96 | #error Unknown data abort handler type
-         |  ^~~~~
-   In file included from arch/arm/kernel/asm-offsets.c:17:
->> arch/arm/include/asm/glue-pf.h:51:2: error: #error Unknown prefetch abort handler type
-      51 | #error Unknown prefetch abort handler type
-         |  ^~~~~
-   make[2]: *** [scripts/Makefile.build:117: arch/arm/kernel/asm-offsets.s] Error 1
-   make[2]: Target '__build' not remade because of errors.
-   make[1]: *** [Makefile:1205: prepare0] Error 2
-   make[1]: Target 'prepare' not remade because of errors.
-   make: *** [Makefile:222: __sub-make] Error 2
-   make: Target 'prepare' not remade because of errors.
+--- a/drivers/cpuidle/cpuidle-riscv-sbi.c
++++ b/drivers/cpuidle/cpuidle-riscv-sbi.c
+@@ -116,12 +116,12 @@ static int __sbi_enter_domain_idle_state
+ 		return -1;
+ 
+ 	/* Do runtime PM to manage a hierarchical CPU toplogy. */
+-	ct_irq_enter_irqson();
+ 	if (s2idle)
+ 		dev_pm_genpd_suspend(pd_dev);
+ 	else
+ 		pm_runtime_put_sync_suspend(pd_dev);
+-	ct_irq_exit_irqson();
++
++	ct_idle_enter();
+ 
+ 	if (sbi_is_domain_state_available())
+ 		state = sbi_get_domain_state();
+@@ -130,12 +130,12 @@ static int __sbi_enter_domain_idle_state
+ 
+ 	ret = sbi_suspend(state) ? -1 : idx;
+ 
+-	ct_irq_enter_irqson();
++	ct_idle_exit();
++
+ 	if (s2idle)
+ 		dev_pm_genpd_resume(pd_dev);
+ 	else
+ 		pm_runtime_get_sync(pd_dev);
+-	ct_irq_exit_irqson();
+ 
+ 	cpu_pm_exit();
+ 
+@@ -246,6 +246,7 @@ static int sbi_dt_cpu_init_topology(stru
+ 	 * of a shared state for the domain, assumes the domain states are all
+ 	 * deeper states.
+ 	 */
++	drv->states[state_count - 1].flags |= CPUIDLE_FLAG_RCU_IDLE;
+ 	drv->states[state_count - 1].enter = sbi_enter_domain_idle_state;
+ 	drv->states[state_count - 1].enter_s2idle =
+ 					sbi_enter_s2idle_domain_idle_state;
 
 
-vim +126 arch/arm/include/asm/glue-cache.h
-
-55bdd694116597d Catalin Marinas 2010-05-21  124  
-753790e713d80b5 Russell King    2011-02-06  125  #if !defined(_CACHE) && !defined(MULTI_CACHE)
-25985edcedea639 Lucas De Marchi 2011-03-30 @126  #error Unknown cache maintenance model
-753790e713d80b5 Russell King    2011-02-06  127  #endif
-753790e713d80b5 Russell King    2011-02-06  128  
-
-:::::: The code at line 126 was first introduced by commit
-:::::: 25985edcedea6396277003854657b5f3cb31a628 Fix common misspellings
-
-:::::: TO: Lucas De Marchi <lucas.demarchi@profusion.mobi>
-:::::: CC: Lucas De Marchi <lucas.demarchi@profusion.mobi>
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
