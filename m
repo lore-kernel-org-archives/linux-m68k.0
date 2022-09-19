@@ -2,43 +2,43 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1323C8300C
-	for <linux-m68k@archiver.kernel.org>; Mon, 19 Sep 2022 10:23:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41C46C6FA97
+	for <linux-m68k@archiver.kernel.org>; Mon, 19 Sep 2022 10:23:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbiISKXX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 19 Sep 2022 06:23:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50000 "EHLO
+        id S230234AbiISKXZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 19 Sep 2022 06:23:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229926AbiISKRt (ORCPT
+        with ESMTP id S230449AbiISKRy (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 19 Sep 2022 06:17:49 -0400
+        Mon, 19 Sep 2022 06:17:54 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B739220EC
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 19 Sep 2022 03:17:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00BEF237E1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 19 Sep 2022 03:17:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=iz2Rk0uC5rGU+Kb0LRDsuPxksHM6C3EYKvZGNmPgVNM=; b=nD07AhPNWRzGO9yRGe9Z4jBcdS
-        XFuuPNxdhpdhfMtRAwSfshNcWIDdV8FJPraXQXdSIbeti8tBPsu6DMxAwX23ulMjc4n4CViWV1BFL
-        SSGt0VLqFI+mkqMQaXoj38Uj1aDwZlpA03nUVY/BU2wAbNQ5sxDeGUL2nORQYE/Nzihl4nlu0xCx4
-        YFMPPmS3riqz3N9PO//k03NmNN6TFNvMr47YU0Zuan07IUeCeFy2lXLZ9FwnEUUDAKeYP2FxVSDf3
-        tOKlR5pQlWR2dK5GWoz9Tye+tJn08cqm5ITpuaszwslCI7e+BWAeEByAeWKvZaYdr+1Grionva68h
-        5jhW4TQA==;
+        bh=eYoUngVW9N27gIhULqYrRlt6uLJ7xBInAkMSAu6ULjk=; b=Ij73wphXljMJWUVviTKuDqPZhp
+        17e2HpP2XUZvIm72WBG7HRFIFj+7gfL8MzcE2u8uVZa75Ug0NOLh6Jo9K0OzCAAbmFXzQGTGsr3no
+        wU+nQSRqmaoK4oh5m7eCdzV4ayTPQhHWh3bXZszmdpw53MzLGQ4TxfnnDnyOMCth1WFLh9R8fUYmK
+        /6EYCH2gb/vXiihmgHFnsduufEMZY5OcI61sbS6ewGPmyKgeJRB221D8HstksAgGk6ZaxYB5igHxB
+        K5S7A+j6jWOoio3pKI4So9hGF/Yc4sXdIGfZhqJOma/Bv6Afx77/wHaFynD9cIU0w6i7MArAN9NVa
+        lRcOIM+A==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oaDq8-004bA9-Dy; Mon, 19 Sep 2022 10:17:24 +0000
+        id 1oaDqB-004bEk-2s; Mon, 19 Sep 2022 10:17:27 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 590C4302F4F;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A3C95302F83;
         Mon, 19 Sep 2022 12:16:25 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 736AC2BAC75AD; Mon, 19 Sep 2022 12:16:22 +0200 (CEST)
-Message-ID: <20220919101522.497914983@infradead.org>
+        id ABA4E2BAC75B6; Mon, 19 Sep 2022 12:16:22 +0200 (CEST)
+Message-ID: <20220919101523.244550344@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 19 Sep 2022 12:00:11 +0200
+Date:   Mon, 19 Sep 2022 12:00:22 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     peterz@infradead.org
 Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
@@ -99,9 +99,8 @@ Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
         linux-xtensa@linux-xtensa.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-arch@vger.kernel.org, kasan-dev@googlegroups.com,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH v2 32/44] cpuidle,acpi: Make noinstr clean
+        linux-arch@vger.kernel.org, kasan-dev@googlegroups.com
+Subject: [PATCH v2 43/44] sched: Always inline __this_cpu_preempt_check()
 References: <20220919095939.761690562@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -109,60 +108,33 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-vmlinux.o: warning: objtool: io_idle+0xc: call to __inb.isra.0() leaves .noinstr.text section
-vmlinux.o: warning: objtool: acpi_idle_enter+0xfe: call to num_online_cpus() leaves .noinstr.text section
-vmlinux.o: warning: objtool: acpi_idle_enter+0x115: call to acpi_idle_fallback_to_c1.isra.0() leaves .noinstr.text section
+vmlinux.o: warning: objtool: in_entry_stack+0x9: call to __this_cpu_preempt_check() leaves .noinstr.text section
+vmlinux.o: warning: objtool: default_do_nmi+0x10: call to __this_cpu_preempt_check() leaves .noinstr.text section
+vmlinux.o: warning: objtool: fpu_idle_fpregs+0x41: call to __this_cpu_preempt_check() leaves .noinstr.text section
+vmlinux.o: warning: objtool: kvm_read_and_reset_apf_flags+0x1: call to __this_cpu_preempt_check() leaves .noinstr.text section
+vmlinux.o: warning: objtool: lockdep_hardirqs_on+0xb0: call to __this_cpu_preempt_check() leaves .noinstr.text section
+vmlinux.o: warning: objtool: lockdep_hardirqs_off+0xae: call to __this_cpu_preempt_check() leaves .noinstr.text section
+vmlinux.o: warning: objtool: irqentry_nmi_enter+0x69: call to __this_cpu_preempt_check() leaves .noinstr.text section
+vmlinux.o: warning: objtool: irqentry_nmi_exit+0x32: call to __this_cpu_preempt_check() leaves .noinstr.text section
+vmlinux.o: warning: objtool: acpi_processor_ffh_cstate_enter+0x9: call to __this_cpu_preempt_check() leaves .noinstr.text section
+vmlinux.o: warning: objtool: acpi_idle_enter+0x43: call to __this_cpu_preempt_check() leaves .noinstr.text section
+vmlinux.o: warning: objtool: acpi_idle_enter_s2idle+0x45: call to __this_cpu_preempt_check() leaves .noinstr.text section
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
- arch/x86/include/asm/shared/io.h |    4 ++--
- drivers/acpi/processor_idle.c    |    2 +-
- include/linux/cpumask.h          |    4 ++--
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ include/linux/percpu-defs.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/include/asm/shared/io.h
-+++ b/arch/x86/include/asm/shared/io.h
-@@ -5,13 +5,13 @@
- #include <linux/types.h>
+--- a/include/linux/percpu-defs.h
++++ b/include/linux/percpu-defs.h
+@@ -310,7 +310,7 @@ extern void __bad_size_call_parameter(vo
+ #ifdef CONFIG_DEBUG_PREEMPT
+ extern void __this_cpu_preempt_check(const char *op);
+ #else
+-static inline void __this_cpu_preempt_check(const char *op) { }
++static __always_inline void __this_cpu_preempt_check(const char *op) { }
+ #endif
  
- #define BUILDIO(bwl, bw, type)						\
--static inline void __out##bwl(type value, u16 port)			\
-+static __always_inline void __out##bwl(type value, u16 port)		\
- {									\
- 	asm volatile("out" #bwl " %" #bw "0, %w1"			\
- 		     : : "a"(value), "Nd"(port));			\
- }									\
- 									\
--static inline type __in##bwl(u16 port)					\
-+static __always_inline type __in##bwl(u16 port)				\
- {									\
- 	type value;							\
- 	asm volatile("in" #bwl " %w1, %" #bw "0"			\
---- a/drivers/acpi/processor_idle.c
-+++ b/drivers/acpi/processor_idle.c
-@@ -593,7 +593,7 @@ static int acpi_idle_play_dead(struct cp
- 	return 0;
- }
- 
--static bool acpi_idle_fallback_to_c1(struct acpi_processor *pr)
-+static __always_inline bool acpi_idle_fallback_to_c1(struct acpi_processor *pr)
- {
- 	return IS_ENABLED(CONFIG_HOTPLUG_CPU) && !pr->flags.has_cst &&
- 		!(acpi_gbl_FADT.flags & ACPI_FADT_C2_MP_SUPPORTED);
---- a/include/linux/cpumask.h
-+++ b/include/linux/cpumask.h
-@@ -908,9 +908,9 @@ static inline const struct cpumask *get_
-  * concurrent CPU hotplug operations unless invoked from a cpuhp_lock held
-  * region.
-  */
--static inline unsigned int num_online_cpus(void)
-+static __always_inline unsigned int num_online_cpus(void)
- {
--	return atomic_read(&__num_online_cpus);
-+	return arch_atomic_read(&__num_online_cpus);
- }
- #define num_possible_cpus()	cpumask_weight(cpu_possible_mask)
- #define num_present_cpus()	cpumask_weight(cpu_present_mask)
+ #define __pcpu_size_call_return(stem, variable)				\
 
 
