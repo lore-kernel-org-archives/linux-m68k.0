@@ -2,43 +2,43 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C87CDC6FD1A
-	for <linux-m68k@archiver.kernel.org>; Mon, 19 Sep 2022 10:23:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 951BAECAA40
+	for <linux-m68k@archiver.kernel.org>; Mon, 19 Sep 2022 10:23:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229947AbiISKXE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 19 Sep 2022 06:23:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53544 "EHLO
+        id S229910AbiISKXD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 19 Sep 2022 06:23:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231531AbiISKUu (ORCPT
+        with ESMTP id S230060AbiISKRt (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 19 Sep 2022 06:20:50 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3073126ACF
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 19 Sep 2022 03:18:20 -0700 (PDT)
+        Mon, 19 Sep 2022 06:17:49 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B605C21803
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 19 Sep 2022 03:17:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=jlMVapcDkKa+q5r/dVIZrQzWqwQOPh4aNsx9pv05CFo=; b=buhX52S0N8GfdrpPROTvjfDI65
-        vo2N72F8ANzTI8iX5yZu4448eTVjHyPggkwJJfRKxs1txYZ+DUykF1keHi9dJ3FYJIVgjO+Dv7BtO
-        JXYwk6PDa0+sp3kc5Rvvb8/Ozy1R5v2F0Ol45g7fuR3UdZWhBnqCsW78Po84SfQbz64I7hort1cFr
-        g13XSo10LkBMNLAyuExTJtjyY46T4cXU/beQLLdxRHU6aP5d+5hLJXADRxRrHdk/ecdvH0VaVvyLT
-        ehnX8ZndOukmUSwZ46v+BOtBKQRM0tk1W3kROcANilt30UO816DEUkSwR0/b0qiDh5Is5urKmLXW+
-        Bw+kCTLg==;
+        bh=o5HILV8lXWZVR34kQkfXu7ELtM3PHvDf12JWqGFz8as=; b=dV5VKjJCiRArWKFRCsJ/bMmVqi
+        MZc+Fiq1hs7Q8065CPPuCPM++cJGcbJ2uK4pePawOSvj84w+Cj9nGfG3jRg8SJcmMT3VlQzhtpHcE
+        7DxBGc+h+RUkfY05BSxLFaTZoocBLId06eVUapYH+F389mVZv4uwqsOZ39kjcy7z5X4kbfPOi9LD3
+        OI1eZdVNictzk9UShsGBuw6E0nq6gQPuXvNBgAidL3xMkeRH4flAF0aYuc+RcKk2rEy4TB9b3KsMd
+        hB3xGHqoKGY4+0yF9SxEHiv7OIe/Hya5bibW1ua9+IRKxlOFf+eeSWEId23pJfafqh1OLSfm2yQZJ
+        3sERPfag==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oaDq3-00E2Ai-EI; Mon, 19 Sep 2022 10:17:20 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oaDq7-004b9d-T1; Mon, 19 Sep 2022 10:17:23 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 17458302F05;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 45276302F33;
         Mon, 19 Sep 2022 12:16:25 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 29E9C2BA7B0FB; Mon, 19 Sep 2022 12:16:22 +0200 (CEST)
-Message-ID: <20220919101521.609602902@infradead.org>
+        id 5B7DB2BAC75A2; Mon, 19 Sep 2022 12:16:22 +0200 (CEST)
+Message-ID: <20220919101522.156951075@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 19 Sep 2022 11:59:58 +0200
+Date:   Mon, 19 Sep 2022 12:00:06 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     peterz@infradead.org
 Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
@@ -100,7 +100,7 @@ Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
         linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
         linux-arch@vger.kernel.org, kasan-dev@googlegroups.com
-Subject: [PATCH v2 19/44] cpuidle,intel_idle: Fix CPUIDLE_FLAG_INIT_XSTATE
+Subject: [PATCH v2 27/44] cpuidle,sched: Remove annotations from TIF_{POLLING_NRFLAG,NEED_RESCHED}
 References: <20220919095939.761690562@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -108,64 +108,128 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-vmlinux.o: warning: objtool: intel_idle_s2idle+0xd5: call to fpu_idle_fpregs() leaves .noinstr.text section
-vmlinux.o: warning: objtool: intel_idle_xstate+0x11: call to fpu_idle_fpregs() leaves .noinstr.text section
-vmlinux.o: warning: objtool: fpu_idle_fpregs+0x9: call to xfeatures_in_use() leaves .noinstr.text section
+vmlinux.o: warning: objtool: mwait_idle+0x5: call to current_set_polling_and_test() leaves .noinstr.text section
+vmlinux.o: warning: objtool: acpi_processor_ffh_cstate_enter+0xc5: call to current_set_polling_and_test() leaves .noinstr.text section
+vmlinux.o: warning: objtool: cpu_idle_poll.isra.0+0x73: call to test_ti_thread_flag() leaves .noinstr.text section
+vmlinux.o: warning: objtool: intel_idle+0xbc: call to current_set_polling_and_test() leaves .noinstr.text section
+vmlinux.o: warning: objtool: intel_idle_irq+0xea: call to current_set_polling_and_test() leaves .noinstr.text section
+vmlinux.o: warning: objtool: intel_idle_s2idle+0xb4: call to current_set_polling_and_test() leaves .noinstr.text section
+
+vmlinux.o: warning: objtool: intel_idle+0xa6: call to current_clr_polling() leaves .noinstr.text section
+vmlinux.o: warning: objtool: intel_idle_irq+0xbf: call to current_clr_polling() leaves .noinstr.text section
+vmlinux.o: warning: objtool: intel_idle_s2idle+0xa1: call to current_clr_polling() leaves .noinstr.text section
+
+vmlinux.o: warning: objtool: mwait_idle+0xe: call to __current_set_polling() leaves .noinstr.text section
+vmlinux.o: warning: objtool: acpi_processor_ffh_cstate_enter+0xc5: call to __current_set_polling() leaves .noinstr.text section
+vmlinux.o: warning: objtool: cpu_idle_poll.isra.0+0x73: call to test_ti_thread_flag() leaves .noinstr.text section
+vmlinux.o: warning: objtool: intel_idle+0xbc: call to __current_set_polling() leaves .noinstr.text section
+vmlinux.o: warning: objtool: intel_idle_irq+0xea: call to __current_set_polling() leaves .noinstr.text section
+vmlinux.o: warning: objtool: intel_idle_s2idle+0xb4: call to __current_set_polling() leaves .noinstr.text section
+
+vmlinux.o: warning: objtool: cpu_idle_poll.isra.0+0x73: call to test_ti_thread_flag() leaves .noinstr.text section
+vmlinux.o: warning: objtool: intel_idle_s2idle+0x73: call to test_ti_thread_flag.constprop.0() leaves .noinstr.text section
+vmlinux.o: warning: objtool: intel_idle_irq+0x91: call to test_ti_thread_flag.constprop.0() leaves .noinstr.text section
+vmlinux.o: warning: objtool: intel_idle+0x78: call to test_ti_thread_flag.constprop.0() leaves .noinstr.text section
+vmlinux.o: warning: objtool: acpi_safe_halt+0xf: call to test_ti_thread_flag.constprop.0() leaves .noinstr.text section
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/include/asm/fpu/xcr.h       |    4 ++--
- arch/x86/include/asm/special_insns.h |    2 +-
- arch/x86/kernel/fpu/core.c           |    4 ++--
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ include/linux/sched/idle.h  |   40 ++++++++++++++++++++++++++++++----------
+ include/linux/thread_info.h |   18 +++++++++++++++++-
+ 2 files changed, 47 insertions(+), 11 deletions(-)
 
---- a/arch/x86/include/asm/fpu/xcr.h
-+++ b/arch/x86/include/asm/fpu/xcr.h
-@@ -5,7 +5,7 @@
- #define XCR_XFEATURE_ENABLED_MASK	0x00000000
- #define XCR_XFEATURE_IN_USE_MASK	0x00000001
- 
--static inline u64 xgetbv(u32 index)
-+static __always_inline u64 xgetbv(u32 index)
- {
- 	u32 eax, edx;
- 
-@@ -27,7 +27,7 @@ static inline void xsetbv(u32 index, u64
-  *
-  * Callers should check X86_FEATURE_XGETBV1.
+--- a/include/linux/sched/idle.h
++++ b/include/linux/sched/idle.h
+@@ -23,12 +23,37 @@ static inline void wake_up_if_idle(int c
   */
--static inline u64 xfeatures_in_use(void)
-+static __always_inline u64 xfeatures_in_use(void)
+ #ifdef TIF_POLLING_NRFLAG
+ 
+-static inline void __current_set_polling(void)
++#ifdef _ASM_GENERIC_BITOPS_INSTRUMENTED_ATOMIC_H
++
++static __always_inline void __current_set_polling(void)
  {
- 	return xgetbv(XCR_XFEATURE_IN_USE_MASK);
- }
---- a/arch/x86/include/asm/special_insns.h
-+++ b/arch/x86/include/asm/special_insns.h
-@@ -295,7 +295,7 @@ static inline int enqcmds(void __iomem *
- 	return 0;
+-	set_thread_flag(TIF_POLLING_NRFLAG);
++	arch_set_bit(TIF_POLLING_NRFLAG,
++		     (unsigned long *)(&current_thread_info()->flags));
  }
  
--static inline void tile_release(void)
-+static __always_inline void tile_release(void)
+-static inline bool __must_check current_set_polling_and_test(void)
++static __always_inline void __current_clr_polling(void)
++{
++	arch_clear_bit(TIF_POLLING_NRFLAG,
++		       (unsigned long *)(&current_thread_info()->flags));
++}
++
++#else
++
++static __always_inline void __current_set_polling(void)
++{
++	set_bit(TIF_POLLING_NRFLAG,
++		(unsigned long *)(&current_thread_info()->flags));
++}
++
++static __always_inline void __current_clr_polling(void)
++{
++	clear_bit(TIF_POLLING_NRFLAG,
++		  (unsigned long *)(&current_thread_info()->flags));
++}
++
++#endif /* _ASM_GENERIC_BITOPS_INSTRUMENTED_ATOMIC_H */
++
++static __always_inline bool __must_check current_set_polling_and_test(void)
  {
- 	/*
- 	 * Instruction opcode for TILERELEASE; supported in binutils
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -856,12 +856,12 @@ int fpu__exception_code(struct fpu *fpu,
-  * Initialize register state that may prevent from entering low-power idle.
-  * This function will be invoked from the cpuidle driver only when needed.
-  */
--void fpu_idle_fpregs(void)
-+noinstr void fpu_idle_fpregs(void)
- {
- 	/* Note: AMX_TILE being enabled implies XGETBV1 support */
- 	if (cpu_feature_enabled(X86_FEATURE_AMX_TILE) &&
- 	    (xfeatures_in_use() & XFEATURE_MASK_XTILE)) {
- 		tile_release();
--		fpregs_deactivate(&current->thread.fpu);
-+		__this_cpu_write(fpu_fpregs_owner_ctx, NULL);
- 	}
+ 	__current_set_polling();
+ 
+@@ -41,12 +66,7 @@ static inline bool __must_check current_
+ 	return unlikely(tif_need_resched());
  }
+ 
+-static inline void __current_clr_polling(void)
+-{
+-	clear_thread_flag(TIF_POLLING_NRFLAG);
+-}
+-
+-static inline bool __must_check current_clr_polling_and_test(void)
++static __always_inline bool __must_check current_clr_polling_and_test(void)
+ {
+ 	__current_clr_polling();
+ 
+@@ -73,7 +93,7 @@ static inline bool __must_check current_
+ }
+ #endif
+ 
+-static inline void current_clr_polling(void)
++static __always_inline void current_clr_polling(void)
+ {
+ 	__current_clr_polling();
+ 
+--- a/include/linux/thread_info.h
++++ b/include/linux/thread_info.h
+@@ -177,7 +177,23 @@ static __always_inline unsigned long rea
+ 	clear_ti_thread_flag(task_thread_info(t), TIF_##fl)
+ #endif /* !CONFIG_GENERIC_ENTRY */
+ 
+-#define tif_need_resched() test_thread_flag(TIF_NEED_RESCHED)
++#ifdef _ASM_GENERIC_BITOPS_INSTRUMENTED_NON_ATOMIC_H
++
++static __always_inline bool tif_need_resched(void)
++{
++	return arch_test_bit(TIF_NEED_RESCHED,
++			     (unsigned long *)(&current_thread_info()->flags));
++}
++
++#else
++
++static __always_inline bool tif_need_resched(void)
++{
++	return test_bit(TIF_NEED_RESCHED,
++			(unsigned long *)(&current_thread_info()->flags));
++}
++
++#endif /* _ASM_GENERIC_BITOPS_INSTRUMENTED_NON_ATOMIC_H */
+ 
+ #ifndef CONFIG_HAVE_ARCH_WITHIN_STACK_FRAMES
+ static inline int arch_within_stack_frames(const void * const stack,
 
 
