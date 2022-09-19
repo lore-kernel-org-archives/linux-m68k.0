@@ -2,43 +2,43 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82CC2C8300E
-	for <linux-m68k@archiver.kernel.org>; Mon, 19 Sep 2022 10:23:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1323C8300C
+	for <linux-m68k@archiver.kernel.org>; Mon, 19 Sep 2022 10:23:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbiISKXU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 19 Sep 2022 06:23:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50070 "EHLO
+        id S230104AbiISKXX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 19 Sep 2022 06:23:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230222AbiISKRu (ORCPT
+        with ESMTP id S229926AbiISKRt (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 19 Sep 2022 06:17:50 -0400
+        Mon, 19 Sep 2022 06:17:49 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C253722BC6
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B739220EC
         for <linux-m68k@lists.linux-m68k.org>; Mon, 19 Sep 2022 03:17:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=lz2MUgDITA4yYb0U+PMz5bsqmEWyVbYbLXt1grP5wdc=; b=Ar3SSe6jGzhlo51swtos76SPi5
-        KuXiRdUWOAjPO/7yHktzfu7OKsDupFAe1VyTEvf67R959dkaj3lnutywtrGNQ0FzD/kNFsrr509Ol
-        zCeztFFINukgQV77MStFwTBM6NB5gODfSAMQV0ab4J8PYg50wlMVVWpd1kiGu7U8DRaIp+zHcs+RC
-        PjkRcfkfDYWB0AK6OHFlYRr5i/D8rJ2O9Fn8FR5c9e91JSkQQbvYD04el9uJ6G/zT187YlaZEV6+6
-        ydgW5aWT5A6QsIVhzK5tAMASoG08AhjIZeNftBw/Sz9H57WdXd5ra4ngtoCCTH6Mr/DQhofJt1LqB
-        c7+wxSkw==;
+        bh=iz2Rk0uC5rGU+Kb0LRDsuPxksHM6C3EYKvZGNmPgVNM=; b=nD07AhPNWRzGO9yRGe9Z4jBcdS
+        XFuuPNxdhpdhfMtRAwSfshNcWIDdV8FJPraXQXdSIbeti8tBPsu6DMxAwX23ulMjc4n4CViWV1BFL
+        SSGt0VLqFI+mkqMQaXoj38Uj1aDwZlpA03nUVY/BU2wAbNQ5sxDeGUL2nORQYE/Nzihl4nlu0xCx4
+        YFMPPmS3riqz3N9PO//k03NmNN6TFNvMr47YU0Zuan07IUeCeFy2lXLZ9FwnEUUDAKeYP2FxVSDf3
+        tOKlR5pQlWR2dK5GWoz9Tye+tJn08cqm5ITpuaszwslCI7e+BWAeEByAeWKvZaYdr+1Grionva68h
+        5jhW4TQA==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oaDq9-004bCZ-RO; Mon, 19 Sep 2022 10:17:26 +0000
+        id 1oaDq8-004bA9-Dy; Mon, 19 Sep 2022 10:17:24 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 80174302F6C;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 590C4302F4F;
         Mon, 19 Sep 2022 12:16:25 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 96B742BA49032; Mon, 19 Sep 2022 12:16:22 +0200 (CEST)
-Message-ID: <20220919101522.975285117@infradead.org>
+        id 736AC2BAC75AD; Mon, 19 Sep 2022 12:16:22 +0200 (CEST)
+Message-ID: <20220919101522.497914983@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 19 Sep 2022 12:00:18 +0200
+Date:   Mon, 19 Sep 2022 12:00:11 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     peterz@infradead.org
 Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
@@ -99,8 +99,9 @@ Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
         linux-xtensa@linux-xtensa.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-arch@vger.kernel.org, kasan-dev@googlegroups.com
-Subject: [PATCH v2 39/44] cpuidle,clk: Remove trace_.*_rcuidle()
+        linux-arch@vger.kernel.org, kasan-dev@googlegroups.com,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH v2 32/44] cpuidle,acpi: Make noinstr clean
 References: <20220919095939.761690562@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -108,44 +109,60 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-OMAP was the one and only user.
+vmlinux.o: warning: objtool: io_idle+0xc: call to __inb.isra.0() leaves .noinstr.text section
+vmlinux.o: warning: objtool: acpi_idle_enter+0xfe: call to num_online_cpus() leaves .noinstr.text section
+vmlinux.o: warning: objtool: acpi_idle_enter+0x115: call to acpi_idle_fallback_to_c1.isra.0() leaves .noinstr.text section
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
- drivers/clk/clk.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/x86/include/asm/shared/io.h |    4 ++--
+ drivers/acpi/processor_idle.c    |    2 +-
+ include/linux/cpumask.h          |    4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -978,12 +978,12 @@ static void clk_core_disable(struct clk_
- 	if (--core->enable_count > 0)
- 		return;
+--- a/arch/x86/include/asm/shared/io.h
++++ b/arch/x86/include/asm/shared/io.h
+@@ -5,13 +5,13 @@
+ #include <linux/types.h>
  
--	trace_clk_disable_rcuidle(core);
-+	trace_clk_disable(core);
- 
- 	if (core->ops->disable)
- 		core->ops->disable(core->hw);
- 
--	trace_clk_disable_complete_rcuidle(core);
-+	trace_clk_disable_complete(core);
- 
- 	clk_core_disable(core->parent);
+ #define BUILDIO(bwl, bw, type)						\
+-static inline void __out##bwl(type value, u16 port)			\
++static __always_inline void __out##bwl(type value, u16 port)		\
+ {									\
+ 	asm volatile("out" #bwl " %" #bw "0, %w1"			\
+ 		     : : "a"(value), "Nd"(port));			\
+ }									\
+ 									\
+-static inline type __in##bwl(u16 port)					\
++static __always_inline type __in##bwl(u16 port)				\
+ {									\
+ 	type value;							\
+ 	asm volatile("in" #bwl " %w1, %" #bw "0"			\
+--- a/drivers/acpi/processor_idle.c
++++ b/drivers/acpi/processor_idle.c
+@@ -593,7 +593,7 @@ static int acpi_idle_play_dead(struct cp
+ 	return 0;
  }
-@@ -1037,12 +1037,12 @@ static int clk_core_enable(struct clk_co
- 		if (ret)
- 			return ret;
  
--		trace_clk_enable_rcuidle(core);
-+		trace_clk_enable(core);
- 
- 		if (core->ops->enable)
- 			ret = core->ops->enable(core->hw);
- 
--		trace_clk_enable_complete_rcuidle(core);
-+		trace_clk_enable_complete(core);
- 
- 		if (ret) {
- 			clk_core_disable(core->parent);
+-static bool acpi_idle_fallback_to_c1(struct acpi_processor *pr)
++static __always_inline bool acpi_idle_fallback_to_c1(struct acpi_processor *pr)
+ {
+ 	return IS_ENABLED(CONFIG_HOTPLUG_CPU) && !pr->flags.has_cst &&
+ 		!(acpi_gbl_FADT.flags & ACPI_FADT_C2_MP_SUPPORTED);
+--- a/include/linux/cpumask.h
++++ b/include/linux/cpumask.h
+@@ -908,9 +908,9 @@ static inline const struct cpumask *get_
+  * concurrent CPU hotplug operations unless invoked from a cpuhp_lock held
+  * region.
+  */
+-static inline unsigned int num_online_cpus(void)
++static __always_inline unsigned int num_online_cpus(void)
+ {
+-	return atomic_read(&__num_online_cpus);
++	return arch_atomic_read(&__num_online_cpus);
+ }
+ #define num_possible_cpus()	cpumask_weight(cpu_possible_mask)
+ #define num_present_cpus()	cpumask_weight(cpu_present_mask)
 
 
