@@ -2,43 +2,43 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7402CC6FA9B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2167C6FA9C
 	for <linux-m68k@archiver.kernel.org>; Mon, 19 Sep 2022 10:25:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230489AbiISKXo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 19 Sep 2022 06:23:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49990 "EHLO
+        id S231139AbiISKXs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 19 Sep 2022 06:23:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbiISKRs (ORCPT
+        with ESMTP id S231196AbiISKTQ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 19 Sep 2022 06:17:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1754523155
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 19 Sep 2022 03:17:43 -0700 (PDT)
+        Mon, 19 Sep 2022 06:19:16 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AFF3240BA
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 19 Sep 2022 03:18:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=rYkYazBjkfDgerhAXoQmSQo0bqbhUZdR/pxZJBUI/ng=; b=u5RmcPfFp43KgNjFh5LvZ7loBh
-        v9b9hsOd68Ng4UfKpMP38vHKgN0Yl7GxNRxqa5l4vGgLDHzZDrR8h82RlDrruuO/1whp8KmKpaJTY
-        nhM4SlU3MzO93PH/qTQreLsPgN/xZArTZVA+LfHoxxkWSqAlFPxdAZ5eitQIoWh5xl8TE6NyOiE3l
-        sUpm0yEhN3Hm23MgDGmnyZ7FsVbsZcy8ZvZpsuvEQAAd0lSbVCnwICl9h0XwVrAxZ7Y5xA82uD05y
-        c7BtSjqJmgAPbi5QV+C0AwU2kvzVInd/T089hW80XGHo0dKA/3y5/4XZjDmvj9YXM2H7G0rG9aIqc
-        5/hO5I1g==;
+        bh=YOWU43M4IjsvcmJXQwOIFJh+WuCbnSytdcIdnv65DkY=; b=AlyUL2n21Ay/eo4jzhxLVHbjtT
+        UQyURrUAFbSeZXMu+qSEhGh5tsE0SavJsEpBS1K1IB5BR2w0cqpFKFUfHSoscIwaG1ohk66JX0VfJ
+        mLJwvAXSiH7Gt28S3XByOnqo3uEOTiM0P9sWLADHW7udnoML9bRxDpBpb3wcuoeOVqMcXphlfL21A
+        my5k9xukM3nRKLIX0+tEddJpYBIiN6NUySN7jnWjWc6oY49Xk2EEzfYF2TBITi40qvcU6x6hpac+t
+        3G1ys0gAkcnegE95WH6F0JTlIbD+ZqauWXPqFE9mdWImdtoBd2u5kmXCBlZVlWagaRZnaojLqXDwM
+        xgmg5ltg==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oaDq8-004bA8-E8; Mon, 19 Sep 2022 10:17:24 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oaDpA-00E28l-Ry; Mon, 19 Sep 2022 10:17:17 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 50483302F4C;
-        Mon, 19 Sep 2022 12:16:25 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id ED9F430067B;
+        Mon, 19 Sep 2022 12:16:21 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 6E0182BAC75AC; Mon, 19 Sep 2022 12:16:22 +0200 (CEST)
-Message-ID: <20220919101522.426692140@infradead.org>
+        id C4C3D2BA49036; Mon, 19 Sep 2022 12:16:21 +0200 (CEST)
+Message-ID: <20220919101520.399971897@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 19 Sep 2022 12:00:10 +0200
+Date:   Mon, 19 Sep 2022 11:59:40 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     peterz@infradead.org
 Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
@@ -100,7 +100,7 @@ Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
         linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
         linux-arch@vger.kernel.org, kasan-dev@googlegroups.com
-Subject: [PATCH v2 31/44] cpuidle,nospec: Make noinstr clean
+Subject: [PATCH v2 01/44] x86/perf/amd: Remove tracing from perf_lopwr_cb()
 References: <20220919095939.761690562@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -108,27 +108,59 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-vmlinux.o: warning: objtool: mwait_idle+0x47: call to mds_idle_clear_cpu_buffers() leaves .noinstr.text section
-vmlinux.o: warning: objtool: acpi_processor_ffh_cstate_enter+0xa2: call to mds_idle_clear_cpu_buffers() leaves .noinstr.text section
-vmlinux.o: warning: objtool: intel_idle+0x91: call to mds_idle_clear_cpu_buffers() leaves .noinstr.text section
-vmlinux.o: warning: objtool: intel_idle_s2idle+0x8c: call to mds_idle_clear_cpu_buffers() leaves .noinstr.text section
-vmlinux.o: warning: objtool: intel_idle_irq+0xaa: call to mds_idle_clear_cpu_buffers() leaves .noinstr.text section
+The perf_lopwr_cb() is called from the idle routines; there is no RCU
+there, we must not enter tracing.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/include/asm/nospec-branch.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/events/amd/brs.c         |   13 +++++--------
+ arch/x86/include/asm/perf_event.h |    2 +-
+ 2 files changed, 6 insertions(+), 9 deletions(-)
 
---- a/arch/x86/include/asm/nospec-branch.h
-+++ b/arch/x86/include/asm/nospec-branch.h
-@@ -310,7 +310,7 @@ static __always_inline void mds_user_cle
-  *
-  * Clear CPU buffers if the corresponding static key is enabled
-  */
--static inline void mds_idle_clear_cpu_buffers(void)
-+static __always_inline void mds_idle_clear_cpu_buffers(void)
+--- a/arch/x86/events/amd/brs.c
++++ b/arch/x86/events/amd/brs.c
+@@ -41,18 +41,15 @@ static inline unsigned int brs_to(int id
+ 	return MSR_AMD_SAMP_BR_FROM + 2 * idx + 1;
+ }
+ 
+-static inline void set_debug_extn_cfg(u64 val)
++static __always_inline void set_debug_extn_cfg(u64 val)
  {
- 	if (static_branch_likely(&mds_idle_clear))
- 		mds_clear_cpu_buffers();
+ 	/* bits[4:3] must always be set to 11b */
+-	wrmsrl(MSR_AMD_DBG_EXTN_CFG, val | 3ULL << 3);
++	__wrmsr(MSR_AMD_DBG_EXTN_CFG, val | 3ULL << 3, val >> 32);
+ }
+ 
+-static inline u64 get_debug_extn_cfg(void)
++static __always_inline u64 get_debug_extn_cfg(void)
+ {
+-	u64 val;
+-
+-	rdmsrl(MSR_AMD_DBG_EXTN_CFG, val);
+-	return val;
++	return __rdmsr(MSR_AMD_DBG_EXTN_CFG);
+ }
+ 
+ static bool __init amd_brs_detect(void)
+@@ -338,7 +335,7 @@ void amd_pmu_brs_sched_task(struct perf_
+  * called from ACPI processor_idle.c or acpi_pad.c
+  * with interrupts disabled
+  */
+-void perf_amd_brs_lopwr_cb(bool lopwr_in)
++void noinstr perf_amd_brs_lopwr_cb(bool lopwr_in)
+ {
+ 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+ 	union amd_debug_extn_cfg cfg;
+--- a/arch/x86/include/asm/perf_event.h
++++ b/arch/x86/include/asm/perf_event.h
+@@ -554,7 +554,7 @@ extern void perf_amd_brs_lopwr_cb(bool l
+ 
+ DECLARE_STATIC_CALL(perf_lopwr_cb, perf_amd_brs_lopwr_cb);
+ 
+-static inline void perf_lopwr_cb(bool lopwr_in)
++static __always_inline void perf_lopwr_cb(bool lopwr_in)
+ {
+ 	static_call_mod(perf_lopwr_cb)(lopwr_in);
+ }
 
 
