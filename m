@@ -2,96 +2,105 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E232CECAAD8
-	for <linux-m68k@archiver.kernel.org>; Wed, 21 Sep 2022 18:52:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6F59ECAAD8
+	for <linux-m68k@archiver.kernel.org>; Wed, 21 Sep 2022 21:52:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbiIUSw6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 21 Sep 2022 14:52:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60410 "EHLO
+        id S230477AbiIUVwK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 21 Sep 2022 17:52:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbiIUSwy (ORCPT
+        with ESMTP id S230479AbiIUVv7 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 21 Sep 2022 14:52:54 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DFA1A3D1D
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 21 Sep 2022 11:52:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E4E26B81C58;
-        Wed, 21 Sep 2022 18:52:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03E61C433C1;
-        Wed, 21 Sep 2022 18:52:45 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="kXWWoNJG"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1663786364;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KRvaya5ay1AaNBwL788C8UpIUvHN1pcmxB0gggACD5I=;
-        b=kXWWoNJG2TaWDq8HstkcqNh1dEcGFA0JYm3izkfwSOoG854gEC1s9Ipoj9RsYbI2gSvDun
-        FUdAqeajTPCnFZzQGA0kJAFESRHtuF9ve/orq9lTP2aVTpvjdWcQOPcaIvow1G3QQBFoPb
-        jbxotIpcH1w4WA1t5MtOC+7DU0CGszg=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 092e0670 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Wed, 21 Sep 2022 18:52:44 +0000 (UTC)
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH 2/2] m68k: virt: generate new RNG seed on reboot
-Date:   Wed, 21 Sep 2022 20:52:08 +0200
-Message-Id: <20220921185208.3549140-2-Jason@zx2c4.com>
-In-Reply-To: <20220921185208.3549140-1-Jason@zx2c4.com>
-References: <20220921185208.3549140-1-Jason@zx2c4.com>
+        Wed, 21 Sep 2022 17:51:59 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 45E3FA720C
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 21 Sep 2022 14:51:49 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DD65715DB;
+        Wed, 21 Sep 2022 14:51:53 -0700 (PDT)
+Received: from e126311.manchester.arm.com (unknown [10.57.76.246])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6F35F3F73B;
+        Wed, 21 Sep 2022 14:51:19 -0700 (PDT)
+Date:   Wed, 21 Sep 2022 22:51:10 +0100
+From:   Kajetan Puchalski <kajetan.puchalski@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
+        mattst88@gmail.com, vgupta@kernel.org, linux@armlinux.org.uk,
+        ulli.kroll@googlemail.com, linus.walleij@linaro.org,
+        shawnguo@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        tony@atomide.com, khilman@kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, guoren@kernel.org, bcain@quicinc.com,
+        chenhuacai@kernel.org, kernel@xen0n.name, geert@linux-m68k.org,
+        sammy@sammy.net, monstr@monstr.eu, tsbogend@alpha.franken.de,
+        dinguyen@kernel.org, jonas@southpole.se,
+        stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
+        James.Bottomley@HansenPartnership.com, deller@gmx.de,
+        mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com,
+        agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
+        svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org,
+        davem@davemloft.net, richard@nod.at,
+        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, jgross@suse.com, srivatsa@csail.mit.edu,
+        amakhalov@vmware.com, pv-drivers@vmware.com,
+        boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com,
+        rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz,
+        gregkh@linuxfoundation.org, mturquette@baylibre.com,
+        sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org,
+        sudeep.holla@arm.com, agross@kernel.org,
+        bjorn.andersson@linaro.org, konrad.dybcio@somainline.org,
+        anup@brainfault.org, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, jacob.jun.pan@linux.intel.com,
+        atishp@atishpatra.org, Arnd Bergmann <arnd@arndb.de>,
+        yury.norov@gmail.com, andriy.shevchenko@linux.intel.com,
+        linux@rasmusvillemoes.dk, dennis@kernel.org, tj@kernel.org,
+        cl@linux.com, rostedt@goodmis.org, pmladek@suse.com,
+        senozhatsky@chromium.org, john.ogness@linutronix.de,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, fweisbec@gmail.com,
+        ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
+        dvyukov@google.com, vincenzo.frascino@arm.com,
+        Andrew Morton <akpm@linux-foundation.org>, jpoimboe@kernel.org,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-perf-users@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-xtensa@linux-xtensa.org, linux-acpi@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-arch@vger.kernel.org, kasan-dev@googlegroups.com
+Subject: Re: [PATCH v2 07/44] cpuidle,psci: Push RCU-idle into driver
+Message-ID: <YyuHTgRh7t6vYjHw@e126311.manchester.arm.com>
+References: <20220919095939.761690562@infradead.org>
+ <20220919101520.802976773@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220919101520.802976773@infradead.org>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Rather than rebooting into a system with no entropy, regenerate the RNG
-seed before rebooting, so that the new system has a fresh seed.
+On Mon, Sep 19, 2022 at 11:59:46AM +0200, Peter Zijlstra wrote:
+> Doing RCU-idle outside the driver, only to then temporarily enable it
+> again, at least twice, before going idle is daft.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-Fixes: a1ee38ab1a75 ("m68k: virt: Use RNG seed from bootinfo block")
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
- arch/m68k/virt/config.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Tried it on Pixel 6 running psci_idle, looks good with no apparent issues.
 
-diff --git a/arch/m68k/virt/config.c b/arch/m68k/virt/config.c
-index 4ab22946ff68..c41d2277de95 100644
---- a/arch/m68k/virt/config.c
-+++ b/arch/m68k/virt/config.c
-@@ -45,10 +45,18 @@ static void virt_halt(void)
- 		;
- }
- 
-+static struct bi_record *rng_seed_record;
-+
- static void virt_reset(void)
- {
- 	void __iomem *base = (void __iomem *)virt_bi_data.ctrl.mmio;
- 
-+	if (rng_seed_record && rng_seed_record->size > sizeof(*rng_seed_record) + 2) {
-+		u16 len = rng_seed_record->size - sizeof(*rng_seed_record) - 2;
-+		get_random_bytes((u8 *)rng_seed_record->data + 2, len);
-+		*(u16 *)rng_seed_record->data = len;
-+	}
-+
- 	iowrite32be(CMD_RESET, base + VIRT_CTRL_REG_CMD);
- 	local_irq_disable();
- 	while (1)
-@@ -101,6 +109,8 @@ int __init virt_parse_bootinfo(const struct bi_record *record)
- 		 * length to prevent kexec from using it.
- 		 */
- 		memzero_explicit((void *)data, len + 2);
-+		 /* Store a reference to be filled in on reboot. */
-+		rng_seed_record = (void *)record;
- 		break;
- 	}
- 	default:
--- 
-2.37.3
-
+Tested-by: Kajetan Puchalski <kajetan.puchalski@arm.com>
