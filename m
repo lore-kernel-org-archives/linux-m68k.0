@@ -2,172 +2,130 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD37CC6FA91
-	for <linux-m68k@archiver.kernel.org>; Thu, 22 Sep 2022 00:46:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 126E9C6FA82
+	for <linux-m68k@archiver.kernel.org>; Fri, 23 Sep 2022 11:30:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229506AbiIVAqL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 21 Sep 2022 20:46:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59492 "EHLO
+        id S230421AbiIWLaY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 23 Sep 2022 07:30:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbiIVAqI (ORCPT
+        with ESMTP id S230356AbiIWLaU (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 21 Sep 2022 20:46:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94F06A599B
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 21 Sep 2022 17:46:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 67E2863346
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 22 Sep 2022 00:46:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7339C43166
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 22 Sep 2022 00:46:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663807562;
-        bh=2bH5aOcexI7rmLPjoykcAnkew/OWwytHkYzPwWB/jQU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qaUYBCa8ZYQI7GFr3vNdl7b4/PNzeOP9Pl2wTB/4OC6mUC/FIDhddHDVnhJyCLZDw
-         YQge6B5Td0P7VO9PjXCnxo31fcUlfOUeOzuNgueaOnxtVyoeE+Kw885ZbDXxjh+Kxz
-         nG8xhYs4MfH8znO0LxccUTvFyIcklL8qxJgHgHzEwD28BpML95SM926I5BVMpBRfGy
-         EClfn8JhrAFiO2xWjdeYnkuQSHDKC+N7GbQ87Gnwaucrl4yjzE6eDQWXlwcBRoA5Iv
-         jLegSRu7TSsZLQytF1F6DuVm9kAdHW2MlxTQNgWpbKQ1zMRvmGVdyaWmNwNcIB2j62
-         KBXRDapx3EsAg==
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-127dca21a7dso11607272fac.12
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 21 Sep 2022 17:46:02 -0700 (PDT)
-X-Gm-Message-State: ACrzQf1dhMhjbNz586PxHu9vud5AgOzndgmLhrVUVKUbAoEUAS+pfU4t
-        9CaHiHfPgstNQgAAGZ+OGh7EasLYCMB3sdbqifw=
-X-Google-Smtp-Source: AMsMyM5wVf/J3OOqRLb4f8q+r+SKS9nQRSK3lKOefa1IGuaM19Jt2C1f8Xzw1tF39UCQAq/htt5QaEfcl4EevNt8Lqo=
-X-Received: by 2002:a05:6870:a78e:b0:12b:542b:e5b2 with SMTP id
- x14-20020a056870a78e00b0012b542be5b2mr6779719oao.112.1663807550798; Wed, 21
- Sep 2022 17:45:50 -0700 (PDT)
+        Fri, 23 Sep 2022 07:30:20 -0400
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D7D3F3100
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 23 Sep 2022 04:30:19 -0700 (PDT)
+Received: by mail-qt1-f170.google.com with SMTP id s18so8170374qtx.6
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 23 Sep 2022 04:30:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=vgb4KaCMBS26tk8RsPqB4bluO87s7au7hKeumOGx9zw=;
+        b=xzw9dT57+PAonT4nhTxxAXCmuaaA/XjwD2cR3lPbUD1ryQEcqPefDmW6rZsXjjqBSi
+         kOMwxsAXPyBU62E4u3vjMHg/q22d6wKVWdBRfh1EWR5HI3DMe0owNsRrcruf2EqxL6ve
+         SFLiL+RtqXFtrGULfGbgDaXdP7+Ol0KAs+1gFwpZZKkpzg1PiK+g3RfDFQaXeLywcEhr
+         OkW6l96KpU2aF9FQfZmmZJ3S3wIQx3zzytOEAHVNevbj2oFQlSBkNbma8Egb2n0V++BK
+         njktRQ7eW3WG90ZN187XFtjQh7peIJoZ+FuTwuvOFByJK8nT6HczqhIiFjy1uOsHFxMI
+         mohQ==
+X-Gm-Message-State: ACrzQf2TG8FoWR33j6A5a8SvLSKG8zcbAhPB7eC3k9p4PVchpWg2eFrl
+        sG+4hrgyw5XeVgemyoHKjrA5VZASTNq5pQ==
+X-Google-Smtp-Source: AMsMyM5bogXklvaWkD/mg06NrZEtlab4FgKKv1cNePOkXtFmUbJaEdL2vy3MqD9fLtnU0Si9t3AJnw==
+X-Received: by 2002:a05:622a:216:b0:35d:773:63ce with SMTP id b22-20020a05622a021600b0035d077363cemr6725522qtx.541.1663932618743;
+        Fri, 23 Sep 2022 04:30:18 -0700 (PDT)
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
+        by smtp.gmail.com with ESMTPSA id v19-20020a05620a441300b006b945519488sm5473221qkp.88.2022.09.23.04.30.18
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Sep 2022 04:30:18 -0700 (PDT)
+Received: by mail-yb1-f182.google.com with SMTP id f189so958408yba.12
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 23 Sep 2022 04:30:18 -0700 (PDT)
+X-Received: by 2002:a25:8e84:0:b0:696:466c:baa with SMTP id
+ q4-20020a258e84000000b00696466c0baamr8165572ybl.604.1663932618054; Fri, 23
+ Sep 2022 04:30:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220919095939.761690562@infradead.org> <20220919101520.802976773@infradead.org>
-In-Reply-To: <20220919101520.802976773@infradead.org>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Thu, 22 Sep 2022 08:45:37 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQxxRQZLV+uJThCZSByUQ0oSoASgwsUggbsR3wHTqrqzg@mail.gmail.com>
-Message-ID: <CAJF2gTQxxRQZLV+uJThCZSByUQ0oSoASgwsUggbsR3wHTqrqzg@mail.gmail.com>
-Subject: Re: [PATCH v2 07/44] cpuidle,psci: Push RCU-idle into driver
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
-        mattst88@gmail.com, vgupta@kernel.org, linux@armlinux.org.uk,
-        ulli.kroll@googlemail.com, linus.walleij@linaro.org,
-        shawnguo@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        tony@atomide.com, khilman@kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, bcain@quicinc.com, chenhuacai@kernel.org,
-        kernel@xen0n.name, geert@linux-m68k.org, sammy@sammy.net,
-        monstr@monstr.eu, tsbogend@alpha.franken.de, dinguyen@kernel.org,
-        jonas@southpole.se, stefan.kristiansson@saunalahti.fi,
-        shorne@gmail.com, James.Bottomley@hansenpartnership.com,
-        deller@gmx.de, mpe@ellerman.id.au, npiggin@gmail.com,
-        christophe.leroy@csgroup.eu, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com,
-        borntraeger@linux.ibm.com, svens@linux.ibm.com,
-        ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net,
-        richard@nod.at, anton.ivanov@cambridgegreys.com,
-        johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, jgross@suse.com, srivatsa@csail.mit.edu,
-        amakhalov@vmware.com, pv-drivers@vmware.com,
-        boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com,
-        rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz,
-        gregkh@linuxfoundation.org, mturquette@baylibre.com,
-        sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org,
-        sudeep.holla@arm.com, agross@kernel.org,
-        bjorn.andersson@linaro.org, konrad.dybcio@somainline.org,
-        anup@brainfault.org, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, jacob.jun.pan@linux.intel.com,
-        atishp@atishpatra.org, Arnd Bergmann <arnd@arndb.de>,
-        yury.norov@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk, dennis@kernel.org, tj@kernel.org,
-        cl@linux.com, rostedt@goodmis.org, pmladek@suse.com,
-        senozhatsky@chromium.org, john.ogness@linutronix.de,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, fweisbec@gmail.com,
-        ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
-        dvyukov@google.com, vincenzo.frascino@arm.com,
-        Andrew Morton <akpm@linux-foundation.org>, jpoimboe@kernel.org,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-perf-users@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-xtensa@linux-xtensa.org, linux-acpi@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-arch@vger.kernel.org, kasan-dev@googlegroups.com
+References: <20220921185208.3549140-1-Jason@zx2c4.com> <20220921185208.3549140-2-Jason@zx2c4.com>
+In-Reply-To: <20220921185208.3549140-2-Jason@zx2c4.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 23 Sep 2022 13:30:06 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUuM85s1APoxRmXnw13hHHEGgo8Z9EKvpV6maaZPaVUfA@mail.gmail.com>
+Message-ID: <CAMuHMdUuM85s1APoxRmXnw13hHHEGgo8Z9EKvpV6maaZPaVUfA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] m68k: virt: generate new RNG seed on reboot
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Reviewed-by: Guo Ren <guoren@kernel.org>
+Hi Jason,
 
-On Mon, Sep 19, 2022 at 6:17 PM Peter Zijlstra <peterz@infradead.org> wrote:
+On Wed, Sep 21, 2022 at 8:52 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+> Rather than rebooting into a system with no entropy, regenerate the RNG
+> seed before rebooting, so that the new system has a fresh seed.
 >
-> Doing RCU-idle outside the driver, only to then temporarily enable it
-> again, at least twice, before going idle is daft.
+> Fixes: a1ee38ab1a75 ("m68k: virt: Use RNG seed from bootinfo block")
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+
+Thanks for your patch!
+
+> --- a/arch/m68k/virt/config.c
+> +++ b/arch/m68k/virt/config.c
+> @@ -45,10 +45,18 @@ static void virt_halt(void)
+>                 ;
+>  }
 >
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  drivers/cpuidle/cpuidle-psci.c |    9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
->
-> --- a/drivers/cpuidle/cpuidle-psci.c
-> +++ b/drivers/cpuidle/cpuidle-psci.c
-> @@ -69,12 +69,12 @@ static int __psci_enter_domain_idle_stat
->                 return -1;
->
->         /* Do runtime PM to manage a hierarchical CPU toplogy. */
-> -       ct_irq_enter_irqson();
->         if (s2idle)
->                 dev_pm_genpd_suspend(pd_dev);
->         else
->                 pm_runtime_put_sync_suspend(pd_dev);
-> -       ct_irq_exit_irqson();
+> +static struct bi_record *rng_seed_record;
+
+This can be const...
+
 > +
-> +       ct_idle_enter();
+>  static void virt_reset(void)
+>  {
+>         void __iomem *base = (void __iomem *)virt_bi_data.ctrl.mmio;
 >
->         state = psci_get_domain_state();
->         if (!state)
-> @@ -82,12 +82,12 @@ static int __psci_enter_domain_idle_stat
->
->         ret = psci_cpu_suspend_enter(state) ? -1 : idx;
->
-> -       ct_irq_enter_irqson();
-> +       ct_idle_exit();
+> +       if (rng_seed_record && rng_seed_record->size > sizeof(*rng_seed_record) + 2) {
+> +               u16 len = rng_seed_record->size - sizeof(*rng_seed_record) - 2;
+> +               get_random_bytes((u8 *)rng_seed_record->data + 2, len);
+> +               *(u16 *)rng_seed_record->data = len;
+
+Wouldn't it be simpler to just use the existing length?
+
+    if (rnd_seed_record) {
+           u16 len = be16_to_cpup(data);
+           get_random_bytes((u8 *)rng_seed_record->data + 2, len);
+    }
+
+However, I have my doubts this will actually work. Was this tested?
+The bootinfo is passed from userspace, usually by reading
+/proc/bootinfo, and adapting it where needed.
+So I think you should implement this in kexec-tools instead.
+
+> +       }
 > +
->         if (s2idle)
->                 dev_pm_genpd_resume(pd_dev);
->         else
->                 pm_runtime_get_sync(pd_dev);
-> -       ct_irq_exit_irqson();
->
->         cpu_pm_exit();
->
-> @@ -240,6 +240,7 @@ static int psci_dt_cpu_init_topology(str
->          * of a shared state for the domain, assumes the domain states are all
->          * deeper states.
->          */
-> +       drv->states[state_count - 1].flags |= CPUIDLE_FLAG_RCU_IDLE;
->         drv->states[state_count - 1].enter = psci_enter_domain_idle_state;
->         drv->states[state_count - 1].enter_s2idle = psci_enter_s2idle_domain_idle_state;
->         psci_cpuidle_use_cpuhp = true;
->
->
+>         iowrite32be(CMD_RESET, base + VIRT_CTRL_REG_CMD);
+>         local_irq_disable();
+>         while (1)
+> @@ -101,6 +109,8 @@ int __init virt_parse_bootinfo(const struct bi_record *record)
+>                  * length to prevent kexec from using it.
+>                  */
+>                 memzero_explicit((void *)data, len + 2);
+> +                /* Store a reference to be filled in on reboot. */
+> +               rng_seed_record = (void *)record;
 
+... so this cast can be dropped.
 
--- 
-Best Regards
- Guo Ren
+>                 break;
+>         }
+>         default:
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
