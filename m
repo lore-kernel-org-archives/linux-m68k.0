@@ -2,82 +2,149 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 962EAC6FA90
-	for <linux-m68k@archiver.kernel.org>; Mon, 26 Sep 2022 10:29:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A7B8C6FA83
+	for <linux-m68k@archiver.kernel.org>; Mon, 26 Sep 2022 10:52:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235382AbiIZK3c (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 26 Sep 2022 06:29:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44956 "EHLO
+        id S236804AbiIZKwi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 26 Sep 2022 06:52:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235683AbiIZK2v (ORCPT
+        with ESMTP id S234911AbiIZKuh (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 26 Sep 2022 06:28:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2454E841
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Sep 2022 03:19:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 45A8160B60
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Sep 2022 10:18:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74BE1C433C1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Sep 2022 10:18:28 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="Ca8kz+NX"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1664187506;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KPitCDjljE+1/cKCHIXEIuBG6dg931Jal6pxfbqJG50=;
-        b=Ca8kz+NXjpnQovPaxTTBjGz8Lj06+Oq17OYzAa4a+p25uD2a9uyo3y3OqdICYJaida5sdR
-        PfxENh1ciNBemkT3h0d85SJmZ0WLo4yCjIm9ZQCiNQE9371yD1lVv0BJgtGwLkuJGGhKiY
-        Wze94iSACKZCJ0AM3tbWIodTA+x5B98=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 0ce78d8f (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO)
-        for <linux-m68k@lists.linux-m68k.org>;
-        Mon, 26 Sep 2022 10:18:26 +0000 (UTC)
-Received: by mail-vk1-f179.google.com with SMTP id s12so3140557vkn.11
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Sep 2022 03:18:26 -0700 (PDT)
-X-Gm-Message-State: ACrzQf02rKI5ij6twYqzJ5+QRFSp119eo+WKyUmxQnOSR+Br4C9X/+W3
-        gd/srg1kzIbCTNOXvPGAj5s83ITPp2HM2SRtG/s=
-X-Google-Smtp-Source: AMsMyM6BZnql+7X0HEuy+6hfAj0blSq1TS/9NzbFmJG3Ns3/H3UwXMEUG4S4g07rNj25WyM63nicfTD8gT+JIWmH3is=
-X-Received: by 2002:ac5:c7a6:0:b0:3a2:7f3c:8170 with SMTP id
- d6-20020ac5c7a6000000b003a27f3c8170mr8275071vkn.6.1664187506008; Mon, 26 Sep
- 2022 03:18:26 -0700 (PDT)
+        Mon, 26 Sep 2022 06:50:37 -0400
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6618058DF0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Sep 2022 03:27:26 -0700 (PDT)
+Received: by mail-qt1-f180.google.com with SMTP id b23so3750435qtr.13
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Sep 2022 03:27:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=wvCseJKa4wntAVz+3aizGq2aXDX4B8OJZy0Gi3dyPRI=;
+        b=EcyhB9rZhQHckhna3MaZPmOMIqpGbiDoYDZYnq863T0g7K62YBdE+pgcclv+dsCCuP
+         uaVob9Gxg7iFhWS6NOVyMQJER76HLrZuZjFVI5ETXZZzEMuTj6/n00/NRZ+9vf4Rvu6a
+         poLI1sEMoDZwsvDuYeZsHJZ0XEeoN32hpEZAbLiTsnvFDu2bQWgHzBiu66vHIp80v9Fc
+         6v8SO9JWqp8xFqI928SR27biN8v0i7GFJkWEgElRw3czkWtdaXUVkLTtDX+Fbbl7WcIL
+         NK/PPUvIG0D0zBGFCS0f68kd3ANmdqWGOgvZ1r0rcjSa9hBDkiHsk4Ux8CF8oMPteNoP
+         61NQ==
+X-Gm-Message-State: ACrzQf2IO2zMGmGaq+AkLAvvXjaEFPThSn3XkudJqV1krT0uHsvLOt39
+        gqckOaiQSuMWu9lAtOuZilCbCOaWF5/g2w==
+X-Google-Smtp-Source: AMsMyM7TqQFU+YDkDr4NbQkusKQydBTMOYss8q9+0R51Wpg5ZsZ4KjTt/e+hh28CGcu8EmCIcDCa7A==
+X-Received: by 2002:a05:622a:19a7:b0:35c:2ad3:c117 with SMTP id u39-20020a05622a19a700b0035c2ad3c117mr17295295qtc.220.1664188045613;
+        Mon, 26 Sep 2022 03:27:25 -0700 (PDT)
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
+        by smtp.gmail.com with ESMTPSA id u12-20020a37ab0c000000b006b9526cfe6bsm11055243qke.80.2022.09.26.03.27.25
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Sep 2022 03:27:25 -0700 (PDT)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-3511e80f908so524397b3.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Sep 2022 03:27:25 -0700 (PDT)
+X-Received: by 2002:a81:1691:0:b0:345:17df:4fc6 with SMTP id
+ 139-20020a811691000000b0034517df4fc6mr19158627yww.502.1664188045078; Mon, 26
+ Sep 2022 03:27:25 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:ab0:2ea6:0:b0:3ae:9878:9be with HTTP; Mon, 26 Sep 2022
- 03:18:25 -0700 (PDT)
-In-Reply-To: <CAMuHMdWT8dhre5TGjYRnEwn_jCZ6CXxvMpLmKp3KKo_CjPOXRQ@mail.gmail.com>
-References: <20220923170340.4099226-1-Jason@zx2c4.com> <20220923170340.4099226-2-Jason@zx2c4.com>
- <CAMuHMdWT8dhre5TGjYRnEwn_jCZ6CXxvMpLmKp3KKo_CjPOXRQ@mail.gmail.com>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Mon, 26 Sep 2022 12:18:25 +0200
-X-Gmail-Original-Message-ID: <CAHmME9oTKp=cw9QFHOU6FKT5qSuQufO5Vo+XPELYGoaQK2fPoA@mail.gmail.com>
-Message-ID: <CAHmME9oTKp=cw9QFHOU6FKT5qSuQufO5Vo+XPELYGoaQK2fPoA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] m68k: virt: generate new RNG seed on reboot
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+References: <20220923170340.4099226-1-Jason@zx2c4.com> <20220923170340.4099226-3-Jason@zx2c4.com>
+In-Reply-To: <20220923170340.4099226-3-Jason@zx2c4.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 26 Sep 2022 12:27:13 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXPcXq_F0dQdJ5nV2io1eDhJs7BZf+TmXWPqGVn9xeLNA@mail.gmail.com>
+Message-ID: <CAMuHMdXPcXq_F0dQdJ5nV2io1eDhJs7BZf+TmXWPqGVn9xeLNA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] m68k: rework BI_VIRT_RNG_SEED as BI_RNG_SEED
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Laurent Vivier <laurent@vivier.eu>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 9/26/22, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> Hi Jason,
->
-> On Fri, Sep 23, 2022 at 7:03 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
->> Rather than rebooting into a system with no entropy, regenerate the RNG
->> seed before rebooting, so that the new system has a fresh seed.
->>
->> Fixes: a1ee38ab1a75 ("m68k: virt: Use RNG seed from bootinfo block")
->> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
->
-> Thanks for your patch!
->
-> I still doubt this is actually guaranteed to work, as the memory containing
-> the bootinfo might be overwritten during normal operation.
+Hi Jason,
 
-Thus far, I'm unable to make it *not* work. So this seems like
-actually an improvement?
+On Fri, Sep 23, 2022 at 7:03 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+> This is useful on !virt platforms for kexec, so change things from
+> BI_VIRT_RNG_SEED to be BI_RNG_SEED, and simply remove BI_VIRT_RNG_SEED
+> because it only ever lasted one release, and nothing is broken by not
+> having it. At the same time, keep a comment noting that it's been
+> removed, so that ID isn't reused.
+>
+> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Laurent Vivier <laurent@vivier.eu>
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 
-Jason
+The approach LGTM, but given my doubts on [PATCH v3 2/3], I think this
+patch should be moved up, to not depend on [2/3].
+
+> --- a/arch/m68k/include/uapi/asm/bootinfo-virt.h
+> +++ b/arch/m68k/include/uapi/asm/bootinfo-virt.h
+> @@ -13,13 +13,8 @@
+>  #define BI_VIRT_VIRTIO_BASE    0x8004
+>  #define BI_VIRT_CTRL_BASE      0x8005
+>
+> -/*
+> - * A random seed used to initialize the RNG. Record format:
+> - *
+> - *   - length       [ 2 bytes, 16-bit big endian ]
+> - *   - seed data    [ `length` bytes, padded to preserve 2-byte alignment ]
+> - */
+> -#define BI_VIRT_RNG_SEED       0x8006
+> +/* No longer used -- replaced with BI_RNG_SEED -- but don't reuse this index:
+> + *     #define BI_VIRT_RNG_SEED        0x8006 */
+
+Please drop the space before TAB.
+
+> --- a/arch/m68k/include/uapi/asm/bootinfo.h
+> +++ b/arch/m68k/include/uapi/asm/bootinfo.h
+> @@ -64,7 +64,13 @@ struct mem_info {
+>                                         /* (struct mem_info) */
+>  #define BI_COMMAND_LINE                0x0007  /* kernel command line parameters */
+>                                         /* (string) */
+> -
+> +/*
+> + * A random seed used to initialize the RNG. Record format:
+> + *
+> + *   - length       [ 2 bytes, 16-bit big endian ]
+> + *   - seed data    [ `length` bytes, padded to preserve 2-byte alignment ]
+
+While experimenting, I noticed this must actually be a 4-byte alignment,
+as data[] is an integral multiple of __be32 words:
+
+    struct bi_record {
+            __be16 tag;                     /* tag ID */
+            __be16 size;                    /* size of record (in bytes) */
+            __be32 data[];                  /* data */
+    };
+
+m68kboot[1] and kexec-boot[2] do implement the correct rounding,
+but qemu's BOOTINFOSTR()[3] and BOOTINFODATA()[4] do not.
+Sorry for missing that before, I guess I was misled by the existing
+bug in BOOTINFOSTR().
+
+Consequently, both kexec-tools[5] and the m68k-bootinfo tool[6] cannot
+parse /proc/bootinfo if the size is not a multiple of 4, which can
+easily be triggered by changing the command line of the m68k virt
+machine.
+
+> + */
+> +#define BI_RNG_SEED            0x0008
+>
+>      /*
+>       *  Linux/m68k Architectures (BI_MACHTYPE)
+
+[1] https://github.com/geertu/m68kboot/blob/master/common/bootinf.c#L171
+[2] https://git.kernel.org/pub/scm/utils/kernel/kexec/kexec-tools.git/tree/kexec/arch/m68k/bootinfo.c#n60
+[3] https://git.qemu.org/?p=qemu.git;a=blob;f=hw/m68k/bootinfo.h;h=bd8b212fd35ce216917e07eb67783b5b69f1e11b;hb=HEAD#l57
+[4] https://git.qemu.org/?p=qemu.git;a=blob;f=hw/m68k/bootinfo.h;h=bd8b212fd35ce216917e07eb67783b5b69f1e11b;hb=HEAD#l73
+[5] https://git.kernel.org/pub/scm/utils/kernel/kexec/kexec-tools.git/tree/kexec/arch/m68k/bootinfo.c#n106
+[6] https://github.com/geertu/m68k-bootinfo/blob/master/m68k-bootinfo.c#L466
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
