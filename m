@@ -2,83 +2,82 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFAC6C07E9D
-	for <linux-m68k@archiver.kernel.org>; Mon, 26 Sep 2022 10:12:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 962EAC6FA90
+	for <linux-m68k@archiver.kernel.org>; Mon, 26 Sep 2022 10:29:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234960AbiIZKMZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 26 Sep 2022 06:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35976 "EHLO
+        id S235382AbiIZK3c (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 26 Sep 2022 06:29:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235063AbiIZKLs (ORCPT
+        with ESMTP id S235683AbiIZK2v (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 26 Sep 2022 06:11:48 -0400
-Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A596481E5
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Sep 2022 03:10:48 -0700 (PDT)
-Received: by mail-qv1-f49.google.com with SMTP id w4so4020882qvp.2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Sep 2022 03:10:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=CF2vupylMrVXkLI1Pe7H2d1pZD7KM4FL97tpjOkeLIE=;
-        b=WN/xzlJlTF8U57Mnl+pzuV8+cxaJE0aJY9LMEDvSGmsLcZhTx9q7oi9iv0e9RDlLgy
-         W9FrdEV8U5Fpd+4uJWc8p+wfF09cBLnzVOW8LFJ5jU5JwcuXw1sC9lYeGBnc9En/zVtK
-         Ekf/YxnFwWA3ZrWdkNNY4oxYDAkdLKQafU8vAWOfctk7XcvWBM29tC6d2OQGe4UbxRjP
-         uuL4fF08tch4Mqxh01KxaZ0CIEfHZDxhAPl6hidcfbQPOcvK1UwXHO3XM4PPMAkAazJU
-         TxbnZDmlUSP8HFurIQ6jo1arKY4so6f3yvr8dVfrDC1eT/TcVZjbUQVPu39kSsUtF8Tr
-         3ROg==
-X-Gm-Message-State: ACrzQf0JPy8Sz2EPEENSzW5GgJ81ICoWZLpAH4yVm8NJsoBwc0CJiAj+
-        OIgl0XxY+R79tj8Pj/9rfY8wf3YrAyn+qw==
-X-Google-Smtp-Source: AMsMyM7Spa/1wHDzIaC173mNdpzl0n1OY7CF8t6Wj30uh1ODYZ7Lt75qcr+5mwZHWrZ+KL3TrTIVRw==
-X-Received: by 2002:ad4:5bc5:0:b0:4ad:73da:6083 with SMTP id t5-20020ad45bc5000000b004ad73da6083mr17201215qvt.69.1664187047333;
-        Mon, 26 Sep 2022 03:10:47 -0700 (PDT)
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
-        by smtp.gmail.com with ESMTPSA id l15-20020ac8148f000000b0034456277e3asm10204977qtj.89.2022.09.26.03.10.47
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Sep 2022 03:10:47 -0700 (PDT)
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-3450990b0aeso62915037b3.12
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Sep 2022 03:10:47 -0700 (PDT)
-X-Received: by 2002:a81:758a:0:b0:345:450b:6668 with SMTP id
- q132-20020a81758a000000b00345450b6668mr19048935ywc.316.1664187046779; Mon, 26
- Sep 2022 03:10:46 -0700 (PDT)
+        Mon, 26 Sep 2022 06:28:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2454E841
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Sep 2022 03:19:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 45A8160B60
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Sep 2022 10:18:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74BE1C433C1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Sep 2022 10:18:28 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="Ca8kz+NX"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1664187506;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KPitCDjljE+1/cKCHIXEIuBG6dg931Jal6pxfbqJG50=;
+        b=Ca8kz+NXjpnQovPaxTTBjGz8Lj06+Oq17OYzAa4a+p25uD2a9uyo3y3OqdICYJaida5sdR
+        PfxENh1ciNBemkT3h0d85SJmZ0WLo4yCjIm9ZQCiNQE9371yD1lVv0BJgtGwLkuJGGhKiY
+        Wze94iSACKZCJ0AM3tbWIodTA+x5B98=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 0ce78d8f (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO)
+        for <linux-m68k@lists.linux-m68k.org>;
+        Mon, 26 Sep 2022 10:18:26 +0000 (UTC)
+Received: by mail-vk1-f179.google.com with SMTP id s12so3140557vkn.11
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Sep 2022 03:18:26 -0700 (PDT)
+X-Gm-Message-State: ACrzQf02rKI5ij6twYqzJ5+QRFSp119eo+WKyUmxQnOSR+Br4C9X/+W3
+        gd/srg1kzIbCTNOXvPGAj5s83ITPp2HM2SRtG/s=
+X-Google-Smtp-Source: AMsMyM6BZnql+7X0HEuy+6hfAj0blSq1TS/9NzbFmJG3Ns3/H3UwXMEUG4S4g07rNj25WyM63nicfTD8gT+JIWmH3is=
+X-Received: by 2002:ac5:c7a6:0:b0:3a2:7f3c:8170 with SMTP id
+ d6-20020ac5c7a6000000b003a27f3c8170mr8275071vkn.6.1664187506008; Mon, 26 Sep
+ 2022 03:18:26 -0700 (PDT)
 MIME-Version: 1.0
+Received: by 2002:ab0:2ea6:0:b0:3ae:9878:9be with HTTP; Mon, 26 Sep 2022
+ 03:18:25 -0700 (PDT)
+In-Reply-To: <CAMuHMdWT8dhre5TGjYRnEwn_jCZ6CXxvMpLmKp3KKo_CjPOXRQ@mail.gmail.com>
 References: <20220923170340.4099226-1-Jason@zx2c4.com> <20220923170340.4099226-2-Jason@zx2c4.com>
-In-Reply-To: <20220923170340.4099226-2-Jason@zx2c4.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 26 Sep 2022 12:10:35 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWT8dhre5TGjYRnEwn_jCZ6CXxvMpLmKp3KKo_CjPOXRQ@mail.gmail.com>
-Message-ID: <CAMuHMdWT8dhre5TGjYRnEwn_jCZ6CXxvMpLmKp3KKo_CjPOXRQ@mail.gmail.com>
+ <CAMuHMdWT8dhre5TGjYRnEwn_jCZ6CXxvMpLmKp3KKo_CjPOXRQ@mail.gmail.com>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Mon, 26 Sep 2022 12:18:25 +0200
+X-Gmail-Original-Message-ID: <CAHmME9oTKp=cw9QFHOU6FKT5qSuQufO5Vo+XPELYGoaQK2fPoA@mail.gmail.com>
+Message-ID: <CAHmME9oTKp=cw9QFHOU6FKT5qSuQufO5Vo+XPELYGoaQK2fPoA@mail.gmail.com>
 Subject: Re: [PATCH v3 2/3] m68k: virt: generate new RNG seed on reboot
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Jason,
-
-On Fri, Sep 23, 2022 at 7:03 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
-> Rather than rebooting into a system with no entropy, regenerate the RNG
-> seed before rebooting, so that the new system has a fresh seed.
+On 9/26/22, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> Hi Jason,
 >
-> Fixes: a1ee38ab1a75 ("m68k: virt: Use RNG seed from bootinfo block")
-> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> On Fri, Sep 23, 2022 at 7:03 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+>> Rather than rebooting into a system with no entropy, regenerate the RNG
+>> seed before rebooting, so that the new system has a fresh seed.
+>>
+>> Fixes: a1ee38ab1a75 ("m68k: virt: Use RNG seed from bootinfo block")
+>> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+>
+> Thanks for your patch!
+>
+> I still doubt this is actually guaranteed to work, as the memory containing
+> the bootinfo might be overwritten during normal operation.
 
-Thanks for your patch!
+Thus far, I'm unable to make it *not* work. So this seems like
+actually an improvement?
 
-I still doubt this is actually guaranteed to work, as the memory containing
-the bootinfo might be overwritten during normal operation.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Jason
