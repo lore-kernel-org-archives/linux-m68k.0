@@ -2,72 +2,173 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86A35C07E9D
-	for <linux-m68k@archiver.kernel.org>; Tue, 27 Sep 2022 13:10:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71BEEC54EE9
+	for <linux-m68k@archiver.kernel.org>; Tue, 27 Sep 2022 13:10:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232262AbiI0NKG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 27 Sep 2022 09:10:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47226 "EHLO
+        id S232410AbiI0NKV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 27 Sep 2022 09:10:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232442AbiI0NKA (ORCPT
+        with ESMTP id S232462AbiI0NKH (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 27 Sep 2022 09:10:00 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2B7B1BA5
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Sep 2022 06:09:51 -0700 (PDT)
+        Tue, 27 Sep 2022 09:10:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40A048A1F3
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Sep 2022 06:09:46 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2CCE3B819D6;
-        Tue, 27 Sep 2022 13:09:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 523FEC433D6;
-        Tue, 27 Sep 2022 13:09:29 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EC90461977;
+        Tue, 27 Sep 2022 13:09:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DEEDC433D6;
+        Tue, 27 Sep 2022 13:09:42 +0000 (UTC)
 Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="nY8c4m6p"
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="MkVOTeC2"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1664284167;
+        t=1664284181;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fZPP5PahCbJY5jGiCruWB3XwrKpCIDgkTFtW5rPCQtk=;
-        b=nY8c4m6pbiX67e7lxXWDvjYm3OGXZTPS9yhS0MYqMpf5zzMIvrg6aHptPRHOkfbOzb4OD1
-        dcIyVR631A9X+HhqXCQGH4kRcPuzAyQl2Zy9SvAw3SBIUB9TdezDR82uryD9bbCHzZTamd
-        XEUWlmllkmeLsoothqluqcTNsTYu5BI=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 61342710 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Tue, 27 Sep 2022 13:09:27 +0000 (UTC)
-Date:   Tue, 27 Sep 2022 15:09:21 +0200
+        bh=Fe4akEYhBM/2Bu4YmMN7wSpP8cjz6zgjKU1u9J3cJnk=;
+        b=MkVOTeC2BY0/fo5n74FI4g5RMZNnsFZrDlqKyZan3g0m8UkkB1AedpdQ5422859IbG/KmY
+        rS2hgntBXVok+GU6Ev4ZCLEd2RXdc8rCB+7IpPMFhPIf4b93p8YvUAwBQXsO/zoGt5Xg+L
+        BEJgFjc+XOK5GF1gGqbFgw5BJ1gh3eo=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id b284f1a1 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Tue, 27 Sep 2022 13:09:40 +0000 (UTC)
 From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
         Laurent Vivier <laurent@vivier.eu>
-Subject: Re: [PATCH v4 3/3] m68k: generate new RNG seed on reboot
-Message-ID: <YzL2AXQeVC4XvPPf@zx2c4.com>
-References: <20220926113754.1256358-1-Jason@zx2c4.com>
- <20220926113754.1256358-3-Jason@zx2c4.com>
- <CAHmME9qLcfT5Mjw1cudhA-zGaLUubkPCTF7trw1ek40==BwumQ@mail.gmail.com>
+Subject: [PATCH v5 2/2] m68k: rework BI_VIRT_RNG_SEED as BI_RNG_SEED
+Date:   Tue, 27 Sep 2022 15:08:35 +0200
+Message-Id: <20220927130835.1629806-2-Jason@zx2c4.com>
+In-Reply-To: <20220927130835.1629806-1-Jason@zx2c4.com>
+References: <20220927130835.1629806-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHmME9qLcfT5Mjw1cudhA-zGaLUubkPCTF7trw1ek40==BwumQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Sep 26, 2022 at 03:13:01PM +0200, Jason A. Donenfeld wrote:
-> Hi Geert,
-> 
-> On Mon, Sep 26, 2022 at 1:38 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
-> >
-> > Rather than rebooting into a system with no entropy, regenerate the RNG
-> > seed before rebooting, so that the new system has a fresh seed.
-> >
-> > Fixes: a1ee38ab1a75 ("m68k: virt: Use RNG seed from bootinfo block")
-> > Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-> 
-> Laurent made a compelling case *against* this approach. So feel free
-> to drop this 3/3 patch. However, 1/3 and 2/3 should still be
-> committed.
+This is useful on !virt platforms for kexec, so change things from
+BI_VIRT_RNG_SEED to be BI_RNG_SEED, and simply remove BI_VIRT_RNG_SEED
+because it only ever lasted one release, and nothing is broken by not
+having it. At the same time, keep a comment noting that it's been
+removed, so that ID isn't reused. In addition, we previously documented
+2-byte alignment, but 4-byte alignment is actually necessary, so update
+that comment.
 
-For Geert's ease, I'll send a v5 with 3/3 dropped.
+Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Laurent Vivier <laurent@vivier.eu>
+Fixes: a1ee38ab1a75 ("m68k: virt: Use RNG seed from bootinfo block")
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+---
+ arch/m68k/include/uapi/asm/bootinfo-virt.h |  9 ++-------
+ arch/m68k/include/uapi/asm/bootinfo.h      |  8 +++++++-
+ arch/m68k/kernel/setup_mm.c                | 12 ++++++++++++
+ arch/m68k/virt/config.c                    | 11 -----------
+ 4 files changed, 21 insertions(+), 19 deletions(-)
 
-Jason
+diff --git a/arch/m68k/include/uapi/asm/bootinfo-virt.h b/arch/m68k/include/uapi/asm/bootinfo-virt.h
+index b091ee9b06e0..7dbcd7bec103 100644
+--- a/arch/m68k/include/uapi/asm/bootinfo-virt.h
++++ b/arch/m68k/include/uapi/asm/bootinfo-virt.h
+@@ -13,13 +13,8 @@
+ #define BI_VIRT_VIRTIO_BASE	0x8004
+ #define BI_VIRT_CTRL_BASE	0x8005
+ 
+-/*
+- * A random seed used to initialize the RNG. Record format:
+- *
+- *   - length       [ 2 bytes, 16-bit big endian ]
+- *   - seed data    [ `length` bytes, padded to preserve 2-byte alignment ]
+- */
+-#define BI_VIRT_RNG_SEED	0x8006
++/* No longer used -- replaced with BI_RNG_SEED -- but don't reuse this index:
++ * #define BI_VIRT_RNG_SEED	0x8006 */
+ 
+ #define VIRT_BOOTI_VERSION	MK_BI_VERSION(2, 0)
+ 
+diff --git a/arch/m68k/include/uapi/asm/bootinfo.h b/arch/m68k/include/uapi/asm/bootinfo.h
+index 95ecf3ae4c49..6ce7644ab3d6 100644
+--- a/arch/m68k/include/uapi/asm/bootinfo.h
++++ b/arch/m68k/include/uapi/asm/bootinfo.h
+@@ -64,7 +64,13 @@ struct mem_info {
+ 					/* (struct mem_info) */
+ #define BI_COMMAND_LINE		0x0007	/* kernel command line parameters */
+ 					/* (string) */
+-
++/*
++ * A random seed used to initialize the RNG. Record format:
++ *
++ *   - length       [ 2 bytes, 16-bit big endian ]
++ *   - seed data    [ `length` bytes, padded to preserve 4-byte struct alignment ]
++ */
++#define BI_RNG_SEED		0x0008
+ 
+     /*
+      *  Linux/m68k Architectures (BI_MACHTYPE)
+diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+index 7e7ef67cff8b..e45cc9923703 100644
+--- a/arch/m68k/kernel/setup_mm.c
++++ b/arch/m68k/kernel/setup_mm.c
+@@ -25,6 +25,7 @@
+ #include <linux/module.h>
+ #include <linux/nvram.h>
+ #include <linux/initrd.h>
++#include <linux/random.h>
+ 
+ #include <asm/bootinfo.h>
+ #include <asm/byteorder.h>
+@@ -151,6 +152,17 @@ static void __init m68k_parse_bootinfo(const struct bi_record *record)
+ 				sizeof(m68k_command_line));
+ 			break;
+ 
++		case BI_RNG_SEED: {
++			u16 len = be16_to_cpup(data);
++			add_bootloader_randomness(data + 2, len);
++			/*
++			 * Zero the data to preserve forward secrecy, and zero the
++			 * length to prevent kexec from using it.
++			 */
++			memzero_explicit((void *)data, len + 2);
++			break;
++		}
++
+ 		default:
+ 			if (MACH_IS_AMIGA)
+ 				unknown = amiga_parse_bootinfo(record);
+diff --git a/arch/m68k/virt/config.c b/arch/m68k/virt/config.c
+index 4ab22946ff68..632ba200ad42 100644
+--- a/arch/m68k/virt/config.c
++++ b/arch/m68k/virt/config.c
+@@ -2,7 +2,6 @@
+ 
+ #include <linux/reboot.h>
+ #include <linux/serial_core.h>
+-#include <linux/random.h>
+ #include <clocksource/timer-goldfish.h>
+ 
+ #include <asm/bootinfo.h>
+@@ -93,16 +92,6 @@ int __init virt_parse_bootinfo(const struct bi_record *record)
+ 		data += 4;
+ 		virt_bi_data.virtio.irq = be32_to_cpup(data);
+ 		break;
+-	case BI_VIRT_RNG_SEED: {
+-		u16 len = be16_to_cpup(data);
+-		add_bootloader_randomness(data + 2, len);
+-		/*
+-		 * Zero the data to preserve forward secrecy, and zero the
+-		 * length to prevent kexec from using it.
+-		 */
+-		memzero_explicit((void *)data, len + 2);
+-		break;
+-	}
+ 	default:
+ 		unknown = 1;
+ 		break;
+-- 
+2.37.3
+
