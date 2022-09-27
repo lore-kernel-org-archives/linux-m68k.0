@@ -2,109 +2,72 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BAB41C07E9D
-	for <linux-m68k@archiver.kernel.org>; Tue, 27 Sep 2022 06:31:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86A35C07E9D
+	for <linux-m68k@archiver.kernel.org>; Tue, 27 Sep 2022 13:10:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230186AbiI0Gb0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 27 Sep 2022 02:31:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55720 "EHLO
+        id S232262AbiI0NKG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 27 Sep 2022 09:10:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbiI0GbS (ORCPT
+        with ESMTP id S232442AbiI0NKA (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 27 Sep 2022 02:31:18 -0400
-Received: from muru.com (muru.com [72.249.23.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 197F9979E3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Sep 2022 23:31:14 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 5E7B081BD;
-        Tue, 27 Sep 2022 06:22:54 +0000 (UTC)
-Date:   Tue, 27 Sep 2022 09:31:11 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
-        mattst88@gmail.com, vgupta@kernel.org, linux@armlinux.org.uk,
-        ulli.kroll@googlemail.com, linus.walleij@linaro.org,
-        shawnguo@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        khilman@kernel.org, catalin.marinas@arm.com, will@kernel.org,
-        guoren@kernel.org, bcain@quicinc.com, chenhuacai@kernel.org,
-        kernel@xen0n.name, geert@linux-m68k.org, sammy@sammy.net,
-        monstr@monstr.eu, tsbogend@alpha.franken.de, dinguyen@kernel.org,
-        jonas@southpole.se, stefan.kristiansson@saunalahti.fi,
-        shorne@gmail.com, James.Bottomley@hansenpartnership.com,
-        deller@gmx.de, mpe@ellerman.id.au, npiggin@gmail.com,
-        christophe.leroy@csgroup.eu, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com,
-        borntraeger@linux.ibm.com, svens@linux.ibm.com,
-        ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net,
-        richard@nod.at, anton.ivanov@cambridgegreys.com,
-        johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, jgross@suse.com, srivatsa@csail.mit.edu,
-        amakhalov@vmware.com, pv-drivers@vmware.com,
-        boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com,
-        rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz,
-        gregkh@linuxfoundation.org, mturquette@baylibre.com,
-        sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org,
-        sudeep.holla@arm.com, agross@kernel.org,
-        bjorn.andersson@linaro.org, konrad.dybcio@somainline.org,
-        anup@brainfault.org, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, jacob.jun.pan@linux.intel.com,
-        atishp@atishpatra.org, Arnd Bergmann <arnd@arndb.de>,
-        yury.norov@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk, dennis@kernel.org, tj@kernel.org,
-        cl@linux.com, rostedt@goodmis.org, pmladek@suse.com,
-        senozhatsky@chromium.org, john.ogness@linutronix.de,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, fweisbec@gmail.com,
-        ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
-        dvyukov@google.com, vincenzo.frascino@arm.com,
-        Andrew Morton <akpm@linux-foundation.org>, jpoimboe@kernel.org,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-perf-users@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-xtensa@linux-xtensa.org, linux-acpi@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-arch@vger.kernel.org, kasan-dev@googlegroups.com
-Subject: Re: [PATCH v2 00/44] cpuidle,rcu: Clean up the mess
-Message-ID: <YzKYrx8Kd9SBYcUg@atomide.com>
-References: <20220919095939.761690562@infradead.org>
+        Tue, 27 Sep 2022 09:10:00 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2B7B1BA5
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Sep 2022 06:09:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2CCE3B819D6;
+        Tue, 27 Sep 2022 13:09:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 523FEC433D6;
+        Tue, 27 Sep 2022 13:09:29 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="nY8c4m6p"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1664284167;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fZPP5PahCbJY5jGiCruWB3XwrKpCIDgkTFtW5rPCQtk=;
+        b=nY8c4m6pbiX67e7lxXWDvjYm3OGXZTPS9yhS0MYqMpf5zzMIvrg6aHptPRHOkfbOzb4OD1
+        dcIyVR631A9X+HhqXCQGH4kRcPuzAyQl2Zy9SvAw3SBIUB9TdezDR82uryD9bbCHzZTamd
+        XEUWlmllkmeLsoothqluqcTNsTYu5BI=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 61342710 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Tue, 27 Sep 2022 13:09:27 +0000 (UTC)
+Date:   Tue, 27 Sep 2022 15:09:21 +0200
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Laurent Vivier <laurent@vivier.eu>
+Subject: Re: [PATCH v4 3/3] m68k: generate new RNG seed on reboot
+Message-ID: <YzL2AXQeVC4XvPPf@zx2c4.com>
+References: <20220926113754.1256358-1-Jason@zx2c4.com>
+ <20220926113754.1256358-3-Jason@zx2c4.com>
+ <CAHmME9qLcfT5Mjw1cudhA-zGaLUubkPCTF7trw1ek40==BwumQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20220919095939.761690562@infradead.org>
+In-Reply-To: <CAHmME9qLcfT5Mjw1cudhA-zGaLUubkPCTF7trw1ek40==BwumQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi,
-
-* Peter Zijlstra <peterz@infradead.org> [220919 10:08]:
-> Hi All!
+On Mon, Sep 26, 2022 at 03:13:01PM +0200, Jason A. Donenfeld wrote:
+> Hi Geert,
 > 
-> At long last, a respin of the cpuidle vs rcu cleanup patches.
+> On Mon, Sep 26, 2022 at 1:38 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+> >
+> > Rather than rebooting into a system with no entropy, regenerate the RNG
+> > seed before rebooting, so that the new system has a fresh seed.
+> >
+> > Fixes: a1ee38ab1a75 ("m68k: virt: Use RNG seed from bootinfo block")
+> > Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 > 
-> v1: https://lkml.kernel.org/r/20220608142723.103523089@infradead.org
-> 
-> These here patches clean up the mess that is cpuidle vs rcuidle.
+> Laurent made a compelling case *against* this approach. So feel free
+> to drop this 3/3 patch. However, 1/3 and 2/3 should still be
+> committed.
 
-I just gave these a quick test and things still work for me. The old
-omap3 off mode during idle still works. No more need to play the
-whack the mole game with RCU-idle :) I did not test on x86, or on other
-ARMs, but considering the test pretty much covered the all the
-affected RCU-idle related paths, where suitable, feel free to add:
+For Geert's ease, I'll send a v5 with 3/3 dropped.
 
-Tested-by: Tony Lindgren <tony@atomide.com>
+Jason
