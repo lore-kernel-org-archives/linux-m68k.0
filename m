@@ -2,190 +2,192 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F6FEC433F5
-	for <linux-m68k@archiver.kernel.org>; Thu, 29 Sep 2022 10:15:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50054C433FE
+	for <linux-m68k@archiver.kernel.org>; Thu, 29 Sep 2022 10:20:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235111AbiI2KPh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 29 Sep 2022 06:15:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37652 "EHLO
+        id S235364AbiI2KUN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 29 Sep 2022 06:20:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234977AbiI2KPJ (ORCPT
+        with ESMTP id S235302AbiI2KTl (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 29 Sep 2022 06:15:09 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF6855A887
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 29 Sep 2022 03:14:52 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id x18so1407441wrm.7
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 29 Sep 2022 03:14:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=RRPHFYR6JN9kGUvlnY0zJ0DYUx4yeQOFM8stN052HXQ=;
-        b=I4bQ+utOBwqfTsrRH8e/4LFtEFqYOXN0L6hEcS3E3O9B5UThHFvwSxU4+B0/Gu3JHF
-         f1c80HTA0Y5WV+j225TDbyJaWIpVBSITD0k4mfUt56bbfyPoMj4LsX5ihjhfiDSEXM4q
-         ZzoJ72rUwwa3awPAY3ypWB2O1kE17PXjD9xOjBd6Dz/ICCXlHITxFIUD5/4Df45NJObg
-         sQinjp5sg90kIBIrjVIiTGfLJ2/Ur2QpMXVXH1nN2qVvnBO1yjcJHBeosRjQv0Ft+pJq
-         pJU9AmOeb3o+nL08uSr74rsIvqfSy9cgpSH5ORl+/JYruUXmdPSIR6DOJNtBl1iJOc8E
-         0k6Q==
+        Thu, 29 Sep 2022 06:19:41 -0400
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3904AF590
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 29 Sep 2022 03:19:39 -0700 (PDT)
+Received: by mail-qt1-f172.google.com with SMTP id b23so455534qtr.13
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 29 Sep 2022 03:19:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=RRPHFYR6JN9kGUvlnY0zJ0DYUx4yeQOFM8stN052HXQ=;
-        b=SN9/OJUBa8Y2JpMCgwVdoepoq90MNPXz/KThl8JJszroJuG+TMBCFOJHoJ/lHA9G/z
-         l3PMhUk/oKc53OMQ6drGNhbbcs2fJ5TFqzIy26rH8z99ALI9Clj3vsoOUuEKsPeb5M92
-         1JsaIQH45e4ot/t19rFKXtpwr10gGodybffja1bfpifqIuoBCYI51Dvx+2z9L2tl89t2
-         125a6HZKzHIyYLlgDKlY/nvwxR6G3rukfuHyQ+quoyeND+wSGHbDeQA7lvnvbSmitIcr
-         OyPnbSdfiw4F7izUxcCu34dIydagDAgz5shx8aGUPrIafRv7nacE6SuuD2l1ZUwej4MN
-         D+Aw==
-X-Gm-Message-State: ACrzQf3k/ng/OXlz28P0wE4EKVjN7Rkcma0U7EI4jP9xKxdCfbXETGbv
-        jnAYlMNyT2H+J28MqDVwvsk=
-X-Google-Smtp-Source: AMsMyM60yiFsTgkqe3xikWUl32bklNuSbScxmAjkQNzLcLlXIew0AC1zw0sqWbw6L6LbxPmGe+BxgQ==
-X-Received: by 2002:adf:d215:0:b0:228:6293:10ff with SMTP id j21-20020adfd215000000b00228629310ffmr1627402wrh.171.1664446491041;
-        Thu, 29 Sep 2022 03:14:51 -0700 (PDT)
-Received: from felia.fritz.box (200116b826e11200b190ebfd45660ea6.dip.versatel-1u1.de. [2001:16b8:26e1:1200:b190:ebfd:4566:ea6])
-        by smtp.gmail.com with ESMTPSA id i4-20020a05600c354400b003b47b80cec3sm4235919wmq.42.2022.09.29.03.14.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Sep 2022 03:14:50 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] m68k: update config files
-Date:   Thu, 29 Sep 2022 12:14:48 +0200
-Message-Id: <20220929101448.32177-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=8GLG7G2DpP05n4xk1niTNKCRQjlEFDZ0ccIwrCXFgQA=;
+        b=JZ+sLEgLHC67ay9dIj/raQo77tigzAndIzlYIw0yY806MYN+LVmb+IHP8IYwvm3U2m
+         PkK+I15rMBynegHWpni+suXfVzkRprBmFCWqqQSh45Z6rF+LVTdP7DZwlcsKWDryMC/8
+         FNQKe0FJTdxePzv0HvRwz/zhQ6FCsZgRwKKej42GvrncJ8NiDBz91qjOSl/YvFiWXDpD
+         t2cTnQ5AXW40ndYWCXMVH6hQK/EfppYk5R9Yl7yG5LUUVnk60dXiYJZoDYHUV4jn9TJr
+         CyqR36NVAxQ6IhU5z8vT5xJCyATI+wN802GsNT4Xzp1Q8ZfI7qWLCliXFcMIoF+iS9Z8
+         SdyA==
+X-Gm-Message-State: ACrzQf2PmP7tZey2jw5j3KcUjv4t3vkq9sGYNB+Ft9AM2VvO88CkO052
+        Peyogmj7vIqk3zjgwPw/l6cxyuwuSyIsoQ==
+X-Google-Smtp-Source: AMsMyM4wHAgWm+fncP2cfVaxNBUbC0P+/sqcBDQNu9lc7rpFAPSwBA50Edxf6dEj7V1MP9bdtxJeNg==
+X-Received: by 2002:ac8:5f48:0:b0:35d:1b11:6ae5 with SMTP id y8-20020ac85f48000000b0035d1b116ae5mr1646619qta.247.1664446778526;
+        Thu, 29 Sep 2022 03:19:38 -0700 (PDT)
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
+        by smtp.gmail.com with ESMTPSA id l23-20020ac87257000000b0035ce8965045sm5415846qtp.42.2022.09.29.03.19.38
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Sep 2022 03:19:38 -0700 (PDT)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-333a4a5d495so9552937b3.10
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 29 Sep 2022 03:19:38 -0700 (PDT)
+X-Received: by 2002:a81:5a57:0:b0:353:6de6:3263 with SMTP id
+ o84-20020a815a57000000b003536de63263mr2384552ywb.358.1664446777926; Thu, 29
+ Sep 2022 03:19:37 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220929101448.32177-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <20220929101448.32177-1-lukas.bulwahn@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 29 Sep 2022 12:19:25 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWwrUKc-o1i85n=BWDutYBS1LSwhZdkXME6hWw+7bmhsw@mail.gmail.com>
+Message-ID: <CAMuHMdWwrUKc-o1i85n=BWDutYBS1LSwhZdkXME6hWw+7bmhsw@mail.gmail.com>
+Subject: Re: [PATCH] m68k: update config files
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, Greg Ungerer <gerg@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Clean up config files by:
-  - removing configs that were deleted in the past
-  - removing configs not in tree and without recently pending patches
-  - adding new configs that are replacements for old configs in the file
+CC Greg, as these are all coldfire or nommu defconfigs
 
-For some detailed information, see Link.
-
-Link: https://lore.kernel.org/kernel-janitors/20220929090645.1389-1-lukas.bulwahn@gmail.com/
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- arch/m68k/configs/amcore_defconfig   | 4 ----
- arch/m68k/configs/m5208evb_defconfig | 3 ---
- arch/m68k/configs/m5249evb_defconfig | 3 ---
- arch/m68k/configs/m5272c3_defconfig  | 3 ---
- arch/m68k/configs/m5275evb_defconfig | 3 ---
- arch/m68k/configs/m5307c3_defconfig  | 3 ---
- arch/m68k/configs/m5407c3_defconfig  | 3 ---
- 7 files changed, 22 deletions(-)
-
-diff --git a/arch/m68k/configs/amcore_defconfig b/arch/m68k/configs/amcore_defconfig
-index 6d9ed2198170..041adcf6ecfc 100644
---- a/arch/m68k/configs/amcore_defconfig
-+++ b/arch/m68k/configs/amcore_defconfig
-@@ -27,9 +27,6 @@ CONFIG_PACKET=y
- CONFIG_UNIX=y
- CONFIG_INET=y
- CONFIG_SYN_COOKIES=y
--# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
--# CONFIG_INET_XFRM_MODE_TUNNEL is not set
--# CONFIG_INET_XFRM_MODE_BEET is not set
- # CONFIG_IPV6 is not set
- # CONFIG_WIRELESS is not set
- # CONFIG_UEVENT_HELPER is not set
-@@ -85,7 +82,6 @@ CONFIG_ROMFS_FS=y
- CONFIG_ROMFS_BACKED_BY_BOTH=y
- # CONFIG_NETWORK_FILESYSTEMS is not set
- CONFIG_PRINTK_TIME=y
--# CONFIG_ENABLE_MUST_CHECK is not set
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_PANIC_ON_OOPS=y
- # CONFIG_SCHED_DEBUG is not set
-diff --git a/arch/m68k/configs/m5208evb_defconfig b/arch/m68k/configs/m5208evb_defconfig
-index 0ee3079f6ca9..31035a0b9247 100644
---- a/arch/m68k/configs/m5208evb_defconfig
-+++ b/arch/m68k/configs/m5208evb_defconfig
-@@ -21,9 +21,6 @@ CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_UNIX=y
- CONFIG_INET=y
--# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
--# CONFIG_INET_XFRM_MODE_TUNNEL is not set
--# CONFIG_INET_XFRM_MODE_BEET is not set
- # CONFIG_INET_DIAG is not set
- # CONFIG_IPV6 is not set
- # CONFIG_FW_LOADER is not set
-diff --git a/arch/m68k/configs/m5249evb_defconfig b/arch/m68k/configs/m5249evb_defconfig
-index f84f68c04065..5706d7a1daba 100644
---- a/arch/m68k/configs/m5249evb_defconfig
-+++ b/arch/m68k/configs/m5249evb_defconfig
-@@ -22,9 +22,6 @@ CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_UNIX=y
- CONFIG_INET=y
--# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
--# CONFIG_INET_XFRM_MODE_TUNNEL is not set
--# CONFIG_INET_XFRM_MODE_BEET is not set
- # CONFIG_INET_DIAG is not set
- # CONFIG_IPV6 is not set
- # CONFIG_FW_LOADER is not set
-diff --git a/arch/m68k/configs/m5272c3_defconfig b/arch/m68k/configs/m5272c3_defconfig
-index eca65020aae3..f02fe144f4ad 100644
---- a/arch/m68k/configs/m5272c3_defconfig
-+++ b/arch/m68k/configs/m5272c3_defconfig
-@@ -22,9 +22,6 @@ CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_UNIX=y
- CONFIG_INET=y
--# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
--# CONFIG_INET_XFRM_MODE_TUNNEL is not set
--# CONFIG_INET_XFRM_MODE_BEET is not set
- # CONFIG_INET_DIAG is not set
- # CONFIG_IPV6 is not set
- # CONFIG_FW_LOADER is not set
-diff --git a/arch/m68k/configs/m5275evb_defconfig b/arch/m68k/configs/m5275evb_defconfig
-index 9402c7a3e9c7..781f307ff330 100644
---- a/arch/m68k/configs/m5275evb_defconfig
-+++ b/arch/m68k/configs/m5275evb_defconfig
-@@ -22,9 +22,6 @@ CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_UNIX=y
- CONFIG_INET=y
--# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
--# CONFIG_INET_XFRM_MODE_TUNNEL is not set
--# CONFIG_INET_XFRM_MODE_BEET is not set
- # CONFIG_INET_DIAG is not set
- # CONFIG_IPV6 is not set
- # CONFIG_FW_LOADER is not set
-diff --git a/arch/m68k/configs/m5307c3_defconfig b/arch/m68k/configs/m5307c3_defconfig
-index bb8b0eb4bdfc..6eac482356ca 100644
---- a/arch/m68k/configs/m5307c3_defconfig
-+++ b/arch/m68k/configs/m5307c3_defconfig
-@@ -22,9 +22,6 @@ CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_UNIX=y
- CONFIG_INET=y
--# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
--# CONFIG_INET_XFRM_MODE_TUNNEL is not set
--# CONFIG_INET_XFRM_MODE_BEET is not set
- # CONFIG_INET_DIAG is not set
- # CONFIG_IPV6 is not set
- # CONFIG_FW_LOADER is not set
-diff --git a/arch/m68k/configs/m5407c3_defconfig b/arch/m68k/configs/m5407c3_defconfig
-index ce9ccf13c7c0..496dcccb1c18 100644
---- a/arch/m68k/configs/m5407c3_defconfig
-+++ b/arch/m68k/configs/m5407c3_defconfig
-@@ -23,9 +23,6 @@ CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_UNIX=y
- CONFIG_INET=y
--# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
--# CONFIG_INET_XFRM_MODE_TUNNEL is not set
--# CONFIG_INET_XFRM_MODE_BEET is not set
- # CONFIG_INET_DIAG is not set
- # CONFIG_IPV6 is not set
- # CONFIG_FW_LOADER is not set
--- 
-2.17.1
-
+On Thu, Sep 29, 2022 at 12:14 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>
+> Clean up config files by:
+>   - removing configs that were deleted in the past
+>   - removing configs not in tree and without recently pending patches
+>   - adding new configs that are replacements for old configs in the file
+>
+> For some detailed information, see Link.
+>
+> Link: https://lore.kernel.org/kernel-janitors/20220929090645.1389-1-lukas.bulwahn@gmail.com/
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+>  arch/m68k/configs/amcore_defconfig   | 4 ----
+>  arch/m68k/configs/m5208evb_defconfig | 3 ---
+>  arch/m68k/configs/m5249evb_defconfig | 3 ---
+>  arch/m68k/configs/m5272c3_defconfig  | 3 ---
+>  arch/m68k/configs/m5275evb_defconfig | 3 ---
+>  arch/m68k/configs/m5307c3_defconfig  | 3 ---
+>  arch/m68k/configs/m5407c3_defconfig  | 3 ---
+>  7 files changed, 22 deletions(-)
+>
+> diff --git a/arch/m68k/configs/amcore_defconfig b/arch/m68k/configs/amcore_defconfig
+> index 6d9ed2198170..041adcf6ecfc 100644
+> --- a/arch/m68k/configs/amcore_defconfig
+> +++ b/arch/m68k/configs/amcore_defconfig
+> @@ -27,9 +27,6 @@ CONFIG_PACKET=y
+>  CONFIG_UNIX=y
+>  CONFIG_INET=y
+>  CONFIG_SYN_COOKIES=y
+> -# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+> -# CONFIG_INET_XFRM_MODE_TUNNEL is not set
+> -# CONFIG_INET_XFRM_MODE_BEET is not set
+>  # CONFIG_IPV6 is not set
+>  # CONFIG_WIRELESS is not set
+>  # CONFIG_UEVENT_HELPER is not set
+> @@ -85,7 +82,6 @@ CONFIG_ROMFS_FS=y
+>  CONFIG_ROMFS_BACKED_BY_BOTH=y
+>  # CONFIG_NETWORK_FILESYSTEMS is not set
+>  CONFIG_PRINTK_TIME=y
+> -# CONFIG_ENABLE_MUST_CHECK is not set
+>  # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+>  CONFIG_PANIC_ON_OOPS=y
+>  # CONFIG_SCHED_DEBUG is not set
+> diff --git a/arch/m68k/configs/m5208evb_defconfig b/arch/m68k/configs/m5208evb_defconfig
+> index 0ee3079f6ca9..31035a0b9247 100644
+> --- a/arch/m68k/configs/m5208evb_defconfig
+> +++ b/arch/m68k/configs/m5208evb_defconfig
+> @@ -21,9 +21,6 @@ CONFIG_NET=y
+>  CONFIG_PACKET=y
+>  CONFIG_UNIX=y
+>  CONFIG_INET=y
+> -# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+> -# CONFIG_INET_XFRM_MODE_TUNNEL is not set
+> -# CONFIG_INET_XFRM_MODE_BEET is not set
+>  # CONFIG_INET_DIAG is not set
+>  # CONFIG_IPV6 is not set
+>  # CONFIG_FW_LOADER is not set
+> diff --git a/arch/m68k/configs/m5249evb_defconfig b/arch/m68k/configs/m5249evb_defconfig
+> index f84f68c04065..5706d7a1daba 100644
+> --- a/arch/m68k/configs/m5249evb_defconfig
+> +++ b/arch/m68k/configs/m5249evb_defconfig
+> @@ -22,9 +22,6 @@ CONFIG_NET=y
+>  CONFIG_PACKET=y
+>  CONFIG_UNIX=y
+>  CONFIG_INET=y
+> -# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+> -# CONFIG_INET_XFRM_MODE_TUNNEL is not set
+> -# CONFIG_INET_XFRM_MODE_BEET is not set
+>  # CONFIG_INET_DIAG is not set
+>  # CONFIG_IPV6 is not set
+>  # CONFIG_FW_LOADER is not set
+> diff --git a/arch/m68k/configs/m5272c3_defconfig b/arch/m68k/configs/m5272c3_defconfig
+> index eca65020aae3..f02fe144f4ad 100644
+> --- a/arch/m68k/configs/m5272c3_defconfig
+> +++ b/arch/m68k/configs/m5272c3_defconfig
+> @@ -22,9 +22,6 @@ CONFIG_NET=y
+>  CONFIG_PACKET=y
+>  CONFIG_UNIX=y
+>  CONFIG_INET=y
+> -# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+> -# CONFIG_INET_XFRM_MODE_TUNNEL is not set
+> -# CONFIG_INET_XFRM_MODE_BEET is not set
+>  # CONFIG_INET_DIAG is not set
+>  # CONFIG_IPV6 is not set
+>  # CONFIG_FW_LOADER is not set
+> diff --git a/arch/m68k/configs/m5275evb_defconfig b/arch/m68k/configs/m5275evb_defconfig
+> index 9402c7a3e9c7..781f307ff330 100644
+> --- a/arch/m68k/configs/m5275evb_defconfig
+> +++ b/arch/m68k/configs/m5275evb_defconfig
+> @@ -22,9 +22,6 @@ CONFIG_NET=y
+>  CONFIG_PACKET=y
+>  CONFIG_UNIX=y
+>  CONFIG_INET=y
+> -# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+> -# CONFIG_INET_XFRM_MODE_TUNNEL is not set
+> -# CONFIG_INET_XFRM_MODE_BEET is not set
+>  # CONFIG_INET_DIAG is not set
+>  # CONFIG_IPV6 is not set
+>  # CONFIG_FW_LOADER is not set
+> diff --git a/arch/m68k/configs/m5307c3_defconfig b/arch/m68k/configs/m5307c3_defconfig
+> index bb8b0eb4bdfc..6eac482356ca 100644
+> --- a/arch/m68k/configs/m5307c3_defconfig
+> +++ b/arch/m68k/configs/m5307c3_defconfig
+> @@ -22,9 +22,6 @@ CONFIG_NET=y
+>  CONFIG_PACKET=y
+>  CONFIG_UNIX=y
+>  CONFIG_INET=y
+> -# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+> -# CONFIG_INET_XFRM_MODE_TUNNEL is not set
+> -# CONFIG_INET_XFRM_MODE_BEET is not set
+>  # CONFIG_INET_DIAG is not set
+>  # CONFIG_IPV6 is not set
+>  # CONFIG_FW_LOADER is not set
+> diff --git a/arch/m68k/configs/m5407c3_defconfig b/arch/m68k/configs/m5407c3_defconfig
+> index ce9ccf13c7c0..496dcccb1c18 100644
+> --- a/arch/m68k/configs/m5407c3_defconfig
+> +++ b/arch/m68k/configs/m5407c3_defconfig
+> @@ -23,9 +23,6 @@ CONFIG_NET=y
+>  CONFIG_PACKET=y
+>  CONFIG_UNIX=y
+>  CONFIG_INET=y
+> -# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+> -# CONFIG_INET_XFRM_MODE_TUNNEL is not set
+> -# CONFIG_INET_XFRM_MODE_BEET is not set
+>  # CONFIG_INET_DIAG is not set
+>  # CONFIG_IPV6 is not set
+>  # CONFIG_FW_LOADER is not set
+> --
+> 2.17.1
