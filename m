@@ -2,70 +2,79 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BAC8C04A95
-	for <linux-m68k@archiver.kernel.org>; Wed, 28 Sep 2022 23:16:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2536C04A95
+	for <linux-m68k@archiver.kernel.org>; Thu, 29 Sep 2022 06:37:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233894AbiI1XQh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 28 Sep 2022 19:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33076 "EHLO
+        id S233206AbiI2Ghk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 29 Sep 2022 02:37:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233313AbiI1XQ3 (ORCPT
+        with ESMTP id S234665AbiI2Ghi (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 28 Sep 2022 19:16:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 522E9A7AA1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 28 Sep 2022 16:16:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B30CA60EE7;
-        Wed, 28 Sep 2022 23:16:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87663C433C1;
-        Wed, 28 Sep 2022 23:16:23 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="YgWBvx2l"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1664406981;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MFlE0ld6cGlbqEZR2H/NeL8tv8fttMveIrKcEOGDIZQ=;
-        b=YgWBvx2lmOpqhou91IO07CApy6xxa4HTExwIYMDqcp73/boK3K1nragJmDzr6iQmVZQF5n
-        b47J4/pQOcwzoESMt5+7YPwtBFzcPBdmwG6cw2xPik7rbBnjGYWSJTcqSUUiZzPozLUG4/
-        RqDvZdvjvVgHULonVcjoruOfyJLYNhA=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 11fdc80f (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Wed, 28 Sep 2022 23:16:21 +0000 (UTC)
-Date:   Thu, 29 Sep 2022 01:16:19 +0200
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, kexec@lists.infradead.org,
-        Simon Horman <horms@verge.net.au>,
-        Laurent Vivier <Laurent@vivier.eu>
-Subject: Re: [PATCH v2] m68k: pass rng seed via BI_RNG_SEED
-Message-ID: <YzTVwzc3oxdWgHjt@zx2c4.com>
-References: <CAHmME9ow+ivvQaCnPqRNiYRn4+fuGksKyRAEWtBa-6yhyg9OTA@mail.gmail.com>
- <20220923164152.4079868-1-Jason@zx2c4.com>
+        Thu, 29 Sep 2022 02:37:38 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1DA5121E69
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 28 Sep 2022 23:37:33 -0700 (PDT)
+Received: from [192.168.100.1] ([82.142.8.70]) by mrelayeu.kundenserver.de
+ (mreue011 [213.165.67.103]) with ESMTPSA (Nemesis) id
+ 1M277h-1ofhuu19j7-002bbt; Thu, 29 Sep 2022 08:37:25 +0200
+Message-ID: <17166083-0941-7644-9bfe-a57203b69fdd@vivier.eu>
+Date:   Thu, 29 Sep 2022 08:37:24 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20220923164152.4079868-1-Jason@zx2c4.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.1
+Subject: Re: [PATCH qemu v2 1/2] m68k: rework BI_VIRT_RNG_SEED as BI_RNG_SEED
+Content-Language: fr
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        linux-m68k@lists.linux-m68k.org, qemu-devel@nongnu.org
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>
+References: <20220926113900.1256630-1-Jason@zx2c4.com>
+From:   Laurent Vivier <laurent@vivier.eu>
+In-Reply-To: <20220926113900.1256630-1-Jason@zx2c4.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:OhjtMMm36axRcSmBXt3bsa7U5OdC/7Hk4Bb+hbQeJcqPqhJCbHA
+ l7zTZOttMakxj+Ko3z24/7nvIXYaXPWCW+Lsce2kjBt5mgXt8uJP34wjG1l0t9DcaMf2io/
+ zjUt3qcZrGcUAC1x5f8oFYRWPpCQQgJnQemjU2oCaAslmCoVIbbvUl78+sHKhYa/riT27sJ
+ ADlqgZPdMGeAZ5iQKoxww==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:96LjjmdNpAQ=:YhL/wY+N3oEkyxZyUyIOP5
+ +49TDXCUvjwO8qBqwZAz3Ova7lLEi0KvrrNNTihK8E2GqGMPkI5rZm6Bomjykymw232mmiOF4
+ eoND6Tna3fUEex2KIhx5RtC+rSB9/TgCwzvonIPwQ8yIUkCtvIcZm9wdy/V9vjCScjZXsn2EL
+ SEF/JFurl7O+cpWZhZ0aQUZjIq943k/rOKKFGr3qd4iVJqb3skJpIEBsnPWxZ2bKs0um2pu/x
+ ij7ijmqLHF0psGD54mAokQEnujQXhryfX/BULIXDJvE04jputVdQDyFq29QgvmTidR9wScwDS
+ P6qiNJWLtpxeGpwrZneaUDNn3YbwrDp94CdDyQQamJr1+IlHRh2ggzVe7dOdLeGMErEPynC/i
+ GzUHVCU3Qsm4n58BNG+40K38M9FlTmPFRNh6Fl9C0IK7518Ze4rqY/AUCqPVePJl9vGKy4Y0o
+ EAbTY1vItm74uwOCBVlWv+B68siA/eSJUMi5ZvW+xJxAhwSKjOmtio5D0gm9p+1qfUcR0AbSA
+ cbUInrat+ekGMgV3ZBeLjGXHHzpHYsNhejx1nWk9EcRKwisJS443mkzUdUX6wCDinR6cZYXO/
+ mP4Ud+x03gESsToPDYc+ypmT4PhQW5NxtyTvgjLXAXOoam8fJHZnHjVv7qelQP3Al05B/7tF+
+ k/P5jhHr1rBvR7F4K1UQhtCWGSYegTOWGYfxK6kKv9gydwY0kbxl/B/tNR0i8r6JbIgxR7LBp
+ qgPuUgv3hdpqEejJ0ReplmZKEtO9fZZricq2QrIZ1o3Hy2v16CVd9NsYI9/ppZuVZvHQJYSVx
+ tEBF6be
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Sep 23, 2022 at 06:41:52PM +0200, Jason A. Donenfeld wrote:
-> In order to pass fresh entropy to kexec'd kernels, use BI_RNG_SEED
-> for passing a seed, with the same semantics that kexec-tools currently
-> uses for i386's setup_data.
+Le 26/09/2022 à 13:38, Jason A. Donenfeld a écrit :
+> Following a change on the kernel side (see link), pass BI_RNG_SEED
+> instead of BI_VIRT_RNG_SEED. This should have no impact on
+> compatibility, as there will simply be no effect if it's an old kernel,
+> which is how things have always been. We then use this as an opportunity
+> to add this to q800, since now we can, which is a nice improvement.
 > 
 > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Laurent Vivier <laurent@vivier.eu>
+> Link: https://lore.kernel.org/lkml/20220923170340.4099226-3-Jason@zx2c4.com/
 > Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 > ---
-> Geert - this hasn't been compile tested yet and also depends on changes
-> that haven't yet landed upstream. Posting this preliminarily now. -Jason
+>   hw/m68k/q800.c                                    | 7 +++++++
+>   hw/m68k/virt.c                                    | 2 +-
+>   include/standard-headers/asm-m68k/bootinfo-virt.h | 4 +++-
+>   include/standard-headers/asm-m68k/bootinfo.h      | 8 +++++++-
+>   4 files changed, 18 insertions(+), 3 deletions(-)
+> 
 
-With [1] having landed, does this patch here suffice for kexec-tools?
+Applied to my m68k-for-7.2 branch
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git/commit/?id=f1bb20c8be1929743fdb313b4770601afc39c1b7
+Thanks,
+Laurent
 
-Jason
