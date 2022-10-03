@@ -2,111 +2,71 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67552C433FE
-	for <linux-m68k@archiver.kernel.org>; Mon,  3 Oct 2022 10:45:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9452C433FE
+	for <linux-m68k@archiver.kernel.org>; Mon,  3 Oct 2022 17:33:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbiJCKpl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 3 Oct 2022 06:45:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44706 "EHLO
+        id S229744AbiJCRdE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 3 Oct 2022 13:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbiJCKpk (ORCPT
+        with ESMTP id S230024AbiJCRcP (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 3 Oct 2022 06:45:40 -0400
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED6450725
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  3 Oct 2022 03:45:34 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed50:d9a7:8e4b:c2c3:1759])
-        by andre.telenet-ops.be with bizsmtp
-        id TNlY2800227BRao01NlYJA; Mon, 03 Oct 2022 12:45:32 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1ofIx1-000Yas-Ok; Mon, 03 Oct 2022 12:45:31 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1ofIx1-00AE1R-8Z; Mon, 03 Oct 2022 12:45:31 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mon, 3 Oct 2022 13:32:15 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 791E73A150
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  3 Oct 2022 10:32:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 4D031CE0B1D;
+        Mon,  3 Oct 2022 17:32:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 94055C43142;
+        Mon,  3 Oct 2022 17:32:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1664818324;
+        bh=wF/ZXwn+w8nhlJRPzrVEBPrBPfzeeXzxJDvoeNX2CgI=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=lFjFxjZC0hV2Ag5nsDbAkAC1RD/4F3Ja+mmU0yX6cjrjPjLCFluMLdWoSx1FoPAF6
+         Pl72TLuR7hdQyqe1/CNgyoLLWyuEGsCsAZu6WH5N9KEzJCBGoW/fS66mnKz6mB9h2+
+         Lu1r1ZNhC2BSa1G9y7LbcAVUHf4ly9muPOLsP/zspSfTmg60qRJLvE8cbPX8oNJlRK
+         WLSKAZ7pfXDSVKDNq3U9uiV83qmFLvS/f67al+YzrWwWZgUqP9vJ8sRdB6DjFHmESd
+         pkM4UoTwB99PX/04fojBEs9jxJ00kahrDd4FPElqvWM4Lzm+pqVx0Mw2pLLS7DYkLo
+         haBb9+2cc+SwA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 81AE9E49FA3;
+        Mon,  3 Oct 2022 17:32:04 +0000 (UTC)
+Subject: Re: [GIT PULL] m68k updates for v6.1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20221003104529.2437138-1-geert@linux-m68k.org>
+References: <20221003104529.2437138-1-geert@linux-m68k.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20221003104529.2437138-1-geert@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.1-tag1
+X-PR-Tracked-Commit-Id: dc63a086daee92c63e392e4e7cd7ed61f3693026
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 75003fa726e990883bba5b38c4c4d873dab45d62
+Message-Id: <166481832452.20277.6973751682427455307.pr-tracker-bot@kernel.org>
+Date:   Mon, 03 Oct 2022 17:32:04 +0000
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Greg Ungerer <gerg@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [GIT PULL] m68k updates for v6.1
-Date:   Mon,  3 Oct 2022 12:45:29 +0200
-Message-Id: <20221003104529.2437138-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-	Hi Linus,
+The pull request you sent on Mon,  3 Oct 2022 12:45:29 +0200:
 
-The following changes since commit 1c23f9e627a7b412978b4e852793c5e3c3efc555:
+> git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.1-tag1
 
-  Linux 6.0-rc2 (2022-08-21 17:32:54 -0700)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/75003fa726e990883bba5b38c4c4d873dab45d62
 
-are available in the Git repository at:
+Thank you!
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.1-tag1
-
-for you to fetch changes up to dc63a086daee92c63e392e4e7cd7ed61f3693026:
-
-  m68k: Rework BI_VIRT_RNG_SEED as BI_RNG_SEED (2022-09-28 22:16:44 +0200)
-
-----------------------------------------------------------------
-m68k updates for v6.1
-
-  - Fix forward secrecy of RNG seed boot record handling,
-  - Make RNG seed boot record handling generic for all m68k platforms
-    using bootinfo,
-  - Defconfig updates,
-  - Minor fixes and improvements.
-
-----------------------------------------------------------------
-Geert Uytterhoeven (1):
-      m68k: defconfig: Update defconfigs for v6.0-rc2
-
-Greg Ungerer (1):
-      m68k: Allow kexec on M68KCLASSIC with MMU enabled only
-
-Jason A. Donenfeld (2):
-      m68k: Process bootinfo records before saving them
-      m68k: Rework BI_VIRT_RNG_SEED as BI_RNG_SEED
-
-Wolfram Sang (1):
-      m68k: Move from strlcpy with unused retval to strscpy
-
- arch/m68k/Kconfig                          |  2 +-
- arch/m68k/configs/amiga_defconfig          |  4 ++--
- arch/m68k/configs/apollo_defconfig         |  4 ++--
- arch/m68k/configs/atari_defconfig          |  4 ++--
- arch/m68k/configs/bvme6000_defconfig       |  4 ++--
- arch/m68k/configs/hp300_defconfig          |  4 ++--
- arch/m68k/configs/mac_defconfig            |  4 ++--
- arch/m68k/configs/multi_defconfig          |  4 ++--
- arch/m68k/configs/mvme147_defconfig        |  4 ++--
- arch/m68k/configs/mvme16x_defconfig        |  4 ++--
- arch/m68k/configs/q40_defconfig            |  4 ++--
- arch/m68k/configs/sun3_defconfig           |  4 ++--
- arch/m68k/configs/sun3x_defconfig          |  4 ++--
- arch/m68k/include/uapi/asm/bootinfo-virt.h |  9 ++-------
- arch/m68k/include/uapi/asm/bootinfo.h      |  7 +++++++
- arch/m68k/kernel/setup_mm.c                | 19 ++++++++++++++++---
- arch/m68k/virt/config.c                    | 11 -----------
- 17 files changed, 50 insertions(+), 46 deletions(-)
-
-Thanks for pulling!
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
