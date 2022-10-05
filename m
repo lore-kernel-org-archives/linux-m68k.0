@@ -2,140 +2,116 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F6A2C4332F
-	for <linux-m68k@archiver.kernel.org>; Wed,  5 Oct 2022 05:06:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00330C433FE
+	for <linux-m68k@archiver.kernel.org>; Wed,  5 Oct 2022 06:55:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230116AbiJEFGo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 5 Oct 2022 01:06:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60278 "EHLO
+        id S229760AbiJEGzH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 5 Oct 2022 02:55:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbiJEFGD (ORCPT
+        with ESMTP id S229532AbiJEGzG (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 5 Oct 2022 01:06:03 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2067.outbound.protection.outlook.com [40.107.237.67])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D7874E25
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  4 Oct 2022 22:04:29 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VQnNarfyEFfJyR9KMhgRcWp3Ap6KKNzyuMWIxUAb1ypLDpxpzFnkxSN4WFzGwFanOB9LVwsrA7DUDHOhQ5ACPiWVZQ47rC/V17CuSzFq4pcHMg6QXsR1OjHlWLtSYcKSnd8qAsL7OqQiFUl8/tGB5P3365Pqk3a5rQYMoYJytkQ8hFNymmKhonYg70t7JLVSR20d1w9Ca65/YUUBgIcdTRyfj8/hjVj/WzdikDthvILZrsT/Mg9N802L5lLNiKenjej6hc7KEzn3YyJpP1fW/2aM2Kbp0VadfUp/ZJ43HD5NH/P6GRFIQ4fsFzsHO9Uwvhjj8vhu7xqHuTBkhd4p5Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VUGnMeKXYhsQ4I9OJx4wnJ3fbX8ZcYbAOImg9h0puEU=;
- b=nUtUJATaPQxIobsWDzq0XfCc6YR3REFQ8jAxjPufvMGFXlbQp+uwII2mhOuRG31pZQ3P27mGQTbIN2EsO+TWeFWbEXatz5d5qs3RiCBnEXcFdfNdJekGpprRF78AcRJwYsW1K4rfl7x0fmUnFT0d5FXG6LnafRDVXrwSl34sbUM8MGhkx52vYSA0p7+hvePoS5DJcTcEDjsbj6j3M4UaECpknmBbW14srEON3C8HS5xXppT/vhQADhl8XCh2APvcUjD0pAOVg77iV/uhsD+9SsTLxfV2qLGJvTQSUQ1ylK2Q54a81wgK7lFejJ1DY4RO71er8rQ7/axEogvuMyS8Rg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=linux-m68k.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VUGnMeKXYhsQ4I9OJx4wnJ3fbX8ZcYbAOImg9h0puEU=;
- b=gF7CqEfrTRTmGE536cLpTGvv1cT1SbVVlLhHFGNpJZSM1USYzij5JYUMjQnB2H3JUDxzEjrHtzexjhWkv6QWjlLHjNeGW54mDix6L8AYSxw6W696nwx/7klaXRHEhCw/xEPZKS6Vhb4X9S/hBdUXf00KdUozLU6LVqBpD/oDTvSO36EDGKep/F19J2VcnumdIUcmDOC3NtNMxigGHQH0gnLOHOHRouxPMD70ZISOrgCn28pjhn0pKkoLpND+09skx+/waAqi+Ai/Dm7w3AjTVrAdJ1gL/zGbXOM7iCwTkSd69NDJy8wPbYIclXbEPf1dVFArhj/q0U5I0LOlbD1zgg==
-Received: from MW4PR03CA0085.namprd03.prod.outlook.com (2603:10b6:303:b6::30)
- by MW3PR12MB4411.namprd12.prod.outlook.com (2603:10b6:303:5e::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5676.24; Wed, 5 Oct
- 2022 05:04:21 +0000
-Received: from CO1NAM11FT028.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:b6:cafe::aa) by MW4PR03CA0085.outlook.office365.com
- (2603:10b6:303:b6::30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5676.29 via Frontend
- Transport; Wed, 5 Oct 2022 05:04:21 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CO1NAM11FT028.mail.protection.outlook.com (10.13.175.214) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5709.10 via Frontend Transport; Wed, 5 Oct 2022 05:04:21 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.26; Tue, 4 Oct 2022
- 22:04:01 -0700
-Received: from dev.nvidia.com (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.29; Tue, 4 Oct 2022
- 22:03:59 -0700
-From:   Chaitanya Kulkarni <kch@nvidia.com>
-To:     <ogeert@linux-m68k.org>, <linux-block@vger.kernel.org>,
-        <linux-m68k@lists.linux-m68k.org>, <linux-kernel@vger.kernel.org>,
-        <drbd-dev@lists.linbit.com>, <nbd@other.debian.org>,
-        <linux-mtd@lists.infradead.org>
-CC:     <axboe@kernel.dk>, <philipp.reisner@linbit.com>,
-        <lars.ellenberg@linbit.com>, <christoph.boehmwalder@linbit.com>,
-        <efremov@linux.com>, <josef@toxicpanda.com>, <tim@cyberelk.net>,
-        <haris.iqbal@ionos.com>, <jinpu.wang@ionos.com>, <richard@nod.at>,
-        <miquel.raynal@bootlin.com>, <vigneshr@ti.com>, <kch@nvidia.com>,
-        <mcgrof@kernel.org>, <hare@suse.de>,
-        <damien.lemoal@opensource.wdc.com>, <johannes.thumshirn@wdc.com>,
-        <bvanassche@acm.org>, <ming.lei@redhat.com>,
-        <vincent.fu@samsung.com>, <shinichiro.kawasaki@wdc.com>
-Subject: [RFC PATCH 17/18] z2ram: use init disk helper
-Date:   Tue, 4 Oct 2022 22:00:26 -0700
-Message-ID: <20221005050027.39591-18-kch@nvidia.com>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20221005050027.39591-1-kch@nvidia.com>
-References: <20221005050027.39591-1-kch@nvidia.com>
+        Wed, 5 Oct 2022 02:55:06 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BBCD6C74C
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  4 Oct 2022 23:55:02 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id D46F0320076F;
+        Wed,  5 Oct 2022 02:54:57 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Wed, 05 Oct 2022 02:55:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm2; t=1664952897; x=1665039297; bh=jWTbZEvbtDtUpxhiaZ06jnKvT3cn
+        t7nqR4YpnsdkpzA=; b=SN/B0rG//lwD0KUvExQeYgJmksgAuQTF3wbAMmkGYXw3
+        tZDKhTSS0NxHUE/2Ljh3UjN1jVph4YVJNCa9EyI/k+wCFbArqwmSL7zuVXxEQvVi
+        6BPctFK77GjmQwtk7oq5brX7C5oEDNKcjOhZ9omGjQffozknm0uLJGdA4Fpdc7+O
+        td/p/33vN73l6G+g+1yZFfNlltEjDxBu5iRaz3KGHmhuUr8DVu9+eCj+6q9Y6g0N
+        bDThAyvejofXn+tgNSPzqEjKpJejXW+D3uwo7Vp/M0MzzbGCxv99heIGcWEy5h2e
+        glwIRnUzWyrOrshKeBlmMc/oubA/jYjr3y0mYPtyBw==
+X-ME-Sender: <xms:Pyo9Y-Z4elN1Fe-Y2a5I_7wiI1rJYJUeIV3kNVkTTPhKeH1M5-vPwA>
+    <xme:Pyo9YxY6wsMwCvFZLEPMRTXWojebDd1jhl7SQ-HfGakBHmmHIsBNCAM-QrjpNjlJS
+    n9MLkASF-3dEhhAaTM>
+X-ME-Received: <xmr:Pyo9Y4_XinFLEkKFqDfQkTqCnLPHtdInd6PX18SGuRvpMOawyGQ2i1yV8sHJ5MZSR1n_u-QBPC6BRl6VXUlKQWb6Xi9zpoLZ0dI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeeivddguddufecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhn
+    ucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrf
+    grthhtvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedv
+    ueehueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:Pyo9YwqufxSZDLDkbx2_7_1aZI-PfVYfpBiX7qPsQYDRbF_Jstl4cg>
+    <xmx:Pyo9Y5raNcqnWsqJdZpmQ_zJHhy3BoEiCgTYwzJt6WITb3rLAO3Alg>
+    <xmx:Pyo9Y-QLMw58FfnDEeWlso5eW8V76Z0BdIwklzwU6U93vzJi8AlyUw>
+    <xmx:QSo9Y_gAkX9CqBZ8zI3KIJAa8a0fZKASrx12ssz77auJ4vxMMkXv0Q>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 5 Oct 2022 02:54:53 -0400 (EDT)
+Date:   Wed, 5 Oct 2022 17:54:48 +1100 (AEDT)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Chaitanya Kulkarni <kch@nvidia.com>
+cc:     geert@linux-m68k.org, linux-block@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        drbd-dev@lists.linbit.com, nbd@other.debian.org,
+        linux-mtd@lists.infradead.org, axboe@kernel.dk,
+        philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
+        christoph.boehmwalder@linbit.com, efremov@linux.com,
+        josef@toxicpanda.com, tim@cyberelk.net, haris.iqbal@ionos.com,
+        jinpu.wang@ionos.com, richard@nod.at, miquel.raynal@bootlin.com,
+        vigneshr@ti.com, mcgrof@kernel.org, hare@suse.de,
+        damien.lemoal@opensource.wdc.com, johannes.thumshirn@wdc.com,
+        bvanassche@acm.org, ming.lei@redhat.com, vincent.fu@samsung.com,
+        shinichiro.kawasaki@wdc.com
+Subject: Re: [RFC PATCH 15/18] swim: use init disk helper
+In-Reply-To: <20221005050027.39591-16-kch@nvidia.com>
+Message-ID: <78eb3d46-de71-a20c-ed5a-efc6ce71f571@linux-m68k.org>
+References: <20221005050027.39591-1-kch@nvidia.com> <20221005050027.39591-16-kch@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.126.231.35]
-X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1NAM11FT028:EE_|MW3PR12MB4411:EE_
-X-MS-Office365-Filtering-Correlation-Id: 05c2da29-eca7-4174-a926-08daa68f105f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jeWij9BSR+ld5x3cRQK7XJOwVQ+x+XDGyITyRqUSjvo5nps2uSnWQ+3iGIG2W2qQIFYkS3eLmafAVndcWjZKvay17CERvXztVJhPgRtHr+NkIu+OloUyx4q6CEh3MGxKLYRlPiX1mR4vZtwE9tvz88yx3KE0+PQRX9J72EMiNnZFtb0DQERSEFpRa9uOvIODAMCjGZTI8GFxuikZSyCm1IGr/+BzTOhXXImuiKGbVLciZdWetQKEbiQ2h02z4ouLmMm6czEFQoROqCpPGa7FTkAvyBZamMNpXb13zXPZKlJmYdg3ZciLVCCTaMMUPRoCYte9w273S8U8Lf96h5ofR4XbCp6xD1eFuOqfAUY1hC1UGiIEhxCqxCGdbIcATvKgsp+VUZzyhRnQPs7USVe7ZeDunylwfTnoAxmndzrhgmhygbz7w7DMny9TUCYbuVnscP9vh/SJKDaS2L2TdvlRBgos9ipW4aSs7zav8Rmdt3GQmZk8IxqAMX8GVM6jUVI/4jvmI+MLpy9DHm0KnwWs+m2Td61xJx3MQb5sNi4u3JWs2oP0AwUbk9e/dDNDyp1Re3OGsDluZy4EjRwUNDcLBw14kvETyc9xn1Uh7joDEyoAhjB4XtenAbuc/HfisBUSLqkcJdVxSzZ3Tr0r1Jr7oIf4gv0GKOf0D0e3gACKp73pGnz5nDhaPE7tqeGs7IcaH0B1Wd8Gc9pXDoVm5ZSGeiKSsLFj60NyFB+KeU/N7RnsN3W7XzSIMpxIvmw7VNeJXgiCm05sGebiLmp3Ck+hAVXW5xxCGayCLr66OM4lCRY=
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(346002)(396003)(136003)(376002)(451199015)(40470700004)(36840700001)(46966006)(478600001)(41300700001)(110136005)(8676002)(54906003)(4326008)(6666004)(40460700003)(70586007)(70206006)(7416002)(36756003)(82740400003)(47076005)(426003)(7636003)(83380400001)(36860700001)(4744005)(7696005)(40480700001)(26005)(8936002)(5660300002)(336012)(316002)(2906002)(356005)(2616005)(186003)(1076003)(16526019)(82310400005)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2022 05:04:21.0491
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 05c2da29-eca7-4174-a926-08daa68f105f
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT028.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4411
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Add and use the helper to initialize the common fields of struct gendisk
-such as major, first_minor, minors, disk_name, private_data, and ops.
-This initialization is spread all over the block drivers. This avoids
-code repetation of inialization code of gendisk in current block drivers
-and any future ones.
+On Tue, 4 Oct 2022, Chaitanya Kulkarni wrote:
 
-Signed-off-by: Chaitanya Kulkarni <kch@nvidia.com>
----
- drivers/block/z2ram.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+> Add and use the helper to initialize the common fields of struct gendisk
+> such as major, first_minor, minors, disk_name, private_data, and ops.
+> This initialization is spread all over the block drivers. This avoids
+> code repetation of inialization code of gendisk in current block drivers
+> and any future ones.
+> 
+> Signed-off-by: Chaitanya Kulkarni <kch@nvidia.com>
+> ---
+>  drivers/block/swim.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/block/swim.c b/drivers/block/swim.c
+> index 42b4b6828690..7fa4b2766367 100644
+> --- a/drivers/block/swim.c
+> +++ b/drivers/block/swim.c
+> @@ -835,15 +835,12 @@ static int swim_floppy_init(struct swim_priv *swd)
+>  
+>  	for (drive = 0; drive < swd->floppy_count; drive++) {
+>  		swd->unit[drive].disk->flags = GENHD_FL_REMOVABLE;
+> -		swd->unit[drive].disk->major = FLOPPY_MAJOR;
+> -		swd->unit[drive].disk->first_minor = drive;
+> -		swd->unit[drive].disk->minors = 1;
+>  		sprintf(swd->unit[drive].disk->disk_name, "fd%d", drive);
+> -		swd->unit[drive].disk->fops = &floppy_fops;
+>  		swd->unit[drive].disk->flags |= GENHD_FL_NO_PART;
+>  		swd->unit[drive].disk->events = DISK_EVENT_MEDIA_CHANGE;
+>  		swd->unit[drive].disk->private_data = &swd->unit[drive];
+> -		set_capacity(swd->unit[drive].disk, 2880);
+> +		init_disk(swd->unit[drive].disk, FLOPPY_MAJOR, drive, 1, 2880,
+> +				&swd->unit[drive], &floopy_dops);
+>  		err = add_disk(swd->unit[drive].disk);
+>  		if (err)
+>  			goto exit_put_disks;
+> 
 
-diff --git a/drivers/block/z2ram.c b/drivers/block/z2ram.c
-index c1e85f356e4d..74432fbfe42c 100644
---- a/drivers/block/z2ram.c
-+++ b/drivers/block/z2ram.c
-@@ -324,11 +324,8 @@ static int z2ram_register_disk(int minor)
- 	if (IS_ERR(disk))
- 		return PTR_ERR(disk);
- 
--	disk->major = Z2RAM_MAJOR;
--	disk->first_minor = minor;
--	disk->minors = 1;
- 	disk->flags |= GENHD_FL_NO_PART;
--	disk->fops = &z2_fops;
-+	init_disk(disk, Z2RAM_MAJOR, minor, 1, 0, NULL, &z2_fops);
- 	if (minor)
- 		sprintf(disk->disk_name, "z2ram%d", minor);
- 	else
--- 
-2.29.0
-
+You typo'd the ops struct. By inspection, I'd say your patches 11/18 and 
+16/18 will not compile either.
