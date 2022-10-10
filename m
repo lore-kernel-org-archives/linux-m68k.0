@@ -2,91 +2,76 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0FD1C433FE
-	for <linux-m68k@archiver.kernel.org>; Mon, 10 Oct 2022 00:29:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C525C433FE
+	for <linux-m68k@archiver.kernel.org>; Mon, 10 Oct 2022 07:59:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232141AbiJJA3o (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 9 Oct 2022 20:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54186 "EHLO
+        id S231326AbiJJH7J (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 10 Oct 2022 03:59:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233340AbiJJA3U (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 9 Oct 2022 20:29:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5131B136;
-        Sun,  9 Oct 2022 17:04:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D9DD960C2B;
-        Mon, 10 Oct 2022 00:04:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A1AAC433D6;
-        Mon, 10 Oct 2022 00:04:14 +0000 (UTC)
-Message-ID: <f16e5bde-0560-9306-be82-d5a825485fb1@linux-m68k.org>
-Date:   Mon, 10 Oct 2022 10:04:11 +1000
+        with ESMTP id S230470AbiJJH7I (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 10 Oct 2022 03:59:08 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB6E72D74A;
+        Mon, 10 Oct 2022 00:59:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=sWolSNkLX1ZPnLQhfmowne8piiQT5rQ6uM09AjXa5Dc=; b=aJIBlsb0nSpWjrle4oZywMion1
+        d0M1TLezw/OcG2P0MgPxI6aB4/HTO9AxzYy4TBBhT7iUcr9rtBjX/6QDGEY3NVp14bJ4/jDCFWOLR
+        AQbNGi/LTMEXH3wmTjrkT5Y5SGv/Ib9V7XughQZRpp+pgf73tDFKD5qBO9fZNJp7D5XdpZAn047TZ
+        EiJJmMepreW3fKePOipspGiOfrSt007DayqpG0JoDUJoeTic1aqPtkls/MHiWNJVicPA3qcsuILrN
+        M+txLRN4vmfGm/5lZL3wxlLajTmeHmNW15SUYd9J3te7dVhIl6aHu6Zoczw8l4kTSbppDR+vGd2rO
+        RUq4Vc7g==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ohngj-00HSJR-TP; Mon, 10 Oct 2022 07:59:01 +0000
+Date:   Mon, 10 Oct 2022 00:59:01 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Chaitanya Kulkarni <kch@nvidia.com>
+Cc:     ogeert@linux-m68k.org, linux-block@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        drbd-dev@lists.linbit.com, nbd@other.debian.org,
+        linux-mtd@lists.infradead.org, axboe@kernel.dk,
+        philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
+        christoph.boehmwalder@linbit.com, efremov@linux.com,
+        josef@toxicpanda.com, tim@cyberelk.net, haris.iqbal@ionos.com,
+        jinpu.wang@ionos.com, richard@nod.at, miquel.raynal@bootlin.com,
+        vigneshr@ti.com, mcgrof@kernel.org, hare@suse.de,
+        damien.lemoal@opensource.wdc.com, johannes.thumshirn@wdc.com,
+        bvanassche@acm.org, ming.lei@redhat.com, vincent.fu@samsung.com,
+        shinichiro.kawasaki@wdc.com
+Subject: Re: [RFC PATCH 01/18] block: add and use init disk helper
+Message-ID: <Y0PQxdzmMzAAW0KF@infradead.org>
+References: <20221005050027.39591-1-kch@nvidia.com>
+ <20221005050027.39591-2-kch@nvidia.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Subject: [git pull] m68knommu changes for v6.1
-To:     torvalds@linux-foundation.org
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221005050027.39591-2-kch@nvidia.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Linus,
+On Tue, Oct 04, 2022 at 10:00:10PM -0700, Chaitanya Kulkarni wrote:
+> +void init_disk(struct gendisk *disk, int major, int first_minor,
+> +		int minors, sector_t sectors, void *private_data,
+> +		const struct block_device_operations *fops)
+> +{
+> +	disk->major = major;
+> +	disk->first_minor = first_minor;
+> +	disk->minors = minors;
+> +	set_capacity(disk, sectors);
+> +	disk->private_data = private_data;
+> +	disk->fops = fops;
 
-Please pull the m68knommu changes for v6.1.
+I don't like this at all.  For one major/first_minor/minors are
+optional and discouraged for new drivers.  Setting the capacity is
+a different thing and is done by helpers also used for revalidation
+in many drivers.
 
-Just a couple of changes. Fixes to compilation of the old/legacy Freescale
-68328 targets in some kernel configurations, and some default configuration
-updates.
-
-Regards
-Greg
-
-
-
-
-The following changes since commit f76349cf41451c5c42a99f18a9163377e4b364ff:
-
-   Linux 6.0-rc7 (2022-09-25 14:01:02 -0700)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v6.1
-
-for you to fetch changes up to 404b7577cee2dc302ae259604b163cabd9bfd4f3:
-
-   m68k: update config files (2022-09-30 10:12:10 +1000)
-
-----------------------------------------------------------------
-m68knommu: updates and fixes for v6.1
-
-Fixes include:
-. fix build problems for legacy 68328 targets
-. clean out configs of removed options
-
-----------------------------------------------------------------
-Greg Ungerer (2):
-       m68knommu: fix non-specific 68328 choice interrupt build failure
-       m68knommu: fix non-mmu classic 68000 legacy timer tick selection
-
-Lukas Bulwahn (1):
-       m68k: update config files
-
-  arch/m68k/68000/ints.c               | 6 +++---
-  arch/m68k/Kconfig.cpu                | 4 +---
-  arch/m68k/configs/amcore_defconfig   | 4 ----
-  arch/m68k/configs/m5208evb_defconfig | 3 ---
-  arch/m68k/configs/m5249evb_defconfig | 3 ---
-  arch/m68k/configs/m5272c3_defconfig  | 3 ---
-  arch/m68k/configs/m5275evb_defconfig | 3 ---
-  arch/m68k/configs/m5307c3_defconfig  | 3 ---
-  arch/m68k/configs/m5407c3_defconfig  | 3 ---
-  9 files changed, 4 insertions(+), 28 deletions(-)
+It might make sense to pass the fops (and maybe private_data) to
+blk_mq_alloc_disk / blk_alloc_disk, but even then I'm not quite
+sure it is worth the churn.
