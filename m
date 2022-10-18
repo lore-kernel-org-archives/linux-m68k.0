@@ -2,48 +2,48 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD4E7C433FE
-	for <linux-m68k@archiver.kernel.org>; Tue, 18 Oct 2022 00:39:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75D0EC433FE
+	for <linux-m68k@archiver.kernel.org>; Tue, 18 Oct 2022 00:40:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbiJRAjF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 17 Oct 2022 20:39:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47640 "EHLO
+        id S232130AbiJRAkJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 17 Oct 2022 20:40:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232146AbiJRAip (ORCPT
+        with ESMTP id S229453AbiJRAjZ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 17 Oct 2022 20:38:45 -0400
+        Mon, 17 Oct 2022 20:39:25 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C9408A1DD
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 17 Oct 2022 17:38:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF5D92F59
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 17 Oct 2022 17:38:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id ADF5E61359;
-        Tue, 18 Oct 2022 00:11:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEADDC43470;
-        Tue, 18 Oct 2022 00:11:41 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5D52D61356;
+        Tue, 18 Oct 2022 00:11:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 204A1C433D6;
+        Tue, 18 Oct 2022 00:11:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666051902;
-        bh=MQB3+rqQQiv9DzGp/23KOPIWRdOXtGc2aFcNcsP9Oz8=;
+        s=k20201202; t=1666051916;
+        bh=o75o+6oKx5y4PpkAivNhZ9rAwEVjvoYaFDTF8LWXaWs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T//1Zmr/FkHXqpjhrVZYtL+oHeQEg7XN5ICFNh4kSFIM1W5c4FaN4DSmFC2Uvl3Ud
-         LF4vZUFFmZSOX7eRsPwv8swibPPzCsLBRvsHD6+FfGKpdm5z8h0SXKy0pCrFQUMKUs
-         Z+xNtci+l7hBaeIpSa0bq4B6vVrzzOJ/AqtFseuB48dn32WRtxPkPb24/GxXIbFbtY
-         4jchwWGN139auXxrzGl64J05+798QSrDu7ywn5ALNldMxCKY7ks2XStIePn/kvnKsk
-         NhvumZOrCW/exokmeGoldunqAoR+id4OhjqGByTk7SSnjVt/HGjsKb2JIYqNEe6buM
-         qvNUyVZaW/1Qw==
+        b=OYuKGX512r/83Ux4fxoyG+MwPdy7MiW3OXk6H3mY/VASVc50WqeKLNxi1m42TcUh1
+         EX4d5QTVH4uUasyShGTS3q4jLjDhTUsVjMQatd3bLqoOUH9ihHDYDZJGWfvY8PTRnP
+         q4oUARijwlFIOXKvatnu8+pKYyGeB9QWl4jg85rTx+89rV3NdC3HAjQr+juN0yL5Wq
+         0RgR3co9u2qctvcBUVgKFR+lF36dsDLj9sOFllFepZt+26K/pvoMqBvK2K9qi3M9xB
+         APuKonjqZVkPwJ3yeU9k1Oj2pPFO7QZNTVlkkNlXBQBv2Nj5vLHsblc18TPscpYIHt
+         MfWWyIbNsvLDw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Ungerer <gerg@linux-m68k.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 4.19 07/10] m68knommu: fix non-mmu classic 68000 legacy timer tick selection
-Date:   Mon, 17 Oct 2022 20:11:25 -0400
-Message-Id: <20221018001128.2732162-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 5/8] m68knommu: fix non-mmu classic 68000 legacy timer tick selection
+Date:   Mon, 17 Oct 2022 20:11:44 -0400
+Message-Id: <20221018001147.2732350-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221018001128.2732162-1-sashal@kernel.org>
-References: <20221018001128.2732162-1-sashal@kernel.org>
+In-Reply-To: <20221018001147.2732350-1-sashal@kernel.org>
+References: <20221018001147.2732350-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -72,7 +72,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-index b2fd1e2fbd89..013a410a3843 100644
+index 6f13c53c8dc7..3f5b92f567dc 100644
 --- a/arch/m68k/Kconfig.cpu
 +++ b/arch/m68k/Kconfig.cpu
 @@ -43,6 +43,7 @@ config M68000
