@@ -2,174 +2,145 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD6DAC433FE
-	for <linux-m68k@archiver.kernel.org>; Tue, 18 Oct 2022 09:20:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4331FC433FE
+	for <linux-m68k@archiver.kernel.org>; Tue, 18 Oct 2022 14:21:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbiJRJUd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 18 Oct 2022 05:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51204 "EHLO
+        id S231468AbiJROVm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 18 Oct 2022 10:21:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230099AbiJRJUc (ORCPT
+        with ESMTP id S231470AbiJROVK (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 18 Oct 2022 05:20:32 -0400
-Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B548F27E
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 18 Oct 2022 02:20:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
-        t=1666084821; bh=N48MFgDUmr1tfKHznoAthvRtR1Wpy0hSpJqTj7oKYC4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=cHV6qrCjD47k3jGPjUQF3lwihop1RDaw3yjdG73m7BjSD1b/7jyWqLqeN+Uyk642T
-         VvEcixZUqLhrENpMZkopSZmIH+3rzqlov7m3aEUZuBieiNorHcibY7orD6PjU5mrAB
-         wuldpVWm+HQ77bl4gfDeA0Z+scSMeI8G3x4eFq+M=
-Received: from [100.100.57.122] (unknown [220.248.53.61])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 69A5760087;
-        Tue, 18 Oct 2022 17:20:20 +0800 (CST)
-Message-ID: <27ffa400-b947-7c83-0e79-c8eb9f96e12e@xen0n.name>
-Date:   Tue, 18 Oct 2022 17:20:19 +0800
+        Tue, 18 Oct 2022 10:21:10 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9EC5D73F9
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 18 Oct 2022 07:20:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1666102846; x=1697638846;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Y9dxeqHb0eKKco/WxjylE4hfic+uXL21dNPpPaOrQY8=;
+  b=S9drzVE1Tk9JgnAbs6EMnUV70G+D4cKiSk0JaiePmSXM5ltEmxIENk/u
+   Bk23sfJfeua3X0gCfezOHsWhc7OjnS29y0L8K5QcQ+CbAZQ8B1t4gizBU
+   8Fcp3kcXET1rdD0lwL3boxEgOuuydw03MaaJMYLfP1Mcre/Cg5Uy9c9sw
+   vV7j+XYD2uJ2Ifeh5E/jgVDS8WE5lOW7U/pLTI8VdkxkFcy+vXNJ1+Bzt
+   or/IbJvF8CWCrk8BVx1z2fTAW2Ixewi8JtZVRR+a2WM7WFxB3GPaG41/O
+   09RnJdP3UPldhRGMVipu+9T9QibUF8cTGvlHGtDdnfJ7JdAd/6YHECtuM
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10504"; a="392421432"
+X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; 
+   d="scan'208";a="392421432"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Oct 2022 07:20:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10504"; a="771222694"
+X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; 
+   d="scan'208";a="771222694"
+Received: from lkp-server01.sh.intel.com (HELO 8381f64adc98) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 18 Oct 2022 07:20:42 -0700
+Received: from kbuild by 8381f64adc98 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oknSU-0001ke-0n;
+        Tue, 18 Oct 2022 14:20:42 +0000
+Date:   Tue, 18 Oct 2022 22:20:29 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 4397b755b31b878449aa00da1afe8c127b189cf1
+Message-ID: <634eb62d.RQDuij2cROq9Nbsa%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:107.0)
- Gecko/20100101 Thunderbird/107.0a1
-Subject: Re: [PATCH] mm: remove kern_addr_valid() completely
-Content-Language: en-US
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linux-fsdevel@vger.kernel.org
-Cc:     Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>
-References: <20221018074014.185687-1-wangkefeng.wang@huawei.com>
-From:   WANG Xuerui <kernel@xen0n.name>
-In-Reply-To: <20221018074014.185687-1-wangkefeng.wang@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 2022/10/18 15:40, Kefeng Wang wrote:
-> Most architectures(except arm64/x86/sparc) simply return 1 for
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 4397b755b31b878449aa00da1afe8c127b189cf1  Merge tag 'v6.1-rc1'
 
-one space before the opening parens
+elapsed time: 1205m
 
-> kern_addr_valid(), which is only used in read_kcore(), and it
-> calls copy_from_kernel_nofault() which could check whether the
-> address is a valid kernel address, so no need kern_addr_valid(),
+configs tested: 68
+configs skipped: 2
 
-minor grammatical nit:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-"... which already checks whether the address is a valid kernel address. 
-So kern_addr_valid is unnecessary, let's remove it."
+gcc tested configs:
+um                             i386_defconfig
+um                           x86_64_defconfig
+arc                                 defconfig
+alpha                               defconfig
+arc                  randconfig-r043-20221018
+x86_64               randconfig-a002-20221017
+s390                             allmodconfig
+riscv                randconfig-r042-20221018
+s390                                defconfig
+s390                 randconfig-r044-20221018
+x86_64               randconfig-a003-20221017
+s390                             allyesconfig
+x86_64               randconfig-a004-20221017
+x86_64               randconfig-a001-20221017
+x86_64               randconfig-a006-20221017
+x86_64               randconfig-a005-20221017
+i386                 randconfig-a001-20221017
+i386                 randconfig-a002-20221017
+i386                 randconfig-a003-20221017
+i386                 randconfig-a004-20221017
+i386                 randconfig-a006-20221017
+powerpc                          allmodconfig
+i386                 randconfig-a005-20221017
+mips                             allyesconfig
+powerpc                           allnoconfig
+sh                               allmodconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                           allyesconfig
+x86_64                          rhel-8.3-func
+x86_64                    rhel-8.3-kselftests
+x86_64                           rhel-8.3-kvm
+x86_64                           rhel-8.3-syz
+x86_64                         rhel-8.3-kunit
+i386                                defconfig
+m68k                             allmodconfig
+alpha                            allyesconfig
+arc                              allyesconfig
+m68k                             allyesconfig
+i386                             allyesconfig
+arm                                 defconfig
+arc                  randconfig-r043-20221017
+ia64                             allmodconfig
+x86_64                        randconfig-a006
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+arm64                            allyesconfig
+arm                              allyesconfig
 
-> let's remove unneeded kern_addr_valid() completely.
-> 
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> ---
->   arch/alpha/include/asm/pgtable.h          |  2 -
->   arch/arc/include/asm/pgtable-bits-arcv2.h |  2 -
->   arch/arm/include/asm/pgtable-nommu.h      |  2 -
->   arch/arm/include/asm/pgtable.h            |  4 --
->   arch/arm64/include/asm/pgtable.h          |  2 -
->   arch/arm64/mm/mmu.c                       | 47 -----------------------
->   arch/arm64/mm/pageattr.c                  |  3 +-
->   arch/csky/include/asm/pgtable.h           |  3 --
->   arch/hexagon/include/asm/page.h           |  7 ----
->   arch/ia64/include/asm/pgtable.h           | 16 --------
->   arch/loongarch/include/asm/pgtable.h      |  2 -
->   arch/m68k/include/asm/pgtable_mm.h        |  2 -
->   arch/m68k/include/asm/pgtable_no.h        |  1 -
->   arch/microblaze/include/asm/pgtable.h     |  3 --
->   arch/mips/include/asm/pgtable.h           |  2 -
->   arch/nios2/include/asm/pgtable.h          |  2 -
->   arch/openrisc/include/asm/pgtable.h       |  2 -
->   arch/parisc/include/asm/pgtable.h         | 15 --------
->   arch/powerpc/include/asm/pgtable.h        |  7 ----
->   arch/riscv/include/asm/pgtable.h          |  2 -
->   arch/s390/include/asm/pgtable.h           |  2 -
->   arch/sh/include/asm/pgtable.h             |  2 -
->   arch/sparc/include/asm/pgtable_32.h       |  6 ---
->   arch/sparc/mm/init_32.c                   |  3 +-
->   arch/sparc/mm/init_64.c                   |  1 -
->   arch/um/include/asm/pgtable.h             |  2 -
->   arch/x86/include/asm/pgtable_32.h         |  9 -----
->   arch/x86/include/asm/pgtable_64.h         |  1 -
->   arch/x86/mm/init_64.c                     | 41 --------------------
->   arch/xtensa/include/asm/pgtable.h         |  2 -
->   fs/proc/kcore.c                           | 26 +++++--------
->   31 files changed, 11 insertions(+), 210 deletions(-)
-> 
-> diff --git a/arch/loongarch/include/asm/pgtable.h b/arch/loongarch/include/asm/pgtable.h
-> index 946704bee599..fc70b7041b76 100644
-> --- a/arch/loongarch/include/asm/pgtable.h
-> +++ b/arch/loongarch/include/asm/pgtable.h
-> @@ -421,8 +421,6 @@ static inline void update_mmu_cache_pmd(struct vm_area_struct *vma,
->   	__update_tlb(vma, address, (pte_t *)pmdp);
->   }
->   
-> -#define kern_addr_valid(addr)	(1)
-> -
->   static inline unsigned long pmd_pfn(pmd_t pmd)
->   {
->   	return (pmd_val(pmd) & _PFN_MASK) >> _PFN_SHIFT;
-
-Acked-by: WANG Xuerui <git@xen0n.name> # loongarch
-
-Thanks!
+clang tested configs:
+hexagon              randconfig-r041-20221018
+hexagon              randconfig-r045-20221018
+i386                 randconfig-a011-20221017
+i386                 randconfig-a013-20221017
+i386                 randconfig-a012-20221017
+i386                 randconfig-a014-20221017
+i386                 randconfig-a016-20221017
+i386                 randconfig-a015-20221017
+x86_64               randconfig-a013-20221017
+x86_64               randconfig-a012-20221017
+x86_64               randconfig-a011-20221017
+x86_64               randconfig-a014-20221017
+x86_64               randconfig-a015-20221017
+x86_64               randconfig-a016-20221017
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
 
 -- 
-WANG "xen0n" Xuerui
-
-Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
