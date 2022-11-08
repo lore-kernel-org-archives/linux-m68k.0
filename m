@@ -2,140 +2,92 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5008AC4332F
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Nov 2022 01:07:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A595C4332F
+	for <linux-m68k@archiver.kernel.org>; Tue,  8 Nov 2022 08:40:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232991AbiKHBHc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 7 Nov 2022 20:07:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41268 "EHLO
+        id S232950AbiKHIkN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 8 Nov 2022 03:40:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232880AbiKHBHb (ORCPT
+        with ESMTP id S229931AbiKHIkM (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 7 Nov 2022 20:07:31 -0500
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44353248CD
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  7 Nov 2022 17:07:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1667869651; x=1699405651;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=mmrhYcTmTR1lKXtSrIdGnAw2X6qLkGFhMFTQn7sjIME=;
-  b=ODPsm5rZJg7DQSbI4u2zWj2lFAK5n5jor27uUm2kOOG6zDki3KfRkOGh
-   GWzLYskr7AUHURu/Jx1ZHtponosHrsrMPuKuOTAG4iLT8yAPn07ni/XsB
-   3L+tu292ATXXwoTJEuTkntpYaTNGT+qUrgqsC19LXnZml4hXeL2NcX2lT
-   HNTzgq+3oRakKJIlDpjoSgyan5l23gWOrFvo6N3VkzthUoqko1AHslbVW
-   fWQ8q00PdSj8iTm/AcXsXPtlg7hQqJ++Lh5tEEt8FD0OPav2wgdEWWNCn
-   Ky3ZuhkV6s2EB5/xjsOPX0tFJx+xH3sUDeNnFzzsUZZUIY5ZBh/7hV5BO
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10524"; a="396864766"
-X-IronPort-AV: E=Sophos;i="5.96,145,1665471600"; 
-   d="scan'208";a="396864766"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2022 17:07:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10524"; a="587182324"
-X-IronPort-AV: E=Sophos;i="5.96,145,1665471600"; 
-   d="scan'208";a="587182324"
-Received: from lkp-server01.sh.intel.com (HELO 462403710aa9) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 07 Nov 2022 17:07:28 -0800
-Received: from kbuild by 462403710aa9 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1osD5L-0001Mu-34;
-        Tue, 08 Nov 2022 01:07:27 +0000
-Date:   Tue, 08 Nov 2022 09:06:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 7cc2f04d1076c927f9a06b2e1ab641c3815e8d34
-Message-ID: <6369ab97.pf7agEuPgR2ZcvQ5%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        Tue, 8 Nov 2022 03:40:12 -0500
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC192DFE
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Nov 2022 00:40:08 -0800 (PST)
+Received: by mail-qt1-f180.google.com with SMTP id z6so8307197qtv.5
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 08 Nov 2022 00:40:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2tFUsRL3FpgdBzxiQy/rXwlRUGlmMU62XkzHAixYMBY=;
+        b=kJ2iXFqR5ZNxjnWNGjZBOARChooBhun6971FaHgUL97kJmWeIT75mam5SN59snkxn5
+         +NT3+R9kouVHTHyJRnDt7ri0CXLugf/Ux8qM5gnlmwWeBY/YCbMJcEH02Ot/L8000IbS
+         kEo5U0dtRYhUNIFbkvNAUn7JLt2VkAHzIFZR1X20PO6o6gCN5hGMIwZjHLgUoFH9lNOP
+         JND5QcmUCZwaH+XOV/yFny/fYtUKS6rdzePzc/on8ppmltDLobfiOg8NtztZ8gfhh1HM
+         hDx7kSIGbkDsVcxAJ6eAVL4Shwy/kjqIzb2xAzcZsVWs4H2aX98lOvvBMeZpWrXpz8HW
+         uBlg==
+X-Gm-Message-State: ACrzQf2c8ASpUbpvW3W4cZRldKPDOlPobynUTrEWIlC/XB+xWQklSL5Z
+        eAvng4uWdSF5nI7NwsReEO46qnvsj+EX2K7G
+X-Google-Smtp-Source: AMsMyM4MWEQFjmCCSUsg4LO86GPn3HOYk60VWIBGrE8LUgwTrUniY5Hyp9B6VgJRBTzTB2W0X5QQDw==
+X-Received: by 2002:ac8:4916:0:b0:3a5:283b:22c7 with SMTP id e22-20020ac84916000000b003a5283b22c7mr34964617qtq.64.1667896807596;
+        Tue, 08 Nov 2022 00:40:07 -0800 (PST)
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
+        by smtp.gmail.com with ESMTPSA id u127-20020a379285000000b006faeecef56fsm3213754qkd.68.2022.11.08.00.40.05
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Nov 2022 00:40:06 -0800 (PST)
+Received: by mail-yb1-f170.google.com with SMTP id o70so16546297yba.7
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 08 Nov 2022 00:40:05 -0800 (PST)
+X-Received: by 2002:a25:6b07:0:b0:6cd:3a43:bfe5 with SMTP id
+ g7-20020a256b07000000b006cd3a43bfe5mr41313897ybc.89.1667896805081; Tue, 08
+ Nov 2022 00:40:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20221107141638.3790965-1-john.ogness@linutronix.de> <20221107141638.3790965-25-john.ogness@linutronix.de>
+In-Reply-To: <20221107141638.3790965-25-john.ogness@linutronix.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 8 Nov 2022 09:39:53 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUEZ2pKM=RJu1NuVarsPSuOw1=R2E6OVQpeO0TqC2tMrA@mail.gmail.com>
+Message-ID: <CAMuHMdUEZ2pKM=RJu1NuVarsPSuOw1=R2E6OVQpeO0TqC2tMrA@mail.gmail.com>
+Subject: Re: [PATCH printk v3 24/40] tty: nfcon: use console_is_registered()
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 7cc2f04d1076c927f9a06b2e1ab641c3815e8d34  Merge tag 'v6.1-rc4'
+Hi John,
 
-elapsed time: 726m
+On Mon, Nov 7, 2022 at 3:16 PM John Ogness <john.ogness@linutronix.de> wrote:
+> Currently CON_ENABLED is being (mis)used to identify if the console
+> has been registered. This is not reliable because it can be set even
+> though registration failed or it can be unset, even though the console
+> is registered.
+>
+> Instead, use console_is_registered().
+>
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
-configs tested: 63
-configs skipped: 2
+Thanks for your patch!
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+LGTM, so
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-gcc tested configs:
-um                             i386_defconfig
-um                           x86_64_defconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-arc                                 defconfig
-s390                                defconfig
-s390                             allmodconfig
-alpha                               defconfig
-s390                             allyesconfig
-x86_64                          rhel-8.3-func
-x86_64                    rhel-8.3-kselftests
-powerpc                           allnoconfig
-mips                             allyesconfig
-powerpc                          allmodconfig
-sh                               allmodconfig
-x86_64                           rhel-8.3-syz
-x86_64                         rhel-8.3-kunit
-x86_64                           rhel-8.3-kvm
-x86_64                               rhel-8.3
-x86_64                              defconfig
-x86_64                           allyesconfig
-arc                  randconfig-r043-20221107
-ia64                             allmodconfig
-i386                 randconfig-a002-20221107
-i386                 randconfig-a003-20221107
-i386                 randconfig-a001-20221107
-i386                                defconfig
-i386                 randconfig-a005-20221107
-i386                 randconfig-a004-20221107
-i386                 randconfig-a006-20221107
-i386                             allyesconfig
-x86_64               randconfig-a005-20221107
-x86_64               randconfig-a001-20221107
-x86_64               randconfig-a003-20221107
-x86_64               randconfig-a002-20221107
-x86_64               randconfig-a004-20221107
-i386                          randconfig-a014
-x86_64               randconfig-a006-20221107
-i386                          randconfig-a012
-i386                          randconfig-a016
-arm                                 defconfig
-arm                              allyesconfig
-arm64                            allyesconfig
+Gr{oetje,eeting}s,
 
-clang tested configs:
-hexagon              randconfig-r041-20221107
-x86_64               randconfig-a014-20221107
-x86_64               randconfig-a011-20221107
-x86_64               randconfig-a013-20221107
-x86_64               randconfig-a012-20221107
-x86_64               randconfig-a015-20221107
-x86_64               randconfig-a016-20221107
-s390                 randconfig-r044-20221107
-riscv                randconfig-r042-20221107
-hexagon              randconfig-r045-20221107
-hexagon              randconfig-r041-20221108
-hexagon              randconfig-r045-20221108
-i386                          randconfig-a013
-i386                          randconfig-a011
-i386                          randconfig-a015
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
+                        Geert
 
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
