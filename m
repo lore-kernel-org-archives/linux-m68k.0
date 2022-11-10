@@ -2,92 +2,128 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A595C4332F
-	for <linux-m68k@archiver.kernel.org>; Tue,  8 Nov 2022 08:40:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BBA19C433FE
+	for <linux-m68k@archiver.kernel.org>; Thu, 10 Nov 2022 13:59:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232950AbiKHIkN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 8 Nov 2022 03:40:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47912 "EHLO
+        id S230150AbiKJN7B (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 10 Nov 2022 08:59:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbiKHIkM (ORCPT
+        with ESMTP id S230142AbiKJN7A (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 8 Nov 2022 03:40:12 -0500
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC192DFE
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Nov 2022 00:40:08 -0800 (PST)
-Received: by mail-qt1-f180.google.com with SMTP id z6so8307197qtv.5
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 08 Nov 2022 00:40:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2tFUsRL3FpgdBzxiQy/rXwlRUGlmMU62XkzHAixYMBY=;
-        b=kJ2iXFqR5ZNxjnWNGjZBOARChooBhun6971FaHgUL97kJmWeIT75mam5SN59snkxn5
-         +NT3+R9kouVHTHyJRnDt7ri0CXLugf/Ux8qM5gnlmwWeBY/YCbMJcEH02Ot/L8000IbS
-         kEo5U0dtRYhUNIFbkvNAUn7JLt2VkAHzIFZR1X20PO6o6gCN5hGMIwZjHLgUoFH9lNOP
-         JND5QcmUCZwaH+XOV/yFny/fYtUKS6rdzePzc/on8ppmltDLobfiOg8NtztZ8gfhh1HM
-         hDx7kSIGbkDsVcxAJ6eAVL4Shwy/kjqIzb2xAzcZsVWs4H2aX98lOvvBMeZpWrXpz8HW
-         uBlg==
-X-Gm-Message-State: ACrzQf2c8ASpUbpvW3W4cZRldKPDOlPobynUTrEWIlC/XB+xWQklSL5Z
-        eAvng4uWdSF5nI7NwsReEO46qnvsj+EX2K7G
-X-Google-Smtp-Source: AMsMyM4MWEQFjmCCSUsg4LO86GPn3HOYk60VWIBGrE8LUgwTrUniY5Hyp9B6VgJRBTzTB2W0X5QQDw==
-X-Received: by 2002:ac8:4916:0:b0:3a5:283b:22c7 with SMTP id e22-20020ac84916000000b003a5283b22c7mr34964617qtq.64.1667896807596;
-        Tue, 08 Nov 2022 00:40:07 -0800 (PST)
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
-        by smtp.gmail.com with ESMTPSA id u127-20020a379285000000b006faeecef56fsm3213754qkd.68.2022.11.08.00.40.05
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Nov 2022 00:40:06 -0800 (PST)
-Received: by mail-yb1-f170.google.com with SMTP id o70so16546297yba.7
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 08 Nov 2022 00:40:05 -0800 (PST)
-X-Received: by 2002:a25:6b07:0:b0:6cd:3a43:bfe5 with SMTP id
- g7-20020a256b07000000b006cd3a43bfe5mr41313897ybc.89.1667896805081; Tue, 08
- Nov 2022 00:40:05 -0800 (PST)
-MIME-Version: 1.0
-References: <20221107141638.3790965-1-john.ogness@linutronix.de> <20221107141638.3790965-25-john.ogness@linutronix.de>
-In-Reply-To: <20221107141638.3790965-25-john.ogness@linutronix.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 8 Nov 2022 09:39:53 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUEZ2pKM=RJu1NuVarsPSuOw1=R2E6OVQpeO0TqC2tMrA@mail.gmail.com>
-Message-ID: <CAMuHMdUEZ2pKM=RJu1NuVarsPSuOw1=R2E6OVQpeO0TqC2tMrA@mail.gmail.com>
-Subject: Re: [PATCH printk v3 24/40] tty: nfcon: use console_is_registered()
+        Thu, 10 Nov 2022 08:59:00 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85AC41D0D2
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 10 Nov 2022 05:58:58 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 8AF001FCD6;
+        Thu, 10 Nov 2022 13:58:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1668088737; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8+BR4g4FYShDqBfZbOAElSZtj5E+C1NfPswxdJoJeCM=;
+        b=PR2axcRFy2cLXU3lQMCGZInPKcc7R/mhN9Ym13PoeMjIPr5OrcwO0lrQ8TaFPHPUcnPpa9
+        UKLbf0NrHvlJLewX71/DZGRo0B9Q6UwaTActSK02Y3kDpB+bI3q5CaMj6bnRdwznIBHtSf
+        rg6KN08uWZuU3lw6I5E7JtNbgeuPo+0=
+Received: from suse.cz (unknown [10.100.201.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 360112C141;
+        Thu, 10 Nov 2022 13:58:57 +0000 (UTC)
+Date:   Thu, 10 Nov 2022 14:58:56 +0100
+From:   Petr Mladek <pmladek@suse.com>
 To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Content-Type: text/plain; charset="UTF-8"
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH printk v3 24/40] tty: nfcon: use console_is_registered()
+Message-ID: <Y20DoLPsrfgm528O@alley>
+References: <20221107141638.3790965-1-john.ogness@linutronix.de>
+ <20221107141638.3790965-25-john.ogness@linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221107141638.3790965-25-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi John,
-
-On Mon, Nov 7, 2022 at 3:16 PM John Ogness <john.ogness@linutronix.de> wrote:
+On Mon 2022-11-07 15:22:22, John Ogness wrote:
 > Currently CON_ENABLED is being (mis)used to identify if the console
 > has been registered. This is not reliable because it can be set even
 > though registration failed or it can be unset, even though the console
 > is registered.
 >
-> Instead, use console_is_registered().
->
 > Signed-off-by: John Ogness <john.ogness@linutronix.de>
+> ---
+>  arch/m68k/emu/nfcon.c | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/m68k/emu/nfcon.c b/arch/m68k/emu/nfcon.c
+> index 557d60867f98..292669fa480f 100644
+> --- a/arch/m68k/emu/nfcon.c
+> +++ b/arch/m68k/emu/nfcon.c
+> @@ -49,14 +49,14 @@ static void nfcon_write(struct console *con, const char *str,
+>  static struct tty_driver *nfcon_device(struct console *con, int *index)
+>  {
+>  	*index = 0;
+> -	return (con->flags & CON_ENABLED) ? nfcon_tty_driver : NULL;
+> +	return console_is_registered(con) ? nfcon_tty_driver : NULL;
+>  }
+>  
+>  static struct console nf_console = {
+>  	.name	= "nfcon",
+>  	.write	= nfcon_write,
+>  	.device	= nfcon_device,
+> -	.flags	= CON_PRINTBUFFER,
+> +	.flags	= CON_PRINTBUFFER | CON_ENABLED,
 
-Thanks for your patch!
+This causes that register_console() will always put the console into
+console_list. It causes regression, see below.
 
-LGTM, so
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Gr{oetje,eeting}s,
+>  	.index	= -1,
+>  };
+>  
+> @@ -106,10 +106,8 @@ static int __init nf_debug_setup(char *arg)
+>  		return 0;
+>  
+>  	stderr_id = nf_get_id("NF_STDERR");
+> -	if (stderr_id) {
+> -		nf_console.flags |= CON_ENABLED;
+> +	if (stderr_id)
+>  		register_console(&nf_console);
 
-                        Geert
+My understanding is that this should enable the console
+when debug=nfcon kernel parameter is used.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+It is a non-standard way. This is why CON_ENABLED flag
+has to be explicitly set.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> -	}
+>  
+>  	return 0;
+>  }
+> @@ -151,7 +149,7 @@ static int __init nfcon_init(void)
+>  
+>  	nfcon_tty_driver = driver;
+>  
+> -	if (!(nf_console.flags & CON_ENABLED))
+> +	if (!console_is_registered(&nf_console))
+>  		register_console(&nf_console);
+
+This calls register_console() when it was not already
+registered by the debug=nfcon early parameter.
+
+It is the standard way. It should enable the console only
+when console=nfcon is defined on the commandline. Or when
+there is no preferred console and no console enabled by default yet.
+
+We should not pre-set CON_ENABLED in this case.
+
+Best Regards,
+Petr
