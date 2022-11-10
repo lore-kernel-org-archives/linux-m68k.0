@@ -2,125 +2,81 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F3CFC433FE
-	for <linux-m68k@archiver.kernel.org>; Thu, 10 Nov 2022 14:19:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53BD7C4332F
+	for <linux-m68k@archiver.kernel.org>; Thu, 10 Nov 2022 17:59:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbiKJOTI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 10 Nov 2022 09:19:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51420 "EHLO
+        id S229982AbiKJR7J (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 10 Nov 2022 12:59:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbiKJOTH (ORCPT
+        with ESMTP id S229625AbiKJR7I (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 10 Nov 2022 09:19:07 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D58CDFB9
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 10 Nov 2022 06:19:05 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1668089943;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CLHBQggQls4mWIgeZbw7Mj4Foog8Zgpi+AZP3I0LDjo=;
-        b=TeyzoeMBsyYpwQEcZ7EWDcxKdM1GA5YG3rA9Rd/s6Mj/hMRJt/CpMZqEY2AONXSU5QtyvO
-        PXdvYEzwGP3Ulb+OiWg35ZaYuNuAI3CHWUqqEPfBQLNfvmOQ/ZXjJImfXkGx7uy0XfTQWA
-        vmtCMPHTIqnf8FO54hbFouDBVPzGZ69l2EBCngFRZNG9G1I2tpXDMAO1QHwU968mx4yzod
-        HXi5s97LggtkkmtA56Lwre1sjoZRcHFgJVMPKk8B1dzPVlGI31nSoS8gV3GOhutszYS7WC
-        tFXYCVanN6ah4JTrlmFUNPzD2QkKPYd2rL2q+btcRzXBjjzUkvooQ2dN6jXKPQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1668089943;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CLHBQggQls4mWIgeZbw7Mj4Foog8Zgpi+AZP3I0LDjo=;
-        b=XVCMkXBronBmd1KX+rOaAL7HrZZrturZw18aI93S+jm3mmMSItyqIEZXc2Qx33a+nZGgqy
-        nib2Diw68mRskRAg==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
+        Thu, 10 Nov 2022 12:59:08 -0500
+X-Greylist: delayed 536 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 10 Nov 2022 09:59:05 PST
+Received: from welho-filter3.welho.com (welho-filter3b.welho.com [83.102.41.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9166745A15
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 10 Nov 2022 09:59:05 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by welho-filter3.welho.com (Postfix) with ESMTP id 7499113599;
+        Thu, 10 Nov 2022 19:50:07 +0200 (EET)
+X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
+Received: from welho-smtp1.welho.com ([IPv6:::ffff:83.102.41.84])
+        by localhost (welho-filter3.welho.com [::ffff:83.102.41.25]) (amavisd-new, port 10024)
+        with ESMTP id taeA9fSntBK7; Thu, 10 Nov 2022 19:50:07 +0200 (EET)
+Received: from [192.168.0.20] (82-181-37-202.bb.dnainternet.fi [82.181.37.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by welho-smtp1.welho.com (Postfix) with ESMTPSA id 142A27A;
+        Thu, 10 Nov 2022 19:50:05 +0200 (EET)
+Message-ID: <a6deb895-342c-ca32-fa3c-39d6c826d70c@helsinkinet.fi>
+Date:   Thu, 10 Nov 2022 19:50:04 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
 Subject: Re: [PATCH printk v3 24/40] tty: nfcon: use console_is_registered()
-In-Reply-To: <Y20DoLPsrfgm528O@alley>
+Content-Language: en-US
 References: <20221107141638.3790965-1-john.ogness@linutronix.de>
  <20221107141638.3790965-25-john.ogness@linutronix.de>
- <Y20DoLPsrfgm528O@alley>
-Date:   Thu, 10 Nov 2022 15:25:02 +0106
-Message-ID: <87cz9u6gfd.fsf@jogness.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+ <Y20DoLPsrfgm528O@alley> <87cz9u6gfd.fsf@jogness.linutronix.de>
+From:   Eero Tamminen <oak@helsinkinet.fi>
+To:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+In-Reply-To: <87cz9u6gfd.fsf@jogness.linutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 2022-11-10, Petr Mladek <pmladek@suse.com> wrote:
->> diff --git a/arch/m68k/emu/nfcon.c b/arch/m68k/emu/nfcon.c
->> index 557d60867f98..292669fa480f 100644
->> --- a/arch/m68k/emu/nfcon.c
->> +++ b/arch/m68k/emu/nfcon.c
->> @@ -49,14 +49,14 @@ static void nfcon_write(struct console *con, const char *str,
->>  static struct tty_driver *nfcon_device(struct console *con, int *index)
->>  {
->>  	*index = 0;
->> -	return (con->flags & CON_ENABLED) ? nfcon_tty_driver : NULL;
->> +	return console_is_registered(con) ? nfcon_tty_driver : NULL;
->>  }
->>  
->>  static struct console nf_console = {
->>  	.name	= "nfcon",
->>  	.write	= nfcon_write,
->>  	.device	= nfcon_device,
->> -	.flags	= CON_PRINTBUFFER,
->> +	.flags	= CON_PRINTBUFFER | CON_ENABLED,
->
-> This causes that register_console() will always put the console into
-> console_list. It causes regression, see below.
+Hi,
 
-Agreed. Nice catch. I will remove initializing with CON_ENABLED.
+On 10.11.2022 16.19, John Ogness wrote:
+> On 2022-11-10, Petr Mladek <pmladek@suse.com> wrote:
+...
+>>> @@ -106,10 +106,8 @@ static int __init nf_debug_setup(char *arg)
+>>>   		return 0;
+>>>   
+>>>   	stderr_id = nf_get_id("NF_STDERR");
+>>> -	if (stderr_id) {
+>>> -		nf_console.flags |= CON_ENABLED;
+>>> +	if (stderr_id)
+>>>   		register_console(&nf_console);
+>>
+>> My understanding is that this should enable the console
+>> when debug=nfcon kernel parameter is used.
+>>
+>> It is a non-standard way. This is why CON_ENABLED flag
+>> has to be explicitly set.
+> 
+> Understood. I will add a comment explaining why CON_ENABLED is set here.
 
->>  	.index	= -1,
->>  };
->>  
->> @@ -106,10 +106,8 @@ static int __init nf_debug_setup(char *arg)
->>  		return 0;
->>  
->>  	stderr_id = nf_get_id("NF_STDERR");
->> -	if (stderr_id) {
->> -		nf_console.flags |= CON_ENABLED;
->> +	if (stderr_id)
->>  		register_console(&nf_console);
->
-> My understanding is that this should enable the console
-> when debug=nfcon kernel parameter is used.
->
-> It is a non-standard way. This is why CON_ENABLED flag
-> has to be explicitly set.
+NatFeats is emulator feature.  If you want to test the resulting kernel, 
+you can use either Aranym or Hatari emulator.
 
-Understood. I will add a comment explaining why CON_ENABLED is set here.
+Aranym NF docs are here:
+https://github.com/aranym/aranym/wiki/natfeats-proposal
 
->> -	}
->>  
->>  	return 0;
->>  }
->> @@ -151,7 +149,7 @@ static int __init nfcon_init(void)
->>  
->>  	nfcon_tty_driver = driver;
->>  
->> -	if (!(nf_console.flags & CON_ENABLED))
->> +	if (!console_is_registered(&nf_console))
->>  		register_console(&nf_console);
->
-> This calls register_console() when it was not already
-> registered by the debug=nfcon early parameter.
->
-> It is the standard way. It should enable the console only
-> when console=nfcon is defined on the commandline. Or when
-> there is no preferred console and no console enabled by default yet.
->
-> We should not pre-set CON_ENABLED in this case.
+Hatari m68k linux docs are here:
+https://hatari.tuxfamily.org/doc/m68k-linux.txt
 
-Agreed. The hunk itself is OK.
 
-John
+	- Eero
