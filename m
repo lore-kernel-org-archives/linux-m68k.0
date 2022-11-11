@@ -2,81 +2,149 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53BD7C4332F
-	for <linux-m68k@archiver.kernel.org>; Thu, 10 Nov 2022 17:59:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1794C4332F
+	for <linux-m68k@archiver.kernel.org>; Fri, 11 Nov 2022 01:36:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbiKJR7J (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 10 Nov 2022 12:59:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41948 "EHLO
+        id S232341AbiKKBgG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 10 Nov 2022 20:36:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbiKJR7I (ORCPT
+        with ESMTP id S232762AbiKKBgD (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 10 Nov 2022 12:59:08 -0500
-X-Greylist: delayed 536 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 10 Nov 2022 09:59:05 PST
-Received: from welho-filter3.welho.com (welho-filter3b.welho.com [83.102.41.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9166745A15
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 10 Nov 2022 09:59:05 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by welho-filter3.welho.com (Postfix) with ESMTP id 7499113599;
-        Thu, 10 Nov 2022 19:50:07 +0200 (EET)
-X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
-Received: from welho-smtp1.welho.com ([IPv6:::ffff:83.102.41.84])
-        by localhost (welho-filter3.welho.com [::ffff:83.102.41.25]) (amavisd-new, port 10024)
-        with ESMTP id taeA9fSntBK7; Thu, 10 Nov 2022 19:50:07 +0200 (EET)
-Received: from [192.168.0.20] (82-181-37-202.bb.dnainternet.fi [82.181.37.202])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        Thu, 10 Nov 2022 20:36:03 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A897A63CC2
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 10 Nov 2022 17:35:58 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by welho-smtp1.welho.com (Postfix) with ESMTPSA id 142A27A;
-        Thu, 10 Nov 2022 19:50:05 +0200 (EET)
-Message-ID: <a6deb895-342c-ca32-fa3c-39d6c826d70c@helsinkinet.fi>
-Date:   Thu, 10 Nov 2022 19:50:04 +0200
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0D851B823D8;
+        Fri, 11 Nov 2022 01:35:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2127BC433D6;
+        Fri, 11 Nov 2022 01:35:56 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="Nob2uOYR"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1668130553;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=4rp5D2BB0lIb8zOROgUIXIM5QS26CXMfzvc7/8uxz3A=;
+        b=Nob2uOYRaYlnBHuitPG5AZKD++mElZmN2NcUxd7ZtnlT1ZABEfJDpSFTZ3dEmW6iTYpgNu
+        jL9j0t52VaB2AN1jClGoCF+BCt1y9GYRQKjZXSci8WLHd6t7evd2lBljbFWsE0uNE8rWU9
+        DCoAqS4bXouG2d/UgZ+3l8TNJGdpZ4M=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id d0321a36 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Fri, 11 Nov 2022 01:35:53 +0000 (UTC)
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, kexec@lists.infradead.org,
+        Simon Horman <horms@verge.net.au>
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [PATCH v2 RESEND kexec-tools] m68k: pass rng seed via BI_RNG_SEED
+Date:   Fri, 11 Nov 2022 02:35:33 +0100
+Message-Id: <20221111013532.494463-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
-Subject: Re: [PATCH printk v3 24/40] tty: nfcon: use console_is_registered()
-Content-Language: en-US
-References: <20221107141638.3790965-1-john.ogness@linutronix.de>
- <20221107141638.3790965-25-john.ogness@linutronix.de>
- <Y20DoLPsrfgm528O@alley> <87cz9u6gfd.fsf@jogness.linutronix.de>
-From:   Eero Tamminen <oak@helsinkinet.fi>
-To:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-In-Reply-To: <87cz9u6gfd.fsf@jogness.linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi,
+In order to pass fresh entropy to kexec'd kernels, use BI_RNG_SEED
+for passing a seed, with the same semantics that kexec-tools currently
+uses for i386's setup_data.
 
-On 10.11.2022 16.19, John Ogness wrote:
-> On 2022-11-10, Petr Mladek <pmladek@suse.com> wrote:
-...
->>> @@ -106,10 +106,8 @@ static int __init nf_debug_setup(char *arg)
->>>   		return 0;
->>>   
->>>   	stderr_id = nf_get_id("NF_STDERR");
->>> -	if (stderr_id) {
->>> -		nf_console.flags |= CON_ENABLED;
->>> +	if (stderr_id)
->>>   		register_console(&nf_console);
->>
->> My understanding is that this should enable the console
->> when debug=nfcon kernel parameter is used.
->>
->> It is a non-standard way. This is why CON_ENABLED flag
->> has to be explicitly set.
-> 
-> Understood. I will add a comment explaining why CON_ENABLED is set here.
+Link: https://git.kernel.org/torvalds/c/dc63a086daee92c63e3
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+---
+Seems like this was forgotten about, so resending.
 
-NatFeats is emulator feature.  If you want to test the resulting kernel, 
-you can use either Aranym or Hatari emulator.
+ kexec/arch/m68k/bootinfo.c       | 23 +++++++++++++++++++++++
+ kexec/arch/m68k/bootinfo.h       |  5 +++++
+ kexec/arch/m68k/kexec-elf-m68k.c |  1 +
+ 3 files changed, 29 insertions(+)
 
-Aranym NF docs are here:
-https://github.com/aranym/aranym/wiki/natfeats-proposal
+diff --git a/kexec/arch/m68k/bootinfo.c b/kexec/arch/m68k/bootinfo.c
+index 18bf226..086a34b 100644
+--- a/kexec/arch/m68k/bootinfo.c
++++ b/kexec/arch/m68k/bootinfo.c
+@@ -2,6 +2,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <sys/random.h>
+ 
+ #include "../../kexec.h"
+ 
+@@ -152,6 +153,11 @@ void bootinfo_print(void)
+ 			printf("BI_COMMAND_LINE: %s\n", bi->string);
+ 			break;
+ 
++		case BI_RNG_SEED:
++			/* These are secret, so never print them to the console */
++			printf("BI_RNG_SEED: 0x%08x bytes\n", be16_to_cpu(bi->rng_seed.len));
++			break;
++
+ 		default:
+ 			printf("BI tag 0x%04x size %u\n", tag, size);
+ 			break;
+@@ -212,6 +218,23 @@ void bootinfo_set_ramdisk(unsigned long ramdisk_addr,
+ 	bi->mem_info.size = ramdisk_size;
+ }
+ 
++void bootinfo_add_rng_seed(void)
++{
++	enum { RNG_SEED_LEN = 32 };
++	struct bi_rec *bi;
++
++	/* Remove existing rng seed records */
++	bi_remove(BI_RNG_SEED);
++
++	/* Add new rng seed record */
++	bi = bi_add(BI_RNG_SEED, sizeof(bi->rng_seed) + RNG_SEED_LEN);
++	if (getrandom(bi->rng_seed.data, RNG_SEED_LEN, GRND_NONBLOCK) != RNG_SEED_LEN) {
++		bi_remove(BI_RNG_SEED);
++		return;
++	}
++	bi->rng_seed.len = cpu_to_be16(RNG_SEED_LEN);
++}
++
+ 
+     /*
+      * Check the bootinfo version in the kernel image
+diff --git a/kexec/arch/m68k/bootinfo.h b/kexec/arch/m68k/bootinfo.h
+index b6f453d..90f75ad 100644
+--- a/kexec/arch/m68k/bootinfo.h
++++ b/kexec/arch/m68k/bootinfo.h
+@@ -20,6 +20,10 @@ struct bi_rec {
+ 			__be32 size;
+ 		} mem_info;
+ 		char string[0];
++		struct {
++			__be16 len;
++			u8 data[0];
++		} rng_seed;
+ 	};
+ };
+ 
+@@ -39,5 +43,6 @@ extern int bootinfo_get_memory_ranges(struct memory_range **range);
+ extern void bootinfo_set_cmdline(const char *cmdline);
+ extern void bootinfo_set_ramdisk(unsigned long ramdisk_addr,
+ 				 unsigned long ramdisk_size);
++extern void bootinfo_add_rng_seed(void);
+ extern void bootinfo_check_bootversion(const struct kexec_info *info);
+ extern void add_bootinfo(struct kexec_info *info, unsigned long addr);
+diff --git a/kexec/arch/m68k/kexec-elf-m68k.c b/kexec/arch/m68k/kexec-elf-m68k.c
+index 8d00eb9..a2bf7ee 100644
+--- a/kexec/arch/m68k/kexec-elf-m68k.c
++++ b/kexec/arch/m68k/kexec-elf-m68k.c
+@@ -162,6 +162,7 @@ int elf_m68k_load(int argc, char **argv, const char *buf, off_t len,
+ 	/* Update and add bootinfo */
+ 	bootinfo_set_cmdline(cmdline);
+ 	bootinfo_set_ramdisk(ramdisk_addr, ramdisk_size);
++	bootinfo_add_rng_seed();
+ 	if (kexec_debug)
+ 		bootinfo_print();
+ 	add_bootinfo(info, bootinfo_addr);
+-- 
+2.38.1
 
-Hatari m68k linux docs are here:
-https://hatari.tuxfamily.org/doc/m68k-linux.txt
-
-
-	- Eero
