@@ -2,161 +2,250 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4164C433FE
-	for <linux-m68k@archiver.kernel.org>; Mon, 14 Nov 2022 15:43:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7801C38A02
+	for <linux-m68k@archiver.kernel.org>; Mon, 14 Nov 2022 16:29:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237158AbiKNPnO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 14 Nov 2022 10:43:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34520 "EHLO
+        id S237534AbiKNQ3k (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 14 Nov 2022 11:29:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236758AbiKNPnN (ORCPT
+        with ESMTP id S237427AbiKNQ3h (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 14 Nov 2022 10:43:13 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D7F1220C9
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Nov 2022 07:43:12 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E12C96125F;
-        Mon, 14 Nov 2022 15:43:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B99C6C433D6;
-        Mon, 14 Nov 2022 15:43:10 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="L4XowN2a"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1668440588;
+        Mon, 14 Nov 2022 11:29:37 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DBE45FF8
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Nov 2022 08:29:36 -0800 (PST)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1668443374;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=w1JVTWEPmueeruXk+2U+Yrb5Pj6kFLZ+Y2Ax884Hli0=;
-        b=L4XowN2a9MAMdWcI5aSm6bXg3lwwD1XylzKQKBt/Y7IieTygB1P7+navBw3zPRy3Vkrcwh
-        wYHiXZRYawWAwce5e4JirSTMxWE4HDWgaEpGCftE/S4JYZmb0FULrP9IkeqNQmONIEo8z2
-        4DqDK24tkF5s8/B42I+iCpRDhVIQNb4=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id cae1b835 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Mon, 14 Nov 2022 15:43:08 +0000 (UTC)
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     horms@kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, kexec@lists.infradead.org
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH kexec-tools v3] m68k: pass rng seed via BI_RNG_SEED
-Date:   Mon, 14 Nov 2022 16:43:03 +0100
-Message-Id: <20221114154303.1176987-1-Jason@zx2c4.com>
-In-Reply-To: <CAHmME9oMiDixKuC==sEHk3O5vfEV_67ouLjtUYQOnfSp9decxA@mail.gmail.com>
-References: <CAHmME9oMiDixKuC==sEHk3O5vfEV_67ouLjtUYQOnfSp9decxA@mail.gmail.com>
+         content-transfer-encoding:content-transfer-encoding;
+        bh=2ia89HZSRLXOgXaOdEDVfM/lt8urljrOhJdnHfXmKjU=;
+        b=YiZgYIzbGCS66YXIbnxE6HJSvuTozQJVm58tUWdD2n4y28gjtW1uZFFKiE4stX4GyLd79p
+        +YNdGDP8PJqfheCbYANqK1Acwttrp3+h1Arxlm6dnx/imsSfHBTsvWINJO1FTQWjJLFhec
+        x9r0v+8OmvuighJO6BPLWW3526LiM9UaibGBRmcynkQdxf8FtKRpskdXdCeaQDDIl9q+DS
+        /iw1SO/WUFNDXJkVPXBCXepuK+u5fcd7eB1JJwMSHpqzBybgcxVOcAekyMdJIDu6B57+G0
+        3iJH018PYhIpqraxqEXvulW/RG3bmOcweaxcG4nokqF6cr2lDsbBuWvm+JkA9A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1668443374;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=2ia89HZSRLXOgXaOdEDVfM/lt8urljrOhJdnHfXmKjU=;
+        b=yWQ3DUdGxE8HiQ+BCoA7MfdIFiUkgVb02pKvTJXiNVqXlQM6ZDYyW+UBcx0rL+UguDA25s
+        z9obC1MVjJfJPMCg==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        kgdb-bugreport@lists.sourceforge.net, linux-serial@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-um@lists.infradead.org, Luis Chamberlain <mcgrof@kernel.org>,
+        Aaron Tomlin <atomlin@redhat.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, Ard Biesheuvel <ardb@kernel.org>,
+        linux-efi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        Michal Simek <michal.simek@xilinx.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        linux-usb@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        Helge Deller <deller@gmx.de>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Tom Rix <trix@redhat.com>, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH printk v4 00/39] reduce console_lock scope
+Date:   Mon, 14 Nov 2022 17:34:53 +0106
+Message-Id: <20221114162932.141883-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-In order to pass fresh entropy to kexec'd kernels, use BI_RNG_SEED
-for passing a seed, with the same semantics that kexec-tools currently
-uses for i386's setup_data.
+This is v4 of a series to prepare for threaded/atomic
+printing. v3 is here [0]. This series focuses on reducing the
+scope of the BKL console_lock. It achieves this by switching to
+SRCU and a dedicated mutex for console list iteration and
+modification, respectively. The console_lock will no longer
+offer this protection.
 
-Link: https://git.kernel.org/torvalds/c/dc63a086daee92c63e3
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
- kexec/arch/m68k/bootinfo.c       | 23 +++++++++++++++++++++++
- kexec/arch/m68k/bootinfo.h       | 10 ++++++++++
- kexec/arch/m68k/kexec-elf-m68k.c |  1 +
- 3 files changed, 34 insertions(+)
+Also, during the review of v2 it came to our attention that
+many console drivers are checking CON_ENABLED to see if they
+are registered. Because this flag can change without
+unregistering and because this flag does not represent an
+atomic point when an (un)registration process is complete,
+a new console_is_registered() function is introduced. This
+function uses the console_list_lock to synchronize with the
+(un)registration process to provide a reliable status.
 
-diff --git a/kexec/arch/m68k/bootinfo.c b/kexec/arch/m68k/bootinfo.c
-index 18bf226..086a34b 100644
---- a/kexec/arch/m68k/bootinfo.c
-+++ b/kexec/arch/m68k/bootinfo.c
-@@ -2,6 +2,7 @@
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
-+#include <sys/random.h>
- 
- #include "../../kexec.h"
- 
-@@ -152,6 +153,11 @@ void bootinfo_print(void)
- 			printf("BI_COMMAND_LINE: %s\n", bi->string);
- 			break;
- 
-+		case BI_RNG_SEED:
-+			/* These are secret, so never print them to the console */
-+			printf("BI_RNG_SEED: 0x%08x bytes\n", be16_to_cpu(bi->rng_seed.len));
-+			break;
-+
- 		default:
- 			printf("BI tag 0x%04x size %u\n", tag, size);
- 			break;
-@@ -212,6 +218,23 @@ void bootinfo_set_ramdisk(unsigned long ramdisk_addr,
- 	bi->mem_info.size = ramdisk_size;
- }
- 
-+void bootinfo_add_rng_seed(void)
-+{
-+	enum { RNG_SEED_LEN = 32 };
-+	struct bi_rec *bi;
-+
-+	/* Remove existing rng seed records */
-+	bi_remove(BI_RNG_SEED);
-+
-+	/* Add new rng seed record */
-+	bi = bi_add(BI_RNG_SEED, sizeof(bi->rng_seed) + RNG_SEED_LEN);
-+	if (getrandom(bi->rng_seed.data, RNG_SEED_LEN, GRND_NONBLOCK) != RNG_SEED_LEN) {
-+		bi_remove(BI_RNG_SEED);
-+		return;
-+	}
-+	bi->rng_seed.len = cpu_to_be16(RNG_SEED_LEN);
-+}
-+
- 
-     /*
-      * Check the bootinfo version in the kernel image
-diff --git a/kexec/arch/m68k/bootinfo.h b/kexec/arch/m68k/bootinfo.h
-index b6f453d..bb8a03a 100644
---- a/kexec/arch/m68k/bootinfo.h
-+++ b/kexec/arch/m68k/bootinfo.h
-@@ -3,6 +3,11 @@
- #define DEFAULT_BOOTINFO_FILE	"/proc/bootinfo"
- #define MAX_BOOTINFO_SIZE	1536
- 
-+/* New in 6.2's <asm/bootinfo.h>. Remove once 6.2 is baseline version. */
-+#ifndef BI_RNG_SEED
-+#define BI_RNG_SEED             0x0008
-+#endif
-+
- 
-     /*
-      *  Convenience overlay of several struct bi_record variants
-@@ -20,6 +25,10 @@ struct bi_rec {
- 			__be32 size;
- 		} mem_info;
- 		char string[0];
-+		struct {
-+			__be16 len;
-+			__u8 data[0];
-+		} rng_seed;
- 	};
- };
- 
-@@ -39,5 +48,6 @@ extern int bootinfo_get_memory_ranges(struct memory_range **range);
- extern void bootinfo_set_cmdline(const char *cmdline);
- extern void bootinfo_set_ramdisk(unsigned long ramdisk_addr,
- 				 unsigned long ramdisk_size);
-+extern void bootinfo_add_rng_seed(void);
- extern void bootinfo_check_bootversion(const struct kexec_info *info);
- extern void add_bootinfo(struct kexec_info *info, unsigned long addr);
-diff --git a/kexec/arch/m68k/kexec-elf-m68k.c b/kexec/arch/m68k/kexec-elf-m68k.c
-index 8d00eb9..a2bf7ee 100644
---- a/kexec/arch/m68k/kexec-elf-m68k.c
-+++ b/kexec/arch/m68k/kexec-elf-m68k.c
-@@ -162,6 +162,7 @@ int elf_m68k_load(int argc, char **argv, const char *buf, off_t len,
- 	/* Update and add bootinfo */
- 	bootinfo_set_cmdline(cmdline);
- 	bootinfo_set_ramdisk(ramdisk_addr, ramdisk_size);
-+	bootinfo_add_rng_seed();
- 	if (kexec_debug)
- 		bootinfo_print();
- 	add_bootinfo(info, bootinfo_addr);
+All users of the console_lock for list iteration have been
+modified. For the call sites where the console_lock is still
+needed (for other reasons), comments are added to explain
+exactly why the console_lock was needed.
+
+All users of CON_ENABLED for registration status have been
+modified to use console_is_registered(). Note that there are
+still users of CON_ENABLED, but this is for legitimate purposes
+about a registered console being able to print.
+
+The base commit for this series is from Paul McKenney's RCU tree
+and provides an NMI-safe SRCU implementation [1]. Without the
+NMI-safe SRCU implementation, this series is not less safe than
+mainline. But we will need the NMI-safe SRCU implementation for
+atomic consoles anyway, so we might as well get it in
+now. Especially since it _does_ increase the reliability for
+mainline in the panic path.
+
+Changes since v3:
+
+general:
+
+- Implement console_srcu_read_flags() and console_srcu_write_flags()
+  to be used for console->flags access under the srcu_read_lock or
+  console_list_lock, respectively. The functions document their
+  relationship to one another and use data_race(), READ_ONCE(), and
+  WRITE_ONCE() macros to annotate their relationship. They also make
+  use of lockdep to warn if used in improper contexts.
+
+- Replace all console_is_enabled() usage with
+  console_srcu_read_flags() (all were under the srcu_read_lock).
+
+serial_core:
+
+- For uart_console_registered(), check uart_console() before taking
+  the console_list_lock to avoid unnecessary lock contention for
+  non-console ports.
+
+m68k/emu/nfcon:
+
+- Only explicitly enable the console if registering via debug=nfcon.
+
+tty/serial/sh-sci:
+
+- Add comments about why @options will always be NULL for the
+  earlyprintk console.
+
+kdb:
+
+- Add comments explaining the expectations for console drivers to
+  work correctly.
+
+printk:
+
+- Some code sites under SRCU were checking flags directly. Use
+  console_srcu_read_flags() instead.
+
+- In register_console() rename bootcon_enabled/realcon_enabled to
+  bootcon_registered/realcon_registered to avoid confusion.
+
+- In register_console() only check for boot console sequences if a
+  boot console is registered and !keep_bootcon. In this case, also
+  take the console_lock to guarantee safe access to console->seq.
+
+- In console_force_preferred_locked() use hlist_del_rcu() instead of
+  hlist_del_init_rcu() so that there is never a window where the
+  console can be viewed as unregistered.
+
+John Ogness
+
+[0] https://lore.kernel.org/lkml/20221107141638.3790965-1-john.ogness@linutronix.de
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/log/?h=srcunmisafe.2022.11.09a
+
+John Ogness (37):
+  printk: Prepare for SRCU console list protection
+  printk: register_console: use "registered" for variable names
+  printk: fix setting first seq for consoles
+  um: kmsg_dump: only dump when no output console available
+  tty: serial: kgdboc: document console_lock usage
+  tty: tty_io: document console_lock usage
+  proc: consoles: document console_lock usage
+  printk: introduce console_list_lock
+  console: introduce wrappers to read/write console flags
+  um: kmsg_dumper: use srcu console list iterator
+  kdb: use srcu console list iterator
+  printk: console_flush_all: use srcu console list iterator
+  printk: __pr_flush: use srcu console list iterator
+  printk: console_is_usable: use console_srcu_read_flags
+  printk: console_unblank: use srcu console list iterator
+  printk: console_flush_on_panic: use srcu console list iterator
+  printk: console_device: use srcu console list iterator
+  console: introduce console_is_registered()
+  serial_core: replace uart_console_enabled() with
+    uart_console_registered()
+  tty: nfcon: use console_is_registered()
+  efi: earlycon: use console_is_registered()
+  tty: hvc: use console_is_registered()
+  tty: serial: earlycon: use console_is_registered()
+  tty: serial: pic32_uart: use console_is_registered()
+  tty: serial: samsung_tty: use console_is_registered()
+  tty: serial: xilinx_uartps: use console_is_registered()
+  usb: early: xhci-dbc: use console_is_registered()
+  netconsole: avoid CON_ENABLED misuse to track registration
+  printk, xen: fbfront: create/use safe function for forcing preferred
+  tty: tty_io: use console_list_lock for list synchronization
+  proc: consoles: use console_list_lock for list iteration
+  tty: serial: kgdboc: use srcu console list iterator
+  tty: serial: kgdboc: use console_list_lock for list traversal
+  tty: serial: kgdboc: synchronize tty_find_polling_driver() and
+    register_console()
+  tty: serial: kgdboc: use console_list_lock to trap exit
+  printk: relieve console_lock of list synchronization duties
+  tty: serial: sh-sci: use setup() callback for early console
+
+Thomas Gleixner (2):
+  serial: kgdboc: Lock console list in probe function
+  printk: Convert console_drivers list to hlist
+
+ .clang-format                       |   1 +
+ arch/m68k/emu/nfcon.c               |   9 +-
+ arch/um/kernel/kmsg_dump.c          |  24 +-
+ drivers/firmware/efi/earlycon.c     |   8 +-
+ drivers/net/netconsole.c            |  21 +-
+ drivers/tty/hvc/hvc_console.c       |   4 +-
+ drivers/tty/serial/8250/8250_core.c |   2 +-
+ drivers/tty/serial/earlycon.c       |   4 +-
+ drivers/tty/serial/kgdboc.c         |  46 ++-
+ drivers/tty/serial/pic32_uart.c     |   4 +-
+ drivers/tty/serial/samsung_tty.c    |   2 +-
+ drivers/tty/serial/serial_core.c    |  14 +-
+ drivers/tty/serial/sh-sci.c         |  20 +-
+ drivers/tty/serial/xilinx_uartps.c  |   2 +-
+ drivers/tty/tty_io.c                |  18 +-
+ drivers/usb/early/xhci-dbc.c        |   2 +-
+ drivers/video/fbdev/xen-fbfront.c   |  12 +-
+ fs/proc/consoles.c                  |  21 +-
+ include/linux/console.h             | 129 +++++++-
+ include/linux/serial_core.h         |  10 +-
+ kernel/debug/kdb/kdb_io.c           |  18 +-
+ kernel/printk/printk.c              | 459 +++++++++++++++++++++-------
+ 22 files changed, 648 insertions(+), 182 deletions(-)
+
+
+base-commit: f733615e39aa2d6ddeef33b7b2c9aa6a5a2c2785
 -- 
-2.38.1
+2.30.2
 
