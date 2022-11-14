@@ -2,178 +2,78 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9AFCC4332F
-	for <linux-m68k@archiver.kernel.org>; Fri, 11 Nov 2022 14:49:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CDD4CC43219
+	for <linux-m68k@archiver.kernel.org>; Mon, 14 Nov 2022 15:39:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233424AbiKKOtU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 11 Nov 2022 09:49:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55464 "EHLO
+        id S237063AbiKNPjm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 14 Nov 2022 10:39:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233317AbiKKOtS (ORCPT
+        with ESMTP id S237133AbiKNPjZ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 11 Nov 2022 09:49:18 -0500
-X-Greylist: delayed 332 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Nov 2022 06:49:16 PST
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC8EA26138
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 11 Nov 2022 06:49:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1668177821;
-        bh=EYvFyeYoIXdpRZUrDIt9Kwnd3gAkvdIgxw1lIXG8SKY=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=l66N3oiBVl0WpLOT0hkLWrSBLQJsJSW4+ouPxFZH5QD5KKmXDB6CMjzwtM8VVLLpX
-         a4mvKpJXJiuV9Qw3ANDqSRII+7K5waLtTRLYZ90oeO3HFXyKJpVusI8jz1TOHWpOiX
-         dJRcqsFN0mN40E/3U0KhejsRReLLA8QsqIZLb9mPKd4oL95EyLfXlhHXXYFtuTieM/
-         mQitMOSC/OQ89QyOELCnHdOHRibH9OXvgNxVpUIxiREjJL0PTMu3jrCYcnxgmXCUU+
-         h1vYvH07RGr00OmtJNBP+zQXctnrrr738WJXcAPDjU36sTOHtCkNno5wnO/vjAKkO+
-         R+/kME1qSOXkw==
-Received: from [172.16.0.153] (192-222-180-24.qc.cable.ebox.net [192.222.180.24])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4N81fh5HFrzgt1;
-        Fri, 11 Nov 2022 09:43:40 -0500 (EST)
-Message-ID: <02cdf436-6942-89a7-98b2-bfa75ba5f301@efficios.com>
-Date:   Fri, 11 Nov 2022 09:43:49 -0500
+        Mon, 14 Nov 2022 10:39:25 -0500
+X-Greylist: delayed 405 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 14 Nov 2022 07:39:16 PST
+Received: from zeeaster.vergenet.net (zeeaster.vergenet.net [206.189.110.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69FC92E9F0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Nov 2022 07:39:16 -0800 (PST)
+Received: from madeliefje.horms.nl (2a02-a44a-2918-403-201-8eff-fe22-8fea.fixed6.kpn.net [IPv6:2a02:a44a:2918:403:201:8eff:fe22:8fea])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by zeeaster.vergenet.net (Postfix) with ESMTPSA id 409982000E;
+        Mon, 14 Nov 2022 15:32:00 +0000 (UTC)
+Received: by madeliefje.horms.nl (Postfix, from userid 7100)
+        id 0206E472B; Mon, 14 Nov 2022 10:31:59 -0500 (EST)
+Date:   Mon, 14 Nov 2022 16:31:59 +0100
+From:   Simon Horman <horms@kernel.org>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, kexec@lists.infradead.org
+Subject: Re: [PATCH v2 RESEND kexec-tools] m68k: pass rng seed via BI_RNG_SEED
+Message-ID: <Y3Jfb5fUnX3skm3+@vergenet.net>
+References: <20221111013532.494463-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
-Subject: Re: [PATCH printk v3 00/40] reduce console_lock scope
-Content-Language: en-US
-To:     John Ogness <john.ogness@linutronix.de>,
-        Petr Mladek <pmladek@suse.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        kgdb-bugreport@lists.sourceforge.net, linux-serial@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-um@lists.infradead.org, Luis Chamberlain <mcgrof@kernel.org>,
-        Aaron Tomlin <atomlin@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Tony Lindgren <tony@atomide.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, Ard Biesheuvel <ardb@kernel.org>,
-        linux-efi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        Michal Simek <michal.simek@xilinx.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        linux-usb@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        Helge Deller <deller@gmx.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Tom Rix <trix@redhat.com>, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <20221107141638.3790965-1-john.ogness@linutronix.de>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20221107141638.3790965-1-john.ogness@linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20221111013532.494463-1-Jason@zx2c4.com>
+Organisation: Horms Solutions BV
+X-Virus-Scanned: clamav-milter 0.103.7 at zeeaster
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 2022-11-07 09:15, John Ogness wrote:
-[...]
+On Fri, Nov 11, 2022 at 02:35:33AM +0100, Jason A. Donenfeld wrote:
+> In order to pass fresh entropy to kexec'd kernels, use BI_RNG_SEED
+> for passing a seed, with the same semantics that kexec-tools currently
+> uses for i386's setup_data.
 > 
-> The base commit for this series is from Paul McKenney's RCU tree
-> and provides an NMI-safe SRCU implementation [1]. Without the
-> NMI-safe SRCU implementation, this series is not less safe than
-> mainline. But we will need the NMI-safe SRCU implementation for
-> atomic consoles anyway, so we might as well get it in
-> now. Especially since it _does_ increase the reliability for
-> mainline in the panic path.
+> Link: https://git.kernel.org/torvalds/c/dc63a086daee92c63e3
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> ---
+> Seems like this was forgotten about, so resending.
 
-So, your email got me to review the SRCU nmi-safe series:
+Hi Jason,
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/log/?h=srcunmisafe.2022.10.21a
+Sorry about missing this earlier.
 
-Especially this commit:
+I was planning to apply it just now, but it seems that
+the github workflow flagged a problem:
 
-https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?h=srcunmisafe.2022.10.21a&id=5d0f5953b60f5f7a278085b55ddc73e2932f4c33
+In file included from ../../kexec/arch/m68k/kexec-m68k.c:19:
+../../kexec/arch/m68k/bootinfo.h:25:4: error: unknown type name ‘u8’
+   25 |    u8 data[0];
+      |    ^~
+make[1]: *** [Makefile:124: kexec/arch/m68k/kexec-m68k.o] Error 1
+make[1]: *** Waiting for unfinished jobs....
+In file included from ../../kexec/arch/m68k/kexec-elf-m68k.c:27:
+../../kexec/arch/m68k/bootinfo.h:25:4: error: unknown type name ‘u8’
+   25 |    u8 data[0];
+      |    ^~
+make[1]: *** [Makefile:124: kexec/arch/m68k/kexec-elf-m68k.o] Error 1
+make: *** [Makefile:276: distcheck] Error 2
+make[1]: Leaving directory '/home/runner/work/kexec-tools/kexec-tools/kexec-tools-2.0.25.git/_build/sub'
+Error: Process completed with exit code 2.
 
-I disagree with the overall approach taken there, which is to create
-yet another SRCU flavor, this time with explicit "nmi-safe" read-locks.
-This adds complexity to the kernel APIs and I think we can be clever
-about this and make SRCU nmi-safe without requiring a whole new incompatible
-API.
-
-You can find the basic idea needed to achieve this in the libside RCU
-user-space implementation. I needed to introduce a split-counter concept
-to support rseq vs atomics to keep track of per-cpu grace period counters.
-The "rseq" counter is the fast-path, but if rseq fails, the abort handler
-uses the atomic counter instead.
-
-https://github.com/compudj/side/blob/main/src/rcu.h#L23
-
-struct side_rcu_percpu_count {
-	uintptr_t begin;
-	uintptr_t rseq_begin;
-	uintptr_t end;
-	uintptr_t rseq_end;
-}  __attribute__((__aligned__(SIDE_CACHE_LINE_SIZE)));
-
-The idea is to "split" each percpu counter into two counters, one for rseq,
-and the other for atomics. When a grace period wants to observe the value of
-a percpu counter, it simply sums the two counters:
-
-https://github.com/compudj/side/blob/main/src/rcu.c#L112
-
-The same idea can be applied to SRCU in the kernel: one counter for percpu ops,
-and the other counter for nmi context, so basically:
-
-srcu_read_lock()
-
-if (likely(!in_nmi()))
-   increment the percpu-ops lock counter
-else
-   increment the atomic lock counter
-
-srcu_read_unlock()
-
-if (likely(!in_nmi()))
-   increment the percpu-ops unlock counter
-else
-   increment the atomic unlock counter
-
-Then in the grace period sum the percpu-ops and the atomic values whenever
-each counter value is read.
-
-This would allow SRCU to be NMI-safe without requiring the callers to
-explicitly state whether they need to be nmi-safe or not, and would only
-take the overhead of the atomics in the NMI handlers rather than for all
-users which happen to use SRCU read locks shared with nmi handlers.
-
-Thoughts ?
-
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+Ref: https://github.com/horms/kexec-tools/actions/runs/3462830642/jobs/5782238446
