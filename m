@@ -2,139 +2,92 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 086B1C4332F
-	for <linux-m68k@archiver.kernel.org>; Tue, 22 Nov 2022 16:43:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8BCFC433FE
+	for <linux-m68k@archiver.kernel.org>; Wed, 23 Nov 2022 16:43:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231519AbiKVQnf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 22 Nov 2022 11:43:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43916 "EHLO
+        id S239087AbiKWQnU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 23 Nov 2022 11:43:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234320AbiKVQn0 (ORCPT
+        with ESMTP id S239077AbiKWQnU (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 22 Nov 2022 11:43:26 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5516F68C6F
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 22 Nov 2022 08:43:15 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A8C9CB81CBD;
-        Tue, 22 Nov 2022 16:43:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7CD1C433D6;
-        Tue, 22 Nov 2022 16:43:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1669135392;
-        bh=HhGB03f7yfLJTw6SIRqhGxERi9Gom4x4ToervBUNQF8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ai29wCwrSrFMalECnQg3VZFE6JJ7w1PVvNsX/nUcTdZGvwJT9FgVXh0Qu1fP/KZjg
-         gLL1mmmGyJUPfkwUZ8U8rfzyORb4k7cg2ocWkdlYVwXPJu4ByDHKX8FbqktGuqI0/r
-         L84ihOeSNwOdUyo5JUrjvyIoAUgVxWDKIToY6zCM=
-Date:   Tue, 22 Nov 2022 17:43:08 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        kgdb-bugreport@lists.sourceforge.net, linux-serial@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-um@lists.infradead.org, Aaron Tomlin <atomlin@redhat.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, Ard Biesheuvel <ardb@kernel.org>,
-        linux-efi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        Michal Simek <michal.simek@xilinx.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        linux-usb@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        Helge Deller <deller@gmx.de>,
+        Wed, 23 Nov 2022 11:43:20 -0500
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D55A56D5A
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Nov 2022 08:43:18 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:881b:815b:474d:c3fd])
+        by andre.telenet-ops.be with bizsmtp
+        id nsjF2800J49U0Rd01sjFf2; Wed, 23 Nov 2022 17:43:17 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1oxsqB-001SDE-2q; Wed, 23 Nov 2022 17:43:15 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1oxsqA-001M4Y-FF; Wed, 23 Nov 2022 17:43:14 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
         Thomas Zimmermann <tzimmermann@suse.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Tom Rix <trix@redhat.com>, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH printk v5 00/40] reduce console_lock scope
-Message-ID: <Y3z8HOt0yOd1nceY@kroah.com>
-References: <20221116162152.193147-1-john.ogness@linutronix.de>
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Gerd Hoffmann <kraxel@redhat.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH resend v2] drm/fourcc: Add missing big-endian XRGB1555 and RGB565 formats
+Date:   Wed, 23 Nov 2022 17:43:10 +0100
+Message-Id: <3ee1f8144feb96c28742b22384189f1f83bcfc1a.1669221671.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221116162152.193147-1-john.ogness@linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Nov 16, 2022 at 05:27:12PM +0106, John Ogness wrote:
-> This is v5 of a series to prepare for threaded/atomic
-> printing. v4 is here [0]. This series focuses on reducing the
-> scope of the BKL console_lock. It achieves this by switching to
-> SRCU and a dedicated mutex for console list iteration and
-> modification, respectively. The console_lock will no longer
-> offer this protection.
-> 
-> Also, during the review of v2 it came to our attention that
-> many console drivers are checking CON_ENABLED to see if they
-> are registered. Because this flag can change without
-> unregistering and because this flag does not represent an
-> atomic point when an (un)registration process is complete,
-> a new console_is_registered() function is introduced. This
-> function uses the console_list_lock to synchronize with the
-> (un)registration process to provide a reliable status.
-> 
-> All users of the console_lock for list iteration have been
-> modified. For the call sites where the console_lock is still
-> needed (for other reasons), comments are added to explain
-> exactly why the console_lock is needed.
-> 
-> All users of CON_ENABLED for registration status have been
-> modified to use console_is_registered(). Note that there are
-> still users of CON_ENABLED, but this is for legitimate purposes
-> about a registered console being able to print.
-> 
-> The base commit for this series is from Paul McKenney's RCU tree
-> and provides an NMI-safe SRCU implementation [1]. Without the
-> NMI-safe SRCU implementation, this series is not less safe than
-> mainline. But we will need the NMI-safe SRCU implementation for
-> atomic consoles anyway, so we might as well get it in
-> now. Especially since it _does_ increase the reliability for
-> mainline in the panic path.
-> 
-> Changes since v4:
-> 
-> printk:
-> 
-> - Introduce console_init_seq() to handle the now rather complex
->   procedure to find an appropriate start sequence number for a
->   new console upon registration.
-> 
-> - When registering a non-boot console and boot consoles are
->   registered, try to flush all the consoles to get the next @seq
->   value before falling back to use the @seq of the enabled boot
->   console that is furthest behind.
-> 
-> - For console_force_preferred_locked(), make the console the
->   head of the console list.
-> 
+As of commit eae06120f1974e1a ("drm: refuse ADDFB2 ioctl for broken
+bigendian drivers"), drivers must set the
+quirk_addfb_prefer_host_byte_order quirk to make the drm_mode_addfb()
+compat code work correctly on big-endian machines.
 
+While that works fine for big-endian XRGB8888 and ARGB8888, which are
+mapped to the existing little-endian BGRX8888 and BGRA8888 formats, it
+does not work for big-endian XRGB1555 and RGB565, as the latter are not
+listed in the format database.
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix this by adding the missing formats.  Limit this to big-endian
+platforms, as there is currently no need to support these formats on
+little-endian platforms.
+
+Fixes: 6960e6da9cec3f66 ("drm: fix drm_mode_addfb() on big endian machines.")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+v2:
+  - Use "DRM_FORMAT_foo | DRM_FORMAT_BIG_ENDIAN" instead of
+    "DRM_FORMAT_HOST_foo",
+  - Turn into a lone patch, as all other patches from series
+    https://lore.kernel.org/r/cover.1657300532.git.geert@linux-m68k.org
+    were applied to drm-misc/for-linux-next.
+---
+ drivers/gpu/drm/drm_fourcc.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
+index e09331bb3bc73f21..265671a7f9134c1f 100644
+--- a/drivers/gpu/drm/drm_fourcc.c
++++ b/drivers/gpu/drm/drm_fourcc.c
+@@ -190,6 +190,10 @@ const struct drm_format_info *__drm_format_info(u32 format)
+ 		{ .format = DRM_FORMAT_BGRA5551,	.depth = 15, .num_planes = 1, .cpp = { 2, 0, 0 }, .hsub = 1, .vsub = 1, .has_alpha = true },
+ 		{ .format = DRM_FORMAT_RGB565,		.depth = 16, .num_planes = 1, .cpp = { 2, 0, 0 }, .hsub = 1, .vsub = 1 },
+ 		{ .format = DRM_FORMAT_BGR565,		.depth = 16, .num_planes = 1, .cpp = { 2, 0, 0 }, .hsub = 1, .vsub = 1 },
++#ifdef __BIG_ENDIAN
++		{ .format = DRM_FORMAT_XRGB1555 | DRM_FORMAT_BIG_ENDIAN, .depth = 15, .num_planes = 1, .cpp = { 2, 0, 0 }, .hsub = 1, .vsub = 1 },
++		{ .format = DRM_FORMAT_RGB565 | DRM_FORMAT_BIG_ENDIAN, .depth = 16, .num_planes = 1, .cpp = { 2, 0, 0 }, .hsub = 1, .vsub = 1 },
++#endif
+ 		{ .format = DRM_FORMAT_RGB888,		.depth = 24, .num_planes = 1, .cpp = { 3, 0, 0 }, .hsub = 1, .vsub = 1 },
+ 		{ .format = DRM_FORMAT_BGR888,		.depth = 24, .num_planes = 1, .cpp = { 3, 0, 0 }, .hsub = 1, .vsub = 1 },
+ 		{ .format = DRM_FORMAT_XRGB8888,	.depth = 24, .num_planes = 1, .cpp = { 4, 0, 0 }, .hsub = 1, .vsub = 1 },
+-- 
+2.25.1
+
