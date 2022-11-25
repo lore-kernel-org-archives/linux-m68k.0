@@ -2,29 +2,29 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0088AC4332F
-	for <linux-m68k@archiver.kernel.org>; Fri, 25 Nov 2022 20:31:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E8AAC46467
+	for <linux-m68k@archiver.kernel.org>; Fri, 25 Nov 2022 20:31:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230042AbiKYUbc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 25 Nov 2022 15:31:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56618 "EHLO
+        id S230022AbiKYUbd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 25 Nov 2022 15:31:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbiKYUbW (ORCPT
+        with ESMTP id S230023AbiKYUbW (ORCPT
         <rfc822;linux-m68k@vger.kernel.org>); Fri, 25 Nov 2022 15:31:22 -0500
 Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6293C2FFF8
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F1565215F
         for <linux-m68k@vger.kernel.org>; Fri, 25 Nov 2022 12:31:20 -0800 (PST)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:d898:271f:7512:e47f])
         by albert.telenet-ops.be with bizsmtp
-        id okXG280064su47u06kXGQe; Fri, 25 Nov 2022 21:31:18 +0100
+        id okXG2800P4su47u06kXGQj; Fri, 25 Nov 2022 21:31:18 +0100
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1oyfLv-001aQt-Q7; Fri, 25 Nov 2022 21:31:15 +0100
+        id 1oyfLw-001aQv-5Z; Fri, 25 Nov 2022 21:31:16 +0100
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1oyfLv-003Kyn-9h; Fri, 25 Nov 2022 21:31:15 +0100
+        id 1oyfLv-003Kz0-Bf; Fri, 25 Nov 2022 21:31:15 +0100
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
@@ -36,101 +36,119 @@ Cc:     Helge Deller <deller@gmx.de>,
         dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
         linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH/RFC 0/3] Atari DRM driver
-Date:   Fri, 25 Nov 2022 21:31:07 +0100
-Message-Id: <cover.1669406380.git.geert@linux-m68k.org>
+Subject: [PATCH/RFC 2/3] drm/simple-kms-helper: Add mode_fixup() to simple display pipe
+Date:   Fri, 25 Nov 2022 21:31:09 +0100
+Message-Id: <3b0862187f1c8910089cb0d06a8669caa985042e.1669406382.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1669406380.git.geert@linux-m68k.org>
+References: <cover.1669406380.git.geert@linux-m68k.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-	Hi all,
+From: Thomas Zimmermann <tzimmermann@suse.de>
 
-This RFC patch series adds a DRM driver for the good old Atari
-ST/TT/Falcon hardware.  It was developed and tested (only) on the ARAnyM
-emulator.
+The mode fix-up function for simple display helpers is equivalent to the
+regular pipeline's CRTC mode fix-up function. It's called to adjust the
+CRTC's display mode for the encoder. Add this function for DRM fbconv
+helpers.
 
-Supported formats:
-  - C[1248],
-  - RG16 (both standard DRM (little-endian) and native (big-endian)),
-  - XR24.
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/gpu/drm/drm_simple_kms_helper.c | 15 +++++++++
+ include/drm/drm_simple_kms_helper.h     | 43 +++++++++++++++++++++++++
+ 2 files changed, 58 insertions(+)
 
-Patch overview:
-  1. The first patch adds two new helper functions for chunky-to-planar
-     conversion,
-  2. The second patch, posted by Thomas Zimmermann a long time ago,
-     introduces a mode_fixup simple kms helper function (more helpers
-     from his fbdev conversion helper function series have been included
-     (partially) in the Atari DRM driver itself),
-  3. The third patch is the actual Atari DRM driver.  The patch was
-     created with "git format-patch -C", to avoid spamming you with code
-     that is identical to the existing Atari fbdev driver.
-
-The driver is definitely not yet ready for upstream inclusion.
-While mode switching usually works, it is far from optimal, and may
-suffer from hick-ups.  Hence the main objective for posting this
-preliminary version is to receive feedback about the (wrong) helper
-functions and callbacks I am using, and about what/how to improve.
-
-Dependencies:
-  - drm-next
-  - Patch series [1] and [2],
-  - For running modetest, you want to apply patch series [3], [4], and
-    [5] to libdrm.
-
-For your testing convenience, I have pushed this series and its
-dependencies to [6].
-
-Thanks for your comments!
-
-P.S. If you are more interested in the journey than in the destination,
-     perhaps you are interested in the presentation I gave at last
-     ELC-E?[7]
-
-[1] "[PATCH resend v2] drm/fourcc: Add missing big-endian XRGB1555 and
-    RGB565 formats"
-    https://lore.kernel.org/r/3ee1f8144feb96c28742b22384189f1f83bcfc1a.1669221671.git.geert@linux-m68k.org
-[2] "[PATCH v3 0/2] drm/modes: Command line mode selection improvements"
-    https://lore.kernel.org/r/cover.1669405382.git.geert@linux-m68k.org
-
-[3] "[PATCH libdrm v2 00/10] Add support for low-color frame buffer
-    formats"
-    https://lore.kernel.org/r/cover.1657302034.git.geert@linux-m68k.org
-[4] "[PATCH libdrm v2 00/10] Big-endian fixes"
-    https://lore.kernel.org/r/cover.1657302103.git.geert@linux-m68k.org
-[5] "[PATCH libdrm] modetest: Add support for named modes containing
-    dashes"
-[6] https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git/log/?h=atari-drm-wip-v1
-[7] https://osseu2022.sched.com/event/15z6T/trading-fbdev-for-drm-no-returns-accepted-geert-uytterhoeven-glider-bv
-
-Geert Uytterhoeven (2):
-  video: fbdev: c2p: Add transp2() and transp2x()
-  drm: atari: Add a DRM driver for Atari graphics hardware
-
-Thomas Zimmermann (1):
-  drm/simple-kms-helper: Add mode_fixup() to simple display pipe
-
- drivers/gpu/drm/drm_simple_kms_helper.c       |   15 +
- drivers/gpu/drm/tiny/Kconfig                  |    8 +
- drivers/gpu/drm/tiny/Makefile                 |    1 +
- .../atafb.c => gpu/drm/tiny/atari_drm.c}      | 2536 +++++++++++++----
- drivers/video/fbdev/c2p_core.h                |   38 +
- include/drm/drm_simple_kms_helper.h           |   43 +
- 6 files changed, 2113 insertions(+), 528 deletions(-)
- copy drivers/{video/fbdev/atafb.c => gpu/drm/tiny/atari_drm.c} (57%)
-
+diff --git a/drivers/gpu/drm/drm_simple_kms_helper.c b/drivers/gpu/drm/drm_simple_kms_helper.c
+index 3ef420ec4534aab5..3d7f859ac9de6814 100644
+--- a/drivers/gpu/drm/drm_simple_kms_helper.c
++++ b/drivers/gpu/drm/drm_simple_kms_helper.c
+@@ -96,6 +96,20 @@ drm_simple_kms_crtc_mode_valid(struct drm_crtc *crtc,
+ 	return pipe->funcs->mode_valid(pipe, mode);
+ }
+ 
++static bool
++drm_simple_kms_crtc_mode_fixup(struct drm_crtc *crtc,
++			       const struct drm_display_mode *mode,
++			       struct drm_display_mode *adjusted_mode)
++{
++	struct drm_simple_display_pipe *pipe;
++
++	pipe = container_of(crtc, struct drm_simple_display_pipe, crtc);
++	if (!pipe->funcs || !pipe->funcs->mode_fixup)
++		return true;
++
++	return pipe->funcs->mode_fixup(crtc, mode, adjusted_mode);
++}
++
+ static int drm_simple_kms_crtc_check(struct drm_crtc *crtc,
+ 				     struct drm_atomic_state *state)
+ {
+@@ -141,6 +155,7 @@ static void drm_simple_kms_crtc_disable(struct drm_crtc *crtc,
+ 
+ static const struct drm_crtc_helper_funcs drm_simple_kms_crtc_helper_funcs = {
+ 	.mode_valid = drm_simple_kms_crtc_mode_valid,
++	.mode_fixup = drm_simple_kms_crtc_mode_fixup,
+ 	.atomic_check = drm_simple_kms_crtc_check,
+ 	.atomic_enable = drm_simple_kms_crtc_enable,
+ 	.atomic_disable = drm_simple_kms_crtc_disable,
+diff --git a/include/drm/drm_simple_kms_helper.h b/include/drm/drm_simple_kms_helper.h
+index 2298fe3af4cd7abb..2312d089ae85a2b6 100644
+--- a/include/drm/drm_simple_kms_helper.h
++++ b/include/drm/drm_simple_kms_helper.h
+@@ -52,6 +52,49 @@ struct drm_simple_display_pipe_funcs {
+ 	enum drm_mode_status (*mode_valid)(struct drm_simple_display_pipe *pipe,
+ 					   const struct drm_display_mode *mode);
+ 
++	/**
++	 * @mode_fixup:
++	 *
++	 * This callback is used to validate a mode. The parameter mode is the
++	 * display mode that userspace requested, adjusted_mode is the mode the
++	 * encoders need to be fed with. Note that this is the inverse semantics
++	 * of the meaning for the &drm_encoder and &drm_bridge_funcs.mode_fixup
++	 * vfunc. If the CRTC of the simple display pipe cannot support the
++	 * requested conversion from mode to adjusted_mode it should reject the
++	 * modeset.
++	 *
++	 * This function is optional.
++	 *
++	 * NOTE:
++	 *
++	 * This function is called in the check phase of atomic modesets, which
++	 * can be aborted for any reason (including on userspace's request to
++	 * just check whether a configuration would be possible). Atomic drivers
++	 * MUST NOT touch any persistent state (hardware or software) or data
++	 * structures except the passed in adjusted_mode parameter.
++	 *
++	 * Atomic drivers which need to inspect and adjust more state should
++	 * instead use the @atomic_check callback, but note that they're not
++	 * perfectly equivalent: @mode_valid is called from
++	 * drm_atomic_helper_check_modeset(), but @atomic_check is called from
++	 * drm_atomic_helper_check_planes(), because originally it was meant for
++	 * plane update checks only.
++	 *
++	 * Also beware that userspace can request its own custom modes, neither
++	 * core nor helpers filter modes to the list of probe modes reported by
++	 * the GETCONNECTOR IOCTL and stored in &drm_connector.modes. To ensure
++	 * that modes are filtered consistently put any CRTC constraints and
++	 * limits checks into @mode_valid.
++	 *
++	 * RETURNS:
++	 *
++	 * True if an acceptable configuration is possible, false if the modeset
++	 * operation should be rejected.
++	 */
++	bool (*mode_fixup)(struct drm_crtc *crtc,
++			   const struct drm_display_mode *mode,
++			   struct drm_display_mode *adjusted_mode);
++
+ 	/**
+ 	 * @enable:
+ 	 *
 -- 
 2.25.1
 
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
