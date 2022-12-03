@@ -2,77 +2,77 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 835E6C4332F
-	for <linux-m68k@archiver.kernel.org>; Fri,  2 Dec 2022 07:02:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A6F6C352A1
+	for <linux-m68k@archiver.kernel.org>; Sat,  3 Dec 2022 06:11:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232462AbiLBHCa (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 2 Dec 2022 02:02:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48718 "EHLO
+        id S230484AbiLCGLJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 3 Dec 2022 01:11:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230163AbiLBHC3 (ORCPT
+        with ESMTP id S230457AbiLCGLI (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 2 Dec 2022 02:02:29 -0500
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF5A49E440
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  1 Dec 2022 23:02:28 -0800 (PST)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 9F54E68AA6; Fri,  2 Dec 2022 08:02:24 +0100 (CET)
-Date:   Fri, 2 Dec 2022 08:02:23 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH 1/2] net: fec: use dma_alloc_noncoherent for m532x
-Message-ID: <20221202070223.GA12459@lst.de>
-References: <20221121095631.216209-1-hch@lst.de> <20221121095631.216209-2-hch@lst.de> <d87264fe-b3e2-39fe-66d2-8201ce81319b@linux-m68k.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d87264fe-b3e2-39fe-66d2-8201ce81319b@linux-m68k.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        Sat, 3 Dec 2022 01:11:08 -0500
+Received: from mxct.zte.com.cn (mxct.zte.com.cn [183.62.165.209])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600F7BF646
+        for <linux-m68k@lists.linux-m68k.org>; Fri,  2 Dec 2022 22:11:03 -0800 (PST)
+Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mxct.zte.com.cn (FangMail) with ESMTPS id 4NPKF10MTrz4y0v7;
+        Sat,  3 Dec 2022 14:11:01 +0800 (CST)
+Received: from szxlzmapp07.zte.com.cn ([10.5.230.251])
+        by mse-fl1.zte.com.cn with SMTP id 2B36As15085164;
+        Sat, 3 Dec 2022 14:10:54 +0800 (+08)
+        (envelope-from yang.yang29@zte.com.cn)
+Received: from mapi (szxlzmapp02[null])
+        by mapi (Zmail) with MAPI id mid14;
+        Sat, 3 Dec 2022 14:10:56 +0800 (CST)
+Date:   Sat, 3 Dec 2022 14:10:56 +0800 (CST)
+X-Zmail-TransId: 2b04638ae870232ee8c4
+X-Mailer: Zmail v1.0
+Message-ID: <202212031410566533649@zte.com.cn>
+Mime-Version: 1.0
+From:   <yang.yang29@zte.com.cn>
+To:     <geert@linux-m68k.org>
+Cc:     <gerg@linux-m68k.org>, <linux-m68k@lists.linux-m68k.org>,
+        <linux-kernel@vger.kernel.org>, <xu.panda@zte.com.cn>,
+        <yang.yang29@zte.com.cn>
+Subject: =?UTF-8?B?W1BBVENIIGxpbnV4LW5leHRdIG02OGs6IHVzZSBzdHJzY3B5KCkgdG8gaW5zdGVhZCBvZiBzdHJuY3B5KCk=?=
+Content-Type: text/plain;
+        charset="UTF-8"
+X-MAIL: mse-fl1.zte.com.cn 2B36As15085164
+X-Fangmail-Gw-Spam-Type: 0
+X-FangMail-Miltered: at cgslv5.04-192.168.251.13.novalocal with ID 638AE875.000 by FangMail milter!
+X-FangMail-Envelope: 1670047861/4NPKF10MTrz4y0v7/638AE875.000/10.5.228.132/[10.5.228.132]/mse-fl1.zte.com.cn/<yang.yang29@zte.com.cn>
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 638AE875.000/4NPKF10MTrz4y0v7
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Dec 01, 2022 at 03:41:34PM +1000, Greg Ungerer wrote:
->>     #ifdef CONFIG_M532x
->> +	/*
->> +	 * Hacky flush of all caches instead of using the DMA API for the TSO
->> +	 * headers.
->> +	 */
->>   	flush_cache_all();
->
-> Even with this corrected this will now end up failing on all other ColdFire types
-> with the FEC hardware module (all the non-M532x types) once the arch_dma_alloc()
-> returns NULL.
->
-> Did you mean "ifndef CONFIG_COLDFIRE" here?
+From: Xu Panda <xu.panda@zte.com.cn>
 
-How did these work before given that the cache flush is conditional
-on CONFIG_M532x?
+The implementation of strscpy() is more robust and safer.
 
->> +#else
->> +		/* m68knommu manually flushes all caches in fec_enet_rx_queue */
->> +		txq->tso_hdrs = dma_alloc_noncoherent(&fep->pdev->dev,
->> +					txq->bd.ring_size * TSO_HEADER_SIZE,
->> +					&txq->tso_hdrs_dma, DMA_BIDIRECTIONAL,
->> +					GFP_KERNEL);
->> +#endif
->>   		if (!txq->tso_hdrs) {
->>   			ret = -ENOMEM;
->>   			goto alloc_failed;
->
-> And what about the dmam_alloc_coherent() call in fec_enet_init()?
-> Does that need changing too?
+Signed-off-by: Xu Panda <xu.panda@zte.com.cn>
+Signed-off-by: Yang Yang <yang.yang29@zte.com>
+---
+ arch/m68k/kernel/setup_no.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-If that's actually use by the FEC implementations on coldire: yes.
-But maybe I need even more help on how the cache flushing is suppoѕed
-to actually work here.
+diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
+index cb6def585851..37fb663559b4 100644
+--- a/arch/m68k/kernel/setup_no.c
++++ b/arch/m68k/kernel/setup_no.c
+@@ -90,8 +90,7 @@ void __init setup_arch(char **cmdline_p)
+ 	config_BSP(&command_line[0], sizeof(command_line));
+
+ #if defined(CONFIG_BOOTPARAM)
+-	strncpy(&command_line[0], CONFIG_BOOTPARAM_STRING, sizeof(command_line));
+-	command_line[sizeof(command_line) - 1] = 0;
++	strscpy(&command_line[0], CONFIG_BOOTPARAM_STRING, sizeof(command_line));
+ #endif /* CONFIG_BOOTPARAM */
+
+ 	process_uboot_commandline(&command_line[0], sizeof(command_line));
+-- 
+2.15.2
