@@ -2,77 +2,79 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A6F6C352A1
-	for <linux-m68k@archiver.kernel.org>; Sat,  3 Dec 2022 06:11:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC107C4332F
+	for <linux-m68k@archiver.kernel.org>; Mon,  5 Dec 2022 00:02:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbiLCGLJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 3 Dec 2022 01:11:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33766 "EHLO
+        id S230428AbiLEACT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 4 Dec 2022 19:02:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230457AbiLCGLI (ORCPT
+        with ESMTP id S230317AbiLEACT (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 3 Dec 2022 01:11:08 -0500
-Received: from mxct.zte.com.cn (mxct.zte.com.cn [183.62.165.209])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600F7BF646
-        for <linux-m68k@lists.linux-m68k.org>; Fri,  2 Dec 2022 22:11:03 -0800 (PST)
-Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
+        Sun, 4 Dec 2022 19:02:19 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC304DFE0
+        for <linux-m68k@lists.linux-m68k.org>; Sun,  4 Dec 2022 16:02:17 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mxct.zte.com.cn (FangMail) with ESMTPS id 4NPKF10MTrz4y0v7;
-        Sat,  3 Dec 2022 14:11:01 +0800 (CST)
-Received: from szxlzmapp07.zte.com.cn ([10.5.230.251])
-        by mse-fl1.zte.com.cn with SMTP id 2B36As15085164;
-        Sat, 3 Dec 2022 14:10:54 +0800 (+08)
-        (envelope-from yang.yang29@zte.com.cn)
-Received: from mapi (szxlzmapp02[null])
-        by mapi (Zmail) with MAPI id mid14;
-        Sat, 3 Dec 2022 14:10:56 +0800 (CST)
-Date:   Sat, 3 Dec 2022 14:10:56 +0800 (CST)
-X-Zmail-TransId: 2b04638ae870232ee8c4
-X-Mailer: Zmail v1.0
-Message-ID: <202212031410566533649@zte.com.cn>
-Mime-Version: 1.0
-From:   <yang.yang29@zte.com.cn>
-To:     <geert@linux-m68k.org>
-Cc:     <gerg@linux-m68k.org>, <linux-m68k@lists.linux-m68k.org>,
-        <linux-kernel@vger.kernel.org>, <xu.panda@zte.com.cn>,
-        <yang.yang29@zte.com.cn>
-Subject: =?UTF-8?B?W1BBVENIIGxpbnV4LW5leHRdIG02OGs6IHVzZSBzdHJzY3B5KCkgdG8gaW5zdGVhZCBvZiBzdHJuY3B5KCk=?=
-Content-Type: text/plain;
-        charset="UTF-8"
-X-MAIL: mse-fl1.zte.com.cn 2B36As15085164
-X-Fangmail-Gw-Spam-Type: 0
-X-FangMail-Miltered: at cgslv5.04-192.168.251.13.novalocal with ID 638AE875.000 by FangMail milter!
-X-FangMail-Envelope: 1670047861/4NPKF10MTrz4y0v7/638AE875.000/10.5.228.132/[10.5.228.132]/mse-fl1.zte.com.cn/<yang.yang29@zte.com.cn>
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 638AE875.000/4NPKF10MTrz4y0v7
+        by ams.source.kernel.org (Postfix) with ESMTPS id 87BB8B80B6F;
+        Mon,  5 Dec 2022 00:02:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A942C433D6;
+        Mon,  5 Dec 2022 00:02:13 +0000 (UTC)
+Message-ID: <62ee3765-b4fc-db79-5281-7295e43f4314@linux-m68k.org>
+Date:   Mon, 5 Dec 2022 10:02:11 +1000
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH linux-next] m68k: use strscpy() to instead of strncpy()
+To:     yang.yang29@zte.com.cn, geert@linux-m68k.org
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        xu.panda@zte.com.cn
+References: <202212031410566533649@zte.com.cn>
+Content-Language: en-US
+From:   Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <202212031410566533649@zte.com.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Xu Panda <xu.panda@zte.com.cn>
+Hi Xu,
 
-The implementation of strscpy() is more robust and safer.
+On 3/12/22 16:10, yang.yang29@zte.com.cn wrote:
+> From: Xu Panda <xu.panda@zte.com.cn>
+> 
+> The implementation of strscpy() is more robust and safer.
+> 
+> Signed-off-by: Xu Panda <xu.panda@zte.com.cn>
+> Signed-off-by: Yang Yang <yang.yang29@zte.com>
 
-Signed-off-by: Xu Panda <xu.panda@zte.com.cn>
-Signed-off-by: Yang Yang <yang.yang29@zte.com>
----
- arch/m68k/kernel/setup_no.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Thanks. Seeing as this is non-MMU related I'll take this through
+the m68knommu git tree. Applied to the for-next branch.
 
-diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
-index cb6def585851..37fb663559b4 100644
---- a/arch/m68k/kernel/setup_no.c
-+++ b/arch/m68k/kernel/setup_no.c
-@@ -90,8 +90,7 @@ void __init setup_arch(char **cmdline_p)
- 	config_BSP(&command_line[0], sizeof(command_line));
+Regards
+Greg
 
- #if defined(CONFIG_BOOTPARAM)
--	strncpy(&command_line[0], CONFIG_BOOTPARAM_STRING, sizeof(command_line));
--	command_line[sizeof(command_line) - 1] = 0;
-+	strscpy(&command_line[0], CONFIG_BOOTPARAM_STRING, sizeof(command_line));
- #endif /* CONFIG_BOOTPARAM */
 
- 	process_uboot_commandline(&command_line[0], sizeof(command_line));
--- 
-2.15.2
+
+> ---
+>   arch/m68k/kernel/setup_no.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
+> index cb6def585851..37fb663559b4 100644
+> --- a/arch/m68k/kernel/setup_no.c
+> +++ b/arch/m68k/kernel/setup_no.c
+> @@ -90,8 +90,7 @@ void __init setup_arch(char **cmdline_p)
+>   	config_BSP(&command_line[0], sizeof(command_line));
+> 
+>   #if defined(CONFIG_BOOTPARAM)
+> -	strncpy(&command_line[0], CONFIG_BOOTPARAM_STRING, sizeof(command_line));
+> -	command_line[sizeof(command_line) - 1] = 0;
+> +	strscpy(&command_line[0], CONFIG_BOOTPARAM_STRING, sizeof(command_line));
+>   #endif /* CONFIG_BOOTPARAM */
+> 
+>   	process_uboot_commandline(&command_line[0], sizeof(command_line));
+
