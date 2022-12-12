@@ -2,102 +2,71 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC0CEC4332F
-	for <linux-m68k@archiver.kernel.org>; Mon, 12 Dec 2022 14:19:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0818AC10F1E
+	for <linux-m68k@archiver.kernel.org>; Mon, 12 Dec 2022 21:12:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231622AbiLLOTM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 12 Dec 2022 09:19:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43148 "EHLO
+        id S233974AbiLLVMp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 12 Dec 2022 16:12:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232234AbiLLOTI (ORCPT
+        with ESMTP id S233977AbiLLVMV (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 12 Dec 2022 09:19:08 -0500
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E104910574
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Dec 2022 06:18:56 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:e0b1:47d7:2716:fd3])
-        by albert.telenet-ops.be with bizsmtp
-        id vSJt2800f3pMg3v06SJtD3; Mon, 12 Dec 2022 15:18:54 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1p4jdt-0003Ul-IM; Mon, 12 Dec 2022 15:18:53 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1p4jds-00F79p-Vo; Mon, 12 Dec 2022 15:18:53 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mon, 12 Dec 2022 16:12:21 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59DB21A07F
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Dec 2022 13:11:46 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 22989B80E64;
+        Mon, 12 Dec 2022 21:11:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id DE52EC433EF;
+        Mon, 12 Dec 2022 21:11:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1670879503;
+        bh=3JX56UwMITPZdgY8LLwjaZY3wG+Wi8aS/uXD95Ilmf4=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=duFHK7pGXZ02CRuVt6wS9qFB3UdqeS9XrMMi753VeAZLEo8611ht0iZcTYXBw6xiJ
+         GOw00B+4Ve1Zhkf+pmQhrkf+ImOBq/z61ifSVkRws89pxbquG3XsvxS5lgZC193rQo
+         UQHU1ew31G6SCr+wmVn25vJjrJnzRDHSzWSEpn8q6ECy0H5vCi62q3E0m2RZ1MyBLd
+         CXjXM0Zu8iG5rOzDClT532o2e+v7Ckr2Ed3VOHTOz5D/QSCIRQflBEv+imkP9TUy1K
+         wmaRQ8SX+S2l6k6LqP1sMj3f8lRbKwcbAU7PSvGat1vbeVq1ZSM0Fsnfij1lCAmXzP
+         GeffVkqAdE7AQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id CE073C00445;
+        Mon, 12 Dec 2022 21:11:43 +0000 (UTC)
+Subject: Re: [GIT PULL] m68k updates for v6.2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20221212141851.3602384-1-geert@linux-m68k.org>
+References: <20221212141851.3602384-1-geert@linux-m68k.org>
+X-PR-Tracked-List-Id: <linux-m68k.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20221212141851.3602384-1-geert@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.2-tag1
+X-PR-Tracked-Commit-Id: 553b20b211c4153f8af6096fd52069bbdf955e23
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 49d07f010c7c6b09ea2c2ebca67b83b38afa5faf
+Message-Id: <167087950384.1809.14819625222924484550.pr-tracker-bot@kernel.org>
+Date:   Mon, 12 Dec 2022 21:11:43 +0000
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Greg Ungerer <gerg@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [GIT PULL] m68k updates for v6.2
-Date:   Mon, 12 Dec 2022 15:18:51 +0100
-Message-Id: <20221212141851.3602384-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-	Hi Linus,
+The pull request you sent on Mon, 12 Dec 2022 15:18:51 +0100:
 
-The following changes since commit 9abf2313adc1ca1b6180c508c25f22f9395cc780:
+> git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.2-tag1
 
-  Linux 6.1-rc1 (2022-10-16 15:36:24 -0700)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/49d07f010c7c6b09ea2c2ebca67b83b38afa5faf
 
-are available in the Git repository at:
+Thank you!
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.2-tag1
-
-for you to fetch changes up to 553b20b211c4153f8af6096fd52069bbdf955e23:
-
-  m68k: defconfig: Update defconfigs for v6.1-rc1 (2022-11-14 14:56:11 +0100)
-
-----------------------------------------------------------------
-m68k updates for v6.2
-
-  - Remove an unused function involving a non-explictly signed char
-    type,
-  - Reword a (correct) comment to stop the inflood of (incorrect)
-    patches trying to fix it,
-  - Defconfig updates.
-
-----------------------------------------------------------------
-Geert Uytterhoeven (2):
-      m68k: mac: Reword comment using double "in"
-      m68k: defconfig: Update defconfigs for v6.1-rc1
-
-Jason A. Donenfeld (1):
-      m68k: mac: Remove unused rbv_set_video_bpp()
-
- arch/m68k/configs/amiga_defconfig    | 42 ++++++++++++++++++------------------
- arch/m68k/configs/apollo_defconfig   | 42 ++++++++++++++++++------------------
- arch/m68k/configs/atari_defconfig    | 42 ++++++++++++++++++------------------
- arch/m68k/configs/bvme6000_defconfig | 42 ++++++++++++++++++------------------
- arch/m68k/configs/hp300_defconfig    | 42 ++++++++++++++++++------------------
- arch/m68k/configs/mac_defconfig      | 42 ++++++++++++++++++------------------
- arch/m68k/configs/multi_defconfig    | 42 ++++++++++++++++++------------------
- arch/m68k/configs/mvme147_defconfig  | 42 ++++++++++++++++++------------------
- arch/m68k/configs/mvme16x_defconfig  | 42 ++++++++++++++++++------------------
- arch/m68k/configs/q40_defconfig      | 42 ++++++++++++++++++------------------
- arch/m68k/configs/sun3_defconfig     | 42 ++++++++++++++++++------------------
- arch/m68k/configs/sun3x_defconfig    | 42 ++++++++++++++++++------------------
- arch/m68k/include/asm/mac_via.h      |  8 -------
- arch/m68k/mac/misc.c                 |  2 +-
- 14 files changed, 253 insertions(+), 261 deletions(-)
-
-Thanks for pulling!
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
