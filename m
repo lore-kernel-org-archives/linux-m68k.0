@@ -2,194 +2,165 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FD43C46467
-	for <linux-m68k@archiver.kernel.org>; Wed, 14 Dec 2022 11:23:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2924C46467
+	for <linux-m68k@archiver.kernel.org>; Thu, 15 Dec 2022 08:51:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238245AbiLNLXx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 14 Dec 2022 06:23:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41984 "EHLO
+        id S229636AbiLOIvB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 15 Dec 2022 03:51:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238240AbiLNLXn (ORCPT
+        with ESMTP id S229632AbiLOIvB (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 14 Dec 2022 06:23:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED87F2AE1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 14 Dec 2022 03:22:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1671016975;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yxc01zNwMiugjthmgVOlTrtXQnLfLvXjRGMFtbZZLpc=;
-        b=TRsRFy5HWKRJqqxwbSC38MkkVL+pzQVaN48RIhRUvbQBZyedt24vDxP9faiB3QhLUvtPSW
-        jUDazLShTTjthZ9qY/reRE4y5Cap5trYiKq0KlvknrQ+4PgoYPXpD9HQWOo6Qg6rAtYfiW
-        /1ZfU7LhfXDdM3IHhUpPVAiJXEkDOlY=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-587-QGF8QKf9M2Sd4Bv03FIiJQ-1; Wed, 14 Dec 2022 06:22:54 -0500
-X-MC-Unique: QGF8QKf9M2Sd4Bv03FIiJQ-1
-Received: by mail-wr1-f70.google.com with SMTP id e19-20020adfa453000000b0024209415034so3471216wra.18
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 14 Dec 2022 03:22:54 -0800 (PST)
+        Thu, 15 Dec 2022 03:51:01 -0500
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05EA61BEB8
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Dec 2022 00:51:00 -0800 (PST)
+Received: by mail-qt1-f170.google.com with SMTP id h16so4645304qtu.2
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Dec 2022 00:50:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=yxc01zNwMiugjthmgVOlTrtXQnLfLvXjRGMFtbZZLpc=;
-        b=4Oxho939AL1P+mD7T+1wHXsY72KAqbUgl7qyfHFzO/Em/fhOba8wkKMmSM+JSCfeWL
-         ChPFSIn8NDKa7sd/v0uR7nvygixPV4ygFchuPTT4850tRdXcPOqt4qCM0mduHRchhFJM
-         vlyIyJ2u+Hm2T9baxUdEN+num7AN9DPcJSHD2+pFe7Xdvdb6z/qCrObA+zOj3bvbkf91
-         iKonr/Idl7tKuEaANOs53uKqwHOx2ajRAVrN9TUIk35sz/Bl8gOLhuG9NLx+M+t5aXZ5
-         pm4O7iJbqHpWM/AZziTNfrlIiGwu/GyIdRAD9HPXtCjtqxFjytAFAqRW6WiE2Ytby7bk
-         /4VA==
-X-Gm-Message-State: ANoB5pnDYX9w4kPFzBlYN1G8X/gsb9WcpL81YTND/B5YEKayvU1OZch+
-        zT/KUtbcD0PWK3OwRx7nGuZNG1IAsCdktpB1CRshjE+wDcLsg/sEpnGUPS6cwGT7FXnOoxSGAMn
-        emaFOpUHM1MFD5Kk4ygVyTOvIl0qf
-X-Received: by 2002:a05:600c:1da2:b0:3cf:5fd2:87a0 with SMTP id p34-20020a05600c1da200b003cf5fd287a0mr17488502wms.40.1671016973461;
-        Wed, 14 Dec 2022 03:22:53 -0800 (PST)
-X-Google-Smtp-Source: AA0mqf4UNUk6/OXN07sN3FMRll3MrS2ehO8GnTfEO+JQv3BigUvXvNgLJLKqkas5vWijxjr/1KiucA==
-X-Received: by 2002:a05:600c:1da2:b0:3cf:5fd2:87a0 with SMTP id p34-20020a05600c1da200b003cf5fd287a0mr17488468wms.40.1671016973157;
-        Wed, 14 Dec 2022 03:22:53 -0800 (PST)
-Received: from ?IPV6:2003:cb:c703:7700:dd7c:92f8:481f:b96b? (p200300cbc7037700dd7c92f8481fb96b.dip0.t-ipconnect.de. [2003:cb:c703:7700:dd7c:92f8:481f:b96b])
-        by smtp.gmail.com with ESMTPSA id o3-20020a05600c510300b003cfa3a12660sm8504320wms.1.2022.12.14.03.22.49
+        bh=IObtWoKZrv/byxcXlzYwmVNDpTjH/MksUA6nr3afl+k=;
+        b=RXS9JTwX4CqkigtUaJ1fMKufn+lP1/PgT4qyE25FexKSlR18FkBYImEj/JlF+wVbDY
+         kQlaD9SECBCQ/2/xctREOWHpJTD0THGEy4XzQbM/M1r3j632L1qWhX6mRBk6rXrXQGb5
+         hfx2GyAToZkpf8Ukt+6LgB0fKHcIStfiHdzUjK31SQWas8Hph/ZKZa1ilTdIXkBPJ0g0
+         jwIH6EOUOzabQc0Fcaymdf1bB1YNnbwqJQjue0qJfS7IdI7Ou2DHjv4QhU0q434Zv8pf
+         HR7bgVa2fKO7DpZ+qRQXJ5utZEQT4n8HRMfVFf9YRucjGvWYseLYYz9j0riC0DmLumw6
+         QISg==
+X-Gm-Message-State: ANoB5pkjb0fjb8NWE0KaEH8sgPCOXEtk1aET9P0Rn6y9NRI3krmVawQj
+        MtsP+ZAAlI3kNLsqNXJK60/bidrr5j+quw==
+X-Google-Smtp-Source: AA0mqf5psrh7up6FFsY0MKAUAzpqj9TshgvkMxODbOPoPbW8MhlLkDpkvPLewccCnTFY4ydUZ/S78g==
+X-Received: by 2002:a05:622a:1f11:b0:3a7:f4cc:8dd5 with SMTP id ca17-20020a05622a1f1100b003a7f4cc8dd5mr44804908qtb.34.1671094258860;
+        Thu, 15 Dec 2022 00:50:58 -0800 (PST)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id m11-20020a05620a290b00b006fc6529abaesm11722146qkp.101.2022.12.15.00.50.56
+        for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Dec 2022 03:22:52 -0800 (PST)
-Message-ID: <10bd4fc0-4fc0-bd98-6926-7d721a3bb12e@redhat.com>
-Date:   Wed, 14 Dec 2022 12:22:49 +0100
+        Thu, 15 Dec 2022 00:50:57 -0800 (PST)
+Received: by mail-yb1-f169.google.com with SMTP id o127so2710219yba.5
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Dec 2022 00:50:56 -0800 (PST)
+X-Received: by 2002:a25:d655:0:b0:6fc:1c96:c9fe with SMTP id
+ n82-20020a25d655000000b006fc1c96c9femr34386835ybg.36.1671094256707; Thu, 15
+ Dec 2022 00:50:56 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH mm-unstable RFC 00/26] mm: support
- __HAVE_ARCH_PTE_SWP_EXCLUSIVE on all architectures with swap PTEs
-To:     linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Nadav Amit <namit@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
-        x86@kernel.org, linux-alpha@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@quicinc.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Chris Zankel <chris@zankel.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
+References: <20221115083349.1662-1-thunder.leizhen@huawei.com>
+In-Reply-To: <20221115083349.1662-1-thunder.leizhen@huawei.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 15 Dec 2022 09:50:45 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWM6+pC3yUqy+hHRrAf1BCz2sz1KQv2zxS+Wz-639X-aA@mail.gmail.com>
+Message-ID: <CAMuHMdWM6+pC3yUqy+hHRrAf1BCz2sz1KQv2zxS+Wz-639X-aA@mail.gmail.com>
+Subject: Re: [PATCH v9] kallsyms: Add self-test facility
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        linux-modules@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
         Ingo Molnar <mingo@redhat.com>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Matt Turner <mattst88@gmail.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Simek <monstr@monstr.eu>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Richard Weinberger <richard@nod.at>,
-        Rich Felker <dalias@libc.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Stafford Horne <shorne@gmail.com>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vineet Gupta <vgupta@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-References: <20221206144730.163732-1-david@redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20221206144730.163732-1-david@redhat.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        David Laight <David.Laight@aculab.com>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 06.12.22 15:47, David Hildenbrand wrote:
-> This is the follow-up on [1]:
-> 	[PATCH v2 0/8] mm: COW fixes part 3: reliable GUP R/W FOLL_GET of
-> 	anonymous pages
-> 
-> After we implemented __HAVE_ARCH_PTE_SWP_EXCLUSIVE on most prominent
-> enterprise architectures, implement __HAVE_ARCH_PTE_SWP_EXCLUSIVE on all
-> remaining architectures that support swap PTEs.
-> 
-> This makes sure that exclusive anonymous pages will stay exclusive, even
-> after they were swapped out -- for example, making GUP R/W FOLL_GET of
-> anonymous pages reliable. Details can be found in [1].
-> 
-> This primarily fixes remaining known O_DIRECT memory corruptions that can
-> happen on concurrent swapout, whereby we can lose DMA reads to a page
-> (modifying the user page by writing to it).
-> 
-> To verify, there are two test cases (requiring swap space, obviously):
-> (1) The O_DIRECT+swapout test case [2] from Andrea. This test case tries
->      triggering a race condition.
-> (2) My vmsplice() test case [3] that tries to detect if the exclusive
->      marker was lost during swapout, not relying on a race condition.
-> 
-> 
-> For example, on 32bit x86 (with and without PAE), my test case fails
-> without these patches:
-> 	$ ./test_swp_exclusive
-> 	FAIL: page was replaced during COW
-> But succeeds with these patches:
-> 	$ ./test_swp_exclusive
-> 	PASS: page was not replaced during COW
-> 
-> 
-> Why implement __HAVE_ARCH_PTE_SWP_EXCLUSIVE for all architectures, even
-> the ones where swap support might be in a questionable state? This is the
-> first step towards removing "readable_exclusive" migration entries, and
-> instead using pte_swp_exclusive() also with (readable) migration entries
-> instead (as suggested by Peter). The only missing piece for that is
-> supporting pmd_swp_exclusive() on relevant architectures with THP
-> migration support.
-> 
-> As all relevant architectures now implement __HAVE_ARCH_PTE_SWP_EXCLUSIVE,,
-> we can drop __HAVE_ARCH_PTE_SWP_EXCLUSIVE in the last patch.
-> 
-> 
-> RFC because some of the swap PTE layouts are really tricky and I really
-> need some feedback related to deciphering these layouts and "using yet
-> unused PTE bits in swap PTEs". I tried cross-compiling all relevant setups
-> (phew, I might only miss some power/nohash variants), but only tested on
-> x86 so far.
+Hi Zhen,
 
-As I was messing with sparc64 either way and got debian to boot under 
-QEMU, I verified that the sparc64 change also seems to work as expected 
-(under sun4u).
+On Tue, Nov 15, 2022 at 9:41 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+> Added test cases for basic functions and performance of functions
+> kallsyms_lookup_name(), kallsyms_on_each_symbol() and
+> kallsyms_on_each_match_symbol(). It also calculates the compression rate
+> of the kallsyms compression algorithm for the current symbol set.
+>
+> The basic functions test begins by testing a set of symbols whose address
+> values are known. Then, traverse all symbol addresses and find the
+> corresponding symbol name based on the address. It's impossible to
+> determine whether these addresses are correct, but we can use the above
+> three functions along with the addresses to test each other. Due to the
+> traversal operation of kallsyms_on_each_symbol() is too slow, only 60
+> symbols can be tested in one second, so let it test on average once
+> every 128 symbols. The other two functions validate all symbols.
+>
+> If the basic functions test is passed, print only performance test
+> results. If the test fails, print error information, but do not perform
+> subsequent performance tests.
+>
+> Start self-test automatically after system startup if
+> CONFIG_KALLSYMS_SELFTEST=y.
+>
+> Example of output content: (prefix 'kallsyms_selftest:' is omitted
+>  start
+>   ---------------------------------------------------------
+>  | nr_symbols | compressed size | original size | ratio(%) |
+>  |---------------------------------------------------------|
+>  |     107543 |       1357912   |      2407433  |  56.40   |
+>   ---------------------------------------------------------
+>  kallsyms_lookup_name() looked up 107543 symbols
+>  The time spent on each symbol is (ns): min=630, max=35295, avg=7353
+>  kallsyms_on_each_symbol() traverse all: 11782628 ns
+>  kallsyms_on_each_match_symbol() traverse all: 9261 ns
+>  finish
+>
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
--- 
-Thanks,
+Thanks for your patch, which is now commit 30f3bb09778de64e ("kallsyms:
+Add self-test facility") in linus/master.
 
-David / dhildenb
+I gave this a try on m68k (atari_defconfig + CONFIG_KALLSYMS_SELFTEST=y),
+but it failed:
 
+    start
+    kallsyms_lookup_name() for kallsyms_test_func_static failed:
+addr=0, expect 60ab0
+    kallsyms_lookup_name() for kallsyms_test_func failed: addr=0, expect 60ac0
+    kallsyms_lookup_name() for kallsyms_test_func_weak failed: addr=0,
+expect 60ac2
+    kallsyms_lookup_name() for vmalloc failed: addr=0, expect c272a
+    kallsyms_lookup_name() for vfree failed: addr=0, expect c2142
+    kallsyms_on_each_match_symbol() for kallsyms_test_func_static
+failed: count=0, addr=0, expect 60ab0
+    kallsyms_on_each_match_symbol() for kallsyms_test_func failed:
+count=0, addr=0, expect 60ac0
+    kallsyms_on_each_match_symbol() for kallsyms_test_func_weak
+failed: count=0, addr=0, expect 60ac2
+    kallsyms_on_each_match_symbol() for vmalloc failed: count=0,
+addr=0, expect c272a
+    kallsyms_on_each_match_symbol() for vfree failed: count=0, addr=0,
+expect c2142
+    abort
+
+Given all addresses are zero, it looks like some required functionality
+or config option is missing.
+
+$ grep SYM .config
+CONFIG_KALLSYMS=y
+CONFIG_KALLSYMS_SELFTEST=y
+CONFIG_KALLSYMS_BASE_RELATIVE=y
+# CONFIG_ASYMMETRIC_KEY_TYPE is not set
+CONFIG_SYMBOLIC_ERRNAME=y
+# CONFIG_STRIP_ASM_SYMS is not set
+CONFIG_KALLSYMS_SELFTEST
+
+Do you have a clue?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
