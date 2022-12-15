@@ -2,108 +2,74 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BC35C4332F
-	for <linux-m68k@archiver.kernel.org>; Thu, 15 Dec 2022 14:58:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D151C4332F
+	for <linux-m68k@archiver.kernel.org>; Thu, 15 Dec 2022 18:43:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbiLOO6G (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 15 Dec 2022 09:58:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33220 "EHLO
+        id S230206AbiLOSns (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 15 Dec 2022 13:43:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbiLOO6F (ORCPT
+        with ESMTP id S229883AbiLOSng (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 15 Dec 2022 09:58:05 -0500
-X-Greylist: delayed 378 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 15 Dec 2022 06:58:04 PST
-Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E0FA2F026
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Dec 2022 06:58:03 -0800 (PST)
-Received: from frontend03.mail.m-online.net (unknown [192.168.6.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4NXwDH3L4Zz1s7td;
-        Thu, 15 Dec 2022 15:51:43 +0100 (CET)
-Received: from localhost (dynscan3.mnet-online.de [192.168.6.84])
-        by mail.m-online.net (Postfix) with ESMTP id 4NXwDG6gW7z1qqlR;
-        Thu, 15 Dec 2022 15:51:42 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan3.mail.m-online.net [192.168.6.84]) (amavisd-new, port 10024)
-        with ESMTP id MCfDl9-9q1u1; Thu, 15 Dec 2022 15:51:41 +0100 (CET)
-X-Auth-Info: kSr35qTNpPStqMNbyk6H06PVKUXS/dvOYpUkCovEhc47FsWskNcys0YbNBFvy8Yd
-Received: from hawking (unknown [81.95.8.244])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Thu, 15 Dec 2022 13:43:36 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 510CE27CF5
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Dec 2022 10:43:35 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Thu, 15 Dec 2022 15:51:41 +0100 (CET)
-From:   Andreas Schwab <schwab@linux-m68k.org>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CB61D61EE1;
+        Thu, 15 Dec 2022 18:43:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD585C433EF;
+        Thu, 15 Dec 2022 18:43:33 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="flZq12FL"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1671129810;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=U2wIk9Iy3lO0eyDurNiRd13Y8NnkLNZtrzeTYAQ5/0k=;
+        b=flZq12FLtve8AI4p3IkuE70hLdYvdwU6KPaOtMYG8Oa7VX5Ve9o7hw2Q/fWm5t7a/Oe0Lm
+        B8jsGuyyAA7hix9P5en6ZZ+FBzZ+NHQaiqECHkCWJ0DZ8XGNqxr+0KaOs8Nbf9ACUPSaCr
+        ArNMjYAx2KHNdymTBvZC9C1/jP9/pEQ=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id c972e1f6 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Thu, 15 Dec 2022 18:43:30 +0000 (UTC)
+Date:   Thu, 15 Dec 2022 11:43:28 -0700
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        linux-modules@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        David Laight <David.Laight@aculab.com>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: Re: [PATCH v9] kallsyms: Add self-test facility
-References: <20221115083349.1662-1-thunder.leizhen@huawei.com>
-        <CAMuHMdWM6+pC3yUqy+hHRrAf1BCz2sz1KQv2zxS+Wz-639X-aA@mail.gmail.com>
-        <ad09966d-9357-1c32-e491-a402af8dac6e@huawei.com>
-        <CAMuHMdW=KXfYc3Rqz6LizJcDxRX3BzUFTPpdTpDB68sw+QPJ=A@mail.gmail.com>
-        <b00bcc04-0633-bac9-76ab-572f9470901c@huawei.com>
-        <CAMuHMdWPSeieR-sGuozd3kWGjVw85EV40irqM9aErXufifzFNA@mail.gmail.com>
-        <49070ac3-02bb-a3b3-b929-ede07e3b2c95@huawei.com>
-        <CAMuHMdU2fge6UJwKAKOAFqtsnhVyfX80g703TRUoPRK_aeuu-w@mail.gmail.com>
-X-Yow:  Loni Anderson's hair should be LEGALIZED!!
-Date:   Thu, 15 Dec 2022 15:51:40 +0100
-In-Reply-To: <CAMuHMdU2fge6UJwKAKOAFqtsnhVyfX80g703TRUoPRK_aeuu-w@mail.gmail.com>
-        (Geert Uytterhoeven's message of "Thu, 15 Dec 2022 15:43:00 +0100")
-Message-ID: <mvmlen8ra83.fsf@linux-m68k.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+Cc:     linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] m68k: string: Make char intermediate in strcmp() signed
+Message-ID: <Y5tq0OSjTvADFnEZ@zx2c4.com>
+References: <bce014e60d7b1a3d1c60009fc3572e2f72591f21.1671110959.git.geert@linux-m68k.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <bce014e60d7b1a3d1c60009fc3572e2f72591f21.1671110959.git.geert@linux-m68k.org>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Dez 15 2022, Geert Uytterhoeven wrote:
+On Thu, Dec 15, 2022 at 02:30:04PM +0100, Geert Uytterhoeven wrote:
+> Since char became unsigned, strcmp() always returns a positive number.
+> 
+> "res" is used to store a byte difference, so it should be signed.
+> 
+> Fixes: 3bc753c06dd02a35 ("kbuild: treat char as always unsigned")
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+> See "Re: [PATCH v9] kallsyms: Add self-test facility"
+> https://lore.kernel.org/r/CAMuHMdWM6+pC3yUqy+hHRrAf1BCz2sz1KQv2zxS+Wz-639X-aA@mail.gmail.com
+> 
+> I'm wondering how many surprises like this are still hidden...
 
->     start
->     kallsyms_lookup_name() for kallsyms_test_func_static failed:
-> addr=8dbc, expect 60308
->     kallsyms_lookup_name() for kallsyms_test_func failed: addr=8dbc,
-> expect 60318
->     kallsyms_lookup_name() for kallsyms_test_func_weak failed:
-> addr=8dbc, expect 6031a
->     kallsyms_lookup_name() for vmalloc failed: addr=8dbc, expect bdc88
->     kallsyms_lookup_name() for vfree failed: addr=8dbc, expect bd6de
+OOOOOOOOOOFFFFF! Not sure how I missed this one. Perhaps the ASM alluded
+the coccinelle scripts. Anyway, thanks for catching it, sorry for the
+bug, and here's my:
 
-Curiously addr always comes out the same.  What symbol does it resolve
-to?
+Reviewed-by: Jason A. Donenfeld <Jason@zx2c4.com>
 
->     kallsyms_on_each_match_symbol() for kallsyms_test_func_static
-> failed: count=24890, addr=1ee870, expect 60308
->     kallsyms_on_each_match_symbol() for kallsyms_test_func failed:
-> count=24890, addr=1ee870, expect 60318
->     kallsyms_on_each_match_symbol() for kallsyms_test_func_weak
-> failed: count=24890, addr=1ee870, expect 6031a
->     kallsyms_on_each_match_symbol() for vmalloc failed: count=24890,
-> addr=1ee870, expect bdc88
->     kallsyms_on_each_match_symbol() for vfree failed: count=24890,
-> addr=1ee870, expect bd6de
+I assume you'll send this out for the next tranche of m68k fixes.
 
-Here too.
-
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+Jason
