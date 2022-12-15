@@ -2,262 +2,73 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E9E8C4332F
-	for <linux-m68k@archiver.kernel.org>; Thu, 15 Dec 2022 13:25:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78C9CC4332F
+	for <linux-m68k@archiver.kernel.org>; Thu, 15 Dec 2022 13:30:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229482AbiLONZL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 15 Dec 2022 08:25:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51926 "EHLO
+        id S229732AbiLONaR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 15 Dec 2022 08:30:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229947AbiLONZH (ORCPT
+        with ESMTP id S229691AbiLONaP (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 15 Dec 2022 08:25:07 -0500
-Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 980482EF5D
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Dec 2022 05:25:05 -0800 (PST)
-Received: by mail-vk1-f172.google.com with SMTP id 6so4715777vkz.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Dec 2022 05:25:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mwOvoQprZDVQRzs2vhwkIOuB19lw7EaaQpyGlGPGWf8=;
-        b=sdB6xKYumJZztah8r7ANPkCPo6ZiE7iDunHXmc8QIuxTAhs7hr2b/wHYCdYfYaCDn9
-         LRAX0TRltcdSgpsAzDVNvbSOrVfFSbdgR4mv+67A+k0mguftkDJ7vvgQX7PGm2L+Ygmn
-         XS9iiLLI630plMAkg5UBWQmNAY1K2vv40Hb2G7o3uHPb5uZPVchs8A0iQ6YlCCX4oroa
-         H08Z7E+Xa+YJQjiej2dzbeXF++DxcWLTGW5LELa/iTYozomUBp4h1mLjId7xfHVcZGfN
-         31R9TCfyawBb5WH8dr7G1jvonLH0vKllBEZ1zY9OhMGcqj2XTN8WEnbTzYTdtBt5I/P/
-         mdNw==
-X-Gm-Message-State: ANoB5pnyHsTVXyPTkGEdKstTjzjrwqLxe5n7ROognGsN+jKojUsm36hl
-        Mgf55w5H2TOHV+4bnb5Ia8Mbqb1GKRtLkA==
-X-Google-Smtp-Source: AA0mqf6dAJetVvGA4uM3fpDwMibqWe5EKuWwS/DhnHOfW4TJYmuo+QD9x2En1KY4xNy8E0chH3tLeA==
-X-Received: by 2002:a1f:3008:0:b0:3bc:3356:d850 with SMTP id w8-20020a1f3008000000b003bc3356d850mr16858081vkw.10.1671110704137;
-        Thu, 15 Dec 2022 05:25:04 -0800 (PST)
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
-        by smtp.gmail.com with ESMTPSA id bi12-20020a05620a318c00b006fa16fe93bbsm12008594qkb.15.2022.12.15.05.25.02
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Dec 2022 05:25:03 -0800 (PST)
-Received: by mail-yb1-f175.google.com with SMTP id b16so3516897yba.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Dec 2022 05:25:02 -0800 (PST)
-X-Received: by 2002:a25:9e84:0:b0:6de:6183:c5c3 with SMTP id
- p4-20020a259e84000000b006de6183c5c3mr77689635ybq.89.1671110702515; Thu, 15
- Dec 2022 05:25:02 -0800 (PST)
-MIME-Version: 1.0
-References: <20221115083349.1662-1-thunder.leizhen@huawei.com>
- <CAMuHMdWM6+pC3yUqy+hHRrAf1BCz2sz1KQv2zxS+Wz-639X-aA@mail.gmail.com>
- <ad09966d-9357-1c32-e491-a402af8dac6e@huawei.com> <CAMuHMdW=KXfYc3Rqz6LizJcDxRX3BzUFTPpdTpDB68sw+QPJ=A@mail.gmail.com>
- <b00bcc04-0633-bac9-76ab-572f9470901c@huawei.com>
-In-Reply-To: <b00bcc04-0633-bac9-76ab-572f9470901c@huawei.com>
+        Thu, 15 Dec 2022 08:30:15 -0500
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AABC1DF22
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Dec 2022 05:30:13 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:2d49:7a8c:85ed:ab2b])
+        by michel.telenet-ops.be with bizsmtp
+        id wdW92800w4DzhY606dW9S1; Thu, 15 Dec 2022 14:30:10 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1p5oJM-000GrD-Fy; Thu, 15 Dec 2022 14:30:08 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1p5oJL-001mxT-SL; Thu, 15 Dec 2022 14:30:07 +0100
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 15 Dec 2022 14:24:51 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWPSeieR-sGuozd3kWGjVw85EV40irqM9aErXufifzFNA@mail.gmail.com>
-Message-ID: <CAMuHMdWPSeieR-sGuozd3kWGjVw85EV40irqM9aErXufifzFNA@mail.gmail.com>
-Subject: Re: [PATCH v9] kallsyms: Add self-test facility
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        linux-modules@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        David Laight <David.Laight@aculab.com>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Content-Type: text/plain; charset="UTF-8"
+To:     "Jason A . Donenfeld" <Jason@zx2c4.com>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: string: Make char intermediate in strcmp() signed
+Date:   Thu, 15 Dec 2022 14:30:04 +0100
+Message-Id: <bce014e60d7b1a3d1c60009fc3572e2f72591f21.1671110959.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Zhen,
+Since char became unsigned, strcmp() always returns a positive number.
 
-CC Jason
+"res" is used to store a byte difference, so it should be signed.
 
-On Thu, Dec 15, 2022 at 1:34 PM Leizhen (ThunderTown)
-<thunder.leizhen@huawei.com> wrote:
-> On 2022/12/15 17:39, Geert Uytterhoeven wrote:
-> > On Thu, Dec 15, 2022 at 10:16 AM Leizhen (ThunderTown)
-> > <thunder.leizhen@huawei.com> wrote:
-> >> On 2022/12/15 16:50, Geert Uytterhoeven wrote:
-> >>> On Tue, Nov 15, 2022 at 9:41 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
-> >>>> Added test cases for basic functions and performance of functions
-> >>>> kallsyms_lookup_name(), kallsyms_on_each_symbol() and
-> >>>> kallsyms_on_each_match_symbol(). It also calculates the compression rate
-> >>>> of the kallsyms compression algorithm for the current symbol set.
-> >>>>
-> >>>> The basic functions test begins by testing a set of symbols whose address
-> >>>> values are known. Then, traverse all symbol addresses and find the
-> >>>> corresponding symbol name based on the address. It's impossible to
-> >>>> determine whether these addresses are correct, but we can use the above
-> >>>> three functions along with the addresses to test each other. Due to the
-> >>>> traversal operation of kallsyms_on_each_symbol() is too slow, only 60
-> >>>> symbols can be tested in one second, so let it test on average once
-> >>>> every 128 symbols. The other two functions validate all symbols.
-> >>>>
-> >>>> If the basic functions test is passed, print only performance test
-> >>>> results. If the test fails, print error information, but do not perform
-> >>>> subsequent performance tests.
-> >>>>
-> >>>> Start self-test automatically after system startup if
-> >>>> CONFIG_KALLSYMS_SELFTEST=y.
-> >>>>
-> >>>> Example of output content: (prefix 'kallsyms_selftest:' is omitted
-> >>>>  start
-> >>>>   ---------------------------------------------------------
-> >>>>  | nr_symbols | compressed size | original size | ratio(%) |
-> >>>>  |---------------------------------------------------------|
-> >>>>  |     107543 |       1357912   |      2407433  |  56.40   |
-> >>>>   ---------------------------------------------------------
-> >>>>  kallsyms_lookup_name() looked up 107543 symbols
-> >>>>  The time spent on each symbol is (ns): min=630, max=35295, avg=7353
-> >>>>  kallsyms_on_each_symbol() traverse all: 11782628 ns
-> >>>>  kallsyms_on_each_match_symbol() traverse all: 9261 ns
-> >>>>  finish
-> >>>>
-> >>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> >>>
-> >>> Thanks for your patch, which is now commit 30f3bb09778de64e ("kallsyms:
-> >>> Add self-test facility") in linus/master.
-> >>>
-> >>> I gave this a try on m68k (atari_defconfig + CONFIG_KALLSYMS_SELFTEST=y),
-> >>> but it failed:
-> >>>
-> >>>     start
-> >>>     kallsyms_lookup_name() for kallsyms_test_func_static failed:
-> >>> addr=0, expect 60ab0
-> >>>     kallsyms_lookup_name() for kallsyms_test_func failed: addr=0, expect 60ac0
-> >>>     kallsyms_lookup_name() for kallsyms_test_func_weak failed: addr=0,
-> >>> expect 60ac2
-> >>>     kallsyms_lookup_name() for vmalloc failed: addr=0, expect c272a
-> >>>     kallsyms_lookup_name() for vfree failed: addr=0, expect c2142
-> >>>     kallsyms_on_each_match_symbol() for kallsyms_test_func_static
-> >>> failed: count=0, addr=0, expect 60ab0
-> >>>     kallsyms_on_each_match_symbol() for kallsyms_test_func failed:
-> >>> count=0, addr=0, expect 60ac0
-> >>>     kallsyms_on_each_match_symbol() for kallsyms_test_func_weak
-> >>> failed: count=0, addr=0, expect 60ac2
-> >>>     kallsyms_on_each_match_symbol() for vmalloc failed: count=0,
-> >>> addr=0, expect c272a
-> >>>     kallsyms_on_each_match_symbol() for vfree failed: count=0, addr=0,
-> >>> expect c2142
-> >>>     abort
-> >>>
-> >>> Given all addresses are zero, it looks like some required functionality
-> >>> or config option is missing.
-> >>>
-> >>> $ grep SYM .config
-> >>> CONFIG_KALLSYMS=y
-> >>> CONFIG_KALLSYMS_SELFTEST=y
-> >>> CONFIG_KALLSYMS_BASE_RELATIVE=y
-> >>> # CONFIG_ASYMMETRIC_KEY_TYPE is not set
-> >>> CONFIG_SYMBOLIC_ERRNAME=y
-> >>> # CONFIG_STRIP_ASM_SYMS is not set
-> >>> CONFIG_KALLSYMS_SELFTEST
-> >>>
-> >>> Do you have a clue?
-> >>
-> >> cat /proc/kallsyms | grep kallsyms_test_func
-> >> Let's see if the compiler-generated symbols have some special suffixes.
-> >
-> > Thanks, looks normal to me:
-> >
-> >     atari:~# cat /proc/kallsyms | grep kallsyms_test_func
-> >     00060ab0 t kallsyms_test_func_static
-> >     00060ac0 T kallsyms_test_func
-> >     00060ac2 W kallsyms_test_func_weak
-> >     atari:~#
->
-> It's incredible. I don't have a m68k environment and I'm trying to build a qemu
-> environment. If you're in a hurry and willing, you can apply the debugging patch
-> in the attachment. I'd like to see what's wrong. Use "dmesg | grep tst" to collect
-> the output information.
+Fixes: 3bc753c06dd02a35 ("kbuild: treat char as always unsigned")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+See "Re: [PATCH v9] kallsyms: Add self-test facility"
+https://lore.kernel.org/r/CAMuHMdWM6+pC3yUqy+hHRrAf1BCz2sz1KQv2zxS+Wz-639X-aA@mail.gmail.com
 
-Still fails:
+I'm wondering how many surprises like this are still hidden...
+---
+ arch/m68k/include/asm/string.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-    tst: found kallsyms_test_func at index=12845
-    tst: [12533] = kallsyms_test_func, seq=17370, offset=191223
-    tst: [18800] = kallsyms_test_func, seq=23193, offset=259263
-    tst: [21934] = kallsyms_test_func, seq=2527, offset=22331
-    tst: [23501] = kallsyms_test_func, seq=11792, offset=126366
-    tst: [24284] = kallsyms_test_func, seq=8427, offset=87395
-    tst: [24676] = kallsyms_test_func, seq=21896, offset=243536
-    tst: [24872] = kallsyms_test_func, seq=22571, offset=251856
-    tst: [24970] = kallsyms_test_func, seq=23264, offset=260074
-    tst: [25019] = kallsyms_test_func, seq=9003, offset=93752
-    tst: [25043] = kallsyms_test_func, seq=14324, offset=155117
-    tst: [25055] = kallsyms_test_func, seq=5942, offset=62266
-    tst: [25061] = kallsyms_test_func, seq=14347, offset=155467
-    tst: [25064] = kallsyms_test_func, seq=14350, offset=155512
-    tst: [25066] = kallsyms_test_func, seq=14346, offset=155457
-    tst: [25067] = kallsyms_test_func, seq=14354, offset=155565
+diff --git a/arch/m68k/include/asm/string.h b/arch/m68k/include/asm/string.h
+index f759d944c4499404..b8f4ae19e8f6ee2c 100644
+--- a/arch/m68k/include/asm/string.h
++++ b/arch/m68k/include/asm/string.h
+@@ -42,7 +42,7 @@ static inline char *strncpy(char *dest, const char *src, size_t n)
+ #define __HAVE_ARCH_STRCMP
+ static inline int strcmp(const char *cs, const char *ct)
+ {
+-	char res;
++	signed char res;
+ 
+ 	asm ("\n"
+ 		"1:	move.b	(%0)+,%2\n"	/* get *cs */
+-- 
+2.25.1
 
-However, the binary search sequence looks very suspicious.
-After investigation, it turns out compare_symbol_name() and strcmp()
-always return positive numbers.
-
-Looks like commit 3bc753c06dd02a35 ("kbuild: treat char as always
-unsigned") is to blame.
-
-Changing:
-
-    --- a/arch/m68k/include/asm/string.h
-    +++ b/arch/m68k/include/asm/string.h
-    @@ -42,7 +42,7 @@ static inline char *strncpy(char *dest, const
-char *src, size_t n)
-     #define __HAVE_ARCH_STRCMP
-     static inline int strcmp(const char *cs, const char *ct)
-     {
-    -       char res;
-    +       signed char res;
-
-            asm ("\n"
-                    "1:     move.b  (%0)+,%2\n"     /* get *cs */
-
-fixes strcmp, but the test still fails:
-
-    tst: kallsyms_lookup_names() is OK, name=kallsyms_test_func, i=0
-    kallsyms_selftest: kallsyms_lookup_name() for
-kallsyms_test_func_static failed: addr=8e1c, expect 60cd4
-    kallsyms_selftest: kallsyms_lookup_name() for kallsyms_test_func
-failed: addr=8e1c, expect 60ce4
-    kallsyms_selftest: kallsyms_lookup_name() for
-kallsyms_test_func_weak failed: addr=8e1c, expect 60ce6
-    kallsyms_selftest: kallsyms_lookup_name() for vmalloc failed:
-addr=8e1c, expect c2946
-    kallsyms_selftest: kallsyms_lookup_name() for vfree failed:
-addr=8e1c, expect c235e
-    kallsyms_selftest: kallsyms_on_each_match_symbol() for
-kallsyms_test_func_static failed: count=25068, addr=1f3d3c, expect
-60cd4
-    kallsyms_selftest: kallsyms_on_each_match_symbol() for
-kallsyms_test_func failed: count=25068, addr=1f3d3c, expect 60ce4
-    kallsyms_selftest: kallsyms_on_each_match_symbol() for
-kallsyms_test_func_weak failed: count=25068, addr=1f3d3c, expect 60ce6
-    kallsyms_selftest: kallsyms_on_each_match_symbol() for vmalloc
-failed: count=25068, addr=1f3d3c, expect c2946
-    kallsyms_selftest: kallsyms_on_each_match_symbol() for vfree
-failed: count=25068, addr=1f3d3c, expect c235e
-    kallsyms_selftest: abort
-
-Dropping -funsigned-char doesn't improve upon that...
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
