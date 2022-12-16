@@ -2,106 +2,94 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 741DDC3DA71
-	for <linux-m68k@archiver.kernel.org>; Fri, 16 Dec 2022 16:32:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 437BAC4332F
+	for <linux-m68k@archiver.kernel.org>; Fri, 16 Dec 2022 16:35:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbiLPQcY convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 16 Dec 2022 11:32:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60748 "EHLO
+        id S229583AbiLPQfV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 16 Dec 2022 11:35:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231367AbiLPQcO (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 16 Dec 2022 11:32:14 -0500
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656711098
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 16 Dec 2022 08:32:13 -0800 (PST)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-279-BdW-Xxs0M0eWjbn_VRCDlA-1; Fri, 16 Dec 2022 16:32:10 +0000
-X-MC-Unique: BdW-Xxs0M0eWjbn_VRCDlA-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 16 Dec
- 2022 16:32:08 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.044; Fri, 16 Dec 2022 16:32:08 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Andreas Schwab' <schwab@linux-m68k.org>
-CC:     "'Leizhen (ThunderTown)'" <thunder.leizhen@huawei.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        "live-patching@vger.kernel.org" <live-patching@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Masahiro Yamada" <masahiroy@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        "linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: RE: [PATCH v9] kallsyms: Add self-test facility
-Thread-Topic: [PATCH v9] kallsyms: Add self-test facility
-Thread-Index: AQHZEWkbzV5WljPUpEGVjsixemOWL65wtOBg
-Date:   Fri, 16 Dec 2022 16:32:08 +0000
-Message-ID: <819801284eb745d9a4189759bad297f5@AcuMS.aculab.com>
-References: <20221115083349.1662-1-thunder.leizhen@huawei.com>
-        <CAMuHMdWM6+pC3yUqy+hHRrAf1BCz2sz1KQv2zxS+Wz-639X-aA@mail.gmail.com>
-        <ad09966d-9357-1c32-e491-a402af8dac6e@huawei.com>
-        <CAMuHMdW=KXfYc3Rqz6LizJcDxRX3BzUFTPpdTpDB68sw+QPJ=A@mail.gmail.com>
-        <b00bcc04-0633-bac9-76ab-572f9470901c@huawei.com>
-        <CAMuHMdWPSeieR-sGuozd3kWGjVw85EV40irqM9aErXufifzFNA@mail.gmail.com>
-        <49070ac3-02bb-a3b3-b929-ede07e3b2c95@huawei.com>
-        <e81710a9-2c45-0724-ec5f-727977202858@huawei.com>
-        <CAMuHMdWAAQNJd21fhodDONb40LFMae3V_517iT22FykCqG90Og@mail.gmail.com>
-        <4aaede14-8bd3-6071-f17b-7efcb5f0de42@huawei.com>
-        <66ec4021-b633-09ba-73ee-b24cdb3fa25a@huawei.com>
-        <CAMuHMdVUvPRvEvGNmB9WO0yg=w04g4q2_1hfOypqEnrYkFr6YQ@mail.gmail.com>
-        <06345dca-0afb-00a5-c9e9-5ba830d8ad05@huawei.com>
-        <52450ec1da164d6d87587063c3b3d3d2@AcuMS.aculab.com>
-        <592dce7a0de24c62bd31c29f86ce6c1b@AcuMS.aculab.com>
-        <87pmcjidfe.fsf@igel.home>
-        <1ba1fadb39994a4d91edabdfd9d69fa6@AcuMS.aculab.com>
-        <87len7ibtt.fsf@igel.home>
-        <c7cebe9da0474eb880ab14124ba290d0@AcuMS.aculab.com>
- <87fsdfib07.fsf@igel.home>
-In-Reply-To: <87fsdfib07.fsf@igel.home>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        with ESMTP id S231317AbiLPQfT (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 16 Dec 2022 11:35:19 -0500
+X-Greylist: delayed 395 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 16 Dec 2022 08:35:17 PST
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F469E2D;
+        Fri, 16 Dec 2022 08:35:17 -0800 (PST)
+Received: from frontend03.mail.m-online.net (unknown [192.168.6.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4NYZKj0Y1xz1qybn;
+        Fri, 16 Dec 2022 17:28:41 +0100 (CET)
+Received: from localhost (dynscan3.mnet-online.de [192.168.6.84])
+        by mail.m-online.net (Postfix) with ESMTP id 4NYZKj0DcVz1qqlR;
+        Fri, 16 Dec 2022 17:28:41 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan3.mail.m-online.net [192.168.6.84]) (amavisd-new, port 10024)
+        with ESMTP id ETe0X5ahipdf; Fri, 16 Dec 2022 17:28:40 +0100 (CET)
+X-Auth-Info: ja4DdYAVJ2M2oPTM5MSLnKMxqoXcKZ/J4uVZBXx+LTeNTf8jbSNfMX9wC25qzEU9
+Received: from igel.home (aftr-62-216-205-197.dynamic.mnet-online.de [62.216.205.197])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Fri, 16 Dec 2022 17:28:40 +0100 (CET)
+Received: by igel.home (Postfix, from userid 1000)
+        id F39D82C32FE; Fri, 16 Dec 2022 17:28:39 +0100 (CET)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     linux-m68k@vger.kernel.org
+Subject: [PATCH] m68k: fix strcmp inline
+CC:     linux-kernel@vger.kernel.org
+X-Yow:  ..  If I had heart failure right now, I couldn't be a more fortunate
+ man!!
+Date:   Fri, 16 Dec 2022 17:28:39 +0100
+Message-ID: <87bko3ia88.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Andreas Schwab
-> Sent: 16 December 2022 16:12
-> On Dez 16 2022, David Laight wrote:
-> 
-> > The other issue is a missing "memory" clobber.
-> 
-> strcmp is a pure read-only operation.
+The return value of strcmp needs to be computed from the ordering of the
+unsigned characters.
 
-Still needs the memory clobber.
+Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
+---
+ arch/m68k/include/asm/string.h | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-	David
+diff --git a/arch/m68k/include/asm/string.h b/arch/m68k/include/asm/string.h
+index f759d944c449..cdafd67774e0 100644
+--- a/arch/m68k/include/asm/string.h
++++ b/arch/m68k/include/asm/string.h
+@@ -42,18 +42,19 @@ static inline char *strncpy(char *dest, const char *src, size_t n)
+ #define __HAVE_ARCH_STRCMP
+ static inline int strcmp(const char *cs, const char *ct)
+ {
+-	char res;
++	int res = 0, tmp = 0;
+ 
+ 	asm ("\n"
+ 		"1:	move.b	(%0)+,%2\n"	/* get *cs */
+-		"	cmp.b	(%1)+,%2\n"	/* compare a byte */
++		"	move.b	(%1)+,%3\n"	/* get *ct */
++		"	cmp.b	%3,%2\n"	/* compare a byte */
+ 		"	jne	2f\n"		/* not equal, break out */
+ 		"	tst.b	%2\n"		/* at end of cs? */
+ 		"	jne	1b\n"		/* no, keep going */
+ 		"	jra	3f\n"		/* strings are equal */
+-		"2:	sub.b	-(%1),%2\n"	/* *cs - *ct */
++		"2:	sub.l	%3,%2\n"	/* *cs - *ct */
+ 		"3:"
+-		: "+a" (cs), "+a" (ct), "=d" (res));
++		: "+a" (cs), "+a" (ct), "+d" (res), "+d" (tmp));
+ 	return res;
+ }
+ #endif /* CONFIG_COLDFIRE */
+-- 
+2.39.0
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
 
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
