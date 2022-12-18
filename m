@@ -2,140 +2,263 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C265BC4332F
-	for <linux-m68k@archiver.kernel.org>; Sat, 17 Dec 2022 17:37:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7C4CC3DA71
+	for <linux-m68k@archiver.kernel.org>; Sun, 18 Dec 2022 03:33:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229667AbiLQRhX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 17 Dec 2022 12:37:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55410 "EHLO
+        id S230095AbiLRDdU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 17 Dec 2022 22:33:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbiLQRhV (ORCPT
+        with ESMTP id S229537AbiLRDdS (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 17 Dec 2022 12:37:21 -0500
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08F611456
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 17 Dec 2022 09:37:19 -0800 (PST)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-180-orGdr5X-MxKcGNPDPyiq_g-1; Sat, 17 Dec 2022 17:37:16 +0000
-X-MC-Unique: orGdr5X-MxKcGNPDPyiq_g-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Sat, 17 Dec
- 2022 17:37:14 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.044; Sat, 17 Dec 2022 17:37:14 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Geert Uytterhoeven' <geert@linux-m68k.org>,
-        "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-CC:     Steven Rostedt <rostedt@goodmis.org>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        "live-patching@vger.kernel.org" <live-patching@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Masahiro Yamada" <masahiroy@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Jiri Olsa" <jolsa@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        "linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: RE: [PATCH v9] kallsyms: Add self-test facility
-Thread-Topic: [PATCH v9] kallsyms: Add self-test facility
-Thread-Index: AQHZEWkbzV5WljPUpEGVjsixemOWL65wtOBggAAGFACAAAApIIAADHsSgAAbgaCAATN6O4AAPulA
-Date:   Sat, 17 Dec 2022 17:37:14 +0000
-Message-ID: <b673f98db7d14d53a6e1a1957ef81741@AcuMS.aculab.com>
-References: <20221115083349.1662-1-thunder.leizhen@huawei.com>
- <e81710a9-2c45-0724-ec5f-727977202858@huawei.com>
- <CAMuHMdWAAQNJd21fhodDONb40LFMae3V_517iT22FykCqG90Og@mail.gmail.com>
- <4aaede14-8bd3-6071-f17b-7efcb5f0de42@huawei.com>
- <66ec4021-b633-09ba-73ee-b24cdb3fa25a@huawei.com>
- <CAMuHMdVUvPRvEvGNmB9WO0yg=w04g4q2_1hfOypqEnrYkFr6YQ@mail.gmail.com>
- <06345dca-0afb-00a5-c9e9-5ba830d8ad05@huawei.com>
- <52450ec1da164d6d87587063c3b3d3d2@AcuMS.aculab.com>
- <592dce7a0de24c62bd31c29f86ce6c1b@AcuMS.aculab.com>
- <87pmcjidfe.fsf@igel.home>
- <1ba1fadb39994a4d91edabdfd9d69fa6@AcuMS.aculab.com>
- <87len7ibtt.fsf@igel.home>
- <c7cebe9da0474eb880ab14124ba290d0@AcuMS.aculab.com>
- <87fsdfib07.fsf@igel.home>
- <819801284eb745d9a4189759bad297f5@AcuMS.aculab.com>
- <20221216115314.6120beb7@gandalf.local.home>
- <ecf4939dbff84709a1782a8e8851b29f@AcuMS.aculab.com>
- <20221216121947.7d03b651@gandalf.local.home>
- <20221216123805.6eba002c@gandalf.local.home>
- <83701d57c0064c709669c03cecc38356@AcuMS.aculab.com>
- <066d4a61-3df9-b9c8-81a2-40dfcd3c73ef@huawei.com>
- <CAMuHMdXeusQbcfymQpKD4EWjBgKF4Wr8o2LyJhyaj3tS2MKTiQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdXeusQbcfymQpKD4EWjBgKF4Wr8o2LyJhyaj3tS2MKTiQ@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sat, 17 Dec 2022 22:33:18 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BDB5DFB9
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 17 Dec 2022 19:33:16 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2FDA960C83
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 18 Dec 2022 03:33:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B9BAC433AC
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 18 Dec 2022 03:33:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1671334394;
+        bh=tIkYFzXEO2chGeVvpnhnUSRiaYqUOvaPo7G7agH5seU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NZznuv2H9MQueEsr6jgEx1junfwjYsvNcOR43Yi/brcuSQR9UH+m6CrgXjrTxCtE7
+         e6bwe9cJqXk1WuwXoKDMvpo9TzcCqL2J7/rfInWmXCzjpBl8AaPX8/ZDKlqMvr8Jnb
+         yPLDT135jBzOiGZQnkegHTEPk2QAKPw71lNMeRicomC31rduSeqQEgDS6bhnzMGqcq
+         lEoicK81SZ/d6NH3t3vJk88ScyMf0ePdwVfZuCHv/jvCCwGUN6mZAZhI4t+dG610gH
+         fki7MqLM2MPF400PykUCrGAk2XSSyU7i3CvLgBvt+bZ5XueXYRrGIX178MJ5NirAWw
+         7omV8lnwwK5iA==
+Received: by mail-ed1-f48.google.com with SMTP id c17so8607623edj.13
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 17 Dec 2022 19:33:13 -0800 (PST)
+X-Gm-Message-State: ANoB5pmLJQJzdKZa8VKZIjq2Xn5Jc0qhloBEX981Z9UinfXFZNsGnJcx
+        nlWAV5EuzCqJiM+bg1uNN4hGsWQdpiqRJ8D3lXY=
+X-Google-Smtp-Source: AA0mqf6HJrjOIUv4bzcPb2/bKtCuYat7PlsqCSDeflk0KMk+BHjoAVHTjhW6I8Yv82IxystWMfrMsjTObq3olIShGs4=
+X-Received: by 2002:a05:6402:5003:b0:462:a25f:f0f2 with SMTP id
+ p3-20020a056402500300b00462a25ff0f2mr35194911eda.156.1671334392205; Sat, 17
+ Dec 2022 19:33:12 -0800 (PST)
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+References: <20221206144730.163732-1-david@redhat.com>
+In-Reply-To: <20221206144730.163732-1-david@redhat.com>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Sun, 18 Dec 2022 11:32:59 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H4bU7JnAPyf9Mv1m+WGR5NWmHJLva3d9_CsRd4Q_OHVpg@mail.gmail.com>
+Message-ID: <CAAhV-H4bU7JnAPyf9Mv1m+WGR5NWmHJLva3d9_CsRd4Q_OHVpg@mail.gmail.com>
+Subject: Re: [PATCH mm-unstable RFC 00/26] mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+ on all architectures with swap PTEs
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Nadav Amit <namit@vmware.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
+        x86@kernel.org, linux-alpha@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@quicinc.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Chris Zankel <chris@zankel.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Simek <monstr@monstr.eu>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Richard Weinberger <richard@nod.at>,
+        Rich Felker <dalias@libc.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Stafford Horne <shorne@gmail.com>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vineet Gupta <vgupta@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-RnJvbTogR2VlcnQgVXl0dGVyaG9ldmVuDQo+IFNlbnQ6IDE3IERlY2VtYmVyIDIwMjIgMTM6MzcN
-Ci4uLg0KPiA+IFNvIGl0J3MgcXVpdGUgcG9zc2libGUgKEkgZGlkbid0IGRpc2Fzc2VtYmxlIHZt
-bGludXgsIGJlY2F1c2UgSSBkaWRuJ3QgbGVhcm4gbTY4ayk6DQoNClByZXR0eSBlYXN5IHRvIHJl
-YWQgaXQuDQoNCi4uLg0KPiA+IC8vYmluYXJ5IHNlYXJjaA0KPiA+IHdoaWxlIChsb3cgPD0gaGln
-aCkgew0KPiA+ICAgICAuLi4NCj4gPiAgICAgcmV0ID0gY29tcGFyZV9zeW1ib2xfbmFtZShuYW1l
-LCBuYW1lYnVmKTsgICAtLS0tPiAoMSkNCj4gPiAgICAgaWYgKCFyZXQpDQo+ID4gICAgICAgICBi
-cmVhazsNCj4gPiB9DQo+ID4NCj4gPiBsb3cgPSBtaWQ7DQo+ID4gd2hpbGUgKGxvdykgew0KPiA+
-ICAgICAuLi4NCj4gPiAgICAgaWYgKGNvbXBhcmVfc3ltYm9sX25hbWUobmFtZSwgbmFtZWJ1Zikp
-ICAgICAtLS0tPiAoMikNCj4gPiAgICAgICAgIGJyZWFrOw0KPiA+ICAgICBsb3ctLTsNCj4gPiB9
-DQo+ID4NCj4gPiBUaGUgcG9pbnRlciAnbmFtZScgYW5kICduYW1lYnVmJyBvZiAoMSkgYW5kICgy
-KSBhcmUgdGhlIHNhbWUsDQo+ID4gc28gdGhlICdpZicgc3RhdGVtZW50IG9mICgyKSBtYXliZSBv
-bWl0dGVkIGJ5IGNvbXBpbGVyLg0KPiANCj4gQW5kIHRoYXQgaXMgZXhhY3RseSB3aGF0IGlzIGhh
-cHBlbmluZzogdGhlcmUgYXJlIDMgY2FsbHMgdG8gc3RyY21wKCkNCj4gd2l0aCB0aGUgZXhhY3Qg
-c2FtZSBwYXJhbWV0ZXJzLCBhbmQgZ2NjIG9taXRzIHR3byBvZiB0aGVtLCBiZWNhdXNlIGl0DQo+
-IGFzc3VtZXMgaXQgY2FuIHByZWRpY3QgdGhlIG91dGNvbWUsIGFzIHRoZSBwYXJhbWV0ZXJzIGhh
-dmVuJ3QgY2hhbmdlZC4NCg0KQWRkaXRpb25hbGx5IGlmIGthbGxzeW1zX2V4cGFuZF9zeW1ib2wo
-KSBpcyBpbmxpbmVkIGFsbCB0aGUgd3JpdGVzDQppdCBkb2VzIHRvIG5hbWVidWZbXSBjYW4gZ2V0
-IGRpc2NhcmRlZCAtIGJlY2F1c2UgdGhleSBhcmUgdXNlZC4NCldoaWNoIHByb2JhYmx5IGNhdXNl
-cyB0aGUgZW50aXJlIGZ1bmN0aW9uIHRvIGdldCBvcHRpbWlzZWQgYXdheS4NCk1vcmUgY29kZSBm
-b2xsb3dzIC0gdGhlcmUgY291bGQgZWFzaWx5IGJlIG5vdGhpbmcgbGVmdCBleGNlcHQNCnRoZSBi
-aW5hcnkgY2hvcCBpdHNlbGYgdGhhdCBlbnN1cmVzIHRoZSBsb29wIHRlcm1pbmF0ZXMuDQoNCj4g
-Tm93LCB3aHkgaGF2ZSB3ZSBuZXZlciBub3RpY2VkIHRoaXMgYmVmb3JlPyBJIGd1ZXNzIGJlY2F1
-c2UgaXQgaXMgdmVyeQ0KPiB1bmNvbW1vbiBmb3IgYSBmdW5jdGlvbiBjYWxsaW5nIHN0cmNtcCgp
-IG11bHRpcGxlIHRpbWVzIHdpdGggdGhlIGV4YWN0DQo+IHNhbWUgcG9pbnRlciBwYXJhbWV0ZXJz
-LiAgQ29tbW9uIHVzZXJzIGNoYW5nZSB0aGUgcG9pbnRlcnMgYmVmb3JlDQo+IGV2ZXJ5IGNhbGws
-IGluc3RlYWQgb2Yga2VlcGluZyB0aGUgcG9pbnRlciwgYnV0IGNoYW5naW5nIHRoZSBidWZmZXJz
-Jw0KPiBjb250ZW50cyB0aGUgcG9pbnRlcnMgcG9pbnQgdG8uDQo+IA0KPiA+IEJ5IHRoZSB3YXks
-IEkgdHJpZWQgbm8gdm9sYXRpbGUgYnV0IHdpdGgNCj4gPiArICAgICAgICAgICAgICAgOiA6ICJt
-ZW1vcnkiKTsNCj4gPiBJdCBhbHNvIHdvcmtzIHdlbGwuDQo+IA0KPiBJbmRlZWQsIGdjYyB2ZXJz
-aW9uIDkuNC4wIChVYnVudHUgOS40LjAtMXVidW50dTF+MjAuMDQpIGdlbmVyYXRlcyB0aGUNCj4g
-c2FtZSBjb2RlIGZvciBlaXRoZXIgYWRkaW5nIHRoZSB2b2xhdGlsZSBvciB0aGUgbWVtb3J5IGNs
-b2JiZXIuDQo+IA0KPiBOb3RlIHRoYXQgc3RyY21wKCkgaXMgdGhlIG9ubHkgZnVuY3Rpb24gaW4g
-YXJjaC9tNjhrL2luY2x1ZGUvYXNtL3N0cmluZy5oDQo+IHVzaW5nIGlubGluZSBhc20gd2l0aG91
-dCB0aGUgdm9sYXRpbGUga2V5d29yZC4gIEkgZ3Vlc3Mgd2Ugd291bGQNCj4gc2VlIHNpbWlsYXIg
-aXNzdWVzIHdpdGggc3RybmxlbigpICh3aGljaCBhbHNvIGRvZXNuJ3QgbW9kaWZ5IG1lbW9yeSkN
-Cj4gd2hlbiBkcm9wcGluZyB0aGUgdm9sYXRpbGUuDQoNClRoZSAndm9sYXRpbGUnIGVuc3VyZXMg
-dGhhdCBzdHJjbXAoKSBkb2Vzbid0IGdldCB0aHJvd24gYXdheS4NCkl0IGRvZXNuJ3QgZW5zdXJl
-IHRoYXQgdGhlIHdyaXRlcyB0byBuYW1lYnVmW10gYXJlbid0IG9wdGltaXNlZCBhd2F5Lg0KDQpP
-bmx5IHRoZSBtZW1vcnkgY2xvYmJlciBkb2VzIHRoYXQuDQoNClNvIGFsbCB0aG9zZSBhc20gZnVu
-Y3Rpb25zIG5lZWQgdGhlIG1lbW9yeSBjbG9iYmVyLg0KVGhleSBwcm9iYWJseSBkb24ndCBuZWVk
-IHZvbGF0aWxlIC0gc2luY2UgdGhlIGNhbGwgaGFzDQphIHJlc3VsdC4NCkluZGVlZCBzaW5jZSB0
-aGUgbWVtb3J5IGNsb2JiZXIgYWxzbyBzYXlzICd3cml0ZXMgdG8gbWVtb3J5Jw0KaXQgbWF5IG1h
-a2UgdGhlIHZvbGF0aWxlIHBvaW50bGVzcy4NCg0KSSdkIGFsc28gYWRkIHRoZSAnZWFybHkgY2xv
-YmJlcicgYW5ub3RhdGlvbiB0byB0aGUgcmVzdWx0Lg0KSXQgbWF5IG5vdCBtYXR0ZXIgc2luY2Ug
-dGhlIHBvaW50ZXJzIGFyZSBpbi1vdXQsIGJ1dCBzaW5jZQ0KdGhlIHBvaW50ZXIgb3V0cHV0cyBh
-cmUgZGlzY2FyZGVkIHNvbWUgJ2JyYWluLWRhbWFnZWQnDQpyZWdpc3RlciBhbGxvY2F0aW9uIG1p
-Z2h0IGFzc2lnbiB0aGUgc2FtZSByZWdpc3Rlci4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQg
-QWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVz
-LCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+Hi, David,
 
+What is the opposite of exclusive here? Shared or inclusive? I prefer
+pte_swp_mkshared() or pte_swp_mkinclusive() rather than
+pte_swp_clear_exclusive(). Existing examples: dirty/clean, young/old
+...
+
+Huacai
+
+On Tue, Dec 6, 2022 at 10:48 PM David Hildenbrand <david@redhat.com> wrote:
+>
+> This is the follow-up on [1]:
+>         [PATCH v2 0/8] mm: COW fixes part 3: reliable GUP R/W FOLL_GET of
+>         anonymous pages
+>
+> After we implemented __HAVE_ARCH_PTE_SWP_EXCLUSIVE on most prominent
+> enterprise architectures, implement __HAVE_ARCH_PTE_SWP_EXCLUSIVE on all
+> remaining architectures that support swap PTEs.
+>
+> This makes sure that exclusive anonymous pages will stay exclusive, even
+> after they were swapped out -- for example, making GUP R/W FOLL_GET of
+> anonymous pages reliable. Details can be found in [1].
+>
+> This primarily fixes remaining known O_DIRECT memory corruptions that can
+> happen on concurrent swapout, whereby we can lose DMA reads to a page
+> (modifying the user page by writing to it).
+>
+> To verify, there are two test cases (requiring swap space, obviously):
+> (1) The O_DIRECT+swapout test case [2] from Andrea. This test case tries
+>     triggering a race condition.
+> (2) My vmsplice() test case [3] that tries to detect if the exclusive
+>     marker was lost during swapout, not relying on a race condition.
+>
+>
+> For example, on 32bit x86 (with and without PAE), my test case fails
+> without these patches:
+>         $ ./test_swp_exclusive
+>         FAIL: page was replaced during COW
+> But succeeds with these patches:
+>         $ ./test_swp_exclusive
+>         PASS: page was not replaced during COW
+>
+>
+> Why implement __HAVE_ARCH_PTE_SWP_EXCLUSIVE for all architectures, even
+> the ones where swap support might be in a questionable state? This is the
+> first step towards removing "readable_exclusive" migration entries, and
+> instead using pte_swp_exclusive() also with (readable) migration entries
+> instead (as suggested by Peter). The only missing piece for that is
+> supporting pmd_swp_exclusive() on relevant architectures with THP
+> migration support.
+>
+> As all relevant architectures now implement __HAVE_ARCH_PTE_SWP_EXCLUSIVE,,
+> we can drop __HAVE_ARCH_PTE_SWP_EXCLUSIVE in the last patch.
+>
+>
+> RFC because some of the swap PTE layouts are really tricky and I really
+> need some feedback related to deciphering these layouts and "using yet
+> unused PTE bits in swap PTEs". I tried cross-compiling all relevant setups
+> (phew, I might only miss some power/nohash variants), but only tested on
+> x86 so far.
+>
+> CCing arch maintainers only on this cover letter and on the respective
+> patch(es).
+>
+>
+> [1] https://lkml.kernel.org/r/20220329164329.208407-1-david@redhat.com
+> [2] https://gitlab.com/aarcange/kernel-testcases-for-v5.11/-/blob/main/page_count_do_wp_page-swap.c
+> [3] https://gitlab.com/davidhildenbrand/scratchspace/-/blob/main/test_swp_exclusive.c
+>
+> David Hildenbrand (26):
+>   mm/debug_vm_pgtable: more pte_swp_exclusive() sanity checks
+>   alpha/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+>   arc/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+>   arm/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+>   csky/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+>   hexagon/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+>   ia64/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+>   loongarch/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+>   m68k/mm: remove dummy __swp definitions for nommu
+>   m68k/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+>   microblaze/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+>   mips/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+>   nios2/mm: refactor swap PTE layout
+>   nios2/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+>   openrisc/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+>   parisc/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+>   powerpc/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE on 32bit book3s
+>   powerpc/nohash/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+>   riscv/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+>   sh/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+>   sparc/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE on 32bit
+>   sparc/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE on 64bit
+>   um/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+>   x86/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE also on 32bit
+>   xtensa/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+>   mm: remove __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+>
+>  arch/alpha/include/asm/pgtable.h              | 40 ++++++++-
+>  arch/arc/include/asm/pgtable-bits-arcv2.h     | 26 +++++-
+>  arch/arm/include/asm/pgtable-2level.h         |  3 +
+>  arch/arm/include/asm/pgtable-3level.h         |  3 +
+>  arch/arm/include/asm/pgtable.h                | 34 ++++++--
+>  arch/arm64/include/asm/pgtable.h              |  1 -
+>  arch/csky/abiv1/inc/abi/pgtable-bits.h        | 13 ++-
+>  arch/csky/abiv2/inc/abi/pgtable-bits.h        | 19 ++--
+>  arch/csky/include/asm/pgtable.h               | 17 ++++
+>  arch/hexagon/include/asm/pgtable.h            | 36 ++++++--
+>  arch/ia64/include/asm/pgtable.h               | 31 ++++++-
+>  arch/loongarch/include/asm/pgtable-bits.h     |  4 +
+>  arch/loongarch/include/asm/pgtable.h          | 38 +++++++-
+>  arch/m68k/include/asm/mcf_pgtable.h           | 35 +++++++-
+>  arch/m68k/include/asm/motorola_pgtable.h      | 37 +++++++-
+>  arch/m68k/include/asm/pgtable_no.h            |  6 --
+>  arch/m68k/include/asm/sun3_pgtable.h          | 38 +++++++-
+>  arch/microblaze/include/asm/pgtable.h         | 44 +++++++---
+>  arch/mips/include/asm/pgtable-32.h            | 86 ++++++++++++++++---
+>  arch/mips/include/asm/pgtable-64.h            | 23 ++++-
+>  arch/mips/include/asm/pgtable.h               | 35 ++++++++
+>  arch/nios2/include/asm/pgtable-bits.h         |  3 +
+>  arch/nios2/include/asm/pgtable.h              | 37 ++++++--
+>  arch/openrisc/include/asm/pgtable.h           | 40 +++++++--
+>  arch/parisc/include/asm/pgtable.h             | 40 ++++++++-
+>  arch/powerpc/include/asm/book3s/32/pgtable.h  | 37 ++++++--
+>  arch/powerpc/include/asm/book3s/64/pgtable.h  |  1 -
+>  arch/powerpc/include/asm/nohash/32/pgtable.h  | 22 +++--
+>  arch/powerpc/include/asm/nohash/32/pte-40x.h  |  6 +-
+>  arch/powerpc/include/asm/nohash/32/pte-44x.h  | 18 +---
+>  arch/powerpc/include/asm/nohash/32/pte-85xx.h |  4 +-
+>  arch/powerpc/include/asm/nohash/64/pgtable.h  | 24 +++++-
+>  arch/powerpc/include/asm/nohash/pgtable.h     | 15 ++++
+>  arch/powerpc/include/asm/nohash/pte-e500.h    |  1 -
+>  arch/riscv/include/asm/pgtable-bits.h         |  3 +
+>  arch/riscv/include/asm/pgtable.h              | 28 ++++--
+>  arch/s390/include/asm/pgtable.h               |  1 -
+>  arch/sh/include/asm/pgtable_32.h              | 53 +++++++++---
+>  arch/sparc/include/asm/pgtable_32.h           | 26 +++++-
+>  arch/sparc/include/asm/pgtable_64.h           | 37 +++++++-
+>  arch/sparc/include/asm/pgtsrmmu.h             | 14 +--
+>  arch/um/include/asm/pgtable.h                 | 36 +++++++-
+>  arch/x86/include/asm/pgtable-2level.h         | 26 ++++--
+>  arch/x86/include/asm/pgtable-3level.h         | 26 +++++-
+>  arch/x86/include/asm/pgtable.h                |  3 -
+>  arch/xtensa/include/asm/pgtable.h             | 31 +++++--
+>  include/linux/pgtable.h                       | 29 -------
+>  mm/debug_vm_pgtable.c                         | 25 +++++-
+>  mm/memory.c                                   |  4 -
+>  mm/rmap.c                                     | 11 ---
+>  50 files changed, 943 insertions(+), 227 deletions(-)
+>
+> --
+> 2.38.1
+>
+>
