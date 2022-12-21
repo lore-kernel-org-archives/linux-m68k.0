@@ -2,68 +2,58 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A446C4332F
-	for <linux-m68k@archiver.kernel.org>; Wed, 21 Dec 2022 17:07:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31593C3DA7A
+	for <linux-m68k@archiver.kernel.org>; Wed, 21 Dec 2022 17:21:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234662AbiLURHC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 21 Dec 2022 12:07:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50864 "EHLO
+        id S234957AbiLURU7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 21 Dec 2022 12:20:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbiLURHB (ORCPT
+        with ESMTP id S234660AbiLURUb (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 21 Dec 2022 12:07:01 -0500
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F0EF19000
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 21 Dec 2022 09:07:00 -0800 (PST)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-417b63464c6so219639277b3.8
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 21 Dec 2022 09:07:00 -0800 (PST)
+        Wed, 21 Dec 2022 12:20:31 -0500
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E73652034C
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 21 Dec 2022 09:19:25 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id e17-20020a9d7311000000b00678202573f1so6315328otk.8
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 21 Dec 2022 09:19:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SYOKcpVH/CwZxAmDD07aAMcukw6jGJ7fZk2tWZQJ5Co=;
-        b=EmYCuGZi1aBhi0+7PLOQjdb/1nrr3I38sgxXNpnj2Ob5gPWVW+wHeaOB0rT2rW9ia1
-         2eC+kMDfVwn1Aw6vUx9l+Y+mROuW36ElXsnZxVtkTOtX3gWfd+EaTqrQgaKdEDoFyGkW
-         RPvMC8bGtPA+mM+/6Yrg5RydYu4wMK+vVcANc=
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=I3f0UiW+/YoUBXR0TYEPPrtQ962Pvq8PyjcKApLuolY=;
+        b=S4JDz4fwJKnV0j2t+m3muAgfmV/i9v941+5H/WJccBUYbdnIgsgPX1hsplf1lkWywn
+         LPmwsR7CREX8GM2K+FgIWNqn2RPJeUWoRfvoUZA9KgsCHYUb2OHx47O/Yr/+zO3V8fvW
+         e9+is3kGg7xnW5j56R/KzPqFMy7sqXpaAgbT+KFGkNVA9xzWWZUWE5nnXvl2vrZ0OcuE
+         qhfq5HGatwlHJs/MMATO0vpWXoHI0A7mmg0mB+DcJ1I87EbHZu3srhnDjNFExkEYVzGJ
+         BxxYjI5nbfyBLmrnJo204A7t446z1aPtQd2Bt5gQakxLLM0B2bcpMZkFe6OUwvvP4uqI
+         vi2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SYOKcpVH/CwZxAmDD07aAMcukw6jGJ7fZk2tWZQJ5Co=;
-        b=iCgtL5cMOscJG2QP+zgxLH/JLGJc/uX4srl2EPBAk7Q6BCOhux2kCVJZP5tPyUJvTW
-         YzWVU+SJQEUShQWwuTbFMOjk0fsxHWGC++FBdqgB+qhhYSGCKIMO74arTOPwq+9ItJrH
-         jO2e1mF8Nr1k3Z2YKRdpigdd8RdzFSsQgUgyZ3vGTMV7tocibu7ZOjasw5UYwEAwG4TX
-         nkdPR3syHAxAQUhvTxAPNDkv6EgDaif1y8v0/5uMeohxFHKSlMWng/tGlOHocGpJ5tEC
-         qhpNfaGKL+xAvgMe0f0mVuD3LQ1/zJfysaeMRYd75+zdx+ChTZXipFPgAeDYWMzW9zxQ
-         yAUw==
-X-Gm-Message-State: AFqh2koXoRsSTPQc5SxOgKpBPvrx3n3eGfXr8mKMXk4+ANg75X+giQoZ
-        Mkrl15nXpL3fQNxgJiK1n39HEOSAx6qqKY55
-X-Google-Smtp-Source: AMrXdXsTsQruUcFX7hx+iTUlf6ZOkmH3U6Wcrk/sf6EaFpAwpOfJx+4JT/66W16D6ihJgRKY5fXwMA==
-X-Received: by 2002:a05:7500:368d:b0:ee:5695:7751 with SMTP id fq13-20020a057500368d00b000ee56957751mr170918gab.51.1671642418942;
-        Wed, 21 Dec 2022 09:06:58 -0800 (PST)
-Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com. [209.85.222.179])
-        by smtp.gmail.com with ESMTPSA id u25-20020a37ab19000000b006feea093006sm10949877qke.124.2022.12.21.09.06.58
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Dec 2022 09:06:58 -0800 (PST)
-Received: by mail-qk1-f179.google.com with SMTP id g8so6899828qkl.2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 21 Dec 2022 09:06:58 -0800 (PST)
-X-Received: by 2002:ae9:ef49:0:b0:6fe:d4a6:dcef with SMTP id
- d70-20020ae9ef49000000b006fed4a6dcefmr84873qkg.594.1671642417917; Wed, 21 Dec
- 2022 09:06:57 -0800 (PST)
-MIME-Version: 1.0
-References: <Y1BcpXAjR4tmV6RQ@zx2c4.com> <20221019203034.3795710-1-Jason@zx2c4.com>
- <20221221145332.GA2399037@roeck-us.net> <CAMuHMdUAaQSXq=4rO9soCGGnH8HZrSS0PjWELqGzXoym4dOqnQ@mail.gmail.com>
- <1a27385c-cca6-888b-1125-d6383e48c0f5@prevas.dk> <20221221155641.GB2468105@roeck-us.net>
-In-Reply-To: <20221221155641.GB2468105@roeck-us.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 21 Dec 2022 09:06:41 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wj7FMFLr9AOW9Aa9ZMt1-Lu01_X8vLiaKosPyF2H-+ujA@mail.gmail.com>
-Message-ID: <CAHk-=wj7FMFLr9AOW9Aa9ZMt1-Lu01_X8vLiaKosPyF2H-+ujA@mail.gmail.com>
-Subject: Re: [PATCH v2] kbuild: treat char as always unsigned
-To:     Guenter Roeck <linux@roeck-us.net>
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=I3f0UiW+/YoUBXR0TYEPPrtQ962Pvq8PyjcKApLuolY=;
+        b=e6F587BWBk17qe8SZelArjT+Hr3gas3JEwCwVv/JEpJmlrDeiyJeC/hMyWALiFQ20N
+         rwduhWl5Za8VUgaztWOpGkGFAhOetFJx8CqP9fSQU0WltVMgqKjmYuDT5BPydYQfWf/l
+         n9uwmTLJ6jCrevEqa53Q/D8nzpEeXsnhWbsuFfp+r1YiXQQQst3uicwYQwwdNH2yYJev
+         NEmrIt8XKCV+JcstuDf7adsX/UdI4OouNhuBTyHSQt/btRjjO0VO3TRaHI1mzQKcI1l3
+         tirIWXCLBLY79viaeDwdPq6KrDGRo4itbXxvMDUbEBgA/nU/ysFZdgfMmn7nD2UwW7sB
+         YGlQ==
+X-Gm-Message-State: AFqh2krAQkU30EPvz+Ve/5XLvsv0KlDr8YWF1en5WXR5Aalcgyib3Gj5
+        Djxugbb02w8ivXz0wUORh6w=
+X-Google-Smtp-Source: AMrXdXv3pz+hJczk8WjDAV1ETvQ0uIZOdEC7sf8fk6L8WyKCM6qdlf4HmLrabf51xN28VtW9sKIJww==
+X-Received: by 2002:a9d:6a11:0:b0:670:8270:1290 with SMTP id g17-20020a9d6a11000000b0067082701290mr1201996otn.38.1671643165022;
+        Wed, 21 Dec 2022 09:19:25 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v17-20020a0568301bd100b0067c87f23476sm1074448ota.57.2022.12.21.09.19.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Dec 2022 09:19:24 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 21 Dec 2022 09:19:22 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         "Jason A. Donenfeld" <Jason@zx2c4.com>,
@@ -75,36 +65,52 @@ Cc:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-m68k@lists.linux-m68k.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2] kbuild: treat char as always unsigned
+Message-ID: <20221221171922.GA2470607@roeck-us.net>
+References: <Y1BcpXAjR4tmV6RQ@zx2c4.com>
+ <20221019203034.3795710-1-Jason@zx2c4.com>
+ <20221221145332.GA2399037@roeck-us.net>
+ <CAMuHMdUAaQSXq=4rO9soCGGnH8HZrSS0PjWELqGzXoym4dOqnQ@mail.gmail.com>
+ <1a27385c-cca6-888b-1125-d6383e48c0f5@prevas.dk>
+ <20221221155641.GB2468105@roeck-us.net>
+ <CAHk-=wj7FMFLr9AOW9Aa9ZMt1-Lu01_X8vLiaKosPyF2H-+ujA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHk-=wj7FMFLr9AOW9Aa9ZMt1-Lu01_X8vLiaKosPyF2H-+ujA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Dec 21, 2022 at 7:56 AM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> The above assumes an unsigned char as input to strcmp(). I consider that
-> a hypothetical problem because "comparing" strings with upper bits
-> set doesn't really make sense in practice (How does one compare G=C3=BCnt=
-er
-> against Gunter ? And how about G=C7=96nter ?). On the other side, the pro=
-blem
-> observed here is real and immediate.
+On Wed, Dec 21, 2022 at 09:06:41AM -0800, Linus Torvalds wrote:
+> On Wed, Dec 21, 2022 at 7:56 AM Guenter Roeck <linux@roeck-us.net> wrote:
+> >
+> > The above assumes an unsigned char as input to strcmp(). I consider that
+> > a hypothetical problem because "comparing" strings with upper bits
+> > set doesn't really make sense in practice (How does one compare Günter
+> > against Gunter ? And how about Gǖnter ?). On the other side, the problem
+> > observed here is real and immediate.
+> 
+> POSIX does actually specify "Günter" vs "Gunter".
+> 
+> The way strcmp is supposed to work is to return the sign of the
+> difference between the byte values ("unsigned char").
+> 
+> But that sign has to be computed in 'int', not in 'signed char'.
+> 
+> So yes, the m68k implementation is broken regardless, but with a
+> signed char it just happened to work for the US-ASCII case that the
+> crypto case tested.
+> 
 
-POSIX does actually specify "G=C3=BCnter" vs "Gunter".
+I understand. I just prefer a known limited breakage to completely
+broken code.
 
-The way strcmp is supposed to work is to return the sign of the
-difference between the byte values ("unsigned char").
+> I think the real fix is to just remove that broken implementation
+> entirely, and rely on the generic one.
 
-But that sign has to be computed in 'int', not in 'signed char'.
+Perfectly fine with me.
 
-So yes, the m68k implementation is broken regardless, but with a
-signed char it just happened to work for the US-ASCII case that the
-crypto case tested.
-
-I think the real fix is to just remove that broken implementation
-entirely, and rely on the generic one.
-
-I'll commit that, and see what happens.
-
-               Linus
+Thanks,
+Guenter
