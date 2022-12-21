@@ -2,59 +2,60 @@ Return-Path: <linux-m68k-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5322EC41535
-	for <linux-m68k@archiver.kernel.org>; Wed, 21 Dec 2022 15:56:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13A10C4167B
+	for <linux-m68k@archiver.kernel.org>; Wed, 21 Dec 2022 16:57:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbiLUP4q (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 21 Dec 2022 10:56:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48612 "EHLO
+        id S232739AbiLUQ53 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 21 Dec 2022 11:57:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbiLUP4p (ORCPT
+        with ESMTP id S232605AbiLUQ51 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 21 Dec 2022 10:56:45 -0500
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0144C13D4F
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 21 Dec 2022 07:56:43 -0800 (PST)
-Received: by mail-oo1-xc2c.google.com with SMTP id z20-20020a4a4914000000b004b026afa844so1451010ooa.13
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 21 Dec 2022 07:56:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vv0eZSneDp0SLp7Btx1IWgdM0JrFkFQy9T5wmXmOXbY=;
-        b=DuW8x9Y5t1Crs5QX21m6OBOsKSxhMa4yKtSHmZcNqp8jAYNR10vCi0tmDKYG0NRauM
-         PnZOndqyQSWrWE/Lb/88mC8V2KypgmZd1qXZxm+bgA9UExBJsALd3IQ3QR8M9UMSEuur
-         tMn99CSDwAh5+lDVMnahtshm7q1baOKMMuDPR+t26vsQbDtfmvi97ZjR49mcmjyeWPwL
-         2kL03tXCSlLAOUwjTRU4DGpdFJ84aYf2dG5WsNUWfl5fPk6m4LBT9FyFoque8z58MOHD
-         lBusY4dEnqqIBjR1+GoZg7U/ARC1PtHQy8h+f9/KbGDuopQW8zm+gZo9/DLE8WdOP2Xw
-         kEGw==
+        Wed, 21 Dec 2022 11:57:27 -0500
+Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 930FBBCAF
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 21 Dec 2022 08:57:25 -0800 (PST)
+Received: by mail-qv1-f45.google.com with SMTP id pp21so10708058qvb.5
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 21 Dec 2022 08:57:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vv0eZSneDp0SLp7Btx1IWgdM0JrFkFQy9T5wmXmOXbY=;
-        b=ul8ZKPUaCqZQrziBmJ53nsofTPry4u3dBnnFrJdWRYueWBqeyy9uWvtBbzT1YmORrI
-         FjInk2A68Clqw4+mj0ahRWbn69R1C2oY0PcVV6CKbYQnzmsh+9GS9xZpv9PTXk3OsktZ
-         Y3DnwBAyDWBMwcY/b/wyt7TkzBViR34ygkx1waP/dJcaun+hEludxeyN2Ctiz94OSK/P
-         cMbaxjesfsl8934/I435G+rbM8rc6QuLKN+12j8PxgKfLA4vv3DyJbCg4aFTbPooip2q
-         YyoxpU9ZZc5nzZQC1X5yu56PZmlDnJQBLaPQWFNts5b+zstgg/PyFAl5lOpD3I1NKGPD
-         tPnw==
-X-Gm-Message-State: AFqh2koKyzwtQdvy8m3IKtwe6CjpBa1Q7NDFbykqBWnwr+j/htNXJYgM
-        EO7HWqqdoKEy0+8zG8nvvZg=
-X-Google-Smtp-Source: AMrXdXuA4YG9xBb2H/3Eu2o7oLrUDR9Hm6jdi+Ur2KHrWqSKnErxfuVjuQRVztL+tv8W1C1oNj78sw==
-X-Received: by 2002:a4a:e38c:0:b0:4a4:309c:12ff with SMTP id l12-20020a4ae38c000000b004a4309c12ffmr1179450oov.4.1671638203281;
-        Wed, 21 Dec 2022 07:56:43 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i8-20020a056820012800b004a0aac2d28fsm6226062ood.35.2022.12.21.07.56.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Dec 2022 07:56:42 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 21 Dec 2022 07:56:41 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JoTtGMDsWdhoDasCfRf0mfD1bZkJ5FH2D/JtOhme8+M=;
+        b=hpiD2xNjMAroSe8J7tX+Mc0m1zFkC+b5KWO36LuDOaw4WvZ7uK59S7OneMgki4Rc1x
+         hJ/W0A7oD5BfNze+zCFLAGUC4Z9QY1cn9TTZfpujefCgF6dhsITo46tpvyXs8elVUN7K
+         MJxvPkDavo9dC7dQ+SKj0hrD+qUuB8gn15UU0sW6XPcPW5BnpwlchT1bqEGbi0lxsPPs
+         m0QuBcisSL50TjC/zzGV6pWBs64MUzyTfFeNo5Z8NQTS0B5UCL3avSX8mr1EYw+zVTNK
+         qo+ZztDD6Nug4nk9f43qC5iJyAM1fS87FdSslnxfsfxN+QnxOrn47o9qHGLUCeCcMVE9
+         KDyw==
+X-Gm-Message-State: AFqh2kqe9P2SrX49RshX/6sai6ZWq/vAc7zFaroupvNi2IIpd8xHvLgv
+        c6M3ZUQkZ1DNUfCGWq5EQXypgBFlJ8AUtg==
+X-Google-Smtp-Source: AMrXdXv2ZZv0VUHPK0Y2sLziiyTNmdZMMDp9ruDRoPYTg3+2eiSANWdFY1VgUZ8hTOfk9BtfORK8qg==
+X-Received: by 2002:a0c:f1ca:0:b0:4c7:3439:16c7 with SMTP id u10-20020a0cf1ca000000b004c7343916c7mr3254592qvl.33.1671641844365;
+        Wed, 21 Dec 2022 08:57:24 -0800 (PST)
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com. [209.85.128.178])
+        by smtp.gmail.com with ESMTPSA id s81-20020a37a954000000b006eeb3165554sm10866263qke.19.2022.12.21.08.57.23
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Dec 2022 08:57:23 -0800 (PST)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-3cbdd6c00adso219069587b3.11
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 21 Dec 2022 08:57:23 -0800 (PST)
+X-Received: by 2002:a81:a101:0:b0:3e5:f2ca:7be8 with SMTP id
+ y1-20020a81a101000000b003e5f2ca7be8mr295673ywg.358.1671641843155; Wed, 21 Dec
+ 2022 08:57:23 -0800 (PST)
+MIME-Version: 1.0
+References: <Y1BcpXAjR4tmV6RQ@zx2c4.com> <20221019203034.3795710-1-Jason@zx2c4.com>
+ <20221221145332.GA2399037@roeck-us.net> <CAMuHMdUAaQSXq=4rO9soCGGnH8HZrSS0PjWELqGzXoym4dOqnQ@mail.gmail.com>
+ <1a27385c-cca6-888b-1125-d6383e48c0f5@prevas.dk>
+In-Reply-To: <1a27385c-cca6-888b-1125-d6383e48c0f5@prevas.dk>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 21 Dec 2022 17:57:10 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdU7-01YhJ2H=7rmWvUjcnW_piy1p0ciYeaKTX8wDCW5Lg@mail.gmail.com>
+Message-ID: <CAMuHMdU7-01YhJ2H=7rmWvUjcnW_piy1p0ciYeaKTX8wDCW5Lg@mail.gmail.com>
+Subject: Re: [PATCH v2] kbuild: treat char as always unsigned
 To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+Cc:     Guenter Roeck <linux@roeck-us.net>,
         "Jason A. Donenfeld" <Jason@zx2c4.com>,
         linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
         linux-arch@vger.kernel.org, linux-toolchains@vger.kernel.org,
@@ -65,26 +66,16 @@ Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH v2] kbuild: treat char as always unsigned
-Message-ID: <20221221155641.GB2468105@roeck-us.net>
-References: <Y1BcpXAjR4tmV6RQ@zx2c4.com>
- <20221019203034.3795710-1-Jason@zx2c4.com>
- <20221221145332.GA2399037@roeck-us.net>
- <CAMuHMdUAaQSXq=4rO9soCGGnH8HZrSS0PjWELqGzXoym4dOqnQ@mail.gmail.com>
- <1a27385c-cca6-888b-1125-d6383e48c0f5@prevas.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1a27385c-cca6-888b-1125-d6383e48c0f5@prevas.dk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Dec 21, 2022 at 04:29:11PM +0100, Rasmus Villemoes wrote:
+Hi Rasmus,
+
+On Wed, Dec 21, 2022 at 4:29 PM Rasmus Villemoes
+<rasmus.villemoes@prevas.dk> wrote:
 > On 21/12/2022 16.05, Geert Uytterhoeven wrote:
-> > Hi Günter,
-> > 
 > > On Wed, Dec 21, 2022 at 3:54 PM Guenter Roeck <linux@roeck-us.net> wrote:
 > >> On Wed, Oct 19, 2022 at 02:30:34PM -0600, Jason A. Donenfeld wrote:
 > >>> Recently, some compile-time checking I added to the clamp_t family of
@@ -144,10 +135,10 @@ On Wed, Dec 21, 2022 at 04:29:11PM +0100, Rasmus Villemoes wrote:
 > >>                 "1:     move.b  (%0)+,%2\n"     /* get *cs */
 > >>
 > >> Does that make sense ? If so I can send a patch.
-> > 
+> >
 > > Thanks, been there, done that
 > > https://lore.kernel.org/all/bce014e60d7b1a3d1c60009fc3572e2f72591f21.1671110959.git.geert@linux-m68k.org
-> 
+>
 > Well, looks like that would still leave strcmp() buggy, you can't
 > represent all possible differences between two char values (signed or
 > not) in an 8-bit quantity. So any implementation based on returning the
@@ -155,12 +146,28 @@ On Wed, Dec 21, 2022 at 04:29:11PM +0100, Rasmus Villemoes wrote:
 > something wider. Otherwise you'll get -128 from strcmp("\x40", "\xc0"),
 > but _also_ -128 when you do strcmp("\xc0", "\x40"), which is obviously
 > bogus.
-> 
 
-The above assumes an unsigned char as input to strcmp(). I consider that
-a hypothetical problem because "comparing" strings with upper bits
-set doesn't really make sense in practice (How does one compare Günter
-against Gunter ? And how about Gǖnter ?). On the other side, the problem
-observed here is real and immediate.
+So we have https://lore.kernel.org/all/87bko3ia88.fsf@igel.home ;-)
 
-Guenter
+And the other issue is m68k strcmp() calls being dropped by the
+optimizer, cfr. the discussion in
+https://lore.kernel.org/all/b673f98db7d14d53a6e1a1957ef81741@AcuMS.aculab.com
+
+> I recently fixed that long-standing bug in U-Boot's strcmp() and a
+> similar one in nolibc in the linux tree. I wonder how many more
+> instances exist.
+
+Thanks, commit fb63362c63c7aeac ("lib: fix buggy strcmp and strncmp") in
+v2023.01-rc1, which is not yet in a released version.
+(and in plain C, not in asm ;-)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
