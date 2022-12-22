@@ -2,125 +2,108 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BE09C3DA7D
-	for <linux-m68k@archiver.kernel.org>; Thu, 22 Dec 2022 12:47:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7EC4C4332F
+	for <linux-m68k@archiver.kernel.org>; Thu, 22 Dec 2022 13:05:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235011AbiLVMrz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 22 Dec 2022 07:47:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37716 "EHLO
+        id S229742AbiLVNFp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 22 Dec 2022 08:05:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235308AbiLVMrx (ORCPT
+        with ESMTP id S235309AbiLVNFn (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 22 Dec 2022 07:47:53 -0500
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7246C09
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 22 Dec 2022 04:47:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1671713272; x=1703249272;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=UPM8RDFaM30ZmFrIb8CKMZ1JANhWUp662jbH45qLr6M=;
-  b=U7Ti5gM7uX2hSBxzWafGGZSDBcDqjumI2csrgPUV3Gmaxw1BNaf3z8Ro
-   FF6neieM8V/SA6HrQxhmet6cGsg8V1Pn4Ot+4KX3fglxDxDH1pnW3PVoK
-   9YZRCSIZn28az1kCO6XUr5BdCTW0FvwIqD4SViceQ6X0gdg6zF7f5QLxR
-   /Bo00h41XDF2crkrb9MNAQZgCN8wXjmgNq51blBh7KNfBIdJYH2/+Rvm3
-   /zv4/jpzOePRSdt+y2oFm4ceGTgMmphSDzSce147uOX4vF6brBHpliEaY
-   BbIViYm6PVSbzGpAKVyuCm0/IWoVcd4nQbwgISsWEK4Ox8GcXvIGwMOIB
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10568"; a="322031550"
-X-IronPort-AV: E=Sophos;i="5.96,265,1665471600"; 
-   d="scan'208";a="322031550"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2022 04:47:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10568"; a="897213732"
-X-IronPort-AV: E=Sophos;i="5.96,265,1665471600"; 
-   d="scan'208";a="897213732"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga006.fm.intel.com with ESMTP; 22 Dec 2022 04:47:45 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1p8Kz8-00Duf4-1e;
-        Thu, 22 Dec 2022 14:47:42 +0200
-Date:   Thu, 22 Dec 2022 14:47:42 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andrzej Hajda <andrzej.hajda@intel.com>
-Cc:     linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, Arnd Bergmann <arnd@arndb.de>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH 18/19] linux/include: add non-atomic version of xchg
-Message-ID: <Y6RR7hPZUN22ytap@smile.fi.intel.com>
-References: <20221222114635.1251934-1-andrzej.hajda@intel.com>
- <20221222114635.1251934-19-andrzej.hajda@intel.com>
+        Thu, 22 Dec 2022 08:05:43 -0500
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 193A0B58
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 22 Dec 2022 05:05:42 -0800 (PST)
+Received: by mail-qt1-f181.google.com with SMTP id a16so1239189qtw.10
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 22 Dec 2022 05:05:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MLCFjw9XIBAbu93dkTI6RLAmkXvVW4axCY2krlbo1Ww=;
+        b=PfEfmCpA/OO5WcFEnSxkR9JHw2Y9osFR4CoHgjXouiQ048TqQD6ItsQqJVg4tszN6T
+         0IXMUNS5IimL/UBmkJGOU369InvMYjIuKOk61XSoN1jnvPouCYSQX9imj4fDYn/3o6Wf
+         y3wNxwLpv6pFxDcCUPPvDFSUrL4TXrz5HdCDM6XjwFO9qmS+6+eBqzM6jTECNORNjrl2
+         N+cmNtbaT9UF1nu2hGFFhGCBI3PjHeBW/KyLiJCEU65EhaAM+A5JhPkrpoMY/H2uKZjC
+         9bSXPc+jVDM7iiadFN9TaYVxmsxbUl3XGr5+WqOr2d24oLtSvwaRPKscedF72ysI8Fh0
+         Bcxw==
+X-Gm-Message-State: AFqh2krIG2GtePWAud0ZaJ1o0ggX9XvNQOjwFV764dKS0SFyuXR/Yz9g
+        Lcytx9uv5uMdy4b/5rVI2dO2kPpxQ4UQZQ==
+X-Google-Smtp-Source: AMrXdXuG0kMgTxdzYJWh07wmD9W6+U7w3/0BOjghMKPUA+APbW7nYuB7cETOI1f/FHhFKv19nWCfww==
+X-Received: by 2002:ac8:468f:0:b0:3a9:7568:fb92 with SMTP id g15-20020ac8468f000000b003a97568fb92mr6336881qto.50.1671714340884;
+        Thu, 22 Dec 2022 05:05:40 -0800 (PST)
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
+        by smtp.gmail.com with ESMTPSA id b7-20020ac85407000000b0039467aadeb8sm330760qtq.13.2022.12.22.05.05.39
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Dec 2022 05:05:39 -0800 (PST)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-3b48b139b46so25680027b3.12
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 22 Dec 2022 05:05:39 -0800 (PST)
+X-Received: by 2002:a05:690c:d84:b0:437:febc:6583 with SMTP id
+ da4-20020a05690c0d8400b00437febc6583mr536308ywb.384.1671714339227; Thu, 22
+ Dec 2022 05:05:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221222114635.1251934-19-andrzej.hajda@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <Y1BcpXAjR4tmV6RQ@zx2c4.com> <20221019203034.3795710-1-Jason@zx2c4.com>
+ <20221221145332.GA2399037@roeck-us.net> <CAMuHMdUAaQSXq=4rO9soCGGnH8HZrSS0PjWELqGzXoym4dOqnQ@mail.gmail.com>
+ <1a27385c-cca6-888b-1125-d6383e48c0f5@prevas.dk> <20221221155641.GB2468105@roeck-us.net>
+ <CAHk-=wj7FMFLr9AOW9Aa9ZMt1-Lu01_X8vLiaKosPyF2H-+ujA@mail.gmail.com>
+ <20221221171922.GA2470607@roeck-us.net> <CAHk-=wjOcqWxpUUrWKLKznRg-HXxRn1AXLW9B6SPq-ioLObdjw@mail.gmail.com>
+In-Reply-To: <CAHk-=wjOcqWxpUUrWKLKznRg-HXxRn1AXLW9B6SPq-ioLObdjw@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 22 Dec 2022 14:05:26 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWwNv-xzrsckMab_eAtZZ-ybDFPyxG9f9ndHBgXjLAayQ@mail.gmail.com>
+Message-ID: <CAMuHMdWwNv-xzrsckMab_eAtZZ-ybDFPyxG9f9ndHBgXjLAayQ@mail.gmail.com>
+Subject: Re: [PATCH v2] kbuild: treat char as always unsigned
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-toolchains@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-m68k@lists.linux-m68k.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Dec 22, 2022 at 12:46:34PM +0100, Andrzej Hajda wrote:
-> The pattern of setting variable with new value and returning old
-> one is very common in kernel. Usually atomicity of the operation
-> is not required, so xchg seems to be suboptimal and confusing in
-> such cases.
+Hi Linus,
 
-FWIW,
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On Wed, Dec 21, 2022 at 7:46 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> On Wed, Dec 21, 2022 at 9:19 AM Guenter Roeck <linux@roeck-us.net> wrote:
+> > On Wed, Dec 21, 2022 at 09:06:41AM -0800, Linus Torvalds wrote:
+> > > I think the real fix is to just remove that broken implementation
+> > > entirely, and rely on the generic one.
+> >
+> > Perfectly fine with me.
+>
+> That got pushed out as commit 7c0846125358 ("m68k: remove broken
+> strcmp implementation") but it's obviously entirely untested. I don't
+> do m68k cross-compiles, much less boot tests.
+>
+> Just FYI for everybody - I may have screwed something up for some very
+> non-obvious reason.
+>
+> But it looked very obvious indeed, and I hate having buggy code that
+> is architecture-specific when we have generic code that isn't buggy.
 
-> Signed-off-by: Andrzej Hajda <andrzej.hajda@intel.com>
-> ---
->  include/linux/non-atomic/xchg.h | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
->  create mode 100644 include/linux/non-atomic/xchg.h
-> 
-> diff --git a/include/linux/non-atomic/xchg.h b/include/linux/non-atomic/xchg.h
-> new file mode 100644
-> index 00000000000000..f7fa5dd746f37d
-> --- /dev/null
-> +++ b/include/linux/non-atomic/xchg.h
-> @@ -0,0 +1,19 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _LINUX_NON_ATOMIC_XCHG_H
-> +#define _LINUX_NON_ATOMIC_XCHG_H
-> +
-> +/**
-> + * __xchg - set variable pointed by @ptr to @val, return old value
-> + * @ptr: pointer to affected variable
-> + * @val: value to be written
-> + *
-> + * This is non-atomic variant of xchg.
-> + */
-> +#define __xchg(ptr, val) ({		\
-> +	__auto_type __ptr = ptr;	\
-> +	__auto_type __t = *__ptr;	\
-> +	*__ptr = (val);			\
-> +	__t;				\
-> +})
-> +
-> +#endif
-> -- 
-> 2.34.1
-> 
+Thank you for being proactive!
+It works fine (and slightly reduced kernel size, too ;-)
 
--- 
-With Best Regards,
-Andy Shevchenko
+Gr{oetje,eeting}s,
 
+                        Geert
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
