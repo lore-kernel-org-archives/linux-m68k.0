@@ -1,72 +1,51 @@
-Return-Path: <linux-m68k-owner@kernel.org>
+Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1330DC4332F
-	for <linux-m68k@archiver.kernel.org>; Wed, 21 Dec 2022 21:01:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A46FEC3DA79
+	for <linux-m68k@archiver.kernel.org>; Thu, 22 Dec 2022 10:42:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232013AbiLUVB2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 21 Dec 2022 16:01:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43716 "EHLO
+        id S235296AbiLVKmE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 22 Dec 2022 05:42:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbiLUVB1 (ORCPT
+        with ESMTP id S234968AbiLVKl7 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 21 Dec 2022 16:01:27 -0500
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509271BE8E
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 21 Dec 2022 13:01:26 -0800 (PST)
-Received: by mail-ot1-x336.google.com with SMTP id j16-20020a056830271000b0067202045ee9so9775315otu.7
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 21 Dec 2022 13:01:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6QEevAywUdrUeO4DWab5onKZKSHXptskyHvOtVcPoLM=;
-        b=aujnWgEizYKCjbfJS0vkqFfjSW1AomSGTvnT0QfxNA3xAl1/UE0c6EioKatVhjL6J3
-         42OzhiUi6zyvBL7wY3XTyuEq8alVjy5Lntt1sxA64oKRg+psSJwJxWURMsR2zFRMehnS
-         p5bSzhLrtQ6JG43iBzwS98Mn7NFVW9/G7uJyU4sWEPCF1v/u9+iojd9sB3rKRquZu9dd
-         Ddb2Xpo7Z6m/b/wYn6AHug4zbPUBx6OwV6BX8I2OVPFnWmoUnCmCHY1K4ttgP9wan1nS
-         hv5WuDgd04N+rrWjHbEcxpLVcM+VhGI+H9nxfeprB2iBUujj2Qm5KR9lju9SISF0W0DU
-         +bNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6QEevAywUdrUeO4DWab5onKZKSHXptskyHvOtVcPoLM=;
-        b=MN4sIdRX5A/G4xDdiohXzZyLBUgbDNujBX44Ka2sAZ0sAlcwZuat8zTbQbiGViWEiT
-         DIYLbtNIUm0sXuxxp3f68H3aLp6BNv30n7flK0LMwspsUWl/xQ/dHC4smlRxJzphpjP7
-         I8yC8U5Nt/qiBn5FvJ/2qOLTTWECe0NeEN3nU4J6gPtVXiJUcmgI6JEb5zWOGgjPgnmw
-         M20EVdGPR8kF3gJWkMuO2c5CZScRcDkFXFWyQd3yj/zfa0ln0yr9OIqTAkyuh//cwCFm
-         eVqynP/ofYo8dCG1Z7T/YnLRZmsYiP0BzM7xJZr7KzjONeEQb2W5tiee83cVATISgC0K
-         l9pQ==
-X-Gm-Message-State: AFqh2kpMzJczf4g0N0DlFT8Z1PeAjCE9gEYZHPoJRh7OV+x3rPC5RwD5
-        gMnzFL0o4UBL/hqB79XXlJs=
-X-Google-Smtp-Source: AMrXdXt2CGoZmAJkjBkN7Wfr4zFgq9qbfTqFafWIOysIuYF2lmo5XwNR3nI5m/jLSsV4WocFLzdtOA==
-X-Received: by 2002:a9d:198a:0:b0:67e:f252:fc9d with SMTP id k10-20020a9d198a000000b0067ef252fc9dmr485763otk.26.1671656485619;
-        Wed, 21 Dec 2022 13:01:25 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r44-20020a05683044ac00b0066e7e4b2f76sm7344017otv.17.2022.12.21.13.01.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Dec 2022 13:01:24 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 21 Dec 2022 13:01:23 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        Thu, 22 Dec 2022 05:41:59 -0500
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14FBE13D64
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 22 Dec 2022 02:41:56 -0800 (PST)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-172-D_exMaKhNCWc8qzlCOLIiw-1; Thu, 22 Dec 2022 10:41:53 +0000
+X-MC-Unique: D_exMaKhNCWc8qzlCOLIiw-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 22 Dec
+ 2022 10:41:52 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.044; Thu, 22 Dec 2022 10:41:52 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Linus Torvalds' <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+CC:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-toolchains@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-toolchains@vger.kernel.org" <linux-toolchains@vger.kernel.org>,
         Masahiro Yamada <masahiroy@kernel.org>,
         Kees Cook <keescook@chromium.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH v2] kbuild: treat char as always unsigned
-Message-ID: <20221221210123.GA2717809@roeck-us.net>
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>
+Subject: RE: [PATCH v2] kbuild: treat char as always unsigned
+Thread-Topic: [PATCH v2] kbuild: treat char as always unsigned
+Thread-Index: AQHZFV6o8tF/XYcvI0qqEtVNYsUlXa55tQ3w
+Date:   Thu, 22 Dec 2022 10:41:52 +0000
+Message-ID: <b2144334261246aa8dc5004c5f1a58c9@AcuMS.aculab.com>
 References: <Y1BcpXAjR4tmV6RQ@zx2c4.com>
  <20221019203034.3795710-1-Jason@zx2c4.com>
  <20221221145332.GA2399037@roeck-us.net>
@@ -74,39 +53,52 @@ References: <Y1BcpXAjR4tmV6RQ@zx2c4.com>
  <1a27385c-cca6-888b-1125-d6383e48c0f5@prevas.dk>
  <20221221155641.GB2468105@roeck-us.net>
  <CAHk-=wj7FMFLr9AOW9Aa9ZMt1-Lu01_X8vLiaKosPyF2H-+ujA@mail.gmail.com>
- <20221221171922.GA2470607@roeck-us.net>
- <CAHk-=wjOcqWxpUUrWKLKznRg-HXxRn1AXLW9B6SPq-ioLObdjw@mail.gmail.com>
+In-Reply-To: <CAHk-=wj7FMFLr9AOW9Aa9ZMt1-Lu01_X8vLiaKosPyF2H-+ujA@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjOcqWxpUUrWKLKznRg-HXxRn1AXLW9B6SPq-ioLObdjw@mail.gmail.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Dec 21, 2022 at 10:46:08AM -0800, Linus Torvalds wrote:
-> On Wed, Dec 21, 2022 at 9:19 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> >
-> > On Wed, Dec 21, 2022 at 09:06:41AM -0800, Linus Torvalds wrote:
-> > >
-> > > I think the real fix is to just remove that broken implementation
-> > > entirely, and rely on the generic one.
-> >
-> > Perfectly fine with me.
-> 
-> That got pushed out as commit 7c0846125358 ("m68k: remove broken
-> strcmp implementation") but it's obviously entirely untested. I don't
-> do m68k cross-compiles, much less boot tests.
-> 
-> Just FYI for everybody - I may have screwed something up for some very
-> non-obvious reason.
-> 
-No worries:
+RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMjEgRGVjZW1iZXIgMjAyMiAxNzowNw0KPiAN
+Cj4gT24gV2VkLCBEZWMgMjEsIDIwMjIgYXQgNzo1NiBBTSBHdWVudGVyIFJvZWNrIDxsaW51eEBy
+b2Vjay11cy5uZXQ+IHdyb3RlOg0KPiA+DQo+ID4gVGhlIGFib3ZlIGFzc3VtZXMgYW4gdW5zaWdu
+ZWQgY2hhciBhcyBpbnB1dCB0byBzdHJjbXAoKS4gSSBjb25zaWRlciB0aGF0DQo+ID4gYSBoeXBv
+dGhldGljYWwgcHJvYmxlbSBiZWNhdXNlICJjb21wYXJpbmciIHN0cmluZ3Mgd2l0aCB1cHBlciBi
+aXRzDQo+ID4gc2V0IGRvZXNuJ3QgcmVhbGx5IG1ha2Ugc2Vuc2UgaW4gcHJhY3RpY2UgKEhvdyBk
+b2VzIG9uZSBjb21wYXJlIEfDvG50ZXINCj4gPiBhZ2FpbnN0IEd1bnRlciA/IEFuZCBob3cgYWJv
+dXQgR8eWbnRlciA/KS4gT24gdGhlIG90aGVyIHNpZGUsIHRoZSBwcm9ibGVtDQo+ID4gb2JzZXJ2
+ZWQgaGVyZSBpcyByZWFsIGFuZCBpbW1lZGlhdGUuDQo+IA0KPiBQT1NJWCBkb2VzIGFjdHVhbGx5
+IHNwZWNpZnkgIkfDvG50ZXIiIHZzICJHdW50ZXIiLg0KPiANCj4gVGhlIHdheSBzdHJjbXAgaXMg
+c3VwcG9zZWQgdG8gd29yayBpcyB0byByZXR1cm4gdGhlIHNpZ24gb2YgdGhlDQo+IGRpZmZlcmVu
+Y2UgYmV0d2VlbiB0aGUgYnl0ZSB2YWx1ZXMgKCJ1bnNpZ25lZCBjaGFyIikuDQo+IA0KPiBCdXQg
+dGhhdCBzaWduIGhhcyB0byBiZSBjb21wdXRlZCBpbiAnaW50Jywgbm90IGluICdzaWduZWQgY2hh
+cicuDQo+IA0KPiBTbyB5ZXMsIHRoZSBtNjhrIGltcGxlbWVudGF0aW9uIGlzIGJyb2tlbiByZWdh
+cmRsZXNzLCBidXQgd2l0aCBhDQo+IHNpZ25lZCBjaGFyIGl0IGp1c3QgaGFwcGVuZWQgdG8gd29y
+ayBmb3IgdGhlIFVTLUFTQ0lJIGNhc2UgdGhhdCB0aGUNCj4gY3J5cHRvIGNhc2UgdGVzdGVkLg0K
+PiANCj4gSSB0aGluayB0aGUgcmVhbCBmaXggaXMgdG8ganVzdCByZW1vdmUgdGhhdCBicm9rZW4g
+aW1wbGVtZW50YXRpb24NCj4gZW50aXJlbHksIGFuZCByZWx5IG9uIHRoZSBnZW5lcmljIG9uZS4N
+Cg0KSSB3b25kZXIgaG93IG11Y2ggc2xvd2VyIGl0IGlzIC0gbTY4ayBpcyBsaWtlbHkgdG8gYmUg
+bWljcm9jb2RlZA0KYW5kIEkgZG9uJ3QgdGhpbmsgaW5zdHJ1Y3Rpb24gdGltaW5ncyBhcmUgYWN0
+dWFsbHkgYXZhaWxhYmxlLg0KVGhlIGZhc3Rlc3QgdmVyc2lvbiBwcm9iYWJseSB1c2VzIHN1Yngg
+KHdpdGggY2FycnkpIHRvIGdlbmVyYXRlDQowLy0xIGFuZCBsZWF2ZXMgK2RlbHRhIGZvciB0aGUg
+b3RoZXIgcmVzdWx0IC0gYnV0IGdldHRpbmcgdGhlDQpjb21wYXJlcyBhbmQgYnJhbmNoZXMgaW4g
+dGhlIHJpZ2h0IG9yZGVyIGlzIGhhcmQuDQoNCkkgYmVsaWV2ZSBzb21lIG9mIHRoZSBvdGhlciBt
+NjhrIGFzbSBmdW5jdGlvbnMgYXJlIGFsc28gbWlzc2luZw0KdGhlICJtZW1vcnkiICdjbG9iYmVy
+JyBhbmQgc28gY291bGQgZ2V0IG1pcy1vcHRpbWlzZWQuDQpXaGlsZSBJIGNhbiB3cml0ZSAob3Ig
+cmF0aGVyIGhhdmUgd3JpdHRlbikgbTY4ayBhc20gSSBkb24ndCBoYXZlDQphIGNvbXBpbGVyLg0K
+DQpJIGFsc28gc3VzcGVjdCB0aGF0IGFueSB4ODYgY29kZSB0aGF0IHVzZXMgJ3JlcCBzY2FzJyBp
+cyBnb2luZw0KdG8gYmUgc2xvdyBvbiBhbnl0aGluZyBtb2Rlcm4uDQoNCglEYXZpZA0KDQotDQpS
+ZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWls
+dG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMp
+DQo=
 
-Build reference: msi-fixes-6.2-1-2644-g0a924817d2ed
-
-Building mcf5208evb:m5208:m5208evb_defconfig:initrd ... running ..... passed
-Building q800:m68040:mac_defconfig:initrd ... running ..... passed
-Building q800:m68040:mac_defconfig:rootfs ... running ..... passed
-
-Guenter
