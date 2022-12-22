@@ -2,100 +2,124 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7EC4C4332F
-	for <linux-m68k@archiver.kernel.org>; Thu, 22 Dec 2022 13:05:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B552C41535
+	for <linux-m68k@archiver.kernel.org>; Thu, 22 Dec 2022 14:15:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbiLVNFp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 22 Dec 2022 08:05:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44522 "EHLO
+        id S235711AbiLVOO7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 22 Dec 2022 09:14:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235309AbiLVNFn (ORCPT
+        with ESMTP id S235664AbiLVOOU (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 22 Dec 2022 08:05:43 -0500
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 193A0B58
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 22 Dec 2022 05:05:42 -0800 (PST)
-Received: by mail-qt1-f181.google.com with SMTP id a16so1239189qtw.10
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 22 Dec 2022 05:05:42 -0800 (PST)
+        Thu, 22 Dec 2022 09:14:20 -0500
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0DA330579
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 22 Dec 2022 06:12:33 -0800 (PST)
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-466c5fb1c39so15878007b3.10
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 22 Dec 2022 06:12:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=MLCFjw9XIBAbu93dkTI6RLAmkXvVW4axCY2krlbo1Ww=;
-        b=PfEfmCpA/OO5WcFEnSxkR9JHw2Y9osFR4CoHgjXouiQ048TqQD6ItsQqJVg4tszN6T
-         0IXMUNS5IimL/UBmkJGOU369InvMYjIuKOk61XSoN1jnvPouCYSQX9imj4fDYn/3o6Wf
-         y3wNxwLpv6pFxDcCUPPvDFSUrL4TXrz5HdCDM6XjwFO9qmS+6+eBqzM6jTECNORNjrl2
-         N+cmNtbaT9UF1nu2hGFFhGCBI3PjHeBW/KyLiJCEU65EhaAM+A5JhPkrpoMY/H2uKZjC
-         9bSXPc+jVDM7iiadFN9TaYVxmsxbUl3XGr5+WqOr2d24oLtSvwaRPKscedF72ysI8Fh0
-         Bcxw==
-X-Gm-Message-State: AFqh2krIG2GtePWAud0ZaJ1o0ggX9XvNQOjwFV764dKS0SFyuXR/Yz9g
-        Lcytx9uv5uMdy4b/5rVI2dO2kPpxQ4UQZQ==
-X-Google-Smtp-Source: AMrXdXuG0kMgTxdzYJWh07wmD9W6+U7w3/0BOjghMKPUA+APbW7nYuB7cETOI1f/FHhFKv19nWCfww==
-X-Received: by 2002:ac8:468f:0:b0:3a9:7568:fb92 with SMTP id g15-20020ac8468f000000b003a97568fb92mr6336881qto.50.1671714340884;
-        Thu, 22 Dec 2022 05:05:40 -0800 (PST)
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
-        by smtp.gmail.com with ESMTPSA id b7-20020ac85407000000b0039467aadeb8sm330760qtq.13.2022.12.22.05.05.39
+        bh=DaSeJ7b4XoTWS2Tt6rTxmu6n/STTyq8+F8PwIAXlFPg=;
+        b=ZTvjWo/W33z3gzSb8j9IITNlToLhmJ3XN7jd+DR522S/eqEnz00isxuNxKeiOSEIEp
+         kDEik67n44Lps4OGOEGYB6WrtBBgKLRHFqeI3HuoFfYSJs9ShqSP+4INOrRtLQvFejz+
+         NDHsmRsq89IIv4W9fkvjdIZimumMnZhL6lYU6urjszKhX7Z3+Qw1hGUZfXAON/Gz8SI7
+         hwuO9xrWUdauDzFZxNfa1nU8WZhYns+4lgVR1GpXtUK1Gpe+8CywVM6XJ+gObes9m5Ia
+         ivAXRkgHIBHKjHSIaainywjNHyege3sp0WQgJieT+hg9WSJ3k5Q970atQ0bfkBkPPqR8
+         +r4w==
+X-Gm-Message-State: AFqh2krsWMkqvJgOE4PeJf30elgrsaYCPxKWuxHyOZnZhcFq/2F7GB/y
+        d3xK0Vk4NdT2XroYS6dXPdTvK3K3r+4YIg==
+X-Google-Smtp-Source: AMrXdXsv6uc2JZRRm8ioDfLbIP3rGL95sx7engw5twbaruslWfRrnsGUQBVSkQJsEXSPERMjUs9rUQ==
+X-Received: by 2002:a05:7500:2303:b0:ea:9ef4:3601 with SMTP id t3-20020a057500230300b000ea9ef43601mr467065gac.38.1671718352487;
+        Thu, 22 Dec 2022 06:12:32 -0800 (PST)
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
+        by smtp.gmail.com with ESMTPSA id w26-20020a05620a095a00b006fc6529abaesm324746qkw.101.2022.12.22.06.12.31
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Dec 2022 05:05:39 -0800 (PST)
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-3b48b139b46so25680027b3.12
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 22 Dec 2022 05:05:39 -0800 (PST)
-X-Received: by 2002:a05:690c:d84:b0:437:febc:6583 with SMTP id
- da4-20020a05690c0d8400b00437febc6583mr536308ywb.384.1671714339227; Thu, 22
- Dec 2022 05:05:39 -0800 (PST)
+        Thu, 22 Dec 2022 06:12:31 -0800 (PST)
+Received: by mail-yb1-f171.google.com with SMTP id j206so2097171ybj.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 22 Dec 2022 06:12:31 -0800 (PST)
+X-Received: by 2002:a25:d243:0:b0:702:90b4:2e24 with SMTP id
+ j64-20020a25d243000000b0070290b42e24mr417369ybg.365.1671718351056; Thu, 22
+ Dec 2022 06:12:31 -0800 (PST)
 MIME-Version: 1.0
-References: <Y1BcpXAjR4tmV6RQ@zx2c4.com> <20221019203034.3795710-1-Jason@zx2c4.com>
- <20221221145332.GA2399037@roeck-us.net> <CAMuHMdUAaQSXq=4rO9soCGGnH8HZrSS0PjWELqGzXoym4dOqnQ@mail.gmail.com>
- <1a27385c-cca6-888b-1125-d6383e48c0f5@prevas.dk> <20221221155641.GB2468105@roeck-us.net>
- <CAHk-=wj7FMFLr9AOW9Aa9ZMt1-Lu01_X8vLiaKosPyF2H-+ujA@mail.gmail.com>
- <20221221171922.GA2470607@roeck-us.net> <CAHk-=wjOcqWxpUUrWKLKznRg-HXxRn1AXLW9B6SPq-ioLObdjw@mail.gmail.com>
-In-Reply-To: <CAHk-=wjOcqWxpUUrWKLKznRg-HXxRn1AXLW9B6SPq-ioLObdjw@mail.gmail.com>
+References: <20221222114635.1251934-1-andrzej.hajda@intel.com>
+In-Reply-To: <20221222114635.1251934-1-andrzej.hajda@intel.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 22 Dec 2022 14:05:26 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWwNv-xzrsckMab_eAtZZ-ybDFPyxG9f9ndHBgXjLAayQ@mail.gmail.com>
-Message-ID: <CAMuHMdWwNv-xzrsckMab_eAtZZ-ybDFPyxG9f9ndHBgXjLAayQ@mail.gmail.com>
-Subject: Re: [PATCH v2] kbuild: treat char as always unsigned
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-toolchains@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
+Date:   Thu, 22 Dec 2022 15:12:19 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUE-a6SffG1PH=WfrMx-CNLB9EfUr4qmL_USBP31YGoNg@mail.gmail.com>
+Message-ID: <CAMuHMdUE-a6SffG1PH=WfrMx-CNLB9EfUr4qmL_USBP31YGoNg@mail.gmail.com>
+Subject: Re: [PATCH 00/19] Introduce __xchg, non-atomic xchg
+To:     Andrzej Hajda <andrzej.hajda@intel.com>
+Cc:     linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, Arnd Bergmann <arnd@arndb.de>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-m68k@lists.linux-m68k.org
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Linus,
+Hi Andrzej,
 
-On Wed, Dec 21, 2022 at 7:46 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
-> On Wed, Dec 21, 2022 at 9:19 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> > On Wed, Dec 21, 2022 at 09:06:41AM -0800, Linus Torvalds wrote:
-> > > I think the real fix is to just remove that broken implementation
-> > > entirely, and rely on the generic one.
-> >
-> > Perfectly fine with me.
->
-> That got pushed out as commit 7c0846125358 ("m68k: remove broken
-> strcmp implementation") but it's obviously entirely untested. I don't
-> do m68k cross-compiles, much less boot tests.
->
-> Just FYI for everybody - I may have screwed something up for some very
-> non-obvious reason.
->
-> But it looked very obvious indeed, and I hate having buggy code that
-> is architecture-specific when we have generic code that isn't buggy.
+Thanks for your series!
 
-Thank you for being proactive!
-It works fine (and slightly reduced kernel size, too ;-)
+On Thu, Dec 22, 2022 at 12:49 PM Andrzej Hajda <andrzej.hajda@intel.com> wrote:
+> I hope there will be place for such tiny helper in kernel.
+> Quick cocci analyze shows there is probably few thousands places
+> where it could be useful.
+> I am not sure who is good person to review/ack such patches,
+> so I've used my intuition to construct to/cc lists, sorry for mistakes.
+> This is the 2nd approach of the same idea, with comments addressed[0].
+>
+> The helper is tiny and there are advices we can leave without it, so
+> I want to present few arguments why it would be good to have it:
+>
+> 1. Code readability/simplification/number of lines:
+>
+> Real example from drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c:
+> -       previous_min_rate = evport->qos.min_rate;
+> -       evport->qos.min_rate = min_rate;
+> +       previous_min_rate = __xchg(evport->qos.min_rate, min_rate);
+
+Upon closer look, shouldn't that be
+
+    previous_min_rate = __xchg(&evport->qos.min_rate, min_rate);
+
+?
+
+> For sure the code is more compact, and IMHO more readable.
+>
+> 2. Presence of similar helpers in other somehow related languages/libs:
+>
+> a) Rust[1]: 'replace' from std::mem module, there is also 'take'
+>     helper (__xchg(&x, 0)), which is the same as private helper in
+>     i915 - fetch_and_zero, see latest patch.
+> b) C++ [2]: 'exchange' from utility header.
+>
+> If the idea is OK there are still 2 qestions to answer:
+>
+> 1. Name of the helper, __xchg follows kernel conventions,
+>     but for me Rust names are also OK.
+
+Before I realized the missing "&", I wondered how this is different
+from swap(), so naming is important.
+https://elixir.bootlin.com/linux/latest/source/include/linux/minmax.h#L139
 
 Gr{oetje,eeting}s,
 
