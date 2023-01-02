@@ -2,92 +2,87 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97CBEC5479D
-	for <linux-m68k@archiver.kernel.org>; Mon,  2 Jan 2023 08:30:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7537C4167B
+	for <linux-m68k@archiver.kernel.org>; Mon,  2 Jan 2023 08:31:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231770AbjABI3q (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 2 Jan 2023 03:29:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48860 "EHLO
+        id S229710AbjABIbI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 2 Jan 2023 03:31:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231782AbjABI3S (ORCPT
+        with ESMTP id S231921AbjABIbF (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 2 Jan 2023 03:29:18 -0500
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C59E47
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Jan 2023 00:29:17 -0800 (PST)
-Received: by mail-qt1-f181.google.com with SMTP id h26so22039258qtu.2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 02 Jan 2023 00:29:17 -0800 (PST)
+        Mon, 2 Jan 2023 03:31:05 -0500
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C22A2E7B
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Jan 2023 00:31:02 -0800 (PST)
+Received: by mail-qt1-f170.google.com with SMTP id s9so22021463qtx.6
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 02 Jan 2023 00:31:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=/zbtsyLDE+wPwkATs9/xlAjvp9QCBVfBrqTl0t3/H28=;
-        b=ApM/RmaqXPIKarKM4Isoxvv9b05miv8zw2BldAKlWpbKrl9SS+ummUdohtbSmMxqsm
-         oxR89HTPOSu7kfw7lWg2GJQ5hJGG/2YnSZFA/QXi3JhWyNeHubaA3cPNySCxMS9b5ItI
-         wMUJ226imAXWVU8exo02bHc4LFR12n96hLqgNwilu0rvh24Y3K1niMiV1qbdaDzEgQxD
-         gJV8KueHqn7pmVAdSPbEMbeiXbq6JUZjfmOIKkdiEeT4qrzCVAg8u2FEgUh+Lvg11DMt
-         TYaGtH6nqaQPNuWPAPX6TM69aAZfcHGM4MfW7l7I3WdRTgmDHT80LNt5r9YGJguQ+Rp7
-         K96w==
-X-Gm-Message-State: AFqh2kqNrimTABTRNIwurTmTZRRdbrEHM+NDy4kAgYMrXXtCCtee47zS
-        jt8EoOmc108U3qK6N6fadx5TkKgvyFsYHg==
-X-Google-Smtp-Source: AMrXdXuOxZl1dGHnhirdLE7SyUxC42Mjmvs5jjxp4np2k0Ud7nSoBAF5xnbV2KcBhBhw7ZiIIh4bYg==
-X-Received: by 2002:a05:622a:1dcb:b0:3a7:e426:2892 with SMTP id bn11-20020a05622a1dcb00b003a7e4262892mr62735769qtb.28.1672648156321;
-        Mon, 02 Jan 2023 00:29:16 -0800 (PST)
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id bk2-20020a05620a1a0200b006ff8ac9acfdsm20212374qkb.49.2023.01.02.00.29.14
+        bh=jo2CI5pKv7C2jtNLeQsFhlozXL/lFYNzin08UvE0x2c=;
+        b=ztWyTAzoeqZ8mLIvAFStBzxilgc9sPSKdd5Q/ZK8kSX45d8f/68JWIOzC1ZSZkwnHC
+         lcIx1w4Rbu2s59NB2K2848SnHZQETU0DZq4Tyuzm9PI3URablWm+zwAvXQAqmGlOcWdn
+         Bw7LKrTniLhDQqYKnG2XjymJS+vD9dVeZ9ee53o5GQFAAF8ueRg6vZQFQaXRLBVEhbw9
+         MOt+Kg7OP2GNeGfbB3a5HmdIuyg+Yzz5u60KS0f9G2GaQK/u8UDxvOmMAuehlsblrRNy
+         my63aKbffaErWWiih3B047aoHEbCuzMcz0NIEZGwKgWMr979OE1GdrHeFSc287KWV84X
+         VVRA==
+X-Gm-Message-State: AFqh2kr4wGlgli17jvDiGs2XbtjaDZY276i6QsfgIVhjvv40ycp+mHRb
+        w5aXBT4F+bJiWDGCrhoUa475+ZJbAqavbA==
+X-Google-Smtp-Source: AMrXdXus1i2FveU/6Zq/LxMmNDoERziy1/gLJ8f5Xdp/N00bVRGT+bcIpSkWAuDAiGNzbFwpeiikxw==
+X-Received: by 2002:a05:622a:4a0f:b0:3ab:5bbc:bbe3 with SMTP id fv15-20020a05622a4a0f00b003ab5bbcbbe3mr58601414qtb.19.1672648261776;
+        Mon, 02 Jan 2023 00:31:01 -0800 (PST)
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
+        by smtp.gmail.com with ESMTPSA id v7-20020a05620a0f0700b006faf76e7c9asm20267658qkl.115.2023.01.02.00.31.00
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Jan 2023 00:29:15 -0800 (PST)
-Received: by mail-yb1-f169.google.com with SMTP id j206so29604246ybj.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 02 Jan 2023 00:29:14 -0800 (PST)
-X-Received: by 2002:a25:aae1:0:b0:6fc:1c96:c9fe with SMTP id
- t88-20020a25aae1000000b006fc1c96c9femr5228868ybi.36.1672648154519; Mon, 02
- Jan 2023 00:29:14 -0800 (PST)
+        Mon, 02 Jan 2023 00:31:01 -0800 (PST)
+Received: by mail-yb1-f170.google.com with SMTP id 186so29588008ybe.8
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 02 Jan 2023 00:31:00 -0800 (PST)
+X-Received: by 2002:a25:d243:0:b0:702:90b4:2e24 with SMTP id
+ j64-20020a25d243000000b0070290b42e24mr2730771ybg.365.1672648260480; Mon, 02
+ Jan 2023 00:31:00 -0800 (PST)
 MIME-Version: 1.0
-References: <Y1BcpXAjR4tmV6RQ@zx2c4.com> <20221019203034.3795710-1-Jason@zx2c4.com>
- <20221221145332.GA2399037@roeck-us.net> <CAMuHMdUAaQSXq=4rO9soCGGnH8HZrSS0PjWELqGzXoym4dOqnQ@mail.gmail.com>
- <1a27385c-cca6-888b-1125-d6383e48c0f5@prevas.dk> <20221221155641.GB2468105@roeck-us.net>
- <CAHk-=wj7FMFLr9AOW9Aa9ZMt1-Lu01_X8vLiaKosPyF2H-+ujA@mail.gmail.com>
- <b2144334261246aa8dc5004c5f1a58c9@AcuMS.aculab.com> <f02e0ac7f2d805020a7ba66803aaff3e31b5eeff.camel@t-online.de>
- <357cbd67260040e4bcf17d519aaafdcb@AcuMS.aculab.com>
-In-Reply-To: <357cbd67260040e4bcf17d519aaafdcb@AcuMS.aculab.com>
+References: <78b23407-bdd0-4b1b-bf6e-ecd4c00294ab@app.fastmail.com> <20221229113338.2436892-1-andrzej.hajda@intel.com>
+In-Reply-To: <20221229113338.2436892-1-andrzej.hajda@intel.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 2 Jan 2023 09:29:02 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWP2GoBU8nwwDP2m_SUxV2sD67nTPyKjQ0Skjc7q7bcNw@mail.gmail.com>
-Message-ID: <CAMuHMdWP2GoBU8nwwDP2m_SUxV2sD67nTPyKjQ0Skjc7q7bcNw@mail.gmail.com>
-Subject: Re: [PATCH v2] kbuild: treat char as always unsigned
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Holger Lubitz <holger.lubitz@t-online.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-toolchains@vger.kernel.org" <linux-toolchains@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
+Date:   Mon, 2 Jan 2023 09:30:48 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVaq9Xg3HrqLo1x5SCuwtJBsczLjWAWmH=23ZtNf_e9hQ@mail.gmail.com>
+Message-ID: <CAMuHMdVaq9Xg3HrqLo1x5SCuwtJBsczLjWAWmH=23ZtNf_e9hQ@mail.gmail.com>
+Subject: Re: [PATCH v2] arch: rename all internal names __xchg to __arch_xchg
+To:     Andrzej Hajda <andrzej.hajda@intel.com>
+Cc:     linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi David,
+On Thu, Dec 29, 2022 at 12:34 PM Andrzej Hajda <andrzej.hajda@intel.com> wrote:
+> __xchg will be used for non-atomic xchg macro.
+>
+> Signed-off-by: Andrzej Hajda <andrzej.hajda@intel.com>
+> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 
-On Fri, Dec 30, 2022 at 12:39 PM David Laight <David.Laight@aculab.com> wrote:
-> Thinking further the fastest strcmp() probably uses big-endian word compares
-> with a check for a zero byte.
-> Especially on 64 bit systems that support misaligned loads.
-> But I'd need to think hard about the actual details.
-
-arch/arc/lib/strcmp-archs.S
-arch/csky/abiv2/strcmp.S
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> [m68k]
 
 Gr{oetje,eeting}s,
 
