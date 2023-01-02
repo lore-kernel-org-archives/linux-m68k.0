@@ -2,110 +2,145 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BBD30C4708D
-	for <linux-m68k@archiver.kernel.org>; Mon,  2 Jan 2023 17:24:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C04BC3DA7A
+	for <linux-m68k@archiver.kernel.org>; Mon,  2 Jan 2023 22:18:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232627AbjABRYp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 2 Jan 2023 12:24:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34194 "EHLO
+        id S229627AbjABWSF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 2 Jan 2023 17:18:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230311AbjABRYo (ORCPT
+        with ESMTP id S229603AbjABWSE (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 2 Jan 2023 12:24:44 -0500
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F9B2BC05
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Jan 2023 09:24:44 -0800 (PST)
+        Mon, 2 Jan 2023 17:18:04 -0500
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFADB6427
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Jan 2023 14:18:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1672680284; x=1704216284;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=6MsclmYEbFQLTFumk27drrI0fnEhnwF05BH3vrcK1XM=;
-  b=Zuu0P2qceyuck5L3YA/oO/w+5y5QRYkCcYNfbk5pwlE0gZtMBOg5xHrt
-   QpH6M8QfT8h7GK7VhQuJU/5iL46+7D559BMoCuC3QPZFigBHJthVOBTE9
-   Z3MHa3i1VWacAEcl4GSibn5uH4PfDBDtVdYHqtuQ2o1dnu4BYRQtj5cOe
-   yGVlbf9rC60Tup8plc0P5VSLrR4ge9fo/yEPozIXsYJdDFCXnjSHYcsI1
-   QQjN8WqJkAkDBvzV4KxqUSh/cLwdtoIGUYfU3Aenw47d5VIijriMzy/8s
-   g+UyORqtyvyX2bLY6PtKYhp8+XvDM45ZwD83yN1QvWFlRwTjNLWo1Jm33
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10578"; a="320231205"
-X-IronPort-AV: E=Sophos;i="5.96,294,1665471600"; 
-   d="scan'208";a="320231205"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2023 09:24:43 -0800
+  t=1672697883; x=1704233883;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=jYXhmDuqGnkDxZIhNdXwL2LccIhOZpGxT8D1SP2yddA=;
+  b=Yo3SUbAq7PVqE603AUYtU9anPQV3JaIcU0v3NkRI8U+JYkBcWxxFiSpc
+   HirDUw3K3lK8KJcgROempAk4AyHhYvssUaLen9lSrhuErLV6qHuHNCka0
+   SFTt0huNMIREbl/Hf2GkynsVjxKkLw7D70sX7X0eb6jZDRe/C2ayLP94D
+   P3i8W32wJ/S+01ruohXfZ2YIsK80kFhJ2EWFYA8JOzHZqjctvavnBbEl2
+   N1z0svzBlMWwkN/iRBk0ObIr9GA+ykzzKZFMQ6EVD0REa4/yyOQTM/DD/
+   fJCaKDQOiVLfoF46lc0QRHO5BIDEIBCHZeWopWnW3+O77hZEFgAE81cmf
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10578"; a="301231873"
+X-IronPort-AV: E=Sophos;i="5.96,295,1665471600"; 
+   d="scan'208";a="301231873"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jan 2023 14:18:02 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10578"; a="632193640"
-X-IronPort-AV: E=Sophos;i="5.96,294,1665471600"; 
-   d="scan'208";a="632193640"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga006.jf.intel.com with ESMTP; 02 Jan 2023 09:24:34 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1pCOY3-003WV9-0D;
-        Mon, 02 Jan 2023 19:24:31 +0200
-Date:   Mon, 2 Jan 2023 19:24:30 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Yury Norov <yury.norov@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matt Turner <mattst88@gmail.com>,
-        Brian Cain <bcain@quicinc.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kees Cook <keescook@chromium.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Marco Elver <elver@google.com>, Borislav Petkov <bp@suse.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, kernel test robot <lkp@intel.com>,
-        linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch@vger.kernel.org, llvm@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/9] bitops: always define asm-generic non-atomic
- bitops
-Message-ID: <Y7MTTtlDCottjQi1@smile.fi.intel.com>
-References: <20220624121313.2382500-1-alexandr.lobakin@intel.com>
- <20220624121313.2382500-3-alexandr.lobakin@intel.com>
- <Y7MC5/wxgGZz/met@boxer>
- <20230102163059.3556962-1-alexandr.lobakin@intel.com>
+X-IronPort-AV: E=McAfee;i="6500,9779,10578"; a="723061894"
+X-IronPort-AV: E=Sophos;i="5.96,295,1665471600"; 
+   d="scan'208";a="723061894"
+Received: from lkp-server01.sh.intel.com (HELO b5d47979f3ad) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 02 Jan 2023 14:18:01 -0800
+Received: from kbuild by b5d47979f3ad with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pCT84-000RZ9-2n;
+        Mon, 02 Jan 2023 22:18:00 +0000
+Date:   Tue, 03 Jan 2023 06:17:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 8075de6c0ed34e9108b4f56148dca6c671319ec7
+Message-ID: <63b3580f.aD+muEpXx97mL82l%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230102163059.3556962-1-alexandr.lobakin@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Jan 02, 2023 at 05:30:59PM +0100, Alexander Lobakin wrote:
-> From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> Date: Mon, 2 Jan 2023 17:14:31 +0100
-> > On Fri, Jun 24, 2022 at 02:13:06PM +0200, Alexander Lobakin wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 8075de6c0ed34e9108b4f56148dca6c671319ec7  Merge tag 'v6.2-rc2'
 
-> > this patch gives me a headache when trying to run sparse against a module.
+elapsed time: 722m
 
-No, it's not related to this patch.
+configs tested: 68
+configs skipped: 2
 
-> > Olek please help :D
-> 
-> It was fixed shortly after the build bots turned on on the original
-> series with [0]. Hovewer, no release tag's been made after the fix.
-> There's also a short discussion regarding packaging Sparse 0.6.4 for
-> Debian with that fix cherry-picked[1], not sure if it led anywhere.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Debian already fixed that for a few weeks at least.
+gcc tested configs:
+powerpc                           allnoconfig
+x86_64                              defconfig
+arc                                 defconfig
+s390                             allmodconfig
+sh                               allmodconfig
+alpha                               defconfig
+s390                                defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+ia64                             allmodconfig
+x86_64                               rhel-8.3
+x86_64                           allyesconfig
+s390                             allyesconfig
+mips                             allyesconfig
+i386                                defconfig
+i386                 randconfig-a004-20230102
+i386                 randconfig-a003-20230102
+i386                 randconfig-a001-20230102
+i386                 randconfig-a002-20230102
+x86_64                          rhel-8.3-func
+x86_64               randconfig-a001-20230102
+x86_64                    rhel-8.3-kselftests
+x86_64               randconfig-a004-20230102
+x86_64               randconfig-a002-20230102
+x86_64               randconfig-a003-20230102
+i386                 randconfig-a005-20230102
+arm                                 defconfig
+i386                 randconfig-a006-20230102
+x86_64               randconfig-a006-20230102
+x86_64               randconfig-a005-20230102
+arm64                            allyesconfig
+powerpc                          allmodconfig
+arm                              allyesconfig
+x86_64                           rhel-8.3-bpf
+x86_64                           rhel-8.3-syz
+i386                             allyesconfig
+riscv                randconfig-r042-20230101
+x86_64                         rhel-8.3-kunit
+x86_64                           rhel-8.3-kvm
+arc                  randconfig-r043-20230102
+x86_64                            allnoconfig
+m68k                             allmodconfig
+arc                              allyesconfig
+arm                  randconfig-r046-20230102
+alpha                            allyesconfig
+m68k                             allyesconfig
+arc                  randconfig-r043-20230101
+s390                 randconfig-r044-20230101
+
+clang tested configs:
+x86_64                          rhel-8.3-rust
+i386                 randconfig-a013-20230102
+i386                 randconfig-a012-20230102
+i386                 randconfig-a011-20230102
+i386                 randconfig-a014-20230102
+i386                 randconfig-a016-20230102
+i386                 randconfig-a015-20230102
+hexagon              randconfig-r041-20230102
+x86_64               randconfig-a011-20230102
+s390                 randconfig-r044-20230102
+x86_64               randconfig-a012-20230102
+x86_64               randconfig-a013-20230102
+hexagon              randconfig-r045-20230101
+x86_64               randconfig-a015-20230102
+x86_64               randconfig-a016-20230102
+hexagon              randconfig-r045-20230102
+arm                  randconfig-r046-20230101
+x86_64               randconfig-a014-20230102
+riscv                randconfig-r042-20230102
+hexagon              randconfig-r041-20230101
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
