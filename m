@@ -2,138 +2,131 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E344C46467
-	for <linux-m68k@archiver.kernel.org>; Tue,  3 Jan 2023 10:05:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 496D4C54E76
+	for <linux-m68k@archiver.kernel.org>; Wed,  4 Jan 2023 22:34:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233132AbjACKFn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 3 Jan 2023 05:05:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39740 "EHLO
+        id S240512AbjADWeQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 4 Jan 2023 17:34:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbjACKFm (ORCPT
+        with ESMTP id S240419AbjADWeP (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 3 Jan 2023 05:05:42 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEBAF635F
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Jan 2023 02:05:41 -0800 (PST)
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3037hcSP015068;
-        Tue, 3 Jan 2023 10:02:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=dMHVtFosqWThDyY5SftMoOPjqDlLusCntZAFShOz2mY=;
- b=KQ8gHflm592WlbRAgwdQmZyTRlHDWh9M3ZAPFV+EMcsIOXJ461PiMpCp5cUVt9BL1e6j
- zqllDR5Fb/gxAm41jRkoRbn7AyAsUGSUMf7knMuu/spo09IOUdLrV2GM4nc+OlkQbkE7
- IJzG4uvffHGaWIteJBPi+B7FHAqQUQN3AtsThHUAZCqJQIQDHXbgZuAeeqSo9WeDmPJj
- eEQnkInKW+xzSa/aKKaqEDcmxJK5+xsGNpjiHiXPohV0tqVjzNS2xI1QFRZv2I9KIldN
- wQ9mkHaOJ5pKdofCP9qAqPj5s8umAAK+tXrV9dZ+20maLxpkr4T38HkHLw9ablzK3SFk /w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mvbt6xp9k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Jan 2023 10:02:20 +0000
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3039LwDp027251;
-        Tue, 3 Jan 2023 10:02:19 GMT
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3mvbt6xp8p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Jan 2023 10:02:19 +0000
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 302CL8aj017444;
-        Tue, 3 Jan 2023 10:02:16 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma02fra.de.ibm.com (PPS) with ESMTPS id 3mtcq6tmts-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Jan 2023 10:02:16 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 303A2EKB49938694
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 3 Jan 2023 10:02:14 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3B14420071;
-        Tue,  3 Jan 2023 10:02:14 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F230A20069;
-        Tue,  3 Jan 2023 10:02:12 +0000 (GMT)
-Received: from osiris (unknown [9.171.83.23])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Tue,  3 Jan 2023 10:02:12 +0000 (GMT)
-Date:   Tue, 3 Jan 2023 11:02:09 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Andrzej Hajda <andrzej.hajda@intel.com>
-Cc:     linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, Arnd Bergmann <arnd@arndb.de>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v3] arch: rename all internal names __xchg to __arch_xchg
-Message-ID: <Y7P9IcR7/jgYWMcq@osiris>
-References: <202212300642.6pdgegGO-lkp@intel.com>
- <20221230141552.128508-1-andrzej.hajda@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221230141552.128508-1-andrzej.hajda@intel.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: JUKgavQnlJumrUvi-CztUW8Qob9IZFEg
-X-Proofpoint-GUID: 0ZquoQ4B0WHjt8os5pwnxRNooiQSYFH8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2023-01-03_01,2023-01-03_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1011
- lowpriorityscore=0 mlxlogscore=712 priorityscore=1501 bulkscore=0
- spamscore=0 adultscore=0 phishscore=0 suspectscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2301030088
+        Wed, 4 Jan 2023 17:34:15 -0500
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 364BF42E00
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Jan 2023 14:34:13 -0800 (PST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id C324A5C00EA;
+        Wed,  4 Jan 2023 17:34:10 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Wed, 04 Jan 2023 17:34:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm2; t=1672871650; x=
+        1672958050; bh=GhHK13puG9rbbmVLp8YxJh1oi2E1z8eW7EP8WFvlzbE=; b=P
+        2rxRqqhwAYm82oHQZlx0eRquBq9ZbKOP3GKdJ563/G6LTzhGjkMpyJFzH5eUa/PX
+        DaoAw+MhLf5t9tMzc9+3GHXPUF9LYA77CjlOcFP46f3PYJa2fy7U7HMVVgphFDwG
+        /2QNvnirm2bH+0W8S3DJT1quRzS/nlbBZggpwkDPpCnOf76gYEEBn0HKaK/3s31u
+        I1gLXMRob7wXikMCPXv5ZDFRimmLxTp8ZnnNq47QSeU3gr3Tcp0oxIwy9V383U2u
+        aohzsLAqeKXo0Q9O1iKb4/s/upBfdrQxyQBLf19sBR7bdctl5vjxSwhcLjwlWivJ
+        yTQ9nSFLzQyXM4p2VRBmg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1672871650; x=
+        1672958050; bh=GhHK13puG9rbbmVLp8YxJh1oi2E1z8eW7EP8WFvlzbE=; b=s
+        XjvCay9qgfp5zZA/FK9sFizwgm3P949Px1iTHcIgW8gTVg86SVON5Wfbk9cu7P4h
+        IufKBgZaD/y0adTibbCtd70bGu1wcKNqiggPDE8SZ3BfIz/ezIJLA7rXBpyO9lfm
+        eM0GadwVZqDfSaDY/hwqpMYHohA8QlCgljo1xvKYbTRugVk4vk+dXit1lNVSqEDn
+        +j+uLX8se25VVGGvly4Zz/t9lWJ3DUU+oxshdq8DGxmVjeMmORnRpkER5W+ftKTR
+        I5ivgROXearuZrs3UY5aOwws/2XFAnKoJmvR2z8dH7IuwZJl7/3jMM4ZABFD5gxh
+        e9zPd/1+v4UP3k/fKunug==
+X-ME-Sender: <xms:4f61Y0kq7rlqRwa5qrGsGybkL6fvzLhofq5cbBitIKGmcyWSwvl3SQ>
+    <xme:4f61Yz2zp7ViQ0uVBBNH1kf7n-onscPjH9L7mgZfYkU69rCQ8gCFcp5HaVsIa_-XL
+    vJCcakZ8eCNjSDtG5A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrjeejucetufdoteggodetrfdotffvucfrrh
+    hofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgenuceurghi
+    lhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurh
+    epofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdetrhhnugcu
+    uegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtthgvrh
+    hnpefgkeeuleegieeghfduudeltdekfeffjeeuleehleefudettddtgfevueeffeeigeen
+    ucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:4f61Yyp3DB1iBTFWX1mslGa6YZRkjsTkLa0ihJVdErUrhV-OYzSxtg>
+    <xmx:4f61Ywnl-RxDAY2VGVQX6wdyc8nVnhG1BE6fwNKJ9i59vMLOAkwexQ>
+    <xmx:4f61Yy1fvAgq5OEIcQ4B2FVdKhaiVIrhU8pzKUnQQPaH6n7XRoI93Q>
+    <xmx:4v61Y7sWXUG5KKCDli-ondi4lSho29TgaWtYpUSJFStWM5SUaTI30w>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 9628CB60086; Wed,  4 Jan 2023 17:34:09 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.7.0-alpha0-1185-g841157300a-fm-20221208.002-g84115730
+Mime-Version: 1.0
+Message-Id: <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com>
+In-Reply-To: <CAHk-=wi8XyAUF9_z6-oa4Ava6PVZeE-=TVNcFK1puQHpOtqLLw@mail.gmail.com>
+References: <000000000000dbce4e05f170f289@google.com>
+ <5f45bb9a-5e00-48dd-82b0-46b19b1b98a3@app.fastmail.com>
+ <CAHk-=wi8XyAUF9_z6-oa4Ava6PVZeE-=TVNcFK1puQHpOtqLLw@mail.gmail.com>
+Date:   Wed, 04 Jan 2023 23:33:50 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Linus Torvalds" <torvalds@linux-foundation.org>
+Cc:     syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        christian.brauner@ubuntu.com,
+        "Damien Le Moal" <damien.lemoal@opensource.wdc.com>,
+        jlayton@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        "Matthew Wilcox" <willy@infradead.org>,
+        ZhangPeng <zhangpeng362@huawei.com>,
+        "Viacheslav Dubeyko" <slava@dubeyko.com>,
+        linux-m68k@lists.linux-m68k.org
+Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Dec 30, 2022 at 03:15:52PM +0100, Andrzej Hajda wrote:
-> __xchg will be used for non-atomic xchg macro.
-> 
-> Signed-off-by: Andrzej Hajda <andrzej.hajda@intel.com>
-> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> v2: squashed all arch patches into one
-> v3: fixed alpha/xchg_local, thx to lkp@intel.com
-> ---
-...
->  arch/s390/include/asm/cmpxchg.h      | 4 ++--
-> diff --git a/arch/s390/include/asm/cmpxchg.h b/arch/s390/include/asm/cmpxchg.h
-> index 84c3f0d576c5b1..efc16f4aac8643 100644
-> --- a/arch/s390/include/asm/cmpxchg.h
-> +++ b/arch/s390/include/asm/cmpxchg.h
-> @@ -14,7 +14,7 @@
->  
->  void __xchg_called_with_bad_pointer(void);
->  
-> -static __always_inline unsigned long __xchg(unsigned long x,
-> +static __always_inline unsigned long __arch_xchg(unsigned long x,
->  					    unsigned long address, int size)
+On Wed, Jan 4, 2023, at 20:06, Linus Torvalds wrote:
+>
+> I suspect this code is basically all dead. From what I can tell, hfs
+> only gets updates for
+>
+>  (a) syzbot reports
+>
+>  (b) vfs interface changes
 
-Please adjust the alignment of the second line.
+There is clearly no new work going into it, and most data exchange
+with MacOS would use HFS+, but I think there are still some users.
 
-> @@ -77,7 +77,7 @@ static __always_inline unsigned long __xchg(unsigned long x,
->  	__typeof__(*(ptr)) __ret;					\
->  									\
->  	__ret = (__typeof__(*(ptr)))					\
-> -		__xchg((unsigned long)(x), (unsigned long)(ptr),	\
-> +		__arch_xchg((unsigned long)(x), (unsigned long)(ptr),	\
->  		       sizeof(*(ptr)));					\
+> and the last real changes seem to have been by Ernesto A. Fern=C3=A1nd=
+ez
+> back in 2018.
+>
+> Hmm. Looking at that code, we have another bug in there, introduced by
+> an earlier fix for a similar issue: commit 8d824e69d9f3 ("hfs: fix OOB
+> Read in __hfs_brec_find") added
+>
+> +       if (HFS_I(main_inode)->cat_key.CName.len > HFS_NAMELEN)
+> +               return -EIO;
+>
+> but it's after hfs_find_init(), so it should actually have done a
+> hfs_find_exit() to not leak memory.
+>
+> So we should probably fix that too.
+>
+> Something like this ENTIRELY UNTESTED patch?
+>
+> Do we have anybody who looks at hfs?
 
-Same here.
+Adding Viacheslav Dubeyko to Cc, he's at least been reviewing
+patches for HFS and HFS+ somewhat recently. The linux-m68k
+list may have some users dual-booting old MacOS.
 
-The same is true for a couple of other architectures - not sure if
-they care however.
+Viacheslav, see the start of the thread at
+https://lore.kernel.org/lkml/000000000000dbce4e05f170f289@google.com/
+
+     Arnd
