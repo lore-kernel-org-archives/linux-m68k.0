@@ -2,116 +2,139 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B085DC3DA7D
-	for <linux-m68k@archiver.kernel.org>; Thu,  5 Jan 2023 16:45:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C949FC3DA7A
+	for <linux-m68k@archiver.kernel.org>; Thu,  5 Jan 2023 21:35:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234173AbjAEQpi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 5 Jan 2023 11:45:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39342 "EHLO
+        id S235028AbjAEVfE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 5 Jan 2023 16:35:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbjAEQph (ORCPT
+        with ESMTP id S234829AbjAEVfE (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 5 Jan 2023 11:45:37 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9824759335
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Jan 2023 08:45:35 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id c11so30324918qtn.11
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 05 Jan 2023 08:45:35 -0800 (PST)
+        Thu, 5 Jan 2023 16:35:04 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 744EC671AB
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Jan 2023 13:35:03 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id c8-20020a17090a4d0800b00225c3614161so3280621pjg.5
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 05 Jan 2023 13:35:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dubeyko-com.20210112.gappssmtp.com; s=20210112;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:subject:from:references:cc:to:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6arApO6IYFcLwiEx1xQQun777cX20MCWlNjtRHJ5Clg=;
-        b=uepsKThOle1iENJ7DV2TsYHwy/gOQiuTQF0fNpBMQRR8+VabvCU10BPMzbZh1ORZXg
-         3MkOl+1WmB/YOuAUHwDScjl7S9g8SKYkBR9BtOnrgK+DaApmIuxT+midA2oFCc1pshKL
-         /LBLrpF4wfUe3LCYZ7865wvKxInxFvIKQ/5OPQHJQMMcUP8NglSZDL1il/jyHarz2MTy
-         XUdQQGjOApmZcO4QeaaRW+nU0FJEWSCPAfKDCbDjx0aXkWjegpdTqb6mEVNEZ52MqR0u
-         IgC6ByABNBVj0lsR0KV++Fraa0FUxauGp1jP7KbvQz/h6DzdeffDZgyw2iGNH2NkrW6k
-         SfRQ==
+        bh=qS8dYeQhr6rkdNYW42bpwedt2Pigt8o7DrRMO2YKtVU=;
+        b=UCgyrtdLtFsbGmj/eBbq/f3ZZiJB/MKhu+RLWoa3idj3eAnIDuWC8TMlDlv7fVqkgS
+         yDQuTp7NTBi87IpnaEHOvOogUuAsh1Q2MquSyivxTvRKZHpVO3JdAFQlxG8RPHCo0nxN
+         ZvVH8ZoXwbVVGf9f4yH65qY+IkZnelbQGn7dOaVl8RPn9QnISWceookRfQk0g3nPkfpM
+         +sfqiDANuikeNxN6Rhc6372iqF6pU950h2IDed+nfgMUvEiq97GfyatWdnmBUfr7TpM5
+         OkW8YWg0asew5JNPOgiSIGrzonn2qg1Og3y6SoOCDfRUzcFCfxFas++1qTWd4Kvfj1c2
+         5IJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6arApO6IYFcLwiEx1xQQun777cX20MCWlNjtRHJ5Clg=;
-        b=xDII2WOL2c2PNOclBGuJ12kAmjGBw1AYYS3XkOXGTfAoBHovJTilxEsCLtIDq4mK9W
-         D83JTyV5yCB3AIUBy74uq4INc8XzN+eJrJ1cPT4hQINzwvAaf5VorP5EK9+8lZx9dwtS
-         47lCDI6IPab1VAk6IkUFWt9Lb1UD4yTUs1o43Lvj7mfKobTUZqq3vwUWdJcB2Mq+6nxd
-         B2pteKLx6O1ln+OE08Ruzgrw2eq/M1E6/n/A+dTtkQRvKEvV7sTG3j1d45pqTPSVtBik
-         jbuJdpn5yoI5zXYm5VQjYDKahJAtJZdLiyQV/NCK9rNNnCYqCltUibKDO+NgUSQ28xxG
-         4yCg==
-X-Gm-Message-State: AFqh2kqUJF9uWYxFvrmIOf1olvBBg4UV5IRLwFya+J1Xfm4+snXhiyFI
-        jWRM7VhEfFRb3Zpm+nDAFNRNWQ==
-X-Google-Smtp-Source: AMrXdXsbTE4sJrzTmujne/EY/Ou99CTR4ifsI+W8HXA5+B6VmowpRpm7dSy8aUe89IRj2jXJHMV1KA==
-X-Received: by 2002:ac8:44b2:0:b0:3a9:89f1:82a with SMTP id a18-20020ac844b2000000b003a989f1082amr69143771qto.61.1672937134671;
-        Thu, 05 Jan 2023 08:45:34 -0800 (PST)
-Received: from smtpclient.apple (172-125-78-211.lightspeed.sntcca.sbcglobal.net. [172.125.78.211])
-        by smtp.gmail.com with ESMTPSA id c9-20020ac85189000000b003a54a19c550sm21840745qtn.57.2023.01.05.08.45.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Jan 2023 08:45:33 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.120.41.1.1\))
-Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
-From:   Viacheslav Dubeyko <slava@dubeyko.com>
-In-Reply-To: <Y7bw7X1Y5KtmPF5s@casper.infradead.org>
-Date:   Thu, 5 Jan 2023 08:45:31 -0800
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:subject:from:references:cc:to:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=qS8dYeQhr6rkdNYW42bpwedt2Pigt8o7DrRMO2YKtVU=;
+        b=2cL6i7Dky1s6dEI+dICHCFcaaPwwb/KxDxmIKS2Slp09wS9AIAw9p7MktcLArlRWwF
+         56BGOGJxIMHP7iDC8J9l2a3CbUOcS2zLftqtPuKjL84NE7ZNfZmM9KV8WsgA/0mV+y88
+         IrGuuadbKW4vzJTeQOmVJMY3jvYO6GmyOPu0D3e775l0dhjSoFS0jpC5vn70cMkYt1WB
+         3YumFMBvWKRDkKqo9DIaNA+LxFO87Vz7v+SdP53+D3zFSzjaS7rSqyOtyFsHKZT1TtrS
+         FsGvcueWjYs+UZCSgJZGbrkDKixcO9kp/0A5i8ibIpBA2HCS5HjLHeoGq4oEzzyfAIZ4
+         KifA==
+X-Gm-Message-State: AFqh2kppivpwPZ1wUzL9xwTYdzgNqsf8CGCCLGMh7cu23fSj3/TRi3cP
+        M87QPHURM1K/88dCA3jrGl0=
+X-Google-Smtp-Source: AMrXdXvEjtBdEejyjymJrx33ei3vhOefzX4zzvUy5Xr8CKi8JrPBqwxPYilZZERkNcsikGfUKx+pyA==
+X-Received: by 2002:a17:90a:f698:b0:226:9f:e871 with SMTP id cl24-20020a17090af69800b00226009fe871mr34089497pjb.21.1672954502659;
+        Thu, 05 Jan 2023 13:35:02 -0800 (PST)
+Received: from Schmitz-MacBook-Pro.local (122-62-142-61-fibre.sparkbb.co.nz. [122.62.142.61])
+        by smtp.googlemail.com with ESMTPSA id g6-20020a17090a640600b00225ffb9c43dsm1777712pjj.5.2023.01.05.13.34.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Jan 2023 13:35:01 -0800 (PST)
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         christian.brauner@ubuntu.com,
         Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs@googlegroups.com,
+        jlayton@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Matthew Wilcox <willy@infradead.org>,
         ZhangPeng <zhangpeng362@huawei.com>,
-        linux-m68k@lists.linux-m68k.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com>
+        Viacheslav Dubeyko <slava@dubeyko.com>,
+        linux-m68k@lists.linux-m68k.org, flar@allandria.com
 References: <000000000000dbce4e05f170f289@google.com>
  <5f45bb9a-5e00-48dd-82b0-46b19b1b98a3@app.fastmail.com>
  <CAHk-=wi8XyAUF9_z6-oa4Ava6PVZeE-=TVNcFK1puQHpOtqLLw@mail.gmail.com>
  <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com>
- <2575F983-D170-4B79-A6BA-912D4ED2CC73@dubeyko.com>
- <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com>
- <Y7bw7X1Y5KtmPF5s@casper.infradead.org>
-To:     Matthew Wilcox <willy@infradead.org>
-X-Mailer: Apple Mail (2.3696.120.41.1.1)
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
+Message-ID: <1bd49fc0-d64f-4eb8-841a-4b09e178b5fd@gmail.com>
+Date:   Fri, 6 Jan 2023 10:34:53 +1300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+Hi Arnd,
+
+Am 05.01.23 um 11:33 schrieb Arnd Bergmann:
+> On Wed, Jan 4, 2023, at 20:06, Linus Torvalds wrote:
+>> I suspect this code is basically all dead. From what I can tell, hfs
+>> only gets updates for
+>>
+>>  (a) syzbot reports
+>>
+>>  (b) vfs interface changes
+> There is clearly no new work going into it, and most data exchange
+> with MacOS would use HFS+, but I think there are still some users.
+PowerPC yaboot boot partitions spring to mind here. Plain HFS is still
+used in places where it can't be replaced AFAIK.
+>
+>> and the last real changes seem to have been by Ernesto A. Fern=C3=A1nd=
+ez
+>> back in 2018.
+>>
+>> Hmm. Looking at that code, we have another bug in there, introduced by=
+
+>> an earlier fix for a similar issue: commit 8d824e69d9f3 ("hfs: fix OOB=
+
+>> Read in __hfs_brec_find") added
+>>
+>> +       if (HFS_I(main_inode)->cat_key.CName.len > HFS_NAMELEN)
+>> +               return -EIO;
+>>
+>> but it's after hfs_find_init(), so it should actually have done a
+>> hfs_find_exit() to not leak memory.
+>>
+>> So we should probably fix that too.
+>>
+>> Something like this ENTIRELY UNTESTED patch?
+
+Looking at Linus' patch, I wonder whether the missing fd.entrylength
+size test in the HFS_IS_RSRC(inode) case was due to the fact that a
+file's resource fork may be empty?
+
+Adding Brad Boyer (bfind.c author) to Cc. Brad might know what
+fd.entrylength should be set to in such a case.
+
+Cheers,
+
+=C2=A0=C2=A0=C2=A0 Michael
 
 
-> On Jan 5, 2023, at 7:46 AM, Matthew Wilcox <willy@infradead.org> =
-wrote:
->=20
-> On Wed, Jan 04, 2023 at 08:37:16PM -0800, Viacheslav Dubeyko wrote:
->> Also, as far as I can see, available volume in report (mount_0.gz) =
-somehow corrupted already:
->=20
-> Syzbot generates deliberately-corrupted (aka fuzzed) filesystem =
-images.
-> So basically, you can't trust anything you read from the disc.
->=20
-
-If the volume has been deliberately corrupted, then no guarantee that =
-file system
-driver will behave nicely. Technically speaking, inode write operation =
-should never
-happened for corrupted volume because the corruption should be detected =
-during
-b-tree node initialization time. If we would like to achieve such nice =
-state of HFS/HFS+
-drivers, then it requires a lot of refactoring/implementation efforts. I =
-am not sure that
-it is worth to do because not so many guys really use HFS/HFS+ as the =
-main file
-system under Linux.
-
-Thanks,
-Slava.
+>>
+>> Do we have anybody who looks at hfs?
+> Adding Viacheslav Dubeyko to Cc, he's at least been reviewing
+> patches for HFS and HFS+ somewhat recently. The linux-m68k
+> list may have some users dual-booting old MacOS.
+>
+> Viacheslav, see the start of the thread at
+> https://lore.kernel.org/lkml/000000000000dbce4e05f170f289@google.com/
+>
+>      Arnd
 
