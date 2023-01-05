@@ -2,61 +2,61 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8E7EC54EBF
-	for <linux-m68k@archiver.kernel.org>; Thu,  5 Jan 2023 00:37:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18FC2C3DA7D
+	for <linux-m68k@archiver.kernel.org>; Thu,  5 Jan 2023 04:37:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234517AbjAEAhY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 4 Jan 2023 19:37:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44412 "EHLO
+        id S229677AbjAEEh1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 4 Jan 2023 23:37:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235701AbjAEAhE (ORCPT
+        with ESMTP id S229569AbjAEEh0 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 4 Jan 2023 19:37:04 -0500
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 288EEBA7
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Jan 2023 16:37:03 -0800 (PST)
-Received: by mail-qt1-x82b.google.com with SMTP id v14so26035899qtq.3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 04 Jan 2023 16:37:03 -0800 (PST)
+        Wed, 4 Jan 2023 23:37:26 -0500
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC5F2186D1
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Jan 2023 20:37:24 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id j130so25550948oif.4
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 04 Jan 2023 20:37:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dubeyko-com.20210112.gappssmtp.com; s=20210112;
         h=to:references:message-id:content-transfer-encoding:cc:date
          :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=h4eXR7+DTXCTaYZ/SdHjg2xu1hwBwg3cWqSb9OuDM9Y=;
-        b=RuWR1y5qjlv+GrqbkjNVxnJ1b79YNDxZsoLwsEER/oFFJBQm5x6N9YstduZzZTb6Rm
-         pGK1H1fm2x5F7gELgYGhzi7BuYAnEKvZrjR+ACIhtJ/5c45nyHeQ6tYXlnkNSPriDycX
-         xzWbn4hDyZ9glm+F30XNjlcnEFGnrD0VhhtIoMqJhOccznsqLSvEj58av5OuRCjiNKJa
-         i5fHnglchNjxLo+XCOSrsVIMEEcpgfQHaMEFVWYgZqSeGa7z1uToZeqW8E52S9DS2WjS
-         z5+gpoqxe0oxAbByAKWECScZ2UoJwiCZUsNRUarxMQQwG8fhfqnfmUtzUPD9veXfJnI0
-         bkrw==
+        bh=KzlzPB+YgVJM+mqLyWb7Jpzkio+HI4A/2g+wVfxujuw=;
+        b=HAUXf7mFXIYyV1f5OEzSdpVvu5bdXzr58K/l4qp1Yc2Msh9HLv9LttHaBxSmF4/cWo
+         gtxkyOBvweS0YhLASiqJgMuFgCFzR61gIEJtypv+rxN0J2rzJRR9jErM2WpLYsDjiwvg
+         hrLmM7bFT3FHsZmBFARjPYaegUFokbflpMfX1srzqCKOdLxtzt22GpCB2eG9I1MGsjcT
+         hv9rsSK84+irAv9P9Yu73p7VVoiTscxfgVyr2Ca2SZ50S6DHO+WrgSJR8hBTRwAKslWi
+         9DQKWjj3CoQM8dF1TEOzljaDQdL1Bzf092vtOATl4kPyO1Yzl4+tzT1i27ONuxV+Qyw6
+         Ymig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=to:references:message-id:content-transfer-encoding:cc:date
          :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=h4eXR7+DTXCTaYZ/SdHjg2xu1hwBwg3cWqSb9OuDM9Y=;
-        b=F2rZ62GQm6BntA+NjjKqGURV1tjsjrAYIhgfO1YZ+KAD9vfBGre+zlXGaOCGBqfyZF
-         VOQ5/JCB8mQz2Qk00gZXzBBNxFPLjaAZMy1gsxArPGmeTj7tSbYLsq20fan8W4Dd9RD1
-         jZHWJ9mly2LwbCZVw0pBOqOfbeD9sTr5fh91aK1BmJY7ySgXgY+p14B4q0XOUOOsofVf
-         07aq33PwJ9vu9zdxeAbqMCOSLp32IH7j1ZtOeko9YkNrLVqv5UKgahKVbf/uwsH/WA5N
-         LnzQyugE2kMqkISIMSSNtuhddhRObwd9qR+GoGEVBvEeL4wTlTeR9wqYEld4xpZlHMi+
-         KnyQ==
-X-Gm-Message-State: AFqh2kow3iTwg+w+WETikK35dDDtMx7BzrdjvcgpC5n6oZms0YO8x0fR
-        U5qcsWlTw3llXGiicNq2316KAQ==
-X-Google-Smtp-Source: AMrXdXvZgQTTb4PUtMb76x1Pe4izfq9PQPMxvPuvugTAIW0gC2/RPdPwYROSYBilceCjmxuBfEoSag==
-X-Received: by 2002:ac8:7450:0:b0:3a7:e599:1ee0 with SMTP id h16-20020ac87450000000b003a7e5991ee0mr59001669qtr.63.1672879022216;
-        Wed, 04 Jan 2023 16:37:02 -0800 (PST)
+        bh=KzlzPB+YgVJM+mqLyWb7Jpzkio+HI4A/2g+wVfxujuw=;
+        b=2xsux1AsDuRrzg17B76ACd74gDRp1d7BCndsGdy0PhnsV/eC0dYqOlahIlsEw5SfbZ
+         O+l3Ms/oilp+6oKWmoz8TgdaJX6N3z5w9uN53vg6VSFODiYKLNGIqUpSQCu3aye7cyOx
+         XixHQvotZH+2uboSl4X705iBjiVANx9TYKsJNCS+DOPOcRAQU/5CYxvrtHydx9KpuDet
+         ElGTff6gKoxhX51L6zQZF/rj08P3G5SYkMZUk7NQ/dFWaO4fGNBlUEUwa7A9Fx7mDTS8
+         grCForSJ6ZL+7syCnqFffl160PFqzL+7NAAlBAwkxbBzGWGmaus4AcIWSpRmyxUVrYYT
+         jLhA==
+X-Gm-Message-State: AFqh2krDkUddrrpUmRxRBbFN6H6Br4wYhilJ9UlWOYue/ifoSIK/vCp9
+        ObQzTTC/CLpqtnSjomQoH2BnBg==
+X-Google-Smtp-Source: AMrXdXue7tFNUtDrOkPpDiwYn1bRxxXc+X+xfON360+y/aa5P18aQdNRvj96yd6KXPWrG43yTWqQug==
+X-Received: by 2002:a05:6808:19aa:b0:35e:de57:51ae with SMTP id bj42-20020a05680819aa00b0035ede5751aemr33258969oib.15.1672893443726;
+        Wed, 04 Jan 2023 20:37:23 -0800 (PST)
 Received: from smtpclient.apple (172-125-78-211.lightspeed.sntcca.sbcglobal.net. [172.125.78.211])
-        by smtp.gmail.com with ESMTPSA id g4-20020ac87744000000b003a7f597dc60sm20987642qtu.72.2023.01.04.16.36.59
+        by smtp.gmail.com with ESMTPSA id v142-20020acaac94000000b003549dde122fsm14980200oie.5.2023.01.04.20.37.21
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 04 Jan 2023 16:37:01 -0800 (PST)
+        Wed, 04 Jan 2023 20:37:22 -0800 (PST)
 Content-Type: text/plain;
         charset=utf-8
 Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.120.41.1.1\))
 Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
 From:   Viacheslav Dubeyko <slava@dubeyko.com>
-In-Reply-To: <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com>
-Date:   Wed, 4 Jan 2023 16:36:51 -0800
+In-Reply-To: <2575F983-D170-4B79-A6BA-912D4ED2CC73@dubeyko.com>
+Date:   Wed, 4 Jan 2023 20:37:16 -0800
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -70,65 +70,105 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         ZhangPeng <zhangpeng362@huawei.com>,
         linux-m68k@lists.linux-m68k.org
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <2575F983-D170-4B79-A6BA-912D4ED2CC73@dubeyko.com>
+Message-Id: <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com>
 References: <000000000000dbce4e05f170f289@google.com>
  <5f45bb9a-5e00-48dd-82b0-46b19b1b98a3@app.fastmail.com>
  <CAHk-=wi8XyAUF9_z6-oa4Ava6PVZeE-=TVNcFK1puQHpOtqLLw@mail.gmail.com>
  <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com>
+ <2575F983-D170-4B79-A6BA-912D4ED2CC73@dubeyko.com>
 To:     Arnd Bergmann <arnd@arndb.de>
 X-Mailer: Apple Mail (2.3696.120.41.1.1)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Arnd,
 
-> On Jan 4, 2023, at 2:33 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+
+> On Jan 4, 2023, at 4:36 PM, Viacheslav Dubeyko <slava@dubeyko.com> =
+wrote:
 >=20
-> On Wed, Jan 4, 2023, at 20:06, Linus Torvalds wrote:
->>=20
->> I suspect this code is basically all dead. =46rom what I can tell, =
-hfs
->> only gets updates for
->>=20
->> (a) syzbot reports
->>=20
->> (b) vfs interface changes
+> Hi Arnd,
 >=20
-> There is clearly no new work going into it, and most data exchange
-> with MacOS would use HFS+, but I think there are still some users.
+>> On Jan 4, 2023, at 2:33 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+
+<skipped>
+
+>>>=20
+>>> Something like this ENTIRELY UNTESTED patch?
+>>>=20
+>>> Do we have anybody who looks at hfs?
+>>=20
+>> Adding Viacheslav Dubeyko to Cc, he's at least been reviewing
+>> patches for HFS and HFS+ somewhat recently. The linux-m68k
+>> list may have some users dual-booting old MacOS.
+>>=20
+>> Viacheslav, see the start of the thread at
+>> https://lore.kernel.org/lkml/000000000000dbce4e05f170f289@google.com/
+>>=20
 >=20
->> and the last real changes seem to have been by Ernesto A. Fern=C3=A1nde=
-z
->> back in 2018.
->>=20
->> Hmm. Looking at that code, we have another bug in there, introduced =
-by
->> an earlier fix for a similar issue: commit 8d824e69d9f3 ("hfs: fix =
-OOB
->> Read in __hfs_brec_find") added
->>=20
->> +       if (HFS_I(main_inode)->cat_key.CName.len > HFS_NAMELEN)
->> +               return -EIO;
->>=20
->> but it's after hfs_find_init(), so it should actually have done a
->> hfs_find_exit() to not leak memory.
->>=20
->> So we should probably fix that too.
->>=20
->> Something like this ENTIRELY UNTESTED patch?
->>=20
->> Do we have anybody who looks at hfs?
->=20
-> Adding Viacheslav Dubeyko to Cc, he's at least been reviewing
-> patches for HFS and HFS+ somewhat recently. The linux-m68k
-> list may have some users dual-booting old MacOS.
->=20
-> Viacheslav, see the start of the thread at
-> https://lore.kernel.org/lkml/000000000000dbce4e05f170f289@google.com/
+> Let me take a look into the issue.
 >=20
 
-Let me take a look into the issue.
+As far as I can see, I cannot reproduce the issue for newly created HFS =
+volume
+with simple operation of creation of several files of 4MB in size. The =
+sync_fs
+operation definitely calls hfs_write_inode() method. But I don't see =
+such issue.
+
+The hfs_write_inode() allocates struct hfs_find_data fd variable on =
+stack
+(fs/hfs/inode.c:426). The fd.entrylength is initialized in =
+__hfs_brec_find()
+(fs/hfs/bfind.c:100). Technically, fd->entrylength =3D len - keylen can =
+introduce
+overflow. But, such issue can take place for corrupted volume. Internal =
+logic
+error should result with returning error by hfs_brec_find =
+(fs/hfs/inode.c:466):
+
+if (hfs_brec_find(&fd))
+     /* panic? */
+     goto out;
+
+And, finally, logic should end without going into the issue.
+
+Also, as far as I can see, available volume in report (mount_0.gz) =
+somehow corrupted already:
+
+sudo losetup /dev/loop20 ./mount_0
+sudo fsck.hfs -d /dev/loop20
+** /dev/loop20
+Using cacheBlockSize=3D32K cacheTotalBlock=3D1024 cacheSize=3D32768K.
+** Checking HFS volume.
+hfs_swap_BTNode: record #1 invalid offset (0xFFF8)
+   Invalid node structure
+(3, 0)
+   Invalid B-tree node size
+(3, 0)
+** Volume check failed.
+volume check failed with error 7=20
+volume type is HFS=20
+primary MDB is at block 2 0x02=20
+alternate MDB is at block 62 0x3e=20
+primary VHB is at block 0 0x00=20
+alternate VHB is at block 0 0x00=20
+sector size =3D 512 0x200=20
+VolumeObject flags =3D 0x19=20
+total sectors for volume =3D 64 0x40=20
+total sectors for embedded volume =3D 0 0x00
+
+So, HFS volume corruption had happened somehow earlier.
+The reported issue is only a side effect of volume corruption.
+The real issue of HFS volume corruption had taken place before.
+And it was a silent issue somehow.
+
+Finally, I don=E2=80=99t see any issue with WARN_ON() in =
+fs/hfs/inode.c:489.
+If we have some issue, then it could happen in b-tree logic or
+HFS volume was corrupted somehow else. But available report doesn=E2=80=99=
+t
+provide any hint what could be wrong during testing.
 
 Thanks,
 Slava.
