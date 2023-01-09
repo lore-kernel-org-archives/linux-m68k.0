@@ -2,63 +2,218 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B5CEC54EBC
-	for <linux-m68k@archiver.kernel.org>; Sun,  8 Jan 2023 05:06:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BD82C54EBE
+	for <linux-m68k@archiver.kernel.org>; Mon,  9 Jan 2023 09:59:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbjAHFGD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 8 Jan 2023 00:06:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51198 "EHLO
+        id S233536AbjAIJ7A (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 9 Jan 2023 04:59:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjAHFGC (ORCPT
+        with ESMTP id S233491AbjAIJ6c (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 8 Jan 2023 00:06:02 -0500
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2348E271B1
-        for <linux-m68k@lists.linux-m68k.org>; Sat,  7 Jan 2023 21:05:59 -0800 (PST)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1pENsb-001gbp-2Q; Sun, 08 Jan 2023 06:05:57 +0100
-Received: from p57bd9ee4.dip0.t-ipconnect.de ([87.189.158.228] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1pENsa-001WLv-SS; Sun, 08 Jan 2023 06:05:57 +0100
-Message-ID: <52c4d532-9aff-f76d-6e62-f9cfb7c76ce7@physik.fu-berlin.de>
-Date:   Sun, 8 Jan 2023 06:05:56 +0100
+        Mon, 9 Jan 2023 04:58:32 -0500
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0A912D2E
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  9 Jan 2023 01:56:10 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:c32c:cc7a:25f1:127a])
+        by albert.telenet-ops.be with bizsmtp
+        id 6Zw8290082RK3VH06Zw8Gg; Mon, 09 Jan 2023 10:56:08 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1pEosw-001KR6-2i;
+        Mon, 09 Jan 2023 10:56:08 +0100
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1pEo4n-00DZ9x-Eb;
+        Mon, 09 Jan 2023 10:04:17 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-m68k@lists.linux-m68k.org
+Cc:     linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: defconfig: Update defconfigs for v6.2-rc3
+Date:   Mon,  9 Jan 2023 10:04:16 +0100
+Message-Id: <6c4589bc56ffba0f923a7361262397f6c32a3dc1.1673255008.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Content-Language: en-US
-To:     Debian m68k <debian-68k@lists.debian.org>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Subject: LLVM developer is looking for advise on TLS support in m68k
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.158.228
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi!
+  - Enable modular build of CD/DVD media packet writing support (revived
+    in commit 4b83e99ee7092df3 ("Revert "pktcdvd: remove driver."")).
 
-There is a bug in M68K LLVM backend which, according to the upstream maintainer,
-might be related to an issue with TLS on m68k, see [1].
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+To be combined with "m68k: defconfig: Update defconfigs for v6.2-rc1".
+---
+ arch/m68k/configs/amiga_defconfig    | 1 +
+ arch/m68k/configs/apollo_defconfig   | 1 +
+ arch/m68k/configs/atari_defconfig    | 1 +
+ arch/m68k/configs/bvme6000_defconfig | 1 +
+ arch/m68k/configs/hp300_defconfig    | 1 +
+ arch/m68k/configs/mac_defconfig      | 1 +
+ arch/m68k/configs/multi_defconfig    | 2 ++
+ arch/m68k/configs/mvme147_defconfig  | 1 +
+ arch/m68k/configs/mvme16x_defconfig  | 1 +
+ arch/m68k/configs/q40_defconfig      | 1 +
+ arch/m68k/configs/sun3_defconfig     | 1 +
+ arch/m68k/configs/sun3x_defconfig    | 1 +
+ 12 files changed, 13 insertions(+)
 
-Could anyone with some insight on the TLS code in glibc chime in?
-
-Thanks,
-Adrian
-
-> [1] https://github.com/llvm/llvm-project/issues/59161#issuecomment-1374701127
-
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index eaee93393fadfaed..ec2d792015a4bdd0 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -312,6 +312,7 @@ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+ CONFIG_RAID_ATTRS=m
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index b600370853be75e5..061a07824dc29502 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -302,6 +302,7 @@ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+ CONFIG_RAID_ATTRS=m
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index d1b7ad44535579eb..79c49647e4818b7a 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -313,6 +313,7 @@ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+ CONFIG_RAID_ATTRS=m
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index 14c2c602c452d6db..0d5832cb3e10b9ce 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -299,6 +299,7 @@ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+ CONFIG_RAID_ATTRS=m
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index 3bf51c3ac62d7514..c246c3538839beb5 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -301,6 +301,7 @@ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+ CONFIG_RAID_ATTRS=m
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index c839c27eeb6efade..98d2d0599e5a8f2c 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -304,6 +304,7 @@ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+ CONFIG_RAID_ATTRS=m
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index a78031c43e63606c..b2d5ec6ba625c7b2 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -314,6 +314,7 @@ CONFIG_AF_KCM=m
+ # CONFIG_WIRELESS is not set
+ CONFIG_PSAMPLE=m
+ CONFIG_NET_IFE=m
++CONFIG_PCCARD=y
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_TEST_ASYNC_DRIVER_PROBE=m
+@@ -333,6 +334,7 @@ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+ CONFIG_RAID_ATTRS=m
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index 241358f64d8f4a0c..d3420c642992b2e7 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -298,6 +298,7 @@ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+ CONFIG_RAID_ATTRS=m
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index 3382fe16d7f31b11..e294b0b67695069c 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -299,6 +299,7 @@ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+ CONFIG_RAID_ATTRS=m
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index 6137020556c8346e..764a94b089362003 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -303,6 +303,7 @@ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+ CONFIG_RAID_ATTRS=m
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index 087505407a0b3e08..d4eeddac6bb8de48 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -296,6 +296,7 @@ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+ CONFIG_RAID_ATTRS=m
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index a0e0fa8fbd504295..ca359b8806830d56 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -296,6 +296,7 @@ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_DRBD=m
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_BLK_DEV_RAM=y
++CONFIG_CDROM_PKTCDVD=m
+ CONFIG_ATA_OVER_ETH=m
+ CONFIG_DUMMY_IRQ=m
+ CONFIG_RAID_ATTRS=m
 -- 
-  .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.34.1
+
