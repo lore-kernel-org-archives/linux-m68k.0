@@ -2,105 +2,75 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE436C5479D
-	for <linux-m68k@archiver.kernel.org>; Mon,  9 Jan 2023 23:51:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7202BC54EBD
+	for <linux-m68k@archiver.kernel.org>; Tue, 10 Jan 2023 00:45:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234963AbjAIXvo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 9 Jan 2023 18:51:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44116 "EHLO
+        id S230128AbjAJApU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 9 Jan 2023 19:45:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230312AbjAIXvn (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 9 Jan 2023 18:51:43 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62409EAA
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  9 Jan 2023 15:51:42 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id h7so3257661pfq.4
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 09 Jan 2023 15:51:42 -0800 (PST)
+        with ESMTP id S235036AbjAJApS (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 9 Jan 2023 19:45:18 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DADCDE035
+        for <linux-m68k@vger.kernel.org>; Mon,  9 Jan 2023 16:45:17 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id h192so7102395pgc.7
+        for <linux-m68k@vger.kernel.org>; Mon, 09 Jan 2023 16:45:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:references:to:subject:from:to:cc:subject:date
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yB+iffEKVzv5eunS5GJ5f80eky1MKpPN3FfJFW+H+zg=;
-        b=HpvaW6w0qNfxzdHC/6GcVDFnfj1hqmXH8hweGraFgL5ukRcwPd/DQhd0E5cg2i0mFD
-         +JKX9n5zhiKfyRZhYJjCNjtW0d1Jnoad/JyDS3+8i/M48UV5HUz3WANCI3O93MjXQ/Jh
-         zzwsdd/1DUbIz8r5eaRzrQovFw9jA2Sg8YxhleFb58eRUwdFfK0zbovccJ4TcYeH3MFj
-         5/e0FANGymNtpb8Z14wV7vdRrvzH8nUSANHfjeBi0zhuCxTcbDUicTBoGx5uVvoY6xBx
-         ua33Ll82/4qoDJJR2ncbBkghs2on6ANllLGDINNDbZuYq39kV4fwhQA6D/DN+KrZcuZn
-         NfVQ==
+        bh=b2tqsKc+ARvXsK3H7Iu4Re8mLtCh5+kfF33kzQBEezs=;
+        b=nQFrmW9q8U5CgftXoM85kjNbPdiNrV5Rp9uYAN/zHBUuj2rg3JdPEhzWEvBfKH64n+
+         ArtT3R7ZAh8/5Q5O1s1s3tVPRH+u9bJDjsn8nMc8EXdtxdD9cHdCSBBx+9vM2majh32l
+         JOuZxRCPNDprQkNY1KpqxeIu7Gyn8wrR488LB0lukMM0xiGpye+yU+taYbyWEjC5tTbZ
+         vPshqDaxIHTy6bYA1AfbuAJpEzGKZuo711n4kx2nx+EILSfAd8zeh0TtBgyPKTJfigXY
+         3sTBx3DfD1oygPF95t/VJeD8Bw4e/IRch+jfm1sgpfSk68ty/Mo9I/r9dVawzb21vDcC
+         9OyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:references:to:subject:x-gm-message-state:from:to:cc
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yB+iffEKVzv5eunS5GJ5f80eky1MKpPN3FfJFW+H+zg=;
-        b=zluTadfAXhC33tLisooSl8NeXXKv97+GH74NIoJ6WfoXr5vJ7OQ+JdypnlSFpuA5q8
-         5tMkGYoVwQ+3iGpKmpdBCoHlK9gRSNWOh0FAsqTV2en0b/Ke01Ui0blzDqaDP5OqFvMz
-         rwGMFxJ2J6vKOo3KYicN/rr3P2WtXwz6eQTIP7Zo1/GPPOKA5VvtJhMZyu/Pm/M+adrK
-         WIGCppGw/eoy0MpLGVg1whL40B/o9ey0jTwkZspsKd6s/b1nvpiA+mZ8uvidA6tnGqom
-         vhXv9Przyn6mi2fdqLej4yfLZpfQtErqKYhEYq03rSnJCZ2VDgqmrfhjdiItT09E4TU4
-         EFTw==
-X-Gm-Message-State: AFqh2kqoJd1cJVFaFhpDjl9bnZhOGE/0NnuNLwOZXQYQJh04oM0HDvnC
-        +J863hEX4q8oNwk0z39nvNNu9pGYlyU=
-X-Google-Smtp-Source: AMrXdXs4gUNu5+DhpVUxVkeBFnPBCXT+yL6d0k2+Ee97zS7t8dMT/PFtOR56GqSmXFF1BR7lUOoZtQ==
-X-Received: by 2002:a05:6a00:4c0a:b0:589:85ed:4119 with SMTP id ea10-20020a056a004c0a00b0058985ed4119mr3324361pfb.32.1673308301345;
-        Mon, 09 Jan 2023 15:51:41 -0800 (PST)
-Received: from [10.1.1.24] (222-154-147-142-fibre.sparkbb.co.nz. [222.154.147.142])
-        by smtp.gmail.com with ESMTPSA id r4-20020aa79624000000b0056bd1bf4243sm6656573pfg.53.2023.01.09.15.51.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 09 Jan 2023 15:51:40 -0800 (PST)
-Subject: Re: Current status of seccomp support in the m68k kernel?
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-References: <0fbcfa49-c77f-f67d-44ad-f8430274ca9d@physik.fu-berlin.de>
+        bh=b2tqsKc+ARvXsK3H7Iu4Re8mLtCh5+kfF33kzQBEezs=;
+        b=TAuzdg/1GJXMQ8P6CA7sCpB8qBTrsnmn857bvWmOzKHFr2n0wbP8uANs0b7N2nMnLy
+         XH2vAZmyz6x6JWYSxfkRslsWqoVDOE6NZTbdL6YK0FpbOfr96eoBwrOiaSL1mrbSrIQf
+         xTnZOAPGdjXQdbH/CCMeTcYklJJ+XZhPnnxUQfad6fAvTr1dQDeAOwJXD6o/VIeP0pNn
+         vatp7X19M/Z9SmfU30KbToZW6bK+vPMU8UnVIUtYCj2idGkMWhpg7mhVau/DGTmy6614
+         oUnARHAF6kZirGRIjtwPZV3yY4JIUSaFgDVQ019dPFGjF4aytNPAIF2yD4w3c878GSwR
+         w8yg==
+X-Gm-Message-State: AFqh2kql/Zl3oR3RDAJ25m7XCM49/lLa3G9jCnpuvVjNUG1mQW/QKNyX
+        3OStNqxuQkJ0mCuBgfgfSGq+3Iz1QxY=
+X-Google-Smtp-Source: AMrXdXvsx2EdvU6aVyOmNIrel+n/tAvsh0RGfYgstnNROAsFn6gz4DzYXJhI/NlIC/RxXG6q6yoOow==
+X-Received: by 2002:aa7:9052:0:b0:58a:898b:e71f with SMTP id n18-20020aa79052000000b0058a898be71fmr509901pfo.26.1673311517367;
+        Mon, 09 Jan 2023 16:45:17 -0800 (PST)
+Received: from xplor.waratah.dyndns.org (222-154-147-142-fibre.sparkbb.co.nz. [222.154.147.142])
+        by smtp.gmail.com with ESMTPSA id v67-20020a622f46000000b00581ad007a9fsm6618931pfv.153.2023.01.09.16.45.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Jan 2023 16:45:16 -0800 (PST)
+Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
+        id A7E45360205; Tue, 10 Jan 2023 13:45:12 +1300 (NZDT)
 From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <965fc3be-8025-2af7-4e84-51d5beae6ec7@gmail.com>
-Date:   Tue, 10 Jan 2023 12:51:35 +1300
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
-MIME-Version: 1.0
-In-Reply-To: <0fbcfa49-c77f-f67d-44ad-f8430274ca9d@physik.fu-berlin.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To:     linux-m68k@vger.kernel.org, geert@linux-m68k.org
+Cc:     glaubitz@physik.fu-berlin.de
+Subject: [PATCH v11 0/3] Add kernel seccomp support for m68k
+Date:   Tue, 10 Jan 2023 13:45:01 +1300
+Message-Id: <20230110004504.20292-1-schmitzmic@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Adrian,
+Patch 1 from v10 of this series is now merged, so patch
+numbering shifts by one.
+Fixed a merge conflict in patch 2 (caused by change from 
+tracehook to ptrace API. 
+Added m68k seccomp self test support as patch 3.
 
-see:
-
-https://lore.kernel.org/r/20220127074158.25888-1-schmitzmic@gmail.com
-
-for the last version of this patch series.
-
-According to 
-https://lore.kernel.org/r/CAMuHMdVUFt2BX7m4BAMP8aJ9Si=sj8eupPf_oQ4_THPH5+b6HQ@mail.gmail.com, 
-Geert had taken the first patch for v5.19, and it's showing up as commit 
-ee9a94d93adcc147052da15816580b007d3b0a5b.
-
-Hmmm... patch #3 does no longer cleanly apply since 
-tracehook_report_syscall_entry() was replaced by 
-ptrace_report_syscall_entry(). I'd better sent an updated version.
-
-I have a further patch that adds m68k support to the kernel seccomp 
-self-test code that may need updating to current mainline, will add that 
-to the series.
+Tested on ARAnyM, 63 out of 89 seccomp_bpf tests now pass
+(33 with the old version).
 
 Cheers,
 
-	Michael
+   Michael
 
-Am 10.01.2023 um 01:37 schrieb John Paul Adrian Glaubitz:
-> Hi!
->
-> I have finally found some time again to work on the userland m68k
-> support for
-> seccomp and I was wondering what the current state of the kernel support
-> is?
->
-> If I remember correctly there were some patches posted that needed testing?
->
-> Adrian
->
+
