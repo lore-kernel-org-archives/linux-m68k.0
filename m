@@ -2,60 +2,60 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 027B1C54EBE
-	for <linux-m68k@archiver.kernel.org>; Tue, 10 Jan 2023 20:22:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9F13C54EBC
+	for <linux-m68k@archiver.kernel.org>; Tue, 10 Jan 2023 20:22:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231672AbjAJUWw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 10 Jan 2023 15:22:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36798 "EHLO
+        id S232031AbjAJUWx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 10 Jan 2023 15:22:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231948AbjAJUWu (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 10 Jan 2023 15:22:50 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13CDB5C922
-        for <linux-m68k@vger.kernel.org>; Tue, 10 Jan 2023 12:22:50 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id h7-20020a17090aa88700b00225f3e4c992so17739487pjq.1
-        for <linux-m68k@vger.kernel.org>; Tue, 10 Jan 2023 12:22:50 -0800 (PST)
+        with ESMTP id S231768AbjAJUWw (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 10 Jan 2023 15:22:52 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1904A5D422
+        for <linux-m68k@vger.kernel.org>; Tue, 10 Jan 2023 12:22:51 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id c8-20020a17090a4d0800b00225c3614161so17686112pjg.5
+        for <linux-m68k@vger.kernel.org>; Tue, 10 Jan 2023 12:22:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=cRS1uuNrZ/VXWG04KnyYN+/H30PFxdTCvSCAVODnZiI=;
-        b=OmrZD6A9YEz6GlEVGhjC53mhLBISPI94KxwKVcqow3SLKZLBrudUd16Tb9W/RTWmSb
-         a3tEVT9Bh5VS8zIQ+/gIesfe9pVIwjrTtRRXMT7bol6MGLZ7xJbXeMwcy+Gxc7FzFHnO
-         WYuW/iyKQuoofhIznNgAmqReR1m2DBjeMbGaIiXFJmAEdESWdf/qeQ+Pcc5fzmRYK6Js
-         SjWXiH3Qqz4uGNfdSkTSRSCvRLKz/z4rwXWVN35WvvnhXfOE6pPkrkK/iCnZ+rD3XzHq
-         H0kc9xNLPqDYrK3WnltWQRHo+jaiCBsnFyETAj8t/22vRPiEmuq4UGdv2sT+Ph6LKqcd
-         xZsA==
+        bh=mK9HkFlYGLxLcrlptP8K8P43h+39WTsUtyWO6yrknYs=;
+        b=g28knvmv/+w/sX8p/buzW8qqTZeDcTTNXILQgX5BqD48Re2vC4z1QlnyJK1wbdq+UU
+         ZloUUaH7DD5/cOJmr4APSqmXxqy8RMe+wQ56FgWVGGDRw8E6l2xzxMyfoF7e7Dqiamlw
+         WBSo6FSa5Ak47EDTRr7ijnBagMM3iCS28m7dXxhH8xVGClPZl2NuIzKd55gCelFCl5kD
+         yXXCs89WCCIzbtal3hOJ2N2TR3m/2fqJLMSLIGujeUpipxKjpT8e/wMsUC9n8+zzjf7L
+         M3A/bWQr9VE021DJz4AIytdXg6g+ln9WJCejDPgdeF8RcahVrwSibVRfL4rw7BQamzgb
+         71Dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cRS1uuNrZ/VXWG04KnyYN+/H30PFxdTCvSCAVODnZiI=;
-        b=ihT6MDqGUIbnpHx4lBkksZG1ZPAYErlc/g4ZmrzA9o+pYN1ODcJx8R4MAO0pNUL6YH
-         /MzVWVJulKiQAPXSPzycEMZYcx/SpPmViSHxF1WHGLf58XjeBKlM53KmOhFCTQAhAIxJ
-         tm+TH6NtvUGMOOZK/+yE+mXBQ3ALmKMimZsCzFgw4VCMzKa04EWdAZBb+425MDnvfJg7
-         wapTitGggIL8kb/PWcXjzzKU4IDVMAgd9gWJIO+IbLEpt+qS1agd7b5gI8IfPgWvrhs9
-         3RNNo0LU1pA0cvJeuCOpgG+SLCf9WbHPwxRfzDPkvqHSjyXVZ8wATDhb+nHqh06+hIIg
-         bBZg==
-X-Gm-Message-State: AFqh2ko35PtYKhcQm19ex8U5FaBTKpPqIGDPVAuZOQ8zpcIgqqqvc0hs
-        gkHeDv4ka/2mNXIMTvFvPTHXtyZrKUI=
-X-Google-Smtp-Source: AMrXdXv2ork3DY9vVZr5SL6Bu6/HYtgKsRup73Fq9xlo4ekuuwBElhxwJUBkaQHdzR1+BHfrbdg1iw==
-X-Received: by 2002:a05:6a20:548e:b0:9d:efd3:66ca with SMTP id i14-20020a056a20548e00b0009defd366camr98988915pzk.17.1673382169500;
-        Tue, 10 Jan 2023 12:22:49 -0800 (PST)
+        bh=mK9HkFlYGLxLcrlptP8K8P43h+39WTsUtyWO6yrknYs=;
+        b=sfa/9iwbPotYTSjwvJMew/FZ8LVsvJ5t/g4ORmt5cRYw2aA1iZFsxk2SIuqm1MflbJ
+         ZgEiwe1xeURLEm8ccnMrUAbPQqeWiR0vL2kzklCtOu3QBMiyNi8HhfmJzhT+AAvmmlIm
+         VYYjgdX0BepKonzICrrRpxtHBSwlQ89to2nMyaEKWL374dy8d1XSShAehNmYyTKwKviD
+         1Gkvauk8sSzVgJpRp5pflXiBUtuvG0/Yn1YWezFxwW6ca5ZuRZ7a5FF651jOvKA4j5J7
+         Ix4WXf56IrvpDORDRMoZE4nUwBvlvSEEPy2P5uRuu3F1FB9oGC5+XjRz8H97iMd0CQqy
+         Lwrw==
+X-Gm-Message-State: AFqh2kpwMYptCqZMK6dyToKuPw/su4Yb0asOnlFcRvQr0RsvToDGlZCP
+        KQ+pWVweRHUOxxvJG8jCYZw=
+X-Google-Smtp-Source: AMrXdXuQQALko54wu9WATAmMkuiPI8WbDWjlL8kodDSz/XQd2zw9/BTSn23HT+WksHZUGzdKYmdQWQ==
+X-Received: by 2002:a17:902:ec89:b0:186:b063:32e with SMTP id x9-20020a170902ec8900b00186b063032emr99977705plg.62.1673382170694;
+        Tue, 10 Jan 2023 12:22:50 -0800 (PST)
 Received: from xplor.waratah.dyndns.org (222-154-147-142-fibre.sparkbb.co.nz. [222.154.147.142])
-        by smtp.gmail.com with ESMTPSA id t2-20020aa79462000000b00582a224e738sm8498134pfq.63.2023.01.10.12.22.48
+        by smtp.gmail.com with ESMTPSA id u12-20020a17090341cc00b0019327a6b740sm5720618ple.308.2023.01.10.12.22.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Jan 2023 12:22:48 -0800 (PST)
+        Tue, 10 Jan 2023 12:22:50 -0800 (PST)
 Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-        id 7ED86360316; Wed, 11 Jan 2023 09:22:45 +1300 (NZDT)
+        id E04FD36031F; Wed, 11 Jan 2023 09:22:46 +1300 (NZDT)
 From:   Michael Schmitz <schmitzmic@gmail.com>
 To:     linux-m68k@vger.kernel.org, geert@linux-m68k.org
 Cc:     glaubitz@physik.fu-berlin.de,
         Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH v12 1/3] m68k/kernel - check syscall_trace_enter() return code on m68k
-Date:   Wed, 11 Jan 2023 09:22:41 +1300
-Message-Id: <20230110202243.29383-2-schmitzmic@gmail.com>
+Subject: [PATCH v12 3/3] tools/testing - seccomp test fixes for m68k
+Date:   Wed, 11 Jan 2023 09:22:43 +1300
+Message-Id: <20230110202243.29383-4-schmitzmic@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230110202243.29383-1-schmitzmic@gmail.com>
 References: <20230110202243.29383-1-schmitzmic@gmail.com>
@@ -63,84 +63,48 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Check return code of syscall_trace_enter(), and skip syscall
-if -1. Return code will be left at what had been set by
-ptrace or seccomp (in regs->d0).
+Add m68k seccomp definitions to seccomp_bpf self test code.
 
-No regression seen in testing with strace on ARAnyM.
+Tested on ARAnyM.
 
 Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-
---
-Changes from v7:
-
-Al Viro:
-- split return code checks from switch to syscall_trace_enter()
-
-Changes from v6:
-
-Geert Uytterhoeven:
-- add syscall_trace_enter() return code check for 68000
-  and coldfire
-
-Changes from v5:
-
-- add comment to explain optimization
-
-Changes from v4:
-
-Andreas Schwab:
-- optimize return code test (addql #1,%d0 for cmpil #-1,%d0)
-- spelling fix in commit message
-
-Changes from v3:
-
-- change syscall_trace_enter return code test from !=0 to ==-1
 ---
- arch/m68k/68000/entry.S    | 2 ++
- arch/m68k/coldfire/entry.S | 2 ++
- arch/m68k/kernel/entry.S   | 2 ++
- 3 files changed, 6 insertions(+)
+ tools/testing/selftests/seccomp/seccomp_bpf.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/arch/m68k/68000/entry.S b/arch/m68k/68000/entry.S
-index 997b54933015..7d63e2f1555a 100644
---- a/arch/m68k/68000/entry.S
-+++ b/arch/m68k/68000/entry.S
-@@ -45,6 +45,8 @@ do_trace:
- 	jbsr	syscall_trace_enter
- 	RESTORE_SWITCH_STACK
- 	addql	#4,%sp
-+	addql	#1,%d0
-+	jeq	ret_from_exception
- 	movel	%sp@(PT_OFF_ORIG_D0),%d1
- 	movel	#-ENOSYS,%d0
- 	cmpl	#NR_syscalls,%d1
-diff --git a/arch/m68k/coldfire/entry.S b/arch/m68k/coldfire/entry.S
-index 9f337c70243a..35104c5417ff 100644
---- a/arch/m68k/coldfire/entry.S
-+++ b/arch/m68k/coldfire/entry.S
-@@ -90,6 +90,8 @@ ENTRY(system_call)
- 	jbsr	syscall_trace_enter
- 	RESTORE_SWITCH_STACK
- 	addql	#4,%sp
-+	addql	#1,%d0
-+	jeq	ret_from_exception
- 	movel	%d3,%a0
- 	jbsr	%a0@
- 	movel	%d0,%sp@(PT_OFF_D0)		/* save the return value */
-diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
-index 18f278bdbd21..0d5b7085d76f 100644
---- a/arch/m68k/kernel/entry.S
-+++ b/arch/m68k/kernel/entry.S
-@@ -184,6 +184,8 @@ do_trace_entry:
- 	jbsr	syscall_trace_enter
- 	RESTORE_SWITCH_STACK
- 	addql	#4,%sp
-+	addql	#1,%d0			| optimization for cmpil #-1,%d0
-+	jeq	ret_from_syscall
- 	movel	%sp@(PT_OFF_ORIG_D0),%d0
- 	cmpl	#NR_syscalls,%d0
- 	jcs	syscall
+diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+index 9c2f448bb3a9..9f854524eed3 100644
+--- a/tools/testing/selftests/seccomp/seccomp_bpf.c
++++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+@@ -138,6 +138,8 @@ struct seccomp_data {
+ #  define __NR_seccomp 337
+ # elif defined(__sh__)
+ #  define __NR_seccomp 372
++# elif defined(__mc68000__)
++#  define __NR_seccomp 380
+ # else
+ #  warning "seccomp syscall number unknown for this architecture"
+ #  define __NR_seccomp 0xffff
+@@ -1838,6 +1840,10 @@ TEST_F(TRACE_poke, getpid_runs_normally)
+ # define ARCH_REGS		struct pt_regs
+ # define SYSCALL_NUM(_regs)	(_regs).regs[3]
+ # define SYSCALL_RET(_regs)	(_regs).regs[0]
++#elif defined(__mc68000__)
++# define ARCH_REGS	struct pt_regs
++# define SYSCALL_NUM(_regs)	(_regs).orig_d0
++# define SYSCALL_RET(_regs)	(_regs).d0
+ #else
+ # error "Do not know how to find your architecture's registers and syscalls"
+ #endif
+@@ -1902,7 +1908,7 @@ const bool ptrace_entry_set_syscall_ret =
+  * Use PTRACE_GETREGS and PTRACE_SETREGS when available. This is useful for
+  * architectures without HAVE_ARCH_TRACEHOOK (e.g. User-mode Linux).
+  */
+-#if defined(__x86_64__) || defined(__i386__) || defined(__mips__)
++#if defined(__x86_64__) || defined(__i386__) || defined(__mips__) || defined(__mc68000__)
+ # define ARCH_GETREGS(_regs)	ptrace(PTRACE_GETREGS, tracee, 0, &(_regs))
+ # define ARCH_SETREGS(_regs)	ptrace(PTRACE_SETREGS, tracee, 0, &(_regs))
+ #else
 -- 
 2.17.1
 
