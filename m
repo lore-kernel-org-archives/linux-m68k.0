@@ -2,71 +2,145 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A102C46467
-	for <linux-m68k@archiver.kernel.org>; Tue, 10 Jan 2023 20:22:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 027B1C54EBE
+	for <linux-m68k@archiver.kernel.org>; Tue, 10 Jan 2023 20:22:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232519AbjAJUWv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 10 Jan 2023 15:22:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36800 "EHLO
+        id S231672AbjAJUWw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 10 Jan 2023 15:22:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231768AbjAJUWu (ORCPT
+        with ESMTP id S231948AbjAJUWu (ORCPT
         <rfc822;linux-m68k@vger.kernel.org>); Tue, 10 Jan 2023 15:22:50 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 320B75D416
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13CDB5C922
         for <linux-m68k@vger.kernel.org>; Tue, 10 Jan 2023 12:22:50 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id z4-20020a17090a170400b00226d331390cso14750779pjd.5
+Received: by mail-pj1-x1033.google.com with SMTP id h7-20020a17090aa88700b00225f3e4c992so17739487pjq.1
         for <linux-m68k@vger.kernel.org>; Tue, 10 Jan 2023 12:22:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1cU3MVb5ceS8PMz6IKk8KxM81lw74s5MFspv3y8p4is=;
-        b=Ji0Hg5yoOpHcAAZqIWuWAck25zXZUVl12QkfXFll4DMlWoIz0SKUxNNIO0ZgHTQypx
-         wDXvLgrJMc1p+0P9IrP6L/JJL4yhSvoXdjnl4tKR2/vN4+LgGYh/+wnqP0H+lM8C1ueF
-         34Wz4ykQoP6j8MRG8dO9WyXBMn8V+rVTNYjmS+9FYPL8VzGyPzJ87L0luM/fi2R4dF4a
-         zF57jJ4jcVXoukcXEonKR/CwFKfJI/Q8CC9W6MILDbid/pIgtZX9mVySXPGlk8xNqV/+
-         nc6YCjRA8xoQDHXWe8f8l2Cx4DS0X3sHA4qqV77MO31mlN/O9jCFIpSiwstbeUl7nnnj
-         1Cvw==
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=cRS1uuNrZ/VXWG04KnyYN+/H30PFxdTCvSCAVODnZiI=;
+        b=OmrZD6A9YEz6GlEVGhjC53mhLBISPI94KxwKVcqow3SLKZLBrudUd16Tb9W/RTWmSb
+         a3tEVT9Bh5VS8zIQ+/gIesfe9pVIwjrTtRRXMT7bol6MGLZ7xJbXeMwcy+Gxc7FzFHnO
+         WYuW/iyKQuoofhIznNgAmqReR1m2DBjeMbGaIiXFJmAEdESWdf/qeQ+Pcc5fzmRYK6Js
+         SjWXiH3Qqz4uGNfdSkTSRSCvRLKz/z4rwXWVN35WvvnhXfOE6pPkrkK/iCnZ+rD3XzHq
+         H0kc9xNLPqDYrK3WnltWQRHo+jaiCBsnFyETAj8t/22vRPiEmuq4UGdv2sT+Ph6LKqcd
+         xZsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1cU3MVb5ceS8PMz6IKk8KxM81lw74s5MFspv3y8p4is=;
-        b=mH24SsX2GZszRnbYkzJj1aZ9cFveoRbqx6IUinXcEoyyhmh9ixo0odluI/kWLwmvt1
-         8lDoj1juGU5K9H/xKEBzfWP+gy38eziRechW/DvGq2SVP0r2pp7LFGHiDp8whmHi5j7o
-         ap2NhleLhxTSF/7VBzJUH0mgFBYqE5BfEdLexqyJqKOY/rb0fa8o4pTPLqFYBLKetYmy
-         LX7c5ztFZkqPbD48RTXVZMUnUlQstMB2s/MemzYlFi1gohHX1hlPhw5FjQgu+lEgRmS9
-         mR0tVfvPEEZKiqcRSqUsW5XvUK4ay4ChEYFO5BHYU2oKCD7UG1CTVr4x5uMGPPgz1hUz
-         2O7w==
-X-Gm-Message-State: AFqh2kp6Y0lxIhvfBQU0DCMLm4fnIcZhi4LYbqcZOUYXdj3E/qQ+Y5RU
-        B4qY5Nvp4tefY+9raKDmIK+0EZS9bs0=
-X-Google-Smtp-Source: AMrXdXu1EHhjpBic1MxYCcGFYbhGL64NHR2yqun2OT52jhTLikh9jQQcDz5Yk0ePnfsQO6muZ/KLDA==
-X-Received: by 2002:a17:90a:a593:b0:219:3812:f254 with SMTP id b19-20020a17090aa59300b002193812f254mr72612859pjq.19.1673382169694;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cRS1uuNrZ/VXWG04KnyYN+/H30PFxdTCvSCAVODnZiI=;
+        b=ihT6MDqGUIbnpHx4lBkksZG1ZPAYErlc/g4ZmrzA9o+pYN1ODcJx8R4MAO0pNUL6YH
+         /MzVWVJulKiQAPXSPzycEMZYcx/SpPmViSHxF1WHGLf58XjeBKlM53KmOhFCTQAhAIxJ
+         tm+TH6NtvUGMOOZK/+yE+mXBQ3ALmKMimZsCzFgw4VCMzKa04EWdAZBb+425MDnvfJg7
+         wapTitGggIL8kb/PWcXjzzKU4IDVMAgd9gWJIO+IbLEpt+qS1agd7b5gI8IfPgWvrhs9
+         3RNNo0LU1pA0cvJeuCOpgG+SLCf9WbHPwxRfzDPkvqHSjyXVZ8wATDhb+nHqh06+hIIg
+         bBZg==
+X-Gm-Message-State: AFqh2ko35PtYKhcQm19ex8U5FaBTKpPqIGDPVAuZOQ8zpcIgqqqvc0hs
+        gkHeDv4ka/2mNXIMTvFvPTHXtyZrKUI=
+X-Google-Smtp-Source: AMrXdXv2ork3DY9vVZr5SL6Bu6/HYtgKsRup73Fq9xlo4ekuuwBElhxwJUBkaQHdzR1+BHfrbdg1iw==
+X-Received: by 2002:a05:6a20:548e:b0:9d:efd3:66ca with SMTP id i14-20020a056a20548e00b0009defd366camr98988915pzk.17.1673382169500;
         Tue, 10 Jan 2023 12:22:49 -0800 (PST)
 Received: from xplor.waratah.dyndns.org (222-154-147-142-fibre.sparkbb.co.nz. [222.154.147.142])
-        by smtp.gmail.com with ESMTPSA id i5-20020a17090a64c500b0022721df27e9sm3290035pjm.11.2023.01.10.12.22.48
+        by smtp.gmail.com with ESMTPSA id t2-20020aa79462000000b00582a224e738sm8498134pfq.63.2023.01.10.12.22.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 10 Jan 2023 12:22:48 -0800 (PST)
 Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-        id BEA22360312; Wed, 11 Jan 2023 09:22:44 +1300 (NZDT)
+        id 7ED86360316; Wed, 11 Jan 2023 09:22:45 +1300 (NZDT)
 From:   Michael Schmitz <schmitzmic@gmail.com>
 To:     linux-m68k@vger.kernel.org, geert@linux-m68k.org
-Cc:     glaubitz@physik.fu-berlin.de
-Subject: [PATCH v12 0/3] Add kernel seccomp support for m68k
-Date:   Wed, 11 Jan 2023 09:22:40 +1300
-Message-Id: <20230110202243.29383-1-schmitzmic@gmail.com>
+Cc:     glaubitz@physik.fu-berlin.de,
+        Michael Schmitz <schmitzmic@gmail.com>
+Subject: [PATCH v12 1/3] m68k/kernel - check syscall_trace_enter() return code on m68k
+Date:   Wed, 11 Jan 2023 09:22:41 +1300
+Message-Id: <20230110202243.29383-2-schmitzmic@gmail.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230110202243.29383-1-schmitzmic@gmail.com>
+References: <20230110202243.29383-1-schmitzmic@gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Merge conflict markers left over in v11 removed, version
-number bumped in order to appease patch management tools.
+Check return code of syscall_trace_enter(), and skip syscall
+if -1. Return code will be left at what had been set by
+ptrace or seccomp (in regs->d0).
 
-No other changes from v11.
+No regression seen in testing with strace on ARAnyM.
 
-Cheers,
+Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
 
-   Michael
+--
+Changes from v7:
 
+Al Viro:
+- split return code checks from switch to syscall_trace_enter()
+
+Changes from v6:
+
+Geert Uytterhoeven:
+- add syscall_trace_enter() return code check for 68000
+  and coldfire
+
+Changes from v5:
+
+- add comment to explain optimization
+
+Changes from v4:
+
+Andreas Schwab:
+- optimize return code test (addql #1,%d0 for cmpil #-1,%d0)
+- spelling fix in commit message
+
+Changes from v3:
+
+- change syscall_trace_enter return code test from !=0 to ==-1
+---
+ arch/m68k/68000/entry.S    | 2 ++
+ arch/m68k/coldfire/entry.S | 2 ++
+ arch/m68k/kernel/entry.S   | 2 ++
+ 3 files changed, 6 insertions(+)
+
+diff --git a/arch/m68k/68000/entry.S b/arch/m68k/68000/entry.S
+index 997b54933015..7d63e2f1555a 100644
+--- a/arch/m68k/68000/entry.S
++++ b/arch/m68k/68000/entry.S
+@@ -45,6 +45,8 @@ do_trace:
+ 	jbsr	syscall_trace_enter
+ 	RESTORE_SWITCH_STACK
+ 	addql	#4,%sp
++	addql	#1,%d0
++	jeq	ret_from_exception
+ 	movel	%sp@(PT_OFF_ORIG_D0),%d1
+ 	movel	#-ENOSYS,%d0
+ 	cmpl	#NR_syscalls,%d1
+diff --git a/arch/m68k/coldfire/entry.S b/arch/m68k/coldfire/entry.S
+index 9f337c70243a..35104c5417ff 100644
+--- a/arch/m68k/coldfire/entry.S
++++ b/arch/m68k/coldfire/entry.S
+@@ -90,6 +90,8 @@ ENTRY(system_call)
+ 	jbsr	syscall_trace_enter
+ 	RESTORE_SWITCH_STACK
+ 	addql	#4,%sp
++	addql	#1,%d0
++	jeq	ret_from_exception
+ 	movel	%d3,%a0
+ 	jbsr	%a0@
+ 	movel	%d0,%sp@(PT_OFF_D0)		/* save the return value */
+diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+index 18f278bdbd21..0d5b7085d76f 100644
+--- a/arch/m68k/kernel/entry.S
++++ b/arch/m68k/kernel/entry.S
+@@ -184,6 +184,8 @@ do_trace_entry:
+ 	jbsr	syscall_trace_enter
+ 	RESTORE_SWITCH_STACK
+ 	addql	#4,%sp
++	addql	#1,%d0			| optimization for cmpil #-1,%d0
++	jeq	ret_from_syscall
+ 	movel	%sp@(PT_OFF_ORIG_D0),%d0
+ 	cmpl	#NR_syscalls,%d0
+ 	jcs	syscall
+-- 
+2.17.1
 
