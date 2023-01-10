@@ -2,110 +2,121 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5D01C54EBC
-	for <linux-m68k@archiver.kernel.org>; Tue, 10 Jan 2023 17:01:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13418C46467
+	for <linux-m68k@archiver.kernel.org>; Tue, 10 Jan 2023 19:12:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232176AbjAJRA6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 10 Jan 2023 12:00:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39626 "EHLO
+        id S238817AbjAJTM5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 10 Jan 2023 14:12:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233733AbjAJRAu (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 10 Jan 2023 12:00:50 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59F346175
-        for <linux-m68k@vger.kernel.org>; Tue, 10 Jan 2023 09:00:50 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id z12so11398882qtv.5
-        for <linux-m68k@vger.kernel.org>; Tue, 10 Jan 2023 09:00:50 -0800 (PST)
+        with ESMTP id S234848AbjAJTMp (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 10 Jan 2023 14:12:45 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A8FCCCA
+        for <linux-m68k@vger.kernel.org>; Tue, 10 Jan 2023 11:12:44 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id jn22so14191185plb.13
+        for <linux-m68k@vger.kernel.org>; Tue, 10 Jan 2023 11:12:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=h9Q4xR3/ugGu6VdXBdV2WzDEkLAveyuUMK6Fmtpu5CI=;
-        b=UkzIifNg8h3y1wtOjs7I09aasMqbcBL48tTSXl5YQt3BnJkvMjAkTHL0MaFFNWQZYX
-         4CsKc6scoQGa9g8hKgdDYE/OO6qFYuQVBvcn9GUWnBdZBNd8rjNl6z/xxe3abak+GTjX
-         eMmftq+OUqLyR6il4PedIoKcEZf+xLffUn5lUZmW/KhJI/VLLuZ4BZcdGJoHqfk6auyV
-         mW8r1rkfPAHuo8nyJVSY0Cvr6SmuWtCRoXuUFQ/Qt/VsH94/yl33eiRhord2qBXoESCl
-         RmAE35pULmRpZUCeq98JEvP13G8vDDLeq0Btymsu8R8a48Uqn+Afi5g5EcViNIPIuP/8
-         Z9hA==
+        bh=AsE3VTd3G2LgCbcs0feibuYdfcA0eUnqZOTZom0OX6Y=;
+        b=IUS/T4DwbSC96qQtTiTGCBjB5pjne9V1ezpnqoLeE6iY4f0uNGDIw+gybTwhuSRwUa
+         YPpiBrVnWy+/VeuxA5JddvdwyE+ZFbYPS6XVkuekEOGf9z44ku/KdzPJ+lOHGSXaDTAb
+         QSVto9+d64g9VtNWRVWLwTNJtpnNlJVq+kP4DzLQP3S1NQsOHqx5iZPR12pShvsCLgU/
+         UztfDWHEFHLKQ1ckKxOmwsnOHzrB9YfyHSrlf0vvhQHLUEtF7uQwLSl+jNhLl2iAOpnB
+         ZKkoMxPVOrpiTHa/IalYryCxTcSTBgd7ndEsSYVM3geCVPWMjjO4WhhZObLgL5/NdrEX
+         npNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h9Q4xR3/ugGu6VdXBdV2WzDEkLAveyuUMK6Fmtpu5CI=;
-        b=YvhEgHEtYHhQpQviuOGU7CZysVrU7EiSZkmYFVmQYTYKJfSKMdG6vp08rARii19EMB
-         +lFFu3cA1CcAD7bvlZfV4zrVvTmZiSsQCZgU3XWB+wDeU+slU+SbST+ygCe/LZis0pg1
-         YtxoX1qC7J36xp8pIJeikRReppLHxwSMRG3VMQ5yBOgtzTL8k3/jxhACKpMXtzEg/8As
-         n21mlqOpXdL6Y6oVrPS8/+k11q3vTlVrVcoJo0IhQqOYn2kzOFuhLeaYfCxLQNl3gtjt
-         9C+DnLliNQWucUcT/gt2XeZGckhN54XdKN1vBpG1Um5pBOS7fPq253IkrwE+G94fbcYn
-         0uZQ==
-X-Gm-Message-State: AFqh2kr6VPWngUH3Hz1+L3NRH0rZ2LfUi8BNPbjYkEr9lgJOH1FgefD0
-        0+zjEYkcFbGEV7T0INPRAlfjtycl1DY=
-X-Google-Smtp-Source: AMrXdXt8CtfBukmcZYH63jRBOROM++Az8K2hJxg4auTsehESnLutIDxLl4Uh0EdWoxytFy9KbnJyUQ==
-X-Received: by 2002:a05:622a:514:b0:3ab:d187:9e7 with SMTP id l20-20020a05622a051400b003abd18709e7mr36593199qtx.44.1673370049249;
-        Tue, 10 Jan 2023 09:00:49 -0800 (PST)
-Received: from [10.0.0.30] (c-76-111-137-61.hsd1.de.comcast.net. [76.111.137.61])
-        by smtp.gmail.com with ESMTPSA id fu28-20020a05622a5d9c00b003a7f3c4dcdfsm6270740qtb.47.2023.01.10.09.00.47
-        (version=TLS1 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Tue, 10 Jan 2023 09:00:48 -0800 (PST)
-Content-Type: text/plain; charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 7.3 \(1878.6\))
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=AsE3VTd3G2LgCbcs0feibuYdfcA0eUnqZOTZom0OX6Y=;
+        b=nkl8ASuSIgxdNsaZFBnIWVfD5vkfLD1BLe/CHQoyf5dErU7kmCvzRkf1efUJUJlJ5C
+         8v3KoqGXa3HlMyO6CU/l4/6mbtH0Zyj0m0EUSpDlUTwax/4J5D0R74Cn8OWiOOghwK/B
+         QvnYSUc56XLijWY2hTehtYOvJoW9j/TqKSb16m/0SuP3X6a7SttRk692o3V7QKWd9DbT
+         UdCJIcvXrAiMOXcR5R94GUY0x+CGqoQA0svHe8IqQhWTIoQHX5a0RhpsC34iE9tpfUC3
+         HNvlvzFZ+PUnHfXGmO72Si789iKUSgPh8qXpp/29WH4j609XuVF2fDI+DTIdqfOBHjxn
+         +i5w==
+X-Gm-Message-State: AFqh2kp/fGGf0FhVtfN+MD0mNR2DwE3OGhlKPSdG96yczkeWrh74qN47
+        7nGlGzRwcFH5gFctfEBZgK4=
+X-Google-Smtp-Source: AMrXdXvcZKAc+K75fad91YLg6U+VeqMwXhcPWz28F1pGDK6heIi0d9kRA4prWOeUKKOjf7Y+bYH8aQ==
+X-Received: by 2002:a17:902:6b4c:b0:18f:9cfb:42aa with SMTP id g12-20020a1709026b4c00b0018f9cfb42aamr68323285plt.10.1673377963629;
+        Tue, 10 Jan 2023 11:12:43 -0800 (PST)
+Received: from [10.1.1.24] (222-154-147-142-fibre.sparkbb.co.nz. [222.154.147.142])
+        by smtp.gmail.com with ESMTPSA id f7-20020a170902ce8700b0018685257c0dsm8531387plg.58.2023.01.10.11.12.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 10 Jan 2023 11:12:43 -0800 (PST)
 Subject: Re: [PATCH v11 2/3] m68k: add kernel seccomp support
-From:   Josh Juran <jjuran@gmail.com>
-In-Reply-To: <20230110004504.20292-3-schmitzmic@gmail.com>
-Date:   Tue, 10 Jan 2023 12:00:10 -0500
+To:     Josh Juran <jjuran@gmail.com>
+References: <20230110004504.20292-1-schmitzmic@gmail.com>
+ <20230110004504.20292-3-schmitzmic@gmail.com>
+ <10FF42FA-120C-4A67-AD2E-188ABE7C4AA3@gmail.com>
 Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org,
         glaubitz@physik.fu-berlin.de
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <10FF42FA-120C-4A67-AD2E-188ABE7C4AA3@gmail.com>
-References: <20230110004504.20292-1-schmitzmic@gmail.com> <20230110004504.20292-3-schmitzmic@gmail.com>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-X-Mailer: Apple Mail (2.1878.6)
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <5d879eee-7170-cc2a-707a-ce85880fbbd9@gmail.com>
+Date:   Wed, 11 Jan 2023 08:12:37 +1300
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
+MIME-Version: 1.0
+In-Reply-To: <10FF42FA-120C-4A67-AD2E-188ABE7C4AA3@gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Jan 9, 2023, at 7:45 PM, Michael Schmitz <schmitzmic@gmail.com> =
-wrote:
+Hi Josh,
 
-> Add necessary arch Kconfig options, define TIF_SECCOMP trace
-> flag and provide basic seccomp filter support in asm/syscall.h
+Thanks - that's a merge conflict I overlooked, fixed in the resent version.
 
-...
-
-> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
->=20
-> --
-> Changes from v10:
->=20
-> - fix merge conflicts
-
-...
-
-The patch below adds, rather than removes, merge conflict markers.  Am I =
-missing something?
-
-> diff --git =
-a/Documentation/features/seccomp/seccomp-filter/arch-support.txt =
-b/Documentation/features/seccomp/seccomp-filter/arch-support.txt
-> index dc71bf7b1a7e..0c2ac424094d 100644
-> --- a/Documentation/features/seccomp/seccomp-filter/arch-support.txt
-> +++ b/Documentation/features/seccomp/seccomp-filter/arch-support.txt
-> @@ -13,8 +13,12 @@
->     |        csky: |  ok  |
->     |     hexagon: | TODO |
->     |        ia64: | TODO |
-> +<<<<<<< HEAD
->     |   loongarch: |  ok  |
->     |        m68k: | TODO |
-> +=3D=3D=3D=3D=3D=3D=3D
-> +    |        m68k: |  ok  |
-> +>>>>>>> 596095b777b9... m68k: add kernel seccomp support
->     |  microblaze: | TODO |
->     |        mips: |  ok  |
->     |       nios2: | TODO |
+But, as Geert points out this breaks patch management tools. I'll resend 
+as v12 later.
 
 Cheers,
-Josh
 
+	Michael
+
+Am 11.01.2023 um 06:00 schrieb Josh Juran:
+> On Jan 9, 2023, at 7:45 PM, Michael Schmitz <schmitzmic@gmail.com> wrote:
+>
+>> Add necessary arch Kconfig options, define TIF_SECCOMP trace
+>> flag and provide basic seccomp filter support in asm/syscall.h
+>
+> ...
+>
+>> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+>>
+>> --
+>> Changes from v10:
+>>
+>> - fix merge conflicts
+>
+> ...
+>
+> The patch below adds, rather than removes, merge conflict markers.  Am I missing something?
+>
+>> diff --git a/Documentation/features/seccomp/seccomp-filter/arch-support.txt b/Documentation/features/seccomp/seccomp-filter/arch-support.txt
+>> index dc71bf7b1a7e..0c2ac424094d 100644
+>> --- a/Documentation/features/seccomp/seccomp-filter/arch-support.txt
+>> +++ b/Documentation/features/seccomp/seccomp-filter/arch-support.txt
+>> @@ -13,8 +13,12 @@
+>>     |        csky: |  ok  |
+>>     |     hexagon: | TODO |
+>>     |        ia64: | TODO |
+>> +<<<<<<< HEAD
+>>     |   loongarch: |  ok  |
+>>     |        m68k: | TODO |
+>> +=======
+>> +    |        m68k: |  ok  |
+>> +>>>>>>> 596095b777b9... m68k: add kernel seccomp support
+>>     |  microblaze: | TODO |
+>>     |        mips: |  ok  |
+>>     |       nios2: | TODO |
+>
+> Cheers,
+> Josh
+>
