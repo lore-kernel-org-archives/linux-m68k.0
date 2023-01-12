@@ -2,44 +2,44 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74490C7113B
-	for <linux-m68k@archiver.kernel.org>; Thu, 12 Jan 2023 20:06:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA1E9C71148
+	for <linux-m68k@archiver.kernel.org>; Thu, 12 Jan 2023 20:06:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232542AbjALUGK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 12 Jan 2023 15:06:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44218 "EHLO
+        id S237637AbjALUGL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 12 Jan 2023 15:06:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236915AbjALT7U (ORCPT
+        with ESMTP id S230124AbjALT7L (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 12 Jan 2023 14:59:20 -0500
+        Thu, 12 Jan 2023 14:59:11 -0500
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 003362DC6
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Jan 2023 11:58:09 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33041308
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Jan 2023 11:58:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=BAfnvD9cLrzo61xSnZTsQNCRnrvqWps/XpXHA7FoM0k=; b=H7KH+Z08RTaT/3t06vLCizvkOG
-        Nl80fuaYr06fmNux1Mx9qtYbuwqPX3UIm8aftX5Z28NOSi2Mj7BunBpu5fAFoNnbe42np6v2RdXQ3
-        SsfqtFqcG9qi0lyDVOoDELfYVw4hTQlnjw9EXtt56vdDtyaKEp2Xa2RVM+DXP4oJW61oMArRyeeJ0
-        ilQmOrnOonRkmnKqBoOTtnaRQcwrM4jm6DFFkWE7NCRk2QdP8h1Fs9cERrbXc91ROvdPufdHKZpV7
-        QvcZXHXDtmJlQQByg/agmBAC+3sVjR/N/VTls/IF9+ePAkX1RGUky+6xWZXvuRPrOisPJZlzBILYP
-        znwmGuiA==;
+        bh=OSWUMoytbsEQ8xUnxginHGtpoSP0fDdQQe/5yHesCdA=; b=EbqGBmO2wjgONt8zgzM18NDs6m
+        XSWXjuSHyAYdiczaj+SJdJ6JCpVDm/NyZ+W/ITNEt0wXRBeG9hGdRw+d4O542oF24V6eJCK+fKZou
+        SGXhIpMWcAbse4OnUNvbO3E1vIfOuhg7+w93HdalOv6aag+omVC7au9s3kunWey9tQ97c6CWePXAO
+        5BTGUz3tx6DtcAcaWZ5k9rjHOYh03mIN2x7Rh3M214NeVXNnk7uO3z2bxkuAlGuy3QDwJPMZAA0LE
+        fyJM6A93BOFEwAW+IZ7u/HQbXA13lwllIkLHXwDwMG3xu8F6p14ZDs8SqHu0RES4bZ0rnbC6FKmCr
+        pHO74mxg==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
         by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1pG3hI-0045pX-32;
-        Thu, 12 Jan 2023 19:57:25 +0000
+        id 1pG3hD-0045oD-0M;
+        Thu, 12 Jan 2023 19:57:08 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C4CD6303453;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 16EAB3033FE;
         Thu, 12 Jan 2023 20:57:13 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 364D42CCF62BD; Thu, 12 Jan 2023 20:57:08 +0100 (CET)
-Message-ID: <20230112195541.416110581@infradead.org>
+        id B69572CCF1F52; Thu, 12 Jan 2023 20:57:07 +0100 (CET)
+Message-ID: <20230112195539.946630819@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 12 Jan 2023 20:43:48 +0100
+Date:   Thu, 12 Jan 2023 20:43:24 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     peterz@infradead.org
 Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
@@ -106,7 +106,7 @@ Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
         linux-trace-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
         "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH v3 34/51] trace: WARN on rcuidle
+Subject: [PATCH v3 10/51] cpuidle,armada: Push RCU-idle into driver
 References: <20230112194314.845371875@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -114,61 +114,64 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-ARCH_WANTS_NO_INSTR (a superset of CONFIG_GENERIC_ENTRY) disallows any
-and all tracing when RCU isn't enabled.
+Doing RCU-idle outside the driver, only to then temporarily enable it
+again before going idle is daft.
+
+Notably the cpu_pm_*() calls implicitly re-enable RCU for a bit.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Acked-by: Frederic Weisbecker <frederic@kernel.org>
 Tested-by: Tony Lindgren <tony@atomide.com>
 Tested-by: Ulf Hansson <ulf.hansson@linaro.org>
 ---
- include/linux/tracepoint.h |   15 +++++++++++++--
- kernel/trace/trace.c       |    3 +++
- 2 files changed, 16 insertions(+), 2 deletions(-)
+ drivers/cpuidle/cpuidle-mvebu-v7.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/include/linux/tracepoint.h
-+++ b/include/linux/tracepoint.h
-@@ -178,6 +178,17 @@ static inline struct tracepoint *tracepo
- #endif /* CONFIG_HAVE_STATIC_CALL */
+--- a/drivers/cpuidle/cpuidle-mvebu-v7.c
++++ b/drivers/cpuidle/cpuidle-mvebu-v7.c
+@@ -36,7 +36,10 @@ static int mvebu_v7_enter_idle(struct cp
+ 	if (drv->states[index].flags & MVEBU_V7_FLAG_DEEP_IDLE)
+ 		deepidle = true;
  
- /*
-+ * ARCH_WANTS_NO_INSTR archs are expected to have sanitized entry and idle
-+ * code that disallow any/all tracing/instrumentation when RCU isn't watching.
-+ */
-+#ifdef CONFIG_ARCH_WANTS_NO_INSTR
-+#define RCUIDLE_COND(rcuidle)	(rcuidle)
-+#else
-+/* srcu can't be used from NMI */
-+#define RCUIDLE_COND(rcuidle)	(rcuidle && in_nmi())
-+#endif
++	ct_idle_enter();
+ 	ret = mvebu_v7_cpu_suspend(deepidle);
++	ct_idle_exit();
 +
-+/*
-  * it_func[0] is never NULL because there is at least one element in the array
-  * when the array itself is non NULL.
-  */
-@@ -188,8 +199,8 @@ static inline struct tracepoint *tracepo
- 		if (!(cond))						\
- 			return;						\
- 									\
--		/* srcu can't be used from NMI */			\
--		WARN_ON_ONCE(rcuidle && in_nmi());			\
-+		if (WARN_ON_ONCE(RCUIDLE_COND(rcuidle)))		\
-+			return;						\
- 									\
- 		/* keep srcu and sched-rcu usage consistent */		\
- 		preempt_disable_notrace();				\
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -3119,6 +3119,9 @@ void __trace_stack(struct trace_array *t
- 		return;
- 	}
+ 	cpu_pm_exit();
  
-+	if (WARN_ON_ONCE(IS_ENABLED(CONFIG_GENERIC_ENTRY)))
-+		return;
-+
- 	/*
- 	 * When an NMI triggers, RCU is enabled via ct_nmi_enter(),
- 	 * but if the above rcu_is_watching() failed, then the NMI
+ 	if (ret)
+@@ -49,6 +52,7 @@ static struct cpuidle_driver armadaxp_id
+ 	.name			= "armada_xp_idle",
+ 	.states[0]		= ARM_CPUIDLE_WFI_STATE,
+ 	.states[1]		= {
++		.flags			= CPUIDLE_FLAG_RCU_IDLE,
+ 		.enter			= mvebu_v7_enter_idle,
+ 		.exit_latency		= 100,
+ 		.power_usage		= 50,
+@@ -57,6 +61,7 @@ static struct cpuidle_driver armadaxp_id
+ 		.desc			= "CPU power down",
+ 	},
+ 	.states[2]		= {
++		.flags			= CPUIDLE_FLAG_RCU_IDLE,
+ 		.enter			= mvebu_v7_enter_idle,
+ 		.exit_latency		= 1000,
+ 		.power_usage		= 5,
+@@ -72,6 +77,7 @@ static struct cpuidle_driver armada370_i
+ 	.name			= "armada_370_idle",
+ 	.states[0]		= ARM_CPUIDLE_WFI_STATE,
+ 	.states[1]		= {
++		.flags			= CPUIDLE_FLAG_RCU_IDLE,
+ 		.enter			= mvebu_v7_enter_idle,
+ 		.exit_latency		= 100,
+ 		.power_usage		= 5,
+@@ -87,6 +93,7 @@ static struct cpuidle_driver armada38x_i
+ 	.name			= "armada_38x_idle",
+ 	.states[0]		= ARM_CPUIDLE_WFI_STATE,
+ 	.states[1]		= {
++		.flags			= CPUIDLE_FLAG_RCU_IDLE,
+ 		.enter			= mvebu_v7_enter_idle,
+ 		.exit_latency		= 10,
+ 		.power_usage		= 5,
 
 
