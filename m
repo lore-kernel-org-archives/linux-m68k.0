@@ -2,44 +2,44 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 425B4C677F1
-	for <linux-m68k@archiver.kernel.org>; Thu, 12 Jan 2023 20:06:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8493C678D8
+	for <linux-m68k@archiver.kernel.org>; Thu, 12 Jan 2023 20:06:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235088AbjALUGe (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 12 Jan 2023 15:06:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44140 "EHLO
+        id S242006AbjALUGi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 12 Jan 2023 15:06:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236847AbjALT7U (ORCPT
+        with ESMTP id S238976AbjALT7V (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 12 Jan 2023 14:59:20 -0500
+        Thu, 12 Jan 2023 14:59:21 -0500
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A8992DD6
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Jan 2023 11:58:10 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 794863895
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Jan 2023 11:58:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=xUXFMmNjQb3UrGtSZK0a2nhjQSuKqnZvrBUrV/kGZ/M=; b=EGHw1O+VhpWPdN6gdRf/7GSjeB
-        0UpV5ZmI/qCVEO227xSy+GcxcSibZfsbDMVhfrklK7v8AyIqqIkF1gP/LgqbAi0mW/tE1qC+L2HXf
-        XvBUyGgq1DaRfzAcG0kIhWQHmV+EHqARCQ0PI+HB0HkJFGK7wif5gXf8cwDpdM+B6kfu/O1OCdau2
-        pSpg2AHgEP6HHM59oP5MZjnLVRtw+NHsWIOGgIai3wNHA4pOmXIQM+eJ6kD+gcxp4nDfUTp3XjBF5
-        ju6vS//9JRlSRzSlmnzBFsdYZAx2plCN0CogGHUzlIGKzhmNE0tcF4m5z8v0nJtN+98R7CxLONDQE
-        HdNpFULw==;
+        bh=g+drg6uUsP6YHX5z1pA/AishyJbSIL0Ic60jCQj0FKI=; b=HX4zIGc7CNEnvS4rGn7W0D9vH+
+        BqXSKBVzbOjdJmVjwKxM7CErrgFVSVz/1+bUhTtJLxqBqKUls/dfAKcxdlM/GqAKIZgPcyyvtiYC/
+        xNsvs3jEkA3Tc7wTD9dKX7AqQVMoK3zZGnoIRVPe2/ByXxJkmUGz2mgC+xq8GzDIl2mMQh/SS0wBb
+        n8VTeRISnPcLdiCi2mz8Xah5kZu27M2Y+yFi7mr7Ut1y4VkoQunAEfDpTHMkZnAblbze/EQp4/W3m
+        gMbvO683icMip+ILGDnrJ2cs/cFkJS4BJyY9lEGJ3v9cTLztSTyffVlb60q8QCxYTmdvnOk8RO/+K
+        ZD1kTYwg==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
         by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1pG3hK-0045pf-2r;
-        Thu, 12 Jan 2023 19:57:25 +0000
+        id 1pG3ha-0045wt-0G;
+        Thu, 12 Jan 2023 19:57:33 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id ECA69303461;
-        Thu, 12 Jan 2023 20:57:13 +0100 (CET)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 51C39300C50;
+        Thu, 12 Jan 2023 20:57:14 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 49A802CD0121F; Thu, 12 Jan 2023 20:57:08 +0100 (CET)
-Message-ID: <20230112195541.721697850@infradead.org>
+        id 810012CD066F0; Thu, 12 Jan 2023 20:57:08 +0100 (CET)
+Message-ID: <20230112195542.458034262@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 12 Jan 2023 20:43:53 +0100
+Date:   Thu, 12 Jan 2023 20:44:05 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     peterz@infradead.org
 Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
@@ -103,10 +103,8 @@ Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
         linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
         linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-trace-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH v3 39/51] arm,omap2: Use WFI for omap2_pm_idle()
+        linux-trace-kernel@vger.kernel.org, kasan-dev@googlegroups.com
+Subject: [PATCH v3 51/51] context_tracking: Fix noinstr vs KASAN
 References: <20230112194314.845371875@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -114,97 +112,66 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-arch_cpu_idle() is a very simple idle interface and exposes only a
-single idle state and is expected to not require RCU and not do any
-tracing/instrumentation.
+vmlinux.o: warning: objtool: __ct_user_enter+0x72: call to __kasan_check_write() leaves .noinstr.text section
+vmlinux.o: warning: objtool: __ct_user_exit+0x47: call to __kasan_check_write() leaves .noinstr.text section
 
-As such, omap2_pm_idle() is not a valid implementation. Replace it
-with a simple (shallow) omap2_do_wfi() call.
-
-Omap2 doesn't have a cpuidle driver; but adding one would be the
-recourse to (re)gain the other idle states.
-
-Suggested-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Acked-by: Frederic Weisbecker <frederic@kernel.org>
-Tested-by: Tony Lindgren <tony@atomide.com>
-Tested-by: Ulf Hansson <ulf.hansson@linaro.org>
 ---
- arch/arm/mach-omap2/pm24xx.c |   51 +------------------------------------------
- 1 file changed, 2 insertions(+), 49 deletions(-)
+ kernel/context_tracking.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
---- a/arch/arm/mach-omap2/pm24xx.c
-+++ b/arch/arm/mach-omap2/pm24xx.c
-@@ -116,50 +116,12 @@ static int omap2_enter_full_retention(vo
+--- a/kernel/context_tracking.c
++++ b/kernel/context_tracking.c
+@@ -510,7 +510,7 @@ void noinstr __ct_user_enter(enum ctx_st
+ 			 * In this we case we don't care about any concurrency/ordering.
+ 			 */
+ 			if (!IS_ENABLED(CONFIG_CONTEXT_TRACKING_IDLE))
+-				atomic_set(&ct->state, state);
++				arch_atomic_set(&ct->state, state);
+ 		} else {
+ 			/*
+ 			 * Even if context tracking is disabled on this CPU, because it's outside
+@@ -527,7 +527,7 @@ void noinstr __ct_user_enter(enum ctx_st
+ 			 */
+ 			if (!IS_ENABLED(CONFIG_CONTEXT_TRACKING_IDLE)) {
+ 				/* Tracking for vtime only, no concurrent RCU EQS accounting */
+-				atomic_set(&ct->state, state);
++				arch_atomic_set(&ct->state, state);
+ 			} else {
+ 				/*
+ 				 * Tracking for vtime and RCU EQS. Make sure we don't race
+@@ -535,7 +535,7 @@ void noinstr __ct_user_enter(enum ctx_st
+ 				 * RCU only requires RCU_DYNTICKS_IDX increments to be fully
+ 				 * ordered.
+ 				 */
+-				atomic_add(state, &ct->state);
++				arch_atomic_add(state, &ct->state);
+ 			}
+ 		}
+ 	}
+@@ -630,12 +630,12 @@ void noinstr __ct_user_exit(enum ctx_sta
+ 			 * In this we case we don't care about any concurrency/ordering.
+ 			 */
+ 			if (!IS_ENABLED(CONFIG_CONTEXT_TRACKING_IDLE))
+-				atomic_set(&ct->state, CONTEXT_KERNEL);
++				arch_atomic_set(&ct->state, CONTEXT_KERNEL);
  
- static int sti_console_enabled;
- 
--static int omap2_allow_mpu_retention(void)
--{
--	if (!omap2xxx_cm_mpu_retention_allowed())
--		return 0;
--	if (sti_console_enabled)
--		return 0;
--
--	return 1;
--}
--
--static void omap2_enter_mpu_retention(void)
-+static void omap2_do_wfi(void)
- {
- 	const int zero = 0;
- 
--	/* The peripherals seem not to be able to wake up the MPU when
--	 * it is in retention mode. */
--	if (omap2_allow_mpu_retention()) {
--		/* REVISIT: These write to reserved bits? */
--		omap_prm_clear_mod_irqs(CORE_MOD, PM_WKST1, ~0);
--		omap_prm_clear_mod_irqs(CORE_MOD, OMAP24XX_PM_WKST2, ~0);
--		omap_prm_clear_mod_irqs(WKUP_MOD, PM_WKST, ~0);
--
--		/* Try to enter MPU retention */
--		pwrdm_set_next_pwrst(mpu_pwrdm, PWRDM_POWER_RET);
--
--	} else {
--		/* Block MPU retention */
--		pwrdm_set_next_pwrst(mpu_pwrdm, PWRDM_POWER_ON);
--	}
--
- 	/* WFI */
- 	asm("mcr p15, 0, %0, c7, c0, 4" : : "r" (zero) : "memory", "cc");
--
--	pwrdm_set_next_pwrst(mpu_pwrdm, PWRDM_POWER_ON);
--}
--
--static int omap2_can_sleep(void)
--{
--	if (omap2xxx_cm_fclks_active())
--		return 0;
--	if (__clk_is_enabled(osc_ck))
--		return 0;
--
--	return 1;
- }
- 
- static void omap2_pm_idle(void)
-@@ -169,16 +131,7 @@ static void omap2_pm_idle(void)
- 	if (omap_irq_pending())
- 		return;
- 
--	error = cpu_cluster_pm_enter();
--	if (error || !omap2_can_sleep()) {
--		omap2_enter_mpu_retention();
--		goto out_cpu_cluster_pm;
--	}
--
--	omap2_enter_full_retention();
--
--out_cpu_cluster_pm:
--	cpu_cluster_pm_exit();
-+	omap2_do_wfi();
- }
- 
- static void __init prcm_setup_regs(void)
+ 		} else {
+ 			if (!IS_ENABLED(CONFIG_CONTEXT_TRACKING_IDLE)) {
+ 				/* Tracking for vtime only, no concurrent RCU EQS accounting */
+-				atomic_set(&ct->state, CONTEXT_KERNEL);
++				arch_atomic_set(&ct->state, CONTEXT_KERNEL);
+ 			} else {
+ 				/*
+ 				 * Tracking for vtime and RCU EQS. Make sure we don't race
+@@ -643,7 +643,7 @@ void noinstr __ct_user_exit(enum ctx_sta
+ 				 * RCU only requires RCU_DYNTICKS_IDX increments to be fully
+ 				 * ordered.
+ 				 */
+-				atomic_sub(state, &ct->state);
++				arch_atomic_sub(state, &ct->state);
+ 			}
+ 		}
+ 	}
 
 
