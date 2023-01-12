@@ -2,43 +2,43 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5699BC678DB
-	for <linux-m68k@archiver.kernel.org>; Thu, 12 Jan 2023 20:06:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74AEDC71130
+	for <linux-m68k@archiver.kernel.org>; Thu, 12 Jan 2023 20:06:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242064AbjALUGB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 12 Jan 2023 15:06:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44154 "EHLO
+        id S242067AbjALUGC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 12 Jan 2023 15:06:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232283AbjALT7N (ORCPT
+        with ESMTP id S232099AbjALT6b (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 12 Jan 2023 14:59:13 -0500
+        Thu, 12 Jan 2023 14:58:31 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9803BBB8
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Jan 2023 11:58:05 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C971C20C
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Jan 2023 11:58:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=ljNIHChdlymEt0s4DtY+Ji5/5ZFr1jFKrzucPLjcAFA=; b=UFhO8sQycbOykP9WLmHLr8syH1
-        9tKpgf+RH4+2oIWu+p1NsZyG1ZQUQEWQKyB7rZeJqKLqT/EpPMTLJSHpi/eniYQI6kNhYX80bC7rp
-        v4DYtLIywV5PM3hyi+6d9VreCBIfyUq0bOE4EJwgP1PAPqwc5ULRKbQuNPzHKcYXFJ+bhA18Sk3BK
-        0SHi+ZzW5d72kp/7epWf2U0Zao67mw1W6KZFzu9PuzdtQCB/RZo73P/7KFSV/9Z+EgMtlu14sgzCt
-        LY3p+teRO7dsISyeJIOJS/fTB2tiC6ZycPsflBP3cBseh7aef5nb+O7jgwPbkvWsd95ol/bFuNb6B
-        77LSYyRg==;
+        bh=el0CIt1mM51BvZPcHKbhuF9lp1fNYUjgpLSAPy3Ccmg=; b=tvBa36On1tgPpOho7ahgpRDeA7
+        VD3Q9HQ4f3Ej4oPbH9YxtMDqs5HyC7lkDZn5vZGB8d3WSo7Z1P9FBFIVms0pz6CgWqRMwrRb15Bsd
+        lcLK8h29qqcDlNe6qJc92nfUkYJF7ntrSRabmmAT0/kBKe4lowjWasVtTUzitfMJgum2PFTCW7aib
+        lFuw51y9ho3hcp236ghfxyTUTs/4QMwB9E3vY+71ARt47IMDlRnGyVA8rTrEzFDXZ7wxABkQRw7/I
+        LNpFhK1ipzOKKwI7x97Ns9z0W+cf/xTT0i7yl5EA14WEDj8/hFqG3cHumvt8KUylgEvg9o+NcZc6z
+        iBVAM65A==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pG3hu-005P6M-DU; Thu, 12 Jan 2023 19:57:50 +0000
+        id 1pG3hc-005Oen-Qk; Thu, 12 Jan 2023 19:57:32 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2E2C5303477;
-        Thu, 12 Jan 2023 20:57:14 +0100 (CET)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AD27A303443;
+        Thu, 12 Jan 2023 20:57:13 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 68B912CD066DC; Thu, 12 Jan 2023 20:57:08 +0100 (CET)
-Message-ID: <20230112195542.151174682@infradead.org>
+        id 24C2C2CCF62B5; Thu, 12 Jan 2023 20:57:08 +0100 (CET)
+Message-ID: <20230112195541.171918174@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 12 Jan 2023 20:44:00 +0100
+Date:   Thu, 12 Jan 2023 20:43:44 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     peterz@infradead.org
 Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
@@ -105,7 +105,7 @@ Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
         linux-trace-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
         "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH v3 46/51] arm64,riscv,perf: Remove RCU_NONIDLE() usage
+Subject: [PATCH v3 30/51] cpuidle,xenpv: Make more PARAVIRT_XXL noinstr clean
 References: <20230112194314.845371875@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -113,57 +113,144 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The PM notifiers should no longer be ran with RCU disabled (per the
-previous patches), as such this hack is no longer required either.
+vmlinux.o: warning: objtool: acpi_idle_enter_s2idle+0xde: call to wbinvd() leaves .noinstr.text section
+vmlinux.o: warning: objtool: default_idle+0x4: call to arch_safe_halt() leaves .noinstr.text section
+vmlinux.o: warning: objtool: xen_safe_halt+0xa: call to HYPERVISOR_sched_op.constprop.0() leaves .noinstr.text section
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
+Reviewed-by: Juergen Gross <jgross@suse.com>
 Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Acked-by: Frederic Weisbecker <frederic@kernel.org>
 Tested-by: Tony Lindgren <tony@atomide.com>
 Tested-by: Ulf Hansson <ulf.hansson@linaro.org>
 ---
- drivers/perf/arm_pmu.c       |   11 +----------
- drivers/perf/riscv_pmu_sbi.c |    8 +-------
- 2 files changed, 2 insertions(+), 17 deletions(-)
+ arch/x86/include/asm/paravirt.h      |    6 ++++--
+ arch/x86/include/asm/special_insns.h |    4 ++--
+ arch/x86/include/asm/xen/hypercall.h |    2 +-
+ arch/x86/kernel/paravirt.c           |   14 ++++++++++++--
+ arch/x86/xen/enlighten_pv.c          |    2 +-
+ arch/x86/xen/irq.c                   |    2 +-
+ 6 files changed, 21 insertions(+), 9 deletions(-)
 
---- a/drivers/perf/arm_pmu.c
-+++ b/drivers/perf/arm_pmu.c
-@@ -762,17 +762,8 @@ static void cpu_pm_pmu_setup(struct arm_
- 		case CPU_PM_ENTER_FAILED:
- 			 /*
- 			  * Restore and enable the counter.
--			  * armpmu_start() indirectly calls
--			  *
--			  * perf_event_update_userpage()
--			  *
--			  * that requires RCU read locking to be functional,
--			  * wrap the call within RCU_NONIDLE to make the
--			  * RCU subsystem aware this cpu is not idle from
--			  * an RCU perspective for the armpmu_start() call
--			  * duration.
- 			  */
--			RCU_NONIDLE(armpmu_start(event, PERF_EF_RELOAD));
-+			armpmu_start(event, PERF_EF_RELOAD);
- 			break;
- 		default:
- 			break;
---- a/drivers/perf/riscv_pmu_sbi.c
-+++ b/drivers/perf/riscv_pmu_sbi.c
-@@ -747,14 +747,8 @@ static int riscv_pm_pmu_notify(struct no
- 		case CPU_PM_ENTER_FAILED:
- 			/*
- 			 * Restore and enable the counter.
--			 *
--			 * Requires RCU read locking to be functional,
--			 * wrap the call within RCU_NONIDLE to make the
--			 * RCU subsystem aware this cpu is not idle from
--			 * an RCU perspective for the riscv_pmu_start() call
--			 * duration.
- 			 */
--			RCU_NONIDLE(riscv_pmu_start(event, PERF_EF_RELOAD));
-+			riscv_pmu_start(event, PERF_EF_RELOAD);
- 			break;
- 		default:
- 			break;
+--- a/arch/x86/include/asm/paravirt.h
++++ b/arch/x86/include/asm/paravirt.h
+@@ -168,7 +168,7 @@ static inline void __write_cr4(unsigned
+ 	PVOP_VCALL1(cpu.write_cr4, x);
+ }
+ 
+-static inline void arch_safe_halt(void)
++static __always_inline void arch_safe_halt(void)
+ {
+ 	PVOP_VCALL0(irq.safe_halt);
+ }
+@@ -178,7 +178,9 @@ static inline void halt(void)
+ 	PVOP_VCALL0(irq.halt);
+ }
+ 
+-static inline void wbinvd(void)
++extern noinstr void pv_native_wbinvd(void);
++
++static __always_inline void wbinvd(void)
+ {
+ 	PVOP_ALT_VCALL0(cpu.wbinvd, "wbinvd", ALT_NOT(X86_FEATURE_XENPV));
+ }
+--- a/arch/x86/include/asm/special_insns.h
++++ b/arch/x86/include/asm/special_insns.h
+@@ -115,7 +115,7 @@ static inline void wrpkru(u32 pkru)
+ }
+ #endif
+ 
+-static inline void native_wbinvd(void)
++static __always_inline void native_wbinvd(void)
+ {
+ 	asm volatile("wbinvd": : :"memory");
+ }
+@@ -179,7 +179,7 @@ static inline void __write_cr4(unsigned
+ 	native_write_cr4(x);
+ }
+ 
+-static inline void wbinvd(void)
++static __always_inline void wbinvd(void)
+ {
+ 	native_wbinvd();
+ }
+--- a/arch/x86/include/asm/xen/hypercall.h
++++ b/arch/x86/include/asm/xen/hypercall.h
+@@ -382,7 +382,7 @@ MULTI_stack_switch(struct multicall_entr
+ }
+ #endif
+ 
+-static inline int
++static __always_inline int
+ HYPERVISOR_sched_op(int cmd, void *arg)
+ {
+ 	return _hypercall2(int, sched_op, cmd, arg);
+--- a/arch/x86/kernel/paravirt.c
++++ b/arch/x86/kernel/paravirt.c
+@@ -233,6 +233,11 @@ static noinstr void pv_native_set_debugr
+ 	native_set_debugreg(regno, val);
+ }
+ 
++noinstr void pv_native_wbinvd(void)
++{
++	native_wbinvd();
++}
++
+ static noinstr void pv_native_irq_enable(void)
+ {
+ 	native_irq_enable();
+@@ -242,6 +247,11 @@ static noinstr void pv_native_irq_disabl
+ {
+ 	native_irq_disable();
+ }
++
++static noinstr void pv_native_safe_halt(void)
++{
++	native_safe_halt();
++}
+ #endif
+ 
+ enum paravirt_lazy_mode paravirt_get_lazy_mode(void)
+@@ -273,7 +283,7 @@ struct paravirt_patch_template pv_ops =
+ 	.cpu.read_cr0		= native_read_cr0,
+ 	.cpu.write_cr0		= native_write_cr0,
+ 	.cpu.write_cr4		= native_write_cr4,
+-	.cpu.wbinvd		= native_wbinvd,
++	.cpu.wbinvd		= pv_native_wbinvd,
+ 	.cpu.read_msr		= native_read_msr,
+ 	.cpu.write_msr		= native_write_msr,
+ 	.cpu.read_msr_safe	= native_read_msr_safe,
+@@ -307,7 +317,7 @@ struct paravirt_patch_template pv_ops =
+ 	.irq.save_fl		= __PV_IS_CALLEE_SAVE(native_save_fl),
+ 	.irq.irq_disable	= __PV_IS_CALLEE_SAVE(pv_native_irq_disable),
+ 	.irq.irq_enable		= __PV_IS_CALLEE_SAVE(pv_native_irq_enable),
+-	.irq.safe_halt		= native_safe_halt,
++	.irq.safe_halt		= pv_native_safe_halt,
+ 	.irq.halt		= native_halt,
+ #endif /* CONFIG_PARAVIRT_XXL */
+ 
+--- a/arch/x86/xen/enlighten_pv.c
++++ b/arch/x86/xen/enlighten_pv.c
+@@ -1019,7 +1019,7 @@ static const typeof(pv_ops) xen_cpu_ops
+ 
+ 		.write_cr4 = xen_write_cr4,
+ 
+-		.wbinvd = native_wbinvd,
++		.wbinvd = pv_native_wbinvd,
+ 
+ 		.read_msr = xen_read_msr,
+ 		.write_msr = xen_write_msr,
+--- a/arch/x86/xen/irq.c
++++ b/arch/x86/xen/irq.c
+@@ -24,7 +24,7 @@ noinstr void xen_force_evtchn_callback(v
+ 	(void)HYPERVISOR_xen_version(0, NULL);
+ }
+ 
+-static void xen_safe_halt(void)
++static noinstr void xen_safe_halt(void)
+ {
+ 	/* Blocking includes an implicit local_irq_enable(). */
+ 	if (HYPERVISOR_sched_op(SCHEDOP_block, NULL) != 0)
 
 
