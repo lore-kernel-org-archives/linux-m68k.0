@@ -2,226 +2,122 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC29FC677F1
-	for <linux-m68k@archiver.kernel.org>; Thu, 12 Jan 2023 13:41:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B158EC54EBD
+	for <linux-m68k@archiver.kernel.org>; Thu, 12 Jan 2023 15:22:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232889AbjALNlz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 12 Jan 2023 08:41:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
+        id S230475AbjALPWc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 12 Jan 2023 10:22:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233607AbjALNla (ORCPT
+        with ESMTP id S234056AbjALPWM (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 12 Jan 2023 08:41:30 -0500
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386C3559F7
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Jan 2023 05:39:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1673530769; x=1705066769;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Fiq7O/W4y1Cb9Aw+M/Hi2kk/28EdDxDe2am7SsMM7o4=;
-  b=cDpZaqVFOy6ZVybKyafkTn35WWDnF/sbqi+RAnUWbwWHIoWoSUrLMHUa
-   LdS2WO8tPbU7FnxC3IM28d9dvbK7TlWG9iPDJjQDD35ykF4D26Vhb8oFX
-   C+OhF38o95Uf21jRQXa+Z6KUeA6Vij2Al4I4O4Xb6e2mKHRLpvDVVEd9s
-   M99nWde6rJ/r47s+hbK/u+2b8xdTlGZvNIXWDOlye2UFn6aL1XKBHsinL
-   uudrrsoiKYzm6+LyCqgWtEpSc5D+6EWK1m8kuvfPZh8KHIdK9ZRsDfM8y
-   +FgRBZxqNrBOByXmUcuR8tbO1dp7zi3AFz2N4YydMXz6swgK6OrCBjh4o
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10587"; a="307227125"
-X-IronPort-AV: E=Sophos;i="5.97,211,1669104000"; 
-   d="scan'208";a="307227125"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2023 05:39:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10587"; a="831695528"
-X-IronPort-AV: E=Sophos;i="5.97,211,1669104000"; 
-   d="scan'208";a="831695528"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga005.jf.intel.com with ESMTP; 12 Jan 2023 05:39:24 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id D190EE1; Thu, 12 Jan 2023 15:39:57 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-doc@vger.kernel.org,
+        Thu, 12 Jan 2023 10:22:12 -0500
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35BC32657
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Jan 2023 07:14:54 -0800 (PST)
+Received: by mail-qt1-f175.google.com with SMTP id jr10so9396741qtb.7
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Jan 2023 07:14:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5Y6qY7Xi7w4nejlKSxi1fYejKBcc6r8h/6CzmR1L1Uk=;
+        b=DYdGeVewBoUuU9/tPJCMReGIjgZW+RJqxV6LmJpjDVK4BupARWbsOfiSjS5Gz0gtQB
+         03fWQepbFh9y3jsLJf0bWTxlKOgAnhaeJvkBcpKtUdd1AXeGCdXDlmaY1Vb9+xZPOyx1
+         fQ82QubuBpSN5FwonZPh7QN9RLdL4dTmXohEouIvwXEPGU9wG6kw6cldMf/i2gpOCAiN
+         VucXvZUpsVCkLAOZcc/JbrDbfp9afo1WolTjuArc1M0RaYef1TqULtVt1nFeixMdsluz
+         0KGABcUs3YDUz24Y9vXUEZQnbw6RX1KTos31ucDhopPHPDtljYBtuN+OaxCNtdycZ82R
+         OOWg==
+X-Gm-Message-State: AFqh2kqGRZEqSfgcrvTKXK3fjeRETTZWuM9+fKzFMhCU5o90/CQiqWFX
+        nsOmUDwlcnk40X9tu++JCQn2kcp7USMtKg==
+X-Google-Smtp-Source: AMrXdXv/2mVtEKmp3Zrwcu9sHFgtFLw3txLKi0cyhds3aJw57R02POGaRj2+JxSTx8flucrpGMFnjg==
+X-Received: by 2002:a05:622a:5c8d:b0:3a9:81ba:409d with SMTP id ge13-20020a05622a5c8d00b003a981ba409dmr110015704qtb.0.1673536492971;
+        Thu, 12 Jan 2023 07:14:52 -0800 (PST)
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com. [209.85.128.178])
+        by smtp.gmail.com with ESMTPSA id h14-20020ac8548e000000b003ab1ee36ee7sm9174946qtq.51.2023.01.12.07.14.51
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Jan 2023 07:14:52 -0800 (PST)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-4a263c4ddbaso244222717b3.0
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Jan 2023 07:14:51 -0800 (PST)
+X-Received: by 2002:a81:1a16:0:b0:46f:bd6:957d with SMTP id
+ a22-20020a811a16000000b0046f0bd6957dmr1837351ywa.383.1673536491636; Thu, 12
+ Jan 2023 07:14:51 -0800 (PST)
+MIME-Version: 1.0
+References: <20230112133942.58471-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20230112133942.58471-1-andriy.shevchenko@linux.intel.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 12 Jan 2023 16:14:39 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXSc-H5TKBGisthv3DH3sZmF3fV_15FuMEt=typwTWUtA@mail.gmail.com>
+Message-ID: <CAMuHMdXSc-H5TKBGisthv3DH3sZmF3fV_15FuMEt=typwTWUtA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] gpio: Remove unused and obsoleted irq_to_gpio()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-gpio@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         linux-doc-tw-discuss@lists.sourceforge.net,
-        linux-m68k@lists.linux-m68k.org, linux-sh@vger.kernel.org
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-m68k@lists.linux-m68k.org, linux-sh@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
         Bartosz Golaszewski <brgl@bgdev.pl>,
         Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>,
         Yanteng Si <siyanteng@loongson.cn>,
         Hu Haowen <src.res@email.cn>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
         Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>
-Subject: [PATCH v1 1/1] gpio: Remove unused and obsoleted irq_to_gpio()
-Date:   Thu, 12 Jan 2023 15:39:42 +0200
-Message-Id: <20230112133942.58471-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.39.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Rich Felker <dalias@libc.org>,
+        Greg Ungerer <gerg@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-irq_to_gpio() is legacy and unused API, remove it for good.
+CC greg
 
-This leaves gpio_to_irq() as it's used yet in many places.
-Nevertheless, removal of its counterpart is a good signal
-to whoever even trying to consider using them that do not.
+On Thu, Jan 12, 2023 at 2:39 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> irq_to_gpio() is legacy and unused API, remove it for good.
+>
+> This leaves gpio_to_irq() as it's used yet in many places.
+> Nevertheless, removal of its counterpart is a good signal
+> to whoever even trying to consider using them that do not.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  Documentation/driver-api/gpio/legacy.rst             |  8 --------
+>  .../translations/zh_CN/driver-api/gpio/legacy.rst    |  7 -------
+>  Documentation/translations/zh_TW/gpio.txt            |  7 -------
+>  arch/m68k/include/asm/gpio.h                         |  7 -------
+>  arch/sh/include/asm/gpio.h                           |  5 -----
+>  include/linux/gpio.h                                 | 12 ------------
+>  6 files changed, 46 deletions(-)
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- Documentation/driver-api/gpio/legacy.rst             |  8 --------
- .../translations/zh_CN/driver-api/gpio/legacy.rst    |  7 -------
- Documentation/translations/zh_TW/gpio.txt            |  7 -------
- arch/m68k/include/asm/gpio.h                         |  7 -------
- arch/sh/include/asm/gpio.h                           |  5 -----
- include/linux/gpio.h                                 | 12 ------------
- 6 files changed, 46 deletions(-)
+[...]
 
-diff --git a/Documentation/driver-api/gpio/legacy.rst b/Documentation/driver-api/gpio/legacy.rst
-index e3e9d26a60ce..a0559d93efd1 100644
---- a/Documentation/driver-api/gpio/legacy.rst
-+++ b/Documentation/driver-api/gpio/legacy.rst
-@@ -387,9 +387,6 @@ map between them using calls like::
- 	/* map GPIO numbers to IRQ numbers */
- 	int gpio_to_irq(unsigned gpio);
- 
--	/* map IRQ numbers to GPIO numbers (avoid using this) */
--	int irq_to_gpio(unsigned irq);
--
- Those return either the corresponding number in the other namespace, or
- else a negative errno code if the mapping can't be done.  (For example,
- some GPIOs can't be used as IRQs.)  It is an unchecked error to use a GPIO
-@@ -405,11 +402,6 @@ devices, by the board-specific initialization code.  Note that IRQ trigger
- options are part of the IRQ interface, e.g. IRQF_TRIGGER_FALLING, as are
- system wakeup capabilities.
- 
--Non-error values returned from irq_to_gpio() would most commonly be used
--with gpio_get_value(), for example to initialize or update driver state
--when the IRQ is edge-triggered.  Note that some platforms don't support
--this reverse mapping, so you should avoid using it.
--
- 
- Emulating Open Drain Signals
- ----------------------------
-diff --git a/Documentation/translations/zh_CN/driver-api/gpio/legacy.rst b/Documentation/translations/zh_CN/driver-api/gpio/legacy.rst
-index 8599e253fcc5..74fa473bb504 100644
---- a/Documentation/translations/zh_CN/driver-api/gpio/legacy.rst
-+++ b/Documentation/translations/zh_CN/driver-api/gpio/legacy.rst
-@@ -358,9 +358,6 @@ GPIO 编号是无符号整数;IRQ 编号也是。这些构成了两个逻辑上
- 	/* 映射 GPIO 编号到 IRQ 编号 */
- 	int gpio_to_irq(unsigned gpio);
- 
--	/* 映射 IRQ 编号到 GPIO 编号 (尽量避免使用) */
--	int irq_to_gpio(unsigned irq);
--
- 它们的返回值为对应命名空间的相关编号，或是负的错误代码(如果无法映射)。
- (例如,某些 GPIO 无法做为 IRQ 使用。)以下的编号错误是未经检测的:使用一个
- 未通过 gpio_direction_input()配置为输入的 GPIO 编号，或者使用一个
-@@ -373,10 +370,6 @@ gpio_to_irq()返回的非错误值可以传递给 request_irq()或者 free_irq()
- 触发选项是 IRQ 接口的一部分，如 IRQF_TRIGGER_FALLING，系统唤醒能力
- 也是如此。
- 
--irq_to_gpio()返回的非错误值大多数通常可以被 gpio_get_value()所使用，
--比如在 IRQ 是沿触发时初始化或更新驱动状态。注意某些平台不支持反映射,所以
--你应该尽量避免使用它。
--
- 
- 模拟开漏信号
- ------------
-diff --git a/Documentation/translations/zh_TW/gpio.txt b/Documentation/translations/zh_TW/gpio.txt
-index abd8e4c0973e..1b986bbb0909 100644
---- a/Documentation/translations/zh_TW/gpio.txt
-+++ b/Documentation/translations/zh_TW/gpio.txt
-@@ -363,9 +363,6 @@ GPIO 編號是無符號整數;IRQ 編號也是。這些構成了兩個邏輯上
- 	/* 映射 GPIO 編號到 IRQ 編號 */
- 	int gpio_to_irq(unsigned gpio);
- 
--	/* 映射 IRQ 編號到 GPIO 編號 (儘量避免使用) */
--	int irq_to_gpio(unsigned irq);
--
- 它們的返回值爲對應命名空間的相關編號，或是負的錯誤代碼(如果無法映射)。
- (例如,某些 GPIO 無法做爲 IRQ 使用。)以下的編號錯誤是未經檢測的:使用一個
- 未通過 gpio_direction_input()配置爲輸入的 GPIO 編號，或者使用一個
-@@ -378,10 +375,6 @@ gpio_to_irq()返回的非錯誤值可以傳遞給 request_irq()或者 free_irq()
- 觸發選項是 IRQ 接口的一部分，如 IRQF_TRIGGER_FALLING，系統喚醒能力
- 也是如此。
- 
--irq_to_gpio()返回的非錯誤值大多數通常可以被 gpio_get_value()所使用，
--比如在 IRQ 是沿觸發時初始化或更新驅動狀態。注意某些平台不支持反映射,所以
--你應該儘量避免使用它。
--
- 
- 模擬開漏信號
- ----------------------------
-diff --git a/arch/m68k/include/asm/gpio.h b/arch/m68k/include/asm/gpio.h
-index a50b27719a58..5cfc0996ba94 100644
---- a/arch/m68k/include/asm/gpio.h
-+++ b/arch/m68k/include/asm/gpio.h
-@@ -66,13 +66,6 @@ static inline int gpio_to_irq(unsigned gpio)
- 		return __gpio_to_irq(gpio);
- }
- 
--static inline int irq_to_gpio(unsigned irq)
--{
--	return (irq >= MCFGPIO_IRQ_VECBASE &&
--		irq < (MCFGPIO_IRQ_VECBASE + MCFGPIO_IRQ_MAX)) ?
--		irq - MCFGPIO_IRQ_VECBASE : -ENXIO;
--}
--
- static inline int gpio_cansleep(unsigned gpio)
- {
- 	return gpio < MCFGPIO_PIN_MAX ? 0 : __gpio_cansleep(gpio);
-diff --git a/arch/sh/include/asm/gpio.h b/arch/sh/include/asm/gpio.h
-index d643250f0a0f..588c1380e4cb 100644
---- a/arch/sh/include/asm/gpio.h
-+++ b/arch/sh/include/asm/gpio.h
-@@ -40,11 +40,6 @@ static inline int gpio_to_irq(unsigned gpio)
- 	return __gpio_to_irq(gpio);
- }
- 
--static inline int irq_to_gpio(unsigned int irq)
--{
--	return -ENOSYS;
--}
--
- #endif /* CONFIG_GPIOLIB */
- 
- #endif /* __ASM_SH_GPIO_H */
-diff --git a/include/linux/gpio.h b/include/linux/gpio.h
-index e94815b3ce1d..85beb236c925 100644
---- a/include/linux/gpio.h
-+++ b/include/linux/gpio.h
-@@ -81,11 +81,6 @@ static inline int gpio_to_irq(unsigned int gpio)
- 	return __gpio_to_irq(gpio);
- }
- 
--static inline int irq_to_gpio(unsigned int irq)
--{
--	return -EINVAL;
--}
--
- #endif /* ! CONFIG_ARCH_HAVE_CUSTOM_GPIO_H */
- 
- /* CONFIG_GPIOLIB: bindings for managed devices that want to request gpios */
-@@ -210,13 +205,6 @@ static inline int gpio_to_irq(unsigned gpio)
- 	return -EINVAL;
- }
- 
--static inline int irq_to_gpio(unsigned irq)
--{
--	/* irq can never have been returned from gpio_to_irq() */
--	WARN_ON(1);
--	return -EINVAL;
--}
--
- static inline int devm_gpio_request(struct device *dev, unsigned gpio,
- 				    const char *label)
- {
--- 
-2.39.0
+> --- a/arch/m68k/include/asm/gpio.h
+> +++ b/arch/m68k/include/asm/gpio.h
+> @@ -66,13 +66,6 @@ static inline int gpio_to_irq(unsigned gpio)
+>                 return __gpio_to_irq(gpio);
+>  }
+>
+> -static inline int irq_to_gpio(unsigned irq)
+> -{
+> -       return (irq >= MCFGPIO_IRQ_VECBASE &&
+> -               irq < (MCFGPIO_IRQ_VECBASE + MCFGPIO_IRQ_MAX)) ?
+> -               irq - MCFGPIO_IRQ_VECBASE : -ENXIO;
+> -}
+> -
+>  static inline int gpio_cansleep(unsigned gpio)
+>  {
+>         return gpio < MCFGPIO_PIN_MAX ? 0 : __gpio_cansleep(gpio);
 
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
