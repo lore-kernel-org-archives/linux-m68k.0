@@ -2,43 +2,43 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 004BBC677F1
-	for <linux-m68k@archiver.kernel.org>; Thu, 12 Jan 2023 19:57:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 775B6C61DB3
+	for <linux-m68k@archiver.kernel.org>; Thu, 12 Jan 2023 19:57:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229754AbjALT54 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 12 Jan 2023 14:57:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43708 "EHLO
+        id S229517AbjALT55 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 12 Jan 2023 14:57:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbjALT5z (ORCPT
+        with ESMTP id S229640AbjALT5z (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Thu, 12 Jan 2023 14:57:55 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96AECD8
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E82FC7
         for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Jan 2023 11:57:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=KLAmYUkc5o4iaLgWEzyq0DD4W34Vw8wzkDDZ9nw8rNA=; b=ATY8kiKnvovNgLEm6qSQ1EQvbq
-        whhVrHfsY0Boal85ZRoFmxTUxBK5B9bIvgSX8kVgT6BcX1L66jwQCdPl/BWOSqcQGl2XmwgaBL4PW
-        OKdsLfeNG0cKIyK4qLBg5dTibPOilkbVEo3W2vYUVl/MzGrlgC59H1LNDjakisaklXFACDQXCVqgH
-        X3HA2n0rfn3BN7gYs5ZEmCkrHIhhMF7I5lLP2nRilVRm9iYl7qlU43ypHe2kjKrxVavesmViWu98M
-        YhMWMygFonCR9p+h3EzH9ve+5v/3v/1iCRvb+1bzQnO8SY3rlhjeY9n904kFy8Lg9quCma5so/ETV
-        SIrS144Q==;
+        bh=WMNBIHuf5Xvagmacq/Rua4pXk5oPDpB6DgeHQM3GMNM=; b=XHTa9fJQ6l9MxKPEyBfPupJlnK
+        QujDsEFDgBb1RH7NNdfEH9tiUdGcD8VlMIlH2CjVqfd+fNH42psBn6fMiV+PWnaBMJfrQlG8/uPJb
+        Okf5Z6OyNAqqQFO4RuIwX4H7J3wmUlp/1CUcFGZtL6SomSncCRNiAtmRxykSQS8awMOGDTC4+beqs
+        ZcKwNhcoilI8HNj5nEyrlEpuXXx8PCFWAbLEZkl+iVIJPsqVqE5HfY/3I1jWlD4JpB0Yxq934dXPd
+        MeGfH84uwYJtbUpHSynk7Q8quBJdyFnyS2B+X1iqYrC1/Fqf9A5HRlMzd1MAQhBIOXenRfEd52BcW
+        oZc0vWYw==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pG3he-005OgL-KO; Thu, 12 Jan 2023 19:57:34 +0000
+        id 1pG3hX-005OcN-Hu; Thu, 12 Jan 2023 19:57:27 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D5966303459;
-        Thu, 12 Jan 2023 20:57:13 +0100 (CET)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EA92B3033D2;
+        Thu, 12 Jan 2023 20:57:12 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 3DD3A2CCFB77A; Thu, 12 Jan 2023 20:57:08 +0100 (CET)
-Message-ID: <20230112195541.538053457@infradead.org>
+        id 9D69C2CCF1F4E; Thu, 12 Jan 2023 20:57:07 +0100 (CET)
+Message-ID: <20230112195539.637185846@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 12 Jan 2023 20:43:50 +0100
+Date:   Thu, 12 Jan 2023 20:43:19 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     peterz@infradead.org
 Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
@@ -105,7 +105,7 @@ Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
         linux-trace-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
         "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH v3 36/51] cpuidle,omap3: Use WFI for omap3_pm_idle()
+Subject: [PATCH v3 05/51] cpuidle,riscv: Push RCU-idle into driver
 References: <20230112194314.845371875@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -113,34 +113,61 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-arch_cpu_idle() is a very simple idle interface and exposes only a
-single idle state and is expected to not require RCU and not do any
-tracing/instrumentation.
+Doing RCU-idle outside the driver, only to then temporarily enable it
+again, at least twice, before going idle is daft.
 
-As such, omap_sram_idle() is not a valid implementation. Replace it
-with the simple (shallow) omap3_do_wfi() call. Leaving the more
-complicated idle states for the cpuidle driver.
+That is, once implicitly through the cpu_pm_*() calls and once
+explicitly doing ct_irq_*_irqon().
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Tony Lindgren <tony@atomide.com>
+Reviewed-by: Anup Patel <anup@brainfault.org>
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Acked-by: Frederic Weisbecker <frederic@kernel.org>
 Tested-by: Tony Lindgren <tony@atomide.com>
 Tested-by: Ulf Hansson <ulf.hansson@linaro.org>
 ---
- arch/arm/mach-omap2/pm34xx.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/cpuidle/cpuidle-riscv-sbi.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
---- a/arch/arm/mach-omap2/pm34xx.c
-+++ b/arch/arm/mach-omap2/pm34xx.c
-@@ -294,7 +294,7 @@ static void omap3_pm_idle(void)
- 	if (omap_irq_pending())
- 		return;
+--- a/drivers/cpuidle/cpuidle-riscv-sbi.c
++++ b/drivers/cpuidle/cpuidle-riscv-sbi.c
+@@ -116,12 +116,12 @@ static int __sbi_enter_domain_idle_state
+ 		return -1;
  
--	omap_sram_idle();
-+	omap3_do_wfi();
- }
+ 	/* Do runtime PM to manage a hierarchical CPU toplogy. */
+-	ct_irq_enter_irqson();
+ 	if (s2idle)
+ 		dev_pm_genpd_suspend(pd_dev);
+ 	else
+ 		pm_runtime_put_sync_suspend(pd_dev);
+-	ct_irq_exit_irqson();
++
++	ct_idle_enter();
  
- #ifdef CONFIG_SUSPEND
+ 	if (sbi_is_domain_state_available())
+ 		state = sbi_get_domain_state();
+@@ -130,12 +130,12 @@ static int __sbi_enter_domain_idle_state
+ 
+ 	ret = sbi_suspend(state) ? -1 : idx;
+ 
+-	ct_irq_enter_irqson();
++	ct_idle_exit();
++
+ 	if (s2idle)
+ 		dev_pm_genpd_resume(pd_dev);
+ 	else
+ 		pm_runtime_get_sync(pd_dev);
+-	ct_irq_exit_irqson();
+ 
+ 	cpu_pm_exit();
+ 
+@@ -246,6 +246,7 @@ static int sbi_dt_cpu_init_topology(stru
+ 	 * of a shared state for the domain, assumes the domain states are all
+ 	 * deeper states.
+ 	 */
++	drv->states[state_count - 1].flags |= CPUIDLE_FLAG_RCU_IDLE;
+ 	drv->states[state_count - 1].enter = sbi_enter_domain_idle_state;
+ 	drv->states[state_count - 1].enter_s2idle =
+ 					sbi_enter_s2idle_domain_idle_state;
 
 
