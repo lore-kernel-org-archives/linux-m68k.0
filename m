@@ -2,44 +2,43 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 078C2C678DC
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56E93C71130
 	for <linux-m68k@archiver.kernel.org>; Thu, 12 Jan 2023 20:06:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233621AbjALUGU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 12 Jan 2023 15:06:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44162 "EHLO
+        id S234994AbjALUGW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 12 Jan 2023 15:06:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234994AbjALT7S (ORCPT
+        with ESMTP id S232083AbjALT6b (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 12 Jan 2023 14:59:18 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6AAB272B
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Jan 2023 11:58:08 -0800 (PST)
+        Thu, 12 Jan 2023 14:58:31 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9557B1EA
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Jan 2023 11:58:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=RrpmTujnodPvC1LE/jXScgO4ZKUrxiQVlZ4+SEf4m04=; b=Y8LFyBFl3JbIwtnCWjFL/hhR5y
-        twnVLexiBK1ooMbeDatb6RWwBocZW13sf5pirkWAWAH1nsW2rgd7ecx2Gc/qOdtvY6YZxKvumRcTm
-        amulB5kgeQbRdQF87cEBBGyv4iJlugiK9kXbD+c92ulURa+BZ+6IgO0Q1qr4EELRq9g05K3UaslzX
-        AWK5oxOOelmKqL4CSrymA461jkib6Q12hrzk8J/XFrR76pcWqThQ8X70scSBkUeWz1SP2e4AHdemR
-        4sJ92NwETWbqsv5J5iWtGkWZGwcWClLra0VFFumQGPO8rMb8BpC/UsbZk6Ohp1wUq3mHnYc2/nqyR
-        7VPa7mnA==;
+        bh=cMg3ptdf90ideilc5ESAExVXsDzvqUAUHPnoGLTznE4=; b=AQVbLNGLAYLI5glCIBdfN2BTr/
+        Gz/Reu1wlylo5D1rPRX3tYfuclMb30JqVrgGLY+i8h5Xf4OY4kfQXs65r/W3Q+cYwmERZwJKdYyGu
+        dOIJbUu55LP0s2WpAnsehl0pUa57AJ3Lq0DpQp5D7jIwVSFDXKmJmnOiTcPJuwyIZF8b0FkqntpIC
+        b8LadvLyxjnkWpOvABXtsz53rhvZOuGgIQLV6FRFQ1goVxCxypfG444hWrorgBNhddOaBK6ge/aAD
+        GocMGlGGl5ycw4gr25/L6Jb+p3aQyhRh2wg9Sdn3uYmPp24GCT0nLRuVL3vNNcZ0HKYejgio/4ncJ
+        cUAaLzFw==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1pG3hD-0045oB-09;
-        Thu, 12 Jan 2023 19:57:08 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pG3hd-005Ofr-QW; Thu, 12 Jan 2023 19:57:33 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 117A63033FB;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BFB59303450;
         Thu, 12 Jan 2023 20:57:13 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id B27F62CCF1F50; Thu, 12 Jan 2023 20:57:07 +0100 (CET)
-Message-ID: <20230112195539.883561913@infradead.org>
+        id 31AC02CCF62BB; Thu, 12 Jan 2023 20:57:08 +0100 (CET)
+Message-ID: <20230112195541.355283994@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 12 Jan 2023 20:43:23 +0100
+Date:   Thu, 12 Jan 2023 20:43:47 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     peterz@infradead.org
 Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
@@ -103,10 +102,8 @@ Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
         linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
         linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-trace-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH v3 09/51] cpuidle,omap3: Push RCU-idle into driver
+        linux-trace-kernel@vger.kernel.org, kasan-dev@googlegroups.com
+Subject: [PATCH v3 33/51] trace: Remove trace_hardirqs_{on,off}_caller()
 References: <20230112194314.845371875@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -114,144 +111,53 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Doing RCU-idle outside the driver, only to then teporarily enable it
-again before going idle is daft.
+Per commit 56e62a737028 ("s390: convert to generic entry") the last
+and only callers of trace_hardirqs_{on,off}_caller() went away, clean
+up.
 
-Notably the cpu_pm_*() calls implicitly re-enable RCU for a bit.
-
+Cc: Sven Schnelle <svens@linux.ibm.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-Reviewed-by: Tony Lindgren <tony@atomide.com>
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Tested-by: Tony Lindgren <tony@atomide.com>
-Tested-by: Ulf Hansson <ulf.hansson@linaro.org>
 ---
- arch/arm/mach-omap2/cpuidle34xx.c |   16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ kernel/trace/trace_preemptirq.c |   29 -----------------------------
+ 1 file changed, 29 deletions(-)
 
---- a/arch/arm/mach-omap2/cpuidle34xx.c
-+++ b/arch/arm/mach-omap2/cpuidle34xx.c
-@@ -133,7 +133,9 @@ static int omap3_enter_idle(struct cpuid
- 	}
+--- a/kernel/trace/trace_preemptirq.c
++++ b/kernel/trace/trace_preemptirq.c
+@@ -84,35 +84,6 @@ void trace_hardirqs_off(void)
+ }
+ EXPORT_SYMBOL(trace_hardirqs_off);
+ NOKPROBE_SYMBOL(trace_hardirqs_off);
+-
+-__visible void trace_hardirqs_on_caller(unsigned long caller_addr)
+-{
+-	if (this_cpu_read(tracing_irq_cpu)) {
+-		if (!in_nmi())
+-			trace_irq_enable_rcuidle(CALLER_ADDR0, caller_addr);
+-		tracer_hardirqs_on(CALLER_ADDR0, caller_addr);
+-		this_cpu_write(tracing_irq_cpu, 0);
+-	}
+-
+-	lockdep_hardirqs_on_prepare();
+-	lockdep_hardirqs_on(caller_addr);
+-}
+-EXPORT_SYMBOL(trace_hardirqs_on_caller);
+-NOKPROBE_SYMBOL(trace_hardirqs_on_caller);
+-
+-__visible void trace_hardirqs_off_caller(unsigned long caller_addr)
+-{
+-	lockdep_hardirqs_off(caller_addr);
+-
+-	if (!this_cpu_read(tracing_irq_cpu)) {
+-		this_cpu_write(tracing_irq_cpu, 1);
+-		tracer_hardirqs_off(CALLER_ADDR0, caller_addr);
+-		if (!in_nmi())
+-			trace_irq_disable_rcuidle(CALLER_ADDR0, caller_addr);
+-	}
+-}
+-EXPORT_SYMBOL(trace_hardirqs_off_caller);
+-NOKPROBE_SYMBOL(trace_hardirqs_off_caller);
+ #endif /* CONFIG_TRACE_IRQFLAGS */
  
- 	/* Execute ARM wfi */
-+	ct_idle_enter();
- 	omap_sram_idle();
-+	ct_idle_exit();
- 
- 	/*
- 	 * Call idle CPU PM enter notifier chain to restore
-@@ -265,6 +267,7 @@ static struct cpuidle_driver omap3_idle_
- 	.owner            = THIS_MODULE,
- 	.states = {
- 		{
-+			.flags		  = CPUIDLE_FLAG_RCU_IDLE,
- 			.enter		  = omap3_enter_idle_bm,
- 			.exit_latency	  = 2 + 2,
- 			.target_residency = 5,
-@@ -272,6 +275,7 @@ static struct cpuidle_driver omap3_idle_
- 			.desc		  = "MPU ON + CORE ON",
- 		},
- 		{
-+			.flags		  = CPUIDLE_FLAG_RCU_IDLE,
- 			.enter		  = omap3_enter_idle_bm,
- 			.exit_latency	  = 10 + 10,
- 			.target_residency = 30,
-@@ -279,6 +283,7 @@ static struct cpuidle_driver omap3_idle_
- 			.desc		  = "MPU ON + CORE ON",
- 		},
- 		{
-+			.flags		  = CPUIDLE_FLAG_RCU_IDLE,
- 			.enter		  = omap3_enter_idle_bm,
- 			.exit_latency	  = 50 + 50,
- 			.target_residency = 300,
-@@ -286,6 +291,7 @@ static struct cpuidle_driver omap3_idle_
- 			.desc		  = "MPU RET + CORE ON",
- 		},
- 		{
-+			.flags		  = CPUIDLE_FLAG_RCU_IDLE,
- 			.enter		  = omap3_enter_idle_bm,
- 			.exit_latency	  = 1500 + 1800,
- 			.target_residency = 4000,
-@@ -293,6 +299,7 @@ static struct cpuidle_driver omap3_idle_
- 			.desc		  = "MPU OFF + CORE ON",
- 		},
- 		{
-+			.flags		  = CPUIDLE_FLAG_RCU_IDLE,
- 			.enter		  = omap3_enter_idle_bm,
- 			.exit_latency	  = 2500 + 7500,
- 			.target_residency = 12000,
-@@ -300,6 +307,7 @@ static struct cpuidle_driver omap3_idle_
- 			.desc		  = "MPU RET + CORE RET",
- 		},
- 		{
-+			.flags		  = CPUIDLE_FLAG_RCU_IDLE,
- 			.enter		  = omap3_enter_idle_bm,
- 			.exit_latency	  = 3000 + 8500,
- 			.target_residency = 15000,
-@@ -307,6 +315,7 @@ static struct cpuidle_driver omap3_idle_
- 			.desc		  = "MPU OFF + CORE RET",
- 		},
- 		{
-+			.flags		  = CPUIDLE_FLAG_RCU_IDLE,
- 			.enter		  = omap3_enter_idle_bm,
- 			.exit_latency	  = 10000 + 30000,
- 			.target_residency = 30000,
-@@ -328,6 +337,7 @@ static struct cpuidle_driver omap3430_id
- 	.owner            = THIS_MODULE,
- 	.states = {
- 		{
-+			.flags		  = CPUIDLE_FLAG_RCU_IDLE,
- 			.enter		  = omap3_enter_idle_bm,
- 			.exit_latency	  = 110 + 162,
- 			.target_residency = 5,
-@@ -335,6 +345,7 @@ static struct cpuidle_driver omap3430_id
- 			.desc		  = "MPU ON + CORE ON",
- 		},
- 		{
-+			.flags		  = CPUIDLE_FLAG_RCU_IDLE,
- 			.enter		  = omap3_enter_idle_bm,
- 			.exit_latency	  = 106 + 180,
- 			.target_residency = 309,
-@@ -342,6 +353,7 @@ static struct cpuidle_driver omap3430_id
- 			.desc		  = "MPU ON + CORE ON",
- 		},
- 		{
-+			.flags		  = CPUIDLE_FLAG_RCU_IDLE,
- 			.enter		  = omap3_enter_idle_bm,
- 			.exit_latency	  = 107 + 410,
- 			.target_residency = 46057,
-@@ -349,6 +361,7 @@ static struct cpuidle_driver omap3430_id
- 			.desc		  = "MPU RET + CORE ON",
- 		},
- 		{
-+			.flags		  = CPUIDLE_FLAG_RCU_IDLE,
- 			.enter		  = omap3_enter_idle_bm,
- 			.exit_latency	  = 121 + 3374,
- 			.target_residency = 46057,
-@@ -356,6 +369,7 @@ static struct cpuidle_driver omap3430_id
- 			.desc		  = "MPU OFF + CORE ON",
- 		},
- 		{
-+			.flags		  = CPUIDLE_FLAG_RCU_IDLE,
- 			.enter		  = omap3_enter_idle_bm,
- 			.exit_latency	  = 855 + 1146,
- 			.target_residency = 46057,
-@@ -363,6 +377,7 @@ static struct cpuidle_driver omap3430_id
- 			.desc		  = "MPU RET + CORE RET",
- 		},
- 		{
-+			.flags		  = CPUIDLE_FLAG_RCU_IDLE,
- 			.enter		  = omap3_enter_idle_bm,
- 			.exit_latency	  = 7580 + 4134,
- 			.target_residency = 484329,
-@@ -370,6 +385,7 @@ static struct cpuidle_driver omap3430_id
- 			.desc		  = "MPU OFF + CORE RET",
- 		},
- 		{
-+			.flags		  = CPUIDLE_FLAG_RCU_IDLE,
- 			.enter		  = omap3_enter_idle_bm,
- 			.exit_latency	  = 7505 + 15274,
- 			.target_residency = 484329,
+ #ifdef CONFIG_TRACE_PREEMPT_TOGGLE
 
 
