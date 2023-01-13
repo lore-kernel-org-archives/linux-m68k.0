@@ -2,221 +2,95 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81DBEC54EBE
-	for <linux-m68k@archiver.kernel.org>; Fri, 13 Jan 2023 17:22:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECB3FC677F1
+	for <linux-m68k@archiver.kernel.org>; Fri, 13 Jan 2023 17:43:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbjAMRWe (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 13 Jan 2023 12:22:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33046 "EHLO
+        id S229571AbjAMRnS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 13 Jan 2023 12:43:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbjAMRVs (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 13 Jan 2023 12:21:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01457983CC
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 13 Jan 2023 09:14:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1673630043;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qm5QoVPm0Ej7LSZYB6DDk7xidLBDUjryz2WuGbnlcmU=;
-        b=jFeeS6Y6BZJow2Ol7AFemPayzwlX7UORKNb6R+1B7NS8HCAb2G2phNvrGFCDPOMfJsOLdt
-        /9N3byLpKOeZB6ROFF+ccNx9Kv5EiYtaGUkYQ3P0uChMIsKlj71eSBrC8RzwQeQRi/LmXI
-        Ot76auktKbYgfi+rKnftl6BFIeyDLMk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-593-JhtZawOWORO1KFpHjnyH1g-1; Fri, 13 Jan 2023 12:13:54 -0500
-X-MC-Unique: JhtZawOWORO1KFpHjnyH1g-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A13BA857D0D;
-        Fri, 13 Jan 2023 17:13:37 +0000 (UTC)
-Received: from t480s.fritz.box (unknown [10.39.193.196])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 43C4D40C2064;
-        Fri, 13 Jan 2023 17:13:30 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Nadav Amit <namit@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
-        x86@kernel.org, linux-alpha@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        David Hildenbrand <david@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH mm-unstable v1 24/26] x86/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE also on 32bit
-Date:   Fri, 13 Jan 2023 18:10:24 +0100
-Message-Id: <20230113171026.582290-25-david@redhat.com>
-In-Reply-To: <20230113171026.582290-1-david@redhat.com>
-References: <20230113171026.582290-1-david@redhat.com>
+        with ESMTP id S229660AbjAMRm6 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 13 Jan 2023 12:42:58 -0500
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B83FE8B779
+        for <linux-m68k@vger.kernel.org>; Fri, 13 Jan 2023 09:29:20 -0800 (PST)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1pGNri-002zG2-Hp; Fri, 13 Jan 2023 18:29:18 +0100
+Received: from p57ae5361.dip0.t-ipconnect.de ([87.174.83.97] helo=[192.168.178.35])
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1pGNri-0005IR-B3; Fri, 13 Jan 2023 18:29:18 +0100
+Message-ID: <0687610a-0efd-51f5-110d-fad0de113556@physik.fu-berlin.de>
+Date:   Fri, 13 Jan 2023 18:29:16 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH v13 0/3] Add kernel seccomp support for m68k
+To:     Michael Schmitz <schmitzmic@gmail.com>
+References: <20230112035529.13521-1-schmitzmic@gmail.com>
+Content-Language: en-US
+Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org,
+        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+In-Reply-To: <20230112035529.13521-1-schmitzmic@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.174.83.97
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Let's support __HAVE_ARCH_PTE_SWP_EXCLUSIVE just like we already do on
-x86-64. After deciphering the PTE layout it becomes clear that there are
-still unused bits for 2-level and 3-level page tables that we should be
-able to use. Reusing a bit avoids stealing one bit from the swap offset.
+Hi!
 
-While at it, mask the type in __swp_entry(); use some helper definitions
-to make the macros easier to grasp.
+On 1/12/23 04:55, Michael Schmitz wrote:
+> Previous version of patch 1 did overwrite a syscall return
+> value that was changed by ptrace or seccomp (in regs->d0)
+> by -ENOSYS when skipping a syscall. Branch directly to
+> ret_from_syscall instead of falling through to badsys (which
+> must set -ENOSYS). I'm sure this can be done more elegantly.
+> 
+> Patch 3 used the wrong struct definition for ARCH_REGS - the
+> kernel ptrace code copies 19 registers (from syscall stack
+> and switch_stack, pt_regs only contains the 14 from the
+> syscall stack). Stack overflow ensues.
+> 
+> With these changes, 79 of 94 seccomp_bpf tests now succeed.
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- arch/x86/include/asm/pgtable-2level.h | 26 +++++++++++++++++++++-----
- arch/x86/include/asm/pgtable-3level.h | 26 +++++++++++++++++++++++---
- arch/x86/include/asm/pgtable.h        |  2 --
- 3 files changed, 44 insertions(+), 10 deletions(-)
+I have also opened a PR now to add m68k support to libseccomp [1].
 
-diff --git a/arch/x86/include/asm/pgtable-2level.h b/arch/x86/include/asm/pgtable-2level.h
-index 60d0f9015317..e9482a11ac52 100644
---- a/arch/x86/include/asm/pgtable-2level.h
-+++ b/arch/x86/include/asm/pgtable-2level.h
-@@ -80,21 +80,37 @@ static inline unsigned long pte_bitop(unsigned long value, unsigned int rightshi
- 	return ((value >> rightshift) & mask) << leftshift;
- }
- 
--/* Encode and de-code a swap entry */
-+/*
-+ * Encode/decode swap entries and swap PTEs. Swap PTEs are all PTEs that
-+ * are !pte_none() && !pte_present().
-+ *
-+ * Format of swap PTEs:
-+ *
-+ *   3 3 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1
-+ *   1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
-+ *   <----------------- offset ------------------> 0 E <- type --> 0
-+ *
-+ *   E is the exclusive marker that is not stored in swap entries.
-+ */
- #define SWP_TYPE_BITS 5
-+#define _SWP_TYPE_MASK ((1U << SWP_TYPE_BITS) - 1)
-+#define _SWP_TYPE_SHIFT (_PAGE_BIT_PRESENT + 1)
- #define SWP_OFFSET_SHIFT (_PAGE_BIT_PROTNONE + 1)
- 
--#define MAX_SWAPFILES_CHECK() BUILD_BUG_ON(MAX_SWAPFILES_SHIFT > SWP_TYPE_BITS)
-+#define MAX_SWAPFILES_CHECK() BUILD_BUG_ON(MAX_SWAPFILES_SHIFT > 5)
- 
--#define __swp_type(x)			(((x).val >> (_PAGE_BIT_PRESENT + 1)) \
--					 & ((1U << SWP_TYPE_BITS) - 1))
-+#define __swp_type(x)			(((x).val >> _SWP_TYPE_SHIFT) \
-+					 & _SWP_TYPE_MASK)
- #define __swp_offset(x)			((x).val >> SWP_OFFSET_SHIFT)
- #define __swp_entry(type, offset)	((swp_entry_t) { \
--					 ((type) << (_PAGE_BIT_PRESENT + 1)) \
-+					 (((type) & _SWP_TYPE_MASK) << _SWP_TYPE_SHIFT) \
- 					 | ((offset) << SWP_OFFSET_SHIFT) })
- #define __pte_to_swp_entry(pte)		((swp_entry_t) { (pte).pte_low })
- #define __swp_entry_to_pte(x)		((pte_t) { .pte = (x).val })
- 
-+/* We borrow bit 7 to store the exclusive marker in swap PTEs. */
-+#define _PAGE_SWP_EXCLUSIVE	_PAGE_PSE
-+
- /* No inverted PFNs on 2 level page tables */
- 
- static inline u64 protnone_mask(u64 val)
-diff --git a/arch/x86/include/asm/pgtable-3level.h b/arch/x86/include/asm/pgtable-3level.h
-index 967b135fa2c0..9e7c0b719c3c 100644
---- a/arch/x86/include/asm/pgtable-3level.h
-+++ b/arch/x86/include/asm/pgtable-3level.h
-@@ -145,8 +145,24 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
- }
- #endif
- 
--/* Encode and de-code a swap entry */
-+/*
-+ * Encode/decode swap entries and swap PTEs. Swap PTEs are all PTEs that
-+ * are !pte_none() && !pte_present().
-+ *
-+ * Format of swap PTEs:
-+ *
-+ *   6 6 6 6 5 5 5 5 5 5 5 5 5 5 4 4 4 4 4 4 4 4 4 4 3 3 3 3 3 3 3 3
-+ *   3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2
-+ *   < type -> <---------------------- offset ----------------------
-+ *
-+ *   3 3 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1
-+ *   1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
-+ *   --------------------------------------------> 0 E 0 0 0 0 0 0 0
-+ *
-+ *   E is the exclusive marker that is not stored in swap entries.
-+ */
- #define SWP_TYPE_BITS		5
-+#define _SWP_TYPE_MASK ((1U << SWP_TYPE_BITS) - 1)
- 
- #define SWP_OFFSET_FIRST_BIT	(_PAGE_BIT_PROTNONE + 1)
- 
-@@ -154,9 +170,10 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
- #define SWP_OFFSET_SHIFT	(SWP_OFFSET_FIRST_BIT + SWP_TYPE_BITS)
- 
- #define MAX_SWAPFILES_CHECK() BUILD_BUG_ON(MAX_SWAPFILES_SHIFT > SWP_TYPE_BITS)
--#define __swp_type(x)			(((x).val) & ((1UL << SWP_TYPE_BITS) - 1))
-+#define __swp_type(x)			(((x).val) & _SWP_TYPE_MASK)
- #define __swp_offset(x)			((x).val >> SWP_TYPE_BITS)
--#define __swp_entry(type, offset)	((swp_entry_t){(type) | (offset) << SWP_TYPE_BITS})
-+#define __swp_entry(type, offset)	((swp_entry_t){((type) & _SWP_TYPE_MASK) \
-+					| (offset) << SWP_TYPE_BITS})
- 
- /*
-  * Normally, __swp_entry() converts from arch-independent swp_entry_t to
-@@ -184,6 +201,9 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
- #define __pte_to_swp_entry(pte)	(__swp_entry(__pteval_swp_type(pte), \
- 					     __pteval_swp_offset(pte)))
- 
-+/* We borrow bit 7 to store the exclusive marker in swap PTEs. */
-+#define _PAGE_SWP_EXCLUSIVE	_PAGE_PSE
-+
- #include <asm/pgtable-invert.h>
- 
- #endif /* _ASM_X86_PGTABLE_3LEVEL_H */
-diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-index 1c843395a8b3..d25195726b78 100644
---- a/arch/x86/include/asm/pgtable.h
-+++ b/arch/x86/include/asm/pgtable.h
-@@ -1299,7 +1299,6 @@ static inline void update_mmu_cache_pud(struct vm_area_struct *vma,
- 		unsigned long addr, pud_t *pud)
- {
- }
--#ifdef _PAGE_SWP_EXCLUSIVE
- #define __HAVE_ARCH_PTE_SWP_EXCLUSIVE
- static inline pte_t pte_swp_mkexclusive(pte_t pte)
- {
-@@ -1315,7 +1314,6 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
- {
- 	return pte_clear_flags(pte, _PAGE_SWP_EXCLUSIVE);
- }
--#endif /* _PAGE_SWP_EXCLUSIVE */
- 
- #ifdef CONFIG_HAVE_ARCH_SOFT_DIRTY
- static inline pte_t pte_swp_mksoft_dirty(pte_t pte)
+Unfortunately, libseccomp fails to build after I updated the syscalls.csv file
+after adding m68k support. It seems that the problem are a number of syscalls
+that exist on m68k only:
+
+   CC       libseccomp_la-syscalls.perf.lo
+syscalls.perf:152:70: error: '__PNR_getpagesize' undeclared here (not in a function)
+   152 | getpagesize,119,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,166,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF
+       |                                                                      ^~~~~~~~~~~~~~~~~
+syscalls.perf:45:69: error: '__PNR_atomic_cmpxchg_32' undeclared here (not in a function)
+    45 | atomic_cmpxchg_32,12,__PNR_atomic_cmpxchg_32,SCMP_KV_UNDEF,__PNR_atomic_cmpxchg_32,SCMP_KV_UNDEF,__PNR_atomic_cmpxchg_32,SCMP_KV_UNDEF,__PNR_atomic_cmpxchg_32,SCMP_KV_UNDEF,__PNR_atomic_cmpxchg_32,SCMP_KV_UNDEF,335,SCMP_KV_UNDEF,__PNR_atomic_cmpxchg_32,SCMP_KV_UNDEF,__PNR_atomic_cmpxchg_32,SCMP_KV_UNDEF,__PNR_atomic_cmpxchg_32,SCMP_KV_UNDEF,__PNR_atomic_cmpxchg_32,SCMP_KV_UNDEF,__PNR_atomic_cmpxchg_32,SCMP_KV_UNDEF,__PNR_atomic_cmpxchg_32,SCMP_KV_UNDEF,__PNR_atomic_cmpxchg_32,SCMP_KV_UNDEF,__PNR_atomic_cmpxchg_32,SCMP_KV_UNDEF,__PNR_atomic_cmpxchg_32,SCMP_KV_UNDEF,__PNR_atomic_cmpxchg_32,SCMP_KV_UNDEF,__PNR_atomic_cmpxchg_32,SCMP_KV_UNDEF
+       |                                                                     ^~~~~~~~~~~~~~~~~~~~~~~
+syscalls.perf:44:69: error: '__PNR_atomic_barrier' undeclared here (not in a function)
+    44 | atomic_barrier,11,__PNR_atomic_barrier,SCMP_KV_UNDEF,__PNR_atomic_barrier,SCMP_KV_UNDEF,__PNR_atomic_barrier,SCMP_KV_UNDEF,__PNR_atomic_barrier,SCMP_KV_UNDEF,__PNR_atomic_barrier,SCMP_KV_UNDEF,336,SCMP_KV_UNDEF,__PNR_atomic_barrier,SCMP_KV_UNDEF,__PNR_atomic_barrier,SCMP_KV_UNDEF,__PNR_atomic_barrier,SCMP_KV_UNDEF,__PNR_atomic_barrier,SCMP_KV_UNDEF,__PNR_atomic_barrier,SCMP_KV_UNDEF,__PNR_atomic_barrier,SCMP_KV_UNDEF,__PNR_atomic_barrier,SCMP_KV_UNDEF,__PNR_atomic_barrier,SCMP_KV_UNDEF,__PNR_atomic_barrier,SCMP_KV_UNDEF,__PNR_atomic_barrier,SCMP_KV_UNDEF,__PNR_atomic_barrier,SCMP_KV_UNDEF
+       |                                                                     ^~~~~~~~~~~~~~~~~~~~
+make[3]: *** [Makefile:903: libseccomp_la-syscalls.perf.lo] Error 1
+make[2]: *** [Makefile:922: all-recursive] Error 1
+make[1]: *** [Makefile:524: all-recursive] Error 1
+make: *** [Makefile:433: all] Error 2
+
+Adrian
+
+> [1] https://github.com/seccomp/libseccomp/pull/397
+
 -- 
-2.39.0
+  .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
