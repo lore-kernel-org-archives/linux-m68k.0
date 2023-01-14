@@ -2,125 +2,178 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 603D6C3DA78
-	for <linux-m68k@archiver.kernel.org>; Sat, 14 Jan 2023 00:01:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DEF96C3DA78
+	for <linux-m68k@archiver.kernel.org>; Sat, 14 Jan 2023 16:09:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229505AbjANABA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 13 Jan 2023 19:01:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49894 "EHLO
+        id S229732AbjANQJ5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 14 Jan 2023 11:09:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229678AbjANAA7 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 13 Jan 2023 19:00:59 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 213904D716
-        for <linux-m68k@vger.kernel.org>; Fri, 13 Jan 2023 16:00:58 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id b17so17484342pld.7
-        for <linux-m68k@vger.kernel.org>; Fri, 13 Jan 2023 16:00:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:cc:references:to:subject:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B3M13IxbAxDiwMHRx0TKEtf/SZxFluuSqH8OoE3mO64=;
-        b=ieTdI9mmctQ8vFsCfESEu+X6ow1wGFzMEE/fDw26/nj5ddmOP77K83VhNgILYsyf9Z
-         u05c6Zphi+06q7azPcpblGDS5NFr1wJcN3bkxlFygE2nFsHKLBDcRqy2rjWkwgMezUNm
-         g60MDnmxSyLP8/fogZgxx8ioIW+Lpz8wR/CdqFI/4lDqzsugDDHheXf+2E5NDByRG6ug
-         NqoGpUnuo0JGUrNxFLXPeXt3mI6g9BYKAemQc66ywJyNd4zjl/ms+8fvz1LguL5w6+m5
-         I4wSiJ99f86yvFf5jh2MHjFHyeTyQiqrX19wBgKTP9I65+sT2CC0FFO406bS0cils7DV
-         4vFA==
+        with ESMTP id S230189AbjANQJu (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sat, 14 Jan 2023 11:09:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C7D93D5
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 14 Jan 2023 08:09:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1673712588;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Q3R4pvBr6dG+A0u3o+nBNguX6qX9S+oXSEacD+sP77s=;
+        b=RRcndnXnBWMCWQbMYZ9g3dFNMAtmnnLcmrttiCKwjVYwYhYeW46tvPR9GO8/Sj9H4yEe94
+        h2hYqfAtpQfjsWNlNs94+vJUPGX9+wVCx2X8PCLrZP0pQ4Z3qVTJK1eW7YNfNO0Lhxc1sp
+        mXtOpRCYIpwQDNM117c3+Yu0AN13dd8=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-642-mNDgFnR5NYKSfkc-6EgTVA-1; Sat, 14 Jan 2023 11:09:39 -0500
+X-MC-Unique: mNDgFnR5NYKSfkc-6EgTVA-1
+Received: by mail-wr1-f71.google.com with SMTP id d27-20020adfa35b000000b002bc813ba677so3513564wrb.6
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 14 Jan 2023 08:09:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:cc:references:to:subject:from:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=B3M13IxbAxDiwMHRx0TKEtf/SZxFluuSqH8OoE3mO64=;
-        b=8GPJYjvUDmYeQvLsdYyMqkISjZMJGv/AKmrlVyYhCRYwwL2AoyqUsmvHdzpyLQv2Ix
-         JX3tA9Bd1/8Kb6gDjwAfnPXkqvwfzNlTer+xMVGEjFUfVIJjd4TSsyFjuKlQF5Ifkpz0
-         ey3ByBOx8dh+2q0KX2OMNi6if+0/DZEgvHAWBuDJHH37mvwRv/5v0XRceriAYHnxFSc2
-         unM4M3zb9Ak2Li4d4IE+XRElm836wN2V+AtMkjoejvCJvCd90GMsicQJk+DU1uWgtolO
-         LTyk537SNP2u5i+xh/wjI/l3vB5NxOV1OMI1sakExBL41Faw+UIdXIAzxdXn1CsfiO9o
-         ywSA==
-X-Gm-Message-State: AFqh2krJNJgKN9KveXUQ8SeOeGMKNHqdsPuHSY/+5dYUpoVAuN/pUFAD
-        pqghcCed7B5miGzdPgKyub8=
-X-Google-Smtp-Source: AMrXdXvIua1DizXv4xiA0clD6Av86faQaW5B7k3mJrZT/Fj7QFXF0HC/kZx8YishR8G0t6LJN5h9vQ==
-X-Received: by 2002:a17:90a:7f86:b0:227:cdd:89bd with SMTP id m6-20020a17090a7f8600b002270cdd89bdmr21627609pjl.10.1673654457551;
-        Fri, 13 Jan 2023 16:00:57 -0800 (PST)
-Received: from [10.1.1.24] (222-154-147-142-fibre.sparkbb.co.nz. [222.154.147.142])
-        by smtp.gmail.com with ESMTPSA id gd23-20020a17090b0fd700b00226c2d90c04sm13106496pjb.38.2023.01.13.16.00.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 13 Jan 2023 16:00:56 -0800 (PST)
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH v13 0/3] Add kernel seccomp support for m68k
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-References: <20230112035529.13521-1-schmitzmic@gmail.com>
- <0687610a-0efd-51f5-110d-fad0de113556@physik.fu-berlin.de>
-Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org,
-        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
-Message-ID: <38518fa1-a584-6e9e-5160-a6922730e8f5@gmail.com>
-Date:   Sat, 14 Jan 2023 13:00:42 +1300
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Q3R4pvBr6dG+A0u3o+nBNguX6qX9S+oXSEacD+sP77s=;
+        b=0GjCyOz7ZbcAj8cbmqIsH772H3rc2AuMt7KFYlWdkpsdTT1SNLGI6sHr8ZoGLAGyWh
+         b2pwXq/KqmYOzQ4X19V9CDNoNemeS/rTeUQs7QfihHoO5hMQxN3vZ3ALod4zAcSA6K3Q
+         8NW5ePyPf1V7/X8izXKh993bD2EGLqlOfeU3LQ5wAfYtunCc7T9obLJgEidnnw75d+yi
+         fN9B6qev3rt1uqhznvKEF2pIQthDjfuXA4yzjF8OpJCC1Vt2xp/ob6+elOFLmGE7vLsm
+         PdsPn8GzPQdlCunpO1FLfYNENf80n3JBslNRxSyM9YpHFlxN4WZZ2zoti7r3kqS+7apL
+         i9hA==
+X-Gm-Message-State: AFqh2kr2uAJ1Q10SFmEvrZvi/nKeky8ou5xd+LUjbZ8nuVzDjjy+RfPo
+        FF5sIQXKUlH+hzdwC0VCaQMujRVYCLxiqyc4zW1qfj2GJdysYKV6WYepI9DXrkql88CzOhBWtah
+        qBEf74yJi3jqxIiEi41oB61Lz6faX
+X-Received: by 2002:a05:600c:348b:b0:3d1:f16b:30e6 with SMTP id a11-20020a05600c348b00b003d1f16b30e6mr62422453wmq.28.1673712578318;
+        Sat, 14 Jan 2023 08:09:38 -0800 (PST)
+X-Google-Smtp-Source: AMrXdXtvXECQ77f+OwG9Mdcw6TdAWlLhcG76s2TeMh5Hr9A1VofwYXs3lPZWG9daADyc7xNo4jh7zQ==
+X-Received: by 2002:a05:600c:348b:b0:3d1:f16b:30e6 with SMTP id a11-20020a05600c348b00b003d1f16b30e6mr62422426wmq.28.1673712578037;
+        Sat, 14 Jan 2023 08:09:38 -0800 (PST)
+Received: from ?IPV6:2003:cb:c71c:9800:fa4a:c1fc:a860:85af? (p200300cbc71c9800fa4ac1fca86085af.dip0.t-ipconnect.de. [2003:cb:c71c:9800:fa4a:c1fc:a860:85af])
+        by smtp.gmail.com with ESMTPSA id q18-20020adfdfd2000000b002bdc129c8f6sm10260315wrn.43.2023.01.14.08.09.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 14 Jan 2023 08:09:37 -0800 (PST)
+Message-ID: <6aaad548-cf48-77fa-9d6c-db83d724b2eb@redhat.com>
+Date:   Sat, 14 Jan 2023 17:09:35 +0100
 MIME-Version: 1.0
-In-Reply-To: <0687610a-0efd-51f5-110d-fad0de113556@physik.fu-berlin.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+To:     linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Nadav Amit <namit@vmware.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
+        x86@kernel.org, linux-alpha@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
+References: <20230113171026.582290-1-david@redhat.com>
+ <20230113171026.582290-2-david@redhat.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH mm-unstable v1 01/26] mm/debug_vm_pgtable: more
+ pte_swp_exclusive() sanity checks
+In-Reply-To: <20230113171026.582290-2-david@redhat.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Adrian,
+On 13.01.23 18:10, David Hildenbrand wrote:
+> We want to implement __HAVE_ARCH_PTE_SWP_EXCLUSIVE on all architectures.
+> Let's extend our sanity checks, especially testing that our PTE bit
+> does not affect:
+> * is_swap_pte() -> pte_present() and pte_none()
+> * the swap entry + type
+> * pte_swp_soft_dirty()
+> 
+> Especially, the pfn_pte() is dodgy when the swap PTE layout differs
+> heavily from ordinary PTEs. Let's properly construct a swap PTE from
+> swap type+offset.
+> 
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+
+The following fixup for !CONFIG_SWAP on top, which makes it compile for me and
+passes when booting on x86_64 with CONFIG_DEBUG_VM_PGTABLE:
+
+...
+[    0.347112] Loaded X.509 cert 'Build time autogenerated kernel key: ee6afc0578f6475656fec8a4f9d02832'
+[    0.350112] debug_vm_pgtable: [debug_vm_pgtable         ]: Validating architecture page table helpers
+[    0.351217] page_owner is disabled
+...
 
 
-Am 14.01.2023 um 06:29 schrieb John Paul Adrian Glaubitz:
-> Hi!
->
-> On 1/12/23 04:55, Michael Schmitz wrote:
->> Previous version of patch 1 did overwrite a syscall return
->> value that was changed by ptrace or seccomp (in regs->d0)
->> by -ENOSYS when skipping a syscall. Branch directly to
->> ret_from_syscall instead of falling through to badsys (which
->> must set -ENOSYS). I'm sure this can be done more elegantly.
->>
->> Patch 3 used the wrong struct definition for ARCH_REGS - the
->> kernel ptrace code copies 19 registers (from syscall stack
->> and switch_stack, pt_regs only contains the 14 from the
->> syscall stack). Stack overflow ensues.
->>
->> With these changes, 79 of 94 seccomp_bpf tests now succeed.
->
-> I have also opened a PR now to add m68k support to libseccomp [1].
->
-> Unfortunately, libseccomp fails to build after I updated the
-> syscalls.csv file
-> after adding m68k support. It seems that the problem are a number of
-> syscalls
-> that exist on m68k only:
->
->   CC       libseccomp_la-syscalls.perf.lo
-> syscalls.perf:152:70: error: '__PNR_getpagesize' undeclared here (not in
-> a function)
->   152 |
-> getpagesize,119,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,166,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF
+ From 6a6162e8af62a4b3f7b9d823fdfae86de3f34a9d Mon Sep 17 00:00:00 2001
+From: David Hildenbrand <david@redhat.com>
+Date: Sat, 14 Jan 2023 16:47:12 +0100
+Subject: [PATCH] fixup: mm/debug_vm_pgtable: more pte_swp_exclusive() sanity
+  checks
 
-That one also exists on alpha and sparc. The other two are indeed unique 
-to m68k.
+generic_max_swapfile_size() is only available with CONFIG_SWAP -- which
+makes sense, because without SWAP there are no swap files. Let's
+simply probe manually which bits we can obtain after storing them in a
+PTE, and properly call it "max swap offset", which is more generic for
+a swap entry.
 
-There must have been other cases of novel syscalls added to libseccomp 
-before?
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+  mm/debug_vm_pgtable.c | 8 +++++---
+  1 file changed, 5 insertions(+), 3 deletions(-)
 
-Cheers,
+diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+index 3da0cc380c35..af59cc7bd307 100644
+--- a/mm/debug_vm_pgtable.c
++++ b/mm/debug_vm_pgtable.c
+@@ -810,15 +810,17 @@ static void __init pmd_swap_soft_dirty_tests(struct pgtable_debug_args *args) {
+  
+  static void __init pte_swap_exclusive_tests(struct pgtable_debug_args *args)
+  {
+-	unsigned long max_swapfile_size = generic_max_swapfile_size();
++	unsigned long max_swap_offset;
+  	swp_entry_t entry, entry2;
+  	pte_t pte;
+  
+  	pr_debug("Validating PTE swap exclusive\n");
+  
++	/* See generic_max_swapfile_size(): probe the maximum offset */
++	max_swap_offset = swp_offset(pte_to_swp_entry(swp_entry_to_pte(swp_entry(0, ~0UL))));
++
+  	/* Create a swp entry with all possible bits set */
+-	entry = swp_entry((1 << MAX_SWAPFILES_SHIFT) - 1,
+-			  max_swapfile_size - 1);
++	entry = swp_entry((1 << MAX_SWAPFILES_SHIFT) - 1, max_swap_offset);
+  
+  	pte = swp_entry_to_pte(entry);
+  	WARN_ON(pte_swp_exclusive(pte));
+-- 
+2.39.0
 
-	Michael
 
->
-> |
-> ^~~~~~~~~~~~~~~~~~~~
-> make[3]: *** [Makefile:903: libseccomp_la-syscalls.perf.lo] Error 1
-> make[2]: *** [Makefile:922: all-recursive] Error 1
-> make[1]: *** [Makefile:524: all-recursive] Error 1
-> make: *** [Makefile:433: all] Error 2
->
-> Adrian
->
->> [1] https://github.com/seccomp/libseccomp/pull/397
->
+
+-- 
+Thanks,
+
+David / dhildenb
+
