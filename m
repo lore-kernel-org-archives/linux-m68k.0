@@ -2,110 +2,87 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4581CC678D7
-	for <linux-m68k@archiver.kernel.org>; Mon, 16 Jan 2023 13:17:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5F71C63797
+	for <linux-m68k@archiver.kernel.org>; Mon, 16 Jan 2023 14:47:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbjAPNR4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 16 Jan 2023 08:17:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39960 "EHLO
+        id S231654AbjAPOro (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 16 Jan 2023 09:47:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231270AbjAPNRj (ORCPT
+        with ESMTP id S231668AbjAPOrT (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 16 Jan 2023 08:17:39 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 802F51F5C5
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Jan 2023 05:16:04 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EBF3D60ADD;
-        Mon, 16 Jan 2023 13:16:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06093C433F0;
-        Mon, 16 Jan 2023 13:15:59 +0000 (UTC)
-Message-ID: <571d5a60-dfcc-d8f9-8c42-0da70b0913f2@linux-m68k.org>
-Date:   Mon, 16 Jan 2023 23:15:57 +1000
+        Mon, 16 Jan 2023 09:47:19 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15577234C2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Jan 2023 06:29:46 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id 203so30432343yby.10
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Jan 2023 06:29:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=LlT3/9OUvutP7VvfxlbNRKjuyN5KCHWjHMPtY13KD4A=;
+        b=E11T6SWFQLjpvpWZl6/zFSmbp42oUMOwB76D9OrBwgxQDzKvjxiXLjM8wWs/SAeo03
+         Np7KuQ638sd0tYB+EMBHAwA6Lb03gX/dR2BN46C57YrIt4ttEC4MqZTKFfSAod9RpT/O
+         6fdYAVXJ/TEjXYQmAM85Ia9TTXTN9o/ssBm8prfQTr+ntRLu2Ea5Eyqpci4Urqz50Mhc
+         p6tXO52etbSZo8aho38HQQJwA9YMdUL2Bz2Lx/6Sy2yB+jSuJRKq89bowouaxoycArYO
+         8CG8/oSWR1NWeS2R//rw7fmpvdPmT8Rbi5HN8Myl4OM6furTwSbZAw60e8NoBQaQv8oE
+         /8KQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LlT3/9OUvutP7VvfxlbNRKjuyN5KCHWjHMPtY13KD4A=;
+        b=V0zCBeBQYMzDJzImN3Qn6ErbVIFvEHgDysX4BP8dqQIXLmo2V4634U20rwZzvf8q5q
+         MdBip2Lk+6h5sIt+e/lkO9nyADXhT6YxqdE+sxG0Yehv+ZS5YWrfBV8PFAgTCXuStDdo
+         PoL2Vb5B4CUgrTgru0TnV5oq60b7XMkL+lN6E89LYRmo089GB4bMUVPOcvuYVEKnEppM
+         9cHc2jF3n+KldeJm3OLJRkwN7fBRhtxj3qMWQjjMFtnP6JRZkOEuKQkKi/1BGavUD9nf
+         LRYs08xpL1fJa7/2buiqeorVxBkayJfwgzNzqChEMU6D8MlAxRZBN1/KUwJ4eJfLh7iO
+         COsg==
+X-Gm-Message-State: AFqh2kqH08AlMnbX938vgDQhLq2qrg2Vs3Cu4PJP7vsjysjPcbShJF5G
+        GWvRfUcKYTGOS4x4iFqgDEi0sv9hVWG/hFsPayB/0w==
+X-Google-Smtp-Source: AMrXdXtd5fUt49TBzg30p8QXrh2V1ZEz9SaQ+wLWPEoHDzNytLWHJ08uQw/FRD/pUVTwOpfRPAGa6eaS5bOvGE5QKXI=
+X-Received: by 2002:a25:d08d:0:b0:7ca:9b40:72a7 with SMTP id
+ h135-20020a25d08d000000b007ca9b4072a7mr1866366ybg.130.1673879385297; Mon, 16
+ Jan 2023 06:29:45 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
+References: <20230112133942.58471-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20230112133942.58471-1-andriy.shevchenko@linux.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 16 Jan 2023 15:29:34 +0100
+Message-ID: <CACRpkdbZs1qF8sqHv+V4-su6rfQvHEJoEHPJkef4cj172ZYKew@mail.gmail.com>
 Subject: Re: [PATCH v1 1/1] gpio: Remove unused and obsoleted irq_to_gpio()
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc:     linux-gpio@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         linux-doc-tw-discuss@lists.sourceforge.net,
         linux-m68k@lists.linux-m68k.org, linux-sh@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
         Bartosz Golaszewski <brgl@bgdev.pl>,
         Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>,
         Yanteng Si <siyanteng@loongson.cn>,
         Hu Haowen <src.res@email.cn>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Yoshinori Sato <ysato@users.sourceforge.jp>,
         Rich Felker <dalias@libc.org>
-References: <20230112133942.58471-1-andriy.shevchenko@linux.intel.com>
- <CAMuHMdXSc-H5TKBGisthv3DH3sZmF3fV_15FuMEt=typwTWUtA@mail.gmail.com>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <CAMuHMdXSc-H5TKBGisthv3DH3sZmF3fV_15FuMEt=typwTWUtA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+On Thu, Jan 12, 2023 at 2:39 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
-On 13/1/23 01:14, Geert Uytterhoeven wrote:
-> CC greg
-> 
-> On Thu, Jan 12, 2023 at 2:39 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
->> irq_to_gpio() is legacy and unused API, remove it for good.
->>
->> This leaves gpio_to_irq() as it's used yet in many places.
->> Nevertheless, removal of its counterpart is a good signal
->> to whoever even trying to consider using them that do not.
->>
->> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->> ---
->>   Documentation/driver-api/gpio/legacy.rst             |  8 --------
->>   .../translations/zh_CN/driver-api/gpio/legacy.rst    |  7 -------
->>   Documentation/translations/zh_TW/gpio.txt            |  7 -------
->>   arch/m68k/include/asm/gpio.h                         |  7 -------
->>   arch/sh/include/asm/gpio.h                           |  5 -----
->>   include/linux/gpio.h                                 | 12 ------------
->>   6 files changed, 46 deletions(-)
-> 
-> [...]
-> 
->> --- a/arch/m68k/include/asm/gpio.h
->> +++ b/arch/m68k/include/asm/gpio.h
->> @@ -66,13 +66,6 @@ static inline int gpio_to_irq(unsigned gpio)
->>                  return __gpio_to_irq(gpio);
->>   }
->>
->> -static inline int irq_to_gpio(unsigned irq)
->> -{
->> -       return (irq >= MCFGPIO_IRQ_VECBASE &&
->> -               irq < (MCFGPIO_IRQ_VECBASE + MCFGPIO_IRQ_MAX)) ?
->> -               irq - MCFGPIO_IRQ_VECBASE : -ENXIO;
->> -}
->> -
->>   static inline int gpio_cansleep(unsigned gpio)
->>   {
->>          return gpio < MCFGPIO_PIN_MAX ? 0 : __gpio_cansleep(gpio);
-> 
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> irq_to_gpio() is legacy and unused API, remove it for good.
+>
+> This leaves gpio_to_irq() as it's used yet in many places.
+> Nevertheless, removal of its counterpart is a good signal
+> to whoever even trying to consider using them that do not.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+Thanks for killing off this API.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-
-
-> Gr{oetje,eeting}s,
-> 
->                          Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                  -- Linus Torvalds
+Yours,
+Linus Walleij
