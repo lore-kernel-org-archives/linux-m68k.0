@@ -2,87 +2,139 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5F71C63797
-	for <linux-m68k@archiver.kernel.org>; Mon, 16 Jan 2023 14:47:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83BEBC54EBE
+	for <linux-m68k@archiver.kernel.org>; Mon, 16 Jan 2023 14:59:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231654AbjAPOro (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 16 Jan 2023 09:47:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40332 "EHLO
+        id S232770AbjAPO70 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 16 Jan 2023 09:59:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231668AbjAPOrT (ORCPT
+        with ESMTP id S232918AbjAPO6k (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 16 Jan 2023 09:47:19 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15577234C2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Jan 2023 06:29:46 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id 203so30432343yby.10
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Jan 2023 06:29:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LlT3/9OUvutP7VvfxlbNRKjuyN5KCHWjHMPtY13KD4A=;
-        b=E11T6SWFQLjpvpWZl6/zFSmbp42oUMOwB76D9OrBwgxQDzKvjxiXLjM8wWs/SAeo03
-         Np7KuQ638sd0tYB+EMBHAwA6Lb03gX/dR2BN46C57YrIt4ttEC4MqZTKFfSAod9RpT/O
-         6fdYAVXJ/TEjXYQmAM85Ia9TTXTN9o/ssBm8prfQTr+ntRLu2Ea5Eyqpci4Urqz50Mhc
-         p6tXO52etbSZo8aho38HQQJwA9YMdUL2Bz2Lx/6Sy2yB+jSuJRKq89bowouaxoycArYO
-         8CG8/oSWR1NWeS2R//rw7fmpvdPmT8Rbi5HN8Myl4OM6furTwSbZAw60e8NoBQaQv8oE
-         /8KQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LlT3/9OUvutP7VvfxlbNRKjuyN5KCHWjHMPtY13KD4A=;
-        b=V0zCBeBQYMzDJzImN3Qn6ErbVIFvEHgDysX4BP8dqQIXLmo2V4634U20rwZzvf8q5q
-         MdBip2Lk+6h5sIt+e/lkO9nyADXhT6YxqdE+sxG0Yehv+ZS5YWrfBV8PFAgTCXuStDdo
-         PoL2Vb5B4CUgrTgru0TnV5oq60b7XMkL+lN6E89LYRmo089GB4bMUVPOcvuYVEKnEppM
-         9cHc2jF3n+KldeJm3OLJRkwN7fBRhtxj3qMWQjjMFtnP6JRZkOEuKQkKi/1BGavUD9nf
-         LRYs08xpL1fJa7/2buiqeorVxBkayJfwgzNzqChEMU6D8MlAxRZBN1/KUwJ4eJfLh7iO
-         COsg==
-X-Gm-Message-State: AFqh2kqH08AlMnbX938vgDQhLq2qrg2Vs3Cu4PJP7vsjysjPcbShJF5G
-        GWvRfUcKYTGOS4x4iFqgDEi0sv9hVWG/hFsPayB/0w==
-X-Google-Smtp-Source: AMrXdXtd5fUt49TBzg30p8QXrh2V1ZEz9SaQ+wLWPEoHDzNytLWHJ08uQw/FRD/pUVTwOpfRPAGa6eaS5bOvGE5QKXI=
-X-Received: by 2002:a25:d08d:0:b0:7ca:9b40:72a7 with SMTP id
- h135-20020a25d08d000000b007ca9b4072a7mr1866366ybg.130.1673879385297; Mon, 16
- Jan 2023 06:29:45 -0800 (PST)
+        Mon, 16 Jan 2023 09:58:40 -0500
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF4529E32
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Jan 2023 06:48:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1673880535; x=1705416535;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=IowLRTrmj1QCkTR6QZMUeM5tRZL+Vs0HrUWMp1qNfQY=;
+  b=Y6dlzLB0fToOIQjJ0R95egiXQHfoSmHca5iZF3TCE+zp6VdGtkQqOtj5
+   S0PW0Eg2UxNlkgabCIa7S8AgtUWYVYj7QXfSRGKLdn2NVIA3Akx+Z1u1U
+   dtvplMqyHnJdBDY/IeXPe4GD25h8GLXpEccrEQk0EwAAKqihLRyhyVhpH
+   6AIk/8/4DfR/8XvCYGtVBEBusnchfurOPYE9OmUaoWQrsxpIPwVvU+JOO
+   EmsjSyvXho3hVo00tA6nqNfrh2LSZbLJAzVse9eiGkl2N8h14EUod/AJf
+   BKoAvm2L24Ahhv8abxnyKWWwYwMUBOnYvK6UBjVG6Ls+MF/yIA8mmm6ac
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10592"; a="304174814"
+X-IronPort-AV: E=Sophos;i="5.97,221,1669104000"; 
+   d="scan'208";a="304174814"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2023 06:48:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10592"; a="801401181"
+X-IronPort-AV: E=Sophos;i="5.97,221,1669104000"; 
+   d="scan'208";a="801401181"
+Received: from lkp-server02.sh.intel.com (HELO f57cd993bc73) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 16 Jan 2023 06:48:33 -0800
+Received: from kbuild by f57cd993bc73 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pHQmn-0000WT-0Q;
+        Mon, 16 Jan 2023 14:48:33 +0000
+Date:   Mon, 16 Jan 2023 22:48:07 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ c8a567e12e9205f360f5f33dbf94cef6ad184ca4
+Message-ID: <63c563a7.yPkZsxrH/A5JqRer%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20230112133942.58471-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20230112133942.58471-1-andriy.shevchenko@linux.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 16 Jan 2023 15:29:34 +0100
-Message-ID: <CACRpkdbZs1qF8sqHv+V4-su6rfQvHEJoEHPJkef4cj172ZYKew@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] gpio: Remove unused and obsoleted irq_to_gpio()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-gpio@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-doc-tw-discuss@lists.sourceforge.net,
-        linux-m68k@lists.linux-m68k.org, linux-sh@vger.kernel.org,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Hu Haowen <src.res@email.cn>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Jan 12, 2023 at 2:39 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: c8a567e12e9205f360f5f33dbf94cef6ad184ca4  Merge tag 'v6.2-rc4'
 
-> irq_to_gpio() is legacy and unused API, remove it for good.
->
-> This leaves gpio_to_irq() as it's used yet in many places.
-> Nevertheless, removal of its counterpart is a good signal
-> to whoever even trying to consider using them that do not.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+elapsed time: 727m
 
-Thanks for killing off this API.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+configs tested: 62
+configs skipped: 2
 
-Yours,
-Linus Walleij
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+x86_64                            allnoconfig
+powerpc                           allnoconfig
+arc                                 defconfig
+alpha                               defconfig
+sh                               allmodconfig
+alpha                            allyesconfig
+arm                                 defconfig
+m68k                             allmodconfig
+arc                              allyesconfig
+m68k                             allyesconfig
+mips                             allyesconfig
+i386                                defconfig
+arc                  randconfig-r043-20230116
+s390                 randconfig-r044-20230116
+riscv                randconfig-r042-20230116
+x86_64                           rhel-8.3-bpf
+ia64                             allmodconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                           rhel-8.3-syz
+arm                              allyesconfig
+x86_64                          rhel-8.3-func
+x86_64                         rhel-8.3-kunit
+x86_64                           rhel-8.3-kvm
+arm64                            allyesconfig
+s390                                defconfig
+s390                             allmodconfig
+powerpc                          allmodconfig
+s390                             allyesconfig
+i386                 randconfig-a013-20230116
+i386                 randconfig-a012-20230116
+i386                             allyesconfig
+i386                 randconfig-a011-20230116
+i386                 randconfig-a014-20230116
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+i386                 randconfig-a016-20230116
+i386                 randconfig-a015-20230116
+x86_64               randconfig-a011-20230116
+x86_64               randconfig-a013-20230116
+x86_64               randconfig-a012-20230116
+x86_64               randconfig-a014-20230116
+x86_64               randconfig-a016-20230116
+x86_64               randconfig-a015-20230116
+um                           x86_64_defconfig
+um                             i386_defconfig
+
+clang tested configs:
+arm                  randconfig-r046-20230116
+hexagon              randconfig-r045-20230116
+x86_64               randconfig-a001-20230116
+hexagon              randconfig-r041-20230116
+x86_64               randconfig-a003-20230116
+x86_64               randconfig-a002-20230116
+x86_64                          rhel-8.3-rust
+x86_64               randconfig-a004-20230116
+x86_64               randconfig-a005-20230116
+x86_64               randconfig-a006-20230116
+i386                 randconfig-a002-20230116
+i386                 randconfig-a004-20230116
+i386                 randconfig-a003-20230116
+i386                 randconfig-a005-20230116
+i386                 randconfig-a001-20230116
+i386                 randconfig-a006-20230116
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
