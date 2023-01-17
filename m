@@ -2,112 +2,200 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8EF1C46467
-	for <linux-m68k@archiver.kernel.org>; Tue, 17 Jan 2023 02:16:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CBF19C3DA78
+	for <linux-m68k@archiver.kernel.org>; Tue, 17 Jan 2023 04:25:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233746AbjAQCQP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 16 Jan 2023 21:16:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59072 "EHLO
+        id S234808AbjAQEZX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 16 Jan 2023 23:25:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235231AbjAQCQN (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 16 Jan 2023 21:16:13 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB81C2331B
-        for <linux-m68k@vger.kernel.org>; Mon, 16 Jan 2023 18:16:12 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id k12so9986971plk.0
-        for <linux-m68k@vger.kernel.org>; Mon, 16 Jan 2023 18:16:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=izGz6pAJ9apCUcUIVpq2dFKgG4tsV4+qAHgJHWpXuV0=;
-        b=Khd9H/iUiMyYFiUsj737mty3iDjC9M0YH9UF8+hXrZiNOYHrs403g73V4m6YmsYTyj
-         w3aMvaOODAinKSfZFrEAcuILMS5CaK/UwvZqxjPbZHIOToBu6YZ3hG9q2pionJ+HIbKf
-         wYhVlb5gco/LNlfn77SxfUGQCvjI72fX7M/29yomCB2GBqNjFwT4y6q3hsQNg032ESvK
-         H8d6Yl/nwQRv4C6RZHvwGBT3vW9/4eIN6eF982XaRjXmaLUyhRP35JMbx2bcbB/tbipI
-         a0KscSBr5w428q4FuUXKTCz/sb4uxzed8Zyg9PCRMS6mdUK9jaCIreMTEB0IQvaBsHdO
-         ENcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=izGz6pAJ9apCUcUIVpq2dFKgG4tsV4+qAHgJHWpXuV0=;
-        b=filBhn1zKXcbqQ6qS1Sg6rCt/hmAeEpndr/mp1DczE3NhTw1tOKlEplTYb2znCHtBc
-         9mV6D4gOXf6OjrvbrRz2HZ69Ym4BirPgs+SX9A069g/s1dWtVqzIiVF9+mldPACZ4fxt
-         odYUcq9HbMsScCBO1N1Nhi3DQkFlGZp4QDjz5XsxksiBTy6YZ8sOXQTJW9L8oYkjNbMj
-         G+VOpRStsxfivA/HRwiXMx/CNEayzlmReDUSqtc664Jfo+FhyxmzbLWi3z0yfwQ9lOOy
-         LPFr6LhGG56kcY0Sv3aC+mLM+ZlPPHfWc21GY2M20S+rxiBpQzK4y24Xoon2MNetxPAx
-         m0vw==
-X-Gm-Message-State: AFqh2krs+35/Mzjh0d7mfYLMGxq9uGnRUppcAqFAk4my+Fdjw3BBoRGZ
-        kiSudzTppJ/5XpzyaWsHOZQ/qsSG7Jw=
-X-Google-Smtp-Source: AMrXdXs4a0LpxCU8k+brMzKoYEIhjXAMSVh8IMa5WiWX6NM42c7CE6iargdrY/AH4/6U8BK8WGO60A==
-X-Received: by 2002:a17:902:e805:b0:194:a372:d904 with SMTP id u5-20020a170902e80500b00194a372d904mr2586537plg.17.1673921772207;
-        Mon, 16 Jan 2023 18:16:12 -0800 (PST)
-Received: from [10.1.1.24] (222-154-147-142-fibre.sparkbb.co.nz. [222.154.147.142])
-        by smtp.gmail.com with ESMTPSA id w19-20020a170902a71300b0019339f3368asm3447852plq.3.2023.01.16.18.16.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 16 Jan 2023 18:16:11 -0800 (PST)
-Subject: Re: [PATCH v13 0/3] Add kernel seccomp support for m68k
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-References: <20230112035529.13521-1-schmitzmic@gmail.com>
- <0687610a-0efd-51f5-110d-fad0de113556@physik.fu-berlin.de>
- <38518fa1-a584-6e9e-5160-a6922730e8f5@gmail.com>
- <6eab0d17-8928-212b-740c-6db249f79838@physik.fu-berlin.de>
-Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org,
-        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <10371c02-c54b-fa3e-2729-12d524685652@gmail.com>
-Date:   Tue, 17 Jan 2023 15:15:56 +1300
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
-MIME-Version: 1.0
-In-Reply-To: <6eab0d17-8928-212b-740c-6db249f79838@physik.fu-berlin.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        with ESMTP id S235150AbjAQEZP (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 16 Jan 2023 23:25:15 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC67021952
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Jan 2023 20:25:13 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4844EB81060;
+        Tue, 17 Jan 2023 04:25:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0701C433EF;
+        Tue, 17 Jan 2023 04:24:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1673929510;
+        bh=LKPfAbcdavLMCpifQk05Aqw+1tD2xg5qsuB6VorVVnI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=rvDfVQk7Tsas4+LZFK04iCV/SqfYXmqYXLFi42JOngYW1dOP0QSo6CLiBkpjYosKx
+         nKUcD4fx6Lu1RT5hJ5yblHd47Jqpvv59kmEAKtriWUWkTZ7hmC4Za3q3BgpEtr891G
+         Uhe5azCk4FahsTTDCEc3lE2+MzsUQWKU5CAcTO6IYBsGKCz8NivYw+lk7qeBhykDxt
+         x23XNA0A5LxituWhIHyg6sCe7NTSUKsY2ON6C3g6I/nFT8i/VEH7jmIvKLWoo8AYZN
+         JlOlRfIFLAGKs5+FVWy9q/WwqqbuzK/Mvbqfsgyxm4gYqDdXx2B1Vx+ckQBMj8vEfk
+         ICBnmkeUNpdwg==
+Date:   Tue, 17 Jan 2023 13:24:46 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
+        mattst88@gmail.com, vgupta@kernel.org, linux@armlinux.org.uk,
+        nsekhar@ti.com, brgl@bgdev.pl, ulli.kroll@googlemail.com,
+        linus.walleij@linaro.org, shawnguo@kernel.org,
+        Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, tony@atomide.com,
+        khilman@kernel.org, krzysztof.kozlowski@linaro.org,
+        alim.akhtar@samsung.com, catalin.marinas@arm.com, will@kernel.org,
+        guoren@kernel.org, bcain@quicinc.com, chenhuacai@kernel.org,
+        kernel@xen0n.name, geert@linux-m68k.org, sammy@sammy.net,
+        monstr@monstr.eu, tsbogend@alpha.franken.de, dinguyen@kernel.org,
+        jonas@southpole.se, stefan.kristiansson@saunalahti.fi,
+        shorne@gmail.com, James.Bottomley@HansenPartnership.com,
+        deller@gmx.de, mpe@ellerman.id.au, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com,
+        borntraeger@linux.ibm.com, svens@linux.ibm.com,
+        ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net,
+        richard@nod.at, anton.ivanov@cambridgegreys.com,
+        johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, jgross@suse.com, srivatsa@csail.mit.edu,
+        amakhalov@vmware.com, pv-drivers@vmware.com,
+        boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com,
+        rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz,
+        gregkh@linuxfoundation.org, mturquette@baylibre.com,
+        sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org,
+        sudeep.holla@arm.com, agross@kernel.org, andersson@kernel.org,
+        konrad.dybcio@linaro.org, anup@brainfault.org,
+        thierry.reding@gmail.com, jonathanh@nvidia.com,
+        jacob.jun.pan@linux.intel.com, atishp@atishpatra.org,
+        Arnd Bergmann <arnd@arndb.de>, yury.norov@gmail.com,
+        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
+        dennis@kernel.org, tj@kernel.org, cl@linux.com,
+        rostedt@goodmis.org, mhiramat@kernel.org, frederic@kernel.org,
+        paulmck@kernel.org, pmladek@suse.com, senozhatsky@chromium.org,
+        john.ogness@linutronix.de, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+        vschneid@redhat.com, ryabinin.a.a@gmail.com, glider@google.com,
+        andreyknvl@gmail.com, dvyukov@google.com,
+        vincenzo.frascino@arm.com,
+        Andrew Morton <akpm@linux-foundation.org>, jpoimboe@kernel.org,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-xtensa@linux-xtensa.org, linux-acpi@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-trace-kernel@vger.kernel.org, kasan-dev@googlegroups.com
+Subject: Re: [PATCH v3 35/51] trace,hardirq: No moar _rcuidle() tracing
+Message-Id: <20230117132446.02ec12e4c10718de27790900@kernel.org>
+In-Reply-To: <20230112195541.477416709@infradead.org>
+References: <20230112194314.845371875@infradead.org>
+        <20230112195541.477416709@infradead.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Adrian,
+Hi Peter,
 
-Am 16.01.2023 um 22:12 schrieb John Paul Adrian Glaubitz:
-> Hi Michael!
->
-> On 1/14/23 01:00, Michael Schmitz wrote:
->>> Unfortunately, libseccomp fails to build after I updated the
->>> syscalls.csv file
->>> after adding m68k support. It seems that the problem are a number of
->>> syscalls
->>> that exist on m68k only:
->>>
->>>   CC       libseccomp_la-syscalls.perf.lo
->>> syscalls.perf:152:70: error: '__PNR_getpagesize' undeclared here (not in
->>> a function)
->>>   152 |
->>> getpagesize,119,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,166,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF,__PNR_getpagesize,SCMP_KV_UNDEF
->>>
->>
->> That one also exists on alpha and sparc. The other two are indeed
->> unique to m68k.
->>
->> There must have been other cases of novel syscalls added to libseccomp
->> before?
->
-> Neither alpha nor sparc are supported by libseccomp, so I think that's
-> not an argument.
+On Thu, 12 Jan 2023 20:43:49 +0100
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-Explains why getpagesize still is not handled by libseccomp, then.
+> Robot reported that trace_hardirqs_{on,off}() tickle the forbidden
+> _rcuidle() tracepoint through local_irq_{en,dis}able().
+> 
+> For 'sane' configs, these calls will only happen with RCU enabled and
+> as such can use the regular tracepoint. This also means it's possible
+> to trace them from NMI context again.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-Now do any of the other architectures recently added to libseccomp have 
-non-standard syscalls? (Trying to work out what commits might hold the 
-secret to adding support for new syscalls...)
+The code looks good to me. I just have a question about comment.
 
-Cheers,
+> ---
+>  kernel/trace/trace_preemptirq.c |   21 +++++++++++++--------
+>  1 file changed, 13 insertions(+), 8 deletions(-)
+> 
+> --- a/kernel/trace/trace_preemptirq.c
+> +++ b/kernel/trace/trace_preemptirq.c
+> @@ -20,6 +20,15 @@
+>  static DEFINE_PER_CPU(int, tracing_irq_cpu);
+>  
+>  /*
+> + * ...
 
-	Michael
+Is this intended? Wouldn't you leave any comment here?
 
->
-> Adrian
->
+Thank you,
+
+> + */
+> +#ifdef CONFIG_ARCH_WANTS_NO_INSTR
+> +#define trace(point)	trace_##point
+> +#else
+> +#define trace(point)	if (!in_nmi()) trace_##point##_rcuidle
+> +#endif
+> +
+> +/*
+>   * Like trace_hardirqs_on() but without the lockdep invocation. This is
+>   * used in the low level entry code where the ordering vs. RCU is important
+>   * and lockdep uses a staged approach which splits the lockdep hardirq
+> @@ -28,8 +37,7 @@ static DEFINE_PER_CPU(int, tracing_irq_c
+>  void trace_hardirqs_on_prepare(void)
+>  {
+>  	if (this_cpu_read(tracing_irq_cpu)) {
+> -		if (!in_nmi())
+> -			trace_irq_enable(CALLER_ADDR0, CALLER_ADDR1);
+> +		trace(irq_enable)(CALLER_ADDR0, CALLER_ADDR1);
+>  		tracer_hardirqs_on(CALLER_ADDR0, CALLER_ADDR1);
+>  		this_cpu_write(tracing_irq_cpu, 0);
+>  	}
+> @@ -40,8 +48,7 @@ NOKPROBE_SYMBOL(trace_hardirqs_on_prepar
+>  void trace_hardirqs_on(void)
+>  {
+>  	if (this_cpu_read(tracing_irq_cpu)) {
+> -		if (!in_nmi())
+> -			trace_irq_enable_rcuidle(CALLER_ADDR0, CALLER_ADDR1);
+> +		trace(irq_enable)(CALLER_ADDR0, CALLER_ADDR1);
+>  		tracer_hardirqs_on(CALLER_ADDR0, CALLER_ADDR1);
+>  		this_cpu_write(tracing_irq_cpu, 0);
+>  	}
+> @@ -63,8 +70,7 @@ void trace_hardirqs_off_finish(void)
+>  	if (!this_cpu_read(tracing_irq_cpu)) {
+>  		this_cpu_write(tracing_irq_cpu, 1);
+>  		tracer_hardirqs_off(CALLER_ADDR0, CALLER_ADDR1);
+> -		if (!in_nmi())
+> -			trace_irq_disable(CALLER_ADDR0, CALLER_ADDR1);
+> +		trace(irq_disable)(CALLER_ADDR0, CALLER_ADDR1);
+>  	}
+>  
+>  }
+> @@ -78,8 +84,7 @@ void trace_hardirqs_off(void)
+>  	if (!this_cpu_read(tracing_irq_cpu)) {
+>  		this_cpu_write(tracing_irq_cpu, 1);
+>  		tracer_hardirqs_off(CALLER_ADDR0, CALLER_ADDR1);
+> -		if (!in_nmi())
+> -			trace_irq_disable_rcuidle(CALLER_ADDR0, CALLER_ADDR1);
+> +		trace(irq_disable)(CALLER_ADDR0, CALLER_ADDR1);
+>  	}
+>  }
+>  EXPORT_SYMBOL(trace_hardirqs_off);
+> 
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
