@@ -2,94 +2,234 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CA81C004D4
-	for <linux-m68k@archiver.kernel.org>; Thu, 19 Jan 2023 09:18:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF292C38159
+	for <linux-m68k@archiver.kernel.org>; Fri, 20 Jan 2023 05:14:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbjASJSq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 19 Jan 2023 04:18:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38216 "EHLO
+        id S231295AbjATFOB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 20 Jan 2023 00:14:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbjASJSo (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 19 Jan 2023 04:18:44 -0500
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A524754202
-        for <linux-m68k@vger.kernel.org>; Thu, 19 Jan 2023 01:18:41 -0800 (PST)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1pIR4B-003u73-6W; Thu, 19 Jan 2023 10:18:39 +0100
-Received: from p57bd9464.dip0.t-ipconnect.de ([87.189.148.100] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1pIR4B-000qYK-08; Thu, 19 Jan 2023 10:18:39 +0100
-Message-ID: <6ab60cd7-66c1-67e7-b82b-a7bb1b2218b3@physik.fu-berlin.de>
-Date:   Thu, 19 Jan 2023 10:18:38 +0100
+        with ESMTP id S229587AbjATFNs (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 20 Jan 2023 00:13:48 -0500
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4029BD175
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 19 Jan 2023 21:02:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1674190927; x=1705726927;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=fSk95QAuUTqmlrBucA2/5hj/b+IHKynrjBnK8AFM3A4=;
+  b=V5jmA+OGXeoulNASIPSTS0jFutFF8RiDSjV3kyFj4XV0qf3uiGNtSX/Y
+   8TsZxqeaLhSe7mBRwCwsiL+YM6O1tj0scIwRC2vZvWDt9JmUleDcwSkVp
+   4nQZ7zQUVqPrWmJi/JB4/rlTJqmJc7d4wy0RcLfbwSkb55CsB8nwOpC0W
+   CguaT+Uh8RW2J3Uy94Twgz17kD+D+EBXO9TIIyfxRm3dSZXdT46FhiMGD
+   AHEtrCtNI77TPCszVcbJhA8TL4WT2lS2nIMz7OSs4ZLLLpq0/92wd45lF
+   pfag/z8NkPLeCq9eim2/YUdJxdx2Yw9cdnAei3332mWbqi+d3Ozp4KsxW
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10595"; a="308937846"
+X-IronPort-AV: E=Sophos;i="5.97,229,1669104000"; 
+   d="scan'208";a="308937846"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2023 09:44:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10595"; a="728795398"
+X-IronPort-AV: E=Sophos;i="5.97,229,1669104000"; 
+   d="scan'208";a="728795398"
+Received: from lkp-server01.sh.intel.com (HELO 5646d64e7320) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 19 Jan 2023 09:44:03 -0800
+Received: from kbuild by 5646d64e7320 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pIYxG-0001gi-2j;
+        Thu, 19 Jan 2023 17:44:02 +0000
+Date:   Fri, 20 Jan 2023 01:43:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Greg Ungerer <gerg@uclinux.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        uclinux-dev@uclinux.org
+Subject: [gerg-m68knommu:armnommu 3/3]
+ arch/arm/include/asm/glue-cache.h:126:2: error: #error Unknown cache
+ maintenance model
+Message-ID: <202301200141.KvEj5eit-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH v13 0/3] Add kernel seccomp support for m68k
-Content-Language: en-US
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org,
-        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-References: <20230112035529.13521-1-schmitzmic@gmail.com>
- <0687610a-0efd-51f5-110d-fad0de113556@physik.fu-berlin.de>
- <38518fa1-a584-6e9e-5160-a6922730e8f5@gmail.com>
- <6eab0d17-8928-212b-740c-6db249f79838@physik.fu-berlin.de>
- <10371c02-c54b-fa3e-2729-12d524685652@gmail.com>
- <e5e6d22a-fafc-9535-4682-a957286ce38d@physik.fu-berlin.de>
- <739413f9-0425-59d9-b6a5-fe225f56cf78@gmail.com>
- <a3addb76-d35a-f74d-f939-686699608066@physik.fu-berlin.de>
- <f2ce2438-8fe1-145e-64d0-9c754cee8913@physik.fu-berlin.de>
- <2b3a641c-003f-6485-a1c1-0e0fdd45d23b@gmail.com>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-In-Reply-To: <2b3a641c-003f-6485-a1c1-0e0fdd45d23b@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.148.100
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi!
+Hi Greg,
 
-On 1/18/23 23:21, Michael Schmitz wrote:
->> libseccomp testsuite now fully passes on m68k, see attached.
-> 
-> Great - you haven't had a chance to compile the kernel selftest suite for seccomp though?
+FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
 
-I haven't looked into this yet.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git armnommu
+head:   667bf6b32356ac9ee1f89433d919f17ace3bb899
+commit: 667bf6b32356ac9ee1f89433d919f17ace3bb899 [3/3] ARM: versatile: support configuring versatile machine for no-MMU
+config: arm-randconfig-c023-20230119 (https://download.01.org/0day-ci/archive/20230120/202301200141.KvEj5eit-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 12.1.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git/commit/?id=667bf6b32356ac9ee1f89433d919f17ace3bb899
+        git remote add gerg-m68knommu https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git
+        git fetch --no-tags gerg-m68knommu armnommu
+        git checkout 667bf6b32356ac9ee1f89433d919f17ace3bb899
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=arm olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=arm prepare
 
-> I wonder whether some of the 'architecture difference' skipped tests are related to the remaining seccomp_bpf self test faults??
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
 
-I actually forgot to enable some tests on m68k in libseccomp.
+All errors (new ones prefixed by >>):
 
-After my most recent changes, there is a large number of tests being run now without errors.
+         |       ^~~~~~~~~~~~~~~~~~
+   In file included from include/linux/list.h:11,
+                    from include/linux/rculist.h:10,
+                    from include/linux/pid.h:5,
+                    from include/linux/sched.h:14:
+   arch/arm/include/asm/barrier.h: At top level:
+   arch/arm/include/asm/barrier.h:9:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
+       9 | #if __LINUX_ARM_ARCH__ >= 7 ||          \
+         |     ^~~~~~~~~~~~~~~~~~
+   arch/arm/include/asm/barrier.h:10:10: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
+      10 |         (__LINUX_ARM_ARCH__ == 6 && defined(CONFIG_CPU_32v6K))
+         |          ^~~~~~~~~~~~~~~~~~
+   arch/arm/include/asm/barrier.h:18:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
+      18 | #if __LINUX_ARM_ARCH__ >= 7
+         |     ^~~~~~~~~~~~~~~~~~
+   arch/arm/include/asm/barrier.h:28:35: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
+      28 | #elif defined(CONFIG_CPU_XSC3) || __LINUX_ARM_ARCH__ == 6
+         |                                   ^~~~~~~~~~~~~~~~~~
+   In file included from arch/arm/include/asm/processor.h:17,
+                    from include/linux/prefetch.h:15,
+                    from arch/arm/include/asm/atomic.h:12,
+                    from include/linux/atomic.h:7,
+                    from include/linux/rcupdate.h:25,
+                    from include/linux/rculist.h:11:
+   arch/arm/include/asm/vdso/processor.h:10:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
+      10 | #if __LINUX_ARM_ARCH__ == 6 || defined(CONFIG_ARM_ERRATA_754327)
+         |     ^~~~~~~~~~~~~~~~~~
+   arch/arm/include/asm/processor.h:107:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
+     107 | #if __LINUX_ARM_ARCH__ >= 5
+         |     ^~~~~~~~~~~~~~~~~~
+   In file included from include/linux/irqflags.h:16,
+                    from arch/arm/include/asm/atomic.h:14:
+   arch/arm/include/asm/irqflags.h:22:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
+      22 | #if __LINUX_ARM_ARCH__ >= 6
+         |     ^~~~~~~~~~~~~~~~~~
+   In file included from arch/arm/include/asm/atomic.h:16:
+   arch/arm/include/asm/cmpxchg.h: In function '__xchg':
+   arch/arm/include/asm/cmpxchg.h:35:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
+      35 | #if __LINUX_ARM_ARCH__ >= 6
+         |     ^~~~~~~~~~~~~~~~~~
+   arch/arm/include/asm/cmpxchg.h:42:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
+      42 | #if __LINUX_ARM_ARCH__ >= 6
+         |     ^~~~~~~~~~~~~~~~~~
+   arch/arm/include/asm/cmpxchg.h: At top level:
+   arch/arm/include/asm/cmpxchg.h:124:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
+     124 | #if __LINUX_ARM_ARCH__ < 6
+         |     ^~~~~~~~~~~~~~~~~~
+   arch/arm/include/asm/atomic.h:28:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
+      28 | #if __LINUX_ARM_ARCH__ >= 6
+         |     ^~~~~~~~~~~~~~~~~~
+   In file included from arch/arm/include/asm/swab.h:19,
+                    from include/uapi/linux/swab.h:8,
+                    from include/linux/swab.h:5,
+                    from arch/arm/include/asm/opcodes.h:86,
+                    from arch/arm/include/asm/bug.h:7,
+                    from include/linux/bug.h:5,
+                    from include/linux/thread_info.h:13,
+                    from include/asm-generic/preempt.h:5,
+                    from ./arch/arm/include/generated/asm/preempt.h:1,
+                    from include/linux/preempt.h:78,
+                    from include/linux/rcupdate.h:27:
+   arch/arm/include/uapi/asm/swab.h:27:29: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
+      27 | #if !defined(__KERNEL__) || __LINUX_ARM_ARCH__ < 6
+         |                             ^~~~~~~~~~~~~~~~~~
+   arch/arm/include/asm/swab.h:21:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
+      21 | #if __LINUX_ARM_ARCH__ >= 6
+         |     ^~~~~~~~~~~~~~~~~~
+   In file included from include/linux/bitops.h:68,
+                    from include/linux/thread_info.h:27:
+   arch/arm/include/asm/bitops.h:218:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
+     218 | #if __LINUX_ARM_ARCH__ < 5
+         |     ^~~~~~~~~~~~~~~~~~
+   In file included from arch/arm/include/asm/thread_info.h:13,
+                    from include/linux/thread_info.h:60:
+   arch/arm/include/asm/fpstate.h:29:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
+      29 | #if __LINUX_ARM_ARCH__ < 6
+         |     ^~~~~~~~~~~~~~~~~~
+   In file included from include/linux/uaccess.h:11,
+                    from include/linux/sched/task.h:11,
+                    from include/linux/sched/signal.h:9,
+                    from include/linux/rcuwait.h:6,
+                    from include/linux/percpu-rwsem.h:7,
+                    from include/linux/fs.h:33,
+                    from include/linux/huge_mm.h:8,
+                    from include/linux/mm.h:740,
+                    from arch/arm/kernel/asm-offsets.c:12:
+   arch/arm/include/asm/uaccess.h:302:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
+     302 | #if __LINUX_ARM_ARCH__ >= 6
+         |     ^~~~~~~~~~~~~~~~~~
+   arch/arm/include/asm/uaccess.h:404:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
+     404 | #if __LINUX_ARM_ARCH__ >= 6
+         |     ^~~~~~~~~~~~~~~~~~
+   In file included from include/linux/scatterlist.h:9,
+                    from include/linux/dma-mapping.h:10,
+                    from arch/arm/kernel/asm-offsets.c:13:
+   arch/arm/include/asm/io.h:53:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
+      53 | #if __LINUX_ARM_ARCH__ < 6
+         |     ^~~~~~~~~~~~~~~~~~
+   In file included from arch/arm/include/asm/cacheflush.h:12,
+                    from arch/arm/kernel/asm-offsets.c:14:
+>> arch/arm/include/asm/glue-cache.h:126:2: error: #error Unknown cache maintenance model
+     126 | #error Unknown cache maintenance model
+         |  ^~~~~
+   In file included from arch/arm/include/asm/cacheflush.h:14:
+   arch/arm/include/asm/cachetype.h:29:5: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
+      29 | #if __LINUX_ARM_ARCH__ >= 7
+         |     ^~~~~~~~~~~~~~~~~~
+   arch/arm/include/asm/cachetype.h:34:7: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
+      34 | #elif __LINUX_ARM_ARCH__ >= 6
+         |       ^~~~~~~~~~~~~~~~~~
+   arch/arm/include/asm/cacheflush.h:197:7: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
+     197 | #elif __LINUX_ARM_ARCH__ >= 7 && defined(CONFIG_SMP)
+         |       ^~~~~~~~~~~~~~~~~~
+   arch/arm/include/asm/cacheflush.h:199:7: warning: "__LINUX_ARM_ARCH__" is not defined, evaluates to 0 [-Wundef]
+     199 | #elif __LINUX_ARM_ARCH__ == 6 && defined(CONFIG_ARM_ERRATA_411920)
+         |       ^~~~~~~~~~~~~~~~~~
+   In file included from arch/arm/kernel/asm-offsets.c:16:
+>> arch/arm/include/asm/glue-df.h:96:2: error: #error Unknown data abort handler type
+      96 | #error Unknown data abort handler type
+         |  ^~~~~
+   In file included from arch/arm/kernel/asm-offsets.c:17:
+>> arch/arm/include/asm/glue-pf.h:51:2: error: #error Unknown prefetch abort handler type
+      51 | #error Unknown prefetch abort handler type
+         |  ^~~~~
+   make[2]: *** [scripts/Makefile.build:114: arch/arm/kernel/asm-offsets.s] Error 1
+   make[2]: Target 'prepare' not remade because of errors.
+   make[1]: *** [Makefile:1286: prepare0] Error 2
+   make[1]: Target 'prepare' not remade because of errors.
+   make: *** [Makefile:242: __sub-make] Error 2
+   make: Target 'prepare' not remade because of errors.
 
-> https://github.com/glaubitz/libseccomp/tree/m68k
 
->> @Geert: Any chance you can approve the seccomp patches?
-> 
-> Now that we have m68k support for libseccomp, getting this merged is no longer purely academic.
-> 
-> Both Al Viro and Andreas Schwab had provided feedback and improvements - could you perhaps review
-> the latest version again (v13) if that's what is holding this up?
+vim +126 arch/arm/include/asm/glue-cache.h
 
-@Andreas: Please use my Github branch if you want to test libseccomp as well.
+55bdd694116597 Catalin Marinas 2010-05-21  124  
+753790e713d80b Russell King    2011-02-06  125  #if !defined(_CACHE) && !defined(MULTI_CACHE)
+25985edcedea63 Lucas De Marchi 2011-03-30 @126  #error Unknown cache maintenance model
+753790e713d80b Russell King    2011-02-06  127  #endif
+753790e713d80b Russell King    2011-02-06  128  
 
-Thanks,
-Adrian
+:::::: The code at line 126 was first introduced by commit
+:::::: 25985edcedea6396277003854657b5f3cb31a628 Fix common misspellings
+
+:::::: TO: Lucas De Marchi <lucas.demarchi@profusion.mobi>
+:::::: CC: Lucas De Marchi <lucas.demarchi@profusion.mobi>
 
 -- 
-  .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
