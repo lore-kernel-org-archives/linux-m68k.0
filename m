@@ -2,61 +2,38 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA1E4C32793
-	for <linux-m68k@archiver.kernel.org>; Wed, 18 Jan 2023 22:21:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CA81C004D4
+	for <linux-m68k@archiver.kernel.org>; Thu, 19 Jan 2023 09:18:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229564AbjARWVj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 18 Jan 2023 17:21:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34080 "EHLO
+        id S230015AbjASJSq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 19 Jan 2023 04:18:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjARWVg (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 18 Jan 2023 17:21:36 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3917264682
-        for <linux-m68k@vger.kernel.org>; Wed, 18 Jan 2023 14:21:36 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id c6so525513pls.4
-        for <linux-m68k@vger.kernel.org>; Wed, 18 Jan 2023 14:21:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XX04lWxahMaP+N40uHcgjtrzC/2DFsBx0hwGwKtF2A8=;
-        b=l3YwVqfhamV7XIrChsR00QVq/1DWqs8StR92RtJjRHNzb2F0Co/DwwJ+MWuuKvIGip
-         kebc/DGVF9sKIAl+YoPU/Wq8L3fQbYhRitKsv/3GNo5gPK8cUZxlsAO001eV788MJHbb
-         e/xbdE44TgxysWoKs3s1dt2A6pUsr4kfF2UB6ZzbvtQ/OKwHN3iIze/UcAyIrdxoepTN
-         vyASwODFidXajf3BkHHoHCo+D8YX0+kpDK36YAgcZFrn1NtSRe5+Ns4MEGTlreIIpE22
-         lt3nQBW8gak5e2wj8iBHg9D9MbsR/H6vfwUPQ7EYwxLaTy26yB0OQLxLbanKdh5QfbBh
-         PZKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XX04lWxahMaP+N40uHcgjtrzC/2DFsBx0hwGwKtF2A8=;
-        b=ZlN7E/ya0GbJakcbEzKs9pfS3XLHfzFkFu1Nhx0N881BzXB/YhoLN2s/WjCO6Cxwbj
-         3NKYAqywMSt1WWfvPmx+eKIVTwHmI3qLWpKwtt6k8T4NVh+lMV7ugKuygfW4OzFI84AJ
-         TH7fkFUH6SW6gUKdBQy01PxusUGQsEQJecLy4/il5rFQcJEHdrtt5FYA181sITVJJXQX
-         T80Kdm6LRGfA6pP4QMV0/+4MATMnu83e7q0TZ/1s7uZWHqZtzTIIz25N5NzYtUMsWmlz
-         jX6Zw7M+vJ89odV1fNC4QeM20r+LEiI1JsCXdBPQgkzG4PJrlKSW8XkQE2acjOxkhLz6
-         sZjg==
-X-Gm-Message-State: AFqh2ko1l5ks+WhxBqIMsQF7P3h9v5QAZqVRwY7njmE/8/OpxejGA6ku
-        nu88ZFlOG3IwhaY2hO5l5mTwaCPfxtE=
-X-Google-Smtp-Source: AMrXdXv1BknvaLz3cARylZREK3KrI7xqjhV5bqmgkV/W+OM2eOIAPUSODfTdLEs9sFYVnmpS3IRheA==
-X-Received: by 2002:a17:90a:2b85:b0:229:2d61:e419 with SMTP id u5-20020a17090a2b8500b002292d61e419mr8328562pjd.14.1674080495709;
-        Wed, 18 Jan 2023 14:21:35 -0800 (PST)
-Received: from ?IPV6:2001:df0:0:200c:113f:d4b9:7ba1:906c? ([2001:df0:0:200c:113f:d4b9:7ba1:906c])
-        by smtp.gmail.com with ESMTPSA id o10-20020a17090aac0a00b002291295fc2dsm1844877pjq.17.2023.01.18.14.21.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Jan 2023 14:21:34 -0800 (PST)
-Message-ID: <2b3a641c-003f-6485-a1c1-0e0fdd45d23b@gmail.com>
-Date:   Thu, 19 Jan 2023 11:21:30 +1300
+        with ESMTP id S229615AbjASJSo (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 19 Jan 2023 04:18:44 -0500
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A524754202
+        for <linux-m68k@vger.kernel.org>; Thu, 19 Jan 2023 01:18:41 -0800 (PST)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1pIR4B-003u73-6W; Thu, 19 Jan 2023 10:18:39 +0100
+Received: from p57bd9464.dip0.t-ipconnect.de ([87.189.148.100] helo=[192.168.178.81])
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1pIR4B-000qYK-08; Thu, 19 Jan 2023 10:18:39 +0100
+Message-ID: <6ab60cd7-66c1-67e7-b82b-a7bb1b2218b3@physik.fu-berlin.de>
+Date:   Thu, 19 Jan 2023 10:18:38 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
+ Thunderbird/102.6.1
 Subject: Re: [PATCH v13 0/3] Add kernel seccomp support for m68k
 Content-Language: en-US
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Michael Schmitz <schmitzmic@gmail.com>
 Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org,
         Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
         Andreas Schwab <schwab@linux-m68k.org>,
@@ -70,49 +47,49 @@ References: <20230112035529.13521-1-schmitzmic@gmail.com>
  <739413f9-0425-59d9-b6a5-fe225f56cf78@gmail.com>
  <a3addb76-d35a-f74d-f939-686699608066@physik.fu-berlin.de>
  <f2ce2438-8fe1-145e-64d0-9c754cee8913@physik.fu-berlin.de>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <f2ce2438-8fe1-145e-64d0-9c754cee8913@physik.fu-berlin.de>
+ <2b3a641c-003f-6485-a1c1-0e0fdd45d23b@gmail.com>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+In-Reply-To: <2b3a641c-003f-6485-a1c1-0e0fdd45d23b@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.148.100
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Adrian,
+Hi!
 
-On 18/01/23 22:43, John Paul Adrian Glaubitz wrote:
-> Hi Michael!
->
-> On 1/18/23 09:30, John Paul Adrian Glaubitz wrote:
->> Good catch, thank you! I added the missing definitions and it builds 
->> fine now.
->>
->> Will test against a kernel with your patches now.
->
-> libseccomp testsuite now fully passes on m68k, see attached.
+On 1/18/23 23:21, Michael Schmitz wrote:
+>> libseccomp testsuite now fully passes on m68k, see attached.
+> 
+> Great - you haven't had a chance to compile the kernel selftest suite for seccomp though?
 
-Great - you haven't had a chance to compile the kernel selftest suite 
-for seccomp though?
+I haven't looked into this yet.
 
-I wonder whether some of the 'architecture difference' skipped tests are 
-related to the remaining seccomp_bpf self test faults??
+> I wonder whether some of the 'architecture difference' skipped tests are related to the remaining seccomp_bpf self test faults??
 
->
-> @Geert: Any chance you can approve the seccomp patches?
+I actually forgot to enable some tests on m68k in libseccomp.
 
-Now that we have m68k support for libseccomp, getting this merged is no 
-longer purely academic.
+After my most recent changes, there is a large number of tests being run now without errors.
 
-Both Al Viro and Andreas Schwab had provided feedback and improvements - 
-could you perhaps review the latest version again (v13) if that's what 
-is holding this up?
+> https://github.com/glaubitz/libseccomp/tree/m68k
 
-Cheers,
+>> @Geert: Any chance you can approve the seccomp patches?
+> 
+> Now that we have m68k support for libseccomp, getting this merged is no longer purely academic.
+> 
+> Both Al Viro and Andreas Schwab had provided feedback and improvements - could you perhaps review
+> the latest version again (v13) if that's what is holding this up?
 
-     Michael
+@Andreas: Please use my Github branch if you want to test libseccomp as well.
 
+Thanks,
+Adrian
 
->
-> Thanks,
-> Adrian
->
+-- 
+  .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+
