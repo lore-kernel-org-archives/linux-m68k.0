@@ -2,88 +2,81 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38D4CC25B4E
-	for <linux-m68k@archiver.kernel.org>; Sun, 22 Jan 2023 16:33:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F5F0C25B4E
+	for <linux-m68k@archiver.kernel.org>; Sun, 22 Jan 2023 16:35:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbjAVQde (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 22 Jan 2023 11:33:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48952 "EHLO
+        id S229814AbjAVQfr (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 22 Jan 2023 11:35:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbjAVQdd (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 22 Jan 2023 11:33:33 -0500
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 954CDFF07
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 22 Jan 2023 08:33:32 -0800 (PST)
-Received: by mail-qt1-f170.google.com with SMTP id h24so4030792qta.12
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 22 Jan 2023 08:33:32 -0800 (PST)
+        with ESMTP id S229766AbjAVQfr (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 22 Jan 2023 11:35:47 -0500
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB60FF07
+        for <linux-m68k@vger.kernel.org>; Sun, 22 Jan 2023 08:35:44 -0800 (PST)
+Received: by mail-qv1-f42.google.com with SMTP id e19so4248051qvw.13
+        for <linux-m68k@vger.kernel.org>; Sun, 22 Jan 2023 08:35:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=vOk3uYZcgTwBo+UdwPSOR5TRv4+Ddg6DJyCWwBKpSKA=;
-        b=IErLKnGbo5gUEIQcNBHAoxdV5BGSXkgSi4zQuk/QzNdwVPHXwZIzexwmaiI1L4DLsl
-         lgkYf4hzvfJYfze/3mouWzJgBRemqXPCBjqvXg/9Nj+x+ZlRMM0mfu1du9Jg6Q9X7FKi
-         8zJwpONiYXXmJ1fVONXDcbzM5EBi1GBKSxHT+iKeG26zRJ8hCbt1Gna5JLjDFmxqVTTk
-         j1uDWYArI3EwvojUa8++vuyAEUGFPAS9NrJo0kyhXYkpMbouszdl4EPWBQNwh/ervFce
-         YItFBty2ug9+aoP/qAHzvyiqLTqlAB6tYXFaz1FUbbgRfZnr1uVsyK3YBrRB0g0qBrvN
-         lsJA==
-X-Gm-Message-State: AFqh2ko0WagI2/y1UqdMvYS8VeRjaBuCO4wdSCw73ReInX3e97FvnjAQ
-        4l35xsys/Sc+fUXXWsR423sDzmHsknVagQ==
-X-Google-Smtp-Source: AMrXdXuqtDL1nD7n34sXNKP2/svGhRb6H4OnKKYII7UJFBLmDUul5TXKHhignN7Jas+Y5QfzT/qxlg==
-X-Received: by 2002:ac8:5a95:0:b0:3b2:39ee:dcf3 with SMTP id c21-20020ac85a95000000b003b239eedcf3mr41774107qtc.25.1674405211488;
-        Sun, 22 Jan 2023 08:33:31 -0800 (PST)
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
-        by smtp.gmail.com with ESMTPSA id r3-20020ac87943000000b003a82562c90fsm9450996qtt.62.2023.01.22.08.33.30
-        for <linux-m68k@lists.linux-m68k.org>
+        bh=IhhIvokiD1rNNK4lcmj3j4UaaORnjeIZMIQ1ASxeAJo=;
+        b=B4um2VLvu/rLJ+0qrytld2GmRl/UEZ9Res3yXHx/IY3aExhAz0ObhT2PeV1U/qZ07Z
+         mKa3IbqAeQJBWCEo+q03MoRH0aqtBln+ryN1sq54IyiXRu/CVydzYl/KoqtR37ogn1EE
+         9tFFOsJL8VJ80kJBKK88MQL3eos+ncLikKwDtdfPqnAo4LS21pPLa5j5uxG7FyhF6TKo
+         yrapc9P4hW2PWJRgJStCEHOcOXHVneaQAKst7UMlDSvZpZN8Sbra4MGGF8lzfLy+SoVW
+         /erZ4vieTqtzsuT+jQti92PlK622FOHVFDt9sJGTSZy3GwjSIj7sCZGzhnw+uAejbXch
+         TCOg==
+X-Gm-Message-State: AFqh2krT1Opw94qdP4M6iKo9kxYpGgqlfnbhjcrLrOZ6iLvIJcHcS10x
+        JJF72L81ECskgYSQQqykZM/BwPKbKqidLA==
+X-Google-Smtp-Source: AMrXdXuFdgpBlrk6II4A5+iputvL2pl4jwL9ro6tM36gFowjkCj1/1XTfj5NFnXjxoo4F8kPgEGBTQ==
+X-Received: by 2002:a05:6214:57d1:b0:534:dfd9:98e with SMTP id lw17-20020a05621457d100b00534dfd9098emr32795667qvb.26.1674405343122;
+        Sun, 22 Jan 2023 08:35:43 -0800 (PST)
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com. [209.85.128.179])
+        by smtp.gmail.com with ESMTPSA id y10-20020a05620a25ca00b006fa4cac54a5sm30025658qko.72.2023.01.22.08.35.42
+        for <linux-m68k@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Jan 2023 08:33:30 -0800 (PST)
-Received: by mail-yb1-f170.google.com with SMTP id t16so7537062ybk.2
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 22 Jan 2023 08:33:30 -0800 (PST)
-X-Received: by 2002:a25:d505:0:b0:7bf:d201:60cb with SMTP id
- r5-20020a25d505000000b007bfd20160cbmr1777981ybe.365.1674405210694; Sun, 22
- Jan 2023 08:33:30 -0800 (PST)
+        Sun, 22 Jan 2023 08:35:42 -0800 (PST)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-501c3a414acso76595057b3.7
+        for <linux-m68k@vger.kernel.org>; Sun, 22 Jan 2023 08:35:42 -0800 (PST)
+X-Received: by 2002:a0d:e657:0:b0:4d9:3858:392 with SMTP id
+ p84-20020a0de657000000b004d938580392mr1823027ywe.502.1674405342374; Sun, 22
+ Jan 2023 08:35:42 -0800 (PST)
 MIME-Version: 1.0
-References: <20220718105553.6529-1-gaoxin@cdjrlc.com>
-In-Reply-To: <20220718105553.6529-1-gaoxin@cdjrlc.com>
+References: <20230112035529.13521-1-schmitzmic@gmail.com> <20230112035529.13521-2-schmitzmic@gmail.com>
+In-Reply-To: <20230112035529.13521-2-schmitzmic@gmail.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sun, 22 Jan 2023 17:33:19 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWtD29w1Utw0VvAC1SrE47x-o+bOcp6=fOGsfWLQHBsUQ@mail.gmail.com>
-Message-ID: <CAMuHMdWtD29w1Utw0VvAC1SrE47x-o+bOcp6=fOGsfWLQHBsUQ@mail.gmail.com>
-Subject: Re: [PATCH] m68k:do not initialise statics to 0.
-To:     gaoxin@cdjrlc.com
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Date:   Sun, 22 Jan 2023 17:35:31 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWW=5MJZL0ztbPhAp726zX=PoGArQhgXz4fekJQUoCmRw@mail.gmail.com>
+Message-ID: <CAMuHMdWW=5MJZL0ztbPhAp726zX=PoGArQhgXz4fekJQUoCmRw@mail.gmail.com>
+Subject: Re: [PATCH v13 1/3] m68k/kernel - check syscall_trace_enter() return
+ code on m68k
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     linux-m68k@vger.kernel.org, glaubitz@physik.fu-berlin.de
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Xin,
-
-On Mon, Jul 18, 2022 at 12:56 PM Xin Gao <gaoxin@cdjrlc.com> wrote:
-> Delete static variables initialized to 0.
+On Thu, Jan 12, 2023 at 4:55 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> Check return code of syscall_trace_enter(), and skip syscall
+> if -1. Return code will be left at what had been set by
+> ptrace or seccomp (in regs->d0).
 >
-> Signed-off-by: Xin Gao <gaoxin@cdjrlc.com>
-
-Thanks for your patch!
-
-> --- a/arch/m68k/q40/q40ints.c
-> +++ b/arch/m68k/q40/q40ints.c
-> @@ -201,8 +201,8 @@ static int ccleirq=60;    /* ISA dev IRQs*/
->  #define DEBUG_Q40INT
->  /*#define IP_USE_DISABLE *//* would be nice, but crashes ???? */
+> No regression seen in testing with strace on ARAnyM.
 >
-> -static int mext_disabled=0;  /* ext irq disabled by master chip? */
-> -static int aliased_irq=0;  /* how many times inside handler ?*/
-> +static int mext_disabled;  /* ext irq disabled by master chip? */
-> +static int aliased_irq;  /* how many times inside handler ?*/
+> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
 >
+> --
+> Changes from v12:
 >
->  /* got interrupt, dispatch to ISA or keyboard/timer IRQs */
+> - prevent overwriting the syscall return value after change
+>   by ptrace or seccomp on 68020+
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v6.3 branch.
+Thanks for the update!
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v6.3.
 
 Gr{oetje,eeting}s,
 
