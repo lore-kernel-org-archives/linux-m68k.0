@@ -2,57 +2,55 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 694C4C25B4E
-	for <linux-m68k@archiver.kernel.org>; Sun, 22 Jan 2023 16:36:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2B1AC25B4E
+	for <linux-m68k@archiver.kernel.org>; Sun, 22 Jan 2023 16:37:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbjAVQgH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 22 Jan 2023 11:36:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49388 "EHLO
+        id S230020AbjAVQha (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 22 Jan 2023 11:37:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229766AbjAVQgH (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 22 Jan 2023 11:36:07 -0500
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400EFFF16
-        for <linux-m68k@vger.kernel.org>; Sun, 22 Jan 2023 08:36:06 -0800 (PST)
-Received: by mail-qt1-f171.google.com with SMTP id a25so7956771qto.10
-        for <linux-m68k@vger.kernel.org>; Sun, 22 Jan 2023 08:36:06 -0800 (PST)
+        with ESMTP id S230072AbjAVQh3 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 22 Jan 2023 11:37:29 -0500
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0838010249
+        for <linux-m68k@vger.kernel.org>; Sun, 22 Jan 2023 08:37:29 -0800 (PST)
+Received: by mail-qt1-f182.google.com with SMTP id x5so7988179qti.3
+        for <linux-m68k@vger.kernel.org>; Sun, 22 Jan 2023 08:37:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=WBaaP4ZwGY6Y8R9gatcQlYhmkOCksOiUfA8gFicptuU=;
-        b=2qCpZIrlPhZwc7kL2lOMURGYeujU6euJQRES6r57UZkN0OjU+X9GLFnHLUyT7PIGSw
-         ieBv3UR6bCPbD/SZL4nN/NsgDFmGYMpfESwPXqwGzv0kCYiG5B3nFo5u38ffsFJ2ZAVb
-         7JQW7KyHrlFenKs530T/vDDdaZSWMBLGMBN84wYAMvZoZj6vb5SVCNmIw1XKUtI7S/gH
-         IBvLkuyEXDSnCZbAh1tJmet2xR54rnI6s08XA8RObLZaHTME1r+70q0e//WkfTklFbeL
-         w/mnaLJfIsscH2z8Hh8cGkF92EYOSnwhkWPWyM/N7SsqTCV3mXuw7TkRpg23KK+GPBqa
-         TGtA==
-X-Gm-Message-State: AFqh2kpde/FnBMxkMjieuhC0B1Qd+I3G7vbBjbuLcS04Ohrc3F7cBmlO
-        AohiKWq7rB8tE6SL+RObPw9HY8A42YYaNg==
-X-Google-Smtp-Source: AMrXdXsuLFXrT6QprLBBb7ZRPGXyP0sHlGIldk5jrfx70o7ruETbwdkOtRQ8E8WDXqkbAt6J9Fo+IA==
-X-Received: by 2002:ac8:47d1:0:b0:3b6:3995:2ec2 with SMTP id d17-20020ac847d1000000b003b639952ec2mr34536316qtr.19.1674405365251;
-        Sun, 22 Jan 2023 08:36:05 -0800 (PST)
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
-        by smtp.gmail.com with ESMTPSA id bz25-20020a05622a1e9900b003a591194221sm8358841qtb.7.2023.01.22.08.36.04
+        bh=30m9wXkH4G30lpZSOxEeIa4vd08y5AgMs/zFnqEB7ZA=;
+        b=w/SH0filEbdR+L3mJiKH1BHGaaInDcykOfzfFhMLyVDM46CN5CNUfWeaaplCSHp8F2
+         LCGMg94axSKOyktFVV98BrvtkhFV1q5J3188lY87KtipPsKJk61XJsnbqbtDnda7j7uk
+         E1J/H+ZodHjWW/8lZ1av2gPvCgJp9XulLOY4+TL3oqyTfsga8EHVJP7LzDezP6IeOChF
+         lKnHjjpuCR5TSEmD8WqL3VVMVvX7PTO1Uxk4CebefSjohzxebXY/zYWNsyzUZaEik97J
+         kAEoU+6ZJScs6eZrKgfe9y/pbJx40FsaCZuvmAIoQ4qNvcJlPNkmw3Nkj3Z8UeUsbkCu
+         qs9Q==
+X-Gm-Message-State: AFqh2kr1lB2df83xgDQT7vfGxX5gGVIsn6ItuZlKaKoB2qTsv9yIWyno
+        zL9nV9VBXSAbgNedMPxWz/NOAcLaj6QAzw==
+X-Google-Smtp-Source: AMrXdXvtqNehyeHG4aZOU3yP0uB5g6ziydlMw5dkQ/NWufpGOA43GM9jGfqVogPkzxLDEkrmhZlUKw==
+X-Received: by 2002:ac8:5ed6:0:b0:3ab:9974:3a06 with SMTP id s22-20020ac85ed6000000b003ab99743a06mr29145737qtx.38.1674405448029;
+        Sun, 22 Jan 2023 08:37:28 -0800 (PST)
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
+        by smtp.gmail.com with ESMTPSA id b24-20020ac86798000000b0039cc944ebdasm23550385qtp.54.2023.01.22.08.37.27
         for <linux-m68k@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Jan 2023 08:36:05 -0800 (PST)
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-4ff07dae50dso95705857b3.2
-        for <linux-m68k@vger.kernel.org>; Sun, 22 Jan 2023 08:36:04 -0800 (PST)
-X-Received: by 2002:a05:690c:c89:b0:4dd:7a8e:1cf3 with SMTP id
- cm9-20020a05690c0c8900b004dd7a8e1cf3mr2270585ywb.384.1674405364650; Sun, 22
- Jan 2023 08:36:04 -0800 (PST)
+        Sun, 22 Jan 2023 08:37:27 -0800 (PST)
+Received: by mail-yb1-f175.google.com with SMTP id 123so12171525ybv.6
+        for <linux-m68k@vger.kernel.org>; Sun, 22 Jan 2023 08:37:27 -0800 (PST)
+X-Received: by 2002:a25:9ac1:0:b0:7b4:6a33:d89f with SMTP id
+ t1-20020a259ac1000000b007b46a33d89fmr1711020ybo.543.1674405447482; Sun, 22
+ Jan 2023 08:37:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20230112035529.13521-1-schmitzmic@gmail.com> <20230112035529.13521-2-schmitzmic@gmail.com>
- <CAMuHMdWW=5MJZL0ztbPhAp726zX=PoGArQhgXz4fekJQUoCmRw@mail.gmail.com>
-In-Reply-To: <CAMuHMdWW=5MJZL0ztbPhAp726zX=PoGArQhgXz4fekJQUoCmRw@mail.gmail.com>
+References: <20230112035529.13521-1-schmitzmic@gmail.com> <20230112035529.13521-3-schmitzmic@gmail.com>
+In-Reply-To: <20230112035529.13521-3-schmitzmic@gmail.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sun, 22 Jan 2023 17:35:53 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWa1wdKk2hG3vsa1OCpRhxPV5J9_r=TsNVyvJxOCCHzHA@mail.gmail.com>
-Message-ID: <CAMuHMdWa1wdKk2hG3vsa1OCpRhxPV5J9_r=TsNVyvJxOCCHzHA@mail.gmail.com>
-Subject: Re: [PATCH v13 1/3] m68k/kernel - check syscall_trace_enter() return
- code on m68k
+Date:   Sun, 22 Jan 2023 17:37:16 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUfBkvwME1wNnaMscXA0k9qBrHVi7M8ppkyaJLSiU8S7Q@mail.gmail.com>
+Message-ID: <CAMuHMdUfBkvwME1wNnaMscXA0k9qBrHVi7M8ppkyaJLSiU8S7Q@mail.gmail.com>
+Subject: Re: [PATCH v13 2/3] m68k: add kernel seccomp support
 To:     Michael Schmitz <schmitzmic@gmail.com>
 Cc:     linux-m68k@vger.kernel.org, glaubitz@physik.fu-berlin.de
 Content-Type: text/plain; charset="UTF-8"
@@ -60,30 +58,44 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sun, Jan 22, 2023 at 5:35 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Thu, Jan 12, 2023 at 4:55 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> > Check return code of syscall_trace_enter(), and skip syscall
-> > if -1. Return code will be left at what had been set by
-> > ptrace or seccomp (in regs->d0).
-> >
-> > No regression seen in testing with strace on ARAnyM.
-> >
-> > Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-> >
-> > --
-> > Changes from v12:
-> >
-> > - prevent overwriting the syscall return value after change
-> >   by ptrace or seccomp on 68020+
+On Thu, Jan 12, 2023 at 4:55 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> Add secure_computing() call to syscall_trace_enter to actually
+> filter system calls.
 >
-> Thanks for the update!
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> i.e. will queue in renesas-devel for v6.3.
+> Add necessary arch Kconfig options, define TIF_SECCOMP trace
+> flag and provide basic seccomp filter support in asm/syscall.h
+>
+> syscall_get_nr currently uses the syscall nr stored in orig_d0
+> because we change d0 to a default return code before starting a
+> syscall trace. This may be inconsistent with syscall_rollback
+> copying orig_d0 to d0 (which we never check upon return from
+> trace). We use d0 for the return code from syscall_trace_enter
+> in entry.S currently, and could perhaps expand that to store
+> a new syscall number returned by the seccomp filter before
+> executing the syscall. This clearly needs some discussion.
+>
+> seccomp_bpf self test on ARAnyM passes 63 out of 89 tests.
+>
+> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
 
-Doh...
+Thanks for your patch!
 
 Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 i.e. will queue in the m68k for-v6.3 branch.
+
+> --- a/arch/m68k/include/asm/syscall.h
+> +++ b/arch/m68k/include/asm/syscall.h
+
+> +static inline void syscall_set_return_value(struct task_struct *task,
+> +                                           struct pt_regs *regs,
+> +                                           int error, long val)
+> +{
+> +       regs->d0 = (long) error ? error : val;
+
+I'll change this to "(long)error ?: val" while applying.
+
+> +}
+> +
 
 Gr{oetje,eeting}s,
 
