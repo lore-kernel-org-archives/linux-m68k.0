@@ -2,123 +2,128 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47D8EC25B4E
-	for <linux-m68k@archiver.kernel.org>; Sun, 22 Jan 2023 16:40:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D654DC38142
+	for <linux-m68k@archiver.kernel.org>; Sun, 22 Jan 2023 18:12:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229814AbjAVQkz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 22 Jan 2023 11:40:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50702 "EHLO
+        id S230071AbjAVSML (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 22 Jan 2023 13:12:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229766AbjAVQky (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 22 Jan 2023 11:40:54 -0500
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF65B193E5;
-        Sun, 22 Jan 2023 08:40:53 -0800 (PST)
-Received: by mail-qt1-f172.google.com with SMTP id q15so8028037qtn.0;
-        Sun, 22 Jan 2023 08:40:53 -0800 (PST)
+        with ESMTP id S230034AbjAVSMK (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 22 Jan 2023 13:12:10 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35561C668
+        for <linux-m68k@vger.kernel.org>; Sun, 22 Jan 2023 10:12:05 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id jm10so9406077plb.13
+        for <linux-m68k@vger.kernel.org>; Sun, 22 Jan 2023 10:12:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eKHgkRxZoDD0S3NaY1Ne/O4BEK/KhfsWRugv7WLGsec=;
+        b=EHRkt1lsW/qaCaAg/j4LcAGKsQMguk2Xb+67e2vNFlaiNA650X6ZdYuI/QZuyItveB
+         8Udl1SxWW6Xxo6R5F5DOmI+MpXIZtCYyzjcyP29j0bSv2/TlzsuzwWAgW7k5OLTxicAr
+         eEumJL5q9t14kK6doJJ6B5B9axBnTIeorU+sHWxpvJfYjqC6h8jA4Nhn8asrpHNVyogv
+         2p4an+0ffys/3bPn+luhVTHZqv1wYJy43c/TawvDvSVcLzAphrYx7SWwaXrWpa5YpIWr
+         W7LJWE1Q3YX0fEGUeSNz84+O8wj4AmmPVQvhkDCWW2u4vsd+Dzr3KfgrEXuQi9iKYYHv
+         o+rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=05DRwYLuKPNybBZTc2206qYE9TZgh2rdWBVkpwkOzJ0=;
-        b=A8GGQ75mKCkHCPmZFV3cVLEJgz45RxIhvimMNuHQbqa3F1hlyIEqCJYyaYIXaLkb/q
-         r1U1EAAldMxjZ4Lr7V1GsKJEfojWTV8h8QxPu6eK96R6ll6cI59v2oepU2PGOoZ1/9sU
-         D7TQ0JQkm3Gx5r0wz6Z4ZN+VbPviRvkGkF7MyAv/OxjZlD4K6L/sX25jbOK/35/7Thja
-         f6UwhdhOkKjpLIO/CYkZSxPSSgF1yN5DVC84LMwHYUrnTje4ddUZ8g1khb05RjyRLeZ0
-         6jxbL65BFi7h0nhIUgbsm2GRm8JBqchw2k+p6/hbBr2O4auV/kvmEIJGkKumKow12vKf
-         tY7Q==
-X-Gm-Message-State: AFqh2kpFmTQQAcWOgHGoQPwRoI+gR4/SGEdvQmXf+LjbO/5EV6GNWaj6
-        uKI/eXADlUTgZ/MxqCFYeEFbk/oFFIn8Zw==
-X-Google-Smtp-Source: AMrXdXt56zWlt1UrPh9C8DjE1rii7b15j8o4rhAwC+uwP6lgPZcFbNs6gQoa7ltikAFKRLay+nnzWw==
-X-Received: by 2002:a05:622a:4319:b0:3b6:5fc7:f554 with SMTP id el25-20020a05622a431900b003b65fc7f554mr24229269qtb.7.1674405652705;
-        Sun, 22 Jan 2023 08:40:52 -0800 (PST)
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
-        by smtp.gmail.com with ESMTPSA id r18-20020a05620a299200b006cebda00630sm30140670qkp.60.2023.01.22.08.40.52
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eKHgkRxZoDD0S3NaY1Ne/O4BEK/KhfsWRugv7WLGsec=;
+        b=Sz4g0hclGCtyPKYnEwsd9k5xCugJvJWJVJddq+XpC11ni481q606jJMlHWMW+7F9/1
+         Mv671SDWXmqPUwxRt19OioLzIFQmv1Tac809x6y41JlBTa4HScr+ixMsIow8NqXd9VgN
+         Dc7rZy/gKTQbpgxo3ssCfQHDdvRNYcr/kR3iueNmbCEJX3AChGNEfu32R7M2JCqBwm2n
+         pY8gAl27acWlAksg/dDJx9NkoLWl78tqAB1XNgICwxhOUvPje9fgpbrulTmxGyi90Vgc
+         dNwJW0V1WH2NMtWUm8O7U64UUMtytC50byj+4nFcEJ5Jq7t1xeJ5j0KkN4KXJ6q+uzsn
+         1L5A==
+X-Gm-Message-State: AFqh2kqkmICQVVPgZOD2kANnvIsspU4UJxHuv9xsRwu4BJBlRZTRiFrV
+        R9WQiBzOQ9pCnc20dafvg4s9k14whds=
+X-Google-Smtp-Source: AMrXdXvV42avTmJA4MltACMRgApeub1d9GGHaUpCATIh+0MVjZRYcNFOsLzIH4W1/zbMEsuQ98883Q==
+X-Received: by 2002:a17:902:8486:b0:189:e3d0:2682 with SMTP id c6-20020a170902848600b00189e3d02682mr22809106plo.30.1674411124632;
+        Sun, 22 Jan 2023 10:12:04 -0800 (PST)
+Received: from ?IPV6:2001:df0:0:200c:34d5:35c:640e:fbac? ([2001:df0:0:200c:34d5:35c:640e:fbac])
+        by smtp.gmail.com with ESMTPSA id 6-20020a170902c20600b0019468fe44d3sm18207493pll.25.2023.01.22.10.12.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Jan 2023 08:40:52 -0800 (PST)
-Received: by mail-yb1-f172.google.com with SMTP id c124so12127597ybb.13;
-        Sun, 22 Jan 2023 08:40:52 -0800 (PST)
-X-Received: by 2002:a25:9801:0:b0:7d5:b884:3617 with SMTP id
- a1-20020a259801000000b007d5b8843617mr1914368ybo.380.1674405651979; Sun, 22
- Jan 2023 08:40:51 -0800 (PST)
+        Sun, 22 Jan 2023 10:12:04 -0800 (PST)
+Message-ID: <27f3da39-ed14-33ac-ebba-4e8291b23d7e@gmail.com>
+Date:   Mon, 23 Jan 2023 07:11:59 +1300
 MIME-Version: 1.0
-References: <20230112035529.13521-1-schmitzmic@gmail.com> <20230112035529.13521-4-schmitzmic@gmail.com>
-In-Reply-To: <20230112035529.13521-4-schmitzmic@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sun, 22 Jan 2023 17:40:40 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUNxLwv8eQRCxSPh6J26gEaMzS=1w6s5zTBWGnnNzmmiA@mail.gmail.com>
-Message-ID: <CAMuHMdUNxLwv8eQRCxSPh6J26gEaMzS=1w6s5zTBWGnnNzmmiA@mail.gmail.com>
-Subject: Re: [PATCH v13 3/3] tools/testing - seccomp test fixes for m68k
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     linux-m68k@vger.kernel.org, glaubitz@physik.fu-berlin.de,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH v13 2/3] m68k: add kernel seccomp support
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@vger.kernel.org, glaubitz@physik.fu-berlin.de
+References: <20230112035529.13521-1-schmitzmic@gmail.com>
+ <20230112035529.13521-3-schmitzmic@gmail.com>
+ <CAMuHMdUfBkvwME1wNnaMscXA0k9qBrHVi7M8ppkyaJLSiU8S7Q@mail.gmail.com>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+In-Reply-To: <CAMuHMdUfBkvwME1wNnaMscXA0k9qBrHVi7M8ppkyaJLSiU8S7Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-CC linux-kselftest
+Thanks Geert,
 
-On Thu, Jan 12, 2023 at 4:55 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> Add m68k seccomp definitions to seccomp_bpf self test code.
+On 23/01/23 05:37, Geert Uytterhoeven wrote:
+> On Thu, Jan 12, 2023 at 4:55 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+>> Add secure_computing() call to syscall_trace_enter to actually
+>> filter system calls.
+>>
+>> Add necessary arch Kconfig options, define TIF_SECCOMP trace
+>> flag and provide basic seccomp filter support in asm/syscall.h
+>>
+>> syscall_get_nr currently uses the syscall nr stored in orig_d0
+>> because we change d0 to a default return code before starting a
+>> syscall trace. This may be inconsistent with syscall_rollback
+>> copying orig_d0 to d0 (which we never check upon return from
+>> trace). We use d0 for the return code from syscall_trace_enter
+>> in entry.S currently, and could perhaps expand that to store
+>> a new syscall number returned by the seccomp filter before
+>> executing the syscall. This clearly needs some discussion.
+>>
+>> seccomp_bpf self test on ARAnyM passes 63 out of 89 tests.
+>>
+>> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+> Thanks for your patch!
 >
-> Tested on ARAnyM.
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> i.e. will queue in the m68k for-v6.3 branch.
 >
-> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+>> --- a/arch/m68k/include/asm/syscall.h
+>> +++ b/arch/m68k/include/asm/syscall.h
+>> +static inline void syscall_set_return_value(struct task_struct *task,
+>> +                                           struct pt_regs *regs,
+>> +                                           int error, long val)
+>> +{
+>> +       regs->d0 = (long) error ? error : val;
+> I'll change this to "(long)error ?: val" while applying.
+
+Sure - could you also update the commit message that I forgot to change? 
+It's 81 out of 94 tests now.
+
+Many thanks also to Adrian for his libseccomp port work!
+
+Cheers,
+
+     Michael
+
+
+>> +}
+>> +
+> Gr{oetje,eeting}s,
+>
+>                          Geert
 >
 > --
-> Changes from v12:
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 >
-> Michael Karcher:
-> - use correct definition of ARCH_REGS (use of struct pt_regs
->   cause stack overflow on passing register set to user space
->   due to size mismatch, and has some register offsets wrong)
-
-Thanks for the update!
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v6.3 branch.
-
-> --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-> +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> @@ -138,6 +138,8 @@ struct seccomp_data {
->  #  define __NR_seccomp 337
->  # elif defined(__sh__)
->  #  define __NR_seccomp 372
-> +# elif defined(__mc68000__)
-> +#  define __NR_seccomp 380
->  # else
->  #  warning "seccomp syscall number unknown for this architecture"
->  #  define __NR_seccomp 0xffff
-> @@ -1838,6 +1840,10 @@ TEST_F(TRACE_poke, getpid_runs_normally)
->  # define ARCH_REGS             struct pt_regs
->  # define SYSCALL_NUM(_regs)    (_regs).regs[3]
->  # define SYSCALL_RET(_regs)    (_regs).regs[0]
-> +#elif defined(__mc68000__)
-> +# define ARCH_REGS     struct user_regs_struct
-> +# define SYSCALL_NUM(_regs)    (_regs).orig_d0
-> +# define SYSCALL_RET(_regs)    (_regs).d0
->  #else
->  # error "Do not know how to find your architecture's registers and syscalls"
->  #endif
-> @@ -1902,7 +1908,7 @@ const bool ptrace_entry_set_syscall_ret =
->   * Use PTRACE_GETREGS and PTRACE_SETREGS when available. This is useful for
->   * architectures without HAVE_ARCH_TRACEHOOK (e.g. User-mode Linux).
->   */
-> -#if defined(__x86_64__) || defined(__i386__) || defined(__mips__)
-> +#if defined(__x86_64__) || defined(__i386__) || defined(__mips__) || defined(__mc68000__)
->  # define ARCH_GETREGS(_regs)   ptrace(PTRACE_GETREGS, tracee, 0, &(_regs))
->  # define ARCH_SETREGS(_regs)   ptrace(PTRACE_SETREGS, tracee, 0, &(_regs))
->  #else
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                  -- Linus Torvalds
