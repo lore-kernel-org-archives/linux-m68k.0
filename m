@@ -2,112 +2,163 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D19C9C25B4E
-	for <linux-m68k@archiver.kernel.org>; Sun, 22 Jan 2023 18:50:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A4A4C05027
+	for <linux-m68k@archiver.kernel.org>; Mon, 23 Jan 2023 05:05:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbjAVSuJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 22 Jan 2023 13:50:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40902 "EHLO
+        id S229999AbjAWFFC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 23 Jan 2023 00:05:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229973AbjAVSuI (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 22 Jan 2023 13:50:08 -0500
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8610C15CB5
-        for <linux-m68k@vger.kernel.org>; Sun, 22 Jan 2023 10:50:07 -0800 (PST)
-Received: by mail-qv1-f44.google.com with SMTP id j9so7678429qvt.0
-        for <linux-m68k@vger.kernel.org>; Sun, 22 Jan 2023 10:50:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YtGz6veGCDMXzbMZ+e1jaEMhChKsjfdqTCiFmoZne70=;
-        b=qy8Rb65zkAwiglpDOI7o+v37ZCOfv7g+srkC/xEIrunH8+D+qNQZjOLoyQLrF0NPgX
-         F/KeRF0seZp4YYdvPrAh1WxE993QnFmqNmMr91017/XTlMgKadR1yQuOBCZtiGjxVlas
-         40LEyPDvDIDFIrRQugcJgL3Z0Ot+CYnAvO8YeQSUsAqSgV8FNWstxGS9wPEYc9S0aWjw
-         LN+RH0Eqw/0y6rwYUHe2ERAEG0FFd7C8inJVnyjdSA83oqcG9eF0hr2lSHkwHS782cD9
-         WDGwzdPPhhhO+Du1AjsLKUYlrJVUYP+ckcLkRTfru5R/cYdOcO1gZJVr1BBiWr22734S
-         pEwg==
-X-Gm-Message-State: AFqh2koKJnAQTdc0rRBa+H1TUVHryl9n0mESVbhaWsla9oy9tNLBVhzE
-        MhyIqk64ITa0pK5rYQIhZRjz+/wDBw1klw==
-X-Google-Smtp-Source: AMrXdXubGKvvM81JARNYq/SW6dLsqaF08PX1ybf1lC6J83Ef3Cu+oTZB0oVXQjTKErqEm5mCqNabnQ==
-X-Received: by 2002:a05:6214:5a8a:b0:4c7:7771:513d with SMTP id ln10-20020a0562145a8a00b004c77771513dmr30915900qvb.45.1674413406513;
-        Sun, 22 Jan 2023 10:50:06 -0800 (PST)
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
-        by smtp.gmail.com with ESMTPSA id ay30-20020a05620a179e00b007090cad77c1sm5950893qkb.3.2023.01.22.10.50.05
-        for <linux-m68k@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Jan 2023 10:50:06 -0800 (PST)
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-4a263c4ddbaso144622827b3.0
-        for <linux-m68k@vger.kernel.org>; Sun, 22 Jan 2023 10:50:05 -0800 (PST)
-X-Received: by 2002:a0d:cbd7:0:b0:46f:bd6:957d with SMTP id
- n206-20020a0dcbd7000000b0046f0bd6957dmr2155602ywd.383.1674413405515; Sun, 22
- Jan 2023 10:50:05 -0800 (PST)
+        with ESMTP id S229519AbjAWFFB (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 23 Jan 2023 00:05:01 -0500
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 476FB16AC7
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 22 Jan 2023 21:05:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1674450300; x=1705986300;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=V11FFQLW7YLwstvg0giAISohbVQdBC+mQiU3pZiGR18=;
+  b=daWmA/G+EVieQbRbpREMx590mlE1m4YnmNX2qO5g/1BOZXB9L307JGKP
+   eSS/dZHXXdlqcfy0sPRbJO1nuofFOFfvuRlsD7DAlw+tAKNol40PuiakW
+   DADi/GnhpwQDaxMNva+eHl7q2P1jVmg9V5bLnAPzF3o3M1aDC0M7dpTsZ
+   6lZGaecmjjw4IZra+NbWlZsB3FnQeWsENfyWp0O+jvC0ZpkC413u4yRBI
+   el0vCfNSZDmxOocfKyWBlqB4hiOcqy498uPyvOUXnqw0YsMoCL+u3HF6r
+   XCFhgST+a8cc/ghClvoQMXCs5nk2CufgCTwC8VYw8830U8WwdQN+DKbZA
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10598"; a="309547795"
+X-IronPort-AV: E=Sophos;i="5.97,238,1669104000"; 
+   d="scan'208";a="309547795"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2023 21:04:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10598"; a="693719946"
+X-IronPort-AV: E=Sophos;i="5.97,238,1669104000"; 
+   d="scan'208";a="693719946"
+Received: from lkp-server01.sh.intel.com (HELO 5646d64e7320) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 22 Jan 2023 21:04:57 -0800
+Received: from kbuild by 5646d64e7320 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pJp0r-0005R6-06;
+        Mon, 23 Jan 2023 05:04:57 +0000
+Date:   Mon, 23 Jan 2023 13:04:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 1815a4712498bb21a0d17239cd68ee22c774c5d4
+Message-ID: <63ce154c.epRV0ahI0ePqEV0v%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20230112035529.13521-1-schmitzmic@gmail.com> <20230112035529.13521-3-schmitzmic@gmail.com>
- <CAMuHMdUfBkvwME1wNnaMscXA0k9qBrHVi7M8ppkyaJLSiU8S7Q@mail.gmail.com> <27f3da39-ed14-33ac-ebba-4e8291b23d7e@gmail.com>
-In-Reply-To: <27f3da39-ed14-33ac-ebba-4e8291b23d7e@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sun, 22 Jan 2023 19:49:52 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXV94-eUT4Xyv0f5WUTRhDngNv6RqDsutUVsMx54qf-kw@mail.gmail.com>
-Message-ID: <CAMuHMdXV94-eUT4Xyv0f5WUTRhDngNv6RqDsutUVsMx54qf-kw@mail.gmail.com>
-Subject: Re: [PATCH v13 2/3] m68k: add kernel seccomp support
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     linux-m68k@vger.kernel.org, glaubitz@physik.fu-berlin.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 1815a4712498bb21a0d17239cd68ee22c774c5d4  Merge tag 'v6.2-rc5'
 
-On Sun, Jan 22, 2023 at 7:12 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> On 23/01/23 05:37, Geert Uytterhoeven wrote:
-> > On Thu, Jan 12, 2023 at 4:55 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> >> Add secure_computing() call to syscall_trace_enter to actually
-> >> filter system calls.
-> >>
-> >> Add necessary arch Kconfig options, define TIF_SECCOMP trace
-> >> flag and provide basic seccomp filter support in asm/syscall.h
-> >>
-> >> syscall_get_nr currently uses the syscall nr stored in orig_d0
-> >> because we change d0 to a default return code before starting a
-> >> syscall trace. This may be inconsistent with syscall_rollback
-> >> copying orig_d0 to d0 (which we never check upon return from
-> >> trace). We use d0 for the return code from syscall_trace_enter
-> >> in entry.S currently, and could perhaps expand that to store
-> >> a new syscall number returned by the seccomp filter before
-> >> executing the syscall. This clearly needs some discussion.
-> >>
-> >> seccomp_bpf self test on ARAnyM passes 63 out of 89 tests.
-> >>
-> >> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-> > Thanks for your patch!
-> >
-> > Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > i.e. will queue in the m68k for-v6.3 branch.
-> >
-> >> --- a/arch/m68k/include/asm/syscall.h
-> >> +++ b/arch/m68k/include/asm/syscall.h
-> >> +static inline void syscall_set_return_value(struct task_struct *task,
-> >> +                                           struct pt_regs *regs,
-> >> +                                           int error, long val)
-> >> +{
-> >> +       regs->d0 = (long) error ? error : val;
-> > I'll change this to "(long)error ?: val" while applying.
->
-> Sure - could you also update the commit message that I forgot to change?
-> It's 81 out of 94 tests now.
+elapsed time: 722m
 
-Np, will do so (tomorrow).
+configs tested: 86
+configs skipped: 2
 
-Gr{oetje,eeting}s,
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-                        Geert
+gcc tested configs:
+powerpc                           allnoconfig
+arc                                 defconfig
+alpha                               defconfig
+arm                                 defconfig
+x86_64                            allnoconfig
+i386                                defconfig
+arm                              allyesconfig
+um                             i386_defconfig
+x86_64                           rhel-8.3-syz
+arm64                            allyesconfig
+x86_64                         rhel-8.3-kunit
+um                           x86_64_defconfig
+s390                             allmodconfig
+x86_64                           rhel-8.3-kvm
+sh                               allmodconfig
+s390                                defconfig
+x86_64                           rhel-8.3-bpf
+x86_64               randconfig-a002-20230123
+mips                             allyesconfig
+x86_64               randconfig-a005-20230123
+ia64                             allmodconfig
+powerpc                          allmodconfig
+x86_64               randconfig-a001-20230123
+alpha                            allyesconfig
+x86_64               randconfig-a006-20230123
+m68k                             allyesconfig
+x86_64               randconfig-a004-20230123
+i386                          randconfig-a014
+x86_64               randconfig-a003-20230123
+i386                          randconfig-a012
+s390                             allyesconfig
+x86_64                              defconfig
+i386                 randconfig-a003-20230123
+i386                 randconfig-a002-20230123
+i386                          randconfig-a016
+x86_64                               rhel-8.3
+i386                 randconfig-a001-20230123
+i386                 randconfig-a005-20230123
+m68k                             allmodconfig
+i386                 randconfig-a006-20230123
+i386                             allyesconfig
+sh                        sh7785lcr_defconfig
+powerpc                      makalu_defconfig
+i386                 randconfig-a004-20230123
+arc                              allyesconfig
+x86_64                    rhel-8.3-kselftests
+powerpc                 canyonlands_defconfig
+parisc                           alldefconfig
+x86_64                          rhel-8.3-func
+x86_64                           allyesconfig
+sh                           se7712_defconfig
+arm                        shmobile_defconfig
+sh                          rsk7264_defconfig
+arm                        multi_v7_defconfig
+arc                  randconfig-r043-20230123
+i386                          randconfig-c001
+riscv                randconfig-r042-20230122
+arc                  randconfig-r043-20230122
+arm                  randconfig-r046-20230123
+s390                 randconfig-r044-20230122
+csky                                defconfig
+parisc                generic-64bit_defconfig
+sh                   sh7770_generic_defconfig
+powerpc                 linkstation_defconfig
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+clang tested configs:
+i386                          randconfig-a013
+i386                          randconfig-a011
+i386                          randconfig-a015
+arm                         mv78xx0_defconfig
+hexagon              randconfig-r041-20230123
+x86_64                          rhel-8.3-rust
+hexagon              randconfig-r045-20230122
+hexagon              randconfig-r045-20230123
+arm                  randconfig-r046-20230122
+s390                 randconfig-r044-20230123
+hexagon              randconfig-r041-20230122
+riscv                randconfig-r042-20230123
+arm                           omap1_defconfig
+mips                      maltaaprp_defconfig
+x86_64               randconfig-a011-20230123
+x86_64               randconfig-a013-20230123
+x86_64               randconfig-a012-20230123
+x86_64               randconfig-a016-20230123
+x86_64               randconfig-a014-20230123
+x86_64               randconfig-a015-20230123
+powerpc                      ppc44x_defconfig
+powerpc                   bluestone_defconfig
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
