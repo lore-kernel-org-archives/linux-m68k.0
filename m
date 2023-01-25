@@ -2,88 +2,120 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64197C38142
-	for <linux-m68k@archiver.kernel.org>; Mon, 23 Jan 2023 15:10:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85E4AC54E94
+	for <linux-m68k@archiver.kernel.org>; Wed, 25 Jan 2023 19:08:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231975AbjAWPKt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 23 Jan 2023 10:10:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37664 "EHLO
+        id S235898AbjAYTIX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 25 Jan 2023 14:08:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231547AbjAWPKt (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 23 Jan 2023 10:10:49 -0500
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D96B13521;
-        Mon, 23 Jan 2023 07:10:48 -0800 (PST)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-50112511ba7so116666447b3.3;
-        Mon, 23 Jan 2023 07:10:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=h/bqJof5MO3pbg3UYX8cTuwpn5Rti6iDINf4SN3BEsI=;
-        b=S6dHBNTjgSrKbwbzKP6W65/OZ46qhS5oT7a6g8lmY3rxVi+FuXO3TDXs/2SMtaoxCs
-         s4U1ng/9R+a4IA4hI/+ASzollNZirnfhCIlHrIJUYMgIVsyiCf4kvYi02O43WsULwKpO
-         32kyuidA7cm4HdD33Hu2lU/IBB33db6gJ92Oey/VrmMB+XgNsmOiV1BFxSOyaExrMEgu
-         ZC9ynux3AygJqPPU+4P3Ql4IybHX9DA/1Q3fvx6tmNa1inDHKBBn6EDcvItkfvnSRzzK
-         VetiTuqYrhEnifjrEh8ATmyvcjZYkGsr0WbMs2hVGWj9gG6a/G/Xgl6cLdJiFL+dWwTX
-         acEQ==
-X-Gm-Message-State: AFqh2krnlmt+oXIcEuMsSjs8pyx9luOI0wNwk+Yj7b2a7GR1yOKwrKVB
-        NCLjawinTfYk9bwevU1zHK4M5GFGKsPVDQ==
-X-Google-Smtp-Source: AMrXdXuByoLCN6ljNUdv0ZqdUQ6MDymJvPowrThRFf9GPZtY4cNLskM6vvV1DIAAKTXvG3G+CsQHYQ==
-X-Received: by 2002:a05:7500:20ce:b0:f1:c647:cb45 with SMTP id u14-20020a05750020ce00b000f1c647cb45mr1869449gau.44.1674486647057;
-        Mon, 23 Jan 2023 07:10:47 -0800 (PST)
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com. [209.85.128.179])
-        by smtp.gmail.com with ESMTPSA id g16-20020a05620a40d000b006fc3fa1f589sm10371803qko.114.2023.01.23.07.10.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Jan 2023 07:10:46 -0800 (PST)
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-4b718cab0e4so175660097b3.9;
-        Mon, 23 Jan 2023 07:10:46 -0800 (PST)
-X-Received: by 2002:a0d:e657:0:b0:4d9:3858:392 with SMTP id
- p84-20020a0de657000000b004d938580392mr2080328ywe.502.1674486646123; Mon, 23
- Jan 2023 07:10:46 -0800 (PST)
+        with ESMTP id S229496AbjAYTIX (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 25 Jan 2023 14:08:23 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E2F561BD
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 25 Jan 2023 11:08:22 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B1CEAB81B8C;
+        Wed, 25 Jan 2023 19:08:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A964C433D2;
+        Wed, 25 Jan 2023 19:08:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674673699;
+        bh=qBn35DQSqUXJuSRxeDRwfpJWNfuE/0crpJYRHd83v4o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YEcaLAiW8LOEsQEOizhwah/DgYdk0Sj0EasElxRkmwC22UeVxExd/uj6NUQmANgP4
+         jAVzwBza/ip8qzByaan6itTOheGqmGzh/hD5E5BgZdD+9/3Ftzb0GYHM6hdAJnWG8c
+         +0dGrFu7IRI1vv+/xNF7SyJwcJ060FgtAE8tFhY0qs9BSVQGxK9kiiDi+9Al/inQ5y
+         QgjBkIDWnjNcjAsez+fQtgv2zY2/zSGOHn2szZ/WwbSgKX3evSa6IUTI2vOHlKyjnc
+         FhqKk/BuoBaxEuVWyr0QicxLbVmc8narKWe5G38G00CIXLChnK8wks51ggl7FZlFcj
+         PHJVAXzE1TuvQ==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Brian Cain <bcain@quicinc.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Simek <monstr@monstr.eu>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Rich Felker <dalias@libc.org>,
+        Richard Weinberger <richard@nod.at>,
+        Stafford Horne <shorne@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vineet Gupta <vgupta@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux--csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+        openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
+        x86@kernel.org, "Mike Rapoport (IBM)" <rppt@kernel.org>
+Subject: [PATCH 0/3] mm, arch: add generic implementation of pfn_valid() for FLATMEM
+Date:   Wed, 25 Jan 2023 21:07:54 +0200
+Message-Id: <20230125190757.22555-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-References: <cover.1669406380.git.geert@linux-m68k.org> <a9883a81-d909-09c5-708b-d598e030380e@physik.fu-berlin.de>
-In-Reply-To: <a9883a81-d909-09c5-708b-d598e030380e@physik.fu-berlin.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 23 Jan 2023 16:10:33 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWHUnWBN7ddBow+fqmt8W--9wFe5x_YMeRg7GQ=BNAL2Q@mail.gmail.com>
-Message-ID: <CAMuHMdWHUnWBN7ddBow+fqmt8W--9wFe5x_YMeRg7GQ=BNAL2Q@mail.gmail.com>
-Subject: Re: [PATCH/RFC 0/3] Atari DRM driver
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Helge Deller <deller@gmx.de>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Adrian,
+From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 
-On Mon, Jan 23, 2023 at 4:09 PM John Paul Adrian Glaubitz
-<glaubitz@physik.fu-berlin.de> wrote:
-> On 11/25/22 21:31, Geert Uytterhoeven wrote:
-> > This RFC patch series adds a DRM driver for the good old Atari
-> > ST/TT/Falcon hardware.  It was developed and tested (only) on the ARAnyM
-> > emulator.
->
-> I just remembered this WIP driver. Has there been any progress?
+Hi,
 
-So far no further progress.
+Every architecture that supports FLATMEM memory model defines its own
+version of pfn_valid() that essentially compares a pfn to max_mapnr.
 
-Gr{oetje,eeting}s,
+Use mips/powerpc version implemented as static inline as a generic
+implementation of pfn_valid() and drop its per-architecture definitions
 
-                        Geert
+Mike Rapoport (IBM) (3):
+  m68k: use asm-generic/memory_model.h for both MMU and !MMU
+  mips: drop definition of pfn_valid() for DISCONTIGMEM
+  mm, arch: add generic implementation of pfn_valid() for FLATMEM
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+ arch/alpha/include/asm/page.h      |  4 ----
+ arch/arc/include/asm/page.h        |  1 -
+ arch/csky/include/asm/page.h       |  1 -
+ arch/hexagon/include/asm/page.h    |  1 -
+ arch/ia64/include/asm/page.h       |  4 ----
+ arch/loongarch/include/asm/page.h  | 13 -------------
+ arch/m68k/include/asm/page.h       |  6 +-----
+ arch/m68k/include/asm/page_mm.h    |  1 -
+ arch/m68k/include/asm/page_no.h    |  4 ----
+ arch/microblaze/include/asm/page.h |  1 -
+ arch/mips/include/asm/page.h       | 28 ----------------------------
+ arch/nios2/include/asm/page.h      |  9 ---------
+ arch/openrisc/include/asm/page.h   |  2 --
+ arch/parisc/include/asm/page.h     |  4 ----
+ arch/powerpc/include/asm/page.h    |  9 ---------
+ arch/riscv/include/asm/page.h      |  5 -----
+ arch/sh/include/asm/page.h         |  3 ---
+ arch/sparc/include/asm/page_32.h   |  1 -
+ arch/um/include/asm/page.h         |  1 -
+ arch/x86/include/asm/page_32.h     |  4 ----
+ arch/x86/include/asm/page_64.h     |  4 ----
+ arch/xtensa/include/asm/page.h     |  2 --
+ include/asm-generic/memory_model.h | 12 ++++++++++++
+ include/asm-generic/page.h         |  2 --
+ 24 files changed, 13 insertions(+), 109 deletions(-)
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
+base-commit: 2241ab53cbb5cdb08a6b2d4688feb13971058f65
+-- 
+2.35.1
+
