@@ -2,96 +2,77 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FD5EC05027
-	for <linux-m68k@archiver.kernel.org>; Thu, 26 Jan 2023 07:22:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FD2DC54E94
+	for <linux-m68k@archiver.kernel.org>; Thu, 26 Jan 2023 08:27:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbjAZHWl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 26 Jan 2023 02:22:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50258 "EHLO
+        id S229908AbjAZI1l (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 26 Jan 2023 03:27:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbjAZHWk (ORCPT
+        with ESMTP id S229491AbjAZI1j (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 26 Jan 2023 02:22:40 -0500
-Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com [66.111.4.224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4759611C5
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 25 Jan 2023 23:22:39 -0800 (PST)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 84E2258287B;
-        Thu, 26 Jan 2023 02:22:36 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Thu, 26 Jan 2023 02:22:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm2; t=1674717756; x=1674724956; bh=E33V4yTgr/
-        ebT73Eum3QUd1t2W82YQcLJ50MWaQWWA8=; b=GiLb/skMhyZcQ01dO+WmZTL0hL
-        fZ2ikfEbw6M+0GfWoi9BCHFyTrzd/xw84UaBaAMBNbekfpfzAvn0+3OyIl7DpZIk
-        AscfaN2jhi+H4+HQPHW6kdeYv0wuJbvXO+Nmf3robmrH9p5Eaz+pTFIh+gw7OUdr
-        GHaCtnvyFflXRN840zxE0TueOxb7X1UKgvjA9BbNkN54rpLAR1FBHefwPtJLfO63
-        HU5voKjovLZNYSTASSTneRk9lhMeYYIxU5ah7ERIB1I+Tlqz6Sh6cL1quV9LIBsu
-        LJGaa2P7uDg6V7dGWcg5+AdhatDXLV001yKTEzZw6AETD2Ctpr5noVgk6LyA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; t=1674717756; x=1674724956; bh=E33V4yTgr/ebT73Eum3QUd1t2W82
-        YQcLJ50MWaQWWA8=; b=i56wP0aRGUynM8c34e7C84YjtNs5ESnKIS4Qk9sa0afa
-        hZ6EA3tyzNwBZXGsbGt4dL3J7JuIzcSWHi3zNRP0iTUuzQE6/UwhR5FhRpLn/ouY
-        xt6qq+vPBvkzpCHoSxo03igHd1P6lM5xa5cKrF0kUrwg7q2T50CTjxmrDjS0magc
-        ZxGVHrCofyRHgqO1ckZj1XRFm2MlqCsUcWY5ZDdbx7SuYVnKPtd0L9F879LdS+aK
-        Dn7zgQYu29nT9qh2c89O8Dw8mgobJhwQ28spFTbeCvY5iq0cHOI93ldlBxi2zZYx
-        hCfhfAJXQq9sSPCh3KQtBHwxvY8+uaUayqJxJdu1iQ==
-X-ME-Sender: <xms:OirSY0UrLGgYH3i-5TBnXx5kCGsN2YicrY23OHL1XQjg0oxapCF8GQ>
-    <xme:OirSY4mGQAtxHP9bCv1xlHPGN64L04ZTpqbp3Zo_GJISeoNzutpf4eILgOt_wG15N
-    1B3TnHPfXPQ5aq8ZzA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedruddvfedguddtiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:OirSY4a2BI8A8n6QHmfRNwvlyjZb0oHPUIh8AqkYJFN6HEjTyNF3mg>
-    <xmx:OirSYzWHad1gVQ1pUnGhOP8BKq_-7XwGF62Qeq8f9YbfS8PPn3iaCw>
-    <xmx:OirSY-nzh-yZLlxChEUc50uhXtONqG_p56LYIjKU8LygqILAOsLvJw>
-    <xmx:PCrSY4uHnBHnmZDNTb4kWTrj5YTK-XYwojaMEFC5m6krF7i9k40zBQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 7FEEBB60089; Thu, 26 Jan 2023 02:22:34 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-85-gd6d859e0cf-fm-20230116.001-gd6d859e0
-Mime-Version: 1.0
-Message-Id: <03605ec4-3e31-475e-8acf-2c342436aa24@app.fastmail.com>
-In-Reply-To: <20230125190757.22555-4-rppt@kernel.org>
-References: <20230125190757.22555-1-rppt@kernel.org>
- <20230125190757.22555-4-rppt@kernel.org>
-Date:   Thu, 26 Jan 2023 08:22:15 +0100
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Mike Rapoport" <rppt@kernel.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>
-Cc:     "Brian Cain" <bcain@quicinc.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        "Dinh Nguyen" <dinguyen@kernel.org>,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Greg Ungerer" <gerg@linux-m68k.org>, guoren <guoren@kernel.org>,
-        "Helge Deller" <deller@gmx.de>,
-        "Huacai Chen" <chenhuacai@kernel.org>,
-        "Matt Turner" <mattst88@gmail.com>,
-        "Max Filippov" <jcmvbkbc@gmail.com>,
-        "Michael Ellerman" <mpe@ellerman.id.au>,
-        "Michal Simek" <monstr@monstr.eu>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        "Rich Felker" <dalias@libc.org>,
-        "Richard Weinberger" <richard@nod.at>,
-        "Stafford Horne" <shorne@gmail.com>,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
-        "Vineet Gupta" <vgupta@kernel.org>,
-        "WANG Xuerui" <kernel@xen0n.name>,
-        "Yoshinori Sato" <ysato@users.sourceforge.jp>,
-        linux-alpha@vger.kernel.org,
-        Linux-Arch <linux-arch@vger.kernel.org>,
+        Thu, 26 Jan 2023 03:27:39 -0500
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E978646162
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Jan 2023 00:27:38 -0800 (PST)
+Received: by mail-qt1-f176.google.com with SMTP id v19so709637qtq.13
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Jan 2023 00:27:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iTLUhLqiktW0lQYPPHgLpL0hyET/yRv7DDBqjk/47Fc=;
+        b=gx7Xy/9WjTA9BAxeWilYl1PnJtqtTvstBWu/vdC/b1Hpw6qTfLjwPxj05WJagRIY8+
+         gyWPCUElws+44acXX8FSt4Glm8Odwv5kBaeMp7jqcGsvXyaOissjwnfCAH67g426BVUd
+         S0rqePKHvG4uSF5k26tsRzJ+jdT5rtiKfVlynhPKCdTQgohsw7T1OhCQF5pZMaAQk4lg
+         lFVxOQitR8LfKRvCYDcsMukKCWLp2HhalgTdHNiRTY8/YnkbjyxggKPkyEe54mi2XuYb
+         s5PR+K5qiklzm+vwIg+MzD3P1M+Ae3cfsKzd3xIlOWG9CKcJAkC1a7yjkw3WXewP6af8
+         BtRw==
+X-Gm-Message-State: AFqh2koa+q+PrmmqkiBWTZDFd6SDfyOa4zazSu24DxkAgbj0+TQvtq2J
+        ViWs05x003Lr2R5cpG9EVJnNJF3a+2J4jw==
+X-Google-Smtp-Source: AMrXdXsv57gk2qY2KD4qtoh3mX9igbOd30K1XK/L/mp79vba7i4ktdQ54ZZSVEyzRH6o0yKhiJTtUQ==
+X-Received: by 2002:a05:622a:1b28:b0:3a9:763b:4a61 with SMTP id bb40-20020a05622a1b2800b003a9763b4a61mr51115011qtb.28.1674721657697;
+        Thu, 26 Jan 2023 00:27:37 -0800 (PST)
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
+        by smtp.gmail.com with ESMTPSA id c12-20020ac84e0c000000b003b697038179sm369677qtw.35.2023.01.26.00.27.37
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Jan 2023 00:27:37 -0800 (PST)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-4c24993965eso13363707b3.12
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Jan 2023 00:27:37 -0800 (PST)
+X-Received: by 2002:a25:9ac1:0:b0:7b4:6a33:d89f with SMTP id
+ t1-20020a259ac1000000b007b46a33d89fmr2761883ybo.543.1674721245117; Thu, 26
+ Jan 2023 00:20:45 -0800 (PST)
+MIME-Version: 1.0
+References: <20230125190757.22555-1-rppt@kernel.org> <20230125190757.22555-2-rppt@kernel.org>
+In-Reply-To: <20230125190757.22555-2-rppt@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 26 Jan 2023 09:20:33 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUeuPgkWVjpZ=OM4ofnoYyv2nY1_FGo0JUZCFXYX=K2vw@mail.gmail.com>
+Message-ID: <CAMuHMdUeuPgkWVjpZ=OM4ofnoYyv2nY1_FGo0JUZCFXYX=K2vw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] m68k: use asm-generic/memory_model.h for both MMU and !MMU
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Brian Cain <bcain@quicinc.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Simek <monstr@monstr.eu>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Rich Felker <dalias@libc.org>,
+        Richard Weinberger <richard@nod.at>,
+        Stafford Horne <shorne@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vineet Gupta <vgupta@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
         linux--csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
         linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
@@ -101,27 +82,33 @@ Cc:     "Brian Cain" <bcain@quicinc.com>,
         linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
         openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
         x86@kernel.org
-Subject: Re: [PATCH 3/3] mm, arch: add generic implementation of pfn_valid() for
- FLATMEM
-Content-Type: text/plain
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Jan 25, 2023, at 20:07, Mike Rapoport wrote:
+On Wed, Jan 25, 2023 at 8:08 PM Mike Rapoport <rppt@kernel.org> wrote:
 > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 >
-> Every architecture that supports FLATMEM memory model defines its own
-> version of pfn_valid() that essentially compares a pfn to max_mapnr.
+> The MMU variant uses generic definitions of page_to_pfn() and
+> pfn_to_page(), but !MMU defines them in include/asm/page_no.h for no
+> good reason.
 >
-> Use mips/powerpc version implemented as static inline as a generic
-> implementation of pfn_valid() and drop its per-architecture definitions
+> Include asm-generic/memory_model.h in the common include/asm/page.h and
+> drop redundant definitions.
 >
 > Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-I assume this can best go through the mm tree, let me know if I should
-pick it up in the asm-generic tree instead.
+Gr{oetje,eeting}s,
 
-     Arnd
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
