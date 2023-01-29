@@ -2,70 +2,132 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F656C61D97
-	for <linux-m68k@archiver.kernel.org>; Sun, 29 Jan 2023 10:09:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96B19C05027
+	for <linux-m68k@archiver.kernel.org>; Sun, 29 Jan 2023 12:43:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229605AbjA2KI7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 29 Jan 2023 05:08:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57874 "EHLO
+        id S229605AbjA2Mm7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 29 Jan 2023 07:42:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjA2KI6 (ORCPT
+        with ESMTP id S234913AbjA2Mm6 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 29 Jan 2023 05:08:58 -0500
-X-Greylist: delayed 468 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 29 Jan 2023 02:08:56 PST
-Received: from scenergy.dfmk.hu (scenergy.dfmk.hu [193.224.143.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C17E18B0C
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 29 Jan 2023 02:08:56 -0800 (PST)
-Received: by scenergy.dfmk.hu (Postfix, from userid 1000)
-        id 615B4800401; Sun, 29 Jan 2023 11:00:22 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by scenergy.dfmk.hu (Postfix) with ESMTP id 221828003F5;
-        Sun, 29 Jan 2023 11:00:22 +0100 (CET)
-Date:   Sun, 29 Jan 2023 11:00:21 +0100 (CET)
-From:   Karoly Balogh <charlie@scenergy.dfmk.hu>
-To:     Chris Hanson <cmhanson@eschatologist.net>
-cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Debian m68k <debian-68k@lists.debian.org>, port-m68k@netbsd.org
-Subject: Re: Work on adding TLS support to LLVM on m68k
-In-Reply-To: <E11E3305-75B1-42FD-A839-46CF93DA5785@eschatologist.net>
-Message-ID: <alpine.DEB.2.02.2301291018310.2793@scenergy.dfmk.hu>
-References: <1dfde9d2-250f-dd1b-1775-76917f4b2166@physik.fu-berlin.de> <E11E3305-75B1-42FD-A839-46CF93DA5785@eschatologist.net>
-User-Agent: Alpine 2.02 (DEB 1266 2009-07-14)
+        Sun, 29 Jan 2023 07:42:58 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC17CD53F
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 29 Jan 2023 04:42:57 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5C2F760D30;
+        Sun, 29 Jan 2023 12:42:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E716EC433D2;
+        Sun, 29 Jan 2023 12:42:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1674996176;
+        bh=8RQZps3hA/u1mdRRQGYSzSx3iKFm4iTs/37kan3EXRs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=nZUZmSKw7/syf9RrBIFurd/O3AkMNzmfegfK+1AS6FvCaH0OhJOzBAu3UXC6av8P5
+         uY9AOa46F/d5yj77Ho8Ndgvw8xxJHw4nNHTmwjtslAXWyegt5vS1IKaYW+Stnwyuiy
+         2a+kHtcUtcTQ5Rqh9d7F2WecpHec0CXwi5TSyt1qClHpJLOA2sydJTb6OF8VZPCNps
+         3fd8EBQ67Wgcl+xTfrf7oQnKtinBQv8tebZZGSc5tamZZbBvwb6yYhdPyn1uALV1nu
+         d2H6gUYCo1lWTN9F7fs+AKTM2279BJ7XhGhJhYj0+jZo3axy2AgunU1xbS8ZdbQ6oz
+         oCSDE8gtPikyw==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Brian Cain <bcain@quicinc.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Simek <monstr@monstr.eu>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Rich Felker <dalias@libc.org>,
+        Richard Weinberger <richard@nod.at>,
+        Russell King <linux@armlinux.org.uk>,
+        Stafford Horne <shorne@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vineet Gupta <vgupta@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-mm@kvack.org,
+        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+        openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
+        x86@kernel.org, "Mike Rapoport (IBM)" <rppt@kernel.org>
+Subject: [PATCH v2 0/4] mm, arch: add generic implementation of pfn_valid() for FLATMEM
+Date:   Sun, 29 Jan 2023 14:42:31 +0200
+Message-Id: <20230129124235.209895-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="8323329-1628901010-1674986422=:2793"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-1628901010-1674986422=:2793
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 
 Hi,
 
-On Sat, 28 Jan 2023, Chris Hanson wrote:
+Every architecture that supports FLATMEM memory model defines its own
+version of pfn_valid() that essentially compares a pfn to max_mapnr.
 
-> That said, any compiler or linker for 68K needs to support multiple ABI
-> standards since Mac OS, Atari, Amiga, and all the different UNIX and
-> UNIX-like operating systems had their own ABI. Fortunately LLVM itself
-> supports the concept of multiple ABIs…
+Use mips/powerpc version implemented as static inline as a generic
+implementation of pfn_valid() and drop its per-architecture definitions
 
-Indeed, but the systems you mention A., use a mixure of ABIs, I mean one
-system with many ABIs, even if there are some "basic assumptions" about
-volatile/nonvolatile registers and so on, but otherwise "you're on your
-own", and B., neither of these have "threads" as such, let alone anything
-that resembles the concept of a Thread Local Storage in the modern sense.
+v2:
+* fix build on ARM and xtensa
+* add Acked- and Reviewed-by, thanks everybody
 
-Point is: it's safe to start on Linux/NetBSD, because there the OS at
-least knows about these as a concept, so there's some framework for it to
-follow as guard rails. Elsewhere - prepare for a lot of faking, and
-hacking, and cheating. :)
+v1: https://lore.kernel.org/all/20230125190757.22555-1-rppt@kernel.org
 
-(Ask me where I know... ;) )
+Mike Rapoport (IBM) (4):
+  arm: include asm-generic/memory_model.h from page.h rather than
+    memory.h
+  m68k: use asm-generic/memory_model.h for both MMU and !MMU
+  mips: drop definition of pfn_valid() for DISCONTIGMEM
+  mm, arch: add generic implementation of pfn_valid() for FLATMEM
 
-Charlie
---8323329-1628901010-1674986422=:2793--
+ arch/alpha/include/asm/page.h      |  4 ----
+ arch/arc/include/asm/page.h        |  1 -
+ arch/arm/include/asm/memory.h      |  2 --
+ arch/arm/include/asm/page.h        |  2 ++
+ arch/csky/include/asm/page.h       |  1 -
+ arch/hexagon/include/asm/page.h    |  1 -
+ arch/ia64/include/asm/page.h       |  4 ----
+ arch/loongarch/include/asm/page.h  | 13 -------------
+ arch/m68k/include/asm/page.h       |  6 +-----
+ arch/m68k/include/asm/page_mm.h    |  1 -
+ arch/m68k/include/asm/page_no.h    |  4 ----
+ arch/microblaze/include/asm/page.h |  1 -
+ arch/mips/include/asm/page.h       | 28 ----------------------------
+ arch/nios2/include/asm/page.h      |  9 ---------
+ arch/openrisc/include/asm/page.h   |  2 --
+ arch/parisc/include/asm/page.h     |  4 ----
+ arch/powerpc/include/asm/page.h    |  9 ---------
+ arch/riscv/include/asm/page.h      |  5 -----
+ arch/sh/include/asm/page.h         |  3 ---
+ arch/sparc/include/asm/page_32.h   |  1 -
+ arch/um/include/asm/page.h         |  1 -
+ arch/x86/include/asm/page_32.h     |  4 ----
+ arch/x86/include/asm/page_64.h     |  4 ----
+ arch/xtensa/include/asm/page.h     |  4 ++--
+ include/asm-generic/memory_model.h | 12 ++++++++++++
+ include/asm-generic/page.h         |  2 --
+ 26 files changed, 17 insertions(+), 111 deletions(-)
+
+
+base-commit: 2241ab53cbb5cdb08a6b2d4688feb13971058f65
+-- 
+2.35.1
+
