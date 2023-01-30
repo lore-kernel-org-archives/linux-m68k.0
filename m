@@ -2,63 +2,64 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79097C636D3
-	for <linux-m68k@archiver.kernel.org>; Mon, 30 Jan 2023 19:10:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0604EC636D7
+	for <linux-m68k@archiver.kernel.org>; Mon, 30 Jan 2023 19:25:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236693AbjA3TKy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 30 Jan 2023 14:10:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42778 "EHLO
+        id S237973AbjA3TZq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 30 Jan 2023 14:25:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbjA3TKw (ORCPT
+        with ESMTP id S237575AbjA3TZf (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 30 Jan 2023 14:10:52 -0500
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD6A10F
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Jan 2023 11:10:51 -0800 (PST)
-Received: by mail-qt1-f170.google.com with SMTP id x17so11110638qto.10
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Jan 2023 11:10:51 -0800 (PST)
+        Mon, 30 Jan 2023 14:25:35 -0500
+Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6BB1D916
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Jan 2023 11:25:34 -0800 (PST)
+Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-16346330067so16476367fac.3
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Jan 2023 11:25:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=timesys-com.20210112.gappssmtp.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=szZsHIWWwEIEvpBzNSiJ4tABquTay9jjA0cso0CeHsY=;
+        b=Z1OYaB76wEkFB0BBQdmHGq9FrtyhA5zwlTodI+830OIsYNZYlkliQKk0VYkA8pveyi
+         /2PTVHcUiug/u9nFMOBeNWu0/FaKWwKdRyNBpuTZyS5BVZ0XDBxj+BMwURiMeED70d4E
+         JQWUHiIa1VL0SBesUB5UDe1GQG3pBqliXUekvZaagD3297SIA59tc30OFqxJB7eecH0J
+         cn84fPK/V8YQnSzpknr+zN4EM0PHMIW+KFy4QnVo+aRNjdRNM5WPzkuZHFqeqqRfzK/9
+         TWoWlvXu9MRtGzMrMPa4Uvd+5aEPlM/ZdZ5oYMRxTXU/6ZSsKzyA131VVVtWnJlEX5yU
+         o2Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=QYQveIOCc92ew4wuWc56i2o9XfBI3Tbl7/eicT4C3m8=;
-        b=5hQm1/rx7xWQiu527XDnhJx18qpMt3fkOnN5XD26bkFAC+1/O87LM6n0PMNCK5VVWl
-         bkV3Ln42kXrifs1Id37lYeu3CvwHUUehb5JXoPeH6lbTA62xBq4d+HSWPMjI4koaOVuJ
-         Ui5/QLrX2cIl+MoctNBzqi0EYZ3QBCBlfDn20lPq2OBT0TxL66QvTThwbqncUq7h/Ou+
-         bEP6CxiHBB4xnlfgSgFcvLQU8Y1XDs3j2336b9aNGQvFg7gKmk4kvgkoUj05uBMh+sBi
-         hACacrianSbrj/p+hVfqroCFvt88+FHSuGO65DA1jNBWEhz80Jq5i/SErJFIHLnNuQ10
-         1qhw==
-X-Gm-Message-State: AFqh2koBvJnV3fTE/FdEzCQRYXaspUQCjcbqYkq2i2VKPuwNykFyIjaW
-        9odlI7BgEkttrXVuZD8RCLoCowPdz7aH7A==
-X-Google-Smtp-Source: AMrXdXu812+SlHXnKHTbeOj0e8LVbEZ+xSs2X4qDSzNz5Ee7ptjtKTuYcCpqK6TRwqySgvUp5XUEkQ==
-X-Received: by 2002:ac8:4914:0:b0:3b1:ad76:eefe with SMTP id e20-20020ac84914000000b003b1ad76eefemr76048255qtq.10.1675105849885;
-        Mon, 30 Jan 2023 11:10:49 -0800 (PST)
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com. [209.85.128.176])
-        by smtp.gmail.com with ESMTPSA id bz17-20020a05622a1e9100b003b86b962030sm2173682qtb.72.2023.01.30.11.10.48
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Jan 2023 11:10:49 -0800 (PST)
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-4fda31c3351so173103967b3.11
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Jan 2023 11:10:48 -0800 (PST)
-X-Received: by 2002:a81:1216:0:b0:506:6b5d:523c with SMTP id
- 22-20020a811216000000b005066b5d523cmr1603608yws.283.1675105848292; Mon, 30
- Jan 2023 11:10:48 -0800 (PST)
+        bh=szZsHIWWwEIEvpBzNSiJ4tABquTay9jjA0cso0CeHsY=;
+        b=xMag6QPxb89vtuSO2VN+1YtvrsjJmX9yG1Dss5C/iwKBqNOn+fa8HFWDLfiysuCpvz
+         m+VnGgiTr8gPpjxhDysxl9ayIOKoOW4ZIN9O8fBXVwAFJREl65Qs2k2Ezb5E9d33RkNE
+         9szy8kVMOP1qh0qHsKdjTc7+Es6o+Y/dSGEtZcEsx0su35X5I+7pz3n/nIdeDHS2sJCr
+         Ys5XfWg6DRrDQjSum/dkT01bHKgB3qLrNAm8drZ8EI9yEYTEk5C5QCUfrUiHweveJjMI
+         G5hMqZQYKj2/hGyMPncq4eHQoomxUAJwX6aNcW54rwIbQ06LSzsmxI/SDFz1TtAIjht4
+         StrA==
+X-Gm-Message-State: AO0yUKVi/uU1MFyrGjuMwnzWtmskWQf5pPNoGvgR4ETxt33ISDy+5M3u
+        VuyBgnvu9kMR0l2WAyeeI7nnySAuYZ/WkXFhPYE9jQ==
+X-Google-Smtp-Source: AK7set830c+EUxOe9qQbgieMNM+kJN8XR9KQwuygfSQG3bmSJPBvl/GBgsvD4FoBJ796pyWhjloSjZtqWPjX844qs5c=
+X-Received: by 2002:a05:6870:610d:b0:163:6c4f:ce0d with SMTP id
+ s13-20020a056870610d00b001636c4fce0dmr1076652oae.219.1675106733949; Mon, 30
+ Jan 2023 11:25:33 -0800 (PST)
 MIME-Version: 1.0
 References: <Y9PWhU7DVQCLP9EX@bill-the-cat> <CAMuHMdUMvGhpbfsTaaNSpypH_XdKjVzY3yWOOpR=Acj_7K6-uw@mail.gmail.com>
  <CALJHbkBqdvJu8KGKbJ2eayhiP_t607AvuwgYidhLTPY7=Mt4Hg@mail.gmail.com>
  <Y9fs2wH4WHIzae5r@bill-the-cat> <7739d9da9f49f99d156dacf645a311388e9eb628.camel@physik.fu-berlin.de>
  <Y9fxfNDNXXyJQ0Dn@bill-the-cat> <6558aca3-63aa-c89c-93fc-a5afe48cbe78@helsinkinet.fi>
 In-Reply-To: <6558aca3-63aa-c89c-93fc-a5afe48cbe78@helsinkinet.fi>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 30 Jan 2023 20:10:36 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdV3xawhr_syeM_5vLrQsF1nMqZhOuyBbUW2mjyPy6Om8Q@mail.gmail.com>
-Message-ID: <CAMuHMdV3xawhr_syeM_5vLrQsF1nMqZhOuyBbUW2mjyPy6Om8Q@mail.gmail.com>
+From:   Angelo Dureghello <angelo.dureghello@timesys.com>
+Date:   Mon, 30 Jan 2023 20:25:03 +0100
+Message-ID: <CALJHbkCLVaPMZK2PMWDqROoSkzLJ9oD1WFJW6_bdkmdBoJrDJA@mail.gmail.com>
 Subject: Re: U-Boot support for M68K removal
 To:     Eero Tamminen <oak@helsinkinet.fi>
 Cc:     Tom Rini <trini@konsulko.com>,
         John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Angelo Dureghello <angelo.dureghello@timesys.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org,
         Joshua Thompson <funaho@jurai.org>,
         Philip Blundell <philb@gnu.org>, u-boot@lists.denx.de,
@@ -68,9 +69,12 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Eero,
+Hi Ereo,
 
 On Mon, Jan 30, 2023 at 8:02 PM Eero Tamminen <oak@helsinkinet.fi> wrote:
+>
+> Hi,
+>
 > On 30.1.2023 18.34, Tom Rini wrote:
 > > That's great to hear. While I started my life on m68k machines, I never
 > > did get Linux up on one. Do the coldfire platforms you have run U-Boot
@@ -98,29 +102,14 @@ On Mon, Jan 30, 2023 at 8:02 PM Eero Tamminen <oak@helsinkinet.fi> wrote:
 > Hatari, 68000-68040 Atari emulation (based on WinUAE CPU core).
 >
 > Previous, 68030 NeXT emulator (based on Hatari).
+>
 
-But none of the platforms listed above boot using U-Boot, which is
-what Tom is interested in...
+Thanks, will have a look if last qemu works for ColdFire.
 
-"qemu-system-m68k -machine help" lists a.o.:
+angelo
 
-    an5206               Arnewsh 5206
-    mcf5208evb           MCF5208EVB (default)
 
-U-Boot still contains include/configs/M5208EVBE.h, but there are no
-actual users...
-
-Angelo: so support for amcore in qemu would be nice ;-)
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Angelo Dureghello
+Timesys
+e. angelo.dureghello@timesys.com
