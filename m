@@ -2,99 +2,82 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31F0CC54EED
-	for <linux-m68k@archiver.kernel.org>; Mon, 30 Jan 2023 10:12:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62528C61DA4
+	for <linux-m68k@archiver.kernel.org>; Mon, 30 Jan 2023 10:18:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235120AbjA3KM1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 30 Jan 2023 05:12:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46800 "EHLO
+        id S236314AbjA3KSQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 30 Jan 2023 05:18:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233298AbjA3KM0 (ORCPT
+        with ESMTP id S236351AbjA3KSH (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 30 Jan 2023 05:12:26 -0500
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB571716F
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Jan 2023 02:12:25 -0800 (PST)
-Received: by mail-qt1-f181.google.com with SMTP id z9so9506824qtv.5
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Jan 2023 02:12:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=msgyLoFKs7pTSgzoTAvpyi4Z6i9IcBr25WOUg5fxIaI=;
-        b=LUt9WwRHFLVw2G2oy1An762iAy0aPdVuyxkWGI7QAV5G5igjZQ2djbQ86ucI8wr6uV
-         QZqmHNQtgOVjsKyP5gxExuiYifwK4q0C4GMHvp9OfFS4tazCQWytKjju14sFeagHQGII
-         17Eg3jAAEc6JxCerEAI7M3tctNKs1hqD5bghytJgAnTqbTU9TaurHLSz0oVLsab55xK3
-         AIWFNEWMFDvqH7FGvo0kyjEfDMjKJr9bRSOy7WqiWi1hf8iec6vau/s8O/nPaXsLM+r8
-         3vBi9sVSNz+cQzG1bSmwdB0dRv2BxvvZQvbRQdJqxCjSH7ojeENxzuV7xqU/mimXfm4T
-         eviQ==
-X-Gm-Message-State: AFqh2kpRIgs8LTgKFTx9UzVaOxMs0UHMVFcPxGxO5ZH4KJhsT1kGpTSI
-        XYyIX9LHZv9HA4dMJOK5ZbNj0BrCTBeeOg==
-X-Google-Smtp-Source: AMrXdXuwFD/jjupQhvBqGTZt/WhAWh1qLGV9lU7LQI/U6hYRyQT0ppYNOneJy8OHEbWd5ku7jEFBuQ==
-X-Received: by 2002:ac8:7107:0:b0:3b6:2f22:75bd with SMTP id z7-20020ac87107000000b003b62f2275bdmr63798607qto.28.1675073543996;
-        Mon, 30 Jan 2023 02:12:23 -0800 (PST)
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
-        by smtp.gmail.com with ESMTPSA id bz17-20020a05622a1e9100b003b86b962030sm1418828qtb.72.2023.01.30.02.12.23
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Jan 2023 02:12:23 -0800 (PST)
-Received: by mail-yb1-f175.google.com with SMTP id 123so13326233ybv.6
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Jan 2023 02:12:23 -0800 (PST)
-X-Received: by 2002:a25:9801:0:b0:7d5:b884:3617 with SMTP id
- a1-20020a259801000000b007d5b8843617mr4331804ybo.380.1675073543385; Mon, 30
- Jan 2023 02:12:23 -0800 (PST)
+        Mon, 30 Jan 2023 05:18:07 -0500
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EF5196AA
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Jan 2023 02:18:02 -0800 (PST)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1pMREd-000bYP-Ts; Mon, 30 Jan 2023 11:17:59 +0100
+Received: from p57bd9464.dip0.t-ipconnect.de ([87.189.148.100] helo=[192.168.178.81])
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1pMREd-000Y8d-Nf; Mon, 30 Jan 2023 11:17:59 +0100
+Message-ID: <e94e6e1d-f0ac-d1bc-bee3-70486d86eec5@physik.fu-berlin.de>
+Date:   Mon, 30 Jan 2023 11:17:59 +0100
 MIME-Version: 1.0
-References: <4a9c1d0d-07aa-792e-921f-237d5a30fc44.ref@yahoo.com> <4a9c1d0d-07aa-792e-921f-237d5a30fc44@yahoo.com>
-In-Reply-To: <4a9c1d0d-07aa-792e-921f-237d5a30fc44@yahoo.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 30 Jan 2023 11:12:11 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdW3yD22_ApemzW_6me3adq6A458u1_F0v-1EYwK_62jPA@mail.gmail.com>
-Message-ID: <CAMuHMdW3yD22_ApemzW_6me3adq6A458u1_F0v-1EYwK_62jPA@mail.gmail.com>
-Subject: Re: stack smashing detected
-To:     Stan Johnson <userm57@yahoo.com>
-Cc:     Debian m68k <debian-68k@lists.debian.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: Work on adding TLS support to LLVM on m68k
+Content-Language: en-US
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Debian m68k <debian-68k@lists.debian.org>, port-m68k@netbsd.org
+References: <1dfde9d2-250f-dd1b-1775-76917f4b2166@physik.fu-berlin.de>
+ <30d71f0f-6628-4a67-2de3-eb84b25b2836@linux-m68k.org>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+In-Reply-To: <30d71f0f-6628-4a67-2de3-eb84b25b2836@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.148.100
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-CC linux-m68k
+Hi Finn!
 
-On Mon, Jan 30, 2023 at 5:01 AM Stan Johnson <userm57@yahoo.com> wrote:
->
-> Hello,
->
-> I am seeing anywhere from zero to four of the following errors while
-> booting Linux on 68030 systems and using sysvinit startup scripts:
->
-> *** stack smashing detected ***: terminated
-> Aborted
->
-> I usually (but not always) see three of the errors while init is running
-> the rcS.d scripts, and one while running the rc2.d scripts. The stack
-> smashing messages appear only on the system console (nothing is logged
-> in an error log or dmesg). Despite the errors, the system continues
-> booting to multiuser mode without any obvious additional problems. I
-> haven't tested systemd, which is too slow to be useful on my m68k
-> systems (though I have a Debian SID with systemd that I can restore for
-> testing if necessary).
->
-> I'm using the current Debian SID and Debian kernel, and I've confirmed
-> the errors on a Mac IIci and SE/30. I haven't seen the errors on any
-> 68040 system (I only tested on a Centris 650 and PowerBook 550c). I also
-> notice the errors on 68030 systems using custom kernels that I have
-> cross-compiled using GCC 12 or GCC 10 on a x86_64 system running Debian
-> SID; however, I do not see the errors as often if I cross-compile using
-> GCC 8.3.0 on a 686 system (running Debian 10.7 Buster) -- I saw the
-> errors a few weeks ago with an earlier kernel, but none today using
-> Linux 6.1.8 cross-compiled with GCC 8.3.0.
->
-> I'll be happy to help debug or troubleshoot, though at this point, since
-> the "stack smashing detected" errors aren't reporting which processes
-> are being terminated/aborted, I'm not sure where to start.
->
-> thanks for any suggestions
->
-> -Stan Johnson   userm57@yahoo.com
+On 1/29/23 01:15, Finn Thain wrote:
+> The developers of the TLS/NPTL support for m68k/coldfire were working for
+> Freescale and Codesourcery at the time...
+> 
+> https://lists.debian.org/debian-68k/2008/02/msg00212.html
+> https://lists.debian.org/debian-68k/2007/11/msg00071.html
+
+Thanks, these links are very useful, especially the one describing the ABI.
+
+I have copied the ABI description into the Github issue, crediting the source:
+
+> https://github.com/llvm/llvm-project/issues/60354
+
+> The toolchain mailing lists at sourceware.org might be a good place to
+> seek technical information about the implementation. Or you could try
+> sending a question to the old e-mail addresses of the people who sent the
+> patches e.g.
+> 
+> https://git.kernel.org/torvalds/c/9674cdc74d63
+
+I have sent an email to both Joseph and Maxim, but I haven't got any reply yet.
+
+Adrian
+
+-- 
+  .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+
