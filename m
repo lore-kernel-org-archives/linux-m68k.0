@@ -2,140 +2,127 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66FB0C636D3
-	for <linux-m68k@archiver.kernel.org>; Mon, 30 Jan 2023 19:32:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3999DC636CD
+	for <linux-m68k@archiver.kernel.org>; Mon, 30 Jan 2023 21:50:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236465AbjA3Tcx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 30 Jan 2023 14:32:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60156 "EHLO
+        id S229685AbjA3Vuw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 30 Jan 2023 16:50:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236396AbjA3Tcx (ORCPT
+        with ESMTP id S229476AbjA3Vuw (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 30 Jan 2023 14:32:53 -0500
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 741132133
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Jan 2023 11:32:48 -0800 (PST)
-Received: by mail-qt1-x831.google.com with SMTP id v19so11185254qtq.13
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Jan 2023 11:32:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yGlwB5+mDvVhzxU1IWfuYh4wXkYc3nPJ1hNISQvaF9w=;
-        b=NMF0IF0wdOZM9FjYfKiIg8P078PUMABR4ovfA6NS3tb4IMC3SdgXQhHeaT/xioagxp
-         HlbbpLimJwz35tETP8sa1DSIVj43RxqakvgMK27/h+l0MiDr892IoH9K/zCeUIoMWVDh
-         G4uFl3VmIQTwBn0T8O9EfzMjoWCGOy/AN8vM8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yGlwB5+mDvVhzxU1IWfuYh4wXkYc3nPJ1hNISQvaF9w=;
-        b=ZLjukMl5e+dPQ0/Nze22jEFDRdEQjcOh0OLu9+xNbKmImc8uSZLcxGLR/5BF9FB1A5
-         hnfd3IDXZMa01sURAW9przdedsE5lGaGvG3VJVnuntlQpzpnMUTJcUHHdF/4MPuV6lX0
-         GqvMWx/cdZD2/oo990RWXBo7kYR9bvI9BEPALKkAkSDVAB6FQD9XFsyHA442O5jEmm7l
-         a6zfCv/MAuiq7L+sehmD8xVhTduE0LaQU4LXecCqG+lwYGIDFdFhb9v2Ep4mrN6+3wgv
-         155n2leNugE4ENM43h2YCgzXedz8VMT7BIBISiEIEovnn1XlfHpkwlCfsTgLOZpJmrGe
-         Y2hw==
-X-Gm-Message-State: AO0yUKWFJv94Ed6gSzS1l/i6zbPrrCY2vISvYRE4j3kURskGm79/Wl/9
-        YgSgDzD1QPTxNfsXmSdyP5EO7A==
-X-Google-Smtp-Source: AK7set9LrhjNn1k2uRY1XjtlC3rvVKrE2zXqja3ohwV1D+yMJlYS7UFnUMD+Z6r+uXSz240KIZbPaQ==
-X-Received: by 2002:ac8:7fc6:0:b0:3b8:4bb8:5aa5 with SMTP id b6-20020ac87fc6000000b003b84bb85aa5mr15211413qtk.54.1675107167584;
-        Mon, 30 Jan 2023 11:32:47 -0800 (PST)
-Received: from bill-the-cat (2603-6081-7b00-6400-31da-0362-f50e-b4ac.res6.spectrum.com. [2603:6081:7b00:6400:31da:362:f50e:b4ac])
-        by smtp.gmail.com with ESMTPSA id k17-20020a05620a143100b007242a18ee8asm869031qkj.128.2023.01.30.11.32.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Jan 2023 11:32:47 -0800 (PST)
-Date:   Mon, 30 Jan 2023 14:32:45 -0500
-From:   Tom Rini <trini@konsulko.com>
-To:     Angelo Dureghello <angelo.dureghello@timesys.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mon, 30 Jan 2023 16:50:52 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2737472B0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Jan 2023 13:50:51 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9E98361280;
+        Mon, 30 Jan 2023 21:50:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF6D8C433D2;
+        Mon, 30 Jan 2023 21:50:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1675115450;
+        bh=Y57z5W1jiRCGSSKHAs8VGIIVC8K6IkKYxssjhZMZbOY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=lA+Ysc28X+Dz78qM/KaM98dytiu/bUOxvWt4z98Pit2QWXwobtu8lkpBs2gYE+LI8
+         pHnMp3UR0FQjtNl/i3VaHATFJTqUibOTubwQBxdRf7ORBk6J25oXMBlYH5pLuRmkbf
+         TWxPC4mYvJZ3+hZOCqcKlQhEnZG++Ds0p8+ysNks9XrC1iczRPfRPuLjDklMh15nHC
+         FhXxZnU0Q3Hc7dCHgLVD8jzAItID3inUskmKC+hrDIHkcd+/NJqNgQ0JR6ux9U9YWq
+         FqnUjsz/HYrl6aC0deXlLI8VC/5+094tVlygAv8YsCMbKFDAVaPKGswAr0FngqnbH+
+         veWp9AhGDa8Hg==
+Message-ID: <b3480cff-970b-bae3-4b8d-01cd587dcb94@kernel.org>
+Date:   Tue, 31 Jan 2023 07:50:45 +1000
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: U-Boot support for M68K removal
+Content-Language: en-US
+To:     Tom Rini <trini@konsulko.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Eero Tamminen <oak@helsinkinet.fi>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Angelo Dureghello <angelo.dureghello@timesys.com>,
         linux-m68k@lists.linux-m68k.org,
         Joshua Thompson <funaho@jurai.org>,
         Philip Blundell <philb@gnu.org>, u-boot@lists.denx.de,
         Huan Wang <alison.wang@nxp.com>
-Subject: Re: U-Boot support for M68K removal
-Message-ID: <Y9gbXXS1Z38gbyGm@bill-the-cat>
 References: <Y9PWhU7DVQCLP9EX@bill-the-cat>
  <CAMuHMdUMvGhpbfsTaaNSpypH_XdKjVzY3yWOOpR=Acj_7K6-uw@mail.gmail.com>
  <CALJHbkBqdvJu8KGKbJ2eayhiP_t607AvuwgYidhLTPY7=Mt4Hg@mail.gmail.com>
  <Y9fs2wH4WHIzae5r@bill-the-cat>
- <CALJHbkCTbhBrn5_XLPBADswOdhwah7vz7eke_YOr-D1spVRmyQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="QryWxdrE/Y3nndm+"
-Content-Disposition: inline
-In-Reply-To: <CALJHbkCTbhBrn5_XLPBADswOdhwah7vz7eke_YOr-D1spVRmyQ@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
+ <7739d9da9f49f99d156dacf645a311388e9eb628.camel@physik.fu-berlin.de>
+ <Y9fxfNDNXXyJQ0Dn@bill-the-cat>
+ <6558aca3-63aa-c89c-93fc-a5afe48cbe78@helsinkinet.fi>
+ <CAMuHMdV3xawhr_syeM_5vLrQsF1nMqZhOuyBbUW2mjyPy6Om8Q@mail.gmail.com>
+ <Y9ga+bN+wHEI7w0m@bill-the-cat>
+From:   Greg Ungerer <gerg@kernel.org>
+In-Reply-To: <Y9ga+bN+wHEI7w0m@bill-the-cat>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+Hi Tom,
 
---QryWxdrE/Y3nndm+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 31/1/23 05:31, Tom Rini wrote:
+> On Mon, Jan 30, 2023 at 08:10:36PM +0100, Geert Uytterhoeven wrote:
+>> Hi Eero,
+>>
+>> On Mon, Jan 30, 2023 at 8:02 PM Eero Tamminen <oak@helsinkinet.fi> wrote:
+>>> On 30.1.2023 18.34, Tom Rini wrote:
+>>>> That's great to hear. While I started my life on m68k machines, I never
+>>>> did get Linux up on one. Do the coldfire platforms you have run U-Boot
+>>>> today? If so, are they already supported upstream? One of my biggest
+>>>> concerns about the architecture, in U-Boot, is that I've just not heard
+>>>> of anyone using it in quite some time, and we don't have any emulated
+>>>> platforms either (can it be done in QEMU? We have other plaforms in CI
+>>>> via QEMU) so I worry it's not working.
+>>>
+>>> Qemu supports both m68k and ColdFire nowadays:
+>>> https://www.qemu.org/docs/master/system/target-m68k.html
+>>>
+>>>
+>>>          - Eero
+>>>
+>>> PS. For m68k there are also a lot of other emulators that emulate
+>>> specific platforms.
+>>>
+>>> Aranym, 68040 Atari "clone", used a lot by Debian m68k port before Qemu
+>>> got m68k support.
+>>>
+>>> WinAUE, 68000-68040 Amiga emulation.  Unlike Aranym or Qemu, this
+>>> emulates also CPU cache.
+>>>
+>>> Hatari, 68000-68040 Atari emulation (based on WinUAE CPU core).
+>>>
+>>> Previous, 68030 NeXT emulator (based on Hatari).
+>>
+>> But none of the platforms listed above boot using U-Boot, which is
+>> what Tom is interested in...
+>>
+>> "qemu-system-m68k -machine help" lists a.o.:
+>>
+>>      an5206               Arnewsh 5206
+>>      mcf5208evb           MCF5208EVB (default)
+>>
+>> U-Boot still contains include/configs/M5208EVBE.h, but there are no
+>> actual users...
+>>
+>> Angelo: so support for amcore in qemu would be nice ;-)
+> 
+> I did a little searching after sending and I see there's been some
+> patches for mcf5208evb and U-Boot, in QEMU but the last message (2019)
+> was that the CPU emulation wasn't quite complete enough.  But yes, one
+> way or another, it would be really great to get a virtualized platform
+> in CI to prevent future breakage.
 
-On Mon, Jan 30, 2023 at 08:22:15PM +0100, Angelo Dureghello wrote:
-> Hi Tom,
->=20
-> thanks a lot, and thanks Geert for forwarding this :)
->=20
-> On Mon, Jan 30, 2023 at 5:14 PM Tom Rini <trini@konsulko.com> wrote:
-> >
-> > On Mon, Jan 30, 2023 at 01:49:11PM +0100, Angelo Dureghello wrote:
-> >
-> > > Hi Tom and all,
-> > >
-> > > really have to apologize, had hard times these last 2 years
-> > > and couldn't follow at all the activity, i am totally culprit
-> > > and responsible.
-> > >
-> > > Now i can jump back on following, if there is any sense
-> > > in keeping m68k/coldfire.
-> > > Let me know, if ok i start back checking all old patches
-> > > from tonight. Also, will have to update my email and rebase
-> > > to master.
-> >
-> > I'm glad you're back. I think the first thing to do would be to confirm
-> > that U-Boot still works on at least some supported board, then
-> > confirming you can still access
-> > https://source.denx.de/u-boot/custodians/u-boot-coldfire
-> >
-> first 2 tests:
->=20
-> 1) rebased u-boot to master, flashed to stmark2 (mcf54415),
-> no boot, black console. Working on this.
+FWIW the QEMU emulation of the m5208evb is good enough to run Linux.
+I do a lot of kernel testing (and development!) using that.
 
-OK.  Based on some other reports in general, I suspect there's probably
-2 or 3 different bugs uncovered / introduced.  Hopefully it's not too
-hard to flash and test so bisect'ing these down won't be super painful.
+Regards
+Greg
 
-> 2) seems i can still access
-> https://source.denx.de/u-boot/custodians/u-boot-coldfire
 
-Great!
-
---=20
-Tom
-
---QryWxdrE/Y3nndm+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEEGjx/cOCPqxcHgJu/FHw5/5Y0tywFAmPYG10ACgkQFHw5/5Y0
-tyw3/Qv+NDnOSwdYob6zu2yOmX9LjbwvwOs2akuMlSoYI6d0uEraGXAH2A//SNpu
-PVlHn6nbBPGWOi+/dPYEiXJHEqePh2tKA+iprRRxe47o+Ot/G3zUdimPIenfP+zg
-AVeLwW8ykPhGGcAQvCbmL0WInuKgJCos6MnrBvzEEetX5ov59ZNfE6rvizjPt1RP
-pzvrkD/P+3KZeZxbh2SF0Sv+P1mVmst0pExY+vriF2Ok27gtcnClA+39Fd+0TIW4
-U06ueJwgbZg3d69axraeCeT+jamLgg09tKAmdb5T1kZDDpF53q9M/elO3I29w5WI
-TErKMHvv6r5d+5QQXhHGNs563CbeU9z0hOqk6A9WyofgicjwH+rWRq7G2fSCjrvl
-/52KI9e9Kk8xz7MAw0cvrApRhdxkguZmXC7MqMD2PYVWegAKf5LmyId8OtOcO4Rf
-G9079lNT480v9oGmboD5ND5YXRcyeodk8/zbWTQF0wuSyk/4za4/T3s/qSWD+IaZ
-TcldyPn/
-=fOP0
------END PGP SIGNATURE-----
-
---QryWxdrE/Y3nndm+--
