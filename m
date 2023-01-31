@@ -2,178 +2,137 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE36FC636D3
-	for <linux-m68k@archiver.kernel.org>; Mon, 30 Jan 2023 22:04:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 033D3C636D3
+	for <linux-m68k@archiver.kernel.org>; Tue, 31 Jan 2023 03:05:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229716AbjA3WE7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 30 Jan 2023 17:04:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50036 "EHLO
+        id S229536AbjAaDFX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 30 Jan 2023 22:05:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230426AbjA3WEv (ORCPT
+        with ESMTP id S229909AbjAaDFW (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 30 Jan 2023 17:04:51 -0500
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 806C72F79F
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Jan 2023 14:04:41 -0800 (PST)
-Received: by mail-qt1-x82a.google.com with SMTP id m26so11645477qtp.9
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Jan 2023 14:04:41 -0800 (PST)
+        Mon, 30 Jan 2023 22:05:22 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8719B29E08
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Jan 2023 19:05:21 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id m11so12996350pji.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Jan 2023 19:05:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=C02woHUh44RrGPmLMOW2pFPkYS764K6xxrpUbrcHhaI=;
-        b=JlPVv/ztLW436tEU2A5i2/hZ6SMgnUIWp0Xn/zCpIjlu5y5zlzdOfnbbs1IYZRcQTv
-         JSqEEffdcPJsAePX3z8GVN7SW/8Sq7OneW8yIEAK4YL3GmCaK4kGJyq5Lj9hgd3e2TGJ
-         sw8e7KcRnAa4FpYnEHogXwROidAqON+uHoYOw=
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cJUhplyXfCpKa6xSQNOt49RdO8/cRnMFdEc/bPdI1lc=;
+        b=TJ9wqSNCT38GX4OyBSBrHeGYqTD16Snf9+SwdPvOsVRva/DmarC2Wvrmwmh0E5Yaiy
+         GrszcCdboxQij9EJ4Vy1xHNXs1n93dE9onPc9boHUW5fC3lunFK1qmlxrAX5ms/LIgTY
+         4p4XQFBQpSsNAdqiAqiYGd5BoHT5du5yqrD0vsd3h8RfNjWR+Hm1QbntUwrYFjC7XYVp
+         LTQEpVFZpAT+Zk3bvmGnWDXD/oB4THfhSD2ItemmoJcL2gxqUsZ+akKGnYmLDDgG8wm7
+         V9nPKj8LrRCf6SOigE28IgnpC49WNsCbKq70rrG6CL9Kl1zqCVsmu2Y5fp8H5fdGLQmN
+         bRvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C02woHUh44RrGPmLMOW2pFPkYS764K6xxrpUbrcHhaI=;
-        b=eVA1HssX9tBTnKYM96f1Hp2GZ+zZvyoNjiGYDBEfpF/TvFFUG2VK0IIbZutpM0aMBX
-         a/sXFm2K4eclYCc1KBQDKfHI8hNc7RsgbjcjMM5sAfCXGR7sbgMIZHp08t6nIna04CK2
-         sev260kTkvbnhKozVCDyH+waygPDnzP1ki6zLO2abJhaOe1WgCyEEQhckdWzodCNySQg
-         J5740n5vyddji2G7/yugx1Kbshu+ilFWRsVGXDJLOIHIsnMpnXS7rP0wKCFK9+/WeL8/
-         7i7Bh3bFC0UcJCCWOVInE4VJkrQGlYkVzuu/AA047GbCjH1CubKikSf2aY+iIlvbAf0J
-         l9XQ==
-X-Gm-Message-State: AO0yUKWAyU6to5TTlZvhL3KuSBzQqBbEjSPfCE1rmizbRaEkaHDN7P6G
-        FDliu+aiV1jQwkzRgMk+VQMLvw==
-X-Google-Smtp-Source: AK7set9t2w1SgEMMGLQKOQAi9Q5Dz1x+YpevXJ0STNjShCIpIIWFmjdKv34qudadPY4Mdb9lAT6tyw==
-X-Received: by 2002:a05:622a:1887:b0:3b9:a63e:35c0 with SMTP id v7-20020a05622a188700b003b9a63e35c0mr1330092qtc.16.1675116280566;
-        Mon, 30 Jan 2023 14:04:40 -0800 (PST)
-Received: from bill-the-cat (2603-6081-7b00-6400-31da-0362-f50e-b4ac.res6.spectrum.com. [2603:6081:7b00:6400:31da:362:f50e:b4ac])
-        by smtp.gmail.com with ESMTPSA id x12-20020a05620a14ac00b0071ddbe8fe23sm3608042qkj.24.2023.01.30.14.04.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Jan 2023 14:04:40 -0800 (PST)
-Date:   Mon, 30 Jan 2023 17:04:38 -0500
-From:   Tom Rini <trini@konsulko.com>
-To:     Greg Ungerer <gerg@kernel.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Eero Tamminen <oak@helsinkinet.fi>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Angelo Dureghello <angelo.dureghello@timesys.com>,
-        linux-m68k@lists.linux-m68k.org,
-        Joshua Thompson <funaho@jurai.org>,
-        Philip Blundell <philb@gnu.org>, u-boot@lists.denx.de,
-        Huan Wang <alison.wang@nxp.com>
-Subject: Re: U-Boot support for M68K removal
-Message-ID: <Y9g+9k/8Hwk5ARv5@bill-the-cat>
-References: <Y9PWhU7DVQCLP9EX@bill-the-cat>
- <CAMuHMdUMvGhpbfsTaaNSpypH_XdKjVzY3yWOOpR=Acj_7K6-uw@mail.gmail.com>
- <CALJHbkBqdvJu8KGKbJ2eayhiP_t607AvuwgYidhLTPY7=Mt4Hg@mail.gmail.com>
- <Y9fs2wH4WHIzae5r@bill-the-cat>
- <7739d9da9f49f99d156dacf645a311388e9eb628.camel@physik.fu-berlin.de>
- <Y9fxfNDNXXyJQ0Dn@bill-the-cat>
- <6558aca3-63aa-c89c-93fc-a5afe48cbe78@helsinkinet.fi>
- <CAMuHMdV3xawhr_syeM_5vLrQsF1nMqZhOuyBbUW2mjyPy6Om8Q@mail.gmail.com>
- <Y9ga+bN+wHEI7w0m@bill-the-cat>
- <b3480cff-970b-bae3-4b8d-01cd587dcb94@kernel.org>
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=cJUhplyXfCpKa6xSQNOt49RdO8/cRnMFdEc/bPdI1lc=;
+        b=vu1t4dfgLV9yUH0JfWrRdNBh0kwPl/E1Gfm9sR/kFFVxKEUZ6fngy5tqUUGn3OzgzA
+         VT6ZEAvhzMNLYjAHk2dSGmBRfMTGKJcFK3sVbXTURRVLuEmhXx6IZTkr0X4hZOIgaQx1
+         x2pcojkN+H6yJyMYh6p9Aw1ENf5zL5FuTosTWxqNxICa0JS5/LwJ63WQILKYgLIzMvWK
+         3tbbt8rirYV4Z51nv1q2nli+VJ9E4cqtOJ7ymxtOJ4fpQvsnjJlChpEfiI++HV8qIHOl
+         bT6hTQuaw1oR1LAnmyUuu0wzBqQ6riksiNeyMpI3J1x6HIyE5hieFiZWvEkm7WfjyVTl
+         xZVw==
+X-Gm-Message-State: AO0yUKXOvuCnThDysNO3ZLYSdoThqODptVwI1qi94jaGVdAK9TvucYIi
+        h5MtP8rOcuUwD/DiThPluu5c7ussiWY=
+X-Google-Smtp-Source: AK7set+z6xvSPJ74bLrXoj4zy6cIAI07QjL+s1gh9fht0ImrUTJyTajisYn8vA5MxiZUDMdcyMOiTQ==
+X-Received: by 2002:a17:902:e312:b0:195:efa7:d54e with SMTP id q18-20020a170902e31200b00195efa7d54emr8715594plc.12.1675134319921;
+        Mon, 30 Jan 2023 19:05:19 -0800 (PST)
+Received: from [10.1.1.24] (222-154-147-142-fibre.sparkbb.co.nz. [222.154.147.142])
+        by smtp.gmail.com with ESMTPSA id jj18-20020a170903049200b0019300c89011sm8550835plb.63.2023.01.30.19.05.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 30 Jan 2023 19:05:19 -0800 (PST)
+Subject: Re: stack smashing detected
+To:     debian-68k@lists.debian.org
+References: <4a9c1d0d-07aa-792e-921f-237d5a30fc44.ref@yahoo.com>
+ <4a9c1d0d-07aa-792e-921f-237d5a30fc44@yahoo.com>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <e7574759-4870-d554-dd63-17da220270f1@gmail.com>
+Date:   Tue, 31 Jan 2023 16:05:15 +1300
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="z7Bj5CJkyVoADOmG"
-Content-Disposition: inline
-In-Reply-To: <b3480cff-970b-bae3-4b8d-01cd587dcb94@kernel.org>
-X-Clacks-Overhead: GNU Terry Pratchett
+In-Reply-To: <4a9c1d0d-07aa-792e-921f-237d5a30fc44@yahoo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+Hi Stan,
 
---z7Bj5CJkyVoADOmG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Am 30.01.2023 um 17:00 schrieb Stan Johnson:
+> Hello,
+>
+> I am seeing anywhere from zero to four of the following errors while
+> booting Linux on 68030 systems and using sysvinit startup scripts:
+>
+> *** stack smashing detected ***: terminated
+> Aborted
+>
+> I usually (but not always) see three of the errors while init is running
+> the rcS.d scripts, and one while running the rc2.d scripts. The stack
+> smashing messages appear only on the system console (nothing is logged
+> in an error log or dmesg). Despite the errors, the system continues
+> booting to multiuser mode without any obvious additional problems. I
+> haven't tested systemd, which is too slow to be useful on my m68k
+> systems (though I have a Debian SID with systemd that I can restore for
+> testing if necessary).
+>
+> I'm using the current Debian SID and Debian kernel, and I've confirmed
+> the errors on a Mac IIci and SE/30. I haven't seen the errors on any
+> 68040 system (I only tested on a Centris 650 and PowerBook 550c). I also
+> notice the errors on 68030 systems using custom kernels that I have
+> cross-compiled using GCC 12 or GCC 10 on a x86_64 system running Debian
+> SID; however, I do not see the errors as often if I cross-compile using
+> GCC 8.3.0 on a 686 system (running Debian 10.7 Buster) -- I saw the
+> errors a few weeks ago with an earlier kernel, but none today using
+> Linux 6.1.8 cross-compiled with GCC 8.3.0.
+>
+> I'll be happy to help debug or troubleshoot, though at this point, since
+> the "stack smashing detected" errors aren't reporting which processes
+> are being terminated/aborted, I'm not sure where to start.
 
-On Tue, Jan 31, 2023 at 07:50:45AM +1000, Greg Ungerer wrote:
-> Hi Tom,
->=20
-> On 31/1/23 05:31, Tom Rini wrote:
-> > On Mon, Jan 30, 2023 at 08:10:36PM +0100, Geert Uytterhoeven wrote:
-> > > Hi Eero,
-> > >=20
-> > > On Mon, Jan 30, 2023 at 8:02 PM Eero Tamminen <oak@helsinkinet.fi> wr=
-ote:
-> > > > On 30.1.2023 18.34, Tom Rini wrote:
-> > > > > That's great to hear. While I started my life on m68k machines, I=
- never
-> > > > > did get Linux up on one. Do the coldfire platforms you have run U=
--Boot
-> > > > > today? If so, are they already supported upstream? One of my bigg=
-est
-> > > > > concerns about the architecture, in U-Boot, is that I've just not=
- heard
-> > > > > of anyone using it in quite some time, and we don't have any emul=
-ated
-> > > > > platforms either (can it be done in QEMU? We have other plaforms =
-in CI
-> > > > > via QEMU) so I worry it's not working.
-> > > >=20
-> > > > Qemu supports both m68k and ColdFire nowadays:
-> > > > https://www.qemu.org/docs/master/system/target-m68k.html
-> > > >=20
-> > > >=20
-> > > >          - Eero
-> > > >=20
-> > > > PS. For m68k there are also a lot of other emulators that emulate
-> > > > specific platforms.
-> > > >=20
-> > > > Aranym, 68040 Atari "clone", used a lot by Debian m68k port before =
-Qemu
-> > > > got m68k support.
-> > > >=20
-> > > > WinAUE, 68000-68040 Amiga emulation.  Unlike Aranym or Qemu, this
-> > > > emulates also CPU cache.
-> > > >=20
-> > > > Hatari, 68000-68040 Atari emulation (based on WinUAE CPU core).
-> > > >=20
-> > > > Previous, 68030 NeXT emulator (based on Hatari).
-> > >=20
-> > > But none of the platforms listed above boot using U-Boot, which is
-> > > what Tom is interested in...
-> > >=20
-> > > "qemu-system-m68k -machine help" lists a.o.:
-> > >=20
-> > >      an5206               Arnewsh 5206
-> > >      mcf5208evb           MCF5208EVB (default)
-> > >=20
-> > > U-Boot still contains include/configs/M5208EVBE.h, but there are no
-> > > actual users...
-> > >=20
-> > > Angelo: so support for amcore in qemu would be nice ;-)
-> >=20
-> > I did a little searching after sending and I see there's been some
-> > patches for mcf5208evb and U-Boot, in QEMU but the last message (2019)
-> > was that the CPU emulation wasn't quite complete enough.  But yes, one
-> > way or another, it would be really great to get a virtualized platform
-> > in CI to prevent future breakage.
->=20
-> FWIW the QEMU emulation of the m5208evb is good enough to run Linux.
-> I do a lot of kernel testing (and development!) using that.
+The man page of init states that init logs process and reason for 
+termination in /var/run/utmp and /var/log/wtmp each time a child process 
+terminates. You're looking for processed terminated by SIGABRT as far as 
+I can see.
 
-That's good to know! I was a little surprised at the message and it's
-possible that the platform was just broken in U-Boot and the person
-assumed that it was a QEMU issue instead.
+There does not appear to be any tool to extract that information from 
+utmp/wtmp files though - utmpdump only shows login process information 
+for me, nothing on init processes.
 
---=20
-Tom
+Another way may be logging the start of each of the rcS.d or rc2.d 
+scripts until you know what scripts to look at in more detail, then 
+adding 'set -v' at the start of those to log every command in the 
+offending script.
 
---z7Bj5CJkyVoADOmG
-Content-Type: application/pgp-signature; name="signature.asc"
+Once the offending binary is known (and the crash can be reproduced 
+after system boot), gdb can be used to find the function that overwrote 
+its local stack guard.
 
------BEGIN PGP SIGNATURE-----
+That's a lot of work on a 030 Mac - have you tried to reproduce this on 
+any kind of emulator?
 
-iQGzBAABCgAdFiEEGjx/cOCPqxcHgJu/FHw5/5Y0tywFAmPYPvIACgkQFHw5/5Y0
-tyxKpQv+PRni/489ykN53CC9iMnUDl2Jpc6P4srZyvVOaIMVviCqhrTSSuenu/Fv
-PmG3nz1R/zjiCpcf+D8z9wYEtiM+oVj6y9lWb1G8mqiey1HHcF+1j8roy3KVQQsp
-MVrs+CM26HfAOSxC7DwIUuxJX0Wbs/eezb+eFq1NjHr8H30AgrMdwieTt76eFW9b
-/MaFV5CmaWdpSBperQl7zMldS2qvJQGn+Uz2bYuJjR+aW0jXXYz2L0YFIk577XvH
-dKF185lvEdVSY+aWTEkrLvI362PSuAX77g7qCoD+ekuQ3jZYTdl+Ty3jxOO/1ysK
-OZPHagk28ZeIOjWiHbv7i9j/BqHGfjdXsdlzdEFnbF/hHg9PUx0hIn+vS/MkJlyJ
-V6hQqdIGpKUZFLr5X79yhQ0e/nCXHut1zc+WTUwhpYR/k7Qa8O8gwm/DeDlVuXEI
-Wty5irGJ78DaMbeog4X3RXuFDnZJfHQ4F3tmZ36dHbqKF2j/XT0WK5QjfNqoLbPZ
-LuoLAoLi
-=ohmy
------END PGP SIGNATURE-----
+I suppose one difference between your 030 and 040 Macs might be the 
+amount of RAM available. I wonder if this bug results from a combination 
+of 030 MMU and memory pressure, or 030 MMU only.
 
---z7Bj5CJkyVoADOmG--
+Cheers,
+
+	Michael
+
+>
+> thanks for any suggestions
+>
+> -Stan Johnson   userm57@yahoo.com
+>
