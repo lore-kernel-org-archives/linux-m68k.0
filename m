@@ -2,118 +2,87 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C932C05027
-	for <linux-m68k@archiver.kernel.org>; Thu,  2 Feb 2023 00:57:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE929C61DA4
+	for <linux-m68k@archiver.kernel.org>; Thu,  2 Feb 2023 07:46:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbjBBA5Q (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 1 Feb 2023 19:57:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50262 "EHLO
+        id S231726AbjBBHqo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 2 Feb 2023 02:46:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229916AbjBBA5P (ORCPT
+        with ESMTP id S231860AbjBBHqn (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 1 Feb 2023 19:57:15 -0500
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8DE95CD02;
-        Wed,  1 Feb 2023 16:57:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=JxMhQfqfZFKjqgX5e6WFjusNEH9w7UJyidC9GBl0BFE=; b=j7zrUF5m9QNeSdthOmzY2TpKll
-        qPTRkZ/xmNsbI8HChk9xVt34XGsY89y73qsr5zxE8DZeUfti8whyBfVk+Ab+kjUnuReBRNDafmDAX
-        /H78PrFrIrMaoRB9EbZbRJ4Zs7Jenz2oKhC7KateHZc+FvE4EURfaz4BFJx0r55ZQo1Vi5FrSgDFI
-        yYZWY8336bh2CFJag9KhZHfpHAP/3O0kEIxOVWGnOYTJtYRxmwGwCH3+tArIpGL0USY+brYn81wps
-        j1g4I7ez2NpxUerl3TovY+NE3eudMkGv9kBRvPwB8LQ6bXEAiIhDkDZeu/6wMFaHrstuWijmeUQlM
-        aZbRGRgw==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1pNNuX-005ZAk-1z;
-        Thu, 02 Feb 2023 00:57:09 +0000
-Date:   Thu, 2 Feb 2023 00:57:09 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, Michal Simek <monstr@monstr.eu>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org
-Subject: Re: [RFC][PATCHSET] VM_FAULT_RETRY fixes
-Message-ID: <Y9sKZTJI7V6qCNRJ@ZenIV>
-References: <Y9lz6yk113LmC9SI@ZenIV>
- <CAHk-=whf73Vm2U3jyTva95ihZzefQbThZZxqZuKAF-Xjwq=G4Q@mail.gmail.com>
- <Y9mD1qp/6zm+jOME@ZenIV>
- <CAHk-=wjiwFzEGd_60H3nbgVB=R_8KTcfUJmXy=hSXCvLrXQRFA@mail.gmail.com>
- <Y9mM5wiEhepjJcN0@ZenIV>
- <CAHk-=wjNwwnBckTo8HLSdsd1ndoAR=5RBoZhdOyzhsnDAYWL9g@mail.gmail.com>
- <Y9rCBqwbLlLf1fHe@x1n>
- <Y9rlI6d5J2Y/YNQ+@ZenIV>
+        Thu, 2 Feb 2023 02:46:43 -0500
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F136384F93
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  1 Feb 2023 23:46:13 -0800 (PST)
+Received: by mail-qt1-f169.google.com with SMTP id z5so1019051qtn.8
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 01 Feb 2023 23:46:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BLpp3el8PzQEw9FqoojrKVG51btX48MICoZF2aZsKVE=;
+        b=EKZMvkdHQR4v+2uY4uVoDF1EV+4BQORWENEl3euXk6p965Big+BNaKbDr8z6bKY+rM
+         ulbeT8MeENse75PoBOqNqqlDncYs+oZw+vQZL4mzrT5PZgWD/JjD58/Ca5+3Jvj3PfZu
+         XTt1Z/nWhColA/4j6NAApg9fhWZupqsDRScgzBs97OsITBqNpZCefYGLwVDK43R9AWq4
+         2O2k30p9Jyche7ieftMoB5HVV8iUrwTDz/1uveYRHnw9bi4EkvYuy4rUHOBb62z4h+po
+         toxTohe2nGqcZiEBDjf9A8wwe82pbLaJYLS42DfRaSdp8+Ip6zEiMkxz19ctoGnyVvKl
+         tYZA==
+X-Gm-Message-State: AO0yUKXm9INJmUG42Y4EFJY0vOWeqUcXFD7RcIqo8FZsQtm8hOOiXQyb
+        E7HQkqF+vqMqh5oEnhz/vHbfnNFogrh0Tw==
+X-Google-Smtp-Source: AK7set88T4yeX/eztkc3erGYSlk+rXaphfXPLce29M1MkB9YIRawF9hQxo2RI8a8Idns6mReONsQkA==
+X-Received: by 2002:ac8:574b:0:b0:3b9:a4bb:e53d with SMTP id 11-20020ac8574b000000b003b9a4bbe53dmr10478795qtx.34.1675323882525;
+        Wed, 01 Feb 2023 23:44:42 -0800 (PST)
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
+        by smtp.gmail.com with ESMTPSA id y77-20020a376450000000b0071c535f3ff3sm9582234qkb.6.2023.02.01.23.44.41
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Feb 2023 23:44:42 -0800 (PST)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-4a263c4ddbaso16481547b3.0
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 01 Feb 2023 23:44:41 -0800 (PST)
+X-Received: by 2002:a0d:f106:0:b0:507:86ae:c733 with SMTP id
+ a6-20020a0df106000000b0050786aec733mr698800ywf.358.1675323881670; Wed, 01 Feb
+ 2023 23:44:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y9rlI6d5J2Y/YNQ+@ZenIV>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <45aa9faee34d73515abcc073812ae1d32f821e3d.camel@physik.fu-berlin.de>
+In-Reply-To: <45aa9faee34d73515abcc073812ae1d32f821e3d.camel@physik.fu-berlin.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 2 Feb 2023 08:44:30 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXE6iPqW=weJyS-AGYMgbaLwA-JjYGhDJj06hw2qK8oHQ@mail.gmail.com>
+Message-ID: <CAMuHMdXE6iPqW=weJyS-AGYMgbaLwA-JjYGhDJj06hw2qK8oHQ@mail.gmail.com>
+Subject: Re: m68k assembly question: jsr vs. bsr
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Debian m68k <debian-68k@lists.debian.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Feb 01, 2023 at 10:18:11PM +0000, Al Viro wrote:
-> 	* logics for stack expansion includes this twist:
->         if (!(vma->vm_flags & VM_GROWSDOWN))
->                 goto map_err;
->         if (user_mode(regs)) {
->                 /* Accessing the stack below usp is always a bug.  The
->                    "+ 256" is there due to some instructions doing
->                    pre-decrement on the stack and that doesn't show up
->                    until later.  */
->                 if (address + 256 < rdusp())
->                         goto map_err;
->         }
->         if (expand_stack(vma, address))
->                 goto map_err;
-> That's m68k; ISTR similar considerations elsewhere, but I could be
-> wrong.
+Hi Adrian,
 
-Hell, yes - 
-        if (!(vma->vm_flags & VM_GROWSDOWN))
-                goto bad_area;
-        if (!(fault_code & FAULT_CODE_WRITE)) {
-                /* Non-faulting loads shouldn't expand stack. */
-                insn = get_fault_insn(regs, insn);
-                if ((insn & 0xc0800000) == 0xc0800000) {
-                        unsigned char asi;
+On Wed, Feb 1, 2023 at 11:17 PM John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+> Can anyone answer this question regarding the difference between "bsr" and "jsr":
+>
+> > https://github.com/llvm/llvm-project/issues/60354#issuecomment-1412018845
 
-                        if (insn & 0x2000)
-                                asi = (regs->tstate >> 24);
-                        else
-                                asi = (insn >> 5);
-                        if ((asi & 0xf2) == 0x82)
-                                goto bad_area;
-                }
-        }
-        if (expand_stack(vma, address))
-                goto bad_area;
+"jsr" is an absolute jump to a subroutine.
+"bsr" is a relative jump (8-bit, 16-bit, or 32-bit signed offset) to a
+subroutine,
+i.e. typically for calling a nearby function.
 
-Note that it's very much not a bug - it's a nonfaulting (== speculative)
-load, and the place where we are heading from bad_area in this case is
-this in do_kernel_fault():
-        if (!(fault_code & (FAULT_CODE_WRITE|FAULT_CODE_ITLB)) &&
-            (insn & 0xc0800000) == 0xc0800000) {
-                if (insn & 0x2000)
-                        asi = (regs->tstate >> 24);
-                else  
-                        asi = (insn >> 5);
-                if ((asi & 0xf2) == 0x82) {
-                        if (insn & 0x1000000) {
-                                handle_ldf_stq(insn, regs);
-                        } else {
-                                /* This was a non-faulting load. Just clear the
-                                 * destination register(s) and continue with the next
-                                 * instruction. -jj
-                                 */
-                                handle_ld_nf(insn, regs);
-                        }
-                        return;
+There's also "jbsr", which is an assembler macro that picks the most
+appropriate: bsr does not need relocation, but bsr.l is 68020+ only.
 
-(the name is misguiding - it covers userland stuff as well; in this
-particular case the triggering instruction is non-priveleged)
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
