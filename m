@@ -2,77 +2,262 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3E21C61DA4
-	for <linux-m68k@archiver.kernel.org>; Thu,  2 Feb 2023 19:04:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86E39C61DA4
+	for <linux-m68k@archiver.kernel.org>; Thu,  2 Feb 2023 22:58:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233114AbjBBTEF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 2 Feb 2023 14:04:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43382 "EHLO
+        id S231903AbjBBW6C (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 2 Feb 2023 17:58:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232149AbjBBTEE (ORCPT
+        with ESMTP id S231905AbjBBW6C (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 2 Feb 2023 14:04:04 -0500
-X-Greylist: delayed 593 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 02 Feb 2023 11:03:59 PST
-Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7864562241
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  2 Feb 2023 11:03:59 -0800 (PST)
-Received: from frontend03.mail.m-online.net (unknown [192.168.6.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4P77HJ29rlz1r1NF;
-        Thu,  2 Feb 2023 19:54:04 +0100 (CET)
-Received: from localhost (dynscan3.mnet-online.de [192.168.6.84])
-        by mail.m-online.net (Postfix) with ESMTP id 4P77HJ0qJHz1qqlR;
-        Thu,  2 Feb 2023 19:54:04 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan3.mail.m-online.net [192.168.6.84]) (amavisd-new, port 10024)
-        with ESMTP id fl5Ca2LeXJDF; Thu,  2 Feb 2023 19:54:03 +0100 (CET)
-X-Auth-Info: D8OAGyHEOu8itnBiwSIIslWO0jTcxnakxKI9fSSax69VtKbbLyQhH0mpSKQuIunr
-Received: from igel.home (aftr-82-135-86-118.dynamic.mnet-online.de [82.135.86.118])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Thu,  2 Feb 2023 19:54:03 +0100 (CET)
-Received: by igel.home (Postfix, from userid 1000)
-        id BB6C72C12F3; Thu,  2 Feb 2023 19:54:02 +0100 (CET)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Debian m68k <debian-68k@lists.debian.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Subject: Re: m68k assembly question: jsr vs. bsr
-References: <45aa9faee34d73515abcc073812ae1d32f821e3d.camel@physik.fu-berlin.de>
-        <CAMuHMdXE6iPqW=weJyS-AGYMgbaLwA-JjYGhDJj06hw2qK8oHQ@mail.gmail.com>
-X-Yow:  My uncle Murray conquered Egypt in 53 B.C.  And I can prove it too!!
-Date:   Thu, 02 Feb 2023 19:54:02 +0100
-In-Reply-To: <CAMuHMdXE6iPqW=weJyS-AGYMgbaLwA-JjYGhDJj06hw2qK8oHQ@mail.gmail.com>
-        (Geert Uytterhoeven's message of "Thu, 2 Feb 2023 08:44:30 +0100")
-Message-ID: <87fsbnj3ud.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Thu, 2 Feb 2023 17:58:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44D42F7A2
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  2 Feb 2023 14:56:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1675378589;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XMJSsnUmUwDCBuOmcITqEg5FKDzJKTZTwWrtPHX2Mzk=;
+        b=by1frhHD9NX3EucgAlDlgUvWie8Iaq9QaStB0uFcmrwgH5Htcye50mo47fMbgmU1XY6gk1
+        BoQ0KNlGl94RdsGChydgh9HLalUPhdr07HmNnUto9Sx7WODjPCeEX2qt6hHMIPgNPYJbmC
+        BvaR3bIs5/g6V8DL6wWJge5BuATzpCo=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-499-_bz6ZVECO0qy8o-Vua7bzg-1; Thu, 02 Feb 2023 17:56:25 -0500
+X-MC-Unique: _bz6ZVECO0qy8o-Vua7bzg-1
+Received: by mail-qk1-f199.google.com with SMTP id a3-20020a05620a438300b007069b068069so2242434qkp.2
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 02 Feb 2023 14:56:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XMJSsnUmUwDCBuOmcITqEg5FKDzJKTZTwWrtPHX2Mzk=;
+        b=Tu5xaNeL1Em/NqBNBoeH/+S+MGt4PY5VDqhWVR43THeUfks0lCoV2mKVcAmYPrhwaY
+         M122eCuBjjHNAjJDES/yX8zmvcM0huvsUU0d92QHUOdfUrzTtq2StNW+z/gVxQ4djAzp
+         hp3p4zAF/PpaKj3OkT7jOhIxw+MkbE7LQR681O+U8JAox0JC5n5xh/17HBB2NpVSnJKM
+         EYm9g3puixeWGYgon+8VzaB4OrtJxDEZ9P2KRaPKs9DkEZV4FeOhYAP5KpHsKWuJdaxz
+         C84nZtKU8WNg1nthIYMvrYcJf3u/L+vJlbwmaaNTFJLYmJGMMbrJcWpHmD781GwMthG8
+         C4HA==
+X-Gm-Message-State: AO0yUKWlfdH26uGjtgAdZmQZJOqQ7UOlClzQUCHbXZQr4VXEUS59Yt3t
+        eKDMZRIAR9JeeY56/ZwvAjNOHbVyoMOxkPhCGX3DJKLDStU5y65psBa+eH26lq5FZKFMl0I7Fm0
+        abGxBSb1vJ2xc1VrezyqHT5aTXgZg
+X-Received: by 2002:a05:622a:1e10:b0:3b8:68df:fc72 with SMTP id br16-20020a05622a1e1000b003b868dffc72mr12702098qtb.2.1675378585236;
+        Thu, 02 Feb 2023 14:56:25 -0800 (PST)
+X-Google-Smtp-Source: AK7set98ufe9BnObmCyLO5vL17bxJ3WNbuFwrxLR6rxAVU1vknl5Zn7Dx1QXwCn46sOWBGmNV32apQ==
+X-Received: by 2002:a05:622a:1e10:b0:3b8:68df:fc72 with SMTP id br16-20020a05622a1e1000b003b868dffc72mr12702061qtb.2.1675378584842;
+        Thu, 02 Feb 2023 14:56:24 -0800 (PST)
+Received: from x1n (bras-base-aurron9127w-grc-56-70-30-145-63.dsl.bell.ca. [70.30.145.63])
+        by smtp.gmail.com with ESMTPSA id j9-20020a05620a410900b00729b7d71ac7sm661766qko.33.2023.02.02.14.56.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Feb 2023 14:56:24 -0800 (PST)
+Date:   Thu, 2 Feb 2023 17:56:22 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, Michal Simek <monstr@monstr.eu>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org
+Subject: Re: [RFC][PATCHSET] VM_FAULT_RETRY fixes
+Message-ID: <Y9w/lrL6g4yauXz4@x1n>
+References: <Y9lz6yk113LmC9SI@ZenIV>
+ <CAHk-=whf73Vm2U3jyTva95ihZzefQbThZZxqZuKAF-Xjwq=G4Q@mail.gmail.com>
+ <Y9mD1qp/6zm+jOME@ZenIV>
+ <CAHk-=wjiwFzEGd_60H3nbgVB=R_8KTcfUJmXy=hSXCvLrXQRFA@mail.gmail.com>
+ <Y9mM5wiEhepjJcN0@ZenIV>
+ <CAHk-=wjNwwnBckTo8HLSdsd1ndoAR=5RBoZhdOyzhsnDAYWL9g@mail.gmail.com>
+ <Y9rCBqwbLlLf1fHe@x1n>
+ <Y9rlI6d5J2Y/YNQ+@ZenIV>
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <Y9rlI6d5J2Y/YNQ+@ZenIV>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Feb 02 2023, Geert Uytterhoeven wrote:
+On Wed, Feb 01, 2023 at 10:18:11PM +0000, Al Viro wrote:
+> On Wed, Feb 01, 2023 at 02:48:22PM -0500, Peter Xu wrote:
+> 
+> > I do also see a common pattern of the possibility to have a generic fault
+> > handler like generic_page_fault().
+> > 
+> > It probably should start with taking the mmap_sem until providing some
+> > retval that is much easier to digest further by the arch-dependent code, so
+> > it can directly do something rather than parsing the bitmask in a
+> > duplicated way (hence the new retval should hopefully not a bitmask anymore
+> > but a "what to do").
+> > 
+> > Maybe it can be something like:
+> > 
+> > /**
+> >  * enum page_fault_retval - Higher level fault retval, generalized from
+> >  * vm_fault_reason above that is only used by hardware page fault handlers.
+> >  * It generalizes the bitmask-versioned retval into something that the arch
+> >  * dependent code should react upon.
+> >  *
+> >  * @PF_RET_COMPLETED:		The page fault is completed successfully
+> >  * @PF_RET_BAD_AREA:		The page fault address falls in a bad area
+> >  *				(e.g., vma not found, expand_stack() fails..)
+> 
+> FWIW, there's a fun discrepancy - VM_FAULT_SIGSEGV may yield SEGV_MAPERR
+> or SEGV_ACCERR; depends upon the architecture.  Not that there'd been
+> many places that return VM_FAULT_SIGSEGV these days...  Good thing, too,
+> since otherwise e.g. csky would oops...
+> 
+> >  * @PF_RET_ACCESS_ERR:		The page fault has access errors
+> >  *				(e.g., write fault on !VM_WRITE vmas)
+> >  * @PF_RET_KERN_FIXUP:		The page fault requires kernel fixups
+> >  *				(e.g., during copy_to_user() but fault failed?)
+> >  * @PF_RET_HWPOISON:		The page fault encountered poisoned pages
+> >  * @PF_RET_SIGNAL:		The page fault encountered poisoned pages
+> 
+> ??
+> 
+> >  * ...
+> >  */
+> > enum page_fault_retval {
+> > 	PF_RET_DONE = 0,
+> > 	PF_RET_BAD_AREA,
+> > 	PF_RET_ACCESS_ERR,
+> > 	PF_RET_KERN_FIXUP,
+> >         PF_RET_HWPOISON,
+> >         PF_RET_SIGNAL,
+> > 	...
+> > };
+> > 
+> > As a start we may still want to return some more information (perhaps still
+> > the vm_fault_t alongside?  Or another union that will provide different
+> > information based on different PF_RET_*).  One major thing is I see how we
+> > handle VM_FAULT_HWPOISON and also the fact that we encode something more
+> > into the bitmask on page sizes (VM_FAULT_HINDEX_MASK).
+> > 
+> > So the generic helper could, hopefully, hide the complexity of:
+> > 
+> >   - Taking and releasing of mmap lock
+> >   - find_vma(), and also relevant checks on access or stack handling
+> 
+> Umm...  arm is a bit special here:
+>                 if (addr < FIRST_USER_ADDRESS)
+> 			return VM_FAULT_BADMAP;
+> with no counterparts elsewhere.
 
-> Hi Adrian,
->
-> On Wed, Feb 1, 2023 at 11:17 PM John Paul Adrian Glaubitz
-> <glaubitz@physik.fu-berlin.de> wrote:
->> Can anyone answer this question regarding the difference between "bsr" and "jsr":
->>
->> > https://github.com/llvm/llvm-project/issues/60354#issuecomment-1412018845
->
-> "jsr" is an absolute jump to a subroutine.
-> "bsr" is a relative jump (8-bit, 16-bit, or 32-bit signed offset) to a
-> subroutine,
-> i.e. typically for calling a nearby function.
+For this specific case IIUC it's the same as bad_area.  VM_FAULT_BADMAP is
+further handled later in do_page_fault() there for either arm/arm64.
 
-jsr/jmp also take pcrel, but bsr/bra with 8-bit disp is shorter.
+This reminded me this, on how arm defines the private retvals, while the
+generic ones grows and probably no one noticed they can collapse already..
+
+#define VM_FAULT_BADMAP		0x010000
+#define VM_FAULT_BADACCESS	0x020000
+
+enum vm_fault_reason {
+        ...
+	VM_FAULT_HINDEX_MASK    = (__force vm_fault_t)0x0f0000,
+};
+
+VM_FAULT_HINDEX_MASK is only used by VM_FAULT_HWPOISON_LARGE, so I think
+arm[64] could expect some surprise when it hit hugetlb hwpoison pages...
+maybe I should prepare a patch for arm.
+
+> 
+> >   - handle_mm_fault() itself (of course...)
+> >   - detect signals
+> >   - handle page fault retries (so, in the new layer of retval there should
+> >     have nothing telling it to retry; it should always be the ultimate result)
+> 
+> agreed.
+> 
+>     - unlock mmap; don't leave that to caller.
+> 
+> >   - parse different errors into "what the arch code should do", and
+> >     generalize the common ones, e.g.
+> >     - OOM, do pagefault_out_of_memory() for user-mode
+> >     - VM_FAULT_SIGSEGV, which should be able to merge into PF_RET_BAD_AREA?
+> >     - ...
+> 
+> AFAICS, all errors in kernel mode => no_context.
+> 
+> > It'll simplify things if we can unify some small details like whether the
+> > -EFAULT above should contain a sigbus.
+> > 
+> > A trivial detail I found when I was looking at this is, x86_64 passes in
+> > different signals to kernelmode_fixup_or_oops() - in do_user_addr_fault()
+> > there're three call sites and each of them pass over a differerent signal.
+> > IIUC that will only make a difference if there's a nested page fault during
+> > the vsyscall emulation (but I may be wrong too because I'm new to this
+> > code), and I have no idea when it'll happen and whether that needs to be
+> > strictly followed.
+> 
+> From my (very incomplete so far) dig through that pile:
+> 	Q: do we still have the cases when handle_mm_fault() does
+> not return any of VM_FAULT_COMPLETED | VM_FAULT_RETRY | VM_FAULT_ERROR?
+> That gets treated as unlock + VM_FAULT_COMPLETED, but do we still need
+> that?
+> 	Q: can VM_FAULT_RETRY be mixed with anything in VM_FAULT_ERROR?
+> What locking, if that happens?
+
+For this one, I don't think they can be mixed.  IMHO RETRY only binds with
+a wait, so if we didn't wait and found issue, we return ERROR; if we
+decided to wait, we will try nothing more besides return after wait with
+the RETRY.  We should just never check any error at all if the wait
+happened.  Otherwise there's a bug of potential deadlock.
+
+I'll skip some details in this email either above or below; I agree
+there're so many trivial details to take care of to not break a thing.
+
+IMHO it'll be merely impossible to merge things across most (if not to say,
+all) archs.  It will need to be start from one or at least a few that still
+shares a major common base - I would still rely on x86 as a start - then we
+try to use the helper in as much archs as possible.
+
+Even on x86, I do also see challenges so I'm not sure whether a common
+enough routine can be abstracted indeed.  But I believe there's a way to do
+this because obviously we still see tons of duplicated logics falling
+around.  It may definitely need time to think out where's the best spot to
+start, and how to gradually move towards covering more archs starting from
+one.
+
+Thanks,
+
+> 	* details of storing the fault details (for ptrace, mostly)
+> vary a lot; no chance to unify, AFAICS.
+> 	* requirements for vma flags also differ; e.g. read fault on
+> alpha is explicitly OK with absence of VM_READ if VM_WRITE is there.
+> Probably should go by way of arm and pass the mask that must
+> have non-empty intersection with vma->vm_flags?  Because *that*
+> is very likely to be a part of ABI - mmap(2) callers that rely
+> upon the flags being OK for given architecture are quite possible.
+> 	* mmap lock is also quite variable in how it's taken;
+> x86 and arm have fun dance with trylock/search for exception handler/etc.
+> Other architectures do not; OTOH, there's a prefetch stuck in itanic
+> variant, with comment about mmap_sem being performance-critical...
+> 	* logics for stack expansion includes this twist:
+>         if (!(vma->vm_flags & VM_GROWSDOWN))
+>                 goto map_err;
+>         if (user_mode(regs)) {
+>                 /* Accessing the stack below usp is always a bug.  The
+>                    "+ 256" is there due to some instructions doing
+>                    pre-decrement on the stack and that doesn't show up
+>                    until later.  */
+>                 if (address + 256 < rdusp())
+>                         goto map_err;
+>         }
+>         if (expand_stack(vma, address))
+>                 goto map_err;
+> That's m68k; ISTR similar considerations elsewhere, but I could be
+> wrong.
+> 
 
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+Peter Xu
+
