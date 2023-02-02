@@ -2,123 +2,77 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD260C05027
-	for <linux-m68k@archiver.kernel.org>; Thu,  2 Feb 2023 07:52:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3E21C61DA4
+	for <linux-m68k@archiver.kernel.org>; Thu,  2 Feb 2023 19:04:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbjBBHwm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 2 Feb 2023 02:52:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49232 "EHLO
+        id S233114AbjBBTEF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 2 Feb 2023 14:04:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjBBHwl (ORCPT
+        with ESMTP id S232149AbjBBTEE (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 2 Feb 2023 02:52:41 -0500
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8304C30FB
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  1 Feb 2023 23:52:40 -0800 (PST)
-Received: by mail-qt1-f177.google.com with SMTP id m12so1052949qth.4
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 01 Feb 2023 23:52:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vQbGJF3NNyVyfmPRcK3LOjc+wIsZSabpqWJ/hgW3N7E=;
-        b=2fEzHiYfR6HYu55fBYv0klKRPN34k9GgHUu860ANqqvXUX+nA08vXfmZReF/OB/KnW
-         soUmL5KNc745SnkKTuSuDInOLBK3h9Xcjg9JG4cJp+/VzuPNNz0Kd1a+VWZwVjtCtRTz
-         k+ilxhR330LtX0gMr3hC//Pg3W1gttfWnUcLyyNSr4M+2byqmXdmZLn3qo4X+sBGT0m8
-         Yu8rLNRXi1NbHwqK4Xt1OMsiI5yfM/xHFxwTDc6jgCS6CPgyeSZi/ElGn87J43psDckM
-         JPg+PVO4DYB3WiQwKbb/tgppnVod4wPGDqOI+V5v0agSDbmZAJPbS5s56x61qUDl8NzW
-         tVMw==
-X-Gm-Message-State: AO0yUKXkDXieMztaDhT5N0bUTmh71mFEpBDOF8fM3xlTPTdj9a24VF78
-        PiCDCayfH3nQWwcESApzS8ASu79Z3DWnZg==
-X-Google-Smtp-Source: AK7set/KXgWLgyDDtFlOH37ApPB3iS83MutB0/lxsuj36JKCPOQHLehYDJCzra3z+G4rtbyA+47VEw==
-X-Received: by 2002:a05:622a:593:b0:3b6:2f3f:2713 with SMTP id c19-20020a05622a059300b003b62f3f2713mr10606794qtb.25.1675324359480;
-        Wed, 01 Feb 2023 23:52:39 -0800 (PST)
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id q26-20020a05620a025a00b0071de2b6d439sm8612579qkn.49.2023.02.01.23.52.38
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Feb 2023 23:52:39 -0800 (PST)
-Received: by mail-yb1-f169.google.com with SMTP id 123so1146625ybv.6
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 01 Feb 2023 23:52:38 -0800 (PST)
-X-Received: by 2002:a25:ada1:0:b0:839:c329:be37 with SMTP id
- z33-20020a25ada1000000b00839c329be37mr648939ybi.89.1675324358662; Wed, 01 Feb
- 2023 23:52:38 -0800 (PST)
-MIME-Version: 1.0
-References: <4a9c1d0d-07aa-792e-921f-237d5a30fc44.ref@yahoo.com>
- <4a9c1d0d-07aa-792e-921f-237d5a30fc44@yahoo.com> <e7574759-4870-d554-dd63-17da220270f1@gmail.com>
- <af524ac9-f5af-e9fb-e33f-0884a0ebfcb6@yahoo.com> <8d54f302-0a39-b8c7-4115-5c10c1d3769f@gmail.com>
-In-Reply-To: <8d54f302-0a39-b8c7-4115-5c10c1d3769f@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 2 Feb 2023 08:52:27 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXQrOe+Oq-1VPQY_DMbQXBA4og+OnGOgfwvjG-5jn=ONg@mail.gmail.com>
-Message-ID: <CAMuHMdXQrOe+Oq-1VPQY_DMbQXBA4og+OnGOgfwvjG-5jn=ONg@mail.gmail.com>
-Subject: Re: stack smashing detected
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Stan Johnson <userm57@yahoo.com>, debian-68k@lists.debian.org,
+        Thu, 2 Feb 2023 14:04:04 -0500
+X-Greylist: delayed 593 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 02 Feb 2023 11:03:59 PST
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7864562241
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  2 Feb 2023 11:03:59 -0800 (PST)
+Received: from frontend03.mail.m-online.net (unknown [192.168.6.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4P77HJ29rlz1r1NF;
+        Thu,  2 Feb 2023 19:54:04 +0100 (CET)
+Received: from localhost (dynscan3.mnet-online.de [192.168.6.84])
+        by mail.m-online.net (Postfix) with ESMTP id 4P77HJ0qJHz1qqlR;
+        Thu,  2 Feb 2023 19:54:04 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan3.mail.m-online.net [192.168.6.84]) (amavisd-new, port 10024)
+        with ESMTP id fl5Ca2LeXJDF; Thu,  2 Feb 2023 19:54:03 +0100 (CET)
+X-Auth-Info: D8OAGyHEOu8itnBiwSIIslWO0jTcxnakxKI9fSSax69VtKbbLyQhH0mpSKQuIunr
+Received: from igel.home (aftr-82-135-86-118.dynamic.mnet-online.de [82.135.86.118])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Thu,  2 Feb 2023 19:54:03 +0100 (CET)
+Received: by igel.home (Postfix, from userid 1000)
+        id BB6C72C12F3; Thu,  2 Feb 2023 19:54:02 +0100 (CET)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Debian m68k <debian-68k@lists.debian.org>,
         linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: m68k assembly question: jsr vs. bsr
+References: <45aa9faee34d73515abcc073812ae1d32f821e3d.camel@physik.fu-berlin.de>
+        <CAMuHMdXE6iPqW=weJyS-AGYMgbaLwA-JjYGhDJj06hw2qK8oHQ@mail.gmail.com>
+X-Yow:  My uncle Murray conquered Egypt in 53 B.C.  And I can prove it too!!
+Date:   Thu, 02 Feb 2023 19:54:02 +0100
+In-Reply-To: <CAMuHMdXE6iPqW=weJyS-AGYMgbaLwA-JjYGhDJj06hw2qK8oHQ@mail.gmail.com>
+        (Geert Uytterhoeven's message of "Thu, 2 Feb 2023 08:44:30 +0100")
+Message-ID: <87fsbnj3ud.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael et al,
+On Feb 02 2023, Geert Uytterhoeven wrote:
 
-On Wed, Feb 1, 2023 at 7:52 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> On 2/02/23 05:38, Stan Johnson wrote:
-> > On 1/30/23 8:05 PM, Michael Schmitz wrote:
-> >> ...
-> >> Am 30.01.2023 um 17:00 schrieb Stan Johnson:
-> >>> I am seeing anywhere from zero to four of the following errors while
-> >>> booting Linux on 68030 systems and using sysvinit startup scripts:
-> >>>
-> >>> *** stack smashing detected ***: terminated
-> >>> Aborted
-> >>>
-> >>> I usually (but not always) see three of the errors while init is running
-> >>> the rcS.d scripts, and one while running the rc2.d scripts. The stack
-> >>> smashing messages appear only on the system console (nothing is logged
-> >>> in an error log or dmesg). Despite the errors, the system continues
-> >>> booting to multiuser mode without any obvious additional problems. I
-> >>> haven't tested systemd, which is too slow to be useful on my m68k
-> >>> systems (though I have a Debian SID with systemd that I can restore for
-> >>> testing if necessary).
-> >>>
-> >>> ...
-> >> Another way may be logging the start of each of the rcS.d or rc2.d
-> >> scripts until you know what scripts to look at in more detail, then
-> >> adding 'set -v' at the start of those to log every command in the
-> >> offending script.
-> > Hi Michael,
-> >
-> > Thanks for your reply.
-> >
-> > After logging the start and end of each script, I see that the "stack
-> > smashing detected" error often happens while running
-> > "/etc/rcS.d/S01mountkernfs.sh" (/etc/init.d/mountkernfs.sh). I'll try to
-> > isolate it to a particular command.
-> >
-> > This may be a coincidence, but the error seems to happen (up to about 4
-> > times) after a warm boot into Mac OS 7.5.5 and a subsequent boot into
-> > Linux that when starting with a cold boot into Mac OS 7.5.5, but it
-> > doesn't seem that that should make any difference for Linux. This
-> > morning, after a cold boot, I saw two of the errors, while after a warm
-> > boot, I saw four.
-> Hmm - that might well indicate a hardware issue rather than software.
-> Bits flipping at random in RAM (and getting picked up because the stack
-> canary changes).
+> Hi Adrian,
+>
+> On Wed, Feb 1, 2023 at 11:17 PM John Paul Adrian Glaubitz
+> <glaubitz@physik.fu-berlin.de> wrote:
+>> Can anyone answer this question regarding the difference between "bsr" and "jsr":
+>>
+>> > https://github.com/llvm/llvm-project/issues/60354#issuecomment-1412018845
+>
+> "jsr" is an absolute jump to a subroutine.
+> "bsr" is a relative jump (8-bit, 16-bit, or 32-bit signed offset) to a
+> subroutine,
+> i.e. typically for calling a nearby function.
 
-You can enable extra debugging options in the kernel, which might help
-detecting memory corruption, like CONFIG_DEBUG_LIST and DEBUG_SLAB.
-It will slow down your kernel, and make it grow too large, though.
+jsr/jmp also take pcrel, but bsr/bra with 8-bit disp is shorter.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
