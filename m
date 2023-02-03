@@ -2,137 +2,94 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 433A9C6379F
-	for <linux-m68k@archiver.kernel.org>; Fri,  3 Feb 2023 14:34:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D539CC61DA4
+	for <linux-m68k@archiver.kernel.org>; Fri,  3 Feb 2023 23:37:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232926AbjBCOex (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 3 Feb 2023 09:34:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51038 "EHLO
+        id S229626AbjBCXhs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 3 Feb 2023 18:37:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233355AbjBCOen (ORCPT
+        with ESMTP id S232957AbjBCXhr (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 3 Feb 2023 09:34:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9103C1C59D
-        for <linux-m68k@lists.linux-m68k.org>; Fri,  3 Feb 2023 06:33:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1675434832;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QVQjsvvXC5vAa55XgbnpLQZ7ycccPtxDGUTVFYgFp7U=;
-        b=AsQoeRQUoXF06E8GG4hOFVjtLFOqD90puxdOeHL9PJQqsjq8FTRxRqj5ayVwS7YLc6jym1
-        LdSekvX16hYPOX6sjeg1tqhbF+JNgboxiBkaC26yoRQ5bUEL6zTpL5S8IAIT16osxU1ZmL
-        WXzOm0z7tmxvODDQgB6XBfQ3IFGV/Lk=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-60-VJRytsMQNFalwC0GN34H-A-1; Fri, 03 Feb 2023 09:33:50 -0500
-X-MC-Unique: VJRytsMQNFalwC0GN34H-A-1
-Received: by mail-wm1-f71.google.com with SMTP id k9-20020a05600c1c8900b003dc5dec2ac6so4702701wms.4
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 03 Feb 2023 06:33:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QVQjsvvXC5vAa55XgbnpLQZ7ycccPtxDGUTVFYgFp7U=;
-        b=P46VChaoRizouvJNJroR1TOwQQNsxikmM4F2Jv0UBZZHo0rEp6yRu66G+uRwP3+kTw
-         8zHCpm5ndVXvBv1+CdYWLBBvesNOvSDosjhD3lqOhjMUomcpIyF1NCIT5w2lP70aErWT
-         efInXTsvPceYiELkBZEA4G5T7OUanYid5AaPZRGbq8QON7LYRTdbD9Bx0YqnEjLQ5/qg
-         IBhR8qij1Eb2lqVsHvgt/Yo/Wdt75haKNb1ZTT6LeZ7qYilwLFjpSJDVddkB4gmuohjV
-         e+VnZVtaBxov2hvs52uk0IyYY8ITBGaqEc7Kmn/qgVQH+NIy3b3Rvo19Kzyf5qTzWEJh
-         lFWw==
-X-Gm-Message-State: AO0yUKUNFK9R6oB7Of17OuS/YExL2oisHWEMn+uwi1UJDVlXpCu91fQ0
-        OlzfS3oftzizT4wlIgeQ492cafgdzXCpDjmM3jJP4+av5cx8HbCYhLYpUjw8UacFvvjfJHGJ+wN
-        prD+liv+b98bdtjELpShj0ekzLGGk
-X-Received: by 2002:a05:600c:3514:b0:3df:ead3:c6fc with SMTP id h20-20020a05600c351400b003dfead3c6fcmr1739764wmq.17.1675434828376;
-        Fri, 03 Feb 2023 06:33:48 -0800 (PST)
-X-Google-Smtp-Source: AK7set+nCaLsRgMPjXxFJ2S9nOzpB4vodjtO+Yac8mpKGPJpDWQMNBTnVH2IJfyVyYdKVED3TZv5Cg==
-X-Received: by 2002:a05:600c:3514:b0:3df:ead3:c6fc with SMTP id h20-20020a05600c351400b003dfead3c6fcmr1739731wmq.17.1675434828065;
-        Fri, 03 Feb 2023 06:33:48 -0800 (PST)
-Received: from [192.168.3.108] (p5b0c6376.dip0.t-ipconnect.de. [91.12.99.118])
-        by smtp.gmail.com with ESMTPSA id o35-20020a05600c512300b003cffd3c3d6csm3239260wms.12.2023.02.03.06.33.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Feb 2023 06:33:47 -0800 (PST)
-Message-ID: <de9cb029-b36e-efe9-9d0e-46a382e889b5@redhat.com>
-Date:   Fri, 3 Feb 2023 15:33:45 +0100
+        Fri, 3 Feb 2023 18:37:47 -0500
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F5A8A7FC
+        for <linux-m68k@lists.linux-m68k.org>; Fri,  3 Feb 2023 15:37:39 -0800 (PST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 49440320030E;
+        Fri,  3 Feb 2023 18:37:37 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Fri, 03 Feb 2023 18:37:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; t=1675467456; x=1675553856; bh=SMr47jTnar81pJNydon8MrHAuYDy
+        yMrr+Blb3ia5WVg=; b=REw9WM0GjaLrjPWyS8r5jP6bWN8CuhUud4QsvmXoNStk
+        HmasB4yXWYBExNnE3e4nCRmajMmXEH8cnaiP+KbEv4QWjMa9+mDPnEh7uNg0j3hu
+        MiY+MrYGFliru0zL7y6+oBvJuBSyIUA8N71qDShgfd3WYLoNj8LCSBnRGR5bwOcX
+        1NX5NDvjBYo3PXprvs5ph0UHNXSqJhWJrJBTgHJ1BAs7TRiTIFJu+USqFAGfdHL3
+        +ixKFgVeASZ5SQH/OfuM067lcrc/RzSsd+saIFsOVjm4Jaj4bYCATd4Y5XhcgXey
+        M5r+Vvn8Arp46NCoywd2b21EExLJlo3aFrgV/B06fw==
+X-ME-Sender: <xms:wJrdY_MjWNIXx4EcfNCEgAYLdi1u78Dm9mF9Ztd8xLTJ95AEXo7Rdg>
+    <xme:wJrdY5-8zeU0n7OTOWd1qb2T7I7qAo-kaKMb28tRcIBa5t6egPKqaWFkooSGBK51h
+    sDgnv6tncHlpKDgYMs>
+X-ME-Received: <xmr:wJrdY-SBBGxi1knGYtQP4AiXX9BQi57m792ilJu8KxYnC_vLJUgF3YQbYQyDmL2T-Oj0kQi6t60w6WYHndpPmW0n8FGl87qIZ7g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudeguddgudefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
+    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
+    htthgvrhhnpeekledtheeufeefgfeffefhveeffeevgeeugedvjeeugffgveehfeffjeff
+    veeigfenucffohhmrghinhepshdtudhmohhunhhtkhgvrhhnfhhsrdhshhdpmhhouhhnth
+    hkvghrnhhfshdrshhhnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
+    lhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:wJrdYzuSscVMddP40EgmnIrv_3iewE39LMw14Lg6vVP1E09ZuMB3tw>
+    <xmx:wJrdY3cJpOrKeu6_DCmcqhxPA9ontlvD4MnM3OFuqdYD8D2elMHZ6g>
+    <xmx:wJrdY_2N87TUkiM4TxhvnnzrjN0hmc_zVENIPhj55VKMiBPnjKT12A>
+    <xmx:wJrdY_GJlKiELIdabSBKl4zcp88_Nu1BDy2HliJSYC5yLuSmshl-bA>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 3 Feb 2023 18:37:34 -0500 (EST)
+Date:   Sat, 4 Feb 2023 10:39:39 +1100 (AEDT)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Stan Johnson <userm57@yahoo.com>
+cc:     Michael Schmitz <schmitzmic@gmail.com>,
+        debian-68k@lists.debian.org,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Subject: Re: stack smashing detected
+In-Reply-To: <af524ac9-f5af-e9fb-e33f-0884a0ebfcb6@yahoo.com>
+Message-ID: <667fa6a9-a760-2116-5f76-a01e078c8079@linux-m68k.org>
+References: <4a9c1d0d-07aa-792e-921f-237d5a30fc44.ref@yahoo.com> <4a9c1d0d-07aa-792e-921f-237d5a30fc44@yahoo.com> <e7574759-4870-d554-dd63-17da220270f1@gmail.com> <af524ac9-f5af-e9fb-e33f-0884a0ebfcb6@yahoo.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH v2 4/4] mm, arch: add generic implementation of
- pfn_valid() for FLATMEM
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Brian Cain <bcain@quicinc.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Matt Turner <mattst88@gmail.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Simek <monstr@monstr.eu>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Rich Felker <dalias@libc.org>,
-        Richard Weinberger <richard@nod.at>,
-        Russell King <linux@armlinux.org.uk>,
-        Stafford Horne <shorne@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vineet Gupta <vgupta@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org,
-        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-        openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
-        x86@kernel.org, Huacai Chen <chenhuacai@loongson.cn>
-References: <20230129124235.209895-1-rppt@kernel.org>
- <20230129124235.209895-5-rppt@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230129124235.209895-5-rppt@kernel.org>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 29.01.23 13:42, Mike Rapoport wrote:
-> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+On Wed, 1 Feb 2023, Stan Johnson wrote:
+
 > 
-> Every architecture that supports FLATMEM memory model defines its own
-> version of pfn_valid() that essentially compares a pfn to max_mapnr.
+> After logging the start and end of each script, I see that the "stack 
+> smashing detected" error often happens while running 
+> "/etc/rcS.d/S01mountkernfs.sh" (/etc/init.d/mountkernfs.sh). I'll try to 
+> isolate it to a particular command.
 > 
-> Use mips/powerpc version implemented as static inline as a generic
-> implementation of pfn_valid() and drop its per-architecture definitions.
-> 
-> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
-> Acked-by: Guo Ren <guoren@kernel.org>		# csky
-> Acked-by: Huacai Chen <chenhuacai@loongson.cn>	# LoongArch
-> Acked-by: Stafford Horne <shorne@gmail.com>	# OpenRISC
-> ---
 
-LGTM with the fixup
+That brings to mind some other unresolved initscript failures, also 
+involving 68030, which were accompanied by "page allocation failure".
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+But it's hard to blame "stack smashing detected" on a page allocation 
+failure since the latter always produces a very noisy splat in the kernel 
+messages.
 
--- 
-Thanks,
+Have you reproduced the error with Debian's kernel package?
 
-David / dhildenb
+If not, please refer to private correspondence from me dated 10 December 
+2022 regarding setting up /etc/initramfs-tools so as to produce a suitably 
+small initramfs.
 
+To save time, I recommend using QEMU and an up-to-date Debian/m68k SID 
+virtual machine to produce the vmlinux and initrd files needed for use 
+with Penguin on your slower machines.
