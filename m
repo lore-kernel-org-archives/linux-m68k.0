@@ -2,133 +2,129 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5402DC61DA4
-	for <linux-m68k@archiver.kernel.org>; Fri,  3 Feb 2023 00:15:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F12AC61DA4
+	for <linux-m68k@archiver.kernel.org>; Fri,  3 Feb 2023 14:31:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232142AbjBCAPK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 2 Feb 2023 19:15:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49402 "EHLO
+        id S233083AbjBCObJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 3 Feb 2023 09:31:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbjBCAPJ (ORCPT
+        with ESMTP id S233000AbjBCObI (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 2 Feb 2023 19:15:09 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2FD2B08E
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  2 Feb 2023 16:15:09 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id 144so2420345pfv.11
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 02 Feb 2023 16:15:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LRsufYRo3YfajOF8B4jJOYzzcfkI7Z67SAbxbSfquq8=;
-        b=CI18T7OvgCJe6FWOrhTDMq559bBxj8tZ48MKO1C3ML4tL3qyKCKj3Wd2NyCI6+udOC
-         8+vX7TwePOUas3ffmkWxlMF8HQiTTBBOaRqxIouzFEu6xeodTIFAleVZ6yoyFm5qo0A+
-         R85exw2iN/f13tVWpdrz6nRrFb99Q5YcAy77QNGZf8M7YRYs+drU6W0Vz+GQh89mvLsj
-         66OY9dc21+CndIlQh5AikxaJopvIQiungozhfV86UBFhFbnNFyGLJ54cUuO2HqVr0DGY
-         hClzL3NszuNwJdesIYkTfWysN/l2QDvfkF+9x9uCy4gB0PCS4MUySoNvGpZOt0wCX3vC
-         Zo4A==
+        Fri, 3 Feb 2023 09:31:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D596DFF4
+        for <linux-m68k@lists.linux-m68k.org>; Fri,  3 Feb 2023 06:30:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1675434619;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FGqA/t5BHooNtKKmgY/P/RvUeTIDhJpfv4X01I3UuzM=;
+        b=KzLKtn5J5FwDJ1xW53tYbqxuplKMAAGctSM8PUKQ9FfhxhD5kMUNjV5QmGhTHb9LN4k1JM
+        WyGG4nNHBPdm+kz7FuL6LCQl+M+t1yl+mEKLj/wLHK33qEkv00jPTKSn2Anz2n9FBO2sAB
+        Sdt2g8AcEwjfqUqtFHQABHkt3NWnZuk=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-31-75XceWfYOFmAonG72GFmEQ-1; Fri, 03 Feb 2023 09:30:17 -0500
+X-MC-Unique: 75XceWfYOFmAonG72GFmEQ-1
+Received: by mail-wm1-f72.google.com with SMTP id iz20-20020a05600c555400b003dc53fcc88fso2706581wmb.2
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 03 Feb 2023 06:30:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=LRsufYRo3YfajOF8B4jJOYzzcfkI7Z67SAbxbSfquq8=;
-        b=iOTQQPMfVPqKJGKZze+W7zvqC4SqbWmVFOhXOIPLCBzwcsDb532pQOJhiFyk2shIdA
-         LzkWPzaXRxuarGS8Ttz1Xw6iH3XBx1cxY12BOOy5LSrHtyVWGmb9uV0NY1JCkT1clVNH
-         WVmj/oSEf6g/U6oiwusAZLpCZiPQK9IgOhX27Yi7gIwGaa44fru0+BYcJ9F7swEb39St
-         p1nkR7WVwdsexyJB2y4GxzAxHuaKCIyraprgrZNX2tOtC4QivSGPsxevGXIg66c8MRpS
-         DYJboC32dsy1T9vy3skKMSO5TzVL/8EOi3oNqalveKMWTRBuZPz5Klc2IvVU0DleHozY
-         2Icw==
-X-Gm-Message-State: AO0yUKXWeRAXpu1br8S/JJQfCa6br+ixfYT4pBu8acAOMNtqAxfDfP1l
-        sjIcQhSfvGLO3jqNtDE8MwbxVeKeI8w=
-X-Google-Smtp-Source: AK7set/QXXjN4k5g+JMKk/n4atUlwd2AyBmPqe7YEvfuNg4K96vnUiET9Mi83IQiFDLJQnpTbfrYcw==
-X-Received: by 2002:a62:b505:0:b0:593:c665:f256 with SMTP id y5-20020a62b505000000b00593c665f256mr2368971pfe.3.1675383308006;
-        Thu, 02 Feb 2023 16:15:08 -0800 (PST)
-Received: from [10.1.1.24] (222-154-147-142-fibre.sparkbb.co.nz. [222.154.147.142])
-        by smtp.gmail.com with ESMTPSA id x8-20020aa79568000000b0059435689e36sm272401pfq.170.2023.02.02.16.15.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 02 Feb 2023 16:15:07 -0800 (PST)
-Subject: Re: stack smashing detected
-To:     Stan Johnson <userm57@yahoo.com>, debian-68k@lists.debian.org
-References: <4a9c1d0d-07aa-792e-921f-237d5a30fc44.ref@yahoo.com>
- <4a9c1d0d-07aa-792e-921f-237d5a30fc44@yahoo.com>
- <e7574759-4870-d554-dd63-17da220270f1@gmail.com>
- <af524ac9-f5af-e9fb-e33f-0884a0ebfcb6@yahoo.com>
- <8d54f302-0a39-b8c7-4115-5c10c1d3769f@gmail.com>
- <8fb2aa62-dcec-9bd0-b8da-00d9bb4ddaba@yahoo.com>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <dea51366-973a-6de8-ca14-68118ed7c924@gmail.com>
-Date:   Fri, 3 Feb 2023 13:15:02 +1300
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FGqA/t5BHooNtKKmgY/P/RvUeTIDhJpfv4X01I3UuzM=;
+        b=DK2v0SkF4wDoU2zhF11+9iXcGqZ6hxEBTl0v5PQjFsTR49/SOCweQNvHHv1t/9qqaG
+         M1l57n3Rpp9dWgVfadmvyW3QcSGeeNZdQsThzvjKl9t6bVQBx1RTEjKt6LhGHKXe0wDM
+         fO7ymD2Qvbdr33gcV58ZQEqYlg/qJsSuWuW4DeEawn78nTuGQbsiclJXxbJea8tg4HoT
+         uRqqZfhBSoTJQ0ih/s3yM8NjUXxGD/TIVwF+l8Bp1hQUvbbY/QjD14R5k1bs7I3zJuV9
+         vItzZo4xNYehoAvjOz3frMM+CvxnLkRDP6iryDJPpd/yQHTUGAABSJirSvYGT7YK6pCq
+         yYYg==
+X-Gm-Message-State: AO0yUKXL0YSfw/QSMW8jUBl3EfmxJbEydIFUKXJ0tV8UKUWG8k52p/I3
+        tX/stFF5G9P5IGz3SjAY9exp8q2DH4+0KdwaLY60dFrvp1guiOh7RJlTy6VHgoInRjazA1/lctv
+        nfqnvdiTqH2ZoWX5c/sYTiUXfqDDq
+X-Received: by 2002:a05:600c:3588:b0:3df:e1e9:200e with SMTP id p8-20020a05600c358800b003dfe1e9200emr4472914wmq.39.1675434616192;
+        Fri, 03 Feb 2023 06:30:16 -0800 (PST)
+X-Google-Smtp-Source: AK7set+3Fxk3nALXFhpoXy/lSyMSFcdmxLuZvgb86YYfx4M4JIQvKCJs/tKTkc3VpDPsDt8toFavpA==
+X-Received: by 2002:a05:600c:3588:b0:3df:e1e9:200e with SMTP id p8-20020a05600c358800b003dfe1e9200emr4472869wmq.39.1675434615896;
+        Fri, 03 Feb 2023 06:30:15 -0800 (PST)
+Received: from [192.168.3.108] (p5b0c6376.dip0.t-ipconnect.de. [91.12.99.118])
+        by smtp.gmail.com with ESMTPSA id h27-20020a05600c2cbb00b003db12112fcfsm3203111wmc.4.2023.02.03.06.30.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Feb 2023 06:30:15 -0800 (PST)
+Message-ID: <569308c6-558b-de6e-1e98-2f50c1c56755@redhat.com>
+Date:   Fri, 3 Feb 2023 15:30:12 +0100
 MIME-Version: 1.0
-In-Reply-To: <8fb2aa62-dcec-9bd0-b8da-00d9bb4ddaba@yahoo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH v2 1/4] arm: include asm-generic/memory_model.h from
+ page.h rather than memory.h
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Brian Cain <bcain@quicinc.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Simek <monstr@monstr.eu>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Rich Felker <dalias@libc.org>,
+        Richard Weinberger <richard@nod.at>,
+        Russell King <linux@armlinux.org.uk>,
+        Stafford Horne <shorne@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vineet Gupta <vgupta@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-mm@kvack.org,
+        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+        openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
+        x86@kernel.org
+References: <20230129124235.209895-1-rppt@kernel.org>
+ <20230129124235.209895-2-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20230129124235.209895-2-rppt@kernel.org>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Stan,
+On 29.01.23 13:42, Mike Rapoport wrote:
+> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> 
+> Makes it consistent with other architectures and allows for generic
+> definition of pfn_valid() in asm-generic/memory_model.h with clear override
+> in arch/arm/include/asm/page.h
+> 
+> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> ---
 
-Am 03.02.2023 um 12:16 schrieb Stan Johnson:
-> On 2/1/23 11:51 AM, Michael Schmitz wrote:
->> ...
->>
->> The stack canary mechanism pushes a token on the stack at function
->> entry, and compares against that token's value at function exit. This is
->> all code generated by gcc in the user binary.
->>
->> The kernel is not involved in function calls other than syscalls. For
->> syscalls, we could try to find the user mode stack, and do a similar
->> canary trick, but I don't think that would be necessary for all
->> syscalls. Might be easier to instrument copy_to_user() instead if you're
->> worried about a syscall receiving result data that way to a variable on
->> the stack.
->>
->> But since we're touching on copy_to_user() here - the 'remove set_fs'
->> patch set by Christoph Hellwig refactored the m68k inline helpers around
->> July 2021. Can you test a kernel prior to those patches (5.15-rc2)?
->> ...
-> I updated my m68k rootfs in QEMU to the latest Debian SID and installed
-> the updated rootfs on my Mac IIci. And it's now restoring to my SE/30,
-> so I'll be able to test on that system again eventually.
->
-> I tested 5.15.0-rc3, 5.15.0-rc2 and 5.15.0-rc1, with inconclusive
-> results on the IIci (3 tests per kernel; e.g. "0, 1, 5" in
-> "Stack-Smashing" indicates that test 1 had zero smashing errors, test 2
-> had 1, and test 3 had 5):
->
-> Kernel          Stack-Smashing
-> 5.15.0-rc3	    0, 1, 5
-> 5.15.0-rc2          2, 3, 2
-> 5.15.0-rc1          7, 1, 3
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-I think we can rule out those changes to usermode copy routines now.
+-- 
+Thanks,
 
-Good idea to test on some other hardware. I'd also consider Geert's 
-suggestion to enable kernel level debugging for the kernel's memory 
-allocators. That does look a lot easier than debugging usermode copy.
+David / dhildenb
 
-Cheers,
-
-	Michael
-
-
-> I saved the serial console logs, but they're probably not too useful at
-> this point. Next, I'll confirm a similar failure on the SE/30, then I'll
-> check 4.0 and 5.0 (on the IIci) to see whether the issue started in that
-> range, then use git bisect in an attempt to isolate the issue further.
-> I'll also do a spot check on a different IIci to lessen the chance that
-> the issue is being caused by a hardware problem. If it's not caused by a
-> kernel bug, the next step will be to isolate the specific offending
-> executable(s) in the sysvinit scripts.
->
-> Or I could test using systemd instead of sysvinit; that would take
-> longer but it might be worthwhile if it doesn't look like a kernel bug.
->
-> -Stan
->
