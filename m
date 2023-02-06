@@ -2,89 +2,75 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7649C63797
-	for <linux-m68k@archiver.kernel.org>; Mon,  6 Feb 2023 12:10:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BEB1AC61DA4
+	for <linux-m68k@archiver.kernel.org>; Mon,  6 Feb 2023 12:26:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230042AbjBFMKH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 6 Feb 2023 07:10:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46176 "EHLO
+        id S229994AbjBFM0J convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 6 Feb 2023 07:26:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbjBFMKC (ORCPT
+        with ESMTP id S229981AbjBFM0G (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 6 Feb 2023 07:10:02 -0500
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A07F22DED
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Feb 2023 04:09:39 -0800 (PST)
-Received: by mail-qt1-f181.google.com with SMTP id 5so2478352qtp.9
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 06 Feb 2023 04:09:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7SQkBcRxxCrTEFDwcET99BwrKIGZJp4wu6h4t2bWjyk=;
-        b=6V6UhgM7izotw68aEAi+T36dNPr6ZIaoDJkDh+XM1RrgxyaYjDbmw2Z1/KF1USFcb/
-         7T/JFjja6PMUM/Di9V3wCRgYj2VUZ2H8p9CGaI1zItTv1owM3QqwjhWCjJ6xh2FBWzdJ
-         qhHuzVF1MN6OBKVZU93cW0wlQdz90U2FxrHUn8ln7FOpTETeqE+Jb0C1bJUf+4t0QRei
-         z1oatUT+gkN+EvFK1QM/qappn71Zd5d0zFzBzbZhxdlnWt5S7IPs6GqA1hs5k0Cn39C5
-         fFB1rQXcYwHKX//r5wF7gd44T6A3xiocJ8w5kJ5WYvmI14IJOfCIrOlj1IeVqzNo+Qcz
-         101g==
-X-Gm-Message-State: AO0yUKV0a8kMBm+vl1M8xmnQLnqoZ61ltoJJYfCu7fadkwNWP6e5aRvd
-        762RqUIzvy5+lZAp4vmWUz9EDJC6wnlCyA==
-X-Google-Smtp-Source: AK7set/q9gvNCgVzvvAP6NM9IrVY/a+XZ26bdQdjZvOa54JZJCp6BlwnjTlKwBJfmJtzKHpBsN583Q==
-X-Received: by 2002:ac8:5bcd:0:b0:3b9:ca2b:a91b with SMTP id b13-20020ac85bcd000000b003b9ca2ba91bmr20012157qtb.29.1675685352562;
-        Mon, 06 Feb 2023 04:09:12 -0800 (PST)
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
-        by smtp.gmail.com with ESMTPSA id b26-20020a05620a119a00b0071de2b6d439sm7270418qkk.49.2023.02.06.04.09.11
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Feb 2023 04:09:11 -0800 (PST)
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-50aa54cc7c0so152364627b3.8
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 06 Feb 2023 04:09:11 -0800 (PST)
-X-Received: by 2002:a81:89c1:0:b0:52a:7537:98a6 with SMTP id
- z184-20020a8189c1000000b0052a753798a6mr259978ywf.384.1675685351335; Mon, 06
- Feb 2023 04:09:11 -0800 (PST)
-MIME-Version: 1.0
-References: <Y9lz6yk113LmC9SI@ZenIV> <Y9l0aBPUEpf1bci9@ZenIV>
-In-Reply-To: <Y9l0aBPUEpf1bci9@ZenIV>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 6 Feb 2023 13:08:59 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWcNcn7R6MMeg51SUkmpZZ+HpdsMtiOE55EbQ1coc10AQ@mail.gmail.com>
-Message-ID: <CAMuHMdWcNcn7R6MMeg51SUkmpZZ+HpdsMtiOE55EbQ1coc10AQ@mail.gmail.com>
-Subject: Re: [PATCH 04/10] m68k: fix livelock in uaccess
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-arch@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, Michal Simek <monstr@monstr.eu>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
+        Mon, 6 Feb 2023 07:26:06 -0500
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386C51EFEB
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Feb 2023 04:26:05 -0800 (PST)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1pP0ZL-003goZ-F6; Mon, 06 Feb 2023 13:25:59 +0100
+Received: from dynamic-078-055-160-111.78.55.pool.telefonica.de ([78.55.160.111] helo=[192.168.1.11])
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1pP0ZL-001rhh-8F; Mon, 06 Feb 2023 13:25:59 +0100
+Message-ID: <40a0fdd71a65307e33dc3b5d8fd15d655fcb0607.camel@physik.fu-berlin.de>
+Subject: Re: U-Boot support for M68K removal
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Greg Ungerer <gerg@kernel.org>,
+        Angelo Dureghello <angelo.dureghello@timesys.com>
+Cc:     Tom Rini <trini@konsulko.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org,
+        Joshua Thompson <funaho@jurai.org>,
+        Philip Blundell <philb@gnu.org>, u-boot@lists.denx.de,
+        Huan Wang <alison.wang@nxp.com>
+Date:   Mon, 06 Feb 2023 13:25:58 +0100
+In-Reply-To: <b7d1cfce-3ba3-6621-60c0-9b401a382971@kernel.org>
+References: <Y9PWhU7DVQCLP9EX@bill-the-cat>
+         <CAMuHMdUMvGhpbfsTaaNSpypH_XdKjVzY3yWOOpR=Acj_7K6-uw@mail.gmail.com>
+         <CALJHbkBqdvJu8KGKbJ2eayhiP_t607AvuwgYidhLTPY7=Mt4Hg@mail.gmail.com>
+         <Y9fs2wH4WHIzae5r@bill-the-cat>
+         <7739d9da9f49f99d156dacf645a311388e9eb628.camel@physik.fu-berlin.de>
+         <af87d98baa2eb3bf253a1f06bc29ee9cd5034e3b.camel@physik.fu-berlin.de>
+         <CALJHbkAuaGrfiAm2jzTmrAPSM+Gq1z-gVSZ+7hgn8-e_Lr82XQ@mail.gmail.com>
+         <b7d1cfce-3ba3-6621-60c0-9b401a382971@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.46.3 
+MIME-Version: 1.0
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 78.55.160.111
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Jan 31, 2023 at 9:06 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> m68k equivalent of 26178ec11ef3 "x86: mm: consolidate VM_FAULT_RETRY handling"
-> If e.g. get_user() triggers a page fault and a fatal signal is caught, we might
-> end up with handle_mm_fault() returning VM_FAULT_RETRY and not doing anything
-> to page tables.  In such case we must *not* return to the faulting insn -
-> that would repeat the entire thing without making any progress; what we need
-> instead is to treat that as failed (user) memory access.
->
-> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Hi Greg!
 
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+On Mon, 2023-02-06 at 22:02 +1000, Greg Ungerer wrote:
+> I wish I had a 54415 based board in my collection. Would make it so
+> much easier to keep the kernel working on it :-(
 
-Gr{oetje,eeting}s,
+Maybe we can find one to buy for you. I would be happy to donate for it.
 
-                        Geert
+Adrian
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
