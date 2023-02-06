@@ -2,115 +2,107 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FFFCC61DA4
-	for <linux-m68k@archiver.kernel.org>; Mon,  6 Feb 2023 12:02:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D92AC63797
+	for <linux-m68k@archiver.kernel.org>; Mon,  6 Feb 2023 12:08:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229582AbjBFMCP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 6 Feb 2023 07:02:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38752 "EHLO
+        id S230167AbjBFMIi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 6 Feb 2023 07:08:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjBFMCP (ORCPT
+        with ESMTP id S229706AbjBFMId (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 6 Feb 2023 07:02:15 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1958512F28
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Feb 2023 04:02:12 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 90D9C60E33;
-        Mon,  6 Feb 2023 12:02:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1004C433EF;
-        Mon,  6 Feb 2023 12:02:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675684931;
-        bh=wS4sH264dDdF0uW6V4ThXzifTpLKkJP2kgphdNctr/w=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=lNQcVBnJea+WfT6stx5JBbLRReavQPY3zk1f4aoLy1jyCvl4q30L6VlLUxKBEP50I
-         /MbRlkaP0skLvd8fPH1mQf/HdyBrvJjnjHhjrPrt59m51MwkMqCemKuzu+u+Ks3mKr
-         djhiLgOfIvJN6SM30v5btt0Hpsaa0+/Z+tQDAzylDrUSugGsZn2pMJCgTRatWI+rNF
-         lnohgUSpUy0ag5ZbzkXXR0SfLjYXO4qGhpqADjB2LtxIyiIRE9s5KTFC+lGBsydFb5
-         sw9JWMAOiSNEztMMMDRV0/y/wnNEyPfFtMVvZ8Xhvn/xDJ+Cz3rAlM+96neWB5Uhty
-         3VvicbqCcsrcw==
-Message-ID: <b7d1cfce-3ba3-6621-60c0-9b401a382971@kernel.org>
-Date:   Mon, 6 Feb 2023 22:02:06 +1000
+        Mon, 6 Feb 2023 07:08:33 -0500
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4310222F8
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Feb 2023 04:08:23 -0800 (PST)
+Received: by mail-qt1-f175.google.com with SMTP id z5so12404720qtn.8
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 06 Feb 2023 04:08:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=02Ztaz85YCyWse0OOUudyylXWESo7R0bW8bc2JlaDZc=;
+        b=p5jOW4FMtMUPpZzZQIGzjxfrW+gJYE2iP2IrvtFk3hOufPeNmGOwjwRmJautl0mxjH
+         bLfe6RUn/Iu7J2wjjRiWm4UhIRpA2SjSmx7dyOGCzah9lqVFRI8BVitiXnh/IChS1B9S
+         MTDnWutO9OfE0fXVDTEinXlaeGavu0nrCAZwljKW2U8MD4cGV7MlIdra6GcenA4nRHFA
+         PUmpGMNXV3G6DV7k2ET6z8cBK1Uz19D5cV1zBCKnvHxIm3oFj9BbyCU0bv9rbdp9Ilwc
+         KTBfqF4N+sBV9fRUFZqpgmNsKcZAWW2mosZSrk5FBIWRnzVYwAEjRnXax4qzNYGhzXW+
+         ivkg==
+X-Gm-Message-State: AO0yUKW1Vlb5oqRvxnbx8grPe9mZIpXF++lNlGhtBIhlRwza8MHSaKF1
+        n5WXYndlOi7M+mOwa+Tuy1nmQVGIiAQ6Tg==
+X-Google-Smtp-Source: AK7set9rMLuzQtUevK2c49aE7TEMYEM615D0xBNjF7wNQG/z6Lt3+QvxG4V9FY9VIb5Tu0zJxNfRQQ==
+X-Received: by 2002:a05:622a:1aa1:b0:3a9:8842:5860 with SMTP id s33-20020a05622a1aa100b003a988425860mr36201152qtc.45.1675685302026;
+        Mon, 06 Feb 2023 04:08:22 -0800 (PST)
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
+        by smtp.gmail.com with ESMTPSA id b13-20020ac801cd000000b003a6a19ee4f0sm7125924qtg.33.2023.02.06.04.08.21
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Feb 2023 04:08:21 -0800 (PST)
+Received: by mail-yb1-f172.google.com with SMTP id q4so9464807ybu.7
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 06 Feb 2023 04:08:21 -0800 (PST)
+X-Received: by 2002:a25:e912:0:b0:8a0:2a4:a96c with SMTP id
+ n18-20020a25e912000000b008a002a4a96cmr214639ybd.380.1675685301223; Mon, 06
+ Feb 2023 04:08:21 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: U-Boot support for M68K removal
-To:     Angelo Dureghello <angelo.dureghello@timesys.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Tom Rini <trini@konsulko.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Joshua Thompson <funaho@jurai.org>,
-        Philip Blundell <philb@gnu.org>, u-boot@lists.denx.de,
-        Huan Wang <alison.wang@nxp.com>
-References: <Y9PWhU7DVQCLP9EX@bill-the-cat>
- <CAMuHMdUMvGhpbfsTaaNSpypH_XdKjVzY3yWOOpR=Acj_7K6-uw@mail.gmail.com>
- <CALJHbkBqdvJu8KGKbJ2eayhiP_t607AvuwgYidhLTPY7=Mt4Hg@mail.gmail.com>
- <Y9fs2wH4WHIzae5r@bill-the-cat>
- <7739d9da9f49f99d156dacf645a311388e9eb628.camel@physik.fu-berlin.de>
- <af87d98baa2eb3bf253a1f06bc29ee9cd5034e3b.camel@physik.fu-berlin.de>
- <CALJHbkAuaGrfiAm2jzTmrAPSM+Gq1z-gVSZ+7hgn8-e_Lr82XQ@mail.gmail.com>
-Content-Language: en-US
-From:   Greg Ungerer <gerg@kernel.org>
-In-Reply-To: <CALJHbkAuaGrfiAm2jzTmrAPSM+Gq1z-gVSZ+7hgn8-e_Lr82XQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <Y9lz6yk113LmC9SI@ZenIV> <Y9pD+TMP+/SyfeJm@FVFF77S0Q05N>
+In-Reply-To: <Y9pD+TMP+/SyfeJm@FVFF77S0Q05N>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 6 Feb 2023 13:08:09 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWtU=2Uq2QDu+eiBLve=uwJ4byU_1K2dKuUTH8wDUHoaw@mail.gmail.com>
+Message-ID: <CAMuHMdWtU=2Uq2QDu+eiBLve=uwJ4byU_1K2dKuUTH8wDUHoaw@mail.gmail.com>
+Subject: Re: [RFC][PATCHSET] VM_FAULT_RETRY fixes
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, linux-arch@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        Michal Simek <monstr@monstr.eu>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+Hi Mark,
 
-On 6/2/23 18:14, Angelo Dureghello wrote:
-> Hi John,
-> 
-> On Sat, Feb 4, 2023 at 4:55 PM John Paul Adrian Glaubitz
-> <glaubitz@physik.fu-berlin.de> wrote:
->>
->> On Mon, 2023-01-30 at 17:22 +0100, John Paul Adrian Glaubitz wrote:
->>> FWIW, m68k is still a very actively maintained architecture in the
->>> Linux kernel and userland with even LLVM and Rust having recently
->>> added support for m68k.
->>>
->>> I also own a Coldfire board myself (not sure which one without
->>> looking), so I can offer to test U-Boot patches in the future.
->>
->> So, I just found my Coldfire board and it's actually a 547x/548x EVB
->> fitted with a 5475 CPU module clocked at 266 MHz.
->>
->> I will get this board set up during the next weeks and I am happy to
->> test any Coldfire kernel patches, and eventually, U-Boot patches if
->> that board is still supported.
->>
-> 
-> thanks a lot.
-> 
-> Actually, i am debugging on a 54415 based board, totally dead
-> using current master.
-> I cannot printf, so using some gpio's for debug.
-> Issue seems to happen at first puts, so, something related
-> to serial port initialization. Hope to fix this soon.
+On Wed, Feb 1, 2023 at 11:52 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> On Tue, Jan 31, 2023 at 08:02:51PM +0000, Al Viro wrote:
+> > On x86 it had been noticed and fixed back in 2014, in 26178ec11ef3 "x86:
+> > mm: consolidate VM_FAULT_RETRY handling".  Some of the other architectures
+> > had it dealt with later - e.g. arm in 2017, the fix is 746a272e44141
+> > "ARM: 8692/1: mm: abort uaccess retries upon fatal signal"; xtensa -
+> > in 2021, the fix is 7b9acbb6aad4f "xtensa: fix uaccess-related livelock
+> > in do_page_fault", etc.
+> >
+> > However, it never had been done on a bunch of architectures - the
+> > current mainline still has that bug on alpha, hexagon, itanic, m68k,
+> > microblaze, nios2, openrisc, parisc, riscv and sparc (both sparc32 and
+> > sparc64).  Fixes are trivial, but I've no way to test them for most
+> > of those architectures.
+>
+> FWIW, when I fixed arm and arm64 back in 2017, I did report the issue here with
+> a test case (and again in 2021, with maintainers all explciitly Cc'd):
+>
+>   https://lore.kernel.org/lkml/20170822102527.GA14671@leverpostej/
+>   https://lore.kernel.org/linux-arch/20210121123140.GD48431@C02TD0UTHF1T.local/
+>
+> ... so if anyone has access to those architectures, that test might be useful
+> for verifying the fix.
 
-I wish I had a 54415 based board in my collection. Would make it so
-much easier to keep the kernel working on it :-(
+Thanks a lot! This showed the problem on m68k, and confirmed Al's fix.
 
-Regards
-Greg
+I'll give it a try on a few more systems later...
 
+Gr{oetje,eeting}s,
 
+                        Geert
 
->>
->> Adrian
->>
->> --
->>   .''`.  John Paul Adrian Glaubitz
->> : :' :  Debian Developer
->> `. `'   Physicist
->>    `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
-> 
-> 
-> Regards,
-> angelo
-> 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
