@@ -2,45 +2,45 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01586C636CD
-	for <linux-m68k@archiver.kernel.org>; Tue,  7 Feb 2023 14:30:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DA83C636CD
+	for <linux-m68k@archiver.kernel.org>; Tue,  7 Feb 2023 14:30:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232486AbjBGOaq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 7 Feb 2023 09:30:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44440 "EHLO
+        id S231660AbjBGOax (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 7 Feb 2023 09:30:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232855AbjBGOaU (ORCPT
+        with ESMTP id S232880AbjBGOaW (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 7 Feb 2023 09:30:20 -0500
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 549743D92D
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Feb 2023 06:29:40 -0800 (PST)
+        Tue, 7 Feb 2023 09:30:22 -0500
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC48B3E08B
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Feb 2023 06:29:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675780180; x=1707316180;
+  t=1675780181; x=1707316181;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=7VgWr2VPj8L1NsfjGJ63Vno2YkqOebd37sMf+dqhyeo=;
-  b=Up4p6BWZGf6qksZkdDiaASb4x4SYtwdL9wn8wODMCzQHsOi5opHqAD9X
-   ELWFUIX69jS4vjc1AL9hgwGGznvNbOEyqhXsvPf+B+RhUjGiLRHeN1ykx
-   BimvFZnS6V85nFcQK/DY12xY4Yxbc/zcz1oEECQGBA2s0PovalBQrA9lx
-   DlI+3/sl0rKd886dE4BwcJJ+y93Tf0MyUc/l90dZLkmGOi2K1alzEM55D
-   OA+KYfOVbE26a4ZmQd0q/qjcm+ErVWlzods3KCw+39c7UKtHN27lzFrH1
-   5WVvhCOkmdguYBG8ju0tFn/l8SGXHlch6X3Z+LQqYsTpm4X6T7v7FOgZx
+  bh=7nNz03Wp2DuSzy1drxMZo+ycm4pzz0+FxjuOEGlypMU=;
+  b=nQeipeJ2Xj1uIEcrJLcKie9qTWgjgf/nFuiYN+G8UbUN+9CW/LPQmimw
+   on7PdnJi3h0lQI6j1kTJqkBGIWTC4GXUbs+rC0ZKObDAy20P892CMdk5m
+   Rs/x+KBz7PgqX9gD95SkxFYokkyLFcs6YDMAAq6+vr4ZfSEnwXn5UEFw2
+   FfhSo0uaAoSGkntC743J05G3jWtcnmLvJOp4J47DQahEPjZwJJe+mxfRp
+   rUpKap/S7ot4lIoLoGf2LhPWM4wRR9dH7eRAuigdALmxubvaWyLMDdqEe
+   Ps3VNBiEgqmN/H1iLVjx5w/3vbrnF4xxFx+LHWt6X0gPn9cQVOr7gTnCw
    g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10614"; a="313163930"
+X-IronPort-AV: E=McAfee;i="6500,9779,10614"; a="391915657"
 X-IronPort-AV: E=Sophos;i="5.97,278,1669104000"; 
-   d="scan'208";a="313163930"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2023 06:29:36 -0800
+   d="scan'208";a="391915657"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2023 06:29:40 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10614"; a="644465274"
+X-IronPort-AV: E=McAfee;i="6500,9779,10614"; a="912355057"
 X-IronPort-AV: E=Sophos;i="5.97,278,1669104000"; 
-   d="scan'208";a="644465274"
+   d="scan'208";a="912355057"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga006.jf.intel.com with ESMTP; 07 Feb 2023 06:29:23 -0800
+  by fmsmga006.fm.intel.com with ESMTP; 07 Feb 2023 06:29:30 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 2D031210; Tue,  7 Feb 2023 16:30:02 +0200 (EET)
+        id 660EF299; Tue,  7 Feb 2023 16:30:02 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Linus Walleij <linus.walleij@linaro.org>,
@@ -97,15 +97,15 @@ Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
         Kalle Valo <kvalo@kernel.org>, Qiang Zhao <qiang.zhao@nxp.com>,
         Li Yang <leoyang.li@nxp.com>, Lee Jones <lee@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v3 01/12] gpiolib: remove empty asm/gpio.h files
-Date:   Tue,  7 Feb 2023 16:29:41 +0200
-Message-Id: <20230207142952.51844-2-andriy.shevchenko@linux.intel.com>
+        Frank Rowand <frowand.list@gmail.com>
+Subject: [PATCH v3 04/12] gpiolib: remove gpio_set_debounce
+Date:   Tue,  7 Feb 2023 16:29:44 +0200
+Message-Id: <20230207142952.51844-5-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230207142952.51844-1-andriy.shevchenko@linux.intel.com>
 References: <20230207142952.51844-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
@@ -113,144 +113,145 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The arm and sh versions of this file are identical to the generic
-versions and can just be removed.
+gpio_set_debounce() only has a single user, which is trivially
+converted to gpiod_set_debounce().
 
-The drivers that actually use the sh3 specific version also include
-cpu/gpio.h directly, with the exception of magicpanelr2, which is
-easily fixed. This leaves coldfire as the only gpio driver
-that needs something custom for gpiolib.
-
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- arch/arm/Kconfig                    |  1 -
- arch/arm/include/asm/gpio.h         | 21 --------------
- arch/sh/Kconfig                     |  1 -
- arch/sh/boards/board-magicpanelr2.c |  1 +
- arch/sh/include/asm/gpio.h          | 45 -----------------------------
- 5 files changed, 1 insertion(+), 68 deletions(-)
- delete mode 100644 arch/arm/include/asm/gpio.h
- delete mode 100644 arch/sh/include/asm/gpio.h
+ Documentation/driver-api/gpio/legacy.rst      |  2 --
+ .../zh_CN/driver-api/gpio/legacy.rst          |  1 -
+ Documentation/translations/zh_TW/gpio.txt     |  1 -
+ drivers/input/touchscreen/ads7846.c           | 24 ++++++++++++-------
+ include/linux/gpio.h                          | 10 --------
+ 5 files changed, 15 insertions(+), 23 deletions(-)
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index e24a9820e12f..1d1a603d964d 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -24,7 +24,6 @@ config ARM
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU
- 	select ARCH_HAS_TEARDOWN_DMA_OPS if MMU
- 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
--	select ARCH_HAVE_CUSTOM_GPIO_H
- 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if CPU_V7 || CPU_V7M || CPU_V6K
- 	select ARCH_HAS_GCOV_PROFILE_ALL
- 	select ARCH_KEEP_MEMBLOCK
-diff --git a/arch/arm/include/asm/gpio.h b/arch/arm/include/asm/gpio.h
-deleted file mode 100644
-index 4ebbb58f06ea..000000000000
---- a/arch/arm/include/asm/gpio.h
-+++ /dev/null
-@@ -1,21 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _ARCH_ARM_GPIO_H
--#define _ARCH_ARM_GPIO_H
--
--#include <asm-generic/gpio.h>
--
--/* The trivial gpiolib dispatchers */
--#define gpio_get_value  __gpio_get_value
--#define gpio_set_value  __gpio_set_value
--#define gpio_cansleep   __gpio_cansleep
--
--/*
-- * Provide a default gpio_to_irq() which should satisfy every case.
-- * However, some platforms want to do this differently, so allow them
-- * to override it.
-- */
--#ifndef gpio_to_irq
--#define gpio_to_irq	__gpio_to_irq
--#endif
--
--#endif /* _ARCH_ARM_GPIO_H */
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index 0665ac0add0b..ccb866750a88 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -4,7 +4,6 @@ config SUPERH
- 	select ARCH_32BIT_OFF_T
- 	select ARCH_ENABLE_MEMORY_HOTPLUG if SPARSEMEM && MMU
- 	select ARCH_ENABLE_MEMORY_HOTREMOVE if SPARSEMEM && MMU
--	select ARCH_HAVE_CUSTOM_GPIO_H
- 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if (GUSA_RB || CPU_SH4A)
- 	select ARCH_HAS_BINFMT_FLAT if !MMU
- 	select ARCH_HAS_CURRENT_STACK_POINTER
-diff --git a/arch/sh/boards/board-magicpanelr2.c b/arch/sh/boards/board-magicpanelr2.c
-index 56bd386ff3b0..75de893152af 100644
---- a/arch/sh/boards/board-magicpanelr2.c
-+++ b/arch/sh/boards/board-magicpanelr2.c
-@@ -21,6 +21,7 @@
- #include <linux/sh_intc.h>
- #include <mach/magicpanelr2.h>
- #include <asm/heartbeat.h>
-+#include <cpu/gpio.h>
- #include <cpu/sh7720.h>
+diff --git a/Documentation/driver-api/gpio/legacy.rst b/Documentation/driver-api/gpio/legacy.rst
+index a0559d93efd1..e0306e78e34b 100644
+--- a/Documentation/driver-api/gpio/legacy.rst
++++ b/Documentation/driver-api/gpio/legacy.rst
+@@ -238,8 +238,6 @@ setup or driver probe/teardown code, so this is an easy constraint.)::
+         ## 	gpio_free_array()
  
- /* Dummy supplies, where voltage doesn't matter */
-diff --git a/arch/sh/include/asm/gpio.h b/arch/sh/include/asm/gpio.h
-deleted file mode 100644
-index 588c1380e4cb..000000000000
---- a/arch/sh/include/asm/gpio.h
-+++ /dev/null
-@@ -1,45 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0
-- *
-- *  include/asm-sh/gpio.h
-- *
-- * Generic GPIO API and pinmux table support for SuperH.
-- *
-- * Copyright (c) 2008 Magnus Damm
-- */
--#ifndef __ASM_SH_GPIO_H
--#define __ASM_SH_GPIO_H
+                 gpio_free()
+-                gpio_set_debounce()
 -
--#include <linux/kernel.h>
--#include <linux/errno.h>
+ 
+ 
+ Claiming and Releasing GPIOs
+diff --git a/Documentation/translations/zh_CN/driver-api/gpio/legacy.rst b/Documentation/translations/zh_CN/driver-api/gpio/legacy.rst
+index 74fa473bb504..dee2a0517c1c 100644
+--- a/Documentation/translations/zh_CN/driver-api/gpio/legacy.rst
++++ b/Documentation/translations/zh_CN/driver-api/gpio/legacy.rst
+@@ -219,7 +219,6 @@ GPIO 值的命令需要等待其信息排到队首才发送命令，再获得其
+         ## 	gpio_free_array()
+ 
+                 gpio_free()
+-                gpio_set_debounce()
+ 
+ 
+ 
+diff --git a/Documentation/translations/zh_TW/gpio.txt b/Documentation/translations/zh_TW/gpio.txt
+index 1b986bbb0909..dc608358d90a 100644
+--- a/Documentation/translations/zh_TW/gpio.txt
++++ b/Documentation/translations/zh_TW/gpio.txt
+@@ -226,7 +226,6 @@ GPIO 值的命令需要等待其信息排到隊首才發送命令，再獲得其
+ ## 	gpio_free_array()
+ 
+ 	gpio_free()
+-	gpio_set_debounce()
+ 
+ 
+ 
+diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
+index 17f11bce8113..a9a4a7f7d315 100644
+--- a/drivers/input/touchscreen/ads7846.c
++++ b/drivers/input/touchscreen/ads7846.c
+@@ -25,8 +25,8 @@
+ #include <linux/slab.h>
+ #include <linux/pm.h>
+ #include <linux/of.h>
+-#include <linux/of_gpio.h>
+ #include <linux/of_device.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/gpio.h>
+ #include <linux/spi/spi.h>
+ #include <linux/spi/ads7846.h>
+@@ -999,7 +999,6 @@ static int ads7846_setup_pendown(struct spi_device *spi,
+ 	if (pdata->get_pendown_state) {
+ 		ts->get_pendown_state = pdata->get_pendown_state;
+ 	} else if (gpio_is_valid(pdata->gpio_pendown)) {
 -
--#if defined(CONFIG_CPU_SH3)
--#include <cpu/gpio.h>
--#endif
+ 		err = devm_gpio_request_one(&spi->dev, pdata->gpio_pendown,
+ 					    GPIOF_IN, "ads7846_pendown");
+ 		if (err) {
+@@ -1010,14 +1009,21 @@ static int ads7846_setup_pendown(struct spi_device *spi,
+ 		}
+ 
+ 		ts->gpio_pendown = pdata->gpio_pendown;
 -
--#include <asm-generic/gpio.h>
--
--#ifdef CONFIG_GPIOLIB
--
--static inline int gpio_get_value(unsigned gpio)
+-		if (pdata->gpio_pendown_debounce)
+-			gpio_set_debounce(pdata->gpio_pendown,
+-					  pdata->gpio_pendown_debounce);
+ 	} else {
+-		dev_err(&spi->dev, "no get_pendown_state nor gpio_pendown?\n");
+-		return -EINVAL;
++		struct gpio_desc *desc;
++
++		desc = devm_gpiod_get(&spi->dev, "pendown", GPIOD_IN);
++		if (IS_ERR(desc)) {
++			dev_err(&spi->dev, "no get_pendown_state nor gpio_pendown?\n");
++			return PTR_ERR(desc);
++		}
++		gpiod_set_consumer_name(desc, "ads7846_pendown");
++
++		ts->gpio_pendown = desc_to_gpio(desc);
+ 	}
++	if (pdata->gpio_pendown_debounce)
++		gpiod_set_debounce(gpio_to_desc(ts->gpio_pendown),
++				   pdata->gpio_pendown_debounce);
+ 
+ 	return 0;
+ }
+@@ -1194,7 +1200,7 @@ static const struct ads7846_platform_data *ads7846_probe_dt(struct device *dev)
+ 	pdata->wakeup = of_property_read_bool(node, "wakeup-source") ||
+ 			of_property_read_bool(node, "linux,wakeup");
+ 
+-	pdata->gpio_pendown = of_get_named_gpio(dev->of_node, "pendown-gpio", 0);
++	pdata->gpio_pendown = -ENOENT;
+ 
+ 	return pdata;
+ }
+diff --git a/include/linux/gpio.h b/include/linux/gpio.h
+index 6719a82eeec5..220e8656f2ab 100644
+--- a/include/linux/gpio.h
++++ b/include/linux/gpio.h
+@@ -100,11 +100,6 @@ static inline int gpio_direction_output(unsigned gpio, int value)
+ 	return gpiod_direction_output_raw(gpio_to_desc(gpio), value);
+ }
+ 
+-static inline int gpio_set_debounce(unsigned gpio, unsigned debounce)
 -{
--	return __gpio_get_value(gpio);
+-	return gpiod_set_debounce(gpio_to_desc(gpio), debounce);
 -}
 -
--static inline void gpio_set_value(unsigned gpio, int value)
+ static inline int gpio_get_value_cansleep(unsigned gpio)
+ {
+ 	return gpiod_get_raw_value_cansleep(gpio_to_desc(gpio));
+@@ -215,11 +210,6 @@ static inline int gpio_direction_output(unsigned gpio, int value)
+ 	return -ENOSYS;
+ }
+ 
+-static inline int gpio_set_debounce(unsigned gpio, unsigned debounce)
 -{
--	__gpio_set_value(gpio, value);
+-	return -ENOSYS;
 -}
 -
--static inline int gpio_cansleep(unsigned gpio)
--{
--	return __gpio_cansleep(gpio);
--}
--
--static inline int gpio_to_irq(unsigned gpio)
--{
--	return __gpio_to_irq(gpio);
--}
--
--#endif /* CONFIG_GPIOLIB */
--
--#endif /* __ASM_SH_GPIO_H */
+ static inline int gpio_get_value(unsigned gpio)
+ {
+ 	/* GPIO can never have been requested or set as {in,out}put */
 -- 
 2.39.1
 
