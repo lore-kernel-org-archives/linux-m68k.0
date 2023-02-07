@@ -2,45 +2,45 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C70AC636CD
-	for <linux-m68k@archiver.kernel.org>; Tue,  7 Feb 2023 14:33:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E3FCC636D6
+	for <linux-m68k@archiver.kernel.org>; Tue,  7 Feb 2023 14:33:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232763AbjBGOdh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 7 Feb 2023 09:33:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43816 "EHLO
+        id S232664AbjBGOdi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 7 Feb 2023 09:33:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233118AbjBGOcd (ORCPT
+        with ESMTP id S232853AbjBGOcj (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 7 Feb 2023 09:32:33 -0500
+        Tue, 7 Feb 2023 09:32:39 -0500
 Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 129403E624
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Feb 2023 06:29:59 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 781F83E62F
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Feb 2023 06:30:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675780199; x=1707316199;
+  t=1675780200; x=1707316200;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=89Ua2SwK+9eoP7ii20ihjA/BcfunvekbP9EUK6guMxA=;
-  b=B0II+vqHS5q0PonnuZDl6dhrjvft6NUOb0uvDxYNRpJkpBdBK7v1YuSm
-   jJw3DefLS/u+vYe9zsgRC0tWZbRlL39Z3uKo9Q9SnsJwS9g0zX6xYBC+U
-   dhv/VMX0wWvkA9IkFULif0nKsX/aQP+49072NfU/6NSW/e5JmHkkmiryD
-   ks5XBhRQcfFuS2J2IY+IqvZ2Gicz/88KE6p2mhw7dwJIvRRKTK/sja5ZO
-   wQ0oRcB8N1eO1UTOMuFna2rL3ExHJN5lRLw3hIDFsglksQ3k12pVqFmlz
-   IU5sgZLg4QsZE3uxIXCeQOlSMVoNVwO+fN3XsL2T6LXQJf3UbIkxEssOp
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10614"; a="391915830"
+  bh=e2HL48VZL68iHiIHMOw3KrWX1/vewPFZgcuY53UtAyY=;
+  b=GE1MVmXxzAewxE+Dn4I3lHzUkeSiM4W3bVqha8PZCjKzdlFJGJnni2LY
+   F+r0BYa7CB6gzu7IuGtYCmuzZqHw4HdPM6sB8DfVjlEfbQKfcirL2O+yL
+   CYpWtUCbT/WeLtcJGSNi6Xjs4I0ltkUcmihV88+pKp4kP5vV2kSC21ppx
+   xsWklGCQBzMjRNoMjnpKdatLDHKZ/mZdZI9T6RE5lT9d/xTpIXrN3+7RO
+   vzOKwzJ87cu2Y6neVM97qSrNYT1U/omeB8jIdUE3+EgRATw7IjWbASnrl
+   GPzpls7PcGEWyJm+2dp+jhOaKcTrcLrvr99wMcLG39s9oJ5nFf5WQO1aO
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10614"; a="391915865"
 X-IronPort-AV: E=Sophos;i="5.97,278,1669104000"; 
-   d="scan'208";a="391915830"
+   d="scan'208";a="391915865"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2023 06:29:47 -0800
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2023 06:29:49 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10614"; a="912355081"
+X-IronPort-AV: E=McAfee;i="6500,9779,10614"; a="912355086"
 X-IronPort-AV: E=Sophos;i="5.97,278,1669104000"; 
-   d="scan'208";a="912355081"
+   d="scan'208";a="912355086"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga006.fm.intel.com with ESMTP; 07 Feb 2023 06:29:37 -0800
+  by fmsmga006.fm.intel.com with ESMTP; 07 Feb 2023 06:29:39 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id B1B80413; Tue,  7 Feb 2023 16:30:02 +0200 (EET)
+        id CEAE14C9; Tue,  7 Feb 2023 16:30:02 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Linus Walleij <linus.walleij@linaro.org>,
@@ -98,9 +98,9 @@ Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
         Li Yang <leoyang.li@nxp.com>, Lee Jones <lee@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Frank Rowand <frowand.list@gmail.com>
-Subject: [PATCH v3 09/12] gpiolib: Drop unused forward declaration from driver.h
-Date:   Tue,  7 Feb 2023 16:29:49 +0200
-Message-Id: <20230207142952.51844-10-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v3 11/12] gpiolib: Group forward declarations in consumer.h
+Date:   Tue,  7 Feb 2023 16:29:51 +0200
+Message-Id: <20230207142952.51844-12-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230207142952.51844-1-andriy.shevchenko@linux.intel.com>
 References: <20230207142952.51844-1-andriy.shevchenko@linux.intel.com>
@@ -110,26 +110,34 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-There is no struct device_node pointers anywhere in the header,
-drop unused forward declaration.
+For better maintenance group the forward declarations together.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- include/linux/gpio/driver.h | 1 -
- 1 file changed, 1 deletion(-)
+ include/linux/gpio/consumer.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
-index ccd8a512d854..262a84ce9bcb 100644
---- a/include/linux/gpio/driver.h
-+++ b/include/linux/gpio/driver.h
-@@ -16,7 +16,6 @@
+diff --git a/include/linux/gpio/consumer.h b/include/linux/gpio/consumer.h
+index a7eb8aa1e54c..5432e5d5fbfb 100644
+--- a/include/linux/gpio/consumer.h
++++ b/include/linux/gpio/consumer.h
+@@ -7,6 +7,7 @@
+ #include <linux/compiler_types.h>
+ #include <linux/err.h>
  
++struct acpi_device;
+ struct device;
+ struct fwnode_handle;
  struct gpio_desc;
- struct of_phandle_args;
--struct device_node;
- struct seq_file;
- struct gpio_device;
- struct module;
+@@ -602,8 +603,6 @@ struct acpi_gpio_mapping {
+ 	unsigned int quirks;
+ };
+ 
+-struct acpi_device;
+-
+ #if IS_ENABLED(CONFIG_GPIOLIB) && IS_ENABLED(CONFIG_ACPI)
+ 
+ int acpi_dev_add_driver_gpios(struct acpi_device *adev,
 -- 
 2.39.1
 
