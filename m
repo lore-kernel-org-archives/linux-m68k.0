@@ -2,261 +2,60 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 491FAC64EC5
-	for <linux-m68k@archiver.kernel.org>; Tue,  7 Feb 2023 03:06:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4D69C636CC
+	for <linux-m68k@archiver.kernel.org>; Tue,  7 Feb 2023 09:36:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbjBGDFo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 6 Feb 2023 22:05:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56396 "EHLO
+        id S229710AbjBGJgZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 7 Feb 2023 04:36:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjBGDFh (ORCPT
+        with ESMTP id S229500AbjBGJgY (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 6 Feb 2023 22:05:37 -0500
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E566F2724
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Feb 2023 19:05:35 -0800 (PST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 9CAC65C016D;
-        Mon,  6 Feb 2023 22:05:32 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Mon, 06 Feb 2023 22:05:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; t=1675739132; x=1675825532; bh=uM1UO9XIp7afVPZ81JNU3mTA9pU3
-        uATOl+OKWoLABwo=; b=Zvtnw6gYgKCDuKEV2RFjFXJ5FBEXx07IhXfjRWlutWgR
-        kjoYsCYUtD8bMFQQMAAPJ2PIuVbxVk9d4k/iYLeW8dQCYuYY9zxLNpq7URI76DVN
-        rpNHp7s/osPWxMn3MWcB7ym0eYCbDN799o3/RKPPOCSzgmB3ToaFWW2UYofXExSR
-        ndLAbYsjuLgaDHe1HNYgdRDo2VTpGWOUggV0alEIU5VjiP5y2HASQQpVxnotAaeo
-        b5l8Viq7MpHXVTc+9ht6pxDiGKJyqsoCmj/Ua+t8X0zOn1jXnJYp+ylss0EAvm8Z
-        HFV+UrB2YeMZjWLZg5TiN/2P6Snn6Xu6d+I0ykKSrQ==
-X-ME-Sender: <xms:-7_hY0yLaEiT5vxTUdBxDl-vvGPLAP1mE_FFygN7UrQe0D5vgzifpQ>
-    <xme:-7_hY4Szr1ub8i-OhfgaEdSV_aXmPpYC_CVWy-QN0DPNVtmcbkvEP05P-yBKHRg01
-    yUQYrm2yh5xejc7o3Y>
-X-ME-Received: <xmr:-7_hY2VfKNJGhBNKvlaq-mkjmucCCUtWwnT1e0a-uzfXOdof5jwQa6sL81qclAEq8FxRQtBmDm6yKZt3Zeec1AtYAhre6s4F3Zo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudegjedgheefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
-    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpeefieehjedvtefgiedtudethfekieelhfevhefgvddtkeekvdekhefftdek
-    vedvueenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieek
-    khdrohhrgh
-X-ME-Proxy: <xmx:-7_hYyjI5Iz3INyBJhpCTT5TJZ5eguGUSw4EWj-E50vQaXUmRg-j4A>
-    <xmx:-7_hY2DtYPpZ6GepDE2Z3WOUI8UqbtKGsjK77kkGMM3eTVpQJUF72Q>
-    <xmx:-7_hYzLu70VewWrME5ni_dMDJUopI-i1X5tWdo4D7e4nFjjgyeToxg>
-    <xmx:_L_hY66XXXQfZtOPGo4LQ-zlSJhsj6TcgDuPub_gnxS18hq1XxileQ>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 6 Feb 2023 22:05:28 -0500 (EST)
-Date:   Tue, 7 Feb 2023 14:07:03 +1100 (AEDT)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-cc:     Al Viro <viro@zeniv.linux.org.uk>, linux-arch@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        Michal Simek <monstr@monstr.eu>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org
-Subject: Re: [PATCH 04/10] m68k: fix livelock in uaccess
-In-Reply-To: <CAHk-=wirpn8qX5hCyeS0a4GCQH5p-2ACXgzJTj7zjZ5rGux_Bw@mail.gmail.com>
-Message-ID: <fc3d0151-30a0-c029-3e43-68664d4d50e6@linux-m68k.org>
-References: <Y9lz6yk113LmC9SI@ZenIV> <Y9l0aBPUEpf1bci9@ZenIV> <92a4aa45-0a7c-a389-798a-2f3e3cfa516f@linux-m68k.org> <CAHk-=wirpn8qX5hCyeS0a4GCQH5p-2ACXgzJTj7zjZ5rGux_Bw@mail.gmail.com>
+        Tue, 7 Feb 2023 04:36:24 -0500
+X-Greylist: delayed 1431 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 07 Feb 2023 01:36:23 PST
+Received: from mail.crawnon.pl (mail.crawnon.pl [51.68.198.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2DF71F900
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Feb 2023 01:36:23 -0800 (PST)
+Received: by mail.crawnon.pl (Postfix, from userid 1002)
+        id 076E7A3861; Tue,  7 Feb 2023 09:11:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=crawnon.pl; s=mail;
+        t=1675761136; bh=C5hX24svv/9/TME4wPCHfYjl17BCtmuxEd1i9B4zdYs=;
+        h=Date:From:To:Subject:From;
+        b=MBa4p3aWEksuqBo6EVml1Sn3v2CEtl+yUJLsEauQPUieMuGEhEvvV4oOGJF49JMfY
+         P2snTiSd6Ec89/1oJoSzAi9Pdnt7v+Bovbq6zh0/2gWNEU2A3Jvu3yVNx1ywju9qmM
+         ++0itrYA0l/rGqJIonzoUnYCDWo6kQAQJn/+YhbspPG6br5wOV6b+sP7rYtY/vRl0i
+         nv5PjcCOmSt4jbRU4T88jFGJr1l/FIozqeAYvLdSAfqPatEpxNniey7tzTOocm6t3q
+         z2fFDLghka1fhjyRbqE0GrRnweppUv8y4lc2/kgKTSf5GXpvnKJRpwLQPcXjftQygy
+         93eIUuJEZ+iSA==
+Received: by mail.crawnon.pl for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Feb 2023 09:10:31 GMT
+Message-ID: <20230207074500-0.1.90.hvf9.0.1nbnn4mu15@crawnon.pl>
+Date:   Tue,  7 Feb 2023 09:10:31 GMT
+From:   =?UTF-8?Q? "Miko=C5=82aj_Fiodorczyk" ?= 
+        <mikolaj.fiodorczyk@crawnon.pl>
+To:     <linux-m68k@lists.linux-m68k.org>
+Subject: Fotowoltaika - nowe warunki
+X-Mailer: mail.crawnon.pl
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sun, 5 Feb 2023, Linus Torvalds wrote:
+Dzie=C5=84 dobry,
 
-> On Sat, Feb 4, 2023 at 10:16 PM Finn Thain <fthain@linux-m68k.org> wrote:
-> >
-> > That could be a bug I was chasing back in 2021 but never found. The mmap
-> > stressors in stress-ng were triggering a crash on a Mac Quadras, though
-> > only rarely. Sometimes it would run all day without a failure.
-> >
-> > Last year when I started using GCC 12 to build the kernel, I saw the same
-> > workload fail again but the failure mode had become a silent hang/livelock
-> > instead of the oopses I got with GCC 6.
-> >
-> > When I press the NMI button after the livelock I always see
-> > do_page_fault() in the backtrace. So I've been testing your patch. I've
-> > been running the same stress-ng reproducer for about 12 hours now with no
-> > failures which looks promising.
-> >
-> > In case that stress-ng testing is of use:
-> > Tested-by: Finn Thain <fthain@linux-m68k.org>
-> 
-> Could you test the thing that Mark Rutland pointed to? He had an
-> actual test-case for this for the arm64 fixes some years ago.
-> 
-> See
-> 
->    https://lore.kernel.org/all/Y9pD+TMP+%2FSyfeJm@FVFF77S0Q05N/
-> 
-> for his email with links to his old test-case?
-> 
+chcia=C5=82bym poinformowa=C4=87, i=C5=BC mog=C4=85 Pa=C5=84stwo uzyska=C4=
+=87 dofinansowanie na systemy fotowoltaiczne w ramach nowej edycji progra=
+mu M=C3=B3j Pr=C4=85d.
 
-With qemu-system-m68k v7.2 runing Linux v6.1, killing Mark's program did 
-not trigger any failure.
+Program zapewnia 6000 z=C5=82 dofinansowania na instalacj=C4=99 paneli i =
+16 000 z=C5=82 na magazyn energii, ni=C5=BCsze cen pr=C4=85du i mo=C5=BCl=
+iwo=C5=9B=C4=87 odliczenia koszt=C3=B3w zwi=C4=85zanych z instalacj=C4=85=
+ fotowoltaiki w ramach rozliczenia PIT (tzw. ulga termomodernizacyjna).
 
-With my Quadra 650 running the same binaries, killing Mark's program 
-produces the BUG splat below. I can confirm that Al's patch fixes it.
+Czy s=C4=85 Pa=C5=84stwo otwarci na wst=C4=99pn=C4=85 rozmow=C4=99 w tym =
+temacie?
 
-[  199.060000] BUG: scheduling while atomic: test/48/0x0003e2e6
-[  199.060000] Modules linked in:
-[  199.060000] CPU: 0 PID: 48 Comm: test Tainted: G        W          6.1.0-mac #3
-[  199.060000] Stack from 00a6204c:
-[  199.060000]         00a6204c 004c1979 004c1979 00000000 00a6215e 00a6206c 00408d62 004c1979
-[  199.060000]         00a62074 0003ad4a 00a620a8 004099e2 00983480 00000000 00a6215e 00000000
-[  199.060000]         00000002 00983480 00a62000 0040970a 00a6209c 00a6209c 00a620c0 00a620c0
-[  199.060000]         00409b94 00000000 00bcf0c0 00a62198 00a357fc 00a6216c 00120e5c 00bcf0d0
-[  199.060000]         00000003 00000001 00000001 0123f039 00000000 00a357fc 00aead38 005870dc
-[  199.060000]         005870dc 00a31200 00000000 00000000 00000000 00010000 0000c000 00000000
-[  199.060000] Call Trace: [<00408d62>] dump_stack+0x10/0x16
-[  199.060000]  [<0003ad4a>] __schedule_bug+0x5e/0x70
-[  199.060000]  [<004099e2>] __schedule+0x2d8/0x446
-[  199.060000]  [<0040970a>] __schedule+0x0/0x446
-[  199.060000]  [<00409b94>] schedule+0x44/0x8e
-[  199.060000]  [<00120e5c>] handle_userfault+0x298/0x3de
-[  199.060000]  [<00010000>] zer_rp2+0x14/0x18
-[  199.060000]  [<0000c000>] cu_dmrs+0x0/0x16
-[  199.060000]  [<00001200>] kernel_pg_dir+0x200/0x1000
-[  199.060000]  [<00010000>] zer_rp2+0x14/0x18
-[  199.060000]  [<0000c000>] cu_dmrs+0x0/0x16
-[  199.060000]  [<00001200>] kernel_pg_dir+0x200/0x1000
-[  199.060000]  [<00010000>] zer_rp2+0x14/0x18
-[  199.060000]  [<0000c000>] cu_dmrs+0x0/0x16
-[  199.060000]  [<000ab0a0>] handle_mm_fault+0xa34/0xa56
-[  199.060000]  [<000c0000>] __alloc_pages_bulk+0x26/0x3f8
-[  199.060000]  [<00007056>] do_page_fault+0xd8/0x28a
-[  199.060000]  [<00006098>] buserr_c+0x1a6/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<000056fc>] do_040writeback1+0x0/0x1d8
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<000062cc>] buserr_c+0x3da/0x6b0
-[  199.060000]  [<00001000>] kernel_pg_dir+0x0/0x1000
-[  199.060000]  [<00002ac0>] buserr+0x20/0x28
-[  199.060000]  [<00001000>] kernel_pg_dir+0x0/0x1000
-[  199.060000]  [<00008001>] mac_irq_disable+0x3b/0x98
-[  199.060000]  [<00001000>] kernel_pg_dir+0x0/0x1000
-[  199.060000]  [<00008001>] mac_irq_disable+0x3b/0x98
-[  199.060000] 
+
+Pozdrawiam,
+Miko=C5=82aj Fiodorczyk
