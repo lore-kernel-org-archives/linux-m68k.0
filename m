@@ -2,45 +2,45 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD0DFC677F1
-	for <linux-m68k@archiver.kernel.org>; Tue,  7 Feb 2023 14:30:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01586C636CD
+	for <linux-m68k@archiver.kernel.org>; Tue,  7 Feb 2023 14:30:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbjBGOap (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 7 Feb 2023 09:30:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43806 "EHLO
+        id S232486AbjBGOaq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 7 Feb 2023 09:30:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232781AbjBGOaG (ORCPT
+        with ESMTP id S232855AbjBGOaU (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 7 Feb 2023 09:30:06 -0500
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 411E83C295
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Feb 2023 06:29:36 -0800 (PST)
+        Tue, 7 Feb 2023 09:30:20 -0500
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 549743D92D
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Feb 2023 06:29:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675780177; x=1707316177;
+  t=1675780180; x=1707316180;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=9Dq4mU58s7wFVOS4xMQ0zOI9I/hT6Ikw0b7RarExmhA=;
-  b=gP55Zm6OnaYCOD+b6Mhfwnw1rWr7w1qEOOL446USMvMgohuOchQ5Dn4k
-   t1wNVn0HLO4LSJ9RozH4DBeECKZbzKWIdAOlVff8kyhzFiTMtZkEErRFe
-   KvMWJy3zdAmeJZFk6txkqEeRT03KO0X+DygSQ3aoWeOWpwogQKjcwNgu5
-   4295H+ImC4jOlfvAnUIT0T4ddAH1IbT2cXSqaSO/HGeJvTqrifqfmZSwy
-   x2JDXVkKJulEwG/Ge0onSoynZeV/n78YqgyHoSPzVj8HdRP9DmwGk/NrE
-   vMY4yoSpoL+LT1groNXI3tdOLn1hGT3P038zvKef9SgRIm/tFZnVFGlQc
+  bh=7VgWr2VPj8L1NsfjGJ63Vno2YkqOebd37sMf+dqhyeo=;
+  b=Up4p6BWZGf6qksZkdDiaASb4x4SYtwdL9wn8wODMCzQHsOi5opHqAD9X
+   ELWFUIX69jS4vjc1AL9hgwGGznvNbOEyqhXsvPf+B+RhUjGiLRHeN1ykx
+   BimvFZnS6V85nFcQK/DY12xY4Yxbc/zcz1oEECQGBA2s0PovalBQrA9lx
+   DlI+3/sl0rKd886dE4BwcJJ+y93Tf0MyUc/l90dZLkmGOi2K1alzEM55D
+   OA+KYfOVbE26a4ZmQd0q/qjcm+ErVWlzods3KCw+39c7UKtHN27lzFrH1
+   5WVvhCOkmdguYBG8ju0tFn/l8SGXHlch6X3Z+LQqYsTpm4X6T7v7FOgZx
    g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10614"; a="329537360"
+X-IronPort-AV: E=McAfee;i="6500,9779,10614"; a="313163930"
 X-IronPort-AV: E=Sophos;i="5.97,278,1669104000"; 
-   d="scan'208";a="329537360"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2023 06:29:35 -0800
+   d="scan'208";a="313163930"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2023 06:29:36 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10614"; a="790811325"
+X-IronPort-AV: E=McAfee;i="6500,9779,10614"; a="644465274"
 X-IronPort-AV: E=Sophos;i="5.97,278,1669104000"; 
-   d="scan'208";a="790811325"
+   d="scan'208";a="644465274"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga004.jf.intel.com with ESMTP; 07 Feb 2023 06:29:23 -0800
+  by orsmga006.jf.intel.com with ESMTP; 07 Feb 2023 06:29:23 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 4035E252; Tue,  7 Feb 2023 16:30:02 +0200 (EET)
+        id 2D031210; Tue,  7 Feb 2023 16:30:02 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Linus Walleij <linus.walleij@linaro.org>,
@@ -97,10 +97,11 @@ Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
         Kalle Valo <kvalo@kernel.org>, Qiang Zhao <qiang.zhao@nxp.com>,
         Li Yang <leoyang.li@nxp.com>, Lee Jones <lee@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Subject: [PATCH v3 02/12] gpiolib: coldfire: remove custom asm/gpio.h
-Date:   Tue,  7 Feb 2023 16:29:42 +0200
-Message-Id: <20230207142952.51844-3-andriy.shevchenko@linux.intel.com>
+        Frank Rowand <frowand.list@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v3 01/12] gpiolib: remove empty asm/gpio.h files
+Date:   Tue,  7 Feb 2023 16:29:41 +0200
+Message-Id: <20230207142952.51844-2-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230207142952.51844-1-andriy.shevchenko@linux.intel.com>
 References: <20230207142952.51844-1-andriy.shevchenko@linux.intel.com>
@@ -112,190 +113,144 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Now that coldfire is the only user of a custom asm/gpio.h, it seems
-better to remove this as well, and have the same interface everywhere.
+The arm and sh versions of this file are identical to the generic
+versions and can just be removed.
 
-For the gpio_get_value()/gpio_set_value()/gpio_to_irq(), gpio_cansleep()
-functions, the custom version is only a micro-optimization to inline the
-function for constant GPIO numbers. However, in the coldfire defconfigs,
-I was unable to find a single instance where this micro-optimization
-was even used, and according to Geert the only user appears to be the
-QSPI chip that is disabled everywhere.
+The drivers that actually use the sh3 specific version also include
+cpu/gpio.h directly, with the exception of magicpanelr2, which is
+easily fixed. This leaves coldfire as the only gpio driver
+that needs something custom for gpiolib.
 
-The custom gpio_request_one() function is even less useful, as it is
-guarded by an #ifdef that is never true.
-
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- arch/m68k/Kconfig.cpu        |  1 -
- arch/m68k/include/asm/gpio.h | 95 ------------------------------------
- drivers/gpio/Kconfig         |  8 ---
- include/linux/gpio.h         |  7 ---
- 4 files changed, 111 deletions(-)
- delete mode 100644 arch/m68k/include/asm/gpio.h
+ arch/arm/Kconfig                    |  1 -
+ arch/arm/include/asm/gpio.h         | 21 --------------
+ arch/sh/Kconfig                     |  1 -
+ arch/sh/boards/board-magicpanelr2.c |  1 +
+ arch/sh/include/asm/gpio.h          | 45 -----------------------------
+ 5 files changed, 1 insertion(+), 68 deletions(-)
+ delete mode 100644 arch/arm/include/asm/gpio.h
+ delete mode 100644 arch/sh/include/asm/gpio.h
 
-diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-index 9380f6e3bb66..96a0fb4f1af5 100644
---- a/arch/m68k/Kconfig.cpu
-+++ b/arch/m68k/Kconfig.cpu
-@@ -24,7 +24,6 @@ config M68KCLASSIC
- 
- config COLDFIRE
- 	bool "Coldfire CPU family support"
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index e24a9820e12f..1d1a603d964d 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -24,7 +24,6 @@ config ARM
+ 	select ARCH_HAS_SYNC_DMA_FOR_CPU
+ 	select ARCH_HAS_TEARDOWN_DMA_OPS if MMU
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
 -	select ARCH_HAVE_CUSTOM_GPIO_H
- 	select CPU_HAS_NO_BITFIELDS
- 	select CPU_HAS_NO_CAS
- 	select CPU_HAS_NO_MULDIV64
-diff --git a/arch/m68k/include/asm/gpio.h b/arch/m68k/include/asm/gpio.h
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if CPU_V7 || CPU_V7M || CPU_V6K
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
+ 	select ARCH_KEEP_MEMBLOCK
+diff --git a/arch/arm/include/asm/gpio.h b/arch/arm/include/asm/gpio.h
 deleted file mode 100644
-index 5cfc0996ba94..000000000000
---- a/arch/m68k/include/asm/gpio.h
+index 4ebbb58f06ea..000000000000
+--- a/arch/arm/include/asm/gpio.h
 +++ /dev/null
-@@ -1,95 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * Coldfire generic GPIO support
-- *
-- * (C) Copyright 2009, Steven King <sfking@fdwdc.com>
--*/
+@@ -1,21 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _ARCH_ARM_GPIO_H
+-#define _ARCH_ARM_GPIO_H
 -
--#ifndef coldfire_gpio_h
--#define coldfire_gpio_h
+-#include <asm-generic/gpio.h>
 -
--#include <linux/io.h>
--#include <asm/coldfire.h>
--#include <asm/mcfsim.h>
--#include <asm/mcfgpio.h>
+-/* The trivial gpiolib dispatchers */
+-#define gpio_get_value  __gpio_get_value
+-#define gpio_set_value  __gpio_set_value
+-#define gpio_cansleep   __gpio_cansleep
+-
 -/*
-- * The Generic GPIO functions
-- *
-- * If the gpio is a compile time constant and is one of the Coldfire gpios,
-- * use the inline version, otherwise dispatch thru gpiolib.
+- * Provide a default gpio_to_irq() which should satisfy every case.
+- * However, some platforms want to do this differently, so allow them
+- * to override it.
 - */
+-#ifndef gpio_to_irq
+-#define gpio_to_irq	__gpio_to_irq
+-#endif
+-
+-#endif /* _ARCH_ARM_GPIO_H */
+diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
+index 0665ac0add0b..ccb866750a88 100644
+--- a/arch/sh/Kconfig
++++ b/arch/sh/Kconfig
+@@ -4,7 +4,6 @@ config SUPERH
+ 	select ARCH_32BIT_OFF_T
+ 	select ARCH_ENABLE_MEMORY_HOTPLUG if SPARSEMEM && MMU
+ 	select ARCH_ENABLE_MEMORY_HOTREMOVE if SPARSEMEM && MMU
+-	select ARCH_HAVE_CUSTOM_GPIO_H
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if (GUSA_RB || CPU_SH4A)
+ 	select ARCH_HAS_BINFMT_FLAT if !MMU
+ 	select ARCH_HAS_CURRENT_STACK_POINTER
+diff --git a/arch/sh/boards/board-magicpanelr2.c b/arch/sh/boards/board-magicpanelr2.c
+index 56bd386ff3b0..75de893152af 100644
+--- a/arch/sh/boards/board-magicpanelr2.c
++++ b/arch/sh/boards/board-magicpanelr2.c
+@@ -21,6 +21,7 @@
+ #include <linux/sh_intc.h>
+ #include <mach/magicpanelr2.h>
+ #include <asm/heartbeat.h>
++#include <cpu/gpio.h>
+ #include <cpu/sh7720.h>
+ 
+ /* Dummy supplies, where voltage doesn't matter */
+diff --git a/arch/sh/include/asm/gpio.h b/arch/sh/include/asm/gpio.h
+deleted file mode 100644
+index 588c1380e4cb..000000000000
+--- a/arch/sh/include/asm/gpio.h
++++ /dev/null
+@@ -1,45 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0
+- *
+- *  include/asm-sh/gpio.h
+- *
+- * Generic GPIO API and pinmux table support for SuperH.
+- *
+- * Copyright (c) 2008 Magnus Damm
+- */
+-#ifndef __ASM_SH_GPIO_H
+-#define __ASM_SH_GPIO_H
+-
+-#include <linux/kernel.h>
+-#include <linux/errno.h>
+-
+-#if defined(CONFIG_CPU_SH3)
+-#include <cpu/gpio.h>
+-#endif
+-
+-#include <asm-generic/gpio.h>
+-
+-#ifdef CONFIG_GPIOLIB
 -
 -static inline int gpio_get_value(unsigned gpio)
 -{
--	if (__builtin_constant_p(gpio) && gpio < MCFGPIO_PIN_MAX)
--		return mcfgpio_read(__mcfgpio_ppdr(gpio)) & mcfgpio_bit(gpio);
--	else
--		return __gpio_get_value(gpio);
+-	return __gpio_get_value(gpio);
 -}
 -
 -static inline void gpio_set_value(unsigned gpio, int value)
 -{
--	if (__builtin_constant_p(gpio) && gpio < MCFGPIO_PIN_MAX) {
--		if (gpio < MCFGPIO_SCR_START) {
--			unsigned long flags;
--			MCFGPIO_PORTTYPE data;
--
--			local_irq_save(flags);
--			data = mcfgpio_read(__mcfgpio_podr(gpio));
--			if (value)
--				data |= mcfgpio_bit(gpio);
--			else
--				data &= ~mcfgpio_bit(gpio);
--			mcfgpio_write(data, __mcfgpio_podr(gpio));
--			local_irq_restore(flags);
--		} else {
--			if (value)
--				mcfgpio_write(mcfgpio_bit(gpio),
--						MCFGPIO_SETR_PORT(gpio));
--			else
--				mcfgpio_write(~mcfgpio_bit(gpio),
--						MCFGPIO_CLRR_PORT(gpio));
--		}
--	} else
--		__gpio_set_value(gpio, value);
--}
--
--static inline int gpio_to_irq(unsigned gpio)
--{
--#if defined(MCFGPIO_IRQ_MIN)
--	if ((gpio >= MCFGPIO_IRQ_MIN) && (gpio < MCFGPIO_IRQ_MAX))
--#else
--	if (gpio < MCFGPIO_IRQ_MAX)
--#endif
--		return gpio + MCFGPIO_IRQ_VECBASE;
--	else
--		return __gpio_to_irq(gpio);
+-	__gpio_set_value(gpio, value);
 -}
 -
 -static inline int gpio_cansleep(unsigned gpio)
 -{
--	return gpio < MCFGPIO_PIN_MAX ? 0 : __gpio_cansleep(gpio);
+-	return __gpio_cansleep(gpio);
 -}
 -
--#ifndef CONFIG_GPIOLIB
--static inline int gpio_request_one(unsigned gpio, unsigned long flags, const char *label)
+-static inline int gpio_to_irq(unsigned gpio)
 -{
--	int err;
--
--	err = gpio_request(gpio, label);
--	if (err)
--		return err;
--
--	if (flags & GPIOF_DIR_IN)
--		err = gpio_direction_input(gpio);
--	else
--		err = gpio_direction_output(gpio,
--			(flags & GPIOF_INIT_HIGH) ? 1 : 0);
--
--	if (err)
--		gpio_free(gpio);
--
--	return err;
+-	return __gpio_to_irq(gpio);
 -}
--#endif /* !CONFIG_GPIOLIB */
--#endif
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index 218d7e4c27ff..06a268d56800 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -3,14 +3,6 @@
- # GPIO infrastructure and drivers
- #
- 
--config ARCH_HAVE_CUSTOM_GPIO_H
--	bool
--	help
--	  Selecting this config option from the architecture Kconfig allows
--	  the architecture to provide a custom asm/gpio.h implementation
--	  overriding the default implementations.  New uses of this are
--	  strongly discouraged.
 -
- menuconfig GPIOLIB
- 	bool "GPIO Support"
- 	help
-diff --git a/include/linux/gpio.h b/include/linux/gpio.h
-index 85beb236c925..2b75017b3aad 100644
---- a/include/linux/gpio.h
-+++ b/include/linux/gpio.h
-@@ -54,11 +54,6 @@ struct gpio {
- };
- 
- #ifdef CONFIG_GPIOLIB
+-#endif /* CONFIG_GPIOLIB */
 -
--#ifdef CONFIG_ARCH_HAVE_CUSTOM_GPIO_H
--#include <asm/gpio.h>
--#else
--
- #include <asm-generic/gpio.h>
- 
- static inline int gpio_get_value(unsigned int gpio)
-@@ -81,8 +76,6 @@ static inline int gpio_to_irq(unsigned int gpio)
- 	return __gpio_to_irq(gpio);
- }
- 
--#endif /* ! CONFIG_ARCH_HAVE_CUSTOM_GPIO_H */
--
- /* CONFIG_GPIOLIB: bindings for managed devices that want to request gpios */
- 
- struct device;
+-#endif /* __ASM_SH_GPIO_H */
 -- 
 2.39.1
 
