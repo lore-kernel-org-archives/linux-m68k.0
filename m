@@ -2,167 +2,88 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B779C64ED6
-	for <linux-m68k@archiver.kernel.org>; Tue,  7 Feb 2023 14:55:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19ED8C636D4
+	for <linux-m68k@archiver.kernel.org>; Tue,  7 Feb 2023 16:12:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232038AbjBGOzn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 7 Feb 2023 09:55:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40806 "EHLO
+        id S232401AbjBGQMZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 7 Feb 2023 11:12:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232045AbjBGOzk (ORCPT
+        with ESMTP id S232589AbjBGQMI (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 7 Feb 2023 09:55:40 -0500
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 873D710A80
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Feb 2023 06:55:36 -0800 (PST)
-Received: by mail-yb1-xb2f.google.com with SMTP id u7so2945207ybi.6
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 07 Feb 2023 06:55:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=kpS3HgKPmEogc2Gw9AlFJQlCzGdEEgzV3gaAp0/AV2s=;
-        b=waPM8nbRluE35gGhrnOOlYCVoqMbSzXI/bIeppE9bSuFFI+RZAzc6Kl5AasZ9otGI4
-         OBcaMb89VmJlQA1BqQM9ko3ab0J+4Uob3evLCOBCdMRAvfPWqBlGowOBUJ6rCj1/Vw5l
-         XsdeMKH6QAcOLrAjl8BW/dfg2o5OtyicTpibLycC02L1REZwkd+Y7rbkJkOqOlSQv3La
-         cTVllcV5wizPEPJZkmwzpovhOVse1MS8EUFEA5YXboPA/Yu4/bznLdms8azWGLg7n+wf
-         jmU54a3NqzhTvcksWe8Tw1hVTpGGhzzkCQdkP6PiJjo5P+u9SwIiWyDKskkWkkK6MrhL
-         sNOQ==
+        Tue, 7 Feb 2023 11:12:08 -0500
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92CD5E3AA
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Feb 2023 08:11:55 -0800 (PST)
+Received: by mail-qt1-f174.google.com with SMTP id cr22so17216371qtb.10
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 07 Feb 2023 08:11:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=kpS3HgKPmEogc2Gw9AlFJQlCzGdEEgzV3gaAp0/AV2s=;
-        b=v4Sg9Ij1/K4PiwYqkgSdetcd060HdkYXTgdH96EEBc9n7FBpp8s3Xvj0vEFORdO3Mq
-         Zfli2Ol6hxkYAAzqlzVFOIMYWZEOw5yhmXytmXRw/FAtgD+txw7lys+KXESSC0lNHc5g
-         vQcGMxC4O1+DvUf3q8qY2k85OQgf+sc6BVLyxZlEfeih2WCT8K51ZM+kH7zWdAxiL+Ys
-         BqIy6viRQ/2PGqMjO8x81kPeRpdgljN8so0hZbOZP9VqgToQcJPIsn3DWsrFPx2VLSf8
-         zoHLz6uOnHkyCXlNzGMMyldoiC7DsBpV424lNZ57c4Hbb4mLr+nngSJ5UcqLu6Karg+a
-         bZ+A==
-X-Gm-Message-State: AO0yUKWYmE1zsd3crBSPSr7LcHnqnAiMn7C7Kb5ZvCtFKVeyDXeXr8IP
-        LR44G0a156B1MNW15y533Cfp19Oo2+Q73Zc5WjzgXQ==
-X-Google-Smtp-Source: AK7set+FPiZG8Q0bqmAM+3oI4VA9/UkIXmLGvn2kwzKpYMs61nqxRIkPG0TtYZXh9iAdflkTtIBPO8Shde99ziPoa9c=
-X-Received: by 2002:a5b:150:0:b0:88f:92ec:4292 with SMTP id
- c16-20020a5b0150000000b0088f92ec4292mr401234ybp.460.1675781735294; Tue, 07
- Feb 2023 06:55:35 -0800 (PST)
+        bh=IKpFmPELNxMbbdNEgrdFiGaCVQckx4xSvoILv5TiVp4=;
+        b=w6dPjK6VklHKTUkoyqPUQ6X2jKy58TA6rUZKFLVJSkjUGwXGutJTGmV4StKnYJnvR/
+         rxCWEtaGnB1KHdebimY36bR7VuFBkwIahKRiw2OFXsTcLy1jqY32Dm+mj74N/OZbsN4M
+         VBLnMcnLPVCP0rYir1jGUNq2iOU4CYYYelHn3+b6/RAYsOo/rTvwsJLgg33fhd0sTnd7
+         VZmLM6xwOCSIUwx9k3t4/iaRu25dhAzgRFMTdMr9/DhCemx0FL/D9WCk7JkIKQuG6ItL
+         z7HcQjhBTczXiP69ay1w+jSxHzcbUhgxPFCeheNhT5UdNEuouTrKWXRzmMvrQ9a3/cFH
+         jLdA==
+X-Gm-Message-State: AO0yUKWyom3Yl55VsmJNdBiurxGNjsBF1zvJhNV+60YijzHbj8qrqhp8
+        1vqUbF1VheN1Zs+yoQY4lUZBlVrEqqmjsg==
+X-Google-Smtp-Source: AK7set+FD9WGXqEUbl+EqsVqZKvtIuC66ZfG/sqZ5IFtWMwYMXamWL4eyEkR1uiq2+HdVIl3U1nl3g==
+X-Received: by 2002:ac8:5f92:0:b0:3b9:ba79:80d7 with SMTP id j18-20020ac85f92000000b003b9ba7980d7mr6682283qta.12.1675786314373;
+        Tue, 07 Feb 2023 08:11:54 -0800 (PST)
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com. [209.85.128.169])
+        by smtp.gmail.com with ESMTPSA id z20-20020ac87f94000000b003b9b8ec742csm9798370qtj.14.2023.02.07.08.11.53
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Feb 2023 08:11:53 -0800 (PST)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-501c3a414acso201921937b3.7
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 07 Feb 2023 08:11:53 -0800 (PST)
+X-Received: by 2002:a0d:f444:0:b0:526:78ad:bb15 with SMTP id
+ d65-20020a0df444000000b0052678adbb15mr382260ywf.47.1675786312866; Tue, 07 Feb
+ 2023 08:11:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20230207142952.51844-1-andriy.shevchenko@linux.intel.com> <20230207142952.51844-7-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20230207142952.51844-7-andriy.shevchenko@linux.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 7 Feb 2023 15:55:23 +0100
-Message-ID: <CACRpkdaPgjDijPjCdinWy5_Rd8g3idv-8K=YPTv5iTfJKFuJfw@mail.gmail.com>
-Subject: Re: [PATCH v3 06/12] gpiolib: split linux/gpio/driver.h out of linux/gpio.h
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Devarsh Thakkar <devarsht@ti.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        linux-gpio@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-doc-tw-discuss@lists.sourceforge.net,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-wpan@vger.kernel.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, linux-arch@vger.kernel.org,
-        devicetree@vger.kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>,
-        Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Hu Haowen <src.res@email.cn>,
-        Russell King <linux@armlinux.org.uk>,
-        Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Mun Yew Tham <mun.yew.tham@intel.com>,
-        Keerthy <j-keerthy@ti.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Alexander Aring <alex.aring@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Kalle Valo <kvalo@kernel.org>, Qiang Zhao <qiang.zhao@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>, Lee Jones <lee@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
+References: <Y9lz6yk113LmC9SI@ZenIV> <Y9l02DvS6CYThTEG@ZenIV>
+In-Reply-To: <Y9l02DvS6CYThTEG@ZenIV>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 7 Feb 2023 17:11:40 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVQusKr_W4dnQzVSWbav7vooCHbiyOQHbnraJCL16bsDQ@mail.gmail.com>
+Message-ID: <CAMuHMdVQusKr_W4dnQzVSWbav7vooCHbiyOQHbnraJCL16bsDQ@mail.gmail.com>
+Subject: Re: [PATCH 09/10] riscv: fix livelock in uaccess
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-arch@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, Michal Simek <monstr@monstr.eu>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Feb 7, 2023 at 3:29 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-
-> From: Arnd Bergmann <arnd@arndb.de>
+On Tue, Jan 31, 2023 at 9:07 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> riscv equivalent of 26178ec11ef3 "x86: mm: consolidate VM_FAULT_RETRY handling"
+> If e.g. get_user() triggers a page fault and a fatal signal is caught, we might
+> end up with handle_mm_fault() returning VM_FAULT_RETRY and not doing anything
+> to page tables.  In such case we must *not* return to the faulting insn -
+> that would repeat the entire thing without making any progress; what we need
+> instead is to treat that as failed (user) memory access.
 >
-> Almost all gpio drivers include linux/gpio/driver.h, and other
-> files should not rely on includes from this header.
->
-> Remove the indirect include from here and include the correct
-> headers directly from where they are used.
->
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 
-Make sure you push this to the kernel.org build servers (zeroday builds),
-I think this patch needs to hit some more files, in my tests with a similar
-patch at least these:
+Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-diff --git a/drivers/hte/hte-tegra194-test.c b/drivers/hte/hte-tegra194-test.c
-index 5d776a185bd6..79eb866558d3 100644
---- a/drivers/hte/hte-tegra194-test.c
-+++ b/drivers/hte/hte-tegra194-test.c
-@@ -6,10 +6,11 @@
-  */
+Gr{oetje,eeting}s,
 
- #include <linux/err.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/moduleparam.h>
- #include <linux/interrupt.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/timer.h>
- #include <linux/platform_device.h>
- #include <linux/workqueue.h>
+                        Geert
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-diff --git a/arch/arm/mach-pxa/viper-pcmcia.c b/arch/arm/mach-pxa/viper-pcmcia.c
-index 26599dcc49b3..2c7af4ed57d5 100644
---- a/arch/arm/mach-pxa/viper-pcmcia.c
-+++ b/arch/arm/mach-pxa/viper-pcmcia.c
-@@ -19,6 +19,7 @@
- #include <linux/errno.h>
- #include <linux/interrupt.h>
- #include <linux/platform_device.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/gpio.h>
-
- #include <pcmcia/ss.h>
-
-Yours,
-Linus Walleij
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
