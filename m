@@ -2,50 +2,60 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B351CC636D7
-	for <linux-m68k@archiver.kernel.org>; Wed,  8 Feb 2023 14:52:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79A58C636CC
+	for <linux-m68k@archiver.kernel.org>; Wed,  8 Feb 2023 14:55:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230025AbjBHOwD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 8 Feb 2023 09:52:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59224 "EHLO
+        id S231678AbjBHOzl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 8 Feb 2023 09:55:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231515AbjBHOvy (ORCPT
+        with ESMTP id S231644AbjBHOzh (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 8 Feb 2023 09:51:54 -0500
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E0ADEFBA
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Feb 2023 06:51:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675867913; x=1707403913;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3P68b0TVOlpRiURRNLVvw64Yo8IjZVFB+vqzhU4qIC8=;
-  b=N4m5Epe6+urLldVT+ALcBfv7cRHHaaacs8NI6i86a+/bMg7up1jRQul3
-   K2cXc9lMW+EVI7gkHMN61O28/BPPihQ+YbJgorsIhnSvftSYEVyRGkTfC
-   ZCix5FuXDdTfOSIHY5zTGRSuFjnR2TX4Vs5YCran3+jezZ8FTp7t4rYKZ
-   6icmnw5U8T8SVX3MHd8g1iPkGC8Wj0VXJlpSy+Xa5KAOUw8qCEuswgy9k
-   wrzatSM7BmFrjHXRGa784JlNOErghFYOjQ2SdnyyhN+QNMlBGc0NG1WgY
-   cRm7XE/vO320D5kl4GsxEcmF06ICIIT+o0t2yeXOac4WWy+cbdT7IJDdY
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="313454190"
-X-IronPort-AV: E=Sophos;i="5.97,281,1669104000"; 
-   d="scan'208";a="313454190"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2023 06:51:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="841199018"
-X-IronPort-AV: E=Sophos;i="5.97,281,1669104000"; 
-   d="scan'208";a="841199018"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga005.jf.intel.com with ESMTP; 08 Feb 2023 06:51:44 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1pPlnR-004ANT-0z;
-        Wed, 08 Feb 2023 16:51:41 +0200
-Date:   Wed, 8 Feb 2023 16:51:41 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
+        Wed, 8 Feb 2023 09:55:37 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93334B77B
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Feb 2023 06:55:31 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id 74so22117823ybl.12
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 08 Feb 2023 06:55:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=C9FYaHZff0n04HIlu0pgHp/yoYQMAR6EN4kK+A76acU=;
+        b=IIUuXKjbtNG+brYJkm3mEz/Fq2Pb+VqZxm9M/D7mrcI0D62GgsPuJzrGVbt3bjOgAe
+         FKHgjDRBffBmgUhp+Zqa3GhW+SJYVkyXIOx4UZjGR/NTZwRH+8Ec9dhaymaPJYoDF/ul
+         uhZIWfEjC/tNp17EsrH4ckdmUbeyIs5G5o9m7zp+yGzEj3sRZGfW5ns8qaXo3UmiN25P
+         jXTHx/9TXUF8ZpeVstcTHKPqER+clJey1/KPBN1LViaw99zwQggNemG7kwAykjT9Ya89
+         TEAScCGhuWQAgdfnh+kSg3K5nsReT9OKxs5o5HSi74s3waAxRJs36+1uPauU5VDw9KHc
+         l0FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=C9FYaHZff0n04HIlu0pgHp/yoYQMAR6EN4kK+A76acU=;
+        b=K4Zr+cUvJKv77aQM2pjDn9gWGItcgwDFdmrC3q8M8dSEjtdMOc5rxJISrZrnclmCXL
+         DN4LEuTR0wicASIIdG/jtsLfVA7hJYwYMyyOvAVYXUPbXMpaWbNjxB72lclzWVICscbZ
+         SSSoV7Ew7nAPlKDJYSoxQEaRhMkwGUvRGpA3wxT4IsRVqobrf3Q+SKlsP5qIg0IFOQzm
+         t7F3cvtiT/o4wWdCPvrzEQeD1exyBSxYQfqusoxH+//J1WFD3u8aM2ZFA3sQaYaY6I0H
+         l8FZZx3BJK2c9hca2yAUfvN5f4fLoziW006OKIkuZhS0nJmWUFPEte4I15b6yltWivm/
+         p3Pw==
+X-Gm-Message-State: AO0yUKU9jt/AYeodxaeGlQ7z7A/cZNoRPHw6BdG7EYkkYDKT+E0W879Y
+        mQ1sUPV5JQ8+j1PjOt9SroCliiNuGDscLrn4AAtqBQ==
+X-Google-Smtp-Source: AK7set9QWN7XZu0/Jygke0mZWpl6dDT6sBRDV263lswVqW9oVhi8Kruq1x//EDsHd+Bda51X+66lj6ea/+9i3ige8Q4=
+X-Received: by 2002:a5b:6c5:0:b0:88f:946:bd98 with SMTP id r5-20020a5b06c5000000b0088f0946bd98mr1003903ybq.24.1675868130850;
+ Wed, 08 Feb 2023 06:55:30 -0800 (PST)
+MIME-Version: 1.0
+References: <20230207142952.51844-1-andriy.shevchenko@linux.intel.com>
+ <20230207142952.51844-7-andriy.shevchenko@linux.intel.com>
+ <CACRpkdaPgjDijPjCdinWy5_Rd8g3idv-8K=YPTv5iTfJKFuJfw@mail.gmail.com>
+ <Y+LWyc4rqCVq5hEi@smile.fi.intel.com> <Y+O2/dVDcvnXByc+@smile.fi.intel.com>
+In-Reply-To: <Y+O2/dVDcvnXByc+@smile.fi.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 8 Feb 2023 15:55:19 +0100
+Message-ID: <CACRpkdacHyxPKg=Dw4xdpOPZUMMNsFAuVRuSo1093E_j4a+W-Q@mail.gmail.com>
+Subject: Re: [PATCH v3 06/12] gpiolib: split linux/gpio/driver.h out of linux/gpio.h
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
@@ -66,59 +76,49 @@ Cc:     Arnd Bergmann <arnd@arndb.de>,
         brcm80211-dev-list.pdl@broadcom.com,
         SHA-cyfmac-dev-list@infineon.com, linux-arch@vger.kernel.org,
         devicetree@vger.kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: Re: [PATCH v3 06/12] gpiolib: split linux/gpio/driver.h out of
- linux/gpio.h
-Message-ID: <Y+O2/dVDcvnXByc+@smile.fi.intel.com>
-References: <20230207142952.51844-1-andriy.shevchenko@linux.intel.com>
- <20230207142952.51844-7-andriy.shevchenko@linux.intel.com>
- <CACRpkdaPgjDijPjCdinWy5_Rd8g3idv-8K=YPTv5iTfJKFuJfw@mail.gmail.com>
- <Y+LWyc4rqCVq5hEi@smile.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y+LWyc4rqCVq5hEi@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Feb 08, 2023 at 12:55:06AM +0200, Andy Shevchenko wrote:
-> On Tue, Feb 07, 2023 at 03:55:23PM +0100, Linus Walleij wrote:
-> > On Tue, Feb 7, 2023 at 3:29 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > 
-> > > From: Arnd Bergmann <arnd@arndb.de>
+On Wed, Feb 8, 2023 at 3:51 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> On Wed, Feb 08, 2023 at 12:55:06AM +0200, Andy Shevchenko wrote:
+> > On Tue, Feb 07, 2023 at 03:55:23PM +0100, Linus Walleij wrote:
+> > > On Tue, Feb 7, 2023 at 3:29 PM Andy Shevchenko
+> > > <andriy.shevchenko@linux.intel.com> wrote:
 > > >
-> > > Almost all gpio drivers include linux/gpio/driver.h, and other
-> > > files should not rely on includes from this header.
-> > >
-> > > Remove the indirect include from here and include the correct
-> > > headers directly from where they are used.
-> 
-> ...
-> 
-> > Make sure you push this to the kernel.org build servers (zeroday builds),
-> 
-> Of course, that is the purpose of publishing this before the release (so we
-> will have some TODO list that eventually this can be applied for v6.4-rc1).
-> 
-> > I think this patch needs to hit some more files, in my tests with a similar
-> > patch at least these:
-> 
-> Right. I forgot to also incorporate your stuff into this series.
-> Do you have anything that I can take as is?
+> > > > From: Arnd Bergmann <arnd@arndb.de>
+> > > >
+> > > > Almost all gpio drivers include linux/gpio/driver.h, and other
+> > > > files should not rely on includes from this header.
+> > > >
+> > > > Remove the indirect include from here and include the correct
+> > > > headers directly from where they are used.
+> >
+> > ...
+> >
+> > > Make sure you push this to the kernel.org build servers (zeroday builds),
+> >
+> > Of course, that is the purpose of publishing this before the release (so we
+> > will have some TODO list that eventually this can be applied for v6.4-rc1).
+> >
+> > > I think this patch needs to hit some more files, in my tests with a similar
+> > > patch at least these:
+> >
+> > Right. I forgot to also incorporate your stuff into this series.
+> > Do you have anything that I can take as is?
+>
+> I'm going to incorporate the following:
+>
+>         gpio: Make the legacy <linux/gpio.h> consumer-only
+>         ARM: s3c24xx: Use the right include
+>         ARM: orion/gpio: Use the right include
+>         hte: tegra-194: Use proper includes
+>         pcmcia: pxa2xx_viper: Include dependency
 
-I'm going to incorporate the following:
+Excellent, thanks. I don't care about being credited, just want things
+to go smooth so you run into less snags.
 
-	gpio: Make the legacy <linux/gpio.h> consumer-only
-	ARM: s3c24xx: Use the right include
-	ARM: orion/gpio: Use the right include
-	hte: tegra-194: Use proper includes
-	pcmcia: pxa2xx_viper: Include dependency
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Yours,
+Linus Walleij
