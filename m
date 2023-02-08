@@ -2,45 +2,45 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7E5FC636CC
-	for <linux-m68k@archiver.kernel.org>; Wed,  8 Feb 2023 17:33:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94BF6C05027
+	for <linux-m68k@archiver.kernel.org>; Wed,  8 Feb 2023 17:33:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231532AbjBHRdu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 8 Feb 2023 12:33:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39546 "EHLO
+        id S231634AbjBHRdz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 8 Feb 2023 12:33:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230482AbjBHRdt (ORCPT
+        with ESMTP id S230482AbjBHRdx (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 8 Feb 2023 12:33:49 -0500
+        Wed, 8 Feb 2023 12:33:53 -0500
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 922023251B
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Feb 2023 09:33:46 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD1673251B
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Feb 2023 09:33:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675877626; x=1707413626;
+  t=1675877630; x=1707413630;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=jEiPyYdsZVsJV2pdec9rr5rbdBbMyx922ioXFsE3FmA=;
-  b=VOkhGDytYNPp3WYie6pdtQBNct7Y6e/HpjhyE3Q02J7fp6RzXHbAN4Tb
-   aiHua2wJjydKgxkIiM7pLihcm7HYjFmyoOdyJLliWM7Y5/yPY/vtfeEQl
-   ctpzAFUQn5/8ughjmD28j6VWZNL12F7anXyq7aSRRtyTUXymzSpECBaGB
-   gxiFFARaEnvMZSZGl9R/M9mJcReX24m1FdWEjnVFTbipodZHMknNeBEU1
-   j0OwIUrd3HsXlN9JcL/uf8T7bw51WZlh9vHsKj0O0oQakbr+RLZp0mKaC
-   lyHOQZw9o334HYf9d0yyIsAF6rvAXxQ5qeaeL4ETUOQWWTC2pNLJGyJt1
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="331153705"
+  bh=5X9ZOcG0DiAszti6VyRB72jA0fVrIX+W6b07WZOwIv4=;
+  b=GrZv8pU4fJCylzpXnfKdRI7GvRc/wmrwgfnEDxRmxIQ0LtVxqVi7RTHA
+   COaiNTeW6g7zxpbzvvvoVX94/JwrxNlqgdgotP73YuH8EgD27r1W881oR
+   2qantqOXMm3JxBZaFoB4tGeZCPfx8+ERDVFo5R7iK9OlMedHdGgvgmc4X
+   ZPiFU4/sXv48E3Ckq1eeDBwcJOkPmXUgfqM6xHI/SrkUv8Xt8gcIsW7HF
+   HK0HjmO4iBpDXFKX13eKKDDqyWUYWRDPszpuaQyyWc9V6tU1ll2EkYMJx
+   Hi1K6DatFkY/nH1RbpyHElry3DNLy8SM33/NfL7C8VYYKoxgl75zN2L0k
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="331153780"
 X-IronPort-AV: E=Sophos;i="5.97,281,1669104000"; 
-   d="scan'208";a="331153705"
+   d="scan'208";a="331153780"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2023 09:33:20 -0800
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2023 09:33:26 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="669265851"
+X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="669265865"
 X-IronPort-AV: E=Sophos;i="5.97,281,1669104000"; 
-   d="scan'208";a="669265851"
+   d="scan'208";a="669265865"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 08 Feb 2023 09:33:08 -0800
+  by fmsmga007.fm.intel.com with ESMTP; 08 Feb 2023 09:33:15 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 76D751C5; Wed,  8 Feb 2023 19:33:47 +0200 (EET)
+        id B005F252; Wed,  8 Feb 2023 19:33:47 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Arnd Bergmann <arnd@arndb.de>,
@@ -104,9 +104,9 @@ Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
         Kalle Valo <kvalo@kernel.org>, Qiang Zhao <qiang.zhao@nxp.com>,
         Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
         Frank Rowand <frowand.list@gmail.com>
-Subject: [PATCH v4 01/18] ARM: orion/gpio: Use the right include
-Date:   Wed,  8 Feb 2023 19:33:26 +0200
-Message-Id: <20230208173343.37582-2-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v4 04/18] gpiolib: Make the legacy <linux/gpio.h> consumer-only
+Date:   Wed,  8 Feb 2023 19:33:29 +0200
+Message-Id: <20230208173343.37582-5-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230208173343.37582-1-andriy.shevchenko@linux.intel.com>
 References: <20230208173343.37582-1-andriy.shevchenko@linux.intel.com>
@@ -118,39 +118,29 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 From: Linus Walleij <linus.walleij@linaro.org>
 
-This is a GPIO driver so include <linux/gpio/driver.h> and not
-the legacy <linux/gpio.h> header. Switch a single call to the
-legacy API and use <linux/gpio/consumer.h> as well.
+The legacy <linux/gpio.h> header was an all-inclusive header used
+by drivers and consumers alike. After eliminating the last users
+of the driver defines, we can drop the inclusion of the
+<linux/gpio/driver.h> header.
 
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- arch/arm/plat-orion/gpio.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ include/asm-generic/gpio.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm/plat-orion/gpio.c b/arch/arm/plat-orion/gpio.c
-index 3ef9ecdd6343..595e9cb33c1d 100644
---- a/arch/arm/plat-orion/gpio.c
-+++ b/arch/arm/plat-orion/gpio.c
-@@ -18,7 +18,8 @@
- #include <linux/spinlock.h>
- #include <linux/bitops.h>
- #include <linux/io.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/driver.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/leds.h>
- #include <linux/of.h>
- #include <linux/of_irq.h>
-@@ -312,7 +313,7 @@ int orion_gpio_led_blink_set(struct gpio_desc *desc, int state,
- 	case GPIO_LED_NO_BLINK_LOW:
- 	case GPIO_LED_NO_BLINK_HIGH:
- 		orion_gpio_set_blink(gpio, 0);
--		gpio_set_value(gpio, state);
-+		gpiod_set_raw_value(desc, state);
- 		break;
- 	case GPIO_LED_BLINK:
- 		orion_gpio_set_blink(gpio, 1);
+diff --git a/include/asm-generic/gpio.h b/include/asm-generic/gpio.h
+index 22cb8c9efc1d..1c910d124423 100644
+--- a/include/asm-generic/gpio.h
++++ b/include/asm-generic/gpio.h
+@@ -8,7 +8,6 @@
+ #ifdef CONFIG_GPIOLIB
+ 
+ #include <linux/compiler.h>
+-#include <linux/gpio/driver.h>
+ #include <linux/gpio/consumer.h>
+ 
+ /*
 -- 
 2.39.1
 
