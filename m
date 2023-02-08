@@ -2,45 +2,45 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 606D8C636D3
-	for <linux-m68k@archiver.kernel.org>; Wed,  8 Feb 2023 17:35:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 826ADC05027
+	for <linux-m68k@archiver.kernel.org>; Wed,  8 Feb 2023 17:35:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232372AbjBHRfT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 8 Feb 2023 12:35:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40138 "EHLO
+        id S231872AbjBHRfU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 8 Feb 2023 12:35:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232030AbjBHReR (ORCPT
+        with ESMTP id S231911AbjBHReF (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 8 Feb 2023 12:34:17 -0500
+        Wed, 8 Feb 2023 12:34:05 -0500
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1359B3FF2E
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Feb 2023 09:34:06 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E00A3E0BC
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Feb 2023 09:34:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675877647; x=1707413647;
+  t=1675877642; x=1707413642;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=t/VM8/VvZGy84HjkdGTixpmW6D3tM4wtEJkqNOFR1p8=;
-  b=S4OyBWxfGBFI2gim9mYwtE1jplSbldOA5txspRJ+fq6Pfz2aS3OwDlAy
-   /ROItTtBh8kE5+FcZv6VdYOMpTIaZJHrTuFw8d3UvyUTWK7YMXBQ6Apf/
-   AJQV5/nh11xearjqeBKcpwWw3mYKNDTcIMDjLVHuVCN7ZUFJpY8ayf13a
-   Lyzy8xAETRavNWEKIUFn3W8WKWmnoYjqDLMN7w5JK2sg3xwx2YwyoPN5m
-   wTpRzl4bNP8nscnv778YA60aawpgB5DLeqysNTYjFM0nbZgRuJXASoDM1
-   3CO/y3dlCm8BZ894p6jY0Y89vgN8Cm2giGiIvqlwMbYIs3/iJhwPE9zTH
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="310225445"
+  bh=4IQLDrOahYJ8lFlzrwNEYRM9qJTE1X0tQcaYGhsJEHc=;
+  b=G2Ko6LLEX419EYXpdWaN8RhlyDnSogCqqhneGWnR2JAwN2RFyqDNHUDI
+   rN1ajcGYE5yfWTt6trWdCVWJm28p3xUt1m0UBsEjsElQw3NJfoDXbaTpT
+   w0zI3lhnm2+j6yUlWucFcTZ345Hh6o1MJpOzb1WXVDPb0gQPgsrncN6j6
+   GlzouI9RtGDe+qv280oaHs/fRMoI9HLhgnuA6D+aK5IOfYVKq7boyu4Zz
+   by00KfscW3lKUEvpUVH7SOfU9HzS168qOVBtfWT/RPqVLlNHNCHpImf7I
+   AQR2TlKJvvFWDFLulGgORzUDErVCruG+g+ORPef1JRE9RcJNtyrf5jhhD
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="310225347"
 X-IronPort-AV: E=Sophos;i="5.97,281,1669104000"; 
-   d="scan'208";a="310225445"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2023 09:33:33 -0800
+   d="scan'208";a="310225347"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2023 09:33:27 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="660703969"
+X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="697723031"
 X-IronPort-AV: E=Sophos;i="5.97,281,1669104000"; 
-   d="scan'208";a="660703969"
+   d="scan'208";a="697723031"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP; 08 Feb 2023 09:33:20 -0800
+  by orsmga008.jf.intel.com with ESMTP; 08 Feb 2023 09:33:15 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id BFF94269; Wed,  8 Feb 2023 19:33:47 +0200 (EET)
+        id 9FC47210; Wed,  8 Feb 2023 19:33:47 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Arnd Bergmann <arnd@arndb.de>,
@@ -103,11 +103,10 @@ Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
         Hante Meuleman <hante.meuleman@broadcom.com>,
         Kalle Valo <kvalo@kernel.org>, Qiang Zhao <qiang.zhao@nxp.com>,
         Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v4 05/18] gpiolib: remove empty asm/gpio.h files
-Date:   Wed,  8 Feb 2023 19:33:30 +0200
-Message-Id: <20230208173343.37582-6-andriy.shevchenko@linux.intel.com>
+        Frank Rowand <frowand.list@gmail.com>
+Subject: [PATCH v4 03/18] hte: tegra-194: Use proper includes
+Date:   Wed,  8 Feb 2023 19:33:28 +0200
+Message-Id: <20230208173343.37582-4-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230208173343.37582-1-andriy.shevchenko@linux.intel.com>
 References: <20230208173343.37582-1-andriy.shevchenko@linux.intel.com>
@@ -117,147 +116,47 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Linus Walleij <linus.walleij@linaro.org>
 
-The arm and sh versions of this file are identical to the generic
-versions and can just be removed.
+The test driver uses the gpiod consumer API so include the right
+<linux/gpio/consumer.h> header. This may cause a problem with
+struct of_device_id being implcitly pulled in by the legacy
+header <linux/gpio.h> so include <linux/mod_devicetable.h>
+explicitly as well.
 
-The drivers that actually use the sh3 specific version also include
-cpu/gpio.h directly, with the exception of magicpanelr2, which is
-easily fixed. This leaves coldfire as the only gpio driver
-that needs something custom for gpiolib.
+While at it, drop explicit moduleparam.h (it's included with module.h)
+and sort the headers.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Vincenzo Palazzo <vincenzopalazzodev@gmail.com>
 ---
- arch/arm/Kconfig                    |  1 -
- arch/arm/include/asm/gpio.h         | 21 --------------
- arch/sh/Kconfig                     |  1 -
- arch/sh/boards/board-magicpanelr2.c |  1 +
- arch/sh/include/asm/gpio.h          | 45 -----------------------------
- 5 files changed, 1 insertion(+), 68 deletions(-)
- delete mode 100644 arch/arm/include/asm/gpio.h
- delete mode 100644 arch/sh/include/asm/gpio.h
+ drivers/hte/hte-tegra194-test.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index e24a9820e12f..1d1a603d964d 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -24,7 +24,6 @@ config ARM
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU
- 	select ARCH_HAS_TEARDOWN_DMA_OPS if MMU
- 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
--	select ARCH_HAVE_CUSTOM_GPIO_H
- 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if CPU_V7 || CPU_V7M || CPU_V6K
- 	select ARCH_HAS_GCOV_PROFILE_ALL
- 	select ARCH_KEEP_MEMBLOCK
-diff --git a/arch/arm/include/asm/gpio.h b/arch/arm/include/asm/gpio.h
-deleted file mode 100644
-index 4ebbb58f06ea..000000000000
---- a/arch/arm/include/asm/gpio.h
-+++ /dev/null
-@@ -1,21 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _ARCH_ARM_GPIO_H
--#define _ARCH_ARM_GPIO_H
--
--#include <asm-generic/gpio.h>
--
--/* The trivial gpiolib dispatchers */
--#define gpio_get_value  __gpio_get_value
--#define gpio_set_value  __gpio_set_value
--#define gpio_cansleep   __gpio_cansleep
--
--/*
-- * Provide a default gpio_to_irq() which should satisfy every case.
-- * However, some platforms want to do this differently, so allow them
-- * to override it.
-- */
--#ifndef gpio_to_irq
--#define gpio_to_irq	__gpio_to_irq
--#endif
--
--#endif /* _ARCH_ARM_GPIO_H */
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index 0665ac0add0b..ccb866750a88 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -4,7 +4,6 @@ config SUPERH
- 	select ARCH_32BIT_OFF_T
- 	select ARCH_ENABLE_MEMORY_HOTPLUG if SPARSEMEM && MMU
- 	select ARCH_ENABLE_MEMORY_HOTREMOVE if SPARSEMEM && MMU
--	select ARCH_HAVE_CUSTOM_GPIO_H
- 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if (GUSA_RB || CPU_SH4A)
- 	select ARCH_HAS_BINFMT_FLAT if !MMU
- 	select ARCH_HAS_CURRENT_STACK_POINTER
-diff --git a/arch/sh/boards/board-magicpanelr2.c b/arch/sh/boards/board-magicpanelr2.c
-index 56bd386ff3b0..75de893152af 100644
---- a/arch/sh/boards/board-magicpanelr2.c
-+++ b/arch/sh/boards/board-magicpanelr2.c
-@@ -21,6 +21,7 @@
- #include <linux/sh_intc.h>
- #include <mach/magicpanelr2.h>
- #include <asm/heartbeat.h>
-+#include <cpu/gpio.h>
- #include <cpu/sh7720.h>
+diff --git a/drivers/hte/hte-tegra194-test.c b/drivers/hte/hte-tegra194-test.c
+index 5d776a185bd6..358d4a10c6a1 100644
+--- a/drivers/hte/hte-tegra194-test.c
++++ b/drivers/hte/hte-tegra194-test.c
+@@ -6,14 +6,14 @@
+  */
  
- /* Dummy supplies, where voltage doesn't matter */
-diff --git a/arch/sh/include/asm/gpio.h b/arch/sh/include/asm/gpio.h
-deleted file mode 100644
-index 588c1380e4cb..000000000000
---- a/arch/sh/include/asm/gpio.h
-+++ /dev/null
-@@ -1,45 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0
-- *
-- *  include/asm-sh/gpio.h
-- *
-- * Generic GPIO API and pinmux table support for SuperH.
-- *
-- * Copyright (c) 2008 Magnus Damm
-- */
--#ifndef __ASM_SH_GPIO_H
--#define __ASM_SH_GPIO_H
--
--#include <linux/kernel.h>
--#include <linux/errno.h>
--
--#if defined(CONFIG_CPU_SH3)
--#include <cpu/gpio.h>
--#endif
--
--#include <asm-generic/gpio.h>
--
--#ifdef CONFIG_GPIOLIB
--
--static inline int gpio_get_value(unsigned gpio)
--{
--	return __gpio_get_value(gpio);
--}
--
--static inline void gpio_set_value(unsigned gpio, int value)
--{
--	__gpio_set_value(gpio, value);
--}
--
--static inline int gpio_cansleep(unsigned gpio)
--{
--	return __gpio_cansleep(gpio);
--}
--
--static inline int gpio_to_irq(unsigned gpio)
--{
--	return __gpio_to_irq(gpio);
--}
--
--#endif /* CONFIG_GPIOLIB */
--
--#endif /* __ASM_SH_GPIO_H */
+ #include <linux/err.h>
+-#include <linux/module.h>
+-#include <linux/moduleparam.h>
++#include <linux/gpio/consumer.h>
++#include <linux/hte.h>
+ #include <linux/interrupt.h>
+-#include <linux/gpio.h>
+-#include <linux/timer.h>
++#include <linux/mod_devicetable.h>
++#include <linux/module.h>
+ #include <linux/platform_device.h>
++#include <linux/timer.h>
+ #include <linux/workqueue.h>
+-#include <linux/hte.h>
+ 
+ /*
+  * This sample HTE GPIO test driver demonstrates HTE API usage by enabling
 -- 
 2.39.1
 
