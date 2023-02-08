@@ -2,45 +2,45 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6825BC636D7
-	for <linux-m68k@archiver.kernel.org>; Wed,  8 Feb 2023 17:34:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55B0CC05027
+	for <linux-m68k@archiver.kernel.org>; Wed,  8 Feb 2023 17:34:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232230AbjBHRek (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 8 Feb 2023 12:34:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39680 "EHLO
+        id S232098AbjBHReo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 8 Feb 2023 12:34:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231841AbjBHReC (ORCPT
+        with ESMTP id S231844AbjBHReC (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Wed, 8 Feb 2023 12:34:02 -0500
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9973A3E610
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Feb 2023 09:33:57 -0800 (PST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74EBA34308
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Feb 2023 09:33:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1675877637; x=1707413637;
+  t=1675877639; x=1707413639;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=bloKEk7wdB/KAamzH2f498CjQ4BYd7MQyp/8x7HupR0=;
-  b=OJ5YukcbpndUL2DYpS/OXXcWMqy8keoenmY9flqsyV1RkjcS6FRsxJ1O
-   B8cNOmrnLBUf/PKTQLVdxdnLWDc4GLvxb/T2UTjA3nKYdbFuzqJib/bGo
-   Mz1rUp4GYT9Z2fOtJear6uKzyEM+JTfC+9fpusH1IZcD43rBRYC1IJeMA
-   nQJ44ybycQ/Cdxi3S3s3IGjVS+uyerFwOBnhiO3MwKvIt/JoWoYklsgcK
-   f3XgRmpbN2nhmJpfx5BHnYRLbVztt0u+ogGzo5mGW44nJjT/dxIfdQ0LR
-   0YEPefWU0Z143hJdheq4NNHuqe9Cya5RJ8DOdUsGmrEMNZSJ0o58Clgeg
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="310225252"
+  bh=OVTbdvlRwsSopBDkL3jXldnhlbwob+iYhRWLjAyRiyk=;
+  b=JV7RpSqI8GqoT0MqaXYCRjkCYNtvp/bd671gsfOArXWphb0WxMAbrrqo
+   8rP3B7lipMCms6HFjOX6iVLVfX0JQ90gk6XggWRCn4+i+6s5JAEwbOMUZ
+   Vo90ear1Dj7zNauyLXtJfECIGlX3a4IYymmEAiK8iTiAtADYtov4O7/UX
+   QdpBEatcM9ol/b/vFneh6SKnW2Q29MvOEj1YS9qDEUb+xRGnaPRMrY+IF
+   rWIaUyp/YRePOoCE9g025Qvg9grKd+jCuEqXJzfYZbHxT4vV3dqxV9VPs
+   R1wIQ6X9HjFzkHCPrPQn8GTdJtNRaaJ0KwT/OfiSkdJEgGf4JlJ9sw0Lz
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="327564333"
 X-IronPort-AV: E=Sophos;i="5.97,281,1669104000"; 
-   d="scan'208";a="310225252"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2023 09:33:21 -0800
+   d="scan'208";a="327564333"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2023 09:33:41 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="697723000"
+X-IronPort-AV: E=McAfee;i="6500,9779,10615"; a="644939090"
 X-IronPort-AV: E=Sophos;i="5.97,281,1669104000"; 
-   d="scan'208";a="697723000"
+   d="scan'208";a="644939090"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga008.jf.intel.com with ESMTP; 08 Feb 2023 09:33:08 -0800
+  by orsmga006.jf.intel.com with ESMTP; 08 Feb 2023 09:33:28 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 8B16F1F8; Wed,  8 Feb 2023 19:33:47 +0200 (EET)
+        id 59E79556; Wed,  8 Feb 2023 19:33:48 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Arnd Bergmann <arnd@arndb.de>,
@@ -104,9 +104,9 @@ Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
         Kalle Valo <kvalo@kernel.org>, Qiang Zhao <qiang.zhao@nxp.com>,
         Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
         Frank Rowand <frowand.list@gmail.com>
-Subject: [PATCH v4 02/18] ARM: s3c24xx: Use the right include
-Date:   Wed,  8 Feb 2023 19:33:27 +0200
-Message-Id: <20230208173343.37582-3-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v4 14/18] gpio: regmap: Add missing header(s)
+Date:   Wed,  8 Feb 2023 19:33:39 +0200
+Message-Id: <20230208173343.37582-15-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230208173343.37582-1-andriy.shevchenko@linux.intel.com>
 References: <20230208173343.37582-1-andriy.shevchenko@linux.intel.com>
@@ -116,37 +116,41 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+Do not imply that some of the generic headers may be always included.
+Instead, include explicitly what we are direct user of.
 
-The file s3c64xx.c is including <linux/gpio.h> despite using no
-symbols from the file, however it needs it to implicitly bring in
-of_have_populated_dt() so include <linux/of.h> explicitly instead.
+While at it, split out the GPIO group of headers.
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- arch/arm/mach-s3c/s3c64xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpio/gpio-regmap.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/mach-s3c/s3c64xx.c b/arch/arm/mach-s3c/s3c64xx.c
-index e97bd59083a8..9f9717874d67 100644
---- a/arch/arm/mach-s3c/s3c64xx.c
-+++ b/arch/arm/mach-s3c/s3c64xx.c
-@@ -21,13 +21,13 @@
- #include <linux/ioport.h>
- #include <linux/serial_core.h>
- #include <linux/serial_s3c.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/reboot.h>
- #include <linux/io.h>
- #include <linux/clk/samsung.h>
- #include <linux/dma-mapping.h>
- #include <linux/irq.h>
--#include <linux/gpio.h>
- #include <linux/irqchip/arm-vic.h>
- #include <clocksource/samsung_pwm.h>
+diff --git a/drivers/gpio/gpio-regmap.c b/drivers/gpio/gpio-regmap.c
+index fca17d478984..c08c8e528867 100644
+--- a/drivers/gpio/gpio-regmap.c
++++ b/drivers/gpio/gpio-regmap.c
+@@ -5,11 +5,17 @@
+  * Copyright 2020 Michael Walle <michael@walle.cc>
+  */
  
+-#include <linux/gpio/driver.h>
+-#include <linux/gpio/regmap.h>
+-#include <linux/kernel.h>
++#include <linux/bits.h>
++#include <linux/device.h>
++#include <linux/err.h>
++#include <linux/io.h>
+ #include <linux/module.h>
+ #include <linux/regmap.h>
++#include <linux/slab.h>
++#include <linux/types.h>
++
++#include <linux/gpio/driver.h>
++#include <linux/gpio/regmap.h>
+ 
+ struct gpio_regmap {
+ 	struct device *parent;
 -- 
 2.39.1
 
