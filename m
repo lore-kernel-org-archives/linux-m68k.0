@@ -2,56 +2,56 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B6A7C636CC
-	for <linux-m68k@archiver.kernel.org>; Wed,  8 Feb 2023 17:57:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5B48C05027
+	for <linux-m68k@archiver.kernel.org>; Wed,  8 Feb 2023 18:03:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231182AbjBHR5k (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 8 Feb 2023 12:57:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36608 "EHLO
+        id S230499AbjBHSDM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 8 Feb 2023 13:03:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230399AbjBHR5i (ORCPT
+        with ESMTP id S229668AbjBHSCz (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 8 Feb 2023 12:57:38 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7748E46176
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Feb 2023 09:57:34 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id o5so20295812ljj.1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 08 Feb 2023 09:57:34 -0800 (PST)
+        Wed, 8 Feb 2023 13:02:55 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E498958948
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Feb 2023 10:02:14 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id o36so13923069wms.1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 08 Feb 2023 10:02:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=BpljMohL8GLL9JNNZm5TNh7NQliOwfqEEgvKA1M8vPA=;
-        b=iSJy452+yQNDkj/XRpSJtdvrqV4Nc9SHmDUlIPEMcI7FsTBkg180jQi1F8xp6YW1iB
-         x+n5zVe4ua33Iptv3+3hIXXVPzCDMsaE+aiY5ZioYXS2QK7YcFrDLdAp2jdyqNCNAiuB
-         jOEvyRlDxjvya+Oe6QZshDBs21k3QFl/D0kQ9C/WADLHUUR3m08hnMM5D5Fh2ivALyk/
-         MfyowyYvxCwIcJkZ8wjZ8+6pip+4HEgfvld60+W6Z8mMTEGB2wvoc+UcpG17rGgizxEB
-         3jdEH391M/2wSjYcYiPL4nNwuw3AUeWO4FlI+ZrKLIUg3rr1b9AQb/hWfziar7N1D7kJ
-         2C5A==
+        bh=M5KNVHSrC7/cdAAppvSovX1BQYH1mlKeTzSZkndabzI=;
+        b=lhYn0UKt1gI8oDRgPLyn7ikFvTDGwf2Vq24dv2LgPHiV8ihqRT2k7qLxUMyUBPC8iL
+         1kjRzv0p5FOr/OPZoPqTsOomSmdtG6dRIDCmM2zWnykN/NsN+pnvQRcekBxPpLb+7dnJ
+         WMII8V513jFjWV6EbLbZAVMg7+7MzRwZc69Es0ZafU8E7dTwE8PemItdaGxExyYCNWB8
+         VicfQ5HP97OFsOvy5HtV54Dl9qvPAh4xrxJ0Tfty7jVCL1BqJCUFOP0rvw4UZintMu+r
+         YcjZHNEqmas9yN+Xvh+FoJd90tCEohAYODXdGcG3sjItNhs8JWgRGQ4Vm8tIfLxbUBbk
+         X96A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BpljMohL8GLL9JNNZm5TNh7NQliOwfqEEgvKA1M8vPA=;
-        b=5WNELhAWldksQJGSo69fS7tTwXr3KkUSEzY0LA1+eGN1nnYb5S19+r5Y123arn8+8g
-         zAOf/+YSH9BoZNsKbmH3c0TN3aNp0PLVAFyZNxC1H6KwVqdT0CeubuwWkvg8mRk0pwp1
-         DPV00PEHfinoXRESMIikh4q/gPuRjXRocEfIbKkod0DONkT2TdC2erA7hwGtt/Af+qvt
-         W1NlSpgb4usP+dwRss7tyt/v6kkuBw9CfOzhqipOWxsgLfm4oPMJ8dyJ5UoBQHvBpFFH
-         1cTQ7RjG1GaYp4bq1oBx5gHJImeuWDhMuG4/mfNkRPkG8cczfGEsTVOP8glArixJks20
-         VhXw==
-X-Gm-Message-State: AO0yUKXlojBMgiGlR9tUROIkBxaS+Ps/9cPuumJ0MFEhISJg9ldHbrgg
-        pQynGCa2WnDTKdNEnjYy9d4jmN7OC12Av0BD
-X-Google-Smtp-Source: AK7set/lK0dtz8rcHRt03yyNK2Vwc1Fz232Sf6dsRanegcNrGJ8x6yT7AAkYHUf260eQ8ib742Kj5Q==
-X-Received: by 2002:adf:f212:0:b0:2c3:dbe0:58ea with SMTP id p18-20020adff212000000b002c3dbe058eamr8107790wro.47.1675877957261;
-        Wed, 08 Feb 2023 09:39:17 -0800 (PST)
+        bh=M5KNVHSrC7/cdAAppvSovX1BQYH1mlKeTzSZkndabzI=;
+        b=IRychuMEvSVC0446zpDezoZseQLxVyNMMq15XqrIhLcv5gXXtmqZfHmxn6Q13/spx3
+         EETF7GgCD0Pv+EAUU3qq9eekPHsmKUMVlEU5/Subd59cU0REBjpDC+C8kZwJ/Txgh4TY
+         3auz/aLAR73YL/ycBPokNKosBnrOAuGbehP0wuv3iL1QYQ0y9KGp9Q+6gvJAQZ92KuGF
+         HSOuoZyJjC2RWCNVlDq5Dc2TesMSUJjaMsSu6OABf/3TFFKSlYcViD7DYT4PRTeG3iGc
+         WYYLzVK7jbNO+T0jij1hFL+nD5PX0hCWgLtIgdCd7pCanJpJEfN9oMtiQu3i0uGqNJAH
+         UFkQ==
+X-Gm-Message-State: AO0yUKU/GMVvMpG+YUYkoNSe+CXp4lg7iPWEl9FWpOB5yTtGMCOnpO4B
+        s24vC+J+dRL+yX9KjJAfVAr9bg==
+X-Google-Smtp-Source: AK7set/N7X08/6/zDIwTs2SW3WqzqwHVir4In+cx7rhLGQNf+mB7g+wx8kSFQo+gWqS8ovXbhXrHVg==
+X-Received: by 2002:a05:600c:9a2:b0:3dd:393c:20b5 with SMTP id w34-20020a05600c09a200b003dd393c20b5mr7247364wmp.35.1675879326639;
+        Wed, 08 Feb 2023 10:02:06 -0800 (PST)
 Received: from [192.168.1.109] ([178.197.216.144])
-        by smtp.gmail.com with ESMTPSA id u10-20020adfdb8a000000b002bfb0c5527esm14273251wri.109.2023.02.08.09.39.13
+        by smtp.gmail.com with ESMTPSA id j40-20020a05600c1c2800b003dc4480df80sm3034104wms.34.2023.02.08.10.02.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Feb 2023 09:39:16 -0800 (PST)
-Message-ID: <30234963-33e5-e2d7-a6ef-112e89efbdd0@linaro.org>
-Date:   Wed, 8 Feb 2023 18:39:12 +0100
+        Wed, 08 Feb 2023 10:02:06 -0800 (PST)
+Message-ID: <80f5271e-6fe6-df5a-beff-f3723110edf7@linaro.org>
+Date:   Wed, 8 Feb 2023 19:02:01 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.7.1
@@ -137,12 +137,9 @@ On 08/02/2023 18:33, Andy Shevchenko wrote:
 > 
 > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  arch/arm/mach-s3c/s3c64xx.c | 2 +-
 
-It's not s3c24xx anymore, so subject prefix:
-ARM: s3c64xx:
 
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
