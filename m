@@ -2,56 +2,57 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60D85C61DA4
-	for <linux-m68k@archiver.kernel.org>; Thu,  9 Feb 2023 10:42:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AB77C05027
+	for <linux-m68k@archiver.kernel.org>; Thu,  9 Feb 2023 10:43:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229942AbjBIKmT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 9 Feb 2023 05:42:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34874 "EHLO
+        id S229635AbjBIKnF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 9 Feb 2023 05:43:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbjBIKmE (ORCPT
+        with ESMTP id S229969AbjBIKmr (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 9 Feb 2023 05:42:04 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31C2D1165E
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  9 Feb 2023 02:41:42 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id 184so1801566ybw.5
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 09 Feb 2023 02:41:42 -0800 (PST)
+        Thu, 9 Feb 2023 05:42:47 -0500
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888966813E
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  9 Feb 2023 02:42:30 -0800 (PST)
+Received: by mail-yb1-xb29.google.com with SMTP id l201so819786ybf.10
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 09 Feb 2023 02:42:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=tNSj88tAbE2c6y06Ms9sAOyNH2UyWm+Nrt13hPQ8iWI=;
-        b=CTfWL8pjm8f2MrW7uavUbnvldEyg0bhDjX9kzmJAomtRXVNHa/aGLoocEdHD0fyy/Y
-         fEKylqcVs1Rm6vCkJ86UCaYPU6SgxWlbi4HnnDcv7Bz22EuLo8VnW5wtx9Bdq3ozCs7A
-         lZNkMVc+naW+d5b+0eDsi+iQsjJg8Q3YhD4iP1td0QgnSPS70YmDicHTJMzjun3aNplC
-         sZJW9L4XCkQP1k06jvz134a+Cjmc7KfiYD3pjsjNdX3Y/BgLss5Jg+vJgVWN5BpvDERW
-         BN28nTKVj1O3Zhkbf2gj8UPBUdyuQZp8hD6GqbCQ1PcojQJtzxTJ1vptev4FdI5FrQI1
-         Ewyg==
+        bh=1EVNZNpF/Er877/te7k/r7KimgWui6kPYTMbzlbMpHE=;
+        b=NoRufYnWd3sLfMds3pddswGHnqjpzO29628T+k+Q97BW963D2fJT2hsh+eLfD4RQRH
+         zdt1oPrfGIR6Ose1yZAl+8pQgeUH06VeoxND49uyRtLk5wZaK6P1vWkHUPfwzBs82HZR
+         oz2k/BMEaFgmS29Yh5uwqHaYMz9Lhz6PDpDDMeI348cBYuVGYWvMWT7QO/+7wp9T5Vuw
+         22Lz60wzbBdJCYBR+gQPrDMAhySTtLLftil07FrKSjq7YegvR0bKStX2X/FTg/1VqIdH
+         Sge2BQn9ZdQJjuaYgcGGeAH8hZsKUPivgELlTQNAPWs8P8uYFiU7J3aJu1bicHqUtpvb
+         002g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=tNSj88tAbE2c6y06Ms9sAOyNH2UyWm+Nrt13hPQ8iWI=;
-        b=XRRQVuphB/v8dp4BIX83cfotOU6gaRLWgSSx3ar6L9tBP8ANzV3EV1g8F6pFugT5UB
-         Cehi1lT+XkcH1lZqV2d7hg56W21TpCHID2hXbOZ1hywbujeatL+JEzhbhLIwN8GrGAxu
-         EpbLzPLueRp/vKiZpeQVSmUdEg7fMEoxqJP9a8gLTnziheT6azkIalkuOZRM6YkB0bL5
-         8nz+AmFXDMWQIi57vAbFfhZev2WiN3eNttN2XbpL1knmCPiTzHSOi4UfeKbcK/fHMvhG
-         IYKWI0DFueGaSsKnJkAJ00gm7twtdioi+vCgE2Kx0CpSp8Muk7d2pSsyZ0lJ1G1iVflE
-         7Rwg==
-X-Gm-Message-State: AO0yUKVvNUgReCu/cBscBeY5fbY7VDvajf4+oUfN8njbVg8Zl2YeLbB7
-        UKRVSsrN/x+5DpMiS/o4vfQIyxZpSEnOlEdRfbXvPQ==
-X-Google-Smtp-Source: AK7set8zUBoMuKEkh07dateX8DXDKQwFdadaIyfZa9ErQD4UXOsRHzHAgRvHHkEB2ER9MGhyrUUFZo9EgHYFwleS790=
-X-Received: by 2002:a5b:6c5:0:b0:88f:946:bd98 with SMTP id r5-20020a5b06c5000000b0088f0946bd98mr1338256ybq.24.1675939286984;
- Thu, 09 Feb 2023 02:41:26 -0800 (PST)
+        bh=1EVNZNpF/Er877/te7k/r7KimgWui6kPYTMbzlbMpHE=;
+        b=WKwuf1VEOFEmxxsZpfAOoXUmzXHpYYE81h0GoGq5oGOvIHFwdyL2F9DpE6LuVq0a3w
+         Q36FVa8M9vDD7ZgNroaRp2m4ZQXgCg/oaqrWRfXA6CZLoTmqbDROGNjDzPvG1ZpBOzNl
+         vSAAH3MaElYwAdXptk6XTddNiisOPWY1sTcQ89QgvP+nHqqUaXxHnpPiFjZseGbkx0PS
+         8LaAOi5p9Ws+iaCy9Dc7xDxGL95mKWjbFodF5iGvQU/YDBNPnOhpMC4HWkGb3Iv/ZmfB
+         f/yf0T0p2yyika/N7vRciz9naOfKCZ+dzZYv6ywMgJjjSi5mukAUoCgSRPmmG6Jyy+KW
+         SwcQ==
+X-Gm-Message-State: AO0yUKV7m8nc7hYNQ1KNPSjtPNMZTf2H2L5fLGrqNKa7B8WKFAK9IvCg
+        q3QaqQpFajqFzUpNO52ZYNfHSkvu1F5Tij3T28hgJw==
+X-Google-Smtp-Source: AK7set/4egQ6ymaaXnifQxB1VP1BF0zfzUZPRKdac18DBhBo3kRtxaBrvl/7jPL1oolTNNR8WQJzGyOCYU7Jrhx58mc=
+X-Received: by 2002:a5b:1c4:0:b0:8c9:2650:4ece with SMTP id
+ f4-20020a5b01c4000000b008c926504ecemr420798ybp.210.1675939349691; Thu, 09 Feb
+ 2023 02:42:29 -0800 (PST)
 MIME-Version: 1.0
-References: <20230208173343.37582-1-andriy.shevchenko@linux.intel.com> <20230208173343.37582-15-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20230208173343.37582-15-andriy.shevchenko@linux.intel.com>
+References: <20230208173343.37582-1-andriy.shevchenko@linux.intel.com> <20230208173343.37582-17-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20230208173343.37582-17-andriy.shevchenko@linux.intel.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 9 Feb 2023 11:41:15 +0100
-Message-ID: <CACRpkdbyosRgubdbNDiHZddK-hPAX7C2MV26eaeKnPO5xy+=Eg@mail.gmail.com>
-Subject: Re: [PATCH v4 14/18] gpio: regmap: Add missing header(s)
+Date:   Thu, 9 Feb 2023 11:42:18 +0100
+Message-ID: <CACRpkdY+u4uQAXLggL=Shf7_dES_HRRtew+9Cxuipxi3nHRRCA@mail.gmail.com>
+Subject: Re: [PATCH v4 16/18] gpiolib: Deduplicate forward declarations in consumer.h
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
@@ -120,10 +121,8 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 On Wed, Feb 8, 2023 at 6:34 PM Andy Shevchenko
 <andriy.shevchenko@linux.intel.com> wrote:
 
-> Do not imply that some of the generic headers may be always included.
-> Instead, include explicitly what we are direct user of.
->
-> While at it, split out the GPIO group of headers.
+> The struct fwnode_handle pointer is used in both branches of ifdeffery,
+> no need to have a copy of the same in each of them, just make it global.
 >
 > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
