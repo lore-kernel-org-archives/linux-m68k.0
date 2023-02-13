@@ -2,63 +2,63 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1169DC636D4
-	for <linux-m68k@archiver.kernel.org>; Mon, 13 Feb 2023 06:26:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62895C64ED6
+	for <linux-m68k@archiver.kernel.org>; Mon, 13 Feb 2023 06:37:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229647AbjBMG0B (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 13 Feb 2023 01:26:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60940 "EHLO
+        id S229837AbjBMGhY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 13 Feb 2023 01:37:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbjBMG0A (ORCPT
+        with ESMTP id S229573AbjBMGhW (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 13 Feb 2023 01:26:00 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9A48696
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Feb 2023 22:25:59 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id c15so9361326oic.8
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Feb 2023 22:25:59 -0800 (PST)
+        Mon, 13 Feb 2023 01:37:22 -0500
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 359539010
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Feb 2023 22:37:21 -0800 (PST)
+Received: by mail-oo1-xc2f.google.com with SMTP id w3-20020a4aa443000000b0051ac1e0f6b7so1101153ool.11
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Feb 2023 22:37:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=WBfrO2gGyOvBRZ1A5wp4UK8YioFxtCNN29YZ0C6yJUM=;
-        b=oDTaHYE7Ifi7cTfoJaBKOA+euRlCFlo+ykP9tRkGsweDWCjfPlRLBkVyxOHGFcmNqc
-         PSZTRHnsx3UreCHv1p9ynDEvrC5nGpdC4VXbwWYrd2yYwCkykGDPLP2SNyHtKIRZ0Fzf
-         m5Q5HPiFjmx/8JH/hVxhNaJo4GLuifz/a00mQ5ccFU5DlCskiDprH6pwoBt/q7h6DDjY
-         XLGT8w6vJ24mYBL9QM1YV+CRlakf167YfDtx3KOo8lkNAunfJWM4pqGoRQPXTLOlgYkl
-         nosLoRl5OZPv9+Xx589w5Zoaba/auqZwvIrVa4S9ZAslff1MJvy24KQ2HNmX2D2e/q/v
-         LF/A==
+        bh=r+mD21wjZ7sbz4e4MxBS6xbK/1FhjAg9+awm6A789ww=;
+        b=k6tlOEQZNhmHTa+ZCajRLjNoXOkqSfo4mR8OrWgNmaL2MKywaTjKPH0ulYH6V9boxY
+         52UWHSIcC8rNsw1dQfTkq/COZKRQGSqbB6Kc2G15s3DFFoFMZdeK0fle1rX83pU7KJ4L
+         ++BO1fcXWC7mjkIEb9evuvP+OSvCviMd3N1ZHNescW7Lpv6a0HL6BarepuSkif6zPqmJ
+         C0miEzpiGke8zc2vSBRq5eRVJsUX8UcbybG0D55ni/6ICUXuIpztwVcd4DNb/6z3a9gS
+         0Q6J9mDHSQbj/EfASGYAa6yP1HnW6//0d7Bxm++QcZv8+DAFF4S+17znkvYeLv4XlC8U
+         Iyig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :sender:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=WBfrO2gGyOvBRZ1A5wp4UK8YioFxtCNN29YZ0C6yJUM=;
-        b=7twAelkEI52KylxSX64qRcPFxoMa/JzK7oxKeJ7vvrVZCBaRnQ+b9PlGK64PrwryLK
-         jeZTkINcYvv9x1K8c+Zm6VLuXUZ0kctWtbY84hYYq/zqDG++bs5WU42WfzmO8GP0siYU
-         tIyOhcLAc7EP9aNDNPrpLX2PVmzkCOC7UzArT7TeCjZoOSgbcV066lsT2koTwq+Sacqb
-         I3sQNG4X0Y371huJAtA4cMNc2ntuzSKncK62Nkzc7tx1Mpv+3zWAtiJLujumCvnkISv/
-         2eZz9oyHxWC6MFFit26c3hPqsOAZ+0M1dTP2mXyUD6eVGQL+tsDJN6X0+0oQmX6l2NyZ
-         57pg==
-X-Gm-Message-State: AO0yUKUFRMWXaFgeIXYkMLANqDvlnTm/qO3nQwV+c0PtNGiAIMM5x2Bk
-        bfJGh7LISKbbgL2uLOvu8Eg=
-X-Google-Smtp-Source: AK7set/+6jsdhTf2sJtfJcDHaoQnUg14v4tlGoQakT99S8J8gTSqtG1+VHr+8pC/SE0SaaNJlMokqg==
-X-Received: by 2002:a05:6808:d2:b0:363:b918:643b with SMTP id t18-20020a05680800d200b00363b918643bmr10584927oic.31.1676269558366;
-        Sun, 12 Feb 2023 22:25:58 -0800 (PST)
+        bh=r+mD21wjZ7sbz4e4MxBS6xbK/1FhjAg9+awm6A789ww=;
+        b=W/zdr8azet4IlYJDUnZIhGUJOItqfNe17bWyNQV46EREXj70vBFi+JNHF7YM07LsXA
+         MfvpLiooVbgLRQfJBODABDx5V16AAnOlng2ec81fQWuL2WxqUo62JP97omcuTBJJJMWX
+         kkKeOnR5R6VNn6WdkbWiDKWcBkMeWiXWssVthpG7d/sVpHnhYJpwNFqUbnxFYy+AMPmM
+         YmIR4vh1JaXQoTLeqS75QnZG0IHb2UgHQnslC8+yXVYAOqak5tDvi9ZXZb/+dWd2T/Gq
+         pG+LNEZmwjMwUp1B7hlzv76noMrH5kQMIm8ZoJbqJRLEg36SqYaehLMoVMvUifq9R1zo
+         rzww==
+X-Gm-Message-State: AO0yUKVE5IIq6gjOb02mubZ6UIUA9NRNdXHk8sB9YYribZyDWSPMdhAM
+        BzcD/9MOzKe+SfZL3ro4t8k=
+X-Google-Smtp-Source: AK7set8CrGfl+FsDAT8ZOxZzNC5b1OZaQkksHfF8KDK4IpXQlQWLkqRaCxpy9jhC5xUjdOk1jrrITw==
+X-Received: by 2002:a4a:d623:0:b0:512:2016:53e5 with SMTP id n3-20020a4ad623000000b00512201653e5mr12513885oon.6.1676270240292;
+        Sun, 12 Feb 2023 22:37:20 -0800 (PST)
 Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id dq3-20020a056808428300b0037d8148cf04sm1851027oib.46.2023.02.12.22.25.54
+        by smtp.gmail.com with ESMTPSA id b15-20020a4ad88f000000b004fc4000ae48sm4528998oov.15.2023.02.12.22.37.16
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Feb 2023 22:25:57 -0800 (PST)
+        Sun, 12 Feb 2023 22:37:19 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <8267dc7e-329f-73cf-b50e-9bf2606b8751@roeck-us.net>
-Date:   Sun, 12 Feb 2023 22:25:52 -0800
+Message-ID: <15a2c023-fdfa-9543-ac36-a846e5f8a000@roeck-us.net>
+Date:   Sun, 12 Feb 2023 22:37:15 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.4.2
-Subject: Re: [PATCH v2 2/4] m68k: use asm-generic/memory_model.h for both MMU
- and !MMU
+Subject: Re: [PATCH v2 4/4] mm, arch: add generic implementation of
+ pfn_valid() for FLATMEM
 Content-Language: en-US
 To:     Mike Rapoport <rppt@kernel.org>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -92,71 +92,57 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
         linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
         openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
-        x86@kernel.org
+        x86@kernel.org, Huacai Chen <chenhuacai@loongson.cn>
 References: <20230129124235.209895-1-rppt@kernel.org>
- <20230129124235.209895-3-rppt@kernel.org>
- <20230212173513.GA4052259@roeck-us.net> <Y+mPJYpVBk1YutDL@kernel.org>
+ <20230129124235.209895-5-rppt@kernel.org>
+ <20230212161320.GA3784076@roeck-us.net> <Y+mRz6Wfocopv9jw@kernel.org>
 From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <Y+mPJYpVBk1YutDL@kernel.org>
+In-Reply-To: <Y+mRz6Wfocopv9jw@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 2/12/23 17:15, Mike Rapoport wrote:
-> Hi,
-> 
-> On Sun, Feb 12, 2023 at 09:35:13AM -0800, Guenter Roeck wrote:
->> Hi,
->>
->> On Sun, Jan 29, 2023 at 02:42:33PM +0200, Mike Rapoport wrote:
+On 2/12/23 17:26, Mike Rapoport wrote:
+> On Sun, Feb 12, 2023 at 08:13:20AM -0800, Guenter Roeck wrote:
+>> On Sun, Jan 29, 2023 at 02:42:35PM +0200, Mike Rapoport wrote:
 >>> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 >>>
->>> The MMU variant uses generic definitions of page_to_pfn() and
->>> pfn_to_page(), but !MMU defines them in include/asm/page_no.h for no
->>> good reason.
+>>> Every architecture that supports FLATMEM memory model defines its own
+>>> version of pfn_valid() that essentially compares a pfn to max_mapnr.
 >>>
->>> Include asm-generic/memory_model.h in the common include/asm/page.h and
->>> drop redundant definitions.
+>>> Use mips/powerpc version implemented as static inline as a generic
+>>> implementation of pfn_valid() and drop its per-architecture definitions.
 >>>
->>> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
->>> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
->>> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 >>
->> This patch results in a boot failure when trying to boot the mcf5208evb qemu
->> emulation. Reverting it together with "mm, arch: add generic implementation
->> of pfn_valid() for FLATMEM" fixes the problem. There is no error log - the
->> emulation hangs silently until aborted.
+>> With this patch in the tree, sh4 and sh4eb qemu emulations no longer boot.
+>> Reverting this patch fixes the problem.
 > 
-> With the patch below I was able to get to the mount of the root file system,
-> but I don't have one, so I couldn't test the boot properly.
+> This should be a better fix than a revert:
 > 
-> diff --git a/arch/m68k/include/asm/page_no.h b/arch/m68k/include/asm/page_no.h
-> index 43ff6b109ebb..060e4c0e7605 100644
-> --- a/arch/m68k/include/asm/page_no.h
-> +++ b/arch/m68k/include/asm/page_no.h
-> @@ -28,6 +28,8 @@ extern unsigned long memory_end;
->   #define	virt_addr_valid(kaddr)	(((unsigned long)(kaddr) >= PAGE_OFFSET) && \
->   				((unsigned long)(kaddr) < memory_end))
+> diff --git a/arch/sh/mm/init.c b/arch/sh/mm/init.c
+> index 506784702430..bf1b54055316 100644
+> --- a/arch/sh/mm/init.c
+> +++ b/arch/sh/mm/init.c
+> @@ -301,6 +301,7 @@ void __init paging_init(void)
+>   	 */
+>   	max_low_pfn = max_pfn = memblock_end_of_DRAM() >> PAGE_SHIFT;
+>   	min_low_pfn = __MEMORY_START >> PAGE_SHIFT;
+> +	set_max_mapnr(max_low_pfn - min_low_pfn);
 >   
-> +#define ARCH_PFN_OFFSET PHYS_PFN(PAGE_OFFSET_RAW)
-> +
->   #endif /* __ASSEMBLY__ */
->   
->   #endif /* _M68K_PAGE_NO_H */
+>   	nodes_clear(node_online_map);
 >   
 
-Yes, that works.
+Confirmed, this fixes the problem for me.
 
 Thanks,
 Guenter
 
+>   
 >> Guenter
 >>
 >> ---
->> bisect log:
->>
 >> # bad: [6ba8a227fd19d19779005fb66ad7562608e1df83] Add linux-next specific files for 20230210
 >> # good: [4ec5183ec48656cec489c49f989c508b68b518e3] Linux 6.2-rc7
 >> git bisect start 'HEAD' 'v6.2-rc7'
@@ -184,10 +170,8 @@ Guenter
 >> git bisect bad b704c765b08cabe82adf76a4d1a74f3688eee410
 >> # bad: [e5734c8b0edfd2a053a5c256189586a3b1e9f63d] mm, arch: add generic implementation of pfn_valid() for FLATMEM
 >> git bisect bad e5734c8b0edfd2a053a5c256189586a3b1e9f63d
->> # bad: [ad8aecea034c591b9754bc5908da9719853aa7fa] mips: drop definition of pfn_valid() for DISCONTIGMEM
->> git bisect bad ad8aecea034c591b9754bc5908da9719853aa7fa
->> # bad: [1f6271a0dfdf952c2e3981f424784d48f243a2be] m68k: use asm-generic/memory_model.h for both MMU and !MMU
->> git bisect bad 1f6271a0dfdf952c2e3981f424784d48f243a2be
->> # first bad commit: [1f6271a0dfdf952c2e3981f424784d48f243a2be] m68k: use asm-generic/memory_model.h for both MMU and !MMU
+>> # good: [ad8aecea034c591b9754bc5908da9719853aa7fa] mips: drop definition of pfn_valid() for DISCONTIGMEM
+>> git bisect good ad8aecea034c591b9754bc5908da9719853aa7fa
+>> # first bad commit: [e5734c8b0edfd2a053a5c256189586a3b1e9f63d] mm, arch: add generic implementation of pfn_valid() for FLATMEM
 > 
 
