@@ -2,126 +2,144 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71725C636CC
-	for <linux-m68k@archiver.kernel.org>; Mon, 13 Feb 2023 07:55:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91ECEC636CC
+	for <linux-m68k@archiver.kernel.org>; Mon, 13 Feb 2023 23:41:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbjBMHzC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 13 Feb 2023 02:55:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43966 "EHLO
+        id S231127AbjBMXln (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 13 Feb 2023 18:41:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229903AbjBMHyp (ORCPT
+        with ESMTP id S229615AbjBMXlm (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 13 Feb 2023 02:54:45 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8397422A
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Feb 2023 23:54:44 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 16B7EB80E01;
-        Mon, 13 Feb 2023 07:54:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3884FC433EF;
-        Mon, 13 Feb 2023 07:54:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676274881;
-        bh=6metnuiv9QkmKFu+JTHLVBvZLre3nFtuNi3AR7PlA78=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P/NLBLn1QBccO0iLmwEVdjTRTOu/1JTVdr0CvbgYz4ThLcAoENpkQwi1mRk7/P19V
-         Brn+rbVYSD8LBBQWtetps+o6x9tV427CYirqerxd+gmGggehAz5OXTZeiD3MkT7U29
-         s/as2HenQlPGtPPTTf3fp/G4jLA+MmtrrPcey6hAK36CzGgOAg/0LtwnODYIfT0DI9
-         MUeph4dw/P2V8jMyhN9SftHlhcEV/JNhGKIKb6cMv7netYSdbt356AlVVkhPoiPUvd
-         r4aExWVaj3CL3McIngU/VdH3ENcuJwfiC6rBQVcgRCzZo3MtbE8U1j5N/4s5pn2pxp
-         sfCWQJUUPJk8Q==
-Date:   Mon, 13 Feb 2023 09:54:17 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Brian Cain <bcain@quicinc.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Matt Turner <mattst88@gmail.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Simek <monstr@monstr.eu>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Rich Felker <dalias@libc.org>,
-        Richard Weinberger <richard@nod.at>,
-        Russell King <linux@armlinux.org.uk>,
-        Stafford Horne <shorne@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vineet Gupta <vgupta@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org,
-        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-        openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
-        x86@kernel.org, Huacai Chen <chenhuacai@loongson.cn>
-Subject: Re: [PATCH v2 4/4] mm, arch: add generic implementation of
- pfn_valid() for FLATMEM
-Message-ID: <Y+nsqV6u/PqNlwDS@kernel.org>
-References: <20230129124235.209895-1-rppt@kernel.org>
- <20230129124235.209895-5-rppt@kernel.org>
- <20230212161320.GA3784076@roeck-us.net>
- <Y+mRz6Wfocopv9jw@kernel.org>
- <15a2c023-fdfa-9543-ac36-a846e5f8a000@roeck-us.net>
+        Mon, 13 Feb 2023 18:41:42 -0500
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B753C659
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Feb 2023 15:41:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1676331701; x=1707867701;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=rzAcwJ9ifql61fcej/2EVdaJguW9i5diIrIlTiLc1vs=;
+  b=m3BbvzmLxIlXBN6LU72De/yq6yzhLQNs1JNR2f6DtnC3f0GOGmJjruaT
+   lwTl47aeGEmZ/d7vTBS5vvRGpjzPp6Oa+XypRuTmiUVYrlrZOiGF7m3DN
+   fdN4hwQePVZtI2mC5cnvz1NedQAPgFFZZFkdl4oSB+JNjzx+8o3aFKDkD
+   Z1hizOQGCSRjOEtrYrfB7mwV2M4dKJJpe2xq1RDKumNu4yaCky9zm77rk
+   yFRBSvdo9i9vlSCVDUmBsf1NSQ4OKshHJ12XhokZ/BnO+6Op3QahMPpMZ
+   6vW7dHTP0mL6H+iTS1KaRkNAsi1cQs+jZI1Gz87WgQjsmU+LwAEMjemo1
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10620"; a="393429616"
+X-IronPort-AV: E=Sophos;i="5.97,294,1669104000"; 
+   d="scan'208";a="393429616"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2023 15:41:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10620"; a="997869134"
+X-IronPort-AV: E=Sophos;i="5.97,294,1669104000"; 
+   d="scan'208";a="997869134"
+Received: from lkp-server01.sh.intel.com (HELO 4455601a8d94) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 13 Feb 2023 15:41:39 -0800
+Received: from kbuild by 4455601a8d94 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pRiS2-00084T-1C;
+        Mon, 13 Feb 2023 23:41:38 +0000
+Date:   Tue, 14 Feb 2023 07:41:01 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ b997879e7c2e1205eaf3b546b4de696fe049cd9d
+Message-ID: <63eaca8d.p617WmN3KB5V1olS%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <15a2c023-fdfa-9543-ac36-a846e5f8a000@roeck-us.net>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Andrew, 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: b997879e7c2e1205eaf3b546b4de696fe049cd9d  m68k: /proc/hardware should depend on PROC_FS
 
-On Sun, Feb 12, 2023 at 10:37:15PM -0800, Guenter Roeck wrote:
-> On 2/12/23 17:26, Mike Rapoport wrote:
-> > On Sun, Feb 12, 2023 at 08:13:20AM -0800, Guenter Roeck wrote:
-> > > On Sun, Jan 29, 2023 at 02:42:35PM +0200, Mike Rapoport wrote:
-> > > > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> > > > 
-> > > > Every architecture that supports FLATMEM memory model defines its own
-> > > > version of pfn_valid() that essentially compares a pfn to max_mapnr.
-> > > > 
-> > > > Use mips/powerpc version implemented as static inline as a generic
-> > > > implementation of pfn_valid() and drop its per-architecture definitions.
-> > > > 
-> > > 
-> > > With this patch in the tree, sh4 and sh4eb qemu emulations no longer boot.
-> > > Reverting this patch fixes the problem.
-> > 
-> > This should be a better fix than a revert:
-> > 
-> > diff --git a/arch/sh/mm/init.c b/arch/sh/mm/init.c
-> > index 506784702430..bf1b54055316 100644
-> > --- a/arch/sh/mm/init.c
-> > +++ b/arch/sh/mm/init.c
-> > @@ -301,6 +301,7 @@ void __init paging_init(void)
-> >   	 */
-> >   	max_low_pfn = max_pfn = memblock_end_of_DRAM() >> PAGE_SHIFT;
-> >   	min_low_pfn = __MEMORY_START >> PAGE_SHIFT;
-> > +	set_max_mapnr(max_low_pfn - min_low_pfn);
-> >   	nodes_clear(node_online_map);
-> 
-> Confirmed, this fixes the problem for me.
- 
-What is your preference for this and m68k fix? Fixups on top of mm-stable
-or v3 of the entire series? 
+elapsed time: 729m
 
-> Thanks,
-> Guenter
+configs tested: 67
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+alpha                            allyesconfig
+alpha                               defconfig
+arc                              allyesconfig
+arc                                 defconfig
+arm                              allmodconfig
+arm                              allyesconfig
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+csky                                defconfig
+i386                             allyesconfig
+i386                              debian-10.3
+i386                                defconfig
+i386                 randconfig-a011-20230213
+i386                 randconfig-a012-20230213
+i386                 randconfig-a013-20230213
+i386                 randconfig-a014-20230213
+i386                 randconfig-a015-20230213
+i386                 randconfig-a016-20230213
+ia64                             allmodconfig
+ia64                                defconfig
+loongarch                        allmodconfig
+loongarch                         allnoconfig
+loongarch                           defconfig
+m68k                             allmodconfig
+m68k                                defconfig
+mips                             allmodconfig
+mips                             allyesconfig
+nios2                               defconfig
+parisc                              defconfig
+parisc64                            defconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+riscv                            allmodconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+s390                             allmodconfig
+s390                             allyesconfig
+s390                                defconfig
+sh                               allmodconfig
+sparc                               defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                            allnoconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                                  kexec
+x86_64               randconfig-a011-20230213
+x86_64               randconfig-a012-20230213
+x86_64               randconfig-a013-20230213
+x86_64               randconfig-a014-20230213
+x86_64               randconfig-a015-20230213
+x86_64               randconfig-a016-20230213
+x86_64                               rhel-8.3
+
+clang tested configs:
+i386                 randconfig-a001-20230213
+i386                 randconfig-a002-20230213
+i386                 randconfig-a003-20230213
+i386                 randconfig-a004-20230213
+i386                 randconfig-a005-20230213
+i386                 randconfig-a006-20230213
+x86_64               randconfig-a001-20230213
+x86_64               randconfig-a002-20230213
+x86_64               randconfig-a003-20230213
+x86_64               randconfig-a004-20230213
+x86_64               randconfig-a005-20230213
+x86_64               randconfig-a006-20230213
 
 -- 
-Sincerely yours,
-Mike.
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
