@@ -2,54 +2,54 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26988C677F1
-	for <linux-m68k@archiver.kernel.org>; Tue, 14 Feb 2023 08:11:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3034AC64ED6
+	for <linux-m68k@archiver.kernel.org>; Tue, 14 Feb 2023 08:12:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231851AbjBNILl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 14 Feb 2023 03:11:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47504 "EHLO
+        id S231574AbjBNIMo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 14 Feb 2023 03:12:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231843AbjBNILj (ORCPT
+        with ESMTP id S231658AbjBNIMn (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 14 Feb 2023 03:11:39 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD13014226
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Feb 2023 00:11:35 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id s13-20020a05600c45cd00b003ddca7a2bcbso5521004wmo.3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Feb 2023 00:11:35 -0800 (PST)
+        Tue, 14 Feb 2023 03:12:43 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F61321A10
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Feb 2023 00:12:41 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id m10so5818044wrn.4
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Feb 2023 00:12:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=rivosinc-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fvpaBOHRxynQVN76sYSm78ChjX1znmriOrQIpZIS+4U=;
-        b=5NlXgVjhh9vbvViub6LhSOmr8tVa6IBVEyF0zRfB83IByLzArwAM+0qw+VxsNI/v3O
-         9OWtZbrdL8JfvpiE3iq+Owwbn7WHXgFSoaFB0e4OactZe5gsW9qsGGDTPeYgJylr7/3s
-         3F4MpYflrtieowDacsXG30s/rLOj/tHYjrMAdlnpeXOJLEslGasAHVP98/8wE2cbZHi+
-         DtJVObK2BvR1NA+BCeSfpJ7/0/Xqxv3cM7UfBXMSNhytYiWpfcvUEjSNTOi8cKTr/Na1
-         dTCAdzJ5u+E++JxwEI0i4jgV9lz/WMEz6jZfUqV1tX/DrncLas0AKVlLr+8/5kI49TKM
-         W/RQ==
+        bh=dWpoWTHF+daqxuKXm60VZYbfqB4+Spk5kTFrpLEIhE4=;
+        b=Veh/EHYixy/BVr2GrHtk30P5YOPi4EHeSNqoamBT39WTsSXejEs0UE30C93HqcRFbp
+         izPwCu8TUcJCCnqCQUAY76bJWXbwocobxnV2kZxn2xUtxnjsLvfB+9HbXWhAb+VvhxwT
+         ARoUqyHz4DGmfUVA+DxyMln0z753FAek0lIkRmiTL+glPB9eA2+4Y+LhwF4bY5+c6Fj7
+         K5SkuIZ/rdq4GcLIl9I10pHsVItae5lluUj0xTVWSi285VRJODP7+Dsb+9bCPUpOm4mh
+         jpS7KbvLNAtE7HUyXRC7hgyv9H7uPIhwNYJ1Tdh6UaI1eBiLIy+6gQu11e3k700HLthN
+         ofOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fvpaBOHRxynQVN76sYSm78ChjX1znmriOrQIpZIS+4U=;
-        b=QDEru76yLmm2VkNlGEGmi8q4fLfqgaQ/ka5isyuBfzshx9gslwx6U5QMvtmVnPCcd6
-         hlNCwdXUOH8G2Lrub2OoxEIX1IMrPQYv65LaTJ0AUesEtTSso4QT+gkLdDWWW7kRQ2Ig
-         7axzDr2KQb9ZvdX7nwbYXaas7/agWrE5GsaZv5I5DDSE48IOgjT4D0V4H0Zp85WeNXyH
-         ejkMNCwrnN42FYDtC5Inh9i2gvjLxBEyYDJ+D1CyFzJVQeR0czxS8pcr9qTVaNyLcTSE
-         N5q2kjuXaSLCjtbffe5wjmYptsYc2oZWqlSyK2bVgYhbVAJP/hRgIzejvDEt1jrqj5rA
-         3eBA==
-X-Gm-Message-State: AO0yUKUBGIV5ZjOGTbu3QehTJnAGMt5yndzd/hrBbnJCKVnYz/5Tu65G
-        0NwDCdx70RXWV6tJH4iDfT9r7A==
-X-Google-Smtp-Source: AK7set/6ZO0GzOxTpCDrsVlt02f4BgyGKOm1zeoaq0l7Vu0+xmZuXJDnZSoDV/hFx/zxMjZLosjRIw==
-X-Received: by 2002:a05:600c:994:b0:3dc:5937:35a2 with SMTP id w20-20020a05600c099400b003dc593735a2mr1855049wmp.9.1676362294487;
-        Tue, 14 Feb 2023 00:11:34 -0800 (PST)
+        bh=dWpoWTHF+daqxuKXm60VZYbfqB4+Spk5kTFrpLEIhE4=;
+        b=SBgspgaEO18ir5TjUjuaxppDOWNUS/IeU782D4FV7oBSKlUvrQPVI4aWBfnugBFZpP
+         6ZE4EaTLSdhN6J3u5kW9fBOfSFoS7rB35mzeQe2cUnK0djQ93yPS34ZRQ3OKYAZS9vMA
+         8h6j2c5VphL8HBEgwFhOlaxuN/xsCaXQHmdWC29gizheZHq40vn5lEGzfwGvgIjSKQyz
+         TwchPIGwt1/KzUq5WKq+DLIVj+fe/x3dw7ZVPdA8WACwD3J7IFpm6P36FdrZqwlgQYr6
+         wYO8MF+WTklaq5jMTM0iGq58H/8NMt0lqMZwQmRVKvVv8Pff/RVbZQx+aLM8Dbv0bHU4
+         0wdg==
+X-Gm-Message-State: AO0yUKUMnYggqDp5appvJuOHT2FZuRUKj2gLKVpIPftOdumJ2RJdg+UY
+        +qdGvRgXvXgD5JGUMb9/xqr4dg==
+X-Google-Smtp-Source: AK7set+d/Wk+5hZQ8NSPgK4Evsk6EpiRcuFavYqIB7p0C+RXb/iGs1hy6ywVSaUPMKt3GJQZyND31w==
+X-Received: by 2002:a05:6000:1b01:b0:2c3:f4bd:2582 with SMTP id f1-20020a0560001b0100b002c3f4bd2582mr1210111wrz.46.1676362360196;
+        Tue, 14 Feb 2023 00:12:40 -0800 (PST)
 Received: from alex-rivos.ba.rivosinc.com (lfbn-lyo-1-450-160.w2-7.abo.wanadoo.fr. [2.7.42.160])
-        by smtp.gmail.com with ESMTPSA id r18-20020a05600c459200b003db03725e86sm18173022wmo.8.2023.02.14.00.11.33
+        by smtp.gmail.com with ESMTPSA id l4-20020adff484000000b002c569acab1esm120587wro.73.2023.02.14.00.12.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Feb 2023 00:11:34 -0800 (PST)
+        Tue, 14 Feb 2023 00:12:39 -0800 (PST)
 From:   Alexandre Ghiti <alexghiti@rivosinc.com>
 To:     Jonathan Corbet <corbet@lwn.net>,
         Richard Henderson <richard.henderson@linaro.org>,
@@ -96,9 +96,9 @@ To:     Jonathan Corbet <corbet@lwn.net>,
         sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
         linux-arch@vger.kernel.org
 Cc:     Palmer Dabbelt <palmer@rivosinc.com>
-Subject: [PATCH v3 21/24] xtensa: Remove empty <uapi/asm/setup.h>
-Date:   Tue, 14 Feb 2023 08:49:22 +0100
-Message-Id: <20230214074925.228106-22-alexghiti@rivosinc.com>
+Subject: [PATCH v3 22/24] powerpc: Remove empty <uapi/asm/setup.h>
+Date:   Tue, 14 Feb 2023 08:49:23 +0100
+Message-Id: <20230214074925.228106-23-alexghiti@rivosinc.com>
 X-Mailer: git-send-email 2.37.2
 In-Reply-To: <20230214074925.228106-1-alexghiti@rivosinc.com>
 References: <20230214074925.228106-1-alexghiti@rivosinc.com>
@@ -112,31 +112,21 @@ From: Palmer Dabbelt <palmer@rivosinc.com>
 
 Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
 ---
- arch/xtensa/include/uapi/asm/setup.h | 15 ---------------
- 1 file changed, 15 deletions(-)
- delete mode 100644 arch/xtensa/include/uapi/asm/setup.h
+ arch/powerpc/include/uapi/asm/setup.h | 5 -----
+ 1 file changed, 5 deletions(-)
+ delete mode 100644 arch/powerpc/include/uapi/asm/setup.h
 
-diff --git a/arch/xtensa/include/uapi/asm/setup.h b/arch/xtensa/include/uapi/asm/setup.h
+diff --git a/arch/powerpc/include/uapi/asm/setup.h b/arch/powerpc/include/uapi/asm/setup.h
 deleted file mode 100644
-index 6f982394684a..000000000000
---- a/arch/xtensa/include/uapi/asm/setup.h
+index f2ca747aa45b..000000000000
+--- a/arch/powerpc/include/uapi/asm/setup.h
 +++ /dev/null
-@@ -1,15 +0,0 @@
+@@ -1,5 +0,0 @@
 -/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
--/*
-- * include/asm-xtensa/setup.h
-- *
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file "COPYING" in the main directory of this archive
-- * for more details.
-- *
-- * Copyright (C) 2001 - 2005 Tensilica Inc.
-- */
+-#ifndef _UAPI_ASM_POWERPC_SETUP_H
+-#define _UAPI_ASM_POWERPC_SETUP_H
 -
--#ifndef _XTENSA_SETUP_H
--#define _XTENSA_SETUP_H
--
--#endif
+-#endif /* _UAPI_ASM_POWERPC_SETUP_H */
 -- 
 2.37.2
 
