@@ -2,58 +2,63 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74364C61DA4
-	for <linux-m68k@archiver.kernel.org>; Tue, 14 Feb 2023 09:00:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 347F3C64EC7
+	for <linux-m68k@archiver.kernel.org>; Tue, 14 Feb 2023 09:05:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbjBNJA4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 14 Feb 2023 04:00:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33954 "EHLO
+        id S232259AbjBNJFy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 14 Feb 2023 04:05:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbjBNJAz (ORCPT
+        with ESMTP id S231969AbjBNJFb (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 14 Feb 2023 04:00:55 -0500
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D025B30C1
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Feb 2023 01:00:52 -0800 (PST)
-Received: by mail-lf1-f53.google.com with SMTP id b3so22548652lfv.2
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Feb 2023 01:00:52 -0800 (PST)
+        Tue, 14 Feb 2023 04:05:31 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056DA23C74
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Feb 2023 01:04:56 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id bu23so14845148wrb.8
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Feb 2023 01:04:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KZk18aUwfr/crPnHPA/QNPK0H4tWzNL+2OmakVamCi8=;
+        b=FuqeOAA0zOBxZDuVrmVbvP8dKvoEf0MRrKKfm5NpFSyLOS1syMedD57gIqKmrL5zko
+         qHpdqh+1Qi4vk3xY+Y+b00Y3rfjpVOFAPuWKFoaNHXYX+NhTIfQLIuO5WcCVUFUjRwy7
+         xMFDBg0c617IjgdOAOjwaUswIiGz5V4UI7DfJ8LBDe8ExR38WilQf/7hqV4J4nMfP3dK
+         +NkXzLhRfCI4LG9OC+J6fTkyG/7he+OYSDs5hlMQV6UXzYF2Dol240t6thsBMIDBZKNF
+         mf4lP1Tmk2bhebKijyv57HPqf77+Ml7M9RiO9cyGc/K41l5a0L/IdrW6ctCufCt4MQrg
+         Mpqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7mNyenBvavxUdV7/ZOu+dVcpWueC+FqvBBNVPDVl8j0=;
-        b=O4cUKNbpGxcLw/nqIBCUYjTjZYvj25iFxAsJ7BRhJ2+7qy48dji7lrjANP3iEbGUu5
-         PYhMGuyG1+LmcjScDGHrxy1JWR4JP73oYtOXpfo1ypCzBKIVBBmb6xq6fbCZ5wAqmmbh
-         s0GO+MEVbU7b9lQT16CYKWdZlTuZtcoN9FJiuW58WeImpKhxrFONUcIQEvJeTG6c2YJQ
-         iUDZYXB/QU2qBNM3qOgl2i1Yl8zxSU18xsWuxqrw9eAkoHo6P4VjljrEaXjyjlRo2rFO
-         FX80Utcorhfri375SJP3Myvu1fe6uCZxUfgj/iCI5KlO19bVVksyp2jpdIem5g3Edb7N
-         cjig==
-X-Gm-Message-State: AO0yUKXSWTCcY3rPWnBquYffVAGUTeSeYbmJg4ydEvYwQ3gOFAaHzIgM
-        4fH3AHmbGsEz9jMRNr70wIcCpe514yIFCp1c
-X-Google-Smtp-Source: AK7set9UM2MtEdG2NTyJ6qftRl0tJM8GYtRuOuqw8wKB1MHSrbK/pw4IHy9q0TMhJ/Ugt52g8Bcs2A==
-X-Received: by 2002:a19:700c:0:b0:4d8:612d:ca03 with SMTP id h12-20020a19700c000000b004d8612dca03mr528247lfc.16.1676365250362;
-        Tue, 14 Feb 2023 01:00:50 -0800 (PST)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
-        by smtp.gmail.com with ESMTPSA id r26-20020ac252ba000000b004db1afe388asm1045347lfm.163.2023.02.14.01.00.46
-        for <linux-m68k@lists.linux-m68k.org>
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KZk18aUwfr/crPnHPA/QNPK0H4tWzNL+2OmakVamCi8=;
+        b=BUDj3lExw2X3l41MdfuKvQJa+MHmdUU3tp5wo92RQ78KyYFYQZxlRwu9xRAFKIVHtq
+         huq1rNm0RkQpMnkS6PVjxzHZ6/1+3n6WhDS3Yn1G0AqLu5cSxGvkq9FR74cfdwTLkpB9
+         qJGcfNSUTyzz25jyP3+0izfLXKZOg8GHzle3Emo+o2KYn3L8obUrGAY5mMHzimPALuvh
+         yCJTDJP+FLcy2mIO46QXYCqstW92PmbKW4Y0bVszQ2c3Ud0caEoQhgthEAwPVAiiGgM+
+         ZCUNgdi+60X7oW0CasnpWPpO9gu++DS+PQisIVQEKbepTJQZ410OT+z39jXVXNHmh9KL
+         iERQ==
+X-Gm-Message-State: AO0yUKUy9eICllT7zudfns+5+y5Is7q4kW7f9f2X/3YULA18972ZNAoE
+        P7udCyKQPJ9WP4s+FMA4VDUYgA==
+X-Google-Smtp-Source: AK7set+jlADAGeMno/J4b9rMaQi1OSFbGE2cOeHJ3WYCoMJkKRkmj2/GQpc+G+sprep4ghyf/aRSVg==
+X-Received: by 2002:a05:6000:8b:b0:2bd:f5bd:5482 with SMTP id m11-20020a056000008b00b002bdf5bd5482mr1310606wrx.28.1676365493352;
+        Tue, 14 Feb 2023 01:04:53 -0800 (PST)
+Received: from [192.168.30.216] ([81.0.6.76])
+        by smtp.gmail.com with ESMTPSA id d13-20020adfe88d000000b002c54f4d0f71sm7494931wrm.38.2023.02.14.01.04.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Feb 2023 01:00:46 -0800 (PST)
-Received: by mail-lj1-f171.google.com with SMTP id l3so17625403ljo.5
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Feb 2023 01:00:46 -0800 (PST)
-X-Received: by 2002:a2e:9448:0:b0:293:5264:ad89 with SMTP id
- o8-20020a2e9448000000b002935264ad89mr149587ljh.37.1676365235984; Tue, 14 Feb
- 2023 01:00:35 -0800 (PST)
+        Tue, 14 Feb 2023 01:04:52 -0800 (PST)
+Message-ID: <a018ab25-b545-1227-951b-a7b4e1c25d5e@linaro.org>
+Date:   Tue, 14 Feb 2023 10:04:48 +0100
 MIME-Version: 1.0
-References: <20230214074925.228106-1-alexghiti@rivosinc.com> <20230214074925.228106-6-alexghiti@rivosinc.com>
-In-Reply-To: <20230214074925.228106-6-alexghiti@rivosinc.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 14 Feb 2023 10:00:22 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWxgRrZqn=Ex4gSSL58gciuHp-6ye+FTR0wgw=jp=4=DA@mail.gmail.com>
-Message-ID: <CAMuHMdWxgRrZqn=Ex4gSSL58gciuHp-6ye+FTR0wgw=jp=4=DA@mail.gmail.com>
-Subject: Re: [PATCH v3 05/24] m68k: Remove COMMAND_LINE_SIZE from uapi
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.7.2
+Subject: Re: [PATCH v3 20/24] x86: Remove empty <uapi/asm/setup.h>
+Content-Language: en-US
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Jonathan Corbet <corbet@lwn.net>,
         Richard Henderson <richard.henderson@linaro.org>,
         Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
         Matt Turner <mattst88@gmail.com>,
@@ -63,9 +68,10 @@ Cc:     Jonathan Corbet <corbet@lwn.net>,
         Will Deacon <will@kernel.org>,
         Huacai Chen <chenhuacai@kernel.org>,
         WANG Xuerui <kernel@xen0n.name>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Michal Simek <monstr@monstr.eu>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
         Helge Deller <deller@gmx.de>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Nicholas Piggin <npiggin@gmail.com>,
@@ -95,29 +101,27 @@ Cc:     Jonathan Corbet <corbet@lwn.net>,
         linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
         linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
         sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-arch@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux-arch@vger.kernel.org
+Cc:     Palmer Dabbelt <palmer@rivosinc.com>
+References: <20230214074925.228106-1-alexghiti@rivosinc.com>
+ <20230214074925.228106-21-alexghiti@rivosinc.com>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <20230214074925.228106-21-alexghiti@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Feb 14, 2023 at 8:55 AM Alexandre Ghiti <alexghiti@rivosinc.com> wrote:
+On 14/2/23 08:49, Alexandre Ghiti wrote:
 > From: Palmer Dabbelt <palmer@rivosinc.com>
->
-> As far as I can tell this is not used by userspace and thus should not
-> be part of the user-visible API.
->
+> 
 > Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+> ---
+>   arch/x86/include/asm/setup.h      | 2 --
+>   arch/x86/include/uapi/asm/setup.h | 1 -
+>   2 files changed, 3 deletions(-)
+>   delete mode 100644 arch/x86/include/uapi/asm/setup.h
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
