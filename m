@@ -2,54 +2,54 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AF98C6379F
-	for <linux-m68k@archiver.kernel.org>; Tue, 14 Feb 2023 07:52:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 124E6C64ED9
+	for <linux-m68k@archiver.kernel.org>; Tue, 14 Feb 2023 07:53:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbjBNHwT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 14 Feb 2023 02:52:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49914 "EHLO
+        id S229742AbjBNHx1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 14 Feb 2023 02:53:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbjBNHwM (ORCPT
+        with ESMTP id S229914AbjBNHxI (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 14 Feb 2023 02:52:12 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA271E2A9
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Feb 2023 23:52:02 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id z13so10353761wmp.2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Feb 2023 23:52:02 -0800 (PST)
+        Tue, 14 Feb 2023 02:53:08 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8FB4206A5
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Feb 2023 23:53:04 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id m16-20020a05600c3b1000b003dc4050c94aso10844932wms.4
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Feb 2023 23:53:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=rivosinc-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8QGomR6O3S6q1h7LTqMqQGUhrMtnm9a8zoeq++2Xa7o=;
-        b=fR3zO3k5w7le7EbRP/5hPFZY4uLUH4ckgrh9M19BdH9Dv5reStNddHAA25t4N3Sesc
-         W25DNRjk2eDkyloYIh9FawqDzoeoM5Ihv9WzrU14UP5nmny0ohmEa7tB18dRaok9qcca
-         Cg0/N9fChXGeR9QMmopc9nD283PdFxnqO1RlIt/KWu0qU3CATwIBzQpWXLSYWOSHHwKx
-         jTukzmp6/vXmx9SoOo9K/bTE3PzB48TIwUC3pPgKI8wOpNsm+0N+U4RKCka40i+f5BkP
-         /FvKgQ3hYM5uSvNyCCcF0tflxn/F7hAgfgHVd6eT53WfWqqvJFa/ALNyo+E9eOUo2Ak5
-         AmQw==
+        bh=6DeOLRVEJw2sfJI9qGhq/0LGJxW9LKFzi0kTd/R8USc=;
+        b=6En8tdEtEE2yL3ckaGlXW3X8IQF8Oidpm5CEN86wGeiTSRAoieRepn+r4rC5ddJwkT
+         R7z+fNhI1jTwzCKC1qEthBZ7fy0C8HXkbpCrS0h8EKEvU+R1uQHwrcO5/Ir3XPZl0Cxi
+         qvQrVaQw2cM+ZrnU7ySm4xsvlyMxy2SCR4WjRYH73U8D5COPFpkQbsk/KyNbZp+52EPE
+         pxSn+Zf6U5s/1WbezYC7kxAfU3IlzhAkmUB3ryL/U0YPH8JDn8kDVh/7RVpooyefQALn
+         5nTTBqhr5EASjx8oFrM02zf9aUd7huvqzvu7C822aHmXHbhXiBANbSxBOxQ2g99ZQuhx
+         NDcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8QGomR6O3S6q1h7LTqMqQGUhrMtnm9a8zoeq++2Xa7o=;
-        b=UvBddLi2WPLF7wkp4oeGSv/eTIHYi09v2cLhuMFfOP3SmNjXQ25sN3TAodaftVAMrD
-         MtjxQtOK0kjAtlbzuYHRadC+d7g4SY/gcgtaVr9ylAeH9oe5UppI+xvhjQry4aRlD0LT
-         uUsksltrgF956idZiwVmJXqo0DFOVOCsrKzGchsu2dHa/uKVMoOW+RahZwBC6zqBKol6
-         n2Z2tgIdqGd94jISqf68pLRR4mC1X2BY29nxB9SC+M3aoA4Tx/sLVhmiCKx32GYvnXu1
-         U3NVI/ozbhBO87vST8a51ND6QDA9P2k/gunJ+W+j4hCayhBhAoAODlfPcDhh4L4zeyU6
-         e7OQ==
-X-Gm-Message-State: AO0yUKXorfk8850CxOUTPnru8GwxkLvNU2KscBSnh/+Adr2DlR84AYOu
-        TzZ1hQce6jLmwZCk1KwDC539yA==
-X-Google-Smtp-Source: AK7set9/2z/bngt+TO0I8mQoi50ZVTNoeKRPycliCaMbwq0WtByVc0+O7QBcGv8JCO9MxNJMRmluyA==
-X-Received: by 2002:a05:600c:4b20:b0:3dc:53da:328b with SMTP id i32-20020a05600c4b2000b003dc53da328bmr1128761wmp.14.1676361121511;
-        Mon, 13 Feb 2023 23:52:01 -0800 (PST)
+        bh=6DeOLRVEJw2sfJI9qGhq/0LGJxW9LKFzi0kTd/R8USc=;
+        b=MOJpY636BBl7hHKg5CyDTE5mQ6P7inNefxHwNjUlBk7OpzbAccqlms9Nv/nrwCkFHd
+         FZswCd5bfMQc6HXjQGhT2/Ql6+YFzfEQ/0dYqAJrCqZ4p8bgOu4ElYEi5PppWLAGHOPn
+         lGsytVg98cklYTcNcoFbZHNoCa4waTKH53TJAKIKS6rG8s9s1fKc6qPeAOf1M0m2sJGF
+         SS5NGa/p51dSB78GFoFJUBYdruN4NJzb+PDNtVg7kQGiseq8b1mpy45/ilrC5yuRZ7Gi
+         nMdVOyF6q5Spp8lNZ/K3Mef2MxffFH+RQ02Oj99DA629LV7z7IgD3qi5U39klaJizHF3
+         s+QQ==
+X-Gm-Message-State: AO0yUKVPt/6lNfrPYCSMBMd9R455b/oId4+c0LZfyMgy5ZyMWxHLeivi
+        0aOeHeFu8gIsqRQXtxQreVqA1Q==
+X-Google-Smtp-Source: AK7set98ypC2QKiebUDI9vIcpmaeqJoN5nCZYHjsCTsTkPxxmAu0Y14ja5TgZ/XhdzRBgxqEZEckPA==
+X-Received: by 2002:a05:600c:4383:b0:3dc:d5b:5f73 with SMTP id e3-20020a05600c438300b003dc0d5b5f73mr1279751wmn.19.1676361183239;
+        Mon, 13 Feb 2023 23:53:03 -0800 (PST)
 Received: from alex-rivos.ba.rivosinc.com (lfbn-lyo-1-450-160.w2-7.abo.wanadoo.fr. [2.7.42.160])
-        by smtp.gmail.com with ESMTPSA id n22-20020a05600c4f9600b003dcc82ce53fsm17982254wmq.38.2023.02.13.23.52.00
+        by smtp.gmail.com with ESMTPSA id y6-20020a05600c364600b003df7b40f99fsm18631615wmq.11.2023.02.13.23.53.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Feb 2023 23:52:01 -0800 (PST)
+        Mon, 13 Feb 2023 23:53:02 -0800 (PST)
 From:   Alexandre Ghiti <alexghiti@rivosinc.com>
 To:     Jonathan Corbet <corbet@lwn.net>,
         Richard Henderson <richard.henderson@linaro.org>,
@@ -96,9 +96,9 @@ To:     Jonathan Corbet <corbet@lwn.net>,
         sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
         linux-arch@vger.kernel.org
 Cc:     Palmer Dabbelt <palmer@rivosinc.com>
-Subject: [PATCH v3 02/24] arm64: Remove COMMAND_LINE_SIZE from uapi
-Date:   Tue, 14 Feb 2023 08:49:03 +0100
-Message-Id: <20230214074925.228106-3-alexghiti@rivosinc.com>
+Subject: [PATCH v3 03/24] arm: Remove COMMAND_LINE_SIZE from uapi
+Date:   Tue, 14 Feb 2023 08:49:04 +0100
+Message-Id: <20230214074925.228106-4-alexghiti@rivosinc.com>
 X-Mailer: git-send-email 2.37.2
 In-Reply-To: <20230214074925.228106-1-alexghiti@rivosinc.com>
 References: <20230214074925.228106-1-alexghiti@rivosinc.com>
@@ -115,36 +115,35 @@ be part of the user-visible API.
 
 Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
 ---
- arch/arm64/include/asm/setup.h      | 3 ++-
- arch/arm64/include/uapi/asm/setup.h | 2 --
- 2 files changed, 2 insertions(+), 3 deletions(-)
+ arch/arm/include/asm/setup.h      | 1 +
+ arch/arm/include/uapi/asm/setup.h | 2 --
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/arm64/include/asm/setup.h b/arch/arm64/include/asm/setup.h
-index f4af547ef54c..7ca70f883cee 100644
---- a/arch/arm64/include/asm/setup.h
-+++ b/arch/arm64/include/asm/setup.h
-@@ -4,8 +4,9 @@
- #define __ARM64_ASM_SETUP_H
+diff --git a/arch/arm/include/asm/setup.h b/arch/arm/include/asm/setup.h
+index ba0872a8dcda..8a1e4f804d1b 100644
+--- a/arch/arm/include/asm/setup.h
++++ b/arch/arm/include/asm/setup.h
+@@ -13,6 +13,7 @@
  
- #include <linux/string.h>
-+#include <linux/types.h>
+ #include <uapi/asm/setup.h>
  
--#include <uapi/asm/setup.h>
-+#define COMMAND_LINE_SIZE	2048
++#define COMMAND_LINE_SIZE 1024
  
- void *get_early_fdt_ptr(void);
- void early_fdt_map(u64 dt_phys);
-diff --git a/arch/arm64/include/uapi/asm/setup.h b/arch/arm64/include/uapi/asm/setup.h
-index 5d703888f351..f9f51e5925aa 100644
---- a/arch/arm64/include/uapi/asm/setup.h
-+++ b/arch/arm64/include/uapi/asm/setup.h
-@@ -22,6 +22,4 @@
+ #define __tag __used __section(".taglist.init")
+ #define __tagtable(tag, fn) \
+diff --git a/arch/arm/include/uapi/asm/setup.h b/arch/arm/include/uapi/asm/setup.h
+index 25ceda63b284..87a4f4af28e1 100644
+--- a/arch/arm/include/uapi/asm/setup.h
++++ b/arch/arm/include/uapi/asm/setup.h
+@@ -17,8 +17,6 @@
  
  #include <linux/types.h>
  
--#define COMMAND_LINE_SIZE	2048
+-#define COMMAND_LINE_SIZE 1024
 -
- #endif
+ /* The list ends with an ATAG_NONE node. */
+ #define ATAG_NONE	0x00000000
+ 
 -- 
 2.37.2
 
