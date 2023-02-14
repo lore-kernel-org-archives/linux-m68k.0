@@ -2,60 +2,60 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 259D5C6379F
-	for <linux-m68k@archiver.kernel.org>; Tue, 14 Feb 2023 09:06:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BAF27C61DA4
+	for <linux-m68k@archiver.kernel.org>; Tue, 14 Feb 2023 09:07:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232241AbjBNJGl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 14 Feb 2023 04:06:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38480 "EHLO
+        id S231998AbjBNJHM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 14 Feb 2023 04:07:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbjBNJGX (ORCPT
+        with ESMTP id S231989AbjBNJG7 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 14 Feb 2023 04:06:23 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB30E2413B
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Feb 2023 01:05:35 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id r2so14854205wrv.7
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Feb 2023 01:05:35 -0800 (PST)
+        Tue, 14 Feb 2023 04:06:59 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 812C1244BF
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Feb 2023 01:06:07 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id he5so2654277wmb.3
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Feb 2023 01:06:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=UN96HvyAH3A0F2+hA45TCkXOEUd+s53tiI7+aSVqnGA=;
-        b=WP20i8MASM2rCtGp2Z93dGmU3cHmgSrcGF/TuhBxt26HL8dLV8rMBWxB7sa8KBt4Tv
-         IL6JfqV+420KDLNpueRS17I87wZnHynwV7GyYH2PGB5tWYRSxhfFEZxTzExAwws6mG6P
-         iakcPY+GsXyCb0Vpx7GzOxxLT7GAjj6878tQ978Llodda2xKxo9vKpEvTImdNhhBzQyU
-         GBTQXOLeWISX7EYhUsOut4r3WpqCivpUPrmqlCqWIZ3Nn69+5MkbHE7fIJ058QvFHCQX
-         3iiN01Fw0+PayGQK0xVI5HNTUycC8oyQptZzWy5M0sPaLFpPfPKlT60lGhE8n0Vhtc/y
-         UvqA==
+        bh=7lGDtk89XYKXto3T46jdYJS4baOVf8wKH+bEbt2a13A=;
+        b=EXGAKwqdwp45M55oyQEpZ9s11tIxJVKDmyxfqRpvLJ7iwHOMdleuZVIpZf+bKKyPLr
+         WUmLzZkawn8dDugm0+h+Q8ZztTAJOf1O7RBwABByNfudNg39nvhjEZOsLMdComtJkvIa
+         mOOACAo1ti2X0i/R+p5qH9s2EuWERiT4zROiXcWcmiZbyHZPXjCCE1gXI/suledcbnSO
+         s58Z5QMsqj5quNavEg/vVJJ+jxlYMkAW8M4TmJ/UyxO8tMShf9afsiCM+8VlZQw98Tky
+         i7/1rC5LDixGnMLStzpUQU6pXp9qisKPVZ0aJqBQKPI5FELYesfgWZu690GNKAT9DMLM
+         t++w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UN96HvyAH3A0F2+hA45TCkXOEUd+s53tiI7+aSVqnGA=;
-        b=p759qssg1jRcEMcgAXjdIvL+InT9Ca3+Wr8ygedy34JugLUbPHtQMc0UTZwAjMeVVH
-         c715D++nmcd07cVCK1MtNyJ6vNGL/PIHVGcRvF5zJvsuvsnfAgnPewRZ2rXT1ru0KEK7
-         t6uuFmQRKfgB8WSrIdFHyWFhJu/4+MYAXyJU4U0PBmK0xGr5zdNLMY0FcqGRu3eqwHGl
-         QjxV9l2JdNwMk3rmBOBnB0QEWSmnApgzOb+KR9zdPrrNnIkkg2907QL23iYePcC1LUK+
-         wy01xagDfOibiCWvG9yapz+ya59NNvAP2DEr+RGla7AnDLsXX0zVffpO/2r+FExJW5tN
-         yq/g==
-X-Gm-Message-State: AO0yUKUK7E2OIteAwnicPKa76IZ1iE7rsp1WbWgbdsWHHpHAo0vSM7d0
-        vbF3thmCeUVtkYaqQe8VO2BF7w==
-X-Google-Smtp-Source: AK7set/bnATx/QinUZEv/kaFr37XQ6gSjCAmEMskILGrw/zUjdr7eN5YeojitqRWgY6y+UsZcveJ9A==
-X-Received: by 2002:adf:ef91:0:b0:2c3:e0a0:94f with SMTP id d17-20020adfef91000000b002c3e0a0094fmr1673667wro.37.1676365532856;
-        Tue, 14 Feb 2023 01:05:32 -0800 (PST)
+        bh=7lGDtk89XYKXto3T46jdYJS4baOVf8wKH+bEbt2a13A=;
+        b=pkHire1uU8Z/gdIzEOeCx+t+WtqJl7xN76ZG489k1QeKQZhQMRt6Loh8fEBRS7lMFv
+         YlGf4ppAsCpiNHTb+Sj4LQLlVr7EEibGMoilVHZckCt28YHdQVDvwZCIz9uCFPZStT0+
+         BjuibhChfMUYhIUJZ2/DedMRF/EkYCVu7S2F/EMUinCA99CpQgExB57UEQL3A1t7q32x
+         8KIqKbuA7WlT/ZyvfMFgQsguET5fg/zmyyVfySooHk9ZspMNU992uZTITXCxdPoOdZzm
+         4qFmVCyHotJ+ywdm6kuybcJBNEo4lQPaKVUqAo/cUZIsOgMpX+5W52XCEB4Y2oxqrJDl
+         pk5Q==
+X-Gm-Message-State: AO0yUKWS2V0tW4UbWSZ9b+0+b1kJxlltqFBoHxEjRE8cHCgB228tXjmU
+        6xG/Keu+AkWJ95I9xvFchhi9pw==
+X-Google-Smtp-Source: AK7set8b+gc17B9aLvg2W9QWD8SjR16ECHsQicot+4Ai+Gvau6Qhz0rnes/7lNYL7+rM27ct6ais4g==
+X-Received: by 2002:a05:600c:548c:b0:3e1:11bd:f577 with SMTP id iv12-20020a05600c548c00b003e111bdf577mr1957731wmb.26.1676365564223;
+        Tue, 14 Feb 2023 01:06:04 -0800 (PST)
 Received: from [192.168.30.216] ([81.0.6.76])
-        by smtp.gmail.com with ESMTPSA id o7-20020a056000010700b002c559def236sm3870899wrx.57.2023.02.14.01.05.29
+        by smtp.gmail.com with ESMTPSA id n16-20020a1c7210000000b003dc1d668866sm19174017wmc.10.2023.02.14.01.06.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Feb 2023 01:05:32 -0800 (PST)
-Message-ID: <34543e7d-f34f-a3bb-cb64-d47da577589e@linaro.org>
-Date:   Tue, 14 Feb 2023 10:05:29 +0100
+        Tue, 14 Feb 2023 01:06:03 -0800 (PST)
+Message-ID: <84bde3ef-4701-431c-3ae0-3f5793e1e13a@linaro.org>
+Date:   Tue, 14 Feb 2023 10:05:59 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.7.2
-Subject: Re: [PATCH v3 24/24] s390: Remove empty <uapi/asm/setup.h>
+Subject: Re: [PATCH v3 14/24] arc: Remove empty <uapi/asm/setup.h>
 Content-Language: en-US
 To:     Alexandre Ghiti <alexghiti@rivosinc.com>,
         Jonathan Corbet <corbet@lwn.net>,
@@ -104,9 +104,9 @@ To:     Alexandre Ghiti <alexghiti@rivosinc.com>,
         linux-arch@vger.kernel.org
 Cc:     Palmer Dabbelt <palmer@rivosinc.com>
 References: <20230214074925.228106-1-alexghiti@rivosinc.com>
- <20230214074925.228106-25-alexghiti@rivosinc.com>
+ <20230214074925.228106-15-alexghiti@rivosinc.com>
 From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
-In-Reply-To: <20230214074925.228106-25-alexghiti@rivosinc.com>
+In-Reply-To: <20230214074925.228106-15-alexghiti@rivosinc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -118,10 +118,10 @@ On 14/2/23 08:49, Alexandre Ghiti wrote:
 > 
 > Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
 > ---
->   arch/s390/include/asm/setup.h      | 1 -
->   arch/s390/include/uapi/asm/setup.h | 1 -
->   2 files changed, 2 deletions(-)
->   delete mode 100644 arch/s390/include/uapi/asm/setup.h
+>   arch/arc/include/asm/setup.h      | 1 -
+>   arch/arc/include/uapi/asm/setup.h | 6 ------
+>   2 files changed, 7 deletions(-)
+>   delete mode 100644 arch/arc/include/uapi/asm/setup.h
 
 Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
 
