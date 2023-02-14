@@ -2,40 +2,62 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80282C05027
-	for <linux-m68k@archiver.kernel.org>; Tue, 14 Feb 2023 09:09:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7915C6379F
+	for <linux-m68k@archiver.kernel.org>; Tue, 14 Feb 2023 09:09:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231966AbjBNJJV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 14 Feb 2023 04:09:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45130 "EHLO
+        id S231728AbjBNJJk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 14 Feb 2023 04:09:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232276AbjBNJI7 (ORCPT
+        with ESMTP id S232276AbjBNJJW (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 14 Feb 2023 04:08:59 -0500
-X-Greylist: delayed 478 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 14 Feb 2023 01:07:52 PST
-Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D1F0C655
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Feb 2023 01:07:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
-        t=1676365191; bh=i0XIzR1Y5NYJLkaxQFngDX1j91Olf/QjeHaXDd3DD/c=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=AhilTiebsZniB4h/3TCzhrMAQ0m1fI8D/hKY2T+4ArseJ+m3Ze12b64a7BZ4L0BhC
-         Cbii2w7OdAf8LC8paKh0dS4uxyxEGslyDxyzPafGMqQIX/0BH2c+SoMYy+3DyDz8fs
-         BbZrEFqt55X8c4cMx2sqOxvYHoYE3tKQfpxZHtYc=
-Received: from [100.100.57.122] (unknown [58.34.185.106])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id B491D600F8;
-        Tue, 14 Feb 2023 16:59:47 +0800 (CST)
-Message-ID: <f3db61bb-5c89-2724-769f-9d606f587f92@xen0n.name>
-Date:   Tue, 14 Feb 2023 16:59:46 +0800
+        Tue, 14 Feb 2023 04:09:22 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF6424C99
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Feb 2023 01:08:21 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id bk16so14852316wrb.11
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Feb 2023 01:08:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dJq3RRMzf3lbuS5bgQVc8NQ+nEsYjE4jNGYbXmQQw78=;
+        b=Wsp4Zlb8V2Jx4m9+tXkDNgf5Lxau03xHaG+6WGxc+G8HrcJltAE2Px1QSC5XUlVOpz
+         2Ng4jqNhjAJ4QJFwe7IYqEDhVP83rKHt0zthGOU/F+j+7d3lCfNC+HaTRTHh98F2fr7Y
+         I1aHMaHeLfbmf2lAE+TKEJNN/s8peiJT6bIUpf+6MkHhRn0aKlK4U+gulZSfiKfbW+Eu
+         wBNce34+0fI2Gh7tFdgEA0vsetKVHpBVYQ4d3RHWTRqruuVixLinnhKVyILNuRuoZPxH
+         SlDA849VfSADVOOeo3f3/Yud1fZ/0yd8ncI6fO9i/ywnDuaYO8zFs36ALYL690/jjvZv
+         Clag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dJq3RRMzf3lbuS5bgQVc8NQ+nEsYjE4jNGYbXmQQw78=;
+        b=kGX5zHAQI7/iSijqicSGYJ19JUfMBbkty7x8PpesgzhEgqA7YDfvYmG/KBgXGVnb2z
+         6rpVZNL/zf6qQ5WqLB64AaE9eeC8kcwQVpF1bDZ6ZE1EowqBuwW05PxY9egQgJnkJCJ3
+         wx9LCJhXcBjLSA//jkHEmcMEiI0z1XfHXDfYjZsPEyZrdzLmIdIWV3iIJxaNzWar05CC
+         NS2kCcjWxWPVHS9fqxlLIs+j9BSy5+y+mmfsznIdU0sFzS+iw92YR8rx6gX9HnKc6aIo
+         CAPrM0Dvn+8uZXDqpP+6QnZGkOYuoTo+D9OUI1AkkIci0mOqQhXssPpr4pY38w08waZH
+         iHUg==
+X-Gm-Message-State: AO0yUKXtUGORTyKlL2FYbb4fAr5V/7Qv+8yad1EDE+UzAt0Yjv+10+uT
+        vb7sgyKwEoL2g1dCX6o+nxzkeg==
+X-Google-Smtp-Source: AK7set9xlomseTD4h4a83sLRQq4DtapmagaqXlgE7UNo4UXcLklpQodFpnducrj9Vfa/kRz/NDHZaQ==
+X-Received: by 2002:a5d:4e01:0:b0:2c5:5a68:958 with SMTP id p1-20020a5d4e01000000b002c55a680958mr1356559wrt.33.1676365699836;
+        Tue, 14 Feb 2023 01:08:19 -0800 (PST)
+Received: from [192.168.30.216] ([81.0.6.76])
+        by smtp.gmail.com with ESMTPSA id n13-20020a05600c3b8d00b003dc434900e1sm17810977wms.34.2023.02.14.01.08.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Feb 2023 01:08:19 -0800 (PST)
+Message-ID: <f327ff48-cd50-4caa-1bea-f9906994e998@linaro.org>
+Date:   Tue, 14 Feb 2023 10:08:15 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.7.2
-Subject: Re: [PATCH v3 10/24] sparc: Remove COMMAND_LINE_SIZE from uapi
-To:     Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
+Subject: Re: [PATCH v3 08/24] parisc: Remove COMMAND_LINE_SIZE from uapi
+Content-Language: en-US
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>,
         Jonathan Corbet <corbet@lwn.net>,
         Richard Henderson <richard.henderson@linaro.org>,
         Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
@@ -45,6 +67,7 @@ To:     Sergey Shtylyov <s.shtylyov@omp.ru>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
         Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Michal Simek <monstr@monstr.eu>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -81,54 +104,27 @@ To:     Sergey Shtylyov <s.shtylyov@omp.ru>,
         linux-arch@vger.kernel.org
 Cc:     Palmer Dabbelt <palmer@rivosinc.com>
 References: <20230214074925.228106-1-alexghiti@rivosinc.com>
- <20230214074925.228106-11-alexghiti@rivosinc.com>
- <017f0b40-8021-8b3b-24d2-c70661b6b292@omp.ru>
-Content-Language: en-US
-From:   WANG Xuerui <kernel@xen0n.name>
-In-Reply-To: <017f0b40-8021-8b3b-24d2-c70661b6b292@omp.ru>
+ <20230214074925.228106-9-alexghiti@rivosinc.com>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <20230214074925.228106-9-alexghiti@rivosinc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 2023/2/14 16:50, Sergey Shtylyov wrote:
-> On 2/14/23 10:49 AM, Alexandre Ghiti wrote:
+On 14/2/23 08:49, Alexandre Ghiti wrote:
+> From: Palmer Dabbelt <palmer@rivosinc.com>
 > 
->> From: Palmer Dabbelt <palmer@rivosinc.com>
->>
->> As far as I can tell this is not used by userspace and thus should not
->> be part of the user-visible API.
->>
->> Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
->> ---
->>   arch/sparc/include/asm/setup.h      | 6 +++++-
->>   arch/sparc/include/uapi/asm/setup.h | 7 -------
->>   2 files changed, 5 insertions(+), 8 deletions(-)
->>
->> diff --git a/arch/sparc/include/asm/setup.h b/arch/sparc/include/asm/setup.h
->> index 72205684e51e..d1384ed92547 100644
->> --- a/arch/sparc/include/asm/setup.h
->> +++ b/arch/sparc/include/asm/setup.h
->> @@ -7,7 +7,11 @@
->>   
->>   #include <linux/interrupt.h>
->>   
->> -#include <uapi/asm/setup.h>
->> +#if defined(__sparc__) && defined(__arch64__)
+> As far as I can tell this is not used by userspace and thus should not
+> be part of the user-visible API.
 > 
->     Mhm, I don't think these two can be #define'd simulaneously...
+> Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+> ---
+>   arch/parisc/include/asm/setup.h      | 7 +++++++
+>   arch/parisc/include/uapi/asm/setup.h | 2 --
+>   2 files changed, 7 insertions(+), 2 deletions(-)
+>   create mode 100644 arch/parisc/include/asm/setup.h
 
-I believe it's just a SPARC-ism [1] [2] that may look strange and be 
-easily confused for __aarch64__ (notice the extra 'a')...
-
-[1]: 
-https://github.com/gcc-mirror/gcc/blob/basepoints/gcc-12/gcc/config/sparc/sparc.h#L301
-[2]: 
-https://github.com/llvm/llvm-project/blob/llvmorg-17-init/clang/lib/Basic/Targets/Sparc.cpp#L241
-
--- 
-WANG "xen0n" Xuerui
-
-Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
 
