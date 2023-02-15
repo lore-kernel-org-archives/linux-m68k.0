@@ -2,91 +2,125 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B86A7C6379F
-	for <linux-m68k@archiver.kernel.org>; Tue, 14 Feb 2023 14:41:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4AD4C64ED9
+	for <linux-m68k@archiver.kernel.org>; Wed, 15 Feb 2023 05:22:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233339AbjBNOl5 convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 14 Feb 2023 09:41:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37450 "EHLO
+        id S233010AbjBOFWb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 15 Feb 2023 00:22:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232729AbjBNOl4 (ORCPT
+        with ESMTP id S232750AbjBOFWa (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 14 Feb 2023 09:41:56 -0500
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7739927D4D;
-        Tue, 14 Feb 2023 06:41:55 -0800 (PST)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1pRwV0-002cvL-LZ; Tue, 14 Feb 2023 15:41:38 +0100
-Received: from p5b13aa49.dip0.t-ipconnect.de ([91.19.170.73] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1pRwV0-000316-EM; Tue, 14 Feb 2023 15:41:38 +0100
-Message-ID: <c9cc61db21e80b0b9304496567d0ed5feea47e25.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH 2/2] sh: initialize max_mapnr
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rich Felker <dalias@libc.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mm@kvack.org, linux-sh@vger.kernel.org
-Date:   Tue, 14 Feb 2023 15:41:37 +0100
-In-Reply-To: <20230214140729.1649961-3-rppt@kernel.org>
-References: <20230214140729.1649961-1-rppt@kernel.org>
-         <20230214140729.1649961-3-rppt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.46.4 
-MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.170.73
+        Wed, 15 Feb 2023 00:22:30 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD1273431D
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Feb 2023 21:22:25 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id s20so11839840pfe.2
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Feb 2023 21:22:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tV+nl5/6nbPk/6HA5pQX/rHuTHF5S4E9f4KJMF/h5x0=;
+        b=fhWxOvSg47bnqh1vlUb0tg8U7zRfENd11uhGOf5Jsz/ZocWHFEI68pLXo5d9vBVXvT
+         wSDFNO3/CV6QVriW/uJf7uSjBsTIo2nfhwr90ljf0Mtrv3l+ZNz03APZ/NoeYJxIi8AS
+         eT1BnG6scYkTL0mRsKAhicVLLfSox5xFSJlK+m4CcZ2f/19AZeBmn0TeLDNpHHUJ+j//
+         pNGe52xRL7NHFqYuRqi8NBAMhHiUAqm3krXcV9gB6lQ+ZUL8htkaq+hcUOto2vJWmQ/P
+         1t61ly6hek8z31+cUX+0shb1PAvYlU/KvbO9KdB05jwbmNe1/Zq0XZpFJiImeu8sqMJC
+         uFRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tV+nl5/6nbPk/6HA5pQX/rHuTHF5S4E9f4KJMF/h5x0=;
+        b=xG+e7xucgqXO8e5jfn2W9kYf9Og50a0eUkrCZ2XZwX4tVLNqC7zF5B0rT0fiNU1h58
+         BLAEHxXBJGzMLhREMTQmiB4iQPvbKZRRWKFnjILPJhMUT0wHsDkiRLzRwEfLEIliFcCh
+         ER6RejnFiSiVqlY21+U9NEpZ6vlrwpu8eChUdSFe1QZspRixYokf91d9+WCDRXalMUXf
+         BxtzZO2GRL2FWJRY/IMrgygNRj5oMMlYpYqahmUiksb/Q+NvAo4rnlFD/OVyQnKEXVCA
+         lygXrOy09IffImi1b69JYH2jfBuD1ySLJsHBGzt1AE+JFTa0VwxrYMrOa2LwdZ9Hqv6w
+         lBFQ==
+X-Gm-Message-State: AO0yUKW8s084YMMsGav0W+vNSv+pIn6i1hE68wMFPMMjdxoVTc9lhyHH
+        c4r3PEp3O/HFJq2uZf9/OKQYyw==
+X-Google-Smtp-Source: AK7set/rdrNLm8tItidqjsvagDbtl5rYMULe1MueAmQXNPzlIf4+Jxy35EVuWqAlcqe6sRrK/ndqkQ==
+X-Received: by 2002:aa7:9f85:0:b0:577:272f:fdb with SMTP id z5-20020aa79f85000000b00577272f0fdbmr600755pfr.29.1676438545117;
+        Tue, 14 Feb 2023 21:22:25 -0800 (PST)
+Received: from localhost ([135.180.226.51])
+        by smtp.gmail.com with ESMTPSA id n14-20020aa78a4e000000b005a8d396ae27sm2788868pfa.8.2023.02.14.21.22.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Feb 2023 21:22:24 -0800 (PST)
+Date:   Tue, 14 Feb 2023 21:22:24 -0800 (PST)
+X-Google-Original-Date: Tue, 14 Feb 2023 21:22:11 PST (-0800)
+Subject:     Re: [PATCH 13/19] arch/riscv: rename internal name __xchg to __arch_xchg
+In-Reply-To: <20221222114635.1251934-14-andrzej.hajda@intel.com>
+CC:     linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, andrzej.hajda@intel.com,
+        Arnd Bergmann <arnd@arndb.de>, rodrigo.vivi@intel.com,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        peterz@infradead.org, boqun.feng@gmail.com, mark.rutland@arm.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     andrzej.hajda@intel.com
+Message-ID: <mhng-e75808d7-21de-4ef8-a606-b7c652a1f38e@palmer-ri-x1c9>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, 2023-02-14 at 16:07 +0200, Mike Rapoport wrote:
-> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> 
-> sh never initializes max_mapnr which is used by the generic
-> implementation of pfn_valid().
-> 
-> Initialize max_mapnr with set_max_mapnr() in sh::paging_init().
-> 
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Fixes: e5080a967785 ("mm, arch: add generic implementation of pfn_valid() for FLATMEM")
-> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+On Thu, 22 Dec 2022 03:46:29 PST (-0800), andrzej.hajda@intel.com wrote:
+> __xchg will be used for non-atomic xchg macro.
+>
+> Signed-off-by: Andrzej Hajda <andrzej.hajda@intel.com>
 > ---
->  arch/sh/mm/init.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/sh/mm/init.c b/arch/sh/mm/init.c
-> index 506784702430..bf1b54055316 100644
-> --- a/arch/sh/mm/init.c
-> +++ b/arch/sh/mm/init.c
-> @@ -301,6 +301,7 @@ void __init paging_init(void)
->  	 */
->  	max_low_pfn = max_pfn = memblock_end_of_DRAM() >> PAGE_SHIFT;
->  	min_low_pfn = __MEMORY_START >> PAGE_SHIFT;
-> +	set_max_mapnr(max_low_pfn - min_low_pfn);
->  
->  	nodes_clear(node_online_map);
->  
+>  arch/riscv/include/asm/atomic.h  | 2 +-
+>  arch/riscv/include/asm/cmpxchg.h | 4 ++--
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/riscv/include/asm/atomic.h b/arch/riscv/include/asm/atomic.h
+> index 0dfe9d857a762b..bba472928b5393 100644
+> --- a/arch/riscv/include/asm/atomic.h
+> +++ b/arch/riscv/include/asm/atomic.h
+> @@ -261,7 +261,7 @@ c_t arch_atomic##prefix##_xchg_release(atomic##prefix##_t *v, c_t n)	\
+>  static __always_inline							\
+>  c_t arch_atomic##prefix##_xchg(atomic##prefix##_t *v, c_t n)		\
+>  {									\
+> -	return __xchg(&(v->counter), n, size);				\
+> +	return __arch_xchg(&(v->counter), n, size);			\
+>  }									\
+>  static __always_inline							\
+>  c_t arch_atomic##prefix##_cmpxchg_relaxed(atomic##prefix##_t *v,	\
+> diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cmpxchg.h
+> index 12debce235e52d..2f4726d3cfcc25 100644
+> --- a/arch/riscv/include/asm/cmpxchg.h
+> +++ b/arch/riscv/include/asm/cmpxchg.h
+> @@ -114,7 +114,7 @@
+>  					    _x_, sizeof(*(ptr)));	\
+>  })
+>
+> -#define __xchg(ptr, new, size)						\
+> +#define __arch_xchg(ptr, new, size)					\
+>  ({									\
+>  	__typeof__(ptr) __ptr = (ptr);					\
+>  	__typeof__(new) __new = (new);					\
+> @@ -143,7 +143,7 @@
+>  #define arch_xchg(ptr, x)						\
+>  ({									\
+>  	__typeof__(*(ptr)) _x_ = (x);					\
+> -	(__typeof__(*(ptr))) __xchg((ptr), _x_, sizeof(*(ptr)));	\
+> +	(__typeof__(*(ptr))) __arch_xchg((ptr), _x_, sizeof(*(ptr)));	\
+>  })
+>
+>  #define xchg32(ptr, x)							\
 
-Acked-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
