@@ -2,105 +2,83 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AC9AC636D4
-	for <linux-m68k@archiver.kernel.org>; Wed, 15 Feb 2023 07:05:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1C3DC6379F
+	for <linux-m68k@archiver.kernel.org>; Wed, 15 Feb 2023 12:16:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbjBOHFN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 15 Feb 2023 02:05:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36618 "EHLO
+        id S234007AbjBOMQk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 15 Feb 2023 07:16:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233689AbjBOHEj (ORCPT
+        with ESMTP id S233980AbjBOMQj (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 15 Feb 2023 02:04:39 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A8B135256
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Feb 2023 23:04:28 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Wed, 15 Feb 2023 07:16:39 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB192387A
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 15 Feb 2023 04:16:38 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4PGpwB16Cyz4x5V;
-        Wed, 15 Feb 2023 18:04:10 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1676444666;
-        bh=JUTkPQAgfduuGSuPZGMfN9jX5ig96F9RnCKqmUbpwX8=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=c9jhtw7yA0XcW4ZIPKehScWAnBIE+yzQpATJfnqks6S8ZJ2HNm+BGFL2euWeBOt8a
-         OhWOKbt3aSBVpTmFcz15w7a7UuhkDO05uNLtnmT22dKVJC01MB7W9tPpnBm9YQMsGK
-         RYNgu0G4CP5zVuci+an4PNoxZ0HU0g5JR/uSa4eE8zpo9iyyuHKEmh9FPQybvgw+KY
-         d58FT+wdEKfgJkLAPaL0Cw6X5qfGspbdggu7TZ1U8VrT0mS5Jx5jrv8cpfFyy5N9KE
-         2xLTt+2MVtXNE6iyfLrIZtYM6caEuBGdw8QxqlgG0gE7FVIBHx1EiyfBSI2iWVwldk
-         /dc0iTP1Vtrhw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-arch@vger.kernel.org
-Cc:     Palmer Dabbelt <palmer@rivosinc.com>
-Subject: Re: [PATCH v3 09/24] powerpc: Remove COMMAND_LINE_SIZE from uapi
-In-Reply-To: <20230214074925.228106-10-alexghiti@rivosinc.com>
-References: <20230214074925.228106-1-alexghiti@rivosinc.com>
- <20230214074925.228106-10-alexghiti@rivosinc.com>
-Date:   Wed, 15 Feb 2023 18:04:04 +1100
-Message-ID: <87357776l7.fsf@mpe.ellerman.id.au>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 367AA61B8A;
+        Wed, 15 Feb 2023 12:16:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E81DC433D2;
+        Wed, 15 Feb 2023 12:16:35 +0000 (UTC)
+Message-ID: <c990e632-4e2e-3942-0fe3-4b7a2e636ff7@linux-m68k.org>
+Date:   Wed, 15 Feb 2023 22:16:32 +1000
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH 1/2] m68k/nommu: add missing definition of ARCH_PFN_OFFSET
+Content-Language: en-US
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rich Felker <dalias@libc.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mm@kvack.org, linux-sh@vger.kernel.org
+References: <20230214140729.1649961-1-rppt@kernel.org>
+ <20230214140729.1649961-2-rppt@kernel.org>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <20230214140729.1649961-2-rppt@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Alexandre Ghiti <alexghiti@rivosinc.com> writes:
-> From: Palmer Dabbelt <palmer@rivosinc.com>
->
-> As far as I can tell this is not used by userspace and thus should not
-> be part of the user-visible API.
->
-> Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+
+On 15/2/23 00:07, Mike Rapoport wrote:
+> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> 
+> On m68k/nommu RAM does not necessarily start at 0x0 and when it does not
+> pfn_valid() uses a wrong offset into the memory map which causes silent
+> boot failures.
+> 
+> Define ARCH_PFN_OFFSET to make pfn_valid() use the correct offset.
+> 
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Fixes: d82f07f06cf8 ("m68k: use asm-generic/memory_model.h for both MMU and !MMU")
+> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+
+Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+
+
 > ---
->  arch/powerpc/include/asm/setup.h      | 2 +-
->  arch/powerpc/include/uapi/asm/setup.h | 2 --
->  2 files changed, 1 insertion(+), 3 deletions(-)
-
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
-
-cheers
+>   arch/m68k/include/asm/page_no.h | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/m68k/include/asm/page_no.h b/arch/m68k/include/asm/page_no.h
+> index 43ff6b109ebb..060e4c0e7605 100644
+> --- a/arch/m68k/include/asm/page_no.h
+> +++ b/arch/m68k/include/asm/page_no.h
+> @@ -28,6 +28,8 @@ extern unsigned long memory_end;
+>   #define	virt_addr_valid(kaddr)	(((unsigned long)(kaddr) >= PAGE_OFFSET) && \
+>   				((unsigned long)(kaddr) < memory_end))
+>   
+> +#define ARCH_PFN_OFFSET PHYS_PFN(PAGE_OFFSET_RAW)
+> +
+>   #endif /* __ASSEMBLY__ */
+>   
+>   #endif /* _M68K_PAGE_NO_H */
