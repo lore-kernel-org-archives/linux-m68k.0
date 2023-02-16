@@ -2,99 +2,109 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59B00C636CC
-	for <linux-m68k@archiver.kernel.org>; Thu, 16 Feb 2023 07:57:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21B9DC61DA4
+	for <linux-m68k@archiver.kernel.org>; Thu, 16 Feb 2023 12:56:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbjBPH5F (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 16 Feb 2023 02:57:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58028 "EHLO
+        id S229687AbjBPM4g (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 16 Feb 2023 07:56:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229760AbjBPH45 (ORCPT
+        with ESMTP id S229603AbjBPM4e (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 16 Feb 2023 02:56:57 -0500
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB89E42BE2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 15 Feb 2023 23:56:24 -0800 (PST)
-Received: by mail-qt1-f178.google.com with SMTP id h24so1275547qta.12
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 15 Feb 2023 23:56:24 -0800 (PST)
+        Thu, 16 Feb 2023 07:56:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A64503B841
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 16 Feb 2023 04:55:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1676552152;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YQju69BiqsaDeQRQ67eE8xOTlMpUfeTc3HdbBLvKdtI=;
+        b=gkkP3KVJzd4rX6j8ESMynH2sClNpp7sNYjpZxIqQNtv5z1yXtigMa0X5+V9ZMKLQHc3bny
+        AgkVscmjKgpgzYPp8IPeOkPiP8LhO2o/ZKIntCW5sjPuqWZ8QdWmm12IX1U7T/6w1Tj/gl
+        yxcbBDfLRYiOLcI9wfCb7cj5yy2bmKM=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-624-JklqYdhUNXa50P8SZv2H8Q-1; Thu, 16 Feb 2023 07:55:46 -0500
+X-MC-Unique: JklqYdhUNXa50P8SZv2H8Q-1
+Received: by mail-wm1-f71.google.com with SMTP id bg3-20020a05600c3c8300b003e1e7d3cf9fso3102911wmb.3
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 16 Feb 2023 04:55:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=VhDO2MK0kPOmCAUzaTEIi3IbK3jHyOtFPMZslsdD/VM=;
-        b=5IreMo5AsK+FjPGtH0a/ktKIVEcs6FKPjUptyFaFF5lSNIe+esJLX1qcd1uJtvOx7y
-         9UsbUr+/0VsHTZZrkGpy0qKK8f1OZKFOabwIl8EqvvRLEEJKcbAVc6EkamHwxU7yaD68
-         mP1zM8irqulR4TmdU8qTiZ8O+31cGomdARmByBLw8tP+Ys23oGnOr1jnWQqzz7OR2Kk6
-         necbore+kkhpB/Vh7aNEW9aVgJk6yRwB8eDm9vTGhh/nna4r4CHkviXnDsiT8t2NzWAD
-         7zTLbeYEyxGE457tmkHdp59KBwapRBi/mIQVU3qOHXEMQA26+vHv50RPMXjTDoaAluT/
-         w3FA==
-X-Gm-Message-State: AO0yUKXaiyoP+uC5Mde81P4tTulZLsS/qpLDng3VxAr6X7T8z9ZirDXk
-        aCW6WMXbk1yF6waJeOuReUv5NxM/PFVErQ==
-X-Google-Smtp-Source: AK7set9u+Bb2dRA2nqkaa2NJVv6OEJSpsD3UTrGtplzC2aL+n9KLQ7b4tOuhk7cx3hDivNTM1+YZcA==
-X-Received: by 2002:ac8:5b0e:0:b0:3b8:26a7:d608 with SMTP id m14-20020ac85b0e000000b003b826a7d608mr8933398qtw.19.1676534139621;
-        Wed, 15 Feb 2023 23:55:39 -0800 (PST)
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
-        by smtp.gmail.com with ESMTPSA id 5-20020a05620a048500b00706c1f7a608sm699848qkr.89.2023.02.15.23.55.39
-        for <linux-m68k@lists.linux-m68k.org>
+        bh=YQju69BiqsaDeQRQ67eE8xOTlMpUfeTc3HdbBLvKdtI=;
+        b=3ucZiAJPwavfzMvnwGXdz3onS+vPSyWBbfHxl/ya8NJcvYyTwXzk4fRB/gN5Kp1TQX
+         gJLeiORXvtWQ4l5hXV0mHs3NULuagQMYtPnHdcqYpntas97Z9UHI3V74NPypbwJ8Yigo
+         EvugDhpeIptbbitW5YWgV722OBaBcWSJmfY5kFRl2JiIftt1TNOhNf3EPVEqb+honq2l
+         w6t3+1co/EOMG3FEFKQm2I9w6VP2EQzjWrORe9mW1vAbWQscS4cA25fddv8cW0QgxmIV
+         beXnZyukfHQ+QZKEDIkQdyj2XOi0XEzYwWzGOcXNGKQXD/ji1jjVJTHK8OXhHqDdchMi
+         yUpg==
+X-Gm-Message-State: AO0yUKXg3lyFkXX0vlx8nnJZ/JBag4T/aRg7Rmh/zZ54WW8whsB4rtgY
+        JZli9cgtxmkPf+GawZWDVZIGTZZwi+g/vHzdz20QuA4iFlC75TfjWVEPz9qCYiGgq9QNcwUFQlN
+        LBrjU0u20GNYvfGlhYIGNyyIn/aOV
+X-Received: by 2002:a05:600c:3095:b0:3e0:270f:dc88 with SMTP id g21-20020a05600c309500b003e0270fdc88mr4727011wmn.33.1676552145109;
+        Thu, 16 Feb 2023 04:55:45 -0800 (PST)
+X-Google-Smtp-Source: AK7set+7vAUFLmGpK/uGMNwqyeDbGIKjmd05FOFkQfPnLLLkNoDCGfYC4U+JHMip2ipd/4/xZ0D3Eg==
+X-Received: by 2002:a05:600c:3095:b0:3e0:270f:dc88 with SMTP id g21-20020a05600c309500b003e0270fdc88mr4726994wmn.33.1676552144813;
+        Thu, 16 Feb 2023 04:55:44 -0800 (PST)
+Received: from ?IPV6:2003:cb:c708:bc00:2acb:9e46:1412:686a? (p200300cbc708bc002acb9e461412686a.dip0.t-ipconnect.de. [2003:cb:c708:bc00:2acb:9e46:1412:686a])
+        by smtp.gmail.com with ESMTPSA id i28-20020a1c541c000000b003dd1c45a7b0sm1803896wmb.23.2023.02.16.04.55.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Feb 2023 23:55:39 -0800 (PST)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-4c24993965eso13467407b3.12
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 15 Feb 2023 23:55:39 -0800 (PST)
-X-Received: by 2002:a81:73c4:0:b0:52e:ec16:6f19 with SMTP id
- o187-20020a8173c4000000b0052eec166f19mr791610ywc.33.1676534138884; Wed, 15
- Feb 2023 23:55:38 -0800 (PST)
+        Thu, 16 Feb 2023 04:55:44 -0800 (PST)
+Message-ID: <36284094-b8b7-abe2-3ac9-f504a7c8010f@redhat.com>
+Date:   Thu, 16 Feb 2023 13:55:43 +0100
 MIME-Version: 1.0
-References: <20230215000446.1655635-1-willy@infradead.org> <20230215200920.1849567-1-willy@infradead.org>
- <20230215200920.1849567-2-willy@infradead.org> <84c923f7-c60b-068d-bb06-48aea1412f53@gmail.com>
- <Y+2wdSxVgS6HmFRy@casper.infradead.org>
-In-Reply-To: <Y+2wdSxVgS6HmFRy@casper.infradead.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 16 Feb 2023 08:55:27 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUtjetsA8_cZAmyTR07CD5SbyV8aSymjd4wL5+TgW2Jgg@mail.gmail.com>
-Message-ID: <CAMuHMdUtjetsA8_cZAmyTR07CD5SbyV8aSymjd4wL5+TgW2Jgg@mail.gmail.com>
-Subject: Re: [PATCH 15/17] m68k: Implement the new page table range API
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Michael Schmitz <schmitzmic@gmail.com>, linux-mm@kvack.org,
-        linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH 1/2] m68k/nommu: add missing definition of ARCH_PFN_OFFSET
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rich Felker <dalias@libc.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mm@kvack.org, linux-sh@vger.kernel.org
+References: <20230214140729.1649961-1-rppt@kernel.org>
+ <20230214140729.1649961-2-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20230214140729.1649961-2-rppt@kernel.org>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Matthew,
+On 14.02.23 15:07, Mike Rapoport wrote:
+> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> 
+> On m68k/nommu RAM does not necessarily start at 0x0 and when it does not
+> pfn_valid() uses a wrong offset into the memory map which causes silent
+> boot failures.
+> 
+> Define ARCH_PFN_OFFSET to make pfn_valid() use the correct offset.
+> 
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Fixes: d82f07f06cf8 ("m68k: use asm-generic/memory_model.h for both MMU and !MMU")
+> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> ---
 
-On Thu, Feb 16, 2023 at 5:26 AM Matthew Wilcox <willy@infradead.org> wrote:
-> On Thu, Feb 16, 2023 at 01:59:44PM +1300, Michael Schmitz wrote:
-> > On 16/02/23 09:09, Matthew Wilcox (Oracle) wrote:
-> > > Add set_ptes(), update_mmu_cache_range(), flush_icache_pages() and
-> > > flush_dcache_folio().  I'm not entirely certain that the 040/060 case
-> > > in __flush_pages_to_ram() is correct.
-> >
-> > I'm pretty sure you need to iterate to hit each of the pages - the code as
-> > is will only push cache entries for the first page.
-> >
-> > Quoting the 040 UM:
-> >
-> > "Both instructions [cinv, cpush] allow operation on a single cache line, all
-> > cache lines in a specific page, or an entire cache, and can select one or
-> > both caches for the operation. For line and page operations, a physical
-> > address in an address register specifies the memory address."
->
-> I actually found that!  What I didn't find was how to tell if this
-> cpush insn is the one which is operating on a single cache line,
-> a single page, or the entire cache.
-
-cpushl (line), cpushp (page), cpusha (all).
-Same for cinv.
-
-Gr{oetje,eeting}s,
-
-                        Geert
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Thanks,
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+David / dhildenb
+
