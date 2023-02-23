@@ -2,142 +2,104 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A15CC6FA9D
-	for <linux-m68k@archiver.kernel.org>; Thu, 23 Feb 2023 09:54:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D885C61DA4
+	for <linux-m68k@archiver.kernel.org>; Thu, 23 Feb 2023 11:26:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234163AbjBWJyw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 23 Feb 2023 04:54:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56250 "EHLO
+        id S233333AbjBWL0y (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 23 Feb 2023 06:26:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232867AbjBWJyl (ORCPT
+        with ESMTP id S233509AbjBWL0w (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 23 Feb 2023 04:54:41 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B48C1211C0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Feb 2023 01:54:38 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id d41-20020a05600c4c2900b003e9e066550fso2302579wmp.4
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Feb 2023 01:54:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20210112.gappssmtp.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=mAI7GZiBb7iDC4DRNXr8MXcTGzYlBwIWTXO3a37K9fA=;
-        b=6rqEsmJobKimBOx+ObGs4Y9oYCoGGA+7PUJSCUc+XzhAJr7k8trhGNeL9l///zHG9h
-         zKi4GFdApLZMJxwwGKyAK5T4vZVP0aQ3XXyt/OWPp5oueU3BzBJzSR5QoLC+/Xx2iJgz
-         5hm79+32XzmlSgEMuCRgCF6jE20gfyjKVSWE2hFVc6aKlMZQREWTRqXyzaVmSBj/MhzH
-         AXlVDuu21E6Hjr/kwbOkk278Lu43ZitZTQ7OHZU1h8q5OpD5tJY9ufRMnPPJf2Rq79nz
-         v4bZ2eQSQps7BpX5yAyoX5mS+40xRdAoLwhab6GQ6F1yPaND58wp3xipYKvUJEcT++Q8
-         E7ow==
+        Thu, 23 Feb 2023 06:26:52 -0500
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7996D72B6
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Feb 2023 03:26:48 -0800 (PST)
+Received: by mail-ed1-f45.google.com with SMTP id eg37so37065829edb.12
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Feb 2023 03:26:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mAI7GZiBb7iDC4DRNXr8MXcTGzYlBwIWTXO3a37K9fA=;
-        b=cAhX9XFFqxtTy+q5GnlFtssGHbfWniAN2p9Hm3nX9nvZp0m86F/0tGsZQDy+NV9YGl
-         UkAHo88hLKpz9WJpwjgJNgDLnd7osgqaoT8vGxiNYZr8FYrjXBdi+WvNUXUy1+2pR0Wq
-         BBSwccwLVdpJ6ttd762kuvbauQRNk1dBpldiWL+8bRx6cRKaAw5u/ragw/yRDZvmOYpe
-         GUwUSV41a62m8+5eCNXmVf8Oo3kw+eORImJIp1qM6YHjeLwbdWypsz8bv21m6FsIV5XL
-         5w4kqEG9HlA9AxEF9RBA/24WJB8meYxqrD8j866cYpCdbfwyTIMnZepGesxxEkj6lKdj
-         SZ+g==
-X-Gm-Message-State: AO0yUKUf0JmabIXBnzE3UlaKXGbPN4UoO3nGIFCcIYw6cPBQcsiAHFay
-        oh+CUyQfDRxILrV93nKQriFiXvUqeUq9Zt8fPTk6ag==
-X-Google-Smtp-Source: AK7set+bh83ESZvs/5JP0HBfjTnQ76DE1v1RkcKyYbYV7gCfY3t7LNoC9ir4Jaga+QNOEzC6TCzSn38PMw2DLd3UjM4=
-X-Received: by 2002:a05:600c:3b9c:b0:3df:df03:45be with SMTP id
- n28-20020a05600c3b9c00b003dfdf0345bemr826148wms.7.1677146076791; Thu, 23 Feb
- 2023 01:54:36 -0800 (PST)
-MIME-Version: 1.0
-References: <20230214074925.228106-1-alexghiti@rivosinc.com>
- <20230214074925.228106-4-alexghiti@rivosinc.com> <Y+zXIgwO5wteLQZ5@shell.armlinux.org.uk>
- <f3e1585c-0d9d-4709-9b21-74a63d8cc9ac@app.fastmail.com>
-In-Reply-To: <f3e1585c-0d9d-4709-9b21-74a63d8cc9ac@app.fastmail.com>
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-Date:   Thu, 23 Feb 2023 10:54:26 +0100
-Message-ID: <CAHVXubgsvjxGbgM6AcxfsHDsHT0iL2pAemGMr5t8KVLKiqC3RA@mail.gmail.com>
-Subject: Re: [PATCH v3 03/24] arm: Remove COMMAND_LINE_SIZE from uapi
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Palmer Dabbelt <palmer@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zG6jwDtYpMM5i6hkPZWpE5bvQMiUV0uLFjJBPBG56go=;
+        b=Lc1eA3cLTe0w5wsL4DjpsraF5k3lOm6SFNXdC5y5JSsCljdr1IXUlbni8jKlx9mrT/
+         oGEAmz6jPTAqQBhnI5LcSkaqBwzchCi0IEkRLnpkQwW9KFj4owcb3ijI7sv/BlB4iQry
+         j7KUm2xzB2FS8gJZmZVrDtO/r5I3rTGjz0ldFFH6mohzpNgBGW7RkwnQ4+JwYTRzby14
+         gvMJZVu913hB7DPvJUeybgeqr8/0wDN1w7ESN2rXZnAG9KDNxuhplNZzjDxi8grkGXEL
+         obyWobR5WmPEaUug+QkYLOH92FCR61QVCbVGzFQFLiuFIBUzoV3MkH+UOGiLzPZGbj+6
+         Kg2A==
+X-Gm-Message-State: AO0yUKVMna9hbTHRAKPQuTbIglRx6j5eNt+YpO1pC3kYoumVabebGVJq
+        VO4BvEJcGDcPwFzFlvUjv8AHked2JiJL3g==
+X-Google-Smtp-Source: AK7set/ADZ2jwF0++W3iu+hB6yp6m1ddei2nfA9In8YoFxI3EWxJ+qRurklcmyNc3SGVehlyE5xHNQ==
+X-Received: by 2002:a05:6402:491:b0:4ad:5220:79f6 with SMTP id k17-20020a056402049100b004ad522079f6mr11111120edv.18.1677151606509;
+        Thu, 23 Feb 2023 03:26:46 -0800 (PST)
+Received: from htpc.tailac752.ts.net (2001-1c06-1802-b100-053f-2d39-17eb-0a08.cable.dynamic.v6.ziggo.nl. [2001:1c06:1802:b100:53f:2d39:17eb:a08])
+        by smtp.gmail.com with ESMTPSA id a14-20020a170906684e00b008b1815e30e3sm8418666ejs.117.2023.02.23.03.26.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Feb 2023 03:26:46 -0800 (PST)
+From:   Kars de Jong <jongk@linux-m68k.org>
+To:     linux-m68k@lists.linux-m68k.org
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kars de Jong <jongk@linux-m68k.org>
+Subject: [PATCH] m68k: fix for systems with memory at end of 32-bit address space
+Date:   Thu, 23 Feb 2023 12:23:49 +0100
+Message-Id: <20230223112349.26675-1-jongk@linux-m68k.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Arnd,
+The calculation of end addresses of memory chunks overflowed to 0 when
+a memory chunk is located at the end of 32-bit address space.
+This is the case for the HP300 architecture.
 
-On Wed, Feb 15, 2023 at 2:05 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Wed, Feb 15, 2023, at 13:59, Russell King (Oracle) wrote:
-> > On Tue, Feb 14, 2023 at 08:49:04AM +0100, Alexandre Ghiti wrote:
-> >> From: Palmer Dabbelt <palmer@rivosinc.com>
-> >>
-> >> As far as I can tell this is not used by userspace and thus should not
-> >> be part of the user-visible API.
-> >>
-> >> Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
-> >
-> > Looks good to me. What's the merge plan for this?
->
-> The easiest way is probably if I merge it through the whole
-> series through the asm-generic tree. The timing is a bit
-> unfortunate as we're just ahead of the merge window, so unless
-> we really need this in 6.3, I'd suggest that Alexandre resend
-> the series to me in two weeks with the Acks added in and I'll
-> pick it up for 6.4.
+Signed-off-by: Kars de Jong <jongk@linux-m68k.org>a
+Link: https://lore.kernel.org/linux-m68k/CACz-3rhUo5pgNwdWHaPWmz+30Qo9xCg70wNxdf7o5x-6tXq8QQ@mail.gmail.com/
+---
+ arch/m68k/mm/motorola.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Sorry for the response delay, I was waiting to see if Palmer would
-merge my KASAN patchset in 6.3 (which he does): I have to admit that
-fixing the command line size + the KASAN patchset would allow 6.3 to
-run on syzkaller, which would be nice.
+diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+index 2a375637e007..911301224078 100644
+--- a/arch/m68k/mm/motorola.c
++++ b/arch/m68k/mm/motorola.c
+@@ -437,7 +437,7 @@ void __init paging_init(void)
+ 	}
+ 
+ 	min_addr = m68k_memory[0].addr;
+-	max_addr = min_addr + m68k_memory[0].size;
++	max_addr = min_addr + m68k_memory[0].size - 1;
+ 	memblock_add_node(m68k_memory[0].addr, m68k_memory[0].size, 0,
+ 			  MEMBLOCK_NONE);
+ 	for (i = 1; i < m68k_num_memory;) {
+@@ -452,21 +452,21 @@ void __init paging_init(void)
+ 		}
+ 		memblock_add_node(m68k_memory[i].addr, m68k_memory[i].size, i,
+ 				  MEMBLOCK_NONE);
+-		addr = m68k_memory[i].addr + m68k_memory[i].size;
++		addr = m68k_memory[i].addr + m68k_memory[i].size - 1;
+ 		if (addr > max_addr)
+ 			max_addr = addr;
+ 		i++;
+ 	}
+ 	m68k_memoffset = min_addr - PAGE_OFFSET;
+-	m68k_virt_to_node_shift = fls(max_addr - min_addr - 1) - 6;
++	m68k_virt_to_node_shift = fls(max_addr - min_addr) - 6;
+ 
+ 	module_fixup(NULL, __start_fixup, __stop_fixup);
+ 	flush_icache();
+ 
+-	high_memory = phys_to_virt(max_addr);
++	high_memory = phys_to_virt(max_addr) + 1;
+ 
+ 	min_low_pfn = availmem >> PAGE_SHIFT;
+-	max_pfn = max_low_pfn = max_addr >> PAGE_SHIFT;
++	max_pfn = max_low_pfn = (max_addr >> PAGE_SHIFT) + 1;
+ 
+ 	/* Reserve kernel text/data/bss and the memory allocated in head.S */
+ 	memblock_reserve(m68k_memory[0].addr, availmem - m68k_memory[0].addr);
 
-If I don't see this merged in 6.3, I'll send another round as you
-suggested in 1 week now :)
+base-commit: b1b5209c1e80a9c9912dfe38986fabbc71a2904e
+-- 
+2.17.1
 
-Thanks!
-
-Alex
-
->
->      Arnd
