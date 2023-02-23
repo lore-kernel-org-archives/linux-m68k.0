@@ -2,213 +2,165 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8510C61DA4
-	for <linux-m68k@archiver.kernel.org>; Thu, 23 Feb 2023 13:05:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C365C64ED8
+	for <linux-m68k@archiver.kernel.org>; Thu, 23 Feb 2023 13:09:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233338AbjBWNFZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 23 Feb 2023 08:05:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59712 "EHLO
+        id S234387AbjBWNJv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 23 Feb 2023 08:09:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234271AbjBWNFY (ORCPT
+        with ESMTP id S234407AbjBWNJu (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 23 Feb 2023 08:05:24 -0500
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0661521EC
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Feb 2023 05:05:15 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed50:bcd1:971c:dc94:f8b5])
-        by xavier.telenet-ops.be with bizsmtp
-        id Qd5C2900G0HkUFX01d5C9t; Thu, 23 Feb 2023 14:05:12 +0100
-Received: from geert (helo=localhost)
-        by ramsan.of.borg with local-esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1pVBHc-009oV5-E3;
-        Thu, 23 Feb 2023 14:05:12 +0100
-Date:   Thu, 23 Feb 2023 14:05:12 +0100 (CET)
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Chuck Lever <cel@kernel.org>
-cc:     linux-nfs@vger.kernel.org, dhowells@redhat.com, simo@redhat.com,
-        linux-kselftest@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH v2 00/41] RPCSEC GSS krb5 enhancements
-In-Reply-To: <167380196429.10651.4103075913257868035.stgit@bazille.1015granger.net>
-Message-ID: <b3e0b5e6-1d0-cdb2-186c-6b4f50e0a3aa@linux-m68k.org>
-References: <167380196429.10651.4103075913257868035.stgit@bazille.1015granger.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+        Thu, 23 Feb 2023 08:09:50 -0500
+Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com [66.111.4.230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7FF15572
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Feb 2023 05:09:40 -0800 (PST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 22E3A581FE1;
+        Thu, 23 Feb 2023 08:09:39 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Thu, 23 Feb 2023 08:09:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm3; t=1677157779; x=1677164979; bh=7qpJ4fyuUV
+        Fw9F28lxEJyIMUTjdhT7HcNbFM6c+Ezgs=; b=HxQNx9y5lkyPfQ9EucQyFAYeXv
+        +wBR4Ci7rIGXcf143C5IPzx2ZqOJaNF3jH5KmZtz7FNxSNa7UoskPstWQeZigMq4
+        WxcCQ/z8bM77PvSxe3rqZoHfF3/mUHrwHyZBzZyDjUboQ9PAUWQIgKxeLmPPaybo
+        9/oRTW8VDP0nTjfHs0i59PhLTfNd8oWYpFzHOr0hyB1JlkxO557CYUNzTcaySrYq
+        HfLz3P47VseG4GU6ljvciKdgu2WLAHI0ASvuTQe3I7jJxJymgUN3BAWU2M5XA1VM
+        uz8KTTIcMwkEpMCm/wKVwxs95KyUmVotFEk351GtecxQeN6fTZ8IWLBMqI8Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; t=1677157779; x=1677164979; bh=7qpJ4fyuUVFw9F28lxEJyIMUTjdh
+        T7HcNbFM6c+Ezgs=; b=RNlma8km1MAuSRNBq9ipJtyRBtTc/ZaAqtJnrMAUd01N
+        A3vr/e+h0oVB8QM+EKHuX7FBVUPTgKtTYa2OG7uDKF7mduylXrp7vgdnX2bpO6hn
+        LS+Tf+OM77FKRpjy1JUZ2k0z0u/ejvDE6PI/VehVVhk2zuyRoIGqumjHPpY/bmKf
+        gvFjjmEnsXN8V98XE2pj0tKi9Raz1zeD5754Phu10AF+P5RZcfvQiwYY0QyK/8IM
+        Z39ZZNv3bEYOxSsbpEC/pekLv/VdBZd/iO4Lnr0WCAnTGVKHo4fDKs57IjC2i0EP
+        d1qc3PDGC8rYTjrBw1CIt1iMeMmgiwXuDce1d0Oivw==
+X-ME-Sender: <xms:kGX3Y3ous26euV3YoyiFJjq3ixwKAGVcNF8YOm8J6PvPHtK-RotuAw>
+    <xme:kGX3YxqCegrJEbUNfah7isGKrsvvXcWdV6BiyY6iP9_c7iKPA4gwBe8CDKSxsQmsp
+    iSx53Wsw9qCkCqiXG4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudekuddggeekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:kGX3Y0MZZfqfcD0VGp9DlsZ1Swf2ynZlE3p_Z8X_FJsHbAIjqOEPMA>
+    <xmx:kGX3Y65fZRpBccwKrsV3jr7sAnG0lDQI0aqT_-pKFxlTBQg3DS1ixA>
+    <xmx:kGX3Y27Vy6XJ9Ep718BXrLdXAhCs5gSA4QbBN1kcE8ycfHfyCwcofw>
+    <xmx:k2X3YyBwHlCTwxFQtAXbLNTtXf_KnKgFaDgG5zL8sv-qdX4Uj_y99g>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 24130B60086; Thu, 23 Feb 2023 08:09:36 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-172-g9a2dae1853-fm-20230213.001-g9a2dae18
+Mime-Version: 1.0
+Message-Id: <874b8076-b0d1-4aaa-bcd8-05d523060152@app.fastmail.com>
+In-Reply-To: <CAHVXubgsvjxGbgM6AcxfsHDsHT0iL2pAemGMr5t8KVLKiqC3RA@mail.gmail.com>
+References: <20230214074925.228106-1-alexghiti@rivosinc.com>
+ <20230214074925.228106-4-alexghiti@rivosinc.com>
+ <Y+zXIgwO5wteLQZ5@shell.armlinux.org.uk>
+ <f3e1585c-0d9d-4709-9b21-74a63d8cc9ac@app.fastmail.com>
+ <CAHVXubgsvjxGbgM6AcxfsHDsHT0iL2pAemGMr5t8KVLKiqC3RA@mail.gmail.com>
+Date:   Thu, 23 Feb 2023 14:09:17 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Alexandre Ghiti" <alexghiti@rivosinc.com>
+Cc:     "Russell King" <linux@armlinux.org.uk>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Richard Henderson" <richard.henderson@linaro.org>,
+        "Ivan Kokshaysky" <ink@jurassic.park.msu.ru>,
+        "Matt Turner" <mattst88@gmail.com>,
+        "Vineet Gupta" <vgupta@kernel.org>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        "Will Deacon" <will@kernel.org>,
+        "Huacai Chen" <chenhuacai@kernel.org>,
+        "WANG Xuerui" <kernel@xen0n.name>,
+        "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        "Michal Simek" <monstr@monstr.eu>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        "Helge Deller" <deller@gmx.de>,
+        "Michael Ellerman" <mpe@ellerman.id.au>,
+        "Nicholas Piggin" <npiggin@gmail.com>,
+        "Christophe Leroy" <christophe.leroy@csgroup.eu>,
+        "Paul Walmsley" <paul.walmsley@sifive.com>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        "Albert Ou" <aou@eecs.berkeley.edu>,
+        "Heiko Carstens" <hca@linux.ibm.com>,
+        "Vasily Gorbik" <gor@linux.ibm.com>,
+        "Alexander Gordeev" <agordeev@linux.ibm.com>,
+        "Christian Borntraeger" <borntraeger@linux.ibm.com>,
+        "Sven Schnelle" <svens@linux.ibm.com>,
+        "Yoshinori Sato" <ysato@users.sourceforge.jp>,
+        "Rich Felker" <dalias@libc.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+        "Dave Hansen" <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Chris Zankel" <chris@zankel.net>,
+        "Max Filippov" <jcmvbkbc@gmail.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        "Palmer Dabbelt" <palmer@rivosinc.com>
+Subject: Re: [PATCH v3 03/24] arm: Remove COMMAND_LINE_SIZE from uapi
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
- 	Hi Chuck,
-
-On Sun, 15 Jan 2023, Chuck Lever wrote:
-> The purpose of this series is to improve/harden the security
-> provided by the Linux kernel's RPCSEC GSS Kerberos 5 mechanism.
-> There are lots of clean-ups in this series, but the pertinent
-> feature is the addition of a clean deprecation path for the DES-
-> and SHA1-based encryption types in accordance with Internet BCPs.
+On Thu, Feb 23, 2023, at 10:54, Alexandre Ghiti wrote:
+> On Wed, Feb 15, 2023 at 2:05 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>>
+>> On Wed, Feb 15, 2023, at 13:59, Russell King (Oracle) wrote:
+>> > On Tue, Feb 14, 2023 at 08:49:04AM +0100, Alexandre Ghiti wrote:
+>> >> From: Palmer Dabbelt <palmer@rivosinc.com>
+>> >>
+>> >> As far as I can tell this is not used by userspace and thus should not
+>> >> be part of the user-visible API.
+>> >>
+>> >> Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+>> >
+>> > Looks good to me. What's the merge plan for this?
+>>
+>> The easiest way is probably if I merge it through the whole
+>> series through the asm-generic tree. The timing is a bit
+>> unfortunate as we're just ahead of the merge window, so unless
+>> we really need this in 6.3, I'd suggest that Alexandre resend
+>> the series to me in two weeks with the Acks added in and I'll
+>> pick it up for 6.4.
 >
-> This series disables DES-based enctypes by default, provides a
-> mechanism for disabling SHA1-based enctypes, and introduces two
-> modern enctypes that do not use deprecated crypto algorithms.
+> Sorry for the response delay, I was waiting to see if Palmer would
+> merge my KASAN patchset in 6.3 (which he does): I have to admit that
+> fixing the command line size + the KASAN patchset would allow 6.3 to
+> run on syzkaller, which would be nice.
 >
-> Not only does that improve security for Kerberos 5 users, but it
-> also prepares SunRPC for eventually switching to a shared common
-> kernel Kerberos 5 implementation, which surely will not implement
-> any deprecated encryption types (in particular, DES-based ones).
->
-> Today, MIT supports both of the newly-introduced enctypes, but
-> Heimdal does not appear to. Thus distributions can enable and
-> disable kernel enctype support to match the set of enctypes
-> supported in their user space Kerberos libraries.
->
-> Scott has been kicking the tires -- we've found no regressions with
-> the current SHA1-based enctypes, while the new ones are disabled by
-> default until we have an opportunity for interop testing. The KUnit
-> tests for the new enctypes pass and this implementation successfully
-> interoperates with itself using these enctypes. Therefore I believe
-> it to be safe to merge.
->
-> When this series gets merged, the Linux NFS community should select
-> and announce a date-certain for removal of SunRPC's DES-based
-> enctype code.
+> If I don't see this merged in 6.3, I'll send another round as you
+> suggested in 1 week now :)
 
-As this is now upstream, I gave it a try on m68k (on the ARAnyM
-emulator), using a config based on atari_defconfig:
+Hi Alexandre,
 
-     KTAP version 1
-     # Subtest: RFC 3961 tests
-     1..3
-         KTAP version 1
-         # Subtest: RFC 3961 n-fold
-         ok 1 64-fold("012345")
-         ok 2 56-fold("password")
-         ok 3 64-fold("Rough Consensus, and Running Code")
-         ok 4 168-fold("password")
-         ok 5 192-fold("MASSACHVSETTS INSTITVTE OF TECHNOLOGY")
-         ok 6 168-fold("Q")
-         ok 7 168-fold("ba")
-         ok 8 64-fold("kerberos")
-         ok 9 128-fold("kerberos")
-         ok 10 168-fold("kerberos")
-         ok 11 256-fold("kerberos")
-     # RFC 3961 n-fold: pass:11 fail:0 skip:0 total:11
-     ok 1 RFC 3961 n-fold
-         KTAP version 1
-         # Subtest: RFC 3961 key derivation
-     # RFC 3961 key derivation: ASSERTION FAILED at net/sunrpc/auth_gss/gss_krb5_test.c:52
-     Expected gk5e != ((void *)0), but
-         gk5e == 00000000
-         ((void *)0) == 00000000
-         not ok 1 des3-hmac-sha1 key derivation case 1
-     # RFC 3961 key derivation: ASSERTION FAILED at net/sunrpc/auth_gss/gss_krb5_test.c:52
-     Expected gk5e != ((void *)0), but
-         gk5e == 00000000
-         ((void *)0) == 00000000
-         not ok 2 des3-hmac-sha1 key derivation case 2
-     # RFC 3961 key derivation: ASSERTION FAILED at net/sunrpc/auth_gss/gss_krb5_test.c:52
-     Expected gk5e != ((void *)0), but
-         gk5e == 00000000
-         ((void *)0) == 00000000
-         not ok 3 des3-hmac-sha1 key derivation case 3
-     # RFC 3961 key derivation: ASSERTION FAILED at net/sunrpc/auth_gss/gss_krb5_test.c:52
-     Expected gk5e != ((void *)0), but
-         gk5e == 00000000
-         ((void *)0) == 00000000
-         not ok 4 des3-hmac-sha1 key derivation case 4
-     # RFC 3961 key derivation: ASSERTION FAILED at net/sunrpc/auth_gss/gss_krb5_test.c:52
-     Expected gk5e != ((void *)0), but
-         gk5e == 00000000
-         ((void *)0) == 00000000
-         not ok 5 des3-hmac-sha1 key derivation case 5
-     # RFC 3961 key derivation: ASSERTION FAILED at net/sunrpc/auth_gss/gss_krb5_test.c:52
-     Expected gk5e != ((void *)0), but
-         gk5e == 00000000
-         ((void *)0) == 00000000
-         not ok 6 des3-hmac-sha1 key derivation case 6
-     # RFC 3961 key derivation: ASSERTION FAILED at net/sunrpc/auth_gss/gss_krb5_test.c:52
-     Expected gk5e != ((void *)0), but
-         gk5e == 00000000
-         ((void *)0) == 00000000
-         not ok 7 des3-hmac-sha1 key derivation case 7
-     # RFC 3961 key derivation: ASSERTION FAILED at net/sunrpc/auth_gss/gss_krb5_test.c:52
-     Expected gk5e != ((void *)0), but
-         gk5e == 00000000
-         ((void *)0) == 00000000
-         not ok 8 des3-hmac-sha1 key derivation case 8
-     # RFC 3961 key derivation: ASSERTION FAILED at net/sunrpc/auth_gss/gss_krb5_test.c:52
-     Expected gk5e != ((void *)0), but
-         gk5e == 00000000
-         ((void *)0) == 00000000
-         not ok 9 des3-hmac-sha1 key derivation case 9
-     # RFC 3961 key derivation: pass:0 fail:9 skip:0 total:9
-     not ok 2 RFC 3961 key derivation
-*** CHK ***   FORMAT=2
-Current process id is 794
-BAD KERNEL TRAP: 00000000
-Modules linked in: gss_krb5_test rpcsec_gss_krb5 auth_rpcgss oid_registry kunit
-PC: [<1188975a>] rfc6803_suite+0x2/0xffffc688 [gss_krb5_test]
-SR: 2200  SP: 93025120  a2: 01b6f700
-d0: 00000002    d1: 00000010    d2: 00000014    d3: 01aebcc4
-d4: 01aebc44    d5: 00000009    a0: 11889754    a1: 01aebc44
-Process insmod (pid: 794, task=c42c6bea)
-Frame format=2 instr addr=1188975a
-Stack from 01aebbd8:
-         11963860 00000000 01aebc44 00000000 00000005 00000001 00000000 00000000
-         11889e5c 11889e34 11889be8 119644d8 1196356e 00000001 00000009 00000000
-         00000000 0000000b 01aebcfc 00000001 00000000 00000001 00000002 00000000
-         00000000 00000000 00000000 00657333 2d686d61 632d7368 6131206b 65792064
-         65726976 6174696f 6e206361 73652039 00000000 484e4f4c 4f475922 29000000
-         00000801 000c729c 005b9c58 00000000 00040cc0 00040cc0 00000000 00000000
-Call Trace: [<11963860>] kunit_run_tests+0x2f2/0x3d2 [kunit]
-  [<119644d8>] kunit_debugfs_create_suite+0x0/0x54 [kunit]
-  [<1196356e>] kunit_run_tests+0x0/0x3d2 [kunit]
-  [<000c729c>] get_page_from_freelist+0x176/0x48a
-  [<00040cc0>] __finish_swait+0x1a/0x1c
-  [<00040cc0>] __finish_swait+0x1a/0x1c
-  [<00040cc0>] __finish_swait+0x1a/0x1c
-  [<000c7126>] get_page_from_freelist+0x0/0x48a
-  [<00009752>] ssincosnan+0x10/0x26
-  [<000c6f00>] __putback_isolated_page+0x62/0x7c
-  [<119639e2>] __kunit_test_suites_init+0xa2/0xfa [kunit]
-  [<000405ea>] __wake_up+0x0/0x1c
-  [<00037774>] blocking_notifier_call_chain+0x0/0x46
-  [<11963a5a>] kunit_module_notify+0x20/0x34 [kunit]
-  [<00037404>] notifier_call_chain+0x34/0x48
-  [<0004e3b4>] module_put+0x0/0x50
-  [<000377a0>] blocking_notifier_call_chain+0x2c/0x46
-  [<0004ebd4>] do_init_module+0xd6/0x1a2
-  [<0036ec50>] memset+0x0/0x8c
-  [<00005b94>] flush_icache_range+0x0/0x30
-  [<0005009c>] load_module+0x1304/0x1368
-  [<0000eb60>] zer_rm2+0x1c/0x24
-  [<0036ed04>] __generic_copy_from_user+0x0/0x40
-  [<00010000>] EXPTBL+0x1c8/0x400
-  [<0036ec50>] memset+0x0/0x8c
-  [<003762ac>] __cond_resched+0x0/0x46
-  [<000501d4>] sys_init_module+0xd4/0xda
-  [<0000eb60>] zer_rm2+0x1c/0x24
-  [<0000536e>] buserr_c+0xc6/0x49a
-  [<00002962>] syscall+0x8/0xc
-  [<0000eb60>] zer_rm2+0x1c/0x24
-  [<0000eb60>] zer_rm2+0x1c/0x24
-  [<00010000>] EXPTBL+0x1c8/0x400
-  [<0018c00b>] nfs_direct_write_schedule_iovec+0xe3/0x1d6
+I have no plans to still pick up the series for 6.3. The patches
+all look fine to me, but it's clearly too late now. What is the
+actual dependency for KASAN, do you just need a longer command
+line or something else? If it's just the command line size,
+I would suggest that Palmer can still pick up a oneline change
+to increase it and refer to this thread in the changelog as a
+reference for why it is not an actual UAPI break.
 
-Code: 646b 1188 42f6 0000 0000 0000 0000 5246 <4320> 3638 3033 2073 7569 7465 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000
-Disabling lock debugging due to kernel taint
-
-All of gss_krb5_test, rpcsec_gss_krb5, auth_rpcgss, oid_registry, and
-kunit are modular.
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
- 						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
+     Arnd
