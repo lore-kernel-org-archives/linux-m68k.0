@@ -2,106 +2,87 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E084C677F1
-	for <linux-m68k@archiver.kernel.org>; Thu, 23 Feb 2023 21:24:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E60CC677F1
+	for <linux-m68k@archiver.kernel.org>; Thu, 23 Feb 2023 21:46:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229379AbjBWVYj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 23 Feb 2023 16:24:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38094 "EHLO
+        id S229717AbjBWVqb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 23 Feb 2023 16:46:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbjBWVYj (ORCPT
+        with ESMTP id S229566AbjBWVqa (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 23 Feb 2023 16:24:39 -0500
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44CE93028E
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Feb 2023 13:24:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1677187476; x=1708723476;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=mVoVfL5vlPHnSouV6VBABWbzjtaVYznfmLZ6wrrIyJs=;
-  b=ARbNOFfth9NJH01seMIkjhbcjWnHhhY5DHZa5R6gB+zUuSyqHvHf0f9K
-   9FN32kBf31zMFgZvv78ArwWLBqomgSZcpYFC9FK29I4oZgV55YSiiYvi/
-   RgOI+PgUXwTctAou/cm3qlh8uhT3JnYuhQTiR8Nh3UvCfxSxdk2AwY65M
-   7ny86cwBPlk+pin+xJxLWfA8p8jA2BcePsdHPn4G9yLid2jNH3hiDrZ7u
-   yootBKvyEu2BaqYrSy+gt0XP9NT2pkwwPC0fPJwCsjOCUHGeuiD4jWhFh
-   oz5MBXY7A9sB8pF5632czPC94rZ8NltmnrbRkXzFXuql7e937+D9aAf8g
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10630"; a="332006823"
-X-IronPort-AV: E=Sophos;i="5.97,322,1669104000"; 
-   d="scan'208";a="332006823"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2023 13:24:28 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10630"; a="665941632"
-X-IronPort-AV: E=Sophos;i="5.97,322,1669104000"; 
-   d="scan'208";a="665941632"
-Received: from ahajda-mobl.ger.corp.intel.com (HELO [10.213.25.22]) ([10.213.25.22])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2023 13:24:21 -0800
-Message-ID: <17f40b7c-f98d-789d-fa19-12ec077b756a@intel.com>
-Date:   Thu, 23 Feb 2023 22:24:19 +0100
+        Thu, 23 Feb 2023 16:46:30 -0500
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A97E1CAD5
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Feb 2023 13:46:28 -0800 (PST)
+Received: from frontend03.mail.m-online.net (unknown [192.168.6.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4PN66V1Z2cz1r0mM;
+        Thu, 23 Feb 2023 22:46:26 +0100 (CET)
+Received: from localhost (dynscan3.mnet-online.de [192.168.6.84])
+        by mail.m-online.net (Postfix) with ESMTP id 4PN66V0GTyz1qqlR;
+        Thu, 23 Feb 2023 22:46:26 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan3.mail.m-online.net [192.168.6.84]) (amavisd-new, port 10024)
+        with ESMTP id qoCwtRDJIKAR; Thu, 23 Feb 2023 22:46:25 +0100 (CET)
+X-Auth-Info: FHoiZ3MocW6HO/RCRo6UOQBlNyf46hv24TIzv6+8nAIIPE77w1h+ZYAKb8gtk+Ec
+Received: from igel.home (aftr-82-135-86-224.dynamic.mnet-online.de [82.135.86.224])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Thu, 23 Feb 2023 22:46:25 +0100 (CET)
+Received: by igel.home (Postfix, from userid 1000)
+        id C86982C129B; Thu, 23 Feb 2023 22:46:24 +0100 (CET)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     Chuck Lever III <chuck.lever@oracle.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Chuck Lever <cel@kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        "simo@redhat.com" <simo@redhat.com>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>
+Subject: Re: [PATCH v2 00/41] RPCSEC GSS krb5 enhancements
+References: <167380196429.10651.4103075913257868035.stgit@bazille.1015granger.net>
+        <b3e0b5e6-1d0-cdb2-186c-6b4f50e0a3aa@linux-m68k.org>
+        <D5221DC2-2A9C-43DC-AC21-FA96E7F76E5B@oracle.com>
+        <CAMuHMdVtsZ-jU5foR7V_4XeXT_0f3Nx5vfoJo5pH2jMga0SpWA@mail.gmail.com>
+        <58CCF033-58C3-4AF0-B958-BE1AAF1695F3@oracle.com>
+        <87mt54e02i.fsf@igel.home>
+        <4697cebe-5399-17f6-4580-99f3f3c86db6@gmail.com>
+X-Yow:  It's strange, but I'm only TRULY ALIVE when I'm covered in POLKA DOTS
+ and TACO SAUCE...
+Date:   Thu, 23 Feb 2023 22:46:24 +0100
+In-Reply-To: <4697cebe-5399-17f6-4580-99f3f3c86db6@gmail.com> (Michael
+        Schmitz's message of "Fri, 24 Feb 2023 07:19:28 +1300")
+Message-ID: <87cz60dphr.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.8.0
-Subject: Re: [Intel-gfx] [PATCH v5 0/7] Introduce __xchg, non-atomic xchg
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>, linux-ia64@vger.kernel.org,
-        linux-sh@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-mips@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-xtensa@linux-xtensa.org, Arnd Bergmann <arnd@arndb.de>,
-        intel-gfx@lists.freedesktop.org, linux-m68k@lists.linux-m68k.org,
-        openrisc@lists.librecores.org, loongarch@lists.linux.dev,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org
-References: <20230118153529.57695-1-andrzej.hajda@intel.com>
- <Y/ZLH5F8LA3H10aL@hirez.programming.kicks-ass.net>
-Content-Language: en-US
-From:   Andrzej Hajda <andrzej.hajda@intel.com>
-Organization: Intel Technology Poland sp. z o.o. - ul. Slowackiego 173, 80-298
- Gdansk - KRS 101882 - NIP 957-07-52-316
-In-Reply-To: <Y/ZLH5F8LA3H10aL@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 22.02.2023 18:04, Peter Zijlstra wrote:
-> On Wed, Jan 18, 2023 at 04:35:22PM +0100, Andrzej Hajda wrote:
-> 
->> Andrzej Hajda (7):
->>    arch: rename all internal names __xchg to __arch_xchg
->>    linux/include: add non-atomic version of xchg
->>    arch/*/uprobes: simplify arch_uretprobe_hijack_return_addr
->>    llist: simplify __llist_del_all
->>    io_uring: use __xchg if possible
->>    qed: use __xchg if possible
->>    drm/i915/gt: use __xchg instead of internal helper
-> 
-> Nothing crazy in here I suppose, I somewhat wonder why you went through
-> the trouble, but meh.
+On Feb 24 2023, Michael Schmitz wrote:
 
-If you are asking why I have proposed this patchset, then the answer is 
-simple, 1st I've tried to find a way to move internal i915 helper to 
-core (see patch 7).
-Then I was looking for possible other users of this helper. And 
-apparently there are many of them, patches 3-7 shows some.
+> Hi Andreas,
+>
+> On 24/02/23 06:57, Andreas Schwab wrote:
+>> On Feb 23 2023, Chuck Lever III wrote:
+>>
+>>> Assuming that "PC:" on m68k is the same as "RIP:" on x86...
+>>> this does not make sense. rfc6803_suite is not a function.
+>> That can mean that something has overwritten the return PC.
+>>
+> Wouldn't you expect a format error in that case?
 
+What format error do you mean?  There was a chk exception, presumably
+because the first word of rfc6803_suite happens to match the encoding of
+the chk insn.
 
-> 
-> You want me to take this through te locking tree (for the next cycle,
-> not this one) where I normally take atomic things or does someone else
-> want this?
-
-If you could take it I will be happy.
-
-Regards
-Andrzej
-
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
