@@ -2,235 +2,73 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D97CC61DA4
-	for <linux-m68k@archiver.kernel.org>; Thu, 23 Feb 2023 16:52:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0485C636D6
+	for <linux-m68k@archiver.kernel.org>; Thu, 23 Feb 2023 17:58:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229479AbjBWQwi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 23 Feb 2023 11:52:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49874 "EHLO
+        id S229478AbjBWR6F (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 23 Feb 2023 12:58:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjBWQwh (ORCPT
+        with ESMTP id S229477AbjBWR6E (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 23 Feb 2023 11:52:37 -0500
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B5E55078
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Feb 2023 08:52:35 -0800 (PST)
-Received: by mail-qt1-f178.google.com with SMTP id h19so8709975qtk.7
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Feb 2023 08:52:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5OmSVuAip9wO3Gha1ZZSovxIPIgEgsLE50VtSIFDnNA=;
-        b=OhXDKKw0Dt8Z4aqzufgazKUPj5Bm6DJYVLWYLL45VYnkKHl2Llr5VvdPtotESUc2GJ
-         LorRjtP8tle2D4Gr9KAZZI5XIa4Zh5Xg8UlfTRHG8Pcok7QxiWKSvNF/RT05Wgd3Lw6P
-         OH7dgSB6jfsEVM1T/ay50D4nMjuraSEGK3gR6wqYBSwsrNHarA8dDCQyPjhViI7GWxVn
-         ImD6YeYkDtQMCZfZntXLyVSRnwOyk1OOewF1RaFFl2RKn7aX6F0PBPhWMQQkqPVJ2/Wy
-         BgmLux8y3+i+kbOmc6uydW7nxjph7aSypG+PztLzSZeT5aVZDGI5yqoye9E3roeADfiH
-         uysQ==
-X-Gm-Message-State: AO0yUKULZe3vYdJrgShAchcmrIS90a69aJ7udtaA9lPS/6Ns7m6WvXYC
-        2Kmi+VhGCRy/JKCFfdkGpvB12WJb5cS2ow==
-X-Google-Smtp-Source: AK7set+UzwBUdXbtpCe4eERZ0qobcQBad7Ptw6lHy7GXFjlhOqwI4P9PlO4NSPPDn30jD6uM9cQ11w==
-X-Received: by 2002:ac8:7f42:0:b0:3ba:1398:c68d with SMTP id g2-20020ac87f42000000b003ba1398c68dmr20929743qtk.16.1677171153851;
-        Thu, 23 Feb 2023 08:52:33 -0800 (PST)
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
-        by smtp.gmail.com with ESMTPSA id j64-20020a37b943000000b007422fd3009esm4385902qkf.20.2023.02.23.08.52.33
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Feb 2023 08:52:33 -0800 (PST)
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5384ff97993so76040617b3.2
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Feb 2023 08:52:33 -0800 (PST)
-X-Received: by 2002:a5b:68c:0:b0:9a0:d4d:5462 with SMTP id j12-20020a5b068c000000b009a00d4d5462mr2374659ybq.7.1677171152895;
- Thu, 23 Feb 2023 08:52:32 -0800 (PST)
-MIME-Version: 1.0
-References: <167380196429.10651.4103075913257868035.stgit@bazille.1015granger.net>
- <b3e0b5e6-1d0-cdb2-186c-6b4f50e0a3aa@linux-m68k.org> <D5221DC2-2A9C-43DC-AC21-FA96E7F76E5B@oracle.com>
- <CAMuHMdVtsZ-jU5foR7V_4XeXT_0f3Nx5vfoJo5pH2jMga0SpWA@mail.gmail.com> <58CCF033-58C3-4AF0-B958-BE1AAF1695F3@oracle.com>
-In-Reply-To: <58CCF033-58C3-4AF0-B958-BE1AAF1695F3@oracle.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 23 Feb 2023 17:52:20 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUG5cthYp3u6GeYqTqMaNgW0Ernq_ce0AZ22rgFQ5J24A@mail.gmail.com>
-Message-ID: <CAMuHMdUG5cthYp3u6GeYqTqMaNgW0Ernq_ce0AZ22rgFQ5J24A@mail.gmail.com>
-Subject: Re: [PATCH v2 00/41] RPCSEC GSS krb5 enhancements
+        Thu, 23 Feb 2023 12:58:04 -0500
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B9C2BEC9
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Feb 2023 09:58:01 -0800 (PST)
+Received: from frontend03.mail.m-online.net (unknown [192.168.6.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4PN12v2tLjz1r15j;
+        Thu, 23 Feb 2023 18:57:59 +0100 (CET)
+Received: from localhost (dynscan3.mnet-online.de [192.168.6.84])
+        by mail.m-online.net (Postfix) with ESMTP id 4PN12v1P5vz1qqlR;
+        Thu, 23 Feb 2023 18:57:59 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan3.mail.m-online.net [192.168.6.84]) (amavisd-new, port 10024)
+        with ESMTP id swIsH1ONtk6g; Thu, 23 Feb 2023 18:57:58 +0100 (CET)
+X-Auth-Info: 1HGqSa/xXAv0pLUXFyDppgnfnh819edct4rbXVxL1P4Kkf6OeDFZTxemhhugNskc
+Received: from igel.home (aftr-82-135-86-224.dynamic.mnet-online.de [82.135.86.224])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Thu, 23 Feb 2023 18:57:58 +0100 (CET)
+Received: by igel.home (Postfix, from userid 1000)
+        id EC43C2C154C; Thu, 23 Feb 2023 18:57:57 +0100 (CET)
+From:   Andreas Schwab <schwab@linux-m68k.org>
 To:     Chuck Lever III <chuck.lever@oracle.com>
-Cc:     Chuck Lever <cel@kernel.org>,
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Chuck Lever <cel@kernel.org>,
         Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
         David Howells <dhowells@redhat.com>,
         "simo@redhat.com" <simo@redhat.com>,
         "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
         "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v2 00/41] RPCSEC GSS krb5 enhancements
+References: <167380196429.10651.4103075913257868035.stgit@bazille.1015granger.net>
+        <b3e0b5e6-1d0-cdb2-186c-6b4f50e0a3aa@linux-m68k.org>
+        <D5221DC2-2A9C-43DC-AC21-FA96E7F76E5B@oracle.com>
+        <CAMuHMdVtsZ-jU5foR7V_4XeXT_0f3Nx5vfoJo5pH2jMga0SpWA@mail.gmail.com>
+        <58CCF033-58C3-4AF0-B958-BE1AAF1695F3@oracle.com>
+X-Yow:  BEEP-BEEP!!  I'm a '49 STUDEBAKER!!
+Date:   Thu, 23 Feb 2023 18:57:57 +0100
+In-Reply-To: <58CCF033-58C3-4AF0-B958-BE1AAF1695F3@oracle.com> (Chuck Lever,
+        III's message of "Thu, 23 Feb 2023 16:18:44 +0000")
+Message-ID: <87mt54e02i.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Chuck,
+On Feb 23 2023, Chuck Lever III wrote:
 
-On Thu, Feb 23, 2023 at 5:19 PM Chuck Lever III <chuck.lever@oracle.com> wrote:
-> > On Feb 23, 2023, at 10:16 AM, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Thu, Feb 23, 2023 at 3:00 PM Chuck Lever III <chuck.lever@oracle.com> wrote:
-> >>> On Feb 23, 2023, at 8:05 AM, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> >>> On Sun, 15 Jan 2023, Chuck Lever wrote:
-> >>>> The purpose of this series is to improve/harden the security
-> >>>> provided by the Linux kernel's RPCSEC GSS Kerberos 5 mechanism.
-> >>>> There are lots of clean-ups in this series, but the pertinent
-> >>>> feature is the addition of a clean deprecation path for the DES-
-> >>>> and SHA1-based encryption types in accordance with Internet BCPs.
-> >>>>
-> >>>> This series disables DES-based enctypes by default, provides a
-> >>>> mechanism for disabling SHA1-based enctypes, and introduces two
-> >>>> modern enctypes that do not use deprecated crypto algorithms.
-> >>>>
-> >>>> Not only does that improve security for Kerberos 5 users, but it
-> >>>> also prepares SunRPC for eventually switching to a shared common
-> >>>> kernel Kerberos 5 implementation, which surely will not implement
-> >>>> any deprecated encryption types (in particular, DES-based ones).
-> >>>>
-> >>>> Today, MIT supports both of the newly-introduced enctypes, but
-> >>>> Heimdal does not appear to. Thus distributions can enable and
-> >>>> disable kernel enctype support to match the set of enctypes
-> >>>> supported in their user space Kerberos libraries.
-> >>>>
-> >>>> Scott has been kicking the tires -- we've found no regressions with
-> >>>> the current SHA1-based enctypes, while the new ones are disabled by
-> >>>> default until we have an opportunity for interop testing. The KUnit
-> >>>> tests for the new enctypes pass and this implementation successfully
-> >>>> interoperates with itself using these enctypes. Therefore I believe
-> >>>> it to be safe to merge.
-> >>>>
-> >>>> When this series gets merged, the Linux NFS community should select
-> >>>> and announce a date-certain for removal of SunRPC's DES-based
-> >>>> enctype code.
-> >>>
-> >>> As this is now upstream, I gave it a try on m68k (on the ARAnyM
-> >>> emulator), using a config based on atari_defconfig:
-> >>>
-> >>>   KTAP version 1
-> >>>   # Subtest: RFC 3961 tests
-> >>>   1..3
-> >>>       KTAP version 1
-> >>>       # Subtest: RFC 3961 n-fold
-> >>>       ok 1 64-fold("012345")
-> >>>       ok 2 56-fold("password")
-> >>>       ok 3 64-fold("Rough Consensus, and Running Code")
-> >>>       ok 4 168-fold("password")
-> >>>       ok 5 192-fold("MASSACHVSETTS INSTITVTE OF TECHNOLOGY")
-> >>>       ok 6 168-fold("Q")
-> >>>       ok 7 168-fold("ba")
-> >>>       ok 8 64-fold("kerberos")
-> >>>       ok 9 128-fold("kerberos")
-> >>>       ok 10 168-fold("kerberos")
-> >>>       ok 11 256-fold("kerberos")
-> >>>   # RFC 3961 n-fold: pass:11 fail:0 skip:0 total:11
-> >>>   ok 1 RFC 3961 n-fold
-> >>>       KTAP version 1
-> >>>       # Subtest: RFC 3961 key derivation
-> >>>   # RFC 3961 key derivation: ASSERTION FAILED at net/sunrpc/auth_gss/gss_krb5_test.c:52
-> >>>   Expected gk5e != ((void *)0), but
-> >>>       gk5e == 00000000
-> >>>       ((void *)0) == 00000000
-> >>>       not ok 1 des3-hmac-sha1 key derivation case 1
-> >>
-> >> Geert, thanks for testing GSS on m68k.
-> >>
-> >> This assertion failure means that support for the encryption types
-> >> specified in RFC 3961 is not built into your kernel.
-> >>
-> >> The new Kunit tests don't work unless everything is built in --
-> >>
-> >> there's a net/sunrpc/.kunitconfig that provides the supported
-> >> build configuration for running them. I typically use a command
-> >> line similar to this:
-> >>
-> >> ./tools/testing/kunit/kunit.py run --raw_output=all --kunitconfig ./net/sunrpc/.kunitconfig
-> >
-> > Aren't modular crypto algorithms auto-loaded when needed?
->
-> The ciphers and digests are handled via the kernel's crypto
-> manager. They will indeed get auto-loaded by SunRPC's GSS on
-> demand, but of course, the set of algorithms used by GSS
-> has to be enabled by Kconfig options first.
->
-> SunRPC GSS has a set of Kerberos encryption types that make
-> use of individual ciphers and digests. Those have never been
-> modularized, and they are each enabled by Kconfig options,
-> as explained below.
->
->
-> > In general, it's a good idea to make the tests test only functionality
-> > that is available, either through "depends on" in Kconfig, or "#if
-> > IS_ENABLED(...)".
->
-> An earlier version of this patch set did just that. It became
-> quite a mess. That's why I chose the .kunitconfig approach.
->
->
-> > Of course that does not preclude providing a
-> > .kunitconfig to enable and test everything.
->
-> The suite should test every Kerberos encryption type that
-> SunRPC GSS has support for. There's no reason to disable a
-> particular encryption type when running the unit tests...
-> unless I'm missing something?
+> Assuming that "PC:" on m68k is the same as "RIP:" on x86...
+> this does not make sense. rfc6803_suite is not a function.
 
-That depends: do you want to test everything, or do you want to test
-(only) the functionality you enabled for your product?
-I tend to enable all modular tests, so I can use insmod to run any
-relevant test when needed.  If a test suddenly needs something that
-is not enabled, you can not run the test without enabling extra
-functionality (which you may not want to enable).
-
-> > Note that net/sunrpc/.kunitconfig has
-> >
-> >    CONFIG_RPCSEC_GSS_KRB5_KUNIT_TEST=y
-> >
-> > which needs KUNIT_ALL_TESTS=y, else it will still be modular.
-> >
-> > First, I tried getting my modular setup working.
-> > After enabling:
-> >    CONFIG_RPCSEC_GSS_KRB5_ENCTYPES_DES=y
->
-> And CONFIG_RPCSEC_GSS_KRB5_ENCTYPES_AES_SHA1=y ??
-
-Sure, I had that enabled, thanks to "default y".
-
-> > Third, with net/sunrpc/.kunitconfig, and
-> > CONFIG_RPCSEC_GSS_KRB5_KUNIT_TEST=y:
-
-[...]
-
-> > Unable to handle kernel access at virtual address af06da84
-
-> > I.e. a slightly different crash.
-> > As the difference between the two crashes is modular vs. builtin,
-> > this looks like an out-of-bound access in the test.
->
-> Why not run the test suite just as I suggested?
-
-I don't think I can use tools/testing/kunit/kunit.py to run the tests
-when cross-compiling my kernel?
-
-My third case (adding options from net/sunrpc/.kunitconfig, and
-setting CONFIG_RPCSEC_GSS_KRB5_KUNIT_TEST=y) should be equivalent to
-that, right?
-
-> Since I cannot reproduce this crash and do not have an m68k
-> platform available to me, I will need you to continue to
-> pursue the issue. I'll help as much as I can.
->
-> I would very much like to see successful test results on
-> non-x86 platforms.
-
-Thanks, I'll give it a try on some other platforms, later...
-
-Gr{oetje,eeting}s,
-
-                        Geert
+That can mean that something has overwritten the return PC.
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
