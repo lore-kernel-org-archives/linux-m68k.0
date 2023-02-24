@@ -2,112 +2,114 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD310C61DA4
-	for <linux-m68k@archiver.kernel.org>; Thu, 23 Feb 2023 22:17:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF05CC61DA4
+	for <linux-m68k@archiver.kernel.org>; Fri, 24 Feb 2023 00:40:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229436AbjBWWRd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 23 Feb 2023 17:17:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50852 "EHLO
+        id S229436AbjBXAki (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 23 Feb 2023 19:40:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbjBWWRc (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 23 Feb 2023 17:17:32 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3471D16AD6
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Feb 2023 14:17:31 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id z20-20020a17090a8b9400b002372d7f823eso789010pjn.4
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Feb 2023 14:17:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ja6bwsbBgKbtI7vlqB2IDNzFjfg8afhxdND/pliSXOQ=;
-        b=lyYCffrF7Uws9PpIM406nmk26TXxEk4SXJltBAPXgZmk0f8s8wuDHDx7973kHFbfss
-         1u/eXC6WXJv1ifth+4+NS+Mj7gsgIQykvergPg7A4ImewQOH2Ed0xrz4hiTqQqjIPtnD
-         s14lfgNOTnb7Oogsh8PtHQKesA1GWyzPhwKbGX00lraNHBQ+1PLJEOkiJaJfP2bC25cT
-         d2YI8gXb5eKn1MzpTMw4aFS6brnyGLfQr6a9hH7cJhZBJ72Up0xNX5MI4b/xlbyPs73e
-         jwEvUx6Im7caAcXjwuK/h+Bvm6/DrUGQfKMblvu1Ixn+aG1ZD5R2rHoa16ostnpqWzfx
-         J8DQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ja6bwsbBgKbtI7vlqB2IDNzFjfg8afhxdND/pliSXOQ=;
-        b=jT5uIFzGld/TKaMQfo4UhrHGMnShB9AjIZVC1dkyZ+5gIHmg6FCke9RVfIO3mgHkrz
-         ZnttjaBaCPbaeOkO595mDO4eG9Nw85bVpOrdMlPfQCoqH9R6K0qfuIZLnfCb+TV7Z2U6
-         W/kz8lE/mW6FS033c391CwvgeUQtsGTtqebFPh0+ZP8mJw3/q6ws4dhXBTqBnMYwenJr
-         i/A34CR6m2KvowyFFFVoHY8uYQq9uqf0GlxKhXX6wFF9doKjgDSLbyxfVW3C5m1lhKTm
-         tiLzhecR1d+8tAPqJ3sWxauMxf5V31ZGJnFXixHJgqiigOylEXnrJWYW6HJtXrfgZl7S
-         pWHw==
-X-Gm-Message-State: AO0yUKVlcWvKJ2BObYVBOdBjFrBBKJTQxrRIQ4RESTRtsny3h74b3M+7
-        mnHsRHKVXxdpi9dJKbRC6zk=
-X-Google-Smtp-Source: AK7set8vjVJGC9vpvHJKpESrO3RwjyD31nlnCbUhzjRzLJxkOj44LW9ApKlEiv26/S7KmWAjpCm7Fg==
-X-Received: by 2002:a17:903:228d:b0:19b:33c0:4097 with SMTP id b13-20020a170903228d00b0019b33c04097mr14081775plh.27.1677190650595;
-        Thu, 23 Feb 2023 14:17:30 -0800 (PST)
-Received: from ?IPV6:2001:df0:0:200c:5169:eed6:c2d0:93c3? ([2001:df0:0:200c:5169:eed6:c2d0:93c3])
-        by smtp.gmail.com with ESMTPSA id q13-20020a170902a3cd00b0019cc88bee09sm943353plb.58.2023.02.23.14.17.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Feb 2023 14:17:30 -0800 (PST)
-Message-ID: <61e478c7-6685-4702-71ac-a4fa2643d3d8@gmail.com>
-Date:   Fri, 24 Feb 2023 11:17:24 +1300
+        with ESMTP id S229484AbjBXAkh (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 23 Feb 2023 19:40:37 -0500
+X-Greylist: delayed 524 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 23 Feb 2023 16:40:35 PST
+Received: from welho-filter2.welho.com (welho-filter2b.welho.com [83.102.41.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F2354A29
+        for <linux-m68k@vger.kernel.org>; Thu, 23 Feb 2023 16:40:35 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by welho-filter2.welho.com (Postfix) with ESMTP id 600BC23674;
+        Fri, 24 Feb 2023 02:31:49 +0200 (EET)
+X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
+Received: from welho-smtp2.welho.com ([IPv6:::ffff:83.102.41.85])
+        by localhost (welho-filter2.welho.com [::ffff:83.102.41.24]) (amavisd-new, port 10024)
+        with ESMTP id EBLHPSOz0-Zd; Fri, 24 Feb 2023 02:31:48 +0200 (EET)
+Received: from [192.168.0.20] (89-27-41-239.bb.dnainternet.fi [89.27.41.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by welho-smtp2.welho.com (Postfix) with ESMTPSA id B01BE72;
+        Fri, 24 Feb 2023 02:31:43 +0200 (EET)
+Message-ID: <2f051c9f-4563-6f0c-c0f6-efc349731ea3@helsinkinet.fi>
+Date:   Fri, 24 Feb 2023 02:31:43 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v2 00/41] RPCSEC GSS krb5 enhancements
+ Thunderbird/102.8.0
+Subject: Re: [PATCH RFC v1] m68k: kernel/traps.c - only force 030 bus error if
+ PC not in exception table
 Content-Language: en-US
-To:     Andreas Schwab <schwab@linux-m68k.org>
-Cc:     Chuck Lever III <chuck.lever@oracle.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Chuck Lever <cel@kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        "simo@redhat.com" <simo@redhat.com>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>
-References: <167380196429.10651.4103075913257868035.stgit@bazille.1015granger.net>
- <b3e0b5e6-1d0-cdb2-186c-6b4f50e0a3aa@linux-m68k.org>
- <D5221DC2-2A9C-43DC-AC21-FA96E7F76E5B@oracle.com>
- <CAMuHMdVtsZ-jU5foR7V_4XeXT_0f3Nx5vfoJo5pH2jMga0SpWA@mail.gmail.com>
- <58CCF033-58C3-4AF0-B958-BE1AAF1695F3@oracle.com> <87mt54e02i.fsf@igel.home>
- <4697cebe-5399-17f6-4580-99f3f3c86db6@gmail.com> <87cz60dphr.fsf@igel.home>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <87cz60dphr.fsf@igel.home>
+To:     Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org,
+        geert@linux-m68k.org
+Cc:     Finn Thain <ftain@linux-m68k.org>,
+        Andreas Schwab <schwab@linux-m68k.org>
+References: <20230222195021.6683-1-schmitzmic@gmail.com>
+From:   Eero Tamminen <oak@helsinkinet.fi>
+In-Reply-To: <20230222195021.6683-1-schmitzmic@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Andreas,
+Hi Michael,
 
-On 24/02/23 10:46, Andreas Schwab wrote:
-> On Feb 24 2023, Michael Schmitz wrote:
->
->> Hi Andreas,
->>
->> On 24/02/23 06:57, Andreas Schwab wrote:
->>> On Feb 23 2023, Chuck Lever III wrote:
->>>
->>>> Assuming that "PC:" on m68k is the same as "RIP:" on x86...
->>>> this does not make sense. rfc6803_suite is not a function.
->>> That can mean that something has overwritten the return PC.
->>>
->> Wouldn't you expect a format error in that case?
-> What format error do you mean?  There was a chk exception, presumably
-> because the first word of rfc6803_suite happens to match the encoding of
-> the chk insn.
-
-I got confused by 'return PC' and thought the exception had happened on 
-a return instruction (but even that would be unlikely - only rte can 
-generate a format error ...).
-
-Your explanation is more likely to be correct. Would that Geert had 
-copied the code snipped from the log.
-
-Cheers,
-
-     Michael
+On 22.2.2023 21.50, Michael Schmitz wrote:
+> __get_kernel_nofault() does copy data in supervisor mode when
+> forcing a task backtrace dump through the sysrq trigger.
+> 
+> Our 030 bus error handler is ill equipped to deal with this:
+> 
+> Whenever ssw indicates a kernel mode access on a data fault,
+> we don't even attempt to handle the fault and instead send
+> a bus error signal (or panic). As a result, the check for
+> exception handling at the fault PC (buried in send_sig_fault()
+> which gets called from do_page_fault() eventually) is never
+> used.
+> 
+> Both 040 and 060 access error handlers do not care whether
+> a fault happened on supervisor mode access, and will call
+> do_page_fault() even on those.
+> 
+> Add a check in bus_error030 to call do_page_fault() in case
+> we do have an entry for the fault PC in our exception table.
+> 
+> Tested on 030 Atari Falcon.
 
 
+I've verified that the kernel Oops was there with unpatched kernel, and 
+this fixes it, also when using Hatari emulator 030 / Atari Falcon emulation.
+
+(Verified both with both v6.0 & v6.2 of Linus' kernel sources.)
+
+
+	- Eero
+
+
+> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com># Please enter the commit message for your changes. Lines starting
+> CC: Eero Tamminen <oak@helsinkinet.fi>
+> CC: Finn Thain <ftain@linux-m68k.org>
+> CC: Andreas Schwab <schwab@linux-m68k.org>
+> CC: Geert Uytterhoeven <geert@linux-m68k.org>
+> Link: https://lore.kernel.org/r/daca2f68-19fa-a2b6-97c6-16b5b7e26afe@helsinkinet.fi
+> ---
+>   arch/m68k/kernel/traps.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
+> index 5c8cba0efc63..67576fb0c466 100644
+> --- a/arch/m68k/kernel/traps.c
+> +++ b/arch/m68k/kernel/traps.c
+> @@ -30,6 +30,7 @@
+>   #include <linux/init.h>
+>   #include <linux/ptrace.h>
+>   #include <linux/kallsyms.h>
+> +#include <linux/extable.h>
+>   
+>   #include <asm/setup.h>
+>   #include <asm/fpu.h>
+> @@ -545,7 +546,7 @@ static inline void bus_error030 (struct frame *fp)
+>   			errorcode |= 2;
+>   
+>   		if (mmusr & (MMU_I | MMU_WP)) {
+> -			if (ssw & 4) {
+> +			if (ssw & 4 && !search_exception_tables(fp->ptregs.pc)) {
+>   				pr_err("Data %s fault at %#010lx in %s (pc=%#lx)\n",
+>   				       ssw & RW ? "read" : "write",
+>   				       fp->un.fmtb.daddr,
