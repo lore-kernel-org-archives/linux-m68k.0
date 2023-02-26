@@ -2,48 +2,48 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1656C7EE2F
-	for <linux-m68k@archiver.kernel.org>; Sun, 26 Feb 2023 14:56:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B17BC6FA8E
+	for <linux-m68k@archiver.kernel.org>; Sun, 26 Feb 2023 15:01:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231388AbjBZO4I (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 26 Feb 2023 09:56:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55182 "EHLO
+        id S231654AbjBZPB2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 26 Feb 2023 10:01:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231265AbjBZOzN (ORCPT
+        with ESMTP id S231752AbjBZPA2 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 26 Feb 2023 09:55:13 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F701B576
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Feb 2023 06:50:55 -0800 (PST)
+        Sun, 26 Feb 2023 10:00:28 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A59BA1DB86
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Feb 2023 06:52:43 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 454F0B80BA8;
-        Sun, 26 Feb 2023 14:49:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 307B0C433D2;
-        Sun, 26 Feb 2023 14:49:39 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A424660C20;
+        Sun, 26 Feb 2023 14:51:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38D4AC433D2;
+        Sun, 26 Feb 2023 14:51:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677422980;
-        bh=axhtctBXzA1VHDcKMADVAeOwE0wmZgjVoFxB93Zi7v0=;
+        s=k20201202; t=1677423062;
+        bh=i0A9Dq6iobGhqxC/4zpKQdzJEHTt/JfIGNby8rTEmes=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tp4ti8AirIw83CKlIuGL/1g8QwHqHTfSOO6k1JI4n85ov9g+ZnjBMEAQbPHNrXJUu
-         m5q58pFR5DRjo5IypSU7w4HEnp2PmdksLFsgd1vQlaXzSIXwJWB9mvGIe5996kgJc6
-         BEp5B5AIdnrZZ2Z4cwHhJCtBmwUWqWYkGAyFaYVkSNrN63ZrHcho6AtpxhiyiXMZQH
-         80W/x1rIxgg6f+ogGR2IIj4sG51McaTe8JeckXYjIdjjrjHhBZeDG0eOZg64sH+G/j
-         c7kZpq06JIoI9SR1K0TD5pT3NF/lh8amdViTDxSR2B1YgEHrh/jHco/8YzoEhqHqj9
-         OUicmSbHi2/Wg==
+        b=Q4mhaldkFEHR00WTwwsq4klWgMi19hjHCmQ7hhlTNQ1NL76hwFa9UYMwWB2MQ9Smm
+         iRjUZiGAZESa7+pamcCTGVaZqxTx+xlJHAUqhAXXzVRTCeShiqJgQjaw54X2av2AiM
+         zQsliAiJGJcbleh/tTXw1JjL83X5AHHUKr/eOQfwxYULgEK7h4ZtEWpaaTIN3EjrDy
+         rgkodUU4en9CXZWU71ZPDgXKdK++K2D12IfJtHpfmT+daDnNE/fWL396FOcKdrB5T+
+         KRUoCxVbpbu2MNWAwNQ4PI0B3ogJqtCI05UwrH5AIQbp3r8aW/qrWNaCuI26Lg/Ffl
+         CAituDnCow2Qw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Michael Schmitz <schmitzmic@gmail.com>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>, gerg@linux-m68k.org,
         ebiederm@xmission.com, linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 5.15 21/36] m68k: Check syscall_trace_enter() return code
-Date:   Sun, 26 Feb 2023 09:48:29 -0500
-Message-Id: <20230226144845.827893-21-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 19/27] m68k: Check syscall_trace_enter() return code
+Date:   Sun, 26 Feb 2023 09:50:06 -0500
+Message-Id: <20230226145014.828855-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230226144845.827893-1-sashal@kernel.org>
-References: <20230226144845.827893-1-sashal@kernel.org>
+In-Reply-To: <20230226145014.828855-1-sashal@kernel.org>
+References: <20230226145014.828855-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -74,10 +74,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  3 files changed, 7 insertions(+)
 
 diff --git a/arch/m68k/68000/entry.S b/arch/m68k/68000/entry.S
-index 997b549330156..7d63e2f1555a0 100644
+index 259b3661b6141..94abf3d8afc52 100644
 --- a/arch/m68k/68000/entry.S
 +++ b/arch/m68k/68000/entry.S
-@@ -45,6 +45,8 @@ do_trace:
+@@ -47,6 +47,8 @@ do_trace:
  	jbsr	syscall_trace_enter
  	RESTORE_SWITCH_STACK
  	addql	#4,%sp
@@ -87,10 +87,10 @@ index 997b549330156..7d63e2f1555a0 100644
  	movel	#-ENOSYS,%d0
  	cmpl	#NR_syscalls,%d1
 diff --git a/arch/m68k/coldfire/entry.S b/arch/m68k/coldfire/entry.S
-index 9f337c70243a3..35104c5417ff4 100644
+index d43a02795a4a4..f1d41a9328a27 100644
 --- a/arch/m68k/coldfire/entry.S
 +++ b/arch/m68k/coldfire/entry.S
-@@ -90,6 +90,8 @@ ENTRY(system_call)
+@@ -92,6 +92,8 @@ ENTRY(system_call)
  	jbsr	syscall_trace_enter
  	RESTORE_SWITCH_STACK
  	addql	#4,%sp
@@ -100,10 +100,10 @@ index 9f337c70243a3..35104c5417ff4 100644
  	jbsr	%a0@
  	movel	%d0,%sp@(PT_OFF_D0)		/* save the return value */
 diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
-index 9434fca68de5d..9f3663facaa0e 100644
+index 9dd76fbb7c6b2..546bab6bfc273 100644
 --- a/arch/m68k/kernel/entry.S
 +++ b/arch/m68k/kernel/entry.S
-@@ -184,9 +184,12 @@ do_trace_entry:
+@@ -167,9 +167,12 @@ do_trace_entry:
  	jbsr	syscall_trace
  	RESTORE_SWITCH_STACK
  	addql	#4,%sp
