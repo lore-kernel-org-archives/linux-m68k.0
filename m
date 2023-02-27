@@ -2,54 +2,54 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88ED7C7EE30
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Feb 2023 02:02:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68400C64ED6
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Feb 2023 02:14:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbjB0CB7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 26 Feb 2023 21:01:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52712 "EHLO
+        id S231196AbjB0COK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 26 Feb 2023 21:14:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbjB0CBt (ORCPT
+        with ESMTP id S230202AbjB0CNo (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 26 Feb 2023 21:01:49 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E6C14EBD
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Feb 2023 18:01:36 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id k21-20020a17090aaa1500b002376652e160so4770213pjq.0
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Feb 2023 18:01:36 -0800 (PST)
+        Sun, 26 Feb 2023 21:13:44 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ECCF1DB80
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Feb 2023 18:11:51 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id c10so1975260pfv.13
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Feb 2023 18:11:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
          :message-id:from:cc:references:to:subject:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=c/o9cv6FW9yb1vp78/4DThJE4MX4bk8wIAP5jhSuCII=;
-        b=SwjD3CVydZEjIcm7bTjxFEGVCzVjmtt8VKPqcUbNjrithwfD+Qhsiz9B5y1nF6nA5A
-         jY6qn3FH2sRibqYkBzZi/RInEHTw4xAz5Ld/He9ab3nHPCG51lsmmB9vMby75r1JPVb3
-         50IzEXAVpcZhIVA/qURFb7+csiWaQzXjGmdsD0+yakCY36lyWEehsNx5Q32tnc0dwjEU
-         Vg25RQW+p7fS2sL3OqLEOTekLBgSWqh8v0BHCZ/UZAqyjP/swD6Dff7tGmijpGcdDfZb
-         JF3j7CB/t71WM1WOSAjMshhe9WFdOhlwpwHLjr+ajUojgOFiaGtzITqAd+uYaG73BWlD
-         ybcQ==
+        bh=V8ctNLwcSYaUIGbRGWSCHJXouJ8nbSVZelm7b62WD6g=;
+        b=Pkg2BwoLn0x8020kmvJkprfm8IPzefdYI9nSaKgUVIngJUjxUKJRWg2liF2FI8sHa3
+         n1PQmlGdNG1Z1rk91BtlgyIA0xcd9eNO12EjFVkJX3ouilF18puv3zDpR0aagTq+qfif
+         IzP/bdL0QswLVyIbQuHu0yeenHhG5nTkonD3KuTuYpBoW+3gUYmTY2QHlmOct9sTge3Q
+         JIco2wzjcfFoBONFSNaQA3vd6bPlKPZpCBtOnccgflSaY7Lqvb6W8x4jFrnLPEiLkoMG
+         MANlCQ9oh5HF6+EYjVCXAybr3bU++3ukmt6087oESxndye6OPfxFoK+f9htWKZUhEa3D
+         u9fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
          :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=c/o9cv6FW9yb1vp78/4DThJE4MX4bk8wIAP5jhSuCII=;
-        b=ehpXMg+vXCB63IIHl7woIhnE/KgWSgbfgRM8i5cgUZhmy0r1O6aYWVldfQkAsBBOtw
-         g2ZltTQhc3eNNfXdMporQbqudOkqv/XFzK4XdPc0pZSJhQMvcyEko037Xv5jfMmkf1IQ
-         MNUpcnRHaEcjD+l2MFPrBH9W3JV9dK65GqpqewVKakRila+W8P8JaaVPIot46QrPF6Bx
-         Vbe2jAkiBYweTNupt9wyuWdR25Fyb6X3pI7qamahVDN6c+2dYQsGWFDB9/RFgnfQQXJu
-         NqItgfgONmDtOu7AVAEEYSi0BVepjUSGS9lKtntSrH/4IKjXIhjkXxd/R8Rixrf0dSwJ
-         W/ug==
-X-Gm-Message-State: AO0yUKXWYZedKNZv8TJbmxrhdULUSpQqFGRPzoyg6+cSqarsi7280jWd
-        FIV589297irDM/oEVjxbBvQ=
-X-Google-Smtp-Source: AK7set/T5AKbR7PowEmdJzwnHd9Rp7MGMA6OBbLB2+Dnl8BG/dpd593nxBDl4SFLzjtm4hHDHhFzJA==
-X-Received: by 2002:a17:903:18e:b0:19c:ec4f:1f0 with SMTP id z14-20020a170903018e00b0019cec4f01f0mr9220865plg.60.1677463295625;
-        Sun, 26 Feb 2023 18:01:35 -0800 (PST)
+        bh=V8ctNLwcSYaUIGbRGWSCHJXouJ8nbSVZelm7b62WD6g=;
+        b=dB0QgGGfwBEWXpKKw/QvwDiwYe13zYlwHtykk/Tc0+nX8uS0vmJI2phlpEnKQsWabC
+         8+S5G35HBEsGuRjScUz7KZuCjGXsb3qSGAtqKCx2Khkn67qV2djtNp0iZS1rF9r6++yg
+         kDpqUSD/PS6FtlwT3XX/8Oh779IGmP4UcBHweZFkniT21Gocd9RDfXFLwRrB3qVzOH+D
+         Od9nMkNT9l03KNdnwdfdMEBb0MylS+Fu24b646IWmZoBab58FFLtzMLMCL6N/x+f8Onq
+         mu1NVrDCb8kiVgkB4Fcf1drdKt4Zo9ZdzjHi9w6Nt1gIqgzaNJHBb524KUzEwF+CoJC0
+         +CAw==
+X-Gm-Message-State: AO0yUKWyJS/vnXDx0efkyCHt2+sacDciELCWSuzUgC1BxaoAZxzdQVM2
+        8ZRQ3u+NXCS0QeBXL7vLd6A=
+X-Google-Smtp-Source: AK7set/42IPVCWAaMsYAB9bwDcVcDh7Jksp2mYwNWPWVJ2p+80x6EuBENcFdjhOLfnmn6SzKOtwORA==
+X-Received: by 2002:a62:1a49:0:b0:5a8:ae60:eb4a with SMTP id a70-20020a621a49000000b005a8ae60eb4amr18780884pfa.28.1677463801027;
+        Sun, 26 Feb 2023 18:10:01 -0800 (PST)
 Received: from [10.1.1.24] (222-154-147-142-fibre.sparkbb.co.nz. [222.154.147.142])
-        by smtp.gmail.com with ESMTPSA id jh11-20020a170903328b00b001962858f990sm3275367plb.164.2023.02.26.18.01.31
+        by smtp.gmail.com with ESMTPSA id s23-20020aa78d57000000b00593c1c5bd0esm3016071pfe.164.2023.02.26.18.09.57
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 26 Feb 2023 18:01:35 -0800 (PST)
+        Sun, 26 Feb 2023 18:10:00 -0800 (PST)
 Subject: Re: Kernel versions 6.x don't boot on Amiga 4000
 To:     Geert Uytterhoeven <geert@linux-m68k.org>,
         John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
@@ -61,8 +61,8 @@ References: <85b92c15482752ca5bbdff6b5f6a720ebbdd3be6.camel@physik.fu-berlin.de>
 Cc:     linux-m68k@lists.linux-m68k.org, debian-68k@lists.debian.org,
         Finn Thain <fthain@linux-m68k.org>
 From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <96e0d5c1-6582-10ed-b6e2-d1bbbdf5a2bd@gmail.com>
-Date:   Mon, 27 Feb 2023 15:01:29 +1300
+Message-ID: <27ac8574-cec3-b093-b6a9-2afd46b7b3fc@gmail.com>
+Date:   Mon, 27 Feb 2023 15:09:54 +1300
 User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
  Icedove/45.4.0
 MIME-Version: 1.0
@@ -73,7 +73,7 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert, Stephen,
+Hi Geert,
 
 Am 27.02.2023 um 01:52 schrieb Geert Uytterhoeven:
 > On Sun, Feb 26, 2023 at 12:02 PM Geert Uytterhoeven
@@ -109,17 +109,20 @@ Am 27.02.2023 um 01:52 schrieb Geert Uytterhoeven:
 >
 > Bisected to commit 376e3fdecb0dcae2 ("m68k: Enable memtest
 > functionality") in v5.17-rc1.  Reverting that on top of latest fixes the
-> issue.
 
-Yes, I'm sorry to say that was the only likely candidate. Can't see why 
-though - are Macs all configured to have RAM start at address zero, and 
-possibly contiguous, Finn?
+What about instead changing the piece of code that you identified as 
+problematic in Kars' case to claim/map the last few bits as well 
+(memblock_cap_size() to be precise)?
+
+I wonder whether Finn's memtest patch merely exposed another MM bug that 
+we don't hit as easily (not without putting memory under a lot of pressure)?
 
 Cheers,
 
 	Michael
 
 
+> issue.
 >
 > Gr{oetje,eeting}s,
 >
