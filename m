@@ -2,113 +2,108 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98595C64ED8
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Feb 2023 20:19:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFAE0C64ED8
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Feb 2023 20:45:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229516AbjB0UTW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 27 Feb 2023 15:19:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
+        id S229470AbjB0UpF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 27 Feb 2023 15:45:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjB0UTW (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 27 Feb 2023 15:19:22 -0500
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3DF922023
-        for <linux-m68k@vger.kernel.org>; Mon, 27 Feb 2023 12:19:20 -0800 (PST)
-Received: by mail-qv1-f44.google.com with SMTP id ks17so5337146qvb.6
-        for <linux-m68k@vger.kernel.org>; Mon, 27 Feb 2023 12:19:20 -0800 (PST)
+        with ESMTP id S229451AbjB0UpF (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 27 Feb 2023 15:45:05 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F0E2056D
+        for <linux-m68k@vger.kernel.org>; Mon, 27 Feb 2023 12:45:04 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id y15-20020a17090aa40f00b00237ad8ee3a0so7461373pjp.2
+        for <linux-m68k@vger.kernel.org>; Mon, 27 Feb 2023 12:45:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=aq/3JL5WaQAxRuLsRiAkkaejaSZZL3INg4wXJVEsIb8=;
+        b=IR5jovmcPhADcmgvo/bRrjLlyEk5HJj7VhF6LTDdCmq65Wp+9LVgu+9bRGzcy6fBFw
+         8lVWKcdsAaE3n0SDijD6IykSE/lbnQhYqU9WuwQ8PRyq/DuBnPl3UHi92OFpzM8sqNFV
+         a1P8sXT4AYduSrLS4fj5v8oRsWoIYheCfRjEY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aqfB6u4DulnSRVK0e+Fw2bg14tKlwvVd1CLMbThZ798=;
-        b=xt2MGwabxsi2FP0e4dngx26Tor3mi3oQ7yq08HHNgO6ILeZ0osc2BqRmyIKQ6Qy6Pi
-         R5RPOJXsvh7hQRtQMwqXIhXSN6TbNYK8xJoI7zwqspgA+38dfURz74YY0trudKRdmBBx
-         Jn7HahT55mf9YCY5nGSz345gWlZlpqPMTtDkRx3kAvoXxLZcZbrlAIy6ZgFhZrtM2p3B
-         NHT2gtVJoCm/Gr96L29FUkXwGB4jGX2F7nXzKRdgzyZE+q8b6pX0JjotQHepPVrE39vv
-         SnVqvCmZjl8q56fFqLEnkm//JbHjzPlsNeLQD1ILIN5soMtPH0Ab1JrU6rJs0vpzKILz
-         tMHw==
-X-Gm-Message-State: AO0yUKWcb294WdcUOnQuq7UpuajeWpfPO3ZzVdg8f0McSOym1myaBDl/
-        SkF88RyC44jvuAPJ4K9aqbOylVyrh3Z6ew==
-X-Google-Smtp-Source: AK7set+SiyNc7e8hI/XV5O0GlxiiqiUpPhWYou2kgqg+a8UOBr7gNHlrzzlmfw+RDmyJAQzDxFkfRw==
-X-Received: by 2002:a05:6214:e89:b0:56f:728:19d4 with SMTP id hf9-20020a0562140e8900b0056f072819d4mr1370127qvb.26.1677529159802;
-        Mon, 27 Feb 2023 12:19:19 -0800 (PST)
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
-        by smtp.gmail.com with ESMTPSA id 70-20020a370449000000b00741a984943fsm5457818qke.40.2023.02.27.12.19.18
-        for <linux-m68k@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Feb 2023 12:19:19 -0800 (PST)
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-53852143afcso210344837b3.3
-        for <linux-m68k@vger.kernel.org>; Mon, 27 Feb 2023 12:19:18 -0800 (PST)
-X-Received: by 2002:a5b:d46:0:b0:a67:c976:c910 with SMTP id
- f6-20020a5b0d46000000b00a67c976c910mr3314364ybr.7.1677529158660; Mon, 27 Feb
- 2023 12:19:18 -0800 (PST)
-MIME-Version: 1.0
-References: <20230222195021.6683-1-schmitzmic@gmail.com>
-In-Reply-To: <20230222195021.6683-1-schmitzmic@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 27 Feb 2023 21:19:04 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWm9yJaHGF-EGVmn69iKXLAh3G9PZer6WJUi-ZJPHDRJQ@mail.gmail.com>
-Message-ID: <CAMuHMdWm9yJaHGF-EGVmn69iKXLAh3G9PZer6WJUi-ZJPHDRJQ@mail.gmail.com>
-Subject: Re: [PATCH RFC v1] m68k: kernel/traps.c - only force 030 bus error if
- PC not in exception table
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aq/3JL5WaQAxRuLsRiAkkaejaSZZL3INg4wXJVEsIb8=;
+        b=uos7MCmAA82mqqcEBZI4VLSVlafNw539JVZp48n3E95OLntgz2tgmBdJhP3Wqf3YrY
+         XYU059mIzAbd9RCA/fAmvva1OrnEn5ZQ0VzSmn/p8HI9AP4SSzZu9hOD8x87sWwbMCLe
+         FBPv2AIpd2/5hy8pKixqHseh8wV+buRkA13zrVaEWQfxn+xg2GBJhN3IALGx4dOI/Vwu
+         LespYBzoEbPDDVcF7R2WvDl4Uc59U8PsJsr1Rtmd4uhs4CXRtWeFs51ByZ/iblRhStLb
+         kbr6YNz3FnHKKCGz3KhGL2cC3FaO4bin7JMYCJC442gbVtw7KXHz16y40GZmjmH8S+ck
+         NkZQ==
+X-Gm-Message-State: AO0yUKX25/x3elZTXrv7sQ1w4rTqKORKYm7fuS97ROQnxBC1GgSvl/vE
+        eaaKCwJ9xfaHd6cNcXf03Rh60g==
+X-Google-Smtp-Source: AK7set95+BcYBporGffr7xyCCMDhL5TU9UuNtU3sTxHo3e2CxYRnDkTg+nz8ScNaXf+qTa1OU8phwA==
+X-Received: by 2002:a05:6a21:788f:b0:b8:723f:e21b with SMTP id bf15-20020a056a21788f00b000b8723fe21bmr1049090pzc.3.1677530703481;
+        Mon, 27 Feb 2023 12:45:03 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id v1-20020aa78501000000b005d4e89b69e5sm4610447pfn.127.2023.02.27.12.45.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Feb 2023 12:45:02 -0800 (PST)
+Message-ID: <63fd164e.a70a0220.96864.89bb@mx.google.com>
+X-Google-Original-Message-ID: <202302271241.@keescook>
+Date:   Mon, 27 Feb 2023 12:45:02 -0800
+From:   Kees Cook <keescook@chromium.org>
 To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     linux-m68k@vger.kernel.org, Eero Tamminen <oak@helsinkinet.fi>,
-        Finn Thain <ftain@linux-m68k.org>,
-        Andreas Schwab <schwab@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org,
+        glaubitz@physik.fu-berlin.de,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [PATCH v13 0/3] Add kernel seccomp support for m68k
+References: <20230112035529.13521-1-schmitzmic@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230112035529.13521-1-schmitzmic@gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael,
+On Thu, Jan 12, 2023 at 04:55:26PM +1300, Michael Schmitz wrote:
+> Previous version of patch 1 did overwrite a syscall return
+> value that was changed by ptrace or seccomp (in regs->d0)
+> by -ENOSYS when skipping a syscall. Branch directly to
+> ret_from_syscall instead of falling through to badsys (which
+> must set -ENOSYS). I'm sure this can be done more elegantly.
+> 
+> Patch 3 used the wrong struct definition for ARCH_REGS - the
+> kernel ptrace code copies 19 registers (from syscall stack
+> and switch_stack, pt_regs only contains the 14 from the
+> syscall stack). Stack overflow ensues.
 
-On Wed, Feb 22, 2023 at 8:52 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> __get_kernel_nofault() does copy data in supervisor mode when
-> forcing a task backtrace dump through the sysrq trigger.
->
-> Our 030 bus error handler is ill equipped to deal with this:
->
-> Whenever ssw indicates a kernel mode access on a data fault,
-> we don't even attempt to handle the fault and instead send
-> a bus error signal (or panic). As a result, the check for
-> exception handling at the fault PC (buried in send_sig_fault()
-> which gets called from do_page_fault() eventually) is never
-> used.
->
-> Both 040 and 060 access error handlers do not care whether
-> a fault happened on supervisor mode access, and will call
-> do_page_fault() even on those.
->
-> Add a check in bus_error030 to call do_page_fault() in case
-> we do have an entry for the fault PC in our exception table.
->
-> Tested on 030 Atari Falcon.
+Hi,
 
-Thanks for your patch!
+Thanks for expanding seccomp support to m68k! I happened to see this
+land in Linus's tree, but it was news to me that it was under
+development. Please use scripts/get_maintainers.pl in the future:
 
-> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com># Please enter the commit message for your changes. Lines starting
+SECURE COMPUTING
+M:      Kees Cook <keescook@chromium.org>
+R:      Andy Lutomirski <luto@amacapital.net>
+R:      Will Drewry <wad@chromium.org>
+S:      Supported
+T:      git git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/seccomp
+F:      Documentation/userspace-api/seccomp_filter.rst
+F:      include/linux/seccomp.h
+F:      include/uapi/linux/seccomp.h
+F:      kernel/seccomp.c
+F:      tools/testing/selftests/kselftest_harness.h
+F:      tools/testing/selftests/seccomp/*
+K:      \bsecure_computing
+K:      \bTIF_SECCOMP\b
 
-Please remove the comment ;-)
+> With these changes, 79 of 94 seccomp_bpf tests now succeed.
 
-> CC: Eero Tamminen <oak@helsinkinet.fi>
-> CC: Finn Thain <ftain@linux-m68k.org>
-> CC: Andreas Schwab <schwab@linux-m68k.org>
-> CC: Geert Uytterhoeven <geert@linux-m68k.org>
-> Link: https://lore.kernel.org/r/daca2f68-19fa-a2b6-97c6-16b5b7e26afe@helsinkinet.fi
+I'm curious which tests are not passing?
 
-404
+Thanks!
 
-I assume that a message from debian-68k?
-Do you have a https://lists.debian.org/debian-68k/ link?
-
-Gr{oetje,eeting}s,
-
-                        Geert
+-Kees
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Kees Cook
