@@ -2,84 +2,118 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73842C7EE2D
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Feb 2023 09:59:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2572FC64ED6
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Feb 2023 11:13:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbjB0J7R (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 27 Feb 2023 04:59:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40732 "EHLO
+        id S229679AbjB0LNo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 27 Feb 2023 06:13:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbjB0J7Q (ORCPT
+        with ESMTP id S229874AbjB0LNi (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 27 Feb 2023 04:59:16 -0500
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEB6D1116B
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Feb 2023 01:59:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1677491955; x=1709027955;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=jR91B98qom+5gzYhQGkhIgN06B7vIdWxDnI3INGZGCs=;
-  b=WF6UhWcbFp2kL/1V64Rb28KCRs+oJYzcK0djftIcjNihXFPNiV8lDhQg
-   HkNOv2+u/sb3ZxEB6iVlmuGnAv8Uiq8Z9PKzdse6XmvzjzCKZaKW8qSk3
-   CYgCpQ3Hbj7hZb2jZ2sY/sPE0vtnp+gwbmEEgoAGUS26Vra23DHn057CN
-   HCCAishFZs4odYeECe6z9njObmULQCrlV7u4zok3izcjJYpUqoretOTcn
-   x/GLyQI5n0yDJ5KxX1vTiE2lSVBQ1iICwopTEFLl9/gyCPyBEKj1CLvua
-   L5GweQ88vBphOLwVPVzF/UlBuq+FF2D4da/s3X3I2QxkNUn02dYulPIwK
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10633"; a="335304387"
-X-IronPort-AV: E=Sophos;i="5.97,331,1669104000"; 
-   d="scan'208";a="335304387"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2023 01:59:15 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10633"; a="737604557"
-X-IronPort-AV: E=Sophos;i="5.97,331,1669104000"; 
-   d="scan'208";a="737604557"
-Received: from jrissane-mobl2.ger.corp.intel.com (HELO intel.com) ([10.249.41.42])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2023 01:59:08 -0800
-Date:   Mon, 27 Feb 2023 10:59:04 +0100
-From:   Andi Shyti <andi.shyti@linux.intel.com>
-To:     Andrzej Hajda <andrzej.hajda@intel.com>
-Cc:     linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [Intel-gfx] [PATCH v5 5/7] io_uring: use __xchg if possible
-Message-ID: <Y/x+6KutaJKGv+Zz@ashyti-mobl2.lan>
-References: <20230118153529.57695-1-andrzej.hajda@intel.com>
- <20230118154450.73842-1-andrzej.hajda@intel.com>
- <20230118154450.73842-5-andrzej.hajda@intel.com>
+        Mon, 27 Feb 2023 06:13:38 -0500
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E372FAD34
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Feb 2023 03:13:18 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed50:9202:974e:f0e0:414c])
+        by laurent.telenet-ops.be with bizsmtp
+        id SBCs2900D1hKVeJ01BCs35; Mon, 27 Feb 2023 12:12:53 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1pWbQe-00AE6w-Et;
+        Mon, 27 Feb 2023 12:12:52 +0100
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1pWbR6-006zp4-B9;
+        Mon, 27 Feb 2023 12:12:52 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Brendan Higgins <brendan.higgins@linux.dev>,
+        David Gow <davidgow@google.com>,
+        Chuck Lever <chuck.lever@oracle.com>
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] kunit: tool: Add support for m68k under QEMU
+Date:   Mon, 27 Feb 2023 12:12:45 +0100
+Message-Id: <108676ae57ac8cade69806ff92768866bf8dd200.1677496263.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230118154450.73842-5-andrzej.hajda@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Andrzej,
+Add basic support to run m68k under QEMU via kunit_tool.
 
-On Wed, Jan 18, 2023 at 04:44:48PM +0100, Andrzej Hajda wrote:
-> Recently introduced helper simplifies the code.
-> 
-> Signed-off-by: Andrzej Hajda <andrzej.hajda@intel.com>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+Does this need CONFIG_VIRTIO_CONSOLE=y? It seems to work fine without.
 
-Reviewed-by: Andi Shyti <andi.shyti@linux.intel.com>
+drivers/clk/.kunitconfig:
 
-Thanks,
-Andi
+    Fails because m68k uses big-endian I/O ops
+
+drivers/gpu/drm/tests/.kunitconfig
+
+    kernel BUG at drivers/gpu/drm/drm_buddy.c:21!
+    (also on arm, ignored)
+
+drivers/gpu/drm/vc4/tests/.kunitconfig
+
+    Depends on arm, works on arm
+
+drivers/hid/.kunitconfig
+
+    Unable to handle kernel NULL pointer dereference at virtual address (ptrval)
+    Oops: 00000000
+    PC: [<001d7380>] uclogic_params_ugee_v2_has_battery+0x6/0x68
+    (also on arm, ignored)
+
+fs/ext4/.kunitconfig: OK
+
+fs/fat/.kunitconfig: OK
+
+kernel/kcsan/.kunitconfig
+
+    Needs HAVE_ARCH_KCSAN and SMP
+    (the former also on arm, ignored)
+
+lib/kunit/.kunitconfig: OK
+
+mm/kfence/.kunitconfig
+
+    Needs HAVE_ARCH_KFENCE
+    (fails on arm due to missing CONFIG_KFENCE_KUNIT_TEST=y, which
+    depends on TRACEPOINTS)
+
+net/sunrpc/.kunitconfig
+
+    After dropping CONFIG_STACKTRACE=y (why is this needed?) from
+    net/sunrpc/.kunitconfig:
+    Unable to handle kernel NULL pointer dereference at virtual address (ptrval)
+    (also on arm, ignored)
+---
+ tools/testing/kunit/qemu_configs/m68k.py | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+ create mode 100644 tools/testing/kunit/qemu_configs/m68k.py
+
+diff --git a/tools/testing/kunit/qemu_configs/m68k.py b/tools/testing/kunit/qemu_configs/m68k.py
+new file mode 100644
+index 0000000000000000..287fc386f8a7ff16
+--- /dev/null
++++ b/tools/testing/kunit/qemu_configs/m68k.py
+@@ -0,0 +1,10 @@
++# SPDX-License-Identifier: GPL-2.0-only
++from ..qemu_config import QemuArchParams
++
++QEMU_ARCH = QemuArchParams(linux_arch='m68k',
++			   kconfig='''
++CONFIG_VIRT=y''',
++			   qemu_arch='m68k',
++			   kernel_path='vmlinux',
++			   kernel_command_line='console=hvc0',
++			   extra_qemu_params=['-machine', 'virt'])
+-- 
+2.34.1
+
