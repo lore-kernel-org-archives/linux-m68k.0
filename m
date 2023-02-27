@@ -2,141 +2,107 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD6E5C64ED6
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Feb 2023 19:57:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06A94C64ED8
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Feb 2023 20:14:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230030AbjB0T5v (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 27 Feb 2023 14:57:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45780 "EHLO
+        id S229649AbjB0UOg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 27 Feb 2023 15:14:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230201AbjB0T5u (ORCPT
+        with ESMTP id S229985AbjB0UOf (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 27 Feb 2023 14:57:50 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D223B2748E
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Feb 2023 11:57:46 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id h19so8022041qtk.7
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Feb 2023 11:57:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zgbfP6t1iEXlYeQDHgpgkGKrmlu/wPbkfmiZJDZsq5c=;
-        b=N4q4rrEN0Vsw9BlA9fe3UGnxvKOoY3UNjLZQwwk+W8erQ9naCIS8LMcye7zGcr9NcA
-         tYbeOFkmZa2g0KOe0B2W7/ikPPrJSp3TkICAP8zgXZqYMJZqLVheDtKJD5z53oBeStBP
-         nykNv9Mb5flRVhkO3gi0kkI75aUrEZ1jvQz7f1fWumDkyfdXKP1UfKzxgNejqzm2q2j3
-         3oiWk4lvHHGbilo60VvV6Ne3KuH26k9A4Q96yWWKcQBOq4zCcflRnygTCsWTCxTnnIuY
-         4KWA9HaAl1DOwoZQ56uw7p8L1eqH0CkKvU6Ioc3IR/VANTgyGcLtIlkRMKyfw3IjeEVI
-         c9Mw==
-X-Gm-Message-State: AO0yUKW7p/Ur98qhq0V/9ZQUjp2YqHw/O3b75Y0H3BirwhqMG3Uon9N3
-        eUSVK671SabYqsm9ycKHWudwUZBT4G2pLg==
-X-Google-Smtp-Source: AK7set/Q+Z2ctD0zf4t/1BTKKDL2oiMH+/BqQaR3Ce3wKWqjep6QThntyV2K6vGvNPmrXhQ+4ixMpw==
-X-Received: by 2002:ac8:5ccc:0:b0:3b0:98c3:217c with SMTP id s12-20020ac85ccc000000b003b098c3217cmr880642qta.6.1677527564724;
-        Mon, 27 Feb 2023 11:52:44 -0800 (PST)
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
-        by smtp.gmail.com with ESMTPSA id i62-20020a37b841000000b0073b79edf46csm5480090qkf.83.2023.02.27.11.52.44
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Feb 2023 11:52:44 -0800 (PST)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-536bf92b55cso206774477b3.12
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Feb 2023 11:52:44 -0800 (PST)
-X-Received: by 2002:a5b:d4e:0:b0:967:f8b2:7a42 with SMTP id
- f14-20020a5b0d4e000000b00967f8b27a42mr7816406ybr.7.1677527205039; Mon, 27 Feb
- 2023 11:46:45 -0800 (PST)
-MIME-Version: 1.0
-References: <20230113171026.582290-1-david@redhat.com> <20230113171026.582290-12-david@redhat.com>
- <CAMuHMdX-FDga8w=pgg1myskEx6wp+oyZifhPPPFnWrc1zW7ZpQ@mail.gmail.com>
- <9ed766a6-cf06-535d-3337-ea6ff25c2362@redhat.com> <CAMuHMdWSaoKqO1Nx7QMDCcXrRmFbqqX8uwDRezXs8g+HdEFjKA@mail.gmail.com>
- <c145a2db-f92c-65aa-3e68-07dbb2e097a6@redhat.com>
-In-Reply-To: <c145a2db-f92c-65aa-3e68-07dbb2e097a6@redhat.com>
+        Mon, 27 Feb 2023 15:14:35 -0500
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90178E383
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Feb 2023 12:14:19 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed50:9202:974e:f0e0:414c])
+        by xavier.telenet-ops.be with bizsmtp
+        id SLEG290011hKVeJ01LEG2f; Mon, 27 Feb 2023 21:14:17 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1pWjsZ-00AKCt-U9;
+        Mon, 27 Feb 2023 21:14:15 +0100
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1pWjt1-007c5R-R2;
+        Mon, 27 Feb 2023 21:14:15 +0100
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 27 Feb 2023 20:46:31 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdX7MND++KXgTpx4jscfctQA_-zPt3EN9-+79EWE7e+OjA@mail.gmail.com>
-Message-ID: <CAMuHMdX7MND++KXgTpx4jscfctQA_-zPt3EN9-+79EWE7e+OjA@mail.gmail.com>
-Subject: Re: [PATCH mm-unstable v1 11/26] microblaze/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Nadav Amit <namit@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
-        x86@kernel.org, linux-alpha@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        Michal Simek <monstr@monstr.eu>
-Content-Type: text/plain; charset="UTF-8"
+To:     Finn Thain <fthain@linux-m68k.org>, Mike Rapoport <rppt@kernel.org>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Stephen Walsh <vk3heg@vk3heg.net>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Subject: [PATCH] m68k: mm: Move initrd phys_to_virt handling after paging_init()
+Date:   Mon, 27 Feb 2023 21:14:13 +0100
+Message-Id: <dff216da09ab7a60217c3fc2147e671ae07d636f.1677528627.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi David,
+When booting with an initial ramdisk on platforms where physical memory
+does not start at address zero (e.g. on Amiga):
 
-On Mon, Feb 27, 2023 at 6:01 PM David Hildenbrand <david@redhat.com> wrote:
-> >>>>    /*
-> >>>>     * Externally used page protection values.
-> >>>> diff --git a/arch/microblaze/include/asm/pgtable.h b/arch/microblaze/include/asm/pgtable.h
-> >>>> index 42f5988e998b..7e3de54bf426 100644
-> >>>> --- a/arch/microblaze/include/asm/pgtable.h
-> >>>> +++ b/arch/microblaze/include/asm/pgtable.h
+    initrd: 0ef0602c - 0f800000
+    Zone ranges:
+      DMA      [mem 0x0000000008000000-0x000000f7ffffffff]
+      Normal   empty
+    Movable zone start for each node
+    Early memory node ranges
+      node   0: [mem 0x0000000008000000-0x000000000f7fffff]
+    Initmem setup node 0 [mem 0x0000000008000000-0x000000000f7fffff]
+    Unable to handle kernel access at virtual address (ptrval)
+    Oops: 00000000
+    Modules linked in:
+    PC: [<00201d3c>] memcmp+0x28/0x56
 
-> >>>>     * - All other bits of the PTE are loaded into TLBLO without
-> >>>>     *  * modification, leaving us only the bits 20, 21, 24, 25, 26, 30 for
-> >>>>     * software PTE bits.  We actually use bits 21, 24, 25, and
-> >>>> @@ -155,6 +155,9 @@ extern pte_t *va_to_pte(unsigned long address);
-> >>>>    #define _PAGE_ACCESSED 0x400   /* software: R: page referenced */
-> >>>>    #define _PMD_PRESENT   PAGE_MASK
-> >>>>
-> >>>> +/* We borrow bit 24 to store the exclusive marker in swap PTEs. */
-> >>>> +#define _PAGE_SWP_EXCLUSIVE    _PAGE_DIRTY
-> >>>
-> >>> _PAGE_DIRTY is 0x80, so this is also bit 7, thus the new comment is
-> >>> wrong?
-> >>
-> >> In the example, I use MSB-0 bit numbering (which I determined to be
-> >> correct in microblaze context eventually, but I got confused a couple a
-> >> times because it's very inconsistent). That should be MSB-0 bit 24.
-> >
-> > Thanks, TIL microblaze uses IBM bit numbering...
->
-> I assume IBM bit numbering corresponds to MSB-0 bit numbering, correct?
+As phys_to_virt() relies on m68k_memoffset and module_fixup(), it must
+not be called before paging_init().  Hence postpone the phys_to_virt
+handling for the initial ramdisk until after calling paging_init().
 
-Correct, as seen in s370 and PowerPC manuals...
+While at it, reduce #ifdef clutter by using IS_ENABLED() instead.
 
-> I recall that I used the comment above "/* Definitions for MicroBlaze.
-> */" as an orientation.
->
-> 0  1  2  3  4  ... 18 19 20 21 22 23 24 25 26 27 28 29 30 31
-> RPN.....................  0  0 EX WR ZSEL.......  W  I  M  G
+Fixes: 376e3fdecb0dcae2 ("m68k: Enable memtest functionality")
+Reported-by: Stephen Walsh <vk3heg@vk3heg.net>
+Link: https://lists.debian.org/debian-68k/2022/09/msg00007.html
+Reported-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Link: https://lore.kernel.org/r/4f45f05f377bf3f5baf88dbd5c3c8aeac59d94f0.camel@physik.fu-berlin.de
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+To be queued as a fix for v6.3.
 
-Indeed, that's where I noticed the "unconventional" numbering...
+ arch/m68k/kernel/setup_mm.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-> So ... either we adjust both or we leave it as is. (again, depends on
-> what the right thing to to is -- which I don't know :) )
-
-It depends whether you want to match the hardware documentation,
-or the Linux BIT() macro and friends...
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+index 3a2bb2e8fdad47b4..fbff1cea62caac23 100644
+--- a/arch/m68k/kernel/setup_mm.c
++++ b/arch/m68k/kernel/setup_mm.c
+@@ -326,16 +326,16 @@ void __init setup_arch(char **cmdline_p)
+ 		panic("No configuration setup");
+ 	}
+ 
+-#ifdef CONFIG_BLK_DEV_INITRD
+-	if (m68k_ramdisk.size) {
++	if (IS_ENABLED(CONFIG_BLK_DEV_INITRD) && m68k_ramdisk.size)
+ 		memblock_reserve(m68k_ramdisk.addr, m68k_ramdisk.size);
++
++	paging_init();
++
++	if (IS_ENABLED(CONFIG_BLK_DEV_INITRD) && m68k_ramdisk.size) {
+ 		initrd_start = (unsigned long)phys_to_virt(m68k_ramdisk.addr);
+ 		initrd_end = initrd_start + m68k_ramdisk.size;
+ 		pr_info("initrd: %08lx - %08lx\n", initrd_start, initrd_end);
+ 	}
+-#endif
+-
+-	paging_init();
+ 
+ #ifdef CONFIG_NATFEAT
+ 	nf_init();
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.34.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
