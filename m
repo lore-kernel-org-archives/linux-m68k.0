@@ -2,107 +2,113 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06A94C64ED8
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Feb 2023 20:14:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98595C64ED8
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Feb 2023 20:19:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbjB0UOg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 27 Feb 2023 15:14:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33710 "EHLO
+        id S229516AbjB0UTW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 27 Feb 2023 15:19:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229985AbjB0UOf (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 27 Feb 2023 15:14:35 -0500
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90178E383
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Feb 2023 12:14:19 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed50:9202:974e:f0e0:414c])
-        by xavier.telenet-ops.be with bizsmtp
-        id SLEG290011hKVeJ01LEG2f; Mon, 27 Feb 2023 21:14:17 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1pWjsZ-00AKCt-U9;
-        Mon, 27 Feb 2023 21:14:15 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1pWjt1-007c5R-R2;
-        Mon, 27 Feb 2023 21:14:15 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Finn Thain <fthain@linux-m68k.org>, Mike Rapoport <rppt@kernel.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Stephen Walsh <vk3heg@vk3heg.net>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Subject: [PATCH] m68k: mm: Move initrd phys_to_virt handling after paging_init()
-Date:   Mon, 27 Feb 2023 21:14:13 +0100
-Message-Id: <dff216da09ab7a60217c3fc2147e671ae07d636f.1677528627.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S229511AbjB0UTW (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 27 Feb 2023 15:19:22 -0500
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3DF922023
+        for <linux-m68k@vger.kernel.org>; Mon, 27 Feb 2023 12:19:20 -0800 (PST)
+Received: by mail-qv1-f44.google.com with SMTP id ks17so5337146qvb.6
+        for <linux-m68k@vger.kernel.org>; Mon, 27 Feb 2023 12:19:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aqfB6u4DulnSRVK0e+Fw2bg14tKlwvVd1CLMbThZ798=;
+        b=xt2MGwabxsi2FP0e4dngx26Tor3mi3oQ7yq08HHNgO6ILeZ0osc2BqRmyIKQ6Qy6Pi
+         R5RPOJXsvh7hQRtQMwqXIhXSN6TbNYK8xJoI7zwqspgA+38dfURz74YY0trudKRdmBBx
+         Jn7HahT55mf9YCY5nGSz345gWlZlpqPMTtDkRx3kAvoXxLZcZbrlAIy6ZgFhZrtM2p3B
+         NHT2gtVJoCm/Gr96L29FUkXwGB4jGX2F7nXzKRdgzyZE+q8b6pX0JjotQHepPVrE39vv
+         SnVqvCmZjl8q56fFqLEnkm//JbHjzPlsNeLQD1ILIN5soMtPH0Ab1JrU6rJs0vpzKILz
+         tMHw==
+X-Gm-Message-State: AO0yUKWcb294WdcUOnQuq7UpuajeWpfPO3ZzVdg8f0McSOym1myaBDl/
+        SkF88RyC44jvuAPJ4K9aqbOylVyrh3Z6ew==
+X-Google-Smtp-Source: AK7set+SiyNc7e8hI/XV5O0GlxiiqiUpPhWYou2kgqg+a8UOBr7gNHlrzzlmfw+RDmyJAQzDxFkfRw==
+X-Received: by 2002:a05:6214:e89:b0:56f:728:19d4 with SMTP id hf9-20020a0562140e8900b0056f072819d4mr1370127qvb.26.1677529159802;
+        Mon, 27 Feb 2023 12:19:19 -0800 (PST)
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
+        by smtp.gmail.com with ESMTPSA id 70-20020a370449000000b00741a984943fsm5457818qke.40.2023.02.27.12.19.18
+        for <linux-m68k@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Feb 2023 12:19:19 -0800 (PST)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-53852143afcso210344837b3.3
+        for <linux-m68k@vger.kernel.org>; Mon, 27 Feb 2023 12:19:18 -0800 (PST)
+X-Received: by 2002:a5b:d46:0:b0:a67:c976:c910 with SMTP id
+ f6-20020a5b0d46000000b00a67c976c910mr3314364ybr.7.1677529158660; Mon, 27 Feb
+ 2023 12:19:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230222195021.6683-1-schmitzmic@gmail.com>
+In-Reply-To: <20230222195021.6683-1-schmitzmic@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 27 Feb 2023 21:19:04 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWm9yJaHGF-EGVmn69iKXLAh3G9PZer6WJUi-ZJPHDRJQ@mail.gmail.com>
+Message-ID: <CAMuHMdWm9yJaHGF-EGVmn69iKXLAh3G9PZer6WJUi-ZJPHDRJQ@mail.gmail.com>
+Subject: Re: [PATCH RFC v1] m68k: kernel/traps.c - only force 030 bus error if
+ PC not in exception table
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     linux-m68k@vger.kernel.org, Eero Tamminen <oak@helsinkinet.fi>,
+        Finn Thain <ftain@linux-m68k.org>,
+        Andreas Schwab <schwab@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-When booting with an initial ramdisk on platforms where physical memory
-does not start at address zero (e.g. on Amiga):
+Hi Michael,
 
-    initrd: 0ef0602c - 0f800000
-    Zone ranges:
-      DMA      [mem 0x0000000008000000-0x000000f7ffffffff]
-      Normal   empty
-    Movable zone start for each node
-    Early memory node ranges
-      node   0: [mem 0x0000000008000000-0x000000000f7fffff]
-    Initmem setup node 0 [mem 0x0000000008000000-0x000000000f7fffff]
-    Unable to handle kernel access at virtual address (ptrval)
-    Oops: 00000000
-    Modules linked in:
-    PC: [<00201d3c>] memcmp+0x28/0x56
+On Wed, Feb 22, 2023 at 8:52 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> __get_kernel_nofault() does copy data in supervisor mode when
+> forcing a task backtrace dump through the sysrq trigger.
+>
+> Our 030 bus error handler is ill equipped to deal with this:
+>
+> Whenever ssw indicates a kernel mode access on a data fault,
+> we don't even attempt to handle the fault and instead send
+> a bus error signal (or panic). As a result, the check for
+> exception handling at the fault PC (buried in send_sig_fault()
+> which gets called from do_page_fault() eventually) is never
+> used.
+>
+> Both 040 and 060 access error handlers do not care whether
+> a fault happened on supervisor mode access, and will call
+> do_page_fault() even on those.
+>
+> Add a check in bus_error030 to call do_page_fault() in case
+> we do have an entry for the fault PC in our exception table.
+>
+> Tested on 030 Atari Falcon.
 
-As phys_to_virt() relies on m68k_memoffset and module_fixup(), it must
-not be called before paging_init().  Hence postpone the phys_to_virt
-handling for the initial ramdisk until after calling paging_init().
+Thanks for your patch!
 
-While at it, reduce #ifdef clutter by using IS_ENABLED() instead.
+> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com># Please enter the commit message for your changes. Lines starting
 
-Fixes: 376e3fdecb0dcae2 ("m68k: Enable memtest functionality")
-Reported-by: Stephen Walsh <vk3heg@vk3heg.net>
-Link: https://lists.debian.org/debian-68k/2022/09/msg00007.html
-Reported-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Link: https://lore.kernel.org/r/4f45f05f377bf3f5baf88dbd5c3c8aeac59d94f0.camel@physik.fu-berlin.de
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-To be queued as a fix for v6.3.
+Please remove the comment ;-)
 
- arch/m68k/kernel/setup_mm.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+> CC: Eero Tamminen <oak@helsinkinet.fi>
+> CC: Finn Thain <ftain@linux-m68k.org>
+> CC: Andreas Schwab <schwab@linux-m68k.org>
+> CC: Geert Uytterhoeven <geert@linux-m68k.org>
+> Link: https://lore.kernel.org/r/daca2f68-19fa-a2b6-97c6-16b5b7e26afe@helsinkinet.fi
 
-diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-index 3a2bb2e8fdad47b4..fbff1cea62caac23 100644
---- a/arch/m68k/kernel/setup_mm.c
-+++ b/arch/m68k/kernel/setup_mm.c
-@@ -326,16 +326,16 @@ void __init setup_arch(char **cmdline_p)
- 		panic("No configuration setup");
- 	}
- 
--#ifdef CONFIG_BLK_DEV_INITRD
--	if (m68k_ramdisk.size) {
-+	if (IS_ENABLED(CONFIG_BLK_DEV_INITRD) && m68k_ramdisk.size)
- 		memblock_reserve(m68k_ramdisk.addr, m68k_ramdisk.size);
-+
-+	paging_init();
-+
-+	if (IS_ENABLED(CONFIG_BLK_DEV_INITRD) && m68k_ramdisk.size) {
- 		initrd_start = (unsigned long)phys_to_virt(m68k_ramdisk.addr);
- 		initrd_end = initrd_start + m68k_ramdisk.size;
- 		pr_info("initrd: %08lx - %08lx\n", initrd_start, initrd_end);
- 	}
--#endif
--
--	paging_init();
- 
- #ifdef CONFIG_NATFEAT
- 	nf_init();
+404
+
+I assume that a message from debian-68k?
+Do you have a https://lists.debian.org/debian-68k/ link?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.34.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
