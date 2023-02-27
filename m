@@ -2,123 +2,117 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC9C0C64ED8
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Feb 2023 07:20:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BE8FC7EE2D
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Feb 2023 07:58:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229562AbjB0HUK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 27 Feb 2023 02:20:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40748 "EHLO
+        id S229471AbjB0H6s (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 27 Feb 2023 02:58:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjB0HUJ (ORCPT
+        with ESMTP id S229610AbjB0H6r (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 27 Feb 2023 02:20:09 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16213C664
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Feb 2023 23:20:05 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id cp7-20020a17090afb8700b0023756229427so9139088pjb.1
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Feb 2023 23:20:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ChBXzot6AmK+axDstgd0ygxnNV80nYRhjmtn+eP4sOI=;
-        b=l/bTQx0u09kVMkv0Qg7DG6fKX0s3KTc/+Sxuz6R3Q6n6Hrq50eZc2reuTNb7apvif3
-         sn0I/5EErOr4WpaToTVNlOPxGizPzqkByc+H2VXhW0wZ5ioKwYRxJugllX0ctbB1lpcV
-         STb4vBD0PxVcuAjF3zzZsAdBiq7UPs6Q9v1tV0KNd1SCPJFIczRuM9K/z7YwrK8yerqs
-         EHzm8qMwR129qg3xnziLcvh8lUqp5Fy0Doy6p4W3WppUNTJFtj2nN4B6zCyxDddU2urM
-         iG4CMstXcGaoMHhmikouMEGYB8BHYmGiEJTsRopSdpt2WeyxYztbdNQy5TP3AYh5+jr2
-         t/xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ChBXzot6AmK+axDstgd0ygxnNV80nYRhjmtn+eP4sOI=;
-        b=GXAo4lP3j8Zl/h5sX7njdeG2XBjMfUBZ8RmjA50HNao4lXB91GX87/NT41P8YVs/jV
-         5C7DNqAyLPENA8SpuWoTqyejD/nDI6DtNPrHR+npAxcegzs6KjtGIm1i+ss+r6tXVrhJ
-         0XFzz+lxrrUNrB54+ApKQo06dkFe7EE69BeE0FNTtC/E5cg+bTBRbFtXhCTpR3Zd6e2p
-         v8FO2IG6coa0ZCFOglmmbjwt9tOqp2LXG7P6rE3q49DkYHR7nVm+UwSl9UOcnhYz5Hf0
-         LkljmifDQIlpDkOzHcrUm/Y9nG/ClFvyQ+P9vU5LlWyMqGsth4opr2EFYKkCvky0aeIB
-         90tA==
-X-Gm-Message-State: AO0yUKXYTdesDJ1t/gWc38mXHFXLaHBzUnIvlFM55cHC8O17za9rx+RB
-        Jm4wn84bJLIoVRKKaU9r1ms=
-X-Google-Smtp-Source: AK7set+Yv5urdkDNgTxKOfEH4Tl0mKLFsrivZdTbiYKR1Nmv95om6NC7SmHCD6B0brMov9FvjIM/fg==
-X-Received: by 2002:a17:903:68e:b0:19d:90f:6c7f with SMTP id ki14-20020a170903068e00b0019d090f6c7fmr3065738plb.43.1677482404508;
-        Sun, 26 Feb 2023 23:20:04 -0800 (PST)
-Received: from [10.1.1.24] (222-154-147-142-fibre.sparkbb.co.nz. [222.154.147.142])
-        by smtp.gmail.com with ESMTPSA id d13-20020a170902aa8d00b00198d7b52eefsm3770736plr.257.2023.02.26.23.20.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 26 Feb 2023 23:20:04 -0800 (PST)
-Subject: Re: Kernel versions 6.x don't boot on Amiga 4000
-To:     Finn Thain <fthain@linux-m68k.org>
-References: <85b92c15482752ca5bbdff6b5f6a720ebbdd3be6.camel@physik.fu-berlin.de>
- <CAMuHMdVgRdJR+a4tooyacg9Wqc-x_U5Oyxkt_axnrncE+AtrUQ@mail.gmail.com>
- <4f45f05f377bf3f5baf88dbd5c3c8aeac59d94f0.camel@physik.fu-berlin.de>
- <CAMuHMdUwh2PPrE37A+TNviU7HB+hPpFmFocJzGxG_sox1=ZGOQ@mail.gmail.com>
- <CAMuHMdUgPXGCHi3E_08iwnfnjkcUpsCwhG985PoX18RvHTjhMA@mail.gmail.com>
- <96e0d5c1-6582-10ed-b6e2-d1bbbdf5a2bd@gmail.com>
- <412c63ed-f3dc-91e4-e08b-b52718823943@linux-m68k.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mon, 27 Feb 2023 02:58:47 -0500
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B10903B
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Feb 2023 23:58:46 -0800 (PST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 45C5C5C00C2;
+        Mon, 27 Feb 2023 02:58:44 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 27 Feb 2023 02:58:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; t=1677484724; x=1677571124; bh=l6VOToy92pz23N7jEvOL/cpz2a5h
+        kxP9WuyX8f5sgSo=; b=DxLOHugjP9TvBS1x0u7jlyed/VhRt9v86XPqYvt1A4Hu
+        tsLNFG2iSsTc1V5wUqMHDpNyWJB0eXYKwybx59sEFMxWhlNygHaLGGWwTtllhzUN
+        egzqM1SumLUgFB+wavuKdiSqqRWwn/9EXcbAKBUJ4+QcoiEDlVq5gnPorfH21ymN
+        HWAWIhjByXdb/sgpLef4vAFhk7tNb5RipNpbi5okLQgD3XXcTUV3q94ec0WVfK0S
+        mDmZhybv2eKPKEKqIEFwph1Pi7V3eak5a/9XIreeAG/fZXX7yzAtVBDYPy2PMfcM
+        B5W0ZQR9Uuzy2SNqIw/WcodPXU4TOaZ1mimgXUMYwg==
+X-ME-Sender: <xms:tGL8Y8Pj10ouCR0qByufBjYJ74HUMai0qgnEDmYTewaDluDdWP4unw>
+    <xme:tGL8Yy9IRy5erNjkZGtoAfoKgZ0LE8vjwrsGBtMz2lSjqhXvN0yu0y_P5c5K8aQ-k
+    xQK4wXXyebeqS9_lw4>
+X-ME-Received: <xmr:tGL8YzRO6APnBQbfrMrylm6YKpM3jFCuFj40kKMjXOs1V-WkKV_ZrbVXV2kJY5-VxAQDJfMOzY6dgd8i47thJj4ghClaLsF7UFc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudekledguddutdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhn
+    ucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrf
+    grthhtvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedv
+    ueehueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:tGL8Y0tw_9QchEQsdmapgoU6ITAf78hOnZpZqjFItWjYqQ1OcmuyiQ>
+    <xmx:tGL8Y0f2DfsIbxzJ7G6Fy0-4ACCYJ9ncaWMkdKoyl6TyjjJBbaivVg>
+    <xmx:tGL8Y41CkIyhZZmdXJ9MvsHeqB5nU9xf4awqA_RPo7Z8jNSBfyd86Q>
+    <xmx:tGL8Y1rl0HYoF82xQ0BKpg75KlQJBbjXN0pULhHJP4WQFG2hgv01Rg>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 27 Feb 2023 02:58:41 -0500 (EST)
+Date:   Mon, 27 Feb 2023 19:01:13 +1100 (AEDT)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Michael Schmitz <schmitzmic@gmail.com>
+cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
         John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
         linux-m68k@lists.linux-m68k.org, debian-68k@lists.debian.org
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <b9d3446b-7589-2f11-ac8b-668010a83db7@gmail.com>
-Date:   Mon, 27 Feb 2023 20:19:58 +1300
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+Subject: Re: Kernel versions 6.x don't boot on Amiga 4000
+In-Reply-To: <30ad3b65-c43c-4389-e8af-b53705833146@linux-m68k.org>
+Message-ID: <e4572f9c-2c9b-ee12-a8b9-e731cf2f45e4@linux-m68k.org>
+References: <85b92c15482752ca5bbdff6b5f6a720ebbdd3be6.camel@physik.fu-berlin.de> <CAMuHMdVgRdJR+a4tooyacg9Wqc-x_U5Oyxkt_axnrncE+AtrUQ@mail.gmail.com> <4f45f05f377bf3f5baf88dbd5c3c8aeac59d94f0.camel@physik.fu-berlin.de> <CAMuHMdUwh2PPrE37A+TNviU7HB+hPpFmFocJzGxG_sox1=ZGOQ@mail.gmail.com>
+ <CAMuHMdUgPXGCHi3E_08iwnfnjkcUpsCwhG985PoX18RvHTjhMA@mail.gmail.com> <27ac8574-cec3-b093-b6a9-2afd46b7b3fc@gmail.com> <30ad3b65-c43c-4389-e8af-b53705833146@linux-m68k.org>
 MIME-Version: 1.0
-In-Reply-To: <412c63ed-f3dc-91e4-e08b-b52718823943@linux-m68k.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Finn,
 
-Am 27.02.2023 um 18:55 schrieb Finn Thain:
+On Mon, 27 Feb 2023, I wrote:
+
 > On Mon, 27 Feb 2023, Michael Schmitz wrote:
->
->>>
->>> Bisected to commit 376e3fdecb0dcae2 ("m68k: Enable memtest
->>> functionality") in v5.17-rc1.  Reverting that on top of latest fixes
->>> the issue.
->>
->> Yes, I'm sorry to say that was the only likely candidate. Can't see why
->> though - are Macs all configured to have RAM start at address zero, and
->> possibly contiguous, Finn?
->>
->
-> I don't really understand your question. This was not a Mac patch. The
-> issue seems to be about the locations initrd_start and initrd_end in
-> relation to the various memory segments (?)
+> 
+> > 
+> > I wonder whether Finn's memtest patch merely exposed another MM bug 
+> > 
+> 
+> A kernel patch may be easier than a bootloader patch (even if this is a 
+> bootloader bug) particularly if it affects multiple platforms.
+> 
+> A partial revert of my patch (below) will probably avoid the issue, but 
+> with the side effect that use of memtest will clobber the initrd.
+> 
 
-I didn't realize that - thanks for pointing this out.
+Maybe that's for the best now that the initrd/initramfs has grown so 
+large. That portion of memory is presently skipped by memtest, which means 
+you'd have to disable the initrd to get good coverage from memtest anyway.
 
->
-> This seems to be the same bug that was raised about 6 months ago... I had
-> thought it was a bootloader bug but I'm out of my depth here.
->
-> https://lists.debian.org/debian-68k/2022/09/msg00047.html
-> https://lists.debian.org/debian-68k/2022/09/msg00051.html
-> https://lists.debian.org/debian-68k/2022/09/msg00055.html
-
-I had forgotten all about that one... Thanks for jogging my memory!
-
-In this case though, the bug happens when the ramdisk is loaded in the 
-lowest address memory chunk, at least at a lower address than the one 
-the kernel runs from.
-
-The crashes in the above thread were all from boots where the initrd got 
-loaded at the end of the memory chunk the kernel runs from.
-
-Time to try using copy_from_kernel_nofault() to copy the ramdisk into 
-its final location? (just kidding)
-
-Cheers,
-
-	Michael
-
-
-
+> The initrd and memtest features aren't usually needed together. At the 
+> time when I needed the memtest feature I did not have confidence in the 
+> hardeare. An initrd wasn't very useful at that point.
+> 
+> diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+> index 3a2bb2e8fdad..92f1b9268dff 100644
+> --- a/arch/m68k/kernel/setup_mm.c
+> +++ b/arch/m68k/kernel/setup_mm.c
+> @@ -326,6 +326,8 @@ void __init setup_arch(char **cmdline_p)
+>  		panic("No configuration setup");
+>  	}
+>  
+> +	paging_init();
+> +
+>  #ifdef CONFIG_BLK_DEV_INITRD
+>  	if (m68k_ramdisk.size) {
+>  		memblock_reserve(m68k_ramdisk.addr, m68k_ramdisk.size);
+> @@ -335,8 +337,6 @@ void __init setup_arch(char **cmdline_p)
+>  	}
+>  #endif
+>  
+> -	paging_init();
+> -
+>  #ifdef CONFIG_NATFEAT
+>  	nf_init();
+>  #endif
+>  
+> 
