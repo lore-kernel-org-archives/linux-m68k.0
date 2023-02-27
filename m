@@ -2,69 +2,96 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 102EEC64ED6
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Feb 2023 18:18:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AE64C7EE2D
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Feb 2023 19:42:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231175AbjB0SS1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 27 Feb 2023 13:18:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49932 "EHLO
+        id S230049AbjB0TmM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 27 Feb 2023 14:42:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231132AbjB0SSV (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 27 Feb 2023 13:18:21 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EAF614993;
-        Mon, 27 Feb 2023 10:18:20 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A48BD60EEB;
-        Mon, 27 Feb 2023 18:18:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 17C65C433D2;
-        Mon, 27 Feb 2023 18:18:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677521899;
-        bh=I0bCf74Lcqw1AcD3SHYA/yvmv57h0u37nXL8rWrpVGA=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=nlNY3JaFSeGl/WQEV2chTvmRvXdvCykBHmuyfSOB7MQQeiYwz5Y2GY80c7jisndEq
-         6NDodWE4w+35sEQoJaVEEkwAcw/xAXZvYhB3+rI3fS2ArXVUaeQqnIdJS6GkayYSKH
-         1OqCoXQaJRyWgqJVaMZ0OJiSiB2ELdWX0JVWuuLmpQBoJZQRB1H2b9xDzx+nQW5HEe
-         LMYE2nGvqX/05wp+tk1wsnj2kekZIeqfVh2AEbjM/FsgVV/SFgvarCFPxA5mTWrQdJ
-         9vvG91FsEKJBial1tUcX9JXj+nueWqmO/Z6XukV6rnqMN1PT4NkIxfO7YDNdy5eaZ9
-         /0E3roAZOV6VA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 07639E68D2D;
-        Mon, 27 Feb 2023 18:18:19 +0000 (UTC)
-Subject: Re: [git pull] m68knommu changes for v6.3
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <9cbb5e07-9390-9758-b3ba-bfbf0d594c66@linux-m68k.org>
-References: <9cbb5e07-9390-9758-b3ba-bfbf0d594c66@linux-m68k.org>
-X-PR-Tracked-List-Id: <linux-m68k.vger.kernel.org>
-X-PR-Tracked-Message-Id: <9cbb5e07-9390-9758-b3ba-bfbf0d594c66@linux-m68k.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v6.3
-X-PR-Tracked-Commit-Id: 5aa52ccf692bfef7ddc23c2be1d48524a4427527
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 02a737f4bb22fd72bffb5b4008bbcb773218b5dd
-Message-Id: <167752189902.27343.10214107172463167808.pr-tracker-bot@kernel.org>
-Date:   Mon, 27 Feb 2023 18:18:19 +0000
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     torvalds@linux-foundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
+        with ESMTP id S229737AbjB0TmL (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 27 Feb 2023 14:42:11 -0500
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FDCC7ECE
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Feb 2023 11:41:59 -0800 (PST)
+Received: by mail-qt1-f171.google.com with SMTP id z6so8097613qtv.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Feb 2023 11:41:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+M8MoXObVraILUYUNZQa6sssikj2rSxS/rHvRcYnSnU=;
+        b=GAHqbeNJp3jcd9v7CJZmachVBGvKLr04xdnbur0hVNIOaRU0D7VfhhEpsOmPss33qI
+         ii48PaR2OjgEuQhu39CvDny2C0QEGa7IftjjSISmChilfHOlNfg6Py2L0tS5AnHoKU+l
+         KkxrUcZ1EHTLIiCaIpZKSZFqo8/n92Lk6MGKXJ2Gltp8XMcFnU5TqHQzoxplES6xWObK
+         6hN50K0nosi2X/LrPWqa+SPCgR7sHHysHmNtVB/DbLNf0zgrnjlV00DrogxGzs7ttqE5
+         i75BK6uC5kyMKaSM+YWxu1aUEOFBxV1eS0ta4kvysy7WOj8U9/X9cadcWyQoF4IIfHmo
+         MprA==
+X-Gm-Message-State: AO0yUKW1Y2X/YWz1cjp7x0IdUpAFQ/iAsOP7PAUdlgw2xZJJm+DAyR2v
+        VzZhiTr8FsO3rU/BByogWKNYExiW5gmx9A==
+X-Google-Smtp-Source: AK7set87osQ/52cfqGcRm9kXGiFyAN3RVGt1ncb/SWlhCCHKG4yRkNo9RWwL+EMmblVCqQyrLWAOfw==
+X-Received: by 2002:ac8:5dd1:0:b0:3bf:d00e:9908 with SMTP id e17-20020ac85dd1000000b003bfd00e9908mr679854qtx.44.1677526918196;
+        Mon, 27 Feb 2023 11:41:58 -0800 (PST)
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
+        by smtp.gmail.com with ESMTPSA id q190-20020a3743c7000000b00742a23cada8sm3177850qka.131.2023.02.27.11.41.57
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Feb 2023 11:41:58 -0800 (PST)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-536af432ee5so208586177b3.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Feb 2023 11:41:57 -0800 (PST)
+X-Received: by 2002:a81:ad5c:0:b0:538:112b:67a0 with SMTP id
+ l28-20020a81ad5c000000b00538112b67a0mr10431853ywk.5.1677526917514; Mon, 27
+ Feb 2023 11:41:57 -0800 (PST)
+MIME-Version: 1.0
+References: <167751329962.149247.12935751231288858919.stgit@bazille.1015granger.net>
+In-Reply-To: <167751329962.149247.12935751231288858919.stgit@bazille.1015granger.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 27 Feb 2023 20:41:41 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdU428G9=Vg6tc6JrWTkE-KD52Agasz3VY5KAJ+1DfT_Zg@mail.gmail.com>
+Message-ID: <CAMuHMdU428G9=Vg6tc6JrWTkE-KD52Agasz3VY5KAJ+1DfT_Zg@mail.gmail.com>
+Subject: Re: [PATCH] SUNRPC: Let Kunit tests run with some enctypes compiled out
+To:     Chuck Lever <cel@kernel.org>
+Cc:     linux-nfs@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The pull request you sent on Mon, 27 Feb 2023 17:05:30 +1000:
+Hi Chuck,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v6.3
+On Mon, Feb 27, 2023 at 4:58 PM Chuck Lever <cel@kernel.org> wrote:
+> From: Chuck Lever <chuck.lever@oracle.com>
+>
+> Allow the new GSS Kerberos encryption type test suites to run
+> outside of the kunit infrastructure. Replace the assertion that
+> fires when lookup_enctype() so that the case is skipped instead of
+> failing outright.
+>
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> ---
+>
+> Hey Geert -
+>
+> This patch addresses part of your concern: with this patch applied,
+> you should be able to run only the tests that target the encryption
+> types that are enabled in your kernel. The other tests will be
+> skipped rather than fail outright.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/02a737f4bb22fd72bffb5b4008bbcb773218b5dd
+Thanks, works fine!
 
-Thank you!
+Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
