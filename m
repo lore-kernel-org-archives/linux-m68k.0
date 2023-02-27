@@ -2,206 +2,242 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CEADEC64ED8
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Feb 2023 14:43:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56483C64ED8
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Feb 2023 14:50:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229608AbjB0On0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 27 Feb 2023 09:43:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53118 "EHLO
+        id S229486AbjB0Oub (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 27 Feb 2023 09:50:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbjB0OnZ (ORCPT
+        with ESMTP id S229804AbjB0Oua (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 27 Feb 2023 09:43:25 -0500
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA201BACE
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Feb 2023 06:43:23 -0800 (PST)
-Received: by mail-qt1-f177.google.com with SMTP id l13so6857159qtv.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Feb 2023 06:43:23 -0800 (PST)
+        Mon, 27 Feb 2023 09:50:30 -0500
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FBFC21A3F
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Feb 2023 06:50:20 -0800 (PST)
+Received: by mail-vs1-xe32.google.com with SMTP id d20so11381103vsf.11
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Feb 2023 06:50:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=1+gKTQLtQJOIV1NN0s+qx5o21DS67VRorDjRUvVXWxo=;
+        b=ERsydiG/w8RcZGLo7tYDvxaoF04n3br11pwkNsRtgeUFP2nMmbYz/rAG9wKyERE4M1
+         1ERear/AC0HwlSremiLWk6n8x8gLxjdb2EaGDn1i4HgxTOBDX2SSR7IWvTcMNilDOwLM
+         9OSDDV1ngeiIEiB1z4rAenHgqAqGUbXdhAILPqGhDxXvRJ3oq/Nio8ZftKRvNRLQPisn
+         oC9A/TVQDzCjFUq/+QLH5GOKYGVm9EdqWLaU71dz3MgIF7QvYGl1pA8s6oixenIpbXy+
+         RCAcNfMbuzxmAgjeZwYEhoQKJoPQftW7f6ZNzsqqiMX9f1SCdF6hfnhCJQ54sg8F3BDQ
+         0DkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ZtpzGlheMp9cWEjldclbCx07Trvxzhn2kfeNTxmqNPE=;
-        b=TlxTYqdQl/Ci8UjQO/MB+g1bPs8zm3RZqVeYz1s3WPrkDq/sXYrd0IwMefBl07oPqh
-         a1RP3lDnTFMoVCPhOOuGsHeyAnmz2242XcU5e1BMuH20P5TLF3vLSvck+iPWnM7GKzGG
-         hktaXKY5QkPhRVrR/XRpkc++buImg4U3606xc9u/Faem6f6SafOjMa8Tng/2K/G4LDE9
-         mXX48GF37fN8Z8D6V2U9TJiIH/3qi7RffFC9D4hGqSdIVEiTapXMs+cm/uG9gxaauRut
-         RuQok9nXtNKBVpKnziO/xGpOL67RfQqjlVnAgZsnrQrYLAIf6Xau0iOwBSzj7nH3gbJY
-         7zRg==
-X-Gm-Message-State: AO0yUKUqWj2W1+v2ursvnwW3kByFTxOVRjmvs6P3+eeaSSc0Lnu0ZkVj
-        gT4ll+oIqYbQD9oSSH7IUPnhvVh78AQv1w==
-X-Google-Smtp-Source: AK7set9bj7rYNlSk5u4mhK1J5VvhaCTCQZiR1gR4xj4UFHlGJ58H6KltWP/WP5JD/0nC0NfT4X2I/g==
-X-Received: by 2002:a05:622a:28e:b0:3bf:d9d2:4871 with SMTP id z14-20020a05622a028e00b003bfd9d24871mr5490592qtw.12.1677509002751;
-        Mon, 27 Feb 2023 06:43:22 -0800 (PST)
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
-        by smtp.gmail.com with ESMTPSA id t30-20020a05620a005e00b00742709bc5edsm5018766qkt.5.2023.02.27.06.43.21
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Feb 2023 06:43:22 -0800 (PST)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-536be69eadfso182726647b3.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Feb 2023 06:43:21 -0800 (PST)
-X-Received: by 2002:a81:ad43:0:b0:533:91d2:9d94 with SMTP id
- l3-20020a81ad43000000b0053391d29d94mr10571733ywk.5.1677509001567; Mon, 27 Feb
- 2023 06:43:21 -0800 (PST)
+        bh=1+gKTQLtQJOIV1NN0s+qx5o21DS67VRorDjRUvVXWxo=;
+        b=XvltmHCTut7aSCxQHKmqqBICPP/cmLoJlSRUbJdszEmiscyODlsMUjHnfxysO50MTh
+         GwRQ9yMe1IKugouzmjD8ZW9/dIudz6CmWmEa7HuFc4hsVBbG+9u9HmgYbCMh+q5utxtY
+         RnEtaOVd/U2SNfmuk1fAd8Zikbt0vaAIAWIuUSO4XeaAv/rkC6H3XAa4iDT3FTN3K6K5
+         gdjBT/YFojsC89uk0A05GNgRIs0XxlCw919JEyvo7IU/UuGTR0s4v0tZ2AlmkBhxBO+1
+         g6qro6M4o2OUCX3pTkIcJT9U/WcDjcPEbhWUBfRrxYCa4smdwn9sZ8USm/0B0psK7pn5
+         nh8A==
+X-Gm-Message-State: AO0yUKXLomXvxidSSB8+wnT0DX+XFswXIykH75JBCmKyLdVeSHukGj0r
+        ctZ9lWGFzqyHYawLVVYHL6zkUl0+nYMRJzVQPyvEIg==
+X-Google-Smtp-Source: AK7set/s+/XuZAYWv2lO2YBoyv7EvnUTxZWG/lOUwK0HqcrWaw9LHOkQxVTj0ZpTNvIyKXObKMars6KdbgSjITFckkE=
+X-Received: by 2002:a67:db0a:0:b0:414:2344:c353 with SMTP id
+ z10-20020a67db0a000000b004142344c353mr7412338vsj.5.1677509419061; Mon, 27 Feb
+ 2023 06:50:19 -0800 (PST)
 MIME-Version: 1.0
-References: <20230113171026.582290-1-david@redhat.com> <20230113171026.582290-12-david@redhat.com>
- <CAMuHMdX-FDga8w=pgg1myskEx6wp+oyZifhPPPFnWrc1zW7ZpQ@mail.gmail.com> <9ed766a6-cf06-535d-3337-ea6ff25c2362@redhat.com>
-In-Reply-To: <9ed766a6-cf06-535d-3337-ea6ff25c2362@redhat.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 27 Feb 2023 15:43:07 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWSaoKqO1Nx7QMDCcXrRmFbqqX8uwDRezXs8g+HdEFjKA@mail.gmail.com>
-Message-ID: <CAMuHMdWSaoKqO1Nx7QMDCcXrRmFbqqX8uwDRezXs8g+HdEFjKA@mail.gmail.com>
-Subject: Re: [PATCH mm-unstable v1 11/26] microblaze/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Nadav Amit <namit@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
-        x86@kernel.org, linux-alpha@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        Michal Simek <monstr@monstr.eu>
-Content-Type: text/plain; charset="UTF-8"
+References: <108676ae57ac8cade69806ff92768866bf8dd200.1677496263.git.geert@linux-m68k.org>
+In-Reply-To: <108676ae57ac8cade69806ff92768866bf8dd200.1677496263.git.geert@linux-m68k.org>
+From:   David Gow <davidgow@google.com>
+Date:   Mon, 27 Feb 2023 22:50:07 +0800
+Message-ID: <CABVgOSmTTw8SLjXXzq4Y91Pi2udNi3MKfX6GkN4phqaMfcDDrA@mail.gmail.com>
+Subject: Re: [PATCH] kunit: tool: Add support for m68k under QEMU
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-m68k@lists.linux-m68k.org
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000000ddf5b05f5af9927"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi David,
+--0000000000000ddf5b05f5af9927
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Feb 27, 2023 at 2:31 PM David Hildenbrand <david@redhat.com> wrote:
-> On 26.02.23 21:13, Geert Uytterhoeven wrote:
-> > On Fri, Jan 13, 2023 at 6:16 PM David Hildenbrand <david@redhat.com> wrote:
-> >> Let's support __HAVE_ARCH_PTE_SWP_EXCLUSIVE by stealing one bit
-> >> from the type. Generic MM currently only uses 5 bits for the type
-> >> (MAX_SWAPFILES_SHIFT), so the stolen bit is effectively unused.
-> >>
-> >> The shift by 2 when converting between PTE and arch-specific swap entry
-> >> makes the swap PTE layout a little bit harder to decipher.
-> >>
-> >> While at it, drop the comment from paulus---copy-and-paste leftover
-> >> from powerpc where we actually have _PAGE_HASHPTE---and mask the type in
-> >> __swp_entry_to_pte() as well.
-> >>
-> >> Cc: Michal Simek <monstr@monstr.eu>
-> >> Signed-off-by: David Hildenbrand <david@redhat.com>
-> >
-> > Thanks for your patch, which is now commit b5c88f21531c3457
-> > ("microblaze/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE") in
-> >
+On Mon, 27 Feb 2023 at 19:12, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 >
-> Right, it went upstream, so we can only fixup.
+> Add basic support to run m68k under QEMU via kunit_tool.
 >
-> >>   arch/m68k/include/asm/mcf_pgtable.h   |  4 +--
-> >
-> > What is this m68k change doing here?
-> > Sorry for not noticing this earlier.
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+
+Thanks very much. This works fine here.
+
+I'll look into failures for individual kunitconfigs and tests later,
+but the actual kunit_tool/QEMU stuff seems good-to-go to me.
+
+Reviewed-by: David Gow <davidgow@google.com>
+
+Cheers,
+-- David
+
+> Does this need CONFIG_VIRTIO_CONSOLE=y? It seems to work fine without.
+
+It's working fine here without, too, so _something_ must be sending
+data to the console.
+
 >
-> Thanks for the late review, still valuable :)
+> drivers/clk/.kunitconfig:
 >
-> That hunk should have gone into the previous patch, looks like I messed
-> that up when reworking.
+>     Fails because m68k uses big-endian I/O ops
 >
-> >
-> > Furthermore, several things below look strange to me...
-> >
-> >>   arch/microblaze/include/asm/pgtable.h | 45 +++++++++++++++++++++------
-> >>   2 files changed, 37 insertions(+), 12 deletions(-)
-> >>
-> >> diff --git a/arch/m68k/include/asm/mcf_pgtable.h b/arch/m68k/include/asm/mcf_pgtable.h
-> >> index 3f8f4d0e66dd..e573d7b649f7 100644
-> >> --- a/arch/m68k/include/asm/mcf_pgtable.h
-> >> +++ b/arch/m68k/include/asm/mcf_pgtable.h
-> >> @@ -46,8 +46,8 @@
-> >>   #define _CACHEMASK040          (~0x060)
-> >>   #define _PAGE_GLOBAL040                0x400   /* 68040 global bit, used for kva descs */
-> >>
-> >> -/* We borrow bit 7 to store the exclusive marker in swap PTEs. */
-> >> -#define _PAGE_SWP_EXCLUSIVE    0x080
-> >> +/* We borrow bit 24 to store the exclusive marker in swap PTEs. */
-> >> +#define _PAGE_SWP_EXCLUSIVE    CF_PAGE_NOCACHE
-> >
-> > CF_PAGE_NOCACHE is 0x80, so this is still bit 7, thus the new comment
-> > is wrong?
+> drivers/gpu/drm/tests/.kunitconfig
 >
-> You're right, it's still bit 7 (and we use LSB-0 bit numbering in that
-> file). I'll send a fixup.
-
-OK.
-
-> >>   /*
-> >>    * Externally used page protection values.
-> >> diff --git a/arch/microblaze/include/asm/pgtable.h b/arch/microblaze/include/asm/pgtable.h
-> >> index 42f5988e998b..7e3de54bf426 100644
-> >> --- a/arch/microblaze/include/asm/pgtable.h
-> >> +++ b/arch/microblaze/include/asm/pgtable.h
-> >> @@ -131,10 +131,10 @@ extern pte_t *va_to_pte(unsigned long address);
-> >>    * of the 16 available.  Bit 24-26 of the TLB are cleared in the TLB
-> >>    * miss handler.  Bit 27 is PAGE_USER, thus selecting the correct
-> >>    * zone.
-> >> - * - PRESENT *must* be in the bottom two bits because swap cache
-> >> - * entries use the top 30 bits.  Because 4xx doesn't support SMP
-> >> - * anyway, M is irrelevant so we borrow it for PAGE_PRESENT.  Bit 30
-> >> - * is cleared in the TLB miss handler before the TLB entry is loaded.
-> >> + * - PRESENT *must* be in the bottom two bits because swap PTEs use the top
-> >> + * 30 bits.  Because 4xx doesn't support SMP anyway, M is irrelevant so we
-> >> + * borrow it for PAGE_PRESENT.  Bit 30 is cleared in the TLB miss handler
-> >> + * before the TLB entry is loaded.
-> >
-> > So the PowerPC 4xx comment is still here?
+>     kernel BUG at drivers/gpu/drm/drm_buddy.c:21!
+>     (also on arm, ignored)
 >
-> I only dropped the comment above __swp_type(). I guess you mean that we
-> could also drop the "Because 4xx doesn't support SMP anyway, M is
-> irrelevant so we borrow it for PAGE_PRESENT." sentence, correct? Not
-
-Yes, that's what I meant.
-
-> sure about the "Bit 30 is cleared in the TLB miss handler" comment, if
-> that can similarly be dropped.
-
-No idea, didn't check. But if it was copied from PPC, chances are
-high it's no longer true....
-
-> >>    * - All other bits of the PTE are loaded into TLBLO without
-> >>    *  * modification, leaving us only the bits 20, 21, 24, 25, 26, 30 for
-> >>    * software PTE bits.  We actually use bits 21, 24, 25, and
-> >> @@ -155,6 +155,9 @@ extern pte_t *va_to_pte(unsigned long address);
-> >>   #define _PAGE_ACCESSED 0x400   /* software: R: page referenced */
-> >>   #define _PMD_PRESENT   PAGE_MASK
-> >>
-> >> +/* We borrow bit 24 to store the exclusive marker in swap PTEs. */
-> >> +#define _PAGE_SWP_EXCLUSIVE    _PAGE_DIRTY
-> >
-> > _PAGE_DIRTY is 0x80, so this is also bit 7, thus the new comment is
-> > wrong?
+> drivers/gpu/drm/vc4/tests/.kunitconfig
 >
-> In the example, I use MSB-0 bit numbering (which I determined to be
-> correct in microblaze context eventually, but I got confused a couple a
-> times because it's very inconsistent). That should be MSB-0 bit 24.
+>     Depends on arm, works on arm
+>
+> drivers/hid/.kunitconfig
+>
+>     Unable to handle kernel NULL pointer dereference at virtual address (ptrval)
+>     Oops: 00000000
+>     PC: [<001d7380>] uclogic_params_ugee_v2_has_battery+0x6/0x68
+>     (also on arm, ignored)
+>
+> fs/ext4/.kunitconfig: OK
+>
+> fs/fat/.kunitconfig: OK
+>
+> kernel/kcsan/.kunitconfig
+>
+>     Needs HAVE_ARCH_KCSAN and SMP
+>     (the former also on arm, ignored)
+>
+> lib/kunit/.kunitconfig: OK
+>
+> mm/kfence/.kunitconfig
+>
+>     Needs HAVE_ARCH_KFENCE
+>     (fails on arm due to missing CONFIG_KFENCE_KUNIT_TEST=y, which
+>     depends on TRACEPOINTS)
+>
+> net/sunrpc/.kunitconfig
+>
+>     After dropping CONFIG_STACKTRACE=y (why is this needed?) from
+>     net/sunrpc/.kunitconfig:
+>     Unable to handle kernel NULL pointer dereference at virtual address (ptrval)
+>     (also on arm, ignored)
+> ---
 
-Thanks, TIL microblaze uses IBM bit numbering...
+It  looks like there are some endianness issues with the apparmor
+policy_unpack_test, too... Otherwise the default set of tests seems to
+pass.
 
-Gr{oetje,eeting}s,
+>  tools/testing/kunit/qemu_configs/m68k.py | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>  create mode 100644 tools/testing/kunit/qemu_configs/m68k.py
+>
+> diff --git a/tools/testing/kunit/qemu_configs/m68k.py b/tools/testing/kunit/qemu_configs/m68k.py
+> new file mode 100644
+> index 0000000000000000..287fc386f8a7ff16
+> --- /dev/null
+> +++ b/tools/testing/kunit/qemu_configs/m68k.py
+> @@ -0,0 +1,10 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +from ..qemu_config import QemuArchParams
+> +
+> +QEMU_ARCH = QemuArchParams(linux_arch='m68k',
+> +                          kconfig='''
+> +CONFIG_VIRT=y''',
+> +                          qemu_arch='m68k',
+> +                          kernel_path='vmlinux',
+> +                          kernel_command_line='console=hvc0',
+> +                          extra_qemu_params=['-machine', 'virt'])
+> --
+> 2.34.1
+>
 
-                        Geert
+--0000000000000ddf5b05f5af9927
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+64VRg2IjDI2fJVE9RD6aMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
+AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
+c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
+LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
+LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
+Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQA2lZLYRLu7foeR
+cHo1VeNA974FZBiCm08Kd44/aCMEzdTJvxAE9xbUJf7hS1i6eW49qxuSp3/YLn6U7uatwAcmZcwp
+Zma19ftf3LH+9Hvffk+X8fbPKe6uHkJhR2LktrhRzF159jj67NvXyGQv8J4n7UNeEVP0d5ByvRwv
+tF2bJwlOwRGLoxasKSyDHIyUpwTfWYPq7XvjoGqQ/tDS7Khcc5WncJl0/ZEj7EKjtoGbsDbLdXEF
+m/6vdcYKJzF9ghHewtV3YIU4RE3pEM4aCWWRtJwbExzeue6fI7RqURbNCAyQuSpWv0YQvzsX3ZX3
+c1otrs50n1N0Sf8/rfJxq7sWMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
+R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
+MDIwAhABxy1wm0tAmHKHFkLS9RWPMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCBn
+YvNwtGQ78LoeI021VjGpp5NdMqZPxl8T11D/wnITrjAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzAyMjcxNDUwMTlaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAM6W9XmJQM+6wHmlDk52C
+8ufek0XR4h5w93LH/bw+FNSJbm1ZcTet3H7YQwtEZ8YxmuDFMCseoDEXq24W3pFFbI6nPLUM1NR2
+wZUjr5lTyciq1Mmup98Oel7JKKNOxMtU8CeMQXszwq5vzA7RwxvMZ5qzM9FkqLneuRBERDlMg10z
+pWPHVYG089/ExYuXS2+y4QYh1ia+ESFM8HwJvMgZ2ESX0vKJGNFsEdHc6JhYDDNOOpfaA9qTsF4X
+wknnq5OegR4dupk9b73If/X9CcPmyYbdd/9ngcmnwVZIGetTyY0zSGiMTX7lU5X5PvNgd5/jCqeL
+rPw3pkZv28Dz+nhW+Q==
+--0000000000000ddf5b05f5af9927--
