@@ -2,109 +2,111 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2148C64EC7
-	for <linux-m68k@archiver.kernel.org>; Tue, 28 Feb 2023 09:45:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C1A7C64EC7
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Feb 2023 15:22:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbjB1Jpq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 28 Feb 2023 04:45:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37134 "EHLO
+        id S229932AbjB1PWm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 28 Feb 2023 10:22:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbjB1Jpo (ORCPT
+        with ESMTP id S229899AbjB1PWl (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 28 Feb 2023 04:45:44 -0500
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD7862E821
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Feb 2023 01:45:20 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 7C4AC5C00D6;
-        Tue, 28 Feb 2023 04:45:14 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Tue, 28 Feb 2023 04:45:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; t=1677577514; x=1677663914; bh=LAIFPVQ3b3V1CGIuqJYt4SeAhAdB
-        WyvM0W3e0hHUVfc=; b=fYJ7im/erM2dC90CAEtP0n0qFTRTGamkc73/6zDlvVxs
-        bHx+Hoh1joHqNxhfE9PnwglDuh0CwrePBxOY7FOZVM1fpzq1PeWiv802n3PQ5K0I
-        8R42FOqzWhjnMf7DTUgwLHcK0n52cdnwAEVW1/n4IigGatGdL/ysnaIcOfzqE5hV
-        TO4Ge5WbjLtW2XE9ncF0vkLn7adRk1ZPf3OzwE38h4tAbxvKo3dvkU1Rmhb6hUmd
-        JjRFTHbm9OOXdEImCkVMs9ojcs7sB5Exjt1gnv6fMs/fbwLLGplk0lse4PC+T4VG
-        qp9nMpTvPqT7rmtYSlv2U7ZqRdiKN4auIoBuvZZSCw==
-X-ME-Sender: <xms:Kc39YyuHi7dfzq8SqQ4bUCMYaNwHVAtKsO8EAIuZLPKSXdwL0GJYlw>
-    <xme:Kc39Y3dLc68wYTetF62FFvL9Tun_mJxfBi-9GBJ0TKUDWBFno0g7212AKRgnKbpuF
-    ubUK5y3LglQ0YNA1nk>
-X-ME-Received: <xmr:Kc39Y9xj-AThbEX61r7Kj0NCumrAOtsgI2N_K7NNBsBFUZE__9plB0k02GM1LHJbLmvYm64FeBUO1SBg3YXhcJmeZLa8hbqNyz0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudelvddgtdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
-    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
-    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:Kc39Y9OYLWONhB-s6xXpPvdiQCzc8EJ1r0ix3MIFmtcP7eQaI_eWGg>
-    <xmx:Kc39Yy9of0qEr4z8JjcPN9jrTDrM_hjyqeOVGyA0b0dDM_ucG7OFdQ>
-    <xmx:Kc39Y1UyFH4Un0Cfsvr75ngB9_mZ9M6M7nSuY_jlHcPCtp7bJeQ7sQ>
-    <xmx:Ks39Y5atzsLT5_ypXZhAknAnpgdpGc3qIm2N2K-NGEpp2laeRroOQA>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 28 Feb 2023 04:45:11 -0500 (EST)
-Date:   Tue, 28 Feb 2023 20:47:43 +1100 (AEDT)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-cc:     Mike Rapoport <rppt@kernel.org>, Stephen Walsh <vk3heg@vk3heg.net>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] m68k: mm: Move initrd phys_to_virt handling after
- paging_init()
-In-Reply-To: <CAMuHMdXMWaCm7OGq7O9F5SWBxhreTppUr4K6K9FmZf1GpaAtVA@mail.gmail.com>
-Message-ID: <a0d5eec7-bb5c-b719-5aa0-ee1ecd11478f@linux-m68k.org>
-References: <dff216da09ab7a60217c3fc2147e671ae07d636f.1677528627.git.geert@linux-m68k.org> <f0877485-16df-1bda-c935-5ef56afacc8d@linux-m68k.org> <CAMuHMdXMWaCm7OGq7O9F5SWBxhreTppUr4K6K9FmZf1GpaAtVA@mail.gmail.com>
+        Tue, 28 Feb 2023 10:22:41 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A71830B33
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Feb 2023 07:22:38 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id t129so4157239iof.12
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Feb 2023 07:22:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vrCu0geLOi4OVGkwEDjMoWqOD6knh9EFuIYJINwxG2Q=;
+        b=IGBBoowU11kDoWvFa5UzxduFuKkleISEIsB8g0SLdw3lG87SsG8+PsmkrCrm3TH2pt
+         LBN/n5AsWe0dZ2AIgADeF8KWpj+ycPcePDpjwLCg0T63e6K3XjzdEZXIUgV6TE7WUBN1
+         AK2CARlsdEe/OX1TbsU78oHzkcJn1RVW+c7oYGgocxiBXOe8c+dQkbo6AMBYWCYSeWRC
+         vhMfw47fslKk3wVgBClGFXE6FBNXcORvFJZL+8l11ZidzustABk5nGG0x2gpRfO9RxJD
+         PuL/N5Cl9Ya1t3fGA7nJ+DSi9olydAlsnnYP9GKF7V1L+IZjLHdL2hpD/GalkWFZw9V7
+         1jRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vrCu0geLOi4OVGkwEDjMoWqOD6knh9EFuIYJINwxG2Q=;
+        b=70KI+yxV7bmWLVUU8wCVkDsKf9ba85taCd3FScxutARCmoCxkG8Wz/Bq97Pc+ybxxK
+         /4p2L7ZlrfEAwOQVc1DpnoYPhiowzZ8XDmlXtpxR9mqPKR4wsXR8Vpnb5JfVDPMv3C/q
+         yTUx4Bc83Uo7gunC8dyBCEF2sojr85u8/unqGXkg2roPLMmr2pVTQXlG9JSrr4bVUveJ
+         hhBEjGO6yQz3rEvkW11QLYy7z9fsrzviaHpS7eOWHNqmJWMrHMtuSoZMu4VDeVgTIDzT
+         n681DKJCdu8xZ3BmSzw5MEp7AK63Fjj7tAeRihwgx/uHlIiy/HhC5svLd+moGgoJQe2o
+         4BfA==
+X-Gm-Message-State: AO0yUKVPcJOclB+exEsMAeliqtJun8nPsjtWmIgHHCd9qZC2YgN0033L
+        toMkEUAWOs70nrKO2XKok7E=
+X-Google-Smtp-Source: AK7set+LdpBxgFLhGrJy0C3vaLPK+VEhjyTfN5z2xzeOHwePBtyBs6X9Ur4LvLgcB2HwBRmMy6YJhg==
+X-Received: by 2002:a05:6602:210b:b0:717:ce6a:188a with SMTP id x11-20020a056602210b00b00717ce6a188amr1936244iox.18.1677597757839;
+        Tue, 28 Feb 2023 07:22:37 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b18-20020a056602001200b0073f0832050bsm3130445ioa.18.2023.02.28.07.22.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Feb 2023 07:22:37 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 28 Feb 2023 07:22:36 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-arch@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, Michal Simek <monstr@monstr.eu>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 08/10] parisc: fix livelock in uaccess
+Message-ID: <20230228152236.GA4088022@roeck-us.net>
+References: <Y9lz6yk113LmC9SI@ZenIV>
+ <Y9l0w4M91DwYLO3N@ZenIV>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y9l0w4M91DwYLO3N@ZenIV>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, 28 Feb 2023, Geert Uytterhoeven wrote:
+On Tue, Jan 31, 2023 at 08:06:27PM +0000, Al Viro wrote:
+> parisc equivalent of 26178ec11ef3 "x86: mm: consolidate VM_FAULT_RETRY handling"
+> If e.g. get_user() triggers a page fault and a fatal signal is caught, we might
+> end up with handle_mm_fault() returning VM_FAULT_RETRY and not doing anything
+> to page tables.  In such case we must *not* return to the faulting insn -
+> that would repeat the entire thing without making any progress; what we need
+> instead is to treat that as failed (user) memory access.
+> 
+> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+> ---
+>  arch/parisc/mm/fault.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
+> index 869204e97ec9..bb30ff6a3e19 100644
+> --- a/arch/parisc/mm/fault.c
+> +++ b/arch/parisc/mm/fault.c
+> @@ -308,8 +308,11 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
+>  
+>  	fault = handle_mm_fault(vma, address, flags, regs);
+>  
+> -	if (fault_signal_pending(fault, regs))
+> +	if (fault_signal_pending(fault, regs)) {
+> +		if (!user_mode(regs))
+> +			goto no_context;
 
-> On Mon, Feb 27, 2023 at 11:46 PM Finn Thain <fthain@linux-m68k.org> wrote:
-> > On Mon, 27 Feb 2023, Geert Uytterhoeven wrote:
-> > > When booting with an initial ramdisk on platforms where physical memory
-> > > does not start at address zero (e.g. on Amiga):
-> > >
-> > >     initrd: 0ef0602c - 0f800000
-> > >     Zone ranges:
-> > >       DMA      [mem 0x0000000008000000-0x000000f7ffffffff]
-> > >       Normal   empty
-> > >     Movable zone start for each node
-> > >     Early memory node ranges
-> > >       node   0: [mem 0x0000000008000000-0x000000000f7fffff]
-> > >     Initmem setup node 0 [mem 0x0000000008000000-0x000000000f7fffff]
-> > >     Unable to handle kernel access at virtual address (ptrval)
-> > >     Oops: 00000000
-> > >     Modules linked in:
-> > >     PC: [<00201d3c>] memcmp+0x28/0x56
-> > >
-> > > As phys_to_virt() relies on m68k_memoffset and module_fixup(), it must
-> > > not be called before paging_init().  Hence postpone the phys_to_virt
-> > > handling for the initial ramdisk until after calling paging_init().
-> >
-> > Thanks for debugging this issue.
-> 
-> Np, you're welcome.
-> 
-> > > While at it, reduce #ifdef clutter by using IS_ENABLED() instead.
-> > >
-> > > Fixes: 376e3fdecb0dcae2 ("m68k: Enable memtest functionality")
-> >
-> > I apologise for the trouble caused by that patch.
-> 
-> Does that count as an Acked-by? ;-)
-> 
+0-day rightfully complains that this leaves 'msg' uninitialized.
 
-Well, git log | grep suggested Mea-culpa-by and some others...
+arch/parisc/mm/fault.c:427 do_page_fault() error: uninitialized symbol 'msg'
 
-Acked-by: Finn Thain <fthain@linux-m68k.org>
+Guenter
+
+>  		return;
+> +	}
+>  
+>  	/* The fault is fully completed (including releasing mmap lock) */
+>  	if (fault & VM_FAULT_COMPLETED)
