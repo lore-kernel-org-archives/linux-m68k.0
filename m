@@ -2,103 +2,97 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A49A9C6FA8E
-	for <linux-m68k@archiver.kernel.org>; Tue, 28 Feb 2023 17:35:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF28DC6FA8E
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Feb 2023 18:39:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229682AbjB1Re7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 28 Feb 2023 12:34:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54858 "EHLO
+        id S229625AbjB1Sje (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 28 Feb 2023 13:39:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjB1Re6 (ORCPT
+        with ESMTP id S229525AbjB1Sje (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 28 Feb 2023 12:34:58 -0500
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 296601EBD7;
-        Tue, 28 Feb 2023 09:34:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bN8lETEGtH3eSCzqdqNXhuD99n9DHCrwwsYdF542otk=; b=tlM7n0Xf2FPdjnh6I1lRD/dMeA
-        /hXzqbpV8RRtbLC1sDVsgtMEN7cikGeK3Z5yneR36FFONPjOZYDhLmOP/tyJMoxJHxpZVcoVnVV0M
-        syx0lJ1Po6cnoqtkr5LVPcY5p0oj3P5gJV5Wm7cl3V/2lA269sPqGXI3qSuox0K2VHs51kQDHSTfm
-        lUncCtO7g0VDFwoVXw7wGG2YSp29ouOnhFFV0dGyHRGISsU+Gw86N7WhFw1pGsETFEz5N+P6P8lb6
-        0P3epZK72dBTYM3LK14Md4g++i+Xn8vyTQ2iKpNruxRo8PZF/qH7Ax8EFV0zWBStHnqUwCar2xFby
-        +gfd/aUQ==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1pX3sK-00CtWb-2k;
-        Tue, 28 Feb 2023 17:34:52 +0000
-Date:   Tue, 28 Feb 2023 17:34:52 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Helge Deller <deller@gmx.de>
-Cc:     linux-arch@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, Michal Simek <monstr@monstr.eu>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 08/10] parisc: fix livelock in uaccess
-Message-ID: <Y/47PMmpLDX5lPWx@ZenIV>
-References: <Y9lz6yk113LmC9SI@ZenIV>
- <Y9l0w4M91DwYLO3N@ZenIV>
- <84b1c2e4-c096-ed19-9701-472b54a4890c@gmx.de>
+        Tue, 28 Feb 2023 13:39:34 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06CFBDC7;
+        Tue, 28 Feb 2023 10:39:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1677609557; i=deller@gmx.de;
+        bh=DtFxm0e8Z7VF1ewH1Ljpw+R4WIItkXIaof9L5puDsAs=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=R3QsjA7OGtTQYeS9wl3oOXsylwtm/n6JHgbAyIDLSQ7/BtZgqpmDP5lN1Fdcv2wAq
+         WuJJsV522M6WcMBYNfd9OmH0KrwgsCQVl9w47tPCXhArXEqV6zMHeBaN3SUVLKZ2Xz
+         pOCguLbsYiy522ururdZq5B7EDtUgidu/PmOfL8Qg8hVlO1J5Ce5T45N78bhS6Mydm
+         uP+IE09E88gpS3iqWAB4SC4oUz4qFXaVADHybhIbziAyhjfxJ3Ro8IxjYzmdef5yQS
+         a7hfuz6HXk42zAVLRwRvekYEb3J418s3NGOb8oQ/s1E3FEkC3doH7rZF4uu5cGbUjc
+         DVvYi4H5GQ2jw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.60] ([92.116.156.241]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MfYLa-1orQXF2oSO-00fydD; Tue, 28
+ Feb 2023 19:39:17 +0100
+Message-ID: <ae6a9ed0-bf62-9a32-310d-286119ffb9e2@gmx.de>
+Date:   Tue, 28 Feb 2023 19:39:15 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <84b1c2e4-c096-ed19-9701-472b54a4890c@gmx.de>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH] input/misc: hp_sdc_rtc: mark an unused function as
+ __maybe_unused
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        linux-m68k@lists.linux-m68k.org,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        linux-parisc@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org
+References: <20230209010125.23690-1-rdunlap@infradead.org>
+ <CAMuHMdXWLAbXFUHg+TT45AqVq6kHxK=FN=5wEHnpdiR0dn2L_g@mail.gmail.com>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <CAMuHMdXWLAbXFUHg+TT45AqVq6kHxK=FN=5wEHnpdiR0dn2L_g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:YPUa2tSq33RwVxYoUl1Og8gJjlzv+5Pq307UknXdNF9GZXxz/wG
+ O7hZHPiRUgUyAiIjP1zGJ9Rc2K8v4axpmHTV2Lyjacl+tu6fFwO4ax8QYBomsrjF1yYiCwe
+ sgJmF0Pv7gG/Tob5Gw87oRL3bmssx5AHntnMYA8h/obcw+OHM//j28M3uXihwoxMLa4bYeh
+ zsfSf7eXslMV4uEyHEQbQ==
+UI-OutboundReport: notjunk:1;M01:P0:Vsl/N89OQdI=;qzEhaOtysIsq/QzRGMbknE1N4Bk
+ uRZMQ7Jsa0cMQI4QTxl/SFOcGOpQIh2wJUPEZq/Mf70Oj5olhyKyltInx88KlbVSPMYsudk4L
+ rNQJDKk0CTr1N9IxsA1CZjaUT0IJ7P4PLharuQT4OXWiY8sAD35VGaHQzFPVx/2PPl4C6dBrn
+ cLjPLydKc/3Ps+GYMhHbXOr4XKGTj0j7ChwxPWtErbMpNgjW7ff1+TMzoU88JxouVj2DNOBn8
+ 4pH65yyg2nKKPJilbmMVpDHvBZDExE7ws9UVWwY5SoUTnD0Cr1cj3GfFxrNsoAyzREDgnE0Wb
+ 2CEKxkkFj2A+KgsRcMusQRc/u8tFJFSN7EIum18aMw+m74F2vMRVs22yV676q4+3S+8ZyO4AS
+ hcV/Sc2Z/0jHLCLQJNl6uVJny+bt1tmBwnGYPCSh7jFaMuY9BKNSYg0M1O7wiXFkGYuKpysGI
+ GIUJWGhAiw/YXjild8low0+m13YNPRmETmKpu3YLpGaJyDySbWXtYqfJCf+ZPFo0SGQWiVR/z
+ aVJ6lEsk0ez74SyPCRmYEU+gqbxGh3NdafdPtXA3AchB1AQMvjb+5l96TZyaFvamZ4HvKJCPQ
+ tuYySLdOFKuv8/t02bM9nnpIJ5Od2BBzIIBpV4oXNwcIGBCuiq50asfBJzEnOdy5bRbxJ2Hzd
+ dXgqp6S2U+1P8+Ikva5ukGl84hdjp8fd9kxAw2YVfhKYmARiM7GAmJFwovypr2gAkm+QRo2ZT
+ YE0FJQvvlhgeUJp0UgnkB7oeytH4ricD/zB/pDkJj6BQfkji77g/jkuk5VMFjIFFtiy7BlQLx
+ tTxxxNvsl93lJfNxCaZlnHfKm8w00C/Dqn7Gg5myH1IddkM1egNRuwSsok4ZOgk8ugd6fUaC0
+ 7TXqn6DegTluaMbqUMdgexV+cA3iUPHrOCZF82WClIgweid4V91Ntj7MpJuEXLmwwf7R5njDq
+ 1axp0L6c9YjtSy37/ZPc5WmclxU=
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Feb 06, 2023 at 05:58:02PM +0100, Helge Deller wrote:
-> Hi Al,
-> 
-> On 1/31/23 21:06, Al Viro wrote:
-> > parisc equivalent of 26178ec11ef3 "x86: mm: consolidate VM_FAULT_RETRY handling"
-> > If e.g. get_user() triggers a page fault and a fatal signal is caught, we might
-> > end up with handle_mm_fault() returning VM_FAULT_RETRY and not doing anything
-> > to page tables.  In such case we must *not* return to the faulting insn -
-> > that would repeat the entire thing without making any progress; what we need
-> > instead is to treat that as failed (user) memory access.
-> > 
-> > Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-> > ---
-> >   arch/parisc/mm/fault.c | 5 ++++-
-> >   1 file changed, 4 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
-> > index 869204e97ec9..bb30ff6a3e19 100644
-> > --- a/arch/parisc/mm/fault.c
-> > +++ b/arch/parisc/mm/fault.c
-> > @@ -308,8 +308,11 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
-> > 
-> >   	fault = handle_mm_fault(vma, address, flags, regs);
-> > 
-> > -	if (fault_signal_pending(fault, regs))
-> > +	if (fault_signal_pending(fault, regs)) {
-> > +		if (!user_mode(regs))
-> > +			goto no_context;
-> >   		return;
-> > +	}
-> 
-> The testcase in
->   https://lore.kernel.org/lkml/20170822102527.GA14671@leverpostej/
->   https://lore.kernel.org/linux-arch/20210121123140.GD48431@C02TD0UTHF1T.local/
-> does hang with and without above patch on parisc.
-> It does not consume CPU in that state and can be killed with ^C.
-> 
-> Any idea?
+On 2/9/23 14:56, Geert Uytterhoeven wrote:
+> On Thu, Feb 9, 2023 at 2:04 AM Randy Dunlap <rdunlap@infradead.org> wrot=
+e:
+>> When CONFIG_PROC_FS is not set, one procfs-related function is not
+>> used, causing a build error or warning.
+>> Mark this function as __maybe_unused to quieten the build.
+>>
+>> ../drivers/input/misc/hp_sdc_rtc.c:268:12: warning: 'hp_sdc_rtc_proc_sh=
+ow' defined but not used [-Wunused-function]
+>>    268 | static int hp_sdc_rtc_proc_show(struct seq_file *m, void *v)
+>>        |            ^~~~~~~~~~~~~~~~~~~~
+>>
+>> Fixes: c18bd9a1ff47 ("hp_sdc_rtc: Don't use create_proc_read_entry()")
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-	Still trying to resurrect the parisc box to test on it...
-FWIW, right now I've locally confirmed that mainline has the bug
-in question and that patch fixes it for alpha, sparc32 and sparc64;
-hexagon, m68k and riscv got acks from other folks; microblaze,
-nios2 and openrisc I can't test at all (no hardware, no qemu setup);
-same for parisc64.  Itanic and parisc32 I might be able to test,
-if I manage to resurrect the hardware.
+applied to parisc tree.
 
-	Just to confirm: your "can be killed with ^C" had been on the
-mainline parisc kernel (with userfaultfd enable, of course, or it wouldn't
-hang up at all), right?  Was it 32bit or 64bit kernel?
+Thanks,
+Helge
+
