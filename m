@@ -2,145 +2,109 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 345BAC64ED6
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Feb 2023 23:28:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9D24C64EC7
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Feb 2023 07:49:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229485AbjB0X2P (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 27 Feb 2023 18:28:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38626 "EHLO
+        id S230048AbjB1HtN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 28 Feb 2023 02:49:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbjB0X2O (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 27 Feb 2023 18:28:14 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0088F10400
-        for <linux-m68k@vger.kernel.org>; Mon, 27 Feb 2023 15:28:12 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id m3-20020a17090ade0300b00229eec90a7fso343949pjv.0
-        for <linux-m68k@vger.kernel.org>; Mon, 27 Feb 2023 15:28:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1677540492;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7FhREM3K/nJSbKnHwJG8uMCpKm+kSskvdHGLr2mMihI=;
-        b=fUkvmwHyq54vpy3dkss6Mh7D2QZBK7avv2dVpl6mtDM4986DQzo7N8F+V7iydO8NwY
-         RL6KKo8UD9Cqdb/l1Vw3ZlsmxPTemf//KjwpS0vNtdmEQseVSmM9ouoM1m7Vqmo6/JaP
-         Eg3wUDjje/3XGWy4QskGmbWefPK3GWIQ6+EaPrdxtfJwwITJIJauXlNFSw99SbzTB2/A
-         Fh0AkK1k9/m4O9WOP2sKjRifypD9RE2ng5hKru4yGxNoGfh/oC1aVTIcXvAmCbni01ck
-         WvxNV+2jgh0kdkTFuEZjjpaasGFguL0E+dMQoimQ/jaK5rGX++LEnKE2tI739Xb7KE6L
-         3RyA==
+        with ESMTP id S229537AbjB1HtM (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 28 Feb 2023 02:49:12 -0500
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383D427D6B
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Feb 2023 23:49:11 -0800 (PST)
+Received: by mail-qt1-f170.google.com with SMTP id c18so9531926qte.5
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Feb 2023 23:49:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677540492;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7FhREM3K/nJSbKnHwJG8uMCpKm+kSskvdHGLr2mMihI=;
-        b=1f1v6AXXlkFaKwK0BKo82IZw3dIoPY/hvFOSmbI2h2FGzLiDy/tqnOtyl64ZZyMeYr
-         ZQdNl/k3GKp+GZAvkzSXZrjBZxottLYJ/AnylGdJq5Rs4wHiLMMHrkIk53SAjLoBIzJ5
-         qZXgJGAwL1V61606RHcvqwdHnuFT5c2vEB7ONYMIV/byQFZQLCIL5+dphWxH6Wtdrurl
-         AERWyvb6H7/DdWdugT1/pjtkpyHBZx2/Z0x6Xq18qkK34DGCTRXrJ83tSDOwSf80GfaE
-         Cs1jcY1Ri6skN2jXT38qbk32NlUDROIvcL/KR6KZDgNbb9a1nimJwZy0NfQ27vojuE2S
-         oEpg==
-X-Gm-Message-State: AO0yUKWGrsncJL1Upvp3CJvNStLuALY7sbBNXmZKDDubXwqNpr47BdbC
-        nJy/1B3N4EP5pkeD02zQo4xdJlpxg+k=
-X-Google-Smtp-Source: AK7set9lNVQrDf3TQQ4htfyI/gnBxzzdzJbcSk1DBahFyeqfOm9nVVfwiw2BXB1IZ8e3Vxx16CvfQg==
-X-Received: by 2002:a17:90b:1c05:b0:234:3b63:d4c0 with SMTP id oc5-20020a17090b1c0500b002343b63d4c0mr1107268pjb.2.1677540492413;
-        Mon, 27 Feb 2023 15:28:12 -0800 (PST)
-Received: from ?IPV6:2001:df0:0:200c:8061:ae59:3388:46ca? ([2001:df0:0:200c:8061:ae59:3388:46ca])
-        by smtp.gmail.com with ESMTPSA id p9-20020a17090a868900b002340b2c62e7sm6590238pjn.55.2023.02.27.15.28.09
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/9nszujs/cR5S+IMyIjmZJZVbyFeU+vaQIe48z9YdiU=;
+        b=DXRuhp0Jbwy1Ew7Dli+rvFu6J/F93x//3osCpLn0lIgdOtGo/jYyHF4TcSc53nUenn
+         +S2PM+0+tnIFj+gsSHy+12N0JZDl/91onlAeFU8AupOLga7Sq8lkUeO7ixnZ1TM0BwIb
+         m30ktTyGxlXz7ODAFswjt0eskXSJJPoxHj2P62BbFgkTYl7/AJzameSESKasztqHt8Cd
+         YmCFAYlXNqVY7GcdNxcI/kOLR344DUsXELbpfva3NpogqvCEZ7CKx0IYgosQKb+qhDp6
+         cp5GSEj9l3Z37p6FKp3DDT2R/PPybTo6GxdRHrqEKQM9iaosh2g+pvSKvvedDgaPCGXV
+         v9GA==
+X-Gm-Message-State: AO0yUKXDP31m2COFZ854ziCvhsF2xem3NLMRNPYlxFzjy7dYbdFnMZ2Z
+        2dY9rxQGFPSeKJd9Gz/+1aMNdOPqpxdQsQ==
+X-Google-Smtp-Source: AK7set8SGbflY9rU51MoDakZw2iyPkkaecmEBKmnYb63BtniVVuAPVMdElapfTRwoAgP/a4oj/N/nQ==
+X-Received: by 2002:a05:622a:15c2:b0:3b8:1be5:3bff with SMTP id d2-20020a05622a15c200b003b81be53bffmr3382329qty.26.1677570549894;
+        Mon, 27 Feb 2023 23:49:09 -0800 (PST)
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com. [209.85.128.178])
+        by smtp.gmail.com with ESMTPSA id d25-20020a05620a205900b0073d873df3fesm6417310qka.30.2023.02.27.23.49.09
+        for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Feb 2023 15:28:11 -0800 (PST)
-Message-ID: <f716ab75-1523-db03-1615-41ec1b9ae6cf@gmail.com>
-Date:   Tue, 28 Feb 2023 12:28:07 +1300
+        Mon, 27 Feb 2023 23:49:09 -0800 (PST)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5384ff97993so248166527b3.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Feb 2023 23:49:09 -0800 (PST)
+X-Received: by 2002:a81:441c:0:b0:52e:f66d:b70f with SMTP id
+ r28-20020a81441c000000b0052ef66db70fmr1003301ywa.5.1677570548820; Mon, 27 Feb
+ 2023 23:49:08 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH RFC v1] m68k: kernel/traps.c - only force 030 bus error if
- PC not in exception table
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@vger.kernel.org, Eero Tamminen <oak@helsinkinet.fi>,
-        Finn Thain <ftain@linux-m68k.org>,
-        Andreas Schwab <schwab@linux-m68k.org>
-References: <20230222195021.6683-1-schmitzmic@gmail.com>
- <CAMuHMdWm9yJaHGF-EGVmn69iKXLAh3G9PZer6WJUi-ZJPHDRJQ@mail.gmail.com>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <CAMuHMdWm9yJaHGF-EGVmn69iKXLAh3G9PZer6WJUi-ZJPHDRJQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <dff216da09ab7a60217c3fc2147e671ae07d636f.1677528627.git.geert@linux-m68k.org>
+ <f0877485-16df-1bda-c935-5ef56afacc8d@linux-m68k.org>
+In-Reply-To: <f0877485-16df-1bda-c935-5ef56afacc8d@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 28 Feb 2023 08:48:53 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXMWaCm7OGq7O9F5SWBxhreTppUr4K6K9FmZf1GpaAtVA@mail.gmail.com>
+Message-ID: <CAMuHMdXMWaCm7OGq7O9F5SWBxhreTppUr4K6K9FmZf1GpaAtVA@mail.gmail.com>
+Subject: Re: [PATCH] m68k: mm: Move initrd phys_to_virt handling after paging_init()
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     Mike Rapoport <rppt@kernel.org>, Stephen Walsh <vk3heg@vk3heg.net>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
+Hi Finn,
 
-thanks for your feedback!
-
-On 28/02/23 09:19, Geert Uytterhoeven wrote:
-> Hi Michael,
+On Mon, Feb 27, 2023 at 11:46 PM Finn Thain <fthain@linux-m68k.org> wrote:
+> On Mon, 27 Feb 2023, Geert Uytterhoeven wrote:
+> > When booting with an initial ramdisk on platforms where physical memory
+> > does not start at address zero (e.g. on Amiga):
+> >
+> >     initrd: 0ef0602c - 0f800000
+> >     Zone ranges:
+> >       DMA      [mem 0x0000000008000000-0x000000f7ffffffff]
+> >       Normal   empty
+> >     Movable zone start for each node
+> >     Early memory node ranges
+> >       node   0: [mem 0x0000000008000000-0x000000000f7fffff]
+> >     Initmem setup node 0 [mem 0x0000000008000000-0x000000000f7fffff]
+> >     Unable to handle kernel access at virtual address (ptrval)
+> >     Oops: 00000000
+> >     Modules linked in:
+> >     PC: [<00201d3c>] memcmp+0x28/0x56
+> >
+> > As phys_to_virt() relies on m68k_memoffset and module_fixup(), it must
+> > not be called before paging_init().  Hence postpone the phys_to_virt
+> > handling for the initial ramdisk until after calling paging_init().
 >
-> On Wed, Feb 22, 2023 at 8:52 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
->> __get_kernel_nofault() does copy data in supervisor mode when
->> forcing a task backtrace dump through the sysrq trigger.
->>
->> Our 030 bus error handler is ill equipped to deal with this:
->>
->> Whenever ssw indicates a kernel mode access on a data fault,
->> we don't even attempt to handle the fault and instead send
->> a bus error signal (or panic). As a result, the check for
->> exception handling at the fault PC (buried in send_sig_fault()
->> which gets called from do_page_fault() eventually) is never
->> used.
->>
->> Both 040 and 060 access error handlers do not care whether
->> a fault happened on supervisor mode access, and will call
->> do_page_fault() even on those.
->>
->> Add a check in bus_error030 to call do_page_fault() in case
->> we do have an entry for the fault PC in our exception table.
->>
->> Tested on 030 Atari Falcon.
-> Thanks for your patch!
+> Thanks for debugging this issue.
+
+Np, you're welcome.
+
+> > While at it, reduce #ifdef clutter by using IS_ENABLED() instead.
+> >
+> > Fixes: 376e3fdecb0dcae2 ("m68k: Enable memtest functionality")
 >
->> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com># Please enter the commit message for your changes. Lines starting
-> Please remove the comment ;-)
+> I apologise for the trouble caused by that patch.
 
-Done that already for v2.
+Does that count as an Acked-by? ;-)
 
->
->> CC: Eero Tamminen <oak@helsinkinet.fi>
->> CC: Finn Thain <ftain@linux-m68k.org>
->> CC: Andreas Schwab <schwab@linux-m68k.org>
->> CC: Geert Uytterhoeven <geert@linux-m68k.org>
->> Link: https://lore.kernel.org/r/daca2f68-19fa-a2b6-97c6-16b5b7e26afe@helsinkinet.fi
-> 404
->
-> I assume that a message from debian-68k?
+Gr{oetje,eeting}s,
 
-No, oddly enough that is a message that I have received with CC to 
-linux-m68k (but not from vger!). And mail-archive.com has it:
+                        Geert
 
-https://www.mail-archive.com/linux-m68k@vger.kernel.org/msg13081.html
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-And also on marc.info:
-
-https://marc.info/?l=linux-m68k&m=155477039405576&w=2
-
-Later one with an experimental patch of mine:
-
-https://marc.info/?l=linux-m68k&m=155494864731013&w=2
-
-None of these messages show up on a search of lore...
-
-What source do you prefer - marc.info or mail-archive.com?
-
-Cheers,
-
-     Michael
-
-
-> Do you have a https://lists.debian.org/debian-68k/ link?
->
-> Gr{oetje,eeting}s,
->
->                          Geert
->
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
