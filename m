@@ -2,110 +2,67 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F04D2C64ED6
-	for <linux-m68k@archiver.kernel.org>; Tue, 28 Feb 2023 15:58:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A84AC64EC7
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Feb 2023 16:37:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbjB1P6J (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 28 Feb 2023 10:58:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52902 "EHLO
+        id S229572AbjB1Qhk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 28 Feb 2023 11:37:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230203AbjB1P5x (ORCPT
+        with ESMTP id S229527AbjB1Qhj (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 28 Feb 2023 10:57:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7289932CD2
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Feb 2023 07:56:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1677599797;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=V7pSWC5euLmUDx9YG5RWzWaGkcDB950fdhQfUYWKICc=;
-        b=Fp/zUWU1RjnkIvon8N2Ji+jaTCmWRriI96LADFlWYWaNHo4UZ2s7fHjPbeO7bnoOhw4HC6
-        un1ARCDhr8EiNuCLwdVsF5MToB2NbRc0797L60SwltFuAF/P/7P6jCrAQbCESENLF0c9sC
-        6Z0jgkThYEJ7xb+cPkWwQ/8ukkb5wbc=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-589-brtdRX6YMo69C3HAP_u5SQ-1; Tue, 28 Feb 2023 10:56:34 -0500
-X-MC-Unique: brtdRX6YMo69C3HAP_u5SQ-1
-Received: by mail-wr1-f72.google.com with SMTP id g6-20020adfa486000000b002c55ef1ec94so1676777wrb.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Feb 2023 07:56:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=V7pSWC5euLmUDx9YG5RWzWaGkcDB950fdhQfUYWKICc=;
-        b=LH4XrUTP/Bu9r4BTKLfWaTaOgR56vY45VKkkAl0oTKLenWxg7UmCKtzdgd3sCz7bqN
-         DtLLKdKyVkSToSs0qKz09MB+jaHT7bkSkdAwOCr7IEHTVV/+8VPEP5CTWLYuVWiPNfyA
-         183+gqw+3asXKKdxx3PtFKRVXOGlRQKf9zypmRUuEywV8gTLAfyY62atF2gDv6YNjN22
-         /+rXajWxxAhwf8Z4LUdDPxt1EjwON6rym1Q00z4m27nTR+znOJnkNtvvK3VP5tJGsbSQ
-         FKIVvNpiqf62WLpFIZ5Vjdo6rCtyKdSHiXWCtL4XIRo3qEl21EPZLD7/9+WozeCqqr2M
-         GxDg==
-X-Gm-Message-State: AO0yUKUFci+GhAxNjQFK5JESCo8owxnNDcRLW8giyruY20YDIXBxXBEd
-        JRNPXvLtSro3CrpZk007o8YLMrzA/TaZwwFUm50px75j1gY2qIzJgDKTD9apH4Ixr5nbP/xIcop
-        r/TAUHdIGqa1hwdJaB8BqYh3WG1FX
-X-Received: by 2002:a05:600c:1e20:b0:3df:9858:c037 with SMTP id ay32-20020a05600c1e2000b003df9858c037mr9985231wmb.12.1677599793385;
-        Tue, 28 Feb 2023 07:56:33 -0800 (PST)
-X-Google-Smtp-Source: AK7set/U2v9f8GltbBAhuiD5VLcyopD+EwumVs1dLk0qMzdF/fI8DkaFn74NX3LW8zhnIM6FtbCCQg==
-X-Received: by 2002:a05:600c:1e20:b0:3df:9858:c037 with SMTP id ay32-20020a05600c1e2000b003df9858c037mr9985221wmb.12.1677599793078;
-        Tue, 28 Feb 2023 07:56:33 -0800 (PST)
-Received: from ?IPV6:2003:cb:c706:b800:3757:baed:f95e:20ac? (p200300cbc706b8003757baedf95e20ac.dip0.t-ipconnect.de. [2003:cb:c706:b800:3757:baed:f95e:20ac])
-        by smtp.gmail.com with ESMTPSA id hn6-20020a05600ca38600b003e21f01c426sm13465165wmb.9.2023.02.28.07.56.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Feb 2023 07:56:32 -0800 (PST)
-Message-ID: <bd656b2c-9a20-dea9-dcef-9cc965bccc9e@redhat.com>
-Date:   Tue, 28 Feb 2023 16:56:30 +0100
+        Tue, 28 Feb 2023 11:37:39 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54FC733459;
+        Tue, 28 Feb 2023 08:37:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=IBh5/W4S+Ngb5u8xM/zenW6fPzVp/2VTq/NjigF0gLU=; b=mtXCmW9ocOBaET573x/F4JRZLD
+        UrzMeHzMxrrGZstuqbKXIxEUaqkKHa1RgKEaslfRW2h1cOFk12yqJXTVHI23dpec1bdAI9KphMG+t
+        C9zqQ23/yNpQmm5mOq89DrWwcn0AdehAsL2dCvEUM+1lPdHPvMoLzBMDxuqr1ZuZVrvJANTcclZgQ
+        hMnuIOClWkX0pXeHge9FpUQwyBSNpeciRvhBV7rbtfVVW5+x440rFYNTNfhTLUE7zmr+Fzhar/e6t
+        V3HG0KwIJ5iUINlVmHgxUsq8CgVP+1OoEoEgsp/UNOmOsyJ1mpDvRcMEmaSyH6hN3RyyFDVQ5mjA/
+        QMiwqQIg==;
+Received: from [2601:1c2:980:9ec0::df2f] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pX2yo-00DmBF-1K; Tue, 28 Feb 2023 16:37:30 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org
+Subject: [PATCH] MAINTAINERS: drop uclinux.org
+Date:   Tue, 28 Feb 2023 08:37:26 -0800
+Message-Id: <20230228163726.10984-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH mm-unstable v1 19/26] riscv/mm: support
- __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        hughd@google.com, jhubbard@nvidia.com, jgg@nvidia.com,
-        rppt@linux.ibm.com, shy828301@gmail.com, vbabka@suse.cz,
-        namit@vmware.com, aarcange@redhat.com, peterx@redhat.com,
-        linux-mm@kvack.org, x86@kernel.org, linux-alpha@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu
-References: <mhng-b8dc8a57-dde0-4995-bbb7-3948a95ba0b1@palmer-ri-x1c9a>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <mhng-b8dc8a57-dde0-4995-bbb7-3948a95ba0b1@palmer-ri-x1c9a>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 28.02.23 16:50, Palmer Dabbelt wrote:
-> On Fri, 13 Jan 2023 09:10:19 PST (-0800), david@redhat.com wrote:
->> Let's support __HAVE_ARCH_PTE_SWP_EXCLUSIVE by stealing one bit
->> from the offset. This reduces the maximum swap space per file: on 32bit
->> to 16 GiB (was 32 GiB).
-> 
-> Seems fine to me, I doubt anyone wants a huge pile of swap on rv32.
+uclinux.org is dead. Drop it from the MAINTAINERS file.
 
-Patch is already upstream, so we can't add tags unfortunately. Thanks 
-for the review!
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Greg Ungerer <gerg@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+---
+ MAINTAINERS |    2 --
+ 1 file changed, 2 deletions(-)
 
--- 
-Thanks,
-
-David / dhildenb
-
+diff -- a/MAINTAINERS b/MAINTAINERS
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -21384,10 +21384,8 @@ F:	include/uapi/linux/ublk_cmd.h
+ UCLINUX (M68KNOMMU AND COLDFIRE)
+ M:	Greg Ungerer <gerg@linux-m68k.org>
+ L:	linux-m68k@lists.linux-m68k.org
+-L:	uclinux-dev@uclinux.org  (subscribers-only)
+ S:	Maintained
+ W:	http://www.linux-m68k.org/
+-W:	http://www.uclinux.org/
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git
+ F:	arch/m68k/*/*_no.*
+ F:	arch/m68k/68*/
