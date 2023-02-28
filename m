@@ -2,67 +2,103 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A84AC64EC7
-	for <linux-m68k@archiver.kernel.org>; Tue, 28 Feb 2023 16:37:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A49A9C6FA8E
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Feb 2023 17:35:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbjB1Qhk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 28 Feb 2023 11:37:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57782 "EHLO
+        id S229682AbjB1Re7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 28 Feb 2023 12:34:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjB1Qhj (ORCPT
+        with ESMTP id S229509AbjB1Re6 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 28 Feb 2023 11:37:39 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54FC733459;
-        Tue, 28 Feb 2023 08:37:35 -0800 (PST)
+        Tue, 28 Feb 2023 12:34:58 -0500
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 296601EBD7;
+        Tue, 28 Feb 2023 09:34:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=IBh5/W4S+Ngb5u8xM/zenW6fPzVp/2VTq/NjigF0gLU=; b=mtXCmW9ocOBaET573x/F4JRZLD
-        UrzMeHzMxrrGZstuqbKXIxEUaqkKHa1RgKEaslfRW2h1cOFk12yqJXTVHI23dpec1bdAI9KphMG+t
-        C9zqQ23/yNpQmm5mOq89DrWwcn0AdehAsL2dCvEUM+1lPdHPvMoLzBMDxuqr1ZuZVrvJANTcclZgQ
-        hMnuIOClWkX0pXeHge9FpUQwyBSNpeciRvhBV7rbtfVVW5+x440rFYNTNfhTLUE7zmr+Fzhar/e6t
-        V3HG0KwIJ5iUINlVmHgxUsq8CgVP+1OoEoEgsp/UNOmOsyJ1mpDvRcMEmaSyH6hN3RyyFDVQ5mjA/
-        QMiwqQIg==;
-Received: from [2601:1c2:980:9ec0::df2f] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pX2yo-00DmBF-1K; Tue, 28 Feb 2023 16:37:30 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Subject: [PATCH] MAINTAINERS: drop uclinux.org
-Date:   Tue, 28 Feb 2023 08:37:26 -0800
-Message-Id: <20230228163726.10984-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.39.2
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bN8lETEGtH3eSCzqdqNXhuD99n9DHCrwwsYdF542otk=; b=tlM7n0Xf2FPdjnh6I1lRD/dMeA
+        /hXzqbpV8RRtbLC1sDVsgtMEN7cikGeK3Z5yneR36FFONPjOZYDhLmOP/tyJMoxJHxpZVcoVnVV0M
+        syx0lJ1Po6cnoqtkr5LVPcY5p0oj3P5gJV5Wm7cl3V/2lA269sPqGXI3qSuox0K2VHs51kQDHSTfm
+        lUncCtO7g0VDFwoVXw7wGG2YSp29ouOnhFFV0dGyHRGISsU+Gw86N7WhFw1pGsETFEz5N+P6P8lb6
+        0P3epZK72dBTYM3LK14Md4g++i+Xn8vyTQ2iKpNruxRo8PZF/qH7Ax8EFV0zWBStHnqUwCar2xFby
+        +gfd/aUQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1pX3sK-00CtWb-2k;
+        Tue, 28 Feb 2023 17:34:52 +0000
+Date:   Tue, 28 Feb 2023 17:34:52 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Helge Deller <deller@gmx.de>
+Cc:     linux-arch@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, Michal Simek <monstr@monstr.eu>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 08/10] parisc: fix livelock in uaccess
+Message-ID: <Y/47PMmpLDX5lPWx@ZenIV>
+References: <Y9lz6yk113LmC9SI@ZenIV>
+ <Y9l0w4M91DwYLO3N@ZenIV>
+ <84b1c2e4-c096-ed19-9701-472b54a4890c@gmx.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <84b1c2e4-c096-ed19-9701-472b54a4890c@gmx.de>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-uclinux.org is dead. Drop it from the MAINTAINERS file.
+On Mon, Feb 06, 2023 at 05:58:02PM +0100, Helge Deller wrote:
+> Hi Al,
+> 
+> On 1/31/23 21:06, Al Viro wrote:
+> > parisc equivalent of 26178ec11ef3 "x86: mm: consolidate VM_FAULT_RETRY handling"
+> > If e.g. get_user() triggers a page fault and a fatal signal is caught, we might
+> > end up with handle_mm_fault() returning VM_FAULT_RETRY and not doing anything
+> > to page tables.  In such case we must *not* return to the faulting insn -
+> > that would repeat the entire thing without making any progress; what we need
+> > instead is to treat that as failed (user) memory access.
+> > 
+> > Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+> > ---
+> >   arch/parisc/mm/fault.c | 5 ++++-
+> >   1 file changed, 4 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
+> > index 869204e97ec9..bb30ff6a3e19 100644
+> > --- a/arch/parisc/mm/fault.c
+> > +++ b/arch/parisc/mm/fault.c
+> > @@ -308,8 +308,11 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
+> > 
+> >   	fault = handle_mm_fault(vma, address, flags, regs);
+> > 
+> > -	if (fault_signal_pending(fault, regs))
+> > +	if (fault_signal_pending(fault, regs)) {
+> > +		if (!user_mode(regs))
+> > +			goto no_context;
+> >   		return;
+> > +	}
+> 
+> The testcase in
+>   https://lore.kernel.org/lkml/20170822102527.GA14671@leverpostej/
+>   https://lore.kernel.org/linux-arch/20210121123140.GD48431@C02TD0UTHF1T.local/
+> does hang with and without above patch on parisc.
+> It does not consume CPU in that state and can be killed with ^C.
+> 
+> Any idea?
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
----
- MAINTAINERS |    2 --
- 1 file changed, 2 deletions(-)
+	Still trying to resurrect the parisc box to test on it...
+FWIW, right now I've locally confirmed that mainline has the bug
+in question and that patch fixes it for alpha, sparc32 and sparc64;
+hexagon, m68k and riscv got acks from other folks; microblaze,
+nios2 and openrisc I can't test at all (no hardware, no qemu setup);
+same for parisc64.  Itanic and parisc32 I might be able to test,
+if I manage to resurrect the hardware.
 
-diff -- a/MAINTAINERS b/MAINTAINERS
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -21384,10 +21384,8 @@ F:	include/uapi/linux/ublk_cmd.h
- UCLINUX (M68KNOMMU AND COLDFIRE)
- M:	Greg Ungerer <gerg@linux-m68k.org>
- L:	linux-m68k@lists.linux-m68k.org
--L:	uclinux-dev@uclinux.org  (subscribers-only)
- S:	Maintained
- W:	http://www.linux-m68k.org/
--W:	http://www.uclinux.org/
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git
- F:	arch/m68k/*/*_no.*
- F:	arch/m68k/68*/
+	Just to confirm: your "can be killed with ^C" had been on the
+mainline parisc kernel (with userfaultfd enable, of course, or it wouldn't
+hang up at all), right?  Was it 32bit or 64bit kernel?
