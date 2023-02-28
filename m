@@ -2,128 +2,134 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9616C64EC7
-	for <linux-m68k@archiver.kernel.org>; Tue, 28 Feb 2023 19:19:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC182C64ED6
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Feb 2023 19:37:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229613AbjB1TTK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 28 Feb 2023 14:19:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51564 "EHLO
+        id S229883AbjB1ThM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 28 Feb 2023 14:37:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229874AbjB1TTJ (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 28 Feb 2023 14:19:09 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69FC12BC6
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Feb 2023 11:19:08 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id i5so9881658pla.2
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Feb 2023 11:19:08 -0800 (PST)
+        with ESMTP id S229437AbjB1ThL (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 28 Feb 2023 14:37:11 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20386268C
+        for <linux-m68k@vger.kernel.org>; Tue, 28 Feb 2023 11:37:10 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id 6-20020a17090a190600b00237c5b6ecd7so10308579pjg.4
+        for <linux-m68k@vger.kernel.org>; Tue, 28 Feb 2023 11:37:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1677611948;
+        d=gmail.com; s=20210112; t=1677613029;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=FpEVz7SmprPoPkB0vfE/PqJxuugSFBKj6AY2r5uLAhc=;
-        b=oWlcXRzyqWqEIYwyzrAbhH5dfbtnZIzo1YdAD6EbxrkG1UYmywauWswlbWUb9RyzJT
-         brrhvXg9BV/J80dlhPlO1Y21wLf6vRkFdXy7JICIvDrelyzHIZjZVwrR4yuaicL7f3Vk
-         2p3merJr6M4IafXoXz51BvBxgjw+2vFOvA7iQCX7+ipsnTqqyjWJ3THXEnrQ8p4gJgDk
-         xZ3DYrEnn6dh5SSFWIpnSPW533U6fF1NRXuZZhGMXkF858tTyzkALowN2hKgVfeUNsrR
-         5wS/6VMndefgSb0UUhYGxgiYLa81lYWrHHI0iDazPBKk+F/PHzqrgvgcgWVcBnyOqxfC
-         HgLQ==
+        bh=2mZD14GxqUCJu2rkCKuReUJwLw4M/zUJGqr+Xv3Edbg=;
+        b=PQUb4CmJnIuRpJhc2QXji1ZPs+otJ/WKklbFAao1o78DlmV/QWCPQU6qq4p1eCPal5
+         3RQGya9H1/9VieGD+AeR+42TgTyP+n6nx2o+0CnkjbyCFNvzWpzxTBXbPa9jwFVN4LhH
+         uNKTV8y8QZ2AaJX+bE/iuD4rFhO/ROSpk/FXjKm5g7VAsn3/9V5kHePXg1cRZhhdNPB4
+         0Mv7wtEVSu69a5ITDR4gzqI1TFghtWKzXJ7dkzfAzyOx66+EiJmXh9tGenjYljvVx2yD
+         2jNvsmHVYHEan8eJvapnXgz83Vig+EcWOi65fSPVv3o4JZaQjJKXIPBv6faN2BVDtm+S
+         /Z1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677611948;
+        d=1e100.net; s=20210112; t=1677613029;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FpEVz7SmprPoPkB0vfE/PqJxuugSFBKj6AY2r5uLAhc=;
-        b=UDxz32yaL9OYNTs0pDKIVI7RbzQZ8g3uEcmScXnRFuxJz7kV6P2Cc36tNxVf8LopW5
-         5RuyMCdH076u7D1A2C9f4A/NCxXlqQ4Dw/cpN209YNH+mt0JfmISQrsPGxi66YmSjq1c
-         Xxxqgt1jTYX1HQBPtnGiKhS2yoZgkGVBVmdgiOaQlG9rVF7+RnkmHnkD/ZDeVmFQsPY0
-         TgrIqeTT8/hj6unojP94v4ZF5EuoCRP1sC11t1TSi9kSnS2spJMrYSE1WNtbcRzEybqg
-         n4KIDm8CwUUxrsEZ6huV8gTsBET9vjV+aH2JSUQ756TF3OjvbWSjeQxhcw+d6SD8QzoL
-         PpHQ==
-X-Gm-Message-State: AO0yUKWNgDRN0RBxgJ80y4jE94CmqJDOmIQ+x/dJx1EHNq1Z5RMcR4l3
-        Ml6lv9mrsWQXkCSD1Ik2BBw=
-X-Google-Smtp-Source: AK7set9nvpB6Jm7bh8EL2CSZ/onqaLVDtbrhvaG0Y49z4Hn9XsjcfvrcAyDG9rY99D0UL9m1Qq4bXA==
-X-Received: by 2002:a05:6a20:7f8e:b0:cb:6e9e:e6df with SMTP id d14-20020a056a207f8e00b000cb6e9ee6dfmr5180512pzj.14.1677611948146;
-        Tue, 28 Feb 2023 11:19:08 -0800 (PST)
+        bh=2mZD14GxqUCJu2rkCKuReUJwLw4M/zUJGqr+Xv3Edbg=;
+        b=oZYyrfdmFCPPjTxa7TXAZ/I7jOiVWWFyPYpyqH1DuMw+7BzFMDVpdnRpTuLR15UaGj
+         ZKE4o8VgnlFlDWdBKYXrDXMUO1sxuJVBHK6IJ+qMLnLIdBMfMUixaZX89wAjsIuOESx1
+         T0Vejy8OxPJEKrf8804Qm4LGYHgISgLaDanw6U0M5xuyJ5EAK+g69gZWEqVIyUj+otpl
+         cSAFrpxRqoWlebIq7CB4N0oOMdNLwwk4bJSWp4gqNsfo5wlnkV8D8DpHL81WUoTlEUsa
+         3Q+UIbnO6CMRQ+jUKKsEubV72hXzze9t17jGYQ6ZE8nWPrih60fVBxtUxN5793J5Q+sV
+         68Ew==
+X-Gm-Message-State: AO0yUKWmcvfpm8xn36vlqPAXXSMnxcDYUiUQgz5l6xh5SN92G0bdTU7G
+        RuiXFANyRUBE5ky4t/RPE4LyWzpk79RrpA==
+X-Google-Smtp-Source: AK7set8IC56wDJqnNKXPkUB41PYvWvYfFh7sqb67W2eeqYA5RGhR/vosk2Kc3u3FsLFRO8FE3z+8Uw==
+X-Received: by 2002:a17:902:ab49:b0:19c:e440:924c with SMTP id ij9-20020a170902ab4900b0019ce440924cmr3451612plb.47.1677613029401;
+        Tue, 28 Feb 2023 11:37:09 -0800 (PST)
 Received: from ?IPV6:2001:df0:0:200c:112f:75e9:7ff2:6774? ([2001:df0:0:200c:112f:75e9:7ff2:6774])
-        by smtp.gmail.com with ESMTPSA id j8-20020a62b608000000b005ded4825201sm6382146pff.112.2023.02.28.11.19.02
+        by smtp.gmail.com with ESMTPSA id c24-20020a170902d91800b0019c2d664869sm6825033plz.298.2023.02.28.11.37.06
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Feb 2023 11:19:07 -0800 (PST)
-Message-ID: <f619e8ce-1fce-ace9-3685-e0b50646e8fb@gmail.com>
-Date:   Wed, 1 Mar 2023 08:18:59 +1300
+        Tue, 28 Feb 2023 11:37:08 -0800 (PST)
+Message-ID: <d7b2a366-8627-aa57-e4a5-fc9c93bf7b16@gmail.com>
+Date:   Wed, 1 Mar 2023 08:37:04 +1300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.7.1
-Subject: Re: [PATCH 08/10] parisc: fix livelock in uaccess
+Subject: Re: [PATCH RFC v1] m68k: kernel/traps.c - only force 030 bus error if
+ PC not in exception table
 Content-Language: en-US
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-arch@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, Michal Simek <monstr@monstr.eu>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <Y9lz6yk113LmC9SI@ZenIV> <Y9l0w4M91DwYLO3N@ZenIV>
- <20230228152236.GA4088022@roeck-us.net>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@vger.kernel.org, Eero Tamminen <oak@helsinkinet.fi>,
+        Finn Thain <ftain@linux-m68k.org>,
+        Andreas Schwab <schwab@linux-m68k.org>
+References: <20230222195021.6683-1-schmitzmic@gmail.com>
+ <CAMuHMdWm9yJaHGF-EGVmn69iKXLAh3G9PZer6WJUi-ZJPHDRJQ@mail.gmail.com>
+ <f716ab75-1523-db03-1615-41ec1b9ae6cf@gmail.com>
+ <CAMuHMdW+fsDdOAr=zBuf0k=zO=FEfjFhHsMPbd6inOk=8DFS2g@mail.gmail.com>
 From:   Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <20230228152236.GA4088022@roeck-us.net>
+In-Reply-To: <CAMuHMdW+fsDdOAr=zBuf0k=zO=FEfjFhHsMPbd6inOk=8DFS2g@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Guenter,
+Hi Geert,
 
-On 1/03/23 04:22, Guenter Roeck wrote:
-> On Tue, Jan 31, 2023 at 08:06:27PM +0000, Al Viro wrote:
->> parisc equivalent of 26178ec11ef3 "x86: mm: consolidate VM_FAULT_RETRY handling"
->> If e.g. get_user() triggers a page fault and a fatal signal is caught, we might
->> end up with handle_mm_fault() returning VM_FAULT_RETRY and not doing anything
->> to page tables.  In such case we must *not* return to the faulting insn -
->> that would repeat the entire thing without making any progress; what we need
->> instead is to treat that as failed (user) memory access.
->>
->> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
->> ---
->>   arch/parisc/mm/fault.c | 5 ++++-
->>   1 file changed, 4 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
->> index 869204e97ec9..bb30ff6a3e19 100644
->> --- a/arch/parisc/mm/fault.c
->> +++ b/arch/parisc/mm/fault.c
->> @@ -308,8 +308,11 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
->>   
->>   	fault = handle_mm_fault(vma, address, flags, regs);
->>   
->> -	if (fault_signal_pending(fault, regs))
->> +	if (fault_signal_pending(fault, regs)) {
->> +		if (!user_mode(regs))
->> +			goto no_context;
-> 0-day rightfully complains that this leaves 'msg' uninitialized.
+On 28/02/23 21:08, Geert Uytterhoeven wrote:
+> Hi Michael,
 >
-> arch/parisc/mm/fault.c:427 do_page_fault() error: uninitialized symbol 'msg'
+> On Tue, Feb 28, 2023 at 12:28 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+>> On 28/02/23 09:19, Geert Uytterhoeven wrote:
+>>> On Wed, Feb 22, 2023 at 8:52 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
+>>>> Link: https://lore.kernel.org/r/daca2f68-19fa-a2b6-97c6-16b5b7e26afe@helsinkinet.fi
+>>> 404
+>>>
+>>> I assume that a message from debian-68k?
+>> No, oddly enough that is a message that I have received with CC to
+>> linux-m68k (but not from vger!). And mail-archive.com has it:
+>>
+>> https://www.mail-archive.com/linux-m68k@vger.kernel.org/msg13081.html
+>>
+>> And also on marc.info:
+>>
+>> https://marc.info/?l=linux-m68k&m=155477039405576&w=2
+> That one has a different Message-ID:
+> alpine.LNX.2.21.1904141327340.130@nippy.intranet
+I get alpine.LNX.2.21.1904091023540.25@nippy.intranet ...
 >
-> Guenter
+>> Later one with an experimental patch of mine:
+>>
+>> https://marc.info/?l=linux-m68k&m=155494864731013&w=2
 
-What happens if you initialize msg to "Page fault: no context" right at 
-the start of do_page_fault (and drop the assignment a few lines down as 
-that's now redundant)?
+63130691-1984-c423-c1f2-73bfd8d3dcd3@gmail.com
 
-(Wondering if the zero page access on parisc could cause a trip right 
-back into do_page_fault, ad infinitum...)
+>>
+>> None of these messages show up on a search of lore...
+> Indeed, and I did receive them through vger.
+>
+>> What source do you prefer - marc.info or mail-archive.com?
+> Let's keep the lore link with the actual Message-ID.
+> Missing emails on lore can be backfilled later...
+>
+> Upon closer look, this predates lore collecting emails, so perhaps
+> something went wrong while importing my old archives I sent
+> to kernel.org. To be investigated...
+
+OK - I'll send around v2 with lore links and comment removed later.
 
 Cheers,
 
      Michael
 
-
->>   		return;
->> +	}
->>   
->>   	/* The fault is fully completed (including releasing mmap lock) */
->>   	if (fault & VM_FAULT_COMPLETED)
+>
+>
+> Gr{oetje,eeting}s,
+>
+>                          Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                  -- Linus Torvalds
