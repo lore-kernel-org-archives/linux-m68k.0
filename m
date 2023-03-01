@@ -2,188 +2,120 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BB68C64ED6
-	for <linux-m68k@archiver.kernel.org>; Wed,  1 Mar 2023 08:17:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47046C7EE30
+	for <linux-m68k@archiver.kernel.org>; Wed,  1 Mar 2023 09:26:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229850AbjCAIRD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 1 Mar 2023 03:17:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47160 "EHLO
+        id S229815AbjCAJZl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 1 Mar 2023 04:25:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbjCAIRB (ORCPT
+        with ESMTP id S229832AbjCAJZ2 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 1 Mar 2023 03:17:01 -0500
+        Wed, 1 Mar 2023 04:25:28 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6737237569
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  1 Mar 2023 00:16:12 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B363250E
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  1 Mar 2023 01:24:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1677658571;
+        s=mimecast20190719; t=1677662678;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qQIo0hNE1IdmdTJeAfVSWSJHdp/A2L81MbqwgQGi7/s=;
-        b=Lgx4494Ki92A8P7KBec9GZ+oniD/so9S6s376pXCBfwIZbpFryYzm7VuUbDCudOmPpuazJ
-        BZlYjiR+awKb7+/obJJdaVaNJPlnbEr8EXFHhRoDxhAjgvdnre76/wb2aZFcUicW5ld7qE
-        AjRVQKfqtaApCJ9VvbYhapBkNy2Iiis=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-64-yTX-WcsgOa21KH2LfM3S9g-1; Wed, 01 Mar 2023 03:16:10 -0500
-X-MC-Unique: yTX-WcsgOa21KH2LfM3S9g-1
-Received: by mail-wm1-f69.google.com with SMTP id x18-20020a1c7c12000000b003e1e7d3cf9fso8001768wmc.3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 01 Mar 2023 00:16:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :content-language:references:cc:to:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qQIo0hNE1IdmdTJeAfVSWSJHdp/A2L81MbqwgQGi7/s=;
-        b=nuZflHth8rpFF2pDB4hRsB+/JouVQ0xWyXeYiaaublcaHHfOPRxftWw/5EP2R87sZx
-         nUP1Eau/EM/VK91HxtGOpz/5Mitz0gQrck7pIjef9vFfN/t52QUmEb+smKYSsKHZHKQb
-         lOrWFzTBnOy8Qy36ZH2V3duR5plHNJzJcGxDZHv9VFJfD2T+Rv+k0P5nSFi7s2xAzS57
-         WQVm2j002HsguPfKtWIQiFY0PNj/gm2RLuskmmPciQ8dVKsXY3einRkfXyS6wpDqqNhW
-         uI+TN2oAJJy5j3C9+iGUwGVGwOzG07kck1N432qIipoeHGC/krONeyYb3MvT06rMffJU
-         sz+A==
-X-Gm-Message-State: AO0yUKXxRnmRg5HSBo080aKThOcjOn58QUlb+QscwdQ3Ze+lylv5moFv
-        o2XHFm/oMu96RRv4Z5wdiTGgjXJCNWtLDpDaBBCvlclbZu/JPIDaFcowl3WkBbNyOp8FXws2x77
-        J6HUvRca0rQTd1G6z25YkbvegFFGK
-X-Received: by 2002:adf:fa42:0:b0:2c8:9cfe:9e29 with SMTP id y2-20020adffa42000000b002c89cfe9e29mr3673938wrr.38.1677658569271;
-        Wed, 01 Mar 2023 00:16:09 -0800 (PST)
-X-Google-Smtp-Source: AK7set/Zcp0KDYd3P+ttMa1nxfZFskB2aS7FMY5A6AFDn91vWMJGTRwO0n5U4FI/yi5+QKrlOm4zVQ==
-X-Received: by 2002:adf:fa42:0:b0:2c8:9cfe:9e29 with SMTP id y2-20020adffa42000000b002c89cfe9e29mr3673883wrr.38.1677658568881;
-        Wed, 01 Mar 2023 00:16:08 -0800 (PST)
-Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
-        by smtp.gmail.com with ESMTPSA id m15-20020a5d6a0f000000b002c707785da4sm11739026wru.107.2023.03.01.00.16.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Mar 2023 00:16:08 -0800 (PST)
-Message-ID: <550c6035-6dd0-d215-226b-1a82dafa05d6@redhat.com>
-Date:   Wed, 1 Mar 2023 09:16:06 +0100
+        bh=EjLBO2oSAz1qd2pyxymW7NNpmRhL/8rZkZFuY2z88lg=;
+        b=WhSm/ig2q3uWy+EUlEyW1FQVhJ2a48IcohyWlvGH7w9IvTn3KvRmJedys4Dvfey9CdB12c
+        xRKhKKpnedVMttd9CqA3wiDbKFSWAB5XEBHXqI8o68QmtP8xNQvyBBCk3beGGhl7EoVM/N
+        TRT4x/IUtlx5Nkqmdx8dXy6Js3ELuRg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-280-y6BwrYfuMfy1XckhSv52eQ-1; Wed, 01 Mar 2023 04:24:33 -0500
+X-MC-Unique: y6BwrYfuMfy1XckhSv52eQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 41D9A85CBE0;
+        Wed,  1 Mar 2023 09:24:32 +0000 (UTC)
+Received: from localhost (ovpn-13-180.pek2.redhat.com [10.72.13.180])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id F07B52026D76;
+        Wed,  1 Mar 2023 09:24:28 +0000 (UTC)
+Date:   Wed, 1 Mar 2023 17:24:26 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>,
+        Edward Cree <ecree.xilinx@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, arnd@arndb.de, christophe.leroy@csgroup.eu,
+        hch@infradead.org, agordeev@linux.ibm.com,
+        wangkefeng.wang@huawei.com, schnelle@linux.ibm.com,
+        David.Laight@aculab.com, shorne@gmail.com,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        x86@kernel.org, netdev@vger.kernel.org,
+        Martin Habets <habetsm.xilinx@gmail.com>
+Subject: Re: [PATCH v5 01/17] asm-generic/iomap.h: remove ARCH_HAS_IOREMAP_xx
+ macros
+Message-ID: <Y/8Zyjfuypg3EiDd@MiWiFi-R3L-srv>
+References: <20230301034247.136007-1-bhe@redhat.com>
+ <20230301034247.136007-2-bhe@redhat.com>
+ <7bd6db48-ffb1-7eb1-decf-afa8be032970@gmail.com>
+ <Y/7eceqZ+89iPm1C@casper.infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H . J . Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Allen <john.allen@amd.com>,
-        "kcc@google.com" <kcc@google.com>,
-        "eranian@google.com" <eranian@google.com>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "jamorris@linux.microsoft.com" <jamorris@linux.microsoft.com>,
-        "dethoma@microsoft.com" <dethoma@microsoft.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "Andrew.Cooper3@citrix.com" <Andrew.Cooper3@citrix.com>,
-        "christina.schimpe@intel.com" <christina.schimpe@intel.com>,
-        "debug@rivosinc.com" <debug@rivosinc.com>
-Cc:     "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-        "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
-        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-References: <20230227222957.24501-1-rick.p.edgecombe@intel.com>
- <20230227222957.24501-14-rick.p.edgecombe@intel.com>
- <1f8b78b6-9f34-b646-68f2-eac62136b9f4@csgroup.eu>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v7 13/41] mm: Make pte_mkwrite() take a VMA
-In-Reply-To: <1f8b78b6-9f34-b646-68f2-eac62136b9f4@csgroup.eu>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y/7eceqZ+89iPm1C@casper.infradead.org>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 01.03.23 08:03, Christophe Leroy wrote:
+On 03/01/23 at 05:11am, Matthew Wilcox wrote:
+> On Wed, Mar 01, 2023 at 04:38:10AM +0000, Edward Cree wrote:
+> > On 01/03/2023 03:42, Baoquan He wrote:
+> > > diff --git a/drivers/net/ethernet/sfc/io.h b/drivers/net/ethernet/sfc/io.h
+> > > index 30439cc83a89..07f99ad14bf3 100644
+> > > --- a/drivers/net/ethernet/sfc/io.h
+> > > +++ b/drivers/net/ethernet/sfc/io.h
+> > > @@ -70,7 +70,7 @@
+> > >   */
+> > >  #ifdef CONFIG_X86_64
+> > >  /* PIO is a win only if write-combining is possible */
+> > > -#ifdef ARCH_HAS_IOREMAP_WC
+> > > +#ifdef ioremap_wc
+> > >  #define EFX_USE_PIO 1
+> > >  #endif
+> > >  #endif
+> > 
+> > So I don't know how valid what we're doing here is...
 > 
-> 
-> Le 27/02/2023 à 23:29, Rick Edgecombe a écrit :
->> The x86 Control-flow Enforcement Technology (CET) feature includes a new
->> type of memory called shadow stack. This shadow stack memory has some
->> unusual properties, which requires some core mm changes to function
->> properly.
->>
->> One of these unusual properties is that shadow stack memory is writable,
->> but only in limited ways. These limits are applied via a specific PTE
->> bit combination. Nevertheless, the memory is writable, and core mm code
->> will need to apply the writable permissions in the typical paths that
->> call pte_mkwrite().
->>
->> In addition to VM_WRITE, the shadow stack VMA's will have a flag denoting
->> that they are special shadow stack flavor of writable memory. So make
->> pte_mkwrite() take a VMA, so that the x86 implementation of it can know to
->> create regular writable memory or shadow stack memory.
->>
->> Apply the same changes for pmd_mkwrite() and huge_pte_mkwrite().
-> 
-> I'm not sure it is a good idea to add a second argument to
-> pte_mkwrite(). All pte_mkxxxx() only take a pte and nothing else.
+> Well, x86 defines ARCH_HAS_IOREMAP_WC unconditionally, so it doesn't
+> affect you ... but you raise a good question about how a driver can
+> determine if it's actually getting WC memory.
 
-We touched on this in previous revisions and so far there was no strong 
-push back. This turned out to be cleaner and easier than the 
-alternatives we evaluated.
+Yeah, this change doesn't affect sfc. Because ARCH_HAS_IOREMAP_WC is used to
+make ioremap_wc defined in <asm/io.h> override the default one in
+<asm-generic/iomap.h>, this patch has made code have the same effect.
 
-pte_modify(), for example, takes another argument. Sure, we could try 
-thinking about passing something else than a VMA to identify the 
-writability type, but I am not convinced that will look particularly better.
+Besides, I have a question still in my mind. Surely this is unrelated to
+this patch.
 
-> 
-> I think you should do the same as commit d9ed9faac283 ("mm: add new
-> arch_make_huge_pte() method for tile support")
-> 
+In commit 38d9029a652c (parisc: Define ioremap_uc and ioremap_wc),
+ioremap_wc definition was added in arch/parisc/include/asm/io.h, and it
+didn't add ARCH_HAS_IOREMAP_WC definition. However, it won't cause
+redefinition of ioremap_wc, even though there's "#include <asm-generic/iomap.h>"
+at below. I could be dizzy on these io.h and iomap.h.
 
-We already have 3 architectures intending to support shadow stacks in 
-one way or the other. Replacing all pte_mkwrite() with 
-arch_pte_mkwrite() doesn't sound particularly appealing to me.
+When I added ioremap_wt and ioremap_np to debug, ioremap_np will
+cause redefinition, while ioremap_wt woundn't. Does anyone know what
+I am missing?
 
-
--- 
-Thanks,
-
-David / dhildenb
+diff --git a/arch/parisc/include/asm/io.h b/arch/parisc/include/asm/io.h
+index c05e781be2f5..20d566eec3b3 100644
+--- a/arch/parisc/include/asm/io.h
++++ b/arch/parisc/include/asm/io.h
+@@ -127,6 +127,8 @@ static inline void gsc_writeq(unsigned long long val, unsigned long addr)
+  */
+ void __iomem *ioremap(unsigned long offset, unsigned long size);
+ #define ioremap_wc                     ioremap
++#define ioremap_wt                     ioremap
++#define ioremap_np                     ioremap
+ #define ioremap_uc                     ioremap
+ #define pci_iounmap                    pci_iounmap
 
