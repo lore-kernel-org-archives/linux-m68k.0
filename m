@@ -2,56 +2,59 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DE80C7EE33
-	for <linux-m68k@archiver.kernel.org>; Thu,  2 Mar 2023 09:47:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC030C678D4
+	for <linux-m68k@archiver.kernel.org>; Thu,  2 Mar 2023 09:48:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbjCBJrH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 2 Mar 2023 04:47:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55428 "EHLO
+        id S230072AbjCBJsR convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 2 Mar 2023 04:48:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230099AbjCBJrF (ORCPT
+        with ESMTP id S229649AbjCBJsP (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 2 Mar 2023 04:47:05 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EBB33B201
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  2 Mar 2023 01:47:02 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id h11so4142342wrm.5
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 02 Mar 2023 01:47:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20210112.gappssmtp.com; s=20210112; t=1677750421;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8G1o29Ga/UNTNJtY/6LksyBwTKom5lFj7gKfXcB8h4g=;
-        b=f5l6eWLUG26Tt1766JjI6+GInzRq5lOwonJqSgSnLvYw936TWJoY/k8LCTgJ0bfkJF
-         /sik1QE/lKik4wYpmelpWwyeaSPucJJe3LtOwmdgxeOqZMifyze3wQXcaEwnVHnCP8iI
-         uhTP6oBehvNs+Cq9TAu5oyX9Vr61Hg6hkYQJhCoxh8B3x+E2tjjKNdPaBlxqsIBA6ezp
-         DZWBusm4N21C0GYVueAYiVK6ByGTSyb/OuQDlMShYL/GtXpALshSesRtnYJRb8OPxeZX
-         E33mvg7vxn/lJGdB/iNyGNTrfDviw75Ua5B9SYEXBJXNoIAFOQ2EvY0Y2b9fZZBUzwZp
-         R52Q==
+        Thu, 2 Mar 2023 04:48:15 -0500
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 764E71BAD6
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  2 Mar 2023 01:48:04 -0800 (PST)
+Received: by mail-qt1-f176.google.com with SMTP id y10so12699110qtj.2
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 02 Mar 2023 01:48:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677750421;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8G1o29Ga/UNTNJtY/6LksyBwTKom5lFj7gKfXcB8h4g=;
-        b=A85yGClsRJo9GP1axNmpIe6Ac2YFWU/G8qQ9qRM4ID1ldleUBdRrYoFueS9pnUG/I8
-         aLt97ui5mq2BfYnnm+WB/n+sgHEzas5aYVJy/xqcpwK9/54K9fkSWhsXvG3ikTiThYEj
-         kg2pD7lELh6vs/FQ9/13K5nVlxkKe51FJhyGzQCuNLii43wJvx7B4AnSpxNoaISy7VCI
-         FlOKothfMIIWaHUO9+xX4KVojvC9Swv9QsoAs4/W49F+3tJYAfW62neUQkukQ6TUBVdb
-         LTix3MWPyLqO0jqRiIxnHDJ7/PSAEkluLPanIXDK7nwjddbyznoA3N8xYHNFQv7ma8Pc
-         zoqw==
-X-Gm-Message-State: AO0yUKWO+qW4nrWu8YKjmNLdGOGVI5qW/xA5q0e2562BaImoTglzfBgi
-        D2ZBalkqM/CbZMy1y9nDKyM0yw==
-X-Google-Smtp-Source: AK7set9J3h1SdWZFjFBk1kF/VV/+0cIiLPOiFxwZAoniEed5KnNwwwJqjyvLs0/w3Ko/NwUYEOVAHw==
-X-Received: by 2002:a5d:568d:0:b0:2c7:f56:28d9 with SMTP id f13-20020a5d568d000000b002c70f5628d9mr6805976wrv.54.1677750420888;
-        Thu, 02 Mar 2023 01:47:00 -0800 (PST)
-Received: from alex-rivos.home (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
-        by smtp.gmail.com with ESMTPSA id v7-20020a05600c444700b003eb0d6f48f3sm2536356wmn.27.2023.03.02.01.46.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Mar 2023 01:47:00 -0800 (PST)
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-To:     Jonathan Corbet <corbet@lwn.net>,
+        bh=SFYMa4F5zx6QmdN+xdk9xuKBVfUQIkEC+rLl+xVi7rY=;
+        b=2wXcW8maWDZJijtig1iO9w7okTaX2/cZ9K49XftpyJRhcIWkg8Binu2lesxyay4Y+X
+         YtG4gGZpFXizQ97EX4u9xlUZoLjkr93xQ6iFmlROvMWGZJISSs18JHl4xgBqPXQTlcVu
+         WLbwQEtJPEg997Geht9ZKhF8xYTgQ3dgEVxhy7FhyxoFdGT38XRCZPp4fJCltpCqDLRI
+         G720Hz5WqURsfE3YzQmGZ6Ha9owQzpCyjPVuTeP63G8dF6pW7p3H9IMzvo4clO1XK+OB
+         fV0mpw/obxbs8kjoVcpjxpbOzCCt36htsKqmKAPWJ9YpTKyFa2FPDMatiSxuqJI609pC
+         apOw==
+X-Gm-Message-State: AO0yUKVxOSWYN0fbGGM3FrRXlXglOXm/2WZdgYuAvDeY9HUIePrFw3ne
+        OBj7TOEUnck0x0nKfAmsXHsVHqESnQdsqQ==
+X-Google-Smtp-Source: AK7set8Tkj6vUyRFxnKHGCrQmrBKlTtYJPFgC1W0IZ0//Y/rh4eaWItyt5Fcj7N9dpMbBohF3jz7PA==
+X-Received: by 2002:a05:622a:1882:b0:3b6:8b52:1359 with SMTP id v2-20020a05622a188200b003b68b521359mr2746531qtc.0.1677750483106;
+        Thu, 02 Mar 2023 01:48:03 -0800 (PST)
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com. [209.85.219.53])
+        by smtp.gmail.com with ESMTPSA id q18-20020ac87352000000b003bfaff2a6b9sm9977626qtp.10.2023.03.02.01.48.02
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Mar 2023 01:48:02 -0800 (PST)
+Received: by mail-qv1-f53.google.com with SMTP id y12so11235915qvt.8
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 02 Mar 2023 01:48:02 -0800 (PST)
+X-Received: by 2002:a81:ad43:0:b0:533:91d2:9d94 with SMTP id
+ l3-20020a81ad43000000b0053391d29d94mr5972312ywk.5.1677750462713; Thu, 02 Mar
+ 2023 01:47:42 -0800 (PST)
+MIME-Version: 1.0
+References: <20230302093539.372962-1-alexghiti@rivosinc.com>
+In-Reply-To: <20230302093539.372962-1-alexghiti@rivosinc.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 2 Mar 2023 10:47:31 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVC99kFpS9vL+HEqbXdDRMKVSW_t21X1p37d0oQufxKLw@mail.gmail.com>
+Message-ID: <CAMuHMdVC99kFpS9vL+HEqbXdDRMKVSW_t21X1p37d0oQufxKLw@mail.gmail.com>
+Subject: Re: [PATCH v4 00/24] Remove COMMAND_LINE_SIZE from uapi
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
         Richard Henderson <richard.henderson@linaro.org>,
         Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
         Matt Turner <mattst88@gmail.com>,
@@ -61,10 +64,9 @@ To:     Jonathan Corbet <corbet@lwn.net>,
         Will Deacon <will@kernel.org>,
         Huacai Chen <chenhuacai@kernel.org>,
         WANG Xuerui <kernel@xen0n.name>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
         Michal Simek <monstr@monstr.eu>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
         Helge Deller <deller@gmx.de>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Nicholas Piggin <npiggin@gmail.com>,
@@ -95,66 +97,61 @@ To:     Jonathan Corbet <corbet@lwn.net>,
         linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
         sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
         linux-arch@vger.kernel.org
-Cc:     Palmer Dabbelt <palmer@rivosinc.com>
-Subject: [PATCH v4 11/24] xtensa: Remove COMMAND_LINE_SIZE from uapi
-Date:   Thu,  2 Mar 2023 10:35:26 +0100
-Message-Id: <20230302093539.372962-12-alexghiti@rivosinc.com>
-X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20230302093539.372962-1-alexghiti@rivosinc.com>
-References: <20230302093539.372962-1-alexghiti@rivosinc.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Palmer Dabbelt <palmer@rivosinc.com>
+Hi Alex,
 
-As far as I can tell this is not used by userspace and thus should not
-be part of the user-visible API.
+On Thu, Mar 2, 2023 at 10:35 AM Alexandre Ghiti <alexghiti@rivosinc.com> wrote:
+> This all came up in the context of increasing COMMAND_LINE_SIZE in the
+> RISC-V port.  In theory that's a UABI break, as COMMAND_LINE_SIZE is the
+> maximum length of /proc/cmdline and userspace could staticly rely on
+> that to be correct.
+>
+> Usually I wouldn't mess around with changing this sort of thing, but
+> PowerPC increased it with a5980d064fe2 ("powerpc: Bump COMMAND_LINE_SIZE
+> to 2048").  There are also a handful of examples of COMMAND_LINE_SIZE
+> increasing, but they're from before the UAPI split so I'm not quite sure
+> what that means: e5a6a1c90948 ("powerpc: derive COMMAND_LINE_SIZE from
+> asm-generic"), 684d2fd48e71 ("[S390] kernel: Append scpdata to kernel
+> boot command line"), 22242681cff5 ("MIPS: Extend COMMAND_LINE_SIZE"),
+> and 2b74b85693c7 ("sh: Derive COMMAND_LINE_SIZE from
+> asm-generic/setup.h.").
+>
+> It seems to me like COMMAND_LINE_SIZE really just shouldn't have been
+> part of the uapi to begin with, and userspace should be able to handle
+> /proc/cmdline of whatever length it turns out to be.  I don't see any
+> references to COMMAND_LINE_SIZE anywhere but Linux via a quick Google
+> search, but that's not really enough to consider it unused on my end.
+>
+> This issue was already considered in s390 and they reached the same
+> conclusion in commit 622021cd6c56 ("s390: make command line
+> configurable").
+>
+> The feedback on the v1 seemed to indicate that COMMAND_LINE_SIZE really
+> shouldn't be part of uapi, so this now touches all the ports.  I've
+> tried to split this all out and leave it bisectable, but I haven't
+> tested it all that aggressively.
+>
+> Changes since v3 <https://lore.kernel.org/all/20230214074925.228106-1-alexghiti@rivosinc.com/>:
+> * Added RB/AB
+> * Added a mention to commit 622021cd6c56 ("s390: make command line
+>   configurable") in the cover letter
 
-Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
-Acked-by: Max Filippov <jcmvbkbc@gmail.com>
----
- arch/xtensa/include/asm/setup.h      | 17 +++++++++++++++++
- arch/xtensa/include/uapi/asm/setup.h |  2 --
- 2 files changed, 17 insertions(+), 2 deletions(-)
- create mode 100644 arch/xtensa/include/asm/setup.h
+Thanks for the update!
 
-diff --git a/arch/xtensa/include/asm/setup.h b/arch/xtensa/include/asm/setup.h
-new file mode 100644
-index 000000000000..5356a5fd4d17
---- /dev/null
-+++ b/arch/xtensa/include/asm/setup.h
-@@ -0,0 +1,17 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+/*
-+ * include/asm-xtensa/setup.h
-+ *
-+ * This file is subject to the terms and conditions of the GNU General Public
-+ * License.  See the file "COPYING" in the main directory of this archive
-+ * for more details.
-+ *
-+ * Copyright (C) 2001 - 2005 Tensilica Inc.
-+ */
-+
-+#ifndef _XTENSA_SETUP_H
-+#define _XTENSA_SETUP_H
-+
-+#define COMMAND_LINE_SIZE	256
-+
-+#endif
-diff --git a/arch/xtensa/include/uapi/asm/setup.h b/arch/xtensa/include/uapi/asm/setup.h
-index 5356a5fd4d17..6f982394684a 100644
---- a/arch/xtensa/include/uapi/asm/setup.h
-+++ b/arch/xtensa/include/uapi/asm/setup.h
-@@ -12,6 +12,4 @@
- #ifndef _XTENSA_SETUP_H
- #define _XTENSA_SETUP_H
- 
--#define COMMAND_LINE_SIZE	256
--
- #endif
--- 
-2.37.2
+ Apparently you forgot to add your own SoB?
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
