@@ -2,54 +2,54 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C222C83003
-	for <linux-m68k@archiver.kernel.org>; Thu,  2 Mar 2023 09:56:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D931DC83005
+	for <linux-m68k@archiver.kernel.org>; Thu,  2 Mar 2023 09:57:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230323AbjCBJzg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 2 Mar 2023 04:55:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38022 "EHLO
+        id S229851AbjCBJ5I (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 2 Mar 2023 04:57:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230295AbjCBJzT (ORCPT
+        with ESMTP id S230420AbjCBJ4a (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 2 Mar 2023 04:55:19 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729D01517C
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  2 Mar 2023 01:55:16 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id e13so4386502wro.10
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 02 Mar 2023 01:55:16 -0800 (PST)
+        Thu, 2 Mar 2023 04:56:30 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 216553B841
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  2 Mar 2023 01:56:18 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id l1so12859533wry.12
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 02 Mar 2023 01:56:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20210112.gappssmtp.com; s=20210112; t=1677750915;
+        d=rivosinc-com.20210112.gappssmtp.com; s=20210112; t=1677750976;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ulDUS2iJXFm2m4kQCMOaQjdrnpHm4utsIFq2lL+6C40=;
-        b=POzlmxOjJt+vUzjHgKiyLtmHF93D8dc8ElKS6QtpjXdmUesEpRKPxKBAc6zrtoOf9F
-         EfQUD/qQ0T/79OjBhJTE8sqLESK1usXr+OZUB2gpyuSHrXMghaSar4AmmQZS9otBXuOq
-         bezlKuZXTOXIIbTaLdNhjqLE7JHQMPI0R1ZZBygS0Z0KTGxwcz7LUmZ4DZDaZAkpBXGE
-         dR/VgZ/ExD85vcRYDVvp/KOCY/q4r8EobUi6q81RmOCzdt+OmumHCCFVctgWhbWvZpIp
-         kpDLSIqzyWoyofHRT78OAMPZFHo1dnI+KtFcPsNtH0oOfHFkWRZu0lLSKZB8FaA6knok
-         i2Rg==
+        bh=nEs3yIz8iEmRFY8PICbSYz9IDFM/n81OtFDX6/s/AEc=;
+        b=knISX1iT2rRR106GIUlbJC06fpznhY3A4dilwlF3bmeod/OcRdwY77WLBaAulDxb61
+         Pk0zUhuXMaIpdVWHqDXDoQZZ3D3QzpQ3Ruhv1clqcbP74yLjtq6jpqGX6eesH+6oHzeO
+         3cFNkLpsLel0/ACtssFKIJ3XeqH1VIntoI5WTyMPUBcqLkiJqxc6DyFl45oy9ffoLcB6
+         I5E/cyonnx/gqVU4jjtrDPhZyMePqvpZyhm7gZHvwM1XibslkBs+UwOXQFGzPPAsdzYb
+         KpDXTSzIiVWdMGKpc9SW2D4U9Q+S2OqdMYO+45EVoUwJ0dpEVpNAY2jfr0NIemdeGfl+
+         h4Eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677750915;
+        d=1e100.net; s=20210112; t=1677750976;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ulDUS2iJXFm2m4kQCMOaQjdrnpHm4utsIFq2lL+6C40=;
-        b=PKx8T8xUr6Mh+8T13JtZrMsjbUVHfZilZTigEPQiXYg1bKTOUmcjmYetcBpUUlBIg1
-         8VskIgy6Uk+budsV08dOleaIkou2oQr/jwpO6LcRPFFRvb6LYHpWaLE+65apIEqHIXlo
-         7kJIvx3OjYmzkW7fheeiQDl65P91VEMKxzIj3r1PDsNh1WrDCGkvtLcwKZ73r1JqnhKL
-         jDTxcvMn6bxPBhNYslrIrRguin9RnyMwoi5xd5Tf5IM7XXXqWjwKVDaa9tRuSk14kZMA
-         BpI6Su5/kKZkDpSLPQ3hXmBBk9Xj2OPdcPjy0XJTI4TzE73NwuZGe31KS/WX+UE/j/Ul
-         M4zA==
-X-Gm-Message-State: AO0yUKWTHZ8DjE8pGHqjhrKHCdUj2sue3NqBz5oedSs+UXV3F+7U2Vbj
-        4EP+/UlusFZKTeOxqnqzZaFT4Q==
-X-Google-Smtp-Source: AK7set8Navb3iBc+2hpEMWYrWKHhP8mttsp1Jdp2Zbxa1wHwXxwyR7TH8IQILh9g0msJIIvsN7M/vg==
-X-Received: by 2002:a5d:40ca:0:b0:2c7:4ec:8d79 with SMTP id b10-20020a5d40ca000000b002c704ec8d79mr6522449wrq.21.1677750914917;
-        Thu, 02 Mar 2023 01:55:14 -0800 (PST)
+        bh=nEs3yIz8iEmRFY8PICbSYz9IDFM/n81OtFDX6/s/AEc=;
+        b=RWNzBkgwDvm6SrDVrWhdJA8mMKCT1XAMiMb+dSr8hgrAMst4FSDv/52qS4MdxaDGqH
+         qO0j9V+gge3dhPc3CJYPwNUgXoH0N34u4qm0DZs9QzZuIwMscbESLJ3aOc00JSsOjqbB
+         aiOiUNf7W718rghCFIaS3GY3/rHUae6eAgiX0EwToqAVn6aDsjK7EKGWcqkdyMg+E+iA
+         zqs30X52h01HuI+fHJA9p+wxGnsnKFfci/uX9FzPNnsllC6GDJ02k+CMdQ3EHX88nIZA
+         kTJjeuhBJcS/IM04ooLPKxtstIqUjtZi1dYPorktutPLRXBZHEXhpQ5EsxDusobSUbPY
+         9VXA==
+X-Gm-Message-State: AO0yUKWbxKhUC5uE2ZJUT65ZDNlSEKghay1i6DvQl956i4R96oemYYrK
+        gAHln1di3oeRYVH6wc+sIiIsoQ==
+X-Google-Smtp-Source: AK7set+NmzGCXmV49Z+yuGoqtBuUh6WsMHapZ5sjWJvg1AxjPSuRMcddn6CMUFtPpYXviamzMTzYwg==
+X-Received: by 2002:a5d:4845:0:b0:2c7:7b7:ee94 with SMTP id n5-20020a5d4845000000b002c707b7ee94mr6581157wrs.13.1677750976700;
+        Thu, 02 Mar 2023 01:56:16 -0800 (PST)
 Received: from alex-rivos.home (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
-        by smtp.gmail.com with ESMTPSA id b15-20020a5d45cf000000b002c703d59fa7sm14611580wrs.12.2023.03.02.01.55.13
+        by smtp.gmail.com with ESMTPSA id e15-20020a5d594f000000b002c5d3f0f737sm14703514wri.30.2023.03.02.01.56.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Mar 2023 01:55:14 -0800 (PST)
+        Thu, 02 Mar 2023 01:56:16 -0800 (PST)
 From:   Alexandre Ghiti <alexghiti@rivosinc.com>
 To:     Jonathan Corbet <corbet@lwn.net>,
         Richard Henderson <richard.henderson@linaro.org>,
@@ -97,9 +97,9 @@ To:     Jonathan Corbet <corbet@lwn.net>,
         linux-arch@vger.kernel.org
 Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
         =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>
-Subject: [PATCH v4 19/24] parisc: Remove empty <uapi/asm/setup.h>
-Date:   Thu,  2 Mar 2023 10:35:34 +0100
-Message-Id: <20230302093539.372962-20-alexghiti@rivosinc.com>
+Subject: [PATCH v4 20/24] x86: Remove empty <uapi/asm/setup.h>
+Date:   Thu,  2 Mar 2023 10:35:35 +0100
+Message-Id: <20230302093539.372962-21-alexghiti@rivosinc.com>
 X-Mailer: git-send-email 2.37.2
 In-Reply-To: <20230302093539.372962-1-alexghiti@rivosinc.com>
 References: <20230302093539.372962-1-alexghiti@rivosinc.com>
@@ -114,23 +114,32 @@ From: Palmer Dabbelt <palmer@rivosinc.com>
 
 Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
 Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
-Acked-by: Helge Deller <deller@gmx.de>
 ---
- arch/parisc/include/uapi/asm/setup.h | 5 -----
- 1 file changed, 5 deletions(-)
- delete mode 100644 arch/parisc/include/uapi/asm/setup.h
+ arch/x86/include/asm/setup.h      | 2 --
+ arch/x86/include/uapi/asm/setup.h | 1 -
+ 2 files changed, 3 deletions(-)
+ delete mode 100644 arch/x86/include/uapi/asm/setup.h
 
-diff --git a/arch/parisc/include/uapi/asm/setup.h b/arch/parisc/include/uapi/asm/setup.h
-deleted file mode 100644
-index bfad89428e47..000000000000
---- a/arch/parisc/include/uapi/asm/setup.h
-+++ /dev/null
-@@ -1,5 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
--#ifndef _PARISC_SETUP_H
--#define _PARISC_SETUP_H
+diff --git a/arch/x86/include/asm/setup.h b/arch/x86/include/asm/setup.h
+index f37cbff7354c..449b50a2f390 100644
+--- a/arch/x86/include/asm/setup.h
++++ b/arch/x86/include/asm/setup.h
+@@ -2,8 +2,6 @@
+ #ifndef _ASM_X86_SETUP_H
+ #define _ASM_X86_SETUP_H
+ 
+-#include <uapi/asm/setup.h>
 -
--#endif /* _PARISC_SETUP_H */
+ #define COMMAND_LINE_SIZE 2048
+ 
+ #include <linux/linkage.h>
+diff --git a/arch/x86/include/uapi/asm/setup.h b/arch/x86/include/uapi/asm/setup.h
+deleted file mode 100644
+index 79a9626b5500..000000000000
+--- a/arch/x86/include/uapi/asm/setup.h
++++ /dev/null
+@@ -1 +0,0 @@
+-/* */
 -- 
 2.37.2
 
