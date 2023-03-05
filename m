@@ -2,114 +2,122 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F580C6FD1A
-	for <linux-m68k@archiver.kernel.org>; Sun,  5 Mar 2023 09:30:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D016C61DA4
+	for <linux-m68k@archiver.kernel.org>; Sun,  5 Mar 2023 10:16:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbjCEJaI convert rfc822-to-8bit (ORCPT
+        id S229686AbjCEKQd convert rfc822-to-8bit (ORCPT
         <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 5 Mar 2023 04:30:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36150 "EHLO
+        Sun, 5 Mar 2023 05:16:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbjCEJaH (ORCPT
+        with ESMTP id S229699AbjCEKQ2 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 5 Mar 2023 04:30:07 -0500
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEE3DCDFD
-        for <linux-m68k@lists.linux-m68k.org>; Sun,  5 Mar 2023 01:30:06 -0800 (PST)
-Received: by mail-qv1-f42.google.com with SMTP id ff4so4715148qvb.2
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 05 Mar 2023 01:30:06 -0800 (PST)
+        Sun, 5 Mar 2023 05:16:28 -0500
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D4C914E89
+        for <linux-m68k@lists.linux-m68k.org>; Sun,  5 Mar 2023 02:16:26 -0800 (PST)
+Received: by mail-qt1-f173.google.com with SMTP id s12so7586341qtq.11
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 05 Mar 2023 02:16:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678008605;
+        d=1e100.net; s=20210112; t=1678011385;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vgd0m+/MCaDvNZBjSvDtubD53Qmudtg807BEeMSQ1f0=;
-        b=geWaGh7bkhy5frPaxnDYNY7sqhUnUwP3vTGLDIbbxbZQUTk/9abkjCa4OdD4oHz6wf
-         9lDRlB9dksIzwv/fFBmw5yJizWQVBjPpUMZ0Syc01oEdN+njSMr3v9tuLX5aCDsSGYFf
-         OBuLco4Kbv+i8qT88KbSI8I+5lLv97ZhYigsLW+xLB5KorkixKWUA+JoMpfLx+jvzWfy
-         AiGeEnh7gbLp/RQ/YXRTqfvdYQArkAjtzbSBD49Hq6/oPU+RxX54F3DovV2BbGNBV4lQ
-         CGZzoqSfd2mbRCGobL+B6olx5OvAX5WQIiCJQluMBm3C2ZLLKcLdllpVhXveozQytn0S
-         99pg==
-X-Gm-Message-State: AO0yUKVyNUrRaAxPqCwvcj4hxqJ/4vdNr1ZguFCDHtZ57Ji8ILrpgoUL
-        465vxgMbWqYfBsyKK2JsrLEV03aqqpMsNQ==
-X-Google-Smtp-Source: AK7set8X3DcnbtdbKuT5zlev65hFVfkoKbLyzjMRCJe9rkFlfGItzpXfqGLGgeKyzqXwbRsjrdLdHQ==
-X-Received: by 2002:a05:6214:21ee:b0:574:97e9:e21c with SMTP id p14-20020a05621421ee00b0057497e9e21cmr11106100qvj.4.1678008605166;
-        Sun, 05 Mar 2023 01:30:05 -0800 (PST)
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
-        by smtp.gmail.com with ESMTPSA id r8-20020ae9d608000000b006f9f3c0c63csm5265450qkk.32.2023.03.05.01.30.04
+        bh=h5qRGfTs5+kV00emn3Oo5iN+DSAN1HACfQYEpZctxMY=;
+        b=kXM5wJ4YieQIaoa6Eb5I7mhqb/HClTRziapm9CkHlLyOID7Rm79I7RCQgIqYQ1jYrE
+         +Fyj4JcNmk0Mz6mj39fXo9LYh6ZSK/e3UFLX8g1HJXDTdR5G0R853Z551f1dw2Ae77v7
+         Q1+7jSMBnCwkf/BhxRR3xQY8aImz0iu27HxcfG0t5l+9bUzDk7eerLDNbnVu8OSEFXJd
+         Ac1bipZp5sFmQPqqpsVQoFuO3JM5Y8E7t4UKeOtlD/1845d0x2Po+Pg/DdFH6reVO30n
+         4UZ7ibavKflNVh2X++JTvK54UVYjjU9dM2dht1jzUDvtjQkIqpb/Z71idnG2JzzOhETK
+         Dqow==
+X-Gm-Message-State: AO0yUKVjhyroW2XA4bk7sgv+F7mhx74FnswDfVffE9DQzqgN3ofsBK8n
+        DqkPzUgwLQXjz8h62NaAV55FYHXb5ySfww==
+X-Google-Smtp-Source: AK7set+yyY6TcU8D0Bdck0ZhAngxY3t/Yn1gQA7qHwSO1rZlJwqbmmaG0v5mbWwSLxKm6RCuIVevCw==
+X-Received: by 2002:ac8:5b56:0:b0:3bf:dbd3:a014 with SMTP id n22-20020ac85b56000000b003bfdbd3a014mr9563504qtw.45.1678011385321;
+        Sun, 05 Mar 2023 02:16:25 -0800 (PST)
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
+        by smtp.gmail.com with ESMTPSA id a191-20020ae9e8c8000000b007423843d879sm5252622qkg.93.2023.03.05.02.16.24
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 Mar 2023 01:30:04 -0800 (PST)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-53cb9ac9470so128121787b3.10
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 05 Mar 2023 01:30:04 -0800 (PST)
-X-Received: by 2002:a81:af0c:0:b0:52f:1c23:ef1 with SMTP id
- n12-20020a81af0c000000b0052f1c230ef1mr4669025ywh.5.1678008604127; Sun, 05 Mar
- 2023 01:30:04 -0800 (PST)
+        Sun, 05 Mar 2023 02:16:24 -0800 (PST)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-536cb25982eso129101587b3.13
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 05 Mar 2023 02:16:24 -0800 (PST)
+X-Received: by 2002:a81:b61d:0:b0:52e:f66d:b70f with SMTP id
+ u29-20020a81b61d000000b0052ef66db70fmr4376324ywh.5.1678011384672; Sun, 05 Mar
+ 2023 02:16:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20230303102817.212148-1-bhe@redhat.com> <20230303102817.212148-3-bhe@redhat.com>
- <87sfej1rie.fsf@mpe.ellerman.id.au>
-In-Reply-To: <87sfej1rie.fsf@mpe.ellerman.id.au>
+References: <20230228213738.272178-1-willy@infradead.org> <20230228213738.272178-14-willy@infradead.org>
+In-Reply-To: <20230228213738.272178-14-willy@infradead.org>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sun, 5 Mar 2023 10:29:52 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXoM24uAZGcjBtscNMOSY_+4u08PEOR7gOfCH7jvCceDg@mail.gmail.com>
-Message-ID: <CAMuHMdXoM24uAZGcjBtscNMOSY_+4u08PEOR7gOfCH7jvCceDg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] arch/*/io.h: remove ioremap_uc in some architectures
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org, arnd@arndb.de,
-        mcgrof@kernel.org, hch@infradead.org, linux-alpha@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org
+Date:   Sun, 5 Mar 2023 11:16:13 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdW5TtUeZDmtHvxw+DxqUADC-OCW=tHE2Gptcoie62T+4w@mail.gmail.com>
+Message-ID: <CAMuHMdW5TtUeZDmtHvxw+DxqUADC-OCW=tHE2Gptcoie62T+4w@mail.gmail.com>
+Subject: Re: [PATCH v3 13/34] m68k: Implement the new page table range API
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael,
+Hi Willy,
 
-On Sun, Mar 5, 2023 at 10:23 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
-> Baoquan He <bhe@redhat.com> writes:
-> > ioremap_uc() is only meaningful on old x86-32 systems with the PAT
-> > extension, and on ia64 with its slightly unconventional ioremap()
-> > behavior, everywhere else this is the same as ioremap() anyway.
-> >
-> > Here, remove the ioremap_uc() definition in architecutures other
-> > than x86 and ia64. These architectures all have asm-generic/io.h
-> > included and will have the default ioremap_uc() definition which
-> > returns NULL.
-> >
-> > Note: This changes the existing behaviour and could break code
-> > calling ioremap_uc(). If any ARCH meets this breakage and really
-> > needs a specific ioremap_uc() for its own usage, one ioremap_uc()
-> > can be added in the ARCH.
+On Tue, Feb 28, 2023 at 10:37 PM Matthew Wilcox (Oracle)
+<willy@infradead.org> wrote:
+> Add set_ptes(), update_mmu_cache_range(), flush_icache_pages() and
+> flush_dcache_folio().
 >
-> I see one use in:
->
-> drivers/video/fbdev/aty/atyfb_base.c:        par->ati_regbase = ioremap_uc(info->fix.mmio_start, 0x1000);
->
->
-> Which isn't obviously x86/ia64 specific.
->
-> I'm pretty sure some powermacs (powerpc) use that driver.
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-I originally wrote that driver for CHRP, so yes.
+Thanks for your patch!
 
-> Maybe that exact code path is only reachable on x86/ia64? But if so
-> please explain why.
+> --- a/arch/m68k/include/asm/cacheflush_mm.h
+> +++ b/arch/m68k/include/asm/cacheflush_mm.h
+> @@ -220,24 +220,28 @@ static inline void flush_cache_page(struct vm_area_struct *vma, unsigned long vm
 >
-> Otherwise it looks like this series could break that driver on powerpc
-> at least.
+>  /* Push the page at kernel virtual address and clear the icache */
+>  /* RZ: use cpush %bc instead of cpush %dc, cinv %ic */
+> -static inline void __flush_page_to_ram(void *vaddr)
+> +static inline void __flush_pages_to_ram(void *vaddr, unsigned int nr)
+>  {
+>         if (CPU_IS_COLDFIRE) {
+>                 unsigned long addr, start, end;
+>                 addr = ((unsigned long) vaddr) & ~(PAGE_SIZE - 1);
+>                 start = addr & ICACHE_SET_MASK;
+> -               end = (addr + PAGE_SIZE - 1) & ICACHE_SET_MASK;
+> +               end = (addr + nr * PAGE_SIZE - 1) & ICACHE_SET_MASK;
+>                 if (start > end) {
+>                         flush_cf_bcache(0, end);
+>                         end = ICACHE_MAX_ADDR;
+>                 }
+>                 flush_cf_bcache(start, end);
+>         } else if (CPU_IS_040_OR_060) {
+> -               __asm__ __volatile__("nop\n\t"
+> -                                    ".chip 68040\n\t"
+> -                                    "cpushp %%bc,(%0)\n\t"
+> -                                    ".chip 68k"
+> -                                    : : "a" (__pa(vaddr)));
+> +               unsigned long paddr = __pa(vaddr);
+> +
+> +               while (nr--) {
+> +                       __asm__ __volatile__("nop\n\t"
+> +                                            ".chip 68040\n\t"
+> +                                            "cpushp %%bc,(%0)\n\t"
+> +                                            ".chip 68k"
+> +                                            : : "a" (paddr + nr * PAGE_SIZE));
 
-Indeed.
+As gcc (9.5.0) keeps on calculating "paddr + nr * PAGE_SIZE"
+inside the loop (albeit using a shift instead of a multiplication),
+please use "paddr" here, followed by "paddr += PAGE_SIZE;".
 
 Gr{oetje,eeting}s,
 
                         Geert
 
--- 
+
+--
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
 In personal conversations with technical people, I call myself a hacker. But
