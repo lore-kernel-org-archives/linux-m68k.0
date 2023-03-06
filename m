@@ -2,97 +2,140 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DCA45C6FD19
-	for <linux-m68k@archiver.kernel.org>; Mon,  6 Mar 2023 07:22:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C19D2C6FD1A
+	for <linux-m68k@archiver.kernel.org>; Mon,  6 Mar 2023 09:35:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229558AbjCFHWC convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 6 Mar 2023 02:22:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52404 "EHLO
+        id S230044AbjCFJfi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 6 Mar 2023 04:35:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjCFHWC (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 6 Mar 2023 02:22:02 -0500
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C5E81C7CC
-        for <linux-m68k@lists.linux-m68k.org>; Sun,  5 Mar 2023 23:21:58 -0800 (PST)
-Received: by mail-qt1-f170.google.com with SMTP id h19so9565496qtk.7
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 05 Mar 2023 23:21:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678087317;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KF4/rhYJLCb1V3udoZ6HDdLYb1astmKZTSpEt1KMS3k=;
-        b=hYoRJtw4OIP7P7hboO59xW6fxvqsPnxByVznph51IrcDkAE8Q1pQFoNfxd4btfLkqd
-         8LI3tD3LIA0NzfPTpiB6PnzNpffweY8dzwSqTEoK2sUYeAis0MxwSBntmkueswklkuh/
-         UFy6LEpG2WYw0hkwJiu46cA6/9xnL0UAREnHFqkddsLLXtVRVI6bkQpSz/g1/p/Rh42L
-         EG7g5em7YwNi+6o+O/ti7HiP6GPx52KNXfpSfYtFNMGQDScDZrj7P9ABb4x1ujmMbr9y
-         3DZ7a2lQ9of/I7Ol93dp65Oc1k9j6CBpYgQOxhlQDyA4g8iOlJcJdmF6lxAaI6m7Q9oY
-         0Ejw==
-X-Gm-Message-State: AO0yUKUJctZVK67UQafiDOUzwLr6S6BAomuQWX5UCVtPLoX5fRtE7XTW
-        TTKST01e5qV8bL4s6ky0bznQvIo0mXlg7A==
-X-Google-Smtp-Source: AK7set/0E/t/HDGAYEgisyaIvK5hxzh/Y6ItqdcLRhE8u028NsTZiNySlaMOSYMycUHuhPs5f9Ke3g==
-X-Received: by 2002:a05:622a:284:b0:3bf:cf9d:ccbd with SMTP id z4-20020a05622a028400b003bfcf9dccbdmr14378308qtw.2.1678087317073;
-        Sun, 05 Mar 2023 23:21:57 -0800 (PST)
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
-        by smtp.gmail.com with ESMTPSA id g12-20020ac8124c000000b003b635a5d56csm7081691qtj.30.2023.03.05.23.21.56
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 Mar 2023 23:21:56 -0800 (PST)
-Received: by mail-yb1-f173.google.com with SMTP id v101so7152267ybi.2
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 05 Mar 2023 23:21:56 -0800 (PST)
-X-Received: by 2002:a5b:308:0:b0:90d:af77:9ca6 with SMTP id
- j8-20020a5b0308000000b0090daf779ca6mr5841580ybp.7.1678087316135; Sun, 05 Mar
- 2023 23:21:56 -0800 (PST)
+        with ESMTP id S229807AbjCFJfh (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 6 Mar 2023 04:35:37 -0500
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D56CA275;
+        Mon,  6 Mar 2023 01:35:33 -0800 (PST)
+Received: (Authenticated sender: alex@ghiti.fr)
+        by mail.gandi.net (Postfix) with ESMTPSA id D7AAE60017;
+        Mon,  6 Mar 2023 09:35:17 +0000 (UTC)
+Message-ID: <caaed678-4a5a-70e5-2ee7-cb2c8042afc0@ghiti.fr>
+Date:   Mon, 6 Mar 2023 10:35:17 +0100
 MIME-Version: 1.0
-References: <20230228213738.272178-1-willy@infradead.org> <20230228213738.272178-14-willy@infradead.org>
- <CAMuHMdW5TtUeZDmtHvxw+DxqUADC-OCW=tHE2Gptcoie62T+4w@mail.gmail.com>
- <ZAS1Lq6//oO/0PXe@casper.infradead.org> <0b00a30e-cb7f-d42b-7d16-0ae8d50ed916@gmail.com>
-In-Reply-To: <0b00a30e-cb7f-d42b-7d16-0ae8d50ed916@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 6 Mar 2023 08:21:44 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUDrOD3DezbvxaJH6CXxDFRNC7G-8uU7mqVHxZcG6GNBA@mail.gmail.com>
-Message-ID: <CAMuHMdUDrOD3DezbvxaJH6CXxDFRNC7G-8uU7mqVHxZcG6GNBA@mail.gmail.com>
-Subject: Re: [PATCH v3 13/34] m68k: Implement the new page table range API
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v3 00/24] Remove COMMAND_LINE_SIZE from uapi
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@arndb.de>, "H. Peter Anvin" <hpa@zytor.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, gor@linux.ibm.com,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        borntraeger@linux.ibm.com, Sven Schnelle <svens@linux.ibm.com>,
+        ysato@users.osdn.me, Rich Felker <dalias@libc.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        chris@zankel.net, Max Filippov <jcmvbkbc@gmail.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        Linux-Arch <linux-arch@vger.kernel.org>
+References: <mhng-e8b09772-24e5-4729-a0bf-01a9e4c76636@palmer-ri-x1c9a>
+ <21F95EC4-71EA-4154-A7DC-8A5BA54F174B@zytor.com>
+ <674bc31e-e4ed-988f-820d-54213d83f9c7@ghiti.fr>
+ <c500840b-b57d-47f2-a3d9-41465b10ffae@app.fastmail.com>
+From:   Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <c500840b-b57d-47f2-a3d9-41465b10ffae@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael,
 
-On Sun, Mar 5, 2023 at 9:44 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> On 6/03/23 04:28, Matthew Wilcox wrote:
-> > On Sun, Mar 05, 2023 at 11:16:13AM +0100, Geert Uytterhoeven wrote:
-> >>> +               while (nr--) {
-> >>> +                       __asm__ __volatile__("nop\n\t"
-> >>> +                                            ".chip 68040\n\t"
-> >>> +                                            "cpushp %%bc,(%0)\n\t"
-> >>> +                                            ".chip 68k"
-> >>> +                                            : : "a" (paddr + nr * PAGE_SIZE));
-> >> As gcc (9.5.0) keeps on calculating "paddr + nr * PAGE_SIZE"
-> >> inside the loop (albeit using a shift instead of a multiplication),
-> >> please use "paddr" here, followed by "paddr += PAGE_SIZE;".
+On 3/3/23 17:40, Arnd Bergmann wrote:
+> On Fri, Mar 3, 2023, at 12:59, Alexandre Ghiti wrote:
+>> On 3/2/23 20:50, H. Peter Anvin wrote:
+>>> On March 1, 2023 7:17:18 PM PST, Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>>>>>> Commit 622021cd6c560ce7 ("s390: make command line configurable"),
+>>>>>> I assume?
+>>>>> Yes, sorry for that. I got distracted while writing and used the wrong
+>>>>> branch to look this up.
+>>>> Alex: Probably worth adding that to the list in the cover letter as it looks like you were planning on a v4 anyway (which I guess you now have to do, given that I just added the issue to RISC-V).
+>>> The only use that is uapi is the *default* length of the command line if the kernel header doesn't include it (in the case of x86, it is in the bzImage header, but that is atchitecture- or even boot format-specific.)
+>> Is COMMAND_LINE_SIZE what you call the default length? Does that mean
+>> that to you the patchset is wrong?
+> On x86, the COMMAND_LINE_SIZE value is already not part of a uapi header,
+> but instead (since bzImage format version 2.06) is communicated from
+> the kernel to the boot loader, which then knows how much data the
+> kernel will read (at most) from the command line.
 >
-> Are we certain that contiguous vaddr always maps to contiguous paddr?
+> Most x86 kernels these days are booted using UEFI, which I think has
+> no such interface, the firmware just passes the command line and a
+> length, but has no way of knowing if the kernel will truncate this.
+> I think that is the same as with any other architecture that passes
+> the command line through UEFI, DT or ATAGS, all of which use
+> length/value pairs.
+>
+> Russell argued on IRC that this can be considered an ABI since a
+> boot loader may use its knowledge of the kernel's command line size
+> limit to reject long command lines. On the other hand, I don't
+> think that any boot loader actually does, they just trust that it
+> fits and don't have a good way of rejecting invalid configuration
+> other than truncating and/or warning.
+>
+> One notable exception I found while looking through is the old
+> (pre-ATAGS) parameter structure on Arm, which uses COMMAND_LINE_SIZE
+> as part of the structure definition. Apparently this was deprecated
+> 22 years ago, so hopefully the remaining riscpc and footbridge
+> users have all upgraded their bootloaders.
+>
+> The only other case I could find that might go wrong is
+> m68knommu with a few files copying a COMMAND_LINE_SIZE sized
+> buffer from flash into a kernel buffer:
+>
+> arch/m68k/coldfire/m5206.c:void __init config_BSP(char *commandp, int size)
+> arch/m68k/coldfire/m5206.c-{
+> arch/m68k/coldfire/m5206.c-#if defined(CONFIG_NETtel)
+> arch/m68k/coldfire/m5206.c-     /* Copy command line from FLASH to local buffer... */
+> arch/m68k/coldfire/m5206.c-     memcpy(commandp, (char *) 0xf0004000, size);
+> arch/m68k/coldfire/m5206.c-     commandp[size-1] = 0;
+> arch/m68k/coldfire/m5206.c-#endif /* CONFIG_NETtel */
 
-For a general __flush_pages_to_ram() function, that would not be
-guaranteed. But as this is meant for folios, it must be true:
-https://elixir.bootlin.com/linux/latest/source/include/linux/mm_types.h#L320
 
-Gr{oetje,eeting}s,
+I see, thanks your thorough explanation: I don't see this m64k issue as 
+a blocker (unless Geert disagrees but he already reviewed the m64k 
+patches),  so I'll send the v5 now.
 
-                        Geert
+Thanks again,
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Alex
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
+>
+>       Arnd
