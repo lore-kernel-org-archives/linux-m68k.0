@@ -2,147 +2,98 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DBF2C678D4
-	for <linux-m68k@archiver.kernel.org>; Mon,  6 Mar 2023 13:19:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CFC78C64EC4
+	for <linux-m68k@archiver.kernel.org>; Mon,  6 Mar 2023 23:01:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbjCFNTZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 6 Mar 2023 08:19:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56512 "EHLO
+        id S229953AbjCFXB4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 6 Mar 2023 18:01:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231182AbjCFNTY (ORCPT
+        with ESMTP id S229742AbjCFXBz (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 6 Mar 2023 08:19:24 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06462A6C5
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Mar 2023 05:19:21 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id m25-20020a7bcb99000000b003e7842b75f2so5167240wmi.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 06 Mar 2023 05:19:21 -0800 (PST)
+        Mon, 6 Mar 2023 18:01:55 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F3B65043
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Mar 2023 15:01:54 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id i3so12232129plg.6
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 06 Mar 2023 15:01:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1678108760;
-        h=content-transfer-encoding:in-reply-to:from:references:to
+        d=gmail.com; s=20210112; t=1678143714;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=vrJgxYarH7I6tNp9lZXR/Ac4rjm0j3spQFQq/MBh93Y=;
-        b=jHFLuIxja1G7FgaKieMDho79j97bJcJzl5r6JSUNDsV4mA/2T7Rt4dEtFe+mJ68fX4
-         BeL12/7YXldN+W+jMsW2lzMpm7r3Yib7HB15R0q1heNbBxPxEhqAIyFb3CQ8yqwvxO6o
-         BJurB4kLXa0lNndbLzZFaNMuolqgLqLKrQAR20V3xF0z74ogRkWYyf9Fn6yc2fhFf5Yt
-         FkCUzXT6yQqa29dR6x7uYhnNqncplW9W2fbLvSLNfHc7S5X+e6Ao0YebH65T7dKnNa3q
-         Jy+sBKs6+/mTsBRIAlMv1Y4l4Lt9r2RJbnY6D7RgudRSTAB6XHrXBh5KlORUW46XFdOz
-         u/1Q==
+        bh=CFvaNQYUtK3/GzIRP4wfkaFrx608yYNRKbg0aOKiIdo=;
+        b=jGkX9bczrnZfe7qhlgEPntSvlGYcNl02gax5qBYne5xhtKngRdLaJmPmXiwD1QlT9H
+         /EVVKqr1PZp/QIr4pCnwXHP8IoycaduQqu6gi7WqGTQcod4mL6xPdLIm3htDAh05tfrD
+         lrmZyiBao7+zc1XOd7hZY6ECaHr2Oj18Sc4jzlO/oPOAXnPRxe2YGdFd/wHEsff0c1ml
+         pXcBCTHTWidAsi0DdPZ14b4oAZZ7XYo8CXvyo5q1+Q5H+I9K5/Dy2JdXHkCgZ6ccqEDR
+         Mcjj+lyZkZZAIj78DuPSpESgbjOsziTSttLugaXHz6PhBAcsPjtpGJZOF6zNy3Tnjbys
+         SIXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678108760;
-        h=content-transfer-encoding:in-reply-to:from:references:to
+        d=1e100.net; s=20210112; t=1678143714;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vrJgxYarH7I6tNp9lZXR/Ac4rjm0j3spQFQq/MBh93Y=;
-        b=csS8FKZX1PNcbq2awgOZnTA6gHmsXB+k/JewfbudiM95rcsSWthuS5yFmVN67o351w
-         y90UQ2a553Ht/vJ7LvYtjwv5n3WhJYwpeapxH6m7uCQrwzr8IH5UvDI67TWr1klQwLCK
-         EIlZmK6qhUwnsnBdMVJZUgBrxjkvXXHRT0nMpzS/5atlxD2ywiL87QT+EyhhAEqEj++a
-         6gT4y4jhxqnjrF9er7PKCVCqC8v9ggh9jzY2N4UIYcqO6KJykx23Aerb3r4yUhiF7Tg5
-         yIcv1nyIv2QiOPC9VOm7FMEr+KgVedI6piLAntxoX9kvbLKHkFOfZ240J6850B5wlqEU
-         OiLg==
-X-Gm-Message-State: AO0yUKXQ82b+IEGH/E8+qDE7KZi3TceQTLX2Y2Z4fUmIiYapuTTbjuUs
-        qG7YXrNIjQxfs8cVSLblbrQvGg==
-X-Google-Smtp-Source: AK7set/GCxEC4IkWKnP9EDEQUMxesVbqKr+YvF+/CM/XdLiZbcIHy+xB1RCNFt5QnRqORoMSq/nNOw==
-X-Received: by 2002:a05:600c:1548:b0:3e2:1f00:bff7 with SMTP id f8-20020a05600c154800b003e21f00bff7mr7424203wmg.12.1678108760216;
-        Mon, 06 Mar 2023 05:19:20 -0800 (PST)
-Received: from [192.168.30.216] ([81.0.6.76])
-        by smtp.gmail.com with ESMTPSA id f21-20020a1c6a15000000b003e733a973d2sm13613044wmc.39.2023.03.06.05.19.16
+        bh=CFvaNQYUtK3/GzIRP4wfkaFrx608yYNRKbg0aOKiIdo=;
+        b=27SDtOflQGw2PCmImDoPU/1J3xXNUJ1V1L9fQQP+pTdz+A74e4uXExEAF+O2zAlv6g
+         AShcO9K6+dDg1fFKxrcLrSe5eYaOmgSgPW4q9jKKhJPliuRgP7B5e96XzjdUey/jiB1X
+         UfHYghN4Cvw4UHMP8xIMeAn6+tzEv50S7An/uyy7HmKo0hM0z0A3QnWCsiMeNtrp6JM6
+         3GiSMgbIVw6iiuzrCs5XVRLrIe9PGaHNA4YwD18Sz5e+Dpc12uKl6GZEDgH36br+sd0S
+         cPq+ChuX2T9NnEQMGfaWpOHV7N1Ku6+6uHvkPSJxRC3Y9Fo+dE6MQDJd+TTIYJEbKkuE
+         jlAg==
+X-Gm-Message-State: AO0yUKXDjs95X07k0o992rYEWUpAjH4mKYlQi/eJWHooWDyODglgD5I/
+        qhyP4VQ5ypU6hu05W4M1pZU=
+X-Google-Smtp-Source: AK7set/Vj8UXjS8rj40zM4+sO9o7q139gb3UfaWLkIHkIeZPS3jYCAzX7WkSDGyNppSvZ6bUWJZOZQ==
+X-Received: by 2002:a05:6a21:33a8:b0:bf:58d1:ce98 with SMTP id yy40-20020a056a2133a800b000bf58d1ce98mr14277840pzb.23.1678143713866;
+        Mon, 06 Mar 2023 15:01:53 -0800 (PST)
+Received: from ?IPV6:2001:df0:0:200c:30b0:fa2a:478a:23d8? ([2001:df0:0:200c:30b0:fa2a:478a:23d8])
+        by smtp.gmail.com with ESMTPSA id n1-20020a6546c1000000b0050301745a5dsm6754962pgr.50.2023.03.06.15.01.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Mar 2023 05:19:19 -0800 (PST)
-Message-ID: <e1fa23ff-951e-176b-1a84-cbaab34ed44d@linaro.org>
-Date:   Mon, 6 Mar 2023 14:19:15 +0100
+        Mon, 06 Mar 2023 15:01:53 -0800 (PST)
+Message-ID: <5f556597-5f09-6baa-80bb-aef7337ae869@gmail.com>
+Date:   Tue, 7 Mar 2023 12:01:47 +1300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.8.0
-Subject: Re: [PATCH v5 00/26] Remove COMMAND_LINE_SIZE from uapi
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v3 13/34] m68k: Implement the new page table range API
 Content-Language: en-US
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-arch@vger.kernel.org
-References: <20230306100508.1171812-1-alexghiti@rivosinc.com>
-From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
-In-Reply-To: <20230306100508.1171812-1-alexghiti@rivosinc.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org
+References: <20230228213738.272178-1-willy@infradead.org>
+ <20230228213738.272178-14-willy@infradead.org>
+ <CAMuHMdW5TtUeZDmtHvxw+DxqUADC-OCW=tHE2Gptcoie62T+4w@mail.gmail.com>
+ <ZAS1Lq6//oO/0PXe@casper.infradead.org>
+ <0b00a30e-cb7f-d42b-7d16-0ae8d50ed916@gmail.com>
+ <CAMuHMdUDrOD3DezbvxaJH6CXxDFRNC7G-8uU7mqVHxZcG6GNBA@mail.gmail.com>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+In-Reply-To: <CAMuHMdUDrOD3DezbvxaJH6CXxDFRNC7G-8uU7mqVHxZcG6GNBA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 6/3/23 11:04, Alexandre Ghiti wrote:
-> This all came up in the context of increasing COMMAND_LINE_SIZE in the
-> RISC-V port.  In theory that's a UABI break, as COMMAND_LINE_SIZE is the
-> maximum length of /proc/cmdline and userspace could staticly rely on
-> that to be correct.
-> 
-> Usually I wouldn't mess around with changing this sort of thing, but
-> PowerPC increased it with a5980d064fe2 ("powerpc: Bump COMMAND_LINE_SIZE
-> to 2048").  There are also a handful of examples of COMMAND_LINE_SIZE
-> increasing, but they're from before the UAPI split so I'm not quite sure
-> what that means: e5a6a1c90948 ("powerpc: derive COMMAND_LINE_SIZE from
-> asm-generic"), 684d2fd48e71 ("[S390] kernel: Append scpdata to kernel
-> boot command line"), 22242681cff5 ("MIPS: Extend COMMAND_LINE_SIZE"),
-> and 2b74b85693c7 ("sh: Derive COMMAND_LINE_SIZE from
-> asm-generic/setup.h.").
-> 
-> It seems to me like COMMAND_LINE_SIZE really just shouldn't have been
-> part of the uapi to begin with, and userspace should be able to handle
-> /proc/cmdline of whatever length it turns out to be.  I don't see any
-> references to COMMAND_LINE_SIZE anywhere but Linux via a quick Google
-> search, but that's not really enough to consider it unused on my end.
-> 
-> This issue was already considered in s390 and they reached the same
-> conclusion in commit 622021cd6c56 ("s390: make command line
-> configurable").
-> 
-> The feedback on the v1 seemed to indicate that COMMAND_LINE_SIZE really
-> shouldn't be part of uapi, so this now touches all the ports.  I've
-> tried to split this all out and leave it bisectable, but I haven't
-> tested it all that aggressively.
+Hi Geert,
 
-Series:
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+On 6/03/23 20:21, Geert Uytterhoeven wrote:
+>> Are we certain that contiguous vaddr always maps to contiguous paddr?
+> For a general __flush_pages_to_ram() function, that would not be
+> guaranteed. But as this is meant for folios, it must be true:
+> https://elixir.bootlin.com/linux/latest/source/include/linux/mm_types.h#L320
 
+Thanks for explaining - that just leaves the problem of cowboys like 
+myself abusing __flush_pages_to_ram(addr, nr) with nr > 1 for something 
+that isn't a folio. Maybe a comment 'nr > 1 only valid on folios' would 
+help ...
+
+Cheers,
+
+     Michael
+
+>
+> Gr{oetje,eeting}s,
+>
+>                          Geert
+>
