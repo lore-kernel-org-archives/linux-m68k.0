@@ -2,406 +2,88 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AECADC61DA4
-	for <linux-m68k@archiver.kernel.org>; Mon,  6 Mar 2023 12:48:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46C25C678D4
+	for <linux-m68k@archiver.kernel.org>; Mon,  6 Mar 2023 12:57:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbjCFMss (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 6 Mar 2023 07:48:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45978 "EHLO
+        id S229784AbjCFM5P convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 6 Mar 2023 07:57:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbjCFMsp (ORCPT
+        with ESMTP id S230281AbjCFM5O (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 6 Mar 2023 07:48:45 -0500
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4E625B87
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Mar 2023 04:48:42 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed50:b745:671d:a946:57fa])
-        by xavier.telenet-ops.be with bizsmtp
-        id V0og2900Q4LuvSS010ogci; Mon, 06 Mar 2023 13:48:40 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1pZAG8-00B5IY-4r;
-        Mon, 06 Mar 2023 13:48:40 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1pZAGe-005B35-4g;
-        Mon, 06 Mar 2023 13:48:40 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-m68k@lists.linux-m68k.org
-Cc:     linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: defconfig: Update defconfigs for v6.3-rc1
-Date:   Mon,  6 Mar 2023 13:48:37 +0100
-Message-Id: <2b6d1357f4cb7e23bb2c7a7d39c4486e77e138ad.1678106848.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
+        Mon, 6 Mar 2023 07:57:14 -0500
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6FE2BEE7
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Mar 2023 04:57:12 -0800 (PST)
+Received: by mail-qt1-f177.google.com with SMTP id z6so10355126qtv.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 06 Mar 2023 04:57:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678107431;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=i5NtHGfBrkQjU8TyvvaiWylqhUt2gDZuD3ZhgSX4hqE=;
+        b=H+Dcbz+UHYJROP5waOWYNtbwH7p+U3jnH76PgBGXBrOX/pSGEw0JGYtK65C9SGmoqc
+         MMXGs6HSSDQSTnjWmVpiT/Q8ZjTlWn71FR03lYXfEjkTNBlu3kJp2bZWbMgo8oKo6BHI
+         B6dkE+cxUqJyWGc6E+qIDgRYrjtD3vKAVznZPL/ydZplU2jvfo/Ilo9IP3LaUN82U33H
+         Ssh+VcWF/wuxMwsjDOdHih0ermRD/yABd3zmQsp3a5IHw64iqNNRFLUBmyEWNVps1fE2
+         4zyZdXuUYREsVOseM7qJ1JSMk8bxVjsjhE4VsV0vFihx+EznEVNxL0ghBocMeaptKCab
+         nwVA==
+X-Gm-Message-State: AO0yUKW03p0I88ag+OCquiKvIZNTi9Pn/Mq8sx/N98xfj2yejjVkNj2N
+        XjNm06p75k33hcHiBfPkCJcYFtq7us1PPQ==
+X-Google-Smtp-Source: AK7set8V2Gch1/7dz+QexQabwoVBsoXzbi95vs1Rc7cG9wl2SIXBMRgYuPx9Ysi0iuqckK0f8G2/eQ==
+X-Received: by 2002:ac8:5c02:0:b0:3b8:525e:15ec with SMTP id i2-20020ac85c02000000b003b8525e15ecmr19541927qti.27.1678107431341;
+        Mon, 06 Mar 2023 04:57:11 -0800 (PST)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id f8-20020a05620a280800b0071d0f1d01easm7435118qkp.57.2023.03.06.04.57.10
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Mar 2023 04:57:11 -0800 (PST)
+Received: by mail-yb1-f169.google.com with SMTP id c80so988822ybf.5
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 06 Mar 2023 04:57:10 -0800 (PST)
+X-Received: by 2002:a5b:d4e:0:b0:a27:3ecd:6 with SMTP id f14-20020a5b0d4e000000b00a273ecd0006mr6469670ybr.1.1678107430715;
+ Mon, 06 Mar 2023 04:57:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230223112349.26675-1-jongk@linux-m68k.org> <CACz-3rjsBjum7T+dt8MGuwThwV98NnKuB-DE-Z3=VYa=nSd6-A@mail.gmail.com>
+In-Reply-To: <CACz-3rjsBjum7T+dt8MGuwThwV98NnKuB-DE-Z3=VYa=nSd6-A@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 6 Mar 2023 13:56:58 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdV+q28hy6qLZwaQLO4dSSZeRfDzDSXfHrJyaSVxq=p1Ew@mail.gmail.com>
+Message-ID: <CAMuHMdV+q28hy6qLZwaQLO4dSSZeRfDzDSXfHrJyaSVxq=p1Ew@mail.gmail.com>
+Subject: Re: [PATCH] m68k: fix for systems with memory at end of 32-bit
+ address space
+To:     Kars de Jong <jongk@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-  - Drop CONFIG_IP_NF_TARGET_CLUSTERIP=m (removed in commit
-    9db5d918e2c07fa0 ("netfilter: ip_tables: remove clusterip target")),
-  - Enable modular build of the Kerberos V mechanism for Secure RPC
-    (auto-builtin since commit dfe9a123451a6e73 ("SUNRPC: Enable
-    rpcsec_gss_krb5.ko to be built without CRYPTO_DES")),
-  - Enable modular build of the new Dhrystone benchmark test.
+On Thu, Feb 23, 2023 at 3:29 PM Kars de Jong <jongk@linux-m68k.org> wrote:
+> Op do 23 feb. 2023 om 12:26 schreef Kars de Jong <jongk@linux-m68k.org>:
+> > The calculation of end addresses of memory chunks overflowed to 0 when
+> > a memory chunk is located at the end of 32-bit address space.
+> > This is the case for the HP300 architecture.
+> >
+> > Signed-off-by: Kars de Jong <jongk@linux-m68k.org>a
+>
+> Whoops, looks like I botched the "Signed-off-by" in the commit,
+> thinking I was in vi when it was nano.
+> Please remove the extra "a" at the end when you commit it :-)
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-To be queued in the m68k for-v6.4 branch.
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue as a fix in the m68k for-v6.3 branch,
+with the above fixed.
 
- arch/m68k/configs/amiga_defconfig    | 3 ++-
- arch/m68k/configs/apollo_defconfig   | 3 ++-
- arch/m68k/configs/atari_defconfig    | 3 ++-
- arch/m68k/configs/bvme6000_defconfig | 3 ++-
- arch/m68k/configs/hp300_defconfig    | 3 ++-
- arch/m68k/configs/mac_defconfig      | 3 ++-
- arch/m68k/configs/multi_defconfig    | 3 ++-
- arch/m68k/configs/mvme147_defconfig  | 3 ++-
- arch/m68k/configs/mvme16x_defconfig  | 3 ++-
- arch/m68k/configs/q40_defconfig      | 3 ++-
- arch/m68k/configs/sun3_defconfig     | 3 ++-
- arch/m68k/configs/sun3x_defconfig    | 3 ++-
- 12 files changed, 24 insertions(+), 12 deletions(-)
+Gr{oetje,eeting}s,
 
-diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
-index ec2d792015a4bdd0..b26469a65bc11ed4 100644
---- a/arch/m68k/configs/amiga_defconfig
-+++ b/arch/m68k/configs/amiga_defconfig
-@@ -214,7 +214,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
- CONFIG_IP_NF_TARGET_NETMAP=m
- CONFIG_IP_NF_TARGET_REDIRECT=m
- CONFIG_IP_NF_MANGLE=m
--CONFIG_IP_NF_TARGET_CLUSTERIP=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
-@@ -495,6 +494,7 @@ CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-+CONFIG_RPCSEC_GSS_KRB5=m
- CONFIG_CIFS=m
- # CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
-@@ -621,6 +621,7 @@ CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
-+CONFIG_TEST_DHRY=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_DIV64=m
- CONFIG_REED_SOLOMON_TEST=m
-diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
-index 061a07824dc29502..944a49a129bedab0 100644
---- a/arch/m68k/configs/apollo_defconfig
-+++ b/arch/m68k/configs/apollo_defconfig
-@@ -210,7 +210,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
- CONFIG_IP_NF_TARGET_NETMAP=m
- CONFIG_IP_NF_TARGET_REDIRECT=m
- CONFIG_IP_NF_MANGLE=m
--CONFIG_IP_NF_TARGET_CLUSTERIP=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
-@@ -452,6 +451,7 @@ CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-+CONFIG_RPCSEC_GSS_KRB5=m
- CONFIG_CIFS=m
- # CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
-@@ -577,6 +577,7 @@ CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
-+CONFIG_TEST_DHRY=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_DIV64=m
- CONFIG_REED_SOLOMON_TEST=m
-diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
-index 79c49647e4818b7a..f3790c45cac722af 100644
---- a/arch/m68k/configs/atari_defconfig
-+++ b/arch/m68k/configs/atari_defconfig
-@@ -217,7 +217,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
- CONFIG_IP_NF_TARGET_NETMAP=m
- CONFIG_IP_NF_TARGET_REDIRECT=m
- CONFIG_IP_NF_MANGLE=m
--CONFIG_IP_NF_TARGET_CLUSTERIP=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
-@@ -483,6 +482,7 @@ CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-+CONFIG_RPCSEC_GSS_KRB5=m
- CONFIG_CIFS=m
- # CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
-@@ -609,6 +609,7 @@ CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
-+CONFIG_TEST_DHRY=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_DIV64=m
- CONFIG_REED_SOLOMON_TEST=m
-diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
-index 0d5832cb3e10b9ce..23b7805309bd4407 100644
---- a/arch/m68k/configs/bvme6000_defconfig
-+++ b/arch/m68k/configs/bvme6000_defconfig
-@@ -207,7 +207,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
- CONFIG_IP_NF_TARGET_NETMAP=m
- CONFIG_IP_NF_TARGET_REDIRECT=m
- CONFIG_IP_NF_MANGLE=m
--CONFIG_IP_NF_TARGET_CLUSTERIP=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
-@@ -444,6 +443,7 @@ CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-+CONFIG_RPCSEC_GSS_KRB5=m
- CONFIG_CIFS=m
- # CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
-@@ -569,6 +569,7 @@ CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
-+CONFIG_TEST_DHRY=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_DIV64=m
- CONFIG_REED_SOLOMON_TEST=m
-diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
-index c246c3538839beb5..5605ab5c3dcfc25f 100644
---- a/arch/m68k/configs/hp300_defconfig
-+++ b/arch/m68k/configs/hp300_defconfig
-@@ -209,7 +209,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
- CONFIG_IP_NF_TARGET_NETMAP=m
- CONFIG_IP_NF_TARGET_REDIRECT=m
- CONFIG_IP_NF_MANGLE=m
--CONFIG_IP_NF_TARGET_CLUSTERIP=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
-@@ -454,6 +453,7 @@ CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-+CONFIG_RPCSEC_GSS_KRB5=m
- CONFIG_CIFS=m
- # CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
-@@ -579,6 +579,7 @@ CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
-+CONFIG_TEST_DHRY=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_DIV64=m
- CONFIG_REED_SOLOMON_TEST=m
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index 98d2d0599e5a8f2c..d0d1f9c33756d795 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -208,7 +208,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
- CONFIG_IP_NF_TARGET_NETMAP=m
- CONFIG_IP_NF_TARGET_REDIRECT=m
- CONFIG_IP_NF_MANGLE=m
--CONFIG_IP_NF_TARGET_CLUSTERIP=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
-@@ -474,6 +473,7 @@ CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-+CONFIG_RPCSEC_GSS_KRB5=m
- CONFIG_CIFS=m
- # CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
-@@ -600,6 +600,7 @@ CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
-+CONFIG_TEST_DHRY=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_DIV64=m
- CONFIG_REED_SOLOMON_TEST=m
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index b2d5ec6ba625c7b2..2ff3fdb524f11b15 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -228,7 +228,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
- CONFIG_IP_NF_TARGET_NETMAP=m
- CONFIG_IP_NF_TARGET_REDIRECT=m
- CONFIG_IP_NF_MANGLE=m
--CONFIG_IP_NF_TARGET_CLUSTERIP=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
-@@ -561,6 +560,7 @@ CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-+CONFIG_RPCSEC_GSS_KRB5=m
- CONFIG_CIFS=m
- # CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
-@@ -687,6 +687,7 @@ CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
-+CONFIG_TEST_DHRY=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_DIV64=m
- CONFIG_REED_SOLOMON_TEST=m
-diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
-index d3420c642992b2e7..e6f5ae526d089339 100644
---- a/arch/m68k/configs/mvme147_defconfig
-+++ b/arch/m68k/configs/mvme147_defconfig
-@@ -206,7 +206,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
- CONFIG_IP_NF_TARGET_NETMAP=m
- CONFIG_IP_NF_TARGET_REDIRECT=m
- CONFIG_IP_NF_MANGLE=m
--CONFIG_IP_NF_TARGET_CLUSTERIP=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
-@@ -443,6 +442,7 @@ CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-+CONFIG_RPCSEC_GSS_KRB5=m
- CONFIG_CIFS=m
- # CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
-@@ -568,6 +568,7 @@ CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
-+CONFIG_TEST_DHRY=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_DIV64=m
- CONFIG_REED_SOLOMON_TEST=m
-diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
-index e294b0b67695069c..f2d4dff4787aade7 100644
---- a/arch/m68k/configs/mvme16x_defconfig
-+++ b/arch/m68k/configs/mvme16x_defconfig
-@@ -207,7 +207,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
- CONFIG_IP_NF_TARGET_NETMAP=m
- CONFIG_IP_NF_TARGET_REDIRECT=m
- CONFIG_IP_NF_MANGLE=m
--CONFIG_IP_NF_TARGET_CLUSTERIP=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
-@@ -444,6 +443,7 @@ CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-+CONFIG_RPCSEC_GSS_KRB5=m
- CONFIG_CIFS=m
- # CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
-@@ -569,6 +569,7 @@ CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
-+CONFIG_TEST_DHRY=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_DIV64=m
- CONFIG_REED_SOLOMON_TEST=m
-diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
-index 764a94b089362003..907eedecd040262c 100644
---- a/arch/m68k/configs/q40_defconfig
-+++ b/arch/m68k/configs/q40_defconfig
-@@ -208,7 +208,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
- CONFIG_IP_NF_TARGET_NETMAP=m
- CONFIG_IP_NF_TARGET_REDIRECT=m
- CONFIG_IP_NF_MANGLE=m
--CONFIG_IP_NF_TARGET_CLUSTERIP=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
-@@ -461,6 +460,7 @@ CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-+CONFIG_RPCSEC_GSS_KRB5=m
- CONFIG_CIFS=m
- # CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
-@@ -587,6 +587,7 @@ CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
-+CONFIG_TEST_DHRY=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_DIV64=m
- CONFIG_REED_SOLOMON_TEST=m
-diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
-index d4eeddac6bb8de48..9e3d47008f218675 100644
---- a/arch/m68k/configs/sun3_defconfig
-+++ b/arch/m68k/configs/sun3_defconfig
-@@ -204,7 +204,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
- CONFIG_IP_NF_TARGET_NETMAP=m
- CONFIG_IP_NF_TARGET_REDIRECT=m
- CONFIG_IP_NF_MANGLE=m
--CONFIG_IP_NF_TARGET_CLUSTERIP=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
-@@ -443,6 +442,7 @@ CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-+CONFIG_RPCSEC_GSS_KRB5=m
- CONFIG_CIFS=m
- # CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
-@@ -567,6 +567,7 @@ CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
-+CONFIG_TEST_DHRY=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_DIV64=m
- CONFIG_REED_SOLOMON_TEST=m
-diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
-index ca359b8806830d56..f6540078cb4beb48 100644
---- a/arch/m68k/configs/sun3x_defconfig
-+++ b/arch/m68k/configs/sun3x_defconfig
-@@ -204,7 +204,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
- CONFIG_IP_NF_TARGET_NETMAP=m
- CONFIG_IP_NF_TARGET_REDIRECT=m
- CONFIG_IP_NF_MANGLE=m
--CONFIG_IP_NF_TARGET_CLUSTERIP=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
-@@ -442,6 +441,7 @@ CONFIG_NFS_V4=m
- CONFIG_NFS_SWAP=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-+CONFIG_RPCSEC_GSS_KRB5=m
- CONFIG_CIFS=m
- # CONFIG_CIFS_STATS2 is not set
- # CONFIG_CIFS_DEBUG is not set
-@@ -567,6 +567,7 @@ CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_KUNIT=m
- CONFIG_KUNIT_ALL_TESTS=m
-+CONFIG_TEST_DHRY=m
- CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_DIV64=m
- CONFIG_REED_SOLOMON_TEST=m
+                        Geert
+
 -- 
-2.34.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
