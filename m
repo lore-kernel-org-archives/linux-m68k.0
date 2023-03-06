@@ -2,131 +2,406 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3AFDC61DA4
-	for <linux-m68k@archiver.kernel.org>; Mon,  6 Mar 2023 10:33:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AECADC61DA4
+	for <linux-m68k@archiver.kernel.org>; Mon,  6 Mar 2023 12:48:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231287AbjCFKdW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 6 Mar 2023 05:33:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37706 "EHLO
+        id S229750AbjCFMss (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 6 Mar 2023 07:48:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231265AbjCFKcu (ORCPT
+        with ESMTP id S229582AbjCFMsp (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 6 Mar 2023 05:32:50 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0575A26CD2
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Mar 2023 02:32:30 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id t15so8249460wrz.7
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 06 Mar 2023 02:32:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20210112.gappssmtp.com; s=20210112; t=1678098748;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2S29OAojjkQ3ph5THndb/5w5HMdqHkAEAaj92KxD7KY=;
-        b=xCSHcSRaD2g1+2DbiYWhwBVgmLp88kCObvoul8o22gAShWEWRsDyBUbrABXr5fv65x
-         IGnHDZLJd6mZoZ4c8bkw6btaQ552OPPkQaMMyBEUs4Bc9wvEuBuP3LVKslg1nEKUwpBX
-         lIVGb+vuDvhF0cDTuCVOpyZV5LaEa7T8m8jfkVFpaCwFvyN4Z00Y7x/hHmTHM+tY2ap5
-         RgDlCHiOuFZ5W2OonNpFKfcm5MsZoArntnS/kOhW3H0fDHSI6TVfGt6dIbQVxoFWUZLC
-         VaMyxBHz7iI91g7KCZulrkhxAWoD0odFmgisNlLZZFPdJeVIIAgA47RuWu1Yjzh0KCRf
-         0raw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678098748;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2S29OAojjkQ3ph5THndb/5w5HMdqHkAEAaj92KxD7KY=;
-        b=ez7UjrvrDF4tJ1UEllTyFzZLndJ1TX1NMI1UUPb1V4DqK1ZZKBKN8jjtG5/rmVJh+4
-         Vh9nVB6m3NVT4AazsO5fXWxry0dip4+wTM6ZI5oAb3po30ZpuAPfNkU2Num8i/C8ZApW
-         qAK0WnH/svqcUBKTSp+XoQZdmfiVHAFaLZRrEhi1AgYp860UiVkCAud/VWodKFadjqkr
-         WnOrEDzrd8CCZ++Kp8DjYHPlIhHujbtV/LAPBXX1NEH2j9DsHW56QduLdVl1CHXUzV9r
-         jlQtQlrW0j/sxpwOdx1xM//Qccj8HE9u+Ktw/AYa8LFfHpszEUH1+mVBl3PXta825xVc
-         gLEQ==
-X-Gm-Message-State: AO0yUKVp8771DqBsp1G2GJioMrnoPc/sBm8Sr2EImGLWGdl78g1VL/0f
-        PoP2anl/XNmxYwLwRbt0iysAEA==
-X-Google-Smtp-Source: AK7set9Vv2uSkjazOq+f3rx/CCBKfCShLhiL1+01KwPuVcwWj2ucc2G1h2TzyZEz/iSKDj7DuGgpzw==
-X-Received: by 2002:adf:e70a:0:b0:2c9:e3d:88ca with SMTP id c10-20020adfe70a000000b002c90e3d88camr6289357wrm.67.1678098748535;
-        Mon, 06 Mar 2023 02:32:28 -0800 (PST)
-Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
-        by smtp.gmail.com with ESMTPSA id u18-20020a5d6ad2000000b002c5539171d1sm9217902wrw.41.2023.03.06.02.32.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Mar 2023 02:32:28 -0800 (PST)
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-arch@vger.kernel.org
-Cc:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Subject: [PATCH v5 26/26] riscv: Remove empty <uapi/asm/setup.h>
-Date:   Mon,  6 Mar 2023 11:05:08 +0100
-Message-Id: <20230306100508.1171812-27-alexghiti@rivosinc.com>
-X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20230306100508.1171812-1-alexghiti@rivosinc.com>
-References: <20230306100508.1171812-1-alexghiti@rivosinc.com>
+        Mon, 6 Mar 2023 07:48:45 -0500
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4E625B87
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Mar 2023 04:48:42 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed50:b745:671d:a946:57fa])
+        by xavier.telenet-ops.be with bizsmtp
+        id V0og2900Q4LuvSS010ogci; Mon, 06 Mar 2023 13:48:40 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1pZAG8-00B5IY-4r;
+        Mon, 06 Mar 2023 13:48:40 +0100
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1pZAGe-005B35-4g;
+        Mon, 06 Mar 2023 13:48:40 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-m68k@lists.linux-m68k.org
+Cc:     linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: defconfig: Update defconfigs for v6.3-rc1
+Date:   Mon,  6 Mar 2023 13:48:37 +0100
+Message-Id: <2b6d1357f4cb7e23bb2c7a7d39c4486e77e138ad.1678106848.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
----
- arch/riscv/include/uapi/asm/setup.h | 6 ------
- 1 file changed, 6 deletions(-)
- delete mode 100644 arch/riscv/include/uapi/asm/setup.h
+  - Drop CONFIG_IP_NF_TARGET_CLUSTERIP=m (removed in commit
+    9db5d918e2c07fa0 ("netfilter: ip_tables: remove clusterip target")),
+  - Enable modular build of the Kerberos V mechanism for Secure RPC
+    (auto-builtin since commit dfe9a123451a6e73 ("SUNRPC: Enable
+    rpcsec_gss_krb5.ko to be built without CRYPTO_DES")),
+  - Enable modular build of the new Dhrystone benchmark test.
 
-diff --git a/arch/riscv/include/uapi/asm/setup.h b/arch/riscv/include/uapi/asm/setup.h
-deleted file mode 100644
-index 17fcecd4a2f8..000000000000
---- a/arch/riscv/include/uapi/asm/setup.h
-+++ /dev/null
-@@ -1,6 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
--
--#ifndef _UAPI_ASM_RISCV_SETUP_H
--#define _UAPI_ASM_RISCV_SETUP_H
--
--#endif /* _UAPI_ASM_RISCV_SETUP_H */
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+To be queued in the m68k for-v6.4 branch.
+
+ arch/m68k/configs/amiga_defconfig    | 3 ++-
+ arch/m68k/configs/apollo_defconfig   | 3 ++-
+ arch/m68k/configs/atari_defconfig    | 3 ++-
+ arch/m68k/configs/bvme6000_defconfig | 3 ++-
+ arch/m68k/configs/hp300_defconfig    | 3 ++-
+ arch/m68k/configs/mac_defconfig      | 3 ++-
+ arch/m68k/configs/multi_defconfig    | 3 ++-
+ arch/m68k/configs/mvme147_defconfig  | 3 ++-
+ arch/m68k/configs/mvme16x_defconfig  | 3 ++-
+ arch/m68k/configs/q40_defconfig      | 3 ++-
+ arch/m68k/configs/sun3_defconfig     | 3 ++-
+ arch/m68k/configs/sun3x_defconfig    | 3 ++-
+ 12 files changed, 24 insertions(+), 12 deletions(-)
+
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index ec2d792015a4bdd0..b26469a65bc11ed4 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -214,7 +214,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
+ CONFIG_IP_NF_TARGET_NETMAP=m
+ CONFIG_IP_NF_TARGET_REDIRECT=m
+ CONFIG_IP_NF_MANGLE=m
+-CONFIG_IP_NF_TARGET_CLUSTERIP=m
+ CONFIG_IP_NF_TARGET_ECN=m
+ CONFIG_IP_NF_TARGET_TTL=m
+ CONFIG_IP_NF_RAW=m
+@@ -495,6 +494,7 @@ CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
++CONFIG_RPCSEC_GSS_KRB5=m
+ CONFIG_CIFS=m
+ # CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+@@ -621,6 +621,7 @@ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
++CONFIG_TEST_DHRY=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index 061a07824dc29502..944a49a129bedab0 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -210,7 +210,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
+ CONFIG_IP_NF_TARGET_NETMAP=m
+ CONFIG_IP_NF_TARGET_REDIRECT=m
+ CONFIG_IP_NF_MANGLE=m
+-CONFIG_IP_NF_TARGET_CLUSTERIP=m
+ CONFIG_IP_NF_TARGET_ECN=m
+ CONFIG_IP_NF_TARGET_TTL=m
+ CONFIG_IP_NF_RAW=m
+@@ -452,6 +451,7 @@ CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
++CONFIG_RPCSEC_GSS_KRB5=m
+ CONFIG_CIFS=m
+ # CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+@@ -577,6 +577,7 @@ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
++CONFIG_TEST_DHRY=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index 79c49647e4818b7a..f3790c45cac722af 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -217,7 +217,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
+ CONFIG_IP_NF_TARGET_NETMAP=m
+ CONFIG_IP_NF_TARGET_REDIRECT=m
+ CONFIG_IP_NF_MANGLE=m
+-CONFIG_IP_NF_TARGET_CLUSTERIP=m
+ CONFIG_IP_NF_TARGET_ECN=m
+ CONFIG_IP_NF_TARGET_TTL=m
+ CONFIG_IP_NF_RAW=m
+@@ -483,6 +482,7 @@ CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
++CONFIG_RPCSEC_GSS_KRB5=m
+ CONFIG_CIFS=m
+ # CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+@@ -609,6 +609,7 @@ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
++CONFIG_TEST_DHRY=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index 0d5832cb3e10b9ce..23b7805309bd4407 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -207,7 +207,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
+ CONFIG_IP_NF_TARGET_NETMAP=m
+ CONFIG_IP_NF_TARGET_REDIRECT=m
+ CONFIG_IP_NF_MANGLE=m
+-CONFIG_IP_NF_TARGET_CLUSTERIP=m
+ CONFIG_IP_NF_TARGET_ECN=m
+ CONFIG_IP_NF_TARGET_TTL=m
+ CONFIG_IP_NF_RAW=m
+@@ -444,6 +443,7 @@ CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
++CONFIG_RPCSEC_GSS_KRB5=m
+ CONFIG_CIFS=m
+ # CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+@@ -569,6 +569,7 @@ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
++CONFIG_TEST_DHRY=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index c246c3538839beb5..5605ab5c3dcfc25f 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -209,7 +209,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
+ CONFIG_IP_NF_TARGET_NETMAP=m
+ CONFIG_IP_NF_TARGET_REDIRECT=m
+ CONFIG_IP_NF_MANGLE=m
+-CONFIG_IP_NF_TARGET_CLUSTERIP=m
+ CONFIG_IP_NF_TARGET_ECN=m
+ CONFIG_IP_NF_TARGET_TTL=m
+ CONFIG_IP_NF_RAW=m
+@@ -454,6 +453,7 @@ CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
++CONFIG_RPCSEC_GSS_KRB5=m
+ CONFIG_CIFS=m
+ # CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+@@ -579,6 +579,7 @@ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
++CONFIG_TEST_DHRY=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index 98d2d0599e5a8f2c..d0d1f9c33756d795 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -208,7 +208,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
+ CONFIG_IP_NF_TARGET_NETMAP=m
+ CONFIG_IP_NF_TARGET_REDIRECT=m
+ CONFIG_IP_NF_MANGLE=m
+-CONFIG_IP_NF_TARGET_CLUSTERIP=m
+ CONFIG_IP_NF_TARGET_ECN=m
+ CONFIG_IP_NF_TARGET_TTL=m
+ CONFIG_IP_NF_RAW=m
+@@ -474,6 +473,7 @@ CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
++CONFIG_RPCSEC_GSS_KRB5=m
+ CONFIG_CIFS=m
+ # CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+@@ -600,6 +600,7 @@ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
++CONFIG_TEST_DHRY=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index b2d5ec6ba625c7b2..2ff3fdb524f11b15 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -228,7 +228,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
+ CONFIG_IP_NF_TARGET_NETMAP=m
+ CONFIG_IP_NF_TARGET_REDIRECT=m
+ CONFIG_IP_NF_MANGLE=m
+-CONFIG_IP_NF_TARGET_CLUSTERIP=m
+ CONFIG_IP_NF_TARGET_ECN=m
+ CONFIG_IP_NF_TARGET_TTL=m
+ CONFIG_IP_NF_RAW=m
+@@ -561,6 +560,7 @@ CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
++CONFIG_RPCSEC_GSS_KRB5=m
+ CONFIG_CIFS=m
+ # CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+@@ -687,6 +687,7 @@ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
++CONFIG_TEST_DHRY=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index d3420c642992b2e7..e6f5ae526d089339 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -206,7 +206,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
+ CONFIG_IP_NF_TARGET_NETMAP=m
+ CONFIG_IP_NF_TARGET_REDIRECT=m
+ CONFIG_IP_NF_MANGLE=m
+-CONFIG_IP_NF_TARGET_CLUSTERIP=m
+ CONFIG_IP_NF_TARGET_ECN=m
+ CONFIG_IP_NF_TARGET_TTL=m
+ CONFIG_IP_NF_RAW=m
+@@ -443,6 +442,7 @@ CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
++CONFIG_RPCSEC_GSS_KRB5=m
+ CONFIG_CIFS=m
+ # CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+@@ -568,6 +568,7 @@ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
++CONFIG_TEST_DHRY=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index e294b0b67695069c..f2d4dff4787aade7 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -207,7 +207,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
+ CONFIG_IP_NF_TARGET_NETMAP=m
+ CONFIG_IP_NF_TARGET_REDIRECT=m
+ CONFIG_IP_NF_MANGLE=m
+-CONFIG_IP_NF_TARGET_CLUSTERIP=m
+ CONFIG_IP_NF_TARGET_ECN=m
+ CONFIG_IP_NF_TARGET_TTL=m
+ CONFIG_IP_NF_RAW=m
+@@ -444,6 +443,7 @@ CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
++CONFIG_RPCSEC_GSS_KRB5=m
+ CONFIG_CIFS=m
+ # CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+@@ -569,6 +569,7 @@ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
++CONFIG_TEST_DHRY=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index 764a94b089362003..907eedecd040262c 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -208,7 +208,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
+ CONFIG_IP_NF_TARGET_NETMAP=m
+ CONFIG_IP_NF_TARGET_REDIRECT=m
+ CONFIG_IP_NF_MANGLE=m
+-CONFIG_IP_NF_TARGET_CLUSTERIP=m
+ CONFIG_IP_NF_TARGET_ECN=m
+ CONFIG_IP_NF_TARGET_TTL=m
+ CONFIG_IP_NF_RAW=m
+@@ -461,6 +460,7 @@ CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
++CONFIG_RPCSEC_GSS_KRB5=m
+ CONFIG_CIFS=m
+ # CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+@@ -587,6 +587,7 @@ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
++CONFIG_TEST_DHRY=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index d4eeddac6bb8de48..9e3d47008f218675 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -204,7 +204,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
+ CONFIG_IP_NF_TARGET_NETMAP=m
+ CONFIG_IP_NF_TARGET_REDIRECT=m
+ CONFIG_IP_NF_MANGLE=m
+-CONFIG_IP_NF_TARGET_CLUSTERIP=m
+ CONFIG_IP_NF_TARGET_ECN=m
+ CONFIG_IP_NF_TARGET_TTL=m
+ CONFIG_IP_NF_RAW=m
+@@ -443,6 +442,7 @@ CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
++CONFIG_RPCSEC_GSS_KRB5=m
+ CONFIG_CIFS=m
+ # CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+@@ -567,6 +567,7 @@ CONFIG_TEST_LOCKUP=m
+ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
++CONFIG_TEST_DHRY=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index ca359b8806830d56..f6540078cb4beb48 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -204,7 +204,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
+ CONFIG_IP_NF_TARGET_NETMAP=m
+ CONFIG_IP_NF_TARGET_REDIRECT=m
+ CONFIG_IP_NF_MANGLE=m
+-CONFIG_IP_NF_TARGET_CLUSTERIP=m
+ CONFIG_IP_NF_TARGET_ECN=m
+ CONFIG_IP_NF_TARGET_TTL=m
+ CONFIG_IP_NF_RAW=m
+@@ -442,6 +441,7 @@ CONFIG_NFS_V4=m
+ CONFIG_NFS_SWAP=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
++CONFIG_RPCSEC_GSS_KRB5=m
+ CONFIG_CIFS=m
+ # CONFIG_CIFS_STATS2 is not set
+ # CONFIG_CIFS_DEBUG is not set
+@@ -567,6 +567,7 @@ CONFIG_WW_MUTEX_SELFTEST=m
+ CONFIG_EARLY_PRINTK=y
+ CONFIG_KUNIT=m
+ CONFIG_KUNIT_ALL_TESTS=m
++CONFIG_TEST_DHRY=m
+ CONFIG_TEST_MIN_HEAP=m
+ CONFIG_TEST_DIV64=m
+ CONFIG_REED_SOLOMON_TEST=m
 -- 
-2.37.2
+2.34.1
 
