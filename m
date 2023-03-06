@@ -2,122 +2,97 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3E9EC6FA99
-	for <linux-m68k@archiver.kernel.org>; Sun,  5 Mar 2023 20:44:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DCA45C6FD19
+	for <linux-m68k@archiver.kernel.org>; Mon,  6 Mar 2023 07:22:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229551AbjCEUo0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 5 Mar 2023 15:44:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44238 "EHLO
+        id S229558AbjCFHWC convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 6 Mar 2023 02:22:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjCEUoZ (ORCPT
+        with ESMTP id S229450AbjCFHWC (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 5 Mar 2023 15:44:25 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D79EDBDD9
-        for <linux-m68k@lists.linux-m68k.org>; Sun,  5 Mar 2023 12:44:23 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id y11so8191931plg.1
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 05 Mar 2023 12:44:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678049063;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qQEhAEnCoSqPNLqIdWFb7wfcuPxRiAiR2KEKFk8XhXg=;
-        b=XsgLdLib5YxD3UoqpUHhBtiMXrRSCSRmpOEeXQH70qS3WFbdWPt1QYhHdkVRA9Gj21
-         mEDZTI0L9f5gUoHNGUz8dYsJKIca+pLBKlsRCwlYQKvVTuWV6OlYHhFz17PFlGmk2qai
-         w48jZGK8k3O71v2p3Ca68xusJCiIKgpGuvqnOrH57yLfgW4OTASVw0mgHUaeGODiWwxk
-         x10bxn2cw3B9cZ28kNFwxInwQIFf7GHfVfivx+Mb0UN+PaMJzNLbgbuQI61l0y63Tqnq
-         f43J6fG1L58LZBfsbeLd8oQiz0acVMwoTIHqcI0gtuJJD7VWsi/T2hq99QSLOBlqWZNa
-         wg0w==
+        Mon, 6 Mar 2023 02:22:02 -0500
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C5E81C7CC
+        for <linux-m68k@lists.linux-m68k.org>; Sun,  5 Mar 2023 23:21:58 -0800 (PST)
+Received: by mail-qt1-f170.google.com with SMTP id h19so9565496qtk.7
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 05 Mar 2023 23:21:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678049063;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qQEhAEnCoSqPNLqIdWFb7wfcuPxRiAiR2KEKFk8XhXg=;
-        b=kVgqiQD/BV7ZtalWO0hPqTYpsQgd5TtVTt5b4URS+YcpsJIkKcJsr0cyg3iFTvllzA
-         fwUENIkDbnvrd5y3EB5xhtiBdMUIrZeIQf2HSzqS2DOO7uMDCRoJIhAxvhnlMJPcK1Ee
-         tsbFT8bpZj07EZCkx60i15THo6p0XexHckqlZg1xvQ/+9KpSV/9yK2hBtciswF6X+uBo
-         nWbJSlrFRd5utbcrWT8VEB5qx4pHUJxVhJoTXlF1OP06O2QG5tyinQxkHMBYE7BmVzez
-         gDaaEIr74K5CFDclr3SdxubpVwpNX3EZlLiZi6qA3GxYteDT5XOoeHKyo/z/9+qfaOqZ
-         7WSg==
-X-Gm-Message-State: AO0yUKXq7oks7Rma1BqJF9ARfVt/21QsUCylJP5/wZpJkjd03FX495mk
-        FAZ3nzW+3mWPX1OcYJ3yvXI=
-X-Google-Smtp-Source: AK7set/RbEx9jtFCpRX+pR8Y+f6oCnVFm4mqzGAENK55LPzQH1+61UY9MM+V+7mTev/dOMa3U25bEQ==
-X-Received: by 2002:a17:903:41ca:b0:19c:be63:a9ce with SMTP id u10-20020a17090341ca00b0019cbe63a9cemr9066698ple.4.1678049063223;
-        Sun, 05 Mar 2023 12:44:23 -0800 (PST)
-Received: from ?IPV6:2001:df0:0:200c:c02f:c6b5:6aff:ae1d? ([2001:df0:0:200c:c02f:c6b5:6aff:ae1d])
-        by smtp.gmail.com with ESMTPSA id j7-20020a170902690700b001991942dde7sm5106140plk.125.2023.03.05.12.44.20
+        d=1e100.net; s=20210112; t=1678087317;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KF4/rhYJLCb1V3udoZ6HDdLYb1astmKZTSpEt1KMS3k=;
+        b=hYoRJtw4OIP7P7hboO59xW6fxvqsPnxByVznph51IrcDkAE8Q1pQFoNfxd4btfLkqd
+         8LI3tD3LIA0NzfPTpiB6PnzNpffweY8dzwSqTEoK2sUYeAis0MxwSBntmkueswklkuh/
+         UFy6LEpG2WYw0hkwJiu46cA6/9xnL0UAREnHFqkddsLLXtVRVI6bkQpSz/g1/p/Rh42L
+         EG7g5em7YwNi+6o+O/ti7HiP6GPx52KNXfpSfYtFNMGQDScDZrj7P9ABb4x1ujmMbr9y
+         3DZ7a2lQ9of/I7Ol93dp65Oc1k9j6CBpYgQOxhlQDyA4g8iOlJcJdmF6lxAaI6m7Q9oY
+         0Ejw==
+X-Gm-Message-State: AO0yUKUJctZVK67UQafiDOUzwLr6S6BAomuQWX5UCVtPLoX5fRtE7XTW
+        TTKST01e5qV8bL4s6ky0bznQvIo0mXlg7A==
+X-Google-Smtp-Source: AK7set/0E/t/HDGAYEgisyaIvK5hxzh/Y6ItqdcLRhE8u028NsTZiNySlaMOSYMycUHuhPs5f9Ke3g==
+X-Received: by 2002:a05:622a:284:b0:3bf:cf9d:ccbd with SMTP id z4-20020a05622a028400b003bfcf9dccbdmr14378308qtw.2.1678087317073;
+        Sun, 05 Mar 2023 23:21:57 -0800 (PST)
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
+        by smtp.gmail.com with ESMTPSA id g12-20020ac8124c000000b003b635a5d56csm7081691qtj.30.2023.03.05.23.21.56
+        for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 Mar 2023 12:44:22 -0800 (PST)
-Message-ID: <0b00a30e-cb7f-d42b-7d16-0ae8d50ed916@gmail.com>
-Date:   Mon, 6 Mar 2023 09:44:17 +1300
+        Sun, 05 Mar 2023 23:21:56 -0800 (PST)
+Received: by mail-yb1-f173.google.com with SMTP id v101so7152267ybi.2
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 05 Mar 2023 23:21:56 -0800 (PST)
+X-Received: by 2002:a5b:308:0:b0:90d:af77:9ca6 with SMTP id
+ j8-20020a5b0308000000b0090daf779ca6mr5841580ybp.7.1678087316135; Sun, 05 Mar
+ 2023 23:21:56 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v3 13/34] m68k: Implement the new page table range API
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-mm@kvack.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-References: <20230228213738.272178-1-willy@infradead.org>
- <20230228213738.272178-14-willy@infradead.org>
+References: <20230228213738.272178-1-willy@infradead.org> <20230228213738.272178-14-willy@infradead.org>
  <CAMuHMdW5TtUeZDmtHvxw+DxqUADC-OCW=tHE2Gptcoie62T+4w@mail.gmail.com>
- <ZAS1Lq6//oO/0PXe@casper.infradead.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <ZAS1Lq6//oO/0PXe@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+ <ZAS1Lq6//oO/0PXe@casper.infradead.org> <0b00a30e-cb7f-d42b-7d16-0ae8d50ed916@gmail.com>
+In-Reply-To: <0b00a30e-cb7f-d42b-7d16-0ae8d50ed916@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 6 Mar 2023 08:21:44 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUDrOD3DezbvxaJH6CXxDFRNC7G-8uU7mqVHxZcG6GNBA@mail.gmail.com>
+Message-ID: <CAMuHMdUDrOD3DezbvxaJH6CXxDFRNC7G-8uU7mqVHxZcG6GNBA@mail.gmail.com>
+Subject: Re: [PATCH v3 13/34] m68k: Implement the new page table range API
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Matthew, Geert,
+Hi Michael,
 
-sorry, I missed that one when it got posted ...
-
-On 6/03/23 04:28, Matthew Wilcox wrote:
-> On Sun, Mar 05, 2023 at 11:16:13AM +0100, Geert Uytterhoeven wrote:
->>> +               while (nr--) {
->>> +                       __asm__ __volatile__("nop\n\t"
->>> +                                            ".chip 68040\n\t"
->>> +                                            "cpushp %%bc,(%0)\n\t"
->>> +                                            ".chip 68k"
->>> +                                            : : "a" (paddr + nr * PAGE_SIZE));
->> As gcc (9.5.0) keeps on calculating "paddr + nr * PAGE_SIZE"
->> inside the loop (albeit using a shift instead of a multiplication),
->> please use "paddr" here, followed by "paddr += PAGE_SIZE;".
-
-Are we certain that contiguous vaddr always maps to contiguous paddr?
-
-If not, I'd suggest we increment vaddr inside the loop, and use __pa() 
-each time:
-
-> +++ b/arch/m68k/include/asm/cacheflush_mm.h
-> @@ -235,13 +235,14 @@ static inline void __flush_pages_to_ram(void *vaddr, unsigned int nr)
->          } else if (CPU_IS_040_OR_060) {
->   
-> -               while (nr--) {
-> +               do {
->                          __asm__ __volatile__("nop\n\t"
->                                               ".chip 68040\n\t"
->                                               "cpushp %%bc,(%0)\n\t"
->                                               ".chip 68k"
-> -                                            : : "a" (paddr + nr * PAGE_SIZE));
-> -               }
-> +                                            : : "a" __pa(vaddr));
-> +                       vaddr += PAGE_SIZE;
-> +               } while (--nr);
->          } else {
->                  unsigned long _tmp;
->                  __asm__ __volatile__("movec %%cacr,%0\n\t"
+On Sun, Mar 5, 2023 at 9:44 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> On 6/03/23 04:28, Matthew Wilcox wrote:
+> > On Sun, Mar 05, 2023 at 11:16:13AM +0100, Geert Uytterhoeven wrote:
+> >>> +               while (nr--) {
+> >>> +                       __asm__ __volatile__("nop\n\t"
+> >>> +                                            ".chip 68040\n\t"
+> >>> +                                            "cpushp %%bc,(%0)\n\t"
+> >>> +                                            ".chip 68k"
+> >>> +                                            : : "a" (paddr + nr * PAGE_SIZE));
+> >> As gcc (9.5.0) keeps on calculating "paddr + nr * PAGE_SIZE"
+> >> inside the loop (albeit using a shift instead of a multiplication),
+> >> please use "paddr" here, followed by "paddr += PAGE_SIZE;".
 >
-(just edited Matthew's patch in the mail editor, untested, may not apply 
-cleanly ...)
+> Are we certain that contiguous vaddr always maps to contiguous paddr?
 
-Cheers,
+For a general __flush_pages_to_ram() function, that would not be
+guaranteed. But as this is meant for folios, it must be true:
+https://elixir.bootlin.com/linux/latest/source/include/linux/mm_types.h#L320
 
-     Michael
+Gr{oetje,eeting}s,
 
+                        Geert
 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
