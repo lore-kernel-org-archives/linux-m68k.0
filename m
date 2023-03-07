@@ -2,136 +2,131 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F721C678D4
-	for <linux-m68k@archiver.kernel.org>; Tue,  7 Mar 2023 07:44:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7C5BC6FA99
+	for <linux-m68k@archiver.kernel.org>; Tue,  7 Mar 2023 21:42:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbjCGHon convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 7 Mar 2023 02:44:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41980 "EHLO
+        id S230437AbjCGVmE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 7 Mar 2023 16:42:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjCGHon (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 7 Mar 2023 02:44:43 -0500
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB19B2B637
-        for <linux-m68k@vger.kernel.org>; Mon,  6 Mar 2023 23:44:40 -0800 (PST)
-Received: by mail-qt1-f182.google.com with SMTP id c18so13477554qte.5
-        for <linux-m68k@vger.kernel.org>; Mon, 06 Mar 2023 23:44:40 -0800 (PST)
+        with ESMTP id S230493AbjCGVmD (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 7 Mar 2023 16:42:03 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 331B2A6BC0
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Mar 2023 13:41:59 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id i5so15645205pla.2
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 07 Mar 2023 13:41:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20210112.gappssmtp.com; s=20210112; t=1678225318;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=h0UBWEzua7mI1E3a/+R1pzklpJ+RGJpYFy9mijom/UM=;
+        b=3d0i9L9fgsM6wfDV6SgEVPe2doCmA84h8dgaHpMbejZeZuQRklJuURRf6PhkCN7ukc
+         w/n+8nbuC+OW0mQWtjtERbzb9wBvkWnsuB3UcR0sH2Ba3g7FDMT+jDol43sV0ZSapUuU
+         afFVzDtGs7qaCnWpNgGUvXPCI9VeRCtjLQt1T3AcBXMLT19wGawFny88dkq7b+SM519J
+         izcWM0iUW0/Sac/AVhLneLvdpP7x0olNKc4YqRIWvevDICe0+qs1ypmIQEYjXt6H2n6Q
+         PGyqmNUpfeGmcTALJ+qCkHjqjpTn7tbuCsOrFtOo3YqXRw3n/PRxx6fcIN5oBf8fOwBc
+         hPrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678175079;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7ArgdY1TKff+exoZRzS1JSqpFH0kCesLdWcVjj8exH0=;
-        b=kQdpiHbe75jwpKB0JqANqk9N1Z2vDUW5jjz5dg3fH4Zo/eC0EoZwUJ7r8RHTHeH3af
-         F/wEu2EeXYadQrckPyxS8WUrEiJHFAJ/tj/hoOzGP38wEy08BT93cfK/167x6wKOLvWW
-         AiTLplCeUXL2C9jmEbXA5F6+IJ280E1NYBBbq+LgzFwZaxeb+hnX3pvTCRQawzKsccMs
-         fFSaBzvbBO7CpMeXfsYPhG/YH2elFXQlcFJJSRFN5yjjcvPjH8OSZwJEk3gRgKe5Q5R1
-         jimM2RzNTDUASZvpEb0fjYQ8EWG7v1di/5+ek5zO/Sb0Rrbkb7wN4Ghl1Vt6/GfH+RND
-         Lr0A==
-X-Gm-Message-State: AO0yUKVb6Xg2Wl/0f+0JkAmKhoZHV82MZ8gJnxCD4attW1EbYnKGi7LS
-        IiiNs+NtV/vR/HavrydcYNX2rzsTiYl6nw==
-X-Google-Smtp-Source: AK7set9GLBBcaFqG/UwFw5eoYJu2DhYcyUGgZ9QvfZ2sTesAtmcUSmfbaOrdnyfXWUollm5lulBzcg==
-X-Received: by 2002:a05:622a:87:b0:3bd:85c:cb3 with SMTP id o7-20020a05622a008700b003bd085c0cb3mr23776694qtw.63.1678175079559;
-        Mon, 06 Mar 2023 23:44:39 -0800 (PST)
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com. [209.85.128.178])
-        by smtp.gmail.com with ESMTPSA id x21-20020a05620a01f500b0071eddd3bebbsm9026517qkn.81.2023.03.06.23.44.39
-        for <linux-m68k@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Mar 2023 23:44:39 -0800 (PST)
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5384ff97993so230718597b3.2
-        for <linux-m68k@vger.kernel.org>; Mon, 06 Mar 2023 23:44:39 -0800 (PST)
-X-Received: by 2002:a81:af0c:0:b0:52f:1c23:ef1 with SMTP id
- n12-20020a81af0c000000b0052f1c230ef1mr8882264ywh.5.1678175078767; Mon, 06 Mar
- 2023 23:44:38 -0800 (PST)
-MIME-Version: 1.0
-References: <20230301021107.26307-1-schmitzmic@gmail.com> <CAMuHMdVP=cNZKZcurO8V1UrNTUgookaWnmPr02+Wv9vxKX-b6Q@mail.gmail.com>
- <e02f3388-461c-27ac-b305-2a63ae144a48@gmail.com>
-In-Reply-To: <e02f3388-461c-27ac-b305-2a63ae144a48@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 7 Mar 2023 08:44:27 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWLgQprQDfEavB+wmzLw2PFOZ2uz3Ucm1BxBfhyJvOifA@mail.gmail.com>
-Message-ID: <CAMuHMdWLgQprQDfEavB+wmzLw2PFOZ2uz3Ucm1BxBfhyJvOifA@mail.gmail.com>
-Subject: Re: [PATCH v2] m68k: kernel/traps.c - only force 030 bus error if PC
- not in exception table
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     linux-m68k@vger.kernel.org, Eero Tamminen <oak@helsinkinet.fi>,
-        Finn Thain <fthain@linux-m68k.org>,
-        Andreas Schwab <schwab@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+        d=1e100.net; s=20210112; t=1678225318;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h0UBWEzua7mI1E3a/+R1pzklpJ+RGJpYFy9mijom/UM=;
+        b=zk6deeDOy7ZCZsE0sbO3yWtynTB8G/RfXg8WqsB37Uuyxu5lI/ZDQGRR48pnbgO5rl
+         KyFJW1IlK0QZMDIGJ46jsxPg08CtLNwIgo72Qz4S5V6a/dsZdvEE/R83dWn+G8a8wl/C
+         mc5iqc2JWSaj9dn48HPIDZcKl3xx+kE3vSx7BzY3UMdPVNUQ5uO8PCBOKPip/xDOdIWI
+         WqFep3EFNkIfhU1Ub3WlLIA4w6tuglfClZN5VT7jkdqUp8EJgjfurnq7jkCALmNT5L68
+         m7O5WHLubk7VduyKiHqYBNLEilb0kUI6M5Fa+KBoyuL3LD4wfEqIceCIeirnVDeK618m
+         dTEQ==
+X-Gm-Message-State: AO0yUKW8X8caJQUQZ8cDftBofjRQxLrueVWw5Dw4dnD2SoauIr9ttmgb
+        uI66y5rjWoZCPIiVt2suH1sRlw==
+X-Google-Smtp-Source: AK7set/K6eJAQf/eSbaq269PoSBswE0gsDc5h7lzSW9lr2zauw1plinMmCGHpVyR/4qKnDR1/eXDIg==
+X-Received: by 2002:a17:902:ce90:b0:19a:9434:af30 with SMTP id f16-20020a170902ce9000b0019a9434af30mr18505363plg.18.1678225318377;
+        Tue, 07 Mar 2023 13:41:58 -0800 (PST)
+Received: from localhost ([50.221.140.188])
+        by smtp.gmail.com with ESMTPSA id km12-20020a17090327cc00b0019e30e3068bsm8866509plb.168.2023.03.07.13.41.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Mar 2023 13:41:57 -0800 (PST)
+Date:   Tue, 07 Mar 2023 13:41:57 -0800 (PST)
+X-Google-Original-Date: Tue, 07 Mar 2023 13:40:59 PST (-0800)
+Subject:     Re: [PATCH v5 12/26] riscv: Remove COMMAND_LINE_SIZE from uapi
+In-Reply-To: <20230306100508.1171812-13-alexghiti@rivosinc.com>
+CC:     Greg KH <gregkh@linuxfoundation.org>, corbet@lwn.net,
+        Richard Henderson <richard.henderson@linaro.org>,
+        ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@kernel.org,
+        linux@armlinux.org.uk, Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, chenhuacai@kernel.org,
+        kernel@xen0n.name, geert@linux-m68k.org, monstr@monstr.eu,
+        tsbogend@alpha.franken.de, James.Bottomley@HansenPartnership.com,
+        deller@gmx.de, mpe@ellerman.id.au, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com,
+        agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
+        svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org,
+        davem@davemloft.net, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, chris@zankel.net, jcmvbkbc@gmail.com,
+        Arnd Bergmann <arnd@arndb.de>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        linux-arch@vger.kernel.org, alexghiti@rivosinc.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     alexghiti@rivosinc.com
+Message-ID: <mhng-d4be5bb5-f0ad-4e76-9b11-83732d233a45@palmer-ri-x1c9a>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael,
-
-On Tue, Mar 7, 2023 at 1:28 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> On 7/03/23 02:03, Geert Uytterhoeven wrote:
-> > On Wed, Mar 1, 2023 at 3:13 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> >> __get_kernel_nofault() does copy data in supervisor mode when
-> >> forcing a task backtrace log through /proc/sysrq_trigger.
-> >> This is expected cause a bus error exception on e.g. NULL
-> >> pointer dereferencing when logging a kernel task has no
-> >> workqueue associated. This bus error ought to be ignored.
-> >>
-> >> Our 030 bus error handler is ill equipped to deal with this:
-> >>
-> >> Whenever ssw indicates a kernel mode access on a data fault,
-> >> we don't even attempt to handle the fault and instead always
-> >> send a SEGV signal (or panic). As a result, the check
-> >> for exception handling at the fault PC (buried in
-> >> send_sig_fault() which gets called from do_page_fault()
-> >> eventually) is never used.
-> >>
-> >> In contrast, both 040 and 060 access error handlers do not
-> >> care whether a fault happened on supervisor mode access,
-> >> and will call do_page_fault() on those, ultimately honoring
-> >> the exception table.
-> >>
-> >> Add a check in bus_error030 to call do_page_fault() in case
-> >> we do have an entry for the fault PC in our exception table.
-> >>
-> >> I had attempted a fix for this earlier in 2019 that did rely
-> >> on testing pagefault_disabled() (see link below) to achieve
-> >> the same thing, but this patch should be more generic.
-> >>
-> >> Tested on 030 Atari Falcon.
-> >>
-> >> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-> >> Reported-by: Eero Tamminen <oak@helsinkinet.fi>
-> >> CC: Eero Tamminen <oak@helsinkinet.fi>
-> >> CC: Finn Thain <fthain@linux-m68k.org>
-> >> CC: Andreas Schwab <schwab@linux-m68k.org>
-> >> CC: Geert Uytterhoeven <geert@linux-m68k.org>
-> >> Link: https://lore.kernel.org/r/alpine.LNX.2.21.1904091023540.25@nippy.intranet
-> >> Link: https://lore.kernel.org/r/63130691-1984-c423-c1f2-73bfd8d3dcd3@gmail.com
-> >> --
-> >>
-> >> Changes from v1:
-> >>
-> >> - add comment
-> >> - reword commit message
-> >> - add link to old patch as well (stick to lore.kernel.org
-> >>    even though these links are currently not functional)
-> > Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > i.e. will queue as a fix in the m68k for-v6.3 branch.
+On Mon, 06 Mar 2023 02:04:54 PST (-0800), alexghiti@rivosinc.com wrote:
+> As far as I can tell this is not used by userspace and thus should not
+> be part of the user-visible API.
 >
-> Thanks - I neglected to search far enough back to find where the context
-> of this diff originates, but upon a closer look, it appears to be the
-> well-known commit 1da177e4c3f4 (start of git history). Do you think this
-> is worth a backport to stable?
+> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> ---
+>  arch/riscv/include/asm/setup.h      | 7 +++++++
+>  arch/riscv/include/uapi/asm/setup.h | 2 --
+>  2 files changed, 7 insertions(+), 2 deletions(-)
+>  create mode 100644 arch/riscv/include/asm/setup.h
+>
+> diff --git a/arch/riscv/include/asm/setup.h b/arch/riscv/include/asm/setup.h
+> new file mode 100644
+> index 000000000000..f165a14344e2
+> --- /dev/null
+> +++ b/arch/riscv/include/asm/setup.h
+> @@ -0,0 +1,7 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +#ifndef _ASM_RISCV_SETUP_H
+> +#define _ASM_RISCV_SETUP_H
+> +
+> +#define COMMAND_LINE_SIZE       1024
+> +
+> +#endif /* _ASM_RISCV_SETUP_H */
+> diff --git a/arch/riscv/include/uapi/asm/setup.h b/arch/riscv/include/uapi/asm/setup.h
+> index 66b13a522880..17fcecd4a2f8 100644
+> --- a/arch/riscv/include/uapi/asm/setup.h
+> +++ b/arch/riscv/include/uapi/asm/setup.h
+> @@ -3,6 +3,4 @@
+>  #ifndef _UAPI_ASM_RISCV_SETUP_H
+>  #define _UAPI_ASM_RISCV_SETUP_H
+>
+> -#define COMMAND_LINE_SIZE	1024
+> -
+>  #endif /* _UAPI_ASM_RISCV_SETUP_H */
 
-I guess it will be auto-backported to stable once it has reached
-upstream, together with the two other fixes.
+Reviewed-by: Palmer Dabbelt <palmer@rivosinc.com>
+Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks!
