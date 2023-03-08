@@ -2,222 +2,149 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0357C6FD20
-	for <linux-m68k@archiver.kernel.org>; Wed,  8 Mar 2023 13:11:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28652C678D5
+	for <linux-m68k@archiver.kernel.org>; Wed,  8 Mar 2023 18:16:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbjCHNLX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 8 Mar 2023 08:11:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50972 "EHLO
+        id S229794AbjCHSQE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 8 Mar 2023 13:16:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231366AbjCHNKv (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 8 Mar 2023 08:10:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FC5A80937
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Mar 2023 05:08:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1678280868;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YuzOmgr2u1PyDfkmKFazdLyWcjTDX0CNS9csyPmB6+k=;
-        b=CsjAm2gzaTD9ZktVrcqwhWPOZDQXokm7MJHsL5rwefGCFokASl6A8astgCDlJxND2PF+ka
-        cl/23/Xhow3hFMeo4nwi5OqAJt9/ZyzX1vcYJc1EmjxeBROEs1b/cRnrZfJ8d/h1GVuPNv
-        +d6/JiXCTAMIjbGZpj0RohoPDTYyYRg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-209-h5-YcZh5Ok2x1n76ZKCkaw-1; Wed, 08 Mar 2023 08:07:43 -0500
-X-MC-Unique: h5-YcZh5Ok2x1n76ZKCkaw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2F67B185A794;
-        Wed,  8 Mar 2023 13:07:42 +0000 (UTC)
-Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-137.pek2.redhat.com [10.72.12.137])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3B58D2166B2A;
-        Wed,  8 Mar 2023 13:07:33 +0000 (UTC)
-From:   Baoquan He <bhe@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-arch@vger.kernel.org, linux-mm@kvack.org, arnd@arndb.de,
-        mpe@ellerman.id.au, geert@linux-m68k.org, mcgrof@kernel.org,
-        hch@infradead.org, Baoquan He <bhe@redhat.com>,
-        linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
-Subject: [PATCH v4 3/4] arch/*/io.h: remove ioremap_uc in some architectures
-Date:   Wed,  8 Mar 2023 21:07:09 +0800
-Message-Id: <20230308130710.368085-4-bhe@redhat.com>
-In-Reply-To: <20230308130710.368085-1-bhe@redhat.com>
-References: <20230308130710.368085-1-bhe@redhat.com>
+        with ESMTP id S230098AbjCHSQB (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 8 Mar 2023 13:16:01 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8580DCF987
+        for <linux-m68k@vger.kernel.org>; Wed,  8 Mar 2023 10:15:42 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id p3-20020a17090ad30300b0023a1cd5065fso2546369pju.0
+        for <linux-m68k@vger.kernel.org>; Wed, 08 Mar 2023 10:15:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678299342;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tPPshpOVX4y9NOpbwy4hWsVAwKzByZRgGHhCRnkW3vk=;
+        b=ek4guvUnE6V70zZOuQyPEAup1BoHfAjlSDZV7uShI6Mv79w7sGcqN54F9eus7SC+UU
+         9Zmq7JSzZcpEHCuqAf5Pe5UrpsOnrBY3yyD8x/ynj0few0AP5QawnNT3Mep6j8Pz+Vwo
+         6o9Ap529AhZazsNcdLWAq+M8+GaqxbTDkWIogKrgmPvrTlLhqLUGMRVGWzEwkgMyuYtu
+         WOQfw9BBV3utXDwSmhoUnmA6yqbqXc5fg45KNqLkDgsBBloF2QvMA0oq8Haxm2NhnZ1W
+         92FWNZ3xjVQ+y8o4Y8khW2IotE3GxXSACkS+Zhey0L+R6nLIr1FFwZM+wtc+dWhzzkvW
+         IRFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678299342;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tPPshpOVX4y9NOpbwy4hWsVAwKzByZRgGHhCRnkW3vk=;
+        b=RqQKDEXArETjLjjQ4YjV+cur2oyoPOJIy2DCW1iTQgK6WJ0qBZ2LX1Dq2UmtE/sio3
+         eZ33u5H0232GcuK75yEo4eWNEiXEPKimgVkG3VVaXsgHVMjQHmBO+hvcW9yMZGirSFvM
+         Wi+sVkPDl4Yr9CAO143rwpwwHYreSXzLFUTAEKqZL+9YGA2si1p3QDhlIenwycDicjdT
+         dN0gUxRHmSE/0uKqs8nd4uhJMbhD9FZwXb2HslLdeeOUFmtN7ZR0vzTR1F/LtFDZsUJX
+         Qu/4m56VlPkNqjbTIvk+KyzRC84Pqz1GJtNA/3ZogNPHtGCi5WKdyftASHdKA2ETarAf
+         8MrQ==
+X-Gm-Message-State: AO0yUKWDcPzZ5RVud0yIcCjD600aaT22/9rRA4kWtTioe9x+2XNIZetL
+        tMOBnkDNzGBZRam1S+jb+rL1WnZELbk=
+X-Google-Smtp-Source: AK7set/RQU1foly0XXn131d187tBfv+WQYQ7qf267zjiJaL3oVJHzhjr9CUJJx0jYedonV6CB5l1Tg==
+X-Received: by 2002:a17:902:e549:b0:19e:76c4:2d30 with SMTP id n9-20020a170902e54900b0019e76c42d30mr24812568plf.61.1678299341845;
+        Wed, 08 Mar 2023 10:15:41 -0800 (PST)
+Received: from ?IPV6:2001:df0:0:200c:69d2:81f8:ea65:418d? ([2001:df0:0:200c:69d2:81f8:ea65:418d])
+        by smtp.gmail.com with ESMTPSA id jd4-20020a170903260400b0019a6f32e6c1sm10094084plb.148.2023.03.08.10.15.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Mar 2023 10:15:41 -0800 (PST)
+Message-ID: <fb6ef993-4698-a25d-88df-62a858f78744@gmail.com>
+Date:   Thu, 9 Mar 2023 07:15:35 +1300
 MIME-Version: 1.0
-Content-type: text/plain
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v2] m68k: kernel/traps.c - only force 030 bus error if PC
+ not in exception table
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@vger.kernel.org, Eero Tamminen <oak@helsinkinet.fi>,
+        Finn Thain <fthain@linux-m68k.org>,
+        Andreas Schwab <schwab@linux-m68k.org>
+References: <20230301021107.26307-1-schmitzmic@gmail.com>
+ <CAMuHMdVP=cNZKZcurO8V1UrNTUgookaWnmPr02+Wv9vxKX-b6Q@mail.gmail.com>
+ <e02f3388-461c-27ac-b305-2a63ae144a48@gmail.com>
+ <CAMuHMdWLgQprQDfEavB+wmzLw2PFOZ2uz3Ucm1BxBfhyJvOifA@mail.gmail.com>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+In-Reply-To: <CAMuHMdWLgQprQDfEavB+wmzLw2PFOZ2uz3Ucm1BxBfhyJvOifA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-ioremap_uc() is only meaningful on old x86-32 systems with the PAT
-extension, and on ia64 with its slightly unconventional ioremap()
-behavior. So remove the ioremap_uc() definition in architecutures
-other than x86 and ia64. These architectures all have asm-generic/io.h
-included and will have the default ioremap_uc() definition which
-returns NULL.
+Hi Geert,
 
-This changes the existing behaviour, while no need to worry about
-any breakage because in the only callsite of ioremap_uc(), code
-has been adjusted to eliminate the impact. Please see
-atyfb_setup_generic() of drivers/video/fbdev/aty/atyfb_base.c.
+On 7/03/23 20:44, Geert Uytterhoeven wrote:
+> Hi Michael,
+>
+> On Tue, Mar 7, 2023 at 1:28 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+>> On 7/03/23 02:03, Geert Uytterhoeven wrote:
+>>> On Wed, Mar 1, 2023 at 3:13 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+>>>> __get_kernel_nofault() does copy data in supervisor mode when
+>>>> forcing a task backtrace log through /proc/sysrq_trigger.
+>>>> This is expected cause a bus error exception on e.g. NULL
+>>>> pointer dereferencing when logging a kernel task has no
+>>>> workqueue associated. This bus error ought to be ignored.
+>>>>
+>>>> Our 030 bus error handler is ill equipped to deal with this:
+>>>>
+>>>> Whenever ssw indicates a kernel mode access on a data fault,
+>>>> we don't even attempt to handle the fault and instead always
+>>>> send a SEGV signal (or panic). As a result, the check
+>>>> for exception handling at the fault PC (buried in
+>>>> send_sig_fault() which gets called from do_page_fault()
+>>>> eventually) is never used.
+>>>>
+>>>> In contrast, both 040 and 060 access error handlers do not
+>>>> care whether a fault happened on supervisor mode access,
+>>>> and will call do_page_fault() on those, ultimately honoring
+>>>> the exception table.
+>>>>
+>>>> Add a check in bus_error030 to call do_page_fault() in case
+>>>> we do have an entry for the fault PC in our exception table.
+>>>>
+>>>> I had attempted a fix for this earlier in 2019 that did rely
+>>>> on testing pagefault_disabled() (see link below) to achieve
+>>>> the same thing, but this patch should be more generic.
+>>>>
+>>>> Tested on 030 Atari Falcon.
+>>>>
+>>>> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+>>>> Reported-by: Eero Tamminen <oak@helsinkinet.fi>
+>>>> CC: Eero Tamminen <oak@helsinkinet.fi>
+>>>> CC: Finn Thain <fthain@linux-m68k.org>
+>>>> CC: Andreas Schwab <schwab@linux-m68k.org>
+>>>> CC: Geert Uytterhoeven <geert@linux-m68k.org>
+>>>> Link: https://lore.kernel.org/r/alpine.LNX.2.21.1904091023540.25@nippy.intranet
+>>>> Link: https://lore.kernel.org/r/63130691-1984-c423-c1f2-73bfd8d3dcd3@gmail.com
+>>>> --
+>>>>
+>>>> Changes from v1:
+>>>>
+>>>> - add comment
+>>>> - reword commit message
+>>>> - add link to old patch as well (stick to lore.kernel.org
+>>>>     even though these links are currently not functional)
+>>> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>>> i.e. will queue as a fix in the m68k for-v6.3 branch.
+>> Thanks - I neglected to search far enough back to find where the context
+>> of this diff originates, but upon a closer look, it appears to be the
+>> well-known commit 1da177e4c3f4 (start of git history). Do you think this
+>> is worth a backport to stable?
+> I guess it will be auto-backported to stable once it has reached
+> upstream, together with the two other fixes.
 
-If any new invocation of ioremap_uc() need be added, please consider
-using ioremap() intead or adding a ARCH specific version if necessary.
+Fair enough - I'll check in a month or so and remind the stable 
+maintainers if need be.
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Baoquan He <bhe@redhat.com>
-Cc: linux-alpha@vger.kernel.org
-Cc: linux-hexagon@vger.kernel.org
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: linux-mips@vger.kernel.org
-Cc: linux-parisc@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-sh@vger.kernel.org
-Cc: sparclinux@vger.kernel.org
----
- Documentation/driver-api/device-io.rst | 9 +++++----
- arch/alpha/include/asm/io.h            | 1 -
- arch/hexagon/include/asm/io.h          | 3 ---
- arch/m68k/include/asm/kmap.h           | 1 -
- arch/mips/include/asm/io.h             | 1 -
- arch/parisc/include/asm/io.h           | 2 --
- arch/powerpc/include/asm/io.h          | 1 -
- arch/sh/include/asm/io.h               | 2 --
- arch/sparc/include/asm/io_64.h         | 1 -
- 9 files changed, 5 insertions(+), 16 deletions(-)
+Cheers,
 
-diff --git a/Documentation/driver-api/device-io.rst b/Documentation/driver-api/device-io.rst
-index 4d2baac0311c..d55384b106bd 100644
---- a/Documentation/driver-api/device-io.rst
-+++ b/Documentation/driver-api/device-io.rst
-@@ -408,11 +408,12 @@ functions for details on the CPU side of things.
- ioremap_uc()
- ------------
- 
--ioremap_uc() behaves like ioremap() except that on the x86 architecture without
--'PAT' mode, it marks memory as uncached even when the MTRR has designated
--it as cacheable, see Documentation/x86/pat.rst.
-+ioremap_uc() is only meaningful on old x86-32 systems with the PAT extension,
-+and on ia64 with its slightly unconventional ioremap() behavior, everywhere
-+elss ioremap_uc() defaults to return NULL.
- 
--Portable drivers should avoid the use of ioremap_uc().
-+
-+Portable drivers should avoid the use of ioremap_uc(), use ioremap() instead.
- 
- ioremap_cache()
- ---------------
-diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
-index 7aeaf7c30a6f..076f0e4e7f1e 100644
---- a/arch/alpha/include/asm/io.h
-+++ b/arch/alpha/include/asm/io.h
-@@ -308,7 +308,6 @@ static inline void __iomem *ioremap(unsigned long port, unsigned long size)
- }
- 
- #define ioremap_wc ioremap
--#define ioremap_uc ioremap
- 
- static inline void iounmap(volatile void __iomem *addr)
- {
-diff --git a/arch/hexagon/include/asm/io.h b/arch/hexagon/include/asm/io.h
-index dcd9cbbf5934..b9847472f25c 100644
---- a/arch/hexagon/include/asm/io.h
-+++ b/arch/hexagon/include/asm/io.h
-@@ -176,9 +176,6 @@ static inline void writel(u32 data, volatile void __iomem *addr)
- #define _PAGE_IOREMAP (_PAGE_PRESENT | _PAGE_READ | _PAGE_WRITE | \
- 		       (__HEXAGON_C_DEV << 6))
- 
--#define ioremap_uc(addr, size) ioremap((addr), (size))
--
--
- #define __raw_writel writel
- 
- static inline void memcpy_fromio(void *dst, const volatile void __iomem *src,
-diff --git a/arch/m68k/include/asm/kmap.h b/arch/m68k/include/asm/kmap.h
-index 4efb3efa593a..b778f015c917 100644
---- a/arch/m68k/include/asm/kmap.h
-+++ b/arch/m68k/include/asm/kmap.h
-@@ -25,7 +25,6 @@ static inline void __iomem *ioremap(unsigned long physaddr, unsigned long size)
- 	return __ioremap(physaddr, size, IOMAP_NOCACHE_SER);
- }
- 
--#define ioremap_uc ioremap
- #define ioremap_wt ioremap_wt
- static inline void __iomem *ioremap_wt(unsigned long physaddr,
- 				       unsigned long size)
-diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
-index 6756baadba6c..da0a625c3c6d 100644
---- a/arch/mips/include/asm/io.h
-+++ b/arch/mips/include/asm/io.h
-@@ -167,7 +167,6 @@ void iounmap(const volatile void __iomem *addr);
-  */
- #define ioremap(offset, size)						\
- 	ioremap_prot((offset), (size), _CACHE_UNCACHED)
--#define ioremap_uc		ioremap
- 
- /*
-  * ioremap_cache -	map bus memory into CPU space
-diff --git a/arch/parisc/include/asm/io.h b/arch/parisc/include/asm/io.h
-index 366537042465..48630c78714a 100644
---- a/arch/parisc/include/asm/io.h
-+++ b/arch/parisc/include/asm/io.h
-@@ -132,8 +132,6 @@ static inline void gsc_writeq(unsigned long long val, unsigned long addr)
- 
- #define ioremap_wc(addr, size)  \
- 	ioremap_prot((addr), (size), _PAGE_IOREMAP)
--#define ioremap_uc(addr, size)  \
--	ioremap_prot((addr), (size), _PAGE_IOREMAP)
- 
- #define pci_iounmap			pci_iounmap
- 
-diff --git a/arch/powerpc/include/asm/io.h b/arch/powerpc/include/asm/io.h
-index 978d687edf32..7873fc83c82c 100644
---- a/arch/powerpc/include/asm/io.h
-+++ b/arch/powerpc/include/asm/io.h
-@@ -863,7 +863,6 @@ void __iomem *ioremap_wt(phys_addr_t address, unsigned long size);
- #endif
- 
- void __iomem *ioremap_coherent(phys_addr_t address, unsigned long size);
--#define ioremap_uc(addr, size)		ioremap((addr), (size))
- #define ioremap_cache(addr, size) \
- 	ioremap_prot((addr), (size), pgprot_val(PAGE_KERNEL))
- 
-diff --git a/arch/sh/include/asm/io.h b/arch/sh/include/asm/io.h
-index b3a26b405c8d..12a892804082 100644
---- a/arch/sh/include/asm/io.h
-+++ b/arch/sh/include/asm/io.h
-@@ -278,8 +278,6 @@ unsigned long long poke_real_address_q(unsigned long long addr,
- 	ioremap_prot((addr), (size), pgprot_val(PAGE_KERNEL))
- #endif /* CONFIG_MMU */
- 
--#define ioremap_uc	ioremap
--
- /*
-  * Convert a physical pointer to a virtual kernel pointer for /dev/mem
-  * access
-diff --git a/arch/sparc/include/asm/io_64.h b/arch/sparc/include/asm/io_64.h
-index 9303270b22f3..d8ee1442f303 100644
---- a/arch/sparc/include/asm/io_64.h
-+++ b/arch/sparc/include/asm/io_64.h
-@@ -423,7 +423,6 @@ static inline void __iomem *ioremap(unsigned long offset, unsigned long size)
- 	return (void __iomem *)offset;
- }
- 
--#define ioremap_uc(X,Y)			ioremap((X),(Y))
- #define ioremap_wc(X,Y)			ioremap((X),(Y))
- #define ioremap_wt(X,Y)			ioremap((X),(Y))
- static inline void __iomem *ioremap_np(unsigned long offset, unsigned long size)
--- 
-2.34.1
+     Michael
 
+
+>
+> Gr{oetje,eeting}s,
+>
+>                          Geert
+>
