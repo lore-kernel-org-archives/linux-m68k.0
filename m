@@ -2,92 +2,90 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 245E9C64EC4
-	for <linux-m68k@archiver.kernel.org>; Thu,  9 Mar 2023 09:46:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C656CC61DA4
+	for <linux-m68k@archiver.kernel.org>; Thu,  9 Mar 2023 14:37:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbjCIJqc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 9 Mar 2023 04:46:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37290 "EHLO
+        id S231853AbjCIOhN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 9 Mar 2023 09:37:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230474AbjCIJqD (ORCPT
+        with ESMTP id S231897AbjCIOgt (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 9 Mar 2023 04:46:03 -0500
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CAE6E4C67
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  9 Mar 2023 01:45:06 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed50:3a77:63e:b168:ae06])
-        by albert.telenet-ops.be with bizsmtp
-        id W9l32900Y54Hw2A069l3gz; Thu, 09 Mar 2023 10:45:04 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1paCp3-00BKDc-0P;
-        Thu, 09 Mar 2023 10:45:03 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1paCpb-00G3TG-I0;
-        Thu, 09 Mar 2023 10:45:03 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [GIT PULL] m68k fixes for v6.3
-Date:   Thu,  9 Mar 2023 10:44:55 +0100
-Message-Id: <20230309094455.3826581-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
+        Thu, 9 Mar 2023 09:36:49 -0500
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AB4FAF4D9E;
+        Thu,  9 Mar 2023 06:36:43 -0800 (PST)
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1paHNg-000885-00; Thu, 09 Mar 2023 15:36:32 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 6CA12C123A; Thu,  9 Mar 2023 15:36:21 +0100 (CET)
+Date:   Thu, 9 Mar 2023 15:36:21 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Baoquan He <bhe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, arnd@arndb.de, mpe@ellerman.id.au,
+        geert@linux-m68k.org, mcgrof@kernel.org, hch@infradead.org,
+        linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
+Subject: Re: [PATCH v4 3/4] arch/*/io.h: remove ioremap_uc in some
+ architectures
+Message-ID: <20230309143621.GA12350@alpha.franken.de>
+References: <20230308130710.368085-1-bhe@redhat.com>
+ <20230308130710.368085-4-bhe@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230308130710.368085-4-bhe@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-	Hi Linus,
+On Wed, Mar 08, 2023 at 09:07:09PM +0800, Baoquan He wrote:
+> ioremap_uc() is only meaningful on old x86-32 systems with the PAT
+> extension, and on ia64 with its slightly unconventional ioremap()
+> behavior. So remove the ioremap_uc() definition in architecutures
+> other than x86 and ia64. These architectures all have asm-generic/io.h
+> included and will have the default ioremap_uc() definition which
+> returns NULL.
+> 
+> This changes the existing behaviour, while no need to worry about
+> any breakage because in the only callsite of ioremap_uc(), code
+> has been adjusted to eliminate the impact. Please see
+> atyfb_setup_generic() of drivers/video/fbdev/aty/atyfb_base.c.
+> 
+> If any new invocation of ioremap_uc() need be added, please consider
+> using ioremap() intead or adding a ARCH specific version if necessary.
+> 
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+> Cc: linux-alpha@vger.kernel.org
+> Cc: linux-hexagon@vger.kernel.org
+> Cc: linux-m68k@lists.linux-m68k.org
+> Cc: linux-mips@vger.kernel.org
+> Cc: linux-parisc@vger.kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-sh@vger.kernel.org
+> Cc: sparclinux@vger.kernel.org
+> ---
+>  Documentation/driver-api/device-io.rst | 9 +++++----
+>  arch/alpha/include/asm/io.h            | 1 -
+>  arch/hexagon/include/asm/io.h          | 3 ---
+>  arch/m68k/include/asm/kmap.h           | 1 -
+>  arch/mips/include/asm/io.h             | 1 -
+>  arch/parisc/include/asm/io.h           | 2 --
+>  arch/powerpc/include/asm/io.h          | 1 -
+>  arch/sh/include/asm/io.h               | 2 --
+>  arch/sparc/include/asm/io_64.h         | 1 -
+>  9 files changed, 5 insertions(+), 16 deletions(-)
 
-The following changes since commit fe15c26ee26efa11741a7b632e9f23b01aca4cc6:
+this doesn't apply to v6.3-rc1... what tree is this based on ?
 
-  Linux 6.3-rc1 (2023-03-05 14:52:03 -0800)
+Thomas.
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.3-tag2
-
-for you to fetch changes up to e36a82bebbf7da814530d5a179bef9df5934b717:
-
-  m68k: Only force 030 bus error if PC not in exception table (2023-03-06 14:09:42 +0100)
-
-----------------------------------------------------------------
-m68k fixes for v6.3
-
-  - Fix systems with memory at end of 32-bit address space,
-  - Fix initrd on systems where memory does not start at address zero,
-  - Fix 68030 handling of bus errors for addresses in exception tables.
-
-Thanks for pulling!
-
-----------------------------------------------------------------
-Geert Uytterhoeven (1):
-      m68k: mm: Move initrd phys_to_virt handling after paging_init()
-
-Kars de Jong (1):
-      m68k: mm: Fix systems with memory at end of 32-bit address space
-
-Michael Schmitz (1):
-      m68k: Only force 030 bus error if PC not in exception table
-
- arch/m68k/kernel/setup_mm.c | 10 +++++-----
- arch/m68k/kernel/traps.c    |  4 +++-
- arch/m68k/mm/motorola.c     | 10 +++++-----
- 3 files changed, 13 insertions(+), 11 deletions(-)
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
