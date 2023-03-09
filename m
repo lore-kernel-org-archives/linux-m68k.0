@@ -2,71 +2,92 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B77FC61DA4
-	for <linux-m68k@archiver.kernel.org>; Thu,  9 Mar 2023 19:07:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53C5CC61DA4
+	for <linux-m68k@archiver.kernel.org>; Thu,  9 Mar 2023 22:55:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbjCITHN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 9 Mar 2023 14:07:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57352 "EHLO
+        id S230323AbjCIWy7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 9 Mar 2023 17:54:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231140AbjCITHK (ORCPT
+        with ESMTP id S231459AbjCIWy4 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 9 Mar 2023 14:07:10 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 273FAFC7FB
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  9 Mar 2023 11:07:10 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Thu, 9 Mar 2023 17:54:56 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423E4110295
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  9 Mar 2023 14:54:35 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9E8C861C00;
-        Thu,  9 Mar 2023 19:07:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 119F5C4339B;
-        Thu,  9 Mar 2023 19:07:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678388829;
-        bh=VjbEarfjglabi7ZBKKjIpPY0DM8fgaY5K9vrIJgwHuU=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=A2IE/DAg3yG3C+ewkEkP7ECYa4AWlf8+KwYWm3fZm817tGX3PSH5ufOzs8Our+6jO
-         QhFh39exVo4jB7b4ZZH82Ie1gsFAIF2WtVAun35Ks3r6MJkHNtXNF5ikdXFez27/6m
-         j24yqFWwR7eULNX3qB9K1tV1CuYdiQB7mF0bBjlH3Mqp0N9GdwAC3VbDkvZP5po2EQ
-         A4HPM3D8U15qO9X/CsVcwkrbeCkuFTH1/p32pz67DEZf+ZjSR8CbgprmatWUG2ZdiS
-         JHRwpdesttdWgWawcPRWu7cIKsPRDPTBLGfQ8wAq4eFIfm2WZqm3xkpdzntzxD42RH
-         UNbiyIUgyutwg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 00087E61B60;
-        Thu,  9 Mar 2023 19:07:08 +0000 (UTC)
-Subject: Re: [GIT PULL] m68k fixes for v6.3
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20230309094455.3826581-1-geert@linux-m68k.org>
-References: <20230309094455.3826581-1-geert@linux-m68k.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20230309094455.3826581-1-geert@linux-m68k.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.3-tag2
-X-PR-Tracked-Commit-Id: e36a82bebbf7da814530d5a179bef9df5934b717
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c70e9b8ea3936a60e2a696dd0ed9bb57885f6bec
-Message-Id: <167838882899.4761.4160304678233805155.pr-tracker-bot@kernel.org>
-Date:   Thu, 09 Mar 2023 19:07:08 +0000
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4PXkyW6RNvz4x7s;
+        Fri, 10 Mar 2023 09:54:27 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1678402469;
+        bh=HnGqhsJTeGjqlPVUTmz3g9ouF0ULtGaBV4DNsEeVxsY=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=qtChMEayOa7BG3gV8biPN1UquvZjKKHH1PLnOktZLFk+z7+30lmoHFQWG/ybTGOfV
+         Msn+vq0214G/5bCC5sK8YEWC4SONYn3IjVV2gLKa55Cy0vLJqZpwyIgKHr5xpyRlRO
+         2B59x+JG32iD6Ll1IeACkY+jSFZ42uC6mHr940GQ8rZCqsWJ73oUfODgJNTU1QA4cH
+         /Zt2BN0brA6nfVHnuvaamrjV+75syVJwmQZUAWs6jzdNGb6ONfyH1iskU2QALlqqJR
+         fcr5fnsHZCG3RA30SBInWnaih8rWQ8VzjneqbRw1yHLKc3Q/ihjyNUCZJzzzjHFnUd
+         puglrrgtkl1qg==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     linux-arch@vger.kernel.org, linux-mm@kvack.org, arnd@arndb.de,
+        geert@linux-m68k.org, mcgrof@kernel.org, hch@infradead.org,
+        Baoquan He <bhe@redhat.com>, linux-alpha@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org
+Subject: Re: [PATCH v4 3/4] arch/*/io.h: remove ioremap_uc in some
+ architectures
+In-Reply-To: <20230308130710.368085-4-bhe@redhat.com>
+References: <20230308130710.368085-1-bhe@redhat.com>
+ <20230308130710.368085-4-bhe@redhat.com>
+Date:   Fri, 10 Mar 2023 09:54:27 +1100
+Message-ID: <874jqtpmcc.fsf@mpe.ellerman.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The pull request you sent on Thu,  9 Mar 2023 10:44:55 +0100:
+Baoquan He <bhe@redhat.com> writes:
+> ioremap_uc() is only meaningful on old x86-32 systems with the PAT
+> extension, and on ia64 with its slightly unconventional ioremap()
+> behavior. So remove the ioremap_uc() definition in architecutures
+> other than x86 and ia64. These architectures all have asm-generic/io.h
+> included and will have the default ioremap_uc() definition which
+> returns NULL.
+>
+> This changes the existing behaviour, while no need to worry about
+> any breakage because in the only callsite of ioremap_uc(), code
+> has been adjusted to eliminate the impact. Please see
+> atyfb_setup_generic() of drivers/video/fbdev/aty/atyfb_base.c.
+>
+> If any new invocation of ioremap_uc() need be added, please consider
+> using ioremap() intead or adding a ARCH specific version if necessary.
+>
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+> Cc: linux-alpha@vger.kernel.org
+> Cc: linux-hexagon@vger.kernel.org
+> Cc: linux-m68k@lists.linux-m68k.org
+> Cc: linux-mips@vger.kernel.org
+> Cc: linux-parisc@vger.kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-sh@vger.kernel.org
+> Cc: sparclinux@vger.kernel.org
+> ---
+>  Documentation/driver-api/device-io.rst | 9 +++++----
+>  arch/alpha/include/asm/io.h            | 1 -
+>  arch/hexagon/include/asm/io.h          | 3 ---
+>  arch/m68k/include/asm/kmap.h           | 1 -
+>  arch/mips/include/asm/io.h             | 1 -
+>  arch/parisc/include/asm/io.h           | 2 --
+>  arch/powerpc/include/asm/io.h          | 1 -
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.3-tag2
+Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c70e9b8ea3936a60e2a696dd0ed9bb57885f6bec
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+cheers
