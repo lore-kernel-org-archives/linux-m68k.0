@@ -2,158 +2,201 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84A1AC6FD1F
-	for <linux-m68k@archiver.kernel.org>; Tue, 14 Mar 2023 16:38:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA024C6FD1D
+	for <linux-m68k@archiver.kernel.org>; Wed, 15 Mar 2023 05:15:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbjCNQi6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 14 Mar 2023 12:38:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36692 "EHLO
+        id S231240AbjCOFPJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 15 Mar 2023 01:15:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbjCNQi4 (ORCPT
+        with ESMTP id S231276AbjCOFPG (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 14 Mar 2023 12:38:56 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 717C62DE57
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Mar 2023 09:38:38 -0700 (PDT)
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32EGRZv7022013;
-        Tue, 14 Mar 2023 16:37:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=kD2FKGQJY5Kf8K0VUyX35AX5LQg3aJuJoe2kwtuWMw0=;
- b=iX+D+PfLCDYte+nyP0JUfTanv1++cGMzXrkEu0Li7gI+yPLgvxEuvkpjg4AncLeq64G9
- 2J9fKM7/vPtmoBOzbMKmeCDtmQG0XDWf54DltcsKhWYAuKplKoOIpPTtp95LGHgrmgiV
- Rq3jKvzt+N1JnIEz6jZRQsFU2f723zceIWqx9FuNuJRK75jzM/k+WABeQua+XcnSbykr
- bdRxuuZaXxG3TSQoNNiFZgrb+KDS3pIxhdEgt8PRwyQlXBieEpqK8ka56UgVrIypPnNx
- tnn7NWo4kn7j5vMmGl15UmWAXzMuzcf0dXBg5vuYXQnfj5PClVT6OaWcgCyyxtydI2AT YQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3pavf5r7qa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Mar 2023 16:37:45 +0000
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 32EGRYU7021991;
-        Tue, 14 Mar 2023 16:37:44 GMT
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3pavf5r7nw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Mar 2023 16:37:43 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 32E8ZueW001600;
-        Tue, 14 Mar 2023 16:37:40 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma03ams.nl.ibm.com (PPS) with ESMTPS id 3p8h96n2sy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Mar 2023 16:37:40 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 32EGbc0p46662236
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Mar 2023 16:37:38 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 59AC220040;
-        Tue, 14 Mar 2023 16:37:38 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A522C20043;
-        Tue, 14 Mar 2023 16:37:34 +0000 (GMT)
-Received: from [9.171.50.237] (unknown [9.171.50.237])
-        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 14 Mar 2023 16:37:34 +0000 (GMT)
-Message-ID: <62b254d84463338f0210b52e37628d05416787d1.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 01/38] Kconfig: introduce HAS_IOPORT option and
- select it as necessary
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
+        Wed, 15 Mar 2023 01:15:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0383125B9D;
+        Tue, 14 Mar 2023 22:14:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=u7otEQw0drUncgREmlSs4Hr4la1Rulf+32AXxHFo/oI=; b=vJinA88ZRxgb83sfXWCSnbOI/6
+        nlXdQ3RerziKOmizgXaq3IAhFcsCLehGop592Wf3RQpHVJdreA/c/t78ENF4YUkjqmryDMRXFvDUK
+        VkARHWGsl/03/0AgiGHT1K4LdeAoeT9Hhp8uAObzm62xgtr7fRXWXeNwi/8nIZnX99J/Ye00i4/Fn
+        wi8vHT9WPqCwuYBsYOl+G191vCuIr03Zkp8JlyY1GiaZ4GF+g7Hqyw+2f1hzWGlw4+rPruor3p8ko
+        pdCXWQPBAGs2yBfSkjfJu3tiupgkkY8cmW/Y9pFAnfncae0KGmYYVxwxywGzCRBPLKKlN/Ns2O/Lj
+        TL1y9Y6Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pcJTM-00DYBq-1G; Wed, 15 Mar 2023 05:14:48 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-arch@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-pci@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
-        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org
-Date:   Tue, 14 Mar 2023 17:37:34 +0100
-In-Reply-To: <20230314121216.413434-2-schnelle@linux.ibm.com>
-References: <20230314121216.413434-1-schnelle@linux.ibm.com>
-         <20230314121216.413434-2-schnelle@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        linux-m68k@lists.linux-m68k.org
+Subject: [PATCH v4 14/36] m68k: Implement the new page table range API
+Date:   Wed, 15 Mar 2023 05:14:22 +0000
+Message-Id: <20230315051444.3229621-15-willy@infradead.org>
+X-Mailer: git-send-email 2.37.1
+In-Reply-To: <20230315051444.3229621-1-willy@infradead.org>
+References: <20230315051444.3229621-1-willy@infradead.org>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: GueKt5igeUn3bYmxiu67S5oTPZyYNUi9
-X-Proofpoint-GUID: 5FevvOZ3EWLw6_zZHyJRkdUMIbd32WjR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-14_10,2023-03-14_02,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- mlxlogscore=675 mlxscore=0 priorityscore=1501 impostorscore=0
- clxscore=1015 malwarescore=0 spamscore=0 bulkscore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2303140137
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, 2023-03-14 at 13:11 +0100, Niklas Schnelle wrote:
-> We introduce a new HAS_IOPORT Kconfig option to indicate support for I/O
-> Port access. In a future patch HAS_IOPORT=3Dn will disable compilation of
-> the I/O accessor functions inb()/outb() and friends on architectures
-> which can not meaningfully support legacy I/O spaces such as s390. Also
-> add dependencies on HAS_IOPORT for the ISA and HAVE_EISA config options
-> as these busses always go along with HAS_IOPORT.
->=20
-> The "depends on" relations on HAS_IOPORT in drivers as well as ifdefs
-> for HAS_IOPORT specific sections will be added in subsequent patches on
-> a per subsystem basis.
->=20
-> Co-developed-by: Arnd Bergmann <arnd@kernel.org>
-> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> ---
->=20
+Add PFN_PTE_SHIFT, update_mmu_cache_range(), flush_icache_pages() and
+flush_dcache_folio().
 
-@Arnd, I swear I asked you and then added Signed-off-bys for all these
-Co-developed-bys as suggested by checkpatch. Sadly that must have been
-during my failed attempt of converting to b4 prep / b4 send before
-sending this last Friday and then it got lost. It almost worked and is
-a very nice work flow except that b4 currently can only use a single
-list of To/Cc fields and for this treewide series that would probably
-hit mail server limits. Added it now.
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+---
+ arch/m68k/include/asm/cacheflush_mm.h    | 27 ++++++++++++++++--------
+ arch/m68k/include/asm/mcf_pgtable.h      |  1 +
+ arch/m68k/include/asm/motorola_pgtable.h |  1 +
+ arch/m68k/include/asm/pgtable_mm.h       |  9 ++++----
+ arch/m68k/include/asm/sun3_pgtable.h     |  1 +
+ arch/m68k/mm/motorola.c                  |  2 +-
+ 6 files changed, 27 insertions(+), 14 deletions(-)
 
-Thanks,
-Niklas
+diff --git a/arch/m68k/include/asm/cacheflush_mm.h b/arch/m68k/include/asm/cacheflush_mm.h
+index 1ac55e7b47f0..88eb85e81ef6 100644
+--- a/arch/m68k/include/asm/cacheflush_mm.h
++++ b/arch/m68k/include/asm/cacheflush_mm.h
+@@ -220,24 +220,29 @@ static inline void flush_cache_page(struct vm_area_struct *vma, unsigned long vm
+ 
+ /* Push the page at kernel virtual address and clear the icache */
+ /* RZ: use cpush %bc instead of cpush %dc, cinv %ic */
+-static inline void __flush_page_to_ram(void *vaddr)
++static inline void __flush_pages_to_ram(void *vaddr, unsigned int nr)
+ {
+ 	if (CPU_IS_COLDFIRE) {
+ 		unsigned long addr, start, end;
+ 		addr = ((unsigned long) vaddr) & ~(PAGE_SIZE - 1);
+ 		start = addr & ICACHE_SET_MASK;
+-		end = (addr + PAGE_SIZE - 1) & ICACHE_SET_MASK;
++		end = (addr + nr * PAGE_SIZE - 1) & ICACHE_SET_MASK;
+ 		if (start > end) {
+ 			flush_cf_bcache(0, end);
+ 			end = ICACHE_MAX_ADDR;
+ 		}
+ 		flush_cf_bcache(start, end);
+ 	} else if (CPU_IS_040_OR_060) {
+-		__asm__ __volatile__("nop\n\t"
+-				     ".chip 68040\n\t"
+-				     "cpushp %%bc,(%0)\n\t"
+-				     ".chip 68k"
+-				     : : "a" (__pa(vaddr)));
++		unsigned long paddr = __pa(vaddr);
++
++		do {
++			__asm__ __volatile__("nop\n\t"
++					     ".chip 68040\n\t"
++					     "cpushp %%bc,(%0)\n\t"
++					     ".chip 68k"
++					     : : "a" (paddr));
++			paddr += PAGE_SIZE;
++		} while (--nr);
+ 	} else {
+ 		unsigned long _tmp;
+ 		__asm__ __volatile__("movec %%cacr,%0\n\t"
+@@ -249,10 +254,14 @@ static inline void __flush_page_to_ram(void *vaddr)
+ }
+ 
+ #define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+-#define flush_dcache_page(page)		__flush_page_to_ram(page_address(page))
++#define flush_dcache_page(page)	__flush_pages_to_ram(page_address(page), 1)
++#define flush_dcache_folio(folio)		\
++	__flush_pages_to_ram(folio_address(folio), folio_nr_pages(folio))
+ #define flush_dcache_mmap_lock(mapping)		do { } while (0)
+ #define flush_dcache_mmap_unlock(mapping)	do { } while (0)
+-#define flush_icache_page(vma, page)	__flush_page_to_ram(page_address(page))
++#define flush_icache_pages(vma, page, nr)	\
++	__flush_pages_to_ram(page_address(page), nr)
++#define flush_icache_page(vma, page) flush_icache_pages(vma, page, 1)
+ 
+ extern void flush_icache_user_page(struct vm_area_struct *vma, struct page *page,
+ 				    unsigned long addr, int len);
+diff --git a/arch/m68k/include/asm/mcf_pgtable.h b/arch/m68k/include/asm/mcf_pgtable.h
+index 13741c1245e1..1414b607eff4 100644
+--- a/arch/m68k/include/asm/mcf_pgtable.h
++++ b/arch/m68k/include/asm/mcf_pgtable.h
+@@ -292,6 +292,7 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
+ 	return pte;
+ }
+ 
++#define PFN_PTE_SHIFT		PAGE_SHIFT
+ #define pmd_pfn(pmd)		(pmd_val(pmd) >> PAGE_SHIFT)
+ #define pmd_page(pmd)		(pfn_to_page(pmd_val(pmd) >> PAGE_SHIFT))
+ 
+diff --git a/arch/m68k/include/asm/motorola_pgtable.h b/arch/m68k/include/asm/motorola_pgtable.h
+index ec0dc19ab834..38d5e5edc3e1 100644
+--- a/arch/m68k/include/asm/motorola_pgtable.h
++++ b/arch/m68k/include/asm/motorola_pgtable.h
+@@ -112,6 +112,7 @@ static inline void pud_set(pud_t *pudp, pmd_t *pmdp)
+ #define pte_present(pte)	(pte_val(pte) & (_PAGE_PRESENT | _PAGE_PROTNONE))
+ #define pte_clear(mm,addr,ptep)		({ pte_val(*(ptep)) = 0; })
+ 
++#define PFN_PTE_SHIFT		PAGE_SHIFT
+ #define pte_page(pte)		virt_to_page(__va(pte_val(pte)))
+ #define pte_pfn(pte)		(pte_val(pte) >> PAGE_SHIFT)
+ #define pfn_pte(pfn, prot)	__pte(((pfn) << PAGE_SHIFT) | pgprot_val(prot))
+diff --git a/arch/m68k/include/asm/pgtable_mm.h b/arch/m68k/include/asm/pgtable_mm.h
+index b93c41fe2067..8c2db20abdb6 100644
+--- a/arch/m68k/include/asm/pgtable_mm.h
++++ b/arch/m68k/include/asm/pgtable_mm.h
+@@ -31,8 +31,6 @@
+ 	do{							\
+ 		*(pteptr) = (pteval);				\
+ 	} while(0)
+-#define set_pte_at(mm,addr,ptep,pteval) set_pte(ptep,pteval)
+-
+ 
+ /* PMD_SHIFT determines the size of the area a second-level page table can map */
+ #if CONFIG_PGTABLE_LEVELS == 3
+@@ -138,11 +136,14 @@ extern void kernel_set_cachemode(void *addr, unsigned long size, int cmode);
+  * tables contain all the necessary information.  The Sun3 does, but
+  * they are updated on demand.
+  */
+-static inline void update_mmu_cache(struct vm_area_struct *vma,
+-				    unsigned long address, pte_t *ptep)
++static inline void update_mmu_cache_range(struct vm_area_struct *vma,
++		unsigned long address, pte_t *ptep, unsigned int nr)
+ {
+ }
+ 
++#define update_mmu_cache(vma, addr, ptep) \
++	update_mmu_cache_range(vma, addr, ptep, 1)
++
+ #endif /* !__ASSEMBLY__ */
+ 
+ /* MMU-specific headers */
+diff --git a/arch/m68k/include/asm/sun3_pgtable.h b/arch/m68k/include/asm/sun3_pgtable.h
+index e582b0484a55..feae73b3b342 100644
+--- a/arch/m68k/include/asm/sun3_pgtable.h
++++ b/arch/m68k/include/asm/sun3_pgtable.h
+@@ -105,6 +105,7 @@ static inline void pte_clear (struct mm_struct *mm, unsigned long addr, pte_t *p
+ 	pte_val (*ptep) = 0;
+ }
+ 
++#define PFN_PTE_SHIFT		0
+ #define pte_pfn(pte)            (pte_val(pte) & SUN3_PAGE_PGNUM_MASK)
+ #define pfn_pte(pfn, pgprot) \
+ ({ pte_t __pte; pte_val(__pte) = pfn | pgprot_val(pgprot); __pte; })
+diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+index 911301224078..790666c6d146 100644
+--- a/arch/m68k/mm/motorola.c
++++ b/arch/m68k/mm/motorola.c
+@@ -81,7 +81,7 @@ static inline void cache_page(void *vaddr)
+ 
+ void mmu_page_ctor(void *page)
+ {
+-	__flush_page_to_ram(page);
++	__flush_pages_to_ram(page, 1);
+ 	flush_tlb_kernel_page(page);
+ 	nocache_page(page);
+ }
+-- 
+2.39.2
 
