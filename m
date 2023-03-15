@@ -2,58 +2,215 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FFFBC6FD1D
-	for <linux-m68k@archiver.kernel.org>; Wed, 15 Mar 2023 09:40:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C738C61DA4
+	for <linux-m68k@archiver.kernel.org>; Wed, 15 Mar 2023 10:08:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231819AbjCOJkM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 15 Mar 2023 05:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49642 "EHLO
+        id S231821AbjCOKIV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 15 Mar 2023 06:08:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232068AbjCOJkL (ORCPT
+        with ESMTP id S231938AbjCOKHv (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 15 Mar 2023 05:40:11 -0400
-X-Greylist: delayed 1338 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 15 Mar 2023 02:40:10 PDT
-Received: from mail.docworker.pl (mail.docworker.pl [94.177.230.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE9340E8
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 15 Mar 2023 02:40:10 -0700 (PDT)
-Received: by mail.docworker.pl (Postfix, from userid 1002)
-        id 0B46E84F4D; Wed, 15 Mar 2023 10:16:11 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=docworker.pl; s=mail;
-        t=1678871783; bh=F9Uuk9o83BVy7SpscM/nJos6FHfnp2pKrNUqPErj3yg=;
-        h=Date:From:To:Subject:From;
-        b=oRaSy9BUS1JJIKxsDsqBMkFXT15gVOQ7OL54XE8mDHV7bhvTnNn6bL1VsM/8+zNZc
-         4mU3nHs0NUigj/LpoLNGSMxL5/kxryKkWVlnUU4nq4Ap2pTM/8ZwEOv4qwJciGhp5G
-         Md2XQeKX7P0yoGBL3id3CNEcQZbB5aQ+HzPfApTBqDopDWAZf1kx+shcVF6UdZHeQK
-         nRD/uM1mtmTvPJxhd3yII/z3y5IyHD4fiFtlGyg5CCCf5E7yEwN9gQiJ384O/ttPnK
-         FHEkqi7Zacy9XbtQ4JLGjZeUYJ8apag7t9/nOE4CiQF6Y7EYBjhA2HH6S6dM0xc9Xf
-         VnMn+Vb7iO62A==
-Received: by mail.docworker.pl for <linux-m68k@lists.linux-m68k.org>; Wed, 15 Mar 2023 09:16:08 GMT
-Message-ID: <20230315084500-0.1.g.1lrw.0.knf7fncd38@docworker.pl>
-Date:   Wed, 15 Mar 2023 09:16:08 GMT
-From:   =?UTF-8?Q? "Mi=C5=82osz_G=C3=B3recki" ?= 
-        <milosz.gorecki@docworker.pl>
-To:     <linux-m68k@lists.linux-m68k.org>
-Subject: Zapytanie ofertowe 
-X-Mailer: mail.docworker.pl
+        Wed, 15 Mar 2023 06:07:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B57B786B2
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 15 Mar 2023 03:07:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3EF1861CB6;
+        Wed, 15 Mar 2023 10:07:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57B57C433EF;
+        Wed, 15 Mar 2023 10:07:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678874860;
+        bh=Yo36L4k3k5PhZyJlOsLlUrFY3s6Bb0ANtR0KVyToG9A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fAggRbb+W++k3GJz/vbWtMw1LzFgnoc8FIuW21bUHQe8IF9FyIZMLtIUQ7Nhfzilz
+         1SX3NI32drkCwVc3mYf2tLLC0pw7lCwbLt8JvSiWibdzVFkc2wzQkdKLE+sMFQhHwn
+         JpKBy4eQvq47IUN8u1KrCZkhR7Fu+quMW0+Ww+30zYw1xios1jDnK3J1xRdUAhERE0
+         A8KCOgavx85DSbgu74bN00ItorUtB0vecIQp5npQ8k81MrS/g8ykC2W3uD4THksBY2
+         tubLNNJkBRyc7S/RhMr0PBmyHzMZMGCE591f/PZFUrSnDC5gQ+5HX7Z2iXPCc7U858
+         yJMoSFsr6DWLg==
+Date:   Wed, 15 Mar 2023 12:07:28 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH v4 14/36] m68k: Implement the new page table range API
+Message-ID: <ZBGY4Im3AQC9GGTu@kernel.org>
+References: <20230315051444.3229621-1-willy@infradead.org>
+ <20230315051444.3229621-15-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230315051444.3229621-15-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Szanowni Pa=C5=84stwo,
+On Wed, Mar 15, 2023 at 05:14:22AM +0000, Matthew Wilcox (Oracle) wrote:
+> Add PFN_PTE_SHIFT, update_mmu_cache_range(), flush_icache_pages() and
+> flush_dcache_folio().
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: linux-m68k@lists.linux-m68k.org
 
-Od blisko 8 lat skutecznie wspieramy naszych partner=C3=B3w w pozyskiwani=
-u klient=C3=B3w. =C5=9Awiadczymy us=C5=82ug=C4=99 generowania lead=C3=B3w=
- z kilkoma unikalnymi cechami jak gwarancja realnego uruchomienia rozm=C3=
-=B3w lub wymiana kontaktu. Nadmieni=C4=99 tak=C5=BCe, i=C5=BC kontakty pr=
-zekazywane s=C4=85 na wy=C5=82=C4=85czno=C5=9B=C4=87.
+Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
 
-Je=C5=9Bli w chwili obecnej poszukujecie Pa=C5=84stwo nowych zapyta=C5=84=
- i lead=C3=B3w sprzeda=C5=BCowych prosz=C4=99 o kontakt lub wskazanie ter=
-minu rozmowy.
+> ---
+>  arch/m68k/include/asm/cacheflush_mm.h    | 27 ++++++++++++++++--------
+>  arch/m68k/include/asm/mcf_pgtable.h      |  1 +
+>  arch/m68k/include/asm/motorola_pgtable.h |  1 +
+>  arch/m68k/include/asm/pgtable_mm.h       |  9 ++++----
+>  arch/m68k/include/asm/sun3_pgtable.h     |  1 +
+>  arch/m68k/mm/motorola.c                  |  2 +-
+>  6 files changed, 27 insertions(+), 14 deletions(-)
+> 
+> diff --git a/arch/m68k/include/asm/cacheflush_mm.h b/arch/m68k/include/asm/cacheflush_mm.h
+> index 1ac55e7b47f0..88eb85e81ef6 100644
+> --- a/arch/m68k/include/asm/cacheflush_mm.h
+> +++ b/arch/m68k/include/asm/cacheflush_mm.h
+> @@ -220,24 +220,29 @@ static inline void flush_cache_page(struct vm_area_struct *vma, unsigned long vm
+>  
+>  /* Push the page at kernel virtual address and clear the icache */
+>  /* RZ: use cpush %bc instead of cpush %dc, cinv %ic */
+> -static inline void __flush_page_to_ram(void *vaddr)
+> +static inline void __flush_pages_to_ram(void *vaddr, unsigned int nr)
+>  {
+>  	if (CPU_IS_COLDFIRE) {
+>  		unsigned long addr, start, end;
+>  		addr = ((unsigned long) vaddr) & ~(PAGE_SIZE - 1);
+>  		start = addr & ICACHE_SET_MASK;
+> -		end = (addr + PAGE_SIZE - 1) & ICACHE_SET_MASK;
+> +		end = (addr + nr * PAGE_SIZE - 1) & ICACHE_SET_MASK;
+>  		if (start > end) {
+>  			flush_cf_bcache(0, end);
+>  			end = ICACHE_MAX_ADDR;
+>  		}
+>  		flush_cf_bcache(start, end);
+>  	} else if (CPU_IS_040_OR_060) {
+> -		__asm__ __volatile__("nop\n\t"
+> -				     ".chip 68040\n\t"
+> -				     "cpushp %%bc,(%0)\n\t"
+> -				     ".chip 68k"
+> -				     : : "a" (__pa(vaddr)));
+> +		unsigned long paddr = __pa(vaddr);
+> +
+> +		do {
+> +			__asm__ __volatile__("nop\n\t"
+> +					     ".chip 68040\n\t"
+> +					     "cpushp %%bc,(%0)\n\t"
+> +					     ".chip 68k"
+> +					     : : "a" (paddr));
+> +			paddr += PAGE_SIZE;
+> +		} while (--nr);
+>  	} else {
+>  		unsigned long _tmp;
+>  		__asm__ __volatile__("movec %%cacr,%0\n\t"
+> @@ -249,10 +254,14 @@ static inline void __flush_page_to_ram(void *vaddr)
+>  }
+>  
+>  #define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+> -#define flush_dcache_page(page)		__flush_page_to_ram(page_address(page))
+> +#define flush_dcache_page(page)	__flush_pages_to_ram(page_address(page), 1)
+> +#define flush_dcache_folio(folio)		\
+> +	__flush_pages_to_ram(folio_address(folio), folio_nr_pages(folio))
+>  #define flush_dcache_mmap_lock(mapping)		do { } while (0)
+>  #define flush_dcache_mmap_unlock(mapping)	do { } while (0)
+> -#define flush_icache_page(vma, page)	__flush_page_to_ram(page_address(page))
+> +#define flush_icache_pages(vma, page, nr)	\
+> +	__flush_pages_to_ram(page_address(page), nr)
+> +#define flush_icache_page(vma, page) flush_icache_pages(vma, page, 1)
+>  
+>  extern void flush_icache_user_page(struct vm_area_struct *vma, struct page *page,
+>  				    unsigned long addr, int len);
+> diff --git a/arch/m68k/include/asm/mcf_pgtable.h b/arch/m68k/include/asm/mcf_pgtable.h
+> index 13741c1245e1..1414b607eff4 100644
+> --- a/arch/m68k/include/asm/mcf_pgtable.h
+> +++ b/arch/m68k/include/asm/mcf_pgtable.h
+> @@ -292,6 +292,7 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
+>  	return pte;
+>  }
+>  
+> +#define PFN_PTE_SHIFT		PAGE_SHIFT
+>  #define pmd_pfn(pmd)		(pmd_val(pmd) >> PAGE_SHIFT)
+>  #define pmd_page(pmd)		(pfn_to_page(pmd_val(pmd) >> PAGE_SHIFT))
+>  
+> diff --git a/arch/m68k/include/asm/motorola_pgtable.h b/arch/m68k/include/asm/motorola_pgtable.h
+> index ec0dc19ab834..38d5e5edc3e1 100644
+> --- a/arch/m68k/include/asm/motorola_pgtable.h
+> +++ b/arch/m68k/include/asm/motorola_pgtable.h
+> @@ -112,6 +112,7 @@ static inline void pud_set(pud_t *pudp, pmd_t *pmdp)
+>  #define pte_present(pte)	(pte_val(pte) & (_PAGE_PRESENT | _PAGE_PROTNONE))
+>  #define pte_clear(mm,addr,ptep)		({ pte_val(*(ptep)) = 0; })
+>  
+> +#define PFN_PTE_SHIFT		PAGE_SHIFT
+>  #define pte_page(pte)		virt_to_page(__va(pte_val(pte)))
+>  #define pte_pfn(pte)		(pte_val(pte) >> PAGE_SHIFT)
+>  #define pfn_pte(pfn, prot)	__pte(((pfn) << PAGE_SHIFT) | pgprot_val(prot))
+> diff --git a/arch/m68k/include/asm/pgtable_mm.h b/arch/m68k/include/asm/pgtable_mm.h
+> index b93c41fe2067..8c2db20abdb6 100644
+> --- a/arch/m68k/include/asm/pgtable_mm.h
+> +++ b/arch/m68k/include/asm/pgtable_mm.h
+> @@ -31,8 +31,6 @@
+>  	do{							\
+>  		*(pteptr) = (pteval);				\
+>  	} while(0)
+> -#define set_pte_at(mm,addr,ptep,pteval) set_pte(ptep,pteval)
+> -
+>  
+>  /* PMD_SHIFT determines the size of the area a second-level page table can map */
+>  #if CONFIG_PGTABLE_LEVELS == 3
+> @@ -138,11 +136,14 @@ extern void kernel_set_cachemode(void *addr, unsigned long size, int cmode);
+>   * tables contain all the necessary information.  The Sun3 does, but
+>   * they are updated on demand.
+>   */
+> -static inline void update_mmu_cache(struct vm_area_struct *vma,
+> -				    unsigned long address, pte_t *ptep)
+> +static inline void update_mmu_cache_range(struct vm_area_struct *vma,
+> +		unsigned long address, pte_t *ptep, unsigned int nr)
+>  {
+>  }
+>  
+> +#define update_mmu_cache(vma, addr, ptep) \
+> +	update_mmu_cache_range(vma, addr, ptep, 1)
+> +
+>  #endif /* !__ASSEMBLY__ */
+>  
+>  /* MMU-specific headers */
+> diff --git a/arch/m68k/include/asm/sun3_pgtable.h b/arch/m68k/include/asm/sun3_pgtable.h
+> index e582b0484a55..feae73b3b342 100644
+> --- a/arch/m68k/include/asm/sun3_pgtable.h
+> +++ b/arch/m68k/include/asm/sun3_pgtable.h
+> @@ -105,6 +105,7 @@ static inline void pte_clear (struct mm_struct *mm, unsigned long addr, pte_t *p
+>  	pte_val (*ptep) = 0;
+>  }
+>  
+> +#define PFN_PTE_SHIFT		0
+>  #define pte_pfn(pte)            (pte_val(pte) & SUN3_PAGE_PGNUM_MASK)
+>  #define pfn_pte(pfn, pgprot) \
+>  ({ pte_t __pte; pte_val(__pte) = pfn | pgprot_val(pgprot); __pte; })
+> diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+> index 911301224078..790666c6d146 100644
+> --- a/arch/m68k/mm/motorola.c
+> +++ b/arch/m68k/mm/motorola.c
+> @@ -81,7 +81,7 @@ static inline void cache_page(void *vaddr)
+>  
+>  void mmu_page_ctor(void *page)
+>  {
+> -	__flush_page_to_ram(page);
+> +	__flush_pages_to_ram(page, 1);
+>  	flush_tlb_kernel_page(page);
+>  	nocache_page(page);
+>  }
+> -- 
+> 2.39.2
+> 
 
-
-Pozdrawiam serdecznie
-Mi=C5=82osz G=C3=B3recki
+-- 
+Sincerely yours,
+Mike.
