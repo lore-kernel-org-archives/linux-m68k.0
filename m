@@ -2,78 +2,108 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BD0DC7618A
-	for <linux-m68k@archiver.kernel.org>; Sun, 19 Mar 2023 08:31:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56B05C6FD1F
+	for <linux-m68k@archiver.kernel.org>; Sun, 19 Mar 2023 14:21:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229861AbjCSIby (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 19 Mar 2023 04:31:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35908 "EHLO
+        id S229605AbjCSOVQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 19 Mar 2023 10:21:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbjCSIbx (ORCPT
+        with ESMTP id S229759AbjCSOVQ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 19 Mar 2023 04:31:53 -0400
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 244EF227B8
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 19 Mar 2023 01:31:51 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 926B03200406;
-        Sun, 19 Mar 2023 04:31:47 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Sun, 19 Mar 2023 04:31:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1679214707; x=1679301107; bh=DiHStp/dqb9HZ
-        uxK4oJUXMdYo1wncOrQNbLFb/+qGmc=; b=tOR2XEo34Fd2I+ISokEvGN6Jp0v3f
-        uE8DMsnfpOTVS7pjB/tlRbvfrCjaE1upyitsYrV0V0FMU8df7do31/SR6WbdXLzR
-        W5YmykzspZOUeKW759rls5SCNyASiC90BDWgFYDIeM27Ha0Kmaf95dn//dKcH2HY
-        bpeV7TU2dQj2o6SgMUfPwmcYOr8rkgqfx+W3AYWpSOs1vNu9arAMaDPbjFQQFOmN
-        WDD5gY9cKdQPOtns3Dql98GpVfYFTLSjHD+VOqGVejDtURKUYu1g0bN3OLyQq4d7
-        zFkyz/tIe/K0HjXVsnLPMhiodOlSWuVIa9cMs8b6bVe/O2P7f0tgVlDcA==
-X-ME-Sender: <xms:csgWZBBDzs3A4ALdKRXb1F496H3J_Mzzb3Ng95YWuhmqlTZt26zBKA>
-    <xme:csgWZPgJyevftKc8uvqG6IC2QFk2aTL3naZuuO0uMmXbZsxKGJtBsaK8wwLBofXFg
-    MoRnAdG5aX4JxBQTI8>
-X-ME-Received: <xmr:csgWZMlmjjv3C-c9ugwvwilXrSedKB7xlp2amzKHeFRNQy_t7hqFZpQMHlYJm6mo1IGSTeUA-aF0REzcnYNroT0KBg63Zf7Jp9I>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdefhedguddvtdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvfevufgjkfhfgggtsehttd
-    ertddttddvnecuhfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhu
-    gidqmheikehkrdhorhhgqeenucggtffrrghtthgvrhhnpeefieehjedvtefgiedtudethf
-    ekieelhfevhefgvddtkeekvdekhefftdekvedvueenucffohhmrghinhepkhgvrhhnvghl
-    rdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
-X-ME-Proxy: <xmx:csgWZLzFKaDijEGIPGyvjdtS3attHL8UG2yX2jSscXrrvxHSAm47-w>
-    <xmx:csgWZGTdA0ddJxYxbBmh1DTgJh55V4UV1PyUEaKRhEhZPWtggKgovQ>
-    <xmx:csgWZOa3owZQuq2aCZqncUkCbA0lUzrxVeKa16yWuKQsCGyvXYz3Eg>
-    <xmx:c8gWZP4zjPmyY_dXfzPPxCJiTGQZupbYSZsgQ_i6cetjt3N3z-KDfQ>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 19 Mar 2023 04:31:45 -0400 (EDT)
-Date:   Sun, 19 Mar 2023 19:34:36 +1100 (AEDT)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Lizhe <sensor1010@163.com>
-cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+        Sun, 19 Mar 2023 10:21:16 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3287F1CBD9
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 19 Mar 2023 07:21:15 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1pdtuK-0001j9-50; Sun, 19 Mar 2023 15:21:12 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1pdtuB-005FIQ-4t; Sun, 19 Mar 2023 15:21:03 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1pdtuA-006A3C-E9; Sun, 19 Mar 2023 15:21:02 +0100
+Date:   Sun, 19 Mar 2023 15:20:58 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     lizhe <sensor1010@163.com>
+Cc:     Finn Thain <fthain@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v1] nubus: Remove redunant driver match function
-In-Reply-To: <20230319040816.232446-1-sensor1010@163.com>
-Message-ID: <3d77744b-ea67-a5bd-8126-f3d56e608add@linux-m68k.org>
+Message-ID: <20230319142058.cfu3ftjfaut3pqzt@pengutronix.de>
 References: <20230319040816.232446-1-sensor1010@163.com>
+ <3d77744b-ea67-a5bd-8126-f3d56e608add@linux-m68k.org>
+ <4cd5783e.1665.186f9882231.Coremail.sensor1010@163.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6yuzzdzry6sztqir"
+Content-Disposition: inline
+In-Reply-To: <4cd5783e.1665.186f9882231.Coremail.sensor1010@163.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-m68k@lists.linux-m68k.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Lizhe,
 
-On Sun, 19 Mar 2023, Lizhe wrote:
+--6yuzzdzry6sztqir
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> If there is no driver match function, the driver core assumes that each
-> candidate pair (driver, device)matches, see driver_match_device()
-> 
+Hello Lizhe,
 
-As it happens, the same patch from a different author was accepted last 
-week.
+On Sun, Mar 19, 2023 at 07:01:33PM +0800, lizhe wrote:
+>       Fthain.
+>       I was the first to submit this patch,
 
-https://lore.kernel.org/linux-m68k/CAMuHMdXQPh0BaQA1csgJbPxjorY15-V9=jb7ZL8Yq24Qe7k9jQ@mail.gmail.com/T/#t
+You sent a patch doing this conversion to several drivers at once[1]
+back in May 2022. You were asked to split up by subsystem and I cannot
+find anything more recent; neither in my inbox nor on
+lore.kernel.org[2]. So unless I missed something I wouldn't claim you
+already sent this patch.
+
+> u.kleline-koenig, please
+>       delete the path you  submitted, this patch does not belong to
+>       you
+
+Even if I'd agree, I couldn't. That's up to Finn (I think) to drop this
+patch again from his queue and then accept a similar patch from you. If
+that's what Finn want's to do and it makes you happy, I won't oppose for
+the sake of resolving that argument.
+
+Having said that I didn't even remember your patch. I just stumbled over
+this patch opportunity while doing some treewide cleanups.
+
+Best regards
+Uwe
+
+[1] https://lore.kernel.org/linux-kernel/20220506045952.136290-1-sensor1010=
+@163.com
+[2] https://lore.kernel.org/all/?q=3Ddrivers%2Fnubus%2Fbus.c
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--6yuzzdzry6sztqir
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmQXGkoACgkQj4D7WH0S
+/k7CaQf9HQmGYLu7JLJnM/pOMKBhOQ7vR9IUB87LaD064XcX5coS61AJnLfhnQYi
+SlfE/J0qdMNMCTIMhhBdfgcc3juDQDkVDZUN69EKCIbIUsjaDfGqW9E5K+pXvKp0
+rVoH9OgHG67sbZKYxJMmjEgxfAboNoBtVhNOYPkPbouzYuNB2wtssHAN6yFZbQ2O
+vuR4ZTabxkSP4PBNR4LJejxd6/J6x0TiVAFrilbBoYDUC/Z1m9uoQRMDoIOIcdYZ
+Y7tZJQlSzVdurHLPQmsf7bZb2y0Y+ixNjHc0LhfUPZYfqLA4BSa6Vd2OGklrNYhP
+dc4wXQvCW67wX6Et4HWKx2BYhY2AeQ==
+=3HW7
+-----END PGP SIGNATURE-----
+
+--6yuzzdzry6sztqir--
