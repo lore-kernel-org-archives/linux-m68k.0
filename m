@@ -2,129 +2,81 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2869DC76195
-	for <linux-m68k@archiver.kernel.org>; Thu, 16 Mar 2023 16:32:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78F7FC6FD1F
+	for <linux-m68k@archiver.kernel.org>; Sun, 19 Mar 2023 04:08:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbjCPQcq convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 16 Mar 2023 12:32:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39310 "EHLO
+        id S229561AbjCSEIy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 19 Mar 2023 00:08:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbjCPQcn (ORCPT
+        with ESMTP id S229481AbjCSEIx (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 16 Mar 2023 12:32:43 -0400
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B38E4877
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 16 Mar 2023 09:32:34 -0700 (PDT)
-Received: by mail-qt1-f175.google.com with SMTP id s12so2329086qtq.11
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 16 Mar 2023 09:32:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678984353;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jgcdy0Q2UM92NkuqSo6yI/I4/kIvBnyOPq4TXfCrfno=;
-        b=jlPQZVf/Adqc5mKtYDC04payCsq0h/NX0NJRgUVKDI8DM/3Dmhdj2wkrbncnEB3uGg
-         pvKTNreCd3MuUcYeA/gh94yYHznItJsQQZiWQqjxHM//CoPeKLaE/hTavzMVPHN6ubJZ
-         eeu6YBkPQas4GF9nVEwyMHlzVdmvamdwcGe7hs3BrfSkU9HOqCR/uVKHlNyNYk9beu+u
-         8xuh3W4G5tylZCko1lrTOirWVzmNzyxaNq9OXE9+ZKxRAWpIzPG29u0/6rBdTvjp7mjX
-         ZG3z6A9u3saOohNByAWgYuGzl8AzM57PRx8B8OU/BQW09YF5WaTW3PN85gcK3NLzueoC
-         UY/w==
-X-Gm-Message-State: AO0yUKUJ5PV5imMzjbvWhBQDDarDJPPMtnyyIZ3FxRNXGaLJ/kflILyX
-        CoogQ5KvwvCPjROPgrv8YWjuZCLzVJG62A==
-X-Google-Smtp-Source: AK7set/SMjDg4Q1+eQ8eiMSe9Lli7eEKF1zZP7o7HxVPykBl46sTVSkNQR41GrdPGN0vqbaNoQuGMA==
-X-Received: by 2002:ac8:5803:0:b0:3bf:ba58:52aa with SMTP id g3-20020ac85803000000b003bfba5852aamr6722354qtg.15.1678984353066;
-        Thu, 16 Mar 2023 09:32:33 -0700 (PDT)
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com. [209.85.128.179])
-        by smtp.gmail.com with ESMTPSA id y5-20020ac87045000000b003bfaff2a6b9sm6059313qtm.10.2023.03.16.09.32.32
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Mar 2023 09:32:32 -0700 (PDT)
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5445009c26bso42231547b3.8
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 16 Mar 2023 09:32:32 -0700 (PDT)
-X-Received: by 2002:a81:ae5e:0:b0:541:a17f:c779 with SMTP id
- g30-20020a81ae5e000000b00541a17fc779mr2625005ywk.4.1678984352328; Thu, 16 Mar
- 2023 09:32:32 -0700 (PDT)
+        Sun, 19 Mar 2023 00:08:53 -0400
+Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E446110A88
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 18 Mar 2023 21:08:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=uDRdZ
+        NkYqSVHlM7n9lW3x7G96oPXX7mnjHXy7vrE5NE=; b=N4G6nNScQJ5rjlfJrJHHu
+        h4h340z8SnM3oTf2ZAGqgog3V7J+Ixt4RI8BgOo//cUlYfrz0v4yQnXEYTJR2YKQ
+        1rmPTf3JBXZnuAe5NQqn72LA6HM2XMR9pUEDTLsveoEVaYh3YXdSIXcQEVJV5bzN
+        89QIU876gyOW/0hSGvd5RA=
+Received: from lizhe.. (unknown [120.245.132.192])
+        by zwqz-smtp-mta-g0-3 (Coremail) with SMTP id _____wCXyrixihZkemSoAQ--.33332S4;
+        Sun, 19 Mar 2023 12:08:40 +0800 (CST)
+From:   Lizhe <sensor1010@163.com>
+To:     fthain@linux-m68k.org
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Lizhe <sensor1010@163.com>
+Subject: [PATCH v1] nubus: Remove redunant driver match function
+Date:   Sun, 19 Mar 2023 12:08:16 +0800
+Message-Id: <20230319040816.232446-1-sensor1010@163.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230315051444.3229621-1-willy@infradead.org> <20230315051444.3229621-15-willy@infradead.org>
- <CAMuHMdULvhry_pGap0J0FLH8TMXG1smanQjUNzPoyKsWh1FZBQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdULvhry_pGap0J0FLH8TMXG1smanQjUNzPoyKsWh1FZBQ@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 16 Mar 2023 17:32:21 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdX__7r=ZcJtTAOZeYkzc7Ls+M+n3vuSY1=_HVCf5Y_twA@mail.gmail.com>
-Message-ID: <CAMuHMdX__7r=ZcJtTAOZeYkzc7Ls+M+n3vuSY1=_HVCf5Y_twA@mail.gmail.com>
-Subject: Re: [PATCH v4 14/36] m68k: Implement the new page table range API
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wCXyrixihZkemSoAQ--.33332S4
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Jr1kZFyxJFy7AryftF45trb_yoWDZwbE9w
+        4UZr93Xr15CF1xKw4fWwsrZFyqyw4vqrZ5JFWrt393A3W7Xw15ZrWDZry7Kr15WrWFyFnF
+        g347Jrs7ZFWDJjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRtFApDUUUUU==
+X-Originating-IP: [120.245.132.192]
+X-CM-SenderInfo: 5vhq20jurqiii6rwjhhfrp/xtbBlww3q2I0YaE4agAAsD
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Mar 15, 2023 at 8:43 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Wed, Mar 15, 2023 at 6:14 AM Matthew Wilcox (Oracle)
-> <willy@infradead.org> wrote:
-> > Add PFN_PTE_SHIFT, update_mmu_cache_range(), flush_icache_pages() and
-> > flush_dcache_folio().
-> >
-> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
->
-> Thanks for your patch!
->
-> > --- a/arch/m68k/include/asm/cacheflush_mm.h
-> > +++ b/arch/m68k/include/asm/cacheflush_mm.h
-> > @@ -220,24 +220,29 @@ static inline void flush_cache_page(struct vm_area_struct *vma, unsigned long vm
-> >
-> >  /* Push the page at kernel virtual address and clear the icache */
-> >  /* RZ: use cpush %bc instead of cpush %dc, cinv %ic */
-> > -static inline void __flush_page_to_ram(void *vaddr)
-> > +static inline void __flush_pages_to_ram(void *vaddr, unsigned int nr)
-> >  {
-> >         if (CPU_IS_COLDFIRE) {
-> >                 unsigned long addr, start, end;
-> >                 addr = ((unsigned long) vaddr) & ~(PAGE_SIZE - 1);
-> >                 start = addr & ICACHE_SET_MASK;
-> > -               end = (addr + PAGE_SIZE - 1) & ICACHE_SET_MASK;
-> > +               end = (addr + nr * PAGE_SIZE - 1) & ICACHE_SET_MASK;
-> >                 if (start > end) {
-> >                         flush_cf_bcache(0, end);
-> >                         end = ICACHE_MAX_ADDR;
-> >                 }
-> >                 flush_cf_bcache(start, end);
-> >         } else if (CPU_IS_040_OR_060) {
-> > -               __asm__ __volatile__("nop\n\t"
-> > -                                    ".chip 68040\n\t"
-> > -                                    "cpushp %%bc,(%0)\n\t"
-> > -                                    ".chip 68k"
-> > -                                    : : "a" (__pa(vaddr)));
-> > +               unsigned long paddr = __pa(vaddr);
-> > +
-> > +               do {
-> > +                       __asm__ __volatile__("nop\n\t"
-> > +                                            ".chip 68040\n\t"
-> > +                                            "cpushp %%bc,(%0)\n\t"
-> > +                                            ".chip 68k"
-> > +                                            : : "a" (paddr));
-> > +                       paddr += PAGE_SIZE;
-> > +               } while (--nr);
->
-> Please use "while (nr--) { ... }", to protect against anyone ever
-> calling this with nr == 0.
->
-> The rest LGTM, I'll give it a try shortly...
+If there is no driver match function, the driver core assumes that each
+candidate pair (driver, device)matches, see driver_match_device()
 
-Still working fine on ARAnyM, so
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Lizhe <sensor1010@163.com>
+---
+ drivers/nubus/bus.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/nubus/bus.c b/drivers/nubus/bus.c
+index 17fad660032c..72921e4f35f6 100644
+--- a/drivers/nubus/bus.c
++++ b/drivers/nubus/bus.c
+@@ -14,11 +14,6 @@
+ #define to_nubus_board(d)       container_of(d, struct nubus_board, dev)
+ #define to_nubus_driver(d)      container_of(d, struct nubus_driver, driver)
+ 
+-static int nubus_bus_match(struct device *dev, struct device_driver *driver)
+-{
+-	return 1;
+-}
+-
+ static int nubus_device_probe(struct device *dev)
+ {
+ 	struct nubus_driver *ndrv = to_nubus_driver(dev->driver);
+@@ -39,7 +34,6 @@ static void nubus_device_remove(struct device *dev)
+ 
+ struct bus_type nubus_bus_type = {
+ 	.name		= "nubus",
+-	.match		= nubus_bus_match,
+ 	.probe		= nubus_device_probe,
+ 	.remove		= nubus_device_remove,
+ };
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.34.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
