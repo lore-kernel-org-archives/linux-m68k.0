@@ -2,104 +2,79 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95DB7C7618A
-	for <linux-m68k@archiver.kernel.org>; Mon, 20 Mar 2023 09:40:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 605A6C7618A
+	for <linux-m68k@archiver.kernel.org>; Mon, 20 Mar 2023 11:22:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230149AbjCTJkz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 20 Mar 2023 05:40:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59530 "EHLO
+        id S229588AbjCTLWf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 20 Mar 2023 07:22:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230168AbjCTJky (ORCPT
+        with ESMTP id S229928AbjCTLWT (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 20 Mar 2023 05:40:54 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D2712070
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 20 Mar 2023 02:40:53 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1peC0Z-00034b-RY; Mon, 20 Mar 2023 10:40:51 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1peC0V-005QQr-V7; Mon, 20 Mar 2023 10:40:47 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1peC0V-006PDg-6i; Mon, 20 Mar 2023 10:40:47 +0100
-Date:   Mon, 20 Mar 2023 10:40:47 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     lizhe <sensor1010@163.com>, linux-m68k@lists.linux-m68k.org,
-        linux-kernel@vger.kernel.org,
+        Mon, 20 Mar 2023 07:22:19 -0400
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8488BDD4
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 20 Mar 2023 04:22:01 -0700 (PDT)
+Received: from ramsan.of.borg ([84.195.187.55])
+        by baptiste.telenet-ops.be with bizsmtp
+        id abMx2900d1C8whw01bMxVl; Mon, 20 Mar 2023 12:21:59 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1peDZk-00E1jv-VC;
+        Mon, 20 Mar 2023 12:21:57 +0100
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1peDaP-00736z-OM;
+        Mon, 20 Mar 2023 12:21:57 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-nvme@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v1] nubus: Remove redunant driver match function
-Message-ID: <20230320094047.bepgy6kud7e23nf2@pengutronix.de>
-References: <20230319040816.232446-1-sensor1010@163.com>
- <3d77744b-ea67-a5bd-8126-f3d56e608add@linux-m68k.org>
- <4cd5783e.1665.186f9882231.Coremail.sensor1010@163.com>
- <20230319142058.cfu3ftjfaut3pqzt@pengutronix.de>
- <04bd0e13-d866-22f4-2b7a-200a31722a46@linux-m68k.org>
+Subject: [PATCH] nvme-tcp: Fix implicit padding in struct nvme_tcp_term_pdu
+Date:   Mon, 20 Mar 2023 12:21:56 +0100
+Message-Id: <af0a1f2194fc9a6f8a95cf6c82277b8b0377d029.1679311226.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="m2rzkgzxqqkppypu"
-Content-Disposition: inline
-In-Reply-To: <04bd0e13-d866-22f4-2b7a-200a31722a46@linux-m68k.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-m68k@lists.linux-m68k.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+On m68k:
 
---m2rzkgzxqqkppypu
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+    drivers/nvme/host/tcp.c: In function ‘nvme_tcp_init_module’:
+    include/linux/compiler_types.h:397:38: error: call to ‘__compiletime_assert_723’ declared with attribute error: BUILD_BUG_ON failed: sizeof(struct nvme_tcp_term_pdu) != 24
 
-Hello Finn,
+Indeed, on m68k the minimum alignment is 2 bytes, not 4 bytes, thus
+triggering the check added in commit 7e87965d3807ab1f ("nvme-tcp: add
+nvme-tcp pdu size build protection"), and indicating that NVMe over
+Fabrics TCP on m68k must be incompatible with other platforms.
 
-[Cc +=3D Geert]
+Fix this by adding explicit padding.
 
-On Mon, Mar 20, 2023 at 02:49:41PM +1100, Finn Thain wrote:
-> On Sun, 19 Mar 2023, Uwe Kleine-K=F6nig wrote:
->=20
-> > On Sun, Mar 19, 2023 at 07:01:33PM +0800, lizhe wrote:
-> >=20
-> > > u.kleline-koenig, please
-> > >       delete the path you submitted, this patch does not belong to you
-> >=20
-> > Even if I'd agree, I couldn't. That's up to Finn (I think) to drop this=
-=20
-> > patch again from his queue and then accept a similar patch from you.=20
+Fixes: fc221d05447aa6db ("nvme-tcp: Add protocol header")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ include/linux/nvme-tcp.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-Iff the patch under discussion is considered for applying: I just
-noticed we want:
+diff --git a/include/linux/nvme-tcp.h b/include/linux/nvme-tcp.h
+index 75470159a194d97f..ba8f82672e39730f 100644
+--- a/include/linux/nvme-tcp.h
++++ b/include/linux/nvme-tcp.h
+@@ -115,6 +115,7 @@ struct nvme_tcp_icresp_pdu {
+ struct nvme_tcp_term_pdu {
+ 	struct nvme_tcp_hdr	hdr;
+ 	__le16			fes;
++	__u8			rsvd2[2];
+ 	__le32			fei;
+ 	__u8			rsvd[8];
+ };
+-- 
+2.34.1
 
-	$Subject ~=3D s/redunant/redundant/
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---m2rzkgzxqqkppypu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmQYKh4ACgkQj4D7WH0S
-/k5Q8Qf/eM0TX5AUY35OMQjbh4bhF+9sECQUMmh5bp/qII6VCm4DkHHwCR6dR4f9
-3rjwYQJoXb42WF1+wXB1ztcZBRMUn7DbmiyIxDntkObtE5LbiUIOVFzerl+oZyUs
-+mTAD8/0OAPIVjWfIbeJKQ39D+kbOQSfOWyRNRCjnkYI0GqC4fJY9rjF3K4+vWub
-QMWIe7HgKMdBFzIX9mjWRlRzRe2JV44+rDxvlYTv2uZiKrvbpeTU8gChGvy0aFj0
-K5J92UOVjCUoy0UuSoFQD9N3Uw9k9NsQWMICYgSMGwWLbmCVuZuBdDvqz4tLKuR2
-4XZzozC0JSWX5V6HRSONJgFVOxQsog==
-=xAEy
------END PGP SIGNATURE-----
-
---m2rzkgzxqqkppypu--
