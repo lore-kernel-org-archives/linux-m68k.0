@@ -2,124 +2,76 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CA17C7619A
-	for <linux-m68k@archiver.kernel.org>; Mon, 20 Mar 2023 01:06:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1852CC7618A
+	for <linux-m68k@archiver.kernel.org>; Mon, 20 Mar 2023 03:48:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231382AbjCTBGG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 19 Mar 2023 21:06:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52794 "EHLO
+        id S230135AbjCTDsQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 19 Mar 2023 23:48:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231278AbjCTBDZ (ORCPT
+        with ESMTP id S230162AbjCTDry (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 19 Mar 2023 21:03:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C63123DA7
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 19 Mar 2023 17:57:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AC09F61152;
-        Mon, 20 Mar 2023 00:56:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A8F9C433D2;
-        Mon, 20 Mar 2023 00:56:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679273806;
-        bh=HFFX2fAl8OfFHPhOUngXFoLexJdmRG+1d1kDH9UkmiM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DwQazwDvfDO6Fgi9gq88vkxtvfX9VeyrAKDEYxvnkZkdAbmxsvhuhwPit0SEfjiMZ
-         LlgzwnI19PISrzMyYwjvrh8MpYn8vGscma7I15ycRa4fwbyKIAQICt4etd63SyX5On
-         JKUyjTEQlAByOnI5QOnLyAS9h1deTd2yWsVOiaJDw8+j3J6WVcb3TV3VZ8yvxvjHE6
-         nZJGkhdEoI9s+oovzxyf/RKnETmQfWscXYc6zf1ZeRjGn95UKz/e5dxtq7IlPA0c28
-         bsz7wlkBdAtPYL1J2zFjGxEd7Vf5BL2RkJ5gFuqGQwxgzpsGDJ8XzmEvrX1a4IOoLI
-         nRnfwiBJmY79g==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Michael Schmitz <schmitzmic@gmail.com>,
-        Eero Tamminen <oak@helsinkinet.fi>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Sasha Levin <sashal@kernel.org>, laurent@vivier.eu,
-        linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 5.4 04/12] m68k: Only force 030 bus error if PC not in exception table
-Date:   Sun, 19 Mar 2023 20:56:27 -0400
-Message-Id: <20230320005636.1429242-4-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230320005636.1429242-1-sashal@kernel.org>
-References: <20230320005636.1429242-1-sashal@kernel.org>
+        Sun, 19 Mar 2023 23:47:54 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E608C1E9C8
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 19 Mar 2023 20:46:19 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 4C1BE5C00D6;
+        Sun, 19 Mar 2023 23:45:29 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Sun, 19 Mar 2023 23:45:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1679283929; x=1679370329; bh=DPqa9CIo5gQ5h
+        DYjjjU5QVq+p20sroVnUZOnK4guvsM=; b=GH9nsM2bm+R9hdZqUUL/8G9bHHVtH
+        o+rs3TAV2mrY2xaQ04HMzSmeKGrMCPtPy2u87Bt91P6C4D3hHDNImAsESSWVkrpV
+        RD3ebWRRSdyvZg22lSW70V5dPW9mmk9pscDw4xzpFuT+zDA7c8lD5CtDGZQJLLIe
+        VeLPzFZ77q7VDiLRiHe4VFJ07ZVpOxIPW/5BdF6Kwib6P8aypqQBOzEb//1HH7vy
+        UnqlxhDzfoEDGsWoop25xUrX05KT3LopRpN6eyGV8u4qpEeVOMCMq/jsegLBFPa1
+        yNCaTkrZPVWUEOFnqGTDV5iWxyKw/NT4EqjVHMeSZft2x02Rp3KjtOyqw==
+X-ME-Sender: <xms:2NYXZEHK8xR7AlrNId0Nj62pu5-_ocML8iABU4pCum5lDfLJgVCRzA>
+    <xme:2NYXZNWfZQ1U3Or57QFa1_GTH5MCi7kukSSqhrXFQK8YxdYFa8uksA-iLME678lOu
+    7GfS0HUKGZaEo_NxQk>
+X-ME-Received: <xmr:2NYXZOLDmgcfoaUd92AKkrQ8BeX2hmTkIXQX4em9oK7_8SB6wkyo8UnZ8xoHWeFsHq05YZW9XSxtlsJIbDsvySqxMeF2bh5652Y>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdefjedgieehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefujgfkfhggtgesthdtre
+    dttddtvdenucfhrhhomhephfhinhhnucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhig
+    qdhmieekkhdrohhrgheqnecuggftrfgrthhtvghrnhepfeeiheejvdetgfeitddutefhke
+    eilefhveehgfdvtdekkedvkeehffdtkeevvdeunecuffhomhgrihhnpehkvghrnhgvlhdr
+    ohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:2NYXZGHfHR4AUjpSPd5vpjyVn4CyBAH711cCOBbLB5nUPITvSm_1SQ>
+    <xmx:2NYXZKUGGfFuBHCJdVSu6NF2tJ9koPz8hJSIIbBOThXHS2XMJqTf2Q>
+    <xmx:2NYXZJOuotoEckIypd7DsUwLCj3XHF5nykr7id9MU_g2Qd_PNzjc6Q>
+    <xmx:2dYXZDe7k_BjQ9kFKg6UMrwExmDJKVI7X9CiRtBTEm_darTlQwKMxA>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 19 Mar 2023 23:45:26 -0400 (EDT)
+Date:   Mon, 20 Mar 2023 14:48:17 +1100 (AEDT)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     lizhe <sensor1010@163.com>
+cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: Re:Re: [PATCH v1] nubus: Remove redunant driver match function
+In-Reply-To: <74decde9.155d.186f9737c21.Coremail.sensor1010@163.com>
+Message-ID: <999d6634-3f06-12be-d6b9-c79019d50787@linux-m68k.org>
+References: <20230319040816.232446-1-sensor1010@163.com> <3d77744b-ea67-a5bd-8126-f3d56e608add@linux-m68k.org> <74decde9.155d.186f9737c21.Coremail.sensor1010@163.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Michael Schmitz <schmitzmic@gmail.com>
+On Sun, 19 Mar 2023, lizhe wrote:
 
-[ Upstream commit e36a82bebbf7da814530d5a179bef9df5934b717 ]
+>        i have already issued this patch a year ago, please accept my patch.
+>        Please see the patch information below :
+>        
+>        https://lore.kernel.org/linux-m68k/20220506045952.136290-1-sensor1010@163.com/
 
-__get_kernel_nofault() does copy data in supervisor mode when
-forcing a task backtrace log through /proc/sysrq_trigger.
-This is expected cause a bus error exception on e.g. NULL
-pointer dereferencing when logging a kernel task has no
-workqueue associated. This bus error ought to be ignored.
-
-Our 030 bus error handler is ill equipped to deal with this:
-
-Whenever ssw indicates a kernel mode access on a data fault,
-we don't even attempt to handle the fault and instead always
-send a SEGV signal (or panic). As a result, the check
-for exception handling at the fault PC (buried in
-send_sig_fault() which gets called from do_page_fault()
-eventually) is never used.
-
-In contrast, both 040 and 060 access error handlers do not
-care whether a fault happened on supervisor mode access,
-and will call do_page_fault() on those, ultimately honoring
-the exception table.
-
-Add a check in bus_error030 to call do_page_fault() in case
-we do have an entry for the fault PC in our exception table.
-
-I had attempted a fix for this earlier in 2019 that did rely
-on testing pagefault_disabled() (see link below) to achieve
-the same thing, but this patch should be more generic.
-
-Tested on 030 Atari Falcon.
-
-Reported-by: Eero Tamminen <oak@helsinkinet.fi>
-Link: https://lore.kernel.org/r/alpine.LNX.2.21.1904091023540.25@nippy.intranet
-Link: https://lore.kernel.org/r/63130691-1984-c423-c1f2-73bfd8d3dcd3@gmail.com
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Link: https://lore.kernel.org/r/20230301021107.26307-1-schmitzmic@gmail.com
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/m68k/kernel/traps.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
-index a245c1933d418..5bf314871e9f6 100644
---- a/arch/m68k/kernel/traps.c
-+++ b/arch/m68k/kernel/traps.c
-@@ -30,6 +30,7 @@
- #include <linux/init.h>
- #include <linux/ptrace.h>
- #include <linux/kallsyms.h>
-+#include <linux/extable.h>
- 
- #include <asm/setup.h>
- #include <asm/fpu.h>
-@@ -550,7 +551,8 @@ static inline void bus_error030 (struct frame *fp)
- 			errorcode |= 2;
- 
- 		if (mmusr & (MMU_I | MMU_WP)) {
--			if (ssw & 4) {
-+			/* We might have an exception table for this PC */
-+			if (ssw & 4 && !search_exception_tables(fp->ptregs.pc)) {
- 				pr_err("Data %s fault at %#010lx in %s (pc=%#lx)\n",
- 				       ssw & RW ? "read" : "write",
- 				       fp->un.fmtb.daddr,
--- 
-2.39.2
-
+What can I possibly do? Your link shows a thread with an acked-by from me 
+from 10 months ago. Also in that thread is a review from Greg 
+Kroah-Hartman that you also appear to have missed.
