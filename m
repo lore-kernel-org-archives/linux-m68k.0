@@ -2,36 +2,36 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93722C6FD1F
-	for <linux-m68k@archiver.kernel.org>; Mon, 20 Mar 2023 01:03:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16C7AC77B6E
+	for <linux-m68k@archiver.kernel.org>; Mon, 20 Mar 2023 01:06:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231312AbjCTBD2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 19 Mar 2023 21:03:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45646 "EHLO
+        id S231336AbjCTBGF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 19 Mar 2023 21:06:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231309AbjCTBCp (ORCPT
+        with ESMTP id S231649AbjCTBFR (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 19 Mar 2023 21:02:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5BED2364C
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 19 Mar 2023 17:57:33 -0700 (PDT)
+        Sun, 19 Mar 2023 21:05:17 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC901ADEB
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 19 Mar 2023 17:58:22 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CCEA5611C9;
-        Mon, 20 Mar 2023 00:55:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7ECDEC433EF;
-        Mon, 20 Mar 2023 00:55:33 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 1A7C4CE102D;
+        Mon, 20 Mar 2023 00:57:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C988C433D2;
+        Mon, 20 Mar 2023 00:57:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679273734;
-        bh=3vjNKBsYhlaRuIIxf3lOjTIlfnngJaoH3K2oWZHOTRY=;
+        s=k20201202; t=1679273837;
+        bh=3ByZmPJLS99AN8es8Q7JHikYHOKrp4p2mJIzhX+LFUg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hLl1AxUl2hqTrbGx8c0uDqG0hJLRSnqvFojokJFTCIU4yMWLe6GFEI3h+5CWSCEJQ
-         XCyDrRzKM6K45cGmSGVrC4gWR40WblrAND/st/OI9J1DvQeSFViJ+rpCZ8Y1Sou/dD
-         MEulbyV1R6jVOaxxdXPT37tsNdCeI1PuJnjXoAbg33I3w3/QZHfOuRXDWxZlT9hwwm
-         8FekJ/+2+k0Hu469fUrJ1U3Bozrxyk1+FUByn+va8wPqkFkYUA87E7piau9KPQWOja
-         0uTUaDo9V0uusSJANi91tMnY65YPKF5bJJgdErpcXH5OoiY6qnpxMupqINMY3IBS66
-         WE9QmBAQQqQfw==
+        b=guVMGymLCstTfLaCQJb0obDuShGT2fsHDR5h0uvb1IV08feqzAEI1grZBu9bgLQEE
+         4z5VbQP3hkHR+6x+Qpp51msETZClz99Nbw5a9O2eFvZYOxH4Wf6b+W8PA42+jZcD8J
+         H0MZ1gNePPYjCd3RF310GzkPL1lG0J+4PXTlBKr9U6HI3bHzusJu7MZnsRtZe96TXd
+         k8QQtdg5CieKrR3Cz9b4AXiqwkLjND1d2wox+afvO6h8mrqdauCcH62JPkOqB42wwb
+         QQkGbUlXgrd7ym44KfDq5BE/a44peIuQIK09gEEOLPXLiLqQdMoNunpg8Tcw4pd3o/
+         pqiAHz/HEUJoA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Michael Schmitz <schmitzmic@gmail.com>,
@@ -39,12 +39,12 @@ Cc:     Michael Schmitz <schmitzmic@gmail.com>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>, laurent@vivier.eu,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 5.15 06/17] m68k: Only force 030 bus error if PC not in exception table
-Date:   Sun, 19 Mar 2023 20:55:08 -0400
-Message-Id: <20230320005521.1428820-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 4/9] m68k: Only force 030 bus error if PC not in exception table
+Date:   Sun, 19 Mar 2023 20:57:02 -0400
+Message-Id: <20230320005707.1429405-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230320005521.1428820-1-sashal@kernel.org>
-References: <20230320005521.1428820-1-sashal@kernel.org>
+In-Reply-To: <20230320005707.1429405-1-sashal@kernel.org>
+References: <20230320005707.1429405-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -99,7 +99,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
-index 59fc63feb0dcc..6f647742a6ca9 100644
+index 9b70a7f5e7058..35f706d836c50 100644
 --- a/arch/m68k/kernel/traps.c
 +++ b/arch/m68k/kernel/traps.c
 @@ -30,6 +30,7 @@
@@ -110,7 +110,7 @@ index 59fc63feb0dcc..6f647742a6ca9 100644
  
  #include <asm/setup.h>
  #include <asm/fpu.h>
-@@ -544,7 +545,8 @@ static inline void bus_error030 (struct frame *fp)
+@@ -550,7 +551,8 @@ static inline void bus_error030 (struct frame *fp)
  			errorcode |= 2;
  
  		if (mmusr & (MMU_I | MMU_WP)) {
