@@ -2,113 +2,65 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C7A3C6FD1D
-	for <linux-m68k@archiver.kernel.org>; Mon, 20 Mar 2023 16:10:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14EC2C6FD1C
+	for <linux-m68k@archiver.kernel.org>; Mon, 20 Mar 2023 19:09:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbjCTQKm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 20 Mar 2023 12:10:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38822 "EHLO
+        id S231395AbjCTTI6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 20 Mar 2023 15:08:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233451AbjCTQKK (ORCPT
+        with ESMTP id S231379AbjCTTIe (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 20 Mar 2023 12:10:10 -0400
-Received: from mail-io1-xd63.google.com (mail-io1-xd63.google.com [IPv6:2607:f8b0:4864:20::d63])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8791346091
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 20 Mar 2023 08:59:32 -0700 (PDT)
-Received: by mail-io1-xd63.google.com with SMTP id f14so5614225iow.5
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 20 Mar 2023 08:59:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1679327950;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dYHfRgyFGmfXf7uT3/vn0EeWZOwjnHEPhqCLdhvEaVc=;
-        b=ZxWrpiJs8GXKz97FuIUkpX603uXClPdCVINDc9hV7KeMZQYGOuSSbdoLpkwhgtobo+
-         ARwfAqQnNBfsFodNn/CQDVMOJRbBgwHMYj53Udx5uwctETte7B8YA8K4ZV9iNd6ZaQ3t
-         DRUDaSKI/MpKj6epZ0TKbhrVoeUE2rkuzlSCwLmPTFTXRPHAueMhuryrLYe6vaQDkTjH
-         vssgS9iP7h2ejoAaBYYa9/4z0uWamhu2QO4c7vVupzt4jS9IiYLpUJKSorUY9yJSlNtL
-         O6oVaBAIx+Dw9i+YbLz04OdPIp2HNIizHbQbEEmFQBC8fMoZMFrED0xsqSgGcxPIZKMY
-         BeMA==
+        Mon, 20 Mar 2023 15:08:34 -0400
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9944BEB4
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 20 Mar 2023 12:00:47 -0700 (PDT)
+Received: by mail-ed1-f54.google.com with SMTP id b20so17861462edd.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 20 Mar 2023 12:00:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679327950;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dYHfRgyFGmfXf7uT3/vn0EeWZOwjnHEPhqCLdhvEaVc=;
-        b=FZU386ISIfQOxM/Tpznl6Elq8ed+urHRORUU+ObygcI3mIGG9CO3CtiWEjkSpyOxV4
-         dFXK/98QfKeB+zuJLJQXC0ZVxnMdOgFqiUBnCMtoTikkOB5q0m0wwH27W3VQT70cycT9
-         d0sxSiLuHYM7JbxU196pzqsqY/sS7j0KzHngIbjJx6gQb4eJSO7D05NWqodVGPh9W1wH
-         M2gB3qO4ChHXYKvKxnv/tmZDVNtZv0lm/Hblyz++f2h2jGbvEtFriL491KQOd50LIfMu
-         SLWrpgO98F2ebOZA7Z7WRzKHVJFBe598tVNIcUXtZFzlwG273oScLCmitGaMo3Tf2ZBK
-         GFNw==
-X-Gm-Message-State: AO0yUKXIoWwJSvqm5XGd2e7P7RuhZqWrDYQkI1TB/RvCjq/KUTFie9YW
-        qonkRqlMY7O4G1xCNYLVhh33WiJRkI0Z0/bpSNaZ6gorJ2RdOQ==
-X-Google-Smtp-Source: AK7set80AWFqWRlEqnusarywacYoeJZQqdV4SbszNu0Fo0QocmMWzC9cQl9RbHeabQIFFidhfX9jbcr4qpjp
-X-Received: by 2002:a5d:8b08:0:b0:752:dca2:6690 with SMTP id k8-20020a5d8b08000000b00752dca26690mr5482280ion.19.1679327950306;
-        Mon, 20 Mar 2023 08:59:10 -0700 (PDT)
-Received: from c7-smtp.dev.purestorage.com ([208.88.159.128])
-        by smtp-relay.gmail.com with ESMTPS id h5-20020a022b05000000b004060ccabe70sm1726205jaa.66.2023.03.20.08.59.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 20 Mar 2023 08:59:10 -0700 (PDT)
-X-Relaying-Domain: purestorage.com
-Received: from dev-csander.dev.purestorage.com (dev-csander.dev.purestorage.com [10.7.70.37])
-        by c7-smtp.dev.purestorage.com (Postfix) with ESMTP id D6AB720D24;
-        Mon, 20 Mar 2023 09:59:09 -0600 (MDT)
-Received: by dev-csander.dev.purestorage.com (Postfix, from userid 1557716354)
-        id D232FE402C8; Mon, 20 Mar 2023 09:59:09 -0600 (MDT)
-From:   Caleb Sander <csander@purestorage.com>
-To:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>
+        d=1e100.net; s=20210112; t=1679338801; x=1681930801;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8YlfMACqhZY+YRomG4PdoSrNzR3WpyqjeQM5DwdiTkk=;
+        b=qq3caPcLwlJT4/e+1H9v9Y2IdH9Qj9EgefaRXJgz7uJ7TfOFnn3nokiSJ6sNVI6Y6J
+         zcW9ptBj+M8Sn8a1nF7ufajeKQw1kfodaYU0XIxRkbkgO7tgIF+aAlyHzwb1gyKAPa+v
+         LTCVvrFzLIvmqPXjz9AQAmv9SV7TRoyMgwmxall3SFP2nUUuUv/eKDRT+nSKHO9Hcqq3
+         8Kcv0T9fORlcSMHsBkKAmijjjXP/LAPILSS9cIEf7JbI/Dlj9sPFmml/uGpIp0orEv5Q
+         Lf8HXijHoagQ4NQj73W1v4OS4vtjd8GRAtkCFDKTHU7dy2nU7LFEfYIIHZj9E8P0OS6W
+         7vEg==
+X-Gm-Message-State: AO0yUKX5TPELWL/5dqT1xh8CACnJ/nj3mjL28nztBsKc2ihQrgsAOtav
+        G+hgsbQ1/HVZoOUaQOh9n6E=
+X-Google-Smtp-Source: AK7set+NPiSXzfehtzkdVf58PBGF7iCyR1T7R3huqkZnQFlyAGakrHL1ORkdSn3uvm8uNHJHWDuajQ==
+X-Received: by 2002:a17:906:dd:b0:92f:27c2:13a3 with SMTP id 29-20020a17090600dd00b0092f27c213a3mr105004eji.3.1679338800719;
+        Mon, 20 Mar 2023 12:00:00 -0700 (PDT)
+Received: from [10.100.102.14] (85.65.253.165.dynamic.barak-online.net. [85.65.253.165])
+        by smtp.gmail.com with ESMTPSA id n15-20020a170906118f00b0092421bf4927sm4840150eja.95.2023.03.20.11.59.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Mar 2023 12:00:00 -0700 (PDT)
+Message-ID: <725cc2a7-8a3d-6d23-c9b2-c841e9d14201@grimberg.me>
+Date:   Mon, 20 Mar 2023 20:59:58 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH] nvme-tcp: fix nvme_tcp_term_pdu to match spec
+Content-Language: en-US
+To:     Caleb Sander <csander@purestorage.com>,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>
 Cc:     Arnd Bergmann <arnd@arndb.de>, linux-nvme@lists.infradead.org,
         linux-m68k@lists.linux-m68k.org,
-        Caleb Sander <csander@purestorage.com>,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] nvme-tcp: fix nvme_tcp_term_pdu to match spec
-Date:   Mon, 20 Mar 2023 09:57:36 -0600
-Message-Id: <20230320155736.1492682-1-csander@purestorage.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <linux-m68k@lists.linux-m68k.org>
 References: <linux-m68k@lists.linux-m68k.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ <20230320155736.1492682-1-csander@purestorage.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <20230320155736.1492682-1-csander@purestorage.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The FEI field of C2HTermReq/H2CTermReq is 4 bytes but not 4-byte-aligned
-in the NVMe/TCP specification (it is located at offset 10 in the PDU).
-Split it into two 16-bit integers in struct nvme_tcp_term_pdu
-so no padding is inserted. There should also be 10 reserved bytes after.
-There are currently no users of this type.
+Thanks for fixing this,
 
-Fixes: fc221d05447aa6db ("nvme-tcp: Add protocol header")
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Caleb Sander <csander@purestorage.com>
----
- include/linux/nvme-tcp.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/nvme-tcp.h b/include/linux/nvme-tcp.h
-index 75470159a194..57ebe1267f7f 100644
---- a/include/linux/nvme-tcp.h
-+++ b/include/linux/nvme-tcp.h
-@@ -113,12 +113,13 @@ struct nvme_tcp_icresp_pdu {
-  * @fei:           fatal error information
-  */
- struct nvme_tcp_term_pdu {
- 	struct nvme_tcp_hdr	hdr;
- 	__le16			fes;
--	__le32			fei;
--	__u8			rsvd[8];
-+	__le16			feil;
-+	__le16			feiu;
-+	__u8			rsvd[10];
- };
- 
- /**
-  * struct nvme_tcp_cmd_pdu - nvme tcp command capsule pdu
-  *
--- 
-2.25.1
-
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
