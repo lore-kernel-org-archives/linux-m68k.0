@@ -2,88 +2,124 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA7C4C6FD1D
-	for <linux-m68k@archiver.kernel.org>; Mon, 20 Mar 2023 14:32:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5985CC6FD1D
+	for <linux-m68k@archiver.kernel.org>; Mon, 20 Mar 2023 15:44:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231693AbjCTOcN convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 20 Mar 2023 10:32:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35008 "EHLO
+        id S233254AbjCTPoi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 20 Mar 2023 11:44:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231288AbjCTOcL (ORCPT
+        with ESMTP id S233260AbjCTPoQ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 20 Mar 2023 10:32:11 -0400
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72DDC14218
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 20 Mar 2023 07:31:58 -0700 (PDT)
-Received: by mail-yb1-f178.google.com with SMTP id j7so13290382ybg.4
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 20 Mar 2023 07:31:58 -0700 (PDT)
+        Mon, 20 Mar 2023 11:44:16 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B7F038B52
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 20 Mar 2023 08:34:53 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id h8so48337607ede.8
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 20 Mar 2023 08:34:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=purestorage.com; s=google2022; t=1679326489;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gev+lmTSygz71wO6A6cNgtj4LSfVrLddOXwraPWxX2c=;
+        b=EgUCBDYYrWJ5uO3T3dPxpCLgj6ldA9iqzSVSSnyLEPMFRBGzlbSwKaNXuLT1kwwMDD
+         WYsOYVmlR3FknZMj+rIWX/vZ7lkujwgz3kV3O1G++PNMj+H24ZqMjSO269ShhpoiD9pH
+         Ime1XpUSigSDSAbS/eH2zQ4WfbpCVDKjA83jOw3+YcOzcfIJwNDqcd+GzhURUgmFsdRZ
+         IjyKkNSVtViPm/1xdRhRss1rW3drQMuh4hQ1+eWYNtXzbg2hR7pRJexI7OXIlyOLTo/O
+         6CMa1Tio0W2f+U8KSTx36GZd2zyueusC6uuwVeEE5xI5xyoDmAV3XzhfhNvsdwvUVQfH
+         GugA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679322717;
+        d=1e100.net; s=20210112; t=1679326489;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=O54noMvqG3UegcIjTcDUZ+r5sq4m1GQijs9yejp9gRE=;
-        b=qaQJkSIAVtxXYYPsts3GYd+2HtrV0f4JF189U2etnfSePjzlxj/H9oLFiPKtiuPngG
-         shE36//ABZ40h9+7xNOJ1ky0t4nb8su07vse/d4EYslItQqvFfJ4u3d1an8w6x1genXR
-         WNuauy0ugBusXXwd7Xu023qHjaI4d9Jo+BM+8Yx6JuSN/NHSRXAFDJQ4nvbD75yVRTSE
-         06gE4Yt2eXPqdH5NrJRZ1S13I8n9UbPEo/h9o5P2PgDW08NXntuNQhAjigNwecdEer8I
-         NCRxVe3CkkJ+nhVOZ+//7ItdogEaDmn2ROUlptslbkh/fivaHcVfEB47+Km46xIzpTaG
-         UQmA==
-X-Gm-Message-State: AO0yUKVPHzIhumDN/9CnPAGDA7pJtwm8ueV7/QHzfwwJh4wLLTVOAnMK
-        ZzYd521qu80iErOl9iT33pZBBhNd1lobUw==
-X-Google-Smtp-Source: AK7set+xxcSNgUBlH8xc+Y2gVKjycJfSn2Jix/jmliKQtyx3YPKQvIcs82KjNrG9SDJ2GIWPU9vVVg==
-X-Received: by 2002:a25:ac22:0:b0:b6d:5e86:7ed2 with SMTP id w34-20020a25ac22000000b00b6d5e867ed2mr1442723ybi.36.1679322717282;
-        Mon, 20 Mar 2023 07:31:57 -0700 (PDT)
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
-        by smtp.gmail.com with ESMTPSA id 12-20020a370b0c000000b0074680682acdsm2752415qkl.76.2023.03.20.07.31.56
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Mar 2023 07:31:57 -0700 (PDT)
-Received: by mail-yb1-f177.google.com with SMTP id k17so2546028ybm.11
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 20 Mar 2023 07:31:56 -0700 (PDT)
-X-Received: by 2002:a05:6902:120b:b0:b6e:b924:b96f with SMTP id
- s11-20020a056902120b00b00b6eb924b96fmr542059ybu.3.1679322716693; Mon, 20 Mar
- 2023 07:31:56 -0700 (PDT)
+        bh=gev+lmTSygz71wO6A6cNgtj4LSfVrLddOXwraPWxX2c=;
+        b=Ol9Ct6Ecb6rKcSE1YDrpf2jJsZJt/KC+bpDQr03rShdZ27RV0m0QigMgw72Er7QByo
+         YrlfSivAR5m2xene5hWE/thVnrS1Y0oCyNximknHXUwxh8GBKt5WNiIlp4pZPlNMpbdE
+         kkeGFFrjq8OBPj1TFW7QDF6r4qxje81Q8rkdKKXge8k/D3Axdy7fJSDdIrl8OD62SLQy
+         vUtj1e5AZHWlQkDlQRY01THsJock7KP4Ui7zs2rJmhli8PGB6qu5rmO2cwr6BHq4eq5H
+         F9BC15fx07bXbJuHiVAfyf6xZgC0uoLbzqx+elDYIc2EvJ4LDCiXB6PCrz639vTY8NRF
+         VVrg==
+X-Gm-Message-State: AO0yUKWYJqGSwCYS/5k4eYDlVDdOT4UK1HQSYqntl0AxPqOqn7y50r9n
+        c3cBAE2DunFVMMkKqqgbgrPPyAvq9/2679tLYi498w==
+X-Google-Smtp-Source: AK7set9t1GSZQvLjwHP75VPWyy4c6sXRoX5WbHLyQmpI3SxhTwuy82upwft7ydf/sZudpjbyLo4B7u6+zU0Qc1Y/V0g=
+X-Received: by 2002:a50:d594:0:b0:4fb:7ccf:337a with SMTP id
+ v20-20020a50d594000000b004fb7ccf337amr6576541edi.3.1679326489177; Mon, 20 Mar
+ 2023 08:34:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230320123202.14474-1-lukas.bulwahn@gmail.com>
-In-Reply-To: <20230320123202.14474-1-lukas.bulwahn@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 20 Mar 2023 15:31:45 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXoPXjXSr=-CnQnNFBf2bd1Oyj++nFekAUnhaj69Rv7JA@mail.gmail.com>
-Message-ID: <CAMuHMdXoPXjXSr=-CnQnNFBf2bd1Oyj++nFekAUnhaj69Rv7JA@mail.gmail.com>
-Subject: Re: [PATCH] m68k: remove obsolete config NO_KERNEL_MSG
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     linux-m68k@lists.linux-m68k.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <af0a1f2194fc9a6f8a95cf6c82277b8b0377d029.1679311226.git.geert@linux-m68k.org>
+In-Reply-To: <af0a1f2194fc9a6f8a95cf6c82277b8b0377d029.1679311226.git.geert@linux-m68k.org>
+From:   Caleb Sander <csander@purestorage.com>
+Date:   Mon, 20 Mar 2023 08:34:38 -0700
+Message-ID: <CADUfDZocrTZq2MPKFFNuJc5yBabG48EiEURwn7-t2UBuVZxCWg@mail.gmail.com>
+Subject: Re: [PATCH] nvme-tcp: Fix implicit padding in struct nvme_tcp_term_pdu
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Arnd Bergmann <arnd@arndb.de>, linux-nvme@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Lukas,
+The nvme_tcp_term_pdu definition needs to be updated anyways to match
+the spec. FEI is at offset 10, so it isn't 4-byte-aligned. I think we
+have gotten away with this so far because the NVMe/TCP driver never
+sends H2CTermReq and doesn't interpret C2HTermReq.
+Mirroring numdl/numdu in nvme_get_log_page_command, the definition
+should look something like:
+struct nvme_tcp_term_pdu {
+        struct nvme_tcp_hdr hdr;
+        __le16 fes;
+        __le16 feil;
+        __le16 feiu;
+        __u8 rsvd[10];
+};
 
-On Mon, Mar 20, 2023 at 1:32 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
-> The use of the config NO_KERNEL_MSG is long gone. Remove this config from
-> m68k's debug kernel configuration setup.
+Best,
+Caleb
+
+On Mon, Mar 20, 2023 at 4:29=E2=80=AFAM Geert Uytterhoeven <geert@linux-m68=
+k.org> wrote:
 >
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-
-Thanks for your patch!
-
-The last user was removed 20 years ago...
-
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v6.4 branch.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> On m68k:
+>
+>     drivers/nvme/host/tcp.c: In function =E2=80=98nvme_tcp_init_module=E2=
+=80=99:
+>     include/linux/compiler_types.h:397:38: error: call to =E2=80=98__comp=
+iletime_assert_723=E2=80=99 declared with attribute error: BUILD_BUG_ON fai=
+led: sizeof(struct nvme_tcp_term_pdu) !=3D 24
+>
+> Indeed, on m68k the minimum alignment is 2 bytes, not 4 bytes, thus
+> triggering the check added in commit 7e87965d3807ab1f ("nvme-tcp: add
+> nvme-tcp pdu size build protection"), and indicating that NVMe over
+> Fabrics TCP on m68k must be incompatible with other platforms.
+>
+> Fix this by adding explicit padding.
+>
+> Fixes: fc221d05447aa6db ("nvme-tcp: Add protocol header")
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>  include/linux/nvme-tcp.h | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/include/linux/nvme-tcp.h b/include/linux/nvme-tcp.h
+> index 75470159a194d97f..ba8f82672e39730f 100644
+> --- a/include/linux/nvme-tcp.h
+> +++ b/include/linux/nvme-tcp.h
+> @@ -115,6 +115,7 @@ struct nvme_tcp_icresp_pdu {
+>  struct nvme_tcp_term_pdu {
+>         struct nvme_tcp_hdr     hdr;
+>         __le16                  fes;
+> +       __u8                    rsvd2[2];
+>         __le32                  fei;
+>         __u8                    rsvd[8];
+>  };
+> --
+> 2.34.1
+>
+>
