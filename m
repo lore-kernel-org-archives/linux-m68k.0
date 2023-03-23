@@ -2,57 +2,38 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99C09C7619A
-	for <linux-m68k@archiver.kernel.org>; Thu, 23 Mar 2023 10:18:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B4FDC761AF
+	for <linux-m68k@archiver.kernel.org>; Thu, 23 Mar 2023 10:34:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbjCWKSJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 23 Mar 2023 06:18:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59746 "EHLO
+        id S231472AbjCWKeO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 23 Mar 2023 06:34:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbjCWKRr (ORCPT
+        with ESMTP id S231327AbjCWKdl (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 23 Mar 2023 06:17:47 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B25D61B2F2
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Mar 2023 03:17:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679566655; x=1711102655;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=FnXm+KxPAQOleEvIez2agf6n8OX0ULT3pj5+c93lH5Q=;
-  b=e8qscO3AAoa2oFRp5lHdk1WAjDr6rak8nHa2Pd1wg9RgN7FYVssOY1k0
-   QDBxwMO0tyzcsUX/T+wkAlfdR/fad6/l/0kPk8I89pELv/t9KpQyVzfLM
-   SEBBkkZxrn9ShbveyuX1FS8pKMPRdwZusvxrsrxApgsdnL5TZU2/Z5BUh
-   K4NqcO+nPIAi0BNtLUochlh1RtLHpD53HZiwLfWHfvqtSBaa2rk2S6pTz
-   n975Xrp/fkBbrcKkUPzzAfWeY4JrkeWKl3LGwP5/G4dnnMq8mhfyxtC2l
-   5Cxq0R6Yux/Qncdkybrqsr1n5zNMv/7vcgMq9rPuVRMUfNdn92ok3NnBV
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="339479962"
-X-IronPort-AV: E=Sophos;i="5.98,283,1673942400"; 
-   d="scan'208";a="339479962"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2023 03:17:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="825766162"
-X-IronPort-AV: E=Sophos;i="5.98,283,1673942400"; 
-   d="scan'208";a="825766162"
-Received: from stinti-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.46.226])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2023 03:17:27 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 154D8109FCC; Thu, 23 Mar 2023 13:17:25 +0300 (+03)
-Date:   Thu, 23 Mar 2023 13:17:25 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+        Thu, 23 Mar 2023 06:33:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739F837550
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Mar 2023 03:30:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E7CEE62560;
+        Thu, 23 Mar 2023 10:30:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC146C433EF;
+        Thu, 23 Mar 2023 10:30:25 +0000 (UTC)
+Date:   Thu, 23 Mar 2023 10:30:22 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
 To:     Mike Rapoport <rppt@kernel.org>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
         Christophe Leroy <christophe.leroy@csgroup.eu>,
         "David S. Miller" <davem@davemloft.net>,
         Dinh Nguyen <dinguyen@kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Guo Ren <guoren@kernel.org>,
         John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
         Max Filippov <jcmvbkbc@gmail.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Rich Felker <dalias@libc.org>,
@@ -65,63 +46,27 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-mm@kvack.org, linux-sh@vger.kernel.org,
         linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
         sparclinux@vger.kernel.org
-Subject: Re: [PATCH 00/14] arch,mm: cleanup Kconfig entries for
- ARCH_FORCE_MAX_ORDER
-Message-ID: <20230323101725.2jmvpaqpzflr4mv2@box>
+Subject: Re: [PATCH 03/14] arm64: reword ARCH_FORCE_MAX_ORDER prompt and help
+ text
+Message-ID: <ZBwqPrYgE/YdHkXC@arm.com>
 References: <20230323092156.2545741-1-rppt@kernel.org>
+ <20230323092156.2545741-4-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230323092156.2545741-1-rppt@kernel.org>
+In-Reply-To: <20230323092156.2545741-4-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Mar 23, 2023 at 11:21:42AM +0200, Mike Rapoport wrote:
+On Thu, Mar 23, 2023 at 11:21:45AM +0200, Mike Rapoport wrote:
 > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 > 
-> Hi,
+> The prompt and help text of ARCH_FORCE_MAX_ORDER are not even close to
+> describe this configuration option.
 > 
-> Several architectures have ARCH_FORCE_MAX_ORDER in their Kconfig and
-> they all have wrong and misleading prompt and help text for this option.
+> Update both to actually describe what this option does.
 > 
-> Besides, some define insane limits for possible values of
-> ARCH_FORCE_MAX_ORDER, some carefully define ranges only for a subset of
-> possible configurations, some make this option configurable by users for no
-> good reason.
-> 
-> This set updates the prompt and help text everywhere and does its best to
-> update actual definitions of ranges where applicable.
-> 
-> Mike Rapoport (IBM) (14):
->   arm: reword ARCH_FORCE_MAX_ORDER prompt and help text
->   arm64: drop ranges in definition of ARCH_FORCE_MAX_ORDER
->   arm64: reword ARCH_FORCE_MAX_ORDER prompt and help text
->   csky: drop ARCH_FORCE_MAX_ORDER
->   ia64: don't allow users to override ARCH_FORCE_MAX_ORDER
->   m68k: reword ARCH_FORCE_MAX_ORDER prompt and help text
->   nios2: reword ARCH_FORCE_MAX_ORDER prompt and help text
->   nios2: drop ranges for definition of ARCH_FORCE_MAX_ORDER
->   powerpc: reword ARCH_FORCE_MAX_ORDER prompt and help text
->   powerpc: drop ranges for definition of ARCH_FORCE_MAX_ORDER
->   sh: reword ARCH_FORCE_MAX_ORDER prompt and help text
->   sh: drop ranges for definition of ARCH_FORCE_MAX_ORDER
->   sparc: reword ARCH_FORCE_MAX_ORDER prompt and help text
->   xtensa: reword ARCH_FORCE_MAX_ORDER prompt and help text
-> 
->  arch/arm/Kconfig      | 16 +++++++++-------
->  arch/arm64/Kconfig    | 27 ++++++++++++---------------
->  arch/csky/Kconfig     |  4 ----
->  arch/ia64/Kconfig     |  3 +--
->  arch/m68k/Kconfig.cpu | 16 +++++++++-------
->  arch/nios2/Kconfig    | 17 +++++++++--------
->  arch/powerpc/Kconfig  | 22 +++++++++-------------
->  arch/sh/mm/Kconfig    | 19 +++++++++----------
->  arch/sparc/Kconfig    | 16 +++++++++-------
->  arch/xtensa/Kconfig   | 16 +++++++++-------
->  10 files changed, 76 insertions(+), 80 deletions(-)
+> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
 
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
