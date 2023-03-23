@@ -2,86 +2,103 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C29CC6FD1C
-	for <linux-m68k@archiver.kernel.org>; Thu, 23 Mar 2023 15:10:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84AFCC74A5B
+	for <linux-m68k@archiver.kernel.org>; Thu, 23 Mar 2023 16:33:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231991AbjCWPKa (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 23 Mar 2023 11:10:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52044 "EHLO
+        id S232239AbjCWQd2 convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 23 Mar 2023 12:33:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229976AbjCWPKY (ORCPT
+        with ESMTP id S231558AbjCWQc4 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 23 Mar 2023 11:10:24 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A56B27D54
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Mar 2023 08:09:32 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id p204so14104063ybc.12
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Mar 2023 08:09:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1679584162;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8SnEIkXp6L+ALBjrOuJPKx5DH0o+AoDgTFps7+YyJMY=;
-        b=zl+BlwzW7gPnSXkWxci5PjAwtOMOIIBrbHRSPehqkTU08JKV0J3Dg7CuwYpn/QR+m7
-         VgXdUnhhr7PlYOQWpVs//ogptifERuorrA7eqdl+Dx0O0xBLngUdU0m1Qx5Zc1WjgFr+
-         k96/sjQKwOHNE4WM041IXhQx0TZ2TF1GLmFUDcC9TTVj87q79wyO8LZGgbak7t6dz2xt
-         d7CgWsr2Bn9ydUodD91x/vnStBtK8hcUsxgxBhWKQkgC4pD6UFhKu0/NGCtvvOC5Tvkf
-         929X9zXzb36a8hNwm1Gx9I7E7nslleyKePEuqrJWPLxTyRUNCFg8w5uRFNVHiKaOPZa5
-         UGVg==
+        Thu, 23 Mar 2023 12:32:56 -0400
+Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C6022C671
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Mar 2023 09:32:04 -0700 (PDT)
+Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-17ac5ee3f9cso23203787fac.12
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Mar 2023 09:32:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679584162;
+        d=1e100.net; s=20210112; t=1679589123;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8SnEIkXp6L+ALBjrOuJPKx5DH0o+AoDgTFps7+YyJMY=;
-        b=FFXIUJ6SIR72AXNBSor5fhFsMbwLMOgUvr9PIFsax9ypXHY+/T/vCx8c3SNKRuQpWX
-         OCgD4EOGZ/NRIuS0AZe+L1dCz5B9mpHi5Lgm49U8qTwG9/5R/wlijPVaAl6ocQjdkpc2
-         Pa8EiA9Zime5um942Cocai4hgGpEh5Z5OVXVLOI6JYvSOoW8pEosnN8u09C4nijacI2P
-         HUWW85lsnLkZdqkeD9GmbDLi+Q38ZkzU7/V2vVjeFjy0uQFa5G7HDcq577owTUTDQtaU
-         KTvY9dc7hTPHm+WgLOEFpKGXEv7pMu/CPJELecJpCUOKNZ7sSI16cs7wEQDBZilSkrbP
-         0x9Q==
-X-Gm-Message-State: AAQBX9dBYZaU2iz/aAW8F9Zds+5PoLhgX6hfT0qGBbZNnHqpqzin0x1R
-        PlkHNkEKK0Ue99OW9a9jScifazJSSeDzwvEVkJ7JAg==
-X-Google-Smtp-Source: AKy350Yv//HOf5AIR4M+neWRU2lB5L6X9r6OQSW7C8ZDiylvn6IzCqPJEyOwSMoTGkLfTT5EaxbodlJfcylOHiXrTRQ=
-X-Received: by 2002:a05:6902:a93:b0:b23:4649:7ef3 with SMTP id
- cd19-20020a0569020a9300b00b2346497ef3mr2351019ybb.4.1679584162516; Thu, 23
- Mar 2023 08:09:22 -0700 (PDT)
+        bh=j7GNIdZ5wgfU6KCXGbmsavLHJtcjfO2exto0gDOFK7Q=;
+        b=db/jW28RRFIJNPJl41PufZp1LGSl04rTBXkw/70FVSIUAQ4dKNoyusG5QXveW3ErqM
+         ofurROOLDNF2tabrTQBdXmwpWRwarZ7UoC7x+FseRkfLJH8fAiT92PqPE7CrosxtNB9m
+         o4SKU7gsIVI0ZdrO/1cOFkR3nvw2F4p4wTdaZVBNexz05jktG656xA8NCv1485usrmn/
+         ktuGg+F7sEQC60oxPK2U0ry7Jm4EHvdbNwBGEMqPthbM1WT6cyJA59HRroWp1KFz+kBN
+         Fi4ClpY17vCIeLCFWgfulq2cpUF+HHmgyUOb56jTsfX/99LDt6zWBw8oWxbETicEWnH5
+         EDSA==
+X-Gm-Message-State: AO0yUKVVz2nNjnolMpolud7KFoLF2o1pJr9cMwDqMn01vyaXBR4mOox0
+        SIhoQaJwf4dsDeXDVath176wSW/y8o+NA2+J
+X-Google-Smtp-Source: AKy350ZnisCO03s1ftFmfbtV2UC1A0eCxEBOq0dad49oS/L3xjPT+RMijtrJQJ2aWNI5v6rfdMXr0w==
+X-Received: by 2002:a05:6870:d181:b0:177:b6ce:1e76 with SMTP id a1-20020a056870d18100b00177b6ce1e76mr2588936oac.55.1679589122993;
+        Thu, 23 Mar 2023 09:32:02 -0700 (PDT)
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com. [209.85.167.176])
+        by smtp.gmail.com with ESMTPSA id vl9-20020a0568710e8900b0017ad7a5f57dsm6386291oab.11.2023.03.23.09.32.02
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Mar 2023 09:32:02 -0700 (PDT)
+Received: by mail-oi1-f176.google.com with SMTP id bo10so16604478oib.11
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Mar 2023 09:32:02 -0700 (PDT)
+X-Received: by 2002:a05:6902:728:b0:a09:314f:a3ef with SMTP id
+ l8-20020a056902072800b00a09314fa3efmr2593946ybt.12.1679588687557; Thu, 23 Mar
+ 2023 09:24:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230323133656.679478-1-linus.walleij@linaro.org> <mvmfs9vwpma.fsf@linux-m68k.org>
-In-Reply-To: <mvmfs9vwpma.fsf@linux-m68k.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 23 Mar 2023 16:09:11 +0100
-Message-ID: <CACRpkdZTKF7MU2Pp0x-sqGEo_rnyZ-GnGhxXhJjypAR3r+GQew@mail.gmail.com>
-Subject: Re: [PATCH] m68k: Pass a pointer to virt_to_pfn() virt_to_page()
-To:     Andreas Schwab <schwab@linux-m68k.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-gpio@vger.kernel.org
+References: <20230323092156.2545741-1-rppt@kernel.org> <20230323092156.2545741-7-rppt@kernel.org>
+In-Reply-To: <20230323092156.2545741-7-rppt@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 23 Mar 2023 17:24:35 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWSE1OzYQfNx=cbP+yKZLkgv=nUS-Ddqk2ORv9qdWFahw@mail.gmail.com>
+Message-ID: <CAMuHMdWSE1OzYQfNx=cbP+yKZLkgv=nUS-Ddqk2ORv9qdWFahw@mail.gmail.com>
+Subject: Re: [PATCH 06/14] m68k: reword ARCH_FORCE_MAX_ORDER prompt and help text
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dinh Nguyen <dinguyen@kernel.org>, Guo Ren <guoren@kernel.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Rich Felker <dalias@libc.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Zi Yan <ziy@nvidia.com>, linux-arm-kernel@lists.infradead.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mm@kvack.org, linux-sh@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
+        sparclinux@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Mar 23, 2023 at 2:42=E2=80=AFPM Andreas Schwab <schwab@linux-m68k.o=
-rg> wrote:
-> On M=C3=A4r 23 2023, Linus Walleij wrote:
+On Thu, Mar 23, 2023 at 10:23 AM Mike Rapoport <rppt@kernel.org> wrote:
+> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 >
-> > diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
-> > index 911301224078..0a9bc8292f78 100644
-> > --- a/arch/m68k/mm/motorola.c
-> > +++ b/arch/m68k/mm/motorola.c
-> > @@ -102,7 +102,7 @@ static struct list_head ptable_list[2] =3D {
-> >       LIST_HEAD_INIT(ptable_list[1]),
-> >  };
-> >
-> > -#define PD_PTABLE(page) ((ptable_desc *)&(virt_to_page(page)->lru))
-> > +#define PD_PTABLE(page) ((ptable_desc *)&(virt_to_page((void *)page)->=
-lru))
+> The prompt and help text of ARCH_FORCE_MAX_ORDER are not even close to
+> describe this configuration option.
 >
-> That should probably get a pair of parens around the macro argument.
+> Update both to actually describe what this option does.
+>
+> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
 
-Ooops that's right. I'll fix.
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Yours,
-Linus Walleij
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
