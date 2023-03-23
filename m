@@ -2,169 +2,147 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B56CC6FD1D
-	for <linux-m68k@archiver.kernel.org>; Thu, 23 Mar 2023 13:25:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BD8EC6FD1D
+	for <linux-m68k@archiver.kernel.org>; Thu, 23 Mar 2023 13:37:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbjCWNZI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 23 Mar 2023 09:25:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35688 "EHLO
+        id S230382AbjCWNhD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 23 Mar 2023 09:37:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbjCWNZG (ORCPT
+        with ESMTP id S230369AbjCWNhC (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 23 Mar 2023 09:25:06 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B494D421B
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Mar 2023 06:25:05 -0700 (PDT)
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32NBwu6E027980;
-        Thu, 23 Mar 2023 13:24:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=VwL2eHgiXbSpbcyOMi1Fm6CGpKEbs60ss+WPZnJK5Ik=;
- b=XUOZb+O02s7yDbfd9owIe2KU+IxtepAYblP5hOfMaou9r1s62w4XYcd21Ay890Ch0UtZ
- b3P6V74UYISN/vgI9gfJX4goA81aaSJ6+BrnqTltbxt9dViPahHFqwYh2ph/oHgOCuUs
- cBuk/dBdRXe6yir7UjhPfJohLY53yu99IuZ0u/VvorW219jlSZERTnQz24NuopyuaJRv
- f/R4+LqrQSLYvZjgJitqK439IVBWg+2l8kKrls150yN5+2GDZLbAW/9AVV53S7LOSmnA
- XiauVMwmdc0qgxFAu2fBNR8kde+goodonXLhqI7dsBaHwnZoURHUBVQ40SKG6ndeV6av Ww== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3pghqssfc6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Mar 2023 13:24:08 +0000
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 32NBrkW0000445;
-        Thu, 23 Mar 2023 13:24:07 GMT
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3pghqssfab-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Mar 2023 13:24:07 +0000
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 32NCFRdl006837;
-        Thu, 23 Mar 2023 13:24:03 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma03fra.de.ibm.com (PPS) with ESMTPS id 3pd4x667jt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Mar 2023 13:24:03 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 32NDO0Y524772868
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 23 Mar 2023 13:24:00 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CBC2C20040;
-        Thu, 23 Mar 2023 13:24:00 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AD7DC2004D;
-        Thu, 23 Mar 2023 13:23:57 +0000 (GMT)
-Received: from [9.171.87.16] (unknown [9.171.87.16])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 23 Mar 2023 13:23:57 +0000 (GMT)
-Message-ID: <95d5d0c434ef6c4cadc3fca34c4c0d3104becea8.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 01/38] Kconfig: introduce HAS_IOPORT option and
- select it as necessary
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Johannes Berg <johannes@sipsolutions.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-pci@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
-        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org
-Date:   Thu, 23 Mar 2023 14:23:57 +0100
-In-Reply-To: <21a828bae06b97b8ca806a6b76d867902b1e0e1f.camel@sipsolutions.net>
-References: <20230314121216.413434-1-schnelle@linux.ibm.com>
-         <20230314121216.413434-2-schnelle@linux.ibm.com>
-         <21a828bae06b97b8ca806a6b76d867902b1e0e1f.camel@sipsolutions.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Thu, 23 Mar 2023 09:37:02 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C8E23305
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Mar 2023 06:37:01 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id s8so27486980lfr.8
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Mar 2023 06:37:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1679578620;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cXJIw2DRUxIwJEoYqYmceOuZSvFzwdb28m7MSqdWoXM=;
+        b=MrSJAmN/vlZXEHU6S8fGGA4l4vFtC5Ub+bLrkoQ5i9EYYjwlWmM/BeUKRR5nMqIxgc
+         lYgk4zxZgG28JCwPHQn0J5UkU3y6a1bZsi7k+61mf1bGx04m4OAcTUotVhZ7M4dQFrvC
+         SrfLXPd5xEqtlB2WXivjZC6bw84f09mFKCgLaSt6vJ9npFgV9F9JJGaw7D7HZY7KJBbJ
+         mynYCaEnvOQWzscP9QA0re3X83zazYTQBdljYIxn2wqxnsa3nmIOstxvjLVA0lVwRy5X
+         S/II5brY53qae/muD02/bRChiDMI6GSoE3VqkfZiPi72DWZ1fIqGYFRYIVyFo0L03aw4
+         zOOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679578620;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cXJIw2DRUxIwJEoYqYmceOuZSvFzwdb28m7MSqdWoXM=;
+        b=G39m8Ye+56oZCOXe8KfvBmG4VVt9IszB6GSgIIFOtB6uSxY77dhhg4aJnHGH3b38DZ
+         xuV6Ell7KbHWFnrZOEEFFSgTTrGvfZM6aLjrwK+sxg4P4fd+9xywrzfjpz8dneXMbMOc
+         Slh+y/CG6HiBaOUISR+0tkzJSZsKvzUIAU1eTSGQuoHpQr93vVM+PddBpK8hbCstk2rk
+         CrvBsEKn4QhUJvE56K1IFqRi3MnGBEtclZDTcghhM3f/uTjlOHvRx3E/TEVfjIXXejwo
+         kvT/MFUBwnRWVquS4lhHQkygO0Z9PAmfabq5dS1spDIfs3CQAVARVEoCrg9CnE0hyJfv
+         0XlQ==
+X-Gm-Message-State: AO0yUKWfuOOoaTw9cR+c4LnZqgCXqtPDvqevSDIOdUXEjSITQy18RzhR
+        cy9TeP6Ms4FMMCHQxMBnoF4KcQ==
+X-Google-Smtp-Source: AK7set+suNOHq9J1H5vslivj2kMvIqhZJxdOWiBPqX0o44F4im9e4/BJhrVUnBJbxDhGIANJzKhpRA==
+X-Received: by 2002:a05:6512:517:b0:4d8:51e7:9f23 with SMTP id o23-20020a056512051700b004d851e79f23mr1854422lfb.34.1679578619964;
+        Thu, 23 Mar 2023 06:36:59 -0700 (PDT)
+Received: from fedora.. ([85.235.12.219])
+        by smtp.gmail.com with ESMTPSA id h11-20020ac250cb000000b004db3d57c3a8sm2936566lfm.96.2023.03.23.06.36.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Mar 2023 06:36:59 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org
+Cc:     linux-gpio@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH] m68k: Pass a pointer to virt_to_pfn() virt_to_page()
+Date:   Thu, 23 Mar 2023 14:36:56 +0100
+Message-Id: <20230323133656.679478-1-linus.walleij@linaro.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ILhJ9KxUcdZTNzZ4sWuhaur67a0wm06C
-X-Proofpoint-ORIG-GUID: mOBSc53Xq2jpq67qceMo9W2p8ZoZQ_8a
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-22_21,2023-03-22_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 lowpriorityscore=0 adultscore=0 suspectscore=0 clxscore=1015
- mlxscore=0 impostorscore=0 spamscore=0 bulkscore=0 mlxlogscore=449
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2303150002 definitions=main-2303230098
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, 2023-03-14 at 13:37 +0100, Johannes Berg wrote:
-> On Tue, 2023-03-14 at 13:11 +0100, Niklas Schnelle wrote:
-> > --- a/arch/um/Kconfig
-> > +++ b/arch/um/Kconfig
-> > @@ -56,6 +56,7 @@ config NO_IOPORT_MAP
-> > =20
-> >  config ISA
-> >  	bool
-> > +	depends on HAS_IOPORT
-> >=20
->=20
-> config ISA here is already unselectable, and nothing ever does "select
-> ISA" (only in some other architectures), so is there much point in this?
->=20
-> I'm not even sure why this exists at all.
+Functions that work on a pointer to virtual memory such as
+virt_to_pfn() and users of that function such as
+virt_to_page() are supposed to pass a pointer to virtual
+memory, ideally a (void *) or other pointer. However since
+many architectures implement virt_to_pfn() as a macro,
+this function becomes polymorphic and accepts both a
+(unsigned long) and a (void *).
 
-You're right there's not much point and I dropped this for v4. I agree
-that probably the whole "config ISA" could be removed if it's always
-false anyway but that seems out of scope for this patch.
+Fix up the offending calls in arch/m68k with explicit casts.
 
->=20
-> But anyway, adding a dependency to a always-false symbol doesn't make it
-> less always-false :-)
->=20
-> Acked-by: Johannes Berg <johannes@sipsolutions.net> # for ARCH=3Dum
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ arch/m68k/mm/motorola.c | 4 ++--
+ arch/m68k/mm/sun3mmu.c  | 2 +-
+ arch/m68k/sun3/dvma.c   | 2 +-
+ arch/m68k/sun3x/dvma.c  | 2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
 
-Thanks
+diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+index 911301224078..0a9bc8292f78 100644
+--- a/arch/m68k/mm/motorola.c
++++ b/arch/m68k/mm/motorola.c
+@@ -102,7 +102,7 @@ static struct list_head ptable_list[2] = {
+ 	LIST_HEAD_INIT(ptable_list[1]),
+ };
+ 
+-#define PD_PTABLE(page) ((ptable_desc *)&(virt_to_page(page)->lru))
++#define PD_PTABLE(page) ((ptable_desc *)&(virt_to_page((void *)page)->lru))
+ #define PD_PAGE(ptable) (list_entry(ptable, struct page, lru))
+ #define PD_MARKBITS(dp) (*(unsigned int *)&PD_PAGE(dp)->index)
+ 
+@@ -201,7 +201,7 @@ int free_pointer_table(void *table, int type)
+ 		list_del(dp);
+ 		mmu_page_dtor((void *)page);
+ 		if (type == TABLE_PTE)
+-			pgtable_pte_page_dtor(virt_to_page(page));
++			pgtable_pte_page_dtor(virt_to_page((void *)page));
+ 		free_page (page);
+ 		return 1;
+ 	} else if (ptable_list[type].next != dp) {
+diff --git a/arch/m68k/mm/sun3mmu.c b/arch/m68k/mm/sun3mmu.c
+index b619d0d4319c..c5e6a23e0262 100644
+--- a/arch/m68k/mm/sun3mmu.c
++++ b/arch/m68k/mm/sun3mmu.c
+@@ -75,7 +75,7 @@ void __init paging_init(void)
+ 		/* now change pg_table to kernel virtual addresses */
+ 		pg_table = (pte_t *) __va ((unsigned long) pg_table);
+ 		for (i=0; i<PTRS_PER_PTE; ++i, ++pg_table) {
+-			pte_t pte = pfn_pte(virt_to_pfn(address), PAGE_INIT);
++			pte_t pte = pfn_pte(virt_to_pfn((void *)address), PAGE_INIT);
+ 			if (address >= (unsigned long)high_memory)
+ 				pte_val (pte) = 0;
+ 			set_pte (pg_table, pte);
+diff --git a/arch/m68k/sun3/dvma.c b/arch/m68k/sun3/dvma.c
+index f15ff16b9997..83fcae6a0e79 100644
+--- a/arch/m68k/sun3/dvma.c
++++ b/arch/m68k/sun3/dvma.c
+@@ -29,7 +29,7 @@ static unsigned long dvma_page(unsigned long kaddr, unsigned long vaddr)
+ 	j = *(volatile unsigned long *)kaddr;
+ 	*(volatile unsigned long *)kaddr = j;
+ 
+-	ptep = pfn_pte(virt_to_pfn(kaddr), PAGE_KERNEL);
++	ptep = pfn_pte(virt_to_pfn((void *)kaddr), PAGE_KERNEL);
+ 	pte = pte_val(ptep);
+ //	pr_info("dvma_remap: addr %lx -> %lx pte %08lx\n", kaddr, vaddr, pte);
+ 	if(ptelist[(vaddr & 0xff000) >> PAGE_SHIFT] != pte) {
+diff --git a/arch/m68k/sun3x/dvma.c b/arch/m68k/sun3x/dvma.c
+index 08bb92113026..a6034ba05845 100644
+--- a/arch/m68k/sun3x/dvma.c
++++ b/arch/m68k/sun3x/dvma.c
+@@ -125,7 +125,7 @@ inline int dvma_map_cpu(unsigned long kaddr,
+ 			do {
+ 				pr_debug("mapping %08lx phys to %08lx\n",
+ 					 __pa(kaddr), vaddr);
+-				set_pte(pte, pfn_pte(virt_to_pfn(kaddr),
++				set_pte(pte, pfn_pte(virt_to_pfn((void *)kaddr),
+ 						     PAGE_KERNEL));
+ 				pte++;
+ 				kaddr += PAGE_SIZE;
+-- 
+2.34.1
 
->=20
->=20
-> Certainly will be nice to get rid of this cruft for architectures that
-> don't have it.
->=20
-> johannes
-
-Yes, also, for s390 the broken NULL + port number access in the generic
-inb()/outb() currently causes the only remaining clang warning on
-defconfig builds.
