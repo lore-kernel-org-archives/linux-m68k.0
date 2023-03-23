@@ -2,293 +2,266 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91D16C77B60
-	for <linux-m68k@archiver.kernel.org>; Thu, 23 Mar 2023 17:12:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E92CC6FD1C
+	for <linux-m68k@archiver.kernel.org>; Thu, 23 Mar 2023 23:11:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbjCWRMx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 23 Mar 2023 13:12:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43528 "EHLO
+        id S230132AbjCWXLb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 23 Mar 2023 19:11:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231556AbjCWRMv (ORCPT
+        with ESMTP id S229529AbjCWXLa (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 23 Mar 2023 13:12:51 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A6523C68
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Mar 2023 10:12:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679591569; x=1711127569;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bOk/bK3iytGpOoPzSN/P3lMEMqW4rV3s8Am9+KQ4/Qo=;
-  b=VVz38drQNTRqjT8lKjzwPT0RNtJCyq0wpAgv28ZPNHzDOyykzzIfFGcD
-   O2QnXfSUW8DT38HkAdk4CxptF5mFmsvcCu1KJY//35ffzkf+d5gh9rx+Y
-   wcKC1WGZsD494Mp+ghiWFl+Hhvesk47IhIdoelPRbOdXxXadBM+SsVXcc
-   vLgp04hpIJfpWw4CK7+Jm4tmmD1mpqyComRiyIFVyxYuqSp1VoFT3h01m
-   QLWX7dhTIvw4vUsFQMFL+FB1DZhMaWSqEA3OBT5macRNhcQ4X8ggC1MfE
-   ej5WmUAZ7M414ov8EOhGFHLDJzFGw6rxvKtGjCm4FFnnumgrqbYz/FKq0
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="338283375"
-X-IronPort-AV: E=Sophos;i="5.98,285,1673942400"; 
-   d="scan'208";a="338283375"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2023 10:12:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="825909467"
-X-IronPort-AV: E=Sophos;i="5.98,285,1673942400"; 
-   d="scan'208";a="825909467"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 23 Mar 2023 10:12:41 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pfOUO-000EZ8-0H;
-        Thu, 23 Mar 2023 17:12:36 +0000
-Date:   Fri, 24 Mar 2023 01:11:39 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Guo Ren <guoren@kernel.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Mike Rapoport <rppt@kernel.org>, Rich Felker <dalias@libc.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Zi Yan <ziy@nvidia.com>, linux-arm-kernel@lists.infradead.org,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org
-Subject: Re: [PATCH 02/14] arm64: drop ranges in definition of
- ARCH_FORCE_MAX_ORDER
-Message-ID: <202303240155.01y6T6Fj-lkp@intel.com>
-References: <20230323092156.2545741-3-rppt@kernel.org>
+        Thu, 23 Mar 2023 19:11:30 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31679FF25
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Mar 2023 16:11:29 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 518BC3200681;
+        Thu, 23 Mar 2023 19:11:28 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Thu, 23 Mar 2023 19:11:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1679613087; x=1679699487; bh=2rW/87ETWD5jh
+        MIHF2OdIMo1SriFDPE0qXDeXQlInQo=; b=O35dTJ5pBBwM1f2ZeAI4pnXWPcl07
+        ByQH4ClCFarMEcBxNZy9zasI7rGGPDWMYpQJ5iuKrVpAeWi+uzCg4YWoyhjrmAOK
+        sA0L0Zdz1wzxAzn5gQoe6/zioZKmSabHXAoGkqsHNrAFpDkWNe9kTQpCEEeH+jxu
+        vT8hu5OybHgHq/FTeuDe/EYn1EDMoIEpP7SFYMJ5yyJqgojlrxiwfbvtQntDnNEO
+        6wZ29ERNIBdlaeUP2Djna/cqeMp8Gh+Ue3Ar/zHIIFQY2j5v3k0Hd6vGgzdkeotN
+        OA81iEJ6W9SdObThSVC2RjVJ79366r/2lxAjxBl9Vojk/WdNMFwKOi+EA==
+X-ME-Sender: <xms:ntwcZIad5GPU8o9tcbTECNkzCngg3saufUWi5YJG7gkouCaoyIoZuQ>
+    <xme:ntwcZDaSW6G5HKJlx4WfrSSISp0P9h20kK8RF0cLQEok5y92ySHba8RHGRc_Tsxzq
+    QYyPI1GS8_N6KTxXT8>
+X-ME-Received: <xmr:ntwcZC8dgo7c9rit5VqrC18aKvAgb26Cvy9o5n_sr9YkM1k2Iy9czCwPWowLBE05_QYTkKmrtgKhClrn6mjxz9TpM25NGfkTlTw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdeghedgtdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevufgjkfhfgggtsehmtderredttdejnecuhfhrohhmpefhihhnnhcu
+    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
+    htthgvrhhnpeelfeeklefggfetkedukeevfffgvdeuheetffekledtfeejteelieejteeh
+    geelieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:ntwcZCoT1oHwF74N4TMHcjHG6MsxKAs34pA1mVZ2c2yaeuIfQP_6RA>
+    <xmx:ntwcZDqpWfA0f4NNMCFNXTxG9x0EqVTZ_VqhG_eJIFMBz7ewOInTzg>
+    <xmx:ntwcZATGlbJHlf-3twiU2ObRx-LaHsSAnwbcVJmyaJBztNrsdxsLRg>
+    <xmx:n9wcZMCZ6KhVxgrQtRMwh3oJW-pHGJWsEtgXwQcmTJJyFf3QtjIgAg>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 23 Mar 2023 19:11:24 -0400 (EDT)
+Date:   Fri, 24 Mar 2023 10:13:51 +1100 (AEDT)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Brad Boyer <flar@allandria.com>
+cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] nubus: Don't list card resources by default
+In-Reply-To: <CAMuHMdUJ6kbpYGTjyY5dX+-YRv3pL0ydG3HQ-H1khyeqLOa05A@mail.gmail.com>
+Message-ID: <072fd894-ec50-ae5f-2be5-ebbeb0e7b39b@linux-m68k.org>
+References: <5b7c473247d66776343d82a55b9815195b1b11fb.1679551394.git.fthain@linux-m68k.org> <CAMuHMdUJ6kbpYGTjyY5dX+-YRv3pL0ydG3HQ-H1khyeqLOa05A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230323092156.2545741-3-rppt@kernel.org>
+Content-Type: multipart/mixed; boundary="-1463811774-1418837779-1679613231=:7816"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Mike,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Thank you for the patch! Yet something to improve:
+---1463811774-1418837779-1679613231=:7816
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-[auto build test ERROR on 51551d71edbc998fd8c8afa7312db3d270f5998e]
+On Thu, 23 Mar 2023, Geert Uytterhoeven wrote:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Mike-Rapoport/arm-reword-ARCH_FORCE_MAX_ORDER-prompt-and-help-text/20230323-172512
-base:   51551d71edbc998fd8c8afa7312db3d270f5998e
-patch link:    https://lore.kernel.org/r/20230323092156.2545741-3-rppt%40kernel.org
-patch subject: [PATCH 02/14] arm64: drop ranges in definition of ARCH_FORCE_MAX_ORDER
-config: arm64-randconfig-r031-20230322 (https://download.01.org/0day-ci/archive/20230324/202303240155.01y6T6Fj-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project 67409911353323ca5edf2049ef0df54132fa1ca7)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install arm64 cross compiling tool for clang build
-        # apt-get install binutils-aarch64-linux-gnu
-        # https://github.com/intel-lab-lkp/linux/commit/0522f943c071abf1610651ea40405b7489c50987
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Mike-Rapoport/arm-reword-ARCH_FORCE_MAX_ORDER-prompt-and-help-text/20230323-172512
-        git checkout 0522f943c071abf1610651ea40405b7489c50987
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm64 olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm64 SHELL=/bin/bash drivers/iommu/ kernel/dma/ mm/
+> On Thu, Mar 23, 2023 at 7:02=E2=80=AFAM Finn Thain <fthain@linux-m68k.org=
+> wrote:
+> > Some Nubus cards have many ROM resources. A single Radius video card
+> > produced well over a thousand entries under /proc/bus/nubus/. Populatin=
+g
+> > /proc/bus/nubus on a slow machine with several such cards installed tak=
+es
+> > long enough that the user may think that the system is wedged. All thos=
+e
+> > procfs entries also consume significant RAM though they are not normall=
+y
+> > needed (except by developers). Omit these resources from /proc/bus/nubu=
+s/
+> > by default and add a kernel parameter to enable them when needed.
+> > On the test machine, this saved 300 kB and 10 seconds.
+> >
+> > Tested-by: Stan Johnson <userm57@yahoo.com>
+> > Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+>=20
+> Thanks for your patch!
+>=20
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202303240155.01y6T6Fj-lkp@intel.com/
+Thanks for your review.
 
-All error/warnings (new ones prefixed by >>):
+> > Checkpatch says "externs should be avoided in .c files" and if this one
+> > appeared twice I would agree. But as it only appears once, I can't see
+> > any advantage to putting it in a new .h file instead of the .c file...
+>=20
+> The advantage is that it allows the compiler to check that the=20
+> signatures of the declaration and the definition do match, now and in=20
+> the future.
+>=20
 
->> mm/memory.c:5791:37: warning: shift count is negative [-Wshift-count-negative]
-           if (unlikely(pages_per_huge_page > MAX_ORDER_NR_PAGES)) {
-                                              ^~~~~~~~~~~~~~~~~~
-   include/linux/mmzone.h:33:31: note: expanded from macro 'MAX_ORDER_NR_PAGES'
-   #define MAX_ORDER_NR_PAGES (1 << MAX_ORDER)
-                                 ^  ~~~~~~~~~
-   include/linux/compiler.h:48:41: note: expanded from macro 'unlikely'
-   #  define unlikely(x)   (__branch_check__(x, 0, __builtin_constant_p(x)))
-                                             ^
-   include/linux/compiler.h:33:34: note: expanded from macro '__branch_check__'
-                           ______r = __builtin_expect(!!(x), expect);      \
-                                                         ^
->> mm/memory.c:5791:37: warning: shift count is negative [-Wshift-count-negative]
-           if (unlikely(pages_per_huge_page > MAX_ORDER_NR_PAGES)) {
-                                              ^~~~~~~~~~~~~~~~~~
-   include/linux/mmzone.h:33:31: note: expanded from macro 'MAX_ORDER_NR_PAGES'
-   #define MAX_ORDER_NR_PAGES (1 << MAX_ORDER)
-                                 ^  ~~~~~~~~~
-   include/linux/compiler.h:48:68: note: expanded from macro 'unlikely'
-   #  define unlikely(x)   (__branch_check__(x, 0, __builtin_constant_p(x)))
-                                                                        ^
-   include/linux/compiler.h:35:19: note: expanded from macro '__branch_check__'
-                                                expect, is_constant);      \
-                                                        ^~~~~~~~~~~
-   mm/memory.c:5843:37: warning: shift count is negative [-Wshift-count-negative]
-           if (unlikely(pages_per_huge_page > MAX_ORDER_NR_PAGES)) {
-                                              ^~~~~~~~~~~~~~~~~~
-   include/linux/mmzone.h:33:31: note: expanded from macro 'MAX_ORDER_NR_PAGES'
-   #define MAX_ORDER_NR_PAGES (1 << MAX_ORDER)
-                                 ^  ~~~~~~~~~
-   include/linux/compiler.h:48:41: note: expanded from macro 'unlikely'
-   #  define unlikely(x)   (__branch_check__(x, 0, __builtin_constant_p(x)))
-                                             ^
-   include/linux/compiler.h:33:34: note: expanded from macro '__branch_check__'
-                           ______r = __builtin_expect(!!(x), expect);      \
-                                                         ^
-   mm/memory.c:5843:37: warning: shift count is negative [-Wshift-count-negative]
-           if (unlikely(pages_per_huge_page > MAX_ORDER_NR_PAGES)) {
-                                              ^~~~~~~~~~~~~~~~~~
-   include/linux/mmzone.h:33:31: note: expanded from macro 'MAX_ORDER_NR_PAGES'
-   #define MAX_ORDER_NR_PAGES (1 << MAX_ORDER)
-                                 ^  ~~~~~~~~~
-   include/linux/compiler.h:48:68: note: expanded from macro 'unlikely'
-   #  define unlikely(x)   (__branch_check__(x, 0, __builtin_constant_p(x)))
-                                                                        ^
-   include/linux/compiler.h:35:19: note: expanded from macro '__branch_check__'
-                                                expect, is_constant);      \
-                                                        ^~~~~~~~~~~
-   4 warnings generated.
---
->> drivers/iommu/dma-iommu.c:739:16: error: anonymous bit-field has negative width (-1)
-           order_mask &= GENMASK(MAX_ORDER, 0);
-                         ^
-   include/linux/bits.h:37:3: note: expanded from macro 'GENMASK'
-           (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-            ^
-   include/linux/bits.h:23:3: note: expanded from macro 'GENMASK_INPUT_CHECK'
-           (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-            ^
-   include/linux/build_bug.h:16:53: note: expanded from macro 'BUILD_BUG_ON_ZERO'
-   #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
-                                                       ^
->> drivers/iommu/dma-iommu.c:739:16: warning: shift count >= width of type [-Wshift-count-overflow]
-           order_mask &= GENMASK(MAX_ORDER, 0);
-                         ^~~~~~~~~~~~~~~~~~~~~
-   include/linux/bits.h:37:31: note: expanded from macro 'GENMASK'
-           (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-                                        ^~~~~~~~~~~~~~~
-   include/linux/bits.h:35:11: note: expanded from macro '__GENMASK'
-            (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-                    ^  ~~~~~~~~~~~~~~~~~~~~~~~~~
-   1 warning and 1 error generated.
---
->> kernel/dma/pool.c:197:39: warning: shift count is negative [-Wshift-count-negative]
-                   pages = min_t(unsigned long, pages, MAX_ORDER_NR_PAGES);
-                                                       ^~~~~~~~~~~~~~~~~~
-   include/linux/mmzone.h:33:31: note: expanded from macro 'MAX_ORDER_NR_PAGES'
-   #define MAX_ORDER_NR_PAGES (1 << MAX_ORDER)
-                                 ^  ~~~~~~~~~
-   include/linux/minmax.h:126:59: note: expanded from macro 'min_t'
-   #define min_t(type, x, y)       __careful_cmp((type)(x), (type)(y), <)
-                                                                   ^
-   include/linux/minmax.h:37:12: note: expanded from macro '__careful_cmp'
-                   __cmp(x, y, op), \
-                            ^
-   include/linux/minmax.h:28:34: note: expanded from macro '__cmp'
-   #define __cmp(x, y, op) ((x) op (y) ? (x) : (y))
-                                    ^
->> kernel/dma/pool.c:197:39: warning: shift count is negative [-Wshift-count-negative]
-                   pages = min_t(unsigned long, pages, MAX_ORDER_NR_PAGES);
-                                                       ^~~~~~~~~~~~~~~~~~
-   include/linux/mmzone.h:33:31: note: expanded from macro 'MAX_ORDER_NR_PAGES'
-   #define MAX_ORDER_NR_PAGES (1 << MAX_ORDER)
-                                 ^  ~~~~~~~~~
-   include/linux/minmax.h:126:59: note: expanded from macro 'min_t'
-   #define min_t(type, x, y)       __careful_cmp((type)(x), (type)(y), <)
-                                                                   ^
-   include/linux/minmax.h:37:12: note: expanded from macro '__careful_cmp'
-                   __cmp(x, y, op), \
-                            ^
-   include/linux/minmax.h:28:46: note: expanded from macro '__cmp'
-   #define __cmp(x, y, op) ((x) op (y) ? (x) : (y))
-                                                ^
->> kernel/dma/pool.c:197:39: warning: shift count is negative [-Wshift-count-negative]
-                   pages = min_t(unsigned long, pages, MAX_ORDER_NR_PAGES);
-                                                       ^~~~~~~~~~~~~~~~~~
-   include/linux/mmzone.h:33:31: note: expanded from macro 'MAX_ORDER_NR_PAGES'
-   #define MAX_ORDER_NR_PAGES (1 << MAX_ORDER)
-                                 ^  ~~~~~~~~~
-   include/linux/minmax.h:126:59: note: expanded from macro 'min_t'
-   #define min_t(type, x, y)       __careful_cmp((type)(x), (type)(y), <)
-                                                                   ^
-   include/linux/minmax.h:38:17: note: expanded from macro '__careful_cmp'
-                   __cmp_once(x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y), op))
-                                 ^
-   include/linux/minmax.h:32:25: note: expanded from macro '__cmp_once'
-                   typeof(y) unique_y = (y);               \
-                                         ^
-   3 warnings generated.
+Ah yes, I forgot that we use a header file to make sure that the header=20
+file is correct ;-)
 
+> > --- a/drivers/nubus/nubus.c
+> > +++ b/drivers/nubus/nubus.c
+> > @@ -34,6 +34,9 @@
+> >
+> >  LIST_HEAD(nubus_func_rsrcs);
+> >
+> > +bool procfs_rsrcs;
+> > +module_param(procfs_rsrcs, bool, 0444);
+>=20
+> With the expanded functionality, is "rsrcs" still a good name?
+> Perhaps this should be an integer, so you can define different
+> levels? E.g.
+>   - 0 =3D just devices
+>   - 1 =3D above + boards + public resources
+>   - 2 =3D above + private resources
 
-vim +739 drivers/iommu/dma-iommu.c
+That really depends on how the proc entries get used. I think it's=20
+probably going to be developers who would use them so I consider all of=20
+this to be outside of the UAPI and subject to change. But it would be nice=
+=20
+to hear from other developers on that point.
 
-0db2e5d18f76a6 Robin Murphy        2015-10-01  732  
-c4b17afb0a4e8d Ganapatrao Kulkarni 2018-11-30  733  static struct page **__iommu_dma_alloc_pages(struct device *dev,
-c4b17afb0a4e8d Ganapatrao Kulkarni 2018-11-30  734  		unsigned int count, unsigned long order_mask, gfp_t gfp)
-0db2e5d18f76a6 Robin Murphy        2015-10-01  735  {
-0db2e5d18f76a6 Robin Murphy        2015-10-01  736  	struct page **pages;
-c4b17afb0a4e8d Ganapatrao Kulkarni 2018-11-30  737  	unsigned int i = 0, nid = dev_to_node(dev);
-3b6b7e19e31a81 Robin Murphy        2016-04-13  738  
-98d56389a5e38b Kirill A. Shutemov  2023-03-15 @739  	order_mask &= GENMASK(MAX_ORDER, 0);
-3b6b7e19e31a81 Robin Murphy        2016-04-13  740  	if (!order_mask)
-3b6b7e19e31a81 Robin Murphy        2016-04-13  741  		return NULL;
-0db2e5d18f76a6 Robin Murphy        2015-10-01  742  
-ab6f4b001c8c72 Gustavo A. R. Silva 2021-09-28  743  	pages = kvcalloc(count, sizeof(*pages), GFP_KERNEL);
-0db2e5d18f76a6 Robin Murphy        2015-10-01  744  	if (!pages)
-0db2e5d18f76a6 Robin Murphy        2015-10-01  745  		return NULL;
-0db2e5d18f76a6 Robin Murphy        2015-10-01  746  
-0db2e5d18f76a6 Robin Murphy        2015-10-01  747  	/* IOMMU can map any pages, so himem can also be used here */
-0db2e5d18f76a6 Robin Murphy        2015-10-01  748  	gfp |= __GFP_NOWARN | __GFP_HIGHMEM;
-0db2e5d18f76a6 Robin Murphy        2015-10-01  749  
-0db2e5d18f76a6 Robin Murphy        2015-10-01  750  	while (count) {
-0db2e5d18f76a6 Robin Murphy        2015-10-01  751  		struct page *page = NULL;
-3b6b7e19e31a81 Robin Murphy        2016-04-13  752  		unsigned int order_size;
-0db2e5d18f76a6 Robin Murphy        2015-10-01  753  
-0db2e5d18f76a6 Robin Murphy        2015-10-01  754  		/*
-0db2e5d18f76a6 Robin Murphy        2015-10-01  755  		 * Higher-order allocations are a convenience rather
-0db2e5d18f76a6 Robin Murphy        2015-10-01  756  		 * than a necessity, hence using __GFP_NORETRY until
-3b6b7e19e31a81 Robin Murphy        2016-04-13  757  		 * falling back to minimum-order allocations.
-0db2e5d18f76a6 Robin Murphy        2015-10-01  758  		 */
-a706e6e10225fb Kirill A. Shutemov  2023-03-15  759  		for (order_mask &= GENMASK(__fls(count), 0);
-3b6b7e19e31a81 Robin Murphy        2016-04-13  760  		     order_mask; order_mask &= ~order_size) {
-3b6b7e19e31a81 Robin Murphy        2016-04-13  761  			unsigned int order = __fls(order_mask);
-c4b17afb0a4e8d Ganapatrao Kulkarni 2018-11-30  762  			gfp_t alloc_flags = gfp;
-3b6b7e19e31a81 Robin Murphy        2016-04-13  763  
-3b6b7e19e31a81 Robin Murphy        2016-04-13  764  			order_size = 1U << order;
-c4b17afb0a4e8d Ganapatrao Kulkarni 2018-11-30  765  			if (order_mask > order_size)
-c4b17afb0a4e8d Ganapatrao Kulkarni 2018-11-30  766  				alloc_flags |= __GFP_NORETRY;
-c4b17afb0a4e8d Ganapatrao Kulkarni 2018-11-30  767  			page = alloc_pages_node(nid, alloc_flags, order);
-0db2e5d18f76a6 Robin Murphy        2015-10-01  768  			if (!page)
-0db2e5d18f76a6 Robin Murphy        2015-10-01  769  				continue;
-4604393ca0c6e4 Robin Murphy        2020-09-03  770  			if (order)
-0db2e5d18f76a6 Robin Murphy        2015-10-01  771  				split_page(page, order);
-0db2e5d18f76a6 Robin Murphy        2015-10-01  772  			break;
-0db2e5d18f76a6 Robin Murphy        2015-10-01  773  		}
-0db2e5d18f76a6 Robin Murphy        2015-10-01  774  		if (!page) {
-0db2e5d18f76a6 Robin Murphy        2015-10-01  775  			__iommu_dma_free_pages(pages, i);
-0db2e5d18f76a6 Robin Murphy        2015-10-01  776  			return NULL;
-0db2e5d18f76a6 Robin Murphy        2015-10-01  777  		}
-3b6b7e19e31a81 Robin Murphy        2016-04-13  778  		count -= order_size;
-3b6b7e19e31a81 Robin Murphy        2016-04-13  779  		while (order_size--)
-0db2e5d18f76a6 Robin Murphy        2015-10-01  780  			pages[i++] = page++;
-0db2e5d18f76a6 Robin Murphy        2015-10-01  781  	}
-0db2e5d18f76a6 Robin Murphy        2015-10-01  782  	return pages;
-0db2e5d18f76a6 Robin Murphy        2015-10-01  783  }
-0db2e5d18f76a6 Robin Murphy        2015-10-01  784  
+Regarding terminology, the files in /proc/bus/nubus/*/ are termed=20
+"records" or "entries" while the subdirectories may represent boards, slot=
+=20
+resources or tables of entries. So a parameter like "proc_entries" (in=20
+effect nubus.proc_entries) might be more apt than "procfs_rsrcs".
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+Linux "devices" correspond to the "functional resources" offered by a=20
+card. (Other resources have other purposes.)
+
+I don't know where the "local/private" designation originates from. It's=20
+not to be found in Apple's book, "Designing Cards and Drivers for the=20
+Macintosh". AFAIK, there's no distinction between "public" and "private"=20
+like you might expect to find between the slot resources needed by Apple's=
+=20
+Slot Manager and those needed by 3rd party drivers. E.g. the=20
+NUBUS_RESID_MAC_ADDRESS and NUBUS_RESID_GAMMADIR slot resources were=20
+Apple-defined, even though nubus.c describes them as "local/private".
+
+Note that this patch doesn't affect the /proc/bus/nubus/boards file which=
+=20
+lists category, type, dr_sw, dr_hw for every functional resource=20
+implemented by every board.
+
+> (disclaimer: I know nothing about NuBus and the current /proc/nubus
+> layout)
+
+Here's an example from my LCIII. There's only one card (in slot e) and it=
+=20
+has minimal resources and entries. e/1 is the "vendor info" slot resource,=
+=20
+e/1/3 is the "revision" entry from that slot resource.
+
+# grep -ar . /proc/bus/nubus
+/proc/bus/nubus/e/1/1:
+/proc/bus/nubus/e/1/2:Ethernet A-Series
+/proc/bus/nubus/e/1/20:
+/proc/bus/nubus/e/1/24/1:A-Series
+/proc/bus/nubus/e/1/24/3:001
+/proc/bus/nubus/e/1/24/4:SS DEV
+/proc/bus/nubus/e/80/1:
+
+/proc/bus/nubus/e/80/2:Network_Ethernet_A_Series
+/proc/bus/nubus/e/80/a:
+/proc/bus/nubus/e/80/80:[snipped binary MAC address]
+/proc/bus/nubus/devices:e       0004 0001 010c 0100     fe000000
+#=20
+
+With this patch, only the /proc/bus/nubus/devices file appears by default.=
+=20
+nubus.c captures that information for bus matching purposes, but the=20
+/proc/bus/nubus/e/* inodes are unused AFAIK. I think they were put there=20
+so that userland programs could find uses for them. Problem is, it can be=
+=20
+expensive to do that, depending on the card ROM, and hence this patch.
+
+>=20
+> Should this be documented? I know there is currently nothing about NuBus=
+=20
+> under Documentation/.
+>=20
+
+Probably...
+
+> > +
+> >  /* Meaning of "bytelanes":
+> >
+> >     The card ROM may appear on any or all bytes of each long word in
+> > @@ -574,7 +577,9 @@ nubus_get_functional_resource(struct nubus_board *b=
+oard, int slot,
+> >                 default:
+> >                         /* Local/Private resources have their own
+> >                            function */
+> > -                       nubus_get_private_resource(fres, dir.procdir, &=
+ent);
+> > +                       if (procfs_rsrcs)
+> > +                               nubus_get_private_resource(fres, dir.pr=
+ocdir,
+> > +                                                          &ent);
+> >                 }
+> >         }
+> >
+> > diff --git a/drivers/nubus/proc.c b/drivers/nubus/proc.c
+> > index 2c320a84fd72..844e86636798 100644
+> > --- a/drivers/nubus/proc.c
+> > +++ b/drivers/nubus/proc.c
+> > @@ -51,11 +51,13 @@ static struct proc_dir_entry *proc_bus_nubus_dir;
+> >   * /proc/bus/nubus/x/ stuff
+> >   */
+> >
+> > +extern bool procfs_rsrcs;
+> > +
+> >  struct proc_dir_entry *nubus_proc_add_board(struct nubus_board *board)
+> >  {
+> >         char name[2];
+> >
+> > -       if (!proc_bus_nubus_dir)
+> > +       if (!proc_bus_nubus_dir || !procfs_rsrcs)
+> >                 return NULL;
+> >         snprintf(name, sizeof(name), "%x", board->slot);
+> >         return proc_mkdir(name, proc_bus_nubus_dir);
+> > @@ -72,7 +74,7 @@ struct proc_dir_entry *nubus_proc_add_rsrc_dir(struct=
+ proc_dir_entry *procdir,
+> >         char name[9];
+> >         int lanes =3D board->lanes;
+> >
+> > -       if (!procdir)
+> > +       if (!procdir || !procfs_rsrcs)
+> >                 return NULL;
+> >         snprintf(name, sizeof(name), "%x", ent->type);
+> >         remove_proc_subtree(name, procdir);
+> > @@ -157,7 +159,7 @@ void nubus_proc_add_rsrc_mem(struct proc_dir_entry =
+*procdir,
+> >         char name[9];
+> >         struct nubus_proc_pde_data *pded;
+> >
+> > -       if (!procdir)
+> > +       if (!procdir || !procfs_rsrcs)
+> >                 return;
+> >
+> >         snprintf(name, sizeof(name), "%x", ent->type);
+> > @@ -176,7 +178,7 @@ void nubus_proc_add_rsrc(struct proc_dir_entry *pro=
+cdir,
+> >         char name[9];
+> >         unsigned char *data =3D (unsigned char *)ent->data;
+> >
+> > -       if (!procdir)
+> > +       if (!procdir || !procfs_rsrcs)
+> >                 return;
+> >
+> >         snprintf(name, sizeof(name), "%x", ent->type);
+>=20
+---1463811774-1418837779-1679613231=:7816--
