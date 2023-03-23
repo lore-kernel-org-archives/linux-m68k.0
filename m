@@ -2,65 +2,114 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFB94C6FD1C
-	for <linux-m68k@archiver.kernel.org>; Thu, 23 Mar 2023 08:48:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B4CAC76195
+	for <linux-m68k@archiver.kernel.org>; Thu, 23 Mar 2023 09:22:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbjCWIsJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 23 Mar 2023 04:48:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47362 "EHLO
+        id S229848AbjCWJWS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 23 Mar 2023 05:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229996AbjCWIsI (ORCPT
+        with ESMTP id S230310AbjCWJWP (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 23 Mar 2023 04:48:08 -0400
-X-Greylist: delayed 512 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 23 Mar 2023 01:48:07 PDT
-Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C2C3FF25
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Mar 2023 01:48:06 -0700 (PDT)
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4PhzKc5pn4z1sB77;
-        Thu, 23 Mar 2023 09:39:32 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4PhzKc4GBcz1qqlY;
-        Thu, 23 Mar 2023 09:39:32 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id ClzVfOsz3AGx; Thu, 23 Mar 2023 09:39:31 +0100 (CET)
-X-Auth-Info: Y+UMJ9JyeLs0U36Yyz5qoPqGiW5wfKK6b6F/ooNgPcoQtneAtR0Pa/OZWp7xmyaq
-Received: from hawking (unknown [81.95.8.244])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Thu, 23 Mar 2023 05:22:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8E06C1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Mar 2023 02:22:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Thu, 23 Mar 2023 09:39:31 +0100 (CET)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] nubus: Don't list card resources by default
-References: <5b7c473247d66776343d82a55b9815195b1b11fb.1679551394.git.fthain@linux-m68k.org>
-X-Yow:  I am a jelly donut.  I am a jelly donut.
-Date:   Thu, 23 Mar 2023 09:39:31 +0100
-In-Reply-To: <5b7c473247d66776343d82a55b9815195b1b11fb.1679551394.git.fthain@linux-m68k.org>
-        (Finn Thain's message of "Thu, 23 Mar 2023 17:03:14 +1100")
-Message-ID: <mvmttybx3ng.fsf@linux-m68k.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2EDFE62564;
+        Thu, 23 Mar 2023 09:22:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81329C433A0;
+        Thu, 23 Mar 2023 09:22:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679563333;
+        bh=D35W3oT4dEB7lQGf2gyibA65I3USxy0/PoMsBYvdggw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FvLGPcFNvposDJHd12P4B6tiY0alzsOWKmMDuuC6Bbtu7FQoT8X1aprZqvi0FJfLS
+         mt0kh+Jo3486s1qGacqEDX/OHvGQZOMLk3QivFrdR+KFUHaYTxUB878ydKgR4ebxQD
+         hFtgvnKM+VqXPQFFh+LsJ24F5Nvj1PwRnlN6oaSMVilDaV5obtUxIDQf1ebqfjw///
+         Xh234xD1rgyjvmGU7SMuN7Gnez8IKfnGstw+tdb8tErfz4SpbTfAXlP81Ofg/1ejcw
+         5ntVdo/7OGVtej0l0Oes4NXXVkuGPAKtpkLi1VbVSLZcdokDBgJOW5/iwZAcLFvNjO
+         EHVKriGuB7TNg==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Guo Ren <guoren@kernel.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mike Rapoport <rppt@kernel.org>, Rich Felker <dalias@libc.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Zi Yan <ziy@nvidia.com>, linux-arm-kernel@lists.infradead.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mm@kvack.org, linux-sh@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
+        sparclinux@vger.kernel.org
+Subject: [PATCH 00/14] arch,mm: cleanup Kconfig entries for ARCH_FORCE_MAX_ORDER
+Date:   Thu, 23 Mar 2023 11:21:42 +0200
+Message-Id: <20230323092156.2545741-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mär 23 2023, Finn Thain wrote:
+From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 
-> Checkpatch says "externs should be avoided in .c files" and if this one
-> appeared twice I would agree. But as it only appears once, I can't see
-> any advantage to putting it in a new .h file instead of the .c file...
+Hi,
 
-Anything wrong with declaring it in <linux/nubus.h>?
+Several architectures have ARCH_FORCE_MAX_ORDER in their Kconfig and
+they all have wrong and misleading prompt and help text for this option.
 
+Besides, some define insane limits for possible values of
+ARCH_FORCE_MAX_ORDER, some carefully define ranges only for a subset of
+possible configurations, some make this option configurable by users for no
+good reason.
+
+This set updates the prompt and help text everywhere and does its best to
+update actual definitions of ranges where applicable.
+
+Mike Rapoport (IBM) (14):
+  arm: reword ARCH_FORCE_MAX_ORDER prompt and help text
+  arm64: drop ranges in definition of ARCH_FORCE_MAX_ORDER
+  arm64: reword ARCH_FORCE_MAX_ORDER prompt and help text
+  csky: drop ARCH_FORCE_MAX_ORDER
+  ia64: don't allow users to override ARCH_FORCE_MAX_ORDER
+  m68k: reword ARCH_FORCE_MAX_ORDER prompt and help text
+  nios2: reword ARCH_FORCE_MAX_ORDER prompt and help text
+  nios2: drop ranges for definition of ARCH_FORCE_MAX_ORDER
+  powerpc: reword ARCH_FORCE_MAX_ORDER prompt and help text
+  powerpc: drop ranges for definition of ARCH_FORCE_MAX_ORDER
+  sh: reword ARCH_FORCE_MAX_ORDER prompt and help text
+  sh: drop ranges for definition of ARCH_FORCE_MAX_ORDER
+  sparc: reword ARCH_FORCE_MAX_ORDER prompt and help text
+  xtensa: reword ARCH_FORCE_MAX_ORDER prompt and help text
+
+ arch/arm/Kconfig      | 16 +++++++++-------
+ arch/arm64/Kconfig    | 27 ++++++++++++---------------
+ arch/csky/Kconfig     |  4 ----
+ arch/ia64/Kconfig     |  3 +--
+ arch/m68k/Kconfig.cpu | 16 +++++++++-------
+ arch/nios2/Kconfig    | 17 +++++++++--------
+ arch/powerpc/Kconfig  | 22 +++++++++-------------
+ arch/sh/mm/Kconfig    | 19 +++++++++----------
+ arch/sparc/Kconfig    | 16 +++++++++-------
+ arch/xtensa/Kconfig   | 16 +++++++++-------
+ 10 files changed, 76 insertions(+), 80 deletions(-)
+
+
+base-commit: 51551d71edbc998fd8c8afa7312db3d270f5998e
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+2.35.1
+
