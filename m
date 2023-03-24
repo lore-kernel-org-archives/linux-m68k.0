@@ -2,41 +2,41 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E92CC6FD1C
-	for <linux-m68k@archiver.kernel.org>; Thu, 23 Mar 2023 23:11:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C9A3C74A5B
+	for <linux-m68k@archiver.kernel.org>; Fri, 24 Mar 2023 00:05:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbjCWXLb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 23 Mar 2023 19:11:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42064 "EHLO
+        id S229794AbjCXAFb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 23 Mar 2023 20:05:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjCWXLa (ORCPT
+        with ESMTP id S229639AbjCXAFa (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 23 Mar 2023 19:11:30 -0400
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31679FF25
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Mar 2023 16:11:29 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 518BC3200681;
-        Thu, 23 Mar 2023 19:11:28 -0400 (EDT)
+        Thu, 23 Mar 2023 20:05:30 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E37C22C67A
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Mar 2023 17:05:29 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id D39E35C014F;
+        Thu, 23 Mar 2023 20:05:25 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 23 Mar 2023 19:11:28 -0400
+  by compute1.internal (MEProxy); Thu, 23 Mar 2023 20:05:25 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-type:content-type:date:date
         :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
         :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1679613087; x=1679699487; bh=2rW/87ETWD5jh
-        MIHF2OdIMo1SriFDPE0qXDeXQlInQo=; b=O35dTJ5pBBwM1f2ZeAI4pnXWPcl07
-        ByQH4ClCFarMEcBxNZy9zasI7rGGPDWMYpQJ5iuKrVpAeWi+uzCg4YWoyhjrmAOK
-        sA0L0Zdz1wzxAzn5gQoe6/zioZKmSabHXAoGkqsHNrAFpDkWNe9kTQpCEEeH+jxu
-        vT8hu5OybHgHq/FTeuDe/EYn1EDMoIEpP7SFYMJ5yyJqgojlrxiwfbvtQntDnNEO
-        6wZ29ERNIBdlaeUP2Djna/cqeMp8Gh+Ue3Ar/zHIIFQY2j5v3k0Hd6vGgzdkeotN
-        OA81iEJ6W9SdObThSVC2RjVJ79366r/2lxAjxBl9Vojk/WdNMFwKOi+EA==
-X-ME-Sender: <xms:ntwcZIad5GPU8o9tcbTECNkzCngg3saufUWi5YJG7gkouCaoyIoZuQ>
-    <xme:ntwcZDaSW6G5HKJlx4WfrSSISp0P9h20kK8RF0cLQEok5y92ySHba8RHGRc_Tsxzq
-    QYyPI1GS8_N6KTxXT8>
-X-ME-Received: <xmr:ntwcZC8dgo7c9rit5VqrC18aKvAgb26Cvy9o5n_sr9YkM1k2Iy9czCwPWowLBE05_QYTkKmrtgKhClrn6mjxz9TpM25NGfkTlTw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdeghedgtdekucetufdoteggodetrfdotf
+        :x-sasl-enc; s=fm2; t=1679616325; x=1679702725; bh=9IrX4z/UdW1Ba
+        0pPp1nLJ/nsHq8lILtqoylag3vMAoI=; b=upPW+bWfOdrT4AqrxHPXa6d86dEvk
+        Cv5+uGOS57ALL3vgFb9ddlgCKKyEfi3ZsXYZwvyc/CImh+UDL592BrF245JVA8tT
+        hwf+sEpSs4W/0kOQV4462TLGu1nUXvf8o5tdPS0rC+bWmzprJN6RU0FYBGfiy7cZ
+        FFnyhea2Lqgw9d9HAr/a41jJO0/EMc8YxACtWcuzz/3HE7eDwCzEHJNW/qEHdP+4
+        I9Rdoe34eu7ZCK670mcpeqd1/K1atVngfye1R7aVo056L7S2FlEmc27Cw2L9/LyP
+        F0FwfB1w79Gx3gRHG8qXv7B/2SlDlzfGIpUT7do2NsZ0Nt+4Wypu3mTnQ==
+X-ME-Sender: <xms:RekcZPR8YBhQ2p9BQclCp0-Ca5wrgG4SjIczBOnHW0QOIZI2b4kUuA>
+    <xme:RekcZAyIPiKO9lIQrz6xFzCC47aojAvUSw299PpkC2kzHmOhP6PUF7GCH7mn3Kww6
+    gwOKmshUdCpuaPxPuM>
+X-ME-Received: <xmr:RekcZE0NS407uPUEr6OBY4aesYcATz-HswUvDQyaBHk-_z-XJeImyK1ma8HXdiPNKU7TOfqKjzFptRfibazHHffAFlDy9A1YINE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdeghedgudekucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhepfffhvfevufgjkfhfgggtsehmtderredttdejnecuhfhrohhmpefhihhnnhcu
@@ -44,24 +44,24 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdeghedgtdekucetufdoteggod
     htthgvrhhnpeelfeeklefggfetkedukeevfffgvdeuheetffekledtfeejteelieejteeh
     geelieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
     hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:ntwcZCoT1oHwF74N4TMHcjHG6MsxKAs34pA1mVZ2c2yaeuIfQP_6RA>
-    <xmx:ntwcZDqpWfA0f4NNMCFNXTxG9x0EqVTZ_VqhG_eJIFMBz7ewOInTzg>
-    <xmx:ntwcZATGlbJHlf-3twiU2ObRx-LaHsSAnwbcVJmyaJBztNrsdxsLRg>
-    <xmx:n9wcZMCZ6KhVxgrQtRMwh3oJW-pHGJWsEtgXwQcmTJJyFf3QtjIgAg>
+X-ME-Proxy: <xmx:RekcZPBDx-S0m0boTclE2myO7d6RRSAU6w4ZtVQj1OgEkLSCNDsEnQ>
+    <xmx:RekcZIhRZW3Y_AsF2NbWscsmggmPPB3aVrxnRWDt05wjUKcnGeWqUQ>
+    <xmx:RekcZDqDqjXf8LnGj9asg3voYOnRw5IalX8BRjSuNVlGo1HLz_7iIQ>
+    <xmx:RekcZEbd6D3X9n-UMBeZtn5QTD4bjd9xecXYgZekFEhG84ZW74ui5w>
 Feedback-ID: i58a146ae:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 23 Mar 2023 19:11:24 -0400 (EDT)
-Date:   Fri, 24 Mar 2023 10:13:51 +1100 (AEDT)
+ 23 Mar 2023 20:05:23 -0400 (EDT)
+Date:   Fri, 24 Mar 2023 11:08:21 +1100 (AEDT)
 From:   Finn Thain <fthain@linux-m68k.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Brad Boyer <flar@allandria.com>
-cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+cc:     Andreas Schwab <schwab@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v2] nubus: Don't list card resources by default
-In-Reply-To: <CAMuHMdUJ6kbpYGTjyY5dX+-YRv3pL0ydG3HQ-H1khyeqLOa05A@mail.gmail.com>
-Message-ID: <072fd894-ec50-ae5f-2be5-ebbeb0e7b39b@linux-m68k.org>
-References: <5b7c473247d66776343d82a55b9815195b1b11fb.1679551394.git.fthain@linux-m68k.org> <CAMuHMdUJ6kbpYGTjyY5dX+-YRv3pL0ydG3HQ-H1khyeqLOa05A@mail.gmail.com>
+In-Reply-To: <CAMuHMdUQ3+OUKZ-6DqcJfMgq8_90Cejzc=onhUmbaYTWJkZHRw@mail.gmail.com>
+Message-ID: <c882ca59-e75d-7ca2-d63f-70aab1b46ade@linux-m68k.org>
+References: <5b7c473247d66776343d82a55b9815195b1b11fb.1679551394.git.fthain@linux-m68k.org> <mvmttybx3ng.fsf@linux-m68k.org> <CAMuHMdUQ3+OUKZ-6DqcJfMgq8_90Cejzc=onhUmbaYTWJkZHRw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="-1463811774-1418837779-1679613231=:7816"
+Content-Type: multipart/mixed; boundary="-1463811774-1838988264-1679616501=:26267"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -69,199 +69,36 @@ X-Mailing-List: linux-m68k@vger.kernel.org
   This message is in MIME format.  The first part should be readable text,
   while the remaining parts are likely unreadable without MIME-aware tools.
 
----1463811774-1418837779-1679613231=:7816
+---1463811774-1838988264-1679616501=:26267
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 
 On Thu, 23 Mar 2023, Geert Uytterhoeven wrote:
 
-> On Thu, Mar 23, 2023 at 7:02=E2=80=AFAM Finn Thain <fthain@linux-m68k.org=
-> wrote:
-> > Some Nubus cards have many ROM resources. A single Radius video card
-> > produced well over a thousand entries under /proc/bus/nubus/. Populatin=
-g
-> > /proc/bus/nubus on a slow machine with several such cards installed tak=
-es
-> > long enough that the user may think that the system is wedged. All thos=
+> On Thu, Mar 23, 2023 at 9:39=E2=80=AFAM Andreas Schwab <schwab@linux-m68k=
+=2Eorg> wrote:
+> > On M=C3=A4r 23 2023, Finn Thain wrote:
+> >
+> > > Checkpatch says "externs should be avoided in .c files" and if this o=
+ne
+> > > appeared twice I would agree. But as it only appears once, I can't se=
 e
-> > procfs entries also consume significant RAM though they are not normall=
-y
-> > needed (except by developers). Omit these resources from /proc/bus/nubu=
-s/
-> > by default and add a kernel parameter to enable them when needed.
-> > On the test machine, this saved 300 kB and 10 seconds.
+> > > any advantage to putting it in a new .h file instead of the .c file..=
+=2E
 > >
-> > Tested-by: Stan Johnson <userm57@yahoo.com>
-> > Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+> > Anything wrong with declaring it in <linux/nubus.h>?
 >=20
-> Thanks for your patch!
+> It's not meant for NuBus device drivers (at least in its current form).
+> So a drivers/nubus/nubus.h would be the most logical place.
 >=20
 
-Thanks for your review.
-
-> > Checkpatch says "externs should be avoided in .c files" and if this one
-> > appeared twice I would agree. But as it only appears once, I can't see
-> > any advantage to putting it in a new .h file instead of the .c file...
->=20
-> The advantage is that it allows the compiler to check that the=20
-> signatures of the declaration and the definition do match, now and in=20
-> the future.
->=20
-
-Ah yes, I forgot that we use a header file to make sure that the header=20
-file is correct ;-)
-
-> > --- a/drivers/nubus/nubus.c
-> > +++ b/drivers/nubus/nubus.c
-> > @@ -34,6 +34,9 @@
-> >
-> >  LIST_HEAD(nubus_func_rsrcs);
-> >
-> > +bool procfs_rsrcs;
-> > +module_param(procfs_rsrcs, bool, 0444);
->=20
-> With the expanded functionality, is "rsrcs" still a good name?
-> Perhaps this should be an integer, so you can define different
-> levels? E.g.
->   - 0 =3D just devices
->   - 1 =3D above + boards + public resources
->   - 2 =3D above + private resources
-
-That really depends on how the proc entries get used. I think it's=20
-probably going to be developers who would use them so I consider all of=20
-this to be outside of the UAPI and subject to change. But it would be nice=
+I think Andreas is right inasmuchas the existing prototypes shared between=
 =20
-to hear from other developers on that point.
+drivers/nubus/nubus.c and drivers/nubus/proc.c are found there, and this=20
+extern is another one of those.
 
-Regarding terminology, the files in /proc/bus/nubus/*/ are termed=20
-"records" or "entries" while the subdirectories may represent boards, slot=
+But I take Geert's point that much of include/linux/nubus.h could be moved=
 =20
-resources or tables of entries. So a parameter like "proc_entries" (in=20
-effect nubus.proc_entries) might be more apt than "procfs_rsrcs".
-
-Linux "devices" correspond to the "functional resources" offered by a=20
-card. (Other resources have other purposes.)
-
-I don't know where the "local/private" designation originates from. It's=20
-not to be found in Apple's book, "Designing Cards and Drivers for the=20
-Macintosh". AFAIK, there's no distinction between "public" and "private"=20
-like you might expect to find between the slot resources needed by Apple's=
-=20
-Slot Manager and those needed by 3rd party drivers. E.g. the=20
-NUBUS_RESID_MAC_ADDRESS and NUBUS_RESID_GAMMADIR slot resources were=20
-Apple-defined, even though nubus.c describes them as "local/private".
-
-Note that this patch doesn't affect the /proc/bus/nubus/boards file which=
-=20
-lists category, type, dr_sw, dr_hw for every functional resource=20
-implemented by every board.
-
-> (disclaimer: I know nothing about NuBus and the current /proc/nubus
-> layout)
-
-Here's an example from my LCIII. There's only one card (in slot e) and it=
-=20
-has minimal resources and entries. e/1 is the "vendor info" slot resource,=
-=20
-e/1/3 is the "revision" entry from that slot resource.
-
-# grep -ar . /proc/bus/nubus
-/proc/bus/nubus/e/1/1:
-/proc/bus/nubus/e/1/2:Ethernet A-Series
-/proc/bus/nubus/e/1/20:
-/proc/bus/nubus/e/1/24/1:A-Series
-/proc/bus/nubus/e/1/24/3:001
-/proc/bus/nubus/e/1/24/4:SS DEV
-/proc/bus/nubus/e/80/1:
-
-/proc/bus/nubus/e/80/2:Network_Ethernet_A_Series
-/proc/bus/nubus/e/80/a:
-/proc/bus/nubus/e/80/80:[snipped binary MAC address]
-/proc/bus/nubus/devices:e       0004 0001 010c 0100     fe000000
-#=20
-
-With this patch, only the /proc/bus/nubus/devices file appears by default.=
-=20
-nubus.c captures that information for bus matching purposes, but the=20
-/proc/bus/nubus/e/* inodes are unused AFAIK. I think they were put there=20
-so that userland programs could find uses for them. Problem is, it can be=
-=20
-expensive to do that, depending on the card ROM, and hence this patch.
-
->=20
-> Should this be documented? I know there is currently nothing about NuBus=
-=20
-> under Documentation/.
->=20
-
-Probably...
-
-> > +
-> >  /* Meaning of "bytelanes":
-> >
-> >     The card ROM may appear on any or all bytes of each long word in
-> > @@ -574,7 +577,9 @@ nubus_get_functional_resource(struct nubus_board *b=
-oard, int slot,
-> >                 default:
-> >                         /* Local/Private resources have their own
-> >                            function */
-> > -                       nubus_get_private_resource(fres, dir.procdir, &=
-ent);
-> > +                       if (procfs_rsrcs)
-> > +                               nubus_get_private_resource(fres, dir.pr=
-ocdir,
-> > +                                                          &ent);
-> >                 }
-> >         }
-> >
-> > diff --git a/drivers/nubus/proc.c b/drivers/nubus/proc.c
-> > index 2c320a84fd72..844e86636798 100644
-> > --- a/drivers/nubus/proc.c
-> > +++ b/drivers/nubus/proc.c
-> > @@ -51,11 +51,13 @@ static struct proc_dir_entry *proc_bus_nubus_dir;
-> >   * /proc/bus/nubus/x/ stuff
-> >   */
-> >
-> > +extern bool procfs_rsrcs;
-> > +
-> >  struct proc_dir_entry *nubus_proc_add_board(struct nubus_board *board)
-> >  {
-> >         char name[2];
-> >
-> > -       if (!proc_bus_nubus_dir)
-> > +       if (!proc_bus_nubus_dir || !procfs_rsrcs)
-> >                 return NULL;
-> >         snprintf(name, sizeof(name), "%x", board->slot);
-> >         return proc_mkdir(name, proc_bus_nubus_dir);
-> > @@ -72,7 +74,7 @@ struct proc_dir_entry *nubus_proc_add_rsrc_dir(struct=
- proc_dir_entry *procdir,
-> >         char name[9];
-> >         int lanes =3D board->lanes;
-> >
-> > -       if (!procdir)
-> > +       if (!procdir || !procfs_rsrcs)
-> >                 return NULL;
-> >         snprintf(name, sizeof(name), "%x", ent->type);
-> >         remove_proc_subtree(name, procdir);
-> > @@ -157,7 +159,7 @@ void nubus_proc_add_rsrc_mem(struct proc_dir_entry =
-*procdir,
-> >         char name[9];
-> >         struct nubus_proc_pde_data *pded;
-> >
-> > -       if (!procdir)
-> > +       if (!procdir || !procfs_rsrcs)
-> >                 return;
-> >
-> >         snprintf(name, sizeof(name), "%x", ent->type);
-> > @@ -176,7 +178,7 @@ void nubus_proc_add_rsrc(struct proc_dir_entry *pro=
-cdir,
-> >         char name[9];
-> >         unsigned char *data =3D (unsigned char *)ent->data;
-> >
-> > -       if (!procdir)
-> > +       if (!procdir || !procfs_rsrcs)
-> >                 return;
-> >
-> >         snprintf(name, sizeof(name), "%x", ent->type);
->=20
----1463811774-1418837779-1679613231=:7816--
+to drivers/nubus/something.h. But is there anything to be gained from=20
+splitting it up that way?
+---1463811774-1838988264-1679616501=:26267--
