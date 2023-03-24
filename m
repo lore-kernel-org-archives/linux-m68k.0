@@ -2,131 +2,234 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33B38C6FD1C
-	for <linux-m68k@archiver.kernel.org>; Fri, 24 Mar 2023 10:04:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E60D2C761AF
+	for <linux-m68k@archiver.kernel.org>; Fri, 24 Mar 2023 13:49:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231464AbjCXKEa (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 24 Mar 2023 06:04:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59906 "EHLO
+        id S229729AbjCXNtD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 24 Mar 2023 09:49:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231411AbjCXKE0 (ORCPT
+        with ESMTP id S231241AbjCXNtA (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 24 Mar 2023 06:04:26 -0400
-X-Greylist: delayed 1803 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 24 Mar 2023 03:04:24 PDT
-Received: from cynthia.allandria.com (cynthia.allandria.com [50.242.82.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E45C1B2C4;
-        Fri, 24 Mar 2023 03:04:24 -0700 (PDT)
-Received: from flar by cynthia.allandria.com with local (Exim 4.84_2)
-        (envelope-from <flar@allandria.com>)
-        id 1pfdGh-0001xM-91; Fri, 24 Mar 2023 01:59:27 -0700
-Date:   Fri, 24 Mar 2023 01:59:27 -0700
-From:   Brad Boyer <flar@allandria.com>
-To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] nubus: Don't list card resources by default
-Message-ID: <20230324085927.GA6354@allandria.com>
-References: <5b7c473247d66776343d82a55b9815195b1b11fb.1679551394.git.fthain@linux-m68k.org>
- <CAMuHMdUJ6kbpYGTjyY5dX+-YRv3pL0ydG3HQ-H1khyeqLOa05A@mail.gmail.com>
- <072fd894-ec50-ae5f-2be5-ebbeb0e7b39b@linux-m68k.org>
+        Fri, 24 Mar 2023 09:49:00 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2084.outbound.protection.outlook.com [40.107.223.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3E45CC24
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Mar 2023 06:48:59 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AO5fgiiKvbp+FtIz+XFTVQzS6GCllakEdsOQbxBxNIb6QmPSWXZQvUuDQGuaW1oi9+zQxB0EySNnxs07rqEMv1zs3EBs1Zxgd5gu14XLcHpTGIGSdHHbVuCDfJUnn65nkO6EdcKaFyLnKY9gVb2g7322LoAk+i5Jq/kOX953DgqvJk/0AfFIMJTl3SukFiJMrVW2usZKFOHFUPBKJrXaxO7KjbIswClEeNGnGHpRZ5rSMw5XPoWYoZ+VmfLWXvPq1mZcr3yUI5Z+C6NslOVHURcbcMYMISUBfXtgUKvpVxMTzJwSs40dT5u2NwZ93FgiIadTVf1axKXI3cEsvrn/WA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kvg8lROentx0LnNhx0Hl0Ztws+5206tkx9RwjxNZ68c=;
+ b=bwUA7M8CY5khuFFL14CVIwimQoykYEHkBcte/TZ4AxOdsk3i8kaQMANq30LTf2bVEuuWQ0LyHC+33GJXJkF6Z4N/fArY+eIfC1L5z9NBhZrpGZ8SoeJdQmHJFwSbjOMnHcXQIY6vgmNgVwaKMnWv86NPzGR6nlgdB1EfUjKzL2iVodqrPAE2SVZBAzax/d18twzzxIWWpg5L7IEig6211BAEJSFFTxgmoxXLg9x0FRHxEvbsbb8g+A9zLu3vEDhpuNeSGBtTPpJaU3Mit2RXqURZYSMcZ8XxHF/FyNCSNSnhGuCBTuZkIjsmWhEHSOjgssbHsqgHBVamvDSTxE7oWw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kvg8lROentx0LnNhx0Hl0Ztws+5206tkx9RwjxNZ68c=;
+ b=eIWSxbDHdFqyct2CqaDA80iH6ru60iYWGbhXHFicSXBLBuOvItzoF3/MGjKOSwUOIuj07jo62NkRnq6a6y0IN8PW7+QQf0XAOGaQ+ebycFTBYQSJpp2O0aD2z6iizsNttHX2aRyh58jsbZHBgOSnAjIQmRkVfbuir2LNQf3+C9guuKTR0TtMe2M1hdDBoLaFBW+nqR2lPu+NyP/NzSdoiqXes4Q4rXz8zZPW382RdXdjcAztM1ikX+XnPCgg30VS8X2ALJSSsnrBWyi6qFL5hVUcYTboHwqrkevp11rm96JbbdUS8T4bO1v0anTH1mv/oxefHKP2XOAL0kLeAdY5JQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
+ SA0PR12MB4382.namprd12.prod.outlook.com (2603:10b6:806:9a::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6178.38; Fri, 24 Mar 2023 13:48:53 +0000
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::bb0b:f14a:c49a:9cd7]) by DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::bb0b:f14a:c49a:9cd7%4]) with mapi id 15.20.6178.037; Fri, 24 Mar 2023
+ 13:48:52 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Guo Ren <guoren@kernel.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Rich Felker <dalias@libc.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mm@kvack.org,
+        linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org
+Subject: Re: [PATCH v2 03/14] arm64: reword ARCH_FORCE_MAX_ORDER prompt and
+ help text
+Date:   Fri, 24 Mar 2023 09:48:49 -0400
+X-Mailer: MailMate (1.14r5937)
+Message-ID: <0D106E04-A043-45B0-8629-11DC10127FD8@nvidia.com>
+In-Reply-To: <20230324052233.2654090-4-rppt@kernel.org>
+References: <20230324052233.2654090-1-rppt@kernel.org>
+ <20230324052233.2654090-4-rppt@kernel.org>
+Content-Type: multipart/signed;
+ boundary="=_MailMate_C127E265-4DDB-40BB-87AD-DB2006154019_=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+X-ClientProxiedBy: MN2PR14CA0010.namprd14.prod.outlook.com
+ (2603:10b6:208:23e::15) To DS7PR12MB5744.namprd12.prod.outlook.com
+ (2603:10b6:8:73::18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <072fd894-ec50-ae5f-2be5-ebbeb0e7b39b@linux-m68k.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|SA0PR12MB4382:EE_
+X-MS-Office365-Filtering-Correlation-Id: f3fd835f-1b41-4474-f959-08db2c6e80eb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +hSCiZE00w4ECAytzmP8tJCVdKfSq8uDYPsWib/SJq/wRni5V2wGBqABcM8HSDCvUmf+1MJf+5u6KzcZsRLrWAi0PcG0bKOSSSlOY7wcVVI8aduU4Zv6/ndrR3v6htDb7YNUcmSDwTsUd3lQC+EKeIKUrLn2tz3jpGP1SJmLrFXI99+ZlDPMolgHvwRHvttwj5wfwKFIg5ue+878DdKJ1LjO++jckjzt8nZZ7EWfQBOkcxfIi0I4LtL3Mo8+m2R8lNaikEZUb2wT2vRjvPo6EbCxm0bZ3dERtxz/bWLvNAagqtWBpyffJ1La5PDmu4ZwKHsNt4tGx2vTx4tjR7xXtxv5UF7ouwyVsgw0CUkCDDDF3OhFzbBcoIGNMP77/bSTlN0QDdhsO/MvanaX75oCqxgsLhJICq5W2y44LHd8ko06oX8r2BE25c7b8XXVtDxGq7ZO4Ml+i7L+w2hN6MIfgZqBDOwO8UBQP9U3gotE5s4Kr2zgD/MX9zhWbcZz3+zTBzykmXJ6TyQn62f621S3kwRy+Kyee6jPRHeSHeFlQdc4yvfty+POCUj4zGOpU6R9rZ5p7zzdKHbrbpYZpn5psWtZhv8yAMz/LV059fPabOeyHUhBzHi0vICsH3Oq8wFJDoujhU/nBEfwpx4jJaXNGH1KDi1hKNZUsqsKrtqs8xC7/ud8rcOdcjVsZ0Xvd4IJS6ISql84mFRoQ2NJUT08UgRRfuC5U/gPjf/YSaqCr5U=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(366004)(346002)(376002)(39860400002)(136003)(396003)(451199018)(38100700002)(2906002)(36756003)(66476007)(83380400001)(2616005)(6486002)(186003)(478600001)(86362001)(33656002)(6916009)(66946007)(8676002)(4326008)(54906003)(66556008)(6512007)(53546011)(6666004)(6506007)(8936002)(26005)(7416002)(41300700001)(5660300002)(235185007)(316002)(45980500001)(72826004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ArbZemy+uPmNOGcVQHstQSlQXA6XGuqe6IS/t1ThEe707MTrOgZofo0Yo7I4?=
+ =?us-ascii?Q?cLWtJQ9HJnRhRGbP2134cbJPdtybTHxoujVlpbQsVCzsCWFAP9T310lPr3Xk?=
+ =?us-ascii?Q?M4PxHL993zLz+qCdurR1gUSa9EtSzLPqOumxh/xxdYV2EqJSDVBb+bo0D0q7?=
+ =?us-ascii?Q?6hHrRDmkW5JAEhOyigWAMnvpZvZncmHMbblZBh2JR5ixvp6h+g+ZpovL7FLi?=
+ =?us-ascii?Q?DX3rrhN2wNqnqOD0kWoXK88muIA0GNJ3SCRc0N6NtpiXU6uGXrnkwt27ad/d?=
+ =?us-ascii?Q?+JrdjNmykBlHv7xPQPXtYTKmEK/w30eGGi6NZ+e/fl4SyLL1IQnIkyq3PVtH?=
+ =?us-ascii?Q?p2zgYUcBGHqH+gYRTi4yO+z4bgYoRywlLPQvkbBzMPhLB+KTajQVh8qB1ctb?=
+ =?us-ascii?Q?IlkfIem99cYGDvVRFZsc7Kgc7VVPfsOWMsa7BdUtj5YvXXouM0Q2ko2ctsSU?=
+ =?us-ascii?Q?Zqrq3fzQjNEJhUG9ghOEIrzpPRg92gNfNM0Dc8BPhZQXCGwUL71y+2p5Chp8?=
+ =?us-ascii?Q?bqPli6CGXJAEMB0BCn60ZVuvWz012rM8JX4imeRtNXyBKQQqgrNToo+WL3ft?=
+ =?us-ascii?Q?GwQ4OUjdw0zEcc7sSGVZxrviVu6Q8E/Da8pLe8drHByNVWz6dl7myXsLUJ2r?=
+ =?us-ascii?Q?kKcPnxUipBgVmuRxpQQ95xzc2h8PMnnPlsAdPdbr0ySmsioYbpt3y8LbcpWO?=
+ =?us-ascii?Q?DqaiInOzK7uErk+wgXBFyo1UVXe/Qt8s9VPyJ7FMEJKHPqAenem5whvNGu10?=
+ =?us-ascii?Q?yP9oYk7NJCugQWGqhzpsjQv9tJBIUxY0PDQ9x7TUq/THSCoSbbya08WPsEce?=
+ =?us-ascii?Q?AUlluL1TdDg6lPREb8SbTJAEM6xTB1K6DoTE31itBnzQp5ePba4vCaxha74u?=
+ =?us-ascii?Q?HKE58mR4wbYfdBLnWawFCT98/ujfgqZqiNKMRLEnj5kUT4shNw+FUpcygZZW?=
+ =?us-ascii?Q?XtDFQA+hVhh0aA49oUbhCRbcz3g7rUtVrGl6o/xGMHmXWRIO/ESQa+ME/aLL?=
+ =?us-ascii?Q?ORbUKrY05BVikoruU9Zc9YQ05tff8eWwCD9zfCC2TVlK8FgVirYkvLZWII69?=
+ =?us-ascii?Q?vNnWRU/6ufGcVa8goe3YxO51HF2/4+9Kq8MOEP8YaMZ0IjC74SLVCMD0FC2B?=
+ =?us-ascii?Q?3W2tZFCAmE1A4bJKjXqYIBgQx0SKG0Sdze1zBimpXStMyA9b4JKG9KxOnpM7?=
+ =?us-ascii?Q?mRnjWoPgUEvm20ecW6roU2iUPJhrHnPqUDV157zphYcpOLwITwyk9EGijGhw?=
+ =?us-ascii?Q?Rwx8rhpzUiGGfWZxWIoEgWjL86XOvstgGrjGwejE8ZFztQOlZTXPQIEMqLTs?=
+ =?us-ascii?Q?5uSrVaqqlcL/v0UEKMjVUl+7+IpXD+XWA6yxUx9z9rvMSb/ie6jo/3GQu8b1?=
+ =?us-ascii?Q?eUF7GOmkB164fToHPT+sHkoD8LctCXPXneazRbdbv3qw4NQBgGljw+ImPyPe?=
+ =?us-ascii?Q?9Sp/GEm+1eELXoEonlFOlajN+W3KQ3AUio1CTgOP7gyDYcdI93aSwqaSmzFM?=
+ =?us-ascii?Q?zCStBVtJXQCJxzqL5MXQd0nI6/UcOk6Q5TFkORgCygOA01TmnUEYnGxO3DVC?=
+ =?us-ascii?Q?RFIs4fZKsx6hurzgK0cB8hAGSSio5IDTNTBq0T+E?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f3fd835f-1b41-4474-f959-08db2c6e80eb
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Mar 2023 13:48:52.6529
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: he5SjmLElUsSYpWnnrahnd5fRDu5tt9GSyDjRRkeOO5vs5+/B/cAZ/kQkn5oIYJa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4382
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Mar 24, 2023 at 10:13:51AM +1100, Finn Thain wrote:
-> On Thu, 23 Mar 2023, Geert Uytterhoeven wrote:
-> > On Thu, Mar 23, 2023 at 7:02???AM Finn Thain <fthain@linux-m68k.org> wrote:
-> > > --- a/drivers/nubus/nubus.c
-> > > +++ b/drivers/nubus/nubus.c
-> > > @@ -34,6 +34,9 @@
-> > >
-> > >  LIST_HEAD(nubus_func_rsrcs);
-> > >
-> > > +bool procfs_rsrcs;
-> > > +module_param(procfs_rsrcs, bool, 0444);
-> > 
-> > With the expanded functionality, is "rsrcs" still a good name?
-> > Perhaps this should be an integer, so you can define different
-> > levels? E.g.
-> >   - 0 = just devices
-> >   - 1 = above + boards + public resources
-> >   - 2 = above + private resources
-> 
-> That really depends on how the proc entries get used. I think it's 
-> probably going to be developers who would use them so I consider all of 
-> this to be outside of the UAPI and subject to change. But it would be nice 
-> to hear from other developers on that point.
+--=_MailMate_C127E265-4DDB-40BB-87AD-DB2006154019_=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-I don't know of anything that currently uses them, but there's a number
-of potential uses depending on how far we want to take things. A real
-video driver for X.org for some of the more advanced cards could take
-advantage of some of the secondary information made available. I've
-got a number of NuBus video cards with some acceleration capabilities
-that were pretty advanced for the time. There's even a driver in the
-ROM on video cards that could be used, but that also requires more
-emulation of the MacOS environment. KVM could potentially need more
-information if we got it running on m68k, although I doubt any real
-Mac has enough RAM to make that useful. I haven't looked at a Radius
-Rocket (a Mac on a card) to see if it has anything useful in these,
-but I wouldn't be surprised if there are useful things there. I've
-never tried to boot Linux on a system with one installed or booting
-Linux on the card itself. I have booted a second instance of the MacOS
-on one, and I seem to recall it shows up as a Q900. I have a couple
-x86 system cards that were intended to run DOS as well. There was
-an Apple II card for the LC slot, but I don't own one. LC slot cards
-show up in software as NuBus, as I recall.
+On 24 Mar 2023, at 1:22, Mike Rapoport wrote:
 
-It wouldn't be in userspace, but we could end up needing to pull
-firmware out of them for a number of different cards. I've got a couple
-SCSI cards that would need to have firmware loaded at runtime, and the
-ROM would have the default version even if we also allow a firmware
-file to override that. Based on the existing qlogicpti.c code, the
-ISP 1000 chip (found on ATTO SiliconExpress IV cards) needs firmware.
-The older SiliconExpress cards all appear to use various ESP chips,
-so they likely don't need anything special. I suspect the various MCP
-based cards have useful things on the ROM for a driver to use. They
-each have a 68000 chip on them running A/ROSE, which is presumably
-loaded from firmware as well. I have both ethernet and serial cards
-based on this platform. It appears that a driver for the specific
-card has to be loaded into A/ROSE on the card after it boots.
+> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+>
+> The prompt and help text of ARCH_FORCE_MAX_ORDER are not even close to
+> describe this configuration option.
+>
+> Update both to actually describe what this option does.
+>
+> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> ---
+>  arch/arm64/Kconfig | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
+>
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 7324032af859..cdaf52ac4018 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -1487,24 +1487,24 @@ config XEN
+>  # 16K |       27          |      14      |       13        |         1=
+1         |
+>  # 64K |       29          |      16      |       13        |         1=
+3         |
+>  config ARCH_FORCE_MAX_ORDER
+> -	int "Maximum zone order" if EXPERT && (ARM64_4K_PAGES || ARM64_16K_PA=
+GES)
+> +	int "Order of maximal physically contiguous allocations" if ARM64_4K_=
+PAGES || ARM64_16K_PAGES
 
-I've got a bunch of cards that I've never even looked at the resources
-built into the ROM chips, so I'm guessing on what might or might not
-be useful. At one point I was buying every card I could find that
-looked interesting, and many of them I've never tested. I have crates
-full of stuff, plus a bunch stacked up that came in original boxes.
+It seems that "if EXPERT" was dropped by accident here.
 
-Checking them is disabled now, but some Macs have fake NuBus resources
-for some of the onboard devices that show up as if they were in a
-virtual NuBus slot 0. Scanning that apparently caused problems on some
-models (presumably a bus error, since it would be accessing invalid
-addresses). Really old kernels had code to scan that protected by a
-compile time option.
+>  	default "13" if ARM64_64K_PAGES
+>  	default "11" if ARM64_16K_PAGES
+>  	default "10"
+>  	help
+> -	  The kernel memory allocator divides physically contiguous memory
+> -	  blocks into "zones", where each zone is a power of two number of
+> -	  pages.  This option selects the largest power of two that the kerne=
+l
+> -	  keeps in the memory allocator.  If you need to allocate very large
+> -	  blocks of physically contiguous memory, then you may need to
+> -	  increase this value.
+> +	  The kernel page allocator limits the size of maximal physically
+> +	  contiguous allocations. The limit is called MAX_ORDER and it
+> +	  defines the maximal power of two of number of pages that can be
+> +	  allocated as a single contiguous block. This option allows
+> +	  overriding the default setting when ability to allocate very
+> +	  large blocks of physically contiguous memory is required.
+>
+> -	  We make sure that we can allocate up to a HugePage size for each co=
+nfiguration.
+> -	  Hence we have :
+> -		MAX_ORDER =3D PMD_SHIFT - PAGE_SHIFT  =3D> PAGE_SHIFT - 3
+> +	  The maximal size of allocation cannot exceed the size of the
+> +	  section, so the value of MAX_ORDER should satisfy
+>
+> -	  However for 4K, we choose a higher default value, 10 as opposed to =
+9, giving us
+> -	  4M allocations matching the default size used by generic code.
+> +	    MAX_ORDER + PAGE_SHIFT <=3D SECTION_SIZE_BITS
+> +
+> +	  Don't change if unsure.
+>
+>  config UNMAP_KERNEL_AT_EL0
+>  	bool "Unmap kernel when running in userspace (aka \"KAISER\")" if EXP=
+ERT
+> -- =
 
-> Regarding terminology, the files in /proc/bus/nubus/*/ are termed 
-> "records" or "entries" while the subdirectories may represent boards, slot 
-> resources or tables of entries. So a parameter like "proc_entries" (in 
-> effect nubus.proc_entries) might be more apt than "procfs_rsrcs".
-> 
-> Linux "devices" correspond to the "functional resources" offered by a 
-> card. (Other resources have other purposes.)
-> 
-> I don't know where the "local/private" designation originates from. It's 
-> not to be found in Apple's book, "Designing Cards and Drivers for the 
-> Macintosh". AFAIK, there's no distinction between "public" and "private" 
-> like you might expect to find between the slot resources needed by Apple's 
-> Slot Manager and those needed by 3rd party drivers. E.g. the 
-> NUBUS_RESID_MAC_ADDRESS and NUBUS_RESID_GAMMADIR slot resources were 
-> Apple-defined, even though nubus.c describes them as "local/private".
+> 2.35.1
 
-The split looks pretty artificial to me. I don't remember any details,
-as I don't think I was looking at that part of the code at the time.
 
-	Brad Boyer
-	flar@allandria.com
+--
+Best Regards,
+Yan, Zi
 
+--=_MailMate_C127E265-4DDB-40BB-87AD-DB2006154019_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename=signature.asc
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmQdqkEPHHppeUBudmlk
+aWEuY29tAAoJEOJ/noEUByhUwaIP/RG0bciGb3wj5HWQeRaRqWKWcktYcPQ7w4Dh
+2pGQeKuSL51RphMV2eO9lDSw0fmEyRTvCWVHKaMCD/9leDkY5chAmu7jpb1IUPTp
+3jK8kg56Iepg13Gx3EWW1KDE2y/3GarCF6JcVvSuVb0yVsP70XPbMHoS7qgI6WjN
+vs14YoCZRPSA5OaCRDmrh7bc4UXkU7Biwsg8DiOsZcnjMFm3HJgafOhLQ57UWtQF
+f6g/uls+c+s1BtCGgZ48iygBq1oJeVn30IkXU/+LeEPGj6qLUXJAcXqTHEXmaW8h
+tbzaHVog1hMjOYuUoCfH+YAgKQ833P19IST6L2CsGh+LQZC3oPUBA7N2HGVa1RtL
+YNkHl4nKsh3yX5TxNadzMdfldoW3oBho0GnxaL93gFknFl+sEudEf7ExRJeXaFjo
+rCVelBEyVCfr0k6pngXCCfs/lw4SYqTb+k+ZbxA+WIgaTqOMUe62wThNnfHrENy6
+OKX6UltE6o5l5XbF3T12cmWemZzBWwOVGpWSUxoImM1isuYl+6DmAbZdcDBImY80
+lLTKlsK7uc9GfQfOmTCicDT9yTR16alIuxP262DfQryqYcwmHqjDwLLyk1JmdRYp
+/o94M++puGJfVSMk/3fBkmvVjH/4+J18ZQ/hW4F1pCWz9OSik+y1bOfSovihFeyB
+46TBIGnB
+=WRnA
+-----END PGP SIGNATURE-----
+
+--=_MailMate_C127E265-4DDB-40BB-87AD-DB2006154019_=--
