@@ -2,36 +2,36 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC8B6C77B60
-	for <linux-m68k@archiver.kernel.org>; Fri, 24 Mar 2023 05:26:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98CFEC76196
+	for <linux-m68k@archiver.kernel.org>; Fri, 24 Mar 2023 05:26:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231712AbjCXF0S (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 24 Mar 2023 01:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33998 "EHLO
+        id S229661AbjCXF0Q (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 24 Mar 2023 01:26:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231501AbjCXFZc (ORCPT
+        with ESMTP id S231616AbjCXFZb (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 24 Mar 2023 01:25:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EDC41C7E6
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Mar 2023 22:24:34 -0700 (PDT)
+        Fri, 24 Mar 2023 01:25:31 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4526B2A9B3
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Mar 2023 22:24:29 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3BCED6295A;
-        Fri, 24 Mar 2023 05:24:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD2BAC4339B;
-        Fri, 24 Mar 2023 05:24:26 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A553DB822EC;
+        Fri, 24 Mar 2023 05:24:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DE6FC433EF;
+        Fri, 24 Mar 2023 05:24:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679635473;
-        bh=nw8UNJG7nUuciviQays7D2+1DNRt50wOuGp0YNt2kts=;
+        s=k20201202; t=1679635466;
+        bh=1zRPyaaLaKChlaF3HiLNG8L4a1+H9YMBeM142XTaxBY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A3CqxCMwJfZzwcOy2cHw6Hy5i4tjtq0LLAqlPpMCz7gceY63zG9+sMCnohgsmNBDp
-         BJhwe+zNosK9oTtSQJ6sMo8h6vZQi3bv8P4VussUYnMpuK3aiMI/SN4BS8qQdBSpx1
-         N4o7L4cp676/LUwaSYP8a8XIhiZKbu5cpIY6aX1ykFXPd7EcB0LPOc/C0J/4Xdezpm
-         9EkSoLPcIlsQkrS8IVNKy0jHHPFeCeWECsgynPY3be9ACBDzng19Lmp+cOjgPEHoQ5
-         w6mtefVg74Z8gmKTE2K06WnOiAV3JoECw5bbt0ivWjt7dfAgLQyScbiZeeTkqm48hH
-         er1kCT3TasZWQ==
+        b=OaMe0O8Y/VqFyvv8P3AJ1JWfaNX6fUglLOJcj3uiMUNqxbjm8gr3zQzueLpQbru3k
+         epbhwOHrXR1omZCGUJ46MWgrzi5JVVVUMbEvFwbZBHTNJoP1R3O3Rt357nnca+/Y50
+         MazCC6m/TE6Wk5itsz2kNTymFFE6Ee7czzfdznGtRIDbRXKkKdT8k8Q69UUznV4zMY
+         kNNQO5IhLe22jyNOezzwMTCICskwDUKeXENIxmLxZ4yPWLQaCW5OKBlzmo+od0rKRh
+         WosyWZZ35ErgkBKSd9iQE6LbvHpmmzi5D05v0zIQAi4gdnhM3ArvsglzNbBv6+vb9z
+         9Y8re2b10Yv7w==
 From:   Mike Rapoport <rppt@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
@@ -55,9 +55,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>,
         linux-mm@kvack.org, linux-sh@vger.kernel.org,
         linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
         sparclinux@vger.kernel.org
-Subject: [PATCH v2 14/14] xtensa: reword ARCH_FORCE_MAX_ORDER prompt and help text
-Date:   Fri, 24 Mar 2023 08:22:33 +0300
-Message-Id: <20230324052233.2654090-15-rppt@kernel.org>
+Subject: [PATCH v2 13/14] sparc: reword ARCH_FORCE_MAX_ORDER prompt and help text
+Date:   Fri, 24 Mar 2023 08:22:32 +0300
+Message-Id: <20230324052233.2654090-14-rppt@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20230324052233.2654090-1-rppt@kernel.org>
 References: <20230324052233.2654090-1-rppt@kernel.org>
@@ -75,23 +75,22 @@ describe this configuration option.
 Update both to actually describe what this option does.
 
 Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
-Reviewed-by: Max Filippov <jcmvbkbc@gmail.com>
 Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 ---
- arch/xtensa/Kconfig | 16 +++++++++-------
+ arch/sparc/Kconfig | 16 +++++++++-------
  1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
-index 3eee334ba873..3c6e5471f025 100644
---- a/arch/xtensa/Kconfig
-+++ b/arch/xtensa/Kconfig
-@@ -772,15 +772,17 @@ config HIGHMEM
- 	  If unsure, say Y.
+diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
+index e3242bf5a8df..959e43a1aaca 100644
+--- a/arch/sparc/Kconfig
++++ b/arch/sparc/Kconfig
+@@ -270,15 +270,17 @@ config ARCH_SPARSEMEM_DEFAULT
+ 	def_bool y if SPARC64
  
  config ARCH_FORCE_MAX_ORDER
 -	int "Maximum zone order"
 +	int "Order of maximal physically contiguous allocations"
- 	default "10"
+ 	default "12"
  	help
 -	  The kernel memory allocator divides physically contiguous memory
 -	  blocks into "zones", where each zone is a power of two number of
@@ -108,8 +107,8 @@ index 3eee334ba873..3c6e5471f025 100644
 +
 +	  Don't change if unsure.
  
- endmenu
- 
+ if SPARC64 || COMPILE_TEST
+ source "kernel/power/Kconfig"
 -- 
 2.35.1
 
