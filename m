@@ -2,102 +2,131 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6790BC6FD1C
-	for <linux-m68k@archiver.kernel.org>; Fri, 24 Mar 2023 08:26:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33B38C6FD1C
+	for <linux-m68k@archiver.kernel.org>; Fri, 24 Mar 2023 10:04:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231453AbjCXI0i convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 24 Mar 2023 04:26:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44336 "EHLO
+        id S231464AbjCXKEa (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 24 Mar 2023 06:04:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229752AbjCXI0h (ORCPT
+        with ESMTP id S231411AbjCXKE0 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 24 Mar 2023 04:26:37 -0400
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4D21D91D
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Mar 2023 01:26:36 -0700 (PDT)
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-541a05e4124so20853067b3.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Mar 2023 01:26:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679646396;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=45SbY74W6cAx8TBdsxbYd/fwuLq1btWb/YBacEQlBno=;
-        b=K5/5dNjyjDX0jnCoqlnd0AXQ86yvEC414Iq2pOA253lb+/fOWduf3YS+g3CPW95etE
-         FuRKhd2O4i3LeNyBrbwQzEw3rmVpLOsOn/lfs6OXS6EcGt8c5Un1WwfOy6Dsxh94+Ary
-         1yYcpZCB+n2FcuQ7CMT/Knk9FwMLwb/pA/7iL6T2cbJON/JZDOfytqiSIZsztbJyx5Z2
-         /3kgNgs/7VfAIktj1QDr7DsyF38d/s9Hi9AZTq1wt1bolK4URfR8WY0223Ilq0UlB2od
-         8fE5vwmObpnePjeKjDO30XC+H9+yWbxOcMyHb6Tb/NKccCFJ4ZwAaB7bsexnIqm00JXZ
-         eaZA==
-X-Gm-Message-State: AAQBX9ctMuCAsN2/u+LvWGMeRGoM7xRlRwM6aN7W65gpj52LzIeApozl
-        A535PiHEpEmhg4IM6uHzEF0gBWxS0S0Iug==
-X-Google-Smtp-Source: AKy350bmGNQye0GZ+jaHYYsC5rbPlFV7Cr2pCLXssIbqgiVXFlFsQ0RnubyRj8t7hlJ4U9wvS16Vqw==
-X-Received: by 2002:a81:c243:0:b0:541:8c9c:9515 with SMTP id t3-20020a81c243000000b005418c9c9515mr1434140ywg.15.1679646395795;
-        Fri, 24 Mar 2023 01:26:35 -0700 (PDT)
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
-        by smtp.gmail.com with ESMTPSA id 7-20020a810707000000b00545a0818492sm299987ywh.34.2023.03.24.01.26.35
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Mar 2023 01:26:35 -0700 (PDT)
-Received: by mail-yb1-f172.google.com with SMTP id p204so1208866ybc.12
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Mar 2023 01:26:35 -0700 (PDT)
-X-Received: by 2002:a05:6902:10c2:b0:b6e:b924:b96f with SMTP id
- w2-20020a05690210c200b00b6eb924b96fmr1607389ybu.3.1679646395243; Fri, 24 Mar
- 2023 01:26:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <5b7c473247d66776343d82a55b9815195b1b11fb.1679551394.git.fthain@linux-m68k.org>
- <mvmttybx3ng.fsf@linux-m68k.org> <CAMuHMdUQ3+OUKZ-6DqcJfMgq8_90Cejzc=onhUmbaYTWJkZHRw@mail.gmail.com>
- <c882ca59-e75d-7ca2-d63f-70aab1b46ade@linux-m68k.org>
-In-Reply-To: <c882ca59-e75d-7ca2-d63f-70aab1b46ade@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 24 Mar 2023 09:26:23 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVSvPk8wYZKVKX_xW_VSHu2qMoX-N4ePRJHejw2nh9JKg@mail.gmail.com>
-Message-ID: <CAMuHMdVSvPk8wYZKVKX_xW_VSHu2qMoX-N4ePRJHejw2nh9JKg@mail.gmail.com>
-Subject: Re: [PATCH v2] nubus: Don't list card resources by default
+        Fri, 24 Mar 2023 06:04:26 -0400
+X-Greylist: delayed 1803 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 24 Mar 2023 03:04:24 PDT
+Received: from cynthia.allandria.com (cynthia.allandria.com [50.242.82.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E45C1B2C4;
+        Fri, 24 Mar 2023 03:04:24 -0700 (PDT)
+Received: from flar by cynthia.allandria.com with local (Exim 4.84_2)
+        (envelope-from <flar@allandria.com>)
+        id 1pfdGh-0001xM-91; Fri, 24 Mar 2023 01:59:27 -0700
+Date:   Fri, 24 Mar 2023 01:59:27 -0700
+From:   Brad Boyer <flar@allandria.com>
 To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     Andreas Schwab <schwab@linux-m68k.org>,
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Subject: Re: [PATCH v2] nubus: Don't list card resources by default
+Message-ID: <20230324085927.GA6354@allandria.com>
+References: <5b7c473247d66776343d82a55b9815195b1b11fb.1679551394.git.fthain@linux-m68k.org>
+ <CAMuHMdUJ6kbpYGTjyY5dX+-YRv3pL0ydG3HQ-H1khyeqLOa05A@mail.gmail.com>
+ <072fd894-ec50-ae5f-2be5-ebbeb0e7b39b@linux-m68k.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <072fd894-ec50-ae5f-2be5-ebbeb0e7b39b@linux-m68k.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Finn,
-
-On Fri, Mar 24, 2023 at 1:05 AM Finn Thain <fthain@linux-m68k.org> wrote:
+On Fri, Mar 24, 2023 at 10:13:51AM +1100, Finn Thain wrote:
 > On Thu, 23 Mar 2023, Geert Uytterhoeven wrote:
-> > On Thu, Mar 23, 2023 at 9:39 AM Andreas Schwab <schwab@linux-m68k.org> wrote:
-> > > On Mär 23 2023, Finn Thain wrote:
-> > > > Checkpatch says "externs should be avoided in .c files" and if this one
-> > > > appeared twice I would agree. But as it only appears once, I can't see
-> > > > any advantage to putting it in a new .h file instead of the .c file...
+> > On Thu, Mar 23, 2023 at 7:02???AM Finn Thain <fthain@linux-m68k.org> wrote:
+> > > --- a/drivers/nubus/nubus.c
+> > > +++ b/drivers/nubus/nubus.c
+> > > @@ -34,6 +34,9 @@
 > > >
-> > > Anything wrong with declaring it in <linux/nubus.h>?
-> >
-> > It's not meant for NuBus device drivers (at least in its current form).
-> > So a drivers/nubus/nubus.h would be the most logical place.
->
-> I think Andreas is right inasmuchas the existing prototypes shared between
-> drivers/nubus/nubus.c and drivers/nubus/proc.c are found there, and this
-> extern is another one of those.
->
-> But I take Geert's point that much of include/linux/nubus.h could be moved
-> to drivers/nubus/something.h. But is there anything to be gained from
-> splitting it up that way?
+> > >  LIST_HEAD(nubus_func_rsrcs);
+> > >
+> > > +bool procfs_rsrcs;
+> > > +module_param(procfs_rsrcs, bool, 0444);
+> > 
+> > With the expanded functionality, is "rsrcs" still a good name?
+> > Perhaps this should be an integer, so you can define different
+> > levels? E.g.
+> >   - 0 = just devices
+> >   - 1 = above + boards + public resources
+> >   - 2 = above + private resources
+> 
+> That really depends on how the proc entries get used. I think it's 
+> probably going to be developers who would use them so I consider all of 
+> this to be outside of the UAPI and subject to change. But it would be nice 
+> to hear from other developers on that point.
 
-Splitting it would prevent NuBus device drivers from messing with
-internal NuBus variables they're not intended to access.
-But I agree that's not a big concern...
+I don't know of anything that currently uses them, but there's a number
+of potential uses depending on how far we want to take things. A real
+video driver for X.org for some of the more advanced cards could take
+advantage of some of the secondary information made available. I've
+got a number of NuBus video cards with some acceleration capabilities
+that were pretty advanced for the time. There's even a driver in the
+ROM on video cards that could be used, but that also requires more
+emulation of the MacOS environment. KVM could potentially need more
+information if we got it running on m68k, although I doubt any real
+Mac has enough RAM to make that useful. I haven't looked at a Radius
+Rocket (a Mac on a card) to see if it has anything useful in these,
+but I wouldn't be surprised if there are useful things there. I've
+never tried to boot Linux on a system with one installed or booting
+Linux on the card itself. I have booted a second instance of the MacOS
+on one, and I seem to recall it shows up as a Q900. I have a couple
+x86 system cards that were intended to run DOS as well. There was
+an Apple II card for the LC slot, but I don't own one. LC slot cards
+show up in software as NuBus, as I recall.
 
-Gr{oetje,eeting}s,
+It wouldn't be in userspace, but we could end up needing to pull
+firmware out of them for a number of different cards. I've got a couple
+SCSI cards that would need to have firmware loaded at runtime, and the
+ROM would have the default version even if we also allow a firmware
+file to override that. Based on the existing qlogicpti.c code, the
+ISP 1000 chip (found on ATTO SiliconExpress IV cards) needs firmware.
+The older SiliconExpress cards all appear to use various ESP chips,
+so they likely don't need anything special. I suspect the various MCP
+based cards have useful things on the ROM for a driver to use. They
+each have a 68000 chip on them running A/ROSE, which is presumably
+loaded from firmware as well. I have both ethernet and serial cards
+based on this platform. It appears that a driver for the specific
+card has to be loaded into A/ROSE on the card after it boots.
 
-                        Geert
+I've got a bunch of cards that I've never even looked at the resources
+built into the ROM chips, so I'm guessing on what might or might not
+be useful. At one point I was buying every card I could find that
+looked interesting, and many of them I've never tested. I have crates
+full of stuff, plus a bunch stacked up that came in original boxes.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Checking them is disabled now, but some Macs have fake NuBus resources
+for some of the onboard devices that show up as if they were in a
+virtual NuBus slot 0. Scanning that apparently caused problems on some
+models (presumably a bus error, since it would be accessing invalid
+addresses). Really old kernels had code to scan that protected by a
+compile time option.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> Regarding terminology, the files in /proc/bus/nubus/*/ are termed 
+> "records" or "entries" while the subdirectories may represent boards, slot 
+> resources or tables of entries. So a parameter like "proc_entries" (in 
+> effect nubus.proc_entries) might be more apt than "procfs_rsrcs".
+> 
+> Linux "devices" correspond to the "functional resources" offered by a 
+> card. (Other resources have other purposes.)
+> 
+> I don't know where the "local/private" designation originates from. It's 
+> not to be found in Apple's book, "Designing Cards and Drivers for the 
+> Macintosh". AFAIK, there's no distinction between "public" and "private" 
+> like you might expect to find between the slot resources needed by Apple's 
+> Slot Manager and those needed by 3rd party drivers. E.g. the 
+> NUBUS_RESID_MAC_ADDRESS and NUBUS_RESID_GAMMADIR slot resources were 
+> Apple-defined, even though nubus.c describes them as "local/private".
+
+The split looks pretty artificial to me. I don't remember any details,
+as I don't think I was looking at that part of the code at the time.
+
+	Brad Boyer
+	flar@allandria.com
+
