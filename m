@@ -2,36 +2,36 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B5AFC76196
-	for <linux-m68k@archiver.kernel.org>; Fri, 24 Mar 2023 05:23:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7256AC6FD1C
+	for <linux-m68k@archiver.kernel.org>; Fri, 24 Mar 2023 05:24:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231492AbjCXFXv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 24 Mar 2023 01:23:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34128 "EHLO
+        id S229997AbjCXFYF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 24 Mar 2023 01:24:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231491AbjCXFXc (ORCPT
+        with ESMTP id S231466AbjCXFXq (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 24 Mar 2023 01:23:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8577E1A4B5
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Mar 2023 22:23:21 -0700 (PDT)
+        Fri, 24 Mar 2023 01:23:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F3EE1B33C
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Mar 2023 22:23:29 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0FB8E62956;
-        Fri, 24 Mar 2023 05:23:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF65CC433EF;
-        Fri, 24 Mar 2023 05:23:13 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AD1E462952;
+        Fri, 24 Mar 2023 05:23:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08A2CC433A1;
+        Fri, 24 Mar 2023 05:23:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679635400;
-        bh=LeuV23DH0esmotNA2QlUjum35xKgU+8zbcmhGeC5TeU=;
+        s=k20201202; t=1679635407;
+        bh=gU9WeuZrKKhjWnkXo6iMK8oK3OAW8JY6v5zyZrx1gFQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mrbi/dJOtzaHgUiVL6QgdFc+kWlVrRKxGkCrNKJ0d1YIPw/3/evFLS/HHQ3psMOAH
-         g1W3YYeg3M8dZx/uIirKdmBNpJT/KKM40fWcK1ZgrnOjerfxRIfSD9MYqUVGMg99pT
-         ZJLSaBF4mwowIdE+5Dax3W0pqpyOqiGomjRLmihUtgrfpg0guPJO4WOUpiTQBwKCDU
-         a0AM0PtMtMYiyp6e298B4MR0/VCNihR56/I+CKVI7d3wK3rIuc8en7Uz8PegvCRN5d
-         kwj//m/F+5wNDBtWdUtQuBkSPTMzlj5xAG91xj//nXn+uGHI2yM594pHZAftDp2s0N
-         hyaYR2lpyMSgg==
+        b=BFdj3KWzf6zlwHRXi2kvBaCDK5IwWYveapciy+Fji7CcGbm732iPsb/YPjuvv9zIH
+         6i/jctZje1DXV7S3ZbrzoNueEf3rgMbP1vrj5lEVq/aRm4XrKWctECPRaTak7reTfU
+         X3bPUKdu2HQPSs5HJYswtyCMeFb3EDxzWvEKXLYUCFm77id4DyAMfHYE60U/qRW8li
+         9bHSq1dQRA9au494Ssx/8QcgyTFdNnBwStfwCPJOzY34mgMs4Dqp2sK3UmVVoJH6ft
+         QZQXJ6pXN41I6wxusj7EPI/Lgw6R8KopT9u+INsszNrq0btGsDgeht5cmNYtrImKK5
+         R+FtwuPNMfntA==
 From:   Mike Rapoport <rppt@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
@@ -55,9 +55,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>,
         linux-mm@kvack.org, linux-sh@vger.kernel.org,
         linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
         sparclinux@vger.kernel.org
-Subject: [PATCH v2 04/14] csky: drop ARCH_FORCE_MAX_ORDER
-Date:   Fri, 24 Mar 2023 08:22:23 +0300
-Message-Id: <20230324052233.2654090-5-rppt@kernel.org>
+Subject: [PATCH v2 05/14] ia64: don't allow users to override ARCH_FORCE_MAX_ORDER
+Date:   Fri, 24 Mar 2023 08:22:24 +0300
+Message-Id: <20230324052233.2654090-6-rppt@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20230324052233.2654090-1-rppt@kernel.org>
 References: <20230324052233.2654090-1-rppt@kernel.org>
@@ -69,33 +69,31 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 
-The default value of ARCH_FORCE_MAX_ORDER matches the generic default
-defined in the MM code, the architecture does not support huge pages, so
-there is no need to keep ARCH_FORCE_MAX_ORDER option available.
+It is enough to keep default values for base and huge pages without
+letting users to override ARCH_FORCE_MAX_ORDER.
 
-Drop it.
+Drop the prompt to make the option unvisible in *config.
 
 Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
 Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 ---
- arch/csky/Kconfig | 4 ----
- 1 file changed, 4 deletions(-)
+ arch/ia64/Kconfig | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-index c694fac43bed..00379a843c37 100644
---- a/arch/csky/Kconfig
-+++ b/arch/csky/Kconfig
-@@ -332,10 +332,6 @@ config HIGHMEM
- 	select KMAP_LOCAL
- 	default y
+diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
+index 0d2f41fa56ee..b61437cae162 100644
+--- a/arch/ia64/Kconfig
++++ b/arch/ia64/Kconfig
+@@ -202,8 +202,7 @@ config IA64_CYCLONE
+ 	  If you're unsure, answer N.
  
--config ARCH_FORCE_MAX_ORDER
--	int "Maximum zone order"
--	default "10"
--
- config DRAM_BASE
- 	hex "DRAM start addr (the same with memory-section in dts)"
- 	default 0x0
+ config ARCH_FORCE_MAX_ORDER
+-	int "MAX_ORDER (10 - 16)"  if !HUGETLB_PAGE
+-	range 10 16  if !HUGETLB_PAGE
++	int
+ 	default "16" if HUGETLB_PAGE
+ 	default "10"
+ 
 -- 
 2.35.1
 
