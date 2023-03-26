@@ -2,131 +2,178 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C603FC6FD1F
-	for <linux-m68k@archiver.kernel.org>; Sat, 25 Mar 2023 12:45:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA28BC76196
+	for <linux-m68k@archiver.kernel.org>; Sun, 26 Mar 2023 00:01:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231575AbjCYMpF convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 25 Mar 2023 08:45:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44526 "EHLO
+        id S229582AbjCZABA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 25 Mar 2023 20:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbjCYMpE (ORCPT
+        with ESMTP id S229488AbjCZABA (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 25 Mar 2023 08:45:04 -0400
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD4911666
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 25 Mar 2023 05:45:03 -0700 (PDT)
-Received: by mail-lf1-f50.google.com with SMTP id g17so5561760lfv.4
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 25 Mar 2023 05:45:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679748300;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=I3FEH8eZrFvGP+z3Ek8xngh+/YrLq34X8EDL4pF+Bk0=;
-        b=M+ANixm7jlQffoRI2zUb6BQAg8jL1aAVHH03lEUpEP9Y4o3bIEkIUhCByxr8maU+qy
-         c9Vila+FhxQZmnCwgk9BeD2SoTXmUSRDkXr06lppAmKzDtIC0m5zStVOpaQVfZRWPNbN
-         UqxacZSwmp9kex1XmcpEjM1tXw7RaKKgQPs1TFoIALIEHd31PRJebe6wmZCEKzEKgMiY
-         m+rbsor0bYFNbFzXPkBQ1eISvdDuCb+CFEBScSlwqqKP7atQhuJx/vQmbAsepcWOg/i6
-         B+lri6jPazFApG069a4oVhDg42xhl8rFzlR9W3yleMlNcICFE8DCnfSQ70kEJbbZkxdh
-         P/qQ==
-X-Gm-Message-State: AAQBX9cJbQY+chU9EPKA9IzVZ0RW8knT48u7LfrekQ7dgtQ3CQUOivuH
-        B52wyfH+pEDkBtTJ+JIFADs6nZTOnA4MtNlH
-X-Google-Smtp-Source: AKy350aqh8sFBZuEsVuCQYjS10bo/StPJFIvTvhZEEoblZjGjR10PDP6992NdswvN5iJRFW7Si+Yxg==
-X-Received: by 2002:ac2:5e81:0:b0:4b6:ecfb:ee98 with SMTP id b1-20020ac25e81000000b004b6ecfbee98mr2173609lfq.41.1679748299654;
-        Sat, 25 Mar 2023 05:44:59 -0700 (PDT)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id o22-20020ac24356000000b004d57fc74f2csm3769441lfl.266.2023.03.25.05.44.59
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Mar 2023 05:44:59 -0700 (PDT)
-Received: by mail-lf1-f43.google.com with SMTP id bi9so5533820lfb.12
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 25 Mar 2023 05:44:59 -0700 (PDT)
-X-Received: by 2002:a05:6512:143:b0:4db:266c:4338 with SMTP id
- m3-20020a056512014300b004db266c4338mr1703638lfo.1.1679748299291; Sat, 25 Mar
- 2023 05:44:59 -0700 (PDT)
-MIME-Version: 1.0
+        Sat, 25 Mar 2023 20:01:00 -0400
+Received: from cynthia.allandria.com (cynthia.allandria.com [50.242.82.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A53BC1FEA;
+        Sat, 25 Mar 2023 17:00:58 -0700 (PDT)
+Received: from flar by cynthia.allandria.com with local (Exim 4.84_2)
+        (envelope-from <flar@allandria.com>)
+        id 1pgDoe-0008NV-KE; Sat, 25 Mar 2023 17:00:56 -0700
+Date:   Sat, 25 Mar 2023 17:00:56 -0700
+From:   Brad Boyer <flar@allandria.com>
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] nubus: Don't list card resources by default
+Message-ID: <20230326000056.GA31801@allandria.com>
 References: <5b7c473247d66776343d82a55b9815195b1b11fb.1679551394.git.fthain@linux-m68k.org>
  <CAMuHMdUJ6kbpYGTjyY5dX+-YRv3pL0ydG3HQ-H1khyeqLOa05A@mail.gmail.com>
- <072fd894-ec50-ae5f-2be5-ebbeb0e7b39b@linux-m68k.org> <20230324085927.GA6354@allandria.com>
+ <072fd894-ec50-ae5f-2be5-ebbeb0e7b39b@linux-m68k.org>
+ <20230324085927.GA6354@allandria.com>
  <0cd7f288-ba43-7764-01a7-2e1e5c7a1640@linux-m68k.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <0cd7f288-ba43-7764-01a7-2e1e5c7a1640@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sat, 25 Mar 2023 13:44:43 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXi1mF=j_Qzzg971AqHF-JdgfaDd+v0HymXXusFt-WBUQ@mail.gmail.com>
-Message-ID: <CAMuHMdXi1mF=j_Qzzg971AqHF-JdgfaDd+v0HymXXusFt-WBUQ@mail.gmail.com>
-Subject: Re: [PATCH v2] nubus: Don't list card resources by default
-To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     Brad Boyer <flar@allandria.com>, linux-m68k@lists.linux-m68k.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Finn,
-
-On Sat, Mar 25, 2023 at 12:33 AM Finn Thain <fthain@linux-m68k.org> wrote:
+On Sat, Mar 25, 2023 at 10:35:52AM +1100, Finn Thain wrote:
 > On Fri, 24 Mar 2023, Brad Boyer wrote:
 > > On Fri, Mar 24, 2023 at 10:13:51AM +1100, Finn Thain wrote:
-> > > On Thu, 23 Mar 2023, Geert Uytterhoeven wrote:
-> > > > On Thu, Mar 23, 2023 at 7:02???AM Finn Thain <fthain@linux-m68k.org> wrote:
-> > > > > --- a/drivers/nubus/nubus.c
-> > > > > +++ b/drivers/nubus/nubus.c
-> > > > > @@ -34,6 +34,9 @@
-> > > > >
-> > > > >  LIST_HEAD(nubus_func_rsrcs);
-> > > > >
-> > > > > +bool procfs_rsrcs;
-> > > > > +module_param(procfs_rsrcs, bool, 0444);
-> > > >
-> > > > With the expanded functionality, is "rsrcs" still a good name?
-> > > > Perhaps this should be an integer, so you can define different
-> > > > levels? E.g.
-> > > >   - 0 = just devices
-> > > >   - 1 = above + boards + public resources
-> > > >   - 2 = above + private resources
-> > >
-> > > That really depends on how the proc entries get used. I think it's
-> > > probably going to be developers who would use them so I consider all
-> > > of this to be outside of the UAPI and subject to change. But it would
+> > > That really depends on how the proc entries get used. I think it's 
+> > > probably going to be developers who would use them so I consider all 
+> > > of this to be outside of the UAPI and subject to change. But it would 
 > > > be nice to hear from other developers on that point.
-> >
-> > I don't know of anything that currently uses them, but there's a number
-> > of potential uses depending on how far we want to take things. A real
-> > video driver for X.org for some of the more advanced cards could take
-> > advantage of some of the secondary information made available. I've got
-> > a number of NuBus video cards with some acceleration capabilities that
+> > 
+> > I don't know of anything that currently uses them, but there's a number 
+> > of potential uses depending on how far we want to take things. A real 
+> > video driver for X.org for some of the more advanced cards could take 
+> > advantage of some of the secondary information made available. I've got 
+> > a number of NuBus video cards with some acceleration capabilities that 
 > > were pretty advanced for the time.
->
-> Good point. I had not considered Xorg drivers. But I'm not sure why
-> userspace drivers would access /proc when they already need /dev/mem or
+> 
+> Good point. I had not considered Xorg drivers. But I'm not sure why 
+> userspace drivers would access /proc when they already need /dev/mem or 
 > some more modern graphics API to be implemented by an in-kernel driver.
->
-> > There's even a driver in the ROM on video cards that could be used, but
-> > that also requires more emulation of the MacOS environment. KVM could
-> > potentially need more information if we got it running on m68k, although
+
+I suppose so. I haven't looked at any of that in years. Back in the
+past a ton of that was being done outside the kernel. X.org used to
+manually parse the PCI tree and do a bunch of stuff on its own.
+
+> > There's even a driver in the ROM on video cards that could be used, but 
+> > that also requires more emulation of the MacOS environment. KVM could 
+> > potentially need more information if we got it running on m68k, although 
 > > I doubt any real Mac has enough RAM to make that useful.
->
-> You only need a few MB to run MacOS (or an early Linux distro). So I
+> 
+> You only need a few MB to run MacOS (or an early Linux distro). So I 
 > rather think that KVM could be workable with 64 or 128 MB of RAM.
->
-> The /proc/bus/nubus/boards file is not affected by this patch, so userland
+> 
+> The /proc/bus/nubus/boards file is not affected by this patch, so userland 
 > tools could still identify the available boards if need be.
 
-Perhaps it would be worthwhile to move the resources out of /proc,
-but into a separate virtual file system?
-That way people who need access to the additional info can load the
-separate virtual file system kernel module, and mount the file system?
+That's probably enough, then. Device pass-through would be the main
+place that would need more, but it would need full access to all
+the slot memory anyway. That might even be a bad idea in general due
+to the lack of an IOMMU. There are DMA capable cards which would then
+have access to system memory. The kernel side of KVM doesn't look too
+painful to implement, and m68k doesn't have some of the strange issues
+of older x86 chips for running a VM.
 
-Gr{oetje,eeting}s,
+> > I haven't looked at a Radius Rocket (a Mac on a card) to see if it has 
+> > anything useful in these, but I wouldn't be surprised if there are 
+> > useful things there. I've never tried to boot Linux on a system with one 
+> > installed or booting Linux on the card itself. I have booted a second 
+> > instance of the MacOS on one, and I seem to recall it shows up as a 
+> > Q900. I have a couple x86 system cards that were intended to run DOS as 
+> > well. There was an Apple II card for the LC slot, but I don't own one. 
+> > LC slot cards show up in software as NuBus, as I recall.
+> > 
+> 
+> I think those cards are in the same category as video cards in the sense 
+> that userspace drivers would need /dev/mem.
 
-                        Geert
+Probably. I was just thinking that having some of the information
+already parsed out might be useful. It's hard to say without having
+anything written to use it.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> > It wouldn't be in userspace, but we could end up needing to pull 
+> > firmware out of them for a number of different cards. I've got a couple 
+> > SCSI cards that would need to have firmware loaded at runtime, and the 
+> > ROM would have the default version even if we also allow a firmware file 
+> > to override that. Based on the existing qlogicpti.c code, the ISP 1000 
+> > chip (found on ATTO SiliconExpress IV cards) needs firmware. The older 
+> > SiliconExpress cards all appear to use various ESP chips, so they likely 
+> > don't need anything special. I suspect the various MCP based cards have 
+> > useful things on the ROM for a driver to use. They each have a 68000 
+> > chip on them running A/ROSE, which is presumably loaded from firmware as 
+> > well. I have both ethernet and serial cards based on this platform. It 
+> > appears that a driver for the specific card has to be loaded into A/ROSE 
+> > on the card after it boots.
+> > 
+> 
+> I had not considered that /proc could be used that way. Unfortunately, the 
+> length of procfs entries is limited to PAGESIZE. Larger entries are listed 
+> but have length 0. So I think this isn't going to fly.
+> 
+> Probably /dev/mem or a MacOS utility, or a ROM dump created by a MacOS 
+> utility, would be needed to extract firmware from the MacOS ROM, such as 
+> the firmware used by the IOP co-processors (which are standard equipment 
+> on some models). The same solutions (though not ideal) could also work for 
+> slot resources.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+To be honest, anything in the kernel should have an explicit API out
+of the NuBus infrastructure rather than poking at these virtual files.
+That could be done without pre-loading all this stuff into memory. A
+similar API out of the core macintosh support code could do the same
+for the system ROM.
+
+I was looking into a more complete IOP driver, and wrote a few parts 
+of it. Doing it right will require reloading the embedded kernel into
+each IOP as well as the individual channel drivers. Those are in the
+ROM somewhere, as well as updated versions in system files. That's the
+only practical way to pull an IOP out of bypass mode, as otherwise it
+requires making a request that includes information that was passed
+in when it was originally put into bypass mode. While we could probably
+extract that out of IOP memory, it's not entirely clear (and definitely
+undocumented) where it keeps that. We currently only use the individual
+channel API calls (and only for ADB), but there's a whole separate IOP
+kernel API that does a bunch of other useful stuff like managing bypass
+mode and doing data transfer.
+
+However, the system ROM doesn't use exactly the same structure as a
+NuBus expansion ROM. That might complicate such work. It might be
+easier to use the firmware infrastructure to load them from files
+and extract the drivers from the latest system software that still
+supported anything with an IOP. The updated IOP drivers are each
+separate resources in the system file that could be extracted with
+native developer utilities in MacOS. Then we presumably have the
+latest. I've never found any hint that the IOP hardware was any
+different between models that have them.
+
+> > I've got a bunch of cards that I've never even looked at the resources 
+> > built into the ROM chips, so I'm guessing on what might or might not be 
+> > useful. At one point I was buying every card I could find that looked 
+> > interesting, and many of them I've never tested. I have crates full of 
+> > stuff, plus a bunch stacked up that came in original boxes.
+> > 
+> > Checking them is disabled now, but some Macs have fake NuBus resources 
+> > for some of the onboard devices that show up as if they were in a 
+> > virtual NuBus slot 0. Scanning that apparently caused problems on some 
+> > models (presumably a bus error, since it would be accessing invalid 
+> > addresses). Really old kernels had code to scan that protected by a 
+> > compile time option.
+> > 
+> 
+> I can't figure out why procfs access to the slot resources from pseudo 
+> slot 0 would be desirable (?)
+
+I'm not sure. Someone clearly thought it was useful in the past. I don't
+think I have any models with anything interesting there. I suspect the
+main thing would be an equivalent to the ROM on a video card for the
+built-in display adapter on those systems.
+
+	Brad Boyer
+	flar@allandria.com
+
