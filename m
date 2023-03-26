@@ -2,125 +2,167 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80B60C74A5B
-	for <linux-m68k@archiver.kernel.org>; Sun, 26 Mar 2023 03:19:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AD82C74A5B
+	for <linux-m68k@archiver.kernel.org>; Sun, 26 Mar 2023 03:39:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbjCZDT0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 25 Mar 2023 23:19:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38520 "EHLO
+        id S231433AbjCZDjD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 25 Mar 2023 23:39:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230286AbjCZDTZ (ORCPT
+        with ESMTP id S231575AbjCZDjB (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 25 Mar 2023 23:19:25 -0400
+        Sat, 25 Mar 2023 23:39:01 -0400
 Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C40F1B44C
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 25 Mar 2023 20:19:23 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 4BB5F5C00D8;
-        Sat, 25 Mar 2023 23:19:21 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A089365A8
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 25 Mar 2023 20:38:58 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id F34775C011B;
+        Sat, 25 Mar 2023 23:38:57 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Sat, 25 Mar 2023 23:19:21 -0400
+  by compute3.internal (MEProxy); Sat, 25 Mar 2023 23:38:57 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1679800761; x=1679887161; bh=3UntI3/+PCVTg
-        DIuGFOF1Ecl1yOb72vFBAvaAjk/4Pk=; b=MVPMXGCRwlm3K+F0ilbAPfuvy6lkd
-        3hS3mt49wzQCCk7aNzzZrRsV61rI+kjBvwiDO/Zj7IRjkMkzurs9Kz4FFb7al6c2
-        fC8Mc2HF/CslE0pINnCrf2R/oJ0shKgndd/MwmONsCJUS9nDe/qUKnYv952ogucv
-        OslATkKfzJugje6eCvVxBGUInDgda3qZwrOK6vFCn8JEFqvkAv+SuIQj1XdUvd7W
-        SWhllxEHzH0m9vG6gvtw2fFl/uIbSY8HWUgggCqfDS1uWQeSeU1YH6sVXlQzlY+e
-        TSVDfuXui0CmDvupWNyMkrFhZ7H9fP8tpzfzDe6XU3cMTLpHq1uk5T33Q==
-X-ME-Sender: <xms:uLkfZFDne9UiEiN2PYnLFJrlrJeEIgToPAjbyDG0vIgpWOsAJC55FQ>
-    <xme:uLkfZDh5SR1dzgtdgY4FbjY4f0WBFen1r6fHyixhnL8xMIbsZI-Udvu_uRt20xs2l
-    eBMtgQiXdB7Ko5gYuo>
-X-ME-Received: <xmr:uLkfZAlFMcInPaKBWGeEjioqaplhPC8bmeD9yrh69q-VN18XG3qBiLCBq4fAsHkpjYxHewBLidGsBITa0_XHz_nyZRX8fFL1UZg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdegledgheekucetufdoteggodetrfdotf
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:message-id:reply-to:sender
+        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm2; t=1679801937; x=1679888337; bh=q
+        q1ZKMz/iBR+IZ3gektncVGgPKUeoeZtWWTf8ymo2A4=; b=aYO5+GLF8hzOdVT8j
+        I+Lzzd+rtO/UfggkJnMSSKmjQKWFYHaapikdJIihqD+hiNRNH7WWizVRXarP7mgg
+        YpPfxXpKgmWsh1dxdUdazR/hjSq+Kln22/XgDzVWIwVVCbF3OgjMl7RsmsdjWvwq
+        AEMSEP0r4kSrdnNgitynJplgmvoRrozqrKKBrE7d85AcTfbyWujvS92b40b5dJyN
+        bvaVrWbCy/PU+2bSb4CLao1HDM9oVVelckNe5lHmBSe5XVFcBfcPud36mbdCbkdL
+        wAOtJ5oDq8ZuSXjYtrkPR7vygADxkS52aTLH9iU/uXgJ9v5KLRBkq8IxXrZKGL+p
+        b7f5A==
+X-ME-Sender: <xms:Ub4fZG93_kVf0JXzi9ppmiK1pIb9-RVFDx6LabQs4noTaVk_qdzEqQ>
+    <xme:Ub4fZGuw8BDjJTodDzUXdap_JAC8zP86HpRjX2QK_XPsExeIZ4ZTfm19-alLPy8Um
+    8FIf4tdiS92ZUDquXY>
+X-ME-Received: <xmr:Ub4fZMCX_9iqq-dhBQMbqmr0p_G800VkH5jNSDWirGX8ejnezQzcW6eBFOdcO1rQxxHXGotAqYQLKpnQLah6odnTpPmh3KHVlug>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdegledgiedvucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
-    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
-    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:uLkfZPzmL6p7fyVrG_v8UhO4QvbpQIkWrIDaRM09o47sUjSiZJoxRQ>
-    <xmx:uLkfZKSFfzTesv8ADXwsm3J0uM_HBr-cHi83B3qL_eu3iGUuwvpOgQ>
-    <xmx:uLkfZCbbc9gSSwfpOagSg_sYiygtIxe3xjKm5YrnxSKQUY_bmxkWXA>
-    <xmx:ubkfZNJVZrJsAj0YMmthgSB3QicgXgCoH8lI3mwdoM_b0TuQTmv0qA>
+    cujfgurhepvfevkffhufffsedttdertddttddtnecuhfhrohhmpefhihhnnhcuvfhhrghi
+    nhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtthgvrh
+    hnpeehfffggeefveegvedtiefffeevuedtgefhueehieetffejfefggeevfeeuvdduleen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrg
+    hinheslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:Ub4fZOeIDbGCjNSpuD1FCedufBRoAyejSHljzFUVe1UIvJj6FwkM4g>
+    <xmx:Ub4fZLOY-k4gdSHNMKQx6uFqerhxTklliofROLIZy6Xaa2jeO5xz8w>
+    <xmx:Ub4fZIlyzkUEGxamLuft2MDQROotryKo-4nfNn9csscgvcmT_JfB5g>
+    <xmx:Ub4fZB0qgJg7i5B-0LbyZ5EwZgfHY4sOPWUZmDRzJCSeKkRxyU0dBw>
 Feedback-ID: i58a146ae:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 25 Mar 2023 23:19:18 -0400 (EDT)
-Date:   Sun, 26 Mar 2023 14:22:14 +1100 (AEDT)
+ 25 Mar 2023 23:38:54 -0400 (EDT)
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "Brad Boyer" <flar@allandria.com>, linux-m68k@lists.linux-m68k.org,
+        linux-kernel@vger.kernel.org
+Message-Id: <62e815b947d6d602def8294040529db80278c561.1679801822.git.fthain@linux-m68k.org>
 From:   Finn Thain <fthain@linux-m68k.org>
-To:     Brad Boyer <flar@allandria.com>
-cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] nubus: Don't list card resources by default
-In-Reply-To: <20230326000056.GA31801@allandria.com>
-Message-ID: <2b42fa38-18f3-971f-635c-b37609b4beae@linux-m68k.org>
-References: <5b7c473247d66776343d82a55b9815195b1b11fb.1679551394.git.fthain@linux-m68k.org> <CAMuHMdUJ6kbpYGTjyY5dX+-YRv3pL0ydG3HQ-H1khyeqLOa05A@mail.gmail.com> <072fd894-ec50-ae5f-2be5-ebbeb0e7b39b@linux-m68k.org> <20230324085927.GA6354@allandria.com>
- <0cd7f288-ba43-7764-01a7-2e1e5c7a1640@linux-m68k.org> <20230326000056.GA31801@allandria.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: [RFC PATCH v3] nubus: Don't list slot resources by default
+Date:   Sun, 26 Mar 2023 14:37:02 +1100
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sat, 25 Mar 2023, Brad Boyer wrote:
+Some Nubus card ROMs contain many slot resources. A single Radius video
+card produced well over a thousand entries under /proc/bus/nubus/.
+Populating /proc/bus/nubus/ on a slow machine with several such cards
+installed takes long enough that the user may think that the system is
+wedged. All those procfs entries also consume significant RAM though
+they are not normally needed (except by developers).
+Omit these resources from /proc/bus/nubus/ by default and add a kernel
+parameter to enable them when needed.
+On the test machine, this saved 300 kB and 10 seconds.
 
-> On Sat, Mar 25, 2023 at 10:35:52AM +1100, Finn Thain wrote:
-> 
-> > 
-> > I think those cards are in the same category as video cards in the 
-> > sense that userspace drivers would need /dev/mem.
-> 
-> Probably. I was just thinking that having some of the information 
-> already parsed out might be useful. It's hard to say without having 
-> anything written to use it.
-> 
+Cc: Brad Boyer <flar@allandria.com>
+Tested-by: Stan Johnson <userm57@yahoo.com>
+Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+---
+ drivers/nubus/nubus.c | 12 +++++++++---
+ drivers/nubus/proc.c  |  8 ++++----
+ include/linux/nubus.h |  1 +
+ 3 files changed, 14 insertions(+), 7 deletions(-)
 
-If someone wanted to write something that uses the procfs information they 
-could still do so, but they would have to enable a kernel parameter first.
+diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
+index f70ba58dbc55..d2d2b580f646 100644
+--- a/drivers/nubus/nubus.c
++++ b/drivers/nubus/nubus.c
+@@ -32,6 +32,12 @@
+ 
+ /* Globals */
+ 
++/* This parameter makes slot resources available in procfs. It's deprecated and
++ * disabled by default as procfs is no longer thought to be suitable for that.
++ */
++bool populate_procfs;
++module_param(populate_procfs, bool, 0);
++
+ LIST_HEAD(nubus_func_rsrcs);
+ 
+ /* Meaning of "bytelanes":
+@@ -572,9 +578,9 @@ nubus_get_functional_resource(struct nubus_board *board, int slot,
+ 			nubus_proc_add_rsrc(dir.procdir, &ent);
+ 			break;
+ 		default:
+-			/* Local/Private resources have their own
+-			   function */
+-			nubus_get_private_resource(fres, dir.procdir, &ent);
++			if (populate_procfs)
++				nubus_get_private_resource(fres, dir.procdir,
++							   &ent);
+ 		}
+ 	}
+ 
+diff --git a/drivers/nubus/proc.c b/drivers/nubus/proc.c
+index 2c320a84fd72..1808accb8214 100644
+--- a/drivers/nubus/proc.c
++++ b/drivers/nubus/proc.c
+@@ -55,7 +55,7 @@ struct proc_dir_entry *nubus_proc_add_board(struct nubus_board *board)
+ {
+ 	char name[2];
+ 
+-	if (!proc_bus_nubus_dir)
++	if (!proc_bus_nubus_dir || !populate_procfs)
+ 		return NULL;
+ 	snprintf(name, sizeof(name), "%x", board->slot);
+ 	return proc_mkdir(name, proc_bus_nubus_dir);
+@@ -72,7 +72,7 @@ struct proc_dir_entry *nubus_proc_add_rsrc_dir(struct proc_dir_entry *procdir,
+ 	char name[9];
+ 	int lanes = board->lanes;
+ 
+-	if (!procdir)
++	if (!procdir || !populate_procfs)
+ 		return NULL;
+ 	snprintf(name, sizeof(name), "%x", ent->type);
+ 	remove_proc_subtree(name, procdir);
+@@ -157,7 +157,7 @@ void nubus_proc_add_rsrc_mem(struct proc_dir_entry *procdir,
+ 	char name[9];
+ 	struct nubus_proc_pde_data *pded;
+ 
+-	if (!procdir)
++	if (!procdir || !populate_procfs)
+ 		return;
+ 
+ 	snprintf(name, sizeof(name), "%x", ent->type);
+@@ -176,7 +176,7 @@ void nubus_proc_add_rsrc(struct proc_dir_entry *procdir,
+ 	char name[9];
+ 	unsigned char *data = (unsigned char *)ent->data;
+ 
+-	if (!procdir)
++	if (!procdir || !populate_procfs)
+ 		return;
+ 
+ 	snprintf(name, sizeof(name), "%x", ent->type);
+diff --git a/include/linux/nubus.h b/include/linux/nubus.h
+index 392fc6c53e96..50c9145808d1 100644
+--- a/include/linux/nubus.h
++++ b/include/linux/nubus.h
+@@ -93,6 +93,7 @@ extern struct bus_type nubus_bus_type;
+ 
+ /* Generic NuBus interface functions, modelled after the PCI interface */
+ #ifdef CONFIG_PROC_FS
++extern bool populate_procfs;
+ void nubus_proc_init(void);
+ struct proc_dir_entry *nubus_proc_add_board(struct nubus_board *board);
+ struct proc_dir_entry *nubus_proc_add_rsrc_dir(struct proc_dir_entry *procdir,
+-- 
+2.37.5
 
-> ...
-> However, the system ROM doesn't use exactly the same structure as a 
-> NuBus expansion ROM. That might complicate such work. It might be easier 
-> to use the firmware infrastructure to load them from files and extract 
-> the drivers from the latest system software that still supported 
-> anything with an IOP. The updated IOP drivers are each separate 
-> resources in the system file that could be extracted with native 
-> developer utilities in MacOS. Then we presumably have the latest. I've 
-> never found any hint that the IOP hardware was any different between 
-> models that have them.
-> 
-
-My thinking was that a firmware cutter (whether it was for ROM resources 
-or slot resources) would remain separate from the kernel, as that seems to 
-be the usual pattern. The existing mechanisms for distributing to 
-/lib/firmware and loading from /lib/firmware could be leveraged.
-
-> > I can't figure out why procfs access to the slot resources from pseudo 
-> > slot 0 would be desirable (?)
-> 
-> I'm not sure. Someone clearly thought it was useful in the past.
-
-That's not clear to me.
-
-Someone clearly thought that the procfs files may be useful for some 
-unknown purpose in userspace. And someone clearly thought that the slot 0 
-resources may be useful for configuring drivers in kernelspace.
-Neither of those panned out.
-
-The only possible use I can think of for slot 0 resources in userspace 
-(e.g. a "TechTool" for Linux) would be better served by mmap'ing the ROM 
-using /dev/mem.
-
-> I don't think I have any models with anything interesting there. I 
-> suspect the main thing would be an equivalent to the ROM on a video card 
-> for the built-in display adapter on those systems.
-> 
-
-Only to the extent that such hardware cannot be probed or simply inferred 
-from bootinfo records already provided (like gestalt id). But the slot 0 
-vs. bootinfo question seems unrelated to the procfs question, right?
