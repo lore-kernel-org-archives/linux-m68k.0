@@ -2,168 +2,267 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC7EBC76195
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Mar 2023 08:38:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78934C761AF
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Mar 2023 12:14:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233057AbjC0IiZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 27 Mar 2023 04:38:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57164 "EHLO
+        id S232672AbjC0MOI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 27 Mar 2023 08:14:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233046AbjC0Ihh (ORCPT
+        with ESMTP id S232663AbjC0MOG (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 27 Mar 2023 04:37:37 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 483D6A27B
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Mar 2023 01:32:20 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id B35B732007E8;
-        Mon, 27 Mar 2023 04:32:02 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 27 Mar 2023 04:32:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1679905922; x=1679992322; bh=gfkfvU97A7/Qa
-        TPhcpXEtEywtsbFi7d5l4ecD/F+XaU=; b=Pnasce1W37qRINuI1viavZIQ6U3HH
-        lX4bBSDZw0vBiXKThiePK+W0DrgxX3mHPN8z6P9Pbit83j7K93OKM9CB1gS1TIee
-        Jvp80jfq4ImOkbRudRYutAub053e7EhRN+qGjU9legjvERy1wzeqtBvXg10Rj1+5
-        gTReHyz8COnBCm3sTQszCqna4jjuXjxODHIC/z7sJ0mRrEqLEh23xMvqWXEYDeF3
-        HpipJXPYmlJvE558kiITMfO6G6u7giKIPlt/spoaK+0MVxPpi+k6u/i8VOSArP7H
-        i8z56a3Y/EoiQDOn7xFHF3mH/ONSelA9RLYL8dGGPh2Jrzy5du6rMdPuQ==
-X-ME-Sender: <xms:glQhZLM0DGSxiHM9j-6ZVQH0SW6u-uv4DUC_rmIEN-2vcK5fWlgSZw>
-    <xme:glQhZF9ehacPKwcO3U0mL2UkPcUlpEN-FQUyHqBcIyib15otoBYqQBvEzALhrPk1c
-    PaIRw0RfQv1ooLtzxE>
-X-ME-Received: <xmr:glQhZKTghn-cU1benQlGw7gnSqH-mfTIfyPW1r0sHa2ydIfHgHdg_EwN8syoqD7dPR63NBpJESVzh6PSg2kwIXl8SixiDqss-pg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdehvddgtdehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevufgjkfhfgggtsehmtderredttdejnecuhfhrohhmpefhihhnnhcu
-    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpedvheelueeludelteehkeetveffgeeivdehgfejudelhfdtudelkeevtddv
-    hedtudenucffohhmrghinhepshhouhhrtggvfigrrhgvrdhorhhgnecuvehluhhsthgvrh
-    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhig
-    qdhmieekkhdrohhrgh
-X-ME-Proxy: <xmx:glQhZPtpVA4x4GhFUieu_KQu2KwGWePYFBc39X9BCN47lax4MdK-Ew>
-    <xmx:glQhZDdm0Irfzlf-P8rAtxOKtaLAi0BsNW0hoLYWO9WXebkibYIqdw>
-    <xmx:glQhZL2LK8QQ4uqoE7aSpRBcUYzNVy0j8tC7MDWl2mP212rJVS42Xg>
-    <xmx:glQhZDnu6bFfCbXs5_lVPXJ1Wn6kgTo96zzJ1ZXV4cnHjVPV93hy3g>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 27 Mar 2023 04:31:56 -0400 (EDT)
-Date:   Mon, 27 Mar 2023 19:34:58 +1100 (AEDT)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-cc:     linux-m68k@lists.linux-m68k.org, debian-68k@lists.debian.org
-Subject: Re: gdb failure: "core file format not supported"
-In-Reply-To: <CAMuHMdV+m5er5twbKX6cE6FQ35sypSmaRFAJ+Npi8venS9gJDw@mail.gmail.com>
-Message-ID: <258a78f3-6f2c-1ea6-ffee-2970501db7d2@linux-m68k.org>
-References: <fa0774b8-3ed2-8b87-defd-17fbb492922f@linux-m68k.org> <ca000c1c-899a-fa5a-90f5-d44682e54740@linux-m68k.org> <1fe7014b-84c5-2229-9b26-d57a3e4e3ddb@linux-m68k.org> <CAMuHMdV+m5er5twbKX6cE6FQ35sypSmaRFAJ+Npi8venS9gJDw@mail.gmail.com>
+        Mon, 27 Mar 2023 08:14:06 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9D843C0D
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Mar 2023 05:14:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3AEF2B8114B;
+        Mon, 27 Mar 2023 12:13:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6F8CC433D2;
+        Mon, 27 Mar 2023 12:13:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1679919237;
+        bh=GiqSNoh/gnOD0kxoCZ+KxN9c2SO+z1nJBns1fyyi+vo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=pq3BAphM3wHtatYjV+DfN2I8sJHS4IYBYyDE+v6/Qc8ZwCT8gpvS4DAGv7VxPzFGA
+         QTONxH3L5u7xfGpaWF72Vn6IOud15UVhnlOu7Pkpc4MFJc3T+eyi/9YHM2uw4o3Q19
+         hlFRkjcr9R2SPBbGCiCcG9K2ncI1oTIHchYegylFXUpPuOkFuj5EhA9x60aFehDKxy
+         Qltw/cCcMI8A23tAm4waeZqorYzy7ERYFcrUh9Z5Dt10vOC7n/8mHT1x94BLc8QwMZ
+         RjkfvTiQw9Na09hCmY2JMMUGUbEev+PR6WHG/lHK6hz99r9Xiisa4orl4KnTMuyptQ
+         /3AEVTN69OUkQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Brian Cain <bcain@quicinc.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-oxnas@groups.io,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org
+Subject: [PATCH 00/21] dma-mapping: unify support for cache flushes
+Date:   Mon, 27 Mar 2023 14:12:56 +0200
+Message-Id: <20230327121317.4081816-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="-1463811774-290702871-1679906098=:11000"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+From: Arnd Bergmann <arnd@arndb.de>
 
----1463811774-290702871-1679906098=:11000
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+After a long discussion about adding SoC specific semantics for when
+to flush caches in drivers/soc/ drivers that we determined to be
+fundamentally flawed[1], I volunteered to try to move that logic into
+architecture-independent code and make all existing architectures do
+the same thing.
 
-On Mon, 27 Mar 2023, Geert Uytterhoeven wrote:
+As we had determined earlier, the behavior is wildly different across
+architectures, but most of the differences come down to either bugs
+(when required flushes are missing) or extra flushes that are harmless
+but might hurt performance.
 
-> On Mon, Mar 27, 2023 at 2:47=E2=80=AFAM Finn Thain <fthain@linux-m68k.org=
-> wrote:
-> > I wasn't able to add the linux-m68k list to the bug report Cc list.
-> >
-> > I'm forwarding this as I don't know the answer to Tom's question...
-> >
-> > On Sat, 25 Mar 2023, tromey at sourceware dot org wrote:
-> >
-> > > https://sourceware.org/bugzilla/show_bug.cgi?id=3D30273
-> > >
-> > > Tom Tromey <tromey at sourceware dot org> changed:
-> > >
-> > >            What    |Removed                     |Added
-> > > ---------------------------------------------------------------------=
--------
-> > >                  CC|                            |tromey at sourceware=
- dot org
-> > >
-> > > --- Comment #1 from Tom Tromey <tromey at sourceware dot org> ---
-> > > This is probably a regression due to this patch:
-> > >
-> > > commit 3eba3a011a89c75c10bd1860eee4589e65697165
-> > > Author: Tom Tromey <tromey@adacore.com>
-> > > Date:   Mon Sep 14 08:30:10 2020 -0600
-> > >
-> > >     Various m68k fixes for gdb
-> > >
-> > >
-> > > When I debug gdb I see it decides this core file is
-> > > GDB_OSABI_SVR4, not GDB_OSABI_LINUX.  This happens
-> > > because m68k_osabi_sniffer takes this branch:
-> > >
-> > >   if (elfosabi =3D=3D ELFOSABI_NONE)
-> > >     return GDB_OSABI_SVR4;
-> > >
-> > > From elf/common.h:
-> > >
-> > > #define ELFOSABI_NONE         0 /* UNIX System V ABI */
-> > > #define ELFOSABI_HPUX         1 /* HP-UX operating system */
-> > > #define ELFOSABI_NETBSD       2 /* NetBSD */
-> > > #define ELFOSABI_GNU          3 /* GNU */
-> > > #define ELFOSABI_LINUX        3 /* Alias for ELFOSABI_GNU */
-> > >
-> > >
-> > > So I guess one question is why this core file isn't marked
-> > > as ELFOSABI_LINUX.
->=20
-> Only PA-RISC and the remoteproc core dumper seem to use
-> ELFOSABI_LINUX?
->=20
->     arch/parisc/include/asm/elf.h:#define ELF_OSABI         ELFOSABI_LINU=
-X
->     arch/parisc/kernel/ptrace.c:    .name =3D "parisc", .e_machine =3D
-> ELF_ARCH, .ei_osabi =3D ELFOSABI_LINUX,
->     arch/parisc/kernel/ptrace.c:    .name =3D "parisc", .e_machine =3D
-> EM_PARISC, .ei_osabi =3D ELFOSABI_LINUX,
->=20
->     include/uapi/linux/elf.h:#ifndef ELF_OSABI
->     include/uapi/linux/elf.h:#define ELF_OSABI ELFOSABI_NONE
->     include/uapi/linux/elf.h-#endif
->=20
->     fs/proc/kcore.c:                                [EI_OSABI] =3D ELF_OS=
-ABI,
->=20
->     drivers/remoteproc/remoteproc_elf_helpers.h:
-> hdr->e_ident[EI_OSABI] =3D ELFOSABI_NONE;
->=20
-> Or perhaps it's set originally somewhere else, but overwritten on
-> m68k (and a few others)?
->=20
->     arch/arm/kernel/ptrace.c:       .name =3D "arm", .e_machine =3D
-> ELF_ARCH, .ei_osabi =3D ELF_OSABI,
->     arch/hexagon/kernel/ptrace.c:   .ei_osabi =3D ELF_OSABI,
->     arch/m68k/kernel/ptrace.c:      .ei_osabi =3D ELF_OSABI,
->     arch/mips/kernel/ptrace.c:      .ei_osabi       =3D ELF_OSABI,
->     arch/mips/kernel/ptrace.c:      .ei_osabi       =3D ELF_OSABI,
->     arch/mips/kernel/ptrace.c:      .ei_osabi       =3D ELF_OSABI,
->     arch/nios2/kernel/ptrace.c:     .ei_osabi =3D ELF_OSABI,
->=20
-> Does this work on other architectures?
->=20
+I finally found the time to come up with an implementation of this, which
+starts by replacing every outlier with one of the three common options:
 
-I'm not sure that it matters. If Tom is right that the regression was=20
-caused by his commit 3eba3a011a89 then the issue would be confined to m68k=
-=20
-and it's ABIs, and how to tell them apart given ELFOSABI_NONE:
-https://sourceware.org/git/?p=3Dbinutils-gdb.git;a=3Dcommitdiff;h=3D3eba3a0=
-11a89=20
+ 1. architectures without speculative prefetching (hegagon, m68k,
+    openrisc, sh, sparc, and certain armv4 and xtensa implementations)
+    only flush their caches before a DMA, by cleaning write-back caches
+    (if any) before a DMA to the device, and by invalidating the caches
+    before a DMA from a device
 
-BTW, I suspect that the best place to discuss this would be bugzilla
-otherwise we'll need to Cc Tom.
----1463811774-290702871-1679906098=:11000--
+ 2. arc, microblaze, mips, nios2, sh and later xtensa now follow the
+    normal 32-bit arm model and invalidate their writeback caches
+    again after a DMA from the device, to remove stale cache lines
+    that got prefetched during the DMA. arc, csky and mips used to
+    invalidate buffers also before the bidirectional DMA, but this
+    is now skipped whenever we know it gets invalidated again
+    after the DMA.
+
+ 3. parisc, powerpc and riscv already flushed buffers before
+    a DMA_FROM_DEVICE, and these get moved to the arm64 behavior
+    that does the writeback before and invalidate after both
+    DMA_FROM_DEVICE and DMA_BIDIRECTIONAL in order to avoid the
+    problem of accidentally leaking stale data if the DMA does
+    not actually happen[2].
+
+The last patch in the series replaces the architecture specific code
+with a shared version that implements all three based on architecture
+specific parameters that are almost always determined at compile time.
+
+The difference between cases 1. and 2. is hardware specific, while between
+2. and 3. we need to decide which semantics we want, but I explicitly
+avoid this question in my series and leave it to be decided later.
+
+Another difference that I do not address here is what cache invalidation
+does for partical cache lines. On arm32, arm64 and powerpc, a partial
+cache line always gets written back before invalidation in order to
+ensure that data before or after the buffer is not discarded. On all
+other architectures, the assumption is cache lines are never shared
+between DMA buffer and data that is accessed by the CPU. If we end up
+always writing back dirty cache lines before a DMA (option 3 above),
+then this point becomes moot, otherwise we should probably address this
+in a follow-up series to document one behavior or the other and implement
+it consistently.
+
+Please review!
+
+      Arnd
+
+[1] https://lore.kernel.org/all/20221212115505.36770-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
+[2] https://lore.kernel.org/all/20220606152150.GA31568@willie-the-truck/
+
+Arnd Bergmann (21):
+  openrisc: dma-mapping: flush bidirectional mappings
+  xtensa: dma-mapping: use normal cache invalidation rules
+  sparc32: flush caches in dma_sync_*for_device
+  microblaze: dma-mapping: skip extra DMA flushes
+  powerpc: dma-mapping: split out cache operation logic
+  powerpc: dma-mapping: minimize for_cpu flushing
+  powerpc: dma-mapping: always clean cache in _for_device() op
+  riscv: dma-mapping: only invalidate after DMA, not flush
+  riscv: dma-mapping: skip invalidation before bidirectional DMA
+  csky: dma-mapping: skip invalidating before DMA from device
+  mips: dma-mapping: skip invalidating before bidirectional DMA
+  mips: dma-mapping: split out cache operation logic
+  arc: dma-mapping: skip invalidating before bidirectional DMA
+  parisc: dma-mapping: use regular flush/invalidate ops
+  ARM: dma-mapping: always invalidate WT caches before DMA
+  ARM: dma-mapping: bring back dmac_{clean,inv}_range
+  ARM: dma-mapping: use arch_sync_dma_for_{device,cpu}() internally
+  ARM: drop SMP support for ARM11MPCore
+  ARM: dma-mapping: use generic form of arch_sync_dma_* helpers
+  ARM: dma-mapping: split out arch_dma_mark_clean() helper
+  dma-mapping: replace custom code with generic implementation
+
+ arch/arc/mm/dma.c                          |  66 ++------
+ arch/arm/Kconfig                           |   4 +
+ arch/arm/include/asm/cacheflush.h          |  21 +++
+ arch/arm/include/asm/glue-cache.h          |   4 +
+ arch/arm/mach-oxnas/Kconfig                |   4 -
+ arch/arm/mach-oxnas/Makefile               |   1 -
+ arch/arm/mach-oxnas/headsmp.S              |  23 ---
+ arch/arm/mach-oxnas/platsmp.c              |  96 -----------
+ arch/arm/mach-versatile/platsmp-realview.c |   4 -
+ arch/arm/mm/Kconfig                        |  19 ---
+ arch/arm/mm/cache-fa.S                     |   4 +-
+ arch/arm/mm/cache-nop.S                    |   6 +
+ arch/arm/mm/cache-v4.S                     |  13 +-
+ arch/arm/mm/cache-v4wb.S                   |   4 +-
+ arch/arm/mm/cache-v4wt.S                   |  22 ++-
+ arch/arm/mm/cache-v6.S                     |  35 +---
+ arch/arm/mm/cache-v7.S                     |   6 +-
+ arch/arm/mm/cache-v7m.S                    |   4 +-
+ arch/arm/mm/dma-mapping-nommu.c            |  36 ++--
+ arch/arm/mm/dma-mapping.c                  | 181 ++++++++++-----------
+ arch/arm/mm/proc-arm1020.S                 |   4 +-
+ arch/arm/mm/proc-arm1020e.S                |   4 +-
+ arch/arm/mm/proc-arm1022.S                 |   4 +-
+ arch/arm/mm/proc-arm1026.S                 |   4 +-
+ arch/arm/mm/proc-arm920.S                  |   4 +-
+ arch/arm/mm/proc-arm922.S                  |   4 +-
+ arch/arm/mm/proc-arm925.S                  |   4 +-
+ arch/arm/mm/proc-arm926.S                  |   4 +-
+ arch/arm/mm/proc-arm940.S                  |   4 +-
+ arch/arm/mm/proc-arm946.S                  |   4 +-
+ arch/arm/mm/proc-feroceon.S                |   8 +-
+ arch/arm/mm/proc-macros.S                  |   2 +
+ arch/arm/mm/proc-mohawk.S                  |   4 +-
+ arch/arm/mm/proc-xsc3.S                    |   4 +-
+ arch/arm/mm/proc-xscale.S                  |   6 +-
+ arch/arm64/mm/dma-mapping.c                |  28 ++--
+ arch/csky/mm/dma-mapping.c                 |  46 +++---
+ arch/hexagon/kernel/dma.c                  |  44 ++---
+ arch/m68k/kernel/dma.c                     |  43 +++--
+ arch/microblaze/kernel/dma.c               |  38 ++---
+ arch/mips/mm/dma-noncoherent.c             |  75 +++------
+ arch/nios2/mm/dma-mapping.c                |  57 +++----
+ arch/openrisc/kernel/dma.c                 |  62 ++++---
+ arch/parisc/include/asm/cacheflush.h       |   6 +-
+ arch/parisc/kernel/pci-dma.c               |  33 +++-
+ arch/powerpc/mm/dma-noncoherent.c          |  76 +++++----
+ arch/riscv/mm/dma-noncoherent.c            |  51 +++---
+ arch/sh/kernel/dma-coherent.c              |  43 +++--
+ arch/sparc/Kconfig                         |   2 +-
+ arch/sparc/kernel/ioport.c                 |  38 +++--
+ arch/xtensa/Kconfig                        |   1 -
+ arch/xtensa/include/asm/cacheflush.h       |   6 +-
+ arch/xtensa/kernel/pci-dma.c               |  47 +++---
+ include/linux/dma-sync.h                   | 107 ++++++++++++
+ 54 files changed, 721 insertions(+), 699 deletions(-)
+ delete mode 100644 arch/arm/mach-oxnas/headsmp.S
+ delete mode 100644 arch/arm/mach-oxnas/platsmp.c
+ create mode 100644 include/linux/dma-sync.h
+
+-- 
+2.39.2
+
+Cc: Vineet Gupta <vgupta@kernel.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Guo Ren <guoren@kernel.org>
+Cc: Brian Cain <bcain@quicinc.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Michal Simek <monstr@monstr.eu>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Dinh Nguyen <dinguyen@kernel.org>
+Cc: Stafford Horne <shorne@gmail.com>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Rich Felker <dalias@libc.org>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Max Filippov <jcmvbkbc@gmail.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc: Conor Dooley <conor.dooley@microchip.com>
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-oxnas@groups.io
+Cc: linux-csky@vger.kernel.org
+Cc: linux-hexagon@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-openrisc@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-sh@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
+Cc: linux-xtensa@linux-xtensa.org
