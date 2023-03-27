@@ -2,132 +2,240 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B6D7C76195
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Mar 2023 15:43:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0640C76195
+	for <linux-m68k@archiver.kernel.org>; Mon, 27 Mar 2023 22:09:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232861AbjC0Pnm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 27 Mar 2023 11:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40944 "EHLO
+        id S229746AbjC0WJn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 27 Mar 2023 18:09:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232461AbjC0Png (ORCPT
+        with ESMTP id S229501AbjC0WJl (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 27 Mar 2023 11:43:36 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04434213A
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Mar 2023 08:43:12 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id d10so5394686pgt.12
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Mar 2023 08:43:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679931791;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HRasUUTOEu/ok1S92mQy2tcMp/4KwW2lXbLEiKBj/7o=;
-        b=a9Tyra08w6T369R91rXxrJCXkjOxFIaUXhoLteFSmlGCSLdt8AdxVWtyn3CbFIgjH2
-         8Kmhxlb+ngiF8mEjiLTkKc9xF4dS98sNTEQG9Q42/Zuer3HIlpb9AKrb/n5l3GHm+69F
-         t8fQxHdlfZ/Bp5QOU0Y4C2vxkwOquva/D9oDhE6EPqWhDlnDfvMJYVymxzG9S7shzhmk
-         XCnyuOfta3lwx3Clh/G1T2ZuqhosqsvJoLPOCsHKpEVDB1n82koUBBAZaar1g5VtWjgp
-         XyOHUGpwr9vL/R7yJV79k/MK4o4a7ok5+UqWolFwrzMSbY79qkiRDsPtNDvIHPwGWn/T
-         7KVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679931791;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HRasUUTOEu/ok1S92mQy2tcMp/4KwW2lXbLEiKBj/7o=;
-        b=Vjb+5ZoTrz3kfdRC8hccUYwrsQlklzOzOxkgOI7g18sQ7l+0rYxavKpertkBkkt513
-         B6fcdsCHbBVy0nWwZZyroVgFtiTiCV9C9MyzVhblgQUCIzPrIJGfEYkrJ3cNnr/ax6f7
-         O0Fpwm5Z9iuYFi5sscwlgtVCkyMEheoP1SjOa7cS2g1qiaoa8wr47j27w3+Ly+CCIsBp
-         liAuf+mLBtGRSMMuVOA3FZ310C01viahEGbiNlpdNOpIGS7M/eGInEdceN/UQ7xmdWWG
-         4mMjBcdJVmDaoM7T3CuyUD6PcnzSXYKytpXVLEQcPe5lx4pIbJyF5IB7ET/HfX8iM05j
-         TiRA==
-X-Gm-Message-State: AAQBX9dRGM10FIqc1eCAyczYOsjQmChPOw86XdGXi/3TWm88vduGKNz2
-        p3OpIQnTYsoS69ygDbPFKi4F6ddeZPPSfNZpGVY=
-X-Google-Smtp-Source: AKy350ZLARTDoGqBnXYfSrHDqt1ndSavaTIx5HilksseUiOHQOdKd5qG9m3KbOwJxwDn1K1TODO6L/v92bKQLX9gh5M=
-X-Received: by 2002:a63:e20f:0:b0:50a:592b:25ba with SMTP id
- q15-20020a63e20f000000b0050a592b25bamr3326211pgh.3.1679931790647; Mon, 27 Mar
- 2023 08:43:10 -0700 (PDT)
+        Mon, 27 Mar 2023 18:09:41 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8AB992
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Mar 2023 15:09:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1679954979; x=1711490979;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=6BHbMQs1pxGDMwXVK/xTlLZeRHbo+B3K718wGX0LvpU=;
+  b=mq93P9nwXm9vdhUun9P4HT6PW44hIyBxreZF0RVYReRM2QLR3KOc1Rdx
+   y2587uNNPXG2p3chA8ndtL38tFhsKszUHVVFbi5cIS4iNSbBW84hnZnLd
+   KsU/no84FX1taByPc7hvlc+ZCqqSQBwmPCwTI1v/cF6Ess39wUAlSj7Li
+   FX/09Cq3vfEKpRjIIvzxZZ+TxYsoYa378VhF/Ia4SRRd7KzVxKG5heXv3
+   aaCDrBGnM2agVfb9g8S+/RYCZyexg1btA6RvBRVjuGSMflcLQrpU/4BOE
+   YfyEZi6/fRyqp2HxWSJVObDGuCHwMH2U7Wsgjkhutv8nq5rP4GjwjUqB7
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10662"; a="403005173"
+X-IronPort-AV: E=Sophos;i="5.98,295,1673942400"; 
+   d="scan'208";a="403005173"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2023 15:09:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10662"; a="929624944"
+X-IronPort-AV: E=Sophos;i="5.98,295,1673942400"; 
+   d="scan'208";a="929624944"
+Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 27 Mar 2023 15:09:36 -0700
+Received: from kbuild by b613635ddfff with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pgv1z-000I3D-2y;
+        Mon, 27 Mar 2023 22:09:35 +0000
+Date:   Tue, 28 Mar 2023 06:08:46 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Greg Ungerer <gerg@uclinux.org>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org
+Subject: [gerg-m68knommu:armnommu 3/3]
+ arch/arm/include/asm/glue-cache.h:126:2: error: Unknown cache maintenance
+ model
+Message-ID: <202303280632.SyiLf8ne-lkp@intel.com>
 MIME-Version: 1.0
-References: <20230327121317.4081816-1-arnd@kernel.org> <20230327121317.4081816-3-arnd@kernel.org>
-In-Reply-To: <20230327121317.4081816-3-arnd@kernel.org>
-From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Mon, 27 Mar 2023 08:42:59 -0700
-Message-ID: <CAMo8BfJwjcQxWVW9o6brvBYTgUe9v=QGgs39=_V6Oc9-OKv7Sw@mail.gmail.com>
-Subject: Re: [PATCH 02/21] xtensa: dma-mapping: use normal cache invalidation rules
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Brian Cain <bcain@quicinc.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Christoph Hellwig <hch@lst.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-oxnas@groups.io,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Mar 27, 2023 at 5:14=E2=80=AFAM Arnd Bergmann <arnd@kernel.org> wro=
-te:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> xtensa is one of the platforms that has both write-back and write-through
-> caches, and needs to account for both in its DMA mapping operations.
->
-> It does this through a set of operations that is different from any
-> architecture. This is not a problem by itself, but it makes it rather
-> hard to figure out whether this is correct or not, and to unify this
-> implementation with the others.
->
-> Change the semantics to the usual ones for non-speculating CPUs:
->
->  - On DMA_TO_DEVICE, call __flush_dcache_range() to perform the
->    writeback even on writethrough caches, where this is a nop.
->
->  - On DMA_FROM_DEVICE, invalidate the mapping before the DMA rather
->    than afterwards.
->
->  - On DMA_BIDIRECTIONAL, combine the pre-writeback with the
->    post-invalidate into a call to __flush_invalidate_dcache_range()
->    that turns into a simple invalidate on writeback caches.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  arch/xtensa/Kconfig                  |  1 -
->  arch/xtensa/include/asm/cacheflush.h |  6 +++---
->  arch/xtensa/kernel/pci-dma.c         | 29 +++++-----------------------
->  3 files changed, 8 insertions(+), 28 deletions(-)
+Hi Greg,
 
-Reviewed-by: Max Filippov <jcmvbkbc@gmail.com>
+FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
 
---=20
-Thanks.
--- Max
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git armnommu
+head:   ab3e3486789d73658a4137c4d337e9c57e2be0de
+commit: 7a001f49d2e36c8feef08fec4b9c283af6a71df4 [3/3] ARM: versatile: support configuring versatile machine for no-MMU
+config: arm-randconfig-c002-20230327 (https://download.01.org/0day-ci/archive/20230328/202303280632.SyiLf8ne-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project 67409911353323ca5edf2049ef0df54132fa1ca7)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # install arm cross compiling tool for clang build
+        # apt-get install binutils-arm-linux-gnueabi
+        # https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git/commit/?id=7a001f49d2e36c8feef08fec4b9c283af6a71df4
+        git remote add gerg-m68knommu https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git
+        git fetch --no-tags gerg-m68knommu armnommu
+        git checkout 7a001f49d2e36c8feef08fec4b9c283af6a71df4
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm prepare
+
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Link: https://lore.kernel.org/oe-kbuild-all/202303280632.SyiLf8ne-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from arch/arm/kernel/asm-offsets.c:11:
+   In file included from include/linux/sched.h:14:
+   In file included from include/linux/pid.h:5:
+   In file included from include/linux/rculist.h:11:
+   In file included from include/linux/rcupdate.h:25:
+   In file included from include/linux/atomic.h:7:
+   arch/arm/include/asm/atomic.h:28:5: warning: '__LINUX_ARM_ARCH__' is not defined, evaluates to 0 [-Wundef]
+   #if __LINUX_ARM_ARCH__ >= 6
+       ^
+   In file included from arch/arm/kernel/asm-offsets.c:11:
+   In file included from include/linux/sched.h:14:
+   In file included from include/linux/pid.h:5:
+   In file included from include/linux/rculist.h:11:
+   In file included from include/linux/rcupdate.h:27:
+   In file included from include/linux/preempt.h:78:
+   In file included from ./arch/arm/include/generated/asm/preempt.h:1:
+   In file included from include/asm-generic/preempt.h:5:
+   In file included from include/linux/thread_info.h:13:
+   In file included from include/linux/bug.h:5:
+   In file included from arch/arm/include/asm/bug.h:7:
+   In file included from arch/arm/include/asm/opcodes.h:86:
+   In file included from include/linux/swab.h:5:
+   In file included from include/uapi/linux/swab.h:8:
+   In file included from arch/arm/include/asm/swab.h:19:
+   arch/arm/include/uapi/asm/swab.h:27:29: warning: '__LINUX_ARM_ARCH__' is not defined, evaluates to 0 [-Wundef]
+   #if !defined(__KERNEL__) || __LINUX_ARM_ARCH__ < 6
+                               ^
+   In file included from arch/arm/kernel/asm-offsets.c:11:
+   In file included from include/linux/sched.h:14:
+   In file included from include/linux/pid.h:5:
+   In file included from include/linux/rculist.h:11:
+   In file included from include/linux/rcupdate.h:27:
+   In file included from include/linux/preempt.h:78:
+   In file included from ./arch/arm/include/generated/asm/preempt.h:1:
+   In file included from include/asm-generic/preempt.h:5:
+   In file included from include/linux/thread_info.h:13:
+   In file included from include/linux/bug.h:5:
+   In file included from arch/arm/include/asm/bug.h:7:
+   In file included from arch/arm/include/asm/opcodes.h:86:
+   In file included from include/linux/swab.h:5:
+   In file included from include/uapi/linux/swab.h:8:
+   arch/arm/include/asm/swab.h:21:5: warning: '__LINUX_ARM_ARCH__' is not defined, evaluates to 0 [-Wundef]
+   #if __LINUX_ARM_ARCH__ >= 6
+       ^
+   In file included from arch/arm/kernel/asm-offsets.c:11:
+   In file included from include/linux/sched.h:14:
+   In file included from include/linux/pid.h:5:
+   In file included from include/linux/rculist.h:11:
+   In file included from include/linux/rcupdate.h:27:
+   In file included from include/linux/preempt.h:78:
+   In file included from ./arch/arm/include/generated/asm/preempt.h:1:
+   In file included from include/asm-generic/preempt.h:5:
+   In file included from include/linux/thread_info.h:14:
+   In file included from include/linux/restart_block.h:10:
+   In file included from include/linux/time64.h:5:
+   In file included from include/linux/math64.h:6:
+   In file included from include/linux/math.h:6:
+   In file included from arch/arm/include/asm/div64.h:107:
+   In file included from include/asm-generic/div64.h:55:
+   In file included from include/linux/log2.h:12:
+   In file included from include/linux/bitops.h:68:
+   arch/arm/include/asm/bitops.h:218:5: warning: '__LINUX_ARM_ARCH__' is not defined, evaluates to 0 [-Wundef]
+   #if __LINUX_ARM_ARCH__ < 5
+       ^
+   In file included from arch/arm/kernel/asm-offsets.c:11:
+   In file included from include/linux/sched.h:14:
+   In file included from include/linux/pid.h:5:
+   In file included from include/linux/rculist.h:11:
+   In file included from include/linux/rcupdate.h:27:
+   In file included from include/linux/preempt.h:78:
+   In file included from ./arch/arm/include/generated/asm/preempt.h:1:
+   In file included from include/asm-generic/preempt.h:5:
+   In file included from include/linux/thread_info.h:60:
+   In file included from arch/arm/include/asm/thread_info.h:13:
+   arch/arm/include/asm/fpstate.h:29:5: warning: '__LINUX_ARM_ARCH__' is not defined, evaluates to 0 [-Wundef]
+   #if __LINUX_ARM_ARCH__ < 6
+       ^
+   In file included from arch/arm/kernel/asm-offsets.c:12:
+   In file included from include/linux/mm.h:855:
+   In file included from include/linux/huge_mm.h:8:
+   In file included from include/linux/fs.h:33:
+   In file included from include/linux/percpu-rwsem.h:7:
+   In file included from include/linux/rcuwait.h:6:
+   In file included from include/linux/sched/signal.h:9:
+   In file included from include/linux/sched/task.h:11:
+   In file included from include/linux/uaccess.h:11:
+   arch/arm/include/asm/uaccess.h:302:5: warning: '__LINUX_ARM_ARCH__' is not defined, evaluates to 0 [-Wundef]
+   #if __LINUX_ARM_ARCH__ >= 6
+       ^
+   arch/arm/include/asm/uaccess.h:404:5: warning: '__LINUX_ARM_ARCH__' is not defined, evaluates to 0 [-Wundef]
+   #if __LINUX_ARM_ARCH__ >= 6
+       ^
+   In file included from arch/arm/kernel/asm-offsets.c:13:
+   In file included from include/linux/dma-mapping.h:10:
+   In file included from include/linux/scatterlist.h:9:
+   arch/arm/include/asm/io.h:53:5: warning: '__LINUX_ARM_ARCH__' is not defined, evaluates to 0 [-Wundef]
+   #if __LINUX_ARM_ARCH__ < 6
+       ^
+   In file included from arch/arm/kernel/asm-offsets.c:14:
+   In file included from arch/arm/include/asm/cacheflush.h:12:
+>> arch/arm/include/asm/glue-cache.h:126:2: error: Unknown cache maintenance model
+   #error Unknown cache maintenance model
+    ^
+   In file included from arch/arm/kernel/asm-offsets.c:14:
+   In file included from arch/arm/include/asm/cacheflush.h:14:
+   arch/arm/include/asm/cachetype.h:29:5: warning: '__LINUX_ARM_ARCH__' is not defined, evaluates to 0 [-Wundef]
+   #if __LINUX_ARM_ARCH__ >= 7
+       ^
+   arch/arm/include/asm/cachetype.h:34:7: warning: '__LINUX_ARM_ARCH__' is not defined, evaluates to 0 [-Wundef]
+   #elif __LINUX_ARM_ARCH__ >= 6
+         ^
+   In file included from arch/arm/kernel/asm-offsets.c:14:
+   arch/arm/include/asm/cacheflush.h:197:7: warning: '__LINUX_ARM_ARCH__' is not defined, evaluates to 0 [-Wundef]
+   #elif __LINUX_ARM_ARCH__ >= 7 && defined(CONFIG_SMP)
+         ^
+   arch/arm/include/asm/cacheflush.h:199:7: warning: '__LINUX_ARM_ARCH__' is not defined, evaluates to 0 [-Wundef]
+   #elif __LINUX_ARM_ARCH__ == 6 && defined(CONFIG_ARM_ERRATA_411920)
+         ^
+   In file included from arch/arm/kernel/asm-offsets.c:16:
+>> arch/arm/include/asm/glue-df.h:96:2: error: Unknown data abort handler type
+   #error Unknown data abort handler type
+    ^
+   In file included from arch/arm/kernel/asm-offsets.c:17:
+>> arch/arm/include/asm/glue-pf.h:51:2: error: Unknown prefetch abort handler type
+   #error Unknown prefetch abort handler type
+    ^
+   24 warnings and 3 errors generated.
+   make[2]: *** [scripts/Makefile.build:114: arch/arm/kernel/asm-offsets.s] Error 1
+   make[2]: Target 'prepare' not remade because of errors.
+   make[1]: *** [Makefile:1286: prepare0] Error 2
+   make[1]: Target 'prepare' not remade because of errors.
+   make: *** [Makefile:226: __sub-make] Error 2
+   make: Target 'prepare' not remade because of errors.
+
+
+vim +126 arch/arm/include/asm/glue-cache.h
+
+55bdd694116597 Catalin Marinas 2010-05-21  124  
+753790e713d80b Russell King    2011-02-06  125  #if !defined(_CACHE) && !defined(MULTI_CACHE)
+25985edcedea63 Lucas De Marchi 2011-03-30 @126  #error Unknown cache maintenance model
+753790e713d80b Russell King    2011-02-06  127  #endif
+753790e713d80b Russell King    2011-02-06  128  
+
+:::::: The code at line 126 was first introduced by commit
+:::::: 25985edcedea6396277003854657b5f3cb31a628 Fix common misspellings
+
+:::::: TO: Lucas De Marchi <lucas.demarchi@profusion.mobi>
+:::::: CC: Lucas De Marchi <lucas.demarchi@profusion.mobi>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
