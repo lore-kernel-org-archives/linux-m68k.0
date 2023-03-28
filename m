@@ -2,208 +2,162 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77FE0C6FD1D
-	for <linux-m68k@archiver.kernel.org>; Mon, 27 Mar 2023 23:06:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BDAE7C761A6
+	for <linux-m68k@archiver.kernel.org>; Tue, 28 Mar 2023 03:35:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbjC0XGl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 27 Mar 2023 19:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50696 "EHLO
+        id S229647AbjC1Dfi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 27 Mar 2023 23:35:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjC0XGl (ORCPT
+        with ESMTP id S230391AbjC1DfJ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 27 Mar 2023 19:06:41 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3552133
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Mar 2023 16:06:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679958400; x=1711494400;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=zX/MtX83LzByAvXcbNgYJ0iYMFKl65NE7UOELQK9Mro=;
-  b=NMW9cw2QqOywYJ/I28rqASXkPQoyD5PN7OavxkvEWNamkxGyPzG+vPvr
-   uDeKlVm9jxG94QM3a/0u/sBpJ49TRlVnNHAvBo2YkGwqUFwCQzujiyrkm
-   Uhy6Vg0TjUWTd9LgcXAV+F+3a8ZluB//VWmHqNXrl7usgm+aTq1wI+Om8
-   WbX/DcxfM4CH+3O1KdDQ0Omu3M6wBvnYkj4KUXVS6N6LPeIdHC4adNpzB
-   QuAn9x2+aOzTC2rm5CVyqLDN+YV8vuOOye6uuDFAsGKtFw8w5U0YUz/bf
-   tCSzaHY6gUZbjZaE1bu9ePpVnL1e+1zAjf7vI67rowh99ZsXqeExOrqUc
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10662"; a="368169565"
-X-IronPort-AV: E=Sophos;i="5.98,295,1673942400"; 
-   d="scan'208";a="368169565"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2023 16:06:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10662"; a="716254138"
-X-IronPort-AV: E=Sophos;i="5.98,295,1673942400"; 
-   d="scan'208";a="716254138"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 27 Mar 2023 16:06:37 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pgvvB-000I4a-0O;
-        Mon, 27 Mar 2023 23:06:37 +0000
-Date:   Tue, 28 Mar 2023 07:06:06 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 97e3e4fbb21e8f1f46dc0d13e72bd6b588626645
-Message-ID: <6422215e./LJ6pU89t2kjp8hB%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        Mon, 27 Mar 2023 23:35:09 -0400
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB713C32
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Mar 2023 20:34:43 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 7C2AA320092A;
+        Mon, 27 Mar 2023 23:34:41 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Mon, 27 Mar 2023 23:34:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1679974481; x=1680060881; bh=AhIj+tjC+n7yU
+        E4WXQ+e+YfxhCUag4nho6eJgRAgadM=; b=vJjLVF3F7HLCaocWXpRUvPB4W85/7
+        QAt/bLv7XBQIRablJGFI6k40wE8GVX/Cgpmvwx2dwBB7oASlwqIAYam4QKQnc6IU
+        n8TG77CT38BHYi6rvRSv6B2Qv6tTrnr8Y/b6s+2eUi0oJo8zeAbBKYKw2WGaNwl2
+        8uQ0BBOohymI1KDEwRv3FUtqGNO7+hEbOPAywF2qeaBhrF0WgQo2GAwrMZdoI9Yt
+        CuLKGTBajWuR01lOkebLGi4HyXM0zxHhC64ExD3ez2NIU/g6ulPSE6li0VVDtR0K
+        /ADNckmYskyGPh0Y4b7zIh/+Pg4YsFY/nU0/Vtp8dYYknQLiLSnI7JEbw==
+X-ME-Sender: <xms:UGAiZO4CkT1Nr-x9Lhw_MzGF6KwM27yL-EjoCDSHFSEsDEjM9WDPUg>
+    <xme:UGAiZH4vvt45ldRrzjWt6HeOCYaNtY4K0GmkBUJEMVhFZ3dLZxCUqo5Onz_j2tlPN
+    NOHkFsB1pI04x876Lo>
+X-ME-Received: <xmr:UGAiZNfELbkqC-Uhm3jcM1RbV7bcsGaCClyuFM5QTAIRy4Qlrx-6XGp2jVE-yrr73puox9XsC_pg0K8wHKF6TLVEA3AxRgr9Zcg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdehfedgjeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvufgjkfhfgggtsehttdertd
+    dttddvnecuhfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidq
+    mheikehkrdhorhhgqeenucggtffrrghtthgvrhhnpeffjeegjeefuedvleekgeeileegud
+    fhgfduudeifefhhffhvdfghfdttddtjeejteenucffohhmrghinhepuggvsghirghnrdho
+    rhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
+    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:UGAiZLJlbSS0wSBZRO8kJfE14MmInYFsRsYnnWcuCg2_A8fn4cLMyg>
+    <xmx:UGAiZCL9TSTQ6GxaivdT1wbNSsQDGzNvYQ-FbdBs6EiqlvntUBo2Rw>
+    <xmx:UGAiZMzv394TXa8z2qsxIQ4GmkwtQx6UghPtkHLPeE_1-tW3bXAvCA>
+    <xmx:UWAiZBmU_WS_EHFNbJfhle3ACV8FS-5QjSAD8Hr61MWnepyRjvLJcw>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 27 Mar 2023 23:34:37 -0400 (EDT)
+Date:   Tue, 28 Mar 2023 14:37:38 +1100 (AEDT)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     debian-68k@lists.debian.org, linux-m68k@lists.linux-m68k.org
+Subject: core dump analysis, was Re: stack smashing detected
+In-Reply-To: <1725f7c1-2084-a404-653d-9e9f8bbe961c@linux-m68k.org>
+Message-ID: <e10b8e06-6a36-5c83-89da-bec8fd7d3ed9@linux-m68k.org>
+References: <4a9c1d0d-07aa-792e-921f-237d5a30fc44.ref@yahoo.com> <8d54f302-0a39-b8c7-4115-5c10c1d3769f@gmail.com> <203b8fd4-6618-27a8-7d18-d50e7accfa4b@gmail.com> <33d7ea3e-9bd2-16e4-4d9a-f7aa5657a0f7@yahoo.com> <c267a9fc-7788-f905-d984-e0372d50d0ec@gmail.com>
+ <dff09ed2-af93-fd43-6d6f-045a6fc0e30d@gmail.com> <c01e2f1c-425f-478d-918e-cd1fd37e0008@yahoo.com> <aee359a6-b5e0-fbe2-3988-779f8601f106@gmail.com> <8042d988-6dd9-8170-60e9-cdf19118440f@yahoo.com> <a8f06e4b-db28-c8f9-5e21-3ea0f3eebacd@linux-m68k.org>
+ <bb27b393-3d02-f42c-5c7f-c27d4936ece9@linux-m68k.org> <37da2ca2-dd99-8417-7cae-a88e2e7fc1b6@yahoo.com> <30a1be59-a1fd-f882-1072-c7db8734b1f1@gmail.com> <39f79c2d-e803-d7b1-078f-8757ca9b1238@yahoo.com> <c47abfdc-31c8-e7ed-1c14-90f68710f25d@gmail.com>
+ <040ad66a-71dd-001b-0446-36cbd6547b37@yahoo.com> <5b9d64bb-2adc-20a2-f596-f99bf255b5cc@linux-m68k.org> <56bd9a33-c58a-58e0-3956-e63c61abe5fe@yahoo.com> <1725f7c1-2084-a404-653d-9e9f8bbe961c@linux-m68k.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 97e3e4fbb21e8f1f46dc0d13e72bd6b588626645  Merge tag 'v6.3-rc4'
+On Sat, 18 Feb 2023, I wrote:
 
-elapsed time: 727m
+> On Fri, 17 Feb 2023, Stan Johnson wrote:
+> 
+> > 
+> > That's not to say a SIGABRT is ignored, it just doesn't kill PID 1.
+> > 
+> 
+> I doubt that /sbin/init is generating the "stack smashing detected" 
+> error but you may need to modify it to find out. If you can't figure out 
+> which userland binary is involved, you'll have to focus on your custom 
+> kernel binary, just as I proposed in my message dated 8 Feb 2023.
+> 
 
-configs tested: 133
-configs skipped: 9
+Using the core dump I generated on my Mac LC III, and using a workaround 
+for the gdb regression, I was able to get the backtrace below.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+root@(none):/root# gdb
+GNU gdb (Debian 13.1-2) 13.1
+Copyright (C) 2023 Free Software Foundation, Inc.
+...
+(gdb) set osabi GNU/Linux
+(gdb) exec /bin/dash
+(gdb) core /root/core.0
+warning: core file may not match specified executable file.
+[New LWP 366]
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/m68k-linux-gnu/libthread_db.so.1".
+Core was generated by `/bin/sh /etc/init.d/mountkernfs.sh reload'.
+Program terminated with signal SIGABRT, Aborted.
+#0  __pthread_kill_implementation (threadid=3222954656, signo=6, no_tid=0)
+    at pthread_kill.c:44
+44      pthread_kill.c: No such file or directory.
+(gdb) bt
+#0  __pthread_kill_implementation (threadid=3222954656, signo=6, no_tid=0)
+    at pthread_kill.c:44
+#1  0xc00a7080 in __pthread_kill_internal (signo=6, threadid=3222954656)
+    at pthread_kill.c:78
+#2  __GI___pthread_kill (threadid=3222954656, signo=6) at pthread_kill.c:89
+#3  0xc0064c22 in __GI_raise (sig=6) at ../sysdeps/posix/raise.c:26
+#4  0xc0052faa in __GI_abort () at abort.c:79
+#5  0xc009b328 in __libc_message (action=<optimized out>, fmt=<optimized out>)
+    at ../sysdeps/posix/libc_fatal.c:155
+#6  0xc012a3c2 in __GI___fortify_fail (
+    msg=0xc0182c5e "stack smashing detected") at fortify_fail.c:26
+#7  0xc012a3a0 in __stack_chk_fail () at stack_chk_fail.c:24
+#8  0xc00e0172 in __wait3 (stat_loc=<optimized out>, options=<optimized out>, 
+    usage=<optimized out>) at ../sysdeps/unix/sysv/linux/wait3.c:41
+#9  0xd000c38e in ?? ()
+#10 0xefee111e in ?? ()
+#11 0x00000000 in ?? ()
+(gdb) 
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r021-20230326   gcc  
-alpha                randconfig-r024-20230327   gcc  
-alpha                randconfig-r032-20230327   gcc  
-arc                              allyesconfig   gcc  
-arc          buildonly-randconfig-r006-20230326   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r025-20230327   gcc  
-arc                  randconfig-r043-20230326   gcc  
-arc                  randconfig-r043-20230327   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                  randconfig-r016-20230326   clang
-arm                  randconfig-r033-20230326   gcc  
-arm                  randconfig-r046-20230326   clang
-arm                  randconfig-r046-20230327   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r005-20230327   gcc  
-arm64                randconfig-r024-20230326   gcc  
-arm64                randconfig-r031-20230327   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r004-20230326   gcc  
-csky                 randconfig-r006-20230326   gcc  
-csky                 randconfig-r012-20230326   gcc  
-hexagon      buildonly-randconfig-r005-20230326   clang
-hexagon      buildonly-randconfig-r006-20230327   clang
-hexagon              randconfig-r021-20230327   clang
-hexagon              randconfig-r023-20230327   clang
-hexagon              randconfig-r041-20230326   clang
-hexagon              randconfig-r041-20230327   clang
-hexagon              randconfig-r045-20230326   clang
-hexagon              randconfig-r045-20230327   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r003-20230327   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-a001-20230327   gcc  
-i386                 randconfig-a002-20230327   gcc  
-i386                 randconfig-a003-20230327   gcc  
-i386                 randconfig-a004-20230327   gcc  
-i386                 randconfig-a005-20230327   gcc  
-i386                 randconfig-a006-20230327   gcc  
-i386                 randconfig-a011-20230327   clang
-i386                 randconfig-a012-20230327   clang
-i386                 randconfig-a013-20230327   clang
-i386                 randconfig-a014-20230327   clang
-i386                 randconfig-a015-20230327   clang
-i386                 randconfig-a016-20230327   clang
-ia64                             allmodconfig   gcc  
-ia64                                defconfig   gcc  
-ia64                 randconfig-r031-20230326   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r002-20230327   gcc  
-m68k                             allmodconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r022-20230326   gcc  
-m68k                 randconfig-r035-20230327   gcc  
-microblaze   buildonly-randconfig-r002-20230326   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips         buildonly-randconfig-r005-20230327   clang
-mips                 randconfig-r001-20230326   gcc  
-mips                 randconfig-r014-20230327   gcc  
-mips                 randconfig-r015-20230326   clang
-mips                 randconfig-r034-20230326   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r005-20230326   gcc  
-nios2                randconfig-r023-20230326   gcc  
-openrisc             randconfig-r006-20230327   gcc  
-parisc       buildonly-randconfig-r004-20230326   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r012-20230327   gcc  
-parisc               randconfig-r013-20230326   gcc  
-parisc               randconfig-r016-20230327   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc      buildonly-randconfig-r003-20230326   gcc  
-powerpc              randconfig-r002-20230326   clang
-powerpc              randconfig-r034-20230327   gcc  
-powerpc              randconfig-r036-20230326   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r025-20230326   gcc  
-riscv                randconfig-r042-20230326   gcc  
-riscv                randconfig-r042-20230327   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r022-20230327   clang
-s390                 randconfig-r044-20230326   gcc  
-s390                 randconfig-r044-20230327   clang
-sh                               allmodconfig   gcc  
-sh                   randconfig-r026-20230326   gcc  
-sh                   randconfig-r032-20230326   gcc  
-sparc        buildonly-randconfig-r004-20230327   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r035-20230326   gcc  
-sparc                randconfig-r036-20230327   gcc  
-sparc64      buildonly-randconfig-r001-20230326   gcc  
-sparc64              randconfig-r001-20230327   gcc  
-sparc64              randconfig-r003-20230327   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-a001-20230327   gcc  
-x86_64               randconfig-a002-20230327   gcc  
-x86_64               randconfig-a003-20230327   gcc  
-x86_64               randconfig-a004-20230327   gcc  
-x86_64               randconfig-a005-20230327   gcc  
-x86_64               randconfig-a006-20230327   gcc  
-x86_64               randconfig-a011-20230327   clang
-x86_64               randconfig-a012-20230327   clang
-x86_64               randconfig-a013-20230327   clang
-x86_64               randconfig-a014-20230327   clang
-x86_64               randconfig-a015-20230327   clang
-x86_64               randconfig-a016-20230327   clang
-x86_64               randconfig-r013-20230327   clang
-x86_64               randconfig-r033-20230327   gcc  
-x86_64                               rhel-8.3   gcc  
-xtensa               randconfig-r004-20230327   gcc  
-xtensa               randconfig-r011-20230326   gcc  
-xtensa               randconfig-r015-20230327   gcc  
+It appears that the failure was in glibc (though I guess the root cause 
+may lie elsewhere). I have two more core files generated by dash (actually 
+by `/bin/sh /etc/rcS.d/S08mountall.sh start') that give the same 
+backtrace. So even though the failure is intermittent, the site of the 
+buffer overrun seems to be consistent.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+Looking at sysdeps/unix/sysv/linux/wait3.c, I guess the only possible 
+place for a buffer overrun would be struct __rusage64 usage64.
+https://sources.debian.org/src/glibc/2.36-8/sysdeps/unix/sysv/linux/wait3.c/?hl=41#L41
+
+(gdb) select-frame 8
+(gdb) print usage64
+$3 = {ru_utime = {tv_sec = 6481621047248640, tv_usec = 91671782025504}, 
+  ru_stime = {tv_sec = 25769811968, tv_usec = 8591449888}, {
+    ru_maxrss = 1515296, __ru_maxrss_word = 1515296}, {ru_ixrss = 1515296, 
+    __ru_ixrss_word = 1515296}, {ru_idrss = 224, __ru_idrss_word = 224}, {
+    ru_isrss = 224, __ru_isrss_word = 224}, {ru_minflt = 6, 
+    __ru_minflt_word = 6}, {ru_majflt = 4, __ru_majflt_word = 4}, {
+    ru_nswap = 4, __ru_nswap_word = 4}, {ru_inblock = 372, 
+    __ru_inblock_word = 372}, {ru_oublock = 0, __ru_oublock_word = 0}, {
+    ru_msgsnd = 0, __ru_msgsnd_word = 0}, {ru_msgrcv = 8, 
+    __ru_msgrcv_word = 8}, {ru_nsignals = 367, __ru_nsignals_word = 367}, {
+    ru_nvcsw = 10, __ru_nvcsw_word = 10}, {ru_nivcsw = 0, 
+    __ru_nivcsw_word = 0}}
+(gdb)
+
+Of course, at this point the damage has already been done and the culprit 
+has gone. I guess there was a buffer overrun during the call to 
+__wait4_time64(). 
+https://sources.debian.org/src/glibc/2.36-8/sysdeps/unix/sysv/linux/wait4.c/?hl=26#L26
+
+It's hard to read glibc source code without knowing what all the macros 
+were set to (such as __KERNEL_OLD_TIMEVAL_MATCHES_TIMEVAL64 and 
+__TIMESIZE).
+
+It would be disappointing if rusage64_to_rusage() in __wait3() was being 
+applied to the result of rusage32_to_rusage64() from __wait4_time64(). 
+Perhaps the ifdefs are arranged in such a way that it doesn't happen...
+
+Anyway, does anyone know how to get a hex dump of the whole stack frame 
+including the canary, in case there is something to be learned from that?
