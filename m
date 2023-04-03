@@ -2,190 +2,96 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2260EC76196
-	for <linux-m68k@archiver.kernel.org>; Mon,  3 Apr 2023 21:53:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F573C76188
+	for <linux-m68k@archiver.kernel.org>; Mon,  3 Apr 2023 22:48:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233569AbjDCVxr (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 3 Apr 2023 17:53:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50980 "EHLO
+        id S232991AbjDCWsA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 3 Apr 2023 18:48:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233317AbjDCVxq (ORCPT
+        with ESMTP id S233575AbjDCWr7 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 3 Apr 2023 17:53:46 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C97F490
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  3 Apr 2023 14:53:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680558825; x=1712094825;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=a9nxfsbE467bQ9fRy1IqjWdx4H2PJkBZ775YYkophSY=;
-  b=GL2r50yO8Y53b1cX9JegyIrysg6xCA29KPYlL6dMH87f0sMNF3DauuPZ
-   RcvQzaH9DxdnYwzLoRekv8QMSuDfbmQJnbe8Lb2SmKexMSSQv6nIXpDJQ
-   nd3insvkQPDxD3RV7OY40e51I8RCn3T7PCAz802ooKxNWAsHT2snUqaej
-   jJzleNxggNe+1fQ4tFdijxnO20mp3h63IBVE9OvKAmVEM4E76ZyTdXE1k
-   O0T5VnXx01WjbZGCH6BOIbKPZv6K9rgm37gWuAJd5aVcOf5a6ENLxBiqP
-   shEElZ9ld11ttI9rC9Uo9VDRQEYyu459yesH5/eLqXxUmnL0nLt7OBmmT
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="339514122"
-X-IronPort-AV: E=Sophos;i="5.98,315,1673942400"; 
-   d="scan'208";a="339514122"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2023 14:53:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="829720985"
-X-IronPort-AV: E=Sophos;i="5.98,315,1673942400"; 
-   d="scan'208";a="829720985"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 03 Apr 2023 14:53:43 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pjS7S-000OrM-26;
-        Mon, 03 Apr 2023 21:53:42 +0000
-Date:   Tue, 04 Apr 2023 05:53:15 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 98485defdf60678296754fce632b05c68f447029
-Message-ID: <642b4acb.gXqroJzw1JI8IZO8%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        Mon, 3 Apr 2023 18:47:59 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AAA6422B
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  3 Apr 2023 15:47:56 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id A6D915C00C4;
+        Mon,  3 Apr 2023 18:47:52 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 03 Apr 2023 18:47:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1680562072; x=1680648472; bh=HjLIyLDWon/8S
+        zB1xJHwySrY+xLuVrMidxaaGOH0+x0=; b=duj8NO5bS0tduhnEImsV3OGpKvPtx
+        LkHspA/V3FTxfMRMsc1Q4r3z8oagaSROm4nnFVdgXH3fMnWlkpybvOGeoTHOraFv
+        63duZK16O8IzJodwSXkLzT/qNO00w9N87kNwInOsj18WnHbbNCSb/7ifUeadOpu8
+        ufYnrMX1VRxyhOyUrGcGXTx4q85MYzrfOwvCMvz5ujVIU3+QbUogn5k7WeVE3IxB
+        XpaqUZZdEiaAWOyc++RTTiQ/sg21v0/39eLw8tP7QAR48Vpv5SZmVzFtCsh2EAZc
+        wCIh6MCQe0Lc8Suf/yDOXVZG5mXEzWKPYNPjBzhmbOaAa65YcpPjp2MMg==
+X-ME-Sender: <xms:l1crZAmH4vCgBpWQw0J0jUJz7ggNXZzJcXy20QY65R2M1ssd0KuCoQ>
+    <xme:l1crZP2wB6iA3gJLmBkraX8D8l29JanWKccD6P3JAKXICpoNzNKAIDSRCnRszTBQa
+    obfU76WR1SFMCzNrRA>
+X-ME-Received: <xmr:l1crZOoB5vqkCcvG_bD410gSFH8WR4oftFVqqMCeHvYY7kvXMFVJ3bEAZiogxE8hH9M7jB5VLgOJG5kQVcdgyPWrpKPTBnv8y0A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdeijedgudejkecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhn
+    ucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrf
+    grthhtvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedv
+    ueehueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:l1crZMl4Qm7aRC2byvLiZPqTPmIEo7LrOjQzvyHs5ldj_iHomi0y3w>
+    <xmx:l1crZO3HYY5dpqIKWc4Hz419GE54U2d46OR99geV64Dcx_InhuyuQA>
+    <xmx:l1crZDuqo86iazpisFqW327fKojW0Lg4FgebHZmpNGn446G75jFjPg>
+    <xmx:mFcrZD90-uaUt1cBb1Rh4XeQwAsI6GRbD_F5j_ANqeAuf2K0TJW0Hw>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 3 Apr 2023 18:47:50 -0400 (EDT)
+Date:   Tue, 4 Apr 2023 08:50:59 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Brad Boyer <flar@allandria.com>
+cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v3] nubus: Don't list slot resources by default
+In-Reply-To: <20230403061827.GA3406@allandria.com>
+Message-ID: <e887a8c9-4310-a6cb-62d2-39db7d75d452@linux-m68k.org>
+References: <62e815b947d6d602def8294040529db80278c561.1679801822.git.fthain@linux-m68k.org> <20230403061827.GA3406@allandria.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 98485defdf60678296754fce632b05c68f447029  Merge tag 'v6.3-rc5'
+On Sun, 2 Apr 2023, Brad Boyer wrote:
 
-elapsed time: 727m
+> On Sun, Mar 26, 2023 at 02:37:02PM +1100, Finn Thain wrote:
+> > diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
+> > index f70ba58dbc55..d2d2b580f646 100644
+> > --- a/drivers/nubus/nubus.c
+> > +++ b/drivers/nubus/nubus.c
+> > @@ -32,6 +32,12 @@
+> >  
+> >  /* Globals */
+> >  
+> > +/* This parameter makes slot resources available in procfs. It's deprecated and
+> > + * disabled by default as procfs is no longer thought to be suitable for that.
+> > + */
+> > +bool populate_procfs;
+> > +module_param(populate_procfs, bool, 0);
+> > +
+> >  LIST_HEAD(nubus_func_rsrcs);
+> >  
+> >  /* Meaning of "bytelanes":
+> 
+> Would it be better to give this option a name that indicates that it is 
+> for nubus only? These are effectively a global namespace. Other than 
+> this, I don't see any issues.
+> 
 
-configs tested: 115
-configs skipped: 9
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r026-20230403   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r023-20230403   gcc  
-arc                  randconfig-r034-20230403   gcc  
-arc                  randconfig-r043-20230402   gcc  
-arc                  randconfig-r043-20230403   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                  randconfig-r046-20230402   gcc  
-arm                  randconfig-r046-20230403   clang
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r004-20230402   gcc  
-arm64                randconfig-r005-20230402   gcc  
-arm64                randconfig-r022-20230403   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r003-20230403   gcc  
-csky                 randconfig-r033-20230403   gcc  
-hexagon              randconfig-r016-20230403   clang
-hexagon              randconfig-r035-20230403   clang
-hexagon              randconfig-r041-20230402   clang
-hexagon              randconfig-r041-20230403   clang
-hexagon              randconfig-r045-20230402   clang
-hexagon              randconfig-r045-20230403   clang
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-a001-20230403   clang
-i386                 randconfig-a002-20230403   clang
-i386                 randconfig-a003-20230403   clang
-i386                 randconfig-a004-20230403   clang
-i386                 randconfig-a005-20230403   clang
-i386                 randconfig-a006-20230403   clang
-i386                 randconfig-a011-20230403   gcc  
-i386                 randconfig-a012-20230403   gcc  
-i386                 randconfig-a013-20230403   gcc  
-i386                 randconfig-a014-20230403   gcc  
-i386                 randconfig-a015-20230403   gcc  
-i386                 randconfig-a016-20230403   gcc  
-i386                 randconfig-r036-20230403   clang
-ia64                             allmodconfig   gcc  
-ia64                                defconfig   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r003-20230402   gcc  
-microblaze           randconfig-r001-20230403   gcc  
-microblaze           randconfig-r002-20230403   gcc  
-microblaze           randconfig-r025-20230402   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                 randconfig-r025-20230403   clang
-mips                 randconfig-r026-20230402   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r021-20230402   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r013-20230402   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc              randconfig-r013-20230403   gcc  
-powerpc              randconfig-r022-20230402   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r006-20230403   clang
-riscv                randconfig-r042-20230402   clang
-riscv                randconfig-r042-20230403   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r012-20230403   gcc  
-s390                 randconfig-r014-20230402   clang
-s390                 randconfig-r044-20230402   clang
-s390                 randconfig-r044-20230403   gcc  
-sh                               allmodconfig   gcc  
-sh                   randconfig-r011-20230403   gcc  
-sh                   randconfig-r031-20230403   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r004-20230403   gcc  
-sparc64              randconfig-r001-20230402   gcc  
-sparc64              randconfig-r006-20230402   gcc  
-sparc64              randconfig-r015-20230403   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-a001-20230403   clang
-x86_64               randconfig-a002-20230403   clang
-x86_64               randconfig-a003-20230403   clang
-x86_64               randconfig-a004-20230403   clang
-x86_64               randconfig-a005-20230403   clang
-x86_64               randconfig-a006-20230403   clang
-x86_64               randconfig-a011-20230403   gcc  
-x86_64               randconfig-a012-20230403   gcc  
-x86_64               randconfig-a013-20230403   gcc  
-x86_64               randconfig-a014-20230403   gcc  
-x86_64               randconfig-a015-20230403   gcc  
-x86_64               randconfig-a016-20230403   gcc  
-x86_64               randconfig-r024-20230403   gcc  
-x86_64               randconfig-r032-20230403   clang
-x86_64                               rhel-8.3   gcc  
-xtensa               randconfig-r012-20230402   gcc  
-xtensa               randconfig-r014-20230403   gcc  
-xtensa               randconfig-r015-20230402   gcc  
-xtensa               randconfig-r024-20230402   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+The name of the module here is "nubus", so this parameter is specified as 
+"nubus.populate_procfs" in the kernel parameters. Without the "nubus" it 
+doesn't work. I should probably add a comment about that.
