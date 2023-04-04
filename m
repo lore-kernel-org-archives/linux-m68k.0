@@ -2,113 +2,191 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9205C6FD1D
-	for <linux-m68k@archiver.kernel.org>; Tue,  4 Apr 2023 11:06:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FCB8C761A6
+	for <linux-m68k@archiver.kernel.org>; Tue,  4 Apr 2023 11:50:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234516AbjDDLGY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 4 Apr 2023 07:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33992 "EHLO
+        id S234903AbjDDLuo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 4 Apr 2023 07:50:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234527AbjDDLGH (ORCPT
+        with ESMTP id S234165AbjDDLun (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 4 Apr 2023 07:06:07 -0400
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AEA555AD
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  4 Apr 2023 04:04:07 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 046BF5C0068;
-        Tue,  4 Apr 2023 07:02:16 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 04 Apr 2023 07:02:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1680606136; x=1680692536; bh=sSo2sqnGTsVy6
-        cwFguvYTeFjtXdy4pFTSD0oaCiuLyE=; b=ez/u/uRCsvbG3GgUE+Q4CSUMU/dsZ
-        kcswAG4z4OlZSvGgkvVURohXyo2lqnqmKdjyoWuAY/LizjmTVUVv9GC9siHdlM+w
-        8dfBuRYD6nkj8VpYTQakmn38E71H9L6sW1C9SL+3lUgx44cPyIYnm4K6UELj+wSU
-        olM0Ugxn7GKhe+OVtZpyv95SIu6hymxxdPwY3T0wjXve4S46GFUzDoPq1Pa4h9Gn
-        ATegS6f1ckdK5M/Tusw3BXoj/rRELAVtRWZ8xlIYZAOHg7vWRXfJ6mpMnYJ9XVzR
-        s4S3eIjZT5l6dWOoy7PODoqQcokcz/A1nK3r8hCH5v6mhksFzrR9pbv3w==
-X-ME-Sender: <xms:twMsZMAMItEG8bTEr-rG49zdiAXBd12efpUTd8hY5tom9Obxedf8sA>
-    <xme:twMsZOgJ6isR6taNyfZqkbLwrKZfC8BfbQ4_nWN5XwrtGHPx607ofGGDlkBKP09tM
-    s9EqWUhxf_07mZPeqs>
-X-ME-Received: <xmr:twMsZPn_zEA7n-AmzDnVhwX_AhgNAOfOqWP7waQqt3oJGKGC2aXmz6njxheK5wwEUETRYia_PIr5Cci-wOFzxEITjFF5DTG1tTk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdeiledgfeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
-    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
-    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:twMsZCwfsvECih8sKaD7L7JYxvVXr1SYZ5PUd_jsQBcL4C4O0zPjVw>
-    <xmx:twMsZBSSrBEhMDlHhmp2tze-3IH9aWKRRuMvE7fAe_17lgUl2t23WA>
-    <xmx:twMsZNbGDhWZrJfIacFjnJ89YVuKC67X5VVmNd6N-Zd-PcUk6l-dVQ>
-    <xmx:uAMsZC7DsnulNSUcoS2rpgNoGXG8Ea6d32eoPTDFbtNRp655H5i_UA>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 4 Apr 2023 07:02:14 -0400 (EDT)
-Date:   Tue, 4 Apr 2023 21:05:22 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-cc:     debian-68k@lists.debian.org, linux-m68k@lists.linux-m68k.org
-Subject: Re: core dump analysis, was Re: stack smashing detected
-In-Reply-To: <69f70488-b84d-7c24-d001-529896f3bd34@linux-m68k.org>
-Message-ID: <e51458c8-353d-c339-5e3e-d4feb5d0da36@linux-m68k.org>
-References: <4a9c1d0d-07aa-792e-921f-237d5a30fc44.ref@yahoo.com> <a8f06e4b-db28-c8f9-5e21-3ea0f3eebacd@linux-m68k.org> <bb27b393-3d02-f42c-5c7f-c27d4936ece9@linux-m68k.org> <37da2ca2-dd99-8417-7cae-a88e2e7fc1b6@yahoo.com> <30a1be59-a1fd-f882-1072-c7db8734b1f1@gmail.com>
- <39f79c2d-e803-d7b1-078f-8757ca9b1238@yahoo.com> <c47abfdc-31c8-e7ed-1c14-90f68710f25d@gmail.com> <040ad66a-71dd-001b-0446-36cbd6547b37@yahoo.com> <5b9d64bb-2adc-20a2-f596-f99bf255b5cc@linux-m68k.org> <56bd9a33-c58a-58e0-3956-e63c61abe5fe@yahoo.com>
- <1725f7c1-2084-a404-653d-9e9f8bbe961c@linux-m68k.org> <e10b8e06-6a36-5c83-89da-bec8fd7d3ed9@linux-m68k.org> <19d1f2ac-67dd-5415-b64a-1e1b4451f01e@linux-m68k.org> <ef5bcf6f-3541-50c2-9b6a-5e9d2f9c68d5@linux-m68k.org> <6c4d497e-6f0e-35cc-908e-9ef98151a56a@gmail.com>
- <44c29a26-a470-c03a-da55-0a9f6d347edd@linux-m68k.org> <d6bdf882-9470-4d05-bd3c-36a1f3410fc1@gmail.com> <69f70488-b84d-7c24-d001-529896f3bd34@linux-m68k.org>
+        Tue, 4 Apr 2023 07:50:43 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EC5D35AC
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  4 Apr 2023 04:50:37 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id r11so129454067edd.5
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 04 Apr 2023 04:50:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxtx.org; s=google; t=1680609035;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:sender:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=I+C2675DfMBQc+7bmUpHmKjNV2QoW8Hg7liBbtScQEs=;
+        b=W4e1ge3GPQTmX0C71yqeRi0KrdamhjjB8UeVprdmGQkAwHCMKylEsOKg2Ht0ZrCjVL
+         ElMzk5ulNt5TMGLg+RDg8+9KRit3EKJzOc4Dn68iTht2HAgZxY1VIN6kYZM9X8SQQIW2
+         c7JmPvdtndkyEqcZooH8Ze4qhrM8b4U7AHitI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680609035;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=I+C2675DfMBQc+7bmUpHmKjNV2QoW8Hg7liBbtScQEs=;
+        b=uGAYwEdCIwW3uc1KEVy40nR7LYbkz0V6HAJ4XDZogm7QjXWM5g5drkt4+uRGWV/Ce8
+         mnr7njugnU04uTztF8edQZV9fVOqqTBkygO+oanLuodF3yCMfh0WUv/ALKN/ARumB7Ue
+         DRNaSEnupohmASpYQPjCUtu6jV2qXY3i5QOMc38jg5UOxKP5JC2ckO0TxLYlMlsMa9m2
+         JETi/7ajxOb9IKKKEuoJTAF7K+g8+kxGvVZcH7D0cSJWdbanLedaJNsJsPfkiB80AtTR
+         z0yBffdy1JQtoAtXyoDUJYuVGQu8OJ/Q6MN6Gsm7Bfu7n6m8qeY1iGSI8HuRHtxVKy3U
+         /zjA==
+X-Gm-Message-State: AAQBX9f8jcqi9jlgPrtUt2KI0lSH67O44Wq1vLsHVFhRZYciPBqJBOT+
+        i9pF9DTzoWXSwSXWeYBatD6aurGb3SQU5HaX0K0lfGje00A=
+X-Google-Smtp-Source: AKy350bWgoVgNoEE7t1qbbWJMKjPhxcPBGZ6Dkc3V18peNh8vDTdNp27KIYBzE2rcKfkxFdsu1QbPw==
+X-Received: by 2002:a17:907:3e2a:b0:930:57e5:d9a8 with SMTP id hp42-20020a1709073e2a00b0093057e5d9a8mr2177326ejc.68.1680609035221;
+        Tue, 04 Apr 2023 04:50:35 -0700 (PDT)
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com. [209.85.128.51])
+        by smtp.gmail.com with ESMTPSA id dx21-20020a170906a85500b008d044ede804sm5815957ejb.163.2023.04.04.04.50.34
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 Apr 2023 04:50:34 -0700 (PDT)
+Sender: Justin Forbes <jmforbes@linuxtx.org>
+Received: by mail-wm1-f51.google.com with SMTP id d11-20020a05600c3acb00b003ef6e6754c5so16192746wms.5
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 04 Apr 2023 04:50:34 -0700 (PDT)
+X-Received: by 2002:a05:6512:38d1:b0:4e8:45d5:53cd with SMTP id
+ p17-20020a05651238d100b004e845d553cdmr662558lft.12.1680609012911; Tue, 04 Apr
+ 2023 04:50:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20230325060828.2662773-1-rppt@kernel.org> <20230325060828.2662773-3-rppt@kernel.org>
+ <CAFxkdAr5C7ggZ+WdvDbsfmwuXujT_z_x3qcUnhnCn-WrAurvgA@mail.gmail.com> <ZCvQGJzdED+An8an@kernel.org>
+In-Reply-To: <ZCvQGJzdED+An8an@kernel.org>
+From:   Justin Forbes <jforbes@fedoraproject.org>
+Date:   Tue, 4 Apr 2023 06:50:01 -0500
+X-Gmail-Original-Message-ID: <CAFbkSA38eTA_iJ3ttBvQ8G4Rjj8qB12GxY7Z=qmZ8wm+0tZieA@mail.gmail.com>
+Message-ID: <CAFbkSA38eTA_iJ3ttBvQ8G4Rjj8qB12GxY7Z=qmZ8wm+0tZieA@mail.gmail.com>
+Subject: Re: [PATCH v3 02/14] arm64: drop ranges in definition of ARCH_FORCE_MAX_ORDER
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Guo Ren <guoren@kernel.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Rich Felker <dalias@libc.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Zi Yan <ziy@nvidia.com>, linux-arm-kernel@lists.infradead.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mm@kvack.org, linux-sh@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
+        sparclinux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, 4 Apr 2023, I wrote:
+On Tue, Apr 4, 2023 at 2:22=E2=80=AFAM Mike Rapoport <rppt@kernel.org> wrot=
+e:
+>
+> On Wed, Mar 29, 2023 at 10:55:37AM -0500, Justin Forbes wrote:
+> > On Sat, Mar 25, 2023 at 1:09=E2=80=AFAM Mike Rapoport <rppt@kernel.org>=
+ wrote:
+> > >
+> > > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> > >
+> > > It is not a good idea to change fundamental parameters of core memory
+> > > management. Having predefined ranges suggests that the values within
+> > > those ranges are sensible, but one has to *really* understand
+> > > implications of changing MAX_ORDER before actually amending it and
+> > > ranges don't help here.
+> > >
+> > > Drop ranges in definition of ARCH_FORCE_MAX_ORDER and make its prompt
+> > > visible only if EXPERT=3Dy
+> >
+> > I do not like suddenly hiding this behind EXPERT for a couple of
+> > reasons.  Most importantly, it will silently change the config for
+> > users building with an old kernel config.  If a user has for instance
+> > "13" set and building with 4K pages, as is the current configuration
+> > for Fedora and RHEL aarch64 builds, an oldconfig build will now set it
+> > to 10 with no indication that it is doing so.  And while I think that
+> > 10 is a fine default for many aarch64 users, there are valid reasons
+> > for choosing other values. Putting this behind expert makes it much
+> > less obvious that this is an option.
+>
+> That's the idea of EXPERT, no?
+>
+> This option was intended to allow allocation of huge pages for
+> architectures that had PMD_ORDER > MAX_ORDER and not to allow user to
+> select size of maximal physically contiguous allocation.
+>
+> Changes to MAX_ORDER fundamentally change the behaviour of core mm and
+> unless users *really* know what they are doing there is no reason to choo=
+se
+> non-default values so hiding this option behind EXPERT seems totally
+> appropriate to me.
 
-> 
-> The actual corruption might offer a clue here. I believe the saved %a3 
-> was clobbered with the value 0xefee1068 which seems to be a pointer into 
-> some stack frame that would have come into existence shortly after 
-> __GI___wait4_time64 was called.
+It sounds nice in theory. In practice. EXPERT hides too much. When you
+flip expert, you expose over a 175ish new config options which are
+hidden behind EXPERT.  You don't have to know what you are doing just
+with the MAX_ORDER, but a whole bunch more as well.  If everyone were
+already running 10, this might be less of a problem. At least Fedora
+and RHEL are running 13 for 4K pages on aarch64. This was not some
+accidental choice, we had to carry a patch to even allow it for a
+while.  If this does go in as is, we will likely just carry a patch to
+remove the "if EXPERT", but that is a bit of a disservice to users who
+might be trying to debug something else upstream, bisecting upstream
+kernels or testing a patch.  In those cases, people tend to use
+pristine upstream sources without distro patches to verify, and they
+tend to use their existing configs. With this change, their MAX_ORDER
+will drop to 10 from 13 silently.   That can look like a different
+issue enough to ruin a bisect or have them give bad feedback on a
+patch because it introduces a "regression" which is not a regression
+at all, but a config change they couldn't see.
 
-Wrong... it is a pointer to the location below the __wait3 stack frame.
-
-(gdb) info frame
-Stack level 8, frame at 0xefee10e0:
- pc = 0xc00e0172 in __wait3 (../sysdeps/unix/sysv/linux/wait3.c:41); 
-    saved pc = 0xd000c38e
- called by frame at 0xefee11dc, caller of frame at 0xefee106c
- source language c.
- Arglist at 0xefee10d8, args: stat_loc=<optimized out>, 
-    options=<optimized out>, usage=<optimized out>
- Locals at 0xefee10d8, Previous frame's sp is 0xefee10e0
- Saved registers:
-  a2 at 0xefee106c, a3 at 0xefee1070, a5 at 0xefee1074, fp at 0xefee10d8,
-  pc at 0xefee10dc
-
-That shows %a2 was saved at 0xefee106c, and the address of interest is the 
-stack location immediately below that. But it has no particular 
-significance: it holds a NULL pointer when the struct __rusage64 *usage 
-argument to __wait4_time64() gets pushed there:
-
-   0xc00e8152 <__wait3+226>:   clrl %sp@-
-   0xc00e8154 <__wait3+228>:   movel %fp@(12),%sp@-
-   0xc00e8158 <__wait3+232>:   movel %d0,%sp@-
-   0xc00e815a <__wait3+234>:   pea 0xffffffff
-   0xc00e815e <__wait3+238>:   bsrl 0xc00e8174 <__GI___wait4_time64>
-
-But it's no longer a NULL pointer at the time of the crash, though it 
-should be, since that stack frame is still active.
-
-(gdb) x/16z 0xefee1068
-0xefee1068:     0xc00e0172      0xd001e718      0xd001e498      0xd001b874
-0xefee1078:     0x00170700      0x00170700      0x00170700      0x00005360
-0xefee1088:     0x0000e920      0x00000006      0x00002000      0x00000002
-0xefee1098:     0x00171f20      0x00171f20      0x00171f20      0x000000e0
-
-Beats me.
+>
+> > Justin
+> >
+> > > Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > > Reviewed-by: Zi Yan <ziy@nvidia.com>
+> > > Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> > > ---
+> > >  arch/arm64/Kconfig | 4 +---
+> > >  1 file changed, 1 insertion(+), 3 deletions(-)
+> > >
+> > > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> > > index e60baf7859d1..7324032af859 100644
+> > > --- a/arch/arm64/Kconfig
+> > > +++ b/arch/arm64/Kconfig
+> > > @@ -1487,11 +1487,9 @@ config XEN
+> > >  # 16K |       27          |      14      |       13        |        =
+ 11         |
+> > >  # 64K |       29          |      16      |       13        |        =
+ 13         |
+> > >  config ARCH_FORCE_MAX_ORDER
+> > > -       int "Maximum zone order" if ARM64_4K_PAGES || ARM64_16K_PAGES
+> > > +       int "Maximum zone order" if EXPERT && (ARM64_4K_PAGES || ARM6=
+4_16K_PAGES)
+> > >         default "13" if ARM64_64K_PAGES
+> > > -       range 11 13 if ARM64_16K_PAGES
+> > >         default "11" if ARM64_16K_PAGES
+> > > -       range 10 15 if ARM64_4K_PAGES
+> > >         default "10"
+> > >         help
+> > >           The kernel memory allocator divides physically contiguous m=
+emory
+> > > --
+> > > 2.35.1
+> > >
+> > >
+>
+> --
+> Sincerely yours,
+> Mike.
+>
