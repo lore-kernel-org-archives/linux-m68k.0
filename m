@@ -2,191 +2,142 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B3A6C7618D
-	for <linux-m68k@archiver.kernel.org>; Tue,  4 Apr 2023 07:19:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 495D3C7618D
+	for <linux-m68k@archiver.kernel.org>; Tue,  4 Apr 2023 07:22:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233815AbjDDHTF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 4 Apr 2023 03:19:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48878 "EHLO
+        id S233855AbjDDHWZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 4 Apr 2023 03:22:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233788AbjDDHTE (ORCPT
+        with ESMTP id S233850AbjDDHWY (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 4 Apr 2023 03:19:04 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B064410CA
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  4 Apr 2023 00:19:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680592742; x=1712128742;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=gfQ5gcQg8T0JOQoyXpjjrcBpVlfN8tVggMorTBxi0mA=;
-  b=njE1rFA0UO+RiJY/RgQpYFoEmROCJ2ekRdLDdxva/pfVlG/IxFW9oC9n
-   YP49Kc3VsvCS7BHD7d+0oNjpg7WYszByvDnjoYngd5DzN29StiS4hvjwO
-   8+noSN+qdYuyropQIFDhqtZl4UgC1bYq8L0lxXqFIuS4EzOe0b1nQEokH
-   jqhUPQEcZf/moh50YEpFlOcuNngTGt/JoHl4bp2F5jQxh8Hn63lHViL73
-   NuqG30V4RdPoq9t/XUAfGHEhjoKuDYFewIsQry4ACamWkeqse+oYYuWXO
-   87DIE466oBZkqjqFDjI5VdgL/gv4tO7Z3oGj4wOA22uRRq4HCfkWSnupd
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="322504749"
-X-IronPort-AV: E=Sophos;i="5.98,317,1673942400"; 
-   d="scan'208";a="322504749"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2023 00:19:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10669"; a="797408808"
-X-IronPort-AV: E=Sophos;i="5.98,317,1673942400"; 
-   d="scan'208";a="797408808"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 04 Apr 2023 00:19:00 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pjawV-000PLJ-2G;
-        Tue, 04 Apr 2023 07:18:59 +0000
-Date:   Tue, 04 Apr 2023 15:18:56 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:for-next] BUILD SUCCESS
- 1ea3bb3e4b767d074c8215c515e959c6420908bf
-Message-ID: <642bcf60.tX4PitH8UAAMNZlp%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        Tue, 4 Apr 2023 03:22:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDCBB268E
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  4 Apr 2023 00:22:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 187FE61248;
+        Tue,  4 Apr 2023 07:22:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18439C433D2;
+        Tue,  4 Apr 2023 07:22:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680592939;
+        bh=zNbuc2c7Q9IWg5uy9hdmHULoUQBr2Hs/BAYhilZF5F4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CqHblzUj1z5GNNRhlVv5PjhJZbkNnPlRJpd8BNP9SFM3LozxkSRnpQ6pJHq1734IE
+         nD0HzFbv58nu6J/EDvb0/r/dPnGTG4/RX9IFH1dtOkbIUrpX4gBAxv+iMBA5DHcRED
+         emlRqtXMUO+8S4B3gXHGAfaZat5oK//B6B2YKi3S5Gq0z1OVXNwTRQKMwaAeo6YUWs
+         fVidc4rMbc4aUoxxzgWhlqdgki6r0Y6O3oX30JhcakMQVSnJAF09H5rT22qPoqcLsD
+         1rUCPCKRgr6yla1vp2aXejTBBX5r0wagFlZzYRUY3h9pSLxjoBb/Ad/MMOzP9CoNyA
+         E21K1u28YAOpQ==
+Date:   Tue, 4 Apr 2023 10:22:00 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Justin Forbes <jforbes@fedoraproject.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Guo Ren <guoren@kernel.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Rich Felker <dalias@libc.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Zi Yan <ziy@nvidia.com>, linux-arm-kernel@lists.infradead.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mm@kvack.org, linux-sh@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
+        sparclinux@vger.kernel.org
+Subject: Re: [PATCH v3 02/14] arm64: drop ranges in definition of
+ ARCH_FORCE_MAX_ORDER
+Message-ID: <ZCvQGJzdED+An8an@kernel.org>
+References: <20230325060828.2662773-1-rppt@kernel.org>
+ <20230325060828.2662773-3-rppt@kernel.org>
+ <CAFxkdAr5C7ggZ+WdvDbsfmwuXujT_z_x3qcUnhnCn-WrAurvgA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFxkdAr5C7ggZ+WdvDbsfmwuXujT_z_x3qcUnhnCn-WrAurvgA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-next
-branch HEAD: 1ea3bb3e4b767d074c8215c515e959c6420908bf  m68k: defconfig: Update defconfigs for v6.3-rc1
+On Wed, Mar 29, 2023 at 10:55:37AM -0500, Justin Forbes wrote:
+> On Sat, Mar 25, 2023 at 1:09 AM Mike Rapoport <rppt@kernel.org> wrote:
+> >
+> > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> >
+> > It is not a good idea to change fundamental parameters of core memory
+> > management. Having predefined ranges suggests that the values within
+> > those ranges are sensible, but one has to *really* understand
+> > implications of changing MAX_ORDER before actually amending it and
+> > ranges don't help here.
+> >
+> > Drop ranges in definition of ARCH_FORCE_MAX_ORDER and make its prompt
+> > visible only if EXPERT=y
+> 
+> I do not like suddenly hiding this behind EXPERT for a couple of
+> reasons.  Most importantly, it will silently change the config for
+> users building with an old kernel config.  If a user has for instance
+> "13" set and building with 4K pages, as is the current configuration
+> for Fedora and RHEL aarch64 builds, an oldconfig build will now set it
+> to 10 with no indication that it is doing so.  And while I think that
+> 10 is a fine default for many aarch64 users, there are valid reasons
+> for choosing other values. Putting this behind expert makes it much
+> less obvious that this is an option.
 
-elapsed time: 1293m
+That's the idea of EXPERT, no?
 
-configs tested: 116
-configs skipped: 6
+This option was intended to allow allocation of huge pages for
+architectures that had PMD_ORDER > MAX_ORDER and not to allow user to
+select size of maximal physically contiguous allocation.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r002-20230403   gcc  
-alpha                randconfig-r023-20230403   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r006-20230403   gcc  
-arc                  randconfig-r043-20230403   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                        realview_defconfig   gcc  
-arm                         socfpga_defconfig   clang
-arm                        spear3xx_defconfig   clang
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r004-20230403   clang
-csky         buildonly-randconfig-r002-20230403   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r006-20230403   gcc  
-hexagon      buildonly-randconfig-r001-20230403   clang
-hexagon              randconfig-r006-20230403   clang
-i386                             allyesconfig   gcc  
-i386                         debian-10.3-func   gcc  
-i386                   debian-10.3-kselftests   gcc  
-i386                        debian-10.3-kunit   gcc  
-i386                          debian-10.3-kvm   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-a001-20230403   clang
-i386                 randconfig-a002-20230403   clang
-i386                 randconfig-a003-20230403   clang
-i386                 randconfig-a004-20230403   clang
-i386                 randconfig-a005-20230403   clang
-i386                 randconfig-a006-20230403   clang
-i386                 randconfig-a011-20230403   gcc  
-i386                 randconfig-a012-20230403   gcc  
-i386                 randconfig-a013-20230403   gcc  
-i386                 randconfig-a014-20230403   gcc  
-i386                 randconfig-a015-20230403   gcc  
-i386                 randconfig-a016-20230403   gcc  
-ia64                             allmodconfig   gcc  
-ia64                                defconfig   gcc  
-ia64                 randconfig-r022-20230403   gcc  
-ia64                 randconfig-r023-20230403   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r025-20230403   gcc  
-m68k                             allmodconfig   gcc  
-m68k                         apollo_defconfig   gcc  
-m68k         buildonly-randconfig-r006-20230403   gcc  
-m68k                                defconfig   gcc  
-m68k                       m5275evb_defconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                           ip32_defconfig   gcc  
-mips                 randconfig-r004-20230403   gcc  
-nios2        buildonly-randconfig-r005-20230403   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r001-20230403   gcc  
-nios2                randconfig-r024-20230403   gcc  
-parisc                              defconfig   gcc  
-parisc                generic-64bit_defconfig   gcc  
-parisc               randconfig-r002-20230403   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                     ksi8560_defconfig   clang
-powerpc              randconfig-r005-20230403   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r042-20230403   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390         buildonly-randconfig-r001-20230403   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r044-20230403   gcc  
-sh                               allmodconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64              randconfig-r005-20230403   gcc  
-sparc64              randconfig-r021-20230403   gcc  
-sparc64              randconfig-r024-20230403   gcc  
-sparc64              randconfig-r026-20230403   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-a001-20230403   clang
-x86_64               randconfig-a002-20230403   clang
-x86_64               randconfig-a003-20230403   clang
-x86_64               randconfig-a004-20230403   clang
-x86_64               randconfig-a005-20230403   clang
-x86_64               randconfig-a006-20230403   clang
-x86_64               randconfig-a011-20230403   gcc  
-x86_64               randconfig-a012-20230403   gcc  
-x86_64               randconfig-a013-20230403   gcc  
-x86_64               randconfig-a014-20230403   gcc  
-x86_64               randconfig-a015-20230403   gcc  
-x86_64               randconfig-a016-20230403   gcc  
-x86_64               randconfig-k001-20230403   gcc  
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                         rhel-8.3-kunit   gcc  
-x86_64                           rhel-8.3-kvm   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
-x86_64                           rhel-8.3-syz   gcc  
-x86_64                               rhel-8.3   gcc  
-xtensa               randconfig-r021-20230403   gcc  
-xtensa               randconfig-r026-20230403   gcc  
+Changes to MAX_ORDER fundamentally change the behaviour of core mm and
+unless users *really* know what they are doing there is no reason to choose
+non-default values so hiding this option behind EXPERT seems totally
+appropriate to me.
+ 
+> Justin
+> 
+> > Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > Reviewed-by: Zi Yan <ziy@nvidia.com>
+> > Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> > ---
+> >  arch/arm64/Kconfig | 4 +---
+> >  1 file changed, 1 insertion(+), 3 deletions(-)
+> >
+> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> > index e60baf7859d1..7324032af859 100644
+> > --- a/arch/arm64/Kconfig
+> > +++ b/arch/arm64/Kconfig
+> > @@ -1487,11 +1487,9 @@ config XEN
+> >  # 16K |       27          |      14      |       13        |         11         |
+> >  # 64K |       29          |      16      |       13        |         13         |
+> >  config ARCH_FORCE_MAX_ORDER
+> > -       int "Maximum zone order" if ARM64_4K_PAGES || ARM64_16K_PAGES
+> > +       int "Maximum zone order" if EXPERT && (ARM64_4K_PAGES || ARM64_16K_PAGES)
+> >         default "13" if ARM64_64K_PAGES
+> > -       range 11 13 if ARM64_16K_PAGES
+> >         default "11" if ARM64_16K_PAGES
+> > -       range 10 15 if ARM64_4K_PAGES
+> >         default "10"
+> >         help
+> >           The kernel memory allocator divides physically contiguous memory
+> > --
+> > 2.35.1
+> >
+> >
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+Sincerely yours,
+Mike.
