@@ -2,119 +2,174 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FEF5C7619A
-	for <linux-m68k@archiver.kernel.org>; Wed,  5 Apr 2023 18:10:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E9448C761AF
+	for <linux-m68k@archiver.kernel.org>; Wed,  5 Apr 2023 18:33:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233984AbjDESKI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 5 Apr 2023 14:10:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39408 "EHLO
+        id S231230AbjDESd4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 5 Apr 2023 14:33:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234318AbjDESKA (ORCPT
+        with ESMTP id S234171AbjDESdz (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 5 Apr 2023 14:10:00 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 318F95BA9
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  5 Apr 2023 11:09:58 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id cu4so26769899qvb.3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 05 Apr 2023 11:09:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680718197; x=1683310197;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=e15NDV90+Lem0WfkCzOryMRGDIn7iIdQ9bmcL/lcTAE=;
-        b=CI7LCdF2QkqohUU82RAQYoU4RLrLFYOjC62If1NgVClAuPlpaMmTm42eafKWA9FNkE
-         wHbjP9QuDhg3p16ungJEbXZ4ijs4wvhBKbLJFJl3FkSM8p6hURMxIf59C4Wc8nbB6ARO
-         oiP4ftHEC9VHnu/6bHOwyeJ7jmpq8J37byNlkKIKUVifSFqTQ43IAFNRzsNnJuD2MPa0
-         pvlLpi8DghasiXKxqV1HA2LV0LAMyE4BbtZBweY21sq4yRxvBiqiIZMfOoGT8iLup/5h
-         AJMyq+7XJSjAJEQjcM4lh/ED1niiJnGAMmmTgysMvRFf+Gq8+QHoAZtUItoFdVFK/psf
-         NAKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680718197; x=1683310197;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=e15NDV90+Lem0WfkCzOryMRGDIn7iIdQ9bmcL/lcTAE=;
-        b=t/VTC48WJmUmZ6JSfxXMATKa/XFDCUGmOL34YKJ7SRFXvfdTjGW21ECn3NgNauQyd6
-         54DSiM17nnHhvRtDTIFJ1hZMtoZWTTOT8CC+f95OllRp9xcw5JnpZwCoNtOvBGqFniWg
-         h1NZtlRVBvxx2uspTSwagYon4oZS+QnRdaVYYYt3HPkewnBzh7UKOo3Cl9zMddHbds9Q
-         4zA4+7JKcd+R76AMevEJsert1TmjGIyXEIpPNfZ2jkpgY/NqljyUpE/NRmZxKMxvjFeO
-         2gMscx80zWpsTL6F2HQDXD9lnfgpTXZ3Hq++ofSvcTwbtIukWm+lucg7N6u+LI0oLdSp
-         Ok6Q==
-X-Gm-Message-State: AAQBX9fYEcCGjgIt0vZ1/2TAyCil1Ggk4pdMvQCCNHTXzbR+h6CKiOoy
-        /BaujTPGXXMoGMLBCzrk3zg=
-X-Google-Smtp-Source: AKy350YP40NftxRGoMbZf+cXkc1NDSURNTwz1oVELRpXHFAPANN2531RcTGdwB/ooRMZf7BMyAyolw==
-X-Received: by 2002:a05:6214:d81:b0:56e:bdfb:f4c5 with SMTP id e1-20020a0562140d8100b0056ebdfbf4c5mr58808qve.36.1680718197251;
-        Wed, 05 Apr 2023 11:09:57 -0700 (PDT)
-Received: from [192.168.1.201] (pool-173-73-95-180.washdc.fios.verizon.net. [173.73.95.180])
-        by smtp.gmail.com with ESMTPSA id c22-20020a056214071600b005dd8b934599sm4408602qvz.49.2023.04.05.11.09.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Apr 2023 11:09:56 -0700 (PDT)
-Message-ID: <dee4b415-0696-90f3-0e2f-2230ff941e1b@gmail.com>
-Date:   Wed, 5 Apr 2023 14:09:55 -0400
+        Wed, 5 Apr 2023 14:33:55 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE966A5D
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  5 Apr 2023 11:33:52 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 274AC22388;
+        Wed,  5 Apr 2023 18:33:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1680719631; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aKm+2KnGcfadUGufvWlUYTOWO8wYUF/m6w9EgTd+Yxg=;
+        b=AY9ehin0RCIs0Z/tUz5CKDnk5hMcYELqfYZsQf6JezYbYgl6N+MUriBP2y4z/HS/u2p4uV
+        vUpEjY29QAk2ubCGTL9muUVgDVI9nLeBUNgGl3cXLFVPYaIg+72dyNHTO+LDRdjUlU8VdL
+        nd1HL6uwb/bGPH2YvPQKvg4RXUfpPNo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1680719631;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aKm+2KnGcfadUGufvWlUYTOWO8wYUF/m6w9EgTd+Yxg=;
+        b=UfgF0YRnUz9dpmsQ4gm6okcJLQEX7z9ep+Kr7HyJzwDq82jBBbfBGRO9qN7DSGXIQELO1T
+        DjJ7TAxa27NsccAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BD06F13A31;
+        Wed,  5 Apr 2023 18:33:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 6kDPLA6/LWSPBwAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Wed, 05 Apr 2023 18:33:50 +0000
+Message-ID: <769a46bd-0c35-f61f-6d68-b982fc25cb55@suse.de>
+Date:   Wed, 5 Apr 2023 20:33:50 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH net-next] net: sunhme: move asm includes to below linux
- includes
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH 01/18] fbdev: Prepare generic architecture helpers
 Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>,
-        Simon Horman <horms@kernel.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        kernel test robot <lkp@intel.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-m68k@lists.linux-m68k.org
-References: <20230405-sunhme-includes-fix-v1-1-bf17cc5de20d@kernel.org>
- <082e6ff7-6799-fa80-81e2-6f8092f8bb51@gmail.com>
- <ZC23vf6tNKU1FgRP@kernel.org> <ZC240XCeYCaSCu0X@casper.infradead.org>
-From:   Sean Anderson <seanga2@gmail.com>
-In-Reply-To: <ZC240XCeYCaSCu0X@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Helge Deller <deller@gmx.de>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Linux-Arch <linux-arch@vger.kernel.org>,
+        linux-fbdev@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-mips@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, loongarch@lists.linux.dev,
+        sparclinux@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+References: <20230405150554.30540-1-tzimmermann@suse.de>
+ <20230405150554.30540-2-tzimmermann@suse.de>
+ <92fe3838-41f0-4e27-8467-161553ff724f@app.fastmail.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <92fe3838-41f0-4e27-8467-161553ff724f@app.fastmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------PH6RE0bdaBjJFU6C368NRApK"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-T24gNC81LzIzIDE0OjA3LCBNYXR0aGV3IFdpbGNveCB3cm90ZToNCj4gT24gV2VkLCBBcHIg
-MDUsIDIwMjMgYXQgMDg6MDI6MzdQTSArMDIwMCwgU2ltb24gSG9ybWFuIHdyb3RlOg0KPj4g
-T24gV2VkLCBBcHIgMDUsIDIwMjMgYXQgMDE6MzQ6MTFQTSAtMDQwMCwgU2VhbiBBbmRlcnNv
-biB3cm90ZToNCj4+PiBPbiA0LzUvMjMgMTM6MjksIFNpbW9uIEhvcm1hbiB3cm90ZToNCj4+
-Pj4gQSByZWNlbnQgcmVhcnJhbmdlbWVudCBvZiBpbmNsdWRlcyBoYXMgbGVhZCB0byBhIHBy
-b2JsZW0gb24gbTY4aw0KPj4+PiBhcyBmbGFnZ2VkIGJ5IHRoZSBrZXJuZWwgdGVzdCByb2Jv
-dC4NCj4+Pj4NCj4+Pj4gUmVzb2x2ZSB0aGlzIGJ5IG1vdmluZyB0aGUgYmxvY2sgYXNtIGlu
-Y2x1ZGVzIHRvIGJlbG93IGxpbnV4IGluY2x1ZGVzLg0KPj4+PiBBIHNpZGUgZWZmZWN0IGkg
-dGhhdCBub24tU3BhcmMgYXNtIGluY2x1ZGVzIGFyZSBub3cgaW1tZWRpYXRlbHkNCj4+Pj4g
-YmVmb3JlIFNwYXJjIGFzbSBpbmNsdWRlcywgd2hpY2ggc2VlbXMgbmljZS4NCj4+Pj4NCj4+
-Pj4gVXNpbmcgc3BhcnNlIHYwLjYuNCBJIHdhcyBhYmxlIHRvIHJlcHJvZHVjZSB0aGlzIHBy
-b2JsZW0gYXMgZm9sbG93cw0KPj4+PiB1c2luZyB0aGUgY29uZmlnIHByb3ZpZGVkIGJ5IHRo
-ZSBrZXJuZWwgdGVzdCByb2JvdDoNCj4+Pj4NCj4+Pj4gJCB3Z2V0IGh0dHBzOi8vZG93bmxv
-YWQuMDEub3JnLzBkYXktY2kvYXJjaGl2ZS8yMDIzMDQwNC8yMDIzMDQwNDE3NDguMHNRYzRL
-NGwtbGtwQGludGVsLmNvbS9jb25maWcNCj4+Pj4gJCBjcCBjb25maWcgLmNvbmZpZw0KPj4+
-PiAkIG1ha2UgQVJDSD1tNjhrIG9sZGNvbmZpZw0KPj4+PiAkIG1ha2UgQVJDSD1tNjhrIEM9
-MiBNPWRyaXZlcnMvbmV0L2V0aGVybmV0L3N1bg0KPj4+PiAgICAgIENDIFtNXSAgZHJpdmVy
-cy9uZXQvZXRoZXJuZXQvc3VuL3N1bmhtZS5vDQo+Pj4+ICAgIEluIGZpbGUgaW5jbHVkZWQg
-ZnJvbSBkcml2ZXJzL25ldC9ldGhlcm5ldC9zdW4vc3VuaG1lLmM6MTk6DQo+Pj4+ICAgIC4v
-YXJjaC9tNjhrL2luY2x1ZGUvYXNtL2lycS5oOjc4OjExOiBlcnJvcjogZXhwZWN0ZWQg4oCY
-O+KAmSBiZWZvcmUg4oCYdm9pZOKAmQ0KPj4+PiAgICAgICA3OCB8IGFzbWxpbmthZ2Ugdm9p
-ZCBkb19JUlEoaW50IGlycSwgc3RydWN0IHB0X3JlZ3MgKnJlZ3MpOw0KPj4+PiAgICAgICAg
-ICB8ICAgICAgICAgICBefn5+fg0KPj4+PiAgICAgICAgICB8ICAgICAgICAgICA7DQo+Pj4+
-ICAgIC4vYXJjaC9tNjhrL2luY2x1ZGUvYXNtL2lycS5oOjc4OjQwOiB3YXJuaW5nOiDigJhz
-dHJ1Y3QgcHRfcmVnc+KAmSBkZWNsYXJlZCBpbnNpZGUgcGFyYW1ldGVyIGxpc3Qgd2lsbCBu
-b3QgYmUgdmlzaWJsZSBvdXRzaWRlIG9mIHRoaXMgZGVmaW5pdGlvbiBvciBkZWNsYXJhdGlv
-bg0KPj4+PiAgICAgICA3OCB8IGFzbWxpbmthZ2Ugdm9pZCBkb19JUlEoaW50IGlycSwgc3Ry
-dWN0IHB0X3JlZ3MgKnJlZ3MpOw0KPj4+PiAgICAgICAgICB8ICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIF5+fn5+fn4NCj4+Pg0KPj4+IFRoaXMgc2VlbXMgbGlr
-ZSBhIHByb2JsZW0gd2l0aCB0aGUgaGVhZGVyLiBtNjhrJ3MgYXNtL2lycS5oIHNob3VsZCBp
-bmNsdWRlIGxpbnV4L2ludGVycnVwdC5oIGJlZm9yZSBpdHMgZGVjbGFyYXRpb25zLg0KPj4N
-Cj4+IEhpIFNlYW4sDQo+Pg0KPj4gSSBkbyBzZWUgeW91ciBwb2ludC4gQnV0IFRCSCBJJ20g
-dW5zdXJlIHdoaWNoIHdheSB0byBnbyBvbiB0aGlzIG9uZS4NCj4+IEdlZXJ0LCBkbyB5b3Ug
-aGF2ZSBhbnkgaW5wdXQ/DQo+IA0KPiBXZSBhbHdheXMgaW5jbHVkZSBsaW51eC8qIGhlYWRl
-cnMgYmVmb3JlIGFzbS8qLiAgVGhlICJzb3J0aW5nIiBvZg0KPiBoZWFkZXJzIGluIHRoaXMg
-d2F5IHdhcyBpbmFwcHJvcHJpYXRlLg0KDQpJcyB0aGlzIHdyaXR0ZW4gZG93biBhbnl3aGVy
-ZT8gSSBjb3VsZG4ndCBmaW5kIGl0IGluIERvY3VtZW50YXRpb24vcHJvY2Vzcy4uLg0KDQot
-LVNlYW4NCg==
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------PH6RE0bdaBjJFU6C368NRApK
+Content-Type: multipart/mixed; boundary="------------PnZlrreMxn0zLzAk4t4Das5u";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Arnd Bergmann <arnd@arndb.de>, Daniel Vetter <daniel.vetter@ffwll.ch>,
+ Helge Deller <deller@gmx.de>, Javier Martinez Canillas <javierm@redhat.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Linux-Arch <linux-arch@vger.kernel.org>, linux-fbdev@vger.kernel.org,
+ linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linux-sh@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-mips@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, loongarch@lists.linux.dev,
+ sparclinux@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+Message-ID: <769a46bd-0c35-f61f-6d68-b982fc25cb55@suse.de>
+Subject: Re: [PATCH 01/18] fbdev: Prepare generic architecture helpers
+References: <20230405150554.30540-1-tzimmermann@suse.de>
+ <20230405150554.30540-2-tzimmermann@suse.de>
+ <92fe3838-41f0-4e27-8467-161553ff724f@app.fastmail.com>
+In-Reply-To: <92fe3838-41f0-4e27-8467-161553ff724f@app.fastmail.com>
+
+--------------PnZlrreMxn0zLzAk4t4Das5u
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
+
+SGkNCg0KQW0gMDUuMDQuMjMgdW0gMTc6NTMgc2NocmllYiBBcm5kIEJlcmdtYW5uOg0KPiBP
+biBXZWQsIEFwciA1LCAyMDIzLCBhdCAxNzowNSwgVGhvbWFzIFppbW1lcm1hbm4gd3JvdGU6
+DQo+PiBHZW5lcmljIGltcGxlbWVudGF0aW9ucyBvZiBmYl9wZ3Byb3RlY3QoKSBhbmQgZmJf
+aXNfcHJpbWFyeV9kZXZpY2UoKQ0KPj4gaGF2ZSBiZWVuIGluIHRoZSBzb3VyY2UgY29kZSBm
+b3IgYSBsb25nIHRpbWUuIFByZXBhcmUgdGhlIGhlYWRlciBmaWxlDQo+PiB0byBtYWtlIHVz
+ZSBvZiB0aGVtLg0KPj4NCj4+IEltcHJvdmUgdGhlIGNvZGUgYnkgdXNpbmcgYW4gaW5saW5l
+IGZ1bmN0aW9uIGZvciBmYl9wZ3Byb3RlY3QoKSBhbmQNCj4+IGJ5IHJlbW92aW5nIGluY2x1
+ZGUgc3RhdGVtZW50cy4NCj4+DQo+PiBTeW1ib2xzIGFyZSBwcm90ZWN0ZWQgYnkgcHJlcHJv
+Y2Vzc29yIGd1YXJkcy4gQXJjaGl0ZWN0dXJlcyB0aGF0DQo+PiBwcm92aWRlIGEgc3ltYm9s
+IG5lZWQgdG8gZGVmaW5lIGEgcHJlcHJvY2Vzc29yIHRva2VuIG9mIHRoZSBzYW1lDQo+PiBu
+YW1lIGFuZCB2YWx1ZS4gT3RoZXJ3aXNlIHRoZSBoZWFkZXIgZmlsZSB3aWxsIHByb3ZpZGUg
+YSBnZW5lcmljDQo+PiBpbXBsZW1lbnRhdGlvbi4gVGhpcyBwYXR0ZXJuIGhhcyBiZWVuIHRh
+a2VuIGZyb20gPGFzbS9pby5oPi4NCj4+DQo+PiBTaWduZWQtb2ZmLWJ5OiBUaG9tYXMgWmlt
+bWVybWFubiA8dHppbW1lcm1hbm5Ac3VzZS5kZT4NCj4gDQo+IE1vdmluZyB0aGlzIGludG8g
+Z2VuZXJpYyBjb2RlIGlzIGdvb2QsIGJ1dCBJJ20gbm90IHN1cmUNCj4gYWJvdXQgdGhlIGRl
+ZmF1bHQgZm9yIGZiX3BncHJvdGVjdCgpOg0KPiANCj4+ICsNCj4+ICsjaWZuZGVmIGZiX3Bn
+cHJvdGVjdA0KPj4gKyNkZWZpbmUgZmJfcGdwcm90ZWN0IGZiX3BncHJvdGVjdA0KPj4gK3N0
+YXRpYyBpbmxpbmUgdm9pZCBmYl9wZ3Byb3RlY3Qoc3RydWN0IGZpbGUgKmZpbGUsIHN0cnVj
+dCB2bV9hcmVhX3N0cnVjdCAqdm1hLA0KPj4gKwkJCQl1bnNpZ25lZCBsb25nIG9mZikNCj4+
+ICt7IH0NCj4+ICsjZW5kaWYNCj4gDQo+IEkgdGhpbmsgbW9zdCBhcmNoaXRlY3R1cmVzIHdp
+bGwgd2FudCB0aGUgdmVyc2lvbiB3ZSBoYXZlIG9uDQo+IGFyYywgYXJtLCBhcm02NCwgbG9v
+bmdhcmNoLCBhbmQgc2ggYWxyZWFkeToNCj4gDQo+IHN0YXRpYyBpbmxpbmUgdm9pZCBmYl9w
+Z3Byb3RlY3Qoc3RydWN0IGZpbGUgKmZpbGUsIHN0cnVjdCB2bV9hcmVhX3N0cnVjdCAqdm1h
+LA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB1bnNpZ25lZCBsb25nIG9m
+ZikNCj4gew0KPiAgICAgICAgIHZtYS0+dm1fcGFnZV9wcm90ID0gcGdwcm90X3dyaXRlY29t
+YmluZSh2bWEtPnZtX3BhZ2VfcHJvdCk7DQo+IH0NCj4gDQo+IHNvIEknZCBzdWdnZXN0IG1h
+a2luZyB0aGF0IHZlcnNpb24gdGhlIGRlZmF1bHQsIGFuZCB0cmVhdGluZyB0aGUNCj4gZW1w
+dHkgb25lcyAobTY4a25vbW11LCBzcGFyYzMyKSBhcyBhcmNoaXRlY3R1cmUgc3BlY2lmaWMN
+Cj4gd29ya2Fyb3VuZHMuDQoNCk1ha2Ugc2Vuc2UsIHRoYW5rcyBmb3IgdGhlIGZlZWRiYWNr
+LiBJJ2xsIHNlbmQgb3V0IGFuIHVwZGF0ZSBzb29uLg0KDQpCZXN0IHJlZ2FyZHMNClRob21h
+cw0KDQo+IA0KPiBJIHNlZSB0aGF0IHNwYXJjNjQgYW5kIHBhcmlzYyB1c2UgcGdwcm90X3Vu
+Y2FjaGVkIGhlcmUsIGJ1dCBhcw0KPiB0aGV5IGRvbid0IGRlZmluZSBhIGN1c3RvbSBwZ3By
+b3Rfd3JpdGVjb21iaW5lLCB0aGlzIGVuZHMgdXAgYmVpbmcNCj4gdGhlIHNhbWUsIGFuZCB0
+aGV5IGNhbiB1c2UgdGhlIGFib3ZlIGRlZmluaXRpb24gYXMgd2VsbC4NCj4gDQo+IG1pcHMg
+ZGVmaW5lcyBwZ3Byb3Rfd3JpdGVjb21iaW5lIGJ1dCB1c2VzIHBncHJvdF9ub25jYWNoZWQN
+Cj4gaW4gZmJfcGdwcm90ZWN0KCksIHdoaWNoIGlzIHByb2JhYmx5IGEgbWlzdGFrZSBhbmQg
+c2hvdWxkIGhhdmUNCj4gYmVlbiB1cGRhdGVkIGFzIHBhcnQgb2YgY29tbWl0IDRiMDUwYmE3
+YTY2YyAoIk1JUFM6IHBndGFibGUuaDoNCj4gSW1wbGVtZW50IHRoZSBwZ3Byb3Rfd3JpdGVj
+b21iaW5lIGZ1bmN0aW9uIGZvciBNSVBTIikuDQo+IA0KPiAgICAgIEFybmQNCg0KLS0gDQpU
+aG9tYXMgWmltbWVybWFubg0KR3JhcGhpY3MgRHJpdmVyIERldmVsb3Blcg0KU1VTRSBTb2Z0
+d2FyZSBTb2x1dGlvbnMgR2VybWFueSBHbWJIDQpNYXhmZWxkc3RyLiA1LCA5MDQwOSBOw7xy
+bmJlcmcsIEdlcm1hbnkNCihIUkIgMzY4MDksIEFHIE7DvHJuYmVyZykNCkdlc2Now6RmdHNm
+w7xocmVyOiBJdm8gVG90ZXYNCg==
+
+--------------PnZlrreMxn0zLzAk4t4Das5u--
+
+--------------PH6RE0bdaBjJFU6C368NRApK
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmQtvw4FAwAAAAAACgkQlh/E3EQov+B8
+SA//S9QvzhCGuS3p6cljiL3iXZKRa6QAzsmTs3qxsBZJVBbAx2oX35juNiYn+llSA4KM2AWgFRYq
+Chdjg/0Vxe5/Nl4HGfHpvKLVmZIg1kHtRRwixJ04p4ws8EPfiZN87MeLecWlQo5x9ewt0yCmBeoA
+j0eLKDz3kN88NbEuFuTqP3y/H5VaDJUZeqCX2OXBVFPCttZjWgkJ77r5CFvMexzh6fMQ+QP/EKbh
+EDDsfHUqq0YKCQobH2KcnEEX+CKJeVR+45+SwdaolfgGzBQ9TFKWnagaJahppLWfzFtg1Tj12NAE
+A+Lcrd395eNy1L4TVf3rVDNiWaUGudPY/iAhQ4ivmvj1Rb3esoRkjN4zmSek590XUZ8jZShkgTig
+dSgkdgKIWTi/lDCB5NgCZgPpsk6TDcc6Kyj99h6UqYzZiYN3GAaXfP1qgPCPI5el9PphHxaXhOH0
+e6PhctJWfsuRVWseHjFXi5M+svclBMYk6bOBvo5K9DYF8PTb5pCSRjk3+P9xqW2DeJfoBQClb5HF
+JBrMpw8SyQYttizA3bYrXaib4c+t6gvbtaV1bbSzpzZx8vueBtvFY9RB7V5k9sThNULfdsnNc4Ke
+CERFDV8vqaQmPTxLxiFvMGuxGysMG8sljev95fD3tcAQIuWY/QA8bnPq3b1pueBR7t7lp+IQ/e26
+RHI=
+=NHDz
+-----END PGP SIGNATURE-----
+
+--------------PH6RE0bdaBjJFU6C368NRApK--
