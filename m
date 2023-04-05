@@ -2,53 +2,53 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 497A9C7EE22
-	for <linux-m68k@archiver.kernel.org>; Wed,  5 Apr 2023 15:06:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4ECEC77B71
+	for <linux-m68k@archiver.kernel.org>; Wed,  5 Apr 2023 15:06:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238819AbjDEPGh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 5 Apr 2023 11:06:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53726 "EHLO
+        id S238891AbjDEPG6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 5 Apr 2023 11:06:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238697AbjDEPGS (ORCPT
+        with ESMTP id S238725AbjDEPG3 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 5 Apr 2023 11:06:18 -0400
+        Wed, 5 Apr 2023 11:06:29 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD713618E
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  5 Apr 2023 08:06:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 335D2619E
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  5 Apr 2023 08:06:07 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3A13B2292B;
-        Wed,  5 Apr 2023 15:06:04 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 274B42293C;
+        Wed,  5 Apr 2023 15:06:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1680707164; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1680707165; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=q+mpH3lWZVvZZw0GybWkLSjYq5BHB3GhQ0nOupAiXow=;
-        b=LicFqTX8fjTuSeh/l/X35bxlDP8B4FXjCkki3Zzy0w/RVJEJgln50MQlC+YwUsWpm+wsuW
-        LsCrC01nzuORTKhFDmdTYEc6X+OHIeGCXRTgUpynsBs1avGAYwlpABTgYW99LxLym6Sx+3
-        dj2ujuuTM5uRJXzkB2eWGjC4OaOBnLY=
+        bh=X4mcJLom6ZAm6gh+Qd1GGG3mMDreyMyZXiAcH0v+nJE=;
+        b=E3C7DIPuZcQ5ckXXJkhw97dBSeflzO3De8NBiQlBKzkJyWilzzov31ZlhZrvaM6qBEv9LF
+        BgNnkJ+AwJLkAnA28SLHgOJHj/PYlPvqDP/99rk6emLo1vqI4dNPdZ4umFYXxhyMtxJeGZ
+        w6VbcM7InoKAR87SbTp0vMX+F72xm7k=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1680707164;
+        s=susede2_ed25519; t=1680707165;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=q+mpH3lWZVvZZw0GybWkLSjYq5BHB3GhQ0nOupAiXow=;
-        b=fo63CBKskL51RafucPuzSsSF1hXQbpsETB7b4i611VZZXmf4SEguxv57DdUnJgnTRkCdq3
-        2D0tIH/bnzU4gXCQ==
+        bh=X4mcJLom6ZAm6gh+Qd1GGG3mMDreyMyZXiAcH0v+nJE=;
+        b=cJ+t5MdSDdGmLZipOoCQHDkUf4Wd2RAWkTB44d1La3+Z8S7vVgXgnU5qiIcmRpgdzSXrd+
+        hn/oD8fSciztSoDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AED7E13A10;
-        Wed,  5 Apr 2023 15:06:03 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AB1F213A10;
+        Wed,  5 Apr 2023 15:06:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id wL/EKVuOLWTPIAAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Wed, 05 Apr 2023 15:06:03 +0000
+        id eHbtKFyOLWTPIAAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Wed, 05 Apr 2023 15:06:04 +0000
 From:   Thomas Zimmermann <tzimmermann@suse.de>
 To:     arnd@arndb.de, daniel.vetter@ffwll.ch, deller@gmx.de,
         javierm@redhat.com, gregkh@linuxfoundation.org
@@ -61,12 +61,10 @@ Cc:     linux-arch@vger.kernel.org, linux-fbdev@vger.kernel.org,
         linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
         sparclinux@vger.kernel.org, x86@kernel.org,
         Thomas Zimmermann <tzimmermann@suse.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH 14/18] arch/powerpc: Implement <asm/fb.h> with generic helpers
-Date:   Wed,  5 Apr 2023 17:05:50 +0200
-Message-Id: <20230405150554.30540-15-tzimmermann@suse.de>
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 16/18] arch/sparc: Implement fb_is_primary_device() in source file
+Date:   Wed,  5 Apr 2023 17:05:52 +0200
+Message-Id: <20230405150554.30540-17-tzimmermann@suse.de>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230405150554.30540-1-tzimmermann@suse.de>
 References: <20230405150554.30540-1-tzimmermann@suse.de>
@@ -76,44 +74,115 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Replace the architecture's fb_is_primary_device() with the generic
-one from <asm-generic/fb.h>. No functional changes.
+Other architectures implment fb_is_primary_device() in a source
+file. Do the same on sparc. No functional changes, but allows to
+remove several include statement from <asm/fb.h>.
 
 Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: "David S. Miller" <davem@davemloft.net>
 ---
- arch/powerpc/include/asm/fb.h | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ arch/sparc/Makefile         |  1 +
+ arch/sparc/include/asm/fb.h | 22 +++++-----------------
+ arch/sparc/video/Makefile   |  3 +++
+ arch/sparc/video/fbdev.c    | 24 ++++++++++++++++++++++++
+ 4 files changed, 33 insertions(+), 17 deletions(-)
+ create mode 100644 arch/sparc/video/Makefile
+ create mode 100644 arch/sparc/video/fbdev.c
 
-diff --git a/arch/powerpc/include/asm/fb.h b/arch/powerpc/include/asm/fb.h
-index 6541ab77c5b9..5f1a2e5f7654 100644
---- a/arch/powerpc/include/asm/fb.h
-+++ b/arch/powerpc/include/asm/fb.h
-@@ -2,8 +2,8 @@
- #ifndef _ASM_FB_H_
- #define _ASM_FB_H_
+diff --git a/arch/sparc/Makefile b/arch/sparc/Makefile
+index a4ea5b05f288..95a9211e48e3 100644
+--- a/arch/sparc/Makefile
++++ b/arch/sparc/Makefile
+@@ -60,6 +60,7 @@ libs-y                 += arch/sparc/prom/
+ libs-y                 += arch/sparc/lib/
  
+ drivers-$(CONFIG_PM) += arch/sparc/power/
++drivers-$(CONFIG_FB) += arch/sparc/video/
+ 
+ boot := arch/sparc/boot
+ 
+diff --git a/arch/sparc/include/asm/fb.h b/arch/sparc/include/asm/fb.h
+index f699962e9ddf..e4ef1955b2b6 100644
+--- a/arch/sparc/include/asm/fb.h
++++ b/arch/sparc/include/asm/fb.h
+@@ -1,12 +1,14 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ #ifndef _SPARC_FB_H_
+ #define _SPARC_FB_H_
+-#include <linux/console.h>
 -#include <linux/fb.h>
++
  #include <linux/fs.h>
 +
  #include <asm/page.h>
+ #include <asm/prom.h>
  
++struct fb_info;
++
  static inline void fb_pgprotect(struct file *file, struct vm_area_struct *vma,
-@@ -13,10 +13,8 @@ static inline void fb_pgprotect(struct file *file, struct vm_area_struct *vma,
- 						 vma->vm_end - vma->vm_start,
- 						 vma->vm_page_prot);
+ 				unsigned long off)
+ {
+@@ -15,20 +17,6 @@ static inline void fb_pgprotect(struct file *file, struct vm_area_struct *vma,
+ #endif
  }
-+#define fb_pgprotect fb_pgprotect
  
 -static inline int fb_is_primary_device(struct fb_info *info)
 -{
+-	struct device *dev = info->device;
+-	struct device_node *node;
+-
+-	if (console_set_on_cmdline)
+-		return 0;
+-
+-	node = dev->of_node;
+-	if (node &&
+-	    node == of_console_device)
+-		return 1;
+-
 -	return 0;
 -}
-+#include <asm-generic/fb.h>
++int fb_is_primary_device(struct fb_info *info);
  
- #endif /* _ASM_FB_H_ */
+ #endif /* _SPARC_FB_H_ */
+diff --git a/arch/sparc/video/Makefile b/arch/sparc/video/Makefile
+new file mode 100644
+index 000000000000..6baddbd58e4d
+--- /dev/null
++++ b/arch/sparc/video/Makefile
+@@ -0,0 +1,3 @@
++# SPDX-License-Identifier: GPL-2.0-only
++
++obj-$(CONFIG_FB) += fbdev.o
+diff --git a/arch/sparc/video/fbdev.c b/arch/sparc/video/fbdev.c
+new file mode 100644
+index 000000000000..dadd5799fbb3
+--- /dev/null
++++ b/arch/sparc/video/fbdev.c
+@@ -0,0 +1,24 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/console.h>
++#include <linux/fb.h>
++#include <linux/module.h>
++
++#include <asm/fb.h>
++#include <asm/prom.h>
++
++int fb_is_primary_device(struct fb_info *info)
++{
++	struct device *dev = info->device;
++	struct device_node *node;
++
++	if (console_set_on_cmdline)
++		return 0;
++
++	node = dev->of_node;
++	if (node && node == of_console_device)
++		return 1;
++
++	return 0;
++}
++EXPORT_SYMBOL(fb_is_primary_device);
 -- 
 2.40.0
 
