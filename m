@@ -2,40 +2,36 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D25FBC7619A
-	for <linux-m68k@archiver.kernel.org>; Wed,  5 Apr 2023 18:03:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB1BAC76188
+	for <linux-m68k@archiver.kernel.org>; Wed,  5 Apr 2023 18:07:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229520AbjDESDb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 5 Apr 2023 14:03:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54946 "EHLO
+        id S233953AbjDESH4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 5 Apr 2023 14:07:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231245AbjDESD1 (ORCPT
+        with ESMTP id S234052AbjDESHu (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 5 Apr 2023 14:03:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C92768E
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  5 Apr 2023 11:02:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 989A662A85;
-        Wed,  5 Apr 2023 18:02:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F150AC4339B;
-        Wed,  5 Apr 2023 18:02:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1680717762;
-        bh=aT/QSekGZ6qxIVg6oZI+/BJiVR31MMBehvh5nsLZPFQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KilFKdOA7T0HZQGoP2XLwDq25p142goZ/oHbpNMBGK9IpA0zYV4Gyf+2kKDtkC/nP
-         Q9zgYC92ZeJpg25z/li0GNKnXn1dWq8qWfYILKLaxgw/bGL1AESipeRQMhFEZPhsjT
-         y4S4XgLmDNbvJdB0saTnL326Waj6PxDTaJXVeUHGO4wFqau0yqpRTuR1mohR4xJbz8
-         r0GY5a7khnOYg4H4oNnC79QIxeNZZJnHBCO6L2S5QNSDl9nkHF1rScFM/rxluTuV6U
-         fdEIhGZDwmxtBdMrbnYjogBg4YnCwhxmJDmxy9dK7Gl5QPZtbHSpLdfxx3Vrr/IMhT
-         wGnPbfEpS2xpA==
-Date:   Wed, 5 Apr 2023 20:02:37 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Sean Anderson <seanga2@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Wed, 5 Apr 2023 14:07:50 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2202F7A97;
+        Wed,  5 Apr 2023 11:07:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=xSgARidbSrbR51sAvFluXb6jWPhaQNLco18yBBJHCVc=; b=jAtjuZ4xXNLvq/2JGDp6JgMaoj
+        gAIoMFyE/X0Luo1gp4xQwfMCbfXXYJqs9KJFpC/JPosJaOSEEGBfP7XCFxnSlrdvWabT+1URapyAY
+        Ge81vkvk+tffke1MO4pzti1k1kK2frr3IYnRnvhpdWoSdKsUxxe0KJ0oi+/O0MyVJ6wuuC6Wl9G5a
+        48O9+qRBJqfsCZyUdsRw8vhrs5DpF6Rp2YgmO8mPl9yHp+2/NjNlQFUTxCMEe8Girj0WbIskqD2N3
+        98desdq3Sy/t+WLE1UIxIjbP2WCF8vURjMybpg2N0OsD/gvefWtJkoIy3s6uWUv4iIvYgNVyVKon4
+        B8VONlNg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pk7XN-00GcaF-Hs; Wed, 05 Apr 2023 18:07:13 +0000
+Date:   Wed, 5 Apr 2023 19:07:13 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Simon Horman <horms@kernel.org>
+Cc:     Sean Anderson <seanga2@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Paolo Abeni <pabeni@redhat.com>,
@@ -46,85 +42,52 @@ Cc:     Jakub Kicinski <kuba@kernel.org>,
         linux-m68k@lists.linux-m68k.org
 Subject: Re: [PATCH net-next] net: sunhme: move asm includes to below linux
  includes
-Message-ID: <ZC23vf6tNKU1FgRP@kernel.org>
+Message-ID: <ZC240XCeYCaSCu0X@casper.infradead.org>
 References: <20230405-sunhme-includes-fix-v1-1-bf17cc5de20d@kernel.org>
  <082e6ff7-6799-fa80-81e2-6f8092f8bb51@gmail.com>
+ <ZC23vf6tNKU1FgRP@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <082e6ff7-6799-fa80-81e2-6f8092f8bb51@gmail.com>
+In-Reply-To: <ZC23vf6tNKU1FgRP@kernel.org>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Apr 05, 2023 at 01:34:11PM -0400, Sean Anderson wrote:
-> On 4/5/23 13:29, Simon Horman wrote:
-> > A recent rearrangement of includes has lead to a problem on m68k
-> > as flagged by the kernel test robot.
+On Wed, Apr 05, 2023 at 08:02:37PM +0200, Simon Horman wrote:
+> On Wed, Apr 05, 2023 at 01:34:11PM -0400, Sean Anderson wrote:
+> > On 4/5/23 13:29, Simon Horman wrote:
+> > > A recent rearrangement of includes has lead to a problem on m68k
+> > > as flagged by the kernel test robot.
+> > > 
+> > > Resolve this by moving the block asm includes to below linux includes.
+> > > A side effect i that non-Sparc asm includes are now immediately
+> > > before Sparc asm includes, which seems nice.
+> > > 
+> > > Using sparse v0.6.4 I was able to reproduce this problem as follows
+> > > using the config provided by the kernel test robot:
+> > > 
+> > > $ wget https://download.01.org/0day-ci/archive/20230404/202304041748.0sQc4K4l-lkp@intel.com/config
+> > > $ cp config .config
+> > > $ make ARCH=m68k oldconfig
+> > > $ make ARCH=m68k C=2 M=drivers/net/ethernet/sun
+> > >     CC [M]  drivers/net/ethernet/sun/sunhme.o
+> > >   In file included from drivers/net/ethernet/sun/sunhme.c:19:
+> > >   ./arch/m68k/include/asm/irq.h:78:11: error: expected ‘;’ before ‘void’
+> > >      78 | asmlinkage void do_IRQ(int irq, struct pt_regs *regs);
+> > >         |           ^~~~~
+> > >         |           ;
+> > >   ./arch/m68k/include/asm/irq.h:78:40: warning: ‘struct pt_regs’ declared inside parameter list will not be visible outside of this definition or declaration
+> > >      78 | asmlinkage void do_IRQ(int irq, struct pt_regs *regs);
+> > >         |                                        ^~~~~~~
 > > 
-> > Resolve this by moving the block asm includes to below linux includes.
-> > A side effect i that non-Sparc asm includes are now immediately
-> > before Sparc asm includes, which seems nice.
-> > 
-> > Using sparse v0.6.4 I was able to reproduce this problem as follows
-> > using the config provided by the kernel test robot:
-> > 
-> > $ wget https://download.01.org/0day-ci/archive/20230404/202304041748.0sQc4K4l-lkp@intel.com/config
-> > $ cp config .config
-> > $ make ARCH=m68k oldconfig
-> > $ make ARCH=m68k C=2 M=drivers/net/ethernet/sun
-> >     CC [M]  drivers/net/ethernet/sun/sunhme.o
-> >   In file included from drivers/net/ethernet/sun/sunhme.c:19:
-> >   ./arch/m68k/include/asm/irq.h:78:11: error: expected ‘;’ before ‘void’
-> >      78 | asmlinkage void do_IRQ(int irq, struct pt_regs *regs);
-> >         |           ^~~~~
-> >         |           ;
-> >   ./arch/m68k/include/asm/irq.h:78:40: warning: ‘struct pt_regs’ declared inside parameter list will not be visible outside of this definition or declaration
-> >      78 | asmlinkage void do_IRQ(int irq, struct pt_regs *regs);
-> >         |                                        ^~~~~~~
+> > This seems like a problem with the header. m68k's asm/irq.h should include linux/interrupt.h before its declarations.
 > 
-> This seems like a problem with the header. m68k's asm/irq.h should include linux/interrupt.h before its declarations.
-
-Hi Sean,
-
-I do see your point. But TBH I'm unsure which way to go on this one.
-Geert, do you have any input?
-
-> --Sean
+> Hi Sean,
 > 
-> > Compile tested only.
-> > 
-> > Fixes: 1ff4f42aef60 ("net: sunhme: Alphabetize includes")
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Link: https://lore.kernel.org/oe-kbuild-all/202304041748.0sQc4K4l-lkp@intel.com/
-> > Signed-off-by: Simon Horman <horms@kernel.org>
-> > ---
-> >   drivers/net/ethernet/sun/sunhme.c | 7 ++++---
-> >   1 file changed, 4 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/sun/sunhme.c b/drivers/net/ethernet/sun/sunhme.c
-> > index ec85aef35bf9..b93613cd1994 100644
-> > --- a/drivers/net/ethernet/sun/sunhme.c
-> > +++ b/drivers/net/ethernet/sun/sunhme.c
-> > @@ -14,9 +14,6 @@
-> >    *     argument : macaddr=0x00,0x10,0x20,0x30,0x40,0x50
-> >    */
-> > -#include <asm/byteorder.h>
-> > -#include <asm/dma.h>
-> > -#include <asm/irq.h>
-> >   #include <linux/bitops.h>
-> >   #include <linux/crc32.h>
-> >   #include <linux/delay.h>
-> > @@ -45,6 +42,10 @@
-> >   #include <linux/types.h>
-> >   #include <linux/uaccess.h>
-> > +#include <asm/byteorder.h>
-> > +#include <asm/dma.h>
-> > +#include <asm/irq.h>
-> > +
-> >   #ifdef CONFIG_SPARC
-> >   #include <asm/auxio.h>
-> >   #include <asm/idprom.h>
-> > 
-> 
+> I do see your point. But TBH I'm unsure which way to go on this one.
+> Geert, do you have any input?
+
+We always include linux/* headers before asm/*.  The "sorting" of
+headers in this way was inappropriate.
