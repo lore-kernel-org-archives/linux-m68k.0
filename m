@@ -2,150 +2,119 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4C67C7619A
-	for <linux-m68k@archiver.kernel.org>; Wed,  5 Apr 2023 16:07:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D2CDC76188
+	for <linux-m68k@archiver.kernel.org>; Wed,  5 Apr 2023 17:30:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232736AbjDEQHr (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 5 Apr 2023 12:07:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59120 "EHLO
+        id S232605AbjDERaS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 5 Apr 2023 13:30:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231953AbjDEQHf (ORCPT
+        with ESMTP id S232465AbjDERaJ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 5 Apr 2023 12:07:35 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E29165580
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  5 Apr 2023 09:07:32 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-5002f12ccfeso76130a12.0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 05 Apr 2023 09:07:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1680710851; x=1683302851;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ir3s/Lf5lvCAlrm1TfcesrDtB2jAmtZCISN/6dp3hBc=;
-        b=VNUObGKko6sqyyipxJHZOjjD7Vgl2nINPanPLg9CF5dNFM42M+zPkinw5lJovFp5IT
-         KgryiwfHZwGoUCHvFhE9cgxsLTI65w6qpIN9bd0/wPOfFcL5qWWLKMUORCChrg/EDytj
-         /mEZ5jrCc5FzC1si2MslaSmste3VoXKbRjv7g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680710851; x=1683302851;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ir3s/Lf5lvCAlrm1TfcesrDtB2jAmtZCISN/6dp3hBc=;
-        b=PDsUFeaCSs15xcVheYoZY0r9BMhBI0+lx71cw02z/T8fnFtfjxvT/BpEk9mZjQIiP/
-         WhruWvYoN0IK3RWjMoL+ertmSezhmnLfPj6nQxT80fu5U0MOQ9mkI4ToxjQoiKt0oakc
-         +E5RueEhXuEa8v2BpzHYiUnOoTcFKD82bgvB+EUThDwR3AqNv4x+balvM7IXXnA6Vbxk
-         0ZGz0ua8IQ6f1BO/y6eZnFh4OxJk+qLF+pOQGQN8VFzkgmIDEMIDFbCRTPk7FuXvBEDy
-         CFqpiUpfiMhcRFRWOYVxPMdG4outfudwyw0Ajij1dassrys4vBM3LH4xb3qHpUdz1l3w
-         AZow==
-X-Gm-Message-State: AAQBX9dwhTVfDJOzhQBgxMhxxhq70Frb3CtiSudNgobK0K/vKZBLG6d4
-        wQVMGFbr6deoEvfdGE/Mozwplw==
-X-Google-Smtp-Source: AKy350aQMCCIGd+ttlIn6lmvnbNQhhwBJ1Oi0jxEBwn9z6WIX2aUYNMX4MoVCA82q+F4FspzQF+uZA==
-X-Received: by 2002:a17:906:10c9:b0:931:4285:ea16 with SMTP id v9-20020a17090610c900b009314285ea16mr2360239ejv.7.1680710851411;
-        Wed, 05 Apr 2023 09:07:31 -0700 (PDT)
-Received: from phenom.ffwll.local (212-51-149-33.fiber7.init7.net. [212.51.149.33])
-        by smtp.gmail.com with ESMTPSA id a23-20020a170906369700b0092a59ee224csm7492153ejc.185.2023.04.05.09.07.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Apr 2023 09:07:31 -0700 (PDT)
-Date:   Wed, 5 Apr 2023 18:07:28 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Helge Deller <deller@gmx.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH 01/18] fbdev: Prepare generic architecture helpers
-Message-ID: <ZC2cwIJJlyDWge+B@phenom.ffwll.local>
-Mail-Followup-To: Arnd Bergmann <arnd@arndb.de>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Helge Deller <deller@gmx.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, x86@kernel.org
-References: <20230405150554.30540-1-tzimmermann@suse.de>
- <20230405150554.30540-2-tzimmermann@suse.de>
- <92fe3838-41f0-4e27-8467-161553ff724f@app.fastmail.com>
+        Wed, 5 Apr 2023 13:30:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 096F85FFD
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  5 Apr 2023 10:30:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6DF2263CAE;
+        Wed,  5 Apr 2023 17:30:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C881BC433D2;
+        Wed,  5 Apr 2023 17:30:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1680715806;
+        bh=MTlSWkTVvQnj8bCbTnc5vIL49pqfkTClsa++NdTazCs=;
+        h=From:Date:Subject:To:Cc:From;
+        b=ra9q1p5bmBMGWpFgB4v4l6pgMweSZ39xkScSBol3GZgeY/cHHHzKh2ngiGKiZuab1
+         Q2tiW81XjCEiSpZywmVvCx2jwPIpbpUdGWetARjxtx7IuNk+2vLW/UgKaeOlHx6HaG
+         bJmpCr+w0cKAwzpIJPCicRYW64MFIlAmzHjtywCJ9CKKQjZvjVNjoJiwWqFSLQ7cDl
+         tzXdjnvs2+3Shtz7WX8kLmFDw3/6tCBkyBzrAUYCvDla9Ny5JCeePSRTr7e62xPpZg
+         PNYRoT4Mzwn333ihQj1Ph2GnSXJUQMI/H7rJcaXmdJVi6o0Wmn7JsSFd7DrylGt2kd
+         fwasqzz7SlSLQ==
+From:   Simon Horman <horms@kernel.org>
+Date:   Wed, 05 Apr 2023 19:29:48 +0200
+Subject: [PATCH net-next] net: sunhme: move asm includes to below linux
+ includes
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <92fe3838-41f0-4e27-8467-161553ff724f@app.fastmail.com>
-X-Operating-System: Linux phenom 6.1.0-7-amd64 
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20230405-sunhme-includes-fix-v1-1-bf17cc5de20d@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAAywLWQC/x2NywoCMQxFf2XI2kAdLaK/Ii76SG2gRmmmMjDMv
+ xtcnsM93A2UOpPCbdqg05eV32JwPEyQapAnIWdjmN18cmfnUYfUl1lJbWRSLLxi8T7ma8mX4Ap
+ YGYMSxh4kVWtltGby08m2/6s7CC0otC7w2PcfiPhXhoQAAAA=
+To:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Sean Anderson <seanga2@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        kernel test robot <lkp@intel.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-m68k@lists.linux-m68k.org
+X-Mailer: b4 0.12.2
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Apr 05, 2023 at 05:53:03PM +0200, Arnd Bergmann wrote:
-> On Wed, Apr 5, 2023, at 17:05, Thomas Zimmermann wrote:
-> > Generic implementations of fb_pgprotect() and fb_is_primary_device()
-> > have been in the source code for a long time. Prepare the header file
-> > to make use of them.
-> >
-> > Improve the code by using an inline function for fb_pgprotect() and
-> > by removing include statements.
-> >
-> > Symbols are protected by preprocessor guards. Architectures that
-> > provide a symbol need to define a preprocessor token of the same
-> > name and value. Otherwise the header file will provide a generic
-> > implementation. This pattern has been taken from <asm/io.h>.
-> >
-> > Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-> 
-> Moving this into generic code is good, but I'm not sure
-> about the default for fb_pgprotect():
-> 
-> > +
-> > +#ifndef fb_pgprotect
-> > +#define fb_pgprotect fb_pgprotect
-> > +static inline void fb_pgprotect(struct file *file, struct vm_area_struct *vma,
-> > +				unsigned long off)
-> > +{ }
-> > +#endif
-> 
-> I think most architectures will want the version we have on
-> arc, arm, arm64, loongarch, and sh already:
-> 
-> static inline void fb_pgprotect(struct file *file, struct vm_area_struct *vma,
->                                 unsigned long off)
-> {
->        vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
-> }
-> 
-> so I'd suggest making that version the default, and treating the
-> empty ones (m68knommu, sparc32) as architecture specific
-> workarounds.
+A recent rearrangement of includes has lead to a problem on m68k
+as flagged by the kernel test robot.
 
-Yeah I was about to type the same suggestion :-)
--Daniel
+Resolve this by moving the block asm includes to below linux includes.
+A side effect i that non-Sparc asm includes are now immediately
+before Sparc asm includes, which seems nice.
 
+Using sparse v0.6.4 I was able to reproduce this problem as follows
+using the config provided by the kernel test robot:
+
+$ wget https://download.01.org/0day-ci/archive/20230404/202304041748.0sQc4K4l-lkp@intel.com/config
+$ cp config .config
+$ make ARCH=m68k oldconfig
+$ make ARCH=m68k C=2 M=drivers/net/ethernet/sun
+   CC [M]  drivers/net/ethernet/sun/sunhme.o
+ In file included from drivers/net/ethernet/sun/sunhme.c:19:
+ ./arch/m68k/include/asm/irq.h:78:11: error: expected ‘;’ before ‘void’
+    78 | asmlinkage void do_IRQ(int irq, struct pt_regs *regs);
+       |           ^~~~~
+       |           ;
+ ./arch/m68k/include/asm/irq.h:78:40: warning: ‘struct pt_regs’ declared inside parameter list will not be visible outside of this definition or declaration
+    78 | asmlinkage void do_IRQ(int irq, struct pt_regs *regs);
+       |                                        ^~~~~~~
+
+Compile tested only.
+
+Fixes: 1ff4f42aef60 ("net: sunhme: Alphabetize includes")
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/oe-kbuild-all/202304041748.0sQc4K4l-lkp@intel.com/
+Signed-off-by: Simon Horman <horms@kernel.org>
+---
+ drivers/net/ethernet/sun/sunhme.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/sun/sunhme.c b/drivers/net/ethernet/sun/sunhme.c
+index ec85aef35bf9..b93613cd1994 100644
+--- a/drivers/net/ethernet/sun/sunhme.c
++++ b/drivers/net/ethernet/sun/sunhme.c
+@@ -14,9 +14,6 @@
+  *     argument : macaddr=0x00,0x10,0x20,0x30,0x40,0x50
+  */
  
-> I see that sparc64 and parisc use pgprot_uncached here, but as
-> they don't define a custom pgprot_writecombine, this ends up being
-> the same, and they can use the above definition as well.
-> 
-> mips defines pgprot_writecombine but uses pgprot_noncached
-> in fb_pgprotect(), which is probably a mistake and should have
-> been updated as part of commit 4b050ba7a66c ("MIPS: pgtable.h:
-> Implement the pgprot_writecombine function for MIPS").
-> 
->     Arnd
+-#include <asm/byteorder.h>
+-#include <asm/dma.h>
+-#include <asm/irq.h>
+ #include <linux/bitops.h>
+ #include <linux/crc32.h>
+ #include <linux/delay.h>
+@@ -45,6 +42,10 @@
+ #include <linux/types.h>
+ #include <linux/uaccess.h>
+ 
++#include <asm/byteorder.h>
++#include <asm/dma.h>
++#include <asm/irq.h>
++
+ #ifdef CONFIG_SPARC
+ #include <asm/auxio.h>
+ #include <asm/idprom.h>
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
