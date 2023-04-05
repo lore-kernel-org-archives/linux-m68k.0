@@ -2,53 +2,53 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C01FC77B6E
-	for <linux-m68k@archiver.kernel.org>; Wed,  5 Apr 2023 15:06:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA263C77B7E
+	for <linux-m68k@archiver.kernel.org>; Wed,  5 Apr 2023 15:06:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238695AbjDEPGL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 5 Apr 2023 11:06:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52898 "EHLO
+        id S238682AbjDEPGK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 5 Apr 2023 11:06:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238668AbjDEPGH (ORCPT
+        with ESMTP id S238661AbjDEPGD (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 5 Apr 2023 11:06:07 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 073F55B9D
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  5 Apr 2023 08:06:03 -0700 (PDT)
+        Wed, 5 Apr 2023 11:06:03 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C2E94203
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  5 Apr 2023 08:06:01 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 6146222925;
-        Wed,  5 Apr 2023 15:06:01 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B633120600;
+        Wed,  5 Apr 2023 15:05:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1680707161; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1680707159; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XbMo3vTzToV+AWbGx2Dtk5bvok2FxXyPAOociH6amPI=;
-        b=NHsGWbfu/eax+uhQRmFEISmq13GQcjQxgBTth9K3svol/82IFPkmizZVrW3pW+mxkXqAZL
-        Et/Eua7M+URyYUadSg/0wKxW+2athNaYMoPTtUFVcA97lHyWsV5yDK108/GiBtObeOOJCj
-        1ZzloVRHuhTtryfr2bBOhpOVWxfeN8M=
+        bh=I+ebQj+prghiXixUTBCQCVOwwXF4D1Rgum6gbJOw+s4=;
+        b=GDiLZyY86lwF2fRr+YRDQwYf6Uq4gXikQToAyRqZBU7u5MWnfWk0yn76mZwoFdTifS919O
+        aqVBOpZ9lpN+CGaKJb/7VobgYkqjNnZyw10FgUU7IXA6m5V79OKQQzeSonRJy7ahlNLd0i
+        hcxJqJEu/M48URUm5FAtWAnunjO3XXM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1680707161;
+        s=susede2_ed25519; t=1680707159;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XbMo3vTzToV+AWbGx2Dtk5bvok2FxXyPAOociH6amPI=;
-        b=gj3pQeHrWZaUevpElwhow9npzUIwo40faql0uX2OgAkqes4uZfhZPKYAcPb5b3Ycc8qA8l
-        q/8Mh9tc4V7R+UAg==
+        bh=I+ebQj+prghiXixUTBCQCVOwwXF4D1Rgum6gbJOw+s4=;
+        b=RvN/SuN57MEBeAu843+3OQKQiZa9/dYcEzCLLSlTUkbdFSXAkUCMA2ZFBm6qPCz1qjknhQ
+        sk1yBshymmXVF+Cw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 01BDB13A10;
-        Wed,  5 Apr 2023 15:06:00 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 422A413A10;
+        Wed,  5 Apr 2023 15:05:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id aJQxO1iOLWTPIAAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Wed, 05 Apr 2023 15:06:00 +0000
+        id YAc0D1eOLWTPIAAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Wed, 05 Apr 2023 15:05:59 +0000
 From:   Thomas Zimmermann <tzimmermann@suse.de>
 To:     arnd@arndb.de, daniel.vetter@ffwll.ch, deller@gmx.de,
         javierm@redhat.com, gregkh@linuxfoundation.org
@@ -61,10 +61,11 @@ Cc:     linux-arch@vger.kernel.org, linux-fbdev@vger.kernel.org,
         linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
         sparclinux@vger.kernel.org, x86@kernel.org,
         Thomas Zimmermann <tzimmermann@suse.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: [PATCH 08/18] arch/mips: Implement <asm/fb.h> with generic helpers
-Date:   Wed,  5 Apr 2023 17:05:44 +0200
-Message-Id: <20230405150554.30540-9-tzimmermann@suse.de>
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH 04/18] arch/arm64: Implement <asm/fb.h> with generic helpers
+Date:   Wed,  5 Apr 2023 17:05:40 +0200
+Message-Id: <20230405150554.30540-5-tzimmermann@suse.de>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230405150554.30540-1-tzimmermann@suse.de>
 References: <20230405150554.30540-1-tzimmermann@suse.de>
@@ -78,18 +79,19 @@ Replace the architecture's fb_is_primary_device() with the generic
 one from <asm-generic/fb.h>. No functional changes.
 
 Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
 ---
- arch/mips/include/asm/fb.h | 10 ++++------
+ arch/arm64/include/asm/fb.h | 10 ++++------
  1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/arch/mips/include/asm/fb.h b/arch/mips/include/asm/fb.h
-index bd3f68c9ddfc..6bda0a81d8ca 100644
---- a/arch/mips/include/asm/fb.h
-+++ b/arch/mips/include/asm/fb.h
-@@ -1,19 +1,17 @@
- #ifndef _ASM_FB_H_
- #define _ASM_FB_H_
+diff --git a/arch/arm64/include/asm/fb.h b/arch/arm64/include/asm/fb.h
+index bdc735ee1f67..fc31a5d1f48a 100644
+--- a/arch/arm64/include/asm/fb.h
++++ b/arch/arm64/include/asm/fb.h
+@@ -5,19 +5,17 @@
+ #ifndef __ASM_FB_H_
+ #define __ASM_FB_H_
  
 -#include <linux/fb.h>
 -#include <linux/fs.h>
@@ -100,7 +102,7 @@ index bd3f68c9ddfc..6bda0a81d8ca 100644
  static inline void fb_pgprotect(struct file *file, struct vm_area_struct *vma,
  				unsigned long off)
  {
- 	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+ 	vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
  }
 +#define fb_pgprotect fb_pgprotect
  
@@ -110,7 +112,7 @@ index bd3f68c9ddfc..6bda0a81d8ca 100644
 -}
 +#include <asm-generic/fb.h>
  
- #endif /* _ASM_FB_H_ */
+ #endif /* __ASM_FB_H_ */
 -- 
 2.40.0
 
