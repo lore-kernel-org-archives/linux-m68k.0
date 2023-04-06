@@ -2,101 +2,153 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA7E5C7618D
-	for <linux-m68k@archiver.kernel.org>; Thu,  6 Apr 2023 19:35:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BF82C7618D
+	for <linux-m68k@archiver.kernel.org>; Thu,  6 Apr 2023 20:17:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237106AbjDFTfU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 6 Apr 2023 15:35:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36298 "EHLO
+        id S238703AbjDFUR1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 6 Apr 2023 16:17:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236860AbjDFTfT (ORCPT
+        with ESMTP id S238444AbjDFUR0 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 6 Apr 2023 15:35:19 -0400
-Received: from mail.sf-mail.de (mail.sf-mail.de [IPv6:2a01:4f8:1c17:6fae:616d:6c69:616d:6c69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871F259E6
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  6 Apr 2023 12:35:16 -0700 (PDT)
-Received: (qmail 22331 invoked from network); 6 Apr 2023 19:08:40 -0000
-Received: from unknown ([2001:9e8:6dc6:3c00:76d4:35ff:feb7:be92]:48442 HELO eto.sf-tec.de) (auth=eike@sf-mail.de)
-        by mail.sf-mail.de (Qsmtpd 0.38dev) with (TLS_AES_256_GCM_SHA384 encrypted) ESMTPSA
-        for <arnd@arndb.de>; Thu, 06 Apr 2023 21:08:40 +0200
-From:   Rolf Eike Beer <eike-kernel@sf-tec.de>
-To:     arnd@arndb.de, daniel.vetter@ffwll.ch, deller@gmx.de,
-        javierm@redhat.com, gregkh@linuxfoundation.org,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     linux-arch@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, x86@kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>
-Subject: Re: [PATCH 12/18] arch/parisc: Implement fb_is_primary_device() under arch/parisc
-Date:   Thu, 06 Apr 2023 21:08:33 +0200
-Message-ID: <5921681.lOV4Wx5bFT@eto.sf-tec.de>
-In-Reply-To: <20230405150554.30540-13-tzimmermann@suse.de>
-References: <20230405150554.30540-1-tzimmermann@suse.de> <20230405150554.30540-13-tzimmermann@suse.de>
+        Thu, 6 Apr 2023 16:17:26 -0400
+Received: from cynthia.allandria.com (cynthia.allandria.com [50.242.82.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71FE04493;
+        Thu,  6 Apr 2023 13:17:25 -0700 (PDT)
+Received: from flar by cynthia.allandria.com with local (Exim 4.84_2)
+        (envelope-from <flar@allandria.com>)
+        id 1pkW2s-0007P4-RX; Thu, 06 Apr 2023 13:17:22 -0700
+Date:   Thu, 6 Apr 2023 13:17:22 -0700
+From:   Brad Boyer <flar@allandria.com>
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] nubus: Don't list slot resources by default
+Message-ID: <20230406201722.GA28362@allandria.com>
+References: <1296c4d691bba057291246f067c191ef8a88531c.1680667933.git.fthain@linux-m68k.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart4819412.31r3eYUQgx"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1296c4d691bba057291246f067c191ef8a88531c.1680667933.git.fthain@linux-m68k.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
---nextPart4819412.31r3eYUQgx
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
-From: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Date: Thu, 06 Apr 2023 21:08:33 +0200
-Message-ID: <5921681.lOV4Wx5bFT@eto.sf-tec.de>
-In-Reply-To: <20230405150554.30540-13-tzimmermann@suse.de>
+On Wed, Apr 05, 2023 at 02:12:13PM +1000, Finn Thain wrote:
+> Some Nubus card ROMs contain many slot resources. A single Radius video
+> card produced well over a thousand entries under /proc/bus/nubus/.
+> Populating /proc/bus/nubus/ on a slow machine with several such cards
+> installed takes long enough that the user may think that the system is
+> wedged. All those procfs entries also consume significant RAM though
+> they are not normally needed (except by developers).
+> Omit these resources from /proc/bus/nubus/ by default and add a kernel
+> parameter to enable them when needed.
+> On the test machine, this saved 300 kB and 10 seconds.
+> 
+> Cc: Brad Boyer <flar@allandria.com>
 
-Am Mittwoch, 5. April 2023, 17:05:48 CEST schrieb Thomas Zimmermann:
-> Move PARISC's implementation of fb_is_primary_device() into the
-> architecture directory. This the place of the declaration and
-> where other architectures implement this function. No functional
-> changes.
+Reviewed-by: Brad Boyer <flar@allandria.com>
 
-> diff --git a/arch/parisc/video/fbdev.c b/arch/parisc/video/fbdev.c
-> new file mode 100644
-> index 000000000000..4a0ae08fc75b
-> --- /dev/null
-> +++ b/arch/parisc/video/fbdev.c
-> @@ -0,0 +1,27 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (C) 2000 Philipp Rumpf <prumpf@tux.org>
-> + * Copyright (C) 2001-2020 Helge Deller <deller@gmx.de>
-> + * Copyright (C) 2001-2002 Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Tested-by: Stan Johnson <userm57@yahoo.com>
+> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+> ---
+> Changed since v3:
+>  - Better commentary.
+> Changed since v2:
+>  - Added commentary.
+>  - Moved declaration to nubus.h.
+> Changed since v1:
+>  - Expanded to cover all slot resources in procfs.
+> ---
+>  drivers/nubus/nubus.c | 13 ++++++++++---
+>  drivers/nubus/proc.c  |  8 ++++----
+>  include/linux/nubus.h |  1 +
+>  3 files changed, 15 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
+> index f70ba58dbc55..f0c24d39f837 100644
+> --- a/drivers/nubus/nubus.c
+> +++ b/drivers/nubus/nubus.c
+> @@ -32,6 +32,13 @@
+>  
+>  /* Globals */
+>  
+> +/* The "nubus.populate_procfs" parameter makes slot resources available in
+> + * procfs. It's deprecated and disabled by default because procfs is no longer
+> + * thought to be suitable for that and some board ROMs make it too expensive.
 > + */
+> +bool populate_procfs;
+> +module_param(populate_procfs, bool, 0);
 > +
-> +#include <linux/module.h>
-> +
-> +#include <asm/fb.h>
-> +
-> +#include <video/sticore.h>
-> +
-> +int fb_is_primary_device(struct fb_info *info)
-> +{
-
-Looking at this makes me wonder why the argument to all of these functions 
-isn't const? Not your fault, but could be a candidate for patch #19?
-
-Eike
---nextPart4819412.31r3eYUQgx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQSaYVDeqwKa3fTXNeNcpIk+abn8TgUCZC8YsQAKCRBcpIk+abn8
-TroxAKCInC1+nDFT2zUZ2BABKO6rWJJXygCfXz1dtt8vvCEpTBZxHF+hSbDdIVk=
-=5z1v
------END PGP SIGNATURE-----
-
---nextPart4819412.31r3eYUQgx--
-
-
-
+>  LIST_HEAD(nubus_func_rsrcs);
+>  
+>  /* Meaning of "bytelanes":
+> @@ -572,9 +579,9 @@ nubus_get_functional_resource(struct nubus_board *board, int slot,
+>  			nubus_proc_add_rsrc(dir.procdir, &ent);
+>  			break;
+>  		default:
+> -			/* Local/Private resources have their own
+> -			   function */
+> -			nubus_get_private_resource(fres, dir.procdir, &ent);
+> +			if (populate_procfs)
+> +				nubus_get_private_resource(fres, dir.procdir,
+> +							   &ent);
+>  		}
+>  	}
+>  
+> diff --git a/drivers/nubus/proc.c b/drivers/nubus/proc.c
+> index 2c320a84fd72..1808accb8214 100644
+> --- a/drivers/nubus/proc.c
+> +++ b/drivers/nubus/proc.c
+> @@ -55,7 +55,7 @@ struct proc_dir_entry *nubus_proc_add_board(struct nubus_board *board)
+>  {
+>  	char name[2];
+>  
+> -	if (!proc_bus_nubus_dir)
+> +	if (!proc_bus_nubus_dir || !populate_procfs)
+>  		return NULL;
+>  	snprintf(name, sizeof(name), "%x", board->slot);
+>  	return proc_mkdir(name, proc_bus_nubus_dir);
+> @@ -72,7 +72,7 @@ struct proc_dir_entry *nubus_proc_add_rsrc_dir(struct proc_dir_entry *procdir,
+>  	char name[9];
+>  	int lanes = board->lanes;
+>  
+> -	if (!procdir)
+> +	if (!procdir || !populate_procfs)
+>  		return NULL;
+>  	snprintf(name, sizeof(name), "%x", ent->type);
+>  	remove_proc_subtree(name, procdir);
+> @@ -157,7 +157,7 @@ void nubus_proc_add_rsrc_mem(struct proc_dir_entry *procdir,
+>  	char name[9];
+>  	struct nubus_proc_pde_data *pded;
+>  
+> -	if (!procdir)
+> +	if (!procdir || !populate_procfs)
+>  		return;
+>  
+>  	snprintf(name, sizeof(name), "%x", ent->type);
+> @@ -176,7 +176,7 @@ void nubus_proc_add_rsrc(struct proc_dir_entry *procdir,
+>  	char name[9];
+>  	unsigned char *data = (unsigned char *)ent->data;
+>  
+> -	if (!procdir)
+> +	if (!procdir || !populate_procfs)
+>  		return;
+>  
+>  	snprintf(name, sizeof(name), "%x", ent->type);
+> diff --git a/include/linux/nubus.h b/include/linux/nubus.h
+> index 392fc6c53e96..50c9145808d1 100644
+> --- a/include/linux/nubus.h
+> +++ b/include/linux/nubus.h
+> @@ -93,6 +93,7 @@ extern struct bus_type nubus_bus_type;
+>  
+>  /* Generic NuBus interface functions, modelled after the PCI interface */
+>  #ifdef CONFIG_PROC_FS
+> +extern bool populate_procfs;
+>  void nubus_proc_init(void);
+>  struct proc_dir_entry *nubus_proc_add_board(struct nubus_board *board);
+>  struct proc_dir_entry *nubus_proc_add_rsrc_dir(struct proc_dir_entry *procdir,
+> -- 
+> 2.37.5
+> 
