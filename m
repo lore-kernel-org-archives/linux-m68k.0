@@ -2,99 +2,139 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27D6AC77B6F
-	for <linux-m68k@archiver.kernel.org>; Tue, 11 Apr 2023 07:21:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E9B4C77B78
+	for <linux-m68k@archiver.kernel.org>; Tue, 11 Apr 2023 08:09:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229640AbjDKHVY convert rfc822-to-8bit (ORCPT
+        id S230062AbjDKIJG convert rfc822-to-8bit (ORCPT
         <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 11 Apr 2023 03:21:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41464 "EHLO
+        Tue, 11 Apr 2023 04:09:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjDKHVX (ORCPT
+        with ESMTP id S229903AbjDKIJF (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 11 Apr 2023 03:21:23 -0400
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 280C6F9
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 11 Apr 2023 00:21:23 -0700 (PDT)
-Received: by mail-yb1-f169.google.com with SMTP id h198so13555745ybg.12
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 11 Apr 2023 00:21:23 -0700 (PDT)
+        Tue, 11 Apr 2023 04:09:05 -0400
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA82A30DF
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 11 Apr 2023 01:09:03 -0700 (PDT)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-54c061acbc9so283790507b3.11
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 11 Apr 2023 01:09:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681197682;
+        d=1e100.net; s=20210112; t=1681200543;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iQGfLVrq2H2KryLTDW+SJAq2e67g+unw+N0J7gMgi0k=;
-        b=NXnN5CxjyokHhufzgePthhyIYoKGxzlRCtMcbDpuhBDnk8XLTw6aG5XvYxh31tHnTM
-         GTfFftJKTIGF+aXG3VIwfue0337rTybCZrEuld625CWuO+tryPPPszNPqZpcHrQrWG7z
-         nQjYBn6LJLeFrgoZ4fpukg/PlvKaBd7Yri4BGhQq0ETPE5+pK69CikTxHhxD5VHoXAuZ
-         7IqOfY4gp8sFoUmgMGS6YFQtaeWtDVojyw/ZjGxWPJI9+/xZzXVw1pCQTtMDUx9dwu2L
-         27Xn1F8OpjxbXCcgc7+p3DLuh/GlwcKGp+UGqUpu6ewV9mxTmUnm0kxBz/ks9DxYuQti
-         XKqQ==
-X-Gm-Message-State: AAQBX9cmaPkiWeEVPbf8TqCwPFcEJ5NYs6WZrgQSX4eppa5DOr2tzHwR
-        PKS2ZzEi7BrwyDLFUF5/+dfzQHC69WTzZw==
-X-Google-Smtp-Source: AKy350atXt4273GH7XdRpjOKND4XjXdcNrvGLuXtkEtNcTHKmFUuN5raB+orGci2SBuLMmXRYQjvig==
-X-Received: by 2002:a25:a4c2:0:b0:a1f:b582:fe5c with SMTP id g60-20020a25a4c2000000b00a1fb582fe5cmr11952869ybi.51.1681197682091;
-        Tue, 11 Apr 2023 00:21:22 -0700 (PDT)
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
-        by smtp.gmail.com with ESMTPSA id y72-20020a25dc4b000000b00b8ed7b61526sm1951053ybe.1.2023.04.11.00.21.21
+        bh=hALJfm4jnccIo090MDgna4b/Z74t0kji7w+cuP7uYXI=;
+        b=0Np8JlH9m7a2tXPH7DZIU3rEhj7d/XW07uqgIPbcuL7FmEqtJmt/JtdwPyvbP4kQCR
+         Go2SWsbXZR3A6TlOhGUZslwc8H14HekJZfpIdlRFL1L/SkXaGtvwS4Kw3+Agtmz97z+r
+         moIah3wWj55Qmy0JbDnhpMXKec3B8Id3nwKg8UD9//CENvyvB31Lz6nPqfFjMMJXwQOo
+         YvHT0PiN0aFSWv8dl9mjaL+btjhqh2355uo+ftbsrEnRhNcwJj+VQudQUhCP2hFacj6P
+         yba1Vpyk4xMvDfJUGRYeW1J4Xh7HWzI7EdIurDLy6LRBkV9D7emqoNnrYw3YtTFtQtpx
+         prhA==
+X-Gm-Message-State: AAQBX9cjuWmOqFjWtXfGdsQO8/zMa3Jd+tTCgl2xC2RZBBLZWkQdW6KS
+        bY1YpknOXUG/4X3f6H8NQV98YxfkHA2pkQ==
+X-Google-Smtp-Source: AKy350bq84RDyJkt2KnMLBGwuGoHMg2ZNvD3PXDIzmc+/bq0fgsH1S8lVwv++LqWEaO1PFYj4Z1bmQ==
+X-Received: by 2002:a81:4fc2:0:b0:54c:25fd:5cfd with SMTP id d185-20020a814fc2000000b0054c25fd5cfdmr6347180ywb.40.1681200542654;
+        Tue, 11 Apr 2023 01:09:02 -0700 (PDT)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
+        by smtp.gmail.com with ESMTPSA id k19-20020a81ac13000000b00545b02d4af5sm3332181ywh.48.2023.04.11.01.09.00
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Apr 2023 00:21:21 -0700 (PDT)
-Received: by mail-yb1-f174.google.com with SMTP id y69so13944532ybe.2
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 11 Apr 2023 00:21:21 -0700 (PDT)
-X-Received: by 2002:a25:7654:0:b0:b8e:e0db:5b9d with SMTP id
- r81-20020a257654000000b00b8ee0db5b9dmr3490915ybc.12.1681197681317; Tue, 11
- Apr 2023 00:21:21 -0700 (PDT)
+        Tue, 11 Apr 2023 01:09:01 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-54c17fa9ae8so243127447b3.5
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 11 Apr 2023 01:09:00 -0700 (PDT)
+X-Received: by 2002:a81:e401:0:b0:54c:19a6:480 with SMTP id
+ r1-20020a81e401000000b0054c19a60480mr7173247ywl.4.1681200539960; Tue, 11 Apr
+ 2023 01:08:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <4a9c1d0d-07aa-792e-921f-237d5a30fc44.ref@yahoo.com>
- <e10b8e06-6a36-5c83-89da-bec8fd7d3ed9@linux-m68k.org> <19d1f2ac-67dd-5415-b64a-1e1b4451f01e@linux-m68k.org>
- <ef5bcf6f-3541-50c2-9b6a-5e9d2f9c68d5@linux-m68k.org> <87zg7rap45.fsf@igel.home>
- <5a5588ca-81c3-3f4c-fd43-c95e90b27939@linux-m68k.org> <67f6bc5f-e1fc-64b9-cb3c-1698cf4daf51@gmail.com>
- <9eea635f-c947-eae7-09fa-d39f00d91532@linux-m68k.org> <3dfea52a-b09e-517a-c3ca-4b559a3d9ce4@gmail.com>
- <23ddfd2a-1123-45ae-866d-158d45e23ba2@linux-m68k.org> <8ff53c49-331e-1388-31c5-79cf21a2c201@gmail.com>
- <77321c26-fd0f-5975-0ab6-a726ee995358@linux-m68k.org> <7d9d587a-c3e1-5d89-4962-b92e025821af@gmail.com>
- <c84c961a-b98d-ff9c-ae25-3f5a26395a15@linux-m68k.org> <5cc7a1f6-e19d-bb8e-3ddc-e1ef796c145f@gmail.com>
- <cb7b71a0-5ecd-e416-e54a-f0d38e4e578a@linux-m68k.org> <b0657a37-4297-1951-96d2-cec8cc6f0355@gmail.com>
- <6f2c6c5b-7e9d-94f2-98ba-9a1306f131bb@linux-m68k.org> <df1f56d3-ff3a-a4bf-290f-7f43f60ba45b@gmail.com>
- <dcad89d6-d535-4e07-0fff-c9070af3519a@linux-m68k.org>
-In-Reply-To: <dcad89d6-d535-4e07-0fff-c9070af3519a@linux-m68k.org>
+References: <20230406143019.6709-1-tzimmermann@suse.de> <20230406143019.6709-2-tzimmermann@suse.de>
+In-Reply-To: <20230406143019.6709-2-tzimmermann@suse.de>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 11 Apr 2023 09:21:08 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXWAzsN0L=T3FBcb1Thj-WqNJe04FS6ujMvRTy5OaWzbQ@mail.gmail.com>
-Message-ID: <CAMuHMdXWAzsN0L=T3FBcb1Thj-WqNJe04FS6ujMvRTy5OaWzbQ@mail.gmail.com>
-Subject: Re: kernel behaviour, was Re: dash behaviour
-To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     Michael Schmitz <schmitzmic@gmail.com>,
-        debian-68k@lists.debian.org, linux-m68k@lists.linux-m68k.org
+Date:   Tue, 11 Apr 2023 10:08:47 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUfViWzPbB+GcGUwxmGNxAohfq71Jed3DzS=Cb+gBzotg@mail.gmail.com>
+Message-ID: <CAMuHMdUfViWzPbB+GcGUwxmGNxAohfq71Jed3DzS=Cb+gBzotg@mail.gmail.com>
+Subject: Re: [PATCH v2 01/19] fbdev: Prepare generic architecture helpers
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     arnd@arndb.de, daniel.vetter@ffwll.ch, deller@gmx.de,
+        javierm@redhat.com, gregkh@linuxfoundation.org,
+        linux-arch@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Finn,
+Hi Thomas,
 
-On Tue, Apr 11, 2023 at 6:59 AM Finn Thain <fthain@linux-m68k.org> wrote:
-> On Tue, 11 Apr 2023, Michael Schmitz wrote:
-> > We don't know for definite that we deal with a suspect user space
-> > program - it might just be a change in a previously fine program that
-> > now exposes a subtle kernel bug (undetected for quite a long time, but
-> > we've seen a few of those now...)?
-> >
+On Thu, Apr 6, 2023 at 4:30 PM Thomas Zimmermann <tzimmermann@suse.de> wrote:
+> Generic implementations of fb_pgprotect() and fb_is_primary_device()
+> have been in the source code for a long time. Prepare the header file
+> to make use of them.
 >
-> That's right -- the kernel is also suspect. As is glibc. I will keep
-> looking for some way to narrow down the search.
+> Improve the code by using an inline function for fb_pgprotect()
+> and by removing include statements. The default mode set by
+> fb_pgprotect() is now writecombine, which is what most platforms
+> want.
+>
+> Symbols are protected by preprocessor guards. Architectures that
+> provide a symbol need to define a preprocessor token of the same
+> name and value. Otherwise the header file will provide a generic
+> implementation. This pattern has been taken from <asm/io.h>.
+>
+> v2:
+>         *  use writecombine mappings by default (Arnd)
+>
+> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
 
-Or the compiler...
+Thanks for your patch!
 
-https://lore.kernel.org/all/CABVgOSmgpkktiLkU-ic0xGitDOhep+3sb5X91hb8RNEzFauhAA@mail.gmail.com
+> --- a/include/asm-generic/fb.h
+> +++ b/include/asm-generic/fb.h
+> @@ -1,13 +1,32 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+> +
+>  #ifndef __ASM_GENERIC_FB_H_
+>  #define __ASM_GENERIC_FB_H_
+> -#include <linux/fb.h>
+>
+> -#define fb_pgprotect(...) do {} while (0)
+> +/*
+> + * Only include this header file from your architecture's <asm/fb.h>.
+> + */
+> +
+> +#include <asm/page.h>
+> +
+> +struct fb_info;
+> +struct file;
+> +
+> +#ifndef fb_pgprotect
+> +#define fb_pgprotect fb_pgprotect
+> +static inline void fb_pgprotect(struct file *file, struct vm_area_struct *vma,
+> +                               unsigned long off)
+
+Does this affect any noMMU platforms that relied on fb_pgprotect()
+doing nothing before?
+Perhaps the body below should be protected by "#ifdef CONFIG_MMU"?
+
+> +{
+> +       vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
+
+Shouldn't this use the pgprot_val() wrapper?
+
+> +}
+> +#endif
 
 Gr{oetje,eeting}s,
 
                         Geert
 
-
---
+-- 
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
 In personal conversations with technical people, I call myself a hacker. But
