@@ -2,91 +2,170 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FECDC77B6F
-	for <linux-m68k@archiver.kernel.org>; Tue, 11 Apr 2023 08:28:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A62CC76196
+	for <linux-m68k@archiver.kernel.org>; Tue, 11 Apr 2023 08:50:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbjDKI2w convert rfc822-to-8bit (ORCPT
+        id S230061AbjDKIu2 convert rfc822-to-8bit (ORCPT
         <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 11 Apr 2023 04:28:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37464 "EHLO
+        Tue, 11 Apr 2023 04:50:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230174AbjDKI2k (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 11 Apr 2023 04:28:40 -0400
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C733A9B
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 11 Apr 2023 01:28:10 -0700 (PDT)
-Received: by mail-pl1-f180.google.com with SMTP id y6so6064585plp.2
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 11 Apr 2023 01:28:10 -0700 (PDT)
+        with ESMTP id S229969AbjDKIu1 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 11 Apr 2023 04:50:27 -0400
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696C1101;
+        Tue, 11 Apr 2023 01:50:26 -0700 (PDT)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-54c061acbc9so285360717b3.11;
+        Tue, 11 Apr 2023 01:50:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1681201689;
+        d=1e100.net; s=20210112; t=1681203025;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KOXdqLxEHLBZ7hy/2mM/9REbA1X5ZreSZtF+7etv6Sw=;
-        b=Y4aCylXMAJ2q6RRDvMDkLXwmT00U6Kc+P6TmrvzYI4Mu3mhqNG762rxalflFDi9j1Q
-         +bLzhKrbl/UMN6LGfULRKeq8VzPimrJevD1IcNEj7lmQn2o8wjxmVCO0c89zmjQbQqnP
-         ttt4PVF7OA0H/GdU9yrO8heb+kKd5h3IKuo1b4CmeY6ku9xTdtiHgMb+YBf0VsEhbrI0
-         5yjLViG6nnA2qF8iMyxmm9if9Vkq10y018QEHO+5jyMsNqukpit+Iz1q8zVE1tV39diL
-         OZowVl8Wm0xTeyuxwUAXztT2F40m52AH7VUmtkDsrFXo+gnqRd/QbY1sjwVM3wLEp/O8
-         je8w==
-X-Gm-Message-State: AAQBX9eXq6wOrqN0V6cqbb+XJzWIBv3d19h924aPSREXzcq+oyvt0j+o
-        /9PRKT4tIg74CjF8NaGEDu5HYKt73lHdxw==
-X-Google-Smtp-Source: AKy350ZqMVwx27+v/LH/8/0as6lEmZPmEPYYqXPXUc6KTGleKObeJLoalisypiDNwSVZ7A+FDWY5mw==
-X-Received: by 2002:a17:90b:4d86:b0:246:92e4:bdbd with SMTP id oj6-20020a17090b4d8600b0024692e4bdbdmr3091509pjb.15.1681201688892;
-        Tue, 11 Apr 2023 01:28:08 -0700 (PDT)
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com. [209.85.216.53])
-        by smtp.gmail.com with ESMTPSA id ba6-20020a170902720600b001a5317b5170sm4709874plb.278.2023.04.11.01.28.08
-        for <linux-m68k@lists.linux-m68k.org>
+        bh=2XsMmfYvpqHWFGERwzpiHyCVbGoq54hxk7fbEhr0Ujk=;
+        b=gfAYPExta6MleGPD+nd+rTxmcmy4Bc6Bn/RSsPM/cfsFpurvTZiYmmuTKJImLgstl3
+         AJYXN4jZOMkXuxnCUrG04dri5sCt5amnERkJoWuk9salhzD+NkWJBfRTI/3UPPHhgU0K
+         b2YNHzFKhlr67ESquawigRjAwv3GZWPy9IIaYm5ONcn8QxheL/GqB/grIItNa3syIw2n
+         TRU8Zf4ZkW/P7A2bdIMiqX59ufEmWwBx9CKefseXNF99qgpAWuz0bUm7/bR6YWkVgiTS
+         us2gRobn68Maeqfcp5oX0AGkuo/rzWC9E2Kqol/i1kxlL+kpSb0YTCEpv/6s58MwEMh4
+         P1gA==
+X-Gm-Message-State: AAQBX9di4HuniKI6CcYAHipFof6dhMa+imwmTJWbmfCcfZpiBMxTX/M1
+        GRE9VYAE5DC4PLPlgyw9UTyhPfWBr5gQ5Q==
+X-Google-Smtp-Source: AKy350ZmUM+9oPC28qYyEH5g/lMjw167mxKQhqA3h1nHhbJcwY8e3Nn1gzDvvKnRfUHfC890wEXFvQ==
+X-Received: by 2002:a0d:e894:0:b0:54f:6f2d:8d9b with SMTP id r142-20020a0de894000000b0054f6f2d8d9bmr1386726ywe.18.1681203025424;
+        Tue, 11 Apr 2023 01:50:25 -0700 (PDT)
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com. [209.85.128.180])
+        by smtp.gmail.com with ESMTPSA id k16-20020a81ff10000000b0054651519898sm3363403ywn.59.2023.04.11.01.50.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Apr 2023 01:28:08 -0700 (PDT)
-Received: by mail-pj1-f53.google.com with SMTP id y11-20020a17090a600b00b0024693e96b58so6085661pji.1
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 11 Apr 2023 01:28:08 -0700 (PDT)
-X-Received: by 2002:a25:d447:0:b0:b75:9519:dbcd with SMTP id
- m68-20020a25d447000000b00b759519dbcdmr960089ybf.12.1681201212819; Tue, 11 Apr
- 2023 01:20:12 -0700 (PDT)
+        Tue, 11 Apr 2023 01:50:25 -0700 (PDT)
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-54c12009c30so252705247b3.9;
+        Tue, 11 Apr 2023 01:50:25 -0700 (PDT)
+X-Received: by 2002:a81:bc08:0:b0:54e:e490:d190 with SMTP id
+ a8-20020a81bc08000000b0054ee490d190mr1268334ywi.4.1681203004780; Tue, 11 Apr
+ 2023 01:50:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230406143019.6709-1-tzimmermann@suse.de> <20230406143019.6709-9-tzimmermann@suse.de>
-In-Reply-To: <20230406143019.6709-9-tzimmermann@suse.de>
+References: <20230323163354.1454196-1-schnelle@linux.ibm.com>
+ <248a41a536d5a3c9e81e8e865b34c5bf74cd36d4.camel@linux.ibm.com>
+ <B1EC1AC7-6BB5-4B66-B171-24687C3CBFB3@zytor.com> <d8686aaf-f12e-446b-9a80-335bb4266a4d@app.fastmail.com>
+ <ccff565cde1440b8bff92d96f94a32b5@AcuMS.aculab.com>
+In-Reply-To: <ccff565cde1440b8bff92d96f94a32b5@AcuMS.aculab.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 11 Apr 2023 10:20:00 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVmZ2GRKqEnZgQKzJ1-Hy-Cz8yoUOhD0TMMqZriH82-tQ@mail.gmail.com>
-Message-ID: <CAMuHMdVmZ2GRKqEnZgQKzJ1-Hy-Cz8yoUOhD0TMMqZriH82-tQ@mail.gmail.com>
-Subject: Re: [PATCH v2 08/19] arch/m68k: Implement <asm/fb.h> with generic helpers
-To:     Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     arnd@arndb.de, daniel.vetter@ffwll.ch, deller@gmx.de,
-        javierm@redhat.com, gregkh@linuxfoundation.org,
-        linux-arch@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, x86@kernel.org
+Date:   Tue, 11 Apr 2023 10:49:52 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWe+U3yOOfy+z19apZaT0q7WhrR2beR=t0Jkbd3ODYbyw@mail.gmail.com>
+Message-ID: <CAMuHMdWe+U3yOOfy+z19apZaT0q7WhrR2beR=t0Jkbd3ODYbyw@mail.gmail.com>
+Subject: Re: [PATCH v4] Kconfig: introduce HAS_IOPORT option and select it as necessary
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, "H. Peter Anvin" <hpa@zytor.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.osdn.me>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Apr 6, 2023 at 4:30 PM Thomas Zimmermann <tzimmermann@suse.de> wrote:
-> Replace the architecture's fb_is_primary_device() with the generic
-> one from <asm-generic/fb.h>. No functional changes.
->
-> v2:
->         * provide empty fb_pgprotect() on non-MMU systems
->
-> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Hi David,
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+On Wed, Apr 5, 2023 at 11:37 PM David Laight <David.Laight@aculab.com> wrote:
+> From: Linuxppc-dev Arnd Bergmann
+> > Sent: 05 April 2023 21:32
+> >
+> > On Wed, Apr 5, 2023, at 22:00, H. Peter Anvin wrote:
+> > > On April 5, 2023 8:12:38 AM PDT, Niklas Schnelle <schnelle@linux.ibm.com> wrote:
+> > >>On Thu, 2023-03-23 at 17:33 +0100, Niklas Schnelle wrote:
+> > >>> We introduce a new HAS_IOPORT Kconfig option to indicate support for I/O
+> > >>> Port access. In a future patch HAS_IOPORT=n will disable compilation of
+> > >>> the I/O accessor functions inb()/outb() and friends on architectures
+> > >>> which can not meaningfully support legacy I/O spaces such as s390.
+> > >>> >>
+> > >>Gentle ping. As far as I can tell this hasn't been picked to any tree
+> > >>sp far but also hasn't seen complains so I'm wondering if I should send
+> > >>a new version of the combined series of this patch plus the added
+> > >>HAS_IOPORT dependencies per subsystem or wait until this is picked up.
+> > >
+> > > You need this on a system supporting not just ISA but also PCI.
+> > >
+> > > Typically on non-x86 architectures this is simply mapped into a memory window.
+> >
+> > I'm pretty confident that the list is correct here, as the HAS_IOPORT
+> > symbol is enabled exactly for the architectures that have a way to
+> > map the I/O space. PCIe generally works fine without I/O space, the
+> > only exception are drivers for devices that were around as early PCI.
+>
+> Isn't there a difference between cpu that have inb()/outb() (probably
+> only x86?) and architectures (well computer designs) that can generate
+> PCI 'I/O' cycles by some means.
+> It isn't even just PCI I/O cycles, I've used an ARM cpu (SA1100)
+> that mapped a chuck of physical address space onto PCMCIA I/O cycles.
+>
+> If the hardware can map a PCI 'IO' bar into normal kernel address
+> space then the bar and accesses can be treated exactly like a memory bar.
+> This probably leaves x86 as the outlier where you need (IIRC) io_readl()
+> and friends that can generate in/out instructions for those accesses.
+>
+> There are also all the x86 ISA devices which need in/out instructions.
+> But (with the likely exception of the UART) they are pretty much
+> platform specific.
+>
+> So, to my mind at least, HAS_IOPORT is just the wrong question.
+
+Not all PCI controllers support mapping the I/O bar in MMIO space, so
+in general you cannot say that CONFIG_PCI=y means CONFIG_HAS_IOPORT=y.
 
 Gr{oetje,eeting}s,
 
                         Geert
 
---
+-- 
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
 In personal conversations with technical people, I call myself a hacker. But
