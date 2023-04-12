@@ -2,127 +2,170 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 604FBC77B72
-	for <linux-m68k@archiver.kernel.org>; Wed, 12 Apr 2023 17:27:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2050C7619A
+	for <linux-m68k@archiver.kernel.org>; Wed, 12 Apr 2023 23:30:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229720AbjDLR1T (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 12 Apr 2023 13:27:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36766 "EHLO
+        id S229541AbjDLXae (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 12 Apr 2023 19:30:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjDLR1S (ORCPT
+        with ESMTP id S229484AbjDLXad (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 12 Apr 2023 13:27:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 085DB4C3C
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 12 Apr 2023 10:27:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Wed, 12 Apr 2023 19:30:33 -0400
+X-Greylist: delayed 471 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 12 Apr 2023 16:30:30 PDT
+Received: from welho-filter3.welho.com (welho-filter3b.welho.com [83.102.41.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB94049E5
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 12 Apr 2023 16:30:30 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by welho-filter3.welho.com (Postfix) with ESMTP id B77C81694A;
+        Thu, 13 Apr 2023 02:22:36 +0300 (EEST)
+X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
+Received: from welho-smtp2.welho.com ([IPv6:::ffff:83.102.41.85])
+        by localhost (welho-filter3.welho.com [::ffff:83.102.41.25]) (amavisd-new, port 10024)
+        with ESMTP id gkmEg0jd-D9l; Thu, 13 Apr 2023 02:22:36 +0300 (EEST)
+Received: from [192.168.0.20] (82-181-33-83.bb.dnainternet.fi [82.181.33.83])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7DEAC63282;
-        Wed, 12 Apr 2023 17:27:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DA85C433EF;
-        Wed, 12 Apr 2023 17:27:11 +0000 (UTC)
-Date:   Wed, 12 Apr 2023 18:27:08 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Justin Forbes <jforbes@fedoraproject.org>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Guo Ren <guoren@kernel.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Rich Felker <dalias@libc.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Zi Yan <ziy@nvidia.com>, linux-arm-kernel@lists.infradead.org,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mm@kvack.org, linux-sh@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
-        sparclinux@vger.kernel.org
-Subject: Re: [PATCH v3 02/14] arm64: drop ranges in definition of
- ARCH_FORCE_MAX_ORDER
-Message-ID: <ZDbp7LAHES3YFo30@arm.com>
-References: <20230325060828.2662773-1-rppt@kernel.org>
- <20230325060828.2662773-3-rppt@kernel.org>
- <CAFxkdAr5C7ggZ+WdvDbsfmwuXujT_z_x3qcUnhnCn-WrAurvgA@mail.gmail.com>
- <ZCvQGJzdED+An8an@kernel.org>
- <CAFbkSA38eTA_iJ3ttBvQ8G4Rjj8qB12GxY7Z=qmZ8wm+0tZieA@mail.gmail.com>
+        by welho-smtp2.welho.com (Postfix) with ESMTPSA id 6EAEE287;
+        Thu, 13 Apr 2023 02:22:29 +0300 (EEST)
+Message-ID: <304e5c81-4e51-6c16-28d0-be48bf86a564@helsinkinet.fi>
+Date:   Thu, 13 Apr 2023 02:22:29 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+From:   Eero Tamminen <oak@helsinkinet.fi>
+Subject: Re: instrumentation, was Re: core dump analysis
+To:     Michael Schmitz <schmitzmic@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Finn Thain <fthain@linux-m68k.org>,
+        Andreas Schwab <schwab@linux-m68k.org>,
+        debian-68k@lists.debian.org, linux-m68k@lists.linux-m68k.org
+References: <4a9c1d0d-07aa-792e-921f-237d5a30fc44.ref@yahoo.com>
+ <1725f7c1-2084-a404-653d-9e9f8bbe961c@linux-m68k.org>
+ <e10b8e06-6a36-5c83-89da-bec8fd7d3ed9@linux-m68k.org>
+ <19d1f2ac-67dd-5415-b64a-1e1b4451f01e@linux-m68k.org>
+ <ef5bcf6f-3541-50c2-9b6a-5e9d2f9c68d5@linux-m68k.org>
+ <87zg7rap45.fsf@igel.home>
+ <5a5588ca-81c3-3f4c-fd43-c95e90b27939@linux-m68k.org>
+ <67f6bc5f-e1fc-64b9-cb3c-1698cf4daf51@gmail.com>
+ <9eea635f-c947-eae7-09fa-d39f00d91532@linux-m68k.org>
+ <3dfea52a-b09e-517a-c3ca-4b559a3d9ce4@gmail.com>
+ <23ddfd2a-1123-45ae-866d-158d45e23ba2@linux-m68k.org>
+ <8ff53c49-331e-1388-31c5-79cf21a2c201@gmail.com>
+ <CAMuHMdVPayRjadOYxxZb-J7q-YtgZDwtCs93+Rz_ReSk+NHCwg@mail.gmail.com>
+ <79ad6f51-5d02-0104-3b63-024e54a25e3c@gmail.com>
+ <7106e764-4def-c03a-30d5-e4f810bd85cc@linux-m68k.org>
+ <912d690c-c43c-8a72-ec8e-14cfb26785f1@gmail.com>
+ <CAMuHMdXEKvKDPZWdzrEs0z=qS=hiK8AEwkSMgwoQcfjc_a4wEA@mail.gmail.com>
+ <13a69c91-ca2b-42d8-dbd5-0b81e76044c6@gmail.com>
+Content-Language: en-US
+In-Reply-To: <13a69c91-ca2b-42d8-dbd5-0b81e76044c6@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFbkSA38eTA_iJ3ttBvQ8G4Rjj8qB12GxY7Z=qmZ8wm+0tZieA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Apr 04, 2023 at 06:50:01AM -0500, Justin Forbes wrote:
-> On Tue, Apr 4, 2023 at 2:22 AM Mike Rapoport <rppt@kernel.org> wrote:
-> > On Wed, Mar 29, 2023 at 10:55:37AM -0500, Justin Forbes wrote:
-> > > On Sat, Mar 25, 2023 at 1:09 AM Mike Rapoport <rppt@kernel.org> wrote:
-> > > >
-> > > > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> > > >
-> > > > It is not a good idea to change fundamental parameters of core memory
-> > > > management. Having predefined ranges suggests that the values within
-> > > > those ranges are sensible, but one has to *really* understand
-> > > > implications of changing MAX_ORDER before actually amending it and
-> > > > ranges don't help here.
-> > > >
-> > > > Drop ranges in definition of ARCH_FORCE_MAX_ORDER and make its prompt
-> > > > visible only if EXPERT=y
-> > >
-> > > I do not like suddenly hiding this behind EXPERT for a couple of
-> > > reasons.  Most importantly, it will silently change the config for
-> > > users building with an old kernel config.  If a user has for instance
-> > > "13" set and building with 4K pages, as is the current configuration
-> > > for Fedora and RHEL aarch64 builds, an oldconfig build will now set it
-> > > to 10 with no indication that it is doing so.  And while I think that
-> > > 10 is a fine default for many aarch64 users, there are valid reasons
-> > > for choosing other values. Putting this behind expert makes it much
-> > > less obvious that this is an option.
-> >
-> > That's the idea of EXPERT, no?
-> >
-> > This option was intended to allow allocation of huge pages for
-> > architectures that had PMD_ORDER > MAX_ORDER and not to allow user to
-> > select size of maximal physically contiguous allocation.
-> >
-> > Changes to MAX_ORDER fundamentally change the behaviour of core mm and
-> > unless users *really* know what they are doing there is no reason to choose
-> > non-default values so hiding this option behind EXPERT seems totally
-> > appropriate to me.
-> 
-> It sounds nice in theory. In practice. EXPERT hides too much. When you
-> flip expert, you expose over a 175ish new config options which are
-> hidden behind EXPERT.  You don't have to know what you are doing just
-> with the MAX_ORDER, but a whole bunch more as well.  If everyone were
-> already running 10, this might be less of a problem. At least Fedora
-> and RHEL are running 13 for 4K pages on aarch64. This was not some
-> accidental choice, we had to carry a patch to even allow it for a
-> while.  If this does go in as is, we will likely just carry a patch to
-> remove the "if EXPERT", but that is a bit of a disservice to users who
-> might be trying to debug something else upstream, bisecting upstream
-> kernels or testing a patch.  In those cases, people tend to use
-> pristine upstream sources without distro patches to verify, and they
-> tend to use their existing configs. With this change, their MAX_ORDER
-> will drop to 10 from 13 silently.   That can look like a different
-> issue enough to ruin a bisect or have them give bad feedback on a
-> patch because it introduces a "regression" which is not a regression
-> at all, but a config change they couldn't see.
+Hi Michael,
 
-If we remove EXPERT (as prior to this patch), I'd rather keep the ranges
-and avoid having to explain to people why some random MAX_ORDER doesn't
-build (keeping the range would also make sense for randconfig, not sure
-we got to any conclusion there).
+On 11.4.2023 11.24, Michael Schmitz wrote:
+> Am 11.04.2023 um 19:19 schrieb Geert Uytterhoeven:
+>> On Tue, Apr 11, 2023 at 6:56 AM Michael Schmitz <schmitzmic@gmail.com> 
+>>> Am 11.04.2023 um 12:20 schrieb Finn Thain:
+>>>> A better solution might be be to port the existing instrumentation like
+>>>> ftrace, kprobes, uprobes etc. Might be a lot of work though. I wonder
+>>>> how portable that stuff is.
 
--- 
-Catalin
+Another possibility is just using manually added kernel tracepoints:
+https://www.kernel.org/doc/html/latest/trace/tracepoints.html
+
+"git grep TRACE_EVENT" did not given any hits for arch/m68k/ though.
+
+(I don't think those need any particular architecture support. One just 
+adds them to locations where it makes sense to trace activity that is 
+important, but which does not happen too often for the very small 
+overhead from disabled static trace point to be significant.)
+
+
+> Looking at a few arch implementations, I'm utterly confused. Wouldn't 
+> know where to start.
+
+Good article: https://lwn.net/Articles/132196/
+
+(Ignore jprobes stuff as that's deprecated.)
+
+
+Because probe replaces instruction at the probe point with a breakpoint:
+https://www.kernel.org/doc/html/latest/trace/kprobes.html#how-does-a-kprobe-work
+
+It needs architecture specific code to decode and simulate the replaced 
+instruction (its side-effects) when it is later executed "out-of-line".
+
+This also causes architecture specific limitations on where the probe 
+can be set.  Architecture may not support simulating all possible 
+instructions, just the most common ones (e.g. ones typically used on 
+function entry and exit points).
+
+Besides that, AFAIK plain kprobes support should not have much 
+architecture specific stuff.
+
+
+(I have no experience with kernel code, I just remember some LWN 
+articles about kprobes during past 2 decades, and I was involved with a 
+tool that did something similar in user-space, before Linux got uprobes 
+support.)
+
+
+
+As to what architecture to use as an example, I think it would be best 
+to ask tracing maintainers for advice, as there seems to be a lot of 
+code which has been copied from each other at different points in time, 
+that might be nowadays better as shared rather than under each arch...
+
+These architectures support kprobes:
+------------------------------------
+$ grep " ok " Documentation/features/debug/kprobes/arch-support.txt
+     |         arc: |  ok  |
+     |         arm: |  ok  |
+     |       arm64: |  ok  |
+     |        csky: |  ok  |
+     |        ia64: |  ok  |
+     |        mips: |  ok  |
+     |      parisc: |  ok  |
+     |     powerpc: |  ok  |
+     |       riscv: |  ok  |
+     |        s390: |  ok  |
+     |          sh: |  ok  |
+     |       sparc: |  ok  |
+     |         x86: |  ok  |
+------------------------------------
+
+But only these seem to have probing functionality isolated nicely to its 
+own directory:
+------------------------------------
+$ ls arch/*/kernel/probes/
+
+arch/arm64/kernel/probes/:
+decode-insn.c  decode-insn.h  kprobes.c  kprobes_trampoline.S  Makefile 
+simulate-insn.c  simulate-insn.h  uprobes.c
+
+arch/csky/kernel/probes/:
+decode-insn.c  decode-insn.h  ftrace.c  kprobes.c  kprobes_trampoline.S 
+Makefile  simulate-insn.c  simulate-insn.h  uprobes.c
+
+arch/riscv/kernel/probes/:
+decode-insn.c  decode-insn.h  ftrace.c  kprobes.c  Makefile  rethook.c 
+rethook.h  rethook_trampoline.S  simulate-insn.c  simulate-insn.h  uprobes.c
+------------------------------------
+
+
+As to testing whether kprobes work, that could be easier with ftrace 
+support also present:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/testing/selftests/ftrace/README
+
+
+	- Eero
+
+PS. Looking at the kernel features list, m68k arch seems to be missing a 
+lot of other features too:
+https://www.kernel.org/doc/html/latest/m68k/features.html
