@@ -2,135 +2,122 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F68CC77B6E
-	for <linux-m68k@archiver.kernel.org>; Thu, 13 Apr 2023 12:52:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FE81C77B6E
+	for <linux-m68k@archiver.kernel.org>; Fri, 14 Apr 2023 09:27:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230060AbjDMMwi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 13 Apr 2023 08:52:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57074 "EHLO
+        id S229564AbjDNJ1w (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 14 Apr 2023 05:27:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230009AbjDMMwh (ORCPT
+        with ESMTP id S229543AbjDNJ1v (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 13 Apr 2023 08:52:37 -0400
-Received: from wnew4-smtp.messagingengine.com (wnew4-smtp.messagingengine.com [64.147.123.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C32A5E2
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 13 Apr 2023 05:52:09 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailnew.west.internal (Postfix) with ESMTP id 5A7EC2B066F8;
-        Thu, 13 Apr 2023 08:52:03 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Thu, 13 Apr 2023 08:52:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1681390322; x=1681397522; bh=NR
-        7qDHxvmrn4O6C7ghCGmkwcCMB9CqvbPSwmBqWhNIE=; b=ZXclSBnVVRa8vpoYG+
-        Nh7NGI1Sfo/+IhOueSX6qtWqFgLpX1O7kGpe874+9lPVAkHB/MzUC6Ip3Qt5J4S1
-        bo+Igz4vPJgrOb5hGwvGzYSyD9RAM686r7y8aQw66DlT4Mt340zXnCYSOX2rluiN
-        l6kWpyNhBIXZQ/WjHlR82CZljPrL2zeVzs/VKz/0NnIUPr0YWmnDYjaoDj48NIs+
-        UFfZMJaZFIZIs03gVqCq4iH3pg/lZtVMlR8XIkQ70K5m2tAxwHrPsotuz4IugI93
-        6XX70k3nZhX+AhqXZznQyr38x7nSAEkpDTOnIVRV2ikChkz1k3AGDfv3Jf0wEK6q
-        B4Qw==
+        Fri, 14 Apr 2023 05:27:51 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A256271E
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 14 Apr 2023 02:27:50 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 8D9855C017E;
+        Fri, 14 Apr 2023 05:27:49 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Fri, 14 Apr 2023 05:27:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        messagingengine.com; h=cc:content-type:content-type:date:date
         :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
         :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1681390322; x=1681397522; bh=NR7qDHxvmrn4O
-        6C7ghCGmkwcCMB9CqvbPSwmBqWhNIE=; b=gqOA+P8sXOuT1JOfKkqGPELz//AFF
-        f2eiDN24y3pX47Aau9zsWL6E8P7Knx1xYRVsUHNfPuY3xLBDKbzMqkoi7VrJfZ+o
-        W2mfsUlFecf2kgDULdtR2hU7Te44ccwG0sZJJ62Vj9KlDW/g2YbNj73dSar7sZor
-        Lalym6dR+k04Z8y/YiYW1TKtaKYCSHw8QkHRYjo8Tdd4ZZV+YIE/S2VHOdNo6IMp
-        Z1kBRS94su8sb72OzoxxZQuCPo8irGFKsthakuC3qSU4fnAaIq/6lBOlIe4lj5le
-        uqmU2YzZXlg34GD8AxHkIBUzub0qWgTia98RBKzwE2Iz+p4RVnYEoo8Ig==
-X-ME-Sender: <xms:8fo3ZIGGcweoBIf29WNloFKKsICMp7uD7W3WGDtwvAzEbureoRK3kQ>
-    <xme:8fo3ZBVH6htlD2rv7m0KIlRDqt5H_xpJqhWk8H5XXhJ6hTi8Y46KqzYekT6ZEcvP-
-    iySV_XAsUXsef2fpLI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdekkedgheekucetufdoteggodetrfdotf
+        :x-sasl-enc; s=fm3; t=1681464469; x=1681550869; bh=5eUbBUR9prjcV
+        eQ9nd2co49hSYVmF2UjW25vUGzEFQg=; b=JnP097tFE/Xlyj3OOtooSAdeSD7or
+        lj4BUHdJmvxqxvCl4rkqm7tze3oWOUHSeCdqbOOINyID+ADteWXxFDjSOJJF83/G
+        ukJgH5Q3/x0Y4LB3mSGPP7ush+sj/uzUOXreTkFCwsQ1C3/PG/FhPGxzqO7kb+m4
+        2kplX62mBsbYFCsJpkA+u1V04NpjK4T6/rhFJKAkOPD4yUvabr2o/fhsEsXzjXQn
+        s9OnqMibd+ZPhCrHFKbnXdIgM7/eCVH95rCUln0mO7yb6CQ5DL1/SIsnMmQ5WCgl
+        9Ogt475C+EMxloAAB646AORzml85pwO5RrNQkzQ3CSBp6Rmune5gMa9ow==
+X-ME-Sender: <xms:lRw5ZLqJztSBgdmS3KvYa79-9XnjUPwhyOw5HI-45s4OpKMmKuJpsQ>
+    <xme:lRw5ZFrcG7fi5JEe33i-NFpIutxiqsehgvlgdLaOI-6uV5yKI5emUgsYU9Mdepo9P
+    CgKHeh2Zy8MOPuf0uw>
+X-ME-Received: <xmr:lRw5ZIMGLiVX3d6qsj3Ou_8lYG_5PYyzsp7iBTPLowWkjaL4ziO1PpIsW3XdNQBFqkpZISoLj7_luu8CDCS2ZjTEQtQ3ccD7wuE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdeltddgudehucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:8fo3ZCJ6WRNY0qBjN-s19TED1hDYTi9JrZ1EWdX72x5Uz5tiomDupw>
-    <xmx:8fo3ZKH4DvlQ_zzGPiQu2mlSLPVJsJocFs7o5u97ykj5S3RFQKqVIQ>
-    <xmx:8fo3ZOVGcI2r7KyDnkTbNlptbOhRxQn3piCwIrpYa2EmmVt1L7apJg>
-    <xmx:8vo3ZLLx-tSRguyqR96OdIBkL35NPK3OPhvrjBvWAq6rBkTuILKinq3Ygk0>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 3A89EB60086; Thu, 13 Apr 2023 08:52:01 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-334-g8c072af647-fm-20230330.001-g8c072af6
-Mime-Version: 1.0
-Message-Id: <66899d69-1339-4a61-8612-6f8e452b0b26@app.fastmail.com>
-In-Reply-To: <OS0PR01MB5922EDAFCD6DA0313DB99C5E86989@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-References: <20230327121317.4081816-1-arnd@kernel.org>
- <20230327121317.4081816-22-arnd@kernel.org>
- <OS0PR01MB5922EDAFCD6DA0313DB99C5E86989@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-Date:   Thu, 13 Apr 2023 14:51:40 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Biju Das" <biju.das.jz@bp.renesas.com>,
-        "Arnd Bergmann" <arnd@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "Vineet Gupta" <vgupta@kernel.org>,
-        "Russell King" <linux@armlinux.org.uk>,
-        "Neil Armstrong" <neil.armstrong@linaro.org>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        "Will Deacon" <will@kernel.org>, guoren <guoren@kernel.org>,
-        "Brian Cain" <bcain@quicinc.com>,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Michal Simek" <monstr@monstr.eu>,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
-        "Dinh Nguyen" <dinguyen@kernel.org>,
-        "Stafford Horne" <shorne@gmail.com>,
-        "Helge Deller" <deller@gmx.de>,
-        "Michael Ellerman" <mpe@ellerman.id.au>,
-        "Christophe Leroy" <christophe.leroy@csgroup.eu>,
-        "Paul Walmsley" <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        "Rich Felker" <dalias@libc.org>,
-        "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        "Max Filippov" <jcmvbkbc@gmail.com>,
-        "Christoph Hellwig" <hch@lst.de>,
-        "Robin Murphy" <robin.murphy@arm.com>,
-        "Lad, Prabhakar" <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        "Conor.Dooley" <conor.dooley@microchip.com>,
-        "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-oxnas@groups.io" <linux-oxnas@groups.io>,
-        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
-        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>
-Subject: Re: [PATCH 21/21] dma-mapping: replace custom code with generic implementation
-Content-Type: text/plain
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvufgjkfhfgggtsehttdertd
+    dttddvnecuhfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidq
+    mheikehkrdhorhhgqeenucggtffrrghtthgvrhhnpeffudfhgeefvdeitedugfelueeghe
+    ekkeefveffhfeiveetledvhfdtveffteeuudenucevlhhushhtvghrufhiiigvpedtnecu
+    rfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorh
+    hg
+X-ME-Proxy: <xmx:lRw5ZO7jGQ6JjUkStaIbMETOh4VVzsKCID0ZBie-1pxz96PomgEnFQ>
+    <xmx:lRw5ZK6keQN0lrxXPgoXbp-UdEnLOhsgrn3behT3UIUWPyMdNDgxxA>
+    <xmx:lRw5ZGgODvo-Myel78-MmHeHuoEmt7ft4e1RTOm6pO52HXRdw7xRBw>
+    <xmx:lRw5ZHWAORde-bnDGEptIep7oO1d7_qydf2RZQpwJmj1TE7puh2XXw>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 14 Apr 2023 05:27:47 -0400 (EDT)
+Date:   Fri, 14 Apr 2023 19:30:56 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     debian-68k@lists.debian.org, linux-m68k@lists.linux-m68k.org
+Subject: Re: core dump analysis, was Re: stack smashing detected
+In-Reply-To: <23ddfd2a-1123-45ae-866d-158d45e23ba2@linux-m68k.org>
+Message-ID: <2f241963-44cd-3196-b39e-9c2d63cda1d3@linux-m68k.org>
+References: <4a9c1d0d-07aa-792e-921f-237d5a30fc44.ref@yahoo.com> <bb27b393-3d02-f42c-5c7f-c27d4936ece9@linux-m68k.org> <37da2ca2-dd99-8417-7cae-a88e2e7fc1b6@yahoo.com> <30a1be59-a1fd-f882-1072-c7db8734b1f1@gmail.com> <39f79c2d-e803-d7b1-078f-8757ca9b1238@yahoo.com>
+ <c47abfdc-31c8-e7ed-1c14-90f68710f25d@gmail.com> <040ad66a-71dd-001b-0446-36cbd6547b37@yahoo.com> <5b9d64bb-2adc-20a2-f596-f99bf255b5cc@linux-m68k.org> <56bd9a33-c58a-58e0-3956-e63c61abe5fe@yahoo.com> <1725f7c1-2084-a404-653d-9e9f8bbe961c@linux-m68k.org>
+ <e10b8e06-6a36-5c83-89da-bec8fd7d3ed9@linux-m68k.org> <19d1f2ac-67dd-5415-b64a-1e1b4451f01e@linux-m68k.org> <ef5bcf6f-3541-50c2-9b6a-5e9d2f9c68d5@linux-m68k.org> <87zg7rap45.fsf@igel.home> <5a5588ca-81c3-3f4c-fd43-c95e90b27939@linux-m68k.org>
+ <67f6bc5f-e1fc-64b9-cb3c-1698cf4daf51@gmail.com> <9eea635f-c947-eae7-09fa-d39f00d91532@linux-m68k.org> <3dfea52a-b09e-517a-c3ca-4b559a3d9ce4@gmail.com> <23ddfd2a-1123-45ae-866d-158d45e23ba2@linux-m68k.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Apr 13, 2023, at 14:13, Biju Das wrote:
-> Hi all,
->
-> FYI, this patch breaks on RZ/G2L SMARC EVK board and Arnd will send V2 
-> for fixing this issue.
->
-> [10:53] <biju> [    3.384408] Unable to handle kernel paging request at 
-> virtual address 000000004afb0080
+On Wed, 5 Apr 2023, I wrote:
 
-Right, sorry about this, I accidentally removed the 'phys_to_virt()'
-conversion on arm64.
+> 
+> I don't care that much what dash does as long as it isn't corrupting 
+> it's own stack, which is a real possibility, and one which gdb's data 
+> watch point would normally resolve. And yet I have no way to tackle 
+> that.
+> 
+> I've been running gdb under QEMU, where the failure is not reproducible. 
+> Running dash under gdb on real hardware is doable (RAM permitting). But 
+> the failure is intermittent even then -- it only happens during 
+> execution of certain init scripts, and I can't reproduce it by manually 
+> running those scripts.
+> 
+> (Even if I could reproduce the failure under gdb, instrumenting 
+> execution in gdb can alter timing in undesirable ways...)
+> 
 
-     Arnd
+Somewhat optimistically, I upgraded the RAM on this system to 36 MB so I 
+can run dash under gdb (20 MB was not enough). But, as expected, the crash 
+went away when I did so.
+
+Outside of gdb, I was able to reproduce the same failure with a clean 
+build from the dash repo (commit b00288f). I can get a crash with 
+optimization level -O1 and -O though it becomes even more rare. So it's 
+easier to use Debian's build (-O2).
+
+One of the difficulties with the core dump is that it happens too late. 
+After the canary check fails, __stack_chk_fail() is called, which then 
+calls a bunch of other stuff until finally abort() is called. This 
+obliterates whatever was below the stack pointer at the time of the 
+failure.
+
+So I modified libc.so.6 and now it just crashes with an illegal 
+instruction in __wait3 rather than branching to __stack_chk_fail. This let 
+me see whatever was left behind in stack memory by __wait4_time64() etc.
+
+__wait4_time64() calls __m68k_read_tp(), and the return address from 
+__m68k_read_tp() can still be seen in stack memory, which suggests that 
+the stack never grew after that call. (So __m68k_read_tp() is implicated.)
+
+Would signal delivery erase any of the memory immediately below the USP? 
+If so, it would erase those old stack frames, which would give some 
+indication of the timing of signal delivery.
+
+If I run dash under gdb under QEMU, I can break on entry to onsig() and 
+find the signal frame on the stack. But when I examine stack memory from 
+the core dump, I can't find 0x70774e40 (i.e. moveq __NR_sigreturn,%d0 ; 
+trap #0) which the kernel puts on the stack in my QEMU experiments.
+
+That suggests that no signal was delivered... and yet gotsigchld == 1 at 
+the time of the coredump, after having been initialized by waitproc() 
+prior to calling __wait3(). So the signal handler onsig() must have 
+executed during __wait3() or __wait4_time64(). I can't explain this.
