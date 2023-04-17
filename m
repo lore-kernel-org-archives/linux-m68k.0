@@ -2,159 +2,195 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56913C77B76
-	for <linux-m68k@archiver.kernel.org>; Mon, 17 Apr 2023 22:19:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 566B0C77B72
+	for <linux-m68k@archiver.kernel.org>; Mon, 17 Apr 2023 23:27:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbjDQWT3 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 17 Apr 2023 18:19:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59082 "EHLO
+        id S229652AbjDQX1M (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 17 Apr 2023 19:27:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbjDQWT2 (ORCPT
+        with ESMTP id S229461AbjDQX1L (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 17 Apr 2023 18:19:28 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8048F46B0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 17 Apr 2023 15:19:27 -0700 (PDT)
+        Mon, 17 Apr 2023 19:27:11 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C26BA3
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 17 Apr 2023 16:27:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1681769967; x=1713305967;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=yMAw32GB6bnYHTIaJx+3YJu4UkN11Fi/gjV1eDLzAFs=;
-  b=U4y6l+zk0G8oVOCICjBZTTf4J4axDVRf2kWd14Hy2EzOhYbdtro8qFHu
-   9gUItQ0X2dmm30doQesI2t9GSRV3G822z5muUvZOgrWpLGpcXb8w+7psb
-   QCJSHtwkE6SQW+/fD7JskbJDpXQhJVO4s/4o5Ksh7lGhtlKY8tGpoKppz
-   QOkrZ16F8CNHBsRd+V1XwLbV1J8ndEALvWvK9B2MBJa4kW7TYKKf3ltKb
-   O/4a931nN346EJjuIc1xzh6Tsw4hl1EkTD4j9u1YPcQYJnQOad4+nrb2n
-   Q92Nyfh/TJchIQMfNShYaGXN4Z56ufx/ZVwNis9roAU6Ub4qa9rKo4/Rv
+  t=1681774029; x=1713310029;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=wPnw+MYu+6kSm8WBM12p+xZ5c93KJ146jZITi0B6nXQ=;
+  b=WcusQzy3mrPJdr/K3ioWO8o2+7w8PN0YRO/3BeGqMQxQUiIvjMY0O6lq
+   p/qKNl3qVKjwHyrjH6gpJWrKMtK7TseyfivsORS231DNa8pTCjOpRQIt8
+   OgAsiFpWbNyFvUYaotTrvQ88QoVCEp8VAksIIY7z0Rj/0UFbcYrUkpjeF
+   JW0Jw1NmHOdX/R/vEXd4wjzIbW/9/G48J+h1dCsq8gm+ODuhj/AVxxluP
+   rXxjru6UKMScPVR0mJKuxA2UpksQ3qnHRlsOcHGSm6uMf/zZmOHJqv/ry
+   32Wef/30hiF62J16025Qe+odmg1rEBWu8DOvGHvEsxfA4kSoFJ0l9RHI8
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10683"; a="347767947"
+X-IronPort-AV: E=McAfee;i="6600,9927,10683"; a="329204613"
 X-IronPort-AV: E=Sophos;i="5.99,205,1677571200"; 
-   d="scan'208";a="347767947"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2023 15:19:11 -0700
+   d="scan'208";a="329204613"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2023 16:27:08 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10683"; a="684313012"
+X-IronPort-AV: E=McAfee;i="6600,9927,10683"; a="834641183"
 X-IronPort-AV: E=Sophos;i="5.99,205,1677571200"; 
-   d="scan'208";a="684313012"
+   d="scan'208";a="834641183"
 Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 17 Apr 2023 15:19:05 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 17 Apr 2023 16:27:07 -0700
 Received: from kbuild by b613635ddfff with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1poXBh-000chh-0f;
-        Mon, 17 Apr 2023 22:19:05 +0000
-Date:   Tue, 18 Apr 2023 06:18:32 +0800
+        id 1poYFW-000cjq-2F;
+        Mon, 17 Apr 2023 23:27:06 +0000
+Date:   Tue, 18 Apr 2023 07:26:21 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Subject: Re: [PATCH 24/33] m68k: Convert various functions to use ptdescs
-Message-ID: <202304180652.LeoLmaNQ-lkp@intel.com>
-References: <20230417205048.15870-25-vishal.moola@gmail.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 94ea4c5cbeeba22abb2abca416eedb2aca30bc67
+Message-ID: <643dd59d.2HfNShQxa5Yth+OI%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230417205048.15870-25-vishal.moola@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Vishal,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 94ea4c5cbeeba22abb2abca416eedb2aca30bc67  Merge tag 'v6.3-rc7'
 
-kernel test robot noticed the following build warnings:
+elapsed time: 821m
 
-[auto build test WARNING on akpm-mm/mm-everything]
-[also build test WARNING on next-20230417]
-[cannot apply to s390/features powerpc/next powerpc/fixes geert-m68k/for-next geert-m68k/for-linus linus/master v6.3-rc7]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+configs tested: 121
+configs skipped: 9
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Vishal-Moola-Oracle/s390-Use-_pt_s390_gaddr-for-gmap-address-tracking/20230418-045832
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20230417205048.15870-25-vishal.moola%40gmail.com
-patch subject: [PATCH 24/33] m68k: Convert various functions to use ptdescs
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230418/202304180652.LeoLmaNQ-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/630b38053b213e6138d3deb3e4325b24ad6dcb1f
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Vishal-Moola-Oracle/s390-Use-_pt_s390_gaddr-for-gmap-address-tracking/20230418-045832
-        git checkout 630b38053b213e6138d3deb3e4325b24ad6dcb1f
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=m68k olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=m68k SHELL=/bin/bash arch/m68k/mm/
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202304180652.LeoLmaNQ-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   arch/m68k/mm/motorola.c: In function 'free_pointer_table':
->> arch/m68k/mm/motorola.c:204:56: warning: passing argument 1 of 'virt_to_ptdesc' makes pointer from integer without a cast [-Wint-conversion]
-     204 |                         ptdesc_pte_dtor(virt_to_ptdesc(page));
-         |                                                        ^~~~
-         |                                                        |
-         |                                                        long unsigned int
-   In file included from arch/m68k/mm/motorola.c:15:
-   include/linux/mm.h:2721:57: note: expected 'const void *' but argument is of type 'long unsigned int'
-    2721 | static inline struct ptdesc *virt_to_ptdesc(const void *x)
-         |                                             ~~~~~~~~~~~~^
-   arch/m68k/mm/motorola.c: At top level:
-   arch/m68k/mm/motorola.c:418:13: warning: no previous prototype for 'paging_init' [-Wmissing-prototypes]
-     418 | void __init paging_init(void)
-         |             ^~~~~~~~~~~
-
-
-vim +/virt_to_ptdesc +204 arch/m68k/mm/motorola.c
-
-   185	
-   186	int free_pointer_table(void *table, int type)
-   187	{
-   188		ptable_desc *dp;
-   189		unsigned long ptable = (unsigned long)table;
-   190		unsigned long page = ptable & PAGE_MASK;
-   191		unsigned int mask = 1U << ((ptable - page)/ptable_size(type));
-   192	
-   193		dp = PD_PTABLE(page);
-   194		if (PD_MARKBITS (dp) & mask)
-   195			panic ("table already free!");
-   196	
-   197		PD_MARKBITS (dp) |= mask;
-   198	
-   199		if (PD_MARKBITS(dp) == ptable_mask(type)) {
-   200			/* all tables in page are free, free page */
-   201			list_del(dp);
-   202			mmu_page_dtor((void *)page);
-   203			if (type == TABLE_PTE)
- > 204				ptdesc_pte_dtor(virt_to_ptdesc(page));
-   205			free_page (page);
-   206			return 1;
-   207		} else if (ptable_list[type].next != dp) {
-   208			/*
-   209			 * move this descriptor to the front of the list, since
-   210			 * it has one or more free tables.
-   211			 */
-   212			list_move(dp, &ptable_list[type]);
-   213		}
-   214		return 0;
-   215	}
-   216	
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r033-20230416   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r021-20230416   gcc  
+arc                  randconfig-r023-20230417   gcc  
+arc                  randconfig-r032-20230416   gcc  
+arc                  randconfig-r043-20230416   gcc  
+arc                  randconfig-r043-20230417   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r013-20230417   gcc  
+arm                  randconfig-r046-20230416   clang
+arm                  randconfig-r046-20230417   gcc  
+arm64                            allyesconfig   gcc  
+arm64        buildonly-randconfig-r004-20230416   clang
+arm64                               defconfig   gcc  
+arm64                randconfig-r016-20230416   gcc  
+arm64                randconfig-r036-20230417   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r021-20230417   gcc  
+hexagon              randconfig-r041-20230416   clang
+hexagon              randconfig-r041-20230417   clang
+hexagon              randconfig-r045-20230416   clang
+hexagon              randconfig-r045-20230417   clang
+i386                             allyesconfig   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-a001-20230417   gcc  
+i386                 randconfig-a002-20230417   gcc  
+i386                 randconfig-a003-20230417   gcc  
+i386                 randconfig-a004-20230417   gcc  
+i386                 randconfig-a005-20230417   gcc  
+i386                 randconfig-a006-20230417   gcc  
+i386                 randconfig-a011-20230417   clang
+i386                 randconfig-a012-20230417   clang
+i386                 randconfig-a013-20230417   clang
+i386                 randconfig-a014-20230417   clang
+i386                 randconfig-a015-20230417   clang
+i386                 randconfig-a016-20230417   clang
+ia64                             allmodconfig   gcc  
+ia64         buildonly-randconfig-r001-20230417   gcc  
+ia64         buildonly-randconfig-r003-20230416   gcc  
+ia64                                defconfig   gcc  
+ia64                 randconfig-r012-20230416   gcc  
+ia64                 randconfig-r026-20230416   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch    buildonly-randconfig-r004-20230417   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k         buildonly-randconfig-r003-20230417   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r011-20230417   gcc  
+m68k                 randconfig-r013-20230416   gcc  
+m68k                 randconfig-r034-20230417   gcc  
+microblaze           randconfig-r014-20230417   gcc  
+microblaze           randconfig-r016-20230417   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 randconfig-r024-20230417   gcc  
+nios2        buildonly-randconfig-r002-20230417   gcc  
+nios2                               defconfig   gcc  
+openrisc     buildonly-randconfig-r005-20230417   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r031-20230417   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc              randconfig-r031-20230416   clang
+powerpc              randconfig-r033-20230417   gcc  
+powerpc              randconfig-r036-20230416   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r015-20230417   clang
+riscv                randconfig-r022-20230417   clang
+riscv                randconfig-r025-20230416   gcc  
+riscv                randconfig-r042-20230416   gcc  
+riscv                randconfig-r042-20230417   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r022-20230416   gcc  
+s390                 randconfig-r025-20230417   clang
+s390                 randconfig-r026-20230417   clang
+s390                 randconfig-r044-20230416   gcc  
+s390                 randconfig-r044-20230417   clang
+sh                               allmodconfig   gcc  
+sh           buildonly-randconfig-r002-20230416   gcc  
+sh           buildonly-randconfig-r006-20230416   gcc  
+sh           buildonly-randconfig-r006-20230417   gcc  
+sh                   randconfig-r024-20230416   gcc  
+sparc                               defconfig   gcc  
+sparc64              randconfig-r011-20230416   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-a001-20230417   gcc  
+x86_64               randconfig-a002-20230417   gcc  
+x86_64               randconfig-a003-20230417   gcc  
+x86_64               randconfig-a004-20230417   gcc  
+x86_64               randconfig-a005-20230417   gcc  
+x86_64               randconfig-a006-20230417   gcc  
+x86_64               randconfig-a011-20230417   clang
+x86_64               randconfig-a012-20230417   clang
+x86_64               randconfig-a013-20230417   clang
+x86_64               randconfig-a014-20230417   clang
+x86_64               randconfig-a015-20230417   clang
+x86_64               randconfig-a016-20230417   clang
+x86_64                               rhel-8.3   gcc  
+xtensa       buildonly-randconfig-r005-20230416   gcc  
+xtensa               randconfig-r014-20230416   gcc  
+xtensa               randconfig-r023-20230416   gcc  
+xtensa               randconfig-r035-20230417   gcc  
 
 -- 
 0-DAY CI Kernel Test Service
