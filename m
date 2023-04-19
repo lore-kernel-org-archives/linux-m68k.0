@@ -2,167 +2,237 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 394DCC77B7A
-	for <linux-m68k@archiver.kernel.org>; Wed, 19 Apr 2023 07:55:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F313DC77B73
+	for <linux-m68k@archiver.kernel.org>; Wed, 19 Apr 2023 08:15:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231591AbjDSHzx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 19 Apr 2023 03:55:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43438 "EHLO
+        id S232331AbjDSIPV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 19 Apr 2023 04:15:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231464AbjDSHzw (ORCPT
+        with ESMTP id S231654AbjDSIPT (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 19 Apr 2023 03:55:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD5B8A5F
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Apr 2023 00:54:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1681890856;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ku4/Si8D6xrlYmDkiBxBM7QW/Zhm4h1GUH6h0hqbhBo=;
-        b=dz7vxGMCHQYQTx6p8+gMm/hkX+cnWfuN++i8al0N1B8eAsJtYTuh/K8uJ4VL0X7bez0Rlo
-        CShlcgPWImE7Pphdv+6aDek1ibwXYMvuyRNDp2bX81Z47sllBtTFG2UcNMW4+fdxoFGgjr
-        UF80fvnA4g6i4lie7mriDgISEpECvqw=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-287-M0kWQ1jcO4OZJJ79FYN-Yg-1; Wed, 19 Apr 2023 03:54:09 -0400
-X-MC-Unique: M0kWQ1jcO4OZJJ79FYN-Yg-1
-Received: by mail-wm1-f70.google.com with SMTP id q19-20020a05600c46d300b003ef69894934so826548wmo.6
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Apr 2023 00:54:09 -0700 (PDT)
+        Wed, 19 Apr 2023 04:15:19 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ADFB100
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Apr 2023 01:15:14 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-63b5c4c76aaso2203702b3a.2
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Apr 2023 01:15:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1681892113; x=1684484113;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AEXlnuKMEWyr0k+270nS0yFZmLfwHVVuci42Nra0MaU=;
+        b=O7x5oaY1jsjUMuUr/CA0XZ0AL2IDyr9/fO4CV2gU8XGppHTpdhRu3APmpHyTg32BTQ
+         FxBcBYJbZqTyzA0hLSut+DrV+zpentv6+0e+FrvgQtoG5d83hl3k78Tq7pGGO94u0jwm
+         C5JzNo59KdofswFzlwpQXZ8NljHT5AAzUDas0GxW8FS3lc6rPpdcSTciJsa2ENLyX+vS
+         DKsMWvIqoVDEAh89GlWzUBA0uvKBXnVFUV2y7VfOGUfZKwAWbFfUBTPQxTqqKo08TNux
+         NhtjgT0xC270fNjR+EhPKr5NgqlO8P9uAQU4s/f5jdG+sBY6SOTa4aOXjI5DP8umS1F5
+         rpoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681890849; x=1684482849;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :references:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ku4/Si8D6xrlYmDkiBxBM7QW/Zhm4h1GUH6h0hqbhBo=;
-        b=lvT/WdmQyBVINGzfks7eFuX8cEskmdeJSsMzxNg+GzjqRNwr68QJ0foXfeMLacGFCZ
-         3TIrZKB14ubNq7S/U+IcXurL19VA/IlmQGz0cWh593oWUYkb/fN1KmED+vGegeFtq7DP
-         WWzAsOMMH39jNU2wt8PF0dHudse+DRGQYKkUBQxrHib7SpHyEalpSFxHU0ZmNYumsh7I
-         G0opyr2WEQXoQaBako4r3oU1gdCGCPiJzUaM8GLZVlbPYGIjQdqFS1fr5EsXWIxM7eur
-         bebl4ajWxFYtM7sZ3E2bnDmtQuY8dt5nD7TcNPKFkNxcNA/B2BcQ3szJL/wnLgBeYp4Y
-         RoFw==
-X-Gm-Message-State: AAQBX9exUWn0VFU0/US7AYa0buAxLsV6wHOniEsCWg2h/lwBA7dVp3fi
-        y+kAyXPOnsyFykeGWoWEip5zUKQDkpObxRetz4xJ8PxgEax5cID8TbHlEZf/EvwbPMVAG+r4uxc
-        qHDiF0FHt1u9W5hps+tZssngdsKqc
-X-Received: by 2002:a05:600c:2305:b0:3f1:728a:1881 with SMTP id 5-20020a05600c230500b003f1728a1881mr7565081wmo.31.1681890848810;
-        Wed, 19 Apr 2023 00:54:08 -0700 (PDT)
-X-Google-Smtp-Source: AKy350ZGeCzv8hHHPCLoBp3+kn6wkQN0cMnv6OhMvvwsxXxMwENw712YUrmrVhvIskYHJBvgTLUksw==
-X-Received: by 2002:a05:600c:2305:b0:3f1:728a:1881 with SMTP id 5-20020a05600c230500b003f1728a1881mr7565048wmo.31.1681890848428;
-        Wed, 19 Apr 2023 00:54:08 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c70b:7b00:7c52:a5fa:8004:96fd? (p200300cbc70b7b007c52a5fa800496fd.dip0.t-ipconnect.de. [2003:cb:c70b:7b00:7c52:a5fa:8004:96fd])
-        by smtp.gmail.com with ESMTPSA id l26-20020a1ced1a000000b003eeb1d6a470sm1327085wmh.13.2023.04.19.00.54.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Apr 2023 00:54:08 -0700 (PDT)
-Message-ID: <e0c0ad67-f23f-ff35-80bf-841dcfd43d99@redhat.com>
-Date:   Wed, 19 Apr 2023 09:54:06 +0200
+        d=1e100.net; s=20221208; t=1681892113; x=1684484113;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=AEXlnuKMEWyr0k+270nS0yFZmLfwHVVuci42Nra0MaU=;
+        b=CnPFWD+RfKVynv6AFzeQg31gSFI/JZZ2lnSizKAP9NyK8JrBIZs0gFyETFd4p+7TFn
+         0DUDmkrIBavnZqR5rwCWpZlQ6JGDiQAk07bkeqNt3tRYWwsNEtBeqe04G06V5nPDoT0H
+         zNmoJQX5ivPH1v4enjrkbF+ExCP2u9JwdOCj5hXHizZtqxc/leFJRFVbOliB0xQ+ptTU
+         d+4Q9DBKhuuPZKXdr7AJ8WCf8Z1ajSL/IHNZBfexBdElmayu3j0bOUwlFlCeblmp8FZh
+         MnFDwLTcGa3OVQiD0hxfAtqb0EnUdMkvuuB0qYZx4K99qEYOX4cTiQCYwea0hGEakoYL
+         A4Hw==
+X-Gm-Message-State: AAQBX9duQ/bGYRi3S9N1pry/q15GP0FRFL7Exzh0vIuPer+Q3aWTotaj
+        Ehp7OFWe+99GwcYBjpLQvMfKms27aS8=
+X-Google-Smtp-Source: AKy350aTrzykLoIj0dIpcrx6POb3SpPIBDvbjo8fgD7cGN/rjs7IEVeuo3hLZbaoxDbD0394lhRUvA==
+X-Received: by 2002:a17:903:32d2:b0:1a6:bbf4:ed79 with SMTP id i18-20020a17090332d200b001a6bbf4ed79mr5694951plr.20.1681892113205;
+        Wed, 19 Apr 2023 01:15:13 -0700 (PDT)
+Received: from [10.1.1.24] (222-152-172-8-fibre.sparkbb.co.nz. [222.152.172.8])
+        by smtp.gmail.com with ESMTPSA id x3-20020a1709027c0300b0019e88453492sm10855591pll.4.2023.04.19.01.15.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 19 Apr 2023 01:15:12 -0700 (PDT)
+Subject: Re: core dump analysis, was Re: stack smashing detected
+To:     Finn Thain <fthain@linux-m68k.org>
+References: <4a9c1d0d-07aa-792e-921f-237d5a30fc44.ref@yahoo.com>
+ <56bd9a33-c58a-58e0-3956-e63c61abe5fe@yahoo.com>
+ <1725f7c1-2084-a404-653d-9e9f8bbe961c@linux-m68k.org>
+ <e10b8e06-6a36-5c83-89da-bec8fd7d3ed9@linux-m68k.org>
+ <19d1f2ac-67dd-5415-b64a-1e1b4451f01e@linux-m68k.org>
+ <ef5bcf6f-3541-50c2-9b6a-5e9d2f9c68d5@linux-m68k.org>
+ <87zg7rap45.fsf@igel.home>
+ <5a5588ca-81c3-3f4c-fd43-c95e90b27939@linux-m68k.org>
+ <67f6bc5f-e1fc-64b9-cb3c-1698cf4daf51@gmail.com>
+ <9eea635f-c947-eae7-09fa-d39f00d91532@linux-m68k.org>
+ <3dfea52a-b09e-517a-c3ca-4b559a3d9ce4@gmail.com>
+ <23ddfd2a-1123-45ae-866d-158d45e23ba2@linux-m68k.org>
+ <2f241963-44cd-3196-b39e-9c2d63cda1d3@linux-m68k.org>
+ <60109ace-4e55-29da-86d9-35e931b11134@gmail.com>
+ <c77fe8b3-03fa-491b-7c10-64f2e52c748a@linux-m68k.org>
+ <d025ad67-9cc2-cf5a-09a7-ce1d8f66109b@gmail.com>
+ <e777cb75-84f6-a61d-810a-2b6d0176e642@linux-m68k.org>
+ <c519ff55-fa2a-56c8-6d72-c5afab38ef48@gmail.com>
+ <3292e840-0ecd-1f03-5d7f-462347e161c9@linux-m68k.org>
+Cc:     debian-68k@lists.debian.org, linux-m68k@lists.linux-m68k.org
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <f8a79839-ab95-be2d-65fa-5cc99ec9f308@gmail.com>
+Date:   Wed, 19 Apr 2023 20:15:07 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-To:     Vishal Moola <vishal.moola@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        xen-devel@lists.xenproject.org, kvm@vger.kernel.org
-References: <20230417205048.15870-1-vishal.moola@gmail.com>
- <20230417205048.15870-2-vishal.moola@gmail.com>
- <da600570-51c7-8088-b46b-7524c9e66e5d@redhat.com>
- <CAOzc2pwpRhNoFbdzdzuvrqbZdf2OsrTvBGs40QCZJjA5fS_q1A@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH 01/33] s390: Use _pt_s390_gaddr for gmap address tracking
-In-Reply-To: <CAOzc2pwpRhNoFbdzdzuvrqbZdf2OsrTvBGs40QCZJjA5fS_q1A@mail.gmail.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <3292e840-0ecd-1f03-5d7f-462347e161c9@linux-m68k.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 18.04.23 23:33, Vishal Moola wrote:
-> On Tue, Apr 18, 2023 at 8:45 AM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 17.04.23 22:50, Vishal Moola (Oracle) wrote:
->>> s390 uses page->index to keep track of page tables for the guest address
->>> space. In an attempt to consolidate the usage of page fields in s390,
->>> replace _pt_pad_2 with _pt_s390_gaddr to replace page->index in gmap.
+Hi Finn,
+
+Am 19.04.2023 um 13:50 schrieb Finn Thain:
+>>>> I would have expected to see a different signal trampoline (for
+>>>> sys_rt_sigreturn) ...
 >>>
->>> This will help with the splitting of struct ptdesc from struct page, as
->>> well as allow s390 to use _pt_frag_refcount for fragmented page table
->>> tracking.
+>>> Well, this seems to be the trampoline from setup_frame() and not
+>>> setup_rt_frame().
+>>
+>> According to the manpages I've seen, glibc ought to pick rt signals if
+>> the kernel supports those (which I suppose it does).
+>>
+>
+> It's got to be the trampoline from setup_frame() because dash did this:
+>
+>         act.sa_flags = 0;
+>         sigfillset(&act.sa_mask);
+>         sigaction(signo, &act, 0);
+
+Ah - dash explicitly requests the old format. Make sense then.
+>
+> and the kernel did this:
+>
+>         /* set up the stack frame */
+>         if (ksig->ka.sa.sa_flags & SA_SIGINFO)
+>                 err = setup_rt_frame(ksig, oldset, regs);
+>         else
+>                 err = setup_frame(ksig, oldset, regs);
+>
 >>>
->>> Since page->_pt_s390_gaddr aliases with mapping, ensure its set to NULL
->>> before freeing the pages as well.
+>>>> But anyway:
+>>>>
+>>>> The saved pc is 0xc00e81b6 which does match the backtrace above.
+>>>> Vector offset 80 matches trap 0 which suggests 0xc00e81b6 should be
+>>>> the instruction after a trap 0 instruction. d0 is 1055 which is not a
+>>>> signal number I recognize.
+>>>>
 >>>
->>> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
->>> ---
+>>> I don't know what d0 represents here. But &frame->sig == 0x11 is
+>>> correct (SIGCHLD).
 >>
->> [...]
+>> Correct - that all works out. But d0 holds the syscall number when we
+>> enter the kernel via trap 0, and that one is odd.
 >>
->>> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
->>> index 3fc9e680f174..2616d64c0e8c 100644
->>> --- a/include/linux/mm_types.h
->>> +++ b/include/linux/mm_types.h
->>> @@ -144,7 +144,7 @@ struct page {
->>>                struct {        /* Page table pages */
->>>                        unsigned long _pt_pad_1;        /* compound_head */
->>>                        pgtable_t pmd_huge_pte; /* protected by page->ptl */
->>> -                     unsigned long _pt_pad_2;        /* mapping */
->>> +                     unsigned long _pt_s390_gaddr;   /* mapping */
->>>                        union {
->>>                                struct mm_struct *pt_mm; /* x86 pgds only */
->>>                                atomic_t pt_frag_refcount; /* powerpc */
+>
+> Well, you showed subsequently that the kernel was probably entered via a
+> page fault and not the get_thread_area trap. Would that explain the d0
+> value?
+
+That d0 was from the dash under gdb run. But I got my signal delivery 
+mixed up - d0 is only expected to hold the syscall number when we issue 
+a syscall. That would be in the child process, not the parent which we 
+debug.
+
+d0 is just whatever the parent had in its register when it started 
+do_signal_return after exception or syscall. On return after syscall, d0 
+holds the task info flags, maybe that's what we see here.
+
+>> See above - I think what's stored there is the extra frame content for a
+>> format b bus error frame. But that extra frame is incomplete at best
+>> (should be 22 longwords, only a4 are seen). Probably overwritten by the
+>> stack frame from __GI___wait4_time64.
 >>
->> The confusing part is, that these gmap page tables are not ordinary
->> process page tables that we would ordinarily place into this section
->> here. That's why they are also not allocated/freed using the typical
->> page table constructor/destructor ...
-> 
-> I initially thought the same, so I was quite confused when I saw
-> __gmap_segment_gaddr was using pmd_pgtable_page().
-> 
-> Although they are not ordinary process page tables, since we
-> eventually want to move them out of struct page, I think shifting them
-> to be in ptdescs, being a memory descriptor for page tables, makes
-> the most sense.
+>
+> Maybe the exception frame leaked onto the user stack via setup_frame()?
 
-Seeing utilities like tlb_remove_page_ptdesc() that don't really apply 
-to such page tables, I wonder if we should much rather treat such 
-shadow/auxiliary/... page tables (just like other architectures like 
-x86, arm, ... employ as well) as a distinct type.
+Yes, for exception frames larger than four words the excess is copied 
+after the end of the sigcontext block.
 
-And have ptdesc be the common type for all process page tables.
+>
+>> Let's parse what's left:
+>> <=
+>>>>> 0xefffefe4:     0xc0028780        <= internal registers (6x)
+>>>>> 0xefffefe0:     0x3c344bfb        <=
+>>>>> 0xefffefdc:     0x000af353        <=
+>>>>> 0xefffefd8:     0x3c340170        <= internal reg; version no.
+>>>>> 0xefffefd4:     0x00000000        <= data input buffer
+>>>>> 0xefffefd0:     0xc00e417c        <= internal registers (2x)
+>>>>> 0xefffefcc:     0xc00e417e        <= stage b address
+>>>>> 0xefffefc8:     0xc00e4180        <= internal registers (4x)
+>>>>> 0xefffefc4:     0x48e73c34        <=
+>>>>> 0xefffefc0:     0x00000000        <= data output buffer
+>>>>> 0xefffefbc:     0xefffeff8        <= internal registers (2x)
+>>>>> 0xefffefb8:     0xefffeffc        <= data fault address
+>>>>> 0xefffefb4:     0x4bfb0170        <= ins stage c, stage b
+>>>>> 0xefffefb0:     0x0eee0709        <= internal register; ssw
+>>
+>> The fault address is the location on the stack where a2 is saved. That
+>> does match the data output buffer contents BTW. fc, fb, rc, rb bits
+>> clear means the fault didn't occur in stage b or c instructions. ssw bit
+>> 8 set indicates a data fault - the data cycle should be rerun on rte. rm
+>> and rw bits clear tell us it's a write fault. If the moveml instruction
+>> copies registers to the stack in descending order, the fault address
+>> makes sense - the stack pointer just crossed a page boundary.
+>>
+>
+> Well spotted!
+>
+>>>
+>>> Bottom line is, the corrupted %a3 register would have been saved by
+>>> the MOVEM instruction at 0xc00e4178, which turns out to be the PC in
+>>> the signal frame. So it certainly looks like the kernel was the
+>>> culprit here.
+>>
+>> I think the moveml instruction did cause a bus error, and on return from
+>> that exception the signal got delivered.
+>>
+>
+> Maybe the signal frame was partially overwritten by the resumed MOVEM?
 
-> 
-> Another option is to leave pmd_pgtable_page() as is just for this case.
-> Or we can revert commit 7e25de77bc5ea which uses the function here
-> then figure out where these gmap pages table pages will go later.
+That's possible - the saved usp in the signal frame is that of the first 
+register saved to the stack (before the page fault).
 
-I'm always confused when reading gmap code, so let me have another look :)
+> I wonder what we'd see if we patched the kernel to log every user data
+> write fault caused by a MOVEM instruction. I'll try to code that up.
 
-The confusing part is that s390x shares the lowest level page tables 
-(PTE tables) between the process and gmap ("guest mapping", similar to 
-EPT on x86-64). It maps these process PTE tables (covering 1 MiB) into 
-gmap-specific PMD tables.
+If these instructions did always cause stack corruption on 030, I think 
+we would have noticed long ago?
 
-pmd_pgtable_page() should indeed always give us a gmap-specific 
-PMD-table. In fact, something allocated via gmap_alloc_table().
+>
+>> On entering the buserror handler, only a1 and a2 are saved, but the
+>> comment in entry.h states that a3-a6 and d6, d7 are preserved by C code.
+>> After buserr_c returns, a3 should be restored to what it was when taking
+>> the bus error. All registers restored before rte, the moveml instruction
+>> ought to be able to resume normally.
+>>
+>> Unless that register use constraint has changed, I don't see how a3
+>> could have changed midway during return from the bus error exception.
+>> But maybe a disassembly of buserr_c from your kernel could confirm that?
+>>
+>
+> I disassembled the relevant build. AFAICT, buserr_c() saves and restores
+> those registers in the right places.
+>
+> BTW, I've reproduced the failures with kernels built with both GCC 12 and
+> GCC 6.
 
-Decoupling both concepts sounds like a good idea.
+Thanks - that was highly unlikely but had to be checked.
 
--- 
-Thanks,
+Leaves the possibility that some kernel bug did corrupt the saved a3 
+copy in struct switch_stack... but that is not used in bus error 
+exceptions. And the only other use of a3 is in ret_from_kernel_thread 
+which is called only from copy_thread() ...
 
-David / dhildenb
+Still baffled...
+
+Cheers,
+
+	Michael
+
 
