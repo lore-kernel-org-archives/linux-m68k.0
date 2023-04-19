@@ -2,30 +2,72 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23E69C77B7F
-	for <linux-m68k@archiver.kernel.org>; Wed, 19 Apr 2023 11:05:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 899F9C77B7C
+	for <linux-m68k@archiver.kernel.org>; Wed, 19 Apr 2023 11:28:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232465AbjDSLFm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 19 Apr 2023 07:05:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34862 "EHLO
+        id S232724AbjDSL2K (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 19 Apr 2023 07:28:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231584AbjDSLFi (ORCPT
+        with ESMTP id S231597AbjDSL2J (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 19 Apr 2023 07:05:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23DD81B5
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Apr 2023 04:05:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BF6946223F;
-        Wed, 19 Apr 2023 11:05:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C58FEC433EF;
-        Wed, 19 Apr 2023 11:05:31 +0000 (UTC)
-Date:   Wed, 19 Apr 2023 12:05:28 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Justin Forbes <jforbes@fedoraproject.org>,
+        Wed, 19 Apr 2023 07:28:09 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AB8D72A7
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Apr 2023 04:28:07 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id fy21so37773300ejb.9
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Apr 2023 04:28:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxtx.org; s=google; t=1681903685; x=1684495685;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:sender:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8N99yfKqkNg/PzVluqPrnuo7/UXaVkUZ4pARZeRWAW0=;
+        b=h+3Tomy+fZrVXH6RN/babMfjC3kI4c/tjjs+upF4u2X/jkiM2Y88CL0+Ndyv402wRA
+         ZN8jK2RJQPiW1OrNQGOz0lJxhdDo0VxjNTL6Wi/rxTAXStbwCZ3oB5IF1CRRLFVGQxbQ
+         T9gYcbmXuvxaBPI1B259kNHR7vtJA9q3ZKhrI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1681903685; x=1684495685;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=8N99yfKqkNg/PzVluqPrnuo7/UXaVkUZ4pARZeRWAW0=;
+        b=EgDS274yVUWW51ZKQFhaQH+fBY25yKHr5JQ4Qi8PfnUGjCKGPeFfg5IRmxDPlZJI4W
+         d0235BTfwLLz9PKeRsD67JMIsSpx4yZKcvqo+Jwn1IaIKwfiCgAh8LM0odBigY8hNgdi
+         /1Htq/IK4jILYcPSEiH1Kn0YQ9mvB26FD0dOI9JCzfCK45hNOSg9BHPqOUfhdViiEqXf
+         qwSAmozKDI6SAhZjUOLS5firLlivaMCyKy9CNgp/zJknnSPBMJqRSaAfNyV6aPYnkmzE
+         humWeK9fXKgjXoohbFvWmwixTGmz/SEONPi50BxolBA3kuRpIcChZtHZD6eIfC3PwTsp
+         pi6g==
+X-Gm-Message-State: AAQBX9fs2k/0kbnTky084WVnvV/oKNkoW/6PrA6hG+Nmxrs87CDDa1Rc
+        vtUyIc0V6gDgv2n9CxnuR0qcc3SNkBxH2sYIbdqyN52k
+X-Google-Smtp-Source: AKy350bFpARyXQPybi1Ir+i9W5gcRWcd6mfcboQKqq3xQtZKXjPEoPIsinVcbWywJDWiLb7HnDdPmw==
+X-Received: by 2002:a17:907:98ef:b0:948:fe00:77f2 with SMTP id ke15-20020a17090798ef00b00948fe0077f2mr13519391ejc.58.1681903684949;
+        Wed, 19 Apr 2023 04:28:04 -0700 (PDT)
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com. [209.85.218.51])
+        by smtp.gmail.com with ESMTPSA id sb23-20020a1709076d9700b0094f9140ff40sm3572312ejc.37.2023.04.19.04.28.04
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Apr 2023 04:28:04 -0700 (PDT)
+Sender: Justin Forbes <jmforbes@linuxtx.org>
+Received: by mail-ej1-f51.google.com with SMTP id dx24so36733347ejb.11
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Apr 2023 04:28:04 -0700 (PDT)
+X-Received: by 2002:a2e:7012:0:b0:2a5:fe8f:b314 with SMTP id
+ l18-20020a2e7012000000b002a5fe8fb314mr1874851ljc.5.1681903663880; Wed, 19 Apr
+ 2023 04:27:43 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230325060828.2662773-1-rppt@kernel.org> <20230325060828.2662773-3-rppt@kernel.org>
+ <CAFxkdAr5C7ggZ+WdvDbsfmwuXujT_z_x3qcUnhnCn-WrAurvgA@mail.gmail.com>
+ <ZCvQGJzdED+An8an@kernel.org> <CAFbkSA38eTA_iJ3ttBvQ8G4Rjj8qB12GxY7Z=qmZ8wm+0tZieA@mail.gmail.com>
+ <ZDbp7LAHES3YFo30@arm.com> <20230418150557.ea8c87c96ec64c899c88ab08@linux-foundation.org>
+ <ZD/K+Mof/Dx5yzjQ@arm.com>
+In-Reply-To: <ZD/K+Mof/Dx5yzjQ@arm.com>
+From:   Justin Forbes <jforbes@fedoraproject.org>
+Date:   Wed, 19 Apr 2023 06:27:31 -0500
+X-Gmail-Original-Message-ID: <CAFbkSA3yn_4Monrnk2u3CzfJ934Hy15rjAJ85AdFU40nV7KTkQ@mail.gmail.com>
+Message-ID: <CAFbkSA3yn_4Monrnk2u3CzfJ934Hy15rjAJ85AdFU40nV7KTkQ@mail.gmail.com>
+Subject: Re: [PATCH v3 02/14] arm64: drop ranges in definition of ARCH_FORCE_MAX_ORDER
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Mike Rapoport <rppt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
         Christophe Leroy <christophe.leroy@csgroup.eu>,
         "David S. Miller" <davem@davemloft.net>,
@@ -46,59 +88,65 @@ Cc:     Justin Forbes <jforbes@fedoraproject.org>,
         linux-mm@kvack.org, linux-sh@vger.kernel.org,
         linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
         sparclinux@vger.kernel.org
-Subject: Re: [PATCH v3 02/14] arm64: drop ranges in definition of
- ARCH_FORCE_MAX_ORDER
-Message-ID: <ZD/K+Mof/Dx5yzjQ@arm.com>
-References: <20230325060828.2662773-1-rppt@kernel.org>
- <20230325060828.2662773-3-rppt@kernel.org>
- <CAFxkdAr5C7ggZ+WdvDbsfmwuXujT_z_x3qcUnhnCn-WrAurvgA@mail.gmail.com>
- <ZCvQGJzdED+An8an@kernel.org>
- <CAFbkSA38eTA_iJ3ttBvQ8G4Rjj8qB12GxY7Z=qmZ8wm+0tZieA@mail.gmail.com>
- <ZDbp7LAHES3YFo30@arm.com>
- <20230418150557.ea8c87c96ec64c899c88ab08@linux-foundation.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230418150557.ea8c87c96ec64c899c88ab08@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Apr 18, 2023 at 03:05:57PM -0700, Andrew Morton wrote:
-> On Wed, 12 Apr 2023 18:27:08 +0100 Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > > It sounds nice in theory. In practice. EXPERT hides too much. When you
-> > > flip expert, you expose over a 175ish new config options which are
-> > > hidden behind EXPERT.  You don't have to know what you are doing just
-> > > with the MAX_ORDER, but a whole bunch more as well.  If everyone were
-> > > already running 10, this might be less of a problem. At least Fedora
-> > > and RHEL are running 13 for 4K pages on aarch64. This was not some
-> > > accidental choice, we had to carry a patch to even allow it for a
-> > > while.  If this does go in as is, we will likely just carry a patch to
-> > > remove the "if EXPERT", but that is a bit of a disservice to users who
-> > > might be trying to debug something else upstream, bisecting upstream
-> > > kernels or testing a patch.  In those cases, people tend to use
-> > > pristine upstream sources without distro patches to verify, and they
-> > > tend to use their existing configs. With this change, their MAX_ORDER
-> > > will drop to 10 from 13 silently.   That can look like a different
-> > > issue enough to ruin a bisect or have them give bad feedback on a
-> > > patch because it introduces a "regression" which is not a regression
-> > > at all, but a config change they couldn't see.
-> > 
-> > If we remove EXPERT (as prior to this patch), I'd rather keep the ranges
-> > and avoid having to explain to people why some random MAX_ORDER doesn't
-> > build (keeping the range would also make sense for randconfig, not sure
-> > we got to any conclusion there).
-> 
-> Well this doesn't seem to have got anywhere.  I think I'll send the
-> patchset into Linus for the next merge window as-is.  Please let's take
-> a look at this Kconfig presentation issue during the following -rc
-> cycle.
+On Wed, Apr 19, 2023 at 6:12=E2=80=AFAM Catalin Marinas <catalin.marinas@ar=
+m.com> wrote:
+>
+> On Tue, Apr 18, 2023 at 03:05:57PM -0700, Andrew Morton wrote:
+> > On Wed, 12 Apr 2023 18:27:08 +0100 Catalin Marinas <catalin.marinas@arm=
+.com> wrote:
+> > > > It sounds nice in theory. In practice. EXPERT hides too much. When =
+you
+> > > > flip expert, you expose over a 175ish new config options which are
+> > > > hidden behind EXPERT.  You don't have to know what you are doing ju=
+st
+> > > > with the MAX_ORDER, but a whole bunch more as well.  If everyone we=
+re
+> > > > already running 10, this might be less of a problem. At least Fedor=
+a
+> > > > and RHEL are running 13 for 4K pages on aarch64. This was not some
+> > > > accidental choice, we had to carry a patch to even allow it for a
+> > > > while.  If this does go in as is, we will likely just carry a patch=
+ to
+> > > > remove the "if EXPERT", but that is a bit of a disservice to users =
+who
+> > > > might be trying to debug something else upstream, bisecting upstrea=
+m
+> > > > kernels or testing a patch.  In those cases, people tend to use
+> > > > pristine upstream sources without distro patches to verify, and the=
+y
+> > > > tend to use their existing configs. With this change, their MAX_ORD=
+ER
+> > > > will drop to 10 from 13 silently.   That can look like a different
+> > > > issue enough to ruin a bisect or have them give bad feedback on a
+> > > > patch because it introduces a "regression" which is not a regressio=
+n
+> > > > at all, but a config change they couldn't see.
+> > >
+> > > If we remove EXPERT (as prior to this patch), I'd rather keep the ran=
+ges
+> > > and avoid having to explain to people why some random MAX_ORDER doesn=
+'t
+> > > build (keeping the range would also make sense for randconfig, not su=
+re
+> > > we got to any conclusion there).
+> >
+> > Well this doesn't seem to have got anywhere.  I think I'll send the
+> > patchset into Linus for the next merge window as-is.  Please let's take
+> > a look at this Kconfig presentation issue during the following -rc
+> > cycle.
+>
+> That's fine by me. I have a slight preference to drop EXPERT and keep
+> the ranges in, especially if it affects current distro kernels. Debian
+> seems to enable EXPERT already in their arm64 kernel config but I'm not
+> sure about the Fedora or other distro kernels. If they don't, we can
+> fix/revert this Kconfig entry once the merging window is closed.
 
-That's fine by me. I have a slight preference to drop EXPERT and keep
-the ranges in, especially if it affects current distro kernels. Debian
-seems to enable EXPERT already in their arm64 kernel config but I'm not
-sure about the Fedora or other distro kernels. If they don't, we can
-fix/revert this Kconfig entry once the merging window is closed.
+Fedora and RHEL do not enable EXPERT already.
 
--- 
-Catalin
+Justin
