@@ -2,87 +2,97 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 998F1C77B75
-	for <linux-m68k@archiver.kernel.org>; Fri, 21 Apr 2023 07:11:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53050C77B75
+	for <linux-m68k@archiver.kernel.org>; Fri, 21 Apr 2023 07:50:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbjDUHL4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 21 Apr 2023 03:11:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53898 "EHLO
+        id S230401AbjDUHug convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 21 Apr 2023 03:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbjDUHLz (ORCPT
+        with ESMTP id S230480AbjDUHuf (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 21 Apr 2023 03:11:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B6E9210B
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Apr 2023 00:11:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9EC2860C69;
-        Fri, 21 Apr 2023 07:11:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA54AC433D2;
-        Fri, 21 Apr 2023 07:11:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1682061113;
-        bh=rMUILe+lzNtFjuK4Wo8tbKNwjXvMBXiBfW9We8f4vr8=;
-        h=From:Date:Subject:To:Cc:From;
-        b=UI5MuaE4/UikemG6JhQ1dvCw3HjcJDedvlypUJW+49LIfPBKusmfQe+xb+bqGx2bt
-         h4KFH8SPmALftGENd9XPx7uUe+Kmwu+vn6wYpejqwQL4uzJH3B5dsLqK251VJLDpf1
-         j6/IZx1mQ7aruuKhv2/dPQ9YNj9BUNuouD53rJwyF4+BvxUeZpL/t4DFGRDwcNFXHn
-         UdjGJwGlCfgw614HAjzy1sciY4FSKtVhrK0A2tX5bMTeHqt/KO/JvUF55jvb6bmmFd
-         sTpk4q1qNbMHN2XfktvsXsHicgpsjnNQAyBLyDhY0wL/yLGqTy0BY89f+UDIBTPFFl
-         GdI2UqwjTVcyQ==
-From:   Simon Horman <horms@kernel.org>
-Date:   Fri, 21 Apr 2023 09:11:49 +0200
-Subject: [PATCH] m68k: kexec: include reboot.h
+        Fri, 21 Apr 2023 03:50:35 -0400
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C190393C7
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Apr 2023 00:50:27 -0700 (PDT)
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-b983027d0faso1245515276.0
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Apr 2023 00:50:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682063427; x=1684655427;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BkpYhZmr123XoZwxeuyT9/faeSkMZw8H0JzS3L2I10s=;
+        b=KkZJJykMXNrCpF8OB+qINHevGXHXlJRruQgfJ28IGReyeu50bhJcwAaZk18ERXmxP1
+         KjB5KBATS5etFZa7yR9D1+vQou44Vxpkk0yRZ9rDxBpEyc06VRF5txDaOCY46p9VsWMe
+         8oLJHeYCauR3UhUlgqu+Al+JcNl1j8urFWc5RV47MLHDNBEhm3ZtcHbCtiD2J+MSSQW3
+         Z9UvLWyXwwqdvgm/fviI8nqRJc3Wwt64tYS0WXa7z1iQWqEDY3Mu2+qbqgxEpASol7Ee
+         dT1TrHvgPsaLEuFuD2gKw7Zr13blSsPAvlLpJLKKgHTqejHOIXJsYQKgzlP7NG+sIk/2
+         XpFA==
+X-Gm-Message-State: AAQBX9fHySWL/GyA9UYtJcb4cm2rvzZCSeGySKDYqG9LZHhN/dUPDzIK
+        rJ+LrDNC3MWhmAwm126KMHkSO1osZ3f5+6Hw
+X-Google-Smtp-Source: AKy350ZhA10ySarFrDgAWDbqQVwLls9Onyw5TTo5NaoIiduqx/j3CBntCTM8xtWdE2UbO+re5KHNiA==
+X-Received: by 2002:a25:ace6:0:b0:b8f:2fc0:d4dd with SMTP id x38-20020a25ace6000000b00b8f2fc0d4ddmr1631913ybd.45.1682063426598;
+        Fri, 21 Apr 2023 00:50:26 -0700 (PDT)
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
+        by smtp.gmail.com with ESMTPSA id s14-20020a5b074e000000b00b993995abe4sm74178ybq.60.2023.04.21.00.50.25
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Apr 2023 00:50:26 -0700 (PDT)
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-b92284f69ebso1673317276.3
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Apr 2023 00:50:25 -0700 (PDT)
+X-Received: by 2002:a25:4d8:0:b0:b98:c9af:b9c7 with SMTP id
+ 207-20020a2504d8000000b00b98c9afb9c7mr1724109ybe.26.1682063425192; Fri, 21
+ Apr 2023 00:50:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230421-m68k-kexec-include-reboot-v1-1-7552963a0f25@kernel.org>
-X-B4-Tracking: v=1; b=H4sIADQ3QmQC/x2NywqDMBBFf0Vm3QGTaCj9ldJFHmMdTCcl0SKI/
- 97g8lw49xxQqTBVeHQHFPpx5SwN1K2DMDt5E3JsDLrXph+0wo+9L7jQTgFZQtoiYSGf84rWqOg
- mM47aOmi+d5XQFydhbg+ypdTGb6GJ9yv4fJ3nH82Mj92AAAAA
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
+References: <20230421-m68k-kexec-include-reboot-v1-1-7552963a0f25@kernel.org>
+In-Reply-To: <20230421-m68k-kexec-include-reboot-v1-1-7552963a0f25@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 21 Apr 2023 09:50:13 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUuV=JmoLoEOL1TfBBmFAMbqOGz0oHn3kz1QN_7s_uObQ@mail.gmail.com>
+Message-ID: <CAMuHMdUuV=JmoLoEOL1TfBBmFAMbqOGz0oHn3kz1QN_7s_uObQ@mail.gmail.com>
+Subject: Re: [PATCH] m68k: kexec: include reboot.h
+To:     Simon Horman <horms@kernel.org>
 Cc:     Baoquan He <bhe@redhat.com>,
         "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
         linux-arm-kernel@lists.infradead.org,
         linux-m68k@lists.linux-m68k.org, kexec@lists.infradead.org,
         linux-kernel@vger.kernel.org
-X-Mailer: b4 0.12.2
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Include reboot.h in machine_kexec.c for declaration of
-machine_crash_shutdown and machine_shutdown.
+On Fri, Apr 21, 2023 at 9:11 AM Simon Horman <horms@kernel.org> wrote:
+> Include reboot.h in machine_kexec.c for declaration of
+> machine_crash_shutdown and machine_shutdown.
+>
+> gcc-12 with W=1 reports:
+>
+>  arch/m68k/kernel/machine_kexec.c:26:6: warning: no previous prototype for 'machine_shutdown' [-Wmissing-prototypes]
+>     26 | void machine_shutdown(void)
+>        |      ^~~~~~~~~~~~~~~~
+>  arch/m68k/kernel/machine_kexec.c:30:6: warning: no previous prototype for 'machine_crash_shutdown' [-Wmissing-prototypes]
+>     30 | void machine_crash_shutdown(struct pt_regs *regs)
+>        |      ^~~~~~~~~~~~~~~~~~~~~~
+>
+> No functional changes intended.
+> Compile tested only.
+>
+> Signed-off-by: Simon Horman <horms@kernel.org>
 
-gcc-12 with W=1 reports:
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k for-v6.4 branch.
 
- arch/m68k/kernel/machine_kexec.c:26:6: warning: no previous prototype for 'machine_shutdown' [-Wmissing-prototypes]
-    26 | void machine_shutdown(void)
-       |      ^~~~~~~~~~~~~~~~
- arch/m68k/kernel/machine_kexec.c:30:6: warning: no previous prototype for 'machine_crash_shutdown' [-Wmissing-prototypes]
-    30 | void machine_crash_shutdown(struct pt_regs *regs)
-       |      ^~~~~~~~~~~~~~~~~~~~~~
+Gr{oetje,eeting}s,
 
-No functional changes intended.
-Compile tested only.
+                        Geert
 
-Signed-off-by: Simon Horman <horms@kernel.org>
----
- arch/m68k/kernel/machine_kexec.c | 1 +
- 1 file changed, 1 insertion(+)
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-diff --git a/arch/m68k/kernel/machine_kexec.c b/arch/m68k/kernel/machine_kexec.c
-index 206f84983120..739875540e89 100644
---- a/arch/m68k/kernel/machine_kexec.c
-+++ b/arch/m68k/kernel/machine_kexec.c
-@@ -6,6 +6,7 @@
- #include <linux/kexec.h>
- #include <linux/mm.h>
- #include <linux/delay.h>
-+#include <linux/reboot.h>
- 
- #include <asm/cacheflush.h>
- #include <asm/page.h>
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
