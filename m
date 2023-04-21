@@ -2,66 +2,67 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D5DCC7618E
-	for <linux-m68k@archiver.kernel.org>; Fri, 21 Apr 2023 01:45:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E238C77B73
+	for <linux-m68k@archiver.kernel.org>; Fri, 21 Apr 2023 01:57:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233237AbjDUBpl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 20 Apr 2023 21:45:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43610 "EHLO
+        id S231287AbjDUB5a (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 20 Apr 2023 21:57:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232750AbjDUBpj (ORCPT
+        with ESMTP id S229660AbjDUB53 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 20 Apr 2023 21:45:39 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C689C1724
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Apr 2023 18:45:38 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1a667067275so15526575ad.1
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Apr 2023 18:45:38 -0700 (PDT)
+        Thu, 20 Apr 2023 21:57:29 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD77B183
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Apr 2023 18:57:28 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-63b51fd2972so1474081b3a.3
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Apr 2023 18:57:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682041538; x=1684633538;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+        d=gmail.com; s=20221208; t=1682042248; x=1684634248;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=GleC4j9uiQCq+vAD1FtWe7wiIw//hcZ/ooMSmKDdE1s=;
-        b=a/4/Tfq57q1HlpIXC6KBskfcJVK09CDD8c+Cy6mWMpzWt2otH+TnmHS/1b4T9sx7Q6
-         eIJs7pUgH0iGJ31luCZv76U0m4+Cq8qUTH3qMBHDgo52JDYDNLmrWS/1kP84gnijhqRQ
-         EbBZVgstxU7vu9RePZ4GORw6CTeB7aQv4JmZraYZUBzlBFknoQUJsT3WtnqIZx87JFIJ
-         gfEie+2zXPtY+QkxBEK6re5qglMRcBHZZ1aoF0BVyfTwK7rA1Q12Hn9AWGqZovxj+Tve
-         nLeoYZwLD99D7aT7ld5Tr+vtCmTaQhgao9Z7MntOY6nRGCaUk3aBkjzrZKWFR8xjzZgq
-         wCyg==
+        bh=soaBuH914CVwLxmstLreOFZF3FGgAAVjqt2XqtPwI0g=;
+        b=LxyeJhhangIwHAnLMuDZxM0NUSKLCrakitHekiKBYwMRW2yu2rP9HHOp7kBfULYLQw
+         9QWTTsEvgBqutk5ZdlYReHND9cEczfoglLIDQLSX6rAmen04/HZGLd/ZvTZKrs+8lDcn
+         OfYiyO5lVWBsZmMllHaVRK6+X+d07ypLAAvlhc0Mgiac32yfxm15PE/Q+qKfkw7oXbmf
+         50zE9ukkO4KK4muxytDvMzOLc204IkTHyOphvgEjdKiCFjhpQV+gGOtp8OcgBijr9U7Y
+         Fi6XeYE/Amk7i5rsVUGgQQi424ICLSa/XFnNrjt78Ez5YAoFVp9Ijc/mprqlFFSFq4bO
+         bMug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682041538; x=1684633538;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+        d=1e100.net; s=20221208; t=1682042248; x=1684634248;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GleC4j9uiQCq+vAD1FtWe7wiIw//hcZ/ooMSmKDdE1s=;
-        b=V9baRoecPp6e/ICs98vBG1u8L0Qr2HrFJEA9ArXjou90B1BqLF6LZnUu8W595yabHk
-         uLBHEjM22qMNQ3aFFvPe0tbYhHNcxjKBiB7U7ubkjE4bFDXeZkqcKiTF+eLoVfaVP4wp
-         WV4JCOvreq1X/cAkjUQJEEowOmC/PJGKGOPvrIAx2wkH3wsQE/VHyDK0ylJNPZ/tued5
-         5oyjslCPSS1xPnkz7CNSjIZUOncUnAUTsfx93jGowXCG/M2frNBpZOVzc07tbO0NjGDD
-         0Jv33VXr/kz3ex5vpkJEpfTLi1bjotTfFQgZtbHBSNmKRXsEoLngQ49/j/x77j22+YXv
-         x1Gw==
-X-Gm-Message-State: AAQBX9cMn+SYS/68MXARV3NKNul30jUuE3C4CQVjry3/eu5HTaAm67Jm
-        cpEzd0raXKGf1qv5vaJWZzs=
-X-Google-Smtp-Source: AKy350Z51LrRBqpKPXs02w/TwoycMH9uAfEyGdwipJQBEKGXbv71cktLoF1wQ+0CqpTdwJa5FlCN2Q==
-X-Received: by 2002:a17:903:234a:b0:1a6:413c:4a47 with SMTP id c10-20020a170903234a00b001a6413c4a47mr4976897plh.1.1682041538112;
-        Thu, 20 Apr 2023 18:45:38 -0700 (PDT)
+        bh=soaBuH914CVwLxmstLreOFZF3FGgAAVjqt2XqtPwI0g=;
+        b=IU8KpxG5dW0lkFBHIztpHtDIko+7enelVxAtRtXYXUEVA8sg+/ayKHqci0r4txvB//
+         JmdcescU/mIWB3lvyYFs6mc32+CHLuIl5wQQW2okx0QvzoFeVL4Gx4xBHm2e98j4rJCe
+         f+euqGE7QGK4jJZcTyLY82+Cj+hKBVOLXwrbfsK4yfp8AWm6QvfFTj7kVbXQoAUqNsjA
+         ydwNJQfYpZRnuADAdT9kZSV9cqnza0xRYmJr7mDt50UWT2z0/1zv88knRWOv2Hc7MQcN
+         l5w0S8TcwTMlArNtd8rpxpET19dQO133NPygReE/U9CBq39sinqjITOVGTzwHGXQbRjO
+         mzpA==
+X-Gm-Message-State: AAQBX9cnbQIcOLv245KXWtZyIBFCHhHSVSduUwQdDeC6f3FzOHj2fVA8
+        C7j9B+c/ybe947EB3TIijq8e3hixQuA=
+X-Google-Smtp-Source: AKy350Y3kKkYUW1u65vawbAfCD273ydQo+Bsccko0RNgEtq4kAy4MqBtGGPLa5e/UudHEAL5nfZznA==
+X-Received: by 2002:a05:6a00:2e8b:b0:63c:6485:d5e5 with SMTP id fd11-20020a056a002e8b00b0063c6485d5e5mr4244744pfb.22.1682042248049;
+        Thu, 20 Apr 2023 18:57:28 -0700 (PDT)
 Received: from ?IPV6:2001:df0:0:200c:852f:30a1:4dd:b24b? ([2001:df0:0:200c:852f:30a1:4dd:b24b])
-        by smtp.gmail.com with ESMTPSA id jn15-20020a170903050f00b001a945e7147asm199858plb.231.2023.04.20.18.45.35
+        by smtp.gmail.com with ESMTPSA id 123-20020a621881000000b00638965d4248sm1804254pfy.184.2023.04.20.18.57.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Apr 2023 18:45:37 -0700 (PDT)
-Message-ID: <1e1a9bde-75a8-267a-8a48-266be55c36a8@gmail.com>
-Date:   Fri, 21 Apr 2023 13:45:33 +1200
+        Thu, 20 Apr 2023 18:57:27 -0700 (PDT)
+Message-ID: <2e5aa9b7-2de9-aea3-050d-4ea0bc479e50@gmail.com>
+Date:   Fri, 21 Apr 2023 13:57:24 +1200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.10.0
 Subject: Re: reliable reproducer, was Re: core dump analysis
 Content-Language: en-US
-From:   Michael Schmitz <schmitzmic@gmail.com>
 To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     debian-68k@lists.debian.org, linux-m68k@lists.linux-m68k.org,
-        Stan Johnson <userm57@yahoo.com>
+Cc:     debian-68k@lists.debian.org, linux-m68k@lists.linux-m68k.org
 References: <4a9c1d0d-07aa-792e-921f-237d5a30fc44.ref@yahoo.com>
+ <ef5bcf6f-3541-50c2-9b6a-5e9d2f9c68d5@linux-m68k.org>
+ <87zg7rap45.fsf@igel.home>
+ <5a5588ca-81c3-3f4c-fd43-c95e90b27939@linux-m68k.org>
  <67f6bc5f-e1fc-64b9-cb3c-1698cf4daf51@gmail.com>
  <9eea635f-c947-eae7-09fa-d39f00d91532@linux-m68k.org>
  <3dfea52a-b09e-517a-c3ca-4b559a3d9ce4@gmail.com>
@@ -76,11 +77,9 @@ References: <4a9c1d0d-07aa-792e-921f-237d5a30fc44.ref@yahoo.com>
  <406cb339-0a0c-4d71-9b5c-c11568793c14@gmail.com>
  <bee7db9b-0f81-dc2e-c737-c8aa25fd0588@linux-m68k.org>
  <fee988a9-dea8-7cae-af02-dda9f12cae08@gmail.com>
- <d1599d1b-b47e-b8c7-6c33-5077c3301293@linux-m68k.org>
- <71af7b52-a1d4-581c-d5af-afce6991c48d@gmail.com>
- <a5036039-9758-f304-5659-49588a9f5165@linux-m68k.org>
- <7ea095ba-7df1-1ffe-e87d-12d46ebe72f6@gmail.com>
-In-Reply-To: <7ea095ba-7df1-1ffe-e87d-12d46ebe72f6@gmail.com>
+ <d4aec386-b0b6-fcae-837c-15ec726e50ec@linux-m68k.org>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+In-Reply-To: <d4aec386-b0b6-fcae-837c-15ec726e50ec@linux-m68k.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -89,47 +88,23 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 Hi Finn,
 
-one more datapoint: using sigaltstack() to set up a separate signal 
-stack in main() (code lifted straight from the sigaltstack man page) 
-does avoid the stack corruption.
+On 21/04/23 13:15, Finn Thain wrote:
+> Fri, 21 Apr 2023 11:15:22 +1000 (AEST)n Thu, 20 Apr 2023, Michael Schmitz wrote:
+>
+>> In my tests, increasing the depth does not cause a monotonous increase
+>> in fault probability. 16k depth only has four crashes, 8k had nine. I'll
+>> stick with 200000 for now.
+>>
+> My tests used 'norandmaps' in the kernel parameters. With the attached
+> .config (which supports Mac and Atari) I saw 12 failures out of 16 tests
+> at depth 5000.
 
-That might be useful as a workaround for dash, while we're analyzing 
-this bug.
+Right - I' make sure to add that in future tests.
 
-I wonder whether recursively growing the stack while taking signals on 
-the same stack is meant to be safe. Need to look at usp inside the 
-signal frame (i.e. at the time the program was preempted for signal 
-delivery) and usp at the lowest recursion depth at the time of the 
-signal handler running ...
+I'll also add your patch to bus_error030 in my builds.
 
 Cheers,
 
      Michael
 
 
-On 21/04/23 09:58, Michael Schmitz wrote:
-> Hi Finn,
->
-> On 20/04/23 20:55, Finn Thain wrote:
->>
->>> But in any case, it looks like we can eliminate the bus error code. 
->>> Same
->>> fault on both 030 and 040 with very different bus error handlers is
->>> highly unlikely.
->>>
->> There's no failure on '040. QEMU and Motorola '040 gave the same result.
->
-> Sorry, my fault - I interpreted your mail as saying 030 and 040 gave 
-> the same result.
->
-> Back to the drawing board ... I've got kernel images back to 2.4.30 
-> and 2.6.37 to try and test. I'm also trying with rt signals and 
-> alternate signal stack (rt signals show the same behaviour).
->
-> Cheers,
->
->     Michael
->
->
->
->
