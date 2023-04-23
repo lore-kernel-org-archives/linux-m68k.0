@@ -2,158 +2,117 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB416C77B76
-	for <linux-m68k@archiver.kernel.org>; Sun, 23 Apr 2023 09:19:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FC9DC77B76
+	for <linux-m68k@archiver.kernel.org>; Sun, 23 Apr 2023 11:15:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229499AbjDWJT5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 23 Apr 2023 05:19:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54998 "EHLO
+        id S229571AbjDWLPJ convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 23 Apr 2023 07:15:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjDWJT4 (ORCPT
+        with ESMTP id S229559AbjDWLPJ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 23 Apr 2023 05:19:56 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD3A1BF0
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 23 Apr 2023 02:19:55 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 22FBB3200708;
-        Sun, 23 Apr 2023 05:19:52 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Sun, 23 Apr 2023 05:19:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1682241591; x=1682327991; bh=H0AkL8MUlLFKo
-        BI2PfzxEaZHvpksuig7eEoEHrmGMKM=; b=ZZ/jm5QNCdpYgaZZ00knmcTY+eNvf
-        uJEHgVSz6S5CL0KHyc9aUL/zLCJIR7jiX3HlJ5Rn/kPJ2twd09IiBm3IGt7W6WZ0
-        SQfBDrpAVDBphR+OUnelvBJQLGVYB9wGyw1iJcAGQntH8VDU/8bKBKACA2+TAuBp
-        4oLG8eywzzec4JdpvUecKpthcz/QCj/moMwPGZ+q7Am0MUDelFhKrY+WevtaHWpW
-        yjNm4rrt+Ih2HiakX+NKyT8zvFTL3Nq1jaqc1IPHrWd1GvLSuvoymPIRZ/Fy6JrK
-        iJxdQQh0XETKNRZ570qWKphGGhNZ6/R2k8cIF28TUMQlAEL23kxELVhYA==
-X-ME-Sender: <xms:N_hEZF_i_Z-SXtnqm_S9-UNsGOut7whrtAz4eY_It9BJD1OsfFB6ZQ>
-    <xme:N_hEZJvYBJLncjp_TZARlKAlAAHD_eKmFfYYl94VbG753pDoGJWF9pzUSnWwGjmsd
-    36tqIb4nxfooTiaUXE>
-X-ME-Received: <xmr:N_hEZDDU75Z5oISNakvt8QsOOykfl0yZsSwdajofaIobiQ4SljYcA3UBdbm60yliywN8KcdVB0yeVKt97iLP9esTsGALa_GC5Xw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfedtkedgudegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
-    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
-    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:N_hEZJfk4z2pteSuW7wa6xGMw6k1g1PPRZ1cLc66K-NBOc8lK8iZgA>
-    <xmx:N_hEZKPC3wITfNLJG55gArcHZZ2jeWobws0OsGPVmnEhCJ1XYcYPrA>
-    <xmx:N_hEZLntTosM8A2yktNOqB_xlMvIPYIR3LXRNLIvJfgPz4RfIHX5lw>
-    <xmx:N_hEZM1LhHNS5OMVJUnylrX3MfvpILFRdBSt5hZNyBq4YsKGqUkNWw>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 23 Apr 2023 05:19:48 -0400 (EDT)
-Date:   Sun, 23 Apr 2023 19:23:27 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-cc:     Andreas Schwab <schwab@linux-m68k.org>,
-        debian-68k@lists.debian.org, linux-m68k@lists.linux-m68k.org
-Subject: Re: reliable reproducer, was Re: core dump analysis
-In-Reply-To: <06c14a4a-1679-31d6-0501-97e20741f88a@gmail.com>
-Message-ID: <13d36a79-5aae-d63c-5014-5503688f07bb@linux-m68k.org>
-References: <4a9c1d0d-07aa-792e-921f-237d5a30fc44.ref@yahoo.com> <bee7db9b-0f81-dc2e-c737-c8aa25fd0588@linux-m68k.org> <fee988a9-dea8-7cae-af02-dda9f12cae08@gmail.com> <d1599d1b-b47e-b8c7-6c33-5077c3301293@linux-m68k.org> <71af7b52-a1d4-581c-d5af-afce6991c48d@gmail.com>
- <a5036039-9758-f304-5659-49588a9f5165@linux-m68k.org> <7ea095ba-7df1-1ffe-e87d-12d46ebe72f6@gmail.com> <f890dd95-6bb9-8012-c49e-774fae71200d@gmail.com> <2fdc2819-526a-756f-19d0-ac1147f85b63@linux-m68k.org> <868b5214-fa13-dcf7-a671-9843169eea06@gmail.com>
- <b1488232-a826-a93a-4806-c11355cf3a77@gmail.com> <87fs8sz6e9.fsf@igel.home> <c73f8f04-944c-107c-4343-ade1deb3098c@gmail.com> <878rekz0md.fsf@igel.home> <f6ca1bd9-419b-f18e-100a-d212bdbf3da1@gmail.com> <87o7nfyd7e.fsf@igel.home> <cb1059f0-527e-2023-9c60-abcbf9eda9b7@gmail.com>
- <87jzy3y79y.fsf@igel.home> <5824d97d-683b-a354-3c39-cb0f54e50bc0@gmail.com> <06c14a4a-1679-31d6-0501-97e20741f88a@gmail.com>
+        Sun, 23 Apr 2023 07:15:09 -0400
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A283410EC
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 23 Apr 2023 04:15:07 -0700 (PDT)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1pqXgP-000w9B-4E; Sun, 23 Apr 2023 13:15:05 +0200
+Received: from p5b13a35e.dip0.t-ipconnect.de ([91.19.163.94] helo=[192.168.178.81])
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1pqXgO-003rOl-QE; Sun, 23 Apr 2023 13:15:05 +0200
+Message-ID: <efb01ccc8cbabd7fc939d3aa1869f68e01157b3a.camel@physik.fu-berlin.de>
+Subject: Question on the m68k Calling Convention (RTD)
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     debian-68k <debian-68k@lists.debian.org>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Michael Karcher <debian@mkarcher.dialup.fu-berlin.de>,
+        Min-Yih Hsu <minyihh@uci.edu>, Sheng <ox59616e@gmail.com>
+Date:   Sun, 23 Apr 2023 13:15:04 +0200
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.0 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.163.94
+X-ZEDAT-Hint: PO
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sun, 23 Apr 2023, Michael Schmitz wrote:
+Hello!
 
-> Am 23.04.2023 um 13:41 schrieb Michael Schmitz:
-> 
-> Though the question remains - is this expected behaviour for programs 
-> that do deep recursion on the stack while taking signals (and the reason 
-> for the option to run signal handlers on an alternate stack)?
-> 
+I'm currently trying to fix a bug [1] in the M68k backend in LLVM.
 
-I don't understand how "deep recursion" can be used to explain this. We've 
-seen crashes with only 1.8 MB of stack usage.
+The problem is that the backend tries to emit RTD when the baseline
+is raised to at least 68020 using the -m68020 command line flag and
+then crashes.
 
-The best reason I can think of for having a signal stack would be that it 
-may be better for signal delivery to fail than for the target process to 
-fail. But I've no idea whether the kernel makes that kind of defensive 
-programming possible (?)
+Looking at the code [2], this happens because the backend runs into
 
-> And why does this almost always appear to happen after bus error exceptions
-> (frame format b)? The extra exception stack information isn't even accounted
-> for in the above frame end address!
-> 
-> Result with sa_sigaction handler:
-> 
-> parent usp  : 0xef969e28
-> handler tos : 0xef969e6c
-> handler stack overwrote usp!
-> frame end   : 0xef969e7c
-> frame start : 0xef969b58
-> handler usp : 0xef969b40
-> signal usp  : 0xef969e04
-> signal pc   : 0x80000696
-> signal fmtv : 0x114
-> 
-> parent usp  : 0xef955008
-> handler tos : 0xef955064
-> handler stack overwrote usp!
-> frame end   : 0xef955074
-> frame start : 0xef954d50
-> handler usp : 0xef954d38
-> signal usp  : 0xef954ffc
-> signal pc   : 0x80000680
-> signal fmtv : 0xb008
-> 
-> parent usp  : 0xef945eb8
-> handler tos : 0xef945f0c
-> handler stack overwrote usp!
-> frame end   : 0xef945f1c
-> frame start : 0xef945bf8
-> handler usp : 0xef945be0
-> signal usp  : 0xef945ea8
-> signal pc   : 0xc009f37a
-> signal fmtv : 0x80
-> 
-> parent usp  : 0xef933eb8
-> handler tos : 0xef933f0c
-> handler stack overwrote usp!
-> frame end   : 0xef933f1c
-> frame start : 0xef933bf8
-> handler usp : 0xef933be0
-> signal usp  : 0xef933ea8
-> signal pc   : 0xc009f37a
-> signal fmtv : 0x80
-> 
-> parent usp  : 0xef921edc
-> handler tos : 0xef9aaca4
-> handler stack overwrote usp!
-> frame end   : 0xef9aacb4
-> frame start : 0xef9aa990
-> handler usp : 0xef9aa978
-> signal usp  : 0xef9aac40
-> signal pc   : 0x80000782
-> signal fmtv : 0x114
-> 
-> Illegal instruction (core dumped)
-> 
+	llvm_unreachable("RTD is not implemented");
 
-I don't understand these results. If usp was really overwritten, the 
-program would have crashed early, no?
+since RTD is indeed not implemented yet.
 
-> Exception right before crash was an interrupt in this case (only seen 
-> that once in this context, though I've seen lots of those in the course 
-> of the test runs). Frame start calculated from siginfo pointer value in 
-> this case.
+Now, the interesting part is the question why the compiler is even trying
+to take this codepath since RTD should normally be turned off in the M68k
+backend by default as it's the case for GCC.
+
+Quote from [3]:
+
+> Use a different function-calling convention, in which functions that take a
+> fixed number of arguments return with the rtd instruction, which pops their
+> arguments while returning. This saves one instruction in the caller since
+> there is no need to pop the arguments there.
 > 
+> This calling convention is incompatible with the one normally used on Unix,
+> so you cannot use it if you need to call libraries compiled with the Unix compiler.
+> 
+> Also, you must provide function prototypes for all functions that take variable
+> numbers of arguments (including printf); otherwise incorrect code is generated
+> for calls to those functions.
+> 
+> In addition, seriously incorrect code results if you call a function with too many
+> arguments. (Normally, extra arguments are harmlessly ignored.)
+> 
+> The rtd instruction is supported by the 68010, 68020, 68030, 68040, 68060 and CPU32
+> processors, but not by the 68000 or 5200.
+> 
+> The default is -mno-rtd.
 
-I didn't realize that you could get a crash from a signal delivered 
-following an interrupt. I'll try to modify the kernel such that signals 
-are not delivered after page faults.
+LLVM/Clang actually suppors the -mno-rtd switch as well.
+
+Quoute from [4]:
+
+> -mrtd, -mno-rtd
+> 
+> Make StdCall calling convention the default
+
+Looking at the code in [2] again, it the RTD codepath is taken when the stack
+adjustment is non-zero which raises the question what the proper stack adjustment
+on m68k is when using GCC with -mno-rtd (the default).
+
+Does the m68k calling convention actually require the callee to clean up the stack
+similar to the stdcall calling convention on x86 or should the stack adjustment
+be zero here unless -mrtd is set?
+
+Thanks,
+Adrian
+
+> [1] https://github.com/llvm/llvm-project/issues/60554
+> [2] https://github.com/llvm/llvm-project/blob/main/llvm/lib/Target/M68k/M68kExpandPseudo.cpp#L245
+> [3] https://gcc.gnu.org/onlinedocs/gcc/M680x0-Options.html
+> [4] https://clang.llvm.org/docs/ClangCommandLineReference.html
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
