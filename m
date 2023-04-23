@@ -2,117 +2,133 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FC9DC77B76
-	for <linux-m68k@archiver.kernel.org>; Sun, 23 Apr 2023 11:15:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86682C77B60
+	for <linux-m68k@archiver.kernel.org>; Sun, 23 Apr 2023 20:19:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbjDWLPJ convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 23 Apr 2023 07:15:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34638 "EHLO
+        id S229517AbjDWUTW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 23 Apr 2023 16:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbjDWLPJ (ORCPT
+        with ESMTP id S229510AbjDWUTW (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 23 Apr 2023 07:15:09 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A283410EC
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 23 Apr 2023 04:15:07 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1pqXgP-000w9B-4E; Sun, 23 Apr 2023 13:15:05 +0200
-Received: from p5b13a35e.dip0.t-ipconnect.de ([91.19.163.94] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1pqXgO-003rOl-QE; Sun, 23 Apr 2023 13:15:05 +0200
-Message-ID: <efb01ccc8cbabd7fc939d3aa1869f68e01157b3a.camel@physik.fu-berlin.de>
-Subject: Question on the m68k Calling Convention (RTD)
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     debian-68k <debian-68k@lists.debian.org>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Michael Karcher <debian@mkarcher.dialup.fu-berlin.de>,
-        Min-Yih Hsu <minyihh@uci.edu>, Sheng <ox59616e@gmail.com>
-Date:   Sun, 23 Apr 2023 13:15:04 +0200
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.0 
+        Sun, 23 Apr 2023 16:19:22 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284FCE6F
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 23 Apr 2023 13:19:21 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1a6c5acf6ccso29690805ad.3
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 23 Apr 2023 13:19:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1682281160; x=1684873160;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/5SSEeGFE1RmrJQOIaPTqZRkcsjSMA0BjtFlJYkpjIE=;
+        b=HdFDYuCKY6CEleqJpCNtUWy9wTZXxNuCUMeMf6b9EPVtl7v7dM/Xkwn/0Iv5hc9e5x
+         I0kcWaYoxL2tb4oYFZsswROj8suvI4zOptGMsGMs3SOue1c5E+LzwU45sqjCdfwPhIEZ
+         lXuOS8M5lZCffYRYr6/Vpu/ygAHy0DPrqRxmu5PR99IZh+tUxHe6NayW4e3gVlx0E+jW
+         dJwybr9qbkQHY71jXyAiM3SUsCkZUselZwcnUxDcDT4MhqoltiyyX/oP9oSXop67ZCXE
+         udhjnHf1n/pdJNpj2VY3JFAQzhN2fbrwXz58vjyLBuIPQEG/wgiyYjxQQmsMmYWyVi53
+         ACoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682281160; x=1684873160;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/5SSEeGFE1RmrJQOIaPTqZRkcsjSMA0BjtFlJYkpjIE=;
+        b=iXtQvBkYjcT2ZR7P8UtrGJoNV6o5q30ktQjPuiKQHFTwZb2xj8ITzPq+nrVt3EepqB
+         Ow8WV07p+U1/4Aggv4soee2zpZ0nnkJ6m9ogtYZ3DMV9AuPjhPYKnNuL9YDg+dMboWiY
+         fCCvfZ5k/y9a8l4lHC8a3CEl1AHUv6m5dHNEIiQT+zux56V62NFPw5SXO9Gw5YLVhKn0
+         g692bTiRj5fB4ZG1kG7TZSNbsPD0KZfGuy1ihrxRaDhp15w3VCwlXYylyw/CEUN57rD1
+         0T9WnPCXjR1RCpXc4NgeYPHv+Esq60vOyVDYzNTf8lPBTgeuEK6hNAX7b3MKn6+gdSY8
+         9Bmw==
+X-Gm-Message-State: AAQBX9es6B4AG7968RnmmRuEK7uLaWGBPIb2yR1Wmj9dFnReI570AeD1
+        lZfQmBTRCjVnPR5vNVcku4I=
+X-Google-Smtp-Source: AKy350ah/PRjhFgrK9o+xZZNAg3GxGqDQURU54IEvhQuKf3o/8/B+QwXATlGRb0FogBV/7SHLdrnrQ==
+X-Received: by 2002:a17:903:1112:b0:1a5:1e7:86d7 with SMTP id n18-20020a170903111200b001a501e786d7mr14351835plh.52.1682281160556;
+        Sun, 23 Apr 2023 13:19:20 -0700 (PDT)
+Received: from ?IPV6:2001:df0:0:200c:7d4f:891d:86e0:1e1c? ([2001:df0:0:200c:7d4f:891d:86e0:1e1c])
+        by smtp.gmail.com with ESMTPSA id t4-20020a170902b20400b001a96496f250sm1758594plr.34.2023.04.23.13.19.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 23 Apr 2023 13:19:20 -0700 (PDT)
+Message-ID: <53153bec-90a9-a617-d3af-fe98d8d54632@gmail.com>
+Date:   Mon, 24 Apr 2023 08:19:15 +1200
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.163.94
-X-ZEDAT-Hint: PO
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: reliable reproducer, was Re: core dump analysis
+Content-Language: en-US
+To:     Andreas Schwab <schwab@linux-m68k.org>
+Cc:     Finn Thain <fthain@linux-m68k.org>, debian-68k@lists.debian.org,
+        linux-m68k@lists.linux-m68k.org
+References: <4a9c1d0d-07aa-792e-921f-237d5a30fc44.ref@yahoo.com>
+ <bee7db9b-0f81-dc2e-c737-c8aa25fd0588@linux-m68k.org>
+ <fee988a9-dea8-7cae-af02-dda9f12cae08@gmail.com>
+ <d1599d1b-b47e-b8c7-6c33-5077c3301293@linux-m68k.org>
+ <71af7b52-a1d4-581c-d5af-afce6991c48d@gmail.com>
+ <a5036039-9758-f304-5659-49588a9f5165@linux-m68k.org>
+ <7ea095ba-7df1-1ffe-e87d-12d46ebe72f6@gmail.com>
+ <f890dd95-6bb9-8012-c49e-774fae71200d@gmail.com>
+ <2fdc2819-526a-756f-19d0-ac1147f85b63@linux-m68k.org>
+ <868b5214-fa13-dcf7-a671-9843169eea06@gmail.com>
+ <b1488232-a826-a93a-4806-c11355cf3a77@gmail.com> <87fs8sz6e9.fsf@igel.home>
+ <c73f8f04-944c-107c-4343-ade1deb3098c@gmail.com> <878rekz0md.fsf@igel.home>
+ <f6ca1bd9-419b-f18e-100a-d212bdbf3da1@gmail.com> <87o7nfyd7e.fsf@igel.home>
+ <cb1059f0-527e-2023-9c60-abcbf9eda9b7@gmail.com> <87jzy3y79y.fsf@igel.home>
+ <5824d97d-683b-a354-3c39-cb0f54e50bc0@gmail.com>
+ <06c14a4a-1679-31d6-0501-97e20741f88a@gmail.com>
+ <87y1mj0zxd.fsf@linux-m68k.org>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+In-Reply-To: <87y1mj0zxd.fsf@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hello!
+Hi Andreas,
 
-I'm currently trying to fix a bug [1] in the M68k backend in LLVM.
+On 23/04/23 20:23, Andreas Schwab wrote:
+> On Apr 23 2023, Michael Schmitz wrote:
+>
+>> Wasn't too hard actually. The signo parameter passed to the handler turns
+>> out to be passed by reference, and signo is located 4 bytes into the
+>> kernel sigframe.
+> That's not "passed by reference".  Function arguments are always passed
+> on the stack.
 
-The problem is that the backend tries to emit RTD when the baseline
-is raised to at least 68020 using the -m68020 command line flag and
-then crashes.
+You're right of course, I should have phrased that different.
 
-Looking at the code [2], this happens because the backend runs into
+signo is passed by value as the first argument on the stack, but I can 
+take a reference to signo to find it's address on the stack. That in 
+turn will tell me the address of the complete signal frame on the stack.
 
-	llvm_unreachable("RTD is not implemented");
+This works because at the time the handler is entered, the stack points 
+to the return address which has been set up by setup_frame, and that's 
+the first longword in struct sigframe (frame.pretcode; points to 
+frame.retcode which holds the trampoline code that will call 
+sys_sigreturn upon exit from the handler). This in turn works because 
+usp is loaded with the address of the sigframe right before calling the 
+handler.
 
-since RTD is indeed not implemented yet.
+In effect, at least indirectly the signal handler receives all two 
+arguments that matter (signo and sigcontext) even though sigcontext is 
+not explicitly passed on the stack (the third longword is frame.code 
+which holds the vector number AFAICS). Not sure what third argument you 
+referred to in another mail.
 
-Now, the interesting part is the question why the compiler is even trying
-to take this codepath since RTD should normally be turned off in the M68k
-backend by default as it's the case for GCC.
+With the rt_sigframe, pointers to siginfo and ucontext are stored after 
+signo so no stack arithmetics is needed there to access all three 
+arguments.
 
-Quote from [3]:
+Anyway, the whole point of the exercise was to see whether I can peek at 
+the registers in the signal frame and their saved copies on the stack, 
+to perhaps spot when the stack corruption begins to happen. I know - 
+should have used a debugger in the first place instead instrumenting a 
+test case.
 
-> Use a different function-calling convention, in which functions that take a
-> fixed number of arguments return with the rtd instruction, which pops their
-> arguments while returning. This saves one instruction in the caller since
-> there is no need to pop the arguments there.
-> 
-> This calling convention is incompatible with the one normally used on Unix,
-> so you cannot use it if you need to call libraries compiled with the Unix compiler.
-> 
-> Also, you must provide function prototypes for all functions that take variable
-> numbers of arguments (including printf); otherwise incorrect code is generated
-> for calls to those functions.
-> 
-> In addition, seriously incorrect code results if you call a function with too many
-> arguments. (Normally, extra arguments are harmlessly ignored.)
-> 
-> The rtd instruction is supported by the 68010, 68020, 68030, 68040, 68060 and CPU32
-> processors, but not by the 68000 or 5200.
-> 
-> The default is -mno-rtd.
+Cheers,
 
-LLVM/Clang actually suppors the -mno-rtd switch as well.
+     Michael
 
-Quoute from [4]:
 
-> -mrtd, -mno-rtd
-> 
-> Make StdCall calling convention the default
 
-Looking at the code in [2] again, it the RTD codepath is taken when the stack
-adjustment is non-zero which raises the question what the proper stack adjustment
-on m68k is when using GCC with -mno-rtd (the default).
-
-Does the m68k calling convention actually require the callee to clean up the stack
-similar to the stdcall calling convention on x86 or should the stack adjustment
-be zero here unless -mrtd is set?
-
-Thanks,
-Adrian
-
-> [1] https://github.com/llvm/llvm-project/issues/60554
-> [2] https://github.com/llvm/llvm-project/blob/main/llvm/lib/Target/M68k/M68kExpandPseudo.cpp#L245
-> [3] https://gcc.gnu.org/onlinedocs/gcc/M680x0-Options.html
-> [4] https://clang.llvm.org/docs/ClangCommandLineReference.html
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
