@@ -2,95 +2,93 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AF5CC77B73
-	for <linux-m68k@archiver.kernel.org>; Sun, 23 Apr 2023 07:37:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32A1DC77B73
+	for <linux-m68k@archiver.kernel.org>; Sun, 23 Apr 2023 07:43:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbjDWHhe (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 23 Apr 2023 03:37:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57696 "EHLO
+        id S230077AbjDWHnO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 23 Apr 2023 03:43:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjDWHhe (ORCPT
+        with ESMTP id S230078AbjDWHnN (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 23 Apr 2023 03:37:34 -0400
-Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 061521BEB
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 23 Apr 2023 00:37:30 -0700 (PDT)
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4Q40Tj1P1tz1r1Mh;
-        Sun, 23 Apr 2023 09:37:29 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4Q40Tj0p4Qz1qqlS;
-        Sun, 23 Apr 2023 09:37:29 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id mE5iTSIhMv-Y; Sun, 23 Apr 2023 09:37:28 +0200 (CEST)
-X-Auth-Info: ShsYz4jigI5nbsQVL6TH0+YYsIZ73Ee12yU3qfa60snwrRXCukcna8B6S15zibaw
-Received: from tiger.home (aftr-82-135-86-35.dynamic.mnet-online.de [82.135.86.35])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Sun, 23 Apr 2023 09:37:28 +0200 (CEST)
-Received: by tiger.home (Postfix, from userid 1000)
-        id DA79F196E46; Sun, 23 Apr 2023 09:37:27 +0200 (CEST)
-From:   Andreas Schwab <schwab@linux-m68k.org>
+        Sun, 23 Apr 2023 03:43:13 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC3CB2700
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 23 Apr 2023 00:42:38 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id A18F7320046F;
+        Sun, 23 Apr 2023 03:42:33 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Sun, 23 Apr 2023 03:42:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1682235753; x=1682322153; bh=jrINGtBppGfrZ
+        TXJgfsMCJNqXj2Xg9iOIGMz/G34GUk=; b=fl6H2L1+opbHDU4qLD92Hq8cjDcBE
+        yie5RhERt7qtXZQd/oeY10fAXW3JvrQK9ZkBviILYkvMsM5AUa6IgYtoZzcRJSzI
+        Bgjbs+CM4k+25GESBgcsxCAvBqV1pGlMxoWYuc6exw0/0x8l+dJc08dUxG+Y4Ux2
+        QRcWIbzHj/GDQzvkuyQRgYdy0TOp83tyz+PQBjQthvRq7rHV+XBdFGywPxMr1Anm
+        2w4ZYUju7krMk0+uAo4QuoeX3BWMugkzACJfP1vKUkjCnGEJ90MMSVcjjCr5X4yo
+        F+zOwme8DEgWhvBMCj9nOMXdX6zNBzoWUq/xyteydLYpbe8H11VKbd9Jw==
+X-ME-Sender: <xms:aOFEZLJawLfpp84-pRwLD7MbZAXzT2jnOpwh9LVQB5PAkJeSHZGanQ>
+    <xme:aOFEZPKlcE6Ad_YsoyARjz9wWbQAkbh9OqU5hNqgmg6Za906MtHW7iNCr3-ms5zJG
+    NSwOof4ITrDdZMpG44>
+X-ME-Received: <xmr:aOFEZDtshmm1aXr4ebi2veQofOv8ynV00DaIPgLCrvII6LyUHX-jRQpBfGdcqPcXiXtW6vjRtHDdxU6rSwsKQus2NLaUA-pI3Vk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfedtjedguddvgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhn
+    ucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrf
+    grthhtvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedv
+    ueehueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:aOFEZEaDwOhllJwplepcWjQVcdCJYcX_LH5yC9iEZ-s15uTLW1_Tww>
+    <xmx:aOFEZCaNtATO0Vd232QF4zLhplzRw60R1V0lmP87JWU1cxlrAOQXMA>
+    <xmx:aOFEZIDZnsul9xUy5fQ4oIhuLh-EHRwUipghULtcik3OdCD9LAP5gA>
+    <xmx:aeFEZLC1YIndCUyhf6AIDS_MBbxqiENSw52FstTbS7wTmyA0s232SQ>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 23 Apr 2023 03:42:30 -0400 (EDT)
+Date:   Sun, 23 Apr 2023 17:46:07 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
 To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Finn Thain <fthain@linux-m68k.org>, debian-68k@lists.debian.org,
-        linux-m68k@lists.linux-m68k.org
-Subject: Re: reliable reproducer, was Re: core dump analysis
-In-Reply-To: <5824d97d-683b-a354-3c39-cb0f54e50bc0@gmail.com> (Michael
-        Schmitz's message of "Sun, 23 Apr 2023 13:41:12 +1200")
-References: <4a9c1d0d-07aa-792e-921f-237d5a30fc44.ref@yahoo.com>
-        <54597ab3-2776-2a55-9952-3bfbbc329829@linux-m68k.org>
-        <406cb339-0a0c-4d71-9b5c-c11568793c14@gmail.com>
-        <bee7db9b-0f81-dc2e-c737-c8aa25fd0588@linux-m68k.org>
-        <fee988a9-dea8-7cae-af02-dda9f12cae08@gmail.com>
-        <d1599d1b-b47e-b8c7-6c33-5077c3301293@linux-m68k.org>
-        <71af7b52-a1d4-581c-d5af-afce6991c48d@gmail.com>
-        <a5036039-9758-f304-5659-49588a9f5165@linux-m68k.org>
-        <7ea095ba-7df1-1ffe-e87d-12d46ebe72f6@gmail.com>
-        <f890dd95-6bb9-8012-c49e-774fae71200d@gmail.com>
-        <2fdc2819-526a-756f-19d0-ac1147f85b63@linux-m68k.org>
-        <868b5214-fa13-dcf7-a671-9843169eea06@gmail.com>
-        <b1488232-a826-a93a-4806-c11355cf3a77@gmail.com>
-        <87fs8sz6e9.fsf@igel.home>
-        <c73f8f04-944c-107c-4343-ade1deb3098c@gmail.com>
-        <878rekz0md.fsf@igel.home>
-        <f6ca1bd9-419b-f18e-100a-d212bdbf3da1@gmail.com>
-        <87o7nfyd7e.fsf@igel.home>
-        <cb1059f0-527e-2023-9c60-abcbf9eda9b7@gmail.com>
-        <87jzy3y79y.fsf@igel.home>
-        <5824d97d-683b-a354-3c39-cb0f54e50bc0@gmail.com>
-X-Yow:  Fold, fold, FOLD!!  FOLDING many items!!
-Date:   Sun, 23 Apr 2023 09:37:27 +0200
-Message-ID: <878rej2gnc.fsf@linux-m68k.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+cc:     debian-68k@lists.debian.org, linux-m68k@lists.linux-m68k.org
+Subject: Re: core dump analysis, was Re: stack smashing detected
+In-Reply-To: <f8a79839-ab95-be2d-65fa-5cc99ec9f308@gmail.com>
+Message-ID: <535b4775-696e-2524-8dfe-2943c3f7750a@linux-m68k.org>
+References: <4a9c1d0d-07aa-792e-921f-237d5a30fc44.ref@yahoo.com> <e10b8e06-6a36-5c83-89da-bec8fd7d3ed9@linux-m68k.org> <19d1f2ac-67dd-5415-b64a-1e1b4451f01e@linux-m68k.org> <ef5bcf6f-3541-50c2-9b6a-5e9d2f9c68d5@linux-m68k.org> <87zg7rap45.fsf@igel.home>
+ <5a5588ca-81c3-3f4c-fd43-c95e90b27939@linux-m68k.org> <67f6bc5f-e1fc-64b9-cb3c-1698cf4daf51@gmail.com> <9eea635f-c947-eae7-09fa-d39f00d91532@linux-m68k.org> <3dfea52a-b09e-517a-c3ca-4b559a3d9ce4@gmail.com> <23ddfd2a-1123-45ae-866d-158d45e23ba2@linux-m68k.org>
+ <2f241963-44cd-3196-b39e-9c2d63cda1d3@linux-m68k.org> <60109ace-4e55-29da-86d9-35e931b11134@gmail.com> <c77fe8b3-03fa-491b-7c10-64f2e52c748a@linux-m68k.org> <d025ad67-9cc2-cf5a-09a7-ce1d8f66109b@gmail.com> <e777cb75-84f6-a61d-810a-2b6d0176e642@linux-m68k.org>
+ <c519ff55-fa2a-56c8-6d72-c5afab38ef48@gmail.com> <3292e840-0ecd-1f03-5d7f-462347e161c9@linux-m68k.org> <f8a79839-ab95-be2d-65fa-5cc99ec9f308@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Apr 23 2023, Michael Schmitz wrote:
+On Wed, 19 Apr 2023, Michael Schmitz wrote:
 
-> Hi Andreas,
->
-> Am 23.04.2023 um 08:46 schrieb Andreas Schwab:
->> On Apr 23 2023, Michael Schmitz wrote:
->>
->>> I'll see whether the signal context is available on the stack even if the
->>> handler isn't passed that parameter.
->>
->> The signal context is always on the stack, and used by the
->> (rt_)sigreturn syscall.
->
-> True, but at the time the signal handler (sa_handler type) runs, all I
-> have is the user stack pointer upon entry to the handler. I'll have to
-> calculate back from that address, if that is possible.
+> > I wonder what we'd see if we patched the kernel to log every user data 
+> > write fault caused by a MOVEM instruction. I'll try to code that up.
+> 
+> If these instructions did always cause stack corruption on 030, I think 
+> we would have noticed long ago?
+> 
 
-The signal handler always receives all three arguments.
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+I think it probably was noticed long ago, in the form of rare userland 
+crashes on 68030. But it was probably never reported because the actual 
+culprit is too distant from the symptoms.
+
+But I take your point -- signal delivery seems to be crucial. Would it be 
+difficult to skip signal delivery following a bus error? Perhaps there's 
+no need to try that experiment, as we know what would happen.
+
+I will take a look at your modified test program and try to use the output 
+to figure out the stack gymnastics.
+
+IIUC, there are two RTEs following the page fault. The first one runs the 
+signal handler, the second one resumes the MOVEM that faulted. Maybe we'll 
+have to intercept the latter (at do_sigreturn() perhaps?) and examine that 
+exception frame.
