@@ -2,64 +2,64 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86682C77B60
-	for <linux-m68k@archiver.kernel.org>; Sun, 23 Apr 2023 20:19:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD526C77B60
+	for <linux-m68k@archiver.kernel.org>; Sun, 23 Apr 2023 20:43:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229517AbjDWUTW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 23 Apr 2023 16:19:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44740 "EHLO
+        id S229800AbjDWUnI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 23 Apr 2023 16:43:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjDWUTW (ORCPT
+        with ESMTP id S229476AbjDWUnH (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 23 Apr 2023 16:19:22 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284FCE6F
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 23 Apr 2023 13:19:21 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1a6c5acf6ccso29690805ad.3
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 23 Apr 2023 13:19:21 -0700 (PDT)
+        Sun, 23 Apr 2023 16:43:07 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A10110C9
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 23 Apr 2023 13:43:06 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-24986c7cf2dso3367832a91.2
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 23 Apr 2023 13:43:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682281160; x=1684873160;
+        d=gmail.com; s=20221208; t=1682282585; x=1684874585;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=/5SSEeGFE1RmrJQOIaPTqZRkcsjSMA0BjtFlJYkpjIE=;
-        b=HdFDYuCKY6CEleqJpCNtUWy9wTZXxNuCUMeMf6b9EPVtl7v7dM/Xkwn/0Iv5hc9e5x
-         I0kcWaYoxL2tb4oYFZsswROj8suvI4zOptGMsGMs3SOue1c5E+LzwU45sqjCdfwPhIEZ
-         lXuOS8M5lZCffYRYr6/Vpu/ygAHy0DPrqRxmu5PR99IZh+tUxHe6NayW4e3gVlx0E+jW
-         dJwybr9qbkQHY71jXyAiM3SUsCkZUselZwcnUxDcDT4MhqoltiyyX/oP9oSXop67ZCXE
-         udhjnHf1n/pdJNpj2VY3JFAQzhN2fbrwXz58vjyLBuIPQEG/wgiyYjxQQmsMmYWyVi53
-         ACoA==
+        bh=QAXki05qpGQiLVoEwrMk83Mycpqpp2edFtYdxscDNiI=;
+        b=NMHkWKN9vS95tlxKrC9pdBG7raAWUnQK+4P00TD+W0Px+AdICcjOctW16Q1/wWScXy
+         dWWqHTSd4ytyPmFTLGgcKalvXVzmAqzKxqpEkk8M9tc2SsCk8IL0HlZHQho5mvSXFe3Y
+         bVMGsTmavWXo388mHN9UqPOo0woloThaKQ1LcRRYjUkChWGN7IxS0eboXAZEaRQxIp1u
+         9GdqaovcZ5HO1MFzqoicUnlUSuEiMF5yp7kAlSjrHOJFT5yEqfoq3iDHC8ncf8GCf84s
+         8N5hocXEGKtgW5EuwryC3UEh3RwcgPoAv2ohcalxZQHPxiDO1PXqx30H/5F388XUYahM
+         Z6eA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682281160; x=1684873160;
+        d=1e100.net; s=20221208; t=1682282585; x=1684874585;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/5SSEeGFE1RmrJQOIaPTqZRkcsjSMA0BjtFlJYkpjIE=;
-        b=iXtQvBkYjcT2ZR7P8UtrGJoNV6o5q30ktQjPuiKQHFTwZb2xj8ITzPq+nrVt3EepqB
-         Ow8WV07p+U1/4Aggv4soee2zpZ0nnkJ6m9ogtYZ3DMV9AuPjhPYKnNuL9YDg+dMboWiY
-         fCCvfZ5k/y9a8l4lHC8a3CEl1AHUv6m5dHNEIiQT+zux56V62NFPw5SXO9Gw5YLVhKn0
-         g692bTiRj5fB4ZG1kG7TZSNbsPD0KZfGuy1ihrxRaDhp15w3VCwlXYylyw/CEUN57rD1
-         0T9WnPCXjR1RCpXc4NgeYPHv+Esq60vOyVDYzNTf8lPBTgeuEK6hNAX7b3MKn6+gdSY8
-         9Bmw==
-X-Gm-Message-State: AAQBX9es6B4AG7968RnmmRuEK7uLaWGBPIb2yR1Wmj9dFnReI570AeD1
-        lZfQmBTRCjVnPR5vNVcku4I=
-X-Google-Smtp-Source: AKy350ah/PRjhFgrK9o+xZZNAg3GxGqDQURU54IEvhQuKf3o/8/B+QwXATlGRb0FogBV/7SHLdrnrQ==
-X-Received: by 2002:a17:903:1112:b0:1a5:1e7:86d7 with SMTP id n18-20020a170903111200b001a501e786d7mr14351835plh.52.1682281160556;
-        Sun, 23 Apr 2023 13:19:20 -0700 (PDT)
+        bh=QAXki05qpGQiLVoEwrMk83Mycpqpp2edFtYdxscDNiI=;
+        b=RKgMd8Gkzg8wpScwX0JVf1SZNQJ7p8Ztume9+dnVTEYtdfziZHvKQ0ZSAQN7X1Lq9D
+         xnlqh+uqGhuQdAP4ACncYZMvqE+imdZZk6ISKQMNRlXVmhI8zFkoAD3acAfdyX2z/LVc
+         GjC+1hKuAbKf9wnUojgjCnD292/f2W1gSbs5unMmkGhCDTxxhoahXZnpGJyerSkfJ3VX
+         mT/jEkPAUpipMIRQ7rF1JbLX48+ccOO1x/nd815BjHBZLvQTwovZfYIN+JY1hM/maOt8
+         PQAMFH9R1uO2Bw27SajB7YCVuqK8SUyigXIIp3/tYVxDNvFXwmtdCRc+qyuGg4ADL0aL
+         GfSQ==
+X-Gm-Message-State: AAQBX9f9z2fInA8HuD7z5Rc7KOH6/Cl8KwUBUVFBVqPXLRB2DuOVNUES
+        6c9p2Hap1Kl9ysDLvInUOz4=
+X-Google-Smtp-Source: AKy350b9TIwgojOXOBPbaSrE/WIQltkiryD+F4Ohan8ipsarkOGUtk8zirVVj/3FBNKr05lsuthFZg==
+X-Received: by 2002:a17:90a:98e:b0:247:26da:5de2 with SMTP id 14-20020a17090a098e00b0024726da5de2mr12011266pjo.20.1682282585345;
+        Sun, 23 Apr 2023 13:43:05 -0700 (PDT)
 Received: from ?IPV6:2001:df0:0:200c:7d4f:891d:86e0:1e1c? ([2001:df0:0:200c:7d4f:891d:86e0:1e1c])
-        by smtp.gmail.com with ESMTPSA id t4-20020a170902b20400b001a96496f250sm1758594plr.34.2023.04.23.13.19.18
+        by smtp.gmail.com with ESMTPSA id om12-20020a17090b3a8c00b002405d3bbe42sm7189170pjb.0.2023.04.23.13.43.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 23 Apr 2023 13:19:20 -0700 (PDT)
-Message-ID: <53153bec-90a9-a617-d3af-fe98d8d54632@gmail.com>
-Date:   Mon, 24 Apr 2023 08:19:15 +1200
+        Sun, 23 Apr 2023 13:43:04 -0700 (PDT)
+Message-ID: <d97fb295-886d-226a-c8f9-6359562d919f@gmail.com>
+Date:   Mon, 24 Apr 2023 08:43:00 +1200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.10.0
 Subject: Re: reliable reproducer, was Re: core dump analysis
 Content-Language: en-US
-To:     Andreas Schwab <schwab@linux-m68k.org>
-Cc:     Finn Thain <fthain@linux-m68k.org>, debian-68k@lists.debian.org,
-        linux-m68k@lists.linux-m68k.org
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     Andreas Schwab <schwab@linux-m68k.org>,
+        debian-68k@lists.debian.org, linux-m68k@lists.linux-m68k.org
 References: <4a9c1d0d-07aa-792e-921f-237d5a30fc44.ref@yahoo.com>
  <bee7db9b-0f81-dc2e-c737-c8aa25fd0588@linux-m68k.org>
  <fee988a9-dea8-7cae-af02-dda9f12cae08@gmail.com>
@@ -76,59 +76,129 @@ References: <4a9c1d0d-07aa-792e-921f-237d5a30fc44.ref@yahoo.com>
  <cb1059f0-527e-2023-9c60-abcbf9eda9b7@gmail.com> <87jzy3y79y.fsf@igel.home>
  <5824d97d-683b-a354-3c39-cb0f54e50bc0@gmail.com>
  <06c14a4a-1679-31d6-0501-97e20741f88a@gmail.com>
- <87y1mj0zxd.fsf@linux-m68k.org>
+ <13d36a79-5aae-d63c-5014-5503688f07bb@linux-m68k.org>
 From:   Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <87y1mj0zxd.fsf@linux-m68k.org>
+In-Reply-To: <13d36a79-5aae-d63c-5014-5503688f07bb@linux-m68k.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Andreas,
+Hi Finn,
 
-On 23/04/23 20:23, Andreas Schwab wrote:
-> On Apr 23 2023, Michael Schmitz wrote:
+On 23/04/23 21:23, Finn Thain wrote:
+> On Sun, 23 Apr 2023, Michael Schmitz wrote:
 >
->> Wasn't too hard actually. The signo parameter passed to the handler turns
->> out to be passed by reference, and signo is located 4 bytes into the
->> kernel sigframe.
-> That's not "passed by reference".  Function arguments are always passed
-> on the stack.
+>> Am 23.04.2023 um 13:41 schrieb Michael Schmitz:
+>>
+>> Though the question remains - is this expected behaviour for programs
+>> that do deep recursion on the stack while taking signals (and the reason
+>> for the option to run signal handlers on an alternate stack)?
+>>
+> I don't understand how "deep recursion" can be used to explain this. We've
+> seen crashes with only 1.8 MB of stack usage.
+OK, it's not really deep (though I've managed to get the test case 
+aborted by the oom killer once on my rather puny RAM). But it's putting 
+lots of frames on the stack in a short span while also utilizing the 
+stack for signal delivery.
+> The best reason I can think of for having a signal stack would be that it
+> may be better for signal delivery to fail than for the target process to
+> fail. But I've no idea whether the kernel makes that kind of defensive
+> programming possible (?)
 
-You're right of course, I should have phrased that different.
+I don't think there's any provision for signal delivery to fail - the 
+signal handler is started from the return-to-userspace code in entry.S, 
+and upon return from the handler, a sigreturn syscall is automatically 
+executed to clean up the stack. As long as the handler returns, all's fine.
 
-signo is passed by value as the first argument on the stack, but I can 
-take a reference to signo to find it's address on the stack. That in 
-turn will tell me the address of the complete signal frame on the stack.
+Not sure what happens if the process context that the handler runs in is 
+killed by the kernel - I suppose the entire process is killed and the 
+context removed, so the issue of parent process survival is moot. But 
+I'm sure we can place an illegal instruction in the handler as soon as a 
+stack overflow is spotted, get a dump and look at that.
 
-This works because at the time the handler is entered, the stack points 
-to the return address which has been set up by setup_frame, and that's 
-the first longword in struct sigframe (frame.pretcode; points to 
-frame.retcode which holds the trampoline code that will call 
-sys_sigreturn upon exit from the handler). This in turn works because 
-usp is loaded with the address of the sigframe right before calling the 
-handler.
+>> And why does this almost always appear to happen after bus error exceptions
+>> (frame format b)? The extra exception stack information isn't even accounted
+>> for in the above frame end address!
+>>
+>> Result with sa_sigaction handler:
+>>
+>> parent usp  : 0xef969e28
+>> handler tos : 0xef969e6c
+>> handler stack overwrote usp!
+>> frame end   : 0xef969e7c
+>> frame start : 0xef969b58
+>> handler usp : 0xef969b40
+>> signal usp  : 0xef969e04
+>> signal pc   : 0x80000696
+>> signal fmtv : 0x114
+>>
+>> parent usp  : 0xef955008
+>> handler tos : 0xef955064
+>> handler stack overwrote usp!
+>> frame end   : 0xef955074
+>> frame start : 0xef954d50
+>> handler usp : 0xef954d38
+>> signal usp  : 0xef954ffc
+>> signal pc   : 0x80000680
+>> signal fmtv : 0xb008
+>>
+>> parent usp  : 0xef945eb8
+>> handler tos : 0xef945f0c
+>> handler stack overwrote usp!
+>> frame end   : 0xef945f1c
+>> frame start : 0xef945bf8
+>> handler usp : 0xef945be0
+>> signal usp  : 0xef945ea8
+>> signal pc   : 0xc009f37a
+>> signal fmtv : 0x80
+>>
+>> parent usp  : 0xef933eb8
+>> handler tos : 0xef933f0c
+>> handler stack overwrote usp!
+>> frame end   : 0xef933f1c
+>> frame start : 0xef933bf8
+>> handler usp : 0xef933be0
+>> signal usp  : 0xef933ea8
+>> signal pc   : 0xc009f37a
+>> signal fmtv : 0x80
+>>
+>> parent usp  : 0xef921edc
+>> handler tos : 0xef9aaca4
+>> handler stack overwrote usp!
+>> frame end   : 0xef9aacb4
+>> frame start : 0xef9aa990
+>> handler usp : 0xef9aa978
+>> signal usp  : 0xef9aac40
+>> signal pc   : 0x80000782
+>> signal fmtv : 0x114
+>>
+>> Illegal instruction (core dumped)
+>>
+> I don't understand these results. If usp was really overwritten, the
+> program would have crashed early, no?
+I think we're still at the point where rec() is called recursively, 
+before any returns.
+>> Exception right before crash was an interrupt in this case (only seen
+>> that once in this context, though I've seen lots of those in the course
+>> of the test runs). Frame start calculated from siginfo pointer value in
+>> this case.
+>>
+> I didn't realize that you could get a crash from a signal delivered
+> following an interrupt. I'll try to modify the kernel such that signals
+> are not delivered after page faults.
 
-In effect, at least indirectly the signal handler receives all two 
-arguments that matter (signo and sigcontext) even though sigcontext is 
-not explicitly passed on the stack (the third longword is frame.code 
-which holds the vector number AFAICS). Not sure what third argument you 
-referred to in another mail.
+Yes, that was news to me, too. I've got swap enabled and probably see a 
+lot more disk I/O than on your machines.
 
-With the rt_sigframe, pointers to siginfo and ucontext are stored after 
-signo so no stack arithmetics is needed there to access all three 
-arguments.
-
-Anyway, the whole point of the exercise was to see whether I can peek at 
-the registers in the signal frame and their saved copies on the stack, 
-to perhaps spot when the stack corruption begins to happen. I know - 
-should have used a debugger in the first place instead instrumenting a 
-test case.
+Delaying signal return until the next syscall or interrupt after page 
+fault ought not be too hard - just replace the 'jra ret_from_exception' 
+by 'RESTORE_ALL' (though that would also defer rescheduling until the 
+next interrupt). For a proper solution, replicate exit_work without a 
+call to do_signal_return ...
 
 Cheers,
 
      Michael
-
-
 
