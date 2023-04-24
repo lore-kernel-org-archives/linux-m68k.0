@@ -2,107 +2,88 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94A3DC7618E
-	for <linux-m68k@archiver.kernel.org>; Mon, 24 Apr 2023 09:49:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20229C7618E
+	for <linux-m68k@archiver.kernel.org>; Mon, 24 Apr 2023 10:28:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231519AbjDXJtP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 24 Apr 2023 05:49:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46704 "EHLO
+        id S230020AbjDXK2y (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 24 Apr 2023 06:28:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231542AbjDXJtA (ORCPT
+        with ESMTP id S231168AbjDXK2X (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 24 Apr 2023 05:49:00 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E113ABC
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Apr 2023 02:48:27 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed30:fce4:9ab4:47f9:86e9])
-        by albert.telenet-ops.be with bizsmtp
-        id oZoL2900K2cB8pT06ZoLFf; Mon, 24 Apr 2023 11:48:20 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1pqsnz-000LC6-IW;
-        Mon, 24 Apr 2023 11:48:20 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1pqso0-008XI4-9L;
-        Mon, 24 Apr 2023 11:48:20 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [GIT PULL] m68k updates for v6.4
-Date:   Mon, 24 Apr 2023 11:48:16 +0200
-Message-Id: <20230424094816.2034583-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
+        Mon, 24 Apr 2023 06:28:23 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A83E45263
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Apr 2023 03:26:27 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3f1957e80a2so71779025e9.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Apr 2023 03:26:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1682331986; x=1684923986;
+        h=content-transfer-encoding:mime-version:message-id:references
+         :in-reply-to:subject:cc:to:from:date:sender:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B5oucjR4LiiCnKHY41QfHitRWmrt3+NiX+0bii1Hzkk=;
+        b=aR2KhA3HRoJD4Eyc8BNLR84uLorhG/Olk+zQ6IY0VyFvVvnB3lm4Zwkzo4uieyYJcW
+         YX9lIbHN/CJcZDRtXcnml/AYBjY62brM9x8NVy1hRzrBWGX+SO/y0gtu2E18gUOLqMgR
+         0VV8tbR0p5tFGheZx/SA677oyS8QNxfNGf3MRNPcqQUWtPHyYmuVFeNV9RwdBtAGv0nc
+         DKMBqH4yfIztGuzwi0uIp6qGUA06FpmaXcm0cYaS27LT8wyQnFkrniz9I8RlnFiC3MIl
+         TZvVY7wjIIcBUfXNXn0w2W1T3028RBy1z03hlY8ocZdPdFNuVs79ofvChLsxmiipe1v6
+         tTxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682331986; x=1684923986;
+        h=content-transfer-encoding:mime-version:message-id:references
+         :in-reply-to:subject:cc:to:from:date:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=B5oucjR4LiiCnKHY41QfHitRWmrt3+NiX+0bii1Hzkk=;
+        b=Cm8FTMuaToL5xtV0wQerJ44cDSgrN90QWQ0FdgyHgXqVpiPz/JpRcDDPxjkEP9SXru
+         M0o3gP8nXQg/Mp8BVFP8B4ckZlFOBQ2JtZabv0lM0bSyWXeUrqvapgI8u+tnVv4sw/lm
+         refwLrCAZ5MbBoIbscbUWwPvDPfbO2pcv9s2rthtAw+OMLnfqN4ywV6faf8BwNhLTBHW
+         Y59sratkkRzsqbLYEls4xF0EwwxvJA5cO9GO0pYT0/J/oGDhIAdFpEMkL4qV7VFFf6eG
+         wA5f+ycOpNq8S+Cg+KgmtAGMnZEAkzFNoNWvyJC9i7oAWt3/vRiVwQk3u/6K8tYT7EyO
+         K05Q==
+X-Gm-Message-State: AAQBX9f/M6HR6o4XgBsrlmfwSvEogkoK7mrGW5XULxP0uW/VrVQtABsI
+        fDnYwxzfemMABGeVcViS4xg=
+X-Google-Smtp-Source: AKy350a2Pm3+1kflahXqkr46TL/6sMJBAfEmY41yfvC9yNkUW8VVZkDEsoXqtBsQe9dORiLogA/mQA==
+X-Received: by 2002:a1c:e904:0:b0:3ed:3268:5f35 with SMTP id q4-20020a1ce904000000b003ed32685f35mr7437665wmc.18.1682331985707;
+        Mon, 24 Apr 2023 03:26:25 -0700 (PDT)
+Received: from ?IPv6:::1? ([2a02:3038:205:36e:bef0:403:381:3710])
+        by smtp.gmail.com with ESMTPSA id ay37-20020a05600c1e2500b003f18b52c73asm11545446wmb.24.2023.04.24.03.26.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Apr 2023 03:26:25 -0700 (PDT)
+Sender: "Richard Z." <richard.zz.ba@gmail.com>
+Date:   Mon, 24 Apr 2023 10:26:22 +0000
+From:   Richard Z <rz@linux-m68k.org>
+To:     debian-68k@lists.debian.org,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        debian-68k <debian-68k@lists.debian.org>
+CC:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Michael Karcher <debian@mkarcher.dialup.fu-berlin.de>,
+        Min-Yih Hsu <minyihh@uci.edu>, Sheng <ox59616e@gmail.com>
+Subject: Re: Question on the m68k Calling Convention (RTD)
+In-Reply-To: <efb01ccc8cbabd7fc939d3aa1869f68e01157b3a.camel@physik.fu-berlin.de>
+References: <efb01ccc8cbabd7fc939d3aa1869f68e01157b3a.camel@physik.fu-berlin.de>
+Message-ID: <5802B69A-00F1-45F1-AC2F-E9AFE549A2AE@linux-m68k.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-	Hi Linus,
 
-The following changes since commit e36a82bebbf7da814530d5a179bef9df5934b717:
 
-  m68k: Only force 030 bus error if PC not in exception table (2023-03-06 14:09:42 +0100)
+On April 23, 2023 11:15:04 AM UTC, John Paul Adrian Glaubitz <glaubitz@phy=
+sik=2Efu-berlin=2Ede> wrote:
 
-are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git m68k-for-v6.4-tag1
+>Now, the interesting part is the question why the compiler is even trying
+>to take this codepath since RTD should normally be turned off in the M68k
+>backend by default as it's the case for GCC=2E
+>
 
-for you to fetch changes up to aaee8c7f2a17d2dd015dc97c113c9ea0cc97272a:
+As you say=2E=2E looks like that codepath should never be taken unless -mr=
+td is explicitly asked for=2E=2E so the problem seems to be somewhere in th=
+e argument/options parsing logic of the compiler=2E
 
-  m68k: kexec: Include <linux/reboot.h> (2023-04-21 09:53:54 +0200)
-
-----------------------------------------------------------------
-m68k updates for v6.4
-
-  - Defconfig updates,
-  - Miscellaneous fixes and improvements.
-
-Thanks for pulling!
-
-----------------------------------------------------------------
-Geert Uytterhoeven (1):
-      m68k: defconfig: Update defconfigs for v6.3-rc1
-
-Lukas Bulwahn (1):
-      m68k: Remove obsolete config NO_KERNEL_MSG
-
-Simon Horman (1):
-      m68k: kexec: Include <linux/reboot.h>
-
-Uwe Kleine-König (1):
-      nubus: Drop noop match function
-
- arch/m68k/Kconfig.debug              | 5 -----
- arch/m68k/configs/amiga_defconfig    | 3 ++-
- arch/m68k/configs/apollo_defconfig   | 3 ++-
- arch/m68k/configs/atari_defconfig    | 3 ++-
- arch/m68k/configs/bvme6000_defconfig | 3 ++-
- arch/m68k/configs/hp300_defconfig    | 3 ++-
- arch/m68k/configs/mac_defconfig      | 3 ++-
- arch/m68k/configs/multi_defconfig    | 4 ++--
- arch/m68k/configs/mvme147_defconfig  | 3 ++-
- arch/m68k/configs/mvme16x_defconfig  | 3 ++-
- arch/m68k/configs/q40_defconfig      | 3 ++-
- arch/m68k/configs/sun3_defconfig     | 3 ++-
- arch/m68k/configs/sun3x_defconfig    | 3 ++-
- arch/m68k/kernel/machine_kexec.c     | 1 +
- drivers/nubus/bus.c                  | 6 ------
- 15 files changed, 25 insertions(+), 24 deletions(-)
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+Richard=20
