@@ -2,38 +2,38 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E88DC77B71
-	for <linux-m68k@archiver.kernel.org>; Tue, 25 Apr 2023 11:25:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4CEDC77B61
+	for <linux-m68k@archiver.kernel.org>; Tue, 25 Apr 2023 11:53:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233652AbjDYLZX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 25 Apr 2023 07:25:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39100 "EHLO
+        id S233801AbjDYLxh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 25 Apr 2023 07:53:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233849AbjDYLZX (ORCPT
+        with ESMTP id S233013AbjDYLxg (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 25 Apr 2023 07:25:23 -0400
+        Tue, 25 Apr 2023 07:53:36 -0400
 Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 043DE9D
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 25 Apr 2023 04:25:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A465512CA6
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 25 Apr 2023 04:53:06 -0700 (PDT)
 Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4Q5KRb3JcBz1sB7V;
-        Tue, 25 Apr 2023 13:25:15 +0200 (CEST)
+        by mail-out.m-online.net (Postfix) with ESMTP id 4Q5L3g57XHz1sB7V;
+        Tue, 25 Apr 2023 13:53:03 +0200 (CEST)
 Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4Q5KRb2hrcz1qqlY;
-        Tue, 25 Apr 2023 13:25:15 +0200 (CEST)
+        by mail.m-online.net (Postfix) with ESMTP id 4Q5L3g4R1fz1qqlS;
+        Tue, 25 Apr 2023 13:53:03 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at mnet-online.de
 Received: from mail.mnet-online.de ([192.168.8.182])
         by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id gSI1yn90z9A1; Tue, 25 Apr 2023 13:25:14 +0200 (CEST)
-X-Auth-Info: 6cXSSK+dVQOyGl8Q7+Q9Z9tQFdVcSLh+AUAEAmkqdRCX7j3jAX/uLWrimMxHON6l
+        with ESMTP id 1clemng5APJs; Tue, 25 Apr 2023 13:53:02 +0200 (CEST)
+X-Auth-Info: R8t8KowVNQZA/fh4iQnqD33Ew1n0CeyDhsv1VSUCy1zzLuPKNIaK4WoqLG2jxDlz
 Received: from igel.home (aftr-82-135-86-255.dynamic.mnet-online.de [82.135.86.255])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
         by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Tue, 25 Apr 2023 13:25:14 +0200 (CEST)
+        Tue, 25 Apr 2023 13:53:02 +0200 (CEST)
 Received: by igel.home (Postfix, from userid 1000)
-        id 401AF2C1264; Tue, 25 Apr 2023 13:25:14 +0200 (CEST)
+        id 8F39D2C1271; Tue, 25 Apr 2023 13:53:02 +0200 (CEST)
 From:   Andreas Schwab <schwab@linux-m68k.org>
 To:     Finn Thain <fthain@linux-m68k.org>
 Cc:     Michael Schmitz <schmitzmic@gmail.com>,
@@ -62,9 +62,10 @@ References: <4a9c1d0d-07aa-792e-921f-237d5a30fc44.ref@yahoo.com>
         <b150c146-cade-bcd3-9c34-d99284dcd153@gmail.com>
         <c3d2d874-e366-1d3b-71b0-7a089d40308a@linux-m68k.org>
         <1fcaa695-5c2d-0c76-444d-6d6be0105f6e@linux-m68k.org>
-X-Yow:  HOW could a GLASS be YELLING??
-Date:   Tue, 25 Apr 2023 13:25:14 +0200
-Message-ID: <87y1mgryp1.fsf@igel.home>
+X-Yow:  ..  hubub, hubub, HUBUB, hubub, hubub, hubub, HUBUB, hubub, hubub,
+ hubub.
+Date:   Tue, 25 Apr 2023 13:53:02 +0200
+Message-ID: <87ttx4rxep.fsf@igel.home>
 User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -72,29 +73,64 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Apr 25 2023, Finn Thain wrote:
+Please try this patch.  Signal delivery should only happen at insn
+boundaries, but due to the way the 030 handles return from bus error
+exceptions (the insn is resumed, not restarted like on the 040/060) the
+kernel may do it in the middle of the faulting insn.
 
-> It turns out that doing so (patch below) does make the problem go away. 
-> Was the exception frame getting clobbered?
->
-> diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
-> index b9f6908a31bc..94104699f5a8 100644
-> --- a/arch/m68k/kernel/signal.c
-> +++ b/arch/m68k/kernel/signal.c
-> @@ -862,7 +862,7 @@ get_sigframe(struct ksignal *ksig, size_t frame_size)
->  {
->  	unsigned long usp = sigsp(rdusp(), ksig);
->  
-> -	return (void __user *)((usp - frame_size) & -8UL);
-> +	return (void __user *)((usp - 256 - frame_size) & -8UL);
-
-Probably the issue is that a bus error exception should never start
-signal delivery when returning to user space.  On the 030 returning from
-a bus error resumes the execution of the faulting insn (unlike the
-040/060 which restart it), and the saved USP may have the original value
-from before the insn started (modified registers may not be updated
-until the insn is complete or just before the final bus cycle).  Signal
-delivery should only ever happen at insn boundaries.
+diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+index 4dd2fd7acba9..6c09a5710728 100644
+--- a/arch/m68k/kernel/entry.S
++++ b/arch/m68k/kernel/entry.S
+@@ -117,7 +117,11 @@ ENTRY(buserr)
+ 	movel	%sp,%sp@-		| stack frame pointer argument
+ 	jbsr	buserr_c
+ 	addql	#4,%sp
+-	jra	ret_from_exception
++	| don't do signal delivery when interrupted while insn is in progress
++	| (on the 020/030)
++	tstl	%d0
++	jeq	ret_from_exception
++	RESTORE_ALL
+ 
+ ENTRY(trap)
+ 	SAVE_ALL_INT
+diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
+index a700807c9b6d..40fc408d1333 100644
+--- a/arch/m68k/kernel/traps.c
++++ b/arch/m68k/kernel/traps.c
+@@ -751,8 +751,10 @@ static inline void access_errorcf(unsigned int fs, struct frame *fp)
+ }
+ #endif /* CONFIG_COLDFIRE CONFIG_MMU */
+ 
+-asmlinkage void buserr_c(struct frame *fp)
++asmlinkage int buserr_c(struct frame *fp)
+ {
++	int not_insn_boundary = 0;
++
+ 	/* Only set esp0 if coming from user mode */
+ 	if (user_mode(&fp->ptregs))
+ 		current->thread.esp0 = (unsigned long) fp;
+@@ -793,8 +795,9 @@ asmlinkage void buserr_c(struct frame *fp)
+ 	  break;
+ #endif
+ #if defined (CPU_M68020_OR_M68030)
+-	case 0xa:
+ 	case 0xb:
++	  not_insn_boundary = 1;
++	case 0xa:
+ 	  bus_error030 (fp);
+ 	  break;
+ #endif
+@@ -803,6 +806,8 @@ asmlinkage void buserr_c(struct frame *fp)
+ 	  pr_debug("Unknown SIGSEGV - 4\n");
+ 	  force_sig(SIGSEGV);
+ 	}
++
++	return not_insn_boundary;
+ }
+ 
+ 
 
 -- 
 Andreas Schwab, schwab@linux-m68k.org
