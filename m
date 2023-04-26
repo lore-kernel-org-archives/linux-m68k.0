@@ -2,142 +2,139 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB4E7C7618E
-	for <linux-m68k@archiver.kernel.org>; Wed, 26 Apr 2023 09:10:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EF59C77B7F
+	for <linux-m68k@archiver.kernel.org>; Wed, 26 Apr 2023 13:04:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239943AbjDZJK7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 26 Apr 2023 05:10:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34090 "EHLO
+        id S240968AbjDZNE1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 26 Apr 2023 09:04:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239384AbjDZJK6 (ORCPT
+        with ESMTP id S240010AbjDZNEZ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 26 Apr 2023 05:10:58 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A3BD40D1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Apr 2023 02:10:57 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1a68f2345c5so54330025ad.2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Apr 2023 02:10:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682500256; x=1685092256;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nT46aJZkT08k/tVuVWzUK3DttbnAcpTzAhLDDk7NDb8=;
-        b=rdNcw1I6rVW03DqiRp6QyaBi2ZpxZU8hR5aqzEqF+Q+e5NprVGX+x4dRC2qy+Yz5Ws
-         vPSk5ayA2fmtIBbLSrh1wL0eP9DL0Bzrv8mb/RuADmJoyOpTFgG/WBcy1gP67Y+uC2SE
-         eFNkdXZS+7LVpLrsjtmwEiy4oB4NffJxi8YzTGL0Ra6xP0vIJjS82ODWpaIkshnYK3wo
-         SOL2FlIZsfVQyMJ1b1El57ZLOS+m+VncJOBaROqaDWHblhRjuWy29l7IkbUTfng/VnwV
-         wormOYs/Q+AJWR5+/a77v2YhAkWi6jVOHASBP6415zGjAteq7J/BaG5w+MWul4T7V9Ii
-         gXHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682500256; x=1685092256;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=nT46aJZkT08k/tVuVWzUK3DttbnAcpTzAhLDDk7NDb8=;
-        b=a6VJpqgChm7C8A8RemE8USfoRHkz3qi7qRyBwJbtDAV9K76zoBU0JyWP6GiNgzF5u3
-         FJjzasvrLJz1q42ilqudeUpskLPe4UlzfFOa+Aqin6j/XJo2DEXT1OQA+DfQnqUskNqx
-         KTzFkV5Cp7U/uzCZFCwvhJJENBVOnTV29QpdkVaODDiQfhULkMBmPCllx/S7a3e8dlGA
-         Vj3UMGoXdcq+VWlp5fBXbFssaykaaBDdFucG0UUp1RXIhyHc/4u40Iagu+4ng45P28oc
-         pAAAYfRg9e66NwITkfkMq2zES7MaxM+Xj7Su2F725yCN9w0oqr+vVSUINLkLbZ/8ruR8
-         LLFw==
-X-Gm-Message-State: AAQBX9eG0LVwMT4BFDRkqxqbi/+8zzBv3e/lIRj+03EvX/GGbOIr/Bqv
-        PjmQxGkZ0hGerbggJxG6NWSwNOQFFMI=
-X-Google-Smtp-Source: AKy350bVqMOi/wmcKR506EjGD5uuV1xpvgPVXTaUDR5z++ioMFcj+r6rU3u8VpkOu2GgJ2HJkoD7Lg==
-X-Received: by 2002:a17:902:e885:b0:1a9:5d19:f5d1 with SMTP id w5-20020a170902e88500b001a95d19f5d1mr17456810plg.5.1682500256144;
-        Wed, 26 Apr 2023 02:10:56 -0700 (PDT)
-Received: from [10.1.1.24] (222-152-172-8-fibre.sparkbb.co.nz. [222.152.172.8])
-        by smtp.gmail.com with ESMTPSA id u1-20020a170902b28100b0019a87ede846sm9487232plr.285.2023.04.26.02.10.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 26 Apr 2023 02:10:55 -0700 (PDT)
-Subject: Re: signal delivery, was Re: reliable reproducer
-To:     Finn Thain <fthain@linux-m68k.org>
-References: <4a9c1d0d-07aa-792e-921f-237d5a30fc44.ref@yahoo.com>
- <878rekz0md.fsf@igel.home> <f6ca1bd9-419b-f18e-100a-d212bdbf3da1@gmail.com>
- <87o7nfyd7e.fsf@igel.home> <cb1059f0-527e-2023-9c60-abcbf9eda9b7@gmail.com>
- <87jzy3y79y.fsf@igel.home> <5824d97d-683b-a354-3c39-cb0f54e50bc0@gmail.com>
- <06c14a4a-1679-31d6-0501-97e20741f88a@gmail.com>
- <13d36a79-5aae-d63c-5014-5503688f07bb@linux-m68k.org>
- <d97fb295-886d-226a-c8f9-6359562d919f@gmail.com>
- <1d9955d2-6016-a238-142a-887f95465dd8@linux-m68k.org>
- <4763c8e2-6fb3-eda6-10d0-94ed1d01cd60@gmail.com>
- <a5d70bac-bd00-7131-9ca0-18976f539adf@linux-m68k.org>
- <b150c146-cade-bcd3-9c34-d99284dcd153@gmail.com>
- <c3d2d874-e366-1d3b-71b0-7a089d40308a@linux-m68k.org>
- <1fcaa695-5c2d-0c76-444d-6d6be0105f6e@linux-m68k.org>
- <87y1mgryp1.fsf@igel.home> <ff777f08-a8a5-6f16-e197-6f2ee2510e56@gmail.com>
- <a72de14b-2e3a-60c3-0aba-81e36d2a68ae@linux-m68k.org>
- <63d4ef2b-ffdc-0294-30c8-aac50ee7b946@gmail.com>
- <f408a661-06d5-be01-e3b5-931647cd8617@linux-m68k.org>
-Cc:     Andreas Schwab <schwab@linux-m68k.org>,
-        debian-68k@lists.debian.org, linux-m68k@lists.linux-m68k.org
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <51b8464a-bb05-144b-949f-b92720b1227c@gmail.com>
-Date:   Wed, 26 Apr 2023 21:10:50 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        Wed, 26 Apr 2023 09:04:25 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71AEF40FF
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Apr 2023 06:04:24 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id F2B2A1FDC9;
+        Wed, 26 Apr 2023 13:04:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1682514263; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=ZvaBzh3f/aiqD52UlKjdoNF7+qwuUVn7MUgqdP2D7Nw=;
+        b=UUB5WwTLuJwXSoCTJ3K7FRWI3bAowE0MAQQnTQ8Woqr9jGn3KSm4fv+l+btYHt/SEzCsD6
+        E6Tz3qvcxaYsO0Ane3YO3a66YgThKstJIJ4Lgjadjm2nGBl3KNTyxPMpou9Mnyuqc/adAL
+        KiMTTGQM90NhVMGC3ytJZ9AIyukntHg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1682514263;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=ZvaBzh3f/aiqD52UlKjdoNF7+qwuUVn7MUgqdP2D7Nw=;
+        b=5Y5kjboljw7Gn1Hlnhprb8RfDWvqxVjp+TudZAikLk9S5eG7QO9FJaa/ij7yCLSwcYk6Zr
+        niVmZqqNbyCVxQAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 86AF6138F0;
+        Wed, 26 Apr 2023 13:04:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id eEa6H1YhSWSBMgAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Wed, 26 Apr 2023 13:04:22 +0000
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+To:     deller@gmx.de, geert@linux-m68k.org, javierm@redhat.com,
+        daniel@ffwll.ch, vgupta@kernel.org, chenhuacai@kernel.org,
+        kernel@xen0n.name, davem@davemloft.net,
+        James.Bottomley@HansenPartnership.com, arnd@arndb.de
+Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arch@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-parisc@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH 0/5] fbdev: Move framebuffer I/O helpers to <asm/fb.h>
+Date:   Wed, 26 Apr 2023 15:04:15 +0200
+Message-Id: <20230426130420.19942-1-tzimmermann@suse.de>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-In-Reply-To: <f408a661-06d5-be01-e3b5-931647cd8617@linux-m68k.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Finn,
+Fbdev provides helpers for framebuffer I/O, such as fb_readl(),
+fb_writel() or fb_memcpy_to_fb(). The implementation of each helper
+depends on the architecture. It's still all located in fbdev's main
+header file <linux/fb.h>. Move all of it into each archtecture's
+<asm/fb.h>, with shared code in <asm-generic/fb.h>.
 
-Am 26.04.2023 um 16:42 schrieb Finn Thain:
-> If the long format frame was corrupted while on the user stack, the
-> partially completed MOVEM won't be resumed correctly. That's why I was
-> concerned about a bug in sys_sigreturn.
+The first patch a simple whitespace cleanup.
 
-Yes, it turns out I hadn't read mangle_kernel_stack() carefully enough. 
-I thought the exception frame had remained on the kernel stack to be 
-restored, but I'd missed that it is actually being restored from the 
-user stack copy to the kernel stack.
+Until now, <linux/fb.h> contained an include of <asm/io.h>. As this
+will go away patches 2 to 4 prepare include statements in the various
+drivers. Source files that use regular I/O helpers, such as readl(),
+now include <linux/io.h>. Source files that use framebuffer I/O
+helpers, such as fb_readl(), now include <asm/fb.h>. The latter now
+includes <linux/io.h> internally.
 
-Need to go back and check whether the sigmask (located after uc_filler 
-in rt sigframes) ever got clobbered.
+Patch 5 moves the framebuffer I/O helpers from <linux/fb.h> into
+the various architecture headers. The common case, where the framebuffer
+is located in I/O memory, serves as the generic implemenation.
 
->>> Wouldn't that depend on the exception frame format? Perhaps it is
->>> unsafe to treat any format 0xB exception frame in the way we do. If
->>> so, what do we do about address error exceptions, which are to produce
->>> SIGBUS? The Programmers Reference Manual says "a long bus fault stack
->>> frame may be generated" in this case.
->>
->> We don't handle access errors (beyond terminating the offending
+The patchset has been built for a variety of platforms, such as x86-64,
+arm, aarch64, ppc64, parisc, m64k, mips and sparc.
 
-Meant to say 'address errors' there. These are misaligned instruction 
-accesses only, and we take them to indicate corruption of the binary or 
-stack, so abort the process.
+Thomas Zimmermann (5):
+  fbdev/matrox: Remove trailing whitespaces
+  ipu-v3: Include <linux/io.h>
+  fbdev: Include <linux/io.h> in various drivers
+  fbdev: Include <linux/io.h> via <asm/fb.h>
+  fbdev: Move framebuffer I/O helpers into <asm/fb.h>
 
->> process).
->>
->
-> SIGBUS could be caught and handled, perhaps followed by a setcontext() or
-> siglongjmp() rather than return. So I don't think we get to disallow frame
-> format 0xB.
+ arch/arc/include/asm/fb.h                   | 29 +++++++
+ arch/ia64/include/asm/fb.h                  | 28 +++++++
+ arch/loongarch/include/asm/fb.h             | 29 +++++++
+ arch/m68k/include/asm/fb.h                  | 29 +++++++
+ arch/sparc/include/asm/fb.h                 | 77 +++++++++++++++++
+ drivers/gpu/ipu-v3/ipu-prv.h                |  1 +
+ drivers/video/fbdev/arcfb.c                 |  1 +
+ drivers/video/fbdev/arkfb.c                 |  2 +
+ drivers/video/fbdev/aty/atyfb.h             |  2 +
+ drivers/video/fbdev/aty/mach64_cursor.c     |  2 +-
+ drivers/video/fbdev/chipsfb.c               |  1 +
+ drivers/video/fbdev/cirrusfb.c              |  2 +
+ drivers/video/fbdev/core/cfbcopyarea.c      |  2 +-
+ drivers/video/fbdev/core/cfbfillrect.c      |  1 +
+ drivers/video/fbdev/core/cfbimgblt.c        |  1 +
+ drivers/video/fbdev/core/svgalib.c          |  3 +-
+ drivers/video/fbdev/cyber2000fb.c           |  2 +
+ drivers/video/fbdev/ep93xx-fb.c             |  2 +
+ drivers/video/fbdev/hgafb.c                 |  3 +-
+ drivers/video/fbdev/hitfb.c                 |  2 +-
+ drivers/video/fbdev/kyro/fbdev.c            |  3 +-
+ drivers/video/fbdev/matrox/matroxfb_accel.c |  8 +-
+ drivers/video/fbdev/matrox/matroxfb_base.h  |  6 +-
+ drivers/video/fbdev/pm2fb.c                 |  3 +
+ drivers/video/fbdev/pm3fb.c                 |  2 +
+ drivers/video/fbdev/pvr2fb.c                |  2 +
+ drivers/video/fbdev/s3fb.c                  |  2 +
+ drivers/video/fbdev/sm712fb.c               |  2 +
+ drivers/video/fbdev/sstfb.c                 |  2 +-
+ drivers/video/fbdev/stifb.c                 |  2 +
+ drivers/video/fbdev/tdfxfb.c                |  3 +-
+ drivers/video/fbdev/tridentfb.c             |  2 +
+ drivers/video/fbdev/vga16fb.c               |  3 +-
+ drivers/video/fbdev/vt8623fb.c              |  2 +
+ drivers/video/fbdev/wmt_ge_rops.c           |  2 +
+ include/asm-generic/fb.h                    | 93 +++++++++++++++++++++
+ include/linux/fb.h                          | 53 ------------
+ 37 files changed, 340 insertions(+), 69 deletions(-)
 
-Yes, we may still need to take these signals. But we don't have to 
-deliver the signals to the user process while exception processing is 
-still in progress. For bus faults mid-instruction, it isn't enough to 
-map in a page so writes can succeed, we also need to resume the 
-instruction to carry out the write.
+-- 
+2.40.0
 
-Come to think of it, the same argument applies for faults taken at an 
-instruction boundary. These need to be resumed as well, they just take 
-less information to load back into the processor.
-
-Now I just wonder why 040 bus errors (exception restart instead of 
-resume) aren't a problem. Pending writebacks are handled during signal 
-return there, too. But the format 7 frame is only 15 longwords, the 
-format b one is 23 longwords. We know increasing the apparent length of 
-the signal frame helps ...
-
-Anyway, Andreas' patch addresses the issue without incurring too much 
-delay in signal processing. If we find out what causes corruption of the 
-exception frame, Andreas' patch can be dropped once a fix is in place.
-
-Cheers,
-
-	Michael
