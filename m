@@ -2,144 +2,83 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E5D6C77B61
-	for <linux-m68k@archiver.kernel.org>; Fri, 28 Apr 2023 13:17:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CAF6BC77B60
+	for <linux-m68k@archiver.kernel.org>; Fri, 28 Apr 2023 13:27:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346218AbjD1NRa (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 28 Apr 2023 09:17:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60956 "EHLO
+        id S1346261AbjD1N1E (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 28 Apr 2023 09:27:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbjD1NRX (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 28 Apr 2023 09:17:23 -0400
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D84DB1FC3
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 28 Apr 2023 06:17:20 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id AB7305C00BE;
-        Fri, 28 Apr 2023 09:17:17 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Fri, 28 Apr 2023 09:17:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1682687837; x=1682774237; bh=PcHVTECY0DTSklc3ILW7xV/aJ7/Nau9fSJX
-        oavdaK3A=; b=eUdK2nJGUj2ojcq/iN8+k9NH/YFehW26tD8EuLHi59mfHw77XBh
-        fsxNlrmYAQkqxYxfq6y27vgAktDmUq34FmXwMFdqTfPO9loKN1XNr+UVkGw680qV
-        BX4/DYfgCMWrAxE4Wow3ZwgWlN0ZNzHHEAtYzaMI7xLQjVEHla6fM+TZ1yvnzX8P
-        E9OEYJ2zcL1QVyo974JDoFI3uCjuLc0KDC60ytqogt91Vrtguy8dOzwcDADe8Q8K
-        wwGN7a6AzKt12/FKaJ6yE4xZxx1mfSbCRrBkh1w9kOWf+J/cSrAHTesLpKGIXn3y
-        r/ezr2uqH7xDgE1v6IYlgXMzGM/v2wMUp7w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1682687837; x=1682774237; bh=PcHVTECY0DTSklc3ILW7xV/aJ7/Nau9fSJX
-        oavdaK3A=; b=UHAR/6bgsNPLLEMAvooCE2Mz7rvShUkiKAolMysUv1eAD0G8pRJ
-        Axt2cEsFq+HL0Sk84JLCYXyIoo4UY6iWfrU5QyWSoznl6Dl9up0oJPS8fmgZCkKN
-        EmUFVujWaEm9kpXEdbpvXC1srFotbipILlqEP+BJC/wZA/MRDDmTDOObpyzAXcfr
-        P5fPwPdeW2skiNrFbXI8pS1Fet/chSbd2eiKQ8NJCdOODy4lMW1yCHqd7i+2kw0m
-        kkAAHSUBJawkS7oRrDqwSvWgWl0YC4FGX0wEe7mqbkV7MbyF4ZFqT2f9EaWXdta5
-        UEG6fShDzo25wuyIzYe0uuavmo6nS5Qe20w==
-X-ME-Sender: <xms:W8dLZGx3L9IVhQ2Z-Dm1gEY_dwHGXe32-QXDVpGxL4oZOrgre8krDA>
-    <xme:W8dLZCT9BitiC8iWSIbkWjDY3CQ3ktYEHuCqF4lu4DEpLRIH__A8UyQjFfr8K3-Q_
-    Hql-wi5bFWVO6i97bQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfedukedgieefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
-    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:W8dLZIV4-CWeJ_MAEkYa-T1q9H3_MDecIqHVzquAXQO4y7Xxr-G-sA>
-    <xmx:W8dLZMg6khyrtIk2_xVeJ0jwab7q97YJj0EgH88Gpq1BMDBeqvzniA>
-    <xmx:W8dLZIB7tmcXPfPCpXuu_s8_Ujf8-kwPj0DVIS5NrKHqzYp1SN7Ggg>
-    <xmx:XcdLZPBenYiA6kEk2QhVgO0DBNH2txmCkaSu9NuYz9QpUDkjGGj7IA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id A158DB60086; Fri, 28 Apr 2023 09:17:15 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-374-g72c94f7a42-fm-20230417.001-g72c94f7a
-Mime-Version: 1.0
-Message-Id: <f612c682-5767-4a58-82f6-f4a4d1b592a1@app.fastmail.com>
-In-Reply-To: <CAMuHMdUGjtiAR37L4_e0_p8ee2=gxoUj7+e7rqMLTBK+vpV4yw@mail.gmail.com>
-References: <20230428092711.406-1-tzimmermann@suse.de>
- <20230428092711.406-6-tzimmermann@suse.de>
- <430c73f0-45f4-f81e-6506-bc8cc955d936@arm.com>
- <CAMuHMdUGjtiAR37L4_e0_p8ee2=gxoUj7+e7rqMLTBK+vpV4yw@mail.gmail.com>
-Date:   Fri, 28 Apr 2023 14:17:24 +0100
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Robin Murphy" <robin.murphy@arm.com>
-Cc:     "Thomas Zimmermann" <tzimmermann@suse.de>,
-        "Helge Deller" <deller@gmx.de>,
-        "Javier Martinez Canillas" <javierm@redhat.com>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        "Vineet Gupta" <vgupta@kernel.org>,
-        "Huacai Chen" <chenhuacai@kernel.org>,
-        "WANG Xuerui" <kernel@xen0n.name>,
-        "David S . Miller" <davem@davemloft.net>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        "Sam Ravnborg" <sam@ravnborg.org>, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-m68k@lists.linux-m68k.org, sparclinux@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org
-Subject: Re: [PATCH v2 5/5] fbdev: Define framebuffer I/O from Linux' I/O functions
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S1346262AbjD1N1B (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 28 Apr 2023 09:27:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B8C1FC6;
+        Fri, 28 Apr 2023 06:26:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9FDF363920;
+        Fri, 28 Apr 2023 13:26:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E566DC433D2;
+        Fri, 28 Apr 2023 13:26:55 +0000 (UTC)
+Message-ID: <201e8b3c-dc53-2475-1cff-34dd21ceeeea@linux-m68k.org>
+Date:   Fri, 28 Apr 2023 23:26:53 +1000
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Subject: [git pull] m68knommu changes for v6.4
+To:     torvalds@linux-foundation.org
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Apr 28, 2023, at 13:27, Geert Uytterhoeven wrote:
-> On Fri, Apr 28, 2023 at 2:18=E2=80=AFPM Robin Murphy <robin.murphy@arm=
-.com> wrote:
->> On 2023-04-28 10:27, Thomas Zimmermann wrote:
+Hi Linus,
 
->> > -
->> > -#elif defined(__i386__) || defined(__alpha__) || defined(__x86_64_=
-_) ||      \
->> > -     defined(__hppa__) || defined(__sh__) || defined(__powerpc__) =
-|| \
->> > -     defined(__arm__) || defined(__aarch64__) || defined(__mips__)
->> > -
->> > -#define fb_readb __raw_readb
->> > -#define fb_readw __raw_readw
->> > -#define fb_readl __raw_readl
->> > -#define fb_readq __raw_readq
->> > -#define fb_writeb __raw_writeb
->> > -#define fb_writew __raw_writew
->> > -#define fb_writel __raw_writel
->> > -#define fb_writeq __raw_writeq
->>
->> Note that on at least some architectures, the __raw variants are
->> native-endian, whereas the regular accessors are explicitly
->> little-endian, so there is a slight risk of inadvertently changing
->> behaviour on big-endian systems (MIPS most likely, but a few old ARM
->> platforms run BE as well).
->
-> Also on m68k, when ISA or PCI are enabled.
->
-> In addition, the non-raw variants may do some extras to guarantee
-> ordering, which you do not need on a frame buffer.
->
-> So I'd go for the __raw_*() variants everywhere.
+Please pull the m68knommu git tree changes for v6.4.
 
-The only implementations in fbdev are
+A couple of minor changes. One to remove the long dead uclinux.org web
+address and email list from the MAINTAINERS entry for UCLINUX. The other
+to remove dead config options in the m68knommu Kconfig.
 
- 1) sparc sbus
- 2) __raw_writel
- 3) direct pointer dereference
+Regards
+Greg
 
-But none use the byte-swapping writel() implementations, and
-the only ones that use the direct pointer dereference or sbus
-are the ones on which these are defined the same as __raw_writel
 
-      Arnd
+
+
+The following changes since commit 6a8f57ae2eb07ab39a6f0ccad60c760743051026:
+
+   Linux 6.3-rc7 (2023-04-16 15:23:53 -0700)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v6.4
+
+for you to fetch changes up to 8ab89e9563161921ffc86724eb3217d228eaad57:
+
+   m68k: Kconfig.machine: remove obsolete configs ROMBASE and ROMSIZE (2023-04-17 09:30:53 +1000)
+
+----------------------------------------------------------------
+m68knommu: updates and fixes for v6.4
+
+Fixes include:
+. remove dead uclinux.org web and email list from MAINTAINERS
+. remove dead config options
+
+----------------------------------------------------------------
+Lukas Bulwahn (1):
+       m68k: Kconfig.machine: remove obsolete configs ROMBASE and ROMSIZE
+
+Randy Dunlap (1):
+       MAINTAINERS: drop uclinux.org
+
+  MAINTAINERS               |  2 --
+  arch/m68k/Kconfig.machine | 17 -----------------
+  2 files changed, 19 deletions(-)
