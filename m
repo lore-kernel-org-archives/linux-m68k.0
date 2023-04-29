@@ -2,139 +2,176 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23296C77B60
-	for <linux-m68k@archiver.kernel.org>; Sat, 29 Apr 2023 20:08:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FC4FC77B7C
+	for <linux-m68k@archiver.kernel.org>; Sat, 29 Apr 2023 20:14:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbjD2UIl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 29 Apr 2023 16:08:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43074 "EHLO
+        id S230214AbjD2UO2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 29 Apr 2023 16:14:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjD2UIk (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sat, 29 Apr 2023 16:08:40 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4630B1
-        for <linux-m68k@vger.kernel.org>; Sat, 29 Apr 2023 13:08:39 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-63b733fd00bso912551b3a.0
-        for <linux-m68k@vger.kernel.org>; Sat, 29 Apr 2023 13:08:39 -0700 (PDT)
+        with ESMTP id S229878AbjD2UO1 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sat, 29 Apr 2023 16:14:27 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B067199
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 29 Apr 2023 13:14:25 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1a68f2345c5so8827815ad.2
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 29 Apr 2023 13:14:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682798919; x=1685390919;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s++x5oz/S+2XWYTYDS+k7Rn66Ct8gCd/zURVvuYVs1I=;
-        b=NjhL5z3NSthXi6o02ntHuz72UCNKDjs3GcOZtZY4ZT3l7DfcjkRalYhx/NL0jPrGcJ
-         QLhCtPxNjyghuifhAzhzG/e2K3vTQElOwx7zdmPXfAjM7zxLb+i4xlR4G92SxLH0BxyU
-         +dLj8xEx7jtEdT4zQSqGEZlJ7AH38iGpYd5/xUMg0aWK2H2aQEv673/j+UZVq7BymMSV
-         uYEV78mERvIYyiZ9K2AEde0VjQznfrhsrSTRJMqGgN57PqM29JuufUcG+7lYMUjsZeP7
-         JXXUVX1laO9HaZXqsR8DriQgOMiLdHna6dpJzSXe+ybNwq6lSRI9fc4uTedGq96F52AZ
-         FVjA==
+        d=dabbelt-com.20221208.gappssmtp.com; s=20221208; t=1682799264; x=1685391264;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EvNXrGU7f9AyBgQxPAxIH8w5LQ2sGDY5VhYCeQmIsvg=;
+        b=ztXNyujPGJ3TImj9rkWYO2n2FifWKitTQShNykqcCXMnlMDmDVUdGDZxkkAjoc2LxT
+         wjlkNuWu5MpGZ0hx2IY/BfGicm00cVl+x8sMPYhvJYOTMhGVFNRcq+t2+IhK1Zbg1HBm
+         TwPyb5IfXHXgdYm4kQQJO8mCutMWnoA0MAQG1HObQV2DkWdvKA82EPwFFy15NEoVvzDJ
+         YaFLlQv2/hnRBo+Kg2l+LFcBMREq5GVfs5levwZlW+i9w9qFVpvKUrXtIKJRJqUd1KUC
+         DRDHp5Z7Fs9kgbXLfeVSACxaLJ8vDKqbLXNf+pwsIg4BCZFLNo8FmqNy+hScbEds+O2l
+         SL9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682798919; x=1685390919;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=s++x5oz/S+2XWYTYDS+k7Rn66Ct8gCd/zURVvuYVs1I=;
-        b=XVMhBFg/F8FuUqJxKn0O1rzxgikZF2lECYNLrMXCU6VmbU7M8tv39iAfOohNss+MZo
-         OfwnfJp4SObYLBtG6JxARsVniRe1sAVWauzREZ9Gi64ZQaEz6VSw5nOobcHrvgbW38v8
-         WQy/Qlx+20IIx5BicK396cy2NVONOKshxyf7m+LfXTBm/oBN9UN/1ezPP68Pq0bMH3vC
-         ucBMbP1bEk9IbOGLm6qZnU/XKRWtdiBwgibKPN5Xxza2RGHzl3KASkfPdBl8FqlNbUmC
-         qA6GevYKWbnMziDPgORKnxHuGefok7CFqLWTrdi0e8MUOqnAoveT52Iyeicpz1XRF+cN
-         qyCw==
-X-Gm-Message-State: AC+VfDxYMszZoE+vS20WY4lgTsjIc3BbeYYdCMbuhhKFOiycVYD91zZ1
-        3SdBVJamvYEZDU1ydFcoEGIxvCe76iM=
-X-Google-Smtp-Source: ACHHUZ4W9W+li++gqvibOwJwODZ6wZiZt+qpdHwLyJU1BxUnVHqlCjO3r5K11Mmal/m+cyOCEqG2UA==
-X-Received: by 2002:a05:6a20:2451:b0:f6:28de:89e1 with SMTP id t17-20020a056a20245100b000f628de89e1mr11973094pzc.33.1682798919119;
-        Sat, 29 Apr 2023 13:08:39 -0700 (PDT)
-Received: from [10.1.1.24] (222-152-172-8-fibre.sparkbb.co.nz. [222.152.172.8])
-        by smtp.gmail.com with ESMTPSA id w68-20020a636247000000b00520f4ecd71esm14949211pgb.93.2023.04.29.13.08.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 29 Apr 2023 13:08:38 -0700 (PDT)
-Subject: Re: [PATCH RFC v1] m68k: signal.c: use signal frame gap to avoid
- stack corruption
-To:     Finn Thain <fthain@linux-m68k.org>
-References: <20230429080410.8993-1-schmitzmic@gmail.com>
- <ad929524-52c8-143c-5249-02fd1722383d@linux-m68k.org>
-Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Stan Johnson <userm57@yahoo.com>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <10ace434-8b76-bd38-5570-9befc9eb7b98@gmail.com>
-Date:   Sun, 30 Apr 2023 08:08:32 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
-MIME-Version: 1.0
-In-Reply-To: <ad929524-52c8-143c-5249-02fd1722383d@linux-m68k.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+        d=1e100.net; s=20221208; t=1682799264; x=1685391264;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EvNXrGU7f9AyBgQxPAxIH8w5LQ2sGDY5VhYCeQmIsvg=;
+        b=PqQ8inSCA+WKNRoaiK/tI/p50jBBguM0aDub1beu3dyZCYvNYBA8NmI39vAbDKgcqA
+         /r9FwfFdsLfoie10xi1c4a+7NnOF+J1hLWs1F/UFA/xVtJF/QFoMSKbXx9Hmp6RACRmy
+         I8+xO1EmLfns25lfjIGZwZ8SOJkJYNtqT6Rx57UQaP6YUsu0D7mlWpgOmTAEIRjT/CwL
+         /yT58JgT+5CFsXqdZlQWUQUi1CQxCguYc6teFxL1CBwtIgNDHp0rMtoe8vrmUEYyqeW/
+         R7bh0C/Riw5VS5PTF42q6hLxATZwVTXIJnonXWPJFWEQyIA+uG/quG8qMHHaPqdZfVS2
+         wYUg==
+X-Gm-Message-State: AC+VfDzlxi/Hp167J5v2tPQcwiMkqNlkaHRW/rfnNxtQkSgKGN4KbPzE
+        cA2msjvdUEoHOe3OhZV/sN8uzg==
+X-Google-Smtp-Source: ACHHUZ7pgoIToYashe1bFzQ1hUq7/0xuSIbhdV55MwhX+AUZI7FSn+oK96sUBgsJukxkcTmiriVdYg==
+X-Received: by 2002:a17:902:ef45:b0:1a6:dd9a:62c5 with SMTP id e5-20020a170902ef4500b001a6dd9a62c5mr8875345plx.10.1682799264493;
+        Sat, 29 Apr 2023 13:14:24 -0700 (PDT)
+Received: from localhost ([50.221.140.188])
+        by smtp.gmail.com with ESMTPSA id g2-20020a170902740200b001a4f7325466sm15179442pll.276.2023.04.29.13.14.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 29 Apr 2023 13:14:23 -0700 (PDT)
+Date:   Sat, 29 Apr 2023 13:14:23 -0700 (PDT)
+X-Google-Original-Date: Sat, 29 Apr 2023 13:14:07 PDT (-0700)
+Subject:     Re: [PATCH] Remove HAVE_VIRT_CPU_ACCOUNTING_GEN option
+In-Reply-To: <20230429063348.125544-1-npiggin@gmail.com>
+CC:     Arnd Bergmann <arnd@arndb.de>, npiggin@gmail.com,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        vgupta@kernel.org, linux-snps-arc@lists.infradead.org,
+        bcain@quicinc.com, linux-hexagon@vger.kernel.org,
+        chenhuacai@kernel.org, loongarch@lists.linux.dev,
+        geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org,
+        monstr@monstr.eu, tsbogend@alpha.franken.de,
+        linux-mips@vger.kernel.org, dinguyen@kernel.org,
+        jonas@southpole.se, stefan.kristiansson@saunalahti.fi,
+        shorne@gmail.com, linux-openrisc@vger.kernel.org,
+        James.Bottomley@HansenPartnership.com, deller@gmx.de,
+        linux-parisc@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
+        ysato@users.sourceforge.jp, dalias@libc.org,
+        glaubitz@physik.fu-berlin.de, linux-sh@vger.kernel.org,
+        davem@davemloft.net, sparclinux@vger.kernel.org, richard@nod.at,
+        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+        linux-um@lists.infradead.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, khilman@baylibre.com, frederic@kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     npiggin@gmail.com
+Message-ID: <mhng-7ec0443b-2201-41b7-996c-78c3a61f0230@palmer-ri-x1c9a>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Finn,
-
-thanks for your feedback!
-
-Am 29.04.2023 um 21:49 schrieb Finn Thain:
->> diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
->> index dfc7590abce8..75f4c4943231 100644
->> --- a/arch/m68k/kernel/signal.c
->> +++ b/arch/m68k/kernel/signal.c
->> @@ -858,11 +858,23 @@ static inline int rt_setup_ucontext(struct ucontext __user *uc, struct pt_regs *
->>  }
->>
->>  static inline void __user *
->> -get_sigframe(struct ksignal *ksig, size_t frame_size)
->> +get_sigframe(struct ksignal *ksig, struct pt_regs *regs, size_t frame_size)
->>  {
->> -	unsigned long usp = sigsp(rdusp(), ksig);
->> +	struct pt_regs *tregs = rte_regs(regs);
->> +	unsigned long usp = rdusp();
->> +	unsigned long ssp = sigsp(usp, ksig);
->> +
->> +	if (CPU_IS_020_OR_030 && ssp == usp && tregs->format == 0xb) {
->> +		struct frame *fmtbframe = (struct frame *) regs;
->> +		unsigned long fltp = (unsigned long) fmtbframe->un.fmtb.daddr;
->> +
->> +		if (fltp < ssp &&
->> +		   (fltp >> PAGE_SHIFT) == (ssp >> PAGE_SHIFT)-1 &&
->> +		 (((fltp - frame_size) & -8UL) >> PAGE_SHIFT) == (fltp >> PAGE_SHIFT))
->> +			ssp = fltp;
->> +	}
->>
->> -	return (void __user *)((usp - frame_size) & -8UL);
->> +	return (void __user *)((ssp - frame_size) & -8UL);
->>  }
->>
->>  static int setup_frame(struct ksignal *ksig, sigset_t *set,
+On Fri, 28 Apr 2023 23:33:48 PDT (-0700), npiggin@gmail.com wrote:
+> This option was created in commit 554b0004d0ec4 ("vtime: Add
+> HAVE_VIRT_CPU_ACCOUNTING_GEN Kconfig") for architectures to indicate
+> they support the 64-bit cputime_t required for VIRT_CPU_ACCOUNTING_GEN.
 >
-> That seems over-complicated to me... I must be missing something.
+> The cputime_t type has since been removed, so this doesn't have any
+> meaning. Remove it.
 >
-> What I had in mind was something like this (untested):
+> Cc: linux-arch@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: Vineet Gupta <vgupta@kernel.org>
+> Cc: linux-snps-arc@lists.infradead.org
+> Cc: Brian Cain <bcain@quicinc.com>
+> Cc: linux-hexagon@vger.kernel.org
+> Cc: Huacai Chen <chenhuacai@kernel.org>
+> Cc: loongarch@lists.linux.dev
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: linux-m68k@lists.linux-m68k.org
+> Cc: Michal Simek <monstr@monstr.eu>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: linux-mips@vger.kernel.org
+> Cc: Dinh Nguyen <dinguyen@kernel.org>
+> Cc: Jonas Bonn <jonas@southpole.se>
+> Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
+> Cc: Stafford Horne <shorne@gmail.com>
+> Cc: linux-openrisc@vger.kernel.org
+> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+> Cc: Helge Deller <deller@gmx.de>
+> Cc: linux-parisc@vger.kernel.org
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Albert Ou <aou@eecs.berkeley.edu>
+> Cc: linux-riscv@lists.infradead.org
+> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> Cc: Rich Felker <dalias@libc.org>
+> Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+> Cc: linux-sh@vger.kernel.org
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: sparclinux@vger.kernel.org
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> Cc: Johannes Berg <johannes@sipsolutions.net>
+> Cc: linux-um@lists.infradead.org
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: x86@kernel.org
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Kevin Hilman <khilman@baylibre.com>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+> ---
+> Hi,
 >
-> 	unsigned long usp;
+> Could we tidy this? I don't know what tree it can go in, timers,
+> sched, asm-generic, probably doesn't matter.
 >
->         if (CPU_IS_020_OR_030 && tregs->format == 0xb)
-> 		/* USP is unreliable so use the worst-case value. */
-> 		usp = sigsp(rdusp() - 256, ksig);
-> 	else
-> 		usp = sigsp(rdusp(), ksig);
+> The only thing this actually does is gate VIRT_CPU_ACCOUNTING_GEN and
+> NO_HZ_FULL so if your arch has some other issue that requires this
+> then the documentation needs to change. Any concerns from the archs?
+> I.e., 32-bit that does *not* define HAVE_VIRT_CPU_ACCOUNTING_GEN
+> which looks to be:
 >
->         return (void __user *)((usp - frame_size) & -8UL);
+> arc
+> hexagon
+> loongarch 32-bit with SMP
+> m68k
+> microblaze
+> mips 32-bit with SMP
+> nios2
+> openrisc
+> parisc 32-bit
+> riscv 32-bit
 
-sigsp() may return an address from the alternate signal stack. In that 
-case, no adjustment to the signal stack address is advised.
+Nothing's jumping out, though I haven't tested this yet so I'm not 100%.  
+I assume this isn't aimed for this merge window, given the timing?  
+Probably best to give this sort of thing time to bake in linux-next, but 
+I doubt anyone is even paying attention to rv32/NO_HZ_FULL so no big 
+deal either way on my end.
 
-The fault address may be on a different page than the normal signal 
-stack address (should have tested that perhaps, instead of the second 
-condition above). In that case we should not adjust the signal stack, 
-either.
+Acked-by: Palmer Dabbelt <palmer@rivosinc.com> # RISC-V
 
-As to the rest, it's a matter of how detrimental indiscriminate use of 
-the worst case gap size might be. Finding the 'best' adjustment may be 
-more hassle than it's worth.
-
-I'll run some stress testing on both versions
-
-Cheers,
-
-	Michael
+> sh
+> sparc 32-bit
+> um 32-bit
+> x86 32-bit
+>
+> Thanks,
+> Nick
