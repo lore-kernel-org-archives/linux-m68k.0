@@ -2,81 +2,69 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1571BC77B61
-	for <linux-m68k@archiver.kernel.org>; Fri, 28 Apr 2023 16:54:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D44AC77B61
+	for <linux-m68k@archiver.kernel.org>; Sat, 29 Apr 2023 00:10:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346407AbjD1QyZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 28 Apr 2023 12:54:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37776 "EHLO
+        id S1347114AbjD2AKP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 28 Apr 2023 20:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346398AbjD1QyX (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 28 Apr 2023 12:54:23 -0400
-Received: from mailrelay2-1.pub.mailoutpod2-cph3.one.com (mailrelay2-1.pub.mailoutpod2-cph3.one.com [IPv6:2a02:2350:5:401::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F128E5BBB
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 28 Apr 2023 09:54:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ravnborg.org; s=rsa1;
-        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-         from:date:from;
-        bh=4h2Y9ZZQ14tdvAGC5hFpqIKQWvmB0qe68pQRnQlSShc=;
-        b=IrdAXdZPKho0zoQxG/scktRALZpl2c237XlKLT5EIx0ja7nZb83hqvUgOuyY55pNvHYqH3FsErtl1
-         5jx6Clb6lkPL8TkUqCtTnSvfCnAc1GKTQxpoyL9YYmuFWy6pRl3ovRobT6YFtqeLlVGxUM3+fK10GW
-         26P+hLCnm+zpPHV7tOv/ibW1ECpjZ4qETcRhhPvrkIFIONhGHQGcxNm6MxcY5BEqj85CuJqzXS5rce
-         1Inl5d47E3sR2kFuS+NTw8OWDudvX6hThvyhlLeRI9ruUhs5QS1y61KsI01ISxy6adAYh2hLAOXbIt
-         t6mRhKxKsnm9awtbASezT6BrkUMBpFA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
-        d=ravnborg.org; s=ed1;
-        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-         from:date:from;
-        bh=4h2Y9ZZQ14tdvAGC5hFpqIKQWvmB0qe68pQRnQlSShc=;
-        b=2sOyzdZRm0G5akePNgNy9pFImOAXPUTPUHEcB6iUeB7W+50cDIuX1agx3ldJaHWZog9XyDftdQu09
-         P8qxcwNCA==
-X-HalOne-ID: 4d02a9c5-e5e5-11ed-9bd2-13111ccb208d
-Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
-        by mailrelay2 (Halon) with ESMTPSA
-        id 4d02a9c5-e5e5-11ed-9bd2-13111ccb208d;
-        Fri, 28 Apr 2023 16:54:14 +0000 (UTC)
-Date:   Fri, 28 Apr 2023 18:54:12 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     deller@gmx.de, geert@linux-m68k.org, javierm@redhat.com,
-        daniel@ffwll.ch, vgupta@kernel.org, chenhuacai@kernel.org,
-        kernel@xen0n.name, davem@davemloft.net,
-        James.Bottomley@hansenpartnership.com, arnd@arndb.de,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arch@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-parisc@vger.kernel.org
-Subject: Re: [PATCH v2 5/5] fbdev: Define framebuffer I/O from Linux' I/O
- functions
-Message-ID: <20230428165412.GA4010212@ravnborg.org>
-References: <20230428092711.406-1-tzimmermann@suse.de>
- <20230428092711.406-6-tzimmermann@suse.de>
- <20230428131221.GE3995435@ravnborg.org>
- <900eaf1c-4d29-2c26-c220-6b4e089d9b94@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <900eaf1c-4d29-2c26-c220-6b4e089d9b94@suse.de>
+        with ESMTP id S1347080AbjD2AKO (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 28 Apr 2023 20:10:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF2835261;
+        Fri, 28 Apr 2023 17:10:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8BAEB645CA;
+        Sat, 29 Apr 2023 00:10:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id EED0FC433EF;
+        Sat, 29 Apr 2023 00:10:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1682727013;
+        bh=BwW0UsZGvK9imyj2hady2P7Sy9vnryrQcbIQFb8hT5w=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=mKvNyNAw33YYJkg2cSCMYgVZvMp5SoOIFucDPMDUxcq3dKSPM+IB9pbB7jhZcK+0o
+         x+yhPgdbIcbLPHhCl7wat+JZQN+9/+/t+9uVt98I2MlrSkUYzSJb2qhTfUquKUUput
+         lSbG8Bn5zrjP7yeFZywQze+WNQuzMit4tm4tmYpkQOxSRnjxcV9VLRnR5uS3ERPHmC
+         xKfmi2TMCQO3LK3dxOt+jzoCXe1NVnpFniCIN3MbHsL51BgzpjFHRigr+W3h3OChDt
+         uXBKPPiZzFcRM4o16RSawjyRyWAbVssAAPd/xCDLnjY1FIZej+sjJiiyY3HdK9ugdx
+         Lec8EuSJL9YnQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D1FF5C41677;
+        Sat, 29 Apr 2023 00:10:12 +0000 (UTC)
+Subject: Re: [git pull] m68knommu changes for v6.4
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <201e8b3c-dc53-2475-1cff-34dd21ceeeea@linux-m68k.org>
+References: <201e8b3c-dc53-2475-1cff-34dd21ceeeea@linux-m68k.org>
+X-PR-Tracked-List-Id: <linux-m68k.vger.kernel.org>
+X-PR-Tracked-Message-Id: <201e8b3c-dc53-2475-1cff-34dd21ceeeea@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v6.4
+X-PR-Tracked-Commit-Id: 8ab89e9563161921ffc86724eb3217d228eaad57
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b23c1376db2dbbf784906bbcc8db81c304fa76a7
+Message-Id: <168272701285.9526.8932368182594171111.pr-tracker-bot@kernel.org>
+Date:   Sat, 29 Apr 2023 00:10:12 +0000
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     torvalds@linux-foundation.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Thomas,
+The pull request you sent on Fri, 28 Apr 2023 23:26:53 +1000:
 
-On Fri, Apr 28, 2023 at 04:18:38PM +0200, Thomas Zimmermann wrote:
-> I'd be happy to have fb_() wrappers that are I/O helpers without
-> ordering guarantees. I'd just wouldn't want them in <linux/fb.h>
+> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v6.4
 
-How about throwing them into a new drm_fb.h header file.
-This header file could be the home for all the fb stuff that is
-shared between drm and the legacy fbdev.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b23c1376db2dbbf784906bbcc8db81c304fa76a7
 
-Then we may slowly migrate more fbdev stuff to drm and let the legacy
-fbdev stuff use the maintained drm stuff.
-Dunno, the pain may not be worth it.
+Thank you!
 
-	Sam
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
