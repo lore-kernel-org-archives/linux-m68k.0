@@ -2,131 +2,173 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18590C77B60
-	for <linux-m68k@archiver.kernel.org>; Sat, 29 Apr 2023 09:01:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F30EC77B60
+	for <linux-m68k@archiver.kernel.org>; Sat, 29 Apr 2023 09:46:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbjD2JBw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 29 Apr 2023 05:01:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34630 "EHLO
+        id S231126AbjD2JqH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 29 Apr 2023 05:46:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjD2JBv (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sat, 29 Apr 2023 05:01:51 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E8D11BCD
-        for <linux-m68k@vger.kernel.org>; Sat, 29 Apr 2023 02:01:50 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-24b89b9a72cso578242a91.1
-        for <linux-m68k@vger.kernel.org>; Sat, 29 Apr 2023 02:01:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682758909; x=1685350909;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i1k+Vb3pr11+GAs77tujED8BiJTiCrZnONla8w2PLCg=;
-        b=GULyfFMLQxt3SkTV0T7K6sFvLmmLHLZ1lr19t21qIfGErwKWldd9cAvikrkbShsSZs
-         IKxcI1TNKk44EHhIYSPNi8R/uNKZWjnjZlneDnPnLSgfyP17rPfLILi6a8wPXJhVqbnM
-         IBv1wUeV1Ep+UNczzB72vzZowrsFBZjZcDib+od3tppmc0PndQAhbSMxyhB7yXoJC/hX
-         zcLnzJQogpZV6KPlPdGA5s6gOK6BvC8smLWFLOUP1OGnQDTFtuwA8qcLyCU+iCrxs5z+
-         RmPoLh1EAqjlRqA6occRKPgNlRn4QDQP1lAZpn3Ksrxy77Qspm3EGMpCh+97hzyRl71C
-         i9dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682758909; x=1685350909;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=i1k+Vb3pr11+GAs77tujED8BiJTiCrZnONla8w2PLCg=;
-        b=FwVTNQKqeh+w6HJrzguv+vVddMEfCC5/fznvykh6joS8iy6qSDDciP+HYmO3KWNwvL
-         PIwXbK6zI187K/KMiUK35wC4qkH1ODsODboK3PTG/Y1jP2r28YR4MzVNFZgLTBnj0ECu
-         ns/QYXaZNqW1W++N+r8ph4UDnxfw2QRxMXHxyg5BVBXNR0wgZYFwrH3pqiS/Q8tep2OS
-         /nPCG/xLmw3fJ71NaGZ66e9jucHCXV6eO3ewiXrrPnb/dhJlUe8r1IsBwxSZUPPrlkNd
-         jQFIqgGRiKg1aoNblW80Bwgw0Y0aQEkZOGUlu/k5NdaEZLiDB3mxcRSeotjLZLW95LMR
-         qDCw==
-X-Gm-Message-State: AC+VfDy1NB7LfWCIuK3c+8drjKBzosHwhFzn1Vn4GVksFLAmibFzlnp2
-        0IXLpJDh5HbxA6zqNPIfooc=
-X-Google-Smtp-Source: ACHHUZ6QrZiTU34kE2Mmn+GAiKOKuS+c8KU2MGrdpSOR1C+dLo3VNrNKoUSmWRse6Zn6c7vp5RdfmQ==
-X-Received: by 2002:a17:90b:4aca:b0:24b:7550:d3b4 with SMTP id mh10-20020a17090b4aca00b0024b7550d3b4mr8296568pjb.10.1682758909397;
-        Sat, 29 Apr 2023 02:01:49 -0700 (PDT)
-Received: from [10.1.1.24] (222-152-172-8-fibre.sparkbb.co.nz. [222.152.172.8])
-        by smtp.gmail.com with ESMTPSA id hi17-20020a17090b30d100b002471deb13fcsm16186241pjb.6.2023.04.29.02.01.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 29 Apr 2023 02:01:48 -0700 (PDT)
+        with ESMTP id S230419AbjD2JqG (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sat, 29 Apr 2023 05:46:06 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5975BE44
+        for <linux-m68k@vger.kernel.org>; Sat, 29 Apr 2023 02:46:05 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 569C932009A0;
+        Sat, 29 Apr 2023 05:46:02 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Sat, 29 Apr 2023 05:46:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1682761561; x=1682847961; bh=I8kPmg1TABfBi
+        trL65cV1m8tHHn30UPShWl/5IIt+xw=; b=jlGWCjL0S8G9IDDi2AFPyuV1EPfuw
+        l3vJ1OWMIMSdpducBxakg29umdlFnUjK9ie95SMh3WY3v23VXXk2cfTC6T7lWiDe
+        KtqPOZNYB4Vtb8USJEMZ18LauYk3dOy1YrUW9DGgif+DXZ6Pq3zPykau/VOtFspG
+        RZE9lYsT+ePTMRqU4hDjV1VsP/jkdT246sW/x2IavGqwzx6+DNQJ7F1xUsmMkSZV
+        39gtrpHy84LXYnDFBmTtcCSvcS8ZaOXgV44qY+i4HQCcfhQQBODtzs2BQzTOrSCW
+        zHw9Xyv+6uvtU315Ijc0jUJToTAGmy48tJCwlVl1hvSRmQ9hxSx0o67bw==
+X-ME-Sender: <xms:WedMZIT1bptoBPoRt4x_60BYY4JDVnCpXYvCT572ItzxHTZKB9xxvw>
+    <xme:WedMZFw9efQWe7TTecy31RS3FdS603VkRmWjaCJSNgM7vW69KtpEe323aogcfo8Sy
+    iB7qNB1QZzsCgu9iQU>
+X-ME-Received: <xmr:WedMZF0g8FQWq7Ti3qtkbvKYa4c-SoEjpCGKBfHsCGcvV2Tcz-fLbLCmOI7kzeknSSdVJHfg23zCPeHtOcBW0ZrkfdOqW57FZFE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeduledgudegkecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhn
+    ucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrf
+    grthhtvghrnhepfeeiheejvdetgfeitddutefhkeeilefhveehgfdvtdekkedvkeehffdt
+    keevvdeunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmhei
+    kehkrdhorhhg
+X-ME-Proxy: <xmx:WedMZMDB8KeScdbH8Z0_lVLyO_cP52SJx65znrvKBsfaWufwK1lBaw>
+    <xmx:WedMZBjD2Ch4RZehOfen5MPRlEu8m-qCh3n3FBHrwd4n5CGBQV-d2A>
+    <xmx:WedMZIo9mU6TIGRUgYM73nc58iOXiwaVLU4zP88deH2sCPgXJAmMlA>
+    <xmx:WedMZEsbYLz4ETXh_9RRkphVEzA0kN--Uhbdw069h_Puz7mcNDe7Pw>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 29 Apr 2023 05:45:58 -0400 (EDT)
+Date:   Sat, 29 Apr 2023 19:49:46 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Michael Schmitz <schmitzmic@gmail.com>
+cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org,
+        Andreas Schwab <schwab@linux-m68k.org>,
+        Stan Johnson <userm57@yahoo.com>
 Subject: Re: [PATCH RFC v1] m68k: signal.c: use signal frame gap to avoid
  stack corruption
-To:     Andreas Schwab <schwab@linux-m68k.org>
+In-Reply-To: <20230429080410.8993-1-schmitzmic@gmail.com>
+Message-ID: <ad929524-52c8-143c-5249-02fd1722383d@linux-m68k.org>
 References: <20230429080410.8993-1-schmitzmic@gmail.com>
- <871qk385lx.fsf@igel.home>
-Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org,
-        Finn Thain <fthain@linux-m68k.org>,
-        Stan Johnson <userm57@yahoo.com>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <2b81d6ef-0cd6-86a5-a595-66b328f0eb43@gmail.com>
-Date:   Sat, 29 Apr 2023 21:01:43 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
 MIME-Version: 1.0
-In-Reply-To: <871qk385lx.fsf@igel.home>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Andreas,
 
-Am 29.04.2023 um 20:17 schrieb Andreas Schwab:
-> On Apr 29 2023, Michael Schmitz wrote:
->
->> We can use the format b fault address in frame.un.fmtb.daddr
->> to find the address where the fault occurred, i.e. the
->> address where the instruction will resume.
->
-> I don't think you can assume any order of transfer.
+On Sat, 29 Apr 2023, Michael Schmitz wrote:
 
-True - I've been seeing this too much through the lens of this 
-particular bug - moveml to user stack faulting while crossing a page 
-boundary.
+> Inserting a gap of 20 bytes avoids user stack corruption
+> due to a discrepancy between user stack pointer and stack
+> state when an instruction is interrupted by a bus fault
+> in mid-execution, in particular a movem instruction with
+> the user stack pointer as target, such as commonly used in
+> the function prologue on C function calls.
+> 
+> The user stack pointer in this case reflects the stack
+> state before the instruction, but as many write operations
+> as would fit while on a mapped page are already written out
+> at that point. On 030 processors, the resulting exception
+> (format b) causes the instruction to be resumed, not
+> restarted after return from exception, and only at that
+> point is the user stack pointer updated. We must not corrupt
+> the user stack by writing beyond what's already stored to
+> the stack, and using the pre-execution stack pointer to
+> place the signal stack, that is exactly what happens.
+> 
+> We have two ways to address the issue: avoid running signal
+> delivery on format b bus fault exception (as suggested by
+> Andreas), or insert a suitable gap into the signal frame to
+> avoid it clobbering the stack contets.
+> 
+> Inserting a gap into every signal frame indiscriminately
+> does appear to cause memory leaks or excessive memory use
+> on low memory systems (been there ...). Some heuristics
+> is called for to only use the frame gap trick where
+> appropriate.
+> 
+> We can use the format b fault address in frame.un.fmtb.daddr
+> to find the address where the fault occurred, i.e. the
+> address where the instruction will resume. Addresses
+> above are no-go, anything up to and including the fault
+> address is OK to use. But we better make sure that the fault
+> address is actually on the page below the USP, and that the
+> start of the signal frame will end up on the same page that
+> the fault occurred on (again, been there). The latter might
+> be sufficient to ensure we're not hitting an unmapped page
+> when copying the signal frame, as the bus fault will have
+> been resolved when we get to signal delivery (??).
+> 
+> The bug that started this debug effort was reported by Stan
+> Johnson. Finn Thain developed a test case and debugged the
+> stack corruption. Fix developed and tested on my Falcon 030
+> with just 14 MB of RAM.
+> 
+> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+> CC: Finn Thain <fthain@linux-m68k.org>
+> CC: Andreas Schwab <schwab@linux-m68k.org>
+> CC: Stan Johnson <userm57@yahoo.com>
+> Link: https://lore.kernel.org/r/CAMuHMdW3yD22_ApemzW_6me3adq6A458u1_F0v-1EYwK_62jPA@mail.gmail.com
+> Link: https://lore.kernel.org/r/e10b8e06-6a36-5c83-89da-bec8fd7d3ed9@linux-m68k.org
+> ---
+>  arch/m68k/kernel/signal.c | 22 +++++++++++++++++-----
+>  1 file changed, 17 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
+> index dfc7590abce8..75f4c4943231 100644
+> --- a/arch/m68k/kernel/signal.c
+> +++ b/arch/m68k/kernel/signal.c
+> @@ -858,11 +858,23 @@ static inline int rt_setup_ucontext(struct ucontext __user *uc, struct pt_regs *
+>  }
+>  
+>  static inline void __user *
+> -get_sigframe(struct ksignal *ksig, size_t frame_size)
+> +get_sigframe(struct ksignal *ksig, struct pt_regs *regs, size_t frame_size)
+>  {
+> -	unsigned long usp = sigsp(rdusp(), ksig);
+> +	struct pt_regs *tregs = rte_regs(regs);
+> +	unsigned long usp = rdusp();
+> +	unsigned long ssp = sigsp(usp, ksig);
+> +
+> +	if (CPU_IS_020_OR_030 && ssp == usp && tregs->format == 0xb) {
+> +		struct frame *fmtbframe = (struct frame *) regs;
+> +		unsigned long fltp = (unsigned long) fmtbframe->un.fmtb.daddr;
+> +
+> +		if (fltp < ssp &&
+> +		   (fltp >> PAGE_SHIFT) == (ssp >> PAGE_SHIFT)-1 &&
+> +		 (((fltp - frame_size) & -8UL) >> PAGE_SHIFT) == (fltp >> PAGE_SHIFT))
+> +			ssp = fltp;
+> +	}
+>  
+> -	return (void __user *)((usp - frame_size) & -8UL);
+> +	return (void __user *)((ssp - frame_size) & -8UL);
+>  }
+>  
+>  static int setup_frame(struct ksignal *ksig, sigset_t *set,
 
-The more typical case appears to look like this:
+That seems over-complicated to me... I must be missing something.
 
-> [ 4703.880000] get_sigframe: signal stack 0xeffff758 fault daddr 0x8003f328
-> [ 5009.830000] get_sigframe: signal stack 0xefffef80 fault daddr 0x80029c88
-> [ 6152.750000] get_sigframe: signal stack 0xeffff3a4 fault daddr 0x8006a290
-> [ 6985.290000] get_sigframe: signal stack 0xeffff3a4 fault daddr 0x8006a290
-> [ 7260.060000] get_sigframe: signal stack 0xeffff020 fault daddr 0x80050cec
-> [ 7794.080000] get_sigframe: signal stack 0xc0001ea0 fault daddr 0x8000c69c
-> [ 7797.240000] get_sigframe: signal stack 0xeffff08c fault daddr 0xc00f4f7e
-> [ 7942.460000] get_sigframe: signal stack 0xeffff3a4 fault daddr 0x80050cec
-> [ 9833.180000] get_sigframe: signal stack 0xeffff3a4 fault daddr 0x80050cec
-> [10153.500000] get_sigframe: signal stack 0xeffff020 fault daddr 0x8006a290
-> [10781.110000] get_sigframe: signal stack 0xeffff3c8 fault daddr 0x800435dc
-> [11648.290000] get_sigframe: signal stack 0xeffff8f0 fault daddr 0x800024f0
-> [11773.260000] get_sigframe: signal stack 0xeffff3d0 fault daddr 0x8002f858
-> [12117.380000] get_sigframe: signal stack 0xeffffa08 fault daddr 0x8006a290
-> [12526.350000] get_sigframe: signal stack 0xefffef78 fault daddr 0xc006fba0
-> [12875.800000] get_sigframe: signal stack 0xc043de08 fault daddr 0x800b5f68
-> [15682.160000] get_sigframe: signal stack 0xeffff8f0 fault daddr 0xc00c37c8
-> [16503.110000] get_sigframe: signal stack 0xeffff730 fault daddr 0x80050cec
-> [16545.560000] get_sigframe: signal stack 0xeffff6ac fault daddr 0x80050cec
+What I had in mind was something like this (untested):
 
-Fault address and USP are entirely unrelated (and no risk of overwriting 
-the area where the fault occurred).
+	unsigned long usp;
 
-My (rather convoluted) checks that are meant to ensure fault address and 
-stack pointer are on immediately adjacent pages, and not miles apart 
-should take care of these above cases.
+        if (CPU_IS_020_OR_030 && tregs->format == 0xb)
+		/* USP is unreliable so use the worst-case value. */
+		usp = sigsp(rdusp() - 256, ksig);
+	else
+		usp = sigsp(rdusp(), ksig);
 
-But I had indeed overlooked the case of crossing a page boundary 
-upwards. Thanks for pointing that out.
-
-As it turns out, in this case using the area on the user stack 
-immediately below USP won't hurt - the transfer direction is away from 
-the end of the signal frame, and as long as the signal stack remains 
-below USP, it does not overwrite anything already on the stack that a 
-resume would miss. No need to shift the signal frame out of the way.
-
-What else am I missing? Examination of the stack contents from the 
-signal handler before resuming the movem through rte has shown the order 
-and direction of transfer is as expect for @sp-, i.e. downwards...
-
-Cheers,
-
-	Michael
+        return (void __user *)((usp - frame_size) & -8UL);
