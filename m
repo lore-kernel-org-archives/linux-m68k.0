@@ -2,173 +2,193 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F30EC77B60
-	for <linux-m68k@archiver.kernel.org>; Sat, 29 Apr 2023 09:46:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36C2CC77B7C
+	for <linux-m68k@archiver.kernel.org>; Sat, 29 Apr 2023 12:26:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231126AbjD2JqH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 29 Apr 2023 05:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41740 "EHLO
+        id S230467AbjD2M0R (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 29 Apr 2023 08:26:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230419AbjD2JqG (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sat, 29 Apr 2023 05:46:06 -0400
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5975BE44
-        for <linux-m68k@vger.kernel.org>; Sat, 29 Apr 2023 02:46:05 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 569C932009A0;
-        Sat, 29 Apr 2023 05:46:02 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Sat, 29 Apr 2023 05:46:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1682761561; x=1682847961; bh=I8kPmg1TABfBi
-        trL65cV1m8tHHn30UPShWl/5IIt+xw=; b=jlGWCjL0S8G9IDDi2AFPyuV1EPfuw
-        l3vJ1OWMIMSdpducBxakg29umdlFnUjK9ie95SMh3WY3v23VXXk2cfTC6T7lWiDe
-        KtqPOZNYB4Vtb8USJEMZ18LauYk3dOy1YrUW9DGgif+DXZ6Pq3zPykau/VOtFspG
-        RZE9lYsT+ePTMRqU4hDjV1VsP/jkdT246sW/x2IavGqwzx6+DNQJ7F1xUsmMkSZV
-        39gtrpHy84LXYnDFBmTtcCSvcS8ZaOXgV44qY+i4HQCcfhQQBODtzs2BQzTOrSCW
-        zHw9Xyv+6uvtU315Ijc0jUJToTAGmy48tJCwlVl1hvSRmQ9hxSx0o67bw==
-X-ME-Sender: <xms:WedMZIT1bptoBPoRt4x_60BYY4JDVnCpXYvCT572ItzxHTZKB9xxvw>
-    <xme:WedMZFw9efQWe7TTecy31RS3FdS603VkRmWjaCJSNgM7vW69KtpEe323aogcfo8Sy
-    iB7qNB1QZzsCgu9iQU>
-X-ME-Received: <xmr:WedMZF0g8FQWq7Ti3qtkbvKYa4c-SoEjpCGKBfHsCGcvV2Tcz-fLbLCmOI7kzeknSSdVJHfg23zCPeHtOcBW0ZrkfdOqW57FZFE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeduledgudegkecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhn
-    ucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrf
-    grthhtvghrnhepfeeiheejvdetgfeitddutefhkeeilefhveehgfdvtdekkedvkeehffdt
-    keevvdeunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmhei
-    kehkrdhorhhg
-X-ME-Proxy: <xmx:WedMZMDB8KeScdbH8Z0_lVLyO_cP52SJx65znrvKBsfaWufwK1lBaw>
-    <xmx:WedMZBjD2Ch4RZehOfen5MPRlEu8m-qCh3n3FBHrwd4n5CGBQV-d2A>
-    <xmx:WedMZIo9mU6TIGRUgYM73nc58iOXiwaVLU4zP88deH2sCPgXJAmMlA>
-    <xmx:WedMZEsbYLz4ETXh_9RRkphVEzA0kN--Uhbdw069h_Puz7mcNDe7Pw>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 29 Apr 2023 05:45:58 -0400 (EDT)
-Date:   Sat, 29 Apr 2023 19:49:46 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Stan Johnson <userm57@yahoo.com>
-Subject: Re: [PATCH RFC v1] m68k: signal.c: use signal frame gap to avoid
- stack corruption
-In-Reply-To: <20230429080410.8993-1-schmitzmic@gmail.com>
-Message-ID: <ad929524-52c8-143c-5249-02fd1722383d@linux-m68k.org>
-References: <20230429080410.8993-1-schmitzmic@gmail.com>
+        with ESMTP id S230458AbjD2M0Q (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sat, 29 Apr 2023 08:26:16 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CBF21999
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 29 Apr 2023 05:26:15 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 886AE21AD9;
+        Sat, 29 Apr 2023 12:26:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1682771173; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ggHjBqSIfzeqcVtGsNuNiNCmozKORAe1+aPPd89K2Zo=;
+        b=gTmI3qC52L6UapKnmdBrpTYkRo+blaTmZ+xqAtZthGf3NWsd77H1PPxPpBlGcazt6SKDe8
+        vNhd49xkN0Rqx1ocjYvQqNFFBMsShzkqugczm+9ra9L6uYqGgC0TPNVZQLNcs+CFDu9Gn0
+        pIaiu5WIocPIe9hlB/2hwQskx28q5gY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1682771173;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ggHjBqSIfzeqcVtGsNuNiNCmozKORAe1+aPPd89K2Zo=;
+        b=L4Zc58oyVTd4UKL+MonKy5CY8zkM6HMZb5L7fiOLMtNrFeMy78aWw46Qmn1G9n/fSO1DPL
+        DgTKrJpyZ6IWA6Bg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1F67A138E0;
+        Sat, 29 Apr 2023 12:26:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id MgW7BuUMTWRUSAAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Sat, 29 Apr 2023 12:26:13 +0000
+Message-ID: <df6fa134-3a62-0872-e008-393e4a29a5ab@suse.de>
+Date:   Sat, 29 Apr 2023 14:26:12 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v2 5/5] fbdev: Define framebuffer I/O from Linux' I/O
+ functions
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Robin Murphy <robin.murphy@arm.com>
+Cc:     Helge Deller <deller@gmx.de>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        "David S . Miller" <davem@davemloft.net>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Sam Ravnborg <sam@ravnborg.org>, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-m68k@lists.linux-m68k.org, sparclinux@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org
+References: <20230428092711.406-1-tzimmermann@suse.de>
+ <20230428092711.406-6-tzimmermann@suse.de>
+ <430c73f0-45f4-f81e-6506-bc8cc955d936@arm.com>
+ <CAMuHMdUGjtiAR37L4_e0_p8ee2=gxoUj7+e7rqMLTBK+vpV4yw@mail.gmail.com>
+ <f612c682-5767-4a58-82f6-f4a4d1b592a1@app.fastmail.com>
+Content-Language: en-US
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <f612c682-5767-4a58-82f6-f4a4d1b592a1@app.fastmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------MelAIvX5Zq5p7fTWZnZe1KnI"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------MelAIvX5Zq5p7fTWZnZe1KnI
+Content-Type: multipart/mixed; boundary="------------XHeCVpw7PiHVQpg0Jphmy7XG";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Robin Murphy <robin.murphy@arm.com>
+Cc: Helge Deller <deller@gmx.de>,
+ Javier Martinez Canillas <javierm@redhat.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Vineet Gupta <vgupta@kernel.org>,
+ Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
+ "David S . Miller" <davem@davemloft.net>,
+ "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Sam Ravnborg <sam@ravnborg.org>, linux-fbdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, Linux-Arch <linux-arch@vger.kernel.org>,
+ linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-m68k@lists.linux-m68k.org, sparclinux@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org
+Message-ID: <df6fa134-3a62-0872-e008-393e4a29a5ab@suse.de>
+Subject: Re: [PATCH v2 5/5] fbdev: Define framebuffer I/O from Linux' I/O
+ functions
+References: <20230428092711.406-1-tzimmermann@suse.de>
+ <20230428092711.406-6-tzimmermann@suse.de>
+ <430c73f0-45f4-f81e-6506-bc8cc955d936@arm.com>
+ <CAMuHMdUGjtiAR37L4_e0_p8ee2=gxoUj7+e7rqMLTBK+vpV4yw@mail.gmail.com>
+ <f612c682-5767-4a58-82f6-f4a4d1b592a1@app.fastmail.com>
+In-Reply-To: <f612c682-5767-4a58-82f6-f4a4d1b592a1@app.fastmail.com>
 
-On Sat, 29 Apr 2023, Michael Schmitz wrote:
+--------------XHeCVpw7PiHVQpg0Jphmy7XG
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-> Inserting a gap of 20 bytes avoids user stack corruption
-> due to a discrepancy between user stack pointer and stack
-> state when an instruction is interrupted by a bus fault
-> in mid-execution, in particular a movem instruction with
-> the user stack pointer as target, such as commonly used in
-> the function prologue on C function calls.
-> 
-> The user stack pointer in this case reflects the stack
-> state before the instruction, but as many write operations
-> as would fit while on a mapped page are already written out
-> at that point. On 030 processors, the resulting exception
-> (format b) causes the instruction to be resumed, not
-> restarted after return from exception, and only at that
-> point is the user stack pointer updated. We must not corrupt
-> the user stack by writing beyond what's already stored to
-> the stack, and using the pre-execution stack pointer to
-> place the signal stack, that is exactly what happens.
-> 
-> We have two ways to address the issue: avoid running signal
-> delivery on format b bus fault exception (as suggested by
-> Andreas), or insert a suitable gap into the signal frame to
-> avoid it clobbering the stack contets.
-> 
-> Inserting a gap into every signal frame indiscriminately
-> does appear to cause memory leaks or excessive memory use
-> on low memory systems (been there ...). Some heuristics
-> is called for to only use the frame gap trick where
-> appropriate.
-> 
-> We can use the format b fault address in frame.un.fmtb.daddr
-> to find the address where the fault occurred, i.e. the
-> address where the instruction will resume. Addresses
-> above are no-go, anything up to and including the fault
-> address is OK to use. But we better make sure that the fault
-> address is actually on the page below the USP, and that the
-> start of the signal frame will end up on the same page that
-> the fault occurred on (again, been there). The latter might
-> be sufficient to ensure we're not hitting an unmapped page
-> when copying the signal frame, as the bus fault will have
-> been resolved when we get to signal delivery (??).
-> 
-> The bug that started this debug effort was reported by Stan
-> Johnson. Finn Thain developed a test case and debugged the
-> stack corruption. Fix developed and tested on my Falcon 030
-> with just 14 MB of RAM.
-> 
-> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-> CC: Finn Thain <fthain@linux-m68k.org>
-> CC: Andreas Schwab <schwab@linux-m68k.org>
-> CC: Stan Johnson <userm57@yahoo.com>
-> Link: https://lore.kernel.org/r/CAMuHMdW3yD22_ApemzW_6me3adq6A458u1_F0v-1EYwK_62jPA@mail.gmail.com
-> Link: https://lore.kernel.org/r/e10b8e06-6a36-5c83-89da-bec8fd7d3ed9@linux-m68k.org
-> ---
->  arch/m68k/kernel/signal.c | 22 +++++++++++++++++-----
->  1 file changed, 17 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
-> index dfc7590abce8..75f4c4943231 100644
-> --- a/arch/m68k/kernel/signal.c
-> +++ b/arch/m68k/kernel/signal.c
-> @@ -858,11 +858,23 @@ static inline int rt_setup_ucontext(struct ucontext __user *uc, struct pt_regs *
->  }
->  
->  static inline void __user *
-> -get_sigframe(struct ksignal *ksig, size_t frame_size)
-> +get_sigframe(struct ksignal *ksig, struct pt_regs *regs, size_t frame_size)
->  {
-> -	unsigned long usp = sigsp(rdusp(), ksig);
-> +	struct pt_regs *tregs = rte_regs(regs);
-> +	unsigned long usp = rdusp();
-> +	unsigned long ssp = sigsp(usp, ksig);
-> +
-> +	if (CPU_IS_020_OR_030 && ssp == usp && tregs->format == 0xb) {
-> +		struct frame *fmtbframe = (struct frame *) regs;
-> +		unsigned long fltp = (unsigned long) fmtbframe->un.fmtb.daddr;
-> +
-> +		if (fltp < ssp &&
-> +		   (fltp >> PAGE_SHIFT) == (ssp >> PAGE_SHIFT)-1 &&
-> +		 (((fltp - frame_size) & -8UL) >> PAGE_SHIFT) == (fltp >> PAGE_SHIFT))
-> +			ssp = fltp;
-> +	}
->  
-> -	return (void __user *)((usp - frame_size) & -8UL);
-> +	return (void __user *)((ssp - frame_size) & -8UL);
->  }
->  
->  static int setup_frame(struct ksignal *ksig, sigset_t *set,
+SGkNCg0KQW0gMjguMDQuMjMgdW0gMTU6MTcgc2NocmllYiBBcm5kIEJlcmdtYW5uOg0KPiBP
+biBGcmksIEFwciAyOCwgMjAyMywgYXQgMTM6MjcsIEdlZXJ0IFV5dHRlcmhvZXZlbiB3cm90
+ZToNCj4+IE9uIEZyaSwgQXByIDI4LCAyMDIzIGF0IDI6MTjigK9QTSBSb2JpbiBNdXJwaHkg
+PHJvYmluLm11cnBoeUBhcm0uY29tPiB3cm90ZToNCj4+PiBPbiAyMDIzLTA0LTI4IDEwOjI3
+LCBUaG9tYXMgWmltbWVybWFubiB3cm90ZToNCj4gDQo+Pj4+IC0NCj4+Pj4gLSNlbGlmIGRl
+ZmluZWQoX19pMzg2X18pIHx8IGRlZmluZWQoX19hbHBoYV9fKSB8fCBkZWZpbmVkKF9feDg2
+XzY0X18pIHx8ICAgICAgXA0KPj4+PiAtICAgICBkZWZpbmVkKF9faHBwYV9fKSB8fCBkZWZp
+bmVkKF9fc2hfXykgfHwgZGVmaW5lZChfX3Bvd2VycGNfXykgfHwgXA0KPj4+PiAtICAgICBk
+ZWZpbmVkKF9fYXJtX18pIHx8IGRlZmluZWQoX19hYXJjaDY0X18pIHx8IGRlZmluZWQoX19t
+aXBzX18pDQo+Pj4+IC0NCj4+Pj4gLSNkZWZpbmUgZmJfcmVhZGIgX19yYXdfcmVhZGINCj4+
+Pj4gLSNkZWZpbmUgZmJfcmVhZHcgX19yYXdfcmVhZHcNCj4+Pj4gLSNkZWZpbmUgZmJfcmVh
+ZGwgX19yYXdfcmVhZGwNCj4+Pj4gLSNkZWZpbmUgZmJfcmVhZHEgX19yYXdfcmVhZHENCj4+
+Pj4gLSNkZWZpbmUgZmJfd3JpdGViIF9fcmF3X3dyaXRlYg0KPj4+PiAtI2RlZmluZSBmYl93
+cml0ZXcgX19yYXdfd3JpdGV3DQo+Pj4+IC0jZGVmaW5lIGZiX3dyaXRlbCBfX3Jhd193cml0
+ZWwNCj4+Pj4gLSNkZWZpbmUgZmJfd3JpdGVxIF9fcmF3X3dyaXRlcQ0KPj4+DQo+Pj4gTm90
+ZSB0aGF0IG9uIGF0IGxlYXN0IHNvbWUgYXJjaGl0ZWN0dXJlcywgdGhlIF9fcmF3IHZhcmlh
+bnRzIGFyZQ0KPj4+IG5hdGl2ZS1lbmRpYW4sIHdoZXJlYXMgdGhlIHJlZ3VsYXIgYWNjZXNz
+b3JzIGFyZSBleHBsaWNpdGx5DQo+Pj4gbGl0dGxlLWVuZGlhbiwgc28gdGhlcmUgaXMgYSBz
+bGlnaHQgcmlzayBvZiBpbmFkdmVydGVudGx5IGNoYW5naW5nDQo+Pj4gYmVoYXZpb3VyIG9u
+IGJpZy1lbmRpYW4gc3lzdGVtcyAoTUlQUyBtb3N0IGxpa2VseSwgYnV0IGEgZmV3IG9sZCBB
+Uk0NCj4+PiBwbGF0Zm9ybXMgcnVuIEJFIGFzIHdlbGwpLg0KPj4NCj4+IEFsc28gb24gbTY4
+aywgd2hlbiBJU0Egb3IgUENJIGFyZSBlbmFibGVkLg0KPj4NCj4+IEluIGFkZGl0aW9uLCB0
+aGUgbm9uLXJhdyB2YXJpYW50cyBtYXkgZG8gc29tZSBleHRyYXMgdG8gZ3VhcmFudGVlDQo+
+PiBvcmRlcmluZywgd2hpY2ggeW91IGRvIG5vdCBuZWVkIG9uIGEgZnJhbWUgYnVmZmVyLg0K
+Pj4NCj4+IFNvIEknZCBnbyBmb3IgdGhlIF9fcmF3XyooKSB2YXJpYW50cyBldmVyeXdoZXJl
+Lg0KPiANCj4gVGhlIG9ubHkgaW1wbGVtZW50YXRpb25zIGluIGZiZGV2IGFyZQ0KPiANCj4g
+ICAxKSBzcGFyYyBzYnVzDQo+ICAgMikgX19yYXdfd3JpdGVsDQo+ICAgMykgZGlyZWN0IHBv
+aW50ZXIgZGVyZWZlcmVuY2UNCj4gDQo+IEJ1dCBub25lIHVzZSB0aGUgYnl0ZS1zd2FwcGlu
+ZyB3cml0ZWwoKSBpbXBsZW1lbnRhdGlvbnMsIGFuZA0KPiB0aGUgb25seSBvbmVzIHRoYXQg
+dXNlIHRoZSBkaXJlY3QgcG9pbnRlciBkZXJlZmVyZW5jZSBvciBzYnVzDQo+IGFyZSB0aGUg
+b25lcyBvbiB3aGljaCB0aGVzZSBhcmUgZGVmaW5lZCB0aGUgc2FtZSBhcyBfX3Jhd193cml0
+ZWwNCg0KQWZ0ZXIgdGhpbmtpbmcgYSBiaXQgbW9yZSBhYm91dCB0aGUgcmVxdWlyZW1lbnRz
+LCBJJ2QgbGlrZSB0byBnb3QgYmFjayANCnRvIHYxLCBidXQgd2l0aCBhIGRpZmZlcmVudCBz
+cGluLiBXZSB3YW50IHRvIGF2b2lkIG9yZGVyaW5nIGd1YXJhbnRlZXMsIA0Kc28gSSBsb29r
+ZWQgYXQgdGhlIF9yZWxheGVkKCkgaGVscGVycywgYnV0IHRoZXkgc2VlbSB0byBzd2FwIGJ5
+dGVzIHRvIA0KbGl0dGxlIGVuZGlhbi4NCg0KSSBndWVzcyB3ZSBjYW4gcmVtb3ZlIHRoZSBm
+Yl9tZW0qKCkgZnVuY3Rpb25zIGVudGlyZWx5LiBUaGV5IGFyZSB0aGUgDQpzYW1lIGFzIHRo
+ZSBub24tZmJfIGNvdW50ZXJwYXJ0cy4gRm9yIHRoZSBmYiByZWFkL3dyaXRlIGhlbHBlcnMs
+IEknZCANCmxpa2UgdG8gYWRkIHRoZW0gdG8gPGFzbS1nZW5lcmljL2ZiLmg+IGluIGEgcGxh
+dGZvcm0tbmV1dHJhbCB3YXkuIFRoZXknZCANCmJlIHdyYXBwZXJzIGFyb3VuZCBfX3Jhd18o
+KSwgYXMgSSB3b3VsZG4ndCB3YW50IGludm9jYXRpb25zIG9mICBfX3Jhd18oKSANCmZ1bmN0
+aW9ucyBpbiB0aGUgZmJkZXYgZHJpdmVycy4NCg0KQmVzdCByZWdhcmRzDQpUaG9tYXMNCg0K
+PiANCj4gICAgICAgIEFybmQNCg0KLS0gDQpUaG9tYXMgWmltbWVybWFubg0KR3JhcGhpY3Mg
+RHJpdmVyIERldmVsb3Blcg0KU1VTRSBTb2Z0d2FyZSBTb2x1dGlvbnMgR2VybWFueSBHbWJI
+DQpGcmFua2Vuc3RyYXNzZSAxNDYsIDkwNDYxIE51ZXJuYmVyZywgR2VybWFueQ0KR0Y6IEl2
+byBUb3RldiwgQW5kcmV3IE15ZXJzLCBBbmRyZXcgTWNEb25hbGQsIEJvdWRpZW4gTW9lcm1h
+bg0KSFJCIDM2ODA5IChBRyBOdWVybmJlcmcpDQo=
 
-That seems over-complicated to me... I must be missing something.
+--------------XHeCVpw7PiHVQpg0Jphmy7XG--
 
-What I had in mind was something like this (untested):
+--------------MelAIvX5Zq5p7fTWZnZe1KnI
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-	unsigned long usp;
+-----BEGIN PGP SIGNATURE-----
 
-        if (CPU_IS_020_OR_030 && tregs->format == 0xb)
-		/* USP is unreliable so use the worst-case value. */
-		usp = sigsp(rdusp() - 256, ksig);
-	else
-		usp = sigsp(rdusp(), ksig);
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmRNDOQFAwAAAAAACgkQlh/E3EQov+D3
+Lg//UhCZBw81TYQDkk+UDr1YbkaGi4Jm2mT/EtMUo2aiopJRpbN8vontw/beFlngxSqtHGbuE+eV
+/Nw3zAhT/0FwyIfz9cckarUnhgWjtozXXAzefE/fvRNS1IpfOd4Z+/HAFpf14aUFX58Ieonzrx0K
+IAUrczjg9YkqH/rjBuQN6esPDuGO6UAnwoPcfsR0LJ8rYA8u21otEL8TJmc6YrLxV8vRDi8F4pfg
+2psTsyd3crIGm2ldrDL7fc8SCJr7pBcrkEM9LJ8TU4iVcEWQ+VinDr6aiworLArjL7td/jSrX8yL
+NgbWRrsLwsh50JtyFgO68P9ujhhD83DyZ6jRMLVCaUCWYH03srIBWqkf7jePnQ3ZnyRtPGuX13a1
++OchiuFDSLb7gUO4YmnIYiSvrNWi+xAbDZopxKynXrqqOyz9qCY1/pTSnVY4W1BZm1DmpYFa/LJ0
+8ASU+1FXKvGU9rDjh9vdm4aK44qqavzduSEDltIQF5rSGjltfpBMnGXaBr7ZF5B+Q9ty5Bsw63Kh
+ksU8M/nayR7toWgtbiAAuLnzz04kv5VRdLVsgY3AEw+H6wz1alVp0SBJNFGJ1CIwjxQ2tFpEcAp4
++tfWD38puBNHk3K2WeT0O152tqPrzhw+6qws+j8SPgTx/gUaxU0jY4JjSgMXSlnum9vnakiOPQFn
+Jl4=
+=PPwW
+-----END PGP SIGNATURE-----
 
-        return (void __user *)((usp - frame_size) & -8UL);
+--------------MelAIvX5Zq5p7fTWZnZe1KnI--
