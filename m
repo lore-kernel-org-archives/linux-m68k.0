@@ -2,139 +2,146 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84E58C77B7E
-	for <linux-m68k@archiver.kernel.org>; Tue,  2 May 2023 06:49:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53780C7EE26
+	for <linux-m68k@archiver.kernel.org>; Tue,  2 May 2023 13:02:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229703AbjEBGti (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 2 May 2023 02:49:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53548 "EHLO
+        id S234290AbjEBNCd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 2 May 2023 09:02:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233439AbjEBGtg (ORCPT
+        with ESMTP id S234294AbjEBNCa (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 2 May 2023 02:49:36 -0400
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9701A6
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  1 May 2023 23:49:35 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 295895C021B;
-        Tue,  2 May 2023 02:49:35 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Tue, 02 May 2023 02:49:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1683010175; x=1683096575; bh=oayuJxCfeTnRy+ySnnEQWW19hsYLM3dIaLu
-        Eybqxkdo=; b=jf1Qg7cy8BQwNSXCRFZ4Zr0n2Knq8eQLlwAav0CG+aleDBNRccm
-        waihM4fBcdO4yZWFt6XjxdQ3vIy0OIzT6uztNDscPAw3znkQG+YROZyjr4+BpX8T
-        VhE2/4zAwumYTYErgeOn/FVgzsh2QDN18d4P/V//yTHfIjndXA1I4NCynmi/Cds8
-        IPEPG5v/UDWqDyfaRJvP8VZ+a8xoO0X2S1HZ3/xi/XXDXejFbv7c4VhGiVK+mais
-        tSUhKkrmHlF4+QSPlx2PeZUCyDwPY5iAHEm9NirnVjsGNjfevuvo6x2/xcA43Fpx
-        Avfxe9iDK334PKcZIfryV4sCHP5SGLu4pLQ==
-X-ME-Sender: <xms:frJQZOYK3IQE-tl6rsPo_WHfhIoGMKM90gkNdFdbGn30rp8bXvk2xQ>
-    <xme:frJQZBZkeQuqtlCkAnBFQn-BAyY_vnCzhVcP8i_o9rhJXH_nHIB_cS9lb_EX4WcZq
-    JiNB7uqu6fQlZN3Jgo>
-X-ME-Received: <xmr:frJQZI-5Q0IMdkmzz5EiRGKzc22FfXQHtEeSD5NIf5U2M9tSPQQs5cVD2Ns69ofal_bY9BzEywa4hK9IPvmVxBF3QN7_LdUvnv8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfedvhedgudduvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefvvefkjghfhffuffestddtredttddttdenucfhrhhomhephfhinhhnucfv
-    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
-    htvghrnhepheekudffheejvdeiveekleelgeffieduvdegleeuhfeuudegkeekheffkefg
-    gfehnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehk
-    rdhorhhg
-X-ME-Proxy: <xmx:frJQZAroQ2aHwbnxRBTujfOromLNEzZLf6gI-8VVGk_cSmZmlQVtrw>
-    <xmx:frJQZJqM3l5zoVUk-9hQLvtQCdE37s0Ee4SrSSTMIcX00n2Mdwhlfg>
-    <xmx:frJQZOTV8gEYKeBbeBZFjUnDP-RWj2b5cUTNMLvO0LRSYCf9eSCTmg>
-    <xmx:f7JQZKAqqDY48lpkG-0Wg5kFCVRG1vSCKEaVzyhCVYleJLvUJa2U0g>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 2 May 2023 02:49:32 -0400 (EDT)
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org,
-        "Michael Schmitz" <schmitzmic@gmail.com>,
-        "Andreas Schwab" <schwab@linux-m68k.org>
-Message-Id: <f94a7736c10bc4f256bef5b826419faacb297f4a.1683010227.git.fthain@linux-m68k.org>
-In-Reply-To: <cover.1683010227.git.fthain@linux-m68k.org>
-References: <cover.1683010227.git.fthain@linux-m68k.org>
-From:   Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH RFC 2/2] m68k: Make allowance for signal delivery following an
- address error
-Date:   Tue, 02 May 2023 16:50:27 +1000
+        Tue, 2 May 2023 09:02:30 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB51526E
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  2 May 2023 06:02:27 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B905921F7C;
+        Tue,  2 May 2023 13:02:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1683032545; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=4/HqMKMsbulxem0YZHptZtjI0v2zedDTIGVljFbx4A0=;
+        b=0/jQzGQjxcsbLoXKHnJlmsUT3JVv9NcXNh8VApsEzclPgvqXiOMOMMUZX42s6shx2N3wH5
+        WKHaUtVeQypvLRNNq5+GiVa4PzEli+F2Vu0ozdPBwnWfJ7TE/B8ck8OEhS+oYSIR6iBLCA
+        bcVHsdu2aNC7jCqqUglALcBQKHVFWvM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1683032545;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=4/HqMKMsbulxem0YZHptZtjI0v2zedDTIGVljFbx4A0=;
+        b=pr+0WmwF1A765+pq5Lr5jvAUfbVCp6UWP2ciA0hJDFgk5xiDi/CqmkpdDug/1NYyvo/HBE
+        9l77+O3JrXAysKCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 58447134FB;
+        Tue,  2 May 2023 13:02:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id tiGhFOEJUWRYTQAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Tue, 02 May 2023 13:02:25 +0000
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+To:     deller@gmx.de, geert@linux-m68k.org, javierm@redhat.com,
+        daniel@ffwll.ch, vgupta@kernel.org, chenhuacai@kernel.org,
+        kernel@xen0n.name, davem@davemloft.net,
+        James.Bottomley@HansenPartnership.com, arnd@arndb.de,
+        sam@ravnborg.org
+Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arch@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-parisc@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH v3 0/6] fbdev: Move framebuffer I/O helpers to <asm/fb.h>
+Date:   Tue,  2 May 2023 15:02:17 +0200
+Message-Id: <20230502130223.14719-1-tzimmermann@suse.de>
+X-Mailer: git-send-email 2.40.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The 68030 Users Manual says that address errors occur immediately they
-are detected during instruction prefetch. The instruction pipeline allows
-prefetch to overlap with other instructions which means an address error
-can be taken during execution of a different instruction.
+(was: fbdev: Use regular I/O function for framebuffers)
 
-Both a bus error and an address error may produce a format 0xB exception
-frame. Regarding those frames, the UM says the PC contained therein has
-the "address of instruction in execution when fault occurred -- may not be
-the instruction which generated the faulted bus cycle".
+Fbdev provides helpers for framebuffer I/O, such as fb_readl(),
+fb_writel() or fb_memcpy_to_fb(). The implementation of each helper
+depends on the architecture, but they are all equivalent to regular
+I/O functions of similar names. So use regular functions instead and
+move all helpers into <asm-generic/fb.h>
 
-In the bus error case, the USP in that frame is not reliable (like the
-PC). We should not rely on it in the address error case. The address error
-case always produces a SIGBUS. That signal may be caught and the
-exception fixed up. If a debugger or emulator were to do so, this patch
-would theoretically prevent user stack corruption.
+The first patch a simple whitespace cleanup.
 
-Cc: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Andreas Schwab <schwab@linux-m68k.org>
-Link: https://lore.kernel.org/linux-m68k/20230429080410.8993-1-schmitzmic@gmail.com/
-Co-developed-by: Michael Schmitz <schmitzmic@gmail.com>
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
----
-Michael, as co-developer, this will need your signed-off-by.
----
- arch/m68k/kernel/signal.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+Until now, <linux/fb.h> contained an include of <asm/io.h>. As this
+will go away patches 2 to 4 prepare include statements in the various
+drivers. Source files that use regular I/O helpers, such as readl(),
+now include <linux/io.h>. Source files that use framebuffer I/O
+helpers, such as fb_readl(), also include <asm/fb.h>.
 
-diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
-index b9f6908a31bc..8aeafbb083f7 100644
---- a/arch/m68k/kernel/signal.c
-+++ b/arch/m68k/kernel/signal.c
-@@ -858,11 +858,16 @@ static inline int rt_setup_ucontext(struct ucontext __user *uc, struct pt_regs *
- }
- 
- static inline void __user *
--get_sigframe(struct ksignal *ksig, size_t frame_size)
-+get_sigframe(struct ksignal *ksig, struct pt_regs *tregs, size_t frame_size)
- {
- 	unsigned long usp = sigsp(rdusp(), ksig);
-+	unsigned long gap = 0;
- 
--	return (void __user *)((usp - frame_size) & -8UL);
-+	if (CPU_IS_020_OR_030 && tregs->format == 0xb)
-+		/* USP is unreliable so use worst-case value */
-+		gap = 256;
-+
-+	return (void __user *)((usp - gap - frame_size) & -8UL);
- }
- 
- static int setup_frame(struct ksignal *ksig, sigset_t *set,
-@@ -880,7 +885,7 @@ static int setup_frame(struct ksignal *ksig, sigset_t *set,
- 		return -EFAULT;
- 	}
- 
--	frame = get_sigframe(ksig, sizeof(*frame) + fsize);
-+	frame = get_sigframe(ksig, tregs, sizeof(*frame) + fsize);
- 
- 	if (fsize)
- 		err |= copy_to_user (frame + 1, regs + 1, fsize);
-@@ -952,7 +957,7 @@ static int setup_rt_frame(struct ksignal *ksig, sigset_t *set,
- 		return -EFAULT;
- 	}
- 
--	frame = get_sigframe(ksig, sizeof(*frame));
-+	frame = get_sigframe(ksig, tregs, sizeof(*frame));
- 
- 	if (fsize)
- 		err |= copy_to_user (&frame->uc.uc_extra, regs + 1, fsize);
+Patch 5 replaces the architecture-based if-else branching in 
+<linux/fb.h> by helpers in <asm-generic/fb.h>. All helpers use Linux'
+existing I/O functions.
+
+Patch 6 harmonizes naming among fbdev and existing I/O functions.
+
+The patchset has been built for a variety of platforms, such as x86-64,
+arm, aarch64, ppc64, parisc, m64k, mips and sparc.
+
+v3:
+	* add the new helpers in <asm-generic/fb.h>
+	* support reordering and native byte order (Geert, Arnd)
+v2:
+	* use Linux I/O helpers (Sam, Arnd)
+
+Thomas Zimmermann (6):
+  fbdev/matrox: Remove trailing whitespaces
+  ipu-v3: Include <linux/io.h>
+  fbdev: Include <linux/io.h> in various drivers
+  fbdev: Include <linux/io.h> via <asm/fb.h>
+  fbdev: Move framebuffer I/O helpers into <asm/fb.h>
+  fbdev: Rename fb_mem*() helpers
+
+ drivers/gpu/ipu-v3/ipu-prv.h                |   1 +
+ drivers/video/fbdev/arcfb.c                 |   1 +
+ drivers/video/fbdev/arkfb.c                 |   2 +
+ drivers/video/fbdev/aty/atyfb.h             |   2 +
+ drivers/video/fbdev/aty/mach64_cursor.c     |   4 +-
+ drivers/video/fbdev/chipsfb.c               |   3 +-
+ drivers/video/fbdev/cirrusfb.c              |   2 +
+ drivers/video/fbdev/core/cfbcopyarea.c      |   2 +-
+ drivers/video/fbdev/core/cfbfillrect.c      |   1 +
+ drivers/video/fbdev/core/cfbimgblt.c        |   1 +
+ drivers/video/fbdev/core/fbmem.c            |   4 +-
+ drivers/video/fbdev/core/svgalib.c          |   3 +-
+ drivers/video/fbdev/cyber2000fb.c           |   2 +
+ drivers/video/fbdev/ep93xx-fb.c             |   2 +
+ drivers/video/fbdev/hgafb.c                 |   3 +-
+ drivers/video/fbdev/hitfb.c                 |   2 +-
+ drivers/video/fbdev/kyro/fbdev.c            |   5 +-
+ drivers/video/fbdev/matrox/matroxfb_accel.c |   8 +-
+ drivers/video/fbdev/matrox/matroxfb_base.h  |   6 +-
+ drivers/video/fbdev/pm2fb.c                 |   3 +
+ drivers/video/fbdev/pm3fb.c                 |   2 +
+ drivers/video/fbdev/pvr2fb.c                |   4 +-
+ drivers/video/fbdev/s3fb.c                  |   2 +
+ drivers/video/fbdev/sm712fb.c               |   2 +
+ drivers/video/fbdev/sstfb.c                 |   4 +-
+ drivers/video/fbdev/stifb.c                 |   6 +-
+ drivers/video/fbdev/tdfxfb.c                |   5 +-
+ drivers/video/fbdev/tridentfb.c             |   2 +
+ drivers/video/fbdev/vga16fb.c               |   3 +-
+ drivers/video/fbdev/vt8623fb.c              |   2 +
+ drivers/video/fbdev/wmt_ge_rops.c           |   2 +
+ include/asm-generic/fb.h                    | 102 ++++++++++++++++++++
+ include/linux/fb.h                          |  53 ----------
+ 33 files changed, 167 insertions(+), 79 deletions(-)
+
 -- 
-2.37.5
+2.40.1
 
