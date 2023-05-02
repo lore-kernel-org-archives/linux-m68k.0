@@ -2,158 +2,80 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7CA5C77B7C
-	for <linux-m68k@archiver.kernel.org>; Tue,  2 May 2023 02:22:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A162C77B7E
+	for <linux-m68k@archiver.kernel.org>; Tue,  2 May 2023 06:48:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231728AbjEBCWT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 1 May 2023 22:22:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48298 "EHLO
+        id S233569AbjEBGsm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 2 May 2023 02:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232184AbjEBCWS (ORCPT
+        with ESMTP id S233439AbjEBGsl (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 1 May 2023 22:22:18 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D133AA6
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  1 May 2023 19:22:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1682994127; x=1714530127;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=85LkbDK+KApuWepVvTrNKkbkOtRXRZZHLuh2xgotSTc=;
-  b=SWG2C9mkUi9n7rSt0nciLqhoZZlIgS1cK0m1feX/w1nZ77bfRr6lra8p
-   nAvGgMzUYK3HkUVtkYKeXZgeNURAhOhf6M/AwuVJzvSPOOysfRUgrHk+V
-   3sfvl7u47s005rzV98welPZTZw3zziuKtzFvzkY3DbG+PcNPsNHR9TXvG
-   tQQzG4/IxK9BoZMn/ESTVdIEwj+mgIY/0pP2FtXbnPlfh0chOzBJKms6T
-   34UnUQ3n84LUH6pMRzyPdfu4+r9086uFzMaTllREGcvV4tKNlVOgD3c+N
-   6BavtjK6PDWhF9S57Dy8A2REq3O4vhVwTUmzmKpbvKauKfnK3cPltzr7f
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10697"; a="376342298"
-X-IronPort-AV: E=Sophos;i="5.99,242,1677571200"; 
-   d="scan'208";a="376342298"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2023 19:22:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10697"; a="646346632"
-X-IronPort-AV: E=Sophos;i="5.99,242,1677571200"; 
-   d="scan'208";a="646346632"
-Received: from lkp-server01.sh.intel.com (HELO e3434d64424d) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 01 May 2023 19:22:01 -0700
-Received: from kbuild by e3434d64424d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1ptfeS-0000m8-1s;
-        Tue, 02 May 2023 02:22:00 +0000
-Date:   Tue, 2 May 2023 10:21:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [PATCH v2 21/34] arm64: Convert various functions to use ptdescs
-Message-ID: <202305021038.c9jfVDsv-lkp@intel.com>
-References: <20230501192829.17086-22-vishal.moola@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230501192829.17086-22-vishal.moola@gmail.com>
+        Tue, 2 May 2023 02:48:41 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5D8B1A6
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  1 May 2023 23:48:39 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id CD3B25C0208;
+        Tue,  2 May 2023 02:48:36 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 02 May 2023 02:48:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:message-id:reply-to:sender
+        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm3; t=1683010116; x=1683096516; bh=2
+        G+eRlAJnvcKDhXQGjvWqa+DpSRajURLO0zcHDQqs3k=; b=Vpn9ZGTOpgQ4fMbVM
+        wp+z6GjV6KMnYQOxojF0UNhiaLlulgrFvCXkcj8lSpb6fLIZhoqsjvMGGEMvDYu8
+        dlcIav2/jrYq138TibFhgsxRdlqgqMYXHb0iPJ1GZGl8tcM+jPxirWKxhPUoaC+E
+        bYIbLS8rjUVZ+CZ4ywyO+nGI+H1Bk3DGVZo7y2wPniIYLGil2qZ61vEh6xypml1f
+        V17YFQxbruzeYC/TGFNHk6oTRxAKbjB1xQRQ/IQMcA/4PhnXrdNmytDW4dah00XK
+        w7OV4p9f3jooJFM7ug/KEzWuohHdZdivv+x3DJIiiOifWONsNpGxFFyOEzUo9+WL
+        SWArA==
+X-ME-Sender: <xms:RLJQZLAJ_LmkMDjrla_aNgCEv_QrG_hBIOwsprV91sFppIWpI0e04g>
+    <xme:RLJQZBhcOne2suDUiD_G0jmUqbvJyhZZxYyEozZn4zDCF41hlcH5EpYbIEifz8uLd
+    plhyQzJPO_IF1eHKao>
+X-ME-Received: <xmr:RLJQZGkeF-D9v3FuzriltqkdYx9Ck818e90NOVf6TF9Q_cP5Db4y94FMaqIO1y3LlcnqKjD1a_WkZtsfilOu8Vr5pwGRi3jpGA0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfedvhedgudduudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefkhffufffvveestddtredttddttdenucfhrhhomhephfhinhhnucfvhhgr
+    ihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrthhtvg
+    hrnhepheffudekteffudetvdffffehgedtteekkeefvefgieethfevvddtlefhuddutedt
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthh
+    grihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:RLJQZNy02Yp9xgpwRla8bOZZPKpwXVdRi53YM3y_alxzigPnHalEjg>
+    <xmx:RLJQZARuQ3ZVfOVYvGLN0kOXUDWVj08UA-hAzFWdvx8M_hsHklI_3w>
+    <xmx:RLJQZAYMJFTjgQL9BotMCpAR-AA43AsHKpoleI4gCOwu_YQSq0kP0g>
+    <xmx:RLJQZLL_hwCjiCcu4jYCglVn0OqZWEvSf6iPUnCh4fqMg8f9eJMpZg>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 2 May 2023 02:48:33 -0400 (EDT)
+Message-Id: <cover.1683010227.git.fthain@linux-m68k.org>
+From:   Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH RFC 0/2] 68020/030 signal handling following exceptions
+Date:   Tue, 02 May 2023 16:50:27 +1000
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org,
+        "Michael Schmitz" <schmitzmic@gmail.com>,
+        "Andreas Schwab" <schwab@linux-m68k.org>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Vishal,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on akpm-mm/mm-everything]
-[also build test ERROR on linus/master next-20230428]
-[cannot apply to s390/features powerpc/next powerpc/fixes geert-m68k/for-next geert-m68k/for-linus v6.3]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Vishal-Moola-Oracle/mm-Add-PAGE_TYPE_OP-folio-functions/20230502-033042
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20230501192829.17086-22-vishal.moola%40gmail.com
-patch subject: [PATCH v2 21/34] arm64: Convert various functions to use ptdescs
-config: arm64-randconfig-r023-20230430 (https://download.01.org/0day-ci/archive/20230502/202305021038.c9jfVDsv-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project b1465cd49efcbc114a75220b153f5a055ce7911f)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install arm64 cross compiling tool for clang build
-        # apt-get install binutils-aarch64-linux-gnu
-        # https://github.com/intel-lab-lkp/linux/commit/8e9481b63b5773d7c914836dcd7fbec2449902bc
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Vishal-Moola-Oracle/mm-Add-PAGE_TYPE_OP-folio-functions/20230502-033042
-        git checkout 8e9481b63b5773d7c914836dcd7fbec2449902bc
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm64 olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm64 SHELL=/bin/bash arch/arm64/
-
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202305021038.c9jfVDsv-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> arch/arm64/mm/mmu.c:440:10: error: invalid argument type 'void' to unary expression
-                   BUG_ON(!ptdesc_pte_dtor(ptdesc));
-                          ^~~~~~~~~~~~~~~~~~~~~~~~
-   include/asm-generic/bug.h:71:45: note: expanded from macro 'BUG_ON'
-   #define BUG_ON(condition) do { if (unlikely(condition)) BUG(); } while (0)
-                                               ^~~~~~~~~
-   include/linux/compiler.h:78:42: note: expanded from macro 'unlikely'
-   # define unlikely(x)    __builtin_expect(!!(x), 0)
-                                               ^
-   arch/arm64/mm/mmu.c:442:10: error: invalid argument type 'void' to unary expression
-                   BUG_ON(!ptdesc_pte_dtor(ptdesc));
-                          ^~~~~~~~~~~~~~~~~~~~~~~~
-   include/asm-generic/bug.h:71:45: note: expanded from macro 'BUG_ON'
-   #define BUG_ON(condition) do { if (unlikely(condition)) BUG(); } while (0)
-                                               ^~~~~~~~~
-   include/linux/compiler.h:78:42: note: expanded from macro 'unlikely'
-   # define unlikely(x)    __builtin_expect(!!(x), 0)
-                                               ^
-   2 errors generated.
+These two patches remedy stack corruption on 68020/030 when delivering
+signals following a bus error or (theoretically) an address error.
 
 
-vim +/void +440 arch/arm64/mm/mmu.c
+Finn Thain (2):
+  m68k: Don't deliver signals except at instruction boundary
+  m68k: Make allowance for signal delivery following an address error
 
-   425	
-   426	static phys_addr_t pgd_pgtable_alloc(int shift)
-   427	{
-   428		phys_addr_t pa = __pgd_pgtable_alloc(shift);
-   429		struct ptdesc *ptdesc = page_ptdesc(phys_to_page(pa));
-   430	
-   431		/*
-   432		 * Call proper page table ctor in case later we need to
-   433		 * call core mm functions like apply_to_page_range() on
-   434		 * this pre-allocated page table.
-   435		 *
-   436		 * We don't select ARCH_ENABLE_SPLIT_PMD_PTLOCK if pmd is
-   437		 * folded, and if so ptdesc_pte_dtor() becomes nop.
-   438		 */
-   439		if (shift == PAGE_SHIFT)
- > 440			BUG_ON(!ptdesc_pte_dtor(ptdesc));
-   441		else if (shift == PMD_SHIFT)
-   442			BUG_ON(!ptdesc_pte_dtor(ptdesc));
-   443	
-   444		return pa;
-   445	}
-   446	
+ arch/m68k/kernel/entry.S  |  6 +++++-
+ arch/m68k/kernel/signal.c | 13 +++++++++----
+ arch/m68k/kernel/traps.c  | 10 ++++++++--
+ 3 files changed, 22 insertions(+), 7 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+2.37.5
+
