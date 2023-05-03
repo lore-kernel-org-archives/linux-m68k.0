@@ -2,95 +2,98 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6D28C77B75
-	for <linux-m68k@archiver.kernel.org>; Wed,  3 May 2023 03:20:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 342D6C77B75
+	for <linux-m68k@archiver.kernel.org>; Wed,  3 May 2023 04:08:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbjECDUt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 2 May 2023 23:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58772 "EHLO
+        id S229457AbjECEIF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 3 May 2023 00:08:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjECDUs (ORCPT
+        with ESMTP id S229450AbjECEIE (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 2 May 2023 23:20:48 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F296AAD
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  2 May 2023 20:20:47 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 465BF3200ABD;
-        Tue,  2 May 2023 23:20:47 -0400 (EDT)
+        Wed, 3 May 2023 00:08:04 -0400
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BC281A6
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  2 May 2023 21:08:03 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 5DB7D3200B52;
+        Wed,  3 May 2023 00:08:02 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 02 May 2023 23:20:47 -0400
+  by compute2.internal (MEProxy); Wed, 03 May 2023 00:08:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-type:content-type:date:date
         :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
         :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1683084046; x=1683170446; bh=FbJnWlJWJTUAy
-        V/7mzLigaFSTNMECRPqipgyTRJCoZI=; b=WWvAPNhqQGPBj/BYTHmmRAbEoG177
-        Ak8y90mTAlEP2Mq9GFUrFzk86mtQ2UJceFgVPiUuFsqyfNOZ6nhuKaCI092Y/QOs
-        LdannZRERPTdnL+iCH4w0siz0bl5CgUKRKBdiss8auntM0nHW4x7DKPaWw6ct2sQ
-        hxQ9fLnCVvxTz7jeUpjQt/bijQck5+png7UDjFZVg7BMjzvqj+A/YXYBsevZtRPG
-        tYSs6oMLpZDRbgtlAdt750XVoBaz+A2x9IJxJ3Z+luUKpNUZSfQBmtZa+Yp+QvHx
-        Qx40p0319W80+Xo60fkiJsUUd/xxZBUjQFB5W9S5Ey0mTQ/X2LWdMTL/Q==
-X-ME-Sender: <xms:DtNRZE0i8qpuEKyHY9jNdW6tmH2w9d9rXpofc8dggQzcbPLoQc2M-A>
-    <xme:DtNRZPHk2wD8l4G33M0sQLRBYMZsttHeLjiKABdyVyrMzG2AIuPVHUQpdAYQbcgod
-    JzJkEQKQhcAZOiJzqA>
-X-ME-Received: <xmr:DtNRZM5Y3fBTAAfrDPBDAkUEYv6-7e-4qpLbZliX1WNtNnXcyfrUAZfaDWasc7bvZfjzr1Kxd9yUuwzqlnxzLk_CqrqKYgQfuII>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfedvjedgieejucetufdoteggodetrfdotf
+        :x-sasl-enc; s=fm3; t=1683086881; x=1683173281; bh=K/z7Z004DMWAW
+        rOmcpvTrCxoHf7ZQa3UhUCxq+N7QGM=; b=UUjDoSOw9UNRnYGS3v8HbS9rrxv7p
+        Wa4XltMgH8sva/Jii7bJKR+yYYFYFqpsNIdYHFpz16iMyY8d+lmWeDW+6B8gyCqL
+        aAFadl499Qz2Ytbhox0MUvNVQizBR89ukAszVozUdZMpiqSFcc++dXz8O9G5KZcx
+        7NNlqJpPJvKZdVMoExu0NaU/FwYNh3/zlBa1Phn9OeGT7rlgSNuwRwhwYh33TY6j
+        a3EritiMbphje5CQqvTuxrlLtBuXWJsM8ZowWvZijCxEjz8d6o+nqPW/plobZVwX
+        TANVVBXlGEMC+W26gobJWtkQijh0uXMWatOFvEAswWuMikcjDm5cM12jQ==
+X-ME-Sender: <xms:Id5RZEtctK-IZAFqlP-QwRsGOF9ZWHFLNUKMQZGyYMnlwJa9RU8N6w>
+    <xme:Id5RZBfK0EE9l64msk3j4FQ78nlRavgyDprsAq7kx4V5dxR95fmq2gSd8Sk2qiJjC
+    SxgXyAIOT9ptLMMAB4>
+X-ME-Received: <xmr:Id5RZPwNC9KzN2XnNPn9Bc9A35fVkP6t8UxiOiUa-k-Cb4e-FhZRjsEMCY21v9f-wP3hatRN9gDm30rxWZGX_x8LA6CLeRBjfGM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfedvjedgjeejucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
     vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
-    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:DtNRZN1P0zIsmdUk1ZJX7WnNtWS25x3ErgzF4yJ5UzgPvAV0_YrWZQ>
-    <xmx:DtNRZHFTuf8fWroslhlqzLK4_ws_O5vY1fxIJM4kpKMiL6gHHdEyVQ>
-    <xmx:DtNRZG-p8s0z3zbgVP29iyyfkstmsO_dduMMR26Pxug238UAbTg-Tw>
-    <xmx:DtNRZNOZH7W_O35XRAYFB5EqdkvqjEoATswPHMYVHse8oBQcl-Rqew>
+    htthgvrhhnpeeuveduudeuhfdvvddvudeftdduteevgffggfevgeevudffveelveefjedv
+    lefftdenucffohhmrghinhepnhigphdrtghomhenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdho
+    rhhg
+X-ME-Proxy: <xmx:Id5RZHPIeA7RSrHmzBTZNJsh3xtS7hQKN4Hn6A0-jwQrlJLCA4Ko_A>
+    <xmx:Id5RZE9vzG0G1mKb2HmwIQQQglEgFkKzsLIRtFcgd0cPTKf8fkwHRw>
+    <xmx:Id5RZPX6xgt5TFLFqOWSu2h57JPHVkK-YkE5v7AO3osFNjJ5_cvy5w>
+    <xmx:Id5RZClPB2Meg8JYK9U_rYRSJA_cFJsJWCT7cOaX5OpHq12Elki9pg>
 Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 2 May 2023 23:20:44 -0400 (EDT)
-Date:   Wed, 3 May 2023 13:24:39 +1000 (AEST)
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 3 May 2023 00:07:59 -0400 (EDT)
+Date:   Wed, 3 May 2023 14:11:52 +1000 (AEST)
 From:   Finn Thain <fthain@linux-m68k.org>
-To:     Andreas Schwab <schwab@linux-m68k.org>
+To:     Michael Schmitz <schmitzmic@gmail.com>
 cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org,
-        Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH RFC 1/2] m68k: Don't deliver signals except at instruction
- boundary
-In-Reply-To: <c68e7985-924c-fdb9-009d-0719b02befe1@linux-m68k.org>
-Message-ID: <163137a5-b4ac-c6fc-03fd-5522d4b7c99a@linux-m68k.org>
-References: <cover.1683010227.git.fthain@linux-m68k.org> <8a32bd0afd8db890b60e48801fb4b24ddc398e96.1683010227.git.fthain@linux-m68k.org> <87v8havfq2.fsf@igel.home> <c68e7985-924c-fdb9-009d-0719b02befe1@linux-m68k.org>
+        Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: [PATCH RFC 2/2] m68k: Make allowance for signal delivery following
+ an address error
+In-Reply-To: <f4280683-9044-3858-3262-16080e584c96@gmail.com>
+Message-ID: <421fd88f-1c91-8fb9-98a8-6ac3974bd9c9@linux-m68k.org>
+References: <cover.1683010227.git.fthain@linux-m68k.org> <f94a7736c10bc4f256bef5b826419faacb297f4a.1683010227.git.fthain@linux-m68k.org> <f4280683-9044-3858-3262-16080e584c96@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+On Wed, 3 May 2023, Michael Schmitz wrote:
 
-On Wed, 3 May 2023, Finn Thain wrote:
+> So the case that you are concerned about here is where the instruction 
+> in execution is e.g. a moveml using USP as one of the data addresses 
+> (making USP unreliable) and the instruction faulting is one of the next 
+> ones being decoded. [...]
 
-> On Tue, 2 May 2023, Andreas Schwab wrote:
-> 
-> > On Mai 02 2023, Finn Thain wrote:
-> > 
-> > > From: Andreas Schwab <schwab@linux-m68k.org>
-> > >
-> > > Signal delivery should only happen at insn boundaries, but due to the 
-> > > way the 030 handles return from bus error exceptions (the insn is 
-> > > resumed, not restarted like on the 040/060) the kernel may do it in 
-> > > the middle of the faulting insn.
-> > 
-> > I don't think this will work properly when the address cannot be 
-> > resolved.  The bus error exception will just be raised again 
-> > immediately.
-> > 
-> 
-> Sorry, I don't follow. Did you mean to say this patch doesn't work 
-> properly when the bus error cannot be resolved? Is that because the user 
-> space signal handler is supposed to fix things up so that the bus error 
-> can then be resolved??
+Right. The instruction in execution may be an incomplete stack operation 
+like MOVEM. If the signal handler fixes up the address error, that stack 
+operation might be resumed after sys_sigreturn(), like the bus error case.
+The kernel allows the exception frame to fixed up by the user program.
+
+> (You mentioned cpBcc or cpDBcc instructions in another mail - where did 
+> you find that? It's not mentioned in my copy of the 030 UM...)
 > 
 
-Nevermind. I just read Michael's explanation.
+It's in the 3rd edition (1990), section 10.5.2.8.
+https://www.nxp.com/files-static/32bit/doc/ref_manual/MC68030UM-P1.pdf
+https://www.nxp.com/files-static/32bit/doc/ref_manual/MC68030UM-P2.pdf
+
+> I'm not trying to say this all isn't necessary for address errors. I'm 
+> just trying to understand why it is.
+> 
+
+I haven't yet tried to write code to demonstrate the theoretical address 
+error issue but I can attempt that if need be. However, such code would be 
+moot if this patch is going to be required anyway, just to fix the bus 
+error case...
