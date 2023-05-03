@@ -2,126 +2,197 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E340DC77B78
-	for <linux-m68k@archiver.kernel.org>; Wed,  3 May 2023 05:50:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E1A5C77B78
+	for <linux-m68k@archiver.kernel.org>; Wed,  3 May 2023 06:59:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229486AbjECFur (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 3 May 2023 01:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57902 "EHLO
+        id S229491AbjECG7G (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 3 May 2023 02:59:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjECFup (ORCPT
+        with ESMTP id S229449AbjECG7F (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 3 May 2023 01:50:45 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A312D4E
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  2 May 2023 22:50:43 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-24e16918323so1874000a91.2
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 02 May 2023 22:50:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683093043; x=1685685043;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XGie2Wifm00jcuC6Ky5HNYtTJCCjnvKHoolJoUUcM/g=;
-        b=SxDNqedDcisP8jGkkP17fe4bobfkHiMhGM6/Buxk1eg2WiL6LAnwOXU0Z+U8mPAgHO
-         BfQoghhiES129HVi4A2YDnWvqiqeIUrEL9BLWkJ6GOb6L2Hxq1UciuQS5xJUg0Yen5Zj
-         f5EawP8GjmK/eDuPHEhowUr59A6/0gRM5p2nt6aYaLkpfdhJczFelS39wfdm0BTHF0dc
-         Wim9oIPAMiDwYU2jScoC5XDK7iI1ScN89UirmA6SAYwmR+xD+IiE+mHcpUsmjdPU/x+z
-         5Hg6buA+AM0z4VDiZArfJKhq/OA395I3yeB1uSZ8yERrslaNGMzpG6l9nTLOKStbqjxX
-         xXaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683093043; x=1685685043;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=XGie2Wifm00jcuC6Ky5HNYtTJCCjnvKHoolJoUUcM/g=;
-        b=FGGy40sLXX8D4bPk7aXpRnz3OW9h/CyWwgk/9fwsvqEgM4z2oKYLvnmRZA5yVK7Hw6
-         B07ktSSNO+JRjoo8BlkQcX0BNKW6i4QXxziD52iQJfl7KBWfSLjyjWoUVfmZYY5+ZNix
-         BL7HQd9zijWZU8JyFS9qwEiuEEItVHvJMcA9cB5b87RIEw5mroMr4TCUyw3NoEFHX+oY
-         Ii6AjKELcT9KRG+0Oo1TKvdow4gsDUsjeFF2uC2OUBxaqcDhYR6ACDQJtplDcAJp5Db1
-         Bxonj+PthcWM2MkTbhxhVttsOxtQPyBRa83lcYvklP8OTfH1Ckb4ycObH7RREBKhqc2X
-         RU0w==
-X-Gm-Message-State: AC+VfDz3cAHC3eur8e+B11dj5NAHlSSpEMtf+dtqWY9K0nQVH/us5bJ3
-        u8hwEMO71Fg+PvCDTh9TC7clq9vl9ww=
-X-Google-Smtp-Source: ACHHUZ632FTm6xJskwplPp1IWWl/PRZy+DlKnzZULtZIYS3Kqp0AmgCs+4qkVxae/EeZnyXxpnREXA==
-X-Received: by 2002:a17:90a:c302:b0:24b:af7d:201d with SMTP id g2-20020a17090ac30200b0024baf7d201dmr19573475pjt.24.1683093043029;
-        Tue, 02 May 2023 22:50:43 -0700 (PDT)
-Received: from [10.1.1.24] (222-152-172-8-fibre.sparkbb.co.nz. [222.152.172.8])
-        by smtp.gmail.com with ESMTPSA id fy17-20020a17090b021100b0024e208a6464sm480608pjb.15.2023.05.02.22.50.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 02 May 2023 22:50:42 -0700 (PDT)
-Subject: Re: [PATCH RFC 2/2] m68k: Make allowance for signal delivery
- following an address error
-To:     Finn Thain <fthain@linux-m68k.org>
-References: <cover.1683010227.git.fthain@linux-m68k.org>
- <f94a7736c10bc4f256bef5b826419faacb297f4a.1683010227.git.fthain@linux-m68k.org>
- <f4280683-9044-3858-3262-16080e584c96@gmail.com>
- <421fd88f-1c91-8fb9-98a8-6ac3974bd9c9@linux-m68k.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Andreas Schwab <schwab@linux-m68k.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <268271f3-7d2c-bb2f-f0e4-b26bc80ac015@gmail.com>
-Date:   Wed, 3 May 2023 17:50:36 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        Wed, 3 May 2023 02:59:05 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E38269D
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  2 May 2023 23:58:52 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1DFCD20014;
+        Wed,  3 May 2023 06:58:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1683097131; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SDkDQ0H4x2vY2WbWItoTPoQwTbRYly8kay1++EV5PPw=;
+        b=c8vFGsLxEEKQIkTWs9AQHjqWQ9gsc5Ml1bqJhe+nH2by02o3jByzLOusJQK3w8uAaYuFvu
+        mqj1QjROkyso+37VLhF4QF4IHJ81WUDUrUoY88Csh9pZji7FJOOahyajPzaOGlrQ1xoLuI
+        P1PgBANvBPu/UXqbPYF8r6Z1cezIpac=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1683097131;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SDkDQ0H4x2vY2WbWItoTPoQwTbRYly8kay1++EV5PPw=;
+        b=w1J2fR1IuDhWIWF1iA3LujC9H/zlly0tvktPaF5nGO2r1Fv5P9/DcBvllFAHj5hog10rTX
+        C1tOVxFVbDkUatDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AEBE913584;
+        Wed,  3 May 2023 06:58:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ZzeQKSoGUmQjPwAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Wed, 03 May 2023 06:58:50 +0000
+Message-ID: <df767237-2bae-f299-9cbb-1543f76c9c3a@suse.de>
+Date:   Wed, 3 May 2023 08:58:49 +0200
 MIME-Version: 1.0
-In-Reply-To: <421fd88f-1c91-8fb9-98a8-6ac3974bd9c9@linux-m68k.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v3 5/6] fbdev: Move framebuffer I/O helpers into
+ <asm/fb.h>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     linux-arch@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
+        arnd@arndb.de, deller@gmx.de, chenhuacai@kernel.org,
+        javierm@redhat.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        James.Bottomley@hansenpartnership.com,
+        linux-m68k@lists.linux-m68k.org, geert@linux-m68k.org,
+        linux-parisc@vger.kernel.org, vgupta@kernel.org,
+        sparclinux@vger.kernel.org, kernel@xen0n.name,
+        linux-snps-arc@lists.infradead.org, davem@davemloft.net,
+        linux-arm-kernel@lists.infradead.org
+References: <20230502130223.14719-1-tzimmermann@suse.de>
+ <20230502130223.14719-6-tzimmermann@suse.de>
+ <20230502200300.GB319489@ravnborg.org>
+Content-Language: en-US
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <20230502200300.GB319489@ravnborg.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------jQs64Jy6GElwzzZZ39a0RUOn"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Finn,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------jQs64Jy6GElwzzZZ39a0RUOn
+Content-Type: multipart/mixed; boundary="------------6tQ2AHuGFxKZaLti4bsSA0S0";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Sam Ravnborg <sam@ravnborg.org>
+Cc: linux-arch@vger.kernel.org, linux-fbdev@vger.kernel.org,
+ linux-ia64@vger.kernel.org, loongarch@lists.linux.dev, arnd@arndb.de,
+ deller@gmx.de, chenhuacai@kernel.org, javierm@redhat.com,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ James.Bottomley@hansenpartnership.com, linux-m68k@lists.linux-m68k.org,
+ geert@linux-m68k.org, linux-parisc@vger.kernel.org, vgupta@kernel.org,
+ sparclinux@vger.kernel.org, kernel@xen0n.name,
+ linux-snps-arc@lists.infradead.org, davem@davemloft.net,
+ linux-arm-kernel@lists.infradead.org
+Message-ID: <df767237-2bae-f299-9cbb-1543f76c9c3a@suse.de>
+Subject: Re: [PATCH v3 5/6] fbdev: Move framebuffer I/O helpers into
+ <asm/fb.h>
+References: <20230502130223.14719-1-tzimmermann@suse.de>
+ <20230502130223.14719-6-tzimmermann@suse.de>
+ <20230502200300.GB319489@ravnborg.org>
+In-Reply-To: <20230502200300.GB319489@ravnborg.org>
 
-Am 03.05.2023 um 16:11 schrieb Finn Thain:
-> On Wed, 3 May 2023, Michael Schmitz wrote:
->
->> So the case that you are concerned about here is where the instruction
->> in execution is e.g. a moveml using USP as one of the data addresses
->> (making USP unreliable) and the instruction faulting is one of the next
->> ones being decoded. [...]
->
-> Right. The instruction in execution may be an incomplete stack operation
-> like MOVEM. If the signal handler fixes up the address error, that stack
-> operation might be resumed after sys_sigreturn(), like the bus error case.
-> The kernel allows the exception frame to fixed up by the user program.
+--------------6tQ2AHuGFxKZaLti4bsSA0S0
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Right - we don't have anything at present that would use signal handlers 
-in this way (that we'd know of) but it's a legitimate use.
+SGkgU2FtDQoNCkFtIDAyLjA1LjIzIHVtIDIyOjAzIHNjaHJpZWIgU2FtIFJhdm5ib3JnOg0K
+PiBIaSBUaG9tYXMsDQo+IA0KPiBPbiBUdWUsIE1heSAwMiwgMjAyMyBhdCAwMzowMjoyMlBN
+ICswMjAwLCBUaG9tYXMgWmltbWVybWFubiB3cm90ZToNCj4+IEltcGxlbWVudCBmcmFtZWJ1
+ZmZlciBJL08gaGVscGVycywgc3VjaCBhcyBmYl9yZWFkKigpIGFuZCBmYl93cml0ZSooKSwN
+Cj4+IGluIHRoZSBhcmNoaXRlY3R1cmUncyA8YXNtL2ZiLmg+IGhlYWRlciBmaWxlIG9yIHRo
+ZSBnZW5lcmljIG9uZS4NCj4gDQo+IEluIHJlYWxpdHkgdGhleSBhcmUgbm93IGFsbCBpbXBs
+ZW1lbnRlZCBpbiB0aGUgZ2VuZXJpYyBvbmUuDQo+IA0KPj4NCj4+IFRoZSBjb21tb24gY2Fz
+ZSBoYXMgYmVlbiB0aGUgdXNlIG9mIHJlZ3VsYXIgSS9PIGZ1bmN0aW9ucywgc3VjaCBhcw0K
+Pj4gX19yYXdfcmVhZGIoKSBvciBtZW1zZXRfaW8oKS4gQSBmZXcgYXJjaGl0ZWN0dXJlcyB1
+c2VkIHBsYWluIHN5c3RlbS0NCj4+IG1lbW9yeSByZWFkcyBhbmQgd3JpdGVzLiBTcGFyYyB1
+c2VkIGhlbHBlcnMgZm9yIGl0cyBTQnVzLg0KPj4NCj4+IFRoZSBhcmNoaXRlY3R1cmVzIHRo
+YXQgdXNlZCBzcGVjaWFsIGNhc2VzIHByb3ZpZGUgdGhlIHNhbWUgY29kZSBpbg0KPj4gdGhl
+aXIgX19yYXdfKigpIEkvTyBoZWxwZXJzLiBTbyB0aGUgcGF0Y2ggcmVwbGFjZXMgdGhpcyBj
+b2RlIHdpdGggdGhlDQo+PiBfX3Jhd18qKCkgZnVuY3Rpb25zIGFuZCBtb3ZlcyBpdCB0byA8
+YXNtLWdlbmVyaWMvZmIuaD4gZm9yIGFsbA0KPj4gYXJjaGl0ZWN0dXJlcy4NCj4gV2hpY2gg
+aXMgYWxzbyBkb2N1bWVudGVkIGhlcmUuDQoNClRoZSBmaXJzdCBwYXJhZ3JhcGggZG9jdW1l
+bnRzIHRoZSBkZXNpZ24gaW50ZW50aW9uLCB0aGUgb3RoZXIgb25lIHRoZSANCmltcGxlbWVu
+dGF0aW9uLiBCdXQgSSBhZ3JlZSB0aGF0IGl0J3Mgbm90IHdlbGwgcGhyYXNlZC4gSSdsbCBz
+ZWUgaWYgSSANCmNhbiBpbXByb3ZlIHRoZSB0ZXh0Lg0KDQo+IA0KPj4NCj4+IHYzOg0KPj4g
+CSogaW1wbGVtZW50IGFsbCBhcmNoaXRlY3R1cmVzIHdpdGggZ2VuZXJpYyBoZWxwZXJzDQo+
+PiAJKiBzdXBwb3J0IHJlb3JkZXJpbmcgYW5kIG5hdGl2ZSBieXRlIG9yZGVyIChHZWVydCwg
+QXJuZCkNCj4+DQo+PiBTaWduZWQtb2ZmLWJ5OiBUaG9tYXMgWmltbWVybWFubiA8dHppbW1l
+cm1hbm5Ac3VzZS5kZT4NCj4+IC0tLQ0KPj4gICBpbmNsdWRlL2FzbS1nZW5lcmljL2ZiLmgg
+fCAxMDEgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+PiAgIGlu
+Y2x1ZGUvbGludXgvZmIuaCAgICAgICB8ICA1MyAtLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPj4g
+ICAyIGZpbGVzIGNoYW5nZWQsIDEwMSBpbnNlcnRpb25zKCspLCA1MyBkZWxldGlvbnMoLSkN
+Cj4+DQo+PiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9hc20tZ2VuZXJpYy9mYi5oIGIvaW5jbHVk
+ZS9hc20tZ2VuZXJpYy9mYi5oDQo+PiBpbmRleCA2OTIyZGQyNDhjNTEuLjA1NDBlY2NkYmVj
+YSAxMDA2NDQNCj4+IC0tLSBhL2luY2x1ZGUvYXNtLWdlbmVyaWMvZmIuaA0KPj4gKysrIGIv
+aW5jbHVkZS9hc20tZ2VuZXJpYy9mYi5oDQo+PiBAQCAtMzEsNCArMzEsMTA1IEBAIHN0YXRp
+YyBpbmxpbmUgaW50IGZiX2lzX3ByaW1hcnlfZGV2aWNlKHN0cnVjdCBmYl9pbmZvICppbmZv
+KQ0KPj4gICB9DQo+PiAgICNlbmRpZg0KPj4gICANCj4+ICsvKg0KPj4gKyAqIEkvTyBoZWxw
+ZXJzIGZvciB0aGUgZnJhbWVidWZmZXIuIFByZWZlciB0aGVzZSBmdW5jdGlvbnMgb3ZlciB0
+aGVpcg0KPj4gKyAqIHJlZ3VsYXIgY291bnRlcnBhcnRzLiBUaGUgcmVndWxhciBJL08gZnVu
+Y3Rpb25zIHByb3ZpZGUgaW4tb3JkZXINCj4+ICsgKiBhY2Nlc3MgYW5kIHN3YXAgYnl0ZXMg
+dG8vZnJvbSBsaXR0bGUtZW5kaWFuIG9yZGVyaW5nLiBOZWl0aGVyIGlzDQo+PiArICogcmVx
+dWlyZWQgZm9yIGZyYW1lYnVmZmVycy4gSW5zdGVhZCwgdGhlIGhlbHBlcnMgcmVhZCBhbmQg
+d3JpdGUNCj4+ICsgKiByYXcgZnJhbWVidWZmZXIgZGF0YS4gSW5kZXBlbmRlbnQgb3BlcmF0
+aW9ucyBjYW4gYmUgcmVvcmRlcmVkIGZvcg0KPj4gKyAqIGltcHJvdmVkIHBlcmZvcm1hbmNl
+Lg0KPj4gKyAqLw0KPj4gKw0KPj4gKyNpZm5kZWYgZmJfcmVhZGINCj4+ICtzdGF0aWMgaW5s
+aW5lIHU4IGZiX3JlYWRiKGNvbnN0IHZvbGF0aWxlIHZvaWQgX19pb21lbSAqYWRkcikNCj4+
+ICt7DQo+PiArCXJldHVybiBfX3Jhd19yZWFkYihhZGRyKTsNCj4+ICt9DQo+PiArI2RlZmlu
+ZSBmYl9yZWFkYiBmYl9yZWFkYg0KPj4gKyNlbmRpZg0KPiANCj4gV2hlbiB3ZSBuZWVkIHRv
+IHByb3ZpZGUgYW4gYXJjaGl0ZWN0dXJlIHNwZWNpZmljIHZhcmlhbnQgdGhlDQo+ICNpZm5k
+ZWYgZm9vDQo+IC4uLg0KPiAjZGVmaW5lIGZvbyBmb28NCj4gY2FuIGJlIGFkZGVkLiBSaWdo
+dCBub3cgaXQgaXMganVzdCBub2lzZSBhcyBubyBhcmNoaXRlY3R1cmVzIHByb3ZpZGUNCj4g
+dGhlaXIgb3duIHZhcmlhbnRzLg0KDQpHaXZlbiBBcm5kJ3MgY29tbWVudHMsIHRoaXMgbWln
+aHQgY2hhbmdlLiBJdCBhbHNvIG1ha2VzIHNlbnNlIGZyb20gYSANCmRlc2lnbiBQT1YuDQoN
+Cj4gDQo+IEJ1dCBJIGFtIG1pc3Npbmcgc29tZXRoaW5nIHNvbWV3aGVyZSBhcyBJIGNhbm5v
+dCBzZWUgaG93IHRoaXMgYnVpbGRzLg0KPiBhc20tZ2VuZXJpYyBub3cgcHJvdmlkZSB0aGUg
+ZmJfcmVhZC9mYl93cml0ZSBoZWxwZXJzLg0KPiBCdXQgZm9yIGV4YW1wbGUgc3BhcmMgaGFz
+IGFuIGFyY2hpdGVjdHVyZSBzcGVjaWZjIGZiLmggc28gaXQgd2lsbCBub3QNCj4gdXNlIHRo
+ZSBhc20tZ2VuZXJpYyB2YXJpYW50LiBTbyBJIHdvbmRlciBob3cgc3BhcmMgZ2V0IGhvbGQg
+b2YgdGhlDQo+IGFzbS1nZW5lcmljIGZiLmggZmlsZT8NCg0KQWxsIGFyY2hpdGVjdHVyZSdz
+IDxhc20vZmIuaD4gZmlsZXMgaW5jbHVkZSA8YXNtLWdlbmVyaWMvZmIuaD4sIHNvIHRoYXQg
+DQp0aGV5IGFsbCBnZXQgdGhlIGludGVyZmFjZXMgd2hpY2ggdGhleSBkb24ndCBkZWZpbmUg
+dGhlbXNlbHZlcy4gRm9yIA0KU3BhcmMsIHRoaXMgaXMgYXQgWzFdLg0KDQpCZXN0IHJlZ2Fy
+ZHMNClRob21hcw0KDQoNClsxXSANCmh0dHBzOi8vY2dpdC5mcmVlZGVza3RvcC5vcmcvZHJt
+L2RybS10aXAvdHJlZS9hcmNoL3NwYXJjL2luY2x1ZGUvYXNtL2ZiLmgjbjE5DQoNCj4gDQo+
+IE1heWJlIGl0IGlzIG9idmlvdXMsIGJ1dCBJIG1pc3MgaXQuDQo+IA0KPiAJU2FtDQoNCi0t
+IA0KVGhvbWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXINClNVU0Ug
+U29mdHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KRnJhbmtlbnN0cmFzc2UgMTQ2LCA5
+MDQ2MSBOdWVybmJlcmcsIEdlcm1hbnkNCkdGOiBJdm8gVG90ZXYsIEFuZHJldyBNeWVycywg
+QW5kcmV3IE1jRG9uYWxkLCBCb3VkaWVuIE1vZXJtYW4NCkhSQiAzNjgwOSAoQUcgTnVlcm5i
+ZXJnKQ0K
 
->> (You mentioned cpBcc or cpDBcc instructions in another mail - where did
->> you find that? It's not mentioned in my copy of the 030 UM...)
->>
->
-> It's in the 3rd edition (1990), section 10.5.2.8.
-> https://www.nxp.com/files-static/32bit/doc/ref_manual/MC68030UM-P1.pdf
-> https://www.nxp.com/files-static/32bit/doc/ref_manual/MC68030UM-P2.pdf
+--------------6tQ2AHuGFxKZaLti4bsSA0S0--
 
-Thanks - I have those but hadn't looked at that section yet.
+--------------jQs64Jy6GElwzzZZ39a0RUOn
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-Linux requires a FPU (real or emulated) and FPU conditional instructions 
-might hit this bug (even though any code compiled by our binutils should 
-avoid it). Better fix this now that we're poking around in this area of 
-the kernel.
+-----BEGIN PGP SIGNATURE-----
 
->> I'm not trying to say this all isn't necessary for address errors. I'm
->> just trying to understand why it is.
->>
->
-> I haven't yet tried to write code to demonstrate the theoretical address
-> error issue but I can attempt that if need be. However, such code would be
-> moot if this patch is going to be required anyway, just to fix the bus
-> error case...
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmRSBikFAwAAAAAACgkQlh/E3EQov+AB
+AQ//Xy5yckNa6c2mse8zcM+Y9bB7wfXqbQhoEPFy2yWTqJHcmP2aJB3aVG2otT/HddHEI4vilkcR
+Ne72cVsqADctlBeqMUM/BkO5IENzhY3OXthSn/um2HUi4S2O3PT9IscF51G2IKjA5HveoODrxmPK
+g6hJvgM9CJyrJnoBRSfs6JEM8frbWMUxUB/EWqiN1+1oerGdp9M4K3ZCs1o47T5dXHpxeew+Z5dE
+4eDSesMGgZt7F410j7PFE69+6mOKpIsnUa0eqybt+3srJtbMSB6hbKv9z0ExVC7C+UFOWTm3qBKr
+1NlVz752xhh1+/RcFWRy+G1H/1tBG+bU4Eu7Mx4sWG8ZVU6drco4STfmZyXKAiQfqt3aiQHEOEX4
+Uzf/wj97PEwKwTlj78s5zV6E3xTySna8kghEb4dAhBqbtDIbmh9MHeKJWi+Wt5jB3DyKBlcAPjlA
+qmrAU3JIr4ZmN/9W7XJtA+MKfmpeY6T2XvAr9AW7p4qhzC7R69Qc2iq40pgswRa6stJYoFFAmF88
+tzuAsfTnu0rW/9p8dwA3fxWFmJV1iw6uW71Sh8r4okDUpnjLmMT351MZB2/nd7de71CwMw07tFww
+aiF2Gzvo9AVvoB6cY4hfZxN4nVGQS4APlMwUO7jHSMPj/l2L+XNcQKG3dxs/h8Bwi6vEVWkFhww3
+0W8=
+=Xb0b
+-----END PGP SIGNATURE-----
 
-No, seeing the coprocessor conditional branch case we want this patch 
-even if we decide to handle data faults differently.
-
-That is, unless Andreas can come up with a reason why calculated branch 
-target adresses cannot be used with these coprocessor branch instructions?
-
-Cheers,
-
-	Michael
-
+--------------jQs64Jy6GElwzzZZ39a0RUOn--
