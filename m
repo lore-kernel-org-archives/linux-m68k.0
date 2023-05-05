@@ -2,102 +2,170 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7329C77B75
-	for <linux-m68k@archiver.kernel.org>; Fri,  5 May 2023 05:05:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF3DBC77B7D
+	for <linux-m68k@archiver.kernel.org>; Fri,  5 May 2023 05:47:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229781AbjEEFFM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 5 May 2023 01:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48780 "EHLO
+        id S230249AbjEEFrn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 5 May 2023 01:47:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229795AbjEEFFL (ORCPT
+        with ESMTP id S230268AbjEEFrk (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 5 May 2023 01:05:11 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE71B93E8
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  4 May 2023 22:05:10 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-517c840f181so647433a12.3
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 04 May 2023 22:05:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683263110; x=1685855110;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Bor6uhAtayZ8QB/La7DzLrGgkgQ7r/5nuuqV3iNy16c=;
-        b=VyOlLaIqUj3iZOoyHiXlHKiVMEDNhH/kOImVNuMjO9PGffGVCj/dK52tcQqNiFYdEr
-         E0OGsjdbbvywfc7Xv+xJhkRxS2AIoNMJkSKQBcdgRzLM3QrpdQ2WZvsQ259ob/4BVbJx
-         DaVJBJYC2fIQamZQw/PTbNFyfDLaVTaYWFbqxFEdyOeEZzqEzdHWWBs+p9zmUikBt34w
-         YFhaQor+iEeyitZECca+mtrJyUdn/uqObML/5c1RiJ8Y/9q9SzmH+ZK0ZEd1k5LoZaRv
-         RywrfFrbJ0ujJOfDgr+yKMm01DYiDJ9s2z2+xeJ4JoAF0NzHGo0SGuO0JlFW+0/hby1J
-         8ZhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683263110; x=1685855110;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Bor6uhAtayZ8QB/La7DzLrGgkgQ7r/5nuuqV3iNy16c=;
-        b=AYjRdAP8AIIdBiaIpWyp2NesQ8b6LZjhJdkKRjSPNHgcidOgaNgN9oSay6LZUdp4WP
-         gtvALf9Do3Df2MqcY4oGBLk/3V60Z3rbMIYm6r0pAYfMpCuoLC65H9xlQDRA6CEdDpSW
-         Nq/WBR6+RfeieKCLvTc3XlmGW09Z+R53QrYCJjJWJi6o6oJ3gOj0qZf0pgMsbWK33xkz
-         6gKdZLZicsH4g+ZRxY2gRluZSCO8oTUbX4TW0vcQQk3YalQsxvZLYjQZWguXTJGelYwV
-         zPlO3GNEfUQj/W8wC88axnbZakieD8MA2ohuAe9DcGtXKQ7SP8x7JfOOZHZmHe5ULs/B
-         UqMg==
-X-Gm-Message-State: AC+VfDzP/tiCTTCI7wb2A4+pjkDtJNaRC+N6DbvueVNWboFbL4f1sM05
-        M5WHR0G6ZVuRvhPCN3z9OxolPw8R9zs=
-X-Google-Smtp-Source: ACHHUZ5ql8yLpB7t4JSN6zK+z/bfoOX1L9GZbSfegLZRQBsmgqQoOCJXXDZPXrhgSZGwehPUkOzsLA==
-X-Received: by 2002:a05:6a20:3d21:b0:ef:e440:8aac with SMTP id y33-20020a056a203d2100b000efe4408aacmr276906pzi.39.1683263109970;
-        Thu, 04 May 2023 22:05:09 -0700 (PDT)
-Received: from [10.1.1.24] (222-152-172-8-fibre.sparkbb.co.nz. [222.152.172.8])
-        by smtp.gmail.com with ESMTPSA id k25-20020aa792d9000000b00636c4bd7c8bsm644404pfa.43.2023.05.04.22.05.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 04 May 2023 22:05:09 -0700 (PDT)
-Subject: Re: [PATCH RFC 2/2] m68k: Make allowance for signal delivery
- following an address error
-To:     Finn Thain <fthain@linux-m68k.org>
-References: <cover.1683010227.git.fthain@linux-m68k.org>
- <f94a7736c10bc4f256bef5b826419faacb297f4a.1683010227.git.fthain@linux-m68k.org>
- <f4280683-9044-3858-3262-16080e584c96@gmail.com>
- <421fd88f-1c91-8fb9-98a8-6ac3974bd9c9@linux-m68k.org>
- <268271f3-7d2c-bb2f-f0e4-b26bc80ac015@gmail.com>
- <79fa24d5-ab04-0750-5dd4-eae6db212a71@linux-m68k.org>
- <c4ed63f4-6aea-2a1c-56b4-80fd64274cef@gmail.com>
- <b57967eb-8021-a4c3-9171-973252529194@linux-m68k.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Andreas Schwab <schwab@linux-m68k.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <4e20d336-1215-bf66-14b1-a142a2960d70@gmail.com>
-Date:   Fri, 5 May 2023 17:05:03 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        Fri, 5 May 2023 01:47:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C7991209E
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  4 May 2023 22:47:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AEBC763B1F
+        for <linux-m68k@lists.linux-m68k.org>; Fri,  5 May 2023 05:47:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B5F4C433D2
+        for <linux-m68k@lists.linux-m68k.org>; Fri,  5 May 2023 05:47:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1683265657;
+        bh=TmEJ43a9wRyU79Q4Z9WHv4VZR6aLeCdSzDRMZZtHgkE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Z26bR3GD7NZekm8D2fY3Likq3Z+WzMYLxGNnfeJCb+QwNkNe2TrCsNu2VFfZjShat
+         waIgr8ZT+ardQLvN1NlwZYzH5cZxJYxowJsqGOWno8Rl9LGCyRjXrN4kUrT0wSjKA3
+         va31vYv4BfxRUWA0U1ACB0SZxiczkJ6ChjLmeQmgK6um5tf4OdsSdlBmir+dXjr7Ib
+         eodQwnLUWN7khfewboLikhJjzXtjqnFi+oOdZSrfft8Feutqpt4nrnNIFe7eshzIjL
+         2R7E0+HCH9g3/5K1V+VPwNnTCBGdmrwdimg1OJKzf3tZSMKqnn1Z4uKwCieN6lGWZq
+         wQHAZd8sjvaLg==
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2ac7707e34fso15704301fa.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 04 May 2023 22:47:37 -0700 (PDT)
+X-Gm-Message-State: AC+VfDyVUm1qfY7iDfour0IETq6Qzj2f65uvrgjFhwhXaHvMxcKLfIhj
+        DhFmGVXcCK5X6km1d7IKGxnnUNiQanKyUEAFXE4=
+X-Google-Smtp-Source: ACHHUZ7vjZvoO17O2+xGcjw8YRQwo0MSgi9BtdhaWD+v+3nmuTyY0RrEyW2wbSK+lqJd6C9lcTXOXjjLYHG3jJse7RE=
+X-Received: by 2002:a17:907:1c07:b0:960:ddba:e5c7 with SMTP id
+ nc7-20020a1709071c0700b00960ddbae5c7mr139047ejc.40.1683265634680; Thu, 04 May
+ 2023 22:47:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <b57967eb-8021-a4c3-9171-973252529194@linux-m68k.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20230327121317.4081816-1-arnd@kernel.org> <20230327121317.4081816-10-arnd@kernel.org>
+In-Reply-To: <20230327121317.4081816-10-arnd@kernel.org>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Fri, 5 May 2023 13:47:03 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTT2VCVMJs1NvgK66uD+BhObjM2WNxf2RY7wTZsho4sjVA@mail.gmail.com>
+Message-ID: <CAJF2gTT2VCVMJs1NvgK66uD+BhObjM2WNxf2RY7wTZsho4sjVA@mail.gmail.com>
+Subject: Re: [PATCH 09/21] riscv: dma-mapping: skip invalidation before
+ bidirectional DMA
+To:     Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     linux-kernel@vger.kernel.org, Vineet Gupta <vgupta@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Brian Cain <bcain@quicinc.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-oxnas@groups.io,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Finn,
-
-Am 05.05.2023 um 15:14 schrieb Finn Thain:
-> On Fri, 5 May 2023, Michael Schmitz wrote:
+On Mon, Mar 27, 2023 at 8:15=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wro=
+te:
 >
->>
->> In terms of fixing the bus error bug, I think we'll need to fix this
->> regression first (only first patch of yours applied):
->>
+> From: Arnd Bergmann <arnd@arndb.de>
 >
-> That patch came from Andreas, maybe he can comment.
+> For a DMA_BIDIRECTIONAL transfer, the caches have to be cleaned
+> first to let the device see data written by the CPU, and invalidated
+> after the transfer to let the CPU see data written by the device.
 >
->> I'll try with your second patch applied as well.
+> riscv also invalidates the caches before the transfer, which does
+> not appear to serve any purpose.
+Yes, we can't guarantee the CPU pre-load cache lines randomly during
+dma working.
+
+But I've two purposes to keep invalidates before dma transfer:
+ - We clearly tell the CPU these cache lines are invalid. The caching
+algorithm would use these invalid slots first instead of replacing
+valid ones.
+ - Invalidating is very cheap. Actually, flush and clean have the same
+performance in our machine.
+
+So, how about:
+
+diff --git a/arch/riscv/mm/dma-noncoherent.c b/arch/riscv/mm/dma-noncoheren=
+t.c
+index d919efab6eba..2c52fbc15064 100644
+--- a/arch/riscv/mm/dma-noncoherent.c
++++ b/arch/riscv/mm/dma-noncoherent.c
+@@ -22,8 +22,6 @@ void arch_sync_dma_for_device(phys_addr_t paddr, size_t s=
+ize,
+                ALT_CMO_OP(clean, vaddr, size, riscv_cbom_block_size);
+                break;
+        case DMA_FROM_DEVICE:
+-               ALT_CMO_OP(clean, vaddr, size, riscv_cbom_block_size);
+-               break;
+        case DMA_BIDIRECTIONAL:
+                ALT_CMO_OP(flush, vaddr, size, riscv_cbom_block_size);
+                break;
+@@ -42,7 +40,7 @@ void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size=
+,
+                break;
+        case DMA_FROM_DEVICE:
+        case DMA_BIDIRECTIONAL:
+                /* I'm not sure all drivers have guaranteed cacheline
+alignment. If not, this inval would cause problems */
+-               ALT_CMO_OP(flush, vaddr, size, riscv_cbom_block_size);
++               ALT_CMO_OP(inval, vaddr, size, riscv_cbom_block_size);
+                break;
+        default:
+                break;
+
 >
-> I think patch 2/2 should be tested alone since 1/2 was nak'd.
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  arch/riscv/mm/dma-noncoherent.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/riscv/mm/dma-noncoherent.c b/arch/riscv/mm/dma-noncoher=
+ent.c
+> index 640f4c496d26..69c80b2155a1 100644
+> --- a/arch/riscv/mm/dma-noncoherent.c
+> +++ b/arch/riscv/mm/dma-noncoherent.c
+> @@ -25,7 +25,7 @@ void arch_sync_dma_for_device(phys_addr_t paddr, size_t=
+ size,
+>                 ALT_CMO_OP(clean, vaddr, size, riscv_cbom_block_size);
+>                 break;
+>         case DMA_BIDIRECTIONAL:
+> -               ALT_CMO_OP(flush, vaddr, size, riscv_cbom_block_size);
+> +               ALT_CMO_OP(clean, vaddr, size, riscv_cbom_block_size);
+>                 break;
+>         default:
+>                 break;
+> --
+> 2.39.2
+>
 
-I'm trying to find out whether patch 2 mitigates the effect of patch 1. 
-But I'll test patch 2 alone as well. No worries.
 
-Cheers,
-
-	Michael
-
-
+--=20
+Best Regards
+ Guo Ren
