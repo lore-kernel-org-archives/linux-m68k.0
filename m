@@ -2,180 +2,153 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5F80C7EE2C
-	for <linux-m68k@archiver.kernel.org>; Sat,  6 May 2023 07:53:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8663C77B75
+	for <linux-m68k@archiver.kernel.org>; Sat,  6 May 2023 08:25:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230218AbjEFHxc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 6 May 2023 03:53:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51608 "EHLO
+        id S229736AbjEFIZA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 6 May 2023 04:25:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbjEFHxa (ORCPT
+        with ESMTP id S229872AbjEFIY7 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 6 May 2023 03:53:30 -0400
-Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com [66.111.4.221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E689ED1
-        for <linux-m68k@lists.linux-m68k.org>; Sat,  6 May 2023 00:53:28 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 8739E580382;
-        Sat,  6 May 2023 03:53:26 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Sat, 06 May 2023 03:53:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1683359606; x=1683366806; bh=qirqUm7PnGWHwQwNur2abUio9msrv//9RED
-        Pco6ZlX4=; b=oUIJ95rOpDfmRIzT7ndjLdYZNMy36XDlyo33IIEnHSZ33J0jADb
-        s8Wl2kVkXJ9JJL3ahFR6/tUlWgUg4T+5GlAeuQgXbA623ytSHMI6w33pgrL5gPkQ
-        W8F9RgVjYAsbzO0gAELiS07CjrceJMlDMNGbnMT9Ppt63zRALUtziJnVtHYJYrC3
-        a3r22nW3NOQdW6Hcx+hp4tzQSpvzL4utHV+ScKAqMXRif/hqb3qf7dOQ+j3mOiYB
-        /Gww6To5Kxu+ozfU/ZCYuINBO6ysg5uyjP/XCWJL1nSywHzOgGamR8pUcOoc8zW0
-        PzXXzWMa17DEz49ZSDc7azQgksBHteG3XQg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1683359606; x=1683366806; bh=qirqUm7PnGWHwQwNur2abUio9msrv//9RED
-        Pco6ZlX4=; b=FTFVgfgd6MPCYHuvSvrDTPt1RQM4i9lYAY8vCVwWMXDobvjkv3Z
-        98lyhl/R4Z82PvVH4ieQeChYq9mxrO3Tqs0Z+otZq+jWQa7lpVJmdHx3vCIv562k
-        5ADJwfkwb6kvs1asZ6WGFKig2+74Ll9eG8vGoZajkWbn1RTVNMqQfOy884BWhLTb
-        wyeVn3+UcWjPWKhyA06U/+/+qwSQ0waDdwo3IioSt1GthWkBHvBi5WzfTDLUwgBQ
-        WNv1APC6NvhnyRkD36wa/v9PZN6oR9vyEi3DbLbtGzb4baYhlYxJ8FSQ9iQVXYTE
-        oKIRXNMC90D9Vu2ER6odZWG3KS51wOQMKDA==
-X-ME-Sender: <xms:cwdWZIyxfxC9bvjRyqPyh0ib1bw6Vq3YOOk7GDOHuGHr104jlhllfw>
-    <xme:cwdWZMR86By_Es81Fs24nFfL6mcjYvXqEeFR5y0ciKrGphskxtRvTK7MWwtAln-3I
-    9slHMOPYz1bwza1C4s>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeeffedguddvhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
-    tehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrf
-    grthhtvghrnhepgfekueelgeeigefhudduledtkeefffejueelheelfedutedttdfgveeu
-    feefieegnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:cwdWZKWPJSNKGJ1BoPCjHJFB41ohvbYc5lXNMEaSpXVx65fcImDOSA>
-    <xmx:cwdWZGjTC32HbA-ZJkwR9iDyfFZL5rCJIdL47Ja82EI69IRoNBcwbA>
-    <xmx:cwdWZKA3HC6RuBSTtV_3Bfdw9CRHScG4KYDshiiNwwwPwz9AjH93HQ>
-    <xmx:dgdWZEwIsTjJdExHIHSo4sMn188isLdlE6P98sPFv2qrASynbBpX8w>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id CB166B60086; Sat,  6 May 2023 03:53:23 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-386-g2404815117-fm-20230425.001-g24048151
-Mime-Version: 1.0
-Message-Id: <b464c1e7-f185-46d1-8b15-9592fa0cfc25@app.fastmail.com>
-In-Reply-To: <CAJF2gTSRuj3-AgynXxZeXc2vGSH8Ohn5eP2hsuKi8rTzSPLhRQ@mail.gmail.com>
-References: <20230327121317.4081816-1-arnd@kernel.org>
- <20230327121317.4081816-10-arnd@kernel.org>
- <CAJF2gTT2VCVMJs1NvgK66uD+BhObjM2WNxf2RY7wTZsho4sjVA@mail.gmail.com>
- <f460ad77-aa76-43bb-b2bb-e3b6dbcd8b03@app.fastmail.com>
- <CAJF2gTSRuj3-AgynXxZeXc2vGSH8Ohn5eP2hsuKi8rTzSPLhRQ@mail.gmail.com>
-Date:   Sat, 06 May 2023 09:53:03 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     guoren <guoren@kernel.org>
-Cc:     "Arnd Bergmann" <arnd@kernel.org>,
-        "Christoph Hellwig" <hch@lst.de>, linux-kernel@vger.kernel.org,
-        "Vineet Gupta" <vgupta@kernel.org>,
-        "Will Deacon" <will@kernel.org>,
-        "Russell King" <linux@armlinux.org.uk>,
-        "Neil Armstrong" <neil.armstrong@linaro.org>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        "Brian Cain" <bcain@quicinc.com>,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Michal Simek" <monstr@monstr.eu>,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
-        "Dinh Nguyen" <dinguyen@kernel.org>,
-        "Stafford Horne" <shorne@gmail.com>,
-        "Helge Deller" <deller@gmx.de>,
-        "Michael Ellerman" <mpe@ellerman.id.au>,
-        "Christophe Leroy" <christophe.leroy@csgroup.eu>,
-        "Paul Walmsley" <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        "Rich Felker" <dalias@libc.org>,
-        "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        "Max Filippov" <jcmvbkbc@gmail.com>,
-        "Robin Murphy" <robin.murphy@arm.com>,
-        "Lad, Prabhakar" <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        "Conor.Dooley" <conor.dooley@microchip.com>,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-oxnas@groups.io" <linux-oxnas@groups.io>,
-        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
-        linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org,
-        "linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org
-Subject: Re: [PATCH 09/21] riscv: dma-mapping: skip invalidation before bidirectional
- DMA
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Sat, 6 May 2023 04:24:59 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918295B8B
+        for <linux-m68k@lists.linux-m68k.org>; Sat,  6 May 2023 01:24:54 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6439e6f5a33so1078561b3a.2
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 06 May 2023 01:24:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683361494; x=1685953494;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xu4qq8ChYw5RP0gDo6XHAOXIUAu8obgdRMCmmK8viVo=;
+        b=qLZNP38tUiLvKIqTdY+1ZfdY4XIKQ583Yi++o9jYSsR61CtTx8xKhnX6bk6tAMdE88
+         uNcXaHZmLAsHNR8fnm/b6G8FawAyXKy58sYu2lZ743BrVKxhnWeMp+WFiMYQa3F/SWWC
+         cbZTiWM2bIH/C7ofq+5wyTCu8iRitjOJMQ2VDZPKn/Pl42Yuq0dq9shi138gIqxtjPhK
+         2ZZZ6RnkOx+cu/df48oMVbj6G/q9pohBounV2YOlWRwQLuyelJtrOkVfnHrQ265bd+Hn
+         b2fdxhOwIB5uVgUXAuZQfHzHTp7n+eCxukKp6vWfSKGhJSxszlAml8LgL71nxHZY8kfc
+         Yl3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683361494; x=1685953494;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=xu4qq8ChYw5RP0gDo6XHAOXIUAu8obgdRMCmmK8viVo=;
+        b=OVa8qX+1Rkwjxz3N8Z36aKBKiqACywcHMjL/7fwa8MdArTtCZE8ZfskK3600PH3uOL
+         rIwSKY8GcqXhFa2qfG4GaOxoaGCdxta77U+8+vG65hqqumtniMLVVHqIvshGxgC98GXr
+         ZDd9UhsTZcFb4LFbo+ZUEopUr48Xi/wVFJ7foWGN8RBrWyFJCS17t4T6Et2gpk1uhm7G
+         8GKRbdIujs6QEi+5O1caunKMKbinGzH57Os5JeCA33ArLHd3T40+y8OQ0D5BYBRj94sw
+         /JE+0PfXyDnmeViJCwRX07LxRkfCXESy0AreIYkk4aUEGOgn2GsowexGRS1JRH1W9RoO
+         UQ1A==
+X-Gm-Message-State: AC+VfDxxnQyCA5QtigdN06nVSxiTqLWd4sPEWAZkEnIpm8EW+79iNIGN
+        hmApmynBd00mUmZeK26LQ4g=
+X-Google-Smtp-Source: ACHHUZ6JyOwtkhdFPIf5NBByRegQG6krCfJGwKiuYAIbrEpT1RczU9sq+NE+x5iffQKLZath4tMV+A==
+X-Received: by 2002:a05:6a00:1251:b0:63d:3aed:44fc with SMTP id u17-20020a056a00125100b0063d3aed44fcmr5181089pfi.26.1683361493944;
+        Sat, 06 May 2023 01:24:53 -0700 (PDT)
+Received: from [10.1.1.24] (222-152-172-8-fibre.sparkbb.co.nz. [222.152.172.8])
+        by smtp.gmail.com with ESMTPSA id k14-20020aa7820e000000b0063d670ad850sm2794814pfi.92.2023.05.06.01.24.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 06 May 2023 01:24:53 -0700 (PDT)
+Subject: Re: [PATCH RFC 2/2] m68k: Make allowance for signal delivery
+ following an address error
+To:     Finn Thain <fthain@linux-m68k.org>
+References: <cover.1683010227.git.fthain@linux-m68k.org>
+ <f94a7736c10bc4f256bef5b826419faacb297f4a.1683010227.git.fthain@linux-m68k.org>
+ <f4280683-9044-3858-3262-16080e584c96@gmail.com>
+ <421fd88f-1c91-8fb9-98a8-6ac3974bd9c9@linux-m68k.org>
+ <268271f3-7d2c-bb2f-f0e4-b26bc80ac015@gmail.com>
+ <79fa24d5-ab04-0750-5dd4-eae6db212a71@linux-m68k.org>
+ <c4ed63f4-6aea-2a1c-56b4-80fd64274cef@gmail.com>
+ <b57967eb-8021-a4c3-9171-973252529194@linux-m68k.org>
+ <4e20d336-1215-bf66-14b1-a142a2960d70@gmail.com>
+ <f393d20f-3067-885e-8f26-6d3b13bd9811@gmail.com>
+ <1a5a6aea-4d58-0f59-f283-694c51bb162d@linux-m68k.org>
+ <55ad6c92-4d84-a8dd-de2f-8342cff5e21f@gmail.com>
+ <c3c4f790-d878-c635-e326-756c3f082873@linux-m68k.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org,
+        Andreas Schwab <schwab@linux-m68k.org>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <6d8837b3-959d-1da6-68f6-a151766b408e@gmail.com>
+Date:   Sat, 6 May 2023 20:24:48 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
+MIME-Version: 1.0
+In-Reply-To: <c3c4f790-d878-c635-e326-756c3f082873@linux-m68k.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sat, May 6, 2023, at 09:25, Guo Ren wrote:
-> On Fri, May 5, 2023 at 9:19=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> w=
-rote:
->>
->> This is something we can consider. Unfortunately, this is something
->> that no architecture (except pa-risc, which has other problems)
->> does at the moment, so we'd probably need to have a proper debate
->> about this.
->>
->> We already have two conflicting ways to handle DMA_FROM_DEVICE,
->> either invalidate/invalidate, or clean/invalidate. I can see
-> I vote to invalidate/invalidate.
+Hi Finn,
+
+Am 06.05.2023 um 14:46 schrieb Finn Thain:
+> On Sat, 6 May 2023, Michael Schmitz wrote:
 >
-...
+>>>
+>>> In my mind, at the time I sent them, patch 1 was expected to mitigate
+>>> the impact of patch 2. It would have been surprising if the reverse
+>>> had somehow happened.
+>>
+>> I did wonder if delaying signal delivery would cause fewer signals to be
+>> delivered in total, and whether the remaining bus faults that do cause
+>> signal delivery (format a) still cause any trouble because of eventual
+>> unreliable USP.
+>>
+>> Adding your patch 2 then might have mitigated these problems while not
+>> placing too much of a burden on the stack.
+>>
 >
->> that flush/invalidate may be a sensible option as well, but I'd
->> want to have that discussion after the series is complete, so
->> we can come to a generic solution that has the same documented
->> behavior across all architectures.
-> Yes, I agree to unify them into a generic solution first. My proposal
-> could be another topic in the future.
+> If fewer signals get delivered in total, that's not a bug, right? It just
+> amounts to is slightly more signal latency on what is already a slow CPU.
 
-Right, I was explicitly trying to exclude that question from my
-series, and left it as an architecture specific Kconfig option
-based on the current behavior.
+I'm not saying it's a bug, and I had expected more latency. I haven't 
+seen any significant difference in either number of signals, and signal 
+latency is hard to gauge without instrumenting the signal code to add a 
+timestamp when the signal is raised. No significant impact on execution 
+time of the tests at any rate.
 
->> In particular, if we end up moving arm64 and riscv back to the
->> traditional invalidate/invalidate for DMA_FROM_DEVICE and
->> document that driver must not rely on buffers getting cleaned
-> After invalidation, the cache lines are also cleaned, right? So why do
-> we need to document it additionally?
+> Format 0xA bus errors happen between instructions according to the User
+> Manual. There's no possibility of hitting the stack corruption bug AFAICS:
+>
+> 	"For efficiency, the MC68030 uses two different bus error stack
+> 	frame formats. When the bus error exception is taken at an
+> 	instruction boundary, less information is required to recover from
+> 	the error, and the processor builds the short bus fault stack
+> 	frame as shown in Table 8-7."
 
-I mentioned the debate in the cover letter, the full explanation
-is archived at
-https://lore.kernel.org/all/20220606152150.GA31568@willie-the-truck/
+Right - I was thinking an exception raised by another instruction than 
+the one currently executing could cause USP to become unreliable but all 
+that does is make the fault address differ from USP (for an instruction 
+executing that uses USP). Your current patches don't use the fault 
+address at all.
 
-In short, the problem that is addressed here is leaking sensitive
-kernel data to user space or a device as in this sequence:
+>>> Anyway, I'm still in the dark as to why patch 1 is interesting. Was
+>>> that because you wanted to delay signal delivery to try to put more
+>>> pressure on stack memory by delivering multiple signals? You and I did
+>>> come up with an
+>>
+>> No - it just eliminates temporary stack growth due to the format b bus
+>> faults as entry into signal delivery.
+>>
+>>> alternative patch for bypassing signal delivery after certain
+>>> exceptions. Maybe that would work better.
+>>
+>> Meaning skipping signal delivery on any bus fault? I haven't tried that
+>> one yet.
+>
+> Don't try that patch if you are hoping to see signal delivery after a
+> format 0xA exception -- you'd only ever get signal delivery after traps,
+> interrupts, FP exceptions and a few other obscure cases.
+>
+> As with patch 1/2, I don't know why you'd want to use it.
 
-1. A DMA buffer is allocated in the kernel and contains stale data
-   that is no longer needed but must not be exposed to untrusted
-   userspace, i.e. encryption keys or user file pages
-2. allocator uses memset() to clear out the buffer
-3. buffer gets mapped into a device for DMA_FROM_DEVICE
-4. writeback cache gets invalidated, uncovering the sensitive
-   data by discarding the zeros
-5. device returns less data than expected
-6. buffer is unmapped
-7. whole buffer is mapped or copied to user space
+As it turns out, I had already tested that one, and it caused signals to 
+be delivered on interrupts mostly instead of bus error exceptions. Never 
+ran stress tests on that one at the time.
 
-Will added his patch for arm64 to prevent this scenario by using
-'clean' instead of 'invalidate' in step 4, and the same behavior
-got copied to riscv but not most of the other architectures.
-The dma-mapping documentation does not say anything about this
-case, and an alternative approach would be to document that
-device drivers must watch out for short reads in step 5, or that
-kzalloc() should clean the cache in step 2. Both of these come
-at a cost as well.
+Cheers,
 
-     Arnd
+	Michael
