@@ -2,54 +2,54 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8514FC77B75
-	for <linux-m68k@archiver.kernel.org>; Sat,  6 May 2023 01:47:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFBD4C77B75
+	for <linux-m68k@archiver.kernel.org>; Sat,  6 May 2023 01:54:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229696AbjEFBrG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 5 May 2023 21:47:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35246 "EHLO
+        id S232957AbjEFByw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 5 May 2023 21:54:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229948AbjEFBrF (ORCPT
+        with ESMTP id S229739AbjEFBys (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 5 May 2023 21:47:05 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E313C14
-        for <linux-m68k@lists.linux-m68k.org>; Fri,  5 May 2023 18:47:04 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-52867360efcso1647954a12.2
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 05 May 2023 18:47:04 -0700 (PDT)
+        Fri, 5 May 2023 21:54:48 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C504C01
+        for <linux-m68k@lists.linux-m68k.org>; Fri,  5 May 2023 18:54:46 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1aaf2ede38fso23781255ad.2
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 05 May 2023 18:54:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683337624; x=1685929624;
+        d=gmail.com; s=20221208; t=1683338086; x=1685930086;
         h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
          :message-id:from:cc:references:to:subject:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=y3b6uLts6XqDls/BBwbEEi1YlBl5X+0k4VkSHMFA9WQ=;
-        b=TmzC3p8+D7Oix/oxYT6zBxj2JIH9XhwXZXBq1Iwu/BsH3UEXdCsr5kssldTFhJ8atT
-         KZdZyGBSDm5E9p0lG6wjykqRD/RfnOf4aUtSxB3lCjW1JRpTALgK67drkJ58eQbf+nbM
-         Em8AoAm7pORhh4p96HpP1RZjsgiggqletNVgJBhRbXNRWjrHN+HZuMTfXD5MM6AXgYQ5
-         pDko/mSCIX1WynhKYmzKoUeNYcUO3ih3l/BJAXDigHKd85R4X4K7HQe6WtWJVcba7gQ8
-         7rT0kzYuLFHsr/7zs88rdfgTLzj6FME9V4jcwiIz1LNTQBud2PNlD+994pueu9dm3C1r
-         RfrA==
+        bh=pUBBuB52UOgcJgtG+Iu/8E75D36ajifvLEwtUX2YcBA=;
+        b=j3zcYB9/0oheS5Swo/9QysQOquEGAOhKAlJz1xilH7qWMGYC1v9dOvrDodqzHP/cLL
+         2xTf1x8o1ujASgP7SMEbUJ4AXrmiACYfcmQ7ag9YlmNEgr79+hPBAyRWrH/Bk98Akytf
+         e1A+mECLWcjDsXShk3OOtZqkNc9sgIN+4KXnKsx3vhrVm+kaVpRizxDihSCaQMadzj3o
+         uJoX+TTgCRipwbCl/g7jjFGQLvlvQC4Gg/NoSGAqxIeRSSrsyl9D74QDV+N3mk7kQM8+
+         T1jUeoaQnFJNs5A7V7H2HFdmffNoW20rePLpyzQ6wAxU7jvmd0zfgdBNmidcYTNDw6n/
+         SONA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683337624; x=1685929624;
+        d=1e100.net; s=20221208; t=1683338086; x=1685930086;
         h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
          :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=y3b6uLts6XqDls/BBwbEEi1YlBl5X+0k4VkSHMFA9WQ=;
-        b=E0AIE/7WuIVJU3nCSYSD5NjuZTdU6glu8SxGJFCOMeNcHxLgMuTEXpWgBLCGeC/Ikh
-         484pi0rH9P8n5fi7BXCgxc2l4EFcoueoFY1W99RVKukvnAX8674lTjjLYHAfynUIeajQ
-         iFpvVoCEFykuMIzzHCP5kPhJkTsGV2xdGqt46XCUg3sAmE+G1W9XdhsG0hre/XVrup8J
-         5//SDVWUVsJ3xBs2j1wtlLbbNpT8CERpvFMAmz7OpqXhLYWE43b9BcCHSjw5jNSKUXB0
-         OljxYMLGoLcxtYeeSvB3nfQUke0K3fV7u8Edw1ZznWT8yJ2hcTyZ6WH13DqvQxr5paqT
-         osRA==
-X-Gm-Message-State: AC+VfDysBoahHqbJOxo3gILXGwkvOoBhvwn/+pQSKT+4iJbTDvyJSqND
-        ccDun6KQqdB9vPEDIYu4vkKWg4/tiaM=
-X-Google-Smtp-Source: ACHHUZ5mO78pnDH0WpQov5SmYwsS4jTiXZp8pTmj6In4vV/gFU4CrqTZ4DBfgHoHnqk/UzQ9JwxSjA==
-X-Received: by 2002:a05:6a21:3702:b0:fc:d037:1972 with SMTP id yl2-20020a056a21370200b000fcd0371972mr3399535pzb.39.1683337623973;
-        Fri, 05 May 2023 18:47:03 -0700 (PDT)
+        bh=pUBBuB52UOgcJgtG+Iu/8E75D36ajifvLEwtUX2YcBA=;
+        b=eVHamODO44db4P6hXdbcFbxEKUpdFjNuqRsV7lvcri399C6q0s9ljqPcoyNSmKoZCL
+         f6X7h++wVG10WfEdq/+QSlOHJ3JYrn7ZoiuwLhrkNatwkbmSnGR3Qobvn+25Yn0V5F6V
+         z8Ey76xeQyYKFp2P5g673uS0+Oqw/wDg4My5/0AJqQ4+lI5iJCFPmkzMnxxD/QDe95PM
+         XFGP/f5Lij2M3yke0WKNNJqrciqLMf4dkl+D2Qp19aVXRXD5iK3EuROg2gxIbgFMp4ZX
+         KamBVy01h/1G8canmTTvgVevNBwL1jcAfIEnF2Lmbgw4XEyYvyfKMK+a0eFmNNk3g5a7
+         841g==
+X-Gm-Message-State: AC+VfDyAJVkOfxjOHxDsofmfko8MDjHEMwuirt9c0Mhc0yhmgZTaVwIp
+        e9r40Ozw2BqzQ8I07suFqUimD+OSo/w=
+X-Google-Smtp-Source: ACHHUZ770Kuhp66JvLl/miE/wwMGazhQtis6765+k7GMQPbas572x8miL0FBcc0rnCN82kkzMF6BJQ==
+X-Received: by 2002:a17:903:25c2:b0:1a6:a405:f714 with SMTP id jc2-20020a17090325c200b001a6a405f714mr3420411plb.63.1683338086314;
+        Fri, 05 May 2023 18:54:46 -0700 (PDT)
 Received: from [10.1.1.24] (222-152-172-8-fibre.sparkbb.co.nz. [222.152.172.8])
-        by smtp.gmail.com with ESMTPSA id g26-20020a63565a000000b0051b4a163ccdsm2181532pgm.11.2023.05.05.18.47.00
+        by smtp.gmail.com with ESMTPSA id 13-20020a170902c20d00b0019cbe436b87sm2398782pll.81.2023.05.05.18.54.43
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 05 May 2023 18:47:03 -0700 (PDT)
+        Fri, 05 May 2023 18:54:45 -0700 (PDT)
 Subject: Re: [PATCH RFC 2/2] m68k: Make allowance for signal delivery
  following an address error
 To:     Finn Thain <fthain@linux-m68k.org>
@@ -63,42 +63,28 @@ References: <cover.1683010227.git.fthain@linux-m68k.org>
  <b57967eb-8021-a4c3-9171-973252529194@linux-m68k.org>
  <4e20d336-1215-bf66-14b1-a142a2960d70@gmail.com>
  <f393d20f-3067-885e-8f26-6d3b13bd9811@gmail.com>
- <1a5a6aea-4d58-0f59-f283-694c51bb162d@linux-m68k.org>
+ <e381cbf7-ac16-6ba8-cc47-90504ccbdaf3@linux-m68k.org>
 Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org,
         Andreas Schwab <schwab@linux-m68k.org>
 From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <55ad6c92-4d84-a8dd-de2f-8342cff5e21f@gmail.com>
-Date:   Sat, 6 May 2023 13:46:58 +1200
+Message-ID: <77d5c271-77d7-0959-93f5-6731dbea7bae@gmail.com>
+Date:   Sat, 6 May 2023 13:54:41 +1200
 User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
  Icedove/45.4.0
 MIME-Version: 1.0
-In-Reply-To: <1a5a6aea-4d58-0f59-f283-694c51bb162d@linux-m68k.org>
+In-Reply-To: <e381cbf7-ac16-6ba8-cc47-90504ccbdaf3@linux-m68k.org>
 Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Finn,
+Hi Finn
 
-Am 06.05.2023 um 12:36 schrieb Finn Thain:
+Am 06.05.2023 um 13:11 schrieb Finn Thain:
 > On Sat, 6 May 2023, Michael Schmitz wrote:
 >
->> Am 05.05.2023 um 17:05 schrieb Michael Schmitz:
->>> Am 05.05.2023 um 15:14 schrieb Finn Thain:
->>>> On Fri, 5 May 2023, Michael Schmitz wrote:
->>>>
->>>>> In terms of fixing the bus error bug, I think we'll need to fix this
->>>>> regression first (only first patch of yours applied):
->>>>>
->>>>
->>>> That patch came from Andreas, maybe he can comment.
->>>>
->>>>> I'll try with your second patch applied as well.
->>>>
->>>> I think patch 2/2 should be tested alone since 1/2 was nak'd.
->>>
 >>> I'm trying to find out whether patch 2 mitigates the effect of patch
 >>> 1.
 >>
@@ -106,35 +92,181 @@ Am 06.05.2023 um 12:36 schrieb Finn Thain:
 >> iteration using the --stack 2 --stack-fill stressor.
 >>
 >
-> In my mind, at the time I sent them, patch 1 was expected to mitigate the
-> impact of patch 2. It would have been surprising if the reverse had
-> somehow happened.
+> When I run that under stock v6.3, one of the stress-ng-stack processes
+> gets killed by the OOM killer, followed by a soft lockup.
 
-I did wonder if delaying signal delivery would cause fewer signals to be 
-delivered in total, and whether the remaining bus faults that do cause 
-signal delivery (format a) still cause any trouble because of eventual 
-unreliable USP.
+Yes, I'd seen the OOM killer kick in before at least once (no soft 
+lockup). Probably due to a cron job putting additional pressure on the 
+system. But that's not the same as a kernel access error, or the hard 
+lockup I reported (with the heartbeat LED and the disk LED on the CF 
+adapter on the IDE bus steady on, so no interrupts serviced anymore).
 
-Adding your patch 2 then might have mitigated these problems while not 
-placing too much of a burden on the stack.
+> So I'd say the failure you saw was not related to the patches you used.
 
-> Anyway, I'm still in the dark as to why patch 1 is interesting. Was that
-> because you wanted to delay signal delivery to try to put more pressure on
-> stack memory by delivering multiple signals? You and I did come up with an
+Hard to say - I'd have to see it fail in the same way again. Didn't take 
+long after start of the stress tests so I'll probably do that sometime.
 
-No - it just eliminates temporary stack growth due to the format b bus 
-faults as entry into signal delivery.
-
-> alternative patch for bypassing signal delivery after certain exceptions.
-> Maybe that would work better.
-
-Meaning skipping signal delivery on any bus fault? I haven't tried that 
-one yet. But I suspect the same problem exists with that as with your 
-patch 1 - if the bus fault wasn't handled, and the signal to be 
-delivered to the process is SIGKILL or SIGSEGV, completing the execption 
-without signal delivery will just cause the same bus fault again, ad 
-infinitum.
+Your patch 2 alone looks a lot more stable so far.
 
 Cheers,
 
 	Michael
+
+>
+> # stress-ng -t 180 --stack 2 --stack-fill
+> stress-ng: info:  [43] setting to a 180 second (3 mins, 0.00 secs) run per stressor
+> stress-ng: info:  [43] dispatching hogs: 2 stack
+> [  162.400000] stress-ng-stack invoked oom-killer: gfp_mask=0x140cca(GFP_HIGHUSER_MOVABLE|__GFP_COMP), order=0, oom_score_adj=1000
+> [  162.420000] CPU: 0 PID: 47 Comm: stress-ng-stack Not tainted 6.3.0-mac #3
+> [  162.420000] Stack from 01465d68:
+> [  162.420000]         01465d68 004d72d8 004d72d8 fffffffd 7fffffff 01465d88 0040e286 004d72d8
+> [  162.420000]         01465db8 0040b74c fffffffd 7fffffff ffffffff 00000840 00000000 00000000
+> [  162.420000]         0092f520 01465e80 004e5560 0092f520 01465df0 0008a110 01465e80 0092f520
+> [  162.420000]         fffffffd 7fffffff ffffffff 00000840 00000000 00000000 01465e80 004e56aa
+> [  162.420000]         004e5560 01465e80 01465e1c 0008a6e0 01465e80 004ad402 00140cca 00000002
+> [  162.420000]         00000000 000c21b2 0050b376 00000000 00000000 01465ea4 000c373a 01465e80
+> [  162.420000] Call Trace: [<0040e286>] dump_stack+0x10/0x16
+> [  162.420000]  [<0040b74c>] dump_header+0x52/0x1be
+> [  162.420000]  [<0008a110>] oom_kill_process+0x3bc/0x3f8
+> [  162.420000]  [<0008a6e0>] out_of_memory+0x2e4/0x44c
+> [  162.420000]  [<00140cca>] proc_pid_status+0x16e/0x1370
+> [  162.420000]  [<000c21b2>] get_page_from_freelist+0x0/0xb76
+> [  162.420000]  [<000c373a>] __alloc_pages+0x734/0xb30
+> [  162.420000]  [<000b28fe>] find_vma+0x0/0x22
+> [  162.420000]  [<00410cf2>] down_read+0x0/0xd6
+> [  162.420000]  [<001408ca>] do_task_stat+0x1038/0x1224
+> [  162.420000]  [<00010000>] sm_dnrm+0x6/0x1a
+> [  162.420000]  [<00020000>] __release_region+0x54/0xc8
+> [  162.420000]  [<00140cca>] proc_pid_status+0x16e/0x1370
+> [  162.420000]  [<00001e70>] kernel_pg_dir+0xe70/0x1000
+> [  162.420000]  [<00002865>] calibrate_delay+0xd3/0x26a
+> [  162.420000]  [<000c3f38>] __folio_alloc+0x20/0x26
+> [  162.420000]  [<00140cca>] proc_pid_status+0x16e/0x1370
+> [  162.420000]  [<000aceea>] handle_mm_fault+0x904/0xb28
+> [  162.420000]  [<00100cca>] zero_user_segments+0x10e/0x12c
+> [  162.420000]  [<000ef3c7>] take_dentry_name_snapshot+0x47/0x64
+> [  162.420000]  [<000070ac>] do_page_fault+0xde/0x292
+> [  162.420000]  [<00006204>] buserr_c+0x2d6/0x6c4
+> [  162.420000]  [<00002000>] _start+0x0/0x8
+> [  162.420000]  [<00040000>] pick_next_task_dl+0x7c/0x8c
+> [  162.420000]  [<00001000>] kernel_pg_dir+0x0/0x1000
+> [  162.420000]  [<00002aa4>] buserr+0x20/0x28
+> [  162.420000]  [<00002000>] _start+0x0/0x8
+> [  162.420000]  [<00040000>] pick_next_task_dl+0x7c/0x8c
+> [  162.420000]  [<0004c017>] irq_thread_dtor+0x7/0xd8
+> [  162.420000]  [<0020b289>] ioc_find_get_icq+0x107/0x246
+> [  162.420000]
+> [  162.430000] Mem-Info:
+> [  162.440000] active_anon:5264 inactive_anon:1765 isolated_anon:0
+> [  162.440000]  active_file:0 inactive_file:0 isolated_file:0
+> [  162.440000]  unevictable:3 dirty:0 writeback:0
+> [  162.440000]  slab_reclaimable:71 slab_unreclaimable:331
+> [  162.440000]  mapped:564 shmem:560 pagetables:16
+> [  162.440000]  sec_pagetables:0 bounce:0
+> [  162.440000]  kernel_misc_reclaimable:0
+> [  162.440000]  free:176 free_pcp:0 free_cma:0
+> [  162.450000] Node 0 active_anon:21056kB inactive_anon:7060kB active_file:0kB inactive_file:0kB unevictable:12kB isolated(anon):0kB isolated(file):0kB mapped:2256kB dirty:0kB writeback:0kB shmem:2240kB writeback_tmp:0kB kernel_stack:280kB pagetables:64kB sec_pagetables:0kB all_unreclaimable? no
+> [  162.460000] DMA free:704kB boost:0kB min:704kB low:880kB high:1056kB reserved_highatomic:0KB active_anon:21056kB inactive_anon:7060kB active_file:0kB inactive_file:0kB unevictable:12kB writepending:0kB present:36864kB managed:31168kB mlocked:12kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
+> [  162.480000] lowmem_reserve[]: 0 0 0
+> [  162.490000] DMA: 0*4kB 0*8kB 0*16kB 0*32kB 1*64kB (M) 1*128kB (M) 2*256kB (M) 0*512kB 0*1024kB 0*2048kB 0*4096kB = 704kB
+> [  162.520000] 611 total pagecache pages
+> [  162.530000] 0 pages in swap cache
+> [  162.540000] Free swap  = 0kB
+> [  162.550000] Total swap = 0kB
+> [  162.560000] 9216 pages RAM
+> [  162.570000] 0 pages HighMem/MovableOnly
+> [  162.580000] 1424 pages reserved
+> [  162.590000] Tasks state (memory values in pages):
+> [  162.610000] [  pid  ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj name
+> [  162.620000] [     43]     0    43     5254      754    12032        0         -1000 stress-ng
+> [  162.630000] [     44]     0    44     5254      197     8448        0         -1000 stress-ng-stack
+> [  162.640000] [     45]     0    45     5254      197     8448        0         -1000 stress-ng-stack
+> [  162.650000] [     46]     0    46     8439     3336    21248        0          1000 stress-ng-stack
+> [  162.660000] [     47]     0    47     8375     3274    20992        0          1000 stress-ng-stack
+> [  162.670000] oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),task=stress-ng-stack,pid=46,uid=0
+> [  162.690000] Out of memory: Killed process 46 (stress-ng-stack) total-vm:33756kB, anon-rss:13336kB, file-rss:4kB, shmem-rss:4kB, UID:0 pgtables:20kB oom_score_adj:1000
+> [  220.440000] watchdog: BUG: soft lockup - CPU#0 stuck for 23s! [kswapd0:20]
+> [  220.440000] Modules linked in:
+> [  220.440000] Format 00  Vector: 0064  PC: 0009310c  Status: 2004    Not tainted
+> [  220.440000] ORIG_D0: ffffffff  D0: 00000000  A2: 0085a530  A1: 0000029b
+> [  220.440000] A0: 0050b3f2  D5: 00000000  D4: 00000001
+> [  220.440000] D3: 00000002  D2: 0000001f  D1: 0000029c
+> [  244.440000] watchdog: BUG: soft lockup - CPU#0 stuck for 45s! [kswapd0:20]
+> [  244.440000] Modules linked in:
+> [  244.440000] Format 00  Vector: 0064  PC: 00207178  Status: 2000    Tainted: G             L
+> [  244.440000] ORIG_D0: ffffffff  D0: 0000000c  A2: 0085a530  A1: 008e3f02
+> [  244.440000] A0: 008e3e48  D5: 00000000  D4: 00000001
+> [  244.440000] D3: 00000002  D2: 00000000  D1: 00000000
+> [  268.440000] watchdog: BUG: soft lockup - CPU#0 stuck for 68s! [kswapd0:20]
+> [  268.440000] Modules linked in:
+> [  268.440000] Format 00  Vector: 0064  PC: 00095a76  Status: 2000    Tainted: G             L
+> [  268.440000] ORIG_D0: ffffffff  D0: 00000000  A2: 0085a530  A1: 0085a530
+> [  268.440000] A0: fffffff6  D5: 00000000  D4: 00000001
+> [  268.440000] D3: 00000002  D2: 0000001f  D1: 00000020
+> [  292.440000] watchdog: BUG: soft lockup - CPU#0 stuck for 90s! [kswapd0:20]
+> [  292.440000] Modules linked in:
+> [  292.440000] Format 00  Vector: 0064  PC: 000930d0  Status: 2000    Tainted: G             L
+> [  292.440000] ORIG_D0: ffffffff  D0: 00000299  A2: 0085a530  A1: 0000029b
+> [  292.440000] A0: 0050b3f2  D5: 00000000  D4: 00000001
+> [  292.440000] D3: 00000002  D2: 0000001f  D1: 0000001f
+> [  316.450000] watchdog: BUG: soft lockup - CPU#0 stuck for 112s! [kswapd0:20]
+> [  316.450000] Modules linked in:
+> [  316.450000] Format 00  Vector: 0064  PC: 0009142a  Status: 2004    Tainted: G             L
+> [  316.450000] ORIG_D0: ffffffff  D0: 0000000c  A2: 0085a530  A1: 008e3f02
+> [  316.450000] A0: 0050b376  D5: 00000000  D4: 00000001
+> [  316.450000] D3: 00000002  D2: 00000000  D1: 00000000
+> [  340.450000] watchdog: BUG: soft lockup - CPU#0 stuck for 135s! [kswapd0:20]
+> [  340.450000] Modules linked in:
+> [  340.450000] Format 00  Vector: 0064  PC: 00092cd2  Status: 2000    Tainted: G             L
+> [  340.450000] ORIG_D0: ffffffff  D0: 0000000f  A2: 0085a530  A1: 000000b0
+> [  340.450000] A0: 00092c9e  D5: 008e3f94  D4: 00000002
+> [  340.450000] D3: 00044260  D2: 00000000  D1: 0050b3ae
+> [  364.450000] watchdog: BUG: soft lockup - CPU#0 stuck for 157s! [kswapd0:20]
+> [  364.450000] Modules linked in:
+> [  364.450000] Format 00  Vector: 0064  PC: 000b06de  Status: 2004    Tainted: G             L
+> [  364.450000] ORIG_D0: ffffffff  D0: 0000000c  A2: 0085a530  A1: 008e3f02
+> [  364.450000] A0: 0050b376  D5: 00000000  D4: 00000001
+> [  364.450000] D3: 00000002  D2: 00000000  D1: 00000000
+> [  388.450000] watchdog: BUG: soft lockup - CPU#0 stuck for 179s! [kswapd0:20]
+> [  388.450000] Modules linked in:
+> [  388.450000] Format 00  Vector: 0064  PC: 000359da  Status: 2000    Tainted: G             L
+> [  388.450000] ORIG_D0: ffffffff  D0: 00000003  A2: 0085a530  A1: 008e3f94
+> [  388.450000] A0: 008e3f88  D5: 008e3f94  D4: 00000001
+> [  388.450000] D3: 00000000  D2: 00000000  D1: 00000003
+> [  412.450000] watchdog: BUG: soft lockup - CPU#0 stuck for 202s! [kswapd0:20]
+> [  412.450000] Modules linked in:
+> [  412.450000] Format 00  Vector: 0064  PC: 00095ca6  Status: 2000    Tainted: G             L
+> [  412.450000] ORIG_D0: ffffffff  D0: 0050b644  A2: 0085a530  A1: 008e3f44
+> [  412.450000] A0: 0085a530  D5: 00000000  D4: 00000001
+> [  412.450000] D3: 00000001  D2: 0000001f  D1: 00000000
+> [  436.450000] watchdog: BUG: soft lockup - CPU#0 stuck for 224s! [kswapd0:20]
+> [  436.450000] Modules linked in:
+> [  436.450000] Format 00  Vector: 0064  PC: 000359e2  Status: 2004    Tainted: G             L
+> [  436.450000] ORIG_D0: ffffffff  D0: 00000000  A2: 0085a530  A1: 008e3f44
+> [  436.450000] A0: 008afe00  D5: 00000000  D4: 00000001
+> [  436.450000] D3: 00000001  D2: 00000000  D1: 00000000
+> [  460.460000] watchdog: BUG: soft lockup - CPU#0 stuck for 246s! [kswapd0:20]
+> [  460.460000] Modules linked in:
+> [  460.460000] Format 00  Vector: 0064  PC: 00092b30  Status: 2004    Tainted: G             L
+> [  460.460000] ORIG_D0: ffffffff  D0: 008e3f44  A2: 0085a530  A1: 008e3f44
+> [  460.460000] A0: 0050b15c  D5: 00000000  D4: 00000001
+> [  460.460000] D3: 00000001  D2: 00000000  D1: 00000000
+> [  484.460000] watchdog: BUG: soft lockup - CPU#0 stuck for 269s! [kswapd0:20]
+> [  484.460000] Modules linked in:
+> [  484.460000] Format 00  Vector: 0064  PC: 000930c0  Status: 2000    Tainted: G             L
+> [  484.460000] ORIG_D0: ffffffff  D0: 00000000  A2: 0085a530  A1: 008e3f02
+> [  484.460000] A0: 0050b3f2  D5: 00000000  D4: 00000001
+> [  484.460000] D3: 00000001  D2: 0000001f  D1: 0000001f
+> [  508.460000] watchdog: BUG: soft lockup - CPU#0 stuck for 291s! [kswapd0:20]
+> [  508.460000] Modules linked in:
+> [  508.460000] Format 00  Vector: 0064  PC: 00097f8c  Status: 2014    Tainted: G             L
+> [  508.460000] ORIG_D0: ffffffff  D0: 00002014  A2: 0085a530  A1: 008e3f4c
+> [  508.460000] A0: 008e3f02  D5: 008e3f94  D4: 00000001
+> [  508.460000] D3: 00000001  D2: 00000000  D1: 00000048
+> [  532.460000] watchdog: BUG: soft lockup - CPU#0 stuck for 313s! [kswapd0:20]
+> [  532.460000] Modules linked in:
+> [  532.460000] Format 00  Vector: 0064  PC: 00095a5c  Status: 2008    Tainted: G             L
+> [  532.460000] ORIG_D0: ffffffff  D0: fffffff6  A2: 0085a530  A1: 0085a530
+> [  532.460000] A0: fffffff6  D5: 00000000  D4: 00000001
+> [  532.460000] D3: 00000001  D2: 0000001f  D1: 00000020
+>
