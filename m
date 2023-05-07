@@ -2,112 +2,58 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59637C77B7F
-	for <linux-m68k@archiver.kernel.org>; Sat,  6 May 2023 11:35:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57742C77B7C
+	for <linux-m68k@archiver.kernel.org>; Sun,  7 May 2023 09:02:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231936AbjEFLf5 convert rfc822-to-8bit (ORCPT
+        id S229757AbjEGJCt convert rfc822-to-8bit (ORCPT
         <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 6 May 2023 07:35:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56012 "EHLO
+        Sun, 7 May 2023 05:02:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231855AbjEFLf4 (ORCPT
+        with ESMTP id S229628AbjEGJCs (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 6 May 2023 07:35:56 -0400
+        Sun, 7 May 2023 05:02:48 -0400
 Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F3837681;
-        Sat,  6 May 2023 04:35:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7805255A9
+        for <linux-m68k@lists.linux-m68k.org>; Sun,  7 May 2023 02:02:47 -0700 (PDT)
 Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
           by outpost.zedat.fu-berlin.de (Exim 4.95)
           with esmtps (TLS1.3)
           tls TLS_AES_256_GCM_SHA384
           (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1pvGCa-002hVY-AY; Sat, 06 May 2023 13:35:48 +0200
-Received: from p57bd9cee.dip0.t-ipconnect.de ([87.189.156.238] helo=suse-laptop.fritz.box)
+          id 1pvaI2-001QTD-1C; Sun, 07 May 2023 11:02:46 +0200
+Received: from p57bd9c27.dip0.t-ipconnect.de ([87.189.156.39] helo=suse-laptop.fritz.box)
           by inpost2.zedat.fu-berlin.de (Exim 4.95)
           with esmtpsa (TLS1.3)
           tls TLS_AES_256_GCM_SHA384
           (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1pvGCZ-000Sf9-Vs; Sat, 06 May 2023 13:35:48 +0200
-Message-ID: <c0677d21a4b6caa2e5018af000294a974121d9e8.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH v2 30/34] sh: Convert pte_free_tlb() to use ptdescs
+          id 1pvaI1-003MVA-QW; Sun, 07 May 2023 11:02:45 +0200
+Message-ID: <5a46ed40ce55b04b7a53591b10cfcc925b468501.camel@physik.fu-berlin.de>
+Subject: The tale of -mrtd in GCC and Clang
 From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-openrisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, xen-devel@lists.xenproject.org,
-        kvm@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>
-Date:   Sat, 06 May 2023 13:35:46 +0200
-In-Reply-To: <20230501192829.17086-31-vishal.moola@gmail.com>
-References: <20230501192829.17086-1-vishal.moola@gmail.com>
-         <20230501192829.17086-31-vishal.moola@gmail.com>
+To:     debian-68k <debian-68k@lists.debian.org>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>
+Date:   Sun, 07 May 2023 11:02:45 +0200
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 User-Agent: Evolution 3.48.1 
 MIME-Version: 1.0
 X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.156.238
+X-Originating-IP: 87.189.156.39
 X-ZEDAT-Hint: PO
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Vishal!
+Good Morning!
 
-On Mon, 2023-05-01 at 12:28 -0700, Vishal Moola (Oracle) wrote:
-> Part of the conversions to replace pgtable constructor/destructors with
-> ptdesc equivalents. Also cleans up some spacing issues.
-> 
-> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
-> ---
->  arch/sh/include/asm/pgalloc.h | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/sh/include/asm/pgalloc.h b/arch/sh/include/asm/pgalloc.h
-> index a9e98233c4d4..ce2ba99dbd84 100644
-> --- a/arch/sh/include/asm/pgalloc.h
-> +++ b/arch/sh/include/asm/pgalloc.h
-> @@ -2,6 +2,7 @@
->  #ifndef __ASM_SH_PGALLOC_H
->  #define __ASM_SH_PGALLOC_H
->  
-> +#include <linux/mm.h>
->  #include <asm/page.h>
->  
->  #define __HAVE_ARCH_PMD_ALLOC_ONE
-> @@ -31,10 +32,10 @@ static inline void pmd_populate(struct mm_struct *mm, pmd_t *pmd,
->  	set_pmd(pmd, __pmd((unsigned long)page_address(pte)));
->  }
->  
-> -#define __pte_free_tlb(tlb,pte,addr)			\
-> -do {							\
-> -	pgtable_pte_page_dtor(pte);			\
-> -	tlb_remove_page((tlb), (pte));			\
-> +#define __pte_free_tlb(tlb, pte, addr)				\
-> +do {								\
-> +	ptdesc_pte_dtor(page_ptdesc(pte));			\
-> +	tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));	\
->  } while (0)
->  
->  #endif /* __ASM_SH_PGALLOC_H */
+While working on the RTD issue in the M68k backend in LLVM, Min dug a bit into
+the hisstory of the "-mrtd" flag in GCC and Clang and turns out it's actually
+much more interesting than we first thought.
 
-Looking at the patch which introduces tlb_remove_page_ptdesc() [1], it seems that
-tlb_remove_page_ptdesc() already calls tlb_remove_page() with ptdesc_page(pt), so
-I'm not sure whether the above tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)))
-is correct.
+See: https://m680x0.github.io/blog/2023/05/the-tale-of-mrtd.html
 
-Shouldn't it just be tlb_remove_page_ptdesc((tlb), (pte))?
-
-Thanks,
 Adrian
-
-> [1] https://lore.kernel.org/linux-mm/20230417205048.15870-5-vishal.moola@gmail.com/
 
 -- 
  .''`.  John Paul Adrian Glaubitz
