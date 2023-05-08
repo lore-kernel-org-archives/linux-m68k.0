@@ -2,190 +2,315 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08A49C7EE3A
-	for <linux-m68k@archiver.kernel.org>; Mon,  8 May 2023 11:49:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A55F0C7EE22
+	for <linux-m68k@archiver.kernel.org>; Mon,  8 May 2023 12:39:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236359AbjEHLs6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 8 May 2023 07:48:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50426 "EHLO
+        id S233237AbjEHMja (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 8 May 2023 08:39:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236143AbjEHLso (ORCPT
+        with ESMTP id S234365AbjEHMjX (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 8 May 2023 07:48:44 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2018643BBC
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  8 May 2023 04:48:34 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A6E4A1FE46;
-        Mon,  8 May 2023 11:48:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1683546513; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZAIMQjO0mj50iqN3Ds+hTpS1uFpGDEW+ohwIrrgKtAw=;
-        b=e1/3dX2p7Hi10DAONEnreSZyeXHUr/AbLxaSDtztYQnSahcUnxokOQGISDtoAVV/5DQScw
-        cZ8FMXutOqQs1brDbaAd4FReoWK9GYSmefMeEaiLzPD512x3Qf3KEtjRBE6CTsQOcmbKxj
-        Flu5Vx3QwPKia2rG0CXxXXVon/LMm3k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1683546513;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZAIMQjO0mj50iqN3Ds+hTpS1uFpGDEW+ohwIrrgKtAw=;
-        b=NdArMZtCWDUEDdv41y1evwZG5HhTGbDXsQM/LuMLtYiB4e3KArx5dTNSp6HBd3z2jA2VZU
-        AT4AxIZSGUv+G4Dw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4437E1346B;
-        Mon,  8 May 2023 11:48:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id QEbYD5HhWGQvNwAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Mon, 08 May 2023 11:48:33 +0000
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-To:     deller@gmx.de, geert@linux-m68k.org, javierm@redhat.com,
-        daniel@ffwll.ch, vgupta@kernel.org, chenhuacai@kernel.org,
-        kernel@xen0n.name, davem@davemloft.net,
-        James.Bottomley@HansenPartnership.com, arnd@arndb.de,
-        sam@ravnborg.org, suijingfeng@loongson.cn
-Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arch@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-parisc@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: [PATCH v5 4/6] fbdev: Include <linux/fb.h> instead of <asm/fb.h>
-Date:   Mon,  8 May 2023 13:48:28 +0200
-Message-Id: <20230508114830.28182-5-tzimmermann@suse.de>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230508114830.28182-1-tzimmermann@suse.de>
-References: <20230508114830.28182-1-tzimmermann@suse.de>
+        Mon, 8 May 2023 08:39:23 -0400
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56A1A39484
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  8 May 2023 05:39:15 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed30:6a18:41e7:fcfe:24c0])
+        by andre.telenet-ops.be with bizsmtp
+        id uCfC2900W2WBekD01CfCj9; Mon, 08 May 2023 14:39:13 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1pw08v-001VqE-Us;
+        Mon, 08 May 2023 14:39:12 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1pw092-00Avgn-LR;
+        Mon, 08 May 2023 14:39:12 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-m68k@lists.linux-m68k.org
+Cc:     linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: defconfig: Update defconfigs for v6.4-rc1
+Date:   Mon,  8 May 2023 14:39:09 +0200
+Message-Id: <5a9bc6058c4fab4b57ba45d778956df8ce7e8688.1683548863.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Replace include statements for <asm/fb.h> with <linux/fb.h>. Fixes
-the coding style: if a header is available in asm/ and linux/, it
-is preferable to include the header from linux/. This only affects
-a few source files, most of which already include <linux/fb.h>.
+  - Enable modular build of the new DMA pool test,
+  - Drop CONFIG_PRINT_QUOTA_WARNING=n (auto-disabled since commit
+    36d532d713db5797 ("quota: mark PRINT_QUOTA_WARNING as BROKEN")),
+  - Drop CONFIG_UNIX=y and CONFIG_INET=y (implied by 9P_FS since commit
+    d7385ba137711ea7 ("9p: Remove INET dependency")).
 
-Suggested-by: Sam Ravnborg <sam@ravnborg.org>
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Sui Jingfeng <suijingfeng@loongson.cn>
-Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/parisc/video/fbdev.c        | 3 +--
- arch/sparc/video/fbdev.c         | 1 -
- arch/x86/video/fbdev.c           | 2 --
- drivers/staging/sm750fb/sm750.c  | 2 +-
- drivers/video/fbdev/core/fbcon.c | 1 -
- drivers/video/fbdev/core/fbmem.c | 2 --
- include/linux/fb.h               | 2 ++
- 7 files changed, 4 insertions(+), 9 deletions(-)
+To be queued in the m68k for-v6.5 branch.
 
-diff --git a/arch/parisc/video/fbdev.c b/arch/parisc/video/fbdev.c
-index 4a0ae08fc75b..137561d98246 100644
---- a/arch/parisc/video/fbdev.c
-+++ b/arch/parisc/video/fbdev.c
-@@ -5,10 +5,9 @@
-  * Copyright (C) 2001-2002 Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-  */
- 
-+#include <linux/fb.h>
- #include <linux/module.h>
- 
--#include <asm/fb.h>
--
- #include <video/sticore.h>
- 
- int fb_is_primary_device(struct fb_info *info)
-diff --git a/arch/sparc/video/fbdev.c b/arch/sparc/video/fbdev.c
-index dadd5799fbb3..25837f128132 100644
---- a/arch/sparc/video/fbdev.c
-+++ b/arch/sparc/video/fbdev.c
-@@ -4,7 +4,6 @@
- #include <linux/fb.h>
- #include <linux/module.h>
- 
--#include <asm/fb.h>
- #include <asm/prom.h>
- 
- int fb_is_primary_device(struct fb_info *info)
-diff --git a/arch/x86/video/fbdev.c b/arch/x86/video/fbdev.c
-index 57ee3c158f97..f41a17ebac48 100644
---- a/arch/x86/video/fbdev.c
-+++ b/arch/x86/video/fbdev.c
-@@ -7,8 +7,6 @@
-  *
-  */
- 
--#include <asm/fb.h>
--
- #include <linux/fb.h>
- #include <linux/module.h>
- #include <linux/pci.h>
-diff --git a/drivers/staging/sm750fb/sm750.c b/drivers/staging/sm750fb/sm750.c
-index 22ace3168723..55e302a27847 100644
---- a/drivers/staging/sm750fb/sm750.c
-+++ b/drivers/staging/sm750fb/sm750.c
-@@ -16,7 +16,7 @@
- #include <linux/pagemap.h>
- #include <linux/screen_info.h>
- #include <linux/console.h>
--#include <asm/fb.h>
-+
- #include "sm750.h"
- #include "sm750_accel.h"
- #include "sm750_cursor.h"
-diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-index eb565a10e5cd..c6c9d040bdec 100644
---- a/drivers/video/fbdev/core/fbcon.c
-+++ b/drivers/video/fbdev/core/fbcon.c
-@@ -75,7 +75,6 @@
- #include <linux/interrupt.h>
- #include <linux/crc32.h> /* For counting font checksums */
- #include <linux/uaccess.h>
--#include <asm/fb.h>
- #include <asm/irq.h>
- 
- #include "fbcon.h"
-diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
-index 3fd95a79e4c3..38f7e83fa6e3 100644
---- a/drivers/video/fbdev/core/fbmem.c
-+++ b/drivers/video/fbdev/core/fbmem.c
-@@ -37,8 +37,6 @@
- #include <linux/mem_encrypt.h>
- #include <linux/pci.h>
- 
--#include <asm/fb.h>
--
- #include <video/nomodeset.h>
- #include <video/vga.h>
- 
-diff --git a/include/linux/fb.h b/include/linux/fb.h
-index 08cb47da71f8..c0f97160ebbf 100644
---- a/include/linux/fb.h
-+++ b/include/linux/fb.h
-@@ -15,6 +15,8 @@
- #include <linux/list.h>
- #include <linux/backlight.h>
- #include <linux/slab.h>
-+
-+#include <asm/fb.h>
- #include <asm/io.h>
- 
- struct vm_area_struct;
+ arch/m68k/configs/amiga_defconfig    | 2 +-
+ arch/m68k/configs/apollo_defconfig   | 2 +-
+ arch/m68k/configs/atari_defconfig    | 2 +-
+ arch/m68k/configs/bvme6000_defconfig | 2 +-
+ arch/m68k/configs/hp300_defconfig    | 2 +-
+ arch/m68k/configs/mac_defconfig      | 2 +-
+ arch/m68k/configs/multi_defconfig    | 2 +-
+ arch/m68k/configs/mvme147_defconfig  | 2 +-
+ arch/m68k/configs/mvme16x_defconfig  | 2 +-
+ arch/m68k/configs/q40_defconfig      | 2 +-
+ arch/m68k/configs/sun3_defconfig     | 1 -
+ arch/m68k/configs/sun3x_defconfig    | 2 +-
+ arch/m68k/configs/virt_defconfig     | 2 --
+ 13 files changed, 11 insertions(+), 14 deletions(-)
+
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index b26469a65bc11ed4..62fdca7efce4dc96 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -43,6 +43,7 @@ CONFIG_IOSCHED_BFQ=m
+ CONFIG_BINFMT_MISC=m
+ CONFIG_SLAB=y
+ # CONFIG_COMPACTION is not set
++CONFIG_DMAPOOL_TEST=m
+ CONFIG_USERFAULTFD=y
+ CONFIG_NET=y
+ CONFIG_PACKET=y
+@@ -454,7 +455,6 @@ CONFIG_OCFS2_FS=m
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
+ CONFIG_FANOTIFY=y
+ CONFIG_QUOTA_NETLINK_INTERFACE=y
+-# CONFIG_PRINT_QUOTA_WARNING is not set
+ CONFIG_AUTOFS_FS=m
+ CONFIG_FUSE_FS=m
+ CONFIG_CUSE=m
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index 944a49a129bedab0..5bfbd0444bb51f70 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -39,6 +39,7 @@ CONFIG_IOSCHED_BFQ=m
+ CONFIG_BINFMT_MISC=m
+ CONFIG_SLAB=y
+ # CONFIG_COMPACTION is not set
++CONFIG_DMAPOOL_TEST=m
+ CONFIG_USERFAULTFD=y
+ CONFIG_NET=y
+ CONFIG_PACKET=y
+@@ -411,7 +412,6 @@ CONFIG_OCFS2_FS=m
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
+ CONFIG_FANOTIFY=y
+ CONFIG_QUOTA_NETLINK_INTERFACE=y
+-# CONFIG_PRINT_QUOTA_WARNING is not set
+ CONFIG_AUTOFS_FS=m
+ CONFIG_FUSE_FS=m
+ CONFIG_CUSE=m
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index f3790c45cac722af..8e52bc4a48f1f04f 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -46,6 +46,7 @@ CONFIG_IOSCHED_BFQ=m
+ CONFIG_BINFMT_MISC=m
+ CONFIG_SLAB=y
+ # CONFIG_COMPACTION is not set
++CONFIG_DMAPOOL_TEST=m
+ CONFIG_USERFAULTFD=y
+ CONFIG_NET=y
+ CONFIG_PACKET=y
+@@ -442,7 +443,6 @@ CONFIG_OCFS2_FS=m
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
+ CONFIG_FANOTIFY=y
+ CONFIG_QUOTA_NETLINK_INTERFACE=y
+-# CONFIG_PRINT_QUOTA_WARNING is not set
+ CONFIG_AUTOFS_FS=m
+ CONFIG_FUSE_FS=m
+ CONFIG_CUSE=m
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index 23b7805309bd4407..f3336f1774ec48b4 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -36,6 +36,7 @@ CONFIG_IOSCHED_BFQ=m
+ CONFIG_BINFMT_MISC=m
+ CONFIG_SLAB=y
+ # CONFIG_COMPACTION is not set
++CONFIG_DMAPOOL_TEST=m
+ CONFIG_USERFAULTFD=y
+ CONFIG_NET=y
+ CONFIG_PACKET=y
+@@ -403,7 +404,6 @@ CONFIG_OCFS2_FS=m
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
+ CONFIG_FANOTIFY=y
+ CONFIG_QUOTA_NETLINK_INTERFACE=y
+-# CONFIG_PRINT_QUOTA_WARNING is not set
+ CONFIG_AUTOFS_FS=m
+ CONFIG_FUSE_FS=m
+ CONFIG_CUSE=m
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index 5605ab5c3dcfc25f..2d1bbac680662884 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -38,6 +38,7 @@ CONFIG_IOSCHED_BFQ=m
+ CONFIG_BINFMT_MISC=m
+ CONFIG_SLAB=y
+ # CONFIG_COMPACTION is not set
++CONFIG_DMAPOOL_TEST=m
+ CONFIG_USERFAULTFD=y
+ CONFIG_NET=y
+ CONFIG_PACKET=y
+@@ -413,7 +414,6 @@ CONFIG_OCFS2_FS=m
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
+ CONFIG_FANOTIFY=y
+ CONFIG_QUOTA_NETLINK_INTERFACE=y
+-# CONFIG_PRINT_QUOTA_WARNING is not set
+ CONFIG_AUTOFS_FS=m
+ CONFIG_FUSE_FS=m
+ CONFIG_CUSE=m
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index d0d1f9c33756d795..b4428dc361027632 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -37,6 +37,7 @@ CONFIG_IOSCHED_BFQ=m
+ CONFIG_BINFMT_MISC=m
+ CONFIG_SLAB=y
+ # CONFIG_COMPACTION is not set
++CONFIG_DMAPOOL_TEST=m
+ CONFIG_USERFAULTFD=y
+ CONFIG_NET=y
+ CONFIG_PACKET=y
+@@ -433,7 +434,6 @@ CONFIG_OCFS2_FS=m
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
+ CONFIG_FANOTIFY=y
+ CONFIG_QUOTA_NETLINK_INTERFACE=y
+-# CONFIG_PRINT_QUOTA_WARNING is not set
+ CONFIG_AUTOFS_FS=m
+ CONFIG_FUSE_FS=m
+ CONFIG_CUSE=m
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index 6d04314ce7eafb39..4cd9fa4cb10c8893 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -57,6 +57,7 @@ CONFIG_IOSCHED_BFQ=m
+ CONFIG_BINFMT_MISC=m
+ CONFIG_SLAB=y
+ # CONFIG_COMPACTION is not set
++CONFIG_DMAPOOL_TEST=m
+ CONFIG_USERFAULTFD=y
+ CONFIG_NET=y
+ CONFIG_PACKET=y
+@@ -519,7 +520,6 @@ CONFIG_OCFS2_FS=m
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
+ CONFIG_FANOTIFY=y
+ CONFIG_QUOTA_NETLINK_INTERFACE=y
+-# CONFIG_PRINT_QUOTA_WARNING is not set
+ CONFIG_AUTOFS_FS=m
+ CONFIG_FUSE_FS=m
+ CONFIG_CUSE=m
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index e6f5ae526d089339..7ee9ad50f0ad9d5e 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -35,6 +35,7 @@ CONFIG_IOSCHED_BFQ=m
+ CONFIG_BINFMT_MISC=m
+ CONFIG_SLAB=y
+ # CONFIG_COMPACTION is not set
++CONFIG_DMAPOOL_TEST=m
+ CONFIG_USERFAULTFD=y
+ CONFIG_NET=y
+ CONFIG_PACKET=y
+@@ -402,7 +403,6 @@ CONFIG_OCFS2_FS=m
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
+ CONFIG_FANOTIFY=y
+ CONFIG_QUOTA_NETLINK_INTERFACE=y
+-# CONFIG_PRINT_QUOTA_WARNING is not set
+ CONFIG_AUTOFS_FS=m
+ CONFIG_FUSE_FS=m
+ CONFIG_CUSE=m
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index f2d4dff4787aade7..2488893616dc237f 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -36,6 +36,7 @@ CONFIG_IOSCHED_BFQ=m
+ CONFIG_BINFMT_MISC=m
+ CONFIG_SLAB=y
+ # CONFIG_COMPACTION is not set
++CONFIG_DMAPOOL_TEST=m
+ CONFIG_USERFAULTFD=y
+ CONFIG_NET=y
+ CONFIG_PACKET=y
+@@ -403,7 +404,6 @@ CONFIG_OCFS2_FS=m
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
+ CONFIG_FANOTIFY=y
+ CONFIG_QUOTA_NETLINK_INTERFACE=y
+-# CONFIG_PRINT_QUOTA_WARNING is not set
+ CONFIG_AUTOFS_FS=m
+ CONFIG_FUSE_FS=m
+ CONFIG_CUSE=m
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index 907eedecd040262c..ffc676289f878012 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -37,6 +37,7 @@ CONFIG_IOSCHED_BFQ=m
+ CONFIG_BINFMT_MISC=m
+ CONFIG_SLAB=y
+ # CONFIG_COMPACTION is not set
++CONFIG_DMAPOOL_TEST=m
+ CONFIG_USERFAULTFD=y
+ CONFIG_NET=y
+ CONFIG_PACKET=y
+@@ -420,7 +421,6 @@ CONFIG_OCFS2_FS=m
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
+ CONFIG_FANOTIFY=y
+ CONFIG_QUOTA_NETLINK_INTERFACE=y
+-# CONFIG_PRINT_QUOTA_WARNING is not set
+ CONFIG_AUTOFS_FS=m
+ CONFIG_FUSE_FS=m
+ CONFIG_CUSE=m
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index 9e3d47008f218675..198179657ce09afc 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -402,7 +402,6 @@ CONFIG_OCFS2_FS=m
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
+ CONFIG_FANOTIFY=y
+ CONFIG_QUOTA_NETLINK_INTERFACE=y
+-# CONFIG_PRINT_QUOTA_WARNING is not set
+ CONFIG_AUTOFS_FS=m
+ CONFIG_FUSE_FS=m
+ CONFIG_CUSE=m
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index f6540078cb4beb48..85364f6178d440d8 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -33,6 +33,7 @@ CONFIG_IOSCHED_BFQ=m
+ CONFIG_BINFMT_MISC=m
+ CONFIG_SLAB=y
+ # CONFIG_COMPACTION is not set
++CONFIG_DMAPOOL_TEST=m
+ CONFIG_USERFAULTFD=y
+ CONFIG_NET=y
+ CONFIG_PACKET=y
+@@ -401,7 +402,6 @@ CONFIG_OCFS2_FS=m
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
+ CONFIG_FANOTIFY=y
+ CONFIG_QUOTA_NETLINK_INTERFACE=y
+-# CONFIG_PRINT_QUOTA_WARNING is not set
+ CONFIG_AUTOFS_FS=m
+ CONFIG_FUSE_FS=m
+ CONFIG_CUSE=m
+diff --git a/arch/m68k/configs/virt_defconfig b/arch/m68k/configs/virt_defconfig
+index 0b5a9f1cb7e8c5d8..49e649cc29f7b1e8 100644
+--- a/arch/m68k/configs/virt_defconfig
++++ b/arch/m68k/configs/virt_defconfig
+@@ -26,8 +26,6 @@ CONFIG_SUN_PARTITION=y
+ CONFIG_SYSV68_PARTITION=y
+ CONFIG_NET=y
+ CONFIG_PACKET=y
+-CONFIG_UNIX=y
+-CONFIG_INET=y
+ CONFIG_IP_PNP=y
+ CONFIG_IP_PNP_DHCP=y
+ CONFIG_IP_PNP_BOOTP=y
 -- 
-2.40.1
+2.34.1
 
