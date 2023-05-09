@@ -2,315 +2,202 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A55F0C7EE22
-	for <linux-m68k@archiver.kernel.org>; Mon,  8 May 2023 12:39:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39563C77B75
+	for <linux-m68k@archiver.kernel.org>; Tue,  9 May 2023 01:08:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233237AbjEHMja (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 8 May 2023 08:39:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39876 "EHLO
+        id S233235AbjEIBI6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 8 May 2023 21:08:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234365AbjEHMjX (ORCPT
+        with ESMTP id S232571AbjEIBI5 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 8 May 2023 08:39:23 -0400
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56A1A39484
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  8 May 2023 05:39:15 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed30:6a18:41e7:fcfe:24c0])
-        by andre.telenet-ops.be with bizsmtp
-        id uCfC2900W2WBekD01CfCj9; Mon, 08 May 2023 14:39:13 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1pw08v-001VqE-Us;
-        Mon, 08 May 2023 14:39:12 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1pw092-00Avgn-LR;
-        Mon, 08 May 2023 14:39:12 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-m68k@lists.linux-m68k.org
-Cc:     linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: defconfig: Update defconfigs for v6.4-rc1
-Date:   Mon,  8 May 2023 14:39:09 +0200
-Message-Id: <5a9bc6058c4fab4b57ba45d778956df8ce7e8688.1683548863.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 8 May 2023 21:08:57 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D05184
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  8 May 2023 18:08:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1683594536; x=1715130536;
+  h=date:from:to:cc:subject:message-id;
+  bh=3Nsnq3fOstgAbLzLk/hkrPeHcS5XN3xMXfeZhmOsc5U=;
+  b=MKB3Tuira5JfSLgtlwCVRdDDpnh4cEy8Q+IvFd4eDM6pGiCIoCbiQfB2
+   3hghyDKtP2252n91I/nzQA93uTNYM2xfIYrKvWmJVeyXBHzB6CykQl6Nw
+   ralDb9r+DaSR5FDDg2IW2+HIkOtY17DmEcYNYURqmmXGrRO5G4YHpn7mL
+   XpykfRkdUA0o8dJf74Dk8JiSLoMtp1mIZYDlMBVG0czHhOe8/S1pZKCdO
+   7y4aOjK8DVyWeNLa21AJVvHBDDmKrGgxOgH+2P4+Y4xIj+5AV66B1Ad2C
+   VeTlIWnSDyPmifHcDJWtKlOa87A1vyJz0NrNtWf99ja0Wv7mPe5GgrflD
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10704"; a="352845468"
+X-IronPort-AV: E=Sophos;i="5.99,259,1677571200"; 
+   d="scan'208";a="352845468"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2023 18:08:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10704"; a="676256344"
+X-IronPort-AV: E=Sophos;i="5.99,259,1677571200"; 
+   d="scan'208";a="676256344"
+Received: from lkp-server01.sh.intel.com (HELO dea6d5a4f140) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 08 May 2023 18:08:47 -0700
+Received: from kbuild by dea6d5a4f140 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pwBqR-0001Wh-0J;
+        Tue, 09 May 2023 01:08:47 +0000
+Date:   Tue, 09 May 2023 09:08:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ c61671b384a1b4c4ab08bf6e75376081e06fdf97
+Message-ID: <20230509010827.9nFmT%lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-  - Enable modular build of the new DMA pool test,
-  - Drop CONFIG_PRINT_QUOTA_WARNING=n (auto-disabled since commit
-    36d532d713db5797 ("quota: mark PRINT_QUOTA_WARNING as BROKEN")),
-  - Drop CONFIG_UNIX=y and CONFIG_INET=y (implied by 9P_FS since commit
-    d7385ba137711ea7 ("9p: Remove INET dependency")).
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: c61671b384a1b4c4ab08bf6e75376081e06fdf97  Merge tag 'v6.4-rc1'
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-To be queued in the m68k for-v6.5 branch.
+elapsed time: 721m
 
- arch/m68k/configs/amiga_defconfig    | 2 +-
- arch/m68k/configs/apollo_defconfig   | 2 +-
- arch/m68k/configs/atari_defconfig    | 2 +-
- arch/m68k/configs/bvme6000_defconfig | 2 +-
- arch/m68k/configs/hp300_defconfig    | 2 +-
- arch/m68k/configs/mac_defconfig      | 2 +-
- arch/m68k/configs/multi_defconfig    | 2 +-
- arch/m68k/configs/mvme147_defconfig  | 2 +-
- arch/m68k/configs/mvme16x_defconfig  | 2 +-
- arch/m68k/configs/q40_defconfig      | 2 +-
- arch/m68k/configs/sun3_defconfig     | 1 -
- arch/m68k/configs/sun3x_defconfig    | 2 +-
- arch/m68k/configs/virt_defconfig     | 2 --
- 13 files changed, 11 insertions(+), 14 deletions(-)
+configs tested: 131
+configs skipped: 11
 
-diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
-index b26469a65bc11ed4..62fdca7efce4dc96 100644
---- a/arch/m68k/configs/amiga_defconfig
-+++ b/arch/m68k/configs/amiga_defconfig
-@@ -43,6 +43,7 @@ CONFIG_IOSCHED_BFQ=m
- CONFIG_BINFMT_MISC=m
- CONFIG_SLAB=y
- # CONFIG_COMPACTION is not set
-+CONFIG_DMAPOOL_TEST=m
- CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
-@@ -454,7 +455,6 @@ CONFIG_OCFS2_FS=m
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_FANOTIFY=y
- CONFIG_QUOTA_NETLINK_INTERFACE=y
--# CONFIG_PRINT_QUOTA_WARNING is not set
- CONFIG_AUTOFS_FS=m
- CONFIG_FUSE_FS=m
- CONFIG_CUSE=m
-diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
-index 944a49a129bedab0..5bfbd0444bb51f70 100644
---- a/arch/m68k/configs/apollo_defconfig
-+++ b/arch/m68k/configs/apollo_defconfig
-@@ -39,6 +39,7 @@ CONFIG_IOSCHED_BFQ=m
- CONFIG_BINFMT_MISC=m
- CONFIG_SLAB=y
- # CONFIG_COMPACTION is not set
-+CONFIG_DMAPOOL_TEST=m
- CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
-@@ -411,7 +412,6 @@ CONFIG_OCFS2_FS=m
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_FANOTIFY=y
- CONFIG_QUOTA_NETLINK_INTERFACE=y
--# CONFIG_PRINT_QUOTA_WARNING is not set
- CONFIG_AUTOFS_FS=m
- CONFIG_FUSE_FS=m
- CONFIG_CUSE=m
-diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
-index f3790c45cac722af..8e52bc4a48f1f04f 100644
---- a/arch/m68k/configs/atari_defconfig
-+++ b/arch/m68k/configs/atari_defconfig
-@@ -46,6 +46,7 @@ CONFIG_IOSCHED_BFQ=m
- CONFIG_BINFMT_MISC=m
- CONFIG_SLAB=y
- # CONFIG_COMPACTION is not set
-+CONFIG_DMAPOOL_TEST=m
- CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
-@@ -442,7 +443,6 @@ CONFIG_OCFS2_FS=m
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_FANOTIFY=y
- CONFIG_QUOTA_NETLINK_INTERFACE=y
--# CONFIG_PRINT_QUOTA_WARNING is not set
- CONFIG_AUTOFS_FS=m
- CONFIG_FUSE_FS=m
- CONFIG_CUSE=m
-diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
-index 23b7805309bd4407..f3336f1774ec48b4 100644
---- a/arch/m68k/configs/bvme6000_defconfig
-+++ b/arch/m68k/configs/bvme6000_defconfig
-@@ -36,6 +36,7 @@ CONFIG_IOSCHED_BFQ=m
- CONFIG_BINFMT_MISC=m
- CONFIG_SLAB=y
- # CONFIG_COMPACTION is not set
-+CONFIG_DMAPOOL_TEST=m
- CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
-@@ -403,7 +404,6 @@ CONFIG_OCFS2_FS=m
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_FANOTIFY=y
- CONFIG_QUOTA_NETLINK_INTERFACE=y
--# CONFIG_PRINT_QUOTA_WARNING is not set
- CONFIG_AUTOFS_FS=m
- CONFIG_FUSE_FS=m
- CONFIG_CUSE=m
-diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
-index 5605ab5c3dcfc25f..2d1bbac680662884 100644
---- a/arch/m68k/configs/hp300_defconfig
-+++ b/arch/m68k/configs/hp300_defconfig
-@@ -38,6 +38,7 @@ CONFIG_IOSCHED_BFQ=m
- CONFIG_BINFMT_MISC=m
- CONFIG_SLAB=y
- # CONFIG_COMPACTION is not set
-+CONFIG_DMAPOOL_TEST=m
- CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
-@@ -413,7 +414,6 @@ CONFIG_OCFS2_FS=m
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_FANOTIFY=y
- CONFIG_QUOTA_NETLINK_INTERFACE=y
--# CONFIG_PRINT_QUOTA_WARNING is not set
- CONFIG_AUTOFS_FS=m
- CONFIG_FUSE_FS=m
- CONFIG_CUSE=m
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index d0d1f9c33756d795..b4428dc361027632 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -37,6 +37,7 @@ CONFIG_IOSCHED_BFQ=m
- CONFIG_BINFMT_MISC=m
- CONFIG_SLAB=y
- # CONFIG_COMPACTION is not set
-+CONFIG_DMAPOOL_TEST=m
- CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
-@@ -433,7 +434,6 @@ CONFIG_OCFS2_FS=m
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_FANOTIFY=y
- CONFIG_QUOTA_NETLINK_INTERFACE=y
--# CONFIG_PRINT_QUOTA_WARNING is not set
- CONFIG_AUTOFS_FS=m
- CONFIG_FUSE_FS=m
- CONFIG_CUSE=m
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index 6d04314ce7eafb39..4cd9fa4cb10c8893 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -57,6 +57,7 @@ CONFIG_IOSCHED_BFQ=m
- CONFIG_BINFMT_MISC=m
- CONFIG_SLAB=y
- # CONFIG_COMPACTION is not set
-+CONFIG_DMAPOOL_TEST=m
- CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
-@@ -519,7 +520,6 @@ CONFIG_OCFS2_FS=m
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_FANOTIFY=y
- CONFIG_QUOTA_NETLINK_INTERFACE=y
--# CONFIG_PRINT_QUOTA_WARNING is not set
- CONFIG_AUTOFS_FS=m
- CONFIG_FUSE_FS=m
- CONFIG_CUSE=m
-diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
-index e6f5ae526d089339..7ee9ad50f0ad9d5e 100644
---- a/arch/m68k/configs/mvme147_defconfig
-+++ b/arch/m68k/configs/mvme147_defconfig
-@@ -35,6 +35,7 @@ CONFIG_IOSCHED_BFQ=m
- CONFIG_BINFMT_MISC=m
- CONFIG_SLAB=y
- # CONFIG_COMPACTION is not set
-+CONFIG_DMAPOOL_TEST=m
- CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
-@@ -402,7 +403,6 @@ CONFIG_OCFS2_FS=m
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_FANOTIFY=y
- CONFIG_QUOTA_NETLINK_INTERFACE=y
--# CONFIG_PRINT_QUOTA_WARNING is not set
- CONFIG_AUTOFS_FS=m
- CONFIG_FUSE_FS=m
- CONFIG_CUSE=m
-diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
-index f2d4dff4787aade7..2488893616dc237f 100644
---- a/arch/m68k/configs/mvme16x_defconfig
-+++ b/arch/m68k/configs/mvme16x_defconfig
-@@ -36,6 +36,7 @@ CONFIG_IOSCHED_BFQ=m
- CONFIG_BINFMT_MISC=m
- CONFIG_SLAB=y
- # CONFIG_COMPACTION is not set
-+CONFIG_DMAPOOL_TEST=m
- CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
-@@ -403,7 +404,6 @@ CONFIG_OCFS2_FS=m
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_FANOTIFY=y
- CONFIG_QUOTA_NETLINK_INTERFACE=y
--# CONFIG_PRINT_QUOTA_WARNING is not set
- CONFIG_AUTOFS_FS=m
- CONFIG_FUSE_FS=m
- CONFIG_CUSE=m
-diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
-index 907eedecd040262c..ffc676289f878012 100644
---- a/arch/m68k/configs/q40_defconfig
-+++ b/arch/m68k/configs/q40_defconfig
-@@ -37,6 +37,7 @@ CONFIG_IOSCHED_BFQ=m
- CONFIG_BINFMT_MISC=m
- CONFIG_SLAB=y
- # CONFIG_COMPACTION is not set
-+CONFIG_DMAPOOL_TEST=m
- CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
-@@ -420,7 +421,6 @@ CONFIG_OCFS2_FS=m
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_FANOTIFY=y
- CONFIG_QUOTA_NETLINK_INTERFACE=y
--# CONFIG_PRINT_QUOTA_WARNING is not set
- CONFIG_AUTOFS_FS=m
- CONFIG_FUSE_FS=m
- CONFIG_CUSE=m
-diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
-index 9e3d47008f218675..198179657ce09afc 100644
---- a/arch/m68k/configs/sun3_defconfig
-+++ b/arch/m68k/configs/sun3_defconfig
-@@ -402,7 +402,6 @@ CONFIG_OCFS2_FS=m
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_FANOTIFY=y
- CONFIG_QUOTA_NETLINK_INTERFACE=y
--# CONFIG_PRINT_QUOTA_WARNING is not set
- CONFIG_AUTOFS_FS=m
- CONFIG_FUSE_FS=m
- CONFIG_CUSE=m
-diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
-index f6540078cb4beb48..85364f6178d440d8 100644
---- a/arch/m68k/configs/sun3x_defconfig
-+++ b/arch/m68k/configs/sun3x_defconfig
-@@ -33,6 +33,7 @@ CONFIG_IOSCHED_BFQ=m
- CONFIG_BINFMT_MISC=m
- CONFIG_SLAB=y
- # CONFIG_COMPACTION is not set
-+CONFIG_DMAPOOL_TEST=m
- CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
-@@ -401,7 +402,6 @@ CONFIG_OCFS2_FS=m
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_FANOTIFY=y
- CONFIG_QUOTA_NETLINK_INTERFACE=y
--# CONFIG_PRINT_QUOTA_WARNING is not set
- CONFIG_AUTOFS_FS=m
- CONFIG_FUSE_FS=m
- CONFIG_CUSE=m
-diff --git a/arch/m68k/configs/virt_defconfig b/arch/m68k/configs/virt_defconfig
-index 0b5a9f1cb7e8c5d8..49e649cc29f7b1e8 100644
---- a/arch/m68k/configs/virt_defconfig
-+++ b/arch/m68k/configs/virt_defconfig
-@@ -26,8 +26,6 @@ CONFIG_SUN_PARTITION=y
- CONFIG_SYSV68_PARTITION=y
- CONFIG_NET=y
- CONFIG_PACKET=y
--CONFIG_UNIX=y
--CONFIG_INET=y
- CONFIG_IP_PNP=y
- CONFIG_IP_PNP_DHCP=y
- CONFIG_IP_PNP_BOOTP=y
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r003-20230508   gcc  
+alpha                randconfig-r025-20230507   gcc  
+alpha                randconfig-r026-20230507   gcc  
+alpha                randconfig-r032-20230507   gcc  
+arc                              allyesconfig   gcc  
+arc          buildonly-randconfig-r005-20230507   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r002-20230508   gcc  
+arc                  randconfig-r043-20230507   gcc  
+arc                  randconfig-r043-20230508   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r002-20230507   clang
+arm                  randconfig-r003-20230507   clang
+arm                  randconfig-r026-20230508   clang
+arm                  randconfig-r036-20230508   gcc  
+arm                  randconfig-r046-20230507   gcc  
+arm                  randconfig-r046-20230508   clang
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r004-20230508   clang
+arm64                randconfig-r015-20230508   gcc  
+arm64                randconfig-r016-20230508   gcc  
+arm64                randconfig-r033-20230508   clang
+csky                                defconfig   gcc  
+csky                 randconfig-r012-20230508   gcc  
+csky                 randconfig-r031-20230507   gcc  
+hexagon      buildonly-randconfig-r004-20230508   clang
+hexagon              randconfig-r015-20230507   clang
+hexagon              randconfig-r023-20230507   clang
+hexagon              randconfig-r032-20230508   clang
+hexagon              randconfig-r041-20230507   clang
+hexagon              randconfig-r041-20230508   clang
+hexagon              randconfig-r045-20230507   clang
+hexagon              randconfig-r045-20230508   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r001-20230508   clang
+i386         buildonly-randconfig-r005-20230508   clang
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-a001-20230508   clang
+i386                 randconfig-a002-20230508   clang
+i386                 randconfig-a003-20230508   clang
+i386                 randconfig-a004-20230508   clang
+i386                 randconfig-a005-20230508   clang
+i386                 randconfig-a006-20230508   clang
+i386                 randconfig-a011-20230508   gcc  
+i386                 randconfig-a012-20230508   gcc  
+i386                 randconfig-a013-20230508   gcc  
+i386                 randconfig-a014-20230508   gcc  
+i386                 randconfig-a015-20230508   gcc  
+i386                 randconfig-a016-20230508   gcc  
+ia64                             allmodconfig   gcc  
+ia64                                defconfig   gcc  
+ia64                 randconfig-r021-20230507   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r016-20230507   gcc  
+loongarch            randconfig-r033-20230507   gcc  
+loongarch            randconfig-r034-20230508   gcc  
+m68k                             allmodconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r011-20230507   gcc  
+m68k                 randconfig-r013-20230507   gcc  
+m68k                 randconfig-r014-20230508   gcc  
+m68k                 randconfig-r024-20230507   gcc  
+microblaze           randconfig-r014-20230507   gcc  
+microblaze           randconfig-r022-20230507   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips         buildonly-randconfig-r003-20230507   clang
+nios2                               defconfig   gcc  
+nios2                randconfig-r034-20230507   gcc  
+openrisc     buildonly-randconfig-r001-20230507   gcc  
+openrisc             randconfig-r036-20230507   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc      buildonly-randconfig-r004-20230507   clang
+powerpc              randconfig-r006-20230507   gcc  
+powerpc              randconfig-r022-20230508   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r013-20230508   gcc  
+riscv                randconfig-r025-20230508   gcc  
+riscv                randconfig-r042-20230507   clang
+riscv                randconfig-r042-20230508   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r001-20230508   clang
+s390                 randconfig-r006-20230508   clang
+s390                 randconfig-r031-20230508   clang
+s390                 randconfig-r044-20230507   clang
+s390                 randconfig-r044-20230508   gcc  
+sh                               allmodconfig   gcc  
+sh           buildonly-randconfig-r002-20230507   gcc  
+sh                   randconfig-r005-20230508   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r035-20230508   gcc  
+sparc64      buildonly-randconfig-r006-20230507   gcc  
+sparc64              randconfig-r001-20230507   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r002-20230508   clang
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                        randconfig-a001   clang
+x86_64                        randconfig-a002   gcc  
+x86_64                        randconfig-a003   clang
+x86_64                        randconfig-a004   gcc  
+x86_64                        randconfig-a005   clang
+x86_64                        randconfig-a006   gcc  
+x86_64               randconfig-a011-20230508   gcc  
+x86_64               randconfig-a012-20230508   gcc  
+x86_64               randconfig-a013-20230508   gcc  
+x86_64               randconfig-a014-20230508   gcc  
+x86_64               randconfig-a015-20230508   gcc  
+x86_64               randconfig-a016-20230508   gcc  
+x86_64               randconfig-r011-20230508   gcc  
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r021-20230508   gcc  
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
