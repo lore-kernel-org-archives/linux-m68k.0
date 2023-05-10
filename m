@@ -2,53 +2,53 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B282FC7EE24
-	for <linux-m68k@archiver.kernel.org>; Wed, 10 May 2023 05:09:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F513C7EE24
+	for <linux-m68k@archiver.kernel.org>; Wed, 10 May 2023 05:11:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235931AbjEJFJ6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 10 May 2023 01:09:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59920 "EHLO
+        id S235541AbjEJFLL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 10 May 2023 01:11:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235972AbjEJFJ5 (ORCPT
+        with ESMTP id S229483AbjEJFLK (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 10 May 2023 01:09:57 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA544EF8
-        for <linux-m68k@lists.linux-m68k.org>; Tue,  9 May 2023 22:09:55 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-55a64f0053fso101752617b3.3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 09 May 2023 22:09:55 -0700 (PDT)
+        Wed, 10 May 2023 01:11:10 -0400
+Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A819525A
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  9 May 2023 22:11:08 -0700 (PDT)
+Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-55a8019379fso62739097b3.0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 09 May 2023 22:11:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1683695395; x=1686287395;
+        d=google.com; s=20221208; t=1683695467; x=1686287467;
         h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UmemeLuI+WpEQXgz9TQT0mwehV8FTU9BDTa5EhoH+Rw=;
-        b=ceZayvLcQzK/jEmDGFktdiBeLmAfZAcJomtj6b8LZ7UVBhK1PGvRLGtv3raaIkoA69
-         8du4wIfy3LTg4noNW6T56a8rTdYN7Kpn5/bm4yjB4emMMTggN1PcgpP7ET0zc6Ogox7V
-         PacpXMb40YNuRMAqf3IboaGbQzDmk/4AhKXM1jLiRZe7o3tGAOJ6z3OSnXWDEM8MmOjy
-         leDcr9V/CMd1mPfM2iHPwMwcuDGyHWo5yaj5bkj6ZD28Zg+yk0+3HzvQJBuo9qxnWea2
-         qCcGWwBxF4a0/bB7X0FeLhxKH1U3vpEQVW9dVdnIidnAwcXxE3l++8L3bRK0NJ7IyPS8
-         JZIw==
+        bh=5t5YV0zKgmgEyAUPKTSjojlBVWu7n9Z5EbrT7MCf/bI=;
+        b=2vB4gHPvdrYwpepEfO1nF7s17T93hgvovaDeIEtq/j7tZEKBAX6MfSFdULN3s1RrSv
+         XbcEaHE4RfnjNOR2bGTDUPbkUVKLAEh7Z60FKXcJrN5AB5F5sDrBlIYfucGi5YFq3CRE
+         x2J76JMa1KrQtFzkek9dhFVhgpBZ4hkaFn0t/tEhn6Lp6XTc2qq6OFMsvbIv1u0qf83/
+         DuPOrKKE39rYYW8ERQAhpQjY3kAUjmEo/2XpafFM5jSnKHS+15Ix6XCgfH0XnW/sjbs8
+         PlPBuW0lMaTsO4yfeYWj+it6wzwQ+thFBn+MFXcJGic5E+ghFwv9VEoF4ainQyun9oWL
+         kbxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683695395; x=1686287395;
+        d=1e100.net; s=20221208; t=1683695467; x=1686287467;
         h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UmemeLuI+WpEQXgz9TQT0mwehV8FTU9BDTa5EhoH+Rw=;
-        b=BgwcrigdkaawGfEWdxFdfX0s5QhACW7q0WpOuDwWwl5T1tcc6hIErqah1P2G8qaRBS
-         uk2wr8zesX2+5d88F18Y4XuBjilMh1YFwb5qvWV4oi+AZqpcfh0O0PbWh8SVndL6OuRw
-         hnnZhEobwicNcUgonIUxY0oMdhe2LGN+z9lwqzccgN81O7lHJYprksLM1HE6zYhwpKk1
-         XFh2rAB8bsdUIe1qfsX4x0QpT9Q/5SPTJKnOmfRHWQoPcTX0wR/Zv/32YWYsDpAMIRKD
-         3yj9i5yqbbQt3/RKTp8eZGPUYUH78qG9PYIxfdy1SYl2Iw5V2Ogy0a3Y4xYU5+pf+9wU
-         Iu1g==
-X-Gm-Message-State: AC+VfDzWmT6/mnQHSIqocx+H6TOZ04GVm0+tGdR+9KKNTSpl15ZtzJtB
-        +p4SBWCeVt2xH8t/JVKqeQcfSA==
-X-Google-Smtp-Source: ACHHUZ6AHFxady081B2wan1G2AdvRI+je11F7XC2fK+PaWqaZjZVH5+mul53az7NeaRbK79eLrDOFQ==
-X-Received: by 2002:a81:92d7:0:b0:55a:4828:182a with SMTP id j206-20020a8192d7000000b0055a4828182amr18309481ywg.36.1683695394676;
-        Tue, 09 May 2023 22:09:54 -0700 (PDT)
+        bh=5t5YV0zKgmgEyAUPKTSjojlBVWu7n9Z5EbrT7MCf/bI=;
+        b=YICX2+x3XQEnCXtwtyzAXOUXYBihP8EUh0jf9+7CNauTgXy7+spvG7s62qjqiiiEo0
+         P8Hd6d+ToE9Jsd3ByPKz01fIpw/sZNZg/vZ3cgLrXCeVctlevmfPiF7LDoxC9mwaz18T
+         qr5c76HVSyQ2gjt6oWjIoUhWZJcU6i2bErqgo7OBevOmAdvGXeinIWCNkJS4Fa6Yms2Z
+         MBxkaz1rfSS9zDmtnlYBxz6LtS7COD8X/FlLtsJpxRNAdACgl52fDeFdF28tyvGyop2z
+         SoJc31AIpsXYRdSZRX5TqjY0jGbqVrIMqPbRkkIybCF94y4zJnFqrnWALOh1X/Vf86n9
+         XjmQ==
+X-Gm-Message-State: AC+VfDyv9HWAuNvxzSctNfRd7KOFciLKEi0lf8lWxLctVQqAEuxZ8Au5
+        uRAr/a9vGDi7+oWR887X2BPZow==
+X-Google-Smtp-Source: ACHHUZ5S12uJTV3RgA8xdSJdxWq0jDZ0XleloV6/dK1s9NkYAdupH7Dq2nQz0anegdxAtAS1U2ZfRQ==
+X-Received: by 2002:a0d:d4c3:0:b0:55a:9d84:2e4e with SMTP id w186-20020a0dd4c3000000b0055a9d842e4emr17689769ywd.18.1683695467357;
+        Tue, 09 May 2023 22:11:07 -0700 (PDT)
 Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id l64-20020a0dc943000000b0055aad7d3f34sm3766659ywd.142.2023.05.09.22.09.51
+        by smtp.gmail.com with ESMTPSA id l65-20020a0dfb44000000b005461671a79csm978797ywf.138.2023.05.09.22.11.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 May 2023 22:09:54 -0700 (PDT)
-Date:   Tue, 9 May 2023 22:09:50 -0700 (PDT)
+        Tue, 09 May 2023 22:11:07 -0700 (PDT)
+Date:   Tue, 9 May 2023 22:11:03 -0700 (PDT)
 From:   Hugh Dickins <hughd@google.com>
 X-X-Sender: hugh@ripple.attlocal.net
 To:     Andrew Morton <akpm@linux-foundation.org>
@@ -85,9 +85,9 @@ cc:     Mike Kravetz <mike.kravetz@oracle.com>,
         linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH 22/23] x86: sme_populate_pgd() use pte_offset_kernel()
+Subject: [PATCH 23/23] xtensa: add pte_unmap() to balance pte_offset_map()
 In-Reply-To: <77a5d8c-406b-7068-4f17-23b7ac53bc83@google.com>
-Message-ID: <6d75e7f-2266-1dda-8a70-c52c27f44da7@google.com>
+Message-ID: <ff6b25c6-f537-6b5c-8743-c9fc2bd81f91@google.com>
 References: <77a5d8c-406b-7068-4f17-23b7ac53bc83@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -95,28 +95,38 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-sme_populate_pgd() is an __init function for sme_encrypt_kernel():
-it should use pte_offset_kernel() instead of pte_offset_map(), to avoid
-the question of whether a pte_unmap() will be needed to balance.
+To keep balance in future, remember to pte_unmap() after a successful
+pte_offset_map().  And (might as well) pretend that get_pte_for_vaddr()
+really needed a map there, to read the pteval before "unmapping".
 
 Signed-off-by: Hugh Dickins <hughd@google.com>
 ---
- arch/x86/mm/mem_encrypt_identity.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/xtensa/mm/tlb.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
-index c6efcf559d88..a1ab542bdfd6 100644
---- a/arch/x86/mm/mem_encrypt_identity.c
-+++ b/arch/x86/mm/mem_encrypt_identity.c
-@@ -188,7 +188,7 @@ static void __init sme_populate_pgd(struct sme_populate_pgd_data *ppd)
- 	if (pmd_large(*pmd))
- 		return;
+diff --git a/arch/xtensa/mm/tlb.c b/arch/xtensa/mm/tlb.c
+index 27a477dae232..0a11fc5f185b 100644
+--- a/arch/xtensa/mm/tlb.c
++++ b/arch/xtensa/mm/tlb.c
+@@ -179,6 +179,7 @@ static unsigned get_pte_for_vaddr(unsigned vaddr)
+ 	pud_t *pud;
+ 	pmd_t *pmd;
+ 	pte_t *pte;
++	unsigned int pteval;
  
--	pte = pte_offset_map(pmd, ppd->vaddr);
-+	pte = pte_offset_kernel(pmd, ppd->vaddr);
- 	if (pte_none(*pte))
- 		set_pte(pte, __pte(ppd->paddr | ppd->pte_flags));
+ 	if (!mm)
+ 		mm = task->active_mm;
+@@ -197,7 +198,9 @@ static unsigned get_pte_for_vaddr(unsigned vaddr)
+ 	pte = pte_offset_map(pmd, vaddr);
+ 	if (!pte)
+ 		return 0;
+-	return pte_val(*pte);
++	pteval = pte_val(*pte);
++	pte_unmap(pte);
++	return pteval;
  }
+ 
+ enum {
 -- 
 2.35.3
 
