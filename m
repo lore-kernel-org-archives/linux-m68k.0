@@ -2,53 +2,53 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 129C4C77B7D
-	for <linux-m68k@archiver.kernel.org>; Thu, 11 May 2023 03:40:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37EC5C7EE23
+	for <linux-m68k@archiver.kernel.org>; Thu, 11 May 2023 04:35:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232848AbjEKDkt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 10 May 2023 23:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40498 "EHLO
+        id S232224AbjEKEfy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 11 May 2023 00:35:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231562AbjEKDks (ORCPT
+        with ESMTP id S236619AbjEKEfv (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 10 May 2023 23:40:48 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808FD30F0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 10 May 2023 20:40:46 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-55a64f0053fso121424287b3.3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 10 May 2023 20:40:46 -0700 (PDT)
+        Thu, 11 May 2023 00:35:51 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A1974C3E
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 10 May 2023 21:35:49 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-b9a6869dd3cso10514368276.2
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 10 May 2023 21:35:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1683776445; x=1686368445;
+        d=google.com; s=20221208; t=1683779748; x=1686371748;
         h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ENej4jeIUZxBD8VRbCOiI8elHKtxPPI57IP2BPex2w8=;
-        b=dRwxCttbruWpOV8kYGHv3nNrU7YtDC+OTBLfOopudv25EcY0eOmFueuJ1hPNX/4yPK
-         lZ+CKDV1ixGM1wGcKj6qimEkiOeHP6uO8k5UBK+K1guiiOneHW0aTpdbI9jx4n9a3pWh
-         YFOswR2fPcVLNVki1JCjWzUrcXjuJx2vuRzc9QuQNzAXt9LIKAoY0UTfBY1lvuZsc4wF
-         pZT0aAuiR0nq7zlCMbbcyMMj9SgafH/QvrYzNVzvWnn9FvZdI2qYWnYMs14sXD98qyJZ
-         5JrZz4aeYcjgWQTN89jue2C1nxgpjN2jR5BgjDHmda2BP2F+t1GLE3TEXf4gxBg+jWes
-         mQFQ==
+        bh=+p7cDTQzCuKi1QAFDlX+tde47HjymadRIrRiXpBnjrE=;
+        b=RNxRw3AER9+L5QAQHv+p6mRvl+kLRPDjAKnUfRCQOcDelCmEsaqcsoNCZ9z6jDnrrF
+         1dGvlmTRCSz6GivkNmP4B8tOGOOSq6Wt3W4n6WYv2A/10cBkSKHBqKgYZ1kIdqfRxRv2
+         b6/PqCtdX4ix7yNCLa/PS5e6wv2Gw1YtT/EuoE2wpe5IJsk/tNbOekNlZ2HocnjPlgpj
+         lSA1YwTzKnLyqwSgSKCOk/yYtynRYu60PUe/zpxP112dZ3XnJoa/QQJP9/l4IL72dAw3
+         efPluGkJmhM0YEv05bCCm1C2B3NBAmU0VrOlKGR25w8Huvmiap7lbD8JzalsqF5imjPe
+         EiGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683776445; x=1686368445;
+        d=1e100.net; s=20221208; t=1683779748; x=1686371748;
         h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ENej4jeIUZxBD8VRbCOiI8elHKtxPPI57IP2BPex2w8=;
-        b=lh952j++saOK0XCPbmlYrcG9yC6uL4G8qarUgWWpWjOdTuR7PjYLNN2k+3LzcCKszV
-         pO1J9D//k+mxqlGQXXyp5a3WCPAgoVXtH6WVBz44v7Ng1DoR3tJnta3T/g49tInoBlvj
-         VltqpemW7XW1DpOgMLiFxXCM8csozE3mreEoGjeWgAuCtl7XllSjgCtgQeRQqvg3De+o
-         rL4+jGB7Nt9+LlotrbFk/2cpgrGeayPIZsrOXgc5Gy0UyRMJ+nHus+xdPSvlW3AGTSOE
-         YLst+CubHJNLGAUPsc8+tFKk1lOd0rWSEMltf+q0q8gsQZwCOvjby2kv7EvqbKBSz6+N
-         ljOQ==
-X-Gm-Message-State: AC+VfDxzw77SYcUbIrw7CvHjsYFzQ1WAEcfcIyMBYEck4/H0EVwS+Zt3
-        9VY4RN/o3EUx5580uqJeVxOVww==
-X-Google-Smtp-Source: ACHHUZ7h//pElwTWDcmRkblmnEL8tpIvH3DpaXFnfKmYUIesZtUkvvAepMEKFrx4IKpikCPoidpc1g==
-X-Received: by 2002:a81:8702:0:b0:560:bb81:6468 with SMTP id x2-20020a818702000000b00560bb816468mr6471997ywf.23.1683776445583;
-        Wed, 10 May 2023 20:40:45 -0700 (PDT)
+        bh=+p7cDTQzCuKi1QAFDlX+tde47HjymadRIrRiXpBnjrE=;
+        b=JZqTD5pS7udDqF1w4pbnuZO+OkveU6Eeon4phCaxDsFqG69nmO1OJ8g4FPmAIV9pNr
+         1i7RYG/7Z1VRq6cUXyTzyoiuIEO+fx7LN1JTWlSsIUPhR4bCC1IW7VsTmrI2F4ng8hQw
+         /kcC+0Z0oBRFKCLpSBWFSh6pF0j1LLQ4bW2HCsscd0ZFTrvRPmlUrc8fj3HpjujeEKiV
+         g/7xvX6+JC5wo5nesTiEDWrVAr9dsD0TkgPjIcPE77U/Sc0D9LvxyY90KXuDiyE45XpQ
+         +eIp48NilbBFA+gzmWXhPw5Q1ysIYV5caMEfnqDqjnMAAJqIGdEojch9dUGtirkoLvK5
+         EdwA==
+X-Gm-Message-State: AC+VfDzaYwWbyhaYbrM5a6aXOhf8iUX89aBZqQ9biG7zP8G7rqKXZaF2
+        HH7VxDdBWmmbxqzJhVmMxRtYJQ==
+X-Google-Smtp-Source: ACHHUZ4jNGBbv4gj0OghzQ/5FaHnsUorF/gO/2yZgUAa0GVD52UTO1h980KsCPnjFH9AHSAArpdGLQ==
+X-Received: by 2002:a25:4884:0:b0:b9d:fe06:1f5b with SMTP id v126-20020a254884000000b00b9dfe061f5bmr18740294yba.15.1683779748403;
+        Wed, 10 May 2023 21:35:48 -0700 (PDT)
 Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id g138-20020a815290000000b0054629ed8300sm4571040ywb.80.2023.05.10.20.40.42
+        by smtp.gmail.com with ESMTPSA id a81-20020a251a54000000b00b7767ca749esm4213494yba.59.2023.05.10.21.35.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 May 2023 20:40:45 -0700 (PDT)
-Date:   Wed, 10 May 2023 20:40:41 -0700 (PDT)
+        Wed, 10 May 2023 21:35:47 -0700 (PDT)
+Date:   Wed, 10 May 2023 21:35:44 -0700 (PDT)
 From:   Hugh Dickins <hughd@google.com>
 X-X-Sender: hugh@ripple.attlocal.net
 To:     Matthew Wilcox <willy@infradead.org>
@@ -79,17 +79,18 @@ cc:     Hugh Dickins <hughd@google.com>,
         John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
         "David S. Miller" <davem@davemloft.net>,
         Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, x86@kernel.org,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
         linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
         linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 01/23] arm: allow pte_offset_map[_lock]() to fail
-In-Reply-To: <ZFup/fG50MPFF979@casper.infradead.org>
-Message-ID: <b9dc75bf-b13c-37ba-6c16-9fc163703dd@google.com>
-References: <77a5d8c-406b-7068-4f17-23b7ac53bc83@google.com> <5011977-d876-6a24-a3fc-c7e6a02877b8@google.com> <ZFup/fG50MPFF979@casper.infradead.org>
+Subject: Re: [PATCH 00/23] arch: allow pte_offset_map[_lock]() to fail
+In-Reply-To: <ZFs0k2rrLPH9A/UU@casper.infradead.org>
+Message-ID: <d7f3c7b2-25b8-ef66-98a8-43d68f4499f@google.com>
+References: <77a5d8c-406b-7068-4f17-23b7ac53bc83@google.com> <ZFs0k2rrLPH9A/UU@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
@@ -97,39 +98,54 @@ List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
 On Wed, 10 May 2023, Matthew Wilcox wrote:
-> On Tue, May 09, 2023 at 09:42:44PM -0700, Hugh Dickins wrote:
-> > diff --git a/arch/arm/lib/uaccess_with_memcpy.c b/arch/arm/lib/uaccess_with_memcpy.c
-> > index e4c2677cc1e9..2f6163f05e93 100644
-> > --- a/arch/arm/lib/uaccess_with_memcpy.c
-> > +++ b/arch/arm/lib/uaccess_with_memcpy.c
-> > @@ -74,6 +74,9 @@ pin_page_for_write(const void __user *_addr, pte_t **ptep, spinlock_t **ptlp)
-> >  		return 0;
-> >  
-> >  	pte = pte_offset_map_lock(current->mm, pmd, addr, &ptl);
-> > +	if (unlikely(!pte))
-> > +		return 0;
+> On Tue, May 09, 2023 at 09:39:13PM -0700, Hugh Dickins wrote:
+> > Two: pte_offset_map() will need to do an rcu_read_lock(), with the
+> > corresponding rcu_read_unlock() in pte_unmap().  But most architectures
+> > never supported CONFIG_HIGHPTE, so some don't always call pte_unmap()
+> > after pte_offset_map(), or have used userspace pte_offset_map() where
+> > pte_offset_kernel() is more correct.  No problem in the current tree,
+> > but a problem once an rcu_read_unlock() will be needed to keep balance.
 > 
-> Failing seems like the wrong thig to do if we transitioned from a PTE
-> to PMD here?  Looks to me like we should goto a new label right after
-> the 'pmd = pmd_offset(pud, addr);', no?
+> Hi Hugh,
+> 
+> I shall have to spend some time looking at these patches, but at LSFMM
+> just a few hours ago, I proposed and nobody objected to removing
+> CONFIG_HIGHPTE.  I don't intend to take action on that consensus
+> immediately, so I can certainly wait until your patches are applied, but
+> if this information simplifies what you're doing, feel free to act on it.
 
-I'm pretty sure it's right as is; but probably more by luck than care -
-I do not think I studied this code as closely as you have now made me do;
-and it's clear that this is a piece of code where rare transient issues
-could come up, and must be handled correctly.  Thank you for making me
-look again.
+Thanks a lot, Matthew: very considerate, as usual.
 
-The key is in the callers of pin_page_for_write(): __copy_to_user_memcpy()
-and __clear_user_memset().  They're doing "while (!pin_page_for_write())"
-loops - they hope for the fast path of getting pte_lock or pmd_lock on
-the page, and doing a __memcpy() or __memset() to the user address; but
-if anything goes "wrong", a __put_user() to fault in the page (or fail)
-then pin_page_for_write() again.
+Yes, I did see your "Whither Highmem?" (wither highmem!) proposal on the
+list, and it did make me think, better get these patches and preview out
+soon, before you get to vanish pte_unmap() altogether.  HIGHMEM or not,
+HIGHPTE or not, I think pte_offset_map() and pte_unmap() still have an
+important role to play.
 
-"if (unlikely(!pte)) return 0" says that the expected fast path did not
-succeed, so please __put_user() and have another go.
+I don't really understand why you're going down a remove-CONFIG_HIGHPTE
+route: I thought you were motivated by the awkardness of kmap on large
+folios; but I don't see how removing HIGHPTE helps with that at all
+(unless you have a "large page tables" effort in mind, but I doubt it).
 
-It is somewhere I could have done a "goto again", but that would be
-superfluous when it's already designed that way at the outer level.
+But I've no investment in CONFIG_HIGHPTE if people think now is the
+time to remove it: I disagree, but wouldn't miss it myself - so long
+as you leave pte_offset_map() and pte_unmap() (under whatever names).
+
+I don't think removing CONFIG_HIGHPTE will simplify what I'm doing.
+For a moment it looked like it would: the PAE case is nasty (and our
+data centres have not been on PAE for a long time, so it wasn't a
+problem I had to face before); and knowing pmd_high must be 0 for a
+page table looked like it would help, but now I'm not so sure of that
+(hmm, I'm changing my mind again as I write).
+
+Peter's pmdp_get_lockless() does rely for complete correctness on
+interrupts being disabled, and I suspect that I may be forced in the
+PAE case to do so briefly; but detest that notion.  For now I'm just
+deferring it, hoping for a better idea before third series finalized.
+
+I mention this (and Cc Peter) in passing: don't want this arch thread
+to go down into that rabbit hole: we can start a fresh thread on it if
+you wish, but right now my priority is commit messages for the second
+series, rather than solving (or even detailing) the PAE problem.
 
 Hugh
