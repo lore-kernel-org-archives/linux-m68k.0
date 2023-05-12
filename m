@@ -2,57 +2,56 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7090FC77B7C
-	for <linux-m68k@archiver.kernel.org>; Fri, 12 May 2023 09:56:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B956C7EE2D
+	for <linux-m68k@archiver.kernel.org>; Fri, 12 May 2023 09:57:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240585AbjELJ42 convert rfc822-to-8bit (ORCPT
+        id S240531AbjELJ5u convert rfc822-to-8bit (ORCPT
         <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 12 May 2023 05:56:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50008 "EHLO
+        Fri, 12 May 2023 05:57:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240577AbjELJ4R (ORCPT
+        with ESMTP id S240090AbjELJ5r (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 12 May 2023 05:56:17 -0400
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21AD911568
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 12 May 2023 02:56:08 -0700 (PDT)
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-55a1462f9f6so94882707b3.3
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 12 May 2023 02:56:08 -0700 (PDT)
+        Fri, 12 May 2023 05:57:47 -0400
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8B6129
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 12 May 2023 02:57:20 -0700 (PDT)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-55a2691637bso143458367b3.0
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 12 May 2023 02:57:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683885367; x=1686477367;
+        d=1e100.net; s=20221208; t=1683885439; x=1686477439;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=G26aphgD58tBa5cm3UBUurmWT+f5Rv1D2HQTBHZMzO8=;
-        b=Fbphuz+q9ZIwjEIe5LecWhJ+wolQ8o3l6ACskPyPCNIYmNxAp7mnZ0MF5AP6Hbqq+Z
-         uZGEjvGfgImmHN6Q7OOrJccFXstvBwVgzuMTOYgYK7IOZR83Gjv0dIswbhMXXTHKCv/9
-         kBfjSR32lk211SgJ6Rd9OV5dIkuiODK1ObUfM7tG0oEU0rRYePJMhFvnzgyulJDlYtSm
-         GfVBIQSpxT8u+YMiTJ9NKeQbBgpk7aKwhpYszx0wjdPmkaBS758CAOQFW4HrYreoh+V/
-         uM7Wc9PVJX1e7VJH6gkMWAYu/h5BvC8CQg1arL0biuq57YcmLkm3D8ASjpExyFKLM7wH
-         efYQ==
-X-Gm-Message-State: AC+VfDxkVW2WOGO+7WPgoJqmUejVAE8sHe8APY+XGHARoobiG/f/yg14
-        oCa2Zz2mpz8eEqYodS9QypUrwREbHC+Ngg==
-X-Google-Smtp-Source: ACHHUZ6x91j5W0HYnh5xbnEY32VshuwxIUcz2AzDeJReIUJwoDn2V8DZusHXdXUMoDccMbn4VIORCQ==
-X-Received: by 2002:a0d:c241:0:b0:556:2699:f3ce with SMTP id e62-20020a0dc241000000b005562699f3cemr21509312ywd.36.1683885367474;
-        Fri, 12 May 2023 02:56:07 -0700 (PDT)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
-        by smtp.gmail.com with ESMTPSA id e6-20020a0dc206000000b0054e82b6a95esm5535449ywd.42.2023.05.12.02.56.06
+        bh=27/Fbt6wOw+aeS9WaGgothEj3OntQ06F+YuUTxkvogA=;
+        b=JgBvIFp+bnP60RT4yfHZyK+kqOc6+3ws1t3Fk+jq1si725q1A/7Zm0xaG/OXfXCy7A
+         5HqBuOauSiW22QjZ3OgSV81i5kF0WcBEWh9qWhAqaH1GzTqxvBgY8W6bohepf0EhE04Q
+         owLpCdVo1HKtUD3qXgW37roqohAF4oDQKeSbY1kmXJK/dlsncZV4GPV3Sx8e60dutyka
+         rIgaoSFY116lk3YWLRB7k/67XssXFpAv+4AczIx1nOGG5QM5NqjwoXAakPkA0voHjigG
+         agsBHuZ0d3ZSG33WesKgR14s/o6kSGry9UI3nYlFxDM+dvj+w1QHt+KzdyvhLp6SPwJF
+         klqg==
+X-Gm-Message-State: AC+VfDxLey5oOjzz6OqZKSjjVy1jUShXy9bYnpXtZ7Y4nQnHVdxWB6Dp
+        vEjNCd0tnVvmSZuOTfWJ3jwXLon70+m/Bg==
+X-Google-Smtp-Source: ACHHUZ5X7kqbCV5AaurE8Sbzj6zOS4burYo8pxLqhFQpaJN2jd5MipOtoDyviNuYTVOMPdFH63GwZg==
+X-Received: by 2002:a0d:ca06:0:b0:54f:c2ee:54a8 with SMTP id m6-20020a0dca06000000b0054fc2ee54a8mr24676915ywd.41.1683885439027;
+        Fri, 12 May 2023 02:57:19 -0700 (PDT)
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com. [209.85.128.170])
+        by smtp.gmail.com with ESMTPSA id l4-20020a81d544000000b0055b46dac76esm5553494ywj.116.2023.05.12.02.57.18
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 May 2023 02:56:06 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-55dc3431c64so71617077b3.2
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 12 May 2023 02:56:06 -0700 (PDT)
-X-Received: by 2002:a81:a012:0:b0:555:f33e:e32e with SMTP id
- x18-20020a81a012000000b00555f33ee32emr22884527ywg.51.1683885366474; Fri, 12
- May 2023 02:56:06 -0700 (PDT)
+        Fri, 12 May 2023 02:57:18 -0700 (PDT)
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-55a2691637bso143458177b3.0
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 12 May 2023 02:57:18 -0700 (PDT)
+X-Received: by 2002:a0d:e209:0:b0:555:cbdc:c6 with SMTP id l9-20020a0de209000000b00555cbdc00c6mr23583778ywe.9.1683885438128;
+ Fri, 12 May 2023 02:57:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230503-virt-to-pfn-v6-4-rc1-v1-0-6c4698dcf9c8@linaro.org> <20230503-virt-to-pfn-v6-4-rc1-v1-2-6c4698dcf9c8@linaro.org>
-In-Reply-To: <20230503-virt-to-pfn-v6-4-rc1-v1-2-6c4698dcf9c8@linaro.org>
+References: <20230503-virt-to-pfn-v6-4-rc1-v1-0-6c4698dcf9c8@linaro.org>
+In-Reply-To: <20230503-virt-to-pfn-v6-4-rc1-v1-0-6c4698dcf9c8@linaro.org>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 12 May 2023 11:55:55 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVJjjo9TMeow1-i27ybpQOu9-VZYnTkY5p8p_Cm6sW_GA@mail.gmail.com>
-Message-ID: <CAMuHMdVJjjo9TMeow1-i27ybpQOu9-VZYnTkY5p8p_Cm6sW_GA@mail.gmail.com>
-Subject: Re: [PATCH 02/12] m68k: Pass a pointer to virt_to_pfn() virt_to_page()
+Date:   Fri, 12 May 2023 11:57:07 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVwusgUqBuERm1=y7fwC5CERuX8VPGdaKcJiu3fM1oNuw@mail.gmail.com>
+Message-ID: <CAMuHMdVwusgUqBuERm1=y7fwC5CERuX8VPGdaKcJiu3fM1oNuw@mail.gmail.com>
+Subject: Re: [PATCH 00/12] arch: Make virt_to_pfn into a static inline
 To:     Linus Walleij <linus.walleij@linaro.org>
 Cc:     Vineet Gupta <vgupta@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -72,74 +71,37 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 Hi Linus,
 
 On Thu, May 11, 2023 at 1:59 PM Linus Walleij <linus.walleij@linaro.org> wrote:
-> Functions that work on a pointer to virtual memory such as
-> virt_to_pfn() and users of that function such as
-> virt_to_page() are supposed to pass a pointer to virtual
-> memory, ideally a (void *) or other pointer. However since
-> many architectures implement virt_to_pfn() as a macro,
-> this function becomes polymorphic and accepts both a
-> (unsigned long) and a (void *).
+> This is an attempt to harden the typing on virt_to_pfn()
+> and pfn_to_virt().
 >
-> Fix up the offending calls in arch/m68k with explicit casts.
+> Making virt_to_pfn() a static inline taking a strongly typed
+> (const void *) makes the contract of a passing a pointer of that
+> type to the function explicit and exposes any misuse of the
+> macro virt_to_pfn() acting polymorphic and accepting many types
+> such as (void *), (unitptr_t) or (unsigned long) as arguments
+> without warnings.
 >
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
-> ChangeLog v1->v2:
-> - Add an extra parens around the page argument to the
->   PD_PTABLE() macro, as is normally required.
+> For symmetry, we do the same with pfn_to_virt().
+>
+> The problem with this inconsistent typing was pointed out by
+> Russell King:
+> https://lore.kernel.org/linux-arm-kernel/YoJDKJXc0MJ2QZTb@shell.armlinux.org.uk/
+>
+> And confirmed by Andrew Morton:
+> https://lore.kernel.org/linux-mm/20220701160004.2ffff4e5ab59a55499f4c736@linux-foundation.org/
+>
+> So the recognition of the problem is widespread.
+>
+> These platforms have been chosen as initial conversion targets:
+>
+> - ARC
+> - ARM
+> - ARM64/Aarch64
+> - asm-generic (including for example x86)
+> - m68k
 
-Thanks for the update!
-
-To build sun3_defconfig and m5475evb_defconfig cleanly, you need to
-include the (Gmail-whitespace-damaged) changes below.
-These were compile-tested only.
-
-diff --git a/arch/m68k/include/asm/mcf_pgtable.h
-b/arch/m68k/include/asm/mcf_pgtable.h
-index 96d069829803505c..46ae379bb14d5e05 100644
---- a/arch/m68k/include/asm/mcf_pgtable.h
-+++ b/arch/m68k/include/asm/mcf_pgtable.h
-@@ -135,7 +135,7 @@ static inline void pte_clear(struct mm_struct *mm,
-unsigned long addr,
- }
-
- #define pte_pagenr(pte)        ((__pte_page(pte) - PAGE_OFFSET) >> PAGE_SHIFT)
--#define pte_page(pte)  virt_to_page(__pte_page(pte))
-+#define pte_page(pte)  virt_to_page((void *)__pte_page(pte))
-
- static inline int pmd_none2(pmd_t *pmd) { return !pmd_val(*pmd); }
- #define pmd_none(pmd) pmd_none2(&(pmd))
-diff --git a/arch/m68k/include/asm/sun3_pgtable.h
-b/arch/m68k/include/asm/sun3_pgtable.h
-index e582b0484a55cd82..f3e7728f58cd9dd0 100644
---- a/arch/m68k/include/asm/sun3_pgtable.h
-+++ b/arch/m68k/include/asm/sun3_pgtable.h
-@@ -109,9 +109,9 @@ static inline void pte_clear (struct mm_struct
-*mm, unsigned long addr, pte_t *p
- #define pfn_pte(pfn, pgprot) \
- ({ pte_t __pte; pte_val(__pte) = pfn | pgprot_val(pgprot); __pte; })
-
--#define pte_page(pte)          virt_to_page(__pte_page(pte))
-+#define pte_page(pte)          virt_to_page((void *)__pte_page(pte))
- #define pmd_pfn(pmd)           (pmd_val(pmd) >> PAGE_SHIFT)
--#define pmd_page(pmd)          virt_to_page(pmd_page_vaddr(pmd))
-+#define pmd_page(pmd)          virt_to_page((void *)pmd_page_vaddr(pmd))
-
-
- static inline int pmd_none2 (pmd_t *pmd) { return !pmd_val (*pmd); }
-diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
-index 70aa0979e02710a8..a4c552c7e2c8ca12 100644
---- a/arch/m68k/mm/mcfmmu.c
-+++ b/arch/m68k/mm/mcfmmu.c
-@@ -69,7 +69,7 @@ void __init paging_init(void)
-
-                /* now change pg_table to kernel virtual addresses */
-                for (i = 0; i < PTRS_PER_PTE; ++i, ++pg_table) {
--                       pte_t pte = pfn_pte(virt_to_pfn(address), PAGE_INIT);
-+                       pte_t pte = pfn_pte(virt_to_pfn((void
-*)address), PAGE_INIT);
-                        if (address >= (unsigned long) high_memory)
-                                pte_val(pte) = 0;
+Thanks, builds fine on m68k with MMU, and boots fine on ARAnyM,
+with the extra changes I replied on patch 2/12.
 
 Gr{oetje,eeting}s,
 
