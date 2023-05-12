@@ -2,114 +2,114 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B956C7EE2D
-	for <linux-m68k@archiver.kernel.org>; Fri, 12 May 2023 09:57:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58626C7EE24
+	for <linux-m68k@archiver.kernel.org>; Fri, 12 May 2023 10:05:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240531AbjELJ5u convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 12 May 2023 05:57:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51596 "EHLO
+        id S240523AbjELKFl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 12 May 2023 06:05:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240090AbjELJ5r (ORCPT
+        with ESMTP id S240529AbjELKFR (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 12 May 2023 05:57:47 -0400
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8B6129
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 12 May 2023 02:57:20 -0700 (PDT)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-55a2691637bso143458367b3.0
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 12 May 2023 02:57:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683885439; x=1686477439;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=27/Fbt6wOw+aeS9WaGgothEj3OntQ06F+YuUTxkvogA=;
-        b=JgBvIFp+bnP60RT4yfHZyK+kqOc6+3ws1t3Fk+jq1si725q1A/7Zm0xaG/OXfXCy7A
-         5HqBuOauSiW22QjZ3OgSV81i5kF0WcBEWh9qWhAqaH1GzTqxvBgY8W6bohepf0EhE04Q
-         owLpCdVo1HKtUD3qXgW37roqohAF4oDQKeSbY1kmXJK/dlsncZV4GPV3Sx8e60dutyka
-         rIgaoSFY116lk3YWLRB7k/67XssXFpAv+4AczIx1nOGG5QM5NqjwoXAakPkA0voHjigG
-         agsBHuZ0d3ZSG33WesKgR14s/o6kSGry9UI3nYlFxDM+dvj+w1QHt+KzdyvhLp6SPwJF
-         klqg==
-X-Gm-Message-State: AC+VfDxLey5oOjzz6OqZKSjjVy1jUShXy9bYnpXtZ7Y4nQnHVdxWB6Dp
-        vEjNCd0tnVvmSZuOTfWJ3jwXLon70+m/Bg==
-X-Google-Smtp-Source: ACHHUZ5X7kqbCV5AaurE8Sbzj6zOS4burYo8pxLqhFQpaJN2jd5MipOtoDyviNuYTVOMPdFH63GwZg==
-X-Received: by 2002:a0d:ca06:0:b0:54f:c2ee:54a8 with SMTP id m6-20020a0dca06000000b0054fc2ee54a8mr24676915ywd.41.1683885439027;
-        Fri, 12 May 2023 02:57:19 -0700 (PDT)
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com. [209.85.128.170])
-        by smtp.gmail.com with ESMTPSA id l4-20020a81d544000000b0055b46dac76esm5553494ywj.116.2023.05.12.02.57.18
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 May 2023 02:57:18 -0700 (PDT)
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-55a2691637bso143458177b3.0
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 12 May 2023 02:57:18 -0700 (PDT)
-X-Received: by 2002:a0d:e209:0:b0:555:cbdc:c6 with SMTP id l9-20020a0de209000000b00555cbdc00c6mr23583778ywe.9.1683885438128;
- Fri, 12 May 2023 02:57:18 -0700 (PDT)
+        Fri, 12 May 2023 06:05:17 -0400
+Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com [66.111.4.230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE7F11555
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 12 May 2023 03:04:57 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 35DA05803BB;
+        Fri, 12 May 2023 06:04:57 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Fri, 12 May 2023 06:04:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1683885897; x=1683893097; bh=Sy9HnHCUR0wgx
+        XvXSub8VPhHbi3glugACk+bWVmVgIc=; b=WhVQmtMRWmrKfxLLyfJfFe1tMkKp7
+        g6eq0i3azbYbNCGWf+UMTGhcfp6yhbpptBIs4OqEAtA4vGLMFHBgeMZ94UwEy1/Q
+        frKlmEBriuLTrWnQ2Zy4Tp/dXSYwpun1+4Yl9lHF77De6XwTJqxU0pcwSSrriFEw
+        yGSrY7ACNFxiIciWY0lnexIltUq/sgF2oTYXOhWeqBkSnJZlOy0hvX+5SdfF5iP4
+        lLpBuBDXP58/5HFV2w9nifKxszItYlsFk7aULlJfIJCUzOBdSps4bdVQDparXGg8
+        HQRYSsVcF/3WNSaPigWgAJKd+HcUzPk3A8wtldh0Zv9fOY2cXUATQBdzw==
+X-ME-Sender: <xms:Rw9eZN4u3iw-extBaYZWahWQIPn2TyHW_-Tr2mANrdjf7MvkMDA4Zw>
+    <xme:Rw9eZK6EU7nC4b3LD3PHu-kTmrubf5DuKNExHZZD1mncoiuA0TMips9BZxL_yVjTb
+    v4xRqLxBxsAJa__lQ4>
+X-ME-Received: <xmr:Rw9eZEcqjB2aT9_uW8KK8InceO94NMww_1B_vB-QKARGge1inQuJyxOwqOjxo5WEY23XzEeXPb5je35qF9lx2nuV_yKH05nwAg8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeehtddgvdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
+    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
+    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
+    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:Rw9eZGI2AVN261Gh5tsyKTOl-BDY9RqG_dZkG6P7jvBKjRMncxs_eQ>
+    <xmx:Rw9eZBL4-8ibaIgszFf3DoCpMiQxiYir7_v9MLCz_ETSUaNtIWk4QQ>
+    <xmx:Rw9eZPxnp8EZedlf1COCSe4CgtYjyh2lxNRLIn1Hgaj6Fm0hhsA8gw>
+    <xmx:SQ9eZJLRHRSCwZK28BFKNsWtPD-yftzvlsnR-XMW0AqnAUxKarRGRA>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 12 May 2023 06:04:54 -0400 (EDT)
+Date:   Fri, 12 May 2023 20:04:48 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+cc:     Helge Deller <deller@gmx.de>, Sui Jingfeng <15330273260@189.cn>,
+        geert@linux-m68k.org, javierm@redhat.com, daniel@ffwll.ch,
+        vgupta@kernel.org, chenhuacai@kernel.org, kernel@xen0n.name,
+        davem@davemloft.net, arnd@arndb.de, sam@ravnborg.org,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arch@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-parisc@vger.kernel.org
+Subject: Re: [PATCH v6 1/6] fbdev/matrox: Remove trailing whitespaces
+In-Reply-To: <e7bd021c-1a6b-6e47-143a-36ae2fd2fe6b@suse.de>
+Message-ID: <7c2a6687-9c4e-efed-5e25-774b582e9a27@linux-m68k.org>
+References: <20230510110557.14343-1-tzimmermann@suse.de> <20230510110557.14343-2-tzimmermann@suse.de> <0e13efbf-9a48-6e70-fdf3-8290f28c6dc7@189.cn> <a2315b9a-0747-1f0f-1f0a-1c6773931db4@suse.de> <15fe1489-f0fa-bbf6-ec08-a270bd4f1559@gmx.de>
+ <e7bd021c-1a6b-6e47-143a-36ae2fd2fe6b@suse.de>
 MIME-Version: 1.0
-References: <20230503-virt-to-pfn-v6-4-rc1-v1-0-6c4698dcf9c8@linaro.org>
-In-Reply-To: <20230503-virt-to-pfn-v6-4-rc1-v1-0-6c4698dcf9c8@linaro.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 12 May 2023 11:57:07 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVwusgUqBuERm1=y7fwC5CERuX8VPGdaKcJiu3fM1oNuw@mail.gmail.com>
-Message-ID: <CAMuHMdVwusgUqBuERm1=y7fwC5CERuX8VPGdaKcJiu3fM1oNuw@mail.gmail.com>
-Subject: Re: [PATCH 00/12] arch: Make virt_to_pfn into a static inline
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Vineet Gupta <vgupta@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-snps-arc@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Linus,
+On Thu, 11 May 2023, Thomas Zimmermann wrote:
 
-On Thu, May 11, 2023 at 1:59 PM Linus Walleij <linus.walleij@linaro.org> wrote:
-> This is an attempt to harden the typing on virt_to_pfn()
-> and pfn_to_virt().
->
-> Making virt_to_pfn() a static inline taking a strongly typed
-> (const void *) makes the contract of a passing a pointer of that
-> type to the function explicit and exposes any misuse of the
-> macro virt_to_pfn() acting polymorphic and accepting many types
-> such as (void *), (unitptr_t) or (unsigned long) as arguments
-> without warnings.
->
-> For symmetry, we do the same with pfn_to_virt().
->
-> The problem with this inconsistent typing was pointed out by
-> Russell King:
-> https://lore.kernel.org/linux-arm-kernel/YoJDKJXc0MJ2QZTb@shell.armlinux.org.uk/
->
-> And confirmed by Andrew Morton:
-> https://lore.kernel.org/linux-mm/20220701160004.2ffff4e5ab59a55499f4c736@linux-foundation.org/
->
-> So the recognition of the problem is widespread.
->
-> These platforms have been chosen as initial conversion targets:
->
-> - ARC
-> - ARM
-> - ARM64/Aarch64
-> - asm-generic (including for example x86)
-> - m68k
+> But I'd really like to see most of these drivers being moved into 
+> staging and deleted soon afterwards. Users will complain about those 
+> drivers that are really still required. Those might be worth to spend 
+> effort on.
+> 
 
-Thanks, builds fine on m68k with MMU, and boots fine on ARAnyM,
-with the extra changes I replied on patch 2/12.
+That strategy is not going to find out what functionality is required. 
+Instead it will find out which beneficiaries are capable of overcoming all 
+of the hurdles to reverting deletion:
 
-Gr{oetje,eeting}s,
+ - Find out how to report a regression correctly.
+ - Gather all the necessary information.
+ - Obtain buy-in from a sympathetic developer.
+ - Build a patched kernel, test it and provide the results. (And possibly 
+   repeat the same until neglected code becomes accepted.)
+ - Wait for the relevant distro to release the relevant kernel update. 
 
-                        Geert
+Developers tend to overlook the burden of process because it's ostensibly 
+done to raise code quality. But it seems to me that affected users are 
+more likely to seek a workaround than undertake the process.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+So deletion doesn't discover end-user requirements. What it does is 
+advertise a vacancy for an unpaid adoptive maintainer, somehow presumed to 
+be found amongst a very well remunerated and very small pool of talent.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+The way I look at it, the maintainence of old code is the price of a 
+so-called "right to repair". But there ain't no free lunch and if we want 
+that right we should seek ways to reduce that price. For example, by 
+making a larger talent pool more effective, by re-using more code and by 
+improving the tooling and automation.
+
+The code I'd delete first wouldn't be a small amount of old code in need 
+of sponsorship. Or even the most buggy code. The first to go would be that 
+code which will never find an actual end user because some portion of the 
+code required to actually use certain platforms was never mainlined by the 
+vendor -- and never will be without some push-back.
