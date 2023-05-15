@@ -2,129 +2,87 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7ECA2C77B7D
-	for <linux-m68k@archiver.kernel.org>; Mon, 15 May 2023 09:45:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF364C7EE22
+	for <linux-m68k@archiver.kernel.org>; Mon, 15 May 2023 09:46:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231829AbjEOJp3 convert rfc822-to-8bit (ORCPT
+        id S240776AbjEOJqG convert rfc822-to-8bit (ORCPT
         <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 15 May 2023 05:45:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49378 "EHLO
+        Mon, 15 May 2023 05:46:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240929AbjEOJoz (ORCPT
+        with ESMTP id S241246AbjEOJpT (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 15 May 2023 05:44:55 -0400
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDB2C26BC
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 May 2023 02:42:57 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-55a44a2637bso181556597b3.2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 May 2023 02:42:57 -0700 (PDT)
+        Mon, 15 May 2023 05:45:19 -0400
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A64E19A4
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 May 2023 02:44:50 -0700 (PDT)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-55a26b46003so186316057b3.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 May 2023 02:44:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684143777; x=1686735777;
+        d=1e100.net; s=20221208; t=1684143889; x=1686735889;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hU3ilFv1v41SW4iLmjhAxafFaVCLvufvLWY2ivP9Jek=;
-        b=JqSYmUkBQmRq1XS/jUh+5kEy6A5m63WGbbLoi7oZNGElLsYCZaEG0bal13Mji6ArwH
-         BzptbnBEcG0l6iSpvBkt7sqafp3OBMfFdW5WlTG9AQ3AJbavkxE2Hrv+ADNvnB+PE3jD
-         mQlUVyfPg8nKf9mhczt1Bawimi2wmtOz3k9JfEFd0KgIozmpc0cPzpo3fpO6RpXEahcb
-         nKxvnQTUHZWSsLAFq4qdpGX0NT0ap8mEQhoq4RR75ivc/iD6tgAanHNC7/fzVfU8slby
-         c6hA0z+HdT5XZzIspkfiiR8JgI5dnehgQNLm/nhZPS+8CAk87tETcaZsN9/RWtRINbTI
-         bfaw==
-X-Gm-Message-State: AC+VfDzQMKIb+xXZxmPEDt7XFcIh6uAazvydjgAJGwKZ9XAav7MbsxGX
-        LqVbX3jgl9AdpzxQ2KMsHrRXOIsVgsyhMA==
-X-Google-Smtp-Source: ACHHUZ6QALfrXBV0yszo5i1/lZX857QZA+c3nQC7PwSpAtrHRsvhZ81MND/QbET1KyMLTVqU1wEPdQ==
-X-Received: by 2002:a0d:c101:0:b0:561:1cff:8675 with SMTP id c1-20020a0dc101000000b005611cff8675mr7993418ywd.14.1684143776557;
-        Mon, 15 May 2023 02:42:56 -0700 (PDT)
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com. [209.85.128.179])
-        by smtp.gmail.com with ESMTPSA id z129-20020a0dd787000000b0055a416529bbsm7601119ywd.24.2023.05.15.02.42.56
+        bh=FfFE/qiRkN557/2I5XaanSNXOAZ3eFVDGQ65E3a+VhY=;
+        b=dRpr63UfoYSPXZ2k8EXwFY1FeY3yN0CkxBr2kFl0rqkvJLDZS7rY7WxL9+mRRm7w4q
+         ycTXFGMYhMb6ieKQ/f5zw2v9ABSVt40xuf0uNftpNkkmswXhm5Yhxf8cdaXx/dtsHafx
+         sTbjr0Z64ebXeaEhwCbGxs8BAGaLZLFtsBYz6ir6MuZu+gQV/UhNesOaFLjeNomhiz0j
+         NmuMX4v4X62WdaLT2W7HdbiTbfCYk55inGcr0kYjQEMn5Mpr7dXsOiBxg056Sv9UVi8r
+         9bVLcTgjeDdbHFDtGmhWQgKdc+5els/AJsUTYlaa84WYrdZQK/8gupViPugQmTEOheVb
+         zpXg==
+X-Gm-Message-State: AC+VfDxWz5xJyS7Io1Xq5WuuQYviO0UO0mAwNYc8B2iDsW8HkdRFPrwJ
+        3eVXBh9Qtxt8aAZsg204PbudTKPeL8y5hA==
+X-Google-Smtp-Source: ACHHUZ583CqeYLk91HYEGrNzdu4O3p2+O1d9bvplfne5S0LMiqQutO2/aibSlG/GJTeFrius/z5y0Q==
+X-Received: by 2002:a0d:ffc7:0:b0:560:bb81:6e8 with SMTP id p190-20020a0dffc7000000b00560bb8106e8mr17943362ywf.51.1684143889306;
+        Mon, 15 May 2023 02:44:49 -0700 (PDT)
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com. [209.85.128.181])
+        by smtp.gmail.com with ESMTPSA id q129-20020a817587000000b0054601bc6ce2sm7734240ywc.118.2023.05.15.02.44.48
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 May 2023 02:42:56 -0700 (PDT)
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-55a83e80262so181303637b3.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 May 2023 02:42:56 -0700 (PDT)
-X-Received: by 2002:a81:a106:0:b0:55a:2cdb:55c9 with SMTP id
- y6-20020a81a106000000b0055a2cdb55c9mr29319131ywg.3.1684143775752; Mon, 15 May
- 2023 02:42:55 -0700 (PDT)
+        Mon, 15 May 2023 02:44:49 -0700 (PDT)
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-559eae63801so186304657b3.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 May 2023 02:44:48 -0700 (PDT)
+X-Received: by 2002:a81:9c10:0:b0:559:e974:82 with SMTP id m16-20020a819c10000000b00559e9740082mr33480420ywa.20.1684143888518;
+ Mon, 15 May 2023 02:44:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <dd1b560bbe426b351cdbb3bbf89414753c3d0117.1679446472.git.fthain@linux-m68k.org>
-In-Reply-To: <dd1b560bbe426b351cdbb3bbf89414753c3d0117.1679446472.git.fthain@linux-m68k.org>
+References: <1296c4d691bba057291246f067c191ef8a88531c.1680667933.git.fthain@linux-m68k.org>
+In-Reply-To: <1296c4d691bba057291246f067c191ef8a88531c.1680667933.git.fthain@linux-m68k.org>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 15 May 2023 11:42:44 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdU9rGxnGCZhDMb2D35M45DL1mVFkVg5Xt+0BcAKYsVi=w@mail.gmail.com>
-Message-ID: <CAMuHMdU9rGxnGCZhDMb2D35M45DL1mVFkVg5Xt+0BcAKYsVi=w@mail.gmail.com>
-Subject: Re: [PATCH] nubus: Remove proc entries before adding them
+Date:   Mon, 15 May 2023 11:44:37 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXLsnfQ4XhJiuE54BjGaCMAxvzOR+GGB9iFD8pYXprfxQ@mail.gmail.com>
+Message-ID: <CAMuHMdXLsnfQ4XhJiuE54BjGaCMAxvzOR+GGB9iFD8pYXprfxQ@mail.gmail.com>
+Subject: Re: [PATCH v4] nubus: Don't list slot resources by default
 To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Cc:     Brad Boyer <flar@allandria.com>, linux-m68k@lists.linux-m68k.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Mar 22, 2023 at 1:52 AM Finn Thain <fthain@linux-m68k.org> wrote:
-> The config ROMs on some Nubus cards contain mistakes such as resource
-> duplication. This results in a warning from proc_register():
+On Wed, Apr 5, 2023 at 6:19 AM Finn Thain <fthain@linux-m68k.org> wrote:
+> Some Nubus card ROMs contain many slot resources. A single Radius video
+> card produced well over a thousand entries under /proc/bus/nubus/.
+> Populating /proc/bus/nubus/ on a slow machine with several such cards
+> installed takes long enough that the user may think that the system is
+> wedged. All those procfs entries also consume significant RAM though
+> they are not normally needed (except by developers).
+> Omit these resources from /proc/bus/nubus/ by default and add a kernel
+> parameter to enable them when needed.
+> On the test machine, this saved 300 kB and 10 seconds.
 >
-> [    1.660000] NuBus: Scanning NuBus slots.
-> [    1.740000] ------------[ cut here ]------------
-> [    1.750000] WARNING: CPU: 0 PID: 1 at fs/proc/generic.c:376 proc_register+0xbc/0xda
-> [    1.770000] proc_dir_entry '24/5' already registered
-> [    1.790000] Modules linked in:
-> [    1.800000] CPU: 0 PID: 1 Comm: swapper Not tainted 6.1.0-5-m68k #1  Debian 6.1.12-1
-> [    1.800000] Stack from 00829d18:
-> [    1.800000]         00829d18 00451507 00451507 00000000 00000009 0038c57c 00451507 00386bae
-> [    1.800000]         00442945 0045f062 00000178 00868580 00868f50 00386c42 0045f062 00000178
-> [    1.800000]         00166fc8 00000009 00000000 00829d78 008685e4 0037f9ec 00000025 00248808
-> [    1.800000]         0045f0df 00829d94 00166fc8 0045f062 00000178 00000009 0045f0df 008689e4
-> [    1.800000]         008685e4 fafe3a20 00868980 00829df3 00829e32 00000024 00829dc0 00167332
-> [    1.800000]         00868980 00868580 00829e40 00248d36 00829df3 00008124 00868980 00248b0c
-> [    1.800000] Call Trace: [<0038c57c>] dump_stack+0xc/0x10
-> [    1.800000]  [<00386bae>] __warn+0x70/0xbc
-> [    1.800000]  [<00386c42>] warn_slowpath_fmt+0x48/0x66
-> [    1.800000]  [<00166fc8>] proc_register+0xbc/0xda
-> [    1.800000]  [<0037f9ec>] memcmp+0x0/0x56
-> [    1.800000]  [<00248808>] nubus_get_rsrc_str+0x0/0x5e
-> [    1.800000]  [<00166fc8>] proc_register+0xbc/0xda
-> [    1.800000]  [<00167332>] proc_create_single_data+0x40/0x48
-> [    1.800000]  [<00248d36>] nubus_proc_add_rsrc_mem+0x68/0xa4
-> [    1.800000]  [<00008124>] amiga_mksound+0xb8/0xc8
-> [    1.800000]  [<00248b0c>] nubus_proc_rsrc_show+0x0/0xa4
-> [    1.800000]  [<00386180>] memset+0x0/0x94
-> [    1.800000]  [<0024864a>] nubus_readdir+0x0/0x66
-> [    1.800000]  [<00560f35>] nubus_get_vendorinfo.isra.0+0x87/0x10e
-> [    1.800000]  [<00560fb4>] nubus_get_vendorinfo.isra.0+0x106/0x10e
-> [    1.800000]  [<00248d72>] nubus_proc_add_rsrc+0x0/0x8e
-> [    1.800000]  [<001f6f50>] __dynamic_pr_debug+0x0/0x96
-> [    1.800000]  [<0038741e>] _printk+0x0/0x18
-> [    1.800000]  [<0016fafe>] kernfs_link_sibling+0x9a/0xaa
-> [    1.800000]  [<00561cb0>] nubus_init+0x660/0x79c
-> [    1.800000]  [<0037f7c6>] strcpy+0x0/0x1c
-> [    1.800000]  [<0003f58c>] parse_args+0x0/0x308
-> [    1.800000]  [<00002104>] do_one_initcall+0x0/0x184
-> [    1.800000]  [<00561650>] nubus_init+0x0/0x79c
-> [    1.800000]  [<00010000>] frc1_dst+0xe/0x14
-> [    1.800000]  [<00002172>] do_one_initcall+0x6e/0x184
-> [    1.800000]  [<0037f7c6>] strcpy+0x0/0x1c
-> [    1.800000]  [<0003f58c>] parse_args+0x0/0x308
-> [    1.800000]  [<00002104>] do_one_initcall+0x0/0x184
-> [    1.800000]  [<0054b25c>] kernel_init_freeable+0x192/0x19c
-> [    1.800000]  [<00561650>] nubus_init+0x0/0x79c
-> [    1.800000]  [<0038c6c4>] kernel_init+0x0/0xec
-> [    1.800000]  [<0038c6d8>] kernel_init+0x14/0xec
-> [    1.800000]  [<0038c6c4>] kernel_init+0x0/0xec
-> [    1.800000]  [<0000297c>] ret_from_kernel_thread+0xc/0x14
-> [    1.800000]
-> [    1.810000] ---[ end trace 0000000000000000 ]---
->
-> This particular card (a Radius video card) contains a duplicated resource
-> hence the /proc/bus/nubus/a/1/24/5 entry got registered twice.
-> (A date resource has ID 5, the vendor info directory has ID 24)
->
-> The solution for this is to remove a potentially pre-existing entry before
-> adding the procfs entry for the resource.
->
-> Reported-and-tested-by: Stan Johnson <userm57@yahoo.com>
+> Cc: Brad Boyer <flar@allandria.com>
+> Tested-by: Stan Johnson <userm57@yahoo.com>
 > Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+> ---
+> Changed since v3:
+>  - Better commentary.
+> Changed since v2:
+>  - Added commentary.
+>  - Moved declaration to nubus.h.
+> Changed since v1:
+>  - Expanded to cover all slot resources in procfs.
 
 Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 i.e. will queue in the m68k for-v6.5 branch.
