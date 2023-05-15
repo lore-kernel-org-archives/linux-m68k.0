@@ -2,284 +2,132 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67CF3C7EE24
-	for <linux-m68k@archiver.kernel.org>; Mon, 15 May 2023 09:10:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B5BAC77B7D
+	for <linux-m68k@archiver.kernel.org>; Mon, 15 May 2023 09:42:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239371AbjEOJKS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 15 May 2023 05:10:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47992 "EHLO
+        id S239783AbjEOJmv convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 15 May 2023 05:42:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238900AbjEOJKF (ORCPT
+        with ESMTP id S239812AbjEOJmV (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 15 May 2023 05:10:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A72FC
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 May 2023 02:09:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1684141753;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=awWutqv7Tku6RTy5++zNn2CsetnK4SAvTciCez0pzMg=;
-        b=FFfHPCVsvwCSQXZtogSRp5SBOQ0RozTtHOQqYVKSYc4v9zFytqGPiAAIs6modUg4Mw3MiC
-        rwVEPv05R8cQIV/OEmZV8DG4SIQErw2Q3RvPMrG79/FReJhr7cHalixPapyNPSAPH8CNbd
-        MHdLTk/tAyAH9aH6k7SBLm4hcTrIW+0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-659-KJdy53drOYK6CyyGE_o-bQ-1; Mon, 15 May 2023 05:09:08 -0400
-X-MC-Unique: KJdy53drOYK6CyyGE_o-bQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BB828800047;
-        Mon, 15 May 2023 09:09:07 +0000 (UTC)
-Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-32.pek2.redhat.com [10.72.12.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6FF2D40C2063;
-        Mon, 15 May 2023 09:08:59 +0000 (UTC)
-From:   Baoquan He <bhe@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-arch@vger.kernel.org, linux-mm@kvack.org, arnd@arndb.de,
-        christophe.leroy@csgroup.eu, hch@infradead.org,
-        agordeev@linux.ibm.com, wangkefeng.wang@huawei.com,
-        schnelle@linux.ibm.com, David.Laight@ACULAB.COM, shorne@gmail.com,
-        willy@infradead.org, deller@gmx.de, Baoquan He <bhe@redhat.com>,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        x86@kernel.org, netdev@vger.kernel.org
-Subject: [PATCH v5 RESEND 01/17] asm-generic/iomap.h: remove ARCH_HAS_IOREMAP_xx macros
-Date:   Mon, 15 May 2023 17:08:32 +0800
-Message-Id: <20230515090848.833045-2-bhe@redhat.com>
-In-Reply-To: <20230515090848.833045-1-bhe@redhat.com>
-References: <20230515090848.833045-1-bhe@redhat.com>
+        Mon, 15 May 2023 05:42:21 -0400
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7FBB4C2E
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 May 2023 02:39:10 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-b9d8b458e10so16326879276.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 May 2023 02:39:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684143532; x=1686735532;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xvFU0BstB/n7JNs68o15ZW/f4y85+yMBEC8vi+Lmbbw=;
+        b=LeHbHRILfRbgs0Di7OQLdnEI86tZRL7lYDv+FgxgIInDSGl/g+oU0wR2DCB+U6MVWH
+         xhJ9vkFeinK86eKPbKyGLE41pk/RGtp0ecTA8C9PDan272vrlvze3o/ypt7gjDJJ5LR5
+         leZ0cYsI+SId23Q7fQ31jtCpbQ9caUQKKH6bxFgxNG4VdkJgqfyyjbNNazG3PuRq6iHa
+         IAkTl0m7CanBK94yRPs3ui9EAFiWQzon6uJhHkzYC7puHawjw5xSfB+G9YPlCCgkWn96
+         HlYgInUVMMIN0lTHKei80A3WJSM05YfuMZCsstIxBha7N0bLavIZNEA914yEt0u2sx/Y
+         3W0Q==
+X-Gm-Message-State: AC+VfDxAzWFnsvJy5JGTw8wJthLDiTIyLG++1qoSzNrznLvHNnHKh9qG
+        E0CdEeTRtVtghfSuj3v55B5tGWoQ+XeAEQ==
+X-Google-Smtp-Source: ACHHUZ5bw5XaJenpvGoPsjdlvynHB7tC76QORA8F0WRoW0nvyXH+pWkKD97LD4KQm84bgbbJ3GzLzg==
+X-Received: by 2002:a25:b19c:0:b0:ba1:8307:ecaa with SMTP id h28-20020a25b19c000000b00ba18307ecaamr27775888ybj.7.1684143532030;
+        Mon, 15 May 2023 02:38:52 -0700 (PDT)
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com. [209.85.128.179])
+        by smtp.gmail.com with ESMTPSA id w132-20020a25c78a000000b00ba71866d8efsm2111249ybe.63.2023.05.15.02.38.51
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 May 2023 02:38:51 -0700 (PDT)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-55d2e87048cso181438797b3.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 May 2023 02:38:51 -0700 (PDT)
+X-Received: by 2002:a0d:e209:0:b0:555:cbdc:c6 with SMTP id l9-20020a0de209000000b00555cbdc00c6mr30150231ywe.9.1684143531314;
+ Mon, 15 May 2023 02:38:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+References: <d4e2a586e793cc8d9442595684ab8a077c0fe726.1678783919.git.fthain@linux-m68k.org>
+In-Reply-To: <d4e2a586e793cc8d9442595684ab8a077c0fe726.1678783919.git.fthain@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 15 May 2023 11:38:40 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXqgzh-_zwirAB+FXSZbuJ6WpML_kMdTRUD_=-Rpx0T5w@mail.gmail.com>
+Message-ID: <CAMuHMdXqgzh-_zwirAB+FXSZbuJ6WpML_kMdTRUD_=-Rpx0T5w@mail.gmail.com>
+Subject: Re: [PATCH] nubus: Partially revert proc_create_single_data() conversion
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     Christoph Hellwig <hch@lst.de>, stable@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Let's use '#define ioremap_xx' and "#ifdef ioremap_xx" instead.
+On Tue, Mar 14, 2023 at 9:53 AM Finn Thain <fthain@linux-m68k.org> wrote:
+> The conversion to proc_create_single_data() introduced a regression
+> whereby reading a file in /proc/bus/nubus results in a seg fault:
+>
+>  # grep -r . /proc/bus/nubus/e/
+> Data read fault at 0x00000020 in Super Data (pc=0x1074c2)
+> BAD KERNEL BUSERR
+> Oops: 00000000
+> Modules linked in:
+> PC: [<001074c2>] PDE_DATA+0xc/0x16
+> SR: 2010  SP: 38284958  a2: 01152370
+> d0: 00000001    d1: 01013000    d2: 01002790    d3: 00000000
+> d4: 00000001    d5: 0008ce2e    a0: 00000000    a1: 00222a40
+> Process grep (pid: 45, task=142f8727)
+> Frame format=B ssw=074d isc=2008 isb=4e5e daddr=00000020 dobuf=01199e70
+> baddr=001074c8 dibuf=ffffffff ver=f
+> Stack from 01199e48:
+>         01199e70 00222a58 01002790 00000000 011a3000 01199eb0 015000c0 00000000
+>         00000000 01199ec0 01199ec0 000d551a 011a3000 00000001 00000000 00018000
+>         d003f000 00000003 00000001 0002800d 01052840 01199fa8 c01f8000 00000000
+>         00000029 0b532b80 00000000 00000000 00000029 0b532b80 01199ee4 00103640
+>         011198c0 d003f000 00018000 01199fa8 00000000 011198c0 00000000 01199f4c
+>         000b3344 011198c0 d003f000 00018000 01199fa8 00000000 00018000 011198c0
+> Call Trace: [<00222a58>] nubus_proc_rsrc_show+0x18/0xa0
+>  [<000d551a>] seq_read+0xc4/0x510
+>  [<00018000>] fp_fcos+0x2/0x82
+>  [<0002800d>] __sys_setreuid+0x115/0x1c6
+>  [<00103640>] proc_reg_read+0x5c/0xb0
+>  [<00018000>] fp_fcos+0x2/0x82
+>  [<000b3344>] __vfs_read+0x2c/0x13c
+>  [<00018000>] fp_fcos+0x2/0x82
+>  [<00018000>] fp_fcos+0x2/0x82
+>  [<000b8aa2>] sys_statx+0x60/0x7e
+>  [<000b34b6>] vfs_read+0x62/0x12a
+>  [<00018000>] fp_fcos+0x2/0x82
+>  [<00018000>] fp_fcos+0x2/0x82
+>  [<000b39c2>] ksys_read+0x48/0xbe
+>  [<00018000>] fp_fcos+0x2/0x82
+>  [<000b3a4e>] sys_read+0x16/0x1a
+>  [<00018000>] fp_fcos+0x2/0x82
+>  [<00002b84>] syscall+0x8/0xc
+>  [<00018000>] fp_fcos+0x2/0x82
+>  [<0000c016>] not_ext+0xa/0x18
+> Code: 4e5e 4e75 4e56 0000 206e 0008 2068 ffe8 <2068> 0020 2008 4e5e 4e75 4e56 0000 2f0b 206e 0008 2068 0004 2668 0020 206b ffe8
+> Disabling lock debugging due to kernel taint
+>
+> Segmentation fault
+>
+> The proc_create_single_data() conversion does not work because
+> single_open(file, nubus_proc_rsrc_show, PDE_DATA(inode)) is not
+> equivalent to the original code.
+>
+> Fixes: 3f3942aca6da ("proc: introduce proc_create_single{,_data}")
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: stable@vger.kernel.org # 5.6+
+> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 
-For each architecture to remove defined ARCH_HAS_IOREMAP_xx macros in
-To remove defined ARCH_HAS_IOREMAP_xx macros in <asm/io.h> of each ARCH,
-the ARCH's own ioremap_wc|wt|np definition need be above
-"#include <asm-generic/iomap.h>. Otherwise the redefinition error would
-be seen during compiling. So the relevant adjustments are made to avoid
-compiling error:
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k for-v6.5 branch.
 
-  loongarch:
-  - doesn't include <asm-generic/iomap.h>, defining ARCH_HAS_IOREMAP_WC
-    is redundant, so simply remove it.
+Gr{oetje,eeting}s,
 
-  m68k:
-  - selected GENERIC_IOMAP, <asm-generic/iomap.h> has been added in
-    <asm-generic/io.h>, and <asm/kmap.h> is included above
-    <asm-generic/iomap.h>, so simply remove ARCH_HAS_IOREMAP_WT defining.
+                        Geert
 
-  mips:
-  - move "#include <asm-generic/iomap.h>" below ioremap_wc definition
-    in <asm/io.h>
-
-  powerpc:
-  - remove "#include <asm-generic/iomap.h>" in <asm/io.h> because it's
-    duplicated with the one in <asm-generic/io.h>, let's rely on the
-    latter.
-
-  x86:
-  - selected GENERIC_IOMAP, remove #include <asm-generic/iomap.h> in
-    the middle of <asm/io.h>. Let's rely on <asm-generic/io.h>.
-
-Signed-off-by: Baoquan He <bhe@redhat.com>
-Cc: loongarch@lists.linux.dev
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: linux-mips@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: x86@kernel.org
-Cc: netdev@vger.kernel.org
-Cc: linux-arch@vger.kernel.org
----
- arch/loongarch/include/asm/io.h     | 2 --
- arch/m68k/include/asm/io_mm.h       | 2 --
- arch/m68k/include/asm/kmap.h        | 2 --
- arch/mips/include/asm/io.h          | 5 ++---
- arch/powerpc/include/asm/io.h       | 9 +--------
- arch/x86/include/asm/io.h           | 5 -----
- drivers/net/ethernet/sfc/io.h       | 2 +-
- drivers/net/ethernet/sfc/siena/io.h | 2 +-
- include/asm-generic/iomap.h         | 6 +++---
- 9 files changed, 8 insertions(+), 27 deletions(-)
-
-diff --git a/arch/loongarch/include/asm/io.h b/arch/loongarch/include/asm/io.h
-index 545e2708fbf7..5fef1246c6fb 100644
---- a/arch/loongarch/include/asm/io.h
-+++ b/arch/loongarch/include/asm/io.h
-@@ -5,8 +5,6 @@
- #ifndef _ASM_IO_H
- #define _ASM_IO_H
- 
--#define ARCH_HAS_IOREMAP_WC
--
- #include <linux/kernel.h>
- #include <linux/types.h>
- 
-diff --git a/arch/m68k/include/asm/io_mm.h b/arch/m68k/include/asm/io_mm.h
-index d41fa488453b..6a0abd4846c6 100644
---- a/arch/m68k/include/asm/io_mm.h
-+++ b/arch/m68k/include/asm/io_mm.h
-@@ -26,8 +26,6 @@
- #include <asm/virtconvert.h>
- #include <asm/kmap.h>
- 
--#include <asm-generic/iomap.h>
--
- #ifdef CONFIG_ATARI
- #define atari_readb   raw_inb
- #define atari_writeb  raw_outb
-diff --git a/arch/m68k/include/asm/kmap.h b/arch/m68k/include/asm/kmap.h
-index dec05743d426..4efb3efa593a 100644
---- a/arch/m68k/include/asm/kmap.h
-+++ b/arch/m68k/include/asm/kmap.h
-@@ -4,8 +4,6 @@
- 
- #ifdef CONFIG_MMU
- 
--#define ARCH_HAS_IOREMAP_WT
--
- /* Values for nocacheflag and cmode */
- #define IOMAP_FULL_CACHING		0
- #define IOMAP_NOCACHE_SER		1
-diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
-index cc28d207a061..477773328a06 100644
---- a/arch/mips/include/asm/io.h
-+++ b/arch/mips/include/asm/io.h
-@@ -12,8 +12,6 @@
- #ifndef _ASM_IO_H
- #define _ASM_IO_H
- 
--#define ARCH_HAS_IOREMAP_WC
--
- #include <linux/compiler.h>
- #include <linux/kernel.h>
- #include <linux/types.h>
-@@ -25,7 +23,6 @@
- #include <asm/byteorder.h>
- #include <asm/cpu.h>
- #include <asm/cpu-features.h>
--#include <asm-generic/iomap.h>
- #include <asm/page.h>
- #include <asm/pgtable-bits.h>
- #include <asm/processor.h>
-@@ -210,6 +207,8 @@ void iounmap(const volatile void __iomem *addr);
- #define ioremap_wc(offset, size)					\
- 	ioremap_prot((offset), (size), boot_cpu_data.writecombine)
- 
-+#include <asm-generic/iomap.h>
-+
- #if defined(CONFIG_CPU_CAVIUM_OCTEON)
- #define war_io_reorder_wmb()		wmb()
- #else
-diff --git a/arch/powerpc/include/asm/io.h b/arch/powerpc/include/asm/io.h
-index f1e657c9bbe8..67a3fb6de498 100644
---- a/arch/powerpc/include/asm/io.h
-+++ b/arch/powerpc/include/asm/io.h
-@@ -3,11 +3,6 @@
- #define _ASM_POWERPC_IO_H
- #ifdef __KERNEL__
- 
--#define ARCH_HAS_IOREMAP_WC
--#ifdef CONFIG_PPC32
--#define ARCH_HAS_IOREMAP_WT
--#endif
--
- /*
-  */
- 
-@@ -732,9 +727,7 @@ static inline void name at					\
- #define writel_relaxed(v, addr)	writel(v, addr)
- #define writeq_relaxed(v, addr)	writeq(v, addr)
- 
--#ifdef CONFIG_GENERIC_IOMAP
--#include <asm-generic/iomap.h>
--#else
-+#ifndef CONFIG_GENERIC_IOMAP
- /*
-  * Here comes the implementation of the IOMAP interfaces.
-  */
-diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
-index e9025640f634..76238842406a 100644
---- a/arch/x86/include/asm/io.h
-+++ b/arch/x86/include/asm/io.h
-@@ -35,9 +35,6 @@
-   *  - Arnaldo Carvalho de Melo <acme@conectiva.com.br>
-   */
- 
--#define ARCH_HAS_IOREMAP_WC
--#define ARCH_HAS_IOREMAP_WT
--
- #include <linux/string.h>
- #include <linux/compiler.h>
- #include <linux/cc_platform.h>
-@@ -212,8 +209,6 @@ void memset_io(volatile void __iomem *, int, size_t);
- #define memcpy_toio memcpy_toio
- #define memset_io memset_io
- 
--#include <asm-generic/iomap.h>
--
- /*
-  * ISA space is 'always mapped' on a typical x86 system, no need to
-  * explicitly ioremap() it. The fact that the ISA IO space is mapped
-diff --git a/drivers/net/ethernet/sfc/io.h b/drivers/net/ethernet/sfc/io.h
-index 30439cc83a89..07f99ad14bf3 100644
---- a/drivers/net/ethernet/sfc/io.h
-+++ b/drivers/net/ethernet/sfc/io.h
-@@ -70,7 +70,7 @@
-  */
- #ifdef CONFIG_X86_64
- /* PIO is a win only if write-combining is possible */
--#ifdef ARCH_HAS_IOREMAP_WC
-+#ifdef ioremap_wc
- #define EFX_USE_PIO 1
- #endif
- #endif
-diff --git a/drivers/net/ethernet/sfc/siena/io.h b/drivers/net/ethernet/sfc/siena/io.h
-index 30439cc83a89..07f99ad14bf3 100644
---- a/drivers/net/ethernet/sfc/siena/io.h
-+++ b/drivers/net/ethernet/sfc/siena/io.h
-@@ -70,7 +70,7 @@
-  */
- #ifdef CONFIG_X86_64
- /* PIO is a win only if write-combining is possible */
--#ifdef ARCH_HAS_IOREMAP_WC
-+#ifdef ioremap_wc
- #define EFX_USE_PIO 1
- #endif
- #endif
-diff --git a/include/asm-generic/iomap.h b/include/asm-generic/iomap.h
-index 08237ae8b840..196087a8126e 100644
---- a/include/asm-generic/iomap.h
-+++ b/include/asm-generic/iomap.h
-@@ -93,15 +93,15 @@ extern void __iomem *ioport_map(unsigned long port, unsigned int nr);
- extern void ioport_unmap(void __iomem *);
- #endif
- 
--#ifndef ARCH_HAS_IOREMAP_WC
-+#ifndef ioremap_wc
- #define ioremap_wc ioremap
- #endif
- 
--#ifndef ARCH_HAS_IOREMAP_WT
-+#ifndef ioremap_wt
- #define ioremap_wt ioremap
- #endif
- 
--#ifndef ARCH_HAS_IOREMAP_NP
-+#ifndef ioremap_np
- /* See the comment in asm-generic/io.h about ioremap_np(). */
- #define ioremap_np ioremap_np
- static inline void __iomem *ioremap_np(phys_addr_t offset, size_t size)
 -- 
-2.34.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
