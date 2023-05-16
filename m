@@ -2,307 +2,399 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CDA67C7EE2F
-	for <linux-m68k@archiver.kernel.org>; Tue, 16 May 2023 12:56:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9628C77B7A
+	for <linux-m68k@archiver.kernel.org>; Tue, 16 May 2023 17:45:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232206AbjEPM4Q (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 16 May 2023 08:56:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36380 "EHLO
+        id S230027AbjEPRpO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 16 May 2023 13:45:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232784AbjEPM4N (ORCPT
+        with ESMTP id S229520AbjEPRpN (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 16 May 2023 08:56:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2886C6A6A
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 May 2023 05:54:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1684241690;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dmTy7RERLTTlHMDvbmWoaYSTmqTCStLXSnB9hgIg4f0=;
-        b=ahiW+QjzjOjPBs9zhr4pnPb4pJXBwoVvKcWYBRoyRxE6Sceo2BOHMTuXusSXInp8USpOw6
-        KkOAHO/FECjCjbGCHJhXgT4C7roGoVBUjb1qcIW1W/U9jE8ENt2CWXtc1f6pYCnaQ0vijC
-        nvqhki4FUYddjqZKUnlEP0VZ3R7JFQY=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-626-z_NlnuGROBOnKL3k1Ydrsw-1; Tue, 16 May 2023 08:54:47 -0400
-X-MC-Unique: z_NlnuGROBOnKL3k1Ydrsw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2C8652808E75;
-        Tue, 16 May 2023 12:54:46 +0000 (UTC)
-Received: from localhost (ovpn-12-79.pek2.redhat.com [10.72.12.79])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CA0EDC15BA0;
-        Tue, 16 May 2023 12:54:44 +0000 (UTC)
-Date:   Tue, 16 May 2023 20:54:41 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, arnd@arndb.de, christophe.leroy@csgroup.eu,
-        hch@infradead.org, agordeev@linux.ibm.com,
-        wangkefeng.wang@huawei.com, schnelle@linux.ibm.com,
-        David.Laight@aculab.com, shorne@gmail.com, willy@infradead.org,
-        deller@gmx.de, loongarch@lists.linux.dev,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH v5 RESEND 01/17] asm-generic/iomap.h: remove
- ARCH_HAS_IOREMAP_xx macros
-Message-ID: <ZGN9EZyoshL9cDE8@MiWiFi-R3L-srv>
-References: <20230515090848.833045-1-bhe@redhat.com>
- <20230515090848.833045-2-bhe@redhat.com>
- <ZGMfl5KW9sXkhT8n@kernel.org>
+        Tue, 16 May 2023 13:45:13 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9039FC;
+        Tue, 16 May 2023 10:45:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1684259054; i=deller@gmx.de;
+        bh=28Q2XTKI3jOrWHGJRY35mfdpvNOlP9oZTBSK7WL8Bjk=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=eXaGMvBKqACcsFqkTyYRfQM2481JQl71DzQiEIaVDzUVH1aDV1H4R33xqAwl3T9xg
+         WyGs2k/8xP0S2HR/CekXsMf6yLBmqry4QSYxr4BvpJva3Ks/s2ycdHnF+/EoAr+h6u
+         NIoYxuVUMWztf2AdYwAzRMjkS9hI8Pd8dMPpn7VuHOMlyOdCyXRmWCYoqqSUxHBvmw
+         evV8w3qjZaKNyexAvtHeNQIrjaAsxgulFEKp3nDKkDglGurFZX71jPAWLjfTwmgGYG
+         s4H5RwDK7jPGN43mnLsgqXe6Vt8DhM5WO+h9lRK2vxVHJEwQX4XP6bFslTwNi3OGd0
+         TeuNvCu0UJvAw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.60] ([94.134.150.20]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N5mKP-1qDPOg4AKR-017Dz0; Tue, 16
+ May 2023 19:44:14 +0200
+Message-ID: <df527e53-3148-02f0-241b-fbc5e28b1618@gmx.de>
+Date:   Tue, 16 May 2023 19:44:09 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZGMfl5KW9sXkhT8n@kernel.org>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v7 1/7] fbdev/hitfb: Cast I/O offset to address
+Content-Language: en-US
+To:     Thomas Zimmermann <tzimmermann@suse.de>, geert@linux-m68k.org,
+        javierm@redhat.com, daniel@ffwll.ch, vgupta@kernel.org,
+        chenhuacai@kernel.org, kernel@xen0n.name, davem@davemloft.net,
+        James.Bottomley@HansenPartnership.com, arnd@arndb.de,
+        sam@ravnborg.org, suijingfeng@loongson.cn
+Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arch@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-parisc@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Artur Rojek <contact@artur-rojek.eu>
+References: <20230512102444.5438-1-tzimmermann@suse.de>
+ <20230512102444.5438-2-tzimmermann@suse.de>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <20230512102444.5438-2-tzimmermann@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:rSOrO+0jt4O4RzM9l14Bz6wfGEKXucA0j3Waundj3xcBKFDFc52
+ MmW0hsb8NLlq0rH9mMz/XUMz+PTuDsa6n+7OMeP7elMOy6xV14Nc64lHY1vMLN09t7CrUAU
+ aro3xE6YuZBtr5yHHhTsC4g3TbNooxbmvDC+2u1zgRm2sKkzCxIS3lxPvtY+OC7z04Uhti5
+ 72FlfAhLCIiPZ2ZVXmmOQ==
+UI-OutboundReport: notjunk:1;M01:P0:ecBgGlwkX5Y=;oQwXswBOboXoEMT5pniOW9e5zDy
+ TDc0juyT2oeDOAYSymZ4Yve6mAwtAQYgC4JulDpsWI54/lpT/3D7R4HTWQBItkMqSmELB7Tfh
+ k/xHSW5SHoW+vvUk5sL4+IR5vxCspl8eKgpH3nyPYnge684GFJK7ApwoTiF0bEeuMEPeE0f98
+ 5nKB5Ki2nXvssTP6YWZstlRi9vmm7UDfKmr6dJC7XQRSdL459sxpPqb6y5Py+VeOtrwRswQ9b
+ mgX6Q416C2OMUv1g2qvDpI/CUwPMRZVR7PdDu0s1ziJFjAoZ4bpAU0a2Amuhqx8ipGBYPgxy9
+ 8K9IWqbt6vD0urHXico4zJpR6rXjjdvRQeMftW7c4y+Mn7o+Gzt+zxbKNHywWhVRr/GF+ybXC
+ yB72kKK2MPCb8Ol4bxPSD2qxRs+u6yR+B5tS0PfJiS96Acllk7UA/0W8kS5K14nUpMPF1nBjW
+ SgGVsJmvnSiuIjlbaZLisaUJpWXTZIYL9DjVqv50wqiLFUrTuaMcFH8IXzLv29VjHSZNEOpBo
+ DUYeBfYKUtlMQjLEL/KhlDZ//O00ulUgDkRDV3l+HMC3KDxM4w1qVuyk9g6rR1gHVFvtRMw4B
+ pKUdaCegbB6YWC3baOTepNotkyxry/FsXyBxefzaocIcXxJipYn7OyR61jwcy7DFoul70oAn1
+ 0a2ZvSp2XLUaT8vIUNhNrNECPa3NCDdrWfNByBWiFrW8o/WVtK5oM6zVT1IzOnAYuzrkDTjAD
+ uoZnelK3f6VSOHLd7t16PWGRCXk7M6eV8Pew6pM1LwlLxJGYb0XchPIobzDo+3uuXqgw8k1x/
+ qfxDOSuCv3W9gkj/I6aq7QqrnHkYz1J9yv4wny00fCDTmiez/GMrUxjchUPzeZj1hpyqCP4Kg
+ AodCMcCoACTsxxNkm24VDBz4N08R7D9G25UWZxxPaXTBo0szFnbZxYJX0JCcEfySdyg7jco/x
+ Rp2dTA==
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 05/16/23 at 09:15am, Mike Rapoport wrote:
-> Hi,
-> 
-> On Mon, May 15, 2023 at 05:08:32PM +0800, Baoquan He wrote:
-> > Let's use '#define ioremap_xx' and "#ifdef ioremap_xx" instead.
-> > 
-> > For each architecture to remove defined ARCH_HAS_IOREMAP_xx macros in
-> 
-> This sentence seems to be stale.
+On 5/12/23 12:24, Thomas Zimmermann wrote:
+> Cast I/O offsets to pointers to use them with I/O functions. The I/O
+> functions expect pointers of type 'volatile void __iomem *', but the
+> offsets are plain integers. Build warnings are
+>
+>    ../drivers/video/fbdev/hitfb.c: In function 'hitfb_accel_wait':
+>    ../arch/x86/include/asm/hd64461.h:18:33: warning: passing argument 1 =
+of 'fb_readw' makes pointer from integer without a cast [-Wint-conversion]
+>     18 | #define HD64461_IO_OFFSET(x)    (HD64461_IOBASE + (x))
+>        |                                 ^~~~~~~~~~~~~~~~~~~~~~
+>        |                                 |
+>        |                                 unsigned int
+>    ../arch/x86/include/asm/hd64461.h:93:33: note: in expansion of macro =
+'HD64461_IO_OFFSET'
+>     93 | #define HD64461_GRCFGR          HD64461_IO_OFFSET(0x1044)      =
+ /* Accelerator Configuration Register */
+>        |                                 ^~~~~~~~~~~~~~~~~
+>    ../drivers/video/fbdev/hitfb.c:47:25: note: in expansion of macro 'HD=
+64461_GRCFGR'
+>     47 |         while (fb_readw(HD64461_GRCFGR) & HD64461_GRCFGR_ACCSTA=
+TUS) ;
+>        |                         ^~~~~~~~~~~~~~
+>    In file included from ../arch/x86/include/asm/fb.h:15,
+>    from ../include/linux/fb.h:19,
+>    from ../drivers/video/fbdev/hitfb.c:22:
+>    ../include/asm-generic/fb.h:52:57: note: expected 'const volatile voi=
+d *' but argument is of type 'unsigned int'
+>     52 | static inline u16 fb_readw(const volatile void __iomem *addr)
+>        |                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+>
+> This patch only fixes the build warnings. It's not clear if the I/O
+> offsets can legally be passed to the I/O helpers. It was apparently
+> broken in 2007 when custom inw()/outw() helpers got removed by
+> commit 34a780a0afeb ("sh: hp6xx pata_platform support."). Fixing the
+> driver would require setting the I/O base address.
 
-Right, will remove this, thanks a lot for careful reviewing.
+I think your patch is the best you can do for now... So...
 
-> 
-> > To remove defined ARCH_HAS_IOREMAP_xx macros in <asm/io.h> of each ARCH,
-> > the ARCH's own ioremap_wc|wt|np definition need be above
-> > "#include <asm-generic/iomap.h>. Otherwise the redefinition error would
-> > be seen during compiling. So the relevant adjustments are made to avoid
-> > compiling error:
-> > 
-> >   loongarch:
-> >   - doesn't include <asm-generic/iomap.h>, defining ARCH_HAS_IOREMAP_WC
-> >     is redundant, so simply remove it.
-> > 
-> >   m68k:
-> >   - selected GENERIC_IOMAP, <asm-generic/iomap.h> has been added in
-> >     <asm-generic/io.h>, and <asm/kmap.h> is included above
-> >     <asm-generic/iomap.h>, so simply remove ARCH_HAS_IOREMAP_WT defining.
-> > 
-> >   mips:
-> >   - move "#include <asm-generic/iomap.h>" below ioremap_wc definition
-> >     in <asm/io.h>
-> > 
-> >   powerpc:
-> >   - remove "#include <asm-generic/iomap.h>" in <asm/io.h> because it's
-> >     duplicated with the one in <asm-generic/io.h>, let's rely on the
-> >     latter.
-> > 
-> >   x86:
-> >   - selected GENERIC_IOMAP, remove #include <asm-generic/iomap.h> in
-> >     the middle of <asm/io.h>. Let's rely on <asm-generic/io.h>.
-> > 
-> > Signed-off-by: Baoquan He <bhe@redhat.com>
-> > Cc: loongarch@lists.linux.dev
-> > Cc: linux-m68k@lists.linux-m68k.org
-> > Cc: linux-mips@vger.kernel.org
-> > Cc: linuxppc-dev@lists.ozlabs.org
-> > Cc: x86@kernel.org
-> > Cc: netdev@vger.kernel.org
-> > Cc: linux-arch@vger.kernel.org
-> 
-> Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
-> 
-> > ---
-> >  arch/loongarch/include/asm/io.h     | 2 --
-> >  arch/m68k/include/asm/io_mm.h       | 2 --
-> >  arch/m68k/include/asm/kmap.h        | 2 --
-> >  arch/mips/include/asm/io.h          | 5 ++---
-> >  arch/powerpc/include/asm/io.h       | 9 +--------
-> >  arch/x86/include/asm/io.h           | 5 -----
-> >  drivers/net/ethernet/sfc/io.h       | 2 +-
-> >  drivers/net/ethernet/sfc/siena/io.h | 2 +-
-> >  include/asm-generic/iomap.h         | 6 +++---
-> >  9 files changed, 8 insertions(+), 27 deletions(-)
-> > 
-> > diff --git a/arch/loongarch/include/asm/io.h b/arch/loongarch/include/asm/io.h
-> > index 545e2708fbf7..5fef1246c6fb 100644
-> > --- a/arch/loongarch/include/asm/io.h
-> > +++ b/arch/loongarch/include/asm/io.h
-> > @@ -5,8 +5,6 @@
-> >  #ifndef _ASM_IO_H
-> >  #define _ASM_IO_H
-> >  
-> > -#define ARCH_HAS_IOREMAP_WC
-> > -
-> >  #include <linux/kernel.h>
-> >  #include <linux/types.h>
-> >  
-> > diff --git a/arch/m68k/include/asm/io_mm.h b/arch/m68k/include/asm/io_mm.h
-> > index d41fa488453b..6a0abd4846c6 100644
-> > --- a/arch/m68k/include/asm/io_mm.h
-> > +++ b/arch/m68k/include/asm/io_mm.h
-> > @@ -26,8 +26,6 @@
-> >  #include <asm/virtconvert.h>
-> >  #include <asm/kmap.h>
-> >  
-> > -#include <asm-generic/iomap.h>
-> > -
-> >  #ifdef CONFIG_ATARI
-> >  #define atari_readb   raw_inb
-> >  #define atari_writeb  raw_outb
-> > diff --git a/arch/m68k/include/asm/kmap.h b/arch/m68k/include/asm/kmap.h
-> > index dec05743d426..4efb3efa593a 100644
-> > --- a/arch/m68k/include/asm/kmap.h
-> > +++ b/arch/m68k/include/asm/kmap.h
-> > @@ -4,8 +4,6 @@
-> >  
-> >  #ifdef CONFIG_MMU
-> >  
-> > -#define ARCH_HAS_IOREMAP_WT
-> > -
-> >  /* Values for nocacheflag and cmode */
-> >  #define IOMAP_FULL_CACHING		0
-> >  #define IOMAP_NOCACHE_SER		1
-> > diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
-> > index cc28d207a061..477773328a06 100644
-> > --- a/arch/mips/include/asm/io.h
-> > +++ b/arch/mips/include/asm/io.h
-> > @@ -12,8 +12,6 @@
-> >  #ifndef _ASM_IO_H
-> >  #define _ASM_IO_H
-> >  
-> > -#define ARCH_HAS_IOREMAP_WC
-> > -
-> >  #include <linux/compiler.h>
-> >  #include <linux/kernel.h>
-> >  #include <linux/types.h>
-> > @@ -25,7 +23,6 @@
-> >  #include <asm/byteorder.h>
-> >  #include <asm/cpu.h>
-> >  #include <asm/cpu-features.h>
-> > -#include <asm-generic/iomap.h>
-> >  #include <asm/page.h>
-> >  #include <asm/pgtable-bits.h>
-> >  #include <asm/processor.h>
-> > @@ -210,6 +207,8 @@ void iounmap(const volatile void __iomem *addr);
-> >  #define ioremap_wc(offset, size)					\
-> >  	ioremap_prot((offset), (size), boot_cpu_data.writecombine)
-> >  
-> > +#include <asm-generic/iomap.h>
-> > +
-> >  #if defined(CONFIG_CPU_CAVIUM_OCTEON)
-> >  #define war_io_reorder_wmb()		wmb()
-> >  #else
-> > diff --git a/arch/powerpc/include/asm/io.h b/arch/powerpc/include/asm/io.h
-> > index f1e657c9bbe8..67a3fb6de498 100644
-> > --- a/arch/powerpc/include/asm/io.h
-> > +++ b/arch/powerpc/include/asm/io.h
-> > @@ -3,11 +3,6 @@
-> >  #define _ASM_POWERPC_IO_H
-> >  #ifdef __KERNEL__
-> >  
-> > -#define ARCH_HAS_IOREMAP_WC
-> > -#ifdef CONFIG_PPC32
-> > -#define ARCH_HAS_IOREMAP_WT
-> > -#endif
-> > -
-> >  /*
-> >   */
-> >  
-> > @@ -732,9 +727,7 @@ static inline void name at					\
-> >  #define writel_relaxed(v, addr)	writel(v, addr)
-> >  #define writeq_relaxed(v, addr)	writeq(v, addr)
-> >  
-> > -#ifdef CONFIG_GENERIC_IOMAP
-> > -#include <asm-generic/iomap.h>
-> > -#else
-> > +#ifndef CONFIG_GENERIC_IOMAP
-> >  /*
-> >   * Here comes the implementation of the IOMAP interfaces.
-> >   */
-> > diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
-> > index e9025640f634..76238842406a 100644
-> > --- a/arch/x86/include/asm/io.h
-> > +++ b/arch/x86/include/asm/io.h
-> > @@ -35,9 +35,6 @@
-> >    *  - Arnaldo Carvalho de Melo <acme@conectiva.com.br>
-> >    */
-> >  
-> > -#define ARCH_HAS_IOREMAP_WC
-> > -#define ARCH_HAS_IOREMAP_WT
-> > -
-> >  #include <linux/string.h>
-> >  #include <linux/compiler.h>
-> >  #include <linux/cc_platform.h>
-> > @@ -212,8 +209,6 @@ void memset_io(volatile void __iomem *, int, size_t);
-> >  #define memcpy_toio memcpy_toio
-> >  #define memset_io memset_io
-> >  
-> > -#include <asm-generic/iomap.h>
-> > -
-> >  /*
-> >   * ISA space is 'always mapped' on a typical x86 system, no need to
-> >   * explicitly ioremap() it. The fact that the ISA IO space is mapped
-> > diff --git a/drivers/net/ethernet/sfc/io.h b/drivers/net/ethernet/sfc/io.h
-> > index 30439cc83a89..07f99ad14bf3 100644
-> > --- a/drivers/net/ethernet/sfc/io.h
-> > +++ b/drivers/net/ethernet/sfc/io.h
-> > @@ -70,7 +70,7 @@
-> >   */
-> >  #ifdef CONFIG_X86_64
-> >  /* PIO is a win only if write-combining is possible */
-> > -#ifdef ARCH_HAS_IOREMAP_WC
-> > +#ifdef ioremap_wc
-> >  #define EFX_USE_PIO 1
-> >  #endif
-> >  #endif
-> > diff --git a/drivers/net/ethernet/sfc/siena/io.h b/drivers/net/ethernet/sfc/siena/io.h
-> > index 30439cc83a89..07f99ad14bf3 100644
-> > --- a/drivers/net/ethernet/sfc/siena/io.h
-> > +++ b/drivers/net/ethernet/sfc/siena/io.h
-> > @@ -70,7 +70,7 @@
-> >   */
-> >  #ifdef CONFIG_X86_64
-> >  /* PIO is a win only if write-combining is possible */
-> > -#ifdef ARCH_HAS_IOREMAP_WC
-> > +#ifdef ioremap_wc
-> >  #define EFX_USE_PIO 1
-> >  #endif
-> >  #endif
-> > diff --git a/include/asm-generic/iomap.h b/include/asm-generic/iomap.h
-> > index 08237ae8b840..196087a8126e 100644
-> > --- a/include/asm-generic/iomap.h
-> > +++ b/include/asm-generic/iomap.h
-> > @@ -93,15 +93,15 @@ extern void __iomem *ioport_map(unsigned long port, unsigned int nr);
-> >  extern void ioport_unmap(void __iomem *);
-> >  #endif
-> >  
-> > -#ifndef ARCH_HAS_IOREMAP_WC
-> > +#ifndef ioremap_wc
-> >  #define ioremap_wc ioremap
-> >  #endif
-> >  
-> > -#ifndef ARCH_HAS_IOREMAP_WT
-> > +#ifndef ioremap_wt
-> >  #define ioremap_wt ioremap
-> >  #endif
-> >  
-> > -#ifndef ARCH_HAS_IOREMAP_NP
-> > +#ifndef ioremap_np
-> >  /* See the comment in asm-generic/io.h about ioremap_np(). */
-> >  #define ioremap_np ioremap_np
-> >  static inline void __iomem *ioremap_np(phys_addr_t offset, size_t size)
-> > -- 
-> > 2.34.1
-> > 
-> > 
-> 
-> -- 
-> Sincerely yours,
-> Mike.
-> 
+Acked-by: Helge Deller <deller@gmx.de>
+
+Thanks!
+Helge
+
+
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202305102136.eMjTSPwH-lkp@=
+intel.com/
+> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+> Cc: Artur Rojek <contact@artur-rojek.eu>
+> ---
+>   drivers/video/fbdev/hitfb.c | 122 ++++++++++++++++++++----------------
+>   1 file changed, 69 insertions(+), 53 deletions(-)
+>
+> diff --git a/drivers/video/fbdev/hitfb.c b/drivers/video/fbdev/hitfb.c
+> index 3033f5056976..7737923b7a0a 100644
+> --- a/drivers/video/fbdev/hitfb.c
+> +++ b/drivers/video/fbdev/hitfb.c
+> @@ -42,17 +42,33 @@ static struct fb_fix_screeninfo hitfb_fix =3D {
+>   	.accel		=3D FB_ACCEL_NONE,
+>   };
+>
+> +static volatile void __iomem *hitfb_offset_to_addr(unsigned int offset)
+> +{
+> +	return (__force volatile void __iomem *)(uintptr_t)offset;
+> +}
+> +
+> +static u16 hitfb_readw(unsigned int offset)
+> +{
+> +	return fb_readw(hitfb_offset_to_addr(offset));
+> +}
+> +
+> +static void hitfb_writew(u16 value, unsigned int offset)
+> +{
+> +	fb_writew(value, hitfb_offset_to_addr(offset));
+> +}
+> +
+>   static inline void hitfb_accel_wait(void)
+>   {
+> -	while (fb_readw(HD64461_GRCFGR) & HD64461_GRCFGR_ACCSTATUS) ;
+> +	while (hitfb_readw(HD64461_GRCFGR) & HD64461_GRCFGR_ACCSTATUS)
+> +		;
+>   }
+>
+>   static inline void hitfb_accel_start(int truecolor)
+>   {
+>   	if (truecolor) {
+> -		fb_writew(6, HD64461_GRCFGR);
+> +		hitfb_writew(6, HD64461_GRCFGR);
+>   	} else {
+> -		fb_writew(7, HD64461_GRCFGR);
+> +		hitfb_writew(7, HD64461_GRCFGR);
+>   	}
+>   }
+>
+> @@ -63,11 +79,11 @@ static inline void hitfb_accel_set_dest(int truecolo=
+r, u16 dx, u16 dy,
+>   	if (truecolor)
+>   		saddr <<=3D 1;
+>
+> -	fb_writew(width-1, HD64461_BBTDWR);
+> -	fb_writew(height-1, HD64461_BBTDHR);
+> +	hitfb_writew(width-1, HD64461_BBTDWR);
+> +	hitfb_writew(height-1, HD64461_BBTDHR);
+>
+> -	fb_writew(saddr & 0xffff, HD64461_BBTDSARL);
+> -	fb_writew(saddr >> 16, HD64461_BBTDSARH);
+> +	hitfb_writew(saddr & 0xffff, HD64461_BBTDSARL);
+> +	hitfb_writew(saddr >> 16, HD64461_BBTDSARH);
+>
+>   }
+>
+> @@ -80,7 +96,7 @@ static inline void hitfb_accel_bitblt(int truecolor, u=
+16 sx, u16 sy, u16 dx,
+>
+>   	height--;
+>   	width--;
+> -	fb_writew(rop, HD64461_BBTROPR);
+> +	hitfb_writew(rop, HD64461_BBTROPR);
+>   	if ((sy < dy) || ((sy =3D=3D dy) && (sx <=3D dx))) {
+>   		saddr =3D WIDTH * (sy + height) + sx + width;
+>   		daddr =3D WIDTH * (dy + height) + dx + width;
+> @@ -91,32 +107,32 @@ static inline void hitfb_accel_bitblt(int truecolor=
+, u16 sx, u16 sy, u16 dx,
+>   				maddr =3D
+>   				    (((width >> 4) + 1) * (height + 1) - 1) * 2;
+>
+> -			fb_writew((1 << 5) | 1, HD64461_BBTMDR);
+> +			hitfb_writew((1 << 5) | 1, HD64461_BBTMDR);
+>   		} else
+> -			fb_writew(1, HD64461_BBTMDR);
+> +			hitfb_writew(1, HD64461_BBTMDR);
+>   	} else {
+>   		saddr =3D WIDTH * sy + sx;
+>   		daddr =3D WIDTH * dy + dx;
+>   		if (mask_addr) {
+> -			fb_writew((1 << 5), HD64461_BBTMDR);
+> +			hitfb_writew((1 << 5), HD64461_BBTMDR);
+>   		} else {
+> -			fb_writew(0, HD64461_BBTMDR);
+> +			hitfb_writew(0, HD64461_BBTMDR);
+>   		}
+>   	}
+>   	if (truecolor) {
+>   		saddr <<=3D 1;
+>   		daddr <<=3D 1;
+>   	}
+> -	fb_writew(width, HD64461_BBTDWR);
+> -	fb_writew(height, HD64461_BBTDHR);
+> -	fb_writew(saddr & 0xffff, HD64461_BBTSSARL);
+> -	fb_writew(saddr >> 16, HD64461_BBTSSARH);
+> -	fb_writew(daddr & 0xffff, HD64461_BBTDSARL);
+> -	fb_writew(daddr >> 16, HD64461_BBTDSARH);
+> +	hitfb_writew(width, HD64461_BBTDWR);
+> +	hitfb_writew(height, HD64461_BBTDHR);
+> +	hitfb_writew(saddr & 0xffff, HD64461_BBTSSARL);
+> +	hitfb_writew(saddr >> 16, HD64461_BBTSSARH);
+> +	hitfb_writew(daddr & 0xffff, HD64461_BBTDSARL);
+> +	hitfb_writew(daddr >> 16, HD64461_BBTDSARH);
+>   	if (mask_addr) {
+>   		maddr +=3D mask_addr;
+> -		fb_writew(maddr & 0xffff, HD64461_BBTMARL);
+> -		fb_writew(maddr >> 16, HD64461_BBTMARH);
+> +		hitfb_writew(maddr & 0xffff, HD64461_BBTMARL);
+> +		hitfb_writew(maddr >> 16, HD64461_BBTMARH);
+>   	}
+>   	hitfb_accel_start(truecolor);
+>   }
+> @@ -127,17 +143,17 @@ static void hitfb_fillrect(struct fb_info *p, cons=
+t struct fb_fillrect *rect)
+>   		cfb_fillrect(p, rect);
+>   	else {
+>   		hitfb_accel_wait();
+> -		fb_writew(0x00f0, HD64461_BBTROPR);
+> -		fb_writew(16, HD64461_BBTMDR);
+> +		hitfb_writew(0x00f0, HD64461_BBTROPR);
+> +		hitfb_writew(16, HD64461_BBTMDR);
+>
+>   		if (p->var.bits_per_pixel =3D=3D 16) {
+> -			fb_writew(((u32 *) (p->pseudo_palette))[rect->color],
+> +			hitfb_writew(((u32 *) (p->pseudo_palette))[rect->color],
+>   				  HD64461_GRSCR);
+>   			hitfb_accel_set_dest(1, rect->dx, rect->dy, rect->width,
+>   					     rect->height);
+>   			hitfb_accel_start(1);
+>   		} else {
+> -			fb_writew(rect->color, HD64461_GRSCR);
+> +			hitfb_writew(rect->color, HD64461_GRSCR);
+>   			hitfb_accel_set_dest(0, rect->dx, rect->dy, rect->width,
+>   					     rect->height);
+>   			hitfb_accel_start(0);
+> @@ -162,7 +178,7 @@ static int hitfb_pan_display(struct fb_var_screeninf=
+o *var,
+>   	if (xoffset !=3D 0)
+>   		return -EINVAL;
+>
+> -	fb_writew((yoffset*info->fix.line_length)>>10, HD64461_LCDCBAR);
+> +	hitfb_writew((yoffset*info->fix.line_length)>>10, HD64461_LCDCBAR);
+>
+>   	return 0;
+>   }
+> @@ -172,33 +188,33 @@ int hitfb_blank(int blank_mode, struct fb_info *in=
+fo)
+>   	unsigned short v;
+>
+>   	if (blank_mode) {
+> -		v =3D fb_readw(HD64461_LDR1);
+> +		v =3D hitfb_readw(HD64461_LDR1);
+>   		v &=3D ~HD64461_LDR1_DON;
+> -		fb_writew(v, HD64461_LDR1);
+> +		hitfb_writew(v, HD64461_LDR1);
+>
+> -		v =3D fb_readw(HD64461_LCDCCR);
+> +		v =3D hitfb_readw(HD64461_LCDCCR);
+>   		v |=3D HD64461_LCDCCR_MOFF;
+> -		fb_writew(v, HD64461_LCDCCR);
+> +		hitfb_writew(v, HD64461_LCDCCR);
+>
+> -		v =3D fb_readw(HD64461_STBCR);
+> +		v =3D hitfb_readw(HD64461_STBCR);
+>   		v |=3D HD64461_STBCR_SLCDST;
+> -		fb_writew(v, HD64461_STBCR);
+> +		hitfb_writew(v, HD64461_STBCR);
+>   	} else {
+> -		v =3D fb_readw(HD64461_STBCR);
+> +		v =3D hitfb_readw(HD64461_STBCR);
+>   		v &=3D ~HD64461_STBCR_SLCDST;
+> -		fb_writew(v, HD64461_STBCR);
+> +		hitfb_writew(v, HD64461_STBCR);
+>
+> -		v =3D fb_readw(HD64461_LCDCCR);
+> +		v =3D hitfb_readw(HD64461_LCDCCR);
+>   		v &=3D ~(HD64461_LCDCCR_MOFF | HD64461_LCDCCR_STREQ);
+> -		fb_writew(v, HD64461_LCDCCR);
+> +		hitfb_writew(v, HD64461_LCDCCR);
+>
+>   		do {
+> -		    v =3D fb_readw(HD64461_LCDCCR);
+> +		    v =3D hitfb_readw(HD64461_LCDCCR);
+>   		} while(v&HD64461_LCDCCR_STBACK);
+>
+> -		v =3D fb_readw(HD64461_LDR1);
+> +		v =3D hitfb_readw(HD64461_LDR1);
+>   		v |=3D HD64461_LDR1_DON;
+> -		fb_writew(v, HD64461_LDR1);
+> +		hitfb_writew(v, HD64461_LDR1);
+>   	}
+>   	return 0;
+>   }
+> @@ -211,10 +227,10 @@ static int hitfb_setcolreg(unsigned regno, unsigne=
+d red, unsigned green,
+>
+>   	switch (info->var.bits_per_pixel) {
+>   	case 8:
+> -		fb_writew(regno << 8, HD64461_CPTWAR);
+> -		fb_writew(red >> 10, HD64461_CPTWDR);
+> -		fb_writew(green >> 10, HD64461_CPTWDR);
+> -		fb_writew(blue >> 10, HD64461_CPTWDR);
+> +		hitfb_writew(regno << 8, HD64461_CPTWAR);
+> +		hitfb_writew(red >> 10, HD64461_CPTWDR);
+> +		hitfb_writew(green >> 10, HD64461_CPTWDR);
+> +		hitfb_writew(blue >> 10, HD64461_CPTWDR);
+>   		break;
+>   	case 16:
+>   		if (regno >=3D 16)
+> @@ -302,11 +318,11 @@ static int hitfb_set_par(struct fb_info *info)
+>   		break;
+>   	}
+>
+> -	fb_writew(info->fix.line_length, HD64461_LCDCLOR);
+> -	ldr3 =3D fb_readw(HD64461_LDR3);
+> +	hitfb_writew(info->fix.line_length, HD64461_LCDCLOR);
+> +	ldr3 =3D hitfb_readw(HD64461_LDR3);
+>   	ldr3 &=3D ~15;
+>   	ldr3 |=3D (info->var.bits_per_pixel =3D=3D 8) ? 4 : 8;
+> -	fb_writew(ldr3, HD64461_LDR3);
+> +	hitfb_writew(ldr3, HD64461_LDR3);
+>   	return 0;
+>   }
+>
+> @@ -337,9 +353,9 @@ static int hitfb_probe(struct platform_device *dev)
+>   	hitfb_fix.smem_start =3D HD64461_IO_OFFSET(0x02000000);
+>   	hitfb_fix.smem_len =3D 512 * 1024;
+>
+> -	lcdclor =3D fb_readw(HD64461_LCDCLOR);
+> -	ldvndr =3D fb_readw(HD64461_LDVNDR);
+> -	ldr3 =3D fb_readw(HD64461_LDR3);
+> +	lcdclor =3D hitfb_readw(HD64461_LCDCLOR);
+> +	ldvndr =3D hitfb_readw(HD64461_LDVNDR);
+> +	ldr3 =3D hitfb_readw(HD64461_LDR3);
+>
+>   	switch (ldr3 & 15) {
+>   	default:
+> @@ -429,9 +445,9 @@ static int hitfb_suspend(struct device *dev)
+>   	u16 v;
+>
+>   	hitfb_blank(1,0);
+> -	v =3D fb_readw(HD64461_STBCR);
+> +	v =3D hitfb_readw(HD64461_STBCR);
+>   	v |=3D HD64461_STBCR_SLCKE_IST;
+> -	fb_writew(v, HD64461_STBCR);
+> +	hitfb_writew(v, HD64461_STBCR);
+>
+>   	return 0;
+>   }
+> @@ -440,12 +456,12 @@ static int hitfb_resume(struct device *dev)
+>   {
+>   	u16 v;
+>
+> -	v =3D fb_readw(HD64461_STBCR);
+> +	v =3D hitfb_readw(HD64461_STBCR);
+>   	v &=3D ~HD64461_STBCR_SLCKE_OST;
+>   	msleep(100);
+> -	v =3D fb_readw(HD64461_STBCR);
+> +	v =3D hitfb_readw(HD64461_STBCR);
+>   	v &=3D ~HD64461_STBCR_SLCKE_IST;
+> -	fb_writew(v, HD64461_STBCR);
+> +	hitfb_writew(v, HD64461_STBCR);
+>   	hitfb_blank(0,0);
+>
+>   	return 0;
 
