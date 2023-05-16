@@ -2,119 +2,91 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E981C77B75
-	for <linux-m68k@archiver.kernel.org>; Tue, 16 May 2023 07:15:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79BFFC7EE2C
+	for <linux-m68k@archiver.kernel.org>; Tue, 16 May 2023 09:19:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231222AbjEPHPw convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 16 May 2023 03:15:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49450 "EHLO
+        id S231992AbjEPJTk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 16 May 2023 05:19:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231253AbjEPHPf (ORCPT
+        with ESMTP id S231994AbjEPJTd (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 16 May 2023 03:15:35 -0400
-Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C68B935AD
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 May 2023 00:15:23 -0700 (PDT)
-Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-76c73f7443dso513481839f.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 May 2023 00:15:23 -0700 (PDT)
+        Tue, 16 May 2023 05:19:33 -0400
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3625598
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 May 2023 02:19:07 -0700 (PDT)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-56186035b61so8982067b3.3
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 May 2023 02:19:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1684228735; x=1686820735;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G3PO2Pyp97ZMAD2vBcdWWuGlS8wMmQ0Anr89fdT1itg=;
+        b=SnLc7z4OusgQkdLJW2gpC1baRzLHCxxry6/C+4UjVFNnTPasnfiPkwK53P1kkgTVdD
+         jTKK8ss4OZD8XKjjQq8wY03VJ5Oe5RHDs1yvY8+EOTxoWcJSuTK7C11kpIWmw3gXQJHd
+         Lr1Q3yVH/sbUISDc/hPO6XN45n3T4qV7q9AbqbvoF3TF/CKKfgqucw7C9ikJ60JvtEYM
+         RZWq8qHyla87xTV8v+o/RkUfgaKOxVyUC2q+zgx1kDfIfEhVq+nmpO3H61poEs9vdGUc
+         mOzQj6BxLBs2pa6WpFCON0vyVIFD01vnG8CwRDr7oaC2ucRGNIWDDeoHyor0/J84BNNJ
+         GWWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684221323; x=1686813323;
+        d=1e100.net; s=20221208; t=1684228735; x=1686820735;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iTQjfNfGsMfbyHJYnY/d7iucXXNLZgToVmLQABWZsBQ=;
-        b=WwWOPiOy34KOTnBH4pqLJC1SCpOv6H+RYuz2kxbp2HL6Bf4lEyVZgMILm8NPnHNqc8
-         6GP1xYfbJ1expoV2XIUn2LW/CoQnhKwJ4kklc1M4RK3penstyYvYRDifjfqgPkjfSZlM
-         jbGbVTybyb88JtbzF+fxjnF3EZrt+cTA8pQV5qC8DNCLjCBPMAAZ7xiAgDBKi31DvdNY
-         8X3Lr/mdxygkwes4Wrs/C3pJJWrtwKpWYEIDEsWsOzF0R6gKXlTOlOdu+F7CH8ujq7Zr
-         mq+bjIlAB8i83RPqULhXPnlZp4rUt+vZfWg4ZP5rMUc9ZSGHCxygGMSi5zIIFyyXfpxa
-         WPtQ==
-X-Gm-Message-State: AC+VfDyfkxGkayqEj7/vYL3GCCYGGslXd8WcALvvSTO9cx65xLSUKcBr
-        gADAztxLFzqapbjNDc7LnVek7lR8Z/JF9A==
-X-Google-Smtp-Source: ACHHUZ4Uy2Jnl3zu/1KFDIHG8grxfwfv+dEbCFHJDweNHgMy85TOWgpcfYiWx7gxBV70yMqJ4Y9Cqg==
-X-Received: by 2002:a05:6602:42c2:b0:76c:69a0:664e with SMTP id ce2-20020a05660242c200b0076c69a0664emr1491732iob.13.1684221322490;
-        Tue, 16 May 2023 00:15:22 -0700 (PDT)
-Received: from mail-io1-f52.google.com (mail-io1-f52.google.com. [209.85.166.52])
-        by smtp.gmail.com with ESMTPSA id w18-20020a029692000000b0040fb0b1b317sm7458027jai.5.2023.05.16.00.15.21
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 May 2023 00:15:22 -0700 (PDT)
-Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-76c636b6306so603027839f.3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 May 2023 00:15:21 -0700 (PDT)
-X-Received: by 2002:a25:1c6:0:b0:ba7:dcad:9b6 with SMTP id 189-20020a2501c6000000b00ba7dcad09b6mr4131622ybb.40.1684220883815;
- Tue, 16 May 2023 00:08:03 -0700 (PDT)
+        bh=G3PO2Pyp97ZMAD2vBcdWWuGlS8wMmQ0Anr89fdT1itg=;
+        b=Umkb6nuLis6oOL52LW/aabSOj2p/ahiKfn9BjteKyYX9pyAGial7aN0bNiVkJfZuNY
+         L8T3qA7u/4D/3i4rEsXTlLOGZpIMVReutxKNbcyH0oI8BRFrFEYE8Oy+dBNKtpPjPfkK
+         tgzuEHBlXBEKGrbGM7RxW5fKoJHfttXFBi5Ve0ygFhqsdba+/anwddqeAl3O2Nf6l0SO
+         nRGfxVaveEeXRzmCHcmgPF7WzFupyZOXYSP83nMiE++2dQB2HuP0ko5G/vlDoGbXS/zN
+         /HLJgzoRuweN8pHZYVkjnl4zImMp1+WFhq75bBe+uEE4/YYMwOpUjxQL+2q0OPLYFSbO
+         GzhQ==
+X-Gm-Message-State: AC+VfDwu038OgFR4URTVcX7FhX2XbmY2UJ21rGrU3pESJoZNCwTfFZd6
+        CVtFi2Tox9Syk2NeroZO5OnUM5LTrGTR8r9td1ekCg==
+X-Google-Smtp-Source: ACHHUZ7ouX4pR8enSVuqce0U0lt0Y3WNzSweQexHvE3MJ4CinODJS3Gxe6HEZ3NipwDnbhl+pti8r/LzgvUfPj6ua34=
+X-Received: by 2002:a0d:c701:0:b0:556:d4ab:cbe with SMTP id
+ j1-20020a0dc701000000b00556d4ab0cbemr34265656ywd.39.1684228735569; Tue, 16
+ May 2023 02:18:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230515090848.833045-1-bhe@redhat.com> <20230515090848.833045-2-bhe@redhat.com>
-In-Reply-To: <20230515090848.833045-2-bhe@redhat.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 16 May 2023 09:07:52 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdU-bL-khVUN59ku1GwV6i4OC3O9AU1GQU2hfGn+JrsBXg@mail.gmail.com>
-Message-ID: <CAMuHMdU-bL-khVUN59ku1GwV6i4OC3O9AU1GQU2hfGn+JrsBXg@mail.gmail.com>
-Subject: Re: [PATCH v5 RESEND 01/17] asm-generic/iomap.h: remove
- ARCH_HAS_IOREMAP_xx macros
-To:     Baoquan He <bhe@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, arnd@arndb.de, christophe.leroy@csgroup.eu,
-        hch@infradead.org, agordeev@linux.ibm.com,
-        wangkefeng.wang@huawei.com, schnelle@linux.ibm.com,
-        David.Laight@aculab.com, shorne@gmail.com, willy@infradead.org,
-        deller@gmx.de, loongarch@lists.linux.dev,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
-        netdev@vger.kernel.org
+References: <20230503-virt-to-pfn-v6-4-rc1-v1-0-6c4698dcf9c8@linaro.org>
+ <20230503-virt-to-pfn-v6-4-rc1-v1-2-6c4698dcf9c8@linaro.org>
+ <CAMuHMdVJjjo9TMeow1-i27ybpQOu9-VZYnTkY5p8p_Cm6sW_GA@mail.gmail.com> <CAMuHMdV5Aukxx+XyC-s2=CDa2BYqvc3uRvWBhD6ri5j09tXj3A@mail.gmail.com>
+In-Reply-To: <CAMuHMdV5Aukxx+XyC-s2=CDa2BYqvc3uRvWBhD6ri5j09tXj3A@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 16 May 2023 11:18:43 +0200
+Message-ID: <CACRpkdbwd6ELhJVu--=N+Ckjp0MNyG3aWv5B+DQUoXNVFicDfw@mail.gmail.com>
+Subject: Re: [PATCH 02/12] m68k: Pass a pointer to virt_to_pfn() virt_to_page()
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Vineet Gupta <vgupta@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-snps-arc@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, May 15, 2023 at 11:14 AM Baoquan He <bhe@redhat.com> wrote:
-> Let's use '#define ioremap_xx' and "#ifdef ioremap_xx" instead.
->
-> For each architecture to remove defined ARCH_HAS_IOREMAP_xx macros in
-> To remove defined ARCH_HAS_IOREMAP_xx macros in <asm/io.h> of each ARCH,
-> the ARCH's own ioremap_wc|wt|np definition need be above
-> "#include <asm-generic/iomap.h>. Otherwise the redefinition error would
-> be seen during compiling. So the relevant adjustments are made to avoid
-> compiling error:
->
->   loongarch:
->   - doesn't include <asm-generic/iomap.h>, defining ARCH_HAS_IOREMAP_WC
->     is redundant, so simply remove it.
->
->   m68k:
->   - selected GENERIC_IOMAP, <asm-generic/iomap.h> has been added in
->     <asm-generic/io.h>, and <asm/kmap.h> is included above
->     <asm-generic/iomap.h>, so simply remove ARCH_HAS_IOREMAP_WT defining.
->
->   mips:
->   - move "#include <asm-generic/iomap.h>" below ioremap_wc definition
->     in <asm/io.h>
->
->   powerpc:
->   - remove "#include <asm-generic/iomap.h>" in <asm/io.h> because it's
->     duplicated with the one in <asm-generic/io.h>, let's rely on the
->     latter.
->
->   x86:
->   - selected GENERIC_IOMAP, remove #include <asm-generic/iomap.h> in
->     the middle of <asm/io.h>. Let's rely on <asm-generic/io.h>.
->
-> Signed-off-by: Baoquan He <bhe@redhat.com>
+On Fri, May 12, 2023 at 12:26=E2=80=AFPM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
 
->  arch/m68k/include/asm/io_mm.h       | 2 --
->  arch/m68k/include/asm/kmap.h        | 2 --
+> Much simpler to drop the cast in __pte_page() instead:
+>
+> @@ -91,7 +91,7 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newp=
+rot)
+>  #define pmd_set(pmdp,ptep) do {} while (0)
+>
+>  #define __pte_page(pte) \
+> -((unsigned long) __va ((pte_val (pte) & SUN3_PAGE_PGNUM_MASK) << PAGE_SH=
+IFT))
+> +        (__va ((pte_val (pte) & SUN3_PAGE_PGNUM_MASK) << PAGE_SHIFT))
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Thanks, folded this into the patch!
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Yours,
+Linus Walleij
