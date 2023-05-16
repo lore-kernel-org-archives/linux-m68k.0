@@ -2,87 +2,111 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48D1DC77B7A
-	for <linux-m68k@archiver.kernel.org>; Tue, 16 May 2023 07:11:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E981C77B75
+	for <linux-m68k@archiver.kernel.org>; Tue, 16 May 2023 07:15:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbjEPHLE convert rfc822-to-8bit (ORCPT
+        id S231222AbjEPHPw convert rfc822-to-8bit (ORCPT
         <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 16 May 2023 03:11:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44728 "EHLO
+        Tue, 16 May 2023 03:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230491AbjEPHLD (ORCPT
+        with ESMTP id S231253AbjEPHPf (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 16 May 2023 03:11:03 -0400
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF7A910FE
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 May 2023 00:11:01 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-55a26b46003so202814007b3.1
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 May 2023 00:11:01 -0700 (PDT)
+        Tue, 16 May 2023 03:15:35 -0400
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C68B935AD
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 May 2023 00:15:23 -0700 (PDT)
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-76c73f7443dso513481839f.0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 May 2023 00:15:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684221061; x=1686813061;
+        d=1e100.net; s=20221208; t=1684221323; x=1686813323;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JLKEBtcsn7izVRwefw1phNZul3WTWfMY8k8wmlvyiKA=;
-        b=YqvuIEpJQzSSH3vJRa3bdSc/yz5DP+Nlb4RQ3X7BD1e6sN2ixw1KDjLmmVkMzJ2gTM
-         8c3MmpTD1hJTy5lqveaxeJKctfBVSP6lqynfPJbHYikxfTHxSsskuO0tphb8yvEpVZFL
-         +wRPbZrrb5KyA22jkpM0owuY1YGq/cEMRm4QSE+hqVARwaeIShTjdDInB20AgY//h1um
-         5ayW9OuOEE2XTZdtRDWVIqm1i4GlN1jWFh2sIlm2YKQShuozXDGZddmT0GMPghhwO3hf
-         lRy7bCK0ka7+Tm/PqwZwbxQ0mpuymJT0EnJiqx4ageUsDQZNHsJ3xhz7Q4ieZ7J0LpWv
-         iyyw==
-X-Gm-Message-State: AC+VfDx4B/uiEh51aRbDYR3nL3p/iIIepoG2PlomQHdVqq/h3rbcx0kf
-        SbOJGTXhEvhgOduCw60rfzbBzZxq7l9P7w==
-X-Google-Smtp-Source: ACHHUZ4yNMIGKna4EzGCoM/xiUSTpeFL8Tc283LG4El+aSSJdQb+YvnL/I9A35vEIRY/sq8Qm1+kcA==
-X-Received: by 2002:a81:c312:0:b0:559:d103:d5c8 with SMTP id r18-20020a81c312000000b00559d103d5c8mr32833725ywk.31.1684221060786;
-        Tue, 16 May 2023 00:11:00 -0700 (PDT)
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
-        by smtp.gmail.com with ESMTPSA id c185-20020a0df3c2000000b00559f03541c6sm397566ywf.132.2023.05.16.00.11.00
+        bh=iTQjfNfGsMfbyHJYnY/d7iucXXNLZgToVmLQABWZsBQ=;
+        b=WwWOPiOy34KOTnBH4pqLJC1SCpOv6H+RYuz2kxbp2HL6Bf4lEyVZgMILm8NPnHNqc8
+         6GP1xYfbJ1expoV2XIUn2LW/CoQnhKwJ4kklc1M4RK3penstyYvYRDifjfqgPkjfSZlM
+         jbGbVTybyb88JtbzF+fxjnF3EZrt+cTA8pQV5qC8DNCLjCBPMAAZ7xiAgDBKi31DvdNY
+         8X3Lr/mdxygkwes4Wrs/C3pJJWrtwKpWYEIDEsWsOzF0R6gKXlTOlOdu+F7CH8ujq7Zr
+         mq+bjIlAB8i83RPqULhXPnlZp4rUt+vZfWg4ZP5rMUc9ZSGHCxygGMSi5zIIFyyXfpxa
+         WPtQ==
+X-Gm-Message-State: AC+VfDyfkxGkayqEj7/vYL3GCCYGGslXd8WcALvvSTO9cx65xLSUKcBr
+        gADAztxLFzqapbjNDc7LnVek7lR8Z/JF9A==
+X-Google-Smtp-Source: ACHHUZ4Uy2Jnl3zu/1KFDIHG8grxfwfv+dEbCFHJDweNHgMy85TOWgpcfYiWx7gxBV70yMqJ4Y9Cqg==
+X-Received: by 2002:a05:6602:42c2:b0:76c:69a0:664e with SMTP id ce2-20020a05660242c200b0076c69a0664emr1491732iob.13.1684221322490;
+        Tue, 16 May 2023 00:15:22 -0700 (PDT)
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com. [209.85.166.52])
+        by smtp.gmail.com with ESMTPSA id w18-20020a029692000000b0040fb0b1b317sm7458027jai.5.2023.05.16.00.15.21
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 May 2023 00:11:00 -0700 (PDT)
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-ba827a34ba8so350054276.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 May 2023 00:11:00 -0700 (PDT)
-X-Received: by 2002:a05:6902:18d6:b0:ba7:b446:f5a4 with SMTP id
- ck22-20020a05690218d600b00ba7b446f5a4mr6935547ybb.8.1684221059889; Tue, 16
- May 2023 00:10:59 -0700 (PDT)
+        Tue, 16 May 2023 00:15:22 -0700 (PDT)
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-76c636b6306so603027839f.3
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 May 2023 00:15:21 -0700 (PDT)
+X-Received: by 2002:a25:1c6:0:b0:ba7:dcad:9b6 with SMTP id 189-20020a2501c6000000b00ba7dcad09b6mr4131622ybb.40.1684220883815;
+ Tue, 16 May 2023 00:08:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <71ed7fb234a5f7381a50253b0d841a656d53e64c.1684200125.git.fthain@linux-m68k.org>
-In-Reply-To: <71ed7fb234a5f7381a50253b0d841a656d53e64c.1684200125.git.fthain@linux-m68k.org>
+References: <20230515090848.833045-1-bhe@redhat.com> <20230515090848.833045-2-bhe@redhat.com>
+In-Reply-To: <20230515090848.833045-2-bhe@redhat.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 16 May 2023 09:10:47 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVi_vtqCD9QA-WqTya=GyPvXg0Ey3sTywcRy0HKCutHAg@mail.gmail.com>
-Message-ID: <CAMuHMdVi_vtqCD9QA-WqTya=GyPvXg0Ey3sTywcRy0HKCutHAg@mail.gmail.com>
-Subject: Re: [PATCH v5] nubus: Don't list slot resources by default
-To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     Brad Boyer <flar@allandria.com>, linux-m68k@lists.linux-m68k.org,
-        linux-kernel@vger.kernel.org
+Date:   Tue, 16 May 2023 09:07:52 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdU-bL-khVUN59ku1GwV6i4OC3O9AU1GQU2hfGn+JrsBXg@mail.gmail.com>
+Message-ID: <CAMuHMdU-bL-khVUN59ku1GwV6i4OC3O9AU1GQU2hfGn+JrsBXg@mail.gmail.com>
+Subject: Re: [PATCH v5 RESEND 01/17] asm-generic/iomap.h: remove
+ ARCH_HAS_IOREMAP_xx macros
+To:     Baoquan He <bhe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, arnd@arndb.de, christophe.leroy@csgroup.eu,
+        hch@infradead.org, agordeev@linux.ibm.com,
+        wangkefeng.wang@huawei.com, schnelle@linux.ibm.com,
+        David.Laight@aculab.com, shorne@gmail.com, willy@infradead.org,
+        deller@gmx.de, loongarch@lists.linux.dev,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
+        netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, May 16, 2023 at 4:05 AM Finn Thain <fthain@linux-m68k.org> wrote:
-> Some Nubus card ROMs contain many slot resources. A single Radius video
-> card produced well over a thousand entries under /proc/bus/nubus/.
-> Populating /proc/bus/nubus/ on a slow machine with several such cards
-> installed takes long enough that the user may think that the system is
-> wedged. All those procfs entries also consume significant RAM though
-> they are not normally needed (except by developers).
-> Omit these resources from /proc/bus/nubus/ by default and add a kernel
-> parameter to enable them when needed.
-> On the test machine, this saved 300 kB and 10 seconds.
+On Mon, May 15, 2023 at 11:14 AM Baoquan He <bhe@redhat.com> wrote:
+> Let's use '#define ioremap_xx' and "#ifdef ioremap_xx" instead.
 >
-> Cc: Brad Boyer <flar@allandria.com>
-> Reviewed-by: Brad Boyer <flar@allandria.com>
-> Tested-by: Stan Johnson <userm57@yahoo.com>
-> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
-> ---
-> Changed since v4:
->  - Renamed the new global variable and adopted module_param_named().
+> For each architecture to remove defined ARCH_HAS_IOREMAP_xx macros in
+> To remove defined ARCH_HAS_IOREMAP_xx macros in <asm/io.h> of each ARCH,
+> the ARCH's own ioremap_wc|wt|np definition need be above
+> "#include <asm-generic/iomap.h>. Otherwise the redefinition error would
+> be seen during compiling. So the relevant adjustments are made to avoid
+> compiling error:
+>
+>   loongarch:
+>   - doesn't include <asm-generic/iomap.h>, defining ARCH_HAS_IOREMAP_WC
+>     is redundant, so simply remove it.
+>
+>   m68k:
+>   - selected GENERIC_IOMAP, <asm-generic/iomap.h> has been added in
+>     <asm-generic/io.h>, and <asm/kmap.h> is included above
+>     <asm-generic/iomap.h>, so simply remove ARCH_HAS_IOREMAP_WT defining.
+>
+>   mips:
+>   - move "#include <asm-generic/iomap.h>" below ioremap_wc definition
+>     in <asm/io.h>
+>
+>   powerpc:
+>   - remove "#include <asm-generic/iomap.h>" in <asm/io.h> because it's
+>     duplicated with the one in <asm-generic/io.h>, let's rely on the
+>     latter.
+>
+>   x86:
+>   - selected GENERIC_IOMAP, remove #include <asm-generic/iomap.h> in
+>     the middle of <asm/io.h>. Let's rely on <asm-generic/io.h>.
+>
+> Signed-off-by: Baoquan He <bhe@redhat.com>
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v6.5 branch.
+>  arch/m68k/include/asm/io_mm.h       | 2 --
+>  arch/m68k/include/asm/kmap.h        | 2 --
+
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
 Gr{oetje,eeting}s,
 
