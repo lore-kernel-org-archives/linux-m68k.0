@@ -2,179 +2,290 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A0B8C7EE22
-	for <linux-m68k@archiver.kernel.org>; Tue, 16 May 2023 02:05:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7757C77B75
+	for <linux-m68k@archiver.kernel.org>; Tue, 16 May 2023 02:47:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229493AbjEPCFa (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 15 May 2023 22:05:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39196 "EHLO
+        id S229733AbjEPCrz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 15 May 2023 22:47:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbjEPCF3 (ORCPT
+        with ESMTP id S229607AbjEPCry (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 15 May 2023 22:05:29 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 080271FF7
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 May 2023 19:05:19 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 96E803200940;
-        Mon, 15 May 2023 22:05:16 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 15 May 2023 22:05:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:message-id:reply-to:sender
-        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm1; t=1684202716; x=1684289116; bh=P
-        qWseRi4Tns2PYqazeOuCibUdRUG/l2L3N/mjf1o2KI=; b=SEcz18ITCdTYmdjBQ
-        UtOMJKh0Vhq668hZYn6zunWRmdSCsar9z2SfEgwtF+f5lF+/ABDnlQTFa9XhgzP3
-        Z2N3hwEnOWmKoCJ9sxXgv27Kq7mZnqsjxq7S4Kb42e/uquy0IpAHphjPSPKXkljz
-        objaBsnWD2/LwdZq7AHxeYMcOiEC+eBM9F1sMKLC+NfUlxzlMErbcrY0G63mc4bw
-        y7lPG6w+bmFec+9oyKrhlezVupHiMMn24yNLLwNfBSA98Np/nqqVZH2Qns7JR8yP
-        fpf4EOtxLV3mWQz4jejfBno0J3KqLVqIEzmx18KTzgnGEIE9D4dKszL589aBBoAi
-        QNfnA==
-X-ME-Sender: <xms:2-RiZByCg-kXG9xwI2sCKW7kuGGt8TYkVxXjnKiCtnDH1rMSjbh-iA>
-    <xme:2-RiZBSqqRXlUFdY2ZZl4hJqahb33eUhG5E2mQqwIX7QrmI-aSCdfQ5gJ5Gpe5iKQ
-    Ljp361jzfi1X41BYY4>
-X-ME-Received: <xmr:2-RiZLW628FVvPRF5XNu9Zd7I6Ykk5qFnf2O7tQF9ZG97gaA3Gly1Q9RREjZrkH5ew_uS0OyUmHtNb63twB7oEK4jVz4ZKLysfI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeehkedgheegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepvfevkffhufffsedttdertddttddtnecuhfhrohhmpefhihhnnhcuvfhhrghi
-    nhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtthgvrh
-    hnpeehfffggeefveegvedtiefffeevuedtgefhueehieetffejfefggeevfeeuvdduleen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrg
-    hinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:2-RiZDiJDE4Qxb8RLOSqyREB5ndCUGHM83woNMu37TK3Ka19fhk_Ow>
-    <xmx:2-RiZDCBgsoAfDuNASlH4gxQklRFmWoPbzzTfyCr_YZb-Y1qtTst2A>
-    <xmx:2-RiZMK9yLIp-BGOcWi4XYlynkmyLK4SgXy4XsfYz_MgDrEwTe76Sw>
-    <xmx:3ORiZI6DRpE1Gc2m2h3B6qa8XHfIAy_Wu-1P8_wacjKulxmiWkRABw>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 15 May 2023 22:05:13 -0400 (EDT)
+        Mon, 15 May 2023 22:47:54 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4B0E48
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 May 2023 19:47:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1684205272; x=1715741272;
+  h=date:from:to:cc:subject:message-id;
+  bh=f2Co/bwhSvleZZg5ABlNo8eNKxx/pwaQoOuvSDJs5MA=;
+  b=LHq9o/rOOCwxe+GpjZ91+ISzjTA1+8dYrTFcJ33XpkuUn+e608mp2ffx
+   zFh6Q4g15RSE0hsjEqSRWmM/rKKRPLJ/fM95R7TOZWZu5BG+oP5QUy/nd
+   B1RuPjqvGckxC1z4uePMFpLC5JiRZjNMsAWH/Q3VeAQPtU3bfJvgMNmXD
+   PaALplx+rKzHEdSRwJa/TGjm5RIYTSzFW0VWfK96zbsx92N34S0mprUfd
+   q1QG2YRsTuJDob5oomek52kHFJqiUXjPxSGL6SwPCE4NK0ZEinS8QAPIK
+   cpY79gpNZPArlSYvOZr3s81/du6yl+wCc2mKXEWXCXdW0b7VelJQ2Focf
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10711"; a="350201451"
+X-IronPort-AV: E=Sophos;i="5.99,277,1677571200"; 
+   d="scan'208";a="350201451"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2023 19:47:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10711"; a="695265325"
+X-IronPort-AV: E=Sophos;i="5.99,277,1677571200"; 
+   d="scan'208";a="695265325"
+Received: from lkp-server01.sh.intel.com (HELO dea6d5a4f140) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 15 May 2023 19:47:50 -0700
+Received: from kbuild by dea6d5a4f140 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1pykj7-0006tw-3D;
+        Tue, 16 May 2023 02:47:49 +0000
+Date:   Tue, 16 May 2023 10:47:41 +0800
+From:   kernel test robot <lkp@intel.com>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "Brad Boyer" <flar@allandria.com>, linux-m68k@lists.linux-m68k.org,
-        linux-kernel@vger.kernel.org
-Message-Id: <71ed7fb234a5f7381a50253b0d841a656d53e64c.1684200125.git.fthain@linux-m68k.org>
-From:   Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH v5] nubus: Don't list slot resources by default
-Date:   Tue, 16 May 2023 11:22:05 +1000
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:for-v6.5] BUILD SUCCESS
+ 4decdb267a4712b4cb56f9bd8cdcd6d9af1c3352
+Message-ID: <20230516024741.Koxwz%lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Some Nubus card ROMs contain many slot resources. A single Radius video
-card produced well over a thousand entries under /proc/bus/nubus/.
-Populating /proc/bus/nubus/ on a slow machine with several such cards
-installed takes long enough that the user may think that the system is
-wedged. All those procfs entries also consume significant RAM though
-they are not normally needed (except by developers).
-Omit these resources from /proc/bus/nubus/ by default and add a kernel
-parameter to enable them when needed.
-On the test machine, this saved 300 kB and 10 seconds.
+tree/branch: INFO setup_repo_specs: /db/releases/20230516094411/lkp-src/repo/*/geert-m68k
+https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-v6.5
+branch HEAD: 4decdb267a4712b4cb56f9bd8cdcd6d9af1c3352  nubus: Remove proc entries before adding them
 
-Cc: Brad Boyer <flar@allandria.com>
-Reviewed-by: Brad Boyer <flar@allandria.com>
-Tested-by: Stan Johnson <userm57@yahoo.com>
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
----
-Changed since v4:
- - Renamed the new global variable and adopted module_param_named().
-Changed since v3:
- - Better commentary.
-Changed since v2:
- - Added commentary.
- - Moved declaration to nubus.h.
-Changed since v1:
- - Expanded to cover all slot resources in procfs.
----
- drivers/nubus/nubus.c | 13 ++++++++++---
- drivers/nubus/proc.c  |  8 ++++----
- include/linux/nubus.h |  1 +
- 3 files changed, 15 insertions(+), 7 deletions(-)
+elapsed time: 931m
 
-diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
-index f70ba58dbc55..ab0f32b901c8 100644
---- a/drivers/nubus/nubus.c
-+++ b/drivers/nubus/nubus.c
-@@ -32,6 +32,13 @@
- 
- /* Globals */
- 
-+/* The "nubus.populate_procfs" parameter makes slot resources available in
-+ * procfs. It's deprecated and disabled by default because procfs is no longer
-+ * thought to be suitable for that and some board ROMs make it too expensive.
-+ */
-+bool nubus_populate_procfs;
-+module_param_named(populate_procfs, nubus_populate_procfs, bool, 0);
-+
- LIST_HEAD(nubus_func_rsrcs);
- 
- /* Meaning of "bytelanes":
-@@ -572,9 +579,9 @@ nubus_get_functional_resource(struct nubus_board *board, int slot,
- 			nubus_proc_add_rsrc(dir.procdir, &ent);
- 			break;
- 		default:
--			/* Local/Private resources have their own
--			   function */
--			nubus_get_private_resource(fres, dir.procdir, &ent);
-+			if (nubus_populate_procfs)
-+				nubus_get_private_resource(fres, dir.procdir,
-+							   &ent);
- 		}
- 	}
- 
-diff --git a/drivers/nubus/proc.c b/drivers/nubus/proc.c
-index 2c320a84fd72..e7a347db708c 100644
---- a/drivers/nubus/proc.c
-+++ b/drivers/nubus/proc.c
-@@ -55,7 +55,7 @@ struct proc_dir_entry *nubus_proc_add_board(struct nubus_board *board)
- {
- 	char name[2];
- 
--	if (!proc_bus_nubus_dir)
-+	if (!proc_bus_nubus_dir || !nubus_populate_procfs)
- 		return NULL;
- 	snprintf(name, sizeof(name), "%x", board->slot);
- 	return proc_mkdir(name, proc_bus_nubus_dir);
-@@ -72,7 +72,7 @@ struct proc_dir_entry *nubus_proc_add_rsrc_dir(struct proc_dir_entry *procdir,
- 	char name[9];
- 	int lanes = board->lanes;
- 
--	if (!procdir)
-+	if (!procdir || !nubus_populate_procfs)
- 		return NULL;
- 	snprintf(name, sizeof(name), "%x", ent->type);
- 	remove_proc_subtree(name, procdir);
-@@ -157,7 +157,7 @@ void nubus_proc_add_rsrc_mem(struct proc_dir_entry *procdir,
- 	char name[9];
- 	struct nubus_proc_pde_data *pded;
- 
--	if (!procdir)
-+	if (!procdir || !nubus_populate_procfs)
- 		return;
- 
- 	snprintf(name, sizeof(name), "%x", ent->type);
-@@ -176,7 +176,7 @@ void nubus_proc_add_rsrc(struct proc_dir_entry *procdir,
- 	char name[9];
- 	unsigned char *data = (unsigned char *)ent->data;
- 
--	if (!procdir)
-+	if (!procdir || !nubus_populate_procfs)
- 		return;
- 
- 	snprintf(name, sizeof(name), "%x", ent->type);
-diff --git a/include/linux/nubus.h b/include/linux/nubus.h
-index 392fc6c53e96..bdcd85e622d8 100644
---- a/include/linux/nubus.h
-+++ b/include/linux/nubus.h
-@@ -93,6 +93,7 @@ extern struct bus_type nubus_bus_type;
- 
- /* Generic NuBus interface functions, modelled after the PCI interface */
- #ifdef CONFIG_PROC_FS
-+extern bool nubus_populate_procfs;
- void nubus_proc_init(void);
- struct proc_dir_entry *nubus_proc_add_board(struct nubus_board *board);
- struct proc_dir_entry *nubus_proc_add_rsrc_dir(struct proc_dir_entry *procdir,
+configs tested: 218
+configs skipped: 10
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha        buildonly-randconfig-r003-20230515   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r004-20230515   gcc  
+alpha                randconfig-r033-20230515   gcc  
+alpha                randconfig-r034-20230515   gcc  
+arc                              allyesconfig   gcc  
+arc          buildonly-randconfig-r003-20230515   gcc  
+arc                                 defconfig   gcc  
+arc                     nsimosci_hs_defconfig   gcc  
+arc                  randconfig-r001-20230515   gcc  
+arc                  randconfig-r023-20230515   gcc  
+arc                  randconfig-r043-20230515   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                         axm55xx_defconfig   gcc  
+arm                                 defconfig   gcc  
+arm                           imxrt_defconfig   gcc  
+arm                  randconfig-r002-20230515   gcc  
+arm                  randconfig-r004-20230515   gcc  
+arm                  randconfig-r046-20230515   clang
+arm                       versatile_defconfig   clang
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r011-20230515   gcc  
+arm64                randconfig-r014-20230515   gcc  
+arm64                randconfig-r015-20230515   gcc  
+arm64                randconfig-r022-20230515   gcc  
+csky         buildonly-randconfig-r001-20230515   gcc  
+csky         buildonly-randconfig-r002-20230515   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r011-20230515   gcc  
+csky                 randconfig-r022-20230515   gcc  
+csky                 randconfig-r031-20230515   gcc  
+hexagon              randconfig-r006-20230515   clang
+hexagon              randconfig-r041-20230515   clang
+hexagon              randconfig-r045-20230515   clang
+i386                             allyesconfig   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-a001-20230515   clang
+i386                 randconfig-a002-20230515   clang
+i386                 randconfig-a003-20230515   clang
+i386                 randconfig-a004-20230515   clang
+i386                 randconfig-a005-20230515   clang
+i386                 randconfig-a006-20230515   clang
+i386                 randconfig-a011-20230515   gcc  
+i386                 randconfig-a012-20230515   gcc  
+i386                 randconfig-a013-20230515   gcc  
+i386                 randconfig-a014-20230515   gcc  
+i386                 randconfig-a015-20230515   gcc  
+i386                 randconfig-a016-20230515   gcc  
+i386                 randconfig-i051-20230515   clang
+i386                 randconfig-i052-20230515   clang
+i386                 randconfig-i053-20230515   clang
+i386                 randconfig-i054-20230515   clang
+i386                 randconfig-i055-20230515   clang
+i386                 randconfig-i056-20230515   clang
+i386                 randconfig-i061-20230515   clang
+i386                 randconfig-i062-20230515   clang
+i386                 randconfig-i063-20230515   clang
+i386                 randconfig-i064-20230515   clang
+i386                 randconfig-i065-20230515   clang
+i386                 randconfig-i066-20230515   clang
+i386                 randconfig-i071-20230515   gcc  
+i386                          randconfig-i071   clang
+i386                 randconfig-i072-20230515   gcc  
+i386                 randconfig-i073-20230515   gcc  
+i386                          randconfig-i073   clang
+i386                 randconfig-i074-20230515   gcc  
+i386                 randconfig-i075-20230515   gcc  
+i386                          randconfig-i075   clang
+i386                 randconfig-i076-20230515   gcc  
+i386                 randconfig-i081-20230515   gcc  
+i386                 randconfig-i082-20230515   gcc  
+i386                 randconfig-i083-20230515   gcc  
+i386                 randconfig-i084-20230515   gcc  
+i386                 randconfig-i085-20230515   gcc  
+i386                 randconfig-i086-20230515   gcc  
+i386                 randconfig-i091-20230515   clang
+i386                 randconfig-i092-20230515   clang
+i386                 randconfig-i093-20230515   clang
+i386                 randconfig-i094-20230515   clang
+i386                 randconfig-i095-20230515   clang
+i386                 randconfig-i096-20230515   clang
+i386                 randconfig-r006-20230515   clang
+i386                 randconfig-r014-20230515   gcc  
+i386                 randconfig-r016-20230515   gcc  
+ia64                             allmodconfig   gcc  
+ia64         buildonly-randconfig-r004-20230515   gcc  
+ia64                                defconfig   gcc  
+ia64                 randconfig-r005-20230515   gcc  
+ia64                 randconfig-r013-20230515   gcc  
+ia64                 randconfig-r032-20230515   gcc  
+loongarch                        alldefconfig   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r016-20230515   gcc  
+m68k                             allmodconfig   gcc  
+m68k         buildonly-randconfig-r001-20230515   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r005-20230515   gcc  
+m68k                 randconfig-r014-20230515   gcc  
+m68k                 randconfig-r016-20230515   gcc  
+m68k                 randconfig-r034-20230515   gcc  
+microblaze           randconfig-r012-20230515   gcc  
+microblaze           randconfig-r026-20230515   gcc  
+microblaze           randconfig-r036-20230515   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                       bmips_be_defconfig   gcc  
+mips         buildonly-randconfig-r005-20230515   gcc  
+mips                 randconfig-r006-20230515   gcc  
+mips                 randconfig-r035-20230515   gcc  
+mips                           rs90_defconfig   clang
+nios2                               defconfig   gcc  
+nios2                randconfig-r023-20230515   gcc  
+nios2                randconfig-r026-20230515   gcc  
+nios2                randconfig-r033-20230515   gcc  
+openrisc     buildonly-randconfig-r006-20230515   gcc  
+openrisc             randconfig-r015-20230515   gcc  
+openrisc             randconfig-r036-20230515   gcc  
+parisc       buildonly-randconfig-r005-20230515   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r003-20230515   gcc  
+parisc               randconfig-r015-20230515   gcc  
+parisc               randconfig-r021-20230515   gcc  
+parisc               randconfig-r023-20230515   gcc  
+parisc               randconfig-r024-20230515   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                        fsp2_defconfig   clang
+powerpc                   microwatt_defconfig   clang
+powerpc              randconfig-r025-20230515   gcc  
+powerpc                     tqm8560_defconfig   clang
+powerpc                      tqm8xx_defconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv        buildonly-randconfig-r001-20230515   gcc  
+riscv        buildonly-randconfig-r006-20230515   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r004-20230515   clang
+riscv                randconfig-r012-20230515   gcc  
+riscv                randconfig-r013-20230515   gcc  
+riscv                randconfig-r031-20230515   clang
+riscv                randconfig-r042-20230515   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390         buildonly-randconfig-r003-20230515   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r044-20230515   gcc  
+sh                               allmodconfig   gcc  
+sh           buildonly-randconfig-r002-20230515   gcc  
+sh                   randconfig-r001-20230515   gcc  
+sh                   randconfig-r033-20230515   gcc  
+sparc        buildonly-randconfig-r004-20230515   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r025-20230515   gcc  
+sparc                randconfig-r032-20230515   gcc  
+sparc                randconfig-r034-20230515   gcc  
+sparc64              randconfig-r024-20230515   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-a001-20230515   clang
+x86_64               randconfig-a002-20230515   clang
+x86_64               randconfig-a003-20230515   clang
+x86_64               randconfig-a004-20230515   clang
+x86_64               randconfig-a005-20230515   clang
+x86_64               randconfig-a006-20230515   clang
+x86_64               randconfig-a011-20230515   gcc  
+x86_64               randconfig-a012-20230515   gcc  
+x86_64               randconfig-a013-20230515   gcc  
+x86_64               randconfig-a014-20230515   gcc  
+x86_64               randconfig-a015-20230515   gcc  
+x86_64               randconfig-a016-20230515   gcc  
+x86_64               randconfig-k001-20230515   gcc  
+x86_64               randconfig-x051-20230515   gcc  
+x86_64               randconfig-x052-20230515   gcc  
+x86_64               randconfig-x053-20230515   gcc  
+x86_64               randconfig-x054-20230515   gcc  
+x86_64               randconfig-x055-20230515   gcc  
+x86_64               randconfig-x056-20230515   gcc  
+x86_64               randconfig-x061-20230515   gcc  
+x86_64               randconfig-x062-20230515   gcc  
+x86_64               randconfig-x063-20230515   gcc  
+x86_64               randconfig-x064-20230515   gcc  
+x86_64               randconfig-x065-20230515   gcc  
+x86_64               randconfig-x066-20230515   gcc  
+x86_64               randconfig-x071-20230515   clang
+x86_64               randconfig-x072-20230515   clang
+x86_64               randconfig-x073-20230515   clang
+x86_64               randconfig-x074-20230515   clang
+x86_64               randconfig-x075-20230515   clang
+x86_64               randconfig-x076-20230515   clang
+x86_64               randconfig-x081-20230515   clang
+x86_64               randconfig-x082-20230515   clang
+x86_64               randconfig-x083-20230515   clang
+x86_64               randconfig-x084-20230515   clang
+x86_64               randconfig-x085-20230515   clang
+x86_64               randconfig-x086-20230515   clang
+x86_64               randconfig-x091-20230515   gcc  
+x86_64               randconfig-x092-20230515   gcc  
+x86_64               randconfig-x093-20230515   gcc  
+x86_64               randconfig-x094-20230515   gcc  
+x86_64               randconfig-x095-20230515   gcc  
+x86_64               randconfig-x096-20230515   gcc  
+x86_64                               rhel-8.3   gcc  
+xtensa       buildonly-randconfig-r006-20230515   gcc  
+xtensa               randconfig-r003-20230515   gcc  
+xtensa               randconfig-r025-20230515   gcc  
+xtensa               randconfig-r026-20230515   gcc  
+
 -- 
-2.37.5
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
