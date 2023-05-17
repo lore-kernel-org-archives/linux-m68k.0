@@ -2,130 +2,157 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C507C77B7A
-	for <linux-m68k@archiver.kernel.org>; Wed, 17 May 2023 11:29:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AB7BC77B7F
+	for <linux-m68k@archiver.kernel.org>; Wed, 17 May 2023 14:01:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbjEQL3S (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 17 May 2023 07:29:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46860 "EHLO
+        id S230213AbjEQOBF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 17 May 2023 10:01:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231190AbjEQL3R (ORCPT
+        with ESMTP id S230082AbjEQOBF (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 17 May 2023 07:29:17 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD0030D1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 17 May 2023 04:29:16 -0700 (PDT)
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34HB7BJC023902;
-        Wed, 17 May 2023 11:28:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=NDNDo483NWCxuBgC62EmEkRd88RyM/bkMdaCrqWiEjU=;
- b=VRtGkAflt6Ne1p93gyowlWX7j5boLIQ7h0nC9VIo7uX3bwTrUs3t4FOkk1lJTYXqc25V
- 9FamFmiSWFwwyWa1DKrOu9DcxLjGAv2i0jSAymPQgGQf5P0M1OluYrFgT26OhkCmT/su
- BOKQtACZlOM4qdl7albr+SCOM7HzolGHsX5OPk132gsH5r9G7psINiKU8nGXVgkrlm0G
- JFTSinpEe96JQbyAanKB2Lfpy9cfYcMtNW6I0KolKOl1iMwgb7HevQZDAfJyxXafubsX
- 7gBNmSwaGFu7ct5RonhF3KWLIHQEwZVWECGZeI9L5VSTs6GPXqMDDHdOU4895qB3OFQc 4w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3qmw5v1gq1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 May 2023 11:28:14 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 34HB7Pi6025529;
-        Wed, 17 May 2023 11:28:13 GMT
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3qmw5v1gn6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 May 2023 11:28:12 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 34H2RRIs022653;
-        Wed, 17 May 2023 11:28:09 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma03ams.nl.ibm.com (PPS) with ESMTPS id 3qj264t4u2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 May 2023 11:28:09 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 34HBS6QC63177030
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 May 2023 11:28:06 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 203902004B;
-        Wed, 17 May 2023 11:28:06 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0CE9620040;
-        Wed, 17 May 2023 11:28:05 +0000 (GMT)
-Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.155.204.135])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Wed, 17 May 2023 11:28:04 +0000 (GMT)
-Date:   Wed, 17 May 2023 13:28:03 +0200
-From:   Alexander Gordeev <agordeev@linux.ibm.com>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
+        Wed, 17 May 2023 10:01:05 -0400
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2086.outbound.protection.outlook.com [40.107.212.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CBD130D1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 17 May 2023 07:01:01 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KFozFO8g7Iug0KCS/fpmf3IL+FpOPqofdw4GkBHKxw/D6Hx6JXrAQYVbt03Tbp+STF7luA0GLaXAhurvykC7MSPA/N9wO6OEr+wIil8virwleaVJgtG5FYWZrbrE+ztJV/swjUKmDhKZdkc/teo2BClNEfyIIAoB44llWtKxpTKib6j/t9aqWKwo4ENX8VsqWsAilemwjSetTMGoBH7zoiN1wJla25PKSJVeY6cMWbi5yb76gL9pu9PINtq85+SCJgTM1BtFrZ7yRZVqvin8I5NLde9PuiSLnnWWLansZ8W0QWc6ZKdEQpmwiSp1bVGI/EVGmuGAdBKNNywdTSNakQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pcTr+4OjYS1N+4DTCyOhmvbpaVciTbnoVinbIPFl/r4=;
+ b=GNAHSWXJEJWJYz4SG541pJnCBwgwJDfg+bESbQmHAhHEG5LZiOD1YM6x4dV/ZGLRU050dGlaQX9N3anPLObci6IeeL775UNtBGcBnAn1Nwb2uVA4QYMxT7I/ivSza8/0y8tZIYIq/Lz+8zTrr4PTXVNyFAmsUL71IBsnramTrRx4zkt/kNEgfXhtQqlbfV0XvKB8aZf2kY15vwn+3GJ0NAJ18gZQOAUktbkWv+zF8+hilGdMVFwd7bIrDlzfxGdYSsJMqG3Vm1bnL8hoHtBd9jDCQtEEHwGEdBaChlbaSvXdTA62g39HU2gZdmZju0c8Ow1UNzJYoXkQvEwmhrDAfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=talpey.com; dmarc=pass action=none header.from=talpey.com;
+ dkim=pass header.d=talpey.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=talpey.com;
+Received: from SN6PR01MB4445.prod.exchangelabs.com (2603:10b6:805:e2::33) by
+ BN7PR01MB3794.prod.exchangelabs.com (2603:10b6:406:81::25) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6387.33; Wed, 17 May 2023 14:00:55 +0000
+Received: from SN6PR01MB4445.prod.exchangelabs.com
+ ([fe80::ef26:464c:ccdf:ee6b]) by SN6PR01MB4445.prod.exchangelabs.com
+ ([fe80::ef26:464c:ccdf:ee6b%6]) with mapi id 15.20.6387.029; Wed, 17 May 2023
+ 14:00:55 +0000
+Message-ID: <6050b8f6-2cb8-3b1a-5068-cfed7737207d@talpey.com>
+Date:   Wed, 17 May 2023 10:00:52 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 05/12] cifs: Pass a pointer to virt_to_page()
+Content-Language: en-US
+To:     Linus Walleij <linus.walleij@linaro.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Helge Deller <deller@gmx.de>,
-        John David Anglin <dave.anglin@bell.net>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 16/23] s390: gmap use pte_unmap_unlock() not spin_unlock()
-Message-ID: <ZGS6Q9jb/Rjwi4Rm@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-References: <77a5d8c-406b-7068-4f17-23b7ac53bc83@google.com>
- <5579873-d7b-65e-5de0-a2ba8a144e7@google.com>
+        Vineet Gupta <vgupta@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Greg Ungerer <gerg@linux-m68k.org>
+Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-snps-arc@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org
+References: <20230503-virt-to-pfn-v6-4-rc1-v1-0-6c4698dcf9c8@linaro.org>
+ <20230503-virt-to-pfn-v6-4-rc1-v1-5-6c4698dcf9c8@linaro.org>
+From:   Tom Talpey <tom@talpey.com>
+In-Reply-To: <20230503-virt-to-pfn-v6-4-rc1-v1-5-6c4698dcf9c8@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BL1P223CA0011.NAMP223.PROD.OUTLOOK.COM
+ (2603:10b6:208:2c4::16) To SN6PR01MB4445.prod.exchangelabs.com
+ (2603:10b6:805:e2::33)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5579873-d7b-65e-5de0-a2ba8a144e7@google.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: tSWvl9C0MlO4O_EzCFOjF_JcbOB8NztS
-X-Proofpoint-ORIG-GUID: NWm_n_tm0YYcdEmwRmZvkdtWX-DujuzO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-05-17_02,2023-05-17_02,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1011
- spamscore=0 adultscore=0 lowpriorityscore=0 mlxlogscore=780
- priorityscore=1501 mlxscore=0 impostorscore=0 suspectscore=0
- malwarescore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2304280000 definitions=main-2305170090
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR01MB4445:EE_|BN7PR01MB3794:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5a81b45b-99a3-4b01-b7ef-08db56df2227
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lbvm7AxkqnRKHm50B3Vs7rDR3YGd9gc/GePzXX1moa5fg/movmvmJjTCs05S2FXXjK/Z4HBT9vG4CMzlxMafdLtklBE/KoDOA2Iyc5LEoFrngbFMeBbV6tExZ7PdwDQ6K8NQjDHR+9Rpx8NIuIz31SqcstH4VS8GSZCtd4BGxfHIminYHZH+A/ao5nM0iM9/m+WoEYxHjYcWNFdlnKffZ6OjcHRkcrG13+H3TYGTDnxrJjFl+1QRSnnT5hpfZ+u7s/VJMcTWn1iuha4M6BSGj7qq5XMbSvseGzHbiRYRhI6k5qt9eIAZZRnn1MZBIjiPB0lNQ+Y00eyZFUK9LBz/TVqPwVBWYWM0BMT2IcSoPOtxvbX/o0OLIAN4qwIOKHjwPWPMnMvvHA5rnsisjhFIGdc006oAJ9cbLr5G0dQKLVl46dlkYpSn0EXkyM5ChGjY1aceBIjPN/MBYSurSnR0i0fte3N8ePA8uT8Cq1nmdF2t3C/zwvWKwMl3elj41X6rxOEBlSqKkOMYejYELJGyxV1nQGV4jTk28y/bw/WrOdVoDz7dsLVTV61SuSIPlq5W10hC98V7KlDpo44VFb3S7By9L2NAUusoPYJOtKNO9ZNSvl1ff4jcEb7juBqIrL8ItBk6wgaRhBe63XHynb1+KA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR01MB4445.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(376002)(396003)(136003)(366004)(39830400003)(451199021)(5660300002)(8676002)(8936002)(7416002)(2616005)(186003)(6506007)(83380400001)(6512007)(53546011)(26005)(38100700002)(38350700002)(52116002)(478600001)(31696002)(6666004)(110136005)(316002)(6486002)(66476007)(66556008)(41300700001)(66946007)(86362001)(36756003)(4326008)(2906002)(31686004)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?K2I5YnJPNEZMR1RXd1h0ZnZpUHFCL0tXelRtTHlvZ3dWSGlPYnkyZGZPOWdj?=
+ =?utf-8?B?KzVXd25IYUlPSTlHV0d1MUdDU2RrUjN1dFFsWVVnbHBwWERVVkp0eHB1SlBq?=
+ =?utf-8?B?di9oSVRMZ29uYXMxeE1rWTlNK1hDbm9VYmo1Rm1hM2Q1ZDZhS2xYRFRlL3pu?=
+ =?utf-8?B?bXZlK3hRSUlZVDBROE92YnJyYjVpazEvZFlqL1gxUnh3WGsxaSt3clppSWV0?=
+ =?utf-8?B?UXhPdys2bldkZDdEeFdLQlNaMHlzOEFnRnpKZFA0c0k3VzYxYXg3b2k5RGxH?=
+ =?utf-8?B?QlVLVmMwZXRibjFVM0dQTTRIampxYnVhL0J2N2FyZWQ2VExyNFUvTXNwVFF0?=
+ =?utf-8?B?VHRZdzlQN1Q1aEgrNXRMNjYwTjR4TU9yaGdrcVQyeXFMaGNDUDYzdXFXUW8v?=
+ =?utf-8?B?M2JiSnE3ZWRUck96V0tVaHNwditaVHZVaGdRN2pNdTdoaEdPdGl6WUl5Y201?=
+ =?utf-8?B?M1JhZFJCRTQrcUNUM0tCeEJadHFXY0xUU3JhRVdSd3E0YTVrS241Q1lZd3NB?=
+ =?utf-8?B?RG9vNHd3b1IrWXErU2RyWWtSK1pPRlZ0ejhjYmF3Mm5iRG1ERm9NaDJjTkx2?=
+ =?utf-8?B?UWszS0ZyYStsWWxBcU1JVzd1ODVOWnFKVU1EMVR4VEIrRFl0eitLbkhVR2Rw?=
+ =?utf-8?B?Q0crQ3B5c3owemRHdmtjYXlybG5LYVZMRkJxcmtOMXBwZXFwMnNLRnl4NFZF?=
+ =?utf-8?B?L0xqVlpaY1FsWjBjVDdNQ2l0SEdYemd0anRzUUZ0YWxHUVROUEJPZ0xWNXBz?=
+ =?utf-8?B?OEJBdHViUzFEQzYwR21xUS9iSGhTZWJBbEl6bXk2VG1ia3VlYlNKVS9nVi9C?=
+ =?utf-8?B?Vk9SMDNNV2FvNHFWRHY5SHJrR0pORFZXVHVtaFRXai9VS2VncHN5eWVaWmZT?=
+ =?utf-8?B?Q3RWTUpQZUhmV3ZFU0ZGWkUveFlMSW51eHdtWWNENzhwYWM3STMzZnJtcGQ2?=
+ =?utf-8?B?YlVQTHp5TmtDM1B6N05LMEpHTWprR3NRR1FBRStkU1BhNGhDb0JDQjFwWW1D?=
+ =?utf-8?B?aWlLTWMzSzdDeURxYzdjRFV4Snh0dlYyN1B0VW9nUkF1WlNGclpBaWppZFFY?=
+ =?utf-8?B?ZWhlTVE1Q2o2dXFKN3VLYjRKU3gwN1JHRkk1WkJMNzRGSURLM3JPOEE1KzVZ?=
+ =?utf-8?B?eTNOQlBtZUhoSzUvQ2UxOE5ZeGFwc1BGbHI0V010bEtFNkFBS3hqL2MzL1RV?=
+ =?utf-8?B?TzV4am5ONHB6SG5kWFBCaklMZnY0MHJLeVl4WHl0R1NqcXNSQUFsWHBJd3dp?=
+ =?utf-8?B?MzM1ZjFxSTNkbUkrYXBqajN5WDUyS2h1QWZrd0VteWxhblhuMmRmbGJtWTg3?=
+ =?utf-8?B?b01wcEZDZ0t5ZnFTeGdvOXZlMWgyaXV1ZGRVV2MzT1g5Yk1wdFkzeDZSNExF?=
+ =?utf-8?B?KzQyc2FpUXIvN09nRUxjS1RhMnpoWGN1enFBSXM3Y29yM3JlT3dmNGdGWFhO?=
+ =?utf-8?B?eXVYbHdGVWtld0RmU2Z2Q0Nia3RFdVhsMm8wSWlMSHhxZG5wYmdCSFN0WjZn?=
+ =?utf-8?B?U3NrWHBZZGFtUHNYU21ZRmdvRTBlV2VtUE1XakZUdE9GMFJiODhuWCtJN0sx?=
+ =?utf-8?B?bEZPMC82Wll4SWJzb2dBbXlFM3NaRDVEU1QzeFBFbXNKZkVUeSt0T1NsdVN1?=
+ =?utf-8?B?NGUzM2JudVBIMzFzUU84STR4UkdTa3ZtR1FFOWFCMDFDN0xFQkF3S05vQlBl?=
+ =?utf-8?B?TlRlVGRWaGd0SnVpRTVLanc0bnQybkgvakxiQ0N1NjRoejBNS3R2dlY1MVgx?=
+ =?utf-8?B?d0QvM1M4UFNodUY3LzFxZDdIOUtzbkIzVGlRaHhxbVNJdjNUeVJFL0hoKzlO?=
+ =?utf-8?B?aEFVaGZVc252c3J2cU0zU2ZKYUVQUkZZellRNWNQMU1UY0Eycnh6eU1UZHFm?=
+ =?utf-8?B?bGt4cm8va2NzMkhDNzczWTR3SVVGNW5zWkhmS0tyd1pZQUw3eC9SMWcvNW9H?=
+ =?utf-8?B?bGNuMW1uWnlFTkk3Tnlxd0FwajIvT1J1djRIcm1TSjJNZVBWV05SbGxSZWNF?=
+ =?utf-8?B?YmFJYWQ3NXNremYwOEMvR2ZPOWE0K3hTcW5jUUxxWVdiOFdTaFIxUyt1STJl?=
+ =?utf-8?B?a3hwejRrUUEvS0VoZ2lJcjV5YmF0VmJNMzU2Q3dCYjMzeGpBZ2VndTRKbFZj?=
+ =?utf-8?Q?AGRmpbsREZZ4P3W47fx0rDU9G?=
+X-OriginatorOrg: talpey.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a81b45b-99a3-4b01-b7ef-08db56df2227
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR01MB4445.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 May 2023 14:00:55.5740
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 2b2dcae7-2555-4add-bc80-48756da031d5
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wBudqqi/t63Ph2KzBu5BEfWSoeiJatGUeN2uPBgTgpvYLTCST5oPNO50SxPAp7kW
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR01MB3794
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, May 09, 2023 at 10:02:32PM -0700, Hugh Dickins wrote:
-> pte_alloc_map_lock() expects to be followed by pte_unmap_unlock(): to
-> keep balance in future, pass ptep as well as ptl to gmap_pte_op_end(),
-> and use pte_unmap_unlock() instead of direct spin_unlock() (even though
-> ptep ends up unused inside the macro).
+On 5/11/2023 7:59 AM, Linus Walleij wrote:
+> Like the other calls in this function virt_to_page() expects
+> a pointer, not an integer.
 > 
-> Signed-off-by: Hugh Dickins <hughd@google.com>
-> ---
->  arch/s390/mm/gmap.c | 22 +++++++++++-----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
+> However since many architectures implement virt_to_pfn() as
+> a macro, this function becomes polymorphic and accepts both a
+> (unsigned long) and a (void *).
+> 
+> Fix this up with an explicit cast.
+> 
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 
-Acked-by: Alexander Gordeev <agordeev@linux.ibm.com>
+For fs/cifs:
+
+Acked-by: Tom Talpey <tom@talpey.com>
+
+> ---
+>   fs/cifs/smbdirect.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/cifs/smbdirect.c b/fs/cifs/smbdirect.c
+> index 0362ebd4fa0f..964f07375a8d 100644
+> --- a/fs/cifs/smbdirect.c
+> +++ b/fs/cifs/smbdirect.c
+> @@ -2500,7 +2500,7 @@ static ssize_t smb_extract_kvec_to_rdma(struct iov_iter *iter,
+>   			if (is_vmalloc_or_module_addr((void *)kaddr))
+>   				page = vmalloc_to_page((void *)kaddr);
+>   			else
+> -				page = virt_to_page(kaddr);
+> +				page = virt_to_page((void *)kaddr);
+>   
+>   			if (!smb_set_sge(rdma, page, off, seg))
+>   				return -EIO;
+> 
