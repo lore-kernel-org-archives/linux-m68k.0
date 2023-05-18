@@ -2,232 +2,105 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E117C77B75
-	for <linux-m68k@archiver.kernel.org>; Wed, 17 May 2023 21:50:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD810C7EE2D
+	for <linux-m68k@archiver.kernel.org>; Thu, 18 May 2023 12:12:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbjEQVup (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 17 May 2023 17:50:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49254 "EHLO
+        id S231509AbjERMMc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 18 May 2023 08:12:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229773AbjEQVuo (ORCPT
+        with ESMTP id S231556AbjERMMJ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 17 May 2023 17:50:44 -0400
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 494116E9A
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 17 May 2023 14:50:40 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-561d5b34e10so10333457b3.1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 17 May 2023 14:50:40 -0700 (PDT)
+        Thu, 18 May 2023 08:12:09 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 454ACE49
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 18 May 2023 05:12:07 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-75795493bceso106663285a.3
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 18 May 2023 05:12:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1684360239; x=1686952239;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CYrqZZXifWUb49UwqN4ktjCYYTpIiyxjiceM91X1owo=;
-        b=PPBehuovPkLBa6/NGbQAXn/eE0OjqEyROrqLX97nN6jBSNnfJoc5x6zVzWooSZlBuR
-         ygh7zMisKFOdApdpWLXdE38Ez48wbdl6bRgelI1M2q7oF1fjbdo+FT/cryTh0RkA2PgM
-         PVNv73NfYOacgZraULasH6MPisPmrZxBB5SdyINIUR+rCWC/xGGFoY/3V4eCh48ezelN
-         vlspmk4A/B3orH5IwCfSCJfMbueYznmKfST0fzCY2VeJqOWgXVBfHyrQGp7gwU4xxk/e
-         4DAXLkf7AssRwZV1LOldxmp7mNGGXTey4IiHanP7lOcu21DjwGEEnizw4Nh4dLrJMR0W
-         24RQ==
+        d=ziepe.ca; s=google; t=1684411926; x=1687003926;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=b1LVde9eD9hiDa72aXFp01UeitZcx1XKK5VRIQwwJ4w=;
+        b=f1WIjix4LVO2qoUadyymiNEwWX8LVYnKjiZJmHZsA00vpgp8OzN7fLeOXwmxyAsNjQ
+         sHOCKYtaHjUeBnmA70xUS7m11Y8GXRs0HF7i7PVSFcwvUzQVx0yAXlGLYQrw7yq7y3KH
+         MBoMqwZGJTzwuItitFkcFv88cqBCrBWri+DUGp8Fc0eAqXpc1sD7lY1vf9Zu0c1UnHTi
+         g1NSzolGSvoeoheQrwHIwMvc3Rso4DvQpoRRtvFDk7J6iY3SLf6NCCF8S9IRrkOXhhUV
+         HRuCy/CUe+KQ4Lk9dlGX7GSjHNglFJk4MTFkm4joUr1QsJe7so9IrOlgfq/tmei89LyY
+         B2xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684360239; x=1686952239;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CYrqZZXifWUb49UwqN4ktjCYYTpIiyxjiceM91X1owo=;
-        b=LnwJND+lcndVm+69rOrfZL1sI7qT3rOlH6ad04op1xwjXF2/5sJzLh0PFbvczLd5GI
-         4hQoIhgb/B6QdEmQDOMUPmAswC1n6Go3yJM1r5Zdj+44TMalNUFl55l92NdU66YihWfO
-         TM/VbMEPyJUYTNovBoXp9dkV+fYamVTwaUVOIXID4W1bxFgBoc3Uwu0vneM41dQ3+SPI
-         AKbsWZeRGDJlenikk0IzUU/lEXTygvzFx19vHmlOi6Jyl60LWZl1wjXUHhq7l8ypt3Qc
-         5qLBSE2/tBrpA7DFbVG4b2rpJOOeYLO7hnhUCP6LZ3NDCB+YtHf6cPdc+4Kt57Eq7Vua
-         hwWw==
-X-Gm-Message-State: AC+VfDzrrW6o/WgSBNgJvazdnOLpmeSwlxnRnmy/8AIQ72RAevBvxKQN
-        +o/gtjGAYwbH+hjDRbg1OmvvbA==
-X-Google-Smtp-Source: ACHHUZ5K1W6BqH54lP1fyWtEUpWwZ0lmy+14bsbtce6I/HyB5LShp2aTZ/lznkrMNM/kuQdbHXvf0A==
-X-Received: by 2002:a81:6744:0:b0:55a:af:2486 with SMTP id b65-20020a816744000000b0055a00af2486mr2691032ywc.18.1684360239031;
-        Wed, 17 May 2023 14:50:39 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id 129-20020a251187000000b00ba6ffc7ef35sm785837ybr.65.2023.05.17.14.50.35
+        d=1e100.net; s=20221208; t=1684411926; x=1687003926;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b1LVde9eD9hiDa72aXFp01UeitZcx1XKK5VRIQwwJ4w=;
+        b=Bdff7hzm/YSVbMo3X/Ur0uXnHy94JApQQYNPSN3BU1+fj2THvJpHoroJdlGl0+FzVK
+         z+gnQgDQjePUcamTVhf/CjJ5pTI0FDmKOV9IlCJmEfxST5t8y4z/iYYSzTH4LQ8Xki6i
+         P7dMn53kojs0XmJljDdjdOTPpTsiz17aYkOWTEptYE2tbJDiRqRZLQp9EpvNdED0sBT7
+         mIWALy3G5GMQDjuFKCZMgLTTgO7NhuA/Ql/mfSKvAAW+HRBZAhgvHIfb4nCb867gjcSp
+         s7X0O6faW6O/q91zGko5OaBLAh0LX7Z0AGg7ht2TJWh84JpsbT6Geu7SWPvQoJPBa6/f
+         XUUA==
+X-Gm-Message-State: AC+VfDy3gSPQtiJKccsGELsjN2KBtU2LsbPvjcZcP7zGFpxPc85jYtg9
+        QnGs+/4x5U5wkQQRbCgB27lj/w==
+X-Google-Smtp-Source: ACHHUZ7wZ7lgCFFjWmWBQuc0tx+WGJVC/VREvoop6Vbqh2gPTjnAeer0zQN00cudqqAWi4mVPLtPKg==
+X-Received: by 2002:a05:6214:2486:b0:5fd:7701:88c5 with SMTP id gi6-20020a056214248600b005fd770188c5mr5974330qvb.6.1684411925806;
+        Thu, 18 May 2023 05:12:05 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
+        by smtp.gmail.com with ESMTPSA id w8-20020a0562140b2800b006215c5bb2e9sm476635qvj.70.2023.05.18.05.12.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 May 2023 14:50:38 -0700 (PDT)
-Date:   Wed, 17 May 2023 14:50:28 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Russell King <linux@armlinux.org.uk>,
+        Thu, 18 May 2023 05:12:05 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1pzcUG-0055VE-PF;
+        Thu, 18 May 2023 09:12:04 -0300
+Date:   Thu, 18 May 2023 09:12:04 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+        xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Helge Deller <deller@gmx.de>,
-        John David Anglin <dave.anglin@bell.net>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        David Hildenbrand <david@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 15/23] s390: allow pte_offset_map_lock() to fail
-In-Reply-To: <20230517123546.672fb9b0@p-imbrenda>
-Message-ID: <4a15dbaa-1614-ce-ce1f-f73959cef895@google.com>
-References: <77a5d8c-406b-7068-4f17-23b7ac53bc83@google.com> <94aec8fe-383f-892-dcbf-d4c14e460a7@google.com> <20230517123546.672fb9b0@p-imbrenda>
+        Richard Weinberger <richard@nod.at>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 00/34] Split ptdesc from struct page
+Message-ID: <ZGYWFIfyDtdpeWg1@ziepe.ca>
+References: <20230501192829.17086-1-vishal.moola@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230501192829.17086-1-vishal.moola@gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, 17 May 2023, Claudio Imbrenda wrote:
-> On Tue, 9 May 2023 22:01:16 -0700 (PDT)
-> Hugh Dickins <hughd@google.com> wrote:
+On Mon, May 01, 2023 at 12:27:55PM -0700, Vishal Moola (Oracle) wrote:
+> The MM subsystem is trying to shrink struct page. This patchset
+> introduces a memory descriptor for page table tracking - struct ptdesc.
 > 
-> > In rare transient cases, not yet made possible, pte_offset_map() and
-> > pte_offset_map_lock() may not find a page table: handle appropriately.
-> > 
-> > Signed-off-by: Hugh Dickins <hughd@google.com>
-> > ---
-> >  arch/s390/kernel/uv.c  |  2 ++
-> >  arch/s390/mm/gmap.c    |  2 ++
-> >  arch/s390/mm/pgtable.c | 12 +++++++++---
-> >  3 files changed, 13 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
-> > index cb2ee06df286..3c62d1b218b1 100644
-> > --- a/arch/s390/kernel/uv.c
-> > +++ b/arch/s390/kernel/uv.c
-> > @@ -294,6 +294,8 @@ int gmap_make_secure(struct gmap *gmap, unsigned long gaddr, void *uvcb)
-> >  
-> >  	rc = -ENXIO;
-> >  	ptep = get_locked_pte(gmap->mm, uaddr, &ptelock);
-> > +	if (!ptep)
-> > +		goto out;
+> This patchset introduces ptdesc, splits ptdesc from struct page, and
+> converts many callers of page table constructor/destructors to use ptdescs.
 
-You may or may not be asking about this instance too.  When I looked at
-how the code lower down handles -ENXIO (promoting it to -EFAULT if an
-access fails, or to -EAGAIN to ask for a retry), this looked just right
-(whereas using -EAGAIN here would be wrong: that expects a "page" which
-has not been initialized at this point).
+Lightly related food for future thought - based on some discussions at
+LSF/MM it would be really nice if an end result of this was that a
+rcu_head was always available in the ptdesc so we don't need to
+allocate memory to free a page table.
 
-> >  	if (pte_present(*ptep) && !(pte_val(*ptep) & _PAGE_INVALID) && pte_write(*ptep)) {
-> >  		page = pte_page(*ptep);
-> >  		rc = -EAGAIN;
-> > diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
-> > index dc90d1eb0d55..d198fc9475a2 100644
-> > --- a/arch/s390/mm/gmap.c
-> > +++ b/arch/s390/mm/gmap.c
-> > @@ -2549,6 +2549,8 @@ static int __zap_zero_pages(pmd_t *pmd, unsigned long start,
-> >  		spinlock_t *ptl;
-> >  
-> >  		ptep = pte_offset_map_lock(walk->mm, pmd, addr, &ptl);
-> > +		if (!ptep)
-> > +			break;
-> 
-> so if pte_offset_map_lock fails, we abort and skip both the failed
-> entry and the rest of the entries?
-
-Yes.
-
-> 
-> can pte_offset_map_lock be retried immediately if it fails? (consider
-> that we currently don't allow THP with KVM guests)
-> 
-> Would something like this:
-> 
-> do {
-> 	ptep = pte_offset_map_lock(...);
-> 	mb();	/* maybe? */
-> } while (!ptep);
-> 
-> make sense?
-
-No.  But you're absolutely right to be asking: thank you for looking
-into it so carefully - and I realize that it's hard at this stage to
-judge what's appropriate, when I've not yet even posted the endpoint
-of these changes, the patches which make it possible not to find a
-page table here.  And I'm intentionally keeping that vague, because
-although I shall only introduce a THP case, I do expect it to be built
-upon later in reclaiming empty page tables: it would be nice not to
-have to change the arch code again when extending further.
-
-My "rare transient cases" phrase may be somewhat misleading: one thing
-that's wrong with your tight pte_offset_map_lock() loop above is that
-the pmd entry pointing to page table may have been suddenly replaced by
-a pmd_none() entry; and there's nothing in your loop above to break out
-if that is so.
-
-But if a page table is suddenly removed, that would be because it was
-either empty, or replaced by a THP entry, or easily reconstructable on
-demand (by that, I probably mean it was only mapping shared file pages,
-which can just be refaulted if needed again).
-
-The case you're wary of, is if the page table were removed briefly,
-then put back shortly after: and still contains zero pages further down.
-That's not something mm does now, nor at the end of my several series,
-nor that I imagine us wanting to do in future: but I am struggling to
-find a killer argument to persuade you that it could never be done -
-most pages in a page table do need rmap tracking, which will BUG if
-it's broken, but that argument happens not to apply to the zero page.
-
-(Hmm, there could be somewhere, where we would find it convenient to
-remove a page table with intent to do ...something, then validation
-of that isolated page table fails, so we just put it back again.)
-
-Is it good enough for me to promise you that we won't do that?
-
-There are several ways in which we could change __zap_zero_pages(),
-but I don't see them as actually dealing with the concern at hand.
-
-One change, I've tended to make at the mm end but did not dare
-to interfere here: it would seem more sensible to do a single
-pte_offset_map_lock() outside the loop, return if that fails,
-increment ptep inside the loop, pte_unmap_unlock() after the loop.
-
-But perhaps you have preemption reasons for not wanting that; and
-although it would eliminate the oddity of half-processing a page
-table, it would not really resolve the problem at hand: because,
-what if this page table got removed just before __zap_zero_pages()
-tries to take the lock, then got put back just after?
-
-Another change: I see __zap_zero_pages() is driven by walk_page_range(),
-and over at the mm end I'm usually setting walk->action to ACTION_AGAIN
-in these failure cases; but thought that an unnecessary piece of magic
-here, and cannot see how it could actually help.  Your "retry the whole
-walk_page_range()" suggestion below would be a heavier equivalent of
-that: but neither way gives confidence, if a page table could actually
-be removed then reinserted without mmap_write_lock().
-
-I think I want to keep this s390 __zap_zero_pages() issue in mind, it is
-important and thank you for raising it; but don't see any change to the
-patch as actually needed.
-
-Hugh
-
-> 
-> 
-> otherwise maybe it's better to return an error and retry the whole
-> walk_page_range() in s390_enable_sie() ? it's a slow path anyway.
-> 
-> >  		if (is_zero_pfn(pte_pfn(*ptep)))
-> >  			ptep_xchg_direct(walk->mm, addr, ptep, __pte(_PAGE_INVALID));
-> >  		pte_unmap_unlock(ptep, ptl);
-> 
-> [...]
+Jason
