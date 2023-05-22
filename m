@@ -2,153 +2,115 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ECCBCC77B73
-	for <linux-m68k@archiver.kernel.org>; Mon, 22 May 2023 10:11:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C857C77B75
+	for <linux-m68k@archiver.kernel.org>; Mon, 22 May 2023 11:41:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbjEVKLn convert rfc822-to-8bit (ORCPT
+        id S233010AbjEVLl6 convert rfc822-to-8bit (ORCPT
         <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 22 May 2023 06:11:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50878 "EHLO
+        Mon, 22 May 2023 07:41:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbjEVKLm (ORCPT
+        with ESMTP id S233331AbjEVLlz (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 22 May 2023 06:11:42 -0400
+        Mon, 22 May 2023 07:41:55 -0400
 Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3534EB7
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 May 2023 03:11:41 -0700 (PDT)
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-babb985f9c8so4130493276.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 May 2023 03:11:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB449B
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 May 2023 04:41:54 -0700 (PDT)
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-ba827c74187so8600356276.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 May 2023 04:41:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684750300; x=1687342300;
+        d=1e100.net; s=20221208; t=1684755713; x=1687347713;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CQATq2c9SwOWOfQ7A10Go9afc2yqePz2ONTwzgTVwBU=;
-        b=k+dSawS6MKRiabMdnDG1bznBG57g9pDwN/I5rMrKmHpACxqEM/46yCOr8QKf18pE49
-         Mz6jDpPZSHs8er74Ifpb/19CHU8ob+nCMHutEtLobrWnTW0SaOFFwl3i2O2uLcYlM630
-         WD3xCpO4J8736sgE/V6qwc5/G9HSfuk2jE6U6g0Gaulwdo5QU68qxwpIx4D9gQgXrUpq
-         a5i7vxg4XqtcKF/XaSWWasttNLasNSteWRbvLQQAaYlYUXt6hR9pLK50tqngR7jRUJn8
-         k7HJB8hww+1YwMY/4QoyKkqZVEIZWFMaRY9V7PJd21o9ibJOjboQFqR6p3wTH8ssIsHM
-         vB1Q==
-X-Gm-Message-State: AC+VfDwtiVVYJRDPuLb1DBdU/3PwE3s1X45Z/6IdF6OTfAWZq6P/j84K
-        HRY7IAmgclzGfbuLQ8n+ia7GrqS/IWUdUQ==
-X-Google-Smtp-Source: ACHHUZ49cZ+Z5h4r9keoiQZl9l40UL6gfM8xD+6IlGLLwQJx/qG7mxodn97LyYlmoLvemQ9wiZQJfg==
-X-Received: by 2002:a0d:eb44:0:b0:561:d1b0:3f7e with SMTP id u65-20020a0deb44000000b00561d1b03f7emr10299910ywe.44.1684750299637;
-        Mon, 22 May 2023 03:11:39 -0700 (PDT)
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com. [209.85.128.170])
-        by smtp.gmail.com with ESMTPSA id x21-20020a0dd515000000b00561608bc0dfsm1959305ywd.56.2023.05.22.03.11.38
+        bh=YQM4CisG43A3UU9kY3EcQQPtrr37Ex7+82L60u0Ozu4=;
+        b=UxW8scZmvR7vtjY7Un/EgSGhY6FaTRaBhAOi/hqBA0+pCYgFIa9Yowo/QQUNUrWvOi
+         EQyuTNxjjVYkpgNJgIw2UhxliOer9AHX5UojFHKHXLLO5CeeXEk6wtDMruFjPglQW4PG
+         h+E/k/wIM8ST4JSC9g3O+CMcOCncojpzJvIMaSJmMgo7j8f4iSV+zQRjKKUfgX3L0uGX
+         0d+AhhZNQHxXGvabri5DUfASq+++uEtjOBsIG2gWGVWjeqSEW9hAvIGcbDVqW+1snjwh
+         I7FVk+k6FAgjIdXH5MLm6aKZGCTlxioYzCLmMCDRwopbwEcFGlDp/hLoM09NITJFlQ0v
+         9fjw==
+X-Gm-Message-State: AC+VfDwZYkq00XGN6RCyn6Ze/kv4UYtKdxk3jXs1yn/h+/W8tcckvS6Z
+        Z6AP0q1VLb+KLlYFVPNsUjP5tP20RgCMOA==
+X-Google-Smtp-Source: ACHHUZ61+1um4h5hKI7jBpIHtny2ZbG612e0+S/EjiX1YsnusR7vmoYfr4lL15P7ovCOZVQ7O9vQTQ==
+X-Received: by 2002:a25:a304:0:b0:ba8:1ebe:9b96 with SMTP id d4-20020a25a304000000b00ba81ebe9b96mr9831843ybi.1.1684755713106;
+        Mon, 22 May 2023 04:41:53 -0700 (PDT)
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
+        by smtp.gmail.com with ESMTPSA id u140-20020a0deb92000000b00561e67c9d7csm2023067ywe.38.2023.05.22.04.41.52
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 May 2023 03:11:39 -0700 (PDT)
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-561f23dc55aso58412067b3.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 May 2023 03:11:38 -0700 (PDT)
-X-Received: by 2002:a81:5247:0:b0:561:c5c3:9d79 with SMTP id
- g68-20020a815247000000b00561c5c39d79mr9161977ywb.45.1684750298756; Mon, 22
- May 2023 03:11:38 -0700 (PDT)
+        Mon, 22 May 2023 04:41:52 -0700 (PDT)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-563874afe98so39791697b3.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 May 2023 04:41:52 -0700 (PDT)
+X-Received: by 2002:a0d:ea43:0:b0:559:d3a0:4270 with SMTP id
+ t64-20020a0dea43000000b00559d3a04270mr11018198ywe.34.1684755712500; Mon, 22
+ May 2023 04:41:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230503-virt-to-pfn-v6-4-rc1-v2-0-0948d38bddab@linaro.org> <20230503-virt-to-pfn-v6-4-rc1-v2-2-0948d38bddab@linaro.org>
-In-Reply-To: <20230503-virt-to-pfn-v6-4-rc1-v2-2-0948d38bddab@linaro.org>
+References: <cover.1683365892.git.fthain@linux-m68k.org> <9e66262a754fcba50208aa424188896cc52a1dd1.1683365892.git.fthain@linux-m68k.org>
+In-Reply-To: <9e66262a754fcba50208aa424188896cc52a1dd1.1683365892.git.fthain@linux-m68k.org>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 22 May 2023 12:11:27 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXB1fK_G=QZ59qkJWXhb61TyLRMwH3qo_0sSmW0Cfv8hA@mail.gmail.com>
-Message-ID: <CAMuHMdXB1fK_G=QZ59qkJWXhb61TyLRMwH3qo_0sSmW0Cfv8hA@mail.gmail.com>
-Subject: Re: [PATCH v2 02/12] m68k: Pass a pointer to virt_to_pfn() virt_to_page()
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Greg Ungerer <gerg@linux-m68k.org>, linux-mm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-snps-arc@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org
+Date:   Mon, 22 May 2023 13:41:41 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdX_0F0hSZKqBBCN3876BmfwbQb1_+N3h-V8xs5ouRXF=A@mail.gmail.com>
+Message-ID: <CAMuHMdX_0F0hSZKqBBCN3876BmfwbQb1_+N3h-V8xs5ouRXF=A@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] m68k: Move signal frame following exception on 68020/030
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     Michael Schmitz <schmitzmic@gmail.com>,
+        Andreas Schwab <schwab@linux-m68k.org>, stable@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Linus,
-
-On Mon, May 22, 2023 at 9:00 AM Linus Walleij <linus.walleij@linaro.org> wrote:
-> Functions that work on a pointer to virtual memory such as
-> virt_to_pfn() and users of that function such as
-> virt_to_page() are supposed to pass a pointer to virtual
-> memory, ideally a (void *) or other pointer. However since
-> many architectures implement virt_to_pfn() as a macro,
-> this function becomes polymorphic and accepts both a
-> (unsigned long) and a (void *).
+On Sat, May 6, 2023 at 11:36 AM Finn Thain <fthain@linux-m68k.org> wrote:
+> On 68030/020, an instruction such as, moveml %a2-%a3/%a5,%sp@- may cause
+> a stack page fault during instruction execution (i.e. not at an
+> instruction boundary) and produce a format 0xB exception frame.
 >
-> Fix up the offending calls in arch/m68k with explicit casts.
+> In this situation, the value of USP will be unreliable. If a signal is to
+> be delivered following the exception, this USP value is used to calculate
+> the location for a signal frame. This can result in a corrupted user
+> stack.
 >
-> The page table include <asm/pgtable.h> will include different
-> variants of the defines depending on whether you build for
-> classic m68k, ColdFire or Sun3, so fix all variants.
+> The corruption was detected in dash (actually in glibc) where it showed
+> up as an intermittent "stack smashing detected" message and crash
+> following signal delivery for SIGCHLD.
 >
-> Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-
-Thanks for the update!
-
-> ---
-> ChangeLog v2->v3:
-
-v3?
-
-> - Fix the sun3 pgtable macro to not cast to unsigned long.
-> - Make a similar change to the ColdFire include.
-
-The ColdFire change is not correct, cfr. below...
-
-> ChangeLog v1->v2:
-> - Add an extra parens around the page argument to the
->   PD_PTABLE() macro, as is normally required.
-> ---
->  arch/m68k/include/asm/mcf_pgtable.h  | 4 ++--
->  arch/m68k/include/asm/sun3_pgtable.h | 4 ++--
->  arch/m68k/mm/mcfmmu.c                | 3 ++-
->  arch/m68k/mm/motorola.c              | 4 ++--
->  arch/m68k/mm/sun3mmu.c               | 2 +-
->  arch/m68k/sun3/dvma.c                | 2 +-
->  arch/m68k/sun3x/dvma.c               | 2 +-
->  7 files changed, 11 insertions(+), 10 deletions(-)
+> It was hard to reproduce that failure because delivery of the signal
+> raced with the page fault and because the kernel places an unpredictable
+> gap of up to 7 bytes between the USP and the signal frame.
 >
-> diff --git a/arch/m68k/include/asm/mcf_pgtable.h b/arch/m68k/include/asm/mcf_pgtable.h
-> index d97fbb812f63..f67c59336ab4 100644
-> --- a/arch/m68k/include/asm/mcf_pgtable.h
-> +++ b/arch/m68k/include/asm/mcf_pgtable.h
-> @@ -115,8 +115,8 @@ static inline void pgd_set(pgd_t *pgdp, pmd_t *pmdp)
->         pgd_val(*pgdp) = virt_to_phys(pmdp);
->  }
+> A format 0xB exception frame can be produced by a bus error or an address
+> error. The 68030 Users Manual says that address errors occur immediately
+> upon detection during instruction prefetch. The instruction pipeline
+> allows prefetch to overlap with other instructions, which means an
+> address error can arise during the execution of a different instruction.
+> So it seems likely that this patch may help in the address error case also.
 >
-> -#define __pte_page(pte)        ((unsigned long) (pte_val(pte) & PAGE_MASK))
-> -#define pmd_page_vaddr(pmd)    ((unsigned long) (pmd_val(pmd)))
-> +#define __pte_page(pte)        (__va (pte_val(pte) & PAGE_MASK))
+> Reported-and-tested-by: Stan Johnson <userm57@yahoo.com>
+> Link: https://lore.kernel.org/all/CAMuHMdW3yD22_ApemzW_6me3adq6A458u1_F0v-1EYwK_62jPA@mail.gmail.com/
+> Cc: Michael Schmitz <schmitzmic@gmail.com>
+> Cc: Andreas Schwab <schwab@linux-m68k.org>
+> Cc: stable@vger.kernel.org
+> Co-developed-by: Michael Schmitz <schmitzmic@gmail.com>
+> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 
-I guess "__va(...)" should be "(void *)..." instead?
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue as a fix in the m68k for-v6.4 branch.
 
-However, that will cause an issue below, as
+I plan to send this upstream later this week, so any additional
+testing would be appreciated.
 
-    #define pte_pagenr(pte)        ((__pte_page(pte) - PAGE_OFFSET) >>
-PAGE_SHIFT)
-
-does depend on __pte_page() returning "unsigned long".
-Fortunately pte_pagenr() appears unused, so it can be removed.
-
-So for now, it might be simpler to add the cast to the caller.
-
-
-> +#define pmd_page_vaddr(pmd)    (__va (pmd_val(pmd)))
-
-This looks bogus, too, as it should return "unsigned long".
+Thanks!
 
 Gr{oetje,eeting}s,
 
                         Geert
 
--- 
+
+--
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
 In personal conversations with technical people, I call myself a hacker. But
