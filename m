@@ -2,105 +2,225 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD810C7EE2D
-	for <linux-m68k@archiver.kernel.org>; Thu, 18 May 2023 12:12:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FD27C7EE2F
+	for <linux-m68k@archiver.kernel.org>; Mon, 22 May 2023 07:00:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231509AbjERMMc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 18 May 2023 08:12:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53454 "EHLO
+        id S231653AbjEVHAr (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 22 May 2023 03:00:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231556AbjERMMJ (ORCPT
+        with ESMTP id S230183AbjEVHAq (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 18 May 2023 08:12:09 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 454ACE49
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 18 May 2023 05:12:07 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-75795493bceso106663285a.3
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 18 May 2023 05:12:07 -0700 (PDT)
+        Mon, 22 May 2023 03:00:46 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19480C1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 May 2023 00:00:39 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2af2696fd1cso34216141fa.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 May 2023 00:00:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1684411926; x=1687003926;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=b1LVde9eD9hiDa72aXFp01UeitZcx1XKK5VRIQwwJ4w=;
-        b=f1WIjix4LVO2qoUadyymiNEwWX8LVYnKjiZJmHZsA00vpgp8OzN7fLeOXwmxyAsNjQ
-         sHOCKYtaHjUeBnmA70xUS7m11Y8GXRs0HF7i7PVSFcwvUzQVx0yAXlGLYQrw7yq7y3KH
-         MBoMqwZGJTzwuItitFkcFv88cqBCrBWri+DUGp8Fc0eAqXpc1sD7lY1vf9Zu0c1UnHTi
-         g1NSzolGSvoeoheQrwHIwMvc3Rso4DvQpoRRtvFDk7J6iY3SLf6NCCF8S9IRrkOXhhUV
-         HRuCy/CUe+KQ4Lk9dlGX7GSjHNglFJk4MTFkm4joUr1QsJe7so9IrOlgfq/tmei89LyY
-         B2xw==
+        d=linaro.org; s=google; t=1684738838; x=1687330838;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DNPIoJfZfpcGl/mQazzDBrBG+IwcTg57IBktWiArhPQ=;
+        b=pIqcidzjihloELcSapvhUCdnCghhcpBL2z4Vy8JgtA966JDSY312p2dVKBOQ887aSw
+         iguakCpNf3PAfmBeVFG328fxAK11pvXM+PvDUbTHylH/hm1FSSCCnD8N/8h6iQFuwJ5y
+         H8GY0LcLORdHC5DWSKK8EH9jD0Ig/05kq1+WW7S9ttVR5Fd0Y/jSle8a0wHXD7YRJ+Cs
+         sAJaQdm83yOAPswPwxgYXGgvxSwmGSS04/eVSBl9irnWrWsWRK60eOp0aUH7UWXPRdM/
+         G0pv8uq3cbgyQoNm1TQZrmZpElktwAayLPsULCSW5WYxFgMFezsJ3clVgheXjkOI2PQd
+         ldFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684411926; x=1687003926;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b1LVde9eD9hiDa72aXFp01UeitZcx1XKK5VRIQwwJ4w=;
-        b=Bdff7hzm/YSVbMo3X/Ur0uXnHy94JApQQYNPSN3BU1+fj2THvJpHoroJdlGl0+FzVK
-         z+gnQgDQjePUcamTVhf/CjJ5pTI0FDmKOV9IlCJmEfxST5t8y4z/iYYSzTH4LQ8Xki6i
-         P7dMn53kojs0XmJljDdjdOTPpTsiz17aYkOWTEptYE2tbJDiRqRZLQp9EpvNdED0sBT7
-         mIWALy3G5GMQDjuFKCZMgLTTgO7NhuA/Ql/mfSKvAAW+HRBZAhgvHIfb4nCb867gjcSp
-         s7X0O6faW6O/q91zGko5OaBLAh0LX7Z0AGg7ht2TJWh84JpsbT6Geu7SWPvQoJPBa6/f
-         XUUA==
-X-Gm-Message-State: AC+VfDy3gSPQtiJKccsGELsjN2KBtU2LsbPvjcZcP7zGFpxPc85jYtg9
-        QnGs+/4x5U5wkQQRbCgB27lj/w==
-X-Google-Smtp-Source: ACHHUZ7wZ7lgCFFjWmWBQuc0tx+WGJVC/VREvoop6Vbqh2gPTjnAeer0zQN00cudqqAWi4mVPLtPKg==
-X-Received: by 2002:a05:6214:2486:b0:5fd:7701:88c5 with SMTP id gi6-20020a056214248600b005fd770188c5mr5974330qvb.6.1684411925806;
-        Thu, 18 May 2023 05:12:05 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
-        by smtp.gmail.com with ESMTPSA id w8-20020a0562140b2800b006215c5bb2e9sm476635qvj.70.2023.05.18.05.12.05
+        d=1e100.net; s=20221208; t=1684738838; x=1687330838;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DNPIoJfZfpcGl/mQazzDBrBG+IwcTg57IBktWiArhPQ=;
+        b=O8wJi2YI98TsSrs9tBZt8G1qoSaezP8ru+GKjHeg58r6Gex7l8MUw9yiaK4IZR5kbF
+         tExNvPI71eFkx58HJXdE/XO7cXX0yZmcV0VlGZQh2G9dGv+/OQXfemF8sEa8I/ZJXk3E
+         gWYOkyICkMPO3jG/XAQOeR6B1rVl81tZoZBG6dtb8iVDL3BfTqrSgBbR8LuaI2G3Zuiw
+         U84C6v3nN9OrMnNdC1xKSU+Gr5yiNF9pY+hB8YpKAkkndkA9Ow/xU7bxia8RUSDhJO7e
+         onRla1spNVRH+dPhoeDOLmHqO7jIlT+LD5ld4u2cso3DbokQKfeXSiTKHbTsdPpZFCql
+         RVrA==
+X-Gm-Message-State: AC+VfDw78bEbZWd5P2EM6NrH05c2Dyx0Um9OA+Sy1OhmYJvdjXSlZM72
+        NczzSQeuvNbjhSmyqFHZjlPUeQIWmQRHOPw1y74=
+X-Google-Smtp-Source: ACHHUZ5F3iLu8/R6cUAYvFbkma+E9E2J9cbDIJbVhGpbBKeakTe5SqM7FDxMbSh7yiPn3ePytuF7GA==
+X-Received: by 2002:a2e:b04d:0:b0:29f:58c6:986e with SMTP id d13-20020a2eb04d000000b0029f58c6986emr3023170ljl.52.1684738837975;
+        Mon, 22 May 2023 00:00:37 -0700 (PDT)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id q4-20020a2e8744000000b002adb98fdf81sm1010187ljj.7.2023.05.22.00.00.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 May 2023 05:12:05 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1pzcUG-0055VE-PF;
-        Thu, 18 May 2023 09:12:04 -0300
-Date:   Thu, 18 May 2023 09:12:04 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        David Hildenbrand <david@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Richard Weinberger <richard@nod.at>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v2 00/34] Split ptdesc from struct page
-Message-ID: <ZGYWFIfyDtdpeWg1@ziepe.ca>
-References: <20230501192829.17086-1-vishal.moola@gmail.com>
+        Mon, 22 May 2023 00:00:37 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH v2 00/12] arch: Make virt_to_pfn into a static inline
+Date:   Mon, 22 May 2023 09:00:35 +0200
+Message-Id: <20230503-virt-to-pfn-v6-4-rc1-v2-0-0948d38bddab@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230501192829.17086-1-vishal.moola@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIABMTa2QC/4WOOw6DMBBEr4JcZ5H5OZAq94gojD+wUmSjNbGIE
+ HePIVWqlG80TzMbC4bQBHbLNkYmYkDvEpSXjKlJutEA6sSs5GXFG15BRFpg8TBbB1FADaQKqG1
+ zrTrTasE1S+ogg4GBpFPTIf86+dcho1/rUZ7JWFzPD48+8YRh8fQ+L8XiSP+sxwI4CFWLrtXKd
+ qq9P9FJ8rmnkfX7vn8ACYaVheYAAAA=
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Greg Ungerer <gerg@linux-m68k.org>
+Cc:     linux-mm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org,
+        linux-snps-arc@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Tom Talpey <tom@talpey.com>
+X-Mailer: b4 0.12.1
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, May 01, 2023 at 12:27:55PM -0700, Vishal Moola (Oracle) wrote:
-> The MM subsystem is trying to shrink struct page. This patchset
-> introduces a memory descriptor for page table tracking - struct ptdesc.
-> 
-> This patchset introduces ptdesc, splits ptdesc from struct page, and
-> converts many callers of page table constructor/destructors to use ptdescs.
+This is an attempt to harden the typing on virt_to_pfn()
+and pfn_to_virt().
 
-Lightly related food for future thought - based on some discussions at
-LSF/MM it would be really nice if an end result of this was that a
-rcu_head was always available in the ptdesc so we don't need to
-allocate memory to free a page table.
+Making virt_to_pfn() a static inline taking a strongly typed
+(const void *) makes the contract of a passing a pointer of that
+type to the function explicit and exposes any misuse of the
+macro virt_to_pfn() acting polymorphic and accepting many types
+such as (void *), (unitptr_t) or (unsigned long) as arguments
+without warnings.
 
-Jason
+For symmetry, we do the same with pfn_to_virt().
+
+The problem with this inconsistent typing was pointed out by
+Russell King:
+https://lore.kernel.org/linux-arm-kernel/YoJDKJXc0MJ2QZTb@shell.armlinux.org.uk/
+
+And confirmed by Andrew Morton:
+https://lore.kernel.org/linux-mm/20220701160004.2ffff4e5ab59a55499f4c736@linux-foundation.org/
+
+So the recognition of the problem is widespread.
+
+These platforms have been chosen as initial conversion targets:
+
+- ARC
+- ARM
+- ARM64/Aarch64
+- asm-generic (including for example x86)
+- m68k
+
+The idea is that if this goes in, it will block further misuse
+of the function signatures due to the large compile coverage,
+and then I can go in and fix the remaining platforms on a
+one-by-one basis.
+
+Some of the patches have been circulated before but were not
+picked up by subsystem maintainers, so now the arch tree is
+target for this series.
+
+It has passed zeroday builds after a lot of iterations in my
+personal tree, but there could be some randconfig outliers.
+
+The To/Cc list would be too long if I include all the minor
+patches maintainers, so I have trimmed it down to the mailing
+lists since these people certainly have received the patches
+before.
+
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+Changes in v2:
+- Fix some "void * x" into "void *x" in generic page accessors and
+  in m68k.
+- Collected a few ACKs
+- All build tests appear to pass!
+- Added Andrew Mortin to To: line to see what he thinks
+- Link to v1: https://lore.kernel.org/r/20230503-virt-to-pfn-v6-4-rc1-v1-0-6c4698dcf9c8@linaro.org
+
+---
+Linus Walleij (12):
+      fs/proc/kcore.c: Pass a pointer to virt_addr_valid()
+      m68k: Pass a pointer to virt_to_pfn() virt_to_page()
+      ARC: init: Pass a pointer to virt_to_pfn() in init
+      riscv: mm: init: Pass a pointer to virt_to_page()
+      cifs: Pass a pointer to virt_to_page()
+      cifs: Pass a pointer to virt_to_page() in cifsglob
+      netfs: Pass a pointer to virt_to_page()
+      arm64: vdso: Pass (void *) to virt_to_page()
+      asm-generic/page.h: Make pfn accessors static inlines
+      ARM: mm: Make virt_to_pfn() a static inline
+      arm64: memory: Make virt_to_pfn() a static inline
+      m68k/mm: Make pfn accessors static inlines
+
+ arch/arc/mm/init.c                   |  2 +-
+ arch/arm/common/sharpsl_param.c      |  2 +-
+ arch/arm/include/asm/delay.h         |  2 +-
+ arch/arm/include/asm/io.h            |  2 +-
+ arch/arm/include/asm/memory.h        | 17 ++++++++++++-----
+ arch/arm/include/asm/page.h          |  4 ++--
+ arch/arm/include/asm/pgtable.h       |  2 +-
+ arch/arm/include/asm/proc-fns.h      |  2 --
+ arch/arm/include/asm/sparsemem.h     |  2 +-
+ arch/arm/include/asm/uaccess-asm.h   |  2 +-
+ arch/arm/include/asm/uaccess.h       |  2 +-
+ arch/arm/kernel/asm-offsets.c        |  2 +-
+ arch/arm/kernel/entry-armv.S         |  2 +-
+ arch/arm/kernel/entry-common.S       |  2 +-
+ arch/arm/kernel/entry-v7m.S          |  2 +-
+ arch/arm/kernel/head-nommu.S         |  3 +--
+ arch/arm/kernel/head.S               |  2 +-
+ arch/arm/kernel/hibernate.c          |  2 +-
+ arch/arm/kernel/suspend.c            |  2 +-
+ arch/arm/kernel/tcm.c                |  2 +-
+ arch/arm/kernel/vmlinux-xip.lds.S    |  3 +--
+ arch/arm/kernel/vmlinux.lds.S        |  3 +--
+ arch/arm/mach-berlin/platsmp.c       |  2 +-
+ arch/arm/mach-keystone/keystone.c    |  2 +-
+ arch/arm/mach-omap2/sleep33xx.S      |  2 +-
+ arch/arm/mach-omap2/sleep43xx.S      |  2 +-
+ arch/arm/mach-omap2/sleep44xx.S      |  2 +-
+ arch/arm/mach-pxa/gumstix.c          |  2 +-
+ arch/arm/mach-rockchip/sleep.S       |  2 +-
+ arch/arm/mach-sa1100/pm.c            |  2 +-
+ arch/arm/mach-shmobile/headsmp-scu.S |  2 +-
+ arch/arm/mach-shmobile/headsmp.S     |  2 +-
+ arch/arm/mach-socfpga/headsmp.S      |  2 +-
+ arch/arm/mach-spear/spear.h          |  2 +-
+ arch/arm/mm/cache-fa.S               |  1 -
+ arch/arm/mm/cache-v4wb.S             |  1 -
+ arch/arm/mm/dma-mapping.c            |  2 +-
+ arch/arm/mm/dump.c                   |  2 +-
+ arch/arm/mm/init.c                   |  2 +-
+ arch/arm/mm/kasan_init.c             |  1 -
+ arch/arm/mm/mmu.c                    |  2 +-
+ arch/arm/mm/physaddr.c               |  2 +-
+ arch/arm/mm/pmsa-v8.c                |  2 +-
+ arch/arm/mm/proc-v7.S                |  2 +-
+ arch/arm/mm/proc-v7m.S               |  2 +-
+ arch/arm/mm/pv-fixup-asm.S           |  2 +-
+ arch/arm64/include/asm/memory.h      |  9 ++++++++-
+ arch/arm64/kernel/vdso.c             |  2 +-
+ arch/m68k/include/asm/mcf_pgtable.h  |  4 ++--
+ arch/m68k/include/asm/page_mm.h      | 11 +++++++++--
+ arch/m68k/include/asm/page_no.h      | 11 +++++++++--
+ arch/m68k/include/asm/sun3_pgtable.h |  4 ++--
+ arch/m68k/mm/mcfmmu.c                |  3 ++-
+ arch/m68k/mm/motorola.c              |  4 ++--
+ arch/m68k/mm/sun3mmu.c               |  2 +-
+ arch/m68k/sun3/dvma.c                |  2 +-
+ arch/m68k/sun3x/dvma.c               |  2 +-
+ arch/riscv/mm/init.c                 |  4 ++--
+ drivers/memory/ti-emif-sram-pm.S     |  2 +-
+ fs/cifs/cifsglob.h                   |  2 +-
+ fs/cifs/smbdirect.c                  |  2 +-
+ fs/netfs/iterator.c                  |  2 +-
+ fs/proc/kcore.c                      |  2 +-
+ include/asm-generic/page.h           | 12 ++++++++++--
+ 64 files changed, 109 insertions(+), 80 deletions(-)
+---
+base-commit: ac9a78681b921877518763ba0e89202254349d1b
+change-id: 20230503-virt-to-pfn-v6-4-rc1-4f5739e8d60d
+
+Best regards,
+-- 
+Linus Walleij <linus.walleij@linaro.org>
+
