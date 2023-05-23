@@ -2,108 +2,264 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EC47C7EE23
-	for <linux-m68k@archiver.kernel.org>; Tue, 23 May 2023 12:05:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE8BEC7EE26
+	for <linux-m68k@archiver.kernel.org>; Tue, 23 May 2023 12:08:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236115AbjEWMFj convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 23 May 2023 08:05:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42258 "EHLO
+        id S231352AbjEWMIW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 23 May 2023 08:08:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236264AbjEWMFi (ORCPT
+        with ESMTP id S236634AbjEWMIV (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 23 May 2023 08:05:38 -0400
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91BBD119
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 May 2023 05:05:29 -0700 (PDT)
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-55db055b412so68614117b3.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 May 2023 05:05:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684843528; x=1687435528;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T4ahAcHn3pk25oWMINMFj6HUYrG1pckCHQI/m37jHT8=;
-        b=eKOdUP7lPnzIHTkKr063BPzheQN4EF+3xuTlcwY2qGzZ4tzHcr+QiOLZtIx+8wPeO7
-         dlpMtgXZWa9C3MB61jhUlJP+eCEXyjBv2VNZNtGCJOJt9TLbVY66BvYIRx6T0e8UBnHT
-         7GhLUP03YRcztZTFS2ycAWGbW1dGKtPi3cB4SLfm5JITtFDdJPgbvJz0WT2ZOt+GE/jM
-         JbPhWn2vPg2YSWoRepbY+s09MhSkzw4Kp3I9EVL9CcCG2ehlQ1mwTAQBbJuwK4e5Kjih
-         1Wm615ogvZ6iLBLa8k9nvVlm0ugl3lmgOYPptekejykSx3UkLE+uOx9I5CCy1PQ13swO
-         eFxQ==
-X-Gm-Message-State: AC+VfDxVuvSnF5WbhwWde1vXHOytkTevpuHo7CdWnCLAKMIJC6A3iN7i
-        FfvSj6FYoB2uo8+xC9uj3+fHT4NOUxLSkA==
-X-Google-Smtp-Source: ACHHUZ6Ogo/Opz6Sj3mHBV6EPdPnUNgtXQjrHBCBOjFaRsVCy17QFFWkJcT3hpYbbl4TZPdnQg+DNw==
-X-Received: by 2002:a05:690c:80f:b0:565:57c9:ca30 with SMTP id bx15-20020a05690c080f00b0056557c9ca30mr622433ywb.3.1684843528432;
-        Tue, 23 May 2023 05:05:28 -0700 (PDT)
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com. [209.85.128.176])
-        by smtp.gmail.com with ESMTPSA id r190-20020a0de8c7000000b0056189f9ec2asm2830752ywe.133.2023.05.23.05.05.28
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 May 2023 05:05:28 -0700 (PDT)
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-5621a279cbbso70428027b3.1
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 May 2023 05:05:28 -0700 (PDT)
-X-Received: by 2002:a81:a156:0:b0:55d:820f:11e7 with SMTP id
- y83-20020a81a156000000b0055d820f11e7mr14014339ywg.2.1684843527952; Tue, 23
- May 2023 05:05:27 -0700 (PDT)
+        Tue, 23 May 2023 08:08:21 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72183126
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 May 2023 05:08:19 -0700 (PDT)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34NBvhWn005111;
+        Tue, 23 May 2023 12:01:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=hvBkau843ws4S1xlMiA8GiItRMnbuFuaqBLPZfwfBjM=;
+ b=oXVaQauy/8g2xTnFTAcyRpsK6R0Z7PJKOkIjtetvDoFQ4C7Vaoz3bjS1jfMMcRnjGqV7
+ TuXgAQJmG4wOpqKlAOC0mckK2z7bJPyGuNkmOInvXMBhkTAQCGGmYX8yjNUjUo/JotTY
+ y88M7nr1R+3aKmsQxuw71PorXdAgogm3w8p+dxg1r3SXTNvYytY90PmqEKvkYUF0HdKS
+ 8vBGN4743QXYxRUd+1shtMbCEiv/f4q8PkkDhpBaoNjpbEOxCyZ2A2qB7Jw6mjy8Gg/a
+ 1VT3FbpG8YJZ455TWleqU6+xiSNDe9tLeM9AueFtcIQmIFB8f7TtJysKO1Yi+xa8PwRI Qw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3qrw2n828u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 May 2023 12:01:08 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 34NC09Ft011638;
+        Tue, 23 May 2023 12:01:07 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3qrw2n826b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 May 2023 12:01:07 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 34N3PmcR020391;
+        Tue, 23 May 2023 12:01:03 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+        by ppma03ams.nl.ibm.com (PPS) with ESMTPS id 3qppcu9epm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 May 2023 12:01:03 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 34NC0x7s59572662
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 May 2023 12:00:59 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 148C520067;
+        Tue, 23 May 2023 12:00:59 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5984120043;
+        Tue, 23 May 2023 12:00:58 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.152.224.66])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 23 May 2023 12:00:58 +0000 (GMT)
+Date:   Tue, 23 May 2023 14:00:56 +0200
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Helge Deller <deller@gmx.de>,
+        John David Anglin <dave.anglin@bell.net>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 15/23] s390: allow pte_offset_map_lock() to fail
+Message-ID: <20230523140056.55b664b1@p-imbrenda>
+In-Reply-To: <4a15dbaa-1614-ce-ce1f-f73959cef895@google.com>
+References: <77a5d8c-406b-7068-4f17-23b7ac53bc83@google.com>
+        <94aec8fe-383f-892-dcbf-d4c14e460a7@google.com>
+        <20230517123546.672fb9b0@p-imbrenda>
+        <4a15dbaa-1614-ce-ce1f-f73959cef895@google.com>
+Organization: IBM
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <cover.1683365892.git.fthain@linux-m68k.org> <9e66262a754fcba50208aa424188896cc52a1dd1.1683365892.git.fthain@linux-m68k.org>
- <CAMuHMdX_0F0hSZKqBBCN3876BmfwbQb1_+N3h-V8xs5ouRXF=A@mail.gmail.com>
- <14e09781-6ffd-0834-fba4-427e5030f2be@gmail.com> <ee3cdd7b-c2b7-792e-e6ad-39fc6a1f817c@helsinkinet.fi>
-In-Reply-To: <ee3cdd7b-c2b7-792e-e6ad-39fc6a1f817c@helsinkinet.fi>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 23 May 2023 14:05:16 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWmaw9J1TfawD_wkmpww1tDtGqA53wrnwsJyoZzSDUdSQ@mail.gmail.com>
-Message-ID: <CAMuHMdWmaw9J1TfawD_wkmpww1tDtGqA53wrnwsJyoZzSDUdSQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] m68k: Move signal frame following exception on 68020/030
-To:     Eero Tamminen <oak@helsinkinet.fi>
-Cc:     Michael Schmitz <schmitzmic@gmail.com>,
-        linux-m68k@lists.linux-m68k.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: KdATZGw-PFRBi7nGruRJQHyOg66o4rOG
+X-Proofpoint-ORIG-GUID: GKYQ85EtVUpqelakERxcPgEdd_8F7rRj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
+ definitions=2023-05-23_07,2023-05-23_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ bulkscore=0 mlxscore=0 priorityscore=1501 adultscore=0 spamscore=0
+ mlxlogscore=999 impostorscore=0 clxscore=1015 lowpriorityscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2304280000 definitions=main-2305230092
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Eero,
+On Wed, 17 May 2023 14:50:28 -0700 (PDT)
+Hugh Dickins <hughd@google.com> wrote:
 
-On Tue, May 23, 2023 at 1:40 PM Eero Tamminen <oak@helsinkinet.fi> wrote:
-> On 23.5.2023 4.11, Michael Schmitz wrote:
-> > On 22/05/23 23:41, Geert Uytterhoeven wrote:
-> ...
-> >> I plan to send this upstream later this week, so any additional
-> >> testing would be appreciated.
-> >
-> > I've given this some lengthy stress testing, and haven't seen it fail once.
-> >
-> > In contrast, various attempts of mine to improve on the concept (by only
-> > moving the signal frame away from the USP in case it's likely to clash)
-> > sometimes came up against a kernel bus error in setup_frame() when
-> > copying the signo to the signal frame. I must be making some incorrect
-> > assumptions still ...
-> >
-> > Limiting the signal frame shift to bus fault exceptions that happen
-> > mid-instruction is not too much of an overhead even in low memory
-> > settings, and using 256 bytes (the largest possible operand size, i.e.
-> > the largest adjustment to USP that might occur on completion of the
-> > interrupted instruction) did not seem to cause any issues with stack
-> > growth either.
-> >
-> > I can give this some more testing in ARAnyM (extending the stack shift
-> > to format 7 frames) but I'd say it's got as much testing on 030 hardware
-> > as we can do.
->
-> Aranym emulates only 040 (without CPU cache).
+> On Wed, 17 May 2023, Claudio Imbrenda wrote:
+> > On Tue, 9 May 2023 22:01:16 -0700 (PDT)
+> > Hugh Dickins <hughd@google.com> wrote:
+> >   
+> > > In rare transient cases, not yet made possible, pte_offset_map() and
+> > > pte_offset_map_lock() may not find a page table: handle appropriately.
+> > > 
+> > > Signed-off-by: Hugh Dickins <hughd@google.com>
+> > > ---
+> > >  arch/s390/kernel/uv.c  |  2 ++
+> > >  arch/s390/mm/gmap.c    |  2 ++
+> > >  arch/s390/mm/pgtable.c | 12 +++++++++---
+> > >  3 files changed, 13 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
+> > > index cb2ee06df286..3c62d1b218b1 100644
+> > > --- a/arch/s390/kernel/uv.c
+> > > +++ b/arch/s390/kernel/uv.c
+> > > @@ -294,6 +294,8 @@ int gmap_make_secure(struct gmap *gmap, unsigned long gaddr, void *uvcb)
+> > >  
+> > >  	rc = -ENXIO;
+> > >  	ptep = get_locked_pte(gmap->mm, uaddr, &ptelock);
+> > > +	if (!ptep)
+> > > +		goto out;  
+> 
+> You may or may not be asking about this instance too.  When I looked at
 
-Hence Michael's comment to extend the stack shift to format-7 frames,
-which is what is generated on '040 in case of an access error.
+actually no, because of the reasons you give here :)
 
-Gr{oetje,eeting}s,
+> how the code lower down handles -ENXIO (promoting it to -EFAULT if an
+> access fails, or to -EAGAIN to ask for a retry), this looked just right
+> (whereas using -EAGAIN here would be wrong: that expects a "page" which
+> has not been initialized at this point).
+> 
+> > >  	if (pte_present(*ptep) && !(pte_val(*ptep) & _PAGE_INVALID) && pte_write(*ptep)) {
+> > >  		page = pte_page(*ptep);
+> > >  		rc = -EAGAIN;
+> > > diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
+> > > index dc90d1eb0d55..d198fc9475a2 100644
+> > > --- a/arch/s390/mm/gmap.c
+> > > +++ b/arch/s390/mm/gmap.c
+> > > @@ -2549,6 +2549,8 @@ static int __zap_zero_pages(pmd_t *pmd, unsigned long start,
+> > >  		spinlock_t *ptl;
+> > >  
+> > >  		ptep = pte_offset_map_lock(walk->mm, pmd, addr, &ptl);
+> > > +		if (!ptep)
+> > > +			break;  
+> > 
+> > so if pte_offset_map_lock fails, we abort and skip both the failed
+> > entry and the rest of the entries?  
+> 
+> Yes.
+> 
+> > 
+> > can pte_offset_map_lock be retried immediately if it fails? (consider
+> > that we currently don't allow THP with KVM guests)
+> > 
+> > Would something like this:
+> > 
+> > do {
+> > 	ptep = pte_offset_map_lock(...);
+> > 	mb();	/* maybe? */
+> > } while (!ptep);
+> > 
+> > make sense?  
+> 
+> No.  But you're absolutely right to be asking: thank you for looking
+> into it so carefully - and I realize that it's hard at this stage to
+> judge what's appropriate, when I've not yet even posted the endpoint
+> of these changes, the patches which make it possible not to find a
+> page table here.  And I'm intentionally keeping that vague, because
+> although I shall only introduce a THP case, I do expect it to be built
+> upon later in reclaiming empty page tables: it would be nice not to
+> have to change the arch code again when extending further.
+> 
+> My "rare transient cases" phrase may be somewhat misleading: one thing
+> that's wrong with your tight pte_offset_map_lock() loop above is that
+> the pmd entry pointing to page table may have been suddenly replaced
+> by a pmd_none() entry; and there's nothing in your loop above to
+> break out if that is so.
+> 
+> But if a page table is suddenly removed, that would be because it was
+> either empty, or replaced by a THP entry, or easily reconstructable on
+> demand (by that, I probably mean it was only mapping shared file
+> pages, which can just be refaulted if needed again).
+> 
+> The case you're wary of, is if the page table were removed briefly,
+> then put back shortly after: and still contains zero pages further
+> down. That's not something mm does now, nor at the end of my several
+> series, nor that I imagine us wanting to do in future: but I am
+> struggling to find a killer argument to persuade you that it could
+> never be done - most pages in a page table do need rmap tracking,
+> which will BUG if it's broken, but that argument happens not to apply
+> to the zero page.
+> 
+> (Hmm, there could be somewhere, where we would find it convenient to
+> remove a page table with intent to do ...something, then validation
+> of that isolated page table fails, so we just put it back again.)
+> 
+> Is it good enough for me to promise you that we won't do that?
+> 
+> There are several ways in which we could change __zap_zero_pages(),
+> but I don't see them as actually dealing with the concern at hand.
+> 
+> One change, I've tended to make at the mm end but did not dare
+> to interfere here: it would seem more sensible to do a single
+> pte_offset_map_lock() outside the loop, return if that fails,
+> increment ptep inside the loop, pte_unmap_unlock() after the loop.
+> 
+> But perhaps you have preemption reasons for not wanting that; and
+> although it would eliminate the oddity of half-processing a page
+> table, it would not really resolve the problem at hand: because,
+> what if this page table got removed just before __zap_zero_pages()
+> tries to take the lock, then got put back just after?
+> 
+> Another change: I see __zap_zero_pages() is driven by
+> walk_page_range(), and over at the mm end I'm usually setting
+> walk->action to ACTION_AGAIN in these failure cases; but thought that
+> an unnecessary piece of magic here, and cannot see how it could
+> actually help.  Your "retry the whole walk_page_range()" suggestion
+> below would be a heavier equivalent of that: but neither way gives
+> confidence, if a page table could actually be removed then reinserted
+> without mmap_write_lock().
+> 
+> I think I want to keep this s390 __zap_zero_pages() issue in mind, it
+> is important and thank you for raising it; but don't see any change
+> to the patch as actually needed.
+> 
+> Hugh
 
-                        Geert
+so if I understand the above correctly, pte_offset_map_lock will only
+fail if the whole page table has disappeared, and in that case, it will
+never reappear with zero pages, therefore we can safely skip (in that
+case just break). if we were to do a continue instead of a break, we
+would most likely fail again anyway.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+in that case I would still like a small change in your patch: please
+write a short (2~3 lines max) comment about why it's ok to do things
+that way
