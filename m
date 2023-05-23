@@ -2,117 +2,154 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C857C77B75
-	for <linux-m68k@archiver.kernel.org>; Mon, 22 May 2023 11:41:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E698C7EE26
+	for <linux-m68k@archiver.kernel.org>; Tue, 23 May 2023 01:12:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233010AbjEVLl6 convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 22 May 2023 07:41:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51582 "EHLO
+        id S230284AbjEWBL7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 22 May 2023 21:11:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233331AbjEVLlz (ORCPT
+        with ESMTP id S231577AbjEWBL6 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 22 May 2023 07:41:55 -0400
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB449B
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 May 2023 04:41:54 -0700 (PDT)
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-ba827c74187so8600356276.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 May 2023 04:41:54 -0700 (PDT)
+        Mon, 22 May 2023 21:11:58 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D597A7
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 May 2023 18:11:52 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-528cdc9576cso4720893a12.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 May 2023 18:11:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1684804312; x=1687396312;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7zer8l8b+HLR6p9Y6rOAVNAk3Mf+mytGElqdkx1hvfg=;
+        b=XRjkEFgqsBq4G281uM5gCPGKUuLv6Z1mhjKaJc+g6HndU/0JHX19fP9ZumGm8Gq6SV
+         KZzuaURaYVAb7sL2sCIE4Qo7TXIUZPP+Wfx9Ds76VMiQ8VwqhyKKPpZydL3OG0IelWPF
+         a+iWXlbtABbGx3tkzOEXeqVy2N8sMmCTNpO2kpT/yVRGQSYFBt7s4OIkvfDINJVRSRgK
+         dV6eD/aQDpQDvOUdwNelisfgp8jerQePhVq9To4IZ729vSxo6VXFPNrNzK7BIoJKWp0V
+         LZhAZ5cwDSDk0LA6rZeY+5h/EjpqWxY3SWWmZ0YopJfPnX4bC3dKVYA+Ir19zfg0cOfS
+         KmMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684755713; x=1687347713;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YQM4CisG43A3UU9kY3EcQQPtrr37Ex7+82L60u0Ozu4=;
-        b=UxW8scZmvR7vtjY7Un/EgSGhY6FaTRaBhAOi/hqBA0+pCYgFIa9Yowo/QQUNUrWvOi
-         EQyuTNxjjVYkpgNJgIw2UhxliOer9AHX5UojFHKHXLLO5CeeXEk6wtDMruFjPglQW4PG
-         h+E/k/wIM8ST4JSC9g3O+CMcOCncojpzJvIMaSJmMgo7j8f4iSV+zQRjKKUfgX3L0uGX
-         0d+AhhZNQHxXGvabri5DUfASq+++uEtjOBsIG2gWGVWjeqSEW9hAvIGcbDVqW+1snjwh
-         I7FVk+k6FAgjIdXH5MLm6aKZGCTlxioYzCLmMCDRwopbwEcFGlDp/hLoM09NITJFlQ0v
-         9fjw==
-X-Gm-Message-State: AC+VfDwZYkq00XGN6RCyn6Ze/kv4UYtKdxk3jXs1yn/h+/W8tcckvS6Z
-        Z6AP0q1VLb+KLlYFVPNsUjP5tP20RgCMOA==
-X-Google-Smtp-Source: ACHHUZ61+1um4h5hKI7jBpIHtny2ZbG612e0+S/EjiX1YsnusR7vmoYfr4lL15P7ovCOZVQ7O9vQTQ==
-X-Received: by 2002:a25:a304:0:b0:ba8:1ebe:9b96 with SMTP id d4-20020a25a304000000b00ba81ebe9b96mr9831843ybi.1.1684755713106;
-        Mon, 22 May 2023 04:41:53 -0700 (PDT)
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
-        by smtp.gmail.com with ESMTPSA id u140-20020a0deb92000000b00561e67c9d7csm2023067ywe.38.2023.05.22.04.41.52
-        for <linux-m68k@lists.linux-m68k.org>
+        d=1e100.net; s=20221208; t=1684804312; x=1687396312;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7zer8l8b+HLR6p9Y6rOAVNAk3Mf+mytGElqdkx1hvfg=;
+        b=LRV/jrj91sCHjiaOmfNkDh8E3Ge3vHg8JBIpEQQMtCPBDjjIzMrrM0kRp0TCO7ebKE
+         ehaPvTgBmiL8xxGD9bdh0d31wSFtcgrPfGBRaLt+Ahp6so8VRDNrrDxLiRMqr1VPTWGQ
+         o3PUg/1gqFOr5n+PXKjml768RTZJ+r7VyZsXz8r8ZcyX2MUVPt5M5q9z/J1sKzgi9BoV
+         iUAo/mwgnGZW4Yyv41BDYyLXiWO3JhT8xx/01mTX8pZqxDaR3ZTnCfvtLwFOWbGX4qHb
+         5plFcxiXhtF0nR25NTn/oEvSYFEo+PaIYl4frVLaov3UCn6M3I1lbVs8FBeBTqV8BOmy
+         /VnQ==
+X-Gm-Message-State: AC+VfDztnx9ezdbgLxugw6UI1n7bc2/12RvkW20ygdIB0qkGlkPeWasT
+        8MileidVJBo3EHEoIPfLtG0=
+X-Google-Smtp-Source: ACHHUZ7fMdZcLgvPTVew+0zN2KyVmCLZ5daLKGr46WzYmFf+BVc/XRUxb3EoZ/3bId3OSNTUy0Rskw==
+X-Received: by 2002:a17:902:ce8a:b0:1af:cbe4:d953 with SMTP id f10-20020a170902ce8a00b001afcbe4d953mr685806plg.60.1684804311560;
+        Mon, 22 May 2023 18:11:51 -0700 (PDT)
+Received: from ?IPV6:2001:df0:0:200c:f952:4e63:79d7:bf10? ([2001:df0:0:200c:f952:4e63:79d7:bf10])
+        by smtp.gmail.com with ESMTPSA id h15-20020a170902f54f00b001ae2b94701fsm5411732plf.21.2023.05.22.18.11.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 May 2023 04:41:52 -0700 (PDT)
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-563874afe98so39791697b3.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 May 2023 04:41:52 -0700 (PDT)
-X-Received: by 2002:a0d:ea43:0:b0:559:d3a0:4270 with SMTP id
- t64-20020a0dea43000000b00559d3a04270mr11018198ywe.34.1684755712500; Mon, 22
- May 2023 04:41:52 -0700 (PDT)
+        Mon, 22 May 2023 18:11:51 -0700 (PDT)
+Message-ID: <14e09781-6ffd-0834-fba4-427e5030f2be@gmail.com>
+Date:   Tue, 23 May 2023 13:11:46 +1200
 MIME-Version: 1.0
-References: <cover.1683365892.git.fthain@linux-m68k.org> <9e66262a754fcba50208aa424188896cc52a1dd1.1683365892.git.fthain@linux-m68k.org>
-In-Reply-To: <9e66262a754fcba50208aa424188896cc52a1dd1.1683365892.git.fthain@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 22 May 2023 13:41:41 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdX_0F0hSZKqBBCN3876BmfwbQb1_+N3h-V8xs5ouRXF=A@mail.gmail.com>
-Message-ID: <CAMuHMdX_0F0hSZKqBBCN3876BmfwbQb1_+N3h-V8xs5ouRXF=A@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] m68k: Move signal frame following exception on 68020/030
-To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     Michael Schmitz <schmitzmic@gmail.com>,
-        Andreas Schwab <schwab@linux-m68k.org>, stable@vger.kernel.org,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v1 1/1] m68k: Move signal frame following exception on
+ 68020/030
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Finn Thain <fthain@linux-m68k.org>
+Cc:     Andreas Schwab <schwab@linux-m68k.org>, stable@vger.kernel.org,
         linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+References: <cover.1683365892.git.fthain@linux-m68k.org>
+ <9e66262a754fcba50208aa424188896cc52a1dd1.1683365892.git.fthain@linux-m68k.org>
+ <CAMuHMdX_0F0hSZKqBBCN3876BmfwbQb1_+N3h-V8xs5ouRXF=A@mail.gmail.com>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+In-Reply-To: <CAMuHMdX_0F0hSZKqBBCN3876BmfwbQb1_+N3h-V8xs5ouRXF=A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sat, May 6, 2023 at 11:36 AM Finn Thain <fthain@linux-m68k.org> wrote:
-> On 68030/020, an instruction such as, moveml %a2-%a3/%a5,%sp@- may cause
-> a stack page fault during instruction execution (i.e. not at an
-> instruction boundary) and produce a format 0xB exception frame.
+Hi Geert,
+
+On 22/05/23 23:41, Geert Uytterhoeven wrote:
+> On Sat, May 6, 2023 at 11:36 AM Finn Thain <fthain@linux-m68k.org> wrote:
+>> On 68030/020, an instruction such as, moveml %a2-%a3/%a5,%sp@- may cause
+>> a stack page fault during instruction execution (i.e. not at an
+>> instruction boundary) and produce a format 0xB exception frame.
+>>
+>> In this situation, the value of USP will be unreliable. If a signal is to
+>> be delivered following the exception, this USP value is used to calculate
+>> the location for a signal frame. This can result in a corrupted user
+>> stack.
+>>
+>> The corruption was detected in dash (actually in glibc) where it showed
+>> up as an intermittent "stack smashing detected" message and crash
+>> following signal delivery for SIGCHLD.
+>>
+>> It was hard to reproduce that failure because delivery of the signal
+>> raced with the page fault and because the kernel places an unpredictable
+>> gap of up to 7 bytes between the USP and the signal frame.
+>>
+>> A format 0xB exception frame can be produced by a bus error or an address
+>> error. The 68030 Users Manual says that address errors occur immediately
+>> upon detection during instruction prefetch. The instruction pipeline
+>> allows prefetch to overlap with other instructions, which means an
+>> address error can arise during the execution of a different instruction.
+>> So it seems likely that this patch may help in the address error case also.
+>>
+>> Reported-and-tested-by: Stan Johnson <userm57@yahoo.com>
+>> Link: https://lore.kernel.org/all/CAMuHMdW3yD22_ApemzW_6me3adq6A458u1_F0v-1EYwK_62jPA@mail.gmail.com/
+>> Cc: Michael Schmitz <schmitzmic@gmail.com>
+>> Cc: Andreas Schwab <schwab@linux-m68k.org>
+>> Cc: stable@vger.kernel.org
+>> Co-developed-by: Michael Schmitz <schmitzmic@gmail.com>
+>> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+>> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> i.e. will queue as a fix in the m68k for-v6.4 branch.
 >
-> In this situation, the value of USP will be unreliable. If a signal is to
-> be delivered following the exception, this USP value is used to calculate
-> the location for a signal frame. This can result in a corrupted user
-> stack.
+> I plan to send this upstream later this week, so any additional
+> testing would be appreciated.
+
+I've given this some lengthy stress testing, and haven't seen it fail once.
+
+In contrast, various attempts of mine to improve on the concept (by only 
+moving the signal frame away from the USP in case it's likely to clash) 
+sometimes came up against a kernel bus error in setup_frame() when 
+copying the signo to the signal frame. I must be making some incorrect 
+assumptions still ...
+
+Limiting the signal frame shift to bus fault exceptions that happen 
+mid-instruction is not too much of an overhead even in low memory 
+settings, and using 256 bytes (the largest possible operand size, i.e. 
+the largest adjustment to USP that might occur on completion of the 
+interrupted instruction) did not seem to cause any issues with stack 
+growth either.
+
+I can give this some more testing in ARAnyM (extending the stack shift 
+to format 7 frames) but I'd say it's got as much testing on 030 hardware 
+as we can do.
+
+Cheers,
+
+     Michael
+
+
 >
-> The corruption was detected in dash (actually in glibc) where it showed
-> up as an intermittent "stack smashing detected" message and crash
-> following signal delivery for SIGCHLD.
+> Thanks!
 >
-> It was hard to reproduce that failure because delivery of the signal
-> raced with the page fault and because the kernel places an unpredictable
-> gap of up to 7 bytes between the USP and the signal frame.
+> Gr{oetje,eeting}s,
 >
-> A format 0xB exception frame can be produced by a bus error or an address
-> error. The 68030 Users Manual says that address errors occur immediately
-> upon detection during instruction prefetch. The instruction pipeline
-> allows prefetch to overlap with other instructions, which means an
-> address error can arise during the execution of a different instruction.
-> So it seems likely that this patch may help in the address error case also.
+>                          Geert
 >
-> Reported-and-tested-by: Stan Johnson <userm57@yahoo.com>
-> Link: https://lore.kernel.org/all/CAMuHMdW3yD22_ApemzW_6me3adq6A458u1_F0v-1EYwK_62jPA@mail.gmail.com/
-> Cc: Michael Schmitz <schmitzmic@gmail.com>
-> Cc: Andreas Schwab <schwab@linux-m68k.org>
-> Cc: stable@vger.kernel.org
-> Co-developed-by: Michael Schmitz <schmitzmic@gmail.com>
-> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
-
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue as a fix in the m68k for-v6.4 branch.
-
-I plan to send this upstream later this week, so any additional
-testing would be appreciated.
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                  -- Linus Torvalds
