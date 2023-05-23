@@ -2,154 +2,225 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E698C7EE26
-	for <linux-m68k@archiver.kernel.org>; Tue, 23 May 2023 01:12:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CABFAC7EE26
+	for <linux-m68k@archiver.kernel.org>; Tue, 23 May 2023 01:12:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230284AbjEWBL7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 22 May 2023 21:11:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39894 "EHLO
+        id S234169AbjEWBMl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 22 May 2023 21:12:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231577AbjEWBL6 (ORCPT
+        with ESMTP id S234018AbjEWBMk (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 22 May 2023 21:11:58 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D597A7
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 May 2023 18:11:52 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-528cdc9576cso4720893a12.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 May 2023 18:11:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684804312; x=1687396312;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7zer8l8b+HLR6p9Y6rOAVNAk3Mf+mytGElqdkx1hvfg=;
-        b=XRjkEFgqsBq4G281uM5gCPGKUuLv6Z1mhjKaJc+g6HndU/0JHX19fP9ZumGm8Gq6SV
-         KZzuaURaYVAb7sL2sCIE4Qo7TXIUZPP+Wfx9Ds76VMiQ8VwqhyKKPpZydL3OG0IelWPF
-         a+iWXlbtABbGx3tkzOEXeqVy2N8sMmCTNpO2kpT/yVRGQSYFBt7s4OIkvfDINJVRSRgK
-         dV6eD/aQDpQDvOUdwNelisfgp8jerQePhVq9To4IZ729vSxo6VXFPNrNzK7BIoJKWp0V
-         LZhAZ5cwDSDk0LA6rZeY+5h/EjpqWxY3SWWmZ0YopJfPnX4bC3dKVYA+Ir19zfg0cOfS
-         KmMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684804312; x=1687396312;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7zer8l8b+HLR6p9Y6rOAVNAk3Mf+mytGElqdkx1hvfg=;
-        b=LRV/jrj91sCHjiaOmfNkDh8E3Ge3vHg8JBIpEQQMtCPBDjjIzMrrM0kRp0TCO7ebKE
-         ehaPvTgBmiL8xxGD9bdh0d31wSFtcgrPfGBRaLt+Ahp6so8VRDNrrDxLiRMqr1VPTWGQ
-         o3PUg/1gqFOr5n+PXKjml768RTZJ+r7VyZsXz8r8ZcyX2MUVPt5M5q9z/J1sKzgi9BoV
-         iUAo/mwgnGZW4Yyv41BDYyLXiWO3JhT8xx/01mTX8pZqxDaR3ZTnCfvtLwFOWbGX4qHb
-         5plFcxiXhtF0nR25NTn/oEvSYFEo+PaIYl4frVLaov3UCn6M3I1lbVs8FBeBTqV8BOmy
-         /VnQ==
-X-Gm-Message-State: AC+VfDztnx9ezdbgLxugw6UI1n7bc2/12RvkW20ygdIB0qkGlkPeWasT
-        8MileidVJBo3EHEoIPfLtG0=
-X-Google-Smtp-Source: ACHHUZ7fMdZcLgvPTVew+0zN2KyVmCLZ5daLKGr46WzYmFf+BVc/XRUxb3EoZ/3bId3OSNTUy0Rskw==
-X-Received: by 2002:a17:902:ce8a:b0:1af:cbe4:d953 with SMTP id f10-20020a170902ce8a00b001afcbe4d953mr685806plg.60.1684804311560;
-        Mon, 22 May 2023 18:11:51 -0700 (PDT)
-Received: from ?IPV6:2001:df0:0:200c:f952:4e63:79d7:bf10? ([2001:df0:0:200c:f952:4e63:79d7:bf10])
-        by smtp.gmail.com with ESMTPSA id h15-20020a170902f54f00b001ae2b94701fsm5411732plf.21.2023.05.22.18.11.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 May 2023 18:11:51 -0700 (PDT)
-Message-ID: <14e09781-6ffd-0834-fba4-427e5030f2be@gmail.com>
-Date:   Tue, 23 May 2023 13:11:46 +1200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v1 1/1] m68k: Move signal frame following exception on
- 68020/030
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Finn Thain <fthain@linux-m68k.org>
-Cc:     Andreas Schwab <schwab@linux-m68k.org>, stable@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-References: <cover.1683365892.git.fthain@linux-m68k.org>
- <9e66262a754fcba50208aa424188896cc52a1dd1.1683365892.git.fthain@linux-m68k.org>
- <CAMuHMdX_0F0hSZKqBBCN3876BmfwbQb1_+N3h-V8xs5ouRXF=A@mail.gmail.com>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <CAMuHMdX_0F0hSZKqBBCN3876BmfwbQb1_+N3h-V8xs5ouRXF=A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Mon, 22 May 2023 21:12:40 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C5B94
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 May 2023 18:12:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1684804357; x=1716340357;
+  h=date:from:to:cc:subject:message-id;
+  bh=VbAvUQAkiL2SzTff6/hcCSZOJolXhlwvPsyd2AS/OgY=;
+  b=FWds0E/KmbZPiAuqeyYbYuBBmMBcsjDnncyQfJeDKldAiOwl3nqWMvGA
+   UbyP4bGEqHRBSMBCv6phdLSWBWEYX9FtM6nItXE23CFEaKeGwAH47hBUY
+   Rq1+Hd2Egy1fNP3zW7Ov9yTeLOiVwH5ED/tMpdK//ZotcZq/90NY9AL9e
+   CNWNnSpceTb97FjymLUA9udlDRevyqRq3EpTxU1RnDDfWW67kL5a6/BAo
+   7OhRa908s3xUCI/RypVLCjJHYBA3ZHz0Mv9iNAyLZNtO76PGe67LJ/O+0
+   umg0/dFQgRd2IHJXV0pqPT1pvyKYnYXUcdbpf/D14vUeMELD+x/4rxFN0
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10718"; a="342546115"
+X-IronPort-AV: E=Sophos;i="6.00,184,1681196400"; 
+   d="scan'208";a="342546115"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2023 18:12:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10718"; a="950330427"
+X-IronPort-AV: E=Sophos;i="6.00,184,1681196400"; 
+   d="scan'208";a="950330427"
+Received: from lkp-server01.sh.intel.com (HELO dea6d5a4f140) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 22 May 2023 18:12:35 -0700
+Received: from kbuild by dea6d5a4f140 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1q1GZm-000DOJ-1i;
+        Tue, 23 May 2023 01:12:34 +0000
+Date:   Tue, 23 May 2023 09:11:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 0d4276cfbe6fd4c4a21acdee803b05a3a6192082
+Message-ID: <20230523011147.GFeU-%lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
+tree/branch: INFO setup_repo_specs: /db/releases/20230522162832/lkp-src/repo/*/geert-m68k
+https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 0d4276cfbe6fd4c4a21acdee803b05a3a6192082  m68k: Move signal frame following exception on 68020/030
 
-On 22/05/23 23:41, Geert Uytterhoeven wrote:
-> On Sat, May 6, 2023 at 11:36 AM Finn Thain <fthain@linux-m68k.org> wrote:
->> On 68030/020, an instruction such as, moveml %a2-%a3/%a5,%sp@- may cause
->> a stack page fault during instruction execution (i.e. not at an
->> instruction boundary) and produce a format 0xB exception frame.
->>
->> In this situation, the value of USP will be unreliable. If a signal is to
->> be delivered following the exception, this USP value is used to calculate
->> the location for a signal frame. This can result in a corrupted user
->> stack.
->>
->> The corruption was detected in dash (actually in glibc) where it showed
->> up as an intermittent "stack smashing detected" message and crash
->> following signal delivery for SIGCHLD.
->>
->> It was hard to reproduce that failure because delivery of the signal
->> raced with the page fault and because the kernel places an unpredictable
->> gap of up to 7 bytes between the USP and the signal frame.
->>
->> A format 0xB exception frame can be produced by a bus error or an address
->> error. The 68030 Users Manual says that address errors occur immediately
->> upon detection during instruction prefetch. The instruction pipeline
->> allows prefetch to overlap with other instructions, which means an
->> address error can arise during the execution of a different instruction.
->> So it seems likely that this patch may help in the address error case also.
->>
->> Reported-and-tested-by: Stan Johnson <userm57@yahoo.com>
->> Link: https://lore.kernel.org/all/CAMuHMdW3yD22_ApemzW_6me3adq6A458u1_F0v-1EYwK_62jPA@mail.gmail.com/
->> Cc: Michael Schmitz <schmitzmic@gmail.com>
->> Cc: Andreas Schwab <schwab@linux-m68k.org>
->> Cc: stable@vger.kernel.org
->> Co-developed-by: Michael Schmitz <schmitzmic@gmail.com>
->> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
->> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
-> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> i.e. will queue as a fix in the m68k for-v6.4 branch.
->
-> I plan to send this upstream later this week, so any additional
-> testing would be appreciated.
+elapsed time: 722m
 
-I've given this some lengthy stress testing, and haven't seen it fail once.
+configs tested: 153
+configs skipped: 12
 
-In contrast, various attempts of mine to improve on the concept (by only 
-moving the signal frame away from the USP in case it's likely to clash) 
-sometimes came up against a kernel bus error in setup_frame() when 
-copying the signo to the signal frame. I must be making some incorrect 
-assumptions still ...
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Limiting the signal frame shift to bus fault exceptions that happen 
-mid-instruction is not too much of an overhead even in low memory 
-settings, and using 256 bytes (the largest possible operand size, i.e. 
-the largest adjustment to USP that might occur on completion of the 
-interrupted instruction) did not seem to cause any issues with stack 
-growth either.
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r014-20230521   gcc  
+alpha                randconfig-r035-20230522   gcc  
+arc                              allyesconfig   gcc  
+arc          buildonly-randconfig-r001-20230522   gcc  
+arc          buildonly-randconfig-r003-20230522   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r026-20230521   gcc  
+arc                  randconfig-r043-20230521   gcc  
+arc                  randconfig-r043-20230522   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r046-20230521   clang
+arm                  randconfig-r046-20230522   gcc  
+arm64                            allyesconfig   gcc  
+arm64        buildonly-randconfig-r006-20230522   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r003-20230521   clang
+arm64                randconfig-r012-20230521   gcc  
+arm64                randconfig-r015-20230522   clang
+arm64                randconfig-r022-20230522   clang
+csky         buildonly-randconfig-r004-20230521   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r025-20230521   gcc  
+hexagon              randconfig-r041-20230521   clang
+hexagon              randconfig-r041-20230522   clang
+hexagon              randconfig-r045-20230521   clang
+hexagon              randconfig-r045-20230522   clang
+i386                             allyesconfig   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-a001-20230522   gcc  
+i386                 randconfig-a002-20230522   gcc  
+i386                 randconfig-a003-20230522   gcc  
+i386                 randconfig-a004-20230522   gcc  
+i386                 randconfig-a005-20230522   gcc  
+i386                 randconfig-a006-20230522   gcc  
+i386                 randconfig-a011-20230522   clang
+i386                 randconfig-a012-20230522   clang
+i386                 randconfig-a013-20230522   clang
+i386                 randconfig-a014-20230522   clang
+i386                 randconfig-a015-20230522   clang
+i386                 randconfig-a016-20230522   clang
+i386                 randconfig-r003-20230522   gcc  
+ia64                             allmodconfig   gcc  
+ia64                                defconfig   gcc  
+ia64                 randconfig-r033-20230521   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r005-20230521   gcc  
+m68k                             allmodconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze           randconfig-r011-20230521   gcc  
+microblaze           randconfig-r021-20230521   gcc  
+microblaze           randconfig-r034-20230522   gcc  
+microblaze           randconfig-r036-20230521   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 randconfig-r004-20230522   clang
+nios2                               defconfig   gcc  
+nios2                randconfig-r026-20230522   gcc  
+openrisc     buildonly-randconfig-r002-20230521   gcc  
+parisc       buildonly-randconfig-r002-20230522   gcc  
+parisc       buildonly-randconfig-r004-20230522   gcc  
+parisc       buildonly-randconfig-r006-20230521   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r023-20230521   gcc  
+parisc               randconfig-r024-20230522   gcc  
+parisc               randconfig-r031-20230522   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc              randconfig-r024-20230521   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r016-20230521   gcc  
+riscv                randconfig-r016-20230522   clang
+riscv                randconfig-r021-20230522   clang
+riscv                randconfig-r042-20230521   gcc  
+riscv                randconfig-r042-20230522   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r013-20230522   clang
+s390                 randconfig-r015-20230521   gcc  
+s390                 randconfig-r032-20230522   gcc  
+s390                 randconfig-r044-20230521   gcc  
+s390                 randconfig-r044-20230522   clang
+sh                               allmodconfig   gcc  
+sh           buildonly-randconfig-r003-20230521   gcc  
+sh                   randconfig-r001-20230521   gcc  
+sh                   randconfig-r001-20230522   gcc  
+sh                   randconfig-r002-20230521   gcc  
+sh                   randconfig-r004-20230521   gcc  
+sh                   randconfig-r014-20230522   gcc  
+sh                   randconfig-r036-20230522   gcc  
+sparc        buildonly-randconfig-r005-20230521   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r005-20230522   gcc  
+sparc                randconfig-r011-20230522   gcc  
+sparc64              randconfig-r023-20230522   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-a001-20230522   gcc  
+x86_64               randconfig-a002-20230522   gcc  
+x86_64               randconfig-a003-20230522   gcc  
+x86_64               randconfig-a004-20230522   gcc  
+x86_64               randconfig-a005-20230522   gcc  
+x86_64               randconfig-a006-20230522   gcc  
+x86_64               randconfig-a011-20230522   clang
+x86_64               randconfig-a012-20230522   clang
+x86_64               randconfig-a013-20230522   clang
+x86_64               randconfig-a014-20230522   clang
+x86_64               randconfig-a015-20230522   clang
+x86_64               randconfig-a016-20230522   clang
+x86_64               randconfig-x051-20230522   clang
+x86_64               randconfig-x052-20230522   clang
+x86_64               randconfig-x053-20230522   clang
+x86_64               randconfig-x054-20230522   clang
+x86_64               randconfig-x055-20230522   clang
+x86_64               randconfig-x056-20230522   clang
+x86_64               randconfig-x061-20230522   clang
+x86_64               randconfig-x062-20230522   clang
+x86_64               randconfig-x063-20230522   clang
+x86_64               randconfig-x064-20230522   clang
+x86_64               randconfig-x065-20230522   clang
+x86_64               randconfig-x066-20230522   clang
+x86_64               randconfig-x071-20230522   gcc  
+x86_64               randconfig-x072-20230522   gcc  
+x86_64               randconfig-x073-20230522   gcc  
+x86_64               randconfig-x074-20230522   gcc  
+x86_64               randconfig-x075-20230522   gcc  
+x86_64               randconfig-x076-20230522   gcc  
+x86_64               randconfig-x081-20230522   gcc  
+x86_64               randconfig-x082-20230522   gcc  
+x86_64               randconfig-x083-20230522   gcc  
+x86_64               randconfig-x084-20230522   gcc  
+x86_64               randconfig-x085-20230522   gcc  
+x86_64               randconfig-x086-20230522   gcc  
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r006-20230522   gcc  
+xtensa               randconfig-r013-20230521   gcc  
+xtensa               randconfig-r031-20230521   gcc  
+xtensa               randconfig-r035-20230521   gcc  
 
-I can give this some more testing in ARAnyM (extending the stack shift 
-to format 7 frames) but I'd say it's got as much testing on 030 hardware 
-as we can do.
-
-Cheers,
-
-     Michael
-
-
->
-> Thanks!
->
-> Gr{oetje,eeting}s,
->
->                          Geert
->
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                  -- Linus Torvalds
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
