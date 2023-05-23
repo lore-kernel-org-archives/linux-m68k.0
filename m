@@ -2,164 +2,94 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1562C7EE31
-	for <linux-m68k@archiver.kernel.org>; Tue, 23 May 2023 10:57:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D122C77B75
+	for <linux-m68k@archiver.kernel.org>; Tue, 23 May 2023 11:12:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236400AbjEWK55 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 23 May 2023 06:57:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39362 "EHLO
+        id S230416AbjEWLMW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 23 May 2023 07:12:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233019AbjEWK5z (ORCPT
+        with ESMTP id S229653AbjEWLMW (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 23 May 2023 06:57:55 -0400
-Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F90A126
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 May 2023 03:57:53 -0700 (PDT)
-Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-456fe3597bdso3301391e0c.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 May 2023 03:57:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684839472; x=1687431472;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MPZGzse+EwoYxx5aP+jOlzsmNfWXOwQHS1xYrgjsec4=;
-        b=dOQwlVtHCe09Vk6RBJyv4UlmNvYYMnzQdN2fEZMcAJCu/TvLE+aT6q3cEIc8MDOmBx
-         HP4ow/lRyQjX5ou5gynKDIgwRGlxnKP17GdXlnjq6uz1ijUiCnacny3Md+zs9HDXlWpd
-         /vJJE9f2AKfUpQCBaZ86Lp475NcG+d8oj3/lzlNgDDkfbpoahI9iEBZqgJGax+ZttcuR
-         gxFYk69/1/g6u8rT0LmqyntNq4QgPOiylA448Fmme9hwmf33rBx4ObygcWDs9zyaVSfI
-         o7vxmAgMbJLQQXRgL/2ax63tRT4pKoFENMaUoAU0k0zcTFUWAtxubuxDUMY5St7Chco4
-         J29w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684839472; x=1687431472;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MPZGzse+EwoYxx5aP+jOlzsmNfWXOwQHS1xYrgjsec4=;
-        b=NgS1xIgDFy8HHb6mv/grWSUcLWUAtTqwZTm6yt9H/1Y5xSilmZcJL4P7F0RMgnqaw7
-         TtWBH80F2e+/CvsgzP4x1vt2KNvpG/LNgSsEtgCsMWYZXe2Dn1yuwuXmjthC3Dy2eCMA
-         GEE12eoSjKmmuuNsPN4D5nMZL3PQPRLvhzigt8q6LKdkSxSj8PJvjezOblirzY6ac/xj
-         upSeNLsiJmAtZL9oxri98/r+0/0u3lDHv1C05oYztwEVqKerJphTV7Q5v/AGy23j9oRt
-         8k2+IdxOoYt0Ov472WiVBjXsFX3l7Vsp/wZey2sF7Vn6yXEFRbKwIX5PlFsESnyakWQv
-         otNQ==
-X-Gm-Message-State: AC+VfDyTch52jlP1to02Y76tCG+SFpLpRUd6xSmFJEPGf8Fkv3v5VFJN
-        lthPKjLrssC23E4SzGnu4fPVzhtFdkGq4osKFu4=
-X-Google-Smtp-Source: ACHHUZ5BnP3gkAdc5bGRbbNu8BA4XYUOvijVFedQabDgzPfHyqbd3wbCe7zKvL1rqhCSR6cTKzJAQSc6wb3cCiUjneM=
-X-Received: by 2002:a1f:2cce:0:b0:440:4c82:6508 with SMTP id
- s197-20020a1f2cce000000b004404c826508mr4142026vks.3.1684839472183; Tue, 23
- May 2023 03:57:52 -0700 (PDT)
+        Tue, 23 May 2023 07:12:22 -0400
+Received: from welho-filter2.welho.com (welho-filter2b.welho.com [83.102.41.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF251C4
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 May 2023 04:12:10 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by welho-filter2.welho.com (Postfix) with ESMTP id 927EA3FE16;
+        Tue, 23 May 2023 14:12:07 +0300 (EEST)
+X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
+Received: from welho-smtp1.welho.com ([IPv6:::ffff:83.102.41.84])
+        by localhost (welho-filter2.welho.com [::ffff:83.102.41.24]) (amavisd-new, port 10024)
+        with ESMTP id Zs69O9pyVv1R; Tue, 23 May 2023 14:12:07 +0300 (EEST)
+Received: from [192.168.0.20] (89-27-40-192.bb.dnainternet.fi [89.27.40.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by welho-smtp1.welho.com (Postfix) with ESMTPSA id 06EF37A;
+        Tue, 23 May 2023 14:12:04 +0300 (EEST)
+Message-ID: <ee3cdd7b-c2b7-792e-e6ad-39fc6a1f817c@helsinkinet.fi>
+Date:   Tue, 23 May 2023 14:12:04 +0300
 MIME-Version: 1.0
-References: <20230523091139.21449-1-vbabka@suse.cz>
-In-Reply-To: <20230523091139.21449-1-vbabka@suse.cz>
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Date:   Tue, 23 May 2023 19:58:03 +0900
-Message-ID: <CAB=+i9RycsnDbJ1f1jTiJ6fXnGUmH95h23G37Ss6XNAA3VJ3_w@mail.gmail.com>
-Subject: Re: [PATCH] mm/slab: rename CONFIG_SLAB to CONFIG_SLAB_DEPRECATED
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Qin Jian <qinjian@cqplus1.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v1 1/1] m68k: Move signal frame following exception on
+ 68020/030
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     linux-m68k@lists.linux-m68k.org
+References: <cover.1683365892.git.fthain@linux-m68k.org>
+ <9e66262a754fcba50208aa424188896cc52a1dd1.1683365892.git.fthain@linux-m68k.org>
+ <CAMuHMdX_0F0hSZKqBBCN3876BmfwbQb1_+N3h-V8xs5ouRXF=A@mail.gmail.com>
+ <14e09781-6ffd-0834-fba4-427e5030f2be@gmail.com>
+Content-Language: en-US
+From:   Eero Tamminen <oak@helsinkinet.fi>
+In-Reply-To: <14e09781-6ffd-0834-fba4-427e5030f2be@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, May 23, 2023 at 6:12=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz> wr=
-ote:
->
-> As discussed at LSF/MM [1] [2] and with no objections raised there,
-> deprecate the SLAB allocator. Rename the user-visible option so that
-> users with CONFIG_SLAB=3Dy get a new prompt with explanation during make
-> oldconfig, while make olddefconfig will just switch to SLUB.
->
-> In all defconfigs with CONFIG_SLAB=3Dy remove the line so those also
-> switch to SLUB. Regressions due to the switch should be reported to
-> linux-mm and slab maintainers.
->
-> [1] https://lore.kernel.org/all/4b9fc9c6-b48c-198f-5f80-811a44737e5f@suse=
-.cz/
-> [2] https://lwn.net/Articles/932201/
->
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
+Hi,
 
-<snip>
+On 23.5.2023 4.11, Michael Schmitz wrote:
+> On 22/05/23 23:41, Geert Uytterhoeven wrote:
+...
+>> I plan to send this upstream later this week, so any additional
+>> testing would be appreciated.
+> 
+> I've given this some lengthy stress testing, and haven't seen it fail once.
+> 
+> In contrast, various attempts of mine to improve on the concept (by only 
+> moving the signal frame away from the USP in case it's likely to clash) 
+> sometimes came up against a kernel bus error in setup_frame() when 
+> copying the signo to the signal frame. I must be making some incorrect 
+> assumptions still ...
+> 
+> Limiting the signal frame shift to bus fault exceptions that happen 
+> mid-instruction is not too much of an overhead even in low memory 
+> settings, and using 256 bytes (the largest possible operand size, i.e. 
+> the largest adjustment to USP that might occur on completion of the 
+> interrupted instruction) did not seem to cause any issues with stack 
+> growth either.
+> 
+> I can give this some more testing in ARAnyM (extending the stack shift 
+> to format 7 frames) but I'd say it's got as much testing on 030 hardware 
+> as we can do.
 
-> diff --git a/mm/Kconfig b/mm/Kconfig
-> index 7672a22647b4..b537c4436d18 100644
-> --- a/mm/Kconfig
-> +++ b/mm/Kconfig
-> @@ -218,11 +218,18 @@ choice
->         help
->            This option allows to select a slab allocator.
->
-> -config SLAB
-> -       bool "SLAB"
-> +config SLAB_DEPRECATED
-> +       bool "SLAB (DEPRECATED)"
->         depends on !PREEMPT_RT
->         select HAVE_HARDENED_USERCOPY_ALLOCATOR
->         help
-> +         Deprecated and scheduled for removal in a few cycles. Replaced =
-by
-> +         SLUB.
-> +
-> +         If you cannot migrate to SLUB, please contact linux-mm@kvack.or=
-g
-> +         and the people listed in the SLAB ALLOCATOR section of MAINTAIN=
-ERS
-> +         file, explaining why.
-> +
->           The regular slab allocator that is established and known to wor=
-k
->           well in all environments. It organizes cache hot objects in
->           per cpu and per node queues.
-> @@ -240,6 +247,11 @@ config SLUB
->
->  endchoice
->
-> +config SLAB
-> +       bool
-> +       default y
-> +       depends on SLAB_DEPRECATED
-> +
->  config SLUB_TINY
->         bool "Configure SLUB for minimal memory footprint"
->         depends on SLUB && EXPERT
-> --
-> 2.40.1
+Aranym emulates only 040 (without CPU cache).
 
-Thank you for the work!
-It looks good to me.
-let's see some users raise their voice.
+For 030 system emulation, you can use either WinUAE (Amiga) or Hatari 
+(Atari).
 
-Acked-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Those emulate (using WinUAE CPU core) all 68000 - 68060 models, 
+including MMU *and* CPU cache.
+
+Note: MMU+cache combination has some issues with Linux on Hatari though, 
+so you need to disable cache & prefetch emulation to be able to run 
+Linux user-space with Hatari [1].  Apparently these issues do not happen 
+on WinUAE, so that seems better 030 Linux test platform for now.
+
+
+	- Eero
+
+[1] https://hatari.tuxfamily.org/doc/m68k-linux.txt
