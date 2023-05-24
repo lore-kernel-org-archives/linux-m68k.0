@@ -2,149 +2,129 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 381C5C7EE32
-	for <linux-m68k@archiver.kernel.org>; Wed, 24 May 2023 01:49:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AEC6C7EE32
+	for <linux-m68k@archiver.kernel.org>; Wed, 24 May 2023 10:10:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231317AbjEXBtc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 23 May 2023 21:49:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43136 "EHLO
+        id S231506AbjEXKKx convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 24 May 2023 06:10:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238919AbjEXBtb (ORCPT
+        with ESMTP id S230128AbjEXKKv (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 23 May 2023 21:49:31 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14818196
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 May 2023 18:49:27 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-ba68ad1b342so644205276.1
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 23 May 2023 18:49:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1684892967; x=1687484967;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qRR20WPPG9GQ+bWld5KX4B7EuAV7QhoHIJ5BRRfzj5g=;
-        b=fL1Ko/YzJ7ADR+5IhbndnTRBOzBniMKv2InrhlDBTKJ8NlYVC/WzojNZzRdjG8LqqI
-         8LB9Z4sfpXm4DMnyfRFicnIehOON6Mw+FClbq6xhPa9tlrIuXm3Q/2idrYMx02+afzOp
-         1VCSHU1xv+O9cTuzhmlxGQq1v0D4TgBrAS9dYOJLgo+SzeMAZ7rQLDPNPL9H5vsD1p44
-         JTB4zFm6Ty/2t/Mm5CpAGXHuXSex52HKZD5bYmtrIhNvgrtjqZinsu17ACzjltY7KKk5
-         TNaE7Q4HSc79RkqKOj+NGXTgrLKTP+KzqHxsfw06sf9yCgMnslxI0DnH5G6oL7bKwZgq
-         fWlg==
+        Wed, 24 May 2023 06:10:51 -0400
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB85AC0
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 24 May 2023 03:10:49 -0700 (PDT)
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-b9daef8681fso678996276.1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 24 May 2023 03:10:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684892967; x=1687484967;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qRR20WPPG9GQ+bWld5KX4B7EuAV7QhoHIJ5BRRfzj5g=;
-        b=S2q5VgxG+1G2VLntLKoUL9pO7tUpWP4HOH3mdmzXm1Mhnhlf/B/mNhO6dRhO6ai4lJ
-         SknvPSaJ98MCjFkDGAj1f1DAJXDKSlnGgmqXpqK/gKjGVLPMx8qxEpXK5CQ+YDruhSzt
-         3+QJA/8zhRVHmxVB+rKhuqXuKp7Z7zyrmUMh24WEhAxwVVmRlzfDb/zix1s5vkeOvkFp
-         MfqXhadQt354u7bauIDoSNFGLC13fVt5D4Axc8mt4IvZm+NlZ5A5tMNBrrKMcDQXg3Qk
-         yMRsrna2jfB9J0hc+en6OAtb8bWFrrM90yZxUERYtVKFJwALX3IggIMhB0KozIRy14MA
-         i80g==
-X-Gm-Message-State: AC+VfDxYfQdw9FPpexJPmWcEvJ9D2tOYsEZc5ZtrOxt3MgYiTh1SXj0+
-        Bu3Ktc1iWIN/hGU5nbvjU9JHgw==
-X-Google-Smtp-Source: ACHHUZ7f0TOZQo7Cw+o/qEVNq4B1zvZdBbLM5VJM6QqwwtZu4t36Vxp5CkGSHrwBFYCBff4rw2Ddpw==
-X-Received: by 2002:a25:385:0:b0:ba8:54c4:3136 with SMTP id 127-20020a250385000000b00ba854c43136mr19398918ybd.52.1684892966804;
-        Tue, 23 May 2023 18:49:26 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id x7-20020a259a07000000b00b8f6ec5a955sm2395274ybn.49.2023.05.23.18.49.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 May 2023 18:49:26 -0700 (PDT)
-Date:   Tue, 23 May 2023 18:49:14 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Helge Deller <deller@gmx.de>,
-        John David Anglin <dave.anglin@bell.net>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 15/23] s390: allow pte_offset_map_lock() to fail
-In-Reply-To: <20230523140056.55b664b1@p-imbrenda>
-Message-ID: <b64cd153-18e8-81a6-b852-c04d8b1381d@google.com>
-References: <77a5d8c-406b-7068-4f17-23b7ac53bc83@google.com> <94aec8fe-383f-892-dcbf-d4c14e460a7@google.com> <20230517123546.672fb9b0@p-imbrenda> <4a15dbaa-1614-ce-ce1f-f73959cef895@google.com> <20230523140056.55b664b1@p-imbrenda>
+        d=1e100.net; s=20221208; t=1684923049; x=1687515049;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qjsS8fRbVoZU8c34Ms8NTam545AKBDbkDG6TRRcdYb4=;
+        b=FRxVkLEB4djQ1rnTEGo1j0TMZFPo4WaUiv6oWrG2BqAjC8XepTB9VOXgZ4g9jpMU7/
+         xYCpLrcvGIBuWQhVCjykg4OVBNWehPj6WPYiT6xm0OSUuAdcOnDUV5uizR78IZWzAgE9
+         Vj4KMlwc3po9eyyMn8kQDH2kK7S6s9T657ChjPa/jgWCC9jY4Ne0mWBt+ZlBUETP2MQV
+         1WQAC5M9PuLDnqWLxVeQSzwSNN8yH0UiS5MFmUrUUp2+WxD9gYIUI3IWN5L0TbTEkKN4
+         jC8keTlpiU9AkVCXSWyqr1KFhNpgSXJnBxjpYFqRGoo0/mnwIkHdHp4RxcN7xE626YJU
+         fN4A==
+X-Gm-Message-State: AC+VfDyZxbU8UtH6HAi2PaQhRb269tPo5Aa1TwvFqAqZTjUqb6iZ50rJ
+        //wqaDz2cGulCkLyZYtrtK8SFWaPJMlE6A==
+X-Google-Smtp-Source: ACHHUZ5M2LDq/JySC9e9kv4lfPOkE0jTjJpJrvcvThU/7E2mOiigzJFskVKxyd+QyocZj5hmaXa0mw==
+X-Received: by 2002:a81:83d3:0:b0:55a:ae1a:d49 with SMTP id t202-20020a8183d3000000b0055aae1a0d49mr18011265ywf.43.1684923048661;
+        Wed, 24 May 2023 03:10:48 -0700 (PDT)
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
+        by smtp.gmail.com with ESMTPSA id n80-20020a0dcb53000000b0055a373a7e5asm3593515ywd.131.2023.05.24.03.10.48
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 May 2023 03:10:48 -0700 (PDT)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-561f10b6139so7038097b3.2
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 24 May 2023 03:10:48 -0700 (PDT)
+X-Received: by 2002:a0d:c007:0:b0:560:ee0d:1d95 with SMTP id
+ b7-20020a0dc007000000b00560ee0d1d95mr18669163ywd.3.1684923047913; Wed, 24 May
+ 2023 03:10:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20230503-virt-to-pfn-v6-4-rc1-v3-0-a16c19c03583@linaro.org> <20230503-virt-to-pfn-v6-4-rc1-v3-2-a16c19c03583@linaro.org>
+In-Reply-To: <20230503-virt-to-pfn-v6-4-rc1-v3-2-a16c19c03583@linaro.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 24 May 2023 12:10:36 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXafb3SYUgu=ZWFRSiqGdt5ahvPEa75v6jGPBPGARaBhw@mail.gmail.com>
+Message-ID: <CAMuHMdXafb3SYUgu=ZWFRSiqGdt5ahvPEa75v6jGPBPGARaBhw@mail.gmail.com>
+Subject: Re: [PATCH v3 02/12] m68k: Pass a pointer to virt_to_pfn() virt_to_page()
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Greg Ungerer <gerg@linux-m68k.org>, linux-mm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-snps-arc@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, 23 May 2023, Claudio Imbrenda wrote:
-> 
-> so if I understand the above correctly, pte_offset_map_lock will only
-> fail if the whole page table has disappeared, and in that case, it will
-> never reappear with zero pages, therefore we can safely skip (in that
-> case just break). if we were to do a continue instead of a break, we
-> would most likely fail again anyway.
+Hi Linus,
 
-Yes, that's the most likely; and you hold mmap_write_lock() there,
-and VM_NOHUGEPAGE on all vmas, so I think it's the only foreseeable
-possibility.
+On Tue, May 23, 2023 at 4:05 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+> Functions that work on a pointer to virtual memory such as
+> virt_to_pfn() and users of that function such as
+> virt_to_page() are supposed to pass a pointer to virtual
+> memory, ideally a (void *) or other pointer. However since
+> many architectures implement virt_to_pfn() as a macro,
+> this function becomes polymorphic and accepts both a
+> (unsigned long) and a (void *).
+>
+> Fix up the offending calls in arch/m68k with explicit casts.
+>
+> The page table include <asm/pgtable.h> will include different
+> variants of the defines depending on whether you build for
+> classic m68k, ColdFire or Sun3, so fix all variants.
+>
+> Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 
-> 
-> in that case I would still like a small change in your patch: please
-> write a short (2~3 lines max) comment about why it's ok to do things
-> that way
+Thanks for your patch!
 
-Sure.
+> ---
+> ChangeLog v2->v3:
+> - Fix up versioning. This is v3.
+> - Let Coldfire __pte_page() return a (void *) instead of __va
+> - Delete Coldfire pte_pagenr() which was using unsigned long
+>   semantics from __pte_page()
 
-But I now see that I've disobeyed you, and gone to 4 lines (but in the
-comment above the function, so as not to distract from the code itself):
-is this good wording to you?  I needed to research how they were stopped
-from coming in afterwards, so wanted to put something greppable in there.
+You may want to mention this removal in the patch descriptin.
 
-And, unless I'm misunderstanding, that "after THP was enabled" was
-always supposed to say "after THP was disabled" (because splitting a
-huge zero page pmd inserts a a page table full of little zero ptes).
+> - Drop ill-advised change to Coldfire pmd_page_vaddr()
 
-Or would you prefer the comment in the commit message instead,
-or down just above the pte_offset_map_lock() line?
+> --- a/arch/m68k/include/asm/sun3_pgtable.h
+> +++ b/arch/m68k/include/asm/sun3_pgtable.h
 
-It would much better if I could find one place at the mm end, to
-enforce its end of the contract; but cannot think how to do that.
+> @@ -111,7 +111,7 @@ static inline void pte_clear (struct mm_struct *mm, unsigned long addr, pte_t *p
+>
+>  #define pte_page(pte)          virt_to_page(__pte_page(pte))
+>  #define pmd_pfn(pmd)           (pmd_val(pmd) >> PAGE_SHIFT)
+> -#define pmd_page(pmd)          virt_to_page(pmd_page_vaddr(pmd))
+> +#define pmd_page(pmd)          virt_to_page((void  *)pmd_page_vaddr(pmd))
 
-Hugh
+There's an extra space between "void" and "*".
 
---- a/arch/s390/mm/gmap.c
-+++ b/arch/s390/mm/gmap.c
-@@ -2537,7 +2537,12 @@ static inline void thp_split_mm(struct mm_struct *mm)
-  * Remove all empty zero pages from the mapping for lazy refaulting
-  * - This must be called after mm->context.has_pgste is set, to avoid
-  *   future creation of zero pages
-- * - This must be called after THP was enabled
-+ * - This must be called after THP was disabled.
-+ *
-+ * mm contracts with s390, that even if mm were to remove a page table,
-+ * racing with the loop below and so causing pte_offset_map_lock() to fail,
-+ * it will never insert a page table containing empty zero pages once
-+ * mm_forbids_zeropage(mm) i.e. mm->context.has_pgste is set.
-  */
- static int __zap_zero_pages(pmd_t *pmd, unsigned long start,
- 			   unsigned long end, struct mm_walk *walk)
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
