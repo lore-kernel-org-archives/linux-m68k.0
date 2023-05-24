@@ -2,105 +2,133 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE3C5C77B73
-	for <linux-m68k@archiver.kernel.org>; Wed, 24 May 2023 13:04:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4B14C7EE33
+	for <linux-m68k@archiver.kernel.org>; Wed, 24 May 2023 14:27:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbjEXNEo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 24 May 2023 09:04:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42482 "EHLO
+        id S235916AbjEXO1J (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 24 May 2023 10:27:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230478AbjEXNEe (ORCPT
+        with ESMTP id S229919AbjEXO1I (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 24 May 2023 09:04:34 -0400
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12B38C5
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 24 May 2023 06:04:21 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 6ADF05C012C;
-        Wed, 24 May 2023 09:04:20 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Wed, 24 May 2023 09:04:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1684933460; x=1685019860; bh=u/
-        j4tury9PFogUt8uLVpuUyYP4Hl3pM3mNXPm8a+p4Y=; b=GI+13FVrtR4WkTH9VX
-        VILe0xD9T7UZrsXz11/XIV+qPSVtW2W73t1IeitFzu0RvZa3GQVqNptX140iAiM/
-        2mJfId1J+reaamo/q7Wg/2DRGKOs6A7te3UeMVr9jQlj211H8apkX+7QsrX6bFs5
-        FuUAybE8D6YCzqX96iF/IhDL8y9KNipRJV3retpe+O6S9azm0kw8D2q01MPFiP/S
-        SXRkjYqLxJHRHQ8BsFQbgT+UEqQcJVB1qNMfECi7a7LXWR8Im4CrR5i9NY9gg14a
-        2AKG4dywXUr1XGDnnXweybTZ78ubK/4BY6vAp1oFcWi28kYhENCAsGDCTAWvNqWv
-        uAog==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1684933460; x=1685019860; bh=u/j4tury9PFog
-        Ut8uLVpuUyYP4Hl3pM3mNXPm8a+p4Y=; b=Mu/KV0wcgODrud6sCQYr+ooG1Pi46
-        XDkZbafQMXnsYK5JOPAraXE+J304VGJ1D2IQnd2mhnU0EzMUxrCAxaeYd+gtjgQa
-        38iLNdkwRTLkFN2r3oRx3HP1UVeRDUibNq3m6hdAs0TXyZxJ4FcrttHSZBIWdqvm
-        fDOksOAY4GCxTASCu8Fd5fiT/7Lk+AzLNsFkkse1zb6iOhDdxTQQFB6senkdSJsG
-        18u59TMDO9Dvh9Mgm8S+S+3pWDd4K+OJu5drKF4AAKu/wHx8m1AZzMx1oCDzrECO
-        YL0cxeYgNDdgf8OrbCvXr/82GN49ID1VhvM9T0Z/Ye4FHNyampSyZMmWw==
-X-ME-Sender: <xms:UwtuZA_34z0U_uFJReH0M9Ay7QUIRJmlD5DZsWwGgvbGcc1EXvAhRw>
-    <xme:UwtuZIvH0TUNDitckQmCAxET5pvd-Y09XIgOzgHo8OFazMmcEDmvT2yuCcV8gfjpn
-    5Ooc6N1N0gzJ3i6TJE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeejhedgheekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:UwtuZGAwHdnwKhHL7EU2E83IxqmoRU02a6M9Bd3Mp-PbjWobVQV1uQ>
-    <xmx:UwtuZAdFR8jdCgIHuH99Hzrae7Lrl5CvgpSrnl29fWbztG9_pt-wEg>
-    <xmx:UwtuZFNyFD-GRCaPXl6ZQ_xrHd9zJUKYTGOhZ6AuaaOCBncFpNWnlQ>
-    <xmx:VAtuZIq142wN3y14Rzp7qi8n8eYmBPvxAGo5TxMjtvMFDKHWtiEhWA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 75941B60086; Wed, 24 May 2023 09:04:19 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-441-ga3ab13cd6d-fm-20230517.001-ga3ab13cd
-Mime-Version: 1.0
-Message-Id: <e4a31b5c-3b52-4565-aeb4-9151a148e188@app.fastmail.com>
-In-Reply-To: <CACRpkdahOz++MD7f=Bmq2f_nT=TQkY5f5vT5PL=YEB4R2B7Vcw@mail.gmail.com>
-References: <CACRpkdahOz++MD7f=Bmq2f_nT=TQkY5f5vT5PL=YEB4R2B7Vcw@mail.gmail.com>
-Date:   Wed, 24 May 2023 15:03:37 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Linus Walleij" <linus.walleij@linaro.org>
-Cc:     Linux-Arch <linux-arch@vger.kernel.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Vineet Gupta" <vgupta@kernel.org>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        "Will Deacon" <will@kernel.org>,
-        "Russell King" <linux@armlinux.org.uk>,
-        "Greg Ungerer" <gerg@linux-m68k.org>, linux-mm@vger.kernel.org,
-        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Subject: Re: [GIT PULL] Convert virt_to_phys() into static inlines
-Content-Type: text/plain
+        Wed, 24 May 2023 10:27:08 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A989D
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 24 May 2023 07:27:06 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 91B9522041;
+        Wed, 24 May 2023 14:27:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1684938424; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tXGazCQJhB+4Gbe14ojDjDepmPElagpzQVjU1cq9coM=;
+        b=CvxJjiwUfSN+kySKUn/EWA67pNGj3pzmDi1HbwCtE90AFBLWe7vv+d8M1Ij3FkSbIz4VTI
+        gWvmGqepcrFlLCBiRAAf+FLKtDv7IxP6DOFYzfABdT3HuVDKFvuPv4HouAx5CI/XFNBevQ
+        b0eo4MDqgOjEmRFkWmGBuHZT8lU/dcs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1684938424;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tXGazCQJhB+4Gbe14ojDjDepmPElagpzQVjU1cq9coM=;
+        b=pq5m/8gWb5XY3U0bzLALdtiUNBu4jqNs3ujyoKqIbmne//9yJpXq+qLIx07FO9Z84ILL6b
+        c/7V1xSDO+g6aHAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1777E13425;
+        Wed, 24 May 2023 14:27:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id VWz9BLgebmSqKAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Wed, 24 May 2023 14:27:04 +0000
+Message-ID: <4f690e97-b26c-1705-51e7-0d7ebc77d819@suse.cz>
+Date:   Wed, 24 May 2023 16:27:03 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] mm/slab: rename CONFIG_SLAB to CONFIG_SLAB_DEPRECATED
+Content-Language: en-US
+To:     David Rientjes <rientjes@google.com>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Qin Jian <qinjian@cqplus1.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-mm@kvack.org
+References: <20230523091139.21449-1-vbabka@suse.cz>
+ <be109b49-8510-5887-72ae-738db9945619@google.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <be109b49-8510-5887-72ae-738db9945619@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, May 24, 2023, at 14:53, Linus Walleij wrote:
-> Hi Arnd,
->
-> I am pretty confident of this branch now, so this needs some
-> rotation in linux-next for the v6.5 kernel. No errors from zeroday!
-> So please pull it into the arch tree for v6.5.
->
-> If it feels shaky anyway I can set up a separate branch to pull it
-> into linux-next. I heard you have a way to shake out unknown
-> issues with stuff like this using randconfigs...
+On 5/24/23 02:29, David Rientjes wrote:
+> On Tue, 23 May 2023, Vlastimil Babka wrote:
+> 
+>> As discussed at LSF/MM [1] [2] and with no objections raised there,
+>> deprecate the SLAB allocator. Rename the user-visible option so that
+>> users with CONFIG_SLAB=y get a new prompt with explanation during make
+>> oldconfig, while make olddefconfig will just switch to SLUB.
+>> 
+>> In all defconfigs with CONFIG_SLAB=y remove the line so those also
+>> switch to SLUB. Regressions due to the switch should be reported to
+>> linux-mm and slab maintainers.
+>> 
+>> [1] https://lore.kernel.org/all/4b9fc9c6-b48c-198f-5f80-811a44737e5f@suse.cz/
+>> [2] https://lwn.net/Articles/932201/
+>> 
+>> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> 
+> Acked-by: David Rientjes <rientjes@google.com>
 
-I've pushed it out to the asm-generic tree now, and merged it into
-my randconfig branch, which should tell me about corner cases on
-arm/arm64 and x86, but it won't find anything else. If I see
-regressions here, I'll let you know and take it back from the
-asm-generic tree.
+Thanks.
 
-      Arnd
+> The Kconfig option says that SLAB will be removed in a few cycles.  I 
+> think we should wait until at least the next LTS kernel is forked at the 
+> end of the year so that users who upgrade to only the LTS releases can be 
+> prompted for this change and surface any concerns.  Slab allocation is a 
+> critical subsystem, so I presume this is the safest and most responsible 
+> way to do the SLAB deprecation.  Hopefully that timeline works for 
+> everybody.
+
+Sure, and in fact looking at predicted release dates [1], if the deprecation
+goes into 6.5 then 6.7 ("few" == 2) is already end of January 2024, anyway.
+
+[1] https://hansen.beer/~dave/phb/
