@@ -2,96 +2,218 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF8F8C77B73
-	for <linux-m68k@archiver.kernel.org>; Wed, 24 May 2023 10:15:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 753AFC7EE2C
+	for <linux-m68k@archiver.kernel.org>; Wed, 24 May 2023 12:53:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232374AbjEXKPB convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 24 May 2023 06:15:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43300 "EHLO
+        id S231235AbjEXMx6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 24 May 2023 08:53:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232495AbjEXKO1 (ORCPT
+        with ESMTP id S231794AbjEXMx5 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 24 May 2023 06:14:27 -0400
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 523C0BF
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 24 May 2023 03:14:01 -0700 (PDT)
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-ba1815e12efso671058276.3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 24 May 2023 03:14:01 -0700 (PDT)
+        Wed, 24 May 2023 08:53:57 -0400
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ABC79B
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 24 May 2023 05:53:55 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-561b50c1856so13224457b3.0
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 24 May 2023 05:53:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1684932834; x=1687524834;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=6k7CwLpjQ+oPFx1tTum0+p01nKq3VVI7v5cgsSAfjNo=;
+        b=uWMJa+LDM2gRpRToobsw29vCAykfT7ArF/5bmR543aY2MOzA64WG8PyYDRrSCbv5Ue
+         Dfvzo5iY0u8OwJh/Usa6lm7EdLSChTnGrEz2jzp6BvPcJkPqFwsqs3Qsp6m8MaB7rsVe
+         Q30nnGF4Q1X8bmtQY4DFlFDiPOWhATsr6lDlVzzEXe3o1eHyS2CHxzaE0yFSt2V70z+u
+         WJ3FVPyWSm6TsN+Z2cxQZKVi782dXQHli55PJmrocqVNgIsBmSnATCMvQI5VdFkx01cp
+         i42stvfX2iLo4xriYKEHP6QY07irj7VIOBgpyAqhKU4jfqvS3UKGZLvMfLg2TeD5ZZyf
+         GMiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684923240; x=1687515240;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dz+M1KSdnKMmcmYWNiYwzrnxigtUcBsMNIJcHfr8PAI=;
-        b=ZDBl7soyJIvvyTzaRdxHfbcjvXypyNwU2C49jYp53Yb2BCF/ckY7L2awfckukL+Ieo
-         H+A36ZpRyNKYv+NTt7KawTaDU0If3lNlXTfid1GHFe4oX/wLyifLVfxZGajluodvnww5
-         oVriq8s6lNXdpeEPhBwbQUBpXouNF4az/q/BMjhiClmfJiYjmsIe5I2pb2H09Dl2UP3N
-         nAAvFT1CNCqjH2Hhlno0dVieqNL2Nyy12bUwlKi301fkOfkY8xlAlfOvmYEBsdiTc5fs
-         HzNiW5E4lv+hFjxWNLNKAS99w2GtLVZ94HwKS9H5/4vtDvGzlRqfYK+ReWqPU6C1yLmO
-         cHEw==
-X-Gm-Message-State: AC+VfDyU4xJl1RXie4nUKwsA+cTvxPS2LAB0XsFOMr5nUNoTGb/dA2h/
-        gw3OqkopP11kNAn5CHPpK5ikB0m8QU81Uw==
-X-Google-Smtp-Source: ACHHUZ6S7B2jObygrSmjV0xj/RO2Y0xdAbGPPH7auGD7GYuMjykYe4DFe8LToMQO4H/Ool9VQIOoFg==
-X-Received: by 2002:a25:dc14:0:b0:ba8:2009:ccbb with SMTP id y20-20020a25dc14000000b00ba82009ccbbmr18375171ybe.46.1684923240316;
-        Wed, 24 May 2023 03:14:00 -0700 (PDT)
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
-        by smtp.gmail.com with ESMTPSA id s99-20020a25aa6c000000b00ba87bc06fe5sm2494731ybi.52.2023.05.24.03.13.59
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 May 2023 03:13:59 -0700 (PDT)
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-563b1e5f701so7030227b3.3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 24 May 2023 03:13:59 -0700 (PDT)
-X-Received: by 2002:a81:5ac3:0:b0:565:347a:46ee with SMTP id
- o186-20020a815ac3000000b00565347a46eemr6575440ywb.7.1684923239253; Wed, 24
- May 2023 03:13:59 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1684932834; x=1687524834;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6k7CwLpjQ+oPFx1tTum0+p01nKq3VVI7v5cgsSAfjNo=;
+        b=fOo/imy/J2juzXZscKSGMNknasOZ3PtToK4ed7hmdh3OqCXQIaHDsal6vvaWH+kjT3
+         K0X2r3KirqEwHQXZSB4PGTdYApiqMmrHZ3vE6TY1HjvVic9wSrIrsf2Dem4A7C3/3ACF
+         KaPj/yLXMfveLsTXEsB+ODlAH6y0gpv8PMLke/09hfxboSUFBiVuzYfgsKDQecQ5R5Dv
+         vO+P/LpoGXjnj85C3lApczSlhbO7KlR5O7gTW4X6H4BUqcj8l/gm0jCep7YPbCzHxJez
+         RpBoVYB9PksCohOgBgKXYH3Ypi8BFnSRO2jPFqI7KL9SdM7b0Ma4jPbZDgit4sKuSNNU
+         1kgw==
+X-Gm-Message-State: AC+VfDwkfnX2LxeEFXeFPhyYKxXCfzEaN9w4k3McH03pxvyv6ianFkq1
+        SCxKzzAOFEvnjU92QWzwTTtwxY0i/cEfmea28reK3g==
+X-Google-Smtp-Source: ACHHUZ6z6oKt9Hy3F5Ix9UnojbF6veGj5yOEPPCsEXLq14Lr8kcj2dPHJnCRCMemy7klqa4CHkog7mF+U8MQxAM2Elw=
+X-Received: by 2002:a0d:f6c3:0:b0:55a:18e2:cdf9 with SMTP id
+ g186-20020a0df6c3000000b0055a18e2cdf9mr14705166ywf.49.1684932834217; Wed, 24
+ May 2023 05:53:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230503-virt-to-pfn-v6-4-rc1-v3-0-a16c19c03583@linaro.org> <20230503-virt-to-pfn-v6-4-rc1-v3-12-a16c19c03583@linaro.org>
-In-Reply-To: <20230503-virt-to-pfn-v6-4-rc1-v3-12-a16c19c03583@linaro.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 24 May 2023 12:13:47 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVFX6vtiiNgZyXTLmhcxdsyOwRL3kb3tDZ4E_LUN2MaeA@mail.gmail.com>
-Message-ID: <CAMuHMdVFX6vtiiNgZyXTLmhcxdsyOwRL3kb3tDZ4E_LUN2MaeA@mail.gmail.com>
-Subject: Re: [PATCH v3 12/12] m68k/mm: Make pfn accessors static inlines
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 24 May 2023 14:53:43 +0200
+Message-ID: <CACRpkdahOz++MD7f=Bmq2f_nT=TQkY5f5vT5PL=YEB4R2B7Vcw@mail.gmail.com>
+Subject: [GIT PULL] Convert virt_to_phys() into static inlines
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux-Arch <linux-arch@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Vineet Gupta <vgupta@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Will Deacon <will@kernel.org>,
         Russell King <linux@armlinux.org.uk>,
         Greg Ungerer <gerg@linux-m68k.org>, linux-mm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-snps-arc@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-cifs@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arch@vger.kernel.org
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, May 23, 2023 at 4:05 PM Linus Walleij <linus.walleij@linaro.org> wrote:
-> Making virt_to_pfn() a static inline taking a strongly typed
-> (const void *) makes the contract of a passing a pointer of that
-> type to the function explicit and exposes any misuse of the
-> macro virt_to_pfn() acting polymorphic and accepting many types
-> such as (void *), (unitptr_t) or (unsigned long) as arguments
-> without warnings.
->
-> For symmetry, do the same with pfn_to_virt().
->
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Hi Arnd,
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+I am pretty confident of this branch now, so this needs some
+rotation in linux-next for the v6.5 kernel. No errors from zeroday!
+So please pull it into the arch tree for v6.5.
 
-Gr{oetje,eeting}s,
+If it feels shaky anyway I can set up a separate branch to pull it
+into linux-next. I heard you have a way to shake out unknown
+issues with stuff like this using randconfigs...
 
-                        Geert
+Yours,
+Linus Walleij
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+The following changes since commit ac9a78681b921877518763ba0e89202254349d1b:
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+  Linux 6.4-rc1 (2023-05-07 13:34:35 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-integrator.git
+tags/virt-to-pfn-for-arch-v6.5
+
+for you to fetch changes up to 8968d8d2bb4f81035138966a18259859fb6bc1ee:
+
+  m68k/mm: Make pfn accessors static inlines (2023-05-24 14:41:55 +0200)
+
+----------------------------------------------------------------
+This is an attempt to harden the typing on virt_to_pfn()
+and pfn_to_virt().
+
+Making virt_to_pfn() a static inline taking a strongly typed
+(const void *) makes the contract of a passing a pointer of that
+type to the function explicit and exposes any misuse of the
+macro virt_to_pfn() acting polymorphic and accepting many types
+such as (void *), (unitptr_t) or (unsigned long) as arguments
+without warnings.
+
+For symmetry, we do the same with pfn_to_virt().
+
+The problem with this inconsistent typing was pointed out by
+Russell King:
+https://lore.kernel.org/linux-arm-kernel/YoJDKJXc0MJ2QZTb@shell.armlinux.org.uk/
+
+And confirmed by Andrew Morton:
+https://lore.kernel.org/linux-mm/20220701160004.2ffff4e5ab59a55499f4c736@linux-foundation.org/
+
+So the recognition of the problem is widespread.
+
+These platforms have been chosen as initial conversion targets:
+
+- ARM
+- ARM64/Aarch64
+- asm-generic (including for example x86)
+- m68k
+
+The idea is that if this goes in, it will block further misuse
+of the function signatures due to the large compile coverage,
+and then I can go in and fix the remaining architectures on a
+one-by-one basis.
+
+Some of the patches have been circulated before but were not
+picked up by subsystem maintainers, so now the arch tree is
+target for this series.
+
+It has passed zeroday builds after a lot of iterations in my
+personal tree, but there could be some randconfig outliers.
+New added or deeply hidden problems appear all the time so
+some minor fallout can be expected.
+
+----------------------------------------------------------------
+Linus Walleij (13):
+      fs/proc/kcore.c: Pass a pointer to virt_addr_valid()
+      m68k: Pass a pointer to virt_to_pfn() virt_to_page()
+      ARC: init: Pass a pointer to virt_to_pfn() in init
+      riscv: mm: init: Pass a pointer to virt_to_page()
+      cifs: Pass a pointer to virt_to_page()
+      cifs: Pass a pointer to virt_to_page() in cifsglob
+      netfs: Pass a pointer to virt_to_page()
+      arm64: vdso: Pass (void *) to virt_to_page()
+      xen/netback: Pass (void *) to virt_to_page()
+      asm-generic/page.h: Make pfn accessors static inlines
+      ARM: mm: Make virt_to_pfn() a static inline
+      arm64: memory: Make virt_to_pfn() a static inline
+      m68k/mm: Make pfn accessors static inlines
+
+ arch/arc/mm/init.c                   |  2 +-
+ arch/arm/common/sharpsl_param.c      |  2 +-
+ arch/arm/include/asm/delay.h         |  2 +-
+ arch/arm/include/asm/io.h            |  2 +-
+ arch/arm/include/asm/memory.h        | 17 ++++++++++++-----
+ arch/arm/include/asm/page.h          |  4 ++--
+ arch/arm/include/asm/pgtable.h       |  2 +-
+ arch/arm/include/asm/proc-fns.h      |  2 --
+ arch/arm/include/asm/sparsemem.h     |  2 +-
+ arch/arm/include/asm/uaccess-asm.h   |  2 +-
+ arch/arm/include/asm/uaccess.h       |  2 +-
+ arch/arm/kernel/asm-offsets.c        |  2 +-
+ arch/arm/kernel/entry-armv.S         |  2 +-
+ arch/arm/kernel/entry-common.S       |  2 +-
+ arch/arm/kernel/entry-v7m.S          |  2 +-
+ arch/arm/kernel/head-nommu.S         |  3 +--
+ arch/arm/kernel/head.S               |  2 +-
+ arch/arm/kernel/hibernate.c          |  2 +-
+ arch/arm/kernel/suspend.c            |  2 +-
+ arch/arm/kernel/tcm.c                |  2 +-
+ arch/arm/kernel/vmlinux-xip.lds.S    |  3 +--
+ arch/arm/kernel/vmlinux.lds.S        |  3 +--
+ arch/arm/mach-berlin/platsmp.c       |  2 +-
+ arch/arm/mach-keystone/keystone.c    |  2 +-
+ arch/arm/mach-omap2/sleep33xx.S      |  2 +-
+ arch/arm/mach-omap2/sleep43xx.S      |  2 +-
+ arch/arm/mach-omap2/sleep44xx.S      |  2 +-
+ arch/arm/mach-pxa/gumstix.c          |  2 +-
+ arch/arm/mach-rockchip/sleep.S       |  2 +-
+ arch/arm/mach-sa1100/pm.c            |  2 +-
+ arch/arm/mach-shmobile/headsmp-scu.S |  2 +-
+ arch/arm/mach-shmobile/headsmp.S     |  2 +-
+ arch/arm/mach-socfpga/headsmp.S      |  2 +-
+ arch/arm/mach-spear/spear.h          |  2 +-
+ arch/arm/mm/cache-fa.S               |  1 -
+ arch/arm/mm/cache-v4wb.S             |  1 -
+ arch/arm/mm/dma-mapping.c            |  2 +-
+ arch/arm/mm/dump.c                   |  2 +-
+ arch/arm/mm/init.c                   |  2 +-
+ arch/arm/mm/kasan_init.c             |  1 -
+ arch/arm/mm/mmu.c                    |  2 +-
+ arch/arm/mm/physaddr.c               |  2 +-
+ arch/arm/mm/pmsa-v8.c                |  2 +-
+ arch/arm/mm/proc-v7.S                |  2 +-
+ arch/arm/mm/proc-v7m.S               |  2 +-
+ arch/arm/mm/pv-fixup-asm.S           |  2 +-
+ arch/arm64/include/asm/memory.h      |  9 ++++++++-
+ arch/arm64/kernel/vdso.c             |  2 +-
+ arch/m68k/include/asm/mcf_pgtable.h  |  3 +--
+ arch/m68k/include/asm/page_mm.h      | 11 +++++++++--
+ arch/m68k/include/asm/page_no.h      | 11 +++++++++--
+ arch/m68k/include/asm/sun3_pgtable.h |  4 ++--
+ arch/m68k/mm/mcfmmu.c                |  3 ++-
+ arch/m68k/mm/motorola.c              |  4 ++--
+ arch/m68k/mm/sun3mmu.c               |  2 +-
+ arch/m68k/sun3/dvma.c                |  2 +-
+ arch/m68k/sun3x/dvma.c               |  2 +-
+ arch/riscv/mm/init.c                 |  4 ++--
+ drivers/memory/ti-emif-sram-pm.S     |  2 +-
+ drivers/net/xen-netback/netback.c    |  2 +-
+ fs/cifs/cifsglob.h                   |  2 +-
+ fs/cifs/smbdirect.c                  |  2 +-
+ fs/netfs/iterator.c                  |  2 +-
+ fs/proc/kcore.c                      |  2 +-
+ include/asm-generic/page.h           | 12 ++++++++++--
+ 65 files changed, 109 insertions(+), 81 deletions(-)
