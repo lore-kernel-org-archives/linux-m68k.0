@@ -2,71 +2,233 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90BC5C77B7A
-	for <linux-m68k@archiver.kernel.org>; Thu, 25 May 2023 17:33:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40C63C7EE29
+	for <linux-m68k@archiver.kernel.org>; Thu, 25 May 2023 18:06:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240888AbjEYRdt (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 25 May 2023 13:33:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44188 "EHLO
+        id S241490AbjEYSGR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 25 May 2023 14:06:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbjEYRds (ORCPT
+        with ESMTP id S240906AbjEYSGD (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 25 May 2023 13:33:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 806FEE43
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 25 May 2023 10:33:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E6F7E6481E;
-        Thu, 25 May 2023 17:33:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 57191C433D2;
-        Thu, 25 May 2023 17:33:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685036017;
-        bh=wEEgGo/3a4FO+gQ7yDuNpSKY17IRjGLZOy18Dr8aYsc=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=KjQW+AC25/0+yMDqMzBUN2csPhcMaJxxbDHUQcGp9mWU3psfmJVVOued2c1gT0mSr
-         JRTlz+wSRaoVFoFlzejBsjgWZUc4TYzrxPr+chOBFg32lBeRQsvdLsH9NPkKrIyaOF
-         3sSKQijZTwz0XVWOw89AUKsGgdDJfdRbYewfCcV0Zbj2uCdL3EaXmDRANATqMKhtqG
-         IhZs/t/5sqqboM6Z1nT/dsGw4CKthm0Flm1+5MX2RgbV20nh5RtvR/tiw/UIHEleii
-         HL5xdgwO/iKJRGKSDTCZs5WQqN1TU/4R/J5nNSyAjSxbW32xI3tye0N9lTZKeGy2gG
-         FYEdRhYvtGAjw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 45B8BC395DF;
-        Thu, 25 May 2023 17:33:37 +0000 (UTC)
-Subject: Re: [GIT PULL] m68k fixes for v6.4
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20230525073545.3225081-1-geert@linux-m68k.org>
-References: <20230525073545.3225081-1-geert@linux-m68k.org>
-X-PR-Tracked-List-Id: <linux-m68k.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20230525073545.3225081-1-geert@linux-m68k.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.4-tag2
-X-PR-Tracked-Commit-Id: b845b574f86dcb6a70dfa698aa87a237b0878d2a
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5566051fa67352af069e0eb4b047f2b832b9a1cc
-Message-Id: <168503601727.13926.4521381185593167712.pr-tracker-bot@kernel.org>
-Date:   Thu, 25 May 2023 17:33:37 +0000
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
+        Thu, 25 May 2023 14:06:03 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B475A1724
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 25 May 2023 11:05:18 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-ba86ea269e0so1230815276.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 25 May 2023 11:05:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1685037879; x=1687629879;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YHz1MnM6TYYio2C+7LZLfrVXy67ugaabkk4Lxt+VEKA=;
+        b=NoHSm+P+R3f9P1hTtI0Aa2538QwCPLtSoQPrBLURQdxmp107FQ1F0pBnbEQWwggzlT
+         fiTACnc6uzA/OAWqwR1JVWYYICkwBDdnIXj4ERwntlgZc/Oij0dm8rv+0LrV+CltMo3B
+         fKyXLHfkdRh4xQKVcMe8OCp5giU3Tnn12LZCznOtQl1pIuAziPLT4fePeWe5Cvh7ZNzP
+         bRQ3kdfBju0tbpe4F8kOJL6Oz3PfBgKD+/0uu8kOUyKFxwwoV5gkGDAbnMcHEgSeCLSi
+         HSGZ+QgYvXiydUgpNmaTWLnoPbGEK3dVe0T9hw+SN0OStPQTocdixTet+7JhvERZXcH+
+         xYiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685037879; x=1687629879;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YHz1MnM6TYYio2C+7LZLfrVXy67ugaabkk4Lxt+VEKA=;
+        b=Zj86IDPZNslnYhdBv0F5BbEYtSQ4nFqa64uf23Fjx4j03W+9MD2VrBlPsCITGrYlNP
+         p01x57br7EWv4ZZIQcziPLoiEea56B28aKszlbN/P//R1hp5TAMHKKEm7PGyhf0CZ3nB
+         XkaLKIxsVzCVtktIF2HHs1OQ+yVlwQqgbXfRTFVdKl2ioE3ZjjyBpjVLjdxqNavhJOBX
+         j5xdhIqaHQUQBv7so/OQetZ5D+M71tXNSpDaUEtW5DSVnc2lryBTqJDc8nSk+kQY6iZa
+         045tZ+b6ZjG+Vu1vTdA+mSGZ4DxBx6gXO6vOJti9O787OQEp18Q2kBNpMJIwsHwLrxGg
+         MykA==
+X-Gm-Message-State: AC+VfDwhLPLTgWU5y9l9q/NZ8sT8wPpCcU928Q6LQJfil+Degsqom0FI
+        I7xA67Qv0xTwhLE/nOmTsnS9qvKnKpAgRQBZc6Y=
+X-Google-Smtp-Source: ACHHUZ7leu3e42UYud7EgWJZoN6PW1XGYdS9PCBG/tq5rzS7YnuUSWzFoklHW8B2kAANtPb/IRvLBp1ufSDbPWAmKj4=
+X-Received: by 2002:a25:7493:0:b0:ba8:15a3:f2e4 with SMTP id
+ p141-20020a257493000000b00ba815a3f2e4mr4848492ybc.0.1685037879336; Thu, 25
+ May 2023 11:04:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230501192829.17086-1-vishal.moola@gmail.com>
+ <20230501192829.17086-6-vishal.moola@gmail.com> <20230525090956.GX4967@kernel.org>
+In-Reply-To: <20230525090956.GX4967@kernel.org>
+From:   Vishal Moola <vishal.moola@gmail.com>
+Date:   Thu, 25 May 2023 11:04:28 -0700
+Message-ID: <CAOzc2pxSH6GhBnAoSOjvYJk2VdMDFZi3H_1qGC5Cdyp3j4AzPQ@mail.gmail.com>
+Subject: Re: [PATCH v2 05/34] mm: add utility functions for ptdesc
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+        xen-devel@lists.xenproject.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The pull request you sent on Thu, 25 May 2023 09:35:45 +0200:
+On Thu, May 25, 2023 at 2:10=E2=80=AFAM Mike Rapoport <rppt@kernel.org> wro=
+te:
+>
+> On Mon, May 01, 2023 at 12:28:00PM -0700, Vishal Moola (Oracle) wrote:
+> > Introduce utility functions setting the foundation for ptdescs. These
+> > will also assist in the splitting out of ptdesc from struct page.
+> >
+> > ptdesc_alloc() is defined to allocate new ptdesc pages as compound
+> > pages. This is to standardize ptdescs by allowing for one allocation
+> > and one free function, in contrast to 2 allocation and 2 free functions=
+.
+> >
+> > Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+> > ---
+> >  include/asm-generic/tlb.h | 11 ++++++++++
+> >  include/linux/mm.h        | 44 +++++++++++++++++++++++++++++++++++++++
+> >  include/linux/pgtable.h   | 12 +++++++++++
+> >  3 files changed, 67 insertions(+)
+> >
+> > diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
+> > index b46617207c93..6bade9e0e799 100644
+> > --- a/include/asm-generic/tlb.h
+> > +++ b/include/asm-generic/tlb.h
+> > @@ -481,6 +481,17 @@ static inline void tlb_remove_page(struct mmu_gath=
+er *tlb, struct page *page)
+> >       return tlb_remove_page_size(tlb, page, PAGE_SIZE);
+> >  }
+> >
+> > +static inline void tlb_remove_ptdesc(struct mmu_gather *tlb, void *pt)
+> > +{
+> > +     tlb_remove_table(tlb, pt);
+> > +}
+> > +
+> > +/* Like tlb_remove_ptdesc, but for page-like page directories. */
+> > +static inline void tlb_remove_page_ptdesc(struct mmu_gather *tlb, stru=
+ct ptdesc *pt)
+> > +{
+> > +     tlb_remove_page(tlb, ptdesc_page(pt));
+> > +}
+> > +
+> >  static inline void tlb_change_page_size(struct mmu_gather *tlb,
+> >                                                    unsigned int page_si=
+ze)
+> >  {
+> > diff --git a/include/linux/mm.h b/include/linux/mm.h
+> > index b18848ae7e22..258f3b730359 100644
+> > --- a/include/linux/mm.h
+> > +++ b/include/linux/mm.h
+> > @@ -2744,6 +2744,45 @@ static inline pmd_t *pmd_alloc(struct mm_struct =
+*mm, pud_t *pud, unsigned long a
+> >  }
+> >  #endif /* CONFIG_MMU */
+> >
+> > +static inline struct ptdesc *virt_to_ptdesc(const void *x)
+> > +{
+> > +     return page_ptdesc(virt_to_head_page(x));
+>
+> Do we ever use compound pages for page tables?
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.4-tag2
+Mips and s390 crst tables use multi-order (but not compound) pages.
+The ptdesc api *should* change that, but until all the allocation/free path=
+s
+are changed it may cause problems.
+Thanks for catching that, I'll change it in v3.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5566051fa67352af069e0eb4b047f2b832b9a1cc
+> > +}
+> > +
+> > +static inline void *ptdesc_to_virt(const struct ptdesc *pt)
+> > +{
+> > +     return page_to_virt(ptdesc_page(pt));
+> > +}
+> > +
+> > +static inline void *ptdesc_address(const struct ptdesc *pt)
+> > +{
+> > +     return folio_address(ptdesc_folio(pt));
+> > +}
+> > +
+> > +static inline bool ptdesc_is_reserved(struct ptdesc *pt)
+> > +{
+> > +     return folio_test_reserved(ptdesc_folio(pt));
+> > +}
+> > +
+> > +static inline struct ptdesc *ptdesc_alloc(gfp_t gfp, unsigned int orde=
+r)
+> > +{
+> > +     struct page *page =3D alloc_pages(gfp | __GFP_COMP, order);
+> > +
+> > +     return page_ptdesc(page);
+> > +}
+> > +
+> > +static inline void ptdesc_free(struct ptdesc *pt)
+> > +{
+> > +     struct page *page =3D ptdesc_page(pt);
+> > +
+> > +     __free_pages(page, compound_order(page));
+> > +}
+>
+> The ptdesc_{alloc,free} API does not sound right to me. The name
+> ptdesc_alloc() implies the allocation of the ptdesc itself, rather than
+> allocation of page table page. The same goes for free.
 
-Thank you!
+I'm not sure I see the difference. Could you elaborate?
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> > +
+> > +static inline void ptdesc_clear(void *x)
+> > +{
+> > +     clear_page(x);
+> > +}
+> > +
+> >  #if USE_SPLIT_PTE_PTLOCKS
+> >  #if ALLOC_SPLIT_PTLOCKS
+> >  void __init ptlock_cache_init(void);
+> > @@ -2970,6 +3009,11 @@ static inline void mark_page_reserved(struct pag=
+e *page)
+> >       adjust_managed_page_count(page, -1);
+> >  }
+> >
+> > +static inline void free_reserved_ptdesc(struct ptdesc *pt)
+> > +{
+> > +     free_reserved_page(ptdesc_page(pt));
+> > +}
+> > +
+> >  /*
+> >   * Default method to free all the __init memory into the buddy system.
+> >   * The freed pages will be poisoned with pattern "poison" if it's with=
+in
+> > diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> > index 5e0f51308724..b067ac10f3dd 100644
+> > --- a/include/linux/pgtable.h
+> > +++ b/include/linux/pgtable.h
+> > @@ -1041,6 +1041,18 @@ TABLE_MATCH(ptl, ptl);
+> >  #undef TABLE_MATCH
+> >  static_assert(sizeof(struct ptdesc) <=3D sizeof(struct page));
+> >
+> > +#define ptdesc_page(pt)                      (_Generic((pt),          =
+       \
+> > +     const struct ptdesc *:          (const struct page *)(pt),      \
+> > +     struct ptdesc *:                (struct page *)(pt)))
+> > +
+> > +#define ptdesc_folio(pt)             (_Generic((pt),                 \
+> > +     const struct ptdesc *:          (const struct folio *)(pt),     \
+> > +     struct ptdesc *:                (struct folio *)(pt)))
+> > +
+> > +#define page_ptdesc(p)                       (_Generic((p),           =
+       \
+> > +     const struct page *:            (const struct ptdesc *)(p),     \
+> > +     struct page *:                  (struct ptdesc *)(p)))
+> > +
+> >  /*
+> >   * No-op macros that just return the current protection value. Defined=
+ here
+> >   * because these macros can be used even if CONFIG_MMU is not defined.
+> > --
+> > 2.39.2
+> >
+> >
+>
+> --
+> Sincerely yours,
+> Mike.
