@@ -2,133 +2,114 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4B14C7EE33
-	for <linux-m68k@archiver.kernel.org>; Wed, 24 May 2023 14:27:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E868FC77B7A
+	for <linux-m68k@archiver.kernel.org>; Thu, 25 May 2023 02:15:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235916AbjEXO1J (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 24 May 2023 10:27:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55906 "EHLO
+        id S230324AbjEYCP0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 24 May 2023 22:15:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229919AbjEXO1I (ORCPT
+        with ESMTP id S230250AbjEYCPX (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 24 May 2023 10:27:08 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A989D
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 24 May 2023 07:27:06 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 91B9522041;
-        Wed, 24 May 2023 14:27:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1684938424; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tXGazCQJhB+4Gbe14ojDjDepmPElagpzQVjU1cq9coM=;
-        b=CvxJjiwUfSN+kySKUn/EWA67pNGj3pzmDi1HbwCtE90AFBLWe7vv+d8M1Ij3FkSbIz4VTI
-        gWvmGqepcrFlLCBiRAAf+FLKtDv7IxP6DOFYzfABdT3HuVDKFvuPv4HouAx5CI/XFNBevQ
-        b0eo4MDqgOjEmRFkWmGBuHZT8lU/dcs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1684938424;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tXGazCQJhB+4Gbe14ojDjDepmPElagpzQVjU1cq9coM=;
-        b=pq5m/8gWb5XY3U0bzLALdtiUNBu4jqNs3ujyoKqIbmne//9yJpXq+qLIx07FO9Z84ILL6b
-        c/7V1xSDO+g6aHAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1777E13425;
-        Wed, 24 May 2023 14:27:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id VWz9BLgebmSqKAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Wed, 24 May 2023 14:27:04 +0000
-Message-ID: <4f690e97-b26c-1705-51e7-0d7ebc77d819@suse.cz>
-Date:   Wed, 24 May 2023 16:27:03 +0200
+        Wed, 24 May 2023 22:15:23 -0400
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C282E6A
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 24 May 2023 19:14:51 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 7A8463200C74;
+        Wed, 24 May 2023 22:13:43 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 24 May 2023 22:13:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1684980823; x=1685067223; bh=cCCWDiGBHNH/1
+        3JSmnh5Q5sUosrLOySbAC+m9QUmDV4=; b=SoiaSR/lHyn8YlOGNvmlUKSK5ABhj
+        WvyfcAQtlXujwXqam0dUdFo++bThKQz2VJ0jIZF2SIPOOt1jUO2Kq+SNaDeeMhKy
+        XE7L3kkG7VtJviJ7IKCsK/54QOwjUPpizCM743Pr+zfgjQLFDQf/afy+wFXFIMGL
+        I0m1KX6CrPG/Wy0dUzI2L0M5YuA1Q2EqIhIlU5ReTfSSniU0HEItcoBZXkmttYlN
+        hUV6En9JyJTbX0TdOLpS8/XSDmseJo6RimWO7XccimpMd49Ak9kYwvvVg0Fxba+l
+        rqBVZhHFBQAQEhTxmHfwlZ+QVDMtQcmXv3MH20zidvG+L0U/SJYsL/gJQ==
+X-ME-Sender: <xms:VsRuZDX5LQnF7AcKlts6u7mcixpjRZUO4j9X1iLhOOVrscSS6x936A>
+    <xme:VsRuZLnVSjE0Dl1hDKrIeCaNJ2FWVTTal2ZIySNfyILTxi_eSwk66C85xA0QQPIn-
+    48p2JXcylwuOKTYUuE>
+X-ME-Received: <xmr:VsRuZPaNzaS_lZWPwauTyIOxF3MB4Kwmew9PfjR4F6jaD2DFpAynx9kjahk5dRsO8-WldaxrQJ7-WSGTkSsw-bC0Rnk1WBoQKis>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeejiedgheehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
+    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
+    htthgvrhhnpeeigefgjefgvdfgjeefveethfeguddukeetudejteejieegleevgfevudek
+    keffgfenucffohhmrghinhepuggvsghirghnrdhorhhgpdhunhhigidrrhhspdhsihhgnh
+    grlhhsrdhinhgtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
+    rhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:VsRuZOXhu1D7NFkCmH7mNOhMcpSZefjrWjIyBvRJ54ajY2gSmkDdMw>
+    <xmx:VsRuZNmwUj7wM--ySqJD8iwhOIOeHqmEjMyq2QUsYFPDUmNOIVnlBw>
+    <xmx:VsRuZLfeCovWomzNnKlalq_uc3jCDvISqkyMbPIszx83ceRlEJN3_Q>
+    <xmx:V8RuZDjE1WtQ0A_3N0T_fjx4_bH-RW4Wc2hZ5EMK44lEzgwKgFck-g>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 24 May 2023 22:13:39 -0400 (EDT)
+Date:   Thu, 25 May 2023 12:13:46 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+cc:     Michael Schmitz <schmitzmic@gmail.com>,
+        Andreas Schwab <schwab@linux-m68k.org>, stable@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] m68k: Move signal frame following exception on
+ 68020/030
+In-Reply-To: <CAMuHMdX_0F0hSZKqBBCN3876BmfwbQb1_+N3h-V8xs5ouRXF=A@mail.gmail.com>
+Message-ID: <74df27ea-ad17-e869-695b-a7e8b042289c@linux-m68k.org>
+References: <cover.1683365892.git.fthain@linux-m68k.org> <9e66262a754fcba50208aa424188896cc52a1dd1.1683365892.git.fthain@linux-m68k.org> <CAMuHMdX_0F0hSZKqBBCN3876BmfwbQb1_+N3h-V8xs5ouRXF=A@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] mm/slab: rename CONFIG_SLAB to CONFIG_SLAB_DEPRECATED
-Content-Language: en-US
-To:     David Rientjes <rientjes@google.com>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Qin Jian <qinjian@cqplus1.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-mm@kvack.org
-References: <20230523091139.21449-1-vbabka@suse.cz>
- <be109b49-8510-5887-72ae-738db9945619@google.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <be109b49-8510-5887-72ae-738db9945619@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 5/24/23 02:29, David Rientjes wrote:
-> On Tue, 23 May 2023, Vlastimil Babka wrote:
+On Mon, 22 May 2023, Geert Uytterhoeven wrote:
+
 > 
->> As discussed at LSF/MM [1] [2] and with no objections raised there,
->> deprecate the SLAB allocator. Rename the user-visible option so that
->> users with CONFIG_SLAB=y get a new prompt with explanation during make
->> oldconfig, while make olddefconfig will just switch to SLUB.
->> 
->> In all defconfigs with CONFIG_SLAB=y remove the line so those also
->> switch to SLUB. Regressions due to the switch should be reported to
->> linux-mm and slab maintainers.
->> 
->> [1] https://lore.kernel.org/all/4b9fc9c6-b48c-198f-5f80-811a44737e5f@suse.cz/
->> [2] https://lwn.net/Articles/932201/
->> 
->> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> i.e. will queue as a fix in the m68k for-v6.4 branch.
 > 
-> Acked-by: David Rientjes <rientjes@google.com>
 
-Thanks.
+Thanks Geert!
 
-> The Kconfig option says that SLAB will be removed in a few cycles.  I 
-> think we should wait until at least the next LTS kernel is forked at the 
-> end of the year so that users who upgrade to only the LTS releases can be 
-> prompted for this change and surface any concerns.  Slab allocation is a 
-> critical subsystem, so I presume this is the safest and most responsible 
-> way to do the SLAB deprecation.  Hopefully that timeline works for 
-> everybody.
+> I plan to send this upstream later this week, so any additional
+> testing would be appreciated.
+> 
 
-Sure, and in fact looking at predicted release dates [1], if the deprecation
-goes into 6.5 then 6.7 ("few" == 2) is already end of January 2024, anyway.
+If there is a userland program that needs all of its sigaltstack space, 
+and cannot accomodate a 256 byte margin, it will be hard to find that 
+program. Often these signal stacks are used for handling (would-be) fatal 
+signals that may not happen in regression testing.
 
-[1] https://hansen.beer/~dave/phb/
+If we fix the kernel and a failure eventually does show up in a userland 
+program, we may be able to patch that program. Looking through Debian's 
+codebase, which is easily searchable, I found lots of different ways to 
+determine the signal stack size. But it's not clear to me which programs 
+calculate it correctly.
+
+Many programs take the architecture's SIGSTKSZ or MINSIGSTKSZ or 
+getauxval(AT_MINSIGSTKSZ) or sysconf(_SC_SIGSTKSZ), or some combination, 
+and then apply an arbitrary safety factor. Some add a constant or apply a 
+lower bound that may reflect the actual requirements of the signal 
+handler. Some just use page_size().
+
+https://sources.debian.org/src/rust-generator/0.7.1-1/src/stack/unix.rs/?hl=85#L84
+https://sources.debian.org/src/ocaml/4.13.1-4/runtime/signals_nat.c/?hl=293#L289
+https://sources.debian.org/src/ruby3.1/3.1.2-7/signal.c/?hl=538#L531
+https://sources.debian.org/src/python3.11/3.11.2-6/Modules/faulthandler.c/?hl=1385#L1368
+https://sources.debian.org/src/llvm-toolchain-9/1:9.0.1-20/llvm/lib/Support/Unix/Signals.inc/?hl=259#L250
+https://sources.debian.org/src/musl/1.2.3-1/src/aio/aio.c/?hl=98#L83
+https://sources.debian.org/src/libreoffice/4:7.4.5-2/external/breakpad/SIGSTKSZ.patch/?hl=4#L4
+https://sources.debian.org/src/libuv1/1.44.2-1/src/unix/thread.c/?hl=168#L165
+https://sources.debian.org/src/stress-ng/0.15.08-1/core-helper.c/?hl=3290#L3276
+https://sources.debian.org/src/cysignals/1.11.2+ds-2/src/cysignals/implementation.c/?hl=446#L442
+https://sources.debian.org/src/vim/2:9.0.1378-2/src/os_unix.c/?hl=828#L811
+https://sources.debian.org/src/m4/1.4.19-3/m4/sigaltstack.m4/?hl=88#L72
+https://sources.debian.org/src/varnish/7.1.1-1.1/bin/varnishd/cache/cache_main.c/?hl=342#L330
+https://sources.debian.org/src/sfxr-qt/1.5.0+ds-2/debian/patches/catch2-patch/?hl=3223#L3121
