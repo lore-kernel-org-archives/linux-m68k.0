@@ -2,327 +2,123 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8259FC7EE23
-	for <linux-m68k@archiver.kernel.org>; Tue, 30 May 2023 11:48:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E299C77B7A
+	for <linux-m68k@archiver.kernel.org>; Tue, 30 May 2023 13:27:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbjE3LsK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 30 May 2023 07:48:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51210 "EHLO
+        id S232545AbjE3N1u (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 30 May 2023 09:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbjE3LsJ (ORCPT
+        with ESMTP id S232278AbjE3N1t (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 30 May 2023 07:48:09 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51237185
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 30 May 2023 04:47:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1685447263; x=1716983263;
-  h=date:from:to:cc:subject:message-id;
-  bh=xenb7cemwXURVNwRML/VdLRbsT5E6/UmQ9WBSR6s6II=;
-  b=VirrtS4T3kiWdOtiDj8C0ed9djsLoHWP6ENTM18eMMEnvaEB3c3osl7b
-   avS50fNyyCp6uj5bN8In44H3iRIIC9vWBKb6xyMD2KMegPUHcgG6iCsQ7
-   J0OjV8uXOkfPSrf4dLhsm/yu+5zVeDnzaRuc6OG6iRZUzzQONlxDJayIY
-   l/ZTvF+nZifJauGUgKe/5gwphbKEMUNBIyrfPW/1IEs93qNJjPAEvxCEr
-   Jkn/VYZpDRPKi8zzW1tKelcyUBahixMhG7ZZl1v09NbIDVG2QxSWcDcTi
-   2c7DHCtFQq/9j+2cuPa1Voug71beMGlSbMAozdr+qgRRqeLW66pza6wHd
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10725"; a="335238588"
-X-IronPort-AV: E=Sophos;i="6.00,204,1681196400"; 
-   d="scan'208";a="335238588"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2023 04:46:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10725"; a="880730999"
-X-IronPort-AV: E=Sophos;i="6.00,204,1681196400"; 
-   d="scan'208";a="880730999"
-Received: from lkp-server01.sh.intel.com (HELO fb1ced2c09fb) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 30 May 2023 04:46:55 -0700
-Received: from kbuild by fb1ced2c09fb with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1q3xoU-0000CB-1D;
-        Tue, 30 May 2023 11:46:54 +0000
-Date:   Tue, 30 May 2023 19:46:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 1fe677095e23d348037f824ffcabec2e38893633
-Message-ID: <20230530114621.rtFPw%lkp@intel.com>
-User-Agent: s-nail v14.9.24
+        Tue, 30 May 2023 09:27:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA36F0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 30 May 2023 06:27:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8C09363019;
+        Tue, 30 May 2023 13:27:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C565C433A4;
+        Tue, 30 May 2023 13:27:44 +0000 (UTC)
+Message-ID: <84ff14e8-b864-f669-447e-392ece094005@linux-m68k.org>
+Date:   Tue, 30 May 2023 23:27:41 +1000
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [linux-stable-rc:queue/5.15 17/69] m68k-linux-ld: section .rodata
+ VMA [00001000,0024925f] overlaps section .text VMA [00000400,00439aff]
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        kernel test robot <lkp@intel.com>
+Cc:     Finn Thain <fthain@linux-m68k.org>, oe-kbuild-all@lists.linux.dev,
+        Sasha Levin <sashal@kernel.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+References: <202305301407.z33zOjcG-lkp@intel.com>
+ <CAMuHMdVM1UoJ=s0TvPVcwzvDe1dHxJehL90WacE8ieirNPNwYA@mail.gmail.com>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <CAMuHMdVM1UoJ=s0TvPVcwzvDe1dHxJehL90WacE8ieirNPNwYA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 1fe677095e23d348037f824ffcabec2e38893633  Merge tag 'v6.4-rc4'
 
-elapsed time: 2240m
+On 30/5/23 19:02, Geert Uytterhoeven wrote:
+> Hi Robot,
+> 
+> Thanks for your report!
+> 
+> On Tue, May 30, 2023 at 8:09 AM kernel test robot <lkp@intel.com> wrote:
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git queue/5.15
+>> head:   45d082d2c0daa97f3ea394c47e705afdd1c621e0
+>> commit: 43f232d748d57057e2e9dd041907c55177c50cf2 [17/69] m68k: Move signal frame following exception on 68020/030
+>> config: m68k-randconfig-r035-20230530 (https://download.01.org/0day-ci/archive/20230530/202305301407.z33zOjcG-lkp@intel.com/config)
+> 
+> FTR, this is a CONFIG_M68000/CONFIG_M68EZ328 config.
+> 
+>> compiler: m68k-linux-gcc (GCC) 12.3.0
+>> reproduce (this is a W=1 build):
+>>          mkdir -p ~/bin
+>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>          chmod +x ~/bin/make.cross
+>>          # https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?id=43f232d748d57057e2e9dd041907c55177c50cf2
+>>          git remote add linux-stable-rc https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+>>          git fetch --no-tags linux-stable-rc queue/5.15
+>>          git checkout 43f232d748d57057e2e9dd041907c55177c50cf2
+>>          # save the config file
+>>          mkdir build_dir && cp config build_dir/.config
+>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.3.0 ~/bin/make.cross W=1 O=build_dir ARCH=m68k olddefconfig
+>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.3.0 ~/bin/make.cross W=1 O=build_dir ARCH=m68k SHELL=/bin/bash
+>>
+>> If you fix the issue, kindly add following tag where applicable
+>> | Reported-by: kernel test robot <lkp@intel.com>
+>> | Closes: https://lore.kernel.org/oe-kbuild-all/202305301407.z33zOjcG-lkp@intel.com/
+>>
+>> All errors (new ones prefixed by >>):
+>>
+>>>> m68k-linux-ld: section .rodata VMA [00001000,0024925f] overlaps section .text VMA [00000400,00439aff]
+> 
+> This is not a regression introduced by the aforementioned commit.
+> The same issue is present in 5.1.113, 5.1, and v6.4-rc4.
 
-configs tested: 256
-configs skipped: 9
+Indeed, that is an interesting one. Essentially the default values for
+RAM and ROM regions causes this. Would be easy to fix for this specific case,
+patch below, but it general would need region overlap checking to be totally
+foolproof I think.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+These defaults based on some old configs I had lying around. These addresses
+seem to to be the values used on most uCsim, uCdimm and Xcopilot configs, so
+probably makes sense to use them as the actual Kconfig default.
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r022-20230529   gcc  
-alpha                randconfig-r026-20230530   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r023-20230529   gcc  
-arc                  randconfig-r031-20230530   gcc  
-arc                  randconfig-r043-20230529   gcc  
-arc                  randconfig-r043-20230530   gcc  
-arc                        vdk_hs38_defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                         bcm2835_defconfig   clang
-arm                                 defconfig   gcc  
-arm                           h3600_defconfig   gcc  
-arm                          pxa3xx_defconfig   gcc  
-arm                  randconfig-r046-20230529   clang
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r012-20230529   gcc  
-csky         buildonly-randconfig-r002-20230529   gcc  
-csky         buildonly-randconfig-r003-20230529   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r021-20230529   gcc  
-csky                 randconfig-r032-20230530   gcc  
-hexagon      buildonly-randconfig-r004-20230529   clang
-hexagon              randconfig-r041-20230529   clang
-hexagon              randconfig-r045-20230529   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r006-20230529   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230529   clang
-i386                 randconfig-i001-20230530   clang
-i386                 randconfig-i002-20230529   clang
-i386                 randconfig-i002-20230530   clang
-i386                 randconfig-i003-20230529   clang
-i386                 randconfig-i003-20230530   clang
-i386                 randconfig-i004-20230529   clang
-i386                 randconfig-i004-20230530   clang
-i386                 randconfig-i005-20230529   clang
-i386                 randconfig-i005-20230530   clang
-i386                 randconfig-i006-20230529   clang
-i386                 randconfig-i006-20230530   clang
-i386                 randconfig-i011-20230529   gcc  
-i386                 randconfig-i011-20230530   gcc  
-i386                 randconfig-i012-20230529   gcc  
-i386                 randconfig-i012-20230530   gcc  
-i386                 randconfig-i013-20230529   gcc  
-i386                 randconfig-i013-20230530   gcc  
-i386                 randconfig-i014-20230529   gcc  
-i386                 randconfig-i014-20230530   gcc  
-i386                 randconfig-i015-20230529   gcc  
-i386                 randconfig-i016-20230529   gcc  
-i386                 randconfig-i051-20230528   gcc  
-i386                 randconfig-i052-20230528   gcc  
-i386                 randconfig-i053-20230528   gcc  
-i386                 randconfig-i054-20230528   gcc  
-i386                 randconfig-i055-20230528   gcc  
-i386                 randconfig-i056-20230528   gcc  
-i386                 randconfig-i061-20230529   clang
-i386                 randconfig-i062-20230529   clang
-i386                 randconfig-i063-20230529   clang
-i386                 randconfig-i064-20230529   clang
-i386                 randconfig-i065-20230529   clang
-i386                 randconfig-i066-20230529   clang
-i386                 randconfig-i071-20230529   gcc  
-i386                 randconfig-i072-20230529   gcc  
-i386                 randconfig-i072-20230530   gcc  
-i386                 randconfig-i073-20230529   gcc  
-i386                 randconfig-i074-20230529   gcc  
-i386                 randconfig-i074-20230530   gcc  
-i386                 randconfig-i075-20230529   gcc  
-i386                 randconfig-i075-20230530   gcc  
-i386                 randconfig-i076-20230529   gcc  
-i386                 randconfig-i076-20230530   gcc  
-i386                 randconfig-i081-20230529   gcc  
-i386                 randconfig-i082-20230529   gcc  
-i386                 randconfig-i082-20230530   gcc  
-i386                 randconfig-i083-20230529   gcc  
-i386                 randconfig-i083-20230530   gcc  
-i386                 randconfig-i084-20230529   gcc  
-i386                 randconfig-i084-20230530   gcc  
-i386                 randconfig-i085-20230529   gcc  
-i386                 randconfig-i085-20230530   gcc  
-i386                 randconfig-i086-20230529   gcc  
-i386                 randconfig-i091-20230529   clang
-i386                 randconfig-i091-20230530   clang
-i386                 randconfig-i092-20230529   clang
-i386                 randconfig-i092-20230530   clang
-i386                 randconfig-i093-20230529   clang
-i386                 randconfig-i093-20230530   clang
-i386                 randconfig-i094-20230529   clang
-i386                 randconfig-i094-20230530   clang
-i386                 randconfig-i095-20230529   clang
-i386                 randconfig-i095-20230530   clang
-i386                 randconfig-i096-20230529   clang
-i386                 randconfig-i096-20230530   clang
-i386                 randconfig-r004-20230529   clang
-i386                 randconfig-r011-20230529   gcc  
-i386                 randconfig-r024-20230530   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             alldefconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r035-20230529   gcc  
-m68k                 randconfig-r035-20230530   gcc  
-microblaze           randconfig-r012-20230530   gcc  
-microblaze           randconfig-r023-20230530   gcc  
-microblaze           randconfig-r024-20230529   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                          ath25_defconfig   clang
-mips         buildonly-randconfig-r005-20230529   gcc  
-mips                 decstation_r4k_defconfig   gcc  
-mips                 randconfig-r034-20230529   gcc  
-mips                          rb532_defconfig   gcc  
-nios2                         10m50_defconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r003-20230529   gcc  
-nios2                randconfig-r011-20230530   gcc  
-openrisc             randconfig-r036-20230530   gcc  
-parisc       buildonly-randconfig-r001-20230529   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r025-20230529   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                      cm5200_defconfig   gcc  
-powerpc                  iss476-smp_defconfig   gcc  
-powerpc              randconfig-r001-20230529   clang
-powerpc                     taishan_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r005-20230529   clang
-riscv                randconfig-r016-20230529   gcc  
-riscv                randconfig-r042-20230529   gcc  
-riscv                randconfig-r042-20230530   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             alldefconfig   clang
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r013-20230530   gcc  
-s390                 randconfig-r014-20230529   gcc  
-s390                 randconfig-r014-20230530   gcc  
-s390                 randconfig-r044-20230529   gcc  
-s390                 randconfig-r044-20230530   gcc  
-sh                               allmodconfig   gcc  
-sh                        dreamcast_defconfig   gcc  
-sh                         ecovec24_defconfig   gcc  
-sh                   randconfig-r022-20230530   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r002-20230529   gcc  
-sparc                randconfig-r016-20230530   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           alldefconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-a001-20230528   gcc  
-x86_64               randconfig-a001-20230529   clang
-x86_64               randconfig-a002-20230528   gcc  
-x86_64               randconfig-a002-20230529   clang
-x86_64               randconfig-a003-20230528   gcc  
-x86_64               randconfig-a003-20230529   clang
-x86_64               randconfig-a004-20230529   clang
-x86_64               randconfig-a005-20230529   clang
-x86_64               randconfig-a006-20230529   clang
-x86_64               randconfig-a011-20230529   gcc  
-x86_64               randconfig-a011-20230530   gcc  
-x86_64               randconfig-a012-20230529   gcc  
-x86_64               randconfig-a012-20230530   gcc  
-x86_64               randconfig-a013-20230529   gcc  
-x86_64               randconfig-a013-20230530   gcc  
-x86_64               randconfig-a014-20230529   gcc  
-x86_64               randconfig-a014-20230530   gcc  
-x86_64               randconfig-a015-20230529   gcc  
-x86_64               randconfig-a015-20230530   gcc  
-x86_64               randconfig-a016-20230529   gcc  
-x86_64               randconfig-a016-20230530   gcc  
-x86_64               randconfig-r013-20230529   gcc  
-x86_64               randconfig-r031-20230529   clang
-x86_64               randconfig-r036-20230529   clang
-x86_64               randconfig-x051-20230529   gcc  
-x86_64               randconfig-x051-20230530   gcc  
-x86_64               randconfig-x052-20230529   gcc  
-x86_64               randconfig-x052-20230530   gcc  
-x86_64               randconfig-x053-20230529   gcc  
-x86_64               randconfig-x053-20230530   gcc  
-x86_64               randconfig-x054-20230529   gcc  
-x86_64               randconfig-x054-20230530   gcc  
-x86_64               randconfig-x055-20230529   gcc  
-x86_64               randconfig-x055-20230530   gcc  
-x86_64               randconfig-x056-20230529   gcc  
-x86_64               randconfig-x056-20230530   gcc  
-x86_64               randconfig-x061-20230528   clang
-x86_64               randconfig-x061-20230530   gcc  
-x86_64               randconfig-x062-20230528   clang
-x86_64               randconfig-x062-20230530   gcc  
-x86_64               randconfig-x063-20230528   clang
-x86_64               randconfig-x063-20230530   gcc  
-x86_64               randconfig-x064-20230528   clang
-x86_64               randconfig-x064-20230530   gcc  
-x86_64               randconfig-x065-20230528   clang
-x86_64               randconfig-x065-20230530   gcc  
-x86_64               randconfig-x066-20230528   clang
-x86_64               randconfig-x066-20230530   gcc  
-x86_64               randconfig-x071-20230528   gcc  
-x86_64               randconfig-x071-20230529   clang
-x86_64               randconfig-x071-20230530   clang
-x86_64               randconfig-x072-20230529   clang
-x86_64               randconfig-x072-20230530   clang
-x86_64               randconfig-x073-20230529   clang
-x86_64               randconfig-x073-20230530   clang
-x86_64               randconfig-x074-20230529   clang
-x86_64               randconfig-x074-20230530   clang
-x86_64               randconfig-x075-20230529   clang
-x86_64               randconfig-x075-20230530   clang
-x86_64               randconfig-x076-20230529   clang
-x86_64               randconfig-x076-20230530   clang
-x86_64               randconfig-x081-20230529   clang
-x86_64               randconfig-x081-20230530   clang
-x86_64               randconfig-x082-20230529   clang
-x86_64               randconfig-x082-20230530   clang
-x86_64               randconfig-x083-20230529   clang
-x86_64               randconfig-x083-20230530   clang
-x86_64               randconfig-x084-20230529   clang
-x86_64               randconfig-x084-20230530   clang
-x86_64               randconfig-x085-20230529   clang
-x86_64               randconfig-x085-20230530   clang
-x86_64               randconfig-x086-20230529   clang
-x86_64               randconfig-x086-20230530   clang
-x86_64               randconfig-x091-20230529   gcc  
-x86_64               randconfig-x091-20230530   gcc  
-x86_64               randconfig-x092-20230529   gcc  
-x86_64               randconfig-x092-20230530   gcc  
-x86_64               randconfig-x093-20230529   gcc  
-x86_64               randconfig-x093-20230530   gcc  
-x86_64               randconfig-x094-20230528   clang
-x86_64               randconfig-x094-20230529   gcc  
-x86_64               randconfig-x094-20230530   gcc  
-x86_64               randconfig-x095-20230529   gcc  
-x86_64               randconfig-x095-20230530   gcc  
-x86_64               randconfig-x096-20230529   gcc  
-x86_64               randconfig-x096-20230530   gcc  
-x86_64                               rhel-8.3   gcc  
-xtensa                generic_kc705_defconfig   gcc  
-xtensa               randconfig-r033-20230529   gcc  
-xtensa                         virt_defconfig   gcc  
+diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
+index 1f3574aef638..d06b1c5d9b0c 100644
+--- a/arch/m68k/Kconfig.machine
++++ b/arch/m68k/Kconfig.machine
+@@ -441,7 +441,7 @@ config ROM
+  
+  config ROMVEC
+         hex "Address of the base of the ROM vectors"
+-       default "0"
++       default "0x10c10000"
+         depends on ROM
+         help
+           This is almost always the same as the base of the ROM. Since on all
+@@ -450,7 +450,7 @@ config ROMVEC
+  
+  config ROMSTART
+         hex "Address of the base of system image in ROM"
+-       default "0x400"
++       default "0x10c10400"
+         depends on ROM
+         help
+           Define the start address of the system image in ROM. Commonly this
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+Regards
+Greg
+
