@@ -2,54 +2,54 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B80C3C87FE4
-	for <linux-m68k@archiver.kernel.org>; Wed, 31 May 2023 21:35:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7046C7EE43
+	for <linux-m68k@archiver.kernel.org>; Wed, 31 May 2023 21:35:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230521AbjEaVfL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 31 May 2023 17:35:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39232 "EHLO
+        id S230450AbjEaVfJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 31 May 2023 17:35:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbjEaVeS (ORCPT
+        with ESMTP id S231186AbjEaVeT (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 31 May 2023 17:34:18 -0400
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C793E60
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 31 May 2023 14:32:53 -0700 (PDT)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-565eb83efe4so956167b3.0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 31 May 2023 14:32:53 -0700 (PDT)
+        Wed, 31 May 2023 17:34:19 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22879E64
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 31 May 2023 14:32:55 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-565d354b59fso993017b3.0
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 31 May 2023 14:32:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685568734; x=1688160734;
+        d=gmail.com; s=20221208; t=1685568736; x=1688160736;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cQ/uV998f7GBK3U8fEwXlOSI96PW+5wzkUNMHiphdSU=;
-        b=Gco7uaZ8T0f7tmyth6uZeLtIanv6GpulpDiuQwIsnzqnPkjzJkIu0h1PZGQ4iQfI5A
-         Wsvmi3eI4+D34lVcMDUsWRCETH5qcZJ6o4mHbMVq/3LTC/HNm7eQ6q2KfFVCA86f3d3I
-         LxBFjI2qJ2MPH41lEvrCJnwlKDxe1mBh52b4jr4phbiXUV/rBKhdQfCzS+0QvKIx+CwJ
-         I9nD3g0MgWbwsz1cldEhhb6oFNl81Iu/IWeIlG3kHhqR9NOaQpioUXIEm19YojgZVH7b
-         YKNDEnmfXzRXtSrjS8AB8ePFyFPpDGIfkcu+Z1fbAVxcvdW9nHAWNVZ44Hj2Se7PAnUx
-         U49A==
+        bh=0GxeAY3mx9RNm+XPUbEc94ZOjIpLa+PLxcZvSX9iQwI=;
+        b=L93fUoh1n2yrqqKzpBnTktVcBXm2pCKywXktnW0z1yiLQvKxqvmxEchYgF8OV+6QTv
+         0bzTf1A4OlAuxa/9dZerxpZsbwsI4TjqwMyAQcFuTYSuZJaeWyYJuEWFU5GYKhF/PssT
+         BviFKPz7vL/Fi2iPZINEIUsA7v2Occp7X58VFjDz42JLNThFo7xdGCGk1w6ybVnEIlHs
+         b72Ur/xMHtdJmjaw3M4Bie9pileXuOl23g9fXNIiRCDxPyqPbOwfW5Xk2DEao1nEkBYA
+         Y/k6knxGTbApmWF3bdrPaXzT+XUQklhHF/wdKHs0p7V2Zyj9EYf6Jf8ACh3np5J3xStV
+         TZFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685568734; x=1688160734;
+        d=1e100.net; s=20221208; t=1685568736; x=1688160736;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cQ/uV998f7GBK3U8fEwXlOSI96PW+5wzkUNMHiphdSU=;
-        b=CNzvUP9jqqptvnMncYwxouseJhGS+yhqICR35at52YjOu3vNR3OkCLbe10EgVuX8B0
-         tbja5fi6Zyvfinj8UGRHIi0yc8t8xRxgD15exIb/Nq1U3UiqOqVUkM50hdsBYi16zG7l
-         D3IMqrMqch1OUPCeL0aT7ddli5Kw5PIxRvgUaiX5cbBBOSlSjdoK/hU6e3nN0ThXwGc9
-         8oc0sQ8tplqcmXX4nUn7RxfGvsIVhrCoAxnA++7WkY78TwoaLpCEotlb1dphQEEefcPU
-         4ERIpG30TnZQ6kWbz6NR1HuIeoFQ2nxCMRalUVhwxNDRckB6gzZZ8D+xLH5CToySx50i
-         Ok6g==
-X-Gm-Message-State: AC+VfDz9bFopVBHk97R3lUdYWwlKU5SId3uqb0+RtFE1dr/yEdlFBryA
-        Zv6bgDK5KMnAwKmgEwPSycM=
-X-Google-Smtp-Source: ACHHUZ5gIOI1fuO3+omWI3ZFi04M+ls0ECM5yJW/hGOTfIhuUEs0QHIWlyyE93+ta0AMRd/Bn9r+fw==
-X-Received: by 2002:a0d:db15:0:b0:562:6c0:c4d3 with SMTP id d21-20020a0ddb15000000b0056206c0c4d3mr7636270ywe.13.1685568734582;
-        Wed, 31 May 2023 14:32:14 -0700 (PDT)
+        bh=0GxeAY3mx9RNm+XPUbEc94ZOjIpLa+PLxcZvSX9iQwI=;
+        b=KdaV6LFbMGEvlctox7DJo55WTFVtAJUG1qMjcUMnWeIVhci2Jh93rNinqV1MFf9pUr
+         xXgHrD7+RH8eqHrdhgvHqK2GjdFSxvd9UNdnjRdcy/pAu8xvXWl9R2+k6Skhrl6bmcoW
+         djJ+n/+ertnSfZipgngVLAIdMlnVqaG5S9zDGja/5E0sJT7UY4qCWNdEPFZOpeiuotl8
+         A2svFP3sja9rVo2Cl/4tQlpVpO1N3ppuhrv+EKpIytdEDsV5RrboxLOXwtf+tWGQ5nB6
+         APnj7zjHYsM/Cpy5fnUyIRnpVj9rqd/dwA6dVEBM1g557TgwtzuQ9CPHLTSwVOVUsTP9
+         N7kA==
+X-Gm-Message-State: AC+VfDwobDwmVAw/IIjeNtgzgPSwdqwfsuOA+NmzK65t39jB7CHLZgYv
+        FghbB1u5nzpu6Ecq20kDvGM=
+X-Google-Smtp-Source: ACHHUZ5gNCrFPXlbEmiVTeSbnpNfi3te/9mQ7ozGamtiEd+qz1ysxTVS5h/CUcEwYIfry/bpNOrmaQ==
+X-Received: by 2002:a81:4f13:0:b0:565:ee73:7711 with SMTP id d19-20020a814f13000000b00565ee737711mr6829660ywb.46.1685568736548;
+        Wed, 31 May 2023 14:32:16 -0700 (PDT)
 Received: from unknowna0e70b2ca394.attlocal.net ([2600:1700:2f7d:1800::46])
-        by smtp.googlemail.com with ESMTPSA id t63-20020a0dd142000000b0055aafcef659sm658905ywd.5.2023.05.31.14.32.12
+        by smtp.googlemail.com with ESMTPSA id t63-20020a0dd142000000b0055aafcef659sm658905ywd.5.2023.05.31.14.32.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 May 2023 14:32:14 -0700 (PDT)
+        Wed, 31 May 2023 14:32:16 -0700 (PDT)
 From:   "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>
@@ -62,61 +62,169 @@ Cc:     linux-mm@kvack.org, linux-arch@vger.kernel.org,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
         linux-um@lists.infradead.org, xen-devel@lists.xenproject.org,
         kvm@vger.kernel.org,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Richard Weinberger <richard@nod.at>
-Subject: [PATCH v3 33/34] um: Convert {pmd, pte}_free_tlb() to use ptdescs
-Date:   Wed, 31 May 2023 14:30:31 -0700
-Message-Id: <20230531213032.25338-34-vishal.moola@gmail.com>
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Subject: [PATCH v3 34/34] mm: Remove pgtable_{pmd, pte}_page_{ctor, dtor}() wrappers
+Date:   Wed, 31 May 2023 14:30:32 -0700
+Message-Id: <20230531213032.25338-35-vishal.moola@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230531213032.25338-1-vishal.moola@gmail.com>
 References: <20230531213032.25338-1-vishal.moola@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Part of the conversions to replace pgtable constructor/destructors with
-ptdesc equivalents. Also cleans up some spacing issues.
+These functions are no longer necessary. Remove them and cleanup
+Documentation referencing them.
 
 Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
 ---
- arch/um/include/asm/pgalloc.h | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ Documentation/mm/split_page_table_lock.rst    | 12 +++++------
+ .../zh_CN/mm/split_page_table_lock.rst        | 14 ++++++-------
+ include/linux/mm.h                            | 20 -------------------
+ 3 files changed, 13 insertions(+), 33 deletions(-)
 
-diff --git a/arch/um/include/asm/pgalloc.h b/arch/um/include/asm/pgalloc.h
-index 8ec7cd46dd96..de5e31c64793 100644
---- a/arch/um/include/asm/pgalloc.h
-+++ b/arch/um/include/asm/pgalloc.h
-@@ -25,19 +25,19 @@
-  */
- extern pgd_t *pgd_alloc(struct mm_struct *);
+diff --git a/Documentation/mm/split_page_table_lock.rst b/Documentation/mm/split_page_table_lock.rst
+index 50ee0dfc95be..4bffec728340 100644
+--- a/Documentation/mm/split_page_table_lock.rst
++++ b/Documentation/mm/split_page_table_lock.rst
+@@ -53,7 +53,7 @@ Support of split page table lock by an architecture
+ ===================================================
  
--#define __pte_free_tlb(tlb,pte, address)		\
--do {							\
--	pgtable_pte_page_dtor(pte);			\
--	tlb_remove_page((tlb),(pte));			\
-+#define __pte_free_tlb(tlb, pte, address)			\
-+do {								\
-+	pagetable_pte_dtor(page_ptdesc(pte));			\
-+	tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));	\
- } while (0)
+ There's no need in special enabling of PTE split page table lock: everything
+-required is done by pgtable_pte_page_ctor() and pgtable_pte_page_dtor(), which
++required is done by pagetable_pte_ctor() and pagetable_pte_dtor(), which
+ must be called on PTE table allocation / freeing.
  
- #ifdef CONFIG_3_LEVEL_PGTABLES
+ Make sure the architecture doesn't use slab allocator for page table
+@@ -63,8 +63,8 @@ This field shares storage with page->ptl.
+ PMD split lock only makes sense if you have more than two page table
+ levels.
  
--#define __pmd_free_tlb(tlb, pmd, address)		\
--do {							\
--	pgtable_pmd_page_dtor(virt_to_page(pmd));	\
--	tlb_remove_page((tlb),virt_to_page(pmd));	\
--} while (0)						\
-+#define __pmd_free_tlb(tlb, pmd, address)			\
-+do {								\
-+	pagetable_pmd_dtor(virt_to_ptdesc(pmd));			\
-+	tlb_remove_page_ptdesc((tlb), virt_to_ptdesc(pmd));	\
-+} while (0)
+-PMD split lock enabling requires pgtable_pmd_page_ctor() call on PMD table
+-allocation and pgtable_pmd_page_dtor() on freeing.
++PMD split lock enabling requires pagetable_pmd_ctor() call on PMD table
++allocation and pagetable_pmd_dtor() on freeing.
  
- #endif
+ Allocation usually happens in pmd_alloc_one(), freeing in pmd_free() and
+ pmd_free_tlb(), but make sure you cover all PMD table allocation / freeing
+@@ -72,7 +72,7 @@ paths: i.e X86_PAE preallocate few PMDs on pgd_alloc().
  
+ With everything in place you can set CONFIG_ARCH_ENABLE_SPLIT_PMD_PTLOCK.
+ 
+-NOTE: pgtable_pte_page_ctor() and pgtable_pmd_page_ctor() can fail -- it must
++NOTE: pagetable_pte_ctor() and pagetable_pmd_ctor() can fail -- it must
+ be handled properly.
+ 
+ page->ptl
+@@ -92,7 +92,7 @@ trick:
+    split lock with enabled DEBUG_SPINLOCK or DEBUG_LOCK_ALLOC, but costs
+    one more cache line for indirect access;
+ 
+-The spinlock_t allocated in pgtable_pte_page_ctor() for PTE table and in
+-pgtable_pmd_page_ctor() for PMD table.
++The spinlock_t allocated in pagetable_pte_ctor() for PTE table and in
++pagetable_pmd_ctor() for PMD table.
+ 
+ Please, never access page->ptl directly -- use appropriate helper.
+diff --git a/Documentation/translations/zh_CN/mm/split_page_table_lock.rst b/Documentation/translations/zh_CN/mm/split_page_table_lock.rst
+index 4fb7aa666037..a2c288670a24 100644
+--- a/Documentation/translations/zh_CN/mm/split_page_table_lock.rst
++++ b/Documentation/translations/zh_CN/mm/split_page_table_lock.rst
+@@ -56,16 +56,16 @@ Hugetlb特定的辅助函数:
+ 架构对分页表锁的支持
+ ====================
+ 
+-没有必要特别启用PTE分页表锁：所有需要的东西都由pgtable_pte_page_ctor()
+-和pgtable_pte_page_dtor()完成，它们必须在PTE表分配/释放时被调用。
++没有必要特别启用PTE分页表锁：所有需要的东西都由pagetable_pte_ctor()
++和pagetable_pte_dtor()完成，它们必须在PTE表分配/释放时被调用。
+ 
+ 确保架构不使用slab分配器来分配页表：slab使用page->slab_cache来分配其页
+ 面。这个区域与page->ptl共享存储。
+ 
+ PMD分页锁只有在你有两个以上的页表级别时才有意义。
+ 
+-启用PMD分页锁需要在PMD表分配时调用pgtable_pmd_page_ctor()，在释放时调
+-用pgtable_pmd_page_dtor()。
++启用PMD分页锁需要在PMD表分配时调用pagetable_pmd_ctor()，在释放时调
++用pagetable_pmd_dtor()。
+ 
+ 分配通常发生在pmd_alloc_one()中，释放发生在pmd_free()和pmd_free_tlb()
+ 中，但要确保覆盖所有的PMD表分配/释放路径：即X86_PAE在pgd_alloc()中预先
+@@ -73,7 +73,7 @@ PMD分页锁只有在你有两个以上的页表级别时才有意义。
+ 
+ 一切就绪后，你可以设置CONFIG_ARCH_ENABLE_SPLIT_PMD_PTLOCK。
+ 
+-注意：pgtable_pte_page_ctor()和pgtable_pmd_page_ctor()可能失败--必
++注意：pagetable_pte_ctor()和pagetable_pmd_ctor()可能失败--必
+ 须正确处理。
+ 
+ page->ptl
+@@ -90,7 +90,7 @@ page->ptl用于访问分割页表锁，其中'page'是包含该表的页面struc
+    的指针并动态分配它。这允许在启用DEBUG_SPINLOCK或DEBUG_LOCK_ALLOC的
+    情况下使用分页锁，但由于间接访问而多花了一个缓存行。
+ 
+-PTE表的spinlock_t分配在pgtable_pte_page_ctor()中，PMD表的spinlock_t
+-分配在pgtable_pmd_page_ctor()中。
++PTE表的spinlock_t分配在pagetable_pte_ctor()中，PMD表的spinlock_t
++分配在pagetable_pmd_ctor()中。
+ 
+ 请不要直接访问page->ptl - -使用适当的辅助函数。
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 2c7d27348ea9..218cad2041a6 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2878,11 +2878,6 @@ static inline bool pagetable_pte_ctor(struct ptdesc *ptdesc)
+ 	return true;
+ }
+ 
+-static inline bool pgtable_pte_page_ctor(struct page *page)
+-{
+-	return pagetable_pte_ctor(page_ptdesc(page));
+-}
+-
+ static inline void pagetable_pte_dtor(struct ptdesc *ptdesc)
+ {
+ 	struct folio *folio = ptdesc_folio(ptdesc);
+@@ -2892,11 +2887,6 @@ static inline void pagetable_pte_dtor(struct ptdesc *ptdesc)
+ 	lruvec_stat_sub_folio(folio, NR_PAGETABLE);
+ }
+ 
+-static inline void pgtable_pte_page_dtor(struct page *page)
+-{
+-	pagetable_pte_dtor(page_ptdesc(page));
+-}
+-
+ #define pte_offset_map_lock(mm, pmd, address, ptlp)	\
+ ({							\
+ 	spinlock_t *__ptl = pte_lockptr(mm, pmd);	\
+@@ -2987,11 +2977,6 @@ static inline bool pagetable_pmd_ctor(struct ptdesc *ptdesc)
+ 	return true;
+ }
+ 
+-static inline bool pgtable_pmd_page_ctor(struct page *page)
+-{
+-	return pagetable_pmd_ctor(page_ptdesc(page));
+-}
+-
+ static inline void pagetable_pmd_dtor(struct ptdesc *ptdesc)
+ {
+ 	struct folio *folio = ptdesc_folio(ptdesc);
+@@ -3001,11 +2986,6 @@ static inline void pagetable_pmd_dtor(struct ptdesc *ptdesc)
+ 	lruvec_stat_sub_folio(folio, NR_PAGETABLE);
+ }
+ 
+-static inline void pgtable_pmd_page_dtor(struct page *page)
+-{
+-	pagetable_pmd_dtor(page_ptdesc(page));
+-}
+-
+ /*
+  * No scalability reason to split PUD locks yet, but follow the same pattern
+  * as the PMD locks to make it easier if we decide to.  The VM should not be
 -- 
 2.40.1
 
