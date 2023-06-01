@@ -2,52 +2,57 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9AFBC77B7A
-	for <linux-m68k@archiver.kernel.org>; Thu,  1 Jun 2023 04:36:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C61BDC77B7E
+	for <linux-m68k@archiver.kernel.org>; Thu,  1 Jun 2023 07:20:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229527AbjFAEgo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 1 Jun 2023 00:36:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37620 "EHLO
+        id S231642AbjFAHU1 convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 1 Jun 2023 03:20:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbjFAEgk (ORCPT
+        with ESMTP id S229524AbjFAHU0 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 1 Jun 2023 00:36:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB97A123
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 31 May 2023 21:36:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1436763F7C
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  1 Jun 2023 04:36:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E382C4339E
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  1 Jun 2023 04:36:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685594197;
-        bh=QZIVYOfQMQfDIruN7rSg689YIbiJbkkfE8AKRfy2n5U=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=XjX+qO5TgZej3fh2HJQIqiOR5PxyL4koYuTQx2qeUwz0mw2WS7S8765bRMbrDCQVG
-         whIGCjOlXBTjeWiN2+LrCx+Or8mSlhjQdHY5MFaYnqKspwUjKhBsJekNkwwwC3A2tK
-         RRJ+PYWLTNVwk2Tc4E1sjjLY66LER3hFT6QIRdlz0YEtfE5QnejkEMpgjlFtCb1L5b
-         jav2+jHQW0E6lB/EBDYRssonNB4dhirDM2pvI3kpcWJ0B9czAKVTkvmbZ2ylsgGsMq
-         x3kGCiBqFY0IqxyFq7Pvs4DJbAWcMeNsAFCqYa1UhLYAOwr6LlCcKM6JbTbj+s1hsP
-         DnX5huppMSCjQ==
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5148f299105so1031965a12.1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 31 May 2023 21:36:37 -0700 (PDT)
-X-Gm-Message-State: AC+VfDwq4Dmn5PwM+a/S8F37BdBIQgrlINidk771ywOTMClEF/GVoKy6
-        fWVcpnRdGV1TAD6IqC3H2x/xPqP/U2/aFJLfSoc=
-X-Google-Smtp-Source: ACHHUZ7XdaYihX3P0occ4fimfrY7vXLE/b8sATTjW74eXROnZDFW1BQ/va3F8G7kmqLig8peXPPgGCGmqMpiLEgKGXM=
-X-Received: by 2002:a05:6402:3511:b0:4fc:97d9:18ec with SMTP id
- b17-20020a056402351100b004fc97d918ecmr437472edd.21.1685594195535; Wed, 31 May
- 2023 21:36:35 -0700 (PDT)
+        Thu, 1 Jun 2023 03:20:26 -0400
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C688129
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  1 Jun 2023 00:20:23 -0700 (PDT)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-561c1436c75so5706587b3.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 01 Jun 2023 00:20:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1685604022; x=1688196022;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uahBQ1+NZ4LtBmJlKuzSeHMKUQpvPqnHtI00z7d7Eg4=;
+        b=gHS7IS56UQMZm8BOiBYWZe9eGMgHEEkhWQYdAwglxSzgtUIMWCYwcfvXvw1+mUvNf7
+         BNIsUn/eTCKThf/YLXPOgzgNqhaaxPE6Om1Wfq6Q/EH8lmlqBO5QCaBOxUiQtrCjdufV
+         wiOpWuByFYtjdbCoCNZiPiDTMsi+k3dNfOqr9HSyaisWEfxEJMbNQxKhQOwtrIYWDk3V
+         YMFfR21sODwBazMvAjIq3yHvBfAhtaSQRtvxqTg0mA2AR3tARtuawOhHsKviGIHWzlII
+         2v+hskt74pvZCKhMAp6WmX+1D6jVM3wW8REtGo4bopfS0Xzu2hPShyhRa9BTKXeR9RoF
+         4B9Q==
+X-Gm-Message-State: AC+VfDw8Q/fVsW/nSJGp9pFjqR6AH1zLL5EuSzHiFBibWY/OL2PYtD8T
+        Hp2efEvdGggRl7Twbd3taWY4XWqRIpfQRQ==
+X-Google-Smtp-Source: ACHHUZ6GIH6iYsKyaznPriDJBdQV9dcdeIvUcvHFxG5EMoxKDn8pcByWuxdXzwrGCxoBKbkqHVopBw==
+X-Received: by 2002:a0d:df54:0:b0:565:a3e6:1b7b with SMTP id i81-20020a0ddf54000000b00565a3e61b7bmr8930014ywe.18.1685604022235;
+        Thu, 01 Jun 2023 00:20:22 -0700 (PDT)
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id s11-20020a81770b000000b00561949f713fsm2505816ywc.39.2023.06.01.00.20.18
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Jun 2023 00:20:19 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-bacf685150cso535474276.3
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 01 Jun 2023 00:20:18 -0700 (PDT)
+X-Received: by 2002:a25:6891:0:b0:ba8:7122:2917 with SMTP id
+ d139-20020a256891000000b00ba871222917mr10052062ybc.0.1685604018484; Thu, 01
+ Jun 2023 00:20:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230531213032.25338-1-vishal.moola@gmail.com> <20230531213032.25338-23-vishal.moola@gmail.com>
-In-Reply-To: <20230531213032.25338-23-vishal.moola@gmail.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Thu, 1 Jun 2023 12:36:23 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSEguewbRMD8w3u3tfSPt-Opy+i=jm_8W2+NtAP1OYSsA@mail.gmail.com>
-Message-ID: <CAJF2gTSEguewbRMD8w3u3tfSPt-Opy+i=jm_8W2+NtAP1OYSsA@mail.gmail.com>
-Subject: Re: [PATCH v3 22/34] csky: Convert __pte_free_tlb() to use ptdescs
+References: <20230531213032.25338-1-vishal.moola@gmail.com> <20230531213032.25338-31-vishal.moola@gmail.com>
+In-Reply-To: <20230531213032.25338-31-vishal.moola@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 1 Jun 2023 09:20:05 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdU4t4ac_eCH0UaX9F+GQ5-9kYjB_=e+pSfTkxG=3b8DsA@mail.gmail.com>
+Message-ID: <CAMuHMdU4t4ac_eCH0UaX9F+GQ5-9kYjB_=e+pSfTkxG=3b8DsA@mail.gmail.com>
+Subject: Re: [PATCH v3 30/34] sh: Convert pte_free_tlb() to use ptdescs
 To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
@@ -58,47 +63,32 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
         linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
         sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        xen-devel@lists.xenproject.org, kvm@vger.kernel.org
+        xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Acked-by: Guo Ren <guoren@kernel.org>
-
-On Thu, Jun 1, 2023 at 5:34=E2=80=AFAM Vishal Moola (Oracle)
+On Wed, May 31, 2023 at 11:33 PM Vishal Moola (Oracle)
 <vishal.moola@gmail.com> wrote:
->
 > Part of the conversions to replace pgtable constructor/destructors with
-> ptdesc equivalents.
+> ptdesc equivalents. Also cleans up some spacing issues.
 >
 > Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
-> ---
->  arch/csky/include/asm/pgalloc.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/csky/include/asm/pgalloc.h b/arch/csky/include/asm/pgal=
-loc.h
-> index 7d57e5da0914..9c84c9012e53 100644
-> --- a/arch/csky/include/asm/pgalloc.h
-> +++ b/arch/csky/include/asm/pgalloc.h
-> @@ -63,8 +63,8 @@ static inline pgd_t *pgd_alloc(struct mm_struct *mm)
->
->  #define __pte_free_tlb(tlb, pte, address)              \
->  do {                                                   \
-> -       pgtable_pte_page_dtor(pte);                     \
-> -       tlb_remove_page(tlb, pte);                      \
-> +       pagetable_pte_dtor(page_ptdesc(pte));           \
-> +       tlb_remove_page_ptdesc(tlb, page_ptdesc(pte));  \
->  } while (0)
->
->  extern void pagetable_init(void);
-> --
-> 2.40.1
->
 
+LGTM, so
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
---=20
-Best Regards
- Guo Ren
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
