@@ -2,126 +2,103 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 737E0C77B73
-	for <linux-m68k@archiver.kernel.org>; Thu,  1 Jun 2023 00:22:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9AFBC77B7A
+	for <linux-m68k@archiver.kernel.org>; Thu,  1 Jun 2023 04:36:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbjFAAWa (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 31 May 2023 20:22:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52582 "EHLO
+        id S229527AbjFAEgo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 1 Jun 2023 00:36:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbjFAAW3 (ORCPT
+        with ESMTP id S229974AbjFAEgk (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 31 May 2023 20:22:29 -0400
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4344D11F
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 31 May 2023 17:22:28 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id D5E16320092F;
-        Wed, 31 May 2023 20:22:24 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 31 May 2023 20:22:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1685578944; x=1685665344; bh=lVTms7WrVNc9n
-        PSJkBHh4FAzxIOS8ynj2PPYmPcYMzY=; b=eUr9jxRGNxLjBaHd53eZEw21tFkk+
-        af+77+hX/XcwGswsZPN5LJVMtiQfZ84yW2kzEzV+aOMnqQNgrq161VEI25ZOmfJy
-        94LGPRXXOW0l+hUGee75tJANC7tXothI9FFE8/h8acVtGhnufcRN3TXkHY+/HS++
-        Q10C+Q7W4ZCba44xPUekbUYEsTNJSxT97UUcANPgYmpTUB/ecPUS1bzlFmENH+mR
-        xEEzkoZr/rWvHydlU9m7BiNsQurjE53DM8JYp96vsRDPHNjh40QyaAybjgybxLhj
-        ng8Du/6rEVFrXWfGt8+vYYN1EqCPK67Ahn9GJaGUQUZ5CniwJX11Erpew==
-X-ME-Sender: <xms:v-R3ZH3O8f7f99rN2sxAytIP8N54JYjpkeQdqEPcrhN-BHz6Ybr_aA>
-    <xme:v-R3ZGFVq9Xy45_Ol1zdNarNOCnxEdJaqu5D6QXOi-232OprEBSsJhj_2vBv-VNC8
-    S1wyYsh6IxDDFbM8IQ>
-X-ME-Received: <xmr:v-R3ZH7YdLO95N6oWPuh56UjxfaSMkFyodgvajTqF5XSjaIpb2BZQhAlSn1i-PT2k1QaJ7KlpBiaiU1IYG4f4bpSbzdeMsHYTC8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeeltddgfeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevufgjkfhfgggtsehmtderredttdejnecuhfhrohhmpefhihhnnhcu
-    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpeelfeeklefggfetkedukeevfffgvdeuheetffekledtfeejteelieejteeh
-    geelieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:v-R3ZM3NTIAI1RDB3LPOvA14yEODQOmrcCbav_zw6P3I8nYqX-fpgw>
-    <xmx:v-R3ZKGS2VzSBBGyxWt9ieBvdPP_8H6Ifjs37P5-TaZpfs4JaqdbCw>
-    <xmx:v-R3ZN-wsk275sY5izl3SXtyK41ZnJKabgy3YrjCLb5_qvRGwVRt6Q>
-    <xmx:wOR3ZGCzxvYXspHRKx9BqJG3RcWMS_gr3Ze23Qj2MpbvzSmfRXUlFg>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 31 May 2023 20:22:20 -0400 (EDT)
-Date:   Thu, 1 Jun 2023 10:22:38 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Joshua Thompson <funaho@jurai.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-m68k@lists.linux-m68k.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Exclude m68k-only drivers from powerpc
- entry
-In-Reply-To: <CAMuHMdUbVmjcYyXmparBm6pQwu3q7HpTKsKfi_aAHGOSX97MUw@mail.gmail.com>
-Message-ID: <f020b46c-f291-ad2f-6c4c-6bc79955e6f2@linux-m68k.org>
-References: <20230531125023.1121060-1-mpe@ellerman.id.au> <CAMuHMdUbVmjcYyXmparBm6pQwu3q7HpTKsKfi_aAHGOSX97MUw@mail.gmail.com>
+        Thu, 1 Jun 2023 00:36:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB97A123
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 31 May 2023 21:36:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1436763F7C
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  1 Jun 2023 04:36:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E382C4339E
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  1 Jun 2023 04:36:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1685594197;
+        bh=QZIVYOfQMQfDIruN7rSg689YIbiJbkkfE8AKRfy2n5U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=XjX+qO5TgZej3fh2HJQIqiOR5PxyL4koYuTQx2qeUwz0mw2WS7S8765bRMbrDCQVG
+         whIGCjOlXBTjeWiN2+LrCx+Or8mSlhjQdHY5MFaYnqKspwUjKhBsJekNkwwwC3A2tK
+         RRJ+PYWLTNVwk2Tc4E1sjjLY66LER3hFT6QIRdlz0YEtfE5QnejkEMpgjlFtCb1L5b
+         jav2+jHQW0E6lB/EBDYRssonNB4dhirDM2pvI3kpcWJ0B9czAKVTkvmbZ2ylsgGsMq
+         x3kGCiBqFY0IqxyFq7Pvs4DJbAWcMeNsAFCqYa1UhLYAOwr6LlCcKM6JbTbj+s1hsP
+         DnX5huppMSCjQ==
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5148f299105so1031965a12.1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 31 May 2023 21:36:37 -0700 (PDT)
+X-Gm-Message-State: AC+VfDwq4Dmn5PwM+a/S8F37BdBIQgrlINidk771ywOTMClEF/GVoKy6
+        fWVcpnRdGV1TAD6IqC3H2x/xPqP/U2/aFJLfSoc=
+X-Google-Smtp-Source: ACHHUZ7XdaYihX3P0occ4fimfrY7vXLE/b8sATTjW74eXROnZDFW1BQ/va3F8G7kmqLig8peXPPgGCGmqMpiLEgKGXM=
+X-Received: by 2002:a05:6402:3511:b0:4fc:97d9:18ec with SMTP id
+ b17-20020a056402351100b004fc97d918ecmr437472edd.21.1685594195535; Wed, 31 May
+ 2023 21:36:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="-1463811774-394251797-1685578872=:27831"
+References: <20230531213032.25338-1-vishal.moola@gmail.com> <20230531213032.25338-23-vishal.moola@gmail.com>
+In-Reply-To: <20230531213032.25338-23-vishal.moola@gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Thu, 1 Jun 2023 12:36:23 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTSEguewbRMD8w3u3tfSPt-Opy+i=jm_8W2+NtAP1OYSsA@mail.gmail.com>
+Message-ID: <CAJF2gTSEguewbRMD8w3u3tfSPt-Opy+i=jm_8W2+NtAP1OYSsA@mail.gmail.com>
+Subject: Re: [PATCH v3 22/34] csky: Convert __pte_free_tlb() to use ptdescs
+To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+        xen-devel@lists.xenproject.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Acked-by: Guo Ren <guoren@kernel.org>
 
----1463811774-394251797-1685578872=:27831
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+On Thu, Jun 1, 2023 at 5:34=E2=80=AFAM Vishal Moola (Oracle)
+<vishal.moola@gmail.com> wrote:
+>
+> Part of the conversions to replace pgtable constructor/destructors with
+> ptdesc equivalents.
+>
+> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+> ---
+>  arch/csky/include/asm/pgalloc.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/csky/include/asm/pgalloc.h b/arch/csky/include/asm/pgal=
+loc.h
+> index 7d57e5da0914..9c84c9012e53 100644
+> --- a/arch/csky/include/asm/pgalloc.h
+> +++ b/arch/csky/include/asm/pgalloc.h
+> @@ -63,8 +63,8 @@ static inline pgd_t *pgd_alloc(struct mm_struct *mm)
+>
+>  #define __pte_free_tlb(tlb, pte, address)              \
+>  do {                                                   \
+> -       pgtable_pte_page_dtor(pte);                     \
+> -       tlb_remove_page(tlb, pte);                      \
+> +       pagetable_pte_dtor(page_ptdesc(pte));           \
+> +       tlb_remove_page_ptdesc(tlb, page_ptdesc(pte));  \
+>  } while (0)
+>
+>  extern void pagetable_init(void);
+> --
+> 2.40.1
+>
 
-On Wed, 31 May 2023, Geert Uytterhoeven wrote:
 
-> On Wed, May 31, 2023 at 2:50=E2=80=AFPM Michael Ellerman <mpe@ellerman.id=
-=2Eau> wrote:
-> > The powerpc section has a "F:" entry for drivers/macintosh, matching=20
-> > all files in or below drivers/macintosh. That is correct for the most=
-=20
-> > part, but there are a couple of m68k-only drivers in the directory, so=
-=20
-> > exclude those.
-> >
-> > Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
->=20
-> Thanks for your patch!
->=20
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -11916,6 +11916,8 @@ L:      linuxppc-dev@lists.ozlabs.org
-> >  S:     Odd Fixes
-> >  F:     arch/powerpc/platforms/powermac/
-> >  F:     drivers/macintosh/
-> > +X:     drivers/macintosh/adb-iop.c
-> > +X:     drivers/macintosh/via-macii.c
-> >
-> >  LINUX FOR POWERPC (32-BIT AND 64-BIT)
-> >  M:     Michael Ellerman <mpe@ellerman.id.au>
->=20
-> LGTM, as there are already entries for these two files under
-> "M68K ON APPLE MACINTOSH".
-
-Right. I should have addded those "X files" in commit 2ae92e8b9b7.
-
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
->=20
-> Which leads us to a related topic: Is Joshua still around?  Should Finn=
-=20
-> be added or replace Joshua in the "M68K ON APPLE MACINTOSH" entry?
->=20
-
-CC Joshua.
-
-If he's not around perhaps we'll see some bounces.
-
-Anyway, I'd be willing to either share the M68K ON APPLE MACINTOSH role or=
-=20
-replace Joshua if he no longer wants that job.
-
-But I hope he does still want it as there's always driver work to do.
----1463811774-394251797-1685578872=:27831--
+--=20
+Best Regards
+ Guo Ren
