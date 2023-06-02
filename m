@@ -2,86 +2,64 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8BCCC77B7A
-	for <linux-m68k@archiver.kernel.org>; Fri,  2 Jun 2023 15:08:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98599C7EE24
+	for <linux-m68k@archiver.kernel.org>; Sat,  3 Jun 2023 10:40:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236404AbjFBPIp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 2 Jun 2023 11:08:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58138 "EHLO
+        id S235669AbjFCKkV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 3 Jun 2023 06:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236389AbjFBPIm (ORCPT
+        with ESMTP id S236923AbjFCKkR (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 2 Jun 2023 11:08:42 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A41EE44
-        for <linux-m68k@lists.linux-m68k.org>; Fri,  2 Jun 2023 08:08:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1685718518; x=1717254518;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=sOg+e66aWxQVMH2SnS4c8kmK+t/T96W9yihpb4WFeM4=;
-  b=Wug9L8JeAOebSm8bE9NXNeQBVVwY1zwQlRyLwoWXeRCIPhfz8hpF4GPl
-   jPeBCRpODWk+W59mfI9FYizx30i6DUSecqhbPZfpNTfwLhda4tRvFNnj/
-   o9MAGfjk3J3cuEmhmPDq9PCd98dcPVxeV2FH8JBBlg/z5GRTRK2uCNsZ7
-   x5rzNXkmvBhDmmi6CsrzD7LdL+YF3TmJAoQuLcGU2JtzRZuxC/cVGaD+r
-   1I/qAeRjXaEV8pwMScOULduvcm41Ff4UuK7jQWvV4GAKalH9tNqH6Bq16
-   7lFz9nJjVK9RNeNWZDLySO60OMe/2GT0fLykUH1Ji+/8qmjDPUxSIGY1J
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="353384534"
-X-IronPort-AV: E=Sophos;i="6.00,213,1681196400"; 
-   d="scan'208";a="353384534"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2023 08:07:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10729"; a="772910503"
-X-IronPort-AV: E=Sophos;i="6.00,213,1681196400"; 
-   d="scan'208";a="772910503"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga008.fm.intel.com with ESMTP; 02 Jun 2023 08:06:58 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1q56Mh-000fcK-2s;
-        Fri, 02 Jun 2023 18:06:55 +0300
-Date:   Fri, 2 Jun 2023 18:06:55 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-gpio@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc-tw-discuss@lists.sourceforge.net,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Hu Haowen <src.res@email.cn>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: Re: [PATCH v1 1/1] gpiolib: Remove unused gpio_cansleep()
-Message-ID: <ZHoFj1NSftx8iS3y@smile.fi.intel.com>
-References: <20230602150106.47783-1-andriy.shevchenko@linux.intel.com>
+        Sat, 3 Jun 2023 06:40:17 -0400
+X-Greylist: delayed 4201 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 03 Jun 2023 03:39:53 PDT
+Received: from mail.webtopbits.pl (mail.webtopbits.pl [195.231.64.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F118170D
+        for <linux-m68k@lists.linux-m68k.org>; Sat,  3 Jun 2023 03:39:53 -0700 (PDT)
+Received: by mail.webtopbits.pl (Postfix, from userid 1001)
+        id 16728A38D4; Fri,  2 Jun 2023 09:51:03 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=webtopbits.pl;
+        s=mail; t=1685695871;
+        bh=Eh8ECMiYd4baGAwPAzhz8mhJACXX7NSRkYjh+plaY18=;
+        h=Date:From:To:Subject:From;
+        b=mOAsc8jooem/ZOqpcGhtN/asC414fSlXtzSzmyHKjMwiosLOoCMLB3L1zeNT0BfUB
+         wkfj+AUJtkvX9ZXMTETvJ5T7hUsUoRbkpjxTp5D9IGwonptIIhM4O62kXprIAPgx8D
+         DN1mNKyPvK2PkU40S32HvwG0pEykaM3LHqETnO7gMs0EWELrEzQpFuHdZRSzN0zsdK
+         HSk/0c4LO5M1wVVL2iQyhtDd1BODM7pJGr/7V7wXkwBQiUaEISQc7FAO4bxwWiSbnL
+         zjn8/36/hzyWccJHWX1KvHBB+JXiORRGlY6+B5w/plsTzF52b8i/7Zw7TJQspwxE5/
+         67U4DFy2SnxJw==
+Received: by mail.webtopbits.pl for <linux-m68k@lists.linux-m68k.org>; Fri,  2 Jun 2023 08:50:56 GMT
+Message-ID: <20230602085530-0.1.8w.5kui.0.66o7by0ezc@webtopbits.pl>
+Date:   Fri,  2 Jun 2023 08:50:56 GMT
+From:   "Kamil Durjasz" <kamil.durjasz@webtopbits.pl>
+To:     <linux-m68k@lists.linux-m68k.org>
+Subject: =?UTF-8?Q?Wy=C5=BCsza_konwersja_w_e-sklepie_?=
+X-Mailer: mail.webtopbits.pl
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230602150106.47783-1-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Jun 02, 2023 at 06:01:06PM +0300, Andy Shevchenko wrote:
-> There is not a single user in the entire kernel of this deprecated API,
-> kill it for good.
+Dzie=C5=84 dobry,
 
-...
+w jaki spos=C3=B3b docieraj=C4=85 Pa=C5=84stwo do odbiorc=C3=B3w?
 
->  .../translations/zh_CN/driver-api/gpio/legacy.rst  | 14 +++-----------
->  Documentation/translations/zh_TW/gpio.txt          | 14 +++-----------
+Tworzymy pot=C4=99=C5=BCne narz=C4=99dzia sprzeda=C5=BCy, kt=C3=B3re pozw=
+alaj=C4=85 kompleksowo rozwi=C4=85za=C4=87 problemy potencjalnych klient=C3=
+=B3w i skutecznie wp=C5=82yn=C4=85=C4=87 na ich decyzje zakupowe.=20
 
-There are Chinese speaking people in Cc, if I'm not mistaken, can you, please,
-check the respective translation fixes?
+Skupiamy si=C4=99 na Pa=C5=84stwa potrzebach zwi=C4=85zanych z obs=C5=82u=
+g=C4=85 sklepu, oczekiwaniach i planach sprzeda=C5=BCowych. Szczeg=C3=B3=C5=
+=82owo dopasowujemy grafik=C4=99, funkcjonalno=C5=9Bci, struktur=C4=99 i =
+mikrointerakcje do Pa=C5=84stwa grupy docelowej, co przek=C5=82ada si=C4=99=
+ na oczekiwane rezultaty.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Ch=C4=99tnie przedstawi=C4=99 dotychczasowe realizacje, aby mogli Pa=C5=84=
+stwo przekona=C4=87 si=C4=99 o naszych mo=C5=BCliwo=C5=9Bciach. Mog=C4=99=
+ si=C4=99 skontaktowa=C4=87?
 
 
+Pozdrawiam
+Kamil Durjasz
