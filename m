@@ -2,316 +2,326 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DFCE0C7EE24
-	for <linux-m68k@archiver.kernel.org>; Mon,  5 Jun 2023 23:00:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED240C77B7A
+	for <linux-m68k@archiver.kernel.org>; Tue,  6 Jun 2023 12:38:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbjFEXA4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 5 Jun 2023 19:00:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44670 "EHLO
+        id S231674AbjFFMit (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 6 Jun 2023 08:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231277AbjFEXA4 (ORCPT
+        with ESMTP id S234294AbjFFMis (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 5 Jun 2023 19:00:56 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E54BE
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  5 Jun 2023 16:00:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1686006052; x=1717542052;
-  h=date:from:to:cc:subject:message-id;
-  bh=TVhCG8+3Jmzff+xSpb10cBbH8VzTRd5bkGuwI05K+ow=;
-  b=MbairD2jcbGC8x5mLPiP2TkyTzrw9sSCEegV7rddm1Bh/LRZn5NSxXD0
-   8dSeLLTBQ+ceaRXKNLmJE1Tq7Cm1tTYskSqSSF7S1gpTLIyytxcatbb2f
-   4KQylJd07kzLhHXsJXJmKZawiDeJUUo3WNQdV8chZIKiQ8JevmbccqHM8
-   ePff1ZomEVMAO4yCdIwtyYPRBSIacuw2rwrkSe8nkPiXFoL0kPofLusro
-   BinQ5h6izc2TE59vq+YG57Yo2x+Mp4DJSlsfvInOZ7kfxGdM9HGWNI5EN
-   2MeO+WNmMGUxuUoPbyOnN7V1Ri/E8xtnxuIXnFxzPIyKMx6BGfufoZaHI
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10732"; a="358956201"
-X-IronPort-AV: E=Sophos;i="6.00,218,1681196400"; 
-   d="scan'208";a="358956201"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2023 16:00:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10732"; a="853157660"
-X-IronPort-AV: E=Sophos;i="6.00,218,1681196400"; 
-   d="scan'208";a="853157660"
-Received: from lkp-server01.sh.intel.com (HELO 15ab08e44a81) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 05 Jun 2023 16:00:30 -0700
-Received: from kbuild by 15ab08e44a81 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1q6JBd-0004W3-0h;
-        Mon, 05 Jun 2023 23:00:29 +0000
-Date:   Tue, 06 Jun 2023 06:59:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- c2f09b03b611372c80931855a368cf86e1665613
-Message-ID: <20230605225950.TVtwV%lkp@intel.com>
-User-Agent: s-nail v14.9.24
+        Tue, 6 Jun 2023 08:38:48 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8D64410E9
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  6 Jun 2023 05:38:41 -0700 (PDT)
+Received: from loongson.cn (unknown [223.106.25.146])
+        by gateway (Coremail) with SMTP id _____8CxOuqrKH9kjSoAAA--.326S3;
+        Tue, 06 Jun 2023 20:38:03 +0800 (CST)
+Received: from [192.168.100.8] (unknown [223.106.25.146])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxZuSpKH9k3VsCAA--.9716S3;
+        Tue, 06 Jun 2023 20:38:02 +0800 (CST)
+Message-ID: <ea4447e4-1157-9cf4-23d0-2411eb63f540@loongson.cn>
+Date:   Tue, 6 Jun 2023 20:38:01 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH v2 1/1] gpiolib: Remove unused gpio_cansleep()
+Content-Language: en-US
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-gpio@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc-tw-discuss@lists.sourceforge.net,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>,
+        Hu Haowen <src.res@email.cn>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <20230605125411.60378-1-andriy.shevchenko@linux.intel.com>
+From:   Yanteng Si <siyanteng@loongson.cn>
+In-Reply-To: <20230605125411.60378-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8AxZuSpKH9k3VsCAA--.9716S3
+X-CM-SenderInfo: pvl1t0pwhqwqxorr0wxvrqhubq/
+X-Coremail-Antispam: 1Uk129KBj9fXoW3tFyxGryfXry5AF43uw45Jwc_yoW8Jry3Wo
+        W7Awsruwn7Ja13JrW3Ga1kWFnrursFkrZ5Za1vq3yrKry7t3s3X3W8Ja43Ja4rAFyrG3Wf
+        GFyxuFWUJrZ5tFyUl-sFpf9Il3svdjkaLaAFLSUrUUUUeb8apTn2vfkv8UJUUUU8wcxFpf
+        9Il3svdxBIdaVrn0xqx4xG64xvF2IEw4CE5I8CrVC2j2Jv73VFW2AGmfu7bjvjm3AaLaJ3
+        UjIYCTnIWjp_UUUO87kC6x804xWl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI
+        8IcIk0rVWrJVCq3wAFIxvE14AKwVWUXVWUAwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
+        Y2AK021l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14
+        v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AK
+        xVWxJr0_GcWln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
+        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r12
+        6r1DMcIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
+        1lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxG
+        rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jFApnUUU
+        UU=
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: c2f09b03b611372c80931855a368cf86e1665613  Merge tag 'v6.4-rc5'
 
-elapsed time: 725m
+在 2023/6/5 20:54, Andy Shevchenko 写道:
+> There is not a single user in the entire kernel of this deprecated API,
+> kill it for good.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-configs tested: 245
-configs skipped: 18
+Reviewed-by: Yanteng Si <siyanteng@loongson.cn>
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r005-20230605   gcc  
-alpha                randconfig-r013-20230605   gcc  
-arc                              allyesconfig   gcc  
-arc          buildonly-randconfig-r002-20230605   gcc  
-arc          buildonly-randconfig-r005-20230605   gcc  
-arc          buildonly-randconfig-r006-20230605   gcc  
-arc                                 defconfig   gcc  
-arc                         haps_hs_defconfig   gcc  
-arc                  randconfig-r016-20230605   gcc  
-arc                  randconfig-r025-20230605   gcc  
-arc                  randconfig-r026-20230605   gcc  
-arc                  randconfig-r043-20230605   gcc  
-arc                    vdk_hs38_smp_defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                       aspeed_g5_defconfig   gcc  
-arm                        clps711x_defconfig   gcc  
-arm                                 defconfig   gcc  
-arm                      footbridge_defconfig   gcc  
-arm                            qcom_defconfig   gcc  
-arm                  randconfig-r031-20230605   gcc  
-arm                  randconfig-r032-20230605   gcc  
-arm                  randconfig-r036-20230605   gcc  
-arm                  randconfig-r046-20230605   clang
-arm                          sp7021_defconfig   clang
-arm64                            allyesconfig   gcc  
-arm64        buildonly-randconfig-r001-20230605   clang
-arm64                               defconfig   gcc  
-arm64                randconfig-r002-20230605   clang
-arm64                randconfig-r006-20230605   clang
-arm64                randconfig-r012-20230605   gcc  
-arm64                randconfig-r013-20230605   gcc  
-arm64                randconfig-r016-20230605   gcc  
-arm64                randconfig-r024-20230605   gcc  
-arm64                randconfig-r034-20230605   clang
-csky         buildonly-randconfig-r001-20230605   gcc  
-csky         buildonly-randconfig-r005-20230605   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r001-20230605   gcc  
-csky                 randconfig-r004-20230605   gcc  
-csky                 randconfig-r012-20230605   gcc  
-csky                 randconfig-r014-20230605   gcc  
-csky                 randconfig-r015-20230605   gcc  
-csky                 randconfig-r023-20230605   gcc  
-csky                 randconfig-r031-20230605   gcc  
-csky                 randconfig-r032-20230605   gcc  
-csky                 randconfig-r034-20230605   gcc  
-hexagon              randconfig-r003-20230605   clang
-hexagon              randconfig-r004-20230605   clang
-hexagon              randconfig-r025-20230605   clang
-hexagon              randconfig-r036-20230605   clang
-hexagon              randconfig-r041-20230605   clang
-hexagon              randconfig-r045-20230605   clang
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230605   clang
-i386                 randconfig-i002-20230605   clang
-i386                 randconfig-i003-20230605   clang
-i386                 randconfig-i004-20230605   clang
-i386                 randconfig-i005-20230605   clang
-i386                 randconfig-i006-20230605   clang
-i386                 randconfig-i011-20230605   gcc  
-i386                 randconfig-i012-20230605   gcc  
-i386                 randconfig-i013-20230605   gcc  
-i386                 randconfig-i014-20230605   gcc  
-i386                 randconfig-i015-20230605   gcc  
-i386                 randconfig-i016-20230605   gcc  
-i386                 randconfig-i051-20230605   clang
-i386                 randconfig-i052-20230605   clang
-i386                 randconfig-i053-20230605   clang
-i386                 randconfig-i054-20230605   clang
-i386                 randconfig-i055-20230605   clang
-i386                 randconfig-i056-20230605   clang
-i386                 randconfig-i061-20230605   clang
-i386                 randconfig-i062-20230605   clang
-i386                 randconfig-i063-20230605   clang
-i386                 randconfig-i064-20230605   clang
-i386                 randconfig-i065-20230605   clang
-i386                 randconfig-i066-20230605   clang
-i386                 randconfig-r006-20230605   clang
-i386                 randconfig-r011-20230605   gcc  
-i386                 randconfig-r021-20230605   gcc  
-i386                 randconfig-r022-20230605   gcc  
-i386                 randconfig-r025-20230605   gcc  
-i386                 randconfig-r026-20230605   gcc  
-i386                 randconfig-r035-20230605   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch    buildonly-randconfig-r004-20230605   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r006-20230606   gcc  
-loongarch            randconfig-r011-20230605   gcc  
-loongarch            randconfig-r012-20230605   gcc  
-loongarch            randconfig-r016-20230605   gcc  
-loongarch            randconfig-r025-20230605   gcc  
-loongarch            randconfig-r033-20230605   gcc  
-m68k                             allmodconfig   gcc  
-m68k         buildonly-randconfig-r001-20230605   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r002-20230606   gcc  
-m68k                 randconfig-r021-20230605   gcc  
-m68k                 randconfig-r023-20230605   gcc  
-m68k                 randconfig-r026-20230605   gcc  
-microblaze           randconfig-r001-20230605   gcc  
-microblaze           randconfig-r003-20230606   gcc  
-microblaze           randconfig-r004-20230605   gcc  
-microblaze           randconfig-r006-20230605   gcc  
-microblaze           randconfig-r026-20230605   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                         bigsur_defconfig   gcc  
-mips         buildonly-randconfig-r002-20230605   gcc  
-mips         buildonly-randconfig-r003-20230605   gcc  
-mips         buildonly-randconfig-r005-20230605   gcc  
-mips                           ip28_defconfig   clang
-mips                 randconfig-r003-20230605   gcc  
-nios2                         10m50_defconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r005-20230605   gcc  
-nios2                randconfig-r011-20230605   gcc  
-nios2                randconfig-r014-20230605   gcc  
-nios2                randconfig-r016-20230605   gcc  
-nios2                randconfig-r031-20230605   gcc  
-nios2                randconfig-r032-20230605   gcc  
-nios2                randconfig-r035-20230605   gcc  
-openrisc     buildonly-randconfig-r001-20230605   gcc  
-openrisc     buildonly-randconfig-r003-20230605   gcc  
-openrisc     buildonly-randconfig-r004-20230605   gcc  
-openrisc             randconfig-r006-20230605   gcc  
-openrisc             randconfig-r021-20230605   gcc  
-openrisc             randconfig-r023-20230605   gcc  
-parisc       buildonly-randconfig-r003-20230605   gcc  
-parisc       buildonly-randconfig-r004-20230605   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r002-20230605   gcc  
-parisc               randconfig-r012-20230605   gcc  
-parisc               randconfig-r015-20230605   gcc  
-parisc               randconfig-r025-20230605   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc      buildonly-randconfig-r002-20230605   gcc  
-powerpc                       eiger_defconfig   gcc  
-powerpc                   microwatt_defconfig   clang
-powerpc                 mpc8315_rdb_defconfig   clang
-powerpc                      ppc44x_defconfig   clang
-powerpc              randconfig-r005-20230606   gcc  
-powerpc              randconfig-r012-20230605   gcc  
-powerpc              randconfig-r013-20230605   gcc  
-powerpc              randconfig-r014-20230605   gcc  
-powerpc              randconfig-r015-20230605   gcc  
-powerpc              randconfig-r021-20230605   gcc  
-powerpc              randconfig-r035-20230605   clang
-powerpc              randconfig-r036-20230605   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv        buildonly-randconfig-r006-20230605   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r002-20230605   clang
-riscv                randconfig-r006-20230605   clang
-riscv                randconfig-r015-20230605   gcc  
-riscv                randconfig-r022-20230605   gcc  
-riscv                randconfig-r042-20230605   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r001-20230606   gcc  
-s390                 randconfig-r015-20230605   gcc  
-s390                 randconfig-r016-20230605   gcc  
-s390                 randconfig-r035-20230605   clang
-s390                 randconfig-r044-20230605   gcc  
-sh                               allmodconfig   gcc  
-sh           buildonly-randconfig-r001-20230605   gcc  
-sh           buildonly-randconfig-r004-20230605   gcc  
-sh                             espt_defconfig   gcc  
-sh                          landisk_defconfig   gcc  
-sh                   randconfig-r013-20230605   gcc  
-sh                   randconfig-r034-20230605   gcc  
-sh                           se7619_defconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r001-20230605   gcc  
-sparc                randconfig-r004-20230605   gcc  
-sparc                randconfig-r012-20230605   gcc  
-sparc                randconfig-r022-20230605   gcc  
-sparc                randconfig-r024-20230605   gcc  
-sparc                randconfig-r025-20230605   gcc  
-sparc                randconfig-r026-20230605   gcc  
-sparc                randconfig-r033-20230605   gcc  
-sparc                randconfig-r034-20230605   gcc  
-sparc                randconfig-r035-20230605   gcc  
-sparc64      buildonly-randconfig-r002-20230605   gcc  
-sparc64      buildonly-randconfig-r003-20230605   gcc  
-sparc64      buildonly-randconfig-r006-20230605   gcc  
-sparc64              randconfig-r011-20230605   gcc  
-sparc64              randconfig-r023-20230605   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-a001-20230605   clang
-x86_64               randconfig-a002-20230605   clang
-x86_64               randconfig-a003-20230605   clang
-x86_64               randconfig-a004-20230605   clang
-x86_64               randconfig-a005-20230605   clang
-x86_64               randconfig-a006-20230605   clang
-x86_64               randconfig-a011-20230605   gcc  
-x86_64               randconfig-a012-20230605   gcc  
-x86_64               randconfig-a013-20230605   gcc  
-x86_64               randconfig-a014-20230605   gcc  
-x86_64               randconfig-a015-20230605   gcc  
-x86_64               randconfig-a016-20230605   gcc  
-x86_64               randconfig-k001-20230605   gcc  
-x86_64               randconfig-r005-20230605   clang
-x86_64               randconfig-r013-20230605   gcc  
-x86_64               randconfig-r016-20230605   gcc  
-x86_64               randconfig-r024-20230605   gcc  
-x86_64               randconfig-r031-20230605   clang
-x86_64               randconfig-r032-20230605   clang
-x86_64               randconfig-x051-20230605   gcc  
-x86_64               randconfig-x052-20230605   gcc  
-x86_64               randconfig-x053-20230605   gcc  
-x86_64               randconfig-x054-20230605   gcc  
-x86_64               randconfig-x055-20230605   gcc  
-x86_64               randconfig-x056-20230605   gcc  
-x86_64               randconfig-x061-20230605   gcc  
-x86_64               randconfig-x062-20230605   gcc  
-x86_64               randconfig-x063-20230605   gcc  
-x86_64               randconfig-x064-20230605   gcc  
-x86_64               randconfig-x065-20230605   gcc  
-x86_64               randconfig-x066-20230605   gcc  
-x86_64                               rhel-8.3   gcc  
-xtensa       buildonly-randconfig-r003-20230605   gcc  
-xtensa       buildonly-randconfig-r005-20230605   gcc  
-xtensa       buildonly-randconfig-r006-20230605   gcc  
-xtensa                          iss_defconfig   gcc  
-xtensa                  nommu_kc705_defconfig   gcc  
-xtensa               randconfig-r002-20230605   gcc  
-xtensa               randconfig-r011-20230605   gcc  
-xtensa               randconfig-r013-20230605   gcc  
-xtensa               randconfig-r015-20230605   gcc  
+Thanks,
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Yanteng
+
+> ---
+> v2: amended Chinese translation (thanks to Yanteng Si)
+>   Documentation/driver-api/gpio/legacy.rst           | 12 +-----------
+>   .../translations/zh_CN/driver-api/gpio/legacy.rst  | 14 +++-----------
+>   Documentation/translations/zh_TW/gpio.txt          | 14 +++-----------
+>   arch/m68k/include/asm/mcfgpio.h                    |  8 --------
+>   arch/mips/include/asm/mach-au1x00/gpio-au1000.h    |  5 -----
+>   arch/mips/include/asm/mach-au1x00/gpio-au1300.h    |  5 -----
+>   include/linux/gpio.h                               | 12 ------------
+>   7 files changed, 7 insertions(+), 63 deletions(-)
+>
+> diff --git a/Documentation/driver-api/gpio/legacy.rst b/Documentation/driver-api/gpio/legacy.rst
+> index 9eda54811faa..b6505914791c 100644
+> --- a/Documentation/driver-api/gpio/legacy.rst
+> +++ b/Documentation/driver-api/gpio/legacy.rst
+> @@ -165,8 +165,7 @@ Most GPIO controllers can be accessed with memory read/write instructions.
+>   Those don't need to sleep, and can safely be done from inside hard
+>   (nonthreaded) IRQ handlers and similar contexts.
+>   
+> -Use the following calls to access such GPIOs,
+> -for which gpio_cansleep() will always return false (see below)::
+> +Use the following calls to access such GPIOs::
+>   
+>   	/* GPIO INPUT:  return zero or nonzero */
+>   	int gpio_get_value(unsigned gpio);
+> @@ -200,13 +199,6 @@ Some GPIO controllers must be accessed using message based busses like I2C
+>   or SPI.  Commands to read or write those GPIO values require waiting to
+>   get to the head of a queue to transmit a command and get its response.
+>   This requires sleeping, which can't be done from inside IRQ handlers.
+> -
+> -Platforms that support this type of GPIO distinguish them from other GPIOs
+> -by returning nonzero from this call (which requires a valid GPIO number,
+> -which should have been previously allocated with gpio_request)::
+> -
+> -	int gpio_cansleep(unsigned gpio);
+> -
+>   To access such GPIOs, a different set of accessors is defined::
+>   
+>   	/* GPIO INPUT:  return zero or nonzero, might sleep */
+> @@ -215,7 +207,6 @@ To access such GPIOs, a different set of accessors is defined::
+>   	/* GPIO OUTPUT, might sleep */
+>   	void gpio_set_value_cansleep(unsigned gpio, int value);
+>   
+> -
+>   Accessing such GPIOs requires a context which may sleep,  for example
+>   a threaded IRQ handler, and those accessors must be used instead of
+>   spinlock-safe accessors without the cansleep() name suffix.
+> @@ -537,7 +528,6 @@ code, which always dispatches through the gpio_chip::
+>   
+>     #define gpio_get_value	__gpio_get_value
+>     #define gpio_set_value	__gpio_set_value
+> -  #define gpio_cansleep		__gpio_cansleep
+>   
+>   Fancier implementations could instead define those as inline functions with
+>   logic optimizing access to specific SOC-based GPIOs.  For example, if the
+> diff --git a/Documentation/translations/zh_CN/driver-api/gpio/legacy.rst b/Documentation/translations/zh_CN/driver-api/gpio/legacy.rst
+> index 1bddecf73670..aeccff777170 100644
+> --- a/Documentation/translations/zh_CN/driver-api/gpio/legacy.rst
+> +++ b/Documentation/translations/zh_CN/driver-api/gpio/legacy.rst
+> @@ -153,8 +153,7 @@ get/set(获取/设置)函数调用没法返回错误,且有可能是配置错误
+>   大多数 GPIO 控制器可以通过内存读/写指令来访问。这些指令不会休眠,可以
+>   安全地在硬(非线程)中断例程和类似的上下文中完成。
+>   
+> -对于那些用 gpio_cansleep()测试总是返回失败的 GPIO(见下文)，使用
+> -以下的函数访问::
+> +对于那些 GPIO，使用以下的函数访问::
+>   
+>   	/* GPIO 输入:返回零或非零 */
+>   	int gpio_get_value(unsigned gpio);
+> @@ -186,11 +185,6 @@ GPIO值是布尔值，零表示低电平，非零表示高电平。当读取一
+>   GPIO 值的命令需要等待其信息排到队首才发送命令，再获得其反馈。期间需要
+>   休眠，这不能在 IRQ 例程(中断上下文)中执行。
+>   
+> -支持此类 GPIO 的平台通过以下函数返回非零值来区分出这种 GPIO。(此函数需要
+> -一个之前通过 gpio_request 分配到的有效 GPIO 编号)::
+> -
+> -	int gpio_cansleep(unsigned gpio);
+> -
+>   为了访问这种 GPIO,内核定义了一套不同的函数::
+>   
+>   	/* GPIO 输入:返回零或非零 ,可能会休眠 */
+> @@ -199,7 +193,6 @@ GPIO 值的命令需要等待其信息排到队首才发送命令，再获得其
+>   	/* GPIO 输出,可能会休眠 */
+>   	void gpio_set_value_cansleep(unsigned gpio, int value);
+>   
+> -
+>   访问这样的 GPIO 需要一个允许休眠的上下文，例如线程 IRQ 处理例程，并用以上的
+>   访问函数替换那些没有 cansleep()后缀的自旋锁安全访问函数。
+>   
+> @@ -483,8 +476,8 @@ GPIO 实现者的框架（可选）
+>   
+>   为了支持这个框架，一个平台的 Kconfig 文件将会 "select"(选择)
+>   ARCH_REQUIRE_GPIOLIB 或 ARCH_WANT_OPTIONAL_GPIOLIB，并让它的
+> -<asm/gpio.h> 包含 <asm-generic/gpio.h>，同时定义三个方法:
+> -gpio_get_value()、gpio_set_value()和 gpio_cansleep()。
+> +<asm/gpio.h> 包含 <asm-generic/gpio.h>，同时定义两个方法:
+> +gpio_get_value()、gpio_set_value()。
+>   
+>   它也应提供一个 ARCH_NR_GPIOS 的定义值，这样可以更好地反映该平台 GPIO
+>   的实际数量,节省静态表的空间。(这个定义值应该包含片上系统内建 GPIO 和
+> @@ -502,7 +495,6 @@ ARCH_WANT_OPTIONAL_GPIOLIB 意味着 gpiolib 核心默认关闭,且用户可以
+>   
+>     #define gpio_get_value	__gpio_get_value
+>     #define gpio_set_value	__gpio_set_value
+> -  #define gpio_cansleep		__gpio_cansleep
+>   
+>   这些定义可以用更理想的实现方法替代，那就是使用经过逻辑优化的内联函数来访问
+>   基于特定片上系统的 GPIO。例如,若引用的 GPIO (寄存器位偏移)是常量“12”，
+> diff --git a/Documentation/translations/zh_TW/gpio.txt b/Documentation/translations/zh_TW/gpio.txt
+> index 66bc7f2bbe53..b93788a2628b 100644
+> --- a/Documentation/translations/zh_TW/gpio.txt
+> +++ b/Documentation/translations/zh_TW/gpio.txt
+> @@ -161,8 +161,7 @@ get/set(獲取/設置)函數調用沒法返回錯誤,且有可能是配置錯誤
+>   大多數 GPIO 控制器可以通過內存讀/寫指令來訪問。這些指令不會休眠,可以
+>   安全地在硬(非線程)中斷例程和類似的上下文中完成。
+>   
+> -對於那些用 gpio_cansleep()測試總是返回失敗的 GPIO(見下文)，使用
+> -以下的函數訪問:
+> +對於那些 GPIO，使用以下的函數訪問:
+>   
+>   	/* GPIO 輸入:返回零或非零 */
+>   	int gpio_get_value(unsigned gpio);
+> @@ -193,11 +192,6 @@ GPIO值是布爾值，零表示低電平，非零表示高電平。當讀取一
+>   GPIO 值的命令需要等待其信息排到隊首才發送命令，再獲得其反饋。期間需要
+>   休眠，這不能在 IRQ 例程(中斷上下文)中執行。
+>   
+> -支持此類 GPIO 的平台通過以下函數返回非零值來區分出這種 GPIO。(此函數需要
+> -一個之前通過 gpio_request 分配到的有效 GPIO 編號):
+> -
+> -	int gpio_cansleep(unsigned gpio);
+> -
+>   爲了訪問這種 GPIO,內核定義了一套不同的函數:
+>   
+>   	/* GPIO 輸入:返回零或非零 ,可能會休眠 */
+> @@ -206,7 +200,6 @@ GPIO 值的命令需要等待其信息排到隊首才發送命令，再獲得其
+>   	/* GPIO 輸出,可能會休眠 */
+>   	void gpio_set_value_cansleep(unsigned gpio, int value);
+>   
+> -
+>   訪問這樣的 GPIO 需要一個允許休眠的上下文，例如線程 IRQ 處理例程，並用以上的
+>   訪問函數替換那些沒有 cansleep()後綴的自旋鎖安全訪問函數。
+>   
+> @@ -449,8 +442,8 @@ GPIO 實現者的框架 (可選)
+>   -------
+>   爲了支持這個框架，一個平台的 Kconfig 文件將會 "select"(選擇)
+>   ARCH_REQUIRE_GPIOLIB 或 ARCH_WANT_OPTIONAL_GPIOLIB，並讓它的
+> -<asm/gpio.h> 包含 <asm-generic/gpio.h>，同時定義三個方法:
+> -gpio_get_value()、gpio_set_value()和 gpio_cansleep()。
+> +<asm/gpio.h> 包含 <asm-generic/gpio.h>，同時定義二個方法:
+> +gpio_get_value()、gpio_set_value()。
+>   
+>   它也應提供一個 ARCH_NR_GPIOS 的定義值，這樣可以更好地反映該平台 GPIO
+>   的實際數量,節省靜態表的空間。(這個定義值應該包含片上系統內建 GPIO 和
+> @@ -468,7 +461,6 @@ ARCH_WANT_OPTIONAL_GPIOLIB 意味著 gpiolib 核心默認關閉,且用戶可以
+>   
+>     #define gpio_get_value	__gpio_get_value
+>     #define gpio_set_value	__gpio_set_value
+> -  #define gpio_cansleep		__gpio_cansleep
+>   
+>   這些定義可以用更理想的實現方法替代，那就是使用經過邏輯優化的內聯函數來訪問
+>   基於特定片上系統的 GPIO。例如,若引用的 GPIO (寄存器位偏移)是常量「12」，
+> diff --git a/arch/m68k/include/asm/mcfgpio.h b/arch/m68k/include/asm/mcfgpio.h
+> index 2cefe8445980..7abd322c019f 100644
+> --- a/arch/m68k/include/asm/mcfgpio.h
+> +++ b/arch/m68k/include/asm/mcfgpio.h
+> @@ -34,14 +34,6 @@ static inline void __gpio_set_value(unsigned gpio, int value)
+>   		__mcfgpio_set_value(gpio, value);
+>   }
+>   
+> -static inline int __gpio_cansleep(unsigned gpio)
+> -{
+> -	if (gpio < MCFGPIO_PIN_MAX)
+> -		return 0;
+> -	else
+> -		return -EINVAL;
+> -}
+> -
+>   static inline int __gpio_to_irq(unsigned gpio)
+>   {
+>   	return -EINVAL;
+> diff --git a/arch/mips/include/asm/mach-au1x00/gpio-au1000.h b/arch/mips/include/asm/mach-au1x00/gpio-au1000.h
+> index adde1fa5097e..82bc2766e2ec 100644
+> --- a/arch/mips/include/asm/mach-au1x00/gpio-au1000.h
+> +++ b/arch/mips/include/asm/mach-au1x00/gpio-au1000.h
+> @@ -500,11 +500,6 @@ static inline int alchemy_gpio_is_valid(int gpio)
+>   		alchemy_gpio1_is_valid(gpio);
+>   }
+>   
+> -static inline int alchemy_gpio_cansleep(int gpio)
+> -{
+> -	return 0;	/* Alchemy never gets tired */
+> -}
+> -
+>   static inline int alchemy_gpio_to_irq(int gpio)
+>   {
+>   	return (gpio >= ALCHEMY_GPIO2_BASE) ?
+> diff --git a/arch/mips/include/asm/mach-au1x00/gpio-au1300.h b/arch/mips/include/asm/mach-au1x00/gpio-au1300.h
+> index d16add7ba49d..43d44f384f97 100644
+> --- a/arch/mips/include/asm/mach-au1x00/gpio-au1300.h
+> +++ b/arch/mips/include/asm/mach-au1x00/gpio-au1300.h
+> @@ -98,11 +98,6 @@ static inline int au1300_gpio_is_valid(unsigned int gpio)
+>   	return ret;
+>   }
+>   
+> -static inline int au1300_gpio_cansleep(unsigned int gpio)
+> -{
+> -	return 0;
+> -}
+> -
+>   /* hardware remembers gpio 0-63 levels on powerup */
+>   static inline int au1300_gpio_getinitlvl(unsigned int gpio)
+>   {
+> diff --git a/include/linux/gpio.h b/include/linux/gpio.h
+> index 88efac969754..7ecc25c543ce 100644
+> --- a/include/linux/gpio.h
+> +++ b/include/linux/gpio.h
+> @@ -108,11 +108,6 @@ static inline void gpio_set_value(unsigned gpio, int value)
+>   	return gpiod_set_raw_value(gpio_to_desc(gpio), value);
+>   }
+>   
+> -static inline int gpio_cansleep(unsigned gpio)
+> -{
+> -	return gpiod_cansleep(gpio_to_desc(gpio));
+> -}
+> -
+>   static inline int gpio_to_irq(unsigned gpio)
+>   {
+>   	return gpiod_to_irq(gpio_to_desc(gpio));
+> @@ -195,13 +190,6 @@ static inline void gpio_set_value(unsigned gpio, int value)
+>   	WARN_ON(1);
+>   }
+>   
+> -static inline int gpio_cansleep(unsigned gpio)
+> -{
+> -	/* GPIO can never have been requested or set as {in,out}put */
+> -	WARN_ON(1);
+> -	return 0;
+> -}
+> -
+>   static inline int gpio_get_value_cansleep(unsigned gpio)
+>   {
+>   	/* GPIO can never have been requested or set as {in,out}put */
+
