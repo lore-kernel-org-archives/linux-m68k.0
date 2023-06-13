@@ -2,95 +2,73 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71815C88CB2
-	for <linux-m68k@archiver.kernel.org>; Tue, 13 Jun 2023 07:29:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E9307C77B7A
+	for <linux-m68k@archiver.kernel.org>; Tue, 13 Jun 2023 07:30:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238329AbjFMH3M convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 13 Jun 2023 03:29:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60172 "EHLO
+        id S240365AbjFMHau (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 13 Jun 2023 03:30:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234043AbjFMH3L (ORCPT
+        with ESMTP id S240203AbjFMHas (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 13 Jun 2023 03:29:11 -0400
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B14A29B
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 13 Jun 2023 00:29:10 -0700 (PDT)
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-56d1cb6a607so25707487b3.2
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 13 Jun 2023 00:29:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686641349; x=1689233349;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gKEzJjzBKla4S0x8jxwIAxVSx314J/aF9PC4BBXNBUc=;
-        b=AZBql3RZ4wqlS6WYKZme4/j2SZVfpuMFoJbxiaDYaixsp4pAeURXvyLXqz+A5zKNXA
-         EYLjMAPOo5ozTx/qRpFrjgl4rsMsv4HHGfrEyZkVK+t3urAN63xiAihPZW2+7ruU/dJM
-         3kKhaFcDhVn5ujazrEDpxP2+cnsZjtF/+XQCtS/PVqYWjZixxXRQU7XpJuvcn+vJ6x5i
-         SdgPTTOEiKo/gjgdoiQDZpJ2ivlbAI6nWEP6QWs6Iw8wRXyUAmGj1oORGj/xzoa2j6u0
-         3bySmJRdAjsluM68n1LWVGIKno0OmkGpB//MrGYc5QJB2txD9iEQZxosXAo+Jy3XfNeQ
-         m8Nw==
-X-Gm-Message-State: AC+VfDyijf6EdQQ0ifcWwQPhfrWOUhDMbDn7CyO8Rehj746iVra5+C/F
-        fGH04C6hF5CJOANBJwJ7ntQsjlOlGtiHGg==
-X-Google-Smtp-Source: ACHHUZ6F29Yg8Xvmb6x5YEGhTmzjsUSNHAe9A6ZLQBGjG5g1tbUx13fPr6EytksHfW3Mv9c6fSr2Kg==
-X-Received: by 2002:a0d:ebc4:0:b0:56c:e4ad:45a6 with SMTP id u187-20020a0debc4000000b0056ce4ad45a6mr1059985ywe.15.1686641349613;
-        Tue, 13 Jun 2023 00:29:09 -0700 (PDT)
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com. [209.85.128.176])
-        by smtp.gmail.com with ESMTPSA id j142-20020a819294000000b0056d1de0a154sm1337754ywg.37.2023.06.13.00.29.08
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jun 2023 00:29:08 -0700 (PDT)
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-56d304ef801so19437527b3.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 13 Jun 2023 00:29:08 -0700 (PDT)
-X-Received: by 2002:a0d:d611:0:b0:56d:ddc:cdbb with SMTP id
- y17-20020a0dd611000000b0056d0ddccdbbmr1077781ywd.25.1686641348561; Tue, 13
- Jun 2023 00:29:08 -0700 (PDT)
+        Tue, 13 Jun 2023 03:30:48 -0400
+X-Greylist: delayed 602 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 13 Jun 2023 00:30:35 PDT
+Received: from mail.lichtvoll.de (luna.lichtvoll.de [194.150.191.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D511B0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 13 Jun 2023 00:30:35 -0700 (PDT)
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+        (No client certificate requested)
+        by mail.lichtvoll.de (Postfix) with ESMTPSA id 5AE5A6F4D58;
+        Tue, 13 Jun 2023 09:20:30 +0200 (CEST)
+From:   Martin Steigerwald <martin@lichtvoll.de>
+To:     debian-68k <debian-68k@lists.debian.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: Status of affs support in the kernel and affstools
+Date:   Tue, 13 Jun 2023 09:20:29 +0200
+Message-ID: <5947812.lOV4Wx5bFT@lichtvoll.de>
+In-Reply-To: <baa520109ab3a13d1ac8aca1c9b8eaeee070c241.camel@physik.fu-berlin.de>
+References: <baa520109ab3a13d1ac8aca1c9b8eaeee070c241.camel@physik.fu-berlin.de>
 MIME-Version: 1.0
-References: <20230612210423.18611-1-vishal.moola@gmail.com> <20230612210423.18611-26-vishal.moola@gmail.com>
-In-Reply-To: <20230612210423.18611-26-vishal.moola@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 13 Jun 2023 09:28:56 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUk2OM+j_j8XSkMxRnNqmKy3qwUA8Mq-RA+p+ByfY-+4g@mail.gmail.com>
-Message-ID: <CAMuHMdUk2OM+j_j8XSkMxRnNqmKy3qwUA8Mq-RA+p+ByfY-+4g@mail.gmail.com>
-Subject: Re: [PATCH v4 25/34] m68k: Convert various functions to use ptdescs
-To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
-        Hugh Dickins <hughd@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Authentication-Results: mail.lichtvoll.de;
+        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Jun 12, 2023 at 11:05 PM Vishal Moola (Oracle)
-<vishal.moola@gmail.com> wrote:
-> As part of the conversions to replace pgtable constructor/destructors with
-> ptdesc equivalents, convert various page table functions to use ptdescs.
->
-> Some of the functions use the *get*page*() helper functions. Convert
-> these to use pagetable_alloc() and ptdesc_address() instead to help
-> standardize page tables further.
->
-> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+John Paul Adrian Glaubitz - 13.06.23, 08:47:11 CEST:
+> I was wondering what the current status of the affs driver in the
+> kernel is, did it receive the fixes that Michael(?) was working on? I
+> vaguely remember there were some issues with larger filesystems or so
+> and that someone was working on fixing these issues.
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Well I just searched for the large size fixing patches discussed on 
+linux-m68k mailing list under subject titles "Amiga RDB partition 
+support fixes":
 
-Gr{oetje,eeting}s,
+While I found a steady stream of fixes for affs, including related to 
+Amiga permission bit handling, quite recent fixes, even in 2023, I did 
+not found that size fixing patch.
 
-                        Geert
+I recalled a discussion where Michael Schmitz talked to Jens Axboe after 
+I asked whether the patch got in on 2023-08-21. I thought back then it 
+would have went in, but maybe the last question asked by Jens Axboe did 
+not get answered?
 
+At least I did not found the patch in git history. Maybe I made a 
+mistake during search.
+
+I will reply to the other thread and ask again. Maybe it was just a last 
+question / answer round missing. Or maybe someone else can confirm that 
+the patch indeed went in.
+
+Best,
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Martin
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
