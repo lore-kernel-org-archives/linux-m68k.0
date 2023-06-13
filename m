@@ -2,213 +2,84 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF6C4C88CB8
-	for <linux-m68k@archiver.kernel.org>; Tue, 13 Jun 2023 12:27:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7388EB64D8
+	for <linux-m68k@archiver.kernel.org>; Tue, 13 Jun 2023 14:53:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242451AbjFMM15 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 13 Jun 2023 08:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35468 "EHLO
+        id S242866AbjFMOxT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 13 Jun 2023 10:53:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242427AbjFMM1z (ORCPT
+        with ESMTP id S242784AbjFMOxR (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 13 Jun 2023 08:27:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F050D1996
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 13 Jun 2023 05:26:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1686659219;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x4X42epITHEmHx9Rdq7WZvtJt4reSEJsGpXTx4uakPs=;
-        b=XnHIVU90C9TJ+dH5iLKcGln4N+lzVrbOu5uj9N85J15wwf4z10nruD+dGMcniFwEbHmk7J
-        lHqVWWDwwSjfFAlkhuZEh3i956u4PWyXakr9CaL1RFFbLTbOyagldGAbMpSdR0WEY9Ty6Z
-        P0oxgRVuraXBH5frWwz/MY1wNqSs+/s=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-433-FMF3OFmwMwyBumoC912Lbw-1; Tue, 13 Jun 2023 08:26:58 -0400
-X-MC-Unique: FMF3OFmwMwyBumoC912Lbw-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-30e3fb5d1a4so2131712f8f.3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 13 Jun 2023 05:26:57 -0700 (PDT)
+        Tue, 13 Jun 2023 10:53:17 -0400
+Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54AE019A8
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 13 Jun 2023 07:53:16 -0700 (PDT)
+Received: by mail-vs1-xe30.google.com with SMTP id ada2fe7eead31-43b1cee7e65so326127137.2
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 13 Jun 2023 07:53:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1686667995; x=1689259995;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aj9On63tZGT4xZHZRbn4kNAEZXg6WSSzte0QQ5DFG5Y=;
+        b=3xz+2W3O1cEmUosWRClgJqLxl0RaLvVadqpzTPvT27Bjy1/yeTJfSOMsG0D7X0iH5o
+         KzX/+z8/VC+rShQubEE/VWKrIyoN8QvzBgqS0+P+gzuMDwG2uuiMKQNdJ2eTNqYu+MaU
+         P+wY2VwAJRMgCg+VbM31WFoOirbEbUKbIVp99SgYmsgjUjHp/9PlvRgETuYgt7l4pIrw
+         lpcgVQIqnHllPbvDsAbALV3GDuBLMOQT0rpRWdnghItx3SNqTwglIa2ZAFhANA6IrrAQ
+         HUA8KJNWZZ+7RJl7qtzwp22HsQazZ2H6FahZGeNmNAzxVORq2tbBkfFGiqOhiXscImN7
+         jHRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686659217; x=1689251217;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=x4X42epITHEmHx9Rdq7WZvtJt4reSEJsGpXTx4uakPs=;
-        b=XfGd7dLLf8a+J7JUyyJrU0aJWdQ/euGpKrJJ1rk6aRtCY5qk8eUsoAlrTWIJ0h5Uo7
-         31eAdIpE5ZpoQTtCBt6bBNSleO1LvMkvUSLrJBPEMa6WrYmFJWUv9ZOmgbji0QNCIQrB
-         0ZUh35+nWNigd7rw9j9RYqP1sbMpeio1dM/cAIU1W6t45cQXzTp/i7ChhVoQv76ynnPm
-         z76471o9JfyIRZ+RwHIIgwwVbuHTm3bkbDaT4zboJ4rZRYdZJbhYe9TF7zaRXHlPoG/F
-         Q2VskRGq9arpfihnHPfctuGpilAfo6cWiTD5umV7iqsdQfCni4hsT+QPe/4MTMGLVAJm
-         yvJA==
-X-Gm-Message-State: AC+VfDzT8aPEt215Pz7gHN7+KulV9SCToeEmMT3XIc1tFxwC94oeOS1k
-        M8IXzT5Wxk1Uj8VfD8s6v3SMRsymfJepQgjpouMLLunZgiXnuCribpBmNX4R1q0fC+GHHIVroGi
-        8HAOdSvfsUujO3mVtb2prOF6Xbgka
-X-Received: by 2002:a5d:6acd:0:b0:30f:b7b4:3e55 with SMTP id u13-20020a5d6acd000000b0030fb7b43e55mr6371763wrw.19.1686659216774;
-        Tue, 13 Jun 2023 05:26:56 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ4yteTIZOrnVCopzRkUBsfyPnfoDVYPpW9xv2sO4EBsmO+rg3naLzU0Pz+CwjSuscU8Zw+bFQ==
-X-Received: by 2002:a5d:6acd:0:b0:30f:b7b4:3e55 with SMTP id u13-20020a5d6acd000000b0030fb7b43e55mr6371694wrw.19.1686659216382;
-        Tue, 13 Jun 2023 05:26:56 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c710:ff00:1a06:80f:733a:e8c6? (p200300cbc710ff001a06080f733ae8c6.dip0.t-ipconnect.de. [2003:cb:c710:ff00:1a06:80f:733a:e8c6])
-        by smtp.gmail.com with ESMTPSA id i1-20020adff301000000b002f28de9f73bsm15275419wro.55.2023.06.13.05.26.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jun 2023 05:26:55 -0700 (PDT)
-Message-ID: <497e571e-e4de-7634-7da6-683599a4bbba@redhat.com>
-Date:   Tue, 13 Jun 2023 14:26:53 +0200
+        d=1e100.net; s=20221208; t=1686667995; x=1689259995;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aj9On63tZGT4xZHZRbn4kNAEZXg6WSSzte0QQ5DFG5Y=;
+        b=WC3ys9ooOCuBSVXd+hzTmZMzyS33JY7X4jJW2tLU0+bRPycrUdLv84NwknNE1off9g
+         4uVF3hNoaG/CECSA/z1IgGihOo5SGW1bEKKcmB/JJRSztcFS9bI6Lpc5YdCpxp0Ova7E
+         aP48AJHSSYpxLhnXxLW+Sy+21oWpxURcIW/WEaQC8HWBZP3oDxyWB6zZIjRL5QENuAmC
+         dgqJ5pJ4JvYyYQyphI5PxJjnCAG0ERrPlKwlcF6GzH/ZBLmayCKL6fAoMuhlzgMXWj5K
+         Ujbne39nLX8L6ln4MTTJBzK9LulL9pJgo9+FTw1WjAA1I/Bs0awxnHnRd4CJSoARCNsl
+         1/mQ==
+X-Gm-Message-State: AC+VfDxJW1DStRflR48NsQzMG9gJSgVZhrIl4czEuGPj/dYX0vIE0KEL
+        JSRgtVLfIHCNgrWDQSFd160d3bIncZnF/NqtBxGG4A==
+X-Google-Smtp-Source: ACHHUZ756bnFHTg62RATpM6wA8I/VVqR/uhiSiA71IFDFVJY4JyUcDi5z39sBzm7jpDc1KvVUBsrTNtF6uxgL2g4exY=
+X-Received: by 2002:a05:6102:3a71:b0:43b:3e78:9886 with SMTP id
+ bf17-20020a0561023a7100b0043b3e789886mr4214600vsb.26.1686667995404; Tue, 13
+ Jun 2023 07:53:15 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v9 01/42] mm: Rename arch pte_mkwrite()'s to
- pte_mkwrite_novma()
-To:     Rick Edgecombe <rick.p.edgecombe@intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H . J . Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Allen <john.allen@amd.com>, kcc@google.com,
-        eranian@google.com, rppt@kernel.org, jamorris@linux.microsoft.com,
-        dethoma@microsoft.com, akpm@linux-foundation.org,
-        Andrew.Cooper3@citrix.com, christina.schimpe@intel.com,
-        debug@rivosinc.com, szabolcs.nagy@arm.com,
-        torvalds@linux-foundation.org, broonie@kernel.org
-Cc:     linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        Michal Simek <monstr@monstr.eu>,
-        Dinh Nguyen <dinguyen@kernel.org>, linux-mips@vger.kernel.org,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        Linus Torvalds <torvalds@linuxfoundation.org>
-References: <20230613001108.3040476-1-rick.p.edgecombe@intel.com>
- <20230613001108.3040476-2-rick.p.edgecombe@intel.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230613001108.3040476-2-rick.p.edgecombe@intel.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20230605125411.60378-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20230605125411.60378-1-andriy.shevchenko@linux.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 13 Jun 2023 16:53:04 +0200
+Message-ID: <CAMRc=Mcg62aoeiwG_3aUAGqL9MeoYjWvL4mxRTEPUPw3RbAUjw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] gpiolib: Remove unused gpio_cansleep()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-gpio@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc-tw-discuss@lists.sourceforge.net,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Hu Haowen <src.res@email.cn>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 13.06.23 02:10, Rick Edgecombe wrote:
-> The x86 Shadow stack feature includes a new type of memory called shadow
-> stack. This shadow stack memory has some unusual properties, which requires
-> some core mm changes to function properly.
-> 
-> One of these unusual properties is that shadow stack memory is writable,
-> but only in limited ways. These limits are applied via a specific PTE
-> bit combination. Nevertheless, the memory is writable, and core mm code
-> will need to apply the writable permissions in the typical paths that
-> call pte_mkwrite(). Future patches will make pte_mkwrite() take a VMA, so
-> that the x86 implementation of it can know whether to create regular
-> writable memory or shadow stack memory.
-> 
-> But there are a couple of challenges to this. Modifying the signatures of
-> each arch pte_mkwrite() implementation would be error prone because some
-> are generated with macros and would need to be re-implemented. Also, some
-> pte_mkwrite() callers operate on kernel memory without a VMA.
-> 
-> So this can be done in a three step process. First pte_mkwrite() can be
-> renamed to pte_mkwrite_novma() in each arch, with a generic pte_mkwrite()
-> added that just calls pte_mkwrite_novma(). Next callers without a VMA can
-> be moved to pte_mkwrite_novma(). And lastly, pte_mkwrite() and all callers
-> can be changed to take/pass a VMA.
-> 
-> Start the process by renaming pte_mkwrite() to pte_mkwrite_novma() and
-> adding the pte_mkwrite() wrapper in linux/pgtable.h. Apply the same
-> pattern for pmd_mkwrite(). Since not all archs have a pmd_mkwrite_novma(),
-> create a new arch config HAS_HUGE_PAGE that can be used to tell if
-> pmd_mkwrite() should be defined. Otherwise in the !HAS_HUGE_PAGE cases the
-> compiler would not be able to find pmd_mkwrite_novma().
-> 
-> No functional change.
-> 
-> Cc: linux-doc@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-alpha@vger.kernel.org
-> Cc: linux-snps-arc@lists.infradead.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-csky@vger.kernel.org
-> Cc: linux-hexagon@vger.kernel.org
-> Cc: linux-ia64@vger.kernel.org
-> Cc: loongarch@lists.linux.dev
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: Michal Simek <monstr@monstr.eu>
-> Cc: Dinh Nguyen <dinguyen@kernel.org>
-> Cc: linux-mips@vger.kernel.org
-> Cc: openrisc@lists.librecores.org
-> Cc: linux-parisc@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-riscv@lists.infradead.org
-> Cc: linux-s390@vger.kernel.org
-> Cc: linux-sh@vger.kernel.org
-> Cc: sparclinux@vger.kernel.org
-> Cc: linux-um@lists.infradead.org
-> Cc: linux-arch@vger.kernel.org
-> Cc: linux-mm@kvack.org
-> Suggested-by: Linus Torvalds <torvalds@linuxfoundation.org>
-> Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-> Link: https://lore.kernel.org/lkml/CAHk-=wiZjSu7c9sFYZb3q04108stgHff2wfbokGCCgW7riz+8Q@mail.gmail.com/
-> ---
-> Hi Non-x86 Arch’s,
-> 
-> x86 has a feature that allows for the creation of a special type of
-> writable memory (shadow stack) that is only writable in limited specific
-> ways. Previously, changes were proposed to core MM code to teach it to
-> decide when to create normally writable memory or the special shadow stack
-> writable memory, but David Hildenbrand suggested[0] to change
-> pXX_mkwrite() to take a VMA, so awareness of shadow stack memory can be
-> moved into x86 code. Later Linus suggested a less error-prone way[1] to go
-> about this after the first attempt had a bug.
-> 
-> Since pXX_mkwrite() is defined in every arch, it requires some tree-wide
-> changes. So that is why you are seeing some patches out of a big x86
-> series pop up in your arch mailing list. There is no functional change.
-> After this refactor, the shadow stack series goes on to use the arch
-> helpers to push arch memory details inside arch/x86 and other arch's
-> with upcoming shadow stack features.
-> 
-> Testing was just 0-day build testing.
-> 
-> Hopefully that is enough context. Thanks!
-> 
-> [0] https://lore.kernel.org/lkml/0e29a2d0-08d8-bcd6-ff26-4bea0e4037b0@redhat.com/
-> [1] https://lore.kernel.org/lkml/CAHk-=wiZjSu7c9sFYZb3q04108stgHff2wfbokGCCgW7riz+8Q@mail.gmail.com/
+On Mon, Jun 5, 2023 at 2:54=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> There is not a single user in the entire kernel of this deprecated API,
+> kill it for good.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
 
-Acked-by: David Hildenbrand <david@redhat.com>
+Applied, thanks!
 
--- 
-Cheers,
-
-David / dhildenb
-
+Bart
