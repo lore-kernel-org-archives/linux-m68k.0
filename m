@@ -2,111 +2,63 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB932EB64DA
-	for <linux-m68k@archiver.kernel.org>; Wed, 14 Jun 2023 10:41:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9118AEB64D9
+	for <linux-m68k@archiver.kernel.org>; Wed, 14 Jun 2023 11:02:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243200AbjFNKlQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 14 Jun 2023 06:41:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50256 "EHLO
+        id S233035AbjFNLCE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 14 Jun 2023 07:02:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236113AbjFNKlB (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 14 Jun 2023 06:41:01 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C521BE5
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 14 Jun 2023 03:40:39 -0700 (PDT)
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1D3B11EC072D;
-        Wed, 14 Jun 2023 12:40:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1686739238;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=l0wmUCOq08ocL9JWwuGeMkrv5XjoGiMDJp61EtBoHWU=;
-        b=NtiUaYGB5+TIiR6764dKlyutinr0Ii2WHv1k1ezwxrjjQluavlkSikEJFCBE29+y/6mRd/
-        9MUSBX1BWV2MDxyCbr2QzRorpbH40VaUbn3P++FsWlkUli8gdX+1wB1IMooeSaZUIQ00QY
-        2Z4CIiA4TBNTNbI3FVrl+xBfD2lz8oY=
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Pj0lafQrEqVp; Wed, 14 Jun 2023 10:40:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1686739234; bh=l0wmUCOq08ocL9JWwuGeMkrv5XjoGiMDJp61EtBoHWU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k/bfHtEPP8YIugFtqP+tN7LuSStGm8cFiUrHxVXMD7P3bgirpEEolWPDL+G5Du0Ye
-         oES6q+UTrgVC0XsCPnhHAnXrgeI74hSaa4liUMaygb/Qe6T0A1WExfifcs6O/SI6Hy
-         UMJ7Ylo8gXm87tXLFG1dJLNFsdrX59AjRaa1KiXyl87SWoSzBeagPRa2apwt2nEakO
-         e9VbO5ef2lKwu/7Bl6wRfn5UcrR3L58Vyjjqim1KInTv2VbqErVoEhQrLfTpdXcONy
-         i8l0xguR7a/APu4Q5wiNXeUs1DhYdGfZpibapg0j34EWnXTfHRkimUnz2uqO5nbl1n
-         WrKGDg1wRNEi6YV9N8ASx3Jkh1GEBSm3Iy47Rtq0mzqtK9wFgejzMmuWsq5rLDTnbu
-         k476FnlY9Q03tTWlcNR0mwL0cltiNK+WzxryIwdyhXz79/U59j+aXRPE3226LH7nuR
-         mPBd/hcumKwgUIW/y7r34xKEyDlXo1cCJDvrLyXetKh9urHMjgm/wmTfrBwkAQeXa7
-         NV1zEAOAmoRv1ihD7AGnEoHuTT3zFe1Rlmdp4JaQPZMj9XyEbY87bxlzuUTxP4/HDP
-         xLdf/AJlIV1769l55vJl2dl/9HW3PNJkuIUZVr1tn/7QIJCewdotxWz7PITPBacB/8
-         mrNBtZfDh3ofu7rt5wUXClHo=
-Received: from zn.tnic (p200300ea971dC5f7329c23ffFea6a903.dip0.t-ipconnect.de [IPv6:2003:ea:971d:c5f7:329c:23ff:fea6:a903])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 511F740E018C;
-        Wed, 14 Jun 2023 10:40:02 +0000 (UTC)
-Date:   Wed, 14 Jun 2023 12:39:55 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        "Ahmed S. Darwish" <darwi@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        linux-sh@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org, Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-um@lists.infradead.org,
-        Richard Henderson <richard.henderson@linaro.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Chris Zankel <chris@zankel.net>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [patch 02/17] x86/cpu: Switch to arch_cpu_finalize_init()
-Message-ID: <20230614103955.GAZImY+6VF9oezn22m@fat_crate.local>
-References: <20230613223827.532680283@linutronix.de>
- <20230613224545.019583869@linutronix.de>
- <87legm8j4h.ffs@tglx>
+        with ESMTP id S231715AbjFNLCD (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 14 Jun 2023 07:02:03 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64774109
+        for <linux-m68k@vger.kernel.org>; Wed, 14 Jun 2023 04:02:02 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id 6a1803df08f44-62de398267aso8501836d6.1
+        for <linux-m68k@vger.kernel.org>; Wed, 14 Jun 2023 04:02:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686740521; x=1689332521;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=QGhaNsS7W/dmFyZfmhMJXui24jjSS9U0u092+cgeJ+M=;
+        b=i0MT49wh6+Z9DoAZkZuytprga+LkTgwGUdHNAXr5M18wWov3SIhzChEurdfHsrG0EG
+         JTZ5nWt0aKPL6gPJsSot/Z5X4gBLzzwjPPPghkVogUy/nOli+JEHKvQqYG9q1AyOmZiS
+         qWF6naBfHPfEY4S3Ji1kUXfIM8MsMBH5U+NMj0PKaVN7LsFIwrlJwgHfdRhVoHLcH53A
+         G66R47qh+G5aDoXo3sYqCHOUrzz6GZW555HRUcrYPAMW5+8uCFv8jIoWjzJTuKps7ilZ
+         jgc99Im626AgmGcpUrCqz5Dsvv6ykZKcxs4Mhjkqk5urYY9Z7rnK3Uy0lAm9BSqF7SV7
+         PEhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686740521; x=1689332521;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QGhaNsS7W/dmFyZfmhMJXui24jjSS9U0u092+cgeJ+M=;
+        b=L8SNVhcqLFz/s2cHl0yXx/Js3ZPLjXOcuLsctqkyXKOn69Bnfccv8rx4T3aXOV4iFs
+         ZeRNzxWj/wasQGlfxUU2mJLBq9JeAMZKhQE/nFgOQZ65uk8iwao+nytncAGJB4cL3PG5
+         9yWc4C8Qno8xqjgwJnOv19cEODugsldfdf7DpIv0ajTQLSl7jjKVb4xDeoAednh5M6bB
+         A9uyx5sZiHyZVdDsNzODMjXH4LffPvvTyNUAoHTqX0p1qt6Hwhunjy9VbVPnI3SjLJGV
+         Oqp0YB6B5FTKx9SI4ckj0dxELyFvjODsyz7+stLlWUXey6XrLxHi9h/5l7mNiMN039fb
+         sdzA==
+X-Gm-Message-State: AC+VfDy9/Kuq6wkqfcpFZb/WUojP/gOfxjRErtatmBvYHXZNisZ7yvrX
+        YHRombDsjT1vb4RdLXo3S5/7/hu53OZ6nG90ckU7LLkjQbo=
+X-Google-Smtp-Source: ACHHUZ4jfL2Dpcw2lgF50Qm7+oc8D7fii//jt4OgUhBfwdc4E41IWNBEZ9BBKecqcoLrgS6VL6QhoWz6ZSvGubczlK4=
+X-Received: by 2002:a05:6214:411b:b0:62f:e386:1e45 with SMTP id
+ kc27-20020a056214411b00b0062fe3861e45mr1441995qvb.1.1686740521222; Wed, 14
+ Jun 2023 04:02:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87legm8j4h.ffs@tglx>
+Received: by 2002:a05:622a:1207:b0:3e6:3c7f:5aec with HTTP; Wed, 14 Jun 2023
+ 04:02:00 -0700 (PDT)
+From:   Xavier Cuenca <xcuenca1993@gmail.com>
+Date:   Wed, 14 Jun 2023 11:02:00 +0000
+Message-ID: <CAHDEakqCyWm7qrrr59k-dpL+=3Zh-ExUSFQ99DY1t0YvJBa-uA@mail.gmail.com>
+Subject: nik_bin_nek_alwi@yahoo.com
+To:     Linux m68k <linux-m68k@vger.kernel.org>,
+        linux mm <linux-mm@kvack.org>,
+        linux mtd <linux-mtd@lists.infradead.org>,
+        linuxppc dev <linuxppc-dev@lists.ozlabs.org>,
+        Luis Alves <ljalvs@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Jun 14, 2023 at 11:53:50AM +0200, Thomas Gleixner wrote:
-> That's the wrong order. mitigations must come before the smt
-> update. Thanks to Boris for spotting it.
-
-Right, with that fixed the ordering looks good now.
-
-Reviewed-by: Borislav Petkov (AMD) <bp@alien8.de>
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+http://tracking.groupon.com/r?tsToken=US_AFF_0_206880_212556_0&url=https://je4zs.app.link/069stfNFxAb
