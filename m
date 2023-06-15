@@ -2,97 +2,109 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CFBFEB64DC
-	for <linux-m68k@archiver.kernel.org>; Thu, 15 Jun 2023 18:40:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33E00EB64D9
+	for <linux-m68k@archiver.kernel.org>; Thu, 15 Jun 2023 19:53:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229536AbjFOSko (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 15 Jun 2023 14:40:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45700 "EHLO
+        id S229588AbjFOTxY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 15 Jun 2023 15:53:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231377AbjFOSjy (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 15 Jun 2023 14:39:54 -0400
-X-Greylist: delayed 3526 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 15 Jun 2023 11:39:44 PDT
-Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C52A82695;
-        Thu, 15 Jun 2023 11:39:44 -0700 (PDT)
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 35FGJsTl017085;
-        Thu, 15 Jun 2023 11:19:54 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 35FGJqSI017082;
-        Thu, 15 Jun 2023 11:19:52 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Thu, 15 Jun 2023 11:19:52 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Eric DeVolder <eric.devolder@oracle.com>, linux@armlinux.org.uk,
-        catalin.marinas@arm.com, will@kernel.org, chenhuacai@kernel.org,
-        geert@linux-m68k.org, tsbogend@alpha.franken.de,
-        James.Bottomley@HansenPartnership.com, deller@gmx.de,
-        ysato@users.osdn.me, dalias@libc.org, glaubitz@physik.fu-berlin.de,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, 86@kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-m68k@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, peterz@infradead.org,
-        linus.walleij@linaro.org, thunder.leizhen@huawei.com,
-        hpa@zytor.com, kernel@xen0n.name, ardb@kernel.org, tsi@tuyoix.net,
-        agordeev@linux.ibm.com, paulmck@kernel.org, bhe@redhat.com,
-        masahiroy@kernel.org, konrad.wilk@oracle.com,
-        sebastian.reichel@collabora.com, samitolvanen@google.com,
-        ojeda@kernel.org, juerg.haefliger@canonical.com,
-        borntraeger@linux.ibm.com, frederic@kernel.org, arnd@arndb.de,
-        mhiramat@kernel.org, aou@eecs.berkeley.edu, keescook@chromium.org,
-        gor@linux.ibm.com, anshuman.khandual@arm.com, hca@linux.ibm.com,
-        xin3.li@intel.com, npiggin@gmail.com, rmk+kernel@armlinux.org.uk,
-        paul.walmsley@sifive.com, boris.ostrovsky@oracle.com,
-        ziy@nvidia.com, hbathini@linux.ibm.com, gregkh@linuxfoundation.org,
-        kirill.shutemov@linux.intel.com, ndesaulniers@google.com,
-        sourabhjain@linux.ibm.com, palmer@dabbelt.com, svens@linux.ibm.com,
-        tj@kernel.org, akpm@linux-foundation.org, rppt@kernel.org
-Subject: Re: [PATCH v1 10/21] powerpc/kexec: refactor for kernel/Kconfig.kexec
-Message-ID: <20230615161952.GD19790@gate.crashing.org>
-References: <20230612172805.681179-1-eric.devolder@oracle.com> <20230612172805.681179-11-eric.devolder@oracle.com> <87fs6tflfi.fsf@mail.lhotse>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87fs6tflfi.fsf@mail.lhotse>
-User-Agent: Mutt/1.4.2.3i
+        with ESMTP id S229503AbjFOTxX (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 15 Jun 2023 15:53:23 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F9C5268A;
+        Thu, 15 Jun 2023 12:53:22 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1b3d0b33dc2so8515ad.0;
+        Thu, 15 Jun 2023 12:53:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686858802; x=1689450802;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rDyg1xRS0mTW8IflRZmJ1y6m6hnypMScbqMo1USnW/Q=;
+        b=nibjocXHmfrLrqxJj8sFvt7u9VyG8VMGJ6DdYQ+ljrDmj1cjDXX8GowkALr6EAq481
+         Aj8z8ITIm3Lnp5PpFcw/Ga6JB0fBr7qE3JeVvU6Nf5eCb56wJ8yVfTOdUYvuT517+Mw1
+         snwDi3gYAVr0qmuZMpG/Om/Lxqh/B45g+ERonreTSQsSy1+DfXyD+fs46Xvdsw6kNX71
+         Z2O88VDcJwj73Pb3kGP1GTpb6X3XRrsGxft6tKeZlJLNircqItxkQE1HH56PqUochH87
+         2yZfPDXD1T4Q01s89jwU/dQVQhRTX4R8suvAULcHWqPl8+mFR1pA5jNv1HeGQUs/j5Oj
+         wUlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686858802; x=1689450802;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rDyg1xRS0mTW8IflRZmJ1y6m6hnypMScbqMo1USnW/Q=;
+        b=OrDvdIEN73Yag7CyXNPSWWH4MCY8cT8f0bjm71W3/ABIyJDdJnQYOdwZBQlgJNKYjF
+         xjvke2o7surU563SGlpJE+gV4feOZC8TUqQrKmol7F7++xbODJiCXEKIh+ZSZigF6IDQ
+         GXJkcPIqDgtSI5S411lwZa/5bPg+BvSH9Os1tqVdi5Zgqd7QV7NnEp5raxcu5YrarHhI
+         8SF1jH2mMiDWD6+GRjqx3JUy1dOmb4ToxoggBiX7o49osDTGCz0gG4LYqNjwKfqOVkil
+         Ia8pLa/FabGBQtxtFG4IH4bt9JlOLEBcsfwy6JfC0in9U02nFjNY0sryj5mFvjiFadwc
+         0aGw==
+X-Gm-Message-State: AC+VfDyPJf/qAC6E3C5WQJC5Diwbk+8rIend7mEhmLIHMz/yizOH9PMq
+        ieSTiXLsKiRSjEVPUwk4KKQ=
+X-Google-Smtp-Source: ACHHUZ5f9Jwb0OQQgGbcS50bZpZR3cRIJmCRpB5LuUiuoZ2cqM1P7md3owTmrvZ3h3afb00ypLngQw==
+X-Received: by 2002:a17:902:744c:b0:1b2:466b:a600 with SMTP id e12-20020a170902744c00b001b2466ba600mr55206plt.19.1686858801984;
+        Thu, 15 Jun 2023 12:53:21 -0700 (PDT)
+Received: from ?IPV6:2001:df0:0:200c:c59a:b7b:526a:7364? ([2001:df0:0:200c:c59a:b7b:526a:7364])
+        by smtp.gmail.com with ESMTPSA id b20-20020a170902d31400b001b414fae374sm4104441plc.291.2023.06.15.12.53.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Jun 2023 12:53:21 -0700 (PDT)
+Message-ID: <69ecfff9-0f18-abe7-aa97-3ec60cf53f13@gmail.com>
+Date:   Fri, 16 Jun 2023 07:53:11 +1200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v10 2/3] block: change annotation of rdb_CylBlocks in
+ affs_hardblocks.h
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org,
+        axboe@kernel.dk, linux-m68k@vger.kernel.org, martin@lichtvoll.de,
+        fthain@linux-m68k.org, stable@vger.kernel.org
+References: <20230615030837.8518-1-schmitzmic@gmail.com>
+ <20230615030837.8518-3-schmitzmic@gmail.com> <20230615041742.GA4426@lst.de>
+ <056834c7-89ca-c8cd-69be-62100f1e5591@gmail.com>
+ <20230615055349.GA5544@lst.de>
+ <CAMuHMdWyQnKUaNtxYjqpxXovFKNPmhQDeCXX=exrqtgOfSFUjw@mail.gmail.com>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+In-Reply-To: <CAMuHMdWyQnKUaNtxYjqpxXovFKNPmhQDeCXX=exrqtgOfSFUjw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Jun 15, 2023 at 01:34:25PM +1000, Michael Ellerman wrote:
-> Eric DeVolder <eric.devolder@oracle.com> writes:
-> > -config KEXEC_FILE
-> > -	bool "kexec file based system call"
-> > -	select KEXEC_CORE
-> > -	select HAVE_IMA_KEXEC if IMA
-> > -	select KEXEC_ELF
-> > -	depends on PPC64
-> > -	depends on CRYPTO=y
-> > -	depends on CRYPTO_SHA256=y
-> ...
-> > +
-> > +config ARCH_HAS_KEXEC_FILE
-> > +	def_bool PPC64 && CRYPTO && CRYPTO_SHA256
-> 
-> The =y's got lost here.
-> 
-> I think they were both meaningful, because both options are tristate. So
-> this previously required them to be built-in (=y), whereas after your
-> patch it will allow them to be modules.
-> 
-> I don't know for sure that those options need to be built-in, but that's
-> what the code does now, so this patch shouldn't change it, at least
-> without an explanation.
+Hi Geert,
 
-This patch shouldn't change it at all, period.  If you want to change it
-(and that sounds like a good idea, if it is possible anyway), that
-should be a separate patch.
+On 15/06/23 19:21, Geert Uytterhoeven wrote:
+> Hi Michael,
+>
+> Thanks for your patch!
+>
+> On Thu, Jun 15, 2023 at 7:53 AM Christoph Hellwig <hch@lst.de> wrote:
+>> On Thu, Jun 15, 2023 at 04:50:45PM +1200, Michael Schmitz wrote:
+>>>> And as far as I can tell everything that is a __u32 here should
+>>>> be an __be32 because it is a big endian on-disk format.  Why
+>>>> would you change only a single field?
+>>> Because that's all I needed, and wanted to avoid excess patch churn. Plus
+>>> (appeal to authority here :-)) it's in keeping with what Al Viro did when
+>>> the __be32 annotations were first added.
+>>>
+>>> I can change all __u32 to __be32 and drop the comment if that's preferred.
+>> That would be great!
+> I totally agree with Christoph.
 
+Thanks - now there's two __s32 fields in that header - one checksum each 
+for RDB and PB. No one has so far seen the need for a 'signed big endian 
+32 bit' type, and I'd rather avoid adding one to types.h. I'll leave 
+those as they are (with the tacit understanding that they are equally 
+meant to be big endian).
 
-Segher
+Cheers,
+
+     Michael
+
+> Gr{oetje,eeting}s,
+>
+>                          Geert
+>
