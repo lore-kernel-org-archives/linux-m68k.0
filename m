@@ -2,122 +2,107 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB0BEEB64D8
-	for <linux-m68k@archiver.kernel.org>; Thu, 15 Jun 2023 01:06:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F716EB64D8
+	for <linux-m68k@archiver.kernel.org>; Thu, 15 Jun 2023 03:08:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbjFOBGS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 14 Jun 2023 21:06:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34218 "EHLO
+        id S242682AbjFODIr (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 14 Jun 2023 23:08:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbjFOBGR (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 14 Jun 2023 21:06:17 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E2526A4;
-        Wed, 14 Jun 2023 18:06:16 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-651ffcc1d3dso5620313b3a.3;
-        Wed, 14 Jun 2023 18:06:16 -0700 (PDT)
+        with ESMTP id S231241AbjFODIq (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 14 Jun 2023 23:08:46 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46FB426A9;
+        Wed, 14 Jun 2023 20:08:45 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-75d4dd6f012so277365085a.2;
+        Wed, 14 Jun 2023 20:08:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686791175; x=1689383175;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=AhxwF6VPBkSFZ7VN0Npm5/cBY2nIa0+bTqjacSN5QuA=;
-        b=PBDOqpLKw8m02ByaVvWNSj7j/ernhI8ENBkMcu2rygtysKh3qorvI9M80YU6FFjboL
-         /E8OsRo8cCbcWXMYhoygfyr9Ukw1NK8Byr89ysK9p2K65eUEBEEE6WkbbzKOxbkWBs5b
-         xGJtvy0C/hiq40JJOl+RUqaarmlXgbOsuAs2pL0/9S4ArUYqSjhxKVwJntIbg9BbLiWY
-         xrlwcRgvitHrAMkJ2cypeNoiHvaf8xZ/ioAuWDTqQwZKOPGnGLTgCe1iWW7hZYeybvID
-         XxApqH0oF5bdAKget34mTQd408PP1GlgLjWCEM+NLgnDM5Xl22jfghMOvWBdLtC7lu4a
-         7cTA==
+        d=gmail.com; s=20221208; t=1686798524; x=1689390524;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YXhRZblGyVMtvtJ0pQfx5ADPdvrkqYGTFGhpU5ex4x4=;
+        b=oLKpZj0NdHuiem25PBDppKlQTkr4il/D0OdBQfHNWsnq2olgjajB9S+EvA70YOpOGs
+         tTC22hmrLvmDjVjOghYYR3ZVgOZsxyJZNYqqAvIc+bBiTx+NTS/5+YtijI+MEqeuyyeF
+         D9G+EcgV0O30B76/4yULl3d5CwHrLRVYkYYooMs8823Zj0I68adFVCndVnuvBsAkvU1i
+         fqvEp6v5fubaYKs073lFv2LW/XBRhVwqz3WYYbYuZuXG0XUiAwYJ2+COErJjImh5lA1x
+         V3+Ipb/Lx5SrKFNUB9nAjZr0V4nrNIXwPCtLAovaAALBdcKmB8VWpwFr5zVXe8wMAegK
+         KABQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686791175; x=1689383175;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AhxwF6VPBkSFZ7VN0Npm5/cBY2nIa0+bTqjacSN5QuA=;
-        b=SVJctx7Dr8/1VI7J6Kxd1WWMpGASJ/t5p3qhsQjwkVFmfEC3PUMFyxC9uIy+y2vRoc
-         gU2eRowdeRmDWV248sD/lqllO0j0vZUXzOd8u1kzSM3S3AQMnHyjsussZqNYlUVhoo10
-         zo1oMAY4QBeU+DlZ+KzBaORL0/2L02fKGdvhM4lZN58OQJuRx25ULx6ssanPXPNgWQ9Z
-         r4pi1TQANBnZCdsl1jj4ccFDTSlEXyFve+8wNsOI6/7AeCH/IG/sF9HUzp74w6dOImvt
-         hH5FUCR70hw5ZqMyywYKe5L4cKo2BtShwN3EK84SpKFB4plvZuwrjZ++4hkvQzWDWNyg
-         pJkw==
-X-Gm-Message-State: AC+VfDyAqeXHjyznIb5JZxSFUAgzKcirFY85fOrKhYCzop4mgA9W2jJj
-        MMDIqsAI6vI28NaJ0R8GNcE=
-X-Google-Smtp-Source: ACHHUZ4bA2fcjqTacqqx6yEf8Pz4JR2BjlgYq+ouIXsTCm/nWQ5tzpW4ZB/tNjFRaEGtDe1XwJllYA==
-X-Received: by 2002:a05:6a00:1a4a:b0:653:a90e:b63e with SMTP id h10-20020a056a001a4a00b00653a90eb63emr3509618pfv.21.1686791175574;
-        Wed, 14 Jun 2023 18:06:15 -0700 (PDT)
-Received: from ?IPV6:2001:df0:0:200c:5447:d1ff:c6bd:ec5d? ([2001:df0:0:200c:5447:d1ff:c6bd:ec5d])
-        by smtp.gmail.com with ESMTPSA id a16-20020a62bd10000000b0065ecdefa57fsm10855866pff.0.2023.06.14.18.06.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Jun 2023 18:06:15 -0700 (PDT)
-Message-ID: <738c6c33-4a95-53d4-cff0-86a3e8170b63@gmail.com>
-Date:   Thu, 15 Jun 2023 13:06:09 +1200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
+        d=1e100.net; s=20221208; t=1686798524; x=1689390524;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YXhRZblGyVMtvtJ0pQfx5ADPdvrkqYGTFGhpU5ex4x4=;
+        b=F3Pu+c3U8amj6eBfbSYdlruGJ+BAzycLr8M0Ea8fUE/6KRdradm31VgKaUFf1tY5GG
+         IbmDjBWSMau2ZC00FcbhSou9o37vrFAsbdc5m/kUIRQmEOaiVjCJ6lV9BNwXGmHXjT8j
+         +QembIylrLmSBrLb2AWqOWI8rfFquPWCZNC+P+iZHaAbO24le0Ad9wTSI92uaKKxNuEz
+         htJXhm4ZRKMdgNsZVTT/8ZTNZ2c4pT/sBXoDNsFRms2jvvoKnN9uDs3VEzat/C83zr3C
+         wyU4+dwNtj3fRdFFgl2QTlP+xA3YntcLB+knGbWUEop6nW9SXWPA7lPcAO8acsUxqw7e
+         5TtQ==
+X-Gm-Message-State: AC+VfDzbav8k99854G8E+QHEtraAVK2JPFEz2v2YaydDjQ4aTPzF4r5V
+        jyh7It8TXBQgUAf6tB3n+/xtbFB6gcc=
+X-Google-Smtp-Source: ACHHUZ5uMnQSSe95TOijWLy910oD4SBSmAb3lO9Z8s0/1aUxuJRS6iZF7CFhP0EGnL234WsjknGFVw==
+X-Received: by 2002:a05:620a:3f4b:b0:75e:14f3:5da1 with SMTP id ty11-20020a05620a3f4b00b0075e14f35da1mr15504759qkn.42.1686798524374;
+        Wed, 14 Jun 2023 20:08:44 -0700 (PDT)
+Received: from xplor.waratah.dyndns.org (222-152-217-2-adsl.sparkbb.co.nz. [222.152.217.2])
+        by smtp.gmail.com with ESMTPSA id 26-20020aa7911a000000b0065440a07294sm11276206pfh.95.2023.06.14.20.08.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jun 2023 20:08:43 -0700 (PDT)
+Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
+        id 0043E360316; Thu, 15 Jun 2023 15:08:39 +1200 (NZST)
 From:   Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH v7 2/2] block: add overflow checks for Amiga partition
- support
-To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     Martin Steigerwald <martin@lichtvoll.de>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-m68k@vger.kernel.org, geert@linux-m68k.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Joanne Dow <jdow@earthlink.net>,
-        Al Viro <viro@zeniv.linux.org.uk>
-References: <1539570747-19906-1-git-send-email-schmitzmic@gmail.com>
- <3748744.kQq0lBPeGt@lichtvoll.de>
- <86671bf8-98db-7d82-f7cb-a80d6f6c064c@gmail.com>
- <4507409.LvFx2qVVIh@lichtvoll.de>
- <98267647-af04-d463-cb5d-c5d6b0a05777@gmail.com>
- <82d25ec7-47cb-cb40-c800-892af48a71f6@linux-m68k.org>
-Content-Language: en-US
-In-Reply-To: <82d25ec7-47cb-cb40-c800-892af48a71f6@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To:     linux-block@vger.kernel.org, axboe@kernel.dk
+Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org, hch@lst.de,
+        martin@lichtvoll.de, fthain@linux-m68k.org,
+        Michael Schmitz <schmitzmic@gmail.com>
+Subject: [PATCH v10 0/3] Amiga RDB partition support fixes
+Date:   Thu, 15 Jun 2023 15:08:34 +1200
+Message-Id: <20230615030837.8518-1-schmitzmic@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Finn,
+Hi Jens,
 
-[resent after it bounced from vger ...]
+Following up on Martin's enquiry, I am resubmitting the Amiga
+partition support fixes again as v10, with changes addressing
+your comments on v8, and a fix for warnings I saw from sparse
+checking on v8 and v9. 
 
-On 15/06/23 12:13, Finn Thain wrote:
-> On Wed, 14 Jun 2023, Michael Schmitz wrote:
->
->> The reason why only rdb_SummedLongs, rdb_BlockBytes and
->> rdb_PartitionList are explicitly declared big endian is probably quite
->> simple - nothing else was used by the Linux RDB parser. My patch adds
->> rdb_CylBlocks to that list, so that ought to be changed to big endian,
->> too.
->>
->> affs_hardblocks.h is a UAPI header - what are the rules and
->> ramifications around changes to those? Might not be worth the hassle in
->> the end.
->>
-> I think it's safe to fix the UAPI header if we are talking about
-> endianness annotations that affect static checking and not code
-> generation. The existing annotations in that struct would appear to
-> support that notion, if indeed they were put there for the benefit of the
-> kernel.
+The simple fix (patch 1) still leaves ample room for overflows in
+calculating start address and size of a RDB partition, though
+such overflows should only be seen in rather unusual cases.
 
-The annotations pre-date mainstream git history - looking at Thomas 
-Gleixner's full history git 
-(https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git/), the 
-annotations were added by Al Viro in 2004 (commit 
-380768f5a50524ff7eab00d03d82a56cf2fdfe7b 
-<https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git/commit/include/linux/affs_hardblocks.h?id=380768f5a50524ff7eab00d03d82a56cf2fdfe7b> 
-there).
+To address these potential overflows, checks are added in the
+third patch of this series. Comments by Geert have been
+addressed in full. 
 
-Al said at the time that he only annotated only those fields that are 
-used by the kernel, and left everything else alone even though it all 
-ought to be big endian.
+In order to avoid warnings about a cast to a restricted
+type (__be32, inside be32_to_cpu()) introduced by the third
+patch, the second patch changes the annotation of the
+rdb_CylBlocks field to __be3, which is what all of the 32 bit
+fields in the RDB struct really ought to be. 
 
-Reason enough to now change the rdb_CylBlocks annotation.
+Reviewed-by tags by Geert and Christoph added. Fixes and
+prerequisites for stable backport also added. 
 
-Thanks,
+Patch 2 still needs formal review. In my humble opinion, patch 1
+can be applied while we wait for that, as it does mostly fix
+this long standing bug (at least when LBD is enabled). 
 
-     Michael
+Cheers,
 
+        Michael
 
+Michael Schmitz (3):
+  block: fix signed int overflow in Amiga partition support
+  block: change annotation of rdb_CylBlocks in affs_hardblocks.h
+  block: add overflow checks for Amiga partition support
+
+ block/partitions/amiga.c             | 102 ++++++++++++++++++++++-----
+ include/uapi/linux/affs_hardblocks.h |   7 +-
+ 2 files changed, 91 insertions(+), 18 deletions(-)
+
+-- 
+2.17.1
 
