@@ -2,298 +2,122 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34D4FC001DB
-	for <linux-m68k@archiver.kernel.org>; Thu, 15 Jun 2023 00:27:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB0BEEB64D8
+	for <linux-m68k@archiver.kernel.org>; Thu, 15 Jun 2023 01:06:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237070AbjFOA1E (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 14 Jun 2023 20:27:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53070 "EHLO
+        id S230281AbjFOBGS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 14 Jun 2023 21:06:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236982AbjFOA1D (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 14 Jun 2023 20:27:03 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE4B268B
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 14 Jun 2023 17:27:00 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-56ff9cc91b4so15081947b3.0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 14 Jun 2023 17:27:00 -0700 (PDT)
+        with ESMTP id S229558AbjFOBGR (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 14 Jun 2023 21:06:17 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E2526A4;
+        Wed, 14 Jun 2023 18:06:16 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-651ffcc1d3dso5620313b3a.3;
+        Wed, 14 Jun 2023 18:06:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1686788819; x=1689380819;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DnWlt5Rs3KXon7VRWQ16gguJVnALQ3ZmklO6Frv1x8M=;
-        b=WRHrIu3gJ2wGOTVICPuRYrvd1c7L0vJmrlkgymQr/8tluUcC03co9peWifCQEP1BsY
-         n1bcKbEoAy3csFFfNr5H+pB6uC7G+M6NDOY8RplOtmKbo0R9oGV+MU9bx9fwzUqBE6qz
-         UoP7JSR/WImIB+BSu++yiJd2ccucSuR3F/8O1ueWLj3eeb3W7W3deV4ilVi0Hz02Zt93
-         TjoBiZtPZ+PXM7D8IHAIhSy81RgpuYrpZDW9wXrDupoXxD94l+mSwBro2iU8DdUEQdKI
-         M+gCDPVaDv5mY02cBNtASY+U3YkMeuVD/52uz72mGD+cYhnjUb+L8OIbARxgrlvrjLd5
-         w90A==
+        d=gmail.com; s=20221208; t=1686791175; x=1689383175;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=AhxwF6VPBkSFZ7VN0Npm5/cBY2nIa0+bTqjacSN5QuA=;
+        b=PBDOqpLKw8m02ByaVvWNSj7j/ernhI8ENBkMcu2rygtysKh3qorvI9M80YU6FFjboL
+         /E8OsRo8cCbcWXMYhoygfyr9Ukw1NK8Byr89ysK9p2K65eUEBEEE6WkbbzKOxbkWBs5b
+         xGJtvy0C/hiq40JJOl+RUqaarmlXgbOsuAs2pL0/9S4ArUYqSjhxKVwJntIbg9BbLiWY
+         xrlwcRgvitHrAMkJ2cypeNoiHvaf8xZ/ioAuWDTqQwZKOPGnGLTgCe1iWW7hZYeybvID
+         XxApqH0oF5bdAKget34mTQd408PP1GlgLjWCEM+NLgnDM5Xl22jfghMOvWBdLtC7lu4a
+         7cTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686788819; x=1689380819;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DnWlt5Rs3KXon7VRWQ16gguJVnALQ3ZmklO6Frv1x8M=;
-        b=A34frPF4QsDj9TE0yLcysRLqYfmXFeXq/mdi91Iq9I0jalX22w4g1kxvfEI542KpSl
-         ST45hPqLVyLw5hx8Jy7gjX3cuQnwkHS+fwjFVyKhVxvFOwrAG6QlA7tyz69wXSwGDSHv
-         0orf+s9aLQZzmTu+Xt6D+DyNine9zLQPhO9QvDjYPxqYRE6oQkdnM7Lym3qXKXVBbjfV
-         RV6FL+z+WSl/9Z2Ca47HelCuhE/v0o0qFxmLCNElZz3xj+4yBR252JMj70tv2xVfjRm6
-         r7N+RGF2Kdp0YOX1BAgm4XaDqOqw1n5z9Eni63AalxVkbkVThGYB7UWNX7kyksK2OlCQ
-         m/gg==
-X-Gm-Message-State: AC+VfDwX7P/LvO/yAq3Jx4HRsSStyDv2TKqc+LH6VYO6q4nRXuNCroNC
-        nG67+Ax0TAg13qo4Ks3yCS++wg==
-X-Google-Smtp-Source: ACHHUZ7bmVwEeref/EmuNgObqE0Cze454MmZYUDZGEjkaQsMh2xmkr5i3f3fpHWj6dmJHfcSbaICaw==
-X-Received: by 2002:a81:8744:0:b0:56d:31bb:7388 with SMTP id x65-20020a818744000000b0056d31bb7388mr3076697ywf.49.1686788819041;
-        Wed, 14 Jun 2023 17:26:59 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id h81-20020a815354000000b0055a881abfc3sm2421337ywb.135.2023.06.14.17.26.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jun 2023 17:26:57 -0700 (PDT)
-Date:   Wed, 14 Jun 2023 17:26:43 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Nathan Chancellor <nathan@kernel.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Helge Deller <deller@gmx.de>,
-        John David Anglin <dave.anglin@bell.net>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v2 07/23] mips: update_mmu_cache() can replace
- __update_tlb()
-In-Reply-To: <20230614231758.GA1503611@dev-arch.thelio-3990X>
-Message-ID: <f5526f17-9d78-f7ea-427a-7e76bfeb6b8@google.com>
-References: <a4963be9-7aa6-350-66d0-2ba843e1af44@google.com> <178970b0-1539-8aac-76fd-972c6c46ec17@google.com> <20230614231758.GA1503611@dev-arch.thelio-3990X>
+        d=1e100.net; s=20221208; t=1686791175; x=1689383175;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AhxwF6VPBkSFZ7VN0Npm5/cBY2nIa0+bTqjacSN5QuA=;
+        b=SVJctx7Dr8/1VI7J6Kxd1WWMpGASJ/t5p3qhsQjwkVFmfEC3PUMFyxC9uIy+y2vRoc
+         gU2eRowdeRmDWV248sD/lqllO0j0vZUXzOd8u1kzSM3S3AQMnHyjsussZqNYlUVhoo10
+         zo1oMAY4QBeU+DlZ+KzBaORL0/2L02fKGdvhM4lZN58OQJuRx25ULx6ssanPXPNgWQ9Z
+         r4pi1TQANBnZCdsl1jj4ccFDTSlEXyFve+8wNsOI6/7AeCH/IG/sF9HUzp74w6dOImvt
+         hH5FUCR70hw5ZqMyywYKe5L4cKo2BtShwN3EK84SpKFB4plvZuwrjZ++4hkvQzWDWNyg
+         pJkw==
+X-Gm-Message-State: AC+VfDyAqeXHjyznIb5JZxSFUAgzKcirFY85fOrKhYCzop4mgA9W2jJj
+        MMDIqsAI6vI28NaJ0R8GNcE=
+X-Google-Smtp-Source: ACHHUZ4bA2fcjqTacqqx6yEf8Pz4JR2BjlgYq+ouIXsTCm/nWQ5tzpW4ZB/tNjFRaEGtDe1XwJllYA==
+X-Received: by 2002:a05:6a00:1a4a:b0:653:a90e:b63e with SMTP id h10-20020a056a001a4a00b00653a90eb63emr3509618pfv.21.1686791175574;
+        Wed, 14 Jun 2023 18:06:15 -0700 (PDT)
+Received: from ?IPV6:2001:df0:0:200c:5447:d1ff:c6bd:ec5d? ([2001:df0:0:200c:5447:d1ff:c6bd:ec5d])
+        by smtp.gmail.com with ESMTPSA id a16-20020a62bd10000000b0065ecdefa57fsm10855866pff.0.2023.06.14.18.06.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Jun 2023 18:06:15 -0700 (PDT)
+Message-ID: <738c6c33-4a95-53d4-cff0-86a3e8170b63@gmail.com>
+Date:   Thu, 15 Jun 2023 13:06:09 +1200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Subject: Re: [PATCH v7 2/2] block: add overflow checks for Amiga partition
+ support
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     Martin Steigerwald <martin@lichtvoll.de>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-m68k@vger.kernel.org, geert@linux-m68k.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Joanne Dow <jdow@earthlink.net>,
+        Al Viro <viro@zeniv.linux.org.uk>
+References: <1539570747-19906-1-git-send-email-schmitzmic@gmail.com>
+ <3748744.kQq0lBPeGt@lichtvoll.de>
+ <86671bf8-98db-7d82-f7cb-a80d6f6c064c@gmail.com>
+ <4507409.LvFx2qVVIh@lichtvoll.de>
+ <98267647-af04-d463-cb5d-c5d6b0a05777@gmail.com>
+ <82d25ec7-47cb-cb40-c800-892af48a71f6@linux-m68k.org>
+Content-Language: en-US
+In-Reply-To: <82d25ec7-47cb-cb40-c800-892af48a71f6@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, 14 Jun 2023, Nathan Chancellor wrote:
+Hi Finn,
 
-> Hi Hugh,
-> 
-> On Thu, Jun 08, 2023 at 12:17:24PM -0700, Hugh Dickins wrote:
-> > Don't make update_mmu_cache() a wrapper around __update_tlb(): call it
-> > directly, and use the ptep (or pmdp) provided by the caller, instead of
-> > re-calling pte_offset_map() - which would raise a question of whether a
-> > pte_unmap() is needed to balance it.
-> > 
-> > Check whether the "ptep" provided by the caller is actually the pmdp,
-> > instead of testing pmd_huge(): or test pmd_huge() too and warn if it
-> > disagrees?  This is "hazardous" territory: needs review and testing.
-> > 
-> > Signed-off-by: Hugh Dickins <hughd@google.com>
-> > ---
-> >  arch/mips/include/asm/pgtable.h | 15 +++------------
-> >  arch/mips/mm/tlb-r3k.c          |  5 +++--
-> >  arch/mips/mm/tlb-r4k.c          |  9 +++------
-> >  3 files changed, 9 insertions(+), 20 deletions(-)
-> > 
-> > diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
-> > index 574fa14ac8b2..9175dfab08d5 100644
-> > --- a/arch/mips/include/asm/pgtable.h
-> > +++ b/arch/mips/include/asm/pgtable.h
-> > @@ -565,15 +565,8 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
-> >  }
-> >  #endif
-> >  
-> > -extern void __update_tlb(struct vm_area_struct *vma, unsigned long address,
-> > -	pte_t pte);
-> > -
-> > -static inline void update_mmu_cache(struct vm_area_struct *vma,
-> > -	unsigned long address, pte_t *ptep)
-> > -{
-> > -	pte_t pte = *ptep;
-> > -	__update_tlb(vma, address, pte);
-> > -}
-> > +extern void update_mmu_cache(struct vm_area_struct *vma,
-> > +	unsigned long address, pte_t *ptep);
-> >  
-> >  #define	__HAVE_ARCH_UPDATE_MMU_TLB
-> >  #define update_mmu_tlb	update_mmu_cache
-> > @@ -581,9 +574,7 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
-> >  static inline void update_mmu_cache_pmd(struct vm_area_struct *vma,
-> >  	unsigned long address, pmd_t *pmdp)
-> >  {
-> > -	pte_t pte = *(pte_t *)pmdp;
-> > -
-> > -	__update_tlb(vma, address, pte);
-> > +	update_mmu_cache(vma, address, (pte_t *)pmdp);
-> >  }
-> >  
-> >  /*
-> > diff --git a/arch/mips/mm/tlb-r3k.c b/arch/mips/mm/tlb-r3k.c
-> > index 53dfa2b9316b..e5722cd8dd6d 100644
-> > --- a/arch/mips/mm/tlb-r3k.c
-> > +++ b/arch/mips/mm/tlb-r3k.c
-> > @@ -176,7 +176,8 @@ void local_flush_tlb_page(struct vm_area_struct *vma, unsigned long page)
-> >  	}
-> >  }
-> >  
-> > -void __update_tlb(struct vm_area_struct *vma, unsigned long address, pte_t pte)
-> > +void update_mmu_cache(struct vm_area_struct *vma,
-> > +		      unsigned long address, pte_t *ptep)
-> >  {
-> >  	unsigned long asid_mask = cpu_asid_mask(&current_cpu_data);
-> >  	unsigned long flags;
-> > @@ -203,7 +204,7 @@ void __update_tlb(struct vm_area_struct *vma, unsigned long address, pte_t pte)
-> >  	BARRIER;
-> >  	tlb_probe();
-> >  	idx = read_c0_index();
-> > -	write_c0_entrylo0(pte_val(pte));
-> > +	write_c0_entrylo0(pte_val(*ptep));
-> >  	write_c0_entryhi(address | pid);
-> >  	if (idx < 0) {					/* BARRIER */
-> >  		tlb_write_random();
-> > diff --git a/arch/mips/mm/tlb-r4k.c b/arch/mips/mm/tlb-r4k.c
-> > index 1b939abbe4ca..c96725d17cab 100644
-> > --- a/arch/mips/mm/tlb-r4k.c
-> > +++ b/arch/mips/mm/tlb-r4k.c
-> > @@ -290,14 +290,14 @@ void local_flush_tlb_one(unsigned long page)
-> >   * updates the TLB with the new pte(s), and another which also checks
-> >   * for the R4k "end of page" hardware bug and does the needy.
-> >   */
-> > -void __update_tlb(struct vm_area_struct * vma, unsigned long address, pte_t pte)
-> > +void update_mmu_cache(struct vm_area_struct *vma,
-> > +		      unsigned long address, pte_t *ptep)
-> >  {
-> >  	unsigned long flags;
-> >  	pgd_t *pgdp;
-> >  	p4d_t *p4dp;
-> >  	pud_t *pudp;
-> >  	pmd_t *pmdp;
-> > -	pte_t *ptep;
-> >  	int idx, pid;
-> >  
-> >  	/*
-> > @@ -326,10 +326,9 @@ void __update_tlb(struct vm_area_struct * vma, unsigned long address, pte_t pte)
-> >  	idx = read_c0_index();
-> >  #ifdef CONFIG_MIPS_HUGE_TLB_SUPPORT
-> >  	/* this could be a huge page  */
-> > -	if (pmd_huge(*pmdp)) {
-> > +	if (ptep == (pte_t *)pmdp) {
-> >  		unsigned long lo;
-> >  		write_c0_pagemask(PM_HUGE_MASK);
-> > -		ptep = (pte_t *)pmdp;
-> >  		lo = pte_to_entrylo(pte_val(*ptep));
-> >  		write_c0_entrylo0(lo);
-> >  		write_c0_entrylo1(lo + (HPAGE_SIZE >> 7));
-> > @@ -344,8 +343,6 @@ void __update_tlb(struct vm_area_struct * vma, unsigned long address, pte_t pte)
-> >  	} else
-> >  #endif
-> >  	{
-> > -		ptep = pte_offset_map(pmdp, address);
-> > -
-> >  #if defined(CONFIG_PHYS_ADDR_T_64BIT) && defined(CONFIG_CPU_MIPS32)
-> >  #ifdef CONFIG_XPA
-> >  		write_c0_entrylo0(pte_to_entrylo(ptep->pte_high));
-> > -- 
-> > 2.35.3
-> > 
-> 
-> I just bisected a crash while powering down a MIPS machine in QEMU to
-> this change as commit 8044511d3893 ("mips: update_mmu_cache() can
-> replace __update_tlb()") in linux-next.
+[resent after it bounced from vger ...]
 
-Thank you, Nathan, that's very helpful indeed.  This patch certainly knew
-that it wanted testing, and I'm glad to hear that it is now seeing some.
+On 15/06/23 12:13, Finn Thain wrote:
+> On Wed, 14 Jun 2023, Michael Schmitz wrote:
+>
+>> The reason why only rdb_SummedLongs, rdb_BlockBytes and
+>> rdb_PartitionList are explicitly declared big endian is probably quite
+>> simple - nothing else was used by the Linux RDB parser. My patch adds
+>> rdb_CylBlocks to that list, so that ought to be changed to big endian,
+>> too.
+>>
+>> affs_hardblocks.h is a UAPI header - what are the rules and
+>> ramifications around changes to those? Might not be worth the hassle in
+>> the end.
+>>
+> I think it's safe to fix the UAPI header if we are talking about
+> endianness annotations that affect static checking and not code
+> generation. The existing annotations in that struct would appear to
+> support that notion, if indeed they were put there for the benefit of the
+> kernel.
 
-While powering down?  The messages below look like it was just coming up,
-but no doubt that's because you were bisecting (or because I'm unfamiliar
-with what messages to expect there).  It's probably irrelevant information,
-but I wonder whether the (V)machine worked well enough for a while before
-you first powered down and spotted the problem, or whether it's never got
-much further than trying to run init (busybox)?  I'm trying to get a feel
-for whether the problem occurs under common or uncommon conditions.
+The annotations pre-date mainstream git history - looking at Thomas 
+Gleixner's full history git 
+(https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git/), the 
+annotations were added by Al Viro in 2004 (commit 
+380768f5a50524ff7eab00d03d82a56cf2fdfe7b 
+<https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git/commit/include/linux/affs_hardblocks.h?id=380768f5a50524ff7eab00d03d82a56cf2fdfe7b> 
+there).
 
-> Unfortunately, I can still
-> reproduce it with the existing fix you have for this change on the
-> mailing list, which is present in next-20230614.
+Al said at the time that he only annotated only those fields that are 
+used by the kernel, and left everything else alone even though it all 
+ought to be big endian.
 
-Right, that later fix was only for a build warning, nothing functional
-(or at least I hoped that it wasn't making any functional difference).
+Reason enough to now change the rdb_CylBlocks annotation.
 
-Thanks a lot for the detailed instructions below: unfortunately, those
-would draw me into a realm of testing I've never needed to enter before,
-so a lot of time spent on setup and learning.  Usually, I just stare at
-the source.
+Thanks,
 
-What this probably says is that I should revert most my cleanup there,
-and keep as close to the existing code as possible.  But some change is
-needed, and I may need to understand (or have a good guess at) what was
-going wrong, to decide what kind of retreat will be successful.
+     Michael
 
-Back to the source for a while: I hope I'll find examples in nearby MIPS
-kernel source (and git history), which will hint at the right way forward.
-Then send you a patch against next-20230614 to try, when I'm reasonably
-confident that it's enough to satisfy my purpose, but likely not to waste
-your time.
 
-Thanks, until later,
-Hugh
 
-> 
-> I can reproduce it with the GCC 13.1.0 on kernel.org [1].
-> 
->   $ make -skj"$(nproc)" ARCH=mips CROSS_COMPILE=mips-linux- mrproper malta_defconfig vmlinux
-> 
->   $ qemu-system-mipsel \
->       -display none \
->       -nodefaults \
->       -cpu 24Kf \
->       -machine malta \
->       -kernel vmlinux \
->       -initrd rootfs.cpio \
->       -m 512m \
->       -serial mon:stdio
->   ...
->   Linux version 6.4.0-rc6-next-20230614 (nathan@dev-arch.thelio-3990X) (mips-linux-gcc (GCC) 13.1.0, GNU ld (GNU Binutils) 2.40) #1 SMP Wed Jun 14 16:13:02 MST 2023
->   ...
->   Run /init as init process
->   process '/bin/busybox' started with executable stack
->   do_page_fault(): sending SIGSEGV to init for invalid read access from 0000003c
->   epc = 77b893dc in ld-uClibc-1.0.39.so[77b84000+8000]
->   ra  = 77b8930c in ld-uClibc-1.0.39.so[77b84000+8000]
->   Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
->   ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
-> 
-> The rootfs is available at [2] if it is needed. I am more than happy to
-> provide additional information or test patches if necessary.
-> 
-> [1]: https://mirrors.edge.kernel.org/pub/tools/crosstool/
-> [2]: https://github.com/ClangBuiltLinux/boot-utils/releases/download/20230609-194440/mipsel-rootfs.cpio.zst
-> 
-> Cheers,
-> Nathan
