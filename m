@@ -2,139 +2,49 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C486EB64D9
-	for <linux-m68k@archiver.kernel.org>; Thu, 15 Jun 2023 03:34:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC2F4EB64DB
+	for <linux-m68k@archiver.kernel.org>; Thu, 15 Jun 2023 04:18:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237527AbjFODeg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 14 Jun 2023 23:34:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48370 "EHLO
+        id S240390AbjFOESG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 15 Jun 2023 00:18:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238077AbjFODeb (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 14 Jun 2023 23:34:31 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E018E26BE
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 14 Jun 2023 20:34:28 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4QhSZn5RL6z4wjB;
-        Thu, 15 Jun 2023 13:34:25 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1686800067;
-        bh=YpcS1BrLjvGbDxUqeoV3otHCJ3+/0YDjxYK8icm+ysA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=eEFN1zC7xAn1Wr3Kit71RQEzhLSL4SIBGcM6Ixe1KFqmhMEDomwzMDGJd3HwTL8zN
-         Z5SzsEAPWzmB9tToxQgSaEVOZXcEQR7leaAQGQjisqMEYiBBeqWsC5xWKqS8nyBQLS
-         pZzn7lqvIK5M7QTIjRhq5k3woxwBsVmXj1ytVeSX3L8BgOr6n2Y9Xmg03KpI+lVpeE
-         ZQAqJIHwBFhFhWRd2V6IMzeNMrigU4PNW1gqmzYWbgPI4yfBONTfaDdJaTx2Ggqek4
-         HbDECZQGZ/n1t7b6XWR17o8sR8f4D6jNZpL9A5ut0u3lqw1gvXjyrzPclYoftupZAa
-         PNxDjHn73WIPw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Eric DeVolder <eric.devolder@oracle.com>, linux@armlinux.org.uk,
-        catalin.marinas@arm.com, will@kernel.org, chenhuacai@kernel.org,
-        geert@linux-m68k.org, tsbogend@alpha.franken.de,
-        James.Bottomley@HansenPartnership.com, deller@gmx.de,
-        ysato@users.sourceforge.jp, dalias@libc.org,
-        glaubitz@physik.fu-berlin.de, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, 86@kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org
-Cc:     kernel@xen0n.name, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com,
-        agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
-        svens@linux.ibm.com, hpa@zytor.com, keescook@chromium.org,
-        paulmck@kernel.org, peterz@infradead.org, frederic@kernel.org,
-        akpm@linux-foundation.org, ardb@kernel.org,
-        samitolvanen@google.com, juerg.haefliger@canonical.com,
-        arnd@arndb.de, rmk+kernel@armlinux.org.uk,
-        linus.walleij@linaro.org, sebastian.reichel@collabora.com,
-        rppt@kernel.org, kirill.shutemov@linux.intel.com,
-        anshuman.khandual@arm.com, ziy@nvidia.com, masahiroy@kernel.org,
-        ndesaulniers@google.com, mhiramat@kernel.org, ojeda@kernel.org,
-        thunder.leizhen@huawei.com, xin3.li@intel.com, tj@kernel.org,
-        gregkh@linuxfoundation.org, tsi@tuyoix.net, bhe@redhat.com,
-        hbathini@linux.ibm.com, sourabhjain@linux.ibm.com,
-        eric.devolder@oracle.com, boris.ostrovsky@oracle.com,
-        konrad.wilk@oracle.com
-Subject: Re: [PATCH v1 10/21] powerpc/kexec: refactor for kernel/Kconfig.kexec
-In-Reply-To: <20230612172805.681179-11-eric.devolder@oracle.com>
-References: <20230612172805.681179-1-eric.devolder@oracle.com>
- <20230612172805.681179-11-eric.devolder@oracle.com>
-Date:   Thu, 15 Jun 2023 13:34:25 +1000
-Message-ID: <87fs6tflfi.fsf@mail.lhotse>
+        with ESMTP id S243009AbjFOERr (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 15 Jun 2023 00:17:47 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39026269E;
+        Wed, 14 Jun 2023 21:17:46 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id DCE6D67373; Thu, 15 Jun 2023 06:17:42 +0200 (CEST)
+Date:   Thu, 15 Jun 2023 06:17:42 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     linux-block@vger.kernel.org, axboe@kernel.dk,
+        linux-m68k@vger.kernel.org, geert@linux-m68k.org, hch@lst.de,
+        martin@lichtvoll.de, fthain@linux-m68k.org, stable@vger.kernel.org
+Subject: Re: [PATCH v10 2/3] block: change annotation of rdb_CylBlocks in
+ affs_hardblocks.h
+Message-ID: <20230615041742.GA4426@lst.de>
+References: <20230615030837.8518-1-schmitzmic@gmail.com> <20230615030837.8518-3-schmitzmic@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230615030837.8518-3-schmitzmic@gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Eric DeVolder <eric.devolder@oracle.com> writes:
+On Thu, Jun 15, 2023 at 03:08:36PM +1200, Michael Schmitz wrote:
+> +/* MSch 20230615: any field used by the Linux kernel must be
+> + * annotated __be32! If any fields require increase to 64
+> + * bit size, rdb_ID _must_ be changed!
+> + */
 
-> The kexec and crash kernel options are provided in the common
-> kernel/Kconfig.kexec. Utilize the common options and provide
-> the ARCH_HAS_ and ARCH_SUPPORTS_ entries to recreate the
-> equivalent set of KEXEC and CRASH options.
->
-> Signed-off-by: Eric DeVolder <eric.devolder@oracle.com>
-> Reviewed-by: Sourabh Jain <sourabhjain@linux.ibm.com>
-> ---
->  arch/powerpc/Kconfig | 55 ++++++++++++++------------------------------
->  1 file changed, 17 insertions(+), 38 deletions(-)
->
-> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-> index bff5820b7cda..36f2fe0cc8a5 100644
-> --- a/arch/powerpc/Kconfig
-> +++ b/arch/powerpc/Kconfig
-> @@ -588,41 +588,21 @@ config PPC64_SUPPORTS_MEMORY_FAILURE
->  	default "y" if PPC_POWERNV
->  	select ARCH_SUPPORTS_MEMORY_FAILURE
->  
-> -config KEXEC
-> -	bool "kexec system call"
-> -	depends on PPC_BOOK3S || PPC_E500 || (44x && !SMP)
-> -	select KEXEC_CORE
-> -	help
-> -	  kexec is a system call that implements the ability to shutdown your
-> -	  current kernel, and to start another kernel.  It is like a reboot
-> -	  but it is independent of the system firmware.   And like a reboot
-> -	  you can start any kernel with it, not just Linux.
-> -
-> -	  The name comes from the similarity to the exec system call.
-> -
-> -	  It is an ongoing process to be certain the hardware in a machine
-> -	  is properly shutdown, so do not be surprised if this code does not
-> -	  initially work for you.  As of this writing the exact hardware
-> -	  interface is strongly in flux, so no good recommendation can be
-> -	  made.
-> -
-> -config KEXEC_FILE
-> -	bool "kexec file based system call"
-> -	select KEXEC_CORE
-> -	select HAVE_IMA_KEXEC if IMA
-> -	select KEXEC_ELF
-> -	depends on PPC64
-> -	depends on CRYPTO=y
-> -	depends on CRYPTO_SHA256=y
-...
-> +
-> +config ARCH_HAS_KEXEC_FILE
-> +	def_bool PPC64 && CRYPTO && CRYPTO_SHA256
+This is a really weird comment.  If you change on-disk format it
+is a different format and needs to be marked as such, sure.
 
-The =y's got lost here.
+And as far as I can tell everything that is a __u32 here should
+be an __be32 because it is a big endian on-disk format.  Why
+would you change only a single field?
 
-I think they were both meaningful, because both options are tristate. So
-this previously required them to be built-in (=y), whereas after your
-patch it will allow them to be modules.
-
-I don't know for sure that those options need to be built-in, but that's
-what the code does now, so this patch shouldn't change it, at least
-without an explanation.
-
-cheers
