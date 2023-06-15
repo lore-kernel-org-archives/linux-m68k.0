@@ -2,109 +2,137 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33E00EB64D9
-	for <linux-m68k@archiver.kernel.org>; Thu, 15 Jun 2023 19:53:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C9D7C001B1
+	for <linux-m68k@archiver.kernel.org>; Thu, 15 Jun 2023 21:22:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229588AbjFOTxY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 15 Jun 2023 15:53:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60524 "EHLO
+        id S230116AbjFOVWX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 15 Jun 2023 17:22:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjFOTxX (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 15 Jun 2023 15:53:23 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F9C5268A;
-        Thu, 15 Jun 2023 12:53:22 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1b3d0b33dc2so8515ad.0;
-        Thu, 15 Jun 2023 12:53:22 -0700 (PDT)
+        with ESMTP id S236156AbjFOVWW (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 15 Jun 2023 17:22:22 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E058296B
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Jun 2023 14:22:20 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-57001c0baddso1227087b3.2
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Jun 2023 14:22:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686858802; x=1689450802;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rDyg1xRS0mTW8IflRZmJ1y6m6hnypMScbqMo1USnW/Q=;
-        b=nibjocXHmfrLrqxJj8sFvt7u9VyG8VMGJ6DdYQ+ljrDmj1cjDXX8GowkALr6EAq481
-         Aj8z8ITIm3Lnp5PpFcw/Ga6JB0fBr7qE3JeVvU6Nf5eCb56wJ8yVfTOdUYvuT517+Mw1
-         snwDi3gYAVr0qmuZMpG/Om/Lxqh/B45g+ERonreTSQsSy1+DfXyD+fs46Xvdsw6kNX71
-         Z2O88VDcJwj73Pb3kGP1GTpb6X3XRrsGxft6tKeZlJLNircqItxkQE1HH56PqUochH87
-         2yZfPDXD1T4Q01s89jwU/dQVQhRTX4R8suvAULcHWqPl8+mFR1pA5jNv1HeGQUs/j5Oj
-         wUlQ==
+        d=google.com; s=20221208; t=1686864139; x=1689456139;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=S2y2ag2VSA5iJWjnLMJgW21sD26IXOkwRb84bIEjNFc=;
+        b=xQ0UEfbeHsvyF9P9GSzV8sPaDnCduWem82QRocOPVTimyNaz+TtzXunPSdeRzXvvAi
+         vai/I3V4xnGwkuPBK2C8BxgXmG/grI3PNJPpvIXErHwA9uzmeBRdld+oVJisQfogsxl0
+         vGLKSwM0YFacwx/AmX5Id6XW9gRfBLJoOHHDKed5GhoMi63Kk25c1kBjAvC4IVlUHe3e
+         oelGGGI8RCOSrTPLR5K32xFZslyRFLZPbM5b3aFNmrO++aNzcuug8bpdMx1IF1HOO2ol
+         NHDhCqI2eK44IOXmk4glSuyplwnvkIK/n7XkQCIImv5fgRh6qF4f64HAb8zfCbRE0z7D
+         2CQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686858802; x=1689450802;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rDyg1xRS0mTW8IflRZmJ1y6m6hnypMScbqMo1USnW/Q=;
-        b=OrDvdIEN73Yag7CyXNPSWWH4MCY8cT8f0bjm71W3/ABIyJDdJnQYOdwZBQlgJNKYjF
-         xjvke2o7surU563SGlpJE+gV4feOZC8TUqQrKmol7F7++xbODJiCXEKIh+ZSZigF6IDQ
-         GXJkcPIqDgtSI5S411lwZa/5bPg+BvSH9Os1tqVdi5Zgqd7QV7NnEp5raxcu5YrarHhI
-         8SF1jH2mMiDWD6+GRjqx3JUy1dOmb4ToxoggBiX7o49osDTGCz0gG4LYqNjwKfqOVkil
-         Ia8pLa/FabGBQtxtFG4IH4bt9JlOLEBcsfwy6JfC0in9U02nFjNY0sryj5mFvjiFadwc
-         0aGw==
-X-Gm-Message-State: AC+VfDyPJf/qAC6E3C5WQJC5Diwbk+8rIend7mEhmLIHMz/yizOH9PMq
-        ieSTiXLsKiRSjEVPUwk4KKQ=
-X-Google-Smtp-Source: ACHHUZ5f9Jwb0OQQgGbcS50bZpZR3cRIJmCRpB5LuUiuoZ2cqM1P7md3owTmrvZ3h3afb00ypLngQw==
-X-Received: by 2002:a17:902:744c:b0:1b2:466b:a600 with SMTP id e12-20020a170902744c00b001b2466ba600mr55206plt.19.1686858801984;
-        Thu, 15 Jun 2023 12:53:21 -0700 (PDT)
-Received: from ?IPV6:2001:df0:0:200c:c59a:b7b:526a:7364? ([2001:df0:0:200c:c59a:b7b:526a:7364])
-        by smtp.gmail.com with ESMTPSA id b20-20020a170902d31400b001b414fae374sm4104441plc.291.2023.06.15.12.53.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Jun 2023 12:53:21 -0700 (PDT)
-Message-ID: <69ecfff9-0f18-abe7-aa97-3ec60cf53f13@gmail.com>
-Date:   Fri, 16 Jun 2023 07:53:11 +1200
+        d=1e100.net; s=20221208; t=1686864139; x=1689456139;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S2y2ag2VSA5iJWjnLMJgW21sD26IXOkwRb84bIEjNFc=;
+        b=J0PiHdhSUhVvDHlwGFI3n5nx+yY7iiC4O5lRwyyFgZAz5uQZlMQH9IF3/x8zhOQpC2
+         Oeo6Q6uunHH4z6sQ8tMaSlytZ3x7+I0fZNJ6N34W/i0qvCC8sa5+sMV+7Lrtfwn+XNtz
+         0CiMPQlVmdsL8UcjV9cliE6rhzulUQIsN7kR4Bycc8nNAsojO2zVch4gO9yIPFH6bDZM
+         a9gDXgJzw0COYOpj3D8SQRHDLO4DGOOJDV2IyCNWrX1n890p5x4M110OCI0B7tyW5NXt
+         p8O+fKX686wzIVlJFARfv0ecMmdgGsYK0QY5ah+u8c7Z+0TgFWs612Cc3Bxlxwu4kO6X
+         Igdg==
+X-Gm-Message-State: AC+VfDy4bvV/NDRLEorofPn7dmnMIQg6mOHn3w/NNPQOI6RFai+6T32t
+        9/xr0RgyEXs/6Ors6JT2EY7TVA==
+X-Google-Smtp-Source: ACHHUZ7Wn443nNp7TXnOUS1g0CwvPfeS1ec2zVwJBnOAceqd4kD8IQUnTLQfS40NfWgzNKeH64ll/A==
+X-Received: by 2002:a81:83d3:0:b0:56c:ea2c:5cb2 with SMTP id t202-20020a8183d3000000b0056cea2c5cb2mr5787878ywf.49.1686864139515;
+        Thu, 15 Jun 2023 14:22:19 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id s189-20020a0de9c6000000b0054f80928ea4sm4626438ywe.140.2023.06.15.14.22.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jun 2023 14:22:19 -0700 (PDT)
+Date:   Thu, 15 Jun 2023 14:22:15 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Nathan Chancellor <nathan@kernel.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Helge Deller <deller@gmx.de>,
+        John David Anglin <dave.anglin@bell.net>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v2 07/23] mips: update_mmu_cache() can replace
+ __update_tlb()
+In-Reply-To: <20230615155059.GB3665766@dev-arch.thelio-3990X>
+Message-ID: <76b41825-30fa-b9e8-d043-2affcba24317@google.com>
+References: <a4963be9-7aa6-350-66d0-2ba843e1af44@google.com> <178970b0-1539-8aac-76fd-972c6c46ec17@google.com> <20230614231758.GA1503611@dev-arch.thelio-3990X> <f5526f17-9d78-f7ea-427a-7e76bfeb6b8@google.com> <344a4da-3890-45fd-607e-b5f85ca6ad48@google.com>
+ <20230615155059.GB3665766@dev-arch.thelio-3990X>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v10 2/3] block: change annotation of rdb_CylBlocks in
- affs_hardblocks.h
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org,
-        axboe@kernel.dk, linux-m68k@vger.kernel.org, martin@lichtvoll.de,
-        fthain@linux-m68k.org, stable@vger.kernel.org
-References: <20230615030837.8518-1-schmitzmic@gmail.com>
- <20230615030837.8518-3-schmitzmic@gmail.com> <20230615041742.GA4426@lst.de>
- <056834c7-89ca-c8cd-69be-62100f1e5591@gmail.com>
- <20230615055349.GA5544@lst.de>
- <CAMuHMdWyQnKUaNtxYjqpxXovFKNPmhQDeCXX=exrqtgOfSFUjw@mail.gmail.com>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <CAMuHMdWyQnKUaNtxYjqpxXovFKNPmhQDeCXX=exrqtgOfSFUjw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
+On Thu, 15 Jun 2023, Nathan Chancellor wrote:
+> On Wed, Jun 14, 2023 at 10:43:30PM -0700, Hugh Dickins wrote:
+> > 
+> > I do hope that you find the first fixes the breakage; but if not, then
+> 
+> I hate to be the bearer of bad news but the first patch did not fix the
+> breakage, I see the same issue.
 
-On 15/06/23 19:21, Geert Uytterhoeven wrote:
-> Hi Michael,
->
-> Thanks for your patch!
->
-> On Thu, Jun 15, 2023 at 7:53 AM Christoph Hellwig <hch@lst.de> wrote:
->> On Thu, Jun 15, 2023 at 04:50:45PM +1200, Michael Schmitz wrote:
->>>> And as far as I can tell everything that is a __u32 here should
->>>> be an __be32 because it is a big endian on-disk format.  Why
->>>> would you change only a single field?
->>> Because that's all I needed, and wanted to avoid excess patch churn. Plus
->>> (appeal to authority here :-)) it's in keeping with what Al Viro did when
->>> the __be32 annotations were first added.
->>>
->>> I can change all __u32 to __be32 and drop the comment if that's preferred.
->> That would be great!
-> I totally agree with Christoph.
+Boo!
 
-Thanks - now there's two __s32 fields in that header - one checksum each 
-for RDB and PB. No one has so far seen the need for a 'signed big endian 
-32 bit' type, and I'd rather avoid adding one to types.h. I'll leave 
-those as they are (with the tacit understanding that they are equally 
-meant to be big endian).
+> 
+> > I even more fervently hope that the second will, despite my hating it.
+> > Touch wood for the first, fingers crossed for the second, thanks,
+> 
+> Thankfully, the second one does. Thanks for the quick and thoughtful
+> responses!
 
-Cheers,
+Hurrah!
 
-     Michael
+Thanks a lot, Nathan.  I'll set aside my disappointment and curiosity,
+clearly I'm not going to have much of a future as a MIPS programmer.
 
-> Gr{oetje,eeting}s,
->
->                          Geert
->
+I must take a break, then rush Andrew the second patch, well, not
+exactly that second patch, since most of that is revert: I'll just
+send the few lines of replacement patch (with a new Subject line, as
+update_mmu_cache() goes back to being separate from __update_tlb()).
+
+Unless you object, I'll include a Tested-by: you.  I realize that
+your testing is limited to seeing it running; but that's true of
+most of the testing at this stage - it gets to be more interesting
+when the patch that adds the rcu_read_lock() and rcu_read_unlock()
+is added on top later.
+
+Thanks again,
+Hugh
