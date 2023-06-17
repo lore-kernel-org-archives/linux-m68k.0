@@ -2,237 +2,105 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BAED5C001B1
-	for <linux-m68k@archiver.kernel.org>; Sat, 17 Jun 2023 03:55:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4947AEB64DC
+	for <linux-m68k@archiver.kernel.org>; Sat, 17 Jun 2023 11:09:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229739AbjFQDy6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 16 Jun 2023 23:54:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35736 "EHLO
+        id S235183AbjFQLI5 convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 17 Jun 2023 07:08:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234078AbjFQDy4 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 16 Jun 2023 23:54:56 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB011BF0
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 16 Jun 2023 20:54:53 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-34226590ee3so24945ab.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 16 Jun 2023 20:54:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1686974092; x=1689566092;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QjPKljmVrq97b/xrgwUpf4fkZeUWNrWjsV3CU9AjkqI=;
-        b=UJDbRMamkrBPVExG/+JpPWPTOqM1QRSzYcymaPP5BGEQsRBouuA13TXnrCLvToP8bV
-         3lKWCVjeaP/fUBGyCPuHbg0CW8MyxuxVz8142sPH/UfHTXnWL/9qnB8dNcL0Beq/TMmQ
-         JqhD594Tk8VivGo6jIoTnf4rOPr1Z+B1guFIC4KvXqrOBNK3dm7Pgfy5L+GI8hJ1stzi
-         pWmq2jqc4gGIjAbzipaWV2tUFC1dw2QMDvPO5CI7Zci41h+2G0iHSy6k3ny0RzPtxj1z
-         M4qdnJcLBAHnbDtPuvuRyfutO5ro8aWEodws/C53fXxgTAicX1IJCrMcK38L5fRgeR6Y
-         ergA==
+        with ESMTP id S235048AbjFQLIz (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sat, 17 Jun 2023 07:08:55 -0400
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 784A7212C;
+        Sat, 17 Jun 2023 04:08:52 -0700 (PDT)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5701e8f2b79so21389277b3.0;
+        Sat, 17 Jun 2023 04:08:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686974092; x=1689566092;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QjPKljmVrq97b/xrgwUpf4fkZeUWNrWjsV3CU9AjkqI=;
-        b=Wfc/QTMqPrW6S9ev69X6yRYJSeU+eyiSybDznm/x4zCwKLBNF82ayS8F9Qd3fidUfk
-         /b32mw0/8a0ydfCYoWnJG0Z4rZTpmRDr8v6qoSlJt4D7OVMn7phk+GB9pZo2pP7Krrr3
-         auRxfFWAeaGlQUgOBpTLY2fGPdLBfq1CWPT61RT/BM+uE3M+thtmh63p05FYfATPa9ME
-         g7QWtMx1Y94ELhVbzbqHoyO20aLX2LILwrZgcKGQiCwM7qS5UnmzMDRAoJU6/IuGaRJW
-         w1+SrOd2rKgZjPQ2ZgiIXuMF6FbUpsceK2MoO1BvuBCT4mbePtM+nQlUV1UWsfrMNzYu
-         6w5w==
-X-Gm-Message-State: AC+VfDztPz0xUYYapflc/5UU+VFapdEpuCcPVEmH1vkSoknY0zPblXsW
-        aznobuEEWMXnEHfQoLsGzA0duw==
-X-Google-Smtp-Source: ACHHUZ52Zzw4gnAVJGh+M+mwB619YPVvWEDyF49a92w1AraAEi5TFjxraa3d5c9DKFNfF5UZkyYmpQ==
-X-Received: by 2002:a05:6e02:1be6:b0:340:57e1:2f76 with SMTP id y6-20020a056e021be600b0034057e12f76mr548195ilv.15.1686974092134;
-        Fri, 16 Jun 2023 20:54:52 -0700 (PDT)
-Received: from google.com ([2620:15c:183:202:bdb2:a15e:7a58:c3a3])
-        by smtp.gmail.com with ESMTPSA id dx7-20020a0566381d0700b0041d759c451asm6634770jab.166.2023.06.16.20.54.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jun 2023 20:54:51 -0700 (PDT)
-Date:   Fri, 16 Jun 2023 21:54:47 -0600
-From:   Yu Zhao <yuzhao@google.com>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Helge Deller <deller@gmx.de>,
-        John David Anglin <dave.anglin@bell.net>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v2 07/23 replacement] mips: add pte_unmap() to balance
- pte_offset_map()
-Message-ID: <ZI0uh8P/akwkGo0D@google.com>
-References: <a4963be9-7aa6-350-66d0-2ba843e1af44@google.com>
- <178970b0-1539-8aac-76fd-972c6c46ec17@google.com>
- <20230614231758.GA1503611@dev-arch.thelio-3990X>
- <f5526f17-9d78-f7ea-427a-7e76bfeb6b8@google.com>
- <344a4da-3890-45fd-607e-b5f85ca6ad48@google.com>
- <20230615155059.GB3665766@dev-arch.thelio-3990X>
- <76b41825-30fa-b9e8-d043-2affcba24317@google.com>
- <addfcb3-b5f4-976e-e050-a2508e589cfe@google.com>
+        d=1e100.net; s=20221208; t=1687000131; x=1689592131;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sWtixX3Z6V44aeoqqIIxWyopGY/w/u3lW96iqUHBgNM=;
+        b=kaU3hsRdAozjSoGR8EAAsMJVlDMeWpXMC2mHPzwB0g/J0Az/3GTH8mOktfP8XuzT+p
+         bCtTrTDiUgdl/a2Yj/Aj7xwHL9P/CDW+YrPSx0+7IZ1I09ZmkwVhDUAxqXb3y0lH0kti
+         YSdjHNyW4mHnRmXgXX9lbZ0KcuE8CNwtpc7pUic/JNvg8BiXjY09ZoNPZeyI52NHgayd
+         L1pPq6nrhPvTu8QLJTuIutOpd0O6IifW3EK9glERwqzptSjgSmN2IxWmoPYKaoCRS5yS
+         D+m1PSp3EFxpVwglxhs8Jz+tIlMI6mnrRLqqhZAQ4/TNcr750LBZZO++bhYW2+A2zIQH
+         f2Ow==
+X-Gm-Message-State: AC+VfDzohN4yllvsoh6ynXSh3FTT2Fbzm/6blFYwMnGxa35Z9EQgCXit
+        Mr9D7nDE2FbpbE8BCrz3Qx2bbXt0crVOkA==
+X-Google-Smtp-Source: ACHHUZ5n38vgX09upKwlvBP+oVLfgWv42x4mdkLw24WwhcRTs0ffv7Jg9R5nwG5H1BSzDwFXrpeg0w==
+X-Received: by 2002:a81:4f54:0:b0:56f:f565:c037 with SMTP id d81-20020a814f54000000b0056ff565c037mr5219067ywb.7.1687000131444;
+        Sat, 17 Jun 2023 04:08:51 -0700 (PDT)
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
+        by smtp.gmail.com with ESMTPSA id p187-20020a0dffc4000000b005706c3e5dfcsm709395ywf.48.2023.06.17.04.08.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Jun 2023 04:08:51 -0700 (PDT)
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-bd744ffc263so1822127276.3;
+        Sat, 17 Jun 2023 04:08:50 -0700 (PDT)
+X-Received: by 2002:a25:ae26:0:b0:be5:c78a:e9b5 with SMTP id
+ a38-20020a25ae26000000b00be5c78ae9b5mr2319004ybj.47.1687000130521; Sat, 17
+ Jun 2023 04:08:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <addfcb3-b5f4-976e-e050-a2508e589cfe@google.com>
+References: <20230616223616.6002-1-schmitzmic@gmail.com> <20230616223616.6002-3-schmitzmic@gmail.com>
+In-Reply-To: <20230616223616.6002-3-schmitzmic@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sat, 17 Jun 2023 13:08:36 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXo+Za3_Bz-PaLhq_oZzEzkN=g5YyDp=vaX7485WuE=Cg@mail.gmail.com>
+Message-ID: <CAMuHMdXo+Za3_Bz-PaLhq_oZzEzkN=g5YyDp=vaX7485WuE=Cg@mail.gmail.com>
+Subject: Re: [PATCH v12 2/3] block: change annotation of rdb_CylBlocks in affs_hardblocks.h
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     linux-block@vger.kernel.org, axboe@kernel.dk,
+        linux-m68k@vger.kernel.org, hch@lst.de, martin@lichtvoll.de,
+        fthain@linux-m68k.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Jun 15, 2023 at 04:02:43PM -0700, Hugh Dickins wrote:
-> To keep balance in future, __update_tlb() remember to pte_unmap() after
-> pte_offset_map().  This is an odd case, since the caller has already done
-> pte_offset_map_lock(), then mips forgets the address and recalculates it;
-> but my two naive attempts to clean that up did more harm than good.
-> 
-> Tested-by: Nathan Chancellor <nathan@kernel.org>
-> Signed-off-by: Hugh Dickins <hughd@google.com>
+On Sat, Jun 17, 2023 at 12:36 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> The Amiga partition parser module uses signed int for partition sector
+> address and count, which will overflow for disks larger than 1 TB.
+>
+> Use u64 as type for sector address and size to allow using disks up to
+> 2 TB without LBD support, and disks larger than 2 TB with LBD. The RBD
+> format allows to specify disk sizes up to 2^128 bytes (though native
+> OS limitations reduce this somewhat, to max 2^68 bytes), so check for
+> u64 overflow carefully to protect against overflowing sector_t.
+>
+> This bug was reported originally in 2012, and the fix was created by
+> the RDB author, Joanne Dow <jdow@earthlink.net>. A patch had been
+> discussed and reviewed on linux-m68k at that time but never officially
+> submitted (now resubmitted as patch 1 of this series).
+>
+> Patch 3 (this series) adds additional error checking and warning
+> messages. One of the error checks now makes use of the previously
+> unused rdb_CylBlocks field, which causes a 'sparse' warning
+> (cast to restricted __be32).
+>
+> Annotate all 32 bit fields in affs_hardblocks.h as __be32, as the
+> on-disk format of RDB and partition blocks is always big endian.
+>
+> Reported-by: Martin Steigerwald <Martin@lichtvoll.de>
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=43511
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Message-ID: <201206192146.09327.Martin@lichtvoll.de>
+> Cc: <stable@vger.kernel.org> # 5.2
+> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-FWIW: Tested-by: Yu Zhao <yuzhao@google.com>
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-There is another problem, likely caused by khugepaged, happened multiple times. But I don't think it's related to your series, just FYI.
+Gr{oetje,eeting}s,
 
-  Got mcheck at ffffffff81134ef0
-  CPU: 3 PID: 36 Comm: khugepaged Not tainted 6.4.0-rc6-00049-g62d8779610bb-dirty #1
-  $ 0   : 0000000000000000 0000000000000014 40000000011ac004 4000000000000000
-  $ 4   : c000000000000000 0000000000000045 000000011a80045b 000000011a80045b
-  $ 8   : 8000000080188000 ffffffff81b526c0 0000000000000200 0000000000000000
-  $12   : 0000000000000028 ffffffff81910cb4 0000000000000000 0000000000000207
-  $16   : 000000aaab800000 80000000037ee990 ffffffff81b50200 8000000005066ae0
-  $20   : 0000000000000001 ffffffff80000000 ffffffff81c10000 000000aaab800000
-  $24   : 0000000000000002 ffffffff812b75f8
-  $28   : 8000000002310000 8000000002313b00 ffffffff81b50000 ffffffff81134d88
-  Hi    : 000000000000017a
-  Lo    : 0000000000000000
-  epc   : ffffffff81134ef0 __update_tlb+0x260/0x2a0
-  ra    : ffffffff81134d88 __update_tlb+0xf8/0x2a0
-  Status: 14309ce2	KX SX UX KERNEL EXL
-  Cause : 00800060 (ExcCode 18)
-  PrId  : 000d9602 (Cavium Octeon III)
-  CPU: 3 PID: 36 Comm: khugepaged Not tainted 6.4.0-rc6-00049-g62d8779610bb-dirty #1
-  Stack : 0000000000000001 0000000000000000 0000000000000008 8000000002313768
-          8000000002313768 80000000023138f8 0000000000000000 0000000000000000
-          a6c8cd76e1667e00 8000000001db4f28 0000000000000001 30302d3663722d30
-          643236672d393430 0000000000000010 ffffffff81910cc0 0000000000000000
-          8000000001d96bcc 0000000000000000 0000000000000000 ffffffff81a68ed0
-          ffffffff81b50000 0000000000000001 ffffffff80000000 ffffffff81c10000
-          000000aaab800000 0000000000000002 ffffffff815b78c0 ffffffffa184e710
-          00000000000000c0 8000000002310000 8000000002313760 ffffffff81b50000
-          ffffffff8111c9cc 0000000000000000 0000000000000000 0000000000000000
-          0000000000000000 0000000000000000 ffffffff8111c9ec 0000000000000000
-          ...
-  Call Trace:
-  [<ffffffff8111c9ec>] show_stack+0x64/0x158
-  [<ffffffff81920078>] dump_stack_lvl+0x5c/0x7c
-  [<ffffffff8111e03c>] do_mcheck+0x2c/0x98
-  [<ffffffff81118608>] handle_mcheck_int+0x38/0x50
-  
-  Index    : 80000000
-  PageMask : 1fe000
-  EntryHi  : 000000aaab8000bd
-  EntryLo0 : 40000000011a8004
-  EntryLo1 : 40000000011ac004
-  Wired    : 0
-  PageGrain: e8000000
-  
-  Index:  2 pgmask=4kb va=c00000feffff4000 asid=b9
-  	[ri=0 xi=0 pa=000022a7000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=000022af000 c=0 d=1 v=1 g=1]
-  Index:  3 pgmask=4kb va=c00000feffff8000 asid=b9
-  	[ri=0 xi=0 pa=00002380000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=00002381000 c=0 d=1 v=1 g=1]
-  Index:  4 pgmask=4kb va=c00000feffffa000 asid=b9
-  	[ri=0 xi=0 pa=000023e9000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=000023ea000 c=0 d=1 v=1 g=1]
-  Index:  5 pgmask=4kb va=c00000feffffe000 asid=b9
-  	[ri=0 xi=0 pa=00002881000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=00002882000 c=0 d=1 v=1 g=1]
-  Index:  6 pgmask=4kb va=c00000fefffb0000 asid=b9
-  	[ri=0 xi=0 pa=00002cc2000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=00002cc3000 c=0 d=1 v=1 g=1]
-  Index:  7 pgmask=4kb va=c00000feffffc000 asid=b9
-  	[ri=0 xi=0 pa=000023eb000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=00002880000 c=0 d=1 v=1 g=1]
-  Index:  8 pgmask=4kb va=c00000feffff6000 asid=b9
-  	[ri=0 xi=0 pa=0000237e000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=0000237f000 c=0 d=1 v=1 g=1]
-  Index: 14 pgmask=4kb va=c00000fefff62000 asid=8e
-  	[ri=0 xi=0 pa=00007477000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=0000745e000 c=0 d=1 v=1 g=1]
-  Index: 15 pgmask=4kb va=c00000fefff52000 asid=8e
-  	[ri=0 xi=0 pa=0000744c000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=0000616d000 c=0 d=1 v=1 g=1]
-  Index: 16 pgmask=4kb va=c00000fefff42000 asid=8e
-  	[ri=0 xi=0 pa=00006334000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=0000616b000 c=0 d=1 v=1 g=1]
-  Index: 19 pgmask=4kb va=c00000fefffb6000 asid=8e
-  	[ri=0 xi=0 pa=00005050000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=00005051000 c=0 d=1 v=1 g=1]
-  Index: 20 pgmask=4kb va=c00000fefff72000 asid=b9
-  	[ri=0 xi=0 pa=00007504000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=00007503000 c=0 d=1 v=1 g=1]
-  Index: 58 pgmask=4kb va=c00000fefffaa000 asid=8e
-  	[ri=0 xi=0 pa=00005126000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=00005127000 c=0 d=1 v=1 g=1]
-  Index: 59 pgmask=4kb va=c00000fefffba000 asid=8e
-  	[ri=0 xi=0 pa=00005129000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=0000512a000 c=0 d=1 v=1 g=1]
-  Index: 79 pgmask=4kb va=c000000000060000 asid=8e
-  	[ri=0 xi=0 pa=0000534b000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=000062f9000 c=0 d=1 v=1 g=1]
-  Index: 80 pgmask=4kb va=c00000000005e000 asid=8e
-  	[ri=0 xi=0 pa=00000000000 c=0 d=0 v=0 g=1] [ri=0 xi=0 pa=00004013000 c=0 d=1 v=1 g=1]
-  Index: 81 pgmask=4kb va=c0000000003a0000 asid=8e
-  	[ri=0 xi=0 pa=000060c6000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=0000340e000 c=0 d=1 v=1 g=1]
-  Index: 82 pgmask=4kb va=c00000000039e000 asid=8e
-  	[ri=0 xi=0 pa=00000000000 c=0 d=0 v=0 g=1] [ri=0 xi=0 pa=000060c5000 c=0 d=1 v=1 g=1]
-  Index: 83 pgmask=4kb va=c00000000003e000 asid=8e
-  	[ri=0 xi=0 pa=00002bf3000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=00002c42000 c=0 d=1 v=1 g=1]
-  Index: 84 pgmask=4kb va=c000000000042000 asid=8e
-  	[ri=0 xi=0 pa=00002c45000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=00002c46000 c=0 d=1 v=1 g=1]
-  Index: 85 pgmask=4kb va=0aaab820000 asid=bd
-  	[ri=0 xi=0 pa=00000000000 c=0 d=0 v=0 g=0] [ri=0 xi=0 pa=00000000000 c=0 d=0 v=0 g=0]
-  Index: 86 pgmask=4kb va=0aaab748000 asid=bd
-  	[ri=0 xi=1 pa=0003c959000 c=0 d=1 v=1 g=0] [ri=0 xi=1 pa=0000f7b6000 c=0 d=0 v=1 g=0]
-  Index: 87 pgmask=4kb va=0fff37c4000 asid=bd
-  	[ri=0 xi=0 pa=0000bd23000 c=0 d=0 v=1 g=0] [ri=0 xi=0 pa=0000bd24000 c=0 d=0 v=1 g=0]
-  Index: 88 pgmask=4kb va=0fff3992000 asid=bd
-  	[ri=0 xi=1 pa=0000bfcd000 c=0 d=0 v=1 g=0] [ri=0 xi=1 pa=0002977b000 c=0 d=0 v=1 g=0]
-  Index: 89 pgmask=4kb va=0fff3288000 asid=bd
-  	[ri=0 xi=0 pa=00032b62000 c=0 d=0 v=1 g=0] [ri=0 xi=0 pa=00032b63000 c=0 d=0 v=1 g=0]
-  Index: 90 pgmask=4kb va=0fff3982000 asid=bd
-  	[ri=0 xi=1 pa=0002d6a3000 c=0 d=1 v=1 g=0] [ri=0 xi=1 pa=0002a423000 c=0 d=0 v=1 g=0]
-  Index: 91 pgmask=4kb va=0fffbb5e000 asid=bd
-  	[ri=0 xi=0 pa=00028949000 c=0 d=1 v=1 g=0] [ri=0 xi=0 pa=00035060000 c=0 d=1 v=1 g=0]
-  Index: 92 pgmask=4kb va=c00000fefffe2000 asid=8e
-  	[ri=0 xi=0 pa=000020f0000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=000020ff000 c=0 d=1 v=1 g=1]
-  Index: 93 pgmask=4kb va=c00000fefffd2000 asid=8e
-  	[ri=0 xi=0 pa=000020b7000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=000020fe000 c=0 d=1 v=1 g=1]
-  Index: 94 pgmask=4kb va=c00000fefffc2000 asid=8e
-  	[ri=0 xi=0 pa=000020b6000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=000020fd000 c=0 d=1 v=1 g=1]
-  Index: 110 pgmask=4kb va=c00000feffff2000 asid=bc
-  	[ri=0 xi=0 pa=000020f1000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=00002100000 c=0 d=1 v=1 g=1]
-  Index: 125 pgmask=4kb va=c00000fefffbe000 asid=bc
-  	[ri=0 xi=0 pa=00005268000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=000053dc000 c=0 d=1 v=1 g=1]
-  Index: 126 pgmask=4kb va=c00000fefffbc000 asid=bc
-  	[ri=0 xi=0 pa=00005266000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=00005267000 c=0 d=1 v=1 g=1]
-  Index: 188 pgmask=4kb va=c00000fefff76000 asid=bb
-  	[ri=0 xi=0 pa=00007576000 c=0 d=1 v=1 g=1] [ri=0 xi=0 pa=00007577000 c=0 d=1 v=1 g=1]
-  
-  Code: 1000ff92  00601025  00000000 <42000006> 1000ffb8  00000000  00000000  8f820018  00021238
-  Kernel panic - not syncing: Caught Machine Check exception - caused by multiple matching entries in the TLB.
-  ---[ end Kernel panic - not syncing: Caught Machine Check exception - caused by multiple matching entries in the TLB. ]---
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
