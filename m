@@ -2,117 +2,145 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65706EB64D7
-	for <linux-m68k@archiver.kernel.org>; Sun, 18 Jun 2023 07:51:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF7F8EB64DD
+	for <linux-m68k@archiver.kernel.org>; Sun, 18 Jun 2023 20:58:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229473AbjFRHvn convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 18 Jun 2023 03:51:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57382 "EHLO
+        id S229691AbjFRU6M (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 18 Jun 2023 16:58:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjFRHvm (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 18 Jun 2023 03:51:42 -0400
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B845FE51;
-        Sun, 18 Jun 2023 00:51:40 -0700 (PDT)
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-5700401acbeso27900317b3.0;
-        Sun, 18 Jun 2023 00:51:40 -0700 (PDT)
+        with ESMTP id S229655AbjFRU6L (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sun, 18 Jun 2023 16:58:11 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28C5EE54
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 18 Jun 2023 13:58:09 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-3f9a81da5d7so251921cf.0
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 18 Jun 2023 13:58:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1687121888; x=1689713888;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FZtyfCTAVMiPGQWHjgwoE9XDDUe5Zitl3naYIJu5u8M=;
+        b=ZVT9TlvXekbzjsIk4FVN6w5b3V3bL2g07xM58CsOQEKlBliMaOMo4yZji4Q+4M2pTX
+         PwOyYLy6AVqkAYYG8oZQzsoJ5wXO3fYU4dvuBveWcoPn/DBqA76dOm2wErETk5RMX4DF
+         Pdjj7y7tVBfSg3bUPlVpNbbP9RKpJTFpWfMqG6NS8ogCoI9SFLLQjHjuiJCl9wmx/QMI
+         sfudbAhw5Fv3ydEbSaSvd7K7sWgk9eaIp4KEVRbqeVVI+v27ojzRWzN3DHLLYoRPb3Uw
+         6IMcAn+rqIjZUCyYlDlj0BpHHcpwknOPBIBYMxSFkst2yjNHbhKR20MPChNpYuTjpIYD
+         wwUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687074699; x=1689666699;
+        d=1e100.net; s=20221208; t=1687121888; x=1689713888;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iXMXyUUSJXR/nTNTa+k3QFOvjzI9dKq9J11YzB0zBbc=;
-        b=DCxCDit2X9jblnIQiL8Q1yuZvkbo7/UbqjncYC6Q5XX2PxYGIb9ON4g8rfnaCb59Af
-         lxDofc5ROwmlPcpV9tzFr+dbnPAQori3pFn/0N+6STQFUkQkU/nG3ze6KIkC43W04xlv
-         WFzMytmCYL272rK5l4E9vNa8AMXBi3qwsKgQRMxLAg8bkd5iyw3SVSGARnhKEwaxiAHd
-         ADJU4bLCLLgxLmiMDKym3PchVLVkIban5rL36616gb/aqACdGOcqvxaOeGRqHd75d8tM
-         exqlQJ5BiC7xNFSPFBXa9I0g2RoID75j7gn2fGaWvCQi1w/RhnAnXoHdHXANEUc66U51
-         KI/Q==
-X-Gm-Message-State: AC+VfDz6wYj7aCEb8zGLsUj0gwCw+KXPBEQh6uDA0cRX1Ea1afuU7kcZ
-        U03+WiZ5eYKD/fNDiYsik0fOm1PzO/cPuw==
-X-Google-Smtp-Source: ACHHUZ7gfC9SiAKuiZVkdGPEIOUbBiWWQzVVNssBR/KT1jM0N6dnRFxrMrm59gO2v3gfW4ajop+EwA==
-X-Received: by 2002:a0d:ca0d:0:b0:56d:770:c315 with SMTP id m13-20020a0dca0d000000b0056d0770c315mr6766217ywd.49.1687074699573;
-        Sun, 18 Jun 2023 00:51:39 -0700 (PDT)
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com. [209.85.219.180])
-        by smtp.gmail.com with ESMTPSA id b16-20020a0dd910000000b005707f542f62sm953037ywe.25.2023.06.18.00.51.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Jun 2023 00:51:38 -0700 (PDT)
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-bd6d9d7da35so2611586276.0;
-        Sun, 18 Jun 2023 00:51:38 -0700 (PDT)
-X-Received: by 2002:a5b:cb:0:b0:bc7:47a:9861 with SMTP id d11-20020a5b00cb000000b00bc7047a9861mr3316637ybp.51.1687074698581;
- Sun, 18 Jun 2023 00:51:38 -0700 (PDT)
+        bh=FZtyfCTAVMiPGQWHjgwoE9XDDUe5Zitl3naYIJu5u8M=;
+        b=QprL9osCvDWD3Cst6Mk1ayqJs00NgwaQa6RZZCy4jPcylLMDkbvIkNiI445Uuo7VDE
+         xBzOligRQzyxBB6K6q1mbARzLhp5xbj1jlUNvUkXLj9vyxgjuVcciWh/EcMbgxO7AMN0
+         SE5NcKlDK0n3LustxXBQXfoaKPTR++hQ97duKAdFafKWsM+Aa5YJmtprXUnRzRAfSwcE
+         pbQCcPqDOy/2TByk+5SvnIsuyy/wn8pUUWzQgDsK0AGd8aLLdIui2aBHKRoG1AVIlDN3
+         iGfSCf1UN/i2yWrlnpouVaF3tsmrFGA9Zl5hBnyJYBHahIpTATiN2LEiTb2QrJWrQBYa
+         6AbQ==
+X-Gm-Message-State: AC+VfDxDMNcT/jI3d5bZMXUZEYaQQmzIxEwaf3r3rBCvm5eR5naqERcF
+        pfNn47zVaqU59HpJZNzj+i666nqmlxt9t6DBodp1FA==
+X-Google-Smtp-Source: ACHHUZ6ZDWbPtAWRuLjADFFa6FEUQ3GypTx245KPaUVC0BHZGX9Wd0LOXtVKSGnZtQDaYiPHdDlVEaUz0sYg2vTadSQ=
+X-Received: by 2002:a05:622a:20a:b0:3f9:a78f:c527 with SMTP id
+ b10-20020a05622a020a00b003f9a78fc527mr291449qtx.21.1687121888063; Sun, 18 Jun
+ 2023 13:58:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230616223616.6002-1-schmitzmic@gmail.com> <20230616223616.6002-3-schmitzmic@gmail.com>
- <CAMuHMdXo+Za3_Bz-PaLhq_oZzEzkN=g5YyDp=vaX7485WuE=Cg@mail.gmail.com> <e29dcf24-367f-4304-9b01-7913e0dcf650@gmail.com>
-In-Reply-To: <e29dcf24-367f-4304-9b01-7913e0dcf650@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sun, 18 Jun 2023 09:51:25 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUHNGKP4jFM7CDhFxHWd+SR4GG6Co0PosLCk1qpBV176w@mail.gmail.com>
-Message-ID: <CAMuHMdUHNGKP4jFM7CDhFxHWd+SR4GG6Co0PosLCk1qpBV176w@mail.gmail.com>
-Subject: Re: [PATCH v12 2/3] block: change annotation of rdb_CylBlocks in affs_hardblocks.h
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     linux-block@vger.kernel.org, axboe@kernel.dk,
-        linux-m68k@vger.kernel.org, hch@lst.de, martin@lichtvoll.de,
-        fthain@linux-m68k.org, stable@vger.kernel.org
+References: <a4963be9-7aa6-350-66d0-2ba843e1af44@google.com>
+ <178970b0-1539-8aac-76fd-972c6c46ec17@google.com> <20230614231758.GA1503611@dev-arch.thelio-3990X>
+ <f5526f17-9d78-f7ea-427a-7e76bfeb6b8@google.com> <344a4da-3890-45fd-607e-b5f85ca6ad48@google.com>
+ <20230615155059.GB3665766@dev-arch.thelio-3990X> <76b41825-30fa-b9e8-d043-2affcba24317@google.com>
+ <addfcb3-b5f4-976e-e050-a2508e589cfe@google.com> <ZI0uh8P/akwkGo0D@google.com>
+In-Reply-To: <ZI0uh8P/akwkGo0D@google.com>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Sun, 18 Jun 2023 14:57:31 -0600
+Message-ID: <CAOUHufbAjZd4Mxkio9OGct-TZ=L0QRG+_6Xa7atQVFN_4ez86w@mail.gmail.com>
+Subject: Re: [PATCH v2 07/23 replacement] mips: add pte_unmap() to balance pte_offset_map()
+To:     Hugh Dickins <hughd@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>, Helge Deller <deller@gmx.de>,
+        John David Anglin <dave.anglin@bell.net>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-mips@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael,
-
-On Sun, Jun 18, 2023 at 5:10 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> Am 17.06.2023 um 23:08 schrieb Geert Uytterhoeven:
-> > On Sat, Jun 17, 2023 at 12:36 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> >> The Amiga partition parser module uses signed int for partition sector
-> >> address and count, which will overflow for disks larger than 1 TB.
-> >>
-> >> Use u64 as type for sector address and size to allow using disks up to
-> >> 2 TB without LBD support, and disks larger than 2 TB with LBD. The RBD
-> >> format allows to specify disk sizes up to 2^128 bytes (though native
-> >> OS limitations reduce this somewhat, to max 2^68 bytes), so check for
-> >> u64 overflow carefully to protect against overflowing sector_t.
-> >>
-> >> This bug was reported originally in 2012, and the fix was created by
-> >> the RDB author, Joanne Dow <jdow@earthlink.net>. A patch had been
-> >> discussed and reviewed on linux-m68k at that time but never officially
-> >> submitted (now resubmitted as patch 1 of this series).
-> >>
-> >> Patch 3 (this series) adds additional error checking and warning
-> >> messages. One of the error checks now makes use of the previously
-> >> unused rdb_CylBlocks field, which causes a 'sparse' warning
-> >> (cast to restricted __be32).
-> >>
-> >> Annotate all 32 bit fields in affs_hardblocks.h as __be32, as the
-> >> on-disk format of RDB and partition blocks is always big endian.
-> >>
-> >> Reported-by: Martin Steigerwald <Martin@lichtvoll.de>
-> >> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=43511
-> >> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> >> Message-ID: <201206192146.09327.Martin@lichtvoll.de>
-> >> Cc: <stable@vger.kernel.org> # 5.2
-> >> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-> >> Reviewed-by: Christoph Hellwig <hch@lst.de>
+On Fri, Jun 16, 2023 at 9:54=E2=80=AFPM Yu Zhao <yuzhao@google.com> wrote:
+>
+> On Thu, Jun 15, 2023 at 04:02:43PM -0700, Hugh Dickins wrote:
+> > To keep balance in future, __update_tlb() remember to pte_unmap() after
+> > pte_offset_map().  This is an odd case, since the caller has already do=
+ne
+> > pte_offset_map_lock(), then mips forgets the address and recalculates i=
+t;
+> > but my two naive attempts to clean that up did more harm than good.
 > >
-> > Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > Tested-by: Nathan Chancellor <nathan@kernel.org>
+> > Signed-off-by: Hugh Dickins <hughd@google.com>
 >
-> Thanks - now I notice the patch title for this one doesn't fit too well
-> anymore.
+> FWIW: Tested-by: Yu Zhao <yuzhao@google.com>
 >
-> Would a change of title mess up the common patch tracking tools?
+> There is another problem, likely caused by khugepaged, happened multiple =
+times. But I don't think it's related to your series, just FYI.
+>
+>   Got mcheck at ffffffff81134ef0
+>   CPU: 3 PID: 36 Comm: khugepaged Not tainted 6.4.0-rc6-00049-g62d8779610=
+bb-dirty #1
 
-You mean changing one patch subject in v13?
-Nah, happens all the time, so the tooling should handle that fine.
+...
 
-Gr{oetje,eeting}s,
+>   Kernel panic - not syncing: Caught Machine Check exception - caused by =
+multiple matching entries in the TLB.
 
-                        Geert
+In case anyone plans to try to fix this - the problem goes back to at
+least 5.15 stable. My (educated) guess is that nobody complained about
+it because all the testing is done in QEMU, which does NOT detect
+conflicting TLBs. This means the verification of the fix would need to
+be on a real piece of h/w or an updated QEMU.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+In target/mips/tcg/sysemu/tlb_helper.c:
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+static void r4k_fill_tlb(CPUMIPSState *env, int idx)
+{
+    r4k_tlb_t *tlb;
+    uint64_t mask =3D env->CP0_PageMask >> (TARGET_PAGE_BITS + 1);
+
+    /* XXX: detect conflicting TLBs and raise a MCHECK exception when neede=
+d */
+...
