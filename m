@@ -2,135 +2,191 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE08BEB64D8
-	for <linux-m68k@archiver.kernel.org>; Mon, 19 Jun 2023 02:53:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03593EB64DA
+	for <linux-m68k@archiver.kernel.org>; Mon, 19 Jun 2023 03:57:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229507AbjFSCx6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 18 Jun 2023 22:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54914 "EHLO
+        id S229569AbjFSD5S (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 18 Jun 2023 23:57:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbjFSCx4 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 18 Jun 2023 22:53:56 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0588E4E;
-        Sun, 18 Jun 2023 19:53:54 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1b549e81cecso1643515ad.0;
-        Sun, 18 Jun 2023 19:53:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687143234; x=1689735234;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HcW1VUXTqcSc+mMUauKY0UCtX0Nd8ZbF6k2ii5GYHdA=;
-        b=qZDLkP7m9HtsnGf2OuczgZWOWhpB4CCADkesjrgcg5ZTM1XTBgY8KEjkV4hSmZfoIJ
-         Kid2JeOmMTbAEyfaJxwyD/TBJbo5cg3My76H20uHvPsOvIPmwPPFV96tMe+uinswJ4IZ
-         ZTg+N8eKRzwa3Q/8LLBFBgvqakCwJdh+oRwWaO7JXTpxkY58iw2cHqOqeFhShQDnuQLt
-         9u17/giJOm4BsQ151qK+upIrBOreQUxuMfFe04IbDgU+u51kbCYhcHJVMqCrwhVPbDSh
-         /XHq29LI7WAoTXZ+mNZIwCZSM/1KC2wqmtld1cqU/DIPOnB3geDxwMjJi5ruZKeCkPrW
-         MuxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687143234; x=1689735234;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=HcW1VUXTqcSc+mMUauKY0UCtX0Nd8ZbF6k2ii5GYHdA=;
-        b=UPyTESzqDdtCvR6TkKDDoiUu4ZmaLWOBOM/gXo2UbDArcZnz6maYGNe8AHTEwx9Rzf
-         HZCV4FR8TTjJ3hFyb0Sq3ZNx2NNtWwS5YrzeUQGaedxcNzEfPg4rY9IKOvZBIPntHpPG
-         ilEdXr+IU3vKcI16c47C2rwaDgZK9t2kGdnfYA3iUVeTAOj4B+V75YFXGdeDg5nW9mSi
-         UHC19EVtAY2t4CMBhY67bkNcS/NnvuJzVnKtHPbFLwipaK/biM+8VBGjSyBWoJ9KD2+6
-         lVIPUimEABbK2y27Pum3pKbP1V2or5O7wdAaeGgXvaihs8uSbF82WE7tcaFMv4Fnou1n
-         8IIQ==
-X-Gm-Message-State: AC+VfDzWkybYig5NO+LzjtXo96lMK5MQqqETZNFqj9mPThGZsTQEvJj+
-        /3o518+4B45+NttTRAjDvLkZq5QVufQ=
-X-Google-Smtp-Source: ACHHUZ4sug0G5UmyVJCVoN+6pnic1syO1JLx7pj9HnnqDKeHP35kdVDp18umy8bDO80CO482avnPHQ==
-X-Received: by 2002:a17:902:e848:b0:1b5:49fc:e336 with SMTP id t8-20020a170902e84800b001b549fce336mr1885019plg.42.1687143233794;
-        Sun, 18 Jun 2023 19:53:53 -0700 (PDT)
-Received: from [10.1.1.24] (222-152-217-2-adsl.sparkbb.co.nz. [222.152.217.2])
-        by smtp.gmail.com with ESMTPSA id i9-20020a17090332c900b0019e60c645b1sm10805337plr.305.2023.06.18.19.53.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 18 Jun 2023 19:53:53 -0700 (PDT)
-Subject: Re: [PATCH v12 2/3] block: change annotation of rdb_CylBlocks in
- affs_hardblocks.h
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-References: <20230616223616.6002-1-schmitzmic@gmail.com>
- <20230616223616.6002-3-schmitzmic@gmail.com>
- <CAMuHMdXo+Za3_Bz-PaLhq_oZzEzkN=g5YyDp=vaX7485WuE=Cg@mail.gmail.com>
- <e29dcf24-367f-4304-9b01-7913e0dcf650@gmail.com>
- <CAMuHMdUHNGKP4jFM7CDhFxHWd+SR4GG6Co0PosLCk1qpBV176w@mail.gmail.com>
-Cc:     linux-block@vger.kernel.org, axboe@kernel.dk,
-        linux-m68k@vger.kernel.org, hch@lst.de, martin@lichtvoll.de,
-        fthain@linux-m68k.org, stable@vger.kernel.org
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <d4c2a542-f8ce-2aef-805b-d5fc3091e30a@gmail.com>
-Date:   Mon, 19 Jun 2023 14:53:45 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        with ESMTP id S229481AbjFSD5R (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sun, 18 Jun 2023 23:57:17 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF4F5C5;
+        Sun, 18 Jun 2023 20:57:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1687146949; x=1687751749; i=deller@gmx.de;
+ bh=2fndrLIH+tdYpXaN3a+B2+gpkPc6UJVTkZbYPRfVVB8=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=tHEzjmtG0VENHAd2DsNX0VdgvhB3svy7eaGOu9NFOvFGhn1vMbEvw1DJ+6Ro8SfR+zYO8Jk
+ oQyuTgSliiEbg8vZLpHgVzlyXTGg39KCzCetFU2QY1sIGcgFZePrwHb9ybGVXL+myxIM7zyFW
+ vutzWxYp5k3P7CbcRS0bdRBQ3OV2xelDwHz+H2/Evbu2z8c/2sLPc4ox6wVqaIps6PKmnyug3
+ Uh162w8Lsy86g+eUKl1+1tWZwxCjWi6j5hYhUWVVAHRKRfHvDjtn4aElpEf0t4RvU0/z6Fz8/
+ PwGLztv0XjhmK7HYbqINh4rNCYiEBBtnOqKRgIMD0/NnASTKw8BA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.60] ([94.134.148.114]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1My36N-1ptYsd3hol-00zXMS; Mon, 19
+ Jun 2023 05:55:49 +0200
+Message-ID: <2f5a3805-b7a5-1c45-e5a4-e273ea289ba6@gmx.de>
+Date:   Mon, 19 Jun 2023 05:55:42 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdUHNGKP4jFM7CDhFxHWd+SR4GG6Co0PosLCk1qpBV176w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v2 08/23] parisc: add pte_unmap() to balance get_ptep()
+Content-Language: en-US
+To:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        John David Anglin <dave.anglin@bell.net>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <a4963be9-7aa6-350-66d0-2ba843e1af44@google.com>
+ <653369-95ef-acd2-d6ea-e95f5a997493@google.com>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <653369-95ef-acd2-d6ea-e95f5a997493@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:E3xdg5CpQcjOoKW8Y56OwqWPK69wZz6OC3pXUq5sC4koD4vx6TE
+ 8yx7mlAVEcBGQCbXtdVKp5UUdnr/61/KwgdLsdsCeafoXWrwMUBr6cWiQIGAUgINT3sBkXj
+ YUQ+i02IXhG0ZBE1C7Dv9zl3aVQVXzwfFiVekkVC97MGOBsK+OwPv4gKZzvDYcrI9sx6vlb
+ RKMhNKB17Raa0wGb+9IJg==
+UI-OutboundReport: notjunk:1;M01:P0:f2v0q5B++HE=;Da2Hd/q80C0hblRDasa115R7ipH
+ ITP+kxg7e8qZRipjLb6CGqyHPdG/Zhb8pEJIpXAWFU3ar1yt+BeqPp25z1tD2fgQoomDBafSI
+ T2JI0cHyhX9oBPPhCH37HzO5OqjXai1apVVEetq9P184N6g33p3cSDDZYP4I6GoLDN9DvQEFu
+ QGd3zrkWkqEmZ6Vad/7T9wzoz6Iy73Cj+YnQUayxP/WmDRLwi5RNxp1O83PFQIH+w3CKE1EWO
+ 23kOMxcrgAD7YqjQU4alZc4K1Phuaj4FBExhBg+66ocbKtD9nfb6PZRuchNLX/Q5VmxOlBfea
+ +unhX9xz0F4yej82C9a9Ahzf2WFmqaqduJ4GfxBBVMpA2OodPCXovgqDmB1veKiq8vZA6X5yk
+ wU+Jcnh+QmfWXd/xL82C8EjAYdwJcDg+eEk6he/T2BpLkdrJqvUsbwmL1s6vm3h2xfZdv9HjP
+ HDqKexAwIHyONgbwbztyEJNTMjILHQtvalYaPHd4cLJWdj/f+xdGeWpPd11qIZv0pNRC6RmzG
+ BMRyfjmCQkvWDZio/DHwSQ9i0PRIQ+8+VjmSj1b6Y6CsaT5/J9RXXe4kiJxSG4snZdzRGYY2O
+ 4McI1b8tXhq5e63I/ekb0ajHKJ5Bor2QBVqDM68FKmYbJv/bR6oV8WIMMsLewJ2LUtXAfXAbu
+ x/EEjEq7JGtus66za+aX5Yazu6PYy0EIzEn+QO1Pnloxqaq1TITSpEEXtzuFrLPYbW8qHKqNl
+ aMzyEK7bpqATAUqTeGQYGs5kvHwxHgsW47YV5D9G3+QzisWw4SSUG2zUA0IqSI6i/fK/bZUUg
+ 9s7lXJW9HE6ObKs8Fk2cZGz0H9VAEPLoLgBcumMBsPE0yNFDqFiHwKmbJ24rQM7wtujiIH8eg
+ Du+92nPxZgAKb8/YuRr6Rozc58x213b7vXjIz4uu3TcvqL6TMGK4B5hLfnDu5CfN3qfqxkdKR
+ hKk8rTZjPetTc5al7ev4qbwvKGA=
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
-
-Am 18.06.2023 um 19:51 schrieb Geert Uytterhoeven:
-> Hi Michael,
+On 6/8/23 21:18, Hugh Dickins wrote:
+> To keep balance in future, remember to pte_unmap() after a successful
+> get_ptep().  And act as if flush_cache_pages() really needs a map there,
+> to read the pfn before "unmapping", to be sure page table is not removed=
+.
 >
-> On Sun, Jun 18, 2023 at 5:10 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
->> Am 17.06.2023 um 23:08 schrieb Geert Uytterhoeven:
->>> On Sat, Jun 17, 2023 at 12:36 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
->>>> The Amiga partition parser module uses signed int for partition sector
->>>> address and count, which will overflow for disks larger than 1 TB.
->>>>
->>>> Use u64 as type for sector address and size to allow using disks up to
->>>> 2 TB without LBD support, and disks larger than 2 TB with LBD. The RBD
->>>> format allows to specify disk sizes up to 2^128 bytes (though native
->>>> OS limitations reduce this somewhat, to max 2^68 bytes), so check for
->>>> u64 overflow carefully to protect against overflowing sector_t.
->>>>
->>>> This bug was reported originally in 2012, and the fix was created by
->>>> the RDB author, Joanne Dow <jdow@earthlink.net>. A patch had been
->>>> discussed and reviewed on linux-m68k at that time but never officially
->>>> submitted (now resubmitted as patch 1 of this series).
->>>>
->>>> Patch 3 (this series) adds additional error checking and warning
->>>> messages. One of the error checks now makes use of the previously
->>>> unused rdb_CylBlocks field, which causes a 'sparse' warning
->>>> (cast to restricted __be32).
->>>>
->>>> Annotate all 32 bit fields in affs_hardblocks.h as __be32, as the
->>>> on-disk format of RDB and partition blocks is always big endian.
->>>>
->>>> Reported-by: Martin Steigerwald <Martin@lichtvoll.de>
->>>> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=43511
->>>> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
->>>> Message-ID: <201206192146.09327.Martin@lichtvoll.de>
->>>> Cc: <stable@vger.kernel.org> # 5.2
->>>> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
->>>> Reviewed-by: Christoph Hellwig <hch@lst.de>
->>>
->>> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
->>
->> Thanks - now I notice the patch title for this one doesn't fit too well
->> anymore.
->>
->> Would a change of title mess up the common patch tracking tools?
+> Signed-off-by: Hugh Dickins <hughd@google.com>
+
+For the parisc parts:
+
+Acked-by: Helge Deller <deller@gmx.de> # parisc
+
+Helge
+
+
+> ---
+>   arch/parisc/kernel/cache.c | 26 +++++++++++++++++++++-----
+>   1 file changed, 21 insertions(+), 5 deletions(-)
 >
-> You mean changing one patch subject in v13?
-
-Correct.
-
-> Nah, happens all the time, so the tooling should handle that fine.
-
-OK - I need to add your review tag anyway.
-
-Cheers,
-
-	Michael
+> diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
+> index ca4a302d4365..501160250bb7 100644
+> --- a/arch/parisc/kernel/cache.c
+> +++ b/arch/parisc/kernel/cache.c
+> @@ -426,10 +426,15 @@ void flush_dcache_page(struct page *page)
+>   		offset =3D (pgoff - mpnt->vm_pgoff) << PAGE_SHIFT;
+>   		addr =3D mpnt->vm_start + offset;
+>   		if (parisc_requires_coherency()) {
+> +			bool needs_flush =3D false;
+>   			pte_t *ptep;
 >
-> Gr{oetje,eeting}s,
+>   			ptep =3D get_ptep(mpnt->vm_mm, addr);
+> -			if (ptep && pte_needs_flush(*ptep))
+> +			if (ptep) {
+> +				needs_flush =3D pte_needs_flush(*ptep);
+> +				pte_unmap(ptep);
+> +			}
+> +			if (needs_flush)
+>   				flush_user_cache_page(mpnt, addr);
+>   		} else {
+>   			/*
+> @@ -561,14 +566,20 @@ EXPORT_SYMBOL(flush_kernel_dcache_page_addr);
+>   static void flush_cache_page_if_present(struct vm_area_struct *vma,
+>   	unsigned long vmaddr, unsigned long pfn)
+>   {
+> -	pte_t *ptep =3D get_ptep(vma->vm_mm, vmaddr);
+> +	bool needs_flush =3D false;
+> +	pte_t *ptep;
 >
->                         Geert
+>   	/*
+>   	 * The pte check is racy and sometimes the flush will trigger
+>   	 * a non-access TLB miss. Hopefully, the page has already been
+>   	 * flushed.
+>   	 */
+> -	if (ptep && pte_needs_flush(*ptep))
+> +	ptep =3D get_ptep(vma->vm_mm, vmaddr);
+> +	if (ptep) {
+> +		needs_flush =3D pte_needs_flush(*ptep);
+> +		pte_unmap(ptep);
+> +	}
+> +	if (needs_flush)
+>   		flush_cache_page(vma, vmaddr, pfn);
+>   }
 >
+> @@ -635,17 +646,22 @@ static void flush_cache_pages(struct vm_area_struc=
+t *vma, unsigned long start, u
+>   	pte_t *ptep;
+>
+>   	for (addr =3D start; addr < end; addr +=3D PAGE_SIZE) {
+> +		bool needs_flush =3D false;
+>   		/*
+>   		 * The vma can contain pages that aren't present. Although
+>   		 * the pte search is expensive, we need the pte to find the
+>   		 * page pfn and to check whether the page should be flushed.
+>   		 */
+>   		ptep =3D get_ptep(vma->vm_mm, addr);
+> -		if (ptep && pte_needs_flush(*ptep)) {
+> +		if (ptep) {
+> +			needs_flush =3D pte_needs_flush(*ptep);
+> +			pfn =3D pte_pfn(*ptep);
+> +			pte_unmap(ptep);
+> +		}
+> +		if (needs_flush) {
+>   			if (parisc_requires_coherency()) {
+>   				flush_user_cache_page(vma, addr);
+>   			} else {
+> -				pfn =3D pte_pfn(*ptep);
+>   				if (WARN_ON(!pfn_valid(pfn)))
+>   					return;
+>   				__flush_cache_page(vma, addr, PFN_PHYS(pfn));
+
