@@ -2,151 +2,148 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFD99C001DE
-	for <linux-m68k@archiver.kernel.org>; Tue, 20 Jun 2023 20:01:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 659BEEB64D7
+	for <linux-m68k@archiver.kernel.org>; Tue, 20 Jun 2023 20:18:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbjFTUBy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 20 Jun 2023 16:01:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42716 "EHLO
+        id S230354AbjFTUSS (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 20 Jun 2023 16:18:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjFTUBx (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 20 Jun 2023 16:01:53 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F511728
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 20 Jun 2023 13:01:50 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6b58439a892so1934189a34.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 20 Jun 2023 13:01:50 -0700 (PDT)
+        with ESMTP id S230203AbjFTUSF (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 20 Jun 2023 16:18:05 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D81131BEA;
+        Tue, 20 Jun 2023 13:17:34 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1b539d2f969so29752455ad.0;
+        Tue, 20 Jun 2023 13:17:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687291309; x=1689883309;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q4F3qXm8x1AVi+0TrKGx40m/sFxYrt6Lj9IeE/BrpeU=;
-        b=g8Wha6YZBIQ4F35wQ8P6Y0c98+3LfOEjAen8YviDIN/VpMlvLwu/TwEQtEhwi2wLbk
-         4/b97qENpIhbKycIE1G3aUVCeb+vz/rCN/gI0l10ch7iG8C6c3ywB5bQ5tQe6ryGYXul
-         5XkEWnvnLWIaJ1vsJQRh6tPgKWpuL7AyPHBFZQZGhCATWoDKR1D2YRUNFvvEx6dCnM6X
-         zMyQcs2OOhmWkXYBbd2Z3eHBKxjZIMZIeFLBGw0YYdvfY15fMS5Ra2rC/awJj+k/fir6
-         OMXeho7/p64d1/Gcc6dtEtZlx65PVhnR78rxvmM8tH1fn8015FZgY0Ml6WWkfDm6BXzA
-         dR7g==
+        d=gmail.com; s=20221208; t=1687292253; x=1689884253;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=+6UCFNg4ScFWTGZ3Vx9Eu23SfSzKM8aQG3DQ2QqYdjs=;
+        b=R0LonCNXLmUPqGHBYylagYDafMHdO5iO4h8sdlp3ecgHQAQ1poSKFZn3eNF7uRly5C
+         T2V8ecsGMhBY+0ui71nxIhMNfDZ2a8LRhZs7Znn3bMAE7VCaakhkOw3ExvrvoJ92VBGU
+         B2u9828FxLFdkhXgu+3NppAdRG+M5+dfWnP52WHB2pcl2oi+6slYodmVgoHjZkOg3I6A
+         TzYNbzMaOgLG2Rdv0DqHqfZm/DyH5GCYsi/CVd28Oa+3/uQ6FdcEbd6wo1jLn63hIpuM
+         CTuZzymoOqBSvYpb87nOCy/jK08IRImbFH2ntu9072LBtEQqawY3U+yzj88o996Yq0Xq
+         SCLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687291309; x=1689883309;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q4F3qXm8x1AVi+0TrKGx40m/sFxYrt6Lj9IeE/BrpeU=;
-        b=J+LE8qwvi/yZpwlfijS/uZdyoG/+P/iFlQoggUMMndPGDtNrO3dTMoMyQO8396epdz
-         +490oOAAHOCBgFZqrsf8uExYOl1bS6PpUj/PwYRFq5VP78mPWBXCfjA+SBUxAo8iZedA
-         BxYGAd+7FmePi55g3nKLLzdk0h1uQd4YxkNLaJrtBz+kOVBWPjmfB8qHj8fM2BuKgy2A
-         eTRhgS1w+gs4y0Q+TY5uN2fTu3jgu1eItQEnH3T7EPb+rbT+6BJ28QLDm2W4bUkKMFL+
-         ve1XL3KXYfnRBUAFC/bzt2ReC+lFgrpjxhlh2dj4vCybX0a/TWbRRHzEBmP7sOqzKHuP
-         b1mg==
-X-Gm-Message-State: AC+VfDzPChypBtocDenva2HLFDf2Vx/jmp5Tcpe6jCih9A3WDLn2bG2e
-        u4LprWwMXUkLzXbxNmKnjTO88Q7NG+QHcgr8e+I=
-X-Google-Smtp-Source: ACHHUZ4Hj3uSYs4sk8lvmBdlBVPXrs6qDttIob0+AqgPuiIWdgPfm9A1hihEUgTK87y6a2gHhIBkt791vtKGzbzprm8=
-X-Received: by 2002:a05:6358:f0e:b0:12b:ed05:18bb with SMTP id
- b14-20020a0563580f0e00b0012bed0518bbmr8612256rwj.27.1687291309110; Tue, 20
- Jun 2023 13:01:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230612210423.18611-1-vishal.moola@gmail.com>
- <20230612210423.18611-5-vishal.moola@gmail.com> <ZIxXw9ERkYv+ipdd@nvidia.com>
-In-Reply-To: <ZIxXw9ERkYv+ipdd@nvidia.com>
-From:   Vishal Moola <vishal.moola@gmail.com>
-Date:   Tue, 20 Jun 2023 13:01:39 -0700
-Message-ID: <CAOzc2pwMW64O0m4Zu4zVFTY+qCJRK7V+7niN_t1m7pLaJrtb2A@mail.gmail.com>
-Subject: Re: [PATCH v4 04/34] pgtable: Create struct ptdesc
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
-        Hugh Dickins <hughd@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        d=1e100.net; s=20221208; t=1687292253; x=1689884253;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+6UCFNg4ScFWTGZ3Vx9Eu23SfSzKM8aQG3DQ2QqYdjs=;
+        b=kOX9lvGVB0rX3GW1Dq9a948u7SMsDh4GFZrzh69/lF+XbCUTy3lA5DbpQMcccnMx7z
+         FcdmaV6nMKcgDtKHlQKt/YnSbZ53MyCxoaaOz+73fGXFxtngTizf923gXFbk9zcpxKBS
+         p9Otn0cAe55rxdr9QXCyRsvC+gn2LksyLU15qB4vvhrjwVRagttjkmloVV8ez62hGZrm
+         mS0K/y7W959gseqzrZirGb6PHVshENvMJaXD2W9dtYyeUnOTmh29199Rh4QlJdJHfRgL
+         AjLgTVXwZ3hQnrkSNNcAvPblkv5BawttVYe3zxTC3BJD6BVEWZ5E53WPD+lJQYXMagMd
+         SbDA==
+X-Gm-Message-State: AC+VfDwZN2wxrlZ9MKJe0zzeU91Fh/n3o3htnR4GJkaeF3Ar4M2vG6xs
+        97+sangFQ68J1zLM9rUe1kE=
+X-Google-Smtp-Source: ACHHUZ4U3Yo0Sk7r11zdKI8hnnbWTGfS94nYBh96Fjq8uhWgDK9EEBqkZspSNgBbCVqvzwm6B1LRhg==
+X-Received: by 2002:a17:902:ec85:b0:1b0:f31:a386 with SMTP id x5-20020a170902ec8500b001b00f31a386mr29052751plg.26.1687292252600;
+        Tue, 20 Jun 2023 13:17:32 -0700 (PDT)
+Received: from xplor.waratah.dyndns.org (222-152-217-2-adsl.sparkbb.co.nz. [222.152.217.2])
+        by smtp.gmail.com with ESMTPSA id g9-20020a170902740900b001b54a88e6adsm1960939pll.309.2023.06.20.13.17.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Jun 2023 13:17:31 -0700 (PDT)
+Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
+        id A37843603D9; Wed, 21 Jun 2023 08:17:28 +1200 (NZST)
+From:   Michael Schmitz <schmitzmic@gmail.com>
+To:     linux-block@vger.kernel.org, axboe@kernel.dk
+Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org, hch@lst.de,
+        martin@lichtvoll.de, fthain@linux-m68k.org,
+        Michael Schmitz <schmitzmic@gmail.com>, stable@vger.kernel.org
+Subject: [PATCH v13 1/3] block: fix signed int overflow in Amiga partition support
+Date:   Wed, 21 Jun 2023 08:17:23 +1200
+Message-Id: <20230620201725.7020-2-schmitzmic@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230620201725.7020-1-schmitzmic@gmail.com>
+References: <20230620201725.7020-1-schmitzmic@gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Jun 16, 2023 at 5:38=E2=80=AFAM Jason Gunthorpe <jgg@nvidia.com> wr=
-ote:
->
-> On Mon, Jun 12, 2023 at 02:03:53PM -0700, Vishal Moola (Oracle) wrote:
-> > Currently, page table information is stored within struct page. As part
-> > of simplifying struct page, create struct ptdesc for page table
-> > information.
-> >
-> > Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
-> > ---
-> >  include/linux/pgtable.h | 51 +++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 51 insertions(+)
-> >
-> > diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> > index c5a51481bbb9..330de96ebfd6 100644
-> > --- a/include/linux/pgtable.h
-> > +++ b/include/linux/pgtable.h
-> > @@ -975,6 +975,57 @@ static inline void ptep_modify_prot_commit(struct =
-vm_area_struct *vma,
-> >  #endif /* __HAVE_ARCH_PTEP_MODIFY_PROT_TRANSACTION */
-> >  #endif /* CONFIG_MMU */
-> >
-> > +
-> > +/**
-> > + * struct ptdesc - Memory descriptor for page tables.
-> > + * @__page_flags: Same as page flags. Unused for page tables.
-> > + * @pt_list: List of used page tables. Used for s390 and x86.
-> > + * @_pt_pad_1: Padding that aliases with page's compound head.
-> > + * @pmd_huge_pte: Protected by ptdesc->ptl, used for THPs.
-> > + * @_pt_s390_gaddr: Aliases with page's mapping. Used for s390 gmap on=
-ly.
-> > + * @pt_mm: Used for x86 pgds.
-> > + * @pt_frag_refcount: For fragmented page table tracking. Powerpc and =
-s390 only.
-> > + * @ptl: Lock for the page table.
-> > + *
-> > + * This struct overlays struct page for now. Do not modify without a g=
-ood
-> > + * understanding of the issues.
-> > + */
-> > +struct ptdesc {
-> > +     unsigned long __page_flags;
-> > +
-> > +     union {
-> > +             struct list_head pt_list;
-> > +             struct {
-> > +                     unsigned long _pt_pad_1;
-> > +                     pgtable_t pmd_huge_pte;
-> > +             };
-> > +     };
-> > +     unsigned long _pt_s390_gaddr;
-> > +
-> > +     union {
-> > +             struct mm_struct *pt_mm;
-> > +             atomic_t pt_frag_refcount;
-> > +     };
-> > +
-> > +#if ALLOC_SPLIT_PTLOCKS
-> > +     spinlock_t *ptl;
-> > +#else
-> > +     spinlock_t ptl;
-> > +#endif
-> > +};
->
-> I think you should include the memcg here too? It needs to be valid
-> for a ptdesc, even if we don't currently deref it through the ptdesc
-> type.
+The Amiga partition parser module uses signed int for partition sector
+address and count, which will overflow for disks larger than 1 TB.
 
-Yes, thanks for catching that! I'll add it to v5.
+Use sector_t as type for sector address and size to allow using disks
+up to 2 TB without LBD support, and disks larger than 2 TB with LBD.
 
-> Also, do you see a way to someday put a 'struct rcu_head' into here?
+This bug was reported originally in 2012, and the fix was created by
+the RDB author, Joanne Dow <jdow@earthlink.net>. A patch had been
+discussed and reviewed on linux-m68k at that time but never officially
+submitted. This patch differs from Joanne's patch only in its use of
+sector_t instead of unsigned int. No checking for overflows is done
+(see patch 3 of this series for that).
 
-Eventually, when they're being dynamically allocated independent of
-struct page. Although at that point I'm not sure if we'll need one.
+Reported-by: Martin Steigerwald <Martin@lichtvoll.de>
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=43511
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Message-ID: <201206192146.09327.Martin@lichtvoll.de>
+Cc: <stable@vger.kernel.org> # 5.2
+Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+Tested-by: Martin Steigerwald <Martin@lichtvoll.de>
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-> Thanks,
-> Jason
+---
+
+Changes from v3:
+
+- split off change of sector address type as quick fix.
+- cast to sector_t in sector address calculations.
+- move overflow checking to separate patch for more thorough review.
+
+Changes from v4:
+
+Andreas Schwab:
+- correct cast to sector_t in sector address calculations
+
+Changes from v7:
+
+Christoph Hellwig
+- correct style issues
+
+Changes from v9:
+
+- add Fixes: tags and stable backport prereq
+---
+ block/partitions/amiga.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/block/partitions/amiga.c b/block/partitions/amiga.c
+index 5c8624e26a54..85c5c79aae48 100644
+--- a/block/partitions/amiga.c
++++ b/block/partitions/amiga.c
+@@ -31,7 +31,8 @@ int amiga_partition(struct parsed_partitions *state)
+ 	unsigned char *data;
+ 	struct RigidDiskBlock *rdb;
+ 	struct PartitionBlock *pb;
+-	int start_sect, nr_sects, blk, part, res = 0;
++	sector_t start_sect, nr_sects;
++	int blk, part, res = 0;
+ 	int blksize = 1;	/* Multiplier for disk block size */
+ 	int slot = 1;
+ 
+@@ -96,14 +97,14 @@ int amiga_partition(struct parsed_partitions *state)
+ 
+ 		/* Tell Kernel about it */
+ 
+-		nr_sects = (be32_to_cpu(pb->pb_Environment[10]) + 1 -
+-			    be32_to_cpu(pb->pb_Environment[9])) *
++		nr_sects = ((sector_t)be32_to_cpu(pb->pb_Environment[10]) + 1 -
++			   be32_to_cpu(pb->pb_Environment[9])) *
+ 			   be32_to_cpu(pb->pb_Environment[3]) *
+ 			   be32_to_cpu(pb->pb_Environment[5]) *
+ 			   blksize;
+ 		if (!nr_sects)
+ 			continue;
+-		start_sect = be32_to_cpu(pb->pb_Environment[9]) *
++		start_sect = (sector_t)be32_to_cpu(pb->pb_Environment[9]) *
+ 			     be32_to_cpu(pb->pb_Environment[3]) *
+ 			     be32_to_cpu(pb->pb_Environment[5]) *
+ 			     blksize;
+-- 
+2.17.1
+
