@@ -2,53 +2,54 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AC4FC04E69
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 862ACC04FE2
 	for <linux-m68k@archiver.kernel.org>; Thu, 22 Jun 2023 20:58:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229832AbjFVU6p (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 22 Jun 2023 16:58:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48982 "EHLO
+        id S231294AbjFVU6q (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 22 Jun 2023 16:58:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231294AbjFVU6l (ORCPT
+        with ESMTP id S231330AbjFVU6n (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 22 Jun 2023 16:58:41 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 937CB2686
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 22 Jun 2023 13:58:02 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-bf5f41a87ceso4111483276.1
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 22 Jun 2023 13:58:02 -0700 (PDT)
+        Thu, 22 Jun 2023 16:58:43 -0400
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6113B2699
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 22 Jun 2023 13:58:05 -0700 (PDT)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5728df0a7d9so67490357b3.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 22 Jun 2023 13:58:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687467476; x=1690059476;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q4Ig2n4cGI8BP25CqcNRq43JhOmkIIdJVFlb5elIpOA=;
-        b=mqvv9g7FTX6YZrTAez67m8G0SADgQWX+ct2Q2ktq+TbKMG/cOnFNL1HUEejNSN9nds
-         9vEK9L2HpCPHz3mnLHm7QE7bazoap9KPjRBuUT4kw6MBU7tHylSDou09veevPp+Qm5tI
-         J6+0hmA98DudaYxzAoNczqxDp5g6z2tqapGcR3NSEAPAgqMiM1eNh+iIzBq7ayejKjj9
-         5MP9SwhVaQTCo1G312fdQXe7vTjboPcFBobNzdFt65RtUbRTWvFRUfh7ZZb+Tak5rboQ
-         uGsNAcBwqdQTtsTo7UoikA/hvdu33PxWnma34tmu5wLmqc0vL2bNnLhMWuiaLjOulKtx
-         4JUQ==
+        d=gmail.com; s=20221208; t=1687467478; x=1690059478;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DXYENedStYVsFXpaqy8X3+wmlabVR1q8JHyD5+dxFj0=;
+        b=oWqJsihW3Mww2gXtWCx6NN1vPsnSmScA0KqTPfHOB2L1LHk/oZiCduo6ehbRGsj3u1
+         3K4TZcf4ipLxkr2vI99P6IIjGRev7x1HMuDNE81bxWMzhRU6uyioFzTZTsBBM3X8iluN
+         tBK6Y8stl1G/1qCE5N0GQ3Qa+8Pmm+N03Nm44USTvnLt7V5LvALEjdohUoDqU7kxuZLt
+         IgowLw0bUJXUmFP7v8RMzC0EWbABefmvZCJB+fh5ayxmmTYy0RtnueLq29qEPJSsxOpa
+         bu8Ei1mTrJukofeSyNP/F3QTQ4sGlZhg7IWdEGo85alo6ycJggU6oX8hiEo/eX8VwR76
+         IyqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687467476; x=1690059476;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Q4Ig2n4cGI8BP25CqcNRq43JhOmkIIdJVFlb5elIpOA=;
-        b=jboBd69HyOYVdp6s+x+SgBOrg9D655RzfWtP2yZmw1kGG06CWfNaQ5F7/8iVIDaaUU
-         a9SuinnjggsGoZp9lEIK3g+ifZCddMZRryeJ7xZV63SbSQpG/zzfZZGX+mAHPC5aFNaU
-         0/Swj5Ae8OuexKd2+3QBM5GpaloKGry6qKuMJasezUfuhyAYcKkw1rPRPEmI4bL4nxvw
-         J+mOESHDpvHxBFGZQbYfG9QbM34NeJoWH2jAk55gI2U+VKY3nV+S/8DaJUOacTIAlCGT
-         pOozwWanSdpZOo4iztyqepCBf58X2nGqc/oS8znjQNyhye1He3reO6tQS0ULJKDsA8VS
-         uZAw==
-X-Gm-Message-State: AC+VfDzI7pJ+j95znwkuoHpYJl66LGPRwqLdaPnkI8bNc43xRISQSBiT
-        CXuC1Ds/6yoEqnnZVvWm1fo=
-X-Google-Smtp-Source: ACHHUZ5QdSwF+iokSIDxxYwBaWLG1oGIRpritBhsZ3H79UKVTTkrzsNTtfFGV/ude8v+TVUUcB2uCQ==
-X-Received: by 2002:a05:6902:92:b0:bba:558e:df05 with SMTP id h18-20020a056902009200b00bba558edf05mr14486764ybs.10.1687467476004;
-        Thu, 22 Jun 2023 13:57:56 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1687467478; x=1690059478;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DXYENedStYVsFXpaqy8X3+wmlabVR1q8JHyD5+dxFj0=;
+        b=lnse1JfNdgFFODrt0acxaYZeY8a5zEOABqxjzg2AjnughstPmCiTu7D1r/h0LfvqlN
+         HrQr4Et+METXXtcpUqEw56mFNwGI0SEwMyrOlil9NvNUGnxlQ6X7/v5Wz6wHJyL00W3i
+         LUSAEe+zTC4/ilL9YosSIgjnVa0vfDSpvXk8awxmY961iJMSAPT0aY6knCrsFHdiYcZy
+         /aTw9xeiWtLDWabi0X9f3Zz1TDwWnEhFcUjC0pMhKwPPI7KRhC5AuY3BMkCqI2CcVj9Z
+         2gDaxjjOU2sK5bXszwus3CBU7k1LM4/c+K6TkqX6Ej6gGMCZVbmCgXNPykckMeIEZ50j
+         /u2Q==
+X-Gm-Message-State: AC+VfDyCTBDL2glS/oNYFF1cELBoEovxGaH0Z0FjnBQHHY7tHyiM3JgS
+        PDuaLS+3GlC3jRv3UVIGQFo=
+X-Google-Smtp-Source: ACHHUZ6Iv2PzBVPKZ2hNXXGWhZAWkMVnsSNpndVsfJ1BDlCBJeA25OFgV2XyKC6amBhVDhSuupua4g==
+X-Received: by 2002:a25:2fce:0:b0:bac:2a78:aaa7 with SMTP id v197-20020a252fce000000b00bac2a78aaa7mr16148309ybv.54.1687467478063;
+        Thu, 22 Jun 2023 13:57:58 -0700 (PDT)
 Received: from unknowna0e70b2ca394.attlocal.net ([2600:1700:2f7d:1800::36])
-        by smtp.googlemail.com with ESMTPSA id d18-20020a5b0c52000000b00bc501a1b062sm1684937ybr.42.2023.06.22.13.57.53
+        by smtp.googlemail.com with ESMTPSA id d18-20020a5b0c52000000b00bc501a1b062sm1684937ybr.42.2023.06.22.13.57.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jun 2023 13:57:55 -0700 (PDT)
+        Thu, 22 Jun 2023 13:57:57 -0700 (PDT)
 From:   "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>
@@ -62,137 +63,114 @@ Cc:     linux-mm@kvack.org, linux-arch@vger.kernel.org,
         linux-um@lists.infradead.org, xen-devel@lists.xenproject.org,
         kvm@vger.kernel.org, Hugh Dickins <hughd@google.com>,
         "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        David Hildenbrand <david@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Richard Weinberger <richard@nod.at>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v5 00/33] Split ptdesc from struct page
-Date:   Thu, 22 Jun 2023 13:57:12 -0700
-Message-Id: <20230622205745.79707-1-vishal.moola@gmail.com>
+        Mike Rapoport <rppt@kernel.org>
+Subject: [PATCH v5 01/33] mm: Add PAGE_TYPE_OP folio functions
+Date:   Thu, 22 Jun 2023 13:57:13 -0700
+Message-Id: <20230622205745.79707-2-vishal.moola@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230622205745.79707-1-vishal.moola@gmail.com>
+References: <20230622205745.79707-1-vishal.moola@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The MM subsystem is trying to shrink struct page. This patchset
-introduces a memory descriptor for page table tracking - struct ptdesc.
+No folio equivalents for page type operations have been defined, so
+define them for later folio conversions.
 
-This patchset introduces ptdesc, splits ptdesc from struct page, and
-converts many callers of page table constructor/destructors to use ptdescs.
+Also changes the Page##uname macros to take in const struct page* since
+we only read the memory here.
 
-Ptdesc is a foundation to further standardize page tables, and eventually
-allow for dynamic allocation of page tables independent of struct page.
-However, the use of pages for page table tracking is quite deeply
-ingrained and varied across archictectures, so there is still a lot of
-work to be done before that can happen.
+Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
+---
+ include/linux/page-flags.h | 30 +++++++++++++++++++++++-------
+ 1 file changed, 23 insertions(+), 7 deletions(-)
 
-This is rebased on next-20230621.
-
-There is a minor conflict with patch 24 and the mm-unstable tree in
-arch/m68k/mm/motorola.c - The end result of applying the patch should
-be the same.
-
-
-v5:
-  More Acked-bys :)
-  Cleanup some documentation wording and formatting
-  Add pt_rcu_head to ptdesc
-  Add memcg to ptdesc (and align it with struct page)
-  Ensure all get_free_page() callers prohibit HIGHMEM for 32 bit support.
-  Renamed folio_{set, clear}_table() to folio_{set, clear}_pgtable()
-  Removed pagetable_clear() as it is not necessary right now
-  pagetable_free() now sets page->mapping = NULL
-  Dropped s390 _refcount to _pt_frag_refcount conversion patch
-
-Vishal Moola (Oracle) (33):
-  mm: Add PAGE_TYPE_OP folio functions
-  s390: Use _pt_s390_gaddr for gmap address tracking
-  pgtable: Create struct ptdesc
-  mm: add utility functions for ptdesc
-  mm: Convert pmd_pgtable_page() to pmd_ptdesc()
-  mm: Convert ptlock_alloc() to use ptdescs
-  mm: Convert ptlock_ptr() to use ptdescs
-  mm: Convert pmd_ptlock_init() to use ptdescs
-  mm: Convert ptlock_init() to use ptdescs
-  mm: Convert pmd_ptlock_free() to use ptdescs
-  mm: Convert ptlock_free() to use ptdescs
-  mm: Create ptdesc equivalents for pgtable_{pte,pmd}_page_{ctor,dtor}
-  powerpc: Convert various functions to use ptdescs
-  x86: Convert various functions to use ptdescs
-  s390: Convert various gmap functions to use ptdescs
-  s390: Convert various pgalloc functions to use ptdescs
-  mm: Remove page table members from struct page
-  pgalloc: Convert various functions to use ptdescs
-  arm: Convert various functions to use ptdescs
-  arm64: Convert various functions to use ptdescs
-  csky: Convert __pte_free_tlb() to use ptdescs
-  hexagon: Convert __pte_free_tlb() to use ptdescs
-  loongarch: Convert various functions to use ptdescs
-  m68k: Convert various functions to use ptdescs
-  mips: Convert various functions to use ptdescs
-  nios2: Convert __pte_free_tlb() to use ptdescs
-  openrisc: Convert __pte_free_tlb() to use ptdescs
-  riscv: Convert alloc_{pmd, pte}_late() to use ptdescs
-  sh: Convert pte_free_tlb() to use ptdescs
-  sparc64: Convert various functions to use ptdescs
-  sparc: Convert pgtable_pte_page_{ctor, dtor}() to ptdesc equivalents
-  um: Convert {pmd, pte}_free_tlb() to use ptdescs
-  mm: Remove pgtable_{pmd, pte}_page_{ctor, dtor}() wrappers
-
- Documentation/mm/split_page_table_lock.rst    |  12 +-
- .../zh_CN/mm/split_page_table_lock.rst        |  14 +-
- arch/arm/include/asm/tlb.h                    |  12 +-
- arch/arm/mm/mmu.c                             |   7 +-
- arch/arm64/include/asm/tlb.h                  |  14 +-
- arch/arm64/mm/mmu.c                           |   7 +-
- arch/csky/include/asm/pgalloc.h               |   4 +-
- arch/hexagon/include/asm/pgalloc.h            |   8 +-
- arch/loongarch/include/asm/pgalloc.h          |  27 ++-
- arch/loongarch/mm/pgtable.c                   |   7 +-
- arch/m68k/include/asm/mcf_pgalloc.h           |  43 ++--
- arch/m68k/include/asm/sun3_pgalloc.h          |   8 +-
- arch/m68k/mm/motorola.c                       |   4 +-
- arch/mips/include/asm/pgalloc.h               |  32 +--
- arch/mips/mm/pgtable.c                        |   8 +-
- arch/nios2/include/asm/pgalloc.h              |   8 +-
- arch/openrisc/include/asm/pgalloc.h           |   8 +-
- arch/powerpc/mm/book3s64/mmu_context.c        |  10 +-
- arch/powerpc/mm/book3s64/pgtable.c            |  32 +--
- arch/powerpc/mm/pgtable-frag.c                |  46 ++--
- arch/riscv/include/asm/pgalloc.h              |   8 +-
- arch/riscv/mm/init.c                          |  16 +-
- arch/s390/include/asm/pgalloc.h               |   4 +-
- arch/s390/include/asm/tlb.h                   |   4 +-
- arch/s390/mm/gmap.c                           | 207 ++++++++++--------
- arch/s390/mm/pgalloc.c                        | 108 ++++-----
- arch/sh/include/asm/pgalloc.h                 |   9 +-
- arch/sparc/mm/init_64.c                       |  17 +-
- arch/sparc/mm/srmmu.c                         |   5 +-
- arch/um/include/asm/pgalloc.h                 |  18 +-
- arch/x86/mm/pgtable.c                         |  47 ++--
- arch/x86/xen/mmu_pv.c                         |   2 +-
- include/asm-generic/pgalloc.h                 |  88 +++++---
- include/asm-generic/tlb.h                     |  11 +
- include/linux/mm.h                            | 153 +++++++++----
- include/linux/mm_types.h                      |  14 --
- include/linux/page-flags.h                    |  30 ++-
- include/linux/pgtable.h                       |  77 +++++++
- mm/memory.c                                   |   8 +-
- 39 files changed, 684 insertions(+), 453 deletions(-)
-
+diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+index 92a2063a0a23..9218028caf33 100644
+--- a/include/linux/page-flags.h
++++ b/include/linux/page-flags.h
+@@ -908,6 +908,8 @@ static inline bool is_page_hwpoison(struct page *page)
+ 
+ #define PageType(page, flag)						\
+ 	((page->page_type & (PAGE_TYPE_BASE | flag)) == PAGE_TYPE_BASE)
++#define folio_test_type(folio, flag)					\
++	((folio->page.page_type & (PAGE_TYPE_BASE | flag)) == PAGE_TYPE_BASE)
+ 
+ static inline int page_type_has_type(unsigned int page_type)
+ {
+@@ -919,27 +921,41 @@ static inline int page_has_type(struct page *page)
+ 	return page_type_has_type(page->page_type);
+ }
+ 
+-#define PAGE_TYPE_OPS(uname, lname)					\
+-static __always_inline int Page##uname(struct page *page)		\
++#define PAGE_TYPE_OPS(uname, lname, fname)				\
++static __always_inline int Page##uname(const struct page *page)		\
+ {									\
+ 	return PageType(page, PG_##lname);				\
+ }									\
++static __always_inline int folio_test_##fname(const struct folio *folio)\
++{									\
++	return folio_test_type(folio, PG_##lname);			\
++}									\
+ static __always_inline void __SetPage##uname(struct page *page)		\
+ {									\
+ 	VM_BUG_ON_PAGE(!PageType(page, 0), page);			\
+ 	page->page_type &= ~PG_##lname;					\
+ }									\
++static __always_inline void __folio_set_##fname(struct folio *folio)	\
++{									\
++	VM_BUG_ON_FOLIO(!folio_test_type(folio, 0), folio);		\
++	folio->page.page_type &= ~PG_##lname;				\
++}									\
+ static __always_inline void __ClearPage##uname(struct page *page)	\
+ {									\
+ 	VM_BUG_ON_PAGE(!Page##uname(page), page);			\
+ 	page->page_type |= PG_##lname;					\
+-}
++}									\
++static __always_inline void __folio_clear_##fname(struct folio *folio)	\
++{									\
++	VM_BUG_ON_FOLIO(!folio_test_##fname(folio), folio);		\
++	folio->page.page_type |= PG_##lname;				\
++}									\
+ 
+ /*
+  * PageBuddy() indicates that the page is free and in the buddy system
+  * (see mm/page_alloc.c).
+  */
+-PAGE_TYPE_OPS(Buddy, buddy)
++PAGE_TYPE_OPS(Buddy, buddy, buddy)
+ 
+ /*
+  * PageOffline() indicates that the page is logically offline although the
+@@ -963,7 +979,7 @@ PAGE_TYPE_OPS(Buddy, buddy)
+  * pages should check PageOffline() and synchronize with such drivers using
+  * page_offline_freeze()/page_offline_thaw().
+  */
+-PAGE_TYPE_OPS(Offline, offline)
++PAGE_TYPE_OPS(Offline, offline, offline)
+ 
+ extern void page_offline_freeze(void);
+ extern void page_offline_thaw(void);
+@@ -973,12 +989,12 @@ extern void page_offline_end(void);
+ /*
+  * Marks pages in use as page tables.
+  */
+-PAGE_TYPE_OPS(Table, table)
++PAGE_TYPE_OPS(Table, table, pgtable)
+ 
+ /*
+  * Marks guardpages used with debug_pagealloc.
+  */
+-PAGE_TYPE_OPS(Guard, guard)
++PAGE_TYPE_OPS(Guard, guard, guard)
+ 
+ extern bool is_free_buddy_page(struct page *page);
+ 
 -- 
 2.40.1
 
