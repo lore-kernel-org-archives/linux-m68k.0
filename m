@@ -2,120 +2,140 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3AFEEB64D7
-	for <linux-m68k@archiver.kernel.org>; Fri, 23 Jun 2023 11:42:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51C00C001DE
+	for <linux-m68k@archiver.kernel.org>; Sat, 24 Jun 2023 01:55:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229673AbjFWLmY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 23 Jun 2023 07:42:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37060 "EHLO
+        id S232182AbjFXBzf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 23 Jun 2023 21:55:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjFWLmX (ORCPT
+        with ESMTP id S229616AbjFXBzd (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 23 Jun 2023 07:42:23 -0400
-X-Greylist: delayed 451 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 23 Jun 2023 04:42:22 PDT
-Received: from lug-owl.de (lug-owl.de [IPv6:2a03:4000:10:469::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E5C1987
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 23 Jun 2023 04:42:22 -0700 (PDT)
-Received: by lug-owl.de (Postfix, from userid 1001)
-        id 8BA1A42081; Fri, 23 Jun 2023 13:34:37 +0200 (CEST)
-Date:   Fri, 23 Jun 2023 13:34:37 +0200
-From:   Jan-Benedict Glaw <jbglaw@lug-owl.de>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org,
-        Ben Hutchings <ben@decadent.org.uk>
-Subject: Re: [PATCH] m68k: Fix invalid .section syntax
-Message-ID: <20230623113437.4iqjixlw7eryolqt@lug-owl.de>
-References: <ZIyBaueWT9jnTwRC@decadent.org.uk>
+        Fri, 23 Jun 2023 21:55:33 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A736273D
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 23 Jun 2023 18:55:32 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1b5452b77b4so9890875ad.3
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 23 Jun 2023 18:55:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1687571732; x=1690163732;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QARueVM5NgEI8ly6kngoX66nkjJ1HIAQ25yUVJM/M7k=;
+        b=jnZC2ybL2QP1QYE4yr+wvqkrseWiA9e6NoqP59ZFdonp0a0kyhkp+nxwBRo6v1Y6Z/
+         YBydA7V4cijiWmqQJyW4qnDfnVFc68PWFrCyQW3WfyV83ZcXiNsnDb36P/IPvxrgawFQ
+         PdsKZv5Qeij8R+FWyRTJSBaFp39sDmm1TEDZXejL81ABXEvWRWyW8842SfLapBaR16sF
+         vD+ELtc/pHAw+pFteF4AqHPumHwOHQ8Xukac1UTuqCAW8wrP8Mwv7RW0ehQhkTSuQINb
+         3rHDLxwqMxX1Ty8DNYaLL6kO4Y4zAIst7+KWnQ3JQ6oIvuvnGT2NsAhP5/RdOvdpuSiy
+         65Eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687571732; x=1690163732;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QARueVM5NgEI8ly6kngoX66nkjJ1HIAQ25yUVJM/M7k=;
+        b=VDKyS3KHjiYT4WPoj6jrcF0h6cCxMzNu3SIZpcJKB329UKVeFWmGTsfELuqvgEWwfm
+         90KXq4voeOj6fiASTZHsdRPmZP1xm54RY/1//jKya+BqcjIbbwbqHrIK4gNEMnZZI+7b
+         1SHSFMRGqnN/EpZdt9ivXWDKSVCvtrdSuEidjmiAMFQLw21Q6liIyA+YtESIggMo3Lk+
+         nUmh3NDn7WT0N3hUowBkip5ij8D0upzxiSHwgPPHMEaDOfqiVvNRnsZOjIMsimWNOm9C
+         /8t9pENfSp9MhVR7jq3lsiMdfXVUuGJuWC0LU/6tdnL/MPnkS/rE4fhh30BlXzlZJYLk
+         v5gw==
+X-Gm-Message-State: AC+VfDwu2LBu8vU5cDjWuRXlSjlA085M+MVQ5ppliDM/ZfzIrarVihLc
+        hvXvJzWqTSUIbOXevyfFq00=
+X-Google-Smtp-Source: ACHHUZ7EKMVxU8TWRgRU9+XwK7LYVXWH3v+gEDo5Epfh8lUR0ifndnY3uj+0AVLI0zG/i3TrUbosxA==
+X-Received: by 2002:a17:902:d50c:b0:1b0:4a37:9ccc with SMTP id b12-20020a170902d50c00b001b04a379cccmr736136plg.62.1687571731937;
+        Fri, 23 Jun 2023 18:55:31 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id jn16-20020a170903051000b001b53472353csm172067plb.211.2023.06.23.18.55.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Jun 2023 18:55:31 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 23 Jun 2023 18:55:29 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     arnd@arndb.de, daniel.vetter@ffwll.ch, deller@gmx.de,
+        javierm@redhat.com, gregkh@linuxfoundation.org,
+        linux-arch@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-sh@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        loongarch@lists.linux.dev, sparclinux@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [v3,17/19] arch/sparc: Implement fb_is_primary_device() in
+ source file
+Message-ID: <c525adc9-6623-4660-8718-e0c9311563b8@roeck-us.net>
+References: <20230417125651.25126-18-tzimmermann@suse.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="h7nz5csw3iqgzu4z"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZIyBaueWT9jnTwRC@decadent.org.uk>
-X-Operating-System: Linux chamaeleon 5.14.0-0.bpo.2-amd64
-X-gpg-fingerprint: 250D 3BCF 7127 0D8C A444  A961 1DBD 5E75 8399 E1BB
-X-gpg-key: wwwkeys.de.pgp.net
-X-Echelon-Enable: howto poison arsenous mail psychological biological nuclear
- warfare test the bombastical terror of flooding the spy listeners explosion
- sex drugs and rock'n'roll
-X-TKUeV: howto poison arsenous mail psychological biological nuclear warfare
- test the bombastical terror of flooding the spy listeners explosion sex
- drugs and rock'n'roll
-X-message-flag: Please send plain text messages only. Do not send HTML
- emails. Thank you.
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <20230417125651.25126-18-tzimmermann@suse.de>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+Hi,
 
---h7nz5csw3iqgzu4z
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, Apr 17, 2023 at 02:56:49PM +0200, Thomas Zimmermann wrote:
+> Other architectures implment fb_is_primary_device() in a source
+> file. Do the same on sparc. No functional changes, but allows to
+> remove several include statement from <asm/fb.h>.
+> 
+> v2:
+> 	* don't include <asm/prom.h> in header file
+> 
+> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+> Cc: "David S. Miller" <davem@davemloft.net>
 
-Hi!
+This patch results (or appears to result) in the following build error
+when trying to build sparc64:allmodconfig.
 
-On Fri, 2023-06-16 17:36:10 +0200, Ben Hutchings <ben@decadent.org.uk> wrot=
-e:
-> gas supports several different forms for .section for ELF targets,
-> including:
->     .section NAME [, "FLAGS"[, @TYPE[,FLAG_SPECIFIC_ARGUMENTS]]]
-> and:
->     .section "NAME"[, #FLAGS...]
->=20
-> In several places we use a mix of these two forms:
->     .section NAME, #FLAGS...
->=20
-> A current development snapshot of binutils (2.40.50.20230611) treats
-> this mixed syntax as an error.
+Error log:
+<stdin>:1519:2: warning: #warning syscall clone3 not implemented [-Wcpp]
+WARNING: modpost: drivers/cpufreq/sparc-us2e-cpufreq: section mismatch in reference: cpufreq_us2e_driver+0x20 (section: .data) -> us2e_freq_cpu_init (section: .init.text)
+WARNING: modpost: drivers/cpufreq/sparc-us3-cpufreq: section mismatch in reference: cpufreq_us3_driver+0x20 (section: .data) -> us3_freq_cpu_init (section: .init.text)
+ERROR: modpost: missing MODULE_LICENSE() in arch/sparc/video/fbdev.o
+ERROR: modpost: "__xchg_called_with_bad_pointer" [lib/atomic64_test.ko] undefined!
 
-I stepped into this as well, and think it's a bad thing to break
-working code along with giving a bad error message:
+Bisect log attached. Note that I suspect that there are several problems,
+but that is difficult to determine since this patch can not easily
+be reverted.
 
-[mk all 2023-06-23 08:34:34] # AS      arch/m68k/fpsp040/skeleton.o
-[mk all 2023-06-23 08:34:34]   m68k-linux-gcc -Wp,-MMD,arch/m68k/fpsp040/.s=
-keleton.o.d -nostdinc -I./arch/m68k/include -I./arch/m68k/include/generated=
-  -I./include -I./arch/m68k/include/uapi -I./arch/m68k/include/generated/ua=
-pi -I./include/uapi -I./include/generated/uapi -include ./include/linux/com=
-piler-version.h -include ./include/linux/kconfig.h -D__KERNEL__ -fmacro-pre=
-fix-map=3D./=3D -D__ASSEMBLY__ -fno-PIE -m68040    -c -o arch/m68k/fpsp040/=
-skeleton.o arch/m68k/fpsp040/skeleton.S=20
-[mk all 2023-06-23 08:34:34] arch/m68k/fpsp040/skeleton.S: Assembler messag=
-es:
-[mk all 2023-06-23 08:34:34] arch/m68k/fpsp040/skeleton.S:502: Error: junk =
-at end of line, first unrecognized character is `#'
-[mk all 2023-06-23 08:34:34] arch/m68k/fpsp040/skeleton.S:508: Error: junk =
-at end of line, first unrecognized character is `#'
-[mk all 2023-06-23 08:34:34] make[3]: *** [scripts/Makefile.build:374: arch=
-/m68k/fpsp040/skeleton.o] Error 1
-[mk all 2023-06-23 08:34:34] make[2]: *** [scripts/Makefile.build:494: arch=
-/m68k/fpsp040] Error 2
-[mk all 2023-06-23 08:34:34] make[1]: *** [scripts/Makefile.build:494: arch=
-/m68k] Error 2
-[mk all 2023-06-23 08:34:34] make: *** [Makefile:2026: .] Error 2
+Guenter
 
-> References: https://buildd.debian.org/status/fetch.php?pkg=3Dlinux&arch=
-=3Dm68k&ver=3D6.4%7Erc6-1%7Eexp1&stamp=3D1686907300&raw=3D1
-> Signed-off-by: Ben Hutchings <benh@debian.org>
-
-As per pers.comm. with Geert:
-
-References: http://toolchain.lug-owl.de/laminar/jobs/linux-m68k-virt_defcon=
-fig/34
-Tested-by: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-
-MfG, JBG
-
---=20
-
---h7nz5csw3iqgzu4z
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iFwEABECAB0WIQQlDTvPcScNjKREqWEdvV51g5nhuwUCZJWDSgAKCRAdvV51g5nh
-u1huAJdRZFQDMZtiXe/qnZtCWovlmpS+AJ4l9POIs4oxL3qDIoXDbCcxCqyJ1Q==
-=Akks
------END PGP SIGNATURE-----
-
---h7nz5csw3iqgzu4z--
+---
+# bad: [8d2be868b42c08290509c60515865f4de24ea704] Add linux-next specific files for 20230623
+# good: [45a3e24f65e90a047bef86f927ebdc4c710edaa1] Linux 6.4-rc7
+git bisect start 'HEAD' 'v6.4-rc7'
+# good: [a5838c78db6a3a02e8d221e588c948f792e7f256] Merge branch 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/wireless/wireless-next.git
+git bisect good a5838c78db6a3a02e8d221e588c948f792e7f256
+# bad: [cca41cc0b5485a0ec20707316c1a00082c01a2af] Merge branch 'for-next' of git://git.kernel.dk/linux-block.git
+git bisect bad cca41cc0b5485a0ec20707316c1a00082c01a2af
+# bad: [901bdf5ea1a836400ee69aa32b04e9c209271ec7] Merge tag 'amd-drm-next-6.5-2023-06-09' of https://gitlab.freedesktop.org/agd5f/linux into drm-next
+git bisect bad 901bdf5ea1a836400ee69aa32b04e9c209271ec7
+# good: [c2d2588c702364ff53916ddd97e2b26fd4f4a317] drm/amdkfd: add send exception operation
+git bisect good c2d2588c702364ff53916ddd97e2b26fd4f4a317
+# bad: [1b842f73edbb1f8513ef4a89389176c628dc014a] drm/i915/guc: Remove some obsolete definitions
+git bisect bad 1b842f73edbb1f8513ef4a89389176c628dc014a
+# bad: [b8887e796e06b1de4db899f49d531d220f94f393] Merge tag 'drm-misc-next-2023-05-24' of git://anongit.freedesktop.org/drm/drm-misc into drm-next
+git bisect bad b8887e796e06b1de4db899f49d531d220f94f393
+# bad: [bfdede3a58ea970333d77a05144a7bcec13cf515] drm/rockchip: cdn-dp: call drm_connector_update_edid_property() unconditionally
+git bisect bad bfdede3a58ea970333d77a05144a7bcec13cf515
+# good: [b50f6d465ac1fb37cab7bfb39ac6c9fb9d8e3716] arch/powerpc: Implement <asm/fb.h> with generic helpers
+git bisect good b50f6d465ac1fb37cab7bfb39ac6c9fb9d8e3716
+# bad: [322d716a3e8a74fb75cd0f657647be4df253fd2f] drm/vkms: isolate pixel conversion functionality
+git bisect bad 322d716a3e8a74fb75cd0f657647be4df253fd2f
+# bad: [55b24786b74863b8f10e4d262e642749911cb3bb] drm/display: Add missing OLED Vesa brightnesses definitions
+git bisect bad 55b24786b74863b8f10e4d262e642749911cb3bb
+# bad: [1c9da7db8899fa0e891997118d75b46d38102497] drm/armada: Include <linux/of.h>
+git bisect bad 1c9da7db8899fa0e891997118d75b46d38102497
+# bad: [db76f19a607d6cf4a9d5868d05675c355e99809c] arch/sparc: Implement <asm/fb.h> with generic helpers
+git bisect bad db76f19a607d6cf4a9d5868d05675c355e99809c
+# bad: [4eec0b3048fcd74b504c2a6828a07f133a8ab508] arch/sparc: Implement fb_is_primary_device() in source file
+git bisect bad 4eec0b3048fcd74b504c2a6828a07f133a8ab508
+# good: [b6cf29637be638a6846d2d297d80cf7c6fb74faf] arch/sh: Implement <asm/fb.h> with generic helpers
+git bisect good b6cf29637be638a6846d2d297d80cf7c6fb74faf
+# first bad commit: [4eec0b3048fcd74b504c2a6828a07f133a8ab508] arch/sparc: Implement fb_is_primary_device() in source file
