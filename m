@@ -2,163 +2,169 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AC7EC0015E
-	for <linux-m68k@archiver.kernel.org>; Tue, 27 Jun 2023 16:09:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B5E3EB64D9
+	for <linux-m68k@archiver.kernel.org>; Tue, 27 Jun 2023 16:53:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbjF0QJQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 27 Jun 2023 12:09:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
+        id S231588AbjF0QxA convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 27 Jun 2023 12:53:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231740AbjF0QJO (ORCPT
+        with ESMTP id S232068AbjF0Qw5 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 27 Jun 2023 12:09:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F1152D7B
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Jun 2023 09:07:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1687882068;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hJDOCrbidQ6SQFQe4MgEFJjZ7UTNPrXFah4ZUMjVF/Y=;
-        b=Cc0KwX7LyXS8JYv5xGW2+kada08T3uFyGsb8yTCVnIZMX4XtJxbocE5Ojds0u20/K+87is
-        myxitS0nc+jnkl3smPQ3i2/vDsQnyna8j92dy+nE2BauC8pcvPB3aet2VXVwCWMCIfP96f
-        FZgTv+82jeH/NQ6orFj0L1Qu8UqSMoQ=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-513-O2U7sX5aONWDU5wx0b4ELw-1; Tue, 27 Jun 2023 12:07:46 -0400
-X-MC-Unique: O2U7sX5aONWDU5wx0b4ELw-1
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-74faf5008bbso79690285a.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Jun 2023 09:07:46 -0700 (PDT)
+        Tue, 27 Jun 2023 12:52:57 -0400
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B657113
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Jun 2023 09:52:56 -0700 (PDT)
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-765a7768f1dso227611685a.0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Jun 2023 09:52:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687882066; x=1690474066;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hJDOCrbidQ6SQFQe4MgEFJjZ7UTNPrXFah4ZUMjVF/Y=;
-        b=O39X6xBV47tfew8RAq6MLMCarzj6kcJViO+pU6zRCTcnbQYnZrJ5KvTNjRpjPafVTc
-         /AS3eyZclHH3DA21f3jPCJSTc0gANCSjm755/866ucWDlS7Il4zlzDZTaN8DO1fijaG7
-         8mStssKEdai3ETxnOkgLGzRXmV76ndLOkwElou+JzVk9wc0ut2jXDa3qT8ICv7tPVUUp
-         7+vQisQNBwz1HHfEEf9e7uUTVDbQqGLOh/YfHY1DQmmPFOb8YbpPr5soetccz7vUy87F
-         aycqSy3Dfqu9CILfhjNtQl0GUgTJAeDS8LEhOljiXYgkGClY27RpFFSr3EV+sCTrCa2w
-         yQ+g==
-X-Gm-Message-State: AC+VfDyyuoV9NXj3mXOM/knPaC8/Wm7qca9Av4yvIH54kdOjLjrwcgTK
-        Hm29+5BJyDUbSM7IkzRTgVSqpWmFm8GIqxKCl7UdzeYhIdYvTcBvueFiTUHhCqE5qOwLSwRnHsP
-        jPk7k1fKTX7VELvnluiIGmVDBUydt
-X-Received: by 2002:a05:620a:4007:b0:765:7b61:46fc with SMTP id h7-20020a05620a400700b007657b6146fcmr12614193qko.7.1687882066254;
-        Tue, 27 Jun 2023 09:07:46 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ7UY1eApNq4tXkhQSQVDzyCNrRRXMA0KLJ6oWun1WyljocOJD3jbWnq1iikbRngPAZ/IFjT9Q==
-X-Received: by 2002:a05:620a:4007:b0:765:7b61:46fc with SMTP id h7-20020a05620a400700b007657b6146fcmr12614153qko.7.1687882065917;
-        Tue, 27 Jun 2023 09:07:45 -0700 (PDT)
-Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id m21-20020a05620a13b500b0075ecdc937ffsm1342302qki.41.2023.06.27.09.07.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jun 2023 09:07:45 -0700 (PDT)
-Date:   Tue, 27 Jun 2023 12:07:43 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
-        Hugh Dickins <hughd@google.com>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: Re: [PATCH v6 03/33] pgtable: Create struct ptdesc
-Message-ID: <ZJsJT9dLtxaKlxVb@x1n>
-References: <20230627031431.29653-1-vishal.moola@gmail.com>
- <20230627031431.29653-4-vishal.moola@gmail.com>
+        d=1e100.net; s=20221208; t=1687884775; x=1690476775;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3lIZI96K9vdLoSwUwpQZZH+ZWrx3VsFWqYpi3+69yqU=;
+        b=k7woLQe+4aDsRPaU3uOjRhNgYlLnyedONDLrt1g0w/CqZ0g6cnaeN/P4Ss8BUn2m8s
+         svdBXvsmuQpb7TOolBysxpQPjN/TckWZi9hTHB4b+rLNrN+RkA0cPZh2WWam6VLJpJyp
+         nfN32jtDCsaAWN5lPn3Pbz9syayIF59lNi7RuD8kebyWRCbX/GkHASCtBb8f/W590NVX
+         rCGicvZUZYyjiPnSxERXgr6XgKLdBKlsQW9/Wqy1pQI5bTOzjtQ6hrUi3PQoaTHJDnVt
+         VjY0pPuEQ6SSz98cMJj9Uak+kiMCJ/D9XKClnVpjXYc+IiF2Q2CCqi0cC3HDlsZm9qw9
+         4ihw==
+X-Gm-Message-State: AC+VfDzEbZBxlQDTgPiDqkCHRwwy8zRMyfhm/ga4FJJ64KYUFJVDBoFf
+        tIULqw6k5KisxavKqtLWQ1EoJTNmwvB/6m4C
+X-Google-Smtp-Source: ACHHUZ7Ta58CvB+t1lJAPkh4D1RuiSCcVQjzsYzDleomCaUkbkWjBEKqQbHCxgtmBB4+rAgD6HMN3g==
+X-Received: by 2002:a05:6214:29e6:b0:630:6926:d00e with SMTP id jv6-20020a05621429e600b006306926d00emr32952776qvb.39.1687884775139;
+        Tue, 27 Jun 2023 09:52:55 -0700 (PDT)
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com. [209.85.160.181])
+        by smtp.gmail.com with ESMTPSA id fb9-20020ad44f09000000b0062b76c29978sm4744535qvb.6.2023.06.27.09.52.54
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jun 2023 09:52:54 -0700 (PDT)
+Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-4009130358cso44525611cf.2
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Jun 2023 09:52:54 -0700 (PDT)
+X-Received: by 2002:a05:6358:f55:b0:132:d3b1:c34a with SMTP id
+ c21-20020a0563580f5500b00132d3b1c34amr12105551rwj.7.1687884753801; Tue, 27
+ Jun 2023 09:52:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20230627031431.29653-4-vishal.moola@gmail.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20230327121317.4081816-1-arnd@kernel.org> <20230327121317.4081816-22-arnd@kernel.org>
+ <OS0PR01MB5922EDAFCD6DA0313DB99C5E86989@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+ <66899d69-1339-4a61-8612-6f8e452b0b26@app.fastmail.com>
+In-Reply-To: <66899d69-1339-4a61-8612-6f8e452b0b26@app.fastmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 27 Jun 2023 18:52:22 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdV5gT1GDLODsUe0XibPRsRHazF4K-UhxTOQCjtC9Ba4mQ@mail.gmail.com>
+Message-ID: <CAMuHMdV5gT1GDLODsUe0XibPRsRHazF4K-UhxTOQCjtC9Ba4mQ@mail.gmail.com>
+Subject: Re: [PATCH 21/21] dma-mapping: replace custom code with generic implementation
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, guoren <guoren@kernel.org>,
+        Brian Cain <bcain@quicinc.com>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "Lad, Prabhakar" <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        "Conor.Dooley" <conor.dooley@microchip.com>,
+        "linux-snps-arc@lists.infradead.org" 
+        <linux-snps-arc@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-oxnas@groups.io" <linux-oxnas@groups.io>,
+        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Jun 26, 2023 at 08:14:01PM -0700, Vishal Moola (Oracle) wrote:
-> Currently, page table information is stored within struct page. As part
-> of simplifying struct page, create struct ptdesc for page table
-> information.
-> 
-> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
-> Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
-> ---
->  include/linux/pgtable.h | 68 +++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 68 insertions(+)
-> 
-> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> index 5063b482e34f..d46cb709ce08 100644
-> --- a/include/linux/pgtable.h
-> +++ b/include/linux/pgtable.h
-> @@ -987,6 +987,74 @@ static inline void ptep_modify_prot_commit(struct vm_area_struct *vma,
->  #endif /* __HAVE_ARCH_PTEP_MODIFY_PROT_TRANSACTION */
->  #endif /* CONFIG_MMU */
->  
-> +
-> +/**
-> + * struct ptdesc -    Memory descriptor for page tables.
-> + * @__page_flags:     Same as page flags. Unused for page tables.
-> + * @pt_rcu_head:      For freeing page table pages.
-> + * @pt_list:          List of used page tables. Used for s390 and x86.
-> + * @_pt_pad_1:        Padding that aliases with page's compound head.
-> + * @pmd_huge_pte:     Protected by ptdesc->ptl, used for THPs.
-> + * @_pt_s390_gaddr:   Aliases with page's mapping. Used for s390 gmap only.
+On Thu, Apr 13, 2023 at 2:52 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> On Thu, Apr 13, 2023, at 14:13, Biju Das wrote:
+> > FYI, this patch breaks on RZ/G2L SMARC EVK board and Arnd will send V2
+> > for fixing this issue.
+> >
+> > [10:53] <biju> [    3.384408] Unable to handle kernel paging request at
+> > virtual address 000000004afb0080
+>
+> Right, sorry about this, I accidentally removed the 'phys_to_virt()'
+> conversion on arm64.
 
-Should some arch-specific bits (and a few others) always under some
-#ifdefs, so it shouldn't appear on other archs?
+Meh, I missed that, so I ended up bisecting this same failure...
 
-> + * @pt_mm:            Used for x86 pgds.
-> + * @pt_frag_refcount: For fragmented page table tracking. Powerpc and s390 only.
-> + * @ptl:              Lock for the page table.
-> + * @__page_type:      Same as page->page_type. Unused for page tables.
-> + * @_refcount:        Same as page refcount. Used for s390 page tables.
-> + * @pt_memcg_data:    Memcg data. Tracked for page tables here.
-> + *
-> + * This struct overlays struct page for now. Do not modify without a good
-> + * understanding of the issues.
-> + */
-> +struct ptdesc {
-> +	unsigned long __page_flags;
-> +
-> +	union {
-> +		struct rcu_head pt_rcu_head;
-> +		struct list_head pt_list;
-> +		struct {
-> +			unsigned long _pt_pad_1;
-> +			pgtable_t pmd_huge_pte;
-> +		};
-> +	};
-> +	unsigned long _pt_s390_gaddr;
-> +
-> +	union {
-> +		struct mm_struct *pt_mm;
-> +		atomic_t pt_frag_refcount;
-> +	};
-> +
-> +	union {
-> +		unsigned long _pt_pad_2;
-> +#if ALLOC_SPLIT_PTLOCKS
-> +		spinlock_t *ptl;
-> +#else
-> +		spinlock_t ptl;
-> +#endif
-> +	};
-> +	unsigned int __page_type;
-> +	atomic_t _refcount;
-> +#ifdef CONFIG_MEMCG
-> +	unsigned long pt_memcg_data;
-> +#endif
-> +};
+This patch is now commit 801f1883c4bb70cc ("dma-mapping: replace
+custom code with generic implementation") in esmil/jh7100-dmapool,
+and broke booting on R-Car Gen3.
 
--- 
-Peter Xu
+The following gmail-whitespace-damaged patch fixes that:
 
+diff --git a/arch/arm64/mm/dma-mapping.c b/arch/arm64/mm/dma-mapping.c
+index 97b7cea5eb23aedd..77e0b68b43e5849a 100644
+--- a/arch/arm64/mm/dma-mapping.c
++++ b/arch/arm64/mm/dma-mapping.c
+@@ -15,17 +15,23 @@
+
+ static inline void arch_dma_cache_wback(phys_addr_t paddr, size_t size)
+ {
+-       dcache_clean_poc(paddr, paddr + size);
++       unsigned long start = (unsigned long)phys_to_virt(paddr);
++
++       dcache_clean_poc(start, start + size);
+ }
+
+ static inline void arch_dma_cache_inv(phys_addr_t paddr, size_t size)
+ {
+-       dcache_inval_poc(paddr, paddr + size);
++       unsigned long start = (unsigned long)phys_to_virt(paddr);
++
++       dcache_inval_poc(start, start + size);
+ }
+
+ static inline void arch_dma_cache_wback_inv(phys_addr_t paddr, size_t size)
+ {
+-       dcache_clean_inval_poc(paddr, paddr + size);
++       unsigned long start = (unsigned long)phys_to_virt(paddr);
++
++       dcache_clean_inval_poc(start, start + size);
+ }
+
+ static inline bool arch_sync_dma_clean_before_fromdevice(void)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
