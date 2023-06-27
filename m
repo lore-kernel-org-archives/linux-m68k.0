@@ -2,54 +2,54 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7B8FC05053
-	for <linux-m68k@archiver.kernel.org>; Tue, 27 Jun 2023 03:15:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A90A9C25B5C
+	for <linux-m68k@archiver.kernel.org>; Tue, 27 Jun 2023 03:15:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230088AbjF0DPk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 26 Jun 2023 23:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
+        id S229988AbjF0DPm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 26 Jun 2023 23:15:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230308AbjF0DP3 (ORCPT
+        with ESMTP id S230179AbjF0DPZ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 26 Jun 2023 23:15:29 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F8C19A3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jun 2023 20:15:25 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-576a9507a9bso36780327b3.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jun 2023 20:15:25 -0700 (PDT)
+        Mon, 26 Jun 2023 23:15:25 -0400
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD171BEC
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jun 2023 20:15:19 -0700 (PDT)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-56ffd7d7fedso42547727b3.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jun 2023 20:15:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687835724; x=1690427724;
+        d=gmail.com; s=20221208; t=1687835718; x=1690427718;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QwvXTPG+SvX1bm+f7lh9ddV99LBkA8HMSnaL5DvtP/w=;
-        b=bw9pNUcuMxpubm9pq3maPyXbc62B+bsuNNloL1m8ijygS8iq7WYtlX4XdEVQIeg/Zh
-         Ngyg1Az+rnDUxxJdpkw2Xv9RrFezRnlEtGz+ikp5CpgXDK/wyBh05TsohR9gIqLikIrz
-         XQJZpHLygL22WsyZKTUtr35hO5G+O3BbEJWU1trW1sFmIRDgY2iyZUpnQW0acaV8lKSP
-         bClQykA4VjSGm4LzvwTtemLaGQIugu/qzT0WXVHTnnvGtI1PeGca+HTzzD6jettWBhDo
-         8pn250bIB0NJGxFmMTfFNawkBicAYzNWGl1omwNwRWLI+9cdDNXLQFqbUAr8KIK7W1AA
-         kzkA==
+        bh=5MMx6i8bJUxARp5QNqsq1CJUY3hOxlwkAEMcUNtK7dI=;
+        b=MeM3v1KjtFoJ68g67QFEF1NyVxMiMYgvdlNUvONCKTcddCTBLfXbCvjdDQ2rkMkntp
+         NglXMwE26fCvz5F9nMSZMUxoetH1ZAcsVpi0efOXfEwN4DA6ftYlLFo1JApHI/tubC37
+         33sHqn+NMB2tr9HBuBdSW/hwIa8uL6U/SOUDWuLzyTAiHAPzWUOM8CjVLD+EbbHd/5kR
+         FnMJGohaY21AmJl4Lrba1v1FCtiqCThvY8//FgKgMI5nMolrkjqa5ElszWe7So6X4/NA
+         29o+uMEWd5I0Ihfj0/TIUUwfyyspThDiVrfoH9mpbEwmREVQeVNhmFuIVnTUiZMir9ah
+         1F3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687835724; x=1690427724;
+        d=1e100.net; s=20221208; t=1687835718; x=1690427718;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QwvXTPG+SvX1bm+f7lh9ddV99LBkA8HMSnaL5DvtP/w=;
-        b=dhp0eXxkCHQXohuHHKjAba64o7J5On36H+4Ph27m1uv+rozwoQdTKwaJP+zLbUQhrk
-         82qUleOmQfehGOvceGYguaS78TFOXr1Lkp/no+qX35Ku6xZbAef3qVMFJwFM338luwI8
-         WTAfxAb5qyjmKTDxizBfYJtfltNmMoorUyzTlypIzmOsfKc1LrABboVhGjBcNCugV8yT
-         spWtlzHAEcvDredkyzXQKPML+gx8kmMGUmhsK0772fs2Xob6ZJH3pDzr1BOPZrv0Qvxq
-         EWUaM/ML9DbOuOXmrKzrb4LEaDu5SAOO8FDkirwX7AV3BRFQBL9qCylIR0SRf1n9Zjjh
-         47Aw==
-X-Gm-Message-State: AC+VfDyJWPV9V10bxOMLPnCN4pbujm+aQdvAW3hSJ5Lv192kWXOJB/xK
-        JoKXWXGc8ucR4NfMO3Xaw0afdhKDha8r+Q==
-X-Google-Smtp-Source: ACHHUZ4U3kYwykXpP1FzDZUmgCkvLtNAT31XIQI7+ns8f+sP4iaCy71EJqjX8aE3VjJuNDesXn/JrA==
-X-Received: by 2002:a81:48d0:0:b0:56d:6dd:c1e0 with SMTP id v199-20020a8148d0000000b0056d06ddc1e0mr35914739ywa.21.1687835724632;
-        Mon, 26 Jun 2023 20:15:24 -0700 (PDT)
+        bh=5MMx6i8bJUxARp5QNqsq1CJUY3hOxlwkAEMcUNtK7dI=;
+        b=B6zT8ZUMHAdqntr6c22bKbrWo5/IRlXxEoJNAzT4klD9HW/m8nNOZWpEgxeWZCYOLD
+         F0uENWq42pg3Xi9YOHj+m+DUhyiUGlH/Dc6Ox8nVylLjfdbgykMlQ01YWbdNOLDyj4Q1
+         ezZmo0xQeNWD/FztmSxeM0VqqvpRg4oFgtd8vwE7FdP1eDl8/J/e8gzyIULXzPaSb3AG
+         7tW1rypmnoTA6RvFRE+QeMFQuuyU8dXSOI2G1J3lT8aZMI0vUZNZM32fHvtASeg7q/l/
+         4pJfb+OVtbPpfTmU+u5UrcdRbemIekPYo7XE+Q4MCHiUai3kWMyqFM6EwLmSIwFJPy5T
+         h3ng==
+X-Gm-Message-State: AC+VfDzhCWFGV/eATDZVUdidVzYr5IyVCVOoQHkQKeE0XI/g4CwVe5l4
+        RsxToYaFWaPhFU8VMlz2ISg=
+X-Google-Smtp-Source: ACHHUZ7jG3JdEOLXHoTlHZs7iMneXhbSi5TTL08hXZ/YgCW6ZXi6BK/DGPcEgnHcQP1gwkgg+JH2AQ==
+X-Received: by 2002:a0d:c506:0:b0:56f:e627:8545 with SMTP id h6-20020a0dc506000000b0056fe6278545mr30778532ywd.39.1687835718493;
+        Mon, 26 Jun 2023 20:15:18 -0700 (PDT)
 Received: from unknowna0e70b2ca394.attlocal.net ([2600:1700:2f7d:1800::16])
-        by smtp.googlemail.com with ESMTPSA id s4-20020a0dd004000000b0057399b3bd26sm1614798ywd.33.2023.06.26.20.15.22
+        by smtp.googlemail.com with ESMTPSA id s4-20020a0dd004000000b0057399b3bd26sm1614798ywd.33.2023.06.26.20.15.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jun 2023 20:15:24 -0700 (PDT)
+        Mon, 26 Jun 2023 20:15:17 -0700 (PDT)
 From:   "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>
@@ -64,9 +64,9 @@ Cc:     linux-mm@kvack.org, linux-arch@vger.kernel.org,
         kvm@vger.kernel.org, Hugh Dickins <hughd@google.com>,
         "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
         Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH v6 08/33] mm: Convert pmd_ptlock_init() to use ptdescs
-Date:   Mon, 26 Jun 2023 20:14:06 -0700
-Message-Id: <20230627031431.29653-9-vishal.moola@gmail.com>
+Subject: [PATCH v6 05/33] mm: Convert pmd_pgtable_page() to pmd_ptdesc()
+Date:   Mon, 26 Jun 2023 20:14:03 -0700
+Message-Id: <20230627031431.29653-6-vishal.moola@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230627031431.29653-1-vishal.moola@gmail.com>
 References: <20230627031431.29653-1-vishal.moola@gmail.com>
@@ -76,53 +76,48 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-This removes some direct accesses to struct page, working towards
-splitting out struct ptdesc from struct page.
+Converts pmd_pgtable_page() to pmd_ptdesc() and all its callers. This
+removes some direct accesses to struct page, working towards splitting
+out struct ptdesc from struct page.
 
 Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
 Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
 ---
- include/linux/mm.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ include/linux/mm.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 0b230d5d229a..1c4c6a7b69b3 100644
+index 14d95d494958..1511faf0263c 100644
 --- a/include/linux/mm.h
 +++ b/include/linux/mm.h
-@@ -2926,12 +2926,12 @@ static inline spinlock_t *pmd_lockptr(struct mm_struct *mm, pmd_t *pmd)
- 	return ptlock_ptr(pmd_ptdesc(pmd));
- }
+@@ -2915,15 +2915,15 @@ pte_t *pte_offset_map_nolock(struct mm_struct *mm, pmd_t *pmd,
  
--static inline bool pmd_ptlock_init(struct page *page)
-+static inline bool pmd_ptlock_init(struct ptdesc *ptdesc)
+ #if USE_SPLIT_PMD_PTLOCKS
+ 
+-static inline struct page *pmd_pgtable_page(pmd_t *pmd)
++static inline struct ptdesc *pmd_ptdesc(pmd_t *pmd)
  {
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
--	page->pmd_huge_pte = NULL;
-+	ptdesc->pmd_huge_pte = NULL;
- #endif
--	return ptlock_init(page);
-+	return ptlock_init(ptdesc_page(ptdesc));
+ 	unsigned long mask = ~(PTRS_PER_PMD * sizeof(pmd_t) - 1);
+-	return virt_to_page((void *)((unsigned long) pmd & mask));
++	return virt_to_ptdesc((void *)((unsigned long) pmd & mask));
  }
  
- static inline void pmd_ptlock_free(struct page *page)
-@@ -2951,7 +2951,7 @@ static inline spinlock_t *pmd_lockptr(struct mm_struct *mm, pmd_t *pmd)
- 	return &mm->page_table_lock;
- }
- 
--static inline bool pmd_ptlock_init(struct page *page) { return true; }
-+static inline bool pmd_ptlock_init(struct ptdesc *ptdesc) { return true; }
- static inline void pmd_ptlock_free(struct page *page) {}
- 
- #define pmd_huge_pte(mm, pmd) ((mm)->pmd_huge_pte)
-@@ -2967,7 +2967,7 @@ static inline spinlock_t *pmd_lock(struct mm_struct *mm, pmd_t *pmd)
- 
- static inline bool pgtable_pmd_page_ctor(struct page *page)
+ static inline spinlock_t *pmd_lockptr(struct mm_struct *mm, pmd_t *pmd)
  {
--	if (!pmd_ptlock_init(page))
-+	if (!pmd_ptlock_init(page_ptdesc(page)))
- 		return false;
- 	__SetPageTable(page);
- 	inc_lruvec_page_state(page, NR_PAGETABLE);
+-	return ptlock_ptr(pmd_pgtable_page(pmd));
++	return ptlock_ptr(ptdesc_page(pmd_ptdesc(pmd)));
+ }
+ 
+ static inline bool pmd_ptlock_init(struct page *page)
+@@ -2942,7 +2942,7 @@ static inline void pmd_ptlock_free(struct page *page)
+ 	ptlock_free(page);
+ }
+ 
+-#define pmd_huge_pte(mm, pmd) (pmd_pgtable_page(pmd)->pmd_huge_pte)
++#define pmd_huge_pte(mm, pmd) (pmd_ptdesc(pmd)->pmd_huge_pte)
+ 
+ #else
+ 
 -- 
 2.40.1
 
