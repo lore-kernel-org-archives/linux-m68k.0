@@ -2,58 +2,59 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B30CEB64DA
-	for <linux-m68k@archiver.kernel.org>; Tue, 27 Jun 2023 02:53:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7CFFEB64D7
+	for <linux-m68k@archiver.kernel.org>; Tue, 27 Jun 2023 02:55:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230158AbjF0Cxs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 26 Jun 2023 22:53:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56650 "EHLO
+        id S230073AbjF0Czf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 26 Jun 2023 22:55:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbjF0Cxr (ORCPT
+        with ESMTP id S229740AbjF0Czc (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 26 Jun 2023 22:53:47 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F10E19A3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jun 2023 19:53:46 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-40079620a83so135451cf.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jun 2023 19:53:46 -0700 (PDT)
+        Mon, 26 Jun 2023 22:55:32 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7422519A4
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jun 2023 19:55:31 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-401d1d967beso136291cf.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jun 2023 19:55:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1687834425; x=1690426425;
+        d=google.com; s=20221208; t=1687834530; x=1690426530;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jXL2A5XwGkQBMKHvJmT9XBgr9QrqO5b2xYT/yObtZVs=;
-        b=xBIB9H6D26duO7D5p9m4SYXnyo8r6ka9obuVuhUc1nSeyBJJHDhGhS//0CYhrq0cEo
-         C3ZegRAqeuF/nHp1Hz01nsb8c9MfJMrAHGvaaVYgKY+EepRGYl1OeaJM6w1KW+G0F5aY
-         Ja7Ufnd8fXGxS7FeHYaRjSPLXtMSgzv5A2UfRDFV+8V3+yG9iAYrGactEFGmsUrKFpMO
-         lx6ka2RYtqwA6/JcD2tJ0Voq7K6g6sgAIIREvF1zoR/jNw4UZJnFjM6K6j2Ysp9yjdfl
-         md6pDBt8J1TZcYvdzAlWxXHjudvUk4mbHTfK96zyrtLCi00HysOXC1SH5YQBPjkeB6Rt
-         +7Og==
+        bh=K6m+wEFcEkBY8kPY3Kx1wllLpYaRIsGxbOUyAAHvddU=;
+        b=ExOjo+32OkxgczlDHvAA93Sbizsv21cvgNnqKyveTvbuoZMVxqcmZEgPgSllcehguu
+         dbX+ENH+6Ay2FKPsfQQPRgwk9gig7UN/Bqn5dy0/3Lt52aEGpC6a0CWZuDlLqxGVuynQ
+         ePD+CMarbkoMLKhi58XFMsuv2TxpZMqD4UY8o5PNiJT66wQAkDvlNiFFn0BYTqgMvXPt
+         9NcqlCm40PM9effdAviY9KeE8HRGVu4E/rigBJg7RATr+OyC7hI4fz3nHHxtdPodsK9Y
+         PNjY12fUxpUwZPWspB5JgiUTyLdHqVtoy8OZEW6quF96sK7Xy1kFz342QD8ZJJbxbPpN
+         +zpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687834425; x=1690426425;
+        d=1e100.net; s=20221208; t=1687834530; x=1690426530;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jXL2A5XwGkQBMKHvJmT9XBgr9QrqO5b2xYT/yObtZVs=;
-        b=ZA0Xi4lOEujpqJvSif5aEWgi8/x3SY2E8NAZsRNE4MJIG5974SvKcTOeKWTANmKMdZ
-         7i5rmss2hxFjc32gQGrrZkPsyj+Dkq4mBeZxU1bPtmGpmmnQvEHKwXdtn+CRJaFT1c8H
-         4hH3vB4mGzHzLvMuRSzbxOZQX8NmQ8KDQEv2Bg6f0h5C/Vaf6ckQ5epxucycze8TKlBA
-         wDfZLNIHUtBSHbgwMu2+1U6iBgcABCsJTlcBXYNIR3F1iM4Huv6TgtTlALwtXQIj2VPV
-         Nx8XkgRpTYLGICYx1x9ur5I3dge+VJF5oH5dUaA3YPZJExRdkuOo0fn6gfgfRv8e2OUA
-         tBgw==
-X-Gm-Message-State: AC+VfDznOH79zVG+1j+ZI+I9Lv/Y9Ey+FqTGSnJP/cXk2NSkgrzN1o3v
-        42w8Vs8vvM1RdTsrb0kXhclFE3VmuhyJf+DjRKS2Kw==
-X-Google-Smtp-Source: ACHHUZ6zI76K2CG0sVaEiLZmWTUL3AMky+bfMr9SxVJfeyKmojoMzl9FYlquTsH7N5mo4L8oNK3cBNdwJ5mTx/oVrN8=
-X-Received: by 2002:ac8:5a4d:0:b0:3ed:86f6:6eab with SMTP id
- o13-20020ac85a4d000000b003ed86f66eabmr658445qta.14.1687834425082; Mon, 26 Jun
- 2023 19:53:45 -0700 (PDT)
+        bh=K6m+wEFcEkBY8kPY3Kx1wllLpYaRIsGxbOUyAAHvddU=;
+        b=HHiFGMzv0eGMvipwBl3JdTHoDTU0mFK3JEJ31XgU32VDQQY0nc7tdCbcB8995JLY3E
+         rjClaynbBUlysYmm63os6GB38RTnROZct+xihQj18JhBJHks0xZgyljH53cFXLZYyi/J
+         biaSGkktZqv6BbwHL51+7f8kc5dB2vncO4UZHWf5FUZsK2HV5SEqCOn41rtpxse6XEl/
+         MgiaL0vM+nXP3NNaimFdvqqAcqaxk0pOer684X41Orn3I3tSTq7v9dAoxLWJsaCHBgOH
+         6m+BxzXdZboqZkp/iIm27cjLZK96mMeLJRPSGRduXGAeaGEbS8FjTQ4ICFivW4jkDBHZ
+         MDPg==
+X-Gm-Message-State: AC+VfDycXBvlolu0cRqhmNC3xLxw1mRZqgF7vKJAQZhrmpdo9Rhj1A9R
+        VY7Zm2SiBE/9X4DyT5kP+spWGVCvLmPEffP4pek0SA==
+X-Google-Smtp-Source: ACHHUZ4HHpDDlpCkNylVwPD6Vtl3Tw7Wkd/6GWnr7BTs/XNVIfH6MktIHos0KxldS43iWx3GtWhQNV7SWLRv/Puj8+4=
+X-Received: by 2002:a05:622a:d1:b0:3f0:af20:1a37 with SMTP id
+ p17-20020a05622a00d100b003f0af201a37mr70012qtw.15.1687834530512; Mon, 26 Jun
+ 2023 19:55:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230626171430.3167004-1-ryan.roberts@arm.com> <20230626171430.3167004-10-ryan.roberts@arm.com>
-In-Reply-To: <20230626171430.3167004-10-ryan.roberts@arm.com>
+References: <20230626171430.3167004-1-ryan.roberts@arm.com> <20230626171430.3167004-7-ryan.roberts@arm.com>
+In-Reply-To: <20230626171430.3167004-7-ryan.roberts@arm.com>
 From:   Yu Zhao <yuzhao@google.com>
-Date:   Mon, 26 Jun 2023 20:53:09 -0600
-Message-ID: <CAOUHufaUT3UzGj-ohPN72CHtgXQHpKFrvJgcPfkJ6HAO=ywKQQ@mail.gmail.com>
-Subject: Re: [PATCH v1 09/10] arm64: mm: Declare support for large anonymous folios
+Date:   Mon, 26 Jun 2023 20:54:54 -0600
+Message-ID: <CAOUHufYBSc=RKpPg4PuHduJiWKOe+vpA_rZVo-9-gFvVue0huQ@mail.gmail.com>
+Subject: Re: [PATCH v1 06/10] mm: Allow deferred splitting of arbitrary large
+ anon folios
 To:     Ryan Roberts <ryan.roberts@arm.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         "Matthew Wilcox (Oracle)" <willy@infradead.org>,
@@ -81,58 +82,12 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 On Mon, Jun 26, 2023 at 11:15=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com=
 > wrote:
 >
-> For the unhinted case, when THP is not permitted for the vma, don't
-> allow anything bigger than 64K. This means we don't waste too much
-> memory. Additionally, for 4K pages this is the contpte size, and for
-> 16K, this is (usually) the HPA size when the uarch feature is
-> implemented. For the hinted case, when THP is permitted for the vma,
-> allow the contpte size for all page size configurations; 64K for 4K, 2M
-> for 16K and 2M for 64K.
+> With the introduction of large folios for anonymous memory, we would
+> like to be able to split them when they have unmapped subpages, in order
+> to free those unused pages under memory pressure. So remove the
+> artificial requirement that the large folio needed to be at least
+> PMD-sized.
 >
 > Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> ---
->  arch/arm64/Kconfig | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
->
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 343e1e1cae10..0e91b5bc8cd9 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -243,6 +243,7 @@ config ARM64
->         select TRACE_IRQFLAGS_SUPPORT
->         select TRACE_IRQFLAGS_NMI_SUPPORT
->         select HAVE_SOFTIRQ_ON_OWN_STACK
-> +       select ARCH_SUPPORTS_LARGE_ANON_FOLIO
->         help
->           ARM 64-bit (AArch64) Linux support.
->
-> @@ -281,6 +282,18 @@ config ARM64_CONT_PMD_SHIFT
->         default 5 if ARM64_16K_PAGES
->         default 4
->
-> +config ARCH_LARGE_ANON_FOLIO_NOTHP_ORDER_MAX
-> +       int
-> +       default 0 if ARM64_64K_PAGES    # 64K (1 page)
-> +       default 2 if ARM64_16K_PAGES    # 64K (4 pages; benefits from HPA=
- where HW supports it)
-> +       default 4 if ARM64_4K_PAGES     # 64K (16 pages; eligible for con=
-tpte-mapping)
-> +
-> +config ARCH_LARGE_ANON_FOLIO_THP_ORDER_MAX
-> +       int
-> +       default 5 if ARM64_64K_PAGES    # 2M  (32 page; eligible for cont=
-pte-mapping)
-> +       default 7 if ARM64_16K_PAGES    # 2M  (128 pages; eligible for co=
-ntpte-mapping)
-> +       default 4 if ARM64_4K_PAGES     # 64K (16 pages; eligible for con=
-tpte-mapping)
-> +
->  config ARCH_MMAP_RND_BITS_MIN
->         default 14 if ARM64_64K_PAGES
->         default 16 if ARM64_16K_PAGES
 
-Can we please just add one Kconfig for the large anon folio feature,
-i.e., ARCH_WANTS_PTE_ORDER, for now?
-
-Feel free to add as many as you wish for arm specific features like
-HPA and contpte.
+Reviewed-by: Yu Zhao <yuzhao@google.com>
