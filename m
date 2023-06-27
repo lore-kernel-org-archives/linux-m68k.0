@@ -2,59 +2,58 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7CFFEB64D7
-	for <linux-m68k@archiver.kernel.org>; Tue, 27 Jun 2023 02:55:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 323C4EB64D9
+	for <linux-m68k@archiver.kernel.org>; Tue, 27 Jun 2023 03:02:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbjF0Czf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 26 Jun 2023 22:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57046 "EHLO
+        id S229832AbjF0DCC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 26 Jun 2023 23:02:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229740AbjF0Czc (ORCPT
+        with ESMTP id S229584AbjF0DCB (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 26 Jun 2023 22:55:32 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7422519A4
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jun 2023 19:55:31 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-401d1d967beso136291cf.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jun 2023 19:55:31 -0700 (PDT)
+        Mon, 26 Jun 2023 23:02:01 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E107DBB
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jun 2023 20:01:59 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-4007b5bafceso92041cf.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jun 2023 20:01:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1687834530; x=1690426530;
+        d=google.com; s=20221208; t=1687834919; x=1690426919;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=K6m+wEFcEkBY8kPY3Kx1wllLpYaRIsGxbOUyAAHvddU=;
-        b=ExOjo+32OkxgczlDHvAA93Sbizsv21cvgNnqKyveTvbuoZMVxqcmZEgPgSllcehguu
-         dbX+ENH+6Ay2FKPsfQQPRgwk9gig7UN/Bqn5dy0/3Lt52aEGpC6a0CWZuDlLqxGVuynQ
-         ePD+CMarbkoMLKhi58XFMsuv2TxpZMqD4UY8o5PNiJT66wQAkDvlNiFFn0BYTqgMvXPt
-         9NcqlCm40PM9effdAviY9KeE8HRGVu4E/rigBJg7RATr+OyC7hI4fz3nHHxtdPodsK9Y
-         PNjY12fUxpUwZPWspB5JgiUTyLdHqVtoy8OZEW6quF96sK7Xy1kFz342QD8ZJJbxbPpN
-         +zpQ==
+        bh=Dubf60A5K0NzNIP7xjDZqZozn3KVMPgogoe8ASnGAZg=;
+        b=PDCiQ+OMm+ZYhItlBm9CJOAjt3arCBaIPefCRV+cRGlKtmTkgJuKH7kAOKyAbCQJzL
+         BCdmcPnotA0n4v9avoXLaITUGQgCoZm0BKEirmoOrgdrv8GGmlOoIokTT8s6lPxZIxSr
+         eePAgRbrFZroffClytmh37SqL9NSTT2FHr7ZtV7QGlDkmk6KAHHYcWPVhpXKOVGr8Tr7
+         Xvj/gX5em4lLmUFwa2ra0Yw/kozeJB+nK/9f/BgOWwSt6jpUIMH8XIdAtL1yeNznNHSz
+         i5guqpOz9eCzUhqIk6gXiuPNKiSeUkePu5MwafnJai+nUz1Z0jF1fVOyqLoOaTDwUabC
+         0MkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687834530; x=1690426530;
+        d=1e100.net; s=20221208; t=1687834919; x=1690426919;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=K6m+wEFcEkBY8kPY3Kx1wllLpYaRIsGxbOUyAAHvddU=;
-        b=HHiFGMzv0eGMvipwBl3JdTHoDTU0mFK3JEJ31XgU32VDQQY0nc7tdCbcB8995JLY3E
-         rjClaynbBUlysYmm63os6GB38RTnROZct+xihQj18JhBJHks0xZgyljH53cFXLZYyi/J
-         biaSGkktZqv6BbwHL51+7f8kc5dB2vncO4UZHWf5FUZsK2HV5SEqCOn41rtpxse6XEl/
-         MgiaL0vM+nXP3NNaimFdvqqAcqaxk0pOer684X41Orn3I3tSTq7v9dAoxLWJsaCHBgOH
-         6m+BxzXdZboqZkp/iIm27cjLZK96mMeLJRPSGRduXGAeaGEbS8FjTQ4ICFivW4jkDBHZ
-         MDPg==
-X-Gm-Message-State: AC+VfDycXBvlolu0cRqhmNC3xLxw1mRZqgF7vKJAQZhrmpdo9Rhj1A9R
-        VY7Zm2SiBE/9X4DyT5kP+spWGVCvLmPEffP4pek0SA==
-X-Google-Smtp-Source: ACHHUZ4HHpDDlpCkNylVwPD6Vtl3Tw7Wkd/6GWnr7BTs/XNVIfH6MktIHos0KxldS43iWx3GtWhQNV7SWLRv/Puj8+4=
-X-Received: by 2002:a05:622a:d1:b0:3f0:af20:1a37 with SMTP id
- p17-20020a05622a00d100b003f0af201a37mr70012qtw.15.1687834530512; Mon, 26 Jun
- 2023 19:55:30 -0700 (PDT)
+        bh=Dubf60A5K0NzNIP7xjDZqZozn3KVMPgogoe8ASnGAZg=;
+        b=du3rVmSdLJV/24S74OSWEEQxoAKDZKhjDej6rp05UEK8a+n2wB8aigIeTOH9ysG5Lu
+         SsP592hXux4aBT/GTyvmx8fMSsGCz7RCkHbqELj8FN02tMfXN/fMVqkwuAze4DQZOQtv
+         +iYImWN0ZHNvv5ScUNnMLqt3Njmt/ghfpWImA7R3hGxObU0AiSQ1bTkDNp1Cq1wIpgvy
+         KFBS/h/HiYlKcIFbNN5Z7DY4hRofBjUNkYvOk5O3i0snsZVBLWQL1k4ak8e1mvRyKPZ0
+         bOr6kYzyFiH7izApQAJl2SloJgc5v2IeE+CoGRWLnQ7JtugOgPr/++g05eOwQQY1J46E
+         i5+w==
+X-Gm-Message-State: AC+VfDxp2JQ2PC3Je/NshMbb51DliQmXW8nM3BNDrAj77aWbLsysvLpW
+        1uCU8JayzaOdN/cV7UJBLtJM51yziQ0cnv/ZhBJ0/g==
+X-Google-Smtp-Source: ACHHUZ5kSZ0VxsoAPI4/7ibeP7x8z7uQzBQxZXwrk6r4ft671XydiY3Jw1m0BE4SFdIns2MuaVANBIMzMf5b0M5GeEY=
+X-Received: by 2002:a05:622a:1a0e:b0:3f9:a73b:57bb with SMTP id
+ f14-20020a05622a1a0e00b003f9a73b57bbmr69998qtb.4.1687834918926; Mon, 26 Jun
+ 2023 20:01:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230626171430.3167004-1-ryan.roberts@arm.com> <20230626171430.3167004-7-ryan.roberts@arm.com>
-In-Reply-To: <20230626171430.3167004-7-ryan.roberts@arm.com>
+References: <20230626171430.3167004-1-ryan.roberts@arm.com> <20230626171430.3167004-11-ryan.roberts@arm.com>
+In-Reply-To: <20230626171430.3167004-11-ryan.roberts@arm.com>
 From:   Yu Zhao <yuzhao@google.com>
-Date:   Mon, 26 Jun 2023 20:54:54 -0600
-Message-ID: <CAOUHufYBSc=RKpPg4PuHduJiWKOe+vpA_rZVo-9-gFvVue0huQ@mail.gmail.com>
-Subject: Re: [PATCH v1 06/10] mm: Allow deferred splitting of arbitrary large
- anon folios
+Date:   Mon, 26 Jun 2023 21:01:22 -0600
+Message-ID: <CAOUHufarua_JmnTu5NM-W3K4Togw+24F=Pf0HU0ZOjuwbRMC0A@mail.gmail.com>
+Subject: Re: [PATCH v1 10/10] mm: Allocate large folios for anonymous memory
 To:     Ryan Roberts <ryan.roberts@arm.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         "Matthew Wilcox (Oracle)" <willy@infradead.org>,
@@ -82,12 +81,47 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 On Mon, Jun 26, 2023 at 11:15=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com=
 > wrote:
 >
-> With the introduction of large folios for anonymous memory, we would
-> like to be able to split them when they have unmapped subpages, in order
-> to free those unused pages under memory pressure. So remove the
-> artificial requirement that the large folio needed to be at least
-> PMD-sized.
+> With all of the enabler patches in place, modify the anonymous memory
+> write allocation path so that it opportunistically attempts to allocate
+> a large folio up to `max_anon_folio_order()` size (This value is
+> ultimately configured by the architecture). This reduces the number of
+> page faults, reduces the size of (e.g. LRU) lists, and generally
+> improves performance by batching what were per-page operations into
+> per-(large)-folio operations.
+>
+> If CONFIG_LARGE_ANON_FOLIO is not enabled (the default) then
+> `max_anon_folio_order()` always returns 0, meaning we get the existing
+> allocation behaviour.
 >
 > Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> ---
+>  mm/memory.c | 159 +++++++++++++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 144 insertions(+), 15 deletions(-)
+>
+> diff --git a/mm/memory.c b/mm/memory.c
+> index a8f7e2b28d7a..d23c44cc5092 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -3161,6 +3161,90 @@ static inline int max_anon_folio_order(struct vm_a=
+rea_struct *vma)
+>                 return CONFIG_LARGE_ANON_FOLIO_NOTHP_ORDER_MAX;
+>  }
+>
+> +/*
+> + * Returns index of first pte that is not none, or nr if all are none.
+> + */
+> +static inline int check_ptes_none(pte_t *pte, int nr)
+> +{
+> +       int i;
+> +
+> +       for (i =3D 0; i < nr; i++) {
+> +               if (!pte_none(ptep_get(pte++)))
+> +                       return i;
+> +       }
+> +
+> +       return nr;
+> +}
+> +
+> +static int calc_anon_folio_order_alloc(struct vm_fault *vmf, int order)
 
-Reviewed-by: Yu Zhao <yuzhao@google.com>
+As suggested previously in 03/10, we can leave this for later.
