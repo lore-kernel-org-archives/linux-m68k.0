@@ -2,160 +2,109 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4FD9EB64D9
-	for <linux-m68k@archiver.kernel.org>; Tue, 27 Jun 2023 18:34:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8949DEB64D9
+	for <linux-m68k@archiver.kernel.org>; Tue, 27 Jun 2023 19:10:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbjF0SeU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 27 Jun 2023 14:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55838 "EHLO
+        id S231296AbjF0TK0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 27 Jun 2023 15:10:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbjF0SeT (ORCPT
+        with ESMTP id S230019AbjF0TKZ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 27 Jun 2023 14:34:19 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A151AE71
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Jun 2023 11:33:47 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-40079620a83so44871cf.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Jun 2023 11:33:47 -0700 (PDT)
+        Tue, 27 Jun 2023 15:10:25 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F08DEFD
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Jun 2023 12:10:24 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-543c692db30so3991516a12.3
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Jun 2023 12:10:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1687890825; x=1690482825;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PTIY9reQDxCVjeBIGzBvbwdTkf7d3X2+E+ffOvvfOt8=;
-        b=IFZFZBAdSS5WPvdUVXRmtMP6d4it0zMJf/l2GDxZXOXh1ctIJNlPkvj2sinpxjJpBe
-         LSKJg/UTJqQVTKhWODYjkO1i4nmcSjjuGZmBYcplmBZiyiFW6CuoXRu+bQTCz2WCa1nH
-         SdQntuzU7sGVa9Zb4/4LWl80uj4Q0BPHxEdxix7lK5L3lwfGKXDqrn1GAAYX6QuI7vNE
-         z1pBKRtW9A03Pn/i46V3X9p17H8SAeO0G3yXELGKIy5uxYSjsIK7Iv6IFYtp9hQ3EnpD
-         eG251UrPtZeVpaEySuJiM3LXqN8D4gZAZ/2Sukeubj3yBMBzkQ54sCd/tzIGiPBSNQ4H
-         dJIw==
+        d=gmail.com; s=20221208; t=1687893024; x=1690485024;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=yS/xmFpqe6+k8T+yWQv7frf8UxF7B6Cm+1CNfhqUPlA=;
+        b=BMqSkVfZP75OxNlOqvaghKGJv9m0y4sm8KFw5SHceiXFQz/e0SiiKJT9I5B52iAH17
+         cMt4KC2GjU9iq0SnaoF95JUsMa0mk+JEcq2FkRIOzoow88IvYkDfH7aBL3K5PbCOKOue
+         txhLzT7BLkzfYn4DxxqSwsZ2KmDA6ILNOIWpC3UOJTW+EHWbeQQdlcmGoaBUyJofM5AY
+         lnVmBNLdubBt20V6jFfi37xAvQhhTT8MryCyACblmLywm5IjXVYJCWSIUi3pbGc+j98S
+         r4FtzORgbma5+HwlZ2RT9hRW9y3a8jxCdKlGNGBWvRri5+DzenA7COAJXTL5/EtGEK0g
+         cong==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687890825; x=1690482825;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PTIY9reQDxCVjeBIGzBvbwdTkf7d3X2+E+ffOvvfOt8=;
-        b=lmsHU314SOFBs+qfOJG7Fq29BpO34P+58oBFE9Wy8mENV0lPulIB8TQgFz/XMJ8yG7
-         0Zfqam/65ZXg5EMWVAiBD4Xfw5HU3mKJvEU/q7QUTDYsmNbU/DftUalbaNuaoSyGnOPI
-         1fZY4OhixtNt7JfguBthixRNjGQeaG0a0c89pJKG0tPMzdT3Q2g2rqfHul9D9rQz2wUE
-         weOf6h+tD9w38ajIj9hM8rerYp+DjE+rlf1qrry4K3pn0NGhpaYgvyIdxH3CWGhYd4k9
-         LrRB/wCncb6g19P8ymnooZBfVztV2fbZP+wBFSRg5PGb9IZqmm2MC4Lorvr3ACLIxPiE
-         UsEg==
-X-Gm-Message-State: AC+VfDy/L85RJJcT8Lhhy8QrA3nbsaZkn9/68akp6RPrH3nF+duEqldG
-        Z+9d4WocDEINiSgbvUitnIam2MU9TNKdmInjTJzsGQ==
-X-Google-Smtp-Source: ACHHUZ6J+FwNO1q3sZEb2eJpxaQ1yK9y93HAAT9rQ/w4kcix4s3yyUXUt2xkbkSmZhsyVHdXENGOFgl+h8r/6XgSKPU=
-X-Received: by 2002:a05:622a:2d2:b0:3fd:ad1b:4e8a with SMTP id
- a18-20020a05622a02d200b003fdad1b4e8amr15807qtx.22.1687890825017; Tue, 27 Jun
- 2023 11:33:45 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1687893024; x=1690485024;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yS/xmFpqe6+k8T+yWQv7frf8UxF7B6Cm+1CNfhqUPlA=;
+        b=HxXPBvoWZquAPV7c+VBu3t99Mm1XXDYWXMfqsJNcIoHwbiOIDd78qoMY+o3lIx8IgA
+         X+OtXndbbVQVEI8kwXjPY2d9ytywnFaFtyMgEJNVo1lyThjH1OwGxC3DCVie9odV75JO
+         +GA1Il8INTxs/ChChw75z0AGfrfp8/ap27QKcuqylwIrIn2LlPKQP2GSP2MaU1ceCkqy
+         AVSKNpCUT11X/zfVi4G5F2TIdSFI9Bp5HgfajCxqy8OvVYGmSWnTp1OCeMkXqbf2BvG3
+         vHQHx2TwUldGx3M+pHvThBpNXJ7bnGgaPnG+uFQtb/fQ5O9uilqU1fU9RFsojzUrH1iE
+         RULQ==
+X-Gm-Message-State: AC+VfDxwO03birRrB2CDO7IJ+MMkQn5oEzMOdOmnvmWIfZClevrfmmgH
+        EqPmccZ8iqy4G0Q0nvzG7rg=
+X-Google-Smtp-Source: ACHHUZ4TyTsIrCRAZ6UdXT5Omt1I9QGIq3lGO+AmEbof8hKm4unG6pcuoo4CdZZ1APibznjic8nqlQ==
+X-Received: by 2002:a17:90a:3cc6:b0:262:df8e:fcb6 with SMTP id k6-20020a17090a3cc600b00262df8efcb6mr9240150pjd.43.1687893024298;
+        Tue, 27 Jun 2023 12:10:24 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id n91-20020a17090a5ae400b002471deb13fcsm6684270pji.6.2023.06.27.12.10.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jun 2023 12:10:23 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <cc954b15-63ab-9d9f-2d37-1aea78b7f65f@roeck-us.net>
+Date:   Tue, 27 Jun 2023 12:10:20 -0700
 MIME-Version: 1.0
-References: <20230626171430.3167004-1-ryan.roberts@arm.com>
- <20230626171430.3167004-11-ryan.roberts@arm.com> <CAOUHufarua_JmnTu5NM-W3K4Togw+24F=Pf0HU0ZOjuwbRMC0A@mail.gmail.com>
- <0c98f854-b4e4-9a71-8e0c-1556bc79468c@arm.com>
-In-Reply-To: <0c98f854-b4e4-9a71-8e0c-1556bc79468c@arm.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Tue, 27 Jun 2023 12:33:09 -0600
-Message-ID: <CAOUHufa21rX1ODOZ0iJxiy4pstgGqhkbfYozg8-+sRp5ZxAOjA@mail.gmail.com>
-Subject: Re: [PATCH v1 10/10] mm: Allocate large folios for anonymous memory
-To:     Ryan Roberts <ryan.roberts@arm.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v5 26/33] nios2: Convert __pte_free_tlb() to use ptdescs
+Content-Language: en-US
+To:     Vishal Moola <vishal.moola@gmail.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+        xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
+        Hugh Dickins <hughd@google.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>
+References: <20230622205745.79707-1-vishal.moola@gmail.com>
+ <20230622205745.79707-27-vishal.moola@gmail.com>
+ <13bab37c-0f0a-431a-8b67-4379bf4dc541@roeck-us.net>
+ <CAOzc2px6VutRkMUTn+M5LFLf1YbRVZFgJ=q7StaApwYRxUWqQA@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <CAOzc2px6VutRkMUTn+M5LFLf1YbRVZFgJ=q7StaApwYRxUWqQA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Jun 27, 2023 at 3:57=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com>=
- wrote:
->
-> On 27/06/2023 04:01, Yu Zhao wrote:
-> > On Mon, Jun 26, 2023 at 11:15=E2=80=AFAM Ryan Roberts <ryan.roberts@arm=
-.com> wrote:
-> >>
-> >> With all of the enabler patches in place, modify the anonymous memory
-> >> write allocation path so that it opportunistically attempts to allocat=
-e
-> >> a large folio up to `max_anon_folio_order()` size (This value is
-> >> ultimately configured by the architecture). This reduces the number of
-> >> page faults, reduces the size of (e.g. LRU) lists, and generally
-> >> improves performance by batching what were per-page operations into
-> >> per-(large)-folio operations.
-> >>
-> >> If CONFIG_LARGE_ANON_FOLIO is not enabled (the default) then
-> >> `max_anon_folio_order()` always returns 0, meaning we get the existing
-> >> allocation behaviour.
-> >>
-> >> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> >> ---
-> >>  mm/memory.c | 159 +++++++++++++++++++++++++++++++++++++++++++++++----=
--
-> >>  1 file changed, 144 insertions(+), 15 deletions(-)
-> >>
-> >> diff --git a/mm/memory.c b/mm/memory.c
-> >> index a8f7e2b28d7a..d23c44cc5092 100644
-> >> --- a/mm/memory.c
-> >> +++ b/mm/memory.c
-> >> @@ -3161,6 +3161,90 @@ static inline int max_anon_folio_order(struct v=
-m_area_struct *vma)
-> >>                 return CONFIG_LARGE_ANON_FOLIO_NOTHP_ORDER_MAX;
-> >>  }
-> >>
-> >> +/*
-> >> + * Returns index of first pte that is not none, or nr if all are none=
-.
-> >> + */
-> >> +static inline int check_ptes_none(pte_t *pte, int nr)
-> >> +{
-> >> +       int i;
-> >> +
-> >> +       for (i =3D 0; i < nr; i++) {
-> >> +               if (!pte_none(ptep_get(pte++)))
-> >> +                       return i;
-> >> +       }
-> >> +
-> >> +       return nr;
-> >> +}
-> >> +
-> >> +static int calc_anon_folio_order_alloc(struct vm_fault *vmf, int orde=
-r)
-> >
-> > As suggested previously in 03/10, we can leave this for later.
->
-> I disagree. This is the logic that prevents us from accidentally replacin=
-g
-> already set PTEs, or wandering out of the VMA bounds etc. How would you c=
-atch
-> all those corener cases without this?
+On 6/27/23 10:42, Vishal Moola wrote:
+> On Mon, Jun 26, 2023 at 10:47 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>>
+>> On Thu, Jun 22, 2023 at 01:57:38PM -0700, Vishal Moola (Oracle) wrote:
+>>> Part of the conversions to replace pgtable constructor/destructors with
+>>> ptdesc equivalents.
+>>>
+>>> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+>>> Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
+>>
+>> This patch causes all nios2 builds to fail.
+> 
+> It looks like you tried to apply this patch on its own. This patch depends
+> on patches 01-12 of this patchset to compile properly. I've cross-compiled
+> this architecture and it worked, but let me know if something fails
+> when its applied on top of those patches (or the rest of the patchset).
 
-Again, sorry for not being clear previously: we definitely need to
-handle alignments & overlapps. But the fallback, i.e., "for (; order >
-1; order--) {" in calc_anon_folio_order_alloc() is not necessary.
 
-For now, we just need something like
+No, I did not try to apply this patch on its own. I tried to build yesterday's
+pending-fixes branch of linux-next.
 
-  bool is_order_suitable() {
-    // check whether it fits properly
-  }
+Guenter
 
-Later on, we could add
-
-  alloc_anon_folio_best_effort()
-  {
-    for a list of fallback orders
-      is_order_suitable()
-  }
