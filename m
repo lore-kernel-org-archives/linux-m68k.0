@@ -2,186 +2,108 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1BEEEB64DC
-	for <linux-m68k@archiver.kernel.org>; Tue, 27 Jun 2023 03:36:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AB71C001DD
+	for <linux-m68k@archiver.kernel.org>; Tue, 27 Jun 2023 04:46:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbjF0Dgx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 26 Jun 2023 23:36:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45612 "EHLO
+        id S231377AbjF0EqZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 27 Jun 2023 00:46:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230032AbjF0DgP (ORCPT
+        with ESMTP id S231214AbjF0Epu (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 26 Jun 2023 23:36:15 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D2964C17
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jun 2023 20:30:59 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-4007b5bafceso96571cf.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jun 2023 20:30:59 -0700 (PDT)
+        Tue, 27 Jun 2023 00:45:50 -0400
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1103B1FCF
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jun 2023 21:44:21 -0700 (PDT)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5703d12ab9aso42541927b3.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jun 2023 21:44:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1687836655; x=1690428655;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Dps86R1lndJwF4gJQy/c3O9t7fuW8Q1JEcrGXaT4yyM=;
-        b=DPpXKg59gxCfYZfd9BY428kZ8iu0DYsney6Rdb3rBdwDtXCqI6by6+cpd+iFCxaq79
-         l5qUs+UtG6qNw6vClJxqZ156uilkFr4nqOfpOjwb4sCDK3cewEwBmVMA0EIXWOjk8R9i
-         TVfgsTBk1kHsR06KuWByKOPsHwpa4kfikZiOJBSb1rUERnaQZ2h4T5rsCZtkeArohaZX
-         Mkw8ML+8yLd2TpK+iFeG6sjz2DCcKu+mgd+76Du4ZXe9n58Em657zW5MzIJDxXMzqKBe
-         fEm9np6GD+3Cx5VBNcJHXVbW+BthLgsTGUPU+3D1UFEeHCXje/m+ogWz3nybucVagpcD
-         4StQ==
+        d=google.com; s=20221208; t=1687841060; x=1690433060;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dVtrcXbE5qXWKdJhq2ArhetT4KPRpQBwbjTOuMnTdxE=;
+        b=501HLYHctmk8sIJeTmzxhRx3/mgKpv1jRi1zyxe6IKd5PzvxEUvUlafEKoDqL6yZVr
+         8LPzltfzYfOsnNGE3T6BklB22lAMitCgdhFuhtcXDNR8cn90bt0hxS6/rFyMCnKABSjm
+         /oRswCkgkHFa78/d8yQxqLAP7w+UcywLgaNVEk0kQUj/E5gzTgG4U1Ib/QTJ68K6B1lq
+         DHiArvPKR0yaKTV4AcdaFGyA0a3QVzlRHTqcAyQmjJhyBDsZIisDj9Axezm4VTj3plhb
+         Dus4mDTAcMi1b8nttzH3dDwb6//iZcVcKmqu+MryYnw/GG09jfr1xcEP4Qfwx6utRJkj
+         zVzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687836655; x=1690428655;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Dps86R1lndJwF4gJQy/c3O9t7fuW8Q1JEcrGXaT4yyM=;
-        b=UwGXm/jzwCIdfXGsyGBTO3mRuF0SaWj9wq0zerWtBQD3wqUWF1fIjWVmS9bhQ5L2Y+
-         Rj5oNR/0I62VfsQYX1aEiomz5tzgE7t4Hq/+TpPyEVH13W38ruvQuWm8z25XmVj66iZH
-         XPDu6/jOXwJJzwt/BF9UokYeCwvqZJfKa8sW+5e1zm2DJXh0O9oAUcmrXCXcWtr5U+8E
-         NKK+QkQZaoI18eZ05bW0XQLDsogoCFHsDdq/WI8B+b8MSHJQFuPTwpN2BzokelYJsfgE
-         n+t+fGtHeFo2VCK290G42+GrkOsBhvSg/kTwz9as97Nrjx/eUONDS6k54l4P0FduUqKo
-         cjGQ==
-X-Gm-Message-State: AC+VfDxz5k22vv/y6km3PjyqvcONgDVl3SK90bEyg3n7K2sjrWSXhLmZ
-        cBqcg6+UeisVZyGE4+cuMZRrywxmtzg13oWq++3chA==
-X-Google-Smtp-Source: ACHHUZ4qGh8xmLwSTj4hOczEKK2tKapgoJ7DPtSPYajCf/D7+00nPQt51ielpDPZJ55CqXUcttPpnW7qGjNXY0ewa5Y=
-X-Received: by 2002:ac8:5953:0:b0:3f5:49b6:f18d with SMTP id
- 19-20020ac85953000000b003f549b6f18dmr57784qtz.11.1687836655385; Mon, 26 Jun
- 2023 20:30:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230626171430.3167004-1-ryan.roberts@arm.com>
-In-Reply-To: <20230626171430.3167004-1-ryan.roberts@arm.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Mon, 26 Jun 2023 21:30:19 -0600
-Message-ID: <CAOUHufaUTbUw9MTzw8D=sVrEB+RP6LSBQVGn93TWk=ozV8XobA@mail.gmail.com>
-Subject: Re: [PATCH v1 00/10] variable-order, large folios for anonymous memory
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
+        d=1e100.net; s=20221208; t=1687841060; x=1690433060;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dVtrcXbE5qXWKdJhq2ArhetT4KPRpQBwbjTOuMnTdxE=;
+        b=kQQqMAChMjJsMwOYacT3IeqPcaqOjNqWxo6ODW+NsbCXiHJncK2sQRVp4uaKkNoqQH
+         RFRsi9HUcseH2ljA3vkROOAUi5sSy0FhYmmUI9QmimrgBFjC8cNoo+QWYRMfqEV//jHe
+         O0ZxPb7ZwowVlCVwtuq5ZvBMw3XYjH9r765Se1y3ayznvJYOKGZPJ1aQKXSn3blSQ+Pt
+         1iazK8bfPKw9QMG//LC+BR81wJOCdsStG/eZ3VQ/zGp/tdLrW+V/8v/hMdTyRvv3cfQB
+         Nm7gtVv37zleP1VEZ8a6s/aBwGoGDnUSpZ6T0FP/oDTa4z4dDaVzptEQqmheMpQecbXZ
+         pK9Q==
+X-Gm-Message-State: AC+VfDzA72RQ1GpTagvbTU1+0tPkF8EOwK6QDYEyhJPIpK0O7thWXiHD
+        A3Ph9MJiohaaom6dI0r33mHdAw==
+X-Google-Smtp-Source: ACHHUZ4LBcIHJ/ynOcwzWzKYI9Mk2cjEWGfgZGpKdMoBZ7/XKupPMOzNiMbSCmgeKveyN334gs70/g==
+X-Received: by 2002:a81:7bc2:0:b0:56d:43cb:da98 with SMTP id w185-20020a817bc2000000b0056d43cbda98mr29864359ywc.29.1687841059932;
+        Mon, 26 Jun 2023 21:44:19 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id j8-20020a252308000000b00bf44703efd3sm1487805ybj.6.2023.06.26.21.44.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jun 2023 21:44:19 -0700 (PDT)
+Date:   Mon, 26 Jun 2023 21:44:08 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+        xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
+        Hugh Dickins <hughd@google.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        David Hildenbrand <david@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Richard Weinberger <richard@nod.at>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Arnd Bergmann <arnd@arndb.de>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH v6 00/33] Split ptdesc from struct page
+In-Reply-To: <20230627031431.29653-1-vishal.moola@gmail.com>
+Message-ID: <e8992eee-4140-427e-bacb-9449f346318@google.com>
+References: <20230627031431.29653-1-vishal.moola@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Jun 26, 2023 at 11:14=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com=
-> wrote:
->
-> Hi All,
->
-> Following on from the previous RFCv2 [1], this series implements variable=
- order,
-> large folios for anonymous memory. The objective of this is to improve
-> performance by allocating larger chunks of memory during anonymous page f=
-aults:
->
->  - Since SW (the kernel) is dealing with larger chunks of memory than bas=
-e
->    pages, there are efficiency savings to be had; fewer page faults, batc=
-hed PTE
->    and RMAP manipulation, fewer items on lists, etc. In short, we reduce =
-kernel
->    overhead. This should benefit all architectures.
->  - Since we are now mapping physically contiguous chunks of memory, we ca=
-n take
->    advantage of HW TLB compression techniques. A reduction in TLB pressur=
-e
->    speeds up kernel and user space. arm64 systems have 2 mechanisms to co=
-alesce
->    TLB entries; "the contiguous bit" (architectural) and HPA (uarch).
->
-> This patch set deals with the SW side of things only and based on feedbac=
-k from
-> the RFC, aims to be the most minimal initial change, upon which future
-> incremental changes can be added. For this reason, the new behaviour is h=
-idden
-> behind a new Kconfig switch, CONFIG_LARGE_ANON_FOLIO, which is disabled b=
-y
-> default. Although the code has been refactored to parameterize the desire=
-d order
-> of the allocation, when the feature is disabled (by forcing the order to =
-be
-> always 0) my performance tests measure no regression. So I'm hoping this =
-will be
-> a suitable mechanism to allow incremental submissions to the kernel witho=
-ut
-> affecting the rest of the world.
->
-> The patches are based on top of v6.4 plus Matthew Wilcox's set_ptes() ser=
-ies
-> [2], which is a hard dependency. I'm not sure of Matthew's exact plans fo=
-r
-> getting that series into the kernel, but I'm hoping we can start the revi=
-ew
-> process on this patch set independently. I have a branch at [3].
->
-> I've posted a separate series concerning the HW part (contpte mapping) fo=
-r arm64
-> at [4].
->
->
-> Performance
-> -----------
->
-> Below results show 2 benchmarks; kernel compilation and speedometer 2.0 (=
-a
-> javascript benchmark running in Chromium). Both cases are running on Ampe=
-re
-> Altra with 1 NUMA node enabled, Ubuntu 22.04 and XFS filesystem. Each ben=
-chmark
-> is repeated 15 times over 5 reboots and averaged.
->
-> All improvements are relative to baseline-4k. 'anonfolio-basic' is this s=
-eries.
-> 'anonfolio' is the full patch set similar to the RFC with the additional =
-changes
-> to the extra 3 fault paths. The rest of the configs are described at [4].
->
-> Kernel Compilation (smaller is better):
->
-> | kernel          |   real-time |   kern-time |   user-time |
-> |:----------------|------------:|------------:|------------:|
-> | baseline-4k     |        0.0% |        0.0% |        0.0% |
-> | anonfolio-basic |       -5.3% |      -42.9% |       -0.6% |
-> | anonfolio       |       -5.4% |      -46.0% |       -0.3% |
-> | contpte         |       -6.8% |      -45.7% |       -2.1% |
-> | exefolio        |       -8.4% |      -46.4% |       -3.7% |
-> | baseline-16k    |       -8.7% |      -49.2% |       -3.7% |
-> | baseline-64k    |      -10.5% |      -66.0% |       -3.5% |
->
-> Speedometer 2.0 (bigger is better):
->
-> | kernel          |   runs_per_min |
-> |:----------------|---------------:|
-> | baseline-4k     |           0.0% |
-> | anonfolio-basic |           0.7% |
-> | anonfolio       |           1.2% |
-> | contpte         |           3.1% |
-> | exefolio        |           4.2% |
-> | baseline-16k    |           5.3% |
+On Mon, 26 Jun 2023, Vishal Moola (Oracle) wrote:
 
-Thanks for pushing this forward!
+> The MM subsystem is trying to shrink struct page. This patchset
+> introduces a memory descriptor for page table tracking - struct ptdesc.
+...
+>  39 files changed, 686 insertions(+), 455 deletions(-)
 
-> Changes since RFCv2
-> -------------------
->
->   - Simplified series to bare minimum (on David Hildenbrand's advice)
+I don't see the point of this patchset: to me it is just obfuscation of
+the present-day tight relationship between page table and struct page.
 
-My impression is that this series still includes many pieces that can
-be split out and discussed separately with followup series.
+Matthew already explained:
 
-(I skipped 04/10 and will look at it tomorrow.)
+> The intent is to get ptdescs to be dynamically allocated at some point
+> in the ~2-3 years out future when we have finished the folio project ...
+
+So in a kindly mood, I'd say that this patchset is ahead of its time.
+But I can certainly adapt to it, if everyone else sees some point to it.
+
+Hugh
