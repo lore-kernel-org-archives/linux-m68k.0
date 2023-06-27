@@ -2,58 +2,58 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A21AAEB64DC
-	for <linux-m68k@archiver.kernel.org>; Tue, 27 Jun 2023 03:05:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8527AEB64DA
+	for <linux-m68k@archiver.kernel.org>; Tue, 27 Jun 2023 03:07:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229766AbjF0DFF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 26 Jun 2023 23:05:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33976 "EHLO
+        id S229898AbjF0DHB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 26 Jun 2023 23:07:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230268AbjF0DFE (ORCPT
+        with ESMTP id S229487AbjF0DG7 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 26 Jun 2023 23:05:04 -0400
+        Mon, 26 Jun 2023 23:06:59 -0400
 Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F87FD9
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jun 2023 20:05:02 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-4007b5bafceso92821cf.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jun 2023 20:05:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E0410C
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jun 2023 20:06:58 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-401f4408955so92861cf.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jun 2023 20:06:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1687835101; x=1690427101;
+        d=google.com; s=20221208; t=1687835217; x=1690427217;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Udfkb7SVUpoKn3jnskw7T04Cur4Mk4q30DewKVsVPBw=;
-        b=7dXkce0taLND+PJoW+Jbed5b0GMFVghZW9QTkNtQ/meQQ+G4/JcOxPI9Kz0HTIpUjJ
-         DVPqS8EWIMWDNLQb9jkhcv0ZsAV/EK12K1no2eVRvJkp1/XJsLCtTp+lt5ximqKd3QcA
-         O/4FOzC2WA2gGIIWEdtacwm2FXxfG0SQAhL3dtnCVqkZxjmSj6j+j9svH7NJ0A6Nj9Rb
-         jKGMzazG69HvNtEOmK94lVQRbs31Ue4JFIlJhwIOy1XZl8cJtEk1tGxwOUPkGV61Icm6
-         b01rBLpfsO2BiVCGWGTplTaE03Ks9gzUEE9/yTs/Jw+v/FzXpBLgUpA5jsREDvfG7KVe
-         F4+Q==
+        bh=vHjDKRRl/15ekTuy08miOOxy3w0/yhMNRIiKSHMWeKc=;
+        b=U+XAZ3T2dIrYSDRflvSR1rmzQYNaCDWIXrwa1SuzZyMaNy4R1Z9M7iKbPChbnEUUcN
+         HbNR42w6rgICSGyutbOx3FUPFNrEn/y7PrelQZJmyCIivX/xaF9v3GFiJpnhAtYeu4RI
+         /ZCmbFdAX8t40oXyMcprKrsltgmdVNvgUKpuOluQcm4IA1tHAnjOewZE9hAeGjLHQPzC
+         F4j8dAcFO/tUYsA1CRgw8DhT52AI7ytP29bgeMTekvzrlL0PghVPLmiES2dlOXNuNOv9
+         MjlQKW2/dQnNI81iD4ySLmnOu8yM7NHqS0Y6SWD1+C1voL+3X694zE5VmhYQ+Sl+KeBK
+         q2gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687835101; x=1690427101;
+        d=1e100.net; s=20221208; t=1687835217; x=1690427217;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Udfkb7SVUpoKn3jnskw7T04Cur4Mk4q30DewKVsVPBw=;
-        b=f4P9lgFuoFp1i+Ju8RURntXK6ukZj1gUhIfxHNIoualDqQwnukqVuiGbgFlBbcMeca
-         vj5b0l74DxzhiDWUlko2U/ix/KV5+evm74bQ3MBQR5gaC5DRq41iJsPVd8tBdiXe9Wh5
-         4mrjkQ2o6LJjLlpDvqfutC4jJGNKdbPWemVGWH3vocCMWqVmVEIX8QI1iIr7+MrG6R5O
-         FwATYsdjAxZPFdVMQmdKunIuvCbYsL1U0JGWWlJT76RzEt1Rsyzmd1wk7HVHk5TNSuIZ
-         YWlGIWXWerA9dMTIEF3XJLEIA4kt/HB3j5X1K5O0tyMr1KoiwH/KlwBvbDSvSf9v59A4
-         4i9w==
-X-Gm-Message-State: AC+VfDyM2OVaEwToR2n2yxEqojcoJ+19JVBtxXSRebtOYN66Lw8sekLU
-        iv+wNyOIIrRAKNp+47fXykfCrlMXbGwp9BW2wCZ+7g==
-X-Google-Smtp-Source: ACHHUZ6aOgvPbYHnS1BNpa8jCA1x3qA5T/74s8rMt4G/rjNue/yoRJoe9/AmYeGifNbUrQ7LDjo+Du5iRcRAq+DY/jI=
-X-Received: by 2002:a05:622a:1014:b0:3ed:210b:e698 with SMTP id
- d20-20020a05622a101400b003ed210be698mr71765qte.7.1687835101534; Mon, 26 Jun
- 2023 20:05:01 -0700 (PDT)
+        bh=vHjDKRRl/15ekTuy08miOOxy3w0/yhMNRIiKSHMWeKc=;
+        b=HP8yZYBeJJSsvneehFkRomBdEOV2OucxfXXhLZRIw4ZCfwauLYTl70iruNxa87cLMQ
+         N6xtcBZ4690EycDXb2z4PkJgd3tou/SyC2jR4v5cGU4JKz8SIdbLWnCOUl6wwmzieQFa
+         we4St73Ozl5MkqS96SN3HxMTaJYpP3lQYbbPmuHbE/RMAa3VP1rRLdyMTCTiSm7+nRZr
+         AEA8efph9xiSr8oPkz1gAMBOjWWxlColfvHr9sCv/XlOaeFi1H4PBJDPvbmK06H7w1cr
+         Cpcd3iQd6Eet5K4R8lD8oHCgyuJeZgdGpjZDvTt+7i44lRlUTIh76s81hmMnJ871hBMV
+         EI5w==
+X-Gm-Message-State: AC+VfDzTMXkgNpGgd4mJakSZgQ/2cU8EjRnuuh8zipx/Lw7XdzQXFB0h
+        gm2ULYEWLkONEzkHlpGg8AXpX3ToP84LImtO51zV5Q==
+X-Google-Smtp-Source: ACHHUZ5p5sW4PXCHzSz3Bi+SKvcosf62y2SJQOFc8Eaih/xwzKdQqVu4Rv48gDYQD7M4asyor1cgbPKZvcH6CWAHIzY=
+X-Received: by 2002:ac8:59c1:0:b0:3e8:684b:195d with SMTP id
+ f1-20020ac859c1000000b003e8684b195dmr619236qtf.10.1687835217476; Mon, 26 Jun
+ 2023 20:06:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230626171430.3167004-1-ryan.roberts@arm.com> <20230626171430.3167004-8-ryan.roberts@arm.com>
-In-Reply-To: <20230626171430.3167004-8-ryan.roberts@arm.com>
+References: <20230626171430.3167004-1-ryan.roberts@arm.com> <20230626171430.3167004-6-ryan.roberts@arm.com>
+In-Reply-To: <20230626171430.3167004-6-ryan.roberts@arm.com>
 From:   Yu Zhao <yuzhao@google.com>
-Date:   Mon, 26 Jun 2023 21:04:25 -0600
-Message-ID: <CAOUHufbhVM-+zMUvHy0zeTb1ZFnDWnvD+=f6v9YxNJ_h5bjaRw@mail.gmail.com>
-Subject: Re: [PATCH v1 07/10] mm: Batch-zap large anonymous folio PTE mappings
+Date:   Mon, 26 Jun 2023 21:06:21 -0600
+Message-ID: <CAOUHufZB=E5jW2O_ASuGUP=X-PfVUSFxOCvC=YU1_WwJiQCibA@mail.gmail.com>
+Subject: Re: [PATCH v1 05/10] mm: Implement folio_remove_rmap_range()
 To:     Ryan Roberts <ryan.roberts@arm.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         "Matthew Wilcox (Oracle)" <willy@infradead.org>,
@@ -78,25 +78,17 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Jun 26, 2023 at 11:15=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com=
+On Mon, Jun 26, 2023 at 11:14=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com=
 > wrote:
 >
-> This allows batching the rmap removal with folio_remove_rmap_range(),
-> which means we avoid spuriously adding a partially unmapped folio to the
-> deferrred split queue in the common case, which reduces split queue lock
-> contention.
->
-> Previously each page was removed from the rmap individually with
-> page_remove_rmap(). If the first page belonged to a large folio, this
-> would cause page_remove_rmap() to conclude that the folio was now
-> partially mapped and add the folio to the deferred split queue. But
-> subsequent calls would cause the folio to become fully unmapped, meaning
-> there is no value to adding it to the split queue.
+> Like page_remove_rmap() but batch-removes the rmap for a range of pages
+> belonging to a folio, for effciency savings. All pages are accounted as
+> small pages.
 >
 > Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 > ---
->  mm/memory.c | 119 ++++++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 119 insertions(+)
+>  include/linux/rmap.h |  2 ++
+>  mm/rmap.c            | 62 ++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 64 insertions(+)
 
-We don't really need this patch for the series to work. So again, I'd
-split it out.
+Sorry for nagging: this can be included in a followup series.
