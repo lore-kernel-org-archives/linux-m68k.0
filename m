@@ -2,217 +2,337 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B145EB64DA
-	for <linux-m68k@archiver.kernel.org>; Thu, 29 Jun 2023 02:21:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B46FEB64D9
+	for <linux-m68k@archiver.kernel.org>; Thu, 29 Jun 2023 04:59:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231208AbjF2CVW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 28 Jun 2023 22:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54072 "EHLO
+        id S230164AbjF2E70 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 29 Jun 2023 00:59:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230036AbjF2CVV (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 28 Jun 2023 22:21:21 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E84110D7
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 28 Jun 2023 19:21:19 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3a1c162cdfeso149157b6e.2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 28 Jun 2023 19:21:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688005278; x=1690597278;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ySyAmfVhMfVx98sxPbiAVA/jFjbxdrr+oshC1ybeyhc=;
-        b=f/AVb8r9xYD3+whHU3qtmPhPa/Wh01Idfg/drHq8Gr6guNSXvXQ/pAjwYbqItSG+Nj
-         Z84SzpAh17q6wvr3q2N5ze1fpSRPxUpsP/kxaREQxH076ZEmRHVPam+YCm6P0CDXBKG6
-         bVNS+8UJBISeaOmr3dbOLt8PsGF/ZtgGU2Ana6FMCgIF2G6mo13X0pKJi/mfsena8JFL
-         udMFLL4DI8r5WrXp8NJ8kEl/TBJXr9bTse16S39f5NY08Xj8hIp0wcv53gbhlKQIc/Vw
-         lmaAbiDcW5DHveSlmwuZtRQ61CIXCSUOII2jpAN9w4tXZMimamKxTfOxRlE1VQ4wmzgV
-         H1Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688005278; x=1690597278;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ySyAmfVhMfVx98sxPbiAVA/jFjbxdrr+oshC1ybeyhc=;
-        b=Zz8Pkr6DV4IrNpoa3P8urirQhfeMY5JpUodaHpDn5d1qIK6iPU0cTJriCjtqQaLw4j
-         stTU8c5ZAB4HdRq8w81A41h8oy3qNkpNQBGJXMk1MuqLcV1SZXu3gaES/YPQEVRoYYri
-         6xgU48FEd4+ve4PmwygICy9dG5VLsjTtelgb9lre5sAoNDvYwJhtRlnmppgQbeCNN7uG
-         LEZ8yiHOGq76ACK8XAI4PA+WMLmtJxRH2JSgPYVH15/fyDi8Uxgfh7e1tFXq8RisKbUO
-         wF+RIrnWMis2zwK33BoJ4i1EwWc1kC8x5C3IaZwV2fn2QydnGfkupf9c42e2hrtJ7I1X
-         9g7A==
-X-Gm-Message-State: AC+VfDxuVTqupnL552rSBhz8PF7dUUpPYYf9eeyhHZX5HZIvuWKr/RU6
-        h2l3XUQ8ufdQt5p4FCIZZOnbOHrfltQKGMZahLo=
-X-Google-Smtp-Source: ACHHUZ7UAQTQw0vu93YPC3yL+Fh5PVTx9pSYuEGC+hZSnUlnYtuDlw64T8GUG8gOF+WXmdmX60xB15SofoDXqSO9ovU=
-X-Received: by 2002:aca:1703:0:b0:3a1:d075:348b with SMTP id
- j3-20020aca1703000000b003a1d075348bmr10384323oii.59.1688005278204; Wed, 28
- Jun 2023 19:21:18 -0700 (PDT)
+        with ESMTP id S229487AbjF2E7Z (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 29 Jun 2023 00:59:25 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E752F171E;
+        Wed, 28 Jun 2023 21:59:21 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1688014741; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=amzY21NZg26lsUWxpbbWvcushQKuhl/kgsVcFgxI4zokpj8zRQdlbOGInlqIXzPr8e
+    OYDP8la/cwS2K6yUzboPpRcl5xNUty1Z3e+1WtH5C6Tt3SBm4xOVVe3GbfKJdmXS1bMy
+    6y1WgKRgQt8d6YMdbF59hQ7UEWYaT1OqQq90SYjbZp2Yz1m4GczNE0GiVm6RMhA7q3sj
+    izEPYTA3smNAaEEyHJp+rzP3OTQ3XaLLvjcIyL211LTcNPlxCyzeh5tCSH/eHGzfCJ67
+    i8nYcmIQOFT9WJMvy09iX9wK+ztf2rejvke4XgGLMlH+PJHROmNoturFVN7lV7Hz/SCE
+    smlA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1688014741;
+    s=strato-dkim-0002; d=strato.com;
+    h=Subject:From:Cc:To:Date:Message-ID:Cc:Date:From:Subject:Sender;
+    bh=+7c6Cd18dRPSY9T1tbPIe2oEVQE8kMzaSrsxr6FZTcE=;
+    b=gMyuYyjJRgqbILooH4iTf3REIhTASx7Kj6R7/a+aEgSRUjSSPF05XHvuhnSXfdpSce
+    nK98ncwKzhxXVZ6Exh+Q09elevGGq0GhIpjr3Ni8O0hRRC56IOhEXR5ujU63lv2aDjnU
+    l4NheTaWLgRMqvqHYPu9Kmdy8bljzFNWhZwKRu2YAdYHOXoJ+mnLg8Z707Ple7GBhILl
+    IhHLk4UntaqUjKeZkLusaXpKvwARuQHiyG7xB/BQuMBeXS3jjGHSWCRtEm6si6x3Iwam
+    KPGZaXj2bM635NKEJPhu3Meg9b3ex4eMPrjcxqU3KRA2Mb0cYwRw+R6P0nPoTUYcUVvh
+    Wd6w==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1688014741;
+    s=strato-dkim-0002; d=xenosoft.de;
+    h=Subject:From:Cc:To:Date:Message-ID:Cc:Date:From:Subject:Sender;
+    bh=+7c6Cd18dRPSY9T1tbPIe2oEVQE8kMzaSrsxr6FZTcE=;
+    b=I6UqEue6rqNL0FdQFFgQ4KU9k5DzcK4IY9lxJ7Lf+GFz2GihU0I2HYk05TpOdrTCgJ
+    w0KssJBeQb405PqvnjZuwwhhDx1O+3Yj9NCGrOjyUZ1Wn52xsMnnhDDcE17sJnfQG70v
+    LmY5g58GzQM+QTEBDHiGT2OaUbav23/RhmtqBxjr7w6z70I25t+PwNnyeBqG2P18bspm
+    4uVJkE8mE4eDIEATrtOKtRNNc3sUokFjKJ4NbLDEI6pEvRPpFhkIqFCK5UY4MULTCNkY
+    Gf5JnJul9NHECOenpfZ7gQL8qS9ndSLc91TgCiHh66SSORMzA5pD4Ughg+ft2C5C5lpz
+    6kCQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1688014741;
+    s=strato-dkim-0003; d=xenosoft.de;
+    h=Subject:From:Cc:To:Date:Message-ID:Cc:Date:From:Subject:Sender;
+    bh=+7c6Cd18dRPSY9T1tbPIe2oEVQE8kMzaSrsxr6FZTcE=;
+    b=SQYiCnb92CJ1SziwXDusRlAzzm2Xh0CEhZM3Hvjo1h1EtZfNRJOkA5/GX7cm310n5w
+    KCbJGIu9IyLLzT/5A6Bw==
+X-RZG-AUTH: ":L2QefEenb+UdBJSdRCXu93KJ1bmSGnhMdmOod1DhGM4l4Hio94KKxRySfLxnHfJ+Dkjp5DdBfio0GngadwiA6YFcQgU5MFYhNcGi40kecMvJRQ=="
+Received: from [IPV6:2a02:8109:8980:4474:e043:b28b:9d80:cfa4]
+    by smtp.strato.de (RZmta 49.6.0 AUTH)
+    with ESMTPSA id N28a51z5T4x0krw
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Thu, 29 Jun 2023 06:59:00 +0200 (CEST)
+Message-ID: <024ce4fa-cc6d-50a2-9aae-3701d0ebf668@xenosoft.de>
+Date:   Thu, 29 Jun 2023 06:59:00 +0200
 MIME-Version: 1.0
-References: <20230626171430.3167004-1-ryan.roberts@arm.com>
- <CAOUHufaUTbUw9MTzw8D=sVrEB+RP6LSBQVGn93TWk=ozV8XobA@mail.gmail.com> <CAOUHufa0S_ayrys0XzDbH8KJi5HxvbGCh_bSAhDpAgcmSJjFUQ@mail.gmail.com>
-In-Reply-To: <CAOUHufa0S_ayrys0XzDbH8KJi5HxvbGCh_bSAhDpAgcmSJjFUQ@mail.gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 28 Jun 2023 19:21:06 -0700
-Message-ID: <CAHbLzkqUD7ABOMVBgW_hZncL3OxZG-8bhfs0H3xK4M=ok_dyQQ@mail.gmail.com>
-Subject: Re: [PATCH v1 00/10] variable-order, large folios for anonymous memory
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Content-Language: de-DE
+To:     schmitzmic@gmail.com
+Cc:     linux-block@vger.kernel.org, axboe@kernel.dk,
+        linux-m68k@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Christoph Hellwig <hch@lst.de>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "R.T.Dickinson" <rtd2@xtra.co.nz>,
+        mad skateman <madskateman@gmail.com>,
+        Darren Stevens <darren@stevens-zone.net>
+From:   Christian Zigotzky <chzigotzky@xenosoft.de>
+Subject: [FSL P50x0] [PASEMI] The Access to partitions on disks with an Amiga
+ partition table doesn't work anymore after the block updates 2023-06-23
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Jun 27, 2023 at 12:49=E2=80=AFAM Yu Zhao <yuzhao@google.com> wrote:
->
-> On Mon, Jun 26, 2023 at 9:30=E2=80=AFPM Yu Zhao <yuzhao@google.com> wrote=
-:
-> >
-> > On Mon, Jun 26, 2023 at 11:14=E2=80=AFAM Ryan Roberts <ryan.roberts@arm=
-.com> wrote:
-> > >
-> > > Hi All,
-> > >
-> > > Following on from the previous RFCv2 [1], this series implements vari=
-able order,
-> > > large folios for anonymous memory. The objective of this is to improv=
-e
-> > > performance by allocating larger chunks of memory during anonymous pa=
-ge faults:
-> > >
-> > >  - Since SW (the kernel) is dealing with larger chunks of memory than=
- base
-> > >    pages, there are efficiency savings to be had; fewer page faults, =
-batched PTE
-> > >    and RMAP manipulation, fewer items on lists, etc. In short, we red=
-uce kernel
-> > >    overhead. This should benefit all architectures.
-> > >  - Since we are now mapping physically contiguous chunks of memory, w=
-e can take
-> > >    advantage of HW TLB compression techniques. A reduction in TLB pre=
-ssure
-> > >    speeds up kernel and user space. arm64 systems have 2 mechanisms t=
-o coalesce
-> > >    TLB entries; "the contiguous bit" (architectural) and HPA (uarch).
-> > >
-> > > This patch set deals with the SW side of things only and based on fee=
-dback from
-> > > the RFC, aims to be the most minimal initial change, upon which futur=
-e
-> > > incremental changes can be added. For this reason, the new behaviour =
-is hidden
-> > > behind a new Kconfig switch, CONFIG_LARGE_ANON_FOLIO, which is disabl=
-ed by
-> > > default. Although the code has been refactored to parameterize the de=
-sired order
-> > > of the allocation, when the feature is disabled (by forcing the order=
- to be
-> > > always 0) my performance tests measure no regression. So I'm hoping t=
-his will be
-> > > a suitable mechanism to allow incremental submissions to the kernel w=
-ithout
-> > > affecting the rest of the world.
-> > >
-> > > The patches are based on top of v6.4 plus Matthew Wilcox's set_ptes()=
- series
-> > > [2], which is a hard dependency. I'm not sure of Matthew's exact plan=
-s for
-> > > getting that series into the kernel, but I'm hoping we can start the =
-review
-> > > process on this patch set independently. I have a branch at [3].
-> > >
-> > > I've posted a separate series concerning the HW part (contpte mapping=
-) for arm64
-> > > at [4].
-> > >
-> > >
-> > > Performance
-> > > -----------
-> > >
-> > > Below results show 2 benchmarks; kernel compilation and speedometer 2=
-.0 (a
-> > > javascript benchmark running in Chromium). Both cases are running on =
-Ampere
-> > > Altra with 1 NUMA node enabled, Ubuntu 22.04 and XFS filesystem. Each=
- benchmark
-> > > is repeated 15 times over 5 reboots and averaged.
-> > >
-> > > All improvements are relative to baseline-4k. 'anonfolio-basic' is th=
-is series.
-> > > 'anonfolio' is the full patch set similar to the RFC with the additio=
-nal changes
-> > > to the extra 3 fault paths. The rest of the configs are described at =
-[4].
-> > >
-> > > Kernel Compilation (smaller is better):
-> > >
-> > > | kernel          |   real-time |   kern-time |   user-time |
-> > > |:----------------|------------:|------------:|------------:|
-> > > | baseline-4k     |        0.0% |        0.0% |        0.0% |
-> > > | anonfolio-basic |       -5.3% |      -42.9% |       -0.6% |
-> > > | anonfolio       |       -5.4% |      -46.0% |       -0.3% |
-> > > | contpte         |       -6.8% |      -45.7% |       -2.1% |
-> > > | exefolio        |       -8.4% |      -46.4% |       -3.7% |
-> > > | baseline-16k    |       -8.7% |      -49.2% |       -3.7% |
-> > > | baseline-64k    |      -10.5% |      -66.0% |       -3.5% |
-> > >
-> > > Speedometer 2.0 (bigger is better):
-> > >
-> > > | kernel          |   runs_per_min |
-> > > |:----------------|---------------:|
-> > > | baseline-4k     |           0.0% |
-> > > | anonfolio-basic |           0.7% |
-> > > | anonfolio       |           1.2% |
-> > > | contpte         |           3.1% |
-> > > | exefolio        |           4.2% |
-> > > | baseline-16k    |           5.3% |
-> >
-> > Thanks for pushing this forward!
-> >
-> > > Changes since RFCv2
-> > > -------------------
-> > >
-> > >   - Simplified series to bare minimum (on David Hildenbrand's advice)
-> >
-> > My impression is that this series still includes many pieces that can
-> > be split out and discussed separately with followup series.
-> >
-> > (I skipped 04/10 and will look at it tomorrow.)
->
-> I went through the series twice. Here what I think a bare minimum
-> series (easier to review/debug/land) would look like:
-> 1. a new arch specific function providing a prefered order within (0,
-> PMD_ORDER).
-> 2. an extended anon folio alloc API taking that order (02/10, partially).
-> 3. an updated folio_add_new_anon_rmap() covering the large() &&
-> !pmd_mappable() case (similar to 04/10).
-> 4. s/folio_test_pmd_mappable/folio_test_large/ in page_remove_rmap()
-> (06/10, reviewed-by provided).
-> 5. finally, use the extended anon folio alloc API with the arch
-> preferred order in do_anonymous_page() (10/10, partially).
->
-> The rest can be split out into separate series and move forward in
-> parallel with probably a long list of things we need/want to do.
+Hello,
 
-Yeah, the suggestion makes sense to me. And I'd like to go with the
-simplest way unless there is strong justification for extra
-optimization for the time being IMHO.
+The access  to partitions on disks with an Amiga partition table (via 
+the Rigid Disk Block RDB) doesn't work anymore on my Cyrus+ board with a 
+FSL P50x0 PowerPC SoC [1] and on my P.A. Semi Nemo board [2] after the 
+block updates 2023-06-23 [3].
 
->
+parted -l
+
+Model: ATA ST2000DM001-9YN1 (scsi)
+Disk /dev/sda: 2000GB
+Sector size (logical/physical): 512B/4096B
+Partition Table: amiga
+Disk Flags:
+
+Number  Start   End     Size    File system  Name  Flags
+  1      1057kB  123MB   122MB   affs7        BDH0  hidden
+  2      123MB   2274MB  2150MB               DH0   boot
+  3      2274MB  691GB   689GB                DH2
+  4      691GB   1992GB  1301GB  ext4         dhx   boot
+
+dmesg | grep -i sda
+
+[    4.208905] sd 0:0:0:0: [sda] 3907029168 512-byte logical blocks: 
+(2.00 TB/1.82 TiB)
+[    4.253995] sd 0:0:0:0: [sda] 4096-byte physical blocks
+[    4.254826] sd 0:0:0:0: [sda] Write Protect is off
+[    4.300069] sd 0:0:0:0: [sda] Mode Sense: 00 3a 00 00
+[    4.486476] sd 0:0:0:0: [sda] Write cache: enabled, read cache: 
+enabled, doesn't support DPO or FUA
+[    4.580507] sd 0:0:0:0: [sda] Preferred minimum I/O size 4096 bytes
+[    4.712624] Dev sda: unable to read partition block 4294967295
+[    4.761532]  sda: RDSK (512) sda1 (DOS^G)(res 2 spb 2) sda2 
+(SFS^B)(res 2 spb 1) sda3 (SFS^B)(res 2 spb 2) sda4 ((res 2 spb 1) 
+unable to read partition table
+[    4.761892] sda: partition table beyond EOD,
+[    4.861681] Dev sda: unable to read partition block 4294967295
+[    4.912094]  sda: RDSK (512) sda1 (DOS^G)(res 2 spb 2) sda2 
+(SFS^B)(res 2 spb 1) sda3 (SFS^B)(res 2 spb 2) sda4 ((res 2 spb 1) 
+unable to read partition table
+[    4.963387] sda: partition table beyond EOD,
+[    5.014769] sd 0:0:0:0: [sda] Attached SCSI disk
+
+I created a patch for reverting the commit. [4]
+
+The access works again with this patch:
+
+[    0.000000] Kernel command line: root=/dev/sda4
+[    3.987717] sd 0:0:0:0: [sda] 3907029168 512-byte logical blocks: 
+(2.00 TB/1.82 TiB)
+[    4.031349] sd 0:0:0:0: [sda] 4096-byte physical blocks
+[    4.123773] sd 0:0:0:0: [sda] Write Protect is off
+[    4.168682] sd 0:0:0:0: [sda] Mode Sense: 00 3a 00 00
+[    4.279304] sd 0:0:0:0: [sda] Write cache: enabled, read cache: 
+enabled, doesn't support DPO or FUA
+[    4.463508] sd 0:0:0:0: [sda] Preferred minimum I/O size 4096 bytes
+[    4.519477]  sda: RDSK (512) sda1 (DOS^G)(res 2 spb 2) sda2 
+(SFS^B)(res 2 spb 1) sda3 (SFS^B)(res 2 spb 2) sda4 ((res 2 spb 1)
+[    4.720896] sda: p4 size 18446744071956107760 extends beyond EOD,
+[    4.922550]  sda: RDSK (512) sda1 (DOS^G)(res 2 spb 2) sda2 
+(SFS^B)(res 2 spb 1) sda3 (SFS^B)(res 2 spb 2) sda4 ((res 2 spb 1)
+[    4.948655] sda: p4 size 18446744071956107760 extends beyond EOD, 
+truncated
+[    4.998956] sd 0:0:0:0: [sda] Attached SCSI disk
+[    8.394695] EXT4-fs (sda4): mounted filesystem 
+93cb7dd2-ce1b-4bf5-ba47-818cf8e8c9f4 ro with ordered data mode. Quota 
+mode: none.
+[   18.578020] EXT4-fs (sda4): re-mounted 
+93cb7dd2-ce1b-4bf5-ba47-818cf8e8c9f4 ro. Quota mode: none.
+[   23.159524] EXT4-fs (sda4): re-mounted 
+93cb7dd2-ce1b-4bf5-ba47-818cf8e8c9f4 r/w. Quota mode: none.
+
+Could you please check your commit?
+
+Thanks,
+Christian
+
+[1] http://wiki.amiga.org/index.php?title=X5000
+[2] https://en.wikipedia.org/wiki/AmigaOne_X1000
+[3] 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a0433f8cae3ac51f59b4b1863032822aaa2d8164
+[4] revert_amiga.c.patch:
+
+--- a/block/partitions/amiga.c    2023-06-29 04:29:22.947100347 +0200
++++ b/block/partitions/amiga.c    2023-06-26 01:29:58.000000000 +0200
+@@ -11,18 +11,10 @@
+  #define pr_fmt(fmt) fmt
+
+  #include <linux/types.h>
+-#include <linux/mm_types.h>
+-#include <linux/overflow.h>
+  #include <linux/affs_hardblocks.h>
+
+  #include "check.h"
+
+-/* magic offsets in partition DosEnvVec */
+-#define NR_HD    3
+-#define NR_SECT    5
+-#define LO_CYL    9
+-#define HI_CYL    10
+-
+  static __inline__ u32
+  checksum_block(__be32 *m, int size)
+  {
+@@ -39,12 +31,8 @@ int amiga_partition(struct parsed_partit
+      unsigned char *data;
+      struct RigidDiskBlock *rdb;
+      struct PartitionBlock *pb;
+-    u64 start_sect, nr_sects;
+-    sector_t blk, end_sect;
+-    u32 cylblk;        /* rdb_CylBlocks = nr_heads*sect_per_track */
+-    u32 nr_hd, nr_sect, lo_cyl, hi_cyl;
+-    int part, res = 0;
+-    unsigned int blksize = 1;    /* Multiplier for disk block size */
++    int start_sect, nr_sects, blk, part, res = 0;
++    int blksize = 1;    /* Multiplier for disk block size */
+      int slot = 1;
+
+      for (blk = 0; ; blk++, put_dev_sector(sect)) {
+@@ -52,7 +40,7 @@ int amiga_partition(struct parsed_partit
+              goto rdb_done;
+          data = read_part_sector(state, blk, &sect);
+          if (!data) {
+-            pr_err("Dev %s: unable to read RDB block %llu\n",
++            pr_err("Dev %s: unable to read RDB block %d\n",
+                     state->disk->disk_name, blk);
+              res = -1;
+              goto rdb_done;
+@@ -69,12 +57,12 @@ int amiga_partition(struct parsed_partit
+          *(__be32 *)(data+0xdc) = 0;
+          if (checksum_block((__be32 *)data,
+                  be32_to_cpu(rdb->rdb_SummedLongs) & 0x7F)==0) {
+-            pr_err("Trashed word at 0xd0 in block %llu ignored in 
+checksum calculation\n",
++            pr_err("Trashed word at 0xd0 in block %d ignored in 
+checksum calculation\n",
+                     blk);
+              break;
+          }
+
+-        pr_err("Dev %s: RDB in block %llu has bad checksum\n",
++        pr_err("Dev %s: RDB in block %d has bad checksum\n",
+                 state->disk->disk_name, blk);
+      }
+
+@@ -91,15 +79,10 @@ int amiga_partition(struct parsed_partit
+      blk = be32_to_cpu(rdb->rdb_PartitionList);
+      put_dev_sector(sect);
+      for (part = 1; blk>0 && part<=16; part++, put_dev_sector(sect)) {
+-        /* Read in terms partition table understands */
+-        if (check_mul_overflow(blk, (sector_t) blksize, &blk)) {
+-            pr_err("Dev %s: overflow calculating partition block %llu! 
+Skipping partitions %u and beyond\n",
+-                state->disk->disk_name, blk, part);
+-            break;
+-        }
++        blk *= blksize;    /* Read in terms partition table understands */
+          data = read_part_sector(state, blk, &sect);
+          if (!data) {
+-            pr_err("Dev %s: unable to read partition block %llu\n",
++            pr_err("Dev %s: unable to read partition block %d\n",
+                     state->disk->disk_name, blk);
+              res = -1;
+              goto rdb_done;
+@@ -111,70 +94,19 @@ int amiga_partition(struct parsed_partit
+          if (checksum_block((__be32 *)pb, 
+be32_to_cpu(pb->pb_SummedLongs) & 0x7F) != 0 )
+              continue;
+
+-        /* RDB gives us more than enough rope to hang ourselves with,
+-         * many times over (2^128 bytes if all fields max out).
+-         * Some careful checks are in order, so check for potential
+-         * overflows.
+-         * We are multiplying four 32 bit numbers to one sector_t!
+-         */
+-
+-        nr_hd   = be32_to_cpu(pb->pb_Environment[NR_HD]);
+-        nr_sect = be32_to_cpu(pb->pb_Environment[NR_SECT]);
+-
+-        /* CylBlocks is total number of blocks per cylinder */
+-        if (check_mul_overflow(nr_hd, nr_sect, &cylblk)) {
+-            pr_err("Dev %s: heads*sects %u overflows u32, skipping 
+partition!\n",
+-                state->disk->disk_name, cylblk);
+-            continue;
+-        }
+-
+-        /* check for consistency with RDB defined CylBlocks */
+-        if (cylblk > be32_to_cpu(rdb->rdb_CylBlocks)) {
+-            pr_warn("Dev %s: cylblk %u > rdb_CylBlocks %u!\n",
+-                state->disk->disk_name, cylblk,
+-                be32_to_cpu(rdb->rdb_CylBlocks));
+-        }
+-
+-        /* RDB allows for variable logical block size -
+-         * normalize to 512 byte blocks and check result.
+-         */
+-
+-        if (check_mul_overflow(cylblk, blksize, &cylblk)) {
+-            pr_err("Dev %s: partition %u bytes per cyl. overflows u32, 
+skipping partition!\n",
+-                state->disk->disk_name, part);
+-            continue;
+-        }
+-
+-        /* Calculate partition start and end. Limit of 32 bit on cylblk
+-         * guarantees no overflow occurs if LBD support is enabled.
+-         */
+-
+-        lo_cyl = be32_to_cpu(pb->pb_Environment[LO_CYL]);
+-        start_sect = ((u64) lo_cyl * cylblk);
+-
+-        hi_cyl = be32_to_cpu(pb->pb_Environment[HI_CYL]);
+-        nr_sects = (((u64) hi_cyl - lo_cyl + 1) * cylblk);
++        /* Tell Kernel about it */
+
++        nr_sects = (be32_to_cpu(pb->pb_Environment[10]) + 1 -
++                be32_to_cpu(pb->pb_Environment[9])) *
++               be32_to_cpu(pb->pb_Environment[3]) *
++               be32_to_cpu(pb->pb_Environment[5]) *
++               blksize;
+          if (!nr_sects)
+              continue;
+-
+-        /* Warn user if partition end overflows u32 (AmigaDOS limit) */
+-
+-        if ((start_sect + nr_sects) > UINT_MAX) {
+-            pr_warn("Dev %s: partition %u (%llu-%llu) needs 64 bit 
+device support!\n",
+-                state->disk->disk_name, part,
+-                start_sect, start_sect + nr_sects);
+-        }
+-
+-        if (check_add_overflow(start_sect, nr_sects, &end_sect)) {
+-            pr_err("Dev %s: partition %u (%llu-%llu) needs LBD device 
+support, skipping partition!\n",
+-                state->disk->disk_name, part,
+-                start_sect, end_sect);
+-            continue;
+-        }
+-
+-        /* Tell Kernel about it */
+-
++        start_sect = be32_to_cpu(pb->pb_Environment[9]) *
++                 be32_to_cpu(pb->pb_Environment[3]) *
++                 be32_to_cpu(pb->pb_Environment[5]) *
++                 blksize;
+          put_partition(state,slot++,start_sect,nr_sects);
+          {
+              /* Be even more informative to aid mounting */
+
+
+
