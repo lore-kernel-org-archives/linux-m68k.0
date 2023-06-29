@@ -2,39 +2,37 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9221C0015E
-	for <linux-m68k@archiver.kernel.org>; Thu, 29 Jun 2023 11:31:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3577EB64DC
+	for <linux-m68k@archiver.kernel.org>; Thu, 29 Jun 2023 15:28:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbjF2Lb7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 29 Jun 2023 07:31:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41986 "EHLO
+        id S231937AbjF2P2d (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 29 Jun 2023 11:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230460AbjF2Lb6 (ORCPT
+        with ESMTP id S230487AbjF2P2c (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 29 Jun 2023 07:31:58 -0400
+        Thu, 29 Jun 2023 11:28:32 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3013C30F0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 29 Jun 2023 04:31:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 85FF32972
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 29 Jun 2023 08:28:21 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C511DC14;
-        Thu, 29 Jun 2023 04:32:39 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 35E38C14;
+        Thu, 29 Jun 2023 08:29:04 -0700 (PDT)
 Received: from [10.1.27.40] (C02Z41KALVDN.cambridge.arm.com [10.1.27.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 45CFC3F64C;
-        Thu, 29 Jun 2023 04:31:53 -0700 (PDT)
-Message-ID: <09ef8f66-6697-d803-89ac-228a6fe2e604@arm.com>
-Date:   Thu, 29 Jun 2023 12:31:52 +0100
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BF5103F64C;
+        Thu, 29 Jun 2023 08:28:17 -0700 (PDT)
+Message-ID: <7ed253e7-7245-32bc-e5ac-6d037b711b49@arm.com>
+Date:   Thu, 29 Jun 2023 16:28:16 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v1 08/10] mm: Kconfig hooks to determine max anon folio
- allocation order
-To:     Yang Shi <shy828301@gmail.com>
+Subject: Re: [PATCH v1 00/10] variable-order, large folios for anonymous
+ memory
+To:     Yu Zhao <yuzhao@google.com>, Yin Fengwei <fengwei.yin@intel.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
         David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
@@ -48,140 +46,183 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
         linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org
 References: <20230626171430.3167004-1-ryan.roberts@arm.com>
- <20230626171430.3167004-9-ryan.roberts@arm.com>
- <CAHbLzkpScGq-ja2A6dRffG8qbrVuwXzkMpFvSq_Fzdqp2wUwPA@mail.gmail.com>
+ <CAOUHufaUTbUw9MTzw8D=sVrEB+RP6LSBQVGn93TWk=ozV8XobA@mail.gmail.com>
+ <CAOUHufa0S_ayrys0XzDbH8KJi5HxvbGCh_bSAhDpAgcmSJjFUQ@mail.gmail.com>
+ <1fb0c4cb-a709-de20-d643-32ed43550059@arm.com>
+ <CAOUHufbtNPkdktjt_5qM45GegVO-rCFOMkSh0HQminQ12zsV8Q@mail.gmail.com>
 From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAHbLzkpScGq-ja2A6dRffG8qbrVuwXzkMpFvSq_Fzdqp2wUwPA@mail.gmail.com>
+In-Reply-To: <CAOUHufbtNPkdktjt_5qM45GegVO-rCFOMkSh0HQminQ12zsV8Q@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 29/06/2023 02:38, Yang Shi wrote:
-> On Mon, Jun 26, 2023 at 10:15 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+On 28/06/2023 19:22, Yu Zhao wrote:
+> On Tue, Jun 27, 2023 at 3:59 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
 >>
->> For variable-order anonymous folios, we need to determine the order that
->> we will allocate. From a SW perspective, the higher the order we
->> allocate, the less overhead we will have; fewer faults, fewer folios in
->> lists, etc. But of course there will also be more memory wastage as the
->> order increases.
->>
->> From a HW perspective, there are memory block sizes that can be
->> beneficial to reducing TLB pressure. arm64, for example, has the ability
->> to map "contpte" sized chunks (64K for a 4K base page, 2M for 16K and
->> 64K base pages) such that one of these chunks only uses a single TLB
->> entry.
->>
->> So we let the architecture specify the order of the maximally beneficial
->> mapping unit when PTE-mapped. Furthermore, because in some cases, this
->> order may be quite big (and therefore potentially wasteful of memory),
->> allow the arch to specify 2 values; One is the max order for a mapping
->> that _would not_ use THP if all size and alignment constraints were met,
->> and the other is the max order for a mapping that _would_ use THP if all
->> those constraints were met.
->>
->> Implement this with Kconfig by introducing some new options to allow the
->> architecture to declare that it supports large anonymous folios along
->> with these 2 preferred max order values. Then introduce a user-facing
->> option, LARGE_ANON_FOLIO, which defaults to disabled and can only be
->> enabled if the architecture has declared its support. When disabled, it
->> forces the max order values, LARGE_ANON_FOLIO_NOTHP_ORDER_MAX and
->> LARGE_ANON_FOLIO_THP_ORDER_MAX to 0, meaning only a single page is ever
->> allocated.
->>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->> ---
->>  mm/Kconfig  | 39 +++++++++++++++++++++++++++++++++++++++
->>  mm/memory.c |  8 ++++++++
->>  2 files changed, 47 insertions(+)
->>
->> diff --git a/mm/Kconfig b/mm/Kconfig
->> index 7672a22647b4..f4ba48c37b75 100644
->> --- a/mm/Kconfig
->> +++ b/mm/Kconfig
->> @@ -1208,4 +1208,43 @@ config PER_VMA_LOCK
->>
->>  source "mm/damon/Kconfig"
->>
->> +config ARCH_SUPPORTS_LARGE_ANON_FOLIO
->> +       def_bool n
->> +       help
->> +         An arch should select this symbol if wants to allow LARGE_ANON_FOLIO
->> +         to be enabled. It must also set the following integer values:
->> +         - ARCH_LARGE_ANON_FOLIO_NOTHP_ORDER_MAX
->> +         - ARCH_LARGE_ANON_FOLIO_THP_ORDER_MAX
->> +
->> +config ARCH_LARGE_ANON_FOLIO_NOTHP_ORDER_MAX
->> +       int
->> +       help
->> +         The maximum size of folio to allocate for an anonymous VMA PTE-mapping
->> +         that does not have the MADV_HUGEPAGE hint set.
->> +
->> +config ARCH_LARGE_ANON_FOLIO_THP_ORDER_MAX
->> +       int
->> +       help
->> +         The maximum size of folio to allocate for an anonymous VMA PTE-mapping
->> +         that has the MADV_HUGEPAGE hint set.
->> +
->> +config LARGE_ANON_FOLIO
->> +       bool "Allocate large folios for anonymous memory"
->> +       depends on ARCH_SUPPORTS_LARGE_ANON_FOLIO
->> +       default n
->> +       help
->> +         Use large (bigger than order-0) folios to back anonymous memory where
->> +         possible. This reduces the number of page faults, as well as other
->> +         per-page overheads to improve performance for many workloads.
->> +
->> +config LARGE_ANON_FOLIO_NOTHP_ORDER_MAX
->> +       int
->> +       default 0 if !LARGE_ANON_FOLIO
->> +       default ARCH_LARGE_ANON_FOLIO_NOTHP_ORDER_MAX
->> +
->> +config LARGE_ANON_FOLIO_THP_ORDER_MAX
->> +       int
->> +       default 0 if !LARGE_ANON_FOLIO
->> +       default ARCH_LARGE_ANON_FOLIO_THP_ORDER_MAX
->> +
+>> On 27/06/2023 08:49, Yu Zhao wrote:
+>>> On Mon, Jun 26, 2023 at 9:30 PM Yu Zhao <yuzhao@google.com> wrote:
+>>>>
+>>>> On Mon, Jun 26, 2023 at 11:14 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>>
+>>>>> Hi All,
+>>>>>
+>>>>> Following on from the previous RFCv2 [1], this series implements variable order,
+>>>>> large folios for anonymous memory. The objective of this is to improve
+>>>>> performance by allocating larger chunks of memory during anonymous page faults:
+>>>>>
+>>>>>  - Since SW (the kernel) is dealing with larger chunks of memory than base
+>>>>>    pages, there are efficiency savings to be had; fewer page faults, batched PTE
+>>>>>    and RMAP manipulation, fewer items on lists, etc. In short, we reduce kernel
+>>>>>    overhead. This should benefit all architectures.
+>>>>>  - Since we are now mapping physically contiguous chunks of memory, we can take
+>>>>>    advantage of HW TLB compression techniques. A reduction in TLB pressure
+>>>>>    speeds up kernel and user space. arm64 systems have 2 mechanisms to coalesce
+>>>>>    TLB entries; "the contiguous bit" (architectural) and HPA (uarch).
+>>>>>
+>>>>> This patch set deals with the SW side of things only and based on feedback from
+>>>>> the RFC, aims to be the most minimal initial change, upon which future
+>>>>> incremental changes can be added. For this reason, the new behaviour is hidden
+>>>>> behind a new Kconfig switch, CONFIG_LARGE_ANON_FOLIO, which is disabled by
+>>>>> default. Although the code has been refactored to parameterize the desired order
+>>>>> of the allocation, when the feature is disabled (by forcing the order to be
+>>>>> always 0) my performance tests measure no regression. So I'm hoping this will be
+>>>>> a suitable mechanism to allow incremental submissions to the kernel without
+>>>>> affecting the rest of the world.
+>>>>>
+>>>>> The patches are based on top of v6.4 plus Matthew Wilcox's set_ptes() series
+>>>>> [2], which is a hard dependency. I'm not sure of Matthew's exact plans for
+>>>>> getting that series into the kernel, but I'm hoping we can start the review
+>>>>> process on this patch set independently. I have a branch at [3].
+>>>>>
+>>>>> I've posted a separate series concerning the HW part (contpte mapping) for arm64
+>>>>> at [4].
+>>>>>
+>>>>>
+>>>>> Performance
+>>>>> -----------
+>>>>>
+>>>>> Below results show 2 benchmarks; kernel compilation and speedometer 2.0 (a
+>>>>> javascript benchmark running in Chromium). Both cases are running on Ampere
+>>>>> Altra with 1 NUMA node enabled, Ubuntu 22.04 and XFS filesystem. Each benchmark
+>>>>> is repeated 15 times over 5 reboots and averaged.
+>>>>>
+>>>>> All improvements are relative to baseline-4k. 'anonfolio-basic' is this series.
+>>>>> 'anonfolio' is the full patch set similar to the RFC with the additional changes
+>>>>> to the extra 3 fault paths. The rest of the configs are described at [4].
+>>>>>
+>>>>> Kernel Compilation (smaller is better):
+>>>>>
+>>>>> | kernel          |   real-time |   kern-time |   user-time |
+>>>>> |:----------------|------------:|------------:|------------:|
+>>>>> | baseline-4k     |        0.0% |        0.0% |        0.0% |
+>>>>> | anonfolio-basic |       -5.3% |      -42.9% |       -0.6% |
+>>>>> | anonfolio       |       -5.4% |      -46.0% |       -0.3% |
+>>>>> | contpte         |       -6.8% |      -45.7% |       -2.1% |
+>>>>> | exefolio        |       -8.4% |      -46.4% |       -3.7% |
+>>>>> | baseline-16k    |       -8.7% |      -49.2% |       -3.7% |
+>>>>> | baseline-64k    |      -10.5% |      -66.0% |       -3.5% |
+>>>>>
+>>>>> Speedometer 2.0 (bigger is better):
+>>>>>
+>>>>> | kernel          |   runs_per_min |
+>>>>> |:----------------|---------------:|
+>>>>> | baseline-4k     |           0.0% |
+>>>>> | anonfolio-basic |           0.7% |
+>>>>> | anonfolio       |           1.2% |
+>>>>> | contpte         |           3.1% |
+>>>>> | exefolio        |           4.2% |
+>>>>> | baseline-16k    |           5.3% |
+>>>>
+>>>> Thanks for pushing this forward!
+>>>>
+>>>>> Changes since RFCv2
+>>>>> -------------------
+>>>>>
+>>>>>   - Simplified series to bare minimum (on David Hildenbrand's advice)
+>>>>
+>>>> My impression is that this series still includes many pieces that can
+>>>> be split out and discussed separately with followup series.
+>>>>
+>>>> (I skipped 04/10 and will look at it tomorrow.)
+>>>
+>>> I went through the series twice. Here what I think a bare minimum
+>>> series (easier to review/debug/land) would look like:
 > 
-> IMHO I don't think we need all of the new kconfigs. Ideally the large
-> anon folios could be supported by all arches, although some of them
-> may not benefit from larger TLB entries due to lack of hardware
-> support.t
+> ===
 > 
-> For now with a minimum implementation, I think you could define a
-> macro or a function that returns the hardware preferred order.
+>>> 1. a new arch specific function providing a prefered order within (0,
+>>> PMD_ORDER).
+>>> 2. an extended anon folio alloc API taking that order (02/10, partially).
+>>> 3. an updated folio_add_new_anon_rmap() covering the large() &&
+>>> !pmd_mappable() case (similar to 04/10).
+>>> 4. s/folio_test_pmd_mappable/folio_test_large/ in page_remove_rmap()
+>>> (06/10, reviewed-by provided).
+>>> 5. finally, use the extended anon folio alloc API with the arch
+>>> preferred order in do_anonymous_page() (10/10, partially).
+> 
+> ===
+> 
+>>> The rest can be split out into separate series and move forward in
+>>> parallel with probably a long list of things we need/want to do.
+>>
+>> Thanks for the fadt review - I really appreciate it!
+>>
+>> I've responded to many of your comments. I'd appreciate if we can close those
+>> points then I will work up a v2.
+> 
+> Thanks!
+> 
+> Based on the latest discussion here [1], my original list above can be
+> optionally reduced to 4 patches: item 2 can be quashed into item 5.
+> 
+> Also please make sure we have only one global (apply to all archs)
+> Kconfig option, and it should be added in item 5:
+> 
+>   if TRANSPARENT_HUGEPAGE
+>     config FLEXIBLE/VARIABLE_THP # or whatever name you see fit
+>   end if
 
-Thanks for the feedback - that aligns with what Yu Zhao suggested. I'm
-implementing it for v2.
+Naming is always the hardest part. I've been calling it LARGE_ANON_FOLIO up
+until now. But I think you are right that we should show that it is related to
+THP, so I'll go with FLEXIBLE_THP for v2, and let people shout if they hate it.
+
+If we are not letting the arch declare that it supports FLEXIBLE_THP, then I
+think we need the default version of arch_wants_pte_order() to return a value
+higher than 0 (which is what I have it returning at the moment). Because
+otherwise, for an arch that hasn't defined its own version of
+arch_wants_pte_order(), FLEXIBLE_THP on vs off will give the same result. So I
+propose to set the default to ilog2(SZ_64K >> PAGE_SHIFT). Shout if you have any
+concerns.
+
+> 
+> (How many new Kconfig options added within arch/arm64/ is not a concern of MM.)
+> 
+> And please make sure it's disabled by default,
+
+Done
+
+ because we are still
+> missing many important functions, e.g., I don't think we can mlock()
+> when large() && !pmd_mappable(), see mlock_pte_range() and
+> mlock_vma_folio(). We can fix it along with many things later, but we
+> need to present a plan and a schedule now. Otherwise, there would be
+> pushback if we try to land the series without supporting mlock().
+
+There are other areas that I'm aware off. I'll put together a table and send it
+out once I have v2 out the door (hopefully tomorrow or Monday). Hopefully we can
+work together to fill it in and figure out who can do what? I'm certainly
+planning to continue to push this work forwards beyond this initial patch set.
 
 Thanks,
 Ryan
 
-
 > 
->>  endmenu
->> diff --git a/mm/memory.c b/mm/memory.c
->> index 9165ed1b9fc2..a8f7e2b28d7a 100644
->> --- a/mm/memory.c
->> +++ b/mm/memory.c
->> @@ -3153,6 +3153,14 @@ static struct folio *try_vma_alloc_movable_folio(struct vm_area_struct *vma,
->>         return vma_alloc_movable_folio(vma, vaddr, 0, zeroed);
->>  }
->>
->> +static inline int max_anon_folio_order(struct vm_area_struct *vma)
->> +{
->> +       if (hugepage_vma_check(vma, vma->vm_flags, false, true, true))
->> +               return CONFIG_LARGE_ANON_FOLIO_THP_ORDER_MAX;
->> +       else
->> +               return CONFIG_LARGE_ANON_FOLIO_NOTHP_ORDER_MAX;
->> +}
->> +
->>  /*
->>   * Handle write page faults for pages that can be reused in the current vma
->>   *
->> --
->> 2.25.1
->>
->>
+> Do you or Fengwei plan to take on it? (I personally don't.) If not,
+> I'll try to find someone from our team to look at it. (It'd be more
+> scalable if we have a coordinated group of people individually solving
+> different problems.)
+> 
+> [1] https://lore.kernel.org/r/b2c81404-67df-f841-ef02-919e841f49f2@arm.com/
 
