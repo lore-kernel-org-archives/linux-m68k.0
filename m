@@ -2,215 +2,234 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C5C3EB64D7
-	for <linux-m68k@archiver.kernel.org>; Fri, 30 Jun 2023 08:35:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77713EB64D7
+	for <linux-m68k@archiver.kernel.org>; Fri, 30 Jun 2023 13:09:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232609AbjF3If3 convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 30 Jun 2023 04:35:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43978 "EHLO
+        id S231854AbjF3NI7 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 30 Jun 2023 09:08:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232321AbjF3IfY (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 30 Jun 2023 04:35:24 -0400
-Received: from mail.lichtvoll.de (lichtvoll.de [IPv6:2001:67c:14c:12f::11:100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A753D1FC1;
-        Fri, 30 Jun 2023 01:35:20 -0700 (PDT)
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
-        (No client certificate requested)
-        by mail.lichtvoll.de (Postfix) with ESMTPSA id 85B3972727C;
-        Fri, 30 Jun 2023 10:35:17 +0200 (CEST)
-Authentication-Results: mail.lichtvoll.de;
-        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
-From:   Martin Steigerwald <martin@lichtvoll.de>
-To:     Christian Zigotzky <chzigotzky@xenosoft.de>,
-        Michael Schmitz <schmitzmic@gmail.com>
-Cc:     linux-block@vger.kernel.org, axboe@kernel.dk,
-        linux-m68k@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@lst.de>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "R.T.Dickinson" <rtd2@xtra.co.nz>,
-        mad skateman <madskateman@gmail.com>,
-        Darren Stevens <darren@stevens-zone.net>
-Subject: Re: [FSL P50x0] [PASEMI] The Access to partitions on disks with an Amiga
- partition table doesn't work anymore after the block updates 2023-06-23
-Date:   Fri, 30 Jun 2023 10:35:16 +0200
-Message-ID: <5866778.MhkbZ0Pkbq@lichtvoll.de>
-In-Reply-To: <a113cb83-9f82-fd39-f132-41ba4c259265@gmail.com>
-References: <024ce4fa-cc6d-50a2-9aae-3701d0ebf668@xenosoft.de>
- <a113cb83-9f82-fd39-f132-41ba4c259265@gmail.com>
+        with ESMTP id S231176AbjF3NI4 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Fri, 30 Jun 2023 09:08:56 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AFB9E6A
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 30 Jun 2023 06:08:55 -0700 (PDT)
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35UCvYeb016458;
+        Fri, 30 Jun 2023 13:08:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=FN5rqn/S21W/5bITOEzjFOkTwNe8qQWXAAfpvfDkQwg=;
+ b=UJNJ5HvOCH3ioidpoyHaAYNX6R7hWNSBpLoG0wUffy5RnAhXHl86PbBvjDO6nKQ8USPi
+ 7sEXar1TkaNkmcJFphUybz6q6Tb4yxl6SQ/ZqNRH66WVQInysN81SF7fQAQUxOBDszhV
+ 3b8fRe2gCQIaza7qcDM7mCKwuC6Ilk9aNPGUJxMUw2n8gCQMYiSIO+tnObSPGBU121h5
+ ObdAJVNEwAu8GE+11sjrvnwTnAQvi/lRj6vqNWPq1mVeKVoGfrKDv0hlj8okmsgyo6sj
+ CZCipRtOJftBTKfcr2t7oYyiWPzb0tjUBJtcpOmD7Kcx/2Zrl+GVqvSu1uoCgmOa264S bw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rhygwgdcx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Jun 2023 13:08:13 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 35UCwN5D019695;
+        Fri, 30 Jun 2023 13:08:03 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rhygwgcwe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Jun 2023 13:08:02 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 35U3RosU004120;
+        Fri, 30 Jun 2023 13:07:52 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma03ams.nl.ibm.com (PPS) with ESMTPS id 3rdr4545n4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 30 Jun 2023 13:07:51 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 35UD7mYr35848862
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Jun 2023 13:07:48 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2D1C420040;
+        Fri, 30 Jun 2023 13:07:48 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 20F4620049;
+        Fri, 30 Jun 2023 13:07:46 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.155.204.135])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Fri, 30 Jun 2023 13:07:46 +0000 (GMT)
+Date:   Fri, 30 Jun 2023 15:07:44 +0200
+From:   Alexander Gordeev <agordeev@linux.ibm.com>
+To:     Eric DeVolder <eric.devolder@oracle.com>
+Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        chenhuacai@kernel.org, geert@linux-m68k.org,
+        tsbogend@alpha.franken.de, James.Bottomley@hansenpartnership.com,
+        deller@gmx.de, ysato@users.sourceforge.jp, dalias@libc.org,
+        glaubitz@physik.fu-berlin.de, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, kernel@xen0n.name, mpe@ellerman.id.au,
+        npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com,
+        borntraeger@linux.ibm.com, svens@linux.ibm.com, hpa@zytor.com,
+        keescook@chromium.org, paulmck@kernel.org, peterz@infradead.org,
+        frederic@kernel.org, akpm@linux-foundation.org, ardb@kernel.org,
+        samitolvanen@google.com, juerg.haefliger@canonical.com,
+        arnd@arndb.de, rmk+kernel@armlinux.org.uk,
+        linus.walleij@linaro.org, sebastian.reichel@collabora.com,
+        rppt@kernel.org, kirill.shutemov@linux.intel.com,
+        anshuman.khandual@arm.com, ziy@nvidia.com, masahiroy@kernel.org,
+        ndesaulniers@google.com, mhiramat@kernel.org, ojeda@kernel.org,
+        thunder.leizhen@huawei.com, xin3.li@intel.com, tj@kernel.org,
+        gregkh@linuxfoundation.org, tsi@tuyoix.net, bhe@redhat.com,
+        hbathini@linux.ibm.com, sourabhjain@linux.ibm.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
+Subject: Re: [PATCH v3 12/13] s390/kexec: refactor for kernel/Kconfig.kexec
+Message-ID: <ZJ7ToGgYAq33bwYI@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20230626161332.183214-1-eric.devolder@oracle.com>
+ <20230626161332.183214-13-eric.devolder@oracle.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230626161332.183214-13-eric.devolder@oracle.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: SRv3tQadK_BLStPKVFehsvtKgdD5bfpY
+X-Proofpoint-ORIG-GUID: SMYiBxc5troNBtSiC2kzVXEEuROkenwR
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-06-30_05,2023-06-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ mlxlogscore=999 priorityscore=1501 phishscore=0 impostorscore=0
+ spamscore=0 bulkscore=0 lowpriorityscore=0 mlxscore=0 clxscore=1015
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2305260000 definitions=main-2306300111
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael, hi Christian.
-
-Michael Schmitz - 29.06.23, 22:27:59 CEST:
-[…]
-> On 29/06/23 16:59, Christian Zigotzky wrote:
-> > Hello,
-> > 
-> > The access  to partitions on disks with an Amiga partition table
-> > (via the Rigid Disk Block RDB) doesn't work anymore on my Cyrus+ 
-> > board with a FSL P50x0 PowerPC SoC [1] and on my P.A. Semi Nemo 
-> > board [2] after the block updates 2023-06-23 [3].
-> > 
-> > parted -l
-[…]
-> > dmesg | grep -i sda
-> > 
-> > [    4.208905] sd 0:0:0:0: [sda] 3907029168 512-byte logical blocks:
-> > (2.00 TB/1.82 TiB)
-
-That is roughly the size of the disk that triggered my bug report from 
-2012.
-
-Jun 19 21:19:09 merkaba kernel: [ 7891.821315] ata8.00: 3907029168 
-sectors, multi 0: LBA48 NCQ (depth 31/32)
-
-Bug 43511 - Partitions: Amiga RDB partition on 2 TB disk way too big, 
-while OK in AmigaOS 4.1
-
-https://bugzilla.kernel.org/show_bug.cgi?id=43511
-
-> > [    4.963387] sda: partition table beyond EOD,
+On Mon, Jun 26, 2023 at 12:13:31PM -0400, Eric DeVolder wrote:
+> The kexec and crash kernel options are provided in the common
+> kernel/Kconfig.kexec. Utilize the common options and provide
+> the ARCH_SUPPORTS_ and ARCH_SELECTS_ entries to recreate the
+> equivalent set of KEXEC and CRASH options.
 > 
-> Haven't see this one in any of my tests. I wonder whether your
-> partitioning software used that value of 4294967295 (32 bit unsigned
-> int max.) as marker for the end of the partition list, instead of
-> NULL? It's clearly beyond the end of your disk, so cannot be a
-> legitimate partition block address. (The parted dump above (showing
-> only four partitions) appears to support that notion.)
-
-I don't know about "-1" for end of partition list. However, on reviewing 
-my bug report I think I used Media Toolbox myself to create the 
-partition table. However I am not completely sure about that. It has 
-been a long time. I used Media Toolbox on AmigaOS 4.1 to extract the 
-binary copy of the RDB, but I do not recall what I used to partition it. 
-I bet it was Media Toolbox as well, likely on some development version 
-of AmigaOS 4. I was member of the AmigaOS 4 team back then. The disk is 
-repartitioned as GPT and I do not even know at the moment where it is. 
-So that is all I can say.
-
-I could ask someone from the AmigaOS 4 team, however I am not a member 
-of it anymore. And in any case, whether Media Toolbox or another tool 
-writes a "-1" to end partition list or not, I'd not treat a signed value 
-"-1" as valid partition size. We could also ask Joanne again, however 
-she was not involved in AmigaOS 4 development and does not know about 
-Media Toolbox. She created the "hdwrench.library" for AmigaOS 3.5/3.9 
-HDToolBox. So maybe it is just good to assume "-1" as end of partition 
-table, at least after confirming from the binary of the affected RDB that 
-the "-1" is indeed at the end of the partition block list. Maybe also in 
-the RDB from my bug report there is this "-1" again… however, the disk 
-worked okay in Linux after testing with Joanne's initial patch from
-
-https://bugzilla.kernel.org/show_bug.cgi?id=43511#c7
-
-Subject: Re: Partitions: Amiga RDB partition on 2 TB disk way too big, 
-while OK in AmigaOS 4.1
-
-https://lore.kernel.org/linux-m68k/
-201206192146.09327.Martin@lichtvoll.de/
-
-
-This comment from an AmigaOS developer is only about the maximum sizes 
-and does not detail a "-1" as partition size – however I did not ask 
-about it back then:
-
-https://lore.kernel.org/linux-m68k/
-201206182239.26647.Martin@lichtvoll.de/
-
-> > [ 5.014769] sd 0:0:0:0: [sda] Attached SCSI disk
-> > 
-> > I created a patch for reverting the commit. [4]
-> > 
-> > The access works again with this patch:
-[…]
-> > bytes [    4.519477]  sda: RDSK (512) sda1 (DOS^G)(res 2 spb 2)
-> > sda2 (SFS^B)(res 2 spb 1) sda3 (SFS^B)(res 2 spb 2) sda4 ((res 2
-> > spb 1) [    4.720896] sda: p4 size 18446744071956107760 extends
-> > beyond EOD,
->
-> That's the 32 bit overflow that the patch series was meant to correct.
-> Parsing the partition table ends before looking at the next partition
-> block in the list, so we never hit the bug you've seen above.
+> NOTE: The original Kconfig has a KEXEC_SIG which depends on
+> MODULE_SIG_FORMAT. However, attempts to keep the MODULE_SIG_FORMAT
+> dependency (using the strategy outlined in this series, and other
+> techniques) results in 'error: recursive dependency detected'
+> on CRYPTO.
 > 
-> By reverting my patch, you just reintroduce the old bug, which could
-> result in mis-parsing the partition table in a way that is not
-> detected by inane values of partition sizes as above, and as far as I
-> recall this bug was reported because it did cause data corruption. Do
-> I have that correct, Martin? Do you still have a copy of the
-> problematic RDB from the old bug report around?
-
-It is in the first attachment of the bug report I mentioned above. The 
-bug the patch fixed.
-
-In the bug report I wrote:
-
-"I had a BTRFS filesystem that had some checksum errors. Maybe thats 
-somehow related to this issue and AmigaOS and/or Linux overwrote 
-something it shouldn´t have touched."
-
-(Meanwhile I bet it is safe to assume that in case the checksum error 
-was from overwriting something it was not AmigaOS 4.)
-
-This is no proof, but as I re-read my bug report: It is clearly an 
-overflow issue worsened by Linux back then truncating the too high 
-partition sizes larger than the disk to the disk size instead of bailing 
-out. So the partition I created for the Linux LVM in front of the Amiga 
-partitions overflowed into the Amiga partitions. Had I used that place 
-inside the PV for any LV and written to it… I bet it would have been 
-goodbye to the Amiga data.
-
-> > Could you please check your commit?
+> Per Alexander Gordeev <agordeev@linux.ibm.com>: "the MODULE_SIG_FORMAT
+> dependency was introduced with [git commit below] and in fact was not
+> necessary, since s390 did/does not use mod_check_sig() anyway.
 > 
-> The patch series has undergone the usual thirteen versions in review,
-> but the reviewers as well as myself may well have missed this point of
-> detail...
-
-I think the patch series has been very well reviewed, but I would not 
-have spotted such an issue as I am not really an RDB expert and even 
-then, with all the big endian conversions and what not inside of there… 
-In my understanding the RDB format is not really as Rigid as the name 
-implies. It is quite flexible, especially when compared to what had been 
-used on PC back then and sometimes even now. So there is a chance for a 
-RDB partitioning that triggers an oversight in the patch series.
-
-> Could you please check this (whitespace-damaged) patch?
+>  commit c8424e776b09 ("MODSIGN: Export module signature definitions")
 > 
->      block/partitions - Amiga partition overflow fix bugfix
+> MODULE_SIG_FORMAT is needed to select SYSTEM_DATA_VERIFICATION. But
+> SYSTEM_DATA_VERIFICATION is also selected by FS_VERITY*, so dropping
+> MODULE_SIG_FORMAT does not hurt."
 > 
->      Making 'blk' sector_t (i.e. 64 bit if LBD support is active)
->      fails the 'blk>0' test in the partition block loop if a
->      value of (signed int) -1 is used to mark the end of the
->      partition block list.
+> Therefore, the solution is to drop the MODULE_SIG_FORMAT dependency
+> from KEXEC_SIG. Still results in equivalent .config files for s390.
 > 
->      Explicitly cast 'blk' to signed int to catch this.
+> Signed-off-by: Eric DeVolder <eric.devolder@oracle.com>
+> ---
+>  arch/s390/Kconfig | 65 ++++++++++++++---------------------------------
+>  1 file changed, 19 insertions(+), 46 deletions(-)
 > 
->      Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-> 
-> diff --git a/block/partitions/amiga.c b/block/partitions/amiga.c
-> index ed222b9c901b..506921095412 100644
-> --- a/block/partitions/amiga.c
-> +++ b/block/partitions/amiga.c
-> @@ -90,7 +90,7 @@ int amiga_partition(struct parsed_partitions *state)
-> }
->          blk = be32_to_cpu(rdb->rdb_PartitionList);
->          put_dev_sector(sect);
-> -       for (part = 1; blk>0 && part<=16; part++, 
-> put_dev_sector(sect)) { 
-> +       for (part = 1; (s32) blk>0 && part<=16; part++,
-> put_dev_sector(sect)) {
+> diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+> index 6dab9c1be508..58dc124433ca 100644
+> --- a/arch/s390/Kconfig
+> +++ b/arch/s390/Kconfig
+> @@ -243,6 +243,25 @@ config PGTABLE_LEVELS
+>  
+>  source "kernel/livepatch/Kconfig"
+>  
+> +config ARCH_DEFAULT_KEXEC
+> +	def_bool y
+> +
+> +config ARCH_SUPPORTS_KEXEC
+> +	def_bool y
+> +
+> +config ARCH_SUPPORTS_KEXEC_FILE
+> +	def_bool CRYPTO && CRYPTO_SHA256 && CRYPTO_SHA256_S390
+> +
+> +config ARCH_HAS_KEXEC_PURGATORY
+> +	def_bool KEXEC_FILE
+> +
+> +config ARCH_SUPPORTS_CRASH_DUMP
+> +	def_bool y
+> +	help
+> +	  Refer to <file:Documentation/s390/zfcpdump.rst> for more details on this.
+> +	  This option also enables s390 zfcpdump.
+> +	  See also <file:Documentation/s390/zfcpdump.rst>
+> +
+>  menu "Processor type and features"
+>  
+>  config HAVE_MARCH_Z10_FEATURES
+> @@ -481,36 +500,6 @@ config SCHED_TOPOLOGY
+>  
+>  source "kernel/Kconfig.hz"
+>  
+> -config KEXEC
+> -	def_bool y
+> -	select KEXEC_CORE
+> -
+> -config KEXEC_FILE
+> -	bool "kexec file based system call"
+> -	select KEXEC_CORE
+> -	depends on CRYPTO
+> -	depends on CRYPTO_SHA256
+> -	depends on CRYPTO_SHA256_S390
+> -	help
+> -	  Enable the kexec file based system call. In contrast to the normal
+> -	  kexec system call this system call takes file descriptors for the
+> -	  kernel and initramfs as arguments.
+> -
+> -config ARCH_HAS_KEXEC_PURGATORY
+> -	def_bool y
+> -	depends on KEXEC_FILE
+> -
+> -config KEXEC_SIG
+> -	bool "Verify kernel signature during kexec_file_load() syscall"
+> -	depends on KEXEC_FILE && MODULE_SIG_FORMAT
+> -	help
+> -	  This option makes kernel signature verification mandatory for
+> -	  the kexec_file_load() syscall.
+> -
+> -	  In addition to that option, you need to enable signature
+> -	  verification for the corresponding kernel image type being
+> -	  loaded in order for this to work.
+> -
+>  config KERNEL_NOBP
+>  	def_bool n
+>  	prompt "Enable modified branch prediction for the kernel by default"
+> @@ -732,22 +721,6 @@ config VFIO_AP
+>  
+>  endmenu
+>  
+> -menu "Dump support"
+> -
+> -config CRASH_DUMP
+> -	bool "kernel crash dumps"
+> -	select KEXEC
+> -	help
+> -	  Generate crash dump after being started by kexec.
+> -	  Crash dump kernels are loaded in the main kernel with kexec-tools
+> -	  into a specially reserved region and then later executed after
+> -	  a crash by kdump/kexec.
+> -	  Refer to <file:Documentation/s390/zfcpdump.rst> for more details on this.
+> -	  This option also enables s390 zfcpdump.
+> -	  See also <file:Documentation/s390/zfcpdump.rst>
+> -
+> -endmenu
+> -
+>  config CCW
+>  	def_bool y
 
-Makes sense to me.
-
-Best,
--- 
-Martin
-
-
+Acked-by: Alexander Gordeev <agordeev@linux.ibm.com>
