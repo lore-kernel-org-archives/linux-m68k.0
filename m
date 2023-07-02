@@ -2,73 +2,60 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FBE3EB64DC
-	for <linux-m68k@archiver.kernel.org>; Sat,  1 Jul 2023 09:48:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18165EB64DC
+	for <linux-m68k@archiver.kernel.org>; Sun,  2 Jul 2023 02:17:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbjGAJsl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 1 Jul 2023 05:48:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50620 "EHLO
+        id S229500AbjGBCRp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 1 Jul 2023 22:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbjGAJsk (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sat, 1 Jul 2023 05:48:40 -0400
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.167])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 222BE3C29;
-        Sat,  1 Jul 2023 02:48:35 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1688204882; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=KdbtNqylftOo1+PbBsC55VutPhxTjNTKGLp2HbuzERO0BqPmB0X0tXpLNeBCxI7V06
-    IU4g7lGfTg7H1tidslsHtnaASa9dojI5SKQ1qDtdZjV4qpgLOkdopIUAbUdwlIY3yuvp
-    4/siEAJ99VMoRaN+59J9Samgca1PtIFwlPTCzsLtCrKJvJqXJv46n7SDgdQYwhcEuQfe
-    r66a7iFFW1g+09K6npXW6BlnHnuNpIERG8W009XetNyBp+UA3y1vnGiSBK54rS9ikF2Y
-    1gUPgDnuUM7LHbpiEHVWTKLb8yx4QOTL3MLTSxyPNahmBN5VFKlUNeJkuUtya1Fc7FuB
-    P2oQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1688204882;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=qvqpM5AoRX2cCiwKz3Sb461vdD3xeoeZK2q+kBPv04g=;
-    b=UQGrMKcjMZv7rhcwx3VmV2SHGm3UfiXbZ8vZTqnym9j2ANoeqmTRVtpOkh2X+Prz4u
-    +ldDStW8ykPcRVzoHTS8o1ezq8KV6jNKUkNBLvWZkwX98ikJYy3JkvSOiQQvB5nVB1UP
-    aei0CgcXG0fFREjUvUFg1vVeOO5/kpOpP2lK8K1m1VTVg2ZUXX6fm4qWA4jjoitHRB3P
-    bLfMLDHKdt6PWebCPLdRu+WPqqCm2OJPmcTQ6bUegLKKRb4QEVXAM8ScT34APMMqMsFN
-    nGUf+9Z0XTYf+i0IiQP00tQbjko/ajlS1XFG+WpAyyc5ltXRoXoRuDPFq+KVEKVMBhlC
-    TuHg==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1688204882;
-    s=strato-dkim-0002; d=xenosoft.de;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=qvqpM5AoRX2cCiwKz3Sb461vdD3xeoeZK2q+kBPv04g=;
-    b=eYqf046Al535sFwuIPIweoln2AY2veN+CgyJP1JADGDRSGyxuiApVwJcyR9GEesvwU
-    aM+0HqHv+Or3ixRd3lMKNCXD1ULa4Sqpl7iiG/PYnUVXEkUV8ytCLnUFuqGsQ+tA6b9p
-    is8LuNE7M7PsYwyxF3HEhW5bPCG8d015L5B/apWqxn/Hx4QcUXQGi+b0ZdqFuNtAQ62e
-    t/VC8JoJgrKVDURWLWrdk46lbg05sPA8EcRO/JD2bLb1GoAxRenlT8tcLL9N0GtWF4Z2
-    VwyS+tlP91BHaP5f1wvx+JQYcUj2MNiPRxYhIa7dJAAeqFyLv1NUW3dtZ1uLhp1wVzYh
-    oHVw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1688204882;
-    s=strato-dkim-0003; d=xenosoft.de;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=qvqpM5AoRX2cCiwKz3Sb461vdD3xeoeZK2q+kBPv04g=;
-    b=166uqhK1qpchihhOp46ND9BsxEC6UaR1JJIRQ47pTlRBlR6QId5kAF9Q1jjxtWuLq6
-    yAksTR2D2isbYQxbQADA==
-X-RZG-AUTH: ":L2QefEenb+UdBJSdRCXu93KJ1bmSGnhMdmOod1DhGM4l4Hio94KKxRySfLxnHfJ+Dkjp5DdBfio0GngadwjR6CBYqLfA6c5k/Fdf2SzuGLMLzg=="
-Received: from [IPV6:2a02:8109:8980:4474:4196:3fea:dfa5:89da]
-    by smtp.strato.de (RZmta 49.6.0 AUTH)
-    with ESMTPSA id N28a51z619m1sPS
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Sat, 1 Jul 2023 11:48:01 +0200 (CEST)
-Message-ID: <b9600d91-6a25-746e-0769-4d0e31038da5@xenosoft.de>
-Date:   Sat, 1 Jul 2023 11:48:01 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
+        with ESMTP id S229446AbjGBCRo (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sat, 1 Jul 2023 22:17:44 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C7421703;
+        Sat,  1 Jul 2023 19:17:38 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1b7f2239bfdso26142205ad.1;
+        Sat, 01 Jul 2023 19:17:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688264258; x=1690856258;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yJTGw+c9DJrbYqiA04K/2tANXpXGkgOAgtlz124a1Co=;
+        b=YgaK746I+skXxol7AodgRplLh/h4Un1YNEUG7ChHu1aIEwGJM26CThspI00TET9jYU
+         HsOAMzX3opDf+nm8c2SXTrbbjKxmpqCKVpOpKnKbkQeg+0NSo3SsA4M5J6R3f5ACJMwt
+         rdeaSIinHZ9oNhxYSX42yap+UNw04KMfCKliMFuf6CYGoUiG2X3rrsd3X5wlOi9bNzsX
+         2eE6y7nsaCalVlw3RkXeFbDkDzQoQE6MqLWxLFgrTAhyVmjk45LRmEEnNFt4yCqzpffe
+         /qcMz71olL8Rl3sjm/gB9v60k20OnlCfPLiW8sVXzw7Kk/AcxXrBr3kpJ9nI6Ml18cuQ
+         bvig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688264258; x=1690856258;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=yJTGw+c9DJrbYqiA04K/2tANXpXGkgOAgtlz124a1Co=;
+        b=fer6czbEEqdWH8wWcQai61hV4jnrJLbhw9/RjJ1epWYm2d5y3A09TkCwgcKAqMuAZk
+         wKKlXdvx/s8HSkLv7+q2fbKI3wG2m9Q3bTm0W2/YKGVlnxD+zcYMBVXCnATfptB0X0Je
+         RVb54sPvZ1VufW37zYYtpk5XaIWzfzSxpDXuGVj6U/1+xBuRoR+QPop63YhAX2cBZY14
+         BI2fDopdVuXVdIQV4P1GHaydnU7QwKWrmi7ahGv6W80Nw1H7f6+/gXIfVU5KCe/idQMx
+         hJD14GXa7umwyteD6zIlTYjsjIv68ynh5T1Hge30EPe/WVyIxfzeEYAiWJCZqBN3IwCt
+         sLdQ==
+X-Gm-Message-State: ABy/qLbQZFGplW5M09TkVTxEjlA9VoAK1r9xIB2QeSG8y7Gp7jbibdHW
+        3FphxLOqlBYWo7TnkA3I7OQ=
+X-Google-Smtp-Source: APBJJlEHuyOIr+bpMXj6M8qVN84MWrOUnsf0HN46zV15E4B5oVJcSfNCuw0JTj4GKAK40hSTwnrpFw==
+X-Received: by 2002:a17:903:1246:b0:1b4:5697:d991 with SMTP id u6-20020a170903124600b001b45697d991mr8479034plh.15.1688264257789;
+        Sat, 01 Jul 2023 19:17:37 -0700 (PDT)
+Received: from [10.1.1.24] (222-152-184-54-fibre.sparkbb.co.nz. [222.152.184.54])
+        by smtp.gmail.com with ESMTPSA id j23-20020a170902759700b001b53953f306sm12875459pll.178.2023.07.01.19.17.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 01 Jul 2023 19:17:37 -0700 (PDT)
 Subject: Re: [PATCH] block: bugfix for Amiga partition overflow check patch
-To:     Michael Schmitz <schmitzmic@gmail.com>, linux-block@vger.kernel.org
+To:     Christian Zigotzky <chzigotzky@xenosoft.de>,
+        linux-block@vger.kernel.org
+References: <20230701023524.7434-1-schmitzmic@gmail.com>
+ <3e3ce346-f627-4adf-179d-b8817361e6e3@xenosoft.de>
+ <94d46446-97fc-9e92-2585-71c18e65b64a@gmail.com>
+ <b9600d91-6a25-746e-0769-4d0e31038da5@xenosoft.de>
 Cc:     axboe@kernel.dk, linux-m68k@vger.kernel.org, geert@linux-m68k.org,
         hch@lst.de, martin@lichtvoll.de, stable@vger.kernel.org,
         "R.T.Dickinson" <rtd2@xtra.co.nz>,
@@ -76,139 +63,104 @@ Cc:     axboe@kernel.dk, linux-m68k@vger.kernel.org, geert@linux-m68k.org,
         mad skateman <madskateman@gmail.com>,
         John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
         Christian Zigotzky <info@xenosoft.de>
-References: <20230701023524.7434-1-schmitzmic@gmail.com>
- <3e3ce346-f627-4adf-179d-b8817361e6e3@xenosoft.de>
- <94d46446-97fc-9e92-2585-71c18e65b64a@gmail.com>
-Content-Language: de-DE
-From:   Christian Zigotzky <chzigotzky@xenosoft.de>
-In-Reply-To: <94d46446-97fc-9e92-2585-71c18e65b64a@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <afe14b08-7bab-d81b-fce6-e6408741760a@gmail.com>
+Date:   Sun, 2 Jul 2023 14:17:23 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
+MIME-Version: 1.0
+In-Reply-To: <b9600d91-6a25-746e-0769-4d0e31038da5@xenosoft.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 01 July 2023 at 10:11 am, Michael Schmitz wrote:
-> Hi Christian,
->
-> Am 01.07.2023 um 18:40 schrieb Christian Zigotzky:
->> On 01 July 2023 at 04:35 am, Michael Schmitz wrote:
->>> Making 'blk' sector_t (i.e. 64 bit if LBD support is active)
->>> fails the 'blk>0' test in the partition block loop if a
->>> value of (signed int) -1 is used to mark the end of the
->>> partition block list.
->>>
->>> This bug was introduced in patch 3 of my prior Amiga partition
->>> support fixes series, and spotted by Christian Zigotzky when
->>> testing the latest block updates.
->>>
->>> Explicitly cast 'blk' to signed int to allow use of -1 to
->>> terminate the partition block linked list.
->>>
->>> Reported-by: Christian Zigotzky <chzigotzky@xenosoft.de>
->>> Fixes: b6f3f28f60 ("Linux 6.4")
->>> Message-ID: 024ce4fa-cc6d-50a2-9aae-3701d0ebf668@xenosoft.de
->>> Cc: <stable@vger.kernel.org> # 6.4
->>> Link:
->>> https://lore.kernel.org/r/024ce4fa-cc6d-50a2-9aae-3701d0ebf668@xenosoft.de 
->>>
->>>
->>> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
->>> ---
->>>   block/partitions/amiga.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/block/partitions/amiga.c b/block/partitions/amiga.c
->>> index ed222b9c901b..506921095412 100644
->>> --- a/block/partitions/amiga.c
->>> +++ b/block/partitions/amiga.c
->>> @@ -90,7 +90,7 @@ int amiga_partition(struct parsed_partitions *state)
->>>       }
->>>       blk = be32_to_cpu(rdb->rdb_PartitionList);
->>>       put_dev_sector(sect);
->>> -    for (part = 1; blk>0 && part<=16; part++, put_dev_sector(sect)) {
->>> +    for (part = 1; (s32) blk>0 && part<=16; part++,
->>> put_dev_sector(sect)) {
->>>           /* Read in terms partition table understands */
->>>           if (check_mul_overflow(blk, (sector_t) blksize, &blk)) {
->>>               pr_err("Dev %s: overflow calculating partition block
->>> %llu! Skipping partitions %u and beyond\n",
->> Hello Michael,
->>
->> Thanks for your patch.
->>
->> I patched the latest git kernel source code with your patch today but
->> unfortunately the kernel has reported a bad geometry. (EXT4-fs (sda4):
->> bad geometry: block count ...)
->>
->> dmesg | grep -i sda
->>
->> [    4.025449] sd 0:0:0:0: [sda] 3907029168 512-byte logical blocks:
->> (2.00 TB/1.82 TiB)
->> [    4.071978] sd 0:0:0:0: [sda] 4096-byte physical blocks
->> [    4.119333] sd 0:0:0:0: [sda] Write Protect is off
->> [    4.165958] sd 0:0:0:0: [sda] Mode Sense: 00 3a 00 00
->> [    4.212921] sd 0:0:0:0: [sda] Write cache: enabled, read cache:
->> enabled, doesn't support DPO or FUA
->> [    4.259469] sd 0:0:0:0: [sda] Preferred minimum I/O size 4096 bytes
->> [    4.502519]  sda: RDSK (512) sda1 (DOS^G)(res 2 spb 2) sda2
->> (SFS^B)(res 2 spb 1) sda3 (SFS^B)(res 2 spb 2) sda4 ((res 2 spb 1)
->
-> Good - all partitions are recognized again as they ought to be.
->
->> [    4.551981] sd 0:0:0:0: [sda] Attached SCSI disk
->> [   82.421727] EXT4-fs (sda4): bad geometry: block count 319655862
->> exceeds size of device (317690430 blocks)
->
-> Now that may be a new bug... or just a filesystem created with 
-> incorrect assumptions about partition size.
->
-> That is the partition that had reported:
->
->> sda: p4 size 18446744071956107760 extends beyond EOD, truncated
->
-> with my patches backed out? I wonder what size mkfs used when creating 
-> the filesystem?
->
-> The calculated size was clearly incorrect, but the truncated size may 
-> also be incorrect. The truncated size is likely that of a partition 
-> extending to the end of the disk, but your actual p4 size may have 
-> been smaller (your parted -l output had 1992GB which is 8 GB shorter 
-> than to EOD).
->
-> On the face of it, this does not look like a new bug in the RDB 
-> partition code, but I'd rather verify that by inspecting the RDB 
-> contents and carrying out the calculations by hand.
->
-> Can you please send a copy of the RDB (first few kB of the disk, 
-> something like dd if=/dev/sda of=rdb-sda.img bs=512 count=16 should 
-> do), and the output of cat /proc/partitions when running a kernel from 
-> before my RDB patches?
->
->
-Copy of the RDB: https://www.xenosoft.de/rdb-sda.img
+Hi Christian,
 
-cat /proc/partitions:
+Am 01.07.2023 um 21:48 schrieb Christian Zigotzky:
+>> Can you please send a copy of the RDB (first few kB of the disk,
+>> something like dd if=/dev/sda of=rdb-sda.img bs=512 count=16 should
+>> do), and the output of cat /proc/partitions when running a kernel from
+>> before my RDB patches?
+>>
+>>
+> Copy of the RDB: https://www.xenosoft.de/rdb-sda.img
 
-major minor  #blocks  name
+Thanks, casual inspection of this RDB does show that indeed a value of 
+-1 is used as pb_next in partition slot 4 (and 5).
 
-    8        0 1953514584 sda
-    8        1     119088 sda1
-    8        2    2100096 sda2
-    8        3  672670920 sda3
-    8        4 1278623448 sda4
-   11        0    1048575 sr0
-    8       32     250880 sdc
-    8       33     249856 sdc1
-    8       16  234431064 sdb
-    8       17  144364512 sdb1
-    8       18          1 sdb2
-    8       19   18500608 sdb3
-    8       20   40717312 sdb4
-    8       21   14684160 sdb5
-    8       22   16161792 sdb6
-    8       48       1440 sdd
-    8       49       1439 sdd1
+The disk geometry is defined as 3 heads, 16 sectors per track (48 
+sectors per cylinder) and 81396441 cylinders which matches your 2 TB 
+disk size.
 
-Thanks
+The first partition begins at cylinder 43 and ends at cylinder 5004, 
+matching the 119088 k (k == 1024 bytes) below.
+
+Partition 2 begins at cylinder 5005, ends at 92508, size 2100096 again 
+as below.
+
+Partition 3 begins at cylinder 92509, ends at 28120463, size 672670920 
+as below.
+
+Partition 4 begins at cylinder 28120464, ends at 81068868, size 
+1270041720, different from the size shown in your /proc/partitions log.
+
+The disk ends at cylinder 81396440, so a partition 4 extending to the 
+end of the disk would have size 1278623448, which is what your log shows.
+
+>
+> cat /proc/partitions:
+>
+> major minor  #blocks  name
+>
+>    8        0 1953514584 sda
+>    8        1     119088 sda1
+>    8        2    2100096 sda2
+>    8        3  672670920 sda3
+>    8        4 1278623448 sda4
+
+I have (disk image on sdb, patches applied):
+      8       20 1270761720 sdb4
+
+which matches what I calculated by hand above.
+
+With an old kernel that does not have the RDB fixes, I get the same 
+partition size as you report. That size is the result of truncation to 
+EOD (the miscalculated size of 18446744071956107760 exceeds the device 
+size).
+
+Creating the filesystem on an unpatched kernel will use that incorrect 
+partition size. I'm sorry to say I cannot see a new RDB partition bug 
+her, just the result of undefined behaviour due to overflowing a 32 bit 
+nr_sect size calculation in the old RDB code.
+
+
+If you cannot shrink the filesystem, you will have to edit the partition 
+table to extend p4 to the end of the disk. Just replace the partition 4 
+pb->pb_Environment[10] (at offset 0x8a8, current value 0x04d50344) by 
+0x04da02d8. As far as I can see, there is no adjustment to the partition 
+block checksum required, as the checksummed block of 160 bytes ends just 
+before the location of the partition's low and high cylinder addresses....
+
+I'd best verify that a patched RDB actually works...
+
+Cheers,
+
+	Michael
+
+
+
+>   11        0    1048575 sr0
+>    8       32     250880 sdc
+>    8       33     249856 sdc1
+>    8       16  234431064 sdb
+>    8       17  144364512 sdb1
+>    8       18          1 sdb2
+>    8       19   18500608 sdb3
+>    8       20   40717312 sdb4
+>    8       21   14684160 sdb5
+>    8       22   16161792 sdb6
+>    8       48       1440 sdd
+>    8       49       1439 sdd1
 
