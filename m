@@ -2,90 +2,190 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2AB1EB64DC
-	for <linux-m68k@archiver.kernel.org>; Mon,  3 Jul 2023 07:05:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37080C0015E
+	for <linux-m68k@archiver.kernel.org>; Mon,  3 Jul 2023 07:55:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229875AbjGCHF4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 3 Jul 2023 03:05:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52576 "EHLO
+        id S229922AbjGCHza convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 3 Jul 2023 03:55:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjGCHFz (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 3 Jul 2023 03:05:55 -0400
-Received: from mail.lichtvoll.de (lichtvoll.de [IPv6:2001:67c:14c:12f::11:100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B512E44;
-        Mon,  3 Jul 2023 00:05:54 -0700 (PDT)
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
-        (No client certificate requested)
-        by mail.lichtvoll.de (Postfix) with ESMTPSA id AEB9772BDDB;
-        Mon,  3 Jul 2023 09:05:50 +0200 (CEST)
-Authentication-Results: mail.lichtvoll.de;
-        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
-From:   Martin Steigerwald <martin@lichtvoll.de>
-To:     linux-block@vger.kernel.org,
-        Christian Zigotzky <chzigotzky@xenosoft.de>,
-        Michael Schmitz <schmitzmic@gmail.com>
-Cc:     axboe@kernel.dk, linux-m68k@vger.kernel.org, geert@linux-m68k.org,
-        hch@lst.de, stable@vger.kernel.org,
-        "R.T.Dickinson" <rtd2@xtra.co.nz>,
-        Darren Stevens <darren@stevens-zone.net>,
-        mad skateman <madskateman@gmail.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Christian Zigotzky <info@xenosoft.de>
-Subject: Re: [PATCH] block: bugfix for Amiga partition overflow check patch
-Date:   Mon, 03 Jul 2023 09:05:50 +0200
-Message-ID: <4858801.31r3eYUQgx@lichtvoll.de>
-In-Reply-To: <234f57e7-a35f-4406-35ad-a5b9b49e9a5e@gmail.com>
-References: <20230701023524.7434-1-schmitzmic@gmail.com>
- <1885875.tdWV9SEqCh@lichtvoll.de>
- <234f57e7-a35f-4406-35ad-a5b9b49e9a5e@gmail.com>
+        with ESMTP id S229809AbjGCHz3 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 3 Jul 2023 03:55:29 -0400
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAFCEBA
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  3 Jul 2023 00:55:20 -0700 (PDT)
+Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-76571dae5feso383459085a.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 03 Jul 2023 00:55:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688370919; x=1690962919;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ap+98X7lUU4Mb/R2w4KrLGdPkASGfI2gOWe+xareG/w=;
+        b=YlzDeOsNgOx4S+e8LZ2335z6CUUUAuatCUsr/i54DxWQ6cGaDJPCMjeslTQzkGFaxd
+         IbIbds/fqb+CZ6IlLHcn306jpmW8jfj4UOENzOcPzoHqyr9EHHXqDAmLOfBP6RzaSjwh
+         cmKs8vFurCE1yc+vn+KbhXNp87+sCWOXL3lUFUNl/ywQSQN8gidlJrlCT50ZdAhxItoO
+         ypoJOY4oGYodM1agEBCBhEPleNkTl8yWCnmwRIr6s3DTwqS32SISSPriiqHZ/COJbj3v
+         xXrKGAFI/n9vI5dYaKBH4rbdRqmw9HAKn+LBrxfL37KyA4Tl8zg0ErSEsPxi4fZh1aAH
+         tDhw==
+X-Gm-Message-State: AC+VfDzQHWScFWcuozBajzkOoL7gXJrrqU8VKIUsY+ygQIDtnKXd+04Y
+        oo7sRuKXIeqLbfZFXX5YqV8De90VocOL/g==
+X-Google-Smtp-Source: ACHHUZ7VRTVn0UOjnGI9jHsWCelqwTkpFhiLcG628JxdorLMjajF8bCA777NusDbCOCVEwT84AmQFg==
+X-Received: by 2002:a05:620a:4113:b0:765:59d8:d421 with SMTP id j19-20020a05620a411300b0076559d8d421mr12749013qko.1.1688370919459;
+        Mon, 03 Jul 2023 00:55:19 -0700 (PDT)
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com. [209.85.160.182])
+        by smtp.gmail.com with ESMTPSA id h5-20020a05620a13e500b00765ac1335c2sm8086372qkl.75.2023.07.03.00.55.19
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 Jul 2023 00:55:19 -0700 (PDT)
+Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-40292285362so33712241cf.3
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 03 Jul 2023 00:55:19 -0700 (PDT)
+X-Received: by 2002:a25:a287:0:b0:c1a:2928:74ab with SMTP id
+ c7-20020a25a287000000b00c1a292874abmr8554017ybi.31.1688370898299; Mon, 03 Jul
+ 2023 00:54:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20230327121317.4081816-1-arnd@kernel.org> <20230327121317.4081816-21-arnd@kernel.org>
+In-Reply-To: <20230327121317.4081816-21-arnd@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 3 Jul 2023 09:54:46 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdW5bXeE=nr7+hHxL+xhm2q05udkJpMBM-BG7g9S7Nt7Zg@mail.gmail.com>
+Message-ID: <CAMuHMdW5bXeE=nr7+hHxL+xhm2q05udkJpMBM-BG7g9S7Nt7Zg@mail.gmail.com>
+Subject: Re: [PATCH 20/21] ARM: dma-mapping: split out arch_dma_mark_clean() helper
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Brian Cain <bcain@quicinc.com>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-oxnas@groups.io,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Michael Schmitz - 02.07.23, 22:22:27 CEST:
-> > I have read through the last mails without commenting. I admit: I do
-> > not yet get what is wrong here? A checksum was miscalculated? Is
-> > this a regular thing to happen when using RDB disks with Linux
-> > partitions?
-> I sent instructions to Christian on how to fix his partition table so
-> the size mismatch between partition and filesystem (caused by the old
-> RDB code) can be avoided, and misreading the checksum calculation code
-> I forgot to update the checksum. That's all.
+Hi Arnd,
 
-Ah okay. Sure, the checksum needs to be updated then.
+On Mon, Mar 27, 2023 at 2:16 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The arm version of the arch_sync_dma_for_cpu() function annotates pages as
+> PG_dcache_clean after a DMA, but no other architecture does this here. On
+> ia64, the same thing is done in arch_sync_dma_for_cpu(), so it makes sense
+> to use the same hook in order to have identical arch_sync_dma_for_cpu()
+> semantics as all other architectures.
+>
+> Splitting this out has multiple effects:
+>
+>  - for dma-direct, this now gets called after arch_sync_dma_for_cpu()
+>    for DMA_FROM_DEVICE mappings, but not for DMA_BIDIRECTIONAL. While
+>    it would not be harmful to keep doing it for bidirectional mappings,
+>    those are apparently not used in any callers that care about the flag.
+>
+>  - Since arm has its own dma-iommu abstraction, this now also needs to
+>    call the same function, so the calls are added there to mirror the
+>    dma-direct version.
+>
+>  - Like dma-direct, the dma-iommu version now marks the dcache clean
+>    for both coherent and noncoherent devices after a DMA, but it only
+>    does this for DMA_FROM_DEVICE, not DMA_BIDIRECTIONAL.
+>
+> [ HELP NEEDED: can anyone confirm that it is a correct assumption
+>   on arm that a cache-coherent device writing to a page always results
+>   in it being in a PG_dcache_clean state like on ia64, or can a device
+>   write directly into the dcache?]
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-From what I thought I gathered from Christian, I thought that his issue 
-would be something that would automatically be triggered by just using 
-disks Amiga + Linux RDB partitioning setup. And I did not get, how any 
-tool on AmigaOS would create partition tables with errors like too large 
-partitions in them. I am not completely sure about the amiga-fdisk tool 
-for Linux, but even there I would be surprised if it would allow to 
-create such a partition table. Especially given that as I remember back 
-then when I faced the overflow issue amiga-fdisk showed the correct 
-values. I always suggest to use a tool on AmigaOS however.
+Thanks for your patch, which is now commit 322dbe898f82fd8a
+("ARM: dma-mapping: split out arch_dma_mark_clean() helper") in
+esmil/jh7100-dmapool.
 
-So that was it: I did not get how Christian comes to claim that so many 
-users were affected with incorrect partition tables, cause frankly Amiga 
-RDB partitioning tools are not actually famous for creating incorrect 
-partition tables like this. There has been some compatibility issue 
-between some Phase 5 tool with a name I do not remember and the other 
-tools back then I believe, but it was not about partition sizes. 
-Especially if you use a HDToolBox from any AmigaOS version up to 3.x or 
-Media Toolbox from AmigaOS 4.x with automatic geometry calculation, I 
-never heard of such a partition to large error in the partition table. 
-Those tools simply do not allow creating that.
+If CONFIG_ARM_DMA_USE_IOMMU=y, the build fails.
 
-So, Christian, unless you can actually enlighten us on a reproducible 
-way how users with those setups end up with incorrect partition tables 
-like this, I consider this case closed. So far you didn't.
+> --- a/arch/arm/mm/dma-mapping.c
+> +++ b/arch/arm/mm/dma-mapping.c
 
-Ciao,
+> @@ -1294,6 +1298,17 @@ static int arm_iommu_map_sg(struct device *dev, struct scatterlist *sg,
+>         return -EINVAL;
+>  }
+>
+> +static void arm_iommu_sync_dma_for_cpu(phys_addr_t phys, size_t len,
+> +                                      enum dma_data_direction dir,
+> +                                      bool dma_coherent)
+> +{
+> +       if (!dma_coherent)
+> +               arch_sync_dma_for_cpu(phys, s->length, dir);
+
+s/s->length/len/
+
+> +
+> +       if (dir == DMA_FROM_DEVICE)
+> +               arch_dma_mark_clean(phys, s->length);
+
+Likewise.
+
+> +}
+> +
+>  /**
+>   * arm_iommu_unmap_sg - unmap a set of SG buffers mapped by dma_map_sg
+>   * @dev: valid struct device pointer
+
+> @@ -1425,9 +1438,9 @@ static void arm_iommu_unmap_page(struct device *dev, dma_addr_t handle,
+>         if (!iova)
+>                 return;
+>
+> -       if (!dev->dma_coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC)) {
+> +       if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+
+Missing opening curly brace.
+
+>                 phys = iommu_iova_to_phys(mapping->domain, handle);
+> -               arch_sync_dma_for_cpu(phys, size, dir);
+> +               arm_iommu_sync_dma_for_cpu(phys, size, dir, dev->dma_coherent);
+>         }
+>
+>         iommu_unmap(mapping->domain, iova, len);
+
+With the above fixed, it builds and boots fine (on R-Car M2-W).
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-Martin
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
