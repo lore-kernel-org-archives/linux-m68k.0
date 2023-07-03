@@ -2,190 +2,117 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37080C0015E
-	for <linux-m68k@archiver.kernel.org>; Mon,  3 Jul 2023 07:55:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BDA2EB64DC
+	for <linux-m68k@archiver.kernel.org>; Mon,  3 Jul 2023 14:19:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbjGCHza convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 3 Jul 2023 03:55:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44380 "EHLO
+        id S230162AbjGCOTj (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 3 Jul 2023 10:19:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbjGCHz3 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 3 Jul 2023 03:55:29 -0400
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAFCEBA
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  3 Jul 2023 00:55:20 -0700 (PDT)
-Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-76571dae5feso383459085a.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 03 Jul 2023 00:55:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688370919; x=1690962919;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ap+98X7lUU4Mb/R2w4KrLGdPkASGfI2gOWe+xareG/w=;
-        b=YlzDeOsNgOx4S+e8LZ2335z6CUUUAuatCUsr/i54DxWQ6cGaDJPCMjeslTQzkGFaxd
-         IbIbds/fqb+CZ6IlLHcn306jpmW8jfj4UOENzOcPzoHqyr9EHHXqDAmLOfBP6RzaSjwh
-         cmKs8vFurCE1yc+vn+KbhXNp87+sCWOXL3lUFUNl/ywQSQN8gidlJrlCT50ZdAhxItoO
-         ypoJOY4oGYodM1agEBCBhEPleNkTl8yWCnmwRIr6s3DTwqS32SISSPriiqHZ/COJbj3v
-         xXrKGAFI/n9vI5dYaKBH4rbdRqmw9HAKn+LBrxfL37KyA4Tl8zg0ErSEsPxi4fZh1aAH
-         tDhw==
-X-Gm-Message-State: AC+VfDzQHWScFWcuozBajzkOoL7gXJrrqU8VKIUsY+ygQIDtnKXd+04Y
-        oo7sRuKXIeqLbfZFXX5YqV8De90VocOL/g==
-X-Google-Smtp-Source: ACHHUZ7VRTVn0UOjnGI9jHsWCelqwTkpFhiLcG628JxdorLMjajF8bCA777NusDbCOCVEwT84AmQFg==
-X-Received: by 2002:a05:620a:4113:b0:765:59d8:d421 with SMTP id j19-20020a05620a411300b0076559d8d421mr12749013qko.1.1688370919459;
-        Mon, 03 Jul 2023 00:55:19 -0700 (PDT)
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com. [209.85.160.182])
-        by smtp.gmail.com with ESMTPSA id h5-20020a05620a13e500b00765ac1335c2sm8086372qkl.75.2023.07.03.00.55.19
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 Jul 2023 00:55:19 -0700 (PDT)
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-40292285362so33712241cf.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 03 Jul 2023 00:55:19 -0700 (PDT)
-X-Received: by 2002:a25:a287:0:b0:c1a:2928:74ab with SMTP id
- c7-20020a25a287000000b00c1a292874abmr8554017ybi.31.1688370898299; Mon, 03 Jul
- 2023 00:54:58 -0700 (PDT)
+        with ESMTP id S229844AbjGCOTi (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 3 Jul 2023 10:19:38 -0400
+X-Greylist: delayed 103467 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 03 Jul 2023 07:19:36 PDT
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 515A2E54;
+        Mon,  3 Jul 2023 07:19:35 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1688393945; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=BrTOfOlKBPWc4K7yBdBeJYnEHfycdbapFCQgLLoGE3XFe3IzSb3yKbsIoGbwIrRVT6
+    i7J8hSIxLy1/Cv7+0CrfIPeF5/jv+48e/jVXGlTOI2018g2aq9T2CgV1PJYwb/vheAA1
+    vFK7OKBl8NZkI3LM3KLDfRXzvq1dgRRIHbFDlu+9+5t5UFrJiyOGlFPqxy/r0g16UDIZ
+    yuf47GapLD62Xzu5MhrsEZZYOShnCWfL+jIknprgdpnzj3VS0Lox6xBnW+Cv93V5VS0v
+    KX5V16I2iokT+oHxc74E6nkqGgtjah2Fe3RGFAkqClV6YlVi55Lc6cyFP0eo5ce1PmhM
+    /7Ow==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1688393945;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=aZqkftNwGuiIw+qvH524CVwYcvHNKRAS4n56iIq1vcw=;
+    b=ZRtziCBzjcRsbZEVhvuCRvu4OOb9sFb6YhxopTBQUWQsohyNPr2S8PWtrqrSffj4tU
+    /D09pichdSN1clItnDXKoKcHDvXzrWbek2qv6sFPPJyliNiNCFubta7KbwzfrFvQfy50
+    MhUXSyPpxZVhvZwpdGbsa5vavR9Yt7r3QhC9KD2q7yf20xE8qaGuhinhlaOfVALcNUXE
+    wW+kQlcoB8o3ks6VB+TqSUPkacvnXzzgQDdcJMC8I1nF/3OUVbDwCaexXpBxsrWO3IBb
+    qvvMwJgQImYC3QimpfaKaDhLP+xOSzx8nuMMhnBkrfaoeNRZ5dHGnyoxY2A/SbIdpi3+
+    avLQ==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1688393945;
+    s=strato-dkim-0002; d=xenosoft.de;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=aZqkftNwGuiIw+qvH524CVwYcvHNKRAS4n56iIq1vcw=;
+    b=XZjO6gm1x0W+ta4vU3k+Z2rY+hOqWYfrRf4Vlu+p32VSDRqWXl/+X119/ZAQbyBvNM
+    ooevx2JSf0jGOFGJz7cz7PTemqnBa4b65RGpOaswhwrOC5YrNyA6oArKhXJ3de9b7qqx
+    JnSiTYL1pmSz0+Cqw5+kZEk7abeN1usCijwsT4QMbrC+vMOVdKiSYt/PrTF9wnTZb6vW
+    0aABdMuOodUY0ykmp1wwvalnOdReXYn8hQWj4vlDUU90jePn0WrQlxyIy/BrCyp1xs1k
+    ELwLUEiik1CGE4yIX/KILbFrEXBwDsFt7oDnqWA0Qo+Idz1LoAG8jkKCK1JWetCBxEC/
+    FvOw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1688393945;
+    s=strato-dkim-0003; d=xenosoft.de;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=aZqkftNwGuiIw+qvH524CVwYcvHNKRAS4n56iIq1vcw=;
+    b=NaABkuKF6mjlHA23pbfoYpK0IUOO3flnFOsyzYy4MJ/KWkE4h+vfUDgSqqRBNMq1rh
+    J6OlaYVOx2V+Z2ElYIAw==
+X-RZG-AUTH: ":L2QefEenb+UdBJSdRCXu93KJ1bmSGnhMdmOod1DhGM4l4Hio94KKxRySfLxnHvJzedR4hZ0hbXsch5+//XdlPUGFli4Uk5Nm+QSwfKBN9bg="
+Received: from [IPV6:2a01:599:a10:1e99:7578:5f56:e200:ca72]
+    by smtp.strato.de (RZmta 49.6.0 AUTH)
+    with ESMTPSA id N28a51z63EJ4xrt
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Mon, 3 Jul 2023 16:19:04 +0200 (CEST)
+Message-ID: <947340d9-b640-0910-317b-5c8022220a55@xenosoft.de>
+Date:   Mon, 3 Jul 2023 16:19:04 +0200
 MIME-Version: 1.0
-References: <20230327121317.4081816-1-arnd@kernel.org> <20230327121317.4081816-21-arnd@kernel.org>
-In-Reply-To: <20230327121317.4081816-21-arnd@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 3 Jul 2023 09:54:46 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdW5bXeE=nr7+hHxL+xhm2q05udkJpMBM-BG7g9S7Nt7Zg@mail.gmail.com>
-Message-ID: <CAMuHMdW5bXeE=nr7+hHxL+xhm2q05udkJpMBM-BG7g9S7Nt7Zg@mail.gmail.com>
-Subject: Re: [PATCH 20/21] ARM: dma-mapping: split out arch_dma_mark_clean() helper
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Brian Cain <bcain@quicinc.com>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Rich Felker <dalias@libc.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH] block: bugfix for Amiga partition overflow check patch
+To:     Martin Steigerwald <martin@lichtvoll.de>,
+        linux-block@vger.kernel.org, Michael Schmitz <schmitzmic@gmail.com>
+Cc:     axboe@kernel.dk, linux-m68k@vger.kernel.org, geert@linux-m68k.org,
+        hch@lst.de, stable@vger.kernel.org,
+        "R.T.Dickinson" <rtd2@xtra.co.nz>,
+        Darren Stevens <darren@stevens-zone.net>,
+        mad skateman <madskateman@gmail.com>,
         John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-oxnas@groups.io,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+        Christian Zigotzky <info@xenosoft.de>
+References: <20230701023524.7434-1-schmitzmic@gmail.com>
+ <1885875.tdWV9SEqCh@lichtvoll.de>
+ <234f57e7-a35f-4406-35ad-a5b9b49e9a5e@gmail.com>
+ <4858801.31r3eYUQgx@lichtvoll.de>
+Content-Language: en-US
+From:   Christian Zigotzky <chzigotzky@xenosoft.de>
+In-Reply-To: <4858801.31r3eYUQgx@lichtvoll.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Arnd,
-
-On Mon, Mar 27, 2023 at 2:16 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On 03.07.23 09:05, Martin Steigerwald wrote:
+> So, Christian, unless you can actually enlighten us on a reproducible
+> way how users with those setups end up with incorrect partition tables
+> like this, I consider this case closed. So far you didn't.
 >
-> The arm version of the arch_sync_dma_for_cpu() function annotates pages as
-> PG_dcache_clean after a DMA, but no other architecture does this here. On
-> ia64, the same thing is done in arch_sync_dma_for_cpu(), so it makes sense
-> to use the same hook in order to have identical arch_sync_dma_for_cpu()
-> semantics as all other architectures.
->
-> Splitting this out has multiple effects:
->
->  - for dma-direct, this now gets called after arch_sync_dma_for_cpu()
->    for DMA_FROM_DEVICE mappings, but not for DMA_BIDIRECTIONAL. While
->    it would not be harmful to keep doing it for bidirectional mappings,
->    those are apparently not used in any callers that care about the flag.
->
->  - Since arm has its own dma-iommu abstraction, this now also needs to
->    call the same function, so the calls are added there to mirror the
->    dma-direct version.
->
->  - Like dma-direct, the dma-iommu version now marks the dcache clean
->    for both coherent and noncoherent devices after a DMA, but it only
->    does this for DMA_FROM_DEVICE, not DMA_BIDIRECTIONAL.
->
-> [ HELP NEEDED: can anyone confirm that it is a correct assumption
->   on arm that a cache-coherent device writing to a page always results
->   in it being in a PG_dcache_clean state like on ia64, or can a device
->   write directly into the dcache?]
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Ciao,
+This is a very simple explanation. The first partitions on the RDB disk 
+were created with Media Toolbox on OS4.1. After that some additional 
+partitions were created with Linux and formatted with ext4.
+With the new patched kernel, these can no longer be mounted.
 
-Thanks for your patch, which is now commit 322dbe898f82fd8a
-("ARM: dma-mapping: split out arch_dma_mark_clean() helper") in
-esmil/jh7100-dmapool.
+I will try out, if I can correct them with GParted. If it works, then I 
+will write some instructions for correcting the partitions via GParted 
+for the end users.
 
-If CONFIG_ARM_DMA_USE_IOMMU=y, the build fails.
+GParted is a good tool and suitable for our customers.
 
-> --- a/arch/arm/mm/dma-mapping.c
-> +++ b/arch/arm/mm/dma-mapping.c
+I know, this is a very old bug and no one has noticed this one. I have 
+not received any error messages because of Linux partitions on RDB disks 
+in the last 10 years. I am very happy that this bug is fixed now but we 
+have to explain it to our customers why they can't mount their Linux 
+partitions on the RDB disk anymore. Booting is of course also affected. 
+(Mounting the root partition)
 
-> @@ -1294,6 +1298,17 @@ static int arm_iommu_map_sg(struct device *dev, struct scatterlist *sg,
->         return -EINVAL;
->  }
->
-> +static void arm_iommu_sync_dma_for_cpu(phys_addr_t phys, size_t len,
-> +                                      enum dma_data_direction dir,
-> +                                      bool dma_coherent)
-> +{
-> +       if (!dma_coherent)
-> +               arch_sync_dma_for_cpu(phys, s->length, dir);
-
-s/s->length/len/
-
-> +
-> +       if (dir == DMA_FROM_DEVICE)
-> +               arch_dma_mark_clean(phys, s->length);
-
-Likewise.
-
-> +}
-> +
->  /**
->   * arm_iommu_unmap_sg - unmap a set of SG buffers mapped by dma_map_sg
->   * @dev: valid struct device pointer
-
-> @@ -1425,9 +1438,9 @@ static void arm_iommu_unmap_page(struct device *dev, dma_addr_t handle,
->         if (!iova)
->                 return;
->
-> -       if (!dev->dma_coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC)) {
-> +       if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
-
-Missing opening curly brace.
-
->                 phys = iommu_iova_to_phys(mapping->domain, handle);
-> -               arch_sync_dma_for_cpu(phys, size, dir);
-> +               arm_iommu_sync_dma_for_cpu(phys, size, dir, dev->dma_coherent);
->         }
->
->         iommu_unmap(mapping->domain, iova, len);
-
-With the above fixed, it builds and boots fine (on R-Car M2-W).
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+But maybe simple GParted instructions is a good solution.
