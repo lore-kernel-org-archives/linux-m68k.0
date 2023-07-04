@@ -2,127 +2,96 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C43F1EB64DC
-	for <linux-m68k@archiver.kernel.org>; Mon,  3 Jul 2023 23:08:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DD9AEB64D9
+	for <linux-m68k@archiver.kernel.org>; Tue,  4 Jul 2023 05:07:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229450AbjGCXIL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 3 Jul 2023 19:08:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47046 "EHLO
+        id S229793AbjGDFHC convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 4 Jul 2023 01:07:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbjGCXIK (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 3 Jul 2023 19:08:10 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82D2186;
-        Mon,  3 Jul 2023 16:07:59 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-666edfc50deso3134659b3a.0;
-        Mon, 03 Jul 2023 16:07:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688425679; x=1691017679;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=30zNCo+aXEcdrX1BYZ3Jkoz9pf4nQ32fKAkcmaAbuak=;
-        b=gSUs7NtBYHwpeLLg17wEsJTefX77ut3A/4nFbS2k2LZV2Lxv6cF/guao2w3TCt+PNu
-         JVSvokGP/0Z2tkeVM0buJ0VcckFpwfJKML4tznnFa/Im8Fd/A28b6nWRuANIn5dTXyPa
-         5jCFTeRehKQHIAmHDJeDIsu+rm4LgBgfeqwtLg3Cx3ahVVkuWIulpSWP9Jv6EBw9LW4B
-         D8dO1IUj6WyPY5ZT6gj6hcaekGunAjSfeOIaLiH1uZazZH14nBqwlQvzYmFDfWZ9tbCH
-         64sZ9kyOoICO8dLTZWI+ggvvFv8vpa6GvlgLiQrXZUGefwOKdiIjL/haWUeQM13mAlJv
-         LOIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688425679; x=1691017679;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=30zNCo+aXEcdrX1BYZ3Jkoz9pf4nQ32fKAkcmaAbuak=;
-        b=H+ELCeOB7fU3gjAImwYUCIWfAN5oC7HFuL/250B0N5tuIXQEbNUWM9YyPR4p+eOlZ2
-         u/MGDPO9Eo0LbhHTaPlV+pi6S23IJ/LkmkQKcknBzz5Na5A6TQa6MzZJVeetz/e+zqTY
-         rebPzL1e/Gq1O2WUebT54CRXCB6PvjSH9n+MliwbjhMX28Jqu9lFvIw7ZmM/XjaZFhpL
-         pBaB29xAoAbnhX1Ao8rAwnZ/hUltg5FtEhCQJAHz+dCyjp6ENFe4boSGnnzcnMAGyWQN
-         ziUBy/Vc9AtwJixyRKj8cxihJvr39IDkohElZCXp+4mwSS1q1dY9mcPVnMU6Lox+Wppv
-         r7wA==
-X-Gm-Message-State: AC+VfDzxKwhpgdfLTYfQUyf/YXY3qZFCLJy3NEqphvsF6ZZBhn8jjZPK
-        reR1GwcMKXpNlgCi7DyKRt8=
-X-Google-Smtp-Source: ACHHUZ7gcOaPDsbNzc5xwNmjHgIPbfFNvEWUcCtR2orYaGicSiZSsbCe/eSSHHqXKJ3OKv6MfQAlGQ==
-X-Received: by 2002:a05:6a00:1388:b0:668:93e7:6800 with SMTP id t8-20020a056a00138800b0066893e76800mr25863549pfg.14.1688425678950;
-        Mon, 03 Jul 2023 16:07:58 -0700 (PDT)
-Received: from xplor.waratah.dyndns.org (222-152-184-54-fibre.sparkbb.co.nz. [222.152.184.54])
-        by smtp.gmail.com with ESMTPSA id y19-20020aa78553000000b0066f37665a63sm9982670pfn.73.2023.07.03.16.07.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Jul 2023 16:07:58 -0700 (PDT)
-Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-        id 9EBA8360319; Tue,  4 Jul 2023 11:07:54 +1200 (NZST)
-From:   Michael Schmitz <schmitzmic@gmail.com>
-To:     linux-block@vger.kernel.org, axboe@kernel.dk
-Cc:     linux-m68k@vger.kernel.org, chzigotzky@xenosoft.de,
-        geert@linux-m68k.org, hch@lst.de, martin@lichtvoll.de,
-        Michael Schmitz <schmitzmic@gmail.com>, stable@vger.kernel.org
-Subject: [PATCH v2] block: bugfix for Amiga partition overflow check patch
-Date:   Tue,  4 Jul 2023 11:07:52 +1200
-Message-Id: <20230703230752.13394-1-schmitzmic@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        with ESMTP id S229487AbjGDFHB (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 4 Jul 2023 01:07:01 -0400
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BFE01AD;
+        Mon,  3 Jul 2023 22:07:00 -0700 (PDT)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1qGYFc-000G9U-89; Tue, 04 Jul 2023 07:06:56 +0200
+Received: from p57bd997f.dip0.t-ipconnect.de ([87.189.153.127] helo=[192.168.178.81])
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1qGYFc-000aQy-0H; Tue, 04 Jul 2023 07:06:56 +0200
+Message-ID: <5dcbbcf69462141ab7cd9679b7577b8047b97f29.camel@physik.fu-berlin.de>
+Subject: Re: [PATCH] block: bugfix for Amiga partition overflow check patch
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Michael Schmitz <schmitzmic@gmail.com>,
+        Christian Zigotzky <chzigotzky@xenosoft.de>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org, hch@lst.de,
+        stable@vger.kernel.org, "R.T.Dickinson" <rtd2@xtra.co.nz>,
+        Darren Stevens <darren@stevens-zone.net>,
+        mad skateman <madskateman@gmail.com>,
+        Christian Zigotzky <info@xenosoft.de>,
+        Martin Steigerwald <martin@lichtvoll.de>,
+        linux-block <linux-block@vger.kernel.org>
+Date:   Tue, 04 Jul 2023 07:06:55 +0200
+In-Reply-To: <45d9f890-ebe2-4014-2411-953fd9741c2b@gmail.com>
+References: <20230701023524.7434-1-schmitzmic@gmail.com>
+         <1885875.tdWV9SEqCh@lichtvoll.de>
+         <234f57e7-a35f-4406-35ad-a5b9b49e9a5e@gmail.com>
+         <4858801.31r3eYUQgx@lichtvoll.de>
+         <947340d9-b640-0910-317b-5c8022220a55@xenosoft.de>
+         <80266037-f808-c448-c3c7-9d5d5f4253a7@xenosoft.de>
+         <45d9f890-ebe2-4014-2411-953fd9741c2b@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.3 
+MIME-Version: 1.0
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.153.127
+X-ZEDAT-Hint: PO
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Making 'blk' sector_t (i.e. 64 bit if LBD support is active)
-fails the 'blk>0' test in the partition block loop if a
-value of (signed int) -1 is used to mark the end of the
-partition block list.
+Hi Michael!
 
-This bug was introduced in patch 3 of my prior Amiga partition
-support fixes series, and spotted by Christian Zigotzky when
-testing the latest block updates.
+On Tue, 2023-07-04 at 09:24 +1200, Michael Schmitz wrote:
+> Hi Christian,
+> 
+> On 4/07/23 02:59, Christian Zigotzky wrote:
+> > > I am very happy that this bug is fixed now but we have to explain it 
+> > > to our customers why they can't mount their Linux partitions on the 
+> > > RDB disk anymore. Booting is of course also affected. (Mounting the 
+> > > root partition)
+> > > 
+> > > But maybe simple GParted instructions are a good solution.
+> > You can apply the patch. I will revert this patch until I find a 
+> > simple solution for our community.
+> > 
+> > Thank you for fixing this issue!
+> 
+> Thanks for testing - I'll add your Tested-by: tag now. I have to correct 
+> the Fixes: tag anyway.
 
-Explicitly cast 'blk' to signed int to allow use of -1 to
-terminate the partition block linked list.
+Have we actually agreed now that this is a bug and not just an effect of the
+corrupted RDB that Christian provided?
 
-Testing by Christian also exposed another aspect of the old
-bug fixed in commits fc3d092c6b ("block: fix signed int
-overflow in Amiga partition support") and b6f3f28f60
-("block: add overflow checks for Amiga partition support"):
+> Jens - is the bugfix patch enough, or do you need a new version of the 
+> entire series?
 
-Partitons that did overflow the disk size (due to 32 bit int
-overflow) were not skipped but truncated to the end of the
-disk. Users who missed the warning message during boot would
-go on to create a filesystem with a size exceeding the
-actual partition size. Now that the 32 bit overflow has been
-corrected, such filesystems may refuse to mount with a
-'filesystem exceeds partition size' error. Users should
-either correct the partition size, or resize the filesystem
-before attempting to boot a kernel with the RDB fixes in
-place.
+But the series has already been applied and released in 6.4, hasn't it?
 
-Reported-by: Christian Zigotzky <chzigotzky@xenosoft.de>
-Fixes: b6f3f28f60 ("block: add overflow checks for Amiga partition support")
-Message-ID: 024ce4fa-cc6d-50a2-9aae-3701d0ebf668@xenosoft.de
-Cc: <stable@vger.kernel.org> # 6.4
-Link: https://lore.kernel.org/r/024ce4fa-cc6d-50a2-9aae-3701d0ebf668@xenosoft.de
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-Tested-by: Christian Zigotzky <chzigotzky@xenosoft.de>
+Adrian
 
---
-
-Changes since v1:
-
-- corrected Fixes: tag
-- added Tested-by:
-- reworded commit message to describe filesystem partition
-  size mismatch problem
----
- block/partitions/amiga.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/block/partitions/amiga.c b/block/partitions/amiga.c
-index ed222b9c901b..506921095412 100644
---- a/block/partitions/amiga.c
-+++ b/block/partitions/amiga.c
-@@ -90,7 +90,7 @@ int amiga_partition(struct parsed_partitions *state)
- 	}
- 	blk = be32_to_cpu(rdb->rdb_PartitionList);
- 	put_dev_sector(sect);
--	for (part = 1; blk>0 && part<=16; part++, put_dev_sector(sect)) {
-+	for (part = 1; (s32) blk>0 && part<=16; part++, put_dev_sector(sect)) {
- 		/* Read in terms partition table understands */
- 		if (check_mul_overflow(blk, (sector_t) blksize, &blk)) {
- 			pr_err("Dev %s: overflow calculating partition block %llu! Skipping partitions %u and beyond\n",
 -- 
-2.17.1
-
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
