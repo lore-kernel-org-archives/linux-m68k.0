@@ -2,107 +2,131 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E066C0015E
-	for <linux-m68k@archiver.kernel.org>; Wed,  5 Jul 2023 09:08:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19684EB64DA
+	for <linux-m68k@archiver.kernel.org>; Wed,  5 Jul 2023 12:14:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232166AbjGEJIe convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 5 Jul 2023 05:08:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41778 "EHLO
+        id S230255AbjGEMOA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 5 Jul 2023 08:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231823AbjGEJId (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 5 Jul 2023 05:08:33 -0400
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B011706;
-        Wed,  5 Jul 2023 02:08:32 -0700 (PDT)
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-c5c03379a76so1906428276.1;
-        Wed, 05 Jul 2023 02:08:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688548111; x=1691140111;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E+TNnJonIwEoTpka1YO/KDKKK9gHKhOV507pFmzvVvo=;
-        b=gAYjz5MryJWAeykZs1fl1yyMyFyI+wRQ6dcNjzxp7RSObvB9WHH9RsHEJTpM7mClEX
-         niulX6xvqCg46B2Aluyj/6OaeBNeHq9ipCaxmWaQS8CrG9ItCg6SA/dW7Wtdkdwj4u4r
-         Tx7gK16a3aAUkRFrjhJa0eDtyIykEBWsMsBS+N8s52du5DbjS1QQqQnAVHNTuXW6c6pa
-         EU0FpCX3bAjAEoZy/iM+dMPBriIUnxVZVtvdD6+ipAjeYWoQ1HlBM+fUKaxnf1TK7RoG
-         3NDvxdurBLAxZ5yK+4NHy75Th8SCpUEAysKoibS+5At8o6DNXbMy/7ZUp2ClS+CJlWut
-         d2wg==
-X-Gm-Message-State: ABy/qLbiLio7X4Swd3MGEHC4iZYZ0JKaDBAYZBGFxDLCI+UwI6P0cMMQ
-        A1bnnkYwz9pf/FJhn6HL5jv4lOgto/izEA==
-X-Google-Smtp-Source: APBJJlF2cdFQ/RfTXYI9fun9UP6bBacdF2Oe83rK3eciuHwHnRCu8SziRtjj81RzWWJu2Ew1HH9AbA==
-X-Received: by 2002:a25:ab65:0:b0:c1b:d362:4b4e with SMTP id u92-20020a25ab65000000b00c1bd3624b4emr14470370ybi.43.1688548110951;
-        Wed, 05 Jul 2023 02:08:30 -0700 (PDT)
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
-        by smtp.gmail.com with ESMTPSA id q6-20020a258e86000000b00c5cac376dffsm672813ybl.22.2023.07.05.02.08.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Jul 2023 02:08:30 -0700 (PDT)
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-c5e76dfcc36so1402582276.2;
-        Wed, 05 Jul 2023 02:08:30 -0700 (PDT)
-X-Received: by 2002:a25:d701:0:b0:c19:df8b:68b with SMTP id
- o1-20020a25d701000000b00c19df8b068bmr14361415ybg.47.1688548110559; Wed, 05
- Jul 2023 02:08:30 -0700 (PDT)
+        with ESMTP id S231202AbjGEMN6 (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 5 Jul 2023 08:13:58 -0400
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2119.outbound.protection.outlook.com [40.107.215.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96B8419AB
+        for <linux-m68k@lists.linux-m68k.org>; Wed,  5 Jul 2023 05:13:33 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W3ockCw1JprI42+9zM1P3uiqq1R3FQrahQJz6ximZdRkZU/RQBUTJA48JRmVPU//lAEFn2K938Oop+CmDvTMtwgsnSjWJlSHEUwYFq1vzyOId9tQb3UDt8rzXJC/OahNO2rNwv/nWhZs85FSaEtRKECE8qgcJjijnQJx3hnlvauaBUJRevBY/vlYIaVAPZbDQDcuDPShnnEFU0JKyWhryW/z+z5T9h59HcoMAOPjg49rrVEFktE5LCMx2vwGaxB6ZVTtS3z942WNkdVz+sdhOJ+5WWOyqgnbPbQkVO7hayg8rzLA7i1VgFYY/cvooYU1XPxgUQ98YNrvqT+svSSgTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HevA+cnnj52toenaN0EtxrUgLYWmtqMQru7abavgc90=;
+ b=gIaReQ+g7ArGA7vF4fir7/9TEhFXabWj3PaROIwJwDnbuZasUQwZJHKAEHc8vtjbmM8y6hoCCxBoTSy6XSlz8S+H9LSzdfkmQnxsQ45BWUUFgPypsZis/g2fQAGlHMmDNbUM91JAE0A8nHvlEwPNsUSNqICv4d+MiKKPwZQu4v62T0w/X6CTw/0eXQ4Ak+Ptbw5ZxIrp9PCTuwMCj+Du3ZprrzrpBTfMmWt0mJYA4zUwhGZ7kQcJAtxf1LDvJJ0DuQ7iYhNhH+QaooZDtDruvmVabDBY8UJnxVAHz3WldNL5iEH5rHo4HwYSo6e2EBjVYrnEg4z2ZMaIMB4bYwrMXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HevA+cnnj52toenaN0EtxrUgLYWmtqMQru7abavgc90=;
+ b=gMJzRsF3yyj9PLRamN5cfiF8aP55FvbmBjDIJtVcDa7JRB0gvhAKkwX8sGbdNIKtj2GH+c7LPCxRkXyJ+fhS1CJxoRH2hxxGc7pCNDuyBSHIlgjESQ2kcT9vHeDec+m+2nfMaTLpz5CBe5IkwXx2tY1u+T3IfiLRGYGJEF7VbeBI8X1UpqHLgiR9ugLoEpzcDikyE6uINeO5jg3IwMci9PrapsiV/CyBMSNGv/grXJcr1NsHJaPRzKaMiapDb8jQwYmjKoO/kb93os8+QXM3M+4F6O9aeCM/WmrC4h4HH8mrn3Ebl8VghnGi8eGpcYJlKyQiJJUy3GTIdLPbXG++lQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SG2PR06MB5288.apcprd06.prod.outlook.com (2603:1096:4:1dc::9) by
+ KL1PR0601MB4403.apcprd06.prod.outlook.com (2603:1096:820:7d::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.17; Wed, 5 Jul
+ 2023 12:13:15 +0000
+Received: from SG2PR06MB5288.apcprd06.prod.outlook.com
+ ([fe80::c2b:41ab:3b14:f920]) by SG2PR06MB5288.apcprd06.prod.outlook.com
+ ([fe80::c2b:41ab:3b14:f920%7]) with mapi id 15.20.6565.016; Wed, 5 Jul 2023
+ 12:13:14 +0000
+From:   Minjie Du <duminjie@vivo.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Minjie Du <duminjie@vivo.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-m68k@lists.linux-m68k.org (open list:M68K ARCHITECTURE),
+        linux-kernel@vger.kernel.org (open list)
+Cc:     opensource.kernel@vivo.com
+Subject: [PATCH v1] m68k: apollo: Remove a duplicate assignment in dn_timer_int
+Date:   Wed,  5 Jul 2023 20:13:07 +0800
+Message-Id: <20230705121307.17204-1-duminjie@vivo.com>
+X-Mailer: git-send-email 2.39.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI1PR02CA0031.apcprd02.prod.outlook.com
+ (2603:1096:4:1f6::11) To SG2PR06MB5288.apcprd06.prod.outlook.com
+ (2603:1096:4:1dc::9)
 MIME-Version: 1.0
-References: <20230620201725.7020-1-schmitzmic@gmail.com> <20230704233808.25166-1-schmitzmic@gmail.com>
- <20230704233808.25166-2-schmitzmic@gmail.com> <CAMuHMdUc-mqHC80euFrXLGGJO3gLW3ywu2aG4MDQi5ED=dWFeQ@mail.gmail.com>
- <06995206-5dc5-8008-ef06-c76389ef0dd8@gmail.com>
-In-Reply-To: <06995206-5dc5-8008-ef06-c76389ef0dd8@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 5 Jul 2023 11:08:19 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVGNB_aZnDHw_wfDTinDk+LKkP1Lx96Cgm0jM6J1WdACQ@mail.gmail.com>
-Message-ID: <CAMuHMdVGNB_aZnDHw_wfDTinDk+LKkP1Lx96Cgm0jM6J1WdACQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/1] block: bugfix for Amiga partition overflow check patch
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     linux-block@vger.kernel.org, axboe@kernel.dk,
-        linux-m68k@vger.kernel.org, chzigotzky@xenosoft.de, hch@lst.de,
-        martin@lichtvoll.de, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SG2PR06MB5288:EE_|KL1PR0601MB4403:EE_
+X-MS-Office365-Filtering-Correlation-Id: f056e357-8bce-4ede-f03e-08db7d513590
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Cs97W3RHWGD4ioJesViUCVt4kDE1WMvb+P722D24y6ZOqrC+eFBTXKtdiSewxoUp3uopOiBTjaptqG1lRwUru8cuhEz1oHPmaW+rq7ITeUcWjqoM1au+os8pr9MIlhADUcHAgaN2U9IMIVCr4AfxI2KR+0Q5BSvMu1f9Q6eDFPtPPP8f2D79jL8kZWrpsGAMJZxqYmwjrfIzpRchQaXlVa1Kp5DBTSjAXQdzKzEWNAfmKHMlinosp44eSyCSYoSjGok/7uT1zEBze+gd+gFj3blepI63ME/DAgf/IOanshPj+U8SICS2JT7nq4mbSIkJVy8HL8+Yxn/h8bdHwh/9t14qPJ0+pJikgOD04s/m5qFe7zcgCdZ2H9qlNetPxl72Q6Tbzz+2LsvQq/PkE1SFFWGnBVMNoGsXt9y9+PreXBZxm+i1zcR9NT8ckVkiYqasZJpAJvNjnPRqYNr+Wpjcp81h+dSIUGY6cZmwgePy95Vfw9FiA74en3rn1i8hjkZmiQ7qsvLMbjx/zobeczFN8jqgyT/9ai46r+O2c0Q5K64JkWrRVm5PDnwjbdGJgt/fHsHzjYDcVGxrfnNanWNAIquX2p5TL/CKIW4XjtqSZbS3O8dZA7R6t6E0HLQZvt/ZlRwrJ1o8EIphLdlJLTDv1dXQLpTsYPoLZR92v3Ciz9A=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB5288.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(346002)(136003)(39860400002)(376002)(366004)(451199021)(41300700001)(8936002)(8676002)(110136005)(36756003)(6486002)(4744005)(316002)(5660300002)(2906002)(66476007)(4326008)(66556008)(52116002)(6666004)(478600001)(6512007)(38100700002)(107886003)(38350700002)(186003)(86362001)(66946007)(2616005)(83380400001)(1076003)(6506007)(26005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Uy5YVZJnJ8AE5pqepNb6z5V1OUIqzuZN6PygxwPNIw7TdrEOgiEmmdCJ5hZA?=
+ =?us-ascii?Q?K8YdhHxry/AXi6MYFKECXmrW2yKzmDUen6PYT5y5pjhFZ8ncOfvXbdfLpzko?=
+ =?us-ascii?Q?joPoHPqSIM9l66yJOKLrPm4GVDi7DOXHmPVBUtBhc3ZqdPpMnZcBPnu0Fd4I?=
+ =?us-ascii?Q?JUz0gCNXumMODAgaYGzDBBSRnlVRrAWhJQV8cxHVHpqqhWyRtuEOdO2pW5WH?=
+ =?us-ascii?Q?NGnGBUweIpGwR6ktCcFwAx+8Lc0yU2pkFrnfxpUhGzYUpHxeXVTD0RusuWBB?=
+ =?us-ascii?Q?TZXxdCtSIBGYoCxLhZysRddkmlgq8KvTbkVk4AkveLFkBBPYh944lE6uZoIz?=
+ =?us-ascii?Q?TLIX1SoGwQx7RZLhEDv3psdJmnfM90W/CH/uJtVaRTdaRz0m9Zp8YXuYDPAf?=
+ =?us-ascii?Q?PteqbnOWQ6oJkL/asDqPM7nHtSkzaUxip8TuQibLvAzOVZc/ArwLelZxTIaV?=
+ =?us-ascii?Q?JLEBTCPpXcg1lBZk4EtHtBkIBi13a9CWbjJyv9eFcRJxaxNUlxVCCamnmvqo?=
+ =?us-ascii?Q?KqPsE4GFGlYJwx6xIypWq+fkP1J9L/o/fJNOYxohd996m8X42j91DfpSQIeM?=
+ =?us-ascii?Q?q8/fol5U16TNU+ib4mFEhekRUSQBpVU17oNmF1Ua/hCtgqVEGCfVqbLJIRB2?=
+ =?us-ascii?Q?zPO8zdOoo5HRBBovCxGGAqtKYQBrTfSqeHhVvFOZkcbHL3ogqU3CB/+0JQjx?=
+ =?us-ascii?Q?+X39Ofj4FLqexqgqK2tI+QK5JbphnSky+iTy39HLd0ukIOD8JjS96VXpyMwz?=
+ =?us-ascii?Q?RscZ+702VYVB9LvSM6CgiJQ830TPz/VhE8vOYodTAJn2x6OA8Q2Fj+3IMic8?=
+ =?us-ascii?Q?9VCbk69qtcgpvB5T4RgIWh0Dbf9VT2OIQrdmbW/5b0VWDU4ciGPjbXNmU4JL?=
+ =?us-ascii?Q?eNPeAiGPtHNQXINHCx+ifAd7VMRTVR2XpUkxK8FV9CtRmqhFTMCKlFEF7elJ?=
+ =?us-ascii?Q?F/L8YMO32UH0z9TI3xm2tYMK1nojgJIYrjnWk+HglZIbruQxEFVMmiS2uY/I?=
+ =?us-ascii?Q?0d5gb4lxN2Qsnsp8b5G5voPjAq9br2K8D5OkwcWptDy4sVz0drjZsx/VdCj6?=
+ =?us-ascii?Q?+rTDPf9wbL1MMXKphGFyvqE2R+AWK2BG4JQj48fN9pLnbVbP9kzG31We1Nzv?=
+ =?us-ascii?Q?Ncl+v9P6BzW3F5MzNBDDKrR2Q8Oc9kPVP1M8nyGi/taVGgWWgK29w9EMcJT1?=
+ =?us-ascii?Q?0WTHoKfIfLmh6tM9hcsSTA3GlBoPK5A5XxiM+62N/72TOlqwotnd3vdTCZBT?=
+ =?us-ascii?Q?1vMlCadXnpb1JjzvHzxdgrEXoDM4XYbVYJaXe+oqFQEtaQYdlGzBSPQr+bq4?=
+ =?us-ascii?Q?53nR7mGNyTcm9U/kn3LqAmrnp9uSC3+uA0pFYIgpVfvq7TBGqugRwYYmF8BE?=
+ =?us-ascii?Q?7ZDhLE66hNj6PhIBmawnZJ9F8Npo47hsj0A3IafdvAi94HHk2z5tWcwv/AJo?=
+ =?us-ascii?Q?mi8kpXcJJAOCwzMVtDtPRgpV6dAr8dhBzdE/JoUucSjj1Hwk2l/d+sfyXA33?=
+ =?us-ascii?Q?Xhj8wnmcHYfGVRM7RnHpriQU+KKannoVzG/V3xhbJF9WTUzLEQoBS4hnMiZK?=
+ =?us-ascii?Q?mBVPIOYwsLqtPCd8WikexSVYCVxEIYJTWNVaZCBm?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f056e357-8bce-4ede-f03e-08db7d513590
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB5288.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jul 2023 12:13:14.9697
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: D9LRBwIbqu8xqBs9IXA90NVEQM+aABhz3QNUnUzw1YEfS5jzguWSLoitQc61Wus4RFNIzILQaizfIMRVP+m/7Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR0601MB4403
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael,
+Delete a duplicate statement from this function implementation.
 
-On Wed, Jul 5, 2023 at 10:53 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> Am 05.07.2023 um 19:28 schrieb Geert Uytterhoeven:
-> > On Wed, Jul 5, 2023 at 1:38 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> >> Making 'blk' sector_t (i.e. 64 bit if LBD support is active)
-> >> fails the 'blk>0' test in the partition block loop if a
-> >> value of (signed int) -1 is used to mark the end of the
-> >> partition block list.
-> >>
-> >> This bug was introduced in patch 3 of my prior Amiga partition
-> >> support fixes series, and spotted by Christian Zigotzky when
-> >> testing the latest block updates.
-> >>
-> >> Explicitly cast 'blk' to signed int to allow use of -1 to
-> >> terminate the partition block linked list.
-> >>
-> >> Reported-by: Christian Zigotzky <chzigotzky@xenosoft.de>
-> >> Fixes: b6f3f28f60 ("block: add overflow checks for Amiga partition support")
-> >> Message-ID: 024ce4fa-cc6d-50a2-9aae-3701d0ebf668@xenosoft.de
-> >
-> > Please drop this line.
->
-> Because it's redundant, as I've also used Link:?
+Signed-off-by: Minjie Du <duminjie@vivo.com>
+---
+ arch/m68k/apollo/config.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-(That, too ;-)
-
-Because the use of the Message-ID: tag in patches is not documented.
-IIRC, it might also cause issues when applying, as the downloaded patch
-will appear to have two Message-IDs.
-I'm not sure the sample git hook in Documentation/maintainer/configure-git.rst
-(and all variants the various maintainers are using) handles this correctly.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/m68k/apollo/config.c b/arch/m68k/apollo/config.c
+index 42a8b8e2b..5645d2018 100644
+--- a/arch/m68k/apollo/config.c
++++ b/arch/m68k/apollo/config.c
+@@ -173,7 +173,6 @@ irqreturn_t dn_timer_int(int irq, void *dev_id)
+ 	legacy_timer_tick(1);
+ 	timer_heartbeat();
+ 
+-	x = *(volatile unsigned char *)(apollo_timer + 3);
+ 	x = *(volatile unsigned char *)(apollo_timer + 5);
+ 
+ 	return IRQ_HANDLED;
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.39.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
