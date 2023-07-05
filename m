@@ -2,100 +2,119 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CEB51EB64DD
-	for <linux-m68k@archiver.kernel.org>; Wed,  5 Jul 2023 07:28:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50312EB64DA
+	for <linux-m68k@archiver.kernel.org>; Wed,  5 Jul 2023 08:51:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232202AbjGEH2l convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 5 Jul 2023 03:28:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48600 "EHLO
+        id S232007AbjGEIvD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 5 Jul 2023 04:51:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbjGEH2k (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 5 Jul 2023 03:28:40 -0400
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 923BE197;
-        Wed,  5 Jul 2023 00:28:39 -0700 (PDT)
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5703d12ab9aso77735077b3.2;
-        Wed, 05 Jul 2023 00:28:39 -0700 (PDT)
+        with ESMTP id S231708AbjGEIvC (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 5 Jul 2023 04:51:02 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA841722;
+        Wed,  5 Jul 2023 01:50:58 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id 5614622812f47-3a3c78ede4bso808024b6e.2;
+        Wed, 05 Jul 2023 01:50:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1688547057; x=1691139057;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wjetYudzBDRm79CoZEFgauUDFcjdsQG1HEiGIKnkNc0=;
+        b=i6C2yhZ0pF3S4zasSWenfcz2CBw8oHQivaBvNp4W74p0zANn30MONFJn6cNmDJpt8q
+         mWAql0bS094GvjDUTlp+nxsqwdkUHuVueU/eimGL2TkkRF7Nn182JCKih1uSgu7Dhi+0
+         45PAVKvxFhKhCtUq4GMKGyBg/mf3Lj7TI9rsz0HNm4B7IXLQc0oj8Gobtfa/nTfo7nL3
+         WwsTJjJGYm/ubrabYHvyq5hplbjqa9eeQqIGlXGc9sfAddh9EN7V8ByKYMc4VkCXlajC
+         Jore9r7B8L/Gg6GgORbSpJi10r1mmGne08rZ7PB+osf7JVx3+1Go8WTzhoYbwV0BGd18
+         VTLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688542118; x=1691134118;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qoAiNZNIgqbj41AcF+rgOlDOxtEarw6ZwBi600VKp2U=;
-        b=Aj5m6T9RHGsqcb3Fvv3VZMZId9bmX9JvLsUXQMhP9BLv85wRRZqmfEDW5gaMtzpGnm
-         HmLT0i/uXMKi6R32dEdq2BmDHC2pdv95Xpz1+xTuE0NRXYz+WHHtJchfQ90aER2dmxzl
-         rbj92AIphE2LpDIsomV4PYn9xJKsIUC4mia/B5R+Q7Sv2dUi4PqmTxJsyNAIiFDbKi+i
-         aciE+NCsTkOueOOpZbXG/PRNQUDeGpt01QTksmpVEDEQAVCfXkc9A9AYzu9x1TQZfPDp
-         1RAEVJbMeq6R0zWVxHXMAfXEL9Zf8v4P35fclJoGWxb4tVm0B9sSIgsxtoOtmS1w5qod
-         3zqg==
-X-Gm-Message-State: ABy/qLa+Bo59mFVYyy7YEjiGqG3+TmLjtIYo8jWw0pcRGi5sherGYMYH
-        KXIlqf1E6PqFUOFL56f5CFvQg4IXFiHXBQ==
-X-Google-Smtp-Source: APBJJlHO/TOoRxkvI954xQrxqNar3VJwyWXBFev8luExhmYFWrwuJifcqirQuYXxPe3f39OB07kwzA==
-X-Received: by 2002:a81:8450:0:b0:568:d63e:dd2c with SMTP id u77-20020a818450000000b00568d63edd2cmr14091002ywf.11.1688542118654;
-        Wed, 05 Jul 2023 00:28:38 -0700 (PDT)
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
-        by smtp.gmail.com with ESMTPSA id z3-20020a0dd703000000b0055a07c7be39sm6067900ywd.31.2023.07.05.00.28.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Jul 2023 00:28:38 -0700 (PDT)
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-c50c797c31bso3716373276.0;
-        Wed, 05 Jul 2023 00:28:38 -0700 (PDT)
-X-Received: by 2002:a25:7d83:0:b0:c13:aca0:b713 with SMTP id
- y125-20020a257d83000000b00c13aca0b713mr14221981ybc.1.1688542118078; Wed, 05
- Jul 2023 00:28:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230620201725.7020-1-schmitzmic@gmail.com> <20230704233808.25166-1-schmitzmic@gmail.com>
- <20230704233808.25166-2-schmitzmic@gmail.com>
-In-Reply-To: <20230704233808.25166-2-schmitzmic@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 5 Jul 2023 09:28:27 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUc-mqHC80euFrXLGGJO3gLW3ywu2aG4MDQi5ED=dWFeQ@mail.gmail.com>
-Message-ID: <CAMuHMdUc-mqHC80euFrXLGGJO3gLW3ywu2aG4MDQi5ED=dWFeQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/1] block: bugfix for Amiga partition overflow check patch
-To:     Michael Schmitz <schmitzmic@gmail.com>
+        d=1e100.net; s=20221208; t=1688547057; x=1691139057;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=wjetYudzBDRm79CoZEFgauUDFcjdsQG1HEiGIKnkNc0=;
+        b=Ir0BMsefMZp1EfN3cxVo4NUoq9AFYCx+qLJE+Y5pDlbalNOJ+oitEfGu+6Rv2CuZk/
+         DVcCg6EctycLbsB7flP/+8KfcOz/5ajAieFO8KJtKZ0tR8/BPpYUOEfemvDgaF5gIBHi
+         EsbZMcVuVaL7N3XnfeHJoVvApq5Jrpeh4i3eGDkxPPHJOKAbNP+jarUncrzQunw2Ky5V
+         lIou9rfwREezfhsKhozCjRDILNGkS9ZzRsr+h6K2H2SpyE1aS92cw/I66cHdoARGe6D9
+         i26hfMxgYJPLmbGDVrPHMMTWDCHwj90Fjrmt8/scw0XABzEwbRIn8W6vXdvG+Xx7CkpY
+         oUFQ==
+X-Gm-Message-State: AC+VfDyJmPullam/F6u0zO4OT69b6G4VchY6P0eN6HqPcNUZvb0ejX/7
+        r4oM2Th1i5nusI4WAKkxsQ7dwftyhng=
+X-Google-Smtp-Source: ACHHUZ5jGof96+7NEVY63a3PdEYzNFMohoQ02d1TKKVe5Mt9qyypeD525412U6gBWe4PB43mqFlq+Q==
+X-Received: by 2002:aca:2b02:0:b0:3a1:dc0d:f337 with SMTP id i2-20020aca2b02000000b003a1dc0df337mr11475349oik.45.1688547057241;
+        Wed, 05 Jul 2023 01:50:57 -0700 (PDT)
+Received: from [10.1.1.24] (222-152-184-54-fibre.sparkbb.co.nz. [222.152.184.54])
+        by smtp.gmail.com with ESMTPSA id j24-20020a63cf18000000b0054ff075fb31sm17590234pgg.42.2023.07.05.01.50.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 05 Jul 2023 01:50:56 -0700 (PDT)
+Subject: Re: [PATCH v3] block: bugfix for Amiga partition overflow check patch
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+References: <20230704054955.16906-1-schmitzmic@gmail.com>
+ <CAMuHMdUY6T7Q+fusJtHQxYTnKAvsdOJvFL_ZS-bkJTV32Y2yCw@mail.gmail.com>
+ <69cf5397-1a99-8cc5-ed48-d354f0ad05df@gmail.com>
+ <CAMuHMdVD9r2XjPYU9WJXYoSO5LriCoYy+TOp4ddru3WbX803Tg@mail.gmail.com>
 Cc:     linux-block@vger.kernel.org, axboe@kernel.dk,
         linux-m68k@vger.kernel.org, chzigotzky@xenosoft.de, hch@lst.de,
         martin@lichtvoll.de, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <07830f19-5275-2108-adf0-b5c1c1d2b5f6@gmail.com>
+Date:   Wed, 5 Jul 2023 20:50:47 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
+MIME-Version: 1.0
+In-Reply-To: <CAMuHMdVD9r2XjPYU9WJXYoSO5LriCoYy+TOp4ddru3WbX803Tg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Jul 5, 2023 at 1:38 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> Making 'blk' sector_t (i.e. 64 bit if LBD support is active)
-> fails the 'blk>0' test in the partition block loop if a
-> value of (signed int) -1 is used to mark the end of the
-> partition block list.
+Hi Geert,
+
+Am 05.07.2023 um 19:24 schrieb Geert Uytterhoeven:
+>>> We do not really have a way to record comments in git history
+>>> after the fact.  The best you can do is to reply to the email thread
+>>> where the patch was submitted.  When people follow the Link:
+>>> tag to the lore archive in the original commit, they can read any follow-ups.
+>>
+>> Does lore pick up related patches through the In-Reply-To header? In
+>> that case it would be easiest for me to to put this comment in a cover
+>> letter to the bugfix patch.
 >
-> This bug was introduced in patch 3 of my prior Amiga partition
-> support fixes series, and spotted by Christian Zigotzky when
-> testing the latest block updates.
+> Lore does not do that (b4 (the tool to download patch series from lore)
+> usually can link a series to its previous version, though).
+> New replies sent to a patch submission do end up in the right thread,
+> so any later comments (bug reports, Reviewed/Tested-by tags, ...)
+> can be found easily by following the Link: tag in the commit.
+
+OK, that's good enough for me.
+
+>>>> Partitions that did overflow the disk size (due to 32 bit int
+>>>> overflow) were not skipped but truncated to the end of the
+>>>> disk. Users who missed the warning message during boot would
+>>> I am confused.  So before, the partition size as seen by Linux after
+>>> the truncation, was correct?
+>>
+>> No, it was incorrect (though valid).
+>>
+>> On a 2 TB disk, a partition of 1.3 TB at the end of the disk (but not
+>> extending to the very end!) would trigger a overflow in the size
+>> calculation:
+>>
+>> sda: p4 size 18446744071956107760 extends beyond EOD,
 >
-> Explicitly cast 'blk' to signed int to allow use of -1 to
-> terminate the partition block linked list.
->
-> Reported-by: Christian Zigotzky <chzigotzky@xenosoft.de>
-> Fixes: b6f3f28f60 ("block: add overflow checks for Amiga partition support")
-> Message-ID: 024ce4fa-cc6d-50a2-9aae-3701d0ebf668@xenosoft.de
+> Oh, so they were not "truncated to the end of the disk"?
 
-Please drop this line.
+Not by the RDB parser, but truncation happens ultimately. I should have 
+copied the second instance of that message from Christian's log:
 
-> Cc: <stable@vger.kernel.org> # 5.2
-> Link: https://lore.kernel.org/r/024ce4fa-cc6d-50a2-9aae-3701d0ebf668@xenosoft.de
-> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-> Reviewed-by: Martin Steigerwald <martin@lichtvoll.de>
-> Tested-by: Christian Zigotzky <chzigotzky@xenosoft.de>
+sda: p4 size 18446744071956107760 extends beyond EOD, truncated
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+The core partition code later sanity checks the partition data and 
+truncates (see block/partitions/core.c:blk_add_partition())
 
-Gr{oetje,eeting}s,
+Cheers,
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+	Michael
