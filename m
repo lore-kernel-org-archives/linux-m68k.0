@@ -2,205 +2,194 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A51DFC00528
-	for <linux-m68k@archiver.kernel.org>; Mon, 10 Jul 2023 20:45:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F335EB64DC
+	for <linux-m68k@archiver.kernel.org>; Mon, 10 Jul 2023 23:05:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231809AbjGJUpH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 10 Jul 2023 16:45:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49496 "EHLO
+        id S229577AbjGJXFg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 10 Jul 2023 19:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230494AbjGJUo6 (ORCPT
+        with ESMTP id S229641AbjGJXFf (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 10 Jul 2023 16:44:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B80AE79;
-        Mon, 10 Jul 2023 13:43:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=3eckwhASlJ5kB1LQ/if3Fo0Hxrj5Tti58CwpH+WVOLg=; b=Cvh1UbtToEDk9/QV9A82rA+pgO
-        ZTVGf7qezP8ORX82Pd9066sJeOM5dE7LJVSdU72VBPOJJePCnnmx2XPj4ovyJ6l2tseqYrpT30eCK
-        U+OfkAb85sMFzp4gY6kAmZ3KHrVUGYUv1fcbj6hZfNkAAMJWS9kq6rLqMWHlXH3D8AU8Y4Fzo2ksa
-        rYBNjIHm+ngWuRRZxot/g5zHA3FmaazW2bANzxCp7m6yvQvNfshhbM4XpxK/qAQ9ssoe/TgzTYC2B
-        1gy6zazOwafB2OLz5giRT6S2BdKpDM2fRB9CnJTd+dM1btzR+GYIvpVPyQG3p8ZOUcLjb7krJ5nyw
-        9ExiL9KQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qIxjS-00EupG-Rz; Mon, 10 Jul 2023 20:43:42 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        linux-m68k@lists.linux-m68k.org
-Subject: [PATCH v5 15/38] m68k: Implement the new page table range API
-Date:   Mon, 10 Jul 2023 21:43:16 +0100
-Message-Id: <20230710204339.3554919-16-willy@infradead.org>
-X-Mailer: git-send-email 2.37.1
-In-Reply-To: <20230710204339.3554919-1-willy@infradead.org>
-References: <20230710204339.3554919-1-willy@infradead.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 10 Jul 2023 19:05:35 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F2D411D
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 10 Jul 2023 16:05:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689030333; x=1720566333;
+  h=date:from:to:cc:subject:message-id;
+  bh=ezUFhK7U7a8zQFItMkrKFPPJZBodMYnz5xARWUW8tnY=;
+  b=Gc02FA7OZwFSjvWGWIm8UXzfz2QDWV8ST4diK6pzS/zPxvHKP+6Rj/i5
+   MT4YcLFrduIM+Zg1wzSyN5QoJFeM79Z/vzH/Cmg85G/QWUCaoBzo1Pikk
+   Amz9MrU7djdPTAWo4gg8q/Iu6KqfyokoJgvT3351xTv127WertX3iHQ+m
+   2uRrQzG2iwlfjkDQ5/4iPnlaID7Ku7qZ9qWfe7ENSKaPp/h/5JSVoF1M8
+   SBcJLNHb4Q83gUhdlbL9zfS6YJNzph7H1239btllZ32xXwaML5cL9HUl1
+   37F2MhH8JmmThNL635xp7ue152RdPOABIXWuL8STf1vSccF5VYjjWFi1V
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="363345171"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="363345171"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2023 16:05:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10767"; a="865545320"
+X-IronPort-AV: E=Sophos;i="6.01,195,1684825200"; 
+   d="scan'208";a="865545320"
+Received: from lkp-server01.sh.intel.com (HELO c544d7fc5005) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 10 Jul 2023 16:05:31 -0700
+Received: from kbuild by c544d7fc5005 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qIzwg-00045H-1y;
+        Mon, 10 Jul 2023 23:05:30 +0000
+Date:   Tue, 11 Jul 2023 07:05:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 7b34d67e5ca0007875cf8770b84697e607129c23
+Message-ID: <202307110720.BlIuckt1-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Add PFN_PTE_SHIFT, update_mmu_cache_range(), flush_icache_pages() and
-flush_dcache_folio().
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 7b34d67e5ca0007875cf8770b84697e607129c23  Merge tag 'v6.5-rc1'
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
-Cc: linux-m68k@lists.linux-m68k.org
----
- arch/m68k/include/asm/cacheflush_mm.h    | 27 ++++++++++++++++--------
- arch/m68k/include/asm/mcf_pgtable.h      |  1 +
- arch/m68k/include/asm/motorola_pgtable.h |  1 +
- arch/m68k/include/asm/pgtable_mm.h       | 10 +++++----
- arch/m68k/include/asm/sun3_pgtable.h     |  1 +
- arch/m68k/mm/motorola.c                  |  2 +-
- 6 files changed, 28 insertions(+), 14 deletions(-)
+elapsed time: 724m
 
-diff --git a/arch/m68k/include/asm/cacheflush_mm.h b/arch/m68k/include/asm/cacheflush_mm.h
-index 1ac55e7b47f0..88eb85e81ef6 100644
---- a/arch/m68k/include/asm/cacheflush_mm.h
-+++ b/arch/m68k/include/asm/cacheflush_mm.h
-@@ -220,24 +220,29 @@ static inline void flush_cache_page(struct vm_area_struct *vma, unsigned long vm
- 
- /* Push the page at kernel virtual address and clear the icache */
- /* RZ: use cpush %bc instead of cpush %dc, cinv %ic */
--static inline void __flush_page_to_ram(void *vaddr)
-+static inline void __flush_pages_to_ram(void *vaddr, unsigned int nr)
- {
- 	if (CPU_IS_COLDFIRE) {
- 		unsigned long addr, start, end;
- 		addr = ((unsigned long) vaddr) & ~(PAGE_SIZE - 1);
- 		start = addr & ICACHE_SET_MASK;
--		end = (addr + PAGE_SIZE - 1) & ICACHE_SET_MASK;
-+		end = (addr + nr * PAGE_SIZE - 1) & ICACHE_SET_MASK;
- 		if (start > end) {
- 			flush_cf_bcache(0, end);
- 			end = ICACHE_MAX_ADDR;
- 		}
- 		flush_cf_bcache(start, end);
- 	} else if (CPU_IS_040_OR_060) {
--		__asm__ __volatile__("nop\n\t"
--				     ".chip 68040\n\t"
--				     "cpushp %%bc,(%0)\n\t"
--				     ".chip 68k"
--				     : : "a" (__pa(vaddr)));
-+		unsigned long paddr = __pa(vaddr);
-+
-+		do {
-+			__asm__ __volatile__("nop\n\t"
-+					     ".chip 68040\n\t"
-+					     "cpushp %%bc,(%0)\n\t"
-+					     ".chip 68k"
-+					     : : "a" (paddr));
-+			paddr += PAGE_SIZE;
-+		} while (--nr);
- 	} else {
- 		unsigned long _tmp;
- 		__asm__ __volatile__("movec %%cacr,%0\n\t"
-@@ -249,10 +254,14 @@ static inline void __flush_page_to_ram(void *vaddr)
- }
- 
- #define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
--#define flush_dcache_page(page)		__flush_page_to_ram(page_address(page))
-+#define flush_dcache_page(page)	__flush_pages_to_ram(page_address(page), 1)
-+#define flush_dcache_folio(folio)		\
-+	__flush_pages_to_ram(folio_address(folio), folio_nr_pages(folio))
- #define flush_dcache_mmap_lock(mapping)		do { } while (0)
- #define flush_dcache_mmap_unlock(mapping)	do { } while (0)
--#define flush_icache_page(vma, page)	__flush_page_to_ram(page_address(page))
-+#define flush_icache_pages(vma, page, nr)	\
-+	__flush_pages_to_ram(page_address(page), nr)
-+#define flush_icache_page(vma, page) flush_icache_pages(vma, page, 1)
- 
- extern void flush_icache_user_page(struct vm_area_struct *vma, struct page *page,
- 				    unsigned long addr, int len);
-diff --git a/arch/m68k/include/asm/mcf_pgtable.h b/arch/m68k/include/asm/mcf_pgtable.h
-index 43e8da8465f9..772b7e7b0654 100644
---- a/arch/m68k/include/asm/mcf_pgtable.h
-+++ b/arch/m68k/include/asm/mcf_pgtable.h
-@@ -291,6 +291,7 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
- 	return pte;
- }
- 
-+#define PFN_PTE_SHIFT		PAGE_SHIFT
- #define pmd_pfn(pmd)		(pmd_val(pmd) >> PAGE_SHIFT)
- #define pmd_page(pmd)		(pfn_to_page(pmd_val(pmd) >> PAGE_SHIFT))
- 
-diff --git a/arch/m68k/include/asm/motorola_pgtable.h b/arch/m68k/include/asm/motorola_pgtable.h
-index ec0dc19ab834..38d5e5edc3e1 100644
---- a/arch/m68k/include/asm/motorola_pgtable.h
-+++ b/arch/m68k/include/asm/motorola_pgtable.h
-@@ -112,6 +112,7 @@ static inline void pud_set(pud_t *pudp, pmd_t *pmdp)
- #define pte_present(pte)	(pte_val(pte) & (_PAGE_PRESENT | _PAGE_PROTNONE))
- #define pte_clear(mm,addr,ptep)		({ pte_val(*(ptep)) = 0; })
- 
-+#define PFN_PTE_SHIFT		PAGE_SHIFT
- #define pte_page(pte)		virt_to_page(__va(pte_val(pte)))
- #define pte_pfn(pte)		(pte_val(pte) >> PAGE_SHIFT)
- #define pfn_pte(pfn, prot)	__pte(((pfn) << PAGE_SHIFT) | pgprot_val(prot))
-diff --git a/arch/m68k/include/asm/pgtable_mm.h b/arch/m68k/include/asm/pgtable_mm.h
-index b93c41fe2067..dbdf1c2b2f66 100644
---- a/arch/m68k/include/asm/pgtable_mm.h
-+++ b/arch/m68k/include/asm/pgtable_mm.h
-@@ -31,8 +31,6 @@
- 	do{							\
- 		*(pteptr) = (pteval);				\
- 	} while(0)
--#define set_pte_at(mm,addr,ptep,pteval) set_pte(ptep,pteval)
--
- 
- /* PMD_SHIFT determines the size of the area a second-level page table can map */
- #if CONFIG_PGTABLE_LEVELS == 3
-@@ -138,11 +136,15 @@ extern void kernel_set_cachemode(void *addr, unsigned long size, int cmode);
-  * tables contain all the necessary information.  The Sun3 does, but
-  * they are updated on demand.
-  */
--static inline void update_mmu_cache(struct vm_area_struct *vma,
--				    unsigned long address, pte_t *ptep)
-+static inline void update_mmu_cache_range(struct vm_fault *vmf,
-+		struct vm_area_struct *vma, unsigned long address,
-+		pte_t *ptep, unsigned int nr)
- {
- }
- 
-+#define update_mmu_cache(vma, addr, ptep) \
-+	update_mmu_cache_range(NULL, vma, addr, ptep, 1)
-+
- #endif /* !__ASSEMBLY__ */
- 
- /* MMU-specific headers */
-diff --git a/arch/m68k/include/asm/sun3_pgtable.h b/arch/m68k/include/asm/sun3_pgtable.h
-index 9e7bf8a5f8f8..0cc39a88ce55 100644
---- a/arch/m68k/include/asm/sun3_pgtable.h
-+++ b/arch/m68k/include/asm/sun3_pgtable.h
-@@ -105,6 +105,7 @@ static inline void pte_clear (struct mm_struct *mm, unsigned long addr, pte_t *p
- 	pte_val (*ptep) = 0;
- }
- 
-+#define PFN_PTE_SHIFT		0
- #define pte_pfn(pte)            (pte_val(pte) & SUN3_PAGE_PGNUM_MASK)
- #define pfn_pte(pfn, pgprot) \
- ({ pte_t __pte; pte_val(__pte) = pfn | pgprot_val(pgprot); __pte; })
-diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
-index c75984e2d86b..8bca46e51e94 100644
---- a/arch/m68k/mm/motorola.c
-+++ b/arch/m68k/mm/motorola.c
-@@ -81,7 +81,7 @@ static inline void cache_page(void *vaddr)
- 
- void mmu_page_ctor(void *page)
- {
--	__flush_page_to_ram(page);
-+	__flush_pages_to_ram(page, 1);
- 	flush_tlb_kernel_page(page);
- 	nocache_page(page);
- }
+configs tested: 123
+configs skipped: 6
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r025-20230710   gcc  
+alpha                randconfig-r032-20230710   gcc  
+arc                              allyesconfig   gcc  
+arc                          axs101_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                     haps_hs_smp_defconfig   gcc  
+arc                  randconfig-r043-20230710   gcc  
+arc                           tb10x_defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                          collie_defconfig   clang
+arm                                 defconfig   gcc  
+arm                       imx_v4_v5_defconfig   clang
+arm                  randconfig-r046-20230710   gcc  
+arm                             rpc_defconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r006-20230710   gcc  
+csky                 randconfig-r024-20230710   gcc  
+hexagon              randconfig-r002-20230710   clang
+hexagon              randconfig-r041-20230710   clang
+hexagon              randconfig-r045-20230710   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230710   gcc  
+i386         buildonly-randconfig-r005-20230710   gcc  
+i386         buildonly-randconfig-r006-20230710   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230710   gcc  
+i386                 randconfig-i002-20230710   gcc  
+i386                 randconfig-i003-20230710   gcc  
+i386                 randconfig-i004-20230710   gcc  
+i386                 randconfig-i005-20230710   gcc  
+i386                 randconfig-i006-20230710   gcc  
+i386                 randconfig-i011-20230710   clang
+i386                 randconfig-i012-20230710   clang
+i386                 randconfig-i013-20230710   clang
+i386                 randconfig-i014-20230710   clang
+i386                 randconfig-i015-20230710   clang
+i386                 randconfig-i016-20230710   clang
+i386                 randconfig-r001-20230710   gcc  
+i386                 randconfig-r033-20230710   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r011-20230710   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                        mvme147_defconfig   gcc  
+m68k                 randconfig-r013-20230710   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 randconfig-r026-20230710   gcc  
+mips                 randconfig-r034-20230710   clang
+mips                         rt305x_defconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc             randconfig-r016-20230710   gcc  
+openrisc             randconfig-r022-20230710   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                      acadia_defconfig   clang
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                        cell_defconfig   gcc  
+powerpc                 mpc832x_rdb_defconfig   clang
+powerpc                      ppc44x_defconfig   clang
+powerpc              randconfig-r021-20230710   clang
+powerpc                     skiroot_defconfig   clang
+powerpc                     stx_gp3_defconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r023-20230710   clang
+riscv                randconfig-r042-20230710   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r031-20230710   gcc  
+s390                 randconfig-r044-20230710   clang
+sh                               allmodconfig   gcc  
+sh                 kfr2r09-romimage_defconfig   gcc  
+sh                            migor_defconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                       sparc32_defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                   randconfig-r003-20230710   clang
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230710   gcc  
+x86_64       buildonly-randconfig-r002-20230710   gcc  
+x86_64       buildonly-randconfig-r003-20230710   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r015-20230710   clang
+x86_64               randconfig-x001-20230710   clang
+x86_64               randconfig-x002-20230710   clang
+x86_64               randconfig-x003-20230710   clang
+x86_64               randconfig-x004-20230710   clang
+x86_64               randconfig-x005-20230710   clang
+x86_64               randconfig-x006-20230710   clang
+x86_64               randconfig-x011-20230710   gcc  
+x86_64               randconfig-x012-20230710   gcc  
+x86_64               randconfig-x013-20230710   gcc  
+x86_64               randconfig-x014-20230710   gcc  
+x86_64               randconfig-x015-20230710   gcc  
+x86_64               randconfig-x016-20230710   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                  nommu_kc705_defconfig   gcc  
+xtensa               randconfig-r014-20230710   gcc  
+xtensa               randconfig-r035-20230710   gcc  
+
 -- 
-2.39.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
