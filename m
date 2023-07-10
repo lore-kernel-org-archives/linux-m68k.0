@@ -2,92 +2,308 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3DC1EB64DA
-	for <linux-m68k@archiver.kernel.org>; Sat,  8 Jul 2023 15:51:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5ED5EEB64D9
+	for <linux-m68k@archiver.kernel.org>; Mon, 10 Jul 2023 11:19:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbjGHPvy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 8 Jul 2023 11:51:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35956 "EHLO
+        id S230239AbjGJLTG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 10 Jul 2023 07:19:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbjGHPvv (ORCPT
+        with ESMTP id S229627AbjGJLTF (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 8 Jul 2023 11:51:51 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C81A112C
-        for <linux-m68k@lists.linux-m68k.org>; Sat,  8 Jul 2023 08:51:47 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4Qyvrv13wmzBHXkc
-        for <linux-m68k@lists.linux-m68k.org>; Sat,  8 Jul 2023 23:51:43 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1688831501; x=1691423502; bh=6UNwiye9DK9kR1UF8tjATHdsO2e
-        t5D1MCkBSWpcgjPk=; b=o/tDvbkIaK/aBgE10wdA9FfKnmRc4LETRbWVaIkM3iN
-        CEjDe1GYGDJEDWWLxpobJunYuHURtKGYKHuleyyTZnE+g3loHAdFaReyqllF4GMR
-        ZvW/45ebtaFOn1PUSATTy5z5f/LRjiY3KLZs/cTpKB6QR85gXG1zTIAyft3jFg7A
-        JHXO6O7shwv5UiX4LXVgVGAkQVAx9HAqujO8xvWJs8yw0sSAZDFEmib7mv39/ryV
-        mIgXdumvsvHLkiTNbq/sGBS4MTkm3FJKW/OSqQ2Q8COEVDEGP0dG6YxUoupXgDH6
-        ziUFtLyrX5feDwW2pZCozBuU+VHivuUIwzACiK9XOhQ==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id dkn7EAQ0YZhB for <linux-m68k@lists.linux-m68k.org>;
-        Sat,  8 Jul 2023 23:51:41 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4Qyvrr66ltzBHXkZ;
-        Sat,  8 Jul 2023 23:51:40 +0800 (CST)
+        Mon, 10 Jul 2023 07:19:05 -0400
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F19EDE7
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 10 Jul 2023 04:19:01 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:f087:2614:ec9d:569f])
+        by baptiste.telenet-ops.be with bizsmtp
+        id KPJy2A00L1w4dBK01PJydw; Mon, 10 Jul 2023 13:18:58 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qIouq-0010yr-Qd;
+        Mon, 10 Jul 2023 13:18:58 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qIouw-00BJ4a-Jz;
+        Mon, 10 Jul 2023 13:18:58 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-m68k@lists.linux-m68k.org
+Cc:     linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: defconfig: Update defconfigs for v6.5-rc1
+Date:   Mon, 10 Jul 2023 13:18:57 +0200
+Message-Id: <274736e1cf7ab863fe84400611c300cb5a25b8c8.1688985387.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Date:   Sat, 08 Jul 2023 23:51:40 +0800
-From:   xuanzhenggang001@208suo.com
-To:     geert@linux-m68k.org
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] m68k: q40: prefer 'unsigned int' to bare use of 'unsigned'
-In-Reply-To: <tencent_7098E5576B2FD785B3A3B9CD6CE0643D4C07@qq.com>
-References: <tencent_7098E5576B2FD785B3A3B9CD6CE0643D4C07@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <4d862263222c7358840745c2cd0ce0fa@208suo.com>
-X-Sender: xuanzhenggang001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Fix the following warnings reported by checkpatch:
+  - Drop CONFIG_CRYPTO_SHA3=m (auto-enabled since commit
+    bb897c55042e9330 ("crypto: jitter - replace LFSR with SHA3-256")),
+  - Enable modular build of the Maple Tree test, which can now be
+    enabled when debugging is disabled.
 
-./arch/m68k/q40/q40ints.c:172: WARNING: Prefer 'unsigned int' to bare 
-use of 'unsigned'
-./arch/m68k/q40/q40ints.c:211: WARNING: Prefer 'unsigned int' to bare 
-use of 'unsigned'
-
-Signed-off-by: Zhenggang Xuan <xuanzhenggang001@208suo.com>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
-  arch/m68k/q40/q40ints.c | 4 ++--
-  1 file changed, 2 insertions(+), 2 deletions(-)
+To be queued in the m68k for-v6.6 branch.
+---
+ arch/m68k/configs/amiga_defconfig    | 2 +-
+ arch/m68k/configs/apollo_defconfig   | 2 +-
+ arch/m68k/configs/atari_defconfig    | 2 +-
+ arch/m68k/configs/bvme6000_defconfig | 2 +-
+ arch/m68k/configs/hp300_defconfig    | 2 +-
+ arch/m68k/configs/mac_defconfig      | 2 +-
+ arch/m68k/configs/multi_defconfig    | 2 +-
+ arch/m68k/configs/mvme147_defconfig  | 2 +-
+ arch/m68k/configs/mvme16x_defconfig  | 2 +-
+ arch/m68k/configs/q40_defconfig      | 2 +-
+ arch/m68k/configs/sun3_defconfig     | 2 +-
+ arch/m68k/configs/sun3x_defconfig    | 2 +-
+ 12 files changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/arch/m68k/q40/q40ints.c b/arch/m68k/q40/q40ints.c
-index 127d7ecdbd49..9605d7b6cb30 100644
---- a/arch/m68k/q40/q40ints.c
-+++ b/arch/m68k/q40/q40ints.c
-@@ -169,7 +169,7 @@ void q40_sched_init (void)
-   *
-  */
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index 4383ed85106335fd..6deb8faa564bc667 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -591,7 +591,6 @@ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+-CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_WP512=m
+@@ -635,6 +634,7 @@ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
++CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index ec0f9c9f9562147b..802c161827f4ceba 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -548,7 +548,6 @@ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+-CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_WP512=m
+@@ -591,6 +590,7 @@ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
++CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index 4b86bb6498ed4bbb..4212c365e93d1899 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -579,7 +579,6 @@ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+-CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_WP512=m
+@@ -623,6 +622,7 @@ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
++CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index 496fb6a415eaf7da..b13552caa6b39864 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -540,7 +540,6 @@ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+-CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_WP512=m
+@@ -583,6 +582,7 @@ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
++CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index 4add7ab9973b1497..f88356c45440c825 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -550,7 +550,6 @@ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+-CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_WP512=m
+@@ -593,6 +592,7 @@ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
++CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index 5845f1f71fd11cd2..7c2ebb616fbad24e 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -570,7 +570,6 @@ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+-CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_WP512=m
+@@ -614,6 +613,7 @@ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
++CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index bbb251bab81addfe..d3b272910b38e712 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -656,7 +656,6 @@ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+-CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_WP512=m
+@@ -700,6 +699,7 @@ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
++CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index 4f9cfc70c66dbe43..4529bc4b843ca0dd 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -539,7 +539,6 @@ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+-CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_WP512=m
+@@ -582,6 +581,7 @@ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
++CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index 67c42b4822f02688..30824032e4d58abe 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -540,7 +540,6 @@ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+-CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_WP512=m
+@@ -583,6 +582,7 @@ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
++CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index 85f19515200bee21..3911211410eda118 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -557,7 +557,6 @@ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+-CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_WP512=m
+@@ -601,6 +600,7 @@ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
++CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index b1b15acb5d5fb3db..991730c50957eb2f 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -538,7 +538,6 @@ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+-CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_WP512=m
+@@ -580,6 +579,7 @@ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
++CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index 91d66c0f5ab6c484..e80d7509ab1d28b6 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -538,7 +538,6 @@ CONFIG_CRYPTO_CHACHA20POLY1305=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
+-CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_VMAC=m
+ CONFIG_CRYPTO_WP512=m
+@@ -581,6 +580,7 @@ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
++CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+-- 
+2.34.1
 
--struct IRQ_TABLE{ unsigned mask; int irq ;};
-+struct IRQ_TABLE { unsigned int mask ; int irq ; };
-  #if 0
-  static struct IRQ_TABLE iirqs[]={
-    {Q40_IRQ_FRAME_MASK,Q40_IRQ_FRAME},
-@@ -208,7 +208,7 @@ static int aliased_irq;        /* how many times 
-inside handler ?*/
-  /* got interrupt, dispatch to ISA or keyboard/timer IRQs */
-  static void q40_irq_handler(unsigned int irq, struct pt_regs *fp)
-  {
--    unsigned mir, mer;
-+    unsigned int mir, mer;
-      int i;
-
-  //repeat:
