@@ -2,74 +2,74 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2157EB64DD
-	for <linux-m68k@archiver.kernel.org>; Tue, 11 Jul 2023 11:32:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2093C001B0
+	for <linux-m68k@archiver.kernel.org>; Tue, 11 Jul 2023 11:32:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbjGKLcM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 11 Jul 2023 07:32:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55588 "EHLO
+        id S231210AbjGKLcq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 11 Jul 2023 07:32:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjGKLcK (ORCPT
+        with ESMTP id S229964AbjGKLcn (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 11 Jul 2023 07:32:10 -0400
+        Tue, 11 Jul 2023 07:32:43 -0400
 Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com [66.111.4.229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8987EE0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 11 Jul 2023 04:32:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F206F127
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 11 Jul 2023 04:32:42 -0700 (PDT)
 Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 9A8CA580178;
-        Tue, 11 Jul 2023 07:32:08 -0400 (EDT)
+        by mailnew.nyi.internal (Postfix) with ESMTP id 6110358017D;
+        Tue, 11 Jul 2023 07:32:42 -0400 (EDT)
 Received: from imap50 ([10.202.2.100])
-  by compute6.internal (MEProxy); Tue, 11 Jul 2023 07:32:08 -0400
+  by compute6.internal (MEProxy); Tue, 11 Jul 2023 07:32:42 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
         :cc:content-type:content-type:date:date:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1689075128; x=1689082328; bh=/C
-        vj5KuDdmHIGd859qaJsBs/f1fpWATGo78ystxolZ8=; b=HzF5Lj64iIpTlqtt/U
-        sveabShinBsVWN7ZS+DWgyJMPU2GSeQFuSUCaVEID6zbvpBcUok2BlUF+h0n+Jsi
-        B+RLu5FWxwKLB8yYD47pAPBs2bab9DlxHcB6VwJMrbK3p9CDt7lAEtwhLFrqHyEX
-        7fV6jp/WUlNvYhzIeZmZ8ELheVWsz4lvwJI2VXV5H/zoLAgGGMs1cuBZ6wy6//Wo
-        lTcLFfuSlHypwPx3xDRLR/oHSmnqF/XLXxzMPsVIUzb0SlCzCAuF5XqLetfBfak0
-        atTp6UW4suxvLr2dJBHShODfomx0zMwaugwqmwH78MNM1MRfNA0cez5yZNpOlgRv
-        //UQ==
+        :subject:subject:to:to; s=fm2; t=1689075162; x=1689082362; bh=3i
+        BxzwnTyVw6BqHPrJ35gyKi0bdZzNDDY557YK2M5BM=; b=H7uwXwbtdwfCUWjYfS
+        zgTdjbt8fxtM5Pb28mR/huI06k1IvvPqw4hdyam/o9wLh6jdLvizXH5ZQxklDpSV
+        FBR2nNAQdmcHSZmXLilQ9dcc6MuP3QWa8oB2IhW2o0P/DWdab3W70i6347xG0h8N
+        L7iXKiaN5/ayKK7HkXD90lrisKPfb46y0IIKdN4pkE/IkTRyrHAgHFf0UgPbG+No
+        enZExOWKk8KjvsmumQVRnQv7eggmyBcDymYqVw4PDAzDnxiOTbSSyLG9uRtsufBG
+        wLG3GytQY6cvibjCwWOGIAOYCMwXlgvdo+o+i9J/TpuZALMMrixBgXGq9xKpWA/v
+        4CGw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-type:content-type:date:date
         :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
         :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1689075128; x=1689082328; bh=/Cvj5KuDdmHIG
-        d859qaJsBs/f1fpWATGo78ystxolZ8=; b=W1/NvmTRCGX/QlW5oKWHfVETVTfbK
-        iiaOMfD5xZsr1wjerC+3qL19Z8aSprXPBEYBfWKdxhdG7CPF8CfT1WR3AD/U//Un
-        zxx8P3k3a+CRFx0FyzD8zVDjk8KMv1IFossSMGyzZMiE+N5ykkDG7SGHyOk1LSbz
-        Bz6m9f+D31N5JQ3EkKQlKNOB/I6NsYPUx+f0YLoOGoGzq72rYerylgYc3CtBcy/n
-        AZoZV8e4voliHZSlImIxGtDEa1Ir51MPftiA+USesbUwJs5AoAISF5B7ko8jQ9TV
-        ypO52hjhNBQOPxHsSQTj42667JQZjYerNOkA0APolagyhbQRUAfakKLNg==
-X-ME-Sender: <xms:tT2tZA4hH3o4izne3FbRuXG2qMPlVHT74IrMecBxjvaUy8gh3b_w0A>
-    <xme:tT2tZB7D0dtivUf9jNL7_gVkezoswV2Kx6PyxJ02Dc5k8dQp62kPCknJo5opBw8es
-    xJHdRKFCVHHYX0BEkU>
+        :x-sasl-enc; s=fm2; t=1689075162; x=1689082362; bh=3iBxzwnTyVw6B
+        qHPrJ35gyKi0bdZzNDDY557YK2M5BM=; b=Rgq5drIfuHuuZkUneRD+VI6DElB7d
+        5n/AuoZd0ePjCCw2n2Gnd/geE/5jAyST+jy/QxZJVAF9bfxcCVfUo4x6eZ8VDRjw
+        WQ2RD1Ad9q+d19mlEaDWr1aV2szbzILkOvodcUv/xlBn8EQn96wWT6oebDSpAjUM
+        czKfx7Y/MyPCanFFnz5sOS+du/U+vwEV9QFVhiowRVvy2pjfdMITy8sh8EeXj0ce
+        tcWEVfbHpLavonVLK50zLhuA3pmQx2/pce1QGcB3y6wyrO3DZI5vLaIcy5Oj+7Vr
+        oruNupTS5F21XAIYtWr9RnHP+bOqXM2IvqLTXBNtTRTiduCYohpTsuXYA==
+X-ME-Sender: <xms:2T2tZKYOMygNw6Aj89mQQ1ghTQ6-yQsd8o7r85aG-9-rzIQIlJQIlQ>
+    <xme:2T2tZNZ85LnFoVTTu3wLlUCJ6rMAYupG_5XgADucFfawjtPnfjdALr66wheaO1Jox
+    ytE7iH3Dvkl3hyUDLA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrfedtgdegudcutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
     fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
     ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
     gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    ffenucevlhhushhtvghrufhiiigvpedvnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
     hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:tT2tZPdfpeh0H17Fj0xsMjjhRasXPz9RbEKCmDysDhuciVYRZAKqCQ>
-    <xmx:tT2tZFIyOZGu1rzltUq4P8BJSV6SxBs1g2wKFNcnL702pktE2075YA>
-    <xmx:tT2tZELda_T17jFWEHVJ_J6NJ6sYUjYLJpVzAfstvwJMmjZg5aOreQ>
-    <xmx:uD2tZKRIbzNeXyzIyAKNVN2Y2wBmljLCQoSWEDw5YnJyybhC98VOWQ>
+X-ME-Proxy: <xmx:2T2tZE_DGQ-Q7oe2w7tNuApK4x90Riy4y-owH55cM_dj9YQ402zfnQ>
+    <xmx:2T2tZMqOKGeFvcDOqawVN_0M-9RzE1Ikidfr910Z6V2KN8I8DYa34g>
+    <xmx:2T2tZFoMCmfr4xdPRGYd1uVu9ZIfzyoNqiT7ixVXkk0SOqXtXPK0mg>
+    <xmx:2j2tZFzb8-OhR9fhPlZym1UMLqdjr9HKK5MmjOcHUjEyzVOjoVGZJA>
 Feedback-ID: i56a14606:Fastmail
 Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id ECECE1700090; Tue, 11 Jul 2023 07:32:04 -0400 (EDT)
+        id 7023E1700090; Tue, 11 Jul 2023 07:32:41 -0400 (EDT)
 X-Mailer: MessagingEngine.com Webmail Interface
 User-Agent: Cyrus-JMAP/3.9.0-alpha0-531-gfdfa13a06d-fm-20230703.001-gfdfa13a0
 Mime-Version: 1.0
-Message-Id: <55fee4b7-41f0-4f24-ad0e-a4527486bad1@app.fastmail.com>
-In-Reply-To: <e48c4d4046de97205fd52a73f77e9b203c3b871e.1689074739.git.legion@kernel.org>
+Message-Id: <0c59140d-e58d-4fb6-a94c-f829bb802db3@app.fastmail.com>
+In-Reply-To: <3098381cf93a5010e878319c6218d2c5851746c0.1689074739.git.legion@kernel.org>
 References: <87o8pscpny.fsf@oldenburg2.str.redhat.com>
  <cover.1689074739.git.legion@kernel.org>
- <e48c4d4046de97205fd52a73f77e9b203c3b871e.1689074739.git.legion@kernel.org>
-Date:   Tue, 11 Jul 2023 13:31:44 +0200
+ <3098381cf93a5010e878319c6218d2c5851746c0.1689074739.git.legion@kernel.org>
+Date:   Tue, 11 Jul 2023 13:32:20 +0200
 From:   "Arnd Bergmann" <arnd@arndb.de>
 To:     "Alexey Gladkov" <legion@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>, linux-api@vger.kernel.org,
@@ -115,7 +115,7 @@ Cc:     "Palmer Dabbelt" <palmer@sifive.com>,
         "Tony Luck" <tony.luck@intel.com>, tycho@tycho.ws,
         "Will Deacon" <will@kernel.org>, x86@kernel.org,
         "Yoshinori Sato" <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH v3 3/5] arch: Register fchmodat4, usually as syscall 451
+Subject: Re: [PATCH v3 1/5] Non-functional cleanup of a "__user * filename"
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
@@ -124,21 +124,10 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 On Tue, Jul 11, 2023, at 13:25, Alexey Gladkov wrote:
 > From: Palmer Dabbelt <palmer@sifive.com>
 >
-> This registers the new fchmodat4 syscall in most places as nuber 451,
-> with alpha being the exception where it's 561.  I found all these sites
-> by grepping for fspick, which I assume has found me everything.
+> The next patch defines a very similar interface, which I copied from
+> this definition.  Since I'm touching it anyway I don't see any reason
+> not to just go fix this one up.
 >
 > Signed-off-by: Palmer Dabbelt <palmer@sifive.com>
-> Signed-off-by: Alexey Gladkov <legion@kernel.org>
 
-In linux-6.5-rc1, number 451 is used for __NR_cachestat, the
-next free one at the moment is 452.
-
->  arch/arm/tools/syscall.tbl                  | 1 +
->  arch/arm64/include/asm/unistd32.h           | 2 ++
-
-Unfortunately, you still also need to change __NR_compat_syscalls
-in arch/arm64/include/asm/unistd.h. Aside from these two issues,
-your patch is the correct way to hook up a new syscall.
-
-   Arnd
+Acked-by: Arnd Bergmann <arnd@arndb.de>
