@@ -2,52 +2,53 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E2E1EB64DD
-	for <linux-m68k@archiver.kernel.org>; Thu, 13 Jul 2023 08:04:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD042C0015E
+	for <linux-m68k@archiver.kernel.org>; Thu, 13 Jul 2023 08:43:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233533AbjGMIE4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 13 Jul 2023 04:04:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46136 "EHLO
+        id S231200AbjGMInN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 13 Jul 2023 04:43:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233602AbjGMIEo (ORCPT
+        with ESMTP id S233346AbjGMImh (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 13 Jul 2023 04:04:44 -0400
+        Thu, 13 Jul 2023 04:42:37 -0400
 Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF73235BE
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 13 Jul 2023 01:02:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19ED23C30
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 13 Jul 2023 01:39:27 -0700 (PDT)
 Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R1nBz3B86zBKy8c
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 13 Jul 2023 16:02:19 +0800 (CST)
+        by mail.208.org (Postfix) with ESMTP id 4R1p1l0R5wzBKy8b
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 13 Jul 2023 16:39:23 +0800 (CST)
 Authentication-Results: mail.208.org (amavisd-new); dkim=pass
         reason="pass (just generated, assumed good)" header.d=208.org
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
         content-transfer-encoding:content-type:message-id:user-agent
         :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689235339; x=1691827340; bh=oL3xOkn7E3MUOt4JI0gh3HeTNGG
-        0L2ucZwS9lYLtuEA=; b=TE4UVTEkDYWk5WrMLKW++RkRGpIdRSFoo2fTqfcxgC2
-        HLDCgN2TMMaPPESJF6hiD3qxE/x8kL0FjJvMUz9Ffos+WpO1dPYidNTN57m3wxvT
-        Y0fEEEp/vLX/l1XdSclGFxzZQNQ7i5PBsdmjlJrHwXUKNnr+FXavnP7XltaOoCxT
-        I4h9mr4f/uk7Are4RY6Q8vBGNCkJJfT5t7dq7UlkDt6T6VtJfnP8ybvZdCzk6rd5
-        zYhmTWl3u3D9xsSy+HZTaP1+RAqruie9u1TzMja2d5wR6mYSkYtvgZNvMsEEqSTT
-        BiARIc4n9ohyUhd6UxLH3rB2c09XX924lD/wOVT09qw==
+        dkim; t=1689237562; x=1691829563; bh=8BBBUOQYlHrOA0abmFXS14YQVVp
+        5Itw+Q01UdXxW2pI=; b=Waw/I/houGBvGg7Wc+Cjla7i3yp6OkMkBSK2aEycCgO
+        Doa162BYNzVqP5bmMCZnO8uP55BH9WWSoWgbtiRSNmsimXwiOe6DdIZ/DnzOF9iZ
+        1pzlZFdoEmBG1q4iKluG70yacaBsCkPq+e/732VI/cAN9dlGzDQKoRn0EPCKziMn
+        WdAIFvI4vjoAbqftJ2QSzWFyxvYxvi4cBcQoMDrfNW2TosovJXZzCMhT+Kf7qGra
+        XzR2DUjmYd6CPwDaNQfZEOpMxueTA1b8lfC/EUJmzk9tK373WEgmFEGOHyEKfW8D
+        a5isvRwLkmTut2tayaEFU/YFkfgTw7yCoCnAGGQjvQA==
 X-Virus-Scanned: amavisd-new at mail.208.org
 Received: from mail.208.org ([127.0.0.1])
         by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id jYgcPJsfOg2V for <linux-m68k@lists.linux-m68k.org>;
-        Thu, 13 Jul 2023 16:02:19 +0800 (CST)
+        with ESMTP id 0bYiU93WO0HE for <linux-m68k@lists.linux-m68k.org>;
+        Thu, 13 Jul 2023 16:39:22 +0800 (CST)
 Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R1nBz15qnzBJDhy;
-        Thu, 13 Jul 2023 16:02:19 +0800 (CST)
+        by mail.208.org (Postfix) with ESMTPSA id 4R1p1k53SVzBJ8lM;
+        Thu, 13 Jul 2023 16:39:22 +0800 (CST)
 MIME-Version: 1.0
-Date:   Thu, 13 Jul 2023 16:02:19 +0800
+Date:   Thu, 13 Jul 2023 16:39:22 +0800
 From:   hexingwei001@208suo.com
-To:     sammy@sammy.net, geert@linux-m68k.org
+To:     gerg@linux-m68k.org, geert@linux-m68k.org
 Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] m68k: sun3: idprom: ERROR: "foo* bar" should be "foo *bar"
-In-Reply-To: <20230713080020.72931-1-panzhiai@cdjrlc.com>
-References: <20230713080020.72931-1-panzhiai@cdjrlc.com>
+Subject: [PATCH] m68k: coldfire: dma_timer: ERROR: "foo __init  bar" should be
+ "foo __init bar"
+In-Reply-To: <20230713081656.77057-1-panzhiai@cdjrlc.com>
+References: <20230713081656.77057-1-panzhiai@cdjrlc.com>
 User-Agent: Roundcube Webmail
-Message-ID: <9dc7423a9e54f849212f21a59074ffb4@208suo.com>
+Message-ID: <0ed701a0d75f07e83f4a85617b2e33ae@208suo.com>
 X-Sender: hexingwei001@208suo.com
 Content-Type: text/plain; charset=US-ASCII;
  format=flowed
@@ -57,23 +58,25 @@ List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
 Fix one occurrences of the checkpatch.pl error:
-ERROR: "foo* bar" should be "foo *bar"
+ERROR: "foo __init  bar" should be "foo __init bar"
 
 Signed-off-by: Xingwei He <hexingwei001@208suo.com>
 ---
-  arch/m68k/sun3/idprom.c | 2 +-
+  arch/m68k/coldfire/dma_timer.c | 2 +-
   1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/m68k/sun3/idprom.c b/arch/m68k/sun3/idprom.c
-index 1ace5353d78f..a4c5cd072c87 100644
---- a/arch/m68k/sun3/idprom.c
-+++ b/arch/m68k/sun3/idprom.c
-@@ -83,7 +83,7 @@ static void __init display_system_type(unsigned char 
-machtype)
-      prom_halt();
-  }
+diff --git a/arch/m68k/coldfire/dma_timer.c 
+b/arch/m68k/coldfire/dma_timer.c
+index cbb289439606..91e6728f51ed 100644
+--- a/arch/m68k/coldfire/dma_timer.c
++++ b/arch/m68k/coldfire/dma_timer.c
+@@ -48,7 +48,7 @@ static struct clocksource clocksource_cf_dt = {
+      .flags        = CLOCK_SOURCE_IS_CONTINUOUS,
+  };
 
--void sun3_get_model(unsigned char* model)
-+void sun3_get_model(unsigned char *model)
+-static int __init  init_cf_dt_clocksource(void)
++static int __init init_cf_dt_clocksource(void)
   {
-      register int i;
+      /*
+       * We setup DMA timer 0 in free run mode. This incrementing counter 
+is
