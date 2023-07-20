@@ -2,34 +2,37 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11A76C0015E
-	for <linux-m68k@archiver.kernel.org>; Thu, 20 Jul 2023 17:30:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9940EEB64DA
+	for <linux-m68k@archiver.kernel.org>; Thu, 20 Jul 2023 17:51:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbjGTRaf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 20 Jul 2023 13:30:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33766 "EHLO
+        id S231944AbjGTRvS convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 20 Jul 2023 13:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231204AbjGTRae (ORCPT
+        with ESMTP id S229580AbjGTRvQ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 20 Jul 2023 13:30:34 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E132722;
-        Thu, 20 Jul 2023 10:30:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kZsL+fRMiTUhIF6cbkchAwMMymJQNGnAWsHwN+ewJ0E=; b=njeSPSpguzsHoVcLskuzq3zqvP
-        fh6yPSsenkfbn+nzasVka6Xcr/4vmVhShCMCWCwccY/VDY/4+EqZ6a08xnubBsxwKl52NFXncUna4
-        neUTaeTjchLENIA5+N7KASwQHi+8BunPa3WVG3+qM2zJZS/VsHgKNdC3WNzT8Z0ZdCyCAAa63J5HO
-        odj5alfVy+NbSyQkfnrweVtwROQS+w3gW7W6y/yPIhdJMID2yZo2if0EGxr+MMkGK/ewsl7+0JUUO
-        Lic2g6Q5iNJbymXPLx0wql6EaA2fSSUuHxU3BlG3N8SbfsK71rrv+19uHkhsEycQKptguXZYHDf72
-        A53SA8Eg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qMXTc-000IDQ-47; Thu, 20 Jul 2023 17:30:08 +0000
-Date:   Thu, 20 Jul 2023 18:30:08 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
+        Thu, 20 Jul 2023 13:51:16 -0400
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6939C269D;
+        Thu, 20 Jul 2023 10:51:15 -0700 (PDT)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1qMXnc-002BO8-NB; Thu, 20 Jul 2023 19:50:48 +0200
+Received: from p57bd98fd.dip0.t-ipconnect.de ([87.189.152.253] helo=suse-laptop.fritz.box)
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1qMXnc-003YrW-FC; Thu, 20 Jul 2023 19:50:48 +0200
+Message-ID: <2d0bd58fb757e7771d13f82050a546ec5f7be8de.camel@physik.fu-berlin.de>
+Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Matthew Wilcox <willy@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>
 Cc:     Viacheslav Dubeyko <slava@dubeyko.com>,
         Arnd Bergmann <arnd@arndb.de>,
         Linus Torvalds <torvalds@linux-foundation.org>,
@@ -42,50 +45,79 @@ Cc:     Viacheslav Dubeyko <slava@dubeyko.com>,
         LKML <linux-kernel@vger.kernel.org>,
         syzkaller-bugs@googlegroups.com,
         ZhangPeng <zhangpeng362@huawei.com>,
-        linux-m68k@lists.linux-m68k.org
-Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
-Message-ID: <ZLlvII/jMPTT32ef@casper.infradead.org>
+        linux-m68k@lists.linux-m68k.org,
+        debian-ports <debian-ports@lists.debian.org>
+Date:   Thu, 20 Jul 2023 19:50:47 +0200
+In-Reply-To: <ZLlvII/jMPTT32ef@casper.infradead.org>
 References: <000000000000dbce4e05f170f289@google.com>
- <5f45bb9a-5e00-48dd-82b0-46b19b1b98a3@app.fastmail.com>
- <CAHk-=wi8XyAUF9_z6-oa4Ava6PVZeE-=TVNcFK1puQHpOtqLLw@mail.gmail.com>
- <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com>
- <2575F983-D170-4B79-A6BA-912D4ED2CC73@dubeyko.com>
- <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com>
- <Y7bw7X1Y5KtmPF5s@casper.infradead.org>
- <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com>
- <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com>
+         <5f45bb9a-5e00-48dd-82b0-46b19b1b98a3@app.fastmail.com>
+         <CAHk-=wi8XyAUF9_z6-oa4Ava6PVZeE-=TVNcFK1puQHpOtqLLw@mail.gmail.com>
+         <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com>
+         <2575F983-D170-4B79-A6BA-912D4ED2CC73@dubeyko.com>
+         <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com>
+         <Y7bw7X1Y5KtmPF5s@casper.infradead.org>
+         <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com>
+         <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com>
+         <ZLlvII/jMPTT32ef@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com>
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.152.253
+X-ZEDAT-Hint: PO
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 05:27:57PM +0200, Dmitry Vyukov wrote:
-> On Thu, 5 Jan 2023 at 17:45, Viacheslav Dubeyko <slava@dubeyko.com> wrote:
-> > > On Wed, Jan 04, 2023 at 08:37:16PM -0800, Viacheslav Dubeyko wrote:
-> > >> Also, as far as I can see, available volume in report (mount_0.gz) somehow corrupted already:
-> > >
-> > > Syzbot generates deliberately-corrupted (aka fuzzed) filesystem images.
-> > > So basically, you can't trust anything you read from the disc.
-> > >
-> >
-> > If the volume has been deliberately corrupted, then no guarantee that file system
-> > driver will behave nicely. Technically speaking, inode write operation should never
-> > happened for corrupted volume because the corruption should be detected during
-> > b-tree node initialization time. If we would like to achieve such nice state of HFS/HFS+
-> > drivers, then it requires a lot of refactoring/implementation efforts. I am not sure that
-> > it is worth to do because not so many guys really use HFS/HFS+ as the main file
-> > system under Linux.
-> 
-> 
-> Most popular distros will happily auto-mount HFS/HFS+ from anything
-> inserted into USB (e.g. what one may think is a charger). This creates
-> interesting security consequences for most Linux users.
-> An image may also be corrupted non-deliberately, which will lead to
-> random memory corruptions if the kernel trusts it blindly.
+Hello!
 
-Then we should delete the HFS/HFS+ filesystems.  They're orphaned in
-MAINTAINERS and if distros are going to do such a damnfool thing,
-then we must stop them.
+On Thu, 2023-07-20 at 18:30 +0100, Matthew Wilcox wrote:
+> On Thu, Jul 20, 2023 at 05:27:57PM +0200, Dmitry Vyukov wrote:
+> > On Thu, 5 Jan 2023 at 17:45, Viacheslav Dubeyko <slava@dubeyko.com> wrote:
+> > > > On Wed, Jan 04, 2023 at 08:37:16PM -0800, Viacheslav Dubeyko wrote:
+> > > > > Also, as far as I can see, available volume in report (mount_0.gz) somehow corrupted already:
+> > > > 
+> > > > Syzbot generates deliberately-corrupted (aka fuzzed) filesystem images.
+> > > > So basically, you can't trust anything you read from the disc.
+> > > > 
+> > > 
+> > > If the volume has been deliberately corrupted, then no guarantee that file system
+> > > driver will behave nicely. Technically speaking, inode write operation should never
+> > > happened for corrupted volume because the corruption should be detected during
+> > > b-tree node initialization time. If we would like to achieve such nice state of HFS/HFS+
+> > > drivers, then it requires a lot of refactoring/implementation efforts. I am not sure that
+> > > it is worth to do because not so many guys really use HFS/HFS+ as the main file
+> > > system under Linux.
+> > 
+> > 
+> > Most popular distros will happily auto-mount HFS/HFS+ from anything
+> > inserted into USB (e.g. what one may think is a charger). This creates
+> > interesting security consequences for most Linux users.
+> > An image may also be corrupted non-deliberately, which will lead to
+> > random memory corruptions if the kernel trusts it blindly.
+> 
+> Then we should delete the HFS/HFS+ filesystems.  They're orphaned in
+> MAINTAINERS and if distros are going to do such a damnfool thing,
+> then we must stop them.
+
+Both HFS and HFS+ work perfectly fine. And if distributions or users are so
+sensitive about security, it's up to them to blacklist individual features
+in the kernel.
+
+Both HFS and HFS+ have been the default filesystem on MacOS for 30 years
+and I don't think it's justified to introduce such a hard compatibility
+breakage just because some people are worried about theoretical evil
+maid attacks.
+
+HFS/HFS+ mandatory if you want to boot Linux on a classic Mac or PowerMac
+and I don't think it's okay to break all these systems running Linux.
+
+Thanks,
+Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
