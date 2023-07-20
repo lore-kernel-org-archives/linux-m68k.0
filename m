@@ -2,152 +2,114 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3D0AEB64DA
-	for <linux-m68k@archiver.kernel.org>; Thu, 20 Jul 2023 22:37:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56524EB64DA
+	for <linux-m68k@archiver.kernel.org>; Thu, 20 Jul 2023 22:38:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbjGTWhY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 20 Jul 2023 18:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56730 "EHLO
+        id S229983AbjGTWiB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 20 Jul 2023 18:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbjGTWhW (ORCPT
+        with ESMTP id S230337AbjGTWh4 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 20 Jul 2023 18:37:22 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B29CE1722
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 15:37:20 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1b8b4749013so9833105ad.2
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 15:37:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689892640; x=1690497440;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/W1w+SY6j6kG1tNs2NxJ9QC7V4tqkxWT/kRb5zTe4W4=;
-        b=YV1e4oKAXfzbTRKikzI5KNFWM5JXF76KTnSUdDfwqmu6/RyTKRB6SoyAwGrX4UzzV3
-         pFesznNl1fXFESxhSqptxALrnUHU/6DTIm38n8qkwdeMM8YJSZh+hGgjl+fM0vgY3+b0
-         4b0CykC66BtX+lTF+FECf02s6uikmfdy8aqscm1MAIj/lMBpv3yD3zEMxF0zaWhhZGV5
-         gU7dQcqNmQ/noxlnyyGT2KsbEWa3VYXg3Bq26u+60kPfRSF7L1gQ0gW55Fkr8Cvd8Ud1
-         MWlMl5Tsd21HlUvRoAfXzifhaYmWm6TgE8IvTO8+eyZV9Trlwq+yQlXoA2U5KFsqyVlS
-         EWEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689892640; x=1690497440;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:references:to:subject:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/W1w+SY6j6kG1tNs2NxJ9QC7V4tqkxWT/kRb5zTe4W4=;
-        b=Mlz0BxMHiU/wXh43hqAFrNNfyvwgsgm8xG6REnHghRqdSXPUK+gDJIfkKPJgM62YWw
-         vUnKlDrSrEY0Qn4qKT1OnNg4ebNqEkR12ulcRdbpS5JtKZ/ZK2HPRZ6EI1OJOsk1wbXo
-         3Abxjbuja7jvC5gExh2kzIoQqDVjClwOWxKVQTHNVWr55ZVmAUceSQI+860SlcC3Zpiq
-         zsGwQ0FTXoHfKoxLq9HOWpVBCTTINeayafWY8d3d8/HpevHL7HkV8o1Plapu7Zbx3iUp
-         w2FlsaVCCxEo2ukJdaN52fpwU1pwzqReR3D1aLlUKrNDZB2QIdZD6+R/GkkH9OGfYQqo
-         vOdQ==
-X-Gm-Message-State: ABy/qLZ7WRMjxMs9pINk7BbQBLNuk527VAKUs/sBP/h0wvMn7czsZA3v
-        XfwRzf5H89fV4sYQfpxIhdk6bTv0SOg=
-X-Google-Smtp-Source: APBJJlFncE86q8OqVpFrkZg/LlxqNtmF9dQXVg2LAFHEf7l4rWNjQQu4mf/jWv6Fi3Z3haTylZH+jA==
-X-Received: by 2002:a17:903:264d:b0:1b8:a39a:2833 with SMTP id je13-20020a170903264d00b001b8a39a2833mr315989plb.15.1689892639621;
-        Thu, 20 Jul 2023 15:37:19 -0700 (PDT)
-Received: from [10.1.1.24] (222-152-184-54-fibre.sparkbb.co.nz. [222.152.184.54])
-        by smtp.gmail.com with ESMTPSA id iw2-20020a170903044200b001b6a27dff99sm1914357plb.159.2023.07.20.15.37.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 20 Jul 2023 15:37:19 -0700 (PDT)
-Subject: Re: clear_bit_unlock_is_negative_byte
-To:     Matthew Wilcox <willy@infradead.org>,
-        linux-m68k@lists.linux-m68k.org
-References: <ZLmKq2VLjYGBVhMI@casper.infradead.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <25b10d04-c6bf-8583-ee0d-84bf647ef0af@gmail.com>
-Date:   Fri, 21 Jul 2023 10:37:14 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        Thu, 20 Jul 2023 18:37:56 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29517E65;
+        Thu, 20 Jul 2023 15:37:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=5wfB/JnTildGLpqIz22A/N+tA5l0CUHxiDZM+QP0Xnw=; b=Qdrj24cjE0nBvu1VL4hCFUzYtu
+        modSy+mz0JT/nbTsDGP4Rqu7vYpq+i2KZ4yfk3YoOuNcRbAQOYiql7azl3dXQ8FAsXH6fcgdu0/I1
+        zgIOAlrFrQXnV4palYO9N1gAvMiA0urkN1CRiEYesm4+Mrrl2Sdq31ytxBIT/pAPe99DwqAjtXvrZ
+        WRdPHrweHO6h5TAFdPcidCw9HVkffv9qM4d4NUTiJXPj//KjqeGH9X40cMX4+rbeorMp8yn/CETaY
+        kazpax+f2FpKq4dC2yflbMBJuQ8r7O0eM2rDzqurfiDz5n1eQnYZx5OQYidLNHh1SZqA0K4ieuH1n
+        iFMWH0eQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qMcH6-000Vlo-Ox; Thu, 20 Jul 2023 22:37:32 +0000
+Date:   Thu, 20 Jul 2023 23:37:32 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jeffrey Walton <noloader@gmail.com>
+Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Viacheslav Dubeyko <slava@dubeyko.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        christian.brauner@ubuntu.com,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs@googlegroups.com,
+        ZhangPeng <zhangpeng362@huawei.com>,
+        linux-m68k@lists.linux-m68k.org,
+        debian-ports <debian-ports@lists.debian.org>
+Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
+Message-ID: <ZLm3LLrsSPYkLYr4@casper.infradead.org>
+References: <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com>
+ <2575F983-D170-4B79-A6BA-912D4ED2CC73@dubeyko.com>
+ <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com>
+ <Y7bw7X1Y5KtmPF5s@casper.infradead.org>
+ <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com>
+ <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com>
+ <ZLlvII/jMPTT32ef@casper.infradead.org>
+ <2d0bd58fb757e7771d13f82050a546ec5f7be8de.camel@physik.fu-berlin.de>
+ <ZLl2Fq35Ya0cNbIm@casper.infradead.org>
+ <CAH8yC8=BwacXyFQret5pKVCzXXO0jLM_u9eW3bTdyPi4y8CSfw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <ZLmKq2VLjYGBVhMI@casper.infradead.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAH8yC8=BwacXyFQret5pKVCzXXO0jLM_u9eW3bTdyPi4y8CSfw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Matthew,
+On Thu, Jul 20, 2023 at 05:38:52PM -0400, Jeffrey Walton wrote:
+> On Thu, Jul 20, 2023 at 2:39 PM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Thu, Jul 20, 2023 at 07:50:47PM +0200, John Paul Adrian Glaubitz wrote:
+> > > > Then we should delete the HFS/HFS+ filesystems.  They're orphaned in
+> > > > MAINTAINERS and if distros are going to do such a damnfool thing,
+> > > > then we must stop them.
+> > >
+> > > Both HFS and HFS+ work perfectly fine. And if distributions or users are so
+> > > sensitive about security, it's up to them to blacklist individual features
+> > > in the kernel.
+> > >
+> > > Both HFS and HFS+ have been the default filesystem on MacOS for 30 years
+> > > and I don't think it's justified to introduce such a hard compatibility
+> > > breakage just because some people are worried about theoretical evil
+> > > maid attacks.
+> > >
+> > > HFS/HFS+ mandatory if you want to boot Linux on a classic Mac or PowerMac
+> > > and I don't think it's okay to break all these systems running Linux.
+> >
+> > If they're so popular, then it should be no trouble to find somebody
+> > to volunteer to maintain those filesystems.  Except they've been
+> > marked as orphaned since 2011 and effectively were orphaned several
+> > years before that (the last contribution I see from Roman Zippel is
+> > in 2008, and his last contribution to hfs was in 2006).
+> 
+> One data point may help.. I've been running Linux on an old PowerMac
+> and an old Intel MacBook since about 2014 or 2015 or so. I have needed
+> the HFS/HFS+ filesystem support for about 9 years now (including that
+> "blessed" support for the Apple Boot partition).
+> 
+> There's never been a problem with Linux and the Apple filesystems.
+> Maybe it speaks to the maturity/stability of the code that already
+> exists. The code does not need a lot of attention nowadays.
+> 
+> Maybe the orphaned status is the wrong metric to use to determine
+> removal. Maybe a better metric would be installation base. I.e., how
+> many users use the filesystem.
 
-Am 21.07.2023 um 07:27 schrieb Matthew Wilcox:
-> I'm looking to implement clear_bit_unlock_is_negative_byte() on every
-> architecture so we can delete the ifdeffery around maybe-we-have-it
-> and remove the simple implementation from filemap.c.  Here's what I've
-> come up with for m68k:
->
-> +static inline bool clear_bit_unlock_is_negative_byte(unsigned int nr,
-> +               volatile unsigned long *p)
-> +{
-> +       char result;
-> +       char mask = 1 << nr;    /* nr guaranteed to be < 7 */
-> +
-> +       __asm__ __volatile__ ("eori %1, %2; smi %0"
-> +               : "=d" (result)
-> +               : "i" (mask), "o" (*p)
-> +               : "memory");
-> +       return result;
-> +}
->
-> It compiles, so I feel Very Pleased With Myself, since I haven't written
-> m68k assmbly in 25 years.  But I have questions.
-
-Unfortunately, after plugging this in, the boot hangs at the first block 
-device encountered:
-
-calling  proc_hardware_init+0x0/0x20 @ 1
-initcall proc_hardware_init+0x0/0x20 returned 0 after 40 usecs
-calling  rtc_init+0x0/0x5e @ 1
-initcall rtc_init+0x0/0x5e returned 0 after 40 usecs
-calling  atari_nvram_init+0x0/0x42 @ 1
-initcall atari_nvram_init+0x0/0x42 returned 0 after 40 usecs
-calling  nfhd_init+0x0/0x206 @ 1
-nfhd8: found device with 20971440 blocks (512 bytes)
-
-Doesn't eat up memory, doesn't sit in a tight spin, just never proceeds 
-past that point.
-
-Running old and new code side by side (well, actually sequentially) in 
-clear_bit_unlock_is_negative_byte()  and comparing results, the return 
-values generated by both options match but the actual contents of the 
-pointer passed to the function (after the mods) does differ:
-
-nfhd8: found device with 20971440 blocks (512 bytes)
-cbu_inb memval mismatch: 2004 12005
-cbu_inb memval mismatch: 2004 12005
-  nfhd8: AHDI p1 p2
-cbu_inb memval mismatch: 26 10027
-cbu_inb memval mismatch: 26 10027
-
-(first value is from the old code, second value from the new code).
-
-It looks to me that the eori operates on a 16 bit word here?
-
-(Disclaimer: I have written m68k assembly occasionally in the past 
-years, but I struggle with inline asm...)
-
-Cheers,
-
-	Michael
-
->
-> First, m68k is big-endian, so I suspect I'm accessing the wrong byte.
-> Should something in there be adding 3 to 'p'?  Better to do it in the
-> asm, or in the constraints so the compiler can see it?
->
-> Second, have I properly communicated to the assembler that this is
-> a byte-size operation, and it needs to check bit 7 and not bits 15 or 31
-> to set the negative flag?
->
-> Third, can this be done better?  x86 has __GCC_ASM_FLAG_OUTPUTS__
-> so it doesn't need the equivalent of the SMI instruction to move the
-> condition to an output variable; it can just tell the compiler that
-> the N flag communicates the result that it's looking for.  Does m68k
-> have __GCC_ASM_FLAG_OUTPUTS__ or did nobody do that work yet?
->
-> Fourth, we could do this is with ANDI instead of EORI.  It's mildly
-> safer, but we really shouldn't have two threads clearing the lock bit
-> that race with each other.  We can't do it with BCLR because that
-> doesn't set the N flag.  If we do that, we'd need to invert the mask.
->
-> Appreciate your time looking at this.
->
+I think you're missing the context.  There are bugs in how this filesystem
+handles intentionally-corrupted filesystems.  That's being reported as
+a critical bug because apparently some distributions automount HFS/HFS+
+filesystems presented to them on a USB key.  Nobody is being paid to fix
+these bugs.  Nobody is volunteering to fix these bugs out of the kindness
+of their heart.  What choice do we have but to remove the filesystem,
+regardless of how many happy users it has?
