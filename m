@@ -2,92 +2,99 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DCFC4EB64DA
-	for <linux-m68k@archiver.kernel.org>; Thu, 20 Jul 2023 09:48:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD8B1C001DC
+	for <linux-m68k@archiver.kernel.org>; Thu, 20 Jul 2023 15:28:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229566AbjGTJs1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 20 Jul 2023 05:48:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46164 "EHLO
+        id S231748AbjGTP2S (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 20 Jul 2023 11:28:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbjGTJrn (ORCPT
+        with ESMTP id S229517AbjGTP2R (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 20 Jul 2023 05:47:43 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 444F1272C
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 02:44:48 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R677x28bzzBRDsR
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 17:44:45 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :subject:to:from:date:mime-version; s=dkim; t=1689846284; x=
-        1692438285; bh=qGOeHgtDBHsSHC3uATnAbr19YDqR8PrzwbEe7cIQD6Y=; b=q
-        SOOgrvE9L1WGf7zl9GpN+soQ8HG3e3eT3s7Bw9Mbfvc/iCYLfDO6DYFqtZcjxh28
-        y6gEQAnk8zgB4dfttkwmAVA3bQwbjjCT6vYgrabB4DBFxvBOC2xVXbwElSqG7J+G
-        CfDmNjj/3RMAMxM3A7LS4ErOsQQ3oL11egiIfmddaKlgngsRNiROLgYo7loLjEEo
-        rybko3Yq6xIgkLmSugdqyYHceHWwpVD+mEmrGN2yrqG9C1sMhEZhYrd/MpTB5UFk
-        cNBzYCiP2lJi37LZJyt0MjSNWeCA1RseczWYotktKlE9lPdg9S8Dmm3/wOCJiklB
-        SUU9yfWUFDZiD2Jz1bbJg==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 0Fvs17bg1RcB for <linux-m68k@lists.linux-m68k.org>;
-        Thu, 20 Jul 2023 17:44:44 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R677w53TPzBRDrZ;
-        Thu, 20 Jul 2023 17:44:44 +0800 (CST)
+        Thu, 20 Jul 2023 11:28:17 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CACEE2115
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 08:28:11 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so13761a12.0
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 08:28:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689866890; x=1690471690;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ueWLYJ0Zpp28j5V5QPthaLz88fH+2254dOYDnHgAd5M=;
+        b=NMSbGUMpK4C+K0lUFpR4U4mRLU2BGKqgVgy3KIZICDV9XOFW3qVvqLCVSIRLoocCJ3
+         zx5HwTBJWP8G5Ukq8j3RLc3ZxO0nz8qfTO6pkgHoVa0NAJZnrNOzWYmTAZc3g5k8jc9c
+         iqVtzrXFOKBFRiiZT8EJUMrIHV0PD2TU4a8YTQv8tFlSjwl7ytGHQbD0ou6BXQKME+TL
+         BtoGu9apQZyLEmd78jSKxhl3jqft/NQXl7t+QYT3CmxUz/rAm4ZrIyar2PlCBE1Ql/gR
+         /H7BUkFDgWCQRjPb9iC8bL7hDMohAHQYqjusxGEDOGW8dfxV9185lWbkRIFLsOLvtJiz
+         D8ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689866890; x=1690471690;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ueWLYJ0Zpp28j5V5QPthaLz88fH+2254dOYDnHgAd5M=;
+        b=AyozN8d9QQHSor3nMWIStyTDkPeHJ1/Yj6neWJr611lbDcOgrOiiH+rTLk0Mg7wMY+
+         Dgxlq/LcYEKd/9Z6Tm/A37MrVKRYo8vZ00tQHhRGBPQdxLLjUVY3jXMKAKbVhqD9G3CY
+         rAUoi0qwmH9LOgwSqRVJSaiesDy9b9t9pH2lb4sChgjTmgwjaRQAtEMApgN8y/IPxTQW
+         zby608Wb8Rf+KA8b07gQualS15yjvOpS60WN0jGrbRjCVGPf45ZKMYcFCw26za44SgRX
+         Vyc3ySe7vzX4ySFu1BV1oqoMUzBiHMMEkTaievX/FjetlyNwTFKAKBnl6hLm9mrLcdxF
+         2gPQ==
+X-Gm-Message-State: ABy/qLY4vEZwcnRDP3HCsovadGusKg5CfVS/iRbavFyhbM6Z7G4m+iw3
+        bBZ9FsDwLnflKO1lohtbg8ClPOF+Z6aNbzo/AoapGw==
+X-Google-Smtp-Source: APBJJlFq0GZ4ZktUOfXrO7gkLDHTJWhPSD/1jcusDXb2jRQnlEDKQRL7PkcO0BkiH+wKF+BeNtP5oYmOviBhd85v+R0=
+X-Received: by 2002:a50:ab5c:0:b0:51e:54d5:50c0 with SMTP id
+ t28-20020a50ab5c000000b0051e54d550c0mr113732edc.1.1689866890072; Thu, 20 Jul
+ 2023 08:28:10 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Thu, 20 Jul 2023 17:44:44 +0800
-From:   zhangyongle001@208suo.com
-To:     linux-m68k@lists.linux-m68k.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] m68k: Fix the following checkpatch error:
-User-Agent: Roundcube Webmail
-Message-ID: <4994ede231971e39e3b7f51844d8868a@208suo.com>
-X-Sender: zhangyongle001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+References: <000000000000dbce4e05f170f289@google.com> <5f45bb9a-5e00-48dd-82b0-46b19b1b98a3@app.fastmail.com>
+ <CAHk-=wi8XyAUF9_z6-oa4Ava6PVZeE-=TVNcFK1puQHpOtqLLw@mail.gmail.com>
+ <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com> <2575F983-D170-4B79-A6BA-912D4ED2CC73@dubeyko.com>
+ <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com> <Y7bw7X1Y5KtmPF5s@casper.infradead.org>
+ <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com>
+In-Reply-To: <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 20 Jul 2023 17:27:57 +0200
+Message-ID: <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com>
+Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
+To:     Viacheslav Dubeyko <slava@dubeyko.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        christian.brauner@ubuntu.com,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs@googlegroups.com,
+        ZhangPeng <zhangpeng362@huawei.com>,
+        linux-m68k@lists.linux-m68k.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-ERROR: that open brace { should be on the previous line
-ERROR: that open brace { should be on the previous line
-ERROR: else should follow close brace '}'
+On Thu, 5 Jan 2023 at 17:45, Viacheslav Dubeyko <slava@dubeyko.com> wrote:
+> > On Wed, Jan 04, 2023 at 08:37:16PM -0800, Viacheslav Dubeyko wrote:
+> >> Also, as far as I can see, available volume in report (mount_0.gz) somehow corrupted already:
+> >
+> > Syzbot generates deliberately-corrupted (aka fuzzed) filesystem images.
+> > So basically, you can't trust anything you read from the disc.
+> >
+>
+> If the volume has been deliberately corrupted, then no guarantee that file system
+> driver will behave nicely. Technically speaking, inode write operation should never
+> happened for corrupted volume because the corruption should be detected during
+> b-tree node initialization time. If we would like to achieve such nice state of HFS/HFS+
+> drivers, then it requires a lot of refactoring/implementation efforts. I am not sure that
+> it is worth to do because not so many guys really use HFS/HFS+ as the main file
+> system under Linux.
 
-Signed-off-by: zhangyongle <zhangyongle001@208suo.com >
----
-  arch/m68k/bvme6000/config.c | 7 ++-----
-  1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/arch/m68k/bvme6000/config.c b/arch/m68k/bvme6000/config.c
-index 3a1d90e399e0..6bc33d5d4d73 100644
---- a/arch/m68k/bvme6000/config.c
-+++ b/arch/m68k/bvme6000/config.c
-@@ -290,8 +290,7 @@ int bvme6000_hwclk(int op, struct rtc_time *t)
-
-  	rtc->msr = 0x40;	/* Ensure clock and real-time-mode-register
-  				 * are accessible */
--	if (op)
--	{	/* Write.... */
-+	if (op) {	/* Write.... */
-  		rtc->t0cr_rtmr = t->tm_year%4;
-  		rtc->bcd_tenms = 0;
-  		rtc->bcd_sec = bin2bcd(t->tm_sec);
-@@ -303,9 +302,7 @@ int bvme6000_hwclk(int op, struct rtc_time *t)
-  		if (t->tm_wday >= 0)
-  			rtc->bcd_dow = bin2bcd(t->tm_wday+1);
-  		rtc->t0cr_rtmr = t->tm_year%4 | 0x08;
--	}
--	else
--	{	/* Read....  */
-+	} else {	/* Read....  */
-  		do {
-  			t->tm_sec  = bcd2bin(rtc->bcd_sec);
-  			t->tm_min  = bcd2bin(rtc->bcd_min);
--- 
-2.40.1
-
+Most popular distros will happily auto-mount HFS/HFS+ from anything
+inserted into USB (e.g. what one may think is a charger). This creates
+interesting security consequences for most Linux users.
+An image may also be corrupted non-deliberately, which will lead to
+random memory corruptions if the kernel trusts it blindly.
