@@ -2,163 +2,82 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E73EEB64DA
-	for <linux-m68k@archiver.kernel.org>; Thu, 20 Jul 2023 19:05:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11B92EB64DA
+	for <linux-m68k@archiver.kernel.org>; Thu, 20 Jul 2023 19:27:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229950AbjGTTFd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 20 Jul 2023 15:05:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53520 "EHLO
+        id S229679AbjGTT1p (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 20 Jul 2023 15:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbjGTTFc (ORCPT
+        with ESMTP id S229750AbjGTT1o (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 20 Jul 2023 15:05:32 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38AA6E43
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 12:05:31 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-666e6ecb52dso764603b3a.2
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 12:05:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689879930; x=1690484730;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i5WxwIIVZh3vzM0O7OdWvee0FQLOrckntfrL4WlrpgQ=;
-        b=bOKuuxgP+6quZ+4NX2C9oFQ+beZmM/S7D8G3o+OQ8U8a8F63PTiN4HLfyowMoixzmb
-         jR7sAxui0n3J+8OLtE2EVOOTkBUtjb/m/A5BFog5beYPKhokIZFPPKXjM8Yk1OuyZIi+
-         7u2jvGL+KeZ7CjNFXvW6U4Mj+u8O51kSCjNIpqtZIeOqLmkzsVpzx2GjBALWOt9IK58t
-         +cF9/iXeysIL3tMC2DR7hPDZwP0bz2oEfdzJWXA00TKXV7FUNrNYE50atqJj+FNG87Pu
-         itRmnPVbIBSuDfb2FE8Zrvv+STUumvkDb0vQngOpuYZKkbI8hFB4VMemcv+0kDBHZVPU
-         KlZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689879930; x=1690484730;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=i5WxwIIVZh3vzM0O7OdWvee0FQLOrckntfrL4WlrpgQ=;
-        b=RrXI61rwhNFUgmit4RDc4KcPj/mMPSwyZM3+Vx0Ai/JtTRYfMGtf5zSbTAX4zAOQeY
-         8jBPCydVErt2iS6kFMslEod4wzlpwMATtu2/RvjoG3M4rHpa8QzJcEeEFHJz6ZKmjosY
-         GaGpNpS0qtnHhVYwadmvZT4BzR37e1U5D5yUd6v13+pjbu5Zw8j1cJBlX8gy2pIdohBN
-         h4kGnProkkVD9YplSSZbUaLrnvpiMXMZIzAaCnd7w7FGHstM1XhOnO9ADKn4J20WhMgs
-         kpvQVCYhhK/+swHsJ19BQOb2C3IoHdwQJpcn4qLFYV+aozC+YsBAhe+9yGGk/zP2qYDW
-         hjbA==
-X-Gm-Message-State: ABy/qLbGLv00O9Q751q+xLYf3vliD66nGlgfmZjoTw6+fjVS/NiTGF2G
-        u2Udrao+nhAaZOouLlH3X2E=
-X-Google-Smtp-Source: APBJJlFvRck6wx9MK8Vvu72MnjOOPhgvvKr/kY3NbAZI66XwRPemH27+SiwJt1uqr7U6/bMVOoCfuQ==
-X-Received: by 2002:a17:90a:8410:b0:263:1213:df3b with SMTP id j16-20020a17090a841000b002631213df3bmr195471pjn.11.1689879930509;
-        Thu, 20 Jul 2023 12:05:30 -0700 (PDT)
-Received: from [10.1.1.24] (222-152-184-54-fibre.sparkbb.co.nz. [222.152.184.54])
-        by smtp.gmail.com with ESMTPSA id 14-20020a17090a194e00b00267dd51778asm109061pjh.7.2023.07.20.12.05.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 20 Jul 2023 12:05:29 -0700 (PDT)
-Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>
-References: <000000000000dbce4e05f170f289@google.com>
- <5f45bb9a-5e00-48dd-82b0-46b19b1b98a3@app.fastmail.com>
- <CAHk-=wi8XyAUF9_z6-oa4Ava6PVZeE-=TVNcFK1puQHpOtqLLw@mail.gmail.com>
- <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com>
- <2575F983-D170-4B79-A6BA-912D4ED2CC73@dubeyko.com>
- <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com>
- <Y7bw7X1Y5KtmPF5s@casper.infradead.org>
- <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com>
- <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com>
- <ZLlvII/jMPTT32ef@casper.infradead.org>
- <b93ff5ca1ecd40084cd7a18e8490bf4e421fd6b9.camel@physik.fu-berlin.de>
-Cc:     Viacheslav Dubeyko <slava@dubeyko.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        christian.brauner@ubuntu.com,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs@googlegroups.com,
-        ZhangPeng <zhangpeng362@huawei.com>,
-        linux-m68k@lists.linux-m68k.org,
-        debian-powerpc <debian-powerpc@lists.debian.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <47a12957-9d9b-4134-0736-bedb15428627@gmail.com>
-Date:   Fri, 21 Jul 2023 07:05:19 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        Thu, 20 Jul 2023 15:27:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3976E171E
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 12:27:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
+        Subject:To:From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=eBBe3q1Bee4Bg/s3z2yb84bzTpyQ6DRe9JuWUElJNJ4=; b=NqT4fhDlA4DgzFdwslGIIENmVP
+        7M8u9OmQo7Ig/LcGcUuYtFQepgtQZrSA6QB/zR+PlxOHzubvjY4UZ3DgG42C7Jh+yBpQQ/bo3ygCm
+        QNHQl/kDm/kxdoK/s0QHUfI8QE0ExfKP/B8fAqQ1zKSG2/bdAQeFkgHUqo4X8rm7q0pXW7Spr2x5J
+        KoJ1osSIAjemF/iJCNfkJK8c55wNrNeYMcRJadgDlwXOq57MByV2caA1U41Ro2nkQR8IhVTCZLeh1
+        ay+7oPOqzhHFZbRU/FfNzncGRnT+uMzHsDUyUimsiqksa3+2MbVmXc9GTr1FrSlPafkHfbzkHKngz
+        Zfp1Agrw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qMZJL-000O8D-L4
+        for linux-m68k@lists.linux-m68k.org; Thu, 20 Jul 2023 19:27:39 +0000
+Date:   Thu, 20 Jul 2023 20:27:39 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     linux-m68k@lists.linux-m68k.org
+Subject: clear_bit_unlock_is_negative_byte
+Message-ID: <ZLmKq2VLjYGBVhMI@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <b93ff5ca1ecd40084cd7a18e8490bf4e421fd6b9.camel@physik.fu-berlin.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Adrian,
+I'm looking to implement clear_bit_unlock_is_negative_byte() on every
+architecture so we can delete the ifdeffery around maybe-we-have-it
+and remove the simple implementation from filemap.c.  Here's what I've
+come up with for m68k:
 
-Am 21.07.2023 um 05:56 schrieb John Paul Adrian Glaubitz:
-> (Please ignore my previous mail which was CC'ed to the wrong list)
->
-> Hello!
->
-> On Thu, 2023-07-20 at 18:30 +0100, Matthew Wilcox wrote:
->> On Thu, Jul 20, 2023 at 05:27:57PM +0200, Dmitry Vyukov wrote:
->>> On Thu, 5 Jan 2023 at 17:45, Viacheslav Dubeyko <slava@dubeyko.com> wrote:
->>>>> On Wed, Jan 04, 2023 at 08:37:16PM -0800, Viacheslav Dubeyko wrote:
->>>>>> Also, as far as I can see, available volume in report (mount_0.gz) somehow corrupted already:
->>>>>
->>>>> Syzbot generates deliberately-corrupted (aka fuzzed) filesystem images.
->>>>> So basically, you can't trust anything you read from the disc.
->>>>>
->>>>
->>>> If the volume has been deliberately corrupted, then no guarantee that file system
->>>> driver will behave nicely. Technically speaking, inode write operation should never
->>>> happened for corrupted volume because the corruption should be detected during
->>>> b-tree node initialization time. If we would like to achieve such nice state of HFS/HFS+
->>>> drivers, then it requires a lot of refactoring/implementation efforts. I am not sure that
->>>> it is worth to do because not so many guys really use HFS/HFS+ as the main file
->>>> system under Linux.
->>>
->>>
->>> Most popular distros will happily auto-mount HFS/HFS+ from anything
->>> inserted into USB (e.g. what one may think is a charger). This creates
->>> interesting security consequences for most Linux users.
->>> An image may also be corrupted non-deliberately, which will lead to
->>> random memory corruptions if the kernel trusts it blindly.
->>
->> Then we should delete the HFS/HFS+ filesystems.  They're orphaned in
->> MAINTAINERS and if distros are going to do such a damnfool thing,
->> then we must stop them.
->
-> Both HFS and HFS+ work perfectly fine. And if distributions or users are so
-> sensitive about security, it's up to them to blacklist individual features
-> in the kernel.
->
-> Both HFS and HFS+ have been the default filesystem on MacOS for 30 years
-> and I don't think it's justified to introduce such a hard compatibility
-> breakage just because some people are worried about theoretical evil
-> maid attacks.
++static inline bool clear_bit_unlock_is_negative_byte(unsigned int nr,
++               volatile unsigned long *p)
++{
++       char result;
++       char mask = 1 << nr;    /* nr guaranteed to be < 7 */
++
++       __asm__ __volatile__ ("eori %1, %2; smi %0"
++               : "=d" (result)
++               : "i" (mask), "o" (*p)
++               : "memory");
++       return result;
++}
 
-Seconded.
+It compiles, so I feel Very Pleased With Myself, since I haven't written
+m68k assmbly in 25 years.  But I have questions.
 
-> HFS/HFS+ mandatory if you want to boot Linux on a classic Mac or PowerMac
-> and I don't think it's okay to break all these systems running Linux.
+First, m68k is big-endian, so I suspect I'm accessing the wrong byte.
+Should something in there be adding 3 to 'p'?  Better to do it in the
+asm, or in the constraints so the compiler can see it?
 
-You can still boot Linux on these systems without HFS support.
+Second, have I properly communicated to the assembler that this is
+a byte-size operation, and it needs to check bit 7 and not bits 15 or 31
+to set the negative flag?
 
-Installing a new kernel to the HFS filesystem, or a boot loader like 
-yaboot, might be another matter. But there still is an user space option 
-like hfsutils or hfsplus.
+Third, can this be done better?  x86 has __GCC_ASM_FLAG_OUTPUTS__
+so it doesn't need the equivalent of the SMI instruction to move the
+condition to an output variable; it can just tell the compiler that
+the N flag communicates the result that it's looking for.  Does m68k
+have __GCC_ASM_FLAG_OUTPUTS__ or did nobody do that work yet?
 
-That said, in terms of the argument about USB media with corrupt HFS 
-filesystems presenting a security risk, I take the view that once you 
-have physical access to a system, all bets are off. Doubly so if 
-auto-mounting USB media is enabled.
+Fourth, we could do this is with ANDI instead of EORI.  It's mildly
+safer, but we really shouldn't have two threads clearing the lock bit
+that race with each other.  We can't do it with BCLR because that
+doesn't set the N flag.  If we do that, we'd need to invert the mask.
 
-Cheers,
-
-	Michael
-
-
->
-> Thanks,
-> Adrian
->
+Appreciate your time looking at this.
