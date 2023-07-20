@@ -2,33 +2,33 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9940EEB64DA
-	for <linux-m68k@archiver.kernel.org>; Thu, 20 Jul 2023 17:51:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECD9CEB64DA
+	for <linux-m68k@archiver.kernel.org>; Thu, 20 Jul 2023 17:56:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231944AbjGTRvS convert rfc822-to-8bit (ORCPT
+        id S229891AbjGTR4X convert rfc822-to-8bit (ORCPT
         <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 20 Jul 2023 13:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44806 "EHLO
+        Thu, 20 Jul 2023 13:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjGTRvQ (ORCPT
+        with ESMTP id S229729AbjGTR4W (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 20 Jul 2023 13:51:16 -0400
+        Thu, 20 Jul 2023 13:56:22 -0400
 Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6939C269D;
-        Thu, 20 Jul 2023 10:51:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171171998;
+        Thu, 20 Jul 2023 10:56:21 -0700 (PDT)
 Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
           by outpost.zedat.fu-berlin.de (Exim 4.95)
           with esmtps (TLS1.3)
           tls TLS_AES_256_GCM_SHA384
           (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qMXnc-002BO8-NB; Thu, 20 Jul 2023 19:50:48 +0200
+          id 1qMXsn-002CO9-HB; Thu, 20 Jul 2023 19:56:09 +0200
 Received: from p57bd98fd.dip0.t-ipconnect.de ([87.189.152.253] helo=suse-laptop.fritz.box)
           by inpost2.zedat.fu-berlin.de (Exim 4.95)
           with esmtpsa (TLS1.3)
           tls TLS_AES_256_GCM_SHA384
           (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qMXnc-003YrW-FC; Thu, 20 Jul 2023 19:50:48 +0200
-Message-ID: <2d0bd58fb757e7771d13f82050a546ec5f7be8de.camel@physik.fu-berlin.de>
+          id 1qMXsn-003Zmq-8y; Thu, 20 Jul 2023 19:56:09 +0200
+Message-ID: <b93ff5ca1ecd40084cd7a18e8490bf4e421fd6b9.camel@physik.fu-berlin.de>
 Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
 From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 To:     Matthew Wilcox <willy@infradead.org>,
@@ -46,8 +46,8 @@ Cc:     Viacheslav Dubeyko <slava@dubeyko.com>,
         syzkaller-bugs@googlegroups.com,
         ZhangPeng <zhangpeng362@huawei.com>,
         linux-m68k@lists.linux-m68k.org,
-        debian-ports <debian-ports@lists.debian.org>
-Date:   Thu, 20 Jul 2023 19:50:47 +0200
+        debian-powerpc <debian-powerpc@lists.debian.org>
+Date:   Thu, 20 Jul 2023 19:56:08 +0200
 In-Reply-To: <ZLlvII/jMPTT32ef@casper.infradead.org>
 References: <000000000000dbce4e05f170f289@google.com>
          <5f45bb9a-5e00-48dd-82b0-46b19b1b98a3@app.fastmail.com>
@@ -69,6 +69,8 @@ X-ZEDAT-Hint: PO
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
+
+(Please ignore my previous mail which was CC'ed to the wrong list)
 
 Hello!
 
@@ -115,6 +117,12 @@ and I don't think it's okay to break all these systems running Linux.
 
 Thanks,
 Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
 -- 
  .''`.  John Paul Adrian Glaubitz
