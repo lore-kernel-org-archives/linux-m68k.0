@@ -2,145 +2,152 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E983EB64DA
-	for <linux-m68k@archiver.kernel.org>; Thu, 20 Jul 2023 22:22:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3D0AEB64DA
+	for <linux-m68k@archiver.kernel.org>; Thu, 20 Jul 2023 22:37:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229619AbjGTWWY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 20 Jul 2023 18:22:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50076 "EHLO
+        id S229592AbjGTWhY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 20 Jul 2023 18:37:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjGTWWX (ORCPT
+        with ESMTP id S229610AbjGTWhW (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 20 Jul 2023 18:22:23 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7F830F9
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 15:21:54 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6b9defb366eso1083065a34.2
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 15:21:54 -0700 (PDT)
+        Thu, 20 Jul 2023 18:37:22 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B29CE1722
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 15:37:20 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1b8b4749013so9833105ad.2
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 15:37:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1689891659; x=1690496459;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ww5WuryDbj+ot6eFUCZgy718TF10XCTB2MyAj3dfUMk=;
-        b=kMTrQS+AVMKURWTk8oT3YVUndrkw3YBFkSDPZfJfY/C+8W4opz2ZMK02Nlmjo8l6HR
-         E8TYoLgI7yI0pqyy47KYCf0iT7ejiT2nT2Ofa5l2C/crlyHBKTAArhiVCdyikgfNKpwe
-         +b66TFAyhOe7XyQM3ft0ise9UZuDXiDQ9bRe0XbTAcSgrx3vkmZmmviWMdDc7EJVgGHG
-         +MfYOuElupYwFtTkpBDMWPWQ3m4zjiZGh6ojXvcea75t5WwAEAN5QR7rV5Pck3GgVZa7
-         p2nbuHWDCAgAJywseSy+RnD3xifTl9d4wJ+BWajfFiR6R+JpwXtwltpRShZCpOJwdbS8
-         Mbmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689891659; x=1690496459;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1689892640; x=1690497440;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:references:to:subject:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ww5WuryDbj+ot6eFUCZgy718TF10XCTB2MyAj3dfUMk=;
-        b=NGn8d91XjevoTZl+sDB7fLqWV1u/3cpS0s5sDYS7vJfV4QJlMiMefYPs3TYt8NuOTu
-         Uf+jqWdwGMSEjkEdrNlMf0KK3d5AfdVZTs+rdYrM/PgQfEm93iMNEpjhcaWyq16ldyRm
-         zJY5cOBhYUUSZxHSA0PN5bOtNVQqfj3bA4QhfmC9ZtrTJKRo1wpNxZKNyRhm544qQJNb
-         vHzS0TEB+l7IlFIqo0+QnxfPUSKDnZRPbL+NYYn7o17ahcPHNeIWpThQr7wO4YmIg889
-         y23A91VQKh+lgFfnCIRM2xglbk8TTAh9DfE4+u9nRLkRzXb4WVteqO7ACWEzWbHxQ3h9
-         lqNw==
-X-Gm-Message-State: ABy/qLaWMdLkz+ogIbGUyx//9NKqkoZ3/1LKvTb8aD4/TIO7GSxlv12T
-        LMcrbwtuPu0u/sYoNKo2KgG8RQ==
-X-Google-Smtp-Source: APBJJlHEKoknw6tsS4AKB23rpXbrSIf0brs+wH8Daq3iqSBdDAYBXthi8Oaw/cEKo3F2y9BIkUw1QQ==
-X-Received: by 2002:aca:1214:0:b0:39e:8678:4035 with SMTP id 20-20020aca1214000000b0039e86784035mr230543ois.13.1689891659575;
-        Thu, 20 Jul 2023 15:20:59 -0700 (PDT)
-Received: from dread.disaster.area (pa49-186-119-116.pa.vic.optusnet.com.au. [49.186.119.116])
-        by smtp.gmail.com with ESMTPSA id gz18-20020a17090b0ed200b00263dfe9b972sm3127330pjb.0.2023.07.20.15.20.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jul 2023 15:20:58 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qMc12-008Wfy-04;
-        Fri, 21 Jul 2023 08:20:56 +1000
-Date:   Fri, 21 Jul 2023 08:20:56 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Viacheslav Dubeyko <slava@dubeyko.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        christian.brauner@ubuntu.com,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs@googlegroups.com,
-        ZhangPeng <zhangpeng362@huawei.com>,
-        linux-m68k@lists.linux-m68k.org,
-        debian-ports <debian-ports@lists.debian.org>
-Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
-Message-ID: <ZLmzSEV6Wk+oRVoL@dread.disaster.area>
-References: <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com>
- <2575F983-D170-4B79-A6BA-912D4ED2CC73@dubeyko.com>
- <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com>
- <Y7bw7X1Y5KtmPF5s@casper.infradead.org>
- <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com>
- <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com>
- <ZLlvII/jMPTT32ef@casper.infradead.org>
- <2d0bd58fb757e7771d13f82050a546ec5f7be8de.camel@physik.fu-berlin.de>
- <ZLl2Fq35Ya0cNbIm@casper.infradead.org>
- <868611d7f222a19127783cc8d5f2af2e42ee24e4.camel@kernel.org>
+        bh=/W1w+SY6j6kG1tNs2NxJ9QC7V4tqkxWT/kRb5zTe4W4=;
+        b=YV1e4oKAXfzbTRKikzI5KNFWM5JXF76KTnSUdDfwqmu6/RyTKRB6SoyAwGrX4UzzV3
+         pFesznNl1fXFESxhSqptxALrnUHU/6DTIm38n8qkwdeMM8YJSZh+hGgjl+fM0vgY3+b0
+         4b0CykC66BtX+lTF+FECf02s6uikmfdy8aqscm1MAIj/lMBpv3yD3zEMxF0zaWhhZGV5
+         gU7dQcqNmQ/noxlnyyGT2KsbEWa3VYXg3Bq26u+60kPfRSF7L1gQ0gW55Fkr8Cvd8Ud1
+         MWlMl5Tsd21HlUvRoAfXzifhaYmWm6TgE8IvTO8+eyZV9Trlwq+yQlXoA2U5KFsqyVlS
+         EWEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689892640; x=1690497440;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:references:to:subject:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/W1w+SY6j6kG1tNs2NxJ9QC7V4tqkxWT/kRb5zTe4W4=;
+        b=Mlz0BxMHiU/wXh43hqAFrNNfyvwgsgm8xG6REnHghRqdSXPUK+gDJIfkKPJgM62YWw
+         vUnKlDrSrEY0Qn4qKT1OnNg4ebNqEkR12ulcRdbpS5JtKZ/ZK2HPRZ6EI1OJOsk1wbXo
+         3Abxjbuja7jvC5gExh2kzIoQqDVjClwOWxKVQTHNVWr55ZVmAUceSQI+860SlcC3Zpiq
+         zsGwQ0FTXoHfKoxLq9HOWpVBCTTINeayafWY8d3d8/HpevHL7HkV8o1Plapu7Zbx3iUp
+         w2FlsaVCCxEo2ukJdaN52fpwU1pwzqReR3D1aLlUKrNDZB2QIdZD6+R/GkkH9OGfYQqo
+         vOdQ==
+X-Gm-Message-State: ABy/qLZ7WRMjxMs9pINk7BbQBLNuk527VAKUs/sBP/h0wvMn7czsZA3v
+        XfwRzf5H89fV4sYQfpxIhdk6bTv0SOg=
+X-Google-Smtp-Source: APBJJlFncE86q8OqVpFrkZg/LlxqNtmF9dQXVg2LAFHEf7l4rWNjQQu4mf/jWv6Fi3Z3haTylZH+jA==
+X-Received: by 2002:a17:903:264d:b0:1b8:a39a:2833 with SMTP id je13-20020a170903264d00b001b8a39a2833mr315989plb.15.1689892639621;
+        Thu, 20 Jul 2023 15:37:19 -0700 (PDT)
+Received: from [10.1.1.24] (222-152-184-54-fibre.sparkbb.co.nz. [222.152.184.54])
+        by smtp.gmail.com with ESMTPSA id iw2-20020a170903044200b001b6a27dff99sm1914357plb.159.2023.07.20.15.37.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 20 Jul 2023 15:37:19 -0700 (PDT)
+Subject: Re: clear_bit_unlock_is_negative_byte
+To:     Matthew Wilcox <willy@infradead.org>,
+        linux-m68k@lists.linux-m68k.org
+References: <ZLmKq2VLjYGBVhMI@casper.infradead.org>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <25b10d04-c6bf-8583-ee0d-84bf647ef0af@gmail.com>
+Date:   Fri, 21 Jul 2023 10:37:14 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <868611d7f222a19127783cc8d5f2af2e42ee24e4.camel@kernel.org>
+In-Reply-To: <ZLmKq2VLjYGBVhMI@casper.infradead.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 02:27:50PM -0400, Jeff Layton wrote:
-> On Thu, 2023-07-20 at 18:59 +0100, Matthew Wilcox wrote:
-> > On Thu, Jul 20, 2023 at 07:50:47PM +0200, John Paul Adrian Glaubitz wrote:
-> > > > Then we should delete the HFS/HFS+ filesystems.  They're orphaned in
-> > > > MAINTAINERS and if distros are going to do such a damnfool thing,
-> > > > then we must stop them.
-> > > 
-> > > Both HFS and HFS+ work perfectly fine. And if distributions or users are so
-> > > sensitive about security, it's up to them to blacklist individual features
-> > > in the kernel.
-> > > 
-> > > Both HFS and HFS+ have been the default filesystem on MacOS for 30 years
-> > > and I don't think it's justified to introduce such a hard compatibility
-> > > breakage just because some people are worried about theoretical evil
-> > > maid attacks.
-> > > 
-> > > HFS/HFS+ mandatory if you want to boot Linux on a classic Mac or PowerMac
-> > > and I don't think it's okay to break all these systems running Linux.
-> > 
-> > If they're so popular, then it should be no trouble to find somebody
-> > to volunteer to maintain those filesystems.  Except they've been
-> > marked as orphaned since 2011 and effectively were orphaned several
-> > years before that (the last contribution I see from Roman Zippel is
-> > in 2008, and his last contribution to hfs was in 2006).
-> 
-> I suspect that this is one of those catch-22 situations: distros are
-> going to enable every feature under the sun. That doesn't mean that
-> anyone is actually _using_ them these days.
-> 
-> Is "staging" still a thing? Maybe we should move these drivers into the
-> staging directory and pick a release where we'll sunset it, and then see
-> who comes out of the woodwork?
+Hi Matthew,
 
-No, the train wreck of filesystems in staging proved that it wasn't
-a viable process.
+Am 21.07.2023 um 07:27 schrieb Matthew Wilcox:
+> I'm looking to implement clear_bit_unlock_is_negative_byte() on every
+> architecture so we can delete the ifdeffery around maybe-we-have-it
+> and remove the simple implementation from filemap.c.  Here's what I've
+> come up with for m68k:
+>
+> +static inline bool clear_bit_unlock_is_negative_byte(unsigned int nr,
+> +               volatile unsigned long *p)
+> +{
+> +       char result;
+> +       char mask = 1 << nr;    /* nr guaranteed to be < 7 */
+> +
+> +       __asm__ __volatile__ ("eori %1, %2; smi %0"
+> +               : "=d" (result)
+> +               : "i" (mask), "o" (*p)
+> +               : "memory");
+> +       return result;
+> +}
+>
+> It compiles, so I feel Very Pleased With Myself, since I haven't written
+> m68k assmbly in 25 years.  But I have questions.
 
-We should just follow the same process as we are using for reiser -
-mark it as deprecated in place, pick a date that we are going to
-remove it, then add a warning (both runtime, in kconfig and probably
-in the kernel filesystem documentation) that it is deprecated and
-support is going to be removed at a certain date.
+Unfortunately, after plugging this in, the boot hangs at the first block 
+device encountered:
 
-We should be applying the same criteria and process for all the
-other filesystems that are orphaned, too. We need to much more
-proactive about dropping support for unmaintained filesystems that
-nobody is ever fixing despite the constant stream of
-corruption- and deadlock- related bugs reported against them.
+calling  proc_hardware_init+0x0/0x20 @ 1
+initcall proc_hardware_init+0x0/0x20 returned 0 after 40 usecs
+calling  rtc_init+0x0/0x5e @ 1
+initcall rtc_init+0x0/0x5e returned 0 after 40 usecs
+calling  atari_nvram_init+0x0/0x42 @ 1
+initcall atari_nvram_init+0x0/0x42 returned 0 after 40 usecs
+calling  nfhd_init+0x0/0x206 @ 1
+nfhd8: found device with 20971440 blocks (512 bytes)
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Doesn't eat up memory, doesn't sit in a tight spin, just never proceeds 
+past that point.
+
+Running old and new code side by side (well, actually sequentially) in 
+clear_bit_unlock_is_negative_byte()  and comparing results, the return 
+values generated by both options match but the actual contents of the 
+pointer passed to the function (after the mods) does differ:
+
+nfhd8: found device with 20971440 blocks (512 bytes)
+cbu_inb memval mismatch: 2004 12005
+cbu_inb memval mismatch: 2004 12005
+  nfhd8: AHDI p1 p2
+cbu_inb memval mismatch: 26 10027
+cbu_inb memval mismatch: 26 10027
+
+(first value is from the old code, second value from the new code).
+
+It looks to me that the eori operates on a 16 bit word here?
+
+(Disclaimer: I have written m68k assembly occasionally in the past 
+years, but I struggle with inline asm...)
+
+Cheers,
+
+	Michael
+
+>
+> First, m68k is big-endian, so I suspect I'm accessing the wrong byte.
+> Should something in there be adding 3 to 'p'?  Better to do it in the
+> asm, or in the constraints so the compiler can see it?
+>
+> Second, have I properly communicated to the assembler that this is
+> a byte-size operation, and it needs to check bit 7 and not bits 15 or 31
+> to set the negative flag?
+>
+> Third, can this be done better?  x86 has __GCC_ASM_FLAG_OUTPUTS__
+> so it doesn't need the equivalent of the SMI instruction to move the
+> condition to an output variable; it can just tell the compiler that
+> the N flag communicates the result that it's looking for.  Does m68k
+> have __GCC_ASM_FLAG_OUTPUTS__ or did nobody do that work yet?
+>
+> Fourth, we could do this is with ANDI instead of EORI.  It's mildly
+> safer, but we really shouldn't have two threads clearing the lock bit
+> that race with each other.  We can't do it with BCLR because that
+> doesn't set the N flag.  If we do that, we'd need to invert the mask.
+>
+> Appreciate your time looking at this.
+>
