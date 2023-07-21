@@ -2,101 +2,70 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01343EB64DC
-	for <linux-m68k@archiver.kernel.org>; Fri, 21 Jul 2023 05:07:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AD11EB64DC
+	for <linux-m68k@archiver.kernel.org>; Fri, 21 Jul 2023 06:41:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229519AbjGUFHi convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 21 Jul 2023 01:07:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53378 "EHLO
+        id S229450AbjGUGlz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 21 Jul 2023 02:41:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjGUFHh (ORCPT
+        with ESMTP id S229679AbjGUGlx (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 21 Jul 2023 01:07:37 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A44B0B3;
-        Thu, 20 Jul 2023 22:07:36 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qMiML-003uNu-Uj; Fri, 21 Jul 2023 07:07:21 +0200
-Received: from p57bd98fd.dip0.t-ipconnect.de ([87.189.152.253] helo=suse-laptop.fritz.box)
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qMiML-0015U5-MU; Fri, 21 Jul 2023 07:07:21 +0200
-Message-ID: <5ef77167046ad0a3e6d05433411c995c245464a8.camel@physik.fu-berlin.de>
-Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Michael Schmitz <schmitzmic@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>
-Cc:     Viacheslav Dubeyko <slava@dubeyko.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        christian.brauner@ubuntu.com,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs@googlegroups.com,
-        ZhangPeng <zhangpeng362@huawei.com>,
-        linux-m68k@lists.linux-m68k.org,
-        debian-powerpc <debian-powerpc@lists.debian.org>
-Date:   Fri, 21 Jul 2023 07:07:20 +0200
-In-Reply-To: <47a12957-9d9b-4134-0736-bedb15428627@gmail.com>
-References: <000000000000dbce4e05f170f289@google.com>
-         <5f45bb9a-5e00-48dd-82b0-46b19b1b98a3@app.fastmail.com>
-         <CAHk-=wi8XyAUF9_z6-oa4Ava6PVZeE-=TVNcFK1puQHpOtqLLw@mail.gmail.com>
-         <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com>
-         <2575F983-D170-4B79-A6BA-912D4ED2CC73@dubeyko.com>
-         <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com>
-         <Y7bw7X1Y5KtmPF5s@casper.infradead.org>
-         <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com>
-         <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com>
-         <ZLlvII/jMPTT32ef@casper.infradead.org>
-         <b93ff5ca1ecd40084cd7a18e8490bf4e421fd6b9.camel@physik.fu-berlin.de>
-         <47a12957-9d9b-4134-0736-bedb15428627@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 
+        Fri, 21 Jul 2023 02:41:53 -0400
+X-Greylist: delayed 409 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 20 Jul 2023 23:41:49 PDT
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FDED110
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 23:41:49 -0700 (PDT)
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4R6ftW04zfz1r68n;
+        Fri, 21 Jul 2023 08:34:56 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.68])
+        by mail.m-online.net (Postfix) with ESMTP id 4R6ftS3vbsz1qqlW;
+        Fri, 21 Jul 2023 08:34:56 +0200 (CEST)
+X-Virus-Scanned: amavis at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+ by localhost (dynscan1.mail.m-online.net [192.168.6.68]) (amavis, port 10024)
+ with ESMTP id 78iYrPK0QU8N; Fri, 21 Jul 2023 08:34:55 +0200 (CEST)
+X-Auth-Info: 2Ku9O/UK/pZJZOQIYAlNVeLX9rYX1k1GCYHqeTNrHpAV+W0QTU314MiLB/2/FyNq
+Received: from tiger.home (aftr-62-216-205-41.dynamic.mnet-online.de [62.216.205.41])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Fri, 21 Jul 2023 08:34:55 +0200 (CEST)
+Received: by tiger.home (Postfix, from userid 1000)
+        id 348071D1D78; Fri, 21 Jul 2023 08:34:55 +0200 (CEST)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: Re: clear_bit_unlock_is_negative_byte
+In-Reply-To: <ZLmKq2VLjYGBVhMI@casper.infradead.org> (Matthew Wilcox's message
+        of "Thu, 20 Jul 2023 20:27:39 +0100")
+References: <ZLmKq2VLjYGBVhMI@casper.infradead.org>
+X-Yow:  After this, I'm going to BURN some RUBBER!!
+Date:   Fri, 21 Jul 2023 08:34:55 +0200
+Message-ID: <87jzut6acw.fsf@linux-m68k.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.152.253
-X-ZEDAT-Hint: PO
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael!
+On Jul 20 2023, Matthew Wilcox wrote:
 
-On Fri, 2023-07-21 at 07:05 +1200, Michael Schmitz wrote:
-> Installing a new kernel to the HFS filesystem, or a boot loader like 
-> yaboot, might be another matter. But there still is an user space option 
-> like hfsutils or hfsplus.
+> +static inline bool clear_bit_unlock_is_negative_byte(unsigned int nr,
+> +               volatile unsigned long *p)
+> +{
+> +       char result;
+> +       char mask = 1 << nr;    /* nr guaranteed to be < 7 */
+> +
+> +       __asm__ __volatile__ ("eori %1, %2; smi %0"
 
-Both won't work with GRUB. grub-install expects the boot partition to be
-mounted while hfsutils/hfsplus don't use the VFS layer.
-
-> That said, in terms of the argument about USB media with corrupt HFS 
-> filesystems presenting a security risk, I take the view that once you 
-> have physical access to a system, all bets are off. Doubly so if 
-> auto-mounting USB media is enabled.
-
-I also don't understand why this was brought up. There are so many other
-potential options for attacking computer, even remotely. We also didn't
-drop x86 support after all these CPU vulnerabilities were discovered, did
-we?
-
-Adrian
+Why are you using XOR if you want to clear a bit?  If it operates on a
+byte, why does it receive a pointer to long?
 
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
