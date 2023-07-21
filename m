@@ -2,97 +2,78 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02862EB64DC
-	for <linux-m68k@archiver.kernel.org>; Fri, 21 Jul 2023 08:14:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52654EB64DC
+	for <linux-m68k@archiver.kernel.org>; Fri, 21 Jul 2023 09:18:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231402AbjGUIOT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 21 Jul 2023 04:14:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57430 "EHLO
+        id S231722AbjGUJSr (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 21 Jul 2023 05:18:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231406AbjGUIOQ (ORCPT
+        with ESMTP id S231731AbjGUJSp (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 21 Jul 2023 04:14:16 -0400
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973CF30ED
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Jul 2023 01:14:10 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id AA0ED3200FA5;
-        Fri, 21 Jul 2023 04:14:04 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Fri, 21 Jul 2023 04:14:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1689927244; x=1690013644; bh=FUNFJj6urWuhz
-        j/ULPd7dgB790ZiEm9pAM63aZfvl0o=; b=K+rMc5OSCr1Fh3xdtUlGdyEGp1ONI
-        51AJM7rHQtcPDLtX+kJ6dtJJb+OZ5//ie4+jgpfhPd2tNJruDPl3+eEPHvmFD1ye
-        4Jb/J120LU917i5czkrEOBtvJtmoP6YWY5AggOG930AFqj2FrrXcZ/QWbx/zbGhb
-        PZY7UmtLp9n1vsTgl/DpXwt4ICVD+veAS/haXKLYa0q5n4/a1ZfwwnxQ8xOgKm30
-        Z6urvnxBg9uTdpQ0kpWJHWUotlTyCmMxFR5rkEXm7b8y+XCwHVtHzIZvPHLLTYor
-        S+KRdPKxBmDyGziWoDh0avzv1jkwzeT49W/KC6xVFmpQE7uOHeLVNM+MA==
-X-ME-Sender: <xms:Sj66ZI4F8NgCrze5lhIwlHzi5NMbZbeIZqw_KSRu13s5Nn5hqNhJXw>
-    <xme:Sj66ZJ4NDo5Q0y3xQ3AuRoG4ogzkOiD8WaAtZHPy_2-RSWBMlDP6W5GyHRUPjDrM6
-    HILsYFMDDzF1H_J4N0>
-X-ME-Received: <xmr:Sj66ZHcYQKXwb_YyFY0VD3xU2FuJeSvcQPaXd1SjdCmJIDc4V_YsFNU8tHVpAaCQS1twWam2aqYIKtQscAtEVSZYHAXhlX-iRvc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedugdduvdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
-    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
-    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:Sj66ZNLA3PZvnZRISS7E-fLyDcxI_6eAde9TLWcINqoNSp_6jQZ8OA>
-    <xmx:Sj66ZMKJFovsSlFYj5Nru_Vl1m0g_K6AnNPnk4Z4S1pajlaTwYfqJg>
-    <xmx:Sj66ZOyPGzQXVDqieXB6gCz0R50dxZa--GnH7pbdOITulJ6lYcXQig>
-    <xmx:TD66ZJ6YMrryZtwMv3xMiDBUj0eFoeqVL_FjWu87hcrOvPjcbNy_yw>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 21 Jul 2023 04:14:01 -0400 (EDT)
-Date:   Fri, 21 Jul 2023 18:14:04 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Matthew Wilcox <willy@infradead.org>
-cc:     Dave Chinner <david@fromorbit.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Viacheslav Dubeyko <slava@dubeyko.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        christian.brauner@ubuntu.com,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs@googlegroups.com,
-        ZhangPeng <zhangpeng362@huawei.com>,
-        linux-m68k@lists.linux-m68k.org,
-        debian-ports <debian-ports@lists.debian.org>
-Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
-In-Reply-To: <ZLnbN4Mm9L5wCzOK@casper.infradead.org>
-Message-ID: <3eca2dab-df70-9d91-52a1-af779e3c2e04@linux-m68k.org>
-References: <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com> <Y7bw7X1Y5KtmPF5s@casper.infradead.org> <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com> <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com> <ZLlvII/jMPTT32ef@casper.infradead.org>
- <2d0bd58fb757e7771d13f82050a546ec5f7be8de.camel@physik.fu-berlin.de> <ZLl2Fq35Ya0cNbIm@casper.infradead.org> <868611d7f222a19127783cc8d5f2af2e42ee24e4.camel@kernel.org> <ZLmzSEV6Wk+oRVoL@dread.disaster.area> <60b57ae9-ff49-de1d-d40d-172c9e6d43d5@linux-m68k.org>
- <ZLnbN4Mm9L5wCzOK@casper.infradead.org>
+        Fri, 21 Jul 2023 05:18:45 -0400
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 895362D7F
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Jul 2023 02:18:41 -0700 (PDT)
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4R6kWJ5f2vz1sCln;
+        Fri, 21 Jul 2023 11:18:36 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.68])
+        by mail.m-online.net (Postfix) with ESMTP id 4R6kWJ4Wnfz1qqlY;
+        Fri, 21 Jul 2023 11:18:36 +0200 (CEST)
+X-Virus-Scanned: amavis at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+ by localhost (dynscan1.mail.m-online.net [192.168.6.68]) (amavis, port 10024)
+ with ESMTP id QkHZwIE1IdQ0; Fri, 21 Jul 2023 11:18:35 +0200 (CEST)
+X-Auth-Info: MV7j8UdYbb3qTpimROpGrV+T4gj2G0naUNnk5e9o8D00aq3UccPeUksdYTd8HR1S
+Received: from igel.home (aftr-62-216-205-254.dynamic.mnet-online.de [62.216.205.254])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Fri, 21 Jul 2023 11:18:35 +0200 (CEST)
+Received: by igel.home (Postfix, from userid 1000)
+        id A54C32C135A; Fri, 21 Jul 2023 11:18:35 +0200 (CEST)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Brad Boyer <flar@allandria.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        linux-m68k@lists.linux-m68k.org
+Subject: Re: clear_bit_unlock_is_negative_byte
+In-Reply-To: <20230721085711.GA6785@allandria.com> (Brad Boyer's message of
+        "Fri, 21 Jul 2023 01:57:11 -0700")
+References: <ZLmKq2VLjYGBVhMI@casper.infradead.org>
+        <87jzut6acw.fsf@linux-m68k.org> <20230721085711.GA6785@allandria.com>
+X-Yow:  What I want to find out is -- do parrots know much about Astro-Turf?
+Date:   Fri, 21 Jul 2023 11:18:35 +0200
+Message-ID: <87bkg5bp1w.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, 21 Jul 2023, Matthew Wilcox wrote:
+On Jul 21 2023, Brad Boyer wrote:
 
-> 
-> You've misunderstood.  Google have decided to subject the entire kernel 
-> (including obsolete unmaintained filesystems) to stress tests that it's 
-> never had before.  IOW these bugs have been there since the code was 
-> merged.  There's nothing to back out.  There's no API change to blame. 
-> It's always been buggy and it's never mattered before.
-> 
+> On Fri, Jul 21, 2023 at 08:34:55AM +0200, Andreas Schwab wrote:
+>> On Jul 20 2023, Matthew Wilcox wrote:
+>> 
+>> > +static inline bool clear_bit_unlock_is_negative_byte(unsigned int nr,
+>> > +               volatile unsigned long *p)
+>> > +{
+>> > +       char result;
+>> > +       char mask = 1 << nr;    /* nr guaranteed to be < 7 */
+>> > +
+>> > +       __asm__ __volatile__ ("eori %1, %2; smi %0"
+>> 
+>> Why are you using XOR if you want to clear a bit?  If it operates on a
+>> byte, why does it receive a pointer to long?
+>
+> I presume the thing with byte is to try to save an extension word.
 
-I'm not blaming the unstable API for the bugs, I'm blaming it for the 
-workload. A stable API (like a userspace API) decreases the likelihood 
-that overloaded maintainers have to orphan a filesystem implementation. 
+Why is this hardcoded in the function name?
+
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
