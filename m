@@ -2,72 +2,69 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E2FFEB64DC
-	for <linux-m68k@archiver.kernel.org>; Fri, 21 Jul 2023 11:59:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C987BEB64DC
+	for <linux-m68k@archiver.kernel.org>; Fri, 21 Jul 2023 12:53:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229453AbjGUL7y (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 21 Jul 2023 07:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52218 "EHLO
+        id S229601AbjGUMxF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 21 Jul 2023 08:53:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbjGUL7x (ORCPT
+        with ESMTP id S231434AbjGUMxE (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 21 Jul 2023 07:59:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B342C171B
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Jul 2023 04:59:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uPd7SbdK0Q1DT4WQiOj0ffQ8jJvj/8MKm8DahokqzEk=; b=g9se6vZBCPHSSYC/aPkz4MiW6/
-        Ekl+63UfyzGYzFGNFaqvCcsMKKVw5Watig+t/pAdGmoaYgTlcfdJaCqzxzxTHQEMvVpiQE44unoQ1
-        Q2b5tSRP3fpvsWAVC9HOCxxF/dxW+PRJaun5st50LO2qCFaQqUrA3N5yURoDzEEBZRTHwTP1c1eRv
-        iFiOnz8YBfsMKMIfWHw6UrL0cK4ODgiwE5l5wTqynB2j3qYOwjW7ib9CdnS9ks0fmoGso1NacM87U
-        AdwaSCYvlLpyjmYhW7tzpklpgm1zgUD7tVpTfonN3HGBrZrc+L5xhO2mPqET10rI+68k+nOeaTaX3
-        5HbbrMXA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qMonU-0015Px-SE; Fri, 21 Jul 2023 11:59:48 +0000
-Date:   Fri, 21 Jul 2023 12:59:48 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andreas Schwab <schwab@linux-m68k.org>
+        Fri, 21 Jul 2023 08:53:04 -0400
+X-Greylist: delayed 12861 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 21 Jul 2023 05:53:00 PDT
+Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 626CA10CB
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Jul 2023 05:53:00 -0700 (PDT)
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4R6qGf3WjBz1sBpn;
+        Fri, 21 Jul 2023 14:52:57 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.68])
+        by mail.m-online.net (Postfix) with ESMTP id 4R6qGd2Nx5z1qqlY;
+        Fri, 21 Jul 2023 14:52:57 +0200 (CEST)
+X-Virus-Scanned: amavis at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+ by localhost (dynscan1.mail.m-online.net [192.168.6.68]) (amavis, port 10024)
+ with ESMTP id WpLDKYH3QzSl; Fri, 21 Jul 2023 14:52:56 +0200 (CEST)
+X-Auth-Info: oFoyfXVN0Wqpf5UTtyG8V+1MDC84j5g+9/TizpxrRvFUi5A+3TFl7x8hie/ylkH8
+Received: from igel.home (aftr-62-216-205-254.dynamic.mnet-online.de [62.216.205.254])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Fri, 21 Jul 2023 14:52:56 +0200 (CEST)
+Received: by igel.home (Postfix, from userid 1000)
+        id 7B6EB2C0096; Fri, 21 Jul 2023 14:52:56 +0200 (CEST)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Matthew Wilcox <willy@infradead.org>
 Cc:     linux-m68k@lists.linux-m68k.org
 Subject: Re: clear_bit_unlock_is_negative_byte
-Message-ID: <ZLpzNAIVVLH9JYZ1@casper.infradead.org>
+In-Reply-To: <ZLpzNAIVVLH9JYZ1@casper.infradead.org> (Matthew Wilcox's message
+        of "Fri, 21 Jul 2023 12:59:48 +0100")
 References: <ZLmKq2VLjYGBVhMI@casper.infradead.org>
- <87jzut6acw.fsf@linux-m68k.org>
+        <87jzut6acw.fsf@linux-m68k.org>
+        <ZLpzNAIVVLH9JYZ1@casper.infradead.org>
+X-Yow:  YOW!!!  I am having fun!!!
+Date:   Fri, 21 Jul 2023 14:52:56 +0200
+Message-ID: <87zg3pa0k7.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87jzut6acw.fsf@linux-m68k.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 08:34:55AM +0200, Andreas Schwab wrote:
-> On Jul 20 2023, Matthew Wilcox wrote:
-> 
-> > +static inline bool clear_bit_unlock_is_negative_byte(unsigned int nr,
-> > +               volatile unsigned long *p)
-> > +{
-> > +       char result;
-> > +       char mask = 1 << nr;    /* nr guaranteed to be < 7 */
-> > +
-> > +       __asm__ __volatile__ ("eori %1, %2; smi %0"
-> 
-> Why are you using XOR if you want to clear a bit?  If it operates on a
-> byte, why does it receive a pointer to long?
+On Jul 21 2023, Matthew Wilcox wrote:
 
-It's a clever hack.  This function has exactly one user, and it's an
-important one -- folio_unlock().  Bit 7 is set if there are other
-threads waiting for this folio to be unlocked.  There are two reasonable
-implementations, depending what kind of CPU you have; you can either
-load-locked; clear the bottom bit, store-conditional, test bit 7.  Or
-x86 and m68k have the perfect instruction to clear a bit and set the
-Negative flag if bit 7 is set.
+> Do you happen to know if __GCC_ASM_FLAG_OUTPUTS__ is implemented for
+> m68k so we can save the SMI instruction?
 
-As I said in the earlier email, BCLR doesn't affect the N flag, but
-EORI and ANDI do.  We are guaranteed that the bit we're clearing is set,
-so EORI will work.  ANDI would also work.
+$ git grep __GCC_ASM_FLAG_OUTPUTS__ -- gcc/config
+gcc/config/aarch64/aarch64-c.cc:  builtin_define ("__GCC_ASM_FLAG_OUTPUTS__");
+gcc/config/arm/arm-c.cc:  def_or_undef_macro (pfile, "__GCC_ASM_FLAG_OUTPUTS__", !TARGET_THUMB1);
+gcc/config/i386/i386-c.cc:  cpp_define (parse_in, "__GCC_ASM_FLAG_OUTPUTS__");
 
-Do you happen to know if __GCC_ASM_FLAG_OUTPUTS__ is implemented for
-m68k so we can save the SMI instruction?
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
