@@ -2,161 +2,136 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4DC9EB64DA
-	for <linux-m68k@archiver.kernel.org>; Fri, 21 Jul 2023 01:43:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E2E0EB64DA
+	for <linux-m68k@archiver.kernel.org>; Fri, 21 Jul 2023 01:46:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229534AbjGUBnP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 20 Jul 2023 21:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50964 "EHLO
+        id S229920AbjGUBqF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 20 Jul 2023 21:46:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjGUBnP (ORCPT
+        with ESMTP id S229891AbjGUBqE (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 20 Jul 2023 21:43:15 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E762106
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 18:43:13 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-55b5a3915f5so807283a12.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 18:43:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689903793; x=1690508593;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oLpdYs62YPlvdkzveHL+cV5fQAOutjcOKDk14R5TjsQ=;
-        b=NQbmks3wON/oRqZBaB0K2fDEBwgYmqf5XRUI2ZTnjxPFR8vgjE8PbBZAcTZBtCs/Xz
-         37fcfBymW41NzPx95GDnQKIEi6Bm4Q/xWYdJP6l7RNoh4vu7YkhyNImnobbSx+XM5y9S
-         +qTQqucLpS18jcOY0Bt4P8X0+T2cUeF3NM8a6ymJcAZSZ0QcO+szsvU7ZpofREE6HGVu
-         Nc3zwCPboKMZ41AuTKVmjPbyyX9lKtzgBBMESVElenORIB1NkcRH7ziPs6327sKZbz/a
-         o6C3iPVL4mL+CSgy8N1zgVAq2zSpMgs+a96zSbkS+cXf4V1M9bOcsjJ+3tLMfn4UQU0E
-         vIWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689903793; x=1690508593;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=oLpdYs62YPlvdkzveHL+cV5fQAOutjcOKDk14R5TjsQ=;
-        b=YGK8QzpH1fn7QJ51IZcUE+aRetusb3DU6OKqxbuu4W7N3ZYo+xz/fnTyobdyI3f9oM
-         bPDtvnCGp4XuLL2pLMJm+BJLtZRHpMCW/WON7IwQM9TLX4CHN8uvsXbRSLapP3cmcpCp
-         aJkKNpxzyGKlvYOCNoVohtVt+5lgj2wbxKwnHxnd0C7pyTHu9Jap3z/uvjguf2WoiFuA
-         n0R85CwuhDtczS2RtFwisaVEgihBmX/33xiTFFds2jQX/+ZnqWabgJkZVSf/xoJGR2bk
-         yxhmxdVDgr9Ks7IziAbdh6DVDZeUiWIjQU68c1Idn14ipqARQPRDHM0HM+DwIK/wd96c
-         uU/A==
-X-Gm-Message-State: ABy/qLYmx014tW7mGdBu6gw25XKCzSCRKrem0XYcGBAZJ8OtcOKfTBcl
-        lqQhGYNHwnbJgglhWVljuCNyts9cavc=
-X-Google-Smtp-Source: APBJJlFx8gWWwnwU+SuyPP+kSR99FWSPHqhw2K57N05E1lCSflpqxqw5oLKdCd1qwlBkNJM0ELO7/A==
-X-Received: by 2002:a05:6a21:99a5:b0:126:9081:2156 with SMTP id ve37-20020a056a2199a500b0012690812156mr621755pzb.4.1689903792671;
-        Thu, 20 Jul 2023 18:43:12 -0700 (PDT)
-Received: from [10.1.1.24] (222-152-184-54-fibre.sparkbb.co.nz. [222.152.184.54])
-        by smtp.gmail.com with ESMTPSA id jb1-20020a170903258100b001b9e8e833f3sm2083193plb.61.2023.07.20.18.43.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 20 Jul 2023 18:43:12 -0700 (PDT)
-Subject: Re: clear_bit_unlock_is_negative_byte
+        Thu, 20 Jul 2023 21:46:04 -0400
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EEC73590
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 18:45:40 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 5E2B85C01A8;
+        Thu, 20 Jul 2023 21:45:39 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 20 Jul 2023 21:45:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1689903939; x=1689990339; bh=iYynT4KhE74j+
+        dSXMjtfN0JZs/wjEjd9JxVM4ynGFAE=; b=snXEv978O7wJ+SWzOrOYXBJpCY1Ie
+        B7BnmXfkr0COvcfnfRvjPvrQ7k59wxUHAgyOV77x6Yvl3u1I+7hMa8XTUuAgbo92
+        3D89fQUfzL5YfpxaBzBik3Lf2ffm2REX9mKVdIpAJaF72okvSWcjSvRk+5QzUAN2
+        /B6CdJ2KB9adOss522i41brkFR5p9sBwDirIdr2HCAch4eSOP+rMvGL5SVsSetdg
+        pC/hep6ZedWP9lDoNlcTt5rgyuk3i45QMLqJ2v/ely4QjXoUieSdj95u5fbNcnx5
+        MrAjHSbAetlZUpbaniCZjZ64Nf202pz+6qJejPl9dWPoxuzmj1GMpaBVQ==
+X-ME-Sender: <xms:QuO5ZNustU4DVeD-BCLqAYCY-bR0iC3ezijc77pRU3arSE0Kn2utmA>
+    <xme:QuO5ZGd3gUjk7tZ-waGyWFWiffGLEyDyFU0sUCBGfW1s2GtmrR4x1mjS3ps5pNJyn
+    sXJmiADNdioE69Av5Y>
+X-ME-Received: <xmr:QuO5ZAy5uoy0BnvLS4XTVjvwSe8mIDCZJVvJlyeOOH6kZmMcG_jsZDljlm1RmsJgpQLeiUOjMZeQvl-Ihi440PwZA6g5j-qACcM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedugdegkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
+    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
+    htvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedvueeh
+    ueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
+    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:QuO5ZEP-tPH-elvLT55nGwyw2VHEld4pe7MgHr6-BI1uAKDt6YIj2w>
+    <xmx:QuO5ZN84iEL6Ez0u0iK7p1wggE-4XYwhGoz8TZ1qIaiJ5_p9lUGwyw>
+    <xmx:QuO5ZEUtkwcLmMsRWrDqvIWfFSNHs4xixctKB_4wtAUGQWhfGbZX9w>
+    <xmx:Q-O5ZMdeuptiP0K-a2hZRq8St-IrOfJ5fp5wNsruIjDam4qmfgMMuw>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 20 Jul 2023 21:45:36 -0400 (EDT)
+Date:   Fri, 21 Jul 2023 11:45:39 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
 To:     Matthew Wilcox <willy@infradead.org>
-References: <ZLmKq2VLjYGBVhMI@casper.infradead.org>
- <25b10d04-c6bf-8583-ee0d-84bf647ef0af@gmail.com>
- <5e3a36d1-13f0-9cc3-de44-cc045025b290@gmail.com>
- <ZLngEXDdrAKSw+90@casper.infradead.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <2e4c5eda-671e-9fc8-17fc-7f4b894ef653@gmail.com>
-Date:   Fri, 21 Jul 2023 13:43:06 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+cc:     Dave Chinner <david@fromorbit.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Viacheslav Dubeyko <slava@dubeyko.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        christian.brauner@ubuntu.com,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs@googlegroups.com,
+        ZhangPeng <zhangpeng362@huawei.com>,
+        linux-m68k@lists.linux-m68k.org,
+        debian-ports <debian-ports@lists.debian.org>
+Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
+In-Reply-To: <ZLnbN4Mm9L5wCzOK@casper.infradead.org>
+Message-ID: <23b19f18-13a3-1744-cdce-801cfa35a807@linux-m68k.org>
+References: <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com> <Y7bw7X1Y5KtmPF5s@casper.infradead.org> <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com> <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com> <ZLlvII/jMPTT32ef@casper.infradead.org>
+ <2d0bd58fb757e7771d13f82050a546ec5f7be8de.camel@physik.fu-berlin.de> <ZLl2Fq35Ya0cNbIm@casper.infradead.org> <868611d7f222a19127783cc8d5f2af2e42ee24e4.camel@kernel.org> <ZLmzSEV6Wk+oRVoL@dread.disaster.area> <60b57ae9-ff49-de1d-d40d-172c9e6d43d5@linux-m68k.org>
+ <ZLnbN4Mm9L5wCzOK@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <ZLngEXDdrAKSw+90@casper.infradead.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Matthew,
+On Fri, 21 Jul 2023, Matthew Wilcox wrote:
 
-Am 21.07.2023 um 13:32 schrieb Matthew Wilcox:
-> On Fri, Jul 21, 2023 at 01:12:48PM +1200, Michael Schmitz wrote:
->> Logging the bit nr. and value passed in:
->>
->> nfhd8: found device with 20971440 blocks (512 bytes)
->> cbu_inb memval mismatch: 2004 12005 2005 0
->> cbu_inb memval mismatch: 2004 12005 2005 0
->>  nfhd8: AHDI p1 p2
->> cbu_inb memval mismatch: 36 10037 37 0
->> cbu_inb memval mismatch: 36 10037 37 0
->
-> I'm not quite sure what values you're printing here?  And whether
-> they're hex or decimal.  Could you show me the printk string?
+> On Fri, Jul 21, 2023 at 11:03:28AM +1000, Finn Thain wrote:
+> > On Fri, 21 Jul 2023, Dave Chinner wrote:
+> > 
+> > > > I suspect that this is one of those catch-22 situations: distros 
+> > > > are going to enable every feature under the sun. That doesn't mean 
+> > > > that anyone is actually _using_ them these days.
+> > 
+> > I think the value of filesystem code is not just a question of how 
+> > often it gets executed -- it's also about retaining access to the data 
+> > collected in archives, museums, galleries etc. that is inevitably held 
+> > in old formats.
+> 
+> That's an argument for adding support to tar, not for maintaining 
+> read/write support.
+> 
 
-All hex, except the last (nr). Values are mem (as modified by the 
-original code), copy of mem (as modified by inline asm), the original 
-value of mem, and nr.
+I rather think it's an argument for collaboration between the interested 
+parties upstream (inluding tar developers). As I see it, the question is, 
+what kind of "upstream" is best for that?
 
->
->> The instruction you need is eori.b, and you'll have to increase the mem
->> pointer by 3 bytes. With that change, I see no further mismatches until the
->> return values begin to differ once disk access begins:
->
-> Ah thanks.  The perils of working from Motorola official docs and then
-> trying to use the GNU assembler ...
->
->> sd 0:0:1:0: [sdb] Preferred minimum I/O size 512 bytes
->> cbu_inb retval mismatch: 1 ff 2084 2084 2085 0
->> rtc-generic rtc-generic: registered as rtc0
->> cbu_inb retval mismatch: 1 ff 2094 2094 2095 0
->> ...
->> sd 0:0:0:0: [sda] Attached SCSI disk
->> probe of 0:0:0:0 returned 0 after 58395182 usecs
->> cbu_inb retval mismatch: 1 ff 2094 2094 2095 0
->>  sdb: RDSK (512) sdb1 (DOS^G)(res 2 spb 2) sdb2 (SFS^B)(res 2 spb 1) sdb3
->> (SFS^B)(res 2 spb 2) sdb4 ((res 2 spb 1)
->> sdb: p4 size 18446744071971831216 extends beyond EOD, enabling native
->> capacity
->> cbu_inb retval mismatch: 1 ff 2084 2084 2085 0
->>
->> (return value from old and new code, value of mem from old and new code,
->> original value, bit nr).
->
-> OK, so the new code would set the byte to 0xff (that's how Sxx works).
-> But it's returning a bool, so that shouldn't matter.  2084/2084/2085
-> would make sense; one of the two functions has cleared the bottom bit.
->
->> Bit 7 was already set before xor, and wasn't cleared. I suspect that's why
->> the return value is no longer 1?
->
-> Ah, it's not supposed to be cleared.  The way this works is that bit 0
-> is the lock bit; if someone's waiting on the folio, they set bit 7.  If
-> bit 7 is set when we clear bit 0, we look on the wait queue.  If there's
-> nobody on the wait queue, we clear bit 7.
+> > > We need to much more proactive about dropping support for 
+> > > unmaintained filesystems that nobody is ever fixing despite the 
+> > > constant stream of corruption- and deadlock- related bugs reported 
+> > > against them.
+> > 
+> > IMO, a stream of bug reports is not a reason to remove code (it's a 
+> > reason to revert some commits).
+> > 
+> > Anyway, that stream of bugs presumably flows from the unstable kernel 
+> > API, which is inherently high-maintenance. It seems that a stable API 
+> > could be more appropriate for any filesystem for which the on-disk 
+> > format is fixed (by old media, by unmaintained FLOSS implementations 
+> > or abandoned proprietary implementations).
+> 
+> You've misunderstood.  Google have decided to subject the entire kernel 
+> (including obsolete unmaintained filesystems) to stress tests that it's 
+> never had before.  IOW these bugs have been there since the code was 
+> merged.  There's nothing to back out.  There's no API change to blame. 
+> It's always been buggy and it's never mattered before.
+> 
 
-Right, that's what I meant to say. I'd only seen cases where bit 0 had 
-been set and was cleared. This isn't an actual production system of 
-sorts, just an ARAnyM instance I can fire up quickly to see patched 
-kernels crash horribly.
+I see. Thanks for providing that background.
 
->
-> So ... I think you've fixed it!
+> It wouldn't be so bad if Google had also decided to fund people to fix 
+> those bugs, but no, they've decided to dump them on public mailing lists 
+> and berate developers into fixing them.
+> 
 
-This is what I have tests running on right now:
-
-static inline bool clear_bit_unlock_is_negative_byte(unsigned int nr,
-                 volatile unsigned long *p)
-{
-         unsigned char *cp = (unsigned char *) p;
-         char result;
-         char mask = 1 << nr;    /* nr guaranteed to be < 7 */
-
-         __asm__ __volatile__ ("eori.b %1, %2; smi %0"
-                 : "=d" (result)
-                 : "i" (mask), "o" (*(cp+3))
-                 : "memory");
-         return result;
-}
-
-I'm sure you can do all the casting to char and increment by 3 in the 
-asm argument...
-
-If there's a simple way to exercise this code path using standard Unix 
-tools (or stress-ng which I ought to have somewhere), drop me a hint.
-
-Cheers,
-
-	Michael
+Those bugs, if moved from kernel to userspace, would be less harmful, 
+right?
