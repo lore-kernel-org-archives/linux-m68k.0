@@ -2,118 +2,103 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10E16EB64DC
-	for <linux-m68k@archiver.kernel.org>; Fri, 21 Jul 2023 07:34:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FA7CEB64DC
+	for <linux-m68k@archiver.kernel.org>; Fri, 21 Jul 2023 07:53:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbjGUHec (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 21 Jul 2023 03:34:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57692 "EHLO
+        id S231252AbjGUHxf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 21 Jul 2023 03:53:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjGUHeb (ORCPT
+        with ESMTP id S230526AbjGUHxc (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 21 Jul 2023 03:34:31 -0400
-X-Greylist: delayed 6696 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 21 Jul 2023 00:34:30 PDT
-Received: from out02.mta.xmission.com (out02.mta.xmission.com [166.70.13.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A03119B0
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Jul 2023 00:34:29 -0700 (PDT)
-Received: from in01.mta.xmission.com ([166.70.13.51]:53604)
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1qMiuc-004rM4-GD; Thu, 20 Jul 2023 23:42:46 -0600
-Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:56814 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1qMiub-00FWv4-7X; Thu, 20 Jul 2023 23:42:45 -0600
-From:   "Eric W. Biederman" <ebiederm@xmission.com>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Viacheslav Dubeyko <slava@dubeyko.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        christian.brauner@ubuntu.com,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs@googlegroups.com,
-        ZhangPeng <zhangpeng362@huawei.com>,
-        linux-m68k@lists.linux-m68k.org
-References: <000000000000dbce4e05f170f289@google.com>
-        <5f45bb9a-5e00-48dd-82b0-46b19b1b98a3@app.fastmail.com>
-        <CAHk-=wi8XyAUF9_z6-oa4Ava6PVZeE-=TVNcFK1puQHpOtqLLw@mail.gmail.com>
-        <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com>
-        <2575F983-D170-4B79-A6BA-912D4ED2CC73@dubeyko.com>
-        <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com>
-        <Y7bw7X1Y5KtmPF5s@casper.infradead.org>
-        <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com>
-        <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com>
-Date:   Fri, 21 Jul 2023 00:40:26 -0500
-In-Reply-To: <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com>
-        (Dmitry Vyukov's message of "Thu, 20 Jul 2023 17:27:57 +0200")
-Message-ID: <87y1j9ddpx.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Fri, 21 Jul 2023 03:53:32 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D6726B8
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Jul 2023 00:53:22 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R6hcv2m4tzBRDtT
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Jul 2023 15:53:19 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689925999; x=1692518000; bh=bAmuNeag8GTPKV3oigS4mEh4jV0
+        Ndn4OtKI/lt6gNOY=; b=uGSR4Vz/h1CAC/xdYDxlAsPwHlCqnQshGuD1WDkky2n
+        iRNUfdX7edqWVbuSesoGZpCHah2J2thEea6wC2udTvOqcI34sYHrOROfssk/jF+X
+        /VaixDLk9AvSAvBEqxvWl5kV84n2ZkoajWO3AZfz4Njzl0lHhrLd7jo48uc9LxNu
+        sQgHpYNpd9s2bATO0T32rJvhVA+Gz+XEnX1avCxM/32C9pu5r5avXyJu2yHFgLtY
+        Mncmk5dJz26XP239yGlL4sH+iAbvWQw/MWyBHOdKIHGGwqBgw7xFONjgW6xx8ZPZ
+        mrA3HQXWxN744bSMQSY+UP+mLdF7IXpYJEJlGSuLxCQ==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id IW8SqV4G-uwR for <linux-m68k@lists.linux-m68k.org>;
+        Fri, 21 Jul 2023 15:53:19 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R6hcv0lJHzBQslQ;
+        Fri, 21 Jul 2023 15:53:19 +0800 (CST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1qMiub-00FWv4-7X;;;mid=<87y1j9ddpx.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
-X-XM-AID: U2FsdGVkX19b4haWTJRkCzfHy8zsGBgQylRh8f4gAnE=
-X-SA-Exim-Connect-IP: 68.227.168.167
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Date:   Fri, 21 Jul 2023 07:53:19 +0000
+From:   sunran001@208suo.com
+To:     geert@linux-m68k.org
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] m68k: q40: Fix nine occurrences of the checkpatch.pl error:
+In-Reply-To: <20230721075132.5512-1-xujianghui@cdjrlc.com>
+References: <20230721075132.5512-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <d58630843012d3323b0576bab81a21a7@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Dmitry Vyukov <dvyukov@google.com> writes:
+Fix three occurrences of the checkpatch.pl error:
+ERROR: space required after that ',' (ctx:VxV)
+ERROR: space prohibited after that open parenthesis '('
 
-> On Thu, 5 Jan 2023 at 17:45, Viacheslav Dubeyko <slava@dubeyko.com> wrote:
->> > On Wed, Jan 04, 2023 at 08:37:16PM -0800, Viacheslav Dubeyko wrote:
->> >> Also, as far as I can see, available volume in report (mount_0.gz) somehow corrupted already:
->> >
->> > Syzbot generates deliberately-corrupted (aka fuzzed) filesystem images.
->> > So basically, you can't trust anything you read from the disc.
->> >
->>
->> If the volume has been deliberately corrupted, then no guarantee that file system
->> driver will behave nicely. Technically speaking, inode write operation should never
->> happened for corrupted volume because the corruption should be detected during
->> b-tree node initialization time. If we would like to achieve such nice state of HFS/HFS+
->> drivers, then it requires a lot of refactoring/implementation efforts. I am not sure that
->> it is worth to do because not so many guys really use HFS/HFS+ as the main file
->> system under Linux.
->
->
-> Most popular distros will happily auto-mount HFS/HFS+ from anything
-> inserted into USB (e.g. what one may think is a charger). This creates
-> interesting security consequences for most Linux users.
-> An image may also be corrupted non-deliberately, which will lead to
-> random memory corruptions if the kernel trusts it blindly.
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+  arch/m68k/q40/q40ints.c | 8 ++++----
+  1 file changed, 4 insertions(+), 4 deletions(-)
 
-I am going to point out that there are no known linux filesystems
-that are safe to mount when someone has written a deliberately
-corrupted filesystem on a usb stick.
+diff --git a/arch/m68k/q40/q40ints.c b/arch/m68k/q40/q40ints.c
+index fdd6e48f4fe3..8843144e8c28 100644
+--- a/arch/m68k/q40/q40ints.c
++++ b/arch/m68k/q40/q40ints.c
+@@ -159,7 +159,7 @@ void q40_sched_init (void)
+  		panic("Couldn't register timer int");
 
-Some filesystems like ext4 make a best effort to fix bugs of this sort
-as they are discovered but unless something has changed since last I
-looked no one makes the effort to ensure that it is 100% safe to mount
-any possible corrupted version of any Linux filesystem.
-
-If there is any filesystem in Linux that is safe to automount from
-an untrusted USB stick I really would like to hear about it.  We could
-allow mounting them in unprivileged user namespaces and give all kinds
-of interesting capabilities to our users.
-
-As it is I respectfully suggest that if there is a security issue it is
-the userspace code that automounts any filesystem on an untrusted USB
-stick.
-
-Eric
+  	master_outb(-1, FRAME_CLEAR_REG);
+-	master_outb( 1, FRAME_RATE_REG);
++	master_outb(1, FRAME_RATE_REG);
+  }
 
 
+@@ -169,12 +169,12 @@ void q40_sched_init (void)
+   *
+  */
 
+-struct IRQ_TABLE{ unsigned mask; int irq ;};
++struct IRQ_TABLE{ unsigned mask; int irq ; };
+  #if 0
+  static struct IRQ_TABLE iirqs[] = {
+    {Q40_IRQ_FRAME_MASK,Q40_IRQ_FRAME},
+    {Q40_IRQ_KEYB_MASK,Q40_IRQ_KEYBOARD},
+-  {0,0}};
++  {0, 0}};
+  #endif
+  static struct IRQ_TABLE eirqs[] = {
+    { .mask = Q40_IRQ3_MASK,	.irq = 3 },	/* ser 1 */
+@@ -185,7 +185,7 @@ static struct IRQ_TABLE eirqs[] = {
+    { .mask = Q40_IRQ7_MASK,	.irq = 7 },	/* par */
+    { .mask = Q40_IRQ5_MASK,	.irq = 5 },
+    { .mask = Q40_IRQ10_MASK,	.irq = 10 },
+-  {0,0}
++  {0, 0}
+  };
 
+  /* complain only this many times about spurious ints : */
