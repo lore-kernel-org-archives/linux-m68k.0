@@ -2,119 +2,118 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80691EB64DA
-	for <linux-m68k@archiver.kernel.org>; Thu, 20 Jul 2023 22:54:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4F34EB64DA
+	for <linux-m68k@archiver.kernel.org>; Fri, 21 Jul 2023 01:03:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229610AbjGTWyI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 20 Jul 2023 18:54:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59966 "EHLO
+        id S229569AbjGUBDi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 20 Jul 2023 21:03:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjGTWyH (ORCPT
+        with ESMTP id S229503AbjGUBDi (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 20 Jul 2023 18:54:07 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99FF7199D
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 15:54:06 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-51f90f713b2so1837148a12.1
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 15:54:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1689893645; x=1690498445;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=icC7qqcxEnMW3yXk8+JIZ8lmrrJx4xPvVXeXAz/l3rg=;
-        b=VWbwxYUaWG0QQr7r2VRF96W1fa7vHG/WmDIzg/IRrV8ryRk8OdKS5x0ikq9FfBsS4l
-         mGK7fQFfM0aYDxEijzZU6Ef1XqqOKdRwGyVZSl6luC7y0/T/SXN13pi2z2pSVQ3/lqWW
-         8XsqZo8giN5R3gbUPGKV8Bv66wS/n7D0x89cI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689893645; x=1690498445;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=icC7qqcxEnMW3yXk8+JIZ8lmrrJx4xPvVXeXAz/l3rg=;
-        b=aowUiRGiHQYtlCGbcTc0kCIdoSXZmvpBMapS7oriqXx0RxjMdPBiFL33orkQan8UYE
-         WwUgbFBhHlHQXl7TTEpwfCJf350ltBnpFACoO7rI+cJ9EMwpKt+dL3GYV0l7fgK7poik
-         2BmWGgF+ZYBVoN/Dwib3RihBF42yM+ig7lpxkCW4JSHBnRESVDUbJIOd123znx2GZQDe
-         yf826aLqJar6I+K4ag0n+q8OzVhUJeSmJpX7+ufSEzA7kRtll6U0HQlc183soAzA1FpX
-         0JIXjDzJRgZg5+DmS+3OVjiCoubHgNh6rNuX/Jmkt9SaZf81Lr18hyJa4j0wo/KjdZsk
-         063Q==
-X-Gm-Message-State: ABy/qLbAI5J49rJhki95Iqb07UrPDM90GAadBmUgYexumOwTvycrqNJS
-        eXVKA85Y1As3jRL8g+1rU2g9HgtxJrSljOEG9qrUrhQc
-X-Google-Smtp-Source: APBJJlFnFET3oLRtYzzoWhqfi1FuLW9V96ly36AyLse7KJOyu6+8TFvoLXcbnCcKFHXzNXXWGmf1Qw==
-X-Received: by 2002:aa7:c382:0:b0:521:db0e:93d9 with SMTP id k2-20020aa7c382000000b00521db0e93d9mr188912edq.40.1689893644973;
-        Thu, 20 Jul 2023 15:54:04 -0700 (PDT)
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com. [209.85.218.42])
-        by smtp.gmail.com with ESMTPSA id u24-20020a05640207d800b0051a53d7b160sm1303635edy.80.2023.07.20.15.54.03
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jul 2023 15:54:03 -0700 (PDT)
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-98de21518fbso216528766b.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 15:54:03 -0700 (PDT)
-X-Received: by 2002:a17:906:778f:b0:978:acec:36b1 with SMTP id
- s15-20020a170906778f00b00978acec36b1mr193104ejm.17.1689893643313; Thu, 20 Jul
- 2023 15:54:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com>
- <2575F983-D170-4B79-A6BA-912D4ED2CC73@dubeyko.com> <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com>
- <Y7bw7X1Y5KtmPF5s@casper.infradead.org> <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com>
- <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com>
- <ZLlvII/jMPTT32ef@casper.infradead.org> <2d0bd58fb757e7771d13f82050a546ec5f7be8de.camel@physik.fu-berlin.de>
- <ZLl2Fq35Ya0cNbIm@casper.infradead.org> <CAH8yC8=BwacXyFQret5pKVCzXXO0jLM_u9eW3bTdyPi4y8CSfw@mail.gmail.com>
- <ZLm3LLrsSPYkLYr4@casper.infradead.org>
-In-Reply-To: <ZLm3LLrsSPYkLYr4@casper.infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 20 Jul 2023 15:53:46 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg7DSNsHY6tWc=WLeqDBYtXges_12fFk1c+-No+fZ0xYQ@mail.gmail.com>
-Message-ID: <CAHk-=wg7DSNsHY6tWc=WLeqDBYtXges_12fFk1c+-No+fZ0xYQ@mail.gmail.com>
-Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jeffrey Walton <noloader@gmail.com>,
+        Thu, 20 Jul 2023 21:03:38 -0400
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44FC12718
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 18:03:36 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id E369A5C00F4;
+        Thu, 20 Jul 2023 21:03:32 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 20 Jul 2023 21:03:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1689901412; x=1689987812; bh=R4ZNGlYIzZjqT
+        Kdh2uUCCHfXsCMNde46ZsMLHyedF/I=; b=X26iwK3gCgmCENMCp/fW1ETWcUzEN
+        9rwLuq4E33Zo0dhDnC7nZvOCLnw3oA8kr5MhSLJ14LNMtTJlvQdeKciQl4R51mU5
+        OjD/BSnJTKaA3e102aHkf3HKi/xD/nWE1sQP9GaWV0hJhSKdElBPI77oiLieA6/0
+        oUKi90TVMJ92HpZCZ4gDOHLzl4q9Llaqfl1yiulga84go00d47fg1yFWgL8XpwSU
+        uykfbLG4c3SPEQHR2Ok/FuAN8NS7ns+9n9zY3uJDEugcaSMXhmiarDaaTGrpc/zk
+        6qmwkuQde+Fbb2VlewWSj5CSduAOjRvxdeh1f1dw/dXeSZewpMzlPx0ZQ==
+X-ME-Sender: <xms:Y9m5ZGHNOoPPua24wf3PLjWeqBKhGbD6w-EXyXG4S4mIXfmXrDQCLA>
+    <xme:Y9m5ZHW08G_fqzzf_tgovXDG75WXjrgEu0O5q7UGK87e4pdRgyUXWxVOPv9MTDT-f
+    asRWFtr3_UfWk1iaj0>
+X-ME-Received: <xmr:Y9m5ZAJM2rR108cHi7m_ZNBXxKOC9XnYVTYVJqiDN2Yshfklo7A1tuTHLvno_jI22YOksrWqhHaG3VzYXsHrVAHI4p5-5Zj4nAc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedugdegtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
+    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
+    htvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedvueeh
+    ueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
+    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:Y9m5ZAGV9zNsA0Any4YXWN_FkYsDjNdxtMDTcKEak1pr8k919uB9Gw>
+    <xmx:Y9m5ZMUbeQcAD8DiPfJCEmJCM5XliXdkI8-s22DZsIy8t0WU5oyMqw>
+    <xmx:Y9m5ZDNtBu6POEckDdHBDiXddmUZ3bZAjb_xeDcA6x27a3lxZ1f6ig>
+    <xmx:ZNm5ZBW_oA0e1oLVnvgtebv0un27mG3J3J5_-FLNFNF-i_wfWoD8Pw>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 20 Jul 2023 21:03:28 -0400 (EDT)
+Date:   Fri, 21 Jul 2023 11:03:28 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Dave Chinner <david@fromorbit.com>
+cc:     Jeff Layton <jlayton@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
         John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
         Dmitry Vyukov <dvyukov@google.com>,
         Viacheslav Dubeyko <slava@dubeyko.com>,
         Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         christian.brauner@ubuntu.com,
         Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Jeff Layton <jlayton@kernel.org>,
         Linux FS Devel <linux-fsdevel@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         syzkaller-bugs@googlegroups.com,
         ZhangPeng <zhangpeng362@huawei.com>,
         linux-m68k@lists.linux-m68k.org,
         debian-ports <debian-ports@lists.debian.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
+In-Reply-To: <ZLmzSEV6Wk+oRVoL@dread.disaster.area>
+Message-ID: <60b57ae9-ff49-de1d-d40d-172c9e6d43d5@linux-m68k.org>
+References: <ab7a9477-ddc7-430f-b4ee-c67251e879b0@app.fastmail.com> <2575F983-D170-4B79-A6BA-912D4ED2CC73@dubeyko.com> <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com> <Y7bw7X1Y5KtmPF5s@casper.infradead.org> <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com>
+ <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com> <ZLlvII/jMPTT32ef@casper.infradead.org> <2d0bd58fb757e7771d13f82050a546ec5f7be8de.camel@physik.fu-berlin.de> <ZLl2Fq35Ya0cNbIm@casper.infradead.org> <868611d7f222a19127783cc8d5f2af2e42ee24e4.camel@kernel.org>
+ <ZLmzSEV6Wk+oRVoL@dread.disaster.area>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, 20 Jul 2023 at 15:37, Matthew Wilcox <willy@infradead.org> wrote:
->
-> I think you're missing the context.  There are bugs in how this filesystem
-> handles intentionally-corrupted filesystems.  That's being reported as
-> a critical bug because apparently some distributions automount HFS/HFS+
-> filesystems presented to them on a USB key.  Nobody is being paid to fix
-> these bugs.  Nobody is volunteering to fix these bugs out of the kindness
-> of their heart.  What choice do we have but to remove the filesystem,
-> regardless of how many happy users it has?
+On Fri, 21 Jul 2023, Dave Chinner wrote:
 
-You're being silly.
+> > I suspect that this is one of those catch-22 situations: distros are 
+> > going to enable every feature under the sun. That doesn't mean that 
+> > anyone is actually _using_ them these days.
 
-We have tons of sane options. The obvious one is "just don't mount
-untrusted media".
+I think the value of filesystem code is not just a question of how often 
+it gets executed -- it's also about retaining access to the data collected 
+in archives, museums, galleries etc. that is inevitably held in old 
+formats.
 
-Now, the kernel doesn't know which media is trusted or not, since the
-kernel doesn't actually see things like /etc/mtab and friends. So we
-in the kernel can't do that, but distros should have a very easy time
-just fixing their crazy models.
+> 
+> We need to much more proactive about dropping support for unmaintained 
+> filesystems that nobody is ever fixing despite the constant stream of 
+> corruption- and deadlock- related bugs reported against them.
+> 
 
-Saying that the kernel should remove a completely fine filesystem just
-because some crazy use-cases that nobody cares about are broken, now
-*that* just crazy.
+IMO, a stream of bug reports is not a reason to remove code (it's a reason 
+to revert some commits).
 
-Now, would it be good to have a maintainer for hgs? Obviously. But no,
-we don't remove filesystems just because they don't have maintainers.
+Anyway, that stream of bugs presumably flows from the unstable kernel API, 
+which is inherently high-maintenance. It seems that a stable API could be 
+more appropriate for any filesystem for which the on-disk format is fixed 
+(by old media, by unmaintained FLOSS implementations or abandoned 
+proprietary implementations).
 
-And no, we have not suddenly started saying "users don't matter".
+Being in userspace, I suppose FUSE could be a stable API though I imagine 
+it's not ideal in the sense that migrating kernel code there would be 
+difficult. Maybe userspace NFS 4 would be a better fit? (I've no idea, I'm 
+out of my depth in /fs...)
 
-          Linus
+Ideally, kernel-to-userspace code migration would be done with automatic 
+program transformation -- otherwise it would become another stream of 
+bugs.
