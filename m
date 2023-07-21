@@ -2,130 +2,95 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA2F8EB64DA
-	for <linux-m68k@archiver.kernel.org>; Fri, 21 Jul 2023 01:25:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D136AEB64DD
+	for <linux-m68k@archiver.kernel.org>; Fri, 21 Jul 2023 01:32:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229616AbjGUBZe (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 20 Jul 2023 21:25:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46706 "EHLO
+        id S229783AbjGUBcF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 20 Jul 2023 21:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjGUBZd (ORCPT
+        with ESMTP id S229528AbjGUBcE (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 20 Jul 2023 21:25:33 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D39921982
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 18:25:32 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id e9e14a558f8ab-34896a1574dso7443675ab.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 18:25:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689902732; x=1690507532;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zZqixkMebZCsM97BxEH3OKrgsuW4WW+mzbaKw56ziPA=;
-        b=Wbfj34d7v4HVvq4v7ZnXIZR1/vaNl8EYpDwbbU6oV2D5lVO5stb7a4OT3dsCrtl+Or
-         h+s8YDh3Pv7uzd/p4572BJ81q0cb9m0SrOVX2QvuCjLf71F52FnMzKgytXLKHoTgVC25
-         FwhDom0beSiCFoEprJ1vMJWSf4Ypsj6quXfY0YdFpTTJQ6HH6k3YPYTNzVksO10HEEbE
-         sxQd1jDIZ4lJ7vGm9prMqL1Fyd2pcYyJ2IQdlfSbFOLBD36MyfyGKpWnLsI8zDpDygLn
-         0QYqzy4dYwsBmyoH04K06TZVloBIv7xWXLw9R5oJCfEbecgdIJ/45dh7CkIjtCZBingD
-         qbLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689902732; x=1690507532;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=zZqixkMebZCsM97BxEH3OKrgsuW4WW+mzbaKw56ziPA=;
-        b=SQEFOWhocOz/81WGyD+FLKeWwb3si68oVoAe27uP1APgdcThmT8t+g3Uyg3nvFbuu4
-         Isk3waD8rCALBmg0VW/Po8WIjwowjP4GYS4dxYvTdRWzUBZEytqB1SF3Ccif4TgnC8Tc
-         eB93mcnn1/TfKyv2UomqDpXJf38T7ujjHhFIkrAozVnnPa42UEZmSHv0yUkEMjGowbY5
-         n1DtUuvRt1LNeFPB4zuK7lCUxu00ywrDsmLHM9Wdij1qAcgmuzV3qcUGMEfJZGmzSOop
-         jEk6nddqPmxL11D8NDHk1mbukdVASCwAbBvO/nIxrg7vI5RjslMNbr9v9vri4vP4TLrU
-         e93A==
-X-Gm-Message-State: ABy/qLaDB0bHn4BQlO9/SJnKaQ72pItQfwN9yFSNsexIMKJEqCLrimqw
-        IGf1XTCagopzUTe05ZOHHeo=
-X-Google-Smtp-Source: APBJJlEOUafjOMIVHPQMCzxz/WV5yWTR2AIHYfgQhNMImcwG1xVJfWmfN6s1dN5XztZqalTExQ9eHA==
-X-Received: by 2002:a05:6e02:f02:b0:346:8b4:34c with SMTP id x2-20020a056e020f0200b0034608b4034cmr661814ilj.16.1689902732151;
-        Thu, 20 Jul 2023 18:25:32 -0700 (PDT)
-Received: from [10.1.1.24] (222-152-184-54-fibre.sparkbb.co.nz. [222.152.184.54])
-        by smtp.gmail.com with ESMTPSA id c1-20020aa781c1000000b00679dc747738sm1866659pfn.10.2023.07.20.18.25.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 20 Jul 2023 18:25:31 -0700 (PDT)
-Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
-To:     Matthew Wilcox <willy@infradead.org>,
-        Finn Thain <fthain@linux-m68k.org>
-References: <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com>
- <Y7bw7X1Y5KtmPF5s@casper.infradead.org>
- <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com>
- <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com>
- <ZLlvII/jMPTT32ef@casper.infradead.org>
- <2d0bd58fb757e7771d13f82050a546ec5f7be8de.camel@physik.fu-berlin.de>
- <ZLl2Fq35Ya0cNbIm@casper.infradead.org>
- <868611d7f222a19127783cc8d5f2af2e42ee24e4.camel@kernel.org>
- <ZLmzSEV6Wk+oRVoL@dread.disaster.area>
- <60b57ae9-ff49-de1d-d40d-172c9e6d43d5@linux-m68k.org>
- <ZLnbN4Mm9L5wCzOK@casper.infradead.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Viacheslav Dubeyko <slava@dubeyko.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        christian.brauner@ubuntu.com,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs@googlegroups.com,
-        ZhangPeng <zhangpeng362@huawei.com>,
-        linux-m68k@lists.linux-m68k.org,
-        debian-ports <debian-ports@lists.debian.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <15ddfcec-8c2a-6f86-db99-8ce5bdc8078d@gmail.com>
-Date:   Fri, 21 Jul 2023 13:25:21 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        Thu, 20 Jul 2023 21:32:04 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CADD2733
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 18:32:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PSx2A+gPGAEBQXEanuoCquzlgTs4W/VYB04SKNDk4Tc=; b=AiyEsjYBmIthk1x3CkQsK4Zofq
+        iEq+108vcDursutdmWSTY/UsHIvODi3B09/BuYXKfKoa4f1nbEkq9j+qfWohj6Kx8KHkcLlpbv+D/
+        Ir3ed9HwzaRgtnBOu196Pc/OY+WMNfdEalrPT9rbB3yKCLR+vT6AROJfCYZPPqTTvS9vlveKf6H3Z
+        q2hpICV7E68Ya878SCqNR4fcBoWRsjow/Tc+/B6cbGZICUbESEr71+2Bxvuvj7aWfmrgb56Sxt45K
+        FxZseORPINpqcRtniLsuEaIKlwPQlJzHsTirk6j2SYLlAxBS2hJ4KZFJ9pj36wKLm4lrWXtKvpJIE
+        8yEYfrZQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qMezx-000dTr-9k; Fri, 21 Jul 2023 01:32:01 +0000
+Date:   Fri, 21 Jul 2023 02:32:01 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: Re: clear_bit_unlock_is_negative_byte
+Message-ID: <ZLngEXDdrAKSw+90@casper.infradead.org>
+References: <ZLmKq2VLjYGBVhMI@casper.infradead.org>
+ <25b10d04-c6bf-8583-ee0d-84bf647ef0af@gmail.com>
+ <5e3a36d1-13f0-9cc3-de44-cc045025b290@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <ZLnbN4Mm9L5wCzOK@casper.infradead.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5e3a36d1-13f0-9cc3-de44-cc045025b290@gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Matthew,
+On Fri, Jul 21, 2023 at 01:12:48PM +1200, Michael Schmitz wrote:
+> Logging the bit nr. and value passed in:
+> 
+> nfhd8: found device with 20971440 blocks (512 bytes)
+> cbu_inb memval mismatch: 2004 12005 2005 0
+> cbu_inb memval mismatch: 2004 12005 2005 0
+>  nfhd8: AHDI p1 p2
+> cbu_inb memval mismatch: 36 10037 37 0
+> cbu_inb memval mismatch: 36 10037 37 0
 
-Am 21.07.2023 um 13:11 schrieb Matthew Wilcox:
-> You've misunderstood.  Google have decided to subject the entire kernel
-> (including obsolete unmaintained filesystems) to stress tests that it's
-> never had before.  IOW these bugs have been there since the code was
-> merged.  There's nothing to back out.  There's no API change to blame.
-> It's always been buggy and it's never mattered before.
->
-> It wouldn't be so bad if Google had also decided to fund people to fix
-> those bugs, but no, they've decided to dump them on public mailing lists
-> and berate developers into fixing them.
+I'm not quite sure what values you're printing here?  And whether
+they're hex or decimal.  Could you show me the printk string?
 
-Dumping these reports on public mailing lists may still be OK (leaving 
-aside that this invites writing code to exploit these bugs). Asking 
-nicely for a fix, too.
+> The instruction you need is eori.b, and you'll have to increase the mem
+> pointer by 3 bytes. With that change, I see no further mismatches until the
+> return values begin to differ once disk access begins:
 
-'Berating developers' clearly oversteps the mark.
+Ah thanks.  The perils of working from Motorola official docs and then
+trying to use the GNU assembler ...
 
-Maybe Google need to train their AI (that they're evidently training on 
-kernel source, so ought to be grateful for such a nice training set) 
-with a view to manners? We'd sure hate Google's input to go ignored for 
-lack of civility?
+> sd 0:0:1:0: [sdb] Preferred minimum I/O size 512 bytes
+> cbu_inb retval mismatch: 1 ff 2084 2084 2085 0
+> rtc-generic rtc-generic: registered as rtc0
+> cbu_inb retval mismatch: 1 ff 2094 2094 2095 0
+> ...
+> sd 0:0:0:0: [sda] Attached SCSI disk
+> probe of 0:0:0:0 returned 0 after 58395182 usecs
+> cbu_inb retval mismatch: 1 ff 2094 2094 2095 0
+>  sdb: RDSK (512) sdb1 (DOS^G)(res 2 spb 2) sdb2 (SFS^B)(res 2 spb 1) sdb3
+> (SFS^B)(res 2 spb 2) sdb4 ((res 2 spb 1)
+> sdb: p4 size 18446744071971831216 extends beyond EOD, enabling native
+> capacity
+> cbu_inb retval mismatch: 1 ff 2084 2084 2085 0
+> 
+> (return value from old and new code, value of mem from old and new code,
+> original value, bit nr).
 
-(We could always reassign bugs of this sort against e.g. HFS to 
-distrubtions, of course. They might have the resources to do something 
-about it. Doesn't Google distribute Linux in some form or other? Is 
-Android or ChromeOS susceptible to this issue? Time to find out ...)
+OK, so the new code would set the byte to 0xff (that's how Sxx works).
+But it's returning a bool, so that shouldn't matter.  2084/2084/2085
+would make sense; one of the two functions has cleared the bottom bit.
 
-Be that as it may - removing code that still has use, just to appease 
-pushy Google staff (or AI) is just plain wrong IMO.
+> Bit 7 was already set before xor, and wasn't cleared. I suspect that's why
+> the return value is no longer 1?
 
-Cheers,
+Ah, it's not supposed to be cleared.  The way this works is that bit 0
+is the lock bit; if someone's waiting on the folio, they set bit 7.  If
+bit 7 is set when we clear bit 0, we look on the wait queue.  If there's
+nobody on the wait queue, we clear bit 7.
 
-	Michael
+So ... I think you've fixed it!
