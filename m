@@ -2,95 +2,103 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D136AEB64DD
-	for <linux-m68k@archiver.kernel.org>; Fri, 21 Jul 2023 01:32:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2C38EB64DA
+	for <linux-m68k@archiver.kernel.org>; Fri, 21 Jul 2023 01:38:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229783AbjGUBcF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 20 Jul 2023 21:32:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48144 "EHLO
+        id S229609AbjGUBi3 convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 20 Jul 2023 21:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbjGUBcE (ORCPT
+        with ESMTP id S229727AbjGUBi2 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 20 Jul 2023 21:32:04 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CADD2733
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 18:32:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PSx2A+gPGAEBQXEanuoCquzlgTs4W/VYB04SKNDk4Tc=; b=AiyEsjYBmIthk1x3CkQsK4Zofq
-        iEq+108vcDursutdmWSTY/UsHIvODi3B09/BuYXKfKoa4f1nbEkq9j+qfWohj6Kx8KHkcLlpbv+D/
-        Ir3ed9HwzaRgtnBOu196Pc/OY+WMNfdEalrPT9rbB3yKCLR+vT6AROJfCYZPPqTTvS9vlveKf6H3Z
-        q2hpICV7E68Ya878SCqNR4fcBoWRsjow/Tc+/B6cbGZICUbESEr71+2Bxvuvj7aWfmrgb56Sxt45K
-        FxZseORPINpqcRtniLsuEaIKlwPQlJzHsTirk6j2SYLlAxBS2hJ4KZFJ9pj36wKLm4lrWXtKvpJIE
-        8yEYfrZQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qMezx-000dTr-9k; Fri, 21 Jul 2023 01:32:01 +0000
-Date:   Fri, 21 Jul 2023 02:32:01 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: Re: clear_bit_unlock_is_negative_byte
-Message-ID: <ZLngEXDdrAKSw+90@casper.infradead.org>
-References: <ZLmKq2VLjYGBVhMI@casper.infradead.org>
- <25b10d04-c6bf-8583-ee0d-84bf647ef0af@gmail.com>
- <5e3a36d1-13f0-9cc3-de44-cc045025b290@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5e3a36d1-13f0-9cc3-de44-cc045025b290@gmail.com>
+        Thu, 20 Jul 2023 21:38:28 -0400
+X-Greylist: delayed 580 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 20 Jul 2023 18:38:26 PDT
+Received: from powerslave.purple-cat.net (powerslave.purple-cat.net [182.54.165.105])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9738E2718
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jul 2023 18:38:26 -0700 (PDT)
+Received: from smtpclient.apple (138.76.224.49.dyn.cust.vf.net.nz [49.224.76.138])
+        (Authenticated sender: mike@purple-cat.net)
+        by powerslave.purple-cat.net (Postfix) with ESMTPA id 36002114006B;
+        Fri, 21 Jul 2023 13:28:37 +1200 (NZST)
+Authentication-Results: powerslave.purple-cat.net;
+        auth=pass smtp.auth=mike@purple-cat.net smtp.mailfrom=mike@purple-cat.net
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+From:   Mike Hosken <mike@purple-cat.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
+Date:   Fri, 21 Jul 2023 13:28:25 +1200
+Message-Id: <933DF777-0CE9-4DFE-B7C7-AF095919E4F0@purple-cat.net>
+References: <CAHk-=wg7DSNsHY6tWc=WLeqDBYtXges_12fFk1c+-No+fZ0xYQ@mail.gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Jeffrey Walton <noloader@gmail.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Viacheslav Dubeyko <slava@dubeyko.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        christian.brauner@ubuntu.com,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs@googlegroups.com,
+        ZhangPeng <zhangpeng362@huawei.com>,
+        linux-m68k@lists.linux-m68k.org,
+        debian-ports <debian-ports@lists.debian.org>,
+        torvalds@linux-foundation.org
+In-Reply-To: <CAHk-=wg7DSNsHY6tWc=WLeqDBYtXges_12fFk1c+-No+fZ0xYQ@mail.gmail.com>
+X-Mailer: iPhone Mail (20F75)
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Jul 21, 2023 at 01:12:48PM +1200, Michael Schmitz wrote:
-> Logging the bit nr. and value passed in:
+Removing support for a file system and dam the user base who happily and actively use the file system is never the right option. 
+
+There are always a lot of users who use so called obsolete hardware and various software to support their needs every day. They don’t subscribe to mailing lists or are in no way active in the community and they depend on Linux continuing to support them. Changing the status quo for a particularly narrow attack surface should never be taken. 
+
+Not having a maintainer is not ideal but the code has been very reliable and as the saying goes if it’s not broken ……..
+
+If a serious problem did come up with this file system there are a number of developers that could do a fix and not be its full time maintainer. 
+
+Calling for the removal is just nonsensical to me. 
+
+Mike Hosken 
+Sent via my iPhone 
+
+> On 21/07/2023, at 11:12, Linus Torvalds <torvalds@linux-foundation.org> wrote:
 > 
-> nfhd8: found device with 20971440 blocks (512 bytes)
-> cbu_inb memval mismatch: 2004 12005 2005 0
-> cbu_inb memval mismatch: 2004 12005 2005 0
->  nfhd8: AHDI p1 p2
-> cbu_inb memval mismatch: 36 10037 37 0
-> cbu_inb memval mismatch: 36 10037 37 0
-
-I'm not quite sure what values you're printing here?  And whether
-they're hex or decimal.  Could you show me the printk string?
-
-> The instruction you need is eori.b, and you'll have to increase the mem
-> pointer by 3 bytes. With that change, I see no further mismatches until the
-> return values begin to differ once disk access begins:
-
-Ah thanks.  The perils of working from Motorola official docs and then
-trying to use the GNU assembler ...
-
-> sd 0:0:1:0: [sdb] Preferred minimum I/O size 512 bytes
-> cbu_inb retval mismatch: 1 ff 2084 2084 2085 0
-> rtc-generic rtc-generic: registered as rtc0
-> cbu_inb retval mismatch: 1 ff 2094 2094 2095 0
-> ...
-> sd 0:0:0:0: [sda] Attached SCSI disk
-> probe of 0:0:0:0 returned 0 after 58395182 usecs
-> cbu_inb retval mismatch: 1 ff 2094 2094 2095 0
->  sdb: RDSK (512) sdb1 (DOS^G)(res 2 spb 2) sdb2 (SFS^B)(res 2 spb 1) sdb3
-> (SFS^B)(res 2 spb 2) sdb4 ((res 2 spb 1)
-> sdb: p4 size 18446744071971831216 extends beyond EOD, enabling native
-> capacity
-> cbu_inb retval mismatch: 1 ff 2084 2084 2085 0
+> ﻿On Thu, 20 Jul 2023 at 15:37, Matthew Wilcox <willy@infradead.org> wrote:
+>> 
+>> I think you're missing the context.  There are bugs in how this filesystem
+>> handles intentionally-corrupted filesystems.  That's being reported as
+>> a critical bug because apparently some distributions automount HFS/HFS+
+>> filesystems presented to them on a USB key.  Nobody is being paid to fix
+>> these bugs.  Nobody is volunteering to fix these bugs out of the kindness
+>> of their heart.  What choice do we have but to remove the filesystem,
+>> regardless of how many happy users it has?
 > 
-> (return value from old and new code, value of mem from old and new code,
-> original value, bit nr).
-
-OK, so the new code would set the byte to 0xff (that's how Sxx works).
-But it's returning a bool, so that shouldn't matter.  2084/2084/2085
-would make sense; one of the two functions has cleared the bottom bit.
-
-> Bit 7 was already set before xor, and wasn't cleared. I suspect that's why
-> the return value is no longer 1?
-
-Ah, it's not supposed to be cleared.  The way this works is that bit 0
-is the lock bit; if someone's waiting on the folio, they set bit 7.  If
-bit 7 is set when we clear bit 0, we look on the wait queue.  If there's
-nobody on the wait queue, we clear bit 7.
-
-So ... I think you've fixed it!
+> You're being silly.
+> 
+> We have tons of sane options. The obvious one is "just don't mount
+> untrusted media".
+> 
+> Now, the kernel doesn't know which media is trusted or not, since the
+> kernel doesn't actually see things like /etc/mtab and friends. So we
+> in the kernel can't do that, but distros should have a very easy time
+> just fixing their crazy models.
+> 
+> Saying that the kernel should remove a completely fine filesystem just
+> because some crazy use-cases that nobody cares about are broken, now
+> *that* just crazy.
+> 
+> Now, would it be good to have a maintainer for hgs? Obviously. But no,
+> we don't remove filesystems just because they don't have maintainers.
+> 
+> And no, we have not suddenly started saying "users don't matter".
+> 
+>          Linus
+> 
