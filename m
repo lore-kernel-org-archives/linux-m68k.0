@@ -2,81 +2,97 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 794C4C00528
-	for <linux-m68k@archiver.kernel.org>; Fri, 21 Jul 2023 08:01:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02862EB64DC
+	for <linux-m68k@archiver.kernel.org>; Fri, 21 Jul 2023 08:14:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230461AbjGUIBE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 21 Jul 2023 04:01:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48812 "EHLO
+        id S231402AbjGUIOT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 21 Jul 2023 04:14:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230034AbjGUIBD (ORCPT
+        with ESMTP id S231406AbjGUIOQ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 21 Jul 2023 04:01:03 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A9B92708
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Jul 2023 01:01:02 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R6hnh6m4HzBRDtV
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Jul 2023 16:00:56 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689926456; x=1692518457; bh=R7OWkFgo62IQSqeLiuqCwyNKzg8
-        CO3vmJCNh4PIA6/Q=; b=Q6QWgLwBcQNkZUj+4ya4V+Cbi+0IQIyMCOk12fAuElm
-        oWF8Lts0JGxXBEKw/L1fZUFZR2ypkztzvSuBVe6HJriRgUHg+N8lEPhJSmnyeSeK
-        WZ/SvlRsHaHVnjcFGOaNUgwqkB8Pvu9UAAvIOOJohNUBJ7cguU8GNfPUhS+7A0dv
-        QB9I2qD6BwByKphkeXtLfIekIhO+xH0fLiqxTeIUhf9N9drtWnkf7oqyTEXO4mRi
-        0WTZHL1+GxUKF6WmIy9UuQP2oPTK1fpgJrc1Szc01Fecmbh9i+j0FmdXaJuQT6De
-        /geO4tCAukvJGiH+ryi2PejcryA5RW7g0ORbd1AMJbw==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id ZdcoRe1L52xl for <linux-m68k@lists.linux-m68k.org>;
-        Fri, 21 Jul 2023 16:00:56 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R6hnh4TqxzBRDt0;
-        Fri, 21 Jul 2023 16:00:56 +0800 (CST)
+        Fri, 21 Jul 2023 04:14:16 -0400
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973CF30ED
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Jul 2023 01:14:10 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id AA0ED3200FA5;
+        Fri, 21 Jul 2023 04:14:04 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Fri, 21 Jul 2023 04:14:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1689927244; x=1690013644; bh=FUNFJj6urWuhz
+        j/ULPd7dgB790ZiEm9pAM63aZfvl0o=; b=K+rMc5OSCr1Fh3xdtUlGdyEGp1ONI
+        51AJM7rHQtcPDLtX+kJ6dtJJb+OZ5//ie4+jgpfhPd2tNJruDPl3+eEPHvmFD1ye
+        4Jb/J120LU917i5czkrEOBtvJtmoP6YWY5AggOG930AFqj2FrrXcZ/QWbx/zbGhb
+        PZY7UmtLp9n1vsTgl/DpXwt4ICVD+veAS/haXKLYa0q5n4/a1ZfwwnxQ8xOgKm30
+        Z6urvnxBg9uTdpQ0kpWJHWUotlTyCmMxFR5rkEXm7b8y+XCwHVtHzIZvPHLLTYor
+        S+KRdPKxBmDyGziWoDh0avzv1jkwzeT49W/KC6xVFmpQE7uOHeLVNM+MA==
+X-ME-Sender: <xms:Sj66ZI4F8NgCrze5lhIwlHzi5NMbZbeIZqw_KSRu13s5Nn5hqNhJXw>
+    <xme:Sj66ZJ4NDo5Q0y3xQ3AuRoG4ogzkOiD8WaAtZHPy_2-RSWBMlDP6W5GyHRUPjDrM6
+    HILsYFMDDzF1H_J4N0>
+X-ME-Received: <xmr:Sj66ZHcYQKXwb_YyFY0VD3xU2FuJeSvcQPaXd1SjdCmJIDc4V_YsFNU8tHVpAaCQS1twWam2aqYIKtQscAtEVSZYHAXhlX-iRvc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrhedugdduvdeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
+    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
+    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
+    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:Sj66ZNLA3PZvnZRISS7E-fLyDcxI_6eAde9TLWcINqoNSp_6jQZ8OA>
+    <xmx:Sj66ZMKJFovsSlFYj5Nru_Vl1m0g_K6AnNPnk4Z4S1pajlaTwYfqJg>
+    <xmx:Sj66ZOyPGzQXVDqieXB6gCz0R50dxZa--GnH7pbdOITulJ6lYcXQig>
+    <xmx:TD66ZJ6YMrryZtwMv3xMiDBUj0eFoeqVL_FjWu87hcrOvPjcbNy_yw>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 21 Jul 2023 04:14:01 -0400 (EDT)
+Date:   Fri, 21 Jul 2023 18:14:04 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Matthew Wilcox <willy@infradead.org>
+cc:     Dave Chinner <david@fromorbit.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Viacheslav Dubeyko <slava@dubeyko.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        syzbot <syzbot+7bb7cd3595533513a9e7@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        christian.brauner@ubuntu.com,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs@googlegroups.com,
+        ZhangPeng <zhangpeng362@huawei.com>,
+        linux-m68k@lists.linux-m68k.org,
+        debian-ports <debian-ports@lists.debian.org>
+Subject: Re: [syzbot] [hfs?] WARNING in hfs_write_inode
+In-Reply-To: <ZLnbN4Mm9L5wCzOK@casper.infradead.org>
+Message-ID: <3eca2dab-df70-9d91-52a1-af779e3c2e04@linux-m68k.org>
+References: <46F233BB-E587-4F2B-AA62-898EB46C9DCE@dubeyko.com> <Y7bw7X1Y5KtmPF5s@casper.infradead.org> <50D6A66B-D994-48F4-9EBA-360E57A37BBE@dubeyko.com> <CACT4Y+aJb4u+KPAF7629YDb2tB2geZrQm5sFR3M+r2P1rgicwQ@mail.gmail.com> <ZLlvII/jMPTT32ef@casper.infradead.org>
+ <2d0bd58fb757e7771d13f82050a546ec5f7be8de.camel@physik.fu-berlin.de> <ZLl2Fq35Ya0cNbIm@casper.infradead.org> <868611d7f222a19127783cc8d5f2af2e42ee24e4.camel@kernel.org> <ZLmzSEV6Wk+oRVoL@dread.disaster.area> <60b57ae9-ff49-de1d-d40d-172c9e6d43d5@linux-m68k.org>
+ <ZLnbN4Mm9L5wCzOK@casper.infradead.org>
 MIME-Version: 1.0
-Date:   Fri, 21 Jul 2023 08:00:56 +0000
-From:   sunran001@208suo.com
-To:     geert@linux-m68k.org
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] m68k: Fix two occurrences of the checkpatch.pl error:
-In-Reply-To: <20230721075949.5632-1-xujianghui@cdjrlc.com>
-References: <20230721075949.5632-1-xujianghui@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <fcc5460f8a84680d6e7379d320ad0575@208suo.com>
-X-Sender: sunran001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-ERROR: that open brace { should be on the previous line
-ERROR: space required after that ',' (ctx:VxV)
+On Fri, 21 Jul 2023, Matthew Wilcox wrote:
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
-  arch/m68k/q40/config.c | 5 ++---
-  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> You've misunderstood.  Google have decided to subject the entire kernel 
+> (including obsolete unmaintained filesystems) to stress tests that it's 
+> never had before.  IOW these bugs have been there since the code was 
+> merged.  There's nothing to back out.  There's no API change to blame. 
+> It's always been buggy and it's never mattered before.
+> 
 
-diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
-index c78ee709b458..62ed3634c0a4 100644
---- a/arch/m68k/q40/config.c
-+++ b/arch/m68k/q40/config.c
-@@ -146,9 +146,8 @@ static void q40_get_model(char *model)
-  	sprintf(model, "Q40");
-  }
-
--static unsigned int serports[] =
--{
--	0x3f8,0x2f8,0x3e8,0x2e8,0
-+static unsigned int serports[] = {
-+	0x3f8, 0x2f8, 0x3e8, 0x2e8, 0
-  };
-
-  static void __init q40_disable_irqs(void)
+I'm not blaming the unstable API for the bugs, I'm blaming it for the 
+workload. A stable API (like a userspace API) decreases the likelihood 
+that overloaded maintainers have to orphan a filesystem implementation. 
