@@ -2,108 +2,113 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55FB4C001B0
-	for <linux-m68k@archiver.kernel.org>; Mon, 24 Jul 2023 11:43:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B765C001DE
+	for <linux-m68k@archiver.kernel.org>; Mon, 24 Jul 2023 13:01:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbjGXLnO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 24 Jul 2023 07:43:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59532 "EHLO
+        id S231489AbjGXNBZ convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 24 Jul 2023 09:01:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjGXLnO (ORCPT
+        with ESMTP id S231500AbjGXNBJ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 24 Jul 2023 07:43:14 -0400
-Received: from mail.sowerbutts.com (mail.sowerbutts.com [IPv6:2001:8b0:3b1:dead::100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06CACF
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Jul 2023 04:43:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sowerbutts.com; s=igor; h=In-Reply-To:Content-Type:MIME-Version:References:
-        Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=VRFGvsd2W9bVpPij7+OPil/g/ywidwS5norFY+pdc9g=; b=iZsWT8K0sNoDfcjBd0lmkLe2vE
-        NMM/ccjYqoryU+qlWHMapCwdkIcMTy2X958KCmQ5pbzaEqG+U+ZK1EK8z7FqLn9UMO7PWmCHcD2ma
-        lkbRd5kEsQjHl1ObRK9wJEFppHrLtUyIcnLtVjna3xvkc28t0tODu2Ju2Hvk+JjqMjojyzeXVrh6G
-        aRZxFpx5ezExl/cYaJJUfJgWwyHZqMMQz4EnGph/JDob1n8nbaQKZ9aBrnKkyXzRFcrWIqH6wcdax
-        ah/PkIy2JeGHhxPLU8Wybo1gr1AiTgpwkFlSEmR3sULkC4IP1BFAAjhK4O3dzjzPa/puDtJYAz+Ud
-        9Pf/D92w==;
-Received: from [2001:8b0:3b1:cafe:2292:e7dd:dea3:4ff6] (helo=sowerbutts.com)
-        by mail.sowerbutts.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <will@sowerbutts.com>)
-        id 1qNtxq-002roq-23;
-        Mon, 24 Jul 2023 12:42:58 +0100
-Date:   Mon, 24 Jul 2023 12:42:58 +0100
-From:   William R Sowerbutts <will@sowerbutts.com>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Finn Thain <fthain@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Subject: Re: Linux 6.4.4 on m68k - Q40 - pata_falcon causes oops at boot time
-Message-ID: <ZL5jwoXAU5t8S+E6@sowerbutts.com>
-References: <ZLvZmVfzJNHlPTlJ@sowerbutts.com>
- <CAMuHMdUU62jjunJh9cqSqHT87B0H0A4udOOPs=WN7WZKpcagVA@mail.gmail.com>
- <1dabd80c-d91e-7869-e95e-199fc58b9f84@linux-m68k.org>
- <c47f07a9-d302-b8ce-c630-988e08cc8254@gmail.com>
+        Mon, 24 Jul 2023 09:01:09 -0400
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C43549C2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Jul 2023 05:58:54 -0700 (PDT)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-57a6df91b1eso53537147b3.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Jul 2023 05:58:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690203533; x=1690808333;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=T6b2FtAV3bNuD5mVsXsz2riCXJosQSO38iUoRG0Tlfw=;
+        b=VRyLpZDLYu3KGXH77dxQURybX7hCW08/tLITA9LrkxpGUqPoJbFUAXcOJelX7ESAwo
+         PosnxvonaWHhP8TsbSkC2ayCIaGkbzxbOApl88PgHqllq8++5lLcCYgY9FeGgIXKUI19
+         FFgTb4o8pqoCwFF6OmP1PAwcu4Ph5B624nbm/pWrFKKSvimV+3HhK1avGkcNhJiwZi9k
+         z6XEttwBQC32yVOQ9TqlwZZdyJ0d7s9okdqH+s+//qlvNbq415yu+UulwLh2sKfTJkuq
+         sFBYD5pHu3PGIxIVarYztKP9gEgVzLHcDWXQGMuC4G4sxqSNyXvKZHeY83/4mjWf3+t/
+         KQLQ==
+X-Gm-Message-State: ABy/qLbMiV4MsHr4Y4SWM8fU/JZOycRFCvID0sl+fkMGLgYquqSC/Lzx
+        2XDddeiQfNicvtTz2YDX1ABCFNp/qVU8Xw==
+X-Google-Smtp-Source: APBJJlGdtdipr8R1NeiwRtLDKXUKq0VtWyrcQ0uOpV62kRZF3fme9IWBGXkiYKp70MWUTP8h0vKltA==
+X-Received: by 2002:a0d:c246:0:b0:577:4387:197c with SMTP id e67-20020a0dc246000000b005774387197cmr8429947ywd.16.1690203533180;
+        Mon, 24 Jul 2023 05:58:53 -0700 (PDT)
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
+        by smtp.gmail.com with ESMTPSA id v129-20020a818587000000b0057042405e2csm2751007ywf.71.2023.07.24.05.58.52
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jul 2023 05:58:52 -0700 (PDT)
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-bc379e4c1cbso4946198276.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Jul 2023 05:58:52 -0700 (PDT)
+X-Received: by 2002:a25:ba0c:0:b0:d15:454e:8ecd with SMTP id
+ t12-20020a25ba0c000000b00d15454e8ecdmr576735ybg.13.1690203532619; Mon, 24 Jul
+ 2023 05:58:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c47f07a9-d302-b8ce-c630-988e08cc8254@gmail.com>
-X-URL:  http://sowerbutts.com/
-X-Hatstand: Voltron
+References: <ZIyBaueWT9jnTwRC@decadent.org.uk>
+In-Reply-To: <ZIyBaueWT9jnTwRC@decadent.org.uk>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 24 Jul 2023 14:58:41 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdW4deu65FdW7qGSYoQDLWmjqcz_oReQY+GKS-EtxERFJQ@mail.gmail.com>
+Message-ID: <CAMuHMdW4deu65FdW7qGSYoQDLWmjqcz_oReQY+GKS-EtxERFJQ@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Fix invalid .section syntax
+To:     Ben Hutchings <ben@decadent.org.uk>
+Cc:     linux-m68k@lists.linux-m68k.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
->I was left with the impression that the Q40 does not actually have the IDE
->controller on the ISA bus.
+Hi Ben,
 
-This is mistaken.
+On Fri, Jun 16, 2023 at 5:47 PM Ben Hutchings <ben@decadent.org.uk> wrote:
+> From: Ben Hutchings <benh@debian.org>
+>
+> gas supports several different forms for .section for ELF targets,
+> including:
+>     .section NAME [, "FLAGS"[, @TYPE[,FLAG_SPECIFIC_ARGUMENTS]]]
+> and:
+>     .section "NAME"[, #FLAGS...]
+>
+> In several places we use a mix of these two forms:
+>     .section NAME, #FLAGS...
+>
+> A current development snapshot of binutils (2.40.50.20230611) treats
+> this mixed syntax as an error.
+>
+> Change to consistently use:
+>     .section NAME, "FLAGS"
+> as is used elsewhere in the kernel.
+>
+> References: https://buildd.debian.org/status/fetch.php?pkg=linux&arch=m68k&ver=6.4%7Erc6-1%7Eexp1&stamp=1686907300&raw=1
+> Signed-off-by: Ben Hutchings <benh@debian.org>
 
-IDE is definitely accessed over the ISA bus.
+Thanks for your patch! Consistency is good.
 
-There is some documentation on the Q40/Q60 hardware here:
-http://www.q40.de/download/harddoc.pdf
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. applied and queued.
 
-The motherboard integrates the CPU, DRAM, video DRAM and display controller, 
-audio DACs, RTC, interrupt controller, keyboard controller, and an LED 
-output.
+> ---
+> These changes are compile-tested only.
 
-There are two ISA slots where all other I/O devices are connected. These are 
-described (concisely!) on page 7 of the linked manual:
+I verified there is no difference in the generated object files with my
+current toolchain (GNU assembler version 2.38 (m68k-linux-gnu)
+using BFD version (GNU Binutils for Ubuntu) 2.38).
 
-8-bit ISA I/O cycles are performed for CPU byte accesses to 0xFF400001 + 4 * ISA address
+Do you think it's worthwhile to fast-track this for v6.5, or is it fine to
+queue this for v6.6?
 
-16-bit ISA I/O cycles are performed for CPU word accesses to 0xFF400000 + 4 * ISA address
+Thanks!
 
-8-bit ISA memory cycles are performed for CPU byte accesses to 0xFF800001 + 4 * ISA address
+Gr{oetje,eeting}s,
 
-16-bit ISA memory cycles are performed for CPU word accesses to 0xFF800000 + 4 * ISA address
+                        Geert
 
-I understand that the machines originally shipped with a 16-bit ISA card 
-based on the W83787IF "PC super I/O" chip, integrating a floppy controller, 
-IDE interface, game port, parallel port, and two 16550A UARTs.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-My Q40 came without this card, so I am using a card based on the similar 
-W83757 chip (the serial ports are 16450 instead of 16550A, it doesn't support 
-the fancy EPP/ECP parallel port modes).
-
->> > It might be a good idea to verify that IDE works in v5.13
->> Yes, please do.
-
-It did.
-
->And please also verify it's broken after 44b1fbc0f5f30e66 was applied.
-
-I will try to do that!
-
-Thanks
-
-Will
-
-_________________________________________________________________________
-William R Sowerbutts                                  will@sowerbutts.com
-"Carpe post meridiem"                               http://sowerbutts.com
-         main(){char*s=">#=0> ^#X@#@^7=",c=0,m;for(;c<15;c++)for
-         (m=-1;m<7;putchar(m++/6&c%3/2?10:s[c]-31&1<<m?42:32));}  
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
