@@ -2,134 +2,93 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05A29C0015E
-	for <linux-m68k@archiver.kernel.org>; Mon, 24 Jul 2023 05:34:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4268FC0015E
+	for <linux-m68k@archiver.kernel.org>; Mon, 24 Jul 2023 08:50:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbjGXFep (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 24 Jul 2023 01:34:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37800 "EHLO
+        id S231851AbjGXIuo convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 24 Jul 2023 04:50:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229921AbjGXFeo (ORCPT
+        with ESMTP id S231828AbjGXIun (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 24 Jul 2023 01:34:44 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA2AE41
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 23 Jul 2023 22:34:41 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1b8b4748fe4so21397525ad.1
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 23 Jul 2023 22:34:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690176881; x=1690781681;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:references:cc:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CrRCs9J9cuqFytw0CPsTvJ0/VgtZFNZF2StTT2ELhYQ=;
-        b=QNd/QcPvcruooUOIbD5r6HqalozOx29e4KE4dL4CktOGQTb8pvqoAas1HziuVSBmRi
-         ONZzaGCN5OnsPEXFNrK+EL0JjW/Q35tesDHqKlv77NudflLqq9fe8kwKxklLVs6L+/jk
-         uMBGeu3j2eB5FZ5RQuO4Y7RyWThlGaCNnZFfSKEPgj4pz3B9L2rooB6iu6DBx4i/QqBT
-         FylWcPrrs1xbjZGDQK/yIs4F9xfxIEjIHNgrkeNi5WB1+2qQEmUaV4+WJz9cUuL06BpT
-         Uxzd2ugL6q9wMfoAzh2XIfVqNN+jc8RseYguWsBKntzh7Oe2SXwGXW8I4zknRu+C6YF+
-         5LdA==
+        Mon, 24 Jul 2023 04:50:43 -0400
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4864895
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Jul 2023 01:50:41 -0700 (PDT)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5768a7e3adbso76182417b3.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Jul 2023 01:50:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690176881; x=1690781681;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:references:cc:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=CrRCs9J9cuqFytw0CPsTvJ0/VgtZFNZF2StTT2ELhYQ=;
-        b=ZWjIteyjQ2srqtlJ4i7aUClFP/Hl5WxiVOs74FpgInSrCPlhUdUlqSLz2Qd24eh8Tt
-         yLM9VibqmTeYYg7jqmnXjlQ8tD985nEdrMtJ1rOVvjhjBLLbbhBtkhEv4DEhBjC2fdSQ
-         qy1jL2C/US+PsWAJ4ayvQlUbwMQG5GreW0O/V2vYCO5CYAmbga6IZrWLwMqsrIWaZtMI
-         QqjLdg1PHUX/MBXowZQBDcR/2e03idcmZjifW7DENbFdTMNmYClrkT9uKSNq1OoEPlLp
-         RNbW8YVYZWp+z2Phx+UinNVrOnFIrxjqNXLwoMf0EscbE6v8KcaUXum76KBVmVxvkIhQ
-         UGQw==
-X-Gm-Message-State: ABy/qLZ0vC9ATFn4/ptqlSXWNe+FrurHoQ2TqU119KwYm21xJDCNH/Oa
-        qWKYm0QeGElcdM94cHzdaKs=
-X-Google-Smtp-Source: APBJJlGYQmm1yrikG0bziSH6O/bk592oPBNWHtfn+yfH3VGi/UD+ryBeFDTfYs8FpGzJ+DcBkJM5Ww==
-X-Received: by 2002:a17:90a:d803:b0:268:a26:d9ee with SMTP id a3-20020a17090ad80300b002680a26d9eemr3112946pjv.46.1690176880778;
-        Sun, 23 Jul 2023 22:34:40 -0700 (PDT)
-Received: from Schmitz-MacBook-Pro.local (222-152-184-54-fibre.sparkbb.co.nz. [222.152.184.54])
-        by smtp.googlemail.com with ESMTPSA id s26-20020a63a31a000000b0055c178a8df1sm7394104pge.94.2023.07.23.22.34.38
+        d=1e100.net; s=20221208; t=1690188640; x=1690793440;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eru5igGG5ZNMFyi9+7h599RckQE/U9fJOptjtiH/IWA=;
+        b=YZIHLoQ1g4tAx74KkSi1qN7FVb+mSwfqEpU/GumlpKflaWwPGEvStx6BvKoJm7oN3g
+         9vexGliMuFaRGIzbQsN3EzqYW6wnZaLAxH6RY5p0hr1IR2o9ilZp51dWHKYwQ2Gey45n
+         Ej6BBuYklHz00tNvGJgGzPv+H9fjFHKH+0XPZ4RGAO4dIZTvqWkPpSnKrE8dGG8u8LVT
+         vm2yV6NFpwBcvSl/eBbV0UnY4RXwv2xzN9LHen8YqT3d8F2RrcNg7MF7VYjZ8G4wQmk/
+         rwmqTqK9UGrnI4d9b321mC5vswE7fNDCq0OIW+EWrsEUFNW0rGc44O6EBIniPXc5FH1y
+         Fwvw==
+X-Gm-Message-State: ABy/qLY5R9B2S7Brh0QUQLf8T1rHeFK13kWIllsDmyr6opQZngT6IAQL
+        dEwdIkns68sI2ClRgaPiJhsfcP/3ETp+zA==
+X-Google-Smtp-Source: APBJJlEaioAUAUWtSJBYpWr13/3R3TSpciHIs0YmwcdNhItBGcsRhWl+FXTnb/pebY+YX9HsF1mhIA==
+X-Received: by 2002:a81:4e0a:0:b0:57a:3942:bb74 with SMTP id c10-20020a814e0a000000b0057a3942bb74mr4780971ywb.17.1690188640103;
+        Mon, 24 Jul 2023 01:50:40 -0700 (PDT)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id s124-20020a818282000000b005702bfb19bfsm2670769ywf.130.2023.07.24.01.50.39
+        for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 23 Jul 2023 22:34:40 -0700 (PDT)
-Subject: Re: [PATCH] m68knommu: Fix warnings in io_no.h: Delete one of
- repeated word 'readw readl writew writel' in comment. WARNING: Possible
- repeated word: 'readw' WARNING: Possible repeated word: 'readl' WARNING:
- Possible repeated word: 'writew' WARNING: Possible repeated word: 'writel'
-To:     huzhi001@208suo.com, gerg@linux-m68k.org, geert@linux-m68k.org
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-References: <tencent_816D5035481D1083943D8E965A59860D5E06@qq.com>
- <9e13fec02524afde21bdf5783dcf7246@208suo.com>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <b0c9bf6d-786d-29b8-7811-e132534227fe@gmail.com>
-Date:   Mon, 24 Jul 2023 17:34:34 +1200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Mon, 24 Jul 2023 01:50:39 -0700 (PDT)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-cea0021d1f3so7621293276.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Jul 2023 01:50:39 -0700 (PDT)
+X-Received: by 2002:a25:f54:0:b0:cef:9a1b:8380 with SMTP id
+ 81-20020a250f54000000b00cef9a1b8380mr6389620ybp.24.1690188639473; Mon, 24 Jul
+ 2023 01:50:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <9e13fec02524afde21bdf5783dcf7246@208suo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+References: <20230721075949.5632-1-xujianghui@cdjrlc.com> <fcc5460f8a84680d6e7379d320ad0575@208suo.com>
+In-Reply-To: <fcc5460f8a84680d6e7379d320ad0575@208suo.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 24 Jul 2023 10:50:27 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdX-wns-BuCGSvC+fLS_RogY=uo2Md_7cnxyHtd-+sHoww@mail.gmail.com>
+Message-ID: <CAMuHMdX-wns-BuCGSvC+fLS_RogY=uo2Md_7cnxyHtd-+sHoww@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Fix two occurrences of the checkpatch.pl error:
+To:     sunran001@208suo.com
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi,
+Hi Ran,
 
-please reconsider - "#define something something" is legitimate use, and
-quite intentional.
-
-Pattern matching can only get you so far, sorry ...
-
-Cheers,
-
-    Michael
-
-Am 24.07.23 um 12:40 schrieb huzhi001@208suo.com:
-> Signed-off-by: ZhiHu <huzhi001@208suo.com>
-> ---
->  arch/m68k/include/asm/io_no.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+On Fri, Jul 21, 2023 at 10:04 AM <sunran001@208suo.com> wrote:
+> ERROR: that open brace { should be on the previous line
+> ERROR: space required after that ',' (ctx:VxV)
 >
-> diff --git a/arch/m68k/include/asm/io_no.h
-> b/arch/m68k/include/asm/io_no.h
-> index 2c96e8480173..b24eb741e666 100644
-> --- a/arch/m68k/include/asm/io_no.h
-> +++ b/arch/m68k/include/asm/io_no.h
-> @@ -62,7 +62,7 @@ static int cf_internalio(const volatile void __iomem
-> *addr)
->   * endian on m68k/ColdFire. Bus based address ranges, like the PCI bus,
->   * are accessed little endian - so we need to byte swap those.
->   */
-> -#define readw readw
-> +#define readw
->  static inline u16 readw(const volatile void __iomem *addr)
->  {
->      if (cf_internalio(addr))
-> @@ -70,7 +70,7 @@ static inline u16 readw(const volatile void __iomem
-> *addr)
->      return swab16(__raw_readw(addr));
->  }
->
-> -#define readl readl
-> +#define readl
->  static inline u32 readl(const volatile void __iomem *addr)
->  {
->      if (cf_internalio(addr))
-> @@ -78,7 +78,7 @@ static inline u32 readl(const volatile void __iomem
-> *addr)
->      return swab32(__raw_readl(addr));
->  }
->
-> -#define writew writew
-> +#define writew
->  static inline void writew(u16 value, volatile void __iomem *addr)
->  {
->      if (cf_internalio(addr))
-> @@ -87,7 +87,7 @@ static inline void writew(u16 value, volatile void
-> __iomem *addr)
->          __raw_writew(swab16(value), addr);
->  }
->
-> -#define writel writel
-> +#define writel
->  static inline void writel(u32 value, volatile void __iomem *addr)
->  {
->      if (cf_internalio(addr))
+> Signed-off-by: Ran Sun <sunran001@208suo.com>
+
+Thanks for your patch!
+
+But obviously you forgot to run scripts/checkpatch.pl on your own patch:
+
+    WARNING: A patch subject line should describe the change not the
+tool that found it
+    #2:
+    Subject: [PATCH] m68k: Fix two occurrences of the checkpatch.pl error:
+
+    WARNING: From:/Signed-off-by: email name mismatch: 'From:
+sunran001@208suo.com' != 'Signed-off-by: Ran Sun
+<sunran001@208suo.com>'
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
