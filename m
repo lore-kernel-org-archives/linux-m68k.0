@@ -2,113 +2,109 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B765C001DE
-	for <linux-m68k@archiver.kernel.org>; Mon, 24 Jul 2023 13:01:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2193C001DF
+	for <linux-m68k@archiver.kernel.org>; Mon, 24 Jul 2023 17:37:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231489AbjGXNBZ convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 24 Jul 2023 09:01:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48882 "EHLO
+        id S231270AbjGXRhM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 24 Jul 2023 13:37:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231500AbjGXNBJ (ORCPT
+        with ESMTP id S230159AbjGXRhL (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 24 Jul 2023 09:01:09 -0400
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C43549C2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Jul 2023 05:58:54 -0700 (PDT)
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-57a6df91b1eso53537147b3.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Jul 2023 05:58:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690203533; x=1690808333;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T6b2FtAV3bNuD5mVsXsz2riCXJosQSO38iUoRG0Tlfw=;
-        b=VRyLpZDLYu3KGXH77dxQURybX7hCW08/tLITA9LrkxpGUqPoJbFUAXcOJelX7ESAwo
-         PosnxvonaWHhP8TsbSkC2ayCIaGkbzxbOApl88PgHqllq8++5lLcCYgY9FeGgIXKUI19
-         FFgTb4o8pqoCwFF6OmP1PAwcu4Ph5B624nbm/pWrFKKSvimV+3HhK1avGkcNhJiwZi9k
-         z6XEttwBQC32yVOQ9TqlwZZdyJ0d7s9okdqH+s+//qlvNbq415yu+UulwLh2sKfTJkuq
-         sFBYD5pHu3PGIxIVarYztKP9gEgVzLHcDWXQGMuC4G4sxqSNyXvKZHeY83/4mjWf3+t/
-         KQLQ==
-X-Gm-Message-State: ABy/qLbMiV4MsHr4Y4SWM8fU/JZOycRFCvID0sl+fkMGLgYquqSC/Lzx
-        2XDddeiQfNicvtTz2YDX1ABCFNp/qVU8Xw==
-X-Google-Smtp-Source: APBJJlGdtdipr8R1NeiwRtLDKXUKq0VtWyrcQ0uOpV62kRZF3fme9IWBGXkiYKp70MWUTP8h0vKltA==
-X-Received: by 2002:a0d:c246:0:b0:577:4387:197c with SMTP id e67-20020a0dc246000000b005774387197cmr8429947ywd.16.1690203533180;
-        Mon, 24 Jul 2023 05:58:53 -0700 (PDT)
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
-        by smtp.gmail.com with ESMTPSA id v129-20020a818587000000b0057042405e2csm2751007ywf.71.2023.07.24.05.58.52
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 05:58:52 -0700 (PDT)
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-bc379e4c1cbso4946198276.2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Jul 2023 05:58:52 -0700 (PDT)
-X-Received: by 2002:a25:ba0c:0:b0:d15:454e:8ecd with SMTP id
- t12-20020a25ba0c000000b00d15454e8ecdmr576735ybg.13.1690203532619; Mon, 24 Jul
- 2023 05:58:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <ZIyBaueWT9jnTwRC@decadent.org.uk>
-In-Reply-To: <ZIyBaueWT9jnTwRC@decadent.org.uk>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 24 Jul 2023 14:58:41 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdW4deu65FdW7qGSYoQDLWmjqcz_oReQY+GKS-EtxERFJQ@mail.gmail.com>
-Message-ID: <CAMuHMdW4deu65FdW7qGSYoQDLWmjqcz_oReQY+GKS-EtxERFJQ@mail.gmail.com>
+        Mon, 24 Jul 2023 13:37:11 -0400
+Received: from maynard.decadent.org.uk (maynard.decadent.org.uk [95.217.213.242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D545698
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Jul 2023 10:37:09 -0700 (PDT)
+Received: from [213.219.164.29] (helo=deadeye)
+        by maynard with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ben@decadent.org.uk>)
+        id 1qNzUZ-0000fA-IF; Mon, 24 Jul 2023 19:37:07 +0200
+Received: from ben by deadeye with local (Exim 4.96)
+        (envelope-from <ben@decadent.org.uk>)
+        id 1qNzUZ-003dCn-01;
+        Mon, 24 Jul 2023 19:37:07 +0200
+Message-ID: <c828c0f32beec48e9f7c628fc8cbe2dcfb19cea1.camel@decadent.org.uk>
 Subject: Re: [PATCH] m68k: Fix invalid .section syntax
-To:     Ben Hutchings <ben@decadent.org.uk>
+From:   Ben Hutchings <ben@decadent.org.uk>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     linux-m68k@lists.linux-m68k.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Date:   Mon, 24 Jul 2023 19:37:02 +0200
+In-Reply-To: <CAMuHMdW4deu65FdW7qGSYoQDLWmjqcz_oReQY+GKS-EtxERFJQ@mail.gmail.com>
+References: <ZIyBaueWT9jnTwRC@decadent.org.uk>
+         <CAMuHMdW4deu65FdW7qGSYoQDLWmjqcz_oReQY+GKS-EtxERFJQ@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="=-tIURyyDEzrnNtxz2+Qrp"
+User-Agent: Evolution 3.48.4-1 
+MIME-Version: 1.0
+X-SA-Exim-Connect-IP: 213.219.164.29
+X-SA-Exim-Mail-From: ben@decadent.org.uk
+X-SA-Exim-Scanned: No (on maynard); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Ben,
 
-On Fri, Jun 16, 2023 at 5:47 PM Ben Hutchings <ben@decadent.org.uk> wrote:
-> From: Ben Hutchings <benh@debian.org>
->
-> gas supports several different forms for .section for ELF targets,
-> including:
->     .section NAME [, "FLAGS"[, @TYPE[,FLAG_SPECIFIC_ARGUMENTS]]]
-> and:
->     .section "NAME"[, #FLAGS...]
->
-> In several places we use a mix of these two forms:
->     .section NAME, #FLAGS...
->
-> A current development snapshot of binutils (2.40.50.20230611) treats
-> this mixed syntax as an error.
->
-> Change to consistently use:
->     .section NAME, "FLAGS"
-> as is used elsewhere in the kernel.
->
-> References: https://buildd.debian.org/status/fetch.php?pkg=linux&arch=m68k&ver=6.4%7Erc6-1%7Eexp1&stamp=1686907300&raw=1
-> Signed-off-by: Ben Hutchings <benh@debian.org>
+--=-tIURyyDEzrnNtxz2+Qrp
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for your patch! Consistency is good.
+On Mon, 2023-07-24 at 14:58 +0200, Geert Uytterhoeven wrote:
+> Hi Ben,
+>=20
+> On Fri, Jun 16, 2023 at 5:47=E2=80=AFPM Ben Hutchings <ben@decadent.org.u=
+k> wrote:
+> > From: Ben Hutchings <benh@debian.org>
+> >=20
+> > gas supports several different forms for .section for ELF targets,
+> > including:
+> >     .section NAME [, "FLAGS"[, @TYPE[,FLAG_SPECIFIC_ARGUMENTS]]]
+> > and:
+> >     .section "NAME"[, #FLAGS...]
+> >=20
+> > In several places we use a mix of these two forms:
+> >     .section NAME, #FLAGS...
+> >=20
+> > A current development snapshot of binutils (2.40.50.20230611) treats
+> > this mixed syntax as an error.
+[...]
+> I verified there is no difference in the generated object files with my
+> current toolchain (GNU assembler version 2.38 (m68k-linux-gnu)
+> using BFD version (GNU Binutils for Ubuntu) 2.38).
+>=20
+> Do you think it's worthwhile to fast-track this for v6.5, or is it fine t=
+o
+> queue this for v6.6?
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. applied and queued.
+The new version of binutils has been in Debian unstable for over a
+month now.  I think this should be fast-tracked.
 
-> ---
-> These changes are compile-tested only.
+Ben.
 
-I verified there is no difference in the generated object files with my
-current toolchain (GNU assembler version 2.38 (m68k-linux-gnu)
-using BFD version (GNU Binutils for Ubuntu) 2.38).
+--=20
+Ben Hutchings
+When in doubt, use brute force. - Ken Thompson
 
-Do you think it's worthwhile to fast-track this for v6.5, or is it fine to
-queue this for v6.6?
 
-Thanks!
+--=-tIURyyDEzrnNtxz2+Qrp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
 
-Gr{oetje,eeting}s,
+-----BEGIN PGP SIGNATURE-----
 
-                        Geert
+iQIzBAABCgAdFiEErCspvTSmr92z9o8157/I7JWGEQkFAmS+tr4ACgkQ57/I7JWG
+EQl1+Q/+KDXC3wnOULul/6eIgJtzXYPMuHHjpft3JEwwGuR6rPU0wh1t0Wyi2j14
+A+ZYaS2hfgWouGiZ7tmn5DTAwerMAPlZ96W3o9k6rB2mvlKdHJ5vvoijUtpjzzmS
+8FQqZiLlOo5cQdc46/BzPKkLMNqXquaW8qLHlS8tNqwdmT7Az17HLp2dbLT5+VCd
+dbzBWIN80E1bX1CaAdiiNKkVZvbAr6LHK1cHIppfoOrxiYp7TE8XQJvjHOfwc11T
+BUU5qwoU6r52qI8EWC0llVoG9oPMSB3PFj6+VB6OT4fI2UiHs52f2Qm5+7424kd1
+ilNzOhLSVNjqyBjtn1+yWa/GWisBm/tDk8XyviNIuxbwBHdrL/JljNAi9sO5ABbp
+brvXXPZCG9bJahMKP8uyJpxDST7Eq8HKJG+X39ubsPtiYWxn3X0YgHyMlvsoCz8m
+MMcVu4Fym2iRkiPJ7TFoGw7bqzmT+Z6sBc+JHDff9I3BsQjtJq1S0YMRrW9yB0A3
+FvsZudS78eVfvdphlx0b3/GttcmgsZmjamRrpYOw7Y4O/jFS8U6NwDcSp2Stc8Qq
+DyFSztlZVayanrGR0cqFgb/fnpHjPDNlr/oTjLOUw4rlUd6KrCUmoW+siDs2YAYk
+EQ6azQDUkzlLLD+384wP8Xd/7E9kCRjpdafn9JuzIUTBwmPlbXg=
+=ReyT
+-----END PGP SIGNATURE-----
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--=-tIURyyDEzrnNtxz2+Qrp--
