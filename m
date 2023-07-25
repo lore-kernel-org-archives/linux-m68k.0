@@ -2,72 +2,101 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD937C0015E
-	for <linux-m68k@archiver.kernel.org>; Tue, 25 Jul 2023 18:18:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0049C00528
+	for <linux-m68k@archiver.kernel.org>; Tue, 25 Jul 2023 18:41:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230504AbjGYSSh (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 25 Jul 2023 14:18:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34560 "EHLO
+        id S232098AbjGYSlM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 25 Jul 2023 14:41:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230416AbjGYSSe (ORCPT
+        with ESMTP id S232159AbjGYSlF (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 25 Jul 2023 14:18:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9EC41FC1
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 25 Jul 2023 11:18:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Tue, 25 Jul 2023 14:41:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C740A1FD2
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 25 Jul 2023 11:40:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690310409;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7ss2tzNf07FPnrLqdDtf+Er94L4qFrw/j0drlGJAUJI=;
+        b=fNG448vpoU7xeT1Uj3zKT+N6td3O6cQcTA75b3bMdml9+54ftdCYn0uKCwStMvL7F5XDWw
+        R6ulZS7fXPSyf/0dYRSm2t/EUvZxjJRujeFzcLWiPuB6QhpPBbLBtJUHCAjLTe+3uI0iXx
+        Uv3+Kc7TAmqIG+EpfWdOUjClEArmq8Y=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-194-8oo2ft68MBSY5EtXE1nj0w-1; Tue, 25 Jul 2023 14:40:05 -0400
+X-MC-Unique: 8oo2ft68MBSY5EtXE1nj0w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5F04861857;
-        Tue, 25 Jul 2023 18:18:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BE395C433CD;
-        Tue, 25 Jul 2023 18:18:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690309112;
-        bh=zYtH6CG2IdEtHPe8c+pbj+oqan9qklrrACjkggQYQyY=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=J313+UjxAn02Sga9EFp9856uR7KwuYfmdc5iJYzhq8dP/rdMFzerX1gJt2HIZvJ/H
-         FOGMzhNWe/aO1TT+r7r1eu5uvzZaI1WviWPhLOq9dUmcATRIKUNdLVaM+pO1UZss4R
-         Fg0PWFinRPzVEp1vIJnBv2c5HV4jMg2A+9H7JLsTQxVRG5cjMlcYtFxENm146iDsIL
-         cCwk4bl+680RuoEjtrioIVXw55EmbO41r7p54MsgbfD5rxX9SfXZbkkqbiPzfsOgYw
-         v3lSuPm37iPbuW3Seu9AcghxkZXuKvLMq+gCBPWKriwlxwZgH+YjsikwplBniXaye4
-         7/1i3pYeO1kUg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id AA2CFC59A4C;
-        Tue, 25 Jul 2023 18:18:32 +0000 (UTC)
-Subject: Re: [GIT PULL] m68k fixes for v6.5
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20230725065752.1731858-1-geert@linux-m68k.org>
-References: <20230725065752.1731858-1-geert@linux-m68k.org>
-X-PR-Tracked-List-Id: <linux-m68k.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20230725065752.1731858-1-geert@linux-m68k.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.5-tag2
-X-PR-Tracked-Commit-Id: 922a9bd138101e3e5718f0f4d40dba68ef89bb43
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: af2e19389c2c1d8a299e04c5105b180ef0c5b5b5
-Message-Id: <169030911268.3173.11090633824641337351.pr-tracker-bot@kernel.org>
-Date:   Tue, 25 Jul 2023 18:18:32 +0000
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 844A21C3408F;
+        Tue, 25 Jul 2023 18:40:00 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.242])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5BBCD4094DC1;
+        Tue, 25 Jul 2023 18:39:52 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <87fs5c3rbl.fsf@oldenburg3.str.redhat.com>
+References: <87fs5c3rbl.fsf@oldenburg3.str.redhat.com> <cover.1689092120.git.legion@kernel.org> <cover.1689074739.git.legion@kernel.org> <104971.1690300714@warthog.procyon.org.uk>
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     dhowells@redhat.com, Alexey Gladkov <legion@kernel.org>,
+        James.Bottomley@HansenPartnership.com, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, axboe@kernel.dk,
+        benh@kernel.crashing.org, borntraeger@de.ibm.com, bp@alien8.de,
+        catalin.marinas@arm.com, christian@brauner.io, dalias@libc.org,
+        davem@davemloft.net, deepa.kernel@gmail.com, deller@gmx.de,
+        fenghua.yu@intel.com, geert@linux-m68k.org, glebfm@altlinux.org,
+        gor@linux.ibm.com, hare@suse.com, hpa@zytor.com,
+        ink@jurassic.park.msu.ru, jhogan@kernel.org, kim.phillips@arm.com,
+        ldv@altlinux.org, linux-alpha@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux@armlinux.org.uk,
+        linuxppc-dev@lists.ozlabs.org, luto@kernel.org, mattst88@gmail.com,
+        mingo@redhat.com, monstr@monstr.eu, mpe@ellerman.id.au,
+        namhyung@kernel.org, paulus@samba.org, peterz@infradead.org,
+        ralf@linux-mips.org, sparclinux@vger.kernel.org, stefan@agner.ch,
+        tglx@linutronix.de, tony.luck@intel.com, tycho@tycho.ws,
+        will@kernel.org, x86@kernel.org, ysato@users.sourceforge.jp,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk
+Subject: Re: Add fchmodat2() - or add a more general syscall?
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <107289.1690310391.1@warthog.procyon.org.uk>
+Date:   Tue, 25 Jul 2023 19:39:51 +0100
+Message-ID: <107290.1690310391@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The pull request you sent on Tue, 25 Jul 2023 08:57:52 +0200:
+Florian Weimer <fweimer@redhat.com> wrote:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.5-tag2
+> > Rather than adding a fchmodat2() syscall, should we add a
+> > "set_file_attrs()" syscall that takes a mask and allows you to set a bunch
+> > of stuff all in one go?  Basically, an interface to notify_change() in the
+> > kernel that would allow several stats to be set atomically.  This might be
+> > of particular interest to network filesystems.
+> 
+> Do you mean atomically as in compare-and-swap (update only if old values
+> match), or just a way to update multiple file attributes with a single
+> system call?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/af2e19389c2c1d8a299e04c5105b180ef0c5b5b5
+I was thinking more in terms of the latter.  AFAIK, there aren't any network
+filesystems support a CAS interface on file attributes like that.  To be able
+to do a CAS operation, we'd need to pass in the old values as well as the new.
 
-Thank you!
+Another thing we could look at is doing "create_and_set_attrs()", possibly
+allowing it to take a list of xattrs also.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+David
+
