@@ -2,212 +2,175 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3193BC001B0
-	for <linux-m68k@archiver.kernel.org>; Tue, 25 Jul 2023 01:25:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65DEFC0729B
+	for <linux-m68k@archiver.kernel.org>; Tue, 25 Jul 2023 04:21:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229459AbjGYBZP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 24 Jul 2023 21:25:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47650 "EHLO
+        id S229577AbjGYEVQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 25 Jul 2023 00:21:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbjGYBZO (ORCPT
+        with ESMTP id S229692AbjGYEVM (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 24 Jul 2023 21:25:14 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AEEB171E
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Jul 2023 18:25:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690248313; x=1721784313;
-  h=date:from:to:cc:subject:message-id;
-  bh=kpntpA/D1y2UKT1bkol9SkDmcQayX50zIL0KCAXyo2w=;
-  b=lUP8gLaqnPE24uz60UP0EHZulKU+Dg3Ay8gMqtYvEj+CGfn0ra0AAx7b
-   SI6uM/zEQrPnmYr/+HOIk9sk1ksfRbQPTbyzx0KvckPUtiFYr3RkIBSQK
-   19TVy08OUDfINYV6c8osFCZ665yAIoLY/tmUiKzsQuiK9qBiOhWOE+ayB
-   AfmQXFlJoqaLd/svClk/UuS2Mxre5I34w5ZVyvM1AsAsGVBIVXzINMHAS
-   eEqtWuwJ5ucjT3OvLXSCRJCEReuoLmaBe7SecgkuJMc9Gp8262R0drJer
-   dZgaUc2KX7vhZ1f00PKNApK26fDHIUgWLA1XVuGfE6b705KYwJMzQtpCr
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="433841477"
-X-IronPort-AV: E=Sophos;i="6.01,229,1684825200"; 
-   d="scan'208";a="433841477"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 18:25:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="839671669"
-X-IronPort-AV: E=Sophos;i="6.01,229,1684825200"; 
-   d="scan'208";a="839671669"
-Received: from lkp-server02.sh.intel.com (HELO 36946fcf73d7) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 24 Jul 2023 18:25:10 -0700
-Received: from kbuild by 36946fcf73d7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qO6nW-000AAZ-0J;
-        Tue, 25 Jul 2023 01:25:10 +0000
-Date:   Tue, 25 Jul 2023 09:25:01 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:for-v6.6] BUILD SUCCESS
- 922a9bd138101e3e5718f0f4d40dba68ef89bb43
-Message-ID: <202307250958.zlxc15JU-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+        Tue, 25 Jul 2023 00:21:12 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 767C1173F
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Jul 2023 21:21:09 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-cfcebc33d04so5669835276.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Jul 2023 21:21:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690258868; x=1690863668;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DXYENedStYVsFXpaqy8X3+wmlabVR1q8JHyD5+dxFj0=;
+        b=NIGVZvXp4f6PI/DiyEOXr4f5A6/bm955BIOhiZOHaf2xh+RIldWqkGVwj9eR6s7h/D
+         u8onvMaEHJrYU/HCUYvuGCCHfNRwQcrgAf2DqnNwPmYZKfV6oX/8zUa5Ig2Q+OQW0ypq
+         XPjKaW0SZdhI5qLkWxfkcfI+eeyw8wOays1ttc+jYPlhsNlhP4uKwb+dfDR5nCYKuXl2
+         +XMxk/OSmgfJy9dL/mFwEgWIg+fhMPrVsdF2dCpA0ebzWdyAhRP+4N95J6UWvMmJ+uKs
+         yf/le1oPMyKhHzKGvzlCs3EuPlXqwgoKoHDer5fRkFbOxeVLftXul8Z+3F07FK5C3JFa
+         Y2Rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690258868; x=1690863668;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DXYENedStYVsFXpaqy8X3+wmlabVR1q8JHyD5+dxFj0=;
+        b=U2PgxhL7ESS3ojLx/ATW0ZP902csEBOGZ99ZXxU+bJX/S+hf1FlwJaw16f25vkxg9U
+         ost79svRW0nYh9V8BdaT5LxNvrJemWVR79dH9Bdez9HD1YWa+9t0uXa3KpWK+0HvvHMs
+         C4/73Af4cbJVSj6r1WLTnj4tBKchHavj4aFJcscLYD6NgRLDNLX+GBN2l0eDDNcq2x6W
+         cndpeLG2ee5a8/boM6sUW4/N58XM24tdjtoXv0GoekrKQHKidZDaF6PX6NAGnlD1bqB7
+         KjSpxnAw8n6Pxi2ADwbTlcWEMCHj5CYiB+w7Hpb5qG09lpxMF5HJP9AuePCU2gMZnN4/
+         JdQw==
+X-Gm-Message-State: ABy/qLao4VjyKp53VTOofOLX1LiqjUhFa5NVTPs9MKpVXdgvvRXKU9jP
+        8X9YhOg6SRpaMyQ3yV8ILJo=
+X-Google-Smtp-Source: APBJJlFMeQGxec1oJDVWQUYg3sII69ysVmGK3iC6jxP+dksIpqg/98z6796G6YK9NBoYSePtafE2Ug==
+X-Received: by 2002:a25:7ac6:0:b0:c5e:d3af:35cb with SMTP id v189-20020a257ac6000000b00c5ed3af35cbmr8904739ybc.42.1690258868599;
+        Mon, 24 Jul 2023 21:21:08 -0700 (PDT)
+Received: from unknowna0e70b2ca394.attlocal.net ([2600:1700:2f7d:1800::16])
+        by smtp.googlemail.com with ESMTPSA id h9-20020a25b189000000b00d0db687ef48sm1175540ybj.61.2023.07.24.21.21.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jul 2023 21:21:08 -0700 (PDT)
+From:   "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-openrisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, xen-devel@lists.xenproject.org,
+        kvm@vger.kernel.org, Hugh Dickins <hughd@google.com>,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>
+Subject: [PATCH mm-unstable v7 01/31] mm: Add PAGE_TYPE_OP folio functions
+Date:   Mon, 24 Jul 2023 21:20:21 -0700
+Message-Id: <20230725042051.36691-2-vishal.moola@gmail.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230725042051.36691-1-vishal.moola@gmail.com>
+References: <20230725042051.36691-1-vishal.moola@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-v6.6
-branch HEAD: 922a9bd138101e3e5718f0f4d40dba68ef89bb43  m68k: Fix invalid .section syntax
+No folio equivalents for page type operations have been defined, so
+define them for later folio conversions.
 
-elapsed time: 727m
+Also changes the Page##uname macros to take in const struct page* since
+we only read the memory here.
 
-configs tested: 141
-configs skipped: 136
+Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
+---
+ include/linux/page-flags.h | 30 +++++++++++++++++++++++-------
+ 1 file changed, 23 insertions(+), 7 deletions(-)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r001-20230724   gcc  
-alpha                randconfig-r016-20230724   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                         haps_hs_defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                         axm55xx_defconfig   gcc  
-arm                                 defconfig   gcc  
-arm                         lpc18xx_defconfig   gcc  
-arm                            qcom_defconfig   gcc  
-arm                  randconfig-r002-20230724   clang
-arm                  randconfig-r011-20230724   gcc  
-arm                           stm32_defconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r031-20230724   gcc  
-csky                                defconfig   gcc  
-hexagon              randconfig-r041-20230724   clang
-hexagon              randconfig-r045-20230724   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230723   clang
-i386         buildonly-randconfig-r004-20230724   gcc  
-i386         buildonly-randconfig-r005-20230723   clang
-i386         buildonly-randconfig-r005-20230724   gcc  
-i386         buildonly-randconfig-r006-20230723   clang
-i386         buildonly-randconfig-r006-20230724   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230724   gcc  
-i386                 randconfig-i002-20230724   gcc  
-i386                 randconfig-i003-20230724   gcc  
-i386                 randconfig-i004-20230724   gcc  
-i386                 randconfig-i005-20230724   gcc  
-i386                 randconfig-i006-20230724   gcc  
-i386                 randconfig-i011-20230724   clang
-i386                 randconfig-i012-20230724   clang
-i386                 randconfig-i013-20230724   clang
-i386                 randconfig-i014-20230724   clang
-i386                 randconfig-i015-20230724   clang
-i386                 randconfig-i016-20230724   clang
-i386                 randconfig-r025-20230724   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch                 loongson3_defconfig   gcc  
-loongarch            randconfig-r016-20230724   gcc  
-loongarch            randconfig-r025-20230724   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                        m5272c3_defconfig   gcc  
-m68k                 randconfig-r023-20230724   gcc  
-m68k                 randconfig-r035-20230724   gcc  
-microblaze           randconfig-r001-20230724   gcc  
-microblaze           randconfig-r004-20230724   gcc  
-microblaze           randconfig-r015-20230724   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                         db1xxx_defconfig   gcc  
-mips                 randconfig-r004-20230724   clang
-nios2                         3c120_defconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r001-20230724   gcc  
-openrisc             randconfig-r012-20230724   gcc  
-openrisc             randconfig-r021-20230724   gcc  
-openrisc             randconfig-r026-20230724   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r001-20230724   gcc  
-parisc               randconfig-r005-20230724   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                      chrp32_defconfig   gcc  
-powerpc                      ppc40x_defconfig   gcc  
-powerpc              randconfig-r006-20230724   gcc  
-powerpc              randconfig-r023-20230724   clang
-powerpc                     stx_gp3_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r004-20230724   gcc  
-riscv                randconfig-r042-20230724   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r044-20230724   clang
-sh                               allmodconfig   gcc  
-sh                         ecovec24_defconfig   gcc  
-sh                               j2_defconfig   gcc  
-sh                   randconfig-r004-20230724   gcc  
-sh                   randconfig-r013-20230724   gcc  
-sh                             sh03_defconfig   gcc  
-sh                            titan_defconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r003-20230724   gcc  
-sparc                randconfig-r005-20230724   gcc  
-sparc                randconfig-r012-20230724   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230723   clang
-x86_64       buildonly-randconfig-r001-20230724   gcc  
-x86_64       buildonly-randconfig-r002-20230723   clang
-x86_64       buildonly-randconfig-r002-20230724   gcc  
-x86_64       buildonly-randconfig-r003-20230723   clang
-x86_64       buildonly-randconfig-r003-20230724   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-r006-20230724   gcc  
-x86_64               randconfig-r011-20230724   clang
-x86_64               randconfig-r013-20230724   clang
-x86_64               randconfig-x001-20230724   clang
-x86_64               randconfig-x002-20230724   clang
-x86_64               randconfig-x003-20230724   clang
-x86_64               randconfig-x004-20230724   clang
-x86_64               randconfig-x005-20230724   clang
-x86_64               randconfig-x006-20230724   clang
-x86_64               randconfig-x011-20230724   gcc  
-x86_64               randconfig-x012-20230724   gcc  
-x86_64               randconfig-x013-20230724   gcc  
-x86_64               randconfig-x014-20230724   gcc  
-x86_64               randconfig-x015-20230724   gcc  
-x86_64               randconfig-x016-20230724   gcc  
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                         rhel-8.3-kunit   gcc  
-x86_64                               rhel-8.3   gcc  
-xtensa                           alldefconfig   gcc  
-xtensa               randconfig-r003-20230724   gcc  
-xtensa               randconfig-r012-20230724   gcc  
-xtensa               randconfig-r015-20230724   gcc  
-
+diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+index 92a2063a0a23..9218028caf33 100644
+--- a/include/linux/page-flags.h
++++ b/include/linux/page-flags.h
+@@ -908,6 +908,8 @@ static inline bool is_page_hwpoison(struct page *page)
+ 
+ #define PageType(page, flag)						\
+ 	((page->page_type & (PAGE_TYPE_BASE | flag)) == PAGE_TYPE_BASE)
++#define folio_test_type(folio, flag)					\
++	((folio->page.page_type & (PAGE_TYPE_BASE | flag)) == PAGE_TYPE_BASE)
+ 
+ static inline int page_type_has_type(unsigned int page_type)
+ {
+@@ -919,27 +921,41 @@ static inline int page_has_type(struct page *page)
+ 	return page_type_has_type(page->page_type);
+ }
+ 
+-#define PAGE_TYPE_OPS(uname, lname)					\
+-static __always_inline int Page##uname(struct page *page)		\
++#define PAGE_TYPE_OPS(uname, lname, fname)				\
++static __always_inline int Page##uname(const struct page *page)		\
+ {									\
+ 	return PageType(page, PG_##lname);				\
+ }									\
++static __always_inline int folio_test_##fname(const struct folio *folio)\
++{									\
++	return folio_test_type(folio, PG_##lname);			\
++}									\
+ static __always_inline void __SetPage##uname(struct page *page)		\
+ {									\
+ 	VM_BUG_ON_PAGE(!PageType(page, 0), page);			\
+ 	page->page_type &= ~PG_##lname;					\
+ }									\
++static __always_inline void __folio_set_##fname(struct folio *folio)	\
++{									\
++	VM_BUG_ON_FOLIO(!folio_test_type(folio, 0), folio);		\
++	folio->page.page_type &= ~PG_##lname;				\
++}									\
+ static __always_inline void __ClearPage##uname(struct page *page)	\
+ {									\
+ 	VM_BUG_ON_PAGE(!Page##uname(page), page);			\
+ 	page->page_type |= PG_##lname;					\
+-}
++}									\
++static __always_inline void __folio_clear_##fname(struct folio *folio)	\
++{									\
++	VM_BUG_ON_FOLIO(!folio_test_##fname(folio), folio);		\
++	folio->page.page_type |= PG_##lname;				\
++}									\
+ 
+ /*
+  * PageBuddy() indicates that the page is free and in the buddy system
+  * (see mm/page_alloc.c).
+  */
+-PAGE_TYPE_OPS(Buddy, buddy)
++PAGE_TYPE_OPS(Buddy, buddy, buddy)
+ 
+ /*
+  * PageOffline() indicates that the page is logically offline although the
+@@ -963,7 +979,7 @@ PAGE_TYPE_OPS(Buddy, buddy)
+  * pages should check PageOffline() and synchronize with such drivers using
+  * page_offline_freeze()/page_offline_thaw().
+  */
+-PAGE_TYPE_OPS(Offline, offline)
++PAGE_TYPE_OPS(Offline, offline, offline)
+ 
+ extern void page_offline_freeze(void);
+ extern void page_offline_thaw(void);
+@@ -973,12 +989,12 @@ extern void page_offline_end(void);
+ /*
+  * Marks pages in use as page tables.
+  */
+-PAGE_TYPE_OPS(Table, table)
++PAGE_TYPE_OPS(Table, table, pgtable)
+ 
+ /*
+  * Marks guardpages used with debug_pagealloc.
+  */
+-PAGE_TYPE_OPS(Guard, guard)
++PAGE_TYPE_OPS(Guard, guard, guard)
+ 
+ extern bool is_free_buddy_page(struct page *page);
+ 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.40.1
+
