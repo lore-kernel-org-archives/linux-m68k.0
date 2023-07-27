@@ -2,133 +2,91 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C4DAC0015E
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 Jul 2023 03:18:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AC0DC04FE2
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Jul 2023 03:57:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231340AbjG0DSF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 26 Jul 2023 23:18:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36506 "EHLO
+        id S231167AbjG0D5U (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 26 Jul 2023 23:57:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230289AbjG0DSA (ORCPT
+        with ESMTP id S229689AbjG0D5R (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 26 Jul 2023 23:18:00 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E171E94
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Jul 2023 20:17:58 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-686be3cbea0so1103346b3a.0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Jul 2023 20:17:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690427878; x=1691032678;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/+XWNNoTh3QSc7zkxoNFSFxDCrhxwrrFqkyYTjKfZQA=;
-        b=jZsf6//XmPZPr9QLzB2Z/dr5WcR1rXEgsRsH4OatPOPneruNPfgv08Nb/hn/BgYd9N
-         424QPAZvJxBTz63ttpRKbtz+2YgcLXLoI1mMJRRJ8qKSrebgiQeaJlugO8kcl9cD6TAJ
-         3j+pX2PMQz30+dCR/obeKNuLlV5mZNddH1R34UKvHHgNWaPJZf7nRPYZ374Ynxvp7Q9z
-         wZLi+ewi53b+exuFnq86mI8ozvj1RT0Gdz9H6o63y1IjUDgnfqiH+jX5PIMcRzOQWEu+
-         bb+f5idJqRoZEjqT0fi09832nLwd7RBFnj8BYaJFTkn5dIXmGP92bYakCLhY+OfiS6cP
-         Z3Fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690427878; x=1691032678;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=/+XWNNoTh3QSc7zkxoNFSFxDCrhxwrrFqkyYTjKfZQA=;
-        b=V8x3ZTZ0eSbpPQbmYJQScoiVhmd3vzPKhSngS987tad131gBYV5Txh5ZIaj/6hNqQh
-         YLHqoqdkkkQM/A3PSLnaWec1jONlNjzkcTMTi0XGkH3M48v/Z0TLRAKrgBIt49KDLW06
-         /zVB+/DuN0w3gRhqVMY88hySFqhYbM/Q0KhDtcWfmLOsplG0WHei5pw6mV/j+qRDxnET
-         V6XIvVEmCAo8Iooje3aRNrLS3jgirJoTuvreZ3oRPgcEwgu4OFiDVBq9ISVJjUxFGrsz
-         u6QIAQc668pzJH9pB0jDoj/GA11inTXn35VeUUi0l/sbac/wL1LjUYSdXMFeeyUPZR7/
-         fuBA==
-X-Gm-Message-State: ABy/qLYybiUX6cZjxwutsb280ltGjBaDIP86C0MsXfHX/aDkAQ4Zzhgh
-        6ePRIxjO3S6tr/wfN4OJWr+XZx+s7Lk=
-X-Google-Smtp-Source: APBJJlFxJJxJrAnSgVS0K1FRSMHc5JA2mnv96WztD2rQau2svfm/o8nVrJizpKhFBIYysxq2+ASz9g==
-X-Received: by 2002:a17:902:ea09:b0:1b6:9954:2030 with SMTP id s9-20020a170902ea0900b001b699542030mr1723549plg.8.1690427877641;
-        Wed, 26 Jul 2023 20:17:57 -0700 (PDT)
-Received: from [10.1.1.24] (222-152-184-54-fibre.sparkbb.co.nz. [222.152.184.54])
-        by smtp.gmail.com with ESMTPSA id p5-20020a170902eac500b001b3bf8001a9sm318416pld.48.2023.07.26.20.17.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 26 Jul 2023 20:17:57 -0700 (PDT)
-Subject: Re: Linux 6.4.4 on m68k - Q40 - pata_falcon causes oops at boot time
-To:     Finn Thain <fthain@linux-m68k.org>
-References: <ZLvZmVfzJNHlPTlJ@sowerbutts.com>
- <CAMuHMdUU62jjunJh9cqSqHT87B0H0A4udOOPs=WN7WZKpcagVA@mail.gmail.com>
- <1dabd80c-d91e-7869-e95e-199fc58b9f84@linux-m68k.org>
- <c47f07a9-d302-b8ce-c630-988e08cc8254@gmail.com>
- <ZL5jwoXAU5t8S+E6@sowerbutts.com>
- <d01db1e6-a0ae-559c-ab64-b3a2f5b60324@gmail.com>
- <997f0ff1-865d-29fb-ef65-2bb693549da8@linux-m68k.org>
- <288847c5-46bd-fcd4-11a7-829685a02c79@gmail.com>
- <521776cc-a11e-0a3a-b44d-fc051f6ee2ea@linux-m68k.org>
-Cc:     William R Sowerbutts <will@sowerbutts.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <624c5629-e337-46ba-c8ac-411fe19f2f46@gmail.com>
-Date:   Thu, 27 Jul 2023 15:17:52 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        Wed, 26 Jul 2023 23:57:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FFBB270D
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Jul 2023 20:57:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7BE4261CF1;
+        Thu, 27 Jul 2023 03:57:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 333DBC433C8;
+        Thu, 27 Jul 2023 03:57:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690430233;
+        bh=2LZQxDDrrueBXO8BVcvN88sdAiFgW61YpvmWoV4rusk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EZdgMDJNvWHpTU/TbbeuJIRdZELQC4io44o7BRZjr/qEbqXP+mOb3SpnPc3GnzZUJ
+         6/89F+qI71eFF4iUju0DDwCRfWxlmyu525kPI64StVeMn3g22mxzWiFX5SyeyJUOvC
+         7vpMprEDvWDPdxrLmbFWPjI1sopKugt5VjA6tOeYBWY7dbKLYXy1ooOebTmGv3ACSj
+         fFwMNdhI5gT7lq20ftyAy9B2B7F0Kx3men5CLDs/URmKMEbxn6qNQpfOdz4+yFLRKM
+         U8TEEb4JSsQRcj9xreGkiiwQXGZr6UG1WIoN/6+4R39C1Goqdd0J+NCOS+t8EZnNCl
+         LnOw3z+jPm6bA==
+Date:   Wed, 26 Jul 2023 20:57:10 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        James.Bottomley@hansenpartnership.com, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, axboe@kernel.dk,
+        benh@kernel.crashing.org, borntraeger@de.ibm.com, bp@alien8.de,
+        catalin.marinas@arm.com, christian@brauner.io, dalias@libc.org,
+        davem@davemloft.net, deepa.kernel@gmail.com, deller@gmx.de,
+        fenghua.yu@intel.com, fweimer@redhat.com, geert@linux-m68k.org,
+        glebfm@altlinux.org, gor@linux.ibm.com, hare@suse.com,
+        hpa@zytor.com, ink@jurassic.park.msu.ru, jhogan@kernel.org,
+        kim.phillips@arm.com, ldv@altlinux.org,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux@armlinux.org.uk, linuxppc-dev@lists.ozlabs.org,
+        luto@kernel.org, mattst88@gmail.com, mingo@redhat.com,
+        monstr@monstr.eu, mpe@ellerman.id.au, namhyung@kernel.org,
+        paulus@samba.org, peterz@infradead.org, ralf@linux-mips.org,
+        sparclinux@vger.kernel.org, stefan@agner.ch, tglx@linutronix.de,
+        tony.luck@intel.com, tycho@tycho.ws, will@kernel.org,
+        x86@kernel.org, ysato@users.sourceforge.jp,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk
+Subject: Re: Add fchmodat2() - or add a more general syscall?
+Message-ID: <20230727035710.GA15127@sol.localdomain>
+References: <cover.1689092120.git.legion@kernel.org>
+ <cover.1689074739.git.legion@kernel.org>
+ <104971.1690300714@warthog.procyon.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <521776cc-a11e-0a3a-b44d-fc051f6ee2ea@linux-m68k.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <104971.1690300714@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Finn,
+On Tue, Jul 25, 2023 at 04:58:34PM +0100, David Howells wrote:
+> Rather than adding a fchmodat2() syscall, should we add a "set_file_attrs()"
+> syscall that takes a mask and allows you to set a bunch of stuff all in one
+> go?  Basically, an interface to notify_change() in the kernel that would allow
+> several stats to be set atomically.  This might be of particular interest to
+> network filesystems.
+> 
+> David
+> 
 
-Am 27.07.2023 um 13:16 schrieb Finn Thain:
->> A correct fix would keep the current IO translation intact, and instead
->> use the platform mem resource to register the driver IO range, and the
->> platform IO resource as base offset to populate the port ioaddr struct
->> (minus the register scaling and byte offset, mind you).
->>
->> I'll give this some more thought ASAP.
->>
->
-> I wonder whether Will's suggestion (CONFIG_HAS_IOPORT_MAP) is feasible in
-> light of the needs of Gayle and EtherNEC drivers.
+fchmodat2() is a simple addition that fits well with the existing syscalls.
+It fixes an oversight in fchmodat().
 
-I'll have to see how that works - both Gayle and EtherNEC don't just 
-need address translation but their respective quirky IO access functions.
+IMO we should just add fchmodat2(), and not get sidetracked by trying to add
+some super-generalized syscall instead.  That can always be done later.
 
->
->> And yes, I'm painfully aware the m68k low level IO code is becoming a
->> bit of a maintainance legacy, in no small part due to my hacks around
->> Atari EtherNEC.
->>
->
-> I guess you and I both can share the blame for 44b1fbc0f5f30e66...
->
-> Anyway, you make a good point about on-going maintenance. Do you think
-> that by supporting standard ISA drivers we might actually reduce the
-> ideosyncracies in m68k IO code?
-
-You and DaveM ought to have a chat about that - abstracting the legacy 
-drivers from the ISA constraints was his preferred option when I last 
-attempted to get the Gayle network driver patches merged. When I say 
-'preferred', I'm probably understating a little.
-
-I had toyed with that using the EtherNEC driver as test case but never 
-got very far (this would have been splitting the driver into a core 
-lib8390 module and a platform-specific module that allows to hook a 
-variety of IO accessors as hooks, not static defines, and I wasn't too 
-certain about performance impacts of such a change, the performance of 
-the EtherNEC being so shitty it won't make any impact there),
-
-The only other option (that I can see) would be creating a bus driver 
-for the ISA bus, with platforms allowed to register their particular IO 
-accessors for IO and memory accesses - again, performance impacts to 
-consider and getting test coverage on legacy ISA hardware a nightmare. 
-This would allow to use legacy driver code more or less unchanged. 
-Haven't given that much thought at all (the idea pretty much originated 
-from this present mess, but that's all).
-
-There may be other approaches that can be considered, if none of this is 
-what you had in mind.
-
-Cheers,
-
-	Michael
+- Eric
