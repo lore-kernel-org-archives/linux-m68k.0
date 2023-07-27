@@ -2,124 +2,124 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCCD6C001DC
-	for <linux-m68k@archiver.kernel.org>; Thu, 27 Jul 2023 17:43:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28E0AEB64DD
+	for <linux-m68k@archiver.kernel.org>; Thu, 27 Jul 2023 23:47:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229445AbjG0RnI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 27 Jul 2023 13:43:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39236 "EHLO
+        id S229946AbjG0Xrf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 27 Jul 2023 19:47:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbjG0Rmx (ORCPT
+        with ESMTP id S229448AbjG0Xre (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 27 Jul 2023 13:42:53 -0400
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D63FB30E8
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Jul 2023 10:42:52 -0700 (PDT)
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4RBdQK2CNdz9sph;
-        Thu, 27 Jul 2023 19:42:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cyphar.com; s=MBO0001;
-        t=1690479769;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=irvaKwjIRBfIMs3OM027g5G4TY2gjSeGrvplRFueXaU=;
-        b=UZDWQCSlVrWdtqreCk6pJhl6N2mvEBs8l+J0GZXLAJ/i0AyNILAKr29Y2HzpDc9MHho6C5
-        xVlOhswIJJkR5SSR4ws+giR/x20PVxaPyIM6O/iNQxvH7uAImdu2F/Zw48FGbEcZ6risS0
-        REEAuKwEzxnqm3M6cQCiZqnNt+7AoEXIgN0iyVEXl/IgRzie92zZ+gVSh1Z8MCS6kWkRql
-        HlKWkqhpMYcbmdMzT3dNoNMTNXKs91TI0m/a0jVKcoSIVgCZEWz4fVmF9rn+0qt15Qn/26
-        OISfzUoTd6FBgoUSvJSBOFNpfsyBzgTQSL6tDQROyhhl2eKXxJMNtKy6plit+w==
-Date:   Fri, 28 Jul 2023 03:42:22 +1000
-From:   Aleksa Sarai <cyphar@cyphar.com>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Alexey Gladkov <legion@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        Palmer Dabbelt <palmer@sifive.com>,
-        James.Bottomley@hansenpartnership.com, acme@kernel.org,
-        alexander.shishkin@linux.intel.com, axboe@kernel.dk,
-        benh@kernel.crashing.org, borntraeger@de.ibm.com, bp@alien8.de,
-        catalin.marinas@arm.com, christian@brauner.io, dalias@libc.org,
-        davem@davemloft.net, deepa.kernel@gmail.com, deller@gmx.de,
-        dhowells@redhat.com, fenghua.yu@intel.com, fweimer@redhat.com,
-        geert@linux-m68k.org, glebfm@altlinux.org, gor@linux.ibm.com,
-        hare@suse.com, hpa@zytor.com, ink@jurassic.park.msu.ru,
-        jhogan@kernel.org, kim.phillips@arm.com, ldv@altlinux.org,
-        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux@armlinux.org.uk, linuxppc-dev@lists.ozlabs.org,
-        luto@kernel.org, mattst88@gmail.com, mingo@redhat.com,
-        monstr@monstr.eu, mpe@ellerman.id.au, namhyung@kernel.org,
-        paulus@samba.org, peterz@infradead.org, ralf@linux-mips.org,
-        sparclinux@vger.kernel.org, stefan@agner.ch, tglx@linutronix.de,
-        tony.luck@intel.com, tycho@tycho.ws, will@kernel.org,
-        x86@kernel.org, ysato@users.sourceforge.jp
-Subject: Re: [PATCH v4 3/5] arch: Register fchmodat2, usually as syscall 452
-Message-ID: <20230727.174206-real.town.kosher.menu-lN1F8uSeAtB@cyphar.com>
-References: <cover.1689074739.git.legion@kernel.org>
- <cover.1689092120.git.legion@kernel.org>
- <a677d521f048e4ca439e7080a5328f21eb8e960e.1689092120.git.legion@kernel.org>
- <nbtxxotfsotuiepm7r4tegc4hy5qxe4dfjuqq7rm6qkkevooxh@4hacgjwit4or>
- <20230727-fangen-olympiade-85fcbdaf03d7@brauner>
+        Thu, 27 Jul 2023 19:47:34 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6E92D70
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Jul 2023 16:47:32 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id E0A855C00F7;
+        Thu, 27 Jul 2023 19:47:29 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Thu, 27 Jul 2023 19:47:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1690501649; x=1690588049; bh=yXUMKLKBIVCEw
+        v2SMsG34X6d+mMDD3O4VAB3EANyDAA=; b=gNaFFrudwAR3tCAfg62UZZSlCG8WG
+        XwiCDIXPc9TBYi/DjTK05P2nLyBQVU5nji3MEVssgkN0I002Vcy44xcFESLcCHHy
+        60IPcXzNlmKDh+EE+cLw6qfP9Gl1unPrlHUAJIhHWFk1XBb/Yw+3keyqEvL6s6VV
+        7jiKuIvKjUbuR2Oy22ARp0lwNjhk1hlYP5Vwgjl0hbU3K9FNWruuE2QG8u4O1ZBO
+        UwcGKEOZQ0EyFpnX8ZPutI1ivvTdcJXbXfdhRlv1x8gt37CXRHMKvxmbvDCexnzI
+        em23+WbDeYGDsH5Sq9CiuesAXqbe2o8CAFYLUa7b9uExC64Fx1N7VWiGQ==
+X-ME-Sender: <xms:EQLDZF_6m-qEgpyr8ARNt2yv8XQ7Y-iJbJYkO_r_kaPU1jKScLnc8w>
+    <xme:EQLDZJsQ5YD7PX85D88tkjO6niiSgNhQB12tsq_2oYpv1VdpOwvMBk-pG9lXiePyu
+    oknnRWBkd9CZF41jFc>
+X-ME-Received: <xmr:EQLDZDCst14zbLSGLXoP189QpTJIpOr0pM0YJeReeiheXak9qzRV3hRpN084AqJ5r8W5gLDMMW-ZALlO9mHxE-0X218qRBqyNyM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrieehgddvhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
+    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
+    htvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedvueeh
+    ueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
+    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:EQLDZJfcCvoZm-II50vuhpwVyeM1cCyoBE0PrBIIXOmVLVeenJHfQg>
+    <xmx:EQLDZKNaR8Im3P5N-_j-sk0ZwA4uuAJGEudvZs_UU7j7tkup0QPoHg>
+    <xmx:EQLDZLml-jyb6zw6for3OMzdmZeCGkSVpJr3YIcbwNzgsoFSeP7x4w>
+    <xmx:EQLDZDb512-CXCJ4ZOeUdbJLkneWyKSezMzs3tr3SBlirWaoopeE9Q>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 27 Jul 2023 19:47:27 -0400 (EDT)
+Date:   Fri, 28 Jul 2023 09:47:43 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Michael Schmitz <schmitzmic@gmail.com>
+cc:     William R Sowerbutts <will@sowerbutts.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Richard Zidlicky <rz@linux-m68k.org>
+Subject: Re: Linux 6.4.4 on m68k - Q40 - pata_falcon causes oops at boot
+ time
+In-Reply-To: <624c5629-e337-46ba-c8ac-411fe19f2f46@gmail.com>
+Message-ID: <81706cdc-2a7a-f383-881a-7313fefbb938@linux-m68k.org>
+References: <ZLvZmVfzJNHlPTlJ@sowerbutts.com> <CAMuHMdUU62jjunJh9cqSqHT87B0H0A4udOOPs=WN7WZKpcagVA@mail.gmail.com> <1dabd80c-d91e-7869-e95e-199fc58b9f84@linux-m68k.org> <c47f07a9-d302-b8ce-c630-988e08cc8254@gmail.com> <ZL5jwoXAU5t8S+E6@sowerbutts.com>
+ <d01db1e6-a0ae-559c-ab64-b3a2f5b60324@gmail.com> <997f0ff1-865d-29fb-ef65-2bb693549da8@linux-m68k.org> <288847c5-46bd-fcd4-11a7-829685a02c79@gmail.com> <521776cc-a11e-0a3a-b44d-fc051f6ee2ea@linux-m68k.org> <624c5629-e337-46ba-c8ac-411fe19f2f46@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="y33k3lm4leglkjmq"
-Content-Disposition: inline
-In-Reply-To: <20230727-fangen-olympiade-85fcbdaf03d7@brauner>
-X-Rspamd-Queue-Id: 4RBdQK2CNdz9sph
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+On Thu, 27 Jul 2023, Michael Schmitz wrote:
 
---y33k3lm4leglkjmq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> >
+> >> And yes, I'm painfully aware the m68k low level IO code is becoming a 
+> >> bit of a maintainance legacy, in no small part due to my hacks around 
+> >> Atari EtherNEC.
+> >>
+> >
+> > I guess you and I both can share the blame for 44b1fbc0f5f30e66...
+> >
+> > Anyway, you make a good point about on-going maintenance. Do you think 
+> > that by supporting standard ISA drivers we might actually reduce the 
+> > ideosyncracies in m68k IO code?
+> 
+> You and DaveM ought to have a chat about that - abstracting the legacy 
+> drivers from the ISA constraints was his preferred option when I last 
+> attempted to get the Gayle network driver patches merged. When I say 
+> 'preferred', I'm probably understating a little.
+> 
 
-On 2023-07-27, Christian Brauner <brauner@kernel.org> wrote:
-> On Wed, Jul 26, 2023 at 02:43:41AM +1000, Aleksa Sarai wrote:
-> > On 2023-07-11, Alexey Gladkov <legion@kernel.org> wrote:
-> > > From: Palmer Dabbelt <palmer@sifive.com>
-> > >=20
-> > > This registers the new fchmodat2 syscall in most places as nuber 452,
-> > > with alpha being the exception where it's 562.  I found all these sit=
-es
-> > > by grepping for fspick, which I assume has found me everything.
-> >=20
-> > Shouldn't this patch be squashed with the patch that adds the syscall?
-> > At least, that's how I've usually seen it done...
->=20
-> Depends. Iirc, someone said they'd prefer for doing it in one patch
-> in some circumstances on some system call we added years ago. But otoh,
-> having the syscall wiring done separately makes it easy for arch
-> maintainers to ack only the wiring up part. Both ways are valid imho.
-> (cachestat() did it for x86 and then all the others separately. So
-> really it seems a bit all over the place depending on the scenario.)
+A discussion with maintainers probably won't get far without working code 
+to look at. Perhaps William will send an RFC patch to illustrate his 
+approach.
 
-Fair enough!
+> I had toyed with that using the EtherNEC driver as test case but never 
+> got very far (this would have been splitting the driver into a core 
+> lib8390 module and a platform-specific module that allows to hook a 
+> variety of IO accessors as hooks, not static defines, and I wasn't too 
+> certain about performance impacts of such a change, the performance of 
+> the EtherNEC being so shitty it won't make any impact there),
+> 
+> The only other option (that I can see) would be creating a bus driver 
+> for the ISA bus, with platforms allowed to register their particular IO 
+> accessors for IO and memory accesses - again, performance impacts to 
+> consider and getting test coverage on legacy ISA hardware a nightmare. 
+> This would allow to use legacy driver code more or less unchanged. 
+> Haven't given that much thought at all (the idea pretty much originated 
+> from this present mess, but that's all).
+> 
+> There may be other approaches that can be considered, if none of this is 
+> what you had in mind.
+> 
 
---=20
-Aleksa Sarai
-Senior Software Engineer (Containers)
-SUSE Linux GmbH
-<https://www.cyphar.com/>
+What I had in mind is probably unacceptable because drivers end up having 
+to do byteswapping as happens in pata_falcon (or falconide and q40ide). 
+Perhaps your bus driver idea would probabably find more acceptance. OTOH 
+if the aim of the exercise is to use standard drivers (like pata_legacy) 
+there would probably be driver changes either way.
 
---y33k3lm4leglkjmq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQS2TklVsp+j1GPyqQYol/rSt+lEbwUCZMKsfgAKCRAol/rSt+lE
-b/FwAQChKTWhN1YMxOU/bLQz1S3i+RhA8DQHZpoCbh1FlOSYwAEAmOKfPG+e4zNA
-VW75+QkpKlGw0rY3TfjxW8YkGfonXgo=
-=/4Tp
------END PGP SIGNATURE-----
-
---y33k3lm4leglkjmq--
+It might be helpful to look for some precedent for this kind of thing 
+among the other big-endian platforms with ISA. MIPS Magnum is dual-endian 
+but Linux only runs in little-endian mode and the problem doesn't arise. 
+But there must be other examples. Maybe CHRP?
