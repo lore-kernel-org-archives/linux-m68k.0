@@ -2,107 +2,142 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2660CC001E0
-	for <linux-m68k@archiver.kernel.org>; Fri, 28 Jul 2023 08:04:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B316C00528
+	for <linux-m68k@archiver.kernel.org>; Fri, 28 Jul 2023 08:44:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233663AbjG1IEw convert rfc822-to-8bit (ORCPT
+        id S234869AbjG1IoT convert rfc822-to-8bit (ORCPT
         <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 28 Jul 2023 04:04:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46226 "EHLO
+        Fri, 28 Jul 2023 04:44:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234697AbjG1IEP (ORCPT
+        with ESMTP id S230310AbjG1IoG (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 28 Jul 2023 04:04:15 -0400
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4157C4200
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 28 Jul 2023 01:03:24 -0700 (PDT)
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-583b0637c04so25434707b3.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 28 Jul 2023 01:03:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690531403; x=1691136203;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cFC62FgZIF3JWlHG1f85S/gFGY2oAxjH59Trv/UJKPw=;
-        b=Pt11gJZgAAyYwQM9aBH3ZE42Q2Rpowfigw16M1zBBrwjW21f3tW5rztMaOESQq3Y3f
-         N0h9DFli9+ZTQSZnYGjhPH5VIQd2mgsYsffNL99cK+P+DEtGOL5E/54kp5BXMTiVO+KC
-         vGNS2ilI9neFAVzH1bmqbPlsF4wUKwjS7HgdiVVPSwFxrtSZBTQsb+7kNKiOmYFbpIxZ
-         7Xl/5pSK23o1qNARepMZFwNXMG26WO3KPUNslctLPvxqjXdFCN3naV4xn5RX0nOH8Ij2
-         Jld8+y6ZJB3yr5rkva9eGbLM0x6L/9h31Oj91VvqR2Kc3KZ1In3paCU4inarfbLuX4T1
-         k4bg==
-X-Gm-Message-State: ABy/qLYdZr3gPJS9K1OJRQJ/+y38VpQUfqN/pK7IsCLTIZtXMAI2Y+9f
-        jBZT6Lyoj5migqhtvtsD602Uxvglhxe3aw==
-X-Google-Smtp-Source: APBJJlERRNmEyOhJBj7ejc2weK7DTL7NgE8iuwyCbWjbJOnMm+TVGFnd4CadQbf+LZUlIzongsSH8Q==
-X-Received: by 2002:a81:8457:0:b0:577:3adb:d8c7 with SMTP id u84-20020a818457000000b005773adbd8c7mr1013694ywf.26.1690531403297;
-        Fri, 28 Jul 2023 01:03:23 -0700 (PDT)
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com. [209.85.128.169])
-        by smtp.gmail.com with ESMTPSA id t14-20020a81830e000000b0058461c9524fsm936913ywf.12.2023.07.28.01.03.22
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 01:03:23 -0700 (PDT)
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-577ddda6ab1so25762807b3.0
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 28 Jul 2023 01:03:22 -0700 (PDT)
-X-Received: by 2002:a81:4886:0:b0:577:3f8c:fc60 with SMTP id
- v128-20020a814886000000b005773f8cfc60mr1352628ywa.1.1690531402794; Fri, 28
- Jul 2023 01:03:22 -0700 (PDT)
+        Fri, 28 Jul 2023 04:44:06 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D90B83A87
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 28 Jul 2023 01:44:03 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-66-QuWuNYGHMBmrzfdm4fjM8A-1; Fri, 28 Jul 2023 09:44:01 +0100
+X-MC-Unique: QuWuNYGHMBmrzfdm4fjM8A-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 28 Jul
+ 2023 09:43:58 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 28 Jul 2023 09:43:58 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Aleksa Sarai' <cyphar@cyphar.com>,
+        Alexey Gladkov <legion@kernel.org>
+CC:     LKML <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "James.Bottomley@hansenpartnership.com" 
+        <James.Bottomley@hansenpartnership.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "christian@brauner.io" <christian@brauner.io>,
+        "dalias@libc.org" <dalias@libc.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "deepa.kernel@gmail.com" <deepa.kernel@gmail.com>,
+        "deller@gmx.de" <deller@gmx.de>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        "fenghua.yu@intel.com" <fenghua.yu@intel.com>,
+        "fweimer@redhat.com" <fweimer@redhat.com>,
+        "geert@linux-m68k.org" <geert@linux-m68k.org>,
+        "glebfm@altlinux.org" <glebfm@altlinux.org>,
+        "gor@linux.ibm.com" <gor@linux.ibm.com>,
+        "hare@suse.com" <hare@suse.com>, "hpa@zytor.com" <hpa@zytor.com>,
+        "ink@jurassic.park.msu.ru" <ink@jurassic.park.msu.ru>,
+        "jhogan@kernel.org" <jhogan@kernel.org>,
+        "kim.phillips@arm.com" <kim.phillips@arm.com>,
+        "ldv@altlinux.org" <ldv@altlinux.org>,
+        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "mattst88@gmail.com" <mattst88@gmail.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "monstr@monstr.eu" <monstr@monstr.eu>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "paulus@samba.org" <paulus@samba.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "ralf@linux-mips.org" <ralf@linux-mips.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "stefan@agner.ch" <stefan@agner.ch>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "tycho@tycho.ws" <tycho@tycho.ws>,
+        "will@kernel.org" <will@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "ysato@users.sourceforge.jp" <ysato@users.sourceforge.jp>,
+        Palmer Dabbelt <palmer@sifive.com>
+Subject: RE: [PATCH v4 2/5] fs: Add fchmodat2()
+Thread-Topic: [PATCH v4 2/5] fs: Add fchmodat2()
+Thread-Index: AQHZwLFLeKGBJJpK+0qJRy2agWp2qK/O266A
+Date:   Fri, 28 Jul 2023 08:43:58 +0000
+Message-ID: <dc48b40748e24d3799e7ee66fa7e8cb4@AcuMS.aculab.com>
+References: <cover.1689074739.git.legion@kernel.org>
+ <cover.1689092120.git.legion@kernel.org>
+ <f2a846ef495943c5d101011eebcf01179d0c7b61.1689092120.git.legion@kernel.org>
+ <njnhwhgmsk64e6vf3ur7fifmxlipmzez3r5g7ejozsrkbwvq7w@tu7w3ieystcq>
+ <ZMEjlDNJkFpYERr1@example.org>
+ <20230727.041348-imposing.uptake.velvet.nylon-712tDwzCAbCCoSGx@cyphar.com>
+ <20230727.173441-loving.habit.lame.acrobat-V6VTPe8G4FRI@cyphar.com>
+In-Reply-To: <20230727.173441-loving.habit.lame.acrobat-V6VTPe8G4FRI@cyphar.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <ZLvZmVfzJNHlPTlJ@sowerbutts.com> <CAMuHMdUU62jjunJh9cqSqHT87B0H0A4udOOPs=WN7WZKpcagVA@mail.gmail.com>
- <1dabd80c-d91e-7869-e95e-199fc58b9f84@linux-m68k.org> <c47f07a9-d302-b8ce-c630-988e08cc8254@gmail.com>
- <ZL5jwoXAU5t8S+E6@sowerbutts.com> <d01db1e6-a0ae-559c-ab64-b3a2f5b60324@gmail.com>
- <997f0ff1-865d-29fb-ef65-2bb693549da8@linux-m68k.org> <288847c5-46bd-fcd4-11a7-829685a02c79@gmail.com>
- <521776cc-a11e-0a3a-b44d-fc051f6ee2ea@linux-m68k.org> <624c5629-e337-46ba-c8ac-411fe19f2f46@gmail.com>
- <81706cdc-2a7a-f383-881a-7313fefbb938@linux-m68k.org> <1e6e6dce-7b97-e206-b4f9-228520d44a45@gmail.com>
-In-Reply-To: <1e6e6dce-7b97-e206-b4f9-228520d44a45@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 28 Jul 2023 10:03:11 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdX8Mv9=6zimfMW-=r9XH+np3V5eyGyQeRVYKV14vJ-q9w@mail.gmail.com>
-Message-ID: <CAMuHMdX8Mv9=6zimfMW-=r9XH+np3V5eyGyQeRVYKV14vJ-q9w@mail.gmail.com>
-Subject: Re: Linux 6.4.4 on m68k - Q40 - pata_falcon causes oops at boot time
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Finn Thain <fthain@linux-m68k.org>,
-        William R Sowerbutts <will@sowerbutts.com>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Richard Zidlicky <rz@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael,
+...
+> FWIW, I agree with Christian that these behaviours are not ideal (and
+> I'm working on a series that might allow for these things to be properly
+> blocked in the future) but there's also the consistency argument -- I
+> don't think fchownat() is much safer to allow in this way than
+> fchmodat() and (again) this behaviour is already possible through
+> procfs.
 
-On Fri, Jul 28, 2023 at 9:52 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> Am 28.07.2023 um 11:47 schrieb Finn Thain:
-> > What I had in mind is probably unacceptable because drivers end up having
-> > to do byteswapping as happens in pata_falcon (or falconide and q40ide).
->
-> Yes, but Q40 and Falcon are impossible to support any other way, and
-> byte swapping the IDE interface in hardware was never repeated anywhere
-> else, fortunately. We will have to keep pata_falcon around for that
-> cause in any event.
+If the 'through procfs' involves readlink("/proc/self/fd/n") and
+accessing through the returned path then the permission checks
+are different.
+Using the returned path requires search permissions on all the
+directories.
 
-Anyone remember TiVo? PPC with byte-swapped IDE interface.
+This is all fine for xxxat() functions where a real open
+directory fd is supplied.
+But other cases definitely need a lot of thought to ensure
+they don't let programs acquire permissions they aren't
+supposed to have.
 
-> > It might be helpful to look for some precedent for this kind of thing
-> > among the other big-endian platforms with ISA. MIPS Magnum is dual-endian
-> > but Linux only runs in little-endian mode and the problem doesn't arise.
-> > But there must be other examples. Maybe CHRP?
->
-> Not all of CHRP, hearing Geert tell it. But there must be some boards
-> that have an ISA bus?
+	David
 
-It did have an ISA bus, but no ISA slots.
-But the only external device on that bus was cs4232 audio.
-All other ISA devices were internal to the south bridge.
-http://g33rt.be/migrated/Linux/PPC/pci/isaAT1/.
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
