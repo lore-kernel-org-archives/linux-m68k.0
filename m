@@ -2,120 +2,127 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F5F4C41513
-	for <linux-m68k@archiver.kernel.org>; Fri, 28 Jul 2023 18:42:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1EF2C001DF
+	for <linux-m68k@archiver.kernel.org>; Sat, 29 Jul 2023 04:57:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234566AbjG1Smp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 28 Jul 2023 14:42:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52018 "EHLO
+        id S230032AbjG2E5G (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 29 Jul 2023 00:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231709AbjG1Smi (ORCPT
+        with ESMTP id S229617AbjG2E5F (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 28 Jul 2023 14:42:38 -0400
-Received: from brightrain.aerifal.cx (brightrain.aerifal.cx [216.12.86.13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FF7A1731
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 28 Jul 2023 11:42:23 -0700 (PDT)
-Date:   Fri, 28 Jul 2023 14:42:12 -0400
-From:   "dalias@libc.org" <dalias@libc.org>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Aleksa Sarai' <cyphar@cyphar.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "James.Bottomley@hansenpartnership.com" 
-        <James.Bottomley@hansenpartnership.com>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
-        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "christian@brauner.io" <christian@brauner.io>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "deepa.kernel@gmail.com" <deepa.kernel@gmail.com>,
-        "deller@gmx.de" <deller@gmx.de>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        "fenghua.yu@intel.com" <fenghua.yu@intel.com>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "glebfm@altlinux.org" <glebfm@altlinux.org>,
-        "gor@linux.ibm.com" <gor@linux.ibm.com>,
-        "hare@suse.com" <hare@suse.com>, "hpa@zytor.com" <hpa@zytor.com>,
-        "ink@jurassic.park.msu.ru" <ink@jurassic.park.msu.ru>,
-        "jhogan@kernel.org" <jhogan@kernel.org>,
-        "kim.phillips@arm.com" <kim.phillips@arm.com>,
-        "ldv@altlinux.org" <ldv@altlinux.org>,
-        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "mattst88@gmail.com" <mattst88@gmail.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "monstr@monstr.eu" <monstr@monstr.eu>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "paulus@samba.org" <paulus@samba.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "ralf@linux-mips.org" <ralf@linux-mips.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "stefan@agner.ch" <stefan@agner.ch>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "tycho@tycho.ws" <tycho@tycho.ws>,
-        "will@kernel.org" <will@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "ysato@users.sourceforge.jp" <ysato@users.sourceforge.jp>,
-        Palmer Dabbelt <palmer@sifive.com>
-Subject: Re: [PATCH v4 2/5] fs: Add fchmodat2()
-Message-ID: <20230728184212.GD20050@brightrain.aerifal.cx>
-References: <cover.1689074739.git.legion@kernel.org>
- <cover.1689092120.git.legion@kernel.org>
- <f2a846ef495943c5d101011eebcf01179d0c7b61.1689092120.git.legion@kernel.org>
- <njnhwhgmsk64e6vf3ur7fifmxlipmzez3r5g7ejozsrkbwvq7w@tu7w3ieystcq>
- <ZMEjlDNJkFpYERr1@example.org>
- <20230727.041348-imposing.uptake.velvet.nylon-712tDwzCAbCCoSGx@cyphar.com>
- <20230727.173441-loving.habit.lame.acrobat-V6VTPe8G4FRI@cyphar.com>
- <dc48b40748e24d3799e7ee66fa7e8cb4@AcuMS.aculab.com>
+        Sat, 29 Jul 2023 00:57:05 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 568B149E0
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 28 Jul 2023 21:57:03 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-55c993e26ffso1621311a12.0
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 28 Jul 2023 21:57:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690606622; x=1691211422;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1Cz/GJLqNnac9acs8DsBrc2EEQJ/b7GKTSsYz/p/5GY=;
+        b=mS0dshfAT9Qu8LVJI3NF/qla+W6bwqgBdXwbX0sA24ChhULj/MLP+6PAzsSfJpHnTb
+         TauXLgszdwDb+5GhWJRALSw8V7lbgY8doJmX1xgg5vA4dSJMvbdMOX4K8g647Hku5yjV
+         fiPZeXPT3ru9kNKMB74DZITR+vlV/WcFJ5G0P0MY2XWXouYxQIeT6k57zT3rM4c0TcWz
+         MCH+qQ1FFRjOxuOY/QmgjsLo6k9XnhnTGyz8jJAlIdFpZYiZH0Uelq+CHtwDFrKcfaGM
+         vqdf7qKMXL8SluPtmaUisT3RIUIG7Ju6fzU4njDix2uqEOw4wtlJe0G7zLXJJdkwbI9D
+         abPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690606622; x=1691211422;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=1Cz/GJLqNnac9acs8DsBrc2EEQJ/b7GKTSsYz/p/5GY=;
+        b=lARdk78wUfuPeobo2ymqcf328zzvQbeNA4a+LPM0K9FJBnV8IOY4UT4hYxjUhqWs+O
+         5k3Kn9V9yO8ccFx7MtcaAMyPNV9hoYoV3dknS8Nmb71Z+ElFzi7nrmsHkN2C1BikHIzp
+         d/qSfCeEk8cxsz2AssI5IbwCvcr94iWJG/jWCfpwbhX8037zLu5mOi1HJGRolZyV1VlY
+         UNvKPTcfq1ZRjJbKqPb/NAc/3bS/k2N4Pqy7v7bb3oEJWgKxBMzyz5pI91HZteURZ+40
+         zdqgzpURKCv3c34t9AQ8NaKaO9Vz+/29UfUhTZbyoax0O4nyMWh7TMt+ZAi9Cya1hmBe
+         Bc0g==
+X-Gm-Message-State: ABy/qLY83et+BnsIXsEW1EswKDgJtXWBxeS8lPwpctxXRV2SFRCf9y4x
+        v9aaLqs2SpK5bDCLG3F1V/8=
+X-Google-Smtp-Source: APBJJlG6uZOt8Q/8Ky+loBbgRZSr0hB13k6M4ocsOtBdEoR8Hkqz9VsmFsqD+X/NjXzZ+CmnFn6gHw==
+X-Received: by 2002:a17:90a:db82:b0:263:e423:5939 with SMTP id h2-20020a17090adb8200b00263e4235939mr3532130pjv.28.1690606622379;
+        Fri, 28 Jul 2023 21:57:02 -0700 (PDT)
+Received: from [10.1.1.24] (222-152-184-54-fibre.sparkbb.co.nz. [222.152.184.54])
+        by smtp.gmail.com with ESMTPSA id 29-20020a17090a1a5d00b0025c2c398d33sm3513072pjl.39.2023.07.28.21.56.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 28 Jul 2023 21:57:01 -0700 (PDT)
+Subject: Re: Linux 6.4.4 on m68k - Q40 - pata_falcon causes oops at boot time
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+References: <ZLvZmVfzJNHlPTlJ@sowerbutts.com>
+ <CAMuHMdUU62jjunJh9cqSqHT87B0H0A4udOOPs=WN7WZKpcagVA@mail.gmail.com>
+ <1dabd80c-d91e-7869-e95e-199fc58b9f84@linux-m68k.org>
+ <c47f07a9-d302-b8ce-c630-988e08cc8254@gmail.com>
+ <ZL5jwoXAU5t8S+E6@sowerbutts.com>
+ <d01db1e6-a0ae-559c-ab64-b3a2f5b60324@gmail.com>
+ <997f0ff1-865d-29fb-ef65-2bb693549da8@linux-m68k.org>
+ <288847c5-46bd-fcd4-11a7-829685a02c79@gmail.com>
+ <521776cc-a11e-0a3a-b44d-fc051f6ee2ea@linux-m68k.org>
+ <624c5629-e337-46ba-c8ac-411fe19f2f46@gmail.com>
+ <81706cdc-2a7a-f383-881a-7313fefbb938@linux-m68k.org>
+ <1e6e6dce-7b97-e206-b4f9-228520d44a45@gmail.com>
+ <CAMuHMdX8Mv9=6zimfMW-=r9XH+np3V5eyGyQeRVYKV14vJ-q9w@mail.gmail.com>
+Cc:     Finn Thain <fthain@linux-m68k.org>,
+        William R Sowerbutts <will@sowerbutts.com>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Richard Zidlicky <rz@linux-m68k.org>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <6b2eb3ad-5053-4998-7aa6-d7e2e90141f9@gmail.com>
+Date:   Sat, 29 Jul 2023 16:56:55 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dc48b40748e24d3799e7ee66fa7e8cb4@AcuMS.aculab.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <CAMuHMdX8Mv9=6zimfMW-=r9XH+np3V5eyGyQeRVYKV14vJ-q9w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 08:43:58AM +0000, David Laight wrote:
-> ....
-> > FWIW, I agree with Christian that these behaviours are not ideal (and
-> > I'm working on a series that might allow for these things to be properly
-> > blocked in the future) but there's also the consistency argument -- I
-> > don't think fchownat() is much safer to allow in this way than
-> > fchmodat() and (again) this behaviour is already possible through
-> > procfs.
-> 
-> If the 'through procfs' involves readlink("/proc/self/fd/n") and
-> accessing through the returned path then the permission checks
-> are different.
-> Using the returned path requires search permissions on all the
-> directories.
+Hi Geert,
 
-That's *not* how "through procfs" works. The "magic symlinks" in
-/proc/*/fd are not actual symlinks that get dereferenced to the
-contents they readlink() to, but special-type objects that dereference
-directly to the underlying file associated with the open file
-description.
+Am 28.07.2023 um 20:03 schrieb Geert Uytterhoeven:
+> Hi Michael,
+>
+> On Fri, Jul 28, 2023 at 9:52 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+>> Am 28.07.2023 um 11:47 schrieb Finn Thain:
+>>> What I had in mind is probably unacceptable because drivers end up having
+>>> to do byteswapping as happens in pata_falcon (or falconide and q40ide).
+>>
+>> Yes, but Q40 and Falcon are impossible to support any other way, and
+>> byte swapping the IDE interface in hardware was never repeated anywhere
+>> else, fortunately. We will have to keep pata_falcon around for that
+>> cause in any event.
+>
+> Anyone remember TiVo? PPC with byte-swapped IDE interface.
 
-Rich
+I vaguely remember, but had forgotten even that it was a PPC machine.
+
+>
+>>> It might be helpful to look for some precedent for this kind of thing
+>>> among the other big-endian platforms with ISA. MIPS Magnum is dual-endian
+>>> but Linux only runs in little-endian mode and the problem doesn't arise.
+>>> But there must be other examples. Maybe CHRP?
+>>
+>> Not all of CHRP, hearing Geert tell it. But there must be some boards
+>> that have an ISA bus?
+>
+> It did have an ISA bus, but no ISA slots.
+> But the only external device on that bus was cs4232 audio.
+
+Thanks, I'll take a look at that.
+
+Cheers,
+
+	Michael
+
+> All other ISA devices were internal to the south bridge.
+> http://g33rt.be/migrated/Linux/PPC/pci/isaAT1/.
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
