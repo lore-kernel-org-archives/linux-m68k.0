@@ -2,192 +2,187 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18729C0015E
-	for <linux-m68k@archiver.kernel.org>; Sun, 30 Jul 2023 03:01:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2101C001DC
+	for <linux-m68k@archiver.kernel.org>; Mon, 31 Jul 2023 17:04:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229456AbjG3DBY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 29 Jul 2023 23:01:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33678 "EHLO
+        id S232576AbjGaREH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 31 Jul 2023 13:04:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjG3DBW (ORCPT
+        with ESMTP id S233756AbjGaRDr (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 29 Jul 2023 23:01:22 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD5F1BFC
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 29 Jul 2023 20:01:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690686080; x=1722222080;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=RSxpak/CfpPX42kY2c5dZ8PAH2kUUyDtkYnsnY9B9oY=;
-  b=m+JkqOLZP/1bP8FZBqjLP28ZSpNEWG4aRG67k2vXbCvJzvAbtw83t3H6
-   AI3q4kR54/nY9NNkbuzSZoEXk+KpL8z2EIkQLQsVhJcEAbtr75+F0nb4n
-   jzKJl2dNmKUwOH2sgZmjIvlfwglPA/fXQ9cAwOnQNyq108vSrfCVaf0jf
-   t8cUMEsRVJHZNFRg9GCDdVNkZcP3fM5Ur9YJqObcWnpX77xsZT1hhnBuN
-   NJH+PpXSv8XTaJOevnha2CjGljwR5aQI1o+lubVjRjAHBLipCxAlDOtw/
-   LD7U0uUDMsSTT1mKkU5F6aOoByCHkzI+gliI08beII9qXCVIhUmTbYFpf
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10786"; a="372438239"
-X-IronPort-AV: E=Sophos;i="6.01,240,1684825200"; 
-   d="scan'208";a="372438239"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2023 20:01:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10786"; a="727869974"
-X-IronPort-AV: E=Sophos;i="6.01,240,1684825200"; 
-   d="scan'208";a="727869974"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 29 Jul 2023 20:01:18 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qPwgH-0004PB-1H;
-        Sun, 30 Jul 2023 03:01:17 +0000
-Date:   Sun, 30 Jul 2023 11:00:47 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Michael Schmitz <schmitzmic@gmail.com>
-Subject: [geert-m68k:master 1/2] drivers/usb/host/isp116x.h:419:15: sparse:
- sparse: cast to restricted __le16
-Message-ID: <202307301003.8cQ3Oey6-lkp@intel.com>
+        Mon, 31 Jul 2023 13:03:47 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E916F1BC0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 31 Jul 2023 10:03:38 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d066d72eb12so6697962276.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 31 Jul 2023 10:03:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690823018; x=1691427818;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ryTLkHDnIGhrwoqJrwF4w+CKAk7Or3iQY3ycYEnzI1s=;
+        b=FItEz4g6fK8MUe9in0y5zvq54vvv6vRus4MvaXB5z0kFF5Wd4GxyLG45TIMFtswPBZ
+         o5hWJRASIfXbLHcyuajDu2shNzEC3fqz1lq+2UGzWjNRBxNrOGPJc7+FeZHb270T76uP
+         DVP8E3UCWoa73Cj1cemt4q3bHNezkBDrcXpoGHgWYyrjCA03wHK6cuEEIp3IlP9F3vH7
+         B0WVEfhX/KMZdz2qP55P02W/l5cO6EeJ2/dVRRpuTUrHoGO/LbskVtPeDS55S32mzgKs
+         4t8PJ/VzqvancbDUNXdKozgYa+ZBjOr6Csg18HLyiAYJhBTxnGsnAH6C4GyD3p+69e1s
+         v6hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690823018; x=1691427818;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ryTLkHDnIGhrwoqJrwF4w+CKAk7Or3iQY3ycYEnzI1s=;
+        b=h2eFMzixkiRdLl16KIe8mUIlEi7zLGDPTgCkc4Oe9+fBR1W18S7ca0oL49SFiQDih2
+         W3lzzwHEonc/iptiyIZrjsvNl7I0IEmTwoXlMZ1vkIN4Tiqzk2oniQiGjsy0ISh+F20u
+         fdvmwT/zwyk4i3dEyjV0YCEBc1ahd9z5iOcDiKy8R7RdFPpyUBiomTdueCPpul1PUZQM
+         6PFr0neHXql1xZTscUYmkqj6z2VNNLDz3NpYxfYH72sPBgrE9J0eD0iDpCtiu/yjXHCe
+         5CbpnR4uAUmFd4XgacqdKlCycLRbQuZP7lGiy1KqbJEpinbcTRwff3UzXd4uE824b8dh
+         Fs4Q==
+X-Gm-Message-State: ABy/qLaiVVzWD3TuLNQBuzektgUb0bzlBl4H+ngGRrG8s0iHgccO0Qfv
+        L1Hp1PBdn/zFseyZpg5T9CE=
+X-Google-Smtp-Source: APBJJlF+dh42RzdYn0EXh+W1YGBDbhVTCkZUXnYcADIxILBW8gkVGvh5Vx2rhlYPGGopBifzCd0Ntg==
+X-Received: by 2002:a25:d1d0:0:b0:d1c:5a9a:48d2 with SMTP id i199-20020a25d1d0000000b00d1c5a9a48d2mr11161535ybg.19.1690823017725;
+        Mon, 31 Jul 2023 10:03:37 -0700 (PDT)
+Received: from unknowna0e70b2ca394.attlocal.net ([2600:1700:2f7d:1800::16])
+        by smtp.googlemail.com with ESMTPSA id x31-20020a25ac9f000000b00c832ad2e2eesm2511833ybi.60.2023.07.31.10.03.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 10:03:37 -0700 (PDT)
+From:   "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-openrisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, xen-devel@lists.xenproject.org,
+        kvm@vger.kernel.org, Hugh Dickins <hughd@google.com>,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        David Hildenbrand <david@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Richard Weinberger <richard@nod.at>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH mm-unstable v8 00/31] Split ptdesc from struct page
+Date:   Mon, 31 Jul 2023 10:03:01 -0700
+Message-Id: <20230731170332.69404-1-vishal.moola@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-head:   cd76bba726300611d2add29cb025db2b42d70b41
-commit: 84fdf8f72e6db3433914e7de7c8e64d95dacaaef [1/2] m68k: atari: Make Atari ROM port I/O write macros return void
-config: m68k-randconfig-r093-20230730 (https://download.01.org/0day-ci/archive/20230730/202307301003.8cQ3Oey6-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230730/202307301003.8cQ3Oey6-lkp@intel.com/reproduce)
+The MM subsystem is trying to shrink struct page. This patchset
+introduces a memory descriptor for page table tracking - struct ptdesc.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307301003.8cQ3Oey6-lkp@intel.com/
+This patchset introduces ptdesc, splits ptdesc from struct page, and
+converts many callers of page table constructor/destructors to use ptdescs.
 
-sparse warnings: (new ones prefixed by >>)
-   drivers/usb/host/isp116x-hcd.c:137:55: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected unsigned short [usertype] val @@     got restricted __le16 [usertype] @@
-   drivers/usb/host/isp116x-hcd.c:137:55: sparse:     expected unsigned short [usertype] val
-   drivers/usb/host/isp116x-hcd.c:137:55: sparse:     got restricted __le16 [usertype]
-   drivers/usb/host/isp116x-hcd.c:184:34: sparse: sparse: cast to restricted __le16
-   drivers/usb/host/isp116x-hcd.c:184:34: sparse: sparse: cast to restricted __le16
-   drivers/usb/host/isp116x-hcd.c:184:34: sparse: sparse: cast to restricted __le16
-   drivers/usb/host/isp116x-hcd.c:184:34: sparse: sparse: cast to restricted __le16
-   drivers/usb/host/isp116x-hcd.c: note: in included file:
-   drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:436:21: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:436:21: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:438:23: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:438:23: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:426:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:426:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:428:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:428:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:402:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:402:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:402:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:402:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:402:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:402:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:402:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:402:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:402:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
->> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
-   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
->> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
-   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
->> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
-   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
->> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
-   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
->> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
-   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
->> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
-   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
->> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
-   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
->> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
-   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
->> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
-   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
->> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
-   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
->> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
-   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
->> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
-   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
+Ptdesc is a foundation to further standardize page tables, and eventually
+allow for dynamic allocation of page tables independent of struct page.
+However, the use of pages for page table tracking is quite deeply
+ingrained and varied across archictectures, so there is still a lot of
+work to be done before that can happen.
 
-vim +419 drivers/usb/host/isp116x.h
+This is rebased on mm-unstable.
 
-4808a1c0261176 Olav Kongas     2005-04-09  414  
-4808a1c0261176 Olav Kongas     2005-04-09  415  static inline u16 isp116x_raw_read_data16(struct isp116x *isp116x)
-4808a1c0261176 Olav Kongas     2005-04-09  416  {
-4808a1c0261176 Olav Kongas     2005-04-09  417  	u16 val;
-4808a1c0261176 Olav Kongas     2005-04-09  418  
-2f0f9fcd96fa8d Michael Schmitz 2013-04-06 @419  	val = isp_raw_readw(isp116x->data_reg);
-4808a1c0261176 Olav Kongas     2005-04-09  420  	isp116x_delay(isp116x, 150);
-4808a1c0261176 Olav Kongas     2005-04-09  421  	return val;
-4808a1c0261176 Olav Kongas     2005-04-09  422  }
-4808a1c0261176 Olav Kongas     2005-04-09  423  
+v8:
+  Fix some compiler issues
 
-:::::: The code at line 419 was first introduced by commit
-:::::: 2f0f9fcd96fa8dbeec54cce98170985f7b384a41 m68k/atari: USB - add ISP1160 USB host controller support
+v7:
+  Drop s390 gmap ptdesc conversions - gmap is unecessary complication
+    that can be dealt with later
+  Be more thorough with ptdesc struct sanity checks and comments
+  Rebase onto mm-unstable
 
-:::::: TO: Michael Schmitz <schmitzmic@gmail.com>
-:::::: CC: Geert Uytterhoeven <geert@linux-m68k.org>
+Vishal Moola (Oracle) (31):
+  mm: Add PAGE_TYPE_OP folio functions
+  pgtable: Create struct ptdesc
+  mm: add utility functions for ptdesc
+  mm: Convert pmd_pgtable_page() callers to use pmd_ptdesc()
+  mm: Convert ptlock_alloc() to use ptdescs
+  mm: Convert ptlock_ptr() to use ptdescs
+  mm: Convert pmd_ptlock_init() to use ptdescs
+  mm: Convert ptlock_init() to use ptdescs
+  mm: Convert pmd_ptlock_free() to use ptdescs
+  mm: Convert ptlock_free() to use ptdescs
+  mm: Create ptdesc equivalents for pgtable_{pte,pmd}_page_{ctor,dtor}
+  powerpc: Convert various functions to use ptdescs
+  x86: Convert various functions to use ptdescs
+  s390: Convert various pgalloc functions to use ptdescs
+  mm: Remove page table members from struct page
+  pgalloc: Convert various functions to use ptdescs
+  arm: Convert various functions to use ptdescs
+  arm64: Convert various functions to use ptdescs
+  csky: Convert __pte_free_tlb() to use ptdescs
+  hexagon: Convert __pte_free_tlb() to use ptdescs
+  loongarch: Convert various functions to use ptdescs
+  m68k: Convert various functions to use ptdescs
+  mips: Convert various functions to use ptdescs
+  nios2: Convert __pte_free_tlb() to use ptdescs
+  openrisc: Convert __pte_free_tlb() to use ptdescs
+  riscv: Convert alloc_{pmd, pte}_late() to use ptdescs
+  sh: Convert pte_free_tlb() to use ptdescs
+  sparc64: Convert various functions to use ptdescs
+  sparc: Convert pgtable_pte_page_{ctor, dtor}() to ptdesc equivalents
+  um: Convert {pmd, pte}_free_tlb() to use ptdescs
+  mm: Remove pgtable_{pmd, pte}_page_{ctor, dtor}() wrappers
+
+ Documentation/mm/split_page_table_lock.rst    |  12 +-
+ .../zh_CN/mm/split_page_table_lock.rst        |  14 +-
+ arch/arm/include/asm/tlb.h                    |  12 +-
+ arch/arm/mm/mmu.c                             |   7 +-
+ arch/arm64/include/asm/tlb.h                  |  14 +-
+ arch/arm64/mm/mmu.c                           |   7 +-
+ arch/csky/include/asm/pgalloc.h               |   4 +-
+ arch/hexagon/include/asm/pgalloc.h            |   8 +-
+ arch/loongarch/include/asm/pgalloc.h          |  27 ++--
+ arch/loongarch/mm/pgtable.c                   |   7 +-
+ arch/m68k/include/asm/mcf_pgalloc.h           |  47 +++---
+ arch/m68k/include/asm/sun3_pgalloc.h          |   8 +-
+ arch/m68k/mm/motorola.c                       |   4 +-
+ arch/mips/include/asm/pgalloc.h               |  32 ++--
+ arch/mips/mm/pgtable.c                        |   8 +-
+ arch/nios2/include/asm/pgalloc.h              |   8 +-
+ arch/openrisc/include/asm/pgalloc.h           |   8 +-
+ arch/powerpc/mm/book3s64/mmu_context.c        |  10 +-
+ arch/powerpc/mm/book3s64/pgtable.c            |  32 ++--
+ arch/powerpc/mm/pgtable-frag.c                |  58 +++----
+ arch/riscv/include/asm/pgalloc.h              |   8 +-
+ arch/riscv/mm/init.c                          |  16 +-
+ arch/s390/include/asm/pgalloc.h               |   4 +-
+ arch/s390/include/asm/tlb.h                   |   4 +-
+ arch/s390/mm/pgalloc.c                        | 128 +++++++--------
+ arch/sh/include/asm/pgalloc.h                 |   9 +-
+ arch/sparc/mm/init_64.c                       |  17 +-
+ arch/sparc/mm/srmmu.c                         |   5 +-
+ arch/um/include/asm/pgalloc.h                 |  18 +--
+ arch/x86/mm/pgtable.c                         |  47 +++---
+ arch/x86/xen/mmu_pv.c                         |   2 +-
+ include/asm-generic/pgalloc.h                 |  88 +++++-----
+ include/asm-generic/tlb.h                     |  11 ++
+ include/linux/mm.h                            | 151 +++++++++++++-----
+ include/linux/mm_types.h                      |  18 ---
+ include/linux/page-flags.h                    |  30 +++-
+ include/linux/pgtable.h                       |  80 ++++++++++
+ mm/memory.c                                   |   8 +-
+ 38 files changed, 586 insertions(+), 385 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.40.1
+
