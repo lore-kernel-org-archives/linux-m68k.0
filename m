@@ -2,81 +2,79 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80D6EC001E0
-	for <linux-m68k@archiver.kernel.org>; Wed,  9 Aug 2023 21:11:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BBB2C0015E
+	for <linux-m68k@archiver.kernel.org>; Wed,  9 Aug 2023 21:28:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbjHIVLO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 9 Aug 2023 17:11:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49754 "EHLO
+        id S229733AbjHIV2x convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 9 Aug 2023 17:28:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233480AbjHIVLO (ORCPT
+        with ESMTP id S229489AbjHIV2x (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 9 Aug 2023 17:11:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74257211C
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  9 Aug 2023 14:11:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DCEA764383;
-        Wed,  9 Aug 2023 21:11:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B2BCC433BA;
-        Wed,  9 Aug 2023 21:11:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691615471;
-        bh=e+yBdXe6YH6EAyOPKB3mcLVmPCMP0zUx7UJIGD0M24w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aPqTAqDwPtJ1adwP/Ym9C+awpJpFqEqJivs/iuesBtoennfgdBbZX3ea3L3TV/z7+
-         96H5CL//YII1mgUJNlkO+3nTN0OT3lcJdj7/K2Um+hlUF2gDzUsEns0OuGAjl1n5Yf
-         Exi7GhbHsmfkP8byLH5s9hJVW5c+JHmqYcSGYb8130SIBFUGSiT6EfXAC/eG2UjU+y
-         uvXvQ0ZYSE8pnpbx6ui9r29DLsQ5hIzbD7ZC3tPgfJAceYjaJ1L4nLWx8rVcgb3/Vk
-         gKlaR+roTAzP6FIL4oqFwjeXKzX3oxiKBSZC79ggrV6ajft9PflD3Fp53TqUKAu+R1
-         mo504NW7osw6Q==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
+        Wed, 9 Aug 2023 17:28:53 -0400
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0361810E0;
+        Wed,  9 Aug 2023 14:28:51 -0700 (PDT)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1qTqjV-002KS1-IB; Wed, 09 Aug 2023 23:28:45 +0200
+Received: from p5b13a393.dip0.t-ipconnect.de ([91.19.163.147] helo=suse-laptop.fritz.box)
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1qTqjV-0010kt-Aq; Wed, 09 Aug 2023 23:28:45 +0200
+Message-ID: <6dd20a539a18aca5e7d976d301c458e100f255b3.camel@physik.fu-berlin.de>
+Subject: Re: [PATCH 2/2] m68k: add memcmp() declarartion
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     Arnd Bergmann <arnd@arndb.de>, linux-m68k@lists.linux-m68k.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] m68k: add memcmp() declarartion
-Date:   Wed,  9 Aug 2023 23:10:50 +0200
-Message-Id: <20230809211057.60514-2-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230809211057.60514-1-arnd@kernel.org>
+Date:   Wed, 09 Aug 2023 23:28:44 +0200
+In-Reply-To: <20230809211057.60514-2-arnd@kernel.org>
 References: <20230809211057.60514-1-arnd@kernel.org>
+         <20230809211057.60514-2-arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.163.147
+X-ZEDAT-Hint: PO
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hi Arnd!
 
-There is a global definition of memcmp() that gets built on m68k but is never
-used and causes a warning because of the missing prototype:
+On Wed, 2023-08-09 at 23:10 +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> There is a global definition of memcmp() that gets built on m68k but is never
+> used and causes a warning because of the missing prototype:
+> 
+> lib/string.c:671:15: error: no previous prototype for 'memcmp' [-Werror=missing-prototypes]
+> 
+> Add the corresponding declaration to avoid the warning. As far as I understand
+> the #define to redirect memcmp() to __builtin_memcmp() does not actually do anything
+> here since this is what it does anyway.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-lib/string.c:671:15: error: no previous prototype for 'memcmp' [-Werror=missing-prototypes]
+Can you fix the typo in the subject?
 
-Add the corresponding declaration to avoid the warning. As far as I understand
-the #define to redirect memcmp() to __builtin_memcmp() does not actually do anything
-here since this is what it does anyway.
+s/declarartion/declaration/
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/m68k/include/asm/string.h | 1 +
- 1 file changed, 1 insertion(+)
+Thanks,
+Adrian
 
-diff --git a/arch/m68k/include/asm/string.h b/arch/m68k/include/asm/string.h
-index f0f5021d6327d..760cc13acdf41 100644
---- a/arch/m68k/include/asm/string.h
-+++ b/arch/m68k/include/asm/string.h
-@@ -41,6 +41,7 @@ static inline char *strncpy(char *dest, const char *src, size_t n)
- #define __HAVE_ARCH_MEMMOVE
- extern void *memmove(void *, const void *, __kernel_size_t);
- 
-+extern int memcmp(const void *, const void *, __kernel_size_t);
- #define memcmp(d, s, n) __builtin_memcmp(d, s, n)
- 
- #define __HAVE_ARCH_MEMSET
 -- 
-2.39.2
-
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
