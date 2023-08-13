@@ -2,184 +2,123 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06716C001B0
-	for <linux-m68k@archiver.kernel.org>; Sun, 13 Aug 2023 05:34:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BBF9C001B0
+	for <linux-m68k@archiver.kernel.org>; Sun, 13 Aug 2023 07:38:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229510AbjHMFem (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 13 Aug 2023 01:34:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51280 "EHLO
+        id S229589AbjHMHiE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 13 Aug 2023 03:38:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjHMFem (ORCPT
+        with ESMTP id S229507AbjHMHiE (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 13 Aug 2023 01:34:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 345BA10FB
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 12 Aug 2023 22:34:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691904880; x=1723440880;
-  h=date:from:to:cc:subject:message-id;
-  bh=JvZQmPWjQn7pkjjBPzzbLxlF1HdiJ79TdYZ2Za4nY90=;
-  b=HF3Zi5TMQya+/YyFIRD65IN98yV+qAExnTgOw0D/qR1ODLAoraXRrCr3
-   aq1RiHzAvFGnXhoaXywPP/uwO7/8lgqtb/3GxtrUd3dAp1gXF0lO7kV97
-   np5tvxEvAsg9FKcoFhmrZdCqz3EMDnyPuokhrdHJHYW9Okh9hK9UZf+GB
-   7yZhstYtPbSR/mc2fVYqrP0364+qAzlH6niS6R8uvD6O4bz0ICn+G1KHe
-   f+TpRwCk1ISePLwJUESl7Eg8YQGR0/tnqyDwGu/gxsT9T11A1SmfCbJeF
-   ctAh5bGD2cTMyB3pLKBzb6Sf5YEp1BjdoOKCRqwcaN1k7vt8rq393cvIn
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10800"; a="352194751"
-X-IronPort-AV: E=Sophos;i="6.01,169,1684825200"; 
-   d="scan'208";a="352194751"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2023 22:34:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10800"; a="906852486"
-X-IronPort-AV: E=Sophos;i="6.01,169,1684825200"; 
-   d="scan'208";a="906852486"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 12 Aug 2023 22:34:32 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qV3kF-0008yM-1o;
-        Sun, 13 Aug 2023 05:34:31 +0000
-Date:   Sun, 13 Aug 2023 13:33:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- f84290f7d5265e88bf4145d5be1dbc8ea4a6b9cf
-Message-ID: <202308131343.QJ9yxKtE-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+        Sun, 13 Aug 2023 03:38:04 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C99659B
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 13 Aug 2023 00:38:05 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id B00EC3200437;
+        Sun, 13 Aug 2023 03:38:03 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Sun, 13 Aug 2023 03:38:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1691912283; x=1691998683; bh=0F8QW3HpnwfkN
+        xWA0qYKHq0ynmNcsfGt/1v/lEifRw4=; b=TxuYzsvq+lo1Z1ewJd5xublWrCgbW
+        LzEsaiGJZF9A4Q1DaTiqmYs7yEUKiihqFClt25kDbLVR+gtFZhddBG4nTZkeTuaA
+        OBngB3lPOzLRzTsBGWhb0r9Xsc4rZoRCsA26X3l9XY9MkCsYf/9Bq6/2UdHVjHE3
+        80V7q0FkaMeWRLtKngAyDpljNiIAMVz2TCJ5uqrf0ljPIkW2EIX8ck52Yv0+mzA6
+        M13Gl5mNk4veQ3QelywtuxHOLIgyPBWNPaFFGIEPgxvF7MjlC+sIo/b4hX7ue58x
+        +fTt/NQ71lp5/HKhWs7U69J9EL67QhNfHP/LpKjbp3wOTIxiWAMXN3rqA==
+X-ME-Sender: <xms:WojYZJwkZ_eE9XiZ93msrJzmHcj5TzFePkGzHxFRg87efwo8NTmKpA>
+    <xme:WojYZJTalFFYJaMPVu9uukGw6fczf_gdRlAw8CXltnM6bJoUdVet8OE47Gu8Z44xN
+    prxpgJco7IJDJHucJY>
+X-ME-Received: <xmr:WojYZDVhkkjoWEr5QB-5TdHwMF32K97uOcE0D8Afr2Jl4YIHSTaF9MPgAQvSDKVdur-oFY3q5PPvUFVVK8dQwWLwGhjuOEJ7uLk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddtuddguddvudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhn
+    ucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrf
+    grthhtvghrnhepfeeiheejvdetgfeitddutefhkeeilefhveehgfdvtdekkedvkeehffdt
+    keevvdeunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmhei
+    kehkrdhorhhg
+X-ME-Proxy: <xmx:WojYZLhtaEG_Eiw8urYv6QvBXsSaFesYxXiFJ-pshoRq-hpwKbbhAw>
+    <xmx:WojYZLDL7Z22EOBtiSnByB-8JWfJ94zv7KzTYEGPDT3A23bwE13Qaw>
+    <xmx:WojYZEJ2Zsqvb9aPr4xOud3IHEiOpQ5uU1BrYoPIi9OAxluYF_rZ1A>
+    <xmx:W4jYZOOeZIrwirnbOWQy_vVWTmmRpqLgBP-dO_fp-lLb7cro-ycM9w>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 13 Aug 2023 03:38:00 -0400 (EDT)
+Date:   Sun, 13 Aug 2023 17:38:00 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Michael Schmitz <schmitzmic@gmail.com>,
+        William R Sowerbutts <will@sowerbutts.com>
+cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Richard Zidlicky <rz@linux-m68k.org>
+Subject: Re: Linux 6.4.4 on m68k - Q40 - pata_falcon causes oops at boot
+ time
+In-Reply-To: <68187ca1-1d4f-92f9-f6c7-476caaa24df0@gmail.com>
+Message-ID: <275c3e98-a8e3-5d2a-13fa-db79ab9d6719@linux-m68k.org>
+References: <ZLvZmVfzJNHlPTlJ@sowerbutts.com> <CAMuHMdUU62jjunJh9cqSqHT87B0H0A4udOOPs=WN7WZKpcagVA@mail.gmail.com> <1dabd80c-d91e-7869-e95e-199fc58b9f84@linux-m68k.org> <c47f07a9-d302-b8ce-c630-988e08cc8254@gmail.com> <ZL5jwoXAU5t8S+E6@sowerbutts.com>
+ <d01db1e6-a0ae-559c-ab64-b3a2f5b60324@gmail.com> <997f0ff1-865d-29fb-ef65-2bb693549da8@linux-m68k.org> <288847c5-46bd-fcd4-11a7-829685a02c79@gmail.com> <521776cc-a11e-0a3a-b44d-fc051f6ee2ea@linux-m68k.org> <624c5629-e337-46ba-c8ac-411fe19f2f46@gmail.com>
+ <81706cdc-2a7a-f383-881a-7313fefbb938@linux-m68k.org> <68187ca1-1d4f-92f9-f6c7-476caaa24df0@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: f84290f7d5265e88bf4145d5be1dbc8ea4a6b9cf  Merge tag 'v6.5-rc5'
+Michael, William,
 
-elapsed time: 720m
+On Sun, 13 Aug 2023, Michael Schmitz wrote:
 
-configs tested: 113
-configs skipped: 5
+> Am 28.07.23 um 11:47 schrieb Finn Thain:
+> > On Thu, 27 Jul 2023, Michael Schmitz wrote:
+> >
+> >>>> And yes, I'm painfully aware the m68k low level IO code is becoming 
+> >>>> a bit of a maintainance legacy, in no small part due to my hacks 
+> >>>> around Atari EtherNEC.
+> >>>>
+> >>> I guess you and I both can share the blame for 44b1fbc0f5f30e66...
+> >>>
+> >>> Anyway, you make a good point about on-going maintenance. Do you 
+> >>> think that by supporting standard ISA drivers we might actually 
+> >>> reduce the ideosyncracies in m68k IO code?
+> >> You and DaveM ought to have a chat about that - abstracting the 
+> >> legacy drivers from the ISA constraints was his preferred option when 
+> >> I last attempted to get the Gayle network driver patches merged. When 
+> >> I say 'preferred', I'm probably understating a little.
+> >>
+> > A discussion with maintainers probably won't get far without working 
+> > code to look at. Perhaps William will send an RFC patch to illustrate 
+> > his approach.
+> 
+> Haven't seen anything yet, so I've just sent a patch switching 
+> pata_falcon.c to use the IO resources instead of the memory resources.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Thanks for sending that.
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r043-20230813   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                         assabet_defconfig   gcc  
-arm                                 defconfig   gcc  
-arm                          ep93xx_defconfig   clang
-arm                  randconfig-r046-20230813   clang
-arm                       versatile_defconfig   clang
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                                defconfig   gcc  
-hexagon              randconfig-r041-20230813   clang
-hexagon              randconfig-r045-20230813   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230813   clang
-i386         buildonly-randconfig-r005-20230813   clang
-i386         buildonly-randconfig-r006-20230813   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230813   clang
-i386                 randconfig-i002-20230813   clang
-i386                 randconfig-i003-20230813   clang
-i386                 randconfig-i004-20230813   clang
-i386                 randconfig-i005-20230813   clang
-i386                 randconfig-i006-20230813   clang
-i386                 randconfig-i011-20230813   gcc  
-i386                 randconfig-i012-20230813   gcc  
-i386                 randconfig-i013-20230813   gcc  
-i386                 randconfig-i014-20230813   gcc  
-i386                 randconfig-i015-20230813   gcc  
-i386                 randconfig-i016-20230813   gcc  
-i386                 randconfig-r002-20230813   clang
-i386                 randconfig-r012-20230813   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r004-20230813   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze           randconfig-r032-20230813   gcc  
-microblaze           randconfig-r036-20230813   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                 randconfig-r003-20230813   gcc  
-mips                 randconfig-r013-20230813   clang
-mips                 randconfig-r023-20230813   clang
-mips                 randconfig-r033-20230813   gcc  
-nios2                               defconfig   gcc  
-openrisc             randconfig-r015-20230813   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r025-20230813   gcc  
-parisc               randconfig-r031-20230813   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc              randconfig-r024-20230813   gcc  
-powerpc                     tqm8548_defconfig   gcc  
-powerpc                     tqm8560_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r016-20230813   gcc  
-riscv                randconfig-r042-20230813   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r026-20230813   gcc  
-s390                 randconfig-r044-20230813   gcc  
-sh                               allmodconfig   gcc  
-sh                          sdk7780_defconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r011-20230813   gcc  
-sparc                       sparc32_defconfig   gcc  
-sparc64              randconfig-r034-20230813   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                   randconfig-r001-20230813   gcc  
-um                   randconfig-r006-20230813   gcc  
-um                   randconfig-r022-20230813   clang
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230813   clang
-x86_64       buildonly-randconfig-r002-20230813   clang
-x86_64       buildonly-randconfig-r003-20230813   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-r005-20230813   clang
-x86_64               randconfig-x001-20230813   gcc  
-x86_64               randconfig-x002-20230813   gcc  
-x86_64               randconfig-x003-20230813   gcc  
-x86_64               randconfig-x004-20230813   gcc  
-x86_64               randconfig-x005-20230813   gcc  
-x86_64               randconfig-x006-20230813   gcc  
-x86_64               randconfig-x011-20230813   clang
-x86_64               randconfig-x012-20230813   clang
-x86_64               randconfig-x013-20230813   clang
-x86_64               randconfig-x014-20230813   clang
-x86_64               randconfig-x015-20230813   clang
-x86_64               randconfig-x016-20230813   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
+> Survived compile and ARAnyM boot tests only so far. I've checked and 
+> confirmed the entire 0xffxxxxx range is mapped transparent in head.S for 
+> Q40 so I don't see what else might be missing.
+> 
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+In the message that Geert originally forwarded, William was quoted as 
+saying it was necessary to "fix up the pata_falcon_data_xfer function". He 
+also said that using the IO port resources "causes the ioread8/iowrite8 
+functions to complain loudly". 
+https://lore.kernel.org/linux-m68k/CAMuHMdUU62jjunJh9cqSqHT87B0H0A4udOOPs=WN7WZKpcagVA@mail.gmail.com/
+
+I think your patch is taking the same approach and may run into the same 
+issues... I guess we shall see when William tests it.
+
+> Please have a look and test if possible. Haven't yet bothered 
+> linux-block or linux-ide... the patch still needs a Fixes: and other 
+> trimmings so isn't ready for submission anyway.
+> 
+
+Right. You'll want to run checkpatch.pl on it at some stage.
