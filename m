@@ -2,161 +2,170 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EC05C0015E
-	for <linux-m68k@archiver.kernel.org>; Sat, 12 Aug 2023 08:12:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17C9DC04A6A
+	for <linux-m68k@archiver.kernel.org>; Sun, 13 Aug 2023 02:48:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234095AbjHLIMa (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 12 Aug 2023 04:12:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49450 "EHLO
+        id S229699AbjHMCsc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 12 Aug 2023 22:48:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjHLIM3 (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 12 Aug 2023 04:12:29 -0400
-X-Greylist: delayed 598 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 12 Aug 2023 01:12:32 PDT
-Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com [66.111.4.224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09AD110F
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 12 Aug 2023 01:12:31 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 53EDC580361;
-        Sat, 12 Aug 2023 04:02:32 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Sat, 12 Aug 2023 04:02:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1691827352; x=1691834552; bh=B7
-        pOJdGFDOf/BCasjh0dVOxmA3Mm35lZV2aH6kqC0w8=; b=F8VTMnEu+WAEaSI8ev
-        8dpIfLM4+oZGC3Fvpn68KvPIKWsfcU17SQhjwHufScXsMsXDuwt6XeedGUhblfys
-        hs4xce37xNWNfWz8ej1A5ttaAvhOmMOB9IsLSlLkKJvdTPf8pe8EK/EKye4odYV3
-        iy0q7v1DVZZC2m89e6fF8SXEcU9ZTHRRD4NDR38GwL+pLR3MBK5Wg/T9GKyH0Sd+
-        g5MnZwZwhYg6nK5jXydKxkuqxQ4dCh2n1DIO6sGkaB6ILOYrbarjNwmRThbHDQoQ
-        1qCixnwaubCrx4LoC9y/tkCZnWvuaCmjXATLNxjkdSLgyNKu8b7A8D9PrJ+WT9kC
-        9bIg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1691827352; x=1691834552; bh=B7pOJdGFDOf/B
-        Casjh0dVOxmA3Mm35lZV2aH6kqC0w8=; b=c/aTYYn0Z+cUZ0NUCJyxNWN19dfUg
-        zkqsvmm3RuR5hIpA4ulOuDJXk+/83/3VaTcoCM//o6Ejm5/10o00E18HZJtG2gjG
-        6ZD6EGdHPChzsNs8ZKlj3wVJzWX+8UIRfbTT87iX5r3/vwD6ozaK1rEEeh1mVM/7
-        ra8F2i5GMdsnVTdDrdjlBljSZ6ErxvHL5socxr9xLP9SiAqbHq+clCY8FxlbffSt
-        t/wYBLNxLxzyLcJOnLcaAVUvkAV5XyzC8eUdOSrWMUCz7WvMZW+ySI1H9VAu8OQw
-        u5wsUq03BMEVxII/bvgwpjG1G4TqNwrLfsdkTzjkHEit7bawAdaWny+NA==
-X-ME-Sender: <xms:lDzXZATraP3ZZ30zeDvLHggEXgACbDwq6WZEn9H5Pxv5O7fJZgN-1g>
-    <xme:lDzXZNzEd5ApK265BQp2jyMbtIjXWUUk-EQ4i2TIeOVzMnojFPXp0tcfjkGjcF-BV
-    BkVhX5oezoCsQ0RLA8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrleelgdduvdehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:lDzXZN3RDFhUYL5CdRmcDHLd0GstqaBIOVltd_DYF6yURxVhph5pLg>
-    <xmx:lDzXZEBVoWRKU5vHFm1ry0MHXHCkhvfn437jYMw8d9jeyK3WoRORsQ>
-    <xmx:lDzXZJiQjB7YnsdHMe0qXCv5ZiPTJN47Loj4zXcgJPZpRfqeXqacsw>
-    <xmx:mDzXZKK2u_iymKCkBM9SdskqG7gJ76GE3P_8rJMuOXVnDraQ-7hFrw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 3DD63B60089; Sat, 12 Aug 2023 04:02:28 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
-Mime-Version: 1.0
-Message-Id: <13f9c06a-f840-4010-ae2f-97d8b2883e76@app.fastmail.com>
-In-Reply-To: <ZNaVYh2qi0VQQKWf@antec>
-References: <20230810141947.1236730-1-arnd@kernel.org>
- <20230810141947.1236730-17-arnd@kernel.org> <ZNaVYh2qi0VQQKWf@antec>
-Date:   Sat, 12 Aug 2023 10:02:07 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Stafford Horne" <shorne@gmail.com>,
-        "Arnd Bergmann" <arnd@kernel.org>
-Cc:     "Andrew Morton" <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, "Matt Turner" <mattst88@gmail.com>,
-        "Vineet Gupta" <vgupta@kernel.org>,
-        "Russell King" <linux@armlinux.org.uk>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        "Will Deacon" <will@kernel.org>, guoren <guoren@kernel.org>,
-        "Brian Cain" <bcain@quicinc.com>,
-        "Huacai Chen" <chenhuacai@kernel.org>,
-        "WANG Xuerui" <kernel@xen0n.name>,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Michal Simek" <monstr@monstr.eu>,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
-        "Dinh Nguyen" <dinguyen@kernel.org>,
-        "Jonas Bonn" <jonas@southpole.se>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        "Helge Deller" <deller@gmx.de>,
-        "Michael Ellerman" <mpe@ellerman.id.au>,
-        "Christophe Leroy" <christophe.leroy@csgroup.eu>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        "Heiko Carstens" <hca@linux.ibm.com>,
-        "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
-        x86@kernel.org, "Borislav Petkov" <bp@alien8.de>,
-        "Nathan Chancellor" <nathan@kernel.org>,
-        "Nick Desaulniers" <ndesaulniers@google.com>,
-        "Guenter Roeck" <linux@roeck-us.net>,
-        "Stephen Rothwell" <sfr@canb.auug.org.au>,
-        linux-next <linux-next@vger.kernel.org>,
-        linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org,
-        "linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>,
-        sparclinux@vger.kernel.org,
-        "Richard Henderson" <richard.henderson@linaro.org>,
-        "Ivan Kokshaysky" <ink@jurassic.park.msu.ru>,
-        "Stefan Kristiansson" <stefan.kristiansson@saunalahti.fi>,
-        "Yoshinori Sato" <ysato@users.sourceforge.jp>,
-        "Rich Felker" <dalias@libc.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        "Chris Zankel" <chris@zankel.net>,
-        "Max Filippov" <jcmvbkbc@gmail.com>,
-        "Christian Brauner" <brauner@kernel.org>,
-        "Paul Walmsley" <paul.walmsley@sifive.com>,
-        "Albert Ou" <aou@eecs.berkeley.edu>,
-        "Youling Tang" <tangyouling@loongson.cn>,
-        "Tiezhu Yang" <yangtiezhu@loongson.cn>,
-        "Masahiro Yamada" <masahiroy@kernel.org>,
-        "Randy Dunlap" <rdunlap@infradead.org>,
-        "Masami Hiramatsu" <mhiramat@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Miguel Ojeda" <ojeda@kernel.org>,
-        "Zhen Lei" <thunder.leizhen@huawei.com>,
-        "Xin Li" <xin3.li@intel.com>, "Nhat Pham" <nphamcs@gmail.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        =?UTF-8?Q?Marc_Aur=C3=A8le_La_France?= <tsi@tuyoix.net>,
-        "Johannes Weiner" <hannes@cmpxchg.org>,
-        linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH 16/17] [RFC] arch: turn -Wmissing-prototypes off conditionally
-Content-Type: text/plain
+        with ESMTP id S229506AbjHMCsc (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sat, 12 Aug 2023 22:48:32 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1EE170A
+        for <linux-m68k@vger.kernel.org>; Sat, 12 Aug 2023 19:48:34 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bc7e65ea44so22261835ad.1
+        for <linux-m68k@vger.kernel.org>; Sat, 12 Aug 2023 19:48:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691894914; x=1692499714;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uH0ESfq+5TAT05/K1myN+B0x662OfGhBt1zb8Q4RCWI=;
+        b=SBWVQn7hDboZV6Fe/knRNE/BxqaWwlvYDugMZnbXCXlbncJQCAdaIdeG+cCsR4oqvB
+         gHpC25VBdj+ymXRKix5UJEcRjhMaRw6677KZgCKAne0s3XlHBdmfhD1LWYUZau3CcZwt
+         TUdIHYs/aXm1La7cuszrofGPsBLPjvepj4Zp7n8YfMEutGj3bVdIsDj3BbbiVLJek14F
+         rguVeq9dm8muVk/tiWqE1DTpHHVSoOTWkEkbmda8EFs1Bl7lY49J2fUiX2lDT6vVqt6B
+         hzRLI2hst78mIOtAZswP/Ir7Mn1kHpdZ3pbadxxvJxYXhqIs6RCkBTa4Yasu3MsOt2Lt
+         ASDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691894914; x=1692499714;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uH0ESfq+5TAT05/K1myN+B0x662OfGhBt1zb8Q4RCWI=;
+        b=RUE4HQaEua+Y07kgTxqouXngpCdcJLADTqqeP6f/uob4b+YF6/vKExhRJo7ZTenpPI
+         +v0leONXoZ0F3StgoYQkXWLqzLKAWhwaQatYrxMt+lkRBMBdfDq1daR0jafLZ3jVGfFx
+         wh7fToOe6MYs5rO6xAb3Ww/UodL7+x9ZGd/eoyoD1X4aBTNQ01hxLyVZKj4hWbFRUsl2
+         aMOPlBF/mjlahvKPiM0pm52aNQrTZY7+EpfYbUpYiJRGqgV3wsOWllCzTocrww6lfG5w
+         d8nqH4w8LHw6sf4Fxri1R9rdUFBSTDenUpB6y3KHSgXsgUHmkUFre/RGBC+g2rFDkSMc
+         DecA==
+X-Gm-Message-State: AOJu0Yw1ZFdBhq6r0M3uvIEe8nuOxNpYkfiy/uigaZVhEVCMb/e1zev3
+        dYbGGrxD3ayFb1isTOROPCK6c7txsng=
+X-Google-Smtp-Source: AGHT+IFf3j6P9CP/F+Uh918YhsSd/JGLNkqO+OBHG4FuGfkoosigODmqQE366KQq3wpVzBc0riH1Gg==
+X-Received: by 2002:a17:903:41cb:b0:1b3:b84b:9008 with SMTP id u11-20020a17090341cb00b001b3b84b9008mr7702427ple.5.1691894914095;
+        Sat, 12 Aug 2023 19:48:34 -0700 (PDT)
+Received: from xplor.waratah.dyndns.org (222-152-184-54-fibre.sparkbb.co.nz. [222.152.184.54])
+        by smtp.gmail.com with ESMTPSA id x3-20020a170902ea8300b001b672af624esm2406530plb.164.2023.08.12.19.48.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Aug 2023 19:48:33 -0700 (PDT)
+Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
+        id E6D4C360328; Sun, 13 Aug 2023 14:48:29 +1200 (NZST)
+From:   Michael Schmitz <schmitzmic@gmail.com>
+To:     will@sowerbutts.com, linux-m68k@vger.kernel.org
+Cc:     geert@linux-m68k.org, Michael Schmitz <schmitzmic@gmail.com>,
+        Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH RFC] m68k/q40: fix IO base selection for Q40 in pata_falcon.c
+Date:   Sun, 13 Aug 2023 14:48:27 +1200
+Message-Id: <20230813024827.31641-1-schmitzmic@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Aug 11, 2023, at 22:09, Stafford Horne wrote:
-> On Thu, Aug 10, 2023 at 04:19:34PM +0200, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
+With commit 44b1fbc0f5f30e66, the Q40 IDE driver was replaced
+by pata_falcon.c (and the later obsoleted falconide.c).
 
->> arch/openrisc/mm/fault.c:44:17: error: no previous prototype for 'do_page_fault' [-Werror=missing-prototypes]
->> arch/openrisc/mm/tlb.c:188:13: error: no previous prototype for 'tlb_init' [-Werror=missing-prototypes]
->
-> I'll try to get these fixed for 6.6.  I was looking at them recently but did not
-> actually make any changes and just put on my TODO.  Your series moves it up in
-> priority and it should be easy to get the fixes out.
+Both IO and memory resources were defined for the Q40 IDE
+platform device, but definition of the IDE register addresses
+was modeled after the Falcon case, both in use of the memory
+resources and in including register scale and byte vs. word
+offset in the address.
 
-Thanks!
+This was correct for the Falcon case, which does not apply
+any address translation to the register addresses. In the
+Q40 case, all of device base address, byte access offset
+and register scaling is included in the platform specific
+ISA access translation (in asm/mm_io.h).
 
-Since we already have the majority of architecture maintainers stepping
-in to fix the warnings, I wonder if I should just drop my patch 16/17
-completely and let the others handle it as well rather than shutting up
-the warnings. Only the asm-offsets change is really needed to compile
-test most of the kernel even with CONFIG_WERROR, and without that this
-is just some harmless output.
+As a consequence, such address translation gets applied
+twice, and register addresses are mangled.
 
-    Arnd
+Use the device base address from the platform IO resource,
+and use standard register offsets from that base in order
+to calculate register addresses (the IO address translation
+will then apply the correct ISA window base and scaling).
+
+Reported-by: William R Sowerbutts <will@sowerbutts.com>
+Link: https://lore.kernel.org/r/CAMuHMdUU62jjunJh9cqSqHT87B0H0A4udOOPs=WN7WZKpcagVA@mail.gmail.com
+Cc: Finn Thain <fthain@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+---
+ drivers/ata/pata_falcon.c | 62 ++++++++++++++++++++++++++-------------
+ 1 file changed, 42 insertions(+), 20 deletions(-)
+
+diff --git a/drivers/ata/pata_falcon.c b/drivers/ata/pata_falcon.c
+index 996516e64f13..9ea5100675c5 100644
+--- a/drivers/ata/pata_falcon.c
++++ b/drivers/ata/pata_falcon.c
+@@ -165,26 +165,48 @@ static int __init pata_falcon_init_one(struct platform_device *pdev)
+ 	ap->pio_mask = ATA_PIO4;
+ 	ap->flags |= ATA_FLAG_SLAVE_POSS | ATA_FLAG_NO_IORDY;
+ 
+-	base = (void __iomem *)base_mem_res->start;
+-	/* N.B. this assumes data_addr will be used for word-sized I/O only */
+-	ap->ioaddr.data_addr		= base + 0 + 0 * 4;
+-	ap->ioaddr.error_addr		= base + 1 + 1 * 4;
+-	ap->ioaddr.feature_addr		= base + 1 + 1 * 4;
+-	ap->ioaddr.nsect_addr		= base + 1 + 2 * 4;
+-	ap->ioaddr.lbal_addr		= base + 1 + 3 * 4;
+-	ap->ioaddr.lbam_addr		= base + 1 + 4 * 4;
+-	ap->ioaddr.lbah_addr		= base + 1 + 5 * 4;
+-	ap->ioaddr.device_addr		= base + 1 + 6 * 4;
+-	ap->ioaddr.status_addr		= base + 1 + 7 * 4;
+-	ap->ioaddr.command_addr		= base + 1 + 7 * 4;
+-
+-	base = (void __iomem *)ctl_mem_res->start;
+-	ap->ioaddr.altstatus_addr	= base + 1;
+-	ap->ioaddr.ctl_addr		= base + 1;
+-
+-	ata_port_desc(ap, "cmd 0x%lx ctl 0x%lx",
+-		      (unsigned long)base_mem_res->start,
+-		      (unsigned long)ctl_mem_res->start);
++	if (MACH_IS_Q40) {
++		base = (void __iomem *)base_res->start;
++		ap->ioaddr.data_addr		= base + 0;
++		ap->ioaddr.error_addr		= base + 1;
++		ap->ioaddr.feature_addr		= base + 1;
++		ap->ioaddr.nsect_addr		= base + 2;
++		ap->ioaddr.lbal_addr		= base + 3;
++		ap->ioaddr.lbam_addr		= base + 4;
++		ap->ioaddr.lbah_addr		= base + 5;
++		ap->ioaddr.device_addr		= base + 6;
++		ap->ioaddr.status_addr		= base + 7;
++		ap->ioaddr.command_addr		= base + 7;
++
++		base = (void __iomem *)ctl_res->start;
++		ap->ioaddr.altstatus_addr	= base;
++		ap->ioaddr.ctl_addr		= base;
++
++		ata_port_desc(ap, "cmd 0x%lx ctl 0x%lx",
++			      (unsigned long)base_res->start,
++			      (unsigned long)ctl_res->start);
++	} else {
++		base = (void __iomem *)base_mem_res->start;
++		/* N.B. this assumes data_addr will be used for word-sized I/O only */
++		ap->ioaddr.data_addr		= base + 0 + 0 * 4;
++		ap->ioaddr.error_addr		= base + 1 + 1 * 4;
++		ap->ioaddr.feature_addr		= base + 1 + 1 * 4;
++		ap->ioaddr.nsect_addr		= base + 1 + 2 * 4;
++		ap->ioaddr.lbal_addr		= base + 1 + 3 * 4;
++		ap->ioaddr.lbam_addr		= base + 1 + 4 * 4;
++		ap->ioaddr.lbah_addr		= base + 1 + 5 * 4;
++		ap->ioaddr.device_addr		= base + 1 + 6 * 4;
++		ap->ioaddr.status_addr		= base + 1 + 7 * 4;
++		ap->ioaddr.command_addr		= base + 1 + 7 * 4;
++
++		base = (void __iomem *)ctl_mem_res->start;
++		ap->ioaddr.altstatus_addr	= base + 1;
++		ap->ioaddr.ctl_addr		= base + 1;
++
++		ata_port_desc(ap, "cmd 0x%lx ctl 0x%lx",
++			      (unsigned long)base_mem_res->start,
++			      (unsigned long)ctl_mem_res->start);
++	}
+ 
+ 	irq_res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+ 	if (irq_res && irq_res->start > 0) {
+-- 
+2.17.1
+
