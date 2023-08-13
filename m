@@ -2,37 +2,37 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8437EC001DB
-	for <linux-m68k@archiver.kernel.org>; Sun, 13 Aug 2023 16:23:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B249DC04E69
+	for <linux-m68k@archiver.kernel.org>; Sun, 13 Aug 2023 16:29:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233727AbjHMQXD (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 13 Aug 2023 12:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48942 "EHLO
+        id S232063AbjHMQ3A (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 13 Aug 2023 12:29:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230281AbjHMQW7 (ORCPT
+        with ESMTP id S233462AbjHMQQp (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 13 Aug 2023 12:22:59 -0400
+        Sun, 13 Aug 2023 12:16:45 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0959E4695
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 13 Aug 2023 09:14:28 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B3F2709
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 13 Aug 2023 09:16:06 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AF11263913;
-        Sun, 13 Aug 2023 16:13:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F028CC433C8;
-        Sun, 13 Aug 2023 16:13:48 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1692363865;
+        Sun, 13 Aug 2023 16:07:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C697C433C8;
+        Sun, 13 Aug 2023 16:07:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691943230;
-        bh=oCZdHydEz3JHw1gNO826CxZeGLYFNQ4ADK7pheYeGqo=;
+        s=k20201202; t=1691942843;
+        bh=b5K8hr69IDOAhaq9/WZGJCGdNQ+l0t7unVtsTp3IF5E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mfGwIW+UPdxl+izJLsNsiduMNMa/zxfLZpJymF5LKZ2Ql040gGmanc/A/x3yU7RPk
-         LxoZS7JNnBcAGIIZRxDqVqE8dyANV4/m1NeXIt8BsRqH7JuyNfB79UieTNY2EiUzx7
-         GdfZMJFtNi1MUw03/3ReX1G+IiOjK9BCQpFhQq2qB3kxOMrxheX964aIFaELfRgEI/
-         2F9YPJio/UfK7jonmsZ/x7WoML+IwaSLkvJkZMlIPJ6t/f48e4howsi+jbvVVxtQ7K
-         F9QjUzCbFTC17linLj0ecfaSnvqOxzWEgh1fR8DA+3K4U5oW3qVXgUlwEAuwfP8ULT
-         hGS6nKDOEJ9sw==
+        b=FVqCenR9mn3V57wnnKjxEJx2Wrl/Q8ZuaHU9wKSJzQV9OcGuLPeE28jHE5H8jYM3O
+         te6IMURrp1qAGUz73M1SVmAcypJXdgMlv/1VWAr3laZHnFXYOihIKfmklH1yJnmhIJ
+         4SHLHWT2dszlPq3C649m0hSYk4MOJ4fk6vRO9BupgaOS10hwmZLgXhXN42xtOWbm80
+         pAaMdlptV5KQBBIarBNWpEhVQqdc7+K4TXYI+garqu9OSLEdFb4uk6NWspEzBTbONp
+         Vhl3FhyPntvdBGOd4cWprYS86bU5fXLuykq09AApcMV9BU2L69M48nKK3d4nKM/aCi
+         7a0iuNk2bI0/A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Ben Hutchings <benh@debian.org>,
@@ -40,16 +40,16 @@ Cc:     Ben Hutchings <benh@debian.org>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH AUTOSEL 4.19 06/13] m68k: Fix invalid .section syntax
-Date:   Sun, 13 Aug 2023 12:13:10 -0400
-Message-Id: <20230813161317.1087606-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 12/31] m68k: Fix invalid .section syntax
+Date:   Sun, 13 Aug 2023 12:05:45 -0400
+Message-Id: <20230813160605.1080385-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230813161317.1087606-1-sashal@kernel.org>
-References: <20230813161317.1087606-1-sashal@kernel.org>
+In-Reply-To: <20230813160605.1080385-1-sashal@kernel.org>
+References: <20230813160605.1080385-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.19.291
+X-stable-base: Linux 5.15.126
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
@@ -88,10 +88,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  3 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/arch/m68k/fpsp040/skeleton.S b/arch/m68k/fpsp040/skeleton.S
-index a8f41615d94a7..31a9c634c81ed 100644
+index 439395aa6fb42..081922c72daaa 100644
 --- a/arch/m68k/fpsp040/skeleton.S
 +++ b/arch/m68k/fpsp040/skeleton.S
-@@ -499,12 +499,12 @@ in_ea:
+@@ -499,13 +499,13 @@ in_ea:
  	dbf	%d0,morein
  	rts
  
@@ -99,7 +99,8 @@ index a8f41615d94a7..31a9c634c81ed 100644
 +	.section .fixup,"ax"
  	.even
  1:
- 	jbra	fpsp040_die
+ 	jbsr	fpsp040_die
+ 	jbra	.Lnotkern
  
 -	.section __ex_table,#alloc
 +	.section __ex_table,"a"
