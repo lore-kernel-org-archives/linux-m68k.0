@@ -2,170 +2,175 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17C9DC04A6A
-	for <linux-m68k@archiver.kernel.org>; Sun, 13 Aug 2023 02:48:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D3D7C0015E
+	for <linux-m68k@archiver.kernel.org>; Sun, 13 Aug 2023 03:07:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229699AbjHMCsc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 12 Aug 2023 22:48:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44944 "EHLO
+        id S229821AbjHMDG4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 12 Aug 2023 23:06:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbjHMCsc (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sat, 12 Aug 2023 22:48:32 -0400
+        with ESMTP id S229506AbjHMDGz (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Sat, 12 Aug 2023 23:06:55 -0400
 Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1EE170A
-        for <linux-m68k@vger.kernel.org>; Sat, 12 Aug 2023 19:48:34 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bc7e65ea44so22261835ad.1
-        for <linux-m68k@vger.kernel.org>; Sat, 12 Aug 2023 19:48:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A40D10C0
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 12 Aug 2023 20:06:58 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bbf8cb61aeso21333575ad.2
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 12 Aug 2023 20:06:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691894914; x=1692499714;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1691896017; x=1692500817;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:subject:from:references:cc:to:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uH0ESfq+5TAT05/K1myN+B0x662OfGhBt1zb8Q4RCWI=;
-        b=SBWVQn7hDboZV6Fe/knRNE/BxqaWwlvYDugMZnbXCXlbncJQCAdaIdeG+cCsR4oqvB
-         gHpC25VBdj+ymXRKix5UJEcRjhMaRw6677KZgCKAne0s3XlHBdmfhD1LWYUZau3CcZwt
-         TUdIHYs/aXm1La7cuszrofGPsBLPjvepj4Zp7n8YfMEutGj3bVdIsDj3BbbiVLJek14F
-         rguVeq9dm8muVk/tiWqE1DTpHHVSoOTWkEkbmda8EFs1Bl7lY49J2fUiX2lDT6vVqt6B
-         hzRLI2hst78mIOtAZswP/Ir7Mn1kHpdZ3pbadxxvJxYXhqIs6RCkBTa4Yasu3MsOt2Lt
-         ASDA==
+        bh=Vkk3mmbDCepgQGkVaGGlj62zp6UlOnGYISC5gQu/VA4=;
+        b=YNA84lyFdzFFlSNJsiBeLoWcUOVvr56VHEIUqBPE7WkdqR9hKSXZz0gTw16DCmrChJ
+         yp40R8qtcebduCAWwNKC9KaVeKK1qkeQsQc8BMZfVZ7xlzJiC2ua1aG+oIV3tK26LYtG
+         QZydIwjkIJ0iSIjikpof71d0nfBjeAEGRohjrl/WtNr0q0kllWa55j6D5OzV/jQ08A+z
+         8m79oGloEsuZB+0VwXHzRC6nftMFmV82NH/6YkrB0xM5t0ILXlciwbt8/AGGvayzV06F
+         9qMuc+kBpBbaKS8gC3IsLVOjCiKK+XQUpNkU2pzLCSxP35mNFnoyzx1sKotZCAHnjWeW
+         cKYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691894914; x=1692499714;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uH0ESfq+5TAT05/K1myN+B0x662OfGhBt1zb8Q4RCWI=;
-        b=RUE4HQaEua+Y07kgTxqouXngpCdcJLADTqqeP6f/uob4b+YF6/vKExhRJo7ZTenpPI
-         +v0leONXoZ0F3StgoYQkXWLqzLKAWhwaQatYrxMt+lkRBMBdfDq1daR0jafLZ3jVGfFx
-         wh7fToOe6MYs5rO6xAb3Ww/UodL7+x9ZGd/eoyoD1X4aBTNQ01hxLyVZKj4hWbFRUsl2
-         aMOPlBF/mjlahvKPiM0pm52aNQrTZY7+EpfYbUpYiJRGqgV3wsOWllCzTocrww6lfG5w
-         d8nqH4w8LHw6sf4Fxri1R9rdUFBSTDenUpB6y3KHSgXsgUHmkUFre/RGBC+g2rFDkSMc
-         DecA==
-X-Gm-Message-State: AOJu0Yw1ZFdBhq6r0M3uvIEe8nuOxNpYkfiy/uigaZVhEVCMb/e1zev3
-        dYbGGrxD3ayFb1isTOROPCK6c7txsng=
-X-Google-Smtp-Source: AGHT+IFf3j6P9CP/F+Uh918YhsSd/JGLNkqO+OBHG4FuGfkoosigODmqQE366KQq3wpVzBc0riH1Gg==
-X-Received: by 2002:a17:903:41cb:b0:1b3:b84b:9008 with SMTP id u11-20020a17090341cb00b001b3b84b9008mr7702427ple.5.1691894914095;
-        Sat, 12 Aug 2023 19:48:34 -0700 (PDT)
-Received: from xplor.waratah.dyndns.org (222-152-184-54-fibre.sparkbb.co.nz. [222.152.184.54])
-        by smtp.gmail.com with ESMTPSA id x3-20020a170902ea8300b001b672af624esm2406530plb.164.2023.08.12.19.48.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Aug 2023 19:48:33 -0700 (PDT)
-Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-        id E6D4C360328; Sun, 13 Aug 2023 14:48:29 +1200 (NZST)
+        d=1e100.net; s=20221208; t=1691896017; x=1692500817;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:subject:from:references:cc:to:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Vkk3mmbDCepgQGkVaGGlj62zp6UlOnGYISC5gQu/VA4=;
+        b=AAk5juCixu8xQmwMgLK022u/epgcWFkZ1VNONPR1YtPeAnZZUmqQRAXCTrG8hx1ezm
+         mCQFDU7iPqGlL286JIaSbgMWVKlQYEFlSLow/EpWPAkjo00T9O/+tkd+IMHmW1Ri2qFz
+         +851YRGLxBKkIcl5GVl4jMsrjsRAksd4BiN8zqn622yro/saEnLoA8MgpdM5Va+Jsje3
+         g28+mKJqdUUZd5XTECWJDt3pvxlVuFetjpEv6K6kkeMRprnWMw0p3RJcdcvHJF0fTAkg
+         wWKDIxn8lTqaUcczQdKqXFmzL3FsiKp1Y9Gpf8Pt5+QIif5pSHkt+rkCjT+IhRZOBVWF
+         wvUg==
+X-Gm-Message-State: AOJu0YxVsWQ/+2sSzj4h39HKsK0+jiRjfXG38yf0+IKyBXQxPORjtLEZ
+        8uFZIzSg9/GXXpQfjUD70w4=
+X-Google-Smtp-Source: AGHT+IHJpaft9m62djowYN6ooGTgBXKP+/3/SeF+ZnpvpxoeVSDECg+z8wLM+98EnU3YiQpiy+/y5g==
+X-Received: by 2002:a17:902:d4c6:b0:1b8:3590:358a with SMTP id o6-20020a170902d4c600b001b83590358amr6114170plg.19.1691896017343;
+        Sat, 12 Aug 2023 20:06:57 -0700 (PDT)
+Received: from Schmitz-MacBook-Pro.local (222-152-184-54-fibre.sparkbb.co.nz. [222.152.184.54])
+        by smtp.googlemail.com with ESMTPSA id im22-20020a170902bb1600b001bdb9951b15sm4150229plb.175.2023.08.12.20.06.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 12 Aug 2023 20:06:56 -0700 (PDT)
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     William R Sowerbutts <will@sowerbutts.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Richard Zidlicky <rz@linux-m68k.org>
+References: <ZLvZmVfzJNHlPTlJ@sowerbutts.com>
+ <CAMuHMdUU62jjunJh9cqSqHT87B0H0A4udOOPs=WN7WZKpcagVA@mail.gmail.com>
+ <1dabd80c-d91e-7869-e95e-199fc58b9f84@linux-m68k.org>
+ <c47f07a9-d302-b8ce-c630-988e08cc8254@gmail.com>
+ <ZL5jwoXAU5t8S+E6@sowerbutts.com>
+ <d01db1e6-a0ae-559c-ab64-b3a2f5b60324@gmail.com>
+ <997f0ff1-865d-29fb-ef65-2bb693549da8@linux-m68k.org>
+ <288847c5-46bd-fcd4-11a7-829685a02c79@gmail.com>
+ <521776cc-a11e-0a3a-b44d-fc051f6ee2ea@linux-m68k.org>
+ <624c5629-e337-46ba-c8ac-411fe19f2f46@gmail.com>
+ <81706cdc-2a7a-f383-881a-7313fefbb938@linux-m68k.org>
 From:   Michael Schmitz <schmitzmic@gmail.com>
-To:     will@sowerbutts.com, linux-m68k@vger.kernel.org
-Cc:     geert@linux-m68k.org, Michael Schmitz <schmitzmic@gmail.com>,
-        Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH RFC] m68k/q40: fix IO base selection for Q40 in pata_falcon.c
-Date:   Sun, 13 Aug 2023 14:48:27 +1200
-Message-Id: <20230813024827.31641-1-schmitzmic@gmail.com>
-X-Mailer: git-send-email 2.17.1
+Subject: Re: Linux 6.4.4 on m68k - Q40 - pata_falcon causes oops at boot time
+Message-ID: <68187ca1-1d4f-92f9-f6c7-476caaa24df0@gmail.com>
+Date:   Sun, 13 Aug 2023 15:06:51 +1200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <81706cdc-2a7a-f383-881a-7313fefbb938@linux-m68k.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-With commit 44b1fbc0f5f30e66, the Q40 IDE driver was replaced
-by pata_falcon.c (and the later obsoleted falconide.c).
+Hi Finn,
 
-Both IO and memory resources were defined for the Q40 IDE
-platform device, but definition of the IDE register addresses
-was modeled after the Falcon case, both in use of the memory
-resources and in including register scale and byte vs. word
-offset in the address.
+Am 28.07.23 um 11:47 schrieb Finn Thain:
+> On Thu, 27 Jul 2023, Michael Schmitz wrote:
+>
+>>>> And yes, I'm painfully aware the m68k low level IO code is becoming =
+a=20
+>>>> bit of a maintainance legacy, in no small part due to my hacks aroun=
+d=20
+>>>> Atari EtherNEC.
+>>>>
+>>> I guess you and I both can share the blame for 44b1fbc0f5f30e66...
+>>>
+>>> Anyway, you make a good point about on-going maintenance. Do you thin=
+k=20
+>>> that by supporting standard ISA drivers we might actually reduce the =
 
-This was correct for the Falcon case, which does not apply
-any address translation to the register addresses. In the
-Q40 case, all of device base address, byte access offset
-and register scaling is included in the platform specific
-ISA access translation (in asm/mm_io.h).
+>>> ideosyncracies in m68k IO code?
+>> You and DaveM ought to have a chat about that - abstracting the legacy=
+=20
+>> drivers from the ISA constraints was his preferred option when I last =
 
-As a consequence, such address translation gets applied
-twice, and register addresses are mangled.
+>> attempted to get the Gayle network driver patches merged. When I say=20
+>> 'preferred', I'm probably understating a little.
+>>
+> A discussion with maintainers probably won't get far without working co=
+de=20
+> to look at. Perhaps William will send an RFC patch to illustrate his=20
+> approach.
 
-Use the device base address from the platform IO resource,
-and use standard register offsets from that base in order
-to calculate register addresses (the IO address translation
-will then apply the correct ISA window base and scaling).
+Haven't seen anything yet, so I've just sent a patch switching
+pata_falcon.c to use the IO resources instead of the memory resources.
+Survived compile and ARAnyM boot tests only so far. I've checked and
+confirmed the entire 0xffxxxxx range is mapped transparent in head.S for
+Q40 so I don't see what else might be missing.
 
-Reported-by: William R Sowerbutts <will@sowerbutts.com>
-Link: https://lore.kernel.org/r/CAMuHMdUU62jjunJh9cqSqHT87B0H0A4udOOPs=WN7WZKpcagVA@mail.gmail.com
-Cc: Finn Thain <fthain@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
----
- drivers/ata/pata_falcon.c | 62 ++++++++++++++++++++++++++-------------
- 1 file changed, 42 insertions(+), 20 deletions(-)
+Please have a look and test if possible. Haven't yet bothered
+linux-block or linux-ide... the patch still needs a Fixes: and other
+trimmings so isn't ready for submission anyway.
 
-diff --git a/drivers/ata/pata_falcon.c b/drivers/ata/pata_falcon.c
-index 996516e64f13..9ea5100675c5 100644
---- a/drivers/ata/pata_falcon.c
-+++ b/drivers/ata/pata_falcon.c
-@@ -165,26 +165,48 @@ static int __init pata_falcon_init_one(struct platform_device *pdev)
- 	ap->pio_mask = ATA_PIO4;
- 	ap->flags |= ATA_FLAG_SLAVE_POSS | ATA_FLAG_NO_IORDY;
- 
--	base = (void __iomem *)base_mem_res->start;
--	/* N.B. this assumes data_addr will be used for word-sized I/O only */
--	ap->ioaddr.data_addr		= base + 0 + 0 * 4;
--	ap->ioaddr.error_addr		= base + 1 + 1 * 4;
--	ap->ioaddr.feature_addr		= base + 1 + 1 * 4;
--	ap->ioaddr.nsect_addr		= base + 1 + 2 * 4;
--	ap->ioaddr.lbal_addr		= base + 1 + 3 * 4;
--	ap->ioaddr.lbam_addr		= base + 1 + 4 * 4;
--	ap->ioaddr.lbah_addr		= base + 1 + 5 * 4;
--	ap->ioaddr.device_addr		= base + 1 + 6 * 4;
--	ap->ioaddr.status_addr		= base + 1 + 7 * 4;
--	ap->ioaddr.command_addr		= base + 1 + 7 * 4;
--
--	base = (void __iomem *)ctl_mem_res->start;
--	ap->ioaddr.altstatus_addr	= base + 1;
--	ap->ioaddr.ctl_addr		= base + 1;
--
--	ata_port_desc(ap, "cmd 0x%lx ctl 0x%lx",
--		      (unsigned long)base_mem_res->start,
--		      (unsigned long)ctl_mem_res->start);
-+	if (MACH_IS_Q40) {
-+		base = (void __iomem *)base_res->start;
-+		ap->ioaddr.data_addr		= base + 0;
-+		ap->ioaddr.error_addr		= base + 1;
-+		ap->ioaddr.feature_addr		= base + 1;
-+		ap->ioaddr.nsect_addr		= base + 2;
-+		ap->ioaddr.lbal_addr		= base + 3;
-+		ap->ioaddr.lbam_addr		= base + 4;
-+		ap->ioaddr.lbah_addr		= base + 5;
-+		ap->ioaddr.device_addr		= base + 6;
-+		ap->ioaddr.status_addr		= base + 7;
-+		ap->ioaddr.command_addr		= base + 7;
-+
-+		base = (void __iomem *)ctl_res->start;
-+		ap->ioaddr.altstatus_addr	= base;
-+		ap->ioaddr.ctl_addr		= base;
-+
-+		ata_port_desc(ap, "cmd 0x%lx ctl 0x%lx",
-+			      (unsigned long)base_res->start,
-+			      (unsigned long)ctl_res->start);
-+	} else {
-+		base = (void __iomem *)base_mem_res->start;
-+		/* N.B. this assumes data_addr will be used for word-sized I/O only */
-+		ap->ioaddr.data_addr		= base + 0 + 0 * 4;
-+		ap->ioaddr.error_addr		= base + 1 + 1 * 4;
-+		ap->ioaddr.feature_addr		= base + 1 + 1 * 4;
-+		ap->ioaddr.nsect_addr		= base + 1 + 2 * 4;
-+		ap->ioaddr.lbal_addr		= base + 1 + 3 * 4;
-+		ap->ioaddr.lbam_addr		= base + 1 + 4 * 4;
-+		ap->ioaddr.lbah_addr		= base + 1 + 5 * 4;
-+		ap->ioaddr.device_addr		= base + 1 + 6 * 4;
-+		ap->ioaddr.status_addr		= base + 1 + 7 * 4;
-+		ap->ioaddr.command_addr		= base + 1 + 7 * 4;
-+
-+		base = (void __iomem *)ctl_mem_res->start;
-+		ap->ioaddr.altstatus_addr	= base + 1;
-+		ap->ioaddr.ctl_addr		= base + 1;
-+
-+		ata_port_desc(ap, "cmd 0x%lx ctl 0x%lx",
-+			      (unsigned long)base_mem_res->start,
-+			      (unsigned long)ctl_mem_res->start);
-+	}
- 
- 	irq_res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
- 	if (irq_res && irq_res->start > 0) {
--- 
-2.17.1
+>> I had toyed with that using the EtherNEC driver as test case but never=
+=20
+>> got very far (this would have been splitting the driver into a core=20
+>> lib8390 module and a platform-specific module that allows to hook a=20
+>> variety of IO accessors as hooks, not static defines, and I wasn't too=
+=20
+>> certain about performance impacts of such a change, the performance of=
+=20
+>> the EtherNEC being so shitty it won't make any impact there),
+>>
+>> The only other option (that I can see) would be creating a bus driver =
+
+>> for the ISA bus, with platforms allowed to register their particular I=
+O=20
+>> accessors for IO and memory accesses - again, performance impacts to=20
+>> consider and getting test coverage on legacy ISA hardware a nightmare.=
+=20
+>> This would allow to use legacy driver code more or less unchanged.=20
+>> Haven't given that much thought at all (the idea pretty much originate=
+d=20
+>> from this present mess, but that's all).
+>>
+>> There may be other approaches that can be considered, if none of this =
+is=20
+>> what you had in mind.
+>>
+> What I had in mind is probably unacceptable because drivers end up havi=
+ng=20
+> to do byteswapping as happens in pata_falcon (or falconide and q40ide).=
+=20
+> Perhaps your bus driver idea would probabably find more acceptance. OTO=
+H=20
+> if the aim of the exercise is to use standard drivers (like pata_legacy=
+)=20
+> there would probably be driver changes either way.
+
+I discovered a problem with my bus driver idea - on Atari, ne.c and
+pata_falcon.c must both use the same bus driver but with different
+address translations and low level IO primitives. I'd need to switch
+between either based on some quality specific to the driver use
+(currently, that's the address range used - anything that looks like a
+memory mapped IO range doesn't get address translation).
+
+Unless that ugliness can somehow be avoided, I don't see the point of
+replacing a kludge in io_mm.h by another equally ugly one in a bus
+driver module.
+
+Need to think about that some more.
+
+Cheers,
+
+=C2=A0=C2=A0=C2=A0 Michael
+
 
