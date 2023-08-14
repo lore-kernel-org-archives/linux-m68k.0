@@ -2,59 +2,47 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58B45C001DE
-	for <linux-m68k@archiver.kernel.org>; Mon, 14 Aug 2023 02:49:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FC9AEB64DD
+	for <linux-m68k@archiver.kernel.org>; Mon, 14 Aug 2023 11:19:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232570AbjHNCtI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 13 Aug 2023 22:49:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39044 "EHLO
+        id S234232AbjHNLTF (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 14 Aug 2023 07:19:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231731AbjHNCsp (ORCPT
+        with ESMTP id S234299AbjHNLSv (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 13 Aug 2023 22:48:45 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D03E65
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 13 Aug 2023 19:48:43 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-26934bc3059so3354211a91.1
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 13 Aug 2023 19:48:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691981323; x=1692586123;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rDW3CO4zJMZP+iJwechL6E2GQsWCN3KsgFjRmrW04DU=;
-        b=UFAbE3Md8//lVfOPS1ay6Lm0QA7gyphyWkFXNkR+03A4Ew4I+riK2QPwSZndy35R8j
-         cxGE2ocfOMFgAg9g0iZbWzwEefpVLZTlw7XYQs9oebDnnjJ0xqIBcwiWumt8dt25E/CS
-         iMNcOdPDj7/zLX2zMJ7m6MRuZhk1d9ubron3K4QGjrPgXwTEUHci9FxG6lVeQq6hDs0j
-         8yx5gugtWjfI+gOSU8WhBhK9DrA3a3zAXEbDm8izgI/7RuVtwR5DpU+6944cSoEdbIt1
-         5jtdXhYaoFKmNW4bPItm7SCeQDfibzHOG+UfnGZK0R8c/KHriVQUZKb+Eb4LegH8GC/W
-         V+hA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691981323; x=1692586123;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=rDW3CO4zJMZP+iJwechL6E2GQsWCN3KsgFjRmrW04DU=;
-        b=Sgx1RF+BSUumvK9++55DqWWiYGMHNAQAIk1wa+dQQgogBStVt9K7Y8ICdUzPru9uBx
-         UH0gVz7QP1jZLCF1hl7VKULoPQdBfs6b7/RSvv3ylBaFi9SSEUaSsdx9Tv9LIgw3r0UB
-         w5g6tB4uIN1rTM81NMu5nUo9JwoxUZ53rgsFX1WaHeRNzquHmgRKLp4VGBV2VUVw/4E5
-         bP4+VAUJ0ngJIdjzBXPwurmEbL3TdHaCA7jvaShXf742F9ffeH1fWSECLIYnpVj8T536
-         maqO0RGDeCTsSxki6pqJi6t5bthuqrMbY8QgDf3nviWqxrBTbMWkAjW1wCsXMVz51Yf5
-         agbA==
-X-Gm-Message-State: AOJu0Yws7y1/4bfthiBULJv9NHwKmQpbqLBpL7HkwUuclyJlpL4VooOw
-        cL+IeIXV9+tzyfJN2M/xjiY=
-X-Google-Smtp-Source: AGHT+IFr3iOAF2cOtZ7rFXmpVhH1c5+9j61y5MDYrRk9gQlpYvdWHgePrm56GRQj5ZmzrElDOldNBA==
-X-Received: by 2002:a17:90a:6fa1:b0:269:4fe8:687 with SMTP id e30-20020a17090a6fa100b002694fe80687mr10782439pjk.19.1691981322524;
-        Sun, 13 Aug 2023 19:48:42 -0700 (PDT)
-Received: from [10.1.1.24] (222-152-184-54-fibre.sparkbb.co.nz. [222.152.184.54])
-        by smtp.gmail.com with ESMTPSA id qa2-20020a17090b4fc200b00263dfe9b972sm8929411pjb.0.2023.08.13.19.48.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 13 Aug 2023 19:48:42 -0700 (PDT)
+        Mon, 14 Aug 2023 07:18:51 -0400
+Received: from mail.sowerbutts.com (mail.sowerbutts.com [IPv6:2001:8b0:3b1:dead::100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AFBEFA
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Aug 2023 04:18:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sowerbutts.com; s=igor; h=In-Reply-To:Content-Type:MIME-Version:References:
+        Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=8JXrAJHQ+J6O4ipP6/OfbdgdZttPjGJ0B7oY8XM5WiU=; b=pK4jAfXQ0ziw7ZB73ZdgeKfgAA
+        chvgHa7AlbuyjdZ/jN6Rqo0Eo0bJ/tjj32fi9fmbKI4ty56xFtTeqngQAaPy66c9FY3UrMuuEVtFn
+        W+fuNYxgvgMMM7O4vhYl0hGau8LkjSA8rsxKeMzh5fI5jMAtDmMfPCOm0Z+2y+GzfBRNVpYr7f+wp
+        d/DCkjAVpwe0yyg6z6WdEgQpX1mZ3w4VR55rNMz6i9k0I+0LFCRFPjo10bhrRaDU1okJyJK8YQ1+k
+        W8rvpzX7anKv74GtdY0fmFaQzd0HrhsM1IoLmZ6DT2K8o6eTWRwvvJDyk0LE2oyrB9oNbTX59pAW1
+        JTKkvMng==;
+Received: from [2001:8b0:3b1:cafe:2292:e7dd:dea3:4ff6] (helo=sowerbutts.com)
+        by mail.sowerbutts.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <will@sowerbutts.com>)
+        id 1qVVau-000Ihu-21;
+        Mon, 14 Aug 2023 12:18:44 +0100
+Date:   Mon, 14 Aug 2023 12:18:44 +0100
+From:   William R Sowerbutts <will@sowerbutts.com>
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     Finn Thain <fthain@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Richard Zidlicky <rz@linux-m68k.org>
 Subject: Re: Linux 6.4.4 on m68k - Q40 - pata_falcon causes oops at boot time
-To:     Finn Thain <fthain@linux-m68k.org>
-References: <c47f07a9-d302-b8ce-c630-988e08cc8254@gmail.com>
- <ZL5jwoXAU5t8S+E6@sowerbutts.com>
- <d01db1e6-a0ae-559c-ab64-b3a2f5b60324@gmail.com>
+Message-ID: <ZNoNlC5fhztMFBAk@sowerbutts.com>
+References: <d01db1e6-a0ae-559c-ab64-b3a2f5b60324@gmail.com>
  <997f0ff1-865d-29fb-ef65-2bb693549da8@linux-m68k.org>
  <288847c5-46bd-fcd4-11a7-829685a02c79@gmail.com>
  <521776cc-a11e-0a3a-b44d-fc051f6ee2ea@linux-m68k.org>
@@ -64,50 +52,94 @@ References: <c47f07a9-d302-b8ce-c630-988e08cc8254@gmail.com>
  <275c3e98-a8e3-5d2a-13fa-db79ab9d6719@linux-m68k.org>
  <ZNlYFCVubNgzmUfc@sowerbutts.com>
  <c8fd631b-226c-4c60-884b-2ffa6437d03f@gmail.com>
- <a1ffc79b-eb37-5ed6-6984-a0a3674662b1@linux-m68k.org>
- <1403a5b1-7d89-9ae7-e47b-168feb148454@gmail.com>
- <70169097-fb78-a55e-92a4-d5d777e27149@linux-m68k.org>
-Cc:     William R Sowerbutts <will@sowerbutts.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Richard Zidlicky <rz@linux-m68k.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <98d863cc-6e58-2107-33ec-c977485c2f6d@gmail.com>
-Date:   Mon, 14 Aug 2023 14:48:36 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
 MIME-Version: 1.0
-In-Reply-To: <70169097-fb78-a55e-92a4-d5d777e27149@linux-m68k.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="hP0EdSY5phCdo9Tv"
+Content-Disposition: inline
+In-Reply-To: <c8fd631b-226c-4c60-884b-2ffa6437d03f@gmail.com>
+X-URL:  http://sowerbutts.com/
+X-Hatstand: Voltron
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Finn,
 
-Am 14.08.2023 um 13:15 schrieb Finn Thain:
+--hP0EdSY5phCdo9Tv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Aug 14, 2023 at 10:54:54AM +1200, Michael Schmitz wrote:
+>On 14/08/23 10:24, William R Sowerbutts wrote:
+>> * 6.4.10 + Michael's RFC patch -- IDE fails (no crash, but "Bad IO 
+>> access")
 >
-> On Mon, 14 Aug 2023, Michael Schmitz wrote:
+>That might be fixed by my second RFC patch, just gone out today.
+
+6.4.10 + your "RFC v2" patch boots without the "Bad IO access" errors!
+
+Your patch looks correct to me.
+
+>This one still byte-swaps the data from disk though. I understood that was
+>always the case for Q40, but I may have been mistaken there.
+
+It is indeed returning byte-swapped data.  This is easily fixed, I'm using
+the attached patch.
+
+>> For my 6.4 patch I enabled byte swapping in the pata_falcon_data_xfer()
+>> function -- this allows me to use an IDE drive with everything in the
+>> normal/compatible byte ordering, which makes life much easier. I assume this
+>> is the intended behaviour.
+>That would be the sane behaviour, but the designers of both the Falcon and
+>apparently the TiVo decided otherwise, wired up the IDE data bus byte-swapped
+>and saved the byteswap operations in the driver. I'm unsure how this was
+>intended to work on Q40.
+
+The Q40 does NOT have hardware to reverse the byte-swapping.  The CPU has to 
+byte-swap data if you want to use disks with standard/compatible data.
+
+>Now the question is how data on legacy Q40 IDE disks have been stored. If
+>it's byte-swapped, we'd better keep that byte order in the current driver
+>(meaning your changes to pata_falcon_data_xfer() won't be needed, but you
+>would have to swap back data on your disk). If it's always been in PC
+>compatible byte order, all data (not just the identify data) must be swapped.
 >
->>
->> Most other Falcon users might use SCSI (and SCSI-SD adapters) to
->> transport data between systems. Not an option for Q40.
->>
->
-> Well, it could be of some help inasmuchas we still support a number of ISA
-> SCSI host adapters. I wonder whether the Q40 ROM, bootloader or vendor
-> software etc. has any support for SCSI cards (with no byteswapping)...
+>I'd like to have Richard's opinion on this (or hear from any other former Q40
+>user).
 
-The issue of byte swapping does not arise for SCSI AFAIR (most host 
-adapters used on these systems are narrow so disk byte order is 
-preserved, and byte swapping happens at the filesystem level if need be. 
-Byte order for wide adapters may be possible to set by the host).
+I have learned that the "standard" firmware for the Q40, SMSQ/E, does not 
+byte-swap data (it also uses an obscure partition scheme and filesystem).
 
-SCSI support came as third party drivers for Atari, I suspect it's been 
-the same for Q40.
+Personally, I am strongly in favour of Linux on the Q40 using standard 
+byte-order disks that are compatible with other machines. This feels like the 
+right thing to do and it is what I think most users would expect.
 
-Cheers,
+Users (if there are any!) with legacy byte-swapped disks can always use the 
+standard tools to byte swap them into the correct, compatible format.
 
-	Michael
+Thanks
 
+Will
+
+_________________________________________________________________________
+William R Sowerbutts                                  will@sowerbutts.com
+"Carpe post meridiem"                               http://sowerbutts.com
+         main(){char*s=">#=0> ^#X@#@^7=",c=0,m;for(;c<15;c++)for
+         (m=-1;m<7;putchar(m++/6&c%3/2?10:s[c]-31&1<<m?42:32));}  
+
+
+--hP0EdSY5phCdo9Tv
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment; filename="pata_falcon-q40-byteswap.patch"
+
+--- linux-6.4.10+michael-rfc2/drivers/ata/pata_falcon.c.orig	2023-08-14 11:21:48.636681174 +0100
++++ linux-6.4.10+michael-rfc2/drivers/ata/pata_falcon.c	2023-08-14 11:34:17.244301035 +0100
+@@ -48,7 +48,7 @@
+ 	struct scsi_cmnd *cmd = qc->scsicmd;
+ 	bool swap = 1;
+ 
+-	if (dev->class == ATA_DEV_ATA && cmd &&
++	if (!MACH_IS_Q40 && dev->class == ATA_DEV_ATA && cmd &&
+ 	    !blk_rq_is_passthrough(scsi_cmd_to_rq(cmd)))
+ 		swap = 0;
+ 
+
+--hP0EdSY5phCdo9Tv--
