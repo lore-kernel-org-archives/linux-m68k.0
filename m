@@ -2,121 +2,121 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F649C001B0
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Aug 2023 09:50:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 130ACC001E0
+	for <linux-m68k@archiver.kernel.org>; Tue, 15 Aug 2023 10:43:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233294AbjHOJty (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 15 Aug 2023 05:49:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41862 "EHLO
+        id S236493AbjHOKmb convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 15 Aug 2023 06:42:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233944AbjHOJtV (ORCPT
+        with ESMTP id S236546AbjHOKmT (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 15 Aug 2023 05:49:21 -0400
-Received: from mail.sowerbutts.com (mail.sowerbutts.com [IPv6:2001:8b0:3b1:dead::100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B36A94
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Aug 2023 02:49:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sowerbutts.com; s=igor; h=In-Reply-To:Content-Type:MIME-Version:References:
-        Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=b2YfGbMiKbaY8yKe+Cb1YquBYLZFEUwtILKbnodNkPM=; b=lBEYm5uJsfXE78AqbSaPa1bXcH
-        xc0leFa+XZdFeO34iHGg7+M3y6um/JWfXFcWv92J4JGl8sgNG3NFyPGMixbL5ZIMVh0YsOmhg8u30
-        AhLAozC66wRbY8uznIwBSDPJHlULzL+tvJEileKtcRKno6n2l+ofMPp7OY3h6i6VtaRYmJOfnAIpS
-        xc9EnAqdRXI+NBdIZENy2y5O2z7oOjAgizah61Abt+V2IwcqlGmwJ1gTYAz0KME9YjdsC6Ll5O2Rz
-        bIsXEfH7L+hRMYuO7GglSKR4AbF6hgUIOCXB630gdBVS/ArvZoHMj9UGW68IIPn9F5Erh/DbjPMRM
-        8gOWD+qQ==;
-Received: from badhorse.sowerbutts.com ([2001:8b0:3b1:beef::bad] helo=sowerbutts.com)
-        by mail.sowerbutts.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <will@sowerbutts.com>)
-        id 1qVqfp-000P2B-2p;
-        Tue, 15 Aug 2023 10:49:13 +0100
-Date:   Tue, 15 Aug 2023 10:49:13 +0100
-From:   William R Sowerbutts <will@sowerbutts.com>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Richard Z <rz@linux-m68k.org>, Finn Thain <fthain@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Subject: Re: Linux 6.4.4 on m68k - Q40 - pata_falcon causes oops at boot time
-Message-ID: <ZNtKGaIgs4Dy2/6b@sowerbutts.com>
-References: <68187ca1-1d4f-92f9-f6c7-476caaa24df0@gmail.com>
- <275c3e98-a8e3-5d2a-13fa-db79ab9d6719@linux-m68k.org>
- <ZNlYFCVubNgzmUfc@sowerbutts.com>
- <c8fd631b-226c-4c60-884b-2ffa6437d03f@gmail.com>
- <ZNoNlC5fhztMFBAk@sowerbutts.com>
- <edd601bc-56c4-fa33-3a68-285eca768f13@gmail.com>
- <39D1BBAD-DCA8-4E0E-ACFD-529DECA233B8@linux-m68k.org>
- <e3964f47-c892-6453-f685-5a06e154f89a@linux-m68k.org>
- <AFCD9AA4-7A09-4AF5-B3BE-1C5554BFB8D2@linux-m68k.org>
- <e36baf9d-b027-380c-de91-c9ff52857168@gmail.com>
+        Tue, 15 Aug 2023 06:42:19 -0400
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB44A1736
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Aug 2023 03:42:17 -0700 (PDT)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-579de633419so48681907b3.3
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Aug 2023 03:42:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692096137; x=1692700937;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KSzF5vEwbW6mTgS5pbSkNReugjfObhBsGWWoH9yrmj4=;
+        b=XaA1fIIYMkihf+Dwzbwnpaxu9FIs9AdcE+JhAh0nOxc0RmUV43W/i25Z/ZGoyRJZat
+         qV8xWUEbS1UUpgaMC0c1G9FKSbTpwPpnfYDrC3o2C4qepkuLz3hR3EiQ98nK7wewQMK3
+         k567uzr4dGbzOjqvs4y68lig6nYP8zFlYutTF8RnA5E12wLmQGGg5icZMhZmzM4M43+V
+         VjHATYOGnh9vl3rm3NMv5FRGBoj/NFNICI3Ha25Pt+k0Nm7dg9/ODcx13JOYohbOPAhZ
+         9cqM9c4PDywJxUs7vavVSlxxdJoDrYIyKY4W2j0EKehyFoR2shpgEbSacrReTYXtN18y
+         BV5A==
+X-Gm-Message-State: AOJu0Yzo9z+1WtDGQoTq95W/OMvmBdjVVKV7QZUQYx96VH1MI56o1zVn
+        2HcY9nLEQfZaQGPk4PhtaMQC5dEzyFc9Fg==
+X-Google-Smtp-Source: AGHT+IFnMx6twz18WVsMbLS8pwA5mbo+J5hU9DBCWLHvBKsdCqmNxanVr9IFWcxiBCaxmDlVIsRUkw==
+X-Received: by 2002:a0d:f0c1:0:b0:589:a9fc:ffcd with SMTP id z184-20020a0df0c1000000b00589a9fcffcdmr10021146ywe.20.1692096136616;
+        Tue, 15 Aug 2023 03:42:16 -0700 (PDT)
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
+        by smtp.gmail.com with ESMTPSA id x1-20020a818701000000b005707d7686ddsm3312995ywf.76.2023.08.15.03.42.16
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Aug 2023 03:42:16 -0700 (PDT)
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-d690c9fbda3so1665887276.0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Aug 2023 03:42:16 -0700 (PDT)
+X-Received: by 2002:a25:84d1:0:b0:d64:6cd9:29a4 with SMTP id
+ x17-20020a2584d1000000b00d646cd929a4mr8903846ybm.61.1692096135766; Tue, 15
+ Aug 2023 03:42:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e36baf9d-b027-380c-de91-c9ff52857168@gmail.com>
-X-URL:  http://sowerbutts.com/
-X-Hatstand: Voltron
+References: <68187ca1-1d4f-92f9-f6c7-476caaa24df0@gmail.com>
+ <275c3e98-a8e3-5d2a-13fa-db79ab9d6719@linux-m68k.org> <ZNlYFCVubNgzmUfc@sowerbutts.com>
+ <c8fd631b-226c-4c60-884b-2ffa6437d03f@gmail.com> <ZNoNlC5fhztMFBAk@sowerbutts.com>
+ <edd601bc-56c4-fa33-3a68-285eca768f13@gmail.com> <39D1BBAD-DCA8-4E0E-ACFD-529DECA233B8@linux-m68k.org>
+ <e3964f47-c892-6453-f685-5a06e154f89a@linux-m68k.org> <AFCD9AA4-7A09-4AF5-B3BE-1C5554BFB8D2@linux-m68k.org>
+ <e36baf9d-b027-380c-de91-c9ff52857168@gmail.com> <ZNtKGaIgs4Dy2/6b@sowerbutts.com>
+In-Reply-To: <ZNtKGaIgs4Dy2/6b@sowerbutts.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 15 Aug 2023 12:42:02 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWoK5i+mWf9surp=ZifUCg9F_EYsCpn3X6OnWs1gKCwqA@mail.gmail.com>
+Message-ID: <CAMuHMdWoK5i+mWf9surp=ZifUCg9F_EYsCpn3X6OnWs1gKCwqA@mail.gmail.com>
+Subject: Re: Linux 6.4.4 on m68k - Q40 - pata_falcon causes oops at boot time
+To:     William R Sowerbutts <will@sowerbutts.com>
+Cc:     Michael Schmitz <schmitzmic@gmail.com>,
+        Richard Z <rz@linux-m68k.org>,
+        Finn Thain <fthain@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
->We need to fix pata_falcon for Q40, and with data on William's disk in 
->little endian order, but data on other users' disks in big endian order, we 
->need to come up with a way to support both for now.
+Hi William,
 
-I don't mind if you break my disk -- I can always byte-swap it if required,
-or patch my kernel to use my preferred byte ordering.
+On Tue, Aug 15, 2023 at 11:49 AM William R Sowerbutts
+<will@sowerbutts.com> wrote:
+> >We need to fix pata_falcon for Q40, and with data on William's disk in
+> >little endian order, but data on other users' disks in big endian order, we
+> >need to come up with a way to support both for now.
+>
+> I don't mind if you break my disk -- I can always byte-swap it if required,
+> or patch my kernel to use my preferred byte ordering.
+>
+> Valid points have been made about needing to keep existing disks working.
+>
+> For the kernel driver to switch byte order after some specific version seems
+> unexpected.
+>
+> On the other hand, having disks compatible with other systems is important,
+> and as a naive new user the byte-swapped disk format was quite unexpected to
+> me.
+>
+> It seems there are reasonable arguments for both sides.
+>
+> I had a cursory look through other drivers and could not find any that make
+> byte ordering a user-selectable option.  Is there any precedent for this?  It
+> would be interesting to learn how they exposed the option to the user.
 
-Valid points have been made about needing to keep existing disks working.  
+IIRC, the consensus was to not add any more byteswapping _options_
+to IDE drivers.  Just make sure the driver returns all data in host order.
+The IDE core will take care of converting the drive identification from
+little to native endian when needed (see swap_buf_le16()).
 
-For the kernel driver to switch byte order after some specific version seems
-unexpected.
+Note that "data" means both the drive identification block (as read
+from the drive's firmware), as user data (as stored on the platters).
+Hence if the interface is byte-swapped, the driver must swap all data
+read, to make sure the drive identification block is correct.
 
-On the other hand, having disks compatible with other systems is important, 
-and as a naive new user the byte-swapped disk format was quite unexpected to 
-me.
+Now, if your native (non-Linux) OS byte-swapped only the drive
+identification block, but not the user data, you have an incompatibility.
+Solving that is meant to be handled through a byte-swapping md layer
+(although I can't seem to find that anymore?).
 
-It seems there are reasonable arguments for both sides.
+Gr{oetje,eeting}s,
 
-I had a cursory look through other drivers and could not find any that make 
-byte ordering a user-selectable option.  Is there any precedent for this?  It 
-would be interesting to learn how they exposed the option to the user.
+                        Geert
 
-I'm not clear if pata_falcon on Atari records data on disk in normal or 
-swapped byte order.  Can I take a drive from my Atari Falcon Linux machine 
-and connect it to a PC without needing to byte swap it?
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-I want to float some potential solutions for discussion;
-
- * Add a kernel configuration option to choose between legacy and compatible 
-   byte ordering on Q40 at compile time (affecting all disks)
- 
- * Add a pata_falcon driver option to choose which of the connected disks 
-   should use legacy or compatible byte ordering at run time
-
- * Extend pata_falcon to examine the connected disk's contents, looking for 
-   some marker that reliably indicates a legacy byte order disk is connected.  
-   Default to compatible byte ordering if this mark is not found.  Maybe it 
-   would be cleaner for some optional module atop the driver to do this.
-
- * Assuming pata_legacy can be made to work well: Have pata_falcon retain 
-   legacy byte ordering, while pata_legacy drives the same hardware in 
-   compatible byte ordering mode.  User chooses the driver to choose byte 
-   ordering.
-
- * Switch pata_falcon to compatible byte order, document for any legacy disk 
-   users how they can either do a one-time migration of their data to 
-   compatible format, or setup the block layer to do byte swapping 
-   on-the-fly.
-
-Thanks
-
-Will
-
-_________________________________________________________________________
-William R Sowerbutts                                  will@sowerbutts.com
-"Carpe post meridiem"                               http://sowerbutts.com
-         main(){char*s=">#=0> ^#X@#@^7=",c=0,m;for(;c<15;c++)for
-         (m=-1;m<7;putchar(m++/6&c%3/2?10:s[c]-31&1<<m?42:32));}  
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
