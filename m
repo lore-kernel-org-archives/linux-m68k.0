@@ -2,63 +2,46 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59B2AEB64DD
-	for <linux-m68k@archiver.kernel.org>; Tue, 15 Aug 2023 03:34:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F649C001B0
+	for <linux-m68k@archiver.kernel.org>; Tue, 15 Aug 2023 09:50:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232047AbjHODdw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 14 Aug 2023 23:33:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53432 "EHLO
+        id S233294AbjHOJty (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 15 Aug 2023 05:49:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234570AbjHODb2 (ORCPT
+        with ESMTP id S233944AbjHOJtV (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 14 Aug 2023 23:31:28 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E71131BC5
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Aug 2023 20:30:51 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bdeb022738so8304145ad.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Aug 2023 20:30:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692070251; x=1692675051;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dtM6npHjX4nOZ3RGGuieWXVHzoKq6I8x2EisCawDjTs=;
-        b=NlRKRktDJ3/+yxdNZjOCntZhgvEscbODW9o1XKTe0JY7Ug13XsQEPNf52qKHPwIP5X
-         DDiUU8kqRRuD70AZorUk2nHL5hxxRS3NCL0btiyZQ2Bqqkj0xeIl+karKmORVV5Fp0VU
-         FyfbVbOjrpfPw7PmdCSYmzQXc1k7QntIXXljIt+TzKjNjqmaO4rjXpQ61Oq2TXPe0xlU
-         baKjXRXtb5M5kSlLB4bW56FWQGLs1qc4G+cAiWWjhXA+aup0aJejBtF/irWV3jyjQnw8
-         5oLV6NwJ2DGFm6eDfCcC6RlFl4IYRUVr34tbok+/Ys+OsoabPRzfnbsCQC2UI3LIm4JF
-         rfeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692070251; x=1692675051;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=dtM6npHjX4nOZ3RGGuieWXVHzoKq6I8x2EisCawDjTs=;
-        b=Ei6ENo7pMMHd6PxdB/OnKArrIVwZYOIoMMyTuBBsBHsJbnTfCeNNeO7Ap+j4kKraEB
-         VpCcwibvWEFQq77RLkFHR3W/5sFJHH5yfnHvawzBdHKQkdL2YoRoYYXter/4cEEZHJii
-         20wmStDNRhAequtbXtcWeOC+C1Y07jIRmcB2UPk0UomqvyrC3l170WWpJrDTtaksV9Th
-         ZrFFuwaPsxIaNESKZBTAUBWsZ37g7FpoXPzEDRk0KewPk7iP4HEBONQFDbBkqIo6zyi8
-         Me9oi8kLsUN48eLLZpti8E0SH4gIXQwxiOGDrOX8KpydyzybI5a4Tuj/LS+k3BTUZWNX
-         4mEw==
-X-Gm-Message-State: AOJu0Yyd7n61Y8+6/+YgxGji9N9jem9TCe2QehCO9VZ13Ii8Xu8yMj1/
-        O20XL5f/G/8FQTpYDWhBbZO6Foi56Uw=
-X-Google-Smtp-Source: AGHT+IF9vRtLADM4yrINFbufLgfk3VLMtJQEsav4fcuHzHhr5qqwv5UGJtz5PhuAfKOeAVILJ3xrfw==
-X-Received: by 2002:a17:902:f542:b0:1b6:b703:36f8 with SMTP id h2-20020a170902f54200b001b6b70336f8mr1228401plf.25.1692070250779;
-        Mon, 14 Aug 2023 20:30:50 -0700 (PDT)
-Received: from [10.1.1.24] (222-152-184-54-fibre.sparkbb.co.nz. [222.152.184.54])
-        by smtp.gmail.com with ESMTPSA id b14-20020a170902b60e00b001bd41b70b65sm10221617pls.49.2023.08.14.20.30.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 14 Aug 2023 20:30:50 -0700 (PDT)
+        Tue, 15 Aug 2023 05:49:21 -0400
+Received: from mail.sowerbutts.com (mail.sowerbutts.com [IPv6:2001:8b0:3b1:dead::100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B36A94
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Aug 2023 02:49:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sowerbutts.com; s=igor; h=In-Reply-To:Content-Type:MIME-Version:References:
+        Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=b2YfGbMiKbaY8yKe+Cb1YquBYLZFEUwtILKbnodNkPM=; b=lBEYm5uJsfXE78AqbSaPa1bXcH
+        xc0leFa+XZdFeO34iHGg7+M3y6um/JWfXFcWv92J4JGl8sgNG3NFyPGMixbL5ZIMVh0YsOmhg8u30
+        AhLAozC66wRbY8uznIwBSDPJHlULzL+tvJEileKtcRKno6n2l+ofMPp7OY3h6i6VtaRYmJOfnAIpS
+        xc9EnAqdRXI+NBdIZENy2y5O2z7oOjAgizah61Abt+V2IwcqlGmwJ1gTYAz0KME9YjdsC6Ll5O2Rz
+        bIsXEfH7L+hRMYuO7GglSKR4AbF6hgUIOCXB630gdBVS/ArvZoHMj9UGW68IIPn9F5Erh/DbjPMRM
+        8gOWD+qQ==;
+Received: from badhorse.sowerbutts.com ([2001:8b0:3b1:beef::bad] helo=sowerbutts.com)
+        by mail.sowerbutts.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <will@sowerbutts.com>)
+        id 1qVqfp-000P2B-2p;
+        Tue, 15 Aug 2023 10:49:13 +0100
+Date:   Tue, 15 Aug 2023 10:49:13 +0100
+From:   William R Sowerbutts <will@sowerbutts.com>
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     Richard Z <rz@linux-m68k.org>, Finn Thain <fthain@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
 Subject: Re: Linux 6.4.4 on m68k - Q40 - pata_falcon causes oops at boot time
-To:     Richard Z <rz@linux-m68k.org>, Finn Thain <fthain@linux-m68k.org>
-References: <d01db1e6-a0ae-559c-ab64-b3a2f5b60324@gmail.com>
- <997f0ff1-865d-29fb-ef65-2bb693549da8@linux-m68k.org>
- <288847c5-46bd-fcd4-11a7-829685a02c79@gmail.com>
- <521776cc-a11e-0a3a-b44d-fc051f6ee2ea@linux-m68k.org>
- <624c5629-e337-46ba-c8ac-411fe19f2f46@gmail.com>
- <81706cdc-2a7a-f383-881a-7313fefbb938@linux-m68k.org>
- <68187ca1-1d4f-92f9-f6c7-476caaa24df0@gmail.com>
+Message-ID: <ZNtKGaIgs4Dy2/6b@sowerbutts.com>
+References: <68187ca1-1d4f-92f9-f6c7-476caaa24df0@gmail.com>
  <275c3e98-a8e3-5d2a-13fa-db79ab9d6719@linux-m68k.org>
  <ZNlYFCVubNgzmUfc@sowerbutts.com>
  <c8fd631b-226c-4c60-884b-2ffa6437d03f@gmail.com>
@@ -67,81 +50,73 @@ References: <d01db1e6-a0ae-559c-ab64-b3a2f5b60324@gmail.com>
  <39D1BBAD-DCA8-4E0E-ACFD-529DECA233B8@linux-m68k.org>
  <e3964f47-c892-6453-f685-5a06e154f89a@linux-m68k.org>
  <AFCD9AA4-7A09-4AF5-B3BE-1C5554BFB8D2@linux-m68k.org>
-Cc:     William R Sowerbutts <will@sowerbutts.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <e36baf9d-b027-380c-de91-c9ff52857168@gmail.com>
-Date:   Tue, 15 Aug 2023 15:30:43 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+ <e36baf9d-b027-380c-de91-c9ff52857168@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <AFCD9AA4-7A09-4AF5-B3BE-1C5554BFB8D2@linux-m68k.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e36baf9d-b027-380c-de91-c9ff52857168@gmail.com>
+X-URL:  http://sowerbutts.com/
+X-Hatstand: Voltron
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Richard,
+>We need to fix pata_falcon for Q40, and with data on William's disk in 
+>little endian order, but data on other users' disks in big endian order, we 
+>need to come up with a way to support both for now.
 
-Am 15.08.2023 um 15:05 schrieb Richard Z:
->
->
-> On August 14, 2023 11:31:36 PM UTC, Finn Thain <fthain@linux-m68k.org> wrote:
->>
->> On Mon, 14 Aug 2023, Richard Z wrote:
->>
->>>
->>> Well ideally it would be a per-device option. This would help the ide SD
->>> cards greatly and people could byte swap their devices one at a time.
->>>
->>
->> Would a byte-swapping IDE cable help, e.g. if the same flash memory card
->> was moved from an IDE interface to a SCSI interface (on the same Q40)?
->
-> The Q40 doesn't have SCSI. The only issue is exchanging devices with other computers.
+I don't mind if you break my disk -- I can always byte-swap it if required,
+or patch my kernel to use my preferred byte ordering.
 
-You could plug one of the old ISA SCSI host adapters into an ISA slot 
-(assuming there's more than one).
+Valid points have been made about needing to keep existing disks working.  
 
-> Byteswapping cable would help the performance but will also swap the ide ident string so the kernel must take that into account.
+For the kernel driver to switch byte order after some specific version seems
+unexpected.
 
-That's what pata_falcon does already - 'swap' is true by default to make 
-that happen, and gets set to false if data are transfered.
+On the other hand, having disks compatible with other systems is important, 
+and as a naive new user the byte-swapped disk format was quite unexpected to 
+me.
 
->
->>
->> Perhaps we should not worry too much about unusual use-cases during what
->> would be a temporary transition period...
->
->
-> You are right, there are sure many other ways to solve the issue with SD cards.
->
->>> Think of it, if you want to boot an older kernel you don't want to
->>> byteswap your whole hard disk back and forth every time when testing an
->>> older or newer kernel.
->>
->> Probably not an issue for end-users, as they are more likely to boot an
->> old userland together with an old kernel. But potentially an issue for
->> kernel developers who need to mix new kernels with old userland. However,
->> kernel developers can use out-of-tree code to help with their testing, as
->> usual.
->
-> Just don't think this transition is worth it if it will make everything more complicated and noticeably slower.
+It seems there are reasonable arguments for both sides.
 
-The problem here is that we'd already done the transition to libata / 
-pata_falcon and the old IDE code has been removed. Q40 IDE was broken in 
-the process.
+I had a cursory look through other drivers and could not find any that make 
+byte ordering a user-selectable option.  Is there any precedent for this?  It 
+would be interesting to learn how they exposed the option to the user.
 
-We need to fix pata_falcon for Q40, and with data on William's disk in 
-little endian order, but data on other users' disks in big endian order, 
-we need to come up with a way to support both for now.
+I'm not clear if pata_falcon on Atari records data on disk in normal or 
+swapped byte order.  Can I take a drive from my Atari Falcon Linux machine 
+and connect it to a PC without needing to byte swap it?
 
-Cheers,
+I want to float some potential solutions for discussion;
 
-	Michael
+ * Add a kernel configuration option to choose between legacy and compatible 
+   byte ordering on Q40 at compile time (affecting all disks)
+ 
+ * Add a pata_falcon driver option to choose which of the connected disks 
+   should use legacy or compatible byte ordering at run time
 
->
-> Richard
->
+ * Extend pata_falcon to examine the connected disk's contents, looking for 
+   some marker that reliably indicates a legacy byte order disk is connected.  
+   Default to compatible byte ordering if this mark is not found.  Maybe it 
+   would be cleaner for some optional module atop the driver to do this.
+
+ * Assuming pata_legacy can be made to work well: Have pata_falcon retain 
+   legacy byte ordering, while pata_legacy drives the same hardware in 
+   compatible byte ordering mode.  User chooses the driver to choose byte 
+   ordering.
+
+ * Switch pata_falcon to compatible byte order, document for any legacy disk 
+   users how they can either do a one-time migration of their data to 
+   compatible format, or setup the block layer to do byte swapping 
+   on-the-fly.
+
+Thanks
+
+Will
+
+_________________________________________________________________________
+William R Sowerbutts                                  will@sowerbutts.com
+"Carpe post meridiem"                               http://sowerbutts.com
+         main(){char*s=">#=0> ^#X@#@^7=",c=0,m;for(;c<15;c++)for
+         (m=-1;m<7;putchar(m++/6&c%3/2?10:s[c]-31&1<<m?42:32));}  
+
