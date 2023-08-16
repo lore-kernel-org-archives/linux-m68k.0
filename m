@@ -2,73 +2,79 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EBDDC41513
-	for <linux-m68k@archiver.kernel.org>; Wed, 16 Aug 2023 14:56:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02E33C001B0
+	for <linux-m68k@archiver.kernel.org>; Wed, 16 Aug 2023 15:34:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245704AbjHPO4Z convert rfc822-to-8bit (ORCPT
+        id S1344183AbjHPPeH convert rfc822-to-8bit (ORCPT
         <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 16 Aug 2023 10:56:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37046 "EHLO
+        Wed, 16 Aug 2023 11:34:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343872AbjHPO4F (ORCPT
+        with ESMTP id S1344192AbjHPPeE (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 16 Aug 2023 10:56:05 -0400
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4444C272B
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Aug 2023 07:56:02 -0700 (PDT)
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6bd066b0fd4so4558983a34.2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Aug 2023 07:56:02 -0700 (PDT)
+        Wed, 16 Aug 2023 11:34:04 -0400
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4719E210E
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Aug 2023 08:34:03 -0700 (PDT)
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-d712d86eb96so1482616276.3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Aug 2023 08:34:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692197761; x=1692802561;
+        d=1e100.net; s=20221208; t=1692200042; x=1692804842;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PWptNDRMUs2ZAaEq3Zc4y6Na38OgEqP5UG5bQfgs1Ds=;
-        b=aFDFwtcVhhlCW1+vRA8rzndJcbPbiUpmxwwd12v9XxcXDnO6ChxCG7NoNOByo7SSKN
-         4Hi+l0cESlzyGJ/j8R4HkoVDiggk/QlgwflTF/gZLgF5Hvv8amSoOAvEnRmYLwrx6jiU
-         IcWfpGd3LuRVyRfZLnh0uhdNXaDO2Farc0Zo0aS0jXJP0N/AYAh2cE5Q2ib/PL+4GtNV
-         tcSuSyPkrjLLrNpwPwOqWAo67ENQhSjeqeflmq+ocwe3WpCKdbdBE32zn7c5ED1M3elV
-         xmie7J54D/0bbF4Fo874G7EGV9Wxdv1/F4oVikiqjN+sA9BIrtjgC5BnGBCp5KC00qdM
-         cafg==
-X-Gm-Message-State: AOJu0YxLvAlCuokZdYEtEjo7Hh3YfC+xzjq76aNl2Ydh6X1ybu606h9f
-        7CY4itwWgqdxaUiUhGytiUbe20nK/NWgpQ==
-X-Google-Smtp-Source: AGHT+IGR7MQeGjcZEufyb41BuEUWSvXj9Yok8NlzbsA8K9W19a9FbsQm1zJ2GYlyzljv9TsSk3PAQw==
-X-Received: by 2002:a9d:7443:0:b0:6b7:5112:bc1a with SMTP id p3-20020a9d7443000000b006b75112bc1amr2025860otk.24.1692197761434;
-        Wed, 16 Aug 2023 07:56:01 -0700 (PDT)
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com. [209.85.167.172])
-        by smtp.gmail.com with ESMTPSA id w25-20020a056830111900b006b9b6aea237sm6175175otq.80.2023.08.16.07.56.01
+        bh=OaVSsPNBIbXa98DG/iHuB0Knmq9R+zqUhYDbkrJc/CM=;
+        b=eqKpdmPwjYUzbPuc+m+EG7pHWdEHmD3O5eZHOWHr2HePoqr8k/4f/fCGqWTQNE0KTR
+         CXTY+eJv64tNsJpkzkbL5LKg47em/PB6Gy9y/jKv1tcFhd9vhU4iCWK0H0AVulwhZuGv
+         ki9mnPvTyim4LzJeb81eqg+5Cqhj7dDYjqaoeMClb+m+l3QT4mkk/eGgumh1UUyjsZeJ
+         hmf4Zck6CNkLd07AOHZsfOawCOhIJ5hxrhXpBUX/yv9LqanorcsSAQhIwXG3234wIVur
+         AtL30jvd4qYF474vamGVrf0mMUziVUr8dEi6CyW0owBtfCQlRhZH53J0Y0exRjZubnAT
+         DGQQ==
+X-Gm-Message-State: AOJu0YwElZ6hAELQisCAJBVfkQohS3H0ecd7nz43HpOMgn/Kku9dVdEi
+        ECcMVWeI7NWW8QEI2ea+LLPZLjd4HI8GIw==
+X-Google-Smtp-Source: AGHT+IERdPN+I0CFC3HgZlBIyOU06qCtb6Yqvxa27MKLDxfbB4/EfaELMb+DgOWiErxOaqHrjW3CFA==
+X-Received: by 2002:a5b:403:0:b0:d6b:75e5:f2fd with SMTP id m3-20020a5b0403000000b00d6b75e5f2fdmr1763232ybp.37.1692200041794;
+        Wed, 16 Aug 2023 08:34:01 -0700 (PDT)
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
+        by smtp.gmail.com with ESMTPSA id o124-20020a254182000000b00d1f0204c1b6sm3552684yba.27.2023.08.16.08.34.01
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Aug 2023 07:56:01 -0700 (PDT)
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3a812843f0fso1343451b6e.2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Aug 2023 07:56:01 -0700 (PDT)
-X-Received: by 2002:a05:6358:6f1b:b0:135:499b:a68c with SMTP id
- r27-20020a0563586f1b00b00135499ba68cmr1098840rwn.8.1692197760871; Wed, 16 Aug
- 2023 07:56:00 -0700 (PDT)
+        Wed, 16 Aug 2023 08:34:01 -0700 (PDT)
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-d712d86eb96so1482596276.3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Aug 2023 08:34:01 -0700 (PDT)
+X-Received: by 2002:a25:d20d:0:b0:d1c:6a5e:463e with SMTP id
+ j13-20020a25d20d000000b00d1c6a5e463emr2111588ybg.28.1692200041383; Wed, 16
+ Aug 2023 08:34:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230807153654.997091-1-masahiroy@kernel.org> <20230807153654.997091-2-masahiroy@kernel.org>
-In-Reply-To: <20230807153654.997091-2-masahiroy@kernel.org>
+References: <20230809211057.60514-1-arnd@kernel.org>
+In-Reply-To: <20230809211057.60514-1-arnd@kernel.org>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 16 Aug 2023 16:55:49 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWqXKZOFAemsYB=5d+eOZdANh=KYhiE18otKPLPp4pP6Q@mail.gmail.com>
-Message-ID: <CAMuHMdWqXKZOFAemsYB=5d+eOZdANh=KYhiE18otKPLPp4pP6Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] m68k: remove <asm/export.h>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org
+Date:   Wed, 16 Aug 2023 17:33:49 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUFRhBT4iNMQpzjspBR20s700FZbhq+NZ_f9HyV1Ztcqg@mail.gmail.com>
+Message-ID: <CAMuHMdUFRhBT4iNMQpzjspBR20s700FZbhq+NZ_f9HyV1Ztcqg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] m68k: define __div64_32() to avoid a warning
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-m68k@lists.linux-m68k.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Aug 7, 2023 at 5:37 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> All *.S files under arch/m68k/ have been converted to include
-> <linux/export.h> instead of <asm/export.h>.
+On Wed, Aug 9, 2023 at 11:11 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 >
-> Remove <asm/export.h>.
+> The generic __div64_32() definition is built on all architectures that don't
+> provide this as a macro. m68k however neither defines nor requires __div64_32,
+> so it should define an empty one to avoid the warning:
 >
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> lib/math/div64.c:31:32: error: no previous prototype for '__div64_32' [-Werror=missing-prototypes]
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+Nice! 142 bytes saved (which do not show up with bloat-o-meter,
+as it does not count weak symbols; patch sent).
 
 Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 i.e. will queue in the m68k for-v6.6 branch.
@@ -77,7 +83,8 @@ Gr{oetje,eeting}s,
 
                         Geert
 
--- 
+
+--
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
 In personal conversations with technical people, I call myself a hacker. But
