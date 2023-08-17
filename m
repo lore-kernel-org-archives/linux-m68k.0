@@ -2,30 +2,30 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87F8FC52CDC
-	for <linux-m68k@archiver.kernel.org>; Thu, 17 Aug 2023 16:08:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 608CBC531DF
+	for <linux-m68k@archiver.kernel.org>; Thu, 17 Aug 2023 16:09:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353485AbjHQQI0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 17 Aug 2023 12:08:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46798 "EHLO
+        id S1353503AbjHQQI2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 17 Aug 2023 12:08:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353475AbjHQQIA (ORCPT
+        with ESMTP id S1353497AbjHQQID (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 17 Aug 2023 12:08:00 -0400
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F1A535A8
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Aug 2023 09:07:56 -0700 (PDT)
+        Thu, 17 Aug 2023 12:08:03 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C349C3583
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Aug 2023 09:07:57 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:d85a:258d:2c59:b44])
-        by xavier.telenet-ops.be with bizsmtp
-        id ag7i2A0024QHFyo01g7imV; Thu, 17 Aug 2023 18:07:54 +0200
+        by laurent.telenet-ops.be with bizsmtp
+        id ag7i2A0054QHFyo01g7i1F; Thu, 17 Aug 2023 18:07:55 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qWfX4-000uIh-Ba;
-        Thu, 17 Aug 2023 18:07:41 +0200
+        id 1qWfX4-000uIv-EU;
+        Thu, 17 Aug 2023 18:07:42 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qWfXB-007YEe-Q2;
+        id 1qWfXB-007YEt-Th;
         Thu, 17 Aug 2023 18:07:41 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     Russell King <linux@armlinux.org.uk>,
@@ -44,9 +44,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
         linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 1/9] ARM: Remove <asm/ide.h>
-Date:   Thu, 17 Aug 2023 18:07:32 +0200
-Message-Id: <e53f0f8da1607856028d941e7ac8646aa2abc555.1692288018.git.geert@linux-m68k.org>
+Subject: [PATCH 5/9] asm-generic: Remove ide_iops.h
+Date:   Thu, 17 Aug 2023 18:07:36 +0200
+Message-Id: <54ed1ce4b29346803bd732aac560a74896d1ecfe.1692288018.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1692288018.git.geert@linux-m68k.org>
 References: <cover.1692288018.git.geert@linux-m68k.org>
@@ -56,45 +56,60 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-As of commit b7fb14d3ac63117e ("ide: remove the legacy ide driver") in
-v5.14, there are no more generic users of <asm/ide.h>.
+The last user of ide_iops.h was removed in commit b7fb14d3ac63117e
+("ide: remove the legacy ide driver") in v5.14.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/arm/include/asm/ide.h | 24 ------------------------
- 1 file changed, 24 deletions(-)
- delete mode 100644 arch/arm/include/asm/ide.h
+ include/asm-generic/ide_iops.h | 39 ----------------------------------
+ 1 file changed, 39 deletions(-)
+ delete mode 100644 include/asm-generic/ide_iops.h
 
-diff --git a/arch/arm/include/asm/ide.h b/arch/arm/include/asm/ide.h
+diff --git a/include/asm-generic/ide_iops.h b/include/asm-generic/ide_iops.h
 deleted file mode 100644
-index a81e0b0d6747aa2f..0000000000000000
---- a/arch/arm/include/asm/ide.h
+index 81dfa3ee5e0697b7..0000000000000000
+--- a/include/asm-generic/ide_iops.h
 +++ /dev/null
-@@ -1,24 +0,0 @@
+@@ -1,39 +0,0 @@
 -/* SPDX-License-Identifier: GPL-2.0 */
--/*
-- *  arch/arm/include/asm/ide.h
-- *
-- *  Copyright (C) 1994-1996  Linus Torvalds & authors
-- */
+-/* Generic I/O and MEMIO string operations.  */
 -
--/*
-- *  This file contains the ARM architecture specific IDE code.
-- */
+-#define __ide_insw	insw
+-#define __ide_insl	insl
+-#define __ide_outsw	outsw
+-#define __ide_outsl	outsl
 -
--#ifndef __ASMARM_IDE_H
--#define __ASMARM_IDE_H
+-static __inline__ void __ide_mm_insw(void __iomem *port, void *addr, u32 count)
+-{
+-	while (count--) {
+-		*(u16 *)addr = readw(port);
+-		addr += 2;
+-	}
+-}
 -
--#ifdef __KERNEL__
+-static __inline__ void __ide_mm_insl(void __iomem *port, void *addr, u32 count)
+-{
+-	while (count--) {
+-		*(u32 *)addr = readl(port);
+-		addr += 4;
+-	}
+-}
 -
--#define __ide_mm_insw(port,addr,len)	readsw(port,addr,len)
--#define __ide_mm_insl(port,addr,len)	readsl(port,addr,len)
--#define __ide_mm_outsw(port,addr,len)	writesw(port,addr,len)
--#define __ide_mm_outsl(port,addr,len)	writesl(port,addr,len)
+-static __inline__ void __ide_mm_outsw(void __iomem *port, void *addr, u32 count)
+-{
+-	while (count--) {
+-		writew(*(u16 *)addr, port);
+-		addr += 2;
+-	}
+-}
 -
--#endif /* __KERNEL__ */
--
--#endif /* __ASMARM_IDE_H */
+-static __inline__ void __ide_mm_outsl(void __iomem * port, void *addr, u32 count)
+-{
+-	while (count--) {
+-		writel(*(u32 *)addr, port);
+-		addr += 4;
+-	}
+-}
 -- 
 2.34.1
 
