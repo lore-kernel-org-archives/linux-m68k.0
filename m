@@ -2,38 +2,38 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AEFAC41513
-	for <linux-m68k@archiver.kernel.org>; Thu, 17 Aug 2023 14:45:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ADC02C30632
+	for <linux-m68k@archiver.kernel.org>; Thu, 17 Aug 2023 14:45:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352165AbjHQOpI (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 17 Aug 2023 10:45:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33282 "EHLO
+        id S1352171AbjHQOpJ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 17 Aug 2023 10:45:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352227AbjHQOpE (ORCPT
+        with ESMTP id S1352231AbjHQOpF (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 17 Aug 2023 10:45:04 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C5B173F
+        Thu, 17 Aug 2023 10:45:05 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 211E02D79
         for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Aug 2023 07:45:01 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:d85a:258d:2c59:b44])
-        by albert.telenet-ops.be with bizsmtp
-        id aeky2A00f4QHFyo06eky8G; Thu, 17 Aug 2023 16:44:59 +0200
+        by laurent.telenet-ops.be with bizsmtp
+        id aeky2A00E4QHFyo01ekyys; Thu, 17 Aug 2023 16:44:59 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qWeF1-000u8f-69;
+        id 1qWeF1-000u8j-7E;
         Thu, 17 Aug 2023 16:44:58 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qWeF8-007SBP-Mu;
+        id 1qWeF8-007SBY-O3;
         Thu, 17 Aug 2023 16:44:58 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
 Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 2/6] m68k: math-emu: Sanitize include guards
-Date:   Thu, 17 Aug 2023 16:44:49 +0200
-Message-Id: <8c84c8bf06c0c1e463c47f071891e2e83d5abdd2.1692283195.git.geert@linux-m68k.org>
+Subject: [PATCH 4/6] m68k: math-emu: Replace external declarations by header inclusion
+Date:   Thu, 17 Aug 2023 16:44:51 +0200
+Message-Id: <163bc2f64b5a3dd7b96a12aaca6733b408ddc880.1692283195.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1692283195.git.geert@linux-m68k.org>
 References: <cover.1692283195.git.geert@linux-m68k.org>
@@ -43,81 +43,52 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Some include guards start with an underscore, others don't.
-Some comments do not match the actual include guard.
+Replace the (incorrect) external declarations by an inclusion of the
+appropriate header file.
 
-Make them uniform, adhering to the "FP_<FOO>_H" format.
+Semantically, the "src" parameters of the various fp_*() functions are
+constant.  However, they cannot actually be const as most of these
+functions perform a normalization step first.  As the fp_one constant
+passed to fp_add() is already normalized, it is safe to cast away its
+constness when making the function call.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/math-emu/fp_arith.h    | 6 +++---
- arch/m68k/math-emu/fp_trig.h     | 6 +++---
- arch/m68k/math-emu/multi_arith.h | 6 +++---
- 3 files changed, 9 insertions(+), 9 deletions(-)
+ arch/m68k/math-emu/fp_log.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/arch/m68k/math-emu/fp_arith.h b/arch/m68k/math-emu/fp_arith.h
-index 0fd3ed217f668652..85bdd83b9dd667a8 100644
---- a/arch/m68k/math-emu/fp_arith.h
-+++ b/arch/m68k/math-emu/fp_arith.h
-@@ -12,8 +12,8 @@
- 
-  */
- 
--#ifndef FP_ARITH_H
--#define FP_ARITH_H
-+#ifndef _FP_ARITH_H
-+#define _FP_ARITH_H
- 
- /* easy ones */
- struct fp_ext *
-@@ -47,4 +47,4 @@ fp_fintrz(struct fp_ext *dest, struct fp_ext *src);
- struct fp_ext *
- fp_fscale(struct fp_ext *dest, struct fp_ext *src);
- 
--#endif	/* FP_ARITH__H */
-+#endif	/* _FP_ARITH_H */
-diff --git a/arch/m68k/math-emu/fp_trig.h b/arch/m68k/math-emu/fp_trig.h
-index af8b247e9c982874..52f0cc31cfe49cb7 100644
---- a/arch/m68k/math-emu/fp_trig.h
-+++ b/arch/m68k/math-emu/fp_trig.h
-@@ -15,8 +15,8 @@
+diff --git a/arch/m68k/math-emu/fp_log.c b/arch/m68k/math-emu/fp_log.c
+index a8eac8c81757d22e..2426634c4ba74377 100644
+--- a/arch/m68k/math-emu/fp_log.c
++++ b/arch/m68k/math-emu/fp_log.c
+@@ -15,6 +15,7 @@
  
  */
  
--#ifndef FP_TRIG_H
--#define FP_TRIG_H
-+#ifndef _FP_TRIG_H
-+#define _FP_TRIG_H
- 
++#include "fp_arith.h"
  #include "fp_emu.h"
  
-@@ -29,4 +29,4 @@
-    they return a status code, which should end up in %d0, if all goes
-    well.  */
+ static const struct fp_ext fp_one =
+@@ -22,9 +23,6 @@ static const struct fp_ext fp_one =
+ 	.exp = 0x3fff,
+ };
  
--#endif /* FP_TRIG__H */
-+#endif /* _FP_TRIG_H */
-diff --git a/arch/m68k/math-emu/multi_arith.h b/arch/m68k/math-emu/multi_arith.h
-index 232f58fe3483d2be..ed2434fcfb1ef46e 100644
---- a/arch/m68k/math-emu/multi_arith.h
-+++ b/arch/m68k/math-emu/multi_arith.h
-@@ -15,8 +15,8 @@
-    implement the subset of integer arithmetic that we need in order to
-    multiply, divide, and normalize 128-bit unsigned mantissae.  */
- 
--#ifndef MULTI_ARITH_H
--#define MULTI_ARITH_H
-+#ifndef _MULTI_ARITH_H
-+#define _MULTI_ARITH_H
- 
- static inline void fp_denormalize(struct fp_ext *reg, unsigned int cnt)
+-extern struct fp_ext *fp_fadd(struct fp_ext *dest, const struct fp_ext *src);
+-extern struct fp_ext *fp_fdiv(struct fp_ext *dest, const struct fp_ext *src);
+-
+ struct fp_ext *
+ fp_fsqrt(struct fp_ext *dest, struct fp_ext *src)
  {
-@@ -285,4 +285,4 @@ static inline void fp_putmant128(struct fp_ext *dest, union fp_mant128 *src,
- 	}
- }
+@@ -70,7 +68,8 @@ fp_fsqrt(struct fp_ext *dest, struct fp_ext *src)
+ 	 *	sqrt(x) = 1 + 1/2*(x-1)
+ 	 *		= 1/2*(1+x)
+ 	 */
+-	fp_fadd(dest, &fp_one);
++	/* It is safe to cast away the constness, as fp_one is normalized */
++	fp_fadd(dest, (struct fp_ext *)&fp_one);
+ 	dest->exp--;		/* * 1/2 */
  
--#endif	/* MULTI_ARITH_H */
-+#endif	/* _MULTI_ARITH_H */
+ 	/*
 -- 
 2.34.1
 
