@@ -2,66 +2,102 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6D03C5320E
-	for <linux-m68k@archiver.kernel.org>; Thu, 17 Aug 2023 20:26:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2B06C64EBC
+	for <linux-m68k@archiver.kernel.org>; Thu, 17 Aug 2023 20:32:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347477AbjHQU0F (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 17 Aug 2023 16:26:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36320 "EHLO
+        id S1354911AbjHQUbd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 17 Aug 2023 16:31:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354900AbjHQUZ5 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Aug 2023 16:25:57 -0400
-Received: from mail.sowerbutts.com (mail.sowerbutts.com [IPv6:2001:8b0:3b1:dead::100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 498DE35A5
-        for <linux-m68k@vger.kernel.org>; Thu, 17 Aug 2023 13:25:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sowerbutts.com; s=igor; h=In-Reply-To:Content-Type:MIME-Version:References:
-        Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=cnrUPYuce+FdYGEayfY4aHSvVh1WoqoFK9Ys3xJVG/s=; b=bS3jspv/CKdpxNpUNo9cXd04zQ
-        qXNuY5fM3dpynqzGxi2KtsH1ExLC/RPEH89n3w1fB0pkadlmMuHOGR3qJB3n+n7mHoqHZMiiRlGD0
-        CeIl1LC4iXlQPdEtIq029o2EnzmPNGX94H4UIloMy5B6eqy7gOIV25is7tGWYA9JJdfaVNPHBnfeU
-        1JNSN2qvildc5kJQeDx6TRndDj/TtvgH8x2y2kojVz3dV1Zt3P6ZxDqHlxNx00jQZOtj8DxRTkKM2
-        CxSyDzknINUtppPyoX3UPWqjCDI+rgZfHF2ZFySKJddQtVsmqXUAgIO2dfjnrpHZGEMYf/KhPJUlc
-        n+U6GsIQ==;
-Received: from [2001:8b0:3b1:cafe:2292:e7dd:dea3:4ff6] (helo=sowerbutts.com)
-        by mail.sowerbutts.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <will@sowerbutts.com>)
-        id 1qWjYa-000gLf-1o;
-        Thu, 17 Aug 2023 21:25:24 +0100
-Date:   Thu, 17 Aug 2023 21:25:24 +0100
-From:   William R Sowerbutts <will@sowerbutts.com>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     linux-m68k@vger.kernel.org, rz@linux-m68k.org, geert@linux-m68k.org
-Subject: Re: [PATCH RFC v3 0/2] Q40 IDE fixes
-Message-ID: <ZN6CNBBSCvFwc9Z9@sowerbutts.com>
-References: <20230817035001.8400-1-schmitzmic@gmail.com>
- <ZN3mT14FzfbhKYt5@sowerbutts.com>
+        with ESMTP id S1354905AbjHQUbC (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Thu, 17 Aug 2023 16:31:02 -0400
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7411C35BD
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Aug 2023 13:30:49 -0700 (PDT)
+Received: from [192.168.1.103] (178.176.75.135) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Thu, 17 Aug
+ 2023 23:30:45 +0300
+Subject: Re: [PATCH 6/9] ata: pata_buddha: Remove #include <asm/ide.h>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-parisc@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <sparclinux@vger.kernel.org>, <linux-ide@vger.kernel.org>,
+        <linux-m68k@lists.linux-m68k.org>, <linux-arch@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <cover.1692288018.git.geert@linux-m68k.org>
+ <0e03e9d36c80f9d6702191fb202ce7b56360bf49.1692288018.git.geert@linux-m68k.org>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <c5e25ff3-c178-7ef4-f354-a3788b2b2c1c@omp.ru>
+Date:   Thu, 17 Aug 2023 23:30:45 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZN3mT14FzfbhKYt5@sowerbutts.com>
-X-URL:  http://sowerbutts.com/
-X-Hatstand: Voltron
+In-Reply-To: <0e03e9d36c80f9d6702191fb202ce7b56360bf49.1692288018.git.geert@linux-m68k.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [178.176.75.135]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.59, Database issued on: 08/17/2023 20:16:19
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 179312 [Aug 17 2023]
+X-KSE-AntiSpam-Info: Version: 5.9.59.0
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 526 526 7a6a9b19f6b9b3921b5701490f189af0e0cd5310
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1;178.176.75.135:7.1.2
+X-KSE-AntiSpam-Info: FromAlignment: s
+X-KSE-AntiSpam-Info: {rdns complete}
+X-KSE-AntiSpam-Info: {fromrtbl complete}
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.75.135
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=none header.from=omp.ru;spf=none
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 08/17/2023 20:19:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 8/17/2023 6:04:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 10:20:15AM +0100, William R Sowerbutts wrote:
->I'll test this evening and report back.
+On 8/17/23 7:07 PM, Geert Uytterhoeven wrote:
 
-The patches work.
+> The Buddha, Catweasel, and X-Surf PATA driver does not need anything
+> from <asm/ide.h>.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Thanks
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-Will
+[...]
 
-_________________________________________________________________________
-William R Sowerbutts                                  will@sowerbutts.com
-"Carpe post meridiem"                               http://sowerbutts.com
-         main(){char*s=">#=0> ^#X@#@^7=",c=0,m;for(;c<15;c++)for
-         (m=-1;m<7;putchar(m++/6&c%3/2?10:s[c]-31&1<<m?42:32));}  
-
+MBR, Sergey
