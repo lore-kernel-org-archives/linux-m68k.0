@@ -2,106 +2,75 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59EDDEE49A1
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Aug 2023 23:51:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 764AFEE499B
+	for <linux-m68k@archiver.kernel.org>; Fri, 18 Aug 2023 23:53:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242898AbjHRXvH (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 18 Aug 2023 19:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43228 "EHLO
+        id S242907AbjHRXxU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 18 Aug 2023 19:53:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242931AbjHRXvH (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 18 Aug 2023 19:51:07 -0400
+        with ESMTP id S242905AbjHRXxC (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 18 Aug 2023 19:53:02 -0400
 Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC543A9F;
-        Fri, 18 Aug 2023 16:51:05 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 0A092320055E;
-        Fri, 18 Aug 2023 19:51:03 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D54903A9F
+        for <linux-m68k@vger.kernel.org>; Fri, 18 Aug 2023 16:53:00 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id DF34E3200929;
+        Fri, 18 Aug 2023 19:52:59 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Fri, 18 Aug 2023 19:51:04 -0400
+  by compute5.internal (MEProxy); Fri, 18 Aug 2023 19:53:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-type:content-type:date:date
         :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
         :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1692402663; x=1692489063; bh=xBl0qbFSd6IRr
-        eu7aGBHXSohTWVbQIhJkC/TtxWNF5E=; b=Ms8xyi1b0UdnSFbLGz7B/QdFx7pOw
-        wMDTuI6f8clAUEcPQszcLooQC1XxausHcl4m8D0RLBpLcgLpLG3bv5zfu1K1aCgq
-        5YPK0fzn1ZOSjPI2qVB14HylkS6SD0OV9wNPrBD02INU+cBtH/FW54/ZT1R4t8vt
-        +otC4yO9+/M+VivYoKoBXGmC/eJ+Orazt75gI7j94xc8Qvp4QRnN6KCUDPR5nmJ+
-        516sjePb+etR62eO9pSLUky3uKREWViHpRIA8xm74/l1MwcUOnExsGjqqvja7yNX
-        ojFOJmyjCqjmyJ29d/NQpJUDrbR7dLZci8LmwyR/tGybs9ybSgHL0UkyA==
-X-ME-Sender: <xms:5gPgZH8Wv4IPIndc5AM-rfUfhSjuJDeurAu_qUxonkfZuxawCk5hEA>
-    <xme:5gPgZDvKnIDRb9Ulr49R_i12f1T3LNj84t_mlodcsqCAtpd4ysD1sZ0GYAFrgApF1
-    L8tjrjByJBeTclqCks>
-X-ME-Received: <xmr:5gPgZFB1NzCPJiYdl-nzHdsqrHN4cAPdXHlD5d6lwR5n0vtizmmUHVxAk6sj2NBsIypgcicrQWcE1qEdmsMrNUOshR5J8dJdjl0>
+        :x-sasl-enc; s=fm1; t=1692402779; x=1692489179; bh=bVBMT4EWXz9WX
+        Jq6vSohcsfErBnlOzYQ/ShLlGqx/m8=; b=zOXhNLAyW/iMtJSkY0BnbIQ2uuWie
+        cAYt4jty4puxxZhwMBvKpqz1yQP1i5/bw37mVSmgOC8vmCdv8ioWOte+Ogr3ZuZQ
+        aXLW38yoXDQsYMlBnZbhrrxt69VKyAXqKLFdfyieqNq5VE92CQcYpKrdcjC6KNyC
+        oOkhFq9KyDHZUEgCfu8D/ZD5dkr3CtooArnBRtxf9jpFAzfN+1DjG6SL/moZgK6n
+        47c0C8YX+/ArkiOY3b7irNQ86+s40FriJx4BBs0cq4Ya1ht9GWWfQM6bc2vIyUjT
+        SPhxYtv17iQSpk5UMnYnnWEXciO7ostJXQSoQnwWy6XHdMkZCV5HYWXUA==
+X-ME-Sender: <xms:WwTgZBwE23Vk65Fo6qn-FuYV0SjVTevPROH5TWXUJh0O_ddGhdjmjg>
+    <xme:WwTgZBQEuE3Ip--lER6EL2xJHj3BiZTHfUQ42VIhO3sXp3IRRaA1LFUXm1yn5jq0e
+    YzVtmtcWxfN_Jke51E>
+X-ME-Received: <xmr:WwTgZLUM1Hz1gxEVutkgtt5i1rsqaJp8LChK29BmT-HW_6nRsKowQp8hJOy97olJje6m-T3TTxhwFOfCfD7zLYGD9p9HQuQigqg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddugedgvdefucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevufgjkfhfgggtsehmtderredttdejnecuhfhrohhmpefhihhnnhcu
+    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
     vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpeelfeeklefggfetkedukeevfffgvdeuheetffekledtfeejteelieejteeh
-    geelieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
+    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
     hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:5gPgZDc_piWmZED77GSnhsjfTxTWR1s9vKMZX30JgRapTq5ulGiJIw>
-    <xmx:5gPgZMMYjJlWc4_yi0PLdOKVrB9tHdTO6NDHnl15s0REX30P23kjlw>
-    <xmx:5gPgZFlZkK0YZVFMahvOH8Dc22EPu45xTxf6-Ld_BiKnF20JPhTpTg>
-    <xmx:5wPgZJrjcEvyObDV01dxDJO8ycig0UxvxiHAYFqQMlzEx7EqGh0PoA>
+X-ME-Proxy: <xmx:WwTgZDhzc5swbb4NfvKqRTRgMKCVgOpDRERG0IYM-xqSFLw2nxoJFQ>
+    <xmx:WwTgZDAjkO2psvHbZKiTeTMrUVka0W4dbyhwdJHuVRWuG2tfG7atjQ>
+    <xmx:WwTgZMK3IjdkoJfAkyPUKJk5aePK_i8nFFfAkIewGNG7jJPo_LvHAQ>
+    <xmx:WwTgZGNmKsgw3DQNxBJJFLPoK_Tghy-Li3hV6Mt3xEVwThX6h8D2gQ>
 Feedback-ID: i58a146ae:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 18 Aug 2023 19:51:00 -0400 (EDT)
-Date:   Sat, 19 Aug 2023 09:51:15 +1000 (AEST)
+ 18 Aug 2023 19:52:57 -0400 (EDT)
+Date:   Sat, 19 Aug 2023 09:53:13 +1000 (AEST)
 From:   Finn Thain <fthain@linux-m68k.org>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-cc:     Michael Schmitz <schmitzmic@gmail.com>, dlemoal@kernel.org,
-        linux-ide@vger.kernel.org, linux-m68k@vger.kernel.org,
-        will@sowerbutts.com, rz@linux-m68k.org
-Subject: Re: [PATCH v2 2/3] ata: pata_falcon: add data_swab option to byte-swap
- disk data
-In-Reply-To: <CAMuHMdVVWwaeMTd397z-=D6Cfp31i0a=y_R1OQqUuBytAXKyFQ@mail.gmail.com>
-Message-ID: <80dcb737-6271-b0ef-6a7d-80b0a89e5e96@linux-m68k.org>
-References: <20230818071405.28581-1-schmitzmic@gmail.com> <20230818071405.28581-3-schmitzmic@gmail.com> <16f01be8-de2e-4fb2-50c3-95f030e740ac@linux-m68k.org> <CAMuHMdVVWwaeMTd397z-=D6Cfp31i0a=y_R1OQqUuBytAXKyFQ@mail.gmail.com>
+cc:     Michael Schmitz <schmitzmic@gmail.com>, will@sowerbutts.com,
+        linux-m68k@vger.kernel.org, rz@linux-m68k.org
+Subject: Re: [PATCH RFC v3 2/2] m68k/q40: add data_swab option for pata_falcon
+ to byte-swap disk data
+In-Reply-To: <CAMuHMdXcz0koHQXAaWCoGXPJVva2a43C9CuwQf3mZeWhPaSiWw@mail.gmail.com>
+Message-ID: <00d475d4-76c1-0ae8-1723-a0fc08a57de4@linux-m68k.org>
+References: <20230817035001.8400-1-schmitzmic@gmail.com> <20230817035001.8400-3-schmitzmic@gmail.com> <f604a8f6-6203-84c5-82b9-570348d416ec@linux-m68k.org> <CAMuHMdV6NWRKL8DAD2e4HPz=fbcAUqi6ww-8_9Mjg0t8eiZCGQ@mail.gmail.com> <8bf4980e-f269-48d2-5b77-3fd6c7270bef@gmail.com>
+ <fd7cd3b9-3f86-feb4-e9ce-aafaea272840@gmail.com> <CAMuHMdXcz0koHQXAaWCoGXPJVva2a43C9CuwQf3mZeWhPaSiWw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="-1463811774-385082581-1692402675=:3862"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
----1463811774-385082581-1692402675=:3862
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-
-
 On Fri, 18 Aug 2023, Geert Uytterhoeven wrote:
 
-> On Fri, Aug 18, 2023 at 9:43=E2=80=AFAM Finn Thain <fthain@linux-m68k.org=
-> wrote:
-> > On Fri, 18 Aug 2023, Michael Schmitz wrote:
+> Of course 0 also works, but causes ".0" to be appended to the platform 
+> device's name, visible in e.g. /sys/bus/platform/devices/.
+> 
 
-> > > --- a/drivers/ata/pata_falcon.c
-> > > +++ b/drivers/ata/pata_falcon.c
-> > > @@ -199,6 +205,8 @@ static int __init pata_falcon_init_one(struct pla=
-tform_device *pdev)
-> > >       ap->ioaddr.altstatus_addr       =3D ctl_base + io_offset;
-> > >       ap->ioaddr.ctl_addr             =3D ctl_base + io_offset;
-> > >
-> > > +     ap->private_data =3D (void *)(uintptr_t)(pata_falcon_swap_mask =
->> (2 * pdev->id));
-> > > +
-> >
-> > My compiler doesn't need that extra type cast in there...
->=20
-> Because it's a 32-bit compiler ;-)
-> With a 64-bit compiler, you would get
->=20
->     warning: cast to pointer from integer of different size
-> [-Wint-to-pointer-cast]
->=20
-> Alternatively, you can change pata_falcon_swap_mask from int to long.
->=20
-
-I see. Thanks for clarifying that for me.
----1463811774-385082581-1692402675=:3862--
+That seems desirable to me.
