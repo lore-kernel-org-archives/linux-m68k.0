@@ -2,88 +2,204 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05520C2FC0E
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Aug 2023 00:37:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5018AC71130
+	for <linux-m68k@archiver.kernel.org>; Fri, 18 Aug 2023 00:43:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356659AbjHRAgx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 17 Aug 2023 20:36:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33730 "EHLO
+        id S1356758AbjHRAmw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 17 Aug 2023 20:42:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356724AbjHRAg0 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Aug 2023 20:36:26 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A4202D57
-        for <linux-m68k@vger.kernel.org>; Thu, 17 Aug 2023 17:36:25 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 177725C00BD;
-        Thu, 17 Aug 2023 20:36:22 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Thu, 17 Aug 2023 20:36:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1692318982; x=1692405382; bh=graOaSyL+gJHo
-        fE3kSpIjeFP2fRcpOoLkuYw/QcD6Do=; b=drFthJ7DaRWhRPS0VcAX+pqRuH+ub
-        8WBxqlG2pPYBfDmYwqTtYQAB0kKfYxZB5+h13TXgQwl7i2CUeVsosa3DZOQf2x1I
-        vnhBpvrbXDteTLXeOFeYxqxdA18R7Aw70d7ISfJGshh3mj7a0olcw52KqDYIFkxT
-        Lj7vGfUqyhjGaH2T0Jjm09KBLYejeD74gipCDOYXfnNniiCxSiG9xn5ratYBYfnk
-        cBFGIrTqUoSizP6+IFKKk/StGxv6t28Bge6EM+LPbNlT7HXbx1kndAlq92dq6kMO
-        NL2V0NsG4daVbHwWKx95BDth3UsJHyrrXTGdwxFCI2qu9TM6civZR5Iow==
-X-ME-Sender: <xms:Bb3eZCmF5H2la-MnpJO33uI63K0nPR6MmVnWXJ8Byfg1KCMriVts-w>
-    <xme:Bb3eZJ2ksYGLTIsEQ2FYBkODRjIbnCFsSitG4bZhgcP1vNqeu6d9FUZchzZyXJF09
-    nZyUdaWuSoe4yrPr_U>
-X-ME-Received: <xmr:Bb3eZAp9pLBd8aY_fqVaT_umC-2GwCnbH0CvHxGLIwHQ_lZVQjg9JRsIrO3Rw7oMVQlHzAmvbYrhMM4kNiWznUQ27P11zuK8NDE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudduvddgfeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
-    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
-    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:Bb3eZGmlezSj7A40WCvfSXCYKIXaTLaab5mqCfpS3vCBLv9HI8NG9g>
-    <xmx:Bb3eZA2IUTZOfJxTgr0FxrFxgKw6IBr2SuVmEjBwkkPWQ1B313uAuA>
-    <xmx:Bb3eZNs31ZMK65Bf--7PiFPYZE45vaWcUveYRfLUhUE30L_rDNucpw>
-    <xmx:Br3eZOCprh0pszdZiIam_XvH126_oSEqCn5emmTyriWpr61A9aFfWw>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 17 Aug 2023 20:36:18 -0400 (EDT)
-Date:   Fri, 18 Aug 2023 10:36:31 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-cc:     will@sowerbutts.com, linux-m68k@vger.kernel.org, rz@linux-m68k.org,
-        geert@linux-m68k.org
-Subject: Re: [PATCH RFC v3 2/2] m68k/q40: add data_swab option for pata_falcon
- to byte-swap disk data
-In-Reply-To: <46d8fe18-5d82-6dcf-3be7-ae78642ce3af@gmail.com>
-Message-ID: <a5df965a-d490-bfd4-ac3d-52e52b8b2a4a@linux-m68k.org>
-References: <20230817035001.8400-1-schmitzmic@gmail.com> <20230817035001.8400-3-schmitzmic@gmail.com> <f604a8f6-6203-84c5-82b9-570348d416ec@linux-m68k.org> <46d8fe18-5d82-6dcf-3be7-ae78642ce3af@gmail.com>
+        with ESMTP id S1356755AbjHRAmc (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Thu, 17 Aug 2023 20:42:32 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C5F2D67;
+        Thu, 17 Aug 2023 17:42:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4744A62024;
+        Fri, 18 Aug 2023 00:42:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B11CBC433C7;
+        Fri, 18 Aug 2023 00:42:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692319350;
+        bh=lqPhcmZdU378XL1xiL/op1vF3k5fYX3kUjV/ZYwwFC8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=t1lVX0VxOVASifoeaANRHQrLcDOgsgqDPfXaBjAE2/asiCHgQUoiX6Lgnw8O8KnyR
+         9HdWr/ow2HKE7Hv3sZe2fjBoakqg5KFt7yY9fsiixdHEa5/vO8tv1x8DBk+k8kepbU
+         vpnW7O0YU6iPofRle0IOmwFI8X3agfZFzoa2+iMbTM7l732PSF5qXYP0pOdcGisG/M
+         6ppwSDRcu1LmTSvOYwlks/ZSbMtiXEtzP2gZLt01CO+RA5/mj3OEKI7NcshE/JiV9x
+         oaoV3Uhu+cho7br9oLIyJqreqEQCjThaJB0JRgOSdJsYCi+RmKy2X4eJw2mShIjKQY
+         6HjQ6r318+L2g==
+Message-ID: <ca753d89-ad51-d901-4058-d974fea7e658@kernel.org>
+Date:   Fri, 18 Aug 2023 09:42:28 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH 1/3] m68k/q40: fix IO base selection for Q40 in
+ pata_falcon.c
+Content-Language: en-US
+To:     Michael Schmitz <schmitzmic@gmail.com>, s.shtylyov@omp.ru,
+        linux-ide@vger.kernel.org, linux-m68k@vger.kernel.org
+Cc:     will@sowerbutts.com, rz@linux-m68k.org, geert@linux-m68k.org,
+        stable@vger.kernel.org, Finn Thain <fthain@linux-m68k.org>
+References: <20230817221232.22035-1-schmitzmic@gmail.com>
+ <20230817221232.22035-2-schmitzmic@gmail.com>
+From:   Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20230817221232.22035-2-schmitzmic@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, 18 Aug 2023, Michael Schmitz wrote:
+On 2023/08/18 7:12, Michael Schmitz wrote:
+> With commit 44b1fbc0f5f3 ("m68k/q40: Replace q40ide driver
+> with pata_falcon and falconide"), the Q40 IDE driver was
+> replaced by pata_falcon.c.
 
-> > I think the patch could be simplified by dropping the dynamic memory 
-> > allocation...
+Please change the patch title to:
+
+ata: pata_falcon: fix IO base selection for Q40
+
 > 
-> If using a private data pointer field for an int bitmask is acceptable 
-> use ...
+> Both IO and memory resources were defined for the Q40 IDE
+> platform device, but definition of the IDE register addresses
+> was modeled after the Falcon case, both in use of the memory
+> resources and in including register scale and byte vs. word
+> offset in the address.
 > 
-
-I thought that was implicit in Geert's response.
-
-I used a similar technique in drivers/nubus/proc.c and it didn't bother 
-anyone.
-
-> I'll see if I can find any performance impact from the additional 
-> swap_data flag. If there's none, your solution may be cleaner.
+> This was correct for the Falcon case, which does not apply
+> any address translation to the register addresses. In the
+> Q40 case, all of device base address, byte access offset
+> and register scaling is included in the platform specific
+> ISA access translation (in asm/mm_io.h).
 > 
+> As a consequence, such address translation gets applied
+> twice, and register addresses are mangled.
+> 
+> Use the device base address from the platform IO resource,
+> and use standard register offsets from that base in order
+> to calculate register addresses (the IO address translation
+> will then apply the correct ISA window base and scaling).
+> 
+> Encode PIO_OFFSET into IO port addresses for all registers
+> except the data transfer register. Encode the MMIO offset
+> there (pata_falcon_data_xfer() directly uses raw IO with
+> no address translation).
+> 
+> Reported-by: William R Sowerbutts <will@sowerbutts.com>
+> Closes: https://lore.kernel.org/r/CAMuHMdUU62jjunJh9cqSqHT87B0H0A4udOOPs=WN7WZKpcagVA@mail.gmail.com
+> Link: https://lore.kernel.org/r/CAMuHMdUU62jjunJh9cqSqHT87B0H0A4udOOPs=WN7WZKpcagVA@mail.gmail.com
+> Fixes: 44b1fbc0f5f3 ("m68k/q40: Replace q40ide driver with pata_falcon and falconide")
+> Cc: <stable@vger.kernel.org> # 5.14
 
-It was the maintenance impact of the extra code that motivated my 
-suggestion. However, by avoiding kalloc we also avoid having to 
-dereference the pointer in the fast path.
+5.14+ ? But I do not think you need to specify anything anyway since you have
+the Fixes tag.
+
+> Cc: Finn Thain <fthain@linux-m68k.org>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+> 
+> ---
+> 
+> Changes from RFC v3:
+> 
+> - split off byte swap option into separate patch
+> 
+> Geert Uytterhoeven:
+> - review comments
+> 
+> Changes from RFC v2:
+> - add driver parameter 'data_swap' as bit mask for drives to swap
+> 
+> Changes from RFC v1:
+> 
+> Finn Thain:
+> - take care to supply IO address suitable for ioread8/iowrite8
+> - use MMIO address for data transfer
+> ---
+>  drivers/ata/pata_falcon.c | 55 ++++++++++++++++++++++++---------------
+>  1 file changed, 34 insertions(+), 21 deletions(-)
+> 
+> diff --git a/drivers/ata/pata_falcon.c b/drivers/ata/pata_falcon.c
+> index 996516e64f13..346259e3bbc8 100644
+> --- a/drivers/ata/pata_falcon.c
+> +++ b/drivers/ata/pata_falcon.c
+> @@ -123,8 +123,8 @@ static int __init pata_falcon_init_one(struct platform_device *pdev)
+>  	struct resource *base_res, *ctl_res, *irq_res;
+>  	struct ata_host *host;
+>  	struct ata_port *ap;
+> -	void __iomem *base;
+> -	int irq = 0;
+> +	void __iomem *base, *ctl_base;
+> +	int irq = 0, io_offset = 1, reg_scale = 4;
+>  
+>  	dev_info(&pdev->dev, "Atari Falcon and Q40/Q60 PATA controller\n");
+>  
+> @@ -165,26 +165,39 @@ static int __init pata_falcon_init_one(struct platform_device *pdev)
+>  	ap->pio_mask = ATA_PIO4;
+>  	ap->flags |= ATA_FLAG_SLAVE_POSS | ATA_FLAG_NO_IORDY;
+>  
+> -	base = (void __iomem *)base_mem_res->start;
+>  	/* N.B. this assumes data_addr will be used for word-sized I/O only */
+> -	ap->ioaddr.data_addr		= base + 0 + 0 * 4;
+> -	ap->ioaddr.error_addr		= base + 1 + 1 * 4;
+> -	ap->ioaddr.feature_addr		= base + 1 + 1 * 4;
+> -	ap->ioaddr.nsect_addr		= base + 1 + 2 * 4;
+> -	ap->ioaddr.lbal_addr		= base + 1 + 3 * 4;
+> -	ap->ioaddr.lbam_addr		= base + 1 + 4 * 4;
+> -	ap->ioaddr.lbah_addr		= base + 1 + 5 * 4;
+> -	ap->ioaddr.device_addr		= base + 1 + 6 * 4;
+> -	ap->ioaddr.status_addr		= base + 1 + 7 * 4;
+> -	ap->ioaddr.command_addr		= base + 1 + 7 * 4;
+> -
+> -	base = (void __iomem *)ctl_mem_res->start;
+> -	ap->ioaddr.altstatus_addr	= base + 1;
+> -	ap->ioaddr.ctl_addr		= base + 1;
+> -
+> -	ata_port_desc(ap, "cmd 0x%lx ctl 0x%lx",
+> -		      (unsigned long)base_mem_res->start,
+> -		      (unsigned long)ctl_mem_res->start);
+> +	ap->ioaddr.data_addr = (void __iomem *)base_mem_res->start;
+> +
+> +	if (base_res) {		/* only Q40 has IO resources */
+> +		io_offset = 0x10000;
+> +		reg_scale = 1;
+> +		base = (void __iomem *)base_res->start;
+> +		ctl_base = (void __iomem *)ctl_res->start;
+> +
+> +		ata_port_desc(ap, "cmd %pa ctl %pa",
+> +			      &base_res->start,
+> +			      &ctl_res->start);
+> +	} else {
+> +		base = (void __iomem *)base_mem_res->start;
+> +		ctl_base = (void __iomem *)ctl_mem_res->start;
+> +
+> +		ata_port_desc(ap, "cmd %pa ctl %pa",
+> +			      &base_mem_res->start,
+> +			      &ctl_mem_res->start);
+> +	}
+> +
+> +	ap->ioaddr.error_addr	= base + io_offset + 1 * reg_scale;
+> +	ap->ioaddr.feature_addr	= base + io_offset + 1 * reg_scale;
+> +	ap->ioaddr.nsect_addr	= base + io_offset + 2 * reg_scale;
+> +	ap->ioaddr.lbal_addr	= base + io_offset + 3 * reg_scale;
+> +	ap->ioaddr.lbam_addr	= base + io_offset + 4 * reg_scale;
+> +	ap->ioaddr.lbah_addr	= base + io_offset + 5 * reg_scale;
+> +	ap->ioaddr.device_addr	= base + io_offset + 6 * reg_scale;
+> +	ap->ioaddr.status_addr	= base + io_offset + 7 * reg_scale;
+> +	ap->ioaddr.command_addr	= base + io_offset + 7 * reg_scale;
+> +
+> +	ap->ioaddr.altstatus_addr	= ctl_base + io_offset;
+> +	ap->ioaddr.ctl_addr		= ctl_base + io_offset;
+>  
+>  	irq_res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+>  	if (irq_res && irq_res->start > 0) {
+
+-- 
+Damien Le Moal
+Western Digital Research
+
