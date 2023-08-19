@@ -2,40 +2,40 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 764AFEE499B
-	for <linux-m68k@archiver.kernel.org>; Fri, 18 Aug 2023 23:53:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04698EE49A1
+	for <linux-m68k@archiver.kernel.org>; Sat, 19 Aug 2023 00:07:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242907AbjHRXxU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 18 Aug 2023 19:53:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58542 "EHLO
+        id S242814AbjHSAHC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 18 Aug 2023 20:07:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242905AbjHRXxC (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Fri, 18 Aug 2023 19:53:02 -0400
+        with ESMTP id S243072AbjHSAHC (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 18 Aug 2023 20:07:02 -0400
 Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D54903A9F
-        for <linux-m68k@vger.kernel.org>; Fri, 18 Aug 2023 16:53:00 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id DF34E3200929;
-        Fri, 18 Aug 2023 19:52:59 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5941C3ABC;
+        Fri, 18 Aug 2023 17:07:01 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 3365432002E2;
+        Fri, 18 Aug 2023 20:07:00 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Fri, 18 Aug 2023 19:53:00 -0400
+  by compute1.internal (MEProxy); Fri, 18 Aug 2023 20:07:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-type:content-type:date:date
         :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
         :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1692402779; x=1692489179; bh=bVBMT4EWXz9WX
-        Jq6vSohcsfErBnlOzYQ/ShLlGqx/m8=; b=zOXhNLAyW/iMtJSkY0BnbIQ2uuWie
-        cAYt4jty4puxxZhwMBvKpqz1yQP1i5/bw37mVSmgOC8vmCdv8ioWOte+Ogr3ZuZQ
-        aXLW38yoXDQsYMlBnZbhrrxt69VKyAXqKLFdfyieqNq5VE92CQcYpKrdcjC6KNyC
-        oOkhFq9KyDHZUEgCfu8D/ZD5dkr3CtooArnBRtxf9jpFAzfN+1DjG6SL/moZgK6n
-        47c0C8YX+/ArkiOY3b7irNQ86+s40FriJx4BBs0cq4Ya1ht9GWWfQM6bc2vIyUjT
-        SPhxYtv17iQSpk5UMnYnnWEXciO7ostJXQSoQnwWy6XHdMkZCV5HYWXUA==
-X-ME-Sender: <xms:WwTgZBwE23Vk65Fo6qn-FuYV0SjVTevPROH5TWXUJh0O_ddGhdjmjg>
-    <xme:WwTgZBQEuE3Ip--lER6EL2xJHj3BiZTHfUQ42VIhO3sXp3IRRaA1LFUXm1yn5jq0e
-    YzVtmtcWxfN_Jke51E>
-X-ME-Received: <xmr:WwTgZLUM1Hz1gxEVutkgtt5i1rsqaJp8LChK29BmT-HW_6nRsKowQp8hJOy97olJje6m-T3TTxhwFOfCfD7zLYGD9p9HQuQigqg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddugedgvdefucetufdoteggodetrfdotf
+        :x-sasl-enc; s=fm1; t=1692403619; x=1692490019; bh=Wf2yENCS4slD4
+        iYjol1D6Wq9V+hMbXohj61/r/7WV+k=; b=mw1nKA2mqPBhd3BIP/XbuG70KgU+8
+        +EF5tK3GcMww8+G+56gyj58bMaWm9ZjjAa8ga6NMSs8g4MeP8OoY3Mzu9tND1bvs
+        oIbzCPhUX+bx9jE6V9Gu+3Bz3NOap1G2hGfmbrCUKMxI5Nl5z8OQuzDwxUURybbe
+        wsN8RE//l9uHnCRJ13aFl80kCIp9V4KjqFRkpd/aTExDOz84x/T+NWJGY7tapvAS
+        IoxKyfeRHY92EihM9AuMWeCiDc1Yv9Y5M7/DhK52cAyl83hZkT6GLfjTAsTYXkMK
+        FV8/KQQe4Rxgl7dQmpxDAvaUrPEO2WWZlPveITtEb2pggCip7BjA/0BOg==
+X-ME-Sender: <xms:owfgZFy7meEZNldcsVxZrd7fCoQKC3c8fc1ifqFW0FOtCXm5P1JwTg>
+    <xme:owfgZFSKj_UDCuIOtMAss0P4asmNz5f3EzAXvxt1HKFBf9BwEgi9Bjld89VdYgY0E
+    mht441AahsCec0n4g4>
+X-ME-Received: <xmr:owfgZPW1Ndmk5VaSpA4SLZqoVcsEp5Bwm1S7GPxPbmtqFiq73Wc29-l0DQm3b69xSCWUavkIvF5NRX5vq0FiaItTBzcnSesCeg4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddugedgvdejucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
@@ -43,34 +43,49 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddugedgvdefucetufdoteggod
     htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
     heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
     hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:WwTgZDhzc5swbb4NfvKqRTRgMKCVgOpDRERG0IYM-xqSFLw2nxoJFQ>
-    <xmx:WwTgZDAjkO2psvHbZKiTeTMrUVka0W4dbyhwdJHuVRWuG2tfG7atjQ>
-    <xmx:WwTgZMK3IjdkoJfAkyPUKJk5aePK_i8nFFfAkIewGNG7jJPo_LvHAQ>
-    <xmx:WwTgZGNmKsgw3DQNxBJJFLPoK_Tghy-Li3hV6Mt3xEVwThX6h8D2gQ>
+X-ME-Proxy: <xmx:owfgZHgDGDaMbgsnWKAwodkK_r2Y3OydQqcgRx_ym55r__RJlI2m8w>
+    <xmx:owfgZHAOOxoZzyW12W2v6J433ZxO6XQhU50IANR8lXIP5opu-QH0Nw>
+    <xmx:owfgZAJiRCpamZxUH_2r2z3e9bEB-tDqehsA5kU9gimq18eAgFrUgg>
+    <xmx:owfgZC9TuXSrnmhbWzZ-eLJkV-HlaivlcJvkEqaoCEWTX15k2i4zVg>
 Feedback-ID: i58a146ae:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 18 Aug 2023 19:52:57 -0400 (EDT)
-Date:   Sat, 19 Aug 2023 09:53:13 +1000 (AEST)
+ 18 Aug 2023 20:06:57 -0400 (EDT)
+Date:   Sat, 19 Aug 2023 10:07:14 +1000 (AEST)
 From:   Finn Thain <fthain@linux-m68k.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-cc:     Michael Schmitz <schmitzmic@gmail.com>, will@sowerbutts.com,
-        linux-m68k@vger.kernel.org, rz@linux-m68k.org
-Subject: Re: [PATCH RFC v3 2/2] m68k/q40: add data_swab option for pata_falcon
- to byte-swap disk data
-In-Reply-To: <CAMuHMdXcz0koHQXAaWCoGXPJVva2a43C9CuwQf3mZeWhPaSiWw@mail.gmail.com>
-Message-ID: <00d475d4-76c1-0ae8-1723-a0fc08a57de4@linux-m68k.org>
-References: <20230817035001.8400-1-schmitzmic@gmail.com> <20230817035001.8400-3-schmitzmic@gmail.com> <f604a8f6-6203-84c5-82b9-570348d416ec@linux-m68k.org> <CAMuHMdV6NWRKL8DAD2e4HPz=fbcAUqi6ww-8_9Mjg0t8eiZCGQ@mail.gmail.com> <8bf4980e-f269-48d2-5b77-3fd6c7270bef@gmail.com>
- <fd7cd3b9-3f86-feb4-e9ce-aafaea272840@gmail.com> <CAMuHMdXcz0koHQXAaWCoGXPJVva2a43C9CuwQf3mZeWhPaSiWw@mail.gmail.com>
+To:     Michael Schmitz <schmitzmic@gmail.com>
+cc:     Geert Uytterhoeven <geert@linux-m68k.org>, dlemoal@kernel.org,
+        linux-ide@vger.kernel.org, linux-m68k@vger.kernel.org,
+        will@sowerbutts.com, rz@linux-m68k.org
+Subject: Re: [PATCH v2 3/3] m68k/atari: change Falcon IDE platform device to
+ id 0
+In-Reply-To: <41d64e82-5995-4e5c-68f5-3e9248ece153@gmail.com>
+Message-ID: <5cb447ce-6436-38e1-b6e9-8a5547202a47@linux-m68k.org>
+References: <20230818071405.28581-1-schmitzmic@gmail.com> <20230818071405.28581-4-schmitzmic@gmail.com> <CAMuHMdUkzk9DxAicq7U5yp3LT0mzaP+tgbwcSYNFx7sripBDcg@mail.gmail.com> <41d64e82-5995-4e5c-68f5-3e9248ece153@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, 18 Aug 2023, Geert Uytterhoeven wrote:
 
-> Of course 0 also works, but causes ".0" to be appended to the platform 
-> device's name, visible in e.g. /sys/bus/platform/devices/.
+On Sat, 19 Aug 2023, Michael Schmitz wrote:
+
+> >
+> > Iff this patch is accepted, it must go in before [PATCH v2 2/3], else 
+> > the latter would cause a regression. And backporting to stable must 
+> > take that into account, too.
+> 
+> I don't see it as a regression - the driver still works OK, it's only 
+> the byte swap option that's broken on Atari, and that's newly 
+> introduced.
+> 
+> But this patch changes the user space exposed platform device name, as 
+> you point out elsewhere. That's reason enough to drop it.
 > 
 
-That seems desirable to me.
+Such a script would be broken on q40 already.
+
+When a fix has a dependency on a separate patch you can backport both by 
+specifying a cherry-picking sequence. We may need Geert to add those 
+commit hashes though. This is discussed in 
+Documentation/process/stable-kernel-rules.rst
