@@ -2,117 +2,88 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5AB2EE49AC
-	for <linux-m68k@archiver.kernel.org>; Mon, 21 Aug 2023 07:46:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CB37EE4996
+	for <linux-m68k@archiver.kernel.org>; Mon, 21 Aug 2023 07:47:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233842AbjHUHqU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 21 Aug 2023 03:46:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39476 "EHLO
+        id S231191AbjHUHrH convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 21 Aug 2023 03:47:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233844AbjHUHqT (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 21 Aug 2023 03:46:19 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9C0B5;
-        Mon, 21 Aug 2023 00:46:16 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bf5c314a57so4313555ad.1;
-        Mon, 21 Aug 2023 00:46:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692603976; x=1693208776;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wLag0Z0HRE6pIAHnpxT0qgRuGZis2m6NT4juYzJgVHM=;
-        b=et1cL7LdO+GBNyPQgA4GjDd2zZizCPvJG/l4gpLdo3uqjnX7Ef/C7RJ7EWm5qZSNJS
-         Uh4ECT/G/Oxf7Tfdfq16pG+juUiMmP4bh+ANiRCaEo8cbAzIDkhH6C8LHFEHlM4wj1AM
-         TRkMFD4BjUR8LSdRSMMWhhw/QB67pdVehdJMxrHnrNUv9y/OLg9uI/VB0ZOXFw5Xq47q
-         85fZIeHMzhM99dK4RF2+gSG9SsjYJcEGGQrzKhd70JCdW7ChapFWATnwbcw69GuKo9Xi
-         3urr7G5iRxBtVdrqN9JSMFXFT8KN5GXi4tjLLepsOJekcCUBwKctqP7aju+oRs+GgnVf
-         oi3A==
+        with ESMTP id S233865AbjHUHrG (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 21 Aug 2023 03:47:06 -0400
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA7E92
+        for <linux-m68k@vger.kernel.org>; Mon, 21 Aug 2023 00:47:05 -0700 (PDT)
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-d71dd633f33so3089780276.2
+        for <linux-m68k@vger.kernel.org>; Mon, 21 Aug 2023 00:47:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692603976; x=1693208776;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=wLag0Z0HRE6pIAHnpxT0qgRuGZis2m6NT4juYzJgVHM=;
-        b=Zy6k4jM9dePttN1vJcEzZSMSluzEPW9yCzf0N4dnP7JSr++0+cLlc3/xq+bOiF9qei
-         mUY1xSrRarcL2DCzq6lojTz6x0M6Lmm0+33Z8QYNoUujTMVH6O9BzjfkZW5ONb1K0wvB
-         InVn8WfbqtsjPd8RxupzfowEIVBrnlp0XLY47Htutkz+xTtZvP+eaP0Q4YNHtIjus7/5
-         vghCZqP2wKMRuXTH3A0RHHfVWbdihZJxRsINAQJz7GgGjyzjoAMIzoqkDD985sEyx4ML
-         POTI3srUeXkSFcKesrdvbw4OVSitGHDf6dFkNqnyN+mWjyFJ8tXeS2/4mVy8F4R5IYIT
-         YIIQ==
-X-Gm-Message-State: AOJu0Yxc/Axv9WLEOvHiCXytue4Xw8mhZlDb7upW6fTWiR0tJDX/Ggf+
-        H4wigyVMWUHIXgHD+BzPfxg=
-X-Google-Smtp-Source: AGHT+IEUnqYOnPAG6QcssE2jsng8EwAq1YOa/bDZ5Htjt2St/e6pHVugiiS6/LRej2ZgbnKhf4IXmA==
-X-Received: by 2002:a17:902:e881:b0:1bd:c9cb:ffdc with SMTP id w1-20020a170902e88100b001bdc9cbffdcmr4636534plg.7.1692603976166;
-        Mon, 21 Aug 2023 00:46:16 -0700 (PDT)
-Received: from [10.1.1.24] (125-236-136-221-fibre.sparkbb.co.nz. [125.236.136.221])
-        by smtp.gmail.com with ESMTPSA id 10-20020a170902c20a00b001a9b29b6759sm1247679pll.183.2023.08.21.00.46.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 21 Aug 2023 00:46:15 -0700 (PDT)
-Subject: Re: [PATCH 1/3] m68k/q40: fix IO base selection for Q40 in
- pata_falcon.c
-To:     Sergey Shtylyov <s.shtylyov@omp.ru>, linux-ide@vger.kernel.org,
-        linux-m68k@vger.kernel.org
-References: <20230817221232.22035-1-schmitzmic@gmail.com>
- <20230817221232.22035-2-schmitzmic@gmail.com>
- <82f37617-949b-bcfa-8531-c0a9790aaf48@omp.ru>
- <3afffc69-62a3-2a11-0c22-8301300e0d50@gmail.com>
-Cc:     will@sowerbutts.com, rz@linux-m68k.org, geert@linux-m68k.org,
-        stable@vger.kernel.org, Finn Thain <fthain@linux-m68k.org>,
-        Damien Le Moal <dlemoal@kernel.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <f15858a3-de77-32fb-4854-521e2c18c4fd@gmail.com>
-Date:   Mon, 21 Aug 2023 19:46:08 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        d=1e100.net; s=20221208; t=1692604024; x=1693208824;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oMIW8is/xkuextWAf2IiprrrINWZNO1bIb4+7Cl1QYY=;
+        b=T15wRlchoPaDrokeZyh/7C1QRD6h5Mu46EtAvmM2Au84s6J+kV6m2+V5Q+YZXmV0xZ
+         ohtM7jGYac9TDsWWLSqEn2VkU3yNA8rWBRDvFdPMkobyNHf5TDKGR2T7/xYkXnIkGvY0
+         IcUShFDjf5tnNtj6ZPtpjNHuO4ov5sLQUzZJgfcpIm3/C/sYNEMJf6REfNJHP4D0LG+8
+         CNZCFC3ebESTZMLCL/xQYbIPdVScqNmkheq9uaVfOCpfBcXuQ5Wb1/Eup5nhWGSa7yD5
+         5jcGvMvkEEXSSeyeQ+G36tAt4NweF/WCVXoPbpBqCvDs+knEIbk8CM76orKXoHj8tUfA
+         bFMg==
+X-Gm-Message-State: AOJu0YyfIm3Ny/2SicCTLn7Y+/9442fTNVjKwaFupUJRTK1ArzRMfZtb
+        Ar6DQArTHB2aGMRVfzg1lYtZ/DvnpcWF7g==
+X-Google-Smtp-Source: AGHT+IHrQNQTDYSJEgwanpZOJP3LURE3AGLGcJKCEpGZmAQ7q0/eOCiLQMHu0JtVweibmYwkuWJw1Q==
+X-Received: by 2002:a25:6c0a:0:b0:d0f:57e8:3476 with SMTP id h10-20020a256c0a000000b00d0f57e83476mr4800956ybc.46.1692604024323;
+        Mon, 21 Aug 2023 00:47:04 -0700 (PDT)
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
+        by smtp.gmail.com with ESMTPSA id n82-20020a25da55000000b00d5d4bae6fdfsm1769221ybf.30.2023.08.21.00.47.03
+        for <linux-m68k@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Aug 2023 00:47:03 -0700 (PDT)
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-d7260fae148so3113337276.1
+        for <linux-m68k@vger.kernel.org>; Mon, 21 Aug 2023 00:47:03 -0700 (PDT)
+X-Received: by 2002:a25:3491:0:b0:d73:ea25:f17b with SMTP id
+ b139-20020a253491000000b00d73ea25f17bmr5551002yba.1.1692604023446; Mon, 21
+ Aug 2023 00:47:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3afffc69-62a3-2a11-0c22-8301300e0d50@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20230817035001.8400-1-schmitzmic@gmail.com> <20230817035001.8400-3-schmitzmic@gmail.com>
+ <f604a8f6-6203-84c5-82b9-570348d416ec@linux-m68k.org> <CAMuHMdV6NWRKL8DAD2e4HPz=fbcAUqi6ww-8_9Mjg0t8eiZCGQ@mail.gmail.com>
+ <8bf4980e-f269-48d2-5b77-3fd6c7270bef@gmail.com> <fd7cd3b9-3f86-feb4-e9ce-aafaea272840@gmail.com>
+ <CAMuHMdXcz0koHQXAaWCoGXPJVva2a43C9CuwQf3mZeWhPaSiWw@mail.gmail.com> <00d475d4-76c1-0ae8-1723-a0fc08a57de4@linux-m68k.org>
+In-Reply-To: <00d475d4-76c1-0ae8-1723-a0fc08a57de4@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 21 Aug 2023 09:46:52 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUAA1rEVowURsTaTyH8o3acKyfL3Hpz75ZE1Qrb6AdG5w@mail.gmail.com>
+Message-ID: <CAMuHMdUAA1rEVowURsTaTyH8o3acKyfL3Hpz75ZE1Qrb6AdG5w@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 2/2] m68k/q40: add data_swab option for pata_falcon
+ to byte-swap disk data
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     Michael Schmitz <schmitzmic@gmail.com>, will@sowerbutts.com,
+        linux-m68k@vger.kernel.org, rz@linux-m68k.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Sergey,
+Hi Finn,
 
-Am 21.08.2023 um 07:19 schrieb Michael Schmitz:
->>> diff --git a/drivers/ata/pata_falcon.c b/drivers/ata/pata_falcon.c
->>> index 996516e64f13..346259e3bbc8 100644
->>> --- a/drivers/ata/pata_falcon.c
->>> +++ b/drivers/ata/pata_falcon.c
->>> @@ -123,8 +123,8 @@ static int __init pata_falcon_init_one(struct
->>> platform_device *pdev)
->>>       struct resource *base_res, *ctl_res, *irq_res;
->>>       struct ata_host *host;
->>>       struct ata_port *ap;
->>> -    void __iomem *base;
->>> -    int irq = 0;
->>> +    void __iomem *base, *ctl_base;
->>> +    int irq = 0, io_offset = 1, reg_scale = 4;
->>     Maybe reg_step?
+On Sat, Aug 19, 2023 at 1:53 AM Finn Thain <fthain@linux-m68k.org> wrote:
+> On Fri, 18 Aug 2023, Geert Uytterhoeven wrote:
+> > Of course 0 also works, but causes ".0" to be appended to the platform
+> > device's name, visible in e.g. /sys/bus/platform/devices/.
 >
-> Could name it that, too. I can't recall where I picked up the term
-> 'register scaling'...
->
-> I'll see what's the consensus (if any) in drivers/.
+> That seems desirable to me.
 
-I've seen some use of 'step' but mostly use of 'shift'.
+Why would it be desirable?
+IMHO this is an unneeded change which is visible in userspace.
 
-Rewriting pata_falcon_init_one() to use register shift instead of 
-register step is trivial, so unless anyone objects, I'll send that 
-version as v4.
+Gr{oetje,eeting}s,
 
-Cheers,
+                        Geert
 
-	Michael
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
->
-> Cheers,
->
->     Michael
->
->
->>
->> [...]
->>
->> MBR, Sergey
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
