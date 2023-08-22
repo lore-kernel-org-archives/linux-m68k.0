@@ -2,253 +2,168 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51A7DEE4996
-	for <linux-m68k@archiver.kernel.org>; Tue, 22 Aug 2023 06:33:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B19AFEE49A3
+	for <linux-m68k@archiver.kernel.org>; Tue, 22 Aug 2023 07:05:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233033AbjHVGdz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 22 Aug 2023 02:33:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42138 "EHLO
+        id S233145AbjHVHFl convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 22 Aug 2023 03:05:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232075AbjHVGdx (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 22 Aug 2023 02:33:53 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C5ACD9
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 21 Aug 2023 23:33:20 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 0240F22C47;
-        Tue, 22 Aug 2023 06:33:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1692685983; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0LefrGrfWIlUUodSIRfdXfGvUMxOpn3Da/x1z7+TACM=;
-        b=dcW/Td18f6Fki4csXaJVH2kX+joGxDMOht06LwZTOfNsgqpMfncIfcqoPyYT4pr6k4mnSU
-        M0TGSwt1po685EhpFFg+MsGQqwUnObFIRiO2wfy913FH+/Lel6/Fb2dOKqsq92KJa+2uD1
-        Bu3YIapaL9IWtKzXxWr75rikpNrC41E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1692685983;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0LefrGrfWIlUUodSIRfdXfGvUMxOpn3Da/x1z7+TACM=;
-        b=rG0JjH04TqT5CksLvToAlLn8tIAFYWH057rgn75zDtNS/jv7ATjOlZlbjVPfguARFEVAuk
-        XrENx1kzxGQ4t0Cg==
-Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 4B5DF2C143;
-        Tue, 22 Aug 2023 06:32:58 +0000 (UTC)
-Date:   Tue, 22 Aug 2023 08:32:57 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Eric DeVolder <eric.devolder@oracle.com>, linux@armlinux.org.uk,
-        catalin.marinas@arm.com, will@kernel.org, chenhuacai@kernel.org,
-        geert@linux-m68k.org, tsbogend@alpha.franken.de,
-        James.Bottomley@hansenpartnership.com, deller@gmx.de,
-        ysato@users.sourceforge.jp, dalias@libc.org,
-        glaubitz@physik.fu-berlin.de, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, peterz@infradead.org,
-        linus.walleij@linaro.org, hpa@zytor.com, kernel@xen0n.name,
-        ardb@kernel.org, tsi@tuyoix.net, agordeev@linux.ibm.com,
-        paulmck@kernel.org, bhe@redhat.com, masahiroy@kernel.org,
-        konrad.wilk@oracle.com, sebastian.reichel@collabora.com,
-        samitolvanen@google.com, ojeda@kernel.org,
-        juerg.haefliger@canonical.com, borntraeger@linux.ibm.com,
-        frederic@kernel.org, arnd@arndb.de, mhiramat@kernel.org,
-        aou@eecs.berkeley.edu, keescook@chromium.org, gor@linux.ibm.com,
-        anshuman.khandual@arm.com, hca@linux.ibm.com, xin3.li@intel.com,
-        npiggin@gmail.com, rmk+kernel@armlinux.org.uk,
-        paul.walmsley@sifive.com, boris.ostrovsky@oracle.com,
-        ziy@nvidia.com, hbathini@linux.ibm.com, gregkh@linuxfoundation.org,
-        kirill.shutemov@linux.intel.com, ndesaulniers@google.com,
-        sourabhjain@linux.ibm.com, palmer@dabbelt.com, svens@linux.ibm.com,
-        tj@kernel.org, akpm@linux-foundation.org, rppt@kernel.org
-Subject: Re: [PATCH v6 02/14] x86/kexec: refactor for kernel/Kconfig.kexec
-Message-ID: <20230822063257.GI8826@kitsune.suse.cz>
-References: <20230712161545.87870-1-eric.devolder@oracle.com>
- <20230712161545.87870-3-eric.devolder@oracle.com>
- <d8ddd4bd-fbc9-dbe9-f5c3-daf8d89aa46d@huawei.com>
+        with ESMTP id S233048AbjHVHFk (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 22 Aug 2023 03:05:40 -0400
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38736130;
+        Tue, 22 Aug 2023 00:05:38 -0700 (PDT)
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6b9e478e122so3014179a34.1;
+        Tue, 22 Aug 2023 00:05:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692687937; x=1693292737;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iP+rN1To96ZQXN7U+PR1AbeNniKJvG7oUIaVqHzjBVA=;
+        b=aMGRmJ/h8n3Dedq2jcNv3UzInaJd+Z0kCZSGw5aAa6Oa/5rAL8kNGNn6apMQbbD/yh
+         BukbfpQQFnbUMett49DgDgmXIpG7QubK9ZaqI+XFOLU1yTZBKlbxl2A8QP0z2wEsgFUN
+         fPgtUBSpz46SvEXmZw+GN0JykcCzSuPZR4qlF8gWEm1ZFnBOil47W+LdLvyQI47mZbjn
+         OTDxNCxtQb98vCqytrn/Ln/pNPrOYKi7B+URDKYVIkoHtgHeTRs/ZXxs/lCWzNptNxmk
+         Xhhx5EmOTlQj0s3a66x2ryucZ6HOcwOJnMCPXeDFccCO5lEXST5eENnW2+v0mPolnjSQ
+         Sb6g==
+X-Gm-Message-State: AOJu0YwPDBqFQDCVjqwas3iS1FHWWPjyGXAAfLK8dbJ/RtaGcOKSg5Sz
+        AtHI7fLRTGTfeYA02NtRtunJUKCV/d1J0Q==
+X-Google-Smtp-Source: AGHT+IEESA9ekd/cOzcINSehY57L9fJJjfhPDsdM2WDpqZHxunCDX1BbUo5QGY0qkaUdOj74evFhGg==
+X-Received: by 2002:a9d:631a:0:b0:6bb:1071:ea72 with SMTP id q26-20020a9d631a000000b006bb1071ea72mr9407843otk.36.1692687937203;
+        Tue, 22 Aug 2023 00:05:37 -0700 (PDT)
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com. [209.85.167.176])
+        by smtp.gmail.com with ESMTPSA id x5-20020a05683000c500b006b8a959ac32sm4337024oto.48.2023.08.22.00.05.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Aug 2023 00:05:36 -0700 (PDT)
+Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3a8614fe8c4so886413b6e.1;
+        Tue, 22 Aug 2023 00:05:36 -0700 (PDT)
+X-Received: by 2002:a05:6358:c1d:b0:134:cb65:fbbe with SMTP id
+ f29-20020a0563580c1d00b00134cb65fbbemr10587247rwj.13.1692687936653; Tue, 22
+ Aug 2023 00:05:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d8ddd4bd-fbc9-dbe9-f5c3-daf8d89aa46d@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20230818234903.9226-1-schmitzmic@gmail.com> <20230818234903.9226-2-schmitzmic@gmail.com>
+ <CAMuHMdUdqRZcwHnWCb0SJ34JM3BqEyejsgWajwsbe_F+6xZMjg@mail.gmail.com> <07f8a1f9-e145-2b0a-61f0-ac5fe5a8fa58@gmail.com>
+In-Reply-To: <07f8a1f9-e145-2b0a-61f0-ac5fe5a8fa58@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 22 Aug 2023 09:05:25 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWNm7RdZcTa5EaWaFZ4NhPi75y8i31C2dkzJ5Hc4rtSJA@mail.gmail.com>
+Message-ID: <CAMuHMdWNm7RdZcTa5EaWaFZ4NhPi75y8i31C2dkzJ5Hc4rtSJA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] ata: pata_falcon: fix IO base selection for Q40
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     dlemoal@kernel.org, linux-ide@vger.kernel.org,
+        linux-m68k@vger.kernel.org, will@sowerbutts.com, rz@linux-m68k.org,
+        stable@vger.kernel.org, Finn Thain <fthain@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hello,
+Hi Michael,
 
-On Thu, Jul 13, 2023 at 07:13:57PM +0800, Leizhen (ThunderTown) wrote:
-> 
-> 
-> On 2023/7/13 0:15, Eric DeVolder wrote:
-> > The kexec and crash kernel options are provided in the common
-> > kernel/Kconfig.kexec. Utilize the common options and provide
-> > the ARCH_SUPPORTS_ and ARCH_SELECTS_ entries to recreate the
-> > equivalent set of KEXEC and CRASH options.
-> > 
-> > Signed-off-by: Eric DeVolder <eric.devolder@oracle.com>
-> > ---
-> >  arch/x86/Kconfig | 92 ++++++++++--------------------------------------
-> >  1 file changed, 19 insertions(+), 73 deletions(-)
-> > 
-> > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> > index 7422db409770..9767a343f7c2 100644
-> > --- a/arch/x86/Kconfig
-> > +++ b/arch/x86/Kconfig
-> > @@ -2040,88 +2040,34 @@ config EFI_RUNTIME_MAP
-> >  
-> >  source "kernel/Kconfig.hz"
-> >  
-> > -config KEXEC
-> > -	bool "kexec system call"
-> > -	select KEXEC_CORE
-> > -	help
-> > -	  kexec is a system call that implements the ability to shutdown your
-> > -	  current kernel, and to start another kernel.  It is like a reboot
-> > -	  but it is independent of the system firmware.   And like a reboot
-> > -	  you can start any kernel with it, not just Linux.
-> > -
-> > -	  The name comes from the similarity to the exec system call.
-> > -
-> > -	  It is an ongoing process to be certain the hardware in a machine
-> > -	  is properly shutdown, so do not be surprised if this code does not
-> > -	  initially work for you.  As of this writing the exact hardware
-> > -	  interface is strongly in flux, so no good recommendation can be
-> > -	  made.
-> > -
-> > -config KEXEC_FILE
-> > -	bool "kexec file based system call"
-> > -	select KEXEC_CORE
-> > -	select HAVE_IMA_KEXEC if IMA
-> > -	depends on X86_64
-> > -	depends on CRYPTO=y
-> > -	depends on CRYPTO_SHA256=y
-> > -	help
-> > -	  This is new version of kexec system call. This system call is
-> > -	  file based and takes file descriptors as system call argument
-> > -	  for kernel and initramfs as opposed to list of segments as
-> > -	  accepted by previous system call.
-> > +config ARCH_SUPPORTS_KEXEC
-> > +	def_bool y
-> 
-> In v5, Joel Fernandes seems to suggest you change it to the following form:
+On Tue, Aug 22, 2023 at 1:57 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> On 21/08/23 19:50, Geert Uytterhoeven wrote:
+> > On Sat, Aug 19, 2023 at 1:49 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> >> With commit 44b1fbc0f5f3 ("m68k/q40: Replace q40ide driver
+> >> with pata_falcon and falconide"), the Q40 IDE driver was
+> >> replaced by pata_falcon.c.
+> >>
+> >> Both IO and memory resources were defined for the Q40 IDE
+> >> platform device, but definition of the IDE register addresses
+> >> was modeled after the Falcon case, both in use of the memory
+> >> resources and in including register scale and byte vs. word
+> >> offset in the address.
+> >>
+> >> This was correct for the Falcon case, which does not apply
+> >> any address translation to the register addresses. In the
+> >> Q40 case, all of device base address, byte access offset
+> >> and register scaling is included in the platform specific
+> >> ISA access translation (in asm/mm_io.h).
+> >>
+> >> As a consequence, such address translation gets applied
+> >> twice, and register addresses are mangled.
+> >>
+> >> Use the device base address from the platform IO resource,
+> >> and use standard register offsets from that base in order
+> >> to calculate register addresses (the IO address translation
+> >> will then apply the correct ISA window base and scaling).
+> >>
+> >> Encode PIO_OFFSET into IO port addresses for all registers
+> >> except the data transfer register. Encode the MMIO offset
+> >> there (pata_falcon_data_xfer() directly uses raw IO with
+> >> no address translation).
+> >>
+> >> Reported-by: William R Sowerbutts <will@sowerbutts.com>
+> >> Closes: https://lore.kernel.org/r/CAMuHMdUU62jjunJh9cqSqHT87B0H0A4udOOPs=WN7WZKpcagVA@mail.gmail.com
+> >> Link: https://lore.kernel.org/r/CAMuHMdUU62jjunJh9cqSqHT87B0H0A4udOOPs=WN7WZKpcagVA@mail.gmail.com
+> >> Fixes: 44b1fbc0f5f3 ("m68k/q40: Replace q40ide driver with pata_falcon and falconide")
+> >> Cc: stable@vger.kernel.org
+> >> Cc: Finn Thain <fthain@linux-m68k.org>
+> >> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> >> Tested-by: William R Sowerbutts <will@sowerbutts.com>
+> >> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+> > Thanks for the update!
+> >
+> >> --- a/drivers/ata/pata_falcon.c
+> >> +++ b/drivers/ata/pata_falcon.c
+> >> @@ -165,26 +165,39 @@ static int __init pata_falcon_init_one(struct platform_device *pdev)
+> >>          ap->pio_mask = ATA_PIO4;
+> >>          ap->flags |= ATA_FLAG_SLAVE_POSS | ATA_FLAG_NO_IORDY;
+> >>
+> >> -       base = (void __iomem *)base_mem_res->start;
+> >>          /* N.B. this assumes data_addr will be used for word-sized I/O only */
+> >> -       ap->ioaddr.data_addr            = base + 0 + 0 * 4;
+> >> -       ap->ioaddr.error_addr           = base + 1 + 1 * 4;
+> >> -       ap->ioaddr.feature_addr         = base + 1 + 1 * 4;
+> >> -       ap->ioaddr.nsect_addr           = base + 1 + 2 * 4;
+> >> -       ap->ioaddr.lbal_addr            = base + 1 + 3 * 4;
+> >> -       ap->ioaddr.lbam_addr            = base + 1 + 4 * 4;
+> >> -       ap->ioaddr.lbah_addr            = base + 1 + 5 * 4;
+> >> -       ap->ioaddr.device_addr          = base + 1 + 6 * 4;
+> >> -       ap->ioaddr.status_addr          = base + 1 + 7 * 4;
+> >> -       ap->ioaddr.command_addr         = base + 1 + 7 * 4;
+> >> -
+> >> -       base = (void __iomem *)ctl_mem_res->start;
+> >> -       ap->ioaddr.altstatus_addr       = base + 1;
+> >> -       ap->ioaddr.ctl_addr             = base + 1;
+> >> -
+> >> -       ata_port_desc(ap, "cmd 0x%lx ctl 0x%lx",
+> >> -                     (unsigned long)base_mem_res->start,
+> >> -                     (unsigned long)ctl_mem_res->start);
+> >> +       ap->ioaddr.data_addr = (void __iomem *)base_mem_res->start;
+> >> +
+> >> +       if (base_res) {         /* only Q40 has IO resources */
+> >> +               io_offset = 0x10000;
+> >> +               reg_scale = 1;
+> >> +               base = (void __iomem *)base_res->start;
+> >> +               ctl_base = (void __iomem *)ctl_res->start;
+> >> +
+> >> +               ata_port_desc(ap, "cmd %pa ctl %pa",
+> >> +                             &base_res->start,
+> >> +                             &ctl_res->start);
+> > This can be  moved outside the else, using %px to format base and
+> > ctl_base.
+>
+> Right - do we need some additional message spelling out what address Q40
+> uses for data transfers? (Redundant for Falcon, of course ...)
+>
+> Though that could be handled outside the else, too:
+>
+> ata_port_desc(ap, "cmd %px ctl %px data %pa",
+>                base, ctl_base, &ap->ioaddr.data_addr);
 
-It's unfortunate that the suggestion did not make it to the mailinglist.
+I guess that wouldn't hurt.
 
-> In arch/Kconfig:
-> +config ARCH_SUPPORTS_KEXEC
-> +	bool
-> 
-> In arch/x86/Kconfig:
-> config X86
-> 	... ...
-> +	select ARCH_SUPPORTS_KEXEC
-> 
-> In arch/arm64/Kconfig:
-> config ARM64
-> 	... ...
-> +	select ARCH_SUPPORTS_KEXEC if PM_SLEEP_SMP
+Gr{oetje,eeting}s,
 
-Which might work for this case
+                        Geert
 
-> 
-> etc..
-> 
-> You can refer to ARCH_HAS_DEBUG_VIRTUAL.
-> 
-> >  
-> > -config ARCH_HAS_KEXEC_PURGATORY
-> > -	def_bool KEXEC_FILE
-> > +config ARCH_SUPPORTS_KEXEC_FILE
-> > +	def_bool X86_64 && CRYPTO && CRYPTO_SHA256
-> >  
-> > -config KEXEC_SIG
-> > -	bool "Verify kernel signature during kexec_file_load() syscall"
-> > +config ARCH_SELECTS_KEXEC_FILE
-> > +	def_bool y
-> >  	depends on KEXEC_FILE
-> > -	help
-> > +	select HAVE_IMA_KEXEC if IMA
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-but not this case, at least not this trivially.
-
-Than for consistency it looks better to keep as is.
-
-Thanks
-
-Michal
-
-> >  
-> > -	  This option makes the kexec_file_load() syscall check for a valid
-> > -	  signature of the kernel image.  The image can still be loaded without
-> > -	  a valid signature unless you also enable KEXEC_SIG_FORCE, though if
-> > -	  there's a signature that we can check, then it must be valid.
-> > +config ARCH_HAS_KEXEC_PURGATORY
-> > +	def_bool KEXEC_FILE
-> >  
-> > -	  In addition to this option, you need to enable signature
-> > -	  verification for the corresponding kernel image type being
-> > -	  loaded in order for this to work.
-> > +config ARCH_SUPPORTS_KEXEC_SIG
-> > +	def_bool y
-> >  
-> > -config KEXEC_SIG_FORCE
-> > -	bool "Require a valid signature in kexec_file_load() syscall"
-> > -	depends on KEXEC_SIG
-> > -	help
-> > -	  This option makes kernel signature verification mandatory for
-> > -	  the kexec_file_load() syscall.
-> > +config ARCH_SUPPORTS_KEXEC_SIG_FORCE
-> > +	def_bool y
-> >  
-> > -config KEXEC_BZIMAGE_VERIFY_SIG
-> > -	bool "Enable bzImage signature verification support"
-> > -	depends on KEXEC_SIG
-> > -	depends on SIGNED_PE_FILE_VERIFICATION
-> > -	select SYSTEM_TRUSTED_KEYRING
-> > -	help
-> > -	  Enable bzImage signature verification support.
-> > +config ARCH_SUPPORTS_KEXEC_BZIMAGE_VERIFY_SIG
-> > +	def_bool y
-> >  
-> > -config CRASH_DUMP
-> > -	bool "kernel crash dumps"
-> > -	depends on X86_64 || (X86_32 && HIGHMEM)
-> > -	help
-> > -	  Generate crash dump after being started by kexec.
-> > -	  This should be normally only set in special crash dump kernels
-> > -	  which are loaded in the main kernel with kexec-tools into
-> > -	  a specially reserved region and then later executed after
-> > -	  a crash by kdump/kexec. The crash dump kernel must be compiled
-> > -	  to a memory address not used by the main kernel or BIOS using
-> > -	  PHYSICAL_START, or it must be built as a relocatable image
-> > -	  (CONFIG_RELOCATABLE=y).
-> > -	  For more details see Documentation/admin-guide/kdump/kdump.rst
-> > +config ARCH_SUPPORTS_KEXEC_JUMP
-> > +	def_bool y
-> >  
-> > -config KEXEC_JUMP
-> > -	bool "kexec jump"
-> > -	depends on KEXEC && HIBERNATION
-> > -	help
-> > -	  Jump between original kernel and kexeced kernel and invoke
-> > -	  code in physical address mode via KEXEC
-> > +config ARCH_SUPPORTS_CRASH_DUMP
-> > +	def_bool X86_64 || (X86_32 && HIGHMEM)
-> >  
-> >  config PHYSICAL_START
-> >  	hex "Physical address where the kernel is loaded" if (EXPERT || CRASH_DUMP)
-> > 
-> 
-> -- 
-> Regards,
->   Zhen Lei
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
