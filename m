@@ -2,108 +2,129 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C435DEE4993
-	for <linux-m68k@archiver.kernel.org>; Tue, 22 Aug 2023 08:39:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED8EFEE4993
+	for <linux-m68k@archiver.kernel.org>; Tue, 22 Aug 2023 19:10:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233895AbjHVIj5 convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 22 Aug 2023 04:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40034 "EHLO
+        id S229885AbjHVTKv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 22 Aug 2023 15:10:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231584AbjHVIj4 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 22 Aug 2023 04:39:56 -0400
-Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com [209.85.217.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B7019C;
-        Tue, 22 Aug 2023 01:39:55 -0700 (PDT)
-Received: by mail-vs1-f53.google.com with SMTP id ada2fe7eead31-44d48168e2cso749129137.2;
-        Tue, 22 Aug 2023 01:39:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692693594; x=1693298394;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        with ESMTP id S230036AbjHVTKu (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 22 Aug 2023 15:10:50 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24751CF9;
+        Tue, 22 Aug 2023 12:10:47 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fe8c3b5ca0so7583799e87.1;
+        Tue, 22 Aug 2023 12:10:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692731445; x=1693336245;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ffUMKIz9ZLdaXCPPtKWL3jgimu+Ma0fYS9zNnJUWmm8=;
-        b=fdy3R3os0kgX36XlZsm3lhVlkOQZL30L+CGQYsljUhH7q6BWH/vfzznIIFrN+pMHeU
-         jcAR9tJz1mXLA+nMCdCZSIi9HYIEb+SOW5edz6SoHY2JVfmcj4i4nY0kw6YCkz0Ipt6E
-         Rx+3MmJ8LF7Mfvz23KQRPPTa5eftUdbDh6WKAsASZ0xZKNfLSA2g4zh8BVcnBV6XrB1s
-         kkadG/55s/0qbS51/VL9FrePBTqy1dCUdSQzdbCstG+8KdWSTf1GringNVH1d+HyHlxK
-         IRhvNgrzZYdpFf1hpp+gbWdOzRcGVyzbO2GYaA77xyVi6FSESD2vxDYjc8/FOkdLmAKq
-         RV+A==
-X-Gm-Message-State: AOJu0Yx8ShGCOrfuK41dWVTVTIa3hFyOunpHW+InpDDaTXq+CJeGqM3j
-        6nOZvBttYsYIBaKeNUW7icRW5ouBjboGww==
-X-Google-Smtp-Source: AGHT+IGgpfgoMkmg5I9ySgax7fR+rmDlspAMEf7ropcByzcKvErM4SgMrxr3gU2ccAA1ZrX4D3gO2A==
-X-Received: by 2002:a67:d08a:0:b0:447:ad77:f034 with SMTP id s10-20020a67d08a000000b00447ad77f034mr7567719vsi.7.1692693593995;
-        Tue, 22 Aug 2023 01:39:53 -0700 (PDT)
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
-        by smtp.gmail.com with ESMTPSA id u184-20020a8147c1000000b005832ca42ba6sm2677321ywa.3.2023.08.22.01.39.53
+        bh=ac/h0h+I+1GzYqIyspUgEAqPDap+Q/+PaFcMaJrdGk0=;
+        b=pIBUBKA44n/yjmm5J6q6ZK9+uTx1yfwxYCipyQniVb+gg5aXQa0T63DmhZ2/vSatPM
+         XEq5sSODv/RzN1rXI3SzTqmSfyyScFH4dxa4ghb6OOcbPBE+v5qKr+VEtUhOk5RXM1mg
+         aRyBlf/XpFAFOvsgPTRv6aSGnMu2tZ7kxGurwSs7U+zlRFSpo6rz4wg+HT1PjFYhQL+b
+         bSrjwHAiRcFAY82air7LyIh9tCafK1Bx8jSjQfTV3e00IUCBdpejGtLhmEPvSaa9EFxO
+         oeqG6ovzTScVUQqYWSL0yjMpfp7WATKK7ea+iTBK8djzQ/s11/dFxnCjFWPCG1gzFX8C
+         HMwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692731445; x=1693336245;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ac/h0h+I+1GzYqIyspUgEAqPDap+Q/+PaFcMaJrdGk0=;
+        b=OV7WczwwZDScwvN5aD6XQUOAgzaIl77IyXzSFKihPDUXcbXVwN3XN0Kitdj1Ww2eap
+         YkKEJE7iXsALr4Nm0zweInQZtz983S3sM9fE7u+/i1G+2ZWUWqlp5A+lBydoNmnSdByi
+         cL3J/TdIfkBkgjfzg92nWqmpJpBhD5UJuxrcWx4GvZ6THCCcB5rRquDUobF7xf65F/2X
+         6vdjpzSsK42R/GMYUZQdJ8pSuJTxCKTJMZdPsLyBnawybvSPwW8b8cpyAD+jussW4Nlo
+         cKgZAACCAxpk/SUp4lyARaelIIlrWQdvxQR0g1ds/AUrNzZXlQ7L00kJW9zk+HxUsAQh
+         IpFg==
+X-Gm-Message-State: AOJu0YzY7/9tPXMewbpUhvK6YIbNyM/NWtj+d3gyxnWwtF/5J+IsPTyL
+        ZOfxbk1IFvbLKMP18L4Q8e0=
+X-Google-Smtp-Source: AGHT+IFX53DtK7pu9ZnGkG5CEbsovhmtS7p+gbDV7NudgBkAtIsK5bFqoDUvRYJacXdUhe7/zELrGQ==
+X-Received: by 2002:a05:6512:4023:b0:4ff:8f45:677a with SMTP id br35-20020a056512402300b004ff8f45677amr9688694lfb.51.1692731444988;
+        Tue, 22 Aug 2023 12:10:44 -0700 (PDT)
+Received: from [192.168.1.103] ([178.176.76.28])
+        by smtp.gmail.com with ESMTPSA id q2-20020a19a402000000b004fdfd4c1fcesm2295791lfc.36.2023.08.22.12.10.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Aug 2023 01:39:53 -0700 (PDT)
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-d6fcffce486so4104362276.3;
-        Tue, 22 Aug 2023 01:39:53 -0700 (PDT)
-X-Received: by 2002:a5b:64a:0:b0:c47:56c9:a9bd with SMTP id
- o10-20020a5b064a000000b00c4756c9a9bdmr7427832ybq.6.1692693592514; Tue, 22 Aug
- 2023 01:39:52 -0700 (PDT)
+        Tue, 22 Aug 2023 12:10:44 -0700 (PDT)
+Subject: Re: [PATCH 2/3] m68k/q40: add data_swab option for pata_falcon to
+ byte-swap disk data
+To:     Michael Schmitz <schmitzmic@gmail.com>, linux-ide@vger.kernel.org,
+        linux-m68k@vger.kernel.org
+Cc:     will@sowerbutts.com, rz@linux-m68k.org, geert@linux-m68k.org,
+        Finn Thain <fthain@linux-m68k.org>
+References: <20230817221232.22035-1-schmitzmic@gmail.com>
+ <20230817221232.22035-3-schmitzmic@gmail.com>
+ <3af82526-1b8f-87bd-b936-9171e4d821df@omp.ru>
+ <5e5217a4-837c-fac8-246c-15f8a2d46bfe@gmail.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <7463b0e7-cc9c-c091-ab47-14d19a0daf07@gmail.com>
+Date:   Tue, 22 Aug 2023 22:10:42 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20230818234903.9226-1-schmitzmic@gmail.com> <20230818234903.9226-2-schmitzmic@gmail.com>
- <CAMuHMdUdqRZcwHnWCb0SJ34JM3BqEyejsgWajwsbe_F+6xZMjg@mail.gmail.com> <fd0b71fa-783e-41c0-ab2b-02656286d2ab@gmail.com>
-In-Reply-To: <fd0b71fa-783e-41c0-ab2b-02656286d2ab@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 22 Aug 2023 10:39:40 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUokks=1Z9vDkzYdqTXEWyhT5WZk8w5FgmppZBeGP2nrg@mail.gmail.com>
-Message-ID: <CAMuHMdUokks=1Z9vDkzYdqTXEWyhT5WZk8w5FgmppZBeGP2nrg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] ata: pata_falcon: fix IO base selection for Q40
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     dlemoal@kernel.org, linux-ide@vger.kernel.org,
-        linux-m68k@vger.kernel.org, will@sowerbutts.com, rz@linux-m68k.org,
-        stable@vger.kernel.org, Finn Thain <fthain@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <5e5217a4-837c-fac8-246c-15f8a2d46bfe@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Michael,
+Hello!
 
-On Tue, Aug 22, 2023 at 10:27 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> Am 21.08.2023 um 19:50 schrieb Geert Uytterhoeven:
-> >> +       ap->ioaddr.data_addr = (void __iomem *)base_mem_res->start;
-> >> +
-> >> +       if (base_res) {         /* only Q40 has IO resources */
-> >> +               io_offset = 0x10000;
-> >> +               reg_scale = 1;
-> >> +               base = (void __iomem *)base_res->start;
-> >> +               ctl_base = (void __iomem *)ctl_res->start;
-> >> +
-> >> +               ata_port_desc(ap, "cmd %pa ctl %pa",
-> >> +                             &base_res->start,
-> >> +                             &ctl_res->start);
-> >
-> > This can be  moved outside the else, using %px to format base and
-> > ctl_base.
->
-> I get a checkpatch warning for %px, but not for %pa (used for .
-> &ap->ioaddr.data_addr). What gives?
->
-> WARNING: Using vsprintf specifier '%px' potentially exposes the kernel
-> memory layout, if you don't really need the address please consider
-> using '%p'.
-> #148: FILE: drivers/ata/pata_falcon.c:194:
-> +       ata_port_desc(ap, "cmd %px ctl %px data %pa",
-> +                     base, ctl_base, &ap->ioaddr.data_addr);
+On 8/20/23 10:27 PM, Michael Schmitz wrote:
+[...]
 
-You can ignore this.
-%p prints obfuscated pointer values, so they are useless here.
-%px prints an unobfuscated pointer value, which is fine here, as it's
-not a pointer to kernel memory that an attacker can use, but just the
-virtual address of an I/O device mapped one-to-one.
+> thanks for reviewing - this has mostly been addressed in v2 or v3 (which I forgot to send to you, sorry). Damien asked for the patch title to be changed (now 'ata: pata_falcon: add data_swab option to byte-swap disk data) so you might have missed it on the list.
 
-Gr{oetje,eeting}s,
+   I didn't want to repeat such request after him. :-)
+   I'm subscribed to linux-ide thru my Gmail account, and I'm still not seeing
+your further patch versions on the list... :-/
 
-                        Geert
+[...]
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>>> Some users of pata_falcon on Q40 have IDE disks in default
+>>> IDE little endian byte order, whereas legacy disks use
+>>> host-native big-endian byte order as on the Atari Falcon.
+>>>
+>>> Add module parameter 'data_swab' to allow connecting drives
+>>> with non-native data byte order. Drives selected by the
+>>> data_swap bit mask will have their user data byte-swapped to
+>>> host byte order, i.e. 'pata_falcon.data_swab=2' will byte-swap
+>>> all user data on drive B, leaving data on drive A in native
+>>> byte order. On Q40, drives on a second IDE interface may be
+>>> added to the bit mask as bits 2 and 3.
+>>>
+>>> Default setting is no byte swapping, i.e. compatibility with
+>>> the native Falcon or Q40 operating system disk format.
+>>>
+>>> Cc: William R Sowerbutts <will@sowerbutts.com>
+>>> Cc: Finn Thain <fthain@linux-m68k.org>
+>>> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+>>> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+[...]
+
+>>> diff --git a/drivers/ata/pata_falcon.c b/drivers/ata/pata_falcon.c
+>>> index 346259e3bbc8..90488f565d6f 100644
+>>> --- a/drivers/ata/pata_falcon.c
+>>> +++ b/drivers/ata/pata_falcon.c
+>>> @@ -33,6 +33,16 @@
+>>>   #define DRV_NAME "pata_falcon"
+>>>   #define DRV_VERSION "0.1.0"
+>>>   +static int pata_falcon_swap_mask;
+>>> +
+>>> +module_param_named(data_swab, pata_falcon_swap_mask, int, 0444);
+>>> +MODULE_PARM_DESC(data_swab, "Data byte swap enable/disable bitmap (0x1==drive1, 0x2==drive2, 0x4==drive3, 0x8==drive4, default==0)");
+>>     Hm, Greg KH keeps saying us that the module parameters belong to '90s. :-)
+
+> What else can I use that would allow setting a driver parameter at boot time? This driver will be built-in pretty much all the time.
+
+   I guess he means sysfs...
+
+[...]
+
+MBR, Sergey
