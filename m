@@ -2,129 +2,95 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62563EE4993
-	for <linux-m68k@archiver.kernel.org>; Wed, 23 Aug 2023 16:35:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3838C7EE2C
+	for <linux-m68k@archiver.kernel.org>; Wed, 23 Aug 2023 22:55:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237257AbjHWQf1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 23 Aug 2023 12:35:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43596 "EHLO
+        id S238802AbjHWWzG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 23 Aug 2023 18:55:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234628AbjHWQf1 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Wed, 23 Aug 2023 12:35:27 -0400
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E016CEE;
-        Wed, 23 Aug 2023 09:35:22 -0700 (PDT)
-Received: from [192.168.1.103] (178.176.72.129) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Wed, 23 Aug
- 2023 19:35:18 +0300
-Subject: Re: [PATCH v4 2/2] ata: pata_falcon: add data_swab option to
- byte-swap disk data
-To:     Michael Schmitz <schmitzmic@gmail.com>, <dlemoal@kernel.org>,
-        <linux-ide@vger.kernel.org>, <linux-m68k@vger.kernel.org>
-CC:     <will@sowerbutts.com>, <rz@linux-m68k.org>, <geert@linux-m68k.org>,
-        Finn Thain <fthain@linux-m68k.org>
-References: <20230822221359.31024-1-schmitzmic@gmail.com>
- <20230822221359.31024-3-schmitzmic@gmail.com>
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <56654dc7-37e7-1fd7-0d3f-647563f4cc5a@omp.ru>
-Date:   Wed, 23 Aug 2023 19:35:17 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        with ESMTP id S238805AbjHWWyk (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Wed, 23 Aug 2023 18:54:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A60310C7
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Aug 2023 15:54:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 58CE265B90;
+        Wed, 23 Aug 2023 22:54:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7428FC433CC;
+        Wed, 23 Aug 2023 22:54:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692831276;
+        bh=Za+r7k8kNmKfD+jB1gV4EVeEhZ5OQ+xqB0xO5nRoNGo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=HrQJpQMFG8z4Pd+cnV17RBTVU3kL43S/rZkcN6RIotCKi6UP/J1NRFFhQ2RWJTGQo
+         5IuTKoaJgK8stu8UeAGu7WDUSVmcdIg9yzVIQ7eeaiPLId3n82NCL10NE0/qvZvKHu
+         vmnh4mUv4clyjYC04MfmF8EV8UveyIfhgMlLFLgvH+H/37yIkjYlWPt0BnDDTEGWiG
+         5tfdb2aV7Yar2QPvV47ceAaWs7SlHgGSJ5kO++W1oI2tWfqBwtzobm9Fh0QBvm4OK9
+         g8pdfJtHvBGcLBddj+qM8JcYxKC/uls6YeOwsRpyoX2KdGbNKjmXNTWL8xBv0GR0dg
+         +1V5A9r7dzEIw==
+Message-ID: <f8080469-a5e5-5345-3454-a697ee7ae120@kernel.org>
+Date:   Thu, 24 Aug 2023 07:54:31 +0900
 MIME-Version: 1.0
-In-Reply-To: <20230822221359.31024-3-schmitzmic@gmail.com>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH treewide 0/9] Remove obsolete IDE headers
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1692288018.git.geert@linux-m68k.org>
 Content-Language: en-US
+From:   Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <cover.1692288018.git.geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [178.176.72.129]
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.59, Database issued on: 08/23/2023 16:19:10
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 179410 [Aug 23 2023]
-X-KSE-AntiSpam-Info: Version: 5.9.59.0
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 527 527 5bb611be2ca2baa31d984ccbf4ef4415504fc308
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.72.129 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.72.129 in (user)
- dbl.spamhaus.org}
-X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;178.176.72.129:7.1.2;omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: FromAlignment: s
-X-KSE-AntiSpam-Info: {rdns complete}
-X-KSE-AntiSpam-Info: {fromrtbl complete}
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.72.129
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=none header.from=omp.ru;spf=none
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 08/23/2023 16:22:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 8/23/2023 2:00:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 8/23/23 1:13 AM, Michael Schmitz wrote:
-
-> Some users of pata_falcon on Q40 have IDE disks in default
-> IDE little endian byte order, whereas legacy disks use
-> host-native big-endian byte order as on the Atari Falcon.
+On 8/18/23 01:07, Geert Uytterhoeven wrote:
+> 	Hi all,
 > 
-> Add module parameter 'data_swab' to allow connecting drives
-> with non-native data byte order. Drives selected by the
-> data_swap bit mask will have their user data byte-swapped to
-> host byte order, i.e. 'pata_falcon.data_swab=2' will byte-swap
-> all user data on drive B, leaving data on drive A in native
-> byte order. On Q40, drives on a second IDE interface may be
-> added to the bit mask as bits 2 and 3.
+> This patch series removes all unused <asm/ide.h> headers and
+> <asm-generic/ide_iops.h>.  <asm/ide.h> was still included by 3 PATA
+> drivers for m68k platforms, but without any real need.
 > 
-> Default setting is no byte swapping, i.e. compatibility with
-> the native Falcon or Q40 operating system disk format.
+> The first 5 patches have no dependencies.
+> The last patch depends on the 3 pata patches.
 > 
-> Cc: William R Sowerbutts <will@sowerbutts.com>
-> Cc: Finn Thain <fthain@linux-m68k.org>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Tested-by: William R Sowerbutts <will@sowerbutts.com>
-> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+> Thanks for your comments!
+> 
+> Geert Uytterhoeven (9):
+>   ARM: Remove <asm/ide.h>
+>   parisc: Remove <asm/ide.h>
+>   powerpc: Remove <asm/ide.h>
+>   sparc: Remove <asm/ide.h>
+>   asm-generic: Remove ide_iops.h
+>   ata: pata_buddha: Remove #include <asm/ide.h>
+>   ata: pata_falcon: Remove #include <asm/ide.h>
+>   ata: pata_gayle: Remove #include <asm/ide.h>
+>   m68k: Remove <asm/ide.h>
 
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Applied to libata for-6.6. Thanks !
 
-[...]
+-- 
+Damien Le Moal
+Western Digital Research
 
-> diff --git a/drivers/ata/pata_falcon.c b/drivers/ata/pata_falcon.c
-> index 3841ea200bcb..7cf15bd9764a 100644
-> --- a/drivers/ata/pata_falcon.c
-> +++ b/drivers/ata/pata_falcon.c
-[...]
-> @@ -194,6 +199,9 @@ static int __init pata_falcon_init_one(struct platform_device *pdev)
->  	ata_port_desc(ap, "cmd %px ctl %px data %pa",
->  		      base, ctl_base, &ap->ioaddr.data_addr);
->  
-> +	ap->private_data = (void *)(uintptr_t)(pdev->id > 0 ?
-> +		pata_falcon_swap_mask >> 2 : pata_falcon_swap_mask);
-
-   How about:
-
-	ap->private_data = (void *)(uintptr_t)(pata_falcon_swap_mask >>
-			   (pdev->id > 0 ? 2 : 0));
-
-[...]
-
-MBR, Sergey
