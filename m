@@ -2,75 +2,128 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F12C3C83F01
-	for <linux-m68k@archiver.kernel.org>; Sat, 26 Aug 2023 11:13:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F4D9C83F15
+	for <linux-m68k@archiver.kernel.org>; Sat, 26 Aug 2023 19:36:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232525AbjHZLMl (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 26 Aug 2023 07:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45202 "EHLO
+        id S229815AbjHZTfi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 26 Aug 2023 15:35:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232523AbjHZLMM (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sat, 26 Aug 2023 07:12:12 -0400
-Received: from mail.sowerbutts.com (mail.sowerbutts.com [IPv6:2001:8b0:3b1:dead::100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E5B21BCD
-        for <linux-m68k@vger.kernel.org>; Sat, 26 Aug 2023 04:12:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sowerbutts.com; s=igor; h=In-Reply-To:Content-Type:MIME-Version:References:
-        Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=XwySiPTA+U1lcMHL3hjcBoYLBd3hpG/N3CL7Y9tK44A=; b=N9vgwwlqGC4J1N3wlb14H2i9wA
-        iO/fxafqjo0XyfdZaa+89TSJy1o4YHSk40HwSYVwsIYKSva8c/awimOhuvM8354Hc0eESPh0aSTBh
-        uYzulfwhXOU5guDf1uKrDi82NFKBPzUY5dua/7xuT78EHojr7mtpbyWJNKFoFpeY05cXb/FrQAIqg
-        j0eFV2lzyZIWyB722mnj2EXsYEtpSfuspRXa5gcKKjDmWFbTRYGtt+jfSPwSd2KZyL8xVbZ0cx9sD
-        lIKLNBD0I3iSEUkhJsMTK3i9Z/xPB81pVBF4dw+m9ehpMBUHNkzh1xcSizTjJFA3kzCMfXeIKqEa2
-        y1mAvupA==;
-Received: from [2001:8b0:3b1:cafe:2292:e7dd:dea3:4ff6] (helo=sowerbutts.com)
-        by mail.sowerbutts.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <will@sowerbutts.com>)
-        id 1qZrCz-001OHf-36;
-        Sat, 26 Aug 2023 12:12:01 +0100
-Date:   Sat, 26 Aug 2023 12:12:01 +0100
-From:   William R Sowerbutts <will@sowerbutts.com>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     s.shtylyov@omp.ru, dlemoal@kernel.org, linux-ide@vger.kernel.org,
-        linux-m68k@vger.kernel.org, rz@linux-m68k.org, geert@linux-m68k.org
-Subject: Re: [PATCH v5 0/2] Q40 IDE fixes
-Message-ID: <ZOneAWSqU2hRVbJ2@sowerbutts.com>
-References: <20230825011335.25808-1-schmitzmic@gmail.com>
+        with ESMTP id S229553AbjHZTfN (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sat, 26 Aug 2023 15:35:13 -0400
+X-Greylist: delayed 591 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 26 Aug 2023 12:35:09 PDT
+Received: from mr3.vodafonemail.de (mr3.vodafonemail.de [145.253.228.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E60F10FF
+        for <linux-m68k@vger.kernel.org>; Sat, 26 Aug 2023 12:35:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arcor.de;
+        s=vfde-mb-mr2-21dec; t=1693077910;
+        bh=zYJgFI5vnbU+fVouWS+uHFQC1cM/6BpLmt+Mnczx3Jo=;
+        h=Date:From:To:Subject:In-Reply-To:References:Message-ID:
+         Content-Type:From;
+        b=O8Pbfqjf5qI2kBJ0v1WBBzENwDR86HZHEgZnRzVCvh0RuzVThCpRoN5LHGGom7mln
+         KaxdmOpFX9tyvUNdmIWilKcMZ93ADiMXJjljm5GqBXuwwHSX5OiaUHzj9Nb25Z2rb1
+         IkT+tQ8Z5dmwjMSzoJVlMHwunb2DPNstcdnxhX5A=
+Received: from smtp.vodafone.de (unknown [10.0.0.2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by mr3.vodafonemail.de (Postfix) with ESMTPS id 4RY6GZ4XzHz1yPy;
+        Sat, 26 Aug 2023 19:25:10 +0000 (UTC)
+Received: from [127.0.0.1] (dynamic-046-114-215-064.46.114.pool.telefonica.de [46.114.215.64])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp.vodafone.de (Postfix) with ESMTPSA id 4RY6GG03PCzHnHf;
+        Sat, 26 Aug 2023 19:24:50 +0000 (UTC)
+Date:   Sat, 26 Aug 2023 19:24:43 +0000
+From:   Richard <richiezid@arcor.de>
+To:     debian-68k@lists.debian.org,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        James Le Cuirot <chewi@aura-online.co.uk>
+CC:     libc-help@sourceware.org, debian-68k <debian-68k@lists.debian.org>,
+        linux-m68k <linux-m68k@vger.kernel.org>
+Subject: Re: Tuple and changes for m68k with -malign-int
+In-Reply-To: <10cbcb8a65639f88e7eeb503fd02df172bc46a07.camel@physik.fu-berlin.de>
+References: <e9035006d50933fb02727fa373629cc821784f6c.camel@aura-online.co.uk> <10cbcb8a65639f88e7eeb503fd02df172bc46a07.camel@physik.fu-berlin.de>
+Message-ID: <5F114C03-5320-485F-86E3-946A334F16D1@arcor.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230825011335.25808-1-schmitzmic@gmail.com>
-X-URL:  http://sowerbutts.com/
-X-Hatstand: Voltron
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-purgate-type: clean
+X-purgate: clean
+X-purgate-size: 2035
+X-purgate-ID: 155817::1693077906-5DFFE94E-A0AAB8C4/0/0
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-I have tested this on my Q40 and I am pleased to report that it works 
-(including the feature to selectively byteswap drives)
 
-Thanks!
 
-Will
+On August 26, 2023 10:51:39 AM UTC, John Paul Adrian Glaubitz <glaubitz@ph=
+ysik=2Efu-berlin=2Ede> wrote:
+>Hi James!
+>
+>On Sat, 2023-08-26 at 09:53 +0100, James Le Cuirot wrote:
+>> I wasn't sure whether to send this to libc-alpha or here=2E This feels =
+more like
+>> a request for help, so I decided to play it safe=2E :)
+>
+>I am CC'ing Debian's m68k mailing list and the Linux m68k kernel mailing =
+list
+>to make sure we're getting enough exposure=2E
+>
+>> The Debian m68k maintainers proposed building their packages with -mali=
+gn-int
+>> last year, aligning to 32-bit instead of 16-bit, which improves compati=
+bility
+>> with some projects and should give better performance on 68020+, at the=
+ cost
+>> of slightly increased memory usage=2E The mold linker is at least one p=
+roject
+>> that has been shown to work after making this change where it previousl=
+y
+>> didn't=2E
+>
+>Not only mold but also most notably the following projects:
 
-On Fri, Aug 25, 2023 at 01:13:33PM +1200, Michael Schmitz wrote:
->Version 5 of the pata_falcon bugfix patch for Q40 support.
->
->Review comments from Sergey, Damien and Geert have been addressed.
->
->Cheers,
->
->   Michael
->
+a linker that is broken by a slightly unusual alignment isn't exactly a pr=
+ime example=2E=2E if any project I would expect linkers and binary tools to=
+ pay attention to portability=2E
+
+>- LLVM
+
+Ok =2E=2E too big to complain about=2E=2E and see above=2E
+
+>- OpenJDK
+
+OpenJDK has not only that one problem=2E
+
+>It's a regular occurrence that a package doesn't build on m68k due to it'=
+s unusual
+>default alignment=2E=20
+
+Unfortunately=2E Some time ago m68k was not the only one with this problem=
+?
+
+
+>Thus, in order to keep the port alive in the future, I think
+>switching to 32-bit alignment by default is inevitable=2E
 >
 
-_________________________________________________________________________
-William R Sowerbutts                                  will@sowerbutts.com
-"Carpe post meridiem"                               http://sowerbutts.com
-         main(){char*s=">#=0> ^#X@#@^7=",c=0,m;for(;c<15;c++)for
-         (m=-1;m<7;putchar(m++/6&c%3/2?10:s[c]-31&1<<m?42:32));}  
+Ok=2E=20
 
+
+>> We need to
+>> break the ABI anyway with time_t going 64-bit, so it makes sense to do =
+these
+>> two things at the same time=2E
+
+
+What exactly will be broken? Afaics kernel ABIs have been since long prett=
+y carefully designed to avoid this problems and noone of the mentioned exam=
+ples should touch them anyway=2E=20
+
+Thus=2E=2E is there any need to change the kernel ABI?
+
+Richard 
