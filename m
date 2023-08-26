@@ -2,115 +2,69 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 716CBC83F0C
-	for <linux-m68k@archiver.kernel.org>; Fri, 25 Aug 2023 22:45:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC354C83F0F
+	for <linux-m68k@archiver.kernel.org>; Sat, 26 Aug 2023 00:45:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbjHYWo6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 25 Aug 2023 18:44:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40608 "EHLO
+        id S231283AbjHZApX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 25 Aug 2023 20:45:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229987AbjHYWoj (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 25 Aug 2023 18:44:39 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2336268F
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Aug 2023 15:44:37 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bdca7cc28dso12053645ad.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Aug 2023 15:44:37 -0700 (PDT)
+        with ESMTP id S231215AbjHZAoy (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Fri, 25 Aug 2023 20:44:54 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A08F32119;
+        Fri, 25 Aug 2023 17:44:51 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-68a41035828so1192233b3a.1;
+        Fri, 25 Aug 2023 17:44:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693003477; x=1693608277;
+        d=gmail.com; s=20221208; t=1693010691; x=1693615491;
         h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
          :message-id:subject:from:references:cc:to:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+EfHZKV5Rs50FUqRYXClC9vzZD5WlxrYeYbs3IamXT4=;
-        b=YxGLOPcaOZR604IVjJRcGcoKnB33IZ0CTfYuHyWKXt+0pInUOQSMoNyJ0dS6B1KmgY
-         cxaBOMvor3UlQ6MZnz8hco99YltIQ+TVGTfUiOj3M6EtIom4aLy5Ogu10qSlU6URXk+W
-         RnRGmXEhLIg0POh+PDKptxk33OVTKsM2/52zz5494dr8R8CSNGpoqbrRI3gpmS9Q+cTN
-         hJYUsHOFyiz+AcMtmJLq8rt6PHOWgX+jhYTNJt4ghkMZ1YZYHd+UADqGIVtKxfSRzrdW
-         eHx1TWLsT9QLE3Re7SH9KzLMTXlxKvezJrH+R76CylIu77symnMHbROv+J2zJ4UP/BTK
-         7yuQ==
+        bh=mPOMYxzU8vZZeKPscxcFLSdrOO7V+ZYl2duFOimfGac=;
+        b=oGWXmOwKDwk+d/Lf2YJ3z+dGGMwkyUGqw8D7fZ/i/Lu8I9unNf+LjytAZdH9KFAWfV
+         R79WcMncUlQCSdw95KtMi1TgNckiNzNEyI+ot1Ba3YY3f4KFMrVsqDBRryIOF+X+7Z+/
+         b1eG4lJwS4ATQ6ntKNrar/ZSP6IfEQHSWtiV9JV0i7fzByZHC1KAba/hFxOB9XD65o9J
+         4CD1GzaHqCf61nYzPadGyU0rKmf6CRc3xoll0p8mu3NYuFwWx0D8/cIZLFOc5QUa+Ldn
+         l+xlwss4qhDlxu/70qM5KTKuvWRFfIhpGkwhfRrYdeKhXNq1SIb7Auyt1wIant8pQdac
+         rnOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693003477; x=1693608277;
+        d=1e100.net; s=20221208; t=1693010691; x=1693615491;
         h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
          :message-id:subject:from:references:cc:to:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=+EfHZKV5Rs50FUqRYXClC9vzZD5WlxrYeYbs3IamXT4=;
-        b=LOP2D1MeIA/hmUhm+cCeReopfRtpDG3dyKx3t7mJFZKMLVlJQWorVYaWRHb2MKjWn6
-         0lxTVVCMDl1V+cV+iL7ljL1ABZY/DJanZP/obE5YBZv+PNT2DuLrlgW/gwUe0IXlVV4k
-         ud47dZGmVihqjU1myywPATclFX0BNygBQGsT0z/GJbA+AXRaSJB6TcgpaBtmBxDoLwVe
-         SteVQf7ZGWeXVJVbekFkci3Ti6RPfPiJX/nKSfDeUBMSzcSyrZwGi8krcAodTIwq7lEU
-         jQPI8IBZycqSDuthBwXHtbEZRoiKTWDj3SourRwdWOPuiOey3MG7MmM9B3Jt312z4Ny7
-         39zg==
-X-Gm-Message-State: AOJu0Ywd2S49/Dz0ghIE8YdR6vJ+4jFHifnjqPz/5EmoEqm5+JlI0RxI
-        WkNRKTTm+Ojj4+qJAFi0HVg=
-X-Google-Smtp-Source: AGHT+IHfISCtSa05UGz9PT6tDA2qtVyoG70cJPjb2fBEQ6/U+mzxDHROeZB/hJ4FR5D+DwWhbVxiGA==
-X-Received: by 2002:a17:903:25d4:b0:1bd:bbc3:c87b with SMTP id jc20-20020a17090325d400b001bdbbc3c87bmr18047490plb.41.1693003477133;
-        Fri, 25 Aug 2023 15:44:37 -0700 (PDT)
+        bh=mPOMYxzU8vZZeKPscxcFLSdrOO7V+ZYl2duFOimfGac=;
+        b=GHsCVxnoKgylJINVvZkSQRHQCkbgDaz1fOnKH7UARXIKEvue5ta2iZ1U1JkIaL2Vcz
+         kPAsPJ1AmqMJMlcPNUWDCVO7vjx7LFuGVh/RoZGCdlo+swNY/Ui1ZO09nX+bP85EfeZ/
+         uXFZdWkWKb68bPV3To6dW+/Mqote/PMfRnh1HO3J2L9KlrcJ5sK9Zymo/Vbsd5cLbFOn
+         Fk6dQJZmVaVxlzmv7oHB9+tREl0q+nANuJgbuvKZbwD2x3AWQKZkOWrcJ+VkeOVi/66D
+         sYWGtfm0GpnCSjoOPwZLCTJwMK0d1JGMEGUllmovoU8zIzmxHRruplREcfUeiVM8zLAI
+         K7ug==
+X-Gm-Message-State: AOJu0YxU9h/yUPwkp667GTVjsYE1pNX1a5elF1KrvuQAScZ1GeVCU6j6
+        VkB+H8CYhDv+dsbqGjmr1NM=
+X-Google-Smtp-Source: AGHT+IHKGpicetbdPVmBuT1CKi6iRtMi30MrnwZ8UsgHHTtFj+mta7z7JJJqd+Be4km0zD3KS0cImw==
+X-Received: by 2002:a05:6a00:1a88:b0:67a:9208:87a with SMTP id e8-20020a056a001a8800b0067a9208087amr18834818pfv.23.1693010690973;
+        Fri, 25 Aug 2023 17:44:50 -0700 (PDT)
 Received: from Schmitz-MacBook-Pro.local (125-236-136-221-fibre.sparkbb.co.nz. [125.236.136.221])
-        by smtp.googlemail.com with ESMTPSA id b1-20020a170902d50100b001adf6b21c77sm2280761plg.107.2023.08.25.15.44.17
+        by smtp.googlemail.com with ESMTPSA id q10-20020a63bc0a000000b00563ff7d9c4bsm2307909pge.73.2023.08.25.17.44.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Aug 2023 15:44:36 -0700 (PDT)
+        Fri, 25 Aug 2023 17:44:50 -0700 (PDT)
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Matt Turner <mattst88@gmail.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Brian Cain <bcain@quicinc.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        x86@kernel.org, Borislav Petkov <bp@alien8.de>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-next@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kbuild@vger.kernel.org
-References: <20230810141947.1236730-1-arnd@kernel.org>
- <169292577153.789945.11297239773543112051.b4-ty@oracle.com>
- <3956e2a4-c545-1212-e95f-3cf61a60d6a4@gmail.com>
- <CAMuHMdWC2S330_Vb_NTHTDC=BakBsw4ouP-eFJv0erV1-jmvTQ@mail.gmail.com>
+Cc:     s.shtylyov@omp.ru, dlemoal@kernel.org, linux-ide@vger.kernel.org,
+        linux-m68k@vger.kernel.org, will@sowerbutts.com, rz@linux-m68k.org,
+        Finn Thain <fthain@linux-m68k.org>
+References: <20230825011335.25808-1-schmitzmic@gmail.com>
+ <20230825011335.25808-3-schmitzmic@gmail.com>
+ <CAMuHMdUhw-mvGXRRimfp1SAMaRzOfQuO=k81LaZbXuNPV0igQQ@mail.gmail.com>
 From:   Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: (subset) [PATCH 00/17] -Wmissing-prototype warning fixes
-Message-ID: <130b3b57-edb0-184d-5b5f-69b013715773@gmail.com>
-Date:   Sat, 26 Aug 2023 10:44:13 +1200
+Subject: Re: [PATCH v5 2/2] ata: pata_falcon: add data_swab option to
+ byte-swap disk data
+Message-ID: <f02aeddc-eb6e-9de3-5c92-959271b1b6c5@gmail.com>
+Date:   Sat, 26 Aug 2023 12:44:44 +1200
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:78.0)
  Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdWC2S330_Vb_NTHTDC=BakBsw4ouP-eFJv0erV1-jmvTQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdUhw-mvGXRRimfp1SAMaRzOfQuO=k81LaZbXuNPV0igQQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
@@ -119,63 +73,91 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 Hi Geert,
 
-Am 25.08.23 um 19:39 schrieb Geert Uytterhoeven:
+Am 25.08.23 um 19:46 schrieb Geert Uytterhoeven:
 > Hi Michael,
 >
-> On Fri, Aug 25, 2023 at 3:31=E2=80=AFAM Michael Schmitz <schmitzmic@gma=
+> On Fri, Aug 25, 2023 at 3:13=E2=80=AFAM Michael Schmitz <schmitzmic@gma=
 il.com> wrote:
->> On 25/08/23 13:12, Martin K. Petersen wrote:
->>> [11/17] scsi: gvp11: remove unused gvp11_setup() function
->>>          https://git.kernel.org/mkp/scsi/c/bfaa4a0ce1bb
->> I somehow missed that one ...
+>> Some users of pata_falcon on Q40 have IDE disks in default
+>> IDE little endian byte order, whereas legacy disks use
+>> host-native big-endian byte order as on the Atari Falcon.
 >>
->> The gvp11_setup() function was probably a relic from the times before
->> module parameters.
+>> Add module parameter 'data_swab' to allow connecting drives
+>> with non-native data byte order. Drives selected by the
+>> data_swap bit mask will have their user data byte-swapped to
+>> host byte order, i.e. 'pata_falcon.data_swab=3D2' will byte-swap
+>> all user data on drive B, leaving data on drive A in native
+>> byte order. On Q40, drives on a second IDE interface may be
+>> added to the bit mask as bits 2 and 3.
 >>
->> Since gvp11_xfer_mask appears to be required for some Amiga systems to=
-
->> set the DMA mask, I'd best send a patch to add such a module parameter=
- ...
+>> Default setting is no byte swapping, i.e. compatibility with
+>> the native Falcon or Q40 operating system disk format.
 >>
->> Do you know any details around the use of DMA masks for Amiga WD33C93
->> drivers, Geert?
-> Doh, it's been a while, and I never had an affected system.
-> Probably it's needed on A2000 with an accelerator card and GVP II SCSI,=
+>> Cc: William R Sowerbutts <will@sowerbutts.com>
+>> Cc: Finn Thain <fthain@linux-m68k.org>
+>> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+>> Tested-by: William R Sowerbutts <will@sowerbutts.com>
+>> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+>> Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+>> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>>
+>> ---
+>>
+>> Changes since v4:
+>>
+>> Damien Le Moal:
+>> - spell out bitmask shift calculation
+> Thanks for the update!
+>
+> Sorry to bother you again...
+>
+>> --- a/drivers/ata/pata_falcon.c
+>> +++ b/drivers/ata/pata_falcon.c
+>> @@ -124,7 +129,7 @@ static int __init pata_falcon_init_one(struct plat=
+form_device *pdev)
+>>         struct ata_host *host;
+>>         struct ata_port *ap;
+>>         void __iomem *base, *ctl_base;
+>> -       int irq =3D 0, io_offset =3D 1, reg_shift =3D 2; /* Falcon def=
+aults */
+>> +       int irq =3D 0, io_offset =3D 1, reg_shift =3D 2, mask_shift; /=
+* Falcon defaults */
+> The comment does not apply to the mask_shift variable, unless you
+> pre-initialize it to 0...
 
-> to prevent DMA to RAM banks that do not support fast DMA cycles.
+It does not apply to mask_shift even then - '0' is the default for the
+first Q40 ISA adapter also, not just for Falcon.
 
-Thanks, that's good enough for me.
+I'll move mask_shift to its own line so the comment can be correct.
 
-Linux 2.0 had this comment:
+>
+>>         dev_info(&pdev->dev, "Atari Falcon and Q40/Q60 PATA controller=
+\n");
+>>
+>> @@ -194,6 +199,12 @@ static int __init pata_falcon_init_one(struct pla=
+tform_device *pdev)
+>>         ata_port_desc(ap, "cmd %px ctl %px data %px",
+>>                       base, ctl_base, ap->ioaddr.data_addr);
+>>
+>> +       if (pdev->id > 0)
+>> +               mask_shift =3D 2;
+>> +       else
+>> +               mask_shift =3D 0;
+> ... and drop the else.
 
-|/* * DMA transfer mask for GVP Series II SCSI controller. * Some
-versions can only DMA into the 24 bit address space * (0->16M). Others
-can DMA into the full 32 bit address * space. The default is to only
-allow DMA into the 24 bit * address space. The "gvp11=3D0xFFFFFFFE" setup=
-
-parameter can * be supplied to force an alternate (32 bit) mask. */ |
-
-|We now handle that (since 2.6.35) through masks defined in
-gvp11_zorro_tbl[] (though I note these don't account for unaligned
-addresses such as implied by the example in the comment. Are unaligned
-DMA buffers still possible today?). Would that cover the 'A2000 with
-accelerator' case?
-|
-
-||
-
-I'm happy to send a patch if an override to the device default DMA mask
-is still necessary.
-
-(Incidentally - did you ever publish the m68k full history tree anywhere
-in git?)
+Damien did seem quite partial to that one, so I'll leave it.
 
 Cheers,
 
 =C2=A0=C2=A0=C2=A0 Michael
 
-
 >
+>> +       ap->private_data =3D (void *)(uintptr_t)(pata_falcon_swap_mask=
+ >> mask_shift);
+>> +
+>>         irq_res =3D platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+>>         if (irq_res && irq_res->start > 0) {
+>>                 irq =3D irq_res->start;
 > Gr{oetje,eeting}s,
 >
 >                         Geert
