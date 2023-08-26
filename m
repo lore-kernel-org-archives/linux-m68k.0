@@ -2,128 +2,169 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F4D9C83F15
-	for <linux-m68k@archiver.kernel.org>; Sat, 26 Aug 2023 19:36:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11150C83F01
+	for <linux-m68k@archiver.kernel.org>; Sat, 26 Aug 2023 20:44:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbjHZTfi (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 26 Aug 2023 15:35:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42568 "EHLO
+        id S229755AbjHZUne (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 26 Aug 2023 16:43:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbjHZTfN (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sat, 26 Aug 2023 15:35:13 -0400
-X-Greylist: delayed 591 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 26 Aug 2023 12:35:09 PDT
-Received: from mr3.vodafonemail.de (mr3.vodafonemail.de [145.253.228.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E60F10FF
-        for <linux-m68k@vger.kernel.org>; Sat, 26 Aug 2023 12:35:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arcor.de;
-        s=vfde-mb-mr2-21dec; t=1693077910;
-        bh=zYJgFI5vnbU+fVouWS+uHFQC1cM/6BpLmt+Mnczx3Jo=;
-        h=Date:From:To:Subject:In-Reply-To:References:Message-ID:
-         Content-Type:From;
-        b=O8Pbfqjf5qI2kBJ0v1WBBzENwDR86HZHEgZnRzVCvh0RuzVThCpRoN5LHGGom7mln
-         KaxdmOpFX9tyvUNdmIWilKcMZ93ADiMXJjljm5GqBXuwwHSX5OiaUHzj9Nb25Z2rb1
-         IkT+tQ8Z5dmwjMSzoJVlMHwunb2DPNstcdnxhX5A=
-Received: from smtp.vodafone.de (unknown [10.0.0.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by mr3.vodafonemail.de (Postfix) with ESMTPS id 4RY6GZ4XzHz1yPy;
-        Sat, 26 Aug 2023 19:25:10 +0000 (UTC)
-Received: from [127.0.0.1] (dynamic-046-114-215-064.46.114.pool.telefonica.de [46.114.215.64])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp.vodafone.de (Postfix) with ESMTPSA id 4RY6GG03PCzHnHf;
-        Sat, 26 Aug 2023 19:24:50 +0000 (UTC)
-Date:   Sat, 26 Aug 2023 19:24:43 +0000
-From:   Richard <richiezid@arcor.de>
-To:     debian-68k@lists.debian.org,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        James Le Cuirot <chewi@aura-online.co.uk>
-CC:     libc-help@sourceware.org, debian-68k <debian-68k@lists.debian.org>,
-        linux-m68k <linux-m68k@vger.kernel.org>
+        with ESMTP id S229885AbjHZUna (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sat, 26 Aug 2023 16:43:30 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ADE6BA
+        for <linux-m68k@vger.kernel.org>; Sat, 26 Aug 2023 13:43:27 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id EF02C32007F9;
+        Sat, 26 Aug 2023 16:43:24 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Sat, 26 Aug 2023 16:43:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        aura-online.co.uk; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1693082604; x=1693169004; bh=GB
+        zgj5pBb0Bvg3O/cZcMXAjGqaOfSUyPccPlHs511ks=; b=L2yFKCA//uZ/P/zNGM
+        99GDBiUDEdLIydg1RoDUWeMrz5yJW/qXbWbirAf67NqHYDgjfio45Cui3Yaovx0J
+        hipb4BDE0Ykh+aaJZdw2912obTKG+xkvQctT7KUS3tMLs4hPHiVc2IOEitHCUkBk
+        spGNRfmeKF58PqUAvZyhgIEnV2y7WV3Qum/7n3kN0xz3HmdaMCUtSW/AhDkERE4f
+        tJuPRdG0r2SWyC8WGrcCjRNxNS6auYLawt6LlE0wop8ivHu1iVwcoMDPjvkZa8BY
+        ZwfM+4Lt/ubjbBsEA7qqk96g4cvWJajLytssP1KxCSqoAuDy0TOG2NFHpidlrKwD
+        UPtQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1693082604; x=1693169004; bh=GBzgj5pBb0Bvg3O/cZcMXAjGqaOfSUyPccP
+        lHs511ks=; b=xXWbgC9Vt5MlYFcYwNtmQQN2wF7MUShzA7a5DCGjLglq2CcOYFc
+        vhAt1TdJDhU8V6aac17u3fzcw4CjynTTvmF3khBumEZt3ohwNwhHkPcZSwG/Mwye
+        x7pYTUrgsTvsqbsflXxr8xUo6J1Mz6ikE88hRGPi92+UclVVpyikHSG7BCmuDySi
+        55MhqPUXXJxahtDRzjUaZHBnzHs8sa3XgEw7sEV0ytdldwpmQCCjmrW+iNPg2jCz
+        5FTJBsAc0ocx88XnbGeDcr3Ly7xiz6+gOGgrwGDM8ovpsy+sXAFuaCTSEJNCh+Rm
+        fIYmPSFC4/4WanO75Xe390zXVPVLByESqJQ==
+X-ME-Sender: <xms:62PqZIq33HGx1NvEzYqG1fs_0-gk94cB6f3a6LJhwpKrxseGwz6Gsw>
+    <xme:62PqZOo9Du_7YOye3ws0mD47pxQa2VM1KNCZfUjH40TLl5GTYa1f-Ips5wcEV2DOD
+    ad1hWWDKNMt8g>
+X-ME-Received: <xmr:62PqZNPwyIurmksC37_TyGrZk0Fi9XfOvnLv7piqUwrDFAUXRdEXXoQ2Vt8MSll2miFjnMRpQjV9EtlFhJUZlvzDwhwNoQGFSfkYoZms>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeftddgudehudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefkuffhvfevffgjfhgtgfgfggesthhqredttderjeenucfhrhhomheplfgr
+    mhgvshcunfgvucevuhhirhhothcuoegthhgvfihisegruhhrrgdqohhnlhhinhgvrdgtoh
+    druhhkqeenucggtffrrghtthgvrhhnpeejieefveduledtkeeivdfhtdffueefieetfeei
+    hedtgfefleefgefffeelveevteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpegthhgvfihisegruhhrrgdqohhnlhhinhgvrdgtohdruhhk
+X-ME-Proxy: <xmx:62PqZP6HU07ZtaXf1Q8FkEIlpKFgvfIedfCcdp2AxyW4igwCxP2gdA>
+    <xmx:62PqZH7fKkR5uDLr7YAZUxSm4rPBHfOzMGDdHf6ZruLZgyU822GTqg>
+    <xmx:62PqZPj4Glji0ZvorqP3bfZTmUlSqOjxLXTZ7aqhnWn0lZVfz05Ifw>
+    <xmx:7GPqZK33S7PYjfI7xbAZVJj9rIo1ssbA36kcE8G8IBCSgfeL05TIAw>
+Feedback-ID: i51cd41ac:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 26 Aug 2023 16:43:22 -0400 (EDT)
+Message-ID: <e323fa5f72e65ade8369e58c7dae39b682c3a6fc.camel@aura-online.co.uk>
 Subject: Re: Tuple and changes for m68k with -malign-int
-In-Reply-To: <10cbcb8a65639f88e7eeb503fd02df172bc46a07.camel@physik.fu-berlin.de>
-References: <e9035006d50933fb02727fa373629cc821784f6c.camel@aura-online.co.uk> <10cbcb8a65639f88e7eeb503fd02df172bc46a07.camel@physik.fu-berlin.de>
-Message-ID: <5F114C03-5320-485F-86E3-946A334F16D1@arcor.de>
-MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+From:   James Le Cuirot <chewi@aura-online.co.uk>
+To:     Richard <richiezid@arcor.de>, debian-68k@lists.debian.org,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     libc-help@sourceware.org, linux-m68k <linux-m68k@vger.kernel.org>
+Date:   Sat, 26 Aug 2023 21:43:19 +0100
+In-Reply-To: <5F114C03-5320-485F-86E3-946A334F16D1@arcor.de>
+References: <e9035006d50933fb02727fa373629cc821784f6c.camel@aura-online.co.uk>
+         <10cbcb8a65639f88e7eeb503fd02df172bc46a07.camel@physik.fu-berlin.de>
+         <5F114C03-5320-485F-86E3-946A334F16D1@arcor.de>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-purgate-type: clean
-X-purgate: clean
-X-purgate-size: 2035
-X-purgate-ID: 155817::1693077906-5DFFE94E-A0AAB8C4/0/0
+User-Agent: Evolution 3.48.4 
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-
-
-On August 26, 2023 10:51:39 AM UTC, John Paul Adrian Glaubitz <glaubitz@ph=
-ysik=2Efu-berlin=2Ede> wrote:
->Hi James!
->
->On Sat, 2023-08-26 at 09:53 +0100, James Le Cuirot wrote:
->> I wasn't sure whether to send this to libc-alpha or here=2E This feels =
+On Sat, 2023-08-26 at 19:24 +0000, Richard wrote:
+>=20
+> On August 26, 2023 10:51:39 AM UTC, John Paul Adrian Glaubitz <glaubitz@p=
+hysik.fu-berlin.de> wrote:
+> > Hi James!
+> >=20
+> > On Sat, 2023-08-26 at 09:53 +0100, James Le Cuirot wrote:
+> > > I wasn't sure whether to send this to libc-alpha or here. This feels =
 more like
->> a request for help, so I decided to play it safe=2E :)
->
->I am CC'ing Debian's m68k mailing list and the Linux m68k kernel mailing =
-list
->to make sure we're getting enough exposure=2E
->
->> The Debian m68k maintainers proposed building their packages with -mali=
-gn-int
->> last year, aligning to 32-bit instead of 16-bit, which improves compati=
-bility
->> with some projects and should give better performance on 68020+, at the=
- cost
->> of slightly increased memory usage=2E The mold linker is at least one p=
+> > > a request for help, so I decided to play it safe. :)
+> >=20
+> > I am CC'ing Debian's m68k mailing list and the Linux m68k kernel mailin=
+g list
+> > to make sure we're getting enough exposure.
+> >=20
+> > > The Debian m68k maintainers proposed building their packages with -ma=
+lign-int
+> > > last year, aligning to 32-bit instead of 16-bit, which improves compa=
+tibility
+> > > with some projects and should give better performance on 68020+, at t=
+he cost
+> > > of slightly increased memory usage. The mold linker is at least one p=
 roject
->> that has been shown to work after making this change where it previousl=
-y
->> didn't=2E
->
->Not only mold but also most notably the following projects:
+> > > that has been shown to work after making this change where it previou=
+sly
+> > > didn't.
+> >=20
+> > Not only mold but also most notably the following projects:
+>=20
+> a linker that is broken by a slightly unusual alignment isn't exactly a p=
+rime example.. if any project I would expect linkers and binary tools to pa=
+y attention to portability.
 
-a linker that is broken by a slightly unusual alignment isn't exactly a pr=
-ime example=2E=2E if any project I would expect linkers and binary tools to=
- pay attention to portability=2E
+Not the best example, I grant you, but it was the only one where I'd
+personally witnessed it making a difference so far.
 
->- LLVM
+> > It's a regular occurrence that a package doesn't build on m68k due to i=
+t's unusual
+> > default alignment.=20
+>=20
+> Unfortunately. Some time ago m68k was not the only one with this problem?
 
-Ok =2E=2E too big to complain about=2E=2E and see above=2E
+Possibly, but I wouldn't know. I suspect it may be the only one still in us=
+e
+with Linux. Gentoo supports most of the architectures to some degree, and I=
+'m
+not aware of any those having this issue.
 
->- OpenJDK
+>=20
+> > > We need to
+> > > break the ABI anyway with time_t going 64-bit, so it makes sense to d=
+o these
+> > > two things at the same time.
+>=20
+>=20
+> What exactly will be broken? Afaics kernel ABIs have been since long pret=
+ty carefully designed to avoid this problems and noone of the mentioned exa=
+mples should touch them anyway.=20
+>=20
+> Thus.. is there any need to change the kernel ABI?
 
-OpenJDK has not only that one problem=2E
+I mentioned the kernel, but I'm not sure whether that's actually affected.
+This is more about userland compatibility in the same way that arm-*-gnu,
+arm-*-gnueabi, and arm-*gnueabihf are incompatible with each other. I did t=
+ry
+mixing the latter two once. This was swiftly met with a segfault.
 
->It's a regular occurrence that a package doesn't build on m68k due to it'=
-s unusual
->default alignment=2E=20
+Of course, a tuple doesn't stop users from mixing these binaries, but it is=
+ a
+good way to ensure that GCC enables the flag when appropriate. This is too
+important to rely on CFLAGS.
 
-Unfortunately=2E Some time ago m68k was not the only one with this problem=
-?
+As for time_t, I hadn't realised a different tuple was being proposed for
+that, but a fellow Gentoo dev confirms. The breakage here is less severe bu=
+t
+still significant. I witnessed it first-hand on 32-bit ARM when GnuTLS star=
+ted
+using 64-bit time_t while curl was still expecting 32-bit, which lead to HT=
+TPS
+requests failing because the certificate start/end dates were completely
+wrong. At that point, we realised this is something that needs to be applie=
+d
+system-wide.
 
-
->Thus, in order to keep the port alive in the future, I think
->switching to 32-bit alignment by default is inevitable=2E
->
-
-Ok=2E=20
-
-
->> We need to
->> break the ABI anyway with time_t going 64-bit, so it makes sense to do =
-these
->> two things at the same time=2E
-
-
-What exactly will be broken? Afaics kernel ABIs have been since long prett=
-y carefully designed to avoid this problems and noone of the mentioned exam=
-ples should touch them anyway=2E=20
-
-Thus=2E=2E is there any need to change the kernel ABI?
-
-Richard 
+I believe we're still waiting on consensus for that too. gnu64time anyone?
+It's 2023, how about gnu=F0=9F=95=9B64? ;)
