@@ -2,189 +2,209 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DC3AC83F17
-	for <linux-m68k@archiver.kernel.org>; Sun, 27 Aug 2023 04:14:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD2C7C83F10
+	for <linux-m68k@archiver.kernel.org>; Sun, 27 Aug 2023 09:22:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229605AbjH0EOO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 27 Aug 2023 00:14:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41784 "EHLO
+        id S230443AbjH0JUv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sun, 27 Aug 2023 05:20:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjH0EN7 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Sun, 27 Aug 2023 00:13:59 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A4C1B3;
-        Sat, 26 Aug 2023 21:13:56 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-686be3cbea0so2130956b3a.0;
-        Sat, 26 Aug 2023 21:13:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693109636; x=1693714436;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=z+GvtWHb+sPnadbXAI9yeROqIVFCXtFoHwNsTt134Jw=;
-        b=OJoVbqZO9/A5jzqj88CZTsuqOFdOvE897nda9VQu96UTyHFRo4v5LUjDFLqiPHbaED
-         gcLfwj4zNrZnN687awxAARZwZ7O1dOejN+lr1fVoztNNicDlIZUsbgAE1BBWPBFE/15s
-         lZ5u4s6qZj2Nbd0TxCHOJHD7esktHrTe43FwpfmmGYumTddaLx6wUf+esrnAAUBYXaW1
-         e9UJVNUyWkWaGUkurKmlg9CxWvSaJmZ9JEkFk2enTAVP2DKvQt5XX6n/v6fHAZtFvk4C
-         VklnYIeIM6NlO2vDs1/bmCBRmXay4dLmfe4dXq1h9lUFGFydVfKnR+Az3ZtFhC7Oknt0
-         RUyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693109636; x=1693714436;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=z+GvtWHb+sPnadbXAI9yeROqIVFCXtFoHwNsTt134Jw=;
-        b=CITO3ykgQA1oMAqXLkRxQv8wksnFgUojjI+1HVkXbF0HVOLA8yCO7OXPxI0T/NSmF0
-         f9jPL8kMipaUXNwOdPvNJJ3uMNffzn6Fnm3NCVwdCGiHxnKltHqM9O0odEbuOhyBRU8B
-         ZH7bcJXdl10vF1kF6VIOp2sr7kceia+0AWG//7E6vetQZ8q9SvzihV9DU1oJ+8nBGMke
-         EPJNkdghYnAVK3joX6ikjTHmx2P9AGDhHoOeYWgNwJZbJ/R9rYGEHP3MusnCZkdPqHB7
-         cHpNBufi7ZDOX/iQg1VvrZ/4G7MAxKO6QigSRR56CEKGTwDt9wbj6NYQ48Rh4ZbmyWXD
-         VIFw==
-X-Gm-Message-State: AOJu0YzGmYh3YjkQOBKlR/9SgXIlXXZhPjkI9RNNNoHJKHfBw7eSvhhG
-        aEBnmsBPtVqY9miL6HQnRx0=
-X-Google-Smtp-Source: AGHT+IHv3OwN3NUkui+Y6ev4ol958GInuGSxxGuKi3IEkqIN2NF5bzMdVH2XCHOOestfOoaEoy2UNA==
-X-Received: by 2002:a05:6a20:1456:b0:13f:c159:63ec with SMTP id a22-20020a056a20145600b0013fc15963ecmr33650125pzi.24.1693109635558;
-        Sat, 26 Aug 2023 21:13:55 -0700 (PDT)
-Received: from xplor.waratah.dyndns.org (125-236-136-221-fibre.sparkbb.co.nz. [125.236.136.221])
-        by smtp.gmail.com with ESMTPSA id p14-20020a62ab0e000000b0068bda522245sm4067275pff.155.2023.08.26.21.13.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Aug 2023 21:13:54 -0700 (PDT)
-Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-        id 6CAE136043F; Sun, 27 Aug 2023 16:13:51 +1200 (NZST)
-From:   Michael Schmitz <schmitzmic@gmail.com>
-To:     s.shtylyov@omp.ru, dlemoal@kernel.org, linux-ide@vger.kernel.org,
-        linux-m68k@vger.kernel.org
-Cc:     will@sowerbutts.com, rz@linux-m68k.org, geert@linux-m68k.org,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH v6 2/2] ata: pata_falcon: add data_swab option to byte-swap disk data
-Date:   Sun, 27 Aug 2023 16:13:48 +1200
-Message-Id: <20230827041348.18887-3-schmitzmic@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230827041348.18887-1-schmitzmic@gmail.com>
-References: <20230827041348.18887-1-schmitzmic@gmail.com>
+        with ESMTP id S230460AbjH0JU0 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Sun, 27 Aug 2023 05:20:26 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC0DDD8
+        for <linux-m68k@vger.kernel.org>; Sun, 27 Aug 2023 02:20:23 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id E9385320079B;
+        Sun, 27 Aug 2023 05:20:22 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Sun, 27 Aug 2023 05:20:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        aura-online.co.uk; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1693128022; x=1693214422; bh=Fe
+        oKv4B05Dd7trlv9iI2ch3jdiT31lHDhbafdbgijj4=; b=HGmml0+b/DNvIQrdZq
+        16QGtVH4esB9YfitRB7DthnV5UvUd62amSWaJWEMtDeXDRXmtJpAFf+G9IlYaKeA
+        QdxkMu/Xe+96oKnI4Tqmwatvedx9Es6hskWzfpc4MGpndOjSv7wW03AA2aEFKOOt
+        AtNvUaF+kvyMRnmtqB3nbtu/zFStbaKqu+Hg65d3LesL9f0AKuCAHXLt7ZW6xeRX
+        UeEDuM7R5zSOxD/2tL6piObfEhnCadPCD4FeWIiyDzswU5585DzOp8sfsSTASJF+
+        cH10eEyWuLkPkCdDhihZxfGbwDO4YAQkJm6+UTT9+akVEHL5us5mDt8HmhUdn9Qb
+        DePg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1693128022; x=1693214422; bh=FeoKv4B05Dd7trlv9iI2ch3jdiT31lHDhba
+        fdbgijj4=; b=K4HnztQ2tRL1X24VfezWSUyvo7ezdq7FmbOc+8+/vET2t9a8nSt
+        FmivdNozk7hYaZxs5hjvrHBJ5AF6+nbzns0imeq8ZckUhsqD/j/DumLLx9RpjFCe
+        /QHXUi2vd0xmBD5tib0oLfzVsIdtDFAeIDqDkg8DraJY+9gfZzz41dLMxO8UgiJ4
+        zI4RRF5i0AWsjh++2XacAZXTAraw/KGHbZ2dIrmcHbw0vFwqe41AHGHde3xw3tv6
+        dOqrSb28JoObrjFMGVeJPL2Rj+YrsMfgH7ZF31ptLpfWIcpqVvZ/THf8J3sQxETI
+        FQJbwmzX8snW1AzuaTgKOYmZuzA7xyNACWg==
+X-ME-Sender: <xms:VBXrZFqbblrgMqGUZ5Uvg6psbxtpxI2jFCUrhpegTPb0ucZCGBT-5g>
+    <xme:VBXrZHodmWuONoV5RqEkgL827JgB8zWQ6QvQeBogpOzLwoX1bzCL77uJtzRHtv7-g
+    mcrhCTkOtX77g>
+X-ME-Received: <xmr:VBXrZCOBhVDkvzCq3QAtkhaYfv_4lJ8dCl65nsGUpDd2bO5p01S-5RrhRTPc0R6v7-oLY86SHW1xVc0FpnFgMIbBbume8zJXUnWO6Nt5>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudefvddgudehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkffuhffvveffjghftgfgfgggsehtqhertddtreejnecuhfhrohhmpeflrghm
+    vghsucfnvgcuvehuihhrohhtuceotghhvgifihesrghurhgrqdhonhhlihhnvgdrtghord
+    hukheqnecuggftrfgrthhtvghrnhepjeeifeevudeltdekiedvhfdtffeufeeiteefieeh
+    tdfgfeelfeegffefleevveetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomheptghhvgifihesrghurhgrqdhonhhlihhnvgdrtghordhukh
+X-ME-Proxy: <xmx:VBXrZA7aBObLoGV-_MXLAInrR-fTzMU2gb0HEHDu0lGSpsNfwy8tow>
+    <xmx:VBXrZE4wJbHNbBXqG1GfPsbTxmqHEkggwDpw6uezmOhVMZnookttQg>
+    <xmx:VBXrZIhBCoOpZDXnUDXM8AgnKVQTAD_t7SsLnbS3dCpG9UCvsfI7sw>
+    <xmx:VhXrZP2WJKIS5xhMS7lLn2jOwNIXUAzCbCZgqL3o02E1nPfXdnQjUQ>
+Feedback-ID: i51cd41ac:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 27 Aug 2023 05:20:20 -0400 (EDT)
+Message-ID: <751c83150533b701d66ac24c8fe81863cf5eab98.camel@aura-online.co.uk>
+Subject: Re: Tuple and changes for m68k with -malign-int
+From:   James Le Cuirot <chewi@aura-online.co.uk>
+To:     Finn Thain <fthain@linux-m68k.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     libc-help@sourceware.org, debian-68k <debian-68k@lists.debian.org>,
+        linux-m68k <linux-m68k@vger.kernel.org>
+Date:   Sun, 27 Aug 2023 10:20:16 +0100
+In-Reply-To: <80a52487-3105-ed5b-a1eb-ec1a0689ef21@linux-m68k.org>
+References: <e9035006d50933fb02727fa373629cc821784f6c.camel@aura-online.co.uk>
+         <10cbcb8a65639f88e7eeb503fd02df172bc46a07.camel@physik.fu-berlin.de>
+         <80a52487-3105-ed5b-a1eb-ec1a0689ef21@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Some users of pata_falcon on Q40 have IDE disks in default
-IDE little endian byte order, whereas legacy disks use
-host-native big-endian byte order as on the Atari Falcon.
+On Sun, 2023-08-27 at 10:46 +1000, Finn Thain wrote:
+> On Sat, 26 Aug 2023, John Paul Adrian Glaubitz wrote:
+>=20
+> > On Sat, 2023-08-26 at 09:53 +0100, James Le Cuirot wrote:
+>=20
+> > ...
+>=20
+> >=20
+> > Not only mold but also most notably the following projects:
+> >=20
+> > - LLVM
+> > - Firebird Database
+> > - OpenJDK
+> > - Various Qt packages
+> >=20
+>=20
+> And potentially more in the future, which may be anticipated on the basis=
+=20
+> that "those users don't need a stable ABI any more, so let's just ignore=
+=20
+> the portability issues in our code and leave the problem to the distros=
+=20
+> and toolchain developers".
+>=20
+> That is the precedent you would set.
+>=20
+> Moreover, why is it that only a few developers have a problem with making=
+=20
+> explicit their decisions regarding alignment of shorts? What actual pain=
+=20
+> does it cause them to accept a patch to make their struct layouts plain?
 
-Add module parameter 'data_swab' to allow connecting drives
-with non-native data byte order. Drives selected by the
-data_swap bit mask will have their user data byte-swapped to
-host byte order, i.e. 'pata_falcon.data_swab=2' will byte-swap
-all user data on drive B, leaving data on drive A in native
-byte order. On Q40, drives on a second IDE interface may be
-added to the bit mask as bits 2 and 3.
+Some projects do accept patches. Yann Collet was even kind enough to fix th=
+is
+in zstd themselves. On the other hand, we have had to fight to stop Python
+from dropping m68k support entirely. The real problem is the effort require=
+d
+to produce these patches. I haven't been able to wrap my head around this s=
+o
+far, but I would still like to learn. I could see myself eventually fixing
+mold, but LLVM feels like a very tall order.
 
-Default setting is no byte swapping, i.e. compatibility with
-the native Falcon or Q40 operating system disk format.
+> > > We need to break the ABI anyway with time_t going 64-bit, so it makes=
+=20
+> > > sense to do these two things at the same time.
+> >=20
+> > Fully agreed.
+> >=20
+>=20
+> If the kernel breaks the ABI, that's a bug, not an excuse. Either you're=
+=20
+> okay with proliferation of incompatible binaries and tools or there are=
+=20
+> some criteria (yet to be identified AFAIK) which permit this bug.
 
-Cc: William R Sowerbutts <will@sowerbutts.com>
-Cc: Finn Thain <fthain@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Tested-by: William R Sowerbutts <will@sowerbutts.com>
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+If you're referring to time_t, the kernel is not breaking the ABI. New
+syscalls were added to 32-bit architectures for 64-bit time_t. The
+incompatibility is within userland, such as in the curl vs GnuTLS example I
+mentioned.
 
----
+> It's not difficult to foresee fragmentation because it follows from the=
+=20
+> manpower shortage. There will always be sufficient manpower to produce a=
+=20
+> break that pleases a few. There may never be enough manpower to produce a=
+=20
+> stable ABI that pleases everyone for the foreseeable future.
+>=20
 
-Changes since v5:
+Since this is about userland, are you suggesting that all userland ABIs sho=
+uld
+simultaneously support both 32-bit and 64-bit time_t? That would never happ=
+en,
+especially when 32-bit time_t will naturally become useless.
 
-Geert Uytterhoeven:
-- correct mask_shift comment
+> > I think -gnu32 sounds very reasonable.
+>=20
+> You do? I think 32 is misleading in the absence of 16-bit or 64-bit=20
+> variants, and -gnu is misleading if other tooling like LLVM already=20
+> supports malign-int. Moreover, it's impossible to align to a bit count in=
+=20
+> general. Not that you'd want to -- it's actually the natural alignment of=
+=20
+> shorts that is at issue, AIUI.
 
-Changes since v4:
+I picked -gnu because this is a variation on what we have already and I've
+never heard of glibc using anything other than -gnu*. You still use -gnu wh=
+en
+building with Clang, so I'm not sure what Clang supporting -malign-int has =
+to
+do with it. Of course, glibc is not the only libc, but the others are not
+compatible anyway and have their own tuples. They will presumably follow su=
+it
+though, as they have done in the past, e.g. -gnueabihf -> -musleabihf.
 
-Damien Le Moal:
-- spell out bitmask shift calculation
+> So, for naming purposes, the proposal might be described as either the AB=
+I=20
+> du jour (leading to -abi23 for 2023) or the new ABI for ever (leading to=
+=20
+> -abin as in -gnuabin32 on MIPS).
+>=20
+> If it's the former, perhaps you should not push it upstream. If it's the=
+=20
+> latter, perhaps this redesign should seek to address real shortcomings=
+=20
+> with the existing ABI, including problems which (for all I know) may have=
+=20
+> entirely prevented some people from using it thus far. That is, it should=
+=20
+> consider silicon beyond 680x0.
 
-Changes since v2:
+I'm not sure what you mean here. I don't think anyone has been prevented fr=
+om
+using the existing ABI when it is the only m68k ABI on Linux. We *are*
+considering other architectures with the time_t issue. I haven't heard anyo=
+ne
+shouting about any other common issues. They should really be shouting abou=
+t
+time_t, as it is somewhat pressing, but surprisingly little has been said
+about it.
 
-Geert Uytterhoeven:
-- only shift swap bitmask if pdev->id > 0
-
-Finn Thain:
-- use pdev->devno directly for byte swap check
-
-Changes since v1:
-
-Damien Le Moal:
-- change patch title
-- drop swap_data flag
-
-Finn Thain:
-- drop allocation of ap->private struct, use field as bitmask
-
-Changes since RFC v4:
-
-Geert Uytterhoeven:
-- don't shift static module parameter for drive 3/4 bitmask
-- simplify bit mask calculation to always use pdev->id
-
-Finn Thain:
-- correct bit numbers for drive 3/4
-
-Changes since RFC v3:
-
-- split off this byte swap handling into separate patch
-
-- add hint regarding third and fourth drive on Q40
-
-Finn Thain:
-- rename module parameter to 'data_swab' to better reflect its use
-
-William Sowerbutts:
-- correct IDE drive number used in data swap conditional
----
- drivers/ata/pata_falcon.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/ata/pata_falcon.c b/drivers/ata/pata_falcon.c
-index 616064b02de6..e3a0aa384f59 100644
---- a/drivers/ata/pata_falcon.c
-+++ b/drivers/ata/pata_falcon.c
-@@ -33,6 +33,11 @@
- #define DRV_NAME "pata_falcon"
- #define DRV_VERSION "0.1.0"
- 
-+static int pata_falcon_swap_mask;
-+
-+module_param_named(data_swab, pata_falcon_swap_mask, int, 0444);
-+MODULE_PARM_DESC(data_swab, "Data byte swap enable/disable bitmap (0x1==drive1, 0x2==drive2, 0x4==drive3, 0x8==drive4, default==0)");
-+
- static const struct scsi_host_template pata_falcon_sht = {
- 	ATA_PIO_SHT(DRV_NAME),
- };
-@@ -50,7 +55,7 @@ static unsigned int pata_falcon_data_xfer(struct ata_queued_cmd *qc,
- 
- 	if (dev->class == ATA_DEV_ATA && cmd &&
- 	    !blk_rq_is_passthrough(scsi_cmd_to_rq(cmd)))
--		swap = 0;
-+		swap = (uintptr_t)ap->private_data & BIT(dev->devno);
- 
- 	/* Transfer multiple of 2 bytes */
- 	if (rw == READ) {
-@@ -124,6 +129,7 @@ static int __init pata_falcon_init_one(struct platform_device *pdev)
- 	struct ata_host *host;
- 	struct ata_port *ap;
- 	void __iomem *base, *ctl_base;
-+	int mask_shift = 0; /* Q40 & Falcon default */
- 	int irq = 0, io_offset = 1, reg_shift = 2; /* Falcon defaults */
- 
- 	dev_info(&pdev->dev, "Atari Falcon and Q40/Q60 PATA controller\n");
-@@ -194,6 +200,10 @@ static int __init pata_falcon_init_one(struct platform_device *pdev)
- 	ata_port_desc(ap, "cmd %px ctl %px data %px",
- 		      base, ctl_base, ap->ioaddr.data_addr);
- 
-+	if (pdev->id > 0)
-+		mask_shift = 2;
-+	ap->private_data = (void *)(uintptr_t)(pata_falcon_swap_mask >> mask_shift);
-+
- 	irq_res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
- 	if (irq_res && irq_res->start > 0) {
- 		irq = irq_res->start;
--- 
-2.17.1
-
+I do know that m68k Linux has been significantly slower since the transitio=
+n
+from linuxthreads to NPTL due to the lack of a spare register, but I gather
+nothing can be done about that.
