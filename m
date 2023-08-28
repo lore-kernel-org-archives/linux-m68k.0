@@ -2,145 +2,72 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DBEDC83F13
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Aug 2023 08:09:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22BEAC83F16
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Aug 2023 10:18:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229552AbjH1IJG (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 28 Aug 2023 04:09:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55192 "EHLO
+        id S229552AbjH1KRz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 28 Aug 2023 06:17:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbjH1IIf (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 28 Aug 2023 04:08:35 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBEC199
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Aug 2023 01:08:00 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bf1935f6c2so19085025ad.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Aug 2023 01:08:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693210077; x=1693814877;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pnrE6dyfVAprK/xFUC60jFewyVljQRt3NNtTMulp0V0=;
-        b=LVg55P2ejT0BJXH9H1+hgJHcBL2A+IF5g+KpwZsnJ2WoqXmcrL9ZfEfa3T6fNEdxE+
-         ga2nqaZ+gZjmffBcNuVnaXDtmvodkJeUEflTba5i6j/rIlhBduWdBgZRPVnHwy+erFMo
-         Q2sF5ZgAuDt+03EKZEd8qEogPdBU5cTg8EccDlTx6cSnC2QLYfomUfDCZyZGJl19L0Ry
-         zfDO9BgqWN0KlkikpK3fWA7KZvQWChySAj+L6JXiUhVTo7xH2gRnW3f4Al2lAGJTZzAW
-         5ZruNkogVGDYB3ptB7Tk7PeewBGyh+fZdTDyBJ7/jPzoGq3RnYeGV17VCUydj0j+5OXO
-         MJDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693210077; x=1693814877;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=pnrE6dyfVAprK/xFUC60jFewyVljQRt3NNtTMulp0V0=;
-        b=ZrtEMSc+ttqPEcW14mzXnlpnwTdkZXd+JGXXhzSSpCF5hgex5QFS39qiEAZnSgBvJu
-         VwIIC9Zlg4eD/WnR5I0OikQ8ewxbKsII6hzRUGcyCQ4n/MV/fSZr9VOvqM31VZWglbk1
-         s2FWbgRFSsLGUpKXYMRcbRWVtVn0GWVPywWwPdEQcfFnTniP3LQHLQNA5qIaxishzEMP
-         r6adfwGqIWWNznQHZ7E05Xs9N2Ry4dC5DfMwYk4c8p+H/eR48xRhAy5EQEquNPluxk1T
-         OVpdZZE4JtoV4OZHz2w7JWemWoSKN9qrSgJeUIKkjvLR9L2CO0pq2UPOORvTCAwj0pzp
-         SyDg==
-X-Gm-Message-State: AOJu0YxV9Jp+H+Qy5N3aMg8kdqScMSZSOEj5VmuIf1Yo00rLA9tlgU03
-        57aXhO6ppKn8Mah9BngcEi8=
-X-Google-Smtp-Source: AGHT+IHEN6rjlzubXIy3DuU1iYHuYGfJmUDj7MCrRMJIjxExjNAtfO/xrf/2cugqJ3sCcKtAmuhffg==
-X-Received: by 2002:a17:903:41d1:b0:1bf:193a:70b6 with SMTP id u17-20020a17090341d100b001bf193a70b6mr38374653ple.5.1693210077452;
-        Mon, 28 Aug 2023 01:07:57 -0700 (PDT)
-Received: from [10.1.1.24] (125-236-136-221-fibre.sparkbb.co.nz. [125.236.136.221])
-        by smtp.gmail.com with ESMTPSA id x19-20020a170902ea9300b001bc445e2497sm6610519plb.79.2023.08.28.01.07.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 28 Aug 2023 01:07:57 -0700 (PDT)
-Subject: Re: (subset) [PATCH 00/17] -Wmissing-prototype warning fixes
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-References: <20230810141947.1236730-1-arnd@kernel.org>
- <169292577153.789945.11297239773543112051.b4-ty@oracle.com>
- <3956e2a4-c545-1212-e95f-3cf61a60d6a4@gmail.com>
- <CAMuHMdWC2S330_Vb_NTHTDC=BakBsw4ouP-eFJv0erV1-jmvTQ@mail.gmail.com>
- <130b3b57-edb0-184d-5b5f-69b013715773@gmail.com>
- <CAMuHMdUkZmkBSksvaGcDCKz2tsgkwyWgDa+WwCJm2UxFMCj1jw@mail.gmail.com>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Matt Turner <mattst88@gmail.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Brian Cain <bcain@quicinc.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        x86@kernel.org, Borislav Petkov <bp@alien8.de>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-next@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kbuild@vger.kernel.org
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <dbed3311-6b8e-a396-7e9e-2747902c5d6a@gmail.com>
-Date:   Mon, 28 Aug 2023 20:07:27 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        with ESMTP id S230448AbjH1KRd (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 28 Aug 2023 06:17:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C72318B;
+        Mon, 28 Aug 2023 03:17:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ADB9A6374C;
+        Mon, 28 Aug 2023 10:17:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C7E1C433C8;
+        Mon, 28 Aug 2023 10:17:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693217842;
+        bh=JSl5gprFI2dDGPsYTRgF1TEMjAU65qHdia3VbYx/PR4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=oy9kjmn4sBfpATiYFJpWFZUuX1benSYyB4y94lkzc8FX3qB6XEah9W6zBWSMOylmd
+         fjYFvRAfwO3WMmP+XqQnXbDyQ4+bNnQH6+w8fly0zjQAZoQB2MuuAaTUewRZ6h+bJ3
+         1joW/waDKeli6w48BlIFGU/gKNJk2/QzOZLXxL3ZRY+tru+Ln+2dYRTdEvyLsoh2h8
+         UhmJ+6r+qIgiQWPbABaYFaJq7wdNGzPZmEwfq+UJJLDZ6rwV6llLxgDthbJMfR8DFu
+         6HqYlnqpfvnKaJgWcRY6sadPgz5rkF8G+nf7UgP2qOn1tjMAzNBaVUngHB1yXXQLQO
+         ZwGYVgz29SE5g==
+Message-ID: <9438885c-8e35-2387-5fc4-eff20a3977c1@kernel.org>
+Date:   Mon, 28 Aug 2023 19:17:20 +0900
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdUkZmkBSksvaGcDCKz2tsgkwyWgDa+WwCJm2UxFMCj1jw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v6 0/2] Q40 IDE fixes
+Content-Language: en-US
+To:     Michael Schmitz <schmitzmic@gmail.com>, s.shtylyov@omp.ru,
+        linux-ide@vger.kernel.org, linux-m68k@vger.kernel.org
+Cc:     will@sowerbutts.com, rz@linux-m68k.org, geert@linux-m68k.org
+References: <20230827041348.18887-1-schmitzmic@gmail.com>
+From:   Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20230827041348.18887-1-schmitzmic@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
+On 8/27/23 13:13, Michael Schmitz wrote:
+> Version 6 of the pata_falcon bugfix patch for Q40 support,
+> addressing the latest comments by Geert and Damien.
+> 
+> No logic changes from v5 which was tested by William.
 
-Am 28.08.2023 um 18:42 schrieb Geert Uytterhoeven:
-> On Sat, Aug 26, 2023 at 12:44 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
->> (Incidentally - did you ever publish the m68k full history tree anywhere
->> in git?)
->
-> You mean the gitified version of the Linux/m68k CVS tree Ralf created
-> for me because my machine wasn't powerful enough?
+Applied to fo-6.6. Thanks !
 
-The very same ...
+> 
+> Cheers,
+> 
+>    Michael
+> 
+> 
 
-> No, and I should look into doing that...
+-- 
+Damien Le Moal
+Western Digital Research
 
-No pressure!
-
-Cheers,
-
-	Michael
-
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
