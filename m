@@ -2,60 +2,61 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36297C83F11
-	for <linux-m68k@archiver.kernel.org>; Mon, 28 Aug 2023 06:57:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81A88C83F13
+	for <linux-m68k@archiver.kernel.org>; Mon, 28 Aug 2023 07:01:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229511AbjH1G51 convert rfc822-to-8bit (ORCPT
+        id S229487AbjH1HAi convert rfc822-to-8bit (ORCPT
         <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 28 Aug 2023 02:57:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34658 "EHLO
+        Mon, 28 Aug 2023 03:00:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbjH1G5K (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 28 Aug 2023 02:57:10 -0400
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A5AAE0
-        for <linux-m68k@vger.kernel.org>; Sun, 27 Aug 2023 23:57:07 -0700 (PDT)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-59234aaca15so33215117b3.3
-        for <linux-m68k@vger.kernel.org>; Sun, 27 Aug 2023 23:57:07 -0700 (PDT)
+        with ESMTP id S229663AbjH1HAY (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Mon, 28 Aug 2023 03:00:24 -0400
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AC6A9E
+        for <linux-m68k@vger.kernel.org>; Mon, 28 Aug 2023 00:00:21 -0700 (PDT)
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-590685a3be5so31873687b3.0
+        for <linux-m68k@vger.kernel.org>; Mon, 28 Aug 2023 00:00:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693205826; x=1693810626;
+        d=1e100.net; s=20221208; t=1693206020; x=1693810820;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zL5DJlpHfJ1uG0/XOt7NA2qa7PY6QqanZud3uUxPtSQ=;
-        b=fs3VL34RAloAO0XkI6+tUIb6bYxsAKkA9iE6pbLsd66VbrAbhIAqxzSP3m3NbrZj/w
-         noCf3+J0tWlKQ4SiYy184FgjBjmLk1nM49lnlvhsTSFQWo6niKKMxW60TLS7UjxPcVQV
-         b4l1KbDZ9X0SqPR7IJHfhVngqlNyeer4aNmq8709BXjUDNixEjAx28RqtdDhm/SXNhVh
-         +fJPg4pFrLMT5SjbwzJJXgiAnXOxqekAy/CHo5QJDlgJaT2LNLRT7sc9q/d8sd9d9bHY
-         0gVAmEDfD+AkFhF1vj/jjU1uAk6JjIrxfPgDJP1R+7dviEhKHLiD2qQD0DOfGRXYb9UI
-         VGKQ==
-X-Gm-Message-State: AOJu0YyfR91lukna/cn1dbOEcs8g+mC4A9Gry5qRPTWfwFnvhOa3s3fJ
-        RFZhYWUqTh5Mf5F3ZR9ydWH15tzBdJAoMg==
-X-Google-Smtp-Source: AGHT+IHFsykAt53We48XKnTcjUxsVqJikcvnN6it3c677kxzeAw9FbpM9rhmXGsP76uWSEAZuKURtQ==
-X-Received: by 2002:a81:71d7:0:b0:576:bfc7:1e43 with SMTP id m206-20020a8171d7000000b00576bfc71e43mr22097463ywc.25.1693205826257;
-        Sun, 27 Aug 2023 23:57:06 -0700 (PDT)
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
-        by smtp.gmail.com with ESMTPSA id x144-20020a81a096000000b00589f4021f84sm1995983ywg.37.2023.08.27.23.57.05
+        bh=/95Vc6xcbNZnn8et4G8uSxySRAV1S0DSAEwAeCoIu1k=;
+        b=KDTq+xoOzeSRaTRD8I2MvDpBnOszDkgXiSFPdEeKl+tA4zpx16Zc40dsdopUS8NenX
+         vL3znfGOFWFCrtktvQN4Lbq41fo4LVi72u771AjXVd0/S/gwTqoWS/VQnB1JLwLxNYgF
+         CYlqd6Dlg5wXzgjmuDV30e52Y/BDJQ63aBu0JnScgjfI1JC8YJqDr1TLIXu34TrrnGyf
+         P3Ij638+f5xFxL7UOOzOp26YfSTqVS3dPgLy2t6SAyjzMyaRDGeDq4vSL20lP0Yg5n6R
+         8ZerNgAGXTAlG+q/e+D/WCkr/Xht8YPRw/N0ahcoqjdL3hbcs+XG8iPip50NnHGaXY3u
+         8RgQ==
+X-Gm-Message-State: AOJu0YxdEm2SSQsnCvSl9lJkWMFLBCqELGtNF+XPJG/Bmi3JGeX/48NA
+        aYq3FN4QfUo0Y84XAnVjyBHmRjxFZY84TA==
+X-Google-Smtp-Source: AGHT+IH3rGFBmBOEKJlANKGlTb6gTWO0WLZHkjxwLEHrrI9nyF6O56F5DLhZ8BcMR9Qd5LINY4SJOg==
+X-Received: by 2002:a81:5b43:0:b0:568:d586:77c4 with SMTP id p64-20020a815b43000000b00568d58677c4mr23281209ywb.4.1693206020009;
+        Mon, 28 Aug 2023 00:00:20 -0700 (PDT)
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
+        by smtp.gmail.com with ESMTPSA id v17-20020a81a551000000b00586b5b6347csm1946788ywg.109.2023.08.28.00.00.19
         for <linux-m68k@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Aug 2023 23:57:06 -0700 (PDT)
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-d77ad095f13so2527876276.2
-        for <linux-m68k@vger.kernel.org>; Sun, 27 Aug 2023 23:57:05 -0700 (PDT)
-X-Received: by 2002:a25:c5c8:0:b0:d7a:cb32:2747 with SMTP id
- v191-20020a25c5c8000000b00d7acb322747mr4683543ybe.17.1693205825341; Sun, 27
- Aug 2023 23:57:05 -0700 (PDT)
+        Mon, 28 Aug 2023 00:00:19 -0700 (PDT)
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-d77ad095e5cso2932241276.0
+        for <linux-m68k@vger.kernel.org>; Mon, 28 Aug 2023 00:00:19 -0700 (PDT)
+X-Received: by 2002:a25:8691:0:b0:d78:312:c4a8 with SMTP id
+ z17-20020a258691000000b00d780312c4a8mr10657439ybk.53.1693206019032; Mon, 28
+ Aug 2023 00:00:19 -0700 (PDT)
 MIME-Version: 1.0
 References: <e9035006d50933fb02727fa373629cc821784f6c.camel@aura-online.co.uk>
- <10cbcb8a65639f88e7eeb503fd02df172bc46a07.camel@physik.fu-berlin.de> <80a52487-3105-ed5b-a1eb-ec1a0689ef21@linux-m68k.org>
-In-Reply-To: <80a52487-3105-ed5b-a1eb-ec1a0689ef21@linux-m68k.org>
+ <10cbcb8a65639f88e7eeb503fd02df172bc46a07.camel@physik.fu-berlin.de>
+ <80a52487-3105-ed5b-a1eb-ec1a0689ef21@linux-m68k.org> <751c83150533b701d66ac24c8fe81863cf5eab98.camel@aura-online.co.uk>
+In-Reply-To: <751c83150533b701d66ac24c8fe81863cf5eab98.camel@aura-online.co.uk>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 28 Aug 2023 08:56:54 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWE5V9N4GYdoe+G6iqBxmjX2rY15FsBkfWYWrXN1TGuGQ@mail.gmail.com>
-Message-ID: <CAMuHMdWE5V9N4GYdoe+G6iqBxmjX2rY15FsBkfWYWrXN1TGuGQ@mail.gmail.com>
+Date:   Mon, 28 Aug 2023 09:00:07 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUV0oM=zp6dG0KNbPJz2m7KBhynHa=ENUJmfh=u3gisbg@mail.gmail.com>
+Message-ID: <CAMuHMdUV0oM=zp6dG0KNbPJz2m7KBhynHa=ENUJmfh=u3gisbg@mail.gmail.com>
 Subject: Re: Tuple and changes for m68k with -malign-int
-To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        James Le Cuirot <chewi@aura-online.co.uk>,
+To:     James Le Cuirot <chewi@aura-online.co.uk>
+Cc:     Finn Thain <fthain@linux-m68k.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
         libc-help@sourceware.org, debian-68k <debian-68k@lists.debian.org>,
         linux-m68k <linux-m68k@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -64,28 +65,22 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Sun, Aug 27, 2023 at 3:03 AM Finn Thain <fthain@linux-m68k.org> wrote:
-> On Sat, 26 Aug 2023, John Paul Adrian Glaubitz wrote:
-> > On Sat, 2023-08-26 at 09:53 +0100, James Le Cuirot wrote:
-> > Not only mold but also most notably the following projects:
-> >
-> > - LLVM
-> > - Firebird Database
-> > - OpenJDK
-> > - Various Qt packages
+On Sun, Aug 27, 2023 at 11:36 AM James Le Cuirot
+<chewi@aura-online.co.uk> wrote:
+> On Sun, 2023-08-27 at 10:46 +1000, Finn Thain wrote:
+> > Moreover, why is it that only a few developers have a problem with making
+> > explicit their decisions regarding alignment of shorts? What actual pain
+> > does it cause them to accept a patch to make their struct layouts plain?
 >
-> And potentially more in the future, which may be anticipated on the basis
-> that "those users don't need a stable ABI any more, so let's just ignore
-> the portability issues in our code and leave the problem to the distros
-> and toolchain developers".
+> Some projects do accept patches. Yann Collet was even kind enough to fix this
+> in zstd themselves. On the other hand, we have had to fight to stop Python
+> from dropping m68k support entirely. The real problem is the effort required
+> to produce these patches. I haven't been able to wrap my head around this so
+> far, but I would still like to learn. I could see myself eventually fixing
+> mold, but LLVM feels like a very tall order.
 
-Indeed, the world is slowly turning into "everything is 64-bit little endian"...
-
-> Moreover, why is it that only a few developers have a problem with making
-> explicit their decisions regarding alignment of shorts? What actual pain
-> does it cause them to accept a patch to make their struct layouts plain?
-
-I guess you mean "ints" and "longs" instead of "shorts"?
+Perhaps we need a new compiler warning: "hole in structure due to
+non-natural alignment, please consider adding explicit padding"?
 
 Gr{oetje,eeting}s,
 
