@@ -2,70 +2,84 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6BBEC6FA8F
-	for <linux-m68k@archiver.kernel.org>; Tue, 29 Aug 2023 09:03:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79A88C83F14
+	for <linux-m68k@archiver.kernel.org>; Tue, 29 Aug 2023 10:52:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234380AbjH2JCk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 29 Aug 2023 05:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55032 "EHLO
+        id S229967AbjH2KwU convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 29 Aug 2023 06:52:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234376AbjH2JCY (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 29 Aug 2023 05:02:24 -0400
-X-Greylist: delayed 592 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 29 Aug 2023 02:02:12 PDT
-Received: from welho-filter2.welho.com (welho-filter2b.welho.com [83.102.41.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC7EE107
-        for <linux-m68k@vger.kernel.org>; Tue, 29 Aug 2023 02:02:12 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by welho-filter2.welho.com (Postfix) with ESMTP id 24A4C43D62;
-        Tue, 29 Aug 2023 11:52:19 +0300 (EEST)
-X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
-Received: from welho-smtp1.welho.com ([IPv6:::ffff:83.102.41.84])
-        by localhost (welho-filter2.welho.com [::ffff:83.102.41.24]) (amavisd-new, port 10024)
-        with ESMTP id UBd3gwth2BFN; Tue, 29 Aug 2023 11:52:18 +0300 (EEST)
-Received: from [192.168.0.20] (89-27-78-73.bb.dnainternet.fi [89.27.78.73])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by welho-smtp1.welho.com (Postfix) with ESMTPSA id 83AC67A;
-        Tue, 29 Aug 2023 11:52:14 +0300 (EEST)
-Message-ID: <e32da2e7-3445-3fce-eb8f-242bdec0df1b@helsinkinet.fi>
-Date:   Tue, 29 Aug 2023 11:52:14 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
+        with ESMTP id S230261AbjH2Kvw (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 29 Aug 2023 06:51:52 -0400
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F8BAC
+        for <linux-m68k@vger.kernel.org>; Tue, 29 Aug 2023 03:51:41 -0700 (PDT)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1qawJq-001umg-F5; Tue, 29 Aug 2023 12:51:34 +0200
+Received: from p57bd925a.dip0.t-ipconnect.de ([87.189.146.90] helo=[192.168.178.81])
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1qawJq-002kGd-7d; Tue, 29 Aug 2023 12:51:34 +0200
+Message-ID: <c39646c885102448c49a4797140e4fcfd1769717.camel@physik.fu-berlin.de>
 Subject: Re: Tuple and changes for m68k with -malign-int
-To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     libc-help@sourceware.org, debian-68k <debian-68k@lists.debian.org>,
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Andreas Schwab <schwab@linux-m68k.org>
+Cc:     Adhemerval Zanella Netto <adhemerval.zanella@linaro.org>,
+        Finn Thain <fthain@linux-m68k.org>,
+        James Le Cuirot <chewi@aura-online.co.uk>,
+        libc-help@sourceware.org, debian-68k <debian-68k@lists.debian.org>,
         linux-m68k <linux-m68k@vger.kernel.org>
+Date:   Tue, 29 Aug 2023 12:51:33 +0200
+In-Reply-To: <mvmy1hv71d7.fsf@linux-m68k.org>
 References: <e9035006d50933fb02727fa373629cc821784f6c.camel@aura-online.co.uk>
- <10cbcb8a65639f88e7eeb503fd02df172bc46a07.camel@physik.fu-berlin.de>
- <80a52487-3105-ed5b-a1eb-ec1a0689ef21@linux-m68k.org>
- <4b4fe9c56dfdb8ec74150413cfc211d70243eb7e.camel@physik.fu-berlin.de>
- <0891ec11-bed1-9120-79d5-4436dc9aee32@linux-m68k.org>
-Content-Language: en-US
-From:   Eero Tamminen <oak@helsinkinet.fi>
-In-Reply-To: <0891ec11-bed1-9120-79d5-4436dc9aee32@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+         <10cbcb8a65639f88e7eeb503fd02df172bc46a07.camel@physik.fu-berlin.de>
+         <80a52487-3105-ed5b-a1eb-ec1a0689ef21@linux-m68k.org>
+         <4b4fe9c56dfdb8ec74150413cfc211d70243eb7e.camel@physik.fu-berlin.de>
+         <dba7fd40-00ee-0ac1-19fd-5ec146aca972@linaro.org>
+         <87134fda9b761e3f81588d440242b9a4e986ddbf.camel@physik.fu-berlin.de>
+         <mvmy1hv71d7.fsf@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 
+MIME-Version: 1.0
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.146.90
+X-ZEDAT-Hint: PO
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi,
-
-On 29.8.2023 4.14, Finn Thain wrote:
-> On Mon, 28 Aug 2023, John Paul Adrian Glaubitz wrote:
->> And since we have to break the ABI anyway to be able to use 64-bit
->> time_t
+On Mon, 2023-08-28 at 15:17 +0200, Andreas Schwab wrote:
+> On Aug 28 2023, John Paul Adrian Glaubitz wrote:
 > 
-> If you're worried about Y2038, aren't you jumping the gun? I reckon we
-> have about 10 years in which to figure out what a better m68k ABI should
-> look like.
+> > The FP failures are most likely the result of the limitations of the FPU emulation
+> > in QEMU for m68k. ARAnyM is known to have much better FPU emulation support than
+> > QEMU, so if you want to have more accurate results, you should test on ARAnyM.
+> 
+> No, you should test on real hardware.  Neither ARAnyM nor QEMU comes
+> close.
 
-Debian is discussing LFS + time_t transition for the next release, for 
-all architectures.  They are related, and if one needs to break / 
-transition ABI, doing it once is better than doing it twice...
+In an ideal world, I would be testing on real hardware, yes. Unfortunately, even on
+my Amiga 4000 with 68060/50 MHz the testsuite would run two weeks or so.
 
-LWN has summary of the discussion: https://lwn.net/Articles/938149/
+> > After all, we had to change the ABI for TLS support as well, didn't
+> > we?
+> 
+> Nope.
 
+So, any binaries from Debian Potato will still work against glibc 2.38 on m68k?
 
-	- Eero
+Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
