@@ -2,130 +2,99 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6967AC6FA8F
-	for <linux-m68k@archiver.kernel.org>; Tue, 29 Aug 2023 10:57:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15263C71153
+	for <linux-m68k@archiver.kernel.org>; Tue, 29 Aug 2023 15:28:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229816AbjH2K4f convert rfc822-to-8bit (ORCPT
+        id S232240AbjH2P1z convert rfc822-to-8bit (ORCPT
         <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 29 Aug 2023 06:56:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44794 "EHLO
+        Tue, 29 Aug 2023 11:27:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235302AbjH2K4Q (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 29 Aug 2023 06:56:16 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F10BE53
-        for <linux-m68k@vger.kernel.org>; Tue, 29 Aug 2023 03:55:43 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qawMr-001vVU-9w; Tue, 29 Aug 2023 12:54:41 +0200
-Received: from p57bd925a.dip0.t-ipconnect.de ([87.189.146.90] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qawMr-002kuC-2V; Tue, 29 Aug 2023 12:54:41 +0200
-Message-ID: <95b19b7af3c64aa4048d47f2b2966e195e7b2235.camel@physik.fu-berlin.de>
-Subject: Re: Tuple and changes for m68k with -malign-int
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     James Le Cuirot <chewi@aura-online.co.uk>,
-        Adhemerval Zanella Netto <adhemerval.zanella@linaro.org>,
-        Finn Thain <fthain@linux-m68k.org>
-Cc:     libc-help@sourceware.org, debian-68k <debian-68k@lists.debian.org>,
-        linux-m68k <linux-m68k@vger.kernel.org>
-Date:   Tue, 29 Aug 2023 12:54:40 +0200
-In-Reply-To: <95a4dd47f25addc0408a1016ecbe1ed18d9dab6d.camel@aura-online.co.uk>
+        with ESMTP id S237293AbjH2P1g (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 29 Aug 2023 11:27:36 -0400
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C0ECC0
+        for <linux-m68k@vger.kernel.org>; Tue, 29 Aug 2023 08:27:30 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5922b96c5fcso52009147b3.0
+        for <linux-m68k@vger.kernel.org>; Tue, 29 Aug 2023 08:27:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693322849; x=1693927649;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1mvC8ugM1vg8H4dtUsSOCZcrdKtAOjkiFP9GldFzN/o=;
+        b=hSYOAkacxKeNeWQxh29JXRn01X2mFeaE3rZI4MOKnqJVuFGqkQItq/gtN/8TMpsnZO
+         oEc7MB5tVNAnLcFtTDLdxb42LUVeOk3BlrJdkhXj/bp3bJQLMcSVu4Wke0crAyASCjbI
+         Nqvyd0AoyRUUELfs5rJNnEXlHeC8RWezketwtgOHnVrrInX69W1fsMUH/DEORW5rvrHU
+         iNjmzjL/i2FaZnjshU55qQZOdTCZi2dUHznjUzxwM/ixJYEucHWv81AWiuUND0HFYoZd
+         3uIsXsnh12pjD7lkSfbaBlAUKQSdtN6jdW/yIzXSO/HX0Szui0tVbCbF0Piq7zp4DT5y
+         AgMg==
+X-Gm-Message-State: AOJu0YyoNP/7b29+QZKeMOdJZyrdtadpZRVNHB8+pOJWRQgBSQ9lcFCN
+        MUsBEuGaLOO1tQBsBZVz21WopbbpUVhqIQ==
+X-Google-Smtp-Source: AGHT+IFu+4qlfpKf4QnC1UGggpRGvCaMniOZRyzwQdVi1QIT0KkyyzkcT1N4v22Imna8t9e9SJjAmg==
+X-Received: by 2002:a25:ae5e:0:b0:d7b:95ff:14f with SMTP id g30-20020a25ae5e000000b00d7b95ff014fmr351110ybe.61.1693322849595;
+        Tue, 29 Aug 2023 08:27:29 -0700 (PDT)
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
+        by smtp.gmail.com with ESMTPSA id k144-20020a252496000000b00babcd913630sm2265082ybk.3.2023.08.29.08.27.29
+        for <linux-m68k@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Aug 2023 08:27:29 -0700 (PDT)
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-d78328bc2abso4110682276.2
+        for <linux-m68k@vger.kernel.org>; Tue, 29 Aug 2023 08:27:29 -0700 (PDT)
+X-Received: by 2002:a25:ae1b:0:b0:d2c:32cb:c631 with SMTP id
+ a27-20020a25ae1b000000b00d2c32cbc631mr29029382ybj.27.1693322849035; Tue, 29
+ Aug 2023 08:27:29 -0700 (PDT)
+MIME-Version: 1.0
 References: <e9035006d50933fb02727fa373629cc821784f6c.camel@aura-online.co.uk>
-         <10cbcb8a65639f88e7eeb503fd02df172bc46a07.camel@physik.fu-berlin.de>
-         <80a52487-3105-ed5b-a1eb-ec1a0689ef21@linux-m68k.org>
-         <4b4fe9c56dfdb8ec74150413cfc211d70243eb7e.camel@physik.fu-berlin.de>
-         <dba7fd40-00ee-0ac1-19fd-5ec146aca972@linaro.org>
-         <87134fda9b761e3f81588d440242b9a4e986ddbf.camel@physik.fu-berlin.de>
-         <95a4dd47f25addc0408a1016ecbe1ed18d9dab6d.camel@aura-online.co.uk>
+ <10cbcb8a65639f88e7eeb503fd02df172bc46a07.camel@physik.fu-berlin.de>
+ <80a52487-3105-ed5b-a1eb-ec1a0689ef21@linux-m68k.org> <4b4fe9c56dfdb8ec74150413cfc211d70243eb7e.camel@physik.fu-berlin.de>
+ <dba7fd40-00ee-0ac1-19fd-5ec146aca972@linaro.org> <87134fda9b761e3f81588d440242b9a4e986ddbf.camel@physik.fu-berlin.de>
+ <mvmy1hv71d7.fsf@linux-m68k.org> <c39646c885102448c49a4797140e4fcfd1769717.camel@physik.fu-berlin.de>
+In-Reply-To: <c39646c885102448c49a4797140e4fcfd1769717.camel@physik.fu-berlin.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 29 Aug 2023 17:27:17 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWGsm5kScKuRnGm0N6sjeOfwTU3jS7-zUmkadqkVfZ2UQ@mail.gmail.com>
+Message-ID: <CAMuHMdWGsm5kScKuRnGm0N6sjeOfwTU3jS7-zUmkadqkVfZ2UQ@mail.gmail.com>
+Subject: Re: Tuple and changes for m68k with -malign-int
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Andreas Schwab <schwab@linux-m68k.org>,
+        Adhemerval Zanella Netto <adhemerval.zanella@linaro.org>,
+        Finn Thain <fthain@linux-m68k.org>,
+        James Le Cuirot <chewi@aura-online.co.uk>,
+        libc-help@sourceware.org, debian-68k <debian-68k@lists.debian.org>,
+        linux-m68k <linux-m68k@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 
-MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.146.90
-X-ZEDAT-Hint: PO
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, 2023-08-28 at 14:29 +0100, James Le Cuirot wrote:
-> On Mon, 2023-08-28 at 14:50 +0200, John Paul Adrian Glaubitz wrote:
-> > Hi Adhemerval!
-> > 
-> > On Mon, 2023-08-28 at 09:44 -0300, Adhemerval Zanella Netto wrote:
-> > > If the idea is really to endeavor on a new ABI for m68k, it means a different
-> > > loader and the question: will it be interoperable with current m68k ABI in the 
-> > > sense that i686 is interoperable with x86_64? It would allow to keep old binaries
-> > > running, similar to what old ABI did for 32 to 64 bits transition.
-> > 
-> > OK.
-> 
-> To that, I would add: what old binaries? Linux on m68k is very obscure these
-> days, with Gentoo, Debian, and NixOS being the only major distributions still
-> supporting it. As the Gentoo m68k maintainer, I would not expect users to be
-> pulling binaries from elsewhere, and I imagine Adrian would say the same.
-> Where would you even get them from? I thought there might be a handful on
-> Aminet, but I cannot even find any there.
+Hi Adrian,
 
-Fully agreed.
+On Tue, Aug 29, 2023 at 12:51 PM John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+> On Mon, 2023-08-28 at 15:17 +0200, Andreas Schwab wrote:
+> > On Aug 28 2023, John Paul Adrian Glaubitz wrote:
+> > > After all, we had to change the ABI for TLS support as well, didn't
+> > > we?
+> >
+> > Nope.
+>
+> So, any binaries from Debian Potato will still work against glibc 2.38 on m68k?
 
-> Upgrading an existing system might be awkward, but time_t alone will probably
-> warrant a reinstall. Having said that, I just tried a somewhat unscientific
-> experiment of running a bunch of random binaries from my 32-bit aligned system
-> on my 16-bit aligned one and nothing broke. I then tried the reverse and saw
-> stash smashing detection kicking in on anything more complex than ls.
+They should.
 
-Thanks so much for performing such tests. This is really appreciated and provides
-valuable information that's very helpful for the transition process.
+I regularly boot filesys-ELF-2.0.x-1400K-2.gz, which was created in 1996,
+right after m68k switched from a.out to ELF. Any failures are reported
+(yes, this does happen, ca. once per decade), and fixed.
 
-> > 
-> > most likely the result of the limitations of the FPU emulation
-> > in QEMU for m68k. ARAnyM is known to have much better FPU emulation support than
-> > QEMU, so if you want to have more accurate results, you should test on ARAnyM.
-> 
-> This is fairly typical of the math-related test failures I have seen from
-> other projects. I hadn't realised that QEMU's FPU emulation was lacking and
-> had just chalked it up to m68k's FP hardware having different capabilities.
-> Either way, I have never noticed any issues here when using software in
-> practise. Not that I've done any heavy number crunching on m68k, but who
-> would?
+Gr{oetje,eeting}s,
 
-There have always been FPU-relevant issues on both QEMU and Aranym although it's
-better on Aranym than on QEMU. This is a well known issue.
-
-> > > I also noted that gcc on mc68060 changed the __DEC_EVAL_METHOD__ to 2, which makes 
-> > > glibc tests to fail to build (since it assumes __DEC_EVAL_METHOD__ equal 0). This
-> > > again raised questions on how the math library would behave depending of the target
-> > > chip.
-> > > 
-> > > All of this issues and potentially work required for a new ABI makes me wonder
-> > > if is really worth to keep *2* distinct ABIs for m68k.  Yes, m68k can follow the
-> > > MIPS mess and have 28 different ABIs that fails to be fully interoperable; but
-> > > I think that if you really want to on this 'gnu32' journey, I think it will be
-> > > better to just deprecate the m68k current ABI, remove it from glibc; and move
-> > > everything to new ABI.
-> > 
-> > I actually wouldn't have a problem with that. I don't plan on supporting the old
-> > ABI with 16-bit alignment. After all, we had to change the ABI for TLS support
-> > as well, didn't we?
-> 
-> I don't want to force anyone here, but I'd also be fine with that. The only
-> downside, apart from compatibility, appears to be slightly increased memory
-> usage, and you're not exactly going to run modern Linux with 8MB RAM anyway.
-
-Agreed. And I finally want to be able to use Rust and LLVM on m68k ;-).
-
-Adrian
+                        Geert
 
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
