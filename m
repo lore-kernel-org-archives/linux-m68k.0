@@ -2,97 +2,85 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8652BC83F17
-	for <linux-m68k@archiver.kernel.org>; Tue, 29 Aug 2023 21:46:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92A8DC71153
+	for <linux-m68k@archiver.kernel.org>; Tue, 29 Aug 2023 22:04:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230503AbjH2Vpm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 29 Aug 2023 17:45:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48112 "EHLO
+        id S239773AbjH2WDz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 29 Aug 2023 18:03:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234473AbjH2Vp1 (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 29 Aug 2023 17:45:27 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D517D7;
-        Tue, 29 Aug 2023 14:45:24 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3a9b342c398so3136609b6e.3;
-        Tue, 29 Aug 2023 14:45:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693345523; x=1693950323; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=M17+48+v4XZJYcb7OmaQ1jozg48HxT2IrHI5UpNpAOU=;
-        b=nHc36x1zF/wzqlBiRTpsptfvvLK/duwOaOlrIgBb2xY0AjzgwL3yqoM2l1lbFlRtfF
-         5U5rrbZd45PanzZ7vt6xfhZKpHyLOhgSFRiIeiOJ2zBz/s6ScnG2POQNeqLS7GP4zc9x
-         KGYSYVcwBB4h7EOpHvWr2P9s2tm82tOITt0KXJp59MX9mQEI/2pdx13Y9r7YDi2FLR3I
-         +x9v3LURxWkI/Znese0OrgZfcLSXfdH/T05S8qaAL81+leKz5iTqAgcxWZSNxJIFTSjL
-         sCVrczF0lCa3gJW+FfgL0a6xS52GlhmEFZsk+ZvHXr9jghtOdBYn6P8i4ZkAzftY2XT/
-         Sbqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693345523; x=1693950323;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=M17+48+v4XZJYcb7OmaQ1jozg48HxT2IrHI5UpNpAOU=;
-        b=MB+eLXlJhNu4gqJUt6d8ZC4ub0RThMhjZq1JZu4CI9wUMH6gGSrqVQUXWWKSJtg4wz
-         gOHpQFP3lVJ0S1Geo9BIrn8dZCQXEmMNfkNfh2R0ysUQzVOW1MaMjIsHQlXa9vZRBK+u
-         sj8ySyeyISX+RC7JsRQVb+SqM0QDzm3CByco5M0kcZbcfMuGVEBB8lkzmzyP900Jzb48
-         rnxo8GhScxdGavCpJnuCv4437DSd97iy5gvSlwqTkohu0XQjI/oflA8oeTWwZQgcCFCS
-         3KXJTUOcNP+Fjj32ik4lewL9d6QDqxw/ovJzTmDOmWzEZgAHAndvrDBP7v4eImtlTvLV
-         TQhw==
-X-Gm-Message-State: AOJu0YwMq1ZdPjXSBg5DKu9c2eJlcqCHGSvXu2AUAeIHl9R1fOFnBds1
-        0ljV3X8CuOD2yFzoNL3JSVg=
-X-Google-Smtp-Source: AGHT+IH2ZqAVMjOU3KX2Kveo5EIDpAucPdgmJmzR+rxw/ln1iPvV89dXQ1x4KB2v2EcLIlbwjTx6lQ==
-X-Received: by 2002:a05:6808:238f:b0:3a1:e85f:33ee with SMTP id bp15-20020a056808238f00b003a1e85f33eemr425520oib.56.1693345523635;
-        Tue, 29 Aug 2023 14:45:23 -0700 (PDT)
-Received: from xplor.waratah.dyndns.org (125-236-136-221-fibre.sparkbb.co.nz. [125.236.136.221])
-        by smtp.gmail.com with ESMTPSA id y14-20020a63b50e000000b00563590be25esm9374129pge.29.2023.08.29.14.45.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Aug 2023 14:45:23 -0700 (PDT)
-Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-        id 74F9B360439; Wed, 30 Aug 2023 09:45:19 +1200 (NZST)
-From:   Michael Schmitz <schmitzmic@gmail.com>
-To:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org
-Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org, arnd@arndb.de,
-        Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH] scsi: gvp11: add module parameter for DMA transfer bit mask
-Date:   Wed, 30 Aug 2023 09:45:17 +1200
-Message-Id: <20230829214517.14448-1-schmitzmic@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        with ESMTP id S238870AbjH2WDd (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 29 Aug 2023 18:03:33 -0400
+X-Greylist: delayed 574 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 29 Aug 2023 15:02:55 PDT
+Received: from scenergy.dfmk.hu (scenergy.dfmk.hu [193.224.143.38])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F8ACD2
+        for <linux-m68k@vger.kernel.org>; Tue, 29 Aug 2023 15:02:55 -0700 (PDT)
+Received: by scenergy.dfmk.hu (Postfix, from userid 1000)
+        id 33E3F8003F4; Tue, 29 Aug 2023 23:53:17 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by scenergy.dfmk.hu (Postfix) with ESMTP id 190688001FB;
+        Tue, 29 Aug 2023 23:53:17 +0200 (CEST)
+Date:   Tue, 29 Aug 2023 23:53:16 +0200 (CEST)
+From:   Karoly Balogh <charlie@scenergy.dfmk.hu>
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+cc:     James Le Cuirot <chewi@aura-online.co.uk>,
+        Adhemerval Zanella Netto <adhemerval.zanella@linaro.org>,
+        Finn Thain <fthain@linux-m68k.org>, libc-help@sourceware.org,
+        debian-68k <debian-68k@lists.debian.org>,
+        linux-m68k <linux-m68k@vger.kernel.org>
+Subject: Re: Tuple and changes for m68k with -malign-int
+In-Reply-To: <95b19b7af3c64aa4048d47f2b2966e195e7b2235.camel@physik.fu-berlin.de>
+Message-ID: <alpine.DEB.2.02.2308292337250.4585@scenergy.dfmk.hu>
+References: <e9035006d50933fb02727fa373629cc821784f6c.camel@aura-online.co.uk>  <10cbcb8a65639f88e7eeb503fd02df172bc46a07.camel@physik.fu-berlin.de>  <80a52487-3105-ed5b-a1eb-ec1a0689ef21@linux-m68k.org>  <4b4fe9c56dfdb8ec74150413cfc211d70243eb7e.camel@physik.fu-berlin.de>
+  <dba7fd40-00ee-0ac1-19fd-5ec146aca972@linaro.org>  <87134fda9b761e3f81588d440242b9a4e986ddbf.camel@physik.fu-berlin.de>  <95a4dd47f25addc0408a1016ecbe1ed18d9dab6d.camel@aura-online.co.uk>
+ <95b19b7af3c64aa4048d47f2b2966e195e7b2235.camel@physik.fu-berlin.de>
+User-Agent: Alpine 2.02 (DEB 1266 2009-07-14)
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Commit bfaa4a0ce1bb ("scsi: gvp11: Remove unused gvp11_setup()
-function") removed the unused gvp11_setup() which had allowed
-to override the default DMA transfer mask defined for GVP II
-SCSI boards on Amiga. There now is no way to set a non-default
-DMA mask on these boards.
+Hi,
 
-Introduce a module parameter to allow users to override the
-default DMA mask for the gvp11 driver.
+On Tue, 29 Aug 2023, John Paul Adrian Glaubitz wrote:
 
-Fixes: bfaa4a0ce1bb ("scsi: gvp11: Remove unused gvp11_setup() function")
-Link: https://lore.kernel.org/r/20230810141947.1236730-12-arnd@kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
----
- drivers/scsi/gvp11.c | 3 +++
- 1 file changed, 3 insertions(+)
+> > I don't want to force anyone here, but I'd also be fine with that. The only
+> > downside, apart from compatibility, appears to be slightly increased memory
+> > usage, and you're not exactly going to run modern Linux with 8MB RAM anyway.
+>
+> Agreed. And I finally want to be able to use Rust and LLVM on m68k ;-).
 
-diff --git a/drivers/scsi/gvp11.c b/drivers/scsi/gvp11.c
-index 0420bfe9bd42..12160d70a571 100644
---- a/drivers/scsi/gvp11.c
-+++ b/drivers/scsi/gvp11.c
-@@ -50,6 +50,9 @@ static irqreturn_t gvp11_intr(int irq, void *data)
- 
- static int gvp11_xfer_mask = 0;
- 
-+module_param(gvp11_xfer_mask,  int, 0444);
-+MODULE_PARM_DESC(gvp11_xfer_mask, "DMA mask (0xff000000 == 24 bit DMA)");
-+
- static int dma_setup(struct scsi_cmnd *cmd, int dir_in)
- {
- 	struct scsi_pointer *scsi_pointer = WD33C93_scsi_pointer(cmd);
--- 
-2.17.1
+So, let me get this straight (or from anothe perspective if you will) -
+neither LLVM and Rust is ready for prime time, because it can't accomodate
+a decade old established standard on our platform. But Linux maintainers
+rush forward, and break^Wchange the ABI, so we can accomodate some
+half-baked fancy new tools.
 
+Sometime later someone realizes: if you want to support any other system
+on m68k (Amiga, Atari, 68k Mac, *BSD, game consoles (embedded) you name
+it), you still need to add support for the original alignment
+restrictions, because on those systems you're not always going to be able
+recompile the $world. So that someone will have the skills to add the
+needed changes to these tools, so they can finally mature and accommodate
+more real world scenarios that are out there.
+
+At that point Linux m68k broke their own ABI for no reason, but because
+someone couldn't wait until the necessary work was done, instead of
+hacking problems around.
+
+Ask me if I've seen this already (elsewhere).
+
+Best,
+--
+Charlie
+
+(Ps: Also, IMO the Itanium analogy is totally bogus. Itanium never had the
+history and the historical significance of m68k, and the hardware has been
+always been an expensive toy for a select few, with a few having any sort
+of self-motivating emotional attachment to it. Also, where you draw the
+line? At which point are we going to do a little endian ABI for m68k, so
+upstream can ignore big endian? Don't laugh, apart from the well known
+ppc64le case by IBM, this has been done the other in an m68k-context too,
+but the other way around - a big-endian x86 GCC, so you can compile Amiga
+ABI compatible libraries that contain native x86 code on emulators...)
