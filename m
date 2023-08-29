@@ -2,99 +2,97 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15263C71153
-	for <linux-m68k@archiver.kernel.org>; Tue, 29 Aug 2023 15:28:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8652BC83F17
+	for <linux-m68k@archiver.kernel.org>; Tue, 29 Aug 2023 21:46:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbjH2P1z convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 29 Aug 2023 11:27:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56138 "EHLO
+        id S230503AbjH2Vpm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 29 Aug 2023 17:45:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237293AbjH2P1g (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 29 Aug 2023 11:27:36 -0400
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C0ECC0
-        for <linux-m68k@vger.kernel.org>; Tue, 29 Aug 2023 08:27:30 -0700 (PDT)
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5922b96c5fcso52009147b3.0
-        for <linux-m68k@vger.kernel.org>; Tue, 29 Aug 2023 08:27:30 -0700 (PDT)
+        with ESMTP id S234473AbjH2Vp1 (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 29 Aug 2023 17:45:27 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D517D7;
+        Tue, 29 Aug 2023 14:45:24 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3a9b342c398so3136609b6e.3;
+        Tue, 29 Aug 2023 14:45:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693345523; x=1693950323; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M17+48+v4XZJYcb7OmaQ1jozg48HxT2IrHI5UpNpAOU=;
+        b=nHc36x1zF/wzqlBiRTpsptfvvLK/duwOaOlrIgBb2xY0AjzgwL3yqoM2l1lbFlRtfF
+         5U5rrbZd45PanzZ7vt6xfhZKpHyLOhgSFRiIeiOJ2zBz/s6ScnG2POQNeqLS7GP4zc9x
+         KGYSYVcwBB4h7EOpHvWr2P9s2tm82tOITt0KXJp59MX9mQEI/2pdx13Y9r7YDi2FLR3I
+         +x9v3LURxWkI/Znese0OrgZfcLSXfdH/T05S8qaAL81+leKz5iTqAgcxWZSNxJIFTSjL
+         sCVrczF0lCa3gJW+FfgL0a6xS52GlhmEFZsk+ZvHXr9jghtOdBYn6P8i4ZkAzftY2XT/
+         Sbqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693322849; x=1693927649;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1693345523; x=1693950323;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1mvC8ugM1vg8H4dtUsSOCZcrdKtAOjkiFP9GldFzN/o=;
-        b=hSYOAkacxKeNeWQxh29JXRn01X2mFeaE3rZI4MOKnqJVuFGqkQItq/gtN/8TMpsnZO
-         oEc7MB5tVNAnLcFtTDLdxb42LUVeOk3BlrJdkhXj/bp3bJQLMcSVu4Wke0crAyASCjbI
-         Nqvyd0AoyRUUELfs5rJNnEXlHeC8RWezketwtgOHnVrrInX69W1fsMUH/DEORW5rvrHU
-         iNjmzjL/i2FaZnjshU55qQZOdTCZi2dUHznjUzxwM/ixJYEucHWv81AWiuUND0HFYoZd
-         3uIsXsnh12pjD7lkSfbaBlAUKQSdtN6jdW/yIzXSO/HX0Szui0tVbCbF0Piq7zp4DT5y
-         AgMg==
-X-Gm-Message-State: AOJu0YyoNP/7b29+QZKeMOdJZyrdtadpZRVNHB8+pOJWRQgBSQ9lcFCN
-        MUsBEuGaLOO1tQBsBZVz21WopbbpUVhqIQ==
-X-Google-Smtp-Source: AGHT+IFu+4qlfpKf4QnC1UGggpRGvCaMniOZRyzwQdVi1QIT0KkyyzkcT1N4v22Imna8t9e9SJjAmg==
-X-Received: by 2002:a25:ae5e:0:b0:d7b:95ff:14f with SMTP id g30-20020a25ae5e000000b00d7b95ff014fmr351110ybe.61.1693322849595;
-        Tue, 29 Aug 2023 08:27:29 -0700 (PDT)
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
-        by smtp.gmail.com with ESMTPSA id k144-20020a252496000000b00babcd913630sm2265082ybk.3.2023.08.29.08.27.29
-        for <linux-m68k@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Aug 2023 08:27:29 -0700 (PDT)
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-d78328bc2abso4110682276.2
-        for <linux-m68k@vger.kernel.org>; Tue, 29 Aug 2023 08:27:29 -0700 (PDT)
-X-Received: by 2002:a25:ae1b:0:b0:d2c:32cb:c631 with SMTP id
- a27-20020a25ae1b000000b00d2c32cbc631mr29029382ybj.27.1693322849035; Tue, 29
- Aug 2023 08:27:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <e9035006d50933fb02727fa373629cc821784f6c.camel@aura-online.co.uk>
- <10cbcb8a65639f88e7eeb503fd02df172bc46a07.camel@physik.fu-berlin.de>
- <80a52487-3105-ed5b-a1eb-ec1a0689ef21@linux-m68k.org> <4b4fe9c56dfdb8ec74150413cfc211d70243eb7e.camel@physik.fu-berlin.de>
- <dba7fd40-00ee-0ac1-19fd-5ec146aca972@linaro.org> <87134fda9b761e3f81588d440242b9a4e986ddbf.camel@physik.fu-berlin.de>
- <mvmy1hv71d7.fsf@linux-m68k.org> <c39646c885102448c49a4797140e4fcfd1769717.camel@physik.fu-berlin.de>
-In-Reply-To: <c39646c885102448c49a4797140e4fcfd1769717.camel@physik.fu-berlin.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 29 Aug 2023 17:27:17 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWGsm5kScKuRnGm0N6sjeOfwTU3jS7-zUmkadqkVfZ2UQ@mail.gmail.com>
-Message-ID: <CAMuHMdWGsm5kScKuRnGm0N6sjeOfwTU3jS7-zUmkadqkVfZ2UQ@mail.gmail.com>
-Subject: Re: Tuple and changes for m68k with -malign-int
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Andreas Schwab <schwab@linux-m68k.org>,
-        Adhemerval Zanella Netto <adhemerval.zanella@linaro.org>,
-        Finn Thain <fthain@linux-m68k.org>,
-        James Le Cuirot <chewi@aura-online.co.uk>,
-        libc-help@sourceware.org, debian-68k <debian-68k@lists.debian.org>,
-        linux-m68k <linux-m68k@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+        bh=M17+48+v4XZJYcb7OmaQ1jozg48HxT2IrHI5UpNpAOU=;
+        b=MB+eLXlJhNu4gqJUt6d8ZC4ub0RThMhjZq1JZu4CI9wUMH6gGSrqVQUXWWKSJtg4wz
+         gOHpQFP3lVJ0S1Geo9BIrn8dZCQXEmMNfkNfh2R0ysUQzVOW1MaMjIsHQlXa9vZRBK+u
+         sj8ySyeyISX+RC7JsRQVb+SqM0QDzm3CByco5M0kcZbcfMuGVEBB8lkzmzyP900Jzb48
+         rnxo8GhScxdGavCpJnuCv4437DSd97iy5gvSlwqTkohu0XQjI/oflA8oeTWwZQgcCFCS
+         3KXJTUOcNP+Fjj32ik4lewL9d6QDqxw/ovJzTmDOmWzEZgAHAndvrDBP7v4eImtlTvLV
+         TQhw==
+X-Gm-Message-State: AOJu0YwMq1ZdPjXSBg5DKu9c2eJlcqCHGSvXu2AUAeIHl9R1fOFnBds1
+        0ljV3X8CuOD2yFzoNL3JSVg=
+X-Google-Smtp-Source: AGHT+IH2ZqAVMjOU3KX2Kveo5EIDpAucPdgmJmzR+rxw/ln1iPvV89dXQ1x4KB2v2EcLIlbwjTx6lQ==
+X-Received: by 2002:a05:6808:238f:b0:3a1:e85f:33ee with SMTP id bp15-20020a056808238f00b003a1e85f33eemr425520oib.56.1693345523635;
+        Tue, 29 Aug 2023 14:45:23 -0700 (PDT)
+Received: from xplor.waratah.dyndns.org (125-236-136-221-fibre.sparkbb.co.nz. [125.236.136.221])
+        by smtp.gmail.com with ESMTPSA id y14-20020a63b50e000000b00563590be25esm9374129pge.29.2023.08.29.14.45.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Aug 2023 14:45:23 -0700 (PDT)
+Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
+        id 74F9B360439; Wed, 30 Aug 2023 09:45:19 +1200 (NZST)
+From:   Michael Schmitz <schmitzmic@gmail.com>
+To:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org
+Cc:     linux-m68k@vger.kernel.org, geert@linux-m68k.org, arnd@arndb.de,
+        Michael Schmitz <schmitzmic@gmail.com>
+Subject: [PATCH] scsi: gvp11: add module parameter for DMA transfer bit mask
+Date:   Wed, 30 Aug 2023 09:45:17 +1200
+Message-Id: <20230829214517.14448-1-schmitzmic@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Adrian,
+Commit bfaa4a0ce1bb ("scsi: gvp11: Remove unused gvp11_setup()
+function") removed the unused gvp11_setup() which had allowed
+to override the default DMA transfer mask defined for GVP II
+SCSI boards on Amiga. There now is no way to set a non-default
+DMA mask on these boards.
 
-On Tue, Aug 29, 2023 at 12:51 PM John Paul Adrian Glaubitz
-<glaubitz@physik.fu-berlin.de> wrote:
-> On Mon, 2023-08-28 at 15:17 +0200, Andreas Schwab wrote:
-> > On Aug 28 2023, John Paul Adrian Glaubitz wrote:
-> > > After all, we had to change the ABI for TLS support as well, didn't
-> > > we?
-> >
-> > Nope.
->
-> So, any binaries from Debian Potato will still work against glibc 2.38 on m68k?
+Introduce a module parameter to allow users to override the
+default DMA mask for the gvp11 driver.
 
-They should.
+Fixes: bfaa4a0ce1bb ("scsi: gvp11: Remove unused gvp11_setup() function")
+Link: https://lore.kernel.org/r/20230810141947.1236730-12-arnd@kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+---
+ drivers/scsi/gvp11.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-I regularly boot filesys-ELF-2.0.x-1400K-2.gz, which was created in 1996,
-right after m68k switched from a.out to ELF. Any failures are reported
-(yes, this does happen, ca. once per decade), and fixed.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/scsi/gvp11.c b/drivers/scsi/gvp11.c
+index 0420bfe9bd42..12160d70a571 100644
+--- a/drivers/scsi/gvp11.c
++++ b/drivers/scsi/gvp11.c
+@@ -50,6 +50,9 @@ static irqreturn_t gvp11_intr(int irq, void *data)
+ 
+ static int gvp11_xfer_mask = 0;
+ 
++module_param(gvp11_xfer_mask,  int, 0444);
++MODULE_PARM_DESC(gvp11_xfer_mask, "DMA mask (0xff000000 == 24 bit DMA)");
++
+ static int dma_setup(struct scsi_cmnd *cmd, int dir_in)
+ {
+ 	struct scsi_pointer *scsi_pointer = WD33C93_scsi_pointer(cmd);
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.17.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
