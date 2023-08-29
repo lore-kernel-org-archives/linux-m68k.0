@@ -2,107 +2,129 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43077C71153
-	for <linux-m68k@archiver.kernel.org>; Tue, 29 Aug 2023 22:06:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1431CC83F17
+	for <linux-m68k@archiver.kernel.org>; Tue, 29 Aug 2023 22:26:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234307AbjH2WGC (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 29 Aug 2023 18:06:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47348 "EHLO
+        id S232509AbjH2W0O (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 29 Aug 2023 18:26:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238830AbjH2WFr (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 29 Aug 2023 18:05:47 -0400
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12433132;
-        Tue, 29 Aug 2023 15:05:45 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 2E9563200951;
-        Tue, 29 Aug 2023 18:05:44 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Tue, 29 Aug 2023 18:05:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1693346743; x=1693433143; bh=n4
-        +LqOxV9x7zOhvxyuDhHD7aHn1YAjQnTQK98pjvt30=; b=eP7m6cm0f/tMSWRIlx
-        7F9QPolnrJC4QuR/J3ObIua5wIgsL8k5ipB/2cDt9RaEudMM2LZz4Bv2HOWN1Ojq
-        W3QoMBUmB1YRjKLtBrT4kgBYVB/xVVmJq8pwKMbwUD0JA17wZ7sBogZlu15vHJ7A
-        HX9FVIN+p3UZPEmYDG01yLPTYSe8QmXDbEY/KYH4UmyIa+uhjgGr7PdbTJtl0Lpx
-        mp30OA+Nqvp5GlMTPIis29TrOwXhCdxeP4+ZaI0WWTUYUbQ9C0W68aYkG9bgP7qo
-        qFYgBMTmz5mUtIOKXg93dTGkUiroBHm6Vbjo4XCuaxQwdmjPEyaRe1lDu8PXsfIF
-        vAHw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1693346743; x=1693433143; bh=n4+LqOxV9x7zO
-        hvxyuDhHD7aHn1YAjQnTQK98pjvt30=; b=RYIkXnqmnlLPa0n9E0UJ23wS20fla
-        xGnuRbz1zR6JGbtEQ8lmg0/Vzoy0jTAp5wbWSrn19hLD4MqIbBxwHSfFEU2Pf9sP
-        sf19ned/eACTE+2AqqLAKh2jGtTZ62E6P8QI1lGiMpin68NX88qg7bXYrs9Dhae4
-        A7Go0EVirYX5APQ2c6AxYMJQ1MxM/+ZI76KX7MqxxMh22WXJFBkN0G/ULDCHVUPi
-        rjxdbO9wqsPNJzc7K+C5x+QblEoN6c+5sfv97KERpb54fy706J+wM1hlCEHvJv6y
-        6HM2nUQLx2urGrHssfuiYepPn2b6yIGEsqJiKLJ8+IZyljjRw7e3DZUJg==
-X-ME-Sender: <xms:t2vuZO5KWY_WqkTbQgUkfQylspUpICkqif2_mQsKQeflbfpy841jvw>
-    <xme:t2vuZH7XtAGLqQ9mL_UQAiraA5bSiNh7F3SZhVSF5uDPfZKMpVEBGdOg6TimsV2Yj
-    MggFmZ9zV6amVB_A8Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudefjedgtdefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:t2vuZNdMIxd3ierFJsGN_OJUCs8vvK8aTlrpHU2ZvS-ScFi9nOcQIg>
-    <xmx:t2vuZLJNKB4Q2ZBsiVm5Xzvfs9eZrScCynednckBnWyu2d51AbK4Pw>
-    <xmx:t2vuZCLFUkUweNX2TZX2EmGS--6CTzyjYsmm0SBBb8faVcsi4z4Hbg>
-    <xmx:t2vuZJWU0LCWV9gsJEpy7kjNVZE7ud4sWhRsAHymFdYN_-4YhDbJ5w>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 4FB49B60089; Tue, 29 Aug 2023 18:05:43 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-701-g9b2f44d3ee-fm-20230823.001-g9b2f44d3
-Mime-Version: 1.0
-Message-Id: <4a7d0dda-c24f-4875-892f-c8c5ef700882@app.fastmail.com>
-In-Reply-To: <20230829214517.14448-1-schmitzmic@gmail.com>
-References: <20230829214517.14448-1-schmitzmic@gmail.com>
-Date:   Tue, 29 Aug 2023 18:05:22 -0400
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Michael Schmitz" <schmitzmic@gmail.com>,
+        with ESMTP id S238435AbjH2W0K (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 29 Aug 2023 18:26:10 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 604F8C2;
+        Tue, 29 Aug 2023 15:26:06 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-68bec3a9bdbso3187319b3a.3;
+        Tue, 29 Aug 2023 15:26:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693347966; x=1693952766; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=S3mrDNqKZv7VLwU1y4Q1e3BwMYueO6udpio+hi3sY54=;
+        b=QNANQ0rTCVphI0pvZ/gv3w5ZxmiCqJc2pxakAzSXcplWKmX4nBHTVwlQb4CJGuNRdC
+         aJoMzcVJNAlz8uLFXXRAtHR4T1kU7DpjqDa4SlRtzA/wE6uDoJgqndYn3rAkUXTYzANh
+         U5MzzKv2vqS9NahW+G5P0sb+Ks9Aagdr++GHkQkIpD8soukc0q0PWxffkY1ragrJXX3b
+         vBhGArqBPWnDj7v/5piVBbLXfrNA0iaBbhowU03MEYmD4vNuJ2osyxEV9kyn4YJNrmMR
+         dmhl8/5e2ZDMvcsEchI17LtA9lWSti/kGJDyi8oFQItnDkDqgBboSF8sxZzdbeVfU+MQ
+         +yeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693347966; x=1693952766;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S3mrDNqKZv7VLwU1y4Q1e3BwMYueO6udpio+hi3sY54=;
+        b=U+9Vh2fe4eugHOhuMPxhNN3SuqGUqdpPLofgI1QCfeZIXmEhEklkONggG5Y/B96HpJ
+         ipRPGbzWibIzrjJ4vJDxWWP0g0xXYQCKxCoRKqYeUHSQaPqq6o8PRm78o5Gudn0hMuSE
+         fCMiAAyU2ujq30gwOgzkz98GREeOymIOwEgEudvmx3EelDY2dIGDPhaTcL4RVh1pyoS5
+         7k+qL7x+f6paM7n5aqHoXKkaCBEutMUsLU21lEaxGK6CKQ4nw+r0gBv/7FbqmSmBpcFj
+         fyiCX1ohsGgtXAK1ROI7X+UpE7sU3E3CDlx+nj35q1BhlYFfE0lbUo7Okh+Tv6hZgGFI
+         XVZQ==
+X-Gm-Message-State: AOJu0YzI1fuSURK6GU57X9bly2ZL3NEA9/n7V+vhQpOKL1gvPM+U4uc0
+        ZtvDDrkCUSlNwbMCiE+47wsRh8S/R+Y=
+X-Google-Smtp-Source: AGHT+IHhpx+YFoYz3NsBY5l+gY+Zi/8ze8zpcHuVGj8VYvviBqChcSXsE0Jgq8GlzJqHJoCwzEE/Lw==
+X-Received: by 2002:a05:6a21:789a:b0:14c:c393:6af with SMTP id bf26-20020a056a21789a00b0014cc39306afmr946615pzc.0.1693347965701;
+        Tue, 29 Aug 2023 15:26:05 -0700 (PDT)
+Received: from ?IPV6:2001:df0:0:200c:7425:4279:1223:a1? ([2001:df0:0:200c:7425:4279:1223:a1])
+        by smtp.gmail.com with ESMTPSA id iy20-20020a170903131400b001b89466a5f4sm9849668plb.105.2023.08.29.15.26.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Aug 2023 15:26:05 -0700 (PDT)
+Message-ID: <ab78a254-ee6a-a2f1-c3cd-3b608e0c9e60@gmail.com>
+Date:   Wed, 30 Aug 2023 10:25:59 +1200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] scsi: gvp11: add module parameter for DMA transfer bit
+ mask
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@arndb.de>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         linux-scsi@vger.kernel.org
 Cc:     linux-m68k@vger.kernel.org,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>
-Subject: Re: [PATCH] scsi: gvp11: add module parameter for DMA transfer bit mask
-Content-Type: text/plain
+        Geert Uytterhoeven <geert@linux-m68k.org>
+References: <20230829214517.14448-1-schmitzmic@gmail.com>
+ <4a7d0dda-c24f-4875-892f-c8c5ef700882@app.fastmail.com>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+In-Reply-To: <4a7d0dda-c24f-4875-892f-c8c5ef700882@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Aug 29, 2023, at 17:45, Michael Schmitz wrote:
-> SCSI boards on Amiga. There now is no way to set a non-default
-> DMA mask on these boards.
+Hi Arnd,
 
-It might help to mention here in which cases the default mask
-is actually wrong.
+thanks for your comments!
 
-> +module_param(gvp11_xfer_mask,  int, 0444);
-> +MODULE_PARM_DESC(gvp11_xfer_mask, "DMA mask (0xff000000 == 24 bit DMA)");
-> +
+On 30/08/23 10:05, Arnd Bergmann wrote:
+> On Tue, Aug 29, 2023, at 17:45, Michael Schmitz wrote:
+>> SCSI boards on Amiga. There now is no way to set a non-default
+>> DMA mask on these boards.
+> It might help to mention here in which cases the default mask
+> is actually wrong.
 
-I think the comment is the wrong way round, it should be
-0x00ffffff in this case, which also matches the default
-mask for ZORRO_PROD_GVP_SERIES_II, in the match table:
+All I have is:
 
-static struct zorro_device_id gvp11_zorro_tbl[] = {
-        { ZORRO_PROD_GVP_COMBO_030_R3_SCSI,     ~0x00ffffff },
-        { ZORRO_PROD_GVP_SERIES_II,             ~0x00ffffff },
-        { ZORRO_PROD_GVP_GFORCE_030_SCSI,       ~0x01ffffff },
-        { ZORRO_PROD_GVP_A530_SCSI,             ~0x01ffffff },
-        { ZORRO_PROD_GVP_COMBO_030_R4_SCSI,     ~0x01ffffff },
-        { ZORRO_PROD_GVP_A1291,                 ~0x07ffffff },
-        { ZORRO_PROD_GVP_GFORCE_040_SCSI_1,     ~0x07ffffff },
-        { 0 }
-};
+Probably it's needed on A2000 with an accelerator card and GVP II SCSI,
+to prevent DMA to RAM banks that do not support fast DMA cycles.
 
-      Arnd
+from Geert's reply. I can add that. It just did sound a shade 
+speculative...
+>
+>> +module_param(gvp11_xfer_mask,  int, 0444);
+>> +MODULE_PARM_DESC(gvp11_xfer_mask, "DMA mask (0xff000000 == 24 bit DMA)");
+>> +
+> I think the comment is the wrong way round, it should be
+> 0x00ffffff in this case, which also matches the default
+> mask for ZORRO_PROD_GVP_SERIES_II, in the match table:
+>
+> static struct zorro_device_id gvp11_zorro_tbl[] = {
+>          { ZORRO_PROD_GVP_COMBO_030_R3_SCSI,     ~0x00ffffff },
+>          { ZORRO_PROD_GVP_SERIES_II,             ~0x00ffffff },
+>          { ZORRO_PROD_GVP_GFORCE_030_SCSI,       ~0x01ffffff },
+>          { ZORRO_PROD_GVP_A530_SCSI,             ~0x01ffffff },
+>          { ZORRO_PROD_GVP_COMBO_030_R4_SCSI,     ~0x01ffffff },
+>          { ZORRO_PROD_GVP_A1291,                 ~0x07ffffff },
+>          { ZORRO_PROD_GVP_GFORCE_040_SCSI_1,     ~0x07ffffff },
+>          { 0 }
+> };
+
+gvp11_xfer_mask works inverse to what you'd expect (and inverse to what 
+a DMA mask usually is defined as). DMA can _not_ be used if (address & 
+gvp11_xfer_mask) isn't zero. See code in dma_setup() for details.
+
+All those definitions have a '~' prefix, for that very reason.
+
+I agree it isn't intuitive, and caused a little head scratching when 
+preparing this patch. But I believe it is correct.
+
+Now you could argue to shift the bit mask inversion to gvp11_probe() or 
+even dma_setup() instead to rule out such confusion in future, but that 
+would be an actual code change and would benefit from testing on at 
+least one of these boards IMO. Not sure how easy that will be.
+
+Cheers,
+
+     Michael
+
+>        Arnd
