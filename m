@@ -2,77 +2,64 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61C9ECA0FFA
-	for <linux-m68k@archiver.kernel.org>; Tue,  5 Sep 2023 16:22:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4817CA0FE2
+	for <linux-m68k@archiver.kernel.org>; Tue,  5 Sep 2023 16:22:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349386AbjIEQVw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 5 Sep 2023 12:21:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40376 "EHLO
+        id S1343716AbjIEQVx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 5 Sep 2023 12:21:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343716AbjIECrP (ORCPT
+        with ESMTP id S1353834AbjIEIUo (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 4 Sep 2023 22:47:15 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD29CC9
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Sep 2023 19:47:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1693882031;
-        bh=u10/VToy+E/OPi9XjZP4n2I6K6AMC3YNx3lXqqyKrWA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=J0UyS+WIgQoJYbA9dbawO9edyrVtzWysZpXCEe9VqoDfs69TC9XyVtpilDMb0DEdo
-         axw/o1IALllIcMtWiaXWPx2zGTpR7663jgxJF0b2wkAXldKnXW3f7Cit6zC8eQlq5W
-         zxrCjsTS3nw4p4rSekMEqCCJ3X2Es8bFh+9hvA9nIvYbKQSVD3PA5ruIot2oAAap5E
-         HvFJj7T0be9dQ0NvrLr0/NzJmayyh2b5KWasZixoItg0Ptm1DeHlC7hhO2b213URb3
-         gAfV86Nq7wJZpMhKiDyKmU5ssXQRSkyv/QhuKEp9AjNySr/h2XsGejVTsQZaXbEGJT
-         AbXUqd44M/lMw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RfqfP1SNYz4wZn;
-        Tue,  5 Sep 2023 12:47:09 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Thomas Zimmermann <tzimmermann@suse.de>, npiggin@gmail.com,
-        christophe.leroy@csgroup.eu, arnd@arndb.de, deller@gmx.de
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-fbdev@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, sparclinux@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arch@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH 0/4] ppc, fbdev: Clean up fbdev mmap helper
-In-Reply-To: <20230901142659.31787-1-tzimmermann@suse.de>
-References: <20230901142659.31787-1-tzimmermann@suse.de>
-Date:   Tue, 05 Sep 2023 12:47:08 +1000
-Message-ID: <874jk9ibf7.fsf@mail.lhotse>
+        Tue, 5 Sep 2023 04:20:44 -0400
+X-Greylist: delayed 86463 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Sep 2023 01:20:41 PDT
+Received: from mail.equinoxrise.pl (mail.equinoxrise.pl [217.61.112.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885B6CC7
+        for <linux-m68k@lists.linux-m68k.org>; Tue,  5 Sep 2023 01:20:41 -0700 (PDT)
+Received: by mail.equinoxrise.pl (Postfix, from userid 1002)
+        id 57F4683496; Mon,  4 Sep 2023 09:41:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=equinoxrise.pl;
+        s=mail; t=1693813324;
+        bh=v6OgBfK5dN7P5dQ0wCu59rOfZaiqziJeLNblJ8dOcGI=;
+        h=Date:From:To:Subject:From;
+        b=jbrdMN2Aq3LSZL6f1VCVHRs7buGsPNst7PDL7t15AxP/0shoJ3fzBQq5uU/DflsMa
+         MMSpIS91TH4VsjGJ7NE814EBw2Ra0Gi2R9PrXaO4ZEzW0v3G/4pW0ZwQrGVCEeSZuX
+         4XtRLtuTwAg8pVUFBjcS5xn4Ac6JGhZ3Tj4AW/oaT2m2D6gW+0VHTQN8vjfisobpbn
+         De8veAhncoSUmWSy0wS6r3YZksDru2sTP3DH2oLaHka00j8KMC7CEY2RO6OlmCJK2r
+         XzWyLqg0zzUykzeHJUq8f7Cdq6MLxTnjq4Z+1zcy//80r5skOkKewLXtQHFgsOH3kC
+         +yGNPx/ibZ7PA==
+Received: by mail.equinoxrise.pl for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Sep 2023 07:40:34 GMT
+Message-ID: <20230904084500-0.1.7.qyc.0.5n7de20bp6@equinoxrise.pl>
+Date:   Mon,  4 Sep 2023 07:40:34 GMT
+From:   "Mateusz Talaga" <mateusz.talaga@equinoxrise.pl>
+To:     <linux-m68k@lists.linux-m68k.org>
+Subject: Prezentacja
+X-Mailer: mail.equinoxrise.pl
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Thomas Zimmermann <tzimmermann@suse.de> writes:
-> Refactor fb_pgprotect() in PowerPC to work without struct file. Then
-> clean up and rename fb_pgprotect(). This change has been discussed at
-> [1] in the context of refactoring fbdev's mmap code.
->
-> The first three patches adapt PowerPC's internal interfaces to
-> provide a phys_mem_access_prot() that works without struct file. Neither
-> the architecture code or fbdev helpers need the parameter.
->
-> Patch 4 replaces fbdev's fb_pgprotect() with fb_pgprot_device() on
-> all architectures. The new helper with its stream-lined interface
-> enables more refactoring within fbdev's mmap implementation.
+Dzie=C5=84 dobry!
 
-The content of this series is OK, but the way it's structured makes it a
-real headache to merge, because it's mostly powerpc changes and then a
-dependant cross architecture patch at the end.
+Czy m=C3=B3g=C5=82bym przedstawi=C4=87 rozwi=C4=85zanie, kt=C3=B3re umo=C5=
+=BCliwia monitoring ka=C5=BCdego auta w czasie rzeczywistym w tym jego po=
+zycj=C4=99, zu=C5=BCycie paliwa i przebieg?
 
-It would be simpler if patch 4 was first and just passed file=NULL to
-the powerpc helper, with an explanation that it's unused and will be
-dropped in a future cleanup.
+Dodatkowo nasze narz=C4=99dzie minimalizuje koszty utrzymania samochod=C3=
+=B3w, skraca czas przejazd=C3=B3w, a tak=C5=BCe tworzenie planu tras czy =
+dostaw.
 
-We could then put the first patch (previously patch 4) in a topic branch
-that is shared between the powerpc tree and the fbdev tree, and then the
-powerpc changes could be staged on top of that through the powerpc tree.
+Z naszej wiedzy i do=C5=9Bwiadczenia korzysta ju=C5=BC ponad 49 tys. Klie=
+nt=C3=B3w. Monitorujemy 809 000 pojazd=C3=B3w na ca=C5=82ym =C5=9Bwiecie,=
+ co jest nasz=C4=85 najlepsz=C4=85 wizyt=C3=B3wk=C4=85.
 
-cheers
+Bardzo prosz=C4=99 o e-maila zwrotnego, je=C5=9Bli mogliby=C5=9Bmy wsp=C3=
+=B3lnie om=C3=B3wi=C4=87 potencja=C5=82 wykorzystania takiego rozwi=C4=85=
+zania w Pa=C5=84stwa firmie.
+
+
+Pozdrawiam
+Mateusz Talaga
