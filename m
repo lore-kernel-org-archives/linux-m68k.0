@@ -2,70 +2,77 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FEEEC71153
-	for <linux-m68k@archiver.kernel.org>; Mon,  4 Sep 2023 18:43:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61C9ECA0FFA
+	for <linux-m68k@archiver.kernel.org>; Tue,  5 Sep 2023 16:22:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351613AbjIDSnw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 4 Sep 2023 14:43:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49892 "EHLO
+        id S1349386AbjIEQVw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 5 Sep 2023 12:21:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351442AbjIDSnw (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Mon, 4 Sep 2023 14:43:52 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C54FCDE;
-        Mon,  4 Sep 2023 11:43:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        with ESMTP id S1343716AbjIECrP (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Mon, 4 Sep 2023 22:47:15 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD29CC9
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Sep 2023 19:47:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1693882031;
+        bh=u10/VToy+E/OPi9XjZP4n2I6K6AMC3YNx3lXqqyKrWA=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=J0UyS+WIgQoJYbA9dbawO9edyrVtzWysZpXCEe9VqoDfs69TC9XyVtpilDMb0DEdo
+         axw/o1IALllIcMtWiaXWPx2zGTpR7663jgxJF0b2wkAXldKnXW3f7Cit6zC8eQlq5W
+         zxrCjsTS3nw4p4rSekMEqCCJ3X2Es8bFh+9hvA9nIvYbKQSVD3PA5ruIot2oAAap5E
+         HvFJj7T0be9dQ0NvrLr0/NzJmayyh2b5KWasZixoItg0Ptm1DeHlC7hhO2b213URb3
+         gAfV86Nq7wJZpMhKiDyKmU5ssXQRSkyv/QhuKEp9AjNySr/h2XsGejVTsQZaXbEGJT
+         AbXUqd44M/lMw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D1319B80EF9;
-        Mon,  4 Sep 2023 18:43:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 818FEC433C8;
-        Mon,  4 Sep 2023 18:43:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693853026;
-        bh=yV1vaq175i9r8coAhXYIVDjTeVoOv0w4lRwcWZei5g4=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=N0PrE5+b/gUD3k7ASG2ObMfqG4PMB4TcPwoJqy2uR8+NAOZpi8AqZQqqJA5Vfaw2e
-         xyL45BeRbEUW2T+SQQOCJiPa8IxPyb0txzu4tS3W8cumS7ftRtUI/lAHkF58T/OPWR
-         rGEjBoDQIAqTdQ9SgycaWp9FU+ogWJmo/xniHJX48NHNIhxN4Gmj+0eVVWisom5FuL
-         PKA6YkFsekADk021UKIfjsV4iEPKaQ51eA0cXNwe5oLnddVW+SMvW8ksrao/iUBAsM
-         YRHKp+ao8ErUEy/I2s1m6fl0FHjRNvVmW1tVep8i6GUBJme6FKYya75haOyoee46Bo
-         XcOVPWsjIk9MQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 614A5C04DD9;
-        Mon,  4 Sep 2023 18:43:46 +0000 (UTC)
-Subject: Re: [git pull] m68knommu changes for v6.6
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <fe6c0932-ac00-8a81-4eae-8759547ddd1f@linux-m68k.org>
-References: <fe6c0932-ac00-8a81-4eae-8759547ddd1f@linux-m68k.org>
-X-PR-Tracked-List-Id: <linux-m68k.vger.kernel.org>
-X-PR-Tracked-Message-Id: <fe6c0932-ac00-8a81-4eae-8759547ddd1f@linux-m68k.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v6.6
-X-PR-Tracked-Commit-Id: cf18ecd34f71dfd2815046d4c0d7b6439bb0cbde
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 7a1415eebeece5a27fb40c0242b171c104ad5727
-Message-Id: <169385302639.15626.4383869315476746170.pr-tracker-bot@kernel.org>
-Date:   Mon, 04 Sep 2023 18:43:46 +0000
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     torvalds@linux-foundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RfqfP1SNYz4wZn;
+        Tue,  5 Sep 2023 12:47:09 +1000 (AEST)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Thomas Zimmermann <tzimmermann@suse.de>, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu, arnd@arndb.de, deller@gmx.de
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-fbdev@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, sparclinux@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arch@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH 0/4] ppc, fbdev: Clean up fbdev mmap helper
+In-Reply-To: <20230901142659.31787-1-tzimmermann@suse.de>
+References: <20230901142659.31787-1-tzimmermann@suse.de>
+Date:   Tue, 05 Sep 2023 12:47:08 +1000
+Message-ID: <874jk9ibf7.fsf@mail.lhotse>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The pull request you sent on Mon, 4 Sep 2023 11:08:06 +1000:
+Thomas Zimmermann <tzimmermann@suse.de> writes:
+> Refactor fb_pgprotect() in PowerPC to work without struct file. Then
+> clean up and rename fb_pgprotect(). This change has been discussed at
+> [1] in the context of refactoring fbdev's mmap code.
+>
+> The first three patches adapt PowerPC's internal interfaces to
+> provide a phys_mem_access_prot() that works without struct file. Neither
+> the architecture code or fbdev helpers need the parameter.
+>
+> Patch 4 replaces fbdev's fb_pgprotect() with fb_pgprot_device() on
+> all architectures. The new helper with its stream-lined interface
+> enables more refactoring within fbdev's mmap implementation.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v6.6
+The content of this series is OK, but the way it's structured makes it a
+real headache to merge, because it's mostly powerpc changes and then a
+dependant cross architecture patch at the end.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/7a1415eebeece5a27fb40c0242b171c104ad5727
+It would be simpler if patch 4 was first and just passed file=NULL to
+the powerpc helper, with an explanation that it's unused and will be
+dropped in a future cleanup.
 
-Thank you!
+We could then put the first patch (previously patch 4) in a topic branch
+that is shared between the powerpc tree and the fbdev tree, and then the
+powerpc changes could be staged on top of that through the powerpc tree.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+cheers
