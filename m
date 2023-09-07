@@ -2,33 +2,34 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3584EC8742
-	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 16:24:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A466EC8743
+	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 16:42:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbjIGQYV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 7 Sep 2023 12:24:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57214 "EHLO
+        id S236726AbjIGQm0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 7 Sep 2023 12:42:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243031AbjIGQW6 (ORCPT
+        with ESMTP id S238455AbjIGQmA (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 7 Sep 2023 12:22:58 -0400
-Received: from riemann.telenet-ops.be (riemann.telenet-ops.be [IPv6:2a02:1800:110:4::f00:10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 011036182
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 09:13:10 -0700 (PDT)
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by riemann.telenet-ops.be (Postfix) with ESMTPS id 4RhL6D01Kfz4x1Nx
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 15:43:00 +0200 (CEST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c214:2eac:128d:f67e])
-        by albert.telenet-ops.be with bizsmtp
-        id j1hy2A00F2mGBSJ061hyaM; Thu, 07 Sep 2023 15:41:59 +0200
+        Thu, 7 Sep 2023 12:42:00 -0400
+X-Greylist: delayed 1694 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 07 Sep 2023 09:08:32 PDT
+Received: from gauss.telenet-ops.be (gauss.telenet-ops.be [195.130.132.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF43B1BF6
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 09:08:32 -0700 (PDT)
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by gauss.telenet-ops.be (Postfix) with ESMTPS id 4RhL535kGmz4x7fQ
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 15:41:59 +0200 (CEST)
+Received: from ramsan.of.borg ([84.195.187.55])
+        by andre.telenet-ops.be with bizsmtp
+        id j1hy2A00V1C8whw011hyGF; Thu, 07 Sep 2023 15:41:59 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGQ-002m9Y-Ni;
+        id 1qeFGQ-002mA6-Te;
         Thu, 07 Sep 2023 15:41:58 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGf-00CMhK-WA;
+        id 1qeFGg-00CMhy-5d;
         Thu, 07 Sep 2023 15:41:58 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
@@ -41,9 +42,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 29/52] m68k: mac: Remove unused sine_data[]
-Date:   Thu,  7 Sep 2023 15:41:30 +0200
-Message-Id: <0bbdc6f8e1164b5fc5965002cd8a88e0c008c930.1694093327.git.geert@linux-m68k.org>
+Subject: [PATCH 37/52] m68k: sun3/3x: Include <asm/config.h> for config_sun3*()
+Date:   Thu,  7 Sep 2023 15:41:38 +0200
+Message-Id: <31d7b55e5a05a1d4261b808a3b801f7de3bfda99.1694093327.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694093327.git.geert@linux-m68k.org>
 References: <cover.1694093327.git.geert@linux-m68k.org>
@@ -56,38 +57,46 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 When building with W=1:
 
-    arch/m68k/mac/macboing.c:29:26: warning: ‘sine_data’ defined but not used [-Wunused-const-variable=]
-       29 | static const signed char sine_data[] = {
-	  |                          ^~~~~~~~~
+    arch/m68k/sun3/config.c:123:13: warning: no previous prototype for ‘config_sun3’ [-Wmissing-prototypes]
+      126 | void __init config_sun3(void)
+	  |             ^~~~~~~~~~~
+    arch/m68k/sun3x/config.c:42:13: warning: no previous prototype for ‘config_sun3x’ [-Wmissing-prototypes]
+       42 | void __init config_sun3x(void)
+	  |             ^~~~~~~~~~~~
 
-The predefined sine table was superseded by a table calculated at
-run-time in v2.2.0.
+Fix this by including <asm/config.h>
 
+Fixes: 91d7b75a5888c182 ("m68k: Add asm/config.h")
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/mac/macboing.c | 9 ---------
- 1 file changed, 9 deletions(-)
+ arch/m68k/sun3/config.c  | 1 +
+ arch/m68k/sun3x/config.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/arch/m68k/mac/macboing.c b/arch/m68k/mac/macboing.c
-index 4de6229c7bfdebce..76431241347682fc 100644
---- a/arch/m68k/mac/macboing.c
-+++ b/arch/m68k/mac/macboing.c
-@@ -22,15 +22,6 @@ static int mac_asc_inited;
-  */
- static __u8 mac_asc_wave_tab[ 0x800 ];
+diff --git a/arch/m68k/sun3/config.c b/arch/m68k/sun3/config.c
+index 203f428a0344a735..b932250c9e7ffbae 100644
+--- a/arch/m68k/sun3/config.c
++++ b/arch/m68k/sun3/config.c
+@@ -32,6 +32,7 @@
+ #include <asm/irq.h>
+ #include <asm/sections.h>
+ #include <asm/sun3ints.h>
++#include <asm/config.h>
  
--/*
-- * Alan's original sine table; needs interpolating to 0x800
-- * (hint: interpolate or hardwire [0 -> Pi/2[, it's symmetric)
-- */
--static const signed char sine_data[] = {
--	0,  39,  75,  103,  121,  127,  121,  103,  75,  39,
--	0, -39, -75, -103, -121, -127, -121, -103, -75, -39
--};
--
- /*
-  * where the ASC hides ...
-  */
+ char sun3_reserved_pmeg[SUN3_PMEGS_NUM];
+ 
+diff --git a/arch/m68k/sun3x/config.c b/arch/m68k/sun3x/config.c
+index 37121a0f12531fef..3a10cda636fc38fb 100644
+--- a/arch/m68k/sun3x/config.c
++++ b/arch/m68k/sun3x/config.c
+@@ -19,6 +19,7 @@
+ #include <asm/sun3ints.h>
+ #include <asm/setup.h>
+ #include <asm/oplib.h>
++#include <asm/config.h>
+ 
+ #include "time.h"
+ 
 -- 
 2.34.1
 
