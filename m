@@ -2,125 +2,109 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B57DEB8FD7
-	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 19:31:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BEFA5EC875E
+	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 23:37:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238223AbjIGTbc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 7 Sep 2023 15:31:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43552 "EHLO
+        id S233136AbjIGXhK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 7 Sep 2023 19:37:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343792AbjIGSIK (ORCPT
+        with ESMTP id S231792AbjIGXhJ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 7 Sep 2023 14:08:10 -0400
-Received: from gauss.telenet-ops.be (gauss.telenet-ops.be [195.130.132.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73CDD199F
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 11:07:48 -0700 (PDT)
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by gauss.telenet-ops.be (Postfix) with ESMTPS id 4RhL6D02HLz4x1pQ
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 15:43:00 +0200 (CEST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c214:2eac:128d:f67e])
-        by laurent.telenet-ops.be with bizsmtp
-        id j1hx2A00F2mGBSJ011hxtg; Thu, 07 Sep 2023 15:41:59 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGQ-002m8o-Db;
-        Thu, 07 Sep 2023 15:41:57 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGf-00CMgN-Lh;
-        Thu, 07 Sep 2023 15:41:57 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-m68k@lists.linux-m68k.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
+        Thu, 7 Sep 2023 19:37:09 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2881A1BD2
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 16:37:06 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 5E4CC5C01BA;
+        Thu,  7 Sep 2023 19:37:05 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Thu, 07 Sep 2023 19:37:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1694129825; x=1694216225; bh=XTtOj1phX1oc3
+        nOxB5P9Xam0a+SUp0ixshRnNwtj29g=; b=HA95W2kXef4fcqozH7ZQyTE6NJNKH
+        /MzXOmjB4ymc/2ONGMAawakp8KJe0vsRaHwUe4BtJjDe9sWbDIuaEKA2XAhS09pm
+        6yOTE1lxTApvGkNEzQJv7XHtaWdkgY2+zpPYV6iPbFVa6EJMzr2OUw6dE2OFVxGS
+        kOEiw4xbSQ39bAdY5cJfTGnLWblw78z95tY0dDTSa9pJFV8Fzri3DOsiiTbyT1ma
+        lZIqKT+DWDg4jbUrIt8tcnIb2rxdvE2ec0AfD2DobWhw6rGWSvXVs6Oz88Dl3OR8
+        H2vAawJGWop+8WfDZopdDk48OqDDjRVMOMHTeVL0t8qnMl5/60VUwYbNw==
+X-ME-Sender: <xms:oF76ZJmL9EKmCd4di2Rg8dmrsugPqzX5pqpVb7DxjNXIHeXOPDXrLw>
+    <xme:oF76ZE0Cjd4GO4btiwfIFyEh3oOY4UsyQ295F6qAg6V9po_I74-T4I7aL8F2W-AVD
+    IU53cPhM0sHpL2PB3s>
+X-ME-Received: <xmr:oF76ZPqAd070QEbtS4XLeZGAuJpeRsBiDbR8rddMKH8Ho57RH_VZmGF3P242fS9IicmLT8Is_Byej5IXC11hdxCrl54xb5tlpq4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehiedgvdehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
+    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
+    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
+    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:oF76ZJnyHb69j_uh76vcO0Wm3_hgMTc3VgY7qTj6utR-YAsExxU-dQ>
+    <xmx:oF76ZH2FBWrJM4XrGcXNa09GEymiFuYVPoORmhoCnnJUygzlPuzCSQ>
+    <xmx:oF76ZIvAahBodzmOOKkSQWXim23VXEP6TlV-_eBch1sHBADGoJlzQw>
+    <xmx:oV76ZMm5H3nvbijrSnaDhaqzL7J_0dvT58Kw7o_TWe5bPhcS6bLWzA>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 7 Sep 2023 19:37:02 -0400 (EDT)
+Date:   Fri, 8 Sep 2023 09:37:12 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+cc:     linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>,
         Michael Schmitz <schmitzmic@gmail.com>,
         Philip Blundell <philb@gnu.org>,
         Greg Ungerer <gerg@linux-m68k.org>,
         Joshua Thompson <funaho@jurai.org>,
         Sam Creasey <sammy@sammy.net>,
         Laurent Vivier <laurent@vivier.eu>,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 17/52] m68k: amiga: Add and use "amiga.h"
-Date:   Thu,  7 Sep 2023 15:41:18 +0200
-Message-Id: <167b484b2e2f73a23768f94fdc7b2dce91aed5d5.1694093327.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1694093327.git.geert@linux-m68k.org>
-References: <cover.1694093327.git.geert@linux-m68k.org>
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 25/52] m68k: apollo: Replace set but not used variable
+ by READ_ONCE()
+In-Reply-To: <5406d0829d8204841c8cb8d265ca91a52cd22d2d.1694093327.git.geert@linux-m68k.org>
+Message-ID: <6e46156f-5a81-d245-63cd-8091605deee1@linux-m68k.org>
+References: <cover.1694093327.git.geert@linux-m68k.org> <5406d0829d8204841c8cb8d265ca91a52cd22d2d.1694093327.git.geert@linux-m68k.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-When building with W=1:
+On Thu, 7 Sep 2023, Geert Uytterhoeven wrote:
 
-    arch/m68k/amiga/amisound.c:48:13: warning: no previous prototype for ‘amiga_init_sound’ [-Wmissing-prototypes]
-       48 | void __init amiga_init_sound(void)
-	  |             ^~~~~~~~~~~~~~~~
-    arch/m68k/amiga/amisound.c:71:6: warning: no previous prototype for ‘amiga_mksound’ [-Wmissing-prototypes]
-       71 | void amiga_mksound( unsigned int hz, unsigned int ticks )
-	  |      ^~~~~~~~~~~~~
+> --- a/arch/m68k/apollo/config.c
+> +++ b/arch/m68k/apollo/config.c
+> @@ -146,13 +146,11 @@ void __init config_apollo(void)
+>  
+>  irqreturn_t dn_timer_int(int irq, void *dev_id)
+>  {
+> -	volatile unsigned char x;
+> -
+>  	legacy_timer_tick(1);
+>  	timer_heartbeat();
+>  
+> -	x = *(volatile unsigned char *)(apollo_timer + 3);
+> -	x = *(volatile unsigned char *)(apollo_timer + 5);
+> +	READ_ONCE(*(volatile unsigned char *)(apollo_timer + 3));
+> +	READ_ONCE(*(volatile unsigned char *)(apollo_timer + 5));
+>  
+>  	return IRQ_HANDLED;
+>  }
+> 
 
-Fix this by introducing a new header file "amiga.h" for holding the
-prototypes of functions implemented in arch/m68k/amiga/.
+I believe the volatile cast is redundant here, as READ_ONCE does that.
+Perhaps the remaining cast could be deduplicated like so:
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/amiga/amiga.h    | 5 +++++
- arch/m68k/amiga/amisound.c | 2 ++
- arch/m68k/amiga/config.c   | 4 ++--
- 3 files changed, 9 insertions(+), 2 deletions(-)
- create mode 100644 arch/m68k/amiga/amiga.h
+-	volatile unsigned char x;
++	unsigned char *at = (unsigned char *)apollo_timer;
 
-diff --git a/arch/m68k/amiga/amiga.h b/arch/m68k/amiga/amiga.h
-new file mode 100644
-index 0000000000000000..00392781442cb91a
---- /dev/null
-+++ b/arch/m68k/amiga/amiga.h
-@@ -0,0 +1,5 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+
-+/* amisound.c */
-+void amiga_init_sound(void);
-+void amiga_mksound(unsigned int hz, unsigned int ticks);
-diff --git a/arch/m68k/amiga/amisound.c b/arch/m68k/amiga/amisound.c
-index 442bdeee6bd7920c..714fe8ec6afa3364 100644
---- a/arch/m68k/amiga/amisound.c
-+++ b/arch/m68k/amiga/amisound.c
-@@ -16,6 +16,8 @@
- 
- #include <asm/amigahw.h>
- 
-+#include "amiga.h"
-+
- static unsigned short *snd_data;
- static const signed char sine_data[] = {
- 	0,  39,  75,  103,  121,  127,  121,  103,  75,  39,
-diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
-index 3137b45750dfcea7..7791673e547bf795 100644
---- a/arch/m68k/amiga/config.c
-+++ b/arch/m68k/amiga/config.c
-@@ -39,6 +39,8 @@
- #include <asm/io.h>
- #include <asm/config.h>
- 
-+#include "amiga.h"
-+
- static unsigned long amiga_model;
- 
- unsigned long amiga_eclock;
-@@ -96,9 +98,7 @@ static char amiga_model_name[13] = "Amiga ";
- static void amiga_sched_init(void);
- static void amiga_get_model(char *model);
- static void amiga_get_hardware_list(struct seq_file *m);
--extern void amiga_mksound(unsigned int count, unsigned int ticks);
- static void amiga_reset(void);
--extern void amiga_init_sound(void);
- static void amiga_mem_console_write(struct console *co, const char *b,
- 				    unsigned int count);
- #ifdef CONFIG_HEARTBEAT
--- 
-2.34.1
+  	legacy_timer_tick(1);
+  	timer_heartbeat();
 
+-	x = *(volatile unsigned char *)(apollo_timer + 3);
+-	x = *(volatile unsigned char *)(apollo_timer + 5);
++	READ_ONCE(*(at + 3));
++	READ_ONCE(*(at + 5));
