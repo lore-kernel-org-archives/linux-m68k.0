@@ -2,34 +2,34 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D641EC873E
-	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 16:53:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1B02EC8743
+	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 16:53:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244399AbjIGQxz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 7 Sep 2023 12:53:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35696 "EHLO
+        id S244469AbjIGQyA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 7 Sep 2023 12:54:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244446AbjIGQxz (ORCPT
+        with ESMTP id S244452AbjIGQx7 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 7 Sep 2023 12:53:55 -0400
+        Thu, 7 Sep 2023 12:53:59 -0400
 Received: from gauss.telenet-ops.be (gauss.telenet-ops.be [IPv6:2a02:1800:120:4::f00:11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41B80E65
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 09:53:27 -0700 (PDT)
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by gauss.telenet-ops.be (Postfix) with ESMTPS id 4RhL6D02PVz4x37f
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 219C5171F
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 09:53:31 -0700 (PDT)
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by gauss.telenet-ops.be (Postfix) with ESMTPS id 4RhL6D1062z4x7Ql
         for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 15:43:00 +0200 (CEST)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c214:2eac:128d:f67e])
-        by baptiste.telenet-ops.be with bizsmtp
-        id j1hy2A0052mGBSJ011hyX2; Thu, 07 Sep 2023 15:41:59 +0200
+        by laurent.telenet-ops.be with bizsmtp
+        id j1hx2A00J2mGBSJ011hxtk; Thu, 07 Sep 2023 15:41:59 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGQ-002m9e-OV;
-        Thu, 07 Sep 2023 15:41:58 +0200
+        id 1qeFGQ-002m8z-Gj;
+        Thu, 07 Sep 2023 15:41:57 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGg-00CMhP-0e;
-        Thu, 07 Sep 2023 15:41:58 +0200
+        id 1qeFGf-00CMgd-P0;
+        Thu, 07 Sep 2023 15:41:57 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
 Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
@@ -41,9 +41,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 30/52] m68k: mac: Remove unused yday in unmktime()
-Date:   Thu,  7 Sep 2023 15:41:31 +0200
-Message-Id: <85b4acf2f1053552541edcf0266eb781c24f73c8.1694093327.git.geert@linux-m68k.org>
+Subject: [PATCH 20/52] m68k: atari: Make atari_platform_init() static
+Date:   Thu,  7 Sep 2023 15:41:21 +0200
+Message-Id: <b0ecf6dc7ef542244f60c72737e9635273ec4028.1694093327.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694093327.git.geert@linux-m68k.org>
 References: <cover.1694093327.git.geert@linux-m68k.org>
@@ -56,39 +56,31 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 When building with W=1:
 
-    arch/m68k/mac/misc.c: In function ‘unmktime’:
-    arch/m68k/mac/misc.c:557:33: warning: variable ‘yday’ set but not used [-Wunused-but-set-variable]
-      557 |         int days, rem, y, wday, yday;
-	  |                                 ^~~~
+    arch/m68k/atari/config.c:883:12: warning: no previous prototype for ‘atari_platform_init’ [-Wmissing-prototypes]
+      883 | int __init atari_platform_init(void)
+	  |            ^~~~~~~~~~~~~~~~~~~
 
-Fix this by removing the unused variable and assignment.
+Fix this by making atari_platform_init() static.
+There was never a user outside arch/m68k/atari/config.c.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/mac/misc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/m68k/atari/config.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/m68k/mac/misc.c b/arch/m68k/mac/misc.c
-index c7cb29f0ff016360..65107abc8848232c 100644
---- a/arch/m68k/mac/misc.c
-+++ b/arch/m68k/mac/misc.c
-@@ -554,7 +554,7 @@ static void unmktime(time64_t time, long offset,
- 		/* Leap years.  */
- 		{ 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366 }
- 	};
--	int days, rem, y, wday, yday;
-+	int days, rem, y, wday;
- 	const unsigned short int *ip;
+diff --git a/arch/m68k/atari/config.c b/arch/m68k/atari/config.c
+index 38a7c05781059840..b4fe4273ad912ebe 100644
+--- a/arch/m68k/atari/config.c
++++ b/arch/m68k/atari/config.c
+@@ -880,7 +880,7 @@ static const struct resource atari_falconide_rsrc[] __initconst = {
+ 	DEFINE_RES_MEM(FALCON_IDE_BASE + 0x38, 2),
+ };
  
- 	days = div_u64_rem(time, SECS_PER_DAY, &rem);
-@@ -592,7 +592,6 @@ static void unmktime(time64_t time, long offset,
- 		y = yg;
- 	}
- 	*yearp = y - 1900;
--	yday = days; /* day in the year.  Not currently used. */
- 	ip = __mon_yday[__isleap(y)];
- 	for (y = 11; days < (long int) ip[y]; --y)
- 		continue;
+-int __init atari_platform_init(void)
++static int __init atari_platform_init(void)
+ {
+ 	struct platform_device *pdev;
+ 	int rv = 0;
 -- 
 2.34.1
 
