@@ -2,252 +2,92 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D2D7EC8726
-	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 17:37:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25C8DEC874C
+	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 17:52:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241851AbjIGRhe (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 7 Sep 2023 13:37:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56128 "EHLO
+        id S235251AbjIGRwc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 7 Sep 2023 13:52:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244574AbjIGRhc (ORCPT
+        with ESMTP id S236733AbjIGRwb (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 7 Sep 2023 13:37:32 -0400
+        Thu, 7 Sep 2023 13:52:31 -0400
 Received: from riemann.telenet-ops.be (riemann.telenet-ops.be [IPv6:2a02:1800:110:4::f00:10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C121FC4
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 10:37:05 -0700 (PDT)
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by riemann.telenet-ops.be (Postfix) with ESMTPS id 4RhLym1WJmz4wwdN
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 16:21:36 +0200 (CEST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c214:2eac:128d:f67e])
-        by xavier.telenet-ops.be with bizsmtp
-        id j2MX2A00Z2mGBSJ012MXpJ; Thu, 07 Sep 2023 16:21:32 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4AB51FEC
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 10:52:05 -0700 (PDT)
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by riemann.telenet-ops.be (Postfix) with ESMTPS id 4RhL535dXmz4x1FV
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 15:41:59 +0200 (CEST)
+Received: from ramsan.of.borg ([84.195.187.55])
+        by andre.telenet-ops.be with bizsmtp
+        id j1hy2A00X1C8whw011hyGG; Thu, 07 Sep 2023 15:41:59 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFsi-002mG8-Ed;
-        Thu, 07 Sep 2023 16:21:31 +0200
+        id 1qeFGR-002mAU-1M;
+        Thu, 07 Sep 2023 15:41:58 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFsx-00CNC9-Mi;
-        Thu, 07 Sep 2023 16:21:31 +0200
+        id 1qeFGg-00CMiS-9f;
+        Thu, 07 Sep 2023 15:41:58 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-m68k@lists.linux-m68k.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+To:     linux-m68k@lists.linux-m68k.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Philip Blundell <philb@gnu.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        Laurent Vivier <laurent@vivier.eu>,
+        linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 1/2] m68k: Replace GPL 2.0+ README.legal boilerplate by SPDX
-Date:   Thu,  7 Sep 2023 16:21:29 +0200
-Message-Id: <db6225d078aae61474ccbde322851758d02e94a9.1694095086.git.geert@linux-m68k.org>
+Subject: [PATCH 43/52] m68k: sun3: Remove unused start_page in sun3_bootmem_alloc()
+Date:   Thu,  7 Sep 2023 15:41:44 +0200
+Message-Id: <96b95edc103adbed339bfb833e7735b2c7634698.1694093327.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1694095086.git.geert@linux-m68k.org>
-References: <cover.1694095086.git.geert@linux-m68k.org>
+In-Reply-To: <cover.1694093327.git.geert@linux-m68k.org>
+References: <cover.1694093327.git.geert@linux-m68k.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Upstream Linux never had a "README.legal" file, but it was present
-in early source releases of Linux/m68k.  It contained a simple copyright
-notice and a link to a version of the "COPYING" file that predated the
-addition of the "only valid GPL version is v2" clause.
+When building with W=1:
 
-Get rid of the references to non-existant files by replacing the
-boilerplate with SPDX license identifiers.
+    arch/m68k/sun3/config.c: In function ‘sun3_bootmem_alloc’:
+    arch/m68k/sun3/config.c:110:23: warning: variable ‘start_page’ set but not used [-Wunused-but-set-variable]
+      112 |         unsigned long start_page;
+	  |                       ^~~~~~~~~~
 
+Fix this by removing the variable and the assignment, now the last user
+is gone.
+
+Fixes: 1008a11590b966b4 ("m68k: switch to MEMBLOCK + NO_BOOTMEM")
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/68000/entry.S     | 7 ++-----
- arch/m68k/bvme6000/config.c | 5 +----
- arch/m68k/coldfire/entry.S  | 7 ++-----
- arch/m68k/ifpsp060/Makefile | 6 ++----
- arch/m68k/kernel/entry.S    | 7 ++-----
- arch/m68k/kernel/head.S     | 8 ++------
- arch/m68k/mvme147/config.c  | 5 +----
- arch/m68k/mvme16x/config.c  | 5 +----
- arch/m68k/q40/config.c      | 5 +----
- 9 files changed, 14 insertions(+), 41 deletions(-)
+ arch/m68k/sun3/config.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/arch/m68k/68000/entry.S b/arch/m68k/68000/entry.S
-index 7d63e2f1555a03dc..72e95663b62ffd54 100644
---- a/arch/m68k/68000/entry.S
-+++ b/arch/m68k/68000/entry.S
-@@ -1,12 +1,9 @@
--/*
-+/* SPDX-License-Identifier: GPL-2.0-or-later
-+ *
-  *  entry.S -- non-mmu 68000 interrupt and exception entry points
-  *
-  *  Copyright (C) 1991, 1992  Linus Torvalds
-  *
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file README.legal in the main directory of this archive
-- * for more details.
-- *
-  * Linux/m68k support by Hamish Macdonald
-  */
+diff --git a/arch/m68k/sun3/config.c b/arch/m68k/sun3/config.c
+index 4550cf25b6f0880a..6e24920e4195490b 100644
+--- a/arch/m68k/sun3/config.c
++++ b/arch/m68k/sun3/config.c
+@@ -109,13 +109,10 @@ static void sun3_halt (void)
+ static void __init sun3_bootmem_alloc(unsigned long memory_start,
+ 				      unsigned long memory_end)
+ {
+-	unsigned long start_page;
+-
+ 	/* align start/end to page boundaries */
+ 	memory_start = ((memory_start + (PAGE_SIZE-1)) & PAGE_MASK);
+ 	memory_end = memory_end & PAGE_MASK;
  
-diff --git a/arch/m68k/bvme6000/config.c b/arch/m68k/bvme6000/config.c
-index e604fe6602461334..8a2ee69a09f6659c 100644
---- a/arch/m68k/bvme6000/config.c
-+++ b/arch/m68k/bvme6000/config.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  *  arch/m68k/bvme6000/config.c
-  *
-@@ -8,10 +9,6 @@
-  *  linux/amiga/config.c
-  *
-  *  Copyright (C) 1993 Hamish Macdonald
-- *
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file README.legal in the main directory of this archive
-- * for more details.
-  */
+-	start_page = __pa(memory_start) >> PAGE_SHIFT;
+ 	max_pfn = num_pages = __pa(memory_end) >> PAGE_SHIFT;
  
- #include <linux/types.h>
-diff --git a/arch/m68k/coldfire/entry.S b/arch/m68k/coldfire/entry.S
-index 35104c5417ff4d07..4ea08336e2fb0aae 100644
---- a/arch/m68k/coldfire/entry.S
-+++ b/arch/m68k/coldfire/entry.S
-@@ -1,4 +1,5 @@
--/*
-+/* SPDX-License-Identifier: GPL-2.0-or-later
-+ *
-  *  entry.S  -- interrupt and exception processing for ColdFire
-  *
-  *  Copyright (C) 1999-2007, Greg Ungerer (gerg@snapgear.com)
-@@ -13,10 +14,6 @@
-  *
-  *  Copyright (C) 1991, 1992  Linus Torvalds
-  *
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file README.legal in the main directory of this archive
-- * for more details.
-- *
-  * Linux/m68k support by Hamish Macdonald
-  *
-  * 68060 fixes by Jesper Skov
-diff --git a/arch/m68k/ifpsp060/Makefile b/arch/m68k/ifpsp060/Makefile
-index 56b530a96c2f33b5..00d0621f547ccb93 100644
---- a/arch/m68k/ifpsp060/Makefile
-+++ b/arch/m68k/ifpsp060/Makefile
-@@ -1,7 +1,5 @@
--# Makefile for 680x0 Linux 68060 integer/floating point support package
-+# SPDX-License-Identifier: GPL-2.0-or-later
- #
--# This file is subject to the terms and conditions of the GNU General Public
--# License.  See the file "README.legal" in the main directory of this archive
--# for more details.
-+# Makefile for 680x0 Linux 68060 integer/floating point support package
- 
- obj-y := fskeleton.o iskeleton.o os.o
-diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
-index 4dd2fd7acba9ea07..3bcdd32a6b36613d 100644
---- a/arch/m68k/kernel/entry.S
-+++ b/arch/m68k/kernel/entry.S
-@@ -1,13 +1,10 @@
--/* -*- mode: asm -*-
-+/* SPDX-License-Identifier: GPL-2.0-or-later
-+ * -*- mode: asm -*-
-  *
-  *  linux/arch/m68k/kernel/entry.S
-  *
-  *  Copyright (C) 1991, 1992  Linus Torvalds
-  *
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file README.legal in the main directory of this archive
-- * for more details.
-- *
-  * Linux/m68k support by Hamish Macdonald
-  *
-  * 68060 fixes by Jesper Skov
-diff --git a/arch/m68k/kernel/head.S b/arch/m68k/kernel/head.S
-index 9e812d8606be8301..852255cf60dec132 100644
---- a/arch/m68k/kernel/head.S
-+++ b/arch/m68k/kernel/head.S
-@@ -1,4 +1,5 @@
--/* -*- mode: asm -*-
-+/* SPDX-License-Identifier: GPL-2.0-or-later
-+** -*- mode: asm -*-
- **
- ** head.S -- This file contains the initial boot code for the
- **	     Linux/68k kernel.
-@@ -25,11 +26,6 @@
- **            for linux-2.1.115
- ** 1999/02/11  Richard Zidlicky: added Q40 support (initial version 99/01/01)
- ** 2004/05/13 Kars de Jong: Finalised HP300 support
--**
--** This file is subject to the terms and conditions of the GNU General Public
--** License. See the file README.legal in the main directory of this archive
--** for more details.
--**
- */
- 
- /*
-diff --git a/arch/m68k/mvme147/config.c b/arch/m68k/mvme147/config.c
-index 7dfacd0b207a9750..8b5dc07f0811f2fc 100644
---- a/arch/m68k/mvme147/config.c
-+++ b/arch/m68k/mvme147/config.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  *  arch/m68k/mvme147/config.c
-  *
-@@ -7,10 +8,6 @@
-  * Based on:
-  *
-  *  Copyright (C) 1993 Hamish Macdonald
-- *
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file README.legal in the main directory of this archive
-- * for more details.
-  */
- 
- #include <linux/types.h>
-diff --git a/arch/m68k/mvme16x/config.c b/arch/m68k/mvme16x/config.c
-index 9bb9a33e43c246c4..d1fbd1704d65822f 100644
---- a/arch/m68k/mvme16x/config.c
-+++ b/arch/m68k/mvme16x/config.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  *  arch/m68k/mvme16x/config.c
-  *
-@@ -8,10 +9,6 @@
-  *  linux/amiga/config.c
-  *
-  *  Copyright (C) 1993 Hamish Macdonald
-- *
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file README.legal in the main directory of this archive
-- * for more details.
-  */
- 
- #include <linux/types.h>
-diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
-index 2c51c2b4a4fbbf79..de7870ad2a30620d 100644
---- a/arch/m68k/q40/config.c
-+++ b/arch/m68k/q40/config.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  *  arch/m68k/q40/config.c
-  *
-@@ -6,10 +7,6 @@
-  * originally based on:
-  *
-  *  linux/bvme/config.c
-- *
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file README.legal in the main directory of this archive
-- * for more details.
-  */
- 
- #include <linux/errno.h>
+ 	high_memory = (void *)memory_end;
 -- 
 2.34.1
 
