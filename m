@@ -2,34 +2,35 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA350EC873F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D80D0EC8741
 	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 15:45:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231626AbjIGPpp (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 7 Sep 2023 11:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50428 "EHLO
+        id S231754AbjIGPpq (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 7 Sep 2023 11:45:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241795AbjIGPjS (ORCPT
+        with ESMTP id S236149AbjIGPlX (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 7 Sep 2023 11:39:18 -0400
-Received: from weierstrass.telenet-ops.be (weierstrass.telenet-ops.be [IPv6:2a02:1800:110:4::f00:11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810F01BF
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 08:37:16 -0700 (PDT)
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by weierstrass.telenet-ops.be (Postfix) with ESMTPS id 4RhL535MSNz4x3HK
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 15:41:59 +0200 (CEST)
-Received: from ramsan.of.borg ([84.195.187.55])
-        by albert.telenet-ops.be with bizsmtp
-        id j1hy2A00T1C8whw061hyaQ; Thu, 07 Sep 2023 15:41:59 +0200
+        Thu, 7 Sep 2023 11:41:23 -0400
+X-Greylist: delayed 599 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 07 Sep 2023 08:37:45 PDT
+Received: from weierstrass.telenet-ops.be (weierstrass.telenet-ops.be [195.130.137.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF5C02D68
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 08:37:45 -0700 (PDT)
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by weierstrass.telenet-ops.be (Postfix) with ESMTPS id 4RhL5L5zxhz4wy0l
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 15:42:14 +0200 (CEST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c214:2eac:128d:f67e])
+        by andre.telenet-ops.be with bizsmtp
+        id j1hy2A0042mGBSJ011hyGB; Thu, 07 Sep 2023 15:41:59 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGQ-002mAD-Ux;
-        Thu, 07 Sep 2023 15:41:58 +0200
+        id 1qeFGQ-002m9E-KK;
+        Thu, 07 Sep 2023 15:41:57 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGg-00CMi7-6v;
-        Thu, 07 Sep 2023 15:41:58 +0200
+        id 1qeFGf-00CMgv-Rn;
+        Thu, 07 Sep 2023 15:41:57 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
 Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
@@ -41,9 +42,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 39/52] m68k: sun3: Fix context restore in flush_tlb_range()
-Date:   Thu,  7 Sep 2023 15:41:40 +0200
-Message-Id: <a7fd6a347bb0454a37c940f5580a289dff2423ed.1694093327.git.geert@linux-m68k.org>
+Subject: [PATCH 24/52] m68k: apollo: Make local reset, serial, and irq functions static
+Date:   Thu,  7 Sep 2023 15:41:25 +0200
+Message-Id: <975ee6ee27cc9d41cfd9026643bd3da63546bc13.1694093327.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694093327.git.geert@linux-m68k.org>
 References: <cover.1694093327.git.geert@linux-m68k.org>
@@ -56,36 +57,91 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 When building with W=1:
 
-    In file included from arch/m68k/kernel/traps.c:42:
-    arch/m68k/include/asm/tlbflush.h: In function ‘flush_tlb_range’:
-    arch/m68k/include/asm/tlbflush.h:191:28: warning: variable ‘oldctx’ set but not used [-Wunused-but-set-variable]
-      191 |         unsigned char seg, oldctx;
-	  |                            ^~~~~~
+    arch/m68k/apollo/config.c:132:6: warning: no previous prototype for ‘dn_serial_print’ [-Wmissing-prototypes]
+      110 | void dn_serial_print (const char *str)
+	  |      ^~~~~~~~~~~~~~~
+    arch/m68k/apollo/dn_ints.c:8:14: warning: no previous prototype for ‘apollo_irq_startup’ [-Wmissing-prototypes]
+	8 | unsigned int apollo_irq_startup(struct irq_data *data)
+	  |              ^~~~~~~~~~~~~~~~~~
+    arch/m68k/apollo/dn_ints.c:19:6: warning: no previous prototype for ‘apollo_irq_shutdown’ [-Wmissing-prototypes]
+       19 | void apollo_irq_shutdown(struct irq_data *data)
+	  |      ^~~~~~~~~~~~~~~~~~~
+    arch/m68k/apollo/dn_ints.c:29:6: warning: no previous prototype for ‘apollo_irq_eoi’ [-Wmissing-prototypes]
+       29 | void apollo_irq_eoi(struct irq_data *data)
+	  |      ^~~~~~~~~~~~~~
 
-Indeed, the old context is saved, but never restored.  Fix this by
-adding the missing call to sun3_put_context().
+Fix this by making all local functions static.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
-Compile-tested only.
-This issue seems to have been present since the introduction of Sun3
-support in v2.4.0.
----
- arch/m68k/include/asm/tlbflush.h | 1 +
- 1 file changed, 1 insertion(+)
+ arch/m68k/apollo/config.c  | 8 ++++----
+ arch/m68k/apollo/dn_ints.c | 6 +++---
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/m68k/include/asm/tlbflush.h b/arch/m68k/include/asm/tlbflush.h
-index b882e2f4f5516f8d..3ab329a03c76c8d8 100644
---- a/arch/m68k/include/asm/tlbflush.h
-+++ b/arch/m68k/include/asm/tlbflush.h
-@@ -208,6 +208,7 @@ static inline void flush_tlb_range (struct vm_area_struct *vma,
- 	next:
- 		start += SUN3_PMEG_SIZE;
- 	}
-+	sun3_put_context(oldctx);
+diff --git a/arch/m68k/apollo/config.c b/arch/m68k/apollo/config.c
+index fccbb40772dca6b9..0e6801eecbaf6361 100644
+--- a/arch/m68k/apollo/config.c
++++ b/arch/m68k/apollo/config.c
+@@ -29,7 +29,7 @@ u_long apollo_model;
+ extern void dn_sched_init(void);
+ extern void dn_init_IRQ(void);
+ extern int dn_dummy_hwclk(int, struct rtc_time *);
+-extern void dn_dummy_reset(void);
++static void dn_dummy_reset(void);
+ #ifdef CONFIG_HEARTBEAT
+ static void dn_heartbeat(int on);
+ #endif
+@@ -107,7 +107,7 @@ static void __init dn_setup_model(void)
+ 
  }
  
- static inline void flush_tlb_kernel_range(unsigned long start, unsigned long end)
+-void dn_serial_print (const char *str)
++static void dn_serial_print(const char *str)
+ {
+     while (*str) {
+         if (*str == '\n') {
+@@ -207,8 +207,8 @@ int dn_dummy_hwclk(int op, struct rtc_time *t) {
+ 
+ }
+ 
+-void dn_dummy_reset(void) {
+-
++static void dn_dummy_reset(void)
++{
+   dn_serial_print("The end !\n");
+ 
+   for(;;);
+diff --git a/arch/m68k/apollo/dn_ints.c b/arch/m68k/apollo/dn_ints.c
+index 02cff7efc8342aa6..d97251fe0ab83045 100644
+--- a/arch/m68k/apollo/dn_ints.c
++++ b/arch/m68k/apollo/dn_ints.c
+@@ -5,7 +5,7 @@
+ #include <asm/traps.h>
+ #include <asm/apollohw.h>
+ 
+-unsigned int apollo_irq_startup(struct irq_data *data)
++static unsigned int apollo_irq_startup(struct irq_data *data)
+ {
+ 	unsigned int irq = data->irq;
+ 
+@@ -16,7 +16,7 @@ unsigned int apollo_irq_startup(struct irq_data *data)
+ 	return 0;
+ }
+ 
+-void apollo_irq_shutdown(struct irq_data *data)
++static void apollo_irq_shutdown(struct irq_data *data)
+ {
+ 	unsigned int irq = data->irq;
+ 
+@@ -26,7 +26,7 @@ void apollo_irq_shutdown(struct irq_data *data)
+ 		*(volatile unsigned char *)(picb+1) |= (1 << (irq - 8));
+ }
+ 
+-void apollo_irq_eoi(struct irq_data *data)
++static void apollo_irq_eoi(struct irq_data *data)
+ {
+ 	*(volatile unsigned char *)(pica) = 0x20;
+ 	*(volatile unsigned char *)(picb) = 0x20;
 -- 
 2.34.1
 
