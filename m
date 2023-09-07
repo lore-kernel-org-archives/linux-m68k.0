@@ -2,33 +2,33 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C110EC8738
-	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 16:15:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 450BDEC8738
+	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 16:16:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240047AbjIGQPs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 7 Sep 2023 12:15:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58274 "EHLO
+        id S240346AbjIGQPw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 7 Sep 2023 12:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239879AbjIGQPa (ORCPT
+        with ESMTP id S232221AbjIGQPf (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 7 Sep 2023 12:15:30 -0400
-Received: from weierstrass.telenet-ops.be (weierstrass.telenet-ops.be [IPv6:2a02:1800:110:4::f00:11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 591E72D50
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 09:12:48 -0700 (PDT)
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by weierstrass.telenet-ops.be (Postfix) with ESMTPS id 4RhL6D02gYz4x309
+        Thu, 7 Sep 2023 12:15:35 -0400
+Received: from riemann.telenet-ops.be (riemann.telenet-ops.be [IPv6:2a02:1800:110:4::f00:10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93BEC5599
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 09:13:11 -0700 (PDT)
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by riemann.telenet-ops.be (Postfix) with ESMTPS id 4RhL6D017nz4x1Ng
         for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 15:43:00 +0200 (CEST)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c214:2eac:128d:f67e])
-        by laurent.telenet-ops.be with bizsmtp
-        id j1hx2A00C2mGBSJ011hxtf; Thu, 07 Sep 2023 15:41:59 +0200
+        by albert.telenet-ops.be with bizsmtp
+        id j1hy2A0042mGBSJ061hyaG; Thu, 07 Sep 2023 15:41:59 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGQ-002m8U-9a;
+        id 1qeFGQ-002m9K-L7;
         Thu, 07 Sep 2023 15:41:57 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGf-00CMfy-Hb;
+        id 1qeFGf-00CMh0-TR;
         Thu, 07 Sep 2023 15:41:57 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
@@ -41,9 +41,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 12/52] m68k: mm: Move paging_init() to common <asm/pgtable.h>
-Date:   Thu,  7 Sep 2023 15:41:13 +0200
-Message-Id: <58e3cf7b890aa8ef578b3de60f4929fd2a3d3075.1694093327.git.geert@linux-m68k.org>
+Subject: [PATCH 25/52] m68k: apollo: Replace set but not used variable by READ_ONCE()
+Date:   Thu,  7 Sep 2023 15:41:26 +0200
+Message-Id: <5406d0829d8204841c8cb8d265ca91a52cd22d2d.1694093327.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694093327.git.geert@linux-m68k.org>
 References: <cover.1694093327.git.geert@linux-m68k.org>
@@ -56,68 +56,38 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 When building with W=1:
 
-    arch/m68k/mm/motorola.c:414:13: warning: no previous prototype for ‘paging_init’ [-Wmissing-prototypes]
-      414 | void __init paging_init(void)
-	  |             ^~~~~~~~~~~
-    arch/m68k/mm/sun3mmu.c:36:13: warning: no previous prototype for ‘paging_init’ [-Wmissing-prototypes]
-       36 | void __init paging_init(void)
-	  |             ^~~~~~~~~~~
+    arch/m68k/apollo/config.c: In function ‘dn_timer_int’:
+    arch/m68k/apollo/config.c:171:32: warning: variable ‘x’ set but not used [-Wunused-but-set-variable]
+      149 |         volatile unsigned char x;
+	  |                                ^
 
-Fix this by consolidating the multiple prototypes into the common
-<asm/pgtable.h>.
+Fix this by using READ_ONCE(), and removing the variable.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/include/asm/pgtable.h    | 9 +++++++++
- arch/m68k/include/asm/pgtable_no.h | 1 -
- arch/m68k/kernel/setup_mm.c        | 2 --
- 3 files changed, 9 insertions(+), 3 deletions(-)
+ arch/m68k/apollo/config.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/arch/m68k/include/asm/pgtable.h b/arch/m68k/include/asm/pgtable.h
-index ad15d655a9bfb3b5..27525c6a12fd0c7f 100644
---- a/arch/m68k/include/asm/pgtable.h
-+++ b/arch/m68k/include/asm/pgtable.h
-@@ -1,6 +1,15 @@
- /* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __M68K_PGTABLE_H
-+#define __M68K_PGTABLE_H
-+
- #ifdef __uClinux__
- #include <asm/pgtable_no.h>
- #else
- #include <asm/pgtable_mm.h>
- #endif
-+
-+#ifndef __ASSEMBLY__
-+extern void paging_init(void);
-+#endif
-+
-+#endif /* __M68K_PGTABLE_H */
-diff --git a/arch/m68k/include/asm/pgtable_no.h b/arch/m68k/include/asm/pgtable_no.h
-index fc044df52b96c149..1a86c15b9008f03d 100644
---- a/arch/m68k/include/asm/pgtable_no.h
-+++ b/arch/m68k/include/asm/pgtable_no.h
-@@ -28,7 +28,6 @@
- #define PAGE_READONLY	__pgprot(0)
- #define PAGE_KERNEL	__pgprot(0)
+diff --git a/arch/m68k/apollo/config.c b/arch/m68k/apollo/config.c
+index 0e6801eecbaf6361..fef9b8a1be673bad 100644
+--- a/arch/m68k/apollo/config.c
++++ b/arch/m68k/apollo/config.c
+@@ -146,13 +146,11 @@ void __init config_apollo(void)
  
--extern void paging_init(void);
- #define swapper_pg_dir ((pgd_t *) 0)
- 
- /*
-diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-index 6f1ae01f322cf231..10310b04f77d8d79 100644
---- a/arch/m68k/kernel/setup_mm.c
-+++ b/arch/m68k/kernel/setup_mm.c
-@@ -107,8 +107,6 @@ EXPORT_SYMBOL(isa_sex);
- 
- #define MASK_256K 0xfffc0000
- 
--extern void paging_init(void);
--
- static void __init m68k_parse_bootinfo(const struct bi_record *record)
+ irqreturn_t dn_timer_int(int irq, void *dev_id)
  {
- 	const struct bi_record *first_record = record;
+-	volatile unsigned char x;
+-
+ 	legacy_timer_tick(1);
+ 	timer_heartbeat();
+ 
+-	x = *(volatile unsigned char *)(apollo_timer + 3);
+-	x = *(volatile unsigned char *)(apollo_timer + 5);
++	READ_ONCE(*(volatile unsigned char *)(apollo_timer + 3));
++	READ_ONCE(*(volatile unsigned char *)(apollo_timer + 5));
+ 
+ 	return IRQ_HANDLED;
+ }
 -- 
 2.34.1
 
