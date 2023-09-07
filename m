@@ -2,41 +2,41 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BEFA5EC875E
-	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 23:37:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8636DEC875E
+	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 23:44:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233136AbjIGXhK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 7 Sep 2023 19:37:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53130 "EHLO
+        id S240355AbjIGXoR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 7 Sep 2023 19:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231792AbjIGXhJ (ORCPT
+        with ESMTP id S238362AbjIGXoR (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 7 Sep 2023 19:37:09 -0400
+        Thu, 7 Sep 2023 19:44:17 -0400
 Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2881A1BD2
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 16:37:06 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 5E4CC5C01BA;
-        Thu,  7 Sep 2023 19:37:05 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE66F1BC6
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 16:44:12 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 550855C009E;
+        Thu,  7 Sep 2023 19:44:12 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Thu, 07 Sep 2023 19:37:05 -0400
+  by compute4.internal (MEProxy); Thu, 07 Sep 2023 19:44:12 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-type:content-type:date:date
         :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
         :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1694129825; x=1694216225; bh=XTtOj1phX1oc3
-        nOxB5P9Xam0a+SUp0ixshRnNwtj29g=; b=HA95W2kXef4fcqozH7ZQyTE6NJNKH
-        /MzXOmjB4ymc/2ONGMAawakp8KJe0vsRaHwUe4BtJjDe9sWbDIuaEKA2XAhS09pm
-        6yOTE1lxTApvGkNEzQJv7XHtaWdkgY2+zpPYV6iPbFVa6EJMzr2OUw6dE2OFVxGS
-        kOEiw4xbSQ39bAdY5cJfTGnLWblw78z95tY0dDTSa9pJFV8Fzri3DOsiiTbyT1ma
-        lZIqKT+DWDg4jbUrIt8tcnIb2rxdvE2ec0AfD2DobWhw6rGWSvXVs6Oz88Dl3OR8
-        H2vAawJGWop+8WfDZopdDk48OqDDjRVMOMHTeVL0t8qnMl5/60VUwYbNw==
-X-ME-Sender: <xms:oF76ZJmL9EKmCd4di2Rg8dmrsugPqzX5pqpVb7DxjNXIHeXOPDXrLw>
-    <xme:oF76ZE0Cjd4GO4btiwfIFyEh3oOY4UsyQ295F6qAg6V9po_I74-T4I7aL8F2W-AVD
-    IU53cPhM0sHpL2PB3s>
-X-ME-Received: <xmr:oF76ZPqAd070QEbtS4XLeZGAuJpeRsBiDbR8rddMKH8Ho57RH_VZmGF3P242fS9IicmLT8Is_Byej5IXC11hdxCrl54xb5tlpq4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehiedgvdehucetufdoteggodetrfdotf
+        :x-sasl-enc; s=fm1; t=1694130252; x=1694216652; bh=q5gchdWfXi6gz
+        h8043+yIcq3FXTYfVp0J8SuZntpZm4=; b=FxPjoUcRadtqSeYFehso6rWtrz3SC
+        pnei1qqAH8luZIS3w/dEznGBdbQjPtR4oieFyJqDY+wmtA29Gm3FfxvmQptn0Pul
+        tu6LpEo4I6MWSGhRosuXZW5KBSQfLMXnXOJkDAChE2K5XMkZlQFKkXxBPnKPJHXO
+        vFkuR6t1OjhLnOt5i22yb3GJ60Ribz8FFtgBBPqGzZ+MkGEdJy99B83sgYQMbfPC
+        z7azGEjZwB8AvjFyRgt2jWY4WBQARAaiE8+xYmL6plM83fPqbzwNWKtV4qlCypYV
+        Q1bPKqAS9llA1pOgcg/Nb9k5impTG0UstWih127pg/QF+DHjPbC6IshvQ==
+X-ME-Sender: <xms:S2D6ZIr-oOoMaEp4AQCGknlXu253c0Mu5a3z88ut8e4_BDbXqJ_XbA>
+    <xme:S2D6ZOp4aiaNrv8PoKwT8cb_ekIffWNaadChXK45AMBpe5hTaM0_DRiDM9yb28Ohl
+    CXauIbb3fNnUQAP7KI>
+X-ME-Received: <xmr:S2D6ZNMPEF90lZisvvGIB0l9-XfU4nV8F7X8ezRgrJDSIELB7bDz5pM-9GBRue2izttAh0zl_OUXOfYNbuMdz_UbWIGYML7idGU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehiedgvdejucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
@@ -44,14 +44,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehiedgvdehucetufdoteggod
     htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
     heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
     hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:oF76ZJnyHb69j_uh76vcO0Wm3_hgMTc3VgY7qTj6utR-YAsExxU-dQ>
-    <xmx:oF76ZH2FBWrJM4XrGcXNa09GEymiFuYVPoORmhoCnnJUygzlPuzCSQ>
-    <xmx:oF76ZIvAahBodzmOOKkSQWXim23VXEP6TlV-_eBch1sHBADGoJlzQw>
-    <xmx:oV76ZMm5H3nvbijrSnaDhaqzL7J_0dvT58Kw7o_TWe5bPhcS6bLWzA>
+X-ME-Proxy: <xmx:S2D6ZP66db3jVxyOd1lLgU-WclItNVAUtE5K2_qnbYBqr_94mu9rvg>
+    <xmx:S2D6ZH6WjFPLImbtGKLVGEUvV2MEsNVMASj8H_JrR7JALKyQ1LvDVQ>
+    <xmx:S2D6ZPjjH2P2oq9Nb1D_5_YS1JBG6S0-mBHDUpesdzzo5mg03ohy4w>
+    <xmx:TGD6ZKYRbBK5KoAPWLQuZEctNvtjDbESYcnY8kxVxK6mg8wvnKQPPA>
 Feedback-ID: i58a146ae:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 7 Sep 2023 19:37:02 -0400 (EDT)
-Date:   Fri, 8 Sep 2023 09:37:12 +1000 (AEST)
+ 7 Sep 2023 19:44:08 -0400 (EDT)
+Date:   Fri, 8 Sep 2023 09:44:21 +1000 (AEST)
 From:   Finn Thain <fthain@linux-m68k.org>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
 cc:     linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>,
@@ -62,49 +62,193 @@ cc:     linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>,
         Sam Creasey <sammy@sammy.net>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 25/52] m68k: apollo: Replace set but not used variable
- by READ_ONCE()
-In-Reply-To: <5406d0829d8204841c8cb8d265ca91a52cd22d2d.1694093327.git.geert@linux-m68k.org>
-Message-ID: <6e46156f-5a81-d245-63cd-8091605deee1@linux-m68k.org>
-References: <cover.1694093327.git.geert@linux-m68k.org> <5406d0829d8204841c8cb8d265ca91a52cd22d2d.1694093327.git.geert@linux-m68k.org>
+Subject: Re: [PATCH 32/52] m68k: mac: Add and use "mac.h"
+In-Reply-To: <e9f3da9b152b7d19b64d775d04e9e11b63dc35b6.1694093327.git.geert@linux-m68k.org>
+Message-ID: <1c7894fe-4cf4-1ad9-5ed2-aaab4351ff4c@linux-m68k.org>
+References: <cover.1694093327.git.geert@linux-m68k.org> <e9f3da9b152b7d19b64d775d04e9e11b63dc35b6.1694093327.git.geert@linux-m68k.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+
 On Thu, 7 Sep 2023, Geert Uytterhoeven wrote:
 
-> --- a/arch/m68k/apollo/config.c
-> +++ b/arch/m68k/apollo/config.c
-> @@ -146,13 +146,11 @@ void __init config_apollo(void)
+> diff --git a/arch/m68k/mac/baboon.c b/arch/m68k/mac/baboon.c
+> index a7d280220662c747..5c97a7058bcdee2e 100644
+> --- a/arch/m68k/mac/baboon.c
+> +++ b/arch/m68k/mac/baboon.c
+> @@ -15,6 +15,8 @@
+>  #include <asm/macints.h>
+>  #include <asm/mac_baboon.h>
 >  
->  irqreturn_t dn_timer_int(int irq, void *dev_id)
->  {
-> -	volatile unsigned char x;
+> +#include "mac.h"
+> +
+>  int baboon_present;
+>  static volatile struct baboon *baboon;
+>  
+> diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+> index d56affefd5cabeb5..e324410ef239c09f 100644
+> --- a/arch/m68k/mac/config.c
+> +++ b/arch/m68k/mac/config.c
+> @@ -50,22 +50,14 @@
+>  #include <asm/mac_psc.h>
+>  #include <asm/config.h>
+>  
+> +#include "mac.h"
+> +
+>  /* Mac bootinfo struct */
+>  struct mac_booter_data mac_bi_data;
+>  
+>  /* The phys. video addr. - might be bogus on some machines */
+>  static unsigned long mac_orig_videoaddr;
+>  
+> -extern int mac_hwclk(int, struct rtc_time *);
+> -extern void iop_init(void);
+> -extern void via_init(void);
+> -extern void via_init_clock(void);
+> -extern void oss_init(void);
+> -extern void psc_init(void);
+> -extern void baboon_init(void);
 > -
->  	legacy_timer_tick(1);
->  	timer_heartbeat();
+> -extern void mac_mksound(unsigned int, unsigned int);
+> -
+>  static void mac_get_model(char *str);
+>  static void mac_identify(void);
+>  static void mac_report_hardware(void);
+> diff --git a/arch/m68k/mac/iop.c b/arch/m68k/mac/iop.c
+> index 010b3b5ae8e8584a..a92740d530ac4fbe 100644
+> --- a/arch/m68k/mac/iop.c
+> +++ b/arch/m68k/mac/iop.c
+> @@ -119,6 +119,8 @@
+>  #include <asm/macints.h>
+>  #include <asm/mac_iop.h>
 >  
-> -	x = *(volatile unsigned char *)(apollo_timer + 3);
-> -	x = *(volatile unsigned char *)(apollo_timer + 5);
-> +	READ_ONCE(*(volatile unsigned char *)(apollo_timer + 3));
-> +	READ_ONCE(*(volatile unsigned char *)(apollo_timer + 5));
+> +#include "mac.h"
+> +
+>  #ifdef DEBUG
+>  #define iop_pr_debug(fmt, ...) \
+>  	printk(KERN_DEBUG "%s: " fmt, __func__, ##__VA_ARGS__)
+> diff --git a/arch/m68k/mac/mac.h b/arch/m68k/mac/mac.h
+> new file mode 100644
+> index 0000000000000000..d3d142cea3b4b911
+> --- /dev/null
+> +++ b/arch/m68k/mac/mac.h
+> @@ -0,0 +1,25 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +struct rtc_time;
+> +
+
+I don't think we need a new header file. Related function prototypes 
+already have homes in existing header files --
+
+> +/* baboon.c */
+> +void baboon_init(void);
+> +
+
+this could go into mac_baboon.h
+
+> +/* iop.c */
+> +void iop_init(void);
+> +
+
+mac_iop.h
+
+> +/* misc.c */
+> +int mac_hwclk(int op, struct rtc_time *t);
+> +
+
+macintosh.h
+
+> +/* macboing.c */
+> +void mac_mksound(unsigned int freq, unsigned int length);
+> +
+
+mac_asc.h
+
+> +/* oss.c */
+> +void oss_init(void);
+> +
+
+mac_oss.h
+
+> +/* psc.c */
+> +void psc_init(void);
+> +
+
+mac_psc.h
+
+> +/* via.c */
+> +void via_init(void);
+> +void via_init_clock(void);
+
+mac_via.h
+
+> diff --git a/arch/m68k/mac/macboing.c b/arch/m68k/mac/macboing.c
+> index 76431241347682fc..faea2265a540192d 100644
+> --- a/arch/m68k/mac/macboing.c
+> +++ b/arch/m68k/mac/macboing.c
+> @@ -16,6 +16,8 @@
+>  #include <asm/macintosh.h>
+>  #include <asm/mac_asc.h>
 >  
->  	return IRQ_HANDLED;
->  }
+> +#include "mac.h"
+> +
+>  static int mac_asc_inited;
+>  /*
+>   * dumb triangular wave table
+> diff --git a/arch/m68k/mac/misc.c b/arch/m68k/mac/misc.c
+> index 65107abc8848232c..4c8f8cbfa05f3404 100644
+> --- a/arch/m68k/mac/misc.c
+> +++ b/arch/m68k/mac/misc.c
+> @@ -25,6 +25,8 @@
+>  
+>  #include <asm/machdep.h>
+>  
+> +#include "mac.h"
+> +
+>  /*
+>   * Offset between Unix time (1970-based) and Mac time (1904-based). Cuda and PMU
+>   * times wrap in 2040. If we need to handle later times, the read_time functions
+> diff --git a/arch/m68k/mac/oss.c b/arch/m68k/mac/oss.c
+> index 921e6c092f2c6626..1641607f300d981c 100644
+> --- a/arch/m68k/mac/oss.c
+> +++ b/arch/m68k/mac/oss.c
+> @@ -27,6 +27,8 @@
+>  #include <asm/mac_via.h>
+>  #include <asm/mac_oss.h>
+>  
+> +#include "mac.h"
+> +
+>  int oss_present;
+>  volatile struct mac_oss *oss;
+>  
+> diff --git a/arch/m68k/mac/psc.c b/arch/m68k/mac/psc.c
+> index 0d0965b19c09b439..b4183cf66efef7f5 100644
+> --- a/arch/m68k/mac/psc.c
+> +++ b/arch/m68k/mac/psc.c
+> @@ -26,6 +26,8 @@
+>  #include <asm/macints.h>
+>  #include <asm/mac_psc.h>
+>  
+> +#include "mac.h"
+> +
+>  #define DEBUG_PSC
+>  
+>  volatile __u8 *psc;
+> diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
+> index 3d11d6219cdd56da..01e6b0e37f8dd0e8 100644
+> --- a/arch/m68k/mac/via.c
+> +++ b/arch/m68k/mac/via.c
+> @@ -38,6 +38,8 @@
+>  #include <asm/mac_psc.h>
+>  #include <asm/mac_oss.h>
+>  
+> +#include "mac.h"
+> +
+>  volatile __u8 *via1, *via2;
+>  int rbv_present;
+>  int via_alt_mapping;
 > 
-
-I believe the volatile cast is redundant here, as READ_ONCE does that.
-Perhaps the remaining cast could be deduplicated like so:
-
--	volatile unsigned char x;
-+	unsigned char *at = (unsigned char *)apollo_timer;
-
-  	legacy_timer_tick(1);
-  	timer_heartbeat();
-
--	x = *(volatile unsigned char *)(apollo_timer + 3);
--	x = *(volatile unsigned char *)(apollo_timer + 5);
-+	READ_ONCE(*(at + 3));
-+	READ_ONCE(*(at + 5));
