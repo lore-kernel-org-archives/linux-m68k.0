@@ -2,34 +2,34 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A078BEC873E
-	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 16:58:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D63BEC8742
+	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 17:19:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244872AbjIGQ6J (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 7 Sep 2023 12:58:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42778 "EHLO
+        id S242931AbjIGRTr (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 7 Sep 2023 13:19:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236674AbjIGQ6J (ORCPT
+        with ESMTP id S242984AbjIGRTq (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 7 Sep 2023 12:58:09 -0400
-Received: from weierstrass.telenet-ops.be (weierstrass.telenet-ops.be [195.130.137.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE82A1FD3
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 09:57:43 -0700 (PDT)
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by weierstrass.telenet-ops.be (Postfix) with ESMTPS id 4RhL535cvxz4x3Hc
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 15:41:59 +0200 (CEST)
-Received: from ramsan.of.borg ([84.195.187.55])
-        by albert.telenet-ops.be with bizsmtp
-        id j1hy2A00U1C8whw061hyaR; Thu, 07 Sep 2023 15:41:59 +0200
+        Thu, 7 Sep 2023 13:19:46 -0400
+Received: from cantor.telenet-ops.be (cantor.telenet-ops.be [IPv6:2a02:1800:120:4::f00:10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E81CDE
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 10:19:22 -0700 (PDT)
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by cantor.telenet-ops.be (Postfix) with ESMTPS id 4RhL6D05KNz4xVNk
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 15:43:00 +0200 (CEST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c214:2eac:128d:f67e])
+        by xavier.telenet-ops.be with bizsmtp
+        id j1hx2A00B2mGBSJ011hxwl; Thu, 07 Sep 2023 15:41:59 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGQ-002mA9-UG;
-        Thu, 07 Sep 2023 15:41:58 +0200
+        id 1qeFGQ-002m8Y-AE;
+        Thu, 07 Sep 2023 15:41:57 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGg-00CMi3-6I;
-        Thu, 07 Sep 2023 15:41:58 +0200
+        id 1qeFGf-00CMg4-IU;
+        Thu, 07 Sep 2023 15:41:57 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
 Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
@@ -41,9 +41,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 38/52] m68k: sun3: Improve Sun3/3x DVMA abstraction in <asm/dvma.h>
-Date:   Thu,  7 Sep 2023 15:41:39 +0200
-Message-Id: <df48190f1784b0d04a64a784839a987e5a56cd8b.1694093327.git.geert@linux-m68k.org>
+Subject: [PATCH 13/52] m68k: mm: Add and use "fault.h"
+Date:   Thu,  7 Sep 2023 15:41:14 +0200
+Message-Id: <7f5b26d2ac7bb619fba42d7887a723aca84f0862.1694093327.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694093327.git.geert@linux-m68k.org>
 References: <cover.1694093327.git.geert@linux-m68k.org>
@@ -56,92 +56,88 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 When building with W=1:
 
-    arch/m68k/sun3/dvma.c:65:13: warning: no previous prototype for ‘sun3_dvma_init’ [-Wmissing-prototypes]
-       65 | void __init sun3_dvma_init(void)
-	  |             ^~~~~~~~~~~~~~
+    arch/m68k/mm/fault.c:22:5: warning: no previous prototype for ‘send_fault_sig’ [-Wmissing-prototypes]
+       22 | int send_fault_sig(struct pt_regs *regs)
+	  |     ^~~~~~~~~~~~~~
+    arch/m68k/mm/fault.c:68:5: warning: no previous prototype for ‘do_page_fault’ [-Wmissing-prototypes]
+       68 | int do_page_fault(struct pt_regs *regs, unsigned long address,
+	  |     ^~~~~~~~~~~~~
 
-    arch/m68k/sun3x/dvma.c:178:6: warning: no previous prototype for ‘dvma_unmap_iommu’ [-Wmissing-prototypes]
-      179 | void dvma_unmap_iommu(unsigned long baddr, int len)
-	  |      ^~~~~~~~~~~~~~~~
-
-Fix this by moving the declarations for sun3_dvma_init() and
-dvma_unmap_iommu() to <asm/dvma.h>.  Avoid #ifdefs in callers by
-providing dummy static inline functions.
+Fix this by introducing a new header file "fault.h" for holding the
+prototypes of functions implemented in arch/m68k/mm/fault.c.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/include/asm/dvma.h |  8 +++++++-
- arch/m68k/sun3/sun3dvma.c    | 15 ---------------
- 2 files changed, 7 insertions(+), 16 deletions(-)
+ arch/m68k/kernel/sys_m68k.c | 3 +--
+ arch/m68k/kernel/traps.c    | 5 +----
+ arch/m68k/mm/fault.c        | 2 ++
+ arch/m68k/mm/fault.h        | 7 +++++++
+ 4 files changed, 11 insertions(+), 6 deletions(-)
+ create mode 100644 arch/m68k/mm/fault.h
 
-diff --git a/arch/m68k/include/asm/dvma.h b/arch/m68k/include/asm/dvma.h
-index f609ec1de36d0d2c..d1d66d04844d3e1c 100644
---- a/arch/m68k/include/asm/dvma.h
-+++ b/arch/m68k/include/asm/dvma.h
-@@ -58,12 +58,16 @@ extern void dvma_free(void *vaddr);
- #define dvma_vtob(x) dvma_vtop(x)
- #define dvma_btov(x) dvma_ptov(x)
+diff --git a/arch/m68k/kernel/sys_m68k.c b/arch/m68k/kernel/sys_m68k.c
+index 14055d676161d725..1af5e60824676bf3 100644
+--- a/arch/m68k/kernel/sys_m68k.c
++++ b/arch/m68k/kernel/sys_m68k.c
+@@ -35,8 +35,7 @@
  
-+void sun3_dvma_init(void);
+ #include <asm/tlb.h>
+ 
+-asmlinkage int do_page_fault(struct pt_regs *regs, unsigned long address,
+-			     unsigned long error_code);
++#include "../mm/fault.h"
+ 
+ asmlinkage long sys_mmap2(unsigned long addr, unsigned long len,
+ 	unsigned long prot, unsigned long flags,
+diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
+index d408334712f7118b..129c89349e1a40aa 100644
+--- a/arch/m68k/kernel/traps.c
++++ b/arch/m68k/kernel/traps.c
+@@ -42,6 +42,7 @@
+ #include <asm/tlbflush.h>
+ 
+ #include "traps.h"
++#include "../mm/fault.h"
+ 
+ static const char *vec_names[] = {
+ 	[VEC_RESETSP]	= "RESET SP",
+@@ -126,10 +127,6 @@ static const char *space_names[] = {
+ };
+ 
+ void die_if_kernel(char *,struct pt_regs *,int);
+-asmlinkage int do_page_fault(struct pt_regs *regs, unsigned long address,
+-                             unsigned long error_code);
+-int send_fault_sig(struct pt_regs *regs);
+-
+ asmlinkage void trap_c(struct frame *fp);
+ 
+ #if defined (CONFIG_M68060)
+diff --git a/arch/m68k/mm/fault.c b/arch/m68k/mm/fault.c
+index c290c5c0cfb93a81..fa3c5f38d9894c08 100644
+--- a/arch/m68k/mm/fault.c
++++ b/arch/m68k/mm/fault.c
+@@ -17,6 +17,8 @@
+ #include <asm/setup.h>
+ #include <asm/traps.h>
+ 
++#include "fault.h"
 +
- static inline int dvma_map_cpu(unsigned long kaddr, unsigned long vaddr,
- 			       int len)
- {
- 	return 0;
- }
+ extern void die_if_kernel(char *, struct pt_regs *, long);
  
-+static inline void dvma_unmap_iommu(unsigned long baddr, int len) { }
+ int send_fault_sig(struct pt_regs *regs)
+diff --git a/arch/m68k/mm/fault.h b/arch/m68k/mm/fault.h
+new file mode 100644
+index 0000000000000000..dab14ef7d4a171d5
+--- /dev/null
++++ b/arch/m68k/mm/fault.h
+@@ -0,0 +1,7 @@
++/* SPDX-License-Identifier: GPL-2.0 */
 +
- #else /* Sun3x */
- 
- /* sun3x dvma page support */
-@@ -78,9 +82,11 @@ static inline int dvma_map_cpu(unsigned long kaddr, unsigned long vaddr,
- #define dvma_vtob(x) ((unsigned long)(x) & 0x00ffffff)
- #define dvma_btov(x) ((unsigned long)(x) | 0xff000000)
- 
--extern int dvma_map_cpu(unsigned long kaddr, unsigned long vaddr, int len);
-+static inline void sun3_dvma_init(void) { }
- 
-+int dvma_map_cpu(unsigned long kaddr, unsigned long vaddr, int len);
- 
-+void dvma_unmap_iommu(unsigned long baddr, int len);
- 
- /* everything below this line is specific to dma used for the onboard
-    ESP scsi on sun3x */
-diff --git a/arch/m68k/sun3/sun3dvma.c b/arch/m68k/sun3/sun3dvma.c
-index 4b560f4d3960c2b5..f66b2413209069f2 100644
---- a/arch/m68k/sun3/sun3dvma.c
-+++ b/arch/m68k/sun3/sun3dvma.c
-@@ -20,18 +20,6 @@
- 
- #undef DVMA_DEBUG
- 
--#ifdef CONFIG_SUN3X
--extern void dvma_unmap_iommu(unsigned long baddr, int len);
--#else
--static inline void dvma_unmap_iommu(unsigned long a, int b)
--{
--}
--#endif
--
--#ifdef CONFIG_SUN3
--extern void sun3_dvma_init(void);
--#endif
--
- static unsigned long *iommu_use;
- 
- #define dvma_index(baddr) ((baddr - DVMA_START) >> DVMA_PAGE_SHIFT)
-@@ -274,10 +262,7 @@ void __init dvma_init(void)
- 
- 	dvma_unmap_iommu(DVMA_START, DVMA_SIZE);
- 
--#ifdef CONFIG_SUN3
- 	sun3_dvma_init();
--#endif
--
- }
- 
- unsigned long dvma_map_align(unsigned long kaddr, int len, int align)
++struct pt_regs;
++
++int do_page_fault(struct pt_regs *regs, unsigned long address,
++		  unsigned long error_code);
++int send_fault_sig(struct pt_regs *regs);
 -- 
 2.34.1
 
