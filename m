@@ -2,165 +2,122 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D07DEEC873F
-	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 16:14:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C110EC8738
+	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 16:15:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236236AbjIGQOk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 7 Sep 2023 12:14:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46846 "EHLO
+        id S240047AbjIGQPs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 7 Sep 2023 12:15:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237677AbjIGQOJ (ORCPT
+        with ESMTP id S239879AbjIGQPa (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 7 Sep 2023 12:14:09 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A862090E
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 08:45:36 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 718DC1F894;
-        Thu,  7 Sep 2023 06:49:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1694069356; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Tmj3YHu3EiPuUc2HxOOZqAmbdUq5Gwk17anV60bvF+8=;
-        b=yU5vier603aXq694itOfrhcjO0QSHPRLF/lueeHBJRSFUC3ta/5WKm18iCH7aRInx50Y+P
-        dlMhxITKyHPvX7XYfZO1ZbjPB2vCg0rpYfZ3c3LfWzbuYpPHxgIL6/rmdCV96ZMwIYptlc
-        2oKsah8Sk+Q1z216oGZcPV1/w+fHjzI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1694069356;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Tmj3YHu3EiPuUc2HxOOZqAmbdUq5Gwk17anV60bvF+8=;
-        b=iW1d0smaEK2EyWUqniHZl4q0Puf5OimB6EzUPBXkH3k0urRlYwtK2wxMIBgTEFdPvs65/2
-        9I7N9s+LaZpvbcCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2DBCA1358B;
-        Thu,  7 Sep 2023 06:49:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id DNAbCmxy+WTFegAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Thu, 07 Sep 2023 06:49:16 +0000
-Message-ID: <fc126f04-64f1-3403-2e12-54c723c68855@suse.de>
-Date:   Thu, 7 Sep 2023 08:49:15 +0200
+        Thu, 7 Sep 2023 12:15:30 -0400
+Received: from weierstrass.telenet-ops.be (weierstrass.telenet-ops.be [IPv6:2a02:1800:110:4::f00:11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 591E72D50
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 09:12:48 -0700 (PDT)
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by weierstrass.telenet-ops.be (Postfix) with ESMTPS id 4RhL6D02gYz4x309
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 15:43:00 +0200 (CEST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c214:2eac:128d:f67e])
+        by laurent.telenet-ops.be with bizsmtp
+        id j1hx2A00C2mGBSJ011hxtf; Thu, 07 Sep 2023 15:41:59 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qeFGQ-002m8U-9a;
+        Thu, 07 Sep 2023 15:41:57 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qeFGf-00CMfy-Hb;
+        Thu, 07 Sep 2023 15:41:57 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-m68k@lists.linux-m68k.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Philip Blundell <philb@gnu.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        Laurent Vivier <laurent@vivier.eu>,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 12/52] m68k: mm: Move paging_init() to common <asm/pgtable.h>
+Date:   Thu,  7 Sep 2023 15:41:13 +0200
+Message-Id: <58e3cf7b890aa8ef578b3de60f4929fd2a3d3075.1694093327.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1694093327.git.geert@linux-m68k.org>
+References: <cover.1694093327.git.geert@linux-m68k.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 2/5] fbdev: Replace fb_pgprotect() with
- fb_pgprot_device()
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Helge Deller <deller@gmx.de>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-fbdev@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, sparclinux@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Linux-Arch <linux-arch@vger.kernel.org>
-References: <20230906144801.25297-1-tzimmermann@suse.de>
- <20230906144801.25297-3-tzimmermann@suse.de>
- <8865aa0a-ec40-41ca-a77e-9172cec49f07@app.fastmail.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <8865aa0a-ec40-41ca-a77e-9172cec49f07@app.fastmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------TEh4cvhQbs1k527ukntUhmr1"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------TEh4cvhQbs1k527ukntUhmr1
-Content-Type: multipart/mixed; boundary="------------LMUVyb40kina8IJoOFeFeOP2";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Arnd Bergmann <arnd@arndb.de>, Michael Ellerman <mpe@ellerman.id.au>,
- Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>, Helge Deller <deller@gmx.de>
-Cc: linuxppc-dev@lists.ozlabs.org, linux-fbdev@vger.kernel.org,
- linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, sparclinux@vger.kernel.org,
- dri-devel@lists.freedesktop.org, Linux-Arch <linux-arch@vger.kernel.org>
-Message-ID: <fc126f04-64f1-3403-2e12-54c723c68855@suse.de>
-Subject: Re: [PATCH v2 2/5] fbdev: Replace fb_pgprotect() with
- fb_pgprot_device()
-References: <20230906144801.25297-1-tzimmermann@suse.de>
- <20230906144801.25297-3-tzimmermann@suse.de>
- <8865aa0a-ec40-41ca-a77e-9172cec49f07@app.fastmail.com>
-In-Reply-To: <8865aa0a-ec40-41ca-a77e-9172cec49f07@app.fastmail.com>
+When building with W=1:
 
---------------LMUVyb40kina8IJoOFeFeOP2
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+    arch/m68k/mm/motorola.c:414:13: warning: no previous prototype for ‘paging_init’ [-Wmissing-prototypes]
+      414 | void __init paging_init(void)
+	  |             ^~~~~~~~~~~
+    arch/m68k/mm/sun3mmu.c:36:13: warning: no previous prototype for ‘paging_init’ [-Wmissing-prototypes]
+       36 | void __init paging_init(void)
+	  |             ^~~~~~~~~~~
 
-SGkgQXJuZA0KDQpBbSAwNi4wOS4yMyB1bSAyMTo1MyBzY2hyaWViIEFybmQgQmVyZ21hbm46
-DQo+IE9uIFdlZCwgU2VwIDYsIDIwMjMsIGF0IDEwOjM1LCBUaG9tYXMgWmltbWVybWFubiB3
-cm90ZToNCj4+IFJlbmFtZSB0aGUgZmJkZXYgbW1hcCBoZWxwZXIgZmJfcGdwcm90ZWN0KCkg
-dG8gZmJfcGdwcm90X2RldmljZSgpLg0KPj4gVGhlIGhlbHBlciBzZXRzIFZNQSBwYWdlLWFj
-Y2VzcyBmbGFncyBmb3IgZnJhbWVidWZmZXJzIGluIGRldmljZSBJL08NCj4+IG1lbW9yeS4g
-VGhlIG5ldyBuYW1lIGZvbGxvd3MgcGdwcm90X2RldmljZSgpLCB3aGljaCBkb2VzIHRoZSBz
-YW1lIGZvcg0KPj4gYXJiaXRyYXJ5IGRldmljZXMuDQo+Pg0KPj4gQWxzbyBjbGVhbiB1cCB0
-aGUgaGVscGVyJ3MgcGFyYW1ldGVycyBhbmQgcmV0dXJuIHZhbHVlLiBJbnN0ZWFkIG9mDQo+
-PiB0aGUgVk1BIGluc3RhbmNlLCBwYXNzIHRoZSBpbmRpdmlkaWFsIHBhcmFtZXRlcnMgc2Vw
-YXJhdGVseTogZXhpc3RpbmcNCj4+IHBhZ2UtYWNjZXNzIGZsYWdzLCB0aGUgVk1BcyBzdGFy
-dCBhbmQgZW5kIGFkZHJlc3NlcyBhbmQgdGhlIG9mZnNldA0KPj4gaW4gdGhlIHVuZGVybHlp
-bmcgZGV2aWNlIG1lbW9yeSByc3AgZmlsZS4gUmV0dXJuIHRoZSBuZXcgcGFnZS1hY2Nlc3MN
-Cj4+IGZsYWdzLiBUaGVzZSBjaGFuZ2VzIGFsaWduIGZiX3BncHJvdF9kZXZpY2UoKSBjbG9z
-ZXIgd2l0aCBwZ3Byb3RfZGV2aWNlLg0KPj4NCj4+IFNpZ25lZC1vZmYtYnk6IFRob21hcyBa
-aW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPg0KPiANCj4gVGhpcyBtYWtlcyBzZW5z
-ZSBhcyBhIGNsZWFudXAsIGJ1dCBJJ20gbm90IHN1cmUgdGhlIG5ldyBuYW1pbmcgaXMgaGVs
-cGZ1bC4NCj4gDQo+IFRoZSAncGdwcm90X2RldmljZScgcGVybWlzc2lvbnMgYXJlIGJhc2Vk
-IG9uIEFybSdzIG1lbW9yeSBhdHRyaWJ1dGVzLA0KPiB3aGljaCBoYXZlIHNsaWdodGx5IGRp
-ZmZlcmVudCBiZWhhdmlvciBmb3IgImRldmljZSIsICJ1bmNhY2hlZCIgYW5kDQo+ICJ3cml0
-ZWNvbWJpbmUiIG1hcHBpbmdzLiBJIHRoaW5rIHNpbXBseSBjYWxsaW5nIHRoaXMgb25lIHBn
-cHJvdF9mYigpDQo+IG9yIGZiX3BncHJvdCgpIHdvdWxkIGJlIGxlc3MgY29uZnVzaW5nLCBz
-aW5jZSBkZXBlbmRpbmcgb24gdGhlIGFyY2hpdGVjdHVyZQ0KPiBpdCBhcHBlYXJzIHRvIGdp
-dmUgZWl0aGVyIHVuY2FjaGVkIG9yIHdyaXRlY29tYmluZSBtYXBwaW5ncyBidXQgbm90DQo+
-ICJkZXZpY2UiIG9uIHRoZSBhcmNoaXRlY3R1cmVzIHdoZXJlIHRoaXMgaXMgZGlmZmVyZW50
-Lg0KDQpJIHNlZS4gVGhhbmtzIGZvciB0aGUgaW5mby4gSSBsaWtlIHBncHJvdF9mYigpIG1h
-eWJlIA0KcGdwcm90X2ZyYW1lYnVmZmVyKCkuIEknbGwgdXBkYXRlIHRoZSBwYXRjaHNldC4N
-Cg0KT25lIHRoaW5nIEkndmUgYmVlbiB3b25kZXJpbmcgaXMgd2hldGhlciBJIHNob3VsZCBh
-dHRlbXB0IHRvIGludGVncmF0ZSANCnRoZSBoZWxwZXJzIGluIDxhc20vZmIuaD4gaW4gdGhl
-IHJlZ3VsYXIgYXNtIGhlYWRlcnMuIFNvIHRoZSBwZ3Byb3QgY29kZSANCndvdWxkIGdvIGlu
-dG8gcGd0YWJsZS5oLCB0aGUgSS9PIGZ1bmN0aW9ucyB3b3VsZCBnbyBpbnRvIGlvLmguIFRo
-ZSBJL08gDQpmdW5jdGlvbnMgY291bGQgdGhlbiBiZSBjYWxsZWQgcmVhZGJfZmIoKSwgd3Jp
-dGVsX2ZiKCksIG1lbWNweV90b2ZiKCkgDQphbmQgc28gb24uIFdvdWxkIHlvdSBwcmVmZXIg
-dGhhdCBvciByYXRoZXIgbm90Pw0KDQpCZXN0IHJlZ2FyZHMNClRob21hcw0KDQo+IA0KPiAg
-ICAgICAgQXJuZA0KDQotLSANClRob21hcyBaaW1tZXJtYW5uDQpHcmFwaGljcyBEcml2ZXIg
-RGV2ZWxvcGVyDQpTVVNFIFNvZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55IEdtYkgNCkZyYW5r
-ZW5zdHJhc3NlIDE0NiwgOTA0NjEgTnVlcm5iZXJnLCBHZXJtYW55DQpHRjogSXZvIFRvdGV2
-LCBBbmRyZXcgTXllcnMsIEFuZHJldyBNY0RvbmFsZCwgQm91ZGllbiBNb2VybWFuDQpIUkIg
-MzY4MDkgKEFHIE51ZXJuYmVyZykNCg==
+Fix this by consolidating the multiple prototypes into the common
+<asm/pgtable.h>.
 
---------------LMUVyb40kina8IJoOFeFeOP2--
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/include/asm/pgtable.h    | 9 +++++++++
+ arch/m68k/include/asm/pgtable_no.h | 1 -
+ arch/m68k/kernel/setup_mm.c        | 2 --
+ 3 files changed, 9 insertions(+), 3 deletions(-)
 
---------------TEh4cvhQbs1k527ukntUhmr1
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+diff --git a/arch/m68k/include/asm/pgtable.h b/arch/m68k/include/asm/pgtable.h
+index ad15d655a9bfb3b5..27525c6a12fd0c7f 100644
+--- a/arch/m68k/include/asm/pgtable.h
++++ b/arch/m68k/include/asm/pgtable.h
+@@ -1,6 +1,15 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __M68K_PGTABLE_H
++#define __M68K_PGTABLE_H
++
+ #ifdef __uClinux__
+ #include <asm/pgtable_no.h>
+ #else
+ #include <asm/pgtable_mm.h>
+ #endif
++
++#ifndef __ASSEMBLY__
++extern void paging_init(void);
++#endif
++
++#endif /* __M68K_PGTABLE_H */
+diff --git a/arch/m68k/include/asm/pgtable_no.h b/arch/m68k/include/asm/pgtable_no.h
+index fc044df52b96c149..1a86c15b9008f03d 100644
+--- a/arch/m68k/include/asm/pgtable_no.h
++++ b/arch/m68k/include/asm/pgtable_no.h
+@@ -28,7 +28,6 @@
+ #define PAGE_READONLY	__pgprot(0)
+ #define PAGE_KERNEL	__pgprot(0)
+ 
+-extern void paging_init(void);
+ #define swapper_pg_dir ((pgd_t *) 0)
+ 
+ /*
+diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+index 6f1ae01f322cf231..10310b04f77d8d79 100644
+--- a/arch/m68k/kernel/setup_mm.c
++++ b/arch/m68k/kernel/setup_mm.c
+@@ -107,8 +107,6 @@ EXPORT_SYMBOL(isa_sex);
+ 
+ #define MASK_256K 0xfffc0000
+ 
+-extern void paging_init(void);
+-
+ static void __init m68k_parse_bootinfo(const struct bi_record *record)
+ {
+ 	const struct bi_record *first_record = record;
+-- 
+2.34.1
 
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmT5cmsFAwAAAAAACgkQlh/E3EQov+AQ
-9hAAnu8YqJbF8kuGEVKqu7BhEZrJ9Yg8lVBP8+c6r7PW6z5NYHSXwtGmySIopyd4c4C6RiUDOq0f
-gI96wa8Ze85a2vVyPMg0vAJxt94DgCURK37L+tMo/jgRP5uTUuRNwSEYURjpsMT4Zbjc1jNgz5b4
-CP7SZuXBRIj8JAP/SPbpHoo+j8m3PNLcpEZjlk+H81zy7s4kLFftw3bBaB6Lu8TBfYCFKIwuGmjJ
-p55XdNWIbj8q8S6Hhh5DN2lFf6qz7p1DRysLVL8q0dtoyXifftoxU8C7baO0/IM2do6tbNucY+9U
-WJRa+UkMasd314eJ4H+F9oSbKG2hrRJAv98eg1Wbf/+VRylJCYa5HsdHHWCGAoBtxUuK1HqarqvF
-Rrqw/Zt1qsEKHNzlzzq9Qlm15+9n5z6FnbXJgUzkApr20orOHu2DLf9FkUNGDOmykOQfNfWC+I0k
-x5dEx6KxgKUhekd4Q8kiaT/EeqMOV+F31TvezVRo9VuM9uRH2WqtH3LS+9T+NzNQx/+aG9WdrcVM
-cWPvt+RifTXdXPhpZA6pKAOe049mKxkdC6iQp0A9L1YB4QP6iNYgR7wqVvQunMCfoQPJcIo9n4aL
-MmcPjtLmozw7BV3fBCeMuWrk41msZ7qbrAyvOrDuMjQtnYMp6cEeLZOcUHk96uZze9DH8vxZat0Q
-FY4=
-=9dZp
------END PGP SIGNATURE-----
-
---------------TEh4cvhQbs1k527ukntUhmr1--
