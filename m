@@ -2,111 +2,94 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80D45EE14D3
-	for <linux-m68k@archiver.kernel.org>; Wed,  6 Sep 2023 19:53:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54E23EC873A
+	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 15:45:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237339AbjIFTxb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 6 Sep 2023 15:53:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55290 "EHLO
+        id S229776AbjIGPpm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 7 Sep 2023 11:45:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239798AbjIFTxa (ORCPT
+        with ESMTP id S245471AbjIGP3g (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 6 Sep 2023 15:53:30 -0400
-Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com [66.111.4.230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDECD173B
-        for <linux-m68k@lists.linux-m68k.org>; Wed,  6 Sep 2023 12:53:26 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailnew.nyi.internal (Postfix) with ESMTP id A7AB858128A;
-        Wed,  6 Sep 2023 15:53:23 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Wed, 06 Sep 2023 15:53:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1694030003; x=1694037203; bh=VH
-        oiOAVzKFrc1qoVv7v9Mr1BrXqTyFKUxLZW2/6sh7A=; b=B9YGq+m+TaGkZYwKEv
-        mwtpybd3N+c0fMrFAnCMSThlV38UxHGUZar4YL61wnZ8hebh7VNwhdEot1JcM314
-        t90DsstQsCqV320qKAeQxaOy7tIjIN6MM/i7+eNgzBWjvsQZqPhhSdxBflKsD8i4
-        ZRmBezwM15eJWbtMRS/w4aPfiuZYSuhzLqNmuw0oqg7NEL0rlnGLcZEyGKEzrxEN
-        G08pXwkhHEmxCZCmVwpMqwrwJ4jOuXUkafTKfsioh4wptnHthM/+o0QpCzaVlAt5
-        p2HsVsrVY9rdSP1XPW2+akPPpXdZ+NhnO5DN6OVHV68jOgT0d4LVctgdofyw14lg
-        P1wQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1694030003; x=1694037203; bh=VHoiOAVzKFrc1
-        qoVv7v9Mr1BrXqTyFKUxLZW2/6sh7A=; b=0eyhXlcs6SwaXsTsohvaVHSDkEW5t
-        pf9IsSwsFxNCmJrnjsC1r2Ar4uKNxAccIwEZcHP0Glfwt7Pk+h/JnKu5+mRrT8Kq
-        IhOhf9SukEJcq9eb/lSO1m3E0oyB542WZP6lVYMF9zXLOsG7pFDQA7FcQlbIGsWO
-        v/7uE15f2PEQTL46VW9VAMeDZf2i5MRnBuAxMk289lztpWbEepsINFs8crl/i4pi
-        cZ6D7fyA0rWRODs/fQ5p4A4vUmfV2n21gu6zI9vyGqm0BY+5Rsgd482HgncvaExW
-        Sz8l5d7mijRz1HFOBAzL8e10OB5UlqpB6CLhAj7KXk+bFmgGbRpuCuFfg==
-X-ME-Sender: <xms:stj4ZMFT5bUXIujyx8rG3XMkkz8xGkw5hclkerDPojseR-OAKoh2EQ>
-    <xme:stj4ZFUrxldM_py_4Cti_MuQgJweGk5z0Yka0QIrf8JQxP8NlU6tdbgihMPfx7dbz
-    agIOq8G_U8LGbygxoU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehfedgudegudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:stj4ZGIpCwrWbQMuQnRKui1vq0jlD_Hw-xaxveFWC1c7nV6BvZOFpg>
-    <xmx:stj4ZOEWKrXyPg7eu5ukVGzSe0cetY7fwF7mwZBQdjSY6eR8XT8jvQ>
-    <xmx:stj4ZCWoKWWomrXTKgZTmEmwM7RaOCq6OifEZR2NKWwutIUZbzo0SQ>
-    <xmx:s9j4ZLONDqSf7o5Z4aSE1onERACQAtFksbMuJmduHrqscQGtXIS0jA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id AE25DB60089; Wed,  6 Sep 2023 15:53:22 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-711-g440737448e-fm-20230828.001-g44073744
-Mime-Version: 1.0
-Message-Id: <8865aa0a-ec40-41ca-a77e-9172cec49f07@app.fastmail.com>
-In-Reply-To: <20230906144801.25297-3-tzimmermann@suse.de>
-References: <20230906144801.25297-1-tzimmermann@suse.de>
- <20230906144801.25297-3-tzimmermann@suse.de>
-Date:   Wed, 06 Sep 2023 15:53:02 -0400
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Thomas Zimmermann" <tzimmermann@suse.de>,
-        "Michael Ellerman" <mpe@ellerman.id.au>,
-        "Nicholas Piggin" <npiggin@gmail.com>,
-        "Christophe Leroy" <christophe.leroy@csgroup.eu>,
-        "Helge Deller" <deller@gmx.de>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-fbdev@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, sparclinux@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Linux-Arch <linux-arch@vger.kernel.org>
-Subject: Re: [PATCH v2 2/5] fbdev: Replace fb_pgprotect() with fb_pgprot_device()
-Content-Type: text/plain
+        Thu, 7 Sep 2023 11:29:36 -0400
+Received: from riemann.telenet-ops.be (riemann.telenet-ops.be [IPv6:2a02:1800:110:4::f00:10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7077A19C
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 08:29:09 -0700 (PDT)
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by riemann.telenet-ops.be (Postfix) with ESMTPS id 4RhL536KZKz4x1yk
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 15:41:59 +0200 (CEST)
+Received: from ramsan.of.borg ([84.195.187.55])
+        by xavier.telenet-ops.be with bizsmtp
+        id j1hy2A00K1C8whw011hywt; Thu, 07 Sep 2023 15:41:59 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qeFGR-002mAc-2n;
+        Thu, 07 Sep 2023 15:41:58 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qeFGg-00CMib-Ax;
+        Thu, 07 Sep 2023 15:41:58 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-m68k@lists.linux-m68k.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Philip Blundell <philb@gnu.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        Laurent Vivier <laurent@vivier.eu>,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 45/52] m68k: sun3: Annotate prom_printf() with __printf()
+Date:   Thu,  7 Sep 2023 15:41:46 +0200
+Message-Id: <c2ad40d765b52387da89a4c94a96ad906df8754b.1694093327.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1694093327.git.geert@linux-m68k.org>
+References: <cover.1694093327.git.geert@linux-m68k.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Wed, Sep 6, 2023, at 10:35, Thomas Zimmermann wrote:
-> Rename the fbdev mmap helper fb_pgprotect() to fb_pgprot_device().
-> The helper sets VMA page-access flags for framebuffers in device I/O
-> memory. The new name follows pgprot_device(), which does the same for
-> arbitrary devices.
->
-> Also clean up the helper's parameters and return value. Instead of
-> the VMA instance, pass the individial parameters separately: existing
-> page-access flags, the VMAs start and end addresses and the offset
-> in the underlying device memory rsp file. Return the new page-access
-> flags. These changes align fb_pgprot_device() closer with pgprot_device.
->
-> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+When building with W=1:
 
-This makes sense as a cleanup, but I'm not sure the new naming is helpful.
+    arch/m68k/sun3/prom/printf.c: In function ‘prom_printf’:
+    arch/m68k/sun3/prom/printf.c:35:9: warning: function ‘prom_printf’ might be a candidate for ‘gnu_printf’ format attribute [-Wsuggest-attribute=format]
+       35 |         vsprintf(ppbuf, fmt, args);
+	  |         ^~~~~~~~
 
-The 'pgprot_device' permissions are based on Arm's memory attributes,
-which have slightly different behavior for "device", "uncached" and
-"writecombine" mappings. I think simply calling this one pgprot_fb()
-or fb_pgprot() would be less confusing, since depending on the architecture
-it appears to give either uncached or writecombine mappings but not
-"device" on the architectures where this is different.
+Fix this by annotating prom_printf() with __printf(1, 2).
 
-      Arnd
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/include/asm/oplib.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/m68k/include/asm/oplib.h b/arch/m68k/include/asm/oplib.h
+index 48cb4fd09f8d9cce..6d5ea67c65d044c1 100644
+--- a/arch/m68k/include/asm/oplib.h
++++ b/arch/m68k/include/asm/oplib.h
+@@ -9,6 +9,8 @@
+ #ifndef __SPARC_OPLIB_H
+ #define __SPARC_OPLIB_H
+ 
++#include <linux/compiler.h>
++
+ #include <asm/openprom.h>
+ 
+ /* The master romvec pointer... */
+@@ -149,7 +151,7 @@ extern char prom_getchar(void);
+ extern void prom_putchar(char character);
+ 
+ /* Prom's internal printf routine, don't use in kernel/boot code. */
+-void prom_printf(char *fmt, ...);
++__printf(1, 2) void prom_printf(char *fmt, ...);
+ 
+ /* Query for input device type */
+ 
+-- 
+2.34.1
+
