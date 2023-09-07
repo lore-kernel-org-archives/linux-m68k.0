@@ -2,33 +2,33 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD98EEC8741
-	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 15:45:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B102EC873A
+	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 15:46:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232105AbjIGPpx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 7 Sep 2023 11:45:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43014 "EHLO
+        id S231895AbjIGPpy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 7 Sep 2023 11:45:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245470AbjIGP3g (ORCPT
+        with ESMTP id S245477AbjIGP3h (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 7 Sep 2023 11:29:36 -0400
+        Thu, 7 Sep 2023 11:29:37 -0400
 Received: from riemann.telenet-ops.be (riemann.telenet-ops.be [IPv6:2a02:1800:110:4::f00:10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6467BCA
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C7E0E57
         for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 08:29:09 -0700 (PDT)
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by riemann.telenet-ops.be (Postfix) with ESMTPS id 4RhL540SJYz4x2gn
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 15:42:00 +0200 (CEST)
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by riemann.telenet-ops.be (Postfix) with ESMTPS id 4RhL534xn1z4x0cl
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 15:41:59 +0200 (CEST)
 Received: from ramsan.of.borg ([84.195.187.55])
-        by albert.telenet-ops.be with bizsmtp
-        id j1hy2A00o1C8whw061hyab; Thu, 07 Sep 2023 15:41:59 +0200
+        by xavier.telenet-ops.be with bizsmtp
+        id j1hy2A00A1C8whw011hywq; Thu, 07 Sep 2023 15:41:59 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGR-002mB0-6n;
+        id 1qeFGQ-002m9y-SO;
         Thu, 07 Sep 2023 15:41:58 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGg-00CMj6-F4;
+        id 1qeFGg-00CMhp-4O;
         Thu, 07 Sep 2023 15:41:58 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
@@ -41,38 +41,76 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 51/52] m68k: sun3x: Make dvma_print() static
-Date:   Thu,  7 Sep 2023 15:41:52 +0200
-Message-Id: <e3a49f03de557fc88dd45138fd86b0e3c40b02dc.1694093327.git.geert@linux-m68k.org>
+Subject: [PATCH 35/52] m68k: mvme16x: Add and use "mvme16x.h"
+Date:   Thu,  7 Sep 2023 15:41:36 +0200
+Message-Id: <84050afd37df01b14804a51d08afa3837492eb30.1694093327.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694093327.git.geert@linux-m68k.org>
 References: <cover.1694093327.git.geert@linux-m68k.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-There was never a user of dvma_print() outside arch/m68k/sun3x/dvma.c.
+When building with W=1:
+
+    arch/m68k/mvme16x/config.c:208:6: warning: no previous prototype for ‘mvme16x_cons_write’ [-Wmissing-prototypes]
+      208 | void mvme16x_cons_write(struct console *co, const char *str, unsigned count)
+	  |      ^~~~~~~~~~~~~~~~~~
+
+Fix this by introducing a new header file "mvme16x.h" for holding the
+prototypes of functions implemented in arch/m68k/mvme16x/.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/sun3x/dvma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/m68k/kernel/early_printk.c | 4 ++--
+ arch/m68k/mvme16x/config.c      | 2 ++
+ arch/m68k/mvme16x/mvme16x.h     | 6 ++++++
+ 3 files changed, 10 insertions(+), 2 deletions(-)
+ create mode 100644 arch/m68k/mvme16x/mvme16x.h
 
-diff --git a/arch/m68k/sun3x/dvma.c b/arch/m68k/sun3x/dvma.c
-index d1847bfa136791e2..5185b4818d408e71 100644
---- a/arch/m68k/sun3x/dvma.c
-+++ b/arch/m68k/sun3x/dvma.c
-@@ -60,7 +60,7 @@ static volatile unsigned long *iommu_pte = (unsigned long *)SUN3X_IOMMU;
+diff --git a/arch/m68k/kernel/early_printk.c b/arch/m68k/kernel/early_printk.c
+index 7d3fe08a48eb0319..3cc944df04f65ef1 100644
+--- a/arch/m68k/kernel/early_printk.c
++++ b/arch/m68k/kernel/early_printk.c
+@@ -12,8 +12,8 @@
+ #include <linux/string.h>
+ #include <asm/setup.h>
  
- #ifdef DEBUG
- /* code to print out a dvma mapping for debugging purposes */
--void dvma_print (unsigned long dvma_addr)
-+static void dvma_print (unsigned long dvma_addr)
- {
+-extern void mvme16x_cons_write(struct console *co,
+-			       const char *str, unsigned count);
++
++#include "../mvme16x/mvme16x.h"
  
- 	unsigned long index;
+ asmlinkage void __init debug_cons_nputs(const char *s, unsigned n);
+ 
+diff --git a/arch/m68k/mvme16x/config.c b/arch/m68k/mvme16x/config.c
+index b6833862ea6b1530..9bb9a33e43c246c4 100644
+--- a/arch/m68k/mvme16x/config.c
++++ b/arch/m68k/mvme16x/config.c
+@@ -38,6 +38,8 @@
+ #include <asm/mvme16xhw.h>
+ #include <asm/config.h>
+ 
++#include "mvme16x.h"
++
+ extern t_bdid mvme_bdid;
+ 
+ static MK48T08ptr_t volatile rtc = (MK48T08ptr_t)MVME_RTC_BASE;
+diff --git a/arch/m68k/mvme16x/mvme16x.h b/arch/m68k/mvme16x/mvme16x.h
+new file mode 100644
+index 0000000000000000..159c34b700394116
+--- /dev/null
++++ b/arch/m68k/mvme16x/mvme16x.h
+@@ -0,0 +1,6 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++
++struct console;
++
++/* config.c */
++void mvme16x_cons_write(struct console *co, const char *str, unsigned count);
 -- 
 2.34.1
 
