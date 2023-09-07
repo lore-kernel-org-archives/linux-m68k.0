@@ -2,33 +2,33 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ABC59EC874D
-	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 17:19:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 365F0EC874E
+	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 17:19:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242716AbjIGRTs (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 7 Sep 2023 13:19:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55708 "EHLO
+        id S243034AbjIGRTu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 7 Sep 2023 13:19:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243023AbjIGRTq (ORCPT
+        with ESMTP id S243091AbjIGRTq (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Thu, 7 Sep 2023 13:19:46 -0400
 Received: from cantor.telenet-ops.be (cantor.telenet-ops.be [IPv6:2a02:1800:120:4::f00:10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 518AD1FF1
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 10:19:23 -0700 (PDT)
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by cantor.telenet-ops.be (Postfix) with ESMTPS id 4RhL6D01Qyz4x301
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6D3BD
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 10:19:26 -0700 (PDT)
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by cantor.telenet-ops.be (Postfix) with ESMTPS id 4RhL6D02Pqz4xHdK
         for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 15:43:00 +0200 (CEST)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c214:2eac:128d:f67e])
-        by albert.telenet-ops.be with bizsmtp
-        id j1hy2A00A2mGBSJ061hyaJ; Thu, 07 Sep 2023 15:41:59 +0200
+        by michel.telenet-ops.be with bizsmtp
+        id j1hx2A00Q2mGBSJ061hxu7; Thu, 07 Sep 2023 15:41:59 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGQ-002m9S-MR;
-        Thu, 07 Sep 2023 15:41:58 +0200
+        id 1qeFGQ-002m8E-5d;
+        Thu, 07 Sep 2023 15:41:57 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGf-00CMhB-Ur;
+        id 1qeFGf-00CMfe-D5;
         Thu, 07 Sep 2023 15:41:57 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
@@ -41,9 +41,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 27/52] m68k: bvme6000: Make bvme6000_abort_int() static
-Date:   Thu,  7 Sep 2023 15:41:28 +0200
-Message-Id: <8e7e2013e00a35c2b74dc1ca16e93871b2d742d2.1694093327.git.geert@linux-m68k.org>
+Subject: [PATCH 08/52] m68k: kernel: Add and use "signal.h"
+Date:   Thu,  7 Sep 2023 15:41:09 +0200
+Message-Id: <145c95cb476f906e419dc9a16e0ae5f1efbf61d4.1694093327.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694093327.git.geert@linux-m68k.org>
 References: <cover.1694093327.git.geert@linux-m68k.org>
@@ -56,31 +56,52 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 When building with W=1:
 
-    arch/m68k/bvme6000/config.c:133:13: warning: no previous prototype for ‘bvme6000_abort_int’ [-Wmissing-prototypes]
-      133 | irqreturn_t bvme6000_abort_int (int irq, void *dev_id)
-	  |             ^~~~~~~~~~~~~~~~~~
+    arch/m68k/kernel/signal.c:756:18: warning: no previous prototype for ‘do_sigreturn’ [-Wmissing-prototypes]
+      756 | asmlinkage void *do_sigreturn(struct pt_regs *regs, struct switch_stack *sw)
+	  |                  ^~~~~~~~~~~~
+    arch/m68k/kernel/signal.c:783:18: warning: no previous prototype for ‘do_rt_sigreturn’ [-Wmissing-prototypes]
+      783 | asmlinkage void *do_rt_sigreturn(struct pt_regs *regs, struct switch_stack *sw)
+	  |                  ^~~~~~~~~~~~~~~
+    arch/m68k/kernel/signal.c:1112:17: warning: no previous prototype for ‘do_notify_resume’ [-Wmissing-prototypes]
+     1112 | asmlinkage void do_notify_resume(struct pt_regs *regs)
+	  |                 ^~~~~~~~~~~~~~~~
 
-Fix this by making bvme6000_abort_int() static.
-There was never a user outside arch/m68k/bvme6000/config.c.
+Fix this by introducing a new header file "signal.h" for holding the
+prototypes of functions implemented in arch/m68k/kernel/signal.c.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/bvme6000/config.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/m68k/kernel/signal.c | 2 ++
+ arch/m68k/kernel/signal.h | 7 +++++++
+ 2 files changed, 9 insertions(+)
+ create mode 100644 arch/m68k/kernel/signal.h
 
-diff --git a/arch/m68k/bvme6000/config.c b/arch/m68k/bvme6000/config.c
-index 3a1d90e399e016cf..e604fe6602461334 100644
---- a/arch/m68k/bvme6000/config.c
-+++ b/arch/m68k/bvme6000/config.c
-@@ -130,7 +130,7 @@ void __init config_bvme6000(void)
- }
+diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
+index 459c5ff69fcfa126..e628b859ef21beaf 100644
+--- a/arch/m68k/kernel/signal.c
++++ b/arch/m68k/kernel/signal.c
+@@ -51,6 +51,8 @@
+ #include <asm/ucontext.h>
+ #include <asm/cacheflush.h>
  
++#include "signal.h"
++
+ #ifdef CONFIG_MMU
  
--irqreturn_t bvme6000_abort_int (int irq, void *dev_id)
-+static irqreturn_t bvme6000_abort_int(int irq, void *dev_id)
- {
-         unsigned long *new = (unsigned long *)vectors;
-         unsigned long *old = (unsigned long *)0xf8000000;
+ /*
+diff --git a/arch/m68k/kernel/signal.h b/arch/m68k/kernel/signal.h
+new file mode 100644
+index 0000000000000000..498d84f828202541
+--- /dev/null
++++ b/arch/m68k/kernel/signal.h
+@@ -0,0 +1,7 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++
++#include <linux/linkage.h>
++
++asmlinkage void do_notify_resume(struct pt_regs *regs);
++asmlinkage void *do_sigreturn(struct pt_regs *regs, struct switch_stack *sw);
++asmlinkage void *do_rt_sigreturn(struct pt_regs *regs, struct switch_stack *sw);
 -- 
 2.34.1
 
