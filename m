@@ -2,34 +2,34 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D700EC873E
-	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 15:46:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CAE8EC873D
+	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 15:46:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233008AbjIGPqP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 7 Sep 2023 11:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37844 "EHLO
+        id S233098AbjIGPqU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 7 Sep 2023 11:46:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235628AbjIGPjS (ORCPT
+        with ESMTP id S238264AbjIGPoA (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 7 Sep 2023 11:39:18 -0400
+        Thu, 7 Sep 2023 11:44:00 -0400
 Received: from weierstrass.telenet-ops.be (weierstrass.telenet-ops.be [IPv6:2a02:1800:110:4::f00:11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E4B172E
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 08:37:17 -0700 (PDT)
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by weierstrass.telenet-ops.be (Postfix) with ESMTPS id 4RhL5L60Ckz4x16l
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 15:42:14 +0200 (CEST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c214:2eac:128d:f67e])
-        by andre.telenet-ops.be with bizsmtp
-        id j1hy2A0022mGBSJ011hyGA; Thu, 07 Sep 2023 15:41:59 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B123AAE
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 08:38:39 -0700 (PDT)
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by weierstrass.telenet-ops.be (Postfix) with ESMTPS id 4RhL534Gypz4wxqG
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 15:41:59 +0200 (CEST)
+Received: from ramsan.of.borg ([84.195.187.55])
+        by xavier.telenet-ops.be with bizsmtp
+        id j1hy2A0071C8whw011hywp; Thu, 07 Sep 2023 15:41:59 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGQ-002m9B-Jc;
-        Thu, 07 Sep 2023 15:41:57 +0200
+        id 1qeFGQ-002m9p-Qm;
+        Thu, 07 Sep 2023 15:41:58 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGf-00CMgq-R7;
-        Thu, 07 Sep 2023 15:41:57 +0200
+        id 1qeFGg-00CMhf-2t;
+        Thu, 07 Sep 2023 15:41:58 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
 Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
@@ -41,9 +41,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 23/52] m68k: apollo: Remove unused debug console functions
-Date:   Thu,  7 Sep 2023 15:41:24 +0200
-Message-Id: <133c76b1bd98932d8aeed8f1a85271cbe4d39a65.1694093327.git.geert@linux-m68k.org>
+Subject: [PATCH 33/52] m68k: mvme147: Make mvme147_init_IRQ() static
+Date:   Thu,  7 Sep 2023 15:41:34 +0200
+Message-Id: <ebca254f27ed507794210220f3eb6ac396946097.1694093327.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694093327.git.geert@linux-m68k.org>
 References: <cover.1694093327.git.geert@linux-m68k.org>
@@ -56,78 +56,31 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 When building with W=1:
 
-    arch/m68k/apollo/config.c:111:5: warning: no previous prototype for ‘dn_serial_console_wait_key’ [-Wmissing-prototypes]
-      111 | int dn_serial_console_wait_key(struct console *co) {
-	  |     ^~~~~~~~~~~~~~~~~~~~~~~~~~
-    arch/m68k/apollo/config.c:118:6: warning: no previous prototype for ‘dn_serial_console_write’ [-Wmissing-prototypes]
-      118 | void dn_serial_console_write (struct console *co, const char *str,unsigned int count)
-	  |      ^~~~~~~~~~~~~~~~~~~~~~~
-    arch/m68k/apollo/config.c:238:6: warning: no previous prototype for ‘dn_dummy_waitbut’ [-Wmissing-prototypes]
-      240 | void dn_dummy_waitbut(void) {
-	  |      ^~~~~~~~~~~~~~~~
+    arch/m68k/mvme147/config.c:76:13: warning: no previous prototype for ‘mvme147_init_IRQ’ [-Wmissing-prototypes]
+       76 | void __init mvme147_init_IRQ(void)
+	  |             ^~~~~~~~~~~~~~~~
 
-Fix this by removing these unused functions.
-The last user of dn_serial_console_write() was removed in v2.3.41.
-The other functions never had any users.
+Fix this by making mvme147_init_IRQ() static.
+The function body was moved to arch/m68k/mvme147/config.c in v2.6.18.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/apollo/config.c | 28 ----------------------------
- 1 file changed, 28 deletions(-)
+ arch/m68k/mvme147/config.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/m68k/apollo/config.c b/arch/m68k/apollo/config.c
-index 42a8b8e2b664226a..fccbb40772dca6b9 100644
---- a/arch/m68k/apollo/config.c
-+++ b/arch/m68k/apollo/config.c
-@@ -4,7 +4,6 @@
- #include <linux/kernel.h>
- #include <linux/mm.h>
- #include <linux/tty.h>
--#include <linux/console.h>
- #include <linux/rtc.h>
- #include <linux/vt_kern.h>
- #include <linux/interrupt.h>
-@@ -108,27 +107,6 @@ static void __init dn_setup_model(void)
+diff --git a/arch/m68k/mvme147/config.c b/arch/m68k/mvme147/config.c
+index 4e6218115f43ce56..7dfacd0b207a9750 100644
+--- a/arch/m68k/mvme147/config.c
++++ b/arch/m68k/mvme147/config.c
+@@ -73,7 +73,7 @@ static void mvme147_get_model(char *model)
+  * the mvme147 IRQ handling routines.
+  */
  
- }
- 
--int dn_serial_console_wait_key(struct console *co) {
--
--	while(!(sio01.srb_csrb & 1))
--		barrier();
--	return sio01.rhrb_thrb;
--}
--
--void dn_serial_console_write (struct console *co, const char *str,unsigned int count)
--{
--   while(count--) {
--	if (*str == '\n') {
--	sio01.rhrb_thrb = (unsigned char)'\r';
--	while (!(sio01.srb_csrb & 0x4))
--                ;
--	}
--    sio01.rhrb_thrb = (unsigned char)*str++;
--    while (!(sio01.srb_csrb & 0x4))
--            ;
--  }
--}
--
- void dn_serial_print (const char *str)
+-void __init mvme147_init_IRQ(void)
++static void __init mvme147_init_IRQ(void)
  {
-     while (*str) {
-@@ -237,12 +215,6 @@ void dn_dummy_reset(void) {
- 
+ 	m68k_setup_user_interrupt(VEC_USER, 192);
  }
- 
--void dn_dummy_waitbut(void) {
--
--  dn_serial_print("waitbut\n");
--
--}
--
- static void dn_get_model(char *model)
- {
-     strcpy(model, "Apollo ");
 -- 
 2.34.1
 
