@@ -2,34 +2,34 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25C8DEC874C
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76D54EC8742
 	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 17:52:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235251AbjIGRwc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        id S237233AbjIGRwc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
         Thu, 7 Sep 2023 13:52:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35652 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236733AbjIGRwb (ORCPT
+        with ESMTP id S229710AbjIGRwb (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Thu, 7 Sep 2023 13:52:31 -0400
 Received: from riemann.telenet-ops.be (riemann.telenet-ops.be [IPv6:2a02:1800:110:4::f00:10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4AB51FEC
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B48BB19C
         for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 10:52:05 -0700 (PDT)
 Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by riemann.telenet-ops.be (Postfix) with ESMTPS id 4RhL535dXmz4x1FV
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 15:41:59 +0200 (CEST)
-Received: from ramsan.of.borg ([84.195.187.55])
+        by riemann.telenet-ops.be (Postfix) with ESMTPS id 4RhL5L603Pz4x0dj
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 15:42:14 +0200 (CEST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c214:2eac:128d:f67e])
         by andre.telenet-ops.be with bizsmtp
-        id j1hy2A00X1C8whw011hyGG; Thu, 07 Sep 2023 15:41:59 +0200
+        id j1hx2A00S2mGBSJ011hxG4; Thu, 07 Sep 2023 15:41:59 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGR-002mAU-1M;
-        Thu, 07 Sep 2023 15:41:58 +0200
+        id 1qeFGQ-002m8c-B2;
+        Thu, 07 Sep 2023 15:41:57 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGg-00CMiS-9f;
-        Thu, 07 Sep 2023 15:41:58 +0200
+        id 1qeFGf-00CMg8-JE;
+        Thu, 07 Sep 2023 15:41:57 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
 Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
@@ -41,9 +41,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 43/52] m68k: sun3: Remove unused start_page in sun3_bootmem_alloc()
-Date:   Thu,  7 Sep 2023 15:41:44 +0200
-Message-Id: <96b95edc103adbed339bfb833e7735b2c7634698.1694093327.git.geert@linux-m68k.org>
+Subject: [PATCH 14/52] m68k: emu: Remove unused vsnprintf() return value in nfprint()
+Date:   Thu,  7 Sep 2023 15:41:15 +0200
+Message-Id: <9d7c75feaa18e7972cf6c7247ffcdfdd4369cc4e.1694093327.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694093327.git.geert@linux-m68k.org>
 References: <cover.1694093327.git.geert@linux-m68k.org>
@@ -56,38 +56,35 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 When building with W=1:
 
-    arch/m68k/sun3/config.c: In function ‘sun3_bootmem_alloc’:
-    arch/m68k/sun3/config.c:110:23: warning: variable ‘start_page’ set but not used [-Wunused-but-set-variable]
-      112 |         unsigned long start_page;
-	  |                       ^~~~~~~~~~
+    arch/m68k/emu/natfeat.c: In function ‘nfprint’:
+    arch/m68k/emu/natfeat.c:59:13: warning: variable ‘n’ set but not used [-Wunused-but-set-variable]
+       59 |         int n;
+	  |             ^
 
-Fix this by removing the variable and the assignment, now the last user
-is gone.
+As the return value of vsnprintf() is unused, and serves no practical
+purpose here, fix this by removing the variable.
 
-Fixes: 1008a11590b966b4 ("m68k: switch to MEMBLOCK + NO_BOOTMEM")
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/sun3/config.c | 3 ---
- 1 file changed, 3 deletions(-)
+ arch/m68k/emu/natfeat.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/m68k/sun3/config.c b/arch/m68k/sun3/config.c
-index 4550cf25b6f0880a..6e24920e4195490b 100644
---- a/arch/m68k/sun3/config.c
-+++ b/arch/m68k/sun3/config.c
-@@ -109,13 +109,10 @@ static void sun3_halt (void)
- static void __init sun3_bootmem_alloc(unsigned long memory_start,
- 				      unsigned long memory_end)
+diff --git a/arch/m68k/emu/natfeat.c b/arch/m68k/emu/natfeat.c
+index b19dc00026d9953b..344637539438d682 100644
+--- a/arch/m68k/emu/natfeat.c
++++ b/arch/m68k/emu/natfeat.c
+@@ -56,10 +56,9 @@ void nfprint(const char *fmt, ...)
  {
--	unsigned long start_page;
--
- 	/* align start/end to page boundaries */
- 	memory_start = ((memory_start + (PAGE_SIZE-1)) & PAGE_MASK);
- 	memory_end = memory_end & PAGE_MASK;
+ 	static char buf[256];
+ 	va_list ap;
+-	int n;
  
--	start_page = __pa(memory_start) >> PAGE_SHIFT;
- 	max_pfn = num_pages = __pa(memory_end) >> PAGE_SHIFT;
- 
- 	high_memory = (void *)memory_end;
+ 	va_start(ap, fmt);
+-	n = vsnprintf(buf, 256, fmt, ap);
++	vsnprintf(buf, 256, fmt, ap);
+ 	nf_call(nf_get_id("NF_STDERR"), virt_to_phys(buf));
+ 	va_end(ap);
+ }
 -- 
 2.34.1
 
