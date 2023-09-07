@@ -2,85 +2,123 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DCDF4EC8742
-	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 17:30:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2F48EC8726
+	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 17:33:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238946AbjIGRaP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 7 Sep 2023 13:30:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38920 "EHLO
+        id S243989AbjIGRdW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 7 Sep 2023 13:33:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235194AbjIGRaO (ORCPT
+        with ESMTP id S245266AbjIGRdQ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 7 Sep 2023 13:30:14 -0400
-Received: from cantor.telenet-ops.be (cantor.telenet-ops.be [IPv6:2a02:1800:120:4::f00:10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154C1CFA
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 10:29:49 -0700 (PDT)
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by cantor.telenet-ops.be (Postfix) with ESMTPS id 4RhL6D08TBz4xVNn
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 15:43:00 +0200 (CEST)
+        Thu, 7 Sep 2023 13:33:16 -0400
+Received: from riemann.telenet-ops.be (riemann.telenet-ops.be [195.130.137.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B141FE4
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 10:32:47 -0700 (PDT)
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by riemann.telenet-ops.be (Postfix) with ESMTPS id 4RhLyj0ZcFz4x0cf
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 16:21:33 +0200 (CEST)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c214:2eac:128d:f67e])
-        by xavier.telenet-ops.be with bizsmtp
-        id j1hx2A00G2mGBSJ011hxwo; Thu, 07 Sep 2023 15:41:59 +0200
+        by laurent.telenet-ops.be with bizsmtp
+        id j2MX2A00S2mGBSJ012MXea; Thu, 07 Sep 2023 16:21:32 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGQ-002m8w-G8;
-        Thu, 07 Sep 2023 15:41:57 +0200
+        id 1qeFsi-002mG9-FE;
+        Thu, 07 Sep 2023 16:21:31 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGf-00CMgX-NW;
-        Thu, 07 Sep 2023 15:41:57 +0200
+        id 1qeFsx-00CNCC-NO;
+        Thu, 07 Sep 2023 16:21:31 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-m68k@lists.linux-m68k.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Philip Blundell <philb@gnu.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        Laurent Vivier <laurent@vivier.eu>,
-        linux-kernel@vger.kernel.org,
+To:     linux-m68k@lists.linux-m68k.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 19/52] m68k: atari: Make ikbd_reset() static
-Date:   Thu,  7 Sep 2023 15:41:20 +0200
-Message-Id: <5a3c56d3dc8f23b1b2fec61a6553e5f301a80497.1694093327.git.geert@linux-m68k.org>
+Subject: [PATCH 2/2] powerpc: Replace GPL 2.0+ README.legal boilerplate by SPDX
+Date:   Thu,  7 Sep 2023 16:21:30 +0200
+Message-Id: <2349faf484969a86be141f6d90e45657e692d3a5.1694095086.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1694093327.git.geert@linux-m68k.org>
-References: <cover.1694093327.git.geert@linux-m68k.org>
+In-Reply-To: <cover.1694095086.git.geert@linux-m68k.org>
+References: <cover.1694095086.git.geert@linux-m68k.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-When building with W=1:
+Upstream Linux never had a "README.legal" file, but it was present
+in early source releases of Linux/m68k.  It contained a simple copyright
+notice and a link to a version of the "COPYING" file that predated the
+addition of the "only valid GPL version is v2" clause.
 
-    arch/m68k/atari/atakeyb.c:335:6: warning: no previous prototype for ‘ikbd_reset’ [-Wmissing-prototypes]
-      335 | void ikbd_reset(void)
-	  |      ^~~~~~~~~~
-
-Fix this by making ikbd_reset() static.
-There was never a user outside arch/m68k/atari/atakey.c.
+Get rid of the references to non-existant files by replacing the
+boilerplate with SPDX license identifiers.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/atari/atakeyb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/kernel/ptrace/ptrace.c | 5 +----
+ arch/powerpc/kernel/signal.c        | 5 +----
+ arch/powerpc/kernel/signal.h        | 7 ++-----
+ 3 files changed, 4 insertions(+), 13 deletions(-)
 
-diff --git a/arch/m68k/atari/atakeyb.c b/arch/m68k/atari/atakeyb.c
-index 5e0e682f9c61a60e..49a9a459bdf4ccbd 100644
---- a/arch/m68k/atari/atakeyb.c
-+++ b/arch/m68k/atari/atakeyb.c
-@@ -332,7 +332,7 @@ void ikbd_write(const char *str, int len)
- }
+diff --git a/arch/powerpc/kernel/ptrace/ptrace.c b/arch/powerpc/kernel/ptrace/ptrace.c
+index 5d7a72b41ae71158..727ed4a145451356 100644
+--- a/arch/powerpc/kernel/ptrace/ptrace.c
++++ b/arch/powerpc/kernel/ptrace/ptrace.c
+@@ -1,3 +1,4 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  *  PowerPC version
+  *    Copyright (C) 1995-1996 Gary Thomas (gdt@linuxppc.org)
+@@ -9,10 +10,6 @@
+  *
+  * Modified by Cort Dougan (cort@hq.fsmlabs.com)
+  * and Paul Mackerras (paulus@samba.org).
+- *
+- * This file is subject to the terms and conditions of the GNU General
+- * Public License.  See the file README.legal in the main directory of
+- * this archive for more details.
+  */
  
- /* Reset (without touching the clock) */
--void ikbd_reset(void)
-+static void ikbd_reset(void)
- {
- 	static const char cmd[2] = { 0x80, 0x01 };
+ #include <linux/regset.h>
+diff --git a/arch/powerpc/kernel/signal.c b/arch/powerpc/kernel/signal.c
+index 68a91e553e14cea2..aa17e62f37547a79 100644
+--- a/arch/powerpc/kernel/signal.c
++++ b/arch/powerpc/kernel/signal.c
+@@ -1,12 +1,9 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Common signal handling code for both 32 and 64 bits
+  *
+  *    Copyright (c) 2007 Benjamin Herrenschmidt, IBM Corporation
+  *    Extracted from signal_32.c and signal_64.c
+- *
+- * This file is subject to the terms and conditions of the GNU General
+- * Public License.  See the file README.legal in the main directory of
+- * this archive for more details.
+  */
  
+ #include <linux/resume_user_mode.h>
+diff --git a/arch/powerpc/kernel/signal.h b/arch/powerpc/kernel/signal.h
+index a429c57ed4331805..58ecea1cdc27ae80 100644
+--- a/arch/powerpc/kernel/signal.h
++++ b/arch/powerpc/kernel/signal.h
+@@ -1,10 +1,7 @@
+-/*
++/* SPDX-License-Identifier: GPL-2.0-or-later
++ *
+  *    Copyright (c) 2007 Benjamin Herrenschmidt, IBM Corporation
+  *    Extracted from signal_32.c and signal_64.c
+- *
+- * This file is subject to the terms and conditions of the GNU General
+- * Public License.  See the file README.legal in the main directory of
+- * this archive for more details.
+  */
+ 
+ #ifndef _POWERPC_ARCH_SIGNAL_H
 -- 
 2.34.1
 
