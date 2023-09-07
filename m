@@ -2,33 +2,33 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF8BCCCFA0A
-	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 19:31:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B57DEB8FD7
+	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 19:31:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237822AbjIGTbb (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 7 Sep 2023 15:31:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34182 "EHLO
+        id S238223AbjIGTbc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 7 Sep 2023 15:31:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244408AbjIGR17 (ORCPT
+        with ESMTP id S1343792AbjIGSIK (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 7 Sep 2023 13:27:59 -0400
-Received: from weierstrass.telenet-ops.be (weierstrass.telenet-ops.be [IPv6:2a02:1800:110:4::f00:11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A1E197
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 10:27:32 -0700 (PDT)
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by weierstrass.telenet-ops.be (Postfix) with ESMTPS id 4RhL6D04Sbz4x3HG
+        Thu, 7 Sep 2023 14:08:10 -0400
+Received: from gauss.telenet-ops.be (gauss.telenet-ops.be [195.130.132.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73CDD199F
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 11:07:48 -0700 (PDT)
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by gauss.telenet-ops.be (Postfix) with ESMTPS id 4RhL6D02HLz4x1pQ
         for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 15:43:00 +0200 (CEST)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c214:2eac:128d:f67e])
-        by xavier.telenet-ops.be with bizsmtp
-        id j1hx2A00F2mGBSJ011hxwn; Thu, 07 Sep 2023 15:41:59 +0200
+        by laurent.telenet-ops.be with bizsmtp
+        id j1hx2A00F2mGBSJ011hxtg; Thu, 07 Sep 2023 15:41:59 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGQ-002m8t-FQ;
+        id 1qeFGQ-002m8o-Db;
         Thu, 07 Sep 2023 15:41:57 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGf-00CMgS-MZ;
+        id 1qeFGf-00CMgN-Lh;
         Thu, 07 Sep 2023 15:41:57 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
@@ -41,13 +41,14 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 18/52] m68k: atari: Document data parameter of stdma_try_lock()
-Date:   Thu,  7 Sep 2023 15:41:19 +0200
-Message-Id: <c94a97725452677dffde1b4e63e9fd13c6752f2e.1694093327.git.geert@linux-m68k.org>
+Subject: [PATCH 17/52] m68k: amiga: Add and use "amiga.h"
+Date:   Thu,  7 Sep 2023 15:41:18 +0200
+Message-Id: <167b484b2e2f73a23768f94fdc7b2dce91aed5d5.1694093327.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694093327.git.geert@linux-m68k.org>
 References: <cover.1694093327.git.geert@linux-m68k.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
@@ -55,27 +56,71 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 When building with W=1:
 
-    arch/m68k/atari/stdma.c:69: warning: Function parameter or member 'data' not described in 'stdma_try_lock'
+    arch/m68k/amiga/amisound.c:48:13: warning: no previous prototype for ‘amiga_init_sound’ [-Wmissing-prototypes]
+       48 | void __init amiga_init_sound(void)
+	  |             ^~~~~~~~~~~~~~~~
+    arch/m68k/amiga/amisound.c:71:6: warning: no previous prototype for ‘amiga_mksound’ [-Wmissing-prototypes]
+       71 | void amiga_mksound( unsigned int hz, unsigned int ticks )
+	  |      ^~~~~~~~~~~~~
 
-Fix this by documenting the data parameter.
+Fix this by introducing a new header file "amiga.h" for holding the
+prototypes of functions implemented in arch/m68k/amiga/.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/atari/stdma.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/m68k/amiga/amiga.h    | 5 +++++
+ arch/m68k/amiga/amisound.c | 2 ++
+ arch/m68k/amiga/config.c   | 4 ++--
+ 3 files changed, 9 insertions(+), 2 deletions(-)
+ create mode 100644 arch/m68k/amiga/amiga.h
 
-diff --git a/arch/m68k/atari/stdma.c b/arch/m68k/atari/stdma.c
-index ce6818eff75efcdf..155fefff19b0e19d 100644
---- a/arch/m68k/atari/stdma.c
-+++ b/arch/m68k/atari/stdma.c
-@@ -61,6 +61,7 @@ static irqreturn_t stdma_int (int irq, void *dummy);
- /**
-  * stdma_try_lock - attempt to acquire ST DMA interrupt "lock"
-  * @handler: interrupt handler to use after acquisition
-+ * @data: cookie passed to the interrupt handler function
-  *
-  * Returns !0 if lock was acquired; otherwise 0.
-  */
+diff --git a/arch/m68k/amiga/amiga.h b/arch/m68k/amiga/amiga.h
+new file mode 100644
+index 0000000000000000..00392781442cb91a
+--- /dev/null
++++ b/arch/m68k/amiga/amiga.h
+@@ -0,0 +1,5 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++
++/* amisound.c */
++void amiga_init_sound(void);
++void amiga_mksound(unsigned int hz, unsigned int ticks);
+diff --git a/arch/m68k/amiga/amisound.c b/arch/m68k/amiga/amisound.c
+index 442bdeee6bd7920c..714fe8ec6afa3364 100644
+--- a/arch/m68k/amiga/amisound.c
++++ b/arch/m68k/amiga/amisound.c
+@@ -16,6 +16,8 @@
+ 
+ #include <asm/amigahw.h>
+ 
++#include "amiga.h"
++
+ static unsigned short *snd_data;
+ static const signed char sine_data[] = {
+ 	0,  39,  75,  103,  121,  127,  121,  103,  75,  39,
+diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
+index 3137b45750dfcea7..7791673e547bf795 100644
+--- a/arch/m68k/amiga/config.c
++++ b/arch/m68k/amiga/config.c
+@@ -39,6 +39,8 @@
+ #include <asm/io.h>
+ #include <asm/config.h>
+ 
++#include "amiga.h"
++
+ static unsigned long amiga_model;
+ 
+ unsigned long amiga_eclock;
+@@ -96,9 +98,7 @@ static char amiga_model_name[13] = "Amiga ";
+ static void amiga_sched_init(void);
+ static void amiga_get_model(char *model);
+ static void amiga_get_hardware_list(struct seq_file *m);
+-extern void amiga_mksound(unsigned int count, unsigned int ticks);
+ static void amiga_reset(void);
+-extern void amiga_init_sound(void);
+ static void amiga_mem_console_write(struct console *co, const char *b,
+ 				    unsigned int count);
+ #ifdef CONFIG_HEARTBEAT
 -- 
 2.34.1
 
