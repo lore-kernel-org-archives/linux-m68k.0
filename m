@@ -2,33 +2,33 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C75EEC873F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD98EEC8741
 	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 15:45:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbjIGPpw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 7 Sep 2023 11:45:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37768 "EHLO
+        id S232105AbjIGPpx (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 7 Sep 2023 11:45:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345200AbjIGPfK (ORCPT
+        with ESMTP id S245470AbjIGP3g (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 7 Sep 2023 11:35:10 -0400
+        Thu, 7 Sep 2023 11:29:36 -0400
 Received: from riemann.telenet-ops.be (riemann.telenet-ops.be [IPv6:2a02:1800:110:4::f00:10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A0BE45
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 08:34:38 -0700 (PDT)
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by riemann.telenet-ops.be (Postfix) with ESMTPS id 4RhL534qKWz4wyXL
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 15:41:59 +0200 (CEST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6467BCA
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 08:29:09 -0700 (PDT)
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by riemann.telenet-ops.be (Postfix) with ESMTPS id 4RhL540SJYz4x2gn
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 15:42:00 +0200 (CEST)
 Received: from ramsan.of.borg ([84.195.187.55])
-        by michel.telenet-ops.be with bizsmtp
-        id j1hy2A00n1C8whw061hyuv; Thu, 07 Sep 2023 15:41:59 +0200
+        by albert.telenet-ops.be with bizsmtp
+        id j1hy2A00o1C8whw061hyab; Thu, 07 Sep 2023 15:41:59 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGQ-002mA1-T2;
+        id 1qeFGR-002mB0-6n;
         Thu, 07 Sep 2023 15:41:58 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qeFGg-00CMhu-51;
+        id 1qeFGg-00CMj6-F4;
         Thu, 07 Sep 2023 15:41:58 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
@@ -41,90 +41,38 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 36/52] m68k: q40: Add and use "q40.h"
-Date:   Thu,  7 Sep 2023 15:41:37 +0200
-Message-Id: <16313fd669800e0e53d5aacdabd2405d6d4c99b1.1694093327.git.geert@linux-m68k.org>
+Subject: [PATCH 51/52] m68k: sun3x: Make dvma_print() static
+Date:   Thu,  7 Sep 2023 15:41:52 +0200
+Message-Id: <e3a49f03de557fc88dd45138fd86b0e3c40b02dc.1694093327.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694093327.git.geert@linux-m68k.org>
 References: <cover.1694093327.git.geert@linux-m68k.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-When building with W=1:
-
-    arch/m68k/q40/q40ints.c:84:13: warning: no previous prototype for ‘q40_init_IRQ’ [-Wmissing-prototypes]
-       84 | void __init q40_init_IRQ(void)
-	  |             ^~~~~~~~~~~~
-    arch/m68k/q40/q40ints.c:112:6: warning: no previous prototype for ‘q40_mksound’ [-Wmissing-prototypes]
-      112 | void q40_mksound(unsigned int hz, unsigned int ticks)
-	  |      ^~~~~~~~~~~
-    arch/m68k/q40/q40ints.c:152:6: warning: no previous prototype for ‘q40_sched_init’ [-Wmissing-prototypes]
-      152 | void q40_sched_init (void)
-	  |      ^~~~~~~~~~~~~~
-
-Fix this by introducing a new header file "q40.h" for holding the
-prototypes of functions implemented in arch/m68k/q40/.
+There was never a user of dvma_print() outside arch/m68k/sun3x/dvma.c.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/q40/config.c  | 6 ++----
- arch/m68k/q40/q40.h     | 6 ++++++
- arch/m68k/q40/q40ints.c | 2 ++
- 3 files changed, 10 insertions(+), 4 deletions(-)
- create mode 100644 arch/m68k/q40/q40.h
+ arch/m68k/sun3x/dvma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
-index c78ee709b45879c7..2c51c2b4a4fbbf79 100644
---- a/arch/m68k/q40/config.c
-+++ b/arch/m68k/q40/config.c
-@@ -36,16 +36,14 @@
- #include <asm/q40_master.h>
- #include <asm/config.h>
+diff --git a/arch/m68k/sun3x/dvma.c b/arch/m68k/sun3x/dvma.c
+index d1847bfa136791e2..5185b4818d408e71 100644
+--- a/arch/m68k/sun3x/dvma.c
++++ b/arch/m68k/sun3x/dvma.c
+@@ -60,7 +60,7 @@ static volatile unsigned long *iommu_pte = (unsigned long *)SUN3X_IOMMU;
  
--extern void q40_init_IRQ(void);
-+#include "q40.h"
-+
- static void q40_get_model(char *model);
--extern void q40_sched_init(void);
+ #ifdef DEBUG
+ /* code to print out a dvma mapping for debugging purposes */
+-void dvma_print (unsigned long dvma_addr)
++static void dvma_print (unsigned long dvma_addr)
+ {
  
- static int q40_hwclk(int, struct rtc_time *);
- static int q40_get_rtc_pll(struct rtc_pll_info *pll);
- static int q40_set_rtc_pll(struct rtc_pll_info *pll);
- 
--extern void q40_mksound(unsigned int /*freq*/, unsigned int /*ticks*/);
--
- static void q40_mem_console_write(struct console *co, const char *b,
- 				  unsigned int count);
- 
-diff --git a/arch/m68k/q40/q40.h b/arch/m68k/q40/q40.h
-new file mode 100644
-index 0000000000000000..3146679bde0dab97
---- /dev/null
-+++ b/arch/m68k/q40/q40.h
-@@ -0,0 +1,6 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+
-+/* q40ints.c */
-+void q40_init_IRQ(void);
-+void q40_mksound(unsigned int hz, unsigned int ticks);
-+void q40_sched_init(void);
-diff --git a/arch/m68k/q40/q40ints.c b/arch/m68k/q40/q40ints.c
-index 127d7ecdbd49ecd9..10f1f294e91f9705 100644
---- a/arch/m68k/q40/q40ints.c
-+++ b/arch/m68k/q40/q40ints.c
-@@ -24,6 +24,8 @@
- #include <asm/q40_master.h>
- #include <asm/q40ints.h>
- 
-+#include "q40.h"
-+
- /*
-  * Q40 IRQs are defined as follows:
-  *            3,4,5,6,7,10,11,14,15 : ISA dev IRQs
+ 	unsigned long index;
 -- 
 2.34.1
 
