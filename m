@@ -2,99 +2,126 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4713EC8747
-	for <linux-m68k@archiver.kernel.org>; Thu,  7 Sep 2023 23:57:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F911EC875F
+	for <linux-m68k@archiver.kernel.org>; Fri,  8 Sep 2023 00:46:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235821AbjIGX5G (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 7 Sep 2023 19:57:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58722 "EHLO
+        id S234422AbjIHAqW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 7 Sep 2023 20:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234640AbjIGX5G (ORCPT
+        with ESMTP id S231550AbjIHAqW (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 7 Sep 2023 19:57:06 -0400
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC11D9D
-        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 16:57:02 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id CDD205C01B7;
-        Thu,  7 Sep 2023 19:56:59 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 07 Sep 2023 19:56:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1694131019; x=1694217419; bh=+7pgqLGNps7ru
-        3XDKk84aBvcEHC6gQtbMxC/jw4A3UM=; b=tmruPd0iqZauQz7vC0ffnf8bkuyyC
-        1ijwwK1IF8Abdh/RdoKapqeCl5xGXIdU/CqSdbEIs64ALcTCqNqeoT5lCCnSUfjf
-        Egfji+KqfLIUvHh9N6sXatwagPs1B172iH4mH6Rc8wx+S3Eq/dlrIFiZXjZkhYhf
-        9/8phocbzl3QujfJvm8cp3MNkx6LVEOgRuspwuAZKhFc4DcEaI2bsT7EXUNl7aqN
-        +ld1QGq8XlWpr+h5ZFrbOhv86WUNXU3VZmDTlwaECLbgnDSO33ny+iWYerLkddlt
-        D/WXZlfwg8vDiS9BjWSXDsMGIfkqoTcQiAmUYo5bHq26r0NJlj7IGKQlA==
-X-ME-Sender: <xms:S2P6ZPvu8CAyvwhLeNB3Dp7QFgdCS1djbm1VMnQSe0HzKzP1JRRS8w>
-    <xme:S2P6ZAdfpb6pR_7IoDCNjorWaQ_fgmzuPsta6YilUNzFaWRfr0uvGEGuHdV2C29fZ
-    2QnhoEQNRa38upD3H0>
-X-ME-Received: <xmr:S2P6ZCwYnmOCv42DveI8jeOm0CYAe2Vb30iLBset3yPUnKwFzaCBwNOv6SyNq_n5HU3RCSujtaLTBMscKhuTCRmoVMo2h-Lawvo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehiedgvdelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
-    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
-    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:S2P6ZOM-eylmdVEVhl68kL_KINhOpcaC2-bXcRvaHAp6lA5lreQCIA>
-    <xmx:S2P6ZP98gXMATucx26GsvxP3DJ2mOCS7_YUisn0AixlP575powG0Fw>
-    <xmx:S2P6ZOXuaWL--SxSDY2l-uVoY2M9wn-DzZNmTEt0FbhGm_me8s-r7g>
-    <xmx:S2P6ZAO5UFTx1ojwd0ex_PocZhvuYB1bVPx6XEoL3X7jaLHKNy6dwg>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 7 Sep 2023 19:56:56 -0400 (EDT)
-Date:   Fri, 8 Sep 2023 09:57:01 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-cc:     linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>,
-        Michael Schmitz <schmitzmic@gmail.com>,
+        Thu, 7 Sep 2023 20:46:22 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA131BD3
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Sep 2023 17:46:18 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bd9b4f8e0eso11466275ad.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 07 Sep 2023 17:46:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694133978; x=1694738778; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vBzMi7nuJEjnLrIfSvx0g5ii+P5l6wXDMWk+6BeTQpU=;
+        b=o6dFEQnSfiUzMHdWNLMBmnS5Zn0X5w2erCzob/7Tg+KINMf7QILWDD0G+T/mOpsUhA
+         iD6po3P577x1/Rp0sTutQ4UdLH5GYjqRLgDbK83LOgZb8E8bU0XQey8VGPO0gCLFTDyb
+         nU2eFk197r1yGha3FJX8izH6eEyYoMbPLWWNoMsj9d/ciUt4ARiwfKo0tWxugrOEzvgn
+         UHjS4EKgwUkUME4CvSh7bysyIgqORk69Vorm2NsEiobE/hgbsENuGsY2hGr1DMtHlDK6
+         ykb3PZjaETr1HKfstTHd09C4iZgZ8HB9ZeRHLI5Z9Q3wgWOm2WyjCaqiqoHhCeYeUDQ1
+         s2OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694133978; x=1694738778;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vBzMi7nuJEjnLrIfSvx0g5ii+P5l6wXDMWk+6BeTQpU=;
+        b=Xbkq5Ijasju8X5CkvJnmQAbux0nPCLvuSu4rKy3MyXa/qsquKnXoVS4i7YwcODzxob
+         8WMtG3e+cbjCyHysD10irA87Cad/y4bqKlpxbG/Mw2bSJ5ANArNeaK3if3rWZjFF/nZV
+         K/HB2Rm5t11FSj/YHAtJYoxCQtT28p7b7f4Fg1WM80S43BWQXFVeUCuVZn1t5iXd7F1q
+         lIwWSf4RMTJUJEo0XuXOWkXaNur5WmkIgVeygx7P+t3FEXujP+L7pZVe1pvQ15UUllGJ
+         7wH2J7AISNXr1ymFcVErxNvkstDb+GjN9oxxzGs5863Aqz2nTb0pdcQQHITr4N4y9kCL
+         dPyg==
+X-Gm-Message-State: AOJu0YycbMkd6DepvLsh2W9Mka+BBYet295XTMI6WbmaPCRMTKg25r9L
+        gyi2viNHSoXBCOZMKwrYJ18=
+X-Google-Smtp-Source: AGHT+IGWKVuAn9zIbN0xHNClqeExD/6A9pM1A1/2u5kzg1ko3yEMSGNowadf3wlGQwgR9C03fLLiDg==
+X-Received: by 2002:a17:902:e741:b0:1b8:c580:5fb9 with SMTP id p1-20020a170902e74100b001b8c5805fb9mr1463386plf.14.1694133977980;
+        Thu, 07 Sep 2023 17:46:17 -0700 (PDT)
+Received: from ?IPV6:2001:df0:0:200c:1d9d:935e:2152:72e4? ([2001:df0:0:200c:1d9d:935e:2152:72e4])
+        by smtp.gmail.com with ESMTPSA id 6-20020a170902ee4600b001a6f7744a27sm340630plo.87.2023.09.07.17.46.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Sep 2023 17:46:17 -0700 (PDT)
+Message-ID: <6ff868a4-d433-6e92-8bf2-573fee19ce2c@gmail.com>
+Date:   Fri, 8 Sep 2023 12:46:11 +1200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 22/52] m68k: atari: Add and use "atari.h"
+Content-Language: en-US
+To:     Finn Thain <fthain@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>,
         Philip Blundell <philb@gnu.org>,
         Greg Ungerer <gerg@linux-m68k.org>,
         Joshua Thompson <funaho@jurai.org>,
         Sam Creasey <sammy@sammy.net>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 22/52] m68k: atari: Add and use "atari.h"
-In-Reply-To: <0778d9dd186928666d760d5523c7d2311f781621.1694093327.git.geert@linux-m68k.org>
-Message-ID: <142e4eb5-b47e-e27c-1be3-bc6c5df889c0@linux-m68k.org>
-References: <cover.1694093327.git.geert@linux-m68k.org> <0778d9dd186928666d760d5523c7d2311f781621.1694093327.git.geert@linux-m68k.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <cover.1694093327.git.geert@linux-m68k.org>
+ <0778d9dd186928666d760d5523c7d2311f781621.1694093327.git.geert@linux-m68k.org>
+ <142e4eb5-b47e-e27c-1be3-bc6c5df889c0@linux-m68k.org>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+In-Reply-To: <142e4eb5-b47e-e27c-1be3-bc6c5df889c0@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, 7 Sep 2023, Geert Uytterhoeven wrote:
+Hi Finn,
 
-> diff --git a/arch/m68k/atari/atari.h b/arch/m68k/atari/atari.h
-> new file mode 100644
-> index 0000000000000000..494a03ddac3d16ae
-> --- /dev/null
-> +++ b/arch/m68k/atari/atari.h
-> @@ -0,0 +1,15 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +
-> +struct rtc_time;
-> +
-> +/* ataints.c */
-> +void atari_init_IRQ(void);
-> +
-> +/* atasound.c */
-> +void atari_microwire_cmd(int cmd);
-> +void atari_mksound(unsigned int hz, unsigned int ticks);
-> +
-> +/* time.c */
-> +void atari_sched_init(void);
-> +int atari_mste_hwclk(int op, struct rtc_time *t);
-> +int atari_tt_hwclk(int op, struct rtc_time *t);
+On 8/09/23 11:57, Finn Thain wrote:
+> On Thu, 7 Sep 2023, Geert Uytterhoeven wrote:
+>
+>> diff --git a/arch/m68k/atari/atari.h b/arch/m68k/atari/atari.h
+>> new file mode 100644
+>> index 0000000000000000..494a03ddac3d16ae
+>> --- /dev/null
+>> +++ b/arch/m68k/atari/atari.h
+>> @@ -0,0 +1,15 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +
+>> +struct rtc_time;
+>> +
+>> +/* ataints.c */
+>> +void atari_init_IRQ(void);
+>> +
+>> +/* atasound.c */
+>> +void atari_microwire_cmd(int cmd);
+>> +void atari_mksound(unsigned int hz, unsigned int ticks);
+>> +
+>> +/* time.c */
+>> +void atari_sched_init(void);
+>> +int atari_mste_hwclk(int op, struct rtc_time *t);
+>> +int atari_tt_hwclk(int op, struct rtc_time *t);
+> Wouldn't atariints.h and atarihw.h be more appropriate places for some of
+> these?
 
-Wouldn't atariints.h and atarihw.h be more appropriate places for some of 
-these?
+atariints.h already has some prototypes, so yes on that account.
+
+atarihw.h only has inlines, but sound and time related prototypes could 
+be added there, too.
+
+Geert's intentions might have been avoiding inclusion of all the 
+hardware specific data in those two files, but the only source file to 
+benefit from this is config.c (the other three already include 
+atariints.h and atarihw.h).
+
+OTOH, considering this patch series adds a lot of other headers that 
+only contain prototypes, it might be better to keep to that pattern 
+everywhere.
+
+Cheers,
+
+     Michael
+
+
