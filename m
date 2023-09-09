@@ -2,127 +2,112 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E207EEEB564
-	for <linux-m68k@archiver.kernel.org>; Sat,  9 Sep 2023 08:35:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 833DEEEB57C
+	for <linux-m68k@archiver.kernel.org>; Sat,  9 Sep 2023 08:38:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343707AbjIIIf5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 9 Sep 2023 04:35:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34132 "EHLO
+        id S244402AbjIIIi0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 9 Sep 2023 04:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244402AbjIIIf4 (ORCPT
+        with ESMTP id S233539AbjIIIiZ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 9 Sep 2023 04:35:56 -0400
+        Sat, 9 Sep 2023 04:38:25 -0400
 Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com [66.111.4.230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D5DF10F6
-        for <linux-m68k@lists.linux-m68k.org>; Sat,  9 Sep 2023 01:35:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B13C010FA
+        for <linux-m68k@lists.linux-m68k.org>; Sat,  9 Sep 2023 01:38:21 -0700 (PDT)
 Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 8C06358095D;
-        Sat,  9 Sep 2023 04:35:51 -0400 (EDT)
+        by mailnew.nyi.internal (Postfix) with ESMTP id 1CCF358095D;
+        Sat,  9 Sep 2023 04:38:21 -0400 (EDT)
 Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Sat, 09 Sep 2023 04:35:51 -0400
+  by compute6.internal (MEProxy); Sat, 09 Sep 2023 04:38:21 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1694248551; x=1694255751; bh=/6rKnVZuaQJqceJBO1nvMva4Alknr21qWzV
-        fQShw7o8=; b=deGTSdrDeWLRxhPvkNMlSr3BVSX/GrgJAUxaVI65CAGORnQAwxj
-        +z8+yf76ydss2TsIzEqCHcUuAgDQuO3JLGS5LC1RV1FCEqCTKZbHib2QpxdK9JXQ
-        iVnG431yOb4um46DBkXK6abY1ZkKw8UlCNHqZVA+l0l6NKY7JdHQgItKF2JkSamJ
-        R60m0vgautenuNnpzFODEYUf4Gprly1GoUivW+/mgbp1B3pYGK9cyQdyseAqnN91
-        DQOBfZv0XB2NEBhLpgg/IrP0l0J2pRpMtCw/jlwxRvsjc8ogD+a3VhFV8AO2EVJg
-        q8tgznvo2F3/enz2KlGSyckpHWib28OBCEg==
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1694248701; x=1694255901; bh=eh
+        Zt+B2jX5xBs+1bj5H5hfiU1YSfmNNpLPHz2pKWFMM=; b=Ir/EqWhglFD1ntvS3q
+        hZWHZv8YhaBCZX26TOJ7pssLwsZPpb10sMwKBhLY9M6vVzIuADdaL/uAPkXzOmEn
+        2ZjtZCNcpjWaPj3LAqgrBpR8QcZsjFs2Oyk4TLLN/GktrdrqO2+UKYzhB8NMEwww
+        TNx6dL5G3j5enrPjysC5R1KWyX/Id224lBIxBO+EfLW700DNJZHz9UCibZpM9vKt
+        xNyqCDGi+/KoyFB7wZYiec/1fE66yZNT6NMxfXZIPHgNVxQTC2mVs25cSDP9xRBB
+        i3BX1BdOhQbDIX++NOFJIe3LRfOqSJN8mDQhk0PC1xOQ5S9qQmeCgq78zDTYhMYF
+        /R/A==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1694248551; x=1694255751; bh=/6rKnVZuaQJqceJBO1nvMva4Alknr21qWzV
-        fQShw7o8=; b=Bx/fxaD3bUFVcuJgK6+PzMjTMAYNAlt8dZbkTjN7avYb6xgw1kH
-        1Bn57adjgOeS+/+BwhmOHCqg7UBtfrOK5xShDUJr3O48LfbYq1279Q/UQIN9UcDP
-        go+LpoxoCGIXF9C71brJjzeU+Zf46tmvu2t/I2Jatj/u7NXR/PrgLtjxglipp8Hf
-        /N5FTpIsG9A1gUTnYtgW8lrClnYtybcgcSDsN3O9OJjrksx9eoZdOfhs3pVLtO1+
-        wKPMVhZ1ktIKV//NsAcL3j5aLgeek45P5AO3Oy+BcGjxV8JfAYHxGbYrIYlv6UTC
-        IBj78nFUgZ2gMTkQ9KSsLXWNv12/Qv+/u0w==
-X-ME-Sender: <xms:Zy78ZISAy1FnoHdJYiK_jQUYTVc45g54EPwYmOxcid5-dNAd5054zQ>
-    <xme:Zy78ZFxswuLGm0xsBkWJLtNDahxqKQI0PmS_65ynEJq-gNZshOilFq8FGQnaQv5sa
-    _2NRjgwClQNJ7BYfBI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehledgtdehucetufdoteggodetrfdotf
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1694248701; x=1694255901; bh=ehZt+B2jX5xBs
+        +1bj5H5hfiU1YSfmNNpLPHz2pKWFMM=; b=03u9Cw/H9C5y2i3STbp7a5Jpka1HA
+        z5pg08EcooJDCxNOyjFqnyVSKUeTUXjmzpE+caCuGVhPq3kMYIb/5I37vgsjeoah
+        IF4LUzTzM1NVVQKOrOqR0FN95MQOFgDOXu2Qn7Ko5rFoOWaE9scaq4L9JaFeVObs
+        s8SrslgboCx+5U8HhS910gmv/X77kizuPX0cceOf4nUaawzQkaeXXeydKnX3sERM
+        LotZwLSxPEZpX+v3mfHCpetkUs4909CYQjv1idFvyg+Hg9buYyxRQOI7QYDRCXEr
+        0zqhnZMDQNMEAQnChNrb1i8J4TWGCmz4rkLQMlKxTuyhJYd+PKtRR0WPw==
+X-ME-Sender: <xms:_C78ZMPoGp1gNarGyZpF65L02p1A89ACQmd8S1h4UN2tXiKPGviQbw>
+    <xme:_C78ZC9pTgcPbdpwMpM0iEuXVjRohyZaxmMgHE17epwYUV069ERtwz24Mh8Tzi6p1
+    -Zm2ehYeFAo-l0JiuE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehledgtdeiucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
-    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:Zy78ZF0jU97R3RVLQHQOyuhuvwuy3qDwz8kBhst50lMGKd8ZNH1I_g>
-    <xmx:Zy78ZMAIy9_9j262RCNuM3rJNR6DiVAPQRJdNlOEjbHYSuremfL_1Q>
-    <xmx:Zy78ZBj-koAGcxocUcpd_g1I9xVx_LF4IBsaZ-TxucCie_Va6XWk8g>
-    <xmx:Zy78ZJjFT6S-wZv6ZjVxEzgsLZyOr-UVDJeFo_5ohUhhfyq25ygtbA>
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepvefhffeltdegheeffffhtdegvdehjedtgfekueevgfduffettedtkeekueef
+    hedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:_C78ZDRblz9JwGy1yhxgANjUckPjHpcgLWsIYsTL0FAKFIcBU91yBQ>
+    <xmx:_C78ZEv5NYA4n-vj_MlHK7JmB_sRC9Oegz_0b7uZD4kCVE47GHkgog>
+    <xmx:_C78ZEdLXCyM90PV0LNm2cJ0goFctvPw0qH6OCSbAUxfCzLixUrxjA>
+    <xmx:_S78ZCudcLPyXdryZOSBgFmYS6NYiSh0rqt2R0H8J7Q5lnJ_yYIy-A>
 Feedback-ID: i56a14606:Fastmail
 Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 4FAB7B60089; Sat,  9 Sep 2023 04:35:51 -0400 (EDT)
+        id D270FB60089; Sat,  9 Sep 2023 04:38:20 -0400 (EDT)
 X-Mailer: MessagingEngine.com Webmail Interface
 User-Agent: Cyrus-JMAP/3.9.0-alpha0-711-g440737448e-fm-20230828.001-g44073744
 Mime-Version: 1.0
-Message-Id: <c7afaff5-61bb-4723-a3db-b040698dfa21@app.fastmail.com>
-In-Reply-To: <CAMuHMdU8HMSgxAPFUSoCnKDs=y8T9w+5K+sTMUzmi37=ynH5FQ@mail.gmail.com>
+Message-Id: <d98b2c68-9507-4a52-9670-6c117e704d04@app.fastmail.com>
+In-Reply-To: <cover.1694093327.git.geert@linux-m68k.org>
 References: <cover.1694093327.git.geert@linux-m68k.org>
- <5406d0829d8204841c8cb8d265ca91a52cd22d2d.1694093327.git.geert@linux-m68k.org>
- <6e46156f-5a81-d245-63cd-8091605deee1@linux-m68k.org>
- <CAMuHMdU8HMSgxAPFUSoCnKDs=y8T9w+5K+sTMUzmi37=ynH5FQ@mail.gmail.com>
-Date:   Sat, 09 Sep 2023 10:35:20 +0200
+Date:   Sat, 09 Sep 2023 10:37:59 +0200
 From:   "Arnd Bergmann" <arnd@arndb.de>
 To:     "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Finn Thain" <fthain@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org,
+        linux-m68k@lists.linux-m68k.org
+Cc:     "Finn Thain" <fthain@linux-m68k.org>,
         "Michael Schmitz" <schmitzmic@gmail.com>,
         "Philip Blundell" <philb@gnu.org>,
         "Greg Ungerer" <gerg@linux-m68k.org>,
         "Joshua Thompson" <funaho@jurai.org>,
         "Sam Creasey" <sammy@sammy.net>,
         "Laurent Vivier" <laurent@vivier.eu>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 25/52] m68k: apollo: Replace set but not used variable by
- READ_ONCE()
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 00/52] m68k: W=1 fixes
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Sep 8, 2023, at 08:51, Geert Uytterhoeven wrote:
+On Thu, Sep 7, 2023, at 15:41, Geert Uytterhoeven wrote:
+> Hi all,
 >
-> On Fri, Sep 8, 2023 at 1:37=E2=80=AFAM Finn Thain <fthain@linux-m68k.o=
-rg> wrote:
->> On Thu, 7 Sep 2023, Geert Uytterhoeven wrote:
->> > --- a/arch/m68k/apollo/config.c
->> > +++ b/arch/m68k/apollo/config.c
->> > @@ -146,13 +146,11 @@ void __init config_apollo(void)
->> >
->> >  irqreturn_t dn_timer_int(int irq, void *dev_id)
->> >  {
->> > -     volatile unsigned char x;
->> > -
->> >       legacy_timer_tick(1);
->> >       timer_heartbeat();
->> >
->> > -     x =3D *(volatile unsigned char *)(apollo_timer + 3);
->> > -     x =3D *(volatile unsigned char *)(apollo_timer + 5);
->> > +     READ_ONCE(*(volatile unsigned char *)(apollo_timer + 3));
->> > +     READ_ONCE(*(volatile unsigned char *)(apollo_timer + 5));
->> >
->> >       return IRQ_HANDLED;
->> >  }
->> >
->>
->> I believe the volatile cast is redundant here, as READ_ONCE does that.
+> This patch series addresses the remaining (after [1]) warnings seen when
+> building arch/m68k/ with W=1.  Perhaps surprisingly, this work has
+> identified and fixes a genuine bug in the Sun-3 TLB handling (see [PATCH
+> 39/52]).
 >
-> Yes it does.  I didn't drop the volatile out of fear of introducing
-> some higher W-level warning about casting away volatility, but upon
-> closer look, the apollo_timer definition itself does not use volatile.
+> Most of the patches in these series are fairly trivial changes with a
+> very low risk of introducing any regressions.  For the less trivial
+> patches, I did look at the assembler output before and after.  As Arnd
+> is working actively on enabling W=1 rather sooner than later, and if no
+> one objects, I plan to rebase [1] and this series after the release of
+> v6.6-rc1, and send it as a fixes pull request to Linus.
+>
+> Note that this series does not address warnings on Coldfire or MMU-less
+> systems.
+>
+> Thanks for your comments!
+>
+> [1] "[PATCH 0/6] m68k: math-emu: Miscellaneous esthetical improvements"
+>     https://lore.kernel.org/r/cover.1692283195.git.geert@linux-m68k.org
 
-I think ideally you'd want apollo_timer or IO_BASE to be marked __iomem
-and passed to readb() instead. OTOH, I don't think anyone actually
-cares about apollo, so your version is probably good enough.
+Thanks a lot for doing these, looks all good to me. I sent
+two minor comments, but those patches are still ok.
 
-     Arnd
+Acked-by: Arnd Bergmann <arnd@arndb.de>
