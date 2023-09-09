@@ -2,103 +2,131 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09281EEB58C
-	for <linux-m68k@archiver.kernel.org>; Sat,  9 Sep 2023 12:12:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E10E5EEB581
+	for <linux-m68k@archiver.kernel.org>; Sat,  9 Sep 2023 16:25:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234102AbjIIMMk convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 9 Sep 2023 08:12:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53742 "EHLO
+        id S229627AbjIIQZL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 9 Sep 2023 12:25:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345567AbjIIMMj (ORCPT
+        with ESMTP id S1346269AbjIIOHm (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 9 Sep 2023 08:12:39 -0400
-Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28952CE6
-        for <linux-m68k@lists.linux-m68k.org>; Sat,  9 Sep 2023 05:12:35 -0700 (PDT)
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-1cca0a1b3c7so2034105fac.2
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 09 Sep 2023 05:12:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694261554; x=1694866354;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ElnjYqTEVh98M3QsOcoe1d7VW/OGyAcrh4Gl8OyK3Xs=;
-        b=AhQRXVa6kafLOPLZ/AH5tPA8DIUEts9U9JWzhfJDvLG6HbOBilaB3Q4oy3srTBREXR
-         D9XUJ6xVDtCm4GXIV7yDQ632OTmwbv6jpDjGSxwHY/EetivZcOpJSM78q0MfAiaKo/PU
-         9Xkwl+nN4hb4qXZYIEuk2OIj5kaYHqipfI9WVZnJ9YJvKQMEo6+0JIMTZgu75ghNPgvu
-         bKc4fNhPLopRUHELO6QxkK5jHw/U420lqNuVmUkqsBdj0l7DsRFoD8ifFvWcdqV972Go
-         CLi0PpFER3yxiyQ+zk1Jqc9A9LutpWvQ3Oi0iEXUUfCCTjIEPbe/Vp5CsSdNuq+ZAvW9
-         54Cw==
-X-Gm-Message-State: AOJu0Yyx1V+enamOWk0UiawTxt2q1CzMmW/1SpiUgtud4Qvg8Un+yOhs
-        HSHpGs2Ronm27JT4slUZ5u6mFrGQVRbrPw==
-X-Google-Smtp-Source: AGHT+IFSExgdtN0sKCm22IBSJhljFYD0fanSbSbsk7+QKPZDsbZ+gbFkluC+ZyhDPPM8zx81yJWe7Q==
-X-Received: by 2002:a05:6870:d252:b0:1be:f720:bb7b with SMTP id h18-20020a056870d25200b001bef720bb7bmr6172464oac.16.1694261554043;
-        Sat, 09 Sep 2023 05:12:34 -0700 (PDT)
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com. [209.85.210.51])
-        by smtp.gmail.com with ESMTPSA id ky6-20020a056871c4c600b001cca1dc6d79sm2013742oac.34.2023.09.09.05.12.33
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Sep 2023 05:12:33 -0700 (PDT)
-Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6bcb5df95c5so2182973a34.1
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 09 Sep 2023 05:12:33 -0700 (PDT)
-X-Received: by 2002:aca:2302:0:b0:3a8:4dfd:4f14 with SMTP id
- e2-20020aca2302000000b003a84dfd4f14mr5186395oie.27.1694261553297; Sat, 09 Sep
- 2023 05:12:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1694093327.git.geert@linux-m68k.org> <64ea8cf65a4318fbf8c91cb3062d90a2555007c4.1694093327.git.geert@linux-m68k.org>
+        Sat, 9 Sep 2023 10:07:42 -0400
+Received: from wnew3-smtp.messagingengine.com (wnew3-smtp.messagingengine.com [64.147.123.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02A05CCA
+        for <linux-m68k@lists.linux-m68k.org>; Sat,  9 Sep 2023 07:07:37 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailnew.west.internal (Postfix) with ESMTP id B28DA2B000C2;
+        Sat,  9 Sep 2023 10:07:34 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Sat, 09 Sep 2023 10:07:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1694268454; x=1694275654; bh=AltuPP/LqeE6uAGSGb8FseNo9A60IhA1lu+
+        5xb2VAGk=; b=SRu7W0JjHy+7J3xJg2yylV229CcXGC7Q/Bu4wJue4kpMxLRjuiv
+        /rm1kimQQrokMtdw5dgKtV03MOINzLOzdhYM65eqc7PfbGeanAuZOweu521VuNRs
+        5y3wqWg4FU2M4ihkriVavUZG5xIl78x66XgSIukGrkX+NmLVVvj1NPKrC/BYIYd+
+        YyJE/jnx8l2l2jdv7lfh8VevJpk9lW9YsXJW8HCnalJQAK5AgMY9j1SR3PnUtH+E
+        o6PFJ3kkc6aQwKCQvkUJhEwH7nqpopW7QxA9uxKV3ZEp0VidPqRnWe0INKRckD3l
+        NuRkJP1s2iUHAsozJWqoe8oRfw45bDV09vA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1694268454; x=1694275654; bh=AltuPP/LqeE6uAGSGb8FseNo9A60IhA1lu+
+        5xb2VAGk=; b=r5XrJ3oAFxBgLmziT3FzAZd3H9GdEbpzF7Y0ZtIU7KYycyFhTO2
+        jVT7DB3yH0vvg7NLQSXRo3kWh7vY1dDWq82QS4+uRyaAMugHOcov1Ibba1/0D9yo
+        7WdblTVlu2/4kopg+Uo267t/Po0WZQs7ywVyiv2yG3UlKe/GnLClWv9dVeYg3wVI
+        uc0xXIjGiooEIB0k+KOdh8TijccKU3aEYeGxehiRxzeR9Qkir43CsDeydgerkCis
+        Erk0x8gm/wruGajNXy831rQLBHAc/pvcSYEsyxoifw9tL1YaBvs8DJ6dgqPvLlTV
+        dVgCA8+ihM/UGFTUOXUaNdybJKW0QBoVZKA==
+X-ME-Sender: <xms:JXz8ZCl2rnah069ySds2jAb9v_x_dEZabHp4pX80D5AUeaZE0TZlyw>
+    <xme:JXz8ZJ1BMwoeAY2o-maKy1lT-AMR52vPR8C8vCEn-pibE-rm60RKxvuU3nX4GZNnx
+    tia74_Eqx1mjXjN6IQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehledgjedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeelfefgueeviefgudduueefueffkeelleeijeelkefgudfgueelledtuddu
+    ieegvdenucffohhmrghinhepghhouggsohhlthdrohhrghenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:JXz8ZApW4v7BgzReF-anvTJLf0emao3RaWXzDrywo8UIRFKJm9d40g>
+    <xmx:JXz8ZGkKxyHwBzln8_bHyERy_Yihk92t-qHvQCzyS9Se0bIUZtbztA>
+    <xmx:JXz8ZA2JKRhSHUzEfjEL4b-EMyI0D_PedhmfRNWNcxjaxE2Adi7uGg>
+    <xmx:Jnz8ZBltFIuxlG-Do68QNuFy22OdtF-z8F8wfmM1PvL86HYMkMULu_tsWO8>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 5D0E3B60089; Sat,  9 Sep 2023 10:07:33 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-711-g440737448e-fm-20230828.001-g44073744
+Mime-Version: 1.0
+Message-Id: <76998b95-827a-4e71-8782-0990b204fcfa@app.fastmail.com>
+In-Reply-To: <CAMuHMdWs0QbRQZCXZ2Gycqb7jjsjUZMp7_h2mVWxR1zrjCL1Og@mail.gmail.com>
+References: <cover.1694093327.git.geert@linux-m68k.org>
+ <64ea8cf65a4318fbf8c91cb3062d90a2555007c4.1694093327.git.geert@linux-m68k.org>
  <2545f40a-0c59-491d-895f-4a7975faaedc@app.fastmail.com>
-In-Reply-To: <2545f40a-0c59-491d-895f-4a7975faaedc@app.fastmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sat, 9 Sep 2023 14:12:21 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWs0QbRQZCXZ2Gycqb7jjsjUZMp7_h2mVWxR1zrjCL1Og@mail.gmail.com>
-Message-ID: <CAMuHMdWs0QbRQZCXZ2Gycqb7jjsjUZMp7_h2mVWxR1zrjCL1Og@mail.gmail.com>
-Subject: Re: [PATCH 15/52] m68k: emu: Mark version[] __maybe_unused
-To:     Arnd Bergmann <arnd@arndb.de>
+ <CAMuHMdWs0QbRQZCXZ2Gycqb7jjsjUZMp7_h2mVWxR1zrjCL1Og@mail.gmail.com>
+Date:   Sat, 09 Sep 2023 16:07:13 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Geert Uytterhoeven" <geert@linux-m68k.org>
 Cc:     linux-m68k@lists.linux-m68k.org,
-        Finn Thain <fthain@linux-m68k.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Philip Blundell <philb@gnu.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        Laurent Vivier <laurent@vivier.eu>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+        "Finn Thain" <fthain@linux-m68k.org>,
+        "Michael Schmitz" <schmitzmic@gmail.com>,
+        "Philip Blundell" <philb@gnu.org>,
+        "Greg Ungerer" <gerg@linux-m68k.org>,
+        "Joshua Thompson" <funaho@jurai.org>,
+        "Sam Creasey" <sammy@sammy.net>,
+        "Laurent Vivier" <laurent@vivier.eu>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 15/52] m68k: emu: Mark version[] __maybe_unused
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Arnd,
-
-On Sat, Sep 9, 2023 at 10:28 AM Arnd Bergmann <arnd@arndb.de> wrote:
-> On Thu, Sep 7, 2023, at 15:41, Geert Uytterhoeven wrote:
-> > When building with W=1:
-> >
-> >     m68k/arch/m68k/emu/nfeth.c:42:19: warning: ‘version’ defined but
-> > not used [-Wunused-const-variable=]
-> >        42 | static const char version[] =
-> >         |                   ^~~~~~~
-> >
-> > Fix this while obeying the wishes of the original copyright holders by
-> > marking version[] with __maybe_unused.
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+On Sat, Sep 9, 2023, at 14:12, Geert Uytterhoeven wrote:
+> Hi Arnd,
 >
-> That will just drop it from the object file, maybe it should
-> instead be marked "__used" ?
+> On Sat, Sep 9, 2023 at 10:28=E2=80=AFAM Arnd Bergmann <arnd@arndb.de> =
+wrote:
+>> On Thu, Sep 7, 2023, at 15:41, Geert Uytterhoeven wrote:
+>> > When building with W=3D1:
+>> >
+>> >     m68k/arch/m68k/emu/nfeth.c:42:19: warning: =E2=80=98version=E2=80=
+=99 defined but
+>> > not used [-Wunused-const-variable=3D]
+>> >        42 | static const char version[] =3D
+>> >         |                   ^~~~~~~
+>> >
+>> > Fix this while obeying the wishes of the original copyright holders=
+ by
+>> > marking version[] with __maybe_unused.
+>> >
+>> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>>
+>> That will just drop it from the object file, maybe it should
+>> instead be marked "__used" ?
+>
+> Given it's been like this since the beginning, I guess it never showed
+> up in the object file anyway...
 
-Given it's been like this since the beginning, I guess it never showed
-up in the object file anyway...
+Older compilers used to keep unused variables, and all versions
+still do when building with -O0 instead of the usual -O2.
 
-Gr{oetje,eeting}s,
+I can see on godbolt.org that gcc-1.27 did not have that optimization
+yet, while gcc-4.1 had it, but I haven't found any versions between
+those. I vaguely remember us throwing out the version strings from
+most kernel files a long time ago, possibly that was triggered by
+gcc no longer putting them into the object any more, but I can't
+find a reference for that.
 
-                        Geert
+What I can see is that a lot of old network drivers have version
+strings like this one, but they are actually printed from the
+probe function, and lost their __devinitdata annotation in the past.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+      Arnd
