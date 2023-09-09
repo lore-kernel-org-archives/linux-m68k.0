@@ -2,150 +2,106 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C3C1EEB570
-	for <linux-m68k@archiver.kernel.org>; Fri,  8 Sep 2023 22:59:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34DB7EEB57C
+	for <linux-m68k@archiver.kernel.org>; Sat,  9 Sep 2023 08:28:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344547AbjIHW7I (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 8 Sep 2023 18:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38180 "EHLO
+        id S1343993AbjIII2k (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 9 Sep 2023 04:28:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343685AbjIHW7H (ORCPT
+        with ESMTP id S1343623AbjIII2k (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 8 Sep 2023 18:59:07 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 407EF1FEA
-        for <linux-m68k@lists.linux-m68k.org>; Fri,  8 Sep 2023 15:59:03 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id BCCB2320095B;
-        Fri,  8 Sep 2023 18:59:01 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 08 Sep 2023 18:59:02 -0400
+        Sat, 9 Sep 2023 04:28:40 -0400
+Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com [66.111.4.230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78F3B1BD3
+        for <linux-m68k@lists.linux-m68k.org>; Sat,  9 Sep 2023 01:28:36 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailnew.nyi.internal (Postfix) with ESMTP id CE1D95809CA;
+        Sat,  9 Sep 2023 04:28:35 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Sat, 09 Sep 2023 04:28:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1694248115; x=1694255315; bh=yhLobfQ0x+LkGN/nwOrxq0JVysZ+tCF7Qsj
+        rXNCba/M=; b=HQE1Y+b4ncRnjXU6Bukn3hmuQsSaJ4wBIjwWAqcUL9dXyTS+TNU
+        aijv2yyilUAWuH/ZJAJ0q77lEqe7q2C+qtzFo0M+scKmQIktBzUC/jrfakjCtJub
+        E9lc8dY7GeMksyJSYaI5+0eFmFX5/ZtquIamcl9x49S664x2/LOYaD0JrEDT7gLd
+        IfbT8GeOVnCMP92RQH0IvBVKV6N+FeXCiN8ckjshT4I+7uxuUYcwTGqAMO4LeFK2
+        l5DfaRAyzt6OnPtjz03WG83VQIWGHVHQ8PCNw1v2tLz7PRHzeV+Fy9kNHBm5rrrV
+        tjw9+sOupGtwaaXr6EHsZsq/u4cdRI0UEfQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-id:content-type
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1694213941; x=
-        1694300341; bh=AVa2iU7isfYOihwSnrZn9s+Ygc1uEyi3ymZHBdxzyGs=; b=C
-        LR3jhl3GzQRfozzrZ8d7zOzR9BW2W0I+wU7sLmv3nRQqYXtSyVdvn9HnooWlXbT1
-        5S6eWZeFZpat6Zifrv79VaoSUzs7PsDxjQ3SDljTj+jvGU3Y3hvdqKB3CkRxEwo4
-        SyMRetaxzAMjN5942ljfXUHe3Mvz8gNhFU4iYsCgBbLgOUeWHyDqjwFvnW4Z5ZlV
-        6eAnAU3Wn+v3XWStqw5wIT8ehGXrDPr2bTcfytet8L/ykxzqRsgWcUaKH5bUe3zG
-        8a+tTxR6gIc3ZigkMTyyp+fVYMcEFEQydVXGnEXOvlzaAnebzN5mt0mrnWPdKmHh
-        djrlcSUrJLBUYXuGFj19Q==
-X-ME-Sender: <xms:NKf7ZPQzntiSh6_1jRL9SunU8JLb1cvVVVMAUyb9zkTxeCTTpaUf-A>
-    <xme:NKf7ZAxz7yJ00BE4cEtwJ80NxwP3mHf9hxqQ_RD_QtScMsDfmGESJZag5XhKe_izm
-    Rk2v6rheaQZgJqBhvk>
-X-ME-Received: <xmr:NKf7ZE0cwW-CjCk6X24Ng-g4dv-YnEbEzyJMyKBohNaY0ya5jTRbohMi0YfEwIWuKeqzxVKJdp12CdO6gv2o8U_whTTcYnU-Tto>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehkedgudejucetufdoteggodetrfdotf
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1694248115; x=1694255315; bh=yhLobfQ0x+LkGN/nwOrxq0JVysZ+tCF7Qsj
+        rXNCba/M=; b=v/nw40CfuTVNlbAiRLW2xwO/F3EugkMmE1jJZoUUnGqb7Y5vxVr
+        gOwv+IAgdjBZ4H0M6ipthYS+RzpmOuHVX4qeA2pOMUHM1MF8u+k8yqPLGFGKgr6p
+        dU6XqV0OFWo03XeR8dx5vDg7I/mSzMjFhgS1pDIdaOYpmjWrqr4zdRI5TkCx/pwx
+        F2Nrr5kJtMpRB1QDhdRNGGCV6OYMCAMs+Be5OqdHoxdH2LHPXr7RVB2XrSUNYlqV
+        2cv4sahpv35j5TTlnSWJQsGStIz4gvB+Z1Z725ThTvH2Rvojn5dpBriMiwsRZ1eC
+        b7ckw6OdLGsQiSvshiFLD7YengyrW9vYuFA==
+X-ME-Sender: <xms:syz8ZIc5DByuy2w_WxQwglZgAJrI_7jyOuEF1XUEI1V4EEdtNXf-wA>
+    <xme:syz8ZKPkTU_IfhYKVuy5QuP0lGywwACkV7zahISrZj6nGjLqrnVHKppE5R5kFwUUQ
+    uI3NCj9gRpXi0OlW-I>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehledgtdegucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevufgjkfhfgggtsehmtderredttdejnecuhfhrohhmpefhihhnnhcu
-    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpeelfeeklefggfetkedukeevfffgvdeuheetffekledtfeejteelieejteeh
-    geelieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:NKf7ZPCmhTYhslxjaGNNVIvL7zDoOPoVfrJVq0jUoBdVSLxcSJK2Xg>
-    <xmx:NKf7ZIh4Z4ztnNqoPcU2Lwn4yMSoUAEqsfW8mpsVCdrA8UOhXcl7Tw>
-    <xmx:NKf7ZDoen0zpLW2qfuR5Flk06zLSkPcomGO1ZPLwnyg1UTey512P6w>
-    <xmx:Naf7ZEjYi1GvjubnrxBT1_dysexK2S50pyYt13zMYCpEQMzuml1Trw>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 8 Sep 2023 18:58:58 -0400 (EDT)
-Date:   Sat, 9 Sep 2023 08:59:11 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-cc:     linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Philip Blundell <philb@gnu.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        Laurent Vivier <laurent@vivier.eu>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 32/52] m68k: mac: Add and use "mac.h"
-In-Reply-To: <CAMuHMdV1Xejj2hmS6fO=gviRCuqL82S+9nFLtSkJjH-aALWThQ@mail.gmail.com>
-Message-ID: <4a126e21-6c36-024b-9ab1-b4798ef274d4@linux-m68k.org>
-References: <cover.1694093327.git.geert@linux-m68k.org> <e9f3da9b152b7d19b64d775d04e9e11b63dc35b6.1694093327.git.geert@linux-m68k.org> <1c7894fe-4cf4-1ad9-5ed2-aaab4351ff4c@linux-m68k.org>
- <CAMuHMdV1Xejj2hmS6fO=gviRCuqL82S+9nFLtSkJjH-aALWThQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="-1463811774-325678859-1694213835=:13296"
-Content-ID: <dc62573c-a8e6-d248-7fd8-89db80912592@nippy.intranet>
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
+    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:syz8ZJgjOdfI6farxGvSchTvgdzIbDzhaW-vJlGlVwq8YVTBF5BeFw>
+    <xmx:syz8ZN8jUt4M4kk-GMrbNnFDJFXs4OWvpIrXSutPbjzb8QMiOY-7xw>
+    <xmx:syz8ZEtkCyX2d2ieV48Fde4PVT-AeVPpRwU6qOZJ6Gvt-fbPVFC6Hw>
+    <xmx:syz8ZJ_d1WoMmlbOPeL_CGSjJKVuiBoPyFMA7VI-qCVmUj4pQIUkuw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 0DBB0B60089; Sat,  9 Sep 2023 04:28:34 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-711-g440737448e-fm-20230828.001-g44073744
+Mime-Version: 1.0
+Message-Id: <2545f40a-0c59-491d-895f-4a7975faaedc@app.fastmail.com>
+In-Reply-To: <64ea8cf65a4318fbf8c91cb3062d90a2555007c4.1694093327.git.geert@linux-m68k.org>
+References: <cover.1694093327.git.geert@linux-m68k.org>
+ <64ea8cf65a4318fbf8c91cb3062d90a2555007c4.1694093327.git.geert@linux-m68k.org>
+Date:   Sat, 09 Sep 2023 10:28:14 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org
+Cc:     "Finn Thain" <fthain@linux-m68k.org>,
+        "Michael Schmitz" <schmitzmic@gmail.com>,
+        "Philip Blundell" <philb@gnu.org>,
+        "Greg Ungerer" <gerg@linux-m68k.org>,
+        "Joshua Thompson" <funaho@jurai.org>,
+        "Sam Creasey" <sammy@sammy.net>,
+        "Laurent Vivier" <laurent@vivier.eu>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 15/52] m68k: emu: Mark version[] __maybe_unused
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Thu, Sep 7, 2023, at 15:41, Geert Uytterhoeven wrote:
+> When building with W=3D1:
+>
+>     m68k/arch/m68k/emu/nfeth.c:42:19: warning: =E2=80=98version=E2=80=99=
+ defined but=20
+> not used [-Wunused-const-variable=3D]
+>        42 | static const char version[] =3D
+> 	  |                   ^~~~~~~
+>
+> Fix this while obeying the wishes of the original copyright holders by
+> marking version[] with __maybe_unused.
+>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
----1463811774-325678859-1694213835=:13296
-Content-Type: text/plain; CHARSET=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <0046fe36-494a-d0fa-fe49-88f0be5cfc9a@nippy.intranet>
+That will just drop it from the object file, maybe it should
+instead be marked "__used" ?
 
-On Fri, 8 Sep 2023, Geert Uytterhoeven wrote:
-
-> On Fri, Sep 8, 2023 at 1:44=E2=80=AFAM Finn Thain <fthain@linux-m68k.org>=
- wrote:
-> > On Thu, 7 Sep 2023, Geert Uytterhoeven wrote:
-> > > --- /dev/null
-> > > +++ b/arch/m68k/mac/mac.h
-> > > @@ -0,0 +1,25 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0 */
-> > > +
-> > > +struct rtc_time;
-> > > +
-> >
-> > I don't think we need a new header file. Related function prototypes
-> > already have homes in existing header files --
-> >
-> > > +/* baboon.c */
-> > > +void baboon_init(void);
-> > > +
-> >
-> > this could go into mac_baboon.h
-> >
-> > > +/* iop.c */
-> > > +void iop_init(void);
-> > > +
-> >
-> > mac_iop.h
-> >
-> > > +/* misc.c */
-> > > +int mac_hwclk(int op, struct rtc_time *t);
-> > > +
-> >
-> > macintosh.h
-> >
-> > > +/* macboing.c */
-> > > +void mac_mksound(unsigned int freq, unsigned int length);
-> > > +
-> >
-> > mac_asc.h
-> >
-> > > +/* oss.c */
-> > > +void oss_init(void);
-> > > +
-> >
-> > mac_oss.h
-> >
-> > > +/* psc.c */
-> > > +void psc_init(void);
-> > > +
-> >
-> > mac_psc.h
-> >
-> > > +/* via.c */
-> > > +void via_init(void);
-> > > +void via_init_clock(void);
-> >
-> > mac_via.h
->=20
-> All mac*.h you suggest live under arch/m68k/include/asm/, and are thus=20
-> shared with the whole tree, while only the core code under arch/m68k/=20
-> needs these definitions.
->=20
-
-I guess #include "../mac/mac.h" is expected but
-#include "../../m68k/mac/mac.h" is not intended (?)
----1463811774-325678859-1694213835=:13296--
+      Arnd
