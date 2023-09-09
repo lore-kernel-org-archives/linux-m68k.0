@@ -2,61 +2,61 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63879EEB58B
-	for <linux-m68k@archiver.kernel.org>; Sat,  9 Sep 2023 12:11:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09281EEB58C
+	for <linux-m68k@archiver.kernel.org>; Sat,  9 Sep 2023 12:12:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345538AbjIIMLO convert rfc822-to-8bit (ORCPT
+        id S234102AbjIIMMk convert rfc822-to-8bit (ORCPT
         <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 9 Sep 2023 08:11:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35482 "EHLO
+        Sat, 9 Sep 2023 08:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233629AbjIIMLN (ORCPT
+        with ESMTP id S1345567AbjIIMMj (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 9 Sep 2023 08:11:13 -0400
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B7BDCCA
-        for <linux-m68k@lists.linux-m68k.org>; Sat,  9 Sep 2023 05:11:07 -0700 (PDT)
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6bee392fe9dso1995283a34.1
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 09 Sep 2023 05:11:07 -0700 (PDT)
+        Sat, 9 Sep 2023 08:12:39 -0400
+Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28952CE6
+        for <linux-m68k@lists.linux-m68k.org>; Sat,  9 Sep 2023 05:12:35 -0700 (PDT)
+Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-1cca0a1b3c7so2034105fac.2
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 09 Sep 2023 05:12:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694261466; x=1694866266;
+        d=1e100.net; s=20230601; t=1694261554; x=1694866354;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yabyQiAl8j5eXWo65T3fAwQZtqAN0vBKM+cJ98wtujM=;
-        b=va6+GyS/qWw8am130KrNk3o1AsfGOKnhhHTFVdPiFdZlTAjwD1xVe6qZrETCP/804J
-         TNTuS78wJsmPZYJ5gNhxSMN8yO8IdTSpRI2k39skzWaAN+bmRxgZzkkWJ0ityRHhZmJo
-         +JvQxudTt4UscYMClVXiJLUZkPE9G5tLowrWLuEFOthp9+Yl0JnIXhBh3o2aEkds1cDb
-         2pTVn4LWr4docB/7sl6wo6KuQ1WUa2BKKQBkxDfgfRk65LDd7Ald15nUkNJGmwwyVNh6
-         lIylqsjfla0TgYU7VcJIlPb2WYrZFfdJsSTzup3ELuB5ioaNkbJohZISuYgjMenZlFx6
-         mNXQ==
-X-Gm-Message-State: AOJu0YyPn6yOgnEj0OIdNY5pCohMF9zObP8ywjakZpgeMRU7X7pcC+z1
-        MBaoU379i7e002DkUmAVkLnVVMW6BjiaBw==
-X-Google-Smtp-Source: AGHT+IEvtxmwx1hEpOw29IrTQlaJ6s85o5IYfunIij934lQdFK1oUsYYwGxK0kCR0pVbMdmICpbDZQ==
-X-Received: by 2002:a05:6830:149:b0:6b9:a6ef:2709 with SMTP id j9-20020a056830014900b006b9a6ef2709mr5783658otp.8.1694261466287;
-        Sat, 09 Sep 2023 05:11:06 -0700 (PDT)
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com. [209.85.128.180])
-        by smtp.gmail.com with ESMTPSA id c82-20020a25c055000000b00d607f70d762sm793098ybf.32.2023.09.09.05.11.05
+        bh=ElnjYqTEVh98M3QsOcoe1d7VW/OGyAcrh4Gl8OyK3Xs=;
+        b=AhQRXVa6kafLOPLZ/AH5tPA8DIUEts9U9JWzhfJDvLG6HbOBilaB3Q4oy3srTBREXR
+         D9XUJ6xVDtCm4GXIV7yDQ632OTmwbv6jpDjGSxwHY/EetivZcOpJSM78q0MfAiaKo/PU
+         9Xkwl+nN4hb4qXZYIEuk2OIj5kaYHqipfI9WVZnJ9YJvKQMEo6+0JIMTZgu75ghNPgvu
+         bKc4fNhPLopRUHELO6QxkK5jHw/U420lqNuVmUkqsBdj0l7DsRFoD8ifFvWcdqV972Go
+         CLi0PpFER3yxiyQ+zk1Jqc9A9LutpWvQ3Oi0iEXUUfCCTjIEPbe/Vp5CsSdNuq+ZAvW9
+         54Cw==
+X-Gm-Message-State: AOJu0Yyx1V+enamOWk0UiawTxt2q1CzMmW/1SpiUgtud4Qvg8Un+yOhs
+        HSHpGs2Ronm27JT4slUZ5u6mFrGQVRbrPw==
+X-Google-Smtp-Source: AGHT+IFSExgdtN0sKCm22IBSJhljFYD0fanSbSbsk7+QKPZDsbZ+gbFkluC+ZyhDPPM8zx81yJWe7Q==
+X-Received: by 2002:a05:6870:d252:b0:1be:f720:bb7b with SMTP id h18-20020a056870d25200b001bef720bb7bmr6172464oac.16.1694261554043;
+        Sat, 09 Sep 2023 05:12:34 -0700 (PDT)
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com. [209.85.210.51])
+        by smtp.gmail.com with ESMTPSA id ky6-20020a056871c4c600b001cca1dc6d79sm2013742oac.34.2023.09.09.05.12.33
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Sep 2023 05:11:05 -0700 (PDT)
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5925e580f12so28612737b3.3
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 09 Sep 2023 05:11:05 -0700 (PDT)
-X-Received: by 2002:a25:aa73:0:b0:d47:8db3:8bc8 with SMTP id
- s106-20020a25aa73000000b00d478db38bc8mr5284381ybi.21.1694261465123; Sat, 09
- Sep 2023 05:11:05 -0700 (PDT)
+        Sat, 09 Sep 2023 05:12:33 -0700 (PDT)
+Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6bcb5df95c5so2182973a34.1
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 09 Sep 2023 05:12:33 -0700 (PDT)
+X-Received: by 2002:aca:2302:0:b0:3a8:4dfd:4f14 with SMTP id
+ e2-20020aca2302000000b003a84dfd4f14mr5186395oie.27.1694261553297; Sat, 09 Sep
+ 2023 05:12:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1694093327.git.geert@linux-m68k.org> <e9f3da9b152b7d19b64d775d04e9e11b63dc35b6.1694093327.git.geert@linux-m68k.org>
- <1c7894fe-4cf4-1ad9-5ed2-aaab4351ff4c@linux-m68k.org> <CAMuHMdV1Xejj2hmS6fO=gviRCuqL82S+9nFLtSkJjH-aALWThQ@mail.gmail.com>
- <4a126e21-6c36-024b-9ab1-b4798ef274d4@linux-m68k.org>
-In-Reply-To: <4a126e21-6c36-024b-9ab1-b4798ef274d4@linux-m68k.org>
+References: <cover.1694093327.git.geert@linux-m68k.org> <64ea8cf65a4318fbf8c91cb3062d90a2555007c4.1694093327.git.geert@linux-m68k.org>
+ <2545f40a-0c59-491d-895f-4a7975faaedc@app.fastmail.com>
+In-Reply-To: <2545f40a-0c59-491d-895f-4a7975faaedc@app.fastmail.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sat, 9 Sep 2023 14:10:52 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdU9ujRZNxmrQh3+QZ2YNbvXwuXnfi-6OBuZxoa2aVsiXA@mail.gmail.com>
-Message-ID: <CAMuHMdU9ujRZNxmrQh3+QZ2YNbvXwuXnfi-6OBuZxoa2aVsiXA@mail.gmail.com>
-Subject: Re: [PATCH 32/52] m68k: mac: Add and use "mac.h"
-To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>,
+Date:   Sat, 9 Sep 2023 14:12:21 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWs0QbRQZCXZ2Gycqb7jjsjUZMp7_h2mVWxR1zrjCL1Og@mail.gmail.com>
+Message-ID: <CAMuHMdWs0QbRQZCXZ2Gycqb7jjsjUZMp7_h2mVWxR1zrjCL1Og@mail.gmail.com>
+Subject: Re: [PATCH 15/52] m68k: emu: Mark version[] __maybe_unused
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-m68k@lists.linux-m68k.org,
+        Finn Thain <fthain@linux-m68k.org>,
         Michael Schmitz <schmitzmic@gmail.com>,
         Philip Blundell <philb@gnu.org>,
         Greg Ungerer <gerg@linux-m68k.org>,
@@ -70,74 +70,27 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Finn,
+Hi Arnd,
 
-On Sat, Sep 9, 2023 at 12:59 AM Finn Thain <fthain@linux-m68k.org> wrote:
-> On Fri, 8 Sep 2023, Geert Uytterhoeven wrote:
-> > On Fri, Sep 8, 2023 at 1:44 AM Finn Thain <fthain@linux-m68k.org> wrote:
-> > > On Thu, 7 Sep 2023, Geert Uytterhoeven wrote:
-> > > > --- /dev/null
-> > > > +++ b/arch/m68k/mac/mac.h
-> > > > @@ -0,0 +1,25 @@
-> > > > +/* SPDX-License-Identifier: GPL-2.0 */
-> > > > +
-> > > > +struct rtc_time;
-> > > > +
-> > >
-> > > I don't think we need a new header file. Related function prototypes
-> > > already have homes in existing header files --
-> > >
-> > > > +/* baboon.c */
-> > > > +void baboon_init(void);
-> > > > +
-> > >
-> > > this could go into mac_baboon.h
-> > >
-> > > > +/* iop.c */
-> > > > +void iop_init(void);
-> > > > +
-> > >
-> > > mac_iop.h
-> > >
-> > > > +/* misc.c */
-> > > > +int mac_hwclk(int op, struct rtc_time *t);
-> > > > +
-> > >
-> > > macintosh.h
-> > >
-> > > > +/* macboing.c */
-> > > > +void mac_mksound(unsigned int freq, unsigned int length);
-> > > > +
-> > >
-> > > mac_asc.h
-> > >
-> > > > +/* oss.c */
-> > > > +void oss_init(void);
-> > > > +
-> > >
-> > > mac_oss.h
-> > >
-> > > > +/* psc.c */
-> > > > +void psc_init(void);
-> > > > +
-> > >
-> > > mac_psc.h
-> > >
-> > > > +/* via.c */
-> > > > +void via_init(void);
-> > > > +void via_init_clock(void);
-> > >
-> > > mac_via.h
+On Sat, Sep 9, 2023 at 10:28 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> On Thu, Sep 7, 2023, at 15:41, Geert Uytterhoeven wrote:
+> > When building with W=1:
 > >
-> > All mac*.h you suggest live under arch/m68k/include/asm/, and are thus
-> > shared with the whole tree, while only the core code under arch/m68k/
-> > needs these definitions.
+> >     m68k/arch/m68k/emu/nfeth.c:42:19: warning: ‘version’ defined but
+> > not used [-Wunused-const-variable=]
+> >        42 | static const char version[] =
+> >         |                   ^~~~~~~
 > >
+> > Fix this while obeying the wishes of the original copyright holders by
+> > marking version[] with __maybe_unused.
+> >
+> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 >
-> I guess #include "../mac/mac.h" is expected but
-> #include "../../m68k/mac/mac.h" is not intended (?)
+> That will just drop it from the object file, maybe it should
+> instead be marked "__used" ?
 
-Yes indeed.
+Given it's been like this since the beginning, I guess it never showed
+up in the object file anyway...
 
 Gr{oetje,eeting}s,
 
