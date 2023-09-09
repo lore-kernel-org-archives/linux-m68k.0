@@ -2,112 +2,150 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 833DEEEB57C
-	for <linux-m68k@archiver.kernel.org>; Sat,  9 Sep 2023 08:38:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63879EEB58B
+	for <linux-m68k@archiver.kernel.org>; Sat,  9 Sep 2023 12:11:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244402AbjIIIi0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sat, 9 Sep 2023 04:38:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45684 "EHLO
+        id S1345538AbjIIMLO convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Sat, 9 Sep 2023 08:11:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233539AbjIIIiZ (ORCPT
+        with ESMTP id S233629AbjIIMLN (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sat, 9 Sep 2023 04:38:25 -0400
-Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com [66.111.4.230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B13C010FA
-        for <linux-m68k@lists.linux-m68k.org>; Sat,  9 Sep 2023 01:38:21 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 1CCF358095D;
-        Sat,  9 Sep 2023 04:38:21 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Sat, 09 Sep 2023 04:38:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1694248701; x=1694255901; bh=eh
-        Zt+B2jX5xBs+1bj5H5hfiU1YSfmNNpLPHz2pKWFMM=; b=Ir/EqWhglFD1ntvS3q
-        hZWHZv8YhaBCZX26TOJ7pssLwsZPpb10sMwKBhLY9M6vVzIuADdaL/uAPkXzOmEn
-        2ZjtZCNcpjWaPj3LAqgrBpR8QcZsjFs2Oyk4TLLN/GktrdrqO2+UKYzhB8NMEwww
-        TNx6dL5G3j5enrPjysC5R1KWyX/Id224lBIxBO+EfLW700DNJZHz9UCibZpM9vKt
-        xNyqCDGi+/KoyFB7wZYiec/1fE66yZNT6NMxfXZIPHgNVxQTC2mVs25cSDP9xRBB
-        i3BX1BdOhQbDIX++NOFJIe3LRfOqSJN8mDQhk0PC1xOQ5S9qQmeCgq78zDTYhMYF
-        /R/A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1694248701; x=1694255901; bh=ehZt+B2jX5xBs
-        +1bj5H5hfiU1YSfmNNpLPHz2pKWFMM=; b=03u9Cw/H9C5y2i3STbp7a5Jpka1HA
-        z5pg08EcooJDCxNOyjFqnyVSKUeTUXjmzpE+caCuGVhPq3kMYIb/5I37vgsjeoah
-        IF4LUzTzM1NVVQKOrOqR0FN95MQOFgDOXu2Qn7Ko5rFoOWaE9scaq4L9JaFeVObs
-        s8SrslgboCx+5U8HhS910gmv/X77kizuPX0cceOf4nUaawzQkaeXXeydKnX3sERM
-        LotZwLSxPEZpX+v3mfHCpetkUs4909CYQjv1idFvyg+Hg9buYyxRQOI7QYDRCXEr
-        0zqhnZMDQNMEAQnChNrb1i8J4TWGCmz4rkLQMlKxTuyhJYd+PKtRR0WPw==
-X-ME-Sender: <xms:_C78ZMPoGp1gNarGyZpF65L02p1A89ACQmd8S1h4UN2tXiKPGviQbw>
-    <xme:_C78ZC9pTgcPbdpwMpM0iEuXVjRohyZaxmMgHE17epwYUV069ERtwz24Mh8Tzi6p1
-    -Zm2ehYeFAo-l0JiuE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehledgtdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepvefhffeltdegheeffffhtdegvdehjedtgfekueevgfduffettedtkeekueef
-    hedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:_C78ZDRblz9JwGy1yhxgANjUckPjHpcgLWsIYsTL0FAKFIcBU91yBQ>
-    <xmx:_C78ZEv5NYA4n-vj_MlHK7JmB_sRC9Oegz_0b7uZD4kCVE47GHkgog>
-    <xmx:_C78ZEdLXCyM90PV0LNm2cJ0goFctvPw0qH6OCSbAUxfCzLixUrxjA>
-    <xmx:_S78ZCudcLPyXdryZOSBgFmYS6NYiSh0rqt2R0H8J7Q5lnJ_yYIy-A>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id D270FB60089; Sat,  9 Sep 2023 04:38:20 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-711-g440737448e-fm-20230828.001-g44073744
-Mime-Version: 1.0
-Message-Id: <d98b2c68-9507-4a52-9670-6c117e704d04@app.fastmail.com>
-In-Reply-To: <cover.1694093327.git.geert@linux-m68k.org>
-References: <cover.1694093327.git.geert@linux-m68k.org>
-Date:   Sat, 09 Sep 2023 10:37:59 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Cc:     "Finn Thain" <fthain@linux-m68k.org>,
-        "Michael Schmitz" <schmitzmic@gmail.com>,
-        "Philip Blundell" <philb@gnu.org>,
-        "Greg Ungerer" <gerg@linux-m68k.org>,
-        "Joshua Thompson" <funaho@jurai.org>,
-        "Sam Creasey" <sammy@sammy.net>,
-        "Laurent Vivier" <laurent@vivier.eu>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/52] m68k: W=1 fixes
-Content-Type: text/plain
+        Sat, 9 Sep 2023 08:11:13 -0400
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B7BDCCA
+        for <linux-m68k@lists.linux-m68k.org>; Sat,  9 Sep 2023 05:11:07 -0700 (PDT)
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6bee392fe9dso1995283a34.1
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 09 Sep 2023 05:11:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694261466; x=1694866266;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yabyQiAl8j5eXWo65T3fAwQZtqAN0vBKM+cJ98wtujM=;
+        b=va6+GyS/qWw8am130KrNk3o1AsfGOKnhhHTFVdPiFdZlTAjwD1xVe6qZrETCP/804J
+         TNTuS78wJsmPZYJ5gNhxSMN8yO8IdTSpRI2k39skzWaAN+bmRxgZzkkWJ0ityRHhZmJo
+         +JvQxudTt4UscYMClVXiJLUZkPE9G5tLowrWLuEFOthp9+Yl0JnIXhBh3o2aEkds1cDb
+         2pTVn4LWr4docB/7sl6wo6KuQ1WUa2BKKQBkxDfgfRk65LDd7Ald15nUkNJGmwwyVNh6
+         lIylqsjfla0TgYU7VcJIlPb2WYrZFfdJsSTzup3ELuB5ioaNkbJohZISuYgjMenZlFx6
+         mNXQ==
+X-Gm-Message-State: AOJu0YyPn6yOgnEj0OIdNY5pCohMF9zObP8ywjakZpgeMRU7X7pcC+z1
+        MBaoU379i7e002DkUmAVkLnVVMW6BjiaBw==
+X-Google-Smtp-Source: AGHT+IEvtxmwx1hEpOw29IrTQlaJ6s85o5IYfunIij934lQdFK1oUsYYwGxK0kCR0pVbMdmICpbDZQ==
+X-Received: by 2002:a05:6830:149:b0:6b9:a6ef:2709 with SMTP id j9-20020a056830014900b006b9a6ef2709mr5783658otp.8.1694261466287;
+        Sat, 09 Sep 2023 05:11:06 -0700 (PDT)
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com. [209.85.128.180])
+        by smtp.gmail.com with ESMTPSA id c82-20020a25c055000000b00d607f70d762sm793098ybf.32.2023.09.09.05.11.05
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Sep 2023 05:11:05 -0700 (PDT)
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5925e580f12so28612737b3.3
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 09 Sep 2023 05:11:05 -0700 (PDT)
+X-Received: by 2002:a25:aa73:0:b0:d47:8db3:8bc8 with SMTP id
+ s106-20020a25aa73000000b00d478db38bc8mr5284381ybi.21.1694261465123; Sat, 09
+ Sep 2023 05:11:05 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1694093327.git.geert@linux-m68k.org> <e9f3da9b152b7d19b64d775d04e9e11b63dc35b6.1694093327.git.geert@linux-m68k.org>
+ <1c7894fe-4cf4-1ad9-5ed2-aaab4351ff4c@linux-m68k.org> <CAMuHMdV1Xejj2hmS6fO=gviRCuqL82S+9nFLtSkJjH-aALWThQ@mail.gmail.com>
+ <4a126e21-6c36-024b-9ab1-b4798ef274d4@linux-m68k.org>
+In-Reply-To: <4a126e21-6c36-024b-9ab1-b4798ef274d4@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sat, 9 Sep 2023 14:10:52 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdU9ujRZNxmrQh3+QZ2YNbvXwuXnfi-6OBuZxoa2aVsiXA@mail.gmail.com>
+Message-ID: <CAMuHMdU9ujRZNxmrQh3+QZ2YNbvXwuXnfi-6OBuZxoa2aVsiXA@mail.gmail.com>
+Subject: Re: [PATCH 32/52] m68k: mac: Add and use "mac.h"
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Philip Blundell <philb@gnu.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        Laurent Vivier <laurent@vivier.eu>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, Sep 7, 2023, at 15:41, Geert Uytterhoeven wrote:
-> Hi all,
->
-> This patch series addresses the remaining (after [1]) warnings seen when
-> building arch/m68k/ with W=1.  Perhaps surprisingly, this work has
-> identified and fixes a genuine bug in the Sun-3 TLB handling (see [PATCH
-> 39/52]).
->
-> Most of the patches in these series are fairly trivial changes with a
-> very low risk of introducing any regressions.  For the less trivial
-> patches, I did look at the assembler output before and after.  As Arnd
-> is working actively on enabling W=1 rather sooner than later, and if no
-> one objects, I plan to rebase [1] and this series after the release of
-> v6.6-rc1, and send it as a fixes pull request to Linus.
->
-> Note that this series does not address warnings on Coldfire or MMU-less
-> systems.
->
-> Thanks for your comments!
->
-> [1] "[PATCH 0/6] m68k: math-emu: Miscellaneous esthetical improvements"
->     https://lore.kernel.org/r/cover.1692283195.git.geert@linux-m68k.org
+Hi Finn,
 
-Thanks a lot for doing these, looks all good to me. I sent
-two minor comments, but those patches are still ok.
+On Sat, Sep 9, 2023 at 12:59 AM Finn Thain <fthain@linux-m68k.org> wrote:
+> On Fri, 8 Sep 2023, Geert Uytterhoeven wrote:
+> > On Fri, Sep 8, 2023 at 1:44 AM Finn Thain <fthain@linux-m68k.org> wrote:
+> > > On Thu, 7 Sep 2023, Geert Uytterhoeven wrote:
+> > > > --- /dev/null
+> > > > +++ b/arch/m68k/mac/mac.h
+> > > > @@ -0,0 +1,25 @@
+> > > > +/* SPDX-License-Identifier: GPL-2.0 */
+> > > > +
+> > > > +struct rtc_time;
+> > > > +
+> > >
+> > > I don't think we need a new header file. Related function prototypes
+> > > already have homes in existing header files --
+> > >
+> > > > +/* baboon.c */
+> > > > +void baboon_init(void);
+> > > > +
+> > >
+> > > this could go into mac_baboon.h
+> > >
+> > > > +/* iop.c */
+> > > > +void iop_init(void);
+> > > > +
+> > >
+> > > mac_iop.h
+> > >
+> > > > +/* misc.c */
+> > > > +int mac_hwclk(int op, struct rtc_time *t);
+> > > > +
+> > >
+> > > macintosh.h
+> > >
+> > > > +/* macboing.c */
+> > > > +void mac_mksound(unsigned int freq, unsigned int length);
+> > > > +
+> > >
+> > > mac_asc.h
+> > >
+> > > > +/* oss.c */
+> > > > +void oss_init(void);
+> > > > +
+> > >
+> > > mac_oss.h
+> > >
+> > > > +/* psc.c */
+> > > > +void psc_init(void);
+> > > > +
+> > >
+> > > mac_psc.h
+> > >
+> > > > +/* via.c */
+> > > > +void via_init(void);
+> > > > +void via_init_clock(void);
+> > >
+> > > mac_via.h
+> >
+> > All mac*.h you suggest live under arch/m68k/include/asm/, and are thus
+> > shared with the whole tree, while only the core code under arch/m68k/
+> > needs these definitions.
+> >
+>
+> I guess #include "../mac/mac.h" is expected but
+> #include "../../m68k/mac/mac.h" is not intended (?)
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+Yes indeed.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
