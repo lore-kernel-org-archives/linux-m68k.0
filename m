@@ -2,129 +2,202 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6049ACA0ED5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD41CCA0ED9
 	for <linux-m68k@archiver.kernel.org>; Mon, 11 Sep 2023 22:26:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243298AbjIKWYR convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 11 Sep 2023 18:24:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35394 "EHLO
+        id S243338AbjIKWYT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 11 Sep 2023 18:24:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238210AbjIKNvT (ORCPT
+        with ESMTP id S237709AbjIKNKs (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 11 Sep 2023 09:51:19 -0400
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4746FA
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Sep 2023 06:51:14 -0700 (PDT)
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-d80211e8df8so2815207276.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Sep 2023 06:51:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694440274; x=1695045074;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rDloSeE/RMJ8xb0vN0WHP8xkcaLq8Ztl0V6yiAC98sM=;
-        b=g8X2/AhEQzG500/CLJGWvzRRuSON2hNqtZOndnoTCAYsumXNxK7X68NQ4eFZAp7q2m
-         GAMhv6EwhPfMxV1ofyEhAPdOrRLmhp/3efproX0tkNAafzcs+Di/BF3R+Ua1FDmikj2j
-         Hzcz7DIwAODRQeyXfrfVbaGJdeApJf4/NVPxCD6htf6iKTXLiLDzQNL0ke8JkHqR7joy
-         cT+G3maL74JxyNfBQ7S2LKp6cu65VyiKFRD0TDowTNSDKCKP7AgrgfM6N0wgCkWzIK4D
-         /lS+0BWpkYpwvmkCWQTyfnmfgGkdHK+Qsw7g2IZGkbSR5WAywIwtnAl88OFtaF72YnTa
-         IADQ==
-X-Gm-Message-State: AOJu0YybWv6Z3bJxHnX61hVX54uhWV0Gs7e1R1XrJrIG+CdMWrFP0Eg9
-        KCHv66qOWX9youOJpV50SD3LgynCO1vvQw==
-X-Google-Smtp-Source: AGHT+IGMl/ihDhfz/vr3Cq0G25y2euOvF7Q4GEetSWktz+d+XmPXIcEnPh/u6b4e51bY1p1StCr6eg==
-X-Received: by 2002:a25:8750:0:b0:d78:48b0:21d2 with SMTP id e16-20020a258750000000b00d7848b021d2mr8130596ybn.3.1694440273910;
-        Mon, 11 Sep 2023 06:51:13 -0700 (PDT)
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com. [209.85.219.180])
-        by smtp.gmail.com with ESMTPSA id j12-20020a25d20c000000b00d7481ed7e45sm1699136ybg.56.2023.09.11.06.51.13
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 06:51:13 -0700 (PDT)
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-d80211e8df8so2815197276.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Sep 2023 06:51:13 -0700 (PDT)
-X-Received: by 2002:a5b:191:0:b0:d08:5a25:e6b4 with SMTP id
- r17-20020a5b0191000000b00d085a25e6b4mr9656076ybl.28.1694440273428; Mon, 11
- Sep 2023 06:51:13 -0700 (PDT)
+        Mon, 11 Sep 2023 09:10:48 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400C2E6
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Sep 2023 06:10:41 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C27AC21852;
+        Mon, 11 Sep 2023 13:10:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1694437839; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8wTvIDVhYd6CW8GIlwJym+m+SkuYKKbeC+cqwQHGlPw=;
+        b=Af2zF/CG5aSEJJe14mMTLnyn4qx+BWXQAf5Fr4U2biPxh1iHH4TmtVQvgpVo2vvMiKACpb
+        H+tmNObpv63loHraLrgYO6pFVqJDP38mAo04Y9tyiJ1q2xdIwi9U6fSXo3sQQgHiki/AbA
+        gbNVjehoBBQT3wahn6/ptvKMqESueKI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1694437839;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8wTvIDVhYd6CW8GIlwJym+m+SkuYKKbeC+cqwQHGlPw=;
+        b=AN5dWf35k86vqHL9AmTcXPCEqp+NJq41Ls9R8h41Ca0A7/w88/RxFFR0clyWlm3JLGKy/+
+        M41rdau27fcY9WBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7A50813780;
+        Mon, 11 Sep 2023 13:10:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id QCP4HM8R/2SCIwAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Mon, 11 Sep 2023 13:10:39 +0000
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+To:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        arnd@arndb.de, deller@gmx.de
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-fbdev@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, sparclinux@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arch@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH v3 4/5] arch/powerpc: Remove file parameter from phys_mem_access_prot code
+Date:   Mon, 11 Sep 2023 15:08:34 +0200
+Message-ID: <20230911131033.27745-5-tzimmermann@suse.de>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230911131033.27745-1-tzimmermann@suse.de>
+References: <20230911131033.27745-1-tzimmermann@suse.de>
 MIME-Version: 1.0
-References: <cover.1694093327.git.geert@linux-m68k.org> <6894409da1a0d8667bf74b9100067485ce3c37ac.1694093327.git.geert@linux-m68k.org>
- <0424526e-e9fd-7a3f-71ed-c43855ab1290@linux-m68k.org>
-In-Reply-To: <0424526e-e9fd-7a3f-71ed-c43855ab1290@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 11 Sep 2023 15:51:02 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdU+KNa6VEydk0uA5E2qn96Jb+ejdd8NHjqFRaC3uuCxKg@mail.gmail.com>
-Message-ID: <CAMuHMdU+KNa6VEydk0uA5E2qn96Jb+ejdd8NHjqFRaC3uuCxKg@mail.gmail.com>
-Subject: Re: [PATCH 06/52] m68k: kernel: Add and use "process.h"
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>,
-        Finn Thain <fthain@linux-m68k.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Philip Blundell <philb@gnu.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        Laurent Vivier <laurent@vivier.eu>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Greg,
+Remove 'file' parameter from struct machdep_calls.phys_mem_access_prot
+and its implementation in pci_phys_mem_access_prot(). The file is not
+used on PowerPC. By removing it, a later patch can simplify fbdev's
+mmap code, which uses phys_mem_access_prot() on PowerPC.
 
-On Mon, Sep 11, 2023 at 3:42 PM Greg Ungerer <gerg@linux-m68k.org> wrote:
-> Nice cleanups. My plan is to clean up the ColdFire/68000 warnings as well.
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+---
+ arch/powerpc/include/asm/book3s/pgtable.h | 10 ++++++++--
+ arch/powerpc/include/asm/machdep.h        |  3 +--
+ arch/powerpc/include/asm/nohash/pgtable.h | 10 ++++++++--
+ arch/powerpc/include/asm/pci.h            |  4 +---
+ arch/powerpc/kernel/pci-common.c          |  3 +--
+ arch/powerpc/mm/mem.c                     |  8 ++++----
+ 6 files changed, 23 insertions(+), 15 deletions(-)
 
-Thanks in advance!
-
-> On 7/9/23 23:41, Geert Uytterhoeven wrote:
-> > --- a/arch/m68k/kernel/process.c
-> > +++ b/arch/m68k/kernel/process.c
-> > @@ -38,6 +38,7 @@
-> >   #include <asm/machdep.h>
-> >   #include <asm/setup.h>
-> >
-> > +#include <process.h>
->
-> I applied all 52 patches to linux-6.6-rc1 and see this:
->
->      $ ARCH=m68k CROSS_COMPILE=m68k-linux- make amiga_defconfig
->      $ ARCH=m68k CROSS_COMPILE=m68k-linux- make W=1
->      ...
->        CC      arch/m68k/kernel/process.o
->      arch/m68k/kernel/process.c:41:10: fatal error: process.h: No such file or directory
->       #include <process.h>
->                ^~~~~~~~~~~
->
-> Of course trivially fixed by doing this:
->
-> diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
-> index d2d6a5735650..2584e94e2134 100644
-> --- a/arch/m68k/kernel/process.c
-> +++ b/arch/m68k/kernel/process.c
-> @@ -38,7 +38,7 @@
->   #include <asm/machdep.h>
->   #include <asm/setup.h>
->
-> -#include <process.h>
-> +#include "process.h"
-
-Thanks, will fix (and any other similar typos, if any).
-
-I usually build in separate output directories, which causes
-
-    -I${srcdir}/include
-    -I${srcdir}/arch/m68k/kernel
-    -I./arch/m68k/kernel
-
-to be added to the include path, causing <...> to work as well :-(
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/powerpc/include/asm/book3s/pgtable.h b/arch/powerpc/include/asm/book3s/pgtable.h
+index d18b748ea3ae0..84e36a5726417 100644
+--- a/arch/powerpc/include/asm/book3s/pgtable.h
++++ b/arch/powerpc/include/asm/book3s/pgtable.h
+@@ -20,9 +20,15 @@ extern void set_pte_at(struct mm_struct *mm, unsigned long addr, pte_t *ptep,
+ extern int ptep_set_access_flags(struct vm_area_struct *vma, unsigned long address,
+ 				 pte_t *ptep, pte_t entry, int dirty);
+ 
++extern pgprot_t __phys_mem_access_prot(unsigned long pfn, unsigned long size,
++				       pgprot_t vma_prot);
++
+ struct file;
+-extern pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
+-				     unsigned long size, pgprot_t vma_prot);
++static inline pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
++					    unsigned long size, pgprot_t vma_prot)
++{
++	return __phys_mem_access_prot(pfn, size, vma_prot);
++}
+ #define __HAVE_PHYS_MEM_ACCESS_PROT
+ 
+ void __update_mmu_cache(struct vm_area_struct *vma, unsigned long address, pte_t *ptep);
+diff --git a/arch/powerpc/include/asm/machdep.h b/arch/powerpc/include/asm/machdep.h
+index 933465ed4c432..d31a5ec1550d4 100644
+--- a/arch/powerpc/include/asm/machdep.h
++++ b/arch/powerpc/include/asm/machdep.h
+@@ -106,8 +106,7 @@ struct machdep_calls {
+ 	int		(*pci_get_legacy_ide_irq)(struct pci_dev *dev, int channel);
+ 
+ 	/* Get access protection for /dev/mem */
+-	pgprot_t	(*phys_mem_access_prot)(struct file *file,
+-						unsigned long pfn,
++	pgprot_t	(*phys_mem_access_prot)(unsigned long pfn,
+ 						unsigned long size,
+ 						pgprot_t vma_prot);
+ 
+diff --git a/arch/powerpc/include/asm/nohash/pgtable.h b/arch/powerpc/include/asm/nohash/pgtable.h
+index a6caaaab6f922..90366b0b3ad9a 100644
+--- a/arch/powerpc/include/asm/nohash/pgtable.h
++++ b/arch/powerpc/include/asm/nohash/pgtable.h
+@@ -246,9 +246,15 @@ extern int ptep_set_access_flags(struct vm_area_struct *vma, unsigned long addre
+ 
+ #define pgprot_writecombine pgprot_noncached_wc
+ 
++extern pgprot_t __phys_mem_access_prot(unsigned long pfn, unsigned long size,
++				       pgprot_t vma_prot);
++
+ struct file;
+-extern pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
+-				     unsigned long size, pgprot_t vma_prot);
++static inline pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
++					    unsigned long size, pgprot_t vma_prot)
++{
++	return __phys_mem_access_prot(pfn, size, vma_prot);
++}
+ #define __HAVE_PHYS_MEM_ACCESS_PROT
+ 
+ #ifdef CONFIG_HUGETLB_PAGE
+diff --git a/arch/powerpc/include/asm/pci.h b/arch/powerpc/include/asm/pci.h
+index 289f1ec85bc54..34ed4d51c546b 100644
+--- a/arch/powerpc/include/asm/pci.h
++++ b/arch/powerpc/include/asm/pci.h
+@@ -104,9 +104,7 @@ extern void of_scan_pci_bridge(struct pci_dev *dev);
+ extern void of_scan_bus(struct device_node *node, struct pci_bus *bus);
+ extern void of_rescan_bus(struct device_node *node, struct pci_bus *bus);
+ 
+-struct file;
+-extern pgprot_t	pci_phys_mem_access_prot(struct file *file,
+-					 unsigned long pfn,
++extern pgprot_t	pci_phys_mem_access_prot(unsigned long pfn,
+ 					 unsigned long size,
+ 					 pgprot_t prot);
+ 
+diff --git a/arch/powerpc/kernel/pci-common.c b/arch/powerpc/kernel/pci-common.c
+index e88d7c9feeec3..73f12a17e572e 100644
+--- a/arch/powerpc/kernel/pci-common.c
++++ b/arch/powerpc/kernel/pci-common.c
+@@ -521,8 +521,7 @@ int pci_iobar_pfn(struct pci_dev *pdev, int bar, struct vm_area_struct *vma)
+  * PCI device, it tries to find the PCI device first and calls the
+  * above routine
+  */
+-pgprot_t pci_phys_mem_access_prot(struct file *file,
+-				  unsigned long pfn,
++pgprot_t pci_phys_mem_access_prot(unsigned long pfn,
+ 				  unsigned long size,
+ 				  pgprot_t prot)
+ {
+diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
+index 8b121df7b08f8..03aadf657d15a 100644
+--- a/arch/powerpc/mm/mem.c
++++ b/arch/powerpc/mm/mem.c
+@@ -34,18 +34,18 @@ unsigned long long memory_limit;
+ unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)] __page_aligned_bss;
+ EXPORT_SYMBOL(empty_zero_page);
+ 
+-pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
+-			      unsigned long size, pgprot_t vma_prot)
++pgprot_t __phys_mem_access_prot(unsigned long pfn, unsigned long size,
++				pgprot_t vma_prot)
+ {
+ 	if (ppc_md.phys_mem_access_prot)
+-		return ppc_md.phys_mem_access_prot(file, pfn, size, vma_prot);
++		return ppc_md.phys_mem_access_prot(pfn, size, vma_prot);
+ 
+ 	if (!page_is_ram(pfn))
+ 		vma_prot = pgprot_noncached(vma_prot);
+ 
+ 	return vma_prot;
+ }
+-EXPORT_SYMBOL(phys_mem_access_prot);
++EXPORT_SYMBOL(__phys_mem_access_prot);
+ 
+ #ifdef CONFIG_MEMORY_HOTPLUG
+ static DEFINE_MUTEX(linear_mapping_mutex);
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.42.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
