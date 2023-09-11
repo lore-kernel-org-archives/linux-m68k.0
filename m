@@ -2,116 +2,124 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27172CA0ECE
-	for <linux-m68k@archiver.kernel.org>; Mon, 11 Sep 2023 22:26:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5701CA0EC6
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 Sep 2023 22:26:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244456AbjIKWZE (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 11 Sep 2023 18:25:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36672 "EHLO
+        id S244401AbjIKWZB convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 11 Sep 2023 18:25:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237701AbjIKNKp (ORCPT
+        with ESMTP id S238135AbjIKNmE (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 11 Sep 2023 09:10:45 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E13B3E4D
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Sep 2023 06:10:40 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7646421850;
-        Mon, 11 Sep 2023 13:10:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1694437839; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zC+JZGsYXsje+yxOPTqCSn4MX7oGHygyObBUu1WbhrA=;
-        b=NXQHlmbMHYPOXM6/Q/wl/QPcZG0WBva+XMfJ3bI8zPZR0ux8x966yv6JXD7NlSTCOQklTa
-        932HKLit7W3e7hcuwCJ8sc5x6KRlq+PhBRrREvJgCoo1V1dGXQ5h7PnTiS4OLTxVn3gu1O
-        Rx1xh4EvrS13FZCYRWs2QwstnFhPB3k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1694437839;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zC+JZGsYXsje+yxOPTqCSn4MX7oGHygyObBUu1WbhrA=;
-        b=JCHgcAtxoFB/ZbPa6EOWzeOMrMPLp/0P8whX9d/BfwDeq0tnkGwyxy4nr08KjBixgKrfEu
-        Rcaq/Y+WU3OamAAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2DC1513AD1;
-        Mon, 11 Sep 2023 13:10:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ALk3Cs8R/2SCIwAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Mon, 11 Sep 2023 13:10:39 +0000
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-To:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        arnd@arndb.de, deller@gmx.de
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-fbdev@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, sparclinux@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arch@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: [PATCH v3 3/5] arch/powerpc: Remove trailing whitespaces
-Date:   Mon, 11 Sep 2023 15:08:33 +0200
-Message-ID: <20230911131033.27745-4-tzimmermann@suse.de>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230911131033.27745-1-tzimmermann@suse.de>
-References: <20230911131033.27745-1-tzimmermann@suse.de>
+        Mon, 11 Sep 2023 09:42:04 -0400
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA7CCD7
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Sep 2023 06:41:58 -0700 (PDT)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-d7ecdb99b7aso3987168276.3
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Sep 2023 06:41:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694439717; x=1695044517;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/Fjv8PmDJnyBJVhOZHOd88BdYtAyAHCd5lHO8BTBdh4=;
+        b=jMwpBDmVVFBmpHu1qt+xVYU6Xhyjf5imrWjHB8gf2iwxw5jhXXCAc7rgiaPRONL2Q+
+         YfSyBYINhYBQUNUTOXZ6oJiDcUczHxCXCUMbxzWfmM86ZPJztLsam7Hxai6fzQb1CS8r
+         MTgLSxqHj9mwSAu5pPNucZUnj1DKvV9OfDqXAhZSnILt42gLkW8qrmrbvWjtBiBHmZIC
+         gK3EuIrm4upSZPLDhEfEq8+GA2rv6K6oPL2q/ijCCzGxEwqQlaVT7V3BbzeLFRLdG3CW
+         lSK1zNhz8h55YvqwQZYefW4MGNlkcExjx3N48+HdKTWge+LVDEwIGiYuWhhnvCLNwDM7
+         PrsA==
+X-Gm-Message-State: AOJu0YxWTi5KvisfM/hHj77MTtKkDxlc7dCEJ5Dm1Hkk8elwVEh1ae9o
+        GFHjWd32YJGIDIbBHY4RbLpS4NJB2jy+Ig==
+X-Google-Smtp-Source: AGHT+IEl8r4Q0I2C/vMi9U+cMeKieSV43qTwJtvfEq85oVK67Hq82iTjr/2JZabPMmu3MF9g78aQEg==
+X-Received: by 2002:a25:bfc7:0:b0:d7a:ba02:eaa1 with SMTP id q7-20020a25bfc7000000b00d7aba02eaa1mr7910030ybm.64.1694439717141;
+        Mon, 11 Sep 2023 06:41:57 -0700 (PDT)
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
+        by smtp.gmail.com with ESMTPSA id i64-20020a256d43000000b00d728a2738f1sm1687704ybc.61.2023.09.11.06.41.56
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 06:41:56 -0700 (PDT)
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-d7260fae148so4005300276.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Sep 2023 06:41:56 -0700 (PDT)
+X-Received: by 2002:a25:ef4d:0:b0:d7a:c4dc:e7b3 with SMTP id
+ w13-20020a25ef4d000000b00d7ac4dce7b3mr8154432ybm.61.1694439716223; Mon, 11
+ Sep 2023 06:41:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1694093327.git.geert@linux-m68k.org> <64ea8cf65a4318fbf8c91cb3062d90a2555007c4.1694093327.git.geert@linux-m68k.org>
+ <2545f40a-0c59-491d-895f-4a7975faaedc@app.fastmail.com> <CAMuHMdWs0QbRQZCXZ2Gycqb7jjsjUZMp7_h2mVWxR1zrjCL1Og@mail.gmail.com>
+ <76998b95-827a-4e71-8782-0990b204fcfa@app.fastmail.com>
+In-Reply-To: <76998b95-827a-4e71-8782-0990b204fcfa@app.fastmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 11 Sep 2023 15:41:44 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVmjFm89kW_=AiatXZ_M2gSJ7+csvv3N77OM_cbsF_tSA@mail.gmail.com>
+Message-ID: <CAMuHMdVmjFm89kW_=AiatXZ_M2gSJ7+csvv3N77OM_cbsF_tSA@mail.gmail.com>
+Subject: Re: [PATCH 15/52] m68k: emu: Mark version[] __maybe_unused
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-m68k@lists.linux-m68k.org,
+        Finn Thain <fthain@linux-m68k.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Philip Blundell <philb@gnu.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        Laurent Vivier <laurent@vivier.eu>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Fix coding style. No functional changes.
+Hi Arnd,
 
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
----
- arch/powerpc/include/asm/machdep.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+On Sat, Sep 9, 2023 at 4:07 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> On Sat, Sep 9, 2023, at 14:12, Geert Uytterhoeven wrote:
+> > On Sat, Sep 9, 2023 at 10:28 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> >> On Thu, Sep 7, 2023, at 15:41, Geert Uytterhoeven wrote:
+> >> > When building with W=1:
+> >> >
+> >> >     m68k/arch/m68k/emu/nfeth.c:42:19: warning: ‘version’ defined but
+> >> > not used [-Wunused-const-variable=]
+> >> >        42 | static const char version[] =
+> >> >         |                   ^~~~~~~
+> >> >
+> >> > Fix this while obeying the wishes of the original copyright holders by
+> >> > marking version[] with __maybe_unused.
+> >> >
+> >> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> >>
+> >> That will just drop it from the object file, maybe it should
+> >> instead be marked "__used" ?
+> >
+> > Given it's been like this since the beginning, I guess it never showed
+> > up in the object file anyway...
+>
+> Older compilers used to keep unused variables, and all versions
+> still do when building with -O0 instead of the usual -O2.
+>
+> I can see on godbolt.org that gcc-1.27 did not have that optimization
+> yet, while gcc-4.1 had it, but I haven't found any versions between
+> those. I vaguely remember us throwing out the version strings from
+> most kernel files a long time ago, possibly that was triggered by
+> gcc no longer putting them into the object any more, but I can't
+> find a reference for that.
+>
+> What I can see is that a lot of old network drivers have version
+> strings like this one, but they are actually printed from the
+> probe function, and lost their __devinitdata annotation in the past.
 
-diff --git a/arch/powerpc/include/asm/machdep.h b/arch/powerpc/include/asm/machdep.h
-index 4f6e7d7ee3883..933465ed4c432 100644
---- a/arch/powerpc/include/asm/machdep.h
-+++ b/arch/powerpc/include/asm/machdep.h
-@@ -10,7 +10,7 @@
- #include <linux/export.h>
- 
- struct pt_regs;
--struct pci_bus;	
-+struct pci_bus;
- struct device_node;
- struct iommu_table;
- struct rtc_time;
-@@ -78,8 +78,8 @@ struct machdep_calls {
- 	unsigned char 	(*nvram_read_val)(int addr);
- 	void		(*nvram_write_val)(int addr, unsigned char val);
- 	ssize_t		(*nvram_write)(char *buf, size_t count, loff_t *index);
--	ssize_t		(*nvram_read)(char *buf, size_t count, loff_t *index);	
--	ssize_t		(*nvram_size)(void);		
-+	ssize_t		(*nvram_read)(char *buf, size_t count, loff_t *index);
-+	ssize_t		(*nvram_size)(void);
- 	void		(*nvram_sync)(void);
- 
- 	/* Exception handlers */
-@@ -102,9 +102,9 @@ struct machdep_calls {
- 	 */
- 	long	 	(*feature_call)(unsigned int feature, ...);
- 
--	/* Get legacy PCI/IDE interrupt mapping */ 
-+	/* Get legacy PCI/IDE interrupt mapping */
- 	int		(*pci_get_legacy_ide_irq)(struct pci_dev *dev, int channel);
--	
-+
- 	/* Get access protection for /dev/mem */
- 	pgprot_t	(*phys_mem_access_prot)(struct file *file,
- 						unsigned long pfn,
+The version string in arch/m68k/emu/nfeth.c used to be __devinitdata,
+too, but it was never printed.  So I'm just gonna silence the warning,
+as this patch does.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.42.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
