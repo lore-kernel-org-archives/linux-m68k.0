@@ -2,132 +2,162 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E29DCA0ECB
-	for <linux-m68k@archiver.kernel.org>; Mon, 11 Sep 2023 22:26:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 055AFCA0EC6
+	for <linux-m68k@archiver.kernel.org>; Mon, 11 Sep 2023 22:26:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243839AbjIKWYd (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 11 Sep 2023 18:24:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52862 "EHLO
+        id S240627AbjIKWYf (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 11 Sep 2023 18:24:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238152AbjIKNmx (ORCPT
+        with ESMTP id S243857AbjIKSDd (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 11 Sep 2023 09:42:53 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9811CF0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Sep 2023 06:42:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 31C9BCE10B4;
-        Mon, 11 Sep 2023 13:42:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E395C433C8;
-        Mon, 11 Sep 2023 13:42:41 +0000 (UTC)
-Message-ID: <0424526e-e9fd-7a3f-71ed-c43855ab1290@linux-m68k.org>
-Date:   Mon, 11 Sep 2023 23:42:38 +1000
+        Mon, 11 Sep 2023 14:03:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EFC0106
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Sep 2023 11:03:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694455409; x=1725991409;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=kxCm8IPxO4Adx3HaWS72d7S3asKhB+RqeSR07UfgL5Q=;
+  b=CQLrc/RSE8wY8fI22DH2IXHONA/HGlFfvi+f7N2ywNFzGkks9aWYKNh6
+   2BrsBYxr1PncSwlvvWmosvWtnnhI+ki2a5VotzE8TXMnR0ZUGVupzayL9
+   YbNH3Td3lWWlhjg98+rqes6+S4+UBtvxo+e4rnUtra/juNC2vHFO1wzh5
+   4T5oB0KK1tRv3vjoDZGo1BtXsb08VWjwUK/zEFkXln8mQEfm4B5W0jyiD
+   fBpPdExcHr31uU4Gh2ZgxOFq9IQSeeNdow7IxFjztmmlXzdtRty0uHsbq
+   8wVQuTsYgQal6bFa84sjP8Dxa8Up76rBzHiadEqsvKUpe0B1jn4AffvaP
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="368416953"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="368416953"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 11:03:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="808905950"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="808905950"
+Received: from sohilmeh.sc.intel.com ([172.25.103.65])
+  by fmsmga008.fm.intel.com with ESMTP; 11 Sep 2023 11:03:26 -0700
+From:   Sohil Mehta <sohil.mehta@intel.com>
+To:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Cc:     Sohil Mehta <sohil.mehta@intel.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Sergei Trofimovich <slyich@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rohan McLure <rmclure@linux.ibm.com>,
+        Andreas Schwab <schwab@linux-m68k.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Deepak Gupta <debug@rivosinc.com>, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: [PATCH 0/2] arch: Sync all syscall tables with 2 newly added system calls
+Date:   Mon, 11 Sep 2023 18:02:08 +0000
+Message-Id: <20230911180210.1060504-1-sohil.mehta@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 06/52] m68k: kernel: Add and use "process.h"
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Philip Blundell <philb@gnu.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        Laurent Vivier <laurent@vivier.eu>,
-        linux-kernel@vger.kernel.org
-References: <cover.1694093327.git.geert@linux-m68k.org>
- <6894409da1a0d8667bf74b9100067485ce3c37ac.1694093327.git.geert@linux-m68k.org>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <6894409da1a0d8667bf74b9100067485ce3c37ac.1694093327.git.geert@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
+6.6-rc1 has added support for 2 new system calls:
+[1] fchmodat2()
+[2] x86-specific map_shadow_stack()
 
-Nice cleanups. My plan is to clean up the ColdFire/68000 warnings as well.
+This series mainly synchronizes the syscall tables arcoss the core kernel and
+tools to reflect the recent updates.
 
+For fchmodat2(), it fixes the missing entries in the tools directory.
 
-On 7/9/23 23:41, Geert Uytterhoeven wrote:
-> When building with W=1:
-> 
->      arch/m68k/kernel/process.c:115:16: warning: no previous prototype for ‘m68k_clone’ [-Wmissing-prototypes]
->        115 | asmlinkage int m68k_clone(struct pt_regs *regs)
-> 	  |                ^~~~~~~~~~
->      arch/m68k/kernel/process.c:136:16: warning: no previous prototype for ‘m68k_clone3’ [-Wmissing-prototypes]
->        136 | asmlinkage int m68k_clone3(struct pt_regs *regs)
-> 	  |                ^~~~~~~~~~~
-> 
-> Fix this by introducing a new header file "process.h" for holding the
-> prototypes of functions implemented in arch/m68k/kernel/process.c.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
->   arch/m68k/kernel/process.c | 1 +
->   arch/m68k/kernel/process.h | 8 ++++++++
->   2 files changed, 9 insertions(+)
->   create mode 100644 arch/m68k/kernel/process.h
-> 
-> diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
-> index e06ce147c0b7fcf2..d2d6a57356502e5b 100644
-> --- a/arch/m68k/kernel/process.c
-> +++ b/arch/m68k/kernel/process.c
-> @@ -38,6 +38,7 @@
->   #include <asm/machdep.h>
->   #include <asm/setup.h>
->   
-> +#include <process.h>
+For map_shadow_stack(), it reserves the syscall across the board. Since
+map_shadow_stack() is x86 specific for now, it is marked as a conditional
+syscall in sys_ni.c. Adding it to the syscall tables of other architectures is
+harmless and would return ENOSYS when exercised.
 
-I applied all 52 patches to linux-6.6-rc1 and see this:
+Reserving arch-specific syscall numbers in the tables of all architectures is
+good practice and would help avoid future conflicts.
 
-     $ ARCH=m68k CROSS_COMPILE=m68k-linux- make amiga_defconfig
-     $ ARCH=m68k CROSS_COMPILE=m68k-linux- make W=1
-     ...
-       CC      arch/m68k/kernel/process.o
-     arch/m68k/kernel/process.c:41:10: fatal error: process.h: No such file or directory
-      #include <process.h>
-               ^~~~~~~~~~~
+[1]: https://lore.kernel.org/lkml/20230824-frohlocken-vorabend-725f6fdaad50@brauner/
+[2]: https://lore.kernel.org/lkml/20230830234752.19858-1-dave.hansen@linux.intel.com/
 
-Of course trivially fixed by doing this:
+Sohil Mehta (2):
+  tools headers UAPI: Sync fchmodat2() syscall table entries
+  arch: Reserve map_shadow_stack() syscall number for all architectures
 
-diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
-index d2d6a5735650..2584e94e2134 100644
---- a/arch/m68k/kernel/process.c
-+++ b/arch/m68k/kernel/process.c
-@@ -38,7 +38,7 @@
-  #include <asm/machdep.h>
-  #include <asm/setup.h>
-  
--#include <process.h>
-+#include "process.h"
-  
-  asmlinkage void ret_from_fork(void);
-  asmlinkage void ret_from_kernel_thread(void);
+ arch/alpha/kernel/syscalls/syscall.tbl              | 1 +
+ arch/arm/tools/syscall.tbl                          | 1 +
+ arch/arm64/include/asm/unistd.h                     | 2 +-
+ arch/arm64/include/asm/unistd32.h                   | 2 ++
+ arch/ia64/kernel/syscalls/syscall.tbl               | 1 +
+ arch/m68k/kernel/syscalls/syscall.tbl               | 1 +
+ arch/microblaze/kernel/syscalls/syscall.tbl         | 1 +
+ arch/mips/kernel/syscalls/syscall_n32.tbl           | 1 +
+ arch/mips/kernel/syscalls/syscall_n64.tbl           | 1 +
+ arch/mips/kernel/syscalls/syscall_o32.tbl           | 1 +
+ arch/parisc/kernel/syscalls/syscall.tbl             | 1 +
+ arch/powerpc/kernel/syscalls/syscall.tbl            | 1 +
+ arch/s390/kernel/syscalls/syscall.tbl               | 1 +
+ arch/sh/kernel/syscalls/syscall.tbl                 | 1 +
+ arch/sparc/kernel/syscalls/syscall.tbl              | 1 +
+ arch/x86/entry/syscalls/syscall_32.tbl              | 1 +
+ arch/xtensa/kernel/syscalls/syscall.tbl             | 1 +
+ include/uapi/asm-generic/unistd.h                   | 5 ++++-
+ tools/include/uapi/asm-generic/unistd.h             | 8 +++++++-
+ tools/perf/arch/mips/entry/syscalls/syscall_n64.tbl | 2 ++
+ tools/perf/arch/powerpc/entry/syscalls/syscall.tbl  | 2 ++
+ tools/perf/arch/s390/entry/syscalls/syscall.tbl     | 2 ++
+ tools/perf/arch/x86/entry/syscalls/syscall_64.tbl   | 2 ++
+ 23 files changed, 37 insertions(+), 3 deletions(-)
 
 
-Regards
-Greg
+base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+-- 
+2.34.1
 
-
->   asmlinkage void ret_from_fork(void);
->   asmlinkage void ret_from_kernel_thread(void);
-> diff --git a/arch/m68k/kernel/process.h b/arch/m68k/kernel/process.h
-> new file mode 100644
-> index 0000000000000000..d31745f2e64bebab
-> --- /dev/null
-> +++ b/arch/m68k/kernel/process.h
-> @@ -0,0 +1,8 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#include <linux/linkage.h>
-> +
-> +struct pt_regs;
-> +
-> +asmlinkage int m68k_clone(struct pt_regs *regs);
-> +asmlinkage int m68k_clone3(struct pt_regs *regs);
