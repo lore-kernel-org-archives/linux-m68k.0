@@ -2,75 +2,113 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1582FCA0EC3
-	for <linux-m68k@archiver.kernel.org>; Tue, 12 Sep 2023 07:14:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D08ECA0ED3
+	for <linux-m68k@archiver.kernel.org>; Tue, 12 Sep 2023 13:50:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbjILHOQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 12 Sep 2023 03:14:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45976 "EHLO
+        id S235051AbjILNu6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 12 Sep 2023 09:50:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231468AbjILHOP (ORCPT
+        with ESMTP id S234834AbjILNu5 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 12 Sep 2023 03:14:15 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7918E10C4
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Sep 2023 00:14:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694502850; x=1726038850;
-  h=date:from:to:cc:subject:message-id;
-  bh=OqxFnhSa/90U5YUpICRxS9Ky0BsK6PS+tKdV7gMc9aw=;
-  b=BuB1YGolr5UmTb5WZaCUPNU7iL+WAbXT3B5pa6U7cJ4DgiBqzC+Wcb54
-   WDHojcmGYRNkzleyCscZ2/TfsoaQ3LWe5Z2O9rjt7ccJnX2vcydzQvr4o
-   k4At1ss6yUxCoeP9b4kBxwzFbtFvT+8HiZNYHmPJWI/MEdT1zBzAe96cw
-   udoGNwfNYRQUrYLyPWpI79niLxbKe1f6NsnkRxctpc09o2y6LtXqZhhZ4
-   a08eT8Z0YnmBAhsFCVljLaa4ZH2ZviZxKxDuTH8G/N9Y4IWF5BmGvAEWU
-   iXxEaJG/4oxs6+bFq37OWxVXb4Zjkrzlkc+b+N3WqT6LssU9xN1DvdRWO
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="382112555"
-X-IronPort-AV: E=Sophos;i="6.02,245,1688454000"; 
-   d="scan'208";a="382112555"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 00:14:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="1074456459"
-X-IronPort-AV: E=Sophos;i="6.02,245,1688454000"; 
-   d="scan'208";a="1074456459"
-Received: from lkp-server02.sh.intel.com (HELO 1e56c5165d33) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 12 Sep 2023 00:14:09 -0700
-Received: from kbuild by 1e56c5165d33 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qfxb0-00004U-2x;
-        Tue, 12 Sep 2023 07:14:04 +0000
-Date:   Tue, 12 Sep 2023 15:13:06 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:for-v6.6] BUILD SUCCESS
- 87856ef9ef8955f459fb691faca921c0a688bc80
-Message-ID: <202309121504.TBO6ibJa-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+        Tue, 12 Sep 2023 09:50:57 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8197010CE
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Sep 2023 06:50:53 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D06A8215E6;
+        Tue, 12 Sep 2023 13:50:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1694526651; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=jfsfCbmV4CKGMsiOpxVuXT74O5izS3toa2d723Akmmw=;
+        b=m64W3uS2e57d3w4nffiJw2Fh7RVuCjr7bt3J7GNJYSsYTztKgQqHhgk+45ttX69+ok4VVh
+        yw99bbZNMAnHVuSsmonUkgR2O2L9e14Mofs81IpcD5l45rxYbx5zcOxWmbHcFcOYwP/nct
+        o5C2uHBJHXRzpiqUOohiTj85xw8bFlI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1694526651;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=jfsfCbmV4CKGMsiOpxVuXT74O5izS3toa2d723Akmmw=;
+        b=IeqafxgshLUoUAVGjmtdVjMjQk111anVIYX6bOmlE+8+ZaBBtGpsXakjueIXBxBxqhg67j
+        VlS2K9Xq+v6m1vDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 934DD139DB;
+        Tue, 12 Sep 2023 13:50:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 55MhI7tsAGVKQwAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Tue, 12 Sep 2023 13:50:51 +0000
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+To:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        arnd@arndb.de, deller@gmx.de
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-fbdev@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, sparclinux@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arch@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH v4 0/5] ppc, fbdev: Clean up fbdev mmap helper
+Date:   Tue, 12 Sep 2023 15:48:58 +0200
+Message-ID: <20230912135050.17155-1-tzimmermann@suse.de>
+X-Mailer: git-send-email 2.42.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-v6.6
-branch HEAD: 87856ef9ef8955f459fb691faca921c0a688bc80  m68k: sun3/3x: Add and use "sun3.h"
+Clean up and rename fb_pgprotect() to work without struct file. Then
+refactor the implementation for PowerPC. This change has been discussed
+at [1] in the context of refactoring fbdev's mmap code.
 
-elapsed time: 972m
+The first two patches update fbdev and replace fbdev's fb_pgprotect()
+with pgprot_framebuffer() on all architectures. The new helper's stream-
+lined interface enables more refactoring within fbdev's mmap
+implementation.
 
-configs tested: 4
-configs skipped: 179
+Patches 3 to 5 adapt PowerPC's internal interfaces to provide
+phys_mem_access_prot() that works without struct file. Neither the
+architecture code or fbdev helpers need the parameter.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+v4:
+	* fix commit message (Christophe)
+v3:
+	* rename fb_pgrotect() to pgprot_framebuffer() (Arnd)
+v2:
+	* reorder patches to simplify merging (Michael)
 
-tested configs:
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
+[1] https://lore.kernel.org/linuxppc-dev/5501ba80-bdb0-6344-16b0-0466a950f82c@suse.com/
+
+Thomas Zimmermann (5):
+  fbdev: Avoid file argument in fb_pgprotect()
+  fbdev: Replace fb_pgprotect() with pgprot_framebuffer()
+  arch/powerpc: Remove trailing whitespaces
+  arch/powerpc: Remove file parameter from phys_mem_access_prot code
+  arch/powerpc: Call internal __phys_mem_access_prot() in fbdev code
+
+ arch/ia64/include/asm/fb.h                | 15 +++++++--------
+ arch/m68k/include/asm/fb.h                | 19 ++++++++++---------
+ arch/mips/include/asm/fb.h                | 11 +++++------
+ arch/powerpc/include/asm/book3s/pgtable.h | 10 ++++++++--
+ arch/powerpc/include/asm/fb.h             | 13 +++++--------
+ arch/powerpc/include/asm/machdep.h        | 13 ++++++-------
+ arch/powerpc/include/asm/nohash/pgtable.h | 10 ++++++++--
+ arch/powerpc/include/asm/pci.h            |  4 +---
+ arch/powerpc/kernel/pci-common.c          |  3 +--
+ arch/powerpc/mm/mem.c                     |  8 ++++----
+ arch/sparc/include/asm/fb.h               | 15 +++++++++------
+ arch/x86/include/asm/fb.h                 | 10 ++++++----
+ arch/x86/video/fbdev.c                    | 15 ++++++++-------
+ drivers/video/fbdev/core/fb_chrdev.c      |  3 ++-
+ include/asm-generic/fb.h                  | 12 ++++++------
+ 15 files changed, 86 insertions(+), 75 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.0
+
