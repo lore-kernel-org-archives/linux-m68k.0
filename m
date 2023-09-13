@@ -2,31 +2,34 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BAF55EDEC5B
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 Sep 2023 14:10:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01903EDEC5D
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 Sep 2023 14:10:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241397AbjIMOKY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 13 Sep 2023 10:10:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60018 "EHLO
+        id S241376AbjIMOK0 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 13 Sep 2023 10:10:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241432AbjIMOJl (ORCPT
+        with ESMTP id S241444AbjIMOJr (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 13 Sep 2023 10:09:41 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B2E81FEA
+        Wed, 13 Sep 2023 10:09:47 -0400
+Received: from weierstrass.telenet-ops.be (weierstrass.telenet-ops.be [IPv6:2a02:1800:110:4::f00:11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7CB2100
         for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Sep 2023 07:08:53 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:f674:9611:cd05:f25a])
-        by michel.telenet-ops.be with bizsmtp
-        id lS8p2A00T3fvA4V06S8qJW; Wed, 13 Sep 2023 16:08:51 +0200
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by weierstrass.telenet-ops.be (Postfix) with ESMTPS id 4Rm2PF4zK8z4xHCK
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Sep 2023 16:08:49 +0200 (CEST)
+Received: from ramsan.of.borg ([84.195.187.55])
+        by andre.telenet-ops.be with bizsmtp
+        id lS8o2A00D1C8whw01S8oWu; Wed, 13 Sep 2023 16:08:49 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qgQXd-003cs1-Kx;
-        Wed, 13 Sep 2023 16:08:47 +0200
+        id 1qgQXe-003cuA-MK;
+        Wed, 13 Sep 2023 16:08:48 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qgQXv-00FV4i-0C;
-        Wed, 13 Sep 2023 16:08:47 +0200
+        id 1qgQXw-00FV7N-1W;
+        Wed, 13 Sep 2023 16:08:48 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
 Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
@@ -38,9 +41,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 17/52] m68k: amiga: Add and use "amiga.h"
-Date:   Wed, 13 Sep 2023 16:08:07 +0200
-Message-Id: <7e9395e1de1c9a34d16ea40a522057f05bbee400.1694613528.git.geert@linux-m68k.org>
+Subject: [PATCH v2 50/52] m68k: sun3x: Make sun3x_halt() static
+Date:   Wed, 13 Sep 2023 16:08:40 +0200
+Message-Id: <0ba2883aaff2e4fc5e570bfee87c58e483668b26.1694613528.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694613528.git.geert@linux-m68k.org>
 References: <cover.1694613528.git.geert@linux-m68k.org>
@@ -53,15 +56,12 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 When building with W=1:
 
-    arch/m68k/amiga/amisound.c:48:13: warning: no previous prototype for ‘amiga_init_sound’ [-Wmissing-prototypes]
-       48 | void __init amiga_init_sound(void)
-	  |             ^~~~~~~~~~~~~~~~
-    arch/m68k/amiga/amisound.c:71:6: warning: no previous prototype for ‘amiga_mksound’ [-Wmissing-prototypes]
-       71 | void amiga_mksound( unsigned int hz, unsigned int ticks )
-	  |      ^~~~~~~~~~~~~
+    arch/m68k/sun3x/prom.c:33:6: warning: no previous prototype for ‘sun3x_halt’ [-Wmissing-prototypes]
+       33 | void sun3x_halt(void)
+	  |      ^~~~~~~~~~
 
-Fix this by introducing a new header file "amiga.h" for holding the
-prototypes of functions implemented in arch/m68k/amiga/.
+Fix this by making sun3x_halt() static.
+The function body was moved to arch/m68k/sun3x/prom.c in v2.4.5.2.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Arnd Bergmann <arnd@arndb.de>
@@ -69,59 +69,22 @@ Acked-by: Arnd Bergmann <arnd@arndb.de>
 v2:
   - Add Acked-by.
 ---
- arch/m68k/amiga/amiga.h    | 5 +++++
- arch/m68k/amiga/amisound.c | 2 ++
- arch/m68k/amiga/config.c   | 4 ++--
- 3 files changed, 9 insertions(+), 2 deletions(-)
- create mode 100644 arch/m68k/amiga/amiga.h
+ arch/m68k/sun3x/prom.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/m68k/amiga/amiga.h b/arch/m68k/amiga/amiga.h
-new file mode 100644
-index 0000000000000000..00392781442cb91a
---- /dev/null
-+++ b/arch/m68k/amiga/amiga.h
-@@ -0,0 +1,5 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+
-+/* amisound.c */
-+void amiga_init_sound(void);
-+void amiga_mksound(unsigned int hz, unsigned int ticks);
-diff --git a/arch/m68k/amiga/amisound.c b/arch/m68k/amiga/amisound.c
-index 442bdeee6bd7920c..714fe8ec6afa3364 100644
---- a/arch/m68k/amiga/amisound.c
-+++ b/arch/m68k/amiga/amisound.c
-@@ -16,6 +16,8 @@
+diff --git a/arch/m68k/sun3x/prom.c b/arch/m68k/sun3x/prom.c
+index 64c23bfaa90c5ba9..8ac87d3dc60718d9 100644
+--- a/arch/m68k/sun3x/prom.c
++++ b/arch/m68k/sun3x/prom.c
+@@ -30,7 +30,7 @@ struct linux_romvec *romvec;
+ e_vector *sun3x_prom_vbr;
  
- #include <asm/amigahw.h>
+ /* Handle returning to the prom */
+-void sun3x_halt(void)
++static void sun3x_halt(void)
+ {
+ 	unsigned long flags;
  
-+#include "amiga.h"
-+
- static unsigned short *snd_data;
- static const signed char sine_data[] = {
- 	0,  39,  75,  103,  121,  127,  121,  103,  75,  39,
-diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
-index 3137b45750dfcea7..7791673e547bf795 100644
---- a/arch/m68k/amiga/config.c
-+++ b/arch/m68k/amiga/config.c
-@@ -39,6 +39,8 @@
- #include <asm/io.h>
- #include <asm/config.h>
- 
-+#include "amiga.h"
-+
- static unsigned long amiga_model;
- 
- unsigned long amiga_eclock;
-@@ -96,9 +98,7 @@ static char amiga_model_name[13] = "Amiga ";
- static void amiga_sched_init(void);
- static void amiga_get_model(char *model);
- static void amiga_get_hardware_list(struct seq_file *m);
--extern void amiga_mksound(unsigned int count, unsigned int ticks);
- static void amiga_reset(void);
--extern void amiga_init_sound(void);
- static void amiga_mem_console_write(struct console *co, const char *b,
- 				    unsigned int count);
- #ifdef CONFIG_HEARTBEAT
 -- 
 2.34.1
 
