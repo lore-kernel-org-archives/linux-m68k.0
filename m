@@ -2,85 +2,302 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AE2DEEB596
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 Sep 2023 06:34:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EB7CCA5500
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 Sep 2023 07:14:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238456AbjIMGeM (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 13 Sep 2023 02:34:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32846 "EHLO
+        id S238367AbjIMHOR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 13 Sep 2023 03:14:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238331AbjIMGeL (ORCPT
+        with ESMTP id S238419AbjIMHOQ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 13 Sep 2023 02:34:11 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C0B41980
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Sep 2023 23:34:07 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-52bcb8b199aso8265848a12.3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Sep 2023 23:34:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694586845; x=1695191645; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4xivZoRLvn+KlDMwpBnyJeJwebEb3d7RlJsAeQ2v9Xg=;
-        b=tAiJGMAa1Yci/lcCQVYGvAdxrlJ45dzo/SdVlJpZeKGMEI9sbNzJHyzR49e6Rt4eKP
-         L/YJgQqoU/ebZAlB6XEKloCDx2GHKUTYh4A+D/PuI1sOI8bkLjqyxThwg6TFXmpVGZDk
-         acsxpEfEYbQmMc9f0AfnOgf7Ur1q/62kQRzxCUGU/XUq5Jfa5gNObWahibGtBOSb93yT
-         iCHdSweeqKEYpf5Ke5IvV5MYnNLhx6q1AEeXxmC/4l0BelzNUaGJ/mw6wt/UTbbvaSz7
-         5d5VC981q7klWIcbs/KdBT5/X8vJ/+zk1/hOnNfqblrqBJc4/uJ+8EdvDMKWq2Uzs2Cy
-         hRlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694586845; x=1695191645;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4xivZoRLvn+KlDMwpBnyJeJwebEb3d7RlJsAeQ2v9Xg=;
-        b=km4vz1QnF7hVH7OR4CdXExjdtC2z4219DBixLDTja5u1EiiIGLvmasTibzlog2EytO
-         8xB8JIVX8iZEgMPyOyNzC06rvv76DWy/5eLOx2ZRWD0P5HC5AWMm4wpy99170nge2jcb
-         9xFt5oqj3urlce7F2OKMEHpFO+NbifejB6zTQ27Ceqbvz45ki54nEF8LOKjpuo9K234x
-         JAXY3DkjNViopGOb+57uUf4QwG1KCc2CwQwdxMA1HIhMb2LNXZOaVpGHfsNtz8AsG6T2
-         n3PfNrlkqXNZ3UUmhuT0mRdRlNbZAqbGquByDCUxLHKB4Ths2UMJzBcstGExbraSqFee
-         WsTA==
-X-Gm-Message-State: AOJu0YzjYcOkYlS0T/IPj7o9q3/UlwQ862BOFo8A+tg+lzlafWsbS90V
-        oYksntBaCFo0YFCjUObyEcnzPg==
-X-Google-Smtp-Source: AGHT+IH7pVsLeTcuGo1IKYmY0OKmMz3guLsV/+W9YMk15RXLnYgeiGl9YmdqiaV6jYyLCb+FD4rIbg==
-X-Received: by 2002:a05:6402:74f:b0:514:9ab4:3524 with SMTP id p15-20020a056402074f00b005149ab43524mr1452889edy.7.1694586845587;
-        Tue, 12 Sep 2023 23:34:05 -0700 (PDT)
-Received: from [192.168.69.115] (176-131-211-241.abo.bbox.fr. [176.131.211.241])
-        by smtp.gmail.com with ESMTPSA id x18-20020aa7d392000000b00522828d438csm6829049edq.7.2023.09.12.23.34.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Sep 2023 23:34:05 -0700 (PDT)
-Message-ID: <7a34d350-9583-9e81-5706-9932a03441eb@linaro.org>
-Date:   Wed, 13 Sep 2023 08:34:02 +0200
+        Wed, 13 Sep 2023 03:14:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E01AC1729
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Sep 2023 00:14:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 59908617BD;
+        Wed, 13 Sep 2023 07:14:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8CCBC433C8;
+        Wed, 13 Sep 2023 07:14:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694589251;
+        bh=pmse5hSEBZUw5E6i+3bNi5x2lkXGKDqiv7zF8a9ECqY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=MNc3ZLqTmc9CUdhM9teyMoT9L4M4UC2Sk3YwmKN5ZRrcgjcQtNlVMGUBisrwaZieq
+         BAcjKs2srUA71jo+gv7URLgoOb51odL4rEFAvT67FZQOzejU+sa/FSXmo9pio8f1B3
+         bZIH6yP/LQuXkXtf8Oiaa5xX2EB9H2yEyt1osDfok6GALWgvIzFt+JtAxVjEP+79P9
+         cOm6PaT4euF9J7Gu2JWbo1lXlbNLQammcqKetqd9A0+K/X68JBR8ZplyMxHiiyNAdr
+         TS/mkSVQgbmPUx1c1vJairdbO83FeMKWZ44Yh0KeIBSj4HWG7uBpEsSz5kcIjWu+Yk
+         NPhapbbgbauLQ==
+From:   Greg Ungerer <gerg@kernel.org>
+To:     linux-m68k@lists.linux-m68k.org
+Cc:     geert@linux-m68k.org, Greg Ungerer <gerg@linux-m68k.org>
+Subject: [PATCH] m68k: use kernel's generic libgcc functions
+Date:   Wed, 13 Sep 2023 17:13:50 +1000
+Message-Id: <20230913071350.1939818-1-gerg@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: [PATCH v4 3/5] arch/powerpc: Remove trailing whitespaces
-Content-Language: en-US
-To:     Thomas Zimmermann <tzimmermann@suse.de>, mpe@ellerman.id.au,
-        npiggin@gmail.com, christophe.leroy@csgroup.eu, arnd@arndb.de,
-        deller@gmx.de
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-fbdev@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, sparclinux@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arch@vger.kernel.org
-References: <20230912135050.17155-1-tzimmermann@suse.de>
- <20230912135050.17155-4-tzimmermann@suse.de>
-From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
-In-Reply-To: <20230912135050.17155-4-tzimmermann@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 12/9/23 15:49, Thomas Zimmermann wrote:
-> Fix coding style. No functional changes.
-> 
-> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-> ---
->   arch/powerpc/include/asm/machdep.h | 10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
+From: Greg Ungerer <gerg@linux-m68k.org>
 
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+The arch/m68k/lib versions of the libgcc functions: ashldi3, ashrdi3
+and lshrdi3 were taken directly from an older version of gcc.
+We can use the kernel's own generic lib versions of these - they are
+virtually identical. Switch to those and remove the m68k local ones.
+
+Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+---
+
+Tested on ColdFire and on an Atari build under aranym.
+
+ arch/m68k/Kconfig       |  3 ++
+ arch/m68k/lib/Makefile  |  3 +-
+ arch/m68k/lib/ashldi3.c | 61 ----------------------------------------
+ arch/m68k/lib/ashrdi3.c | 62 -----------------------------------------
+ arch/m68k/lib/lshrdi3.c | 61 ----------------------------------------
+ 5 files changed, 4 insertions(+), 186 deletions(-)
+ delete mode 100644 arch/m68k/lib/ashldi3.c
+ delete mode 100644 arch/m68k/lib/ashrdi3.c
+ delete mode 100644 arch/m68k/lib/lshrdi3.c
+
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 3e318bf9504c..3e96486d9528 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -19,6 +19,9 @@ config M68K
+ 	select GENERIC_CPU_DEVICES
+ 	select GENERIC_IOMAP
+ 	select GENERIC_IRQ_SHOW
++	select GENERIC_LIB_ASHLDI3
++	select GENERIC_LIB_ASHRDI3
++	select GENERIC_LIB_LSHRDI3
+ 	select HAS_IOPORT if PCI || ISA || ATARI_ROM_ISA
+ 	select HAVE_ARCH_SECCOMP
+ 	select HAVE_ARCH_SECCOMP_FILTER
+diff --git a/arch/m68k/lib/Makefile b/arch/m68k/lib/Makefile
+index eca17f14b4d5..9158688e6cc6 100644
+--- a/arch/m68k/lib/Makefile
++++ b/arch/m68k/lib/Makefile
+@@ -4,8 +4,7 @@
+ # Makefile for m68k-specific library files..
+ #
+ 
+-lib-y	:= ashldi3.o ashrdi3.o lshrdi3.o muldi3.o \
+-	   memcpy.o memset.o memmove.o
++lib-y	:= muldi3.o memcpy.o memset.o memmove.o
+ 
+ lib-$(CONFIG_MMU) += uaccess.o
+ lib-$(CONFIG_CPU_HAS_NO_MULDIV64) += mulsi3.o divsi3.o udivsi3.o
+diff --git a/arch/m68k/lib/ashldi3.c b/arch/m68k/lib/ashldi3.c
+deleted file mode 100644
+index ac08f8141390..000000000000
+--- a/arch/m68k/lib/ashldi3.c
++++ /dev/null
+@@ -1,61 +0,0 @@
+-/* ashrdi3.c extracted from gcc-2.95.2/libgcc2.c which is: */
+-/* Copyright (C) 1989, 92-98, 1999 Free Software Foundation, Inc.
+-
+-This file is part of GNU CC.
+-
+-GNU CC is free software; you can redistribute it and/or modify
+-it under the terms of the GNU General Public License as published by
+-the Free Software Foundation; either version 2, or (at your option)
+-any later version.
+-
+-GNU CC is distributed in the hope that it will be useful,
+-but WITHOUT ANY WARRANTY; without even the implied warranty of
+-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-GNU General Public License for more details. */
+-
+-#include <linux/compiler.h>
+-#include <linux/export.h>
+-
+-#define BITS_PER_UNIT 8
+-
+-typedef		 int SItype	__mode(SI);
+-typedef unsigned int USItype	__mode(SI);
+-typedef		 int DItype	__mode(DI);
+-typedef int word_type           __mode(__word__);
+-
+-struct DIstruct {SItype high, low;};
+-
+-typedef union
+-{
+-  struct DIstruct s;
+-  DItype ll;
+-} DIunion;
+-
+-DItype
+-__ashldi3 (DItype u, word_type b)
+-{
+-  DIunion w;
+-  word_type bm;
+-  DIunion uu;
+-
+-  if (b == 0)
+-    return u;
+-
+-  uu.ll = u;
+-
+-  bm = (sizeof (SItype) * BITS_PER_UNIT) - b;
+-  if (bm <= 0)
+-    {
+-      w.s.low = 0;
+-      w.s.high = (USItype)uu.s.low << -bm;
+-    }
+-  else
+-    {
+-      USItype carries = (USItype)uu.s.low >> bm;
+-      w.s.low = (USItype)uu.s.low << b;
+-      w.s.high = ((USItype)uu.s.high << b) | carries;
+-    }
+-
+-  return w.ll;
+-}
+-EXPORT_SYMBOL(__ashldi3);
+diff --git a/arch/m68k/lib/ashrdi3.c b/arch/m68k/lib/ashrdi3.c
+deleted file mode 100644
+index 5837b1dd3334..000000000000
+--- a/arch/m68k/lib/ashrdi3.c
++++ /dev/null
+@@ -1,62 +0,0 @@
+-/* ashrdi3.c extracted from gcc-2.7.2/libgcc2.c which is: */
+-/* Copyright (C) 1989, 1992, 1993, 1994, 1995 Free Software Foundation, Inc.
+-
+-This file is part of GNU CC.
+-
+-GNU CC is free software; you can redistribute it and/or modify
+-it under the terms of the GNU General Public License as published by
+-the Free Software Foundation; either version 2, or (at your option)
+-any later version.
+-
+-GNU CC is distributed in the hope that it will be useful,
+-but WITHOUT ANY WARRANTY; without even the implied warranty of
+-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-GNU General Public License for more details. */
+-
+-#include <linux/compiler.h>
+-#include <linux/export.h>
+-
+-#define BITS_PER_UNIT 8
+-
+-typedef		 int SItype	__mode(SI);
+-typedef unsigned int USItype	__mode(SI);
+-typedef		 int DItype	__mode(DI);
+-typedef int word_type           __mode(__word__);
+-
+-struct DIstruct {SItype high, low;};
+-
+-typedef union
+-{
+-  struct DIstruct s;
+-  DItype ll;
+-} DIunion;
+-
+-DItype
+-__ashrdi3 (DItype u, word_type b)
+-{
+-  DIunion w;
+-  word_type bm;
+-  DIunion uu;
+-
+-  if (b == 0)
+-    return u;
+-
+-  uu.ll = u;
+-
+-  bm = (sizeof (SItype) * BITS_PER_UNIT) - b;
+-  if (bm <= 0)
+-    {
+-      /* w.s.high = 1..1 or 0..0 */
+-      w.s.high = uu.s.high >> (sizeof (SItype) * BITS_PER_UNIT - 1);
+-      w.s.low = uu.s.high >> -bm;
+-    }
+-  else
+-    {
+-      USItype carries = (USItype)uu.s.high << bm;
+-      w.s.high = uu.s.high >> b;
+-      w.s.low = ((USItype)uu.s.low >> b) | carries;
+-    }
+-
+-  return w.ll;
+-}
+-EXPORT_SYMBOL(__ashrdi3);
+diff --git a/arch/m68k/lib/lshrdi3.c b/arch/m68k/lib/lshrdi3.c
+deleted file mode 100644
+index 7f40566be6c8..000000000000
+--- a/arch/m68k/lib/lshrdi3.c
++++ /dev/null
+@@ -1,61 +0,0 @@
+-/* lshrdi3.c extracted from gcc-2.7.2/libgcc2.c which is: */
+-/* Copyright (C) 1989, 1992, 1993, 1994, 1995 Free Software Foundation, Inc.
+-
+-This file is part of GNU CC.
+-
+-GNU CC is free software; you can redistribute it and/or modify
+-it under the terms of the GNU General Public License as published by
+-the Free Software Foundation; either version 2, or (at your option)
+-any later version.
+-
+-GNU CC is distributed in the hope that it will be useful,
+-but WITHOUT ANY WARRANTY; without even the implied warranty of
+-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-GNU General Public License for more details. */
+-
+-#include <linux/compiler.h>
+-#include <linux/export.h>
+-
+-#define BITS_PER_UNIT 8
+-
+-typedef		 int SItype	__mode(SI);
+-typedef unsigned int USItype	__mode(SI);
+-typedef		 int DItype	__mode(DI);
+-typedef int word_type           __mode(__word__);
+-
+-struct DIstruct {SItype high, low;};
+-
+-typedef union
+-{
+-  struct DIstruct s;
+-  DItype ll;
+-} DIunion;
+-
+-DItype
+-__lshrdi3 (DItype u, word_type b)
+-{
+-  DIunion w;
+-  word_type bm;
+-  DIunion uu;
+-
+-  if (b == 0)
+-    return u;
+-
+-  uu.ll = u;
+-
+-  bm = (sizeof (SItype) * BITS_PER_UNIT) - b;
+-  if (bm <= 0)
+-    {
+-      w.s.high = 0;
+-      w.s.low = (USItype)uu.s.high >> -bm;
+-    }
+-  else
+-    {
+-      USItype carries = (USItype)uu.s.high << bm;
+-      w.s.high = (USItype)uu.s.high >> b;
+-      w.s.low = ((USItype)uu.s.low >> b) | carries;
+-    }
+-
+-  return w.ll;
+-}
+-EXPORT_SYMBOL(__lshrdi3);
+-- 
+2.25.1
 
