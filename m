@@ -2,108 +2,79 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BAD42EDEC4D
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 Sep 2023 13:45:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BDF6BEDEC57
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 Sep 2023 14:08:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241060AbjIMNpV (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 13 Sep 2023 09:45:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36090 "EHLO
+        id S241243AbjIMOIz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 13 Sep 2023 10:08:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241160AbjIMNpS (ORCPT
+        with ESMTP id S241233AbjIMOIy (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 13 Sep 2023 09:45:18 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B111BC3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Sep 2023 06:45:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id B163ECE1F1B;
-        Wed, 13 Sep 2023 13:45:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22FA8C433C8;
-        Wed, 13 Sep 2023 13:45:09 +0000 (UTC)
-From:   Greg Ungerer <gerg@linux-m68k.org>
+        Wed, 13 Sep 2023 10:08:54 -0400
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701B11BC3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Sep 2023 07:08:50 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:f674:9611:cd05:f25a])
+        by andre.telenet-ops.be with bizsmtp
+        id lS8m2A00H3fvA4V01S8mWf; Wed, 13 Sep 2023 16:08:48 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qgQXd-003cqy-7J;
+        Wed, 13 Sep 2023 16:08:46 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qgQXu-00FV3T-Ib;
+        Wed, 13 Sep 2023 16:08:46 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
-Cc:     geert@linux-m68k.org, Greg Ungerer <gerg@linux-m68k.org>
-Subject: [PATCH 6/7] m68knommu: 68000: fix warnings in 68000 interrupt handling
-Date:   Wed, 13 Sep 2023 23:44:24 +1000
-Message-Id: <20230913134425.2610927-7-gerg@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230913134425.2610927-1-gerg@linux-m68k.org>
-References: <20230913134425.2610927-1-gerg@linux-m68k.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Philip Blundell <philb@gnu.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        Laurent Vivier <laurent@vivier.eu>,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v2 01/52] m68k: kernel: Add missing asmlinkage to do_notify_resume()
+Date:   Wed, 13 Sep 2023 16:07:51 +0200
+Message-Id: <e24d63ec4332316e859125caa8d07c0589603cfd.1694613528.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1694613528.git.geert@linux-m68k.org>
+References: <cover.1694613528.git.geert@linux-m68k.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-When building with W=1:
+do_notify_resume() is called from assembly code, so it should be marked
+asmlinkage for documentation purposes.
 
-      CC      arch/m68k/68000/ints.o
-    arch/m68k/68000/ints.c:77:6: warning: no previous prototype for ‘process_int’ [-Wmissing-prototypes]
-     void process_int(int vec, struct pt_regs *fp)
-          ^~~~~~~~~~~
-    arch/m68k/68000/ints.c:153:13: warning: no previous prototype for ‘trap_init’ [-Wmissing-prototypes]
-     void __init trap_init(void)
-                 ^~~~~~~~~
-
-Include linux/cpu.h to get the prototype for trap_init().
-Create a local ints.h for prototype of process_int(). Also mark
-process_int() as asmlinkage, since it is called from the first level
-interrupt assembly handler.
-
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/m68k/68000/ints.c | 5 ++++-
- arch/m68k/68000/ints.h | 7 +++++++
- 2 files changed, 11 insertions(+), 1 deletion(-)
- create mode 100644 arch/m68k/68000/ints.h
+v2:
+  - Add Acked-by.
+---
+ arch/m68k/kernel/signal.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/m68k/68000/ints.c b/arch/m68k/68000/ints.c
-index f9a5ec781408..2ba9926e91ae 100644
---- a/arch/m68k/68000/ints.c
-+++ b/arch/m68k/68000/ints.c
-@@ -14,6 +14,7 @@
- #include <linux/init.h>
- #include <linux/interrupt.h>
- #include <linux/irq.h>
-+#include <linux/cpu.h>
- #include <asm/traps.h>
- #include <asm/io.h>
- #include <asm/machdep.h>
-@@ -26,6 +27,8 @@
- #include <asm/MC68328.h>
- #endif
+diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
+index ba468b5f3f0b65bd..459c5ff69fcfa126 100644
+--- a/arch/m68k/kernel/signal.c
++++ b/arch/m68k/kernel/signal.c
+@@ -1109,7 +1109,7 @@ static void do_signal(struct pt_regs *regs)
+ 	restore_saved_sigmask();
+ }
  
-+#include "ints.h"
-+
- /* assembler routines */
- asmlinkage void system_call(void);
- asmlinkage void buserr(void);
-@@ -74,7 +77,7 @@ asmlinkage irqreturn_t inthandler7(void);
-  * into one vector and look in the blasted mask register...
-  * This code is designed to be fast, almost constant time, not clean!
-  */
--void process_int(int vec, struct pt_regs *fp)
-+asmlinkage void process_int(int vec, struct pt_regs *fp)
+-void do_notify_resume(struct pt_regs *regs)
++asmlinkage void do_notify_resume(struct pt_regs *regs)
  {
- 	int irq;
- 	int mask;
-diff --git a/arch/m68k/68000/ints.h b/arch/m68k/68000/ints.h
-new file mode 100644
-index 000000000000..d9cfd0eb9ffe
---- /dev/null
-+++ b/arch/m68k/68000/ints.h
-@@ -0,0 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+
-+#include <linux/linkage.h>
-+
-+struct pt_regs;
-+
-+asmlinkage void process_int(int vec, struct pt_regs *fp);
+ 	if (test_thread_flag(TIF_NOTIFY_SIGNAL) ||
+ 	    test_thread_flag(TIF_SIGPENDING))
 -- 
-2.25.1
+2.34.1
 
