@@ -2,33 +2,30 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 506E9EDEC5A
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 Sep 2023 14:09:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB62EEDEC5B
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 Sep 2023 14:09:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241281AbjIMOJX (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 13 Sep 2023 10:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53026 "EHLO
+        id S241405AbjIMOJc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 13 Sep 2023 10:09:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241286AbjIMOI5 (ORCPT
+        with ESMTP id S241287AbjIMOI5 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Wed, 13 Sep 2023 10:08:57 -0400
-Received: from gauss.telenet-ops.be (gauss.telenet-ops.be [195.130.132.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C4271BC8
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D821BC7
         for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Sep 2023 07:08:51 -0700 (PDT)
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by gauss.telenet-ops.be (Postfix) with ESMTPS id 4Rm2PF716dz4x9km
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Sep 2023 16:08:49 +0200 (CEST)
-Received: from ramsan.of.borg ([84.195.187.55])
-        by andre.telenet-ops.be with bizsmtp
-        id lS8o2A00R1C8whw01S8oWy; Wed, 13 Sep 2023 16:08:49 +0200
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:f674:9611:cd05:f25a])
+        by laurent.telenet-ops.be with bizsmtp
+        id lS8n2A0033fvA4V01S8nmA; Wed, 13 Sep 2023 16:08:48 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qgQXd-003csT-RF;
+        id 1qgQXd-003cs9-Mb;
         Wed, 13 Sep 2023 16:08:47 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qgQXv-00FV5H-6K;
+        id 1qgQXv-00FV4s-1k;
         Wed, 13 Sep 2023 16:08:47 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
@@ -41,9 +38,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 24/52] m68k: apollo: Make local reset, serial, and irq functions static
-Date:   Wed, 13 Sep 2023 16:08:14 +0200
-Message-Id: <d2b3a6785d3e80069fea85921c72cf0b7afb8493.1694613528.git.geert@linux-m68k.org>
+Subject: [PATCH v2 19/52] m68k: atari: Make ikbd_reset() static
+Date:   Wed, 13 Sep 2023 16:08:09 +0200
+Message-Id: <6babf691fff55f913808ad845e66f60ab00063b2.1694613528.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694613528.git.geert@linux-m68k.org>
 References: <cover.1694613528.git.geert@linux-m68k.org>
@@ -56,20 +53,12 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 When building with W=1:
 
-    arch/m68k/apollo/config.c:132:6: warning: no previous prototype for ‘dn_serial_print’ [-Wmissing-prototypes]
-      110 | void dn_serial_print (const char *str)
-	  |      ^~~~~~~~~~~~~~~
-    arch/m68k/apollo/dn_ints.c:8:14: warning: no previous prototype for ‘apollo_irq_startup’ [-Wmissing-prototypes]
-	8 | unsigned int apollo_irq_startup(struct irq_data *data)
-	  |              ^~~~~~~~~~~~~~~~~~
-    arch/m68k/apollo/dn_ints.c:19:6: warning: no previous prototype for ‘apollo_irq_shutdown’ [-Wmissing-prototypes]
-       19 | void apollo_irq_shutdown(struct irq_data *data)
-	  |      ^~~~~~~~~~~~~~~~~~~
-    arch/m68k/apollo/dn_ints.c:29:6: warning: no previous prototype for ‘apollo_irq_eoi’ [-Wmissing-prototypes]
-       29 | void apollo_irq_eoi(struct irq_data *data)
-	  |      ^~~~~~~~~~~~~~
+    arch/m68k/atari/atakeyb.c:335:6: warning: no previous prototype for ‘ikbd_reset’ [-Wmissing-prototypes]
+      335 | void ikbd_reset(void)
+	  |      ^~~~~~~~~~
 
-Fix this by making all local functions static.
+Fix this by making ikbd_reset() static.
+There was never a user outside arch/m68k/atari/atakey.c.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Arnd Bergmann <arnd@arndb.de>
@@ -77,74 +66,22 @@ Acked-by: Arnd Bergmann <arnd@arndb.de>
 v2:
   - Add Acked-by.
 ---
- arch/m68k/apollo/config.c  | 8 ++++----
- arch/m68k/apollo/dn_ints.c | 6 +++---
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ arch/m68k/atari/atakeyb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/m68k/apollo/config.c b/arch/m68k/apollo/config.c
-index fccbb40772dca6b9..0e6801eecbaf6361 100644
---- a/arch/m68k/apollo/config.c
-+++ b/arch/m68k/apollo/config.c
-@@ -29,7 +29,7 @@ u_long apollo_model;
- extern void dn_sched_init(void);
- extern void dn_init_IRQ(void);
- extern int dn_dummy_hwclk(int, struct rtc_time *);
--extern void dn_dummy_reset(void);
-+static void dn_dummy_reset(void);
- #ifdef CONFIG_HEARTBEAT
- static void dn_heartbeat(int on);
- #endif
-@@ -107,7 +107,7 @@ static void __init dn_setup_model(void)
- 
+diff --git a/arch/m68k/atari/atakeyb.c b/arch/m68k/atari/atakeyb.c
+index 5e0e682f9c61a60e..49a9a459bdf4ccbd 100644
+--- a/arch/m68k/atari/atakeyb.c
++++ b/arch/m68k/atari/atakeyb.c
+@@ -332,7 +332,7 @@ void ikbd_write(const char *str, int len)
  }
  
--void dn_serial_print (const char *str)
-+static void dn_serial_print(const char *str)
+ /* Reset (without touching the clock) */
+-void ikbd_reset(void)
++static void ikbd_reset(void)
  {
-     while (*str) {
-         if (*str == '\n') {
-@@ -207,8 +207,8 @@ int dn_dummy_hwclk(int op, struct rtc_time *t) {
+ 	static const char cmd[2] = { 0x80, 0x01 };
  
- }
- 
--void dn_dummy_reset(void) {
--
-+static void dn_dummy_reset(void)
-+{
-   dn_serial_print("The end !\n");
- 
-   for(;;);
-diff --git a/arch/m68k/apollo/dn_ints.c b/arch/m68k/apollo/dn_ints.c
-index 02cff7efc8342aa6..d97251fe0ab83045 100644
---- a/arch/m68k/apollo/dn_ints.c
-+++ b/arch/m68k/apollo/dn_ints.c
-@@ -5,7 +5,7 @@
- #include <asm/traps.h>
- #include <asm/apollohw.h>
- 
--unsigned int apollo_irq_startup(struct irq_data *data)
-+static unsigned int apollo_irq_startup(struct irq_data *data)
- {
- 	unsigned int irq = data->irq;
- 
-@@ -16,7 +16,7 @@ unsigned int apollo_irq_startup(struct irq_data *data)
- 	return 0;
- }
- 
--void apollo_irq_shutdown(struct irq_data *data)
-+static void apollo_irq_shutdown(struct irq_data *data)
- {
- 	unsigned int irq = data->irq;
- 
-@@ -26,7 +26,7 @@ void apollo_irq_shutdown(struct irq_data *data)
- 		*(volatile unsigned char *)(picb+1) |= (1 << (irq - 8));
- }
- 
--void apollo_irq_eoi(struct irq_data *data)
-+static void apollo_irq_eoi(struct irq_data *data)
- {
- 	*(volatile unsigned char *)(pica) = 0x20;
- 	*(volatile unsigned char *)(picb) = 0x20;
 -- 
 2.34.1
 
