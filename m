@@ -2,30 +2,30 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB2B6EDEC5A
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 Sep 2023 14:10:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1C74EDEC5B
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 Sep 2023 14:10:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241543AbjIMOKO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        id S241547AbjIMOKO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
         Wed, 13 Sep 2023 10:10:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52890 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241371AbjIMOJW (ORCPT
+        with ESMTP id S241354AbjIMOJX (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 13 Sep 2023 10:09:22 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B721BD1
+        Wed, 13 Sep 2023 10:09:23 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479811BCC
         for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Sep 2023 07:08:52 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:f674:9611:cd05:f25a])
-        by laurent.telenet-ops.be with bizsmtp
-        id lS8n2A0073fvA4V01S8nmD; Wed, 13 Sep 2023 16:08:48 +0200
+        by albert.telenet-ops.be with bizsmtp
+        id lS8n2A00R3fvA4V06S8n4D; Wed, 13 Sep 2023 16:08:48 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qgQXd-003csL-PL;
+        id 1qgQXe-003ctB-6W;
         Wed, 13 Sep 2023 16:08:47 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qgQXv-00FV57-44;
+        id 1qgQXv-00FV6A-HL;
         Wed, 13 Sep 2023 16:08:47 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
@@ -38,9 +38,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 22/52] m68k: atari: Add and use "atari.h"
-Date:   Wed, 13 Sep 2023 16:08:12 +0200
-Message-Id: <336e4a478ccbfd7e3e91cdbd27636947587a23a6.1694613528.git.geert@linux-m68k.org>
+Subject: [PATCH v2 35/52] m68k: mvme16x: Add and use "mvme16x.h"
+Date:   Wed, 13 Sep 2023 16:08:25 +0200
+Message-Id: <6200cc3b26fad215c4524748af04692e38c5ecd2.1694613528.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694613528.git.geert@linux-m68k.org>
 References: <cover.1694613528.git.geert@linux-m68k.org>
@@ -53,27 +53,12 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 When building with W=1:
 
-    arch/m68k/atari/time.c:59:1: warning: no previous prototype for ‘atari_sched_init’ [-Wmissing-prototypes]
-       59 | atari_sched_init(void)
-	  | ^~~~~~~~~~~~~~~~
-    arch/m68k/atari/time.c:140:5: warning: no previous prototype for ‘atari_mste_hwclk’ [-Wmissing-prototypes]
-      140 | int atari_mste_hwclk( int op, struct rtc_time *t )
-	  |     ^~~~~~~~~~~~~~~~
-    arch/m68k/atari/time.c:199:5: warning: no previous prototype for ‘atari_tt_hwclk’ [-Wmissing-prototypes]
-      199 | int atari_tt_hwclk( int op, struct rtc_time *t )
-	  |     ^~~~~~~~~~~~~~
-    arch/m68k/atari/ataints.c:267:13: warning: no previous prototype for ‘atari_init_IRQ’ [-Wmissing-prototypes]
-      267 | void __init atari_init_IRQ(void)
-	  |             ^~~~~~~~~~~~~~
-    arch/m68k/atari/atasound.c:36:6: warning: no previous prototype for ‘atari_microwire_cmd’ [-Wmissing-prototypes]
-       36 | void atari_microwire_cmd (int cmd)
-	  |      ^~~~~~~~~~~~~~~~~~~
-    arch/m68k/atari/atasound.c:53:6: warning: no previous prototype for ‘atari_mksound’ [-Wmissing-prototypes]
-       53 | void atari_mksound (unsigned int hz, unsigned int ticks)
-	  |      ^~~~~~~~~~~~~
+    arch/m68k/mvme16x/config.c:208:6: warning: no previous prototype for ‘mvme16x_cons_write’ [-Wmissing-prototypes]
+      208 | void mvme16x_cons_write(struct console *co, const char *str, unsigned count)
+	  |      ^~~~~~~~~~~~~~~~~~
 
-Fix this by introducing a new header file "atari.h" for holding the
-prototypes of functions implemented in arch/m68k/atari/.
+Fix this by introducing a new header file "mvme16x.h" for holding the
+prototypes of functions implemented in arch/m68k/mvme16x/.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Arnd Bergmann <arnd@arndb.de>
@@ -81,114 +66,52 @@ Acked-by: Arnd Bergmann <arnd@arndb.de>
 v2:
   - Add Acked-by.
 ---
- arch/m68k/atari/ataints.c  |  3 +--
- arch/m68k/atari/atari.h    | 15 +++++++++++++++
- arch/m68k/atari/atasound.c |  1 +
- arch/m68k/atari/config.c   | 11 ++---------
- arch/m68k/atari/time.c     |  2 ++
- 5 files changed, 21 insertions(+), 11 deletions(-)
- create mode 100644 arch/m68k/atari/atari.h
+ arch/m68k/kernel/early_printk.c | 4 ++--
+ arch/m68k/mvme16x/config.c      | 2 ++
+ arch/m68k/mvme16x/mvme16x.h     | 6 ++++++
+ 3 files changed, 10 insertions(+), 2 deletions(-)
+ create mode 100644 arch/m68k/mvme16x/mvme16x.h
 
-diff --git a/arch/m68k/atari/ataints.c b/arch/m68k/atari/ataints.c
-index 56f02ea2c248d844..23256434191c39af 100644
---- a/arch/m68k/atari/ataints.c
-+++ b/arch/m68k/atari/ataints.c
-@@ -52,6 +52,7 @@
- #include <asm/entry.h>
- #include <asm/io.h>
+diff --git a/arch/m68k/kernel/early_printk.c b/arch/m68k/kernel/early_printk.c
+index 7d3fe08a48eb0319..3cc944df04f65ef1 100644
+--- a/arch/m68k/kernel/early_printk.c
++++ b/arch/m68k/kernel/early_printk.c
+@@ -12,8 +12,8 @@
+ #include <linux/string.h>
+ #include <asm/setup.h>
  
-+#include "atari.h"
- 
- /*
-  * Atari interrupt handling scheme:
-@@ -81,8 +82,6 @@ __ALIGN_STR "\n\t"
- 	"orw	#0x200,%sp@\n\t"	/* set saved ipl to 2 */
- 	"rte");
- 
--extern void atari_microwire_cmd(int cmd);
--
- static unsigned int atari_irq_startup(struct irq_data *data)
- {
- 	unsigned int irq = data->irq;
-diff --git a/arch/m68k/atari/atari.h b/arch/m68k/atari/atari.h
-new file mode 100644
-index 0000000000000000..494a03ddac3d16ae
---- /dev/null
-+++ b/arch/m68k/atari/atari.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
+-extern void mvme16x_cons_write(struct console *co,
+-			       const char *str, unsigned count);
 +
-+struct rtc_time;
-+
-+/* ataints.c */
-+void atari_init_IRQ(void);
-+
-+/* atasound.c */
-+void atari_microwire_cmd(int cmd);
-+void atari_mksound(unsigned int hz, unsigned int ticks);
-+
-+/* time.c */
-+void atari_sched_init(void);
-+int atari_mste_hwclk(int op, struct rtc_time *t);
-+int atari_tt_hwclk(int op, struct rtc_time *t);
-diff --git a/arch/m68k/atari/atasound.c b/arch/m68k/atari/atasound.c
-index a8724d998c39fcfa..c38ef0e6078e7260 100644
---- a/arch/m68k/atari/atasound.c
-+++ b/arch/m68k/atari/atasound.c
-@@ -28,6 +28,7 @@
- #include <asm/irq.h>
- #include <asm/atariints.h>
++#include "../mvme16x/mvme16x.h"
  
-+#include "atari.h"
+ asmlinkage void __init debug_cons_nputs(const char *s, unsigned n);
  
- /*
-  * stuff from the old atasound.c
-diff --git a/arch/m68k/atari/config.c b/arch/m68k/atari/config.c
-index b4fe4273ad912ebe..b48a0606a00068b9 100644
---- a/arch/m68k/atari/config.c
-+++ b/arch/m68k/atari/config.c
-@@ -48,6 +48,8 @@
- #include <asm/io.h>
+diff --git a/arch/m68k/mvme16x/config.c b/arch/m68k/mvme16x/config.c
+index b6833862ea6b1530..9bb9a33e43c246c4 100644
+--- a/arch/m68k/mvme16x/config.c
++++ b/arch/m68k/mvme16x/config.c
+@@ -38,6 +38,8 @@
+ #include <asm/mvme16xhw.h>
  #include <asm/config.h>
  
-+#include "atari.h"
++#include "mvme16x.h"
 +
- u_long atari_mch_cookie;
- EXPORT_SYMBOL(atari_mch_cookie);
+ extern t_bdid mvme_bdid;
  
-@@ -69,19 +71,10 @@ int atari_rtc_year_offset;
- static void atari_reset(void);
- static void atari_get_model(char *model);
- static void atari_get_hardware_list(struct seq_file *m);
--
--/* atari specific irq functions */
--extern void atari_init_IRQ (void);
--extern void atari_mksound(unsigned int count, unsigned int ticks);
- #ifdef CONFIG_HEARTBEAT
- static void atari_heartbeat(int on);
- #endif
- 
--/* atari specific timer functions (in time.c) */
--extern void atari_sched_init(void);
--extern int atari_mste_hwclk (int, struct rtc_time *);
--extern int atari_tt_hwclk (int, struct rtc_time *);
--
- /* ++roman: This is a more elaborate test for an SCC chip, since the plain
-  * Medusa board generates DTACK at the SCC's standard addresses, but a SCC
-  * board in the Medusa is possible. Also, the addresses where the ST_ESCC
-diff --git a/arch/m68k/atari/time.c b/arch/m68k/atari/time.c
-index 7e44d0e9d0f8a902..3453c6dc6b41d3c9 100644
---- a/arch/m68k/atari/time.c
-+++ b/arch/m68k/atari/time.c
-@@ -23,6 +23,8 @@
- #include <asm/atariints.h>
- #include <asm/machdep.h>
- 
-+#include "atari.h"
+ static MK48T08ptr_t volatile rtc = (MK48T08ptr_t)MVME_RTC_BASE;
+diff --git a/arch/m68k/mvme16x/mvme16x.h b/arch/m68k/mvme16x/mvme16x.h
+new file mode 100644
+index 0000000000000000..159c34b700394116
+--- /dev/null
++++ b/arch/m68k/mvme16x/mvme16x.h
+@@ -0,0 +1,6 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
 +
- DEFINE_SPINLOCK(rtc_lock);
- EXPORT_SYMBOL_GPL(rtc_lock);
- 
++struct console;
++
++/* config.c */
++void mvme16x_cons_write(struct console *co, const char *str, unsigned count);
 -- 
 2.34.1
 
