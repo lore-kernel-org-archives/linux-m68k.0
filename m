@@ -2,30 +2,30 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2B9DEDEC61
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 Sep 2023 14:08:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EB4EEDEC65
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 Sep 2023 14:08:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241305AbjIMOJA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        id S241308AbjIMOJA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
         Wed, 13 Sep 2023 10:09:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52876 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241258AbjIMOI4 (ORCPT
+        with ESMTP id S241262AbjIMOI4 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Wed, 13 Sep 2023 10:08:56 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 581111BD7
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 730BD1BDC
         for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Sep 2023 07:08:50 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:f674:9611:cd05:f25a])
-        by baptiste.telenet-ops.be with bizsmtp
-        id lS8n2A0043fvA4V01S8nqD; Wed, 13 Sep 2023 16:08:48 +0200
+        by xavier.telenet-ops.be with bizsmtp
+        id lS8n2A0023fvA4V01S8n2c; Wed, 13 Sep 2023 16:08:48 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qgQXd-003crw-KA;
-        Wed, 13 Sep 2023 16:08:47 +0200
+        id 1qgQXd-003crh-H7;
+        Wed, 13 Sep 2023 16:08:46 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qgQXu-00FV4d-Vg;
+        id 1qgQXu-00FV4I-SY;
         Wed, 13 Sep 2023 16:08:46 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
@@ -38,9 +38,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 16/52] m68k: amiga: pcmcia: Replace set but not used variable by READ_ONCE()
-Date:   Wed, 13 Sep 2023 16:08:06 +0200
-Message-Id: <1436fa6b329c2212aaf020055afbb97e64b6f039.1694613528.git.geert@linux-m68k.org>
+Subject: [PATCH v2 12/52] m68k: mm: Move paging_init() to common <asm/pgtable.h>
+Date:   Wed, 13 Sep 2023 16:08:02 +0200
+Message-Id: <1b03fde54f205e972e19959b8e335022205d538c.1694613528.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694613528.git.geert@linux-m68k.org>
 References: <cover.1694613528.git.geert@linux-m68k.org>
@@ -53,12 +53,15 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 When building with W=1:
 
-    arch/m68k/amiga/pcmcia.c: In function ‘pcmcia_reset’:
-    arch/m68k/amiga/pcmcia.c:29:23: warning: variable ‘b’ set but not used [-Wunused-but-set-variable]
-       29 |         unsigned char b;
-	  |                       ^
+    arch/m68k/mm/motorola.c:414:13: warning: no previous prototype for ‘paging_init’ [-Wmissing-prototypes]
+      414 | void __init paging_init(void)
+	  |             ^~~~~~~~~~~
+    arch/m68k/mm/sun3mmu.c:36:13: warning: no previous prototype for ‘paging_init’ [-Wmissing-prototypes]
+       36 | void __init paging_init(void)
+	  |             ^~~~~~~~~~~
 
-Fix this by using READ_ONCE(), and removing the variable.
+Fix this by consolidating the multiple prototypes into the common
+<asm/pgtable.h>.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Arnd Bergmann <arnd@arndb.de>
@@ -66,26 +69,56 @@ Acked-by: Arnd Bergmann <arnd@arndb.de>
 v2:
   - Add Acked-by.
 ---
- arch/m68k/amiga/pcmcia.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/m68k/include/asm/pgtable.h    | 9 +++++++++
+ arch/m68k/include/asm/pgtable_no.h | 1 -
+ arch/m68k/kernel/setup_mm.c        | 2 --
+ 3 files changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/arch/m68k/amiga/pcmcia.c b/arch/m68k/amiga/pcmcia.c
-index 7106f0c3639bc105..63cce6b590df4dcb 100644
---- a/arch/m68k/amiga/pcmcia.c
-+++ b/arch/m68k/amiga/pcmcia.c
-@@ -26,11 +26,10 @@ static unsigned char cfg_byte = GAYLE_CFG_0V|GAYLE_CFG_150NS;
- void pcmcia_reset(void)
+diff --git a/arch/m68k/include/asm/pgtable.h b/arch/m68k/include/asm/pgtable.h
+index ad15d655a9bfb3b5..27525c6a12fd0c7f 100644
+--- a/arch/m68k/include/asm/pgtable.h
++++ b/arch/m68k/include/asm/pgtable.h
+@@ -1,6 +1,15 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __M68K_PGTABLE_H
++#define __M68K_PGTABLE_H
++
+ #ifdef __uClinux__
+ #include <asm/pgtable_no.h>
+ #else
+ #include <asm/pgtable_mm.h>
+ #endif
++
++#ifndef __ASSEMBLY__
++extern void paging_init(void);
++#endif
++
++#endif /* __M68K_PGTABLE_H */
+diff --git a/arch/m68k/include/asm/pgtable_no.h b/arch/m68k/include/asm/pgtable_no.h
+index fc044df52b96c149..1a86c15b9008f03d 100644
+--- a/arch/m68k/include/asm/pgtable_no.h
++++ b/arch/m68k/include/asm/pgtable_no.h
+@@ -28,7 +28,6 @@
+ #define PAGE_READONLY	__pgprot(0)
+ #define PAGE_KERNEL	__pgprot(0)
+ 
+-extern void paging_init(void);
+ #define swapper_pg_dir ((pgd_t *) 0)
+ 
+ /*
+diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+index 6f1ae01f322cf231..10310b04f77d8d79 100644
+--- a/arch/m68k/kernel/setup_mm.c
++++ b/arch/m68k/kernel/setup_mm.c
+@@ -107,8 +107,6 @@ EXPORT_SYMBOL(isa_sex);
+ 
+ #define MASK_256K 0xfffc0000
+ 
+-extern void paging_init(void);
+-
+ static void __init m68k_parse_bootinfo(const struct bi_record *record)
  {
- 	unsigned long reset_start_time = jiffies;
--	unsigned char b;
- 
- 	gayle_reset = 0x00;
- 	while (time_before(jiffies, reset_start_time + 1*HZ/100));
--	b = gayle_reset;
-+	READ_ONCE(gayle_reset);
- }
- EXPORT_SYMBOL(pcmcia_reset);
- 
+ 	const struct bi_record *first_record = record;
 -- 
 2.34.1
 
