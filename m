@@ -2,30 +2,30 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25645EDEC5E
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 Sep 2023 14:10:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB2B6EDEC5A
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 Sep 2023 14:10:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241371AbjIMOKO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        id S241543AbjIMOKO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
         Wed, 13 Sep 2023 10:10:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53002 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241376AbjIMOJW (ORCPT
+        with ESMTP id S241371AbjIMOJW (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Wed, 13 Sep 2023 10:09:22 -0400
 Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F1F1BD3
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B721BD1
         for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Sep 2023 07:08:52 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:f674:9611:cd05:f25a])
         by laurent.telenet-ops.be with bizsmtp
-        id lS8n2A00D3fvA4V01S8nmG; Wed, 13 Sep 2023 16:08:48 +0200
+        id lS8n2A0073fvA4V01S8nmD; Wed, 13 Sep 2023 16:08:48 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qgQXe-003csx-3N;
+        id 1qgQXd-003csL-PL;
         Wed, 13 Sep 2023 16:08:47 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qgQXv-00FV5w-Ej;
+        id 1qgQXv-00FV57-44;
         Wed, 13 Sep 2023 16:08:47 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
@@ -38,9 +38,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 32/52] m68k: mac: Add and use "mac.h"
-Date:   Wed, 13 Sep 2023 16:08:22 +0200
-Message-Id: <d1fe0014a9e472a305333de4fa17f335c93d73af.1694613528.git.geert@linux-m68k.org>
+Subject: [PATCH v2 22/52] m68k: atari: Add and use "atari.h"
+Date:   Wed, 13 Sep 2023 16:08:12 +0200
+Message-Id: <336e4a478ccbfd7e3e91cdbd27636947587a23a6.1694613528.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694613528.git.geert@linux-m68k.org>
 References: <cover.1694613528.git.geert@linux-m68k.org>
@@ -53,33 +53,27 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 When building with W=1:
 
-    arch/m68k/mac/iop.c:235:13: warning: no previous prototype for ‘iop_init’ [-Wmissing-prototypes]
-      235 | void __init iop_init(void)
-	  |             ^~~~~~~~
-    arch/m68k/mac/via.c:112:13: warning: no previous prototype for ‘via_init’ [-Wmissing-prototypes]
-      111 | void __init via_init(void)
-	  |             ^~~~~~~~
-    arch/m68k/mac/via.c:623:13: warning: no previous prototype for ‘via_init_clock’ [-Wmissing-prototypes]
-      593 | void __init via_init_clock(void)
+    arch/m68k/atari/time.c:59:1: warning: no previous prototype for ‘atari_sched_init’ [-Wmissing-prototypes]
+       59 | atari_sched_init(void)
+	  | ^~~~~~~~~~~~~~~~
+    arch/m68k/atari/time.c:140:5: warning: no previous prototype for ‘atari_mste_hwclk’ [-Wmissing-prototypes]
+      140 | int atari_mste_hwclk( int op, struct rtc_time *t )
+	  |     ^~~~~~~~~~~~~~~~
+    arch/m68k/atari/time.c:199:5: warning: no previous prototype for ‘atari_tt_hwclk’ [-Wmissing-prototypes]
+      199 | int atari_tt_hwclk( int op, struct rtc_time *t )
+	  |     ^~~~~~~~~~~~~~
+    arch/m68k/atari/ataints.c:267:13: warning: no previous prototype for ‘atari_init_IRQ’ [-Wmissing-prototypes]
+      267 | void __init atari_init_IRQ(void)
 	  |             ^~~~~~~~~~~~~~
-    arch/m68k/mac/oss.c:37:13: warning: no previous prototype for ‘oss_init’ [-Wmissing-prototypes]
-       37 | void __init oss_init(void)
-	  |             ^~~~~~~~
-    arch/m68k/mac/psc.c:76:13: warning: no previous prototype for ‘psc_init’ [-Wmissing-prototypes]
-       76 | void __init psc_init(void)
-	  |             ^~~~~~~~
-    arch/m68k/mac/baboon.c:25:13: warning: no previous prototype for ‘baboon_init’ [-Wmissing-prototypes]
-       25 | void __init baboon_init(void)
-	  |             ^~~~~~~~~~~
-    arch/m68k/mac/macboing.c:155:6: warning: no previous prototype for ‘mac_mksound’ [-Wmissing-prototypes]
-      155 | void mac_mksound( unsigned int freq, unsigned int length )
-	  |      ^~~~~~~~~~~
-    arch/m68k/mac/misc.c:608:5: warning: no previous prototype for ‘mac_hwclk’ [-Wmissing-prototypes]
-      608 | int mac_hwclk(int op, struct rtc_time *t)
-	  |     ^~~~~~~~~
+    arch/m68k/atari/atasound.c:36:6: warning: no previous prototype for ‘atari_microwire_cmd’ [-Wmissing-prototypes]
+       36 | void atari_microwire_cmd (int cmd)
+	  |      ^~~~~~~~~~~~~~~~~~~
+    arch/m68k/atari/atasound.c:53:6: warning: no previous prototype for ‘atari_mksound’ [-Wmissing-prototypes]
+       53 | void atari_mksound (unsigned int hz, unsigned int ticks)
+	  |      ^~~~~~~~~~~~~
 
-Fix this by introducing a new header file "mac.h" for holding the
-prototypes of functions implemented in arch/m68k/mac/.
+Fix this by introducing a new header file "atari.h" for holding the
+prototypes of functions implemented in arch/m68k/atari/.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Arnd Bergmann <arnd@arndb.de>
@@ -87,169 +81,114 @@ Acked-by: Arnd Bergmann <arnd@arndb.de>
 v2:
   - Add Acked-by.
 ---
- arch/m68k/mac/baboon.c   |  2 ++
- arch/m68k/mac/config.c   | 12 ++----------
- arch/m68k/mac/iop.c      |  2 ++
- arch/m68k/mac/mac.h      | 25 +++++++++++++++++++++++++
- arch/m68k/mac/macboing.c |  2 ++
- arch/m68k/mac/misc.c     |  2 ++
- arch/m68k/mac/oss.c      |  2 ++
- arch/m68k/mac/psc.c      |  2 ++
- arch/m68k/mac/via.c      |  2 ++
- 9 files changed, 41 insertions(+), 10 deletions(-)
- create mode 100644 arch/m68k/mac/mac.h
+ arch/m68k/atari/ataints.c  |  3 +--
+ arch/m68k/atari/atari.h    | 15 +++++++++++++++
+ arch/m68k/atari/atasound.c |  1 +
+ arch/m68k/atari/config.c   | 11 ++---------
+ arch/m68k/atari/time.c     |  2 ++
+ 5 files changed, 21 insertions(+), 11 deletions(-)
+ create mode 100644 arch/m68k/atari/atari.h
 
-diff --git a/arch/m68k/mac/baboon.c b/arch/m68k/mac/baboon.c
-index a7d280220662c747..5c97a7058bcdee2e 100644
---- a/arch/m68k/mac/baboon.c
-+++ b/arch/m68k/mac/baboon.c
-@@ -15,6 +15,8 @@
- #include <asm/macints.h>
- #include <asm/mac_baboon.h>
+diff --git a/arch/m68k/atari/ataints.c b/arch/m68k/atari/ataints.c
+index 56f02ea2c248d844..23256434191c39af 100644
+--- a/arch/m68k/atari/ataints.c
++++ b/arch/m68k/atari/ataints.c
+@@ -52,6 +52,7 @@
+ #include <asm/entry.h>
+ #include <asm/io.h>
  
-+#include "mac.h"
-+
- int baboon_present;
- static volatile struct baboon *baboon;
++#include "atari.h"
  
-diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-index d56affefd5cabeb5..e324410ef239c09f 100644
---- a/arch/m68k/mac/config.c
-+++ b/arch/m68k/mac/config.c
-@@ -50,22 +50,14 @@
- #include <asm/mac_psc.h>
- #include <asm/config.h>
+ /*
+  * Atari interrupt handling scheme:
+@@ -81,8 +82,6 @@ __ALIGN_STR "\n\t"
+ 	"orw	#0x200,%sp@\n\t"	/* set saved ipl to 2 */
+ 	"rte");
  
-+#include "mac.h"
-+
- /* Mac bootinfo struct */
- struct mac_booter_data mac_bi_data;
- 
- /* The phys. video addr. - might be bogus on some machines */
- static unsigned long mac_orig_videoaddr;
- 
--extern int mac_hwclk(int, struct rtc_time *);
--extern void iop_init(void);
--extern void via_init(void);
--extern void via_init_clock(void);
--extern void oss_init(void);
--extern void psc_init(void);
--extern void baboon_init(void);
+-extern void atari_microwire_cmd(int cmd);
 -
--extern void mac_mksound(unsigned int, unsigned int);
--
- static void mac_get_model(char *str);
- static void mac_identify(void);
- static void mac_report_hardware(void);
-diff --git a/arch/m68k/mac/iop.c b/arch/m68k/mac/iop.c
-index 010b3b5ae8e8584a..a92740d530ac4fbe 100644
---- a/arch/m68k/mac/iop.c
-+++ b/arch/m68k/mac/iop.c
-@@ -119,6 +119,8 @@
- #include <asm/macints.h>
- #include <asm/mac_iop.h>
- 
-+#include "mac.h"
-+
- #ifdef DEBUG
- #define iop_pr_debug(fmt, ...) \
- 	printk(KERN_DEBUG "%s: " fmt, __func__, ##__VA_ARGS__)
-diff --git a/arch/m68k/mac/mac.h b/arch/m68k/mac/mac.h
+ static unsigned int atari_irq_startup(struct irq_data *data)
+ {
+ 	unsigned int irq = data->irq;
+diff --git a/arch/m68k/atari/atari.h b/arch/m68k/atari/atari.h
 new file mode 100644
-index 0000000000000000..d3d142cea3b4b911
+index 0000000000000000..494a03ddac3d16ae
 --- /dev/null
-+++ b/arch/m68k/mac/mac.h
-@@ -0,0 +1,25 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
++++ b/arch/m68k/atari/atari.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
 +
 +struct rtc_time;
 +
-+/* baboon.c */
-+void baboon_init(void);
++/* ataints.c */
++void atari_init_IRQ(void);
 +
-+/* iop.c */
-+void iop_init(void);
++/* atasound.c */
++void atari_microwire_cmd(int cmd);
++void atari_mksound(unsigned int hz, unsigned int ticks);
 +
-+/* misc.c */
-+int mac_hwclk(int op, struct rtc_time *t);
-+
-+/* macboing.c */
-+void mac_mksound(unsigned int freq, unsigned int length);
-+
-+/* oss.c */
-+void oss_init(void);
-+
-+/* psc.c */
-+void psc_init(void);
-+
-+/* via.c */
-+void via_init(void);
-+void via_init_clock(void);
-diff --git a/arch/m68k/mac/macboing.c b/arch/m68k/mac/macboing.c
-index 76431241347682fc..faea2265a540192d 100644
---- a/arch/m68k/mac/macboing.c
-+++ b/arch/m68k/mac/macboing.c
-@@ -16,6 +16,8 @@
- #include <asm/macintosh.h>
- #include <asm/mac_asc.h>
++/* time.c */
++void atari_sched_init(void);
++int atari_mste_hwclk(int op, struct rtc_time *t);
++int atari_tt_hwclk(int op, struct rtc_time *t);
+diff --git a/arch/m68k/atari/atasound.c b/arch/m68k/atari/atasound.c
+index a8724d998c39fcfa..c38ef0e6078e7260 100644
+--- a/arch/m68k/atari/atasound.c
++++ b/arch/m68k/atari/atasound.c
+@@ -28,6 +28,7 @@
+ #include <asm/irq.h>
+ #include <asm/atariints.h>
  
-+#include "mac.h"
-+
- static int mac_asc_inited;
++#include "atari.h"
+ 
  /*
-  * dumb triangular wave table
-diff --git a/arch/m68k/mac/misc.c b/arch/m68k/mac/misc.c
-index 65107abc8848232c..4c8f8cbfa05f3404 100644
---- a/arch/m68k/mac/misc.c
-+++ b/arch/m68k/mac/misc.c
-@@ -25,6 +25,8 @@
+  * stuff from the old atasound.c
+diff --git a/arch/m68k/atari/config.c b/arch/m68k/atari/config.c
+index b4fe4273ad912ebe..b48a0606a00068b9 100644
+--- a/arch/m68k/atari/config.c
++++ b/arch/m68k/atari/config.c
+@@ -48,6 +48,8 @@
+ #include <asm/io.h>
+ #include <asm/config.h>
  
++#include "atari.h"
++
+ u_long atari_mch_cookie;
+ EXPORT_SYMBOL(atari_mch_cookie);
+ 
+@@ -69,19 +71,10 @@ int atari_rtc_year_offset;
+ static void atari_reset(void);
+ static void atari_get_model(char *model);
+ static void atari_get_hardware_list(struct seq_file *m);
+-
+-/* atari specific irq functions */
+-extern void atari_init_IRQ (void);
+-extern void atari_mksound(unsigned int count, unsigned int ticks);
+ #ifdef CONFIG_HEARTBEAT
+ static void atari_heartbeat(int on);
+ #endif
+ 
+-/* atari specific timer functions (in time.c) */
+-extern void atari_sched_init(void);
+-extern int atari_mste_hwclk (int, struct rtc_time *);
+-extern int atari_tt_hwclk (int, struct rtc_time *);
+-
+ /* ++roman: This is a more elaborate test for an SCC chip, since the plain
+  * Medusa board generates DTACK at the SCC's standard addresses, but a SCC
+  * board in the Medusa is possible. Also, the addresses where the ST_ESCC
+diff --git a/arch/m68k/atari/time.c b/arch/m68k/atari/time.c
+index 7e44d0e9d0f8a902..3453c6dc6b41d3c9 100644
+--- a/arch/m68k/atari/time.c
++++ b/arch/m68k/atari/time.c
+@@ -23,6 +23,8 @@
+ #include <asm/atariints.h>
  #include <asm/machdep.h>
  
-+#include "mac.h"
++#include "atari.h"
 +
- /*
-  * Offset between Unix time (1970-based) and Mac time (1904-based). Cuda and PMU
-  * times wrap in 2040. If we need to handle later times, the read_time functions
-diff --git a/arch/m68k/mac/oss.c b/arch/m68k/mac/oss.c
-index 921e6c092f2c6626..1641607f300d981c 100644
---- a/arch/m68k/mac/oss.c
-+++ b/arch/m68k/mac/oss.c
-@@ -27,6 +27,8 @@
- #include <asm/mac_via.h>
- #include <asm/mac_oss.h>
+ DEFINE_SPINLOCK(rtc_lock);
+ EXPORT_SYMBOL_GPL(rtc_lock);
  
-+#include "mac.h"
-+
- int oss_present;
- volatile struct mac_oss *oss;
- 
-diff --git a/arch/m68k/mac/psc.c b/arch/m68k/mac/psc.c
-index 0d0965b19c09b439..b4183cf66efef7f5 100644
---- a/arch/m68k/mac/psc.c
-+++ b/arch/m68k/mac/psc.c
-@@ -26,6 +26,8 @@
- #include <asm/macints.h>
- #include <asm/mac_psc.h>
- 
-+#include "mac.h"
-+
- #define DEBUG_PSC
- 
- volatile __u8 *psc;
-diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
-index 3d11d6219cdd56da..01e6b0e37f8dd0e8 100644
---- a/arch/m68k/mac/via.c
-+++ b/arch/m68k/mac/via.c
-@@ -38,6 +38,8 @@
- #include <asm/mac_psc.h>
- #include <asm/mac_oss.h>
- 
-+#include "mac.h"
-+
- volatile __u8 *via1, *via2;
- int rbv_present;
- int via_alt_mapping;
 -- 
 2.34.1
 
