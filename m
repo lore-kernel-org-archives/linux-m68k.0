@@ -2,33 +2,33 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23B0FEDEC5C
-	for <linux-m68k@archiver.kernel.org>; Wed, 13 Sep 2023 14:09:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5640EDEC5C
+	for <linux-m68k@archiver.kernel.org>; Wed, 13 Sep 2023 14:09:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241460AbjIMOJu (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 13 Sep 2023 10:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52944 "EHLO
+        id S241474AbjIMOJz (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 13 Sep 2023 10:09:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241333AbjIMOJN (ORCPT
+        with ESMTP id S241340AbjIMOJO (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 13 Sep 2023 10:09:13 -0400
-Received: from weierstrass.telenet-ops.be (weierstrass.telenet-ops.be [195.130.137.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E672E1BF2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Sep 2023 07:08:51 -0700 (PDT)
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by weierstrass.telenet-ops.be (Postfix) with ESMTPS id 4Rm2PG2pqVz4x0m0
+        Wed, 13 Sep 2023 10:09:14 -0400
+Received: from cantor.telenet-ops.be (cantor.telenet-ops.be [IPv6:2a02:1800:120:4::f00:10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86EB11FC2
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Sep 2023 07:08:53 -0700 (PDT)
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by cantor.telenet-ops.be (Postfix) with ESMTPS id 4Rm2PG1HvWz4x7b8
         for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Sep 2023 16:08:50 +0200 (CEST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:f674:9611:cd05:f25a])
-        by xavier.telenet-ops.be with bizsmtp
-        id lS8p2A0063fvA4V01S8p3f; Wed, 13 Sep 2023 16:08:50 +0200
+Received: from ramsan.of.borg ([84.195.187.55])
+        by baptiste.telenet-ops.be with bizsmtp
+        id lS8o2A00x1C8whw01S8orG; Wed, 13 Sep 2023 16:08:50 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qgQXe-003ctO-Ag;
+        id 1qgQXe-003css-1g;
         Wed, 13 Sep 2023 16:08:47 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qgQXv-00FV6Q-LK;
+        id 1qgQXv-00FV5k-CF;
         Wed, 13 Sep 2023 16:08:47 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
@@ -41,9 +41,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 38/52] m68k: sun3: Improve Sun3/3x DVMA abstraction in <asm/dvma.h>
-Date:   Wed, 13 Sep 2023 16:08:28 +0200
-Message-Id: <ec93ed1b28b75674ae9a0b42de083a9bb140f0b3.1694613528.git.geert@linux-m68k.org>
+Subject: [PATCH v2 30/52] m68k: mac: Remove unused yday in unmktime()
+Date:   Wed, 13 Sep 2023 16:08:20 +0200
+Message-Id: <b25c42eac8beb0862f1b2041e817cb421ec66b4e.1694613528.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694613528.git.geert@linux-m68k.org>
 References: <cover.1694613528.git.geert@linux-m68k.org>
@@ -56,17 +56,12 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 
 When building with W=1:
 
-    arch/m68k/sun3/dvma.c:65:13: warning: no previous prototype for ‘sun3_dvma_init’ [-Wmissing-prototypes]
-       65 | void __init sun3_dvma_init(void)
-	  |             ^~~~~~~~~~~~~~
+    arch/m68k/mac/misc.c: In function ‘unmktime’:
+    arch/m68k/mac/misc.c:557:33: warning: variable ‘yday’ set but not used [-Wunused-but-set-variable]
+      557 |         int days, rem, y, wday, yday;
+	  |                                 ^~~~
 
-    arch/m68k/sun3x/dvma.c:178:6: warning: no previous prototype for ‘dvma_unmap_iommu’ [-Wmissing-prototypes]
-      179 | void dvma_unmap_iommu(unsigned long baddr, int len)
-	  |      ^~~~~~~~~~~~~~~~
-
-Fix this by moving the declarations for sun3_dvma_init() and
-dvma_unmap_iommu() to <asm/dvma.h>.  Avoid #ifdefs in callers by
-providing dummy static inline functions.
+Fix this by removing the unused variable and assignment.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Arnd Bergmann <arnd@arndb.de>
@@ -74,78 +69,30 @@ Acked-by: Arnd Bergmann <arnd@arndb.de>
 v2:
   - Add Acked-by.
 ---
- arch/m68k/include/asm/dvma.h |  8 +++++++-
- arch/m68k/sun3/sun3dvma.c    | 15 ---------------
- 2 files changed, 7 insertions(+), 16 deletions(-)
+ arch/m68k/mac/misc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/m68k/include/asm/dvma.h b/arch/m68k/include/asm/dvma.h
-index f609ec1de36d0d2c..d1d66d04844d3e1c 100644
---- a/arch/m68k/include/asm/dvma.h
-+++ b/arch/m68k/include/asm/dvma.h
-@@ -58,12 +58,16 @@ extern void dvma_free(void *vaddr);
- #define dvma_vtob(x) dvma_vtop(x)
- #define dvma_btov(x) dvma_ptov(x)
+diff --git a/arch/m68k/mac/misc.c b/arch/m68k/mac/misc.c
+index c7cb29f0ff016360..65107abc8848232c 100644
+--- a/arch/m68k/mac/misc.c
++++ b/arch/m68k/mac/misc.c
+@@ -554,7 +554,7 @@ static void unmktime(time64_t time, long offset,
+ 		/* Leap years.  */
+ 		{ 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366 }
+ 	};
+-	int days, rem, y, wday, yday;
++	int days, rem, y, wday;
+ 	const unsigned short int *ip;
  
-+void sun3_dvma_init(void);
-+
- static inline int dvma_map_cpu(unsigned long kaddr, unsigned long vaddr,
- 			       int len)
- {
- 	return 0;
- }
- 
-+static inline void dvma_unmap_iommu(unsigned long baddr, int len) { }
-+
- #else /* Sun3x */
- 
- /* sun3x dvma page support */
-@@ -78,9 +82,11 @@ static inline int dvma_map_cpu(unsigned long kaddr, unsigned long vaddr,
- #define dvma_vtob(x) ((unsigned long)(x) & 0x00ffffff)
- #define dvma_btov(x) ((unsigned long)(x) | 0xff000000)
- 
--extern int dvma_map_cpu(unsigned long kaddr, unsigned long vaddr, int len);
-+static inline void sun3_dvma_init(void) { }
- 
-+int dvma_map_cpu(unsigned long kaddr, unsigned long vaddr, int len);
- 
-+void dvma_unmap_iommu(unsigned long baddr, int len);
- 
- /* everything below this line is specific to dma used for the onboard
-    ESP scsi on sun3x */
-diff --git a/arch/m68k/sun3/sun3dvma.c b/arch/m68k/sun3/sun3dvma.c
-index 4b560f4d3960c2b5..f66b2413209069f2 100644
---- a/arch/m68k/sun3/sun3dvma.c
-+++ b/arch/m68k/sun3/sun3dvma.c
-@@ -20,18 +20,6 @@
- 
- #undef DVMA_DEBUG
- 
--#ifdef CONFIG_SUN3X
--extern void dvma_unmap_iommu(unsigned long baddr, int len);
--#else
--static inline void dvma_unmap_iommu(unsigned long a, int b)
--{
--}
--#endif
--
--#ifdef CONFIG_SUN3
--extern void sun3_dvma_init(void);
--#endif
--
- static unsigned long *iommu_use;
- 
- #define dvma_index(baddr) ((baddr - DVMA_START) >> DVMA_PAGE_SHIFT)
-@@ -274,10 +262,7 @@ void __init dvma_init(void)
- 
- 	dvma_unmap_iommu(DVMA_START, DVMA_SIZE);
- 
--#ifdef CONFIG_SUN3
- 	sun3_dvma_init();
--#endif
--
- }
- 
- unsigned long dvma_map_align(unsigned long kaddr, int len, int align)
+ 	days = div_u64_rem(time, SECS_PER_DAY, &rem);
+@@ -592,7 +592,6 @@ static void unmktime(time64_t time, long offset,
+ 		y = yg;
+ 	}
+ 	*yearp = y - 1900;
+-	yday = days; /* day in the year.  Not currently used. */
+ 	ip = __mon_yday[__isleap(y)];
+ 	for (y = 11; days < (long int) ip[y]; --y)
+ 		continue;
 -- 
 2.34.1
 
