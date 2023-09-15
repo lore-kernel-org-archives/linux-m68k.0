@@ -2,128 +2,235 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3867DEEB581
-	for <linux-m68k@archiver.kernel.org>; Fri, 15 Sep 2023 03:24:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE30DEE643D
+	for <linux-m68k@archiver.kernel.org>; Fri, 15 Sep 2023 08:25:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231933AbjIODYK (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 14 Sep 2023 23:24:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48764 "EHLO
+        id S232859AbjIOIZo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 15 Sep 2023 04:25:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjIODYJ (ORCPT
+        with ESMTP id S232109AbjIOIZn (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 14 Sep 2023 23:24:09 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E9A1FCE
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 14 Sep 2023 20:24:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1694748242;
-        bh=6XG3B0FzXsmvZoKkkhm5wOJHB7Zd1TpS1JWjBGpTusE=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=PKpIyJXfdhJr2Sk2XiFpR9ouUJal5nD2tBGYvkTi+yQRsa9ZIvCgirZ5+6besrqBL
-         UlCTRNeIti/3HlXKC5s/hNh/zWDyp0CAj38ooZCtURDec0zV29n1q0vvHWP8LzC/8u
-         j+BMCh8sirKL/ZLOdFgRYAJwTicvGuLLCgCMve6s4NNE6G+YTeu3xI1X+6WSPiiUmJ
-         53dID1WgSubZVw/xkbEC18yiNd+dsH+sCiTIMfNZ4C0SAAbyPBEWD+PT1gDHirRJ7I
-         e1Oe/pJXxiN5V+sroGp3Ed6zutx8sxe3J/0iaG/Wx6C4lA/ghdRZcbu2waY0Piauup
-         ceLVj/+K8GSVw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rn0045DDWz4wxR;
-        Fri, 15 Sep 2023 13:23:48 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Sohil Mehta <sohil.mehta@intel.com>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Cc:     Sohil Mehta <sohil.mehta@intel.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Sergei Trofimovich <slyich@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rohan McLure <rmclure@linux.ibm.com>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Deepak Gupta <debug@rivosinc.com>, linux-alpha@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v2] arch: Reserve map_shadow_stack() syscall number for
- all architectures
-In-Reply-To: <20230914185804.2000497-1-sohil.mehta@intel.com>
-References: <20230914185804.2000497-1-sohil.mehta@intel.com>
-Date:   Fri, 15 Sep 2023 13:23:43 +1000
-Message-ID: <878r986rwg.fsf@mail.lhotse>
+        Fri, 15 Sep 2023 04:25:43 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B243AB5
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 15 Sep 2023 01:24:22 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:7135:da8b:ba1d:1a7c])
+        by michel.telenet-ops.be with bizsmtp
+        id m8QK2A00Y3q21w7068QKEm; Fri, 15 Sep 2023 10:24:20 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qh47M-003lDg-NX;
+        Fri, 15 Sep 2023 10:24:19 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qh47f-00GZTR-Mj;
+        Fri, 15 Sep 2023 10:24:19 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for v6.6 (take two)
+Date:   Fri, 15 Sep 2023 10:24:16 +0200
+Message-Id: <20230915082416.3949600-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Sohil Mehta <sohil.mehta@intel.com> writes:
-> commit c35559f94ebc ("x86/shstk: Introduce map_shadow_stack syscall")
-> recently added support for map_shadow_stack() but it is limited to x86
-> only for now. There is a possibility that other architectures (namely,
-> arm64 and RISC-V), that are implementing equivalent support for shadow
-> stacks, might need to add support for it.
->
-> Independent of that, reserving arch-specific syscall numbers in the
-> syscall tables of all architectures is good practice and would help
-> avoid future conflicts. map_shadow_stack() is marked as a conditional
-> syscall in sys_ni.c. Adding it to the syscall tables of other
-> architectures is harmless and would return ENOSYS when exercised.
->
-> Note, map_shadow_stack() was assigned #453 during the merge process
-> since #452 was taken by fchmodat2().
->
-> For Powerpc, map it to sys_ni_syscall() as is the norm for Powerpc
-> syscall tables.
+	Hi Linus,
 
-Mapping it to sys_map_shadow_stack() would work fine, but I'm happy with
-sys_ni_syscall as I don't see powerpc implementing map_shadow_stack()
-any time soon.
+The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
 
-cheers
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.6-tag2
+
+for you to fetch changes up to 010d358b9087748f403fd33c4cf34c27584871bf:
+
+  m68k: sun3/3x: Add and use "sun3.h" (2023-09-13 16:17:24 +0200)
+
+----------------------------------------------------------------
+m68k updates for v6.6 (take two)
+
+  - Miscellaneous esthetical improvements for the floating point
+    emulator,
+  - Miscellaneous fixes for W=1 builds.
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+Geert Uytterhoeven (58):
+      m68k: math-emu: Fix incorrect file reference in fp_log.c
+      m68k: math-emu: Sanitize include guards
+      m68k: math-emu: Make multi_arith.h self-contained
+      m68k: math-emu: Replace external declarations by header inclusion
+      m68k: math-emu: Reformat function and variable headers
+      m68k: math-emu: Add missing prototypes
+      m68k: kernel: Add missing asmlinkage to do_notify_resume()
+      m68k: kernel: Include <linux/cpu.h> for trap_init()
+      m68k: kernel: Make bad_super_trap() static
+      m68k: kernel: Add and use <asm/syscalls.h>
+      m68k: kernel: Add and use "ints.h"
+      m68k: kernel: Add and use "process.h"
+      m68k: kernel: Add and use "ptrace.h"
+      m68k: kernel: Add and use "signal.h"
+      m68k: kernel: Add and use "traps.h"
+      m68k: kernel: Add and use "vectors.h"
+      m68k: mm: Include <asm/hwtest.h> for hwreg_()
+      m68k: mm: Move paging_init() to common <asm/pgtable.h>
+      m68k: mm: Add and use "fault.h"
+      m68k: emu: Remove unused vsnprintf() return value in nfprint()
+      m68k: emu: Mark version[] __maybe_unused
+      m68k: amiga: pcmcia: Replace set but not used variable by READ_ONCE()
+      m68k: amiga: Add and use "amiga.h"
+      m68k: atari: Document data parameter of stdma_try_lock()
+      m68k: atari: Make ikbd_reset() static
+      m68k: atari: Make atari_platform_init() static
+      m68k: atari: Make atari_stram_map_pages() static
+      m68k: atari: Add and use "atari.h"
+      m68k: apollo: Remove unused debug console functions
+      m68k: apollo: Make local reset, serial, and irq functions static
+      m68k: apollo: Replace set but not used variable by READ_ONCE()
+      m68k: apollo: Add and use "apollo.h"
+      m68k: bvme6000: Make bvme6000_abort_int() static
+      m68k: hp300: Include "time.h" for hp300_sched_init()
+      m68k: mac: Remove unused sine_data[]
+      m68k: mac: Remove unused yday in unmktime()
+      m68k: mac: Make mac_platform_init() static
+      m68k: mac: Add and use "mac.h"
+      m68k: mvme147: Make mvme147_init_IRQ() static
+      m68k: mvme16x: Remove unused sink in mvme16x_cons_write()
+      m68k: mvme16x: Add and use "mvme16x.h"
+      m68k: q40: Add and use "q40.h"
+      m68k: sun3/3x: Include <asm/config.h> for config_sun3*()
+      m68k: sun3: Improve Sun3/3x DVMA abstraction in <asm/dvma.h>
+      m68k: sun3: Fix context restore in flush_tlb_range()
+      m68k: sun3: Fix signature of sun3_get_model()
+      m68k: sun3: Add missing asmlinkage to sun3_init()
+      m68k: sun3: Remove unused orig_baddr in free_baddr()
+      m68k: sun3: Remove unused start_page in sun3_bootmem_alloc()
+      m68k: sun3: Remove unused vsprintf() return value in prom_printf()
+      m68k: sun3: Annotate prom_printf() with __printf()
+      m68k: sun3: Make print_pte() static
+      m68k: sun3: Make sun3_platform_init() static
+      m68k: sun3x: Fix signature of sun3_leds()
+      m68k: sun3x: Do not mark dvma_map_iommu() inline
+      m68k: sun3x: Make sun3x_halt() static
+      m68k: sun3x: Make dvma_print() static
+      m68k: sun3/3x: Add and use "sun3.h"
+
+ arch/m68k/amiga/amiga.h            |  5 ++++
+ arch/m68k/amiga/amisound.c         |  2 ++
+ arch/m68k/amiga/config.c           |  4 +--
+ arch/m68k/amiga/pcmcia.c           |  3 +--
+ arch/m68k/apollo/apollo.h          |  4 +++
+ arch/m68k/apollo/config.c          | 45 +++++++------------------------
+ arch/m68k/apollo/dn_ints.c         |  8 +++---
+ arch/m68k/atari/ataints.c          |  3 +--
+ arch/m68k/atari/atakeyb.c          |  2 +-
+ arch/m68k/atari/atari.h            | 15 +++++++++++
+ arch/m68k/atari/atasound.c         |  1 +
+ arch/m68k/atari/config.c           | 13 +++------
+ arch/m68k/atari/stdma.c            |  1 +
+ arch/m68k/atari/stram.c            |  2 +-
+ arch/m68k/atari/time.c             |  2 ++
+ arch/m68k/bvme6000/config.c        |  2 +-
+ arch/m68k/emu/natfeat.c            |  3 +--
+ arch/m68k/emu/nfeth.c              |  2 +-
+ arch/m68k/hp300/time.c             |  2 ++
+ arch/m68k/include/asm/dvma.h       |  8 +++++-
+ arch/m68k/include/asm/oplib.h      |  4 ++-
+ arch/m68k/include/asm/pgtable.h    |  9 +++++++
+ arch/m68k/include/asm/pgtable_no.h |  1 -
+ arch/m68k/include/asm/syscalls.h   | 19 ++++++++++++++
+ arch/m68k/include/asm/tlbflush.h   |  1 +
+ arch/m68k/kernel/early_printk.c    |  4 +--
+ arch/m68k/kernel/ints.c            |  2 ++
+ arch/m68k/kernel/ints.h            |  7 +++++
+ arch/m68k/kernel/process.c         |  1 +
+ arch/m68k/kernel/process.h         |  8 ++++++
+ arch/m68k/kernel/ptrace.c          |  2 ++
+ arch/m68k/kernel/ptrace.h          |  6 +++++
+ arch/m68k/kernel/setup_mm.c        |  2 --
+ arch/m68k/kernel/signal.c          |  4 ++-
+ arch/m68k/kernel/signal.h          |  7 +++++
+ arch/m68k/kernel/sys_m68k.c        |  4 +--
+ arch/m68k/kernel/traps.c           | 11 ++++----
+ arch/m68k/kernel/traps.h           | 10 +++++++
+ arch/m68k/kernel/vectors.c         |  3 +++
+ arch/m68k/kernel/vectors.h         |  3 +++
+ arch/m68k/mac/baboon.c             |  2 ++
+ arch/m68k/mac/config.c             | 14 +++-------
+ arch/m68k/mac/iop.c                |  2 ++
+ arch/m68k/mac/mac.h                | 25 ++++++++++++++++++
+ arch/m68k/mac/macboing.c           | 11 ++------
+ arch/m68k/mac/misc.c               |  5 ++--
+ arch/m68k/mac/oss.c                |  2 ++
+ arch/m68k/mac/psc.c                |  2 ++
+ arch/m68k/mac/via.c                |  2 ++
+ arch/m68k/math-emu/fp_arith.c      | 49 ++++++++++++----------------------
+ arch/m68k/math-emu/fp_arith.h      | 49 ++++++++++++++--------------------
+ arch/m68k/math-emu/fp_log.c        | 46 ++++++++++++--------------------
+ arch/m68k/math-emu/fp_log.h        | 44 +++++++++++++++++++++++++++++++
+ arch/m68k/math-emu/fp_trig.c       | 54 +++++++++++++-------------------------
+ arch/m68k/math-emu/fp_trig.h       | 25 +++++++++++++++---
+ arch/m68k/math-emu/multi_arith.h   |  8 +++---
+ arch/m68k/mm/fault.c               |  2 ++
+ arch/m68k/mm/fault.h               |  7 +++++
+ arch/m68k/mm/hwtest.c              |  2 ++
+ arch/m68k/mm/sun3kmap.c            |  6 ++---
+ arch/m68k/mm/sun3mmu.c             |  2 +-
+ arch/m68k/mvme147/config.c         |  2 +-
+ arch/m68k/mvme16x/config.c         |  5 ++--
+ arch/m68k/mvme16x/mvme16x.h        |  6 +++++
+ arch/m68k/q40/config.c             |  6 ++---
+ arch/m68k/q40/q40.h                |  6 +++++
+ arch/m68k/q40/q40ints.c            |  2 ++
+ arch/m68k/sun3/config.c            | 13 +++++----
+ arch/m68k/sun3/idprom.c            |  4 ++-
+ arch/m68k/sun3/intersil.c          |  1 +
+ arch/m68k/sun3/leds.c              |  2 ++
+ arch/m68k/sun3/mmu_emu.c           |  3 ++-
+ arch/m68k/sun3/prom/printf.c       |  5 ++--
+ arch/m68k/sun3/sun3.h              | 22 ++++++++++++++++
+ arch/m68k/sun3/sun3dvma.c          | 17 ------------
+ arch/m68k/sun3/sun3ints.c          |  2 +-
+ arch/m68k/sun3x/config.c           |  6 ++---
+ arch/m68k/sun3x/dvma.c             |  5 ++--
+ arch/m68k/sun3x/prom.c             |  2 +-
+ 79 files changed, 422 insertions(+), 281 deletions(-)
+ create mode 100644 arch/m68k/amiga/amiga.h
+ create mode 100644 arch/m68k/apollo/apollo.h
+ create mode 100644 arch/m68k/atari/atari.h
+ create mode 100644 arch/m68k/include/asm/syscalls.h
+ create mode 100644 arch/m68k/kernel/ints.h
+ create mode 100644 arch/m68k/kernel/process.h
+ create mode 100644 arch/m68k/kernel/ptrace.h
+ create mode 100644 arch/m68k/kernel/signal.h
+ create mode 100644 arch/m68k/kernel/traps.h
+ create mode 100644 arch/m68k/kernel/vectors.h
+ create mode 100644 arch/m68k/mac/mac.h
+ create mode 100644 arch/m68k/math-emu/fp_log.h
+ create mode 100644 arch/m68k/mm/fault.h
+ create mode 100644 arch/m68k/mvme16x/mvme16x.h
+ create mode 100644 arch/m68k/q40/q40.h
+ create mode 100644 arch/m68k/sun3/sun3.h
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
