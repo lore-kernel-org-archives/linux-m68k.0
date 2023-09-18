@@ -2,257 +2,107 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6529CD13DE
-	for <linux-m68k@archiver.kernel.org>; Mon, 18 Sep 2023 10:15:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D74B5CD37B0
+	for <linux-m68k@archiver.kernel.org>; Mon, 18 Sep 2023 17:56:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239508AbjIRKPQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 18 Sep 2023 06:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32856 "EHLO
+        id S229454AbjIRR4a (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 18 Sep 2023 13:56:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239517AbjIRKPC (ORCPT
+        with ESMTP id S229561AbjIRR4a (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 18 Sep 2023 06:15:02 -0400
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96B3EE7
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Sep 2023 03:14:55 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:9622:9b2f:73fd:43ad])
-        by xavier.telenet-ops.be with bizsmtp
-        id nNEr2A00n4u9dj801NErPt; Mon, 18 Sep 2023 12:14:53 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qiBGw-003wYV-Kt;
-        Mon, 18 Sep 2023 12:14:51 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qiBHH-006GjT-E1;
-        Mon, 18 Sep 2023 12:14:51 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Greg Ungerer <gerg@linux-m68k.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org,
-        linux-spdx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 1/2] m68k: Replace GPL 2.0+ README.legal boilerplate with SPDX
-Date:   Mon, 18 Sep 2023 12:14:43 +0200
-Message-Id: <23430c233728ab02ec0af8e714994398d383137a.1695031668.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1695031668.git.geert@linux-m68k.org>
-References: <cover.1695031668.git.geert@linux-m68k.org>
+        Mon, 18 Sep 2023 13:56:30 -0400
+Received: from mail-0301.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B6CFB
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Sep 2023 10:56:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=n8pjl.ca;
+        s=protonmail2; t=1695059779; x=1695318979;
+        bh=KDmGL0149HMvYz0D68P8rK9iJncYI66ZFd51OEaftAc=;
+        h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+        b=XDyAGqfxs1IhZyrSbs3kXmWVIDtAAGsbXg/jRzsX7fuS5Oxw4QNBzYWsvFGPZ+ksw
+         S5Zcze4DfsU+j4F71vMZOBVGe3BZKYabMh1wfnbZ2ABquD3iq/MryJ0VB04GGHqRW3
+         gnQBHdLwQI3E7N3+pV5UgFQGhEjTazGFHroCb4KlhwP9A18gG508T7Pqs5jbffIgxO
+         cUkXsv81IXGY6O6u6TWRNYFNwN9rAhwcn1b7zAnxuUbHTSaeD2idJu0SKxFygNCYtF
+         S9e7CJc5qlz+kEo5lV3WyEyT1tOTgZkgAyKcyZB3b18aHv/xFJwzM9+FJT8sFeXCTe
+         SfZ1idLrRGTVw==
+Date:   Mon, 18 Sep 2023 17:56:09 +0000
+To:     reiserfs-devel@vger.kernel.org
+From:   Peter Lafreniere <peter@n8pjl.ca>
+Cc:     Peter Lafreniere <peter@n8pjl.ca>, jack@suse.cz,
+        linux-kernel@vger.kernel.org, richard@nod.at,
+        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+        linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org,
+        linux-sh@vger.kernel.org, tsbogend@alpha.franken.de,
+        linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        geert@linux-m68k.org, linux-arm-kernel@lists.infradead.org,
+        linux@armlinux.org.uk, linux-alpha@vger.kernel.org,
+        richard.henderson@linaro.org, ink@jurassic.park.msu.ru
+Subject: [PATCH 0/7] arch/*: config: Remove ReiserFS from defconfig
+Message-ID: <20230918175529.19011-1-peter@n8pjl.ca>
+Feedback-ID: 53133685:user:proton
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Upstream Linux never had a "README.legal" file, but it was present
-in early source releases of Linux/m68k.  It contained a simple copyright
-notice and a link to a version of the "COPYING" file that predated the
-addition of the "only valid GPL version is v2" clause.
+ReiserFS has been considered deprecated for 19 months since commit
+eb103a51640e ("reiserfs: Deprecate reiserfs"). However, there are
+several architectures that still build it into their defconfig kernels.
 
-Get rid of the references to non-existent files by replacing the
-boilerplate with SPDX license identifiers.
+As ReiserFS will be removed in 2025, delete all ReiserFS-related options
+from defconfig files before the filesystem's removal.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Greg Ungerer <gerg@linux-m68k.org>
----
-v2:
-  - Add Acked-by,
-  - s/existant/existent/.
----
- arch/m68k/68000/entry.S     | 7 ++-----
- arch/m68k/bvme6000/config.c | 5 +----
- arch/m68k/coldfire/entry.S  | 7 ++-----
- arch/m68k/ifpsp060/Makefile | 6 ++----
- arch/m68k/kernel/entry.S    | 7 ++-----
- arch/m68k/kernel/head.S     | 8 ++------
- arch/m68k/mvme147/config.c  | 5 +----
- arch/m68k/mvme16x/config.c  | 5 +----
- arch/m68k/q40/config.c      | 5 +----
- 9 files changed, 14 insertions(+), 41 deletions(-)
+The series is intended to be approved/rejected on an arch-by-arch basis.
+No patch is dependant upon another in the series.
 
-diff --git a/arch/m68k/68000/entry.S b/arch/m68k/68000/entry.S
-index 7d63e2f1555a03dc..72e95663b62ffd54 100644
---- a/arch/m68k/68000/entry.S
-+++ b/arch/m68k/68000/entry.S
-@@ -1,12 +1,9 @@
--/*
-+/* SPDX-License-Identifier: GPL-2.0-or-later
-+ *
-  *  entry.S -- non-mmu 68000 interrupt and exception entry points
-  *
-  *  Copyright (C) 1991, 1992  Linus Torvalds
-  *
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file README.legal in the main directory of this archive
-- * for more details.
-- *
-  * Linux/m68k support by Hamish Macdonald
-  */
- 
-diff --git a/arch/m68k/bvme6000/config.c b/arch/m68k/bvme6000/config.c
-index e604fe6602461334..8a2ee69a09f6659c 100644
---- a/arch/m68k/bvme6000/config.c
-+++ b/arch/m68k/bvme6000/config.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  *  arch/m68k/bvme6000/config.c
-  *
-@@ -8,10 +9,6 @@
-  *  linux/amiga/config.c
-  *
-  *  Copyright (C) 1993 Hamish Macdonald
-- *
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file README.legal in the main directory of this archive
-- * for more details.
-  */
- 
- #include <linux/types.h>
-diff --git a/arch/m68k/coldfire/entry.S b/arch/m68k/coldfire/entry.S
-index 35104c5417ff4d07..4ea08336e2fb0aae 100644
---- a/arch/m68k/coldfire/entry.S
-+++ b/arch/m68k/coldfire/entry.S
-@@ -1,4 +1,5 @@
--/*
-+/* SPDX-License-Identifier: GPL-2.0-or-later
-+ *
-  *  entry.S  -- interrupt and exception processing for ColdFire
-  *
-  *  Copyright (C) 1999-2007, Greg Ungerer (gerg@snapgear.com)
-@@ -13,10 +14,6 @@
-  *
-  *  Copyright (C) 1991, 1992  Linus Torvalds
-  *
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file README.legal in the main directory of this archive
-- * for more details.
-- *
-  * Linux/m68k support by Hamish Macdonald
-  *
-  * 68060 fixes by Jesper Skov
-diff --git a/arch/m68k/ifpsp060/Makefile b/arch/m68k/ifpsp060/Makefile
-index 56b530a96c2f33b5..00d0621f547ccb93 100644
---- a/arch/m68k/ifpsp060/Makefile
-+++ b/arch/m68k/ifpsp060/Makefile
-@@ -1,7 +1,5 @@
--# Makefile for 680x0 Linux 68060 integer/floating point support package
-+# SPDX-License-Identifier: GPL-2.0-or-later
- #
--# This file is subject to the terms and conditions of the GNU General Public
--# License.  See the file "README.legal" in the main directory of this archive
--# for more details.
-+# Makefile for 680x0 Linux 68060 integer/floating point support package
- 
- obj-y := fskeleton.o iskeleton.o os.o
-diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
-index 4dd2fd7acba9ea07..3bcdd32a6b36613d 100644
---- a/arch/m68k/kernel/entry.S
-+++ b/arch/m68k/kernel/entry.S
-@@ -1,13 +1,10 @@
--/* -*- mode: asm -*-
-+/* SPDX-License-Identifier: GPL-2.0-or-later
-+ * -*- mode: asm -*-
-  *
-  *  linux/arch/m68k/kernel/entry.S
-  *
-  *  Copyright (C) 1991, 1992  Linus Torvalds
-  *
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file README.legal in the main directory of this archive
-- * for more details.
-- *
-  * Linux/m68k support by Hamish Macdonald
-  *
-  * 68060 fixes by Jesper Skov
-diff --git a/arch/m68k/kernel/head.S b/arch/m68k/kernel/head.S
-index 9e812d8606be8301..852255cf60dec132 100644
---- a/arch/m68k/kernel/head.S
-+++ b/arch/m68k/kernel/head.S
-@@ -1,4 +1,5 @@
--/* -*- mode: asm -*-
-+/* SPDX-License-Identifier: GPL-2.0-or-later
-+** -*- mode: asm -*-
- **
- ** head.S -- This file contains the initial boot code for the
- **	     Linux/68k kernel.
-@@ -25,11 +26,6 @@
- **            for linux-2.1.115
- ** 1999/02/11  Richard Zidlicky: added Q40 support (initial version 99/01/01)
- ** 2004/05/13 Kars de Jong: Finalised HP300 support
--**
--** This file is subject to the terms and conditions of the GNU General Public
--** License. See the file README.legal in the main directory of this archive
--** for more details.
--**
- */
- 
- /*
-diff --git a/arch/m68k/mvme147/config.c b/arch/m68k/mvme147/config.c
-index 7dfacd0b207a9750..8b5dc07f0811f2fc 100644
---- a/arch/m68k/mvme147/config.c
-+++ b/arch/m68k/mvme147/config.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  *  arch/m68k/mvme147/config.c
-  *
-@@ -7,10 +8,6 @@
-  * Based on:
-  *
-  *  Copyright (C) 1993 Hamish Macdonald
-- *
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file README.legal in the main directory of this archive
-- * for more details.
-  */
- 
- #include <linux/types.h>
-diff --git a/arch/m68k/mvme16x/config.c b/arch/m68k/mvme16x/config.c
-index 9bb9a33e43c246c4..d1fbd1704d65822f 100644
---- a/arch/m68k/mvme16x/config.c
-+++ b/arch/m68k/mvme16x/config.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  *  arch/m68k/mvme16x/config.c
-  *
-@@ -8,10 +9,6 @@
-  *  linux/amiga/config.c
-  *
-  *  Copyright (C) 1993 Hamish Macdonald
-- *
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file README.legal in the main directory of this archive
-- * for more details.
-  */
- 
- #include <linux/types.h>
-diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
-index 2c51c2b4a4fbbf79..de7870ad2a30620d 100644
---- a/arch/m68k/q40/config.c
-+++ b/arch/m68k/q40/config.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  *  arch/m68k/q40/config.c
-  *
-@@ -6,10 +7,6 @@
-  * originally based on:
-  *
-  *  linux/bvme/config.c
-- *
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file README.legal in the main directory of this archive
-- * for more details.
-  */
- 
- #include <linux/errno.h>
--- 
-2.34.1
+See discussion originating in,
+Link: https://lore.kernel.org/linux-um/20230918125744.4342-1-peter@n8pjl.ca=
+/
+
+Peter Lafreniere (7):
+  arch: um: remove ReiserFS from defconfig
+  arch: powerpc: remove ReiserFS from defconfig
+  arch: sh: remove ReiserFS from defconfig
+  arch: mips: remove ReiserFS from defconfig
+  arch: m68k: remove ReiserFS from defconfig
+  arch: arm: remove ReiserFS from defconfig
+  arch: alpha: remove ReiserFS from defconfig
+
+ arch/alpha/configs/defconfig                | 1 -
+ arch/arm/configs/pxa_defconfig              | 4 ----
+ arch/m68k/configs/amiga_defconfig           | 1 -
+ arch/m68k/configs/apollo_defconfig          | 1 -
+ arch/m68k/configs/atari_defconfig           | 1 -
+ arch/m68k/configs/bvme6000_defconfig        | 1 -
+ arch/m68k/configs/hp300_defconfig           | 1 -
+ arch/m68k/configs/mac_defconfig             | 1 -
+ arch/m68k/configs/multi_defconfig           | 1 -
+ arch/m68k/configs/mvme147_defconfig         | 1 -
+ arch/m68k/configs/mvme16x_defconfig         | 1 -
+ arch/m68k/configs/q40_defconfig             | 1 -
+ arch/m68k/configs/sun3_defconfig            | 1 -
+ arch/m68k/configs/sun3x_defconfig           | 1 -
+ arch/mips/configs/fuloong2e_defconfig       | 1 -
+ arch/mips/configs/jazz_defconfig            | 4 ----
+ arch/mips/configs/lemote2f_defconfig        | 3 ---
+ arch/mips/configs/malta_defconfig           | 5 -----
+ arch/mips/configs/malta_kvm_defconfig       | 5 -----
+ arch/mips/configs/maltaup_xpa_defconfig     | 5 -----
+ arch/mips/configs/rm200_defconfig           | 4 ----
+ arch/powerpc/configs/44x/sam440ep_defconfig | 1 -
+ arch/powerpc/configs/g5_defconfig           | 4 ----
+ arch/powerpc/configs/ppc64e_defconfig       | 4 ----
+ arch/powerpc/configs/ppc6xx_defconfig       | 5 -----
+ arch/sh/configs/landisk_defconfig           | 1 -
+ arch/sh/configs/titan_defconfig             | 1 -
+ arch/um/configs/i386_defconfig              | 1 -
+ arch/um/configs/x86_64_defconfig            | 1 -
+ 29 files changed, 62 deletions(-)
+
+--=20
+2.42.0
+
 
