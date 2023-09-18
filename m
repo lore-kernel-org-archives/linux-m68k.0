@@ -2,44 +2,41 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D74B5CD37B0
-	for <linux-m68k@archiver.kernel.org>; Mon, 18 Sep 2023 17:56:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 910D1CD37B0
+	for <linux-m68k@archiver.kernel.org>; Mon, 18 Sep 2023 17:57:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229454AbjIRR4a (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 18 Sep 2023 13:56:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33796 "EHLO
+        id S230179AbjIRR5j (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 18 Sep 2023 13:57:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjIRR4a (ORCPT
+        with ESMTP id S229473AbjIRR5i (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 18 Sep 2023 13:56:30 -0400
-Received: from mail-0301.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B6CFB
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Sep 2023 10:56:24 -0700 (PDT)
+        Mon, 18 Sep 2023 13:57:38 -0400
+Received: from mail-4018.proton.ch (mail-4018.proton.ch [185.70.40.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6806E118
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Sep 2023 10:57:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=n8pjl.ca;
-        s=protonmail2; t=1695059779; x=1695318979;
-        bh=KDmGL0149HMvYz0D68P8rK9iJncYI66ZFd51OEaftAc=;
-        h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-        b=XDyAGqfxs1IhZyrSbs3kXmWVIDtAAGsbXg/jRzsX7fuS5Oxw4QNBzYWsvFGPZ+ksw
-         S5Zcze4DfsU+j4F71vMZOBVGe3BZKYabMh1wfnbZ2ABquD3iq/MryJ0VB04GGHqRW3
-         gnQBHdLwQI3E7N3+pV5UgFQGhEjTazGFHroCb4KlhwP9A18gG508T7Pqs5jbffIgxO
-         cUkXsv81IXGY6O6u6TWRNYFNwN9rAhwcn1b7zAnxuUbHTSaeD2idJu0SKxFygNCYtF
-         S9e7CJc5qlz+kEo5lV3WyEyT1tOTgZkgAyKcyZB3b18aHv/xFJwzM9+FJT8sFeXCTe
-         SfZ1idLrRGTVw==
-Date:   Mon, 18 Sep 2023 17:56:09 +0000
-To:     reiserfs-devel@vger.kernel.org
+        s=protonmail2; t=1695059850; x=1695319050;
+        bh=fxkOegwM1kWWZhiEUnJVXy5U34ldzgUlKjJMCE+oxYo=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=i4Jg3qh04A5xAwch6FjEguMLOKOgRgBcj3kr5mQ7qbJT8avXbrYYQ0qpcAQmxT01d
+         U7t/24O1kn7Nw4y2D42nKrRKElDbmqY0PxDbjnZzIGxb3rzR0v9EWVf2Bt2VfdGCG0
+         jb2lvo4/YxbI4k5YgOdL+tArvwuWzb0hvTF3zqVqZMZav/1Yv7YrrzROgOWjQKpAyM
+         qiCWktMgYURXrxId3e7Dfexw4TFCB568zse4/KPx57tQMZ8XsAcUgb8zAqbE/o1B4U
+         z1+8MR5kKpu4j14vGxx5CPM17qSKmsfi+YLAwdcnAgxVwv0+pqS/+I/GuveVFRDP5s
+         ojhDVqhBpilKg==
+Date:   Mon, 18 Sep 2023 17:57:24 +0000
+To:     linux-m68k@lists.linux-m68k.org
 From:   Peter Lafreniere <peter@n8pjl.ca>
 Cc:     Peter Lafreniere <peter@n8pjl.ca>, jack@suse.cz,
-        linux-kernel@vger.kernel.org, richard@nod.at,
-        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
-        linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org,
-        linux-sh@vger.kernel.org, tsbogend@alpha.franken.de,
-        linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        geert@linux-m68k.org, linux-arm-kernel@lists.infradead.org,
-        linux@armlinux.org.uk, linux-alpha@vger.kernel.org,
-        richard.henderson@linaro.org, ink@jurassic.park.msu.ru
-Subject: [PATCH 0/7] arch/*: config: Remove ReiserFS from defconfig
-Message-ID: <20230918175529.19011-1-peter@n8pjl.ca>
+        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        geert@linux-m68k.org
+Subject: [PATCH 5/7] arch: m68k: remove ReiserFS from defconfig
+Message-ID: <20230918175529.19011-6-peter@n8pjl.ca>
+In-Reply-To: <20230918175529.19011-1-peter@n8pjl.ca>
+References: <20230918175529.19011-1-peter@n8pjl.ca>
 Feedback-ID: 53133685:user:proton
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
@@ -48,60 +45,185 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-ReiserFS has been considered deprecated for 19 months since commit
-eb103a51640e ("reiserfs: Deprecate reiserfs"). However, there are
-several architectures that still build it into their defconfig kernels.
+ReiserFS has been deprecated for a year and a half, yet is still built
+as part of a defconfig kernel.
 
-As ReiserFS will be removed in 2025, delete all ReiserFS-related options
-from defconfig files before the filesystem's removal.
+According to commit eb103a51640e ("reiserfs: Deprecate reiserfs"), the
+filesystem is slated to be removed in 2025. Remove it from the defconfig
+profiles now, as part of its deprecation process.
 
-The series is intended to be approved/rejected on an arch-by-arch basis.
-No patch is dependant upon another in the series.
+Signed-off-by: Peter Lafreniere <peter@n8pjl.ca>
+---
+ arch/m68k/configs/amiga_defconfig    | 1 -
+ arch/m68k/configs/apollo_defconfig   | 1 -
+ arch/m68k/configs/atari_defconfig    | 1 -
+ arch/m68k/configs/bvme6000_defconfig | 1 -
+ arch/m68k/configs/hp300_defconfig    | 1 -
+ arch/m68k/configs/mac_defconfig      | 1 -
+ arch/m68k/configs/multi_defconfig    | 1 -
+ arch/m68k/configs/mvme147_defconfig  | 1 -
+ arch/m68k/configs/mvme16x_defconfig  | 1 -
+ arch/m68k/configs/q40_defconfig      | 1 -
+ arch/m68k/configs/sun3_defconfig     | 1 -
+ arch/m68k/configs/sun3x_defconfig    | 1 -
+ 12 files changed, 12 deletions(-)
 
-See discussion originating in,
-Link: https://lore.kernel.org/linux-um/20230918125744.4342-1-peter@n8pjl.ca=
-/
-
-Peter Lafreniere (7):
-  arch: um: remove ReiserFS from defconfig
-  arch: powerpc: remove ReiserFS from defconfig
-  arch: sh: remove ReiserFS from defconfig
-  arch: mips: remove ReiserFS from defconfig
-  arch: m68k: remove ReiserFS from defconfig
-  arch: arm: remove ReiserFS from defconfig
-  arch: alpha: remove ReiserFS from defconfig
-
- arch/alpha/configs/defconfig                | 1 -
- arch/arm/configs/pxa_defconfig              | 4 ----
- arch/m68k/configs/amiga_defconfig           | 1 -
- arch/m68k/configs/apollo_defconfig          | 1 -
- arch/m68k/configs/atari_defconfig           | 1 -
- arch/m68k/configs/bvme6000_defconfig        | 1 -
- arch/m68k/configs/hp300_defconfig           | 1 -
- arch/m68k/configs/mac_defconfig             | 1 -
- arch/m68k/configs/multi_defconfig           | 1 -
- arch/m68k/configs/mvme147_defconfig         | 1 -
- arch/m68k/configs/mvme16x_defconfig         | 1 -
- arch/m68k/configs/q40_defconfig             | 1 -
- arch/m68k/configs/sun3_defconfig            | 1 -
- arch/m68k/configs/sun3x_defconfig           | 1 -
- arch/mips/configs/fuloong2e_defconfig       | 1 -
- arch/mips/configs/jazz_defconfig            | 4 ----
- arch/mips/configs/lemote2f_defconfig        | 3 ---
- arch/mips/configs/malta_defconfig           | 5 -----
- arch/mips/configs/malta_kvm_defconfig       | 5 -----
- arch/mips/configs/maltaup_xpa_defconfig     | 5 -----
- arch/mips/configs/rm200_defconfig           | 4 ----
- arch/powerpc/configs/44x/sam440ep_defconfig | 1 -
- arch/powerpc/configs/g5_defconfig           | 4 ----
- arch/powerpc/configs/ppc64e_defconfig       | 4 ----
- arch/powerpc/configs/ppc6xx_defconfig       | 5 -----
- arch/sh/configs/landisk_defconfig           | 1 -
- arch/sh/configs/titan_defconfig             | 1 -
- arch/um/configs/i386_defconfig              | 1 -
- arch/um/configs/x86_64_defconfig            | 1 -
- 29 files changed, 62 deletions(-)
-
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_de=
+fconfig
+index 6deb8faa564b..f89f57aedeed 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -448,7 +448,6 @@ CONFIG_RTC_DRV_RP5C01=3Dm
+ # CONFIG_IOMMU_SUPPORT is not set
+ CONFIG_DAX=3Dm
+ CONFIG_EXT4_FS=3Dy
+-CONFIG_REISERFS_FS=3Dm
+ CONFIG_JFS_FS=3Dm
+ CONFIG_OCFS2_FS=3Dm
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_=
+defconfig
+index 802c161827f4..ac18b21d4bf1 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -405,7 +405,6 @@ CONFIG_RTC_DRV_GENERIC=3Dm
+ # CONFIG_IOMMU_SUPPORT is not set
+ CONFIG_DAX=3Dm
+ CONFIG_EXT4_FS=3Dy
+-CONFIG_REISERFS_FS=3Dm
+ CONFIG_JFS_FS=3Dm
+ CONFIG_OCFS2_FS=3Dm
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_de=
+fconfig
+index 2cb3d755873b..7cb3b643e57c 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -425,7 +425,6 @@ CONFIG_RTC_DRV_GENERIC=3Dm
+ # CONFIG_IOMMU_SUPPORT is not set
+ CONFIG_DAX=3Dm
+ CONFIG_EXT4_FS=3Dy
+-CONFIG_REISERFS_FS=3Dm
+ CONFIG_JFS_FS=3Dm
+ CONFIG_OCFS2_FS=3Dm
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6=
+000_defconfig
+index b13552caa6b3..359c51562db2 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -397,7 +397,6 @@ CONFIG_RTC_DRV_GENERIC=3Dm
+ # CONFIG_IOMMU_SUPPORT is not set
+ CONFIG_DAX=3Dm
+ CONFIG_EXT4_FS=3Dy
+-CONFIG_REISERFS_FS=3Dm
+ CONFIG_JFS_FS=3Dm
+ CONFIG_OCFS2_FS=3Dm
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_de=
+fconfig
+index f88356c45440..41eb91c33eae 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -407,7 +407,6 @@ CONFIG_RTC_DRV_GENERIC=3Dm
+ # CONFIG_IOMMU_SUPPORT is not set
+ CONFIG_DAX=3Dm
+ CONFIG_EXT4_FS=3Dy
+-CONFIG_REISERFS_FS=3Dm
+ CONFIG_JFS_FS=3Dm
+ CONFIG_OCFS2_FS=3Dm
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defcon=
+fig
+index 7c2ebb616fba..cf384a98323f 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -427,7 +427,6 @@ CONFIG_RTC_DRV_GENERIC=3Dm
+ # CONFIG_IOMMU_SUPPORT is not set
+ CONFIG_DAX=3Dm
+ CONFIG_EXT4_FS=3Dy
+-CONFIG_REISERFS_FS=3Dm
+ CONFIG_JFS_FS=3Dm
+ CONFIG_OCFS2_FS=3Dm
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_de=
+fconfig
+index d3b272910b38..7472b6d949fa 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -513,7 +513,6 @@ CONFIG_RTC_DRV_GENERIC=3Dm
+ # CONFIG_IOMMU_SUPPORT is not set
+ CONFIG_DAX=3Dm
+ CONFIG_EXT4_FS=3Dy
+-CONFIG_REISERFS_FS=3Dm
+ CONFIG_JFS_FS=3Dm
+ CONFIG_OCFS2_FS=3Dm
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme14=
+7_defconfig
+index 4529bc4b843c..064a5906e8a6 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -396,7 +396,6 @@ CONFIG_RTC_DRV_GENERIC=3Dm
+ # CONFIG_IOMMU_SUPPORT is not set
+ CONFIG_DAX=3Dm
+ CONFIG_EXT4_FS=3Dy
+-CONFIG_REISERFS_FS=3Dm
+ CONFIG_JFS_FS=3Dm
+ CONFIG_OCFS2_FS=3Dm
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16=
+x_defconfig
+index 30824032e4d5..6ff79eae70ed 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -397,7 +397,6 @@ CONFIG_RTC_DRV_GENERIC=3Dm
+ # CONFIG_IOMMU_SUPPORT is not set
+ CONFIG_DAX=3Dm
+ CONFIG_EXT4_FS=3Dy
+-CONFIG_REISERFS_FS=3Dm
+ CONFIG_JFS_FS=3Dm
+ CONFIG_OCFS2_FS=3Dm
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defcon=
+fig
+index 3911211410ed..922804e0e2cd 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -414,7 +414,6 @@ CONFIG_RTC_DRV_GENERIC=3Dm
+ # CONFIG_IOMMU_SUPPORT is not set
+ CONFIG_DAX=3Dm
+ CONFIG_EXT4_FS=3Dy
+-CONFIG_REISERFS_FS=3Dm
+ CONFIG_JFS_FS=3Dm
+ CONFIG_OCFS2_FS=3Dm
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defc=
+onfig
+index 991730c50957..3583ac7c8986 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -395,7 +395,6 @@ CONFIG_RTC_DRV_GENERIC=3Dm
+ # CONFIG_IOMMU_SUPPORT is not set
+ CONFIG_DAX=3Dm
+ CONFIG_EXT4_FS=3Dy
+-CONFIG_REISERFS_FS=3Dm
+ CONFIG_JFS_FS=3Dm
+ CONFIG_OCFS2_FS=3Dm
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_de=
+fconfig
+index e80d7509ab1d..a6df5013f915 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -395,7 +395,6 @@ CONFIG_RTC_DRV_GENERIC=3Dm
+ # CONFIG_IOMMU_SUPPORT is not set
+ CONFIG_DAX=3Dm
+ CONFIG_EXT4_FS=3Dy
+-CONFIG_REISERFS_FS=3Dm
+ CONFIG_JFS_FS=3Dm
+ CONFIG_OCFS2_FS=3Dm
+ # CONFIG_OCFS2_DEBUG_MASKLOG is not set
 --=20
 2.42.0
 
