@@ -2,38 +2,44 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9CF1C46CA1
-	for <linux-m68k@archiver.kernel.org>; Mon, 18 Sep 2023 10:08:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C8A3C46CA1
+	for <linux-m68k@archiver.kernel.org>; Mon, 18 Sep 2023 10:15:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbjIRKHg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 18 Sep 2023 06:07:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48944 "EHLO
+        id S239426AbjIRKPP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 18 Sep 2023 06:15:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241275AbjIRKHf (ORCPT
+        with ESMTP id S239544AbjIRKPC (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 18 Sep 2023 06:07:35 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD93A6
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Sep 2023 03:07:29 -0700 (PDT)
+        Mon, 18 Sep 2023 06:15:02 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B169A109
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Sep 2023 03:14:55 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:9622:9b2f:73fd:43ad])
-        by baptiste.telenet-ops.be with bizsmtp
-        id nN7T2A0064u9dj801N7Tl5; Mon, 18 Sep 2023 12:07:27 +0200
+        by laurent.telenet-ops.be with bizsmtp
+        id nNEr2A00P4u9dj801NEreA; Mon, 18 Sep 2023 12:14:53 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qiB9m-003wXj-5L;
-        Mon, 18 Sep 2023 12:07:27 +0200
+        id 1qiBGw-003wYT-KP;
+        Mon, 18 Sep 2023 12:14:51 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qiBA6-006Gbr-Su;
-        Mon, 18 Sep 2023 12:07:26 +0200
+        id 1qiBHH-006GjQ-Ba;
+        Mon, 18 Sep 2023 12:14:51 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Sam Creasey <sammy@sammy.net>
-Cc:     linux-m68k@lists.linux-m68k.org,
+To:     Greg Ungerer <gerg@linux-m68k.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org,
+        linux-spdx@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: sun3: Change led_pattern[] to unsigned char
-Date:   Mon, 18 Sep 2023 12:07:25 +0200
-Message-Id: <794c5d543dbdae8336a13ef2459adafaaadb7d86.1695031620.git.geert@linux-m68k.org>
+Subject: [PATCH v2 0/2] m68k/powerpc: Kill references to non-existent README.legal
+Date:   Mon, 18 Sep 2023 12:14:42 +0200
+Message-Id: <cover.1695031668.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -41,36 +47,79 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The values stored in led_pattern[] are only used for passing to
-sun3_leds(), which takes an "unsigned char".
-Change the type of led_pattern[] accordingly, to reduce kernel size.
+	Hi all,
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/sun3/sun3ints.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Several source files contain license boilerplate that refers to the file
+"README.legal", which never existed in upstream Linux.  This is a relic
+from the early port of Linux to the m68k processor family, before it was
+merged in v1.3.94.  Later, copies of this boilerplate ended up in the
+PowerPC port.
 
-diff --git a/arch/m68k/sun3/sun3ints.c b/arch/m68k/sun3/sun3ints.c
-index 781e7c0a6f523a2b..32eaf55f87bec174 100644
---- a/arch/m68k/sun3/sun3ints.c
-+++ b/arch/m68k/sun3/sun3ints.c
-@@ -29,11 +29,11 @@ void sun3_enable_interrupts(void)
- 	sun3_enable_irq(0);
- }
- 
--static int led_pattern[8] = {
--       ~(0x80), ~(0x01),
--       ~(0x40), ~(0x02),
--       ~(0x20), ~(0x04),
--       ~(0x10), ~(0x08)
-+static unsigned char led_pattern[8] = {
-+	(u8)~(0x80), (u8)~(0x01),
-+	(u8)~(0x40), (u8)~(0x02),
-+	(u8)~(0x20), (u8)~(0x04),
-+	(u8)~(0x10), (u8)~(0x08)
- };
- 
- volatile unsigned char* sun3_intreg;
+The "README.legal" file (from e.g. [1]) read:
+
+---8<-----------------------------------------------------------------
+Legal information about the Linux/68k software package
+
+All files contained in this archive are copyrighted by one or more
+person.  They are not in the public domain.
+
+Most of the files are copyrighted by Linus Torvalds, the original
+writer of Linux for IBM PC clone systems.  Some parts are copyrighted
+by other IBM PC linux developers.  Other parts are copyrighted by
+Linux/68k developers.
+
+This package is subject to the terms and conditions of the GNU General
+Public License.  A copy of this license may be found in the file named
+"COPYING" which should be in the same directory as this file.  If the
+file has been omitted, you may obtain it by writing to the Free
+Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+----------------------------------------------------------------->8---
+
+Note that the "COPYING" file at that time corresponded to the version
+from upstream Linux v0.99.11 until v2.1.104, and thus predated the
+addition of the "only valid GPL version is v2" clause in v2.4.0-test8.
+
+This patch series gets rid of the references to README.legal by
+replacing the boilerplate with SPDX license identifiers.
+
+Changes compared to v1[2]:
+  - Add Acked-by,
+  - s/existant/existent/.
+
+Thanks for your comments!
+
+[1] https://www.ibiblio.org/pub/historic-linux/ftp-archives/tsx-11.mit.edu/Oct-07-1996/680x0/v0.9/linux-0.9.tar.gz
+[2] "[PATCH 0/2] m68k/powerpc: Kill references to non-existent README.legal
+    https://lore.kernel.org/r/cover.1694095086.git.geert@linux-m68k.org
+
+Geert Uytterhoeven (2):
+  m68k: Replace GPL 2.0+ README.legal boilerplate with SPDX
+  powerpc: Replace GPL 2.0+ README.legal boilerplate with SPDX
+
+ arch/m68k/68000/entry.S             | 7 ++-----
+ arch/m68k/bvme6000/config.c         | 5 +----
+ arch/m68k/coldfire/entry.S          | 7 ++-----
+ arch/m68k/ifpsp060/Makefile         | 6 ++----
+ arch/m68k/kernel/entry.S            | 7 ++-----
+ arch/m68k/kernel/head.S             | 8 ++------
+ arch/m68k/mvme147/config.c          | 5 +----
+ arch/m68k/mvme16x/config.c          | 5 +----
+ arch/m68k/q40/config.c              | 5 +----
+ arch/powerpc/kernel/ptrace/ptrace.c | 5 +----
+ arch/powerpc/kernel/signal.c        | 5 +----
+ arch/powerpc/kernel/signal.h        | 7 ++-----
+ 12 files changed, 18 insertions(+), 54 deletions(-)
+
 -- 
 2.34.1
 
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
