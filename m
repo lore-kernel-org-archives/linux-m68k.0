@@ -2,101 +2,71 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 046F7CD5BDC
-	for <linux-m68k@archiver.kernel.org>; Tue, 19 Sep 2023 15:22:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA50DCD13D3
+	for <linux-m68k@archiver.kernel.org>; Tue, 19 Sep 2023 15:27:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233035AbjISPWR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 19 Sep 2023 11:22:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46098 "EHLO
+        id S233143AbjISP1f (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 19 Sep 2023 11:27:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232679AbjISPWP (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 19 Sep 2023 11:22:15 -0400
-Received: from www.kot-begemot.co.uk (ns1.kot-begemot.co.uk [217.160.28.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E005BE5;
-        Tue, 19 Sep 2023 08:22:09 -0700 (PDT)
-Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
-        by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1qicXc-002SL8-Lu; Tue, 19 Sep 2023 15:21:32 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
-        by jain.kot-begemot.co.uk with esmtp (Exim 4.94.2)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1qicXZ-00Ft9g-WC; Tue, 19 Sep 2023 16:21:32 +0100
-Message-ID: <9a5c0856-d542-9912-7494-53d7fe4538a3@cambridgegreys.com>
-Date:   Tue, 19 Sep 2023 16:21:29 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: Arches that don't support PREEMPT
-Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org, mgorman@suse.de,
-        rostedt@goodmis.org, jon.grimm@amd.com, bharata@amd.com,
-        raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
-        konrad.wilk@oracle.com, jgross@suse.com, andrew.cooper3@citrix.com,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Richard Weinberger <richard@nod.at>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-um@lists.infradead.org, Brian Cain <bcain@quicinc.com>,
-        linux-hexagon@vger.kernel.org,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
-References: <87zg1u1h5t.fsf@oracle.com>
- <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
- <20230911150410.GC9098@noisy.programming.kicks-ass.net>
- <87h6o01w1a.fsf@oracle.com>
- <20230912082606.GB35261@noisy.programming.kicks-ass.net>
- <87cyyfxd4k.ffs@tglx>
- <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
- <87led2wdj0.ffs@tglx> <ZQmbhoQIINs8rLHp@casper.infradead.org>
- <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de>
- <20230919134218.GA39281@noisy.programming.kicks-ass.net>
- <bd664a61-4506-bab0-19c3-0011f57005b5@cambridgegreys.com>
- <87y1h2ur98.ffs@tglx>
-From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
-In-Reply-To: <87y1h2ur98.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Clacks-Overhead: GNU Terry Pratchett
+        with ESMTP id S233135AbjISP1e (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Tue, 19 Sep 2023 11:27:34 -0400
+Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 088339C;
+        Tue, 19 Sep 2023 08:27:27 -0700 (PDT)
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 38JFGXnW031198;
+        Tue, 19 Sep 2023 10:16:33 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 38JFGUOK031195;
+        Tue, 19 Sep 2023 10:16:30 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Tue, 19 Sep 2023 10:16:30 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Peter Lafreniere <peter@n8pjl.ca>
+Cc:     anton.ivanov@cambridgegreys.com, geert@linux-m68k.org,
+        ink@jurassic.park.msu.ru, jack@suse.cz, johannes@sipsolutions.net,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-um@lists.infradead.org, linux@armlinux.org.uk,
+        linuxppc-dev@lists.ozlabs.org, reiserfs-devel@vger.kernel.org,
+        richard.henderson@linaro.org, richard@nod.at,
+        tsbogend@alpha.franken.de
+Subject: Re: [PATCH 0/7] arch/*: config: Remove ReiserFS from defconfig
+Message-ID: <20230919151630.GO19790@gate.crashing.org>
+References: <20230918175529.19011-1-peter@n8pjl.ca> <20230918234108.GN19790@gate.crashing.org> <20230919000026.7409-1-peter@n8pjl.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230919000026.7409-1-peter@n8pjl.ca>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+On Tue, Sep 19, 2023 at 12:00:34AM +0000, Peter Lafreniere wrote:
+> On Monday, September 18th, 2023 at 19:41, Segher Boessenkool <segher@kernel.crashing.org> wrote:
+> > On Mon, Sep 18, 2023 at 05:56:09PM +0000, Peter Lafreniere wrote:
+> > 
+> > > ReiserFS has been considered deprecated for 19 months since commit
+> > > eb103a51640e ("reiserfs: Deprecate reiserfs"). However, there are
+> > > several architectures that still build it into their defconfig kernels.
+> > > 
+> > > As ReiserFS will be removed in 2025, delete all ReiserFS-related options
+> > > from defconfig files before the filesystem's removal.
+> > 
+> > 
+> > This is essentially equivalent to deleting the filesystem now. Why do
+> > this? Is there such a hurry?
+> 
+> This is not equivalent to deleting the filesystem. The filesystem can still
+> be configured into kernels, and few distros use a defconfig kernel anyway.
 
-On 19/09/2023 16:17, Thomas Gleixner wrote:
-> On Tue, Sep 19 2023 at 15:21, Anton Ivanov wrote:
->> On 19/09/2023 14:42, Peter Zijlstra wrote:
->>> If you're working on one of them, then surely it's a simple matter of
->>> working on adding CONFIG_PREEMPT support :-)
->> In the case of UML adding preempt will be quite difficult. I looked at
->> this a few years back.
-> What's so difficult about it?
+Most people who compile kernels use defconfigs though.  Distros are a
+tiny minority if you look at builds.
 
-It's been a while. I remember that I dropped it at the time, but do not remember the full details.
+Again: why do you want this?
 
-There was some stuff related to FP state and a few other issues I ran into while rewriting the interrupt controller. Some of it may be resolved by now as we are using host cpu flags, etc.
 
-I can give it another go :)
-
->
-> Thanks,
->
->          tglx
->
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
-
+Segher
