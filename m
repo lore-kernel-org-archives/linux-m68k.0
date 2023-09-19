@@ -2,42 +2,38 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9EF0CD5BC8
-	for <linux-m68k@archiver.kernel.org>; Tue, 19 Sep 2023 14:17:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3865CD5BCA
+	for <linux-m68k@archiver.kernel.org>; Tue, 19 Sep 2023 14:25:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232730AbjISORU (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 19 Sep 2023 10:17:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38110 "EHLO
+        id S232825AbjISOZH convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 19 Sep 2023 10:25:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232766AbjISORM (ORCPT
+        with ESMTP id S232801AbjISOZF (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 19 Sep 2023 10:17:12 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51097BF
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 19 Sep 2023 07:17:06 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695133024;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AzWx00LzOrWB97CWuV/YA9TmYjDj3ZDIMkfBUMc4vK4=;
-        b=BOxMpPsViTe4eAtpu1ohDtFuIpN7IjvrZhvOBsd6347EBpK1i33XuSFab8AL0lweo+PFy8
-        3iOGDMIC+Hvv+hkN5eCfmcGqjfheYxtMZOzKC2dGwAvwVE43AtzVXjipdaNuZPnRPbknwE
-        NhtRbmiYrJlKh0tGITD5wAlrwn4Xa6bmHo3iBcler3nO26HcQQl1xzJ/mp0JZif/nQtWlF
-        dBjwcMDZfWh/3oIWHNKiGV3t+tWujITFdQ7bz0UDDF95w9VGLx6XyR7FCO5Coye1/DEUi6
-        rLum0uGnFlDWQ9t4rol0rAMiYlovZXwlD2eyyMvvFhw0zpX9gnqC1yMp/YlV2g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695133024;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AzWx00LzOrWB97CWuV/YA9TmYjDj3ZDIMkfBUMc4vK4=;
-        b=nRpx4S8fWZgScRYmAhyhfVuD4eX5xNxfXOTycjWAjLwMsE2Xlh4NbkKZ/6cMTKcYmUdKVK
-        LXdA7Tw5o0myYtBA==
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Peter Zijlstra <peterz@infradead.org>
+        Tue, 19 Sep 2023 10:25:05 -0400
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2912EEA;
+        Tue, 19 Sep 2023 07:24:56 -0700 (PDT)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1qibek-001CsS-ED; Tue, 19 Sep 2023 16:24:50 +0200
+Received: from p5b13a40a.dip0.t-ipconnect.de ([91.19.164.10] helo=[192.168.178.81])
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1qibek-0024rB-4a; Tue, 19 Sep 2023 16:24:50 +0200
+Message-ID: <a428516ebeae71e33635edc83052c972ce40c85d.camel@physik.fu-berlin.de>
+Subject: Re: Arches that don't support PREEMPT
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Ankur Arora <ankur.a.arora@oracle.com>,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
@@ -57,70 +53,49 @@ Cc:     Matthew Wilcox <willy@infradead.org>,
         Richard Henderson <richard.henderson@linaro.org>,
         Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
         Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
-Subject: Re: Arches that don't support PREEMPT
-In-Reply-To: <a6c84803274116ec827cd4bdd4e72a8d0c304c27.camel@physik.fu-berlin.de>
-References: <87zg1u1h5t.fsf@oracle.com>
- <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
- <20230911150410.GC9098@noisy.programming.kicks-ass.net>
- <87h6o01w1a.fsf@oracle.com>
- <20230912082606.GB35261@noisy.programming.kicks-ass.net>
- <87cyyfxd4k.ffs@tglx>
- <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
- <87led2wdj0.ffs@tglx> <ZQmbhoQIINs8rLHp@casper.infradead.org>
- <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de>
- <20230919134218.GA39281@noisy.programming.kicks-ass.net>
- <a6c84803274116ec827cd4bdd4e72a8d0c304c27.camel@physik.fu-berlin.de>
-Date:   Tue, 19 Sep 2023 16:17:04 +0200
-Message-ID: <877comw8m7.ffs@tglx>
+Date:   Tue, 19 Sep 2023 16:24:48 +0200
+In-Reply-To: <20230919141627.GB39281@noisy.programming.kicks-ass.net>
+References: <20230911150410.GC9098@noisy.programming.kicks-ass.net>
+         <87h6o01w1a.fsf@oracle.com>
+         <20230912082606.GB35261@noisy.programming.kicks-ass.net>
+         <87cyyfxd4k.ffs@tglx>
+         <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
+         <87led2wdj0.ffs@tglx> <ZQmbhoQIINs8rLHp@casper.infradead.org>
+         <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de>
+         <20230919134218.GA39281@noisy.programming.kicks-ass.net>
+         <a6c84803274116ec827cd4bdd4e72a8d0c304c27.camel@physik.fu-berlin.de>
+         <20230919141627.GB39281@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.164.10
+X-ZEDAT-Hint: PO
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Sep 19 2023 at 15:48, John Paul Adrian Glaubitz wrote:
-> On Tue, 2023-09-19 at 15:42 +0200, Peter Zijlstra wrote:
->> > The agreement to kill off ia64 wasn't an invitation to kill off other stuff
->> > that people are still working on! Can we please not do this?
->> 
->> If you're working on one of them, then surely it's a simple matter of
->> working on adding CONFIG_PREEMPT support :-)
->
-> As Geert poined out, I'm not seeing anything particular problematic with the
-> architectures lacking CONFIG_PREEMPT at the moment. This seems to be more
-> something about organizing KConfig files.
->
-> I find it a bit unfair that maintainers of architectures that have huge companies
-> behind them use their manpower to urge less popular architectures for removal just
-> because they don't have 150 people working on the port so they can keep up with
-> design changes quickly.
+On Tue, 2023-09-19 at 16:16 +0200, Peter Zijlstra wrote:
+> > I find it a bit unfair that maintainers of architectures that have huge companies
+> > behind them use their manpower to urge less popular architectures for removal just
+> > because they don't have 150 people working on the port so they can keep up with
+> > design changes quickly.
+> 
+> PREEMPT isn't something new. Also, I don't think the arch part for
+> actually supporting it is particularly hard, mostly it is sticking the
+> preempt_schedule_irq() call in return from interrupt code path.
+> 
+> If you convert the arch to generic-entry (a much larger undertaking)
+> then you get this for free.
 
-I don't urge for removal. I just noticed that these four architectures
-lack PREEMPT support. The only thing which is missing is the actual
-preemption point in the return to kernel code path.
+If the conversion isn't hard, why is the first reflex the urge to remove an architecture
+instead of offering advise how to get the conversion done?
 
-But otherwise it should just work, which I obviously can't confirm :)
+Adrian
 
-Even without that preemption point it should build and boot. There might
-be some minor latency issues when that preemption point is not there,
-but adding it is not rocket science either. It's probably about 10 lines
-of ASM code, if at all.
-
-Though not adding that might cause a blocking issue for the rework of
-the whole preemption logic in order to remove the sprinkled around
-cond_resched() muck or force us to maintain some nasty workaround just
-for the benefit of a few stranglers.
-
-So I can make the same argument the other way around, that it's
-unjustified that some architectures which are just supported for
-nostalgia throw roadblocks into kernel developemnt.
-
-If my ALPHA foo wouldn't be very close to zero, I'd write that ASM hack
-myself, but that's going to cost more of my and your time than it's
-worth the trouble,
-
-Hmm. I could delegate that to Linus, he might still remember :)
-
-Thanks,
-
-        tglx
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
