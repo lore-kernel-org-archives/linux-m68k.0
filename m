@@ -2,93 +2,92 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 659DBCE79A8
-	for <linux-m68k@archiver.kernel.org>; Tue, 19 Sep 2023 16:16:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80F8DCE79A9
+	for <linux-m68k@archiver.kernel.org>; Tue, 19 Sep 2023 16:23:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230203AbjISQQN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 19 Sep 2023 12:16:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53276 "EHLO
+        id S230170AbjISQXF convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 19 Sep 2023 12:23:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjISQQM (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 19 Sep 2023 12:16:12 -0400
-Received: from mail-4323.proton.ch (mail-4323.proton.ch [185.70.43.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A530BA9;
-        Tue, 19 Sep 2023 09:16:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=n8pjl.ca;
-        s=protonmail2; t=1695140160; x=1695399360;
-        bh=k2QmhXn3FHpsD31Ag66sjWvY57vLi94vGdI9Jg32c2Q=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=VjPOUfr+BDKot6jNtzfiNQUBn+0rrhZJiA59iRWy30aLqarcEfUbJl13WNuPnXIoW
-         NywHiVkOkN0sAhAj5HVCpUg5MCHPnoVtVm3uKwvnlLQz2bUOxdLprD9u+w4LbKTPgA
-         bnBfsyBEq3NfeW6N9NlCpqkwDvrEgdVVXns49DKnopvogQCzzy0NJzr2/B+6TZ37p2
-         pBG3Imgo+IjObhl+GtscMyMDCDfzeNnzpCBmxFsxt25WKmx+xpxmqyJ0hqsjVZLW+n
-         JXFusuE18XA6ozPVKnAkxmiePcriJHUHal7GefK+IYNNYtydrpkBO7Z/E7Jw9j+Yfj
-         +4CaTlaacEEcQ==
-Date:   Tue, 19 Sep 2023 16:15:41 +0000
-To:     geert@linux-m68k.org
-From:   Peter Lafreniere <peter@n8pjl.ca>
-Cc:     anton.ivanov@cambridgegreys.com, ink@jurassic.park.msu.ru,
-        jack@suse.cz, johannes@sipsolutions.net,
-        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-um@lists.infradead.org, linux@armlinux.org.uk,
-        linuxppc-dev@lists.ozlabs.org, peter@n8pjl.ca,
-        reiserfs-devel@vger.kernel.org, richard.henderson@linaro.org,
-        richard@nod.at, segher@kernel.crashing.org,
-        tsbogend@alpha.franken.de
-Subject: Re: [PATCH 0/7] arch/*: config: Remove ReiserFS from defconfig
-Message-ID: <20230919161535.4774-1-peter@n8pjl.ca>
-In-Reply-To: <CAMuHMdXQ=xpeY3tmLXe1kgJbRtmVAn62rEhvzO+VB7GCgy4F8w@mail.gmail.com>
-References: <20230918175529.19011-1-peter@n8pjl.ca> <20230918234108.GN19790@gate.crashing.org> <20230919000026.7409-1-peter@n8pjl.ca> <20230919151630.GO19790@gate.crashing.org> <20230919155832.4179-1-peter@n8pjl.ca> <CAMuHMdXQ=xpeY3tmLXe1kgJbRtmVAn62rEhvzO+VB7GCgy4F8w@mail.gmail.com>
-Feedback-ID: 53133685:user:proton
+        with ESMTP id S231191AbjISQXE (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 19 Sep 2023 12:23:04 -0400
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44347B0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 19 Sep 2023 09:22:56 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 5074A635DB51;
+        Tue, 19 Sep 2023 18:22:48 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id m6Ardn4BMmQu; Tue, 19 Sep 2023 18:22:47 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 6D072622F591;
+        Tue, 19 Sep 2023 18:22:47 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id rJmHKg4qnWLe; Tue, 19 Sep 2023 18:22:47 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 16951635DB51;
+        Tue, 19 Sep 2023 18:22:47 +0200 (CEST)
+Date:   Tue, 19 Sep 2023 18:22:46 +0200 (CEST)
+From:   Richard Weinberger <richard@nod.at>
+To:     anton ivanov <anton.ivanov@cambridgegreys.com>
+Cc:     tglx <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        torvalds <torvalds@linux-foundation.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, x86 <x86@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>, bp <bp@alien8.de>,
+        dave hansen <dave.hansen@linux.intel.com>, hpa <hpa@zytor.com>,
+        mingo <mingo@redhat.com>, juri lelli <juri.lelli@redhat.com>,
+        vincent guittot <vincent.guittot@linaro.org>, mgorman@suse.de,
+        Steven Rostedt <rostedt@goodmis.org>,
+        jon grimm <jon.grimm@amd.com>, bharata@amd.com,
+        raghavendra kt <raghavendra.kt@amd.com>,
+        boris ostrovsky <boris.ostrovsky@oracle.com>,
+        konrad wilk <konrad.wilk@oracle.com>, jgross <jgross@suse.com>,
+        andrew cooper3 <andrew.cooper3@citrix.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-um <linux-um@lists.infradead.org>,
+        Brian Cain <bcain@quicinc.com>, linux-hexagon@vger.kernel.org,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        linux-alpha <linux-alpha@vger.kernel.org>
+Message-ID: <551475267.58816.1695140566849.JavaMail.zimbra@nod.at>
+In-Reply-To: <9a5c0856-d542-9912-7494-53d7fe4538a3@cambridgegreys.com>
+References: <87zg1u1h5t.fsf@oracle.com> <87led2wdj0.ffs@tglx> <ZQmbhoQIINs8rLHp@casper.infradead.org> <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de> <20230919134218.GA39281@noisy.programming.kicks-ass.net> <bd664a61-4506-bab0-19c3-0011f57005b5@cambridgegreys.com> <87y1h2ur98.ffs@tglx> <9a5c0856-d542-9912-7494-53d7fe4538a3@cambridgegreys.com>
+Subject: Re: Arches that don't support PREEMPT
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: Arches that don't support PREEMPT
+Thread-Index: bIFTlUwZ+xXV2WWntYYwoPsb2f3c+g==
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Geert,
+----- Ursprüngliche Mail -----
+> Von: "anton ivanov" <anton.ivanov@cambridgegreys.com>
+> It's been a while. I remember that I dropped it at the time, but do not remember
+> the full details.
+> 
+> There was some stuff related to FP state and a few other issues I ran into while
+> rewriting the interrupt controller. Some of it may be resolved by now as we are
+> using host cpu flags, etc.
 
-On Tue, Sep 19, 2023 at 12:02, Geert Uytterhoeven <geert@linux-m68k.org> wr=
-ote:
->=20
-> Hi Peter,
->=20
-> On Tue, Sep 19, 2023 at 5:58=E2=80=AFPM Peter Lafreniere peter@n8pjl.ca w=
-rote:
->=20
-> > 2) Stops building an obsolete and largely-unused filesystem unnecessari=
-ly.
-> > Some hobbyist targets like m68k and alpha may prefer to keep all filesy=
-stems
-> > available until total removal, but others like arm and UML have no need=
- for
-> > ReiserFS to be built unless specifically configured.
->=20
->=20
-> As UML is used a lot for testing, isn't it actually counter-productive
-> to remove ReiserFS from the UML defconfig? The less testing it
-> receives, the higher the chance of introducing regressions.
+I remember also having a hacky but working version almost 10 years ago.
+It was horrible slow because of the extra scheduler rounds.
+But yes, if PREEMPT will be a must-have feature we'll have to try again.
 
-UML is used for testing, but in my view that makes the inclusion of
-ReiserFS in its defconfig even worse. Users of UML are trying to test a
-particular function, and so tend to use ext[2-4], as those are included in
-the defconfig and are well tested and stable. So there is no extra testing
-being done on ReiserFS due to its inclusion in the defconfig.
-
-Keeping UML's defconfig as slim as possible improves build times, which is
-particularly important for kernel testing and development.
-
->=20
-> Gr{oetje,eeting}s,
->=20
-> Geert
->
-
-Cheers,
-Peter Lafreniere=20
-
+Thanks,
+//richard
