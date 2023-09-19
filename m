@@ -2,77 +2,129 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DB59CE79AB
-	for <linux-m68k@archiver.kernel.org>; Tue, 19 Sep 2023 17:52:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41643CE79A9
+	for <linux-m68k@archiver.kernel.org>; Tue, 19 Sep 2023 17:58:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232572AbjISRw4 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 19 Sep 2023 13:52:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54120 "EHLO
+        id S232752AbjISR6v convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 19 Sep 2023 13:58:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231842AbjISRwz (ORCPT
-        <rfc822;linux-m68k@vger.kernel.org>); Tue, 19 Sep 2023 13:52:55 -0400
-X-Greylist: delayed 2574 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 19 Sep 2023 10:52:49 PDT
-Received: from wp441.webpack.hosteurope.de (wp441.webpack.hosteurope.de [80.237.133.210])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF8592;
-        Tue, 19 Sep 2023 10:52:49 -0700 (PDT)
-Received: from [2a03:7846:b79f:101:21c:c4ff:fe1f:fd93] (helo=valdese.nms.ulrich-teichert.org); authenticated
-        by wp441.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1qieEF-0002Of-1O; Tue, 19 Sep 2023 19:09:39 +0200
-Received: from valdese.nms.ulrich-teichert.org (localhost [127.0.0.1])
-        by valdese.nms.ulrich-teichert.org (8.15.2/8.15.2/Debian-14~deb10u1) with ESMTPS id 38JH9cRR007304
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Tue, 19 Sep 2023 19:09:38 +0200
-Received: (from ut@localhost)
-        by valdese.nms.ulrich-teichert.org (8.15.2/8.15.2/Submit) id 38JH9ac1007303;
-        Tue, 19 Sep 2023 19:09:36 +0200
-Message-Id: <202309191709.38JH9ac1007303@valdese.nms.ulrich-teichert.org>
+        with ESMTP id S232584AbjISR6u (ORCPT
+        <rfc822;linux-m68k@lists.linux-m68k.org>);
+        Tue, 19 Sep 2023 13:58:50 -0400
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2FD8F;
+        Tue, 19 Sep 2023 10:58:44 -0700 (PDT)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1qieza-002CLX-Et; Tue, 19 Sep 2023 19:58:34 +0200
+Received: from p5b13a40a.dip0.t-ipconnect.de ([91.19.164.10] helo=suse-laptop.fritz.box)
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1qieza-002eoT-1f; Tue, 19 Sep 2023 19:58:34 +0200
+Message-ID: <64746d98b60f1677cecd26501511f140688801e1.camel@physik.fu-berlin.de>
 Subject: Re: Arches that don't support PREEMPT
-To:     hpa@zytor.com (H. Peter Anvin)
-Date:   Tue, 19 Sep 2023 19:09:36 +0200 (CEST)
-Cc:     tglx@linutronix.de (Thomas Gleixner),
-        glaubitz@physik.fu-berlin.de (John Paul Adrian Glaubitz),
-        peterz@infradead.org (Peter Zijlstra),
-        willy@infradead.org (Matthew Wilcox),
-        torvalds@linux-foundation.org (Linus Torvalds),
-        ankur.a.arora@oracle.com (Ankur Arora),
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
         akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, mingo@redhat.com,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
         juri.lelli@redhat.com, vincent.guittot@linaro.org, mgorman@suse.de,
         rostedt@goodmis.org, jon.grimm@amd.com, bharata@amd.com,
         raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
         konrad.wilk@oracle.com, jgross@suse.com, andrew.cooper3@citrix.com,
-        geert@linux-m68k.org (Geert Uytterhoeven),
-        linux-m68k@vger.kernel.org, richard@nod.at (Richard Weinberger),
-        anton.ivanov@cambridgegreys.com (Anton Ivanov),
-        johannes@sipsolutions.net (Johannes Berg),
-        linux-um@lists.infradead.org, bcain@quicinc.com (Brian Cain),
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-um@lists.infradead.org, Brian Cain <bcain@quicinc.com>,
         linux-hexagon@vger.kernel.org,
-        richard.henderson@linaro.org (Richard Henderson),
-        ink@jurassic.park.msu.ru (Ivan Kokshaysky),
-        mattst88@gmail.com (Matt Turner), linux-alpha@vger.kernel.org
-In-Reply-To: <7EB81196-3A32-4638-A076-0C0CFF722996@zytor.com>
-From:   Ulrich Teichert <krypton@ulrich-teichert.org>
-X-Mailer: ELM [version 2.5 PL8]
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
+Date:   Tue, 19 Sep 2023 19:58:31 +0200
+In-Reply-To: <CAHk-=wgUimqtF7PqFfRw4Ju5H1KYkp6+8F=hBz7amGQ8GaGKkA@mail.gmail.com>
+References: <87zg1u1h5t.fsf@oracle.com>
+         <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
+         <20230911150410.GC9098@noisy.programming.kicks-ass.net>
+         <87h6o01w1a.fsf@oracle.com>
+         <20230912082606.GB35261@noisy.programming.kicks-ass.net>
+         <87cyyfxd4k.ffs@tglx>
+         <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
+         <87led2wdj0.ffs@tglx> <ZQmbhoQIINs8rLHp@casper.infradead.org>
+         <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de>
+         <20230919134218.GA39281@noisy.programming.kicks-ass.net>
+         <a6c84803274116ec827cd4bdd4e72a8d0c304c27.camel@physik.fu-berlin.de>
+         <CAHk-=wgUimqtF7PqFfRw4Ju5H1KYkp6+8F=hBz7amGQ8GaGKkA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;ut@ulrich-teichert.org;1695145970;e28d9866;
-X-HE-SMSGID: 1qieEF-0002Of-1O
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.164.10
+X-ZEDAT-Hint: PO
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi,
+Hi Linus!
 
-[del]
-> Does *anyone* actually run Alpha at this point?
+On Tue, 2023-09-19 at 10:25 -0700, Linus Torvalds wrote:
+> On Tue, 19 Sept 2023 at 06:48, John Paul Adrian Glaubitz
+> <glaubitz@physik.fu-berlin.de> wrote:
+> > 
+> > As Geert poined out, I'm not seeing anything particular problematic with the
+> > architectures lacking CONFIG_PREEMPT at the moment. This seems to be more
+> > something about organizing KConfig files.
+> 
+> It can definitely be problematic.
+> 
+> Not the Kconfig file part, and not the preempt count part itself.
+> 
+> But the fact that it has never been used and tested means that there
+> might be tons of "this architecture code knows it's not preemptible,
+> because this architecture doesn't support preemption".
+> 
+> So you may have basic architecture code that simply doesn't have the
+> "preempt_disable()/enable()" pairs that it needs.
+> 
+> PeterZ mentioned the generic entry code, which does this for the entry
+> path. But it actually goes much deeper: just do a
+> 
+>     git grep preempt_disable arch/x86/kernel
+> 
+> and then do the same for some other architectures.
+> 
+> Looking at alpha, for example, there *are* hits for it, so at least
+> some of the code there clearly *tries* to do it. But does it cover all
+> the required parts? If it's never been tested, I'd be surprised if
+> it's all just ready to go.
 
-Yes, at least I'm still trying to keep my boxes running from time to time,
+Thanks for the detailed explanation.
 
-CU,
-Uli
+> I do think we'd need to basically continue to support ARCH_NO_PREEMPT
+> - and such architectures migth end up with the worst-cast latencies of
+> only scheduling at return to user space.
+
+Great to hear, thank you.
+
+And, yes, eventually I would be happy to help get alpha and m68k converted.
+
+Adrian
+
 -- 
-Dipl. Inf. Ulrich Teichert|e-mail: Ulrich.Teichert@gmx.de | Listening to:
-Stormweg 24               |The Baboon Show: Rolling, The Chats: 6L GTR,Plosivs:
-24539 Neumuenster, Germany|Hit the Breaks, Nightwatchers: On a Mission
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
