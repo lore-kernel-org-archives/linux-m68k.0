@@ -2,104 +2,95 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38B75CE79AB
-	for <linux-m68k@archiver.kernel.org>; Wed, 20 Sep 2023 08:10:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4D73CE79AC
+	for <linux-m68k@archiver.kernel.org>; Wed, 20 Sep 2023 08:26:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233403AbjITIKc (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 20 Sep 2023 04:10:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60380 "EHLO
+        id S233597AbjITI0i (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 20 Sep 2023 04:26:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232262AbjITIKb (ORCPT
+        with ESMTP id S232318AbjITI0e (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 20 Sep 2023 04:10:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F74B97
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Sep 2023 01:09:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695197381;
+        Wed, 20 Sep 2023 04:26:34 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846A3A1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Sep 2023 01:26:28 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695198386;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=wUFr8wXK8O4RymSbY1nra3xh487ahU0WWNS0q+EozOI=;
-        b=cZw9MAO/FcFnZh/YiCPqOFpRj2rCyX2RsOemK+2vaLaMFb0Wu8mzwKMzLVxGm29okoWQVG
-        SkEfU37DssycvC5aRN3SI6NWuDrNFSPNEOXhHo4rvzLdpsGrsgeCCmv3lxG33uval6NTvj
-        G7r3dbjR0RWZqiRjE8SH/XD1CzAFelQ=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-614-aLxtse1nMm6biEu1ou2vqQ-1; Wed, 20 Sep 2023 04:09:39 -0400
-X-MC-Unique: aLxtse1nMm6biEu1ou2vqQ-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3f5df65fa35so48368575e9.3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Sep 2023 01:09:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695197378; x=1695802178;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wUFr8wXK8O4RymSbY1nra3xh487ahU0WWNS0q+EozOI=;
-        b=mxz6vnZYAbXcE7NaIwfgBZFbUzxQl03VVeXjQtQo3Luac/LWlP2l/86dEA4THUPZxE
-         CgnHb4H3bykJriV8zJgMOxnX+UV51w9zz7LNVsj2oVEVbA3SKJPdKuxC6sC5aRVKYDFk
-         90CzaGXPNai1ruV4rCq5ONo2ZRM4HQB1GamS4japvSKAhwZUwD/dkPTgRvqIug+JvwiR
-         OeGLJ+Tr//18GxBGJDdrFSayerVCz7puQ7W+z1YsrczmkqCTbX+k3wjL0AwJT43tMRnh
-         RYV1byha+iTb5o8VT7adWzKUUENACFjFkkA5YUfdbY3s88CebNN4JsYvoEmKwtfXq4Rl
-         0Q0A==
-X-Gm-Message-State: AOJu0YwcvnvSidwb1IrYtIZcfk7VsFQMZT+tDTGl9yPdtySRjI4UJiKU
-        jUH0jNHmhS8gnbuMbvVMqY9bLKjROx6JYcUQCvjPEDxrW+4V6JSPabrJG5ob87aqPf0RexO4uyx
-        9TK8vlOhfVN2Lfu1xk1MwxInX8HZx
-X-Received: by 2002:a1c:771a:0:b0:401:bf56:8ba0 with SMTP id t26-20020a1c771a000000b00401bf568ba0mr1546103wmi.28.1695197378555;
-        Wed, 20 Sep 2023 01:09:38 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHysZz6FM59YTt5tU+tK8YwrLHrBxcEDjY1ArDkjh6Nbe/7xpyZCpKNOycMqjW9MlKxyQeQmA==
-X-Received: by 2002:a1c:771a:0:b0:401:bf56:8ba0 with SMTP id t26-20020a1c771a000000b00401bf568ba0mr1546080wmi.28.1695197378265;
-        Wed, 20 Sep 2023 01:09:38 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id 26-20020a05600c22da00b003fedcd02e2asm1223759wmg.35.2023.09.20.01.09.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 01:09:38 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Thomas Zimmermann <tzimmermann@suse.de>, mpe@ellerman.id.au,
-        npiggin@gmail.com, christophe.leroy@csgroup.eu, arnd@arndb.de,
-        deller@gmx.de
-Cc:     linux-arch@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-m68k@lists.linux-m68k.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v4 2/5] fbdev: Replace fb_pgprotect() with
- pgprot_framebuffer()
-In-Reply-To: <20230912135050.17155-3-tzimmermann@suse.de>
-References: <20230912135050.17155-1-tzimmermann@suse.de>
- <20230912135050.17155-3-tzimmermann@suse.de>
-Date:   Wed, 20 Sep 2023 10:09:37 +0200
-Message-ID: <87fs39l0zi.fsf@minerva.mail-host-address-is-not-set>
+        bh=Cz3ybOd/ypkcGDuMCJQdl0UFouGTxpARZATHk1efhH0=;
+        b=EGx2EBigs6+KVxSISL/lO4SeWI2/p5U3N6zV5areodcDyVNQT2YbEaxonhjEzXP7/szlID
+        TMqjKMwwRJVKmQfn51MUW9KIbWl9E19kzugQpYPh1RqXMdMqyHRHId8GsHbiYMY1gupCr9
+        inWCgekLEVw9LLIxUEhX+SjOdAKmXLyfbATOE5SKrIhGQ6opMrTgQNDBWj6h+pupcy9mQY
+        IAtJFpC+IZrsZhADhx21jPYjN4cUEmbdknYpq1yaFpD3q1JUKeyYvZEasHaRFyuKPfCocG
+        sb/JjJcoHFqbdHPNLrqct85JyOKGX/90xcldUD95gAEiF72EcQ3euVx2thUmyg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695198386;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Cz3ybOd/ypkcGDuMCJQdl0UFouGTxpARZATHk1efhH0=;
+        b=Zhs312twDc9TbsbkF5GT2tuvKzW8ClBRyZtMimieaTdcJbOGBK7CVUU6mFwCowxAhHysBo
+        5AdimDwJAjJms3Ag==
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org, mgorman@suse.de,
+        rostedt@goodmis.org, jon.grimm@amd.com, bharata@amd.com,
+        raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
+        konrad.wilk@oracle.com, jgross@suse.com, andrew.cooper3@citrix.com,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-um@lists.infradead.org, Brian Cain <bcain@quicinc.com>,
+        linux-hexagon@vger.kernel.org,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
+Subject: Re: Arches that don't support PREEMPT
+In-Reply-To: <CAHk-=wgUimqtF7PqFfRw4Ju5H1KYkp6+8F=hBz7amGQ8GaGKkA@mail.gmail.com>
+References: <87zg1u1h5t.fsf@oracle.com>
+ <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
+ <20230911150410.GC9098@noisy.programming.kicks-ass.net>
+ <87h6o01w1a.fsf@oracle.com>
+ <20230912082606.GB35261@noisy.programming.kicks-ass.net>
+ <87cyyfxd4k.ffs@tglx>
+ <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
+ <87led2wdj0.ffs@tglx> <ZQmbhoQIINs8rLHp@casper.infradead.org>
+ <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de>
+ <20230919134218.GA39281@noisy.programming.kicks-ass.net>
+ <a6c84803274116ec827cd4bdd4e72a8d0c304c27.camel@physik.fu-berlin.de>
+ <CAHk-=wgUimqtF7PqFfRw4Ju5H1KYkp6+8F=hBz7amGQ8GaGKkA@mail.gmail.com>
+Date:   Wed, 20 Sep 2023 10:26:25 +0200
+Message-ID: <87edituu6m.ffs@tglx>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Thomas Zimmermann <tzimmermann@suse.de> writes:
-
-Hello Thomas,
-
-> Rename the fbdev mmap helper fb_pgprotect() to pgprot_framebuffer().
-> The helper sets VMA page-access flags for framebuffers in device I/O
-> memory.
+On Tue, Sep 19 2023 at 10:25, Linus Torvalds wrote:
+> PeterZ mentioned the generic entry code, which does this for the entry
+> path. But it actually goes much deeper: just do a
 >
+>     git grep preempt_disable arch/x86/kernel
+>
+> and then do the same for some other architectures.
+>
+> Looking at alpha, for example, there *are* hits for it, so at least
+> some of the code there clearly *tries* to do it. But does it cover all
+> the required parts? If it's never been tested, I'd be surprised if
+> it's all just ready to go.
 
-I think this rename makes it more clear.
-
-> Also clean up the helper's parameters and return value. Instead of
-> the VMA instance, pass the individial parameters separately: existing
-> page-access flags, the VMAs start and end addresses and the offset
-
-But I fail to see the benefit of this part. Could you please add an
-explanation about why this change is desirable ?
-
--- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
-
+Interestingly enough m68k has zero instances, but it supports PREEMPT on
+the COLDFIRE subarchitecture...
