@@ -2,39 +2,39 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76F2DCE79AD
-	for <linux-m68k@archiver.kernel.org>; Wed, 20 Sep 2023 08:02:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C6F8CE79AB
+	for <linux-m68k@archiver.kernel.org>; Wed, 20 Sep 2023 08:09:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233629AbjITICv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 20 Sep 2023 04:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45838 "EHLO
+        id S233641AbjITIJn (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 20 Sep 2023 04:09:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233313AbjITICs (ORCPT
+        with ESMTP id S232937AbjITIJn (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 20 Sep 2023 04:02:48 -0400
-X-Greylist: delayed 363 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 20 Sep 2023 01:02:42 PDT
-Received: from mail.venturelinkage.com (mail.venturelinkage.com [80.211.143.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6178BCE
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Sep 2023 01:02:42 -0700 (PDT)
-Received: by mail.venturelinkage.com (Postfix, from userid 1002)
-        id 5D93E8284E; Wed, 20 Sep 2023 09:56:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=venturelinkage.com;
-        s=mail; t=1695196598;
-        bh=7iowqdzve/IIiUUjcEwx8j3uMrVqqiE7R9zbOCKRV9Q=;
+        Wed, 20 Sep 2023 04:09:43 -0400
+X-Greylist: delayed 527 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 20 Sep 2023 01:09:36 PDT
+Received: from mail.crystalbizventures.pl (mail.crystalbizventures.pl [217.61.112.167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03F969D
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Sep 2023 01:09:35 -0700 (PDT)
+Received: by mail.crystalbizventures.pl (Postfix, from userid 1002)
+        id 7C22E829A1; Wed, 20 Sep 2023 10:00:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=crystalbizventures.pl; s=mail; t=1695196846;
+        bh=ylPEEFxKikzRNxw8qePBwubcoXBfCPGkyK2Vq3svM24=;
         h=Date:From:To:Subject:From;
-        b=b8JYbbFciPIkFkuxwszMEt1mZT71wfDXIV7m2fYYQHLDi3C4IjgD6H0NeaUEww/j/
-         m6LC/HnANUG8thP93bX/erYG31F6a7WwPKA47NNA4MXcPpqfi9PmFkUjU66BTi+8Cp
-         x+oUvExXFx1utWnyizfKUe/L4D+hlJ5YKtAVURIOMh4NbaMnTdKdxgOAUXDyoXLsTv
-         3t073q5UwtHw/eR1WaYVUaK5yef4rtAHxWfPrUTFnQLXpvf+IiMhk7CrJ4hQrMY78O
-         cErUT3eXB7eCUdFV8lJaO/sM/FUZIHzDAdHiQmODqF6JYmYpqoqS8aJwp1XPEpcbaV
-         /iWIkBOinc+GQ==
-Received: by mail.venturelinkage.com for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Sep 2023 07:56:21 GMT
-Message-ID: <20230920084500-0.1.l.12hc.0.fc1injx6ml@venturelinkage.com>
-Date:   Wed, 20 Sep 2023 07:56:21 GMT
-From:   "Lukas Varga" <lukas.varga@venturelinkage.com>
+        b=bXoKoPWwMqOLNALQuEzRDcGiMXLp60aYLzuUr7xGZpCYzJeBMKex3rUyiBnC5d4qb
+         5gep6UKb2Q1/C8q7ikLaoaA4IJX4Kj4W5piDDm19WTrZcYc5x6OB+YWUZX7P0Ysimw
+         nMGs86ii6ka4LwHb051cxI+mp55vf7fPzsH7l4RmSP7zktuOaGb/pedWmsDKyyYiL6
+         Uk/gH48p/SV3zlgTfkgavjpenffvVJfvyNkztk+41+zqRkOnSwcSSmlld8fp5oa0JA
+         tFONsw0WG+aZdrjVJwDMmapzsOXPRf4kbnp/K8QFsUcf08ZBzOENpcZJq28/0xvjqN
+         W+HJnyEqCjhlw==
+Received: by mail.crystalbizventures.pl for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Sep 2023 08:00:35 GMT
+Message-ID: <20230920084500-0.1.q.2vml.0.4zwmangq5h@crystalbizventures.pl>
+Date:   Wed, 20 Sep 2023 08:00:35 GMT
+From:   "Dominik Chrostek" <dominik.chrostek@crystalbizventures.pl>
 To:     <linux-m68k@lists.linux-m68k.org>
-Subject: =?UTF-8?Q?Popt=C3=A1vka?=
-X-Mailer: mail.venturelinkage.com
+Subject: =?UTF-8?Q?Wyd=C5=82u=C5=BCony_termin_p=C5=82atno=C5=9Bci_za_kupowane_towary?=
+X-Mailer: mail.crystalbizventures.pl
 MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
@@ -42,19 +42,17 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Dobr=C3=A9 r=C3=A1no,
+Dzie=C5=84 dobry,
 
-Dovolil jsem si V=C3=A1s kontaktovat, proto=C5=BEe m=C3=A1m z=C3=A1jem ov=
-=C4=9B=C5=99it mo=C5=BEnost nav=C3=A1z=C3=A1n=C3=AD spolupr=C3=A1ce.
+czy wiedz=C4=85 Pa=C5=84stwo, =C5=BCe macie mo=C5=BCliwo=C5=9B=C4=87 zap=C5=
+=82aty za towar w znacznie p=C3=B3=C5=BAniejszym terminie?
 
-Podporujeme firmy p=C5=99i z=C3=ADsk=C3=A1v=C3=A1n=C3=AD nov=C3=BDch obch=
-odn=C3=ADch z=C3=A1kazn=C3=ADk=C5=AF.
+Terminowo uregulujemy w Pa=C5=84stwa imieniu faktury u dostawc=C3=B3w, a =
+po zap=C5=82acie wystawiamy Pa=C5=84stwu faktur=C4=99 sprzeda=C5=BCy z od=
+roczonym terminem p=C5=82atno=C5=9Bci (30-90 dni).
 
-M=C5=AF=C5=BEeme si promluvit a poskytnout podrobnosti?
-
-V p=C5=99=C3=ADpad=C4=9B z=C3=A1jmu V=C3=A1s bude kontaktovat n=C3=A1=C5=A1=
- anglicky mluv=C3=ADc=C3=AD z=C3=A1stupce.
+S=C4=85 Pa=C5=84stwo zainteresowani takim rozwi=C4=85zaniem?
 
 
-Pozdravy
-Lukas Varga
+Pozdrawiam
+Dominik Chrostek
