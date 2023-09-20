@@ -2,118 +2,59 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2922ECE79AB
-	for <linux-m68k@archiver.kernel.org>; Wed, 20 Sep 2023 08:02:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76F2DCE79AD
+	for <linux-m68k@archiver.kernel.org>; Wed, 20 Sep 2023 08:02:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233175AbjITIC1 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 20 Sep 2023 04:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51544 "EHLO
+        id S233629AbjITICv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 20 Sep 2023 04:02:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233313AbjITIC0 (ORCPT
+        with ESMTP id S233313AbjITICs (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 20 Sep 2023 04:02:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD539D
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Sep 2023 01:01:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695196893;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rnpCpoK1Qphye/H0at9y+THlkxPvcEo2r5PdFTxqnHY=;
-        b=RoQH+KrP3GG6ewXQrWr3WFoLXf1EWfyL/eBaK6S0xBNZzrIecy3OYF0PpB5gQlHgz7ordC
-        u0lM8+n8BFB6DpsNcV49R2QRIRshUFv6OtvZLnGNueOi+QYlbJH6YC45PyHDsJioRYZv8w
-        FR1IuyagYmqdcbjPZAx/RJhXDSG1/Dw=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-139-rOCA2Ws3O96XmEZhVF5nGw-1; Wed, 20 Sep 2023 04:01:29 -0400
-X-MC-Unique: rOCA2Ws3O96XmEZhVF5nGw-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-32001e60fb3so231188f8f.1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Sep 2023 01:01:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695196888; x=1695801688;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rnpCpoK1Qphye/H0at9y+THlkxPvcEo2r5PdFTxqnHY=;
-        b=EEnYZ5yYd5KlkBypK4zXRlgfcKtwfQAkOI5CsuFoOWqLGkLGtaggY4lAGSQSpPejfo
-         6WboHukjDC3uPIE7GS06NZEVnol6OBZEd0YeSXgHmkjtV+8AY/6vyECRVhp5SNTwc8YO
-         vBntFxcYMETfnlRbFM5WD0qgeA3G2JbGhJNGsKzpSlD3QJEERPv0bjMnHF6JpbiTaPe8
-         UGQRl9Oz7TxevmBhV/7s6WUg3Jvw9YUKID3MybOtfZC6u/ilOx9Nf0ZzeiQDBM+yl+DE
-         OAR3TmNh92TL2BHUbf3vE9q9xZ4E+mMYnCOSfvnTESlzH6at2ct5KN2f3c8QRWzmE9wx
-         IDuw==
-X-Gm-Message-State: AOJu0YwgIoygsyC7GP30kHBPXgrqHM3Lj6kidjvioSKIF0p2JWi7jget
-        Ulv1ICP0joU4Qs7U7dAf9PZ3+2S0zg5gcASE3z+1jdpl2O/maIg0JW3x2JgER3md7TOzpFsRHKs
-        tOpq4e0RTTfOltNCLR2CXHZ49QWgJ
-X-Received: by 2002:a5d:4691:0:b0:317:6579:2b9f with SMTP id u17-20020a5d4691000000b0031765792b9fmr1441897wrq.30.1695196888609;
-        Wed, 20 Sep 2023 01:01:28 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEGjMaHCrb95S6OjzxI7LM9YzqMZD+FHo9V0ilc7E6hmphf8oly7XaHzjchfvY6rdHHetD1Jw==
-X-Received: by 2002:a5d:4691:0:b0:317:6579:2b9f with SMTP id u17-20020a5d4691000000b0031765792b9fmr1441876wrq.30.1695196888277;
-        Wed, 20 Sep 2023 01:01:28 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id a4-20020adffb84000000b0031c5e9c2ed7sm17627845wrr.92.2023.09.20.01.01.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Sep 2023 01:01:27 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Thomas Zimmermann <tzimmermann@suse.de>, mpe@ellerman.id.au,
-        npiggin@gmail.com, christophe.leroy@csgroup.eu, arnd@arndb.de,
-        deller@gmx.de
-Cc:     linux-arch@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-m68k@lists.linux-m68k.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v4 1/5] fbdev: Avoid file argument in fb_pgprotect()
-In-Reply-To: <20230912135050.17155-2-tzimmermann@suse.de>
-References: <20230912135050.17155-1-tzimmermann@suse.de>
- <20230912135050.17155-2-tzimmermann@suse.de>
-Date:   Wed, 20 Sep 2023 10:01:27 +0200
-Message-ID: <87il85l1d4.fsf@minerva.mail-host-address-is-not-set>
+        Wed, 20 Sep 2023 04:02:48 -0400
+X-Greylist: delayed 363 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 20 Sep 2023 01:02:42 PDT
+Received: from mail.venturelinkage.com (mail.venturelinkage.com [80.211.143.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6178BCE
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Sep 2023 01:02:42 -0700 (PDT)
+Received: by mail.venturelinkage.com (Postfix, from userid 1002)
+        id 5D93E8284E; Wed, 20 Sep 2023 09:56:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=venturelinkage.com;
+        s=mail; t=1695196598;
+        bh=7iowqdzve/IIiUUjcEwx8j3uMrVqqiE7R9zbOCKRV9Q=;
+        h=Date:From:To:Subject:From;
+        b=b8JYbbFciPIkFkuxwszMEt1mZT71wfDXIV7m2fYYQHLDi3C4IjgD6H0NeaUEww/j/
+         m6LC/HnANUG8thP93bX/erYG31F6a7WwPKA47NNA4MXcPpqfi9PmFkUjU66BTi+8Cp
+         x+oUvExXFx1utWnyizfKUe/L4D+hlJ5YKtAVURIOMh4NbaMnTdKdxgOAUXDyoXLsTv
+         3t073q5UwtHw/eR1WaYVUaK5yef4rtAHxWfPrUTFnQLXpvf+IiMhk7CrJ4hQrMY78O
+         cErUT3eXB7eCUdFV8lJaO/sM/FUZIHzDAdHiQmODqF6JYmYpqoqS8aJwp1XPEpcbaV
+         /iWIkBOinc+GQ==
+Received: by mail.venturelinkage.com for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Sep 2023 07:56:21 GMT
+Message-ID: <20230920084500-0.1.l.12hc.0.fc1injx6ml@venturelinkage.com>
+Date:   Wed, 20 Sep 2023 07:56:21 GMT
+From:   "Lukas Varga" <lukas.varga@venturelinkage.com>
+To:     <linux-m68k@lists.linux-m68k.org>
+Subject: =?UTF-8?Q?Popt=C3=A1vka?=
+X-Mailer: mail.venturelinkage.com
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Thomas Zimmermann <tzimmermann@suse.de> writes:
+Dobr=C3=A9 r=C3=A1no,
 
-Hello Thomas,
+Dovolil jsem si V=C3=A1s kontaktovat, proto=C5=BEe m=C3=A1m z=C3=A1jem ov=
+=C4=9B=C5=99it mo=C5=BEnost nav=C3=A1z=C3=A1n=C3=AD spolupr=C3=A1ce.
 
-> Only PowerPC's fb_pgprotect() needs the file argument, although
-> the implementation does not use it. Pass NULL to the internal
+Podporujeme firmy p=C5=99i z=C3=ADsk=C3=A1v=C3=A1n=C3=AD nov=C3=BDch obch=
+odn=C3=ADch z=C3=A1kazn=C3=ADk=C5=AF.
 
-Can you please mention the function that's the implementation for
-PowerPC ? If I'm looking at the code correctly, that function is
-phys_mem_access_prot() defined in the arch/powerpc/mm/mem.c file:
+M=C5=AF=C5=BEeme si promluvit a poskytnout podrobnosti?
 
-pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
-			      unsigned long size, pgprot_t vma_prot)
-{
-	if (ppc_md.phys_mem_access_prot)
-		return ppc_md.phys_mem_access_prot(file, pfn, size, vma_prot);
+V p=C5=99=C3=ADpad=C4=9B z=C3=A1jmu V=C3=A1s bude kontaktovat n=C3=A1=C5=A1=
+ anglicky mluv=C3=ADc=C3=AD z=C3=A1stupce.
 
-	if (!page_is_ram(pfn))
-		vma_prot = pgprot_noncached(vma_prot);
 
-	return vma_prot;
-}
-
-and if set, ppc_md.phys_mem_access_prot is pci_phys_mem_access_prot()
-that is defined in the arch/powerpc/kernel/pci-common.c source file:
-
-https://elixir.bootlin.com/linux/v6.6-rc2/source/arch/powerpc/kernel/pci-common.c#L524
-
-That function indeed doesn't use the file argument. So your patch looks
-correct to me.
-
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
-
--- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
-
+Pozdravy
+Lukas Varga
