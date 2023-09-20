@@ -2,120 +2,110 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2C5FCE79DD
-	for <linux-m68k@archiver.kernel.org>; Wed, 20 Sep 2023 14:41:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A27C6C04AA7
+	for <linux-m68k@archiver.kernel.org>; Wed, 20 Sep 2023 15:07:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236683AbjITOlW (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 20 Sep 2023 10:41:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40418 "EHLO
+        id S235078AbjITPHT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 20 Sep 2023 11:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236823AbjITOlL (ORCPT
+        with ESMTP id S235314AbjITPHS (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 20 Sep 2023 10:41:11 -0400
-Received: from www.kot-begemot.co.uk (ns1.kot-begemot.co.uk [217.160.28.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 619231BDC;
-        Wed, 20 Sep 2023 07:40:28 -0700 (PDT)
-Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
-        by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1qiyLd-002W2U-3v; Wed, 20 Sep 2023 14:38:37 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
-        by jain.kot-begemot.co.uk with esmtp (Exim 4.94.2)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1qiyLa-00HNGo-By; Wed, 20 Sep 2023 15:38:36 +0100
-Message-ID: <159b79fc-16d8-2d12-ed17-fb508879d791@cambridgegreys.com>
-Date:   Wed, 20 Sep 2023 15:38:33 +0100
+        Wed, 20 Sep 2023 11:07:18 -0400
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29AB0A1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Sep 2023 08:07:12 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id DE07F5C01BB;
+        Wed, 20 Sep 2023 11:07:08 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Wed, 20 Sep 2023 11:07:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1695222428; x=1695308828; bh=ms
+        4LUioRCx9g5Fcd6Nj2Z553BmfY/nfNy++/9p0eMTE=; b=BHuLRfyyuipWu6am6/
+        M3C5KuEVtPRgHdnUSWE2tXf1NF5z/c0HjnG1qXb1WaGZu8Uq7k1Lq5DXx3SfUhLJ
+        +AGNDQ0Gvdy1xUAqZGHxFG0dPweDd4IWaDHtLa1Ju8frSZGFQNlRlxX/YTmR+QTm
+        FrxvvQHeQGOAH4tKQgxAP8/n/XDBfPur4ivYpz7AqfbRaoZFC/0DB/LRt6ogTvDK
+        ibhf89hk7VyhvpN4sS3aoNoWA5NNg9KqAE+6NjLPwBok0RZB1mJOs3iV6MFt/MH4
+        Dtvydol1NjIVeiH0yas9c7mbU50veoZbaGHU9IbQP2FByO/vbbLSQKTuw+/nHr+K
+        WV2g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1695222428; x=1695308828; bh=ms4LUioRCx9g5
+        Fcd6Nj2Z553BmfY/nfNy++/9p0eMTE=; b=qgZHhiyUGnQdiRx/usTNHt32rPNJr
+        9B5WYZMfGf4Wh7FyO6A52lomoJ9ynn4fijFhbL1uXxQvXbZqDqwI3RtNixlUDdBY
+        nr7g83/UKByMv2jpbfoqr0MMhEyLeVl4HTvngpxiAH2TNzYOuQTYsysj+12PQUhh
+        NfZeCSd5kQ2vll+YcV+q/+APQLD6yBY/5mJ6KzJ/VXaqAf54B8D5OfAW8ja+q4S8
+        OwObw1sDeIiXVgJxGcmw5NakTXzLLouS4lIeLJo/w8h5AT4kacfRuTF+izO/lkmJ
+        F56Yyuk075kXqXJcxdmlOPxlIIi+Xm++i+2jPz5jH6sqj1NLjf7H1eCog==
+X-ME-Sender: <xms:nAoLZYwrTKoT42bcnpXZ4-w53D73C76DbJIuYsMLzYvbbB86qR_ffQ>
+    <xme:nAoLZcRulMbaUjUAhbE-QFya1Gxyi5QzCzhATtS7FolBRFqxN9c07Aga3yV4Qoxiq
+    eWbYSyImVFth6dskDE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudekfedgkeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:nAoLZaWZx_TRLb7BjvQU3lpTtrt3jJpa0avXJjdRrHX-EzABxErB_A>
+    <xmx:nAoLZWgVBoycMfqp10qcSIzofTqfa999ofexvDZjpX2k4ORya7JL9g>
+    <xmx:nAoLZaBR9j0jFMUdPxCKTuDNgoxms16P9lFOofBz07ktzPmbvA4Yng>
+    <xmx:nAoLZe6LFDULF3sZ_R6NM9MvFBnTENxcVdrZ0bbn_jFL0BMhje4eJA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id EC7C5B60089; Wed, 20 Sep 2023 11:07:07 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-761-gece9e40c48-fm-20230913.001-gece9e40c
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: Arches that don't support PREEMPT
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org, mgorman@suse.de,
-        rostedt@goodmis.org, jon.grimm@amd.com, bharata@amd.com,
-        raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
-        konrad.wilk@oracle.com, jgross@suse.com, andrew.cooper3@citrix.com,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Richard Weinberger <richard@nod.at>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-um@lists.infradead.org, Brian Cain <bcain@quicinc.com>,
-        linux-hexagon@vger.kernel.org,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
-References: <20230911150410.GC9098@noisy.programming.kicks-ass.net>
- <87h6o01w1a.fsf@oracle.com>
- <20230912082606.GB35261@noisy.programming.kicks-ass.net>
- <87cyyfxd4k.ffs@tglx>
- <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
- <87led2wdj0.ffs@tglx> <ZQmbhoQIINs8rLHp@casper.infradead.org>
- <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de>
- <20230919134218.GA39281@noisy.programming.kicks-ass.net>
- <a6c84803274116ec827cd4bdd4e72a8d0c304c27.camel@physik.fu-berlin.de>
- <20230919141627.GB39281@noisy.programming.kicks-ass.net>
-From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20230919141627.GB39281@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Clacks-Overhead: GNU Terry Pratchett
+Message-Id: <df784a58-23f8-43d2-8506-ab1d351da8fe@app.fastmail.com>
+In-Reply-To: <20230912135050.17155-1-tzimmermann@suse.de>
+References: <20230912135050.17155-1-tzimmermann@suse.de>
+Date:   Wed, 20 Sep 2023 11:06:48 -0400
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Thomas Zimmermann" <tzimmermann@suse.de>,
+        "Michael Ellerman" <mpe@ellerman.id.au>,
+        "Nicholas Piggin" <npiggin@gmail.com>,
+        "Christophe Leroy" <christophe.leroy@csgroup.eu>,
+        "Helge Deller" <deller@gmx.de>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-fbdev@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, sparclinux@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Linux-Arch <linux-arch@vger.kernel.org>
+Subject: Re: [PATCH v4 0/5] ppc, fbdev: Clean up fbdev mmap helper
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+On Tue, Sep 12, 2023, at 09:48, Thomas Zimmermann wrote:
+> Clean up and rename fb_pgprotect() to work without struct file. Then
+> refactor the implementation for PowerPC. This change has been discussed
+> at [1] in the context of refactoring fbdev's mmap code.
+>
+> The first two patches update fbdev and replace fbdev's fb_pgprotect()
+> with pgprot_framebuffer() on all architectures. The new helper's stream-
+> lined interface enables more refactoring within fbdev's mmap
+> implementation.
+>
+> Patches 3 to 5 adapt PowerPC's internal interfaces to provide
+> phys_mem_access_prot() that works without struct file. Neither the
+> architecture code or fbdev helpers need the parameter.
+>
+> v4:
+> 	* fix commit message (Christophe)
+> v3:
+> 	* rename fb_pgrotect() to pgprot_framebuffer() (Arnd)
 
+I had another look today, and everything look good to me now.
 
-On 19/09/2023 15:16, Peter Zijlstra wrote:
-> On Tue, Sep 19, 2023 at 03:48:09PM +0200, John Paul Adrian Glaubitz wrote:
->> On Tue, 2023-09-19 at 15:42 +0200, Peter Zijlstra wrote:
->>>> The agreement to kill off ia64 wasn't an invitation to kill off other stuff
->>>> that people are still working on! Can we please not do this?
->>>
->>> If you're working on one of them, then surely it's a simple matter of
->>> working on adding CONFIG_PREEMPT support :-)
->>
->> As Geert poined out, I'm not seeing anything particular problematic with the
->> architectures lacking CONFIG_PREEMPT at the moment. This seems to be more
->> something about organizing KConfig files.
-> 
-> The plan in the parent thread is to remove PREEMPT_NONE and
-> PREEMPT_VOLUNTARY and only keep PREEMPT_FULL.
-> 
->> I find it a bit unfair that maintainers of architectures that have huge companies
->> behind them use their manpower to urge less popular architectures for removal just
->> because they don't have 150 people working on the port so they can keep up with
->> design changes quickly.
-> 
-> PREEMPT isn't something new. Also, I don't think the arch part for
-> actually supporting it is particularly hard, mostly it is sticking the
-> preempt_schedule_irq() call in return from interrupt code path.
+Whole series
 
-That calls local_irq_enable() which does various signal related/irq pending work on UML. That in turn does no like being invoked again (as you may have already been invoked out of that) in the IRQ return path.
-
-So it is likely to end up being slightly more difficult than that for UML - it will need to be wrapped so it can be invoked from the "host" side signal code as well as invoked with some additional checks to avoid making a hash out of the IRQ handling.
-
-It may be necessary to modify some of the existing reentrancy prevention logic in the signal handlers as well and change it to make use of the preempt count instead of its own flags/counters.
-
-> 
-> If you convert the arch to generic-entry (a much larger undertaking)
-> then you get this for free.
-> 
-> _______________________________________________
-> linux-um mailing list
-> linux-um@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-um
-> 
-
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
