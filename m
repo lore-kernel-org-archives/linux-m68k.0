@@ -2,110 +2,109 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A27C6C04AA7
-	for <linux-m68k@archiver.kernel.org>; Wed, 20 Sep 2023 15:07:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CDD1C0031C
+	for <linux-m68k@archiver.kernel.org>; Wed, 20 Sep 2023 16:57:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235078AbjITPHT (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Wed, 20 Sep 2023 11:07:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48764 "EHLO
+        id S234870AbjITQ5I (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Wed, 20 Sep 2023 12:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235314AbjITPHS (ORCPT
-        <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Wed, 20 Sep 2023 11:07:18 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29AB0A1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Sep 2023 08:07:12 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id DE07F5C01BB;
-        Wed, 20 Sep 2023 11:07:08 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Wed, 20 Sep 2023 11:07:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1695222428; x=1695308828; bh=ms
-        4LUioRCx9g5Fcd6Nj2Z553BmfY/nfNy++/9p0eMTE=; b=BHuLRfyyuipWu6am6/
-        M3C5KuEVtPRgHdnUSWE2tXf1NF5z/c0HjnG1qXb1WaGZu8Uq7k1Lq5DXx3SfUhLJ
-        +AGNDQ0Gvdy1xUAqZGHxFG0dPweDd4IWaDHtLa1Ju8frSZGFQNlRlxX/YTmR+QTm
-        FrxvvQHeQGOAH4tKQgxAP8/n/XDBfPur4ivYpz7AqfbRaoZFC/0DB/LRt6ogTvDK
-        ibhf89hk7VyhvpN4sS3aoNoWA5NNg9KqAE+6NjLPwBok0RZB1mJOs3iV6MFt/MH4
-        Dtvydol1NjIVeiH0yas9c7mbU50veoZbaGHU9IbQP2FByO/vbbLSQKTuw+/nHr+K
-        WV2g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1695222428; x=1695308828; bh=ms4LUioRCx9g5
-        Fcd6Nj2Z553BmfY/nfNy++/9p0eMTE=; b=qgZHhiyUGnQdiRx/usTNHt32rPNJr
-        9B5WYZMfGf4Wh7FyO6A52lomoJ9ynn4fijFhbL1uXxQvXbZqDqwI3RtNixlUDdBY
-        nr7g83/UKByMv2jpbfoqr0MMhEyLeVl4HTvngpxiAH2TNzYOuQTYsysj+12PQUhh
-        NfZeCSd5kQ2vll+YcV+q/+APQLD6yBY/5mJ6KzJ/VXaqAf54B8D5OfAW8ja+q4S8
-        OwObw1sDeIiXVgJxGcmw5NakTXzLLouS4lIeLJo/w8h5AT4kacfRuTF+izO/lkmJ
-        F56Yyuk075kXqXJcxdmlOPxlIIi+Xm++i+2jPz5jH6sqj1NLjf7H1eCog==
-X-ME-Sender: <xms:nAoLZYwrTKoT42bcnpXZ4-w53D73C76DbJIuYsMLzYvbbB86qR_ffQ>
-    <xme:nAoLZcRulMbaUjUAhbE-QFya1Gxyi5QzCzhATtS7FolBRFqxN9c07Aga3yV4Qoxiq
-    eWbYSyImVFth6dskDE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudekfedgkeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:nAoLZaWZx_TRLb7BjvQU3lpTtrt3jJpa0avXJjdRrHX-EzABxErB_A>
-    <xmx:nAoLZWgVBoycMfqp10qcSIzofTqfa999ofexvDZjpX2k4ORya7JL9g>
-    <xmx:nAoLZaBR9j0jFMUdPxCKTuDNgoxms16P9lFOofBz07ktzPmbvA4Yng>
-    <xmx:nAoLZe6LFDULF3sZ_R6NM9MvFBnTENxcVdrZ0bbn_jFL0BMhje4eJA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id EC7C5B60089; Wed, 20 Sep 2023 11:07:07 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-761-gece9e40c48-fm-20230913.001-gece9e40c
+        with ESMTP id S234457AbjITQ5H (ORCPT
+        <rfc822;linux-m68k@vger.kernel.org>); Wed, 20 Sep 2023 12:57:07 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E67F99;
+        Wed, 20 Sep 2023 09:57:01 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 54B642017D;
+        Wed, 20 Sep 2023 16:57:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1695229020; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=arrJUNtqjU/izONia38ns6kqz5a2Ljs8vzyYYK7Z784=;
+        b=B5zucAFR4XyR8/5tRFN24icRoW3Li46w9AYROy5fgeQHJjHHmWe1VBSTJAgJzltxBUTQfj
+        A2xO9YmlmCUAHIhnO6bcsmBlTch94Tqw9Zrs2J99gUVXgRrg7N5SnwIhK/ADmsG7DqDXb5
+        NyDsDzox8Vmqa0S6njAX9jt6GCL7qPo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1695229020;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=arrJUNtqjU/izONia38ns6kqz5a2Ljs8vzyYYK7Z784=;
+        b=TEI3317KDo5yb9aq6yYTvDHKSUd5zcn5XGrWvmgB48JFj1/RVX24vTZ5l0fScD+mlAMJpN
+        CaN28xdVs9HUPMBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 420581333E;
+        Wed, 20 Sep 2023 16:57:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id s1QXEFwkC2UDdgAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 20 Sep 2023 16:57:00 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id AE8E8A077D; Wed, 20 Sep 2023 18:56:59 +0200 (CEST)
+Date:   Wed, 20 Sep 2023 18:56:59 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Peter Lafreniere <peter@n8pjl.ca>, segher@kernel.crashing.org,
+        anton.ivanov@cambridgegreys.com, ink@jurassic.park.msu.ru,
+        jack@suse.cz, johannes@sipsolutions.net,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-um@lists.infradead.org, linux@armlinux.org.uk,
+        linuxppc-dev@lists.ozlabs.org, reiserfs-devel@vger.kernel.org,
+        richard.henderson@linaro.org, richard@nod.at,
+        tsbogend@alpha.franken.de
+Subject: Re: [PATCH 0/7] arch/*: config: Remove ReiserFS from defconfig
+Message-ID: <20230920165659.coe7d2lydiaatoby@quack3>
+References: <20230918175529.19011-1-peter@n8pjl.ca>
+ <20230918234108.GN19790@gate.crashing.org>
+ <20230919000026.7409-1-peter@n8pjl.ca>
+ <20230919151630.GO19790@gate.crashing.org>
+ <20230919155832.4179-1-peter@n8pjl.ca>
+ <CAMuHMdXQ=xpeY3tmLXe1kgJbRtmVAn62rEhvzO+VB7GCgy4F8w@mail.gmail.com>
 MIME-Version: 1.0
-Message-Id: <df784a58-23f8-43d2-8506-ab1d351da8fe@app.fastmail.com>
-In-Reply-To: <20230912135050.17155-1-tzimmermann@suse.de>
-References: <20230912135050.17155-1-tzimmermann@suse.de>
-Date:   Wed, 20 Sep 2023 11:06:48 -0400
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Thomas Zimmermann" <tzimmermann@suse.de>,
-        "Michael Ellerman" <mpe@ellerman.id.au>,
-        "Nicholas Piggin" <npiggin@gmail.com>,
-        "Christophe Leroy" <christophe.leroy@csgroup.eu>,
-        "Helge Deller" <deller@gmx.de>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-fbdev@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, sparclinux@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Linux-Arch <linux-arch@vger.kernel.org>
-Subject: Re: [PATCH v4 0/5] ppc, fbdev: Clean up fbdev mmap helper
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdXQ=xpeY3tmLXe1kgJbRtmVAn62rEhvzO+VB7GCgy4F8w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Tue, Sep 12, 2023, at 09:48, Thomas Zimmermann wrote:
-> Clean up and rename fb_pgprotect() to work without struct file. Then
-> refactor the implementation for PowerPC. This change has been discussed
-> at [1] in the context of refactoring fbdev's mmap code.
->
-> The first two patches update fbdev and replace fbdev's fb_pgprotect()
-> with pgprot_framebuffer() on all architectures. The new helper's stream-
-> lined interface enables more refactoring within fbdev's mmap
-> implementation.
->
-> Patches 3 to 5 adapt PowerPC's internal interfaces to provide
-> phys_mem_access_prot() that works without struct file. Neither the
-> architecture code or fbdev helpers need the parameter.
->
-> v4:
-> 	* fix commit message (Christophe)
-> v3:
-> 	* rename fb_pgrotect() to pgprot_framebuffer() (Arnd)
+On Tue 19-09-23 18:02:39, Geert Uytterhoeven wrote:
+> Hi Peter,
+> 
+> On Tue, Sep 19, 2023 at 5:58 PM Peter Lafreniere <peter@n8pjl.ca> wrote:
+> >  2) Stops building an obsolete and largely-unused filesystem unnecessarily.
+> >     Some hobbyist targets like m68k and alpha may prefer to keep all filesystems
+> >     available until total removal, but others like arm and UML have no need for
+> >     ReiserFS to be built unless specifically configured.
+> 
+> As UML is used a lot for testing, isn't it actually counter-productive
+> to remove ReiserFS from the UML defconfig?  The less testing it
+> receives, the higher the chance of introducing regressions.
 
-I had another look today, and everything look good to me now.
+The only testing I know about for reiserfs (besides build testing) is
+syzbot. And regarding the people / bots doing filesystem testing I know
+none of them uses UML. Rather it is x86 VMs these days where reiserfs is
+disabled in the defconfig for a *long* time (many years). Also when you do
+filesystem testing, you usually just test the few filesystems you care
+about and for which you have all the tools installed. So frankly I don't
+see a good reason to leave reiserfs enabled in defconfigs. But sure if
+m68k or other arch wants to keep reiserfs in it's defconfig for some
+consistency reasons, I'm fine with it. I just suspect that for most archs
+this is just a historical reason.
 
-Whole series
-
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
