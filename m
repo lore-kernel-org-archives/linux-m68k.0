@@ -2,156 +2,159 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAB24CE7A8C
-	for <linux-m68k@archiver.kernel.org>; Mon, 25 Sep 2023 15:53:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 411C2E81806
+	for <linux-m68k@archiver.kernel.org>; Tue, 26 Sep 2023 00:33:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231689AbjIYPxm (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 25 Sep 2023 11:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51280 "EHLO
+        id S229460AbjIZAeA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 25 Sep 2023 20:34:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjIYPxl (ORCPT
+        with ESMTP id S231490AbjIZAd7 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 25 Sep 2023 11:53:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B41F5AF
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 25 Sep 2023 08:53:34 -0700 (PDT)
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-        by dfw.source.kernel.org (Postfix) with ESMTP id DB10E611C5;
-        Mon, 25 Sep 2023 15:53:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E3C9C433C8;
-        Mon, 25 Sep 2023 15:53:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695657213;
-        bh=IfkWee5NGXcjx2dGOM+wKo9pmVmBViwhCPWD/UdzuuQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=tDkFmT81D6oSNGqYSQjqpGYlSgfdMvsbHE6HpCPrdP7RZmhBsyfXOaZtuTR3ZNFu4
-         jxtvqsQXaGGZMdxIMLivsUiUlWsmK88pY3rGZZHlVBdO/3zQ2X9tSYmbYr3jBIXjhc
-         vtFpi2JG/0MuR2my9PL6fBriQGIZCPNPMOJ4Z7+vxQiQf7jXZtP+LwGb3lBLw6reiW
-         XwqDvdnSylbGfnwtu1B5gpar4gDbGW6nLAw8ApmvdZoRp/rjlx5UziY1peZeOPKGac
-         G/ecgEcLlB0Pz224zq/oYB9As3CCTkwAOSi/cwTyx+xzYMCXlhGBm8nEPZRXtpMg2D
-         26Ni3YWFv0miQ==
-From:   Arnd Bergmann <arnd@kernel.org>
+        Mon, 25 Sep 2023 20:33:59 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68AAA109
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 25 Sep 2023 17:33:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695688433; x=1727224433;
+  h=date:from:to:cc:subject:message-id;
+  bh=LmSTdyrG7Vse7XnJeAvLbTQSynIqHSy+Ee3Td9kETJE=;
+  b=O30zPChZssUzywPRZYEEticU5tyYTcgCLeU9JBUw3YCFX9CLy9hCiMUD
+   GtNsVXNf+z5jZWbzcxJq1Bxgm7WMKPOMayjKfZv7dMVlv4SkhVyiybZg1
+   8sujbLIfBpE1GV37U6PBRXEIRb9XMIMoONJ7wmVOd8zjChJluot9oHEkK
+   YLchTI3NRQjnkzCFYUoOjiPUYZFQY1892W72vtjJ5dNNVkO5xToPYLmpX
+   8KjdIY8O834Eoe/+60aSmYTAiQt9OHIdj7Ngh5htXUhDE+o+LJ7/aioE/
+   R+B1r4SuQmvgFk0baajuMVCjBQKRRUYaHzaAQvL3+VF8QNpO2LT5EctIK
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="360827934"
+X-IronPort-AV: E=Sophos;i="6.03,176,1694761200"; 
+   d="scan'208";a="360827934"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2023 17:33:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10843"; a="891978175"
+X-IronPort-AV: E=Sophos;i="6.03,176,1694761200"; 
+   d="scan'208";a="891978175"
+Received: from lkp-server02.sh.intel.com (HELO 32c80313467c) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 25 Sep 2023 17:32:36 -0700
+Received: from kbuild by 32c80313467c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qkw1C-0002Bv-0W;
+        Tue, 26 Sep 2023 00:33:38 +0000
+Date:   Tue, 26 Sep 2023 08:32:44 +0800
+From:   kernel test robot <lkp@intel.com>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] m68k: asm/io.h: mark mmio read addresses as const
-Date:   Mon, 25 Sep 2023 17:53:20 +0200
-Message-Id: <20230925155328.443664-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Cc:     linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:for-v6.7] BUILD SUCCESS
+ 0c316da2164c5980ad4b3da5d8efbb6019b5b18c
+Message-ID: <202309260841.t1nKJqiU-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-v6.7
+branch HEAD: 0c316da2164c5980ad4b3da5d8efbb6019b5b18c  m68k: Replace GPL 2.0+ README.legal boilerplate with SPDX
 
-Passing constant __iomem tokens into the readl() family of helpers
-or any of the others causes a warning on m68k:
+elapsed time: 734m
 
-include/asm-generic/io.h: In function 'ioread8_rep':
-arch/m68k/include/asm/io_mm.h:375:44: warning: passing argument 1 of 'raw_insb' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-     375 | #define readsb(port, buf, nr)     raw_insb((port), (u8
+configs tested: 88
+configs skipped: 159
 
-Add a 'const' modifier to the pointers to shut up the warnings here.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Closes: https://lore.kernel.org/oe-kbuild-all/202309251926.bPl23AhG-lkp@intel.com/
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/m68k/include/asm/raw_io.h | 26 ++++++++++++++------------
- 1 file changed, 14 insertions(+), 12 deletions(-)
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                   randconfig-001-20230926   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                         assabet_defconfig   gcc  
+arm                                 defconfig   gcc  
+arm                        multi_v7_defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20230926   gcc  
+i386         buildonly-randconfig-002-20230926   gcc  
+i386         buildonly-randconfig-003-20230926   gcc  
+i386         buildonly-randconfig-004-20230926   gcc  
+i386         buildonly-randconfig-005-20230926   gcc  
+i386         buildonly-randconfig-006-20230926   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20230926   gcc  
+i386                  randconfig-002-20230926   gcc  
+i386                  randconfig-003-20230926   gcc  
+i386                  randconfig-004-20230926   gcc  
+i386                  randconfig-005-20230926   gcc  
+i386                  randconfig-006-20230926   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20230926   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                        bcm63xx_defconfig   clang
+mips                      maltasmvp_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20230926   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                  randconfig-001-20230926   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64       buildonly-randconfig-001-20230926   gcc  
+x86_64       buildonly-randconfig-002-20230926   gcc  
+x86_64       buildonly-randconfig-003-20230926   gcc  
+x86_64       buildonly-randconfig-004-20230926   gcc  
+x86_64       buildonly-randconfig-005-20230926   gcc  
+x86_64       buildonly-randconfig-006-20230926   gcc  
+x86_64                randconfig-001-20230926   gcc  
+x86_64                randconfig-002-20230926   gcc  
+x86_64                randconfig-003-20230926   gcc  
+x86_64                randconfig-004-20230926   gcc  
+x86_64                randconfig-005-20230926   gcc  
+x86_64                randconfig-006-20230926   gcc  
+x86_64                randconfig-071-20230926   gcc  
+x86_64                randconfig-072-20230926   gcc  
+x86_64                randconfig-073-20230926   gcc  
+x86_64                randconfig-074-20230926   gcc  
+x86_64                randconfig-075-20230926   gcc  
+x86_64                randconfig-076-20230926   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
 
-diff --git a/arch/m68k/include/asm/raw_io.h b/arch/m68k/include/asm/raw_io.h
-index 3ba40bc1dfaa9..4bc29e57e57fb 100644
---- a/arch/m68k/include/asm/raw_io.h
-+++ b/arch/m68k/include/asm/raw_io.h
-@@ -17,15 +17,15 @@
-  * two accesses to memory, which may be undesirable for some devices.
-  */
- #define in_8(addr) \
--    ({ u8 __v = (*(__force volatile u8 *) (unsigned long)(addr)); __v; })
-+    ({ u8 __v = (*(__force const volatile u8 *) (unsigned long)(addr)); __v; })
- #define in_be16(addr) \
--    ({ u16 __v = (*(__force volatile u16 *) (unsigned long)(addr)); __v; })
-+    ({ u16 __v = (*(__force const volatile u16 *) (unsigned long)(addr)); __v; })
- #define in_be32(addr) \
--    ({ u32 __v = (*(__force volatile u32 *) (unsigned long)(addr)); __v; })
-+    ({ u32 __v = (*(__force const volatile u32 *) (unsigned long)(addr)); __v; })
- #define in_le16(addr) \
--    ({ u16 __v = le16_to_cpu(*(__force volatile __le16 *) (unsigned long)(addr)); __v; })
-+    ({ u16 __v = le16_to_cpu(*(__force const volatile __le16 *) (unsigned long)(addr)); __v; })
- #define in_le32(addr) \
--    ({ u32 __v = le32_to_cpu(*(__force volatile __le32 *) (unsigned long)(addr)); __v; })
-+    ({ u32 __v = le32_to_cpu(*(__force const volatile __le32 *) (unsigned long)(addr)); __v; })
- 
- #define out_8(addr,b) (void)((*(__force volatile u8 *) (unsigned long)(addr)) = (b))
- #define out_be16(addr,w) (void)((*(__force volatile u16 *) (unsigned long)(addr)) = (w))
-@@ -98,7 +98,8 @@
- #define raw_rom_outw(val, port) rom_out_be16((port), (val))
- #endif /* CONFIG_ATARI_ROM_ISA */
- 
--static inline void raw_insb(volatile u8 __iomem *port, u8 *buf, unsigned int len)
-+static inline void raw_insb(const volatile u8 __iomem *port, u8 *buf,
-+			    unsigned int len)
- {
- 	unsigned int i;
- 
-@@ -146,7 +147,7 @@ static inline void raw_outsb(volatile u8 __iomem *port, const u8 *buf,
- 	}
- }
- 
--static inline void raw_insw(volatile u16 __iomem *port, u16 *buf, unsigned int nr)
-+static inline void raw_insw(volatile const u16 __iomem *port, u16 *buf, unsigned int nr)
- {
- 	unsigned int tmp;
- 
-@@ -225,7 +226,7 @@ static inline void raw_outsw(volatile u16 __iomem *port, const u16 *buf,
- 	}
- }
- 
--static inline void raw_insl(volatile u32 __iomem *port, u32 *buf, unsigned int nr)
-+static inline void raw_insl(const volatile u32 __iomem *port, u32 *buf, unsigned int nr)
- {
- 	unsigned int tmp;
- 
-@@ -305,7 +306,7 @@ static inline void raw_outsl(volatile u32 __iomem *port, const u32 *buf,
- }
- 
- 
--static inline void raw_insw_swapw(volatile u16 __iomem *port, u16 *buf,
-+static inline void raw_insw_swapw(const volatile u16 __iomem *port, u16 *buf,
- 				  unsigned int nr)
- {
-     if ((nr) % 8)
-@@ -413,7 +414,8 @@ static inline void raw_outsw_swapw(volatile u16 __iomem *port, const u16 *buf,
- 
- 
- #if defined(CONFIG_ATARI_ROM_ISA)
--static inline void raw_rom_insb(volatile u8 __iomem *port, u8 *buf, unsigned int len)
-+static inline void raw_rom_insb(const volatile u8 __iomem *port, u8 *buf,
-+				unsigned int len)
- {
- 	unsigned int i;
- 
-@@ -430,7 +432,7 @@ static inline void raw_rom_outsb(volatile u8 __iomem *port, const u8 *buf,
- 		rom_out_8(port, *buf++);
- }
- 
--static inline void raw_rom_insw(volatile u16 __iomem *port, u16 *buf,
-+static inline void raw_rom_insw(const volatile u16 __iomem *port, u16 *buf,
- 				   unsigned int nr)
- {
- 	unsigned int i;
-@@ -448,7 +450,7 @@ static inline void raw_rom_outsw(volatile u16 __iomem *port, const u16 *buf,
- 		rom_out_be16(port, *buf++);
- }
- 
--static inline void raw_rom_insw_swapw(volatile u16 __iomem *port, u16 *buf,
-+static inline void raw_rom_insw_swapw(const volatile u16 __iomem *port, u16 *buf,
- 				   unsigned int nr)
- {
- 	unsigned int i;
 -- 
-2.39.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
