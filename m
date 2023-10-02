@@ -2,122 +2,92 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E6E8E784AC
-	for <linux-m68k@archiver.kernel.org>; Mon,  2 Oct 2023 13:12:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B14B7E784BA
+	for <linux-m68k@archiver.kernel.org>; Mon,  2 Oct 2023 19:42:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237310AbjJBNMf convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 2 Oct 2023 09:12:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33950 "EHLO
+        id S229623AbjJBTmr (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 2 Oct 2023 15:42:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236163AbjJBNMe (ORCPT
+        with ESMTP id S238941AbjJBTmp (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 2 Oct 2023 09:12:34 -0400
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EBE93
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Oct 2023 06:12:31 -0700 (PDT)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-59f6e6b7600so139752957b3.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 02 Oct 2023 06:12:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696252351; x=1696857151;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sH/JE9V8CyScfvNbdP533tae/oPZjky+UiCYZoWPE1E=;
-        b=gruTD1m7pN/cxtee8CA/perTZWWzDEIhlQNzzGLE6NVtl5cUQN6+AiC545oZvR1yPI
-         cHvBH9yCpxgjgzFcOjG1m8P0Ny+Bazf+J1JEbw8hVVhk3oYEAG6OMRYQRsJO4bG3s6f0
-         w8dOt/Invj5oy//QyxbWjDPGfx3r+F+/1YNE1bLXc2U6ub8ls6qDC1EPiBuSoCE6hUsz
-         bJ6buuIpgM3sJ1xlbhLaSd3xVMh5JT2BV/JuvLH4dH2u4npnqPthePBcbOw7cAzzBAOJ
-         mNFUZHoOa2Z1sUpoBFUGBoHNjI5VCur4xUGOcQfMKZbbfDRjk8l7EgLVSn3JW4APSBr6
-         mC2Q==
-X-Gm-Message-State: AOJu0Yydz77tRb03+sJBk8bfaRZleP1NjargRtRgrXa6tnxvrN1nyOgL
-        BVUQP015NvhSU4HbsASYyfpiPeQjJHcMow==
-X-Google-Smtp-Source: AGHT+IFiOFXD4xmYID0yJXUd22kTfJfV4V/mcHlf3kV4PEyCAn8ZJNkEq0LLxaQLY20lrECz5gM3rw==
-X-Received: by 2002:a0d:c2c2:0:b0:59c:a7f:ca7b with SMTP id e185-20020a0dc2c2000000b0059c0a7fca7bmr9238880ywd.51.1696252350568;
-        Mon, 02 Oct 2023 06:12:30 -0700 (PDT)
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
-        by smtp.gmail.com with ESMTPSA id q185-20020a8180c2000000b005956b451fb8sm7670378ywf.100.2023.10.02.06.12.30
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Oct 2023 06:12:30 -0700 (PDT)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-59f4f80d084so159854867b3.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 02 Oct 2023 06:12:30 -0700 (PDT)
-X-Received: by 2002:a81:5305:0:b0:57a:8ecb:11ad with SMTP id
- h5-20020a815305000000b0057a8ecb11admr11166921ywb.43.1696252350020; Mon, 02
- Oct 2023 06:12:30 -0700 (PDT)
+        Mon, 2 Oct 2023 15:42:45 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03BA291
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Oct 2023 12:42:42 -0700 (PDT)
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+        by ams.source.kernel.org (Postfix) with ESMTP id 46E85B81658;
+        Mon,  2 Oct 2023 19:42:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70430C433CA;
+        Mon,  2 Oct 2023 19:42:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696275760;
+        bh=hub9jctWu9D1FsgfFGloNeuVrD9nxiOWZcxoX8/pNEY=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=XH9xBab5FRDSSExMVXnRHhMOHn/MFLpBg7+WmEGQdxiVZ2Yp15ZqPTjJlr3o7U9Gj
+         89hUUOwFNHy10aYrnQnBFctzCeNwPhvlJnV6KLdxSeLO8cdH7tVT6f515+eD0CXQgW
+         eIBJ7BYhFVP9M69gnYj7bD2CvPdIQCuCcuq85D1tWMCCHydgcTrDieq42aDUSabkTU
+         W5l+JWhCiuecRSkaCK/lCpOtCdRTfocMTeLoaPQvI4WVQG8h1/a59O0hsSndYr0maH
+         NihCWjCq1zkokLkggPvXmypfQH6e0KSXGefa9WM1GIZVjfHoBKjHlacbOkrg7ylByf
+         8KziE+UPCxR9g==
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 4F9C727C0054;
+        Mon,  2 Oct 2023 15:42:39 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 02 Oct 2023 15:42:39 -0400
+X-ME-Sender: <xms:Lh0bZaSpkrJ9mh2udTx3-pXdeDEUTT9qU4ROPpEX7n5ddbcHBPg1fA>
+    <xme:Lh0bZfyuAbCwXPRw6Ex1AfPN39oTWIw3vbe65sf-KuKHpeOxqqpYtiAbES5Lx_JE1
+    G4CDOvFmUj4Oex2vqg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtgddutdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusehkvghrnhgvlhdrohhrgheqnecuggftrf
+    grthhtvghrnhepvddttdffjeefgeeggfelfefggefhheeffefftefggfelgeduveevtefh
+    feejveeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghrnhguodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduvdekhedujedt
+    vdegqddvkeejtddtvdeigedqrghrnhgupeepkhgvrhhnvghlrdhorhhgsegrrhhnuggsrd
+    guvg
+X-ME-Proxy: <xmx:Lh0bZX1BnkMPlhPOGUuhBaFwi4XMi73M0dlcoh60qhntYku9Iu1S3w>
+    <xmx:Lh0bZWCcVwMM9UqBGsqYQO6GM6xfBcu-jfDofXS84ZdZP6N7GT9Z4A>
+    <xmx:Lh0bZTiZj8dV_J_B0Yw8us2QOuV--92RScpiRSzzTUihVEJ2Y_QC3g>
+    <xmx:Lx0bZbbToS1y64_K-wVEEP8QgXSiMwEMKojjNBgVSzqBr5u9q-J61g>
+Feedback-ID: i36794607:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id C4FC7B6008D; Mon,  2 Oct 2023 15:42:38 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-958-g1b1b911df8-fm-20230927.002-g1b1b911d
 MIME-Version: 1.0
+Message-Id: <d5836a46-c614-4270-8473-05c98bbab41f@app.fastmail.com>
+In-Reply-To: <CAMuHMdWFCSQgsf_0qwdkkAif3zDXM2N-WEymJBa1eeT4N6Ezcw@mail.gmail.com>
 References: <20230925155328.443664-1-arnd@kernel.org>
-In-Reply-To: <20230925155328.443664-1-arnd@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 2 Oct 2023 15:12:17 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWFCSQgsf_0qwdkkAif3zDXM2N-WEymJBa1eeT4N6Ezcw@mail.gmail.com>
-Message-ID: <CAMuHMdWFCSQgsf_0qwdkkAif3zDXM2N-WEymJBa1eeT4N6Ezcw@mail.gmail.com>
+ <CAMuHMdWFCSQgsf_0qwdkkAif3zDXM2N-WEymJBa1eeT4N6Ezcw@mail.gmail.com>
+Date:   Mon, 02 Oct 2023 21:42:18 +0200
+From:   "Arnd Bergmann" <arnd@kernel.org>
+To:     "Geert Uytterhoeven" <geert@linux-m68k.org>
+Cc:     "kernel test robot" <lkp@intel.com>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] m68k: asm/io.h: mark mmio read addresses as const
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     kernel test robot <lkp@intel.com>, linux-m68k@lists.linux-m68k.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi Arnd,
-
-On Mon, Sep 25, 2023 at 5:53 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Oct 2, 2023, at 15:12, Geert Uytterhoeven wrote:
+> On Mon, Sep 25, 2023 at 5:53=E2=80=AFPM Arnd Bergmann <arnd@kernel.org=
+> wrote:
+>>  #define out_8(addr,b) (void)((*(__force volatile u8 *) (unsigned lon=
+g)(addr)) =3D (b))
+>>  #define out_be16(addr,w) (void)((*(__force volatile u16 *) (unsigned=
+ long)(addr)) =3D (w))
 >
-> Passing constant __iomem tokens into the readl() family of helpers
-> or any of the others causes a warning on m68k:
->
-> include/asm-generic/io.h: In function 'ioread8_rep':
-> arch/m68k/include/asm/io_mm.h:375:44: warning: passing argument 1 of 'raw_insb' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
->      375 | #define readsb(port, buf, nr)     raw_insb((port), (u8
->
-> Add a 'const' modifier to the pointers to shut up the warnings here.
->
-> Closes: https://lore.kernel.org/oe-kbuild-all/202309251926.bPl23AhG-lkp@intel.com/
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Shouldn't a similar change be made to rom_in_{8,be16,le16}()?
 
-Thanks for your patch!
+Right, these seem to have escaped my regex searches.
 
-> --- a/arch/m68k/include/asm/raw_io.h
-> +++ b/arch/m68k/include/asm/raw_io.h
-> @@ -17,15 +17,15 @@
->   * two accesses to memory, which may be undesirable for some devices.
->   */
->  #define in_8(addr) \
-> -    ({ u8 __v = (*(__force volatile u8 *) (unsigned long)(addr)); __v; })
-> +    ({ u8 __v = (*(__force const volatile u8 *) (unsigned long)(addr)); __v; })
->  #define in_be16(addr) \
-> -    ({ u16 __v = (*(__force volatile u16 *) (unsigned long)(addr)); __v; })
-> +    ({ u16 __v = (*(__force const volatile u16 *) (unsigned long)(addr)); __v; })
->  #define in_be32(addr) \
-> -    ({ u32 __v = (*(__force volatile u32 *) (unsigned long)(addr)); __v; })
-> +    ({ u32 __v = (*(__force const volatile u32 *) (unsigned long)(addr)); __v; })
->  #define in_le16(addr) \
-> -    ({ u16 __v = le16_to_cpu(*(__force volatile __le16 *) (unsigned long)(addr)); __v; })
-> +    ({ u16 __v = le16_to_cpu(*(__force const volatile __le16 *) (unsigned long)(addr)); __v; })
->  #define in_le32(addr) \
-> -    ({ u32 __v = le32_to_cpu(*(__force volatile __le32 *) (unsigned long)(addr)); __v; })
-> +    ({ u32 __v = le32_to_cpu(*(__force const volatile __le32 *) (unsigned long)(addr)); __v; })
->
->  #define out_8(addr,b) (void)((*(__force volatile u8 *) (unsigned long)(addr)) = (b))
->  #define out_be16(addr,w) (void)((*(__force volatile u16 *) (unsigned long)(addr)) = (w))
+> I can do that while applying...
 
-Shouldn't a similar change be made to rom_in_{8,be16,le16}()?
+Ok, thanks!
 
-I can do that while applying...
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+     Arnd
