@@ -2,83 +2,79 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6D59E81E03
-	for <linux-m68k@archiver.kernel.org>; Fri,  6 Oct 2023 14:41:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A166EE81E04
+	for <linux-m68k@archiver.kernel.org>; Fri,  6 Oct 2023 14:41:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232511AbjJFOlY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        id S232558AbjJFOlY (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
         Fri, 6 Oct 2023 10:41:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57230 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230158AbjJFOlX (ORCPT
+        with ESMTP id S232385AbjJFOlY (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 6 Oct 2023 10:41:23 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B491DB
+        Fri, 6 Oct 2023 10:41:24 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B66AE4
         for <linux-m68k@lists.linux-m68k.org>; Fri,  6 Oct 2023 07:41:21 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:5e53:403c:300c:38ca])
-        by albert.telenet-ops.be with bizsmtp
-        id uehJ2A0020nPCdM06ehJGo; Fri, 06 Oct 2023 16:41:18 +0200
+        by michel.telenet-ops.be with bizsmtp
+        id uehJ2A0020nPCdM06ehJJC; Fri, 06 Oct 2023 16:41:18 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qom10-005X4e-33;
+        id 1qom10-005X4T-1Q;
         Fri, 06 Oct 2023 16:41:18 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qom10-006v2U-0f;
-        Fri, 06 Oct 2023 16:41:18 +0200
+        id 1qom0z-006v2J-Ue;
+        Fri, 06 Oct 2023 16:41:17 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
 Cc:     linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 3/5] m68k: kernel: Fix indentation by 7 spaces in traps.c
-Date:   Fri,  6 Oct 2023 16:41:12 +0200
-Message-Id: <d1b38c9d389c1135f7856cf5f90852c2f1584c50.1696602993.git.geert@linux-m68k.org>
+Subject: [PATCH 0/5] m68k: Fix indentation by odd number of spaces
+Date:   Fri,  6 Oct 2023 16:41:09 +0200
+Message-Id: <cover.1696602993.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1696602993.git.geert@linux-m68k.org>
-References: <cover.1696602993.git.geert@linux-m68k.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Indentation should use TABs, not spaces.
+	Hi all,
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/kernel/traps.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+This patch series fixes indentation by an odd number of spaces in a few
+files I was working on.  I also fixed a few more whitespace errors in
+reindented code while at it.  No functional changes.
+    
+To be queued in the m68k for-v6.7 branch.
 
-diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
-index 8ee773d29954921c..53d0cf343d90f9b2 100644
---- a/arch/m68k/kernel/traps.c
-+++ b/arch/m68k/kernel/traps.c
-@@ -486,10 +486,10 @@ static inline void bus_error030 (struct frame *fp)
- 	if (buserr_type & SUN3_BUSERR_INVALID) {
- 		if (!mmu_emu_handle_fault(addr, 1, 0))
- 			do_page_fault (&fp->ptregs, addr, 0);
--       } else {
-+	} else {
- 		pr_debug("protection fault on insn access (segv).\n");
- 		force_sig (SIGSEGV);
--       }
-+	}
- }
- #else
- #if defined(CPU_M68020_OR_M68030)
-@@ -850,9 +850,9 @@ void show_registers(struct pt_regs *regs)
- 	pr_info("PC: [<%08lx>] %pS\n", regs->pc, (void *)regs->pc);
- 	pr_info("SR: %04x  SP: %p  a2: %08lx\n", regs->sr, regs, regs->a2);
- 	pr_info("d0: %08lx    d1: %08lx    d2: %08lx    d3: %08lx\n",
--	       regs->d0, regs->d1, regs->d2, regs->d3);
-+		regs->d0, regs->d1, regs->d2, regs->d3);
- 	pr_info("d4: %08lx    d5: %08lx    a0: %08lx    a1: %08lx\n",
--	       regs->d4, regs->d5, regs->a0, regs->a1);
-+		regs->d4, regs->d5, regs->a0, regs->a1);
- 
- 	pr_info("Process %s (pid: %d, task=%p)\n",
- 		current->comm, task_pid_nr(current), current);
+Geert Uytterhoeven (5):
+  m68k: Fix indentation by 7 spaces in <asm/io_mm.h>
+  m68k: sun3: Fix indentation by 5 or 7 spaces
+  m68k: kernel: Fix indentation by 7 spaces in traps.c
+  m68k: Fix indentation by 2 or 5 spaces in <asm/page_mm.h>
+  m68k: fpsp040: Fix indentation by 5 spaces
+
+ arch/m68k/fpsp040/slogn.S            | 88 ++++++++++++++--------------
+ arch/m68k/include/asm/io_mm.h        | 24 ++++----
+ arch/m68k/include/asm/page_mm.h      | 45 +++++++-------
+ arch/m68k/include/asm/sun3_pgalloc.h | 10 ++--
+ arch/m68k/include/asm/tlbflush.h     | 72 +++++++++++------------
+ arch/m68k/kernel/traps.c             |  8 +--
+ arch/m68k/sun3/mmu_emu.c             | 40 ++++++-------
+ 7 files changed, 142 insertions(+), 145 deletions(-)
+
 -- 
 2.34.1
 
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
