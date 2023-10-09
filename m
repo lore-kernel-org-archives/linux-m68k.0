@@ -2,33 +2,33 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78002E95A97
-	for <linux-m68k@archiver.kernel.org>; Mon,  9 Oct 2023 07:41:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53E0AE95A8E
+	for <linux-m68k@archiver.kernel.org>; Mon,  9 Oct 2023 07:41:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345414AbjJIHlo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 9 Oct 2023 03:41:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47258 "EHLO
+        id S1345426AbjJIHls (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 9 Oct 2023 03:41:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345374AbjJIHll (ORCPT
+        with ESMTP id S1345429AbjJIHlr (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 9 Oct 2023 03:41:41 -0400
+        Mon, 9 Oct 2023 03:41:47 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3510AA6;
-        Mon,  9 Oct 2023 00:41:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42037A6;
+        Mon,  9 Oct 2023 00:41:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=nLXJ74DIlmTyEfUCPxCnxHOKUZ2EbH9X62hrp3In1pc=; b=hq60RbawWuWPnmJoa6koV41w5d
-        p/tEvgwr8UukI8BNvVpBHNNhRu/vYr1p2+gih4SNOvJgyerc/KWa8HPMkFWqafLstqAQ71HTebLaN
-        5fiEpv7awg8J1VVK3Gm40cG+/rAztFkrN5xrL9DOQcgUA9HV6MMsCHSAeSkzBjNObgHh4lF9sDUpe
-        eTapMH9h/3kty5AexsC6AQDKGCd2yEFUiRaUVQMs77kagGkZs6POnIg0RDRt0/A51t9RKEidmra51
-        tuvsVI5QU0tf9wjzwZ2/fPXUzH+Woynp9WL/yi4q2uVjdnqoNNIX2g+VcbOMMbsuUcSF3+pZVm3gD
-        gX6AF1xw==;
+        bh=VF0gxGFSBA+cMueOmLdHXrnjVJ09h1I3YlloleiMbFI=; b=0OOkYrVz0/HNB0kgh5KBUuvSze
+        2BQc+JNZ4Ny2yFzQOSkvEtUZASdUyknYL6PteaIeKQSoe+eAdhNqcK2f9GPMKTqjLXNM+Hko6QL/A
+        jrW+rfPvsjLaDYV8HKdTRsyq2T221cRR/jeQj+8ywMAObYuZiSAyT/Vbxy/bVb4m9ao5HODS7HG5u
+        x/gnyRUKZlImsnu959sLFWj7VCxSawisTuUzCzkTKvwJk9RnQsE2NmFVForKiwJ4BJtSmLLS55LTZ
+        GdAYu7Gm061Y+/cgSh+8hwFbIcFl0O+IFAx877BKIZYH1rwkXdFuiq9bss44iWhjsBuNGb3oCRANY
+        y2fp0asA==;
 Received: from [2001:4bb8:182:6657:e5a9:584c:4324:b228] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qpktS-009uhw-2z;
-        Mon, 09 Oct 2023 07:41:35 +0000
+        id 1qpktY-009uj7-2R;
+        Mon, 09 Oct 2023 07:41:41 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     iommu@lists.linux.dev
 Cc:     Robin Murphy <robin.murphy@arm.com>,
@@ -40,9 +40,9 @@ Cc:     Robin Murphy <robin.murphy@arm.com>,
         NXP Linux Team <linux-imx@nxp.com>,
         linux-m68k@lists.linux-m68k.org, netdev@vger.kernel.org,
         Jim Quinlan <james.quinlan@broadcom.com>
-Subject: [PATCH 3/6] dma-direct: simplify the use atomic pool logic in dma_direct_alloc
-Date:   Mon,  9 Oct 2023 09:41:18 +0200
-Message-Id: <20231009074121.219686-4-hch@lst.de>
+Subject: [PATCH 5/6] net: fec: use dma_alloc_noncoherent for m532x
+Date:   Mon,  9 Oct 2023 09:41:20 +0200
+Message-Id: <20231009074121.219686-6-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231009074121.219686-1-hch@lst.de>
 References: <20231009074121.219686-1-hch@lst.de>
@@ -53,57 +53,143 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-The logic in dma_direct_alloc when to use the atomic pool vs remapping
-grew a bit unreadable.  Consolidate it into a single check, and clean
-up the set_uncached vs remap logic a bit as well.
+The coldfire platforms can't properly implement dma_alloc_coherent and
+currently just return noncoherent memory from dma_alloc_coherent.
+
+The fec driver than works around this with a flush of all caches in the
+receive path. Make this hack a little less bad by using the explicit
+dma_alloc_noncoherent API and documenting the hacky cache flushes so
+that the DMA API level hack can be removed.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- kernel/dma/direct.c | 25 ++++++++++---------------
- 1 file changed, 10 insertions(+), 15 deletions(-)
+ drivers/net/ethernet/freescale/fec_main.c | 84 ++++++++++++++++++++---
+ 1 file changed, 75 insertions(+), 9 deletions(-)
 
-diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-index ec410af1d8a14e..1327d04fa32a25 100644
---- a/kernel/dma/direct.c
-+++ b/kernel/dma/direct.c
-@@ -234,27 +234,22 @@ void *dma_direct_alloc(struct device *dev, size_t size,
- 					dma_handle);
+diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+index 77c8e9cfb44562..aa032ea0ebf0c2 100644
+--- a/drivers/net/ethernet/freescale/fec_main.c
++++ b/drivers/net/ethernet/freescale/fec_main.c
+@@ -406,6 +406,70 @@ static void fec_dump(struct net_device *ndev)
+ 	} while (bdp != txq->bd.base);
+ }
  
- 		/*
--		 * Otherwise remap if the architecture is asking for it.  But
--		 * given that remapping memory is a blocking operation we'll
--		 * instead have to dip into the atomic pools.
-+		 * Otherwise we require the architecture to either be able to
-+		 * mark arbitrary parts of the kernel direct mapping uncached,
-+		 * or remapped it uncached.
- 		 */
-+		set_uncached = IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED);
- 		remap = IS_ENABLED(CONFIG_DMA_DIRECT_REMAP);
--		if (remap) {
--			if (dma_direct_use_pool(dev, gfp))
--				return dma_direct_alloc_from_pool(dev, size,
--						dma_handle, gfp);
--		} else {
--			if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED))
--				return NULL;
--			set_uncached = true;
--		}
-+		if (!set_uncached && !remap)
-+			return NULL;
- 	}
++/*
++ * Coldfire does not support DMA coherent allocations, and has historically used
++ * a band-aid with a manual flush in fec_enet_rx_queue.
++ */
++#ifdef CONFIG_COLDFIRE
++static void *fec_dma_alloc(struct device *dev, size_t size, dma_addr_t *handle,
++		gfp_t gfp)
++{
++	return dma_alloc_noncoherent(dev, size, handle, DMA_BIDIRECTIONAL, gfp);
++}
++
++static void fec_dma_free(struct device *dev, size_t size, void *cpu_addr,
++		dma_addr_t handle)
++{
++	dma_free_noncoherent(dev, size, cpu_addr, handle, DMA_BIDIRECTIONAL);
++}
++#else /* CONFIG_COLDFIRE */
++static void *fec_dma_alloc(struct device *dev, size_t size, dma_addr_t *handle,
++		gfp_t gfp)
++{
++	return dma_alloc_coherent(dev, size, handle, gfp);
++}
++
++static void fec_dma_free(struct device *dev, size_t size, void *cpu_addr,
++		dma_addr_t handle)
++{
++	dma_free_coherent(dev, size, cpu_addr, handle);
++}
++#endif /* !CONFIG_COLDFIRE */
++
++struct fec_dma_devres {
++	size_t		size;
++	void		*vaddr;
++	dma_addr_t	dma_handle;
++};
++
++static void fec_dmam_release(struct device *dev, void *res)
++{
++	struct fec_dma_devres *this = res;
++
++	fec_dma_free(dev, this->size, this->vaddr, this->dma_handle);
++}
++
++static void *fec_dmam_alloc(struct device *dev, size_t size, dma_addr_t *handle,
++		gfp_t gfp)
++{
++	struct fec_dma_devres *dr;
++	void *vaddr;
++
++	dr = devres_alloc(fec_dmam_release, sizeof(*dr), gfp);
++	if (!dr)
++		return NULL;
++	vaddr = fec_dma_alloc(dev, size, handle, gfp);
++	if (!vaddr) {
++		devres_free(dr);
++		return NULL;
++	}
++	dr->vaddr = vaddr;
++	dr->dma_handle = *handle;
++	dr->size = size;
++	devres_add(dev, dr);
++	return vaddr;
++}
++
+ static inline bool is_ipv4_pkt(struct sk_buff *skb)
+ {
+ 	return skb->protocol == htons(ETH_P_IP) && ip_hdr(skb)->version == 4;
+@@ -1661,6 +1725,10 @@ fec_enet_rx_queue(struct net_device *ndev, int budget, u16 queue_id)
+ #endif
  
- 	/*
--	 * Decrypting memory may block, so allocate the memory from the atomic
--	 * pools if we can't block.
-+	 * Remapping or decrypting memory may block, allocate the memory from
-+	 * the atomic pools instead if we aren't allowed block.
- 	 */
--	if (force_dma_unencrypted(dev) && dma_direct_use_pool(dev, gfp))
-+	if ((remap || force_dma_unencrypted(dev)) &&
-+	    dma_direct_use_pool(dev, gfp))
- 		return dma_direct_alloc_from_pool(dev, size, dma_handle, gfp);
+ #ifdef CONFIG_M532x
++	/*
++	 * Hacky flush of all caches instead of using the DMA API for the TSO
++	 * headers.
++	 */
+ 	flush_cache_all();
+ #endif
+ 	rxq = fep->rx_queue[queue_id];
+@@ -3288,10 +3356,9 @@ static void fec_enet_free_queue(struct net_device *ndev)
+ 	for (i = 0; i < fep->num_tx_queues; i++)
+ 		if (fep->tx_queue[i] && fep->tx_queue[i]->tso_hdrs) {
+ 			txq = fep->tx_queue[i];
+-			dma_free_coherent(&fep->pdev->dev,
+-					  txq->bd.ring_size * TSO_HEADER_SIZE,
+-					  txq->tso_hdrs,
+-					  txq->tso_hdrs_dma);
++			fec_dma_free(&fep->pdev->dev,
++				     txq->bd.ring_size * TSO_HEADER_SIZE,
++				     txq->tso_hdrs, txq->tso_hdrs_dma);
+ 		}
  
- 	/* we always manually zero the memory once we are done */
+ 	for (i = 0; i < fep->num_rx_queues; i++)
+@@ -3321,10 +3388,9 @@ static int fec_enet_alloc_queue(struct net_device *ndev)
+ 		txq->tx_stop_threshold = FEC_MAX_SKB_DESCS;
+ 		txq->tx_wake_threshold = FEC_MAX_SKB_DESCS + 2 * MAX_SKB_FRAGS;
+ 
+-		txq->tso_hdrs = dma_alloc_coherent(&fep->pdev->dev,
++		txq->tso_hdrs = fec_dma_alloc(&fep->pdev->dev,
+ 					txq->bd.ring_size * TSO_HEADER_SIZE,
+-					&txq->tso_hdrs_dma,
+-					GFP_KERNEL);
++					&txq->tso_hdrs_dma, GFP_KERNEL);
+ 		if (!txq->tso_hdrs) {
+ 			ret = -ENOMEM;
+ 			goto alloc_failed;
+@@ -4043,8 +4109,8 @@ static int fec_enet_init(struct net_device *ndev)
+ 	bd_size = (fep->total_tx_ring_size + fep->total_rx_ring_size) * dsize;
+ 
+ 	/* Allocate memory for buffer descriptors. */
+-	cbd_base = dmam_alloc_coherent(&fep->pdev->dev, bd_size, &bd_dma,
+-				       GFP_KERNEL);
++	cbd_base = fec_dmam_alloc(&fep->pdev->dev, bd_size, &bd_dma,
++				  GFP_KERNEL);
+ 	if (!cbd_base) {
+ 		ret = -ENOMEM;
+ 		goto free_queue_mem;
 -- 
 2.39.2
 
