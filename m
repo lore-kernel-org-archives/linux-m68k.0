@@ -2,116 +2,92 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15885E95A91
-	for <linux-m68k@archiver.kernel.org>; Mon,  9 Oct 2023 07:41:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 378E5E95A91
+	for <linux-m68k@archiver.kernel.org>; Mon,  9 Oct 2023 08:39:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345374AbjJIHl5 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 9 Oct 2023 03:41:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60448 "EHLO
+        id S234433AbjJIIjd convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 9 Oct 2023 04:39:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345431AbjJIHlt (ORCPT
+        with ESMTP id S234407AbjJIIjd (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 9 Oct 2023 03:41:49 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CE08F;
-        Mon,  9 Oct 2023 00:41:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=J0N33buiHeappg+m+Dq08xJB46xuxlX8SMtn/y29oQQ=; b=bi4nkMlX1sEIWe8AWc45AGSIF7
-        AEkSsS6pt1TsxqOXMseRQdPnQTmbR6v5Jeuaiguhx0knPIU/tn9nMdZz94UP5eWWpTRtnhKp9tQN7
-        HfsoaPEGnMzG53bko4vPHw4LZhJx9w2yYO4wCZf80KQbi856wX6nNLpBwhbFbSbkf8Qzw4imJVor3
-        oer5ztdx1IAocg6Fxtbqo7paappgzw/bn6Fob9gWln2LHLBRsXXP++7vChe1s+hBnbbHOKENzv6k+
-        19wEs3F6gK3o546x5/W9FiuIwagCn3d6bcSBs85elqPGduZ9KFXhBGked64J8b/ZErWzoGLBZ0dYt
-        ndWgQZww==;
-Received: from [2001:4bb8:182:6657:e5a9:584c:4324:b228] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qpktb-009ukC-17;
-        Mon, 09 Oct 2023 07:41:43 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     iommu@lists.linux.dev
-Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Mon, 9 Oct 2023 04:39:33 -0400
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5585A3
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  9 Oct 2023 01:39:31 -0700 (PDT)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5a21ea6baccso51837517b3.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 09 Oct 2023 01:39:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696840771; x=1697445571;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XCa60SJYenNTin9ORA6mgu5HPNBKWXiBobv0OFeXlBg=;
+        b=wbfwihzIxFYa4f5v1mZMB2qUsxiMoN8ZAceOhqu5AmFXrc1xnEel6tTduoy7Qi5mtj
+         uV+xOApWQv3IHo+RKGUqm7mGs0p0ihkpgxJ0ZU9Yx/uOVh2trTwMJ/ad4DUxk0gGWNQ6
+         //bmU28dic/SB9/MR5LZzMrdVqgCLLekIvVTsrcTpI5xFa4e9d4hdognX8s1hjDH+ctN
+         7Xf7RaSzr0fT1yueRFrPESfSQljpXW5lM4+E9ZSNxtIBcqiIC/+hvEN7legHI4EhMrfi
+         iycCfaufSxxs9uLpQMtBAsO/bLegqUhh0bRVtJmVPPleKaJTfz0eS7YE34tSZCopCGgI
+         8YJQ==
+X-Gm-Message-State: AOJu0Yyv2B46Ksh+LSLejT9y9B3gDX4gHZ7W0CzX53lhVRYoJ/9S0FvN
+        Mo2HAf98bcuixgKb0VzTrpEYAcaEnlh6mA==
+X-Google-Smtp-Source: AGHT+IGwcNRbujvHRXfn8TkVywJlh/LLOd8QYbw72myMfgN8+dhsT7xDn+4XwSwHH9y4VNpoGnk1ow==
+X-Received: by 2002:a0d:f182:0:b0:5a4:3e67:35a3 with SMTP id a124-20020a0df182000000b005a43e6735a3mr14402671ywf.49.1696840770626;
+        Mon, 09 Oct 2023 01:39:30 -0700 (PDT)
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
+        by smtp.gmail.com with ESMTPSA id t22-20020a818316000000b0059beb468cb3sm3561065ywf.32.2023.10.09.01.39.29
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Oct 2023 01:39:30 -0700 (PDT)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5a21ea6baccso51837367b3.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 09 Oct 2023 01:39:29 -0700 (PDT)
+X-Received: by 2002:a0d:d443:0:b0:5a2:3734:507 with SMTP id
+ w64-20020a0dd443000000b005a237340507mr16135074ywd.21.1696840769802; Mon, 09
+ Oct 2023 01:39:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231009074121.219686-1-hch@lst.de>
+In-Reply-To: <20231009074121.219686-1-hch@lst.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 9 Oct 2023 10:39:18 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdU281a+=9SApaCRy5os3k73HGZhQ=Fsv58OD4C430iDDg@mail.gmail.com>
+Message-ID: <CAMuHMdU281a+=9SApaCRy5os3k73HGZhQ=Fsv58OD4C430iDDg@mail.gmail.com>
+Subject: Re: fix the non-coherent coldfire dma_alloc_coherent
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     iommu@lists.linux.dev, Robin Murphy <robin.murphy@arm.com>,
         Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
         Wei Fang <wei.fang@nxp.com>,
         Shenwei Wang <shenwei.wang@nxp.com>,
         Clark Wang <xiaoning.wang@nxp.com>,
         NXP Linux Team <linux-imx@nxp.com>,
         linux-m68k@lists.linux-m68k.org, netdev@vger.kernel.org,
-        Jim Quinlan <james.quinlan@broadcom.com>
-Subject: [PATCH 6/6] m68k: don't provide arch_dma_alloc for nommu/coldfire
-Date:   Mon,  9 Oct 2023 09:41:21 +0200
-Message-Id: <20231009074121.219686-7-hch@lst.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231009074121.219686-1-hch@lst.de>
-References: <20231009074121.219686-1-hch@lst.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Greg Ungerer <gerg@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-m68knommu and coldfire can't provide coherent DMA allocations at all.
-Currently they simply return normal kernel memory from
-dma_alloc_coherent, which is broken and breaks the API contract.  Now
-that the only DMA capable driver on these systems has been switched
-to use explicitly non-coherent allocations we can drop this hack and
-return NULL from dma_alloc_coherent.
+CC Greg
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/m68k/Kconfig      |  1 -
- arch/m68k/kernel/dma.c | 23 -----------------------
- 2 files changed, 24 deletions(-)
+On Mon, Oct 9, 2023 at 9:41 AM Christoph Hellwig <hch@lst.de> wrote:
+> this is the next attempt to not return memory that is not DMA coherent
+> on coldfire/m68knommu.  The last one needed more fixups in the fec
+> driver, which this versions includes.  On top of that I've also added
+> a few more cleanups to the core dma allocation code.
+>
+> Jim: any work to support the set_uncached and remap method for arm32
+> should probably be based on this, and patch 3 should make that
+> selection a little easier.
 
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 0430b8ba6b5cc6..3e318bf9504c5b 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -3,7 +3,6 @@ config M68K
- 	bool
- 	default y
- 	select ARCH_32BIT_OFF_T
--	select ARCH_DMA_ALLOC if !MMU || COLDFIRE
- 	select ARCH_HAS_BINFMT_FLAT
- 	select ARCH_HAS_CPU_FINALIZE_INIT if MMU
- 	select ARCH_HAS_CURRENT_STACK_POINTER
-diff --git a/arch/m68k/kernel/dma.c b/arch/m68k/kernel/dma.c
-index 2e192a5df949bb..eb164ef1a45ebd 100644
---- a/arch/m68k/kernel/dma.c
-+++ b/arch/m68k/kernel/dma.c
-@@ -33,29 +33,6 @@ pgprot_t pgprot_dmacoherent(pgprot_t prot)
- 	}
- 	return prot;
- }
--#else
--void *arch_dma_alloc(struct device *dev, size_t size, dma_addr_t *dma_handle,
--		gfp_t gfp, unsigned long attrs)
--{
--	void *ret;
--
--	if (dev == NULL || (*dev->dma_mask < 0xffffffff))
--		gfp |= GFP_DMA;
--	ret = (void *)__get_free_pages(gfp, get_order(size));
--
--	if (ret != NULL) {
--		memset(ret, 0, size);
--		*dma_handle = virt_to_phys(ret);
--	}
--	return ret;
--}
--
--void arch_dma_free(struct device *dev, size_t size, void *vaddr,
--		dma_addr_t dma_handle, unsigned long attrs)
--{
--	free_pages((unsigned long)vaddr, get_order(size));
--}
--
- #endif /* CONFIG_MMU && !CONFIG_COLDFIRE */
- 
- void arch_sync_dma_for_device(phys_addr_t handle, size_t size,
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.39.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
