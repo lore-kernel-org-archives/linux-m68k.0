@@ -2,57 +2,80 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 362BBE95A8E
-	for <linux-m68k@archiver.kernel.org>; Mon,  9 Oct 2023 12:48:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1ED6E95A91
+	for <linux-m68k@archiver.kernel.org>; Mon,  9 Oct 2023 12:58:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376447AbjJIMsN (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 9 Oct 2023 08:48:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32970 "EHLO
+        id S1376598AbjJIM6u (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 9 Oct 2023 08:58:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346437AbjJIMsN (ORCPT
+        with ESMTP id S1376530AbjJIM6u (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 9 Oct 2023 08:48:13 -0400
+        Mon, 9 Oct 2023 08:58:50 -0400
 Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D2A93
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  9 Oct 2023 05:48:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4861B8F
+        for <linux-m68k@lists.linux-m68k.org>; Mon,  9 Oct 2023 05:58:49 -0700 (PDT)
 Received: by verein.lst.de (Postfix, from userid 2407)
-        id 3A32068CFE; Mon,  9 Oct 2023 14:48:06 +0200 (CEST)
-Date:   Mon, 9 Oct 2023 14:48:05 +0200
+        id C183A68CFE; Mon,  9 Oct 2023 14:58:44 +0200 (CEST)
+Date:   Mon, 9 Oct 2023 14:58:44 +0200
 From:   Christoph Hellwig <hch@lst.de>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Christoph Hellwig <hch@lst.de>, iommu@lists.linux.dev,
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Christoph Hellwig <hch@lst.de>, iommu@lists.linux.dev,
         Marek Szyprowski <m.szyprowski@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Wei Fang <wei.fang@nxp.com>,
         Shenwei Wang <shenwei.wang@nxp.com>,
         Clark Wang <xiaoning.wang@nxp.com>,
         NXP Linux Team <linux-imx@nxp.com>,
         linux-m68k@lists.linux-m68k.org, netdev@vger.kernel.org,
         Jim Quinlan <james.quinlan@broadcom.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "Lad, Prabhakar" <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        arm-soc <soc@kernel.org>
-Subject: Re: [PATCH 1/6] dma-direct: add depdenencies to
- CONFIG_DMA_GLOBAL_POOL
-Message-ID: <20231009124805.GA7042@lst.de>
-References: <20231009074121.219686-1-hch@lst.de> <20231009074121.219686-2-hch@lst.de> <CAMuHMdWiYDQ5J7R7hPaVAYgXqJvpjdksoF6X-zHrJ_80Ly4XfQ@mail.gmail.com> <20231009091625.GB22463@lst.de> <CAMuHMdUZNewD-QC8J7MWSBP197Vc169meOjjK6=b7M11kVjUzg@mail.gmail.com> <20231009094330.GA24836@lst.de> <CAMuHMdV2FXdUHtjYW8JyXGBgHhR8De0vp3Ee77e6G8Vbs3gG8Q@mail.gmail.com> <1cd44af1-10ac-465a-8d20-e0aa268e036f@arm.com> <CAMuHMdXNX7+VLnSYhj=M9dTSTWLJqjS_WaT0ceMRUYoa5_MSeA@mail.gmail.com>
+        Greg Ungerer <gerg@linux-m68k.org>
+Subject: Re: [PATCH 5/6] net: fec: use dma_alloc_noncoherent for m532x
+Message-ID: <20231009125843.GA7272@lst.de>
+References: <20231009074121.219686-1-hch@lst.de> <20231009074121.219686-6-hch@lst.de> <ea608718-8a50-4f87-aecf-fc100d283fe8@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdXNX7+VLnSYhj=M9dTSTWLJqjS_WaT0ceMRUYoa5_MSeA@mail.gmail.com>
+In-Reply-To: <ea608718-8a50-4f87-aecf-fc100d283fe8@arm.com>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 01:10:26PM +0200, Geert Uytterhoeven wrote:
-> RISCV_DMA_NONCOHERENT does not select DMA_GLOBAL_POOL,
-> ARCH_R9A07G043 selects DMA_GLOBAL_POOL.
-> RISCV_DMA_NONCOHERENT does select DMA_DIRECT_REMAP if MMU.
+On Mon, Oct 09, 2023 at 11:29:12AM +0100, Robin Murphy wrote:
+> It looks a bit odd that this ends up applying to all of Coldfire, while the 
+> associated cache flush only applies to the M532x platform, which implies 
+> that we'd now be relying on the non-coherent allocation actually being 
+> coherent on other Coldfire platforms.
+>
+> Would it work to do something like this to make sure dma-direct does the 
+> right thing on such platforms (which presumably don't have caches?), and 
+> then reduce the scope of this FEC hack accordingly, to clean things up even 
+> better?
 
-Yeah, and we'll basically need to split RISCV_DMA_NONCOHERENT into
-an option for each type of non-coherent support.  This is why we
-should never have added support for any of the non-standard versions,
-as it's turning into a giant mess.
+Probably.  Actually Greg comment something along the lines last
+time, and mentioned something about just instruction vs instruction
+and data cache.
+
+>
+> diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+> index b826e9c677b2..1851fa3fe077 100644
+> --- a/arch/m68k/Kconfig.cpu
+> +++ b/arch/m68k/Kconfig.cpu
+> @@ -27,6 +27,7 @@ config COLDFIRE
+>  	select CPU_HAS_NO_BITFIELDS
+>  	select CPU_HAS_NO_CAS
+>  	select CPU_HAS_NO_MULDIV64
+> +	select DMA_DEFAULT_COHERENT if !MMU && !M523x
+
+Although it would probably make more sense to simply not select
+CONFIG_ARCH_HAS_SYNC_DMA_FOR_DEVICE and
+CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU for these platforms and not
+build the non-coherent code at all.  This should also include
+all coldfire platforms with mmu (M54xx/M548x/M5441x).  Then
+again for many of the coldfire platforms the Kconfig allows
+to select CACHE_WRITETHRU/CACHE_COPYBACK which looks related.
+
+Greg, any chance you could help out with the caching modes on
+coldfire and legacy m68knommu?
 
