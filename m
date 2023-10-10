@@ -2,219 +2,223 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0751CD68F4
-	for <linux-m68k@archiver.kernel.org>; Tue, 10 Oct 2023 06:57:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34B5CCD8C8B
+	for <linux-m68k@archiver.kernel.org>; Tue, 10 Oct 2023 14:21:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442336AbjJJG5J (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 10 Oct 2023 02:57:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58186 "EHLO
+        id S232958AbjJJOVL (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 10 Oct 2023 10:21:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442347AbjJJG5I (ORCPT
+        with ESMTP id S233003AbjJJOVJ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 10 Oct 2023 02:57:08 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 467B3C6
-        for <linux-m68k@lists.linux-m68k.org>; Mon,  9 Oct 2023 23:57:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696921027; x=1728457027;
-  h=date:from:to:cc:subject:message-id;
-  bh=ZabMaTlijLsYMoWB9mj0esj/h2HzXesqmGtv9RdRCZI=;
-  b=fsooT3qabR09eUPxP0mZjUkM3rDSNRT17843qd+WiZkBM3KQEzbDBJHE
-   yQ4dR0GnkwjsQja/9oxhpwM75X6pLWmFI6oszAGX+RZHsqE3JblayiLag
-   JQ0RxQGchtW4Td/BvyRZrruolwNd6axrYa/s7BPn2Ed5zpIJI+p8oreDE
-   /H9qiDSFBT+4L/Ld3VFvKmXwydAM+pK0vE0l2JTrYBXs5Z0lB8FlqIRjt
-   f1EX/4EVIz2HDNnjdQpv1in9OgEHEdgG4uVtOql888SY+Qe07vFIR7dhp
-   gX8Ki7uMN0MOdEv239kjFm1geD9dyo45YpQX6jy7koxkGdTBKhn7K6DXH
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="383203701"
-X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
-   d="scan'208";a="383203701"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 23:57:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="757000150"
-X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
-   d="scan'208";a="757000150"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 09 Oct 2023 23:57:04 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qq6fu-00007p-2r;
-        Tue, 10 Oct 2023 06:57:02 +0000
-Date:   Tue, 10 Oct 2023 14:56:39 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 7a83d7318ee1ca071ec5ceeabd2aae410fdfb7fb
-Message-ID: <202310101436.UL5jOS6g-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+        Tue, 10 Oct 2023 10:21:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29762100
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 10 Oct 2023 07:21:04 -0700 (PDT)
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+        by dfw.source.kernel.org (Postfix) with ESMTP id 05BD361705;
+        Tue, 10 Oct 2023 14:21:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30602C433C9;
+        Tue, 10 Oct 2023 14:21:00 +0000 (UTC)
+Message-ID: <0299895c-24a5-4bd4-b7a4-dc50cc21e3d8@linux-m68k.org>
+Date:   Wed, 11 Oct 2023 00:20:57 +1000
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/6] net: fec: use dma_alloc_noncoherent for m532x
+Content-Language: en-US
+To:     Robin Murphy <robin.murphy@arm.com>,
+        Christoph Hellwig <hch@lst.de>, iommu@lists.linux.dev
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-m68k@lists.linux-m68k.org, netdev@vger.kernel.org,
+        Jim Quinlan <james.quinlan@broadcom.com>
+References: <20231009074121.219686-1-hch@lst.de>
+ <20231009074121.219686-6-hch@lst.de>
+ <ea608718-8a50-4f87-aecf-fc100d283fe8@arm.com>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <ea608718-8a50-4f87-aecf-fc100d283fe8@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 7a83d7318ee1ca071ec5ceeabd2aae410fdfb7fb  Merge tag 'v6.6-rc5'
+Hi Robin,
 
-elapsed time: 947m
+On 9/10/23 20:29, Robin Murphy wrote:
+> On 2023-10-09 08:41, Christoph Hellwig wrote:
+>> The coldfire platforms can't properly implement dma_alloc_coherent and
+>> currently just return noncoherent memory from dma_alloc_coherent.
+>>
+>> The fec driver than works around this with a flush of all caches in the
+>> receive path. Make this hack a little less bad by using the explicit
+>> dma_alloc_noncoherent API and documenting the hacky cache flushes so
+>> that the DMA API level hack can be removed.
+>>
+>> Signed-off-by: Christoph Hellwig <hch@lst.de>
+>> ---
+>>   drivers/net/ethernet/freescale/fec_main.c | 84 ++++++++++++++++++++---
+>>   1 file changed, 75 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+>> index 77c8e9cfb44562..aa032ea0ebf0c2 100644
+>> --- a/drivers/net/ethernet/freescale/fec_main.c
+>> +++ b/drivers/net/ethernet/freescale/fec_main.c
+>> @@ -406,6 +406,70 @@ static void fec_dump(struct net_device *ndev)
+>>       } while (bdp != txq->bd.base);
+>>   }
+>> +/*
+>> + * Coldfire does not support DMA coherent allocations, and has historically used
+>> + * a band-aid with a manual flush in fec_enet_rx_queue.
+>> + */
+>> +#ifdef CONFIG_COLDFIRE
+> 
+> It looks a bit odd that this ends up applying to all of Coldfire, while the associated cache flush only applies to the M532x platform, which implies that we'd now be relying on the non-coherent allocation actually being coherent on other Coldfire platforms.
+> 
+> Would it work to do something like this to make sure dma-direct does the right thing on such platforms (which presumably don't have caches?), and then reduce the scope of this FEC hack accordingly, to clean things up even better?
+> 
+> diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+> index b826e9c677b2..1851fa3fe077 100644
+> --- a/arch/m68k/Kconfig.cpu
+> +++ b/arch/m68k/Kconfig.cpu
+> @@ -27,6 +27,7 @@ config COLDFIRE
+>       select CPU_HAS_NO_BITFIELDS
+>       select CPU_HAS_NO_CAS
+>       select CPU_HAS_NO_MULDIV64
+> +    select DMA_DEFAULT_COHERENT if !MMU && !M523x
 
-configs tested: 148
-configs skipped: 2
+That should be M532x.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I am pretty sure the code as-is today is broken for the case of using
+the split cache arrangement (so both instruction and data cache) for any
+of the version 2 cores too (denoted by the HAVE_CACHE_SPLIT option).
+But that has probably not been picked up because the default on those
+has always been instruction cache only.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                          axs103_defconfig   gcc  
-arc                      axs103_smp_defconfig   gcc  
-arc                                 defconfig   gcc  
-arc                            hsdk_defconfig   gcc  
-arc                   randconfig-001-20231010   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                          ep93xx_defconfig   clang
-arm                   randconfig-001-20231010   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231010   gcc  
-i386         buildonly-randconfig-002-20231010   gcc  
-i386         buildonly-randconfig-003-20231010   gcc  
-i386         buildonly-randconfig-004-20231010   gcc  
-i386         buildonly-randconfig-005-20231010   gcc  
-i386         buildonly-randconfig-006-20231010   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231010   gcc  
-i386                  randconfig-002-20231010   gcc  
-i386                  randconfig-003-20231010   gcc  
-i386                  randconfig-004-20231010   gcc  
-i386                  randconfig-005-20231010   gcc  
-i386                  randconfig-006-20231010   gcc  
-i386                  randconfig-011-20231010   gcc  
-i386                  randconfig-012-20231010   gcc  
-i386                  randconfig-013-20231010   gcc  
-i386                  randconfig-014-20231010   gcc  
-i386                  randconfig-015-20231010   gcc  
-i386                  randconfig-016-20231010   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231010   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                     decstation_defconfig   gcc  
-mips                           gcw0_defconfig   gcc  
-mips                       lemote2f_defconfig   clang
-mips                          rm200_defconfig   clang
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                    amigaone_defconfig   gcc  
-powerpc                        icon_defconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231010   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231010   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                         ecovec24_defconfig   gcc  
-sh                               j2_defconfig   gcc  
-sh                          landisk_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231010   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231010   gcc  
-x86_64       buildonly-randconfig-002-20231010   gcc  
-x86_64       buildonly-randconfig-003-20231010   gcc  
-x86_64       buildonly-randconfig-004-20231010   gcc  
-x86_64       buildonly-randconfig-005-20231010   gcc  
-x86_64       buildonly-randconfig-006-20231010   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231010   gcc  
-x86_64                randconfig-002-20231010   gcc  
-x86_64                randconfig-003-20231010   gcc  
-x86_64                randconfig-004-20231010   gcc  
-x86_64                randconfig-005-20231010   gcc  
-x86_64                randconfig-006-20231010   gcc  
-x86_64                randconfig-011-20231010   gcc  
-x86_64                randconfig-012-20231010   gcc  
-x86_64                randconfig-013-20231010   gcc  
-x86_64                randconfig-014-20231010   gcc  
-x86_64                randconfig-015-20231010   gcc  
-x86_64                randconfig-016-20231010   gcc  
-x86_64                randconfig-071-20231010   gcc  
-x86_64                randconfig-072-20231010   gcc  
-x86_64                randconfig-073-20231010   gcc  
-x86_64                randconfig-074-20231010   gcc  
-x86_64                randconfig-075-20231010   gcc  
-x86_64                randconfig-076-20231010   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
+The reason for the special case for the M532x series is that it is a version 3
+core and they have a unified instruction and data cache. The 523x series is the
+only version 3 core that Linux supports that has the FEC hardware module.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Regards
+Greg
+
+
+>       select GENERIC_CSUM
+>       select GPIOLIB
+>       select HAVE_LEGACY_CLK
+> 
+> 
+> Thanks,
+> Robin.
+> 
+>> +static void *fec_dma_alloc(struct device *dev, size_t size, dma_addr_t *handle,
+>> +        gfp_t gfp)
+>> +{
+>> +    return dma_alloc_noncoherent(dev, size, handle, DMA_BIDIRECTIONAL, gfp);
+>> +}
+>> +
+>> +static void fec_dma_free(struct device *dev, size_t size, void *cpu_addr,
+>> +        dma_addr_t handle)
+>> +{
+>> +    dma_free_noncoherent(dev, size, cpu_addr, handle, DMA_BIDIRECTIONAL);
+>> +}
+>> +#else /* CONFIG_COLDFIRE */
+>> +static void *fec_dma_alloc(struct device *dev, size_t size, dma_addr_t *handle,
+>> +        gfp_t gfp)
+>> +{
+>> +    return dma_alloc_coherent(dev, size, handle, gfp);
+>> +}
+>> +
+>> +static void fec_dma_free(struct device *dev, size_t size, void *cpu_addr,
+>> +        dma_addr_t handle)
+>> +{
+>> +    dma_free_coherent(dev, size, cpu_addr, handle);
+>> +}
+>> +#endif /* !CONFIG_COLDFIRE */
+>> +
+>> +struct fec_dma_devres {
+>> +    size_t        size;
+>> +    void        *vaddr;
+>> +    dma_addr_t    dma_handle;
+>> +};
+>> +
+>> +static void fec_dmam_release(struct device *dev, void *res)
+>> +{
+>> +    struct fec_dma_devres *this = res;
+>> +
+>> +    fec_dma_free(dev, this->size, this->vaddr, this->dma_handle);
+>> +}
+>> +
+>> +static void *fec_dmam_alloc(struct device *dev, size_t size, dma_addr_t *handle,
+>> +        gfp_t gfp)
+>> +{
+>> +    struct fec_dma_devres *dr;
+>> +    void *vaddr;
+>> +
+>> +    dr = devres_alloc(fec_dmam_release, sizeof(*dr), gfp);
+>> +    if (!dr)
+>> +        return NULL;
+>> +    vaddr = fec_dma_alloc(dev, size, handle, gfp);
+>> +    if (!vaddr) {
+>> +        devres_free(dr);
+>> +        return NULL;
+>> +    }
+>> +    dr->vaddr = vaddr;
+>> +    dr->dma_handle = *handle;
+>> +    dr->size = size;
+>> +    devres_add(dev, dr);
+>> +    return vaddr;
+>> +}
+>> +
+>>   static inline bool is_ipv4_pkt(struct sk_buff *skb)
+>>   {
+>>       return skb->protocol == htons(ETH_P_IP) && ip_hdr(skb)->version == 4;
+>> @@ -1661,6 +1725,10 @@ fec_enet_rx_queue(struct net_device *ndev, int budget, u16 queue_id)
+>>   #endif
+>>   #ifdef CONFIG_M532x
+>> +    /*
+>> +     * Hacky flush of all caches instead of using the DMA API for the TSO
+>> +     * headers.
+>> +     */
+>>       flush_cache_all();
+>>   #endif
+>>       rxq = fep->rx_queue[queue_id];
+>> @@ -3288,10 +3356,9 @@ static void fec_enet_free_queue(struct net_device *ndev)
+>>       for (i = 0; i < fep->num_tx_queues; i++)
+>>           if (fep->tx_queue[i] && fep->tx_queue[i]->tso_hdrs) {
+>>               txq = fep->tx_queue[i];
+>> -            dma_free_coherent(&fep->pdev->dev,
+>> -                      txq->bd.ring_size * TSO_HEADER_SIZE,
+>> -                      txq->tso_hdrs,
+>> -                      txq->tso_hdrs_dma);
+>> +            fec_dma_free(&fep->pdev->dev,
+>> +                     txq->bd.ring_size * TSO_HEADER_SIZE,
+>> +                     txq->tso_hdrs, txq->tso_hdrs_dma);
+>>           }
+>>       for (i = 0; i < fep->num_rx_queues; i++)
+>> @@ -3321,10 +3388,9 @@ static int fec_enet_alloc_queue(struct net_device *ndev)
+>>           txq->tx_stop_threshold = FEC_MAX_SKB_DESCS;
+>>           txq->tx_wake_threshold = FEC_MAX_SKB_DESCS + 2 * MAX_SKB_FRAGS;
+>> -        txq->tso_hdrs = dma_alloc_coherent(&fep->pdev->dev,
+>> +        txq->tso_hdrs = fec_dma_alloc(&fep->pdev->dev,
+>>                       txq->bd.ring_size * TSO_HEADER_SIZE,
+>> -                    &txq->tso_hdrs_dma,
+>> -                    GFP_KERNEL);
+>> +                    &txq->tso_hdrs_dma, GFP_KERNEL);
+>>           if (!txq->tso_hdrs) {
+>>               ret = -ENOMEM;
+>>               goto alloc_failed;
+>> @@ -4043,8 +4109,8 @@ static int fec_enet_init(struct net_device *ndev)
+>>       bd_size = (fep->total_tx_ring_size + fep->total_rx_ring_size) * dsize;
+>>       /* Allocate memory for buffer descriptors. */
+>> -    cbd_base = dmam_alloc_coherent(&fep->pdev->dev, bd_size, &bd_dma,
+>> -                       GFP_KERNEL);
+>> +    cbd_base = fec_dmam_alloc(&fep->pdev->dev, bd_size, &bd_dma,
+>> +                  GFP_KERNEL);
+>>       if (!cbd_base) {
+>>           ret = -ENOMEM;
+>>           goto free_queue_mem;
