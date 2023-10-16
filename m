@@ -2,126 +2,178 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9CBDCDB474
-	for <linux-m68k@archiver.kernel.org>; Mon, 16 Oct 2023 17:16:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A79F7CDB465
+	for <linux-m68k@archiver.kernel.org>; Mon, 16 Oct 2023 20:33:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232389AbjJPRQg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 16 Oct 2023 13:16:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43030 "EHLO
+        id S234000AbjJPUdw (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 16 Oct 2023 16:33:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjJPRQ2 (ORCPT
+        with ESMTP id S232682AbjJPUdv (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 16 Oct 2023 13:16:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D89311F
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Oct 2023 10:16:27 -0700 (PDT)
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-        by dfw.source.kernel.org (Postfix) with ESMTP id 975AB60FC9;
-        Mon, 16 Oct 2023 17:16:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D9E5C433C8;
-        Mon, 16 Oct 2023 17:16:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697476586;
-        bh=MRy3up7oqUohj1XgFS/GiBFKY4NG7WbUD1k/7sSM8yM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ipMf8FZsx8iTVB3wSbylZBSCHdrLB9w4rvDfkqnc8OEH92i+lx+zxbGvLA3SWLgf7
-         inKovQXXDMyiOl88agX16f0oLzdYGl0f/kKBwYw79ppGjETfOyJ8krtmvDh8M+C7sR
-         o1xcU2etDt1GGUk7m/x2cShFClEqOmPkkZT1XVfdJS5xgt6beKobBf+FlARHSh+9vt
-         lP/OevPV6O3qMwS2fzL4p1WRYsP4pjlBRiAJHZ4IC6TVRZqftsbLYewdNCH3EIM0g7
-         fsEq5bObLfsAlf2jYlRrxk6Kh53CEmpcwkdc9QoozbLHqM2eYAn9KDpqGNJSrXDFo5
-         U0u0JM/pkIv8Q==
-Date:   Mon, 16 Oct 2023 18:16:20 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Conor Dooley <conor.dooley@microchip.com>,
-        Greg Ungerer <gerg@linux-m68k.org>, iommu@lists.linux.dev,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-m68k@lists.linux-m68k.org, netdev@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
-        Jim Quinlan <james.quinlan@broadcom.com>
-Subject: Re: [PATCH 01/12] riscv: RISCV_NONSTANDARD_CACHE_OPS shouldn't
- depend on RISCV_DMA_NONCOHERENT
-Message-ID: <20231016-outwit-bungee-b46cf212c292@spud>
-References: <20231016054755.915155-1-hch@lst.de>
- <20231016054755.915155-2-hch@lst.de>
- <20231016-walmart-egomaniac-dc4c63ea70a6@wendy>
- <20231016131716.GA26484@lst.de>
+        Mon, 16 Oct 2023 16:33:51 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E76B0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Oct 2023 13:33:48 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6c4bad60a1aso2978208a34.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Oct 2023 13:33:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697488428; x=1698093228; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FRWY+QElkskL8wemRIg4NTsWbtaxxzWjt8U5HujW9kw=;
+        b=UsZH3TPqEbuGCA24Os8l+ogPaoOe0qRe97Pp/6zt/M43oYoNR0N3nw4wPRajgqX1TX
+         umdqQjI2iS4gZshl8+zo3zwDU7PAhdByh9vEzkCLIPRSfC98LEEz+vtwr8yBBLWqABZa
+         rJzqzwpttedBrAIYMWbu675NnaWdZTGpHBuvTKHO96tge32SF1lIV5qIpUJJ+92vFRsi
+         xsxFauKMY6dJshpUngaHQDuLc0tXp98xUMuRWyC8XUpkLk9Hz1fMw2VLtSm+0OTgTFeW
+         zrlyWiEmXyDe0Vbuba4MUSHqbhfJSkDcpUdTq2wq2fAo3Q1fDHIeKIdUumJwcgSOP9XK
+         d/xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697488428; x=1698093228;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FRWY+QElkskL8wemRIg4NTsWbtaxxzWjt8U5HujW9kw=;
+        b=segRFqfR/Y9zf08ybQBOoGQnZPx30Mv+XjHepiMzPubdfMTz7Wy9EUUxV8VpLIufp+
+         Sb1cU+DMUEk7sAb9IlhZhyHW/uzEAotUqDIFyqkZahsf7CFhTLpmjul4UapQ3iDlxlel
+         eZ8GGno7NBZOgJqaB2EgEKsCi4jltVzVOBFaW6mDcZsgYTHqveFor9lcEGCPUi+5H9aD
+         A9dt722gv1JwCuTeD4vlN+dcbt2rLxtZP1CcvBselcXT9ZPCEqoysa/VPRmdp/jk7zcn
+         MkzzoQCYCZvIrXqVHKGciTLjIpU8kj41T+tic2h5xJoK6zIXQCebgoavUPavZGbn2X8Y
+         +82A==
+X-Gm-Message-State: AOJu0Yzjbe0zaA/pBbFIBQwUJyKYrrWOhe7BxRmCtySulR3+pT8vuiqU
+        /FU8hB+MTWIjIH93PlMFEFY=
+X-Google-Smtp-Source: AGHT+IG0cGbclFM3Cfjk+8WyKdDCoUvHnAS14MOWRm9NlAwNWKrqzGbW2SpzErRD8nEDumguRXVd2Q==
+X-Received: by 2002:a9d:6858:0:b0:6bc:bd1a:26d with SMTP id c24-20020a9d6858000000b006bcbd1a026dmr344562oto.15.1697488427735;
+        Mon, 16 Oct 2023 13:33:47 -0700 (PDT)
+Received: from ?IPV6:2001:df0:0:200c:f4c2:1fbd:107b:b16c? ([2001:df0:0:200c:f4c2:1fbd:107b:b16c])
+        by smtp.gmail.com with ESMTPSA id f123-20020a625181000000b0068c006dd5c1sm334087pfb.115.2023.10.16.13.33.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Oct 2023 13:33:47 -0700 (PDT)
+Message-ID: <7286cd41-4f06-8afc-b8c5-acc617771daf@gmail.com>
+Date:   Tue, 17 Oct 2023 09:33:40 +1300
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="n9y3/cEO82Secmi+"
-Content-Disposition: inline
-In-Reply-To: <20231016131716.GA26484@lst.de>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH/RFC] m68k: Add full preempt support
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+References: <7858a184cda66e0991fd295c711dfed7e4d1248c.1696603287.git.geert@linux-m68k.org>
+ <CAMuHMdUQ72KOPw5vxNfhjoTR-SsaELeKneBmyQPYEWa_o5OZZA@mail.gmail.com>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+In-Reply-To: <CAMuHMdUQ72KOPw5vxNfhjoTR-SsaELeKneBmyQPYEWa_o5OZZA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
+Hi Geert,
 
---n9y3/cEO82Secmi+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 17/10/23 01:23, Geert Uytterhoeven wrote:
+> On Fri, Oct 6, 2023 at 4:49 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>> Currently, a Preemptible Kernel is only supported on the Coldfire CPU
+>> family.  Extend preempt support to the full Classic M68K CPU family
+>> (68020+ with MMU, and 68000-derivatives without MMU).
+>>
+>> Make sure preemption is disabled in loops involving cache and TLB
+>> flushing.
+>>
+>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>> ---
+>> Tested on ARAnyM, using none/voluntary/full preemption.
+>> Compile-tested on 68000.
+>>
+>> I don't know if all of the preempt_{dis,en}able() pairs are really
+>> needed, or if we need more of them.  I just followed what some other
+>> architectures are doing.
+>>
+>> Without the preempt_{dis,en}able() pairs, the kernel panics on ARAnyM while
+>> starting early userspace (Debian 4.0), cfr. below.
+>> Does full preemption work on Coldfire without?
+>> Thanks for your comments!
+>>
+>>      BUG: Bad rss-counter state mm:93ade98e type:MM_FILEPAGES val:-7
+>>      BUG: Bad rss-counter state mm:93ade98e type:MM_ANONPAGES val:-1
+>>      Kernel panic - not syncing: table already free!
+> Ran into one of these again, once, so probably we need more
+> preempt_{dis,en}able() pairs, but where?
+>
+>      BUG: Bad rss-counter state mm:9bb416c6 type:MM_FILEPAGES val:-20
+>      BUG: Bad rss-counter state mm:9bb416c6 type:MM_ANONPAGES val:-6
 
-On Mon, Oct 16, 2023 at 03:17:16PM +0200, Christoph Hellwig wrote:
-> On Mon, Oct 16, 2023 at 01:49:41PM +0100, Conor Dooley wrote:
-> > Hey,
-> >=20
-> > On Mon, Oct 16, 2023 at 07:47:43AM +0200, Christoph Hellwig wrote:
-> > > RISCV_NONSTANDARD_CACHE_OPS is also used for the pmem cache maintenan=
-ce
-> > > helpers, which are built into the kernel unconditionally.
-> >=20
-> > You surely have better insight than I do here, but is this actually
-> > required?
-> > This patch seems to allow creation of a kernel where the cache
-> > maintenance operations could be used for pmem, but would be otherwise
-> > unavailable, which seems counter intuitive to me.
-> >
-> > Why would someone want to provide the pmem helpers with cache
-> > maintenance operations, but not provide them generally?
-> >=20
->=20
-> Even if all your periphals are cache coherent (very common on server
-> class hardware) you still need cache maintenance for pmem.  No need
-> to force the extra text size and runtime overhead for non-coherent DMA.
+Is that significant here? In particular, does this condition cause a 
+fault signal sent to the associated process?
 
-Ah, right.
+If I read the mmput() code right, this is just a warning happening 
+during process exit. The stack trace suggests that process exit was 
+forced by a signal.
 
-> > I also don't really understand what the unconditional nature of the pmem
-> > helpers has to do with anything, as this patch does not unconditionally
-> > provide any cache management operations, only relax the conditions under
-> > which the non-standard cache management operations can be provided.
->=20
-> They simply were broken if a platform had non-standard cache mem but
-> only coherent DMA before.  That's probably more a theoretical than
-> practial case, but still worth fixing.
+Maybe we should disable preemption until signal handling is complete?
 
-And this part of it makes more sense with the above use-case explained.
+Your patch to entry.S does not check for pending signals before 
+preempting the kernel on return from exception or interrupt ...
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Cheers,
 
-Thanks,
-Conor.
+     Michael
 
 
---n9y3/cEO82Secmi+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZS1v5AAKCRB4tDGHoIJi
-0uu/AQDsd+QvHSok4Q8k4HHYfsUMrdFaeTVLhvRpSi+kRG+LLwD/T6ws6vJoKrWg
-ZkwzD5bj5QIZjaHiwVcDzL6nh9r1gAo=
-=qQsV
------END PGP SIGNATURE-----
-
---n9y3/cEO82Secmi+--
+>      Kernel panic - not syncing: table already free!
+>      CPU: 0 PID: 480 Comm: grep Not tainted
+> 6.6.0-rc6-atari-01887-g1ab3ae298649 #1601
+>      Stack from 018c9c8c:
+>              018c9c8c 0048a940 0048a940 00000000 00000001 003c0caa
+> 0048a940 003b9b96
+>              00000001 00000001 01a58000 01a62100 01a5b000 000cf316
+> 018c9dd2 00006440
+>              0047d67f 80039000 c0000000 01a58b00 80039000 80000000
+> c0000000 01a62100
+>              01a5b000 000cfd0e 01a58b00 00000001 ffffffff 018c9db2
+> 00000000 000cfb36
+>              80000000 01a60a68 01a60a68 003aa02e 000dbd0a 000d557c
+> 80000000 80038fff
+>              80038fff bfffffff 000cfd8e 018c9dd2 80000000 80039000
+> 00000000 c0000000
+>      Call Trace: [<003c0caa>] dump_stack+0xc/0x10
+>       [<003b9b96>] panic+0xd8/0x256
+>       [<000cf316>] pmd_offset.isra.0+0x0/0x20
+>       [<00006440>] free_pointer_table+0x68/0x124
+>       [<000cfd0e>] free_pgd_range+0x1d8/0x1ea
+>       [<000cfb36>] free_pgd_range+0x0/0x1ea
+>       [<003aa02e>] mas_find+0x0/0x4c
+>       [<000dbd0a>] unlink_anon_vmas+0x0/0x108
+>       [<000d557c>] unlink_file_vma+0x0/0x40
+>       [<000cfd8e>] free_pgtables+0x6e/0x80
+>       [<00045eec>] up_read+0x0/0x62
+>       [<000d63fc>] exit_mmap+0x118/0x1ee
+>       [<0000c001>] asinbig+0x25/0x34
+>       [<0000ffff>] EXPTBL+0x2eb/0x400
+>       [<0000ffff>] EXPTBL+0x2eb/0x400
+>       [<00021f10>] __mmput+0x18/0xae
+>       [<00025cce>] do_exit+0x2b4/0x7ba
+>       [<00026316>] do_group_exit+0x1e/0x96
+>       [<0002e354>] get_signal+0x19c/0x694
+>       [<000032fc>] test_ti_thread_flag+0x0/0x14
+>       [<0002d6b6>] force_sig_info_to_task+0xb0/0xea
+>       [<00003caa>] do_notify_resume+0x36/0x4a0
+>       [<0002d970>] force_sig_fault_to_task+0x32/0x3e
+>       [<0002d990>] force_sig_fault+0x14/0x1a
+>       [<0000597c>] send_fault_sig+0x24/0x84
+>       [<00002632>] do_signal_return+0x10/0x1a
+>       [<00088000>] adjust_reg_min_max_vals+0x106/0x140c
+>
+>      ---[ end Kernel panic - not syncing: table already free! ]---
+>
+> Gr{oetje,eeting}s,
+>
+>                          Geert
+>
