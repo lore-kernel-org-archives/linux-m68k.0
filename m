@@ -2,70 +2,111 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC75DCDB47E
-	for <linux-m68k@archiver.kernel.org>; Sun, 15 Oct 2023 10:06:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5797C46CA1
+	for <linux-m68k@archiver.kernel.org>; Mon, 16 Oct 2023 05:48:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233542AbjJOKGo (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Sun, 15 Oct 2023 06:06:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54778 "EHLO
+        id S231587AbjJPFsP (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 16 Oct 2023 01:48:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbjJOKGc (ORCPT
+        with ESMTP id S229686AbjJPFsO (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Sun, 15 Oct 2023 06:06:32 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3793115
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 15 Oct 2023 03:06:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1697364383;
-        bh=lQ471ge3JT3D/IyXiBK6OqZg4gy00/Wz1cpF1NMX1CI=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=Jgv8/cUxgQM27y6U//UT8VctmRJrqlUlqIr1QQTvvhugWnDzvcBYSj+SLZifK2jTQ
-         owmdqqRmmp8iY6chJq2Mlnpjbq6RAj8jt0kTavOSSUm2KQgIWHKXgDY5hnkI1rXRb9
-         NIdVXDDuIe1rtwQ5evX8B8s9Peo+r//MyCvLnEJu3WQv7amCnhXoAL+d5jvpc0YjYY
-         35406tFs9oyMdUOOMphj3mCWt3yUm5zVp0ckK6CxgcejWbG+0vkHDPW3MGFNsWQ5DX
-         tEUDQT8EKLC+kMhx0X8thKh1EhRV8sMxpXYvKiRh1qX2qbrIMTQ4XvICpOiJdoeKvz
-         ZQx5NpTCbYS3w==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S7bVc4t2xz4wnw;
-        Sun, 15 Oct 2023 21:06:16 +1100 (AEDT)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     reiserfs-devel@vger.kernel.org, Peter Lafreniere <peter@n8pjl.ca>
-Cc:     jack@suse.cz, linux-kernel@vger.kernel.org, richard@nod.at,
-        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
-        linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org,
-        linux-sh@vger.kernel.org, tsbogend@alpha.franken.de,
-        linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        geert@linux-m68k.org, linux-arm-kernel@lists.infradead.org,
-        linux@armlinux.org.uk, linux-alpha@vger.kernel.org,
-        richard.henderson@linaro.org, ink@jurassic.park.msu.ru
-In-Reply-To: <20230918175529.19011-1-peter@n8pjl.ca>
-References: <20230918175529.19011-1-peter@n8pjl.ca>
-Subject: Re: (subset) [PATCH 0/7] arch/*: config: Remove ReiserFS from defconfig
-Message-Id: <169736429854.960528.1442206910501555108.b4-ty@ellerman.id.au>
-Date:   Sun, 15 Oct 2023 21:04:58 +1100
+        Mon, 16 Oct 2023 01:48:14 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 921C7F4;
+        Sun, 15 Oct 2023 22:48:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=WUNnW2AzudcNr4qo2U1qAYpqA55+BUJ9igvSrFrJsk0=; b=k9gRQmW3KX85+dvAm7SRblzVlF
+        8yt/+UihM/RmRRmyHk7PBZmtccb2GrfmrT5QymkNnPZTjG6GkUfDtN/+PBwoFbAtc2nTHA1LofGoZ
+        kh1TQEbcNuFER0Y9kUOxeWC1WE5P4Py6NxanrNWyKv0AR3+Udgz+XfDE9DFlZ/B2w/2c8KMYbxZma
+        RpSFh2lh7P5O/gyf+225JI9+v+QQ0TJkz/9EKr3Bjh0UTx8crzMs8TqaTNr2h9IQ5h0U1knAU9VWB
+        CUnV+4VVZ0xZgseUkikX2np0Wpg+R+/8MsNZAeJDEXqdinkkQKFYAh7i+HIfcbEsQgHcg3oI1I1qA
+        FdymHa9g==;
+Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qsGSP-008QfY-1h;
+        Mon, 16 Oct 2023 05:48:01 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Greg Ungerer <gerg@linux-m68k.org>, iommu@lists.linux.dev
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Conor Dooley <conor@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-m68k@lists.linux-m68k.org, netdev@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
+        Jim Quinlan <james.quinlan@broadcom.com>
+Subject: [PATCH 01/12] riscv: RISCV_NONSTANDARD_CACHE_OPS shouldn't depend on RISCV_DMA_NONCOHERENT
+Date:   Mon, 16 Oct 2023 07:47:43 +0200
+Message-Id: <20231016054755.915155-2-hch@lst.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231016054755.915155-1-hch@lst.de>
+References: <20231016054755.915155-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Mon, 18 Sep 2023 17:56:09 +0000, Peter Lafreniere wrote:
-> ReiserFS has been considered deprecated for 19 months since commit
-> eb103a51640e ("reiserfs: Deprecate reiserfs"). However, there are
-> several architectures that still build it into their defconfig kernels.
-> 
-> As ReiserFS will be removed in 2025, delete all ReiserFS-related options
-> from defconfig files before the filesystem's removal.
-> 
-> [...]
+RISCV_NONSTANDARD_CACHE_OPS is also used for the pmem cache maintenance
+helpers, which are built into the kernel unconditionally.
 
-Applied to powerpc/next.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ arch/riscv/Kconfig          | 1 -
+ drivers/cache/Kconfig       | 2 +-
+ drivers/soc/renesas/Kconfig | 2 +-
+ 3 files changed, 2 insertions(+), 3 deletions(-)
 
-[2/7] arch: powerpc: remove ReiserFS from defconfig
-      https://git.kernel.org/powerpc/c/c945e6f453a361b0e9daddd2be9c099d1b80d6f8
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index d607ab0f7c6daf..0ac0b538379718 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -277,7 +277,6 @@ config RISCV_DMA_NONCOHERENT
+ 
+ config RISCV_NONSTANDARD_CACHE_OPS
+ 	bool
+-	depends on RISCV_DMA_NONCOHERENT
+ 	help
+ 	  This enables function pointer support for non-standard noncoherent
+ 	  systems to handle cache management.
+diff --git a/drivers/cache/Kconfig b/drivers/cache/Kconfig
+index a57677f908f3ba..d6e5e3abaad8af 100644
+--- a/drivers/cache/Kconfig
++++ b/drivers/cache/Kconfig
+@@ -3,7 +3,7 @@ menu "Cache Drivers"
+ 
+ config AX45MP_L2_CACHE
+ 	bool "Andes Technology AX45MP L2 Cache controller"
+-	depends on RISCV_DMA_NONCOHERENT
++	depends on RISCV
+ 	select RISCV_NONSTANDARD_CACHE_OPS
+ 	help
+ 	  Support for the L2 cache controller on Andes Technology AX45MP platforms.
+diff --git a/drivers/soc/renesas/Kconfig b/drivers/soc/renesas/Kconfig
+index 12040ce116a551..880c544bb2dfda 100644
+--- a/drivers/soc/renesas/Kconfig
++++ b/drivers/soc/renesas/Kconfig
+@@ -335,7 +335,7 @@ config ARCH_R9A07G043
+ 	bool "RISC-V Platform support for RZ/Five"
+ 	depends on NONPORTABLE
+ 	select ARCH_RZG2L
+-	select AX45MP_L2_CACHE if RISCV_DMA_NONCOHERENT
++	select AX45MP_L2_CACHE
+ 	select DMA_GLOBAL_POOL
+ 	select ERRATA_ANDES if RISCV_SBI
+ 	select ERRATA_ANDES_CMO if ERRATA_ANDES
+-- 
+2.39.2
 
-cheers
