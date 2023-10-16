@@ -2,154 +2,175 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93897CDB465
-	for <linux-m68k@archiver.kernel.org>; Mon, 16 Oct 2023 12:24:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E3AFC41513
+	for <linux-m68k@archiver.kernel.org>; Mon, 16 Oct 2023 12:50:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231444AbjJPMYK convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 16 Oct 2023 08:24:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44634 "EHLO
+        id S233341AbjJPMu2 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 16 Oct 2023 08:50:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbjJPMYJ (ORCPT
+        with ESMTP id S233256AbjJPMu1 (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 16 Oct 2023 08:24:09 -0400
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE999F
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Oct 2023 05:24:07 -0700 (PDT)
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5a7afd45199so56248177b3.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Oct 2023 05:24:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697459047; x=1698063847;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JZcwFp66xptXd4AEmlGTA3AEv44O/pe/cNK0gPURnGg=;
-        b=OXWdAp4MKNdg3Rh43GKybgd/J6jVQPejPBzRl33RcL4LDJozPnHN3LTNl4vn8A7bUH
-         DyDBAZcjwfQSgG2c7pXAWZc+zDkJNod7SmkoAJfHgx7X3B78RJrqkMzReL4oLSE++tDr
-         /5clwonMXTOmOe6+qVC8VGXlMcYDs2x7Dn9KVqsApNr3Nkf9Igli6TWsJzY5ToVw+KKP
-         lNttq2GgvHT5OwQIJ3jFS2IGDEuoa3HH84GJ/IdLGJh/vRPsWdzt1xJX6p+BG000va+i
-         yZzqo0E8nJUF+5H5XIm091k8LGTmTMBtb3l5MTsqOEi8rFqqPK/qGvHrSKqGd71zCvF0
-         iu6Q==
-X-Gm-Message-State: AOJu0YxROVahKiEwXNZjimRevCRe6s9gcYnhAbiUyHk5cWmGjuohPIo2
-        JgnSMWTmUqHdx1LWe16TBxxK6BQoLVGRBA==
-X-Google-Smtp-Source: AGHT+IHiRKWqbXC+x5PqDe5WW35jXP+LF7hK+o3BY8AYDPn+DLvLStuAmdIk25mIbCG6RbunDhv9xQ==
-X-Received: by 2002:a0d:d441:0:b0:5a7:dad7:61dd with SMTP id w62-20020a0dd441000000b005a7dad761ddmr16287349ywd.20.1697459046671;
-        Mon, 16 Oct 2023 05:24:06 -0700 (PDT)
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
-        by smtp.gmail.com with ESMTPSA id g69-20020a815248000000b0059f8120ee4dsm2176105ywb.30.2023.10.16.05.24.06
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Oct 2023 05:24:06 -0700 (PDT)
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5a7c7262d5eso56062427b3.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Oct 2023 05:24:06 -0700 (PDT)
-X-Received: by 2002:a81:5751:0:b0:5a7:b723:8fa3 with SMTP id
- l78-20020a815751000000b005a7b7238fa3mr18207000ywb.26.1697459045950; Mon, 16
- Oct 2023 05:24:05 -0700 (PDT)
+        Mon, 16 Oct 2023 08:50:27 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1AE4B4
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Oct 2023 05:50:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1697460625; x=1728996625;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=QegDkNMZMRhVlJdi4RGF/B2gb0RjIiBMZVBOlKntRnE=;
+  b=o5wfr7ss592qcST9IJjcbdSaW/+qLH8/KSws4CwYDvSQKCfRFEKCzXtP
+   s5Zmlx4dAnIZNUvGbBZcxq2lUMbnrwt+9J/mU84GITnStK7z4hH4qYCjc
+   IEwpgG/ESESdaSsCvTtAogJH9BHnQqUBjHsQI/TR97jCR8xHRfa39EEp8
+   RGdOjRhsCFKdHqXxvSs1kYL4fqNVx8eBxbFC8wJZtP1dfLP2333wv/XX7
+   eoZcLaUPABNks1yAW13vvYYYoCRzjMMwDdcNFFRQOdeR/gs9cpVT4WYiJ
+   bbIU0l8RN55SADj0HnwAzXtesDuJxlCO4f/lbxJcJy1hShLiZriaYLNst
+   g==;
+X-CSE-ConnectionGUID: ITNzLPtcTWajHI2MYV7Rww==
+X-CSE-MsgGUID: +uJSPN5bQBOp65OEvyXvMQ==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
+   d="asc'?scan'208";a="240802253"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Oct 2023 05:50:24 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 16 Oct 2023 05:50:06 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Mon, 16 Oct 2023 05:50:02 -0700
+Date:   Mon, 16 Oct 2023 13:49:41 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Christoph Hellwig <hch@lst.de>
+CC:     Greg Ungerer <gerg@linux-m68k.org>, <iommu@lists.linux.dev>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Conor Dooley <conor@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        <linux-m68k@lists.linux-m68k.org>, <netdev@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>,
+        <linux-renesas-soc@vger.kernel.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>
+Subject: Re: [PATCH 01/12] riscv: RISCV_NONSTANDARD_CACHE_OPS shouldn't
+ depend on RISCV_DMA_NONCOHERENT
+Message-ID: <20231016-walmart-egomaniac-dc4c63ea70a6@wendy>
+References: <20231016054755.915155-1-hch@lst.de>
+ <20231016054755.915155-2-hch@lst.de>
 MIME-Version: 1.0
-References: <7858a184cda66e0991fd295c711dfed7e4d1248c.1696603287.git.geert@linux-m68k.org>
-In-Reply-To: <7858a184cda66e0991fd295c711dfed7e4d1248c.1696603287.git.geert@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 16 Oct 2023 14:23:53 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUQ72KOPw5vxNfhjoTR-SsaELeKneBmyQPYEWa_o5OZZA@mail.gmail.com>
-Message-ID: <CAMuHMdUQ72KOPw5vxNfhjoTR-SsaELeKneBmyQPYEWa_o5OZZA@mail.gmail.com>
-Subject: Re: [PATCH/RFC] m68k: Add full preempt support
-To:     Greg Ungerer <gerg@linux-m68k.org>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="H4bRYPb5tXhOAmff"
+Content-Disposition: inline
+In-Reply-To: <20231016054755.915155-2-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Oct 6, 2023 at 4:49 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> Currently, a Preemptible Kernel is only supported on the Coldfire CPU
-> family.  Extend preempt support to the full Classic M68K CPU family
-> (68020+ with MMU, and 68000-derivatives without MMU).
->
-> Make sure preemption is disabled in loops involving cache and TLB
-> flushing.
->
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+--H4bRYPb5tXhOAmff
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hey,
+
+On Mon, Oct 16, 2023 at 07:47:43AM +0200, Christoph Hellwig wrote:
+> RISCV_NONSTANDARD_CACHE_OPS is also used for the pmem cache maintenance
+> helpers, which are built into the kernel unconditionally.
+
+You surely have better insight than I do here, but is this actually
+required?
+This patch seems to allow creation of a kernel where the cache
+maintenance operations could be used for pmem, but would be otherwise
+unavailable, which seems counter intuitive to me.
+Why would someone want to provide the pmem helpers with cache
+maintenance operations, but not provide them generally?
+
+I also don't really understand what the unconditional nature of the pmem
+helpers has to do with anything, as this patch does not unconditionally
+provide any cache management operations, only relax the conditions under
+which the non-standard cache management operations can be provided.
+
+What am I missing?
+
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
-> Tested on ARAnyM, using none/voluntary/full preemption.
-> Compile-tested on 68000.
->
-> I don't know if all of the preempt_{dis,en}able() pairs are really
-> needed, or if we need more of them.  I just followed what some other
-> architectures are doing.
->
-> Without the preempt_{dis,en}able() pairs, the kernel panics on ARAnyM while
-> starting early userspace (Debian 4.0), cfr. below.
-> Does full preemption work on Coldfire without?
-> Thanks for your comments!
->
->     BUG: Bad rss-counter state mm:93ade98e type:MM_FILEPAGES val:-7
->     BUG: Bad rss-counter state mm:93ade98e type:MM_ANONPAGES val:-1
->     Kernel panic - not syncing: table already free!
+>  arch/riscv/Kconfig          | 1 -
+>  drivers/cache/Kconfig       | 2 +-
+>  drivers/soc/renesas/Kconfig | 2 +-
+>  3 files changed, 2 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index d607ab0f7c6daf..0ac0b538379718 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -277,7 +277,6 @@ config RISCV_DMA_NONCOHERENT
+> =20
+>  config RISCV_NONSTANDARD_CACHE_OPS
+>  	bool
+> -	depends on RISCV_DMA_NONCOHERENT
+>  	help
+>  	  This enables function pointer support for non-standard noncoherent
+>  	  systems to handle cache management.
+> diff --git a/drivers/cache/Kconfig b/drivers/cache/Kconfig
+> index a57677f908f3ba..d6e5e3abaad8af 100644
+> --- a/drivers/cache/Kconfig
+> +++ b/drivers/cache/Kconfig
+> @@ -3,7 +3,7 @@ menu "Cache Drivers"
+> =20
+>  config AX45MP_L2_CACHE
+>  	bool "Andes Technology AX45MP L2 Cache controller"
+> -	depends on RISCV_DMA_NONCOHERENT
+> +	depends on RISCV
+>  	select RISCV_NONSTANDARD_CACHE_OPS
+>  	help
+>  	  Support for the L2 cache controller on Andes Technology AX45MP platfo=
+rms.
+> diff --git a/drivers/soc/renesas/Kconfig b/drivers/soc/renesas/Kconfig
+> index 12040ce116a551..880c544bb2dfda 100644
+> --- a/drivers/soc/renesas/Kconfig
+> +++ b/drivers/soc/renesas/Kconfig
+> @@ -335,7 +335,7 @@ config ARCH_R9A07G043
+>  	bool "RISC-V Platform support for RZ/Five"
+>  	depends on NONPORTABLE
+>  	select ARCH_RZG2L
+> -	select AX45MP_L2_CACHE if RISCV_DMA_NONCOHERENT
 
-Ran into one of these again, once, so probably we need more
-preempt_{dis,en}able() pairs, but where?
+FWIW, this one is already gone in linux-next, as part of fixing some
+randconfig issues.
 
-    BUG: Bad rss-counter state mm:9bb416c6 type:MM_FILEPAGES val:-20
-    BUG: Bad rss-counter state mm:9bb416c6 type:MM_ANONPAGES val:-6
-    Kernel panic - not syncing: table already free!
-    CPU: 0 PID: 480 Comm: grep Not tainted
-6.6.0-rc6-atari-01887-g1ab3ae298649 #1601
-    Stack from 018c9c8c:
-            018c9c8c 0048a940 0048a940 00000000 00000001 003c0caa
-0048a940 003b9b96
-            00000001 00000001 01a58000 01a62100 01a5b000 000cf316
-018c9dd2 00006440
-            0047d67f 80039000 c0000000 01a58b00 80039000 80000000
-c0000000 01a62100
-            01a5b000 000cfd0e 01a58b00 00000001 ffffffff 018c9db2
-00000000 000cfb36
-            80000000 01a60a68 01a60a68 003aa02e 000dbd0a 000d557c
-80000000 80038fff
-            80038fff bfffffff 000cfd8e 018c9dd2 80000000 80039000
-00000000 c0000000
-    Call Trace: [<003c0caa>] dump_stack+0xc/0x10
-     [<003b9b96>] panic+0xd8/0x256
-     [<000cf316>] pmd_offset.isra.0+0x0/0x20
-     [<00006440>] free_pointer_table+0x68/0x124
-     [<000cfd0e>] free_pgd_range+0x1d8/0x1ea
-     [<000cfb36>] free_pgd_range+0x0/0x1ea
-     [<003aa02e>] mas_find+0x0/0x4c
-     [<000dbd0a>] unlink_anon_vmas+0x0/0x108
-     [<000d557c>] unlink_file_vma+0x0/0x40
-     [<000cfd8e>] free_pgtables+0x6e/0x80
-     [<00045eec>] up_read+0x0/0x62
-     [<000d63fc>] exit_mmap+0x118/0x1ee
-     [<0000c001>] asinbig+0x25/0x34
-     [<0000ffff>] EXPTBL+0x2eb/0x400
-     [<0000ffff>] EXPTBL+0x2eb/0x400
-     [<00021f10>] __mmput+0x18/0xae
-     [<00025cce>] do_exit+0x2b4/0x7ba
-     [<00026316>] do_group_exit+0x1e/0x96
-     [<0002e354>] get_signal+0x19c/0x694
-     [<000032fc>] test_ti_thread_flag+0x0/0x14
-     [<0002d6b6>] force_sig_info_to_task+0xb0/0xea
-     [<00003caa>] do_notify_resume+0x36/0x4a0
-     [<0002d970>] force_sig_fault_to_task+0x32/0x3e
-     [<0002d990>] force_sig_fault+0x14/0x1a
-     [<0000597c>] send_fault_sig+0x24/0x84
-     [<00002632>] do_signal_return+0x10/0x1a
-     [<00088000>] adjust_reg_min_max_vals+0x106/0x140c
+Cheers,
+Conor.
 
-    ---[ end Kernel panic - not syncing: table already free! ]---
+> +	select AX45MP_L2_CACHE
+>  	select DMA_GLOBAL_POOL
+>  	select ERRATA_ANDES if RISCV_SBI
+>  	select ERRATA_ANDES_CMO if ERRATA_ANDES
+> --=20
+> 2.39.2
+>=20
 
-Gr{oetje,eeting}s,
+--H4bRYPb5tXhOAmff
+Content-Type: application/pgp-signature; name="signature.asc"
 
-                        Geert
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZS0xZAAKCRB4tDGHoIJi
+0r8WAP0V7KR64e4ZUtsXTDWdQEWkorwWePw0OFIpRuGhinkaEwD/c3YYEZm7U2pY
+4IztZY7Ga6qv2gPgi28lN/xhzpKvZgg=
+=rZtF
+-----END PGP SIGNATURE-----
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--H4bRYPb5tXhOAmff--
