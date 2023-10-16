@@ -2,82 +2,154 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72BFDC41513
-	for <linux-m68k@archiver.kernel.org>; Mon, 16 Oct 2023 11:59:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93897CDB465
+	for <linux-m68k@archiver.kernel.org>; Mon, 16 Oct 2023 12:24:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229633AbjJPL7z (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 16 Oct 2023 07:59:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35754 "EHLO
+        id S231444AbjJPMYK convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 16 Oct 2023 08:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjJPL7y (ORCPT
+        with ESMTP id S229621AbjJPMYJ (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 16 Oct 2023 07:59:54 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 85671E3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Oct 2023 04:59:53 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1B8461FB;
-        Mon, 16 Oct 2023 05:00:33 -0700 (PDT)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DA1E43F5A1;
-        Mon, 16 Oct 2023 04:59:49 -0700 (PDT)
-Message-ID: <4f709c6d-0635-4136-9cfa-717484f47fde@arm.com>
-Date:   Mon, 16 Oct 2023 12:59:49 +0100
+        Mon, 16 Oct 2023 08:24:09 -0400
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE999F
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Oct 2023 05:24:07 -0700 (PDT)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5a7afd45199so56248177b3.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Oct 2023 05:24:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697459047; x=1698063847;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JZcwFp66xptXd4AEmlGTA3AEv44O/pe/cNK0gPURnGg=;
+        b=OXWdAp4MKNdg3Rh43GKybgd/J6jVQPejPBzRl33RcL4LDJozPnHN3LTNl4vn8A7bUH
+         DyDBAZcjwfQSgG2c7pXAWZc+zDkJNod7SmkoAJfHgx7X3B78RJrqkMzReL4oLSE++tDr
+         /5clwonMXTOmOe6+qVC8VGXlMcYDs2x7Dn9KVqsApNr3Nkf9Igli6TWsJzY5ToVw+KKP
+         lNttq2GgvHT5OwQIJ3jFS2IGDEuoa3HH84GJ/IdLGJh/vRPsWdzt1xJX6p+BG000va+i
+         yZzqo0E8nJUF+5H5XIm091k8LGTmTMBtb3l5MTsqOEi8rFqqPK/qGvHrSKqGd71zCvF0
+         iu6Q==
+X-Gm-Message-State: AOJu0YxROVahKiEwXNZjimRevCRe6s9gcYnhAbiUyHk5cWmGjuohPIo2
+        JgnSMWTmUqHdx1LWe16TBxxK6BQoLVGRBA==
+X-Google-Smtp-Source: AGHT+IHiRKWqbXC+x5PqDe5WW35jXP+LF7hK+o3BY8AYDPn+DLvLStuAmdIk25mIbCG6RbunDhv9xQ==
+X-Received: by 2002:a0d:d441:0:b0:5a7:dad7:61dd with SMTP id w62-20020a0dd441000000b005a7dad761ddmr16287349ywd.20.1697459046671;
+        Mon, 16 Oct 2023 05:24:06 -0700 (PDT)
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
+        by smtp.gmail.com with ESMTPSA id g69-20020a815248000000b0059f8120ee4dsm2176105ywb.30.2023.10.16.05.24.06
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Oct 2023 05:24:06 -0700 (PDT)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5a7c7262d5eso56062427b3.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Oct 2023 05:24:06 -0700 (PDT)
+X-Received: by 2002:a81:5751:0:b0:5a7:b723:8fa3 with SMTP id
+ l78-20020a815751000000b005a7b7238fa3mr18207000ywb.26.1697459045950; Mon, 16
+ Oct 2023 05:24:05 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 08/12] dma-direct: warn when coherent allocations aren't
- supported
-Content-Language: en-GB
-To:     Christoph Hellwig <hch@lst.de>, Greg Ungerer <gerg@linux-m68k.org>,
-        iommu@lists.linux.dev
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Conor Dooley <conor@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-m68k@lists.linux-m68k.org, netdev@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
-        Jim Quinlan <james.quinlan@broadcom.com>
-References: <20231016054755.915155-1-hch@lst.de>
- <20231016054755.915155-9-hch@lst.de>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20231016054755.915155-9-hch@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <7858a184cda66e0991fd295c711dfed7e4d1248c.1696603287.git.geert@linux-m68k.org>
+In-Reply-To: <7858a184cda66e0991fd295c711dfed7e4d1248c.1696603287.git.geert@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 16 Oct 2023 14:23:53 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUQ72KOPw5vxNfhjoTR-SsaELeKneBmyQPYEWa_o5OZZA@mail.gmail.com>
+Message-ID: <CAMuHMdUQ72KOPw5vxNfhjoTR-SsaELeKneBmyQPYEWa_o5OZZA@mail.gmail.com>
+Subject: Re: [PATCH/RFC] m68k: Add full preempt support
+To:     Greg Ungerer <gerg@linux-m68k.org>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 16/10/2023 6:47 am, Christoph Hellwig wrote:
-> Log a warning once when dma_alloc_coherent fails because the platform
-> does not support coherent allocations at all.
-
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
-
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+On Fri, Oct 6, 2023 at 4:49 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> Currently, a Preemptible Kernel is only supported on the Coldfire CPU
+> family.  Extend preempt support to the full Classic M68K CPU family
+> (68020+ with MMU, and 68000-derivatives without MMU).
+>
+> Make sure preemption is disabled in loops involving cache and TLB
+> flushing.
+>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 > ---
->   kernel/dma/direct.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-> index 1327d04fa32a25..fddfea3b2fe173 100644
-> --- a/kernel/dma/direct.c
-> +++ b/kernel/dma/direct.c
-> @@ -240,8 +240,10 @@ void *dma_direct_alloc(struct device *dev, size_t size,
->   		 */
->   		set_uncached = IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED);
->   		remap = IS_ENABLED(CONFIG_DMA_DIRECT_REMAP);
-> -		if (!set_uncached && !remap)
-> +		if (!set_uncached && !remap) {
-> +			pr_warn_once("coherent DMA allocations not supported on this platform.\n");
->   			return NULL;
-> +		}
->   	}
->   
->   	/*
+> Tested on ARAnyM, using none/voluntary/full preemption.
+> Compile-tested on 68000.
+>
+> I don't know if all of the preempt_{dis,en}able() pairs are really
+> needed, or if we need more of them.  I just followed what some other
+> architectures are doing.
+>
+> Without the preempt_{dis,en}able() pairs, the kernel panics on ARAnyM while
+> starting early userspace (Debian 4.0), cfr. below.
+> Does full preemption work on Coldfire without?
+> Thanks for your comments!
+>
+>     BUG: Bad rss-counter state mm:93ade98e type:MM_FILEPAGES val:-7
+>     BUG: Bad rss-counter state mm:93ade98e type:MM_ANONPAGES val:-1
+>     Kernel panic - not syncing: table already free!
+
+Ran into one of these again, once, so probably we need more
+preempt_{dis,en}able() pairs, but where?
+
+    BUG: Bad rss-counter state mm:9bb416c6 type:MM_FILEPAGES val:-20
+    BUG: Bad rss-counter state mm:9bb416c6 type:MM_ANONPAGES val:-6
+    Kernel panic - not syncing: table already free!
+    CPU: 0 PID: 480 Comm: grep Not tainted
+6.6.0-rc6-atari-01887-g1ab3ae298649 #1601
+    Stack from 018c9c8c:
+            018c9c8c 0048a940 0048a940 00000000 00000001 003c0caa
+0048a940 003b9b96
+            00000001 00000001 01a58000 01a62100 01a5b000 000cf316
+018c9dd2 00006440
+            0047d67f 80039000 c0000000 01a58b00 80039000 80000000
+c0000000 01a62100
+            01a5b000 000cfd0e 01a58b00 00000001 ffffffff 018c9db2
+00000000 000cfb36
+            80000000 01a60a68 01a60a68 003aa02e 000dbd0a 000d557c
+80000000 80038fff
+            80038fff bfffffff 000cfd8e 018c9dd2 80000000 80039000
+00000000 c0000000
+    Call Trace: [<003c0caa>] dump_stack+0xc/0x10
+     [<003b9b96>] panic+0xd8/0x256
+     [<000cf316>] pmd_offset.isra.0+0x0/0x20
+     [<00006440>] free_pointer_table+0x68/0x124
+     [<000cfd0e>] free_pgd_range+0x1d8/0x1ea
+     [<000cfb36>] free_pgd_range+0x0/0x1ea
+     [<003aa02e>] mas_find+0x0/0x4c
+     [<000dbd0a>] unlink_anon_vmas+0x0/0x108
+     [<000d557c>] unlink_file_vma+0x0/0x40
+     [<000cfd8e>] free_pgtables+0x6e/0x80
+     [<00045eec>] up_read+0x0/0x62
+     [<000d63fc>] exit_mmap+0x118/0x1ee
+     [<0000c001>] asinbig+0x25/0x34
+     [<0000ffff>] EXPTBL+0x2eb/0x400
+     [<0000ffff>] EXPTBL+0x2eb/0x400
+     [<00021f10>] __mmput+0x18/0xae
+     [<00025cce>] do_exit+0x2b4/0x7ba
+     [<00026316>] do_group_exit+0x1e/0x96
+     [<0002e354>] get_signal+0x19c/0x694
+     [<000032fc>] test_ti_thread_flag+0x0/0x14
+     [<0002d6b6>] force_sig_info_to_task+0xb0/0xea
+     [<00003caa>] do_notify_resume+0x36/0x4a0
+     [<0002d970>] force_sig_fault_to_task+0x32/0x3e
+     [<0002d990>] force_sig_fault+0x14/0x1a
+     [<0000597c>] send_fault_sig+0x24/0x84
+     [<00002632>] do_signal_return+0x10/0x1a
+     [<00088000>] adjust_reg_min_max_vals+0x106/0x140c
+
+    ---[ end Kernel panic - not syncing: table already free! ]---
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
