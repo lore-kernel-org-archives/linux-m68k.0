@@ -2,33 +2,33 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3B0BCDB482
-	for <linux-m68k@archiver.kernel.org>; Mon, 16 Oct 2023 05:48:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37155CDB484
+	for <linux-m68k@archiver.kernel.org>; Mon, 16 Oct 2023 05:48:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231638AbjJPFsQ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 16 Oct 2023 01:48:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37112 "EHLO
+        id S231510AbjJPFsR (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 16 Oct 2023 01:48:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbjJPFsO (ORCPT
+        with ESMTP id S231538AbjJPFsP (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 16 Oct 2023 01:48:14 -0400
+        Mon, 16 Oct 2023 01:48:15 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B9EF2;
-        Sun, 15 Oct 2023 22:48:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BF3E4;
+        Sun, 15 Oct 2023 22:48:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=HNzOvxESbvs0T+eHOSkoEf67mG8U/1N0p04PAmqKDXE=; b=2LZ3V85GIZkSezRnfJZYY+41II
-        hAx6KoDUJTBNqUViFNGY1iq1nTy806urFG6DFTIc2y/2hSVyjA5lvblAdhrrnaaZQVtKSHJ0ClxcT
-        btOJq+Bmc7p8nTSIiogtPYQD+ROsKcZY1kAf7rXBV5bTPCqZOXR5zAPo+kJAIpYCRWxWcBhYIWT30
-        W/8ajfCpTAo+9W/ldmJlQlKV4w+tSlA9wi1V8z5VY1wah9B3q7iD5jhMiU2g3oEsK5+9PSm+AfIol
-        T3CyQGbEa0TDUnq9JIaSaM67p8D5JV0MDB3w8KArp2cItSF5Kfm6892pvl119ffXh3wOtu4m6im+q
-        LIlB+54Q==;
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=09OXcjV5LjWtZgzHphgSEOzGoq+sVyJJ1rTh412jyyc=; b=QVxDSiE7PtzcAx7kdTFFhVH1A+
+        L+vIzroq4ifhL++4BR+7byFq3XULMiKqN5PKahJdNRmuPu1Pyj7hCfo5NDTaQeokmSktZoHBXWSoe
+        YRTw7HBbQPdYgxdcQiDRsQF8STUjdIhbVxhfwckO7PbwvH8Jzax6Tm9U+Rq6IowbFMrSIA/k74Jyg
+        i+N+nuUAC608YRtjWI6rmf8gs7KJVjCkJ2raNCUEDaIHLLvhjHkQV2622tpqOfPaC1c7JDuRUYlix
+        ettTWh6+82c7wQ167i+NhQ5rf6lBudSL8AX0gVpSAn/4s/KEL8ZZ4VBK9lWdWFLzQWCjK2ZlsT3ad
+        06HD7czg==;
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qsGSM-008Qdv-36;
-        Mon, 16 Oct 2023 05:47:59 +0000
+        id 1qsGSR-008QgM-30;
+        Mon, 16 Oct 2023 05:48:04 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Greg Ungerer <gerg@linux-m68k.org>, iommu@lists.linux.dev
 Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
@@ -46,10 +46,12 @@ Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
         linux-m68k@lists.linux-m68k.org, netdev@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
         Jim Quinlan <james.quinlan@broadcom.com>
-Subject: fix the non-coherent coldfire dma_alloc_coherent v2
-Date:   Mon, 16 Oct 2023 07:47:42 +0200
-Message-Id: <20231016054755.915155-1-hch@lst.de>
+Subject: [PATCH 02/12] riscv: only select DMA_DIRECT_REMAP from RISCV_ISA_ZICBOM
+Date:   Mon, 16 Oct 2023 07:47:44 +0200
+Message-Id: <20231016054755.915155-3-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231016054755.915155-1-hch@lst.de>
+References: <20231016054755.915155-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
@@ -57,20 +59,34 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi all,
+RISCV_DMA_NONCOHERENT is also used for whacky non-standard
+non-coherent ops that use different hooks in dma-direct.
 
-this is the next attempt to not return memory that is not DMA coherent
-on coldfire/m68knommu.  The last one needed more fixups in the fec
-driver, which this versions includes.  On top of that I've also added
-a few more cleanups to the core DMA allocation code.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ arch/riscv/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Jim: any work to support the set_uncached and remap method for arm32
-should probably be based on this, and patch 3 should make that
-selection a little easier.
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 0ac0b538379718..9c48fecc671918 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -273,7 +273,6 @@ config RISCV_DMA_NONCOHERENT
+ 	select ARCH_HAS_SYNC_DMA_FOR_CPU
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+ 	select DMA_BOUNCE_UNALIGNED_KMALLOC if SWIOTLB
+-	select DMA_DIRECT_REMAP if MMU
+ 
+ config RISCV_NONSTANDARD_CACHE_OPS
+ 	bool
+@@ -549,6 +548,7 @@ config RISCV_ISA_ZICBOM
+ 	depends on RISCV_ALTERNATIVE
+ 	default y
+ 	select RISCV_DMA_NONCOHERENT
++	select DMA_DIRECT_REMAP
+ 	help
+ 	   Adds support to dynamically detect the presence of the ZICBOM
+ 	   extension (Cache Block Management Operations) and enable its
+-- 
+2.39.2
 
-Changes since v1:
- - sort out the dependency mess in RISCV
- - don't even built non-coherent DMA support for coldfire cores without
-   data caches
- - apply the fec workarounds to all coldfire platforms with data caches
- - add a trivial cleanup for m68k dma.c
