@@ -2,75 +2,98 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8059FCDB465
-	for <linux-m68k@archiver.kernel.org>; Tue, 17 Oct 2023 02:08:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2955CDB474
+	for <linux-m68k@archiver.kernel.org>; Tue, 17 Oct 2023 07:59:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbjJQCIZ (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 16 Oct 2023 22:08:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47956 "EHLO
+        id S232134AbjJQH7W convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 17 Oct 2023 03:59:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjJQCIY (ORCPT
+        with ESMTP id S234723AbjJQH7V (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 16 Oct 2023 22:08:24 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4EDB9B
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Oct 2023 19:08:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697508503; x=1729044503;
-  h=date:from:to:cc:subject:message-id;
-  bh=1FVwb9yVBOLyE2DyscxXMqgNmCXfdSdnV2Y9lI1DuAc=;
-  b=F9/xgEfOI7mbAJJyBgeFN37D3LshrY3k1arVuzTtsOF1ltsCuR6QW9tv
-   XYNIq+J3UDNIiTK/OMsc1dxblrCJeRjF2IE2kg5puuR79kbAFVIgTuQhk
-   Nvtfbug3couE+bXYQyNTA5tNL+Z9apwEviT6/PC41y3FXm1dKL1GM8Ydq
-   mKfvQkoxl3qOrz/OJS0ezLt3YL9LCrHS26W7JCwaBzFG6cRIuzAqhTr3Y
-   uruTzwsKAbLa5dm4n1I1THhP8bGXFcfb6LInL5vLzDh8DGfZwtjYNDe1R
-   7U5ebiIFISli1C3Xbhu1OBYXzYyyq+sXeAMPRG68ohKdCe1D6BaGfZLyg
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="7246751"
-X-IronPort-AV: E=Sophos;i="6.03,230,1694761200"; 
-   d="scan'208";a="7246751"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 19:08:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="929580123"
-X-IronPort-AV: E=Sophos;i="6.03,230,1694761200"; 
-   d="scan'208";a="929580123"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 16 Oct 2023 19:08:21 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qsZVL-0008qW-0M;
-        Tue, 17 Oct 2023 02:08:19 +0000
-Date:   Tue, 17 Oct 2023 10:07:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:for-v6.7] BUILD SUCCESS
- 03191fb3db3d2585725bcffe0356d12fcfd27c4c
-Message-ID: <202310171040.4vaUuVp8-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+        Tue, 17 Oct 2023 03:59:21 -0400
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C52C6F1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 17 Oct 2023 00:59:17 -0700 (PDT)
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-d9beb863816so1987447276.1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 17 Oct 2023 00:59:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697529557; x=1698134357;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=R9M3vO8TKvpu7sLT3D9MNM+ZNPQeT7q9+/iFi4wqDgU=;
+        b=DbhsjBHHWmfFyNMrtTMXk2XXPD4XNS0Pjck110rnFV5ZOemQOQ5lC6GKIn7Kpf1sXw
+         gc/cleZ0fYIeybmtXi0WF99CML7JLBmTlMkPoGGwFRMuBErwEY59neXHJvgr/+dTn2S4
+         wR6xuf05DAYH4OgznGzdCUUw6x90SMUr1gv3gAu+mpoJhHbHS6u0QbaqenwlSHmRuKQT
+         xj7O650G5VuBsKfDU6W1tLbXVPmkKvJQCFafXqp2QMEaAf0jWA6zsnt2ii3okIU8CBYN
+         EybcD0e9E1IP50el2CBHUxjjfsdVraPkd7ZtM0zYXa6ba3pDOL88+MSh21/WT8G0ZTHn
+         EuiQ==
+X-Gm-Message-State: AOJu0Yyg/usetki8vRh4y8uM6Sly+QJkFTI5FeJ3l0RdHQyx04zHRlHb
+        mRRS3ZGQVsl0c3aGd35FSp5OPAerdCdijg==
+X-Google-Smtp-Source: AGHT+IGIKqe6RdTJHGNSjw4jhNjir+w00STwKIJtWOfKklHANVueHIkTg2zImzvQ1bDl5p4fW+dQXw==
+X-Received: by 2002:a25:1105:0:b0:d9a:5aa0:7a30 with SMTP id 5-20020a251105000000b00d9a5aa07a30mr1306934ybr.39.1697529556619;
+        Tue, 17 Oct 2023 00:59:16 -0700 (PDT)
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
+        by smtp.gmail.com with ESMTPSA id k13-20020a25fe0d000000b00d89b8bf0147sm339459ybe.15.2023.10.17.00.59.16
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Oct 2023 00:59:16 -0700 (PDT)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5a822f96aedso47252087b3.2
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 17 Oct 2023 00:59:16 -0700 (PDT)
+X-Received: by 2002:a0d:e9c2:0:b0:59b:c6a4:15c7 with SMTP id
+ s185-20020a0de9c2000000b0059bc6a415c7mr1352703ywe.46.1697529555871; Tue, 17
+ Oct 2023 00:59:15 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231016054755.915155-1-hch@lst.de> <20231016054755.915155-4-hch@lst.de>
+In-Reply-To: <20231016054755.915155-4-hch@lst.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 17 Oct 2023 09:59:03 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXO94MVoNVh+=meozYXRwpV8jPTBivLJfDHVTvJn7nW4g@mail.gmail.com>
+Message-ID: <CAMuHMdXO94MVoNVh+=meozYXRwpV8jPTBivLJfDHVTvJn7nW4g@mail.gmail.com>
+Subject: Re: [PATCH 03/12] soc: renesas: ARCH_R9A07G043 depends on !RISCV_ISA_ZICBOM
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Greg Ungerer <gerg@linux-m68k.org>, iommu@lists.linux.dev,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Conor Dooley <conor@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-m68k@lists.linux-m68k.org, netdev@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
+        Jim Quinlan <james.quinlan@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-v6.7
-branch HEAD: 03191fb3db3d2585725bcffe0356d12fcfd27c4c  m68k: lib: Include <linux/libgcc.h> for __muldi3()
+On Mon, Oct 16, 2023 at 7:48 AM Christoph Hellwig <hch@lst.de> wrote:
+> ARCH_R9A07G043 has it's own non-standard global pool based DMA coherent
 
-elapsed time: 740m
+its
 
-configs tested: 4
-configs skipped: 161
+> allocator, which conflicts with the remap based RISCV_ISA_ZICBOM version.
+> Add a proper dependency.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-tested configs:
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
