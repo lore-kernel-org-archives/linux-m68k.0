@@ -2,175 +2,110 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07975CDB482
-	for <linux-m68k@archiver.kernel.org>; Tue, 17 Oct 2023 08:07:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98935CDB474
+	for <linux-m68k@archiver.kernel.org>; Tue, 17 Oct 2023 08:20:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234620AbjJQIHg (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Tue, 17 Oct 2023 04:07:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33150 "EHLO
+        id S234571AbjJQIUw convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 17 Oct 2023 04:20:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232134AbjJQIHf (ORCPT
+        with ESMTP id S232134AbjJQIUw (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Tue, 17 Oct 2023 04:07:35 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C1793
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 17 Oct 2023 01:07:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697530054; x=1729066054;
-  h=date:from:to:cc:subject:message-id;
-  bh=ZiCfkR4zREQbufnf+kbZeHaSe1jGzHM8buXDsmhKha8=;
-  b=OpmTxMy+wY5GLwAv/Vna8bDvksYANBxMPVZWwyUD6n87Qs0tRzHwK1sI
-   t7LIwoyuQ+skUOeGoTkyLsOG2LaIM2tRilu3Fy+O5mEj3RnyMc5UF6zOn
-   Nytdd6hh7pNFgjnDxGUAU9RZFL5Ou3CM8Fp6OXk+VkK2D3+MAvkeSXF4s
-   QLRxKKGTSar+5h7ZEepGlBW2Z6ex+mwoK5zreru6mUG0UI1FQsZBuTf5Q
-   zE4rBUZHj6diZtm5ugUKCq4BybHy59aG8R/hKZT0wR3vdz53kz4lCP+zq
-   ZpXqtPgMPAYhh4yWgKKeAu4mMErpsnoXNvri+pjCwbAfXkTlrUKdZ+Ulq
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="389595492"
-X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="389595492"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Oct 2023 01:07:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="785394530"
-X-IronPort-AV: E=Sophos;i="6.03,231,1694761200"; 
-   d="scan'208";a="785394530"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 17 Oct 2023 01:07:32 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qsf6v-0009K9-1H;
-        Tue, 17 Oct 2023 08:07:29 +0000
-Date:   Tue, 17 Oct 2023 16:06:57 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 12260693019039832c3f971c6dbf38f99349d270
-Message-ID: <202310171654.TdNR4Pf8-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+        Tue, 17 Oct 2023 04:20:52 -0400
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0C993
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 17 Oct 2023 01:20:50 -0700 (PDT)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5a8ada42c2aso630387b3.3
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 17 Oct 2023 01:20:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697530849; x=1698135649;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CdUY7Js3MyY72r3pkukYQuEPFyg4hUCkNQ1ukw9r4To=;
+        b=Fypih95dlU4pKscxFiL/Sws7jblsPxmg4DLMGlxgAO2JZ2Lj8efolnuprfj5z0fI3g
+         7RMi6E2/q4Qz65E4bAqDGkThJ0SOSgzAJU87/vu0zEenO41xAKjm031zSPVKLuUs+0W3
+         kKS7DfsjZMVUVE7C9Zcqdw7j9rFAskhJ2ofCQtQHu2qlPOH5sRlOOsnvGNEUozgPkQBJ
+         crBM4c/y/qDe7TK5F0wcOL9QFPJcIkLZxkXSJasdZz56bOH/1MRtGX2KUjxA0YMgtJgT
+         6VbjENn77Rj/BHRHqIj7qDfcmHOzRjpLlNbkPwZ3xZR6TIMPM8bDYT8d4Ml3LlLT0MXi
+         j46Q==
+X-Gm-Message-State: AOJu0Yy6giBaHZQUoQSCv5C7p5GIfRO7YqHcTdsueOoboHdcU3a4EiKp
+        FlMkWkY0PbW3lf1Ahr3ulkCPUXviLx0Jvw==
+X-Google-Smtp-Source: AGHT+IHA+8qZxutgOXlN4GwaeSztapw2rMpWKLadH7XgVgX6np1GIrhp1dNK62WgmAK7UIrRVy2wWg==
+X-Received: by 2002:a81:490f:0:b0:5a8:1aa0:6253 with SMTP id w15-20020a81490f000000b005a81aa06253mr1592691ywa.7.1697530849672;
+        Tue, 17 Oct 2023 01:20:49 -0700 (PDT)
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
+        by smtp.gmail.com with ESMTPSA id w201-20020a8149d2000000b005845e6f9b50sm427032ywa.113.2023.10.17.01.20.47
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Oct 2023 01:20:47 -0700 (PDT)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5a7d9d357faso68247137b3.0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 17 Oct 2023 01:20:47 -0700 (PDT)
+X-Received: by 2002:a81:ab41:0:b0:59f:4dcd:227e with SMTP id
+ d1-20020a81ab41000000b0059f4dcd227emr1543078ywk.37.1697530847545; Tue, 17 Oct
+ 2023 01:20:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231016054755.915155-1-hch@lst.de> <20231016054755.915155-5-hch@lst.de>
+In-Reply-To: <20231016054755.915155-5-hch@lst.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 17 Oct 2023 10:20:35 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdW=Rp8+fcGrZ5fbVDyEZgVMGH_YHMxSTBdHB+zNxw4bxA@mail.gmail.com>
+Message-ID: <CAMuHMdW=Rp8+fcGrZ5fbVDyEZgVMGH_YHMxSTBdHB+zNxw4bxA@mail.gmail.com>
+Subject: Re: [PATCH 04/12] soc: renesas: select RISCV_DMA_NONCOHERENT from ARCH_R9A07G043
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Greg Ungerer <gerg@linux-m68k.org>, iommu@lists.linux.dev,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Conor Dooley <conor@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-m68k@lists.linux-m68k.org, netdev@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
+        Jim Quinlan <james.quinlan@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 12260693019039832c3f971c6dbf38f99349d270  m68k: lib: Include <linux/libgcc.h> for __muldi3()
+On Mon, Oct 16, 2023 at 7:48 AM Christoph Hellwig <hch@lst.de> wrote:
+> Selecting DMA_GLOBAL_POOL without the rest of the non-coherent DMA
+> infrastructure does not make sense.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/soc/renesas/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/soc/renesas/Kconfig b/drivers/soc/renesas/Kconfig
+> index f1696d3b5018d0..ea473b4150dfa8 100644
+> --- a/drivers/soc/renesas/Kconfig
+> +++ b/drivers/soc/renesas/Kconfig
+> @@ -338,6 +338,7 @@ config ARCH_R9A07G043
+>         select ARCH_RZG2L
+>         select AX45MP_L2_CACHE
+>         select DMA_GLOBAL_POOL
+> +       select RISCV_DMA_NONCOHERENT
+>         select ERRATA_ANDES if RISCV_SBI
+>         select ERRATA_ANDES_CMO if ERRATA_ANDES
 
-elapsed time: 1098m
+With proper sort order, and rebased to soc/for-next:
+Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-configs tested: 104
-configs skipped: 2
+Gr{oetje,eeting}s,
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231016   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20231016   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231016   gcc  
-i386                  randconfig-002-20231016   gcc  
-i386                  randconfig-003-20231016   gcc  
-i386                  randconfig-004-20231016   gcc  
-i386                  randconfig-005-20231016   gcc  
-i386                  randconfig-006-20231016   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231016   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231016   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231016   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231016   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231016   gcc  
-x86_64                randconfig-002-20231016   gcc  
-x86_64                randconfig-003-20231016   gcc  
-x86_64                randconfig-004-20231016   gcc  
-x86_64                randconfig-005-20231016   gcc  
-x86_64                randconfig-006-20231016   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
+                        Geert
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
