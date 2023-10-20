@@ -2,91 +2,90 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50BEFCDB47E
-	for <linux-m68k@archiver.kernel.org>; Fri, 20 Oct 2023 05:40:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DEA41CDB47E
+	for <linux-m68k@archiver.kernel.org>; Fri, 20 Oct 2023 07:18:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235599AbjJTFk6 (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Fri, 20 Oct 2023 01:40:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49274 "EHLO
+        id S1376319AbjJTHSr convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 20 Oct 2023 03:18:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235613AbjJTFky (ORCPT
+        with ESMTP id S1376356AbjJTHSq (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Fri, 20 Oct 2023 01:40:54 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B06119;
-        Thu, 19 Oct 2023 22:40:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=f5GWYBu+PKHamukWGpCOB6Gbm7bgNIpCSyr7dKv6+1g=; b=PhVT2nkgy3+lbP4vZOcgWvTN5i
-        tJfiJf+9gc29uHUK19jyfDU3Xg/YhyElCyWF915/BUMNphCm4MBDQ5ORVCa5APGSGjtb94U0Wa+L6
-        2t1JF97CPcG0ScFGSbOf1pFKTUY7vFicIHB/nlc61p15LAaDhHcEYq0DrQRq23GZaOPCYSuPQVvXE
-        tvc2ofhIT+mO9AyImjq2M4ZevNiQHxV1DeKbHeppki+6SkgIwxARtFjv4RI3qrQHBiMGyVRAdTM+t
-        T2lHLAgWm+ADw2gWSnm5Dhyk7OJ9uO3yXrr9kFdqmH7ctFyxm8aWdCAQFfRYnogBWXKeIKEraPJBU
-        mdd4MR9g==;
-Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qtiFb-001GmL-0X;
-        Fri, 20 Oct 2023 05:40:47 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Greg Ungerer <gerg@linux-m68k.org>, iommu@lists.linux.dev
-Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Fri, 20 Oct 2023 03:18:46 -0400
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4958BD51
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 20 Oct 2023 00:18:45 -0700 (PDT)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5a7d532da4bso4988307b3.2
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 20 Oct 2023 00:18:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697786324; x=1698391124;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OizVgKEhlDyqgQ+n9W+hpcjW/zmDsIX6WVqXAdIMLco=;
+        b=EJk87AszgRgcu9v68cHvDjJBQSv8NGy7eblQoejyaEJulSY3qNVwlfHNlJddAwVkMj
+         42t9tggsy8xD3Xk2sjQgYbmnl9fM/HgvWaBeduqf0n1Y7sOs/jw4hGj5wwLe0ms+R4tw
+         /Pvv3T/1Wu5fH/AUjMvCoHPGci+ptVapsd5HhfdER63K2ZJosCFeclvKq6CsqZYlq12j
+         rW+hmUmLEEs1gP4nECFL4uKPvMHGc7529cwa9dWbsZvnE29RRiOtKcfElZ+CZRnF5jmX
+         TpZDUI1yqIxtVVoiHmDjy0Rl99Xu4INaW1R79piI4JcIswc9xN0ub4bfh6q0bStswhLg
+         7xlQ==
+X-Gm-Message-State: AOJu0Yy/6XFnRuh1vfnwqvuUrtxVN2nl2ECn1d8CQr6arkwQaZzUfYMY
+        Hn6HwCGRws+xebsn4H7ssFCpexcwLEi1KQ==
+X-Google-Smtp-Source: AGHT+IHjLQos7VGyZ2FkuFD7N38R32dQugwbEGl3k6mC+NaU/EBUhUkuCTmFjjCyTG5/5MreNQOZsA==
+X-Received: by 2002:a81:a050:0:b0:5a7:ba54:af02 with SMTP id x77-20020a81a050000000b005a7ba54af02mr1124155ywg.38.1697786324016;
+        Fri, 20 Oct 2023 00:18:44 -0700 (PDT)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
+        by smtp.gmail.com with ESMTPSA id z1-20020a81ac41000000b005a7e429f9d0sm487109ywj.43.2023.10.20.00.18.43
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Oct 2023 00:18:43 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5a7d532da4bso4988017b3.2
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 20 Oct 2023 00:18:43 -0700 (PDT)
+X-Received: by 2002:a0d:ddd7:0:b0:59f:4dcd:227e with SMTP id
+ g206-20020a0dddd7000000b0059f4dcd227emr1147454ywe.37.1697786323167; Fri, 20
+ Oct 2023 00:18:43 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231020054024.78295-1-hch@lst.de> <20231020054024.78295-2-hch@lst.de>
+In-Reply-To: <20231020054024.78295-2-hch@lst.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 20 Oct 2023 09:18:32 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVNmbMsqBF3gozT7yqUVJZ+9Eg2wjTuQF+1W4jKXdAZVQ@mail.gmail.com>
+Message-ID: <CAMuHMdVNmbMsqBF3gozT7yqUVJZ+9Eg2wjTuQF+1W4jKXdAZVQ@mail.gmail.com>
+Subject: Re: [PATCH 1/8] dma-direct: add depdenencies to CONFIG_DMA_GLOBAL_POOL
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Greg Ungerer <gerg@linux-m68k.org>, iommu@lists.linux.dev,
+        Robin Murphy <robin.murphy@arm.com>,
         Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
         Wei Fang <wei.fang@nxp.com>,
         Shenwei Wang <shenwei.wang@nxp.com>,
         Clark Wang <xiaoning.wang@nxp.com>,
         NXP Linux Team <linux-imx@nxp.com>,
-        linux-m68k@lists.linux-m68k.org, netdev@vger.kernel.org
-Subject: [PATCH 8/8] m68k: remove unused includes from dma.c
-Date:   Fri, 20 Oct 2023 07:40:24 +0200
-Message-Id: <20231020054024.78295-9-hch@lst.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231020054024.78295-1-hch@lst.de>
-References: <20231020054024.78295-1-hch@lst.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+        linux-m68k@lists.linux-m68k.org, netdev@vger.kernel.org,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-dma.c doesn't need most of the headers it includes.  Also there is
-no point in undefining the DEBUG symbol given that it isn't used
-anywhere in this small file.
+s/depdenencies/dependencies/
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reviewed-by: Greg Ungerer <gerg@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Tested-by: Greg Ungerer <gerg@linux-m68k.org>
----
- arch/m68k/kernel/dma.c | 9 ---------
- 1 file changed, 9 deletions(-)
+On Fri, Oct 20, 2023 at 7:40 AM Christoph Hellwig <hch@lst.de> wrote:
+> CONFIG_DMA_GLOBAL_POOL can't be combined with other DMA coherent
+> allocators.  Add dependencies to Kconfig to document this, and make
+> kconfig complain about unment dependencies if someone tries.
 
-diff --git a/arch/m68k/kernel/dma.c b/arch/m68k/kernel/dma.c
-index eef63d032abb53..16063783aa80c6 100644
---- a/arch/m68k/kernel/dma.c
-+++ b/arch/m68k/kernel/dma.c
-@@ -4,17 +4,8 @@
-  * for more details.
-  */
- 
--#undef DEBUG
--
- #include <linux/dma-map-ops.h>
--#include <linux/device.h>
- #include <linux/kernel.h>
--#include <linux/platform_device.h>
--#include <linux/scatterlist.h>
--#include <linux/slab.h>
--#include <linux/vmalloc.h>
--#include <linux/export.h>
--
- #include <asm/cacheflush.h>
- 
- #ifndef CONFIG_COLDFIRE
+unmet
+
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.39.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
