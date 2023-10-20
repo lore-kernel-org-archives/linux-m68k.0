@@ -2,33 +2,33 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52E5CC001DF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9816AC0032E
 	for <linux-m68k@archiver.kernel.org>; Fri, 20 Oct 2023 05:40:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235252AbjJTFkk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        id S233509AbjJTFkk (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
         Fri, 20 Oct 2023 01:40:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35332 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233509AbjJTFkj (ORCPT
+        with ESMTP id S233505AbjJTFkj (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
         Fri, 20 Oct 2023 01:40:39 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F2BD1A6;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E7C9D4C;
         Thu, 19 Oct 2023 22:40:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=mDzIZQ/fWeGbPC1Nok0DTdolfJiMn3Mwfk8q0zRywXg=; b=Zkid2MHIF1cA1H/8btD9RK46S0
-        DQw5wFVpnnItjVm66zLBOc9O6J+W72q275CLIN1NcjVR5QfqoLPPWyM6EjvuyAuMVwxLURVF4+P5d
-        3+3uyiI+tq3PO1oy7b7rGbf4XBxyL6Y5vzkUPtxqeBfZZI2juxaFYTA2ZsQ2WBJ9+EoUGlt5y8vYZ
-        0XLIE2jo6wCkwM/ZIOhmBWklWGmkicd2UHcYy8rulvNR8QW+SwaWTsJ/H20gPumXGfDpwEf22jw7Y
-        m05fakPg7dP87bWP20LxqVrBM/GUWPQms6PtxxsQJd2m4nt+7I6VDZwK4YS9Cy8cLCYPvn4mF09qW
-        3YmepUXA==;
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=Pyz8+fmVXEIys12Pb3NL+63o6RprjuprlzvCIRnkBVU=; b=d+y5VOu+M/5iYh5+2vSPd9i5AB
+        Rilo+F27nDhvIQ/lVqQAYJYz6xdiRlDwVbTfaTAL5a9WQnLq2QZ3D+GGCabDZ530g6VnOpxZAzKn6
+        k7Z8JwRh5bXboJ8UDSZyuGqHpQ6cPt7ALRcxT5dEyoGtvNY1VRgBvS+hsxWRpsPK8f5VX/v3S43nG
+        N1EyB2LjpAZ+RXsxtNzSK0J0YpBtrHBrD7Wm59HPygGey+HD11EhwM40BQFO+xwOHyJAK04Lq6QON
+        eUVYxBK9WsueQWLtVRG3z+jr5AC5H9H8OncDLAOmTWPFeWD2F0WSxBwRRIieea4EDyg0RiqVEyoNp
+        BZw7e4+w==;
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qtiFI-001GiC-08;
-        Fri, 20 Oct 2023 05:40:28 +0000
+        id 1qtiFM-001GiR-2e;
+        Fri, 20 Oct 2023 05:40:33 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Greg Ungerer <gerg@linux-m68k.org>, iommu@lists.linux.dev
 Cc:     Robin Murphy <robin.murphy@arm.com>,
@@ -39,10 +39,12 @@ Cc:     Robin Murphy <robin.murphy@arm.com>,
         Clark Wang <xiaoning.wang@nxp.com>,
         NXP Linux Team <linux-imx@nxp.com>,
         linux-m68k@lists.linux-m68k.org, netdev@vger.kernel.org
-Subject: fix the non-coherent coldfire dma_alloc_coherent v4
-Date:   Fri, 20 Oct 2023 07:40:16 +0200
-Message-Id: <20231020054024.78295-1-hch@lst.de>
+Subject: [PATCH 2/8] dma-direct: add a CONFIG_ARCH_HAS_DMA_ALLOC symbol
+Date:   Fri, 20 Oct 2023 07:40:18 +0200
+Message-Id: <20231020054024.78295-3-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231020054024.78295-1-hch@lst.de>
+References: <20231020054024.78295-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
@@ -50,31 +52,110 @@ Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-Hi all,
+Instead of using arch_dma_alloc if none of the generic coherent
+allocators are used, require the architectures to explicitly opt into
+providing it.  This will used to deal with the case of m68knommu and
+coldfire where we can't do any coherent allocations whatsoever, and
+also makes it clear that arch_dma_alloc is a last resort.
 
-this is the next attempt to not return memory that is not DMA coherent
-on coldfire/m68knommu.  The last one needed more fixups in the fec
-driver, which this versions includes.  On top of that I've also added
-a few more cleanups to the core DMA allocation code.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+Reviewed-by: Greg Ungerer <gerg@linux-m68k.org>
+Tested-by: Greg Ungerer <gerg@linux-m68k.org>
+---
+ arch/arm/Kconfig    |  1 +
+ arch/m68k/Kconfig   |  1 +
+ arch/parisc/Kconfig |  1 +
+ kernel/dma/Kconfig  |  9 +++++++++
+ kernel/dma/direct.c | 12 ++----------
+ 5 files changed, 14 insertions(+), 10 deletions(-)
 
-Note: without the separately submitted
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 9557808e8937b1..f8567e95f98bef 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -8,6 +8,7 @@ config ARM
+ 	select ARCH_HAS_CPU_FINALIZE_INIT if MMU
+ 	select ARCH_HAS_CURRENT_STACK_POINTER
+ 	select ARCH_HAS_DEBUG_VIRTUAL if MMU
++	select ARCH_HAS_DMA_ALLOC if MMU
+ 	select ARCH_HAS_DMA_WRITE_COMBINE if !ARM_DMA_MEM_BUFFERABLE
+ 	select ARCH_HAS_ELF_RANDOMIZE
+ 	select ARCH_HAS_FORTIFY_SOURCE
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 3e318bf9504c5b..4f3e7dec2171c8 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -6,6 +6,7 @@ config M68K
+ 	select ARCH_HAS_BINFMT_FLAT
+ 	select ARCH_HAS_CPU_FINALIZE_INIT if MMU
+ 	select ARCH_HAS_CURRENT_STACK_POINTER
++	select ARCH_HAS_DMA_ALLOC if !MMU || COLDFIRE
+ 	select ARCH_HAS_DMA_PREP_COHERENT if HAS_DMA && MMU && !COLDFIRE
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE if HAS_DMA
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index a15ab147af2e07..46e8e4ea7a57de 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -8,6 +8,7 @@ config PARISC
+ 	select HAVE_FUNCTION_GRAPH_TRACER
+ 	select HAVE_SYSCALL_TRACEPOINTS
+ 	select ARCH_WANT_FRAME_POINTERS
++	select ARCH_HAS_DMA_ALLOC if PA11
+ 	select ARCH_HAS_ELF_RANDOMIZE
+ 	select ARCH_HAS_STRICT_KERNEL_RWX
+ 	select ARCH_HAS_STRICT_MODULE_RWX
+diff --git a/kernel/dma/Kconfig b/kernel/dma/Kconfig
+index 4524db877eba36..d62f5957f36be7 100644
+--- a/kernel/dma/Kconfig
++++ b/kernel/dma/Kconfig
+@@ -144,6 +144,15 @@ config DMA_DIRECT_REMAP
+ 	select DMA_COHERENT_POOL
+ 	select DMA_NONCOHERENT_MMAP
+ 
++#
++# Fallback to arch code for DMA allocations.  This should eventually go away.
++#
++config ARCH_HAS_DMA_ALLOC
++	depends on !ARCH_HAS_DMA_SET_UNCACHED
++	depends on !DMA_DIRECT_REMAP
++	depends on !DMA_GLOBAL_POOL
++	bool
++
+ config DMA_CMA
+ 	bool "DMA Contiguous Memory Allocator"
+ 	depends on HAVE_DMA_CONTIGUOUS && CMA
+diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+index 9596ae1aa0dacf..c078090cd38ecc 100644
+--- a/kernel/dma/direct.c
++++ b/kernel/dma/direct.c
+@@ -220,13 +220,7 @@ void *dma_direct_alloc(struct device *dev, size_t size,
+ 		return dma_direct_alloc_no_mapping(dev, size, dma_handle, gfp);
+ 
+ 	if (!dev_is_dma_coherent(dev)) {
+-		/*
+-		 * Fallback to the arch handler if it exists.  This should
+-		 * eventually go away.
+-		 */
+-		if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED) &&
+-		    !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
+-		    !IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
++		if (IS_ENABLED(CONFIG_ARCH_HAS_DMA_ALLOC) &&
+ 		    !is_swiotlb_for_alloc(dev))
+ 			return arch_dma_alloc(dev, size, dma_handle, gfp,
+ 					      attrs);
+@@ -330,9 +324,7 @@ void dma_direct_free(struct device *dev, size_t size,
+ 		return;
+ 	}
+ 
+-	if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED) &&
+-	    !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
+-	    !IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
++	if (IS_ENABLED(CONFIG_ARCH_HAS_DMA_ALLOC) &&
+ 	    !dev_is_dma_coherent(dev) &&
+ 	    !is_swiotlb_for_alloc(dev)) {
+ 		arch_dma_free(dev, size, cpu_addr, dma_addr, attrs);
+-- 
+2.39.2
 
-   fix a few RISC-V / renesas Kconfig dependencies
-
-series this will cause Kconfig warnings on riscv.   These warnings are
-due to real dependency issues, so I do not plan to hold the series for
-those patches to be applied.
-
-
-Changes since v2:
- - drop the separatly submitted riscv/soc patches and rebase on top of the
-   soc tree
- - rename CONFIG_ARCH_DMA_ALLOC to ARCH_HAS_DMA_ALLOC
- - fix stray CONFIG_ prefixes in a Kconfig file
-
-Changes since v1:
- - sort out the dependency mess in RISCV
- - don't even built non-coherent DMA support for coldfire cores without
-   data caches
- - apply the fec workarounds to all coldfire platforms with data caches
- - add a trivial cleanup for m68k dma.c
