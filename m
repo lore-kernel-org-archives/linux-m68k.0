@@ -2,61 +2,55 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61733CDB474
-	for <linux-m68k@archiver.kernel.org>; Mon, 23 Oct 2023 05:50:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE9C0C25B47
+	for <linux-m68k@archiver.kernel.org>; Tue, 24 Oct 2023 08:11:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229458AbjJWFuy (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 23 Oct 2023 01:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36432 "EHLO
+        id S233768AbjJXILO (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Tue, 24 Oct 2023 04:11:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjJWFux (ORCPT
+        with ESMTP id S233842AbjJXILK (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 23 Oct 2023 01:50:53 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE15FC
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 22 Oct 2023 22:50:51 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 6B12A68AA6; Mon, 23 Oct 2023 07:50:48 +0200 (CEST)
-Date:   Mon, 23 Oct 2023 07:50:48 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Greg Ungerer <gerg@linux-m68k.org>,
-        iommu@lists.linux.dev, Robin Murphy <robin.murphy@arm.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-m68k@lists.linux-m68k.org, netdev@vger.kernel.org,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: Re: [PATCH 1/8] dma-direct: add depdenencies to
- CONFIG_DMA_GLOBAL_POOL
-Message-ID: <20231023055048.GA11374@lst.de>
-References: <20231020054024.78295-1-hch@lst.de> <20231020054024.78295-2-hch@lst.de> <CAMuHMdVNmbMsqBF3gozT7yqUVJZ+9Eg2wjTuQF+1W4jKXdAZVQ@mail.gmail.com>
+        Tue, 24 Oct 2023 04:11:10 -0400
+Received: from mail.citycodes.pl (mail.citycodes.pl [158.255.215.195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54FF910C1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Oct 2023 01:11:08 -0700 (PDT)
+Received: by mail.citycodes.pl (Postfix, from userid 1001)
+        id DC61C21688; Tue, 24 Oct 2023 10:10:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=citycodes.pl; s=mail;
+        t=1698135066; bh=fClkhHu/p6gIm8tbpvFwCqGX3kXIMdqjiuDdSiYGEkk=;
+        h=Date:From:To:Subject:From;
+        b=OVArhaE29thSrGOBEl8JC0jmaiIFS8Dd/XeJJ83G2Q2qk+9kMOquucDIkD3yWXvmr
+         UyRPyCWM/LHliDvHVwxcPsfRv2X4k6H0xpJ58JXHZ/uzsUpCgrAf+R1oXe75CJFLe+
+         MGPKqnACKddOlEYIIN7faX6A4WyrRukXlfKLKJh+nf1KpFv9ccwMXaaHPDvA+9jT3d
+         4QO5oDVp0OLjzlseQhwYZSRJna5z/l5Bm5zZ4aaI1HQMAQMTWMzjgDiVTrwjN61vHr
+         H1IBAn1S0sGp84Vp/cRTYa1P8ymDvTmwiZmU1/9IKYnGuz0LfPDoZxjZRtKoSHwntH
+         syHpbdt4j9QHA==
+Received: by mail.citycodes.pl for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Oct 2023 08:10:35 GMT
+Message-ID: <20231024084500-0.1.8a.l8cq.0.21mxsde567@citycodes.pl>
+Date:   Tue, 24 Oct 2023 08:10:35 GMT
+From:   "Kamil Lasek" <kamil.lasek@citycodes.pl>
+To:     <linux-m68k@lists.linux-m68k.org>
+Subject: Wycena paneli fotowoltaicznych
+X-Mailer: mail.citycodes.pl
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdVNmbMsqBF3gozT7yqUVJZ+9Eg2wjTuQF+1W4jKXdAZVQ@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 09:18:32AM +0200, Geert Uytterhoeven wrote:
-> s/depdenencies/dependencies/
-> 
-> On Fri, Oct 20, 2023 at 7:40 AM Christoph Hellwig <hch@lst.de> wrote:
-> > CONFIG_DMA_GLOBAL_POOL can't be combined with other DMA coherent
-> > allocators.  Add dependencies to Kconfig to document this, and make
-> > kconfig complain about unment dependencies if someone tries.
-> 
-> unmet
+Dzie=C5=84 dobry,
 
-Thanks, I've fixed this up, and also removed the line selecting
-ARCH_USE_DMA_ALLOC which snuk back into the second to last patch
-after the last rebase and applied the whole series to the dma-mapping
-tree now.
+dostrzegam mo=C5=BCliwo=C5=9B=C4=87 wsp=C3=B3=C5=82pracy z Pa=C5=84stwa f=
+irm=C4=85.
 
-The RISC-V dependency fixes still haven't made it to the SOC tree, so
-you will see dependency warnings in linux-next until that gets fixed.
+=C5=9Awiadczymy kompleksow=C4=85 obs=C5=82ug=C4=99 inwestycji w fotowolta=
+ik=C4=99, kt=C3=B3ra obni=C5=BCa koszty energii elektrycznej.
+
+Czy s=C4=85 Pa=C5=84stwo zainteresowani weryfikacj=C4=85 wst=C4=99pnych p=
+ropozycji?
+
+
+Pozdrawiam,
+Kamil Lasek
