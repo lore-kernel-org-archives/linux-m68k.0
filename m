@@ -2,220 +2,295 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A9ABC4332F
-	for <linux-m68k@archiver.kernel.org>; Mon, 30 Oct 2023 04:01:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E66ACC4332F
+	for <linux-m68k@archiver.kernel.org>; Mon, 30 Oct 2023 10:13:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229544AbjJ3EBA (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Mon, 30 Oct 2023 00:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39092 "EHLO
+        id S232480AbjJ3KNB (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Mon, 30 Oct 2023 06:13:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjJ3EA7 (ORCPT
+        with ESMTP id S231945AbjJ3KNA (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Mon, 30 Oct 2023 00:00:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CEB697
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 29 Oct 2023 21:00:56 -0700 (PDT)
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-        by dfw.source.kernel.org (Postfix) with ESMTP id 7F3EB60BB9;
-        Mon, 30 Oct 2023 04:00:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFD3AC433C8;
-        Mon, 30 Oct 2023 04:00:53 +0000 (UTC)
-From:   Greg Ungerer <gerg@linux-m68k.org>
-To:     linux-m68k@lists.linux-m68k.org
-Cc:     geert@linux-m68k.org, Greg Ungerer <gerg@kernel.org>,
-        Greg Ungerer <gerg@linux-m68k.org>
-Subject: [PATCH] m68k: use kernel's generic muldi3 libgcc function
-Date:   Mon, 30 Oct 2023 14:00:40 +1000
-Message-Id: <20231030040040.3087779-1-gerg@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Mon, 30 Oct 2023 06:13:00 -0400
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A408A77
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Oct 2023 03:12:55 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:7082:5ab3:115b:c8d0])
+        by baptiste.telenet-ops.be with bizsmtp
+        id 4ACq2B00G1qcjVs01ACqoP; Mon, 30 Oct 2023 11:12:50 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qxPGL-007p2L-00;
+        Mon, 30 Oct 2023 11:12:50 +0100
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qxPGM-006npy-I0;
+        Mon, 30 Oct 2023 11:12:50 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for v6.7
+Date:   Mon, 30 Oct 2023 11:12:49 +0100
+Message-Id: <20231030101249.1621533-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-From: Greg Ungerer <gerg@kernel.org>
+	Hi Linus,
 
-Use the kernels own generic lib/muldi3.c implementation of muldi3 for
-68K machines. Some 68K CPUs support 64bit multiplies so move the arch
-specific umul_ppmm() macro into a header file that is included by
-lib/muldi3.c. That way it can take advantage of the single instruction
-when available.
+The following changes since commit 6465e260f48790807eef06b583b38ca9789b6072:
 
-There is currently no arch specific compiler.h header for m68k, so create
-one for the umul_ppmm() macro. Then remove the old arch/m68k/lib/muldi3.c
-file that is no longer required.
+  Linux 6.6-rc3 (2023-09-24 14:31:13 -0700)
 
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
----
- arch/m68k/Kconfig                |  2 +
- arch/m68k/include/asm/compiler.h | 22 ++++++++
- arch/m68k/lib/Makefile           |  2 +-
- arch/m68k/lib/muldi3.c           | 96 --------------------------------
- 4 files changed, 25 insertions(+), 97 deletions(-)
- create mode 100644 arch/m68k/include/asm/compiler.h
- delete mode 100644 arch/m68k/lib/muldi3.c
+are available in the Git repository at:
 
-Geert: this is a follow up to our discussion at
-       https://lore.kernel.org/all/f9dc98e1-83b0-4345-b4e8-f833f0e73e58@linux-m68k.org/T/
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.7-tag1
 
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 3e96486d9528..6aa85096e1ee 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -22,7 +22,9 @@ config M68K
- 	select GENERIC_LIB_ASHLDI3
- 	select GENERIC_LIB_ASHRDI3
- 	select GENERIC_LIB_LSHRDI3
-+	select GENERIC_LIB_MULDI3
- 	select HAS_IOPORT if PCI || ISA || ATARI_ROM_ISA
-+	select HAVE_ARCH_COMPILER_H
- 	select HAVE_ARCH_SECCOMP
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_ASM_MODVERSIONS
-diff --git a/arch/m68k/include/asm/compiler.h b/arch/m68k/include/asm/compiler.h
-new file mode 100644
-index 000000000000..4abd3c6fc0e2
---- /dev/null
-+++ b/arch/m68k/include/asm/compiler.h
-@@ -0,0 +1,22 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __ASM_M68K_COMPILER_H
-+#define __ASM_M68K_COMPILER_H
-+
-+#ifndef CONFIG_CPU_HAS_NO_MULDIV64
-+
-+/*
-+ * For those 68K CPUs that support 64bit multiply define umul_ppm()
-+ * for the common muldi3 libgcc helper function (in lib/muldi3.c).
-+ * CPUs that don't have it (like the original 68000 and ColdFire)
-+ * will fallback to using the C-coded version of umul_ppmm().
-+ */
-+#define umul_ppmm(w1, w0, u, v)				\
-+	__asm__ ("mulu%.l %3,%1:%0"			\
-+		 : "=d" ((unsigned long)(w0)),		\
-+		   "=d" ((unsigned long)(w1))		\
-+		 : "%0" ((unsigned long)(u)),		\
-+		   "dmi" ((unsigned long)(v)))
-+
-+#endif /* !CONFIG_CPU_HAS_NO_MULDIV64 */
-+
-+#endif /* __ASM_M68K_COMPILER_H */
-diff --git a/arch/m68k/lib/Makefile b/arch/m68k/lib/Makefile
-index 9158688e6cc6..15278a95259e 100644
---- a/arch/m68k/lib/Makefile
-+++ b/arch/m68k/lib/Makefile
-@@ -4,7 +4,7 @@
- # Makefile for m68k-specific library files..
- #
- 
--lib-y	:= muldi3.o memcpy.o memset.o memmove.o
-+lib-y	:= memcpy.o memset.o memmove.o
- 
- lib-$(CONFIG_MMU) += uaccess.o
- lib-$(CONFIG_CPU_HAS_NO_MULDIV64) += mulsi3.o divsi3.o udivsi3.o
-diff --git a/arch/m68k/lib/muldi3.c b/arch/m68k/lib/muldi3.c
-deleted file mode 100644
-index eb7d9d86ff66..000000000000
---- a/arch/m68k/lib/muldi3.c
-+++ /dev/null
-@@ -1,96 +0,0 @@
--/* muldi3.c extracted from gcc-2.7.2.3/libgcc2.c and 
--			   gcc-2.7.2.3/longlong.h which is: */
--/* Copyright (C) 1989, 1992, 1993, 1994, 1995 Free Software Foundation, Inc.
--
--This file is part of GNU CC.
--
--GNU CC is free software; you can redistribute it and/or modify
--it under the terms of the GNU General Public License as published by
--the Free Software Foundation; either version 2, or (at your option)
--any later version.
--
--GNU CC is distributed in the hope that it will be useful,
--but WITHOUT ANY WARRANTY; without even the implied warranty of
--MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--GNU General Public License for more details. */
--
--#include <linux/compiler.h>
--#include <linux/export.h>
--
--#ifdef CONFIG_CPU_HAS_NO_MULDIV64
--
--#define SI_TYPE_SIZE 32
--#define __BITS4 (SI_TYPE_SIZE / 4)
--#define __ll_B (1L << (SI_TYPE_SIZE / 2))
--#define __ll_lowpart(t) ((USItype) (t) % __ll_B)
--#define __ll_highpart(t) ((USItype) (t) / __ll_B)
--
--#define umul_ppmm(w1, w0, u, v)						\
--  do {									\
--    USItype __x0, __x1, __x2, __x3;					\
--    USItype __ul, __vl, __uh, __vh;					\
--									\
--    __ul = __ll_lowpart (u);						\
--    __uh = __ll_highpart (u);						\
--    __vl = __ll_lowpart (v);						\
--    __vh = __ll_highpart (v);						\
--									\
--    __x0 = (USItype) __ul * __vl;					\
--    __x1 = (USItype) __ul * __vh;					\
--    __x2 = (USItype) __uh * __vl;					\
--    __x3 = (USItype) __uh * __vh;					\
--									\
--    __x1 += __ll_highpart (__x0);/* this can't give carry */		\
--    __x1 += __x2;		/* but this indeed can */		\
--    if (__x1 < __x2)		/* did we get it? */			\
--      __x3 += __ll_B;		/* yes, add it in the proper pos. */	\
--									\
--    (w1) = __x3 + __ll_highpart (__x1);					\
--    (w0) = __ll_lowpart (__x1) * __ll_B + __ll_lowpart (__x0);		\
--  } while (0)
--
--#else
--
--#define umul_ppmm(w1, w0, u, v) \
--  __asm__ ("mulu%.l %3,%1:%0"						\
--           : "=d" ((USItype)(w0)),					\
--             "=d" ((USItype)(w1))					\
--           : "%0" ((USItype)(u)),					\
--             "dmi" ((USItype)(v)))
--
--#endif
--
--#define __umulsidi3(u, v) \
--  ({DIunion __w;							\
--    umul_ppmm (__w.s.high, __w.s.low, u, v);				\
--    __w.ll; })
--
--typedef 	 int SItype	__mode(SI);
--typedef unsigned int USItype	__mode(SI);
--typedef		 int DItype	__mode(DI);
--typedef int word_type           __mode(__word__);
--
--struct DIstruct {SItype high, low;};
--
--typedef union
--{
--  struct DIstruct s;
--  DItype ll;
--} DIunion;
--
--DItype
--__muldi3 (DItype u, DItype v)
--{
--  DIunion w;
--  DIunion uu, vv;
--
--  uu.ll = u;
--  vv.ll = v;
--
--  w.ll = __umulsidi3 (uu.s.low, vv.s.low);
--  w.s.high += ((USItype) uu.s.low * (USItype) vv.s.high
--	       + (USItype) uu.s.high * (USItype) vv.s.low);
--
--  return w.ll;
--}
--EXPORT_SYMBOL(__muldi3);
--- 
-2.25.1
+for you to fetch changes up to 03191fb3db3d2585725bcffe0356d12fcfd27c4c:
 
+  m68k: lib: Include <linux/libgcc.h> for __muldi3() (2023-10-16 14:30:40 +0200)
+
+----------------------------------------------------------------
+m68k updates for v6.7
+
+  - Miscellaneous esthetical improvements for the floating point
+    emulator,
+  - Remove the last user of strlcpy(),
+  - Use kernel's generic libgcc functions,
+  - Miscellaneous fixes for W=1 builds,
+  - Miscellaneous indentation fixes,
+  - Miscellaneous fixes and improvements,
+  - Defconfig updates.
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      m68k: io: Mark mmio read addresses as const
+
+Azeem Shaikh (1):
+      m68k: emu: Replace strlcpy() with strscpy()
+
+Geert Uytterhoeven (68):
+      m68k: math-emu: Fix incorrect file reference in fp_log.c
+      m68k: math-emu: Sanitize include guards
+      m68k: math-emu: Make multi_arith.h self-contained
+      m68k: math-emu: Replace external declarations by header inclusion
+      m68k: math-emu: Reformat function and variable headers
+      m68k: math-emu: Add missing prototypes
+      m68k: kernel: Add missing asmlinkage to do_notify_resume()
+      m68k: kernel: Include <linux/cpu.h> for trap_init()
+      m68k: kernel: Make bad_super_trap() static
+      m68k: kernel: Add and use <asm/syscalls.h>
+      m68k: kernel: Add and use "ints.h"
+      m68k: kernel: Add and use "process.h"
+      m68k: kernel: Add and use "ptrace.h"
+      m68k: kernel: Add and use "signal.h"
+      m68k: kernel: Add and use "traps.h"
+      m68k: kernel: Add and use "vectors.h"
+      m68k: mm: Include <asm/hwtest.h> for hwreg_()
+      m68k: mm: Move paging_init() to common <asm/pgtable.h>
+      m68k: mm: Add and use "fault.h"
+      m68k: emu: Remove unused vsnprintf() return value in nfprint()
+      m68k: emu: Mark version[] __maybe_unused
+      m68k: amiga: pcmcia: Replace set but not used variable by READ_ONCE()
+      m68k: amiga: Add and use "amiga.h"
+      m68k: atari: Document data parameter of stdma_try_lock()
+      m68k: atari: Make ikbd_reset() static
+      m68k: atari: Make atari_platform_init() static
+      m68k: atari: Make atari_stram_map_pages() static
+      m68k: atari: Add and use "atari.h"
+      m68k: apollo: Remove unused debug console functions
+      m68k: apollo: Make local reset, serial, and irq functions static
+      m68k: apollo: Replace set but not used variable by READ_ONCE()
+      m68k: apollo: Add and use "apollo.h"
+      m68k: bvme6000: Make bvme6000_abort_int() static
+      m68k: hp300: Include "time.h" for hp300_sched_init()
+      m68k: mac: Remove unused sine_data[]
+      m68k: mac: Remove unused yday in unmktime()
+      m68k: mac: Make mac_platform_init() static
+      m68k: mac: Add and use "mac.h"
+      m68k: mvme147: Make mvme147_init_IRQ() static
+      m68k: mvme16x: Remove unused sink in mvme16x_cons_write()
+      m68k: mvme16x: Add and use "mvme16x.h"
+      m68k: q40: Add and use "q40.h"
+      m68k: sun3/3x: Include <asm/config.h> for config_sun3*()
+      m68k: sun3: Improve Sun3/3x DVMA abstraction in <asm/dvma.h>
+      m68k: sun3: Fix context restore in flush_tlb_range()
+      m68k: sun3: Fix signature of sun3_get_model()
+      m68k: sun3: Add missing asmlinkage to sun3_init()
+      m68k: sun3: Remove unused orig_baddr in free_baddr()
+      m68k: sun3: Remove unused start_page in sun3_bootmem_alloc()
+      m68k: sun3: Remove unused vsprintf() return value in prom_printf()
+      m68k: sun3: Annotate prom_printf() with __printf()
+      m68k: sun3: Make print_pte() static
+      m68k: sun3: Make sun3_platform_init() static
+      m68k: sun3x: Fix signature of sun3_leds()
+      m68k: sun3x: Do not mark dvma_map_iommu() inline
+      m68k: sun3x: Make sun3x_halt() static
+      m68k: sun3x: Make dvma_print() static
+      m68k: sun3/3x: Add and use "sun3.h"
+      m68k: sun3: Change led_pattern[] to unsigned char
+      m68k: Replace GPL 2.0+ README.legal boilerplate with SPDX
+      m68k: defconfig: Update defconfigs for v6.6-rc1
+      m68k: defconfig: Update virt_defconfig for v6.6-rc3
+      m68k: Fix indentation by 7 spaces in <asm/io_mm.h>
+      m68k: sun3: Fix indentation by 5 or 7 spaces
+      m68k: kernel: Fix indentation by 7 spaces in traps.c
+      m68k: Fix indentation by 2 or 5 spaces in <asm/page_mm.h>
+      m68k: fpsp040: Fix indentation by 5 spaces
+      m68k: lib: Include <linux/libgcc.h> for __muldi3()
+
+Greg Ungerer (1):
+      m68k: Use kernel's generic libgcc functions
+
+Rolf Eike Beer (1):
+      m68k: Add missing types to asm/irq.h
+
+ arch/m68k/68000/entry.S              |  7 +--
+ arch/m68k/Kconfig                    |  3 ++
+ arch/m68k/amiga/amiga.h              |  5 ++
+ arch/m68k/amiga/amisound.c           |  2 +
+ arch/m68k/amiga/config.c             |  4 +-
+ arch/m68k/amiga/pcmcia.c             |  3 +-
+ arch/m68k/apollo/apollo.h            |  4 ++
+ arch/m68k/apollo/config.c            | 45 ++++--------------
+ arch/m68k/apollo/dn_ints.c           |  8 ++--
+ arch/m68k/atari/ataints.c            |  3 +-
+ arch/m68k/atari/atakeyb.c            |  2 +-
+ arch/m68k/atari/atari.h              | 15 ++++++
+ arch/m68k/atari/atasound.c           |  1 +
+ arch/m68k/atari/config.c             | 13 ++----
+ arch/m68k/atari/stdma.c              |  1 +
+ arch/m68k/atari/stram.c              |  2 +-
+ arch/m68k/atari/time.c               |  2 +
+ arch/m68k/bvme6000/config.c          |  7 +--
+ arch/m68k/coldfire/entry.S           |  7 +--
+ arch/m68k/configs/amiga_defconfig    |  1 +
+ arch/m68k/configs/apollo_defconfig   |  2 +
+ arch/m68k/configs/atari_defconfig    |  1 +
+ arch/m68k/configs/bvme6000_defconfig |  2 +
+ arch/m68k/configs/hp300_defconfig    |  2 +
+ arch/m68k/configs/mac_defconfig      |  1 +
+ arch/m68k/configs/multi_defconfig    |  1 +
+ arch/m68k/configs/mvme147_defconfig  |  2 +
+ arch/m68k/configs/mvme16x_defconfig  |  2 +
+ arch/m68k/configs/q40_defconfig      |  1 +
+ arch/m68k/configs/sun3_defconfig     |  2 +
+ arch/m68k/configs/sun3x_defconfig    |  2 +
+ arch/m68k/configs/virt_defconfig     |  3 +-
+ arch/m68k/emu/natfeat.c              |  9 ++--
+ arch/m68k/emu/nfeth.c                |  2 +-
+ arch/m68k/fpsp040/slogn.S            | 88 ++++++++++++++++++------------------
+ arch/m68k/hp300/time.c               |  2 +
+ arch/m68k/ifpsp060/Makefile          |  6 +--
+ arch/m68k/include/asm/dvma.h         |  8 +++-
+ arch/m68k/include/asm/io_mm.h        | 24 +++++-----
+ arch/m68k/include/asm/irq.h          |  5 ++
+ arch/m68k/include/asm/oplib.h        |  4 +-
+ arch/m68k/include/asm/page_mm.h      | 45 +++++++++---------
+ arch/m68k/include/asm/pgtable.h      |  9 ++++
+ arch/m68k/include/asm/pgtable_no.h   |  1 -
+ arch/m68k/include/asm/raw_io.h       | 32 +++++++------
+ arch/m68k/include/asm/sun3_pgalloc.h | 10 ++--
+ arch/m68k/include/asm/syscalls.h     | 19 ++++++++
+ arch/m68k/include/asm/tlbflush.h     | 73 +++++++++++++++---------------
+ arch/m68k/kernel/early_printk.c      |  4 +-
+ arch/m68k/kernel/entry.S             |  7 +--
+ arch/m68k/kernel/head.S              |  8 +---
+ arch/m68k/kernel/ints.c              |  2 +
+ arch/m68k/kernel/ints.h              |  7 +++
+ arch/m68k/kernel/process.c           |  1 +
+ arch/m68k/kernel/process.h           |  8 ++++
+ arch/m68k/kernel/ptrace.c            |  2 +
+ arch/m68k/kernel/ptrace.h            |  6 +++
+ arch/m68k/kernel/setup_mm.c          |  2 -
+ arch/m68k/kernel/signal.c            |  4 +-
+ arch/m68k/kernel/signal.h            |  7 +++
+ arch/m68k/kernel/sys_m68k.c          |  4 +-
+ arch/m68k/kernel/traps.c             | 19 ++++----
+ arch/m68k/kernel/traps.h             | 10 ++++
+ arch/m68k/kernel/vectors.c           |  3 ++
+ arch/m68k/kernel/vectors.h           |  3 ++
+ arch/m68k/lib/Makefile               |  3 +-
+ arch/m68k/lib/ashldi3.c              | 61 -------------------------
+ arch/m68k/lib/ashrdi3.c              | 62 -------------------------
+ arch/m68k/lib/lshrdi3.c              | 61 -------------------------
+ arch/m68k/lib/muldi3.c               |  1 +
+ arch/m68k/mac/baboon.c               |  2 +
+ arch/m68k/mac/config.c               | 14 ++----
+ arch/m68k/mac/iop.c                  |  2 +
+ arch/m68k/mac/mac.h                  | 25 ++++++++++
+ arch/m68k/mac/macboing.c             | 11 +----
+ arch/m68k/mac/misc.c                 |  5 +-
+ arch/m68k/mac/oss.c                  |  2 +
+ arch/m68k/mac/psc.c                  |  2 +
+ arch/m68k/mac/via.c                  |  2 +
+ arch/m68k/math-emu/fp_arith.c        | 49 +++++++-------------
+ arch/m68k/math-emu/fp_arith.h        | 49 ++++++++------------
+ arch/m68k/math-emu/fp_log.c          | 46 +++++++------------
+ arch/m68k/math-emu/fp_log.h          | 44 ++++++++++++++++++
+ arch/m68k/math-emu/fp_trig.c         | 54 ++++++++--------------
+ arch/m68k/math-emu/fp_trig.h         | 25 ++++++++--
+ arch/m68k/math-emu/multi_arith.h     |  8 ++--
+ arch/m68k/mm/fault.c                 |  2 +
+ arch/m68k/mm/fault.h                 |  7 +++
+ arch/m68k/mm/hwtest.c                |  2 +
+ arch/m68k/mm/sun3kmap.c              |  6 +--
+ arch/m68k/mm/sun3mmu.c               |  2 +-
+ arch/m68k/mvme147/config.c           |  7 +--
+ arch/m68k/mvme16x/config.c           | 10 ++--
+ arch/m68k/mvme16x/mvme16x.h          |  6 +++
+ arch/m68k/q40/config.c               | 11 ++---
+ arch/m68k/q40/q40.h                  |  6 +++
+ arch/m68k/q40/q40ints.c              |  2 +
+ arch/m68k/sun3/config.c              | 13 +++---
+ arch/m68k/sun3/idprom.c              |  4 +-
+ arch/m68k/sun3/intersil.c            |  1 +
+ arch/m68k/sun3/leds.c                |  2 +
+ arch/m68k/sun3/mmu_emu.c             | 43 +++++++++---------
+ arch/m68k/sun3/prom/printf.c         |  5 +-
+ arch/m68k/sun3/sun3.h                | 22 +++++++++
+ arch/m68k/sun3/sun3dvma.c            | 17 -------
+ arch/m68k/sun3/sun3ints.c            | 12 ++---
+ arch/m68k/sun3x/config.c             |  6 +--
+ arch/m68k/sun3x/dvma.c               |  5 +-
+ arch/m68k/sun3x/prom.c               |  2 +-
+ 109 files changed, 634 insertions(+), 677 deletions(-)
+ create mode 100644 arch/m68k/amiga/amiga.h
+ create mode 100644 arch/m68k/apollo/apollo.h
+ create mode 100644 arch/m68k/atari/atari.h
+ create mode 100644 arch/m68k/include/asm/syscalls.h
+ create mode 100644 arch/m68k/kernel/ints.h
+ create mode 100644 arch/m68k/kernel/process.h
+ create mode 100644 arch/m68k/kernel/ptrace.h
+ create mode 100644 arch/m68k/kernel/signal.h
+ create mode 100644 arch/m68k/kernel/traps.h
+ create mode 100644 arch/m68k/kernel/vectors.h
+ delete mode 100644 arch/m68k/lib/ashldi3.c
+ delete mode 100644 arch/m68k/lib/ashrdi3.c
+ delete mode 100644 arch/m68k/lib/lshrdi3.c
+ create mode 100644 arch/m68k/mac/mac.h
+ create mode 100644 arch/m68k/math-emu/fp_log.h
+ create mode 100644 arch/m68k/mm/fault.h
+ create mode 100644 arch/m68k/mvme16x/mvme16x.h
+ create mode 100644 arch/m68k/q40/q40.h
+ create mode 100644 arch/m68k/sun3/sun3.h
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
