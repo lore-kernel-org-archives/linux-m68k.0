@@ -2,82 +2,175 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9077EC4332F
-	for <linux-m68k@archiver.kernel.org>; Thu,  2 Nov 2023 08:55:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 384BEC4332F
+	for <linux-m68k@archiver.kernel.org>; Thu,  2 Nov 2023 10:57:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234935AbjKBIzw convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 2 Nov 2023 04:55:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48592 "EHLO
+        id S1346318AbjKBK5p (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Thu, 2 Nov 2023 06:57:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235025AbjKBIzj (ORCPT
+        with ESMTP id S1346098AbjKBK5o (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 2 Nov 2023 04:55:39 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB1ED42;
-        Thu,  2 Nov 2023 01:55:28 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qyTU2-000sVY-7b; Thu, 02 Nov 2023 09:55:22 +0100
-Received: from p5dc55299.dip0.t-ipconnect.de ([93.197.82.153] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qyTU1-003w1r-W4; Thu, 02 Nov 2023 09:55:22 +0100
-Message-ID: <a4707277562862260bdc159bb88dafd6f85a67bc.camel@physik.fu-berlin.de>
-Subject: Re: Does anyone use Appletalk?
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Finn Thain <fthain@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Dan Williams <dcbw@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Netdev <netdev@vger.kernel.org>, linuxppc-dev@lists.ozlabs.org
-Date:   Thu, 02 Nov 2023 09:55:21 +0100
-In-Reply-To: <973278b8-c9e5-b1cf-2e08-2ff8fd8e9aa4@linux-m68k.org>
-References: <CAMuHMdWL2TnYmkt2W6=ohBuKmyof8kR3p7ZPzmXmWSGnKj9c3g@mail.gmail.com>
-         <594446aaf91b282ff3cbd95953576ffd29f38dab.camel@physik.fu-berlin.de>
-         <CAMuHMdWv=A6MiVwUuOp8zOCcf21HxKb8cdrndzdbAZik3VRXiw@mail.gmail.com>
-         <5e3e52a48ba9cc0109a98cf4c5371c3f80c4b4cc.camel@physik.fu-berlin.de>
-         <79b7f88e3dd6536fe69c63ed3b4cc1f2c551ce8d.camel@redhat.com>
-         <d40cd45a-e7e3-49c4-931b-c5ec75a6bf56@app.fastmail.com>
-         <973278b8-c9e5-b1cf-2e08-2ff8fd8e9aa4@linux-m68k.org>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.50.1 
+        Thu, 2 Nov 2023 06:57:44 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0B55E7
+        for <linux-m68k@lists.linux-m68k.org>; Thu,  2 Nov 2023 03:57:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698922657; x=1730458657;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=h4enFCUSn8BV3Heci5Ocr14Bw9lcrZkIVIhepyhCnwQ=;
+  b=jT0Nh13HDqKS3lTTzPMXwKxpJ8D3kr7I2BtLIpzYsIHbYB0HPNssgaOM
+   +9DLxZY9cReAlKX5B9886tuZKA6y/nQye8AKquZlK4tZu4gF6rplYiNbT
+   45TtZL3dsZEVVJ1EziN33+tgVlKpDQ6PZjP93APEFPwCJe2KOds3AbSCB
+   G7uGj5p3M9XxLyQuDk7Yi11kuWCMvpxgYTexUb8yhivp/WfoSzFbxa9/H
+   n81mZ+aGXDqyZtAQyHCd7dxEU+ZEDqc1iKyTL1ttaNQWFb1gi4aAJTudV
+   xfgra+Ip1UTtkbVrF/sYcDB5hpTXn+vfJ48eGytn5mBf/CDoUxTfnEsiD
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="379080214"
+X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
+   d="scan'208";a="379080214"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 03:57:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10881"; a="831658437"
+X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
+   d="scan'208";a="831658437"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 02 Nov 2023 03:57:28 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qyVOA-0001QK-19;
+        Thu, 02 Nov 2023 10:57:26 +0000
+Date:   Thu, 2 Nov 2023 18:56:28 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Greg Ungerer <gerg@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        uclinux-dev@uclinux.org
+Subject: [gerg-m68knommu:cf 3/3] lib/crypto/mpi/longlong.h:534: warning:
+ "umul_ppmm" redefined
+Message-ID: <202311021826.pC3SLHbU-lkp@intel.com>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 93.197.82.153
-X-ZEDAT-Hint: PO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On Thu, 2023-11-02 at 13:13 +1100, Finn Thain wrote:
-> So I can't object to the removal of the localtalk code. But I do object to 
-> the underhand manner in which it is done.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git cf
+head:   046fd54f263ce0782ba2b56e0a514a1eeceff350
+commit: 046fd54f263ce0782ba2b56e0a514a1eeceff350 [3/3] m68k: use kernel's generic muldi3 libgcc function
+config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231102/202311021826.pC3SLHbU-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231102/202311021826.pC3SLHbU-lkp@intel.com/reproduce)
 
-I agree. I have the impression that the actual users of the affected code are
-never asked. It's usually a question posed on a mailing list where 99% of the
-affected users don't hang around.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311021826.pC3SLHbU-lkp@intel.com/
 
-Naturally, there won't be any objections to the removal because affected users
-didn't receive a heads-up in the first place.
+All warnings (new ones prefixed by >>):
 
-Adrian
+   In file included from lib/crypto/mpi/generic_mpih-mul1.c:17:
+>> lib/crypto/mpi/longlong.h:534: warning: "umul_ppmm" redefined
+     534 | #define umul_ppmm(w1, w0, u, v) \
+         | 
+   In file included from include/linux/compiler_types.h:167,
+                    from <command-line>:
+   arch/m68k/include/asm/compiler.h:13: note: this is the location of the previous definition
+      13 | #define umul_ppmm(w1, w0, u, v)                         \
+         | 
+
+
+vim +/umul_ppmm +534 lib/crypto/mpi/longlong.h
+
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  510  
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  511  /***************************************
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  512  	**************  68000	****************
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  513  	***************************************/
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  514  #if (defined(__mc68000__) || defined(__mc68020__) || defined(__NeXT__) || defined(mc68020)) && W_TYPE_SIZE == 32
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  515  #define add_ssaaaa(sh, sl, ah, al, bh, bl) \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  516  	__asm__ ("add%.l %5,%1\n" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  517  	   "addx%.l %3,%0" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  518  	: "=d" ((USItype)(sh)), \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  519  	     "=&d" ((USItype)(sl)) \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  520  	: "%0" ((USItype)(ah)), \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  521  	     "d" ((USItype)(bh)), \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  522  	     "%1" ((USItype)(al)), \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  523  	     "g" ((USItype)(bl)))
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  524  #define sub_ddmmss(sh, sl, ah, al, bh, bl) \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  525  	__asm__ ("sub%.l %5,%1\n" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  526  	   "subx%.l %3,%0" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  527  	: "=d" ((USItype)(sh)), \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  528  	     "=&d" ((USItype)(sl)) \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  529  	: "0" ((USItype)(ah)), \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  530  	     "d" ((USItype)(bh)), \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  531  	     "1" ((USItype)(al)), \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  532  	     "g" ((USItype)(bl)))
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  533  #if (defined(__mc68020__) || defined(__NeXT__) || defined(mc68020))
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31 @534  #define umul_ppmm(w1, w0, u, v) \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  535  	__asm__ ("mulu%.l %3,%1:%0" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  536  	: "=d" ((USItype)(w0)), \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  537  	     "=d" ((USItype)(w1)) \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  538  	: "%0" ((USItype)(u)), \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  539  	     "dmi" ((USItype)(v)))
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  540  #define UMUL_TIME 45
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  541  #define udiv_qrnnd(q, r, n1, n0, d) \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  542  	__asm__ ("divu%.l %4,%1:%0" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  543  	: "=d" ((USItype)(q)), \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  544  	     "=d" ((USItype)(r)) \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  545  	: "0" ((USItype)(n0)), \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  546  	     "1" ((USItype)(n1)), \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  547  	     "dmi" ((USItype)(d)))
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  548  #define UDIV_TIME 90
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  549  #define sdiv_qrnnd(q, r, n1, n0, d) \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  550  	__asm__ ("divs%.l %4,%1:%0" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  551  	: "=d" ((USItype)(q)), \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  552  	     "=d" ((USItype)(r)) \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  553  	: "0" ((USItype)(n0)), \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  554  	     "1" ((USItype)(n1)), \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  555  	     "dmi" ((USItype)(d)))
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  556  #else /* not mc68020 */
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  557  #define umul_ppmm(xh, xl, a, b) \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  558  do { USItype __umul_tmp1, __umul_tmp2; \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  559  	__asm__ ("| Inlined umul_ppmm\n" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  560  	"move%.l %5,%3\n" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  561  	"move%.l %2,%0\n" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  562  	"move%.w %3,%1\n" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  563  	"swap	%3\n" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  564  	"swap	%0\n" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  565  	"mulu	%2,%1\n" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  566  	"mulu	%3,%0\n" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  567  	"mulu	%2,%3\n" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  568  	"swap	%2\n" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  569  	"mulu	%5,%2\n" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  570  	"add%.l	%3,%2\n" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  571  	"jcc	1f\n" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  572  	"add%.l	%#0x10000,%0\n" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  573  	"1:	move%.l %2,%3\n" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  574  	"clr%.w	%2\n" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  575  	"swap	%2\n" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  576  	"swap	%3\n" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  577  	"clr%.w	%3\n" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  578  	"add%.l	%3,%1\n" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  579  	"addx%.l %2,%0\n" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  580  	"| End inlined umul_ppmm" \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  581  	: "=&d" ((USItype)(xh)), "=&d" ((USItype)(xl)), \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  582  		"=d" (__umul_tmp1), "=&d" (__umul_tmp2) \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  583  	: "%2" ((USItype)(a)), "d" ((USItype)(b))); \
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  584  } while (0)
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  585  #define UMUL_TIME 100
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  586  #define UDIV_TIME 400
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  587  #endif /* not mc68020 */
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  588  #endif /* mc68000 */
+5ce3e312ec5c11 lib/mpi/longlong.h Dmitry Kasatkin 2011-08-31  589  
+
+:::::: The code at line 534 was first introduced by commit
+:::::: 5ce3e312ec5c11abce13215be70700778bf601f0 crypto: GnuPG based MPI lib - header files (part 2)
+
+:::::: TO: Dmitry Kasatkin <dmitry.kasatkin@intel.com>
+:::::: CC: Dmitry Kasatkin <dmitry.kasatkin@intel.com>
 
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
