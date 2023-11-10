@@ -2,147 +2,124 @@ Return-Path: <linux-m68k-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23C4AC4332F
-	for <linux-m68k@archiver.kernel.org>; Thu,  9 Nov 2023 20:31:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BF30C4332F
+	for <linux-m68k@archiver.kernel.org>; Fri, 10 Nov 2023 17:58:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345128AbjKIUbv (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
-        Thu, 9 Nov 2023 15:31:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43814 "EHLO
+        id S230286AbjKJR5p (ORCPT <rfc822;linux-m68k@archiver.kernel.org>);
+        Fri, 10 Nov 2023 12:57:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234623AbjKIUbk (ORCPT
+        with ESMTP id S231160AbjKJR4W (ORCPT
         <rfc822;linux-m68k@lists.linux-m68k.org>);
-        Thu, 9 Nov 2023 15:31:40 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A0EA49D1;
-        Thu,  9 Nov 2023 12:31:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1699561869; x=1700166669; i=deller@gmx.de;
-        bh=3jA2O5flvizCABXx4ttgZeVpGLkt76gxErJWerUzBgQ=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-         In-Reply-To;
-        b=r5M9CiZqN/jtz/zCrhg/fSrcWrivR453BKh8+aUf3OMuz52XcD78AaRdJcuO2CNU
-         UImOYdQbY+OQaBrITrvw72QdqzYMSBuGQt3bPapTlMVfuBlx2yBrCL66nBG7V99Fu
-         U1xNeHewRw9nQY432/zRLyDCIwg6tf0RkL4v4E/ou5zFoCdnRp9modn6p9gKjrHXP
-         jA9ir3NKDF+G81qF8ezJK8Czr0Hua3xnEdaK1XYfZgL+IxrKC0MvHSlqmSgMFiNDz
-         uv0AuiF4as7Xa3APEnl/+krkELUyUUahhUY9a/7WEWgRMJbimGP5mXiPuoftflOtx
-         F5StcTecgbnh2VwXVg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.60] ([94.134.153.156]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MUowV-1qs4tQ1rhh-00QhHh; Thu, 09
- Nov 2023 21:31:09 +0100
-Message-ID: <e2f7ef76-7c03-40d6-a985-141dc1a191c2@gmx.de>
-Date:   Thu, 9 Nov 2023 21:31:08 +0100
+        Fri, 10 Nov 2023 12:56:22 -0500
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 203892E5F3
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Nov 2023 03:20:06 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 77FD53200A7D;
+        Fri, 10 Nov 2023 06:20:03 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Fri, 10 Nov 2023 06:20:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1699615202; x=1699701602; bh=od
+        rwaD2WbWl9QIXV6S63xcSUQgU7RAQjz3aDEgQNnQA=; b=S9xHaNbE7zd/i1/hCm
+        RraRG57Kfe0Kx1dI3w4MIVQcmupgWSnGJZ3lFtBwvvxjwU4RKcxrHmZWsmvf20fn
+        oQ1+sLvnCzGku+ClQ2NcjzqH41FGhHigruCMdHL7sm4ndlIGbO/85TC1XtxTJLuW
+        //YjHpk4ww18ZIc7SNf0Z+h63865fcoeqNCIK7zWZpeGgAfvymNmZ3owcMvLvOc2
+        ZzbSf1QQXq/PMiiJgyc4eCqtJDYnXBjsHqMXdfXjjHPRlQL0LXYHJv63kiFXbiyj
+        0iT2yBqk0BecmaST5S2lwLQIxA2p3sHakk2QfoUsqLcr3wLt/xeJesHx3HVpAujk
+        WyeA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1699615202; x=1699701602; bh=odrwaD2WbWl9Q
+        IXV6S63xcSUQgU7RAQjz3aDEgQNnQA=; b=g3Ln4oWW9qoFZeKtM8x57cEtirJRe
+        7yv/U4SczJmaK4mkx/UArXatjDqrEwnHUKe/MhCecPvLsROzKCgAuFT5YwsglHzy
+        Z0d/EkqY18bSrNGU3InSAw7KVOcPoA00wHK7QJ+tySNe09c+46zXCzmayBN99UCV
+        13a3tE3UKLLbhz7c93EGF5+z7XRFfAUGdnftf9b8dBexldqkDCwYKzXVitbTzuz3
+        gsPeROblHKpaanvqlPCybAo09X32iLcBw+plvVsbQRS3wEN/bvv7Bc/5BpiEq80J
+        jQdt8AGQ4usJx1EVjiuD9DXQWTQxALAQCtFK1aZ/BM5lRq6lIonP+OAUg==
+X-ME-Sender: <xms:4hFOZRmxD8JJtuaYTT6hgXwMuoooBmoHZQ4_lRZOdKmZO4TtI77ucA>
+    <xme:4hFOZc35zPJhKnpWVJ1d5tNdCVZxGlhHCbLGgKU5HukPAs2xIKaWVsitTSs_b0te9
+    -HLZhKeW2SWlrZXT4M>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddvfedgvdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:4hFOZXriEJChqxzA1M1AhJd3QLuPo93t7Q0MuQVmrbi88yW7ubutpQ>
+    <xmx:4hFOZRl2BVyXcpsR6vRYf7Ecd6z1GcicX_4v7uxPrOI4TJVJvDMisw>
+    <xmx:4hFOZf2Cvd_UQjL6GnWY3pFDGisWdVYyFHeazwDw6zVTBBxtji_Htg>
+    <xmx:4hFOZdASJVr6eKirQysMZWjNDGkjLeNCnZQi2PmA18JmvxV2KPwKaQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 65624B60089; Fri, 10 Nov 2023 06:20:02 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1108-g3a29173c6d-fm-20231031.005-g3a29173c
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/22] fb: amifb: Stop using platform_driver_probe()
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Atul Raut <rauji.raut@gmail.com>, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, kernel@pengutronix.de,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-References: <20231107091740.3924258-1-u.kleine-koenig@pengutronix.de>
- <20231107091740.3924258-2-u.kleine-koenig@pengutronix.de>
- <CAMuHMdVaaH_ZJT+jAyxZxnVYT3L=b4B-LEMTP4PqQH2TE0nH6g@mail.gmail.com>
- <9559f1d6-f68e-4c14-83b0-e5a545039124@gmx.de>
- <CAMuHMdVsHHPAE5JXjC5rS86H=nDgBMePGU8b1y_wcQYrWZHuTA@mail.gmail.com>
-From:   Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
-In-Reply-To: <CAMuHMdVsHHPAE5JXjC5rS86H=nDgBMePGU8b1y_wcQYrWZHuTA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:wix2lv0/0/bdXp9mIyXaOBLlu/03xgjvPuZko6JduTHlbRKrm5m
- UH5TJyL/vUXuyfieMNLHTHW1aB72Bvw7Mq+M90okobX74Dh1RIw2GZHgX3u19vqo1aFgO5y
- pj3AwP1hGq80f5gHW6ZRo1KRELcsxIcMR8h52x3vyZKqDnYxuCyZZoEqeTAoEZX9vpb2fYF
- XpY0dtkOoxckH99RYrp/w==
-UI-OutboundReport: notjunk:1;M01:P0:X629G8/7wx4=;9OQbjKko2DnTNSzDf8Epesze6tK
- lnfDlEQjsTFVlSeMec/XiCLA86QwtlJnETZYqAdxGCw+u3Wo9/mzqX7v9EYttmAzfN20T9SAS
- 7q0yG19xfC88U944ZlHsiNp6YhpDKU6gLom0u6ynmjS5TGyOHhAAByMfbfLJwYg/1/FrSpLOI
- fTd8x8SMYUi06Rp5HE7yQebKr89J2EohMzv2yZC4EFEahW08kvit/POAJCWKlwdHYrhqWveUU
- WTZiuYFGqYeXZ/o3JQuglGBgB14jGj5jSm0U5kj3HWAXtTvMaBm+C38YSDyetJF0u4vuDuPCU
- hI562qnyuzOtiAP7hpNifpvhv9U9wESJ5Xdoz+Aa0ChlwE2Ood1r9tWJreSO4jKu8OVTcyubU
- fCbLdhI0g+bFZlD/AY0LANh/4UkSVE+R3GR7TwX4ES2mVa6FvvNoMbAaIX1OVCQbcQWBqDw61
- Cp+OIi+9hldefpuDWeFfW9mi8aaEQ13r0WUvbawe9y35DFxZlTqP97NcAmJoUBanT11QX+uz4
- 1Makdz0X49SKu4eiSuBpe1lDS71L4TSQv8qpTXwIiIc5MHMOG51ilM15VBkcwM9KYCGOr6TP9
- hRoj1dQ3xR0sUeM3SLRClbEK/dv9U2W0lIIIjQjZTqHDkbVnqLUVg8fFYTnQRKzMi/u2tvjq5
- ej7SOSge75quvu7lBlNYmuCNlWfjE/9Myuai7vFkMN6+IS31W5BtOzHc7uLH6CrJmQ4zV3IlT
- iTGucv6YSIivG82IJtVTbwGkCE1/grvULxaxQ92hzvfnyTszoGG31qErYN0WPjT7pPTl31or5
- FE5/KJ1VodEU5W9y2vqS0Hxi35GOFqB2YhTuA6x6T6goKzUu6bi97mOOYtVYrhm9+9OtUIgU4
- 4eKQdrbI+VHr1uwaQAoxJhE6qauqibSlMeiyLORvxo6j/846XKApQgv0cqR7MrU6goJ467I0v
- nf6j9A==
+Message-Id: <571ed28a-9690-4f85-9122-4b0f76975cb3@app.fastmail.com>
+In-Reply-To: <20231110103120.387517-1-thuth@redhat.com>
+References: <20231110103120.387517-1-thuth@redhat.com>
+Date:   Fri, 10 Nov 2023 12:19:42 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Thomas Huth" <thuth@redhat.com>,
+        "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org,
+        "Greg Ungerer" <gerg@linux-m68k.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] m68k: Avoid CONFIG_COLDFIRE switch in uapi header
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-m68k.vger.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 
-On 11/8/23 22:34, Geert Uytterhoeven wrote:
-> Hi Helge,
+On Fri, Nov 10, 2023, at 11:31, Thomas Huth wrote:
+> We should not use any CONFIG switches in uapi headers since
+> these only work during kernel compilation. They are not defined
+> for userspace. Let's use the __mcoldfire__ switch from the
+> compiler here instead.
 >
-> On Wed, Nov 8, 2023 at 10:32=E2=80=AFPM Helge Deller <deller@gmx.de> wro=
-te:
->> On 11/8/23 22:06, Geert Uytterhoeven wrote:
->>> On Tue, Nov 7, 2023 at 10:20=E2=80=AFAM Uwe Kleine-K=C3=B6nig
->>> <u.kleine-koenig@pengutronix.de> wrote:
->>>> On today's platforms the benefit of platform_driver_probe() isn't tha=
-t
->>>> relevant any more. It allows to drop some code after booting (or modu=
-le
->>>> loading) for .probe() and discard the .remove() function completely i=
-f
->>>> the driver is built-in. This typically saves a few 100k.
->>>
->>> Which is a lot on platforms with only a few MiBs of RAM...
->>
->> True.
->> Given the warnings below, what is your suggestion?
->> Better to drop the amifb patch ?
+> Signed-off-by: Thomas Huth <thuth@redhat.com>
+> ---
+>  Marked as RFC since I didn't test it - I'd appreciate if someone
+>  could give it a try on a real system.
 >
-> I think so. There is a reason these drivers use platform_driver_probe().
+>  arch/m68k/include/uapi/asm/ptrace.h | 2 +-
+>  scripts/headers_install.sh          | 1 -
+>  2 files changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/arch/m68k/include/uapi/asm/ptrace.h 
+> b/arch/m68k/include/uapi/asm/ptrace.h
+> index 5b50ea592e00..ebd9fccb3d11 100644
+> --- a/arch/m68k/include/uapi/asm/ptrace.h
+> +++ b/arch/m68k/include/uapi/asm/ptrace.h
+> @@ -39,7 +39,7 @@ struct pt_regs {
+>    long     d0;
+>    long     orig_d0;
+>    long     stkadj;
+> -#ifdef CONFIG_COLDFIRE
+> +#ifdef __mcoldfire__
+>    unsigned format :  4; /* frame format specifier */
+>    unsigned vector : 12; /* vector offset */
+>    unsigned short sr;
 
-Ok, I've dropped both amifb patches.
+I think this should be harmless, but I'm not sure we even
+need the structure in a uapi header: about half the architectures
+define this in a user-visible way, while the others don't.
 
-Helge
+On csky, powerpc and microblaze, pt_regs is used inside
+of the 'struct sigcontext' definition, but I don't think
+this was ever the case on m68k.
 
+The other one that is accessed in userspace is 'struct
+user_regs_struct', but this one is actually not in the
+uapi headers on m68k or x86.
+
+     Arnd
