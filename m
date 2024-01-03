@@ -1,33 +1,29 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E0783B28F;
-	Fri, 10 Nov 2023 19:35:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 569FA1B27B
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  3 Jan 2024 15:59:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="QWIAULOH"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A15FFC433CA;
-	Fri, 10 Nov 2023 19:35:10 +0000 (UTC)
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="yw5xUecH"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by ams.source.kernel.org (Postfix) with ESMTP id 929A8B811F6;
+	Wed,  3 Jan 2024 15:59:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9FAAC433C7;
+	Wed,  3 Jan 2024 15:59:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1699644910;
-	bh=a8twNFEKjGrKBxbdq191jaAma5+5cbZZWFE+Q6SHfO4=;
-	h=Date:From:To:Subject:References:In-Reply-To:From;
-	b=QWIAULOHfuC4ewTV3HG2pnrPYVTcQmHYctffbQR65o8lGEafhP0RAYM3fCRSz3VWw
-	 j3ZPD3GePpQS36hL6HkQa1TKqTCL/mCNrYH3Lj3P6TSLxNDktFoc/fMvZzWXnn4RGa
-	 MsHKSj90uf6JkRds+DIZYTZqnsoLyFU3BriaM6sE=
-Date: Fri, 10 Nov 2023 14:35:09 -0500
+	s=korg; t=1704297555;
+	bh=Sh1oDxxlvDmOX9fkFGqfasaagPS1FFnqillX3/n0cIk=;
+	h=Date:From:To:Subject:From;
+	b=yw5xUecHcahwbxaorFuC66EGHFrJd/ee/pgFfA/OwGlO7meeADcR43RFCN9SemTBe
+	 tvlERHiznQUtAz87KVJtAt8wZCdMWfdegOl74YGrPzQC5846cN9MKjUXCLdLjDXvEl
+	 SwNjLCUcUg4p/mNXG6ZGOkF+IfXKzLHGR04sqQ7A=
+Date: Wed, 3 Jan 2024 10:59:13 -0500
 From: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To: linux-embedded@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-fbdev@vger.kernel.org, linux-fpga@vger.kernel.org, linux-fscrypt@vger.kernel.org, 
-	linux-gcc@vger.kernel.org, linux-gpio@vger.kernel.org, linux-hams@vger.kernel.org, 
-	linux-hexagon@vger.kernel.org, linux-hotplug@vger.kernel.org, linux-hwmon@vger.kernel.org, 
-	linux-i2c@vger.kernel.org, linux-ia64@vger.kernel.org, linux-ide@vger.kernel.org, 
-	linux-iio@vger.kernel.org, linux-input@vger.kernel.org, linux-integrity@vger.kernel.org, 
-	linux-kbuild@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-leds@vger.kernel.org, 
-	linux-m68k@vger.kernel.org, linux-man@vger.kernel.org, linux-media@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-mmc@vger.kernel.org, linux-msdos@vger.kernel.org
-Subject: Re: PSA: This list is being migrated (no action required)
-Message-ID: <3dfzeofvzxqk4yuyoancdanbxzpw5udmvbdz3b2mdwejwbnhk2@7y56nwlj3rgp>
-References: <cfriwrxovqzcrptf74ccq52lcqj2nsergucufsz6wlh45fdnz3@z5e5y2lowbq2>
+To: linux-m68k@lists.linux-m68k.org
+Subject: Test delivery to the legacy address
+Message-ID: <20240103-straight-intelligent-lionfish-fafe99@lemur>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -36,20 +32,10 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <cfriwrxovqzcrptf74ccq52lcqj2nsergucufsz6wlh45fdnz3@z5e5y2lowbq2>
 
-On Fri, Nov 10, 2023 at 01:51:44PM -0500, Konstantin Ryabitsev wrote:
-> This list is being migrated to new vger infrastructure. No action is required
-> on your part and there will be no change in how you interact with this list
-> after the migration is completed.
-> 
-> There will be a short 30-minute delay to the list archives on lore.kernel.org.
-> Once the backend work is done, I will follow up with another message.
+Hello:
 
-This work is completed now. This message acts as a test to make sure archives
-are working at their new place.
-
-If anything is not working or looking right, please reach out to
-helpdesk@kernel.org.
+This is a test to ensure that delivery to the domain lists.linux-m68k.org is
+set up properly. Please ignore.
 
 -K
