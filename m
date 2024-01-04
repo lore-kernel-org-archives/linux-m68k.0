@@ -1,242 +1,111 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1E0A22327
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  4 Jan 2024 13:19:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D19842232E
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  4 Jan 2024 13:39:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NPfCUEH/"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704374398; x=1735910398;
-  h=date:from:to:cc:subject:message-id;
-  bh=+dpD0xntDZ5D3pHLE4GYF7CXk8RCUD+pmmeOOUdE+28=;
-  b=NPfCUEH/+6OP1G3wbN74Tn5ZbLENQawh3PnjQA+DJev4jdfP//L+cy0w
-   gtkSnslRvRqPYuAXSCSRhvBFBLcBYwKR8RGrBO89/YbH1uijaoupAxkFF
-   jFx0owxnWgk4Bdhx2p2+Cd+In5DidsbBz+xRyUJrM8kxedDQKEhkdf3vM
-   feCkEUji8pxdnoC9mHh0N/C5IbkJcY9miFYNrMPG7FaIWqnlO00p0mgBT
-   mTyNvRQUQFMivv4gtE5cKnSjxNgKsNYalfWiWGJLldG6wXDWCfmujP0FU
-   YRkKwWB+0CZQryGrcErQHBOIJ1oNVUlNHJDzitkzVkSPoeCn0tDx9k2yG
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="396132042"
-X-IronPort-AV: E=Sophos;i="6.04,330,1695711600"; 
-   d="scan'208";a="396132042"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 05:19:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10942"; a="783870747"
-X-IronPort-AV: E=Sophos;i="6.04,330,1695711600"; 
-   d="scan'208";a="783870747"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 04 Jan 2024 05:19:56 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rLNdT-000NKo-1g;
-	Thu, 04 Jan 2024 13:19:49 +0000
-Date: Thu, 04 Jan 2024 21:18:45 +0800
-From: kernel test robot <lkp@intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 040c428a4c75bc1d488125067f0f6ae44a0be23b
-Message-ID: <202401042141.wFYyyAfv-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="2VlCCPon"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id F28B5CE1A5A;
+	Thu,  4 Jan 2024 13:39:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65571C433C7;
+	Thu,  4 Jan 2024 13:39:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1704375578;
+	bh=X5mM0G3dsXWDeA035dm6R/r6Y3NeVnfJFjdE0fL194U=;
+	h=Subject:To:From:Date:From;
+	b=2VlCCPon17pN1KG0rjgaGVVNJd5KDE9Cm/dPsSisKMkktQeVNB6+0oR/AAqDYhv4r
+	 OfxIfpcPTw/wby1ClOc4iFpi8Kw3nCx8GYj8C1c5DQ368npeooSz/89Ax6N0UoTEXm
+	 N4ekw0HYQMedHJqrJDsxBYBnetDIStxW5YKv1EpU=
+Subject: patch "nubus: make nubus_bus_type static and constant" added to char-misc-testing
+To: gregkh@linuxfoundation.org,fthain@linux-m68k.org,geert@linux-m68k.org,linux-m68k@lists.linux-m68k.org
+From: <gregkh@linuxfoundation.org>
+Date: Thu, 04 Jan 2024 14:39:26 +0100
+Message-ID: <2024010426-junkyard-overshot-5c16@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: 8bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 040c428a4c75bc1d488125067f0f6ae44a0be23b  nubus: Make nubus_bus_type static and constant
 
-elapsed time: 1461m
+This is a note to let you know that I've just added the patch titled
 
-configs tested: 176
-configs skipped: 2
+    nubus: make nubus_bus_type static and constant
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+to my char-misc git tree which can be found at
+    git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git
+in the char-misc-testing branch.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                          axs101_defconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240104   gcc  
-arc                   randconfig-002-20240104   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240104   gcc  
-arm                   randconfig-002-20240104   gcc  
-arm                   randconfig-003-20240104   gcc  
-arm                   randconfig-004-20240104   gcc  
-arm                         s3c6400_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240104   gcc  
-arm64                 randconfig-002-20240104   gcc  
-arm64                 randconfig-003-20240104   gcc  
-arm64                 randconfig-004-20240104   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240104   gcc  
-csky                  randconfig-002-20240104   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240104   clang
-hexagon               randconfig-002-20240104   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386         buildonly-randconfig-001-20240103   clang
-i386         buildonly-randconfig-002-20240103   clang
-i386         buildonly-randconfig-003-20240103   clang
-i386         buildonly-randconfig-004-20240103   clang
-i386         buildonly-randconfig-005-20240103   clang
-i386         buildonly-randconfig-006-20240103   clang
-i386                                defconfig   gcc  
-i386                  randconfig-001-20240103   clang
-i386                  randconfig-002-20240103   clang
-i386                  randconfig-003-20240103   clang
-i386                  randconfig-004-20240103   clang
-i386                  randconfig-005-20240103   clang
-i386                  randconfig-006-20240103   clang
-i386                  randconfig-011-20240103   gcc  
-i386                  randconfig-011-20240104   clang
-i386                  randconfig-012-20240103   gcc  
-i386                  randconfig-012-20240104   clang
-i386                  randconfig-013-20240103   gcc  
-i386                  randconfig-013-20240104   clang
-i386                  randconfig-014-20240103   gcc  
-i386                  randconfig-014-20240104   clang
-i386                  randconfig-015-20240103   gcc  
-i386                  randconfig-015-20240104   clang
-i386                  randconfig-016-20240103   gcc  
-i386                  randconfig-016-20240104   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240104   gcc  
-loongarch             randconfig-002-20240104   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                        stmark2_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   clang
-mips                             allyesconfig   gcc  
-mips                           ci20_defconfig   gcc  
-mips                         db1xxx_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240104   gcc  
-nios2                 randconfig-002-20240104   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240104   gcc  
-parisc                randconfig-002-20240104   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   clang
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                      ep88xc_defconfig   gcc  
-powerpc                     ksi8560_defconfig   gcc  
-powerpc                       ppc64_defconfig   gcc  
-powerpc               randconfig-001-20240104   gcc  
-powerpc               randconfig-002-20240104   gcc  
-powerpc               randconfig-003-20240104   gcc  
-powerpc                     stx_gp3_defconfig   gcc  
-powerpc64             randconfig-001-20240104   gcc  
-powerpc64             randconfig-002-20240104   gcc  
-powerpc64             randconfig-003-20240104   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   clang
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20240104   gcc  
-riscv                 randconfig-002-20240104   gcc  
-riscv                          rv32_defconfig   clang
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20240104   clang
-s390                  randconfig-002-20240104   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240104   gcc  
-sh                    randconfig-002-20240104   gcc  
-sparc                            allmodconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240104   gcc  
-sparc64               randconfig-002-20240104   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240104   gcc  
-um                    randconfig-002-20240104   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240104   gcc  
-x86_64       buildonly-randconfig-002-20240104   gcc  
-x86_64       buildonly-randconfig-003-20240104   gcc  
-x86_64       buildonly-randconfig-004-20240104   gcc  
-x86_64       buildonly-randconfig-005-20240104   gcc  
-x86_64       buildonly-randconfig-006-20240104   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-011-20240104   gcc  
-x86_64                randconfig-012-20240104   gcc  
-x86_64                randconfig-013-20240104   gcc  
-x86_64                randconfig-014-20240104   gcc  
-x86_64                randconfig-015-20240104   gcc  
-x86_64                randconfig-016-20240104   gcc  
-x86_64                randconfig-071-20240104   gcc  
-x86_64                randconfig-072-20240104   gcc  
-x86_64                randconfig-073-20240104   gcc  
-x86_64                randconfig-074-20240104   gcc  
-x86_64                randconfig-075-20240104   gcc  
-x86_64                randconfig-076-20240104   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                randconfig-001-20240104   gcc  
-xtensa                randconfig-002-20240104   gcc  
+The patch will show up in the next release of the linux-next tree
+(usually sometime within the next 24 hours during the week.)
 
+The patch will be merged to the char-misc-next branch sometime soon,
+after it passes testing, and the merge window is open.
+
+If you have any questions about this process, please let me know.
+
+
+From 3faea80bd9ff02b655cb0c80a1c0bdca44c0f94d Mon Sep 17 00:00:00 2001
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date: Tue, 19 Dec 2023 16:47:41 +0100
+Subject: nubus: make nubus_bus_type static and constant
+
+Now that the driver core can properly handle constant struct bus_type,
+move the nubus_bus_type variable to be a constant structure as well,
+placing it into read-only memory which can not be modified at runtime.
+
+It's also never used outside of drivers/nubus/bus.c so make it static
+and don't export it as no one is using it.
+
+Cc: Finn Thain <fthain@linux-m68k.org>
+Cc:  <linux-m68k@lists.linux-m68k.org>
+Acked-by: Finn Thain <fthain@linux-m68k.org>
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Link: https://lore.kernel.org/r/2023121940-enlarged-editor-c9a8@gregkh
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/nubus/bus.c   | 3 +--
+ include/linux/nubus.h | 2 --
+ 2 files changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/nubus/bus.c b/drivers/nubus/bus.c
+index 72921e4f35f6..12df4d88970c 100644
+--- a/drivers/nubus/bus.c
++++ b/drivers/nubus/bus.c
+@@ -32,12 +32,11 @@ static void nubus_device_remove(struct device *dev)
+ 		ndrv->remove(to_nubus_board(dev));
+ }
+ 
+-struct bus_type nubus_bus_type = {
++static const struct bus_type nubus_bus_type = {
+ 	.name		= "nubus",
+ 	.probe		= nubus_device_probe,
+ 	.remove		= nubus_device_remove,
+ };
+-EXPORT_SYMBOL(nubus_bus_type);
+ 
+ int nubus_driver_register(struct nubus_driver *ndrv)
+ {
+diff --git a/include/linux/nubus.h b/include/linux/nubus.h
+index bdcd85e622d8..4d103ac8f5c7 100644
+--- a/include/linux/nubus.h
++++ b/include/linux/nubus.h
+@@ -89,8 +89,6 @@ struct nubus_driver {
+ 	void (*remove)(struct nubus_board *board);
+ };
+ 
+-extern struct bus_type nubus_bus_type;
+-
+ /* Generic NuBus interface functions, modelled after the PCI interface */
+ #ifdef CONFIG_PROC_FS
+ extern bool nubus_populate_procfs;
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.43.0
+
+
