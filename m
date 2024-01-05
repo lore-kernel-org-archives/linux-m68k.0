@@ -1,92 +1,108 @@
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66476224D2
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  4 Jan 2024 14:21:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51D22538B
+	for <linux-m68k@lists.linux-m68k.org>; Fri,  5 Jan 2024 03:44:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=landley.net
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=landley.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="KrOqGj4x"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 939C3B817EA;
-	Thu,  4 Jan 2024 14:21:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94DEDC433C7;
-	Thu,  4 Jan 2024 14:21:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1704378077;
-	bh=/ZE0ffeY3PHUJyPXXPACUFohNZu0SJq+OYpBXNqHH/c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KrOqGj4xTuOzMeNcbAiBYwE2E0lu820lHOOywYIgwDtT9QOdhoZWbRhTEMMKTYl/a
-	 usBOtsTftx8Bth+ONMlEP/yQPeLQIRDrEsSErvNTZyk4OGUxKKj/fhyYF6DfsaeOqm
-	 FpgejHxxM7WlSqigmceQcWLvp0a4Axjx5/bTZWVU=
-Date: Thu, 4 Jan 2024 15:21:15 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: fthain@linux-m68k.org, linux-m68k@lists.linux-m68k.org
-Subject: Re: patch "nubus: make nubus_bus_type static and constant" added to
- char-misc-testing
-Message-ID: <2024010459-wrought-cartridge-d012@gregkh>
-References: <2024010426-junkyard-overshot-5c16@gregkh>
- <CAMuHMdUN_AciSOrxYehoyOqYG8BFOJN2CLjY+PeqZW+ze2zf2g@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=landley-net.20230601.gappssmtp.com header.i=@landley-net.20230601.gappssmtp.com header.b="y+zNtwYK"
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-680b1956ca4so5858466d6.3
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 04 Jan 2024 19:44:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=landley-net.20230601.gappssmtp.com; s=20230601; t=1704426265; x=1705031065; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=h9Mf84xFuyY+KXEL0NxI6rgus6ihvZvZ8KwrTqLyjZE=;
+        b=y+zNtwYKLFkWZASkdqjiz0Fm/QIzzMTGpt8KgPlYpbM0yn8JsJc5aZ5CnL/EX/5k/e
+         0m5CMPoZUVBb0C9CVtx8Hz4m7Czhjt32UySrsLyOP9X5vAYzkWi8CYvc/xs5ABi2agPG
+         8ujfEK4GXI1jFK8Np+gWKPFMQ3+LHjE9seTSES+xyaVfpNi/MZpsXcnUeYSdauvv27SL
+         AwNmCiPygwU1XxPeCN1WblbEFt3wKcCKhKdLEfbdPGWwaPXF2Dj4RFLGSVyk/MgohJGT
+         YtfQPi3ZPzU6pg6n6aAxe/so6lvyptjnRc5EcQ5vgfqhHJmPV2APOwRCuD/Jvx2JQg+C
+         FqXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704426265; x=1705031065;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=h9Mf84xFuyY+KXEL0NxI6rgus6ihvZvZ8KwrTqLyjZE=;
+        b=J9bM4uwFKt5SFpnTPmKn0jsIPcg9wmHlYMrk8Gb/brln+hVVp0St+g7dGnKsdQBIsS
+         p6ceS2GRqWn8N7eu0dAi9rhrU/TV5An6bktOhj9cEUXwtCUiCTKJESqoQCElPD/RsOlJ
+         H9YZ8Yv3NYWnI6Z3OCR5cxIIcb9hFW44SYqPOq5u8dbfaUdaKhqlM8jqW+UyX047GCv6
+         ZOKy8SubLznBB8EZBwl+zMXm1nJQp6VaPKh6quE35AZu7QQRs0vhFRTLRisN4hzhoRpk
+         37U1pY3oe6vFY6b7rncHz6G+1i0MNKm+eVZZF4ih06IsOFBayqlwPuHEo5LQM68z0gaM
+         tvGA==
+X-Gm-Message-State: AOJu0Yw7I06klwQT0Tsdctmilh/suT9YJOf5Z33ysFbyYqtc/zmF0qHg
+	GhmSNnToNL+7wmTC3hciAymCOYm4ue78GQ==
+X-Google-Smtp-Source: AGHT+IE5c+alCyX1IwIj3VnIvG0UA9lij+ign+WLiqw65B1fGZND/Aeym1T7qiFm3gDYxSCgN4CMSg==
+X-Received: by 2002:a05:6214:2602:b0:67f:5660:3e4 with SMTP id gu2-20020a056214260200b0067f566003e4mr1707272qvb.67.1704426264997;
+        Thu, 04 Jan 2024 19:44:24 -0800 (PST)
+Received: from [172.16.32.83] ([198.232.126.202])
+        by smtp.gmail.com with ESMTPSA id eh17-20020a056214187100b0067f70cc986asm297636qvb.92.2024.01.04.19.44.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Jan 2024 19:44:24 -0800 (PST)
+Message-ID: <8131b56d-937d-d7a9-0bab-99599617ad74@landley.net>
+Date: Thu, 4 Jan 2024 21:50:51 -0600
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH 00/36] Remove UCLINUX from LTP
+Content-Language: en-US
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it, Cyril Hrubis <chrubis@suse.cz>,
+ Li Wang <liwang@redhat.com>, Andrea Cervesato <andrea.cervesato@suse.com>,
+ Greg Ungerer <gerg@linux-m68k.org>, Jonathan Corbet <corbet@lwn.net>,
+ Randy Dunlap <rdunlap@infradead.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Christophe Lyon <christophe.lyon@linaro.org>,
+ linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ linux-riscv <linux-riscv@lists.infradead.org>,
+ Linux-sh list <linux-sh@vger.kernel.org>
+References: <20240103015240.1065284-1-pvorel@suse.cz>
+ <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
+From: Rob Landley <rob@landley.net>
+In-Reply-To: <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdUN_AciSOrxYehoyOqYG8BFOJN2CLjY+PeqZW+ze2zf2g@mail.gmail.com>
 
-On Thu, Jan 04, 2024 at 03:00:40PM +0100, Geert Uytterhoeven wrote:
-> Hi Greg,
+
+
+On 1/3/24 03:46, Geert Uytterhoeven wrote:
+> Hi Petr,
 > 
-> On Thu, Jan 4, 2024 at 2:39 PM <gregkh@linuxfoundation.org> wrote:
-> > This is a note to let you know that I've just added the patch titled
-> >
-> >     nubus: make nubus_bus_type static and constant
-> >
-> > to my char-misc git tree which can be found at
-> >     git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git
-> > in the char-misc-testing branch.
-> >
-> > The patch will show up in the next release of the linux-next tree
-> > (usually sometime within the next 24 hours during the week.)
-> >
-> > The patch will be merged to the char-misc-next branch sometime soon,
-> > after it passes testing, and the merge window is open.
-> >
-> > If you have any questions about this process, please let me know.
-> >
-> >
-> > From 3faea80bd9ff02b655cb0c80a1c0bdca44c0f94d Mon Sep 17 00:00:00 2001
-> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Date: Tue, 19 Dec 2023 16:47:41 +0100
-> > Subject: nubus: make nubus_bus_type static and constant
-> >
-> > Now that the driver core can properly handle constant struct bus_type,
-> > move the nubus_bus_type variable to be a constant structure as well,
-> > placing it into read-only memory which can not be modified at runtime.
-> >
-> > It's also never used outside of drivers/nubus/bus.c so make it static
-> > and don't export it as no one is using it.
-> >
-> > Cc: Finn Thain <fthain@linux-m68k.org>
-> > Cc:  <linux-m68k@lists.linux-m68k.org>
-> > Acked-by: Finn Thain <fthain@linux-m68k.org>
-> > Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > Link: https://lore.kernel.org/r/2023121940-enlarged-editor-c9a8@gregkh
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> CC other uClinux arch lists
 > 
-> I have already applied this to the m68k tree:
-> https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git/commit/?h=for-v6.8&id=a15f2d48c6f84ae0dd2000288592c79d5d1acd0e
+> On Wed, Jan 3, 2024 at 2:52 AM Petr Vorel <pvorel@suse.cz> wrote:
+>> UCLINUX is broken in LTP and nobody really cares. Actually I dare to
+>> say UCLINUX is dead. Therefore I prepared patchset to remove UCLINUX
+>> from LTP. We have been actively removing UCLINUX from LTP during rewrite
+>> tests to new LTP API. This removes the rest from the old tests (which
+>> will be sooner or later rewritten to new API).
+>>
+>> Because the patchset is quite big, I did not want to send it to mailing
+>> lists (but I can do it if you want).
+>>
+>> Can you please have look at my fork on gitlab, branch: remove-UCLINUX
+>> https://gitlab.com/pevik/ltp/-/commits/remove-UCLINUX?ref_type=heads
+>>
+>> Build test:
+>> https://github.com/pevik/ltp/actions/runs/7392470215
 > 
-> You even thanked me when I said I was going to do that:
-> https://lore.kernel.org/all/2024010254-truce-populate-70d1@gregkh
+> Thanks for your series!
+> 
+> I see you only CCed linux-m68k, but AFAIK, uClinux is not restricted
+> to m68k/coldfire, but also available on arm32, riscv, sh, and xtensa.
 
-Ugh, too many patches...
+Do you mean "nommu support", or do you mean the ancient distro Jeff Dionne
+stopped maintaining in 2003?
 
-Thanks, I'll go drop this from my tree now.
+Because I've been doing nommu musl-libc systems for a few years now. Works for me...
 
-greg k-h
+Rob
