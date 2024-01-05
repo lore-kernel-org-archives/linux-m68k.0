@@ -1,49 +1,49 @@
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51D22538B
-	for <linux-m68k@lists.linux-m68k.org>; Fri,  5 Jan 2024 03:44:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C457B4405
+	for <linux-m68k@lists.linux-m68k.org>; Fri,  5 Jan 2024 03:45:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=landley.net
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=landley.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=landley-net.20230601.gappssmtp.com header.i=@landley-net.20230601.gappssmtp.com header.b="y+zNtwYK"
-Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-680b1956ca4so5858466d6.3
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 04 Jan 2024 19:44:25 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=landley-net.20230601.gappssmtp.com header.i=@landley-net.20230601.gappssmtp.com header.b="lNsD57oK"
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-680a06cc763so5580016d6.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 04 Jan 2024 19:45:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=landley-net.20230601.gappssmtp.com; s=20230601; t=1704426265; x=1705031065; darn=lists.linux-m68k.org;
+        d=landley-net.20230601.gappssmtp.com; s=20230601; t=1704426333; x=1705031133; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=h9Mf84xFuyY+KXEL0NxI6rgus6ihvZvZ8KwrTqLyjZE=;
-        b=y+zNtwYKLFkWZASkdqjiz0Fm/QIzzMTGpt8KgPlYpbM0yn8JsJc5aZ5CnL/EX/5k/e
-         0m5CMPoZUVBb0C9CVtx8Hz4m7Czhjt32UySrsLyOP9X5vAYzkWi8CYvc/xs5ABi2agPG
-         8ujfEK4GXI1jFK8Np+gWKPFMQ3+LHjE9seTSES+xyaVfpNi/MZpsXcnUeYSdauvv27SL
-         AwNmCiPygwU1XxPeCN1WblbEFt3wKcCKhKdLEfbdPGWwaPXF2Dj4RFLGSVyk/MgohJGT
-         YtfQPi3ZPzU6pg6n6aAxe/so6lvyptjnRc5EcQ5vgfqhHJmPV2APOwRCuD/Jvx2JQg+C
-         FqXw==
+        bh=O8c3ESdi0IpZK01xiWxgeJ4UdiYi9dbopai5vRQAmfM=;
+        b=lNsD57oK+VVluvCLEqr/tEnHeLYUqqEFbvvDiixCA1Gzg2ptsT3HNY+v6tAlyW1Gr8
+         IUiR8oC+DRxoMvlhrxbbdpdDCFOQ1L9l3QqtffGqreFTXQ4uI5Rwx1+cIndg7fqf6DHX
+         cJPVH9gEkxJ4JsQmyC/V/BzBwX3DNAngbboerVqjBu2q97kzwdQuCeOfJRFjL97c4y9t
+         Sx+XzEv2UXsR3DeR+YIzdXK603CdK9mPhFfQfzsSK9mscm5sxiJ0ju6gQ2iXmnb1NSCa
+         Rhe0vjhp4Kgwbp5vqLzCeGq6yswTrdZhc8/pbNmaUTg37xOQZalX8qxgiw8mxeJ3JUH/
+         FORQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704426265; x=1705031065;
+        d=1e100.net; s=20230601; t=1704426333; x=1705031133;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h9Mf84xFuyY+KXEL0NxI6rgus6ihvZvZ8KwrTqLyjZE=;
-        b=J9bM4uwFKt5SFpnTPmKn0jsIPcg9wmHlYMrk8Gb/brln+hVVp0St+g7dGnKsdQBIsS
-         p6ceS2GRqWn8N7eu0dAi9rhrU/TV5An6bktOhj9cEUXwtCUiCTKJESqoQCElPD/RsOlJ
-         H9YZ8Yv3NYWnI6Z3OCR5cxIIcb9hFW44SYqPOq5u8dbfaUdaKhqlM8jqW+UyX047GCv6
-         ZOKy8SubLznBB8EZBwl+zMXm1nJQp6VaPKh6quE35AZu7QQRs0vhFRTLRisN4hzhoRpk
-         37U1pY3oe6vFY6b7rncHz6G+1i0MNKm+eVZZF4ih06IsOFBayqlwPuHEo5LQM68z0gaM
-         tvGA==
-X-Gm-Message-State: AOJu0Yw7I06klwQT0Tsdctmilh/suT9YJOf5Z33ysFbyYqtc/zmF0qHg
-	GhmSNnToNL+7wmTC3hciAymCOYm4ue78GQ==
-X-Google-Smtp-Source: AGHT+IE5c+alCyX1IwIj3VnIvG0UA9lij+ign+WLiqw65B1fGZND/Aeym1T7qiFm3gDYxSCgN4CMSg==
-X-Received: by 2002:a05:6214:2602:b0:67f:5660:3e4 with SMTP id gu2-20020a056214260200b0067f566003e4mr1707272qvb.67.1704426264997;
-        Thu, 04 Jan 2024 19:44:24 -0800 (PST)
+        bh=O8c3ESdi0IpZK01xiWxgeJ4UdiYi9dbopai5vRQAmfM=;
+        b=UN+CvIEGnF2bpUB7Pah+z9MapgOV6Fsa7iWXLCjEeF/DcK07cMP8lMnmI7fjV3fbiO
+         JtEF7bPNiD7PlJTYGK0QGmihLxbUQntRfwm6UfN3ksEEKne5E64xDIV0rIucVBZA5MBF
+         s4kFu4tnkrc69YDdVQySkW1auylPhFiaCqnxMjMl8h+Emz89yU0DwKnueZcJt5/jna+Y
+         E/RPyblMVUbvsJFsS3QnnbAVWT+ldZ25Cyaxv/RRkB7ni36Dl1TGHokK3Gq4FAPN3NBO
+         t96NCSoII+aO/+FugihOUR6u9AdJKzDkZTDviocXhSGb/VqJUxuTelDYJPkJZtTW62qb
+         JJjQ==
+X-Gm-Message-State: AOJu0YwsNUOD2niDG5pZxNerr0hWiYZN1rqfZA4KTGugobNeUIJ1XaSQ
+	oCyzliGHEInjFWKjoyn1H+fgaCfta9QSlw==
+X-Google-Smtp-Source: AGHT+IFbkA2aPU2aI39vcY4LyLCBENRrl6F3tJNOaay03B3PVHlOWcvhr88DceJ6bvJ0p4z3390ecg==
+X-Received: by 2002:ad4:5742:0:b0:680:d233:9d7 with SMTP id q2-20020ad45742000000b00680d23309d7mr1637485qvx.125.1704426332729;
+        Thu, 04 Jan 2024 19:45:32 -0800 (PST)
 Received: from [172.16.32.83] ([198.232.126.202])
-        by smtp.gmail.com with ESMTPSA id eh17-20020a056214187100b0067f70cc986asm297636qvb.92.2024.01.04.19.44.23
+        by smtp.gmail.com with ESMTPSA id n12-20020ad444ac000000b0067f75dbf08fsm307623qvt.11.2024.01.04.19.45.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jan 2024 19:44:24 -0800 (PST)
-Message-ID: <8131b56d-937d-d7a9-0bab-99599617ad74@landley.net>
-Date: Thu, 4 Jan 2024 21:50:51 -0600
+        Thu, 04 Jan 2024 19:45:32 -0800 (PST)
+Message-ID: <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
+Date: Thu, 4 Jan 2024 21:52:00 -0600
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -54,8 +54,8 @@ User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.10.0
 Subject: Re: [PATCH 00/36] Remove UCLINUX from LTP
 Content-Language: en-US
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it, Cyril Hrubis <chrubis@suse.cz>,
+To: Cyril Hrubis <chrubis@suse.cz>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it,
  Li Wang <liwang@redhat.com>, Andrea Cervesato <andrea.cervesato@suse.com>,
  Greg Ungerer <gerg@linux-m68k.org>, Jonathan Corbet <corbet@lwn.net>,
  Randy Dunlap <rdunlap@infradead.org>,
@@ -67,42 +67,26 @@ Cc: ltp@lists.linux.it, Cyril Hrubis <chrubis@suse.cz>,
  Linux-sh list <linux-sh@vger.kernel.org>
 References: <20240103015240.1065284-1-pvorel@suse.cz>
  <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
+ <20240103114957.GD1073466@pevik>
+ <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
+ <ZZVOhlGPg5KRyS-F@yuki>
 From: Rob Landley <rob@landley.net>
-In-Reply-To: <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
+In-Reply-To: <ZZVOhlGPg5KRyS-F@yuki>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-
-
-On 1/3/24 03:46, Geert Uytterhoeven wrote:
-> Hi Petr,
+On 1/3/24 06:09, Cyril Hrubis wrote:
+> Hi!
+>> I am not sure I agree with this series.
+>> Removing support for UCLINUX from LTP is almost a guarantee for
+>> not noticing when more breakage is introduced.
+>> 
+>> How exactly is UCLINUX broken in LTP?
 > 
-> CC other uClinux arch lists
-> 
-> On Wed, Jan 3, 2024 at 2:52 AM Petr Vorel <pvorel@suse.cz> wrote:
->> UCLINUX is broken in LTP and nobody really cares. Actually I dare to
->> say UCLINUX is dead. Therefore I prepared patchset to remove UCLINUX
->> from LTP. We have been actively removing UCLINUX from LTP during rewrite
->> tests to new LTP API. This removes the rest from the old tests (which
->> will be sooner or later rewritten to new API).
->>
->> Because the patchset is quite big, I did not want to send it to mailing
->> lists (but I can do it if you want).
->>
->> Can you please have look at my fork on gitlab, branch: remove-UCLINUX
->> https://gitlab.com/pevik/ltp/-/commits/remove-UCLINUX?ref_type=heads
->>
->> Build test:
->> https://github.com/pevik/ltp/actions/runs/7392470215
-> 
-> Thanks for your series!
-> 
-> I see you only CCed linux-m68k, but AFAIK, uClinux is not restricted
-> to m68k/coldfire, but also available on arm32, riscv, sh, and xtensa.
+> As far as we know noone is using it and nobody is maintaing it for a
+> decade,
 
-Do you mean "nommu support", or do you mean the ancient distro Jeff Dionne
-stopped maintaining in 2003?
-
-Because I've been doing nommu musl-libc systems for a few years now. Works for me...
+Nobody is maintaining "uclinux" because that was a distro, but you can build
+nommu support in buildroot and such, and people do.
 
 Rob
