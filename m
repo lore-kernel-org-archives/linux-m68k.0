@@ -1,238 +1,185 @@
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA38017D1
-	for <linux-m68k@lists.linux-m68k.org>; Sun,  7 Jan 2024 01:42:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="YdAc4Sir"
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3bbbf5a59b7so841893b6e.3
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 06 Jan 2024 17:42:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google; t=1704591774; x=1705196574; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=matoZ5S2fV8t/Ms3FWjpgYbZ+hH9ZfZByV/p/hEQelk=;
-        b=YdAc4SirNWzTMdzW4Q3gHnEH/oWcGRWlq8/YbTb63SVjrANhpdnXWFXksJDX7QFiyu
-         nKiGf+7ST63xsYFyXUG7lCDL3Lf2gG4rYtvxxNO5Z6CDoNNtRY1JumQEbuFSWsC4aOCf
-         xVG+OmXBmGGuhsxzqhMY6Z0jg4rsI4vd/QsBE=
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9358012E4F
+	for <linux-m68k@lists.linux-m68k.org>; Sun,  7 Jan 2024 12:01:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d480c6342dso7323185ad.2
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 07 Jan 2024 04:01:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704591774; x=1705196574;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=matoZ5S2fV8t/Ms3FWjpgYbZ+hH9ZfZByV/p/hEQelk=;
-        b=tVLCUJFU9Bo/ZTXEKXPGZ3rv7jB73DlogMPK9Dk0mMSKyN9asxr4Dud6wt2vBsiRSr
-         GgIvo8xOWHefFj5gT3QeBIwbjedcGERMpanG5qVAaqcsB7ZtE5tRxQOJxKhEIgZikK2k
-         Ai01zvhy9GVo/7s/ksxARzkmwa+nnBFA8nB+ItkkCxHuaPy629248LYEh+qK+ZJTg9Jo
-         g//kIkxxtW5Un9SeqfMrYSKPuJfLkm+PGavBKebKQZagPwKjpKS44jst7+jhD9Wp5/bn
-         rb8xXjW+QzOB3ICZKwJw/mnh1nWpVaQHWSZrsoGstMY+riKEpyoaS/dpTytOzsEH6Shr
-         twoQ==
-X-Gm-Message-State: AOJu0YwlusZbu6XsGnCK9ISzaM/yczycqjqN85ojN5peSBJnzK42LLzk
-	4lHHl3i982wdxCBCCvpbDDPcbza46iqNEg==
-X-Google-Smtp-Source: AGHT+IFJWW8JzNX6Yzr/MOCXwGIuUzfOgEE8tqgTuOd4awAl24W81lc9UOxCjEtKyyyEbW8ANyCMjw==
-X-Received: by 2002:a05:6808:3a11:b0:3bb:e3d4:6694 with SMTP id gr17-20020a0568083a1100b003bbe3d46694mr2851385oib.37.1704591774623;
-        Sat, 06 Jan 2024 17:42:54 -0800 (PST)
-Received: from shiro.work.home.arpa ([2400:4162:2428:2ffe:618e:93fb:c5ea:6eba])
-        by smtp.googlemail.com with ESMTPSA id a23-20020a17090a6d9700b0028d2521dc53sm2370585pjk.46.2024.01.06.17.42.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Jan 2024 17:42:54 -0800 (PST)
-From: Daniel Palmer <daniel@0x0f.com>
-To: gerg@linux-m68k.org,
-	geert@linux-m68k.org
-Cc: linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org,
-	Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH] m68k: Use macro to generate 68000 interrupt entry sleds
-Date: Sun,  7 Jan 2024 10:42:48 +0900
-Message-ID: <20240107014248.3651022-1-daniel@0x0f.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1704628907; x=1705233707;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+QnGROJ1oWVw3/Pa8uoXPLukkVuGGFCJD+vSnZeWEEA=;
+        b=Rjcz3jMJmS2e5EB9PNoFSXGrWVdvCPdGUhjCp4FAUsMMj082bXdGQjNTtBhdjFVBcR
+         nFWi/GAWzgJrOXHbjOxAsQIdyvbZUZp6kXjNvacBQ3WordKQVf1j7YDYHzF89ivPtgnB
+         iezla9HLj/CatpZMuhzMQJTfVEIsVQyo6RIB0KRcCW6uAeTfVQT56XmREfw1dUfdz/ST
+         39XznJxScjL1xiTIgElZIB+NWMXidTKBeqA781Ifjp/rtK8qrJU4g8OOmlrCxRrZxgsu
+         cSDNBs2ybG1NE3AJN5K9iJ1AYYlHvyjiw7+GZRIyFnXixjIYIonO924VYfBt+1tvCqYU
+         JXUg==
+X-Gm-Message-State: AOJu0YyR9xh2938uc9w8aHNdBK0qbkqk6Cjw2j9QlzrCONrDr+MellIg
+	Gm1G4d9lvf1KZqb7Rn6VYDoBL99lDJQD2YiTrMo=
+X-Google-Smtp-Source: AGHT+IHLPAYIJC36BTu95hJWkiiM7l4wuMzpp++PtD979TuU3xLZ9t8ZJYI6QTGlSxDEqq4T5BatXjsFjWmrrB2CkY0=
+X-Received: by 2002:a17:903:41ce:b0:1d3:ec14:10f0 with SMTP id
+ u14-20020a17090341ce00b001d3ec1410f0mr2738441ple.52.1704628906763; Sun, 07
+ Jan 2024 04:01:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr>
+ <20231217071250.892867-1-mailhol.vincent@wanadoo.fr> <20231217071250.892867-2-mailhol.vincent@wanadoo.fr>
+ <CAMuHMdUvqY4VLDS0mW2VbSzTmef9xt+F3FCpRj5-Mv+KeOqyXg@mail.gmail.com>
+In-Reply-To: <CAMuHMdUvqY4VLDS0mW2VbSzTmef9xt+F3FCpRj5-Mv+KeOqyXg@mail.gmail.com>
+From: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date: Sun, 7 Jan 2024 21:01:34 +0900
+Message-ID: <CAMZ6RqJyJsucRHnuwj87gC9H9hZm9UwC8vAxEJHEPvM-sY=5DA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/5] m68k/bitops: force inlining of all bitops functions
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+	Yury Norov <yury.norov@gmail.com>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Douglas Anderson <dianders@chromium.org>, Kees Cook <keescook@chromium.org>, 
+	Petr Mladek <pmladek@suse.com>, Randy Dunlap <rdunlap@infradead.org>, 
+	Zhaoyang Huang <zhaoyang.huang@unisoc.com>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Marco Elver <elver@google.com>, Brian Cain <bcain@quicinc.com>, 
+	Matthew Wilcox <willy@infradead.org>, "Paul E . McKenney" <paulmck@kernel.org>, linux-hexagon@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-In preparation for decoupling the plain 68000 code from
-the DragonBall support clean entry.S a little bit by
-using a macro to generic the interrupt sleds (needed to
-put the vector number on the stack as the 68000 doesn't
-do that) and use the correct numbers.
+On Tue. 2 janv. 2024 at 19:28, Geert Uytterhoeven <geert@linux-m68k.org> wr=
+ote:
+>
+> Hi Vincent,
+>
+> Thanks for your patch!
 
-The function to call from the sled is a parameter so that
-other interrupt types (i.e. autovectored ones) can specify
-their handler when they are added later.
+Thanks for the review and for running the benchmark.
 
-Signed-off-by: Daniel Palmer <daniel@0x0f.com>
----
+> On Sun, Dec 17, 2023 at 8:13=E2=80=AFAM Vincent Mailhol
+> <mailhol.vincent@wanadoo.fr> wrote:
+> > The inline keyword actually does not guarantee that the compiler will
+> > inline a functions. Whenever the goal is to actually inline a
+> > function, __always_inline should always be preferred instead.
+> >
+> > On an allyesconfig, with GCC 13.2.1, it saves roughly 5 KB.
+> >
+> >   $ size --format=3DGNU vmlinux.before vmlinux.after
+> >         text       data        bss      total filename
+> >     60449738   70975612    2288988  133714338 vmlinux.before
+> >     60446534   70972412    2289596  133708542 vmlinux.after
+>
+> With gcc 9.5.0-1ubuntu1~22.04, the figures are completely different
+> (i.e. a size increase):
 
-This is a small patch to show that I'm working on this before someone
-comes along and deletes everything. For plain 68000 I have:
-  - working QEMU setup using the newish m68k virt machine
-  - working u-boot for mc68000 (Works on QEMU for now, will work on
-    real hardware too..)
-  - u-boot creates a devicetree from the bootinfo and the kernel uses
-    that so things are *modern*.
-  - buildroot working enough that it can generate a rootfs
-  - kernel working enough that it can mount the rootfs over virtio
-    and run the shell (there are some problems after that though..)
+Those results are not normal, there should not be such a big
+discrepancy between two versions of the same compiler. I double
+checked everything and found out that I made a mistake when computing
+the figures: not sure what exactly, but at some point, the ASLR seeds
+(or other similar randomization feature) got reset and so, the
+decrease I witnessed was just a "lucky roll".
 
- arch/m68k/68000/entry.S | 100 ++++++++--------------------------------
- arch/m68k/68000/ints.c  |  14 +++---
- 2 files changed, 27 insertions(+), 87 deletions(-)
+After rerunning the benchmark (making sure to keep every seeds), I got
+similar results as you:
 
-diff --git a/arch/m68k/68000/entry.S b/arch/m68k/68000/entry.S
-index 72e95663b62f..e1fc740412f2 100644
---- a/arch/m68k/68000/entry.S
-+++ b/arch/m68k/68000/entry.S
-@@ -23,13 +23,6 @@
- .globl ret_from_exception
- .globl sys_call_table
- .globl bad_interrupt
--.globl inthandler1
--.globl inthandler2
--.globl inthandler3
--.globl inthandler4
--.globl inthandler5
--.globl inthandler6
--.globl inthandler7
- 
- badsys:
- 	movel	#-ENOSYS,%sp@(PT_OFF_D0)
-@@ -119,85 +112,32 @@ Lsignal_return:
- 	addql	#4,%sp
- 	jra	1b
- 
--/*
-- * This is the main interrupt handler, responsible for calling process_int()
-- */
--inthandler1:
--	SAVE_ALL_INT
--	movew	%sp@(PT_OFF_FORMATVEC), %d0
--	and	#0x3ff, %d0
--
--	movel	%sp,%sp@-
--	movel	#65,%sp@- 		/*  put vector # on stack*/
--	jbsr	process_int		/*  process the IRQ*/
--3:     	addql	#8,%sp			/*  pop parameters off stack*/
--	bra	ret_from_exception
--
--inthandler2:
--	SAVE_ALL_INT
--	movew	%sp@(PT_OFF_FORMATVEC), %d0
--	and	#0x3ff, %d0
--
--	movel	%sp,%sp@-
--	movel	#66,%sp@- 		/*  put vector # on stack*/
--	jbsr	process_int		/*  process the IRQ*/
--3:     	addql	#8,%sp			/*  pop parameters off stack*/
--	bra	ret_from_exception
--
--inthandler3:
--	SAVE_ALL_INT
--	movew	%sp@(PT_OFF_FORMATVEC), %d0
--	and	#0x3ff, %d0
--
--	movel	%sp,%sp@-
--	movel	#67,%sp@- 		/*  put vector # on stack*/
--	jbsr	process_int		/*  process the IRQ*/
--3:     	addql	#8,%sp			/*  pop parameters off stack*/
--	bra	ret_from_exception
--
--inthandler4:
-+/* Create an interrupt vector sled */
-+ .macro inthandler num func
-+	.globl inthandler\num
-+	inthandler\num:
- 	SAVE_ALL_INT
- 	movew	%sp@(PT_OFF_FORMATVEC), %d0
- 	and	#0x3ff, %d0
- 
- 	movel	%sp,%sp@-
--	movel	#68,%sp@- 		/*  put vector # on stack*/
--	jbsr	process_int		/*  process the IRQ*/
--3:     	addql	#8,%sp			/*  pop parameters off stack*/
--	bra	ret_from_exception
--
--inthandler5:
--	SAVE_ALL_INT
--	movew	%sp@(PT_OFF_FORMATVEC), %d0
--	and	#0x3ff, %d0
--
--	movel	%sp,%sp@-
--	movel	#69,%sp@- 		/*  put vector # on stack*/
--	jbsr	process_int		/*  process the IRQ*/
--3:     	addql	#8,%sp			/*  pop parameters off stack*/
--	bra	ret_from_exception
--
--inthandler6:
--	SAVE_ALL_INT
--	movew	%sp@(PT_OFF_FORMATVEC), %d0
--	and	#0x3ff, %d0
--
--	movel	%sp,%sp@-
--	movel	#70,%sp@- 		/*  put vector # on stack*/
--	jbsr	process_int		/*  process the IRQ*/
--3:     	addql	#8,%sp			/*  pop parameters off stack*/
--	bra	ret_from_exception
--
--inthandler7:
--	SAVE_ALL_INT
--	movew	%sp@(PT_OFF_FORMATVEC), %d0
--	and	#0x3ff, %d0
--
--	movel	%sp,%sp@-
--	movel	#71,%sp@- 		/*  put vector # on stack*/
--	jbsr	process_int		/*  process the IRQ*/
--3:     	addql	#8,%sp			/*  pop parameters off stack*/
-+	/* put vector # on stack*/
-+	movel	#\num,%sp@-
-+	/* process the IRQ*/
-+	jbsr	\func
-+	/* pop parameters off stack*/
-+	addql	#8,%sp
- 	bra	ret_from_exception
-+ .endm
-+
-+/* Dragonball interrupts */
-+inthandler 65 process_int
-+inthandler 66 process_int
-+inthandler 67 process_int
-+inthandler 68 process_int
-+inthandler 69 process_int
-+inthandler 70 process_int
-+inthandler 71 process_int
- 
- inthandler:
- 	SAVE_ALL_INT
-diff --git a/arch/m68k/68000/ints.c b/arch/m68k/68000/ints.c
-index 2ba9926e91ae..3d93255c2fe4 100644
---- a/arch/m68k/68000/ints.c
-+++ b/arch/m68k/68000/ints.c
-@@ -63,13 +63,13 @@ asmlinkage void trap46(void);
- asmlinkage void trap47(void);
- asmlinkage irqreturn_t bad_interrupt(int, void *);
- asmlinkage irqreturn_t inthandler(void);
--asmlinkage irqreturn_t inthandler1(void);
--asmlinkage irqreturn_t inthandler2(void);
--asmlinkage irqreturn_t inthandler3(void);
--asmlinkage irqreturn_t inthandler4(void);
--asmlinkage irqreturn_t inthandler5(void);
--asmlinkage irqreturn_t inthandler6(void);
--asmlinkage irqreturn_t inthandler7(void);
-+asmlinkage irqreturn_t inthandler65(void);
-+asmlinkage irqreturn_t inthandler66(void);
-+asmlinkage irqreturn_t inthandler67(void);
-+asmlinkage irqreturn_t inthandler68(void);
-+asmlinkage irqreturn_t inthandler69(void);
-+asmlinkage irqreturn_t inthandler70(void);
-+asmlinkage irqreturn_t inthandler71(void);
- 
- /* The 68k family did not have a good way to determine the source
-  * of interrupts until later in the family.  The EC000 core does
--- 
-2.43.0
+        text       data        bss      total filename
+    60449738   70975356    2288988  133714082
+vmlinux_allyesconfig.before_this_series
+    60446534   70979068    2289596  133715198
+vmlinux_allyesconfig.after_first_patch
+    60429746   70979132    2291676  133700554
+vmlinux_allyesconfig.final_second_patch
 
+Note that there are still some kind of randomness on the data segment
+as shown in those other benchmarks I run:
+
+        text       data        bss      total filename
+    60449738   70976124    2288988  133714850
+vmlinux_allyesconfig.before_this_series
+    60446534   70980092    2289596  133716222
+vmlinux_allyesconfig.after_first_patch
+    60429746   70979388    2291676  133700810
+vmlinux_allyesconfig.after_second_patch
+
+        text       data        bss      total filename
+    60449738   70975612    2288988  133714338
+vmlinux_allyesconfig.before_this_series
+    60446534   70980348    2289596  133716478
+vmlinux_allyesconfig.after_first_patch
+    60429746   70979900    2291676  133701322
+vmlinux_allyesconfig.after_second_patch
+
+But the error margin is within 1K.
+
+So, in short, I inlined some functions which I shouldn't have. I am
+preparing a v4 in which I will only inline the bit-find functions
+(namely: __ffs(), ffs(), ffz(), __fls(), fls() and fls64()). Here are
+the new figures:
+
+        text       data        bss      total filename
+    60453552   70955485    2288620  133697657
+vmlinux_allyesconfig.before_this_series
+    60450304   70953085    2289260  133692649
+vmlinux_allyesconfig.after_first_patch
+    60433536   70952637    2291340  133677513
+vmlinux_allyesconfig.after_second_patch
+
+N.B. The new figures were after a rebase, so do not try to compare
+with the previous benchmarks. I will send the v4 soon, after I finish
+to update the patch comments and double check things.
+
+Concerning the other functions in bitops.h, there may be some other
+ones worth a __always_inline. But I will narrow the scope of this
+series only to the bit-find function. If a good samaritan wants to
+investigate the other functions, go ahead!
+
+Yours sincerely,
+Vincent Mailhol
+
+
+
+
+> allyesconfig:
+>
+>       text       data        bss      total filename
+>   58878600   72415994    2283652  133578246 vmlinux.before
+>   58882250   72419706    2284004  133585960 vmlinux.after
+>
+> atari_defconfig:
+>
+>       text       data        bss      total filename
+>    4112060    1579862     151680    5843602 vmlinux-v6.7-rc8
+>    4117008    1579350     151680    5848038
+> vmlinux-v6.7-rc8-1-m68k-bitops-force-inlining
+>
+> The next patch offsets that for allyesconfig, but not for atari_defconfig=
+.
+>
+> > Reference: commit 8dd5032d9c54 ("x86/asm/bitops: Force inlining of
+> > test_and_set_bit and friends")
+>
+> Please don't split lines containing tags.
+>
+> > Link: https://git.kernel.org/torvalds/c/8dd5032d9c54
+> >
+> > Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+>
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
+8k.org
+>
+> In personal conversations with technical people, I call myself a hacker. =
+But
+> when I'm talking to journalists I just say "programmer" or something like=
+ that.
+>                                 -- Linus Torvalds
