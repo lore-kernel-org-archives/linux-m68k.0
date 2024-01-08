@@ -1,183 +1,118 @@
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A626412B71
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  8 Jan 2024 09:32:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="Sq0eEL7J"
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6dbb7d80df8so1346912a34.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 08 Jan 2024 01:32:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google; t=1704706353; x=1705311153; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TfdL1VvrUAffk+JEt/9C7vAUDoa3/sBqju5Vv3smMQQ=;
-        b=Sq0eEL7JnaEB/ASGVWyie2Vtu9gQaUXT5U1/cVX6VwJD5/abkI6VPYuFjn16VTZMXu
-         X7dDkkhwM56PB5qG/rLaJZrDwYGUornPTJdVDLf125qKKrs4Atdq3WzHY/ZUElAZM4tK
-         T439sW6ZMZU3wzwSH4eqU7hNIuIrZIIgRKhR8=
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA2313ADD
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  8 Jan 2024 09:56:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5f2aab1c0c5so18000257b3.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 08 Jan 2024 01:56:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704706353; x=1705311153;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1704707811; x=1705312611;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TfdL1VvrUAffk+JEt/9C7vAUDoa3/sBqju5Vv3smMQQ=;
-        b=L047fiGQNlp5K4Fq3xLWSlWZElivDbKYclBIRf0uC5TRaWmrqGmo6ahivtHX6VnblS
-         ugdBSQMe6OwX0LUXTcYM6nLo9u84Pr8r0Vya5z9sxq8t7Pz1u8bI/XhAmFK1976NILop
-         WogWmu+YOrtwtYodXphUaZWXPhLMGUec+2htpTvANQcOXhfBitTBHdOhNRugi/jU+OHP
-         bMpkj1d9/9HY4cM/i2L8uZq0S6IdX55qEiEsjOULIhgWX7auM3wznyCDrKxIi65rPHXb
-         IXTOlC23WHZtu4QQFpnYRZEFJVnGTNV/Vvy+8tsJUs1PNst8bNZQKXs1mTgzMPI1O0aA
-         fc8A==
-X-Gm-Message-State: AOJu0YyT5GK86WCNFQkyx/nuuMTQ3VuruMJvmyWoHjRIy0YXNzlhb6lp
-	kgx8PleBwqbOfXovkwn9xLr77mWLQpJMsQ==
-X-Google-Smtp-Source: AGHT+IHOfqcx1LisFMsghCeAdvBasVv/c4m8FJbkf6lrgBZPAPZGqSJTbJFW/Lb7JJGqlKNxTU388A==
-X-Received: by 2002:a9d:590a:0:b0:6db:fe20:fc1c with SMTP id t10-20020a9d590a000000b006dbfe20fc1cmr2517182oth.63.1704706352778;
-        Mon, 08 Jan 2024 01:32:32 -0800 (PST)
-Received: from shiro.work.home.arpa ([2400:4162:2428:2ffe:a221:b29b:7116:6ce9])
-        by smtp.googlemail.com with ESMTPSA id i8-20020a632208000000b005cdbebd61d8sm5578974pgi.9.2024.01.08.01.32.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 01:32:32 -0800 (PST)
-From: Daniel Palmer <daniel@0x0f.com>
-To: gerg@linux-m68k.org,
-	geert@linux-m68k.org,
-	fthain@linux-m68k.org
-Cc: linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org,
-	Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH v2 2/2] m68k: Fix interrupt stack frames for 68000
-Date: Mon,  8 Jan 2024 18:32:21 +0900
-Message-ID: <20240108093221.1477020-3-daniel@0x0f.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240108093221.1477020-1-daniel@0x0f.com>
-References: <20240108093221.1477020-1-daniel@0x0f.com>
+        bh=J6zcoW9ZBE4FkJfB/Sgrd9ilZjNAT7x2Y69neKzMmhA=;
+        b=RD7GlDrddevKlnPiX2g4+RDh7prCnLalbaHPmwGCpu6m078aqKGUqugA+eYiin6v/5
+         Cp08lFTYdSqUYKWMQJy+qP1qQa9tGrN03dqnJyu602Xv0cqxOIdRQL9TUsaw5I9LJJSu
+         RVxEF0bADPoSKtIgtvRqXVGxYkRgRuCef7Qu/t9Md45Ofezbmz8XDLH/skpMjCL9ph/V
+         ZR0jFMOqoaBYlFgCUdmZP/SbqWnI4+L0b6Z8hEg3LsSnUZlNgjVPo2wt/KHwWPjVZcCo
+         sC32MQDH8ip37GadB46mfsdR/qFExa18UtltSi54E92KYlfls0Tj/8cajwCasRo4pi6j
+         TYHg==
+X-Gm-Message-State: AOJu0YxuPcvPHeTSRLzlOL/MLsUsPfXZb+TGJaI1L6Sim24cRqnnwitu
+	7fgPnuw49J2yKJyTgqjL+WaB76G/pni2/g==
+X-Google-Smtp-Source: AGHT+IEjcMAATnoM4NTYDIaNQpiRi/nmE+qGvqIL27WOCfwt0ySD6nYeN2VVoAr5SDl+StCPm6/5gg==
+X-Received: by 2002:a81:7756:0:b0:5e2:af70:4f11 with SMTP id s83-20020a817756000000b005e2af704f11mr3652807ywc.38.1704707810601;
+        Mon, 08 Jan 2024 01:56:50 -0800 (PST)
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
+        by smtp.gmail.com with ESMTPSA id q1-20020a0dce01000000b005f134299392sm3044873ywd.52.2024.01.08.01.56.49
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Jan 2024 01:56:50 -0800 (PST)
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dbdb124491cso1131344276.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 08 Jan 2024 01:56:49 -0800 (PST)
+X-Received: by 2002:a25:7ec7:0:b0:dbd:726a:21f0 with SMTP id
+ z190-20020a257ec7000000b00dbd726a21f0mr1894139ybc.16.1704707809104; Mon, 08
+ Jan 2024 01:56:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240108093221.1477020-1-daniel@0x0f.com> <20240108093221.1477020-3-daniel@0x0f.com>
+In-Reply-To: <20240108093221.1477020-3-daniel@0x0f.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 8 Jan 2024 10:56:37 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdX44A6+BNByuvbCC2gcM5vAipbaGAK7L8Vh8q3tMynBbQ@mail.gmail.com>
+Message-ID: <CAMuHMdX44A6+BNByuvbCC2gcM5vAipbaGAK7L8Vh8q3tMynBbQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] m68k: Fix interrupt stack frames for 68000
+To: Daniel Palmer <daniel@0x0f.com>
+Cc: gerg@linux-m68k.org, fthain@linux-m68k.org, 
+	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The plain old 68000 does not push the frame type/vector on the
-stack when an interrupt starts like the brand new 68010 does.
+Hi Daniel,
 
-This means that currently everything in struct pt_regs is
-a bit off because it expects the processor to push an extra
-short before the kernel interrupt code adds the rest.
+Thanks for your patch!
 
-In entry.S for the 68000 we already need to manually put
-the vector number on the stack to work out what interrupt
-is being handled because the cpu doesn't push that to the
-stack.
+On Mon, Jan 8, 2024 at 10:32=E2=80=AFAM Daniel Palmer <daniel@0x0f.com> wro=
+te:
+> The plain old 68000 does not push the frame type/vector on the
+> stack when an interrupt starts like the brand new 68010 does.
 
-So we can jiggle this around a bit to fix the issue:
-- For 68000 use the same struct pt_regs layout as coldfire
-  where frame/vector is after pc and sp.
-- In entry.S push the vector number first, the stack pointer
-  now lines up with the sktadj field in pt_regs and when saving
-  the remaining registers the offsets match the fields in the
-  struct.
-- Remove the vec argument from the DragonBall interrupt
-  decoding logic as it's not pushed on the stack anymore
-  and not used either way.
+;-)
 
-Signed-off-by: Daniel Palmer <daniel@0x0f.com>
----
- arch/m68k/68000/entry.S             | 9 ++++-----
- arch/m68k/68000/ints.c              | 2 +-
- arch/m68k/include/asm/entry.h       | 3 +++
- arch/m68k/include/uapi/asm/ptrace.h | 2 +-
- 4 files changed, 9 insertions(+), 7 deletions(-)
+> This means that currently everything in struct pt_regs is
+> a bit off because it expects the processor to push an extra
+> short before the kernel interrupt code adds the rest.
+>
+> In entry.S for the 68000 we already need to manually put
+> the vector number on the stack to work out what interrupt
+> is being handled because the cpu doesn't push that to the
+> stack.
+>
+> So we can jiggle this around a bit to fix the issue:
+> - For 68000 use the same struct pt_regs layout as coldfire
+>   where frame/vector is after pc and sp.
+> - In entry.S push the vector number first, the stack pointer
+>   now lines up with the sktadj field in pt_regs and when saving
+>   the remaining registers the offsets match the fields in the
+>   struct.
+> - Remove the vec argument from the DragonBall interrupt
+>   decoding logic as it's not pushed on the stack anymore
+>   and not used either way.
+>
+> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
 
-diff --git a/arch/m68k/68000/entry.S b/arch/m68k/68000/entry.S
-index e1fc740412f2..58c64656713a 100644
---- a/arch/m68k/68000/entry.S
-+++ b/arch/m68k/68000/entry.S
-@@ -54,6 +54,7 @@ do_trace:
- 	jra	ret_from_exception
- 
- ENTRY(system_call)
-+	movew	#32,%sp@-
- 	SAVE_ALL_SYS
- 
- 	/* save top of frame*/
-@@ -116,17 +117,15 @@ Lsignal_return:
-  .macro inthandler num func
- 	.globl inthandler\num
- 	inthandler\num:
-+	movew	#\num,%sp@-
- 	SAVE_ALL_INT
--	movew	%sp@(PT_OFF_FORMATVEC), %d0
--	and	#0x3ff, %d0
- 
-+	/* Push frame address onto stack */
- 	movel	%sp,%sp@-
--	/* put vector # on stack*/
--	movel	#\num,%sp@-
- 	/* process the IRQ*/
- 	jbsr	\func
- 	/* pop parameters off stack*/
--	addql	#8,%sp
-+	addql	#4,%sp
- 	bra	ret_from_exception
-  .endm
- 
-diff --git a/arch/m68k/68000/ints.c b/arch/m68k/68000/ints.c
-index e721932e495d..67c8f9e000ca 100644
---- a/arch/m68k/68000/ints.c
-+++ b/arch/m68k/68000/ints.c
-@@ -77,7 +77,7 @@ asmlinkage irqreturn_t inthandler71(void);
-  * into one vector and look in the blasted mask register...
-  * This code is designed to be fast, almost constant time, not clean!
-  */
--asmlinkage void process_int(int vec, struct pt_regs *fp)
-+asmlinkage void process_int(struct pt_regs *fp)
- {
- 	int irq;
- 	int mask;
-diff --git a/arch/m68k/include/asm/entry.h b/arch/m68k/include/asm/entry.h
-index 9b52b060c76a..71396c948162 100644
---- a/arch/m68k/include/asm/entry.h
-+++ b/arch/m68k/include/asm/entry.h
-@@ -184,6 +184,7 @@
-  * that the stack frame is NOT for syscall
-  */
- .macro SAVE_ALL_INT
-+					/* entry.S should populate the vector */
- 	clrl	%sp@-			/* stk_adj */
- 	pea	-1:w			/* orig d0 */
- 	movel	%d0,%sp@-		/* d0 */
-@@ -191,6 +192,7 @@
- .endm
- 
- .macro SAVE_ALL_SYS
-+					/* entry.S should populate the vector */
- 	clrl	%sp@-			/* stk_adj */
- 	movel	%d0,%sp@-		/* orig d0 */
- 	movel	%d0,%sp@-		/* d0 */
-@@ -202,6 +204,7 @@
- 	movel	%sp@+,%d0
- 	addql	#4,%sp			/* orig d0 */
- 	addl	%sp@+,%sp		/* stk adj */
-+	addql	#2,%sp			/* entry.S populated vector */
- 	rte
- .endm
- 
-diff --git a/arch/m68k/include/uapi/asm/ptrace.h b/arch/m68k/include/uapi/asm/ptrace.h
-index 5b50ea592e00..49d7829df77c 100644
---- a/arch/m68k/include/uapi/asm/ptrace.h
-+++ b/arch/m68k/include/uapi/asm/ptrace.h
-@@ -39,7 +39,7 @@ struct pt_regs {
-   long     d0;
-   long     orig_d0;
-   long     stkadj;
--#ifdef CONFIG_COLDFIRE
-+#if defined(CONFIG_COLDFIRE) || defined(CONFIG_M68000)
-   unsigned format :  4; /* frame format specifier */
-   unsigned vector : 12; /* vector offset */
-   unsigned short sr;
--- 
-2.43.0
+> --- a/arch/m68k/include/uapi/asm/ptrace.h
+> +++ b/arch/m68k/include/uapi/asm/ptrace.h
+> @@ -39,7 +39,7 @@ struct pt_regs {
+>    long     d0;
+>    long     orig_d0;
+>    long     stkadj;
+> -#ifdef CONFIG_COLDFIRE
+> +#if defined(CONFIG_COLDFIRE) || defined(CONFIG_M68000)
+>    unsigned format :  4; /* frame format specifier */
+>    unsigned vector : 12; /* vector offset */
+>    unsigned short sr;
 
+I think it would be better to use the classic m68k stack frame.
+That would pave the way for building a single nommu kernel for
+MC680[012346]0 that runs on e.g. any Amiga.
+MC68000 and Coldfire are incompatible anyway.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
