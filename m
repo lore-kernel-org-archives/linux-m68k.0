@@ -1,44 +1,44 @@
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 753ED125A6
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  8 Jan 2024 09:32:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A626412B71
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  8 Jan 2024 09:32:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="E5xAPjT2"
-Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3bbd6e3795eso1764520b6e.2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 08 Jan 2024 01:32:31 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="Sq0eEL7J"
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6dbb7d80df8so1346912a34.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 08 Jan 2024 01:32:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google; t=1704706351; x=1705311151; darn=lists.linux-m68k.org;
+        d=0x0f.com; s=google; t=1704706353; x=1705311153; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pn2kTcTKQegvfRo59aF494Y7VB6jkLeF4G27EDz1T1U=;
-        b=E5xAPjT2+8IDQo0OBHkmnmSPB7wi+XZnkqRXzTvshh85Rt8oXacxx9B+f9+dP3JXtc
-         I10S0tBGAWNHEhmUQ0uW4PpuCVm2JwTgSrPByDXOWb5vDtSsSOW0BkkbKVt0SrUhfhsE
-         KE4NFxstUefiSl58BmlrmOccD05kiQns/GNUs=
+        bh=TfdL1VvrUAffk+JEt/9C7vAUDoa3/sBqju5Vv3smMQQ=;
+        b=Sq0eEL7JnaEB/ASGVWyie2Vtu9gQaUXT5U1/cVX6VwJD5/abkI6VPYuFjn16VTZMXu
+         X7dDkkhwM56PB5qG/rLaJZrDwYGUornPTJdVDLf125qKKrs4Atdq3WzHY/ZUElAZM4tK
+         T439sW6ZMZU3wzwSH4eqU7hNIuIrZIIgRKhR8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704706351; x=1705311151;
+        d=1e100.net; s=20230601; t=1704706353; x=1705311153;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pn2kTcTKQegvfRo59aF494Y7VB6jkLeF4G27EDz1T1U=;
-        b=rccRpwLpRoxAQqlmnAr47llnhnRBRBgxOLoxVrGx9BFLuvAD7aKYl545+O3cu0SaZM
-         99haEXutwW4V9NoADPVpxLoJhIMHvlGr37Ce0jeR5xlr11Ug56tWjKpqf7bgdtM1c6IE
-         g1SQwp5m81IrctuX3pmAerLZXV6rl7sF3UKOkZHIxwsWN5Awm5wp/thzdJnEgEI0ew3g
-         7jN5nFG3OC9xxFuFEbS47KtGkRYqMXB6RcSymE0bwc2pY9XZiWHwh9cH9RIudoGu8QeH
-         wj1j79WRNjQwxi+0Sh1FcaQEKdFlvaHxdOWcBTz3oazKoXj0u3vQRvbOy7zfJoJNPibl
-         kchg==
-X-Gm-Message-State: AOJu0YyefMxB4vPSI6JsskOLP/O/2WPzC+BJgR0UiKwvJouKRRv78Af8
-	SFge6PG9sY3myHKXANK63qLOPqO1T5UhdQ==
-X-Google-Smtp-Source: AGHT+IF0v9pYtaCUdIMW0KC8X3CbJCAZUdalzX5CmE1kx5uZ44HD8tapWvSVvYGzZsd5cm0k4YOdCQ==
-X-Received: by 2002:a05:6358:949d:b0:170:e930:bd3 with SMTP id i29-20020a056358949d00b00170e9300bd3mr3002255rwb.32.1704706350703;
-        Mon, 08 Jan 2024 01:32:30 -0800 (PST)
+        bh=TfdL1VvrUAffk+JEt/9C7vAUDoa3/sBqju5Vv3smMQQ=;
+        b=L047fiGQNlp5K4Fq3xLWSlWZElivDbKYclBIRf0uC5TRaWmrqGmo6ahivtHX6VnblS
+         ugdBSQMe6OwX0LUXTcYM6nLo9u84Pr8r0Vya5z9sxq8t7Pz1u8bI/XhAmFK1976NILop
+         WogWmu+YOrtwtYodXphUaZWXPhLMGUec+2htpTvANQcOXhfBitTBHdOhNRugi/jU+OHP
+         bMpkj1d9/9HY4cM/i2L8uZq0S6IdX55qEiEsjOULIhgWX7auM3wznyCDrKxIi65rPHXb
+         IXTOlC23WHZtu4QQFpnYRZEFJVnGTNV/Vvy+8tsJUs1PNst8bNZQKXs1mTgzMPI1O0aA
+         fc8A==
+X-Gm-Message-State: AOJu0YyT5GK86WCNFQkyx/nuuMTQ3VuruMJvmyWoHjRIy0YXNzlhb6lp
+	kgx8PleBwqbOfXovkwn9xLr77mWLQpJMsQ==
+X-Google-Smtp-Source: AGHT+IHOfqcx1LisFMsghCeAdvBasVv/c4m8FJbkf6lrgBZPAPZGqSJTbJFW/Lb7JJGqlKNxTU388A==
+X-Received: by 2002:a9d:590a:0:b0:6db:fe20:fc1c with SMTP id t10-20020a9d590a000000b006dbfe20fc1cmr2517182oth.63.1704706352778;
+        Mon, 08 Jan 2024 01:32:32 -0800 (PST)
 Received: from shiro.work.home.arpa ([2400:4162:2428:2ffe:a221:b29b:7116:6ce9])
-        by smtp.googlemail.com with ESMTPSA id i8-20020a632208000000b005cdbebd61d8sm5578974pgi.9.2024.01.08.01.32.28
+        by smtp.googlemail.com with ESMTPSA id i8-20020a632208000000b005cdbebd61d8sm5578974pgi.9.2024.01.08.01.32.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 01:32:30 -0800 (PST)
+        Mon, 08 Jan 2024 01:32:32 -0800 (PST)
 From: Daniel Palmer <daniel@0x0f.com>
 To: gerg@linux-m68k.org,
 	geert@linux-m68k.org,
@@ -46,9 +46,9 @@ To: gerg@linux-m68k.org,
 Cc: linux-m68k@lists.linux-m68k.org,
 	linux-kernel@vger.kernel.org,
 	Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH v2 1/2] m68k: Use macro to generate 68000 interrupt entry sleds
-Date: Mon,  8 Jan 2024 18:32:20 +0900
-Message-ID: <20240108093221.1477020-2-daniel@0x0f.com>
+Subject: [PATCH v2 2/2] m68k: Fix interrupt stack frames for 68000
+Date: Mon,  8 Jan 2024 18:32:21 +0900
+Message-ID: <20240108093221.1477020-3-daniel@0x0f.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240108093221.1477020-1-daniel@0x0f.com>
 References: <20240108093221.1477020-1-daniel@0x0f.com>
@@ -60,192 +60,124 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In preparation for decoupling the plain 68000 code from
-the DragonBall support clean entry.S a little bit by
-using a macro to generic the interrupt sleds (needed to
-put the vector number on the stack as the 68000 doesn't
-do that) and use the correct numbers.
+The plain old 68000 does not push the frame type/vector on the
+stack when an interrupt starts like the brand new 68010 does.
 
-The function to call from the sled is a parameter so that
-other interrupt types (i.e. autovectored ones) can specify
-their handler when they are added later.
+This means that currently everything in struct pt_regs is
+a bit off because it expects the processor to push an extra
+short before the kernel interrupt code adds the rest.
+
+In entry.S for the 68000 we already need to manually put
+the vector number on the stack to work out what interrupt
+is being handled because the cpu doesn't push that to the
+stack.
+
+So we can jiggle this around a bit to fix the issue:
+- For 68000 use the same struct pt_regs layout as coldfire
+  where frame/vector is after pc and sp.
+- In entry.S push the vector number first, the stack pointer
+  now lines up with the sktadj field in pt_regs and when saving
+  the remaining registers the offsets match the fields in the
+  struct.
+- Remove the vec argument from the DragonBall interrupt
+  decoding logic as it's not pushed on the stack anymore
+  and not used either way.
 
 Signed-off-by: Daniel Palmer <daniel@0x0f.com>
 ---
- arch/m68k/68000/entry.S | 100 ++++++++--------------------------------
- arch/m68k/68000/ints.c  |  28 +++++------
- 2 files changed, 34 insertions(+), 94 deletions(-)
+ arch/m68k/68000/entry.S             | 9 ++++-----
+ arch/m68k/68000/ints.c              | 2 +-
+ arch/m68k/include/asm/entry.h       | 3 +++
+ arch/m68k/include/uapi/asm/ptrace.h | 2 +-
+ 4 files changed, 9 insertions(+), 7 deletions(-)
 
 diff --git a/arch/m68k/68000/entry.S b/arch/m68k/68000/entry.S
-index 72e95663b62f..e1fc740412f2 100644
+index e1fc740412f2..58c64656713a 100644
 --- a/arch/m68k/68000/entry.S
 +++ b/arch/m68k/68000/entry.S
-@@ -23,13 +23,6 @@
- .globl ret_from_exception
- .globl sys_call_table
- .globl bad_interrupt
--.globl inthandler1
--.globl inthandler2
--.globl inthandler3
--.globl inthandler4
--.globl inthandler5
--.globl inthandler6
--.globl inthandler7
+@@ -54,6 +54,7 @@ do_trace:
+ 	jra	ret_from_exception
  
- badsys:
- 	movel	#-ENOSYS,%sp@(PT_OFF_D0)
-@@ -119,85 +112,32 @@ Lsignal_return:
- 	addql	#4,%sp
- 	jra	1b
+ ENTRY(system_call)
++	movew	#32,%sp@-
+ 	SAVE_ALL_SYS
  
--/*
-- * This is the main interrupt handler, responsible for calling process_int()
-- */
--inthandler1:
--	SAVE_ALL_INT
--	movew	%sp@(PT_OFF_FORMATVEC), %d0
--	and	#0x3ff, %d0
--
--	movel	%sp,%sp@-
--	movel	#65,%sp@- 		/*  put vector # on stack*/
--	jbsr	process_int		/*  process the IRQ*/
--3:     	addql	#8,%sp			/*  pop parameters off stack*/
--	bra	ret_from_exception
--
--inthandler2:
--	SAVE_ALL_INT
--	movew	%sp@(PT_OFF_FORMATVEC), %d0
--	and	#0x3ff, %d0
--
--	movel	%sp,%sp@-
--	movel	#66,%sp@- 		/*  put vector # on stack*/
--	jbsr	process_int		/*  process the IRQ*/
--3:     	addql	#8,%sp			/*  pop parameters off stack*/
--	bra	ret_from_exception
--
--inthandler3:
--	SAVE_ALL_INT
--	movew	%sp@(PT_OFF_FORMATVEC), %d0
--	and	#0x3ff, %d0
--
--	movel	%sp,%sp@-
--	movel	#67,%sp@- 		/*  put vector # on stack*/
--	jbsr	process_int		/*  process the IRQ*/
--3:     	addql	#8,%sp			/*  pop parameters off stack*/
--	bra	ret_from_exception
--
--inthandler4:
-+/* Create an interrupt vector sled */
-+ .macro inthandler num func
-+	.globl inthandler\num
-+	inthandler\num:
+ 	/* save top of frame*/
+@@ -116,17 +117,15 @@ Lsignal_return:
+  .macro inthandler num func
+ 	.globl inthandler\num
+ 	inthandler\num:
++	movew	#\num,%sp@-
  	SAVE_ALL_INT
- 	movew	%sp@(PT_OFF_FORMATVEC), %d0
- 	and	#0x3ff, %d0
+-	movew	%sp@(PT_OFF_FORMATVEC), %d0
+-	and	#0x3ff, %d0
  
++	/* Push frame address onto stack */
  	movel	%sp,%sp@-
--	movel	#68,%sp@- 		/*  put vector # on stack*/
--	jbsr	process_int		/*  process the IRQ*/
--3:     	addql	#8,%sp			/*  pop parameters off stack*/
--	bra	ret_from_exception
--
--inthandler5:
--	SAVE_ALL_INT
--	movew	%sp@(PT_OFF_FORMATVEC), %d0
--	and	#0x3ff, %d0
--
--	movel	%sp,%sp@-
--	movel	#69,%sp@- 		/*  put vector # on stack*/
--	jbsr	process_int		/*  process the IRQ*/
--3:     	addql	#8,%sp			/*  pop parameters off stack*/
--	bra	ret_from_exception
--
--inthandler6:
--	SAVE_ALL_INT
--	movew	%sp@(PT_OFF_FORMATVEC), %d0
--	and	#0x3ff, %d0
--
--	movel	%sp,%sp@-
--	movel	#70,%sp@- 		/*  put vector # on stack*/
--	jbsr	process_int		/*  process the IRQ*/
--3:     	addql	#8,%sp			/*  pop parameters off stack*/
--	bra	ret_from_exception
--
--inthandler7:
--	SAVE_ALL_INT
--	movew	%sp@(PT_OFF_FORMATVEC), %d0
--	and	#0x3ff, %d0
--
--	movel	%sp,%sp@-
--	movel	#71,%sp@- 		/*  put vector # on stack*/
--	jbsr	process_int		/*  process the IRQ*/
--3:     	addql	#8,%sp			/*  pop parameters off stack*/
-+	/* put vector # on stack*/
-+	movel	#\num,%sp@-
-+	/* process the IRQ*/
-+	jbsr	\func
-+	/* pop parameters off stack*/
-+	addql	#8,%sp
+-	/* put vector # on stack*/
+-	movel	#\num,%sp@-
+ 	/* process the IRQ*/
+ 	jbsr	\func
+ 	/* pop parameters off stack*/
+-	addql	#8,%sp
++	addql	#4,%sp
  	bra	ret_from_exception
-+ .endm
-+
-+/* Dragonball interrupts */
-+inthandler 65 process_int
-+inthandler 66 process_int
-+inthandler 67 process_int
-+inthandler 68 process_int
-+inthandler 69 process_int
-+inthandler 70 process_int
-+inthandler 71 process_int
+  .endm
  
- inthandler:
- 	SAVE_ALL_INT
 diff --git a/arch/m68k/68000/ints.c b/arch/m68k/68000/ints.c
-index 2ba9926e91ae..e721932e495d 100644
+index e721932e495d..67c8f9e000ca 100644
 --- a/arch/m68k/68000/ints.c
 +++ b/arch/m68k/68000/ints.c
-@@ -63,13 +63,13 @@ asmlinkage void trap46(void);
- asmlinkage void trap47(void);
- asmlinkage irqreturn_t bad_interrupt(int, void *);
- asmlinkage irqreturn_t inthandler(void);
--asmlinkage irqreturn_t inthandler1(void);
--asmlinkage irqreturn_t inthandler2(void);
--asmlinkage irqreturn_t inthandler3(void);
--asmlinkage irqreturn_t inthandler4(void);
--asmlinkage irqreturn_t inthandler5(void);
--asmlinkage irqreturn_t inthandler6(void);
--asmlinkage irqreturn_t inthandler7(void);
-+asmlinkage irqreturn_t inthandler65(void);
-+asmlinkage irqreturn_t inthandler66(void);
-+asmlinkage irqreturn_t inthandler67(void);
-+asmlinkage irqreturn_t inthandler68(void);
-+asmlinkage irqreturn_t inthandler69(void);
-+asmlinkage irqreturn_t inthandler70(void);
-+asmlinkage irqreturn_t inthandler71(void);
+@@ -77,7 +77,7 @@ asmlinkage irqreturn_t inthandler71(void);
+  * into one vector and look in the blasted mask register...
+  * This code is designed to be fast, almost constant time, not clean!
+  */
+-asmlinkage void process_int(int vec, struct pt_regs *fp)
++asmlinkage void process_int(struct pt_regs *fp)
+ {
+ 	int irq;
+ 	int mask;
+diff --git a/arch/m68k/include/asm/entry.h b/arch/m68k/include/asm/entry.h
+index 9b52b060c76a..71396c948162 100644
+--- a/arch/m68k/include/asm/entry.h
++++ b/arch/m68k/include/asm/entry.h
+@@ -184,6 +184,7 @@
+  * that the stack frame is NOT for syscall
+  */
+ .macro SAVE_ALL_INT
++					/* entry.S should populate the vector */
+ 	clrl	%sp@-			/* stk_adj */
+ 	pea	-1:w			/* orig d0 */
+ 	movel	%d0,%sp@-		/* d0 */
+@@ -191,6 +192,7 @@
+ .endm
  
- /* The 68k family did not have a good way to determine the source
-  * of interrupts until later in the family.  The EC000 core does
-@@ -163,13 +163,13 @@ void __init trap_init(void)
+ .macro SAVE_ALL_SYS
++					/* entry.S should populate the vector */
+ 	clrl	%sp@-			/* stk_adj */
+ 	movel	%d0,%sp@-		/* orig d0 */
+ 	movel	%d0,%sp@-		/* d0 */
+@@ -202,6 +204,7 @@
+ 	movel	%sp@+,%d0
+ 	addql	#4,%sp			/* orig d0 */
+ 	addl	%sp@+,%sp		/* stk adj */
++	addql	#2,%sp			/* entry.S populated vector */
+ 	rte
+ .endm
  
- 	_ramvec[32] = system_call;
- 
--	_ramvec[65] = (e_vector) inthandler1;
--	_ramvec[66] = (e_vector) inthandler2;
--	_ramvec[67] = (e_vector) inthandler3;
--	_ramvec[68] = (e_vector) inthandler4;
--	_ramvec[69] = (e_vector) inthandler5;
--	_ramvec[70] = (e_vector) inthandler6;
--	_ramvec[71] = (e_vector) inthandler7;
-+	_ramvec[65] = (e_vector) inthandler65;
-+	_ramvec[66] = (e_vector) inthandler66;
-+	_ramvec[67] = (e_vector) inthandler67;
-+	_ramvec[68] = (e_vector) inthandler68;
-+	_ramvec[69] = (e_vector) inthandler69;
-+	_ramvec[70] = (e_vector) inthandler70;
-+	_ramvec[71] = (e_vector) inthandler71;
- }
- 
- void __init init_IRQ(void)
+diff --git a/arch/m68k/include/uapi/asm/ptrace.h b/arch/m68k/include/uapi/asm/ptrace.h
+index 5b50ea592e00..49d7829df77c 100644
+--- a/arch/m68k/include/uapi/asm/ptrace.h
++++ b/arch/m68k/include/uapi/asm/ptrace.h
+@@ -39,7 +39,7 @@ struct pt_regs {
+   long     d0;
+   long     orig_d0;
+   long     stkadj;
+-#ifdef CONFIG_COLDFIRE
++#if defined(CONFIG_COLDFIRE) || defined(CONFIG_M68000)
+   unsigned format :  4; /* frame format specifier */
+   unsigned vector : 12; /* vector offset */
+   unsigned short sr;
 -- 
 2.43.0
 
