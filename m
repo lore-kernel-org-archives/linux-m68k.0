@@ -1,67 +1,89 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B134146BA7
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  8 Jan 2024 14:05:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="lLAGiGzO"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id B37AA6100B;
-	Mon,  8 Jan 2024 14:05:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA426C433D9;
-	Mon,  8 Jan 2024 14:05:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1704722749;
-	bh=A3MDVymzkdgqng/BpWHZNJl9Xi/zGuX7UtURlFIHjcc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lLAGiGzO4zQ8JbCEd7GIuEr3DXhV7Wc27/IHpeKUX8DuoHMbE9ecd4+AoAlGqmdyD
-	 uF35+eQJjIPw4bovTatU1wD9cie5BTxqzIigYWVU6pW+euMHc6YwqoVYxRby+VShTm
-	 wvVLWt5rNVlX3LabRTB8ADw7kE0E7mDWOEHQ1JKM=
-Date: Mon, 8 Jan 2024 15:05:46 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc: Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Helge Deller <deller@gmx.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-input@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vt: remove superfluous CONFIG_HW_CONSOLE
-Message-ID: <2024010822-cardstock-nebulizer-c9c9@gregkh>
-References: <20240108134102.601-1-lukas.bulwahn@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6877A46B94
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  8 Jan 2024 14:08:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5e734251f48so13312927b3.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 08 Jan 2024 06:08:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704722913; x=1705327713;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MdHl7md1Zkmv60g30fUAOV7PYkRMYcjuuSdDFpSytAY=;
+        b=a4zwSHxqMSqZa3y9BHa0u6WIxW1viCDQZ+XOYUDaoKvYhhG+kuXmo8p8TFOS4SB9+K
+         0OCU/6z0wHVl2lfFWwbf4hMXywrnOZanfpbfOLG+DmucZuPlQ9CtwW61koIDHMqJ6t+O
+         Hyfz/MCEJ7iXeccc2bUo0bETTPOlhoPzreKa2LoW0EURXY9FjP7Q5tEhIwH+jxxxcgJ3
+         jXDPAYIDfM09pyzeccWLLiCCoxIia7iQrhyA4t5wfPTlIPRiTCeYO+cR20RQHOCpDPc0
+         Az0gmxt0EQ8vFHc8I6prD3EDfjpdaOEiFAw9jqm8y89pE46atuKaMEX9NXeW1+nJp1AJ
+         K9AA==
+X-Gm-Message-State: AOJu0Yx50vGyQK3PsAw6krj+1c5a15CpxWnnRrzbd11vz7wkjBAjaf0u
+	a4TiK4CRSODD5dznU9Rryozdl727o80S5w==
+X-Google-Smtp-Source: AGHT+IEM4tx6hP/T4C8WZuRcOO+oa/GQQbXM6DFEv2weQu23U/vFzb+IUe6gtqCzyRvPakMDtEiXMg==
+X-Received: by 2002:a0d:c884:0:b0:5e8:79c8:caac with SMTP id k126-20020a0dc884000000b005e879c8caacmr4697946ywd.18.1704722913028;
+        Mon, 08 Jan 2024 06:08:33 -0800 (PST)
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com. [209.85.128.169])
+        by smtp.gmail.com with ESMTPSA id k126-20020a819384000000b005ef7ecd53absm3195974ywg.39.2024.01.08.06.08.32
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Jan 2024 06:08:32 -0800 (PST)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5e734251f48so13312597b3.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 08 Jan 2024 06:08:32 -0800 (PST)
+X-Received: by 2002:a81:570b:0:b0:5f8:fc22:93f5 with SMTP id
+ l11-20020a81570b000000b005f8fc2293f5mr128986ywb.26.1704722911972; Mon, 08 Jan
+ 2024 06:08:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240108134102.601-1-lukas.bulwahn@gmail.com>
 In-Reply-To: <20240108134102.601-1-lukas.bulwahn@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 8 Jan 2024 15:08:20 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXW0bU3KO+-S+jZDGUDkb0Nxg6EQUdc_uKTCs8jj6VOLg@mail.gmail.com>
+Message-ID: <CAMuHMdXW0bU3KO+-S+jZDGUDkb0Nxg6EQUdc_uKTCs8jj6VOLg@mail.gmail.com>
+Subject: Re: [PATCH] vt: remove superfluous CONFIG_HW_CONSOLE
+To: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
+	linux-serial@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+	Helge Deller <deller@gmx.de>, Andrew Morton <akpm@linux-foundation.org>, linux-input@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org, linux-fbdev@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, kernel-janitors@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 08, 2024 at 02:41:02PM +0100, Lukas Bulwahn wrote:
+On Mon, Jan 8, 2024 at 2:41=E2=80=AFPM Lukas Bulwahn <lukas.bulwahn@gmail.c=
+om> wrote:
 > The config HW_CONSOLE is always identical to the config VT and is not
 > visible in the kernel's build menuconfig. So, CONFIG_HW_CONSOLE is
 > redundant.
-> 
+>
 > Replace all references to CONFIG_HW_CONSOLE with CONFIG_VT and remove
 > CONFIG_HW_CONSOLE.
-> 
+>
 > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> I think this patch is best picked up by Greg rather than splitting it
-> in smaller pieces for m68k, amiga keyboard, fbdev etc.
-> 
-> Greg, if that is fine, could you pick this for the next merge window?
 
-Yes, the "next" one, it's too late for 6.8-rc1, sorry.
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-I'll look at it after -rc1 is out.
+>  arch/m68k/amiga/config.c        | 2 +-
 
-thanks,
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-greg k-h
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
