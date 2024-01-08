@@ -1,70 +1,96 @@
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from cantor.telenet-ops.be (cantor.telenet-ops.be [195.130.132.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2485134AC
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  8 Jan 2024 10:18:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="aU9hXBZi"
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6d9b2c8e2a4so1646885b3a.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 08 Jan 2024 02:18:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google; t=1704709080; x=1705313880; darn=lists.linux-m68k.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=n+s3i7ULFHDXKn2RzndAY0qvbKNroYnauIf17/cWotw=;
-        b=aU9hXBZiINMXZGpDGKHH+Hh9+nqCuvdUU5rV9EA+YNS0O1GBQvw2qBixs5AkIhyxUa
-         kaUIHqS3g8RFEz6Lk4Q8+aIVI6q4L+LAAttgZNHm2sG1Qu94TPOeyn0GA8ySWrl3Sm+L
-         v4wgYQiEKeaStK/pBCgoYoAwx2autPCI3CFMU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704709080; x=1705313880;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=n+s3i7ULFHDXKn2RzndAY0qvbKNroYnauIf17/cWotw=;
-        b=v94f/1ZQqHLh9K2rn9OK9UClMlgfZO3k9K+pCbhGsNrPXmF2txFoWkFntalnKBIANs
-         PaYn5FDiVzdfDftqUHP8ryUR81uMwtLbCcUAbECQE8AGzbj3+enoVtTOLj4+NftO4aXQ
-         J/gsVnXZO4oKITXdCgyASxA9JbE2DpZa1BU7flNZOt+yUIV6dnvy3vmkPtkXLgwJWBIB
-         dMPsZEBsQ8MJQQWPtCd+yRVCLIfPuhAjXkaPhSRJrcLaJ3y2PiotIHsn2k6JU+nNDcVr
-         LuLYPrrJoqcu0cXpi/0tZvEK+KaIDXUKFjO9ykckq0uinw/F3/F4LKo0B70AijnGnw+6
-         mtBQ==
-X-Gm-Message-State: AOJu0Yx2cW5hQL/y886W+kITzOMzkRWGjTkYYhqIAEID45YutyjNCgQr
-	TMMs8vhTjba5Yq/6M+GW+MHqCg7uTe6VlWNuyuBvh6Iww/vy/g==
-X-Google-Smtp-Source: AGHT+IGyPSfYxH/22q7ASb9c1WAWmZu4q6xeNojRnrTqhB37yGNb8zC6qt7WFB43LtXSHSzRyKHf+vfeNCdNFNxXlmc=
-X-Received: by 2002:a05:6a00:1ad3:b0:6d8:e153:f884 with SMTP id
- f19-20020a056a001ad300b006d8e153f884mr7325344pfv.30.1704709079932; Mon, 08
- Jan 2024 02:17:59 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97EDB2D043
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  8 Jan 2024 11:26:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+	by cantor.telenet-ops.be (Postfix) with ESMTPS id 4T7sFk13tXz4x00t
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  8 Jan 2024 12:26:18 +0100 (CET)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:d323:2fd4:4f64:e281])
+	by andre.telenet-ops.be with bizsmtp
+	id YBSA2B00Q0Qz0eJ01BSAsB; Mon, 08 Jan 2024 12:26:11 +0100
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1rMnl3-00Estg-Gm;
+	Mon, 08 Jan 2024 12:26:10 +0100
+Received: from geert by rox.of.borg with local (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1rMnli-00CeHk-LV;
+	Mon, 08 Jan 2024 12:26:10 +0100
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for v6.8
+Date: Mon,  8 Jan 2024 12:26:06 +0100
+Message-Id: <20240108112606.3014783-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108093221.1477020-1-daniel@0x0f.com> <20240108093221.1477020-3-daniel@0x0f.com>
- <CAMuHMdX44A6+BNByuvbCC2gcM5vAipbaGAK7L8Vh8q3tMynBbQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdX44A6+BNByuvbCC2gcM5vAipbaGAK7L8Vh8q3tMynBbQ@mail.gmail.com>
-From: Daniel Palmer <daniel@0x0f.com>
-Date: Mon, 8 Jan 2024 19:17:49 +0900
-Message-ID: <CAFr9PX=g+tVRYwhXkrPK421RW7ba1M1H2pM_AR6sJNx+oTFwjg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] m68k: Fix interrupt stack frames for 68000
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: gerg@linux-m68k.org, fthain@linux-m68k.org, 
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hi Geert,
+	Hi Linus,
 
-On Mon, 8 Jan 2024 at 18:56, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> I think it would be better to use the classic m68k stack frame.
-> That would pave the way for building a single nommu kernel for
-> MC680[012346]0 that runs on e.g. any Amiga.
-> MC68000 and Coldfire are incompatible anyway.
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
 
-Ok, I'll work that out. I have an A600 with an 020 board so I could
-actually test it on real hardware. :)
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
 
-Cheers,
+are available in the Git repository at:
 
-Daniel
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.8-tag1
+
+for you to fetch changes up to 6b9c045b0602cf64b33ea6da5e6aa6f81dd47ae8:
+
+  m68k: defconfig: Update defconfigs for v6.7-rc1 (2024-01-03 13:34:08 +0100)
+
+----------------------------------------------------------------
+m68k updates for v6.8
+
+  - Make the NuBus bus type static and constant,
+  - Defconfig updates.
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+Geert Uytterhoeven (1):
+      m68k: defconfig: Update defconfigs for v6.7-rc1
+
+Greg Kroah-Hartman (1):
+      nubus: Make nubus_bus_type static and constant
+
+ arch/m68k/configs/amiga_defconfig    | 2 +-
+ arch/m68k/configs/apollo_defconfig   | 2 +-
+ arch/m68k/configs/atari_defconfig    | 2 +-
+ arch/m68k/configs/bvme6000_defconfig | 2 +-
+ arch/m68k/configs/hp300_defconfig    | 2 +-
+ arch/m68k/configs/mac_defconfig      | 5 +----
+ arch/m68k/configs/multi_defconfig    | 5 +----
+ arch/m68k/configs/mvme147_defconfig  | 2 +-
+ arch/m68k/configs/mvme16x_defconfig  | 2 +-
+ arch/m68k/configs/q40_defconfig      | 2 +-
+ arch/m68k/configs/sun3_defconfig     | 2 +-
+ arch/m68k/configs/sun3x_defconfig    | 2 +-
+ drivers/nubus/bus.c                  | 3 +--
+ include/linux/nubus.h                | 2 --
+ 14 files changed, 13 insertions(+), 22 deletions(-)
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
