@@ -1,118 +1,143 @@
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA2313ADD
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  8 Jan 2024 09:56:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5f2aab1c0c5so18000257b3.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 08 Jan 2024 01:56:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704707811; x=1705312611;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=J6zcoW9ZBE4FkJfB/Sgrd9ilZjNAT7x2Y69neKzMmhA=;
-        b=RD7GlDrddevKlnPiX2g4+RDh7prCnLalbaHPmwGCpu6m078aqKGUqugA+eYiin6v/5
-         Cp08lFTYdSqUYKWMQJy+qP1qQa9tGrN03dqnJyu602Xv0cqxOIdRQL9TUsaw5I9LJJSu
-         RVxEF0bADPoSKtIgtvRqXVGxYkRgRuCef7Qu/t9Md45Ofezbmz8XDLH/skpMjCL9ph/V
-         ZR0jFMOqoaBYlFgCUdmZP/SbqWnI4+L0b6Z8hEg3LsSnUZlNgjVPo2wt/KHwWPjVZcCo
-         sC32MQDH8ip37GadB46mfsdR/qFExa18UtltSi54E92KYlfls0Tj/8cajwCasRo4pi6j
-         TYHg==
-X-Gm-Message-State: AOJu0YxuPcvPHeTSRLzlOL/MLsUsPfXZb+TGJaI1L6Sim24cRqnnwitu
-	7fgPnuw49J2yKJyTgqjL+WaB76G/pni2/g==
-X-Google-Smtp-Source: AGHT+IEjcMAATnoM4NTYDIaNQpiRi/nmE+qGvqIL27WOCfwt0ySD6nYeN2VVoAr5SDl+StCPm6/5gg==
-X-Received: by 2002:a81:7756:0:b0:5e2:af70:4f11 with SMTP id s83-20020a817756000000b005e2af704f11mr3652807ywc.38.1704707810601;
-        Mon, 08 Jan 2024 01:56:50 -0800 (PST)
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
-        by smtp.gmail.com with ESMTPSA id q1-20020a0dce01000000b005f134299392sm3044873ywd.52.2024.01.08.01.56.49
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Jan 2024 01:56:50 -0800 (PST)
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dbdb124491cso1131344276.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 08 Jan 2024 01:56:49 -0800 (PST)
-X-Received: by 2002:a25:7ec7:0:b0:dbd:726a:21f0 with SMTP id
- z190-20020a257ec7000000b00dbd726a21f0mr1894139ybc.16.1704707809104; Mon, 08
- Jan 2024 01:56:49 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 531272575C
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  8 Jan 2024 10:07:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GsmfaT9v";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7ScbUFE/";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GsmfaT9v";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7ScbUFE/"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6F4071F795;
+	Mon,  8 Jan 2024 10:07:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704708422; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=R99rqxoGR/Qlzqgu2a6HJKzxAx4tDUpg3SJMoXbVjNk=;
+	b=GsmfaT9vT5a2rd85NnzGqeWRbuuq3hTMlT1avysMx1ORSgDDgY+/MFoxWcl6VBFexV6GyC
+	m8W2Cydfw4v0Qx4Bagq4PPXa7Gua3JJbzmtP4RSMW3hGUKn4xm0YP9qQfEUI2SwCdpmIXx
+	mZwBi9cpv7TZ1vvxwbqMG6rS1GFFaV4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704708422;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=R99rqxoGR/Qlzqgu2a6HJKzxAx4tDUpg3SJMoXbVjNk=;
+	b=7ScbUFE/CJ4U26UvCsuT6MZhX96dkM3iqYXqnjxi/FbgcAHJn3yVZixO3KDB0KCmmaWvcJ
+	9xYfLEbYp9QfauAw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704708422; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=R99rqxoGR/Qlzqgu2a6HJKzxAx4tDUpg3SJMoXbVjNk=;
+	b=GsmfaT9vT5a2rd85NnzGqeWRbuuq3hTMlT1avysMx1ORSgDDgY+/MFoxWcl6VBFexV6GyC
+	m8W2Cydfw4v0Qx4Bagq4PPXa7Gua3JJbzmtP4RSMW3hGUKn4xm0YP9qQfEUI2SwCdpmIXx
+	mZwBi9cpv7TZ1vvxwbqMG6rS1GFFaV4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704708422;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=R99rqxoGR/Qlzqgu2a6HJKzxAx4tDUpg3SJMoXbVjNk=;
+	b=7ScbUFE/CJ4U26UvCsuT6MZhX96dkM3iqYXqnjxi/FbgcAHJn3yVZixO3KDB0KCmmaWvcJ
+	9xYfLEbYp9QfauAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 512331392C;
+	Mon,  8 Jan 2024 10:07:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id sMOXEkbJm2UrNgAAD6G6ig
+	(envelope-from <chrubis@suse.cz>); Mon, 08 Jan 2024 10:07:02 +0000
+Date: Mon, 8 Jan 2024 11:07:25 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Cc: Rob Landley <rob@landley.net>,
+	Geert Uytterhoeven <geert@linux-m68k.org>, ltp@lists.linux.it,
+	Li Wang <liwang@redhat.com>,
+	Andrea Cervesato <andrea.cervesato@suse.com>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Christophe Lyon <christophe.lyon@linaro.org>,
+	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+	Linux ARM <linux-arm-kernel@lists.infradead.org>,
+	linux-riscv <linux-riscv@lists.infradead.org>,
+	Linux-sh list <linux-sh@vger.kernel.org>,
+	automated-testing@lists.yoctoproject.org, buildroot@buildroot.org,
+	Niklas Cassel <niklas.cassel@wdc.com>
+Subject: Re: Call for nommu LTP maintainer [was: Re: [PATCH 00/36] Remove
+ UCLINUX from LTP]
+Message-ID: <ZZvJXTshFUYSaMVH@yuki>
+References: <20240103015240.1065284-1-pvorel@suse.cz>
+ <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
+ <20240103114957.GD1073466@pevik>
+ <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
+ <ZZVOhlGPg5KRyS-F@yuki>
+ <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
+ <20240105131135.GA1484621@pevik>
+ <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
+ <20240108090338.GA1552643@pevik>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108093221.1477020-1-daniel@0x0f.com> <20240108093221.1477020-3-daniel@0x0f.com>
-In-Reply-To: <20240108093221.1477020-3-daniel@0x0f.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 8 Jan 2024 10:56:37 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdX44A6+BNByuvbCC2gcM5vAipbaGAK7L8Vh8q3tMynBbQ@mail.gmail.com>
-Message-ID: <CAMuHMdX44A6+BNByuvbCC2gcM5vAipbaGAK7L8Vh8q3tMynBbQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] m68k: Fix interrupt stack frames for 68000
-To: Daniel Palmer <daniel@0x0f.com>
-Cc: gerg@linux-m68k.org, fthain@linux-m68k.org, 
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240108090338.GA1552643@pevik>
+X-Spam-Level: *
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=GsmfaT9v;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="7ScbUFE/"
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-1.01 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[19];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -1.01
+X-Rspamd-Queue-Id: 6F4071F795
+X-Spam-Flag: NO
 
-Hi Daniel,
+Hi!
+> But as I said, if anybody from nommu decides to maintain it in LTP, I'll try to
+> support him in my free time (review patches, give advices). And if nobody
+> stands, this patchset which removes the support in the old API will be merged
+> after next LTP release (in the end of January).
 
-Thanks for your patch!
+Let me highlight this part, we are eager to help anybody who is willing
+to pick the nommu work, but we do not have resources to drive it.
 
-On Mon, Jan 8, 2024 at 10:32=E2=80=AFAM Daniel Palmer <daniel@0x0f.com> wro=
-te:
-> The plain old 68000 does not push the frame type/vector on the
-> stack when an interrupt starts like the brand new 68010 does.
-
-;-)
-
-> This means that currently everything in struct pt_regs is
-> a bit off because it expects the processor to push an extra
-> short before the kernel interrupt code adds the rest.
->
-> In entry.S for the 68000 we already need to manually put
-> the vector number on the stack to work out what interrupt
-> is being handled because the cpu doesn't push that to the
-> stack.
->
-> So we can jiggle this around a bit to fix the issue:
-> - For 68000 use the same struct pt_regs layout as coldfire
->   where frame/vector is after pc and sp.
-> - In entry.S push the vector number first, the stack pointer
->   now lines up with the sktadj field in pt_regs and when saving
->   the remaining registers the offsets match the fields in the
->   struct.
-> - Remove the vec argument from the DragonBall interrupt
->   decoding logic as it's not pushed on the stack anymore
->   and not used either way.
->
-> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
-
-> --- a/arch/m68k/include/uapi/asm/ptrace.h
-> +++ b/arch/m68k/include/uapi/asm/ptrace.h
-> @@ -39,7 +39,7 @@ struct pt_regs {
->    long     d0;
->    long     orig_d0;
->    long     stkadj;
-> -#ifdef CONFIG_COLDFIRE
-> +#if defined(CONFIG_COLDFIRE) || defined(CONFIG_M68000)
->    unsigned format :  4; /* frame format specifier */
->    unsigned vector : 12; /* vector offset */
->    unsigned short sr;
-
-I think it would be better to use the classic m68k stack frame.
-That would pave the way for building a single nommu kernel for
-MC680[012346]0 that runs on e.g. any Amiga.
-MC68000 and Coldfire are incompatible anyway.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+-- 
+Cyril Hrubis
+chrubis@suse.cz
