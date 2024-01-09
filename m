@@ -1,266 +1,83 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C879C381B8
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  9 Jan 2024 12:27:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53EDC39AC0
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  9 Jan 2024 14:10:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nRkElcpS"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704803248; x=1736339248;
-  h=date:from:to:cc:subject:message-id;
-  bh=i8TN8qupgar5iUDt7ySLTpmZiGMWXqNDt02vUVUooGY=;
-  b=nRkElcpStIhblkzfjBVXS6yBV9bVEKZaHzJk7qxK3SGp8aiH62zM6xHh
-   cVY5cTM31Yc184vjkuJvVrJXwOSwlW09N1tYEuFObBBgLAUa3N3sN7c05
-   jPpzkk+aivU7fFY73z2n/6ms8tEtCQhZMZMlwtEaAHq72VU5xSNWPkNhm
-   mqnD3vkk+APbOSsERIOxkpTANk2hFv6e6nTbPDK/FIzvCtpdf8C0Npcc9
-   gbVMaT5Co1Y7AptfEJo9m4bATdY2UsfoILIkm0J6Qmx31y8aA/e8tofp3
-   cfpwxLjUt6LWyVj+hDCeq4vhaakdnn2zJQh9XvuwzP6OEY3JjB4e+oZlR
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="11668232"
-X-IronPort-AV: E=Sophos;i="6.04,182,1695711600"; 
-   d="scan'208";a="11668232"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2024 04:27:25 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="955002161"
-X-IronPort-AV: E=Sophos;i="6.04,182,1695711600"; 
-   d="scan'208";a="955002161"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 09 Jan 2024 04:27:23 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rNBCT-0005pQ-0L;
-	Tue, 09 Jan 2024 12:27:21 +0000
-Date: Tue, 09 Jan 2024 20:26:33 +0800
-From: kernel test robot <lkp@intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:m68k-v6.7] BUILD SUCCESS
- 68f7a449731d9081a261c75fecf6896872e0a194
-Message-ID: <202401092031.XdmmVTCz-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="Yd0prTOv"
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6d9b51093a0so2516446b3a.0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 09 Jan 2024 06:10:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google; t=1704809404; x=1705414204; darn=lists.linux-m68k.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=pq/dGBHry+bUFK42zIvRKqg915RDTOWS/nNkiEQIoSY=;
+        b=Yd0prTOv2cu14fUYbmbwyDFp5V0Fg3gXr/a4/DlRV+D0ZaY1xTKP+gT1q6zTRE/Dzl
+         vPCXzkjyDx1aVmfLdDcIDqHzuPyqvKHKF4TQKh5pyhsCPRAhMasBNzax6FSu4iQP4xLK
+         o3vhfsKCX4jHcKODOP4xnXk0xbXs6yeQ80+rk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704809404; x=1705414204;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pq/dGBHry+bUFK42zIvRKqg915RDTOWS/nNkiEQIoSY=;
+        b=xSS22deLR6QInuW5OW/0cdqnN/fNrAlkd187z2Gjenr15r20mLq6GLl8mWUWMKHd4a
+         V8+jaE5dLIYAvKKfCMRFsT6nOl9dBN2rYFSHfd8hOFftV9E86GaOMo7KqdP1NpGKBcAJ
+         8t5UnCMESpEaB/C74pGqOg82oJtqvhYu5bsrSEcIT+e1cQ7yIOTjA1duLiZI/syNob/7
+         xRyUmqSc0ogz2kvau0mQOhq67rPkijfkF5bUzAWZxMPXfaEVpN66Yjpip+Tvkd9ONsrf
+         weYS1rEkxuzQ1kx2xWC/paZUiv3L64pZZngklVp0MHGqZKWYjH7pqBId5xPoJjQ4/g5n
+         dbfA==
+X-Gm-Message-State: AOJu0Yy5nV9/enaSOQ6euPMcMWLlf6YVQPNVmas1x94sVxJEG/ifrkLW
+	T6jIlTozIuqWKxX8dKFt9XeZa3F2X/8oMPOPhojuQKKu+FjMTg==
+X-Google-Smtp-Source: AGHT+IGybin4X6fPS7n0pGkPXVq/l7a2ywRmpT2HL/MuiV7RD2yWxQJMYUOqexE68flKre3YDuqEYb0We0t71oH5V7Y=
+X-Received: by 2002:aa7:881a:0:b0:6d9:a32b:a27f with SMTP id
+ c26-20020aa7881a000000b006d9a32ba27fmr5221136pfo.45.1704809404554; Tue, 09
+ Jan 2024 06:10:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20240108093221.1477020-1-daniel@0x0f.com> <20240108093221.1477020-3-daniel@0x0f.com>
+ <CAMuHMdX44A6+BNByuvbCC2gcM5vAipbaGAK7L8Vh8q3tMynBbQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdX44A6+BNByuvbCC2gcM5vAipbaGAK7L8Vh8q3tMynBbQ@mail.gmail.com>
+From: Daniel Palmer <daniel@0x0f.com>
+Date: Tue, 9 Jan 2024 23:09:53 +0900
+Message-ID: <CAFr9PXn9wqbxToGDkSenW3XTCMPinUg1a9fHrUDQVhRKC6s5TA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] m68k: Fix interrupt stack frames for 68000
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: gerg@linux-m68k.org, fthain@linux-m68k.org, 
+	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git m68k-v6.7
-branch HEAD: 68f7a449731d9081a261c75fecf6896872e0a194  m68k: defconfig: Enable Atari EtherNAT and NetUSBee USB support
+Hi All,
 
-elapsed time: 1456m
+Sorry for the spam..
 
-configs tested: 200
-configs skipped: 2
+On Mon, 8 Jan 2024 at 18:56, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> I think it would be better to use the classic m68k stack frame.
+> That would pave the way for building a single nommu kernel for
+> MC680[012346]0 that runs on e.g. any Amiga.
+> MC68000 and Coldfire are incompatible anyway.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+While looking at how to do this I realised that the addql #2,%sp in
+RESTORE_ALL in entry.h will now break the stack frames for those fancy
+68010+ users.
+So that needs to be #ifdef'd to make it only compile for 68000. I saw
+an error email from the next build stuff so I guess the change has
+been queued somewhere? If so I should send a fix..
+I'm not sure how to actually make that generic without patching the
+code at runtime (remove the 68000 specific bit, reserve enough extra
+space to rewrite the code..) but it's a macro so not so simple.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                          axs103_defconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240109   gcc  
-arc                   randconfig-002-20240109   gcc  
-arc                    vdk_hs38_smp_defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                         at91_dt_defconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240109   clang
-arm                   randconfig-002-20240109   clang
-arm                   randconfig-003-20240109   clang
-arm                   randconfig-004-20240109   clang
-arm                           tegra_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240109   clang
-arm64                 randconfig-002-20240109   clang
-arm64                 randconfig-003-20240109   clang
-arm64                 randconfig-004-20240109   clang
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240109   gcc  
-csky                  randconfig-002-20240109   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240109   clang
-hexagon               randconfig-002-20240109   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386         buildonly-randconfig-001-20240108   gcc  
-i386         buildonly-randconfig-002-20240108   gcc  
-i386         buildonly-randconfig-003-20240108   gcc  
-i386         buildonly-randconfig-004-20240108   gcc  
-i386         buildonly-randconfig-005-20240108   gcc  
-i386         buildonly-randconfig-006-20240108   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20240108   gcc  
-i386                  randconfig-002-20240108   gcc  
-i386                  randconfig-003-20240108   gcc  
-i386                  randconfig-004-20240108   gcc  
-i386                  randconfig-005-20240108   gcc  
-i386                  randconfig-006-20240108   gcc  
-i386                  randconfig-011-20240108   clang
-i386                  randconfig-011-20240109   gcc  
-i386                  randconfig-012-20240108   clang
-i386                  randconfig-012-20240109   gcc  
-i386                  randconfig-013-20240108   clang
-i386                  randconfig-013-20240109   gcc  
-i386                  randconfig-014-20240108   clang
-i386                  randconfig-014-20240109   gcc  
-i386                  randconfig-015-20240108   clang
-i386                  randconfig-015-20240109   gcc  
-i386                  randconfig-016-20240108   clang
-i386                  randconfig-016-20240109   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240109   gcc  
-loongarch             randconfig-002-20240109   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                          sun3x_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   clang
-mips                             allyesconfig   gcc  
-mips                         db1xxx_defconfig   gcc  
-mips                      fuloong2e_defconfig   gcc  
-mips                           gcw0_defconfig   gcc  
-mips                       lemote2f_defconfig   gcc  
-nios2                         10m50_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240109   gcc  
-nios2                 randconfig-002-20240109   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240109   gcc  
-parisc                randconfig-002-20240109   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   clang
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                 canyonlands_defconfig   gcc  
-powerpc                      cm5200_defconfig   gcc  
-powerpc                     mpc83xx_defconfig   gcc  
-powerpc                      ppc40x_defconfig   gcc  
-powerpc               randconfig-001-20240109   clang
-powerpc               randconfig-002-20240109   clang
-powerpc               randconfig-003-20240109   clang
-powerpc                    socrates_defconfig   gcc  
-powerpc                 xes_mpc85xx_defconfig   gcc  
-powerpc64                        alldefconfig   gcc  
-powerpc64             randconfig-001-20240109   clang
-powerpc64             randconfig-002-20240109   clang
-powerpc64             randconfig-003-20240109   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   clang
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20240109   clang
-riscv                 randconfig-002-20240109   clang
-riscv                          rv32_defconfig   clang
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20240109   gcc  
-s390                  randconfig-002-20240109   gcc  
-s390                       zfcpdump_defconfig   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                        dreamcast_defconfig   gcc  
-sh                          polaris_defconfig   gcc  
-sh                    randconfig-001-20240109   gcc  
-sh                    randconfig-002-20240109   gcc  
-sh                             sh03_defconfig   gcc  
-sh                        sh7757lcr_defconfig   gcc  
-sh                            titan_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240109   gcc  
-sparc64               randconfig-002-20240109   gcc  
-um                               alldefconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240109   clang
-um                    randconfig-002-20240109   clang
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240109   clang
-x86_64       buildonly-randconfig-002-20240109   clang
-x86_64       buildonly-randconfig-003-20240109   clang
-x86_64       buildonly-randconfig-004-20240109   clang
-x86_64       buildonly-randconfig-005-20240109   clang
-x86_64       buildonly-randconfig-006-20240109   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-001-20240109   gcc  
-x86_64                randconfig-002-20240109   gcc  
-x86_64                randconfig-003-20240109   gcc  
-x86_64                randconfig-004-20240109   gcc  
-x86_64                randconfig-005-20240109   gcc  
-x86_64                randconfig-006-20240109   gcc  
-x86_64                randconfig-011-20240109   clang
-x86_64                randconfig-012-20240109   clang
-x86_64                randconfig-013-20240109   clang
-x86_64                randconfig-014-20240109   clang
-x86_64                randconfig-015-20240109   clang
-x86_64                randconfig-016-20240109   clang
-x86_64                randconfig-071-20240109   clang
-x86_64                randconfig-072-20240109   clang
-x86_64                randconfig-073-20240109   clang
-x86_64                randconfig-074-20240109   clang
-x86_64                randconfig-075-20240109   clang
-x86_64                randconfig-076-20240109   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                randconfig-001-20240109   gcc  
-xtensa                randconfig-002-20240109   gcc  
-xtensa                         virt_defconfig   gcc  
+Anyhow, and more importantly, it seems like there is another issue in
+68000/entry.S that breaks syscalls (especially vfork). After fixing
+that I now have a working nommu 68000 system. I'll send a fix for that
+too.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Cheers,
+
+Daniel
