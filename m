@@ -1,161 +1,155 @@
-Received: from wnew4-smtp.messagingengine.com (wnew4-smtp.messagingengine.com [64.147.123.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48FD73FE36
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 10 Jan 2024 10:20:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="JP39xJs9";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="UmPKqJXZ"
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailnew.west.internal (Postfix) with ESMTP id 0F1522B005B2;
-	Wed, 10 Jan 2024 05:20:33 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 10 Jan 2024 05:20:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1704882033;
-	 x=1704889233; bh=syE5UlqFQxkc/rlq6eSMNsD1Ft+dm/4kEwr9kygNnZw=; b=
-	JP39xJs9nz7sao0Mw71uaZ/eiQXIoVplqugjUGZYhQ7guX3+bZhIuPn+FTIF0P/U
-	kFKA5/KKnrvphnR9VVDqO7b9pSS6wICSG3UluT021gLpH5lthNGCLq13PQ9KJjEJ
-	1ljadw2mqVer0c9AYE4e0vRLjHJbc6Ff1HjG1hJRNVl2d58ls4RnrwTbd1lVfNCT
-	/p4Lj2EC6KAxjG6XjKrUccDBnfGAbkRQ9JltT0U4qRnMynNH4R98FTVJAThZmA9u
-	jQBMWbwGpK+oalRypy9TC8j8qfMWGON+J6gzAN0ArgN5Lu7H51+TiItFXrD89wmd
-	vZG/l4E5n8fT1+kO8ueizQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1704882033; x=
-	1704889233; bh=syE5UlqFQxkc/rlq6eSMNsD1Ft+dm/4kEwr9kygNnZw=; b=U
-	mPKqJXZVgmHnjEzCuKASxczr7emU7nTNeH25WN9+C8eCNew7DVr1bRr/+srzmGUM
-	OLnTHQSNkb+EpmX50WeEu35xdXIziu96hJDuEpPD56diPrxIQi32vTaocnV2ckb1
-	HD7aUd5o6s31cHFZPeyloB1t3fGS7jNWGPLq0zyRBeBaK7y25NpZqIyzw5gFDKsU
-	pgPvYLFgWLau455DHxp57ybe58+CnFFt/AMqw12H893i5lWeRlqp9SNjB20pdoew
-	+mPjKLaT3vdzJvpuSAYIlv2XgkShbWLlHqONIAN9nqEm1n8JAXEzEYFZ9iKC3jQK
-	mYsm11bq3sdDv2qml7QSw==
-X-ME-Sender: <xms:b2-eZV_KMr_PAO_kk0ge4HNc0mbJzBFnJKYHP3Wn5ArwwAHJiUgo6g>
-    <xme:b2-eZZug-0NmwZ3_tB5EneosW6omYAdslyOjXGHW_SxmM98uPtte7R3mOTMO5r8vb
-    U5elh8Vhr3nkMsPDkU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeiuddgudegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
-    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:b2-eZTD8snTlVFeWedik1H69gSlAKgK5Cfa5oODX4P9VlRv3yNVtaA>
-    <xmx:b2-eZZfs69_EmPDsleKZW4CQjR8pVKQx5Y8bLR1JfUiKHCBXHCWmmA>
-    <xmx:b2-eZaMqe5fTef3bZBI_1IiTCXh5CeSfqu9FYtz6ovkxTl1P8-0xSA>
-    <xmx:cW-eZYGsc9qNXZdY9id5LaSUAgT20Cc4RFtJpxiSbqeKVbO3FhZS773eVF0>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 64819B6008D; Wed, 10 Jan 2024 05:20:31 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C7394CB57
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 10 Jan 2024 13:34:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2B0A7220B0;
+	Wed, 10 Jan 2024 13:34:01 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4201013786;
+	Wed, 10 Jan 2024 13:34:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 5hiwDMicnmUSKwAAD6G6ig
+	(envelope-from <pvorel@suse.cz>); Wed, 10 Jan 2024 13:34:00 +0000
+Date: Wed, 10 Jan 2024 14:33:58 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Rob Landley <rob@landley.net>
+Cc: Cyril Hrubis <chrubis@suse.cz>,
+	Geert Uytterhoeven <geert@linux-m68k.org>, ltp@lists.linux.it,
+	Li Wang <liwang@redhat.com>,
+	Andrea Cervesato <andrea.cervesato@suse.com>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Christophe Lyon <christophe.lyon@linaro.org>,
+	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+	Linux ARM <linux-arm-kernel@lists.infradead.org>,
+	linux-riscv <linux-riscv@lists.infradead.org>,
+	Linux-sh list <linux-sh@vger.kernel.org>,
+	automated-testing@lists.yoctoproject.org, buildroot@buildroot.org,
+	Niklas Cassel <niklas.cassel@wdc.com>
+Subject: Re: Call for nommu LTP maintainer [was: Re: [PATCH 00/36] Remove
+ UCLINUX from LTP]
+Message-ID: <20240110133358.GB1698252@pevik>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+References: <20240103015240.1065284-1-pvorel@suse.cz>
+ <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
+ <20240103114957.GD1073466@pevik>
+ <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
+ <ZZVOhlGPg5KRyS-F@yuki>
+ <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
+ <20240105131135.GA1484621@pevik>
+ <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
+ <20240108090338.GA1552643@pevik>
+ <a3d7f5ae-56c6-9cd8-2cda-2d50d12be9c4@landley.net>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <fdf707b9-f39d-4f5a-a8bf-1bcb8cc6594f@app.fastmail.com>
-In-Reply-To: 
- <CAMuHMdV8uFKntiMfwwmnFpd4Dcx8vJDwS6r1iBLtkh40N71dbw@mail.gmail.com>
-References: <20231108125843.3806765-1-arnd@kernel.org>
- <20231108125843.3806765-9-arnd@kernel.org>
- <CAMuHMdV8uFKntiMfwwmnFpd4Dcx8vJDwS6r1iBLtkh40N71dbw@mail.gmail.com>
-Date: Wed, 10 Jan 2024 11:20:10 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Geert Uytterhoeven" <geert@linux-m68k.org>,
- "Arnd Bergmann" <arnd@kernel.org>
-Cc: "Andrew Morton" <akpm@linux-foundation.org>,
- linux-kernel@vger.kernel.org, "Masahiro Yamada" <masahiroy@kernel.org>,
- linux-kbuild@vger.kernel.org, "Matt Turner" <mattst88@gmail.com>,
- "Vineet Gupta" <vgupta@kernel.org>,
- "Russell King" <linux@armlinux.org.uk>,
- "Catalin Marinas" <catalin.marinas@arm.com>,
- "Will Deacon" <will@kernel.org>, "Steven Rostedt" <rostedt@goodmis.org>,
- "Masami Hiramatsu" <mhiramat@kernel.org>,
- "Mark Rutland" <mark.rutland@arm.com>, guoren <guoren@kernel.org>,
- "Peter Zijlstra" <peterz@infradead.org>,
- "Ard Biesheuvel" <ardb@kernel.org>,
- "Huacai Chen" <chenhuacai@kernel.org>,
- "Greg Ungerer" <gerg@linux-m68k.org>, "Michal Simek" <monstr@monstr.eu>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- "Dinh Nguyen" <dinguyen@kernel.org>,
- "Michael Ellerman" <mpe@ellerman.id.au>,
- "Nicholas Piggin" <npiggin@gmail.com>,
- "Christophe Leroy" <christophe.leroy@csgroup.eu>,
- "Geoff Levand" <geoff@infradead.org>,
- "Palmer Dabbelt" <palmer@dabbelt.com>,
- "Heiko Carstens" <hca@linux.ibm.com>,
- "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
- "David S . Miller" <davem@davemloft.net>,
- "Andy Lutomirski" <luto@kernel.org>,
- "Thomas Gleixner" <tglx@linutronix.de>, "Ingo Molnar" <mingo@redhat.com>,
- x86@kernel.org, "Helge Deller" <deller@gmx.de>,
- "Sudip Mukherjee" <sudipm.mukherjee@gmail.com>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- "Timur Tabi" <timur@kernel.org>,
- "Kent Overstreet" <kent.overstreet@linux.dev>,
- "David Woodhouse" <dwmw2@infradead.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- "Anil S Keshavamurthy" <anil.s.keshavamurthy@intel.com>,
- "Kees Cook" <keescook@chromium.org>,
- "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
- "Juri Lelli" <juri.lelli@redhat.com>,
- "Vincent Guittot" <vincent.guittot@linaro.org>,
- "Nathan Chancellor" <nathan@kernel.org>,
- "Nick Desaulniers" <ndesaulniers@google.com>,
- "Nicolas Schier" <nicolas@fjasle.eu>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
- "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
- Netdev <netdev@vger.kernel.org>, linux-parisc@vger.kernel.org,
- linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org,
- "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
- linux-mtd@lists.infradead.org, "Palmer Dabbelt" <palmer@rivosinc.com>,
- "Alexander Gordeev" <agordeev@linux.ibm.com>
-Subject: Re: [PATCH 08/22] [v2] arch: consolidate arch_irq_work_raise prototypes
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a3d7f5ae-56c6-9cd8-2cda-2d50d12be9c4@landley.net>
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	 REPLY(-4.00)[]
+X-Spam-Score: -4.00
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 2B0A7220B0
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	none
 
-On Wed, Jan 10, 2024, at 10:03, Geert Uytterhoeven wrote:
-> On Wed, Nov 8, 2023 at 2:01=E2=80=AFPM Arnd Bergmann <arnd@kernel.org>=
- wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->>
->> The prototype was hidden in an #ifdef on x86, which causes a warning:
->>
->> kernel/irq_work.c:72:13: error: no previous prototype for 'arch_irq_w=
-ork_raise' [-Werror=3Dmissing-prototypes]
->
-> This issue is now present upstream.
->
->> Some architectures have a working prototype, while others don't.
->> Fix this by providing it in only one place that is always visible.
->>
->> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
->> Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
->> Acked-by: Guo Ren <guoren@kernel.org>
->> Reviewed-by: Alexander Gordeev <agordeev@linux.ibm.com>
->> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->
-> Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Hi Rob, all,
 
-I've sent out the asm-generic pull request now,
-that contains the fix. Thanks for the reminder.
+> On 1/8/24 03:03, Petr Vorel wrote:
+> > Hi Rob, all,
 
-      Arnd
+> > [ Added Niklas Cassel, who is maintainer of qemu_riscv64_nommu_virt_defconfig in
+> > buildroot ]
+
+> Hi Niklas!
+
+> >> Buildroot also apparently has an LTP package selectable in menuconfig:
+
+> >> https://github.com/buildroot/buildroot/tree/master/package/ltp-testsuite
+
+> >> But I haven't tried it...
+
+> > I'm the maintainer of the LTP package in buildroot in my private time.
+> > BTW I spent quite a lot of time fixing LTP (and some other system packages,
+> > e.g. nfs-utils) compilation on some old legacy architectures reported via
+> > http://autobuild.buildroot.net/ I've never used in the reality.
+> > But I certainly don't have time to drive nommu support in my private time.
+> > I don't even have an interest, I don't use any nommu device.
+
+> I do, but I've never done much with LTP, and I have my hands full with toybox
+> and mkroot already.
+
+Understand.
+
+> > Therefore nobody who is not involved in nommu will not find a time to support it
+> > in LTP (support does not mean just to add the functionality to the new C API,
+> > but run tests on nommu and fix failing bugs). I suppose nobody is paid to work
+> > on nommu platforms, it would have to be a hobby project, right?
+
+> A bunch of people are paid to work on nommu platforms, and I've worked with them
+> a bunch, but none of them talk to linux-kernel. They find the culture toxic,
+> insular, and categorically dismissive of their interests.
+
+> For example, cortex-m is a large nommu platform on which vendors support Linux
+> BSPs, but notice how page 8 of
+> https://www.microsemi.com/document-portal/doc_view/132181-linux-cortex-m-users-manual
+> points at a cross compiler toolchain from _2010_ and page 4 says they're booting
+> a 2.6.33 kernel?
+
+> I'm a bit weird in that I try to get CURRENT stuff to work on nommu, and a lot
+> of people have been happy to consume my work, but getting any of them to post
+> directly to linux-kernel is like pulling teeth.
+
+Interesting, thanks for sharing this. BTW I'm not saying anybody is using nommu,
+but I wonder if anybody really test it with LTP. And if yes, I wonder why we
+don't have reports about tests broken in new API.
+
+> > But as I said, if anybody from nommu decides to maintain it in LTP, I'll try to
+> > support him in my free time (review patches, give advices). And if nobody
+> > stands, this patchset which removes the support in the old API will be merged
+> > after next LTP release (in the end of January).
+
+> What does the API migration do? Is there a page on it ala OABI vs EABI in arm or
+> something?
+
+New C API is documented at our wiki: the API for using in the tests [1]
+and the library itself [2]. (We also have shell API, but we can ignore it for
+nommu.)
+
+All files in lib/ directory which include tst_test.h are part of new C API. Main
+file is lib/tst_test.c. LTP tests, which has been rewritten to new API include
+tst_test.h, they are in testcases/ directory. Library has it's own tests (for
+testing regression in in lib/newlib_tests/*.c.
+
+The reason why Cyril wrote in 2016 new C API was that the old API was buggy
+(tests randomly fails). Tests which are still using the old API (there is
+ongoing rewrite) include test.h. The old API is not much documented.
+
+Feel free to ask any more question.
+
+Kind regards,
+Petr
+
+[1] https://github.com/linux-test-project/ltp/wiki/C-Test-API
+[2] https://github.com/linux-test-project/ltp/tree/master/lib
+
+> Rob
