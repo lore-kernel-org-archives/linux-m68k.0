@@ -1,79 +1,78 @@
-Received: from mx08-001d1705.pphosted.com (mx08-001d1705.pphosted.com [185.183.30.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB54F3F8D2
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  9 Jan 2024 23:42:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sony.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sony.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D12226FD9
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 10 Jan 2024 04:55:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=landley.net
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=landley.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sony.com header.i=@sony.com header.b="iqcRV0oW"
-Received: from pps.filterd (m0209321.ppops.net [127.0.0.1])
-	by mx08-001d1705.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 409MU61p002548;
-	Tue, 9 Jan 2024 22:37:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sony.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : mime-version :
- content-type : content-transfer-encoding; s=S1;
- bh=JXzGxs6Stn5IBMnrNbACinWYPG1iyEmivXZPCbRsS6A=;
- b=iqcRV0oWM9+S2ybp2514u10l2/4vfU+nGAsWou/PuQ/UqX6rOXTzjSUE8gf4+zBRHxLe
- lIMgMQCpO4LM96STKf7URqmW3GhE2oX6z8CZ1L0o8whsJrKBPmOHAV1jrHk3S9jCZ2Wk
- KZPS5OyrM15ZDcgDEkSDe4kncyU/pyrmddZg5G2EHJOWpFFD4KKjsjiF/pF10E30p8tl
- 8VwyRSPACBKvAklzG1cDtMFVcdQocymO5+Z/jViy7+/t50nTrPLLCOnFqJqq2GddfwZr
- ZVQe927MM0mD/rNcWjN93EnnDY4kZWYoUlAFVTtx0gcmGMVB/23/ZbiUvH9L59OsgFwa kg== 
-Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam02lp2040.outbound.protection.outlook.com [104.47.51.40])
-	by mx08-001d1705.pphosted.com (PPS) with ESMTPS id 3vf23w32gq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 09 Jan 2024 22:37:42 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FRmuIQVDpPYgQDwONAnObnsxHwFNNJk8qQb5W351KGYqtaFVMn2k/BR6cpp0ACiXXtcTloPeR8x0yKY02IK1dK0knUcxif8mvroaDnSwtl+z3rfxnxFYYGGyOjewx6dPJNKDqDrk6qT1m4U/z3sSYeXt9oQc7jViMrBL5XDy0fSnqVQg6RSBbgzMyDD/bKGYYJwuOUWwlr3QYfyKrPOMlRjkBlFSg/k6xYBlvfzvpfhnNz8kjF0efaCq7reGeb83u2Jr8R08joqW55n0zW3rn77pEEN2MYIFUQMapHpXPCpFeujXxKT+Z1yrkgdPu0dixpvw3rk2LNsduShcbRsyIg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JXzGxs6Stn5IBMnrNbACinWYPG1iyEmivXZPCbRsS6A=;
- b=Wwqv9ydyF0rlRwpcUS3S2Xvd7WdNUZBnIo+iawznlenl0wW3ggdDIE4p8Y/80JbdvNXCRa/5G2Mj/WI4mQQDSc2xk8brUa7VzsJ3K2dcrpz9XJa3mnTzghOLQ8QFFvGE8C1uRqNuRD8ooPsyjKWZWVsMli82JYYogjnCKqDaYthdCnux31uTeMG4tKqJHoqf5HJpEHLMFK4vFe+S+YCXyl7vO6fJWuUFa5+HE/r6fHK0eSKw8mtZSOhCY0FLeF0OZJwGDNolL1lmQTvbUSggQM5Ty5ZCU9OihYHQjA9Isp0gQszQns8jj91zbIQ7noiWLzRzUSeU2W4TwgVpmpIhHg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=sony.com; dmarc=pass action=none header.from=sony.com;
- dkim=pass header.d=sony.com; arc=none
-Received: from SA3PR13MB6372.namprd13.prod.outlook.com (2603:10b6:806:37d::13)
- by MW4PR13MB5459.namprd13.prod.outlook.com (2603:10b6:303:182::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Tue, 9 Jan
- 2024 22:37:38 +0000
-Received: from SA3PR13MB6372.namprd13.prod.outlook.com
- ([fe80::ca00:2b32:e9c0:805c]) by SA3PR13MB6372.namprd13.prod.outlook.com
- ([fe80::ca00:2b32:e9c0:805c%4]) with mapi id 15.20.7159.020; Tue, 9 Jan 2024
- 22:37:38 +0000
-From: "Bird, Tim" <Tim.Bird@sony.com>
-To: Cyril Hrubis <chrubis@suse.cz>, Petr Vorel <pvorel@suse.cz>
-CC: Rob Landley <rob@landley.net>, Geert Uytterhoeven <geert@linux-m68k.org>,
-        "ltp@lists.linux.it" <ltp@lists.linux.it>, Li Wang <liwang@redhat.com>,
-        Andrea Cervesato <andrea.cervesato@suse.com>,
-        Greg Ungerer
-	<gerg@linux-m68k.org>, Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap
-	<rdunlap@infradead.org>,
-        John Paul Adrian Glaubitz
-	<glaubitz@physik.fu-berlin.de>,
-        Christophe Lyon <christophe.lyon@linaro.org>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM
-	<linux-arm-kernel@lists.infradead.org>,
-        linux-riscv
-	<linux-riscv@lists.infradead.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        "automated-testing@lists.yoctoproject.org"
-	<automated-testing@lists.yoctoproject.org>,
-        "buildroot@buildroot.org"
-	<buildroot@buildroot.org>,
-        Niklas Cassel <niklas.cassel@wdc.com>
-Subject: RE: [Automated-testing] Call for nommu LTP maintainer [was: Re:
+	dkim=pass (2048-bit key) header.d=landley-net.20230601.gappssmtp.com header.i=@landley-net.20230601.gappssmtp.com header.b="hyOxkxSo"
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7bc332d3a8cso254562339f.2
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 09 Jan 2024 20:55:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=landley-net.20230601.gappssmtp.com; s=20230601; t=1704862504; x=1705467304; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CzVp5mzD+Fj7TLL+nhaVBHlXPHxADhlYIbeceq4hmZc=;
+        b=hyOxkxSolNtmThFXdZQuWwEBz+AnD8Fpg0C6iUObhc1dOFaWvJxLV8E9avQqZa3kQl
+         Yd2xHzXCLm3Cb29zpbDcrS1UAhtzvL3TxHFHMEJCoUCSQv6f1kbDoLkxj3UaPNkjpbjw
+         B4VlXfht3VV5WTXrf5Qq1VgpDnEf+CN3sWbeX9B9Sf/CxtFyIA73jsACFON72PNnu2qc
+         zOqeP+lM1tRe1Ue+yEl+3bBh4oVI+D3U+zqssTFSLMu/jjIDe9assJyhQpZfY9JVX6q7
+         Q5Ld+swuHBQrj5hUZi0/RvJsQwIoIpPTGED1LLCybLlnJWOKoa5y7EhvdDTCBcCEccAL
+         mn8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704862504; x=1705467304;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CzVp5mzD+Fj7TLL+nhaVBHlXPHxADhlYIbeceq4hmZc=;
+        b=Fowcbf4eN2P8N0nds5G8Y+yuGUlSmisJ0U171a6isKe4KiE94NGS8QofgOEbTwsRA5
+         ngOGz6Nf2ZVq6eE4aeKwOq5kL9leoelRCh1PEy5Y0FikMvyVlpLbhf0T6WpvT7+YEugN
+         prPGV7sfokZOVgBA9yDlomcff6s9JuchVEzLgIUcKArRQLjGP1f+DkSSD3ocvHLzmPk0
+         h5B5UTvoJ1IMTMRBpX9/S+eGIsctPG1+42Q0mA1gHuTyXvV3YYrPRyOIcr6quiA2Eq9M
+         x/xV4yGqvp/u7JIAdYYnoV0AekMBfn3E0XzBk3MAJOM3rxGmA+PD22Jqh2/3oCnnKwav
+         IEFQ==
+X-Gm-Message-State: AOJu0YyJ4L8vxFOVoaezru5Srt/pzeXmVJo7encoPgEzUIPKiaAxJrti
+	qQfAQv01GUj5AYecAfhQ8YYPoCBdBrKxew==
+X-Google-Smtp-Source: AGHT+IFb0/sWi2xHI0sNc7LK1zG0hgGtr9339MhRxKhI3GiazRtMe5O0d+j7I+eYAKtWStVTQG/jeg==
+X-Received: by 2002:a6b:f307:0:b0:7be:f955:c5d6 with SMTP id m7-20020a6bf307000000b007bef955c5d6mr89967ioh.21.1704862503861;
+        Tue, 09 Jan 2024 20:55:03 -0800 (PST)
+Received: from [172.16.32.83] ([198.232.126.202])
+        by smtp.gmail.com with ESMTPSA id b21-20020a5d8915000000b007bc3ebacf3esm93045ion.46.2024.01.09.20.55.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Jan 2024 20:55:03 -0800 (PST)
+Message-ID: <a1842251-6b0d-6a8d-3781-fd04c66fa471@landley.net>
+Date: Tue, 9 Jan 2024 23:01:40 -0600
+Precedence: bulk
+X-Mailing-List: linux-m68k@vger.kernel.org
+List-Id: <linux-m68k.vger.kernel.org>
+List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [Automated-testing] Call for nommu LTP maintainer [was: Re:
  [PATCH 00/36] Remove UCLINUX from LTP]
-Thread-Topic: [Automated-testing] Call for nommu LTP maintainer [was: Re:
- [PATCH 00/36] Remove UCLINUX from LTP]
-Thread-Index: AQHaP9i+nPde0Zv90kmfJ6SqZmE5/rDPo4mBgAARuoCAAl6a8A==
-Date: Tue, 9 Jan 2024 22:37:37 +0000
-Message-ID: 
- <SA3PR13MB6372498CC6372F8B16237244FD6A2@SA3PR13MB6372.namprd13.prod.outlook.com>
+Content-Language: en-US
+To: "Bird, Tim" <Tim.Bird@sony.com>, Cyril Hrubis <chrubis@suse.cz>,
+ Petr Vorel <pvorel@suse.cz>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+ "ltp@lists.linux.it" <ltp@lists.linux.it>, Li Wang <liwang@redhat.com>,
+ Andrea Cervesato <andrea.cervesato@suse.com>,
+ Greg Ungerer <gerg@linux-m68k.org>, Jonathan Corbet <corbet@lwn.net>,
+ Randy Dunlap <rdunlap@infradead.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Christophe Lyon <christophe.lyon@linaro.org>,
+ "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ linux-riscv <linux-riscv@lists.infradead.org>,
+ Linux-sh list <linux-sh@vger.kernel.org>,
+ "automated-testing@lists.yoctoproject.org"
+ <automated-testing@lists.yoctoproject.org>,
+ "buildroot@buildroot.org" <buildroot@buildroot.org>,
+ Niklas Cassel <niklas.cassel@wdc.com>
 References: <20240103015240.1065284-1-pvorel@suse.cz>
  <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
  <20240103114957.GD1073466@pevik>
@@ -82,144 +81,224 @@ References: <20240103015240.1065284-1-pvorel@suse.cz>
  <20240105131135.GA1484621@pevik>
  <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
  <20240108090338.GA1552643@pevik> <ZZvJXTshFUYSaMVH@yuki>
-In-Reply-To: <ZZvJXTshFUYSaMVH@yuki>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA3PR13MB6372:EE_|MW4PR13MB5459:EE_
-x-ms-office365-filtering-correlation-id: 4b4df69d-774e-4cb1-ccde-08dc11639512
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- c9G8MZ20E7QAmhxdz4gs5WCazPqAiejWDa6XVNVANQp2ch/lLMHm0H5CxgEE2GCB6N01JXF1fsaJTRzHK44aQ405KQKXMzEBTCLt5IvhcGB7uLjnRw1T8FfhB11USHoNGtFRmiUINY6raeAxl+kF5eyYiziljzCy+s/ePu59ieqJasuqagQRJO79rmWd47B0p10++imEJVBVy9sHtts9kpsGygmg0w9ZGvw9/VtUZPJzF+o1NjS5p0Tp8etJdfdmytWyMFPytjxp4eTFuVcQhY4gKP5FaeVD+0lhkARMPnsi2xgXqMaRfgee6g6mh3+PD4DTaFKpix9R+pZvaTgqMU8OjpkFQWDcdN7gCoZoS3c5jTufw9MYicPgPcBpwA8y1cLymn/YLJGrNyXeKAdt48doiO6iPrF7dHPYiGT+4N10jkJmZXs/t7ToOaYBC1fk5a6NvgDMFhbc/dULvaCoXRLI32txZDrE2FFLROdC5IHFl4k02nKBvw+sN5PSK1BzanLKwM3JS+GbT67/U+euxV+XowLoS+jkJi8PYMR5MhvrETvUglrN8NVxJRLWuQ4Wf7He5ikg4I2OLnN3EpG3IJRvI+ZHcX56zC5otfvcIPAnG2djcx1F0CqYiALGRWl8F5PRXqxncozSQ/fS07hUx2ObatYRsxj+0wzLyJMEwnw=
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA3PR13MB6372.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(136003)(39860400002)(346002)(396003)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(5660300002)(2906002)(7416002)(33656002)(86362001)(38100700002)(478600001)(82960400001)(83380400001)(7696005)(26005)(122000001)(9686003)(38070700009)(71200400001)(6506007)(8936002)(8676002)(316002)(4326008)(52536014)(76116006)(41300700001)(110136005)(54906003)(64756008)(66476007)(66446008)(66946007)(66556008)(55016003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?us-ascii?Q?UK1HE9hrBxsfhaV2n1sECNOAATGeaZ8RkhXQbdBZp4jmMFkeWqcTLGgggOj3?=
- =?us-ascii?Q?zvyPtUCXvYvytWuMzjJFgL9t1mFFHNO7c+EA1y6zR0OUpt/uKqHzIh+y4CQj?=
- =?us-ascii?Q?KwpZCyzJGxKfcQ0IYZCs8xBIpxy7EQvEW+2DX7fhk64QE0LMEI1es1L3t+TF?=
- =?us-ascii?Q?7793i94Qc3pqi4NDBAxrJBLXsM6rKPTR5d4eYA7aPrVhBRRkFl0BohENJBIO?=
- =?us-ascii?Q?pMxGwZVMRhoWEmqWE/0AABkwfM1frpwmMX+thUo2m2eygIJsmtOR8MdAQtbJ?=
- =?us-ascii?Q?9QdNmGg1YM0IhNjO80ybC1pc2mVuOdLEiVYyMAuWzcTjUDgRd+m2jb+vFg/o?=
- =?us-ascii?Q?SbcJUnyRPWlbJYOscZgFGzdHnd9Kh1z4Pvm7earSY7Vqfgs1h7rzuDcjR9Xf?=
- =?us-ascii?Q?ZbJ3xJlh+hSaPEgR0R8uX+Fu+P1GEqMvejcwDW0OtNS2W9iDSfgWWPWp2zrk?=
- =?us-ascii?Q?ieY2HaahAow5KnCCfcfebeeAn1X//aTSsKiOf7fe/UgcPXm/Q4qIr5Ous9Q2?=
- =?us-ascii?Q?mSwlpeCIxAEz3lZCnIujlxh6s7NvSjrTwpn2YyA9HB7Ap7DWhffZWFxxoMHY?=
- =?us-ascii?Q?IZSICToj9xCuq7ONok7eSDbWes7tqSKr4VbRr1LOWl82hE+5akufvVYlZl7I?=
- =?us-ascii?Q?S5LSWPvN3fZXx+zv4Vn0NpSAVg5d8HmO/PMq4qzlunDpEkdmcGB7I9R9sGRf?=
- =?us-ascii?Q?N6Vcq2lkRJBnNV5PUb1fWYjm4oi2Qf0xbB9FF2D+BA2nDT+33uyr2Dg+o4iC?=
- =?us-ascii?Q?J6FN27IpX9DG3bRC+y7TjIr5N7cxFtHT22Vsp+fcm2nEJM6tGSU/q4BMXI6O?=
- =?us-ascii?Q?rQUHs9H7g3Lr3/wBIcZpYChAHmXjW7LfxKZJP7x16x2t6k+0M+WiHk5qp7UO?=
- =?us-ascii?Q?kLyrLnRKvkLFJVG1/H9y9kJkYF/3HigM3szyI9Mh5U/bzqC9jDvRu/EXJKhN?=
- =?us-ascii?Q?4W0GpY1tA4z7Fw7fUndKih6Cxm3sxM5mnsO4c6fGSYudsh/q/E7RsHE7cgFA?=
- =?us-ascii?Q?7xcVDqxZ8Fm2kSTHeAEu2EHI6978U6pXdrmw43qC9vf5InAv6KX/KFxO1Ggn?=
- =?us-ascii?Q?V0knSaKDm41iL04y2XqwZ5hh5sSdVWo98JHEuL8m6r2AOxGi0E+yvda+akXf?=
- =?us-ascii?Q?DxouUgGRErgQfVG5eu7O83w+ojldGs9OTdlya61LhOZcFUQDxag/Mn7SBEJb?=
- =?us-ascii?Q?GzjRNyg11vvJJSwmGtDAEazkLroO9EFWhLg1TR6+Ib9CIvpKHMPEuGYUe7K2?=
- =?us-ascii?Q?sXcXXtEX2zdQ34D44OEPBIcZWlXGSnFnyYyGWkct0h5k2M60TAzJriQSzv7J?=
- =?us-ascii?Q?h9HorrQQUQmd4gUZBvRuKa7bTH8m4nx2dGFRP+iOAtGozM7h0XrJ4ZlUNqkR?=
- =?us-ascii?Q?zkC+IM5F4UzugvuIcRrmywrbWHPTMuzzn/GzFoIflmsR5jr0qKTY0U2G6gAc?=
- =?us-ascii?Q?+Nd68dsXoXWmyo3knIeuVDreiM4l+ih6l/5yu9F0jM+iQu+5AJJrvdgEuV8B?=
- =?us-ascii?Q?J2sdH6sN6GY3/5UnJ+V5ABDdsxNq9yJDwH8A+ai25UW4JR26+ANPs9wHrJpU?=
- =?us-ascii?Q?OJtLMjJH6GsTOUNQU0I=3D?=
-Precedence: bulk
-X-Mailing-List: linux-m68k@vger.kernel.org
-List-Id: <linux-m68k.vger.kernel.org>
-List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	hTdxRjf+lC3ldsIG39e6r5UhPevNALKJoEmIGyixVyrBrOMajlFeDCPID14KEdmoZk3dZH8YvV3vuG5LSpbSotF1LGyW01edVt1WzH1d3eic5RmX0ZmXwY/wprEJbSc7aiU4K7044jcUSfkUMTWn83mnJGlaojFCXMPUJ/6Q5mdyU9tbhaBjHF9gTQ3I0msUnUabcjgzdJ6pojDw4JlCpe8VmfmtkZwdY1c8BXrf32JKN6H7QjY2Kk3dY5aZfvkjUt8zp+UXC+z/2KUH9l8jc2JcY9/M3KLotzswEJhyeRioKm7AQ3NjGiVZSRJeOiKC0HF2YKoVeGZaOeQRDSiNZtjnWDO0h2BoXbPrJDcMVjtto9gdwBCrshZY99RjGVdAJIAUt9QKo5FgkMmF4xs2QpAPnKGdcELubchCMxYNt8uR7NlWilpeMI24WR5pxYYt4ri4FDrvEyY4kZ0Jvh7Vxqd8X9K7gre5Db1dc/gWuqTlMvofFGFxmI9PCpBfR5wC131bKNzbS3fNSAbD0Ne+nGEZBEIHtf8nXoOHn2h0/g40+6qx+e9bA3+vbD+H8qNvYTlmEtZu9cDmV1L73By1uS8sCLkOFsK7SoRsJiwxp9ngcCbPUvb/hmTuPf6Ni9F4
-X-OriginatorOrg: sony.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA3PR13MB6372.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4b4df69d-774e-4cb1-ccde-08dc11639512
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jan 2024 22:37:37.9824
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 66c65d8a-9158-4521-a2d8-664963db48e4
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: NwzkhAudYNNDNf3XbiQJ2XoMWjptUSH9/J20xglEQQe/soX6y1VWgk4dkm2zw7hESDbr/Md5mlazz40zUqJ06g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR13MB5459
-X-Proofpoint-ORIG-GUID: XNttZybjFJ9vBXk87idEj1148j8TZufP
-X-Proofpoint-GUID: XNttZybjFJ9vBXk87idEj1148j8TZufP
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-X-Sony-Outbound-GUID: XNttZybjFJ9vBXk87idEj1148j8TZufP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-09_11,2024-01-09_02,2023-05-22_02
+ <SA3PR13MB6372498CC6372F8B16237244FD6A2@SA3PR13MB6372.namprd13.prod.outlook.com>
+From: Rob Landley <rob@landley.net>
+In-Reply-To: <SA3PR13MB6372498CC6372F8B16237244FD6A2@SA3PR13MB6372.namprd13.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-> -----Original Message-----
-> From: automated-testing@lists.yoctoproject.org <automated-testing@lists.y=
-octoproject.org> On Behalf Of Cyril Hrubis
-> Hi!
-> > But as I said, if anybody from nommu decides to maintain it in LTP, I'l=
-l try to
-> > support him in my free time (review patches, give advices). And if nobo=
-dy
-> > stands, this patchset which removes the support in the old API will be =
-merged
-> > after next LTP release (in the end of January).
->=20
-> Let me highlight this part, we are eager to help anybody who is willing
-> to pick the nommu work, but we do not have resources to drive it.
+On 1/9/24 16:37, Bird, Tim wrote:
+>> -----Original Message-----
+>> From: automated-testing@lists.yoctoproject.org <automated-testing@lists.yoctoproject.org> On Behalf Of Cyril Hrubis
+>> Hi!
+>> > But as I said, if anybody from nommu decides to maintain it in LTP, I'll try to
+>> > support him in my free time (review patches, give advices). And if nobody
+>> > stands, this patchset which removes the support in the old API will be merged
+>> > after next LTP release (in the end of January).
+>> 
+>> Let me highlight this part, we are eager to help anybody who is willing
+>> to pick the nommu work, but we do not have resources to drive it.
+> 
+> I have a couple of comments here.
+> 
+> I think it would be good to give a little bit more time to try to find a helper/maintainer
+> for this.  As Rob pointed out, a lot of embedded Linux developers are using very old
+> kernels (and, if they are using LTP, likely very old versions of LTP).  They are also
+> notorious for not being active on the mailing lists.  So this might take some active
+> outreach to find helpers.  (I realize that this thread is part of this
+> outreach effort).  For this reason, I'd like a few more weeks to try to advertise this
+> need within the embedded Linux community.
 
-I have a couple of comments here.
+I'd like to point out I have the _interest_ in doing this, and might have some
+ability, but what I don't have is the spare bandwidth.
 
-I think it would be good to give a little bit more time to try to find a he=
-lper/maintainer
-for this.  As Rob pointed out, a lot of embedded Linux developers are using=
- very old
-kernels (and, if they are using LTP, likely very old versions of LTP).  The=
-y are also
-notorious for not being active on the mailing lists.  So this might take so=
-me active
-outreach to find helpers.  (I realize that this thread is part of this
-outreach effort).  For this reason, I'd like a few more weeks to try to adv=
-ertise this
-need within the embedded Linux community.
+I maintain toybox, which Android is using as the command line for both its
+installed systems and its build system (which they call "hermetic" builds,
+shipping their own build dependencies). I'm trying to get Android to build under
+android, which is a slightly heavier lift than turning busybox into a
+development environment capable of building Linux From Scratch starting from
+just 7 packages (Linux, busybox, uclibc, make, gcc, binutils, and bash) was.
 
-I am not using nommu systems myself, so I'm in a similar position as Petr i=
-n terms
-of it not making much sense for me to be the maintainer.  However, having s=
-aid that,
-I have had for a few years now an idea for a background project related to =
-LTP
-that might make this a more interesting fit for me.  Sony uses NuttX, and i=
-s considering
-using Zephyr in some of our low-end processor systems.  This includes some =
-nommu
-systems.  For some time now, I have wanted to experiment with using LTP to =
-test
-the compatibility of those systems with the Linux system APIs.  In full dis=
-closure,
-I have no idea if this is a feasible or useful idea or not.  But it's somet=
-hing I'd like
-to investigate.
+Which I _succeeded_ at some years ago, by the way:
 
-I realize that testing non-Linux RTOSes is out-of-scope for LTP.  But given=
- that that is
-something I would like to do, and that it might be relevant to the Linux no=
-mmu tests,
-I would humbly request a few weeks to investigate this before the nommu cod=
-e is removed.
-This delay would be to see if it would make sense for me to volunteer to he=
-lp out with
-maintaining this otherwise abandoned code.
+  https://landley.net/aboriginal/about.html
 
-I can't promise anything, but I'd like to find out more about:
-1) what parts of the current LTP are not supporting nommu (what's currently=
- broken),
-2) how much code we're talking about, and
-3) what the desired roadmap going forward would be, to continue to support =
-this code.
+The development work I was doing on busybox was why I wound up maintaining that
+project for a bit, and after I got it to work (the project's 1.0 release) other
+projects like Alpine and Adelie Linux took it from there.
 
-Thanks,
- -- Tim
+Unfortunately, this time due to the FSF's spectacular stupidity with GPLv3, the
+Android trademark licensing guidelines do not allow adding any GPL code in
+userspace beyond what was grandfathered in circa 2007. (Busybox predates
+android, yet android does not ship busybox. There's a reason for that.) Even
+those grandfathered in ones they've been steadily replacing (rewriting the
+bluetooth daemon with an apache licensed version, switching the build from gcc
+to llvm, replacing gnu make with kati, and so on...) So I couldn't use ANY
+existing gpl code (like busybox could) and largely had to write a new one of
+everything. (Android was using a lot of bsd implementations, but have you ever
+tried to build the linux kernel with bsd sed or bsd make? Doesn't quite fit.)
 
+Anyway, I'm most of the way done now (see http://landley.net/toybox/status.html
+and https://landley.net/toybox/roadmap.html#dev_env) and almost all my toybox
+stuff already supports nommu. I'm even writing a bash replacement shell
+(handling all the <(bash/{weirdness}/{1..7}) I can manage) that has full nommu
+support. To support subshells it does a vfork() and exec of itself, then
+marshalls all the local variable and function state across a pipe to the child
+instance. (The sending side is at
+https://github.com/landley/toybox/blob/master/toys/pending/sh.c#L1360 and the
+receiving side at
+https://github.com/landley/toybox/blob/master/toys/pending/sh.c#L4146 .)
+
+Speaking of which, I'm still sad that the kernel never implemented a "re-exec
+self" that isn't dependent on /proc and doesn't get confused by chroots, but
+this is another aspect of "linux-kernel does not care when we bring this stuff
+up". The topic comes up from time to time, and some patches have been proposed,
+but it has yet to result in a way to do it that I am aware of:
+
+https://lkml.iu.edu/hypermail/linux/kernel/0612.3/0238.html
+https://lkml.iu.edu/hypermail/linux/kernel/1709.1/03186.html
+https://lkml.iu.edu/hypermail/linux/kernel/2005.2/07206.html
+
+Also, ext4 eventually fixed the ext2/ext3 split, but binfmt_fdpic.c is still a
+separate file and not a couple of if() statements in binfmt_elf.c. Sigh...
+
+Anyway...
+
+> I am not using nommu systems myself, so I'm in a similar position as Petr in terms
+> of it not making much sense for me to be the maintainer.  However, having said that,
+> I have had for a few years now an idea for a background project related to LTP
+> that might make this a more interesting fit for me.  Sony uses NuttX, and is considering
+> using Zephyr in some of our low-end processor systems.  This includes some nommu
+> systems.  For some time now, I have wanted to experiment with using LTP to test
+> the compatibility of those systems with the Linux system APIs.  In full disclosure,
+> I have no idea if this is a feasible or useful idea or not.  But it's something I'd like
+> to investigate.
+
+I've been talking with Rich Felker on IRC about what's involved in porting musl
+on top of RTOS du jour. There was a long list of things he said in IRC that I
+could try to scrape out of the log if you're interested.
+
+The midipix guy also pointed me at https://midipix.org/sys_sysapi.h and
+https://git.midipix.org/mmglue from where he ported musl to Windows.
+
+I also got pointed at
+http://lists.landley.net/pipermail/toybox-landley.net/2024-January/029967.html
+I.E. https://github.com/apexrtos/apex/blob/master/sys/kern/syscall_table.c from
+somebody ELSE who did it for a different RTOS...
+
+> I realize that testing non-Linux RTOSes is out-of-scope for LTP.
+
+What we've basically been discussing is that "the Linux API" is a de-facto
+standard somewhere beyond posix, which has been implemented a bunch of different
+times now. FreeBSD's Linux emulation layer, Windows Subsystem For Linux, Google
+proposed a Linux layer for Fuchsia
+(https://9to5google.com/2021/02/12/google-fuchsia-os-android-linux-programs-starnix/),
+here's a guy who wrote his own kernel that runs the Linux binaries
+(https://github.com/vvaltchev/tilck
+I.E. https://www.youtube.com/watch?v=Ce1pMlZO_mI )...
+
+I dunno what subset of the API other operating systems want to support, but
+given that Linus is an empty nester now (all three daughters off to college),
+idle discussions about his eventual retirement have been quietly going on for a
+while now...
+
+> But given that that is
+> something I would like to do, and that it might be relevant to the Linux nommu tests,
+> I would humbly request a few weeks to investigate this before the nommu code is removed.
+> This delay would be to see if it would make sense for me to volunteer to help out with
+> maintaining this otherwise abandoned code.
+
+I am interested in helping, but I am overstretched as it is.
+
+My mkroot script builds bootable linux systems and regression tests them under
+qemu for a dozen architectures, all in about 350 lines of bash. To make that
+work I created an even _more_ compressed kernel config format, microconfig, so
+adding support for a new target is... well I recently added or1k support and
+everything the script knows about that target is the 3 lines starting at:
+
+https://github.com/landley/toybox/blob/master/mkroot/mkroot.sh#L233
+
+That build script is already mostly self-hosting, in that it first builds a
+directory of toybox binaries (line 62) and points the $PATH at those, and then
+builds toybox and a Linux kernel under that. Which works, but cheats:
+
+https://github.com/landley/toybox/blob/master/scripts/install.sh#L105
+
+The PENDING= command list is the binaries it symlinks out of the host $PATH, the
+ones before the multi-space break are theones I have partial implementations of
+in "pending" (but which aren't in defconfig yet because they're not finished),
+and the ones after the break are the ones I haven't started writing yet. I.E. I
+still need to finish "expr git tr bash sh gzip", and I need to start "awk bison
+flex make". But once I've written all of those, I should be able to run
+mkroot.sh in a mkroot image.
+
+And THEN I need to get the automated regression test script that makes sure all
+the targets still work under qemu
+(https://github.com/landley/toybox/blob/master/mkroot/testroot.sh about 100
+lines) to also run the toybox test suite in qemu, but that still requires actual
+bash to run the test suite, toysh isn't quite finished yet (and I refuse to trim
+it because I want toysh to implement all those bash features).
+
+And THEN I need to get it to build Linux From Scratch, which I did back under
+aboriginal linux back in the day:
+
+https://landley.net/aboriginal/control-images/
+
+(I have to start over with the current LFS 12.0 stuff because none of those old
+packages know what musl is and autoconf is just craptacular. Alas, LFS is full
+of gnu packages, and gnu is brittle navel-gazing crap. But that's the best
+stress test for my command line stuff handling all the weired evil corner cases
+it throws at them. And it's also why both busybox and toybox seds reply to
+--version with "this is not gnu sed 9.0" because of STUPID autoconf regexes...)
+
+mkroot's already got the plumbing to add arbitrary extra behavior to the images
+as build packages, the
+https://github.com/landley/toybox/blob/master/mkroot/packages/tests package is
+just a stub for now but I know what I want to have that do once the shell's ready...
+
+And once I've got it building Linux From Scratch, THEN I need to tackle AOSP,
+which is its own rant, but luckily its maintainer (Elliott Hughes, the "Android
+base OS" maintainer) is the #2 developer on toybox, and I've been discussing
+these plans with him for years:
+
+http://lists.landley.net/pipermail/toybox-landley.net/2016-July/024590.html
+
+But he's waiting for me to get through my todo list before actually trying to
+add anything like a posix container to Android. It's mostly a security thing,
+the ability to create arbitrary code and then execute it is like someone asking
+to bring an open flame onto an airplane:
+
+http://lists.landley.net/pipermail/toybox-landley.net/2019-September/026992.html
+
+The other problem is that for historical reasons each app installs as a
+different UID and a "posix container" would need to be able to install a UID/GID
+_range_ which the container could then remap using container plumbing (and also
+lock the hell DOWN using container plumbing, so its ability to trojan the phone
+and do evil maid attacks and 37 other bad things was NOT ALLOWED, which is some
+design work they seem to be deferring until I wave something otherwise usable at
+them)...
+
+(Ok, and he thinks phones are too slow to build android, that nobody does
+development on anything less powerful than a 32 processor machine with at least
+that many gigs of ram and a fiber connection to the net because nobody at GOOGLE
+has less than that. He has boggled at me about this cultural difference before,
+skip to about 20:30 in
+http://androidbackstage.blogspot.com/2016/07/episode-53-adb-on-adb.html for
+example. Anyway, at some point I need to STRIP DOWN the AOSP build so it takes
+less than forever. Haven't even opened that can of worms yet, but from a
+capability standpoint it's gotta build the whole thing _first_...)
+
+Anyway, the point is this is its own whole ecosystem, which I'd need a staff of
+a dozen people to navigate properly, and there's just me. And now that toybox
+has users, I get support requests coming in...
+
+> I can't promise anything, but I'd like to find out more about:
+> 1) what parts of the current LTP are not supporting nommu (what's currently broken),
+> 2) how much code we're talking about, and
+> 3) what the desired roadmap going forward would be, to continue to support this code.
+
+I am very interested in these things as well. I would like to help, and am happy
+to answer all the questions I can, but caffeine only takes you so far when it
+comes to regular commitments...
+
+Rob
