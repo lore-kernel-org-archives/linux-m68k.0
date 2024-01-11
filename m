@@ -1,187 +1,154 @@
-Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D6E610A0C
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 11 Jan 2024 09:21:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="Y8BJu9jf";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="d5CJnWAt"
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1704964883; x=1736500883;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=Tp40nZEBMOrW7oyH1gssww6z3JdInFrMpkyypG8GeHc=;
-  b=Y8BJu9jfoY2dGyVX/TwF3vU8t9HPt+s/7DcztR6cmR0XamtW3rFb1q5S
-   F4AORICIC52wkbjkJb7Ti7yRBYiXjDbyHv+w2Y3DeVwffMYtLvU8kANwe
-   IloK0k0EB/BhRafF5HjwCDzYVk/wlv6qFEAlCZ4nXtzCMRqHHgHG5fvH0
-   zNV28n55vg2bFJnEKXKBb4BRXvW9No9yF5BV0xN90xrETFVo79lyS5qCe
-   5Bjm44pkPARtFKCvzuwvsYsZuTpm/cAVP50EEEjFIKjqPSBYIv6IFzVBL
-   wInCY1IMYe7qQQOwpQYCwC7KzkVatXWYaCco9Fym3UKrPIxMcpWTh0tNE
-   A==;
-X-CSE-ConnectionGUID: LZZpp6NGQb2Lqr6A8gjeJQ==
-X-CSE-MsgGUID: +BZdlo4hRa2aSyVlfRre5Q==
-X-IronPort-AV: E=Sophos;i="6.04,185,1695657600"; 
-   d="scan'208";a="7117659"
-Received: from mail-mw2nam12lp2040.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.40])
-  by ob1.hgst.iphmx.com with ESMTP; 11 Jan 2024 17:21:14 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gFjdmOoqhCMno94N5ZfRyEUtRvwyOA+PQ5dfGOZuci33h1ak8IFWx9jMtGOeWPG/tnow9U6qh337f60Tpd/qaSh1XfpV2tITQCfEMDgcywwsFzW4NepmmZgGZrsTRmEMN5eNVGwWmRfvk4a/pim67DkAMJOqPJ2CJK1WdmjpkStZ1z9RrNue6KBBfSUVL07daU0GaZAtoNkVzGLoClyl+4xngvx5TQy1lVcEz4xUrcxR5MxYsQvDxCMfhohICnJx9X9+9yxj1EoAc9GGMGAP7AVDq56RS+LlMiGhN3Ah3s3XKAE97jsOwMM6nvMFbc41MSLaq5sab6a4mlAUI8FHtA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Tp40nZEBMOrW7oyH1gssww6z3JdInFrMpkyypG8GeHc=;
- b=Fj36YtrFP5ijMbTqf7jNxspm+aqO2B4Be04Ggc/zHsQU6B51EK60w1ouNTiiM8buqBeU+jAhr8vhG2zbvbhZrdQ+lKQk3OVm56CXaMVoT+36yJ6/w3gK+cgamcQxE+ChschYScux8Y4UCaS4Hv/uMJTIHqI9qLX4DKRaekimIFFarEBAQq06ylDJsLnmwykgTUE/IkHrDimPu0pTcS+sn+kjDWSF9RSt0LNN3AHcep6lm2jzqok2G/Tiz5BI25vJehGDQW3PeaaV+lRaL3P5VTxyV0rT05llHWAlQTXMEAX4S2Aql9C3XTXQbIu6DJBMa4U60WG2R2FIoOe7XkezCQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Tp40nZEBMOrW7oyH1gssww6z3JdInFrMpkyypG8GeHc=;
- b=d5CJnWAt8ZhuQBhPUlFDNRm8gw7WoxEzTHL7HGph1npXld1WGLQvgiiwnupmkfi/M0zlUCPhmQUZhi5CUW2p3ziRNYMxDRdBk+1Zb3p94N9fRPp9h03Q/7TGdmq9UNAzDulLiZt30KX3pmiuFb4075YM0ojDVkwVhj2amMZFVaU=
-Received: from BL0PR04MB4850.namprd04.prod.outlook.com (2603:10b6:208:5f::14)
- by BL3PR04MB7996.namprd04.prod.outlook.com (2603:10b6:208:347::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7181.21; Thu, 11 Jan
- 2024 09:21:13 +0000
-Received: from BL0PR04MB4850.namprd04.prod.outlook.com
- ([fe80::56e9:30a:5826:79fa]) by BL0PR04MB4850.namprd04.prod.outlook.com
- ([fe80::56e9:30a:5826:79fa%4]) with mapi id 15.20.7181.018; Thu, 11 Jan 2024
- 09:21:12 +0000
-From: Niklas Cassel <Niklas.Cassel@wdc.com>
-To: Greg Ungerer <gerg@linux-m68k.org>
-CC: Rob Landley <rob@landley.net>, Petr Vorel <pvorel@suse.cz>, Tim Bird
-	<tim.bird@sony.com>, Cyril Hrubis <chrubis@suse.cz>, Geert Uytterhoeven
-	<geert@linux-m68k.org>, "ltp@lists.linux.it" <ltp@lists.linux.it>, Li Wang
-	<liwang@redhat.com>, Andrea Cervesato <andrea.cervesato@suse.com>, Jonathan
- Corbet <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>, John Paul
- Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Christophe Lyon
-	<christophe.lyon@linaro.org>, "linux-m68k@lists.linux-m68k.org"
-	<linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, Linux ARM
-	<linux-arm-kernel@lists.infradead.org>, linux-riscv
-	<linux-riscv@lists.infradead.org>, Linux-sh list <linux-sh@vger.kernel.org>,
-	"automated-testing@lists.yoctoproject.org"
-	<automated-testing@lists.yoctoproject.org>, "buildroot@buildroot.org"
-	<buildroot@buildroot.org>
-Subject: Re: [Automated-testing] Call for nommu LTP maintainer [was: Re:
- [PATCH 00/36] Remove UCLINUX from LTP]
-Thread-Topic: [Automated-testing] Call for nommu LTP maintainer [was: Re:
- [PATCH 00/36] Remove UCLINUX from LTP]
-Thread-Index: AQHaQhGbMR/7MaUknku9yjrZLvyb+bDPsNGAgAO+XIiAACGIAIAALXKAgACcvoA=
-Date: Thu, 11 Jan 2024 09:21:12 +0000
-Message-ID: <ZZ+zB29hRhpjiOrh@x1-carbon>
-References: <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
- <20240105131135.GA1484621@pevik>
- <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
- <20240108090338.GA1552643@pevik> <ZZvJXTshFUYSaMVH@yuki>
- <SA3PR13MB6372498CC6372F8B16237244FD6A2@SA3PR13MB6372.namprd13.prod.outlook.com>
- <20240110141455.GC1698252@pevik>
- <40996ea1-3417-1c2f-ddd2-e6ed45cb6f4b@landley.net>
- <ZZ8JbCPd3rq4u7iG@x1-carbon>
- <7e348eb3-bd34-4c66-9ed6-b5108da80486@linux-m68k.org>
-In-Reply-To: <7e348eb3-bd34-4c66-9ed6-b5108da80486@linux-m68k.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL0PR04MB4850:EE_|BL3PR04MB7996:EE_
-x-ms-office365-filtering-correlation-id: 65807b6e-69c7-48f1-8d17-08dc1286a7b5
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- SBNNz4U4FpU6wuaym0UIGe3iBdWo547K8CBWJbpggH+QhgNPYC+lVgZWdUq1/s9xzMYeeM0IHSmmuYfT519b1rwUObpPK8Aw/bF8AjhWz2gl5gAUkF5tBRyC5Vekk62FPySMP7VeZFnSu8ddpv5k/1VXAkGv2vjE0AQGzjxgZq/T0pNEPYrsNiXYgoSTPKyd60a6W3cUu1QYBLvI+wTqmbkVnBMY/7IOjdx8ha1ZRfmAiMScZ50ho5moQqvaWZdT8VukTuiQV6zdTDmaAzL6U/VpXh39wT44BzdmR+lpBNc60jRZ4rGzvLE3r+jb0vHiYgQgM1ayQV9rOChPTwNSQ1Q0FHceBmiyYvkE6QLbEs3J5i57DZ6dqr4MkI0/979rx2W7RiEQNnRvKWH2EXmFrNZxYVLiyPYm7towvEjSfbLU89bmDMGfoZA3JbqmjC8tV4pHRAxcoNAyVyDpcsSOWjmGGtT23eiHbaVLgipLt5Pi4frzepTiTYnKh0Hz/uVn/kZ75pfyl5LiB651Yq3oykl3tcfne6BEOwMfyhtWzBvQnbH93qGWvdQDEp1wNofgPJCOlcqFoBcZsqendNXI1Db6eqBQpZbz+okS3rCtcg9RERKlk6rqVVPWtPMcWt+Y
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR04MB4850.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(366004)(39860400002)(136003)(376002)(346002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(478600001)(91956017)(966005)(7416002)(5660300002)(4744005)(2906002)(53546011)(316002)(6506007)(54906003)(6486002)(4326008)(26005)(6512007)(9686003)(8936002)(8676002)(86362001)(82960400001)(122000001)(38100700002)(64756008)(71200400001)(76116006)(66946007)(66556008)(66446008)(6916009)(66476007)(41300700001)(33716001)(38070700009)(67856001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?KJmBL0EA67teCjeznFlQ56mTY730OekpzlzUzake11ATLnzJsTyIOID9iEVM?=
- =?us-ascii?Q?KI7XSLYTORsDliFTu9jS7PMMkWjw0eIngPKjDLt4a9MKgJS/xtzFq3g9CDG3?=
- =?us-ascii?Q?dQhk8ZUmqsPwo8XSm7MKqGvar3taK82/mmQ7RYvKgklgv2V/2/EshjhM3WMi?=
- =?us-ascii?Q?/6HCdvd0jdWUCOI1741ndMSjqGBSlQvuHS6ABaBqqZqIJ/WGOVImFYAfnUht?=
- =?us-ascii?Q?KXCk2Qj1mQjZrm6iFl+snWrAQ89oO7M3eN2hIHrisxkXzwGnypezN7gd10eR?=
- =?us-ascii?Q?SqaGGOQnicnLiaQ2/B8jAbgtWfwnU9qF9I6ZYTVoo7nWIjAdFkTHquyPHFev?=
- =?us-ascii?Q?JaXOk0fzPrsVKjTMzAy5OsXwcrdYVCKqXiNkmlXWp5alftQD1DY2pIQKS0S9?=
- =?us-ascii?Q?SF2jDi6uktaJaunkcHXQ71EFlzpezQuo9uKCDYkk1iiCfJCpdoidSnnkX55I?=
- =?us-ascii?Q?K8e/ZRG35U8/Y37vngA8iuucvt6jq5CquBfFqPyg/0rQK21sJ1racWu6Icop?=
- =?us-ascii?Q?ygcKIwW03DqZO4eLOWtVNdbZLMtR13jktYAsuUX8/XYgU4e8kOOHuauH/k/I?=
- =?us-ascii?Q?GUYeDsUgpyIJecTn0kxkawHlRMuEzRoPWrnfX/hVr6Hc1LzgqxFFvFt7Z2Pp?=
- =?us-ascii?Q?ffq4DlOGOlX4u2qotFfG9uL9jx6yWsr8DnVNO8vDQiYAxMABfRHQ4Eo+D9Fh?=
- =?us-ascii?Q?7T53wJdDbQsk7S4tL32r2/CO9gkyJMsKHjnC/oql6ZmkNt7u6Bv5lW78v3Ox?=
- =?us-ascii?Q?JUyl15v7tNBSwPvSI81/WeG/I4lLXwlz3ufCAsWOobuFbLoyJh9pg3y1q3Pv?=
- =?us-ascii?Q?4vvwQrA4SGJ/jiGKqRQ8/O3PtpUkNvR9dbNYhypeqgiQrvYkdgGLApuXoAEP?=
- =?us-ascii?Q?WF5h7m3B4bRDIpF2gwnbI6dyGzeCaPPr+KnkJxE1yzQm/lJqJ/sAC9GNK3Z0?=
- =?us-ascii?Q?lSj8/nmCIJCVZeaZkDpVZVZlYn5ORehXoNHA3+FLiPeSdNEbPzynJfsYOvLj?=
- =?us-ascii?Q?9J5ZkOoU6FInIxgLWEDiXw9R91wl/k/OoGmjO8Si1EIFO6T8AAQv1hzQPOx1?=
- =?us-ascii?Q?m0SVEkOW3bDdD5cVLEQYT2snIECKqCs75ibDNcC3zfXcE5GTo9ZHN4QB/6EM?=
- =?us-ascii?Q?zCXejGsDjMOLGTgV1L92Pb14t2+rXYyXGL6YjuPbAdqQZ9qpbrNi5Y4RtPj9?=
- =?us-ascii?Q?jhcXoYolhG+mTH2zgJweozYtInGgn6/I7yd4uV840TJhNucHyNrBHOS7pp9e?=
- =?us-ascii?Q?xknVNUg/J9biVowafpljlkM43fc67X9O4kPtuRBWNX1K8CRE3eZVZk7/pO+G?=
- =?us-ascii?Q?NxaDaDYPZsMlron1DLnStr7hbZduJPioV0v2LO0K0CZjYQGGLifMm93XcpXV?=
- =?us-ascii?Q?Bt9AdKuQ9pvIx4OFzcGwvJYH9Z+x7xdOXWUzXp1oviInRSab4GP1tHTSD4pm?=
- =?us-ascii?Q?441VxTj+RQGGy+w3UR/Y7xuXTQkWrAju3fTrYV8ceZdp6tbyl8pF02KBhovE?=
- =?us-ascii?Q?bNnJS1c9Gnhx6xR8vVlBaYoLXD6sNQWZsFa/b+t5x5MFCqdZeYJlsAQWFJhd?=
- =?us-ascii?Q?OIgE8XIq9S7toDTHAd0jok06eXj0BcELsp+4GVsRvMp+redO83urytGN0d8Y?=
- =?us-ascii?Q?Yg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <12B10F2B10EDCA46923469645F06011E@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 812F816401
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 11 Jan 2024 13:12:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5f70c085d64so45805177b3.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 11 Jan 2024 05:12:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704978719; x=1705583519;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EQ5ASUjPjhRUwAFEFid0Fjz0cuH2JwdEJzRuxsRLB6E=;
+        b=Q/3KfYgkeJqHiWVQKsQDZuWjlPwpVZ2JNJGsIpKjGcE7Z12ZWXd1n/gvaSLYuFTkN2
+         /Lo6ubOO3MuBhcc9Gm4XWs9BCjXnQJRoxc25LwMD9BnM12rZzAx0zlrI/2bTBbu2y/+3
+         Ed6oui5ehMGsMy7QSrrgkdoTuEqzuoa/8ePLuhBJt0PWOIQr4b/1z1vXOIpRlKI2Wd4I
+         rkg/jiTyIJdxw2Istm6f+g8J5creJm7eQ5aQm4fTe/WtXYQ1sOJSkWfNfkuEQW7kmhAR
+         +swE2i6ibhlm4B+tKmV2utI+Rz58L4/A8ac1uqsCsep7pnRwc3O4GGJhuU/e/Sf3zEuP
+         m60A==
+X-Gm-Message-State: AOJu0YwGrYioHD63pbJ/8jwtQyxWynWOEC8s6oLTyqODyZ9AdmSrupiF
+	jBQ8K7RHrHPoUbiwnDY6GtMx6/ez5r0KJw==
+X-Google-Smtp-Source: AGHT+IHTv3hWduOnQBqWYM/9a4a7JcQnuMrrQ7sKvVVN0cM5Q7MpEiSWAdGg0ItHHTfI7pryPza4oA==
+X-Received: by 2002:a0d:ea12:0:b0:5f3:7df:563a with SMTP id t18-20020a0dea12000000b005f307df563amr605287ywe.16.1704978718267;
+        Thu, 11 Jan 2024 05:11:58 -0800 (PST)
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
+        by smtp.gmail.com with ESMTPSA id cp10-20020a05690c0e0a00b005f134299392sm391140ywb.52.2024.01.11.05.11.56
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Jan 2024 05:11:57 -0800 (PST)
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dbed4b84667so4727854276.0
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 11 Jan 2024 05:11:56 -0800 (PST)
+X-Received: by 2002:a25:41cf:0:b0:dbd:ab41:60d5 with SMTP id
+ o198-20020a2541cf000000b00dbdab4160d5mr1033855yba.123.1704978716687; Thu, 11
+ Jan 2024 05:11:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	8ZatEdcqQWR/z7/xnhZug+6MjLuIe7uUxLNgZEEmA/VyG1w9Gj7AUGhMmcke3WY4hE26GNSpXOJ+Bf/fNOFixb0Ld49GV14Mt0tIHg/vIIPuoiiCJaX+fU5tcRk7dxWt1Lw2KVAXkeY3W27Xsc+CPf4XqoyK2VzeXFY/bqk8zr9UqMkP3w8dHDGuB/wL53EWwfpvDLBckdyre0eErxLz7pO/Czd/FbEH2yXlCvA44re66NVgB4O+K3Y6j16vBrmq1HkIDaIFlxvDfln0HLM7S8wDEavWCorSAIwVAVyA7SVo+QBs5GzzfL5qEQFtF+4ICzkQVp6faIs5Q2xjaSVjmxRRZKYd/y91TVEc3c8l1g5goMdk5DE/qymmEexqw9sFHlqj+HyuxFwu5jP++blcH2X5pk0me6hO7mIj0Z4D+Ml9Ki9Y4JKrNNb6yMul/KSbhR4AzBung0QymOFkHi9z6czLYGcGp+To7IaTcOmjXEkG40+XKG9oxnmz6rrvoi1QO82q5If9cOceAsiJTAKZBikfIerAKwtqdZi/85V28zBN6v3H5N4BAz+tkVM4EIBS/tvL5qN9Ur7LWViDb3Uw2CIsUsE8Diwl3ZyR3JLHWztLay6TSLarY1+bTML5+zcY
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR04MB4850.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 65807b6e-69c7-48f1-8d17-08dc1286a7b5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jan 2024 09:21:12.8071
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: AFFGaIbxLVyEn2xc5FMEMmWs4YS4pNnSQIz5XDqkm1N3dKAA9U2cXaMfrEezUlzFal6yYQEEv+ye3dDCJpRzug==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR04MB7996
+References: <CAMuHMdXGwyS-CL0vLdUP4Z4YEYhmcmDyC3YdGCnS=jFkqASqvw@mail.gmail.com>
+ <20240103114957.GD1073466@pevik> <CAMuHMdX0s0gLRoPtjJmDnSmZ_MNY590dN+JxM1HKAL1g_bjX+w@mail.gmail.com>
+ <ZZVOhlGPg5KRyS-F@yuki> <5a1f1ff3-8a61-67cf-59a9-ce498738d912@landley.net>
+ <20240105131135.GA1484621@pevik> <90c1ddc1-c608-30fc-d5aa-fdf63c90d055@landley.net>
+ <20240108090338.GA1552643@pevik> <ZZvJXTshFUYSaMVH@yuki> <SA3PR13MB6372498CC6372F8B16237244FD6A2@SA3PR13MB6372.namprd13.prod.outlook.com>
+ <20240110141455.GC1698252@pevik> <40996ea1-3417-1c2f-ddd2-e6ed45cb6f4b@landley.net>
+In-Reply-To: <40996ea1-3417-1c2f-ddd2-e6ed45cb6f4b@landley.net>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 11 Jan 2024 14:11:43 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdX5ACKVBQvEwMi7KHZkSVGZPJoocEC1wosfB7zc0u2mbA@mail.gmail.com>
+Message-ID: <CAMuHMdX5ACKVBQvEwMi7KHZkSVGZPJoocEC1wosfB7zc0u2mbA@mail.gmail.com>
+Subject: Re: [Automated-testing] Call for nommu LTP maintainer [was: Re:
+ [PATCH 00/36] Remove UCLINUX from LTP]
+To: Rob Landley <rob@landley.net>
+Cc: Petr Vorel <pvorel@suse.cz>, Tim Bird <tim.bird@sony.com>, Cyril Hrubis <chrubis@suse.cz>, 
+	"ltp@lists.linux.it" <ltp@lists.linux.it>, Li Wang <liwang@redhat.com>, 
+	Andrea Cervesato <andrea.cervesato@suse.com>, Greg Ungerer <gerg@linux-m68k.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Christophe Lyon <christophe.lyon@linaro.org>, 
+	"linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	Linux ARM <linux-arm-kernel@lists.infradead.org>, 
+	linux-riscv <linux-riscv@lists.infradead.org>, Linux-sh list <linux-sh@vger.kernel.org>, 
+	"automated-testing@lists.yoctoproject.org" <automated-testing@lists.yoctoproject.org>, 
+	"buildroot@buildroot.org" <buildroot@buildroot.org>, Niklas Cassel <niklas.cassel@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 11, 2024 at 10:00:11AM +1000, Greg Ungerer wrote:
->=20
-> On 11/1/24 07:17, Niklas Cassel wrote:
-> > On Wed, Jan 10, 2024 at 01:23:51PM -0600, Rob Landley wrote:
-> > > UCLINUX is a long-dead distro. Linaro died in the dot-com crash and i=
-ts founder
-> > > Jeff Dionne moved to Japan for his next gig and never came back. On t=
-he way out
-> > > he handed uclinux off to someone else, who didn't do a lot of work ma=
-intaining
-> > > it. Most of the actual support went "upstream" into various packages =
-(linux and
-> > > busybox and gcc and so on) before the handoff, so you didn't NEED ucl=
-inux anymore.
-> >=20
-> > s/Linaro/Lineo/
->=20
-> Lineo was not founded by Jeff Dionne, see https://en.wikipedia.org/wiki/L=
-ineo
-> for its genisys. Maybe you are thinking of RT-Control.
+Hi Rob,
 
-Yes, Jeff cofounded Rt-Control which later merged with Lineo.
+On Wed, Jan 10, 2024 at 8:17=E2=80=AFPM Rob Landley <rob@landley.net> wrote=
+:
+> You can't fork() on nommu because copies of the mappings have different
+> addresses, meaning any pointers in the copied mappings would point into t=
+he OLD
+> mappings (belonging to the parent process), and fixing them up is 100%
+> equivalent to the "garbage collection in C" problem. (It's AI-complete. O=
+f the
+> C3PO kind, not the "autocorrect with syntax checking" kind.) People get h=
+ung up
+> on the "it would be very inefficient to do that because no copy-on-write"
+> problem and miss the "the child couldn't FUNCTION because its pointer var=
+iables
+> all contain parent addresses" problem.
 
-My main point is that Linaro is a completely different company,
-which did not "die in the dot-com crash", like stated above.
+Actually you can implement fork(), if you teach the compiler to use
+separate stacks for return addresses and data:
+  - The first stack would contain only absolute addresses, to be
+    relocated after copying,
+  - The second stack would contain integers and relative pointers
+    (see FDPIC below), which do not need relocation after copying.
 
+> The OTHER fun thing about nommu is you can't run conventional ELF binarie=
+s,
+> because everything is linked at fixed address. So you might be able to ru=
+n ONE
+> instance of the program as your init task, assuming those addresses were
+> available even then, but as soon as you try to run a second one it's a co=
+nflict.
+>
+> The quick and dirty work around is to make PIE binaries, which can reloca=
+te
+> everything into available space, which works but doesn't scale. The probl=
+em with
+> ELF PIE is that everything is linked contiguously from a single base poin=
+ter,
+> meaning your text, rodata, data, and bss segments are all one linear blob=
+. So if
+> you run two instances of bash, you've loaded two copies of the test and t=
+he
+> rodoata. This fills up your memory fast.
+>
+> AND PIE requires contiguous memory, which nommu is bad at providing becau=
+se it
+> has no page tables to remap stuff. With an mmu it can coalesce scattered
+> physical pages into a virtually contiguous range, but without an mmu you =
+can
+> have plenty of memory free but in tiny chunks, none big enough to satisfy=
+ an
+> allocation request.
+>
+> So they invented FDPIC, which is ELF with FOUR base pointers. Each major =
+section
+> (rodata, text, data, and bss) has its own base pointer, so you need to fi=
+nd
+> smaller chunks of memory to load them into (and thus it can work on a mor=
+e
+> fragmented system), AND it means that two instances of the same program c=
+an
+> share the read-only sections (rodata and text) so you only need new copie=
+s of
+> the writeable segments (data and bss. And the heap. And the stack.)
 
-Kind regards,
-Niklas=
+Or Amiga LoadSeg() relocatable binaries and shared libraries ;-)
+As this supported splitting code, data, and bss in lots of smaller
+hunks, it could counter fragmented memory quite well.
+
+BTW, can't you run and thus test nommu-binaries under normal Linux, too?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
