@@ -1,148 +1,112 @@
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B41623746
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Jan 2024 13:27:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B430D2E85A
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Jan 2024 19:02:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706448468; cv=none; b=R9PsAz+m/EhuSc8c3RMwdbsG19LUJlJmE4+4OnMjx9XOKNMVYOz9ucxzsed8c0QpZCCYuAaLWjLYUdp0z1HWinamKyl/UyJ58xSPTVGO745uBEQ7os9dAAIIeoEhyXFkLHlAsCeJNFudxlPqIgDdUqhUPZYLA7xI1W3QtCohV8c=
+	t=1706468545; cv=none; b=cmYzhoFEPGkFZheEmmIB3PJaDAuU0L+T4UGB9ZqQAlhQhw4/6HKcx2TiO6qSyIKWgOtT3DsM/pH/kHfueDEHb1eZrz4uXkd+yjLdY7M+xOaMOdLfDDSom1fVsxc/D8GA4veIwHwlsll25gZBR2BuMHywjfNQWfHkydiKkCuOKhA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706448468; c=relaxed/simple;
-	bh=69eUiVcVjXP8yf48feB6h5T6KQMxfGOSRyaTvN+mWZM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aqn7AjzTMTXVqHRKjwGwBWEXLTuQ7bm24HTHiUrsJDTBGLtjXzYLzxOJEurWbsHt/+9SvaGWoVZZxGH+fXu1JStW+m4BmRwffzy6/tKD5m3LJKmZHyNimZgrmB9hHWqLbL9PtszzRzKBroBd6uvw4kI6tiEeTRow0zFl30k62jc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-29567ec5a6cso90822a91.0
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Jan 2024 05:27:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706448465; x=1707053265;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mBSmUuPziI7/ip1tnYbDPWClv7tgzD2lgVrD1csa1/c=;
-        b=Rcejs15O08JqTJgxSY9SjDNh5xnbyIyfjIOWeUg1+NMP++k5pGl8G+BVmxgktaZ2Gy
-         Xqrzu9UunxGAm5e8HKpiwrHUt4vnHJ9hQOdRy90ltBpyehI8e8f0rblkjjUb+BJXO7/O
-         vZvWrHH/thXtUCk1hzn9NYv0WlRLUEVGu16sCUfWstitJjMQvdCw+Rvh+1o6dLLnMuee
-         yP+BJppvbZO+pySIydMtb9JQ5AqXGDG083zEEzPWVNawqfC/2u8Ks7LD1HkJ2HxrsIeh
-         UhBWc9VtUOy5yI3XB64tlfj5/KYu+urOJRpUXKOE/VO+GsNZm8CXOBifN7HHhUKkjAfS
-         rbhw==
-X-Gm-Message-State: AOJu0YzfLda6g8H3L/U+bSy2nZbYV+D/tGCDxC4Mwih/MyxfKEyH/RQS
-	r0tVxqRZrwduyVowAms4Xhb1erLr7/qVGoQhVzjrcMrJtX14LdZghqADZD3YhOLJCRAG2+/nzgO
-	knqKOiKx6Jo5rKzIINl0OcW74UYg=
-X-Google-Smtp-Source: AGHT+IHW0ZpztywsQvrDPSCwTjVGTYnJgRy2DkCv0hgE9/FYo3FSlfokv9bExQHNddeY613XOZtAJtBw5wKNj+ZPyt4=
-X-Received: by 2002:a17:90b:3c8:b0:28d:c2ec:8950 with SMTP id
- go8-20020a17090b03c800b0028dc2ec8950mr4703902pjb.2.1706448465441; Sun, 28 Jan
- 2024 05:27:45 -0800 (PST)
+	s=arc-20240116; t=1706468545; c=relaxed/simple;
+	bh=IFk7ohYCGkaEaZqGweUu5moUQWGrImMh+yZAuCDHdqY=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=JCMyh4MlGaPjTuX6SAfnycotQ8RUodJO9jm6F+k9h6oXQJ/aKB4JsVJxiKs5YJk2LSJeBQqYgeEmmCmbM9ycsCUcl5l0D/BT8hO8xjyAtOqsfLtch6EbBsWt0zVudUr3pjdhrTeS5q0xBTYy8NlBZpYpj7TigQpz3qcrirCRJ14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-204-vG2EihzvPXeJminPNiTDtQ-1; Sun, 28 Jan 2024 19:02:15 +0000
+X-MC-Unique: vG2EihzvPXeJminPNiTDtQ-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 28 Jan
+ 2024 19:01:51 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sun, 28 Jan 2024 19:01:51 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Vincent MAILHOL' <mailhol.vincent@wanadoo.fr>
+CC: Finn Thain <fthain@linux-m68k.org>, Andrew Morton
+	<akpm@linux-foundation.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, Yury Norov <yury.norov@gmail.com>, "Nick
+ Desaulniers" <ndesaulniers@google.com>, Douglas Anderson
+	<dianders@chromium.org>, Kees Cook <keescook@chromium.org>, Petr Mladek
+	<pmladek@suse.com>, Randy Dunlap <rdunlap@infradead.org>, Zhaoyang Huang
+	<zhaoyang.huang@unisoc.com>, Geert Uytterhoeven <geert+renesas@glider.be>,
+	Marco Elver <elver@google.com>, Brian Cain <bcain@quicinc.com>, "Geert
+ Uytterhoeven" <geert@linux-m68k.org>, Matthew Wilcox <willy@infradead.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>, "linux-m68k@lists.linux-m68k.org"
+	<linux-m68k@lists.linux-m68k.org>
+Subject: RE: [PATCH v4 2/5] m68k/bitops: use __builtin_{clz,ctzl,ffs} to
+ evaluate constant expressions
+Thread-Topic: [PATCH v4 2/5] m68k/bitops: use __builtin_{clz,ctzl,ffs} to
+ evaluate constant expressions
+Thread-Index: AQHaUbL1xJNZnFSfqkuoXGWoPFOF8LDvIt6wgAAVO4CAAFsoEA==
+Date: Sun, 28 Jan 2024 19:01:51 +0000
+Message-ID: <3af455be023949649f4061223600250b@AcuMS.aculab.com>
+References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr>
+ <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr>
+ <20240128050449.1332798-3-mailhol.vincent@wanadoo.fr>
+ <c47fedaf-cdc9-f970-460f-d2ee7e806da4@linux-m68k.org>
+ <CAMZ6RqKj207uv5AF_fvb65nhCM32V=VAQXsUGLNmbeXYKPvZJg@mail.gmail.com>
+ <9d9be9dbe92f43d2a95d11d6b2f434c1@AcuMS.aculab.com>
+ <CAMZ6Rq+RnY16sREhAZ6AFn3sz1SuPsKqhW-m0TrrDz1hd=vNOA@mail.gmail.com>
+In-Reply-To: <CAMZ6Rq+RnY16sREhAZ6AFn3sz1SuPsKqhW-m0TrrDz1hd=vNOA@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr>
- <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr> <20240128050449.1332798-3-mailhol.vincent@wanadoo.fr>
- <c47fedaf-cdc9-f970-460f-d2ee7e806da4@linux-m68k.org> <CAMZ6RqKj207uv5AF_fvb65nhCM32V=VAQXsUGLNmbeXYKPvZJg@mail.gmail.com>
- <9d9be9dbe92f43d2a95d11d6b2f434c1@AcuMS.aculab.com>
-In-Reply-To: <9d9be9dbe92f43d2a95d11d6b2f434c1@AcuMS.aculab.com>
-From: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date: Sun, 28 Jan 2024 22:27:33 +0900
-Message-ID: <CAMZ6Rq+RnY16sREhAZ6AFn3sz1SuPsKqhW-m0TrrDz1hd=vNOA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/5] m68k/bitops: use __builtin_{clz,ctzl,ffs} to
- evaluate constant expressions
-To: David Laight <David.Laight@aculab.com>
-Cc: Finn Thain <fthain@linux-m68k.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Yury Norov <yury.norov@gmail.com>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Douglas Anderson <dianders@chromium.org>, 
-	Kees Cook <keescook@chromium.org>, Petr Mladek <pmladek@suse.com>, 
-	Randy Dunlap <rdunlap@infradead.org>, Zhaoyang Huang <zhaoyang.huang@unisoc.com>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Marco Elver <elver@google.com>, 
-	Brian Cain <bcain@quicinc.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Matthew Wilcox <willy@infradead.org>, "Paul E . McKenney" <paulmck@kernel.org>, 
-	"linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 
-On Sun. 28 janv. 2024 at 21:16, David Laight <David.Laight@aculab.com> wrote:
-> From: Vincent MAILHOL
-> > Sent: 28 January 2024 06:27
-> >
-> > On Sun. 28 Jan. 2024 at 14:39, Finn Thain <fthain@linux-m68k.org> wrote:
-> > > On Sun, 28 Jan 2024, Vincent Mailhol wrote:
-> > >
-> > > > The compiler is not able to do constant folding on "asm volatile" code.
-> > > >
-> > > > Evaluate whether or not the function argument is a constant expression
-> > > > and if this is the case, return an equivalent builtin expression.
-> > > >
-> ...
-> > > If the builtin has the desired behaviour, why do we reimplement it in asm?
-> > > Shouldn't we abandon one or the other to avoid having to prove (and
-> > > maintain) their equivalence?
-> >
-> > The asm is meant to produce better results when the argument is not a
-> > constant expression. Below commit is a good illustration of why we
-> > want both the asm and the built:
-> >
-> >   https://git.kernel.org/torvalds/c/146034fed6ee
-> >
-> > I say "is meant", because I did not assert whether this is still true.
-> > Note that there are some cases in which the asm is not better anymore,
-> > for example, see this thread:
-> >
-> >   https://lore.kernel.org/lkml/20221106095106.849154-2-mailhol.vincent@wanadoo.fr/
-> >
-> > but I did not receive more answers, so I stopped trying to investigate
-> > the subject.
-> >
-> > If you want, you can check the produced assembly of both the asm and
-> > the builtin for both clang and gcc, and if the builtin is always
-> > either better or equivalent, then the asm can be removed. That said, I
-> > am not spending more effort there after being ghosted once (c.f. above
-> > thread).
->
-> I don't see any example there of why the __builtin_xxx() versions
-> shouldn't be used all the time.
-> (The x86-64 asm blocks contain unrelated call instructions and objdump
-> wasn't passed -d to show what they were.
-> One even has the 'return thunk pessimisation showing.)
+RnJvbTogVmluY2VudCBNQUlMSE9MIA0KPiBTZW50OiAyOCBKYW51YXJ5IDIwMjQgMTM6MjgNCi4u
+Lg0KPiBGYWlyLiBNeSBnb2FsIHdhcyBub3QgdG8gcG9pbnQgdG8gdGhlIGFzc2VtYmx5IGNvZGUg
+YnV0IHRvIHRoaXMgc2VudGVuY2U6DQo+IA0KPiAgIEhvd2V2ZXIsIGZvciBub24gY29uc3RhbnQg
+ZXhwcmVzc2lvbnMsIHRoZSBrZXJuZWwncyBmZnMoKSBhc20NCj4gICB2ZXJzaW9uIHJlbWFpbnMg
+YmV0dGVyIGZvciB4ODZfNjQgYmVjYXVzZSwgY29udHJhcnkgdG8gR0NDLCBpdA0KPiAgIGRvZXNu
+J3QgZW1pdCB0aGUgQ01PViBhc3NlbWJseSBpbnN0cnVjdGlvbg0KDQpUaGUgY29tbWVudCBpbiB0
+aGUgY29kZSBpczoNCgkgKiBBTUQ2NCBzYXlzIEJTRkwgd29uJ3QgY2xvYmJlciB0aGUgZGVzdCBy
+ZWcgaWYgeD09MDsgSW50ZWw2NCBzYXlzIHRoZQ0KCSAqIGRlc3QgcmVnIGlzIHVuZGVmaW5lZCBp
+ZiB4PT0wLCBidXQgdGhlaXIgQ1BVIGFyY2hpdGVjdCBzYXlzIGl0cw0KCSAqIHZhbHVlIGlzIHdy
+aXR0ZW4gdG8gc2V0IGl0IHRvIHRoZSBzYW1lIGFzIGJlZm9yZSwgZXhjZXB0IHRoYXQgdGhlDQoJ
+ICogdG9wIDMyIGJpdHMgd2lsbCBiZSBjbGVhcmVkLg0KSSBndWVzcyBnY2MgaXNuJ3Qgd2lsbGlu
+ZyB0byBhY3Qgb24gaGVhcnNheSENCg0KPiANCj4gSSBzaG91bGQgaGF2ZSBiZWVuIG1vcmUgY2xl
+YXIuIFNvcnJ5IGZvciB0aGF0Lg0KPiANCj4gQnV0IHRoZSBmYWN0IHJlbWFpbnMsIG9uIHg4Niwg
+c29tZSBvZiB0aGUgYXNtIHByb2R1Y2VkIG1vcmUgb3B0aW1pemVkDQo+IGNvZGUgdGhhbiB0aGUg
+YnVpbHRpbi4NCj4gDQo+ID4gSSBhY3R1YWxseSBzdXNwZWN0IHRoZSBhc20gdmVyc2lvbnMgcHJl
+ZGF0ZSB0aGUgYnVpbHRpbnMuDQo+IA0KPiBUaGlzIHNlZW1zIHRydWUuIFRoZSBfX2J1bHRpbnMg
+d2VyZSBpbnRyb2R1Y2VkIGluOg0KPiANCj4gICBnZW5lcmljOiBJbXBsZW1lbnQgZ2VuZXJpYyBm
+ZnMvZmxzIHVzaW5nIF9fYnVpbHRpbl8qIGZ1bmN0aW9ucw0KPiAgIGh0dHBzOi8vZ2l0Lmtlcm5l
+bC5vcmcvdG9ydmFsZHMvYy8wNDhmYTJkZjkyYzMNCg0KSSB3YXMgdGhpbmtpbmcgb2YgY29tcGls
+ZXIgdmVyc2lvbnMgbm90IGtlcm5lbCBzb3VyY2UgY29tbWl0cy4NCllvdSdkIG5lZWQgdG8gYmUg
+ZG9pbmcgc29tZSBzZXJpb3VzIHNvZnR3YXJlIGFyY2hhZW9sb2d5Lg0KDQo+IHdoZW4gdGhlIGFz
+bSBpbXBsZW1lbnRhdGlvbiBhbHJlYWR5IGV4aXN0ZWQgaW4gbTY4ay4NCj4gDQo+ID4gRG9lcyAo
+b3IgY2FuKSB0aGUgb3V0ZXIgY29tbW9uIGhlYWRlciB1c2UgdGhlIF9fYnVpbHRpbiBmdW5jdGlv
+bnMNCj4gPiBpZiBubyBhc20gdmVyc2lvbiBleGlzdHM/DQo+IA0KPiBZZXMsIHRoaXMgd291bGQg
+YmUgZXh0cmVtZWx5IGVhc3kuIFlvdSBqdXN0IG5lZWQgdG8NCj4gDQo+ICAgI2luY2x1ZGUvYXNt
+LWdlbmVyaWMvYml0b3BzL2J1aWx0aW4tX19mZnMuaA0KPiAgICNpbmNsdWRlL2FzbS1nZW5lcmlj
+L2JpdG9wcy9idWlsdGluLWZmcy5oDQo+ICAgI2luY2x1ZGUvYXNtLWdlbmVyaWMvYml0b3BzL2J1
+aWx0aW4tX19mbHMuaA0KPiAgICNpbmNsdWRlL2FzbS1nZW5lcmljL2JpdG9wcy9idWlsdGluLWZs
+cy5oDQo+IA0KPiBhbmQgcmVtb3ZlIGFsbCB0aGUgYXNtIGltcGxlbWVudGF0aW9ucy4gSWYgeW91
+IGdpdmUgbWUgeW91ciBncmVlbg0KPiBsaWdodCwgSSBjYW4gZG8gdGhhdCBjaGFuZ2UuIFRoaXMg
+aXMgdHJpdmlhbC4gVGhlIG9ubHkgdGhpbmcgSSBhbSBub3QNCj4gcmVhZHkgdG8gZG8gaXMgdG8g
+Y29tcGFyZSB0aGUgcHJvZHVjZWQgYXNzZW1ibHkgY29kZSBhbmQgY29uZmlybQ0KPiB3aGV0aGVy
+IG9yIG5vdCBpdCBpcyBiZXR0ZXIgdG8gcmVtb3ZlIGFzbSBjb2RlLg0KPiANCj4gVGhvdWdodHM/
+DQoNCk5vdCBmb3IgbWUgdG8gc2F5Lg0KQnV0IHRoZSBidWlsdGlucyBhcmUgbGlrZWx5IHRvIGdl
+bmVyYXRlIHJlYXNvbmFibGUgY29kZS4NClNvIHVubGVzcyB0aGUgYXNtIGNhbiBiZSBiZXR0ZXIg
+KGxpa2UgdHJ1c3RpbmcgdW5kb2N1bWVudGVkDQp4ODYgY3B1IGJlaGF2aW91cikgdXNpbmcgdGhl
+bSBpcyBwcm9iYWJseSBiZXN0Lg0KDQpGb3IgdGhlIG9uZXMgeW91IGFyZSBjaGFuZ2luZyBpdCBt
+YXkgYmUgYmVzdCB0byBwcm9wb3NlIHVzaW5nDQp0aGUgYnVpbHRpbnMgYWxsIHRoZSB0aW1lLg0K
+DQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQs
+IE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86
+IDEzOTczODYgKFdhbGVzKQ0K
 
-Fair. My goal was not to point to the assembly code but to this sentence:
-
-  However, for non constant expressions, the kernel's ffs() asm
-  version remains better for x86_64 because, contrary to GCC, it
-  doesn't emit the CMOV assembly instruction
-
-I should have been more clear. Sorry for that.
-
-But the fact remains, on x86, some of the asm produced more optimized
-code than the builtin.
-
-> I actually suspect the asm versions predate the builtins.
-
-This seems true. The __bultins were introduced in:
-
-  generic: Implement generic ffs/fls using __builtin_* functions
-  https://git.kernel.org/torvalds/c/048fa2df92c3
-
-when the asm implementation already existed in m68k.
-
-> Does (or can) the outer common header use the __builtin functions
-> if no asm version exists?
-
-Yes, this would be extremely easy. You just need to
-
-  #include/asm-generic/bitops/builtin-__ffs.h
-  #include/asm-generic/bitops/builtin-ffs.h
-  #include/asm-generic/bitops/builtin-__fls.h
-  #include/asm-generic/bitops/builtin-fls.h
-
-and remove all the asm implementations. If you give me your green
-light, I can do that change. This is trivial. The only thing I am not
-ready to do is to compare the produced assembly code and confirm
-whether or not it is better to remove asm code.
-
-Thoughts?
-
-Yours sincerely,
-Vincent Mailhol
