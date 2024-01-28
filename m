@@ -1,170 +1,157 @@
-Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25C7B208CB
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Jan 2024 05:06:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DAB7D51A
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Jan 2024 05:39:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706418387; cv=none; b=V3X2MUFwQxsA1bAb4VoLE3DHNh4DwrlIkoZAYAHgYS84asR67287sR+bI+H0HVhdXd7Oz/Oa7Q3BLhZhWmTDekSxs4LxMZxKYvF5LU+eOuJbeoZvltuM9Zf2dHuSiMHLChkR53wHW7jg+QdLfgAUAPmoPc4ULGcTU+EPlb1fw6o=
+	t=1706420365; cv=none; b=jhF6AWXhMLtQNgubRe5PTnQ/IjNyWqo6iO4gd9xdHazIFS8Vs/857ond+JMZ6qu1n0AK4Nz/CcfVPGz0Y6lCJQ8QoRNVROJmRrG9u4nnscen8YbMZKZTmpKKh4m57FRjaKye1Mxlf/F62UNln2/4DzTmynCg/9amlaTiIwNyg9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706418387; c=relaxed/simple;
-	bh=sqYZMDlKDRUfnljor6SGKDrcquN71PTrtDOFGVVMCyI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kScuWIbZS/MDr6Y4O0+XdVqoeuTLgpowE/5frefYdC4KJUdvdSl0vx3XWRroAPDa9MXOtERHyMqJ5vu8hWFtBf1QvFTjiWylQEYkQ7QHUzNmesxcFgWXwntyAElH4gWtYOl0zJAE7IFd/GWf9dZVeI4tz5KzWXOX1GPh3mDZCYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OzZIgKLI; arc=none smtp.client-ip=209.85.167.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1706420365; c=relaxed/simple;
+	bh=ACKTKOuJWUOirQ98WBHpdV1H/YZfxrXRPTERjk4FaYg=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=kEUZ+kMpLTKybkStOby1rJOuxJY79OGYBhOtKL3OSGBGCPQ4Qa0gs85QpUj5Nj+0dSqsGlHhzdkUC9OwVpGym9nvM14IKEpq5vs+u8DTZV7d/9ajsmDCgyIJw4YlqbtKCSahGpJPCYlmjUCILtycF5pV5RXSCaxNn1xn5TSzpgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=QGIBCckh; arc=none smtp.client-ip=64.147.123.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OzZIgKLI"
-Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3bbb4806f67so1372681b6e.3
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 27 Jan 2024 21:06:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706418385; x=1707023185; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Klq863pFaGoDv/8+20XN12p6t4dw+6WO92EMrH2yao8=;
-        b=OzZIgKLIPyWdihXLwkrTqCQOmBcKafuk0U00DJOvQvZ0wMt7+UjP86ciAn5E9hskaw
-         /yzNJiYPOaWxMx49ikFms3+r4s0zhf79/l3BWn2UbC73eHWKCaQMyR9j3uwBgVg86U+n
-         ru2FO6p7DFPfKjV+tb95FePRBtdMOuGdIIpLcVShyTfpxeI9FezSUDYTWkKDTSLSIx5E
-         ihOAwS6cmEiz4PGsFkZTmZ4otNcTVWF2i//Dq+iO0oY2SS3Dbny5wnlmUNoLPac5DKCp
-         rCRwkmlB7PxTzu0bb+tpXAibbcrTlq0lU/9vLYf9mi+j+/C8MYJb4eDMiG357Nq7SPkG
-         faoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706418385; x=1707023185;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Klq863pFaGoDv/8+20XN12p6t4dw+6WO92EMrH2yao8=;
-        b=INMJY0KmySQ1T8fwOMTdQri/8kOXl7vE6+yofzJBnb6+8iiNVFRqzUOLxhnkfmqwlw
-         UeRADgUkleJ3X9nk+M5FfjxQSnHOoTFzs5m3c5Nf+JgpLztZ6NVc3gWYBIKCpoe17yB5
-         E7iuxgPfEkaRctOMZFZ8FTQvy0ZXI6wweTnk5gdYrZkJGnCrsX/tJYXmphD8uiGRqKmI
-         kYJ2+sCw173HTfhn1VjCaxtxT7ViM3PWSGKOKrrA0SWYdyXT7k8mWm/1+Ywnw3BgsZjQ
-         px0Aab3VXw24DwMCQ+HEARuVxMYuNiIkiagzIm17ZuN5mnXHim+ulW3MeSzv8HcNhihi
-         fWJg==
-X-Gm-Message-State: AOJu0Yxx2M/PkTl/NRar5VZscY9rAnGVphniqvwVo56Z5Be0XG3ij6Lv
-	mx9xuRdK7yPhCcr26vZjeLC9+WJ7yyAU0P1KMvh6zMZgZiT9dAgZ
-X-Google-Smtp-Source: AGHT+IFJKmp+bAvhbdfzCBdTHyX1Zr9Yd3+YnQ7Hr1irLdsB79h6IjRdALDmguFKws+ptaAXM7qdlQ==
-X-Received: by 2002:a05:6808:d49:b0:3be:3a9e:5cd6 with SMTP id w9-20020a0568080d4900b003be3a9e5cd6mr804691oik.34.1706418385049;
-        Sat, 27 Jan 2024 21:06:25 -0800 (PST)
-Received: from localhost.localdomain (124x33x176x97.ap124.ftth.ucom.ne.jp. [124.33.176.97])
-        by smtp.gmail.com with ESMTPSA id lp17-20020a056a003d5100b006ddd182bf1csm3550372pfb.46.2024.01.27.21.06.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Jan 2024 21:06:24 -0800 (PST)
-Sender: Vincent Mailhol <vincent.mailhol@gmail.com>
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org
-Cc: Yury Norov <yury.norov@gmail.com>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Douglas Anderson <dianders@chromium.org>,
-	Kees Cook <keescook@chromium.org>,
-	Petr Mladek <pmladek@suse.com>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Marco Elver <elver@google.com>,
-	Brian Cain <bcain@quicinc.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	linux-m68k@lists.linux-m68k.org,
-	Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v4 5/5] lib: test_bitops: add compile-time optimization/evaluations assertions
-Date: Sun, 28 Jan 2024 14:00:11 +0900
-Message-ID: <20240128050449.1332798-6-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr>
-References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr>
- <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr>
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="QGIBCckh"
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailout.west.internal (Postfix) with ESMTP id 0443F32004CE;
+	Sun, 28 Jan 2024 00:39:19 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Sun, 28 Jan 2024 00:39:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706420359; x=1706506759; bh=/tykfuzP/yR2RGWwFOx8HgWGqcUI
+	yxkAtWGbaAySd0o=; b=QGIBCckh5pOYqdjAwRDpZ5oAxbCS1/KBe2w3cEpypgWA
+	CDMJDnnDumnw9Mpknp92wKit1tdkTEnN7cXRdtTYHDM3ssaigpx90XRr9hRub+FJ
+	QL4yDoP2uM2xtF0MNfGPQO1QuljgMUSEHFM3O4KIccPPg07SirFI9DpdKzlvgDRJ
+	cX1onb86SbT9miZaZKSYNrCS2flEEwxVXb9x63zuA8agwsoUhFVSPXxJ2S2JrvYi
+	bx68MHms7RG//VDiNryn5MhaYhpaOs/eEokgUK/PHBDgPx+fabQzDzn2cPzbNMZL
+	wy121y6ijwYVVzAgsnE/WOcIKRC21Q+iSx0KUiB9gg==
+X-ME-Sender: <xms:hui1Zf_xlyl9BjJ4ir9hFoSVgAtZLBWtC4obzARRnbZwnyx-qhfs6A>
+    <xme:hui1Zbs_J7onqkko3z0-HKMhfG5vhgngjZJ2dX3A_n_Rct7ZowReWdO7nnu5pz_oV
+    ZytEZjssJ7jFE2HNb8>
+X-ME-Received: <xmr:hui1ZdB8vGd93PFvBuS0XicnNUsAMPh6wN750GlXTlh674_KYTn_rqadVPm5GSXjjKh4hM1vQa0yaEvhzWhda3BFgTbRAgKOz9Y>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedttddgkedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
+    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
+    htthgvrhhnpeefieehjedvtefgiedtudethfekieelhfevhefgvddtkeekvdekhefftdek
+    vedvueenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieek
+    khdrohhrgh
+X-ME-Proxy: <xmx:hui1ZbdwBzhax__TQMIFf4fycmgkJSzHWDXwEaaK8wUKVYjurlWmvQ>
+    <xmx:hui1ZUMsZ2ENIFb9DkVlMZsf0CETLeD-IcGgIEg2pT8xMPtKfOvnVg>
+    <xmx:hui1ZdmmXJPbAheteJw4h8jAPUrv4zMKsGELv-j0SOjh0gkW171Qeg>
+    <xmx:h-i1Zblc6qpduetkIU1SmqcjjD_MuPpcQKVTPLmNiizhF33epcexFA>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 28 Jan 2024 00:39:16 -0500 (EST)
+Date: Sun, 28 Jan 2024 16:39:18 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
+    Yury Norov <yury.norov@gmail.com>, 
+    Nick Desaulniers <ndesaulniers@google.com>, 
+    Douglas Anderson <dianders@chromium.org>, 
+    Kees Cook <keescook@chromium.org>, Petr Mladek <pmladek@suse.com>, 
+    Randy Dunlap <rdunlap@infradead.org>, 
+    Zhaoyang Huang <zhaoyang.huang@unisoc.com>, 
+    Geert Uytterhoeven <geert+renesas@glider.be>, 
+    Marco Elver <elver@google.com>, Brian Cain <bcain@quicinc.com>, 
+    Geert Uytterhoeven <geert@linux-m68k.org>, 
+    Matthew Wilcox <willy@infradead.org>, 
+    "Paul E . McKenney" <paulmck@kernel.org>, linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH v4 2/5] m68k/bitops: use __builtin_{clz,ctzl,ffs} to
+ evaluate constant expressions
+In-Reply-To: <20240128050449.1332798-3-mailhol.vincent@wanadoo.fr>
+Message-ID: <c47fedaf-cdc9-f970-460f-d2ee7e806da4@linux-m68k.org>
+References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr> <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr> <20240128050449.1332798-3-mailhol.vincent@wanadoo.fr>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 
-Add a function in the bitops test suite to assert that the bitops
-helper functions correctly fold into constant expressions (or trigger
-a build bug otherwise). This should work on all the optimization
-levels supported by Kbuild.
 
-The added function does not perform any runtime tests and gets
-optimized out to nothing after passing the build assertions.
+On Sun, 28 Jan 2024, Vincent Mailhol wrote:
 
-Suggested-by: Yury Norov <yury.norov@gmail.com>
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
----
- lib/Kconfig.debug |  4 ++++
- lib/test_bitops.c | 32 ++++++++++++++++++++++++++++++++
- 2 files changed, 36 insertions(+)
+> The compiler is not able to do constant folding on "asm volatile" code.
+> 
+> Evaluate whether or not the function argument is a constant expression
+> and if this is the case, return an equivalent builtin expression.
+> 
+> On linux 6.7 with an allyesconfig and GCC 13.2.1, it saves roughly 11 KB.
+> 
+>   $ size --format=GNU vmlinux.before vmlinux.after
+>     text       data        bss      total filename
+>     60457964   70953697    2288644  133700305 vmlinux.before
+>     60441196   70957057    2290724  133688977 vmlinux.after
+> 
+> Reference: commit fdb6649ab7c1 ("x86/asm/bitops: Use __builtin_ctzl() to evaluate constant expressions")
+> Link: https://git.kernel.org/torvalds/c/fdb6649ab7c1
+> 
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+> ---
+>  arch/m68k/include/asm/bitops.h | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
+> index a8b23f897f24..02ec8a193b96 100644
+> --- a/arch/m68k/include/asm/bitops.h
+> +++ b/arch/m68k/include/asm/bitops.h
+> @@ -469,6 +469,9 @@ static __always_inline unsigned long ffz(unsigned long word)
+>  {
+>  	int res;
+>  
+> +	if (__builtin_constant_p(word))
+> +		return __builtin_ctzl(~word);
+> +
+>  	__asm__ __volatile__ ("bfffo %1{#0,#0},%0"
+>  			      : "=d" (res) : "d" (~word & -~word));
+>  	return res ^ 31;
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 4405f81248fb..85f8638b3ae6 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2439,6 +2439,10 @@ config TEST_BITOPS
- 	  compilations. It has no dependencies and doesn't run or load unless
- 	  explicitly requested by name.  for example: modprobe test_bitops.
- 
-+	  In addition, check that the compiler is able to fold the bitops
-+	  function into a compile-time constant (given that the argument is also
-+	  a compile-time constant) and trigger a build bug otherwise.
-+
- 	  If unsure, say N.
- 
- config TEST_VMALLOC
-diff --git a/lib/test_bitops.c b/lib/test_bitops.c
-index 3b7bcbee84db..99b612515eb6 100644
---- a/lib/test_bitops.c
-+++ b/lib/test_bitops.c
-@@ -50,6 +50,34 @@ static unsigned long order_comb_long[][2] = {
- };
- #endif
- 
-+/* Assert that a boolean expression can be folded in a constant and is true. */
-+#define test_const_eval(test_expr)				\
-+({								\
-+	/* Evaluate once so that compiler can fold it. */	\
-+	bool __test_expr = test_expr;				\
-+								\
-+	BUILD_BUG_ON(!__builtin_constant_p(__test_expr));	\
-+	BUILD_BUG_ON(!__test_expr);				\
-+})
-+
-+/*
-+ * On any supported optimization level (-O2, -Os) and if invoked with
-+ * a compile-time constant argument, the compiler must be able to fold
-+ * into a constant expression all the bit find functions. Namely:
-+ * __ffs(), ffs(), ffz(), __fls(), fls() and fls64(). Otherwise,
-+ * trigger a build bug.
-+ */
-+static __always_inline void test_bitops_const_eval(unsigned int n)
-+{
-+	test_const_eval(__ffs(BIT(n)) == n);
-+	test_const_eval(ffs(BIT(n)) == n + 1);
-+	test_const_eval(ffz(~BIT(n)) == n);
-+	test_const_eval(__fls(BIT(n)) == n);
-+	test_const_eval(fls(BIT(n)) == n + 1);
-+	test_const_eval(fls64(BIT_ULL(n)) == n + 1);
-+	test_const_eval(fls64(BIT_ULL(n + 32)) == n + 33);
-+}
-+
- static int __init test_bitops_startup(void)
- {
- 	int i, bit_set;
-@@ -94,6 +122,10 @@ static int __init test_bitops_startup(void)
- 	if (bit_set != BITOPS_LAST)
- 		pr_err("ERROR: FOUND SET BIT %d\n", bit_set);
- 
-+	test_bitops_const_eval(0);
-+	test_bitops_const_eval(10);
-+	test_bitops_const_eval(31);
-+
- 	pr_info("Completed bitops test\n");
- 
- 	return 0;
--- 
-2.43.0
+If the builtin has the desired behaviour, why do we reimplement it in asm? 
+Shouldn't we abandon one or the other to avoid having to prove (and 
+maintain) their equivalence?
 
+> @@ -490,6 +493,9 @@ static __always_inline unsigned long ffz(unsigned long word)
+>  	!defined(CONFIG_M68000)
+>  static __always_inline unsigned long __ffs(unsigned long x)
+>  {
+> +	if (__builtin_constant_p(x))
+> +		return __builtin_ctzl(x);
+> +
+>  	__asm__ __volatile__ ("bitrev %0; ff1 %0"
+>  		: "=d" (x)
+>  		: "0" (x));
+> @@ -522,6 +528,9 @@ static __always_inline int ffs(int x)
+>  {
+>  	int cnt;
+>  
+> +	if (__builtin_constant_p(x))
+> +		return __builtin_ffs(x);
+> +
+>  	__asm__ ("bfffo %1{#0:#0},%0"
+>  		: "=d" (cnt)
+>  		: "dm" (x & -x));
+> @@ -540,6 +549,9 @@ static __always_inline int fls(unsigned int x)
+>  {
+>  	int cnt;
+>  
+> +	if (__builtin_constant_p(x))
+> +		return x ? BITS_PER_TYPE(x) - __builtin_clz(x) : 0;
+> +
+>  	__asm__ ("bfffo %1{#0,#0},%0"
+>  		: "=d" (cnt)
+>  		: "dm" (x));
+> 
