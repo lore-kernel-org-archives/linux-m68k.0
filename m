@@ -1,87 +1,179 @@
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC44320306
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 27 Jan 2024 23:33:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 762146ABF
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Jan 2024 05:06:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706398419; cv=none; b=Z54ChRRJi9vmdQ3HbcH5utomNXu2RNcyutxKuMmeqgda6COWXY20kNkWa1xsgg48NtIaJCfO2IeTaHII8F1qfqyxADnTwaIsMctkUy6dDLSf3lareNfI4/rhBkvzoWAWqzwZElbSIbFVwoa3lCYByNjymrOF0WU7Sq+hgS1m0xA=
+	t=1706418367; cv=none; b=QD/1xybH0cmiBAdWBmeI2k5uIdTtDGTuz+Q6TKihkM9f4bYbLd1e+dLv894TKmZBRJ/E6pVXdKeOC0M7KwYQAlFWE85dNA82HrcWHxPJNPCVPg52w5URbpVGb0gD4DOeTZmj2GEE/nC/+PiuAfrK+CGQ/RTc9ethoU87aQdkQ60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706398419; c=relaxed/simple;
-	bh=hjmnJkzs+a+lqTPd0afizO4oVAsHQIIDji+ghdide70=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=EUyx9W7JlqFLW+5TuOfratUuS1vfgnJMg2Ikn8HFAfO1OPA/WFzjglHMxGkvyZsOqsfMsFL/CrHIfzzaYQIGXiRUhYJu7AKbU5RyBJdDAkiBvBXFjKAhrU/gcm+DAI5yIwJTAB48Ky7jFSM3KnxsdJn8kSOmrl0n2l6aL8W4c5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=landley.net; spf=none smtp.mailfrom=landley.net; dkim=pass (2048-bit key) header.d=landley-net.20230601.gappssmtp.com header.i=@landley-net.20230601.gappssmtp.com header.b=fYRgz9Or; arc=none smtp.client-ip=209.85.167.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=landley.net
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=landley.net
+	s=arc-20240116; t=1706418367; c=relaxed/simple;
+	bh=woUTGpV2lL/Prio24DhLsAC1y4k4dXyC3Djn7wPcNNg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=UwFMx8XqBUqWvWGRWJsjWDQidEG3fZ09eZr7sZHNfjhCL7yFZqdUg4uFIJrDfQk1y4x0h/803VCRSE9GYwZWwyQBb8aOYEvIMGNgyXsttZW70irWHFcem/ulaByuPymPOuHfoMBYnGDOnSa76dK4eimif7ZKXp+2/+q2VpjzOlg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tt2CR6Y1; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=landley-net.20230601.gappssmtp.com header.i=@landley-net.20230601.gappssmtp.com header.b="fYRgz9Or"
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3be156ca48eso220715b6e.0
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 27 Jan 2024 15:33:37 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tt2CR6Y1"
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5d7005ea1d0so1038710a12.1
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 27 Jan 2024 21:06:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=landley-net.20230601.gappssmtp.com; s=20230601; t=1706398417; x=1707003217; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1706418364; x=1707023164; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hjmnJkzs+a+lqTPd0afizO4oVAsHQIIDji+ghdide70=;
-        b=fYRgz9OrNT3V3zm0rUfifhecs3VqrU4VrBdz9iJSSyJxTOS6suOjDWGiVnbn3xNCtT
-         uIANx1tjKor96dHDO9JEU7uj6WeRflecC14QQ92Jyw/P67BgQEO+AbT2vBu49GX1gZ0B
-         HFwz/1CAbj1AzL5d29vsvIqlW9lurl8aVH0THHCvfWbHlr2MqfEbdYFcf0BKQvu0/GPr
-         KA7GTzpBxqcUqTpu2gW4neTFXLzXGwdwmOxcoEq7wa4rJ2fdH9VosK1VyI9ltcnsqysa
-         +SYH2oC+oM64X8lN9v2/+gJzGRTTLCAdLFmdN4rt0/eyxgBpD/bwV2GiCYEQ41V1J1xS
-         gcJg==
+        bh=cq/z7gzXK8vY4MJq5h6j8eIlm4yN+X+iR4tLkhOxEwY=;
+        b=Tt2CR6Y1XxVBSVuD8XvI0O/50D73gn+WA0mv8/7uwzhATddux0+3tTrNt/p7sE8V3l
+         YFaUGSnNBRAtjC13b93IWnW0d2iegp1DimwqI34jTq/IqJEhuvk+Lt+rJzvrWsambilV
+         orV53hmkAhsEs+UA9clUGHSeMS68eVpfSw0Kqbsv66V2qngCloJyGlYA/LfMXF4rYChQ
+         +0KESMGsoiyEGpDuR2nOVwuI3TJUJ/a1i4I0d7dPK5KwkXi4jb7qlSzM0a76eCuFuM2M
+         B6POtzqRP+AGS3gMhfs+UEUmehUpxSmQU93aLMIMhRaXFCymTLGWXbCaMfku2Jp9QaE0
+         9MTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706398417; x=1707003217;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=hjmnJkzs+a+lqTPd0afizO4oVAsHQIIDji+ghdide70=;
-        b=TQkVfC637NFjHtzaaYTjoch3lLEHmdpiNKG8YWfGP+jexbksZHutBF66JFPxhnNele
-         85XArvaolrTOt6p1z3Z2beOIhMr9rfx4KItacQc318n+AarqjTTNRDcrP0pXOF+i3fx1
-         52ztQwqoRCAn48dnzjYLDxfZE8n9PPg4XYrDkmETQWOFUG9lK6fgvc3lSCcZarkPREpL
-         V4MavDWi9WiYO8f/1isDkbmGLREvkd2Zfj1VKvrUlRbisvfq9gzZnnE3KEgs80xLI7DL
-         0n47EmcXrxm1dywhd+/Fro0nqKdjIf6kt1gll6f1eY22pf3JQr+qN3AZ2rtbUjsS4LHi
-         ZNYQ==
-X-Gm-Message-State: AOJu0Yw/X76ugvdEtKr+8nRmcclK8sOAvM2GpdiOBG76XHKXtxEuPlIi
-	OZsr3BDyiwl2yYQjPWWFvflAPoUiBJ/NEEZ+N8TlIbv53Tdq+sxNfE1VIqfRm3Wrf4hVSVIGFfd
-	l
-X-Google-Smtp-Source: AGHT+IE39pu9Zu8kyuA5W3Y04CsJGDjKi6wuYDIKmtLQ5ntzT5ywr57a4UqgNF4GTCIQsfYJ7iFODg==
-X-Received: by 2002:a05:6808:158f:b0:3bd:729a:774 with SMTP id t15-20020a056808158f00b003bd729a0774mr2376316oiw.50.1706398416658;
-        Sat, 27 Jan 2024 15:33:36 -0800 (PST)
-Received: from [192.168.1.4] ([136.62.51.249])
-        by smtp.gmail.com with ESMTPSA id do10-20020a0568300e0a00b006dec024acffsm886871otb.57.2024.01.27.15.33.36
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 27 Jan 2024 15:33:36 -0800 (PST)
-Message-ID: <169c2fe0-36bd-5e9a-b37f-430ec69a686f@landley.net>
-Date: Sat, 27 Jan 2024 17:40:48 -0600
+        d=1e100.net; s=20230601; t=1706418364; x=1707023164;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=cq/z7gzXK8vY4MJq5h6j8eIlm4yN+X+iR4tLkhOxEwY=;
+        b=Lk+TxDAIipVK2Vw8VyHVPiNqZkXgAe4Efbzy2cV94fkwOhk4mykkocs30Eoco71QNn
+         eMlzpOlVYsLksKrHrAvKStghU3Mspz2QlSbInuk9wDQ/tW6XCOg2aDK6WYchhexScBmE
+         fq1Ei9Jt0tMBOirS2nvWj8M9tZ9HfHSwMdMk89+Y5MAqzrdEm/v+S+Sk/aNAo9RUdhls
+         vMqanuVe4zeUC1J5BapIF3hoIXzFtopmD08MQ+MnPMIZrHzGm5HO2DZpuVvMRdD03Kio
+         uWYRo4/f7sDIBjLC4oSEG4dlJQDI23FENQ2p1xtkFutgXO1xyEub7o8RlmrQ8/OUr0er
+         gqpA==
+X-Gm-Message-State: AOJu0YzHlGtB0IRy2a2ExUu9PVjzHisn8ZMbVJbolTQybkj1CR1P094e
+	PAVtbFV7NYo6KVKrrYCkuyc51a9V+gUDp53TV5i4LCz1QtqteEyc
+X-Google-Smtp-Source: AGHT+IHlaF9aAss+wN3s/ZF+gmHMOoO6NWHBaUA46qNNRgoQwLErqdMCz/eggLIziRpdriVL6IV3Wg==
+X-Received: by 2002:a05:6a20:4caa:b0:19c:678c:6d37 with SMTP id fq42-20020a056a204caa00b0019c678c6d37mr2616311pzb.37.1706418364398;
+        Sat, 27 Jan 2024 21:06:04 -0800 (PST)
+Received: from localhost.localdomain (124x33x176x97.ap124.ftth.ucom.ne.jp. [124.33.176.97])
+        by smtp.gmail.com with ESMTPSA id lp17-20020a056a003d5100b006ddd182bf1csm3550372pfb.46.2024.01.27.21.05.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Jan 2024 21:06:03 -0800 (PST)
+Sender: Vincent Mailhol <vincent.mailhol@gmail.com>
+From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org
+Cc: Yury Norov <yury.norov@gmail.com>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Douglas Anderson <dianders@chromium.org>,
+	Kees Cook <keescook@chromium.org>,
+	Petr Mladek <pmladek@suse.com>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Marco Elver <elver@google.com>,
+	Brian Cain <bcain@quicinc.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	linux-m68k@lists.linux-m68k.org,
+	Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v4 0/5] bitops: optimize code and add tests
+Date: Sun, 28 Jan 2024 14:00:06 +0900
+Message-ID: <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr>
+References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Content-Language: en-US
-To: linux-m68k <linux-m68k@lists.linux-m68k.org>
-From: Rob Landley <rob@landley.net>
-Subject: m68k fdpic toolchain?
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Now that we can build fdpic support in the kernel, does a _compiler_ exist?
+This series adds a compile test to make sure that all the bitops
+operations (namely __ffs(), ffs(), ffz(), __fls(), fls(), fls64())
+correctly fold constant expressions given that their argument is also
+a constant expression. The other functions from bitops.h are out of
+scope.
 
-https://lore.kernel.org/linux-mm/20220428033319.239341-1-gerg@linux-m68k.org/T/
+So far, only the n68k and the hexagon architectures lack such
+optimization. To this extend, the first two patches optimize m68k
+architecture, the third and fourth optimize the hexagon architecture
+bitops function.
 
-I built buildroot's mcf5208evb defconfig and booted it under qemu, but it's
-binflt, which I'm not adding to my test system's package dependencies.
+The fifth and final patch adds the compile time tests to assert that
+the constant folding occurs and that the result is accurate.
 
-I've already got an sh2 fdpic test system, but it's on real hardware, not qemu.
-(The toolchain patches for that are at
-https://github.com/richfelker/musl-cross-make/blob/master/patches/binutils-2.33.1/0001-j2.diff
-and
-https://github.com/richfelker/musl-cross-make/blob/master/patches/gcc-11.2.0/0003-j2.diff
-by the way. I'm happy to use similar out-of-tree patches for m68k in the short
-term, if that's what's available...)
+This is tested on arm, arm64, hexagon, m68k, x86 and x86_64. For other
+architectures, I am putting my trust into the kernel test robot to
+send a report if ever one of these still lacks bitops
+optimizations. The kernel test robot did not complain on v3, giving me
+confidence that all architectures are now properly optimized.
+---
 
-Rob
+** Changelog **
+
+v3 -> v4:
+
+  - Only apply the __always_inline to the bit-find functions, do not
+    touch other functions from bitops.h. I discovered that the
+    benchmark done in the v3 was incorrect (refer to the thread for
+    details). The scope was thus narrowed down to the bit-find
+    functions for which I could demonstrate the gain in the benchmark.
+
+  - Add benchmark for hexagon (patch 3/5 and 4/5). Contrarily to the
+    m68k benchmark which is with an allyesconfig, the hexagon
+    benchmark uses a defconfig. The reason is just that the
+    allyesconfig did not work on first try on my environment (even
+    before applying this series), and I did not spent efforts to
+    troubleshoot.
+
+  - Add Geert review tag in patch 2/5. Despite also receiving the tag
+    for patch 1/5, I did not apply due to new changes in that patch.
+
+  - Do not split the lines containing tags.
+
+  Link: https://lore.kernel.org/all/20231217071250.892867-1-mailhol.vincent@wanadoo.fr/
+
+v2 -> v3:
+
+  - Add patches 1/5 and 2/5 to optimize m68k architecture bitops.
+    Thanks to the kernel test robot for reporting!
+
+  - Add patches 3/5 and 4/5 to optimize hexagon architecture bitops.
+    Thanks to the kernel test robot for reporting!
+
+  - Patch 5/5: mark test_bitops_const_eval() as __always_inline, this
+    done, pass n (the test number) as a parameter. Previously, only
+    BITS(10) was tested. Add tests for BITS(0) and BITS(31).
+
+  Link: https://lore.kernel.org/all/20231130102717.1297492-1-mailhol.vincent@wanadoo.fr/
+
+v1 -> v2:
+
+  - Drop the RFC patch. v1 was not ready to be applied on x86 because
+    of pending changes in arch/x86/include/asm/bitops.h. This was
+    finally fixed by Nick in commit 3dae5c43badf ("x86/asm/bitops: Use
+    __builtin_clz{l|ll} to evaluate constant expressions").
+    Thanks Nick!
+
+  - Update the commit description.
+
+  - Introduce the test_const_eval() macro to factorize code.
+
+  - No functional change.
+
+  Link: https://lore.kernel.org/all/20221111081316.30373-1-mailhol.vincent@wanadoo.fr/
+
+Vincent Mailhol (5):
+  m68k/bitops: force inlining of all bit-find functions
+  m68k/bitops: use __builtin_{clz,ctzl,ffs} to evaluate constant
+    expressions
+  hexagon/bitops: force inlining of all bit-find functions
+  hexagon/bitops: use __builtin_{clz,ctzl,ffs} to evaluate constant
+    expressions
+  lib: test_bitops: add compile-time optimization/evaluations assertions
+
+ arch/hexagon/include/asm/bitops.h | 25 +++++++++++++++++++-----
+ arch/m68k/include/asm/bitops.h    | 26 ++++++++++++++++++-------
+ lib/Kconfig.debug                 |  4 ++++
+ lib/test_bitops.c                 | 32 +++++++++++++++++++++++++++++++
+ 4 files changed, 75 insertions(+), 12 deletions(-)
+
+-- 
+2.43.0
+
