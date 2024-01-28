@@ -1,56 +1,56 @@
-Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B63971CA9C
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Jan 2024 05:06:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2697A1EB2F
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Jan 2024 05:06:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706418380; cv=none; b=j6hdLCrUJTFONlZHDt0Lbj+Eu50fygItN6h7WHatNSlQBRbpfWMnvLTvgY1ZtLsC8Eqvjn6gKfKvI1mY/FV1wAUfZUo0V6FbmA9LhMh8jZILRUef3PrYiVOzW7sSWUnBxyiCsFsxWj1Houid/fSkyoO0BTOXyt8R+mY0dlOyaVA=
+	t=1706418383; cv=none; b=Hwa9+V7GTiL9qYED41NWrxUvshIj9Q8RYrF3iBF+9swml2lUwNgavaO4UE5mRzsuvGxfHNKYhrvbcuwC5OvinNoONOcaiWvaNWSs8FPWsc96MVeOv4aAPOJm+VZMOgG6aXL90kbXMlFmN8Qr1Bn2e4/4M15L1R1zXl2jYMXRxbw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706418380; c=relaxed/simple;
-	bh=EUVQyICOpBqVWh6g3IN6x5mNM2NGmg0g/sEBs5QBZ1U=;
+	s=arc-20240116; t=1706418383; c=relaxed/simple;
+	bh=R1pbFLI03IlZKTp/TgcUS71vFBkjz46xTjfOd1hIJ0k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aiG3fi/IKAt7UdesJtH8dRP8lcGieneMCUToHpSBQ/pXVGgsSEmaVN55kBfg0I74vJRSF5NRbqeRMBcTFIdoC2h7mUyIwPft7uf4QA/30XEYGsrjn/fTMHW9tyecC+lNUY0DU2SRiHPU6jKNs41TNTyxH/9oUR4btfr/svUotac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kIu6nAKd; arc=none smtp.client-ip=209.85.161.52
+	 MIME-Version; b=XO7PV3s41/qIV6wzoHClEkHmVdhLUreOc4L42sx4cbJbt2aa7TK9FJEan0NIM+UaN/pqhnoe6UUzvK6E7bIkR0/7vhnl5uuvv4PwoTTCT0ukwgdhIjB0VlagtJcIfNY3gMD3lw/lkO4vFq8SvDAVDDcvuJcMkZXCjBcbTgKBymM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XNkT3M6l; arc=none smtp.client-ip=209.85.161.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kIu6nAKd"
-Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5986d902ae6so1121789eaf.3
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 27 Jan 2024 21:06:17 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XNkT3M6l"
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-59a181a46b6so639926eaf.0
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 27 Jan 2024 21:06:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706418377; x=1707023177; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20230601; t=1706418381; x=1707023181; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GLlJCmhI5JZIPAQYj2G74sUtNrIAZ9HIcrgV/zcgKnA=;
-        b=kIu6nAKdezuoNHyxp7s5FYNA8cSQmc4+RRkIQgQ1vskt4+SZSgOBGi3hEYD/ohAtBY
-         E3wpo497PTBIWF5pc2IIfu4wiImQzMYRIw1l+4ZU5/r0rEbnw/eMsMhT23/CBbCBcF91
-         DNnvpweJk/56YjOTlBXgRHVA6UUgxGW7xkD/TTPCm97QVmhdchS89Ra5RbynRgh0dIOM
-         19jrIt53+v/lvcheqW/OYuW2h9XeqIlDt2UZoPwdyLN8epV9Nx6tJAikFE1cMUZ0T/O3
-         O0zt6d+oJUA/+qZ04WTIoYRtK5VUcTQbc7PuB4qmV1hstywb+DaqK3Xu/0EWYTncpzPV
-         8shw==
+        bh=FQBsNQfE0P3AMOj6B4RUDeOxeQtA43qqvQ0BuQwr7rw=;
+        b=XNkT3M6lwfO2pX5di37f2wmrAVORTS5Aoi0uaIaaHGpfwt3Ut/H9boVyzXV5EqfNSj
+         1j97tP5S3itvtdwmbuuOL+zE4aLE+DiNEI7JPPD5KgMNakS8v3xmEM2YW0IpyVLdReIe
+         qr3wPokz2DH7ErVvBqYINLHxbdJ9NMaU3nkrtUGgBEUAervYv74+p0h+Vk/BgZLEladD
+         7qlFbocK56Id0PywgboO13H9y4qZ8XYhJK8EiLoF1deOyf7cJ4UJJjcYuNddmS2ssGFO
+         nT8DQv5WlEyLH+1NAza5mQGjxQeo54OPgl7h/C99FPjLyZkjir8xC1gdxoIOHe9nwQ+7
+         O26A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706418377; x=1707023177;
+        d=1e100.net; s=20230601; t=1706418381; x=1707023181;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=GLlJCmhI5JZIPAQYj2G74sUtNrIAZ9HIcrgV/zcgKnA=;
-        b=mB/P2JqM296idFmVsZ/0oGrSRmNwyZVR6IxzSLsxICSgxV8zZmPXcMcGCPl46zldtR
-         KfhSez977OlfnRE67tcyLHnPLIXk0MoBfERGAXDunUHjGoXN3vGhrovXO9OisfrnZK+9
-         Y7C5e+VqUMlFYspMWh6QjJE88LhIUYzNoVRQudOKv+kNWilwgBtdDjqqWpFTKJwuUJnd
-         areyqSWl2lbgUg6GCFqj2f1g9BfQKo06rt8r7cf47SwwI/YRCUVYQt4RysgZ4UkEQPw/
-         X+go3cd3LBgQFDPbZ8okCpeLPknpmaDPk4UJf5YyNHhIfCSdzXTaoULU0QVbZdLywQ9a
-         RDWQ==
-X-Gm-Message-State: AOJu0YxcwHdMR9y6nRCXaDgLP7ZiiLqQgkYB08T8OCyFrDtLKMxxfow+
-	od92Sx5AsdelJYODN0Jr1cy4Khpx8OwDuzboOZZcgqAbaJ9r1yfA
-X-Google-Smtp-Source: AGHT+IHoQbPQZIJSI+buf7XdlQZCHJPSEHdvtWV2n+RU3qSWFQbxHhbebOSg/814TJZcUf51VrOmCA==
-X-Received: by 2002:a05:6359:4114:b0:177:2e7:cd54 with SMTP id kh20-20020a056359411400b0017702e7cd54mr3368594rwc.32.1706418376523;
-        Sat, 27 Jan 2024 21:06:16 -0800 (PST)
+        bh=FQBsNQfE0P3AMOj6B4RUDeOxeQtA43qqvQ0BuQwr7rw=;
+        b=QZnsaPq8BcVKUWt7mqDpfx4e6TOoZ8cTExkPgzR+haXyhyFbomh8ab9rabwwZdgFFu
+         z61zX8noOq/UANwPHowkFuWrwxxYLDmLjN/sY0CaM5tnyMMbjiogEPc3qbPuGTOc/xv7
+         Xf58C4FBiYRz0H63nyIBXK8/FTSQE527AH6g07pF40n/dAEN/1NbjbebFIemZxe74R4N
+         ItxJRm/bPOgaBNyshsw4bjLjn94V/OcUwNroEe/AxCLFSKajTGSTX5e6GsuKdhCpIbFj
+         h+su18qyyttoYz+SjBrFQQdoWlrjpg61Dkv2M+jgw9bragQI2qBJf1vwLYVPp9/PkKzb
+         o36w==
+X-Gm-Message-State: AOJu0YyGZiLxJRQdalEDF7UAnkoWmdBk32mlyeGoCXlt60GhQQdVnRGd
+	IN0/TSjyA2zI/YR65/jyhBNv+X2nd25MgtnH9fNxVtLK7YheVVlf
+X-Google-Smtp-Source: AGHT+IEG7nBxPu1DZAQ3x4bvDDnlqVoOR9wWy15hrjJ//5bm1LQ2RgGqogRvkweP/oDf95b7NCqmJQ==
+X-Received: by 2002:a05:6830:4106:b0:6db:b046:2189 with SMTP id w6-20020a056830410600b006dbb0462189mr3439811ott.24.1706418380989;
+        Sat, 27 Jan 2024 21:06:20 -0800 (PST)
 Received: from localhost.localdomain (124x33x176x97.ap124.ftth.ucom.ne.jp. [124.33.176.97])
-        by smtp.gmail.com with ESMTPSA id lp17-20020a056a003d5100b006ddd182bf1csm3550372pfb.46.2024.01.27.21.06.12
+        by smtp.gmail.com with ESMTPSA id lp17-20020a056a003d5100b006ddd182bf1csm3550372pfb.46.2024.01.27.21.06.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Jan 2024 21:06:15 -0800 (PST)
+        Sat, 27 Jan 2024 21:06:20 -0800 (PST)
 Sender: Vincent Mailhol <vincent.mailhol@gmail.com>
 From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 To: Andrew Morton <akpm@linux-foundation.org>,
@@ -70,9 +70,9 @@ Cc: Yury Norov <yury.norov@gmail.com>,
 	"Paul E . McKenney" <paulmck@kernel.org>,
 	linux-m68k@lists.linux-m68k.org,
 	Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v4 3/5] hexagon/bitops: force inlining of all bit-find functions
-Date: Sun, 28 Jan 2024 14:00:09 +0900
-Message-ID: <20240128050449.1332798-4-mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v4 4/5] hexagon/bitops: use __builtin_{clz,ctzl,ffs} to evaluate constant expressions
+Date: Sun, 28 Jan 2024 14:00:10 +0900
+Message-ID: <20240128050449.1332798-5-mailhol.vincent@wanadoo.fr>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr>
 References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr>
@@ -85,82 +85,81 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The inline keyword actually does not guarantee that the compiler will
-inline a functions. Whenever the goal is to actually inline a
-function, __always_inline should always be preferred instead.
+The compiler is not able to do constant folding on "asm volatile" code.
 
-__always_inline is also needed for further optimizations which will
-come up in a follow-up patch.
+Evaluate whether or not the function argument is a constant expression
+and if this is the case, return an equivalent builtin expression.
 
-Inline all the bit-find function which have a custom hexagon assembly
-implementation, namely: __ffs(), ffs(), ffz(), __fls(), fls().
+On linux 6.7 with an allyesconfig and clang 17.0.6, it saves roughly
+4 KB.
 
-On linux v6.7 defconfig with clang 17.0.6, it does not impact the
-final size, meaning that, overall, those function were already inlined
-on modern clangs:
-
-  $ size --format=GNU vmlinux.before vmlinux.after vmlinux.final
+  $ size --format=GNU vmlinux.before vmlinux.after
         text       data        bss      total filename
      4827900    1798340     364057    6990297 vmlinux.before
-     4827900    1798340     364057    6990297 vmlinux.after
+     4827072    1795060     364057    6986189 vmlinux.after
 
-Reference: commit 8dd5032d9c54 ("x86/asm/bitops: Force inlining of test_and_set_bit and friends")
-Link: https://git.kernel.org/torvalds/c/8dd5032d9c54
+Reference: commit fdb6649ab7c1 ("x86/asm/bitops: Use __builtin_ctzl() to evaluate constant expressions")
+Link: https://git.kernel.org/torvalds/c/fdb6649ab7c1
 
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 ---
- arch/hexagon/include/asm/bitops.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/hexagon/include/asm/bitops.h | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
 diff --git a/arch/hexagon/include/asm/bitops.h b/arch/hexagon/include/asm/bitops.h
-index 160d8f37fa1a..e856d6dbfe16 100644
+index e856d6dbfe16..c74a639c84f3 100644
 --- a/arch/hexagon/include/asm/bitops.h
 +++ b/arch/hexagon/include/asm/bitops.h
-@@ -200,7 +200,7 @@ arch_test_bit_acquire(unsigned long nr, const volatile unsigned long *addr)
-  *
-  * Undefined if no zero exists, so code should check against ~0UL first.
-  */
--static inline long ffz(int x)
-+static __always_inline long ffz(int x)
+@@ -204,6 +204,9 @@ static __always_inline long ffz(int x)
  {
  	int r;
  
-@@ -217,7 +217,7 @@ static inline long ffz(int x)
-  * This is defined the same way as ffs.
-  * Note fls(0) = 0, fls(1) = 1, fls(0x80000000) = 32.
-  */
--static inline int fls(unsigned int x)
-+static __always_inline int fls(unsigned int x)
++	if (__builtin_constant_p(x))
++		return __builtin_ctzl(~x);
++
+ 	asm("%0 = ct1(%1);\n"
+ 		: "=&r" (r)
+ 		: "r" (x));
+@@ -221,6 +224,9 @@ static __always_inline int fls(unsigned int x)
  {
  	int r;
  
-@@ -238,7 +238,7 @@ static inline int fls(unsigned int x)
-  * the libc and compiler builtin ffs routines, therefore
-  * differs in spirit from the above ffz (man ffs).
-  */
--static inline int ffs(int x)
-+static __always_inline int ffs(int x)
++	if (__builtin_constant_p(x))
++		return x ? BITS_PER_TYPE(x) - __builtin_clz(x) : 0;
++
+ 	asm("{ %0 = cl0(%1);}\n"
+ 		"%0 = sub(#32,%0);\n"
+ 		: "=&r" (r)
+@@ -242,6 +248,9 @@ static __always_inline int ffs(int x)
  {
  	int r;
  
-@@ -260,7 +260,7 @@ static inline int ffs(int x)
-  * bits_per_long assumed to be 32
-  * numbering starts at 0 I think (instead of 1 like ffs)
-  */
--static inline unsigned long __ffs(unsigned long word)
-+static __always_inline unsigned long __ffs(unsigned long word)
++	if (__builtin_constant_p(x))
++		return __builtin_ffs(x);
++
+ 	asm("{ P0 = cmp.eq(%1,#0); %0 = ct0(%1);}\n"
+ 		"{ if (P0) %0 = #0; if (!P0) %0 = add(%0,#1);}\n"
+ 		: "=&r" (r)
+@@ -264,6 +273,9 @@ static __always_inline unsigned long __ffs(unsigned long word)
  {
  	int num;
  
-@@ -278,7 +278,7 @@ static inline unsigned long __ffs(unsigned long word)
-  * Undefined if no set bit exists, so code should check against 0 first.
-  * bits_per_long assumed to be 32
-  */
--static inline unsigned long __fls(unsigned long word)
-+static __always_inline unsigned long __fls(unsigned long word)
++	if (__builtin_constant_p(word))
++		return __builtin_ctzl(word);
++
+ 	asm("%0 = ct0(%1);\n"
+ 		: "=&r" (num)
+ 		: "r" (word));
+@@ -282,6 +294,9 @@ static __always_inline unsigned long __fls(unsigned long word)
  {
  	int num;
  
++	if (__builtin_constant_p(word))
++		return BITS_PER_LONG - 1 - __builtin_clzl(word);
++
+ 	asm("%0 = cl0(%1);\n"
+ 		"%0 = sub(#31,%0);\n"
+ 		: "=&r" (num)
 -- 
 2.43.0
 
