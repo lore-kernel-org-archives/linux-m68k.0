@@ -1,98 +1,106 @@
-Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9F1D1EB22
-	for <linux-m68k@vger.kernel.org>; Sun, 28 Jan 2024 10:20:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE9FB208AF
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Jan 2024 12:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706437249; cv=none; b=g42Brf5OLqxx9Iz33fSsRhLE95Me5ldqb3970LsXT3A5Ei/4z3HFUqkpVRlwtHGX1LWb9/5YnsyTLNHVWUo3FQ8OX3gD8xDzRGaYg3XGu/xtuV4oy/6QY0pitGFBTts4bUE5CXl46D2AOIEMt9Dl/gCS2lhFqFr2l5T7QAkjn7o=
+	t=1706444235; cv=none; b=spHLmYckRH6ckHJN41OWv7HNVn/oVHjco/QYFpYOjzWLx130LUqhJDnIN12L1qGr0MAOn9oheWsMLxds37Po0/JWWGLn1tjZSUAdIudmO8Cu8aSdoIwn6SAnrlonumdPCzNItAnBJd0/V733FveGF2RR3nKHmEOOp+mNhFjtfss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706437249; c=relaxed/simple;
-	bh=is4HbxsUr3AZqTf5FMdJUZvd/6nJY7IBbKqWufkGY2k=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=LB7+pDP6sNyJICC1BfudCP6/45wi74n1/jPE5cHsxyuWynWWsZzEgVDg9aeX0PChYa5lEL5QDccpT8coscWtFn9T2rfwcSH2rQKbw0JztW/F3KH9fU6fTXGui9sutTlq6U5Bq2D7/C7xjnzjcdexToe25R0Tmps/yjrMpOaAiwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=landley.net; spf=none smtp.mailfrom=landley.net; dkim=pass (2048-bit key) header.d=landley-net.20230601.gappssmtp.com header.i=@landley-net.20230601.gappssmtp.com header.b=zZtAglif; arc=none smtp.client-ip=209.85.167.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=landley.net
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=landley.net
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=landley-net.20230601.gappssmtp.com header.i=@landley-net.20230601.gappssmtp.com header.b="zZtAglif"
-Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3bbbc6bcc78so1739893b6e.1
-        for <linux-m68k@vger.kernel.org>; Sun, 28 Jan 2024 02:20:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=landley-net.20230601.gappssmtp.com; s=20230601; t=1706437247; x=1707042047; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ETx8KXuNp/J85XIzEUyNHHfqjDsw3dfBnNYZ/3vNj10=;
-        b=zZtAglifD0ETD2y4WBivP558+aIjiKKxD2I/iDkSLCHJY3/yIpgz9s1z9/vH0q44GG
-         4GHLkKa7fYMLxJnmZru+eKpdyQZs7bglKZhb3XXBgSbR3ccYsfQdN0grag298NnT23lk
-         rKTgw/EaDYLBg3/CpYPJ7BZHqMjOYr/UVrFqvPNX0vKrKBh3B8+AQg4QprnFVJhUTH2U
-         GO9nuQK/46XT9w0O8G1L7sM359XLg8tronjbRzAxxrDPL06CNzlbDoQ1lFIqw7K/xwDM
-         yOSFeasz/s+4/AAQmYJuRmLG5A2AbZ19owc4jd40vA/UWoStkx1el+mIqmwR6wijOwuT
-         P65g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706437247; x=1707042047;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ETx8KXuNp/J85XIzEUyNHHfqjDsw3dfBnNYZ/3vNj10=;
-        b=AWO+KF+rE6rBcznShs+JI1fLYxqrRr2GBn6eoJvD3x6JXo3F4uZvXvBPtYAFd38k9u
-         9tW4O6GzgwIBRYcvGXJuw4ZxTtTlwtRm+kQZdgBTp25Q1pK2+Lm/CqgDqg3pL7D5S+Zu
-         zM9KN7XIADDxRzle9I9YDcdEYGoK4ngsFpJoqHAlu8/DpD6A8Nwn9Q3su05pePdcAyEK
-         1FqFUZ/qZzrfX0h+3KqfAQsbewvHkcT2AEKu9FLlfySGZMFa1dp7eBGpP5dAx3u3duIh
-         g5msxC6u8syQR3h6fc5xTLS6VP/g65iRsVXjgWEZIVJe2F1kVLHH359JgAnXd8xmtLbT
-         JRVA==
-X-Gm-Message-State: AOJu0YwJiFMkqbQd2DsJHdwgeMDX6vHKvJ6QHuBfIf+7r0oToQTmIPXW
-	HUdicKuMdoda/HdSkpgerG/t5IPBucI4AkKaRgQ+czi0PS89EfD1uLGzdX/sWlo1JFGz3CfPWn4
-	3
-X-Google-Smtp-Source: AGHT+IFXttHRBZVDyOsgrB7/uO/atrzEk712Iy1RGRNQRpVuosKmu6PInSmFWAGHimpp5sEAbcWqTQ==
-X-Received: by 2002:a05:6808:148b:b0:3be:2e20:af9d with SMTP id e11-20020a056808148b00b003be2e20af9dmr2347093oiw.8.1706437246762;
-        Sun, 28 Jan 2024 02:20:46 -0800 (PST)
-Received: from [192.168.1.4] ([136.62.51.249])
-        by smtp.gmail.com with ESMTPSA id l7-20020a544507000000b003bdffb48333sm833681oil.35.2024.01.28.02.20.46
-        for <linux-m68k@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Jan 2024 02:20:46 -0800 (PST)
-Message-ID: <18232799-792d-e5c4-5483-00e84b8bd530@landley.net>
-Date: Sun, 28 Jan 2024 04:27:59 -0600
+	s=arc-20240116; t=1706444235; c=relaxed/simple;
+	bh=SozXLh3KenyMR0qcRmmuAZrWrBYZ30sZ1xNaH0/AzYQ=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=Wh6jZqxNpLb0lsOdrbxEW/bAm1JwpFwzHyd7K2H9cA4e7qTYDi7LfvrscBRkHeiZqJVxyqIivx/qeeAgQC/WvBZvLkE9XUfomjf0s4WXsj9bw4HJJvnDkyhfLdKIYItDsbD0sHn0MAwwvt6YLb4nkjLWBbAKkbEwKra6lojxaDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-275--Xf6UUp_NjOr1vM6gW-ukg-1; Sun, 28 Jan 2024 12:17:05 +0000
+X-MC-Unique: -Xf6UUp_NjOr1vM6gW-ukg-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 28 Jan
+ 2024 12:16:42 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sun, 28 Jan 2024 12:16:41 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Vincent MAILHOL' <mailhol.vincent@wanadoo.fr>, Finn Thain
+	<fthain@linux-m68k.org>
+CC: Andrew Morton <akpm@linux-foundation.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, Yury Norov <yury.norov@gmail.com>, "Nick
+ Desaulniers" <ndesaulniers@google.com>, Douglas Anderson
+	<dianders@chromium.org>, Kees Cook <keescook@chromium.org>, Petr Mladek
+	<pmladek@suse.com>, Randy Dunlap <rdunlap@infradead.org>, Zhaoyang Huang
+	<zhaoyang.huang@unisoc.com>, Geert Uytterhoeven <geert+renesas@glider.be>,
+	Marco Elver <elver@google.com>, Brian Cain <bcain@quicinc.com>, "Geert
+ Uytterhoeven" <geert@linux-m68k.org>, Matthew Wilcox <willy@infradead.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>, "linux-m68k@lists.linux-m68k.org"
+	<linux-m68k@lists.linux-m68k.org>
+Subject: RE: [PATCH v4 2/5] m68k/bitops: use __builtin_{clz,ctzl,ffs} to
+ evaluate constant expressions
+Thread-Topic: [PATCH v4 2/5] m68k/bitops: use __builtin_{clz,ctzl,ffs} to
+ evaluate constant expressions
+Thread-Index: AQHaUbL1xJNZnFSfqkuoXGWoPFOF8LDvIt6w
+Date: Sun, 28 Jan 2024 12:16:41 +0000
+Message-ID: <9d9be9dbe92f43d2a95d11d6b2f434c1@AcuMS.aculab.com>
+References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr>
+ <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr>
+ <20240128050449.1332798-3-mailhol.vincent@wanadoo.fr>
+ <c47fedaf-cdc9-f970-460f-d2ee7e806da4@linux-m68k.org>
+ <CAMZ6RqKj207uv5AF_fvb65nhCM32V=VAQXsUGLNmbeXYKPvZJg@mail.gmail.com>
+In-Reply-To: <CAMZ6RqKj207uv5AF_fvb65nhCM32V=VAQXsUGLNmbeXYKPvZJg@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-To: linux-m68k@vger.kernel.org
-From: Rob Landley <rob@landley.net>
-Subject: m68k fdpic toolchain?
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 
-Now that we can build coldfire fdpic support in the kernel, does a _compiler_ exist?
+RnJvbTogVmluY2VudCBNQUlMSE9MDQo+IFNlbnQ6IDI4IEphbnVhcnkgMjAyNCAwNjoyNw0KPiAN
+Cj4gT24gU3VuLiAyOCBKYW4uIDIwMjQgYXQgMTQ6MzksIEZpbm4gVGhhaW4gPGZ0aGFpbkBsaW51
+eC1tNjhrLm9yZz4gd3JvdGU6DQo+ID4gT24gU3VuLCAyOCBKYW4gMjAyNCwgVmluY2VudCBNYWls
+aG9sIHdyb3RlOg0KPiA+DQo+ID4gPiBUaGUgY29tcGlsZXIgaXMgbm90IGFibGUgdG8gZG8gY29u
+c3RhbnQgZm9sZGluZyBvbiAiYXNtIHZvbGF0aWxlIiBjb2RlLg0KPiA+ID4NCj4gPiA+IEV2YWx1
+YXRlIHdoZXRoZXIgb3Igbm90IHRoZSBmdW5jdGlvbiBhcmd1bWVudCBpcyBhIGNvbnN0YW50IGV4
+cHJlc3Npb24NCj4gPiA+IGFuZCBpZiB0aGlzIGlzIHRoZSBjYXNlLCByZXR1cm4gYW4gZXF1aXZh
+bGVudCBidWlsdGluIGV4cHJlc3Npb24uDQo+ID4gPg0KLi4uDQo+ID4gSWYgdGhlIGJ1aWx0aW4g
+aGFzIHRoZSBkZXNpcmVkIGJlaGF2aW91ciwgd2h5IGRvIHdlIHJlaW1wbGVtZW50IGl0IGluIGFz
+bT8NCj4gPiBTaG91bGRuJ3Qgd2UgYWJhbmRvbiBvbmUgb3IgdGhlIG90aGVyIHRvIGF2b2lkIGhh
+dmluZyB0byBwcm92ZSAoYW5kDQo+ID4gbWFpbnRhaW4pIHRoZWlyIGVxdWl2YWxlbmNlPw0KPiAN
+Cj4gVGhlIGFzbSBpcyBtZWFudCB0byBwcm9kdWNlIGJldHRlciByZXN1bHRzIHdoZW4gdGhlIGFy
+Z3VtZW50IGlzIG5vdCBhDQo+IGNvbnN0YW50IGV4cHJlc3Npb24uIEJlbG93IGNvbW1pdCBpcyBh
+IGdvb2QgaWxsdXN0cmF0aW9uIG9mIHdoeSB3ZQ0KPiB3YW50IGJvdGggdGhlIGFzbSBhbmQgdGhl
+IGJ1aWx0Og0KPiANCj4gICBodHRwczovL2dpdC5rZXJuZWwub3JnL3RvcnZhbGRzL2MvMTQ2MDM0
+ZmVkNmVlDQo+IA0KPiBJIHNheSAiaXMgbWVhbnQiLCBiZWNhdXNlIEkgZGlkIG5vdCBhc3NlcnQg
+d2hldGhlciB0aGlzIGlzIHN0aWxsIHRydWUuDQo+IE5vdGUgdGhhdCB0aGVyZSBhcmUgc29tZSBj
+YXNlcyBpbiB3aGljaCB0aGUgYXNtIGlzIG5vdCBiZXR0ZXIgYW55bW9yZSwNCj4gZm9yIGV4YW1w
+bGUsIHNlZSB0aGlzIHRocmVhZDoNCj4gDQo+ICAgaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGtt
+bC8yMDIyMTEwNjA5NTEwNi44NDkxNTQtMi1tYWlsaG9sLnZpbmNlbnRAd2FuYWRvby5mci8NCj4g
+DQo+IGJ1dCBJIGRpZCBub3QgcmVjZWl2ZSBtb3JlIGFuc3dlcnMsIHNvIEkgc3RvcHBlZCB0cnlp
+bmcgdG8gaW52ZXN0aWdhdGUNCj4gdGhlIHN1YmplY3QuDQo+IA0KPiBJZiB5b3Ugd2FudCwgeW91
+IGNhbiBjaGVjayB0aGUgcHJvZHVjZWQgYXNzZW1ibHkgb2YgYm90aCB0aGUgYXNtIGFuZA0KPiB0
+aGUgYnVpbHRpbiBmb3IgYm90aCBjbGFuZyBhbmQgZ2NjLCBhbmQgaWYgdGhlIGJ1aWx0aW4gaXMg
+YWx3YXlzDQo+IGVpdGhlciBiZXR0ZXIgb3IgZXF1aXZhbGVudCwgdGhlbiB0aGUgYXNtIGNhbiBi
+ZSByZW1vdmVkLiBUaGF0IHNhaWQsIEkNCj4gYW0gbm90IHNwZW5kaW5nIG1vcmUgZWZmb3J0IHRo
+ZXJlIGFmdGVyIGJlaW5nIGdob3N0ZWQgb25jZSAoYy5mLiBhYm92ZQ0KPiB0aHJlYWQpLg0KDQpJ
+IGRvbid0IHNlZSBhbnkgZXhhbXBsZSB0aGVyZSBvZiB3aHkgdGhlIF9fYnVpbHRpbl94eHgoKSB2
+ZXJzaW9ucw0Kc2hvdWxkbid0IGJlIHVzZWQgYWxsIHRoZSB0aW1lLg0KKFRoZSB4ODYtNjQgYXNt
+IGJsb2NrcyBjb250YWluIHVucmVsYXRlZCBjYWxsIGluc3RydWN0aW9ucyBhbmQgb2JqZHVtcA0K
+d2Fzbid0IHBhc3NlZCAtZCB0byBzaG93IHdoYXQgdGhleSB3ZXJlLg0KT25lIGV2ZW4gaGFzIHRo
+ZSAncmV0dXJuIHRodW5rIHBlc3NpbWlzYXRpb24gc2hvd2luZy4pDQoNCkkgYWN0dWFsbHkgc3Vz
+cGVjdCB0aGUgYXNtIHZlcnNpb25zIHByZWRhdGUgdGhlIGJ1aWx0aW5zLg0KDQpEb2VzIChvciBj
+YW4pIHRoZSBvdXRlciBjb21tb24gaGVhZGVyIHVzZSB0aGUgX19idWlsdGluIGZ1bmN0aW9ucw0K
+aWYgbm8gYXNtIHZlcnNpb24gZXhpc3RzPw0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRy
+ZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1L
+MSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-https://lore.kernel.org/linux-mm/20220428033319.239341-1-gerg@linux-m68k.org/T/
-
-I built buildroot's mcf5208evb defconfig and booted it under qemu, but it's
-binflt, which I'm not adding to my test system's package dependencies. According
-to fs/Kconfig.binfmt:
-
- config BINFMT_ELF_FDPIC
-        bool "Kernel support for FDPIC ELF binaries"
-        default y if !BINFMT_ELF
-        depends on ARM || ((M68K || RISCV || SUPERH || XTENSA) && !MMU)
-
-So I can select it, but in gcc's current git "grep -irl fdpic gcc/config" only
-has hits in the sh, arm, frv, and bfin directories.
-
-Two of those three (frv and blackfin) were jettisoned by linux-kernel due to
-loss of expertise in the development community. I've already got an sh2 fdpic
-test system, but only on real hardware, not qemu (which decided to add
-qemu-system-sh4 instead of qemu-system-sh way back when, and thus never
-populated the rest of the family).
-
-I'm happy to use out-of-tree patches for m68k if that's what's available, but I
-haven't been able to find any. I assume that enabling fdpic means the ABI was
-documented specifying the registers for the extra segments...?
-
-Rob
