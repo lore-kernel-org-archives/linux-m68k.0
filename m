@@ -1,87 +1,148 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BE0A15A4
-	for <linux-m68k@vger.kernel.org>; Sun, 28 Jan 2024 12:55:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B41623746
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Jan 2024 13:27:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706446523; cv=none; b=Hd9ylgCKhHfPWkblkTbkbsyLlstd+rSZP699mLMS4/2Lrlb6PNtmhm66N/upT/Bs7Bn8WDQz7Bt7o2PGbNO4fYUhppoCgRxTBoN0uGqL+0PcuYNQ52oSpUTNcDWIqRLXbX05ebIuOPMOCT8sfei0ol6PesvVgWAKZ8Eu9JnXyNk=
+	t=1706448468; cv=none; b=R9PsAz+m/EhuSc8c3RMwdbsG19LUJlJmE4+4OnMjx9XOKNMVYOz9ucxzsed8c0QpZCCYuAaLWjLYUdp0z1HWinamKyl/UyJ58xSPTVGO745uBEQ7os9dAAIIeoEhyXFkLHlAsCeJNFudxlPqIgDdUqhUPZYLA7xI1W3QtCohV8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706446523; c=relaxed/simple;
-	bh=rx2HFDDSP/mcKBkegRkCspsIZWFLe2J4Y1/jcDqTvt8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=MIpzy6yT9n6shQbHLwWMY2MI96MYJEuUQhA7MWJTdEfQKch5iuV4e0SaR2czRH89+k9hhNKm5rNXrNUpCkwv9knFUgwIaaHob061KIIgpq7VaIj7QXibUC4P52xocNa2rTWH0ptCuX6ofFVTgO2RJRPU3WklFt/ekb5FbZKv9T0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ahj1MR3V; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ahj1MR3V"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E222C43399;
-	Sun, 28 Jan 2024 12:55:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706446522;
-	bh=rx2HFDDSP/mcKBkegRkCspsIZWFLe2J4Y1/jcDqTvt8=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=ahj1MR3VgK6lE9Pd1x0y1DsYD7zwmSemxeewoHuQ33jg9lzNBpMT1mBCr1EFLjnaY
-	 E4QZUnlhgnI+8KSb1fRhLk86sh3MmNCZvDGBy86Y4EzF75blFHiARWcT0tQzuTS5or
-	 koxB7M6c6yf0emfr8u0yw2v7nO7CPEzjSHJthQsCuAxwuDeHKaidoiic+0a2rrRGLQ
-	 zEbKSwklXMj96aXotrwpWvvXMkUcZHIBWTNKUjv0YRaZbKnieV8yVfL94r1szroSoD
-	 XlNb36sH63262YIPrpdDsKkTffYe2iXImmNJEqJeFY82//c6M59Ryyd4rRZJGahSaE
-	 +9rqVWZn6vwIg==
-Message-ID: <5534a940-2346-4911-8395-aeefd3d50513@kernel.org>
-Date: Sun, 28 Jan 2024 22:55:19 +1000
+	s=arc-20240116; t=1706448468; c=relaxed/simple;
+	bh=69eUiVcVjXP8yf48feB6h5T6KQMxfGOSRyaTvN+mWZM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aqn7AjzTMTXVqHRKjwGwBWEXLTuQ7bm24HTHiUrsJDTBGLtjXzYLzxOJEurWbsHt/+9SvaGWoVZZxGH+fXu1JStW+m4BmRwffzy6/tKD5m3LJKmZHyNimZgrmB9hHWqLbL9PtszzRzKBroBd6uvw4kI6tiEeTRow0zFl30k62jc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-29567ec5a6cso90822a91.0
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Jan 2024 05:27:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706448465; x=1707053265;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mBSmUuPziI7/ip1tnYbDPWClv7tgzD2lgVrD1csa1/c=;
+        b=Rcejs15O08JqTJgxSY9SjDNh5xnbyIyfjIOWeUg1+NMP++k5pGl8G+BVmxgktaZ2Gy
+         Xqrzu9UunxGAm5e8HKpiwrHUt4vnHJ9hQOdRy90ltBpyehI8e8f0rblkjjUb+BJXO7/O
+         vZvWrHH/thXtUCk1hzn9NYv0WlRLUEVGu16sCUfWstitJjMQvdCw+Rvh+1o6dLLnMuee
+         yP+BJppvbZO+pySIydMtb9JQ5AqXGDG083zEEzPWVNawqfC/2u8Ks7LD1HkJ2HxrsIeh
+         UhBWc9VtUOy5yI3XB64tlfj5/KYu+urOJRpUXKOE/VO+GsNZm8CXOBifN7HHhUKkjAfS
+         rbhw==
+X-Gm-Message-State: AOJu0YzfLda6g8H3L/U+bSy2nZbYV+D/tGCDxC4Mwih/MyxfKEyH/RQS
+	r0tVxqRZrwduyVowAms4Xhb1erLr7/qVGoQhVzjrcMrJtX14LdZghqADZD3YhOLJCRAG2+/nzgO
+	knqKOiKx6Jo5rKzIINl0OcW74UYg=
+X-Google-Smtp-Source: AGHT+IHW0ZpztywsQvrDPSCwTjVGTYnJgRy2DkCv0hgE9/FYo3FSlfokv9bExQHNddeY613XOZtAJtBw5wKNj+ZPyt4=
+X-Received: by 2002:a17:90b:3c8:b0:28d:c2ec:8950 with SMTP id
+ go8-20020a17090b03c800b0028dc2ec8950mr4703902pjb.2.1706448465441; Sun, 28 Jan
+ 2024 05:27:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: m68k fdpic toolchain?
-Content-Language: en-US
-To: Rob Landley <rob@landley.net>, linux-m68k@vger.kernel.org
-References: <18232799-792d-e5c4-5483-00e84b8bd530@landley.net>
-From: Greg Ungerer <gerg@kernel.org>
-In-Reply-To: <18232799-792d-e5c4-5483-00e84b8bd530@landley.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr>
+ <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr> <20240128050449.1332798-3-mailhol.vincent@wanadoo.fr>
+ <c47fedaf-cdc9-f970-460f-d2ee7e806da4@linux-m68k.org> <CAMZ6RqKj207uv5AF_fvb65nhCM32V=VAQXsUGLNmbeXYKPvZJg@mail.gmail.com>
+ <9d9be9dbe92f43d2a95d11d6b2f434c1@AcuMS.aculab.com>
+In-Reply-To: <9d9be9dbe92f43d2a95d11d6b2f434c1@AcuMS.aculab.com>
+From: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date: Sun, 28 Jan 2024 22:27:33 +0900
+Message-ID: <CAMZ6Rq+RnY16sREhAZ6AFn3sz1SuPsKqhW-m0TrrDz1hd=vNOA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/5] m68k/bitops: use __builtin_{clz,ctzl,ffs} to
+ evaluate constant expressions
+To: David Laight <David.Laight@aculab.com>
+Cc: Finn Thain <fthain@linux-m68k.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Yury Norov <yury.norov@gmail.com>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Douglas Anderson <dianders@chromium.org>, 
+	Kees Cook <keescook@chromium.org>, Petr Mladek <pmladek@suse.com>, 
+	Randy Dunlap <rdunlap@infradead.org>, Zhaoyang Huang <zhaoyang.huang@unisoc.com>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Marco Elver <elver@google.com>, 
+	Brian Cain <bcain@quicinc.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	Matthew Wilcox <willy@infradead.org>, "Paul E . McKenney" <paulmck@kernel.org>, 
+	"linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 
+On Sun. 28 janv. 2024 at 21:16, David Laight <David.Laight@aculab.com> wrote:
+> From: Vincent MAILHOL
+> > Sent: 28 January 2024 06:27
+> >
+> > On Sun. 28 Jan. 2024 at 14:39, Finn Thain <fthain@linux-m68k.org> wrote:
+> > > On Sun, 28 Jan 2024, Vincent Mailhol wrote:
+> > >
+> > > > The compiler is not able to do constant folding on "asm volatile" code.
+> > > >
+> > > > Evaluate whether or not the function argument is a constant expression
+> > > > and if this is the case, return an equivalent builtin expression.
+> > > >
+> ...
+> > > If the builtin has the desired behaviour, why do we reimplement it in asm?
+> > > Shouldn't we abandon one or the other to avoid having to prove (and
+> > > maintain) their equivalence?
+> >
+> > The asm is meant to produce better results when the argument is not a
+> > constant expression. Below commit is a good illustration of why we
+> > want both the asm and the built:
+> >
+> >   https://git.kernel.org/torvalds/c/146034fed6ee
+> >
+> > I say "is meant", because I did not assert whether this is still true.
+> > Note that there are some cases in which the asm is not better anymore,
+> > for example, see this thread:
+> >
+> >   https://lore.kernel.org/lkml/20221106095106.849154-2-mailhol.vincent@wanadoo.fr/
+> >
+> > but I did not receive more answers, so I stopped trying to investigate
+> > the subject.
+> >
+> > If you want, you can check the produced assembly of both the asm and
+> > the builtin for both clang and gcc, and if the builtin is always
+> > either better or equivalent, then the asm can be removed. That said, I
+> > am not spending more effort there after being ghosted once (c.f. above
+> > thread).
+>
+> I don't see any example there of why the __builtin_xxx() versions
+> shouldn't be used all the time.
+> (The x86-64 asm blocks contain unrelated call instructions and objdump
+> wasn't passed -d to show what they were.
+> One even has the 'return thunk pessimisation showing.)
 
-On 28/1/24 20:27, Rob Landley wrote:
-> Now that we can build coldfire fdpic support in the kernel, does a _compiler_ exist?
+Fair. My goal was not to point to the assembly code but to this sentence:
 
-No, no fdopic support has been added to bgcc for m68k/coldfire.
+  However, for non constant expressions, the kernel's ffs() asm
+  version remains better for x86_64 because, contrary to GCC, it
+  doesn't emit the CMOV assembly instruction
 
+I should have been more clear. Sorry for that.
 
-> https://lore.kernel.org/linux-mm/20220428033319.239341-1-gerg@linux-m68k.org/T/
-> 
-> I built buildroot's mcf5208evb defconfig and booted it under qemu, but it's
-> binflt, which I'm not adding to my test system's package dependencies. According
-> to fs/Kconfig.binfmt:
-> 
->   config BINFMT_ELF_FDPIC
->          bool "Kernel support for FDPIC ELF binaries"
->          default y if !BINFMT_ELF
->          depends on ARM || ((M68K || RISCV || SUPERH || XTENSA) && !MMU)
-> 
-> So I can select it, but in gcc's current git "grep -irl fdpic gcc/config" only
-> has hits in the sh, arm, frv, and bfin directories.
+But the fact remains, on x86, some of the asm produced more optimized
+code than the builtin.
 
-As-is today you can load and run PIE ELF binaries using this support.
-No additional changes to binutils or gcc required for that.
+> I actually suspect the asm versions predate the builtins.
 
-Regards
-Greg
+This seems true. The __bultins were introduced in:
 
+  generic: Implement generic ffs/fls using __builtin_* functions
+  https://git.kernel.org/torvalds/c/048fa2df92c3
 
+when the asm implementation already existed in m68k.
 
-> Two of those three (frv and blackfin) were jettisoned by linux-kernel due to
-> loss of expertise in the development community. I've already got an sh2 fdpic
-> test system, but only on real hardware, not qemu (which decided to add
-> qemu-system-sh4 instead of qemu-system-sh way back when, and thus never
-> populated the rest of the family).
-> 
-> I'm happy to use out-of-tree patches for m68k if that's what's available, but I
-> haven't been able to find any. I assume that enabling fdpic means the ABI was
-> documented specifying the registers for the extra segments...?
-> 
-> Rob
-> 
+> Does (or can) the outer common header use the __builtin functions
+> if no asm version exists?
+
+Yes, this would be extremely easy. You just need to
+
+  #include/asm-generic/bitops/builtin-__ffs.h
+  #include/asm-generic/bitops/builtin-ffs.h
+  #include/asm-generic/bitops/builtin-__fls.h
+  #include/asm-generic/bitops/builtin-fls.h
+
+and remove all the asm implementations. If you give me your green
+light, I can do that change. This is trivial. The only thing I am not
+ready to do is to compare the produced assembly code and confirm
+whether or not it is better to remove asm code.
+
+Thoughts?
+
+Yours sincerely,
+Vincent Mailhol
