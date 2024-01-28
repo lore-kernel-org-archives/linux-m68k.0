@@ -1,56 +1,56 @@
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2697A1EB2F
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Jan 2024 05:06:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25C7B208CB
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Jan 2024 05:06:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706418383; cv=none; b=Hwa9+V7GTiL9qYED41NWrxUvshIj9Q8RYrF3iBF+9swml2lUwNgavaO4UE5mRzsuvGxfHNKYhrvbcuwC5OvinNoONOcaiWvaNWSs8FPWsc96MVeOv4aAPOJm+VZMOgG6aXL90kbXMlFmN8Qr1Bn2e4/4M15L1R1zXl2jYMXRxbw=
+	t=1706418387; cv=none; b=V3X2MUFwQxsA1bAb4VoLE3DHNh4DwrlIkoZAYAHgYS84asR67287sR+bI+H0HVhdXd7Oz/Oa7Q3BLhZhWmTDekSxs4LxMZxKYvF5LU+eOuJbeoZvltuM9Zf2dHuSiMHLChkR53wHW7jg+QdLfgAUAPmoPc4ULGcTU+EPlb1fw6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706418383; c=relaxed/simple;
-	bh=R1pbFLI03IlZKTp/TgcUS71vFBkjz46xTjfOd1hIJ0k=;
+	s=arc-20240116; t=1706418387; c=relaxed/simple;
+	bh=sqYZMDlKDRUfnljor6SGKDrcquN71PTrtDOFGVVMCyI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XO7PV3s41/qIV6wzoHClEkHmVdhLUreOc4L42sx4cbJbt2aa7TK9FJEan0NIM+UaN/pqhnoe6UUzvK6E7bIkR0/7vhnl5uuvv4PwoTTCT0ukwgdhIjB0VlagtJcIfNY3gMD3lw/lkO4vFq8SvDAVDDcvuJcMkZXCjBcbTgKBymM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XNkT3M6l; arc=none smtp.client-ip=209.85.161.41
+	 MIME-Version; b=kScuWIbZS/MDr6Y4O0+XdVqoeuTLgpowE/5frefYdC4KJUdvdSl0vx3XWRroAPDa9MXOtERHyMqJ5vu8hWFtBf1QvFTjiWylQEYkQ7QHUzNmesxcFgWXwntyAElH4gWtYOl0zJAE7IFd/GWf9dZVeI4tz5KzWXOX1GPh3mDZCYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OzZIgKLI; arc=none smtp.client-ip=209.85.167.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XNkT3M6l"
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-59a181a46b6so639926eaf.0
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 27 Jan 2024 21:06:21 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OzZIgKLI"
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3bbb4806f67so1372681b6e.3
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 27 Jan 2024 21:06:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706418381; x=1707023181; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20230601; t=1706418385; x=1707023185; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FQBsNQfE0P3AMOj6B4RUDeOxeQtA43qqvQ0BuQwr7rw=;
-        b=XNkT3M6lwfO2pX5di37f2wmrAVORTS5Aoi0uaIaaHGpfwt3Ut/H9boVyzXV5EqfNSj
-         1j97tP5S3itvtdwmbuuOL+zE4aLE+DiNEI7JPPD5KgMNakS8v3xmEM2YW0IpyVLdReIe
-         qr3wPokz2DH7ErVvBqYINLHxbdJ9NMaU3nkrtUGgBEUAervYv74+p0h+Vk/BgZLEladD
-         7qlFbocK56Id0PywgboO13H9y4qZ8XYhJK8EiLoF1deOyf7cJ4UJJjcYuNddmS2ssGFO
-         nT8DQv5WlEyLH+1NAza5mQGjxQeo54OPgl7h/C99FPjLyZkjir8xC1gdxoIOHe9nwQ+7
-         O26A==
+        bh=Klq863pFaGoDv/8+20XN12p6t4dw+6WO92EMrH2yao8=;
+        b=OzZIgKLIPyWdihXLwkrTqCQOmBcKafuk0U00DJOvQvZ0wMt7+UjP86ciAn5E9hskaw
+         /yzNJiYPOaWxMx49ikFms3+r4s0zhf79/l3BWn2UbC73eHWKCaQMyR9j3uwBgVg86U+n
+         ru2FO6p7DFPfKjV+tb95FePRBtdMOuGdIIpLcVShyTfpxeI9FezSUDYTWkKDTSLSIx5E
+         ihOAwS6cmEiz4PGsFkZTmZ4otNcTVWF2i//Dq+iO0oY2SS3Dbny5wnlmUNoLPac5DKCp
+         rCRwkmlB7PxTzu0bb+tpXAibbcrTlq0lU/9vLYf9mi+j+/C8MYJb4eDMiG357Nq7SPkG
+         faoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706418381; x=1707023181;
+        d=1e100.net; s=20230601; t=1706418385; x=1707023185;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=FQBsNQfE0P3AMOj6B4RUDeOxeQtA43qqvQ0BuQwr7rw=;
-        b=QZnsaPq8BcVKUWt7mqDpfx4e6TOoZ8cTExkPgzR+haXyhyFbomh8ab9rabwwZdgFFu
-         z61zX8noOq/UANwPHowkFuWrwxxYLDmLjN/sY0CaM5tnyMMbjiogEPc3qbPuGTOc/xv7
-         Xf58C4FBiYRz0H63nyIBXK8/FTSQE527AH6g07pF40n/dAEN/1NbjbebFIemZxe74R4N
-         ItxJRm/bPOgaBNyshsw4bjLjn94V/OcUwNroEe/AxCLFSKajTGSTX5e6GsuKdhCpIbFj
-         h+su18qyyttoYz+SjBrFQQdoWlrjpg61Dkv2M+jgw9bragQI2qBJf1vwLYVPp9/PkKzb
-         o36w==
-X-Gm-Message-State: AOJu0YyGZiLxJRQdalEDF7UAnkoWmdBk32mlyeGoCXlt60GhQQdVnRGd
-	IN0/TSjyA2zI/YR65/jyhBNv+X2nd25MgtnH9fNxVtLK7YheVVlf
-X-Google-Smtp-Source: AGHT+IEG7nBxPu1DZAQ3x4bvDDnlqVoOR9wWy15hrjJ//5bm1LQ2RgGqogRvkweP/oDf95b7NCqmJQ==
-X-Received: by 2002:a05:6830:4106:b0:6db:b046:2189 with SMTP id w6-20020a056830410600b006dbb0462189mr3439811ott.24.1706418380989;
-        Sat, 27 Jan 2024 21:06:20 -0800 (PST)
+        bh=Klq863pFaGoDv/8+20XN12p6t4dw+6WO92EMrH2yao8=;
+        b=INMJY0KmySQ1T8fwOMTdQri/8kOXl7vE6+yofzJBnb6+8iiNVFRqzUOLxhnkfmqwlw
+         UeRADgUkleJ3X9nk+M5FfjxQSnHOoTFzs5m3c5Nf+JgpLztZ6NVc3gWYBIKCpoe17yB5
+         E7iuxgPfEkaRctOMZFZ8FTQvy0ZXI6wweTnk5gdYrZkJGnCrsX/tJYXmphD8uiGRqKmI
+         kYJ2+sCw173HTfhn1VjCaxtxT7ViM3PWSGKOKrrA0SWYdyXT7k8mWm/1+Ywnw3BgsZjQ
+         px0Aab3VXw24DwMCQ+HEARuVxMYuNiIkiagzIm17ZuN5mnXHim+ulW3MeSzv8HcNhihi
+         fWJg==
+X-Gm-Message-State: AOJu0Yxx2M/PkTl/NRar5VZscY9rAnGVphniqvwVo56Z5Be0XG3ij6Lv
+	mx9xuRdK7yPhCcr26vZjeLC9+WJ7yyAU0P1KMvh6zMZgZiT9dAgZ
+X-Google-Smtp-Source: AGHT+IFJKmp+bAvhbdfzCBdTHyX1Zr9Yd3+YnQ7Hr1irLdsB79h6IjRdALDmguFKws+ptaAXM7qdlQ==
+X-Received: by 2002:a05:6808:d49:b0:3be:3a9e:5cd6 with SMTP id w9-20020a0568080d4900b003be3a9e5cd6mr804691oik.34.1706418385049;
+        Sat, 27 Jan 2024 21:06:25 -0800 (PST)
 Received: from localhost.localdomain (124x33x176x97.ap124.ftth.ucom.ne.jp. [124.33.176.97])
-        by smtp.gmail.com with ESMTPSA id lp17-20020a056a003d5100b006ddd182bf1csm3550372pfb.46.2024.01.27.21.06.16
+        by smtp.gmail.com with ESMTPSA id lp17-20020a056a003d5100b006ddd182bf1csm3550372pfb.46.2024.01.27.21.06.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Jan 2024 21:06:20 -0800 (PST)
+        Sat, 27 Jan 2024 21:06:24 -0800 (PST)
 Sender: Vincent Mailhol <vincent.mailhol@gmail.com>
 From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 To: Andrew Morton <akpm@linux-foundation.org>,
@@ -70,9 +70,9 @@ Cc: Yury Norov <yury.norov@gmail.com>,
 	"Paul E . McKenney" <paulmck@kernel.org>,
 	linux-m68k@lists.linux-m68k.org,
 	Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v4 4/5] hexagon/bitops: use __builtin_{clz,ctzl,ffs} to evaluate constant expressions
-Date: Sun, 28 Jan 2024 14:00:10 +0900
-Message-ID: <20240128050449.1332798-5-mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v4 5/5] lib: test_bitops: add compile-time optimization/evaluations assertions
+Date: Sun, 28 Jan 2024 14:00:11 +0900
+Message-ID: <20240128050449.1332798-6-mailhol.vincent@wanadoo.fr>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr>
 References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr>
@@ -85,81 +85,86 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The compiler is not able to do constant folding on "asm volatile" code.
+Add a function in the bitops test suite to assert that the bitops
+helper functions correctly fold into constant expressions (or trigger
+a build bug otherwise). This should work on all the optimization
+levels supported by Kbuild.
 
-Evaluate whether or not the function argument is a constant expression
-and if this is the case, return an equivalent builtin expression.
+The added function does not perform any runtime tests and gets
+optimized out to nothing after passing the build assertions.
 
-On linux 6.7 with an allyesconfig and clang 17.0.6, it saves roughly
-4 KB.
-
-  $ size --format=GNU vmlinux.before vmlinux.after
-        text       data        bss      total filename
-     4827900    1798340     364057    6990297 vmlinux.before
-     4827072    1795060     364057    6986189 vmlinux.after
-
-Reference: commit fdb6649ab7c1 ("x86/asm/bitops: Use __builtin_ctzl() to evaluate constant expressions")
-Link: https://git.kernel.org/torvalds/c/fdb6649ab7c1
-
+Suggested-by: Yury Norov <yury.norov@gmail.com>
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 ---
- arch/hexagon/include/asm/bitops.h | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ lib/Kconfig.debug |  4 ++++
+ lib/test_bitops.c | 32 ++++++++++++++++++++++++++++++++
+ 2 files changed, 36 insertions(+)
 
-diff --git a/arch/hexagon/include/asm/bitops.h b/arch/hexagon/include/asm/bitops.h
-index e856d6dbfe16..c74a639c84f3 100644
---- a/arch/hexagon/include/asm/bitops.h
-+++ b/arch/hexagon/include/asm/bitops.h
-@@ -204,6 +204,9 @@ static __always_inline long ffz(int x)
- {
- 	int r;
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 4405f81248fb..85f8638b3ae6 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2439,6 +2439,10 @@ config TEST_BITOPS
+ 	  compilations. It has no dependencies and doesn't run or load unless
+ 	  explicitly requested by name.  for example: modprobe test_bitops.
  
-+	if (__builtin_constant_p(x))
-+		return __builtin_ctzl(~x);
++	  In addition, check that the compiler is able to fold the bitops
++	  function into a compile-time constant (given that the argument is also
++	  a compile-time constant) and trigger a build bug otherwise.
 +
- 	asm("%0 = ct1(%1);\n"
- 		: "=&r" (r)
- 		: "r" (x));
-@@ -221,6 +224,9 @@ static __always_inline int fls(unsigned int x)
- {
- 	int r;
+ 	  If unsure, say N.
  
-+	if (__builtin_constant_p(x))
-+		return x ? BITS_PER_TYPE(x) - __builtin_clz(x) : 0;
-+
- 	asm("{ %0 = cl0(%1);}\n"
- 		"%0 = sub(#32,%0);\n"
- 		: "=&r" (r)
-@@ -242,6 +248,9 @@ static __always_inline int ffs(int x)
- {
- 	int r;
+ config TEST_VMALLOC
+diff --git a/lib/test_bitops.c b/lib/test_bitops.c
+index 3b7bcbee84db..99b612515eb6 100644
+--- a/lib/test_bitops.c
++++ b/lib/test_bitops.c
+@@ -50,6 +50,34 @@ static unsigned long order_comb_long[][2] = {
+ };
+ #endif
  
-+	if (__builtin_constant_p(x))
-+		return __builtin_ffs(x);
++/* Assert that a boolean expression can be folded in a constant and is true. */
++#define test_const_eval(test_expr)				\
++({								\
++	/* Evaluate once so that compiler can fold it. */	\
++	bool __test_expr = test_expr;				\
++								\
++	BUILD_BUG_ON(!__builtin_constant_p(__test_expr));	\
++	BUILD_BUG_ON(!__test_expr);				\
++})
 +
- 	asm("{ P0 = cmp.eq(%1,#0); %0 = ct0(%1);}\n"
- 		"{ if (P0) %0 = #0; if (!P0) %0 = add(%0,#1);}\n"
- 		: "=&r" (r)
-@@ -264,6 +273,9 @@ static __always_inline unsigned long __ffs(unsigned long word)
++/*
++ * On any supported optimization level (-O2, -Os) and if invoked with
++ * a compile-time constant argument, the compiler must be able to fold
++ * into a constant expression all the bit find functions. Namely:
++ * __ffs(), ffs(), ffz(), __fls(), fls() and fls64(). Otherwise,
++ * trigger a build bug.
++ */
++static __always_inline void test_bitops_const_eval(unsigned int n)
++{
++	test_const_eval(__ffs(BIT(n)) == n);
++	test_const_eval(ffs(BIT(n)) == n + 1);
++	test_const_eval(ffz(~BIT(n)) == n);
++	test_const_eval(__fls(BIT(n)) == n);
++	test_const_eval(fls(BIT(n)) == n + 1);
++	test_const_eval(fls64(BIT_ULL(n)) == n + 1);
++	test_const_eval(fls64(BIT_ULL(n + 32)) == n + 33);
++}
++
+ static int __init test_bitops_startup(void)
  {
- 	int num;
+ 	int i, bit_set;
+@@ -94,6 +122,10 @@ static int __init test_bitops_startup(void)
+ 	if (bit_set != BITOPS_LAST)
+ 		pr_err("ERROR: FOUND SET BIT %d\n", bit_set);
  
-+	if (__builtin_constant_p(word))
-+		return __builtin_ctzl(word);
++	test_bitops_const_eval(0);
++	test_bitops_const_eval(10);
++	test_bitops_const_eval(31);
 +
- 	asm("%0 = ct0(%1);\n"
- 		: "=&r" (num)
- 		: "r" (word));
-@@ -282,6 +294,9 @@ static __always_inline unsigned long __fls(unsigned long word)
- {
- 	int num;
+ 	pr_info("Completed bitops test\n");
  
-+	if (__builtin_constant_p(word))
-+		return BITS_PER_LONG - 1 - __builtin_clzl(word);
-+
- 	asm("%0 = cl0(%1);\n"
- 		"%0 = sub(#31,%0);\n"
- 		: "=&r" (num)
+ 	return 0;
 -- 
 2.43.0
 
