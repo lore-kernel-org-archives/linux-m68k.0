@@ -1,112 +1,103 @@
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B430D2E85A
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Jan 2024 19:02:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D04AE4597D
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Jan 2024 22:34:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706468545; cv=none; b=cmYzhoFEPGkFZheEmmIB3PJaDAuU0L+T4UGB9ZqQAlhQhw4/6HKcx2TiO6qSyIKWgOtT3DsM/pH/kHfueDEHb1eZrz4uXkd+yjLdY7M+xOaMOdLfDDSom1fVsxc/D8GA4veIwHwlsll25gZBR2BuMHywjfNQWfHkydiKkCuOKhA=
+	t=1706481300; cv=none; b=qGpSg25nrBEoqyIbzU/Dmr5JLDfnJUir8JVV8Qv0EnmiyMzBx5J6avXgAhwIKU7dIyEUIzp/jAd2LWIR2vZlVpXeE1peMrM+Weh3f8qQ9ms+S39x5cJbaX6LpoPINpkRNYTdM7+OiFymeW0SBlQ7clfC2UhaoyqtxhQz5s3l/OM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706468545; c=relaxed/simple;
-	bh=IFk7ohYCGkaEaZqGweUu5moUQWGrImMh+yZAuCDHdqY=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=JCMyh4MlGaPjTuX6SAfnycotQ8RUodJO9jm6F+k9h6oXQJ/aKB4JsVJxiKs5YJk2LSJeBQqYgeEmmCmbM9ycsCUcl5l0D/BT8hO8xjyAtOqsfLtch6EbBsWt0zVudUr3pjdhrTeS5q0xBTYy8NlBZpYpj7TigQpz3qcrirCRJ14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-204-vG2EihzvPXeJminPNiTDtQ-1; Sun, 28 Jan 2024 19:02:15 +0000
-X-MC-Unique: vG2EihzvPXeJminPNiTDtQ-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 28 Jan
- 2024 19:01:51 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sun, 28 Jan 2024 19:01:51 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Vincent MAILHOL' <mailhol.vincent@wanadoo.fr>
-CC: Finn Thain <fthain@linux-m68k.org>, Andrew Morton
-	<akpm@linux-foundation.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, Yury Norov <yury.norov@gmail.com>, "Nick
- Desaulniers" <ndesaulniers@google.com>, Douglas Anderson
-	<dianders@chromium.org>, Kees Cook <keescook@chromium.org>, Petr Mladek
-	<pmladek@suse.com>, Randy Dunlap <rdunlap@infradead.org>, Zhaoyang Huang
-	<zhaoyang.huang@unisoc.com>, Geert Uytterhoeven <geert+renesas@glider.be>,
-	Marco Elver <elver@google.com>, Brian Cain <bcain@quicinc.com>, "Geert
- Uytterhoeven" <geert@linux-m68k.org>, Matthew Wilcox <willy@infradead.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>, "linux-m68k@lists.linux-m68k.org"
-	<linux-m68k@lists.linux-m68k.org>
-Subject: RE: [PATCH v4 2/5] m68k/bitops: use __builtin_{clz,ctzl,ffs} to
+	s=arc-20240116; t=1706481300; c=relaxed/simple;
+	bh=0cFPyEkMwRW7LWGPRa3CjFrN1T2de+1DrXN5dT6WK3E=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=U1OBaFDodjAAXCfKiLALwI2SyjiagN77yj0VzCnv8Zo+bDfM7U+IYJlXz73uJ4Q++rNRNdQE0mEckl6wyOZ4PU7c8M1kfM3tQu2lLxkFKWhvHxNdt4JtkhxxkMlM5zgZG1msxQ7P4g7oGjUiETbk0Kf68LuWFhq3Z2l7Mi9/0A0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=DY5XBcTs; arc=none smtp.client-ip=64.147.123.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="DY5XBcTs"
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailout.west.internal (Postfix) with ESMTP id 2C4B43200AAC;
+	Sun, 28 Jan 2024 17:34:56 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Sun, 28 Jan 2024 17:34:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706481295; x=1706567695; bh=g12uW+xPEP7nxRNTu1rV1k935e2o
+	J9MX42MHVhfS0zU=; b=DY5XBcTs45FuuMOCLbeAiSEulwUpTzVa8g2swmJYmfOR
+	2uQqyfCJfbxs3mc6Cu97ndZje54fB9WBQil0AX8Z7826wPQhVnBBqEOUaIStAkqG
+	N1GL41pPh7akrTey7WvhRS9yA33u6O45dUxEa822U7tzgZStP4rWoo62T2pSW8pS
+	WUnFRv/ZZHoaRluGgcNZdHGWTF3XwuSZhnGttz/ltWVdVBbt9Yj6hPuB6PrlL78t
+	tZH3I0r/AFTF1omfr84Wly/F0bIUoVldciL9wwWTfuDXqa97Bt/iNl5Pqd6JgQf5
+	N4B5+9X4GkzBkf/Yj37jj2YIQDsMbnIAMziFCHvYMw==
+X-ME-Sender: <xms:jta2ZRcYlGV6d6SMqUCACUhmSCXOH_dgy3SNbalIzTSKd4xlm7TjiA>
+    <xme:jta2ZfMH3byGIXqqYUFVZZfgxumJROVLUHn8p8VADNRRYv1coS4xKU_Ax17zfsw7D
+    AA_URKca6Pp6-qWaUk>
+X-ME-Received: <xmr:jta2ZagMpQRU-7-Zz4wkOIxJiEiJdohw4Ro-_Tmp3mRAuTS_BceRoSmhAMlZppJYEXfTQjne2yYeNDc10mI82K-L9rt8qGQ5Idg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtvddgudeiudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhn
+    ucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrf
+    grthhtvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedv
+    ueehueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:jta2Za-_aOOhCnAfXlIY-Xg0pizHFaEsLINFPOKWQ5wROKTbZTiomA>
+    <xmx:jta2ZdubaKMcTpZ6_YQPWy1Pn8juz34yIrLTJF724bysR3Q8hirNeQ>
+    <xmx:jta2ZZG6W6jscofsfrT8WrX29Kj8IJNnPiKcfeu_xYnvwBtGJn-u9Q>
+    <xmx:j9a2ZdOPTCX95bG1S_-sUi6BGMzOGlzRbgQ46C473zgLEUhFtksl2w>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 28 Jan 2024 17:34:50 -0500 (EST)
+Date: Mon, 29 Jan 2024 09:34:56 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+cc: David Laight <David.Laight@aculab.com>, 
+    Andrew Morton <akpm@linux-foundation.org>, 
+    "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+    Yury Norov <yury.norov@gmail.com>, 
+    Nick Desaulniers <ndesaulniers@google.com>, 
+    Douglas Anderson <dianders@chromium.org>, 
+    Kees Cook <keescook@chromium.org>, Petr Mladek <pmladek@suse.com>, 
+    Randy Dunlap <rdunlap@infradead.org>, 
+    Zhaoyang Huang <zhaoyang.huang@unisoc.com>, 
+    Geert Uytterhoeven <geert+renesas@glider.be>, 
+    Marco Elver <elver@google.com>, Brian Cain <bcain@quicinc.com>, 
+    Geert Uytterhoeven <geert@linux-m68k.org>, 
+    Matthew Wilcox <willy@infradead.org>, 
+    "Paul E . McKenney" <paulmck@kernel.org>, 
+    "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>
+Subject: Re: [PATCH v4 2/5] m68k/bitops: use __builtin_{clz,ctzl,ffs} to
  evaluate constant expressions
-Thread-Topic: [PATCH v4 2/5] m68k/bitops: use __builtin_{clz,ctzl,ffs} to
- evaluate constant expressions
-Thread-Index: AQHaUbL1xJNZnFSfqkuoXGWoPFOF8LDvIt6wgAAVO4CAAFsoEA==
-Date: Sun, 28 Jan 2024 19:01:51 +0000
-Message-ID: <3af455be023949649f4061223600250b@AcuMS.aculab.com>
-References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr>
- <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr>
- <20240128050449.1332798-3-mailhol.vincent@wanadoo.fr>
- <c47fedaf-cdc9-f970-460f-d2ee7e806da4@linux-m68k.org>
- <CAMZ6RqKj207uv5AF_fvb65nhCM32V=VAQXsUGLNmbeXYKPvZJg@mail.gmail.com>
- <9d9be9dbe92f43d2a95d11d6b2f434c1@AcuMS.aculab.com>
- <CAMZ6Rq+RnY16sREhAZ6AFn3sz1SuPsKqhW-m0TrrDz1hd=vNOA@mail.gmail.com>
 In-Reply-To: <CAMZ6Rq+RnY16sREhAZ6AFn3sz1SuPsKqhW-m0TrrDz1hd=vNOA@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+Message-ID: <77831c6f-7fc9-c42d-b29b-c3b2f3f5e687@linux-m68k.org>
+References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr> <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr> <20240128050449.1332798-3-mailhol.vincent@wanadoo.fr> <c47fedaf-cdc9-f970-460f-d2ee7e806da4@linux-m68k.org>
+ <CAMZ6RqKj207uv5AF_fvb65nhCM32V=VAQXsUGLNmbeXYKPvZJg@mail.gmail.com> <9d9be9dbe92f43d2a95d11d6b2f434c1@AcuMS.aculab.com> <CAMZ6Rq+RnY16sREhAZ6AFn3sz1SuPsKqhW-m0TrrDz1hd=vNOA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=US-ASCII
 
-RnJvbTogVmluY2VudCBNQUlMSE9MIA0KPiBTZW50OiAyOCBKYW51YXJ5IDIwMjQgMTM6MjgNCi4u
-Lg0KPiBGYWlyLiBNeSBnb2FsIHdhcyBub3QgdG8gcG9pbnQgdG8gdGhlIGFzc2VtYmx5IGNvZGUg
-YnV0IHRvIHRoaXMgc2VudGVuY2U6DQo+IA0KPiAgIEhvd2V2ZXIsIGZvciBub24gY29uc3RhbnQg
-ZXhwcmVzc2lvbnMsIHRoZSBrZXJuZWwncyBmZnMoKSBhc20NCj4gICB2ZXJzaW9uIHJlbWFpbnMg
-YmV0dGVyIGZvciB4ODZfNjQgYmVjYXVzZSwgY29udHJhcnkgdG8gR0NDLCBpdA0KPiAgIGRvZXNu
-J3QgZW1pdCB0aGUgQ01PViBhc3NlbWJseSBpbnN0cnVjdGlvbg0KDQpUaGUgY29tbWVudCBpbiB0
-aGUgY29kZSBpczoNCgkgKiBBTUQ2NCBzYXlzIEJTRkwgd29uJ3QgY2xvYmJlciB0aGUgZGVzdCBy
-ZWcgaWYgeD09MDsgSW50ZWw2NCBzYXlzIHRoZQ0KCSAqIGRlc3QgcmVnIGlzIHVuZGVmaW5lZCBp
-ZiB4PT0wLCBidXQgdGhlaXIgQ1BVIGFyY2hpdGVjdCBzYXlzIGl0cw0KCSAqIHZhbHVlIGlzIHdy
-aXR0ZW4gdG8gc2V0IGl0IHRvIHRoZSBzYW1lIGFzIGJlZm9yZSwgZXhjZXB0IHRoYXQgdGhlDQoJ
-ICogdG9wIDMyIGJpdHMgd2lsbCBiZSBjbGVhcmVkLg0KSSBndWVzcyBnY2MgaXNuJ3Qgd2lsbGlu
-ZyB0byBhY3Qgb24gaGVhcnNheSENCg0KPiANCj4gSSBzaG91bGQgaGF2ZSBiZWVuIG1vcmUgY2xl
-YXIuIFNvcnJ5IGZvciB0aGF0Lg0KPiANCj4gQnV0IHRoZSBmYWN0IHJlbWFpbnMsIG9uIHg4Niwg
-c29tZSBvZiB0aGUgYXNtIHByb2R1Y2VkIG1vcmUgb3B0aW1pemVkDQo+IGNvZGUgdGhhbiB0aGUg
-YnVpbHRpbi4NCj4gDQo+ID4gSSBhY3R1YWxseSBzdXNwZWN0IHRoZSBhc20gdmVyc2lvbnMgcHJl
-ZGF0ZSB0aGUgYnVpbHRpbnMuDQo+IA0KPiBUaGlzIHNlZW1zIHRydWUuIFRoZSBfX2J1bHRpbnMg
-d2VyZSBpbnRyb2R1Y2VkIGluOg0KPiANCj4gICBnZW5lcmljOiBJbXBsZW1lbnQgZ2VuZXJpYyBm
-ZnMvZmxzIHVzaW5nIF9fYnVpbHRpbl8qIGZ1bmN0aW9ucw0KPiAgIGh0dHBzOi8vZ2l0Lmtlcm5l
-bC5vcmcvdG9ydmFsZHMvYy8wNDhmYTJkZjkyYzMNCg0KSSB3YXMgdGhpbmtpbmcgb2YgY29tcGls
-ZXIgdmVyc2lvbnMgbm90IGtlcm5lbCBzb3VyY2UgY29tbWl0cy4NCllvdSdkIG5lZWQgdG8gYmUg
-ZG9pbmcgc29tZSBzZXJpb3VzIHNvZnR3YXJlIGFyY2hhZW9sb2d5Lg0KDQo+IHdoZW4gdGhlIGFz
-bSBpbXBsZW1lbnRhdGlvbiBhbHJlYWR5IGV4aXN0ZWQgaW4gbTY4ay4NCj4gDQo+ID4gRG9lcyAo
-b3IgY2FuKSB0aGUgb3V0ZXIgY29tbW9uIGhlYWRlciB1c2UgdGhlIF9fYnVpbHRpbiBmdW5jdGlv
-bnMNCj4gPiBpZiBubyBhc20gdmVyc2lvbiBleGlzdHM/DQo+IA0KPiBZZXMsIHRoaXMgd291bGQg
-YmUgZXh0cmVtZWx5IGVhc3kuIFlvdSBqdXN0IG5lZWQgdG8NCj4gDQo+ICAgI2luY2x1ZGUvYXNt
-LWdlbmVyaWMvYml0b3BzL2J1aWx0aW4tX19mZnMuaA0KPiAgICNpbmNsdWRlL2FzbS1nZW5lcmlj
-L2JpdG9wcy9idWlsdGluLWZmcy5oDQo+ICAgI2luY2x1ZGUvYXNtLWdlbmVyaWMvYml0b3BzL2J1
-aWx0aW4tX19mbHMuaA0KPiAgICNpbmNsdWRlL2FzbS1nZW5lcmljL2JpdG9wcy9idWlsdGluLWZs
-cy5oDQo+IA0KPiBhbmQgcmVtb3ZlIGFsbCB0aGUgYXNtIGltcGxlbWVudGF0aW9ucy4gSWYgeW91
-IGdpdmUgbWUgeW91ciBncmVlbg0KPiBsaWdodCwgSSBjYW4gZG8gdGhhdCBjaGFuZ2UuIFRoaXMg
-aXMgdHJpdmlhbC4gVGhlIG9ubHkgdGhpbmcgSSBhbSBub3QNCj4gcmVhZHkgdG8gZG8gaXMgdG8g
-Y29tcGFyZSB0aGUgcHJvZHVjZWQgYXNzZW1ibHkgY29kZSBhbmQgY29uZmlybQ0KPiB3aGV0aGVy
-IG9yIG5vdCBpdCBpcyBiZXR0ZXIgdG8gcmVtb3ZlIGFzbSBjb2RlLg0KPiANCj4gVGhvdWdodHM/
-DQoNCk5vdCBmb3IgbWUgdG8gc2F5Lg0KQnV0IHRoZSBidWlsdGlucyBhcmUgbGlrZWx5IHRvIGdl
-bmVyYXRlIHJlYXNvbmFibGUgY29kZS4NClNvIHVubGVzcyB0aGUgYXNtIGNhbiBiZSBiZXR0ZXIg
-KGxpa2UgdHJ1c3RpbmcgdW5kb2N1bWVudGVkDQp4ODYgY3B1IGJlaGF2aW91cikgdXNpbmcgdGhl
-bSBpcyBwcm9iYWJseSBiZXN0Lg0KDQpGb3IgdGhlIG9uZXMgeW91IGFyZSBjaGFuZ2luZyBpdCBt
-YXkgYmUgYmVzdCB0byBwcm9wb3NlIHVzaW5nDQp0aGUgYnVpbHRpbnMgYWxsIHRoZSB0aW1lLg0K
-DQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQs
-IE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86
-IDEzOTczODYgKFdhbGVzKQ0K
 
+On Sun, 28 Jan 2024, Vincent MAILHOL wrote:
+
+> > > The asm is meant to produce better results when the argument is not 
+> > > a constant expression.
+
+Is that because gcc's implementation has to satisfy requirements that are 
+excessively stringent for the kernel's purposes? Or is it a compiler 
+deficiency only affecting certain architectures?
+
+> ... The only thing I am not ready to do is to compare the produced 
+> assembly code and confirm whether or not it is better to remove asm 
+> code.
+> 
+
+If you do the comparison and find no change, you get to say so in the 
+commit log, and everyone is happy.
