@@ -1,368 +1,307 @@
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [195.130.132.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18AD960DE4
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Jan 2024 12:38:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0946364A7
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 30 Jan 2024 02:03:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706531892; cv=none; b=hMpla2i0VxMnA8zNBz6R9QSP61pkVBv6q7CX7+Yk6s/5F8PaAUvdlqDo5IhI6uR+LYut5cIk38tjfvjs+BDwkRqT/Mk57m9fPdJNZeSZPvZkJATBy/lXVIsQZg9LoM1grTwBA3kxdY/pg2i65nwoGmIo5iBEktE7XbE7Qs6jHsE=
+	t=1706580224; cv=none; b=HlN9kiJhNxOIguIa9oBlw4x7+MJmJVDtMQUrNtPp6P+ZXn2qexH0SNzE8A3+YV9gVK21ERjx/UV8ry1ep/l6g9X4LG40x5qqsnPXtxuakW3QKV2cHMivBpoAKtTgJBC8Etklzs0ty2Fn61AY++rQ1PluNFsadPWi8J8tNn1/K+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706531892; c=relaxed/simple;
-	bh=a3S0HTaEG+NRy3OuBzC4bJEk/TMKka1UdnM0wUTLvoE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UDakQXTANGeGu4cxOZ+zawU/68RCP7Z13RSevpSxQCfOMC5SCKhb4vu25NzXiIicahnFe2G9KFTm+2EKOycb6z9Gq+/G4jitUdYjo7qX1zoycovWK4K9eYMTIjflUDQmnN4ZZIC2fFB6KpGznVsrxGJjljAOPAP3k+xQtiGE5m4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:3b5f:c6ad:b5fc:a0f3])
-	by andre.telenet-ops.be with bizsmtp
-	id gce02B00K2ZPkuY01ce0Tz; Mon, 29 Jan 2024 13:38:00 +0100
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rUQsu-00Gh8R-Kb;
-	Mon, 29 Jan 2024 13:38:00 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rUQtk-007Vav-9a;
-	Mon, 29 Jan 2024 13:38:00 +0100
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: linux-m68k@lists.linux-m68k.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: defconfig: Update defconfigs for v6.8-rc1
-Date: Mon, 29 Jan 2024 13:37:59 +0100
-Message-Id: <902a6cfd5f0c5b67470658dd6dffdd1bac1948b5.1706272008.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706580224; c=relaxed/simple;
+	bh=Qwvl8Ww9Ylu9h94IJCW8wPrqrsS3AfaSsTmhfoNkcXw=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=idN+IK1/LkomeZIRMdzSjNJ/HNVc+0jNAN1hEoetvR8iRdqeEgXbhN53nlJRhD5Z2XRd6lVthl5TXqgqDUCiWHBJQl5oDzQxKvcMdaXWSY5Axx6e/oVRJ1AyS5Mse6GXAWyuZW5rdLF+qbwpCtd6kh/dPWE22BzWJgXZUBxNouM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jOQDSgsW; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jOQDSgsW"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706580223; x=1738116223;
+  h=date:from:to:cc:subject:message-id;
+  bh=Qwvl8Ww9Ylu9h94IJCW8wPrqrsS3AfaSsTmhfoNkcXw=;
+  b=jOQDSgsWoakf1R5vK69EEWPEz0tXLQ3hRPIrv3Yozi9s7NVKh0Ymi2/8
+   c3xQP6K/11WHdad/1YmKkCjfvrY80sAPbYvNYMENPGPkPFHts6UB0Y+w2
+   zjads19kRaSZMl+4dktu17gpjWlaH80bCXdcAyZMFHIrGGZUAE/t5jrtC
+   dEmg8psmdD55Fxk0fqt84cksFQdgQK0k5lyZeQCP7hcbfSG9upbwaI+Ha
+   L93fEgSLj4jMc8zxWP6M9HCc7A5beBwVeFOnkjVJSSbpGpLNZDa0YlqGj
+   PNirqVkFhss8oNCYRCyIK6+cIraQyGphKAiI94MU0ejAFLCmZR4Zvd1W8
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="10533662"
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="10533662"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 18:03:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,707,1701158400"; 
+   d="scan'208";a="22283417"
+Received: from lkp-server01.sh.intel.com (HELO 370188f8dc87) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 29 Jan 2024 18:03:40 -0800
+Received: from kbuild by 370188f8dc87 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rUdTN-0004qK-3C;
+	Tue, 30 Jan 2024 02:03:37 +0000
+Date: Tue, 30 Jan 2024 10:03:37 +0800
+From: kernel test robot <lkp@intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ e6d0024441d8fbcdf27914e168c40fafdc253593
+Message-ID: <202401301035.GP5MqKX0-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-  - Drop CONFIG_MD_LINEAR=m (removed in commit 849d18e27be9a125 ("md:
-    Remove deprecated CONFIG_MD_LINEAR")),
-  - Drop CONFIG_CRYPTO_CFB=m and CONFIG_CRYPTO_OFB=m (removed in commit
-    412ac51ce0b8c558 ("crypto: cfb,ofb - Remove cfb and ofb")).
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: e6d0024441d8fbcdf27914e168c40fafdc253593  Merge tag 'v6.8-rc2'
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-To be queued in the m68k for-v6.9 branch.
+elapsed time: 847m
 
- arch/m68k/configs/amiga_defconfig    | 3 ---
- arch/m68k/configs/apollo_defconfig   | 3 ---
- arch/m68k/configs/atari_defconfig    | 3 ---
- arch/m68k/configs/bvme6000_defconfig | 3 ---
- arch/m68k/configs/hp300_defconfig    | 3 ---
- arch/m68k/configs/mac_defconfig      | 3 ---
- arch/m68k/configs/multi_defconfig    | 3 ---
- arch/m68k/configs/mvme147_defconfig  | 3 ---
- arch/m68k/configs/mvme16x_defconfig  | 3 ---
- arch/m68k/configs/q40_defconfig      | 3 ---
- arch/m68k/configs/sun3_defconfig     | 3 ---
- arch/m68k/configs/sun3x_defconfig    | 3 ---
- 12 files changed, 36 deletions(-)
+configs tested: 234
+configs skipped: 3
 
-diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
-index b4d71fea558f1f0f..a6f6607efe79cd20 100644
---- a/arch/m68k/configs/amiga_defconfig
-+++ b/arch/m68k/configs/amiga_defconfig
-@@ -336,7 +336,6 @@ CONFIG_ATA=y
- CONFIG_PATA_GAYLE=y
- CONFIG_PATA_BUDDHA=y
- CONFIG_MD=y
--CONFIG_MD_LINEAR=m
- CONFIG_BLK_DEV_DM=m
- CONFIG_DM_UNSTRIPED=m
- CONFIG_DM_CRYPT=m
-@@ -579,12 +578,10 @@ CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_ADIANTUM=m
- CONFIG_CRYPTO_ARC4=m
--CONFIG_CRYPTO_CFB=m
- CONFIG_CRYPTO_CTS=m
- CONFIG_CRYPTO_HCTR2=m
- CONFIG_CRYPTO_KEYWRAP=m
- CONFIG_CRYPTO_LRW=m
--CONFIG_CRYPTO_OFB=m
- CONFIG_CRYPTO_PCBC=m
- CONFIG_CRYPTO_XTS=m
- CONFIG_CRYPTO_AEGIS128=m
-diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
-index 682d8cd3dd3cea94..0ca1f9f930bc1fd3 100644
---- a/arch/m68k/configs/apollo_defconfig
-+++ b/arch/m68k/configs/apollo_defconfig
-@@ -316,7 +316,6 @@ CONFIG_SCSI_SAS_ATTRS=m
- CONFIG_ISCSI_TCP=m
- CONFIG_ISCSI_BOOT_SYSFS=m
- CONFIG_MD=y
--CONFIG_MD_LINEAR=m
- CONFIG_BLK_DEV_DM=m
- CONFIG_DM_UNSTRIPED=m
- CONFIG_DM_CRYPT=m
-@@ -536,12 +535,10 @@ CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_ADIANTUM=m
- CONFIG_CRYPTO_ARC4=m
--CONFIG_CRYPTO_CFB=m
- CONFIG_CRYPTO_CTS=m
- CONFIG_CRYPTO_HCTR2=m
- CONFIG_CRYPTO_KEYWRAP=m
- CONFIG_CRYPTO_LRW=m
--CONFIG_CRYPTO_OFB=m
- CONFIG_CRYPTO_PCBC=m
- CONFIG_CRYPTO_XTS=m
- CONFIG_CRYPTO_AEGIS128=m
-diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
-index 946ac609c0d07da9..ad0b50923d99f6f7 100644
---- a/arch/m68k/configs/atari_defconfig
-+++ b/arch/m68k/configs/atari_defconfig
-@@ -331,7 +331,6 @@ CONFIG_ATA=y
- # CONFIG_ATA_BMDMA is not set
- CONFIG_PATA_FALCON=y
- CONFIG_MD=y
--CONFIG_MD_LINEAR=m
- CONFIG_BLK_DEV_DM=m
- CONFIG_DM_UNSTRIPED=m
- CONFIG_DM_CRYPT=m
-@@ -567,12 +566,10 @@ CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_ADIANTUM=m
- CONFIG_CRYPTO_ARC4=m
--CONFIG_CRYPTO_CFB=m
- CONFIG_CRYPTO_CTS=m
- CONFIG_CRYPTO_HCTR2=m
- CONFIG_CRYPTO_KEYWRAP=m
- CONFIG_CRYPTO_LRW=m
--CONFIG_CRYPTO_OFB=m
- CONFIG_CRYPTO_PCBC=m
- CONFIG_CRYPTO_XTS=m
- CONFIG_CRYPTO_AEGIS128=m
-diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
-index 7395c12caef6e84a..ad8f81fbb630c2bc 100644
---- a/arch/m68k/configs/bvme6000_defconfig
-+++ b/arch/m68k/configs/bvme6000_defconfig
-@@ -314,7 +314,6 @@ CONFIG_ISCSI_TCP=m
- CONFIG_ISCSI_BOOT_SYSFS=m
- CONFIG_BVME6000_SCSI=y
- CONFIG_MD=y
--CONFIG_MD_LINEAR=m
- CONFIG_BLK_DEV_DM=m
- CONFIG_DM_UNSTRIPED=m
- CONFIG_DM_CRYPT=m
-@@ -528,12 +527,10 @@ CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_ADIANTUM=m
- CONFIG_CRYPTO_ARC4=m
--CONFIG_CRYPTO_CFB=m
- CONFIG_CRYPTO_CTS=m
- CONFIG_CRYPTO_HCTR2=m
- CONFIG_CRYPTO_KEYWRAP=m
- CONFIG_CRYPTO_LRW=m
--CONFIG_CRYPTO_OFB=m
- CONFIG_CRYPTO_PCBC=m
- CONFIG_CRYPTO_XTS=m
- CONFIG_CRYPTO_AEGIS128=m
-diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
-index 92506bc7f78daef1..ff253b6accecbd3b 100644
---- a/arch/m68k/configs/hp300_defconfig
-+++ b/arch/m68k/configs/hp300_defconfig
-@@ -315,7 +315,6 @@ CONFIG_SCSI_SAS_ATTRS=m
- CONFIG_ISCSI_TCP=m
- CONFIG_ISCSI_BOOT_SYSFS=m
- CONFIG_MD=y
--CONFIG_MD_LINEAR=m
- CONFIG_BLK_DEV_DM=m
- CONFIG_DM_UNSTRIPED=m
- CONFIG_DM_CRYPT=m
-@@ -538,12 +537,10 @@ CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_ADIANTUM=m
- CONFIG_CRYPTO_ARC4=m
--CONFIG_CRYPTO_CFB=m
- CONFIG_CRYPTO_CTS=m
- CONFIG_CRYPTO_HCTR2=m
- CONFIG_CRYPTO_KEYWRAP=m
- CONFIG_CRYPTO_LRW=m
--CONFIG_CRYPTO_OFB=m
- CONFIG_CRYPTO_PCBC=m
- CONFIG_CRYPTO_XTS=m
- CONFIG_CRYPTO_AEGIS128=m
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index 144bc8c0d8b590b3..f92b866620a7de86 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -320,7 +320,6 @@ CONFIG_ATA=y
- # CONFIG_ATA_BMDMA is not set
- CONFIG_PATA_PLATFORM=y
- CONFIG_MD=y
--CONFIG_MD_LINEAR=m
- CONFIG_BLK_DEV_DM=m
- CONFIG_DM_UNSTRIPED=m
- CONFIG_DM_CRYPT=m
-@@ -555,12 +554,10 @@ CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_ADIANTUM=m
- CONFIG_CRYPTO_ARC4=m
--CONFIG_CRYPTO_CFB=m
- CONFIG_CRYPTO_CTS=m
- CONFIG_CRYPTO_HCTR2=m
- CONFIG_CRYPTO_KEYWRAP=m
- CONFIG_CRYPTO_LRW=m
--CONFIG_CRYPTO_OFB=m
- CONFIG_CRYPTO_PCBC=m
- CONFIG_CRYPTO_XTS=m
- CONFIG_CRYPTO_AEGIS128=m
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index 07594c72949773f6..bd813beaa8a72553 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -363,7 +363,6 @@ CONFIG_PATA_GAYLE=y
- CONFIG_PATA_BUDDHA=y
- CONFIG_PATA_PLATFORM=y
- CONFIG_MD=y
--CONFIG_MD_LINEAR=m
- CONFIG_BLK_DEV_DM=m
- CONFIG_DM_UNSTRIPED=m
- CONFIG_DM_CRYPT=m
-@@ -641,12 +640,10 @@ CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_ADIANTUM=m
- CONFIG_CRYPTO_ARC4=m
--CONFIG_CRYPTO_CFB=m
- CONFIG_CRYPTO_CTS=m
- CONFIG_CRYPTO_HCTR2=m
- CONFIG_CRYPTO_KEYWRAP=m
- CONFIG_CRYPTO_LRW=m
--CONFIG_CRYPTO_OFB=m
- CONFIG_CRYPTO_PCBC=m
- CONFIG_CRYPTO_XTS=m
- CONFIG_CRYPTO_AEGIS128=m
-diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
-index c34de6c1de203f16..2237ee0fe4337607 100644
---- a/arch/m68k/configs/mvme147_defconfig
-+++ b/arch/m68k/configs/mvme147_defconfig
-@@ -313,7 +313,6 @@ CONFIG_ISCSI_TCP=m
- CONFIG_ISCSI_BOOT_SYSFS=m
- CONFIG_MVME147_SCSI=y
- CONFIG_MD=y
--CONFIG_MD_LINEAR=m
- CONFIG_BLK_DEV_DM=m
- CONFIG_DM_UNSTRIPED=m
- CONFIG_DM_CRYPT=m
-@@ -527,12 +526,10 @@ CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_ADIANTUM=m
- CONFIG_CRYPTO_ARC4=m
--CONFIG_CRYPTO_CFB=m
- CONFIG_CRYPTO_CTS=m
- CONFIG_CRYPTO_HCTR2=m
- CONFIG_CRYPTO_KEYWRAP=m
- CONFIG_CRYPTO_LRW=m
--CONFIG_CRYPTO_OFB=m
- CONFIG_CRYPTO_PCBC=m
- CONFIG_CRYPTO_XTS=m
- CONFIG_CRYPTO_AEGIS128=m
-diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
-index 83bc029d1f335338..afb5aa9c5012c4d1 100644
---- a/arch/m68k/configs/mvme16x_defconfig
-+++ b/arch/m68k/configs/mvme16x_defconfig
-@@ -314,7 +314,6 @@ CONFIG_ISCSI_TCP=m
- CONFIG_ISCSI_BOOT_SYSFS=m
- CONFIG_MVME16x_SCSI=y
- CONFIG_MD=y
--CONFIG_MD_LINEAR=m
- CONFIG_BLK_DEV_DM=m
- CONFIG_DM_UNSTRIPED=m
- CONFIG_DM_CRYPT=m
-@@ -528,12 +527,10 @@ CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_ADIANTUM=m
- CONFIG_CRYPTO_ARC4=m
--CONFIG_CRYPTO_CFB=m
- CONFIG_CRYPTO_CTS=m
- CONFIG_CRYPTO_HCTR2=m
- CONFIG_CRYPTO_KEYWRAP=m
- CONFIG_CRYPTO_LRW=m
--CONFIG_CRYPTO_OFB=m
- CONFIG_CRYPTO_PCBC=m
- CONFIG_CRYPTO_XTS=m
- CONFIG_CRYPTO_AEGIS128=m
-diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
-index 4f551dac2ed72e36..e40f7a308966e8f1 100644
---- a/arch/m68k/configs/q40_defconfig
-+++ b/arch/m68k/configs/q40_defconfig
-@@ -320,7 +320,6 @@ CONFIG_ATA=y
- # CONFIG_ATA_BMDMA is not set
- CONFIG_PATA_FALCON=y
- CONFIG_MD=y
--CONFIG_MD_LINEAR=m
- CONFIG_BLK_DEV_DM=m
- CONFIG_DM_UNSTRIPED=m
- CONFIG_DM_CRYPT=m
-@@ -545,12 +544,10 @@ CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_ADIANTUM=m
- CONFIG_CRYPTO_ARC4=m
--CONFIG_CRYPTO_CFB=m
- CONFIG_CRYPTO_CTS=m
- CONFIG_CRYPTO_HCTR2=m
- CONFIG_CRYPTO_KEYWRAP=m
- CONFIG_CRYPTO_LRW=m
--CONFIG_CRYPTO_OFB=m
- CONFIG_CRYPTO_PCBC=m
- CONFIG_CRYPTO_XTS=m
- CONFIG_CRYPTO_AEGIS128=m
-diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
-index b1bf01182bd32fa2..4df397c0395f4240 100644
---- a/arch/m68k/configs/sun3_defconfig
-+++ b/arch/m68k/configs/sun3_defconfig
-@@ -310,7 +310,6 @@ CONFIG_ISCSI_TCP=m
- CONFIG_ISCSI_BOOT_SYSFS=m
- CONFIG_SUN3_SCSI=y
- CONFIG_MD=y
--CONFIG_MD_LINEAR=m
- CONFIG_BLK_DEV_DM=m
- CONFIG_DM_UNSTRIPED=m
- CONFIG_DM_CRYPT=m
-@@ -526,12 +525,10 @@ CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_ADIANTUM=m
- CONFIG_CRYPTO_ARC4=m
--CONFIG_CRYPTO_CFB=m
- CONFIG_CRYPTO_CTS=m
- CONFIG_CRYPTO_HCTR2=m
- CONFIG_CRYPTO_KEYWRAP=m
- CONFIG_CRYPTO_LRW=m
--CONFIG_CRYPTO_OFB=m
- CONFIG_CRYPTO_PCBC=m
- CONFIG_CRYPTO_XTS=m
- CONFIG_CRYPTO_AEGIS128=m
-diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
-index 5c9a3f71f036e361..aa7719b3947fb17b 100644
---- a/arch/m68k/configs/sun3x_defconfig
-+++ b/arch/m68k/configs/sun3x_defconfig
-@@ -311,7 +311,6 @@ CONFIG_ISCSI_TCP=m
- CONFIG_ISCSI_BOOT_SYSFS=m
- CONFIG_SUN3X_ESP=y
- CONFIG_MD=y
--CONFIG_MD_LINEAR=m
- CONFIG_BLK_DEV_DM=m
- CONFIG_DM_UNSTRIPED=m
- CONFIG_DM_CRYPT=m
-@@ -526,12 +525,10 @@ CONFIG_CRYPTO_TEA=m
- CONFIG_CRYPTO_TWOFISH=m
- CONFIG_CRYPTO_ADIANTUM=m
- CONFIG_CRYPTO_ARC4=m
--CONFIG_CRYPTO_CFB=m
- CONFIG_CRYPTO_CTS=m
- CONFIG_CRYPTO_HCTR2=m
- CONFIG_CRYPTO_KEYWRAP=m
- CONFIG_CRYPTO_LRW=m
--CONFIG_CRYPTO_OFB=m
- CONFIG_CRYPTO_PCBC=m
- CONFIG_CRYPTO_XTS=m
- CONFIG_CRYPTO_AEGIS128=m
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                      axs103_smp_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240129   gcc  
+arc                   randconfig-001-20240130   gcc  
+arc                   randconfig-002-20240129   gcc  
+arc                   randconfig-002-20240130   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                         axm55xx_defconfig   gcc  
+arm                                 defconfig   clang
+arm                       multi_v4t_defconfig   gcc  
+arm                          pxa3xx_defconfig   gcc  
+arm                   randconfig-001-20240129   gcc  
+arm                   randconfig-001-20240130   gcc  
+arm                   randconfig-002-20240129   gcc  
+arm                   randconfig-002-20240130   gcc  
+arm                   randconfig-003-20240129   gcc  
+arm                   randconfig-003-20240130   gcc  
+arm                   randconfig-004-20240129   gcc  
+arm                   randconfig-004-20240130   gcc  
+arm64                            alldefconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240129   gcc  
+arm64                 randconfig-001-20240130   gcc  
+arm64                 randconfig-002-20240129   gcc  
+arm64                 randconfig-002-20240130   gcc  
+arm64                 randconfig-003-20240129   gcc  
+arm64                 randconfig-003-20240130   gcc  
+arm64                 randconfig-004-20240129   gcc  
+arm64                 randconfig-004-20240130   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240129   gcc  
+csky                  randconfig-001-20240130   gcc  
+csky                  randconfig-002-20240129   gcc  
+csky                  randconfig-002-20240130   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386         buildonly-randconfig-001-20240129   gcc  
+i386         buildonly-randconfig-002-20240129   gcc  
+i386         buildonly-randconfig-003-20240129   gcc  
+i386         buildonly-randconfig-004-20240129   gcc  
+i386         buildonly-randconfig-005-20240129   gcc  
+i386         buildonly-randconfig-006-20240129   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20240129   gcc  
+i386                  randconfig-002-20240129   gcc  
+i386                  randconfig-003-20240129   gcc  
+i386                  randconfig-004-20240129   gcc  
+i386                  randconfig-005-20240129   gcc  
+i386                  randconfig-006-20240129   gcc  
+i386                  randconfig-011-20240129   clang
+i386                  randconfig-011-20240130   clang
+i386                  randconfig-012-20240129   clang
+i386                  randconfig-012-20240130   clang
+i386                  randconfig-013-20240129   clang
+i386                  randconfig-013-20240130   clang
+i386                  randconfig-014-20240129   clang
+i386                  randconfig-014-20240130   clang
+i386                  randconfig-015-20240129   clang
+i386                  randconfig-015-20240130   clang
+i386                  randconfig-016-20240129   clang
+i386                  randconfig-016-20240130   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240129   gcc  
+loongarch             randconfig-001-20240130   gcc  
+loongarch             randconfig-002-20240129   gcc  
+loongarch             randconfig-002-20240130   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                          atari_defconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                       m5475evb_defconfig   gcc  
+m68k                        mvme16x_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+microblaze                      mmu_defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   clang
+mips                             allyesconfig   gcc  
+mips                  decstation_64_defconfig   gcc  
+mips                           ip32_defconfig   gcc  
+mips                  maltasmvp_eva_defconfig   gcc  
+mips                          rm200_defconfig   gcc  
+mips                         rt305x_defconfig   gcc  
+mips                        vocore2_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240129   gcc  
+nios2                 randconfig-001-20240130   gcc  
+nios2                 randconfig-002-20240129   gcc  
+nios2                 randconfig-002-20240130   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240129   gcc  
+parisc                randconfig-001-20240130   gcc  
+parisc                randconfig-002-20240129   gcc  
+parisc                randconfig-002-20240130   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   clang
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                     asp8347_defconfig   gcc  
+powerpc                      bamboo_defconfig   gcc  
+powerpc                      ep88xc_defconfig   gcc  
+powerpc                  iss476-smp_defconfig   gcc  
+powerpc               randconfig-001-20240129   gcc  
+powerpc               randconfig-001-20240130   gcc  
+powerpc               randconfig-002-20240129   gcc  
+powerpc               randconfig-002-20240130   gcc  
+powerpc               randconfig-003-20240129   gcc  
+powerpc               randconfig-003-20240130   gcc  
+powerpc                    socrates_defconfig   gcc  
+powerpc                     tqm8540_defconfig   gcc  
+powerpc                         wii_defconfig   gcc  
+powerpc64             randconfig-001-20240129   gcc  
+powerpc64             randconfig-001-20240130   gcc  
+powerpc64             randconfig-002-20240129   gcc  
+powerpc64             randconfig-002-20240130   gcc  
+powerpc64             randconfig-003-20240129   gcc  
+powerpc64             randconfig-003-20240130   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   clang
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20240129   gcc  
+riscv                 randconfig-001-20240130   gcc  
+riscv                 randconfig-002-20240129   gcc  
+riscv                 randconfig-002-20240130   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                       zfcpdump_defconfig   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                         ap325rxa_defconfig   gcc  
+sh                                  defconfig   gcc  
+sh                          lboxre2_defconfig   gcc  
+sh                          polaris_defconfig   gcc  
+sh                    randconfig-001-20240129   gcc  
+sh                    randconfig-001-20240130   gcc  
+sh                    randconfig-002-20240129   gcc  
+sh                    randconfig-002-20240130   gcc  
+sh                          rsk7203_defconfig   gcc  
+sh                          rsk7264_defconfig   gcc  
+sh                          sdk7780_defconfig   gcc  
+sh                           se7712_defconfig   gcc  
+sh                           se7724_defconfig   gcc  
+sh                           sh2007_defconfig   gcc  
+sh                        sh7785lcr_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240129   gcc  
+sparc64               randconfig-001-20240130   gcc  
+sparc64               randconfig-002-20240129   gcc  
+sparc64               randconfig-002-20240130   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240129   gcc  
+um                    randconfig-001-20240130   gcc  
+um                    randconfig-002-20240129   gcc  
+um                    randconfig-002-20240130   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240130   gcc  
+x86_64       buildonly-randconfig-002-20240130   gcc  
+x86_64       buildonly-randconfig-003-20240130   gcc  
+x86_64       buildonly-randconfig-004-20240130   gcc  
+x86_64       buildonly-randconfig-005-20240130   gcc  
+x86_64       buildonly-randconfig-006-20240130   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                randconfig-011-20240130   gcc  
+x86_64                randconfig-012-20240130   gcc  
+x86_64                randconfig-013-20240130   gcc  
+x86_64                randconfig-014-20240130   gcc  
+x86_64                randconfig-015-20240130   gcc  
+x86_64                randconfig-016-20240130   gcc  
+x86_64                randconfig-071-20240130   gcc  
+x86_64                randconfig-072-20240130   gcc  
+x86_64                randconfig-073-20240130   gcc  
+x86_64                randconfig-074-20240130   gcc  
+x86_64                randconfig-075-20240130   gcc  
+x86_64                randconfig-076-20240130   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                randconfig-001-20240129   gcc  
+xtensa                randconfig-001-20240130   gcc  
+xtensa                randconfig-002-20240129   gcc  
+xtensa                randconfig-002-20240130   gcc  
+xtensa                    smp_lx200_defconfig   gcc  
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
