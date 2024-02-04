@@ -1,132 +1,110 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AC44DDCE
-	for <linux-m68k@vger.kernel.org>; Fri,  2 Feb 2024 03:57:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.218
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706846241; cv=pass; b=qqvcW3gW9VA8nMncz16CSuiUyODPm1TNy9Rqkk/taCjRvXStsttJq1wvZwqcQvSBiuDfBhOtC6wX7/X1rAthcbpG5Pa2ZffzUL8AMJd/kCQKIX81JI19VAsYGfgNEB/1sTckXxGvY8MDeex8yjCUbJUdKpxl6+jXmXaR9XVsJso=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706846241; c=relaxed/simple;
-	bh=OWaUsxOIX3jeZ6R00Rn+O5MBJrxjyl8s6XJMdI/TTBY=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=XLokRro0wyUtvCcz47zZdCO9MKh2EfN42DIdty8eAd0FIZAaJJ9gr2Pl4t4zUN139Xon6nQSkZNZe/wE/uIVpVLQXXYoo7uiKE7Xds3kRK8GYNa3OJSfhpeonvHDKY/NnQm1E+8iZjTAvJhRkVAaDeV6qcnXd/3S7/HNsnDiwFI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fpond.eu; spf=none smtp.mailfrom=fpond.eu; dkim=pass (2048-bit key) header.d=fpond.eu header.i=@fpond.eu header.b=MGXn0lgP; dkim=permerror (0-bit key) header.d=fpond.eu header.i=@fpond.eu header.b=Pmslkuza; arc=pass smtp.client-ip=81.169.146.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fpond.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=fpond.eu
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fpond.eu header.i=@fpond.eu header.b="MGXn0lgP";
-	dkim=permerror (0-bit key) header.d=fpond.eu header.i=@fpond.eu header.b="Pmslkuza"
-ARC-Seal: i=1; a=rsa-sha256; t=1706846054; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=dkDhAKxm4dsS8hRAsXbJVllQKTTwYEQskQXa/M5czgRu2PQfEOlbDifLGREpdqj9P3
-    fqZtVVknCJRPYUzGuncxuwCdwILNki+0/V/TKGzDAueMc2i+ZzSQmQKnLWVK22CPCciN
-    RvdysR6e80e2sjXQ4bzP036WZ+uavtcEeW1pIqta5zOA/4ZH+jn5oy03dlv0GjeKpdGT
-    0T7wncPjrRorWkbxGzo71r3IGaMv0S+lPX4dPaqHShiHHMAcuQewExw0zdSB6NPraXuX
-    lZj8lRHS48t0rCqCuVg37x2906d625eclrDPsn8MLIXaAYhdnzDqLGjrgl6dUxSwNG3/
-    7AjA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1706846054;
-    s=strato-dkim-0002; d=strato.com;
-    h=Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=D1PJ33Al58Oj79FC4LzOHfCJIx91hqZZs9eizfDW+Tc=;
-    b=OGKti5ldY9GOtc0joGPMCWGVdoU1WCNHVKIdxwG0T2VGeHlV14JaH5avZRdoAdYa4z
-    ot3M71VIUn7slqm5Tj+xZUWLAdLu4kzdFlpedmLzfMtFRosR+kjExGX7XCL88hZmOQ/Q
-    Ktw8w5nz4EVEkGbM40zaxSWwH4SKMVTIY9DdwIYqDrLmvYzMYMDs+bT6389a2q+wpNqr
-    gd4/S3sMki+HZnZQBtvm/ffyi3GKs54ZIPhbJKPePru/Rlhl0KMcrRNlW7dVbujxQft9
-    66pEfjAoKRecsk0mefdAC4K8yX3STX8Z3U0BytY+ZQ17bZ0pP4svfpr6xzHhlQKXymIe
-    LBkQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1706846054;
-    s=strato-dkim-0002; d=fpond.eu;
-    h=Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=D1PJ33Al58Oj79FC4LzOHfCJIx91hqZZs9eizfDW+Tc=;
-    b=MGXn0lgPjFT8VwA7hvP/naJaSF5iQtd4hp4+GgHbdT7Zp++nFPcadV3rTeGx8Q1vNF
-    tCvqw2IB1NyJ3sBB64Ud0Utz/99pTz3U2lUsgQqAD8ofVDvpQJvpIAxNMYNgaLwq/nCe
-    uhX/lXpf536Vwp4JLBd747EQWC5AGfoWEqefpSjDaSeEg4hlOrkEymeglfuIIb2PTFBn
-    IEWm2ZeOMJcIUeRgr7jelyLwZ9kdH22AtO7fhOGVt7clQOXa/deV8E+RJ2tnm16X0Pnn
-    PZYEIUhwumOY5/yt8MXo+hT3qddxSNvcVxLpqWwv0x9b4wnbQPGQnnTbo3N6PTPqqqbJ
-    blEQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1706846054;
-    s=strato-dkim-0003; d=fpond.eu;
-    h=Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=D1PJ33Al58Oj79FC4LzOHfCJIx91hqZZs9eizfDW+Tc=;
-    b=PmslkuzaYxuzdgFqakDQGo0bsYhSw+zGCSslpsedUj+daNodSt0MZsOgyj6EYts8rf
-    4O+qvxsd2k5OgcW2KjCA==
-X-RZG-AUTH: ":OWANVUa4dPFUgKR/3dpvnYP0Np73amq+g13rqGzvv3qxio1R8fGl/wuMlg=="
-Received: from ox-live-app101.back.ox.d0m.de
-    by smtp-ox.front (RZmta 49.11.2 AUTH)
-    with ESMTPSA id Z7ddde0123sEXS4
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-	(Client did not present a certificate);
-    Fri, 2 Feb 2024 04:54:14 +0100 (CET)
-Date: Fri, 2 Feb 2024 04:54:14 +0100 (CET)
-From: Ulrich Hecht <uli@fpond.eu>
-To: cip-dev@lists.cip-project.org, Michael Schmitz <schmitzmic@gmail.com>,
-	linux-m68k@vger.kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Message-ID: <1550495460.64761.1706846054273@webmail.strato.com>
-In-Reply-To: <20240201204329.24202-1-schmitzmic@gmail.com>
-References: <20240201204329.24202-1-schmitzmic@gmail.com>
-Subject: Re: [cip-dev] [PATCH] m68k: include module.h to make use of
- exception handling in traps.c
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F2E4224F1
+	for <linux-m68k@lists.linux-m68k.org>; Sun,  4 Feb 2024 13:56:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707055003; cv=none; b=OSzMQTV4moJuF3xWUK9reDi3CwgqjGWFX1g5tydssLbCC3ktIMVhmWBze5RGCDprb0X6XWBp3AcenBKX78iAPsrT4Q2GjBlmkx4PN0EySUS1wXdABwipvK2YuaFBcKou+QpU4IGb7UKmPLcSMyYFYxfqonrFifZETuOON2nV5yI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707055003; c=relaxed/simple;
+	bh=tJuCMmVGPqjd839e1z8+vTfJCbhSpH7uhSZwYeJ2Rn8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=X3kUGdWUdx1H5Z5Yxi8dkO+GP8upI6qcmD9w88Jq2l34JPLhyRITHl+PpH6bkm8RzGEmzePfpgkC4NKPKa+gzfSbHfJrevRXTC4nsF6XA3Ueiy8+MQhjQa5lTcf3dh03Rv7HZoY//uv7rIsVrec4O1U0XAHGx6dIKJPbQ60sPfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6e11faeb125so1803609a34.2
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 04 Feb 2024 05:56:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707055001; x=1707659801;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AK5HHzPHOnJw06PkmeDxTeJoWKOlCirPBPN/7WaX+mg=;
+        b=SpeCvNUudQp+nV6aQaC+hYXGDJjtsOCAFd0PBTvP1IDbaPdsLd/4FgFDLZQktdDg4k
+         MWuw29NwhJsSbjZ3ZjSOhaDJL5G1IaNqweShgT3M4dwvKpqEo74UVYH6hI1xy/3f9/3r
+         HMcuekBVhC18oLViKF1awFX+r4e4j6cFA3aSDZbodK/0WF6yyaUP2RMHWLdLaaXEAGPf
+         hIA2nIpU4KjNsMhRs3W5TLRAwmwHgCucLIul0ITmC10NzNzUoT2TCrFeycqhbRGuEsKV
+         y4ME2kb60+XqBVgeMXX1FzLLkMrRJHrasgrot+eH21DHmuAFHuwdU9ziVQhJsF4jVJyM
+         EL+w==
+X-Gm-Message-State: AOJu0YznuPSr6kBsZh01yW1HDAfufgfWjj2bpN8eDVbku1jb6yPh+xE4
+	oILwlIsivDFQaMw+ut6TImZRVnud8OB+6JLuQKk+tBrSqVXu3R0ga3eFAZjV4It6UZEtaf6rQNx
+	4w6nVJJ5GU0/uj5i+4nMbIvIihI8=
+X-Google-Smtp-Source: AGHT+IEgFL+oArtYo9MSy3rjb/Xp9QIC5qVF6dVHA9GYj9ihuddYCKzmTlB0ALs+JGFe1SiI2g1uBGusiLUzvu83rLc=
+X-Received: by 2002:a05:6358:7e13:b0:175:67e3:cb28 with SMTP id
+ o19-20020a0563587e1300b0017567e3cb28mr11987431rwm.12.1707055000858; Sun, 04
+ Feb 2024 05:56:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.6-Rev57
-X-Originating-Client: open-xchange-appsuite
+References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr>
+ <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr> <20240128050449.1332798-3-mailhol.vincent@wanadoo.fr>
+ <c47fedaf-cdc9-f970-460f-d2ee7e806da4@linux-m68k.org> <CAMZ6RqKj207uv5AF_fvb65nhCM32V=VAQXsUGLNmbeXYKPvZJg@mail.gmail.com>
+ <9d9be9dbe92f43d2a95d11d6b2f434c1@AcuMS.aculab.com> <CAMZ6Rq+RnY16sREhAZ6AFn3sz1SuPsKqhW-m0TrrDz1hd=vNOA@mail.gmail.com>
+ <77831c6f-7fc9-c42d-b29b-c3b2f3f5e687@linux-m68k.org>
+In-Reply-To: <77831c6f-7fc9-c42d-b29b-c3b2f3f5e687@linux-m68k.org>
+From: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date: Sun, 4 Feb 2024 22:56:28 +0900
+Message-ID: <CAMZ6RqLyRxvUiLKZLkQF1cYFkdOqX73V2K=dGbNROMDj61OKLw@mail.gmail.com>
+Subject: Re: [PATCH v4 2/5] m68k/bitops: use __builtin_{clz,ctzl,ffs} to
+ evaluate constant expressions
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: David Laight <David.Laight@aculab.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Yury Norov <yury.norov@gmail.com>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Douglas Anderson <dianders@chromium.org>, 
+	Kees Cook <keescook@chromium.org>, Petr Mladek <pmladek@suse.com>, 
+	Randy Dunlap <rdunlap@infradead.org>, Zhaoyang Huang <zhaoyang.huang@unisoc.com>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Marco Elver <elver@google.com>, 
+	Brian Cain <bcain@quicinc.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	Matthew Wilcox <willy@infradead.org>, "Paul E . McKenney" <paulmck@kernel.org>, 
+	"linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+
+Hi Finn and David,
+
+Sorry for the late feedback, I did not have much time during weekdays.
+
+On Monday. 29 Jan. 2024 at 07:34, Finn Thain <fthain@linux-m68k.org> wrote:
+> On Sun, 28 Jan 2024, Vincent MAILHOL wrote:
+> > > > The asm is meant to produce better results when the argument is not
+> > > > a constant expression.
+>
+> Is that because gcc's implementation has to satisfy requirements that are
+> excessively stringent for the kernel's purposes? Or is it a compiler
+> deficiency only affecting certain architectures?
+
+I just guess that GCC guys followed the Intel datasheet while the
+kernel guys like to live a bit more dangerously and rely on some not
+so well defined behaviours... But I am really not the person to whom
+you should ask.
+
+I just want to optimize the constant folding and this is the only
+purpose of this series. I am absolutely not an asm. That's also why I
+am reluctant to compare the asm outputs.
+
+> > ... The only thing I am not ready to do is to compare the produced
+> > assembly code and confirm whether or not it is better to remove asm
+> > code.
+> >
+>
+> If you do the comparison and find no change, you get to say so in the
+> commit log, and everyone is happy.
+
+Without getting into details, here is a quick comparaisons of gcc and
+clang generated asm for all the bitops builtin:
+
+  https://godbolt.org/z/Yb8nMKnYf
+
+To the extent of my limited knowledge, it looks rather OK for gcc, but
+for clang... seems that this is the default software implementation.
+
+So are we fine with the current patch? Or maybe clang support is not
+important for m68k? I do not know so tell me :)
 
 
-> On 02/01/2024 9:43 PM CET Michael Schmitz <schmitzmic@gmail.com> wrote:
-> 
->  
-> Backporting commit 513138a14063760e (m68k: Only force 030
-> bus error if PC not in exception table) to v4.4 by the CIP
-> project revealed a build error due to extable.h not yet
-> available.
-> 
-> extable.h was split off module.h in v4.8 (commit
-> 0ef7653797addea8) so amend 513138a14063760e accordingly.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202401302324.d3o6tgup-lkp@intel.com/
-> Cc: <cip-dev@lists.cip-project.org> # 4.4
-> Cc: Ulrich Hecht <uli@fpond.eu>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-> ---
->  arch/m68k/kernel/traps.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
-> index c547140b8325..2209214cf91c 100644
-> --- a/arch/m68k/kernel/traps.c
-> +++ b/arch/m68k/kernel/traps.c
-> @@ -29,7 +29,7 @@
->  #include <linux/init.h>
->  #include <linux/ptrace.h>
->  #include <linux/kallsyms.h>
-> -#include <linux/extable.h>
-> +#include <linux/module.h>
->  
->  #include <asm/setup.h>
->  #include <asm/fpu.h>
-> -- 
-> 2.17.1
-
-Applied, thank you.
-
-CU
-Uli
+Yours sincerely,
+Vincent Mailhol
