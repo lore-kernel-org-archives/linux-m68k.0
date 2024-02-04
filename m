@@ -1,108 +1,144 @@
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3B25250EB
-	for <linux-m68k@vger.kernel.org>; Sun,  4 Feb 2024 19:42:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D2C7BE58
+	for <linux-m68k@lists.linux-m68k.org>; Sun,  4 Feb 2024 23:13:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707075735; cv=none; b=cPU3F2UXQsfIxulaR1XzX5b1wpgeMX+ewE7agJpdFDODplC/PSNNA6fRZU1hO2Mf06JnzsCILqJjfNZnPXWcGeVsAV+v8TX6sQ1I3uDhDbROBhlfs/ptNx3uBkmz4pZlpq1OfWETtMHibjvPL5pGvjLFwdREPg8IL7cO7ptNCj8=
+	t=1707088403; cv=none; b=Ixxm+n+ozHplzzsnc6hsHmUl0pGZZYcUQKIb9zAiC5DhCY8NsE4bAxSpx7cwUcsVmMTADBweJqbat3YVN7f2cGSqvg1R1tqUb1MoqrOG+901qOdtEAlD9bKS+4AC4ivsNrnR5BGQcYK0nhAmgXG9ENNlDbs0FJ9aaVk6ga6/BEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707075735; c=relaxed/simple;
-	bh=cJHKINTZdOU6BQJLcpYy8G9nmxX6/q6DKnhEVzUksJM=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=k/0mKXSXCWudklFzbRXFRgG1GxK3dwTdJY42rxVCogwcTFz7iDKs1Pc9g0R7WinONiP1HAqlFezdyAPOe+EJSok/aqpz8gNCLRci4/SZDp9j8+H1Kpu0t07ICe5kGDtgqqISBtJJtKhbQlYulgev0PuOY+8qHbu9sjvU1RNaGwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WvBACMp0; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1707088403; c=relaxed/simple;
+	bh=ip3/aLvpwB6hh59hlGaCKqqPuqApfThsV9cH/ZQcw0A=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=QRe2SPEgxGV0yfJhsetGPNYBI93X7szqA4KvEZ6EheQSUiQxEHd22JMNIUmTNZrEHzg2rdzI0eGLEBTUIH3R+J83xfznOC82wXgSMJDJ0dKkLGrDBj+6bAJh0j9dhNSEG0YoVEQMzSVK4bSGtRGAI7wYyjA4Zjb7n2FgFHSK2Wg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=mCmEcMdh; arc=none smtp.client-ip=64.147.123.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WvBACMp0"
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d8da50bffaso16136125ad.2
-        for <linux-m68k@vger.kernel.org>; Sun, 04 Feb 2024 11:42:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707075733; x=1707680533; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qPD8cpBs7b/3VK32LfdYjqDzdG2NmooKZqiQI1WLm1M=;
-        b=WvBACMp0QGO7750MYZ7DxvVhJ7dEY9fvG9rnPYSN+sFLs/Ze1w4Qd5dv3SXtDlcBXL
-         ZxR84zOI3t/C8lvVeGhR/3z0lD6+hmxqg9kxbjb5AN+qOVri4cKIB9gfRFdJFa6oDN3o
-         nh9w4ZR2TJQGbvq2FdLKvonbBoSRSgzWiPRKrqHCIHUQxtTT1rVS7F8qgSK4H7DfUOr2
-         KPvJRSS48s+iPDqj7XC+q4RVKWv/1pwvmEChwTXre4YqJG8QYnBTbW12jBH+8YQ20EXA
-         tmTLNcMdV4x08W7nG8ek7r3mtcoagtCZkJwyWHL8Aj/REhvUOjAzV/8LZuOM8bBxscqw
-         kGFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707075733; x=1707680533;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qPD8cpBs7b/3VK32LfdYjqDzdG2NmooKZqiQI1WLm1M=;
-        b=nhTlu5wUJ+0kNLtOHuW3WD2Mv4tOV1O2niU3sK1FHSIXBiyVm/gO0/ZhRh2ZB6FRTY
-         49YQ32L7IyChxrCMRCuWreSM5aMfmmGUcUq9qs5iZkT9voJea9Nb/+1Ob+NDkyz4zkg0
-         il+7VAiY+iivdvwYmKU3djoPpshrC/L4pTzJTDpE4K/ERNYIP3CsJ/LsbzNh3bdZtSkH
-         fgogMEF6o0kvOQ39QTY80mNbKJL2q5jt2IS9YRab+iEu3U48CVMEyfAS1pbuSigt/ySJ
-         QyUwBRsc+wte4qSRyMwWWkAAITkcuN/OfUD3Qy+cTruiyPM4/6k9jki0VtCE5TQE/BxW
-         6V3g==
-X-Gm-Message-State: AOJu0Yx45PmN6HqzW37cRCuiUeky2Nss9F8ZiOhxuZNLga/w8AdXcFcn
-	6BDQe1sRxOKiNcLrdoLcznHFDBS9KfF914pwlyPDDiPNQ4VlqUZpA5YupcNt
-X-Google-Smtp-Source: AGHT+IFsurT17xown/BX8lJo3PlTpjf/j+Dp4or78QDOeccyDmBhkWTxltgKEFBx1MG4sw3MxpKlZg==
-X-Received: by 2002:a17:903:2cf:b0:1d9:3843:3f07 with SMTP id s15-20020a17090302cf00b001d938433f07mr16237089plk.61.1707075732760;
-        Sun, 04 Feb 2024 11:42:12 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVrhp0JnhdG4QWxcz2APF7FUxNF3Q5ZibxYEyChz0hy2L85ghcbrGJ5eAsopd3PEpnqYM93Dqm02J6c0cvbA9LQLpqhB9p3PtQWlY41voo9GMMZKrQAdvERZBx6tL6xExCHFdHBWyfd0KW1L44=
-Received: from ?IPV6:2001:df0:0:200c:f6:2f34:b460:2ba5? ([2001:df0:0:200c:f6:2f34:b460:2ba5])
-        by smtp.gmail.com with ESMTPSA id 4-20020a170902e9c400b001d901c2087esm4847464plk.302.2024.02.04.11.42.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Feb 2024 11:42:12 -0800 (PST)
-Message-ID: <290053b6-0be9-6513-cd2a-15c6247c0503@gmail.com>
-Date: Mon, 5 Feb 2024 08:42:07 +1300
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="mCmEcMdh"
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailout.west.internal (Postfix) with ESMTP id BD8C032002D8;
+	Sun,  4 Feb 2024 18:13:18 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Sun, 04 Feb 2024 18:13:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707088398; x=1707174798; bh=oNkBOhK2M/xkfV+ZHmGOMVnjckv8
+	IiPoAgUeewZaHlo=; b=mCmEcMdhttWavMs/bUZGT3gXSu1BdyYEOPbN7sxehE4T
+	Dotka4LmTGURKACazRnoeWyJ1MnLZpAOSUw6wdQ/QsKhSeBri/PfZrY0z0SpJ/i0
+	H426bNPEznV7xErv/dOBS59BmRU6bQpgD/0MD+KJzHBlgme+zGgIyosefYoWSTB9
+	kGWUz/vRmOjrrIE46EszHZM5d9ZlhUrvQU06LCcOmVKgBeDyOEXAztiSAbbLU1u4
+	0O8diF92lB45dOIrLEVsbm0JnVNtYsW8ez9eXhthCcrZrXX5VHfsCfq6zbSYQxul
+	IMOmLhIS3i+1I8p5zFqrr53ZUy6j7uU5Wq0xDJeQLg==
+X-ME-Sender: <xms:DBrAZTIh3MGNRIbT5wzgeagScl_QVb_KAbCJsXMWuM0oFJr0NZtGog>
+    <xme:DBrAZXIqm45S-VB4Cs8qRyVhpA9uYGE5WOqT2md2zitQgusoSoscG8BZlkK0SICIF
+    SjIH858vs-Gbfk1GkA>
+X-ME-Received: <xmr:DBrAZbvWqxSoTqbPW4Ahu61ZOJt1lKHPrDdGvADGFc42wt3XOpSgwx4loTlNR_IZxo81YCMxmGdTG0t0IbbiEYZgUq2CQy9-PUo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeduledgtdejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
+    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
+    htthgvrhhnpeetueekgffgudeitdekiefhffeiheekffffveffgeeitefgteegjeeigeel
+    tdehkeenucffohhmrghinhepghhouggsohhlthdrohhrghenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmhei
+    kehkrdhorhhg
+X-ME-Proxy: <xmx:DBrAZcbbXZP7Ubt2GWnsTfdqfmRJrHR9tI4ka-JQhi-BqzNNB33z2g>
+    <xmx:DBrAZaY7Np2axbhYBeACq4cH8wRwcimAJp0PofOVVWGmntOhQbivJg>
+    <xmx:DBrAZQAmnRstNkxEUWkFuLb2-oIkLi1A52OziIu9tNNxSfvTnmSCjw>
+    <xmx:DhrAZfJ43rGvoT01Zpy89jpvDdNmS23G_2smVb9lPOArxMHmzCPing>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 4 Feb 2024 18:13:12 -0500 (EST)
+Date: Mon, 5 Feb 2024 10:13:26 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+cc: David Laight <David.Laight@aculab.com>, 
+    Andrew Morton <akpm@linux-foundation.org>, 
+    "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+    Yury Norov <yury.norov@gmail.com>, 
+    Nick Desaulniers <ndesaulniers@google.com>, 
+    Douglas Anderson <dianders@chromium.org>, 
+    Kees Cook <keescook@chromium.org>, Petr Mladek <pmladek@suse.com>, 
+    Randy Dunlap <rdunlap@infradead.org>, 
+    Zhaoyang Huang <zhaoyang.huang@unisoc.com>, 
+    Geert Uytterhoeven <geert+renesas@glider.be>, 
+    Marco Elver <elver@google.com>, Brian Cain <bcain@quicinc.com>, 
+    Geert Uytterhoeven <geert@linux-m68k.org>, 
+    Matthew Wilcox <willy@infradead.org>, 
+    "Paul E . McKenney" <paulmck@kernel.org>, 
+    "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>
+Subject: Re: [PATCH v4 2/5] m68k/bitops: use __builtin_{clz,ctzl,ffs} to
+ evaluate constant expressions
+In-Reply-To: <CAMZ6RqLyRxvUiLKZLkQF1cYFkdOqX73V2K=dGbNROMDj61OKLw@mail.gmail.com>
+Message-ID: <002675b0-6976-9efa-6bc5-b8bad287a1d2@linux-m68k.org>
+References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr> <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr> <20240128050449.1332798-3-mailhol.vincent@wanadoo.fr> <c47fedaf-cdc9-f970-460f-d2ee7e806da4@linux-m68k.org>
+ <CAMZ6RqKj207uv5AF_fvb65nhCM32V=VAQXsUGLNmbeXYKPvZJg@mail.gmail.com> <9d9be9dbe92f43d2a95d11d6b2f434c1@AcuMS.aculab.com> <CAMZ6Rq+RnY16sREhAZ6AFn3sz1SuPsKqhW-m0TrrDz1hd=vNOA@mail.gmail.com> <77831c6f-7fc9-c42d-b29b-c3b2f3f5e687@linux-m68k.org>
+ <CAMZ6RqLyRxvUiLKZLkQF1cYFkdOqX73V2K=dGbNROMDj61OKLw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH RFC 0/4]
-Content-Language: en-US
-From: Michael Schmitz <schmitzmic@gmail.com>
-To: linux-m68k@vger.kernel.org
-Cc: geert@linux-m68k.org, uli@fpond.eu, fthain@linux-m68k.org,
- viro@zeniv.linux.org.uk
-References: <20240204192105.5677-1-schmitzmic@gmail.com>
-In-Reply-To: <20240204192105.5677-1-schmitzmic@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 
-Oh dear...
+On Sun, 4 Feb 2024, Vincent MAILHOL wrote:
 
-$Subject ought to have read 'Some m68k v4.4 backports' (or something to 
-that effect).
+> Sorry for the late feedback, I did not have much time during weekdays.
+> 
+> On Monday. 29 Jan. 2024 at 07:34, Finn Thain <fthain@linux-m68k.org> wrote:
+> > On Sun, 28 Jan 2024, Vincent MAILHOL wrote:
+> > > > > The asm is meant to produce better results when the argument is not
+> > > > > a constant expression.
+> >
+> > Is that because gcc's implementation has to satisfy requirements that are
+> > excessively stringent for the kernel's purposes? Or is it a compiler
+> > deficiency only affecting certain architectures?
+> 
+> I just guess that GCC guys followed the Intel datasheet while the
+> kernel guys like to live a bit more dangerously and rely on some not
+> so well defined behaviours... But I am really not the person to whom
+> you should ask.
+> 
+> I just want to optimize the constant folding and this is the only
+> purpose of this series. I am absolutely not an asm. That's also why I
+> am reluctant to compare the asm outputs.
+> 
 
-I'll send that series to cip-dev@lists.cip-project.org shortly if there 
-are no objections.
+How does replacing asm with a builtin prevent constant folding?
 
-Cheers,
+> > > ... The only thing I am not ready to do is to compare the produced
+> > > assembly code and confirm whether or not it is better to remove asm
+> > > code.
+> > >
+> >
+> > If you do the comparison and find no change, you get to say so in the
+> > commit log, and everyone is happy.
+> 
+> Without getting into details, here is a quick comparaisons of gcc and
+> clang generated asm for all the bitops builtin:
+> 
+>   https://godbolt.org/z/Yb8nMKnYf
+> 
+> To the extent of my limited knowledge, it looks rather OK for gcc, but
+> for clang... seems that this is the default software implementation.
+> 
+> So are we fine with the current patch? Or maybe clang support is not
+> important for m68k? I do not know so tell me :)
+> 
 
-     Michael
+Let's see if I understand.
 
-On 5/02/24 08:21, Michael Schmitz wrote:
-> CIP v4.4 backport of Al Viro's misc. m68k signal handling and
-> page fault fixes.
->
-> The first three are a prerequisite for Finn Thain's 'm68k: Move
-> signal frame following exception on 68020/030' patch, and fix
-> the backport compile error seen in
-> https://lore.kernel.org/oe-kbuild-all/202401310920.sBSI4BHj-lkp@intel.com/
->
-> RFC version of these patches to give Geert and Al a chance to yell
-> at me in case I got details of these patches wrong. I don't claim
-> to understand signal handling in anywhere near the required level
-> of detail.
->
-> Tested on my 68030 Atari Falcon.
->
-> Cheers,
->
->     Michael
->     
->
+You are proposing that the kernel source carry an unquantified 
+optimization, with inherent complexity and maintenance costs, just for the 
+benefit of users who choose a compiler that doesn't work as well as the 
+standard compiler. Is that it?
+
+At some point in the future when clang comes up to scrach with gcc and the 
+builtin reaches parity with the asm, I wonder if you will then remove both 
+your optimization and the asm, to eliminate the afore-mentioned complexity 
+and maintenance costs. Is there an incentive for that work?
