@@ -1,132 +1,120 @@
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0288F10A01
-	for <linux-m68k@vger.kernel.org>; Mon,  5 Feb 2024 06:03:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9616C11CAD
+	for <linux-m68k@vger.kernel.org>; Mon,  5 Feb 2024 08:10:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707113040; cv=none; b=iA3EHLgsOxZ1KOH5FpoKGilZQ7MmLuga65dFJ2lpY6YUKGHuxWp4639j9PrS+8tHz1iL0aRrCk4v/g+zhJKIwFBiHEco8rJKC+ZQQLorl8kQZ/JZHnv1OeU4elZ9uYnlpECkrUrsUYnK704CcAoxiyov1rfm8KbOogEbG9sDVEM=
+	t=1707120648; cv=none; b=WI/hxfVVPz6Ez+UdjBNYZaP4SgJem8R7W2v8qsPTdcINPr1SsTxhE/qO3wC7HH1G2BI8LfiURRlxwt+toDU5DwsGxuofXEQ9bMheKFkldNM9sppxz9GjGoQktWHkDtN/pj1WQJ7sXAbgQLlZ2f1Q8gbfdmtM/YcyfhXMMSLtAvY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707113040; c=relaxed/simple;
-	bh=oJpWbcjUnZOYUHS4gSQXzCthYT9BcnlkYXcv4Jt18zE=;
-	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=f/YpJEDwsPDYNd+LPfy2u3kcKufGbfgkrnZHPpQJllj+6U8+r6pcyUzACs8yRx2uw8URnOsfaX5xhizZS2EX1NbDc5+FiLXZ9j/KsY1otLuPFITBY6fOjePxDgHzudYejqhr8GYMJHlZxw1zryBp1cQblifEBsrDnkQQMh2toJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZST5obS8; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1707120648; c=relaxed/simple;
+	bh=z886diQCx8FBiESMrgrGn34N/afNzUt046B6/LBocFQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fHH0bC6hzczp7at83ONx6P7TcNtNZf67RPbi14E3Sx0PQv8+c5j0q435D3mijifzFfUEutXEKxrMUSUVD5MmDNiUChsJGOBUzvN0nvawtdAMM6aDlHPd/NXqKb1Lbx3iXSd/iD7J/B9xIFMIczItv4tcwZ6Nwh3SV/s8cgXhJDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZST5obS8"
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e02d298334so464197b3a.0
-        for <linux-m68k@vger.kernel.org>; Sun, 04 Feb 2024 22:03:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707113038; x=1707717838; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uGL/ByuU508fiYbUuhFT4hiOKhi0VVx0cF+VFQ1lbtw=;
-        b=ZST5obS8nw1zenRJsrhTIxk61N7Zi0eZgrLO2fLcQBJxqn0RCKJ3/VmMvz9fBIJ1s3
-         h4MjZUROh3vC1N16fYm9hAZhvqCVC/DLtEIc/JjOQi2jXAhhyi0wEQ5EWJvTbzEflUME
-         vNa5Fa4uy3lrkxkrylgf+ehBJvmNWXT5TJ1D2aRlSXKfW1c5Y01yZnILcxG97zixEs7x
-         gOsxrXnYHn1tncHRxwnabKCeUhYM3xRGjmGOYILNmKWub0e3SwXEwoWTpNJr82EGG68c
-         gz5dygaMe18Ks2jH+49Zy5MP2hgRkhM7CTKcfUraPg3SgpjP0Uex4yRAkUUTQA+qiUWJ
-         0zBg==
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-60406da718aso41264477b3.1
+        for <linux-m68k@vger.kernel.org>; Mon, 05 Feb 2024 00:10:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707113038; x=1707717838;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=uGL/ByuU508fiYbUuhFT4hiOKhi0VVx0cF+VFQ1lbtw=;
-        b=dnmw+WjcEEgNdzSXTgrto3ilt4k7n+ovYO5QeKplJwRZUoEaaJe0evBQvibpGi8lA8
-         7G8hnab9z9n7qvUmspJjbgDsP1eOcYxhM4sjKLan0zirTJiopWiEBu6JK2MU7ZV5oBHK
-         C+66Hw7ptOZXrdVga1a1RnxYOCu6SXa1OkEu8UOkdGDXvgbhUkzvMRdopZaw06LxzwmA
-         aCZMafAm9dDf7gvkaJ/oMTwYZYz54chyHRB3RwqsmK89iQg7dTgFCTUj99xZbzvG62Dy
-         xWLrwe+rlckGAG1qnND9S4Vt6A3HktGvku+o30RYIIHJAbanN4mnSJgfQzxY9FSaBx1U
-         y23A==
-X-Gm-Message-State: AOJu0YzSN9uYwIflIvOg4D6O39X2/7iOlIQaA4BosahP0m+FKFil3EGo
-	pKlz7pOlwkGv7KgQ0eKtHukf+otg4oEiD8owQkM4ySVWkABhuBDn0/kS2MX+
-X-Google-Smtp-Source: AGHT+IHoO3LMCIOXxmTyYNmuzpbv3IS/NMGor1ZHWl7ZLieG/Y4cX5Y6J49N6aIruGcBEs6Nd1cWxw==
-X-Received: by 2002:a05:6a20:d805:b0:19c:b1f0:9848 with SMTP id iv5-20020a056a20d80500b0019cb1f09848mr8061184pzb.7.1707113038208;
-        Sun, 04 Feb 2024 22:03:58 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXizbn1+mwF5kqicwH3nhpU5gBjVET9EY5OXahXHT9TPJxnu23HJdBpzAJIdPn+sIIEuGXn5rSu3daujgNTwPNIZAPykFsWbDeT73fAiu3qp/6DdSSMvQRTdthByQ8ZK8UxAq4YBeSXhbEmiPoPgePwpM/bo/Yp8e260cTNV7ZXo7wP/X8CKuL5
-Received: from [10.1.1.24] (125-236-136-221-fibre.sparkbb.co.nz. [125.236.136.221])
-        by smtp.gmail.com with ESMTPSA id x15-20020aa784cf000000b006e03ab56acbsm2048073pfn.217.2024.02.04.22.03.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 04 Feb 2024 22:03:57 -0800 (PST)
-Subject: Re: [PATCH RFC 4/4] m68k equivalent of 26178ec11ef3 "x86: mm:
- consolidate VM_FAULT_RETRY handling" If e.g. get_user() triggers a page fault
- and a fatal signal is caught, we might end up with handle_mm_fault()
- returning VM_FAULT_RETRY and not doing anything to page tables. In such case
- we must *not* return to the faulting insn - that would repeat the entire
- thing without making any progress; what we need instead is to treat that as
- failed (user) memory access.
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- linux-m68k@vger.kernel.org
-References: <20240204192105.5677-1-schmitzmic@gmail.com>
- <20240204192105.5677-5-schmitzmic@gmail.com>
- <87ad7f18a772614df4d36595d385b51e54c949d0.camel@physik.fu-berlin.de>
-Cc: geert@linux-m68k.org, uli@fpond.eu, fthain@linux-m68k.org,
- viro@zeniv.linux.org.uk
-From: Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <721d2b41-c9ac-7771-3e74-235cccd26fb4@gmail.com>
-Date: Mon, 5 Feb 2024 19:03:51 +1300
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        d=1e100.net; s=20230601; t=1707120645; x=1707725445;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ai9w879nWv0dbT4IZhKWbMNJNw2LJvIyrZ3Li+PRgW4=;
+        b=I3nBOQFwp6NpM7UogXxRdnUUkbn6gFGq+PitG9tof2Jey+isDjklcVMq62VI0UukvK
+         10qmbCuA7RAMOipKm82kF3bO2QZDpfZIzAr6QJu1LbGSkTpxNKEaZknCEcJJA692HCeL
+         L5y2+un6KAiXJPmpaUSCaxYbqXsYDT5K4rCy5KWPBqHckzlKFK4RDh5lBpLG376F/Hwn
+         KILxpXLjhE8RDIS+Wz12w4S5MZjJHBhiKWujEBff/cCdrG3llWDaC43L///uuGyaTQxK
+         LRuftHeeXP/ACnO02CqJamfNGDTMtRO8wQaFOJRlSFcv58MXACGMztMfEm2ZGnJr5iZ/
+         WKkw==
+X-Gm-Message-State: AOJu0Yzm8yvvenz9IUPp2LuVr20R7i2ZfO0N8ixgYGwo79WAPHQqFCSS
+	FAOWu2fH/uccKmbvWq8kWHqaSlLZ9cNwwOQM9TF8XivMRIfzipGNL0dP1nGIZFE=
+X-Google-Smtp-Source: AGHT+IFH221fHA2wjyCAfj6mY/fLWo56u9HRSwDR0Ink7Ylbm4uuQZz8NMGWK6+6PgLrm2DZGT5bZg==
+X-Received: by 2002:a81:5743:0:b0:5e8:995f:6a0f with SMTP id l64-20020a815743000000b005e8995f6a0fmr8627908ywb.13.1707120645022;
+        Mon, 05 Feb 2024 00:10:45 -0800 (PST)
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
+        by smtp.gmail.com with ESMTPSA id m83-20020a0dca56000000b006040ac59200sm1841223ywd.102.2024.02.05.00.10.44
+        for <linux-m68k@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Feb 2024 00:10:44 -0800 (PST)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-60412866c36so40210757b3.2
+        for <linux-m68k@vger.kernel.org>; Mon, 05 Feb 2024 00:10:44 -0800 (PST)
+X-Received: by 2002:a0d:d811:0:b0:5ef:317b:67ee with SMTP id
+ a17-20020a0dd811000000b005ef317b67eemr9403459ywe.9.1707120644671; Mon, 05 Feb
+ 2024 00:10:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <87ad7f18a772614df4d36595d385b51e54c949d0.camel@physik.fu-berlin.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240205023236.9325-1-schmitzmic@gmail.com> <20240205023236.9325-5-schmitzmic@gmail.com>
+In-Reply-To: <20240205023236.9325-5-schmitzmic@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 5 Feb 2024 09:10:33 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUMwQSEwDQ3tsmChutY3P0VQUA0A8jg63NxfyrmxfKWXQ@mail.gmail.com>
+Message-ID: <CAMuHMdUMwQSEwDQ3tsmChutY3P0VQUA0A8jg63NxfyrmxfKWXQ@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 4/8] m68k: Handle arrivals of multiple signals correctly
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: linux-m68k@vger.kernel.org, uli@fpond.eu, fthain@linux-m68k.org, 
+	viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Adrian,
+Hi Michael,
 
-Am 05.02.2024 um 18:32 schrieb John Paul Adrian Glaubitz:
-> Hi Michael,
+Thanks for your patch!
+
+On Mon, Feb 5, 2024 at 3:32=E2=80=AFAM Michael Schmitz <schmitzmic@gmail.co=
+m> wrote:
+> From: Al Viro <viro@zeniv.linux.org.uk>
+
+When submitting a backport, please add lines like
+
+    commit 4bb0bd81ce5e97092dfda6a106d414b703ec0ee8 upstream.
+
+> When we have several pending signals, have entered with the kernel
+> with large exception frame *and* have already built at least one
+> sigframe, regs->stkadj is going to be non-zero and regs->format/sr/pc
+> are going to be junk - the real values are in shifted exception stack
+> frame we'd built when putting together the first sigframe.
 >
-> On Mon, 2024-02-05 at 08:21 +1300, Michael Schmitz wrote:
->> From: Al Viro <viro@zeniv.linux.org.uk>
->>
->> MSch: v4.4 backport compile errors fixes.
->>
->> Tested-by: Finn Thain <fthain@linux-m68k.org>
->> Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
->> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
->> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
->> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
->> ---
->>  arch/m68k/mm/fault.c | 5 ++++-
->>  1 file changed, 4 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/m68k/mm/fault.c b/arch/m68k/mm/fault.c
->> index 6a94cdd0c830..f94df64c3784 100644
->> --- a/arch/m68k/mm/fault.c
->> +++ b/arch/m68k/mm/fault.c
->> @@ -139,8 +139,11 @@ good_area:
->>  	fault = handle_mm_fault(mm, vma, address, flags);
->>  	pr_debug("handle_mm_fault returns %d\n", fault);
->>
->> -	if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(current))
->> +	if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(current)) {
->> +		if (!user_mode(regs))
->> +			goto no_context;
->>  		return 0;
->> +	}
->>
->>  	if (unlikely(fault & VM_FAULT_ERROR)) {
->>  		if (fault & VM_FAULT_OOM)
+> If that happens, subsequent sigframes are going to be garbage.
+> Not hard to fix - just need to find the "adjusted" frame first
+> and look for format/vector/sr/pc in it.
 >
-> That subject looks like it contains the long description which should go
-> into the patch instead.
+> MSch: Minor v4.4 backport merge conflict fixes.
 
-Yep - I fat-fingered editing the commit message there. Thanks for spotting!
-
-Fixed in v2.
-
-	Michael
+Please move this to "[MSch: ...] below...
 
 >
-> Adrian
->
+> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+> Tested-by: Michael Schmitz <schmitzmic@gmail.com>
+> Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
+> Tested-by: Finn Thain <fthain@linux-m68k.org>
+> Link: https://lore.kernel.org/r/YP2dBIAPTaVvHiZ6@zeniv-ca.linux.org.uk
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+... i.e. here.
+
+> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+
+Good.
+Please add your SoB on all patches you handle, some lack it.
+
+Thanks a lot for taking care of this!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
