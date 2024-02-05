@@ -1,120 +1,121 @@
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9616C11CAD
-	for <linux-m68k@vger.kernel.org>; Mon,  5 Feb 2024 08:10:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3416412B8C
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  5 Feb 2024 09:17:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707120648; cv=none; b=WI/hxfVVPz6Ez+UdjBNYZaP4SgJem8R7W2v8qsPTdcINPr1SsTxhE/qO3wC7HH1G2BI8LfiURRlxwt+toDU5DwsGxuofXEQ9bMheKFkldNM9sppxz9GjGoQktWHkDtN/pj1WQJ7sXAbgQLlZ2f1Q8gbfdmtM/YcyfhXMMSLtAvY=
+	t=1707124641; cv=none; b=Hrdz3Fp0KzM39z199W4i9dhiHP7fz7IJgMMbBvNxFscRYDZQF/gS8GhvvmT6xh1FhDylJEZP8wfOkloqO1rjxBt3CtoECPHFH04LTBNlgvsTbFD473yI+9ryWD7OHKXVU/uLjvbUuhcrygyEgp/IlFCFyFq3HNHAAoT0hI5nrPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707120648; c=relaxed/simple;
-	bh=z886diQCx8FBiESMrgrGn34N/afNzUt046B6/LBocFQ=;
+	s=arc-20240116; t=1707124641; c=relaxed/simple;
+	bh=96MPBiS40e0x9Vw86i9UrFnPx8o4zrAU2LTLF+KiPMw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fHH0bC6hzczp7at83ONx6P7TcNtNZf67RPbi14E3Sx0PQv8+c5j0q435D3mijifzFfUEutXEKxrMUSUVD5MmDNiUChsJGOBUzvN0nvawtdAMM6aDlHPd/NXqKb1Lbx3iXSd/iD7J/B9xIFMIczItv4tcwZ6Nwh3SV/s8cgXhJDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	 To:Cc:Content-Type; b=saQKrueGipubS7cdQr1ulbWYVCiPJPaS+tl3/NdNnIkeCdkDnNd7/+OW1o8a4VtAOnWvuQ5bgcOR7A1QSxZvjvU4EtXByPFj39xPy1+y8AZ1N+J8K1UjPRc0jsw1J1Jjo1UVjv7KJCZjZAigbQvkLiyjMTCQHq53qFXpEVvYQM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-60406da718aso41264477b3.1
-        for <linux-m68k@vger.kernel.org>; Mon, 05 Feb 2024 00:10:46 -0800 (PST)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-296a02b7104so457197a91.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 05 Feb 2024 01:17:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707120645; x=1707725445;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ai9w879nWv0dbT4IZhKWbMNJNw2LJvIyrZ3Li+PRgW4=;
-        b=I3nBOQFwp6NpM7UogXxRdnUUkbn6gFGq+PitG9tof2Jey+isDjklcVMq62VI0UukvK
-         10qmbCuA7RAMOipKm82kF3bO2QZDpfZIzAr6QJu1LbGSkTpxNKEaZknCEcJJA692HCeL
-         L5y2+un6KAiXJPmpaUSCaxYbqXsYDT5K4rCy5KWPBqHckzlKFK4RDh5lBpLG376F/Hwn
-         KILxpXLjhE8RDIS+Wz12w4S5MZjJHBhiKWujEBff/cCdrG3llWDaC43L///uuGyaTQxK
-         LRuftHeeXP/ACnO02CqJamfNGDTMtRO8wQaFOJRlSFcv58MXACGMztMfEm2ZGnJr5iZ/
-         WKkw==
-X-Gm-Message-State: AOJu0Yzm8yvvenz9IUPp2LuVr20R7i2ZfO0N8ixgYGwo79WAPHQqFCSS
-	FAOWu2fH/uccKmbvWq8kWHqaSlLZ9cNwwOQM9TF8XivMRIfzipGNL0dP1nGIZFE=
-X-Google-Smtp-Source: AGHT+IFH221fHA2wjyCAfj6mY/fLWo56u9HRSwDR0Ink7Ylbm4uuQZz8NMGWK6+6PgLrm2DZGT5bZg==
-X-Received: by 2002:a81:5743:0:b0:5e8:995f:6a0f with SMTP id l64-20020a815743000000b005e8995f6a0fmr8627908ywb.13.1707120645022;
-        Mon, 05 Feb 2024 00:10:45 -0800 (PST)
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
-        by smtp.gmail.com with ESMTPSA id m83-20020a0dca56000000b006040ac59200sm1841223ywd.102.2024.02.05.00.10.44
-        for <linux-m68k@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Feb 2024 00:10:44 -0800 (PST)
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-60412866c36so40210757b3.2
-        for <linux-m68k@vger.kernel.org>; Mon, 05 Feb 2024 00:10:44 -0800 (PST)
-X-Received: by 2002:a0d:d811:0:b0:5ef:317b:67ee with SMTP id
- a17-20020a0dd811000000b005ef317b67eemr9403459ywe.9.1707120644671; Mon, 05 Feb
- 2024 00:10:44 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707124639; x=1707729439;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rU3n7CJ8LR2Ka0hr51hd9lp4PmyuHjFJfmGGeQpcndM=;
+        b=wTzbCXrhpYwDhaPMNYdj3a2+6LaKlLEKKniv0lCnssHSLKXJh1pMq/CBevkAGgLw9N
+         m+nSL6dO5Bbp0WBfjv+JeYdAM+DEMc47HatN9gcq41NPnWGzTVZr89aNiuJ8lONvBTdh
+         ShWnJEnvw5mg73/JiEF+vUtSNF4AkIJiO17WIrPq9PuVvfPyLRQPhPqR/3rGDqPkbAd9
+         IIlHw0ypvRGd1GRAE3h2vmnr7xm0eRrfF9MRJNHxkCNuTSL98+pPOduoyUJtF2cMWjE2
+         rYk9j7bORieiALdW8a9Yv5x5p67+ylpA+Q/bRN/Q1H9fUYdNyLU7NaxqpdA4yJLeGRAj
+         yZdg==
+X-Gm-Message-State: AOJu0YzYBNWHj+tBzi5ssE+pqiVH5rnkyPl8Y5qeo1YTjlfv04iGXLx+
+	IhylLMu3PBpbxXptPS7CINhmswyBcSOjuxXw9bMBdb7ljp42sBA+tdDMzf3VtoZn7/OkhlmqtiH
+	xAHRy2MQ1H65NVuBB0+B2RZ5uBv4=
+X-Google-Smtp-Source: AGHT+IFfZf+XD8BOSl7R7bC9f9eXgr73a5N6xcGPxMPSXsWh7hXatH3CaIIqjbH6bQN1DrRciODcjMzAjFn8nQ7Nry0=
+X-Received: by 2002:a17:90a:3006:b0:296:2035:a3c2 with SMTP id
+ g6-20020a17090a300600b002962035a3c2mr10729751pjb.36.1707124639396; Mon, 05
+ Feb 2024 01:17:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205023236.9325-1-schmitzmic@gmail.com> <20240205023236.9325-5-schmitzmic@gmail.com>
-In-Reply-To: <20240205023236.9325-5-schmitzmic@gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 5 Feb 2024 09:10:33 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUMwQSEwDQ3tsmChutY3P0VQUA0A8jg63NxfyrmxfKWXQ@mail.gmail.com>
-Message-ID: <CAMuHMdUMwQSEwDQ3tsmChutY3P0VQUA0A8jg63NxfyrmxfKWXQ@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 4/8] m68k: Handle arrivals of multiple signals correctly
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: linux-m68k@vger.kernel.org, uli@fpond.eu, fthain@linux-m68k.org, 
-	viro@zeniv.linux.org.uk
+References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr>
+ <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr> <20240128050449.1332798-3-mailhol.vincent@wanadoo.fr>
+ <c47fedaf-cdc9-f970-460f-d2ee7e806da4@linux-m68k.org> <CAMZ6RqKj207uv5AF_fvb65nhCM32V=VAQXsUGLNmbeXYKPvZJg@mail.gmail.com>
+ <9d9be9dbe92f43d2a95d11d6b2f434c1@AcuMS.aculab.com> <CAMZ6Rq+RnY16sREhAZ6AFn3sz1SuPsKqhW-m0TrrDz1hd=vNOA@mail.gmail.com>
+ <77831c6f-7fc9-c42d-b29b-c3b2f3f5e687@linux-m68k.org> <CAMZ6RqLyRxvUiLKZLkQF1cYFkdOqX73V2K=dGbNROMDj61OKLw@mail.gmail.com>
+ <002675b0-6976-9efa-6bc5-b8bad287a1d2@linux-m68k.org>
+In-Reply-To: <002675b0-6976-9efa-6bc5-b8bad287a1d2@linux-m68k.org>
+From: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date: Mon, 5 Feb 2024 18:17:07 +0900
+Message-ID: <CAMZ6RqKx=EO9kcOmxRyBuhULdDyTCeAXz25j_uF7TSy72Jahpw@mail.gmail.com>
+Subject: Re: [PATCH v4 2/5] m68k/bitops: use __builtin_{clz,ctzl,ffs} to
+ evaluate constant expressions
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: David Laight <David.Laight@aculab.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Yury Norov <yury.norov@gmail.com>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Douglas Anderson <dianders@chromium.org>, 
+	Kees Cook <keescook@chromium.org>, Petr Mladek <pmladek@suse.com>, 
+	Randy Dunlap <rdunlap@infradead.org>, Zhaoyang Huang <zhaoyang.huang@unisoc.com>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Marco Elver <elver@google.com>, 
+	Brian Cain <bcain@quicinc.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	Matthew Wilcox <willy@infradead.org>, "Paul E . McKenney" <paulmck@kernel.org>, 
+	"linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Michael,
-
-Thanks for your patch!
-
-On Mon, Feb 5, 2024 at 3:32=E2=80=AFAM Michael Schmitz <schmitzmic@gmail.co=
-m> wrote:
-> From: Al Viro <viro@zeniv.linux.org.uk>
-
-When submitting a backport, please add lines like
-
-    commit 4bb0bd81ce5e97092dfda6a106d414b703ec0ee8 upstream.
-
-> When we have several pending signals, have entered with the kernel
-> with large exception frame *and* have already built at least one
-> sigframe, regs->stkadj is going to be non-zero and regs->format/sr/pc
-> are going to be junk - the real values are in shifted exception stack
-> frame we'd built when putting together the first sigframe.
+On Mon. 5 Feb. 2024 at 08:13, Finn Thain <fthain@linux-m68k.org> wrote:
+> On Sun, 4 Feb 2024, Vincent MAILHOL wrote:
+(...)
+> Let's see if I understand.
 >
-> If that happens, subsequent sigframes are going to be garbage.
-> Not hard to fix - just need to find the "adjusted" frame first
-> and look for format/vector/sr/pc in it.
->
-> MSch: Minor v4.4 backport merge conflict fixes.
+> You are proposing that the kernel source carry an unquantified
+> optimization, with inherent complexity and maintenance costs, just for the
+> benefit of users who choose a compiler that doesn't work as well as the
+> standard compiler. Is that it?
 
-Please move this to "[MSch: ...] below...
+My proposal is quantified, c.f. my commit message:
 
->
-> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-> Tested-by: Michael Schmitz <schmitzmic@gmail.com>
-> Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
-> Tested-by: Finn Thain <fthain@linux-m68k.org>
-> Link: https://lore.kernel.org/r/YP2dBIAPTaVvHiZ6@zeniv-ca.linux.org.uk
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+  On an allyesconfig, with GCC 13.2.1, it saves roughly 8 KB.
 
-... i.e. here.
+"Saving roughly 8kb" is a quantification.
 
-> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+And clang use in the kernel is standardized:
 
-Good.
-Please add your SoB on all patches you handle, some lack it.
+  https://www.kernel.org/doc/html/latest/process/changes.html#current-minimal-requirements
 
-Thanks a lot for taking care of this!
+GCC may be predominant, but, although optional, clang v11+ is
+officially supported, and thus my patches should not neglect it.
 
-Gr{oetje,eeting}s,
+This is why I am asking whether or not clang support is important or
+not for m68k. If you tell me it is not, then fine, I will remove all
+the asm (by the way, the patch is already ready). But if there are
+even a few users who care about clang for m68k, then I do not think we
+should penalize them and I would not sign-off a change which
+negatively impacts some users.
 
-                        Geert
+The linux-m68k mailing list should know better than me if people care
+about clang support. So let me reiterate the question from my previous
+message: is clang support important for you?
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
+I would like a formal acknowledgement from the linux-m68k mailing list
+before sending a patch that may negatively impact some users. Thank
+you.
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+> At some point in the future when clang comes up to scrach with gcc and the
+> builtin reaches parity with the asm, I wonder if you will then remove both
+> your optimization and the asm, to eliminate the afore-mentioned complexity
+> and maintenance costs. Is there an incentive for that work?
+
+I will not follow up the evolution of clang support for m68k builtins.
+The goal of this series is to add a test to assert that all
+architectures correctly do the constant folding on the bit find
+operations (fifth patch of this series). It happens that m68k and
+hexagon architectures are failing that test, so I am fixing this as a
+one shot. After this series, I have no plan to do further work on m68k
+and hexagon architectures. Thank you for your understanding.
+
+
+Yours sincerely,
+Vincent Mailhol
