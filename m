@@ -1,144 +1,101 @@
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D2C7BE58
-	for <linux-m68k@lists.linux-m68k.org>; Sun,  4 Feb 2024 23:13:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C2B033EE
+	for <linux-m68k@vger.kernel.org>; Mon,  5 Feb 2024 02:32:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707088403; cv=none; b=Ixxm+n+ozHplzzsnc6hsHmUl0pGZZYcUQKIb9zAiC5DhCY8NsE4bAxSpx7cwUcsVmMTADBweJqbat3YVN7f2cGSqvg1R1tqUb1MoqrOG+901qOdtEAlD9bKS+4AC4ivsNrnR5BGQcYK0nhAmgXG9ENNlDbs0FJ9aaVk6ga6/BEQ=
+	t=1707100363; cv=none; b=Pt8EuO+8Fj1wcvBz8VCZnF8RitsspcZV5yfsuDuERZjjV+CNcSeIHxK64v3QD3fDXTSa722xe7KXbSOtJ4xdC6d63K/glrER+hI5PkvJarVIDlPHgDCwfUQXe0IRbzSMQMngkdMiIxXE7a99YHISmj38DVqOadQT8eGM9MdgXKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707088403; c=relaxed/simple;
-	bh=ip3/aLvpwB6hh59hlGaCKqqPuqApfThsV9cH/ZQcw0A=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=QRe2SPEgxGV0yfJhsetGPNYBI93X7szqA4KvEZ6EheQSUiQxEHd22JMNIUmTNZrEHzg2rdzI0eGLEBTUIH3R+J83xfznOC82wXgSMJDJ0dKkLGrDBj+6bAJh0j9dhNSEG0YoVEQMzSVK4bSGtRGAI7wYyjA4Zjb7n2FgFHSK2Wg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=mCmEcMdh; arc=none smtp.client-ip=64.147.123.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1707100363; c=relaxed/simple;
+	bh=aZQyzO+RWs46vrnUGT+1+kTTH2BhJrI4gMjK1l5XwTA=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=OcqL/2rDQohcf5g1FIdOuZb6CvWLpGxydmZm0K3eoMxNQn03SMO1NNK9/wI8dVbSs4RhepQPSX252npeJZ5ZcGOlDmTxcZNgG6uuX0xlhuyOzkvSDFDBAsjXGaHj5CSqLGk7X6PH7p12eK3qg+Dzsy5Wpcxm2g1r5J9Mp/DpniQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yy6GO1Uo; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="mCmEcMdh"
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailout.west.internal (Postfix) with ESMTP id BD8C032002D8;
-	Sun,  4 Feb 2024 18:13:18 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Sun, 04 Feb 2024 18:13:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1707088398; x=1707174798; bh=oNkBOhK2M/xkfV+ZHmGOMVnjckv8
-	IiPoAgUeewZaHlo=; b=mCmEcMdhttWavMs/bUZGT3gXSu1BdyYEOPbN7sxehE4T
-	Dotka4LmTGURKACazRnoeWyJ1MnLZpAOSUw6wdQ/QsKhSeBri/PfZrY0z0SpJ/i0
-	H426bNPEznV7xErv/dOBS59BmRU6bQpgD/0MD+KJzHBlgme+zGgIyosefYoWSTB9
-	kGWUz/vRmOjrrIE46EszHZM5d9ZlhUrvQU06LCcOmVKgBeDyOEXAztiSAbbLU1u4
-	0O8diF92lB45dOIrLEVsbm0JnVNtYsW8ez9eXhthCcrZrXX5VHfsCfq6zbSYQxul
-	IMOmLhIS3i+1I8p5zFqrr53ZUy6j7uU5Wq0xDJeQLg==
-X-ME-Sender: <xms:DBrAZTIh3MGNRIbT5wzgeagScl_QVb_KAbCJsXMWuM0oFJr0NZtGog>
-    <xme:DBrAZXIqm45S-VB4Cs8qRyVhpA9uYGE5WOqT2md2zitQgusoSoscG8BZlkK0SICIF
-    SjIH858vs-Gbfk1GkA>
-X-ME-Received: <xmr:DBrAZbvWqxSoTqbPW4Ahu61ZOJt1lKHPrDdGvADGFc42wt3XOpSgwx4loTlNR_IZxo81YCMxmGdTG0t0IbbiEYZgUq2CQy9-PUo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeduledgtdejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
-    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpeetueekgffgudeitdekiefhffeiheekffffveffgeeitefgteegjeeigeel
-    tdehkeenucffohhmrghinhepghhouggsohhlthdrohhrghenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmhei
-    kehkrdhorhhg
-X-ME-Proxy: <xmx:DBrAZcbbXZP7Ubt2GWnsTfdqfmRJrHR9tI4ka-JQhi-BqzNNB33z2g>
-    <xmx:DBrAZaY7Np2axbhYBeACq4cH8wRwcimAJp0PofOVVWGmntOhQbivJg>
-    <xmx:DBrAZQAmnRstNkxEUWkFuLb2-oIkLi1A52OziIu9tNNxSfvTnmSCjw>
-    <xmx:DhrAZfJ43rGvoT01Zpy89jpvDdNmS23G_2smVb9lPOArxMHmzCPing>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 4 Feb 2024 18:13:12 -0500 (EST)
-Date: Mon, 5 Feb 2024 10:13:26 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-cc: David Laight <David.Laight@aculab.com>, 
-    Andrew Morton <akpm@linux-foundation.org>, 
-    "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-    Yury Norov <yury.norov@gmail.com>, 
-    Nick Desaulniers <ndesaulniers@google.com>, 
-    Douglas Anderson <dianders@chromium.org>, 
-    Kees Cook <keescook@chromium.org>, Petr Mladek <pmladek@suse.com>, 
-    Randy Dunlap <rdunlap@infradead.org>, 
-    Zhaoyang Huang <zhaoyang.huang@unisoc.com>, 
-    Geert Uytterhoeven <geert+renesas@glider.be>, 
-    Marco Elver <elver@google.com>, Brian Cain <bcain@quicinc.com>, 
-    Geert Uytterhoeven <geert@linux-m68k.org>, 
-    Matthew Wilcox <willy@infradead.org>, 
-    "Paul E . McKenney" <paulmck@kernel.org>, 
-    "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>
-Subject: Re: [PATCH v4 2/5] m68k/bitops: use __builtin_{clz,ctzl,ffs} to
- evaluate constant expressions
-In-Reply-To: <CAMZ6RqLyRxvUiLKZLkQF1cYFkdOqX73V2K=dGbNROMDj61OKLw@mail.gmail.com>
-Message-ID: <002675b0-6976-9efa-6bc5-b8bad287a1d2@linux-m68k.org>
-References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr> <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr> <20240128050449.1332798-3-mailhol.vincent@wanadoo.fr> <c47fedaf-cdc9-f970-460f-d2ee7e806da4@linux-m68k.org>
- <CAMZ6RqKj207uv5AF_fvb65nhCM32V=VAQXsUGLNmbeXYKPvZJg@mail.gmail.com> <9d9be9dbe92f43d2a95d11d6b2f434c1@AcuMS.aculab.com> <CAMZ6Rq+RnY16sREhAZ6AFn3sz1SuPsKqhW-m0TrrDz1hd=vNOA@mail.gmail.com> <77831c6f-7fc9-c42d-b29b-c3b2f3f5e687@linux-m68k.org>
- <CAMZ6RqLyRxvUiLKZLkQF1cYFkdOqX73V2K=dGbNROMDj61OKLw@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yy6GO1Uo"
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d751bc0c15so33993235ad.2
+        for <linux-m68k@vger.kernel.org>; Sun, 04 Feb 2024 18:32:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707100361; x=1707705161; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V7MzyyYFvH0RGogbMMSkZTf1hhiieHpOJepGOnXNPy8=;
+        b=Yy6GO1UohRa1PcBR2d+/ThTcW+XFr+I+xUE8kBN5VqwYKhdmp3dh2MXxPfPktu8CH4
+         9kdBtSy5O3SZDPSoWkGkgH+hCpwHaap28JAulDpPOjdoCb9+nrLmriBU/P1g2IVpSNOQ
+         jWIqjNwZin+5q46NEOKLajYLmfEwDqRDv3u9bCHOPW3IdLM/T1cdSS2XUCtjlIwIl1yA
+         kIY6ZWbihstO7xkgOIEB5mJiA/M+j6z7m0TZVyiWUJ6TOuiIlOSA1wAsGqX3xbhJqlfU
+         eTxquGnQbgvhe6Xg8eAw1kImzI94teXm4CLHxNWyb4tW1/aYSYYmnaMMNwGGScJdAil+
+         LbiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707100361; x=1707705161;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=V7MzyyYFvH0RGogbMMSkZTf1hhiieHpOJepGOnXNPy8=;
+        b=BRGy0oi8nZQIiPOF/+YN+r7jD/DQl4PFPTPsvcsS3gjtB+yYsTe/rTepjZMHUQlI4C
+         SVR2SVLhYfUhSuRcGXAiimsOwA3TTmZi/IVpw/PRUCrqKazZj5sEPGTcBMS5BDZnzkxE
+         8fL59HABRk0BP1Hvc+wJK+hDE7iJ+ujRfk9O190og/tpSD7ruAiVnzWVLnJn0p+A2ZBc
+         +yQc84hAhM/9s7vmYnzVyvSjQFXDSUIvfss60x2J/OzlALsUc/ghKa1JFDBio9QELGcl
+         mELGUHk32dtWwiLNGIMYYClS89xxJdcX66eiEv2V+7GQ6n+rsJ/NP6CNiBh9JMtS+pf6
+         6ZUg==
+X-Gm-Message-State: AOJu0Yy1PWYrpBPNcPQKBDg3MLBYgXJD/Ne6qegkn+0x7uOFMl2Vn9q0
+	WLElp6wMQa2AIUMEgMsjt+9ZDDw/rvqCDfc8vOWl2+39uKwm4eB1
+X-Google-Smtp-Source: AGHT+IEI6y2M61vc6JPg0BRpBklVvF6bpXpOlq9dVXJ+TiHb3400d3Gce3CTHfGFS9OXFX65jK6iYw==
+X-Received: by 2002:a17:903:2345:b0:1d9:4544:ed22 with SMTP id c5-20020a170903234500b001d94544ed22mr16209890plh.42.1707100361472;
+        Sun, 04 Feb 2024 18:32:41 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUbZ7ua6zqxl1XUBgUpLr2l9MLKXoBNNGtN4+THEKc3GTz0iJ6soJruwcaDXSpfiR8R0nmb/M4wVdzJ5tRaazM7gwMY/uqbw50i8cC2YYw1i0Hh4VOQFX4tMu1IL5euTHbWY+E2SfpjTe/g1IA=
+Received: from xplor.waratah.dyndns.org (125-236-136-221-fibre.sparkbb.co.nz. [125.236.136.221])
+        by smtp.gmail.com with ESMTPSA id j21-20020a170902c3d500b001d7610fdb7csm5122855plj.226.2024.02.04.18.32.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Feb 2024 18:32:41 -0800 (PST)
+Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
+	id C726C36027A; Mon,  5 Feb 2024 15:32:37 +1300 (NZDT)
+From: Michael Schmitz <schmitzmic@gmail.com>
+To: linux-m68k@vger.kernel.org
+Cc: geert@linux-m68k.org,
+	uli@fpond.eu,
+	fthain@linux-m68k.org,
+	viro@zeniv.linux.org.uk
+Subject: [PATCH RFC v2 0/8] m68k v4.4 backport fixes
+Date: Mon,  5 Feb 2024 15:32:28 +1300
+Message-Id: <20240205023236.9325-1-schmitzmic@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 
-On Sun, 4 Feb 2024, Vincent MAILHOL wrote:
+CIP v4.4 backport patches for m68k. Basically everything needed
+to make v4.4 work on my Falcon. This includes my iounmap() fix,
+Al Viro's signal handling and uaccess page fault fixes, my 030
+buserr_c fix for exception handling during page faults, and Finn's
+030 signal frame fix. 
 
-> Sorry for the late feedback, I did not have much time during weekdays.
-> 
-> On Monday. 29 Jan. 2024 at 07:34, Finn Thain <fthain@linux-m68k.org> wrote:
-> > On Sun, 28 Jan 2024, Vincent MAILHOL wrote:
-> > > > > The asm is meant to produce better results when the argument is not
-> > > > > a constant expression.
-> >
-> > Is that because gcc's implementation has to satisfy requirements that are
-> > excessively stringent for the kernel's purposes? Or is it a compiler
-> > deficiency only affecting certain architectures?
-> 
-> I just guess that GCC guys followed the Intel datasheet while the
-> kernel guys like to live a bit more dangerously and rely on some not
-> so well defined behaviours... But I am really not the person to whom
-> you should ask.
-> 
-> I just want to optimize the constant folding and this is the only
-> purpose of this series. I am absolutely not an asm. That's also why I
-> am reluctant to compare the asm outputs.
-> 
+Patch 1 should be applied to v4.4-cip, or else ioremap / iounmap
+has no chance to work on 030 processors.
 
-How does replacing asm with a builtin prevent constant folding?
+Patches 2 and 3 have been applied to v4.4-cip.
 
-> > > ... The only thing I am not ready to do is to compare the produced
-> > > assembly code and confirm whether or not it is better to remove asm
-> > > code.
-> > >
-> >
-> > If you do the comparison and find no change, you get to say so in the
-> > commit log, and everyone is happy.
-> 
-> Without getting into details, here is a quick comparaisons of gcc and
-> clang generated asm for all the bitops builtin:
-> 
->   https://godbolt.org/z/Yb8nMKnYf
-> 
-> To the extent of my limited knowledge, it looks rather OK for gcc, but
-> for clang... seems that this is the default software implementation.
-> 
-> So are we fine with the current patch? Or maybe clang support is not
-> important for m68k? I do not know so tell me :)
-> 
+Patches 4-6 are a prerequisite for patch 8, Finn Thain's 'm68k:
+Move signal frame following exception on 68020/030' patch which
+had been applied but failed to compile (see error reported in
+https://lore.kernel.org/oe-kbuild-all/202401310920.sBSI4BHj-lkp@intel.com/
+which has gone away with patches 4-6 in place).
 
-Let's see if I understand.
+Patch 7 is another page fault handling fix which should be applied
+(though I have found no test case for it, and cannot say how common
+that livelock issue is on m68k).
 
-You are proposing that the kernel source carry an unquantified 
-optimization, with inherent complexity and maintenance costs, just for the 
-benefit of users who choose a compiler that doesn't work as well as the 
-standard compiler. Is that it?
+All patches as RFC version to give Geert and Al a chance to yell
+at me in case I got details of these patches wrong. I don't claim
+to understand signal handling in anywhere near the required level
+of detail.
 
-At some point in the future when clang comes up to scrach with gcc and the 
-builtin reaches parity with the asm, I wonder if you will then remove both 
-your optimization and the asm, to eliminate the afore-mentioned complexity 
-and maintenance costs. Is there an incentive for that work?
+Tested on my 68030 Atari Falcon.
+
+Cheers,
+
+   Michael
+
