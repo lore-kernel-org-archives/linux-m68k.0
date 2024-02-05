@@ -1,121 +1,101 @@
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3416412B8C
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  5 Feb 2024 09:17:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6E47134AE
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  5 Feb 2024 09:48:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.29
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707124641; cv=none; b=Hrdz3Fp0KzM39z199W4i9dhiHP7fz7IJgMMbBvNxFscRYDZQF/gS8GhvvmT6xh1FhDylJEZP8wfOkloqO1rjxBt3CtoECPHFH04LTBNlgvsTbFD473yI+9ryWD7OHKXVU/uLjvbUuhcrygyEgp/IlFCFyFq3HNHAAoT0hI5nrPA=
+	t=1707126524; cv=none; b=NmucKSP/0LrXgnYExuVPnOOUseUQrCKqQfTP4XRx6onK6H/nuXqYjxwW8FqWBXb4uUpRWmdlHlyWZ6Vmr5evtzLOYzad4GO+9vazsZrumE8tzIHmeeusSgtOtpboSahqnR1hANZqcgLAv72CjqYtsGnQpZIh/+BgnENmd1StGrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707124641; c=relaxed/simple;
-	bh=96MPBiS40e0x9Vw86i9UrFnPx8o4zrAU2LTLF+KiPMw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=saQKrueGipubS7cdQr1ulbWYVCiPJPaS+tl3/NdNnIkeCdkDnNd7/+OW1o8a4VtAOnWvuQ5bgcOR7A1QSxZvjvU4EtXByPFj39xPy1+y8AZ1N+J8K1UjPRc0jsw1J1Jjo1UVjv7KJCZjZAigbQvkLiyjMTCQHq53qFXpEVvYQM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-296a02b7104so457197a91.2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 05 Feb 2024 01:17:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707124639; x=1707729439;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rU3n7CJ8LR2Ka0hr51hd9lp4PmyuHjFJfmGGeQpcndM=;
-        b=wTzbCXrhpYwDhaPMNYdj3a2+6LaKlLEKKniv0lCnssHSLKXJh1pMq/CBevkAGgLw9N
-         m+nSL6dO5Bbp0WBfjv+JeYdAM+DEMc47HatN9gcq41NPnWGzTVZr89aNiuJ8lONvBTdh
-         ShWnJEnvw5mg73/JiEF+vUtSNF4AkIJiO17WIrPq9PuVvfPyLRQPhPqR/3rGDqPkbAd9
-         IIlHw0ypvRGd1GRAE3h2vmnr7xm0eRrfF9MRJNHxkCNuTSL98+pPOduoyUJtF2cMWjE2
-         rYk9j7bORieiALdW8a9Yv5x5p67+ylpA+Q/bRN/Q1H9fUYdNyLU7NaxqpdA4yJLeGRAj
-         yZdg==
-X-Gm-Message-State: AOJu0YzYBNWHj+tBzi5ssE+pqiVH5rnkyPl8Y5qeo1YTjlfv04iGXLx+
-	IhylLMu3PBpbxXptPS7CINhmswyBcSOjuxXw9bMBdb7ljp42sBA+tdDMzf3VtoZn7/OkhlmqtiH
-	xAHRy2MQ1H65NVuBB0+B2RZ5uBv4=
-X-Google-Smtp-Source: AGHT+IFfZf+XD8BOSl7R7bC9f9eXgr73a5N6xcGPxMPSXsWh7hXatH3CaIIqjbH6bQN1DrRciODcjMzAjFn8nQ7Nry0=
-X-Received: by 2002:a17:90a:3006:b0:296:2035:a3c2 with SMTP id
- g6-20020a17090a300600b002962035a3c2mr10729751pjb.36.1707124639396; Mon, 05
- Feb 2024 01:17:19 -0800 (PST)
+	s=arc-20240116; t=1707126524; c=relaxed/simple;
+	bh=Hf4odG5wn7R54sc/WswXFwxztiof6WIDGhFtOxaGJzc=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=i132xNf1F5XrQ4Rg35aQTQbZPJuLSpxwMeV+RI4FyNIxSBIue32hIlMQPofgEkSvDowS0hLdR4rduGfe/70dNiC3R5QT0jQ511Hdknpq0wPliTQJitvhQHErk2REiPMC5unNhum1sII0kI8NPYoMXY40lk8MGa5o1b1vCtUcm2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=JVQQRWEe; arc=none smtp.client-ip=66.111.4.29
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="JVQQRWEe"
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailout.nyi.internal (Postfix) with ESMTP id 95CBB5C0112;
+	Mon,  5 Feb 2024 04:48:40 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Mon, 05 Feb 2024 04:48:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707126520; x=1707212920; bh=4HXHrHNRaH/IGLDh84/hJNfQKsbt
+	Ooowjsd4egH2tFE=; b=JVQQRWEeOYnEhibTNuIBXSMWoBRVPo9jQIn5cPeafI9B
+	t2aqtg/oyijjW33uoMbiCMaiPTVr0nx07m5RPDE1WnkpYpFDga8RilOqjh0S6zU6
+	TxjgKabtOx+vNkMTnA0czdlykdQKLIkNFpT1b0sp5TE6YbWDyElhf3LiNP0ls9KE
+	IcdzWpSeGKC9fztMKc9lNF9i8d9pdZWqYXN1tKLYtSSPecCdeIrjy99+9n9s5/Kp
+	HUfYyx0L4nq3KGkIqVamdn0aD/TSauVorrkyLz65RhSlKnOGgOcEU27Jc/J7+WKD
+	ckAR2DuhVzxooOymrNpUI1twU74iaJa9jg4q1Ips7w==
+X-ME-Sender: <xms:967AZRIUg7WFtLxi5TS-MvjElePolX1QJzDGFXN5axAWvkPR9OCT2Q>
+    <xme:967AZdLTZXHJ3SbZcYmqfj2E4fRigq6SbKcb_hA6PZpUn0HpyyqGX4JROsSxgi2Vx
+    b7sZXYrQ9Md1TevomE>
+X-ME-Received: <xmr:967AZZs0oh07aXjL-pfl4gZoWbG7Hn7oNFQhSfMDDxqAt3xuAjN2zYxbwcpWIZFD9uiRsKDU0fW-GjcEfNRIsY-AvwfOJJl4VSI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedvtddgtdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
+    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
+    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
+    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:967AZSYUG4cMTnsSNelO9mbuPgrtrV6GemDreiAoalUGxJu00gKjCw>
+    <xmx:967AZYZ87Z3Ytff1-xBzqLFWMC5by-if_CHhN824ahT-hDSR0PyNHg>
+    <xmx:967AZWAFbRw-Q53LURCgAix7aAd3w9ZM6_PRh9HkR3BAlA8wITB2EQ>
+    <xmx:-K7AZVIGGQkwvzSxWmKB3L5DnOspGn7cwf2jAqPpMOuYz7ODSMWcFw>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 5 Feb 2024 04:48:37 -0500 (EST)
+Date: Mon, 5 Feb 2024 20:48:52 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+cc: David Laight <David.Laight@aculab.com>, 
+    Andrew Morton <akpm@linux-foundation.org>, 
+    "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+    Yury Norov <yury.norov@gmail.com>, 
+    Nick Desaulniers <ndesaulniers@google.com>, 
+    Douglas Anderson <dianders@chromium.org>, 
+    Kees Cook <keescook@chromium.org>, Petr Mladek <pmladek@suse.com>, 
+    Randy Dunlap <rdunlap@infradead.org>, 
+    Zhaoyang Huang <zhaoyang.huang@unisoc.com>, 
+    Geert Uytterhoeven <geert+renesas@glider.be>, 
+    Marco Elver <elver@google.com>, Brian Cain <bcain@quicinc.com>, 
+    Geert Uytterhoeven <geert@linux-m68k.org>, 
+    Matthew Wilcox <willy@infradead.org>, 
+    "Paul E . McKenney" <paulmck@kernel.org>, 
+    "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>
+Subject: Re: [PATCH v4 2/5] m68k/bitops: use __builtin_{clz,ctzl,ffs} to
+ evaluate constant expressions
+In-Reply-To: <CAMZ6RqKx=EO9kcOmxRyBuhULdDyTCeAXz25j_uF7TSy72Jahpw@mail.gmail.com>
+Message-ID: <00a7e866-23ff-fc63-b6df-364580f69c78@linux-m68k.org>
+References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr> <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr> <20240128050449.1332798-3-mailhol.vincent@wanadoo.fr> <c47fedaf-cdc9-f970-460f-d2ee7e806da4@linux-m68k.org>
+ <CAMZ6RqKj207uv5AF_fvb65nhCM32V=VAQXsUGLNmbeXYKPvZJg@mail.gmail.com> <9d9be9dbe92f43d2a95d11d6b2f434c1@AcuMS.aculab.com> <CAMZ6Rq+RnY16sREhAZ6AFn3sz1SuPsKqhW-m0TrrDz1hd=vNOA@mail.gmail.com> <77831c6f-7fc9-c42d-b29b-c3b2f3f5e687@linux-m68k.org>
+ <CAMZ6RqLyRxvUiLKZLkQF1cYFkdOqX73V2K=dGbNROMDj61OKLw@mail.gmail.com> <002675b0-6976-9efa-6bc5-b8bad287a1d2@linux-m68k.org> <CAMZ6RqKx=EO9kcOmxRyBuhULdDyTCeAXz25j_uF7TSy72Jahpw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr>
- <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr> <20240128050449.1332798-3-mailhol.vincent@wanadoo.fr>
- <c47fedaf-cdc9-f970-460f-d2ee7e806da4@linux-m68k.org> <CAMZ6RqKj207uv5AF_fvb65nhCM32V=VAQXsUGLNmbeXYKPvZJg@mail.gmail.com>
- <9d9be9dbe92f43d2a95d11d6b2f434c1@AcuMS.aculab.com> <CAMZ6Rq+RnY16sREhAZ6AFn3sz1SuPsKqhW-m0TrrDz1hd=vNOA@mail.gmail.com>
- <77831c6f-7fc9-c42d-b29b-c3b2f3f5e687@linux-m68k.org> <CAMZ6RqLyRxvUiLKZLkQF1cYFkdOqX73V2K=dGbNROMDj61OKLw@mail.gmail.com>
- <002675b0-6976-9efa-6bc5-b8bad287a1d2@linux-m68k.org>
-In-Reply-To: <002675b0-6976-9efa-6bc5-b8bad287a1d2@linux-m68k.org>
-From: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date: Mon, 5 Feb 2024 18:17:07 +0900
-Message-ID: <CAMZ6RqKx=EO9kcOmxRyBuhULdDyTCeAXz25j_uF7TSy72Jahpw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/5] m68k/bitops: use __builtin_{clz,ctzl,ffs} to
- evaluate constant expressions
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: David Laight <David.Laight@aculab.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Yury Norov <yury.norov@gmail.com>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Douglas Anderson <dianders@chromium.org>, 
-	Kees Cook <keescook@chromium.org>, Petr Mladek <pmladek@suse.com>, 
-	Randy Dunlap <rdunlap@infradead.org>, Zhaoyang Huang <zhaoyang.huang@unisoc.com>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Marco Elver <elver@google.com>, 
-	Brian Cain <bcain@quicinc.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Matthew Wilcox <willy@infradead.org>, "Paul E . McKenney" <paulmck@kernel.org>, 
-	"linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-
-On Mon. 5 Feb. 2024 at 08:13, Finn Thain <fthain@linux-m68k.org> wrote:
-> On Sun, 4 Feb 2024, Vincent MAILHOL wrote:
-(...)
-> Let's see if I understand.
->
-> You are proposing that the kernel source carry an unquantified
-> optimization, with inherent complexity and maintenance costs, just for the
-> benefit of users who choose a compiler that doesn't work as well as the
-> standard compiler. Is that it?
-
-My proposal is quantified, c.f. my commit message:
-
-  On an allyesconfig, with GCC 13.2.1, it saves roughly 8 KB.
-
-"Saving roughly 8kb" is a quantification.
-
-And clang use in the kernel is standardized:
-
-  https://www.kernel.org/doc/html/latest/process/changes.html#current-minimal-requirements
-
-GCC may be predominant, but, although optional, clang v11+ is
-officially supported, and thus my patches should not neglect it.
-
-This is why I am asking whether or not clang support is important or
-not for m68k. If you tell me it is not, then fine, I will remove all
-the asm (by the way, the patch is already ready). But if there are
-even a few users who care about clang for m68k, then I do not think we
-should penalize them and I would not sign-off a change which
-negatively impacts some users.
-
-The linux-m68k mailing list should know better than me if people care
-about clang support. So let me reiterate the question from my previous
-message: is clang support important for you?
-
-I would like a formal acknowledgement from the linux-m68k mailing list
-before sending a patch that may negatively impact some users. Thank
-you.
-
-> At some point in the future when clang comes up to scrach with gcc and the
-> builtin reaches parity with the asm, I wonder if you will then remove both
-> your optimization and the asm, to eliminate the afore-mentioned complexity
-> and maintenance costs. Is there an incentive for that work?
-
-I will not follow up the evolution of clang support for m68k builtins.
-The goal of this series is to add a test to assert that all
-architectures correctly do the constant folding on the bit find
-operations (fifth patch of this series). It happens that m68k and
-hexagon architectures are failing that test, so I am fixing this as a
-one shot. After this series, I have no plan to do further work on m68k
-and hexagon architectures. Thank you for your understanding.
+Content-Type: text/plain; charset=US-ASCII
 
 
-Yours sincerely,
-Vincent Mailhol
+On Mon, 5 Feb 2024, Vincent MAILHOL wrote:
+
+> 
+> This is why I am asking whether or not clang support is important or not 
+> for m68k. If you tell me it is not, then fine, I will remove all the asm 
+> (by the way, the patch is already ready). But if there are even a few 
+> users who care about clang for m68k, then I do not think we should 
+> penalize them and I would not sign-off a change which negatively impacts 
+> some users.
+> 
+
+If clang support is important then clang's builtins are important. So why 
+not improve those instead? That would resolve the issue in a win-win.
