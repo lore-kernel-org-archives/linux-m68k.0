@@ -1,161 +1,106 @@
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9EAF8F51;
-	Mon,  5 Feb 2024 02:32:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BCD9B653
+	for <linux-m68k@vger.kernel.org>; Mon,  5 Feb 2024 05:32:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707100370; cv=none; b=dn58N8tcA25p/IJiz/rFcVcvuMBVqA5xvybKHac6AahpHX9s8j8P7Ax2hQIEs6F7EKoAKQnMlCmo3QZ7mwveKusiRxuLRzTqvsdqD+OjlFe/pB39TK1yAo/CzBI31p6M4zmdxyztLOr3E2UpEScFXSSopsG2GkWZkpyeC70XqUE=
+	t=1707111132; cv=none; b=W41J+hkXyfNBuWIt6mnAbV/z11wy7M5Uvrs4+/JHIalHszp6o7i2UpL0YPMayTqHcCIxuOtkbO3rklwmzSJiwHkRx2cFnZwoSf5ilC8KiSgjJL/tXvB1Q43CvnMoNtEld3uRoEdFL1TACmO+aoIMS2cKnvSqo1xqbFka9GC2TFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707100370; c=relaxed/simple;
-	bh=gEMjQcZtRi/+8XKkrggSOKWdHpkxx9sAEC+ja8pr0r0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=itV3yRHRRDe8g9rnWTCAt3NE6J8YDaAXIYFuwFju6KeO3Sr+7/A1a1ew7fZs65OGZqJaO+N/EbE628mzbiKFwrC7Ilck9BvF74RXoGL/+avDEHXl3OPFCSjfhnpcV4s7xbZ1TKbpNSMX/HD25U1sdcxwhv6EXc6FvELKEx+Mpbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iSA85bBL; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iSA85bBL"
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e03ab56e75so293529b3a.2;
-        Sun, 04 Feb 2024 18:32:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707100368; x=1707705168; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=AHP3bpnrDrmcH0nJC+WbODRZ2J1Taa/l9rz69PC7XxM=;
-        b=iSA85bBLEBLUYdUsxQi51YiJHH6M4iX9Xb+qYIri2//xMqoRn4vj62h6glpWnPqeGA
-         5FC/k1Q4uJ8AlMawu2myr5EALxZ6fOWw8WTAR95c6RItcaN0bgOtSOM4HHbyV0Zk1yHC
-         muRopguAVYq6tdRaKy8NVEx8dH1Qvb67O2J+wXQn/rZGeZwKT+u2Y0He8THZ4P/xaiJe
-         OcMx6636tHDow5nlRfJHXy6agqBqw+owqqbYVFfwBLe68eYbP/ax4bTuTZ5AMEP1UX5j
-         5fqNMBsmAt66GEymp6GvjNDM5ZiEtmixYcVw/4EsI053DK8BzxB/fx/2BTyoA4O5hLdB
-         KQRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707100368; x=1707705168;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AHP3bpnrDrmcH0nJC+WbODRZ2J1Taa/l9rz69PC7XxM=;
-        b=hJcBjPZF40X1es67Ol/cIKOX572/g96yTkFP4tGDvXu3lfEp2lhibPmpR4mhNj8rQF
-         mvKlcMGZdp5YtjvrGCeqnVNNTvWx/vX23KbW2S9gc4lAUBq8Ta8iaWnpt+/9QLjWC3TR
-         Ypw1NSd7dac5kW1aHb4KruZnAwLUyAmEkd0RFMPGyuoWTfAo/zgkFvmmZ7EWUx9VapBy
-         2ObAbZVkl0XNHXil+8EqNe9ag7ePtE1yNKxXNYIOj7dyjzt3Nj+td9djIi9KYDGTiZb5
-         6aQ1n+y/aGDNbjt+4xhbSQx33F0YdjpctsyeJwkU5qTaBBnqLtME/2igXnFrtVpgM/Gx
-         51Iw==
-X-Gm-Message-State: AOJu0YxGoLDu0fRwD5++cvAyw47/viNob04VZqlQMiwS8IgvtawrDoqX
-	vohAfSD+fXBf7vMc0Czpm6hh/JJWGl47KlyAl9Mn+Rj1T4RF1ASG
-X-Google-Smtp-Source: AGHT+IEc7XKX0NKQkKGoHzBtBofWOM0OIau3VNyrfnCT9Ts0PHH2zTQOhNLm2jwa58jN2GhwdmbWtQ==
-X-Received: by 2002:aa7:9817:0:b0:6e0:3cfd:501e with SMTP id e23-20020aa79817000000b006e03cfd501emr1582502pfl.3.1707100368178;
-        Sun, 04 Feb 2024 18:32:48 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXJ1wl23UYPABeuCmOrY8t5d1BlUT5eoHYlrVnVypYCGm8MF4YnPUg+4/QDpE6cH631fSHX0/BpEwtsvWqYKlSpetER1n5zQ5zT1wLb1no58wj0gGWAEPZzgs2paXwPtwPzdGTxo49OZ6d/T4/TDUZoJLSVwjd7Evy4sS5yOFrzRZRF94nMICh29LV++Ci0Zv3/CKRtcyZBWIzCu8asfGUoBVhwqkekbhOpf4IYeHYmizI=
-Received: from xplor.waratah.dyndns.org (125-236-136-221-fibre.sparkbb.co.nz. [125.236.136.221])
-        by smtp.gmail.com with ESMTPSA id q18-20020aa79832000000b006d0a29ad0aasm5392960pfl.5.2024.02.04.18.32.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Feb 2024 18:32:46 -0800 (PST)
-Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-	id DE54236031F; Mon,  5 Feb 2024 15:32:42 +1300 (NZDT)
-From: Michael Schmitz <schmitzmic@gmail.com>
-To: linux-m68k@vger.kernel.org
-Cc: geert@linux-m68k.org,
-	uli@fpond.eu,
-	fthain@linux-m68k.org,
-	viro@zeniv.linux.org.uk,
-	Michael Schmitz <schmitzmic@gmail.com>,
-	Andreas Schwab <schwab@linux-m68k.org>,
-	stable@vger.kernel.org
-Subject: [PATCH RFC v2 8/8] m68k: Move signal frame following exception on 68020/030
-Date: Mon,  5 Feb 2024 15:32:36 +1300
-Message-Id: <20240205023236.9325-9-schmitzmic@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240205023236.9325-1-schmitzmic@gmail.com>
-References: <20240205023236.9325-1-schmitzmic@gmail.com>
+	s=arc-20240116; t=1707111132; c=relaxed/simple;
+	bh=RgBAwdqquKXWAbUjBzZtVxfRA0SLsxsFzhanwBB+wQU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=W3rNeiEWJVAPbYDR40CYlI1dqonpNREU/gq5KKASEZln4vivHh1xXplT9ysJi2eWRnemt6Z6OmJkxKc+OX7XcDtYF63KFjLsh6j91rYvFAGXy9r7G/FKl/dSXmZYMJVXylWMKW7dOe03JoC7hqSFzcwtIv+Vbk9RqjPZ5AX4+WU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; arc=none smtp.client-ip=130.133.4.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=physik.fu-berlin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.97)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1rWraQ-00000002iyT-3gaX; Mon, 05 Feb 2024 06:32:06 +0100
+Received: from port-92-192-74-82.dynamic.as20676.net ([92.192.74.82] helo=suse-laptop.fritz.box)
+          by inpost2.zedat.fu-berlin.de (Exim 4.97)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1rWraQ-00000001YQl-1xpi; Mon, 05 Feb 2024 06:32:06 +0100
+Message-ID: <87ad7f18a772614df4d36595d385b51e54c949d0.camel@physik.fu-berlin.de>
+Subject: Re: [PATCH RFC 4/4] m68k equivalent of 26178ec11ef3 "x86: mm:
+ consolidate VM_FAULT_RETRY handling" If e.g. get_user() triggers a page
+ fault and a fatal signal is caught, we might end up with handle_mm_fault()
+ returning VM_FAULT_RETRY and not doing anything to page tables.  In such
+ case we must *not* return to the faulting insn - that would repeat the
+ entire thing without making any progress; what we need instead is to treat
+ that as failed (user) memory access.
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org
+Cc: geert@linux-m68k.org, uli@fpond.eu, fthain@linux-m68k.org, 
+	viro@zeniv.linux.org.uk
+Date: Mon, 05 Feb 2024 06:32:04 +0100
+In-Reply-To: <20240204192105.5677-5-schmitzmic@gmail.com>
+References: <20240204192105.5677-1-schmitzmic@gmail.com>
+	 <20240204192105.5677-5-schmitzmic@gmail.com>
+Autocrypt: addr=glaubitz@physik.fu-berlin.de; prefer-encrypt=mutual;
+ keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-ZEDAT-Hint: PO
 
-From: Finn Thain <fthain@linux-m68k.org>
+Hi Michael,
 
-On 68030/020, an instruction such as, moveml %a2-%a3/%a5,%sp@- may cause
-a stack page fault during instruction execution (i.e. not at an
-instruction boundary) and produce a format 0xB exception frame.
+On Mon, 2024-02-05 at 08:21 +1300, Michael Schmitz wrote:
+> From: Al Viro <viro@zeniv.linux.org.uk>
+>=20
+> MSch: v4.4 backport compile errors fixes.
+>=20
+> Tested-by: Finn Thain <fthain@linux-m68k.org>
+> Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+> ---
+>  arch/m68k/mm/fault.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/arch/m68k/mm/fault.c b/arch/m68k/mm/fault.c
+> index 6a94cdd0c830..f94df64c3784 100644
+> --- a/arch/m68k/mm/fault.c
+> +++ b/arch/m68k/mm/fault.c
+> @@ -139,8 +139,11 @@ good_area:
+>  	fault =3D handle_mm_fault(mm, vma, address, flags);
+>  	pr_debug("handle_mm_fault returns %d\n", fault);
+> =20
+> -	if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(current))
+> +	if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(current)) {
+> +		if (!user_mode(regs))
+> +			goto no_context;
+>  		return 0;
+> +	}
+> =20
+>  	if (unlikely(fault & VM_FAULT_ERROR)) {
+>  		if (fault & VM_FAULT_OOM)
 
-In this situation, the value of USP will be unreliable.  If a signal is
-to be delivered following the exception, this USP value is used to
-calculate the location for a signal frame.  This can result in a
-corrupted user stack.
+That subject looks like it contains the long description which should go
+into the patch instead.
 
-The corruption was detected in dash (actually in glibc) where it showed
-up as an intermittent "stack smashing detected" message and crash
-following signal delivery for SIGCHLD.
+Adrian
 
-It was hard to reproduce that failure because delivery of the signal
-raced with the page fault and because the kernel places an unpredictable
-gap of up to 7 bytes between the USP and the signal frame.
-
-A format 0xB exception frame can be produced by a bus error or an
-address error.  The 68030 Users Manual says that address errors occur
-immediately upon detection during instruction prefetch.  The instruction
-pipeline allows prefetch to overlap with other instructions, which means
-an address error can arise during the execution of a different
-instruction.  So it seems likely that this patch may help in the address
-error case also.
-
-Reported-and-tested-by: Stan Johnson <userm57@yahoo.com>
-Link: https://lore.kernel.org/all/CAMuHMdW3yD22_ApemzW_6me3adq6A458u1_F0v-1EYwK_62jPA@mail.gmail.com/
-Cc: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Andreas Schwab <schwab@linux-m68k.org>
-Cc: stable@vger.kernel.org
-Co-developed-by: Michael Schmitz <schmitzmic@gmail.com>
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Link: https://lore.kernel.org/r/9e66262a754fcba50208aa424188896cc52a1dd1.1683365892.git.fthain@linux-m68k.org
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/kernel/signal.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
-
-diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
-index 8fb8ee804b3a..de7c1bde62bc 100644
---- a/arch/m68k/kernel/signal.c
-+++ b/arch/m68k/kernel/signal.c
-@@ -808,11 +808,17 @@ static inline int rt_setup_ucontext(struct ucontext __user *uc, struct pt_regs *
- }
- 
- static inline void __user *
--get_sigframe(struct ksignal *ksig, size_t frame_size)
-+get_sigframe(struct ksignal *ksig, struct pt_regs *tregs, size_t frame_size)
- {
- 	unsigned long usp = sigsp(rdusp(), ksig);
-+	unsigned long gap = 0;
- 
--	return (void __user *)((usp - frame_size) & -8UL);
-+	if (CPU_IS_020_OR_030 && tregs->format == 0xb) {
-+		/* USP is unreliable so use worst-case value */
-+		gap = 256;
-+	}
-+
-+	return (void __user *)((usp - gap - frame_size) & -8UL);
- }
- 
- static int setup_frame(struct ksignal *ksig, sigset_t *set,
-@@ -830,7 +836,7 @@ static int setup_frame(struct ksignal *ksig, sigset_t *set,
- 		return -EFAULT;
- 	}
- 
--	frame = get_sigframe(ksig, sizeof(*frame) + fsize);
-+	frame = get_sigframe(ksig, tregs, sizeof(*frame) + fsize);
- 
- 	if (fsize)
- 		err |= copy_to_user (frame + 1, regs + 1, fsize);
-@@ -903,7 +909,7 @@ static int setup_rt_frame(struct ksignal *ksig, sigset_t *set,
- 		return -EFAULT;
- 	}
- 
--	frame = get_sigframe(ksig, sizeof(*frame));
-+	frame = get_sigframe(ksig, tregs, sizeof(*frame));
- 
- 	if (fsize)
- 		err |= copy_to_user (&frame->uc.uc_extra, regs + 1, fsize);
--- 
-2.17.1
-
+--=20
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
