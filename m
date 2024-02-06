@@ -1,69 +1,67 @@
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A611B94B;
-	Tue,  6 Feb 2024 21:11:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 485831B957
+	for <linux-m68k@vger.kernel.org>; Tue,  6 Feb 2024 21:11:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707253893; cv=none; b=EqRr9jntHMMYAixOGDfmGOBNW2F2CnlhZ+njLNAuWavjPN6CEeo+xpmKrqmSTquQq65oOmz9C1RmvD+hD5Fn+3SOipyaLip6uqUAf8eN0UNgLbi40RZ2ifBfT+x/+kfl2gp6qutUUgedkyh0mOK7dDm6G97w+X3IL9FVyN3Fa2k=
+	t=1707253894; cv=none; b=QKPkf0st3fjPLeKjU3f+xiE7uY+NQAA0RGRfyngSupK4/kWoyB9eaf5bbwhINM55R6OCXZGqvIl0mYYoS0oIphaQT3xBiXR7ayH5x0qxJ3kwLbixTCFTq/u5L19934huQcZSk06+3WpAN3VgQFataApLpm1IvJnwiyudv/T75wI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707253893; c=relaxed/simple;
-	bh=GV/eJUKwb2OYMCovPWnrR+Niw7eLeAUICtYDESUG/0U=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=cMBl27s1sukskjnTygvifL32LSVI+e4gNed4q3hEPZMRE4Y0f7Ys164IIl9zYVusqCvtdiSqOLsVr8SxG2P7k2PmqbkUjAv5GqiqLbWmmbUpYrxt+D1J/+/ARW1k2UAZ5Widqw4EOymbQzHu/99y/c20LcE0KyM4ujoTP3Y4YrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NGdtD8WO; arc=none smtp.client-ip=209.85.214.179
+	s=arc-20240116; t=1707253894; c=relaxed/simple;
+	bh=Yv6xTneJlaXLNAuMbRfV0xWMsv7cK5ZIbYMvKn40cXk=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=r1S6l3RcnVBbkAM0zyqJrfznxagMDsB/0cszKtBOixP9LUAxcEZ/Me0JMCw0V43Fz78Gh8+7jZq4psgPWWhjbmHyql9OSgCRlB7XcatuUZBHF+LN1gMhTwemxUqCA+esIUTC7Q1XMFbaZsUj7FREjPC+uVxFH9ZnNf5GkltUzwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HR+RFq0U; arc=none smtp.client-ip=209.85.210.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NGdtD8WO"
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d76671e5a4so49383205ad.0;
-        Tue, 06 Feb 2024 13:11:30 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HR+RFq0U"
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e04d24bd39so1822197b3a.0
+        for <linux-m68k@vger.kernel.org>; Tue, 06 Feb 2024 13:11:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1707253890; x=1707858690; darn=vger.kernel.org;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=VAjBSRX04ka0kvKjRppyin94pEa8/DDkMvhfnjtKPtk=;
-        b=NGdtD8WOOHCbkJqDVRZVMTA6agNt0pu17Q3DTbkAZTTvThxtYYXe6igIK36YjNwtSz
-         dJnGtoMaTpmKf7zXzWI++pVfvgokr92DOmOD6qB2cDEHqkqw7hI1nE9PSbICFMo9NcL2
-         5294L0Hj3vEq6779C5lOcHhhN/1/YZ3CZkH7p+yimGUvMQ+/omD7h2tTMVtb+hwaWYIn
-         ZN0g/ThBQdtWJ+3w9+EpUq+Xuyd17crNgvJsegAWb6j+w5qx2MVdhvTjEn2IZHzvEdM+
-         z4lkfUkivSlWaWiqNABUUaZj3w7f4vZAO23ply+VMWoFDc6YnykX2FxcRaWetFukevJO
-         OrVg==
+        bh=+jtx9iTIYYk4ppvGP19xVnsO3K2G5AcI22Bp2g1Lx20=;
+        b=HR+RFq0UPhYkjSox//YymIQkL7SpTWLvmvFnNm6szi3IX9RAqt+rleRU52I8eCzfuT
+         uvXEtPR/PKPQDpPuD0EeJsyoz+2p4tg/Eg6XzBxe/7VlovVyjKwNHAWbFF1N2gshveF8
+         h055481qdzt3vQJ3LoY4K7HHu0SXdNh5SaMtEQn7MfE2xsuiUCndmkBvs/Fcjv6hQg21
+         t0nB3QuAbtGFy4yIEszc24i0lXR8oVEudBEtJG1r2EStH4ubSx4sHyVmLA6LMzxKsuHQ
+         nnLKG4KPqmrGsdGAl3w6h3US4niAKlhdZe9MaPVyx6gmml7u/ILJaZlTDq9aRB7K+DKu
+         D32Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1707253890; x=1707858690;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VAjBSRX04ka0kvKjRppyin94pEa8/DDkMvhfnjtKPtk=;
-        b=ftJb2jxe+qklZcxm068u3nn/8yw5xnniydMkpzkavHnX+QF86qMZS7TOvp6K4te944
-         d9o/yy7D2zFS08RgkeXs90AXvEjX2r5CglS4LCY5PqN3yQKAx2L+z/SwrUEubbP98duM
-         6Zsw0svBlcBrUSLc4XUr79/xhWrCRqFOx1JKClE59pxqIZauJSOXf44QSA3XlGQ4TTho
-         uGHvNh9M7EZvFFedWuAqO6TE3WRtGta9psHs+VEdSXIzPkpe/ub/4hMr94c4Hv6kqLRB
-         HNei+zhrbffZT483NSxRcPJ1dEx1IqA9R1j+YREF5bKYlsq8S6X11TDSVn4AzfE3TyDB
-         3JVw==
-X-Forwarded-Encrypted: i=1; AJvYcCUz1ml7X3Rwu60+spVY8MnpR5oRw45GhmU8u6g6d1ShK8/U8SFB0mQkJzrf+kIoDkeJEnl1zOVskkkL1mAuDQv5Vr0Y2vo4
-X-Gm-Message-State: AOJu0YzJvh2yfpSPWLOUpFJ8zerTwoaikdDbrGkS1+tndecs0QwSZXx6
-	FGuEbx0sim8eNxcASlmokWmtE0B92NnrmzAajkpOmryyy0pz7vaW
-X-Google-Smtp-Source: AGHT+IGD4DFF7IRxHMdmWQ/isr67lQtHBLzguLofsVYh4mFdPkxv3getkWoLeSQ+zJ83NHZfFKOljw==
-X-Received: by 2002:a17:902:e74b:b0:1d9:5ce0:224 with SMTP id p11-20020a170902e74b00b001d95ce00224mr3196233plf.0.1707253890179;
-        Tue, 06 Feb 2024 13:11:30 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXLWh+OT5ZTXAmtUlHxbpR43+IjLniUkaB6E4WAOsVnRHDI8T9AChs2S6upLNnGq1xtf4g5CQPhi+EeTkHV8TLFkjKEAHw7o0JLVpH7Bn5VF4z8TNni96wzmOr8aJgv43LDphT9hy5h5XMF0BZz6rRjSYeQdgUdbDbM2dV0tDB5fs0FvX+5KsrPhD7zfSd1LdHH/3oTlnSB5CmsjUhn9Qz7S9wIEP+x65oVxrPwgT5ANZs=
+        bh=+jtx9iTIYYk4ppvGP19xVnsO3K2G5AcI22Bp2g1Lx20=;
+        b=TjUkvRXl6AeomzgYYjPGh2cFgEZQTjmpKlCE8Bd9G4VP1mAQGWs5u+IbgQKmgMGlB9
+         9ENnvOrSFc7GKGxp/ENzs4i2tkUnr/LUyr6xiGr8R2x9v8rS20u3cy1d8BILH2IQyLVW
+         MhCx8DG7Xt6u2zsuwHVZTzJPdQb0d0r8L1RfGnF+Unlw785hqNe8El7ioTQIsXMQlZET
+         ok68MnDZWsR8x4K3hzGxQrgG8yw07lFrMWyVgAuCLMAiKtPMTyAGQIpia73tfUOQsCdf
+         jRaM8zIpCNVw71Gi/f1VflItt6a+Itk6RBLNo0W4Pv1ezfPocpM8J/Ylepw6FlsDpo5R
+         WwBA==
+X-Gm-Message-State: AOJu0YzdlyNQmG8m8rd6ovyI5STIDYOduR7CgtJ98C2NdO7W3nErnHTW
+	88Gk4xAQTR3KfmO6L3AHbScN1OzA4jAIjC5+OORN/PLRxgH4AUcZ
+X-Google-Smtp-Source: AGHT+IH3QGWja/WQchLDtBWv5JIcYgSc9RxCALD+HX2p30QWYeOlInRb6FYUTZHQoa+xOEYdX+Cc1A==
+X-Received: by 2002:a05:6a00:2348:b0:6e0:3e9b:2604 with SMTP id j8-20020a056a00234800b006e03e9b2604mr962625pfj.15.1707253889861;
+        Tue, 06 Feb 2024 13:11:29 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVpch9cfTXSoTvkYopOEgsHTxaAzuTqlOt5rIP4FaPJSe22qmC5uF5Apxrrdjp4GmgHR0ziD+b1vXSQWf8nqJ3NlVVPIWEuIiMyaj3g9sswqisjwPWCO87fPo8LLvKbav7RhgsDIJtkTYp9kXEFJCH89FpxeXalu9ahxzN0BNkhM/3K7Bqd+ms3ggNE0xRy3mQ9DRRibkwsfcq8k+5Xm+OqQQ==
 Received: from xplor.waratah.dyndns.org (125-236-136-221-fibre.sparkbb.co.nz. [125.236.136.221])
-        by smtp.gmail.com with ESMTPSA id le11-20020a170902fb0b00b001d8f251c8b2sm2315243plb.221.2024.02.06.13.11.27
+        by smtp.gmail.com with ESMTPSA id u3-20020a62d443000000b006e025e1fa61sm2622902pfl.14.2024.02.06.13.11.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 06 Feb 2024 13:11:28 -0800 (PST)
 Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-	id 0A6A9360457; Wed,  7 Feb 2024 10:11:25 +1300 (NZDT)
+	id 9865B36031A; Wed,  7 Feb 2024 10:11:23 +1300 (NZDT)
 From: Michael Schmitz <schmitzmic@gmail.com>
 To: linux-m68k@vger.kernel.org
 Cc: geert@linux-m68k.org,
 	uli@fpond.eu,
 	fthain@linux-m68k.org,
 	viro@zeniv.linux.org.uk,
-	Michael Schmitz <schmitzmic@gmail.com>,
-	Andreas Schwab <schwab@linux-m68k.org>,
-	stable@vger.kernel.org
-Subject: [PATCH v3 8/8] m68k: Move signal frame following exception on 68020/030
-Date: Wed,  7 Feb 2024 10:11:04 +1300
-Message-Id: <20240206211104.26421-9-schmitzmic@gmail.com>
+	cip-dev@lists.cip-project.org,
+	Michael Schmitz <schmitzmic@gmail.com>
+Subject: [PATCH v3 6/8] m68k: Leave stack mangling to asm wrapper of sigreturn()
+Date: Wed,  7 Feb 2024 10:11:02 +1300
+Message-Id: <20240206211104.26421-7-schmitzmic@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240206211104.26421-1-schmitzmic@gmail.com>
 References: <20240206211104.26421-1-schmitzmic@gmail.com>
@@ -73,92 +71,393 @@ List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 
-From: Finn Thain <fthain@linux-m68k.org>
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-commit b845b574f86dcb6a70dfa698aa87a237b0878d2a upstream.
+commit 0d20abde987bed05a8963c8aa4276019d54ff9e7 upstream.
 
-On 68030/020, an instruction such as, moveml %a2-%a3/%a5,%sp@- may cause
-a stack page fault during instruction execution (i.e. not at an
-instruction boundary) and produce a format 0xB exception frame.
+sigreturn has to deal with an unpleasant problem - exception stack frames
+have different sizes, depending upon the exception (and processor model, as
+well) and variable-sized part of exception frame may contain information
+needed for instruction restart.  So when signal handler terminates and calls
+sigreturn to resume the execution at the place where we'd been when we caught
+the signal, it has to rearrange the frame at the bottom of kernel stack.
+Worse, it might need to open a gap in the kernel stack, shifting pt_regs
+towards lower addresses.
 
-In this situation, the value of USP will be unreliable.  If a signal is
-to be delivered following the exception, this USP value is used to
-calculate the location for a signal frame.  This can result in a
-corrupted user stack.
+Doing that from C is insane - we'd need to shift stack frames (return addresses,
+local variables, etc.) of C call chain, right under the nose of compiler and
+hope it won't fall apart horribly.  What had been actually done is only slightly
+less insane - an inline asm in mangle_kernel_stack() moved the stuff around,
+then reset stack pointer and jumped to label in asm glue.
 
-The corruption was detected in dash (actually in glibc) where it showed
-up as an intermittent "stack smashing detected" message and crash
-following signal delivery for SIGCHLD.
+However, we can avoid all that mess if the asm wrapper we have to use anyway
+would reserve some space on the stack between switch_stack and the C stack
+frame of do_{rt_,}sigreturn().   Then C part can simply memmove() pt_regs +
+switch_stack, memcpy() the variable part of exception frame into the opened
+gap - all of that without inline asm, buggering C call chain, magical jumps
+to asm labels, etc.
 
-It was hard to reproduce that failure because delivery of the signal
-raced with the page fault and because the kernel places an unpredictable
-gap of up to 7 bytes between the USP and the signal frame.
+Asm wrapper would need to know where the moved switch_stack has ended up -
+it might have been shifted into the gap we'd reserved before do_rt_sigreturn()
+call.  That's where it needs to set the stack pointer to.  So let the C part
+return just that and be done with that.
 
-A format 0xB exception frame can be produced by a bus error or an
-address error.  The 68030 Users Manual says that address errors occur
-immediately upon detection during instruction prefetch.  The instruction
-pipeline allows prefetch to overlap with other instructions, which means
-an address error can arise during the execution of a different
-instruction.  So it seems likely that this patch may help in the address
-error case also.
+While we are at it, the call of berr_040cleanup() we need to do when
+returning via 68040 bus error exception frame can be moved into C part
+as well.
 
-Reported-and-tested-by: Stan Johnson <userm57@yahoo.com>
-Link: https://lore.kernel.org/all/CAMuHMdW3yD22_ApemzW_6me3adq6A458u1_F0v-1EYwK_62jPA@mail.gmail.com/
-Cc: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Andreas Schwab <schwab@linux-m68k.org>
-Cc: stable@vger.kernel.org
-Co-developed-by: Michael Schmitz <schmitzmic@gmail.com>
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Link: https://lore.kernel.org/r/9e66262a754fcba50208aa424188896cc52a1dd1.1683365892.git.fthain@linux-m68k.org
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Tested-by: Michael Schmitz <schmitzmic@gmail.com>
+Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
+Tested-by: Finn Thain <fthain@linux-m68k.org>
+Link: https://lore.kernel.org/r/YP2dTQPm1wGPWFgD@zeniv-ca.linux.org.uk
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+[MSch: Minor v4.4 backport merge conflict and compile errors fixed]
+Cc: <cip-dev@lists.cip-project.org> # 4.4
+Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
 ---
- arch/m68k/kernel/signal.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ arch/m68k/68000/entry.S       |   3 -
+ arch/m68k/coldfire/entry.S    |   3 -
+ arch/m68k/include/asm/traps.h |   4 ++
+ arch/m68k/kernel/entry.S      |  49 +++++++-------
+ arch/m68k/kernel/signal.c     | 118 ++++++++++++----------------------
+ 5 files changed, 72 insertions(+), 105 deletions(-)
 
+diff --git a/arch/m68k/68000/entry.S b/arch/m68k/68000/entry.S
+index 259b3661b614..cce465e850fe 100644
+--- a/arch/m68k/68000/entry.S
++++ b/arch/m68k/68000/entry.S
+@@ -25,7 +25,6 @@
+ .globl system_call
+ .globl resume
+ .globl ret_from_exception
+-.globl ret_from_signal
+ .globl sys_call_table
+ .globl bad_interrupt
+ .globl inthandler1
+@@ -59,8 +58,6 @@ do_trace:
+ 	subql	#4,%sp			/* dummy return address */
+ 	SAVE_SWITCH_STACK
+ 	jbsr	syscall_trace_leave
+-
+-ret_from_signal:
+ 	RESTORE_SWITCH_STACK
+ 	addql	#4,%sp
+ 	jra	ret_from_exception
+diff --git a/arch/m68k/coldfire/entry.S b/arch/m68k/coldfire/entry.S
+index 52d312d5b4d4..1a75c1015847 100644
+--- a/arch/m68k/coldfire/entry.S
++++ b/arch/m68k/coldfire/entry.S
+@@ -51,7 +51,6 @@ sw_usp:
+ .globl system_call
+ .globl resume
+ .globl ret_from_exception
+-.globl ret_from_signal
+ .globl sys_call_table
+ .globl inthandler
+ 
+@@ -98,8 +97,6 @@ ENTRY(system_call)
+ 	subql	#4,%sp			/* dummy return address */
+ 	SAVE_SWITCH_STACK
+ 	jbsr	syscall_trace_leave
+-
+-ret_from_signal:
+ 	RESTORE_SWITCH_STACK
+ 	addql	#4,%sp
+ 
+diff --git a/arch/m68k/include/asm/traps.h b/arch/m68k/include/asm/traps.h
+index 4aff3358fbaf..a9d5c1c870d3 100644
+--- a/arch/m68k/include/asm/traps.h
++++ b/arch/m68k/include/asm/traps.h
+@@ -267,6 +267,10 @@ struct frame {
+     } un;
+ };
+ 
++#ifdef CONFIG_M68040
++asmlinkage void berr_040cleanup(struct frame *fp);
++#endif
++
+ #endif /* __ASSEMBLY__ */
+ 
+ #endif /* _M68K_TRAPS_H */
+diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+index dbeba043b703..9a79733b20db 100644
+--- a/arch/m68k/kernel/entry.S
++++ b/arch/m68k/kernel/entry.S
+@@ -71,14 +71,38 @@ ENTRY(__sys_vfork)
+ 
+ ENTRY(sys_sigreturn)
+ 	SAVE_SWITCH_STACK
++	movel	%sp,%a1			  	| switch_stack pointer
++	lea	%sp@(SWITCH_STACK_SIZE),%a0	| pt_regs pointer
++	lea     %sp@(-84),%sp			| leave a gap
++	movel	%a1,%sp@-
++	movel	%a0,%sp@-
+ 	jbsr	do_sigreturn
+-	RESTORE_SWITCH_STACK
+-	rts
++	jra	1f				| shared with rt_sigreturn()
+ 
+ ENTRY(sys_rt_sigreturn)
+ 	SAVE_SWITCH_STACK
++	movel	%sp,%a1			  	| switch_stack pointer
++	lea	%sp@(SWITCH_STACK_SIZE),%a0	| pt_regs pointer
++	lea     %sp@(-84),%sp			| leave a gap
++	movel	%a1,%sp@-
++	movel	%a0,%sp@-
++	| stack contents:
++	|   [original pt_regs address] [original switch_stack address]
++	|   [gap] [switch_stack] [pt_regs] [exception frame]
+ 	jbsr	do_rt_sigreturn
++
++1:
++	| stack contents now:
++	|   [original pt_regs address] [original switch_stack address]
++	|   [unused part of the gap] [moved switch_stack] [moved pt_regs]
++	|   [replacement exception frame]
++	| return value of do_{rt_,}sigreturn() points to moved switch_stack.
++
++	movel	%d0,%sp				| discard the leftover junk
+ 	RESTORE_SWITCH_STACK
++	| stack contents now is just [syscall return address] [pt_regs] [frame]
++	| return pt_regs.d0
++	movel	%sp@(PT_OFF_D0+4),%d0
+ 	rts
+ 
+ ENTRY(buserr)
+@@ -169,27 +193,6 @@ do_trace_exit:
+ 	addql	#4,%sp
+ 	jra	.Lret_from_exception
+ 
+-ENTRY(ret_from_signal)
+-	movel	%curptr@(TASK_STACK),%a1
+-	tstb	%a1@(TINFO_FLAGS+2)
+-	jge	1f
+-	lea	%sp@(SWITCH_STACK_SIZE),%a1
+-	movel	%a1,%curptr@(TASK_THREAD+THREAD_ESP0)
+-	jbsr	syscall_trace
+-1:	RESTORE_SWITCH_STACK
+-	addql	#4,%sp
+-/* on 68040 complete pending writebacks if any */
+-#ifdef CONFIG_M68040
+-	bfextu	%sp@(PT_OFF_FORMATVEC){#0,#4},%d0
+-	subql	#7,%d0				| bus error frame ?
+-	jbne	1f
+-	movel	%sp,%sp@-
+-	jbsr	berr_040cleanup
+-	addql	#4,%sp
+-1:
+-#endif
+-	jra	.Lret_from_exception
+-
+ ENTRY(system_call)
+ 	SAVE_ALL_SYS
+ 
 diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
-index 8fb8ee804b3a..de7c1bde62bc 100644
+index 644c2ddc8aac..8fb8ee804b3a 100644
 --- a/arch/m68k/kernel/signal.c
 +++ b/arch/m68k/kernel/signal.c
-@@ -808,11 +808,17 @@ static inline int rt_setup_ucontext(struct ucontext __user *uc, struct pt_regs *
- }
- 
- static inline void __user *
--get_sigframe(struct ksignal *ksig, size_t frame_size)
-+get_sigframe(struct ksignal *ksig, struct pt_regs *tregs, size_t frame_size)
+@@ -594,57 +594,35 @@ static inline int rt_save_fpu_state(struct ucontext __user *uc, struct pt_regs *
+ static int mangle_kernel_stack(struct pt_regs *regs, int formatvec,
+ 			       void __user *fp)
  {
- 	unsigned long usp = sigsp(rdusp(), ksig);
-+	unsigned long gap = 0;
- 
--	return (void __user *)((usp - frame_size) & -8UL);
-+	if (CPU_IS_020_OR_030 && tregs->format == 0xb) {
-+		/* USP is unreliable so use worst-case value */
-+		gap = 256;
-+	}
+-	int fsize = frame_extra_sizes(formatvec >> 12);
+-	if (fsize < 0) {
++	int extra = frame_extra_sizes(formatvec >> 12);
++	char buf[sizeof(((struct frame *)0)->un)];
 +
-+	return (void __user *)((usp - gap - frame_size) & -8UL);
++	if (extra < 0) {
+ 		/*
+ 		 * user process trying to return with weird frame format
+ 		 */
+-#ifdef DEBUG
+-		printk("user process returning with weird frame format\n");
+-#endif
+-		return 1;
++		pr_debug("user process returning with weird frame format\n");
++		return -1;
+ 	}
+-	if (!fsize) {
+-		regs->format = formatvec >> 12;
+-		regs->vector = formatvec & 0xfff;
+-	} else {
+-		struct switch_stack *sw = (struct switch_stack *)regs - 1;
+-		unsigned long buf[fsize / 2]; /* yes, twice as much */
+-
+-		/* that'll make sure that expansion won't crap over data */
+-		if (copy_from_user(buf + fsize / 4, fp, fsize))
+-			return 1;
+-
+-		/* point of no return */
+-		regs->format = formatvec >> 12;
+-		regs->vector = formatvec & 0xfff;
+-#define frame_offset (sizeof(struct pt_regs)+sizeof(struct switch_stack))
+-		__asm__ __volatile__ (
+-#ifdef CONFIG_COLDFIRE
+-			 "   movel %0,%/sp\n\t"
+-			 "   bra ret_from_signal\n"
+-#else
+-			 "   movel %0,%/a0\n\t"
+-			 "   subl %1,%/a0\n\t"     /* make room on stack */
+-			 "   movel %/a0,%/sp\n\t"  /* set stack pointer */
+-			 /* move switch_stack and pt_regs */
+-			 "1: movel %0@+,%/a0@+\n\t"
+-			 "   dbra %2,1b\n\t"
+-			 "   lea %/sp@(%c3),%/a0\n\t" /* add offset of fmt */
+-			 "   lsrl  #2,%1\n\t"
+-			 "   subql #1,%1\n\t"
+-			 /* copy to the gap we'd made */
+-			 "2: movel %4@+,%/a0@+\n\t"
+-			 "   dbra %1,2b\n\t"
+-			 "   bral ret_from_signal\n"
++	if (extra && copy_from_user(buf, fp, extra))
++		return -1;
++	regs->format = formatvec >> 12;
++	regs->vector = formatvec & 0xfff;
++	if (extra) {
++		void *p = (struct switch_stack *)regs - 1;
++		struct frame *new = (void *)regs - extra;
++		int size = sizeof(struct pt_regs)+sizeof(struct switch_stack);
++
++		memmove(p - extra, p, size);
++		memcpy(p - extra + size, buf, extra);
++		current->thread.esp0 = (unsigned long)&new->ptregs;
++#ifdef CONFIG_M68040
++		/* on 68040 complete pending writebacks if any */
++		if (new->ptregs.format == 7) // bus error frame
++			berr_040cleanup(new);
+ #endif
+-			 : /* no outputs, it doesn't ever return */
+-			 : "a" (sw), "d" (fsize), "d" (frame_offset/4-1),
+-			   "n" (frame_offset), "a" (buf + fsize/4)
+-			 : "a0");
+-#undef frame_offset
+ 	}
+-	return 0;
++	return extra;
  }
  
- static int setup_frame(struct ksignal *ksig, sigset_t *set,
-@@ -830,7 +836,7 @@ static int setup_frame(struct ksignal *ksig, sigset_t *set,
- 		return -EFAULT;
- 	}
+ static inline int
+@@ -652,14 +630,13 @@ restore_sigcontext(struct pt_regs *regs, struct sigcontext __user *usc, void __u
+ {
+ 	int formatvec;
+ 	struct sigcontext context;
+-	int err = 0;
  
--	frame = get_sigframe(ksig, sizeof(*frame) + fsize);
-+	frame = get_sigframe(ksig, tregs, sizeof(*frame) + fsize);
+ 	/* Always make any pending restarted system calls return -EINTR */
+ 	current->restart_block.fn = do_no_restart_syscall;
  
- 	if (fsize)
- 		err |= copy_to_user (frame + 1, regs + 1, fsize);
-@@ -903,7 +909,7 @@ static int setup_rt_frame(struct ksignal *ksig, sigset_t *set,
- 		return -EFAULT;
- 	}
+ 	/* get previous context */
+ 	if (copy_from_user(&context, usc, sizeof(context)))
+-		goto badframe;
++		return -1;
  
--	frame = get_sigframe(ksig, sizeof(*frame));
-+	frame = get_sigframe(ksig, tregs, sizeof(*frame));
+ 	/* restore passed registers */
+ 	regs->d0 = context.sc_d0;
+@@ -672,15 +649,10 @@ restore_sigcontext(struct pt_regs *regs, struct sigcontext __user *usc, void __u
+ 	wrusp(context.sc_usp);
+ 	formatvec = context.sc_formatvec;
  
- 	if (fsize)
- 		err |= copy_to_user (&frame->uc.uc_extra, regs + 1, fsize);
+-	err = restore_fpu_state(&context);
+-
+-	if (err || mangle_kernel_stack(regs, formatvec, fp))
+-		goto badframe;
+-
+-	return 0;
++	if (restore_fpu_state(&context))
++		return -1;
+ 
+-badframe:
+-	return 1;
++	return mangle_kernel_stack(regs, formatvec, fp);
+ }
+ 
+ static inline int
+@@ -697,7 +669,7 @@ rt_restore_ucontext(struct pt_regs *regs, struct switch_stack *sw,
+ 
+ 	err = __get_user(temp, &uc->uc_mcontext.version);
+ 	if (temp != MCONTEXT_VERSION)
+-		goto badframe;
++		return -1;
+ 	/* restore passed registers */
+ 	err |= __get_user(regs->d0, &gregs[0]);
+ 	err |= __get_user(regs->d1, &gregs[1]);
+@@ -726,24 +698,17 @@ rt_restore_ucontext(struct pt_regs *regs, struct switch_stack *sw,
+ 	err |= restore_altstack(&uc->uc_stack);
+ 
+ 	if (err)
+-		goto badframe;
+-
+-	if (mangle_kernel_stack(regs, temp, &uc->uc_extra))
+-		goto badframe;
++		return -1;
+ 
+-	return 0;
+-
+-badframe:
+-	return 1;
++	return mangle_kernel_stack(regs, temp, &uc->uc_extra);
+ }
+ 
+-asmlinkage int do_sigreturn(unsigned long __unused)
++asmlinkage void *do_sigreturn(struct pt_regs *regs, struct switch_stack *sw)
+ {
+-	struct switch_stack *sw = (struct switch_stack *) &__unused;
+-	struct pt_regs *regs = (struct pt_regs *) (sw + 1);
+ 	unsigned long usp = rdusp();
+ 	struct sigframe __user *frame = (struct sigframe __user *)(usp - 4);
+ 	sigset_t set;
++	int size;
+ 
+ 	if (!access_ok(VERIFY_READ, frame, sizeof(*frame)))
+ 		goto badframe;
+@@ -755,22 +720,22 @@ asmlinkage int do_sigreturn(unsigned long __unused)
+ 
+ 	set_current_blocked(&set);
+ 
+-	if (restore_sigcontext(regs, &frame->sc, frame + 1))
++	size = restore_sigcontext(regs, &frame->sc, frame + 1);
++	if (size < 0)
+ 		goto badframe;
+-	return regs->d0;
++	return (void *)sw - size;
+ 
+ badframe:
+ 	force_sig(SIGSEGV, current);
+-	return 0;
++	return sw;
+ }
+ 
+-asmlinkage int do_rt_sigreturn(unsigned long __unused)
++asmlinkage void *do_rt_sigreturn(struct pt_regs *regs, struct switch_stack *sw)
+ {
+-	struct switch_stack *sw = (struct switch_stack *) &__unused;
+-	struct pt_regs *regs = (struct pt_regs *) (sw + 1);
+ 	unsigned long usp = rdusp();
+ 	struct rt_sigframe __user *frame = (struct rt_sigframe __user *)(usp - 4);
+ 	sigset_t set;
++	int size;
+ 
+ 	if (!access_ok(VERIFY_READ, frame, sizeof(*frame)))
+ 		goto badframe;
+@@ -779,13 +744,14 @@ asmlinkage int do_rt_sigreturn(unsigned long __unused)
+ 
+ 	set_current_blocked(&set);
+ 
+-	if (rt_restore_ucontext(regs, sw, &frame->uc))
++	size = rt_restore_ucontext(regs, sw, &frame->uc);
++	if (size < 0)
+ 		goto badframe;
+-	return regs->d0;
++	return (void *)sw - size;
+ 
+ badframe:
+ 	force_sig(SIGSEGV, current);
+-	return 0;
++	return sw;
+ }
+ 
+ static inline struct pt_regs *rte_regs(struct pt_regs *regs)
 -- 
 2.17.1
 
