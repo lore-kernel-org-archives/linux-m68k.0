@@ -1,357 +1,331 @@
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F5DE35884
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  5 Feb 2024 15:42:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 374451CD07
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  6 Feb 2024 10:32:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707147723; cv=none; b=DdjJ97jb0hldTiJjn5gbGP7YOJ+X1tbmwI8sDHYw8RBd9sBOjy7XsuFOhmQq8bwfD8qeffui32kUaFXgO+Qle9TBOoCorbjI6W6ngmdsWuFnMG5IjB8AIToAyS0TdbuFAbQoYtDcr1aaristb1UKzoIDGUI//FPckXcUFG3Wy0Y=
+	t=1707215523; cv=none; b=AyKOzGXOB30+mEuquvc2T0BcSqtRFWGS+imjMnntd5HRIahJaI8uShFfmbNH+mpsG3CGQsTzqg3G6SjJFL5hDOPHhZ40jN56Rm4rV1G7A3kFLQAjJ0pu+VR9Z5YzoJU7szvGUM1/Yc4ReJ7rZ6sZjN4vYfRtq05q7NQLWw2g7K0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707147723; c=relaxed/simple;
-	bh=53b2H8uF29g5f+ZgMeGd29yJbLCDFBzBlvwx1MeFTPQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=R0D+l+2qZ6s/nXGxCr90Li7pVvW5Xei1T68n7y7huE35rCdLERjU9R0AssUtkHocjSDANndBD7Z1sg5cy7ADF1gNlvPVYIKboSAUHDRyb2KuOnY5E3g4gL9E7hK2qXLfVBdM8zEbXVlkQv4u6qaDMjhZWPNoacibL5loI4jVn1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DpF5Q6BR; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1707215523; c=relaxed/simple;
+	bh=nlSJIXePdkNQSTjnIOvz+ymevMnY/tQauJwYr1L6Wcw=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=oSVU+gNA5RauXl57PKGxDit/7J2xgeMsiDOFJ+XuEfhAecAdGEHMYUHV7HMcGaaFjWi7Y0JMFis/1DcuQOt8Tbr6wDl/xrZfPTXZUilslrfTGIgLTS8vzXL0p+vaxuRX0F41gp+09AVPLgUyY6fi78Q4NDniOlJN3K2GmO7nXrg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=H7o6H2fQ; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DpF5Q6BR"
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d98fc5ebceso7120715ad.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 05 Feb 2024 07:42:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707147720; x=1707752520; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DBc4fLjatrXpASlD/WVnTmp4iXcVx1KBzPpDYNmB8KU=;
-        b=DpF5Q6BR+N1SNDcCK0wZTKjRnFhXpFBC+AB4nPDajYEOvti3RzK7JWNUku4FmbHLkt
-         QWigwJP67e24RRkQKmLiYcDgkF5P2MtR8OmeJBOa0RtcRNs8GlU2YtWXz1Zfv5IcDhf9
-         EstTEibK0+ehHNrQiOCZ9eIM9VCLsxoF8AjnvvDBKHS9R2l5e654Pv+hMZdhPlnzDY3g
-         Rh3LNgYGEDPbq96bP5/flcxe07y7EebikkihYUBvkAWcd0oUxj/KTjDRM7zX2bW23NwM
-         PwvMxbtn3Jk4XKxXLVz507gH4rOk+7nJ/R9kNQbIYUp1Zn+FQoQXsPyQUn130izvUmds
-         AN6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707147720; x=1707752520;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=DBc4fLjatrXpASlD/WVnTmp4iXcVx1KBzPpDYNmB8KU=;
-        b=RuXcc/wWRkyWj/l4wra2tcbch0pFogJrYiyxtGP4XbqHb/EZqjFHk+ot0yAwualIGT
-         +dA3D82E+cqXaRiRHV5KAH+J4N0fujoCfnMgOeWUkmBUKtFPADb1DFd1rK2ClQUZhuyu
-         l54hlpWe3kl4k89ezJCOshWs2pyLRVx6/b6cRhyjYq1bsSkoXqNlqvC9Wd74A0eJixHb
-         hElwKoUN3jqt4NFZX5EMy9eg50Yt6US7vL/TKfdlN8+ekoZX3nxT0D5WxBSz1MvOZ5PI
-         iEnOlk2fIE6hZBQ9gpRMbJKR3rZdj+4F153U+yiNUnoImpUam36SNpNvr7rlsBiBK6Gx
-         /GRg==
-X-Gm-Message-State: AOJu0YzDOx0VqWLSc+NoFBa8y3BoeDwfatwThNA/OAKEa92AUjGF3OE0
-	dXUQGrQ7SU67EijUXeAU6tfAGIlTjBFM6B7GrlsHGfq+A5U9+YLS
-X-Google-Smtp-Source: AGHT+IFa60vwbhiLC3KHxBDj3pj07TOapnYwrlrH7l61oHAatkapvrje4wYvZjjJjzdKrsZTGMK7Qw==
-X-Received: by 2002:a17:903:40c4:b0:1d9:9fa2:a0b4 with SMTP id t4-20020a17090340c400b001d99fa2a0b4mr4512229pld.66.1707147720292;
-        Mon, 05 Feb 2024 07:42:00 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUQN9wfp6UC88AploE6+ZJapT/z6lIHI5mkXVzCwf/z3/vRM5yQOMaPI+85GRn0VJhpP408gle1gklCtbulFsie/wKxp2KOGHQ1iyBNB2hQqQxoC9iIQvUU/8k4b7423QIJLOjUaAV8F0DqjNXwdbB6rHrkn8F3h31kqKOzxUQH/cL1QxM1W1Dns6Hejt2M2lH4H9XKG4FaQx/1w3nTLS+zahxeT3y9UDvkFpGdcjhWqPn0KzLXe9mwBLKBNFAYxgQrndF03JGNszEaMzYTUj9Q3F6xYvljz+k6b+zOLUvD9Uc+1DBdB5GvGB33gHw0S/RjfxfGHztZgH1IqLu4eISs/Zlr9AY8s4UYDKcW19cO/iguLqstZGcgt+lTAzXi8Wpm5cwnuDcQqs+64iaWuFSI7TH8ytj/WMQSxuoY3E1X7sgzX/xgQIehfsPH3HJOIxX5XPTI/bJM5vlORlbipOV9s7Z3J0ajrL6NA0fkgWV9uJDqwH7wRPQgWO8KKH/vZsha9rXMTnrGqwQPJuGBbY19ngfz54bpOI3UtgcwMi5vOn41A5cJh1qrI08GLlVD7tPetCmITHcbtficmcnJp00=
-Received: from localhost.localdomain (124x33x176x97.ap124.ftth.ucom.ne.jp. [124.33.176.97])
-        by smtp.gmail.com with ESMTPSA id s9-20020a170903320900b001d8a5c08277sm4438plh.260.2024.02.05.07.41.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 07:41:59 -0800 (PST)
-Sender: Vincent Mailhol <vincent.mailhol@gmail.com>
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To: fthain@linux-m68k.org
-Cc: mailhol.vincent@wanadoo.fr,
-	David.Laight@aculab.com,
-	akpm@linux-foundation.org,
-	bcain@quicinc.com,
-	dianders@chromium.org,
-	elver@google.com,
-	geert+renesas@glider.be,
-	geert@linux-m68k.org,
-	keescook@chromium.org,
-	linux-kernel@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org,
-	ndesaulniers@google.com,
-	paulmck@kernel.org,
-	pmladek@suse.com,
-	rdunlap@infradead.org,
-	willy@infradead.org,
-	yury.norov@gmail.com,
-	zhaoyang.huang@unisoc.com
-Subject: [PATCH] m68k/bitops: always use compiler's builtin for bit finding functions
-Date: Tue,  6 Feb 2024 00:40:37 +0900
-Message-ID: <20240205154143.1004442-1-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <CAMZ6RqLkCPuy+mQxp0HuVBgfSiFgFOwimYm1Ro7ESANyF-fRyg@mail.gmail.com>
-References: <CAMZ6RqLkCPuy+mQxp0HuVBgfSiFgFOwimYm1Ro7ESANyF-fRyg@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="H7o6H2fQ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707215522; x=1738751522;
+  h=date:from:to:cc:subject:message-id;
+  bh=nlSJIXePdkNQSTjnIOvz+ymevMnY/tQauJwYr1L6Wcw=;
+  b=H7o6H2fQjwVsRHJzvkUjCxndCFU2BS3L2Xqfhw43etaWk+903v6fjssb
+   HEY9v5Mca0aYMJCvGocEJlN/lSEnSMIoPWymnLIufBU3wzfSnTr9cVqyM
+   /2QLFes87XgIoIwjRc+6ucqS6L3i4GAug+Qp/wHYdkQRETF//T5XPWRfM
+   MhknMt6HRHKIw/+CwULx3fYt4svl+9aZvU8xqgIxFirciS3HVXBw3Gu+C
+   X7Z7Bqhkd/nN907khHy9NxqEBiCQ1vLH3V2Pg62FfDg3a94R7Tdxv4Cwv
+   FMoHBk/DtpqObaQjTLDbOlQi9SMWVx8vwVao5fdkCDfJzCPdhXyLtB7OP
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="627675"
+X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
+   d="scan'208";a="627675"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 02:32:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,247,1701158400"; 
+   d="scan'208";a="38406709"
+Received: from lkp-server01.sh.intel.com (HELO 01f0647817ea) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 06 Feb 2024 02:31:59 -0800
+Received: from kbuild by 01f0647817ea with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rXIk8-0001H2-1k;
+	Tue, 06 Feb 2024 10:31:56 +0000
+Date: Tue, 06 Feb 2024 18:31:43 +0800
+From: kernel test robot <lkp@intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 0bd8a354c65a73a681fc2cb00f7745ed3f21c334
+Message-ID: <202402061840.6V7QYxii-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-GCC and clang provides a set of builtin functions which can be used as
-a replacement for ffs(), __ffs(), fls() and __fls().
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 0bd8a354c65a73a681fc2cb00f7745ed3f21c334  Merge tag 'v6.8-rc3'
 
-Using the builtin comes as a trade-off.
+elapsed time: 1477m
 
-Pros:
+configs tested: 258
+configs skipped: 3
 
-  - Simpler code, easier to maintain
-  - Guarantee the constant folding
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Cons:
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                          axs103_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                     haps_hs_smp_defconfig   gcc  
+arc                   randconfig-001-20240205   gcc  
+arc                   randconfig-001-20240206   gcc  
+arc                   randconfig-002-20240205   gcc  
+arc                   randconfig-002-20240206   gcc  
+arc                           tb10x_defconfig   gcc  
+arc                        vdk_hs38_defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                          collie_defconfig   gcc  
+arm                                 defconfig   clang
+arm                            mmp2_defconfig   gcc  
+arm                        mvebu_v5_defconfig   gcc  
+arm                        neponset_defconfig   gcc  
+arm                   randconfig-002-20240205   gcc  
+arm                   randconfig-002-20240206   gcc  
+arm                   randconfig-003-20240206   gcc  
+arm                           tegra_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240205   gcc  
+arm64                 randconfig-001-20240206   gcc  
+arm64                 randconfig-002-20240205   gcc  
+arm64                 randconfig-003-20240205   gcc  
+arm64                 randconfig-003-20240206   gcc  
+arm64                 randconfig-004-20240205   gcc  
+arm64                 randconfig-004-20240206   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240205   gcc  
+csky                  randconfig-001-20240206   gcc  
+csky                  randconfig-002-20240205   gcc  
+csky                  randconfig-002-20240206   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240205   clang
+i386         buildonly-randconfig-002-20240205   clang
+i386         buildonly-randconfig-003-20240205   clang
+i386         buildonly-randconfig-003-20240206   gcc  
+i386         buildonly-randconfig-004-20240205   clang
+i386         buildonly-randconfig-005-20240205   clang
+i386         buildonly-randconfig-005-20240206   gcc  
+i386         buildonly-randconfig-006-20240205   clang
+i386         buildonly-randconfig-006-20240206   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240205   clang
+i386                  randconfig-002-20240205   clang
+i386                  randconfig-003-20240205   clang
+i386                  randconfig-004-20240205   gcc  
+i386                  randconfig-005-20240205   clang
+i386                  randconfig-006-20240205   gcc  
+i386                  randconfig-011-20240205   gcc  
+i386                  randconfig-012-20240205   clang
+i386                  randconfig-012-20240206   gcc  
+i386                  randconfig-013-20240205   gcc  
+i386                  randconfig-014-20240205   gcc  
+i386                  randconfig-014-20240206   gcc  
+i386                  randconfig-015-20240205   clang
+i386                  randconfig-015-20240206   gcc  
+i386                  randconfig-016-20240205   gcc  
+i386                  randconfig-016-20240206   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240205   gcc  
+loongarch             randconfig-001-20240206   gcc  
+loongarch             randconfig-002-20240205   gcc  
+loongarch             randconfig-002-20240206   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                          atari_defconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                       m5249evb_defconfig   gcc  
+m68k                            mac_defconfig   gcc  
+m68k                        mvme147_defconfig   gcc  
+m68k                        mvme16x_defconfig   gcc  
+m68k                            q40_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                       bmips_be_defconfig   gcc  
+mips                          malta_defconfig   gcc  
+mips                malta_qemu_32r6_defconfig   gcc  
+mips                      maltasmvp_defconfig   gcc  
+mips                    maltaup_xpa_defconfig   gcc  
+mips                           rs90_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240205   gcc  
+nios2                 randconfig-001-20240206   gcc  
+nios2                 randconfig-002-20240205   gcc  
+nios2                 randconfig-002-20240206   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                generic-32bit_defconfig   gcc  
+parisc                randconfig-001-20240205   gcc  
+parisc                randconfig-001-20240206   gcc  
+parisc                randconfig-002-20240205   gcc  
+parisc                randconfig-002-20240206   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                    ge_imp3a_defconfig   gcc  
+powerpc                  iss476-smp_defconfig   gcc  
+powerpc                   microwatt_defconfig   gcc  
+powerpc                     powernv_defconfig   gcc  
+powerpc                     ppa8548_defconfig   gcc  
+powerpc                      ppc64e_defconfig   gcc  
+powerpc               randconfig-002-20240206   gcc  
+powerpc               randconfig-003-20240205   gcc  
+powerpc                    sam440ep_defconfig   gcc  
+powerpc                  storcenter_defconfig   gcc  
+powerpc                      walnut_defconfig   gcc  
+powerpc                         wii_defconfig   gcc  
+powerpc64             randconfig-001-20240206   gcc  
+powerpc64             randconfig-003-20240206   gcc  
+riscv                            alldefconfig   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240206   gcc  
+riscv                 randconfig-002-20240205   gcc  
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-002-20240205   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                         ecovec24_defconfig   gcc  
+sh                 kfr2r09-romimage_defconfig   gcc  
+sh                          kfr2r09_defconfig   gcc  
+sh                    randconfig-001-20240205   gcc  
+sh                    randconfig-001-20240206   gcc  
+sh                    randconfig-002-20240205   gcc  
+sh                    randconfig-002-20240206   gcc  
+sh                          rsk7201_defconfig   gcc  
+sh                          rsk7264_defconfig   gcc  
+sh                          sdk7780_defconfig   gcc  
+sh                           se7722_defconfig   gcc  
+sh                        sh7757lcr_defconfig   gcc  
+sh                   sh7770_generic_defconfig   gcc  
+sh                          urquell_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240205   gcc  
+sparc64               randconfig-001-20240206   gcc  
+sparc64               randconfig-002-20240205   gcc  
+sparc64               randconfig-002-20240206   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                    randconfig-002-20240205   gcc  
+um                    randconfig-002-20240206   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240205   clang
+x86_64       buildonly-randconfig-001-20240206   gcc  
+x86_64       buildonly-randconfig-002-20240205   clang
+x86_64       buildonly-randconfig-002-20240206   clang
+x86_64       buildonly-randconfig-003-20240205   gcc  
+x86_64       buildonly-randconfig-003-20240206   gcc  
+x86_64       buildonly-randconfig-004-20240205   gcc  
+x86_64       buildonly-randconfig-004-20240206   gcc  
+x86_64       buildonly-randconfig-005-20240205   gcc  
+x86_64       buildonly-randconfig-005-20240206   gcc  
+x86_64       buildonly-randconfig-006-20240205   gcc  
+x86_64       buildonly-randconfig-006-20240206   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240205   gcc  
+x86_64                randconfig-001-20240206   clang
+x86_64                randconfig-002-20240205   gcc  
+x86_64                randconfig-002-20240206   clang
+x86_64                randconfig-003-20240205   clang
+x86_64                randconfig-003-20240206   gcc  
+x86_64                randconfig-004-20240205   gcc  
+x86_64                randconfig-004-20240206   gcc  
+x86_64                randconfig-005-20240205   gcc  
+x86_64                randconfig-005-20240206   gcc  
+x86_64                randconfig-006-20240205   gcc  
+x86_64                randconfig-006-20240206   clang
+x86_64                randconfig-011-20240205   gcc  
+x86_64                randconfig-011-20240206   gcc  
+x86_64                randconfig-012-20240205   gcc  
+x86_64                randconfig-012-20240206   clang
+x86_64                randconfig-013-20240205   clang
+x86_64                randconfig-013-20240206   gcc  
+x86_64                randconfig-014-20240205   clang
+x86_64                randconfig-014-20240206   clang
+x86_64                randconfig-015-20240205   gcc  
+x86_64                randconfig-015-20240206   gcc  
+x86_64                randconfig-016-20240205   clang
+x86_64                randconfig-016-20240206   clang
+x86_64                randconfig-071-20240205   clang
+x86_64                randconfig-071-20240206   gcc  
+x86_64                randconfig-072-20240205   gcc  
+x86_64                randconfig-072-20240206   gcc  
+x86_64                randconfig-073-20240205   clang
+x86_64                randconfig-073-20240206   gcc  
+x86_64                randconfig-074-20240205   clang
+x86_64                randconfig-074-20240206   gcc  
+x86_64                randconfig-075-20240205   gcc  
+x86_64                randconfig-075-20240206   clang
+x86_64                randconfig-076-20240205   clang
+x86_64                randconfig-076-20240206   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                           alldefconfig   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                  audio_kc705_defconfig   gcc  
+xtensa                randconfig-001-20240205   gcc  
+xtensa                randconfig-001-20240206   gcc  
+xtensa                randconfig-002-20240205   gcc  
+xtensa                randconfig-002-20240206   gcc  
+xtensa                         virt_defconfig   gcc  
 
-  - clang does not provide optimized code. Ref:
-    https://godbolt.org/z/Yb8nMKnYf
-
-Despite of the cons, use the builtin unconditionally and remove any
-existing assembly implementation.
-
-This done, remove the find_first_zero_bit(), find_next_zero_bit(),
-find_first_bit() and find_next_bit() assembly implementations.
-Instead, rely on the generic functions from linux/find.h which will
-themselves rely on the builtin we just set up.
-
-Not-signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
----
-As written earlier, I do not want to sign-off a patch which can
-degrade the performances of m68k clang users. But because it is
-already written, there it is.
-
-If someone wants to pick up this, go ahead. Just make sure to remove
-any reference to myself. I hereby grant permission for anyone to reuse
-that patch, with or without modifications, under the unique condition
-that my name gets removed.
----
- arch/m68k/include/asm/bitops.h | 215 +--------------------------------
- 1 file changed, 5 insertions(+), 210 deletions(-)
-
-diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
-index 14c64a6f1217..44aac8ced9fc 100644
---- a/arch/m68k/include/asm/bitops.h
-+++ b/arch/m68k/include/asm/bitops.h
-@@ -340,218 +340,13 @@ static inline bool xor_unlock_is_negative_byte(unsigned long mask,
- #endif
- }
- 
--/*
-- *	The true 68020 and more advanced processors support the "bfffo"
-- *	instruction for finding bits. ColdFire and simple 68000 parts
-- *	(including CPU32) do not support this. They simply use the generic
-- *	functions.
-- */
--#if defined(CONFIG_CPU_HAS_NO_BITFIELDS)
--#include <asm-generic/bitops/ffz.h>
--#else
--
--static inline int find_first_zero_bit(const unsigned long *vaddr,
--				      unsigned size)
--{
--	const unsigned long *p = vaddr;
--	int res = 32;
--	unsigned int words;
--	unsigned long num;
--
--	if (!size)
--		return 0;
--
--	words = (size + 31) >> 5;
--	while (!(num = ~*p++)) {
--		if (!--words)
--			goto out;
--	}
--
--	__asm__ __volatile__ ("bfffo %1{#0,#0},%0"
--			      : "=d" (res) : "d" (num & -num));
--	res ^= 31;
--out:
--	res += ((long)p - (long)vaddr - 4) * 8;
--	return res < size ? res : size;
--}
--#define find_first_zero_bit find_first_zero_bit
--
--static inline int find_next_zero_bit(const unsigned long *vaddr, int size,
--				     int offset)
--{
--	const unsigned long *p = vaddr + (offset >> 5);
--	int bit = offset & 31UL, res;
--
--	if (offset >= size)
--		return size;
--
--	if (bit) {
--		unsigned long num = ~*p++ & (~0UL << bit);
--		offset -= bit;
--
--		/* Look for zero in first longword */
--		__asm__ __volatile__ ("bfffo %1{#0,#0},%0"
--				      : "=d" (res) : "d" (num & -num));
--		if (res < 32) {
--			offset += res ^ 31;
--			return offset < size ? offset : size;
--		}
--		offset += 32;
--
--		if (offset >= size)
--			return size;
--	}
--	/* No zero yet, search remaining full bytes for a zero */
--	return offset + find_first_zero_bit(p, size - offset);
--}
--#define find_next_zero_bit find_next_zero_bit
--
--static inline int find_first_bit(const unsigned long *vaddr, unsigned size)
--{
--	const unsigned long *p = vaddr;
--	int res = 32;
--	unsigned int words;
--	unsigned long num;
--
--	if (!size)
--		return 0;
--
--	words = (size + 31) >> 5;
--	while (!(num = *p++)) {
--		if (!--words)
--			goto out;
--	}
--
--	__asm__ __volatile__ ("bfffo %1{#0,#0},%0"
--			      : "=d" (res) : "d" (num & -num));
--	res ^= 31;
--out:
--	res += ((long)p - (long)vaddr - 4) * 8;
--	return res < size ? res : size;
--}
--#define find_first_bit find_first_bit
--
--static inline int find_next_bit(const unsigned long *vaddr, int size,
--				int offset)
--{
--	const unsigned long *p = vaddr + (offset >> 5);
--	int bit = offset & 31UL, res;
--
--	if (offset >= size)
--		return size;
--
--	if (bit) {
--		unsigned long num = *p++ & (~0UL << bit);
--		offset -= bit;
--
--		/* Look for one in first longword */
--		__asm__ __volatile__ ("bfffo %1{#0,#0},%0"
--				      : "=d" (res) : "d" (num & -num));
--		if (res < 32) {
--			offset += res ^ 31;
--			return offset < size ? offset : size;
--		}
--		offset += 32;
--
--		if (offset >= size)
--			return size;
--	}
--	/* No one yet, search remaining full bytes for a one */
--	return offset + find_first_bit(p, size - offset);
--}
--#define find_next_bit find_next_bit
--
--/*
-- * ffz = Find First Zero in word. Undefined if no zero exists,
-- * so code should check against ~0UL first..
-- */
--static inline unsigned long ffz(unsigned long word)
--{
--	int res;
--
--	__asm__ __volatile__ ("bfffo %1{#0,#0},%0"
--			      : "=d" (res) : "d" (~word & -~word));
--	return res ^ 31;
--}
--
--#endif
--
- #ifdef __KERNEL__
- 
--#if defined(CONFIG_CPU_HAS_NO_BITFIELDS)
--
--/*
-- *	The newer ColdFire family members support a "bitrev" instruction
-- *	and we can use that to implement a fast ffs. Older Coldfire parts,
-- *	and normal 68000 parts don't have anything special, so we use the
-- *	generic functions for those.
-- */
--#if (defined(__mcfisaaplus__) || defined(__mcfisac__)) && \
--	!defined(CONFIG_M68000)
--static inline unsigned long __ffs(unsigned long x)
--{
--	__asm__ __volatile__ ("bitrev %0; ff1 %0"
--		: "=d" (x)
--		: "0" (x));
--	return x;
--}
--
--static inline int ffs(int x)
--{
--	if (!x)
--		return 0;
--	return __ffs(x) + 1;
--}
--
--#else
--#include <asm-generic/bitops/ffs.h>
--#include <asm-generic/bitops/__ffs.h>
--#endif
--
--#include <asm-generic/bitops/fls.h>
--#include <asm-generic/bitops/__fls.h>
--
--#else
--
--/*
-- *	ffs: find first bit set. This is defined the same way as
-- *	the libc and compiler builtin ffs routines, therefore
-- *	differs in spirit from the above ffz (man ffs).
-- */
--static inline int ffs(int x)
--{
--	int cnt;
--
--	__asm__ ("bfffo %1{#0:#0},%0"
--		: "=d" (cnt)
--		: "dm" (x & -x));
--	return 32 - cnt;
--}
--
--static inline unsigned long __ffs(unsigned long x)
--{
--	return ffs(x) - 1;
--}
--
--/*
-- *	fls: find last bit set.
-- */
--static inline int fls(unsigned int x)
--{
--	int cnt;
--
--	__asm__ ("bfffo %1{#0,#0},%0"
--		: "=d" (cnt)
--		: "dm" (x));
--	return 32 - cnt;
--}
--
--static inline unsigned long __fls(unsigned long x)
--{
--	return fls(x) - 1;
--}
--
--#endif
-+#include <asm-generic/bitops/builtin-ffs.h>
-+#include <asm-generic/bitops/builtin-__ffs.h>
-+#include <asm-generic/bitops/builtin-fls.h>
-+#include <asm-generic/bitops/builtin-__fls.h>
-+#include <asm-generic/bitops/ffz.h>
- 
- /* Simple test-and-set bit locks */
- #define test_and_set_bit_lock	test_and_set_bit
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
