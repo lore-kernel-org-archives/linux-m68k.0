@@ -1,68 +1,66 @@
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 394D61BF20;
-	Tue,  6 Feb 2024 21:11:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B4871B94D
+	for <linux-m68k@vger.kernel.org>; Tue,  6 Feb 2024 21:11:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707253880; cv=none; b=qx/fZUw49V2GOZrX2x2KNvZ/mpyHZ06zDvMVBz+DITQOBLUPWMhwRJsuGTkESz743ikzJmLKZHExp/MWYGfKzGZHyPd26x5RKIqxd9WTf8HuDSP7ZNAus8WFZfPcAEtr2l5m3Yf5BhlRiOUpUOCnS9/Dw+jSnUMahGL+esV2Wbg=
+	t=1707253885; cv=none; b=UxKxkkRivlOKmUw/C+jggDq2n40m0jTtDPobjfac4NOeIL0yL+3LEwW3UUOsxsdSYmPah5fB+DRmdoQunrnfWb2XLSndyr8OLN+Gw2MJbOM5Ggk0W8RIkpFpj8huCqZ/fSUO8LP76shy7t5XdWyAOV159KKpY1TvIV1ABWmMnyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707253880; c=relaxed/simple;
-	bh=6W2qJ7emBHDpfjsMd5I+Yh5aNZEm7ERBKlFcs6o7FCc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=R30abWg0iP1JrNiW9zDfW4xCHjFKqVo21Jwc7zm/w91sy7oHgHItOp5oBVq4bY5UrKjgrn3fUj2WdGQm2igmztHkmwElS/Fkq9Rl7ZbT3PcB0J1u7jzrilLI74xPa4tZk61ORy756C4GTCHCFo2erH7ayhJ3bCGrUoXgQbVlZOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V15MCYET; arc=none smtp.client-ip=209.85.216.41
+	s=arc-20240116; t=1707253885; c=relaxed/simple;
+	bh=BWsWqyz1blA+TRl1jYyuY4H2R3U/VTPI6HqjB0o20sY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=ln5iS78RpPHGbyeTUS4WIHNdR0c6PoXsnbSA/HYKGvMRs9ECZFOs2gBcQ9As7VfVNGKlVTsAnPcfo0MXz21FDfkEF4i+ToLa163WkTbs+gQBcCuwpTAICie4CrGF14Zi6pKnOgzm9kpd5ADizQMcz+l+A2DVbmsayy0woc80NPU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lu+MTzB6; arc=none smtp.client-ip=209.85.214.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V15MCYET"
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-296cca91667so806976a91.3;
-        Tue, 06 Feb 2024 13:11:19 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lu+MTzB6"
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d953fa3286so44240035ad.2
+        for <linux-m68k@vger.kernel.org>; Tue, 06 Feb 2024 13:11:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707253878; x=1707858678; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1707253883; x=1707858683; darn=vger.kernel.org;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=I2CG33VPPpXBW0bT6gJ7H7D26BUksG/NvgMt6SM3LZM=;
-        b=V15MCYETce+D2589znVr25ARUhG58effZJWBLIo5sEeWg/9ryWMuxbULFxIilAlBoq
-         /ybSNJ1JHSWuTJ/8+ZjtLSaF5wtL12cj7KCeLHWyEmvAKwUX6YwEeYqqAKKhlIx729+O
-         Rjp7RPa4QapwxPWNPz2IlScQ6PPmOj+mwb6GtM/iTkVHWNYUgADLKzkAKcWLj53jr7p4
-         ddFyqcGZzz77/Wuu+TdxxqvTsYEq9CJTb3/gsAzc8mAd1h4MSFF1W9+z7J4aSNIZKIMh
-         tBKpUxIkqbdhXGHkWsLEFVNNNtCCDK3TdfZUP/X4JX7Yl7+SbX42XnFYxB/nPWC1KP53
-         O5iA==
+        bh=GFF8vC7r8XusyZDgQUYf/pE8/Yo6kYAPsSmPJdF37Z8=;
+        b=lu+MTzB6ASYmmcHhdWyIE2GtMqY28uN3Kk2rx6FYSk1fZUmkatYI3qHUerB8ttyTFN
+         AZErgVkQ0LCY++mLvvfrPC06tTtpeAGsRuwDrjrkW475InC5/8TdxjPW37xlL7LAXcbU
+         GdCmqpe68gWZmA1o4Kfk/5p0HJ4NdLYPrTrJNgTIPVxqlbUEcHDKgYIIWpKszbT09mLk
+         XQ1EQKTU8xOd83lhbY5j+pWXSbbHGeyARscr+tjIhxadZK0ct+Fp6gFCwrfksPPK4Cpa
+         +XSmuaQ6s4fEMslTIDMBC80/af1nHWG9jbyDJAXIjMjCPrs8fZMmEc2X+1qDBf1h0nWt
+         xvQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707253878; x=1707858678;
+        d=1e100.net; s=20230601; t=1707253883; x=1707858683;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=I2CG33VPPpXBW0bT6gJ7H7D26BUksG/NvgMt6SM3LZM=;
-        b=i1L5DoJm7Jcpn+DH42x9qwl0IBd4Vb1IeTiu4CIeuZLXCdHEjc9HSrEtlD1kdO+ddm
-         Oz8rc2McA8QkHYwQvmzbCIeYIUklEDvHRIPjhzgZmAbS1mNfPTTlcaXvdZ7x6RGxw1rY
-         CFjLIWwwGuAqr7XPMDlCNrZmixeX43RlVxRvR6FzoMSu4hWRjnZH/HCh1YYoYMFS5PbC
-         E/mzkJ9S6sPRMWjZfZvbDguxyC1QbJ8kA1PsdDtRAqSyDPuGxE6ONwBr+roaLO+pSBqi
-         Udd3lQRAQcNizgdNSjNNrwomZVXnXwcX8a88VBlF5hOHmMuO82/mbNP8ktUQ590sCX7a
-         HyaA==
-X-Gm-Message-State: AOJu0YzzxRuba6mtJ8Pj/j5BfsJgwPOURXoytlDqjC5528ToEnAx3iEJ
-	Gh/IFOeOL8yx1FxXTOwf5nhkvn4N2vUoQPw+pM416fXbKlVq3rem
-X-Google-Smtp-Source: AGHT+IGVeb5RZpfylDVMc7uFzF0bFVYLKe4HdkLjmpP7649rzmcsyMIf+ArF8LarY9xNjUUvum2wXQ==
-X-Received: by 2002:a17:90b:1bc2:b0:296:a746:67f5 with SMTP id oa2-20020a17090b1bc200b00296a74667f5mr713716pjb.44.1707253878470;
-        Tue, 06 Feb 2024 13:11:18 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW5VIR9m9MMf8pmz/Juke+rIkiaThYJzHJEqOC6aLZ9e2M+FwS4sPB2eyROhKpqeAHdIkbPQy2JINmb71r9IAgdX4igZZDAs3slsD2qWziJjP51PAEccx8LWS+M1b2XHsOAQW8nETQFLTVwyfZMKjNLdGW+H0GH+lVta8YAKMl8wyRejRxG5qCyXKC1LrSmpMtYgEZQW89ZewsAwjsJPJbWycuIzCPX40cyUwyZW1iWp8JE37FBsk/fcw==
+        bh=GFF8vC7r8XusyZDgQUYf/pE8/Yo6kYAPsSmPJdF37Z8=;
+        b=wQBrtHV24r7oZ+YWN7mR2b24cffAt6vqhmL8CUDk8ITW0x1T44+j7xMWBo1u66JpFY
+         K9d4Sv5gW7cmWd7Y6dHobTaDrxfVasIRKYsVJ/Lbmbu4/gH4JMCRNRqL+tBdlMMMKx1/
+         6qJkdlCMc/2Qw5OBEwIonLzduAgLYdYtqnhPkE6HVFSpzX0VG9kmIpUbgxwrqheXSeGb
+         RgngyxjpvUi+j6PambS6FsF3LGBM7omU4qVO1LPCfc0FE3i20b4oKtrGBgrLiWtrt+oq
+         4iV3jCjICg/ulMCbeXPiALm4LuPirJTrQk/R5MKfLfWIAibS7sRz5dRPauhiDTYNKrHt
+         GDwA==
+X-Gm-Message-State: AOJu0Yzn2MJak4Bjy4Zp0LAdWbYZS/g7JKMs47+qmS0FRxaH7hdxIJOt
+	1lrE/+T6WALuII/rHPxxVgGxCVAQdOwmKQ4xC4W91aAw54RGv6AH
+X-Google-Smtp-Source: AGHT+IGKW1/+UlOaJuHilemedzVzmVBl6PwSF7H4Jrk8td7Oxzh8odBd6IKuYGVpuHYroeW35upkpQ==
+X-Received: by 2002:a17:90a:8a88:b0:296:1127:ceca with SMTP id x8-20020a17090a8a8800b002961127cecamr810328pjn.6.1707253882835;
+        Tue, 06 Feb 2024 13:11:22 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCW2f259l6w9vDz+edE/JK+w2+LUG+XaxYMMK94BVefiBXVw9qrIOiGzpDksrD4eU6OHVxX2+AVbC6+ECeD0fLYNl72lWORHCxLU12a4nc6UFpvdgQDxBbEPY/QQCwQI5BA/MN07fFugmGOLI3Bh1G6YVpzixm9BQAPx+WSsFE+UrjFc
 Received: from xplor.waratah.dyndns.org (125-236-136-221-fibre.sparkbb.co.nz. [125.236.136.221])
-        by smtp.gmail.com with ESMTPSA id z6-20020a17090a468600b002961ccd55e4sm2143578pjf.31.2024.02.06.13.11.16
+        by smtp.gmail.com with ESMTPSA id cz11-20020a17090ad44b00b00296bf413fd0sm2199733pjb.35.2024.02.06.13.11.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Feb 2024 13:11:17 -0800 (PST)
+        Tue, 06 Feb 2024 13:11:22 -0800 (PST)
 Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-	id B2A2036031F; Wed,  7 Feb 2024 10:11:13 +1300 (NZDT)
+	id 17FBE36031A; Wed,  7 Feb 2024 10:11:19 +1300 (NZDT)
 From: Michael Schmitz <schmitzmic@gmail.com>
 To: linux-m68k@vger.kernel.org
 Cc: geert@linux-m68k.org,
 	uli@fpond.eu,
 	fthain@linux-m68k.org,
 	viro@zeniv.linux.org.uk,
-	Michael Schmitz <schmitzmic@gmail.com>,
-	stable@vger.kernel.org,
-	cip-dev@lists.cip-project.org
-Subject: [PATCH v3 1/8] m68k/mm: Adjust VM area to be unmapped by gap size for __iounmap()
-Date: Wed,  7 Feb 2024 10:10:57 +1300
-Message-Id: <20240206211104.26421-2-schmitzmic@gmail.com>
+	Michael Schmitz <schmitzmic@gmail.com>
+Subject: [PATCH v3 2/8] m68k: Only force 030 bus error if PC not in exception table
+Date: Wed,  7 Feb 2024 10:10:58 +1300
+Message-Id: <20240206211104.26421-3-schmitzmic@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240206211104.26421-1-schmitzmic@gmail.com>
 References: <20240206211104.26421-1-schmitzmic@gmail.com>
@@ -72,56 +70,70 @@ List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 
-commit 3f90f9ef2dda316d64e420d5d51ba369587ccc55 upstream.
+commit 513138a14063760ef611f18ba76c5c7915ff8cdd upstream.
 
-If 020/030 support is enabled, get_io_area() leaves an IO_SIZE gap
-between mappings which is added to the vm_struct representing the
-mapping.  __ioremap() uses the actual requested size (after alignment),
-while __iounmap() is passed the size from the vm_struct.
+__get_kernel_nofault() does copy data in supervisor mode when
+forcing a task backtrace log through /proc/sysrq_trigger.
+This is expected cause a bus error exception on e.g. NULL
+pointer dereferencing when logging a kernel task has no
+workqueue associated. This bus error ought to be ignored.
 
-On 020/030, early termination descriptors are used to set up mappings of
-extent 'size', which are validated on unmapping. The unmapped gap of
-size IO_SIZE defeats the sanity check of the pmd tables, causing
-__iounmap() to loop forever on 030.
+Our 030 bus error handler is ill equipped to deal with this:
 
-On 040/060, unmapping of page table entries does not check for a valid
-mapping, so the umapping loop always completes there.
+Whenever ssw indicates a kernel mode access on a data fault,
+we don't even attempt to handle the fault and instead always
+send a SEGV signal (or panic). As a result, the check
+for exception handling at the fault PC (buried in
+send_sig_fault() which gets called from do_page_fault()
+eventually) is never used.
 
-Adjust size to be unmapped by the gap that had been added in the
-vm_struct prior.
+In contrast, both 040 and 060 access error handlers do not
+care whether a fault happened on supervisor mode access,
+and will call do_page_fault() on those, ultimately honoring
+the exception table.
 
-This fixes the hang in atari_platform_init() reported a long time ago,
-and a similar one reported by Finn recently (addressed by removing
-ioremap() use from the SWIM driver.
+Add a check in bus_error030 to call do_page_fault() in case
+we do have an entry for the fault PC in our exception table.
 
-Tested on my Falcon in 030 mode - untested but should work the same on
-040/060 (the extra page tables cleared there would never have been set
-up anyway).
+I had attempted a fix for this earlier in 2019 that did rely
+on testing pagefault_disabled() (see link below) to achieve
+the same thing, but this patch should be more generic.
 
+Tested on 030 Atari Falcon.
+
+Reported-by: Eero Tamminen <oak@helsinkinet.fi>
+Link: https://lore.kernel.org/r/alpine.LNX.2.21.1904091023540.25@nippy.intranet
+Link: https://lore.kernel.org/r/63130691-1984-c423-c1f2-73bfd8d3dcd3@gmail.com
 Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-[geert: Minor commit description improvements]
-[geert: This was fixed in 2.4.23, but not in 2.5.x]
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Link: https://lore.kernel.org/r/20230301021107.26307-1-schmitzmic@gmail.com
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: stable@vger.kernel.org
-Cc: <cip-dev@lists.cip-project.org> # 4.4
 ---
- arch/m68k/mm/kmap.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/m68k/kernel/traps.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/m68k/mm/kmap.c b/arch/m68k/mm/kmap.c
-index 6e4955bc542b..fcd52cefee29 100644
---- a/arch/m68k/mm/kmap.c
-+++ b/arch/m68k/mm/kmap.c
-@@ -88,7 +88,8 @@ static inline void free_io_area(void *addr)
- 	for (p = &iolist ; (tmp = *p) ; p = &tmp->next) {
- 		if (tmp->addr == addr) {
- 			*p = tmp->next;
--			__iounmap(tmp->addr, tmp->size);
-+			/* remove gap added in get_io_area() */
-+			__iounmap(tmp->addr, tmp->size - IO_SIZE);
- 			kfree(tmp);
- 			return;
- 		}
+diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
+index 6c9ca24830e9..c547140b8325 100644
+--- a/arch/m68k/kernel/traps.c
++++ b/arch/m68k/kernel/traps.c
+@@ -29,6 +29,7 @@
+ #include <linux/init.h>
+ #include <linux/ptrace.h>
+ #include <linux/kallsyms.h>
++#include <linux/extable.h>
+ 
+ #include <asm/setup.h>
+ #include <asm/fpu.h>
+@@ -549,7 +550,8 @@ static inline void bus_error030 (struct frame *fp)
+ 			errorcode |= 2;
+ 
+ 		if (mmusr & (MMU_I | MMU_WP)) {
+-			if (ssw & 4) {
++			/* We might have an exception table for this PC */
++			if (ssw & 4 && !search_exception_tables(fp->ptregs.pc)) {
+ 				pr_err("Data %s fault at %#010lx in %s (pc=%#lx)\n",
+ 				       ssw & RW ? "read" : "write",
+ 				       fp->un.fmtb.daddr,
 -- 
 2.17.1
 
