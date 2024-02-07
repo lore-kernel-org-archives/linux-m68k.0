@@ -1,107 +1,104 @@
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wfout2-smtp.messagingengine.com (wfout2-smtp.messagingengine.com [64.147.123.145])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA21C1CFA9
-	for <linux-m68k@vger.kernel.org>; Tue,  6 Feb 2024 21:37:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC0921CD2B
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  7 Feb 2024 06:30:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707255436; cv=none; b=uYz0MZt3TtE1BDB/6DUG34+7gJc8eO3CWmenIU5OzZPepIVK7DUmbQzP6f5XDRla+ichw0+58piKIGfh4CZRtncDdzCmZ0OY03TrkJSyhbgQSVORhw9TGyPDwZRdlxowTugKwrnwH9O10RF7LrVO5R+fiRcd6RxX8NtMiYu4UZU=
+	t=1707287457; cv=none; b=fMKGrp4JZk/6TzNUymhWEMln34ofEwG4EFeLW9UTvano4H/rw/NZUrgv4+8iiABbcY9Nq5CPfGrCtJ01ixgye3XilIzmuQAgJzhOBt+yT0qhcjKXTxEmH/6ykWFs/DIxj4rFSm6eK84W4aAqJqXbbVDr03G4FjEdcSznnp63wr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707255436; c=relaxed/simple;
-	bh=v59Lzkgd1pAU/+Jsx/5WM4/iT3zgYsEPCCKHpm/i4z0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BRYoWPE+KSowV7VYjB2r0oyvHhHvufh/KZzLdYt3MBor7AMu9SmibpXJRnQPRgzG0xkVTuSqNgiP7vt1vo5dmuAVLugW4hRe0wWM2sfrx5yuceMLt+2E4BSOQL/hHdGgL1gb+KJla9p1VJMkBFSqOhFom9u+gQRO8DyAThBp6lA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eaXp0NLB; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1707287457; c=relaxed/simple;
+	bh=zjUyccO5kmtnrNZbXgtpxlpwxekTnpaqHlECgsnZcgQ=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=Em8EQAZcUVUvJcM52EWSyGfLpooyunOEYO/tibPwj/FpaBaHXl6Ma5LBGcW1oFMtB7dizA0az08Ib2c9NrNpi+u5YNpz/P6LMrZqS5V3KK0FTwFjhTwvdImsNUF5lUzdT1UidOEOuv3yP6cNf60I/OaIIJoY1VBIcq1OWen/38o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=mf0noyJQ; arc=none smtp.client-ip=64.147.123.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eaXp0NLB"
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d7354ba334so53003065ad.1
-        for <linux-m68k@vger.kernel.org>; Tue, 06 Feb 2024 13:37:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707255434; x=1707860234; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=THnSb0acR2Pn80Zsv+38O4Ghf3iU02oRgiZOG1MwHKA=;
-        b=eaXp0NLBEysSr478Cxk09EixA4X9c3TMzK1qQZU7/GnQRZmlTWzHNEgPIcyxPBfNkM
-         vIf5yrQk5hYRlL5Nd3fpdCvrMFc6cm4UqnwKhfAdQbWBodE2yHdXoeklQadY5xCgjTpb
-         loeucB+w/rK9Q4NdbL4OIwwlHYck0K1MghWZo0LZEND9VCQlZjeR0EOxrzoFtbFJnyc6
-         yTmsIPRHRKxHOkrACD59eiRK/6WdPBs7lJKo3p6kQ2HTAOyZMiEu+V+non2u0+LdWdsK
-         T/9z1HgQYtFqBhxWC4rMCfG8Du8gxTuKCPgulPUzNtMWayFb6JB+F7mgcT1i1mADDmSD
-         WC4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707255434; x=1707860234;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=THnSb0acR2Pn80Zsv+38O4Ghf3iU02oRgiZOG1MwHKA=;
-        b=J/pc7YR4cWiQif9B0QN9pkF9GBTKhDaTa6pkWKFkyyKWkBs2S6twZg+zBg/K/Bhc9o
-         lC+Gi7xm4fPssFiYf800ygHG+2CQoyVFOxtN+2it6mk1KRg8B8B1NpJvRAsHEar/sM8w
-         Havxk0rlCPl864kxPVSJ0ZGQOTmbN74cz+8NDE74bQ9iHb8HOq+1Ykq8gsaPx85mC/1e
-         PAm2Op9v6+YFOSVBhNTU6WyH8H7x6IXqNxHLv54CM3uM22muRlxj8tWOG9+Wz32QuZYr
-         toidfChJ+K9J9oSogRWBDmYaOzoDvVeso7WnM9iVqxK3+rVTValAUxQ/vtOqHvYzxSMT
-         8hDw==
-X-Gm-Message-State: AOJu0YyMRmY6f+U7RnlxJa8L/p8SVv5BraH6e2xohxW2d4uLbO0FnVl6
-	dYR+JbRPQqQ+zlFkBXZxqIKRgSB68jcIR5+ofoB4UJF+eAItuszZ
-X-Google-Smtp-Source: AGHT+IGfzPTC8Tw+NSbYvLYtY2nCKvtb6nsOKI4rTC9JIMmuXFkafSLSfONQoRm5Tu8l6C/3iHnwBQ==
-X-Received: by 2002:a17:902:7448:b0:1d9:bbc2:87e7 with SMTP id e8-20020a170902744800b001d9bbc287e7mr2823054plt.36.1707255434179;
-        Tue, 06 Feb 2024 13:37:14 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCVHgEY5l/tRXGusXsT0AFJILrjtYJ3JsbjRXNleMiV+74p/XDRlj5SfnSOtyuVGHdRBSE92JHM8E/r4ikK8EAtaNxiGusIeUgheWonXvjReSbsXaBx1qUZEE9NVGBSFtMV0WViL1jP6KRg4gsMZAkRsxmbDPwPh2Hn/KXAaBpTQqHheCEOMZz5e
-Received: from ?IPV6:2001:df0:0:200c:adb8:c71:a09c:347f? ([2001:df0:0:200c:adb8:c71:a09c:347f])
-        by smtp.gmail.com with ESMTPSA id kf6-20020a17090305c600b001d8f82f90ccsm2343721plb.199.2024.02.06.13.37.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Feb 2024 13:37:13 -0800 (PST)
-Message-ID: <1ec6b945-4eba-4cf6-8ca5-3db88b7f92de@gmail.com>
-Date: Wed, 7 Feb 2024 10:37:08 +1300
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="mf0noyJQ"
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailfout.west.internal (Postfix) with ESMTP id 4D1E61C0006E;
+	Wed,  7 Feb 2024 01:30:53 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Wed, 07 Feb 2024 01:30:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707287452; x=1707373852; bh=fVw80QJFLPYfWbj4U+oHv7nKjKhE
+	pJo5GSFwl//HtDQ=; b=mf0noyJQ3Bn4VWIfZ7NXg/B2I3uVlcJHSYda4lTfoDzD
+	5NnpjeyZnuuYImDXLTmr2B11pAcGnnVTjC8csx3l5drIh6oTLHDSbA+XtvTabj4n
+	NMGdEY6PQcdbV2mFTyDiGegRgLSsDuEO9UkG58j4FjF1ag5qzYHOzoGGZNl2Y29W
+	S7ogfsQfphH57UM/2cOPFTDlocfZLnB0fN2xAtpSYPg9JgUmnByM18njP9gdib/K
+	5GcM92sIpRcFBRL5r/azFJ1eZnP6171lSHxefGQgDN2vN416cgBggsaN4k9dn9eA
+	E0nmWNMkUJ7m8RZmRPucHh6LoezoE94fJfD38NucIg==
+X-ME-Sender: <xms:myPDZY95qD8LBMsOf29A9ZYGyB2Jz6rJoQvfst-5IW5213b41e2pQw>
+    <xme:myPDZQtYvNG8C4-diJspRWr3U578BJ02esnipOh6rIb0s0YG7jMjjBeHFEJlw19qv
+    _7MSNoegHYfXNFnWGk>
+X-ME-Received: <xmr:myPDZeC2zy-ZtpP5MuMMHS2Ed7SogVAnYFr_7q1Spcvi1s0uZQtfirlx-ojAZuKoZc475zWChpnJ6MedIErakmZY7t4jEt82Ivo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrtddugdelhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
+    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
+    htvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedvueeh
+    ueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
+    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:myPDZYeJIRVhzNos9TaAtbCBFZuzcsNgt3RCtKo3JhLHrKwN69iKSA>
+    <xmx:myPDZdOcjjfvA8O2uuR_EZzcGcXOaecgeUmxRV_j_r2NnbJPwGcpvA>
+    <xmx:myPDZSn0CNYwor8j0cYNNViF-te9y7UZwsUQBaPMsCOrYVHHXC88hQ>
+    <xmx:nCPDZezsi9dlmzAfzlICL4EfiW2fWA6vGVBKvhIZFv3MZ1hA1XruHLSJe2E>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 7 Feb 2024 01:30:49 -0500 (EST)
+Date: Wed, 7 Feb 2024 17:31:08 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+cc: David Laight <David.Laight@aculab.com>, 
+    Andrew Morton <akpm@linux-foundation.org>, 
+    "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+    Yury Norov <yury.norov@gmail.com>, 
+    Nick Desaulniers <ndesaulniers@google.com>, 
+    Douglas Anderson <dianders@chromium.org>, 
+    Kees Cook <keescook@chromium.org>, Petr Mladek <pmladek@suse.com>, 
+    Randy Dunlap <rdunlap@infradead.org>, 
+    Zhaoyang Huang <zhaoyang.huang@unisoc.com>, 
+    Geert Uytterhoeven <geert+renesas@glider.be>, 
+    Marco Elver <elver@google.com>, Brian Cain <bcain@quicinc.com>, 
+    Geert Uytterhoeven <geert@linux-m68k.org>, 
+    Matthew Wilcox <willy@infradead.org>, 
+    "Paul E . McKenney" <paulmck@kernel.org>, 
+    "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>
+Subject: Re: [PATCH v4 2/5] m68k/bitops: use __builtin_{clz,ctzl,ffs} to
+ evaluate constant expressions
+In-Reply-To: <CAMZ6RqLkCPuy+mQxp0HuVBgfSiFgFOwimYm1Ro7ESANyF-fRyg@mail.gmail.com>
+Message-ID: <ca9bd701-1cd0-94b9-e8cb-4a4328dea58a@linux-m68k.org>
+References: <20221111081316.30373-1-mailhol.vincent@wanadoo.fr> <20240128050449.1332798-1-mailhol.vincent@wanadoo.fr> <20240128050449.1332798-3-mailhol.vincent@wanadoo.fr> <c47fedaf-cdc9-f970-460f-d2ee7e806da4@linux-m68k.org>
+ <CAMZ6RqKj207uv5AF_fvb65nhCM32V=VAQXsUGLNmbeXYKPvZJg@mail.gmail.com> <9d9be9dbe92f43d2a95d11d6b2f434c1@AcuMS.aculab.com> <CAMZ6Rq+RnY16sREhAZ6AFn3sz1SuPsKqhW-m0TrrDz1hd=vNOA@mail.gmail.com> <77831c6f-7fc9-c42d-b29b-c3b2f3f5e687@linux-m68k.org>
+ <CAMZ6RqLyRxvUiLKZLkQF1cYFkdOqX73V2K=dGbNROMDj61OKLw@mail.gmail.com> <002675b0-6976-9efa-6bc5-b8bad287a1d2@linux-m68k.org> <CAMZ6RqKx=EO9kcOmxRyBuhULdDyTCeAXz25j_uF7TSy72Jahpw@mail.gmail.com> <00a7e866-23ff-fc63-b6df-364580f69c78@linux-m68k.org>
+ <CAMZ6RqLkCPuy+mQxp0HuVBgfSiFgFOwimYm1Ro7ESANyF-fRyg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/8] m68k v4.4 backport fixes
-Content-Language: en-US
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- linux-m68k@vger.kernel.org
-Cc: geert@linux-m68k.org, uli@fpond.eu, fthain@linux-m68k.org,
- viro@zeniv.linux.org.uk
-References: <20240206211104.26421-1-schmitzmic@gmail.com>
- <1ff0280f69c02b4e64e1a1055c9411ecbff9ffc0.camel@physik.fu-berlin.de>
-From: Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <1ff0280f69c02b4e64e1a1055c9411ecbff9ffc0.camel@physik.fu-berlin.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 
-Hi Adrian,
 
-On 7/02/24 10:15, John Paul Adrian Glaubitz wrote:
-> Hi Michael,
->
-> On Wed, 2024-02-07 at 10:10 +1300, Michael Schmitz wrote:
->> IP v4.4 backport patches for m68k. Basically everything needed
->> to make v4.4 work on my Falcon. This includes my iounmap() fix,
->> Al Viro's signal handling and uaccess page fault fixes, my 030
->> buserr_c fix for exception handling during page faults, and Finn's
->> 030 signal frame fix.
-> Correct me if I'm wrong, but 4.4 is no longer maintained, is it?
->
-> It seems that the last LTS release for 4.4 was 4.4.302 [1].
+On Mon, 5 Feb 2024, Vincent MAILHOL wrote:
 
-That is correct. You will note that none of my patches did contain a Cc: 
-stable@vger.kernel.org tag.
+> On Mon. 5 Feb. 2024 at 18:48, Finn Thain <fthain@linux-m68k.org> wrote:
+> > On Mon, 5 Feb 2024, Vincent MAILHOL wrote:
+> >
+> > If clang support is important then clang's builtins are important. So 
+> > why not improve those instead? That would resolve the issue in a 
+> > win-win.
+> 
+> I am deeply sorry, but with all your respect, this request is unfair. I 
+> will not fix the compiler.
+> 
 
-This is about CIP releases - see 
-https://wiki.linuxfoundation.org/civilinfrastructureplatform/start for 
-more information. EOL for the CIP 4.4 kernel is projected to be 01/2027. 
-That's still some way off.
-
-Cheers,
-
-     Michael
-
->
-> Adrian
->
->> [1] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tag/?h=v4.4.302
+Absolutely. It is unfair. Just as your proposal was unfair to maintainers. 
+That patch would make a compiler deficiency into a maintenance burden.
