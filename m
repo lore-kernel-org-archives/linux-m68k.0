@@ -1,126 +1,119 @@
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+Received: from mail.envs.net (mail.envs.net [5.199.136.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA21F36B04
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 10 Feb 2024 10:30:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E6F12E652
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 10 Feb 2024 10:34:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.199.136.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707561014; cv=none; b=hOv9Z2FDwpHKvzah7JC/8pnvH5r8viNy5VjKTqeo6Noc622ZAgK9FyDisdOKJs6Z5/nkDb0fWdPOm+C9gR6PElcTzmc2PuUnIaWH13QZh/qzvuL3DF7Sbh8qDv1YofZ+sgagMcu3JUkVdi1a5Oh/4pZPzbKw8Ryytli3SpFzldA=
+	t=1707561264; cv=none; b=Dwx3w/funy7cT/yzfCHJiXAnaGLWTXfIERt4ZfJeTFb69EioLh4DH6QnDXa9jbgViWTPs9JiH9KucgsIowFz7UV4eSbGqgPhIU6fln7ZuUR/GuMS3BjCX5HB13greegLgu/+1rehfwaha1ZxffUcJFd/TIKPB4qnJ0MoU0qOw8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707561014; c=relaxed/simple;
-	bh=A3ud78No7kD0Dn1wHTcneyRE+SVmCuqOLRHwIx5bJeE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hnwz9D79N2suTo5MdL5NAF0kgkSNDc23DfRrGs+CnY2ARt93f7UqlGfri6GcIpi3mM3LhvheX1hpWDoERLO+vcaAVxfcdNSdZc2gJjkYg/V1Ayk+1GvU08wfTSyC9X9P5s28uexHkoOsTPvZjXrXfshrsRAAIZFdRlgUl7Wrz9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=T/mPfRyu; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+	s=arc-20240116; t=1707561264; c=relaxed/simple;
+	bh=AsuSDfnSnrEsA8nNMuWFNnT28IB3MGY8F39wtmkbqgw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=unP3VuO0PyPKxOlfMHRmD8LW4rDQSOVEL8O6+XeRisDXsTkbBJ5NQKSJ5aGu+411n4i+d6wfaCXYwVEEad+NnhkmjAA8S+phpm7mC86CWNF+sXSW1TYiiAGaG8oU/h0l/ojaSx/rlwRfwM8diyNgAgZ9/akyfWnfO+FKHtWbh68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=envs.net; spf=pass smtp.mailfrom=envs.net; dkim=pass (4096-bit key) header.d=envs.net header.i=@envs.net header.b=Q6KVukH2; arc=none smtp.client-ip=5.199.136.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=envs.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=envs.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="T/mPfRyu"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=ph4jzB86nHaGBdGyQlHwPpxZccThyM3+Io4W8gZIxGI=; b=T/mPfRyuRFUl8GCt02nw5hF8m8
-	Awp1djpMFwBhecelf0XDJm5aDEs/HFqx7756B0bVepr/IJfGnj/mDwY2ntorwNMhuX7PNwkVwgiOs
-	Vo0wg1FUKUe1QsAW95tmiDTM0/WP/VecHW4kPFzjiebWPfx/akDPQAN9lTy2Xp/2xXX+IbY8KnVwk
-	MgbJRMZIRSjH+kI3aucCRbMHAnW4kOdZf765ego1yIRs35nz7bEpVbQLqzKKnVgwsNeRfkoMwTEpr
-	nQVW3vHN/FJOwHxxSdheb5jdA9FltDBf0iVdtYybDa44bHMN/9CrHW6PvlCMexy63eQf+bCpkOJr8
-	eiPfQRGA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38040)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rYkbe-0006qq-0m;
-	Sat, 10 Feb 2024 10:29:10 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rYkbU-0007Ja-Ln; Sat, 10 Feb 2024 10:29:00 +0000
-Date: Sat, 10 Feb 2024 10:29:00 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Zhang Bingwu <xtex@envs.net>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Zhang Bingwu <xtexchooser@duck.com>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>, x86@kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	sparclinux@vger.kernel.org
+	dkim=pass (4096-bit key) header.d=envs.net header.i=@envs.net header.b="Q6KVukH2"
+Received: from localhost (mail.envs.net [127.0.0.1])
+	by mail.envs.net (Postfix) with ESMTP id 680A738A0669;
+	Sat, 10 Feb 2024 10:34:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=envs.net; s=modoboa;
+	t=1707561258; bh=5a4661pQcO2UmB9YG8h4KMvOlZHo5f/ZdvFHx3vRpxM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Q6KVukH29RtPYwyml17BXgB1SmxkBYEw4zRKRdKhpkPRa67se3EdVj24xz81Ui0wV
+	 bBNmdiX5dFJ/Xp/zyB26rb9gY+UsBhPlTzHR0/YSXlz0jXt7TQHToVwVdQ0m6D9VMa
+	 vNmRfdEn5LTArmMr2SIjvZMADyomU00AaofZpWTreGX1i0gAO4bXRV+RE88WDG3Yb+
+	 3kznEc0XPTY7aoYT1FMzoz8fmwpTlX6A52K2JY85jYorttEXIMeU9kV5yut/B+iGjv
+	 JJDyZO87vAiyGH2IBxG1sPRLEIGjHz8ez6XEerXvaRVtRjAaM4QagCuKSpRExeFzYP
+	 QWY4e7gG4PVlyVXAhnmaRRHCmLovC3fuoZCGm2lD0leXsnwnsZ7k2OVV9Zf3rYdEpx
+	 /Uw5xIjxS5AAh33rNa7LVNAHvNU1hzgGBP06bFerJ9AAf8vZx63wEeS4681LKJA4Bq
+	 1l68Gh2zHrzCxnj4kay9zKRabS4r95sXzhEeLLP6gVYWWKBuhrD8bFsA0JdWc53J6T
+	 FGqpvGOMqiE8WlDTiWAI2lXoaCMeI1fDKKyf7P6rtFB+LzpPRZLquhDLkUmF97Tmog
+	 +xitv9uyVWBsUPLRSOifICJt7QN451b4+c3v9BChHq9OmqaRl2JUMQP4TX3HTQhXpu
+	 1H/k22hJKWvTVPg81yHEaMpo=
+X-Virus-Scanned: Debian amavisd-new at mail.envs.net
+Received: from mail.envs.net ([127.0.0.1])
+	by localhost (mail.envs.net [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id BTTrmuQrF_Ze; Sat, 10 Feb 2024 10:33:36 +0000 (UTC)
+Received: from xtex.localnet (unknown [103.84.217.246])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.envs.net (Postfix) with ESMTPSA;
+	Sat, 10 Feb 2024 10:33:36 +0000 (UTC)
+From: xtex <xtex@envs.net>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Dinh Nguyen <dinguyen@kernel.org>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Helge Deller <deller@gmx.de>, Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>,
+ Andreas Larsson <andreas@gaisler.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ Masahiro Yamada <masahiroy@kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>,
+ x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+ Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
 Subject: Re: [PATCH 1/2] kbuild: Abort make on install failures
-Message-ID: <ZcdP7CC+OMbp5ZMi@shell.armlinux.org.uk>
-References: <20240210074601.5363-1-xtex@envs.net>
- <20240210074601.5363-2-xtex@envs.net>
+Date: Sat, 10 Feb 2024 18:33:31 +0800
+Message-ID: <4681093.vXUDI8C0e8@xtex>
+In-Reply-To: <ZcdP7CC+OMbp5ZMi@shell.armlinux.org.uk>
+References:
+ <20240210074601.5363-1-xtex@envs.net> <20240210074601.5363-2-xtex@envs.net>
+ <ZcdP7CC+OMbp5ZMi@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240210074601.5363-2-xtex@envs.net>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Type: multipart/signed; boundary="nextPart2124038.9o76ZdvQCi";
+ micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-On Sat, Feb 10, 2024 at 03:46:00PM +0800, Zhang Bingwu wrote:
-> From: Zhang Bingwu <xtexchooser@duck.com>
-> 
-> Setting '-e' flag tells shells to exit with error exit code immediately
-> after any of commands fails, and causes make(1) to regard recipes as
-> failed.
-> 
-> Before this, make will still continue to succeed even after the
-> installation failed, for example, for insufficient permission or
-> directory does not exist.
-> 
-> Signed-off-by: Zhang Bingwu <xtexchooser@duck.com>
-> ---
->  arch/arm/boot/install.sh   | 2 ++
->  arch/arm64/boot/install.sh | 2 ++
->  arch/m68k/install.sh       | 2 ++
->  arch/nios2/boot/install.sh | 2 ++
->  arch/parisc/install.sh     | 2 ++
->  arch/riscv/boot/install.sh | 2 ++
->  arch/s390/boot/install.sh  | 2 ++
->  arch/sparc/boot/install.sh | 2 ++
->  arch/x86/boot/install.sh   | 2 ++
->  9 files changed, 18 insertions(+)
-> 
-> diff --git a/arch/arm/boot/install.sh b/arch/arm/boot/install.sh
-> index 9ec11fac7d8d..34e2c6e31fd1 100755
-> --- a/arch/arm/boot/install.sh
-> +++ b/arch/arm/boot/install.sh
-> @@ -17,6 +17,8 @@
->  #   $3 - kernel map file
->  #   $4 - default install path (blank if root directory)
->  
-> +set -e
-> +
+--nextPart2124038.9o76ZdvQCi
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
+From: xtex <xtex@envs.net>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Subject: Re: [PATCH 1/2] kbuild: Abort make on install failures
+Date: Sat, 10 Feb 2024 18:33:31 +0800
+Message-ID: <4681093.vXUDI8C0e8@xtex>
+In-Reply-To: <ZcdP7CC+OMbp5ZMi@shell.armlinux.org.uk>
+MIME-Version: 1.0
 
-What about #!/bin/sh -e on the first line, which is the more normal way
-to do this for an entire script?
+On Saturday, February 10, 2024 6:29:00 PM CST Russell King (Oracle) wrote:
+> What about #!/bin/sh -e on the first line, which is the more normal way
+> to do this for an entire script?
+
+Will do this in V2.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+xtex @ Sat Feb 10 10:32:32 AM UTC 2024
+
+--nextPart2124038.9o76ZdvQCi
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRyMYBLBSxnDxWmdx25GAhu2ARbkQUCZcdQ+wAKCRC5GAhu2ARb
+kfdKAPoCZsP7u1iukZo1ZGlB4JJK7jPZWKy/eD8aN/lnP9KNjgD/Ve0PtHuJoCdb
+qNDGRUIqnxjTCIqNFhKrA1/d7wWfEQA=
+=uBWc
+-----END PGP SIGNATURE-----
+
+--nextPart2124038.9o76ZdvQCi--
+
+
+
