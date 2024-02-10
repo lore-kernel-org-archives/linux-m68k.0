@@ -1,75 +1,87 @@
-Received: from mail.envs.net (mail.envs.net [5.199.136.28])
+Received: from e2i605.smtp2go.com (e2i605.smtp2go.com [103.2.142.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E6F12E652
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 10 Feb 2024 10:34:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.199.136.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1C125F56E
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 10 Feb 2024 21:22:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.2.142.93
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707561264; cv=none; b=Dwx3w/funy7cT/yzfCHJiXAnaGLWTXfIERt4ZfJeTFb69EioLh4DH6QnDXa9jbgViWTPs9JiH9KucgsIowFz7UV4eSbGqgPhIU6fln7ZuUR/GuMS3BjCX5HB13greegLgu/+1rehfwaha1ZxffUcJFd/TIKPB4qnJ0MoU0qOw8Q=
+	t=1707600175; cv=none; b=WU7PhZ70GA05uEyulpa4DfibJv3EDqndmnN2XpYTHmRH/qEtkQ2WUZV8HQTWYH+0HNFjM5dDnctG48CruGGjGW8b9bK7vaxL/oxWCOzPKy6iHdWqY0FE7HtWz3h4nBs1pefYo6r+2mbp0yZbfHd6ihyN5q8GVmcfMsSbSpQ35xw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707561264; c=relaxed/simple;
-	bh=AsuSDfnSnrEsA8nNMuWFNnT28IB3MGY8F39wtmkbqgw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=unP3VuO0PyPKxOlfMHRmD8LW4rDQSOVEL8O6+XeRisDXsTkbBJ5NQKSJ5aGu+411n4i+d6wfaCXYwVEEad+NnhkmjAA8S+phpm7mC86CWNF+sXSW1TYiiAGaG8oU/h0l/ojaSx/rlwRfwM8diyNgAgZ9/akyfWnfO+FKHtWbh68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=envs.net; spf=pass smtp.mailfrom=envs.net; dkim=pass (4096-bit key) header.d=envs.net header.i=@envs.net header.b=Q6KVukH2; arc=none smtp.client-ip=5.199.136.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=envs.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=envs.net
+	s=arc-20240116; t=1707600175; c=relaxed/simple;
+	bh=I1g56Qbu1U7xe3c1QV1JroAnkemuPw2aHxort9pD/Wc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QiIP1LtzxeXdLq/IhsFRcKzDAADE7cGQULKu+Iql5+JLu/T2vwaB34nD+jzcnDVUVbKuPhvvre5yJEkuQwBn1E7rUAtKuJq4Pgkji4pCAexzh3GsFBcmM1pKBIFwjT5sJvLfaP8vivGwTrYIeJNgfWTooM4vmIRlFMZGqM4Q+dQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu; spf=pass smtp.mailfrom=em1174286.fjasle.eu; dkim=pass (2048-bit key) header.d=smtpservice.net header.i=@smtpservice.net header.b=dqWDMqEl; dkim=pass (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b=OGfTkmAQ; dkim=pass (1024-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b=JbkbT0pd; arc=none smtp.client-ip=103.2.142.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=em1174286.fjasle.eu
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=envs.net header.i=@envs.net header.b="Q6KVukH2"
-Received: from localhost (mail.envs.net [127.0.0.1])
-	by mail.envs.net (Postfix) with ESMTP id 680A738A0669;
-	Sat, 10 Feb 2024 10:34:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=envs.net; s=modoboa;
-	t=1707561258; bh=5a4661pQcO2UmB9YG8h4KMvOlZHo5f/ZdvFHx3vRpxM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Q6KVukH29RtPYwyml17BXgB1SmxkBYEw4zRKRdKhpkPRa67se3EdVj24xz81Ui0wV
-	 bBNmdiX5dFJ/Xp/zyB26rb9gY+UsBhPlTzHR0/YSXlz0jXt7TQHToVwVdQ0m6D9VMa
-	 vNmRfdEn5LTArmMr2SIjvZMADyomU00AaofZpWTreGX1i0gAO4bXRV+RE88WDG3Yb+
-	 3kznEc0XPTY7aoYT1FMzoz8fmwpTlX6A52K2JY85jYorttEXIMeU9kV5yut/B+iGjv
-	 JJDyZO87vAiyGH2IBxG1sPRLEIGjHz8ez6XEerXvaRVtRjAaM4QagCuKSpRExeFzYP
-	 QWY4e7gG4PVlyVXAhnmaRRHCmLovC3fuoZCGm2lD0leXsnwnsZ7k2OVV9Zf3rYdEpx
-	 /Uw5xIjxS5AAh33rNa7LVNAHvNU1hzgGBP06bFerJ9AAf8vZx63wEeS4681LKJA4Bq
-	 1l68Gh2zHrzCxnj4kay9zKRabS4r95sXzhEeLLP6gVYWWKBuhrD8bFsA0JdWc53J6T
-	 FGqpvGOMqiE8WlDTiWAI2lXoaCMeI1fDKKyf7P6rtFB+LzpPRZLquhDLkUmF97Tmog
-	 +xitv9uyVWBsUPLRSOifICJt7QN451b4+c3v9BChHq9OmqaRl2JUMQP4TX3HTQhXpu
-	 1H/k22hJKWvTVPg81yHEaMpo=
-X-Virus-Scanned: Debian amavisd-new at mail.envs.net
-Received: from mail.envs.net ([127.0.0.1])
-	by localhost (mail.envs.net [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id BTTrmuQrF_Ze; Sat, 10 Feb 2024 10:33:36 +0000 (UTC)
-Received: from xtex.localnet (unknown [103.84.217.246])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.envs.net (Postfix) with ESMTPSA;
-	Sat, 10 Feb 2024 10:33:36 +0000 (UTC)
-From: xtex <xtex@envs.net>
+	dkim=pass (2048-bit key) header.d=smtpservice.net header.i=@smtpservice.net header.b="dqWDMqEl";
+	dkim=pass (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b="OGfTkmAQ";
+	dkim=pass (1024-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b="JbkbT0pd"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=smtpservice.net; s=mp6320.a1-4.dyn; x=1707601063; h=Feedback-ID:
+	X-Smtpcorp-Track:Message-ID:Subject:To:From:Date:Reply-To:Sender:
+	List-Unsubscribe; bh=2Fq96AF5MB0+kJ+KJdOs/5ZldIf6fpvtRLYffLd24+I=; b=dqWDMqEl
+	jXEKsKZlAF4JLOgY5r7AUhLifZ613mDWIJ0BURZqkLsHVLVJgCajChHswR6ryfDRXyN4f02fQpoeV
+	lY/wtsHAjT2HOniJ9BXWyv1vtolpj4nOs6u1jjkZT5MCpnS+SKgY2fAY2GijJ6J+FM3I/3BiRUpcf
+	SCIq4o+QMXn594NNdSmMVy8FNiHxAOTrf8KjhrGQn73+x6BJG16UP4c3kIjE/X+HJ/3bW/hR7J2BQ
+	T+570EZu+ySulRnkClllFTJb8Iwsj7Av103Jmd2rH7iTKwwvQ6xyAMZS55PraJinhuJKmL0OXIHkg
+	fYP2Om3jJA8uw3Ow3HGz02XNxA==;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fjasle.eu;
+ i=@fjasle.eu; q=dns/txt; s=s1174286; t=1707600163; h=from : subject :
+ to : message-id : date;
+ bh=2Fq96AF5MB0+kJ+KJdOs/5ZldIf6fpvtRLYffLd24+I=;
+ b=OGfTkmAQKA++N3GT87VL3mhpGnh6mP3ZMsgIv9PRIkiZA/aOpzb5Xotmpyus1wtR+ZfFP
+ V2HDQQJPrwIJeEZZrc9oaliDRfT55P40xJOO2wjdPoc/1w9PKwxLl8ZY7a5dULeTIzA18hd
+ VzkJeMJqu8pwruPaRL7XF/FewFns96d9nooTSaS9cdvi0iTpCgfkck3ksMpXy3PW1f8vkC+
+ Wj5ZW+3dRJSMC0sQp58dkb5AuRTl4JcRhig1JSjingOri1hZshfzEHBaUvxEM0z+tD2986q
+ diOwYKV9nzwNXjCdTkGlHjlduuItvrIfE3Cod7Rh8N9gSZB5I7T+S1KKvgtg==
+Received: from [10.139.162.187] (helo=SmtpCorp) by smtpcorp.com with esmtpsa
+ (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+ (Exim 4.94.2-S2G) (envelope-from <nicolas@fjasle.eu>)
+ id 1rYulD-qt4Fr1-Lp; Sat, 10 Feb 2024 21:19:46 +0000
+Received: from [10.85.249.164] (helo=leknes.fjasle.eu)
+ by smtpcorp.com with esmtpsa
+ (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+ (Exim 4.96.1-S2G) (envelope-from <nicolas@fjasle.eu>)
+ id 1rYulD-4XnyKn-0Z; Sat, 10 Feb 2024 21:19:43 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fjasle.eu; s=mail;
+ t=1707599972; bh=I1g56Qbu1U7xe3c1QV1JroAnkemuPw2aHxort9pD/Wc=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=JbkbT0pdaP8BnvXh9tpxj+YS6okGmBmnNGsrfdhfV9EoSpDF5F4uOHaMJ+xMqzgij
+ GHorn8ZRP9m/80ivs1VHZsgnANVVzW1lsFOxlplnJSNro9J6nuH834VWmTQkPGt9Is
+ yHwwg6G/9TmIg3PL7q7Lo4tsSP4IC66lViSJVPGw=
+Received: by leknes.fjasle.eu (Postfix, from userid 1000)
+ id 9DE743E9DC; Sat, 10 Feb 2024 22:19:32 +0100 (CET)
+Date: Sat, 10 Feb 2024 22:19:32 +0100
+From: Nicolas Schier <nicolas@fjasle.eu>
 To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Dinh Nguyen <dinguyen@kernel.org>,
+Cc: Zhang Bingwu <xtex@envs.net>, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Dinh Nguyen <dinguyen@kernel.org>,
  "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
  Helge Deller <deller@gmx.de>, Paul Walmsley <paul.walmsley@sifive.com>,
  Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
  Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
  Alexander Gordeev <agordeev@linux.ibm.com>,
  Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>,
- Andreas Larsson <andreas@gaisler.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Sven Schnelle <svens@linux.ibm.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Andreas Larsson <andreas@gaisler.com>,
+ Thomas Gleixner <tglx@linutronix.de>,
  Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Zhang Bingwu <xtexchooser@duck.com>,
  Masahiro Yamada <masahiroy@kernel.org>,
- Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>,
- x86@kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
- Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+ Nathan Chancellor <nathan@kernel.org>, x86@kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ sparclinux@vger.kernel.org
 Subject: Re: [PATCH 1/2] kbuild: Abort make on install failures
-Date: Sat, 10 Feb 2024 18:33:31 +0800
-Message-ID: <4681093.vXUDI8C0e8@xtex>
-In-Reply-To: <ZcdP7CC+OMbp5ZMi@shell.armlinux.org.uk>
-References:
- <20240210074601.5363-1-xtex@envs.net> <20240210074601.5363-2-xtex@envs.net>
+Message-ID: <ZcfoZKJHkdEh5JmV@fjasle.eu>
+References: <20240210074601.5363-1-xtex@envs.net>
+ <20240210074601.5363-2-xtex@envs.net>
  <ZcdP7CC+OMbp5ZMi@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -77,43 +89,80 @@ List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2124038.9o76ZdvQCi";
- micalg="pgp-sha512"; protocol="application/pgp-signature"
-
---nextPart2124038.9o76ZdvQCi
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
-From: xtex <xtex@envs.net>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Subject: Re: [PATCH 1/2] kbuild: Abort make on install failures
-Date: Sat, 10 Feb 2024 18:33:31 +0800
-Message-ID: <4681093.vXUDI8C0e8@xtex>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="enK6rDCtE6qVMuuk"
+Content-Disposition: inline
 In-Reply-To: <ZcdP7CC+OMbp5ZMi@shell.armlinux.org.uk>
-MIME-Version: 1.0
+X-Smtpcorp-Track: 1rYI_D4bnyKn0Z.xzh01gNhdL6-Q
+Feedback-ID: 1174286m:1174286a9YXZ7r:1174286sd7ZiAHDp8
+X-Report-Abuse: Please forward a copy of this message, including all headers,
+ to <abuse-report@smtp2go.com>
 
-On Saturday, February 10, 2024 6:29:00 PM CST Russell King (Oracle) wrote:
+
+--enK6rDCtE6qVMuuk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, Feb 10, 2024 at 10:29:00AM +0000 Russell King (Oracle) wrote:
+> On Sat, Feb 10, 2024 at 03:46:00PM +0800, Zhang Bingwu wrote:
+> > From: Zhang Bingwu <xtexchooser@duck.com>
+> >=20
+> > Setting '-e' flag tells shells to exit with error exit code immediately
+> > after any of commands fails, and causes make(1) to regard recipes as
+> > failed.
+> >=20
+> > Before this, make will still continue to succeed even after the
+> > installation failed, for example, for insufficient permission or
+> > directory does not exist.
+> >
+> > Signed-off-by: Zhang Bingwu <xtexchooser@duck.com>
+> > ---
+
+Thanks for fixing!
+
+[...]
+> > diff --git a/arch/arm/boot/install.sh b/arch/arm/boot/install.sh
+> > index 9ec11fac7d8d..34e2c6e31fd1 100755
+> > --- a/arch/arm/boot/install.sh
+> > +++ b/arch/arm/boot/install.sh
+> > @@ -17,6 +17,8 @@
+> >  #   $3 - kernel map file
+> >  #   $4 - default install path (blank if root directory)
+> > =20
+> > +set -e
+> > +
+>=20
 > What about #!/bin/sh -e on the first line, which is the more normal way
 > to do this for an entire script?
 
-Will do this in V2.
+are you sure?  I can find many more occurrences of 'set -e' than the
+shebang version in the Linux tree, especially in the kbuild scripts, thus
+it's bike-shedding, isn't it?
 
--- 
-xtex @ Sat Feb 10 10:32:32 AM UTC 2024
+Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
 
---nextPart2124038.9o76ZdvQCi
+Kind regards,
+Nicolas
+
+--enK6rDCtE6qVMuuk
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQRyMYBLBSxnDxWmdx25GAhu2ARbkQUCZcdQ+wAKCRC5GAhu2ARb
-kfdKAPoCZsP7u1iukZo1ZGlB4JJK7jPZWKy/eD8aN/lnP9KNjgD/Ve0PtHuJoCdb
-qNDGRUIqnxjTCIqNFhKrA1/d7wWfEQA=
-=uBWc
+iQIzBAABCAAdFiEEh0E3p4c3JKeBvsLGB1IKcBYmEmkFAmXH6FkACgkQB1IKcBYm
+Emmflg//QV42IFPNYuHOXGOMGBjwhOcPS5a63Ery8+rM164QOh4y8GFFm70Ti5Wd
+s5wSWvSTxw+riHznvjEkrzi/KrHEMIWsy6HRRBdrzwpiytGb7QCnUT1LtSteBeNe
+JPtcZ5MGz0W4HIUA4cj46FxFGpR+DjnrGk2FoXd/BSwhYq0asA1muUHQ0YwN3ksS
+b86PM8Y/JgAbCGeA9qF+uZGaSFjU9cl4LQj14E7IPYrp9ZeDgYY3eC6vNPJ+64zD
+Jipvq0pg5G9MrN92hNXw/VVn4pGrquNcIqFQwGypcZIb2YrKOLEtPBctEqZkYNfd
+TGngv5bUFvUwllm9o/VpflR1XOx1auN2AJQux6l1ca41dhH/tKkFCrDU7V5Xxc6J
+3VBC9QeZuVuh5AETrC9whYVFSIvoQvH5NHRV6ffqA6AGjXQJNsNNsUuwVnhliaDh
+vqNO7OJm2ZoZmlBjNCGI1LsjNateOOY7mzk1Fsz9pl0OyhkDjjDoT56rTcC+Ykz9
+HSceveMepuVG/vTNMEwXIGAaG3p+7+/mj4QrwE9TAWCRs/ASCnaMYJUkPmJLfuXD
+tOP59blzBvkY5HAmDHMdl4AIFtM9rjm/JQORwYT2tB+MfdyZxCWWJPz7mjs6ykAy
+JF9090FJh3puL9bw721bvpb75ptKyBxpuvQsas2SspCCtT1DidQ=
+=NJcH
 -----END PGP SIGNATURE-----
 
---nextPart2124038.9o76ZdvQCi--
-
-
-
+--enK6rDCtE6qVMuuk--
