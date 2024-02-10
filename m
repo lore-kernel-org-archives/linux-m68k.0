@@ -1,112 +1,135 @@
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+Received: from mail.envs.net (mail.envs.net [5.199.136.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56D5750245
-	for <linux-m68k@vger.kernel.org>; Thu,  8 Feb 2024 22:51:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85C6B286AF
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 10 Feb 2024 07:47:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.199.136.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707432701; cv=none; b=l42x8tdS9RsSQ/riOKYoXu57kR5kpwEZI3/u2Fq+jfaBYYkNzaDM707E9S/wfM9s5hFvpGEc7qeRyOt+jJ0yebd/QVSJzDTpMYSBipSSRwd2X1qNisonKJd57XLFfpWoZXqbv25d3PY5Cc0XTy+ROBWNWVSnctNWUeB0AHQ1Qs0=
+	t=1707551231; cv=none; b=tzZ1TPoajkAhw3sewlQuWPe7FFpgA/SSTK7kSgw8ESP5LfASNRnAPdUvagxFQLfTmKwHo2c+UlK8XmEKOyC3ecPoxt6xjQaglTN98hnQmLqlFNMmJfegHTONgHX9JEfFAwRykaqNnzul4zq3/9HWtZyS8CVsljf4hf+WZyiHhRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707432701; c=relaxed/simple;
-	bh=jSrA+oK5OVgRwIZ3elEBowm61Hm7vmXAfNLvhxNCo2E=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=oBLQ/KQ0NKVn0FPwC32CWFSDvpGKq7226FMsKU4+0ePKC75oySYxC6ZxEKxnU/FmGXN+LlKUPSY65l+q/RONN48vBU0YCEoWrD9/xAxztPicsWG9sPj0QuvqquUlEKSSJpJbyl6OILm3S1DbzkyKg3YCxifUy97uMgSsJicG2JM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=uVe64oLz; arc=none smtp.client-ip=66.111.4.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1707551231; c=relaxed/simple;
+	bh=JON8F2LhEpKeCfNUzxa5Cw3iz9OiKleIBXDTxpGM5Ds=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=D4AGlXHYX4uXuXDhxVlxtrAntn7oRmie1totdIR7AQK+oVdncRNBKpRSLfVP9OSGfNhrCUxXD8JZFg/gy6N1igj2U3JcnjtmyHeKeh3qbgR4w6nAolwX8TVzVHo6hKYCMpuU496BrrES41EVHfD/2CMSC12Lhrg4z/a3c1MkS98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=envs.net; spf=pass smtp.mailfrom=envs.net; dkim=pass (4096-bit key) header.d=envs.net header.i=@envs.net header.b=BHyKVslw; arc=none smtp.client-ip=5.199.136.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=envs.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=envs.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="uVe64oLz"
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailout.nyi.internal (Postfix) with ESMTP id 063985C00B9;
-	Thu,  8 Feb 2024 17:51:37 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 08 Feb 2024 17:51:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1707432697; x=1707519097; bh=uPAUpV5wzl3qhpBbOxbaYYD3NZes
-	CzOB8/MDhmnwGnE=; b=uVe64oLzA8tNlJI60dL5DN30NxSCGAr8Pk8EFC17QPaS
-	mREk6p4IV7fCcwjKLWK1pHRdEcwFL2/VSvz2PzxrwtEDW76vfKHe5E3jq/fXd2o7
-	RlKw4Rttn5JuIcEeh4jk9VAL7EpO/8POjwNkk7LrBy17GyzHqYGxkwCE8wTfY29Y
-	KIYKYwQC+gOoQJsEW9fnIIt0sB9FYtTJx/mjL8Gm96PH8zHBVJ1oPX1YYGI81fQN
-	cY92FxcFab9zQrx8scKmIRhJ83frv1mnb+9lvahX7C7dmf1Uz4D93p31GRWctfDF
-	JVAM3CMZsh5JuBlXwiIIGcRbK+8X3y/cX1hNywaQlw==
-X-ME-Sender: <xms:-FrFZWyCKQmFlLddhP8cYdzuc99nun4QGp_uQhAOkmeV7XZv-KV0gQ>
-    <xme:-FrFZSSsX13DJrlSlRjyiV8EzuobdzP9WT-m8iAHU92tFkpg0jwlDpBjI6fhOPGR_
-    _2jnRCWHaJXoR3sw9c>
-X-ME-Received: <xmr:-FrFZYX79JYUh9587OTgs7FW9QwDha41PdTcvli8JVE8Vgoqa9edZr7EmPG5cMl4iJEsKEKBvuhCnPKqaLMr-prxLAj_fA5wIyc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrtdehgddtvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
-    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
-    htvghrnhepfeeiheejvdetgfeitddutefhkeeilefhveehgfdvtdekkedvkeehffdtkeev
-    vdeunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehk
-    rdhorhhg
-X-ME-Proxy: <xmx:-FrFZcgByNm7UfxaC0vnUrEMl7taTHnoRo4iy2NVVAgo96OmUTqz2w>
-    <xmx:-FrFZYA2ZrwGJBXcNL1Pe9P4RRSRVTJueD2aXuZrGuQktkqCDT7uGQ>
-    <xmx:-FrFZdLQYsu6-_TVytABUMgdW7v5cEmHNSymF6W5teQrhz7nG-N4Ww>
-    <xmx:-VrFZbO-cRknYQHT7rhMTMOi_HcDJEWyplRuXExM3SbspSglhWpmZQ>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 8 Feb 2024 17:51:34 -0500 (EST)
-Date: Fri, 9 Feb 2024 09:51:28 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Ulrich Hecht <uli@fpond.eu>, Al Viro <viro@zeniv.linux.org.uk>
-cc: Michael Schmitz <schmitzmic@gmail.com>, 
-    Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
-Subject: Re: [PATCH RFC v2 4/8] m68k: Handle arrivals of multiple signals
- correctly
-In-Reply-To: <1501038841.1120470.1707393238298@webmail.strato.com>
-Message-ID: <34d37f57-3146-8aa0-7828-2df2d1679ee4@linux-m68k.org>
-References: <20240205023236.9325-1-schmitzmic@gmail.com> <20240205023236.9325-5-schmitzmic@gmail.com> <CAMuHMdUMwQSEwDQ3tsmChutY3P0VQUA0A8jg63NxfyrmxfKWXQ@mail.gmail.com> <401b6911-e6ed-3e9f-9dcc-d4f951c6beef@gmail.com>
- <1501038841.1120470.1707393238298@webmail.strato.com>
+	dkim=pass (4096-bit key) header.d=envs.net header.i=@envs.net header.b="BHyKVslw"
+Received: from localhost (mail.envs.net [127.0.0.1])
+	by mail.envs.net (Postfix) with ESMTP id EC9A538A0669;
+	Sat, 10 Feb 2024 07:46:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=envs.net; s=modoboa;
+	t=1707551218; bh=B10Vnlot+2ilvHh7OCvlmhyXD6mosKAEgX9C4cq3ecg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=BHyKVslwdL2RbJki6trr7V1cE+cbklBCioJup0TiYv412ptDhgE2fjt9lYE/d/fFA
+	 Cz1w+6hkQ8cXPkGa1zFHBj5Weha9RyeoQClD5I+GyKxk4wlSFDcW+myI/UlJVWNIG9
+	 hmKB2RkGQRDC4zEGXZENTHKaAQiISqv7dY7Ua+QI3j+OLEUs50+gi4SYvb+FLTicGh
+	 rrnQvy+DDOQX66lzlVh7+KRjVTyhgRUnadkv0y0oty+cgAr9g7iMjE+gKqMpDt7kPp
+	 ZoS6KtJdtrkI2e6ECI5s6CWMJ+fSz/DtZwJgDcF80COmLVvRuOYJ6ROnUFo083lh4B
+	 QfjTvAn9Ejs74dyGDoe6zJ91YPkgNi0aGGAZny98tNCoQEdQfXdYB4h0+l2MUbWIDr
+	 iueWpVRix1LCQXJ57a1Nsm16givXVaSyhXkeUWtJj9dBgaBSDPzxn2k7DUZsJBeC6s
+	 MCgwofjJSxeC0ZHRmhqoc0erGdJlmGI54cFaNOKgQ49n6yY2YOq6LBFhKgfPZCiGCs
+	 ONXpAgkORRJQzNqipwuYpdNzhEYr8NJ64k7v40/66WQZwi7KWrrtdHFcr5PnVgOEZW
+	 NChobvVcTbpIyWw2B0RCN4q5bm9KJa5fbZyrcyzCda7DEWj0hraUQ+I6558RXGLEYS
+	 I4Cq2Emxz6uouFP7bmdIqLPU=
+X-Virus-Scanned: Debian amavisd-new at mail.envs.net
+Received: from mail.envs.net ([127.0.0.1])
+	by localhost (mail.envs.net [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 7q0JDr8gKqlZ; Sat, 10 Feb 2024 07:46:47 +0000 (UTC)
+Received: from xtexx.eu.org (unknown [223.73.102.109])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.envs.net (Postfix) with ESMTPSA;
+	Sat, 10 Feb 2024 07:46:47 +0000 (UTC)
+From: Zhang Bingwu <xtex@envs.net>
+To: Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Helge Deller <deller@gmx.de>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Zhang Bingwu <xtexchooser@duck.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>
+Cc: x86@kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-parisc@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	sparclinux@vger.kernel.org
+Subject: [PATCH 0/2] kbuild: Fix install errors when INSTALL_PATH does not exist
+Date: Sat, 10 Feb 2024 15:45:59 +0800
+Message-ID: <20240210074601.5363-1-xtex@envs.net>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+
+From: Zhang Bingwu <xtexchooser@duck.com>
+
+When running 'make zinstall INSTALL_PATH=somepath'
+ where 'somepath' does not exist, the install
+ scripts (install.sh) print error messages
+ but also return a success status code.
+This will make 'make' regard 'install' (and 'zinstall', etc)
+ succeeded.
+When there are also other targets at the same time,
+ for example, 'make zinstall dtbs_install modules_install',
+ make will keep going on and other outputs will fill stdout,
+ and make the error message hard to find.
+
+dtbs_install and modules_install creates the target directory
+ if it does not exist. install, zinstall and others should
+ have the same behaviour.
+
+If INSTALL_PATH is not a valid directory, we should create it.
+If the installation process still fails with errors, for example,
+ insufficient space on disk or permission denied, make should regard
+ the install target failed, stop as soon as possible,
+ and exit with error.
+
+Zhang Bingwu (2):
+  kbuild: Abort make on install failures
+  kbuild: Create INSTALL_PATH directory if it does not exist
+
+ arch/arm/boot/install.sh   | 2 ++
+ arch/arm64/boot/install.sh | 2 ++
+ arch/m68k/install.sh       | 2 ++
+ arch/nios2/boot/install.sh | 2 ++
+ arch/parisc/install.sh     | 2 ++
+ arch/riscv/boot/install.sh | 2 ++
+ arch/s390/boot/install.sh  | 2 ++
+ arch/sparc/boot/install.sh | 2 ++
+ arch/x86/boot/install.sh   | 2 ++
+ scripts/install.sh         | 4 ++++
+ 10 files changed, 22 insertions(+)
 
 
-On Thu, 8 Feb 2024, Ulrich Hecht wrote:
+base-commit: d0f86d080e3d7d5e1e75a56d88daf8e5f56a4146
+-- 
+2.43.0
 
-> 
-> > On 02/05/2024 11:15 AM CET Michael Schmitz <schmitzmic@gmail.com> 
-> > wrote: On that note - Uli: would you prefer the entire backport 
-> > series, or only those you do not already have?
-> 
-> I'd prefer to only get what's missing.
-> 
-
-Ulrich, I imagine that you would normally receive fixes via the 
-corresponding -stable trees. If Michael's series went into 
-stable/linux-4.19.y you could cherry-pick from there for your v4.4.y tree 
-and maybe avoid some merge conflicts that way. So perhaps we should ask 
-the -stable maintainers to backport first (?)
-
-Al, I see that the following commits are missing from stable/linux-v6.1 
-and older trees, despite the word "fix" in the subject. Reading the merge 
-commit 1a8d05a726dc "Merge tag 'pull-fixes' of 
-git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs" suggests to me 
-that these are old bugs...
-
-bd75497a77cc m68k: fix livelock in uaccess
-d835eb3a57de riscv: fix livelock in uaccess
-0b92ed09cb9f hexagon: fix livelock in uaccess
-15261678a8c2 parisc: fix livelock in uaccess
-dce45493aff3 alpha: fix livelock in uaccess
-79c54c97c773 sparc: fix livelock in uaccess
-d088af1e221c ia64: fix livelock in uaccess
-a1179ac743e8 microblaze: fix livelock in uaccess
-e902e508c5b2 nios2: fix livelock in uaccess
-caa82ae7ef52 openrisc: fix livelock in uaccess
-
-In addition, stable/linux-v5.10 and the older trees lack the following 
-commit, despite the Fixes tag.
-
-50e43a573344 m68k: Update ->thread.esp0 before calling syscall_trace() in ret_from_signal
