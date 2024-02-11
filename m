@@ -1,97 +1,89 @@
-Received: from mail.envs.net (mail.envs.net [5.199.136.28])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D197227450
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 11 Feb 2024 10:32:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.199.136.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF2761426A
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 11 Feb 2024 23:06:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707647554; cv=none; b=EfDOLZYBCA9Wzw8sLXShc4eX4+w+4b/DTWUlFjAOl4VpW/32uKCVPvAV+6SK02ZxtgNt84TVfWq0ejxTCtfKRr8anrGuAjQr8WI8zN5IEp6LzPZnmIOmVq4qSqQugRYQ+l1hNmbCTuLmq9swcuTr/MZeakDrd3ymjg9I7B+Thd8=
+	t=1707692811; cv=none; b=aU0Vbr6u/bLtvR1qMuo69zVz1sRZ8WbOispIfk42ZRa3UBstmUbydsBGcpurdF4CpL6DMECeKswxqJHU99LWpB1hIfre2lXcRmdmcGPMDXsdP4jiJLRAEPecBE7deX4WDclEDShy6LreJCFzf4uaWncrXXUIWk9LpShlbgRJ5q0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707647554; c=relaxed/simple;
-	bh=etRjsipeELaWCrmPD0sbIzv/CUhY77/idogMRUDkIGA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tR4dL7veUBBMnIf8SLlnhntLNTCVRaWj5lG0S4lJ+Bkbtm8d1Xy+FTQIgQ6x4y65k21RDdW3ORrSnd+cfkbLpwXTPtti39FbohoXxm0bZkI4JyNA4QUILCSRgKUefXrajFGUFLpe15DZ3AaaCcgPTRInORpClMGcZ+7nxHX6BFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=envs.net; spf=pass smtp.mailfrom=envs.net; dkim=pass (4096-bit key) header.d=envs.net header.i=@envs.net header.b=Jd9A54zX; arc=none smtp.client-ip=5.199.136.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=envs.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=envs.net
+	s=arc-20240116; t=1707692811; c=relaxed/simple;
+	bh=jtcobRYgNI43bB+fM74E7FhkB3DFmGQyjnJ4YWHpRps=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=JgOdS8eds6a27Gt65H0Bxqt1dPY34Sc0xR6vQ9i72HV8Eyx+Tk/2jVyWb1BwS5XU2mjizpUsowsWZl/KtAxmlaZbyPgCR4KbidWxqKGxl09WyPTvvkeNoU6JsiM16ECX+g4iYa77vfsw4HELSUjVbAiwG2L2AVFd8YKwosNp8D4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=loxPormF; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=envs.net header.i=@envs.net header.b="Jd9A54zX"
-Received: from localhost (mail.envs.net [127.0.0.1])
-	by mail.envs.net (Postfix) with ESMTP id 2EB1F38A0673;
-	Sun, 11 Feb 2024 10:32:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=envs.net; s=modoboa;
-	t=1707647542; bh=dLh7MlVuk355kto4z+2BT9WqRjzdR9Gl3cXp8/KeMec=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Jd9A54zXfJ1xQmZ6O4wlZ1OPR2ame5KhRLXD1s0iYIb4wB6Xn0HQgUWPgiBldl00Y
-	 hCSRTlbzcMI60Kmn4XoYF2kxpck/0hCE7rZYYKrPwt/X+3cYZHsrncO9qnVfGUlAF+
-	 D/hnz1QnoLFIbv2ONMvYSU0VAH+9MGB/unrU6CL9Q+sxRqS0n2pSvBaGJN8zwltopJ
-	 FUqzFc+cNF9ovSkVbcnuLIgE6csHcCsRZy0xAODusFEpvhhyemV+WBWytlFmHK0O/d
-	 mPEgZez+T/e6dItllz5fgVA+SOTZoAzOIPkZjTz4xU6nNkf55z5VjK1c+DLNg4uIXy
-	 9+uy6gZKghfV6Cj/eLEQUWf3+BES12+z51bgbzdNVOlsJocPL1bsByECK80WcpCRAs
-	 9CnruCSy6Y95CXJtbD34tYfIm6EakRvlIom6YzZDW+tDRdc1mgIz302UNgNrcv/m8x
-	 NFnS34NbU5AUDgjDcPWrFhj8X+eUUdltEADHTXaxLWmSMjwjy8+NNAzY+DHurungbs
-	 CH8eQc4ufGNqSmF28IUn6/pQ2oJ1zqI05MBrWFF49OQPLjf6F3Iv6XVX9GR0dgCRng
-	 pY00VZciZ75yI1PtwTeDloj/tBy57e3g7zK6it+g/tDci0UbYey5vHApQLQcheT2Ha
-	 rdf0UH3FDXjINE85+27U8oWI=
-X-Virus-Scanned: Debian amavisd-new at mail.envs.net
-Received: from mail.envs.net ([127.0.0.1])
-	by localhost (mail.envs.net [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id M1aevNjCSz4D; Sun, 11 Feb 2024 10:31:41 +0000 (UTC)
-Received: from xtex.localnet (unknown [103.84.217.246])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.envs.net (Postfix) with ESMTPSA;
-	Sun, 11 Feb 2024 10:31:41 +0000 (UTC)
-From: xtex <xtex@envs.net>
-To: Nicolas Schier <nicolas@fjasle.eu>, Masahiro Yamada <masahiroy@kernel.org>
-Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Dinh Nguyen <dinguyen@kernel.org>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Helge Deller <deller@gmx.de>, Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>,
- Andreas Larsson <andreas@gaisler.com>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
- Nathan Chancellor <nathan@kernel.org>, x86@kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- sparclinux@vger.kernel.org
-Subject: Re: [PATCH 1/2] kbuild: Abort make on install failures
-Date: Sun, 11 Feb 2024 18:31:36 +0800
-Message-ID: <2646117.S0smAIiGLA@xtex>
-In-Reply-To:
- <CAK7LNAQPm7PXoKM+id25wX9AtVmmXvE7i8GrGB9etU__EMUwdg@mail.gmail.com>
-References:
- <20240210074601.5363-1-xtex@envs.net> <ZcfoZKJHkdEh5JmV@fjasle.eu>
- <CAK7LNAQPm7PXoKM+id25wX9AtVmmXvE7i8GrGB9etU__EMUwdg@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="loxPormF"
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6d9f94b9186so2249242b3a.0
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 11 Feb 2024 15:06:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707692809; x=1708297609; darn=lists.linux-m68k.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=gCuySXt9kRwqpI/wQDtgRgdqYmihUz1Tr8Gz7e8ppCU=;
+        b=loxPormFHOK1dVAC/TC+iYTopWWGcGSIPFita3KiFTidYxxE/oVS1IIWA6mCtNB8TV
+         OUzxy9DT84JUpETqX5xPBj1P92TCyHmxiSIfyNG8RtjkuXHTgzXrKcD89i3gz8AWHBRv
+         uPogOJZphW5b9SSH1Sdrztn1lK2RCr/iwzosdF+6MkorOJV4kMkNlaS4ZfGCRB0PdfDn
+         1t/3iFm8/hFV2ng7PYdEAklCMpXdhOCK6AdbdPD1aPr5oSOo9G5zfqmOkmeDLCRBpo72
+         FpqGFDnJ4dBgw0TfFbFfd6s3PLJIJNMPrZdrTIPz1C8I/YEk3AIjd2TQIErbC7kYiawh
+         cKlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707692809; x=1708297609;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gCuySXt9kRwqpI/wQDtgRgdqYmihUz1Tr8Gz7e8ppCU=;
+        b=IvHLt/KAKUCGHkMZyxxJl6/s+bf7zuja0VakZ2E2TEk/JQrt6SOv+b5YtE10BzUJo9
+         XaDA+hkzxNma0qR5nkhgm1qrLC4Wq9a/9a4dslBxrbvXRLTEUH5RfpNfeIuc5ZvrSRI2
+         NpvjHrufw4PR85ftkqkYG5/GNzhQfnlVJdZ+cH4VszhvMmxmRMf48d7AGvQlnZBSBlCR
+         fT7cyO9faZjoUziiF7feOrCc2VMhUEhH7uEzRi0HfSeKZ4uPm6qNqlXk/b71BbLkyxip
+         XhhS+As4z+14rIQXKR31PboJoV74p8z3I1dAi1flEdlzY2YB1NJcCcGoDeYQWTHHHZJh
+         RBlA==
+X-Gm-Message-State: AOJu0Yxn5pCUBVQNwa3YVAKouVzV4XnRCXgAIguzcH+NZnOA9EinI51Z
+	5uF4hCIWmwKEIAqm0LV4anQqD1wFKrfKzfuEQfFWdXWpl0UOe9jS
+X-Google-Smtp-Source: AGHT+IGkF8iwmZ1C8WoWCat6qIp7VV/d/IlBX+mHEslKVgouuWxghIkjljZ6xvgkKzYvt6IBsvriug==
+X-Received: by 2002:a05:6a20:9f43:b0:19e:a9e6:c05 with SMTP id ml3-20020a056a209f4300b0019ea9e60c05mr8085896pzb.43.1707692809151;
+        Sun, 11 Feb 2024 15:06:49 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXdHbC8J0Ps8b93WpG2q46cOzDyD7bkya8gbU0f2Y98KE+iz2Oe1i3VYX5LqtUpL2lKDFcRRs0WElDBoDX+XbHug3oYlk3MCOp9dIeC
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b30-20020a63715e000000b005cfbec9f8b4sm5564967pgn.54.2024.02.11.15.06.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Feb 2024 15:06:48 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Sun, 11 Feb 2024 15:06:46 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: stackinit unit test failures on m68k
+Message-ID: <a0d10d50-2720-4ecd-a2c6-c2c5e5aeee65@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Sunday, February 11, 2024 7:35:35 AM CST Masahiro Yamada wrote:
-> 
-> The separate 'set -e' statement works for both cases,
-> so I think this is safer, though it is kind of bike-shedding.
+Hi Geert,
 
-Thanks!
-I also think it is safer to use 'set -e' in the case of 'sh install.sh',
- so I support not to use 'sh -e' in the shebang line. The planned V2 patch for 
-this disappeared.
+I see the following stackinit unit test failures on m68k when running
+the q800 emulation.
 
--- 
-Zhang Bingwu @ Sun Feb 11 10:27:48 AM UTC 2024
+    # test_char_array_zero: ASSERTION FAILED at lib/stackinit_kunit.c:333
+    Expected stackinit_range_contains(fill_start, fill_size, target_start, target_size) to be true, but is false
+stack fill missed target!? (fill 16 wide, target offset by -12)
 
+    # test_char_array_none: ASSERTION FAILED at lib/stackinit_kunit.c:343
+    Expected stackinit_range_contains(fill_start, fill_size, target_start, target_size) to be true, but is false
+stack fill missed target!? (fill 16 wide, target offset by -12)
 
+Do you happen to know if this a problem with the test, with m68k, or maybe
+with the configuration ? My configuration is based on mac_defconfig with
+various test options enabled. I use gcc 11.4 to build the image. I tried
+with qemu v8.1 and v8.2.
 
+Thanks,
+Guenter
