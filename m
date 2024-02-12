@@ -1,89 +1,135 @@
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF2761426A
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 11 Feb 2024 23:06:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA3937E9
+	for <linux-m68k@vger.kernel.org>; Mon, 12 Feb 2024 00:49:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707692811; cv=none; b=aU0Vbr6u/bLtvR1qMuo69zVz1sRZ8WbOispIfk42ZRa3UBstmUbydsBGcpurdF4CpL6DMECeKswxqJHU99LWpB1hIfre2lXcRmdmcGPMDXsdP4jiJLRAEPecBE7deX4WDclEDShy6LreJCFzf4uaWncrXXUIWk9LpShlbgRJ5q0=
+	t=1707698943; cv=none; b=cI1A1nmxDmCIIS+cu9Df4dvCWqOa6KdjVhnZ3MZg6yKs7euDgnnvOPnZ1o5JQ5OTJe93NrVfj8hrAuVw+qRUEeOipMFYLWtTUN4dDhEJNTVq6VQQr4DhGjng4neZLfClxfh7ToalIdAqoBkpthwH3M6wid1E8k+B6RRjBXIHI4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707692811; c=relaxed/simple;
-	bh=jtcobRYgNI43bB+fM74E7FhkB3DFmGQyjnJ4YWHpRps=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=JgOdS8eds6a27Gt65H0Bxqt1dPY34Sc0xR6vQ9i72HV8Eyx+Tk/2jVyWb1BwS5XU2mjizpUsowsWZl/KtAxmlaZbyPgCR4KbidWxqKGxl09WyPTvvkeNoU6JsiM16ECX+g4iYa77vfsw4HELSUjVbAiwG2L2AVFd8YKwosNp8D4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=loxPormF; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+	s=arc-20240116; t=1707698943; c=relaxed/simple;
+	bh=0RBsGcHgnbvvz0Xr51hXSEeL6hbWMdt75HlXXA2EX+M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fn4WU8irUcY7cZKpKIv+8GpLnp5cgeRwHtoS2nV47F9QF5r1Qwv1RmetgRtT3c09gR2gSWzDQG5g1qwvLIsViBcqOkREHViNSZKx3A27qJftH+KbWRZ2bQqMZvpaNEmBP2yQXSrYjTNoYZ28tgNz/Ir6vR13gNY8AWjJAmqXfFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eXNczt7R; arc=none smtp.client-ip=209.85.215.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="loxPormF"
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6d9f94b9186so2249242b3a.0
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 11 Feb 2024 15:06:49 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eXNczt7R"
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5cddfe0cb64so1796838a12.0
+        for <linux-m68k@vger.kernel.org>; Sun, 11 Feb 2024 16:49:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707692809; x=1708297609; darn=lists.linux-m68k.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=gCuySXt9kRwqpI/wQDtgRgdqYmihUz1Tr8Gz7e8ppCU=;
-        b=loxPormFHOK1dVAC/TC+iYTopWWGcGSIPFita3KiFTidYxxE/oVS1IIWA6mCtNB8TV
-         OUzxy9DT84JUpETqX5xPBj1P92TCyHmxiSIfyNG8RtjkuXHTgzXrKcD89i3gz8AWHBRv
-         uPogOJZphW5b9SSH1Sdrztn1lK2RCr/iwzosdF+6MkorOJV4kMkNlaS4ZfGCRB0PdfDn
-         1t/3iFm8/hFV2ng7PYdEAklCMpXdhOCK6AdbdPD1aPr5oSOo9G5zfqmOkmeDLCRBpo72
-         FpqGFDnJ4dBgw0TfFbFfd6s3PLJIJNMPrZdrTIPz1C8I/YEk3AIjd2TQIErbC7kYiawh
-         cKlg==
+        d=gmail.com; s=20230601; t=1707698941; x=1708303741; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CIgNWWoE1k8isP4ouJdbhuUmYX7ZaIQXrsFa38XH8Q0=;
+        b=eXNczt7RTffdnp+b4Rx8lVBJNTrQITc4QFrK1nN1Rao9tgCKUsfLLlpCCbl/dtWsYx
+         ZGEQcy3GgekWMVQ49W6AphpJx6VnhMmovtQmBnilu70ZQqtQG4cX5Vi2g+FzUO6L8tZx
+         BlbcuADnPL2DBWx9mviBmz487tlRFoKfE9YC8UzRDL/WZ6OaMoj589L8bLkmVWF/hLaV
+         yjwrIhCahZ7mxpvQ3NqGlT7QKKnaDTsNfUv9LWfQd/Gb3k37BW6idJijofNeomOr4trt
+         MynUe1AOm+xu3tPtI/clqSn8ACBnCJuTTps1Sk2gak/Cf+r8s36T7A1Khf8STLep+bBr
+         GGrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707692809; x=1708297609;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gCuySXt9kRwqpI/wQDtgRgdqYmihUz1Tr8Gz7e8ppCU=;
-        b=IvHLt/KAKUCGHkMZyxxJl6/s+bf7zuja0VakZ2E2TEk/JQrt6SOv+b5YtE10BzUJo9
-         XaDA+hkzxNma0qR5nkhgm1qrLC4Wq9a/9a4dslBxrbvXRLTEUH5RfpNfeIuc5ZvrSRI2
-         NpvjHrufw4PR85ftkqkYG5/GNzhQfnlVJdZ+cH4VszhvMmxmRMf48d7AGvQlnZBSBlCR
-         fT7cyO9faZjoUziiF7feOrCc2VMhUEhH7uEzRi0HfSeKZ4uPm6qNqlXk/b71BbLkyxip
-         XhhS+As4z+14rIQXKR31PboJoV74p8z3I1dAi1flEdlzY2YB1NJcCcGoDeYQWTHHHZJh
-         RBlA==
-X-Gm-Message-State: AOJu0Yxn5pCUBVQNwa3YVAKouVzV4XnRCXgAIguzcH+NZnOA9EinI51Z
-	5uF4hCIWmwKEIAqm0LV4anQqD1wFKrfKzfuEQfFWdXWpl0UOe9jS
-X-Google-Smtp-Source: AGHT+IGkF8iwmZ1C8WoWCat6qIp7VV/d/IlBX+mHEslKVgouuWxghIkjljZ6xvgkKzYvt6IBsvriug==
-X-Received: by 2002:a05:6a20:9f43:b0:19e:a9e6:c05 with SMTP id ml3-20020a056a209f4300b0019ea9e60c05mr8085896pzb.43.1707692809151;
-        Sun, 11 Feb 2024 15:06:49 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXdHbC8J0Ps8b93WpG2q46cOzDyD7bkya8gbU0f2Y98KE+iz2Oe1i3VYX5LqtUpL2lKDFcRRs0WElDBoDX+XbHug3oYlk3MCOp9dIeC
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id b30-20020a63715e000000b005cfbec9f8b4sm5564967pgn.54.2024.02.11.15.06.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Feb 2024 15:06:48 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Sun, 11 Feb 2024 15:06:46 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: stackinit unit test failures on m68k
-Message-ID: <a0d10d50-2720-4ecd-a2c6-c2c5e5aeee65@roeck-us.net>
+        d=1e100.net; s=20230601; t=1707698941; x=1708303741;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CIgNWWoE1k8isP4ouJdbhuUmYX7ZaIQXrsFa38XH8Q0=;
+        b=XIQkxHuZoZ9L4ylX6PHXZuxy0IVLirVgjFIW/pHDSGVjwpU44NVV70uMRKaw5f+/dg
+         rkp2vZz3Unq+HjFlQT6hBF6tDzGDIhsBQoCT/wE2qPPuu8gq1D4aecrKfs6ooAJ4U+nr
+         ca5fS0qMsuvMi9VRTB2CZ/s9TQx+FUIKrsj76APunNiY6RHDSNncTdTvV27Xu2KQK88Z
+         xqtew5Wk2+RqA1NXk+8No9mNQFlPlAJ3bBtnqnEMuFiqm7PYRRpZEDlSMYQ6GOAlQp0+
+         D4p+BNmRjHv/lOwHlf6E0kQrlhr+qkAIR1DVax9TGjMUAgGaEX+e6AzC7IwEZYEYRW7C
+         eGoA==
+X-Forwarded-Encrypted: i=1; AJvYcCURNCHZty7Ji15HOeXMD7fFFpZQVx25xgS4gTr84za876MbrhAn4NWANCwLdf/6dBnKQZae8uW9m7iqlCRnfH8ATz3IrBvHsvmsLg==
+X-Gm-Message-State: AOJu0Yz174JMoctvNTX7t8qbCb2bdZxZttKsNaBZcIZcociZsNcFOFrL
+	AnSiFMFk+wQXilZW4jgdKhfA+ZtUs/+h2QwFIBrAOcN3ZoJA/5+p
+X-Google-Smtp-Source: AGHT+IFnAxwgLFY/hv+JUvF1VxpmZdwB8TqurSV3L3y+K36Grnw29CK+omKtvS5u8rgrxr6mYY39Pw==
+X-Received: by 2002:a05:6a21:1743:b0:19e:ca05:226e with SMTP id nw3-20020a056a21174300b0019eca05226emr2338087pzb.9.1707698941115;
+        Sun, 11 Feb 2024 16:49:01 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVE4+8Hn0AjFUs1xSR5SqA9XPFw486D2CiF5tSTIHGcyMlCsR2VNxpvV+vu/36dE+vAbubRpw1r2faZsYs3moc8jbjb2btaKE0I+jSnJyL0MCeZ7vEHe8eaDDUZvUJ5uwkgJQDep95ItaChD/qvOeOF/w==
+Received: from ?IPV6:2001:df0:0:200c:adb8:c71:a09c:347f? ([2001:df0:0:200c:adb8:c71:a09c:347f])
+        by smtp.gmail.com with ESMTPSA id k5-20020a170902e90500b001d9ef367c85sm4777987pld.104.2024.02.11.16.48.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 11 Feb 2024 16:49:00 -0800 (PST)
+Message-ID: <142a53d7-3a29-4609-b3b7-07f7f00ca64f@gmail.com>
+Date: Mon, 12 Feb 2024 13:48:56 +1300
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v2 4/8] m68k: Handle arrivals of multiple signals
+ correctly
+Content-Language: en-US
+To: Finn Thain <fthain@linux-m68k.org>, Ulrich Hecht <uli@fpond.eu>,
+ Al Viro <viro@zeniv.linux.org.uk>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
+References: <20240205023236.9325-1-schmitzmic@gmail.com>
+ <20240205023236.9325-5-schmitzmic@gmail.com>
+ <CAMuHMdUMwQSEwDQ3tsmChutY3P0VQUA0A8jg63NxfyrmxfKWXQ@mail.gmail.com>
+ <401b6911-e6ed-3e9f-9dcc-d4f951c6beef@gmail.com>
+ <1501038841.1120470.1707393238298@webmail.strato.com>
+ <34d37f57-3146-8aa0-7828-2df2d1679ee4@linux-m68k.org>
+From: Michael Schmitz <schmitzmic@gmail.com>
+In-Reply-To: <34d37f57-3146-8aa0-7828-2df2d1679ee4@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Geert,
 
-I see the following stackinit unit test failures on m68k when running
-the q800 emulation.
+On 9/02/24 11:51, Finn Thain wrote:
+> On Thu, 8 Feb 2024, Ulrich Hecht wrote:
+>
+>>> On 02/05/2024 11:15 AM CET Michael Schmitz <schmitzmic@gmail.com>
+>>> wrote: On that note - Uli: would you prefer the entire backport
+>>> series, or only those you do not already have?
+>> I'd prefer to only get what's missing.
+>>
+> Ulrich, I imagine that you would normally receive fixes via the
+> corresponding -stable trees. If Michael's series went into
+> stable/linux-4.19.y you could cherry-pick from there for your v4.4.y tree
+> and maybe avoid some merge conflicts that way. So perhaps we should ask
+> the -stable maintainers to backport first (?)
+>
+> Al, I see that the following commits are missing from stable/linux-v6.1
+> and older trees, despite the word "fix" in the subject. Reading the merge
+> commit 1a8d05a726dc "Merge tag 'pull-fixes' of
+> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs" suggests to me
+> that these are old bugs...
 
-    # test_char_array_zero: ASSERTION FAILED at lib/stackinit_kunit.c:333
-    Expected stackinit_range_contains(fill_start, fill_size, target_start, target_size) to be true, but is false
-stack fill missed target!? (fill 16 wide, target offset by -12)
+Only
 
-    # test_char_array_none: ASSERTION FAILED at lib/stackinit_kunit.c:343
-    Expected stackinit_range_contains(fill_start, fill_size, target_start, target_size) to be true, but is false
-stack fill missed target!? (fill 16 wide, target offset by -12)
+bd75497a77cc m68k: fix livelock in uaccess, and
 
-Do you happen to know if this a problem with the test, with m68k, or maybe
-with the configuration ? My configuration is based on mac_defconfig with
-various test options enabled. I use gcc 11.4 to build the image. I tried
-with qemu v8.1 and v8.2.
+0d20abde987b m68k: Leave stack mangling to asm wrapper of sigreturn()
 
-Thanks,
-Guenter
+need changes to apply to v4.19. Only compile tested so far.
+
+Happy to submit the adjusted patches to stable, and ask the stable 
+maintainers to pick up the missing bits from Linus' or Geert's tree.
+
+Would that be good enough?
+
+Cheers,
+
+Michael
+
+>
+> bd75497a77cc m68k: fix livelock in uaccess
+> d835eb3a57de riscv: fix livelock in uaccess
+> 0b92ed09cb9f hexagon: fix livelock in uaccess
+> 15261678a8c2 parisc: fix livelock in uaccess
+> dce45493aff3 alpha: fix livelock in uaccess
+> 79c54c97c773 sparc: fix livelock in uaccess
+> d088af1e221c ia64: fix livelock in uaccess
+> a1179ac743e8 microblaze: fix livelock in uaccess
+> e902e508c5b2 nios2: fix livelock in uaccess
+> caa82ae7ef52 openrisc: fix livelock in uaccess
+>
+> In addition, stable/linux-v5.10 and the older trees lack the following
+> commit, despite the Fixes tag.
+>
+> 50e43a573344 m68k: Update ->thread.esp0 before calling syscall_trace() in ret_from_signal
