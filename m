@@ -1,135 +1,109 @@
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA3937E9
-	for <linux-m68k@vger.kernel.org>; Mon, 12 Feb 2024 00:49:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACFCBF9FF
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Feb 2024 08:34:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707698943; cv=none; b=cI1A1nmxDmCIIS+cu9Df4dvCWqOa6KdjVhnZ3MZg6yKs7euDgnnvOPnZ1o5JQ5OTJe93NrVfj8hrAuVw+qRUEeOipMFYLWtTUN4dDhEJNTVq6VQQr4DhGjng4neZLfClxfh7ToalIdAqoBkpthwH3M6wid1E8k+B6RRjBXIHI4U=
+	t=1707726859; cv=none; b=p+BPQqbjJLb4aCD0oluWuz2wCu75jrBHu2r5fKZi00ac5Nr+k3VQvnFwbAe6c0tVceKj0VofajFKVfK/0R6lT03j1qn9cs47dRnZe0GP9Tltrk6t7JhL1B//x8PK+0SZ7IxgCpY4PiSBqOl60rtm6Te1rgcP0tuB5w5KnuNsgJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707698943; c=relaxed/simple;
-	bh=0RBsGcHgnbvvz0Xr51hXSEeL6hbWMdt75HlXXA2EX+M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fn4WU8irUcY7cZKpKIv+8GpLnp5cgeRwHtoS2nV47F9QF5r1Qwv1RmetgRtT3c09gR2gSWzDQG5g1qwvLIsViBcqOkREHViNSZKx3A27qJftH+KbWRZ2bQqMZvpaNEmBP2yQXSrYjTNoYZ28tgNz/Ir6vR13gNY8AWjJAmqXfFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eXNczt7R; arc=none smtp.client-ip=209.85.215.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1707726859; c=relaxed/simple;
+	bh=TC7YkIUu5KcxgTcQjkswqfPLExSnc8VDRJFLg3B3zu8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OcozkOWpi3rmW12Vrvv/XwlHSTrgGY9UCM/tMG+WLSLwpW1l1eFdd8hMUfBzfimDSuAV9lh60rU/urtEBWDTYpe3RRbfn/BOV/cklw+wpiuUAM1k4Ex0RJAsdnfFlANV9XPODCtM/iOt1j4lRbRWH3iGifu4NSslmU2jnhsUlyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eXNczt7R"
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5cddfe0cb64so1796838a12.0
-        for <linux-m68k@vger.kernel.org>; Sun, 11 Feb 2024 16:49:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707698941; x=1708303741; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CIgNWWoE1k8isP4ouJdbhuUmYX7ZaIQXrsFa38XH8Q0=;
-        b=eXNczt7RTffdnp+b4Rx8lVBJNTrQITc4QFrK1nN1Rao9tgCKUsfLLlpCCbl/dtWsYx
-         ZGEQcy3GgekWMVQ49W6AphpJx6VnhMmovtQmBnilu70ZQqtQG4cX5Vi2g+FzUO6L8tZx
-         BlbcuADnPL2DBWx9mviBmz487tlRFoKfE9YC8UzRDL/WZ6OaMoj589L8bLkmVWF/hLaV
-         yjwrIhCahZ7mxpvQ3NqGlT7QKKnaDTsNfUv9LWfQd/Gb3k37BW6idJijofNeomOr4trt
-         MynUe1AOm+xu3tPtI/clqSn8ACBnCJuTTps1Sk2gak/Cf+r8s36T7A1Khf8STLep+bBr
-         GGrA==
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc742543119so2304082276.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Feb 2024 00:34:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707698941; x=1708303741;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CIgNWWoE1k8isP4ouJdbhuUmYX7ZaIQXrsFa38XH8Q0=;
-        b=XIQkxHuZoZ9L4ylX6PHXZuxy0IVLirVgjFIW/pHDSGVjwpU44NVV70uMRKaw5f+/dg
-         rkp2vZz3Unq+HjFlQT6hBF6tDzGDIhsBQoCT/wE2qPPuu8gq1D4aecrKfs6ooAJ4U+nr
-         ca5fS0qMsuvMi9VRTB2CZ/s9TQx+FUIKrsj76APunNiY6RHDSNncTdTvV27Xu2KQK88Z
-         xqtew5Wk2+RqA1NXk+8No9mNQFlPlAJ3bBtnqnEMuFiqm7PYRRpZEDlSMYQ6GOAlQp0+
-         D4p+BNmRjHv/lOwHlf6E0kQrlhr+qkAIR1DVax9TGjMUAgGaEX+e6AzC7IwEZYEYRW7C
-         eGoA==
-X-Forwarded-Encrypted: i=1; AJvYcCURNCHZty7Ji15HOeXMD7fFFpZQVx25xgS4gTr84za876MbrhAn4NWANCwLdf/6dBnKQZae8uW9m7iqlCRnfH8ATz3IrBvHsvmsLg==
-X-Gm-Message-State: AOJu0Yz174JMoctvNTX7t8qbCb2bdZxZttKsNaBZcIZcociZsNcFOFrL
-	AnSiFMFk+wQXilZW4jgdKhfA+ZtUs/+h2QwFIBrAOcN3ZoJA/5+p
-X-Google-Smtp-Source: AGHT+IFnAxwgLFY/hv+JUvF1VxpmZdwB8TqurSV3L3y+K36Grnw29CK+omKtvS5u8rgrxr6mYY39Pw==
-X-Received: by 2002:a05:6a21:1743:b0:19e:ca05:226e with SMTP id nw3-20020a056a21174300b0019eca05226emr2338087pzb.9.1707698941115;
-        Sun, 11 Feb 2024 16:49:01 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVE4+8Hn0AjFUs1xSR5SqA9XPFw486D2CiF5tSTIHGcyMlCsR2VNxpvV+vu/36dE+vAbubRpw1r2faZsYs3moc8jbjb2btaKE0I+jSnJyL0MCeZ7vEHe8eaDDUZvUJ5uwkgJQDep95ItaChD/qvOeOF/w==
-Received: from ?IPV6:2001:df0:0:200c:adb8:c71:a09c:347f? ([2001:df0:0:200c:adb8:c71:a09c:347f])
-        by smtp.gmail.com with ESMTPSA id k5-20020a170902e90500b001d9ef367c85sm4777987pld.104.2024.02.11.16.48.58
+        d=1e100.net; s=20230601; t=1707726856; x=1708331656;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bQCv0JdYx3KO7ENBhTEo9fPqiTJK6xJp0dwgojv3j0A=;
+        b=ljzcXLHfs82xCVGHCQ8RZ3FT+9VV69XRpAbxZLsbTxMb6WLfHFbmZ07VJVmly/pdT4
+         /Hj+e/wvm9DRuHoGE8ut4Ez7of5wCMtKJFZsaHCmTH61IN34ny9nT2AHIQMoG1TjvZ18
+         qsf9cWVCRrx8JTNFS0Tmj2759bXcG9wgggT9Yb6+hp3/yc469Pm5l18clApD7wQB2h91
+         XRLANpQxB2fERqQyis9VXGYXaIjHBz9lNbjNTls7DIxOmtQnIl2AYsGEhQwL4ciHX2p/
+         8+az5BfEQxHdwaMXS/gCKMV3/GMBVMqjxDkja+qQy5Rao8C8+dqgV1vv3FlhKwpeBUz2
+         GZ9w==
+X-Gm-Message-State: AOJu0Yz0mCbhW/DNf78qxo6BlX+Ia2Hj2bAphh4+nUjhM53OKKr750W0
+	POqOp+wfBy0Jv76dOkeLqJaaRxDz1MFKAGlcrCae7121Ewxe0Ib62y3idbyz6Tk=
+X-Google-Smtp-Source: AGHT+IED3Laiu/oetksCvWE0a95yUo8+XAv++CfsVDGcUnso6uXr1Eg+YU1nBWjcPAzhHpGShLV1WQ==
+X-Received: by 2002:a25:d0d6:0:b0:dc7:2401:df4e with SMTP id h205-20020a25d0d6000000b00dc72401df4emr3221135ybg.39.1707726855512;
+        Mon, 12 Feb 2024 00:34:15 -0800 (PST)
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
+        by smtp.gmail.com with ESMTPSA id 129-20020a250b87000000b00dc701408c12sm1171518ybl.42.2024.02.12.00.34.15
+        for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Feb 2024 16:49:00 -0800 (PST)
-Message-ID: <142a53d7-3a29-4609-b3b7-07f7f00ca64f@gmail.com>
-Date: Mon, 12 Feb 2024 13:48:56 +1300
+        Mon, 12 Feb 2024 00:34:15 -0800 (PST)
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so1989307276.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Feb 2024 00:34:15 -0800 (PST)
+X-Received: by 2002:a25:b1a1:0:b0:dc3:71da:35b0 with SMTP id
+ h33-20020a25b1a1000000b00dc371da35b0mr2937501ybj.16.1707726854983; Mon, 12
+ Feb 2024 00:34:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v2 4/8] m68k: Handle arrivals of multiple signals
- correctly
-Content-Language: en-US
-To: Finn Thain <fthain@linux-m68k.org>, Ulrich Hecht <uli@fpond.eu>,
- Al Viro <viro@zeniv.linux.org.uk>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
-References: <20240205023236.9325-1-schmitzmic@gmail.com>
- <20240205023236.9325-5-schmitzmic@gmail.com>
- <CAMuHMdUMwQSEwDQ3tsmChutY3P0VQUA0A8jg63NxfyrmxfKWXQ@mail.gmail.com>
- <401b6911-e6ed-3e9f-9dcc-d4f951c6beef@gmail.com>
- <1501038841.1120470.1707393238298@webmail.strato.com>
- <34d37f57-3146-8aa0-7828-2df2d1679ee4@linux-m68k.org>
-From: Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <34d37f57-3146-8aa0-7828-2df2d1679ee4@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <a0d10d50-2720-4ecd-a2c6-c2c5e5aeee65@roeck-us.net>
+In-Reply-To: <a0d10d50-2720-4ecd-a2c6-c2c5e5aeee65@roeck-us.net>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 12 Feb 2024 09:34:02 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXMsxRRMV8g6+9vTy_4o8HF49SUh2deNdFjgKwDLEWrxQ@mail.gmail.com>
+Message-ID: <CAMuHMdXMsxRRMV8g6+9vTy_4o8HF49SUh2deNdFjgKwDLEWrxQ@mail.gmail.com>
+Subject: Re: stackinit unit test failures on m68k
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi G=C3=BCnter,
 
-On 9/02/24 11:51, Finn Thain wrote:
-> On Thu, 8 Feb 2024, Ulrich Hecht wrote:
+On Mon, Feb 12, 2024 at 12:06=E2=80=AFAM Guenter Roeck <linux@roeck-us.net>=
+ wrote:
+> I see the following stackinit unit test failures on m68k when running
+> the q800 emulation.
 >
->>> On 02/05/2024 11:15 AM CET Michael Schmitz <schmitzmic@gmail.com>
->>> wrote: On that note - Uli: would you prefer the entire backport
->>> series, or only those you do not already have?
->> I'd prefer to only get what's missing.
->>
-> Ulrich, I imagine that you would normally receive fixes via the
-> corresponding -stable trees. If Michael's series went into
-> stable/linux-4.19.y you could cherry-pick from there for your v4.4.y tree
-> and maybe avoid some merge conflicts that way. So perhaps we should ask
-> the -stable maintainers to backport first (?)
+>     # test_char_array_zero: ASSERTION FAILED at lib/stackinit_kunit.c:333
+>     Expected stackinit_range_contains(fill_start, fill_size, target_start=
+, target_size) to be true, but is false
+> stack fill missed target!? (fill 16 wide, target offset by -12)
 >
-> Al, I see that the following commits are missing from stable/linux-v6.1
-> and older trees, despite the word "fix" in the subject. Reading the merge
-> commit 1a8d05a726dc "Merge tag 'pull-fixes' of
-> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs" suggests to me
-> that these are old bugs...
-
-Only
-
-bd75497a77cc m68k: fix livelock in uaccess, and
-
-0d20abde987b m68k: Leave stack mangling to asm wrapper of sigreturn()
-
-need changes to apply to v4.19. Only compile tested so far.
-
-Happy to submit the adjusted patches to stable, and ask the stable 
-maintainers to pick up the missing bits from Linus' or Geert's tree.
-
-Would that be good enough?
-
-Cheers,
-
-Michael
-
+>     # test_char_array_none: ASSERTION FAILED at lib/stackinit_kunit.c:343
+>     Expected stackinit_range_contains(fill_start, fill_size, target_start=
+, target_size) to be true, but is false
+> stack fill missed target!? (fill 16 wide, target offset by -12)
 >
-> bd75497a77cc m68k: fix livelock in uaccess
-> d835eb3a57de riscv: fix livelock in uaccess
-> 0b92ed09cb9f hexagon: fix livelock in uaccess
-> 15261678a8c2 parisc: fix livelock in uaccess
-> dce45493aff3 alpha: fix livelock in uaccess
-> 79c54c97c773 sparc: fix livelock in uaccess
-> d088af1e221c ia64: fix livelock in uaccess
-> a1179ac743e8 microblaze: fix livelock in uaccess
-> e902e508c5b2 nios2: fix livelock in uaccess
-> caa82ae7ef52 openrisc: fix livelock in uaccess
->
-> In addition, stable/linux-v5.10 and the older trees lack the following
-> commit, despite the Fixes tag.
->
-> 50e43a573344 m68k: Update ->thread.esp0 before calling syscall_trace() in ret_from_signal
+> Do you happen to know if this a problem with the test, with m68k, or mayb=
+e
+> with the configuration ? My configuration is based on mac_defconfig with
+> various test options enabled. I use gcc 11.4 to build the image. I tried
+> with qemu v8.1 and v8.2.
+
+Thanks, I see the same failures in the logs of my last testrun on ARAnyM, t=
+oo.
+I haven't looked into the details yet.
+
+Only two failures does look like a nice improvement, compared to the
+previous time I ran that test ;-)
+
+https://lore.kernel.org/all/CAMuHMdX_g1tbiUL9PUQdqaegrEzCNN3GtbSvSBFYAL4Tzv=
+stFg@mail.gmail.com
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
