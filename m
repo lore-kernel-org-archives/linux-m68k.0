@@ -1,109 +1,107 @@
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACFCBF9FF
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Feb 2024 08:34:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707726859; cv=none; b=p+BPQqbjJLb4aCD0oluWuz2wCu75jrBHu2r5fKZi00ac5Nr+k3VQvnFwbAe6c0tVceKj0VofajFKVfK/0R6lT03j1qn9cs47dRnZe0GP9Tltrk6t7JhL1B//x8PK+0SZ7IxgCpY4PiSBqOl60rtm6Te1rgcP0tuB5w5KnuNsgJE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707726859; c=relaxed/simple;
-	bh=TC7YkIUu5KcxgTcQjkswqfPLExSnc8VDRJFLg3B3zu8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OcozkOWpi3rmW12Vrvv/XwlHSTrgGY9UCM/tMG+WLSLwpW1l1eFdd8hMUfBzfimDSuAV9lh60rU/urtEBWDTYpe3RRbfn/BOV/cklw+wpiuUAM1k4Ex0RJAsdnfFlANV9XPODCtM/iOt1j4lRbRWH3iGifu4NSslmU2jnhsUlyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc742543119so2304082276.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Feb 2024 00:34:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707726856; x=1708331656;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bQCv0JdYx3KO7ENBhTEo9fPqiTJK6xJp0dwgojv3j0A=;
-        b=ljzcXLHfs82xCVGHCQ8RZ3FT+9VV69XRpAbxZLsbTxMb6WLfHFbmZ07VJVmly/pdT4
-         /Hj+e/wvm9DRuHoGE8ut4Ez7of5wCMtKJFZsaHCmTH61IN34ny9nT2AHIQMoG1TjvZ18
-         qsf9cWVCRrx8JTNFS0Tmj2759bXcG9wgggT9Yb6+hp3/yc469Pm5l18clApD7wQB2h91
-         XRLANpQxB2fERqQyis9VXGYXaIjHBz9lNbjNTls7DIxOmtQnIl2AYsGEhQwL4ciHX2p/
-         8+az5BfEQxHdwaMXS/gCKMV3/GMBVMqjxDkja+qQy5Rao8C8+dqgV1vv3FlhKwpeBUz2
-         GZ9w==
-X-Gm-Message-State: AOJu0Yz0mCbhW/DNf78qxo6BlX+Ia2Hj2bAphh4+nUjhM53OKKr750W0
-	POqOp+wfBy0Jv76dOkeLqJaaRxDz1MFKAGlcrCae7121Ewxe0Ib62y3idbyz6Tk=
-X-Google-Smtp-Source: AGHT+IED3Laiu/oetksCvWE0a95yUo8+XAv++CfsVDGcUnso6uXr1Eg+YU1nBWjcPAzhHpGShLV1WQ==
-X-Received: by 2002:a25:d0d6:0:b0:dc7:2401:df4e with SMTP id h205-20020a25d0d6000000b00dc72401df4emr3221135ybg.39.1707726855512;
-        Mon, 12 Feb 2024 00:34:15 -0800 (PST)
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
-        by smtp.gmail.com with ESMTPSA id 129-20020a250b87000000b00dc701408c12sm1171518ybl.42.2024.02.12.00.34.15
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Feb 2024 00:34:15 -0800 (PST)
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so1989307276.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Feb 2024 00:34:15 -0800 (PST)
-X-Received: by 2002:a25:b1a1:0:b0:dc3:71da:35b0 with SMTP id
- h33-20020a25b1a1000000b00dc371da35b0mr2937501ybj.16.1707726854983; Mon, 12
- Feb 2024 00:34:14 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E20618030
+	for <linux-m68k@vger.kernel.org>; Mon, 12 Feb 2024 10:14:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.25
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707732850; cv=pass; b=MICyKQUoVqvvsEIYuLzjZXpE5nIEL9/wg/aeinJqDwMgrPAyOF7wPXmN9OzwF3DLCPaGJ84SsSk3o0pPup78AmIJDEyotwN2FKPHXrvyrwA4k4HktlBWSbg2gpxu4LRBLC3zcOBqElJkL2yS0Y/q2MXQVyADVdWpNiuYGIcYJOM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707732850; c=relaxed/simple;
+	bh=auJ5Raf4nrR7jMRo6YXPw7GwWC+VwmLC9HPp8mJYK4I=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=Uwa9wzwATZRh9u8c3D5af8TDAd7EMMjOZ7C9zAhFQUNqiLtnvk26pMQWMfy3y4QcU/oTDmHOG6zeXicMspjvubPb58x0EfQ9iroheL0pdWUgmGEDSjCMeSJrys/NsgNonlF+47+a7i6wmaz8U6sG5s3IhARRRkzPsZtM5auL3SU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fpond.eu; spf=none smtp.mailfrom=fpond.eu; dkim=pass (2048-bit key) header.d=fpond.eu header.i=@fpond.eu header.b=CUTPTOgA; dkim=permerror (0-bit key) header.d=fpond.eu header.i=@fpond.eu header.b=BmY5ATBy; arc=pass smtp.client-ip=85.215.255.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fpond.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=fpond.eu
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=fpond.eu header.i=@fpond.eu header.b="CUTPTOgA";
+	dkim=permerror (0-bit key) header.d=fpond.eu header.i=@fpond.eu header.b="BmY5ATBy"
+ARC-Seal: i=1; a=rsa-sha256; t=1707732124; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=Bqnlx6nyLzNQHTL46u6mG9nRvJ2eldbEz/mptnzQXj77iKbxMZz4zLa+jflDvcb/uP
+    z08hDZ5QF0fRCeC2HCQD3cQiaXJNY4ur/E59KhzePB2EfA+7Bn1Esq2oVsD3qaX2yNB9
+    ASLNILiyeswly/8+akrdXvoIcpol0/fdMlmVSMVJWWoWvvGEN5CCfatZelUfSGg3ddcj
+    7V5u5twv+MpZQE9HPXyg1t67HqYkb2WeaijfAOuoSdPFtjDDclAoHU7AuvkwjlPooxXW
+    Y5VxfcDzixnyjciSTHlZ0uzoAkCGurIChdAQB571dXGRnevafaJZXOwhdvRX2CW+lqLm
+    Uh5Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1707732124;
+    s=strato-dkim-0002; d=strato.com;
+    h=Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=7C5l8fhhWXEqulnPAAcprupFA6jwXOqitjdUFG+tUi8=;
+    b=Z86js2bEREWEu7pHI010UxPVIowYZNUqCBcCXbKVsuRkah7J/vUopvMpdI/obpXBG6
+    Pdh/kvj7xPSikPhNsjcW4V91MBddUOxJoulwEfMknKCsj/b82iz0Z4jDQ5AfN4I96DDQ
+    QWK31mkP1iFJnwzB7+TB2NRHp6lQMQ164zLGms9l6Im1IXb9YtSdJFhD9OudLcTTStYx
+    qZtekW+g0r6AgkQM+PlAEzoZd85WXIXxj58FV6iSgY2nuJ5iQ42yzw0wj433+IW8CmNL
+    1AaeWhowCMamLAAFneV4VFOojGRu8n2EPC7AchKOOBddu6FITyPuZTcgnlPWba2wwCuT
+    dw1A==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1707732123;
+    s=strato-dkim-0002; d=fpond.eu;
+    h=Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=7C5l8fhhWXEqulnPAAcprupFA6jwXOqitjdUFG+tUi8=;
+    b=CUTPTOgAmB3D9ahi/RAz2vxRGZAqmGInnCQBlyyJ83fH8B7YPuiabUibBNCGpkoZhT
+    GFqFYeaTEi493ogjf9t60LDIyMMkrjT6/4O65/skSKcsT06OY6penyIbrCsfktYutuLw
+    xDykZY3imNhp55rd5uc3iquwTCWfLEPWZjsuFo6uIwui15H/ddKPBpvIaYKL0SYY7xfG
+    zb27g8G/QLGo+VCMd/xU9f8Lh7s5NRVI7u/L+SjdGR5jJb03LNgZEmwHbwNTPC1yzEdY
+    UQMKF+fE7z10nPVNgR96vbgFFMxKYXpE729R5cozv519OcW6QvrBfJXjpN6Wbzfgf8II
+    lgkA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1707732123;
+    s=strato-dkim-0003; d=fpond.eu;
+    h=Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=7C5l8fhhWXEqulnPAAcprupFA6jwXOqitjdUFG+tUi8=;
+    b=BmY5ATBycWW11z+vJSWv4HJJgxFe9hVN9PlfCCKBUlevvfyvyluypGYWzUjTn6SyKO
+    Lkvp2AeFO5chzNTkceAg==
+X-RZG-AUTH: ":OWANVUa4dPFUgKR/3dpvnYP0Np73amq+g13rqGzvv3qxio1R8fCs/83N2Y0="
+Received: from ox-live-app103.back.ox.d0m.de
+    by smtp-ox.front (RZmta 49.11.2 AUTH)
+    with ESMTPSA id Z7ddde01CA236s5
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+	(Client did not present a certificate);
+    Mon, 12 Feb 2024 11:02:03 +0100 (CET)
+Date: Mon, 12 Feb 2024 11:02:03 +0100 (CET)
+From: Ulrich Hecht <uli@fpond.eu>
+To: Finn Thain <fthain@linux-m68k.org>, Al Viro <viro@zeniv.linux.org.uk>
+Cc: Michael Schmitz <schmitzmic@gmail.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	linux-m68k@vger.kernel.org
+Message-ID: <522961735.202648.1707732123771@webmail.strato.com>
+In-Reply-To: <34d37f57-3146-8aa0-7828-2df2d1679ee4@linux-m68k.org>
+References: <20240205023236.9325-1-schmitzmic@gmail.com>
+ <20240205023236.9325-5-schmitzmic@gmail.com>
+ <CAMuHMdUMwQSEwDQ3tsmChutY3P0VQUA0A8jg63NxfyrmxfKWXQ@mail.gmail.com>
+ <401b6911-e6ed-3e9f-9dcc-d4f951c6beef@gmail.com>
+ <1501038841.1120470.1707393238298@webmail.strato.com>
+ <34d37f57-3146-8aa0-7828-2df2d1679ee4@linux-m68k.org>
+Subject: Re: [PATCH RFC v2 4/8] m68k: Handle arrivals of multiple signals
+ correctly
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <a0d10d50-2720-4ecd-a2c6-c2c5e5aeee65@roeck-us.net>
-In-Reply-To: <a0d10d50-2720-4ecd-a2c6-c2c5e5aeee65@roeck-us.net>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 12 Feb 2024 09:34:02 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXMsxRRMV8g6+9vTy_4o8HF49SUh2deNdFjgKwDLEWrxQ@mail.gmail.com>
-Message-ID: <CAMuHMdXMsxRRMV8g6+9vTy_4o8HF49SUh2deNdFjgKwDLEWrxQ@mail.gmail.com>
-Subject: Re: stackinit unit test failures on m68k
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.6-Rev59
+X-Originating-Client: open-xchange-appsuite
 
-Hi G=C3=BCnter,
 
-On Mon, Feb 12, 2024 at 12:06=E2=80=AFAM Guenter Roeck <linux@roeck-us.net>=
- wrote:
-> I see the following stackinit unit test failures on m68k when running
-> the q800 emulation.
->
->     # test_char_array_zero: ASSERTION FAILED at lib/stackinit_kunit.c:333
->     Expected stackinit_range_contains(fill_start, fill_size, target_start=
-, target_size) to be true, but is false
-> stack fill missed target!? (fill 16 wide, target offset by -12)
->
->     # test_char_array_none: ASSERTION FAILED at lib/stackinit_kunit.c:343
->     Expected stackinit_range_contains(fill_start, fill_size, target_start=
-, target_size) to be true, but is false
-> stack fill missed target!? (fill 16 wide, target offset by -12)
->
-> Do you happen to know if this a problem with the test, with m68k, or mayb=
-e
-> with the configuration ? My configuration is based on mac_defconfig with
-> various test options enabled. I use gcc 11.4 to build the image. I tried
-> with qemu v8.1 and v8.2.
+> On 02/08/2024 11:51 PM CET Finn Thain <fthain@linux-m68k.org> wrote:
+> Ulrich, I imagine that you would normally receive fixes via the 
+> corresponding -stable trees. If Michael's series went into 
+> stable/linux-4.19.y you could cherry-pick from there for your v4.4.y tree 
+> and maybe avoid some merge conflicts that way.
 
-Thanks, I see the same failures in the logs of my last testrun on ARAnyM, t=
-oo.
-I haven't looked into the details yet.
+That would work for me.
 
-Only two failures does look like a nice improvement, compared to the
-previous time I ran that test ;-)
-
-https://lore.kernel.org/all/CAMuHMdX_g1tbiUL9PUQdqaegrEzCNN3GtbSvSBFYAL4Tzv=
-stFg@mail.gmail.com
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+CU
+Uli
