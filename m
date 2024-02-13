@@ -1,107 +1,92 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.25])
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E20618030
-	for <linux-m68k@vger.kernel.org>; Mon, 12 Feb 2024 10:14:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.25
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707732850; cv=pass; b=MICyKQUoVqvvsEIYuLzjZXpE5nIEL9/wg/aeinJqDwMgrPAyOF7wPXmN9OzwF3DLCPaGJ84SsSk3o0pPup78AmIJDEyotwN2FKPHXrvyrwA4k4HktlBWSbg2gpxu4LRBLC3zcOBqElJkL2yS0Y/q2MXQVyADVdWpNiuYGIcYJOM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707732850; c=relaxed/simple;
-	bh=auJ5Raf4nrR7jMRo6YXPw7GwWC+VwmLC9HPp8mJYK4I=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=Uwa9wzwATZRh9u8c3D5af8TDAd7EMMjOZ7C9zAhFQUNqiLtnvk26pMQWMfy3y4QcU/oTDmHOG6zeXicMspjvubPb58x0EfQ9iroheL0pdWUgmGEDSjCMeSJrys/NsgNonlF+47+a7i6wmaz8U6sG5s3IhARRRkzPsZtM5auL3SU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fpond.eu; spf=none smtp.mailfrom=fpond.eu; dkim=pass (2048-bit key) header.d=fpond.eu header.i=@fpond.eu header.b=CUTPTOgA; dkim=permerror (0-bit key) header.d=fpond.eu header.i=@fpond.eu header.b=BmY5ATBy; arc=pass smtp.client-ip=85.215.255.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fpond.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=fpond.eu
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74C7D256A;
+	Tue, 13 Feb 2024 05:05:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.29
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707800722; cv=none; b=YREzsEIvTBECr0ZmHlsP4oDg+DjX6ZMEyDT34Cq7jLY/Js9gGtu1/+QicjdRG8m9nqR6UK7LEfl25umhSlabALKUlRRsL0TqnWXi0nzWWH/XYh0A/zm7NmPV3S+3kopxQM1HJivOSLnXYVj2UQ2b7W/+Z41VieAf+mOpNuRcp7U=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707800722; c=relaxed/simple;
+	bh=WSKMr6gkDr1yf6ORzy09m9ta4RLYmTrh742X0+WP1LY=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=XamtYqAq/Jtr8yRgLxlyM6gT8GPWDrfeGyQDXJL8RTsC8P1+UFl+eO7UE6X24TxmUQ0E7yM6Aom1LS6gHAkMvD1FUmSGlQbmzfAOl+/+d1s6AxD2AyiUiusBU8ezXQaPxowdGJEmwfTAYywgPn+GGOrIAnBcP/1Y4Je/N1V7LtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=xdjjI/uG; arc=none smtp.client-ip=66.111.4.29
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fpond.eu header.i=@fpond.eu header.b="CUTPTOgA";
-	dkim=permerror (0-bit key) header.d=fpond.eu header.i=@fpond.eu header.b="BmY5ATBy"
-ARC-Seal: i=1; a=rsa-sha256; t=1707732124; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=Bqnlx6nyLzNQHTL46u6mG9nRvJ2eldbEz/mptnzQXj77iKbxMZz4zLa+jflDvcb/uP
-    z08hDZ5QF0fRCeC2HCQD3cQiaXJNY4ur/E59KhzePB2EfA+7Bn1Esq2oVsD3qaX2yNB9
-    ASLNILiyeswly/8+akrdXvoIcpol0/fdMlmVSMVJWWoWvvGEN5CCfatZelUfSGg3ddcj
-    7V5u5twv+MpZQE9HPXyg1t67HqYkb2WeaijfAOuoSdPFtjDDclAoHU7AuvkwjlPooxXW
-    Y5VxfcDzixnyjciSTHlZ0uzoAkCGurIChdAQB571dXGRnevafaJZXOwhdvRX2CW+lqLm
-    Uh5Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1707732124;
-    s=strato-dkim-0002; d=strato.com;
-    h=Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=7C5l8fhhWXEqulnPAAcprupFA6jwXOqitjdUFG+tUi8=;
-    b=Z86js2bEREWEu7pHI010UxPVIowYZNUqCBcCXbKVsuRkah7J/vUopvMpdI/obpXBG6
-    Pdh/kvj7xPSikPhNsjcW4V91MBddUOxJoulwEfMknKCsj/b82iz0Z4jDQ5AfN4I96DDQ
-    QWK31mkP1iFJnwzB7+TB2NRHp6lQMQ164zLGms9l6Im1IXb9YtSdJFhD9OudLcTTStYx
-    qZtekW+g0r6AgkQM+PlAEzoZd85WXIXxj58FV6iSgY2nuJ5iQ42yzw0wj433+IW8CmNL
-    1AaeWhowCMamLAAFneV4VFOojGRu8n2EPC7AchKOOBddu6FITyPuZTcgnlPWba2wwCuT
-    dw1A==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1707732123;
-    s=strato-dkim-0002; d=fpond.eu;
-    h=Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=7C5l8fhhWXEqulnPAAcprupFA6jwXOqitjdUFG+tUi8=;
-    b=CUTPTOgAmB3D9ahi/RAz2vxRGZAqmGInnCQBlyyJ83fH8B7YPuiabUibBNCGpkoZhT
-    GFqFYeaTEi493ogjf9t60LDIyMMkrjT6/4O65/skSKcsT06OY6penyIbrCsfktYutuLw
-    xDykZY3imNhp55rd5uc3iquwTCWfLEPWZjsuFo6uIwui15H/ddKPBpvIaYKL0SYY7xfG
-    zb27g8G/QLGo+VCMd/xU9f8Lh7s5NRVI7u/L+SjdGR5jJb03LNgZEmwHbwNTPC1yzEdY
-    UQMKF+fE7z10nPVNgR96vbgFFMxKYXpE729R5cozv519OcW6QvrBfJXjpN6Wbzfgf8II
-    lgkA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1707732123;
-    s=strato-dkim-0003; d=fpond.eu;
-    h=Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=7C5l8fhhWXEqulnPAAcprupFA6jwXOqitjdUFG+tUi8=;
-    b=BmY5ATBycWW11z+vJSWv4HJJgxFe9hVN9PlfCCKBUlevvfyvyluypGYWzUjTn6SyKO
-    Lkvp2AeFO5chzNTkceAg==
-X-RZG-AUTH: ":OWANVUa4dPFUgKR/3dpvnYP0Np73amq+g13rqGzvv3qxio1R8fCs/83N2Y0="
-Received: from ox-live-app103.back.ox.d0m.de
-    by smtp-ox.front (RZmta 49.11.2 AUTH)
-    with ESMTPSA id Z7ddde01CA236s5
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-	(Client did not present a certificate);
-    Mon, 12 Feb 2024 11:02:03 +0100 (CET)
-Date: Mon, 12 Feb 2024 11:02:03 +0100 (CET)
-From: Ulrich Hecht <uli@fpond.eu>
-To: Finn Thain <fthain@linux-m68k.org>, Al Viro <viro@zeniv.linux.org.uk>
-Cc: Michael Schmitz <schmitzmic@gmail.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-m68k@vger.kernel.org
-Message-ID: <522961735.202648.1707732123771@webmail.strato.com>
-In-Reply-To: <34d37f57-3146-8aa0-7828-2df2d1679ee4@linux-m68k.org>
-References: <20240205023236.9325-1-schmitzmic@gmail.com>
- <20240205023236.9325-5-schmitzmic@gmail.com>
- <CAMuHMdUMwQSEwDQ3tsmChutY3P0VQUA0A8jg63NxfyrmxfKWXQ@mail.gmail.com>
- <401b6911-e6ed-3e9f-9dcc-d4f951c6beef@gmail.com>
- <1501038841.1120470.1707393238298@webmail.strato.com>
- <34d37f57-3146-8aa0-7828-2df2d1679ee4@linux-m68k.org>
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="xdjjI/uG"
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailout.nyi.internal (Postfix) with ESMTP id 248045C00D5;
+	Tue, 13 Feb 2024 00:05:18 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Tue, 13 Feb 2024 00:05:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707800718; x=1707887118; bh=Rocq4MWumvMfC9CyxYv4ihUWxIMl
+	w/77e/N5Du0lMQc=; b=xdjjI/uGXdt7OIXCZrX8j28ZTCn++0Lx1WEuVWn7Oxab
+	Mb5LLyl1kI1PHe0zaoq0TG7U/ka/tJ7K5sKQ2wc7YWHwTILEue56nt06LxCfKgec
+	Yv2D7BT5xB7BJVgbFNXJwBQeDoswOe+SWKUpc5NKx/lcr8t1c+B5bFnutya/c6nk
+	V+1jpO3qjae/4+dwSpPplp3Qyu7Z9PmszxXRHD9fS1HcrB+pxREsEpN38WRXFJmj
+	UMLyuwAhrzK8Lmu+MfKie6omTOEoL9tgn4XvsaAJ8tSN7UivKZ3qkgKAZFWVSlpb
+	slRyocSnKSzcl4B8TV/l7vuX0klGS7LXG3BPI11IpQ==
+X-ME-Sender: <xms:jfjKZfadPvel9h4Le3UmYdVErNmOb9Ydb2Dy_li4FCyPrMaZCMFDtg>
+    <xme:jfjKZeZhUsJtMonr_KkAdXn7QJXZyFE8G7K6AMtEbxGUzfu62p1KRs4nYwEWB2F7_
+    yaSnEOtHnxjQQHYjJc>
+X-ME-Received: <xmr:jfjKZR-rcGxIMoJ7NJqifnQ9nNYdDXaG0WnvfAWrYlSGW8wA2XFcDv-Kfvw_JOPAtFdIjkb4mKLKW0dUTCV4e-R3Eqmw6-Ej4R8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudeggdekudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
+    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
+    htvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedvueeh
+    ueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
+    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:jfjKZVoiLk1QPYRNKclOLt2EWgb7kRqQ3bZ0jQMimdtz2_IDtDALVw>
+    <xmx:jfjKZapAvUIdAS5x8xYtmM-U2pe1EMXtOx0n2bwDQ9uk5A__KTmBrw>
+    <xmx:jfjKZbTgS_zOcxyUOkDpwdljxJKmwlNJOmLi7EKJ3Yuu7gFx5pfwPg>
+    <xmx:jvjKZTlgZFtTygnCkeKIPM5yjVQ73b_4O_1lfrKg91uEqDL6s2yR6Q>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 13 Feb 2024 00:05:14 -0500 (EST)
+Date: Tue, 13 Feb 2024 16:05:40 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Ulrich Hecht <uli@fpond.eu>
+cc: Al Viro <viro@zeniv.linux.org.uk>, Michael Schmitz <schmitzmic@gmail.com>, 
+    Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, 
+    stable@vger.kernel.org
 Subject: Re: [PATCH RFC v2 4/8] m68k: Handle arrivals of multiple signals
  correctly
+In-Reply-To: <522961735.202648.1707732123771@webmail.strato.com>
+Message-ID: <f3022b02-9859-1af1-1913-4215a12c1da8@linux-m68k.org>
+References: <20240205023236.9325-1-schmitzmic@gmail.com> <20240205023236.9325-5-schmitzmic@gmail.com> <CAMuHMdUMwQSEwDQ3tsmChutY3P0VQUA0A8jg63NxfyrmxfKWXQ@mail.gmail.com> <401b6911-e6ed-3e9f-9dcc-d4f951c6beef@gmail.com> <1501038841.1120470.1707393238298@webmail.strato.com>
+ <34d37f57-3146-8aa0-7828-2df2d1679ee4@linux-m68k.org> <522961735.202648.1707732123771@webmail.strato.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.6-Rev59
-X-Originating-Client: open-xchange-appsuite
+Content-Type: text/plain; charset=US-ASCII
 
+[Cc: stable]
 
-> On 02/08/2024 11:51 PM CET Finn Thain <fthain@linux-m68k.org> wrote:
-> Ulrich, I imagine that you would normally receive fixes via the 
-> corresponding -stable trees. If Michael's series went into 
-> stable/linux-4.19.y you could cherry-pick from there for your v4.4.y tree 
-> and maybe avoid some merge conflicts that way.
+On Mon, 12 Feb 2024, Ulrich Hecht wrote:
 
-That would work for me.
+> 
+> > On 02/08/2024 11:51 PM CET Finn Thain <fthain@linux-m68k.org> wrote:
+> > Ulrich, I imagine that you would normally receive fixes via the 
+> > corresponding -stable trees. If Michael's series went into 
+> > stable/linux-4.19.y you could cherry-pick from there for your v4.4.y tree 
+> > and maybe avoid some merge conflicts that way.
+> 
+> That would work for me.
+> 
 
-CU
-Uli
+OK. Here's the relevant commit. It fixes bd6f56a75bb2 which first appeared 
+in v2.6.38-rc1. I believe this can be cherry-picked without any conflicts.
+
+50e43a573344 m68k: Update ->thread.esp0 before calling syscall_trace() in ret_from_signal
