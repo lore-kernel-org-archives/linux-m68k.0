@@ -1,139 +1,92 @@
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA28757868
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 13 Feb 2024 14:40:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9754857897
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 13 Feb 2024 14:44:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707835252; cv=none; b=ntYHBsmyPWsGGybUSK+iHti1wxaX8Zcs2BfC2YIdizH8VmgtkA4tGgrzzLMJdlY29Lzh4UDPM26UclhtLgqn+qb2/WnhoqEHe1Q4V9fhAKeGXneuk3KatMJQx1dhCuqgG688F5NseTDUjxOpCOH5xAYB5Vf3GvNu4gv8jrvv32s=
+	t=1707835468; cv=none; b=sT2QzYIlJ8KHtxgjntEBmaHbznjSEX6S3Ze3ar2ezx3woFtgKtv+9o5VtDHLHOe87PgXxKabPlgfkxvvp0ysXjlDb/t2DB9Ytgwsx1Oz1ofp9aoUOLZdqxZJRrEXMjOEGyrW1yCZpxVekyy5VCAHwPUCi0AXX+ZjMsMRgMBl30c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707835252; c=relaxed/simple;
-	bh=9wr1dY/KF1EMO7RfHDenVXuKa3LL028Ys5gjvGlxZg0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=e+aBuCgRbKmE+mYCsWq3st+VwBf7oYr/0UGwV50dWIf64DNF+9iCh5Fa1ELT4i3APr6CnK7zJeZirpvGouvKOf0wA1YaocIy07JItNVQV1jMRZC+mMDZoW7GlKIcvNmXmKSgtoqsCQUegUkUv+BkuM5kMdcKNcjyoqJuwPkHUvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=o4iwT3yz; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+	s=arc-20240116; t=1707835468; c=relaxed/simple;
+	bh=4T6Z+T+8+wgSIZaaE8oQJZMCq24ZtSpur1maeFVGFmY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=c/ypkNTiVtJYq2iIJ8x6VyoEH/FUu4M7IQcgSZaCM1nZzmhCdKwn9uoShfOsGhCGwqhlXAVRbUtVF1LUBoQvzEV9TRL1afZUOo8IUzemF/9ztZKy0NDdL5WEsB6I5s2RYndvX5sKv8AzY96x6t3HSsJFZNK1NlcZ7p46Chymg38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="o4iwT3yz"
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d780a392fdso36641255ad.3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 13 Feb 2024 06:40:50 -0800 (PST)
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-607836d3c5bso8041007b3.2
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 13 Feb 2024 06:44:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707835250; x=1708440050;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jGhFLWDt9P653uYYjvnNppxSBgBEq+mV75IitCasdPI=;
-        b=P5C6QCyW0VkK97XH3DZegGwJASROsgPBwNPZheb/v106TDVrO/vz1CuBXaaHTnq0Eo
-         S3ZSUIKW1eY0mYl+pA7hBIMGUHsZo7DhjTktZGmGPL62SesdDtmA5xV8YKlcmh1aVQ3K
-         oUCjs4nnANsrxIpG9E4d7BHCYHDBvW2WV5Nqpryu/COzD3Z5CDUT/MnFdVrOaXB/Xo8S
-         ghQtMvXZZJYXCP3ESld/McnXoYH0sHa9xAqsdQfbe37vhuYcorrbEF3DVNLjFflGUscm
-         F+czSn86BZWpAyoLSY/Wy48W4hptQkB2nh7wRmj1hxoDO+U7np00nDCWl79rDwLbCSgz
-         wZ2Q==
-X-Gm-Message-State: AOJu0Yz80kY/pQ1udjiv19+FVTO6gOz8Zl6u0Lkc/wtXDtzvCSmAaEPM
-	i5nT0t1V5Iu/Ph5A7iS9JujrUSd9QdKrg/C4xVFmsbgEpVjKKuxN
-X-Google-Smtp-Source: AGHT+IEvi+fP04X+P68cjc0JGIFEo5a6eZF1WWuTxWEnQ6bOrr7K/2nd2I4krYUBelnamXggzk27Dg==
-X-Received: by 2002:a17:902:e88b:b0:1db:4f20:3ada with SMTP id w11-20020a170902e88b00b001db4f203adamr197322plg.49.1707835250132;
-        Tue, 13 Feb 2024 06:40:50 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCX/iQDkEygH1QiPaJNqM5Mh4Ch0FQ1C2CBoIYZfnHNEaB3gmkyqb4QOl7PWDuSWnGQVe/PNnmv7SWBq/HgQZZrG/QkPO02xqxvCkFF2CC/6W3vD4EatO5zaT/F8qxZX95PJOMZhsssfpQ==
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id lg7-20020a170902fb8700b001da2f9c6e01sm2184362plb.136.2024.02.13.06.40.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 06:40:49 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1707835248;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=jGhFLWDt9P653uYYjvnNppxSBgBEq+mV75IitCasdPI=;
-	b=o4iwT3yzbXd+mkE6O8JXRIR6hZypZ5x0Af8gQoXyk8CpM8h3c1QhafSWMhLW+05Jvd9FGU
-	KL+r1ul8SFgcWyWxdUDwatHqF2C5TM2hCuiM98vJqeG+65670NsUeRVwJod4g5Equ3Qije
-	2GaqA46njbxtMqBZuAfc1xZOyp8VtmhgOhmox6IzXWy+s/DuyGtPGt6YLwyWvl9/Hwg1/l
-	/2LLYpfq8Pmk1bFUmhbzJaDxqy7lgoFcU5WfciROJmLU7gf/aK6oA33SHJ3HGVVXL8aKtx
-	RRuE1zfzQuGsozU9YSIdmrkKA1pZ0XKFwySJVE5bbIUnUbus+4i+86d/h/wUxA==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Tue, 13 Feb 2024 11:41:25 -0300
-Subject: [PATCH] zorro: make zorro_bus_type const
+        d=1e100.net; s=20230601; t=1707835464; x=1708440264;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RWOHboTTtc8J+GRIzyUUHApRBnZZYmJFISH7bck1uo4=;
+        b=Rtb/7946i2oXRhxxjP+PvuLFp96cf5rCpjRosX9dXKYC25hVBH8Y9ZT+nCfAoQvWuT
+         6J7KckR17NUF3HkyosJBJsd5oLuWpH71OUffO9Ke9OmicfB1dYG/k7wQvWkcuvJ75W5v
+         80YJEvMySSLXgQHVwBPCbRldNollIlj8rWFAwxuIrlumy1AscOve1iWY1fuF600UXOLy
+         3DJZrLmyDAHw/UMxwDOf+PKJfAyTdygqM9pwXjTtRHv7dz/F2bj/pAlHdU32ZMLrWDcR
+         55zCUFXADigdg0KdJeLA3YHv3YyxAvpBTj8mlCWF58yYeWdPU57kzdlnlUK7otyqYqjS
+         f1ow==
+X-Gm-Message-State: AOJu0YxtkbhBDGBVyDsX8M5zi85+ElmGOniqyiDg9M7bnDD+v4/5G3wc
+	QB8f32hCoT8GQ6EASlFCfTaCuR+tIDURrBAV/unHVD1C5WS431aBVDf6gki1UXw=
+X-Google-Smtp-Source: AGHT+IGKOKVR24Njrr5w8zuR3XQsJVLCsVOVmwC4fEJwTMwKDssJoIVLBFIB/NNR13YqhzTE8sNFCw==
+X-Received: by 2002:a81:8491:0:b0:604:16de:b563 with SMTP id u139-20020a818491000000b0060416deb563mr9366924ywf.11.1707835464329;
+        Tue, 13 Feb 2024 06:44:24 -0800 (PST)
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com. [209.85.219.180])
+        by smtp.gmail.com with ESMTPSA id i138-20020a816d90000000b006078cfca84dsm253341ywc.38.2024.02.13.06.44.23
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Feb 2024 06:44:24 -0800 (PST)
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dc6e080c1f0so3789929276.2
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 13 Feb 2024 06:44:23 -0800 (PST)
+X-Received: by 2002:a25:848b:0:b0:dc6:d738:1fa6 with SMTP id
+ v11-20020a25848b000000b00dc6d7381fa6mr9937843ybk.6.1707835463699; Tue, 13 Feb
+ 2024 06:44:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240213-bus_cleanup-zorro-v1-1-388ceed8e7bd@marliere.net>
-X-B4-Tracking: v=1; b=H4sIAJR/y2UC/x3MQQqAIBBA0avErBNyalFdJSIypxoIjZEiEu+et
- HyL/yMEEqYAfRFB6ObA3mXosoBln91Gim02YIVNhbpW5grTctDsrlO9XsSrDlvTGY22bizk7hR
- a+fmfw5jSBzfawDBjAAAA
-To: Geert Uytterhoeven <geert@linux-m68k.org>
+References: <20240213-bus_cleanup-zorro-v1-1-388ceed8e7bd@marliere.net>
+In-Reply-To: <20240213-bus_cleanup-zorro-v1-1-388ceed8e7bd@marliere.net>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 13 Feb 2024 15:44:11 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdX472r7nY1QenJcG1VQWAF_Bx53UyXOWdPENTQKdDvLCw@mail.gmail.com>
+Message-ID: <CAMuHMdX472r7nY1QenJcG1VQWAF_Bx53UyXOWdPENTQKdDvLCw@mail.gmail.com>
+Subject: Re: [PATCH] zorro: make zorro_bus_type const
+To: "Ricardo B. Marliere" <ricardo@marliere.net>
 Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1594; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=9wr1dY/KF1EMO7RfHDenVXuKa3LL028Ys5gjvGlxZg0=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBly3+YZ+6itBtgGcn+ayT7cPIzI1TiuPy0D93qw
- weRl+tqvVCJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZct/mAAKCRDJC4p8Y4ZY
- pkoeD/9IAMZO1Vf9XjA42IyUi3c8QxczV+6rzkVQn9gAeKXXfOgAOgumyDNFL9cPF26/1d+WMHD
- mzPsQfzYxXJSCZbaX/2m7bIqPyG5SIKzU5ZIK/eVGEBAMFt1dL6LGw21LLAr20f+uqi6IxHmu1o
- n/pop2FrTnxSSTMDh+SpeAfwBRgkZyRkabt09pNu+3j9aUb15P+e/Omo2fFX7PLKYrZDlu4GNU6
- hseq0IOJepl3PWj4iFY9jZ8cj0W3odlgek/dPG6uqHg1FwXFtEM9irUWcAVKrh/sNMbPbtyp7jX
- NDP8v1chhtvj7/qowqOXli+/rRV/GjrYjGpxRzAKDrjencVEuL+E50io055BbUR0V+RxYLq1Cu1
- PbrxS2RGc9UA9kZXI+EmbH/7qWtjj8t+A6CKWoJzSK1yGgaDRONBwGPaSfTsC4zAwf+2zDxfJRi
- 1Wmkgt7sREOS/WWhxyjG8bbqiu/vvXBGQss8FMvKM6GAcwe6xM7ocvTgc8zm4/aLhePaV0ADtCV
- seCWQCVAdZkd18yXhjFl/vJjmpY6sxptmFrUvgvC0hsoVHitixcpW/CjomFWMd+RYc13SidhqL/
- WdSkA+Xt7ALsFswiYzVX1bwC4nXmqf0LyyNYWayZQOVmpVVIXdP5UPwNMvPxgVQnfjbTTh+7lwq
- DJbHkcBXMuSdDhQ==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Since commit d492cc2573a0 ("driver core: device.h: make struct
-bus_type a const *"), the driver core can properly handle constant
-struct bus_type, move the zorro_bus_type variable to be a constant
-structure as well, placing it into read-only memory which can not be
-modified at runtime.
+On Tue, Feb 13, 2024 at 3:40=E2=80=AFPM Ricardo B. Marliere
+<ricardo@marliere.net> wrote:
+> Since commit d492cc2573a0 ("driver core: device.h: make struct
+> bus_type a const *"), the driver core can properly handle constant
+> struct bus_type, move the zorro_bus_type variable to be a constant
+> structure as well, placing it into read-only memory which can not be
+> modified at runtime.
+>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- drivers/zorro/zorro-driver.c | 2 +-
- drivers/zorro/zorro.h        | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k tree for v6.9.
 
-diff --git a/drivers/zorro/zorro-driver.c b/drivers/zorro/zorro-driver.c
-index 025edfccedcf..f49d19977e82 100644
---- a/drivers/zorro/zorro-driver.c
-+++ b/drivers/zorro/zorro-driver.c
-@@ -150,7 +150,7 @@ static int zorro_uevent(const struct device *dev, struct kobj_uevent_env *env)
- 	return 0;
- }
- 
--struct bus_type zorro_bus_type = {
-+const struct bus_type zorro_bus_type = {
- 	.name		= "zorro",
- 	.dev_name	= "zorro",
- 	.dev_groups	= zorro_device_attribute_groups,
-diff --git a/drivers/zorro/zorro.h b/drivers/zorro/zorro.h
-index f84df9fb4c20..df44e35203fd 100644
---- a/drivers/zorro/zorro.h
-+++ b/drivers/zorro/zorro.h
-@@ -4,7 +4,7 @@
-      *  Zorro bus
-      */
- 
--extern struct bus_type zorro_bus_type;
-+extern const struct bus_type zorro_bus_type;
- 
- 
- #ifdef CONFIG_ZORRO_NAMES
+Gr{oetje,eeting}s,
 
----
-base-commit: 6b9c045b0602cf64b33ea6da5e6aa6f81dd47ae8
-change-id: 20240213-bus_cleanup-zorro-928b9b12d34d
+                        Geert
 
-Best regards,
--- 
-Ricardo B. Marliere <ricardo@marliere.net>
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
 
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
