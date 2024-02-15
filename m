@@ -1,61 +1,85 @@
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54D725FDC0
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 13 Feb 2024 15:05:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.40.73.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B886D518;
+	Thu, 15 Feb 2024 07:11:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707836730; cv=none; b=OBDrj7U/09KzAPGiS5RtnUGQ2X4IaKliTSF35Yq26sHaVHtdtnpt27L9OdEDnmn8gvcjbQ3F4IRvAgq5nGfPpxsw8HFX+8GdoPF+o8oQhC8kZbdTQEoI//Zo2SNmxMG2eF9m7+EEPbZ7ZczsuZfxRkaBBUK5Ssc22JxbWt6e6ug=
+	t=1707981070; cv=none; b=N3Mz6Qm39fDOR+D8XH7no52aHii916kMLlDMhdBNKJl8rRr/TvFq+IEyyCxw8vrEO9x+Nna736V9vZ1X8FXLvzRwAeO9g/CzGrRsaKtZqYeDBFbe5v6w5ZtZ0gKrKbAszc45iyPaA8RIKNOBDpb5YE90U6zOflyssvVYwHHlM3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707836730; c=relaxed/simple;
-	bh=Qa6rVTdH4iQGyAAt2k4ZX9zqEob7WMbTmIXFs7XCOio=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gUflYaWU7dlnareAeQQvfBNz/E4ZD7m7qMXix8Dy1pIFviPiEsRTaTFdgipdiQZgZNq1P2ljg25YHpYMUs4y/05wUWfBGNBhsHtsepJRHjd7CvqvO9YS1N/tK6jPZ9goKxUVY3IljPOaVWnSK2OUggwHGy7d8riJEq6bMmma76Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=H7C4M9rd; arc=none smtp.client-ip=145.40.73.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1707981070; c=relaxed/simple;
+	bh=WME+GiprMna6xXV4mZBqG46m7hYx6KZ5nkbGB0j/5YI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=g8gyGh5OLgON/XKCK4k5wxL5b0MxLAr5zj5m5WzgLgmVbsid1M5PJIMunVx4la3x5+FboBZRRU8sFZ6F6ZiVQctDCGt0LRSjORfDX/pR6MqaHIT8N+yle3YXWWm16RDAURQcjcL+ucNDJiQKtKNj/vShqe3UwkRQFowGZRM2r2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=s6NYKEcM; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="H7C4M9rd"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id F13C4CE1C9F;
-	Tue, 13 Feb 2024 15:05:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7CC4C433F1;
-	Tue, 13 Feb 2024 15:05:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1707836725;
-	bh=Qa6rVTdH4iQGyAAt2k4ZX9zqEob7WMbTmIXFs7XCOio=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=H7C4M9rdRXokWR0t+dcNMJMksJsOVh7lNpJoEITtBG8GNgSp1b7NVVg/ra3HOC043
-	 YpNX14dvMfJz99sgnbH7n2TfY+D1NwlEq8GCH30cidPhdnShJ7HsV5GdhFnkd4/nuU
-	 wv3m49EbmKNobmnROko2cMPV1f+dG/RL2sKfWAAs=
-Date: Tue, 13 Feb 2024 16:05:22 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="s6NYKEcM"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=Nxm36FqNxHTO2bUEkPIukbTZrVtZ7SMU3lqBNewlmRw=; b=s6NYKEcMfnp31ToeLegkrxxtgm
+	ajKd0J3cEPs9lWZrwB4JvwhxTNESqQjX/hKipTGcDCZEjoWA0nXm8qALOMXDjcAsqByXmtN2xUXm2
+	H3Mam83uMZL/lyV2UmnCLuxUMKGZ5q30tZoj8cAcO3lJgnCEuho+z2sCI3Z0yuKS5PxyYZ6s3TK3a
+	y7+FbSKMf4exPftSZuE3pc3dxhKGQcx8mmB/ntJfz3iYfWgh9dPqb2rA+ISmtYS4eeFfFZhQ5fcom
+	MG58P9oqp3ZJeG+mCtsjXSnM1mxnurL+rxy0BnqMNbpo6xpkib5BICH/Doh0qgf1gDgFh23/hEmS3
+	3gDX0sAg==;
+Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1raVte-0000000FCXP-1wpH;
+	Thu, 15 Feb 2024 07:11:02 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] zorro: make zorro_bus_type const
-Message-ID: <2024021314-coyness-frosty-f8cc@gregkh>
-References: <20240213-bus_cleanup-zorro-v1-1-388ceed8e7bd@marliere.net>
+	Minchan Kim <minchan@kernel.org>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Coly Li <colyli@suse.de>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Ira Weiny <ira.weiny@intel.com>,
+	linux-m68k@lists.linux-m68k.org,
+	linux-bcache@vger.kernel.org,
+	nvdimm@lists.linux.dev,
+	linux-block@vger.kernel.org
+Subject: pass queue_limits to blk_alloc_disk for simple drivers
+Date: Thu, 15 Feb 2024 08:10:46 +0100
+Message-Id: <20240215071055.2201424-1-hch@lst.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240213-bus_cleanup-zorro-v1-1-388ceed8e7bd@marliere.net>
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Tue, Feb 13, 2024 at 11:41:25AM -0300, Ricardo B. Marliere wrote:
-> Since commit d492cc2573a0 ("driver core: device.h: make struct
-> bus_type a const *"), the driver core can properly handle constant
-> struct bus_type, move the zorro_bus_type variable to be a constant
-> structure as well, placing it into read-only memory which can not be
-> modified at runtime.
-> 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-> ---
+Hi Jens,
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+this series converts all "simple" bio based drivers that don't have
+complex internal layering or other oddities to pass the queue_limits to
+blk_mq_alloc_disk.  None of these drivers updates the limits at runtime.
+
+
+Diffstat:
+ arch/m68k/emu/nfblock.c             |   10 ++++---
+ arch/xtensa/platforms/iss/simdisk.c |    8 +++--
+ block/genhd.c                       |   11 ++++---
+ drivers/block/brd.c                 |   26 +++++++++---------
+ drivers/block/drbd/drbd_main.c      |    6 ++--
+ drivers/block/n64cart.c             |   12 +++++---
+ drivers/block/null_blk/main.c       |    7 ++--
+ drivers/block/pktcdvd.c             |    7 ++--
+ drivers/block/ps3vram.c             |    6 ++--
+ drivers/block/zram/zram_drv.c       |   51 +++++++++++++++++-------------------
+ drivers/md/bcache/super.c           |   48 +++++++++++++++++----------------
+ drivers/md/dm.c                     |    4 +-
+ drivers/md/md.c                     |    7 ++--
+ drivers/nvdimm/btt.c                |   14 +++++----
+ drivers/nvdimm/pmem.c               |   14 +++++----
+ drivers/nvme/host/multipath.c       |    6 ++--
+ drivers/s390/block/dcssblk.c        |   10 ++++---
+ include/linux/blkdev.h              |   10 ++++---
+ 18 files changed, 143 insertions(+), 114 deletions(-)
