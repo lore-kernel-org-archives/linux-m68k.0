@@ -1,103 +1,115 @@
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0639813AC6;
-	Thu, 15 Feb 2024 07:11:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47FFE13699D
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Feb 2024 18:16:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707981088; cv=none; b=bmVHDbeJFDoN8yZTpPuOEnEE+4OOxgho+YQAU2gLFLS8iCY56K5mXjRKFp9svoB5OiI+REhhXjyfN8lFXQY9fMga7Nu6LuoA523hUfutnvnAmTuSnr7Hik3I/kVS6J/e00HoXppGLfAfY5UY4fYUH/oE+4Mz+SmvGIdrQveU6Js=
+	t=1708020971; cv=none; b=etxjxP3JKdjV7FA3wAYxNR7GHw0Nl4nwYcQ0qy9x4XLcSoazsVwjx5j1i179LrxGIo/pkrRhIvrOqcRZfZ08+AGtodGwDvSjw/HIGjFp/q7XhnXbCUML1CN95oG/HoS1YzcTFVrMmvTfRCRRC7UnwpoBwNhyeogOgZY8HbFoZy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707981088; c=relaxed/simple;
-	bh=mUQ6qR1VcZlsa80hsbyzs7x83EgfVJ4CEIp0+7G3LpU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=R54v/UBjXUPimX2+G83UpCumGNTF3wm4osd66oY0CJXs1TtAa++PBY5OXddPbEUFvNcfBTn+QnE739PlYDShgm/qD92NWwVZpozzB6wDU5pbdQ1HuRVa4CtDVg+hqA61wTM4ObKV+tHNWpfAuYUv0/n0Dd6aq17yh88eQXTGHJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=4wIQuCo0; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+	s=arc-20240116; t=1708020971; c=relaxed/simple;
+	bh=I4dB3GMx6a+9L4e9XCMmtI4/zUU1rGbMjgwANKjHCRY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GZP8SrrIpz5g9mtRjrvbjL4VPokAcXaRx55fW+IH1ODsAMo87f0nYMF90ccyYQigImKkM7pd9TVHt50JP0mLr0m2mpjP/O/p/m+ENSaYEQbE49mwwqJT06DHz2P45wx1cW/NPGsA7nZG57RaztjfEPT3fAzHVvszw0NgstEAT2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mI9j71Zo; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="4wIQuCo0"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=pnXzo7LJP4uipI+1tMWvmV+hmJq5LEF/ccT/cYRw3UY=; b=4wIQuCo0hhJt0bS8FfIcEoZZzg
-	ppDkiLp2/RwrR7jhZsmfYuTLoywwRD7OpxAIDDHEmOBuNxTDzEi+84LSTFxLs+8q3nJgBaIE/fMB4
-	RhKGO2PThpNXLNSQhocr7Sv7J1GRW14WyLt7HIYH7wicxN7tlQnQgDPcVO4vFBdt3pAD7xRZGd/mo
-	Y5Q5HZ+CrksXeQdJn4DzYFUuuS8pcS88oZGhep/ECjpRENt6XkdCtt9LYAuLz/Gf8DDOw70dCUC+G
-	6ITMc2vpGjJ3DD3EBUBFpyYPLDrAZAiAf+a4XpP1e3NLdKLm3ib7rQxabPjeA7MFQ9gsoLAolOnlb
-	7irv8ecw==;
-Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1raVu1-0000000FCbr-0TlZ;
-	Thu, 15 Feb 2024 07:11:25 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
-	Minchan Kim <minchan@kernel.org>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Coly Li <colyli@suse.de>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Ira Weiny <ira.weiny@intel.com>,
-	linux-m68k@lists.linux-m68k.org,
-	linux-bcache@vger.kernel.org,
-	nvdimm@lists.linux.dev,
-	linux-block@vger.kernel.org
-Subject: [PATCH 9/9] dcssblk: pass queue_limits to blk_mq_alloc_disk
-Date: Thu, 15 Feb 2024 08:10:55 +0100
-Message-Id: <20240215071055.2201424-10-hch@lst.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240215071055.2201424-1-hch@lst.de>
-References: <20240215071055.2201424-1-hch@lst.de>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mI9j71Zo"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708020969; x=1739556969;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=I4dB3GMx6a+9L4e9XCMmtI4/zUU1rGbMjgwANKjHCRY=;
+  b=mI9j71ZoPH71hzDlmMuidb3BmIoVE9tsG9Q60pcbHY/PXJ7kKTSpLrSn
+   +oFbuCsdjojwRg9R8jCMSbRLj89Lm9xVdpbyrhrMUCZ3yuXgY+mFJjzY+
+   SIzc3W6dU8htwhCHvmNXXgBmaVma47xkjz1KleyG4ehBLVCOIKTPnzg0q
+   y1fsIJVNSKbNZN5WuKstr6GRFi9zfKCYWAxegcTmLtxLFxVyhDp5/ncw3
+   aI4nU5sNaqhFfOpYgh3e1iq3Lbx8TXKK7J33+CrJf9mAquRUA9HeeBiEy
+   aExoL3v09HldE8rL+1Pf6yOGycbTj7GtaYFP3UwL6OFE7QM+4L+amzaFP
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="27583110"
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="27583110"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 10:15:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="8210773"
+Received: from djiang5-mobl3.amr.corp.intel.com (HELO [10.246.113.87]) ([10.246.113.87])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 10:15:49 -0800
+Message-ID: <b5fab2d6-5cc1-4dd9-b3a3-faf649427ae7@intel.com>
+Date: Thu, 15 Feb 2024 11:15:47 -0700
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 8/9] pmem: pass queue_limits to blk_mq_alloc_disk
+Content-Language: en-US
+To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+ Minchan Kim <minchan@kernel.org>,
+ Sergey Senozhatsky <senozhatsky@chromium.org>, Coly Li <colyli@suse.de>,
+ Vishal Verma <vishal.l.verma@intel.com>,
+ Dan Williams <dan.j.williams@intel.com>, Ira Weiny <ira.weiny@intel.com>,
+ linux-m68k@lists.linux-m68k.org, linux-bcache@vger.kernel.org,
+ nvdimm@lists.linux.dev, linux-block@vger.kernel.org
+References: <20240215071055.2201424-1-hch@lst.de>
+ <20240215071055.2201424-9-hch@lst.de>
+From: Dave Jiang <dave.jiang@intel.com>
+In-Reply-To: <20240215071055.2201424-9-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Pass the queue limits directly to blk_alloc_disk instead of setting them
-one at a time.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/s390/block/dcssblk.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/s390/block/dcssblk.c b/drivers/s390/block/dcssblk.c
-index 0903b432ea9740..9c8f529b827cb3 100644
---- a/drivers/s390/block/dcssblk.c
-+++ b/drivers/s390/block/dcssblk.c
-@@ -546,6 +546,9 @@ static const struct attribute_group *dcssblk_dev_attr_groups[] = {
- static ssize_t
- dcssblk_add_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
- {
-+	struct queue_limits lim = {
-+		.logical_block_size	= 4096,
-+	};
- 	int rc, i, j, num_of_segments;
- 	struct dcssblk_dev_info *dev_info;
- 	struct segment_info *seg_info, *temp;
-@@ -629,7 +632,7 @@ dcssblk_add_store(struct device *dev, struct device_attribute *attr, const char
- 	dev_info->dev.release = dcssblk_release_segment;
- 	dev_info->dev.groups = dcssblk_dev_attr_groups;
- 	INIT_LIST_HEAD(&dev_info->lh);
--	dev_info->gd = blk_alloc_disk(NULL, NUMA_NO_NODE);
-+	dev_info->gd = blk_alloc_disk(&lim, NUMA_NO_NODE);
- 	if (IS_ERR(dev_info->gd)) {
- 		rc = PTR_ERR(dev_info->gd);
- 		goto seg_list_del;
-@@ -639,7 +642,6 @@ dcssblk_add_store(struct device *dev, struct device_attribute *attr, const char
- 	dev_info->gd->fops = &dcssblk_devops;
- 	dev_info->gd->private_data = dev_info;
- 	dev_info->gd->flags |= GENHD_FL_NO_PART;
--	blk_queue_logical_block_size(dev_info->gd->queue, 4096);
- 	blk_queue_flag_set(QUEUE_FLAG_DAX, dev_info->gd->queue);
- 
- 	seg_byte_size = (dev_info->end - dev_info->start + 1);
--- 
-2.39.2
+On 2/15/24 12:10 AM, Christoph Hellwig wrote:
+> Pass the queue limits directly to blk_alloc_disk instead of setting them
+> one at a time.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
+Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+> ---
+>  drivers/nvdimm/pmem.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
+> index 3a5df8d467c507..8dcc10b6db5b12 100644
+> --- a/drivers/nvdimm/pmem.c
+> +++ b/drivers/nvdimm/pmem.c
+> @@ -451,6 +451,11 @@ static int pmem_attach_disk(struct device *dev,
+>  {
+>  	struct nd_namespace_io *nsio = to_nd_namespace_io(&ndns->dev);
+>  	struct nd_region *nd_region = to_nd_region(dev->parent);
+> +	struct queue_limits lim = {
+> +		.logical_block_size	= pmem_sector_size(ndns),
+> +		.physical_block_size	= PAGE_SIZE,
+> +		.max_hw_sectors		= UINT_MAX,
+> +	};
+>  	int nid = dev_to_node(dev), fua;
+>  	struct resource *res = &nsio->res;
+>  	struct range bb_range;
+> @@ -497,7 +502,7 @@ static int pmem_attach_disk(struct device *dev,
+>  		return -EBUSY;
+>  	}
+>  
+> -	disk = blk_alloc_disk(NULL, nid);
+> +	disk = blk_alloc_disk(&lim, nid);
+>  	if (IS_ERR(disk))
+>  		return PTR_ERR(disk);
+>  	q = disk->queue;
+> @@ -539,9 +544,6 @@ static int pmem_attach_disk(struct device *dev,
+>  	pmem->virt_addr = addr;
+>  
+>  	blk_queue_write_cache(q, true, fua);
+> -	blk_queue_physical_block_size(q, PAGE_SIZE);
+> -	blk_queue_logical_block_size(q, pmem_sector_size(ndns));
+> -	blk_queue_max_hw_sectors(q, UINT_MAX);
+>  	blk_queue_flag_set(QUEUE_FLAG_NONROT, q);
+>  	blk_queue_flag_set(QUEUE_FLAG_SYNCHRONOUS, q);
+>  	if (pmem->pfn_flags & PFN_MAP)
