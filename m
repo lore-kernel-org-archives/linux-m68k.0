@@ -1,83 +1,172 @@
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2BD62D046
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 19 Feb 2024 12:04:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2455C3B1A8
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 19 Feb 2024 16:01:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708344289; cv=none; b=LCKawo0izu/T4rU1rlwc9HGPry/IvAoGEd5om6TxXGkNLfv1TjQIUBOC7SAjYK2Dkd9jSsGgRsUGpQvk3Tj1rpOItkSqEXuNy3ZKHikpoGxskJqGhzqvPUyBVUOD9D/3R2S7LAC2f4LyHc8oLUUR7vozUIGZc1TDbMAEDS2C3YU=
+	t=1708358498; cv=none; b=UskjEZRWusx7n789PEHAI5VDeztRLmdB0ij6BN91XLxij1uZQYXqpBof7IzcdoBa+CpJCIpfp2sluV+x6mQ4rD3G1lCCF9Po+WLoiwsuE3f8LgD/0+XA1ZlW+oDJha2PbjszINod4buqxcOmHAtsmAeDSMnpzLFcc0hnfe49ziE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708344289; c=relaxed/simple;
-	bh=zDbj09vXhQ9a99MHLCKO+w+Rwn+2vxV620SpE5+aZl8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HIq0sE7oETGJyIbroriKB06Mdpy+Bxa9lVFz4D77pWtp2djKSssCzbWi4X5nInoq4qR4GT5qrR158yJqV9XacGitlsZsurpam5c1ON7o17XFx/SJXb3flEe3hSM8P7ezuMuXxorVcdwoVLSAl/UQdPFgDDEuHxuPUvvyJ3Z+Ico=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=m9YjWd3i; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+	s=arc-20240116; t=1708358498; c=relaxed/simple;
+	bh=9rjvz9CM+LavqK3pQR6XiVskqXx8Rp5ZFRE6QcceZfA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UKCjklPL1736goir4LycxG4Z05+UKWsMpsbjl7A482PQOVVC1fBLxfXo+JqnQ8hKGpRTXMe+ZFcOpTwSJKnW6pr/2iVZMZ3/+j8b/WBcnEJl3GWmMiy2qwJZJiEUplF0EAHXAD1LN+pyF0a6zKaA7ZtqnGNaaVH9wJSmjtAe2R8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DeflILUu; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="m9YjWd3i"
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5cddfe0cb64so3288140a12.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 19 Feb 2024 04:04:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708344286; x=1708949086; darn=lists.linux-m68k.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UD0Q+YuM0aYncw1zT/Ixj8YCSgfiS1s5vMLj9q2v0Ag=;
-        b=m9YjWd3itImTI1cdPVV9eAPiRZriou88tJeK/RbSKx8mzzDpcon8U13a3L6xODNa8T
-         2+uBrtwYFgKa2AVxfTqWTVP0HVHOyLmhUj4Jljcwdyg7kYLmK7TqEWYCdlahX48SO1sz
-         jPz6fkOKfMq8lfmPQXLKZ7SpBhk9Q+mZHzFhA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708344286; x=1708949086;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UD0Q+YuM0aYncw1zT/Ixj8YCSgfiS1s5vMLj9q2v0Ag=;
-        b=VrTuPKwRjCRHVxhgHX6MGFE+cPdcS8KLKlERgAsI2jpAQbeZ83iWI9GQs45MgSFALa
-         QLiMJlPRYwxlbdCoNucPZi/T3w+FTivhSi1COF+ytLK7HV6tFCmiVT1P/WPTG8IVLJ+G
-         f/fJYjaElZ38aEbpoabUK+h6IK5dE8hS8bHxsbuNQ7KrwOgYNPOdr6xWFqiyHJSt3jyY
-         l8l21I+e4bBy2vX4yQynhKNQF5hfQGs0gGXRl9Klm2KBd3TKs910w07TbrzR2DjrPWrL
-         fHzB1qrZ04TI85hw5Kh/7mhLkiDoMvhvq9C2qnMdh2w9TEB8hPuz5gXzjdZYnaQGIous
-         jQbg==
-X-Forwarded-Encrypted: i=1; AJvYcCW32ZYWTo1TSSjhUglZ3wrl0mhFzMIbNLyoXu3MpB4iBONphr2taPfa4W3Lk2c+jzvuGvaoGawwjkm4Ln7x9n2po7+qnq078ToF3e38O1EP
-X-Gm-Message-State: AOJu0YxkCwBorw9mYHKiiEmrYjxsu3OmjYxyAXAVPPjJLV8Lu0lyaDWP
-	Jf32pw6rzCr82o4cUMb3D5ABVca9kbfXKAw879fbePat7Aaq75h6Oyo/uRBTfg==
-X-Google-Smtp-Source: AGHT+IGI3q8seWzsit4w49RmDdpR7qXA23sSQ+6AKRh25Sx/UF2Jg2gSUuWiILezaNCe3BsJyRg1Qg==
-X-Received: by 2002:a17:90b:607:b0:299:69c9:da3b with SMTP id gb7-20020a17090b060700b0029969c9da3bmr2641050pjb.38.1708344286161;
-        Mon, 19 Feb 2024 04:04:46 -0800 (PST)
-Received: from google.com ([2401:fa00:8f:203:8998:e92c:64ca:f09f])
-        by smtp.gmail.com with ESMTPSA id sl14-20020a17090b2e0e00b00296d9c4d5f0sm5125314pjb.10.2024.02.19.04.04.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 04:04:45 -0800 (PST)
-Date: Mon, 19 Feb 2024 21:04:40 +0900
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, Geert Uytterhoeven <geert@linux-m68k.org>,
-	Minchan Kim <minchan@kernel.org>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Coly Li <colyli@suse.de>, Vishal Verma <vishal.l.verma@intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>,
-	linux-m68k@lists.linux-m68k.org, linux-bcache@vger.kernel.org,
-	nvdimm@lists.linux.dev, linux-block@vger.kernel.org
-Subject: Re: [PATCH 5/9] zram: pass queue_limits to blk_mq_alloc_disk
-Message-ID: <20240219120440.GA11472@google.com>
-References: <20240215071055.2201424-1-hch@lst.de>
- <20240215071055.2201424-6-hch@lst.de>
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DeflILUu"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708358495;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ACYtZtf7H5Q3rQRQKd2B0qBvUBXaYHTjNbsS69NayNU=;
+	b=DeflILUu2i716alpypGC8BN95kCs1nIJgcVeR9CD+DxSU/2Elpk7CG6EN8zpDV2oRG4P4l
+	4+ppKhpoXomimx6CrO2ARui9y1SBr5LVcDdmJGTv66LBqQxIcirJK+GEf7sN7xjhoSybXo
+	dH4/65C2JVJpGfp4XVmgT/BDW0dKGy8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-625-N3l74wuWPYC-cgKPtsyPdg-1; Mon, 19 Feb 2024 11:01:30 -0500
+X-MC-Unique: N3l74wuWPYC-cgKPtsyPdg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E6980108C063;
+	Mon, 19 Feb 2024 16:01:29 +0000 (UTC)
+Received: from thuth-p1g4.redhat.com (unknown [10.39.192.115])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id F098F1121312;
+	Mon, 19 Feb 2024 16:01:27 +0000 (UTC)
+From: Thomas Huth <thuth@redhat.com>
+To: linux-m68k@lists.linux-m68k.org,
+	Arnd Bergmann <arnd@arndb.de>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org,
+	Oleg Nesterov <oleg@redhat.com>
+Subject: [PATCH v2] m68k: Avoid CONFIG_COLDFIRE switch in uapi header
+Date: Mon, 19 Feb 2024 17:01:26 +0100
+Message-ID: <20240219160126.510498-1-thuth@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240215071055.2201424-6-hch@lst.de>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-On (24/02/15 08:10), Christoph Hellwig wrote:
-> 
-> Pass the queue limits directly to blk_alloc_disk instead of setting them
-> one at a time.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+We should not use any CONFIG switches in uapi headers since these
+only work during kernel compilation; they are not defined for
+userspace. Fix it by moving the struct pt_regs to the kernel-internal
+header instead - struct pt_regs does not seem to be required for
+the userspace headers on m68k at all.
 
-Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Suggested-by: Greg Ungerer <gerg@linux-m68k.org>
+Signed-off-by: Thomas Huth <thuth@redhat.com>
+---
+ v2: Move the struct instead of changing the #ifdef
+
+ See previous discussion here:
+ https://lore.kernel.org/lkml/6e3f2a2e-2430-4b4f-9ead-d9a4d5e42713@linux-m68k.org/
+
+ arch/m68k/include/asm/ptrace.h      | 29 +++++++++++++++++++++++++++++
+ arch/m68k/include/uapi/asm/ptrace.h | 28 ----------------------------
+ scripts/headers_install.sh          |  1 -
+ 3 files changed, 29 insertions(+), 29 deletions(-)
+
+diff --git a/arch/m68k/include/asm/ptrace.h b/arch/m68k/include/asm/ptrace.h
+index ea5a80ca1ab33..f200712946603 100644
+--- a/arch/m68k/include/asm/ptrace.h
++++ b/arch/m68k/include/asm/ptrace.h
+@@ -6,6 +6,35 @@
+ 
+ #ifndef __ASSEMBLY__
+ 
++/*
++ * This struct defines the way the registers are stored on the
++ * stack during a system call.
++ */
++struct pt_regs {
++	long     d1;
++	long     d2;
++	long     d3;
++	long     d4;
++	long     d5;
++	long     a0;
++	long     a1;
++	long     a2;
++	long     d0;
++	long     orig_d0;
++	long     stkadj;
++#ifdef CONFIG_COLDFIRE
++	unsigned format :  4; /* frame format specifier */
++	unsigned vector : 12; /* vector offset */
++	unsigned short sr;
++	unsigned long  pc;
++#else
++	unsigned short sr;
++	unsigned long  pc;
++	unsigned format :  4; /* frame format specifier */
++	unsigned vector : 12; /* vector offset */
++#endif
++};
++
+ #ifndef PS_S
+ #define PS_S  (0x2000)
+ #define PS_M  (0x1000)
+diff --git a/arch/m68k/include/uapi/asm/ptrace.h b/arch/m68k/include/uapi/asm/ptrace.h
+index 5b50ea592e002..a83bfe36dd10a 100644
+--- a/arch/m68k/include/uapi/asm/ptrace.h
++++ b/arch/m68k/include/uapi/asm/ptrace.h
+@@ -24,34 +24,6 @@
+ 
+ #ifndef __ASSEMBLY__
+ 
+-/* this struct defines the way the registers are stored on the
+-   stack during a system call. */
+-
+-struct pt_regs {
+-  long     d1;
+-  long     d2;
+-  long     d3;
+-  long     d4;
+-  long     d5;
+-  long     a0;
+-  long     a1;
+-  long     a2;
+-  long     d0;
+-  long     orig_d0;
+-  long     stkadj;
+-#ifdef CONFIG_COLDFIRE
+-  unsigned format :  4; /* frame format specifier */
+-  unsigned vector : 12; /* vector offset */
+-  unsigned short sr;
+-  unsigned long  pc;
+-#else
+-  unsigned short sr;
+-  unsigned long  pc;
+-  unsigned format :  4; /* frame format specifier */
+-  unsigned vector : 12; /* vector offset */
+-#endif
+-};
+-
+ /*
+  * This is the extended stack used by signal handlers and the context
+  * switcher: it's pushed after the normal "struct pt_regs".
+diff --git a/scripts/headers_install.sh b/scripts/headers_install.sh
+index f7d9b114de8f7..6bbccb43f7e72 100755
+--- a/scripts/headers_install.sh
++++ b/scripts/headers_install.sh
+@@ -74,7 +74,6 @@ arch/arc/include/uapi/asm/page.h:CONFIG_ARC_PAGE_SIZE_16K
+ arch/arc/include/uapi/asm/page.h:CONFIG_ARC_PAGE_SIZE_4K
+ arch/arc/include/uapi/asm/swab.h:CONFIG_ARC_HAS_SWAPE
+ arch/arm/include/uapi/asm/ptrace.h:CONFIG_CPU_ENDIAN_BE8
+-arch/m68k/include/uapi/asm/ptrace.h:CONFIG_COLDFIRE
+ arch/nios2/include/uapi/asm/swab.h:CONFIG_NIOS2_CI_SWAB_NO
+ arch/nios2/include/uapi/asm/swab.h:CONFIG_NIOS2_CI_SWAB_SUPPORT
+ arch/x86/include/uapi/asm/auxvec.h:CONFIG_IA32_EMULATION
+-- 
+2.43.2
+
