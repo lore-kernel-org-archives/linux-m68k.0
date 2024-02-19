@@ -1,172 +1,117 @@
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2455C3B1A8
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 19 Feb 2024 16:01:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DCF74177F
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 19 Feb 2024 16:40:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708358498; cv=none; b=UskjEZRWusx7n789PEHAI5VDeztRLmdB0ij6BN91XLxij1uZQYXqpBof7IzcdoBa+CpJCIpfp2sluV+x6mQ4rD3G1lCCF9Po+WLoiwsuE3f8LgD/0+XA1ZlW+oDJha2PbjszINod4buqxcOmHAtsmAeDSMnpzLFcc0hnfe49ziE=
+	t=1708360814; cv=none; b=tNyQD3VpnheHgS2hPDSrmMP9aP62DcMQG7gotELOcynw1TXinsFQVOM1u79mNZMDPZcWacBX97xHSdzBFnEsOG76152Ysf4AAxRHsDRvRryGzguEjLM27HQNvR4SvoXz5xfdzBP0Ubg8GT69n2eqBrG7wQ0WIt+ZoWrhxPrpWhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708358498; c=relaxed/simple;
-	bh=9rjvz9CM+LavqK3pQR6XiVskqXx8Rp5ZFRE6QcceZfA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UKCjklPL1736goir4LycxG4Z05+UKWsMpsbjl7A482PQOVVC1fBLxfXo+JqnQ8hKGpRTXMe+ZFcOpTwSJKnW6pr/2iVZMZ3/+j8b/WBcnEJl3GWmMiy2qwJZJiEUplF0EAHXAD1LN+pyF0a6zKaA7ZtqnGNaaVH9wJSmjtAe2R8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DeflILUu; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1708360814; c=relaxed/simple;
+	bh=95GvX6IkRKyNVrApn51thQj4Nye8v5hz784wB2DCO04=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=U1LFS9sNYx9lQF5Vh3IfZFbWdAsVc5d6aMtatur7KnIhm7pjPXwZSGaGlpw+6FahKBfHtfw7c/Zcw4htO+kth94Y0nhg9kD8cBNYSU45ZAXCqx9AyXawb/JPOfHgEY7QbWxHiWDXgngcYGZ97xFVqF6XKmfL2ooBGeU3SOhxVRo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Cna77SAm; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DeflILUu"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Cna77SAm"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708358495;
+	s=mimecast20190719; t=1708360811;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding;
-	bh=ACYtZtf7H5Q3rQRQKd2B0qBvUBXaYHTjNbsS69NayNU=;
-	b=DeflILUu2i716alpypGC8BN95kCs1nIJgcVeR9CD+DxSU/2Elpk7CG6EN8zpDV2oRG4P4l
-	4+ppKhpoXomimx6CrO2ARui9y1SBr5LVcDdmJGTv66LBqQxIcirJK+GEf7sN7xjhoSybXo
-	dH4/65C2JVJpGfp4XVmgT/BDW0dKGy8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-625-N3l74wuWPYC-cgKPtsyPdg-1; Mon, 19 Feb 2024 11:01:30 -0500
-X-MC-Unique: N3l74wuWPYC-cgKPtsyPdg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	bh=aWnNccAiTUjVXKX2RmHz2334a0dYfqfAPgkPcqZqo7E=;
+	b=Cna77SAmJ9imYr/GZeEnNJ2LbgbUijHP97NvwG9fRpH0eW5mWmZkwb5LPS517PXDoEdcXG
+	pxbqDMXwgquCagt1XpAuiiYVksvnO0HThkawAEUcNQ5tzAGOsab1tPXEtK4mFpL4MBfiKO
+	6+zIShcLRi9ZT0u9kroj3tN61JWEjsg=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-301-vNaxvvWQOqem7xRflWcJIQ-1; Mon,
+ 19 Feb 2024 11:40:05 -0500
+X-MC-Unique: vNaxvvWQOqem7xRflWcJIQ-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E6980108C063;
-	Mon, 19 Feb 2024 16:01:29 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F0B3C280FEC9;
+	Mon, 19 Feb 2024 16:40:04 +0000 (UTC)
 Received: from thuth-p1g4.redhat.com (unknown [10.39.192.115])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id F098F1121312;
-	Mon, 19 Feb 2024 16:01:27 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id A15F6492BE3;
+	Mon, 19 Feb 2024 16:40:03 +0000 (UTC)
 From: Thomas Huth <thuth@redhat.com>
 To: linux-m68k@lists.linux-m68k.org,
-	Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Greg Ungerer <gerg@linux-m68k.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
 	Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-kernel@vger.kernel.org,
-	Oleg Nesterov <oleg@redhat.com>
-Subject: [PATCH v2] m68k: Avoid CONFIG_COLDFIRE switch in uapi header
-Date: Mon, 19 Feb 2024 17:01:26 +0100
-Message-ID: <20240219160126.510498-1-thuth@redhat.com>
+	linux-serial@vger.kernel.org
+Subject: [PATCH] drivers/tty/serial: Remove unused function early_mcf_setup
+Date: Mon, 19 Feb 2024 17:40:02 +0100
+Message-ID: <20240219164002.520342-1-thuth@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-We should not use any CONFIG switches in uapi headers since these
-only work during kernel compilation; they are not defined for
-userspace. Fix it by moving the struct pt_regs to the kernel-internal
-header instead - struct pt_regs does not seem to be required for
-the userspace headers on m68k at all.
+Compiling a kernel for the ColdFire causes a compiler warning:
 
-Suggested-by: Greg Ungerer <gerg@linux-m68k.org>
+drivers/tty/serial/mcf.c:473:12: warning: no previous prototype for
+ ‘early_mcf_setup’ [-Wmissing-prototypes]
+  473 | int __init early_mcf_setup(struct mcf_platform_uart *platp)
+      |            ^~~~~~~~~~~~~~~
+
+This function seems to be completely unused, so let's remove it
+to silence the warning.
+
 Signed-off-by: Thomas Huth <thuth@redhat.com>
 ---
- v2: Move the struct instead of changing the #ifdef
+ drivers/tty/serial/mcf.c | 27 ---------------------------
+ 1 file changed, 27 deletions(-)
 
- See previous discussion here:
- https://lore.kernel.org/lkml/6e3f2a2e-2430-4b4f-9ead-d9a4d5e42713@linux-m68k.org/
-
- arch/m68k/include/asm/ptrace.h      | 29 +++++++++++++++++++++++++++++
- arch/m68k/include/uapi/asm/ptrace.h | 28 ----------------------------
- scripts/headers_install.sh          |  1 -
- 3 files changed, 29 insertions(+), 29 deletions(-)
-
-diff --git a/arch/m68k/include/asm/ptrace.h b/arch/m68k/include/asm/ptrace.h
-index ea5a80ca1ab33..f200712946603 100644
---- a/arch/m68k/include/asm/ptrace.h
-+++ b/arch/m68k/include/asm/ptrace.h
-@@ -6,6 +6,35 @@
+diff --git a/drivers/tty/serial/mcf.c b/drivers/tty/serial/mcf.c
+index 8690a45239e09..b0604d6da0257 100644
+--- a/drivers/tty/serial/mcf.c
++++ b/drivers/tty/serial/mcf.c
+@@ -470,33 +470,6 @@ static struct mcf_uart mcf_ports[4];
+ #if defined(CONFIG_SERIAL_MCF_CONSOLE)
+ /****************************************************************************/
  
- #ifndef __ASSEMBLY__
- 
-+/*
-+ * This struct defines the way the registers are stored on the
-+ * stack during a system call.
-+ */
-+struct pt_regs {
-+	long     d1;
-+	long     d2;
-+	long     d3;
-+	long     d4;
-+	long     d5;
-+	long     a0;
-+	long     a1;
-+	long     a2;
-+	long     d0;
-+	long     orig_d0;
-+	long     stkadj;
-+#ifdef CONFIG_COLDFIRE
-+	unsigned format :  4; /* frame format specifier */
-+	unsigned vector : 12; /* vector offset */
-+	unsigned short sr;
-+	unsigned long  pc;
-+#else
-+	unsigned short sr;
-+	unsigned long  pc;
-+	unsigned format :  4; /* frame format specifier */
-+	unsigned vector : 12; /* vector offset */
-+#endif
-+};
-+
- #ifndef PS_S
- #define PS_S  (0x2000)
- #define PS_M  (0x1000)
-diff --git a/arch/m68k/include/uapi/asm/ptrace.h b/arch/m68k/include/uapi/asm/ptrace.h
-index 5b50ea592e002..a83bfe36dd10a 100644
---- a/arch/m68k/include/uapi/asm/ptrace.h
-+++ b/arch/m68k/include/uapi/asm/ptrace.h
-@@ -24,34 +24,6 @@
- 
- #ifndef __ASSEMBLY__
- 
--/* this struct defines the way the registers are stored on the
--   stack during a system call. */
+-int __init early_mcf_setup(struct mcf_platform_uart *platp)
+-{
+-	struct uart_port *port;
+-	int i;
 -
--struct pt_regs {
--  long     d1;
--  long     d2;
--  long     d3;
--  long     d4;
--  long     d5;
--  long     a0;
--  long     a1;
--  long     a2;
--  long     d0;
--  long     orig_d0;
--  long     stkadj;
--#ifdef CONFIG_COLDFIRE
--  unsigned format :  4; /* frame format specifier */
--  unsigned vector : 12; /* vector offset */
--  unsigned short sr;
--  unsigned long  pc;
--#else
--  unsigned short sr;
--  unsigned long  pc;
--  unsigned format :  4; /* frame format specifier */
--  unsigned vector : 12; /* vector offset */
--#endif
--};
+-	for (i = 0; ((i < MCF_MAXPORTS) && (platp[i].mapbase)); i++) {
+-		port = &mcf_ports[i].port;
 -
- /*
-  * This is the extended stack used by signal handlers and the context
-  * switcher: it's pushed after the normal "struct pt_regs".
-diff --git a/scripts/headers_install.sh b/scripts/headers_install.sh
-index f7d9b114de8f7..6bbccb43f7e72 100755
---- a/scripts/headers_install.sh
-+++ b/scripts/headers_install.sh
-@@ -74,7 +74,6 @@ arch/arc/include/uapi/asm/page.h:CONFIG_ARC_PAGE_SIZE_16K
- arch/arc/include/uapi/asm/page.h:CONFIG_ARC_PAGE_SIZE_4K
- arch/arc/include/uapi/asm/swab.h:CONFIG_ARC_HAS_SWAPE
- arch/arm/include/uapi/asm/ptrace.h:CONFIG_CPU_ENDIAN_BE8
--arch/m68k/include/uapi/asm/ptrace.h:CONFIG_COLDFIRE
- arch/nios2/include/uapi/asm/swab.h:CONFIG_NIOS2_CI_SWAB_NO
- arch/nios2/include/uapi/asm/swab.h:CONFIG_NIOS2_CI_SWAB_SUPPORT
- arch/x86/include/uapi/asm/auxvec.h:CONFIG_IA32_EMULATION
+-		port->line = i;
+-		port->type = PORT_MCF;
+-		port->mapbase = platp[i].mapbase;
+-		port->membase = (platp[i].membase) ? platp[i].membase :
+-			(unsigned char __iomem *) port->mapbase;
+-		port->iotype = SERIAL_IO_MEM;
+-		port->irq = platp[i].irq;
+-		port->uartclk = MCF_BUSCLK;
+-		port->flags = UPF_BOOT_AUTOCONF;
+-		port->rs485_config = mcf_config_rs485;
+-		port->rs485_supported = mcf_rs485_supported;
+-		port->ops = &mcf_uart_ops;
+-	}
+-
+-	return 0;
+-}
+-
+-/****************************************************************************/
+-
+ static void mcf_console_putc(struct console *co, const char c)
+ {
+ 	struct uart_port *port = &(mcf_ports + co->index)->port;
 -- 
 2.43.2
 
