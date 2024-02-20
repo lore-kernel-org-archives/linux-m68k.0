@@ -1,117 +1,131 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DCF74177F
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 19 Feb 2024 16:40:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B88EB43AD8
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 20 Feb 2024 05:11:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708360814; cv=none; b=tNyQD3VpnheHgS2hPDSrmMP9aP62DcMQG7gotELOcynw1TXinsFQVOM1u79mNZMDPZcWacBX97xHSdzBFnEsOG76152Ysf4AAxRHsDRvRryGzguEjLM27HQNvR4SvoXz5xfdzBP0Ubg8GT69n2eqBrG7wQ0WIt+ZoWrhxPrpWhU=
+	t=1708405912; cv=none; b=RrA0fapb/reiN0nfMEgK9y3dhNqu9cfGEh3ebqO7WxXizygQEiytzbbSLc+yHCKnjMBWfjdXghjdfoU7I+0Qp8Zf1siCoY6YSvqoKoU+l/wk4Oki8QelkwpvM9lQMfwsVKjX20vSGZ+Et7NPMSq5mB9TR/tc+6gkvyJSpox1vY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708360814; c=relaxed/simple;
-	bh=95GvX6IkRKyNVrApn51thQj4Nye8v5hz784wB2DCO04=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=U1LFS9sNYx9lQF5Vh3IfZFbWdAsVc5d6aMtatur7KnIhm7pjPXwZSGaGlpw+6FahKBfHtfw7c/Zcw4htO+kth94Y0nhg9kD8cBNYSU45ZAXCqx9AyXawb/JPOfHgEY7QbWxHiWDXgngcYGZ97xFVqF6XKmfL2ooBGeU3SOhxVRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Cna77SAm; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Cna77SAm"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708360811;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=aWnNccAiTUjVXKX2RmHz2334a0dYfqfAPgkPcqZqo7E=;
-	b=Cna77SAmJ9imYr/GZeEnNJ2LbgbUijHP97NvwG9fRpH0eW5mWmZkwb5LPS517PXDoEdcXG
-	pxbqDMXwgquCagt1XpAuiiYVksvnO0HThkawAEUcNQ5tzAGOsab1tPXEtK4mFpL4MBfiKO
-	6+zIShcLRi9ZT0u9kroj3tN61JWEjsg=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-301-vNaxvvWQOqem7xRflWcJIQ-1; Mon,
- 19 Feb 2024 11:40:05 -0500
-X-MC-Unique: vNaxvvWQOqem7xRflWcJIQ-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F0B3C280FEC9;
-	Mon, 19 Feb 2024 16:40:04 +0000 (UTC)
-Received: from thuth-p1g4.redhat.com (unknown [10.39.192.115])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id A15F6492BE3;
-	Mon, 19 Feb 2024 16:40:03 +0000 (UTC)
-From: Thomas Huth <thuth@redhat.com>
-To: linux-m68k@lists.linux-m68k.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Greg Ungerer <gerg@linux-m68k.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Subject: [PATCH] drivers/tty/serial: Remove unused function early_mcf_setup
-Date: Mon, 19 Feb 2024 17:40:02 +0100
-Message-ID: <20240219164002.520342-1-thuth@redhat.com>
+	s=arc-20240116; t=1708405912; c=relaxed/simple;
+	bh=Tle04KGjv5qK7fgMC8JcBb4jlw2c7eWK92khlGD58SI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hsR7XK4pTDevFxEHCgShbIvdQLs2w/N3aDSYBOhVCVHZRx1CiG4akZ6Pa67Qy5QNbY52Wqd32203phd9rwNq2KOpxowMHjgq6tOjj/0Hmk4KtBUeDKWOeRLXHqXq+gx/Sc4phBN9jW6ZdVNU9l4cqBFGPbi3dFlPj/bSv9rwmt4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5648d92919dso1955574a12.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 19 Feb 2024 21:11:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708405909; x=1709010709;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HM05L2ldB01MDloVEcaACmWW1x/UYxtiMyHn9Zi26Sk=;
+        b=cI2eXu7GMH6KqiUMmBQU3vVJ0X5ml5uYSwv3hY1NQDH8IHB3NeWYDOA9rqVlJaLHNH
+         gL+9IR14+0qDeJmwn4RYoa92NML4JtC6SttXn3J7fhQpqLG0QYGLlVhBF6PAyVFlggl1
+         KqIuIId0f1lYQWqBkYnFOONX2CCUfajpFqUi2sbBJZosQ9HeSH+QfBEWEXcnJJ2BitfN
+         gvLmxqeVXNH/LlFg89FosnlfjYRIJsF4UA7bKvPonS/OUBi5c/EJBeQlQdepHpUMXcH/
+         KcBScOMmaRInG16jXAk8A9eQp4V6HAymBv3c8R+wPczrXLiQ5w2Ck7MderVeIlGLm+Tm
+         5qXA==
+X-Forwarded-Encrypted: i=1; AJvYcCXpujn5df/2Rf3u0/mfy31qaPsH8EJT1xENvoxBXTtQ3qgHnnjb3nzMhfZ7WoNRSdVo+Tv2qesuEb+BgDPoZyjkRT0+ojbO+AfoVU9y+qhp
+X-Gm-Message-State: AOJu0Yz8BvSBbre5XLbk9NxQqPRwXm+zZad7mRiBuCQGgIyZPbuwMM78
+	07VFlpx7YxNFOOSHHbZMcVIpgn5vxW3VDN80CvpHyFlj6ExjS4tU
+X-Google-Smtp-Source: AGHT+IHTSDSI0OrxLtiDLC+2nRnfiaeL5P906Hhmw889gdqHzFkbP08yqRqOSElMPSgLuOX1rdNPKw==
+X-Received: by 2002:a17:906:3c0b:b0:a3e:b439:6c8d with SMTP id h11-20020a1709063c0b00b00a3eb4396c8dmr2320603ejg.25.1708405908804;
+        Mon, 19 Feb 2024 21:11:48 -0800 (PST)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id ti7-20020a170907c20700b00a3d99dc3f3asm3544475ejc.67.2024.02.19.21.11.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Feb 2024 21:11:48 -0800 (PST)
+Message-ID: <c44bfc7f-7b06-4985-953d-185f8b576a5b@kernel.org>
+Date: Tue, 20 Feb 2024 06:11:47 +0100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drivers/tty/serial: Remove unused function
+ early_mcf_setup
+Content-Language: en-US
+To: Thomas Huth <thuth@redhat.com>, linux-m68k@lists.linux-m68k.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Greg Ungerer <gerg@linux-m68k.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+References: <20240219164002.520342-1-thuth@redhat.com>
+From: Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <20240219164002.520342-1-thuth@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-Compiling a kernel for the ColdFire causes a compiler warning:
+On 19. 02. 24, 17:40, Thomas Huth wrote:
+> Compiling a kernel for the ColdFire causes a compiler warning:
+> 
+> drivers/tty/serial/mcf.c:473:12: warning: no previous prototype for
+>   ‘early_mcf_setup’ [-Wmissing-prototypes]
+>    473 | int __init early_mcf_setup(struct mcf_platform_uart *platp)
+>        |            ^~~~~~~~~~~~~~~
+> 
+> This function seems to be completely unused, so let's remove it
+> to silence the warning.
 
-drivers/tty/serial/mcf.c:473:12: warning: no previous prototype for
- ‘early_mcf_setup’ [-Wmissing-prototypes]
-  473 | int __init early_mcf_setup(struct mcf_platform_uart *platp)
-      |            ^~~~~~~~~~~~~~~
+And it seems so since the driver addition in 2007 by:
+commit 49aa49bfd40d718095669c1c70c9d167b814e29b
+Author: Greg Ungerer <gerg@snapgear.com>
+Date:   Tue Oct 23 14:37:54 2007 +1000
 
-This function seems to be completely unused, so let's remove it
-to silence the warning.
+     m68knommu: new style ColdFire UART driver
 
-Signed-off-by: Thomas Huth <thuth@redhat.com>
----
- drivers/tty/serial/mcf.c | 27 ---------------------------
- 1 file changed, 27 deletions(-)
 
-diff --git a/drivers/tty/serial/mcf.c b/drivers/tty/serial/mcf.c
-index 8690a45239e09..b0604d6da0257 100644
---- a/drivers/tty/serial/mcf.c
-+++ b/drivers/tty/serial/mcf.c
-@@ -470,33 +470,6 @@ static struct mcf_uart mcf_ports[4];
- #if defined(CONFIG_SERIAL_MCF_CONSOLE)
- /****************************************************************************/
- 
--int __init early_mcf_setup(struct mcf_platform_uart *platp)
--{
--	struct uart_port *port;
--	int i;
--
--	for (i = 0; ((i < MCF_MAXPORTS) && (platp[i].mapbase)); i++) {
--		port = &mcf_ports[i].port;
--
--		port->line = i;
--		port->type = PORT_MCF;
--		port->mapbase = platp[i].mapbase;
--		port->membase = (platp[i].membase) ? platp[i].membase :
--			(unsigned char __iomem *) port->mapbase;
--		port->iotype = SERIAL_IO_MEM;
--		port->irq = platp[i].irq;
--		port->uartclk = MCF_BUSCLK;
--		port->flags = UPF_BOOT_AUTOCONF;
--		port->rs485_config = mcf_config_rs485;
--		port->rs485_supported = mcf_rs485_supported;
--		port->ops = &mcf_uart_ops;
--	}
--
--	return 0;
--}
--
--/****************************************************************************/
--
- static void mcf_console_putc(struct console *co, const char c)
- {
- 	struct uart_port *port = &(mcf_ports + co->index)->port;
+
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+
+thanks,
 -- 
-2.43.2
+js
+suse labs
 
