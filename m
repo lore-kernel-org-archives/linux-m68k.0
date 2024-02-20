@@ -1,169 +1,122 @@
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+Received: from wfout2-smtp.messagingengine.com (wfout2-smtp.messagingengine.com [64.147.123.145])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB066DCE4
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 20 Feb 2024 14:13:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.40.73.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE92A74E0A
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 20 Feb 2024 15:10:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708438423; cv=none; b=du9YgyEkkfkMDziUMIyO8OfP/GIILxqHoEguSH1nS6CIxjnae/Tp6R2giJKAYM5xvsGRQm80IVvLAIrQ22mI2R4hoZdxs+9YOHGtrSLtfuWTTo1r+in2lw72uRgRlUR7Cj062LGOitndH+IfsTkLCL2m7TN5Rl8m6E0/JoW37mw=
+	t=1708441821; cv=none; b=hSZfm2toPf6coH8+qbDWNTZpJm5GqqKjhqkeraG7UUmk43m3xe3tf5Mgo55l7Pag7lEpOID9SHfc5pUE43Luu9PNsUbEHXeM6j667wPpbh7ywlHLdLoTu/pxDgaO5u2WIDr/IFb+yCIJdNk5/OdcLsc8ytUzS/0MvRMDUeeJSIs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708438423; c=relaxed/simple;
-	bh=a/bcvUYS8RrdPrVW1BVMBabZsS22xG8p15sj6qVxNR8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FQ4n5hBPVltbDYJKf1ULLg9l6As3VK2mbUjUcT510BvPyeWTashmsl+/0Uxbhqe1HqzZ2xFEjULp8mxYq9HCOjcWO31aO93tFwjJ6hzfLAuYVTzIvEAe0OwcDjHYhiAWD8aAY7V+066d/q58hQBDK3VABoCNpS19O4Xh0WXAMCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=145.40.73.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id A763FCE1390;
-	Tue, 20 Feb 2024 14:13:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99E29C433F1;
-	Tue, 20 Feb 2024 14:13:29 +0000 (UTC)
-Message-ID: <6f3b246e-7417-4455-abe4-ca3b42fdda4c@linux-m68k.org>
-Date: Wed, 21 Feb 2024 00:13:25 +1000
+	s=arc-20240116; t=1708441821; c=relaxed/simple;
+	bh=8uKXtErleUTOrIMNYktGodmojGKjihEgbYdtl9mFGgo=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=ZHGPiB/8RFnyapIA7IZY2TtRg5yobhG6fkZMgW+W0bTaToGYm/D/eRuIvQTXrUiWwxurzuiEcw7VZ2o626a/H/Xizl3fgbyJ3NKENeXNDsTru2kzQb2yJ34sjuCXVG43EYyeNKDFP1p7+mgCIzPHO/+wwqbn7I/2GhaLzDoT7E4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=tY11oLHE; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=coHV/e+m; arc=none smtp.client-ip=64.147.123.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="tY11oLHE";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="coHV/e+m"
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id 4B1E71C00096;
+	Tue, 20 Feb 2024 10:10:18 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 20 Feb 2024 10:10:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1708441817; x=1708528217; bh=Atu0OpnXzZ
+	orWtqFeTIeosaeih3wF0IbqGTMPEqB/RI=; b=tY11oLHEtqcO9Z0if6sonscf2L
+	Z3Lf0sdP1MLmKYk7ZgAczwPZZMjpTqfG7nUKztQRS9iTCTAXqvsfiKhCa2fSrTMa
+	vbJSFqcFqPCU1uzHzSWceNQpx1THQT6hqYBIc/nhm0nqpdk4E2vgZFHJ4jHi1m8v
+	pK4MyfTI7RE6ls//2k/h7/tGOLYS+L3FtM0hHkngzjztfeIKjSm9wxu3AOEWD+v+
+	OMbr+nhzbOqeC1yaPGcnlDCckuCFu8EaOXAQ3xmw50xlerD0o4et+Z0iQrAjooy3
+	dX65zRJwHn4GznaoHgphXfhoWvMtkV03t4VZUReccLemtWu7Xy3iSBmqcqCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1708441817; x=1708528217; bh=Atu0OpnXzZorWtqFeTIeosaeih3w
+	F0IbqGTMPEqB/RI=; b=coHV/e+mdCsgad2PUKvoy/NyfCmXq7VHJWjPHaDkwlvg
+	VPguCg4KeV4YoLDCLrUbxxn4qFU1UG/uJiRLT/HNGgkV20/J1+PrxO2yrodIBDBi
+	U/zYAYjff22ZiZB+n1NyMRG5rxtEa2fCePrEbSLqKYi1zCRYAvH2uzXPA7EIkpAS
+	YapalWKD7otM5v02U7TM1GZQg5+xLlpPYoUc9BESn7UiWIzdnnUj7nA2uy5QbVQe
+	CI38HJx7blQDpZR9zym7LdSOfTlAkDl7rtHeFb7+gaMUC1shP/asQ0AexKLJ5t/u
+	GkH+Es+mH+s8AbgyA24gFJWiBVnqlobJ9yAc6j7rsw==
+X-ME-Sender: <xms:2cDUZUBNiOlJKcBW-QSbiwM96EB-wC302bX_pOTE-_x1bWfrer0N3w>
+    <xme:2cDUZWiAZuNAoz2BHoIne0qTy-oFEgLXwQ2ffOPIuqu3sc-IbX5CnRzw2DQOmz6q-
+    BvzsC63g5V12nHinMg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfedtgdejgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeevhfffledtgeehfeffhfdtgedvheejtdfgkeeuvefgudffteettdekkeeufeeh
+    udenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:2cDUZXl0QnFEwqEzGQL8_AHgws1Zt22IB8FTcfNdNfPeE4-z9fiuLg>
+    <xmx:2cDUZay5X4AokSEU5qsMAIUOTHgszMVpq8PJiV8I49KGNI4sSxxvSQ>
+    <xmx:2cDUZZRaZjhFd8jKM32FY6sggxM6ZVGcGQC5Q47axUEy5erRARzowQ>
+    <xmx:2cDUZSK7ZZCHC0pnlrvmmJeGntFcUcnSQeIrBAr4WaJoAKTFm5zRLjxmzUc>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 16AFCB6008D; Tue, 20 Feb 2024 10:10:17 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-153-g7e3bb84806-fm-20240215.007-g7e3bb848
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] m68k: Avoid CONFIG_COLDFIRE switch in uapi header
-Content-Language: en-US
-To: Thomas Huth <thuth@redhat.com>, linux-m68k@lists.linux-m68k.org,
- Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-kernel@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>
+Message-Id: <4824192b-5573-4246-a47c-ad6249e2900e@app.fastmail.com>
+In-Reply-To: <6f3b246e-7417-4455-abe4-ca3b42fdda4c@linux-m68k.org>
 References: <20240219160126.510498-1-thuth@redhat.com>
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <20240219160126.510498-1-thuth@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+ <6f3b246e-7417-4455-abe4-ca3b42fdda4c@linux-m68k.org>
+Date: Tue, 20 Feb 2024 16:09:55 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Greg Ungerer" <gerg@linux-m68k.org>, "Thomas Huth" <thuth@redhat.com>,
+ linux-m68k@lists.linux-m68k.org, "Geert Uytterhoeven" <geert@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org, "Oleg Nesterov" <oleg@redhat.com>
+Subject: Re: [PATCH v2] m68k: Avoid CONFIG_COLDFIRE switch in uapi header
+Content-Type: text/plain
 
+On Tue, Feb 20, 2024, at 15:13, Greg Ungerer wrote:
+> On 20/2/24 02:01, Thomas Huth wrote:
+>> We should not use any CONFIG switches in uapi headers since these
+>> only work during kernel compilation; they are not defined for
+>> userspace. Fix it by moving the struct pt_regs to the kernel-internal
+>> header instead - struct pt_regs does not seem to be required for
+>> the userspace headers on m68k at all.
+>> 
+>> Suggested-by: Greg Ungerer <gerg@linux-m68k.org>
+>> Signed-off-by: Thomas Huth <thuth@redhat.com>
+>> ---
+>>   v2: Move the struct instead of changing the #ifdef
+>> 
+>>   See previous discussion here:
+>>   https://lore.kernel.org/lkml/6e3f2a2e-2430-4b4f-9ead-d9a4d5e42713@linux-m68k.org/
+>
+> I am fine with this. FWIW the following architectures do
+> not define pt_regs in their uapi/ptrace.h header either:
+> arc, arm64, loongarch, nios2, openrisc, riscv, s390, xtensa
+> Though quite a few of them have a user_pt_regs instead.
+>
+> So for me:
+>
+> Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+>
+> Geert, Arnd, do you have any thoughts on this?
 
-On 20/2/24 02:01, Thomas Huth wrote:
-> We should not use any CONFIG switches in uapi headers since these
-> only work during kernel compilation; they are not defined for
-> userspace. Fix it by moving the struct pt_regs to the kernel-internal
-> header instead - struct pt_regs does not seem to be required for
-> the userspace headers on m68k at all.
-> 
-> Suggested-by: Greg Ungerer <gerg@linux-m68k.org>
-> Signed-off-by: Thomas Huth <thuth@redhat.com>
-> ---
->   v2: Move the struct instead of changing the #ifdef
-> 
->   See previous discussion here:
->   https://lore.kernel.org/lkml/6e3f2a2e-2430-4b4f-9ead-d9a4d5e42713@linux-m68k.org/
+It clearly doesn't change the ABI, so that part is fine.
 
-I am fine with this. FWIW the following architectures do
-not define pt_regs in their uapi/ptrace.h header either:
-arc, arm64, loongarch, nios2, openrisc, riscv, s390, xtensa
-Though quite a few of them have a user_pt_regs instead.
+If asm/ptrace.h is included by some userspace tool to
+get the definition, it might cause a compile-time error
+that needs a trivial source change.
 
-So for me:
+This could be needed for ptrace (gdb, strace) or signal
+handling and setjmp (libc), though it's more likely that these
+already have their own copies.
 
-Acked-by: Greg Ungerer <gerg@linux-m68k.org>
-
-Geert, Arnd, do you have any thoughts on this?
-
-Regards
-Greg
-
-
-
->   arch/m68k/include/asm/ptrace.h      | 29 +++++++++++++++++++++++++++++
->   arch/m68k/include/uapi/asm/ptrace.h | 28 ----------------------------
->   scripts/headers_install.sh          |  1 -
->   3 files changed, 29 insertions(+), 29 deletions(-)
-> 
-> diff --git a/arch/m68k/include/asm/ptrace.h b/arch/m68k/include/asm/ptrace.h
-> index ea5a80ca1ab33..f200712946603 100644
-> --- a/arch/m68k/include/asm/ptrace.h
-> +++ b/arch/m68k/include/asm/ptrace.h
-> @@ -6,6 +6,35 @@
->   
->   #ifndef __ASSEMBLY__
->   
-> +/*
-> + * This struct defines the way the registers are stored on the
-> + * stack during a system call.
-> + */
-> +struct pt_regs {
-> +	long     d1;
-> +	long     d2;
-> +	long     d3;
-> +	long     d4;
-> +	long     d5;
-> +	long     a0;
-> +	long     a1;
-> +	long     a2;
-> +	long     d0;
-> +	long     orig_d0;
-> +	long     stkadj;
-> +#ifdef CONFIG_COLDFIRE
-> +	unsigned format :  4; /* frame format specifier */
-> +	unsigned vector : 12; /* vector offset */
-> +	unsigned short sr;
-> +	unsigned long  pc;
-> +#else
-> +	unsigned short sr;
-> +	unsigned long  pc;
-> +	unsigned format :  4; /* frame format specifier */
-> +	unsigned vector : 12; /* vector offset */
-> +#endif
-> +};
-> +
->   #ifndef PS_S
->   #define PS_S  (0x2000)
->   #define PS_M  (0x1000)
-> diff --git a/arch/m68k/include/uapi/asm/ptrace.h b/arch/m68k/include/uapi/asm/ptrace.h
-> index 5b50ea592e002..a83bfe36dd10a 100644
-> --- a/arch/m68k/include/uapi/asm/ptrace.h
-> +++ b/arch/m68k/include/uapi/asm/ptrace.h
-> @@ -24,34 +24,6 @@
->   
->   #ifndef __ASSEMBLY__
->   
-> -/* this struct defines the way the registers are stored on the
-> -   stack during a system call. */
-> -
-> -struct pt_regs {
-> -  long     d1;
-> -  long     d2;
-> -  long     d3;
-> -  long     d4;
-> -  long     d5;
-> -  long     a0;
-> -  long     a1;
-> -  long     a2;
-> -  long     d0;
-> -  long     orig_d0;
-> -  long     stkadj;
-> -#ifdef CONFIG_COLDFIRE
-> -  unsigned format :  4; /* frame format specifier */
-> -  unsigned vector : 12; /* vector offset */
-> -  unsigned short sr;
-> -  unsigned long  pc;
-> -#else
-> -  unsigned short sr;
-> -  unsigned long  pc;
-> -  unsigned format :  4; /* frame format specifier */
-> -  unsigned vector : 12; /* vector offset */
-> -#endif
-> -};
-> -
->   /*
->    * This is the extended stack used by signal handlers and the context
->    * switcher: it's pushed after the normal "struct pt_regs".
-> diff --git a/scripts/headers_install.sh b/scripts/headers_install.sh
-> index f7d9b114de8f7..6bbccb43f7e72 100755
-> --- a/scripts/headers_install.sh
-> +++ b/scripts/headers_install.sh
-> @@ -74,7 +74,6 @@ arch/arc/include/uapi/asm/page.h:CONFIG_ARC_PAGE_SIZE_16K
->   arch/arc/include/uapi/asm/page.h:CONFIG_ARC_PAGE_SIZE_4K
->   arch/arc/include/uapi/asm/swab.h:CONFIG_ARC_HAS_SWAPE
->   arch/arm/include/uapi/asm/ptrace.h:CONFIG_CPU_ENDIAN_BE8
-> -arch/m68k/include/uapi/asm/ptrace.h:CONFIG_COLDFIRE
->   arch/nios2/include/uapi/asm/swab.h:CONFIG_NIOS2_CI_SWAB_NO
->   arch/nios2/include/uapi/asm/swab.h:CONFIG_NIOS2_CI_SWAB_SUPPORT
->   arch/x86/include/uapi/asm/auxvec.h:CONFIG_IA32_EMULATION
+     Arnd
