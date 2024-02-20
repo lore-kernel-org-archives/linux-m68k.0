@@ -1,135 +1,99 @@
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E24969E1A
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 20 Feb 2024 13:22:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C39974274
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 20 Feb 2024 13:55:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708435325; cv=none; b=oJnYglpmc8EKkq7ijQTiD+H8XwpmuS1BOvwZ7PVGfGrLpYKEXGmWTNu4tNpZG4IkocwZWM41k4opkP2ww15r7RYlHHxxgGf/XaLafrnopELUEFPSYVLVvXFz1IOeajrF+mcQNpJekV+ytl202cXPk0UbNwq5DqAh2kxOVBwK/J0=
+	t=1708437356; cv=none; b=GJJ4s59i5O7gguDtozzMMZUacOCOJLiGz/9hmtlkqY00WioLoKPenxaRRV9tyllJyfYMD54c+qF4lqk2Xm7xv9t7bf1grmcYQT7L0QwXvD9iTT697DQ1ONGlpkWpSLhaqGlJi3HXHjxWDvZ1lYSo9f3x+9T7/k3dFCOghQe1/AU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708435325; c=relaxed/simple;
-	bh=3q84UebxO+IhnMV8qY+OCVsLMfCwqQIckMDPCnOjIso=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=h4ZaKy2DT28CfZOPNIN8PzToscJBGf8AcEX4HV4XcCerMEpbcL5CDqBB5kgdbYM5uJMPr/MMIPaD35/rVL+Qjcmw0PK/2LOVoLYblK7wCMfsjkunB07ay2aMc8/hSE0fw9n+Aw+nJzKnJHgOyEWAkGe/RMX64uPj/U/KA23SYPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=XHO89c4V; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="XHO89c4V"
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1db8f32cae5so7457165ad.1
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 20 Feb 2024 05:22:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1708435321; x=1709040121; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HEAQQIO5cXmeHaxWtI/kIw0AxsNxruezROUdauKPKd8=;
-        b=XHO89c4VSmOYNPoIeIMvGlHrjIIY/UwXTwG3eupxDL/RXXcDqWYLkiQPxCFe1EsBd8
-         jLIeKkhPawKxbL5t9nnCIgqO76ihQVV5Lk3qcqKJxKzfqJAqckVmKQOu8pUBAwdT82my
-         g/ijR9a9yw5ub+bx55i79z8t0F3a/CrKCnfd2ZKf1WJ3ulyOo5CXLI2tBTzasSJ2h3ab
-         V0bAJmS2/h8N6Z/OmLoicSIENIGXItE+55MgKBeG/V9lGxZa/8O28BmNvJnO9aPZm+ld
-         aCFcdWN3M5SGFyh7H29eExEIf56GUEF/lgJPcDuwjFyfSvg1x+YP+YjbNHK3qOxQBArX
-         9v5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708435321; x=1709040121;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HEAQQIO5cXmeHaxWtI/kIw0AxsNxruezROUdauKPKd8=;
-        b=D220zV8oCjgt8Hu+rdz0lre8xa1PvuwRqgn81DkE2O9mI7VHKXzzeZpdfdUpuNejtu
-         IXy7IYOKUL9I/8+Wmo1gjFa6V78AMmkpDrw67ZtCAnNn4qwzS5gfU+0le1YCIcEy1Qjb
-         uyTObYBWbZwjzzLaXCpJxYq3J438tpZoOczSCE8nXWlQtLznwBf4ek5cqgxS3lE1XzYN
-         abcWDNijiwuY3X6Wh+kW22ms3KgNTOt2WN1ckhm7/Ob4zELc9zinlM+BwSZTcSKs8M9n
-         0oZYhSmNGa5HYryvek0He0MH2ouRQYaouJZIiAPq316dlxOXQt41AZ4kmb2CbxAqHma8
-         9B1A==
-X-Forwarded-Encrypted: i=1; AJvYcCW+cKAqC0V8+RvIZWFQW8VXhg5STfWgFQHycipIY5u0mg+x4zaK/NoeNU/HLJ6wedA75PRzDRrjcqYnQBqEUznckKD/0iasyYhZBs5l5pcv
-X-Gm-Message-State: AOJu0YxJJtG0hRePdFLVaZPXyvtAMTMn5nn80R1VTOzkgIRvyhXXBaEa
-	NwbhnfdKKVtoFDYI4gfLTk7k+AaqMQH9yufZYYadcOtG1qymO9KEgJsvzufgD8o=
-X-Google-Smtp-Source: AGHT+IEMwWNUM0V6Qdc3mCEsLOi+xgsjqIc+o1/9KK8l9wrn0nGXqQ1ot4iyhmAMYT1vnSnW2SKzWg==
-X-Received: by 2002:a17:902:8681:b0:1db:55c2:4a3a with SMTP id g1-20020a170902868100b001db55c24a3amr13335822plo.6.1708435321497;
-        Tue, 20 Feb 2024 05:22:01 -0800 (PST)
-Received: from [127.0.0.1] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id iw11-20020a170903044b00b001db5e807cd2sm6188911plb.82.2024.02.20.05.22.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 05:22:00 -0800 (PST)
-From: Jens Axboe <axboe@kernel.dk>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, 
- Minchan Kim <minchan@kernel.org>, 
- Sergey Senozhatsky <senozhatsky@chromium.org>, Coly Li <colyli@suse.de>, 
- Vishal Verma <vishal.l.verma@intel.com>, 
- Dan Williams <dan.j.williams@intel.com>, Dave Jiang <dave.jiang@intel.com>, 
- Ira Weiny <ira.weiny@intel.com>, linux-m68k@lists.linux-m68k.org, 
- linux-bcache@vger.kernel.org, nvdimm@lists.linux.dev, 
- linux-block@vger.kernel.org
-In-Reply-To: <20240215071055.2201424-1-hch@lst.de>
-References: <20240215071055.2201424-1-hch@lst.de>
-Subject: Re: pass queue_limits to blk_alloc_disk for simple drivers
-Message-Id: <170843532016.4095460.3703902225081924718.b4-ty@kernel.dk>
-Date: Tue, 20 Feb 2024 06:22:00 -0700
+	s=arc-20240116; t=1708437356; c=relaxed/simple;
+	bh=CFBAEkF/q8ncI+9sPI0M6RjIXSeHLouADi9KF1CiGh4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fWfoTkvGalmYNvCPB638IC3LbC6CgWuHlto7/g5z8cpPGcD/sBGT9EwZkQzAU8a6GcMOOgjudcfoC8WL2MHcSeSxtKXN/9n38dWbR3dpmZA07jVPI9Nwe9FrIoPvesiz/sI97Fn59EwcZbx+rY5mBF1RZhRYfrAdGDBhjXQ5ogA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=139.178.84.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 4BF07610E8;
+	Tue, 20 Feb 2024 13:55:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7567DC433C7;
+	Tue, 20 Feb 2024 13:55:51 +0000 (UTC)
+Message-ID: <590107ef-16f1-4680-8fd6-11df838ce14a@linux-m68k.org>
+Date: Tue, 20 Feb 2024 23:55:48 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.5-dev-2aabd
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drivers/tty/serial: Remove unused function
+ early_mcf_setup
+To: Geert Uytterhoeven <geert@linux-m68k.org>,
+ Jiri Slaby <jirislaby@kernel.org>
+Cc: Thomas Huth <thuth@redhat.com>, linux-m68k@lists.linux-m68k.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+References: <20240219164002.520342-1-thuth@redhat.com>
+ <c44bfc7f-7b06-4985-953d-185f8b576a5b@kernel.org>
+ <CAMuHMdXc=rR9udEmMsCJof+sCxdoJryF49-Gy9j=DJqiHyUsvQ@mail.gmail.com>
+Content-Language: en-US
+From: Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <CAMuHMdXc=rR9udEmMsCJof+sCxdoJryF49-Gy9j=DJqiHyUsvQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
-On Thu, 15 Feb 2024 08:10:46 +0100, Christoph Hellwig wrote:
-> this series converts all "simple" bio based drivers that don't have
-> complex internal layering or other oddities to pass the queue_limits to
-> blk_mq_alloc_disk.  None of these drivers updates the limits at runtime.
+On 20/2/24 20:23, Geert Uytterhoeven wrote:
+> On Tue, Feb 20, 2024 at 6:11 AM Jiri Slaby <jirislaby@kernel.org> wrote:
+>> On 19. 02. 24, 17:40, Thomas Huth wrote:
+>>> Compiling a kernel for the ColdFire causes a compiler warning:
+>>>
+>>> drivers/tty/serial/mcf.c:473:12: warning: no previous prototype for
+>>>    ‘early_mcf_setup’ [-Wmissing-prototypes]
+>>>     473 | int __init early_mcf_setup(struct mcf_platform_uart *platp)
+>>>         |            ^~~~~~~~~~~~~~~
+>>>
+>>> This function seems to be completely unused, so let's remove it
+>>> to silence the warning.
+>>
+>> And it seems so since the driver addition in 2007 by:
+>> commit 49aa49bfd40d718095669c1c70c9d167b814e29b
+>> Author: Greg Ungerer <gerg@snapgear.com>
+>> Date:   Tue Oct 23 14:37:54 2007 +1000
+>>
+>>       m68knommu: new style ColdFire UART driver
 > 
-> Diffstat:
->  arch/m68k/emu/nfblock.c             |   10 ++++---
->  arch/xtensa/platforms/iss/simdisk.c |    8 +++--
->  block/genhd.c                       |   11 ++++---
->  drivers/block/brd.c                 |   26 +++++++++---------
->  drivers/block/drbd/drbd_main.c      |    6 ++--
->  drivers/block/n64cart.c             |   12 +++++---
->  drivers/block/null_blk/main.c       |    7 ++--
->  drivers/block/pktcdvd.c             |    7 ++--
->  drivers/block/ps3vram.c             |    6 ++--
->  drivers/block/zram/zram_drv.c       |   51 +++++++++++++++++-------------------
->  drivers/md/bcache/super.c           |   48 +++++++++++++++++----------------
->  drivers/md/dm.c                     |    4 +-
->  drivers/md/md.c                     |    7 ++--
->  drivers/nvdimm/btt.c                |   14 +++++----
->  drivers/nvdimm/pmem.c               |   14 +++++----
->  drivers/nvme/host/multipath.c       |    6 ++--
->  drivers/s390/block/dcssblk.c        |   10 ++++---
->  include/linux/blkdev.h              |   10 ++++---
->  18 files changed, 143 insertions(+), 114 deletions(-)
+> Indeed.
 > 
-> [...]
+> Looks like the "changes to the ColdFire based m68knommu systems
+> to use a platform model at init, and this is used there" from [1]
+> never materialized on any public mailing list?
+> 
+> Greg: does it still make sense to add them?
 
-Applied, thanks!
+No, it never really turned out to be useful enough to anyone,
+so I never really pushed it out or progressed it any further.
 
-[1/9] block: pass a queue_limits argument to blk_alloc_disk
-      commit: 74fa8f9c553f7b5ccab7d103acae63cc2e080465
-[2/9] nfblock: pass queue_limits to blk_mq_alloc_disk
-      commit: 2cfe0104bc1b4a94f81e386f5ff11041f39c1882
-[3/9] brd: pass queue_limits to blk_mq_alloc_disk
-      commit: b5baaba4ce5c8a0e36b5232b16c0731e3eb0d939
-[4/9] n64cart: pass queue_limits to blk_mq_alloc_disk
-      commit: cc7f05c7ec0b26e1eda8ec7a99452032d08d305e
-[5/9] zram: pass queue_limits to blk_mq_alloc_disk
-      commit: 4190b3f291d9563a438bf32424a3f049442fc3a5
-[6/9] bcache: pass queue_limits to blk_mq_alloc_disk
-      commit: b3f0846e720ee59291e3c5235f8a46e70dbc652c
-[7/9] btt: pass queue_limits to blk_mq_alloc_disk
-      commit: 77c059222c31b0480c61964f361b28a4ce111e52
-[8/9] pmem: pass queue_limits to blk_mq_alloc_disk
-      commit: c3d9c3031e18f145d8a12026d4d704125fe901ac
-[9/9] dcssblk: pass queue_limits to blk_mq_alloc_disk
-      commit: af190c53c995bf7c742c3387f6537534f8b92322
+So I am fine with removing this now:
 
-Best regards,
--- 
-Jens Axboe
+Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+
+I can take it via the m68knommu git tree if no one else wants to
+pick it up.
+
+Regards
+Greg
 
 
 
+> If not:
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> 
+> [1] https://lore.kernel.org/all/47254BEB.2040609@snapgear.com/
+> 
+> Gr{oetje,eeting}s,
+> 
+>                          Geert
+> 
