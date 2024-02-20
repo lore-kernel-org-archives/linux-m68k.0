@@ -1,26 +1,26 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C39974274
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 20 Feb 2024 13:55:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB066DCE4
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 20 Feb 2024 14:13:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.40.73.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708437356; cv=none; b=GJJ4s59i5O7gguDtozzMMZUacOCOJLiGz/9hmtlkqY00WioLoKPenxaRRV9tyllJyfYMD54c+qF4lqk2Xm7xv9t7bf1grmcYQT7L0QwXvD9iTT697DQ1ONGlpkWpSLhaqGlJi3HXHjxWDvZ1lYSo9f3x+9T7/k3dFCOghQe1/AU=
+	t=1708438423; cv=none; b=du9YgyEkkfkMDziUMIyO8OfP/GIILxqHoEguSH1nS6CIxjnae/Tp6R2giJKAYM5xvsGRQm80IVvLAIrQ22mI2R4hoZdxs+9YOHGtrSLtfuWTTo1r+in2lw72uRgRlUR7Cj062LGOitndH+IfsTkLCL2m7TN5Rl8m6E0/JoW37mw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708437356; c=relaxed/simple;
-	bh=CFBAEkF/q8ncI+9sPI0M6RjIXSeHLouADi9KF1CiGh4=;
+	s=arc-20240116; t=1708438423; c=relaxed/simple;
+	bh=a/bcvUYS8RrdPrVW1BVMBabZsS22xG8p15sj6qVxNR8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fWfoTkvGalmYNvCPB638IC3LbC6CgWuHlto7/g5z8cpPGcD/sBGT9EwZkQzAU8a6GcMOOgjudcfoC8WL2MHcSeSxtKXN/9n38dWbR3dpmZA07jVPI9Nwe9FrIoPvesiz/sI97Fn59EwcZbx+rY5mBF1RZhRYfrAdGDBhjXQ5ogA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=139.178.84.217
+	 In-Reply-To:Content-Type; b=FQ4n5hBPVltbDYJKf1ULLg9l6As3VK2mbUjUcT510BvPyeWTashmsl+/0Uxbhqe1HqzZ2xFEjULp8mxYq9HCOjcWO31aO93tFwjJ6hzfLAuYVTzIvEAe0OwcDjHYhiAWD8aAY7V+066d/q58hQBDK3VABoCNpS19O4Xh0WXAMCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=145.40.73.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 4BF07610E8;
-	Tue, 20 Feb 2024 13:55:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7567DC433C7;
-	Tue, 20 Feb 2024 13:55:51 +0000 (UTC)
-Message-ID: <590107ef-16f1-4680-8fd6-11df838ce14a@linux-m68k.org>
-Date: Tue, 20 Feb 2024 23:55:48 +1000
+	by sin.source.kernel.org (Postfix) with ESMTP id A763FCE1390;
+	Tue, 20 Feb 2024 14:13:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99E29C433F1;
+	Tue, 20 Feb 2024 14:13:29 +0000 (UTC)
+Message-ID: <6f3b246e-7417-4455-abe4-ca3b42fdda4c@linux-m68k.org>
+Date: Wed, 21 Feb 2024 00:13:25 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -28,72 +28,142 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drivers/tty/serial: Remove unused function
- early_mcf_setup
-To: Geert Uytterhoeven <geert@linux-m68k.org>,
- Jiri Slaby <jirislaby@kernel.org>
-Cc: Thomas Huth <thuth@redhat.com>, linux-m68k@lists.linux-m68k.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20240219164002.520342-1-thuth@redhat.com>
- <c44bfc7f-7b06-4985-953d-185f8b576a5b@kernel.org>
- <CAMuHMdXc=rR9udEmMsCJof+sCxdoJryF49-Gy9j=DJqiHyUsvQ@mail.gmail.com>
+Subject: Re: [PATCH v2] m68k: Avoid CONFIG_COLDFIRE switch in uapi header
 Content-Language: en-US
+To: Thomas Huth <thuth@redhat.com>, linux-m68k@lists.linux-m68k.org,
+ Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>
+References: <20240219160126.510498-1-thuth@redhat.com>
 From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <CAMuHMdXc=rR9udEmMsCJof+sCxdoJryF49-Gy9j=DJqiHyUsvQ@mail.gmail.com>
+In-Reply-To: <20240219160126.510498-1-thuth@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
 
-On 20/2/24 20:23, Geert Uytterhoeven wrote:
-> On Tue, Feb 20, 2024 at 6:11 AM Jiri Slaby <jirislaby@kernel.org> wrote:
->> On 19. 02. 24, 17:40, Thomas Huth wrote:
->>> Compiling a kernel for the ColdFire causes a compiler warning:
->>>
->>> drivers/tty/serial/mcf.c:473:12: warning: no previous prototype for
->>>    ‘early_mcf_setup’ [-Wmissing-prototypes]
->>>     473 | int __init early_mcf_setup(struct mcf_platform_uart *platp)
->>>         |            ^~~~~~~~~~~~~~~
->>>
->>> This function seems to be completely unused, so let's remove it
->>> to silence the warning.
->>
->> And it seems so since the driver addition in 2007 by:
->> commit 49aa49bfd40d718095669c1c70c9d167b814e29b
->> Author: Greg Ungerer <gerg@snapgear.com>
->> Date:   Tue Oct 23 14:37:54 2007 +1000
->>
->>       m68knommu: new style ColdFire UART driver
+On 20/2/24 02:01, Thomas Huth wrote:
+> We should not use any CONFIG switches in uapi headers since these
+> only work during kernel compilation; they are not defined for
+> userspace. Fix it by moving the struct pt_regs to the kernel-internal
+> header instead - struct pt_regs does not seem to be required for
+> the userspace headers on m68k at all.
 > 
-> Indeed.
+> Suggested-by: Greg Ungerer <gerg@linux-m68k.org>
+> Signed-off-by: Thomas Huth <thuth@redhat.com>
+> ---
+>   v2: Move the struct instead of changing the #ifdef
 > 
-> Looks like the "changes to the ColdFire based m68knommu systems
-> to use a platform model at init, and this is used there" from [1]
-> never materialized on any public mailing list?
-> 
-> Greg: does it still make sense to add them?
+>   See previous discussion here:
+>   https://lore.kernel.org/lkml/6e3f2a2e-2430-4b4f-9ead-d9a4d5e42713@linux-m68k.org/
 
-No, it never really turned out to be useful enough to anyone,
-so I never really pushed it out or progressed it any further.
+I am fine with this. FWIW the following architectures do
+not define pt_regs in their uapi/ptrace.h header either:
+arc, arm64, loongarch, nios2, openrisc, riscv, s390, xtensa
+Though quite a few of them have a user_pt_regs instead.
 
-So I am fine with removing this now:
+So for me:
 
 Acked-by: Greg Ungerer <gerg@linux-m68k.org>
 
-I can take it via the m68knommu git tree if no one else wants to
-pick it up.
+Geert, Arnd, do you have any thoughts on this?
 
 Regards
 Greg
 
 
 
-> If not:
-> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>   arch/m68k/include/asm/ptrace.h      | 29 +++++++++++++++++++++++++++++
+>   arch/m68k/include/uapi/asm/ptrace.h | 28 ----------------------------
+>   scripts/headers_install.sh          |  1 -
+>   3 files changed, 29 insertions(+), 29 deletions(-)
 > 
-> [1] https://lore.kernel.org/all/47254BEB.2040609@snapgear.com/
-> 
-> Gr{oetje,eeting}s,
-> 
->                          Geert
-> 
+> diff --git a/arch/m68k/include/asm/ptrace.h b/arch/m68k/include/asm/ptrace.h
+> index ea5a80ca1ab33..f200712946603 100644
+> --- a/arch/m68k/include/asm/ptrace.h
+> +++ b/arch/m68k/include/asm/ptrace.h
+> @@ -6,6 +6,35 @@
+>   
+>   #ifndef __ASSEMBLY__
+>   
+> +/*
+> + * This struct defines the way the registers are stored on the
+> + * stack during a system call.
+> + */
+> +struct pt_regs {
+> +	long     d1;
+> +	long     d2;
+> +	long     d3;
+> +	long     d4;
+> +	long     d5;
+> +	long     a0;
+> +	long     a1;
+> +	long     a2;
+> +	long     d0;
+> +	long     orig_d0;
+> +	long     stkadj;
+> +#ifdef CONFIG_COLDFIRE
+> +	unsigned format :  4; /* frame format specifier */
+> +	unsigned vector : 12; /* vector offset */
+> +	unsigned short sr;
+> +	unsigned long  pc;
+> +#else
+> +	unsigned short sr;
+> +	unsigned long  pc;
+> +	unsigned format :  4; /* frame format specifier */
+> +	unsigned vector : 12; /* vector offset */
+> +#endif
+> +};
+> +
+>   #ifndef PS_S
+>   #define PS_S  (0x2000)
+>   #define PS_M  (0x1000)
+> diff --git a/arch/m68k/include/uapi/asm/ptrace.h b/arch/m68k/include/uapi/asm/ptrace.h
+> index 5b50ea592e002..a83bfe36dd10a 100644
+> --- a/arch/m68k/include/uapi/asm/ptrace.h
+> +++ b/arch/m68k/include/uapi/asm/ptrace.h
+> @@ -24,34 +24,6 @@
+>   
+>   #ifndef __ASSEMBLY__
+>   
+> -/* this struct defines the way the registers are stored on the
+> -   stack during a system call. */
+> -
+> -struct pt_regs {
+> -  long     d1;
+> -  long     d2;
+> -  long     d3;
+> -  long     d4;
+> -  long     d5;
+> -  long     a0;
+> -  long     a1;
+> -  long     a2;
+> -  long     d0;
+> -  long     orig_d0;
+> -  long     stkadj;
+> -#ifdef CONFIG_COLDFIRE
+> -  unsigned format :  4; /* frame format specifier */
+> -  unsigned vector : 12; /* vector offset */
+> -  unsigned short sr;
+> -  unsigned long  pc;
+> -#else
+> -  unsigned short sr;
+> -  unsigned long  pc;
+> -  unsigned format :  4; /* frame format specifier */
+> -  unsigned vector : 12; /* vector offset */
+> -#endif
+> -};
+> -
+>   /*
+>    * This is the extended stack used by signal handlers and the context
+>    * switcher: it's pushed after the normal "struct pt_regs".
+> diff --git a/scripts/headers_install.sh b/scripts/headers_install.sh
+> index f7d9b114de8f7..6bbccb43f7e72 100755
+> --- a/scripts/headers_install.sh
+> +++ b/scripts/headers_install.sh
+> @@ -74,7 +74,6 @@ arch/arc/include/uapi/asm/page.h:CONFIG_ARC_PAGE_SIZE_16K
+>   arch/arc/include/uapi/asm/page.h:CONFIG_ARC_PAGE_SIZE_4K
+>   arch/arc/include/uapi/asm/swab.h:CONFIG_ARC_HAS_SWAPE
+>   arch/arm/include/uapi/asm/ptrace.h:CONFIG_CPU_ENDIAN_BE8
+> -arch/m68k/include/uapi/asm/ptrace.h:CONFIG_COLDFIRE
+>   arch/nios2/include/uapi/asm/swab.h:CONFIG_NIOS2_CI_SWAB_NO
+>   arch/nios2/include/uapi/asm/swab.h:CONFIG_NIOS2_CI_SWAB_SUPPORT
+>   arch/x86/include/uapi/asm/auxvec.h:CONFIG_IA32_EMULATION
