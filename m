@@ -1,131 +1,111 @@
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B88EB43AD8
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 20 Feb 2024 05:11:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B56360EDF
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 20 Feb 2024 10:23:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708405912; cv=none; b=RrA0fapb/reiN0nfMEgK9y3dhNqu9cfGEh3ebqO7WxXizygQEiytzbbSLc+yHCKnjMBWfjdXghjdfoU7I+0Qp8Zf1siCoY6YSvqoKoU+l/wk4Oki8QelkwpvM9lQMfwsVKjX20vSGZ+Et7NPMSq5mB9TR/tc+6gkvyJSpox1vY4=
+	t=1708424613; cv=none; b=h/RpqSPsBU9zLQgYnU6+NzQCz62mgf46hN4/svDhUeVyxCCEjO4/ilm+gO4RaB+ikv0qRZSvSmUNnx1o0Uko818PKvmsgKjWK4L8a5UpPTeJ9SZbee0FamXTfCAxeORkJsbrraXNsyvDwFTqItYaYsUtPN5nAZxtA0n/NRqqJ3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708405912; c=relaxed/simple;
-	bh=Tle04KGjv5qK7fgMC8JcBb4jlw2c7eWK92khlGD58SI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hsR7XK4pTDevFxEHCgShbIvdQLs2w/N3aDSYBOhVCVHZRx1CiG4akZ6Pa67Qy5QNbY52Wqd32203phd9rwNq2KOpxowMHjgq6tOjj/0Hmk4KtBUeDKWOeRLXHqXq+gx/Sc4phBN9jW6ZdVNU9l4cqBFGPbi3dFlPj/bSv9rwmt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1708424613; c=relaxed/simple;
+	bh=mLt4xmejzlrsSSdRTa1yS9wn+ZVm8cOBAXhmP0gRgxs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nKcRq9dN+pwtx+i1/jDVn97FUNEggL/+ZMrv0tAqgxeghgdq+2QyOryo400NW0SNd5TJZwdQUbY18360ZnmwU+hTzyrOtBgZ4AlLGFwKLZy3R7MzAd4DvJGpKmmApkzesRuhKZVcvl2os4IL697seMZQS7N9SaZ9B6cuXgAhU/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5648d92919dso1955574a12.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 19 Feb 2024 21:11:50 -0800 (PST)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-603fd31f5c2so52743167b3.0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 20 Feb 2024 02:23:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708405909; x=1709010709;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HM05L2ldB01MDloVEcaACmWW1x/UYxtiMyHn9Zi26Sk=;
-        b=cI2eXu7GMH6KqiUMmBQU3vVJ0X5ml5uYSwv3hY1NQDH8IHB3NeWYDOA9rqVlJaLHNH
-         gL+9IR14+0qDeJmwn4RYoa92NML4JtC6SttXn3J7fhQpqLG0QYGLlVhBF6PAyVFlggl1
-         KqIuIId0f1lYQWqBkYnFOONX2CCUfajpFqUi2sbBJZosQ9HeSH+QfBEWEXcnJJ2BitfN
-         gvLmxqeVXNH/LlFg89FosnlfjYRIJsF4UA7bKvPonS/OUBi5c/EJBeQlQdepHpUMXcH/
-         KcBScOMmaRInG16jXAk8A9eQp4V6HAymBv3c8R+wPczrXLiQ5w2Ck7MderVeIlGLm+Tm
-         5qXA==
-X-Forwarded-Encrypted: i=1; AJvYcCXpujn5df/2Rf3u0/mfy31qaPsH8EJT1xENvoxBXTtQ3qgHnnjb3nzMhfZ7WoNRSdVo+Tv2qesuEb+BgDPoZyjkRT0+ojbO+AfoVU9y+qhp
-X-Gm-Message-State: AOJu0Yz8BvSBbre5XLbk9NxQqPRwXm+zZad7mRiBuCQGgIyZPbuwMM78
-	07VFlpx7YxNFOOSHHbZMcVIpgn5vxW3VDN80CvpHyFlj6ExjS4tU
-X-Google-Smtp-Source: AGHT+IHTSDSI0OrxLtiDLC+2nRnfiaeL5P906Hhmw889gdqHzFkbP08yqRqOSElMPSgLuOX1rdNPKw==
-X-Received: by 2002:a17:906:3c0b:b0:a3e:b439:6c8d with SMTP id h11-20020a1709063c0b00b00a3eb4396c8dmr2320603ejg.25.1708405908804;
-        Mon, 19 Feb 2024 21:11:48 -0800 (PST)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id ti7-20020a170907c20700b00a3d99dc3f3asm3544475ejc.67.2024.02.19.21.11.47
+        d=1e100.net; s=20230601; t=1708424609; x=1709029409;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=12Kyp8aB3rpgIdqlByHzUCQrNKWenvMCDuD+CWYwf7E=;
+        b=kGRQR0KZDPs2e+l/l4vJKCPt9tn/xPMVlnm9l3CfEDINUtrZO5d7PbWBBPg8BXtgXF
+         gxr6eozCqByRPPm1Ch5D4Ev9d2VwCUYixDfaHanjy4uybDSbIoggHvweYUoykSlzJVar
+         JZ/eDKMiZvgTnbIuQlTHZmN9OawSb7MchN6X7WCrDABTLmjjgNmRMMZbd+y4atzw6egH
+         Hk9QqW6KkpdCz+Powe1XT9H0eIcPZaS0+Qc0bYOLVVpGOAt8rRpWQ0Qw14XBK/RvMXBf
+         JHHzC29EwMey780YFZItoBey5FLusex3znAt1AAk0A1cnan5jKY1H/XmhfQVVOwbhNfk
+         EHkw==
+X-Forwarded-Encrypted: i=1; AJvYcCVIZX8G5Cuo3Heyat5ZpCoFPVVLzyEGdhYBNjcD9fqciarJlYevvWo2JXn9qzK7UWK/hAUrE3jJb3HurCmzu1m8lm8YSc0i9A15EGKaYbVq
+X-Gm-Message-State: AOJu0YwXmXHkh9NjMICtX/pHDTMKnjjOrbMM6LGPWzon1oz2PJ06zHan
+	/ruw6cH8P91gByFA8GDS18OJ9JDhdG28vhBWn6cX2JwGpj8xCTQ8Z08It6imUFU=
+X-Google-Smtp-Source: AGHT+IFVZAVyt7oDPJVU4f2yUTU/zNUMZZm0qfCJDkChWLaOV97u24CoHf3l+82DcjNF9oGSMha2IQ==
+X-Received: by 2002:a81:4fc1:0:b0:608:4073:6d4c with SMTP id d184-20020a814fc1000000b0060840736d4cmr2740167ywb.20.1708424608928;
+        Tue, 20 Feb 2024 02:23:28 -0800 (PST)
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com. [209.85.128.170])
+        by smtp.gmail.com with ESMTPSA id m205-20020a8171d6000000b006048e2331fcsm2040111ywc.91.2024.02.20.02.23.28
+        for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Feb 2024 21:11:48 -0800 (PST)
-Message-ID: <c44bfc7f-7b06-4985-953d-185f8b576a5b@kernel.org>
-Date: Tue, 20 Feb 2024 06:11:47 +0100
+        Tue, 20 Feb 2024 02:23:28 -0800 (PST)
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-607e54b6cf5so31473377b3.0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 20 Feb 2024 02:23:28 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXmmUGo2w1END2003ZWUAdymxP0GVctAuxI252I41ZtsiizJ1Mf2SVcZbszfBPorwVAbvxxx0qI/BbjkqSvViijFjMC78BDZuKYyRLQp81F
+X-Received: by 2002:a81:4f84:0:b0:607:df5f:5e0c with SMTP id
+ d126-20020a814f84000000b00607df5f5e0cmr9142339ywb.3.1708424607929; Tue, 20
+ Feb 2024 02:23:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drivers/tty/serial: Remove unused function
- early_mcf_setup
-Content-Language: en-US
-To: Thomas Huth <thuth@redhat.com>, linux-m68k@lists.linux-m68k.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Greg Ungerer <gerg@linux-m68k.org>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20240219164002.520342-1-thuth@redhat.com>
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- xsFNBE6S54YBEACzzjLwDUbU5elY4GTg/NdotjA0jyyJtYI86wdKraekbNE0bC4zV+ryvH4j
- rrcDwGs6tFVrAHvdHeIdI07s1iIx5R/ndcHwt4fvI8CL5PzPmn5J+h0WERR5rFprRh6axhOk
- rSD5CwQl19fm4AJCS6A9GJtOoiLpWn2/IbogPc71jQVrupZYYx51rAaHZ0D2KYK/uhfc6neJ
- i0WqPlbtIlIrpvWxckucNu6ZwXjFY0f3qIRg3Vqh5QxPkojGsq9tXVFVLEkSVz6FoqCHrUTx
- wr+aw6qqQVgvT/McQtsI0S66uIkQjzPUrgAEtWUv76rM4ekqL9stHyvTGw0Fjsualwb0Gwdx
- ReTZzMgheAyoy/umIOKrSEpWouVoBt5FFSZUyjuDdlPPYyPav+hpI6ggmCTld3u2hyiHji2H
- cDpcLM2LMhlHBipu80s9anNeZhCANDhbC5E+NZmuwgzHBcan8WC7xsPXPaiZSIm7TKaVoOcL
- 9tE5aN3jQmIlrT7ZUX52Ff/hSdx/JKDP3YMNtt4B0cH6ejIjtqTd+Ge8sSttsnNM0CQUkXps
- w98jwz+Lxw/bKMr3NSnnFpUZaxwji3BC9vYyxKMAwNelBCHEgS/OAa3EJoTfuYOK6wT6nadm
- YqYjwYbZE5V/SwzMbpWu7Jwlvuwyfo5mh7w5iMfnZE+vHFwp/wARAQABzSFKaXJpIFNsYWJ5
- IDxqaXJpc2xhYnlAa2VybmVsLm9yZz7CwXcEEwEIACEFAlW3RUwCGwMFCwkIBwIGFQgJCgsC
- BBYCAwECHgECF4AACgkQvSWxBAa0cEnVTg//TQpdIAr8Tn0VAeUjdVIH9XCFw+cPSU+zMSCH
- eCZoA/N6gitEcnvHoFVVM7b3hK2HgoFUNbmYC0RdcSc80pOF5gCnACSP9XWHGWzeKCARRcQR
- 4s5YD8I4VV5hqXcKo2DFAtIOVbHDW+0okOzcecdasCakUTr7s2fXz97uuoc2gIBB7bmHUGAH
- XQXHvdnCLjDjR+eJN+zrtbqZKYSfj89s/ZHn5Slug6w8qOPT1sVNGG+eWPlc5s7XYhT9z66E
- l5C0rG35JE4PhC+tl7BaE5IwjJlBMHf/cMJxNHAYoQ1hWQCKOfMDQ6bsEr++kGUCbHkrEFwD
- UVA72iLnnnlZCMevwE4hc0zVhseWhPc/KMYObU1sDGqaCesRLkE3tiE7X2cikmj/qH0CoMWe
- gjnwnQ2qVJcaPSzJ4QITvchEQ+tbuVAyvn9H+9MkdT7b7b2OaqYsUP8rn/2k1Td5zknUz7iF
- oJ0Z9wPTl6tDfF8phaMIPISYrhceVOIoL+rWfaikhBulZTIT5ihieY9nQOw6vhOfWkYvv0Dl
- o4GRnb2ybPQpfEs7WtetOsUgiUbfljTgILFw3CsPW8JESOGQc0Pv8ieznIighqPPFz9g+zSu
- Ss/rpcsqag5n9rQp/H3WW5zKUpeYcKGaPDp/vSUovMcjp8USIhzBBrmI7UWAtuedG9prjqfO
- wU0ETpLnhgEQAM+cDWLL+Wvc9cLhA2OXZ/gMmu7NbYKjfth1UyOuBd5emIO+d4RfFM02XFTI
- t4MxwhAryhsKQQcA4iQNldkbyeviYrPKWjLTjRXT5cD2lpWzr+Jx7mX7InV5JOz1Qq+P+nJW
- YIBjUKhI03ux89p58CYil24Zpyn2F5cX7U+inY8lJIBwLPBnc9Z0An/DVnUOD+0wIcYVnZAK
- DiIXODkGqTg3fhZwbbi+KAhtHPFM2fGw2VTUf62IHzV+eBSnamzPOBc1XsJYKRo3FHNeLuS8
- f4wUe7bWb9O66PPFK/RkeqNX6akkFBf9VfrZ1rTEKAyJ2uqf1EI1olYnENk4+00IBa+BavGQ
- 8UW9dGW3nbPrfuOV5UUvbnsSQwj67pSdrBQqilr5N/5H9z7VCDQ0dhuJNtvDSlTf2iUFBqgk
- 3smln31PUYiVPrMP0V4ja0i9qtO/TB01rTfTyXTRtqz53qO5dGsYiliJO5aUmh8swVpotgK4
- /57h3zGsaXO9PGgnnAdqeKVITaFTLY1ISg+Ptb4KoliiOjrBMmQUSJVtkUXMrCMCeuPDGHo7
- 39Xc75lcHlGuM3yEB//htKjyprbLeLf1y4xPyTeeF5zg/0ztRZNKZicgEmxyUNBHHnBKHQxz
- 1j+mzH0HjZZtXjGu2KLJ18G07q0fpz2ZPk2D53Ww39VNI/J9ABEBAAHCwV8EGAECAAkFAk6S
- 54YCGwwACgkQvSWxBAa0cEk3tRAAgO+DFpbyIa4RlnfpcW17AfnpZi9VR5+zr496n2jH/1ld
- wRO/S+QNSA8qdABqMb9WI4BNaoANgcg0AS429Mq0taaWKkAjkkGAT7mD1Q5PiLr06Y/+Kzdr
- 90eUVneqM2TUQQbK+Kh7JwmGVrRGNqQrDk+gRNvKnGwFNeTkTKtJ0P8jYd7P1gZb9Fwj9YLx
- jhn/sVIhNmEBLBoI7PL+9fbILqJPHgAwW35rpnq4f/EYTykbk1sa13Tav6btJ+4QOgbcezWI
- wZ5w/JVfEJW9JXp3BFAVzRQ5nVrrLDAJZ8Y5ioWcm99JtSIIxXxt9FJaGc1Bgsi5K/+dyTKL
- wLMJgiBzbVx8G+fCJJ9YtlNOPWhbKPlrQ8+AY52Aagi9WNhe6XfJdh5g6ptiOILm330mkR4g
- W6nEgZVyIyTq3ekOuruftWL99qpP5zi+eNrMmLRQx9iecDNgFr342R9bTDlb1TLuRb+/tJ98
- f/bIWIr0cqQmqQ33FgRhrG1+Xml6UXyJ2jExmlO8JljuOGeXYh6ZkIEyzqzffzBLXZCujlYQ
- DFXpyMNVJ2ZwPmX2mWEoYuaBU0JN7wM+/zWgOf2zRwhEuD3A2cO2PxoiIfyUEfB9SSmffaK/
- S4xXoB6wvGENZ85Hg37C7WDNdaAt6Xh2uQIly5grkgvWppkNy4ZHxE+jeNsU7tg=
-In-Reply-To: <20240219164002.520342-1-thuth@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240219164002.520342-1-thuth@redhat.com> <c44bfc7f-7b06-4985-953d-185f8b576a5b@kernel.org>
+In-Reply-To: <c44bfc7f-7b06-4985-953d-185f8b576a5b@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 20 Feb 2024 11:23:15 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXc=rR9udEmMsCJof+sCxdoJryF49-Gy9j=DJqiHyUsvQ@mail.gmail.com>
+Message-ID: <CAMuHMdXc=rR9udEmMsCJof+sCxdoJryF49-Gy9j=DJqiHyUsvQ@mail.gmail.com>
+Subject: Re: [PATCH] drivers/tty/serial: Remove unused function early_mcf_setup
+To: Jiri Slaby <jirislaby@kernel.org>, Greg Ungerer <gerg@linux-m68k.org>
+Cc: Thomas Huth <thuth@redhat.com>, linux-m68k@lists.linux-m68k.org, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, 
+	linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 19. 02. 24, 17:40, Thomas Huth wrote:
-> Compiling a kernel for the ColdFire causes a compiler warning:
-> 
-> drivers/tty/serial/mcf.c:473:12: warning: no previous prototype for
->   ‘early_mcf_setup’ [-Wmissing-prototypes]
->    473 | int __init early_mcf_setup(struct mcf_platform_uart *platp)
->        |            ^~~~~~~~~~~~~~~
-> 
-> This function seems to be completely unused, so let's remove it
-> to silence the warning.
+On Tue, Feb 20, 2024 at 6:11=E2=80=AFAM Jiri Slaby <jirislaby@kernel.org> w=
+rote:
+> On 19. 02. 24, 17:40, Thomas Huth wrote:
+> > Compiling a kernel for the ColdFire causes a compiler warning:
+> >
+> > drivers/tty/serial/mcf.c:473:12: warning: no previous prototype for
+> >   =E2=80=98early_mcf_setup=E2=80=99 [-Wmissing-prototypes]
+> >    473 | int __init early_mcf_setup(struct mcf_platform_uart *platp)
+> >        |            ^~~~~~~~~~~~~~~
+> >
+> > This function seems to be completely unused, so let's remove it
+> > to silence the warning.
+>
+> And it seems so since the driver addition in 2007 by:
+> commit 49aa49bfd40d718095669c1c70c9d167b814e29b
+> Author: Greg Ungerer <gerg@snapgear.com>
+> Date:   Tue Oct 23 14:37:54 2007 +1000
+>
+>      m68knommu: new style ColdFire UART driver
 
-And it seems so since the driver addition in 2007 by:
-commit 49aa49bfd40d718095669c1c70c9d167b814e29b
-Author: Greg Ungerer <gerg@snapgear.com>
-Date:   Tue Oct 23 14:37:54 2007 +1000
+Indeed.
 
-     m68knommu: new style ColdFire UART driver
+Looks like the "changes to the ColdFire based m68knommu systems
+to use a platform model at init, and this is used there" from [1]
+never materialized on any public mailing list?
 
+Greg: does it still make sense to add them? If not:
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
+[1] https://lore.kernel.org/all/47254BEB.2040609@snapgear.com/
 
-Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+Gr{oetje,eeting}s,
 
-thanks,
--- 
-js
-suse labs
+                        Geert
 
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
