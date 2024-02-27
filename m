@@ -1,88 +1,160 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from flow2-smtp.messagingengine.com (flow2-smtp.messagingengine.com [103.168.172.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB5D91332AA;
-	Tue, 27 Feb 2024 09:06:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A00F1386B0
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Feb 2024 10:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.137
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709024801; cv=none; b=anpcvGmv7kvE9u3+w214eBtQ2HC9NKY42KJQafzuyQSoAgXUyCKvhUhf3anMMFGVBecto+ov8fMRJxc9ONZ/aMIeNqcaHs+pTptC8Af0uCVRs/9FNp9NE9qbCzj2MUWAVt47Vw7mWOzom277Pf7IsVoF2sdFwmYlM+JAV6LdGr8=
+	t=1709031568; cv=none; b=l7TQeuMrzZYh42K0NinQaCbGOUd8HLddbUGJGz4CGE2EgpW6YKSR0RSa2+dIPO7IMsD7O/7q9azF3FnLrbuSszPBP5DGQgubkTnHmmnNWY/BM0vDrfteoTTmCnyR0w30NQ8nSfJJpZi7CznVVEEc2XnGJnO5dcQQrhuKl3KdTOU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709024801; c=relaxed/simple;
-	bh=TTZJrnTIFJCbLCIzk9Jv5e0pFgQa3oludyzZHZ81E74=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rmH7X5dBf69D1RdnJ2Na9+9kcFI4Ia9EIg1pDVwyUbkX+8lydMk8m/LDYVXBUxOCMLB8HB9uhFOoRrbfC6utcC5uEbQ6CY4vp5Q9mGUvxVnekRypemjdIByJWZMpGlCbyj6soOEdNJ1dg9EHpBrwGpyvfovDORP58ayolK9kkhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=NU3Qnet5; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1709031568; c=relaxed/simple;
+	bh=Z8dw8VXWA+48h8Uwo/1LAJcvTxClQqn0y2pXceSZ2RM=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=OnbVubJ47+OZdO/inqqzVVdkttXcjK68Our2TZXYwCSSKlVh+43gjkb5bRzqNn7JqKJ4kX/HMlgJ4g3hsezcYTRnNoos0B/hvFPohJQ5IgkRJtYiJj7E+nZg1KJ9axXamCWtf4vCyx78YxcRvLdx5jOA45PJoMxqTdfUd3w29ys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=KreeJwgJ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=bBO3jySl; arc=none smtp.client-ip=103.168.172.137
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="NU3Qnet5"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60D8FC43390;
-	Tue, 27 Feb 2024 09:06:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1709024800;
-	bh=TTZJrnTIFJCbLCIzk9Jv5e0pFgQa3oludyzZHZ81E74=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NU3Qnet5H/qUIgUxp0zxie5QxsJiS13J0MlfJ9N3eiVn4GoSwcP/901grM17n6FH+
-	 eRmPC1ZcjCjFmgWNR23qpbFrVWO+F5a/o9kXKraLJ1KaJ2OeiNYItEedUj99OUgabx
-	 KEjlp19ILK78asNqDP92B4Kf7Kr1xMIcT5LCtDiU=
-Date: Tue, 27 Feb 2024 10:06:37 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: stable@vger.kernel.org, linux-m68k@vger.kernel.org,
-	geert@linux-m68k.org, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH] block: ataflop: more blk-mq refactoring fixes
-Message-ID: <2024022726-magnitude-molecule-d251@gregkh>
-References: <20240227013728.15935-1-schmitzmic@gmail.com>
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="KreeJwgJ";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="bBO3jySl"
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailflow.nyi.internal (Postfix) with ESMTP id 78DBA200138;
+	Tue, 27 Feb 2024 05:59:24 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 27 Feb 2024 05:59:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1709031564; x=1709038764; bh=ALe4jRIpXw
+	GFVbo3YEKz32tiMZckplvn+7Agjim/VUs=; b=KreeJwgJS47kfteNF0Atm9VoLT
+	mRfGs//TxfpC0fFZ9SEmCaC2swxwVrdN/3Ir+9oF+fbHxOtydzs0GOj0O1ITDp51
+	ZhOnnsY7S3TnCZ4KCQAKSLYiFfKjoPsBoAlA8dApodL0QZ6nRCISIYBeFh2ul3w/
+	q59zfzcWezxy3DWuubch7g8lA2Drw5Ez0jYc9VWGFhZDa2LlhFdeHC7I+E7yatGM
+	hJNcDmI6gI3Zx71w11VLK+zKbOxBUMm1nalGz6w7e9Wc1kc8YztPLUVQ8LkOyg65
+	8WPuiETbWNlfqV0KEzh2qfROCbOq47LpMKoQbeNARU2PmuDi7KJ3PGB2mQlg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709031564; x=1709038764; bh=ALe4jRIpXwGFVbo3YEKz32tiMZck
+	plvn+7Agjim/VUs=; b=bBO3jySluCJ8iVd9SgGyaduu/7B7YWQLFiJ9Ps7xlapC
+	2Lu1jhKLr4XQz6dXwNluypZlvD7ktNGmEBmDx+l/7yB8xrGle+W+vyms/K+FVKb6
+	vfmssdRCf1wqieikEjJKlb4PL5URebMEeI7syXqZL8FtQxHCsQt7H3xzRq5ndzoQ
+	oZYNOTsMDpvjTL6WgQqY2GdPhVBq45+29NWAcjyYpqxh67E2AyyZ323tgVUDvNzD
+	j1qYSIwN2bTbtxvpO5Qnw5eDvGuNoreXZ4SGviyGwWwNwe24kyiKu1PnLoTqm6Hx
+	IZfTtcsnJMRwsibpxr+rL7unENDS3lSef9Mi0eR4QA==
+X-ME-Sender: <xms:isDdZafoyfIa2slvrGRb4QuGqlhK60arMii6iYL9riKPHpp4cGpkDg>
+    <xme:isDdZUM16FrnZSoIWKFKjkea6vNGsbbxm1_XQpYP7hU7n55KtwCjU4HyZXe4xvGnR
+    al4oJbACmXVdB8-sZs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgeeggddvfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:isDdZbg33X-NA4Q4g8hs1l1s2knS3VeDh75_ybtft9UbLAD21da0lQ>
+    <xmx:isDdZX91w2MZ5hgE7eH834qgzVQv9GUyFiDnpUSBzy5R9xSTy3NkLA>
+    <xmx:isDdZWvlIMVHAGfyORa7V5l8neOSYMEy4LWAa7attify04IxVKQb6Q>
+    <xmx:jMDdZVrJHSt9kALdLSyweF2DkUkEC1DI1fmVrfUCTkdSqb87F7HE81ozT4I>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 9822DB6008D; Tue, 27 Feb 2024 05:59:22 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-153-g7e3bb84806-fm-20240215.007-g7e3bb848
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240227013728.15935-1-schmitzmic@gmail.com>
+Message-Id: <164616c2-94f6-40e8-86e0-850dc8da212e@app.fastmail.com>
+In-Reply-To: 
+ <CAMuHMdWRBQF95fJ+NkPUdvpu5VfRm2WyTnvdqB1Xe7d4vsvY2g@mail.gmail.com>
+References: <20240226161414.2316610-1-arnd@kernel.org>
+ <20240226161414.2316610-4-arnd@kernel.org>
+ <CAMuHMdWRBQF95fJ+NkPUdvpu5VfRm2WyTnvdqB1Xe7d4vsvY2g@mail.gmail.com>
+Date: Tue, 27 Feb 2024 11:59:01 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Geert Uytterhoeven" <geert@linux-m68k.org>,
+ "Arnd Bergmann" <arnd@kernel.org>
+Cc: "Thomas Gleixner" <tglx@linutronix.de>,
+ "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
+ "Kees Cook" <keescook@chromium.org>,
+ "Anna-Maria Gleixner" <anna-maria@linutronix.de>,
+ "Matt Turner" <mattst88@gmail.com>, "Vineet Gupta" <vgupta@kernel.org>,
+ "Russell King" <linux@armlinux.org.uk>,
+ "Catalin Marinas" <catalin.marinas@arm.com>, guoren <guoren@kernel.org>,
+ "Brian Cain" <bcain@quicinc.com>, "Huacai Chen" <chenhuacai@kernel.org>,
+ "Michal Simek" <monstr@monstr.eu>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ "Helge Deller" <deller@gmx.de>, "Michael Ellerman" <mpe@ellerman.id.au>,
+ "Christophe Leroy" <christophe.leroy@csgroup.eu>,
+ "Palmer Dabbelt" <palmer@dabbelt.com>,
+ "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
+ "Andreas Larsson" <andreas@gaisler.com>,
+ "Richard Weinberger" <richard@nod.at>, x86@kernel.org,
+ "Max Filippov" <jcmvbkbc@gmail.com>, "Andy Lutomirski" <luto@kernel.org>,
+ "Jan Kiszka" <jan.kiszka@siemens.com>,
+ "Kieran Bingham" <kbingham@kernel.org>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+ linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+ "linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-um@lists.infradead.org
+Subject: Re: [PATCH 3/4] arch: define CONFIG_PAGE_SIZE_*KB on all architectures
+Content-Type: text/plain
 
-On Tue, Feb 27, 2024 at 02:37:28PM +1300, Michael Schmitz wrote:
-> [ commit d28e4dff085c5a87025c9a0a85fb798bd8e9ca17 upstream ]
-> 
-> As it turns out, my earlier patch in commit 86d46fdaa12a (block:
-> ataflop: fix breakage introduced at blk-mq refactoring) was
-> incomplete. This patch fixes any remaining issues found during
-> more testing and code review.
-> 
-> Requests exceeding 4 k are handled in 4k segments but
-> __blk_mq_end_request() is never called on these (still
-> sectors outstanding on the request). With redo_fd_request()
-> removed, there is no provision to kick off processing of the
-> next segment, causing requests exceeding 4k to hang. (By
-> setting /sys/block/fd0/queue/max_sectors_k <= 4 as workaround,
-> this behaviour can be avoided).
-> 
-> Instead of reintroducing redo_fd_request(), requeue the remainder
-> of the request by calling blk_mq_requeue_request() on incomplete
-> requests (i.e. when blk_update_request() still returns true), and
-> rely on the block layer to queue the residual as new request.
-> 
-> Both error handling and formatting needs to release the
-> ST-DMA lock, so call finish_fdc() on these (this was previously
-> handled by redo_fd_request()). finish_fdc() may be called
-> legitimately without the ST-DMA lock held - make sure we only
-> release the lock if we actually held it. In a similar way,
-> early exit due to errors in ataflop_queue_rq() must release
-> the lock.
-> 
-> After minor errors, fd_error sets up to recalibrate the drive
-> but never re-runs the current operation (another task handled by
-> redo_fd_request() before). Call do_fd_action() to get the next
-> steps (seek, retry read/write) underway.
-> 
-> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-> Fixes: 6ec3938cff95f (ataflop: convert to blk-mq)
-> Fixes: 86d46fdaa12a (block: ataflop: fix breakage introduced at blk-mq refactoring)
-> CC: stable@vger.kernel.org # 5.10.x
-> Link: https://lore.kernel.org/r/20211024002013.9332-1-schmitzmic@gmail.com
-> Signed-off-by: Jens Axboe <axboe@kernel.dk>
-> [MSch: v5.10 backport merge conflict fix]
+On Tue, Feb 27, 2024, at 09:54, Geert Uytterhoeven wrote:
+> Hi Arnd,
+>> diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+>> index 9dcf245c9cbf..c777a129768a 100644
+>> --- a/arch/m68k/Kconfig.cpu
+>> +++ b/arch/m68k/Kconfig.cpu
+>> @@ -30,6 +30,7 @@ config COLDFIRE
+>>         select GENERIC_CSUM
+>>         select GPIOLIB
+>>         select HAVE_LEGACY_CLK
+>> +       select HAVE_PAGE_SIZE_8KB if !MMU
+>
+> .... if you would drop the !MMU-dependency here.
+>
+>>
+>>  endchoice
+>>
+>> @@ -45,6 +46,7 @@ config M68000
+>>         select GENERIC_CSUM
+>>         select CPU_NO_EFFICIENT_FFS
+>>         select HAVE_ARCH_HASH
+>> +       select HAVE_PAGE_SIZE_4KB
+>
+> Perhaps replace this by
+>
+>     config M68KCLASSIC
+>             bool "Classic M68K CPU family support"
+>             select HAVE_ARCH_PFN_VALID
+>   +         select HAVE_PAGE_SIZE_4KB if !MMU
+>
+> so it covers all 680x0 CPUs without MMU?
 
-Now queued up, thanks.
+I was a bit unsure about how to best do this since there
+is not really a need for a fixed page size on nommu kernels,
+whereas the three MMU configs clearly tie the page size to
+the MMU rather than the platform.
 
-greg k-h
+There should be no reason for coldfire to have a different
+page size from dragonball if neither of them actually uses
+hardware pages, so one of them could be changed later.
+
+Let me know if that makes sense to you, or you still
+prefer me to change it like you suggested.
+
+      Arnd
