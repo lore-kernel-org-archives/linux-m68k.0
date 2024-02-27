@@ -1,25 +1,25 @@
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3548914534C
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Feb 2024 13:46:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0406B1474A9
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Feb 2024 13:46:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709041576; cv=none; b=rEFk2PVrRl+Q5l8hSLHdrMFqefllouFWRqkzyhoWo04yxXGggAiAtkza6DC5E+mAplms+jTLLt8lNjpKrs04S6xkiOHO4fZhQqaKvDVqfkOouQJmAOiMxdfcdSKYo4ajOEpMCZnwGbcsVJS50WRyj4Ev5EIF1oM/lFwpTNluAWs=
+	t=1709041613; cv=none; b=eL/emZsVtgQTEVqW/pY3bPO1EclGmlrio+wk79vlPcnjsCScUWzsJvKpKNppUS5ThfHpYCeUS24N/stMt9yjwZ2jcV15S4dtTHr+r9743M5wFMKzJaJWN5UtFq/5RZnW2PsDYo+NTlWYhTVki75UFImRJvchrZI1rfs0H4pYzHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709041576; c=relaxed/simple;
-	bh=xRjDVtu3nytJp3c18npkYm9xnFy1VlKHPEHeJB+cX/Y=;
+	s=arc-20240116; t=1709041613; c=relaxed/simple;
+	bh=Kvh5mtk92pn+GmzhsBj3v6EsxD9iSlLWlQs86SKVnTw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rowcR6J5PeBV8RItUClL8xtmlxl9EhmDefwNY+9gchMTnxPi2oBN9+obd4HC5Pb+SWk8PXfmUdWTUYbuPHa59Q36NP5G5JhY6fDIEe7XdjM+P6D1Q2ESvmbIbGY+CceCLUEM6EvyCvLE1HhygRUV5DQ8ZfSz6plEFGgmI2msjEc=
+	 Content-Type:Content-Disposition:In-Reply-To; b=YICOl/NB662RzhQd5Mbm7mw7MjXrSDbMOIB3cKlqha9XX1VWBX21+GP7bEucpLEW3+VDWZlnigUCkt2ws7z7X917ysubF+wn7Ozinfluy5MUOidAXttEFDWs8uQeEVuq4Whyc5J2+vunYLGhb91MthzCNtGOyioPaGP0nqOqrVI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=139.178.84.217
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 0FED960A47;
-	Tue, 27 Feb 2024 13:46:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1CC5C433C7;
-	Tue, 27 Feb 2024 13:46:05 +0000 (UTC)
-Date: Tue, 27 Feb 2024 13:46:03 +0000
+	by dfw.source.kernel.org (Postfix) with ESMTP id F00A260A47;
+	Tue, 27 Feb 2024 13:46:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CB54C43390;
+	Tue, 27 Feb 2024 13:46:42 +0000 (UTC)
+Date: Tue, 27 Feb 2024 13:46:40 +0000
 From: Catalin Marinas <catalin.marinas@arm.com>
 To: Arnd Bergmann <arnd@kernel.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>,
@@ -52,12 +52,12 @@ Cc: Thomas Gleixner <tglx@linutronix.de>,
 	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
 	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
 	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-um@lists.infradead.org
-Subject: Re: [PATCH 2/4] arch: simplify architecture specific page size
- configuration
-Message-ID: <Zd3nm4YNW8OwVQxm@arm.com>
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+	Linux Kernel Functional Testing <lkft@linaro.org>
+Subject: Re: [PATCH 4/4] vdso: avoid including asm/page.h
+Message-ID: <Zd3nwGX2oevtj_hQ@arm.com>
 References: <20240226161414.2316610-1-arnd@kernel.org>
- <20240226161414.2316610-3-arnd@kernel.org>
+ <20240226161414.2316610-5-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -66,19 +66,36 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240226161414.2316610-3-arnd@kernel.org>
+In-Reply-To: <20240226161414.2316610-5-arnd@kernel.org>
 
-On Mon, Feb 26, 2024 at 05:14:12PM +0100, Arnd Bergmann wrote:
+On Mon, Feb 26, 2024 at 05:14:14PM +0100, Arnd Bergmann wrote:
 > From: Arnd Bergmann <arnd@arndb.de>
 > 
-> arc, arm64, parisc and powerpc all have their own Kconfig symbols
-> in place of the common CONFIG_PAGE_SIZE_4KB symbols. Change these
-> so the common symbols are the ones that are actually used, while
-> leaving the arhcitecture specific ones as the user visible
-> place for configuring it, to avoid breaking user configs.
+> The recent change to the vdso_data_store broke building compat VDSO
+> on at least arm64 because it includes headers outside of the include/vdso/
+> namespace:
 > 
+> In file included from arch/arm64/include/asm/lse.h:5,
+>                  from arch/arm64/include/asm/cmpxchg.h:14,
+>                  from arch/arm64/include/asm/atomic.h:16,
+>                  from include/linux/atomic.h:7,
+>                  from include/asm-generic/bitops/atomic.h:5,
+>                  from arch/arm64/include/asm/bitops.h:25,
+>                  from include/linux/bitops.h:68,
+>                  from arch/arm64/include/asm/memory.h:209,
+>                  from arch/arm64/include/asm/page.h:46,
+>                  from include/vdso/datapage.h:22,
+>                  from lib/vdso/gettimeofday.c:5,
+>                  from <command-line>:
+> arch/arm64/include/asm/atomic_ll_sc.h:298:9: error: unknown type name 'u128'
+>   298 |         u128 full;
+> 
+> Use an open-coded page size calculation based on the new CONFIG_PAGE_SHIFT
+> Kconfig symbol instead.
+> 
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Fixes: a0d2fcd62ac2 ("vdso/ARM: Make union vdso_data_store available for all architectures")
+> Link: https://lore.kernel.org/lkml/CA+G9fYtrXXm_KO9fNPz3XaRxHV7UD_yQp-TEuPQrNRHU+_0W_Q@mail.gmail.com/
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-For arm64:
 
 Acked-by: Catalin Marinas <catalin.marinas@arm.com>
