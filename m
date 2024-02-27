@@ -1,524 +1,277 @@
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2400B4A33
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Feb 2024 00:49:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.40.73.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C319336E;
+	Tue, 27 Feb 2024 01:37:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708994998; cv=none; b=jeoo7sFLHftTrsun1hCJdg4z9o2Jf549XHMch9iG5egw4GI7iITo2C+2qvzAYjiyaVT7OYK+i0vs2hJEWaIcxv2dsE0EtZ21uWzCkwXTF20c/KW3oDxH3OySImHzlcm9ywcPq8cQzNDDMYYjBi33iGwd6FA+0v5WTeN+SRZMM8I=
+	t=1708997857; cv=none; b=oNgY5wZb/FT0hZ7Vpb69lyp9jPwbD2ORY9YAj6hX/fyoiBIAwxUkkwppL/yTaHi8+8aVeSRDCHxqDJKJZjUOad1BRYOgztO57Tn3lHPoiTz+2gVSWmRg+Yde3+lI70qP2B1LXOlJopaYNh5WX+Mj5D/2wdO4J4BYcgNvvufmPDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708994998; c=relaxed/simple;
-	bh=rccfFAsIXXB1qR3NT1VIdPRPtfwefb4SHiEfUqybo3o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=i7IrtPQSVlBePKLKguBfBqOy1sOx5q2XmQMmAkKR4qGXwot5yNBPDuggDynVIAgJ+f40deWEHLMap6IdLPThBXu/OKDjn3NhBy9NL82vB9Y+14eugcNlrpMwKm3fYflBuSZANGe0C+3qW4Q/5GvbtoABnqLzdwUF8TYLZRvfTww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hlb2FLF+; arc=none smtp.client-ip=145.40.73.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1708997857; c=relaxed/simple;
+	bh=szvoCJ8mxzmSPnnj71G5SmTEB2MJk0RIcbyrD348UHc=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=BWp680jRVN45IXO/6WNvHzv3f5a/+Q7pIBnGc3l7HQLtMV6OVnWBaWo9HHjWieM9zM5cqAzPG12JPDQb8ERd0ENsLkWp6ECYjhDMiMYTnQI7jK9kmTP2PSxGn0E9ecSjwDz3t5DQyaeQrBp+rk+wCMAscroLON6m2kxchxFvX2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IOB6KPqo; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hlb2FLF+"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 89D7ACE18AB
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Feb 2024 00:49:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB6FBC43399
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Feb 2024 00:49:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708994992;
-	bh=rccfFAsIXXB1qR3NT1VIdPRPtfwefb4SHiEfUqybo3o=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=hlb2FLF+7oSLe2uaiQD1GRNrdcUcZ76jkMNefv7y9z0d4avyL6FJ+ec7MgIsVWa5P
-	 wvDYvR10b8lFqBOgHmiA20/osMi1ld0TZqLNPYid52p2q5f1QA1scVPKtHhKfIDhrC
-	 q/svMK1Zm8VDLDLUYcDNUcNYAUTAdB82AhjafWTXrSI4iDZBqMRFNL534Smb8NdazI
-	 ymraKhDbxXSVTEhoYUArpoXZ2r5dqvW0+L+n8D1lFNRcYqnhaZWc3vUmQ45go8B2dM
-	 9JaWRnD/n3enlV67RX51LMpQ6+Gmgkk/xvPrcP0vyLUs5JSJ74i3u0JV/RpiWY7fzr
-	 YOZ11VkXCa1NQ==
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-512fb30dbc9so1746786e87.2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Feb 2024 16:49:52 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVp1UsiMC1whz4v3FQO5MVKKE+6g0sUktJFlHwNurDOISGWjgXVG9/pNr11rDB36Px1Iq8S69rjz5MLEd4E2EpJhThZ8AJa1qHxknRjw5F0
-X-Gm-Message-State: AOJu0Yx3F7obSciC799V6A4BRbmN7ZGjlIGPtBQ/muUbUIf3dVz1c7dt
-	brtvdHNcdrfUbAuYqgrkWrrPBi7XThfygacniIfknUGIFP8UoDb9Mj48ze0BEXxJ3K3xKLoP1nF
-	Vi8T0/RuieParc+G92ESG7Ia06Kg=
-X-Google-Smtp-Source: AGHT+IHMbxJ3SiFOofcXhuN9irkVPuqdMkmTsNwCqv7uyX1PBMjHMV5Lrsk8D9faur3ryNh+qAv630nq+LkptA51b9c=
-X-Received: by 2002:a05:6512:10d2:b0:512:cef7:4754 with SMTP id
- k18-20020a05651210d200b00512cef74754mr6391328lfg.5.1708994969841; Mon, 26 Feb
- 2024 16:49:29 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IOB6KPqo"
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dc1ff697f9so30413655ad.0;
+        Mon, 26 Feb 2024 17:37:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708997855; x=1709602655; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Xf0fD7sfnD+IFHcYsOvjKCBQ0iWeVFP4rLWMLoIWcbc=;
+        b=IOB6KPqo4lI2P+AwpCBHJ8/z8xIbOC6sNoiyA43pspTI774Euvd9n85lRB092KrIb3
+         wbW2NKY+1mNgJ4P2yp0oCRUED40rvsCqUzZwMNbNuahqL9AUDSg8znpiqQ4pMPgAN4dJ
+         0KyBAOmdsUEUPEeYOP2vXuhqohz7XYYRxFocT7qraSW7cizg5UJi0OBkEGufUpuXOn+5
+         V3j0DMZIcZOdP1f4iFCf+okhTBOlbZ4tncoqPPQS4ZV+2p5xZ4iZJmcVQgu8NeM1gUN1
+         EOM2SclzMqAnqQw/qfv0dedJWaWz4XvOXvldVnjbVggEFQNwYMztxgYu/o1gsQ++PYE5
+         qkYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708997855; x=1709602655;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Xf0fD7sfnD+IFHcYsOvjKCBQ0iWeVFP4rLWMLoIWcbc=;
+        b=dRJq8L6/zrtx0zkKmmf98Z+DRqISqg1n9lNNQX1DLeQ0J+f75B3BkIeayyoJF60tWC
+         Q1Ku32UoL8d29UqywlE+pyFHxbq2pko60J9maLxfgt1PP1bsmnPqIgNL6l5uejfuGWZ1
+         t0qQSGxZQi+F7+S+dKPX7SLH4Pp4pRY5cU+D/d8cJgeXPRz5xoWPPzmjf0JAwR7IDLQv
+         k0LFSH1016XL8h+H8Ii68tmWbPggxps8vo1OAcBBY2qjh2imI5xKvlS4Tv06X/xeRotJ
+         pj4hIn2Z6vmhvUcnnfehd4V1U6yT4RCx2xSkDSK15xieZ0K+nvg7Sd9u1QadYXgzdAHj
+         r1wQ==
+X-Gm-Message-State: AOJu0YzupH8qWI/w3+KvIaOg/Kif4RRqE+GriH6I5zaRrALAurPP5agF
+	1YHP8dmEC6zduT8rreK5oF3In/oo/Yd5DEoRQ0+G2KnZIxIGySTq
+X-Google-Smtp-Source: AGHT+IHJ4N8s1oW71EoIFfSgJ20yx5lMoCPaLqb/kt0rfRNG2vGawk4IPNHTaA/1VU5mlcIIAdkzdQ==
+X-Received: by 2002:a17:902:e94f:b0:1db:fad5:26ad with SMTP id b15-20020a170902e94f00b001dbfad526admr3273946pll.51.1708997854993;
+        Mon, 26 Feb 2024 17:37:34 -0800 (PST)
+Received: from xplor.waratah.dyndns.org (125-236-136-221-fibre.sparkbb.co.nz. [125.236.136.221])
+        by smtp.gmail.com with ESMTPSA id iz10-20020a170902ef8a00b001dc8e1375e2sm320999plb.104.2024.02.26.17.37.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 17:37:34 -0800 (PST)
+Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
+	id 91B6436031A; Tue, 27 Feb 2024 14:37:30 +1300 (NZDT)
+From: Michael Schmitz <schmitzmic@gmail.com>
+To: stable@vger.kernel.org
+Cc: linux-m68k@vger.kernel.org,
+	gregkh@linuxfoundation.org,
+	geert@linux-m68k.org,
+	Michael Schmitz <schmitzmic@gmail.com>,
+	Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH] block: ataflop: more blk-mq refactoring fixes
+Date: Tue, 27 Feb 2024 14:37:28 +1300
+Message-Id: <20240227013728.15935-1-schmitzmic@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240226161414.2316610-1-arnd@kernel.org> <20240226161414.2316610-4-arnd@kernel.org>
-In-Reply-To: <20240226161414.2316610-4-arnd@kernel.org>
-From: Guo Ren <guoren@kernel.org>
-Date: Tue, 27 Feb 2024 08:49:18 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSCdXtCib2Wv_DQQSJ5srhDwHH6B3xgdrr1-SQECUL1VA@mail.gmail.com>
-Message-ID: <CAJF2gTSCdXtCib2Wv_DQQSJ5srhDwHH6B3xgdrr1-SQECUL1VA@mail.gmail.com>
-Subject: Re: [PATCH 3/4] arch: define CONFIG_PAGE_SIZE_*KB on all architectures
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Vincenzo Frascino <vincenzo.frascino@arm.com>, 
-	Kees Cook <keescook@chromium.org>, Anna-Maria Behnsen <anna-maria@linutronix.de>, 
-	Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@kernel.org>, 
-	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Brian Cain <bcain@quicinc.com>, Huacai Chen <chenhuacai@kernel.org>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller <deller@gmx.de>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Andreas Larsson <andreas@gaisler.com>, 
-	Richard Weinberger <richard@nod.at>, x86@kernel.org, Max Filippov <jcmvbkbc@gmail.com>, 
-	Andy Lutomirski <luto@kernel.org>, Jan Kiszka <jan.kiszka@siemens.com>, 
-	Kieran Bingham <kbingham@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
-	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
-	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-um@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 12:15=E2=80=AFAM Arnd Bergmann <arnd@kernel.org> wr=
-ote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> Most architectures only support a single hardcoded page size. In order
-> to ensure that each one of these sets the corresponding Kconfig symbols,
-> change over the PAGE_SHIFT definition to the common one and allow
-> only the hardware page size to be selected.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  arch/alpha/Kconfig                 | 1 +
->  arch/alpha/include/asm/page.h      | 2 +-
->  arch/arm/Kconfig                   | 1 +
->  arch/arm/include/asm/page.h        | 2 +-
->  arch/csky/Kconfig                  | 1 +
->  arch/csky/include/asm/page.h       | 2 +-
->  arch/m68k/Kconfig                  | 3 +++
->  arch/m68k/Kconfig.cpu              | 2 ++
->  arch/m68k/include/asm/page.h       | 6 +-----
->  arch/microblaze/Kconfig            | 1 +
->  arch/microblaze/include/asm/page.h | 2 +-
->  arch/nios2/Kconfig                 | 1 +
->  arch/nios2/include/asm/page.h      | 2 +-
->  arch/openrisc/Kconfig              | 1 +
->  arch/openrisc/include/asm/page.h   | 2 +-
->  arch/riscv/Kconfig                 | 1 +
->  arch/riscv/include/asm/page.h      | 2 +-
->  arch/s390/Kconfig                  | 1 +
->  arch/s390/include/asm/page.h       | 2 +-
->  arch/sparc/Kconfig                 | 2 ++
->  arch/sparc/include/asm/page_32.h   | 2 +-
->  arch/sparc/include/asm/page_64.h   | 3 +--
->  arch/um/Kconfig                    | 1 +
->  arch/um/include/asm/page.h         | 2 +-
->  arch/x86/Kconfig                   | 1 +
->  arch/x86/include/asm/page_types.h  | 2 +-
->  arch/xtensa/Kconfig                | 1 +
->  arch/xtensa/include/asm/page.h     | 2 +-
->  28 files changed, 32 insertions(+), 19 deletions(-)
->
-> diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
-> index d6968d090d49..4f490250d323 100644
-> --- a/arch/alpha/Kconfig
-> +++ b/arch/alpha/Kconfig
-> @@ -14,6 +14,7 @@ config ALPHA
->         select PCI_DOMAINS if PCI
->         select PCI_SYSCALL if PCI
->         select HAVE_ASM_MODVERSIONS
-> +       select HAVE_PAGE_SIZE_8KB
->         select HAVE_PCSPKR_PLATFORM
->         select HAVE_PERF_EVENTS
->         select NEED_DMA_MAP_STATE
-> diff --git a/arch/alpha/include/asm/page.h b/arch/alpha/include/asm/page.=
-h
-> index 4db1ebc0ed99..70419e6be1a3 100644
-> --- a/arch/alpha/include/asm/page.h
-> +++ b/arch/alpha/include/asm/page.h
-> @@ -6,7 +6,7 @@
->  #include <asm/pal.h>
->
->  /* PAGE_SHIFT determines the page size */
-> -#define PAGE_SHIFT     13
-> +#define PAGE_SHIFT     CONFIG_PAGE_SHIFT
->  #define PAGE_SIZE      (_AC(1,UL) << PAGE_SHIFT)
->  #define PAGE_MASK      (~(PAGE_SIZE-1))
->
-> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> index 0af6709570d1..9d52ba3a8ad1 100644
-> --- a/arch/arm/Kconfig
-> +++ b/arch/arm/Kconfig
-> @@ -116,6 +116,7 @@ config ARM
->         select HAVE_MOD_ARCH_SPECIFIC
->         select HAVE_NMI
->         select HAVE_OPTPROBES if !THUMB2_KERNEL
-> +       select HAVE_PAGE_SIZE_4KB
->         select HAVE_PCI if MMU
->         select HAVE_PERF_EVENTS
->         select HAVE_PERF_REGS
-> diff --git a/arch/arm/include/asm/page.h b/arch/arm/include/asm/page.h
-> index 119aa85d1feb..62af9f7f9e96 100644
-> --- a/arch/arm/include/asm/page.h
-> +++ b/arch/arm/include/asm/page.h
-> @@ -8,7 +8,7 @@
->  #define _ASMARM_PAGE_H
->
->  /* PAGE_SHIFT determines the page size */
-> -#define PAGE_SHIFT             12
-> +#define PAGE_SHIFT             CONFIG_PAGE_SHIFT
->  #define PAGE_SIZE              (_AC(1,UL) << PAGE_SHIFT)
->  #define PAGE_MASK              (~((1 << PAGE_SHIFT) - 1))
->
-> diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-> index cf2a6fd7dff8..9c2723ab1c94 100644
-> --- a/arch/csky/Kconfig
-> +++ b/arch/csky/Kconfig
-> @@ -89,6 +89,7 @@ config CSKY
->         select HAVE_KPROBES if !CPU_CK610
->         select HAVE_KPROBES_ON_FTRACE if !CPU_CK610
->         select HAVE_KRETPROBES if !CPU_CK610
-> +       select HAVE_PAGE_SIZE_4KB
->         select HAVE_PERF_EVENTS
->         select HAVE_PERF_REGS
->         select HAVE_PERF_USER_STACK_DUMP
-> diff --git a/arch/csky/include/asm/page.h b/arch/csky/include/asm/page.h
-> index 4a0502e324a6..f70f37402d75 100644
-> --- a/arch/csky/include/asm/page.h
-> +++ b/arch/csky/include/asm/page.h
-> @@ -10,7 +10,7 @@
->  /*
->   * PAGE_SHIFT determines the page size: 4KB
->   */
-> -#define PAGE_SHIFT     12
-> +#define PAGE_SHIFT     CONFIG_PAGE_SHIFT
-LGTM, thx.
-Acked-by: Guo Ren <guoren@kernel.org>
+[ commit d28e4dff085c5a87025c9a0a85fb798bd8e9ca17 upstream ]
 
->  #define PAGE_SIZE      (_AC(1, UL) << PAGE_SHIFT)
->  #define PAGE_MASK      (~(PAGE_SIZE - 1))
->  #define THREAD_SIZE    (PAGE_SIZE * 2)
-> diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-> index 4b3e93cac723..7b709453d5e7 100644
-> --- a/arch/m68k/Kconfig
-> +++ b/arch/m68k/Kconfig
-> @@ -84,12 +84,15 @@ config MMU
->
->  config MMU_MOTOROLA
->         bool
-> +       select HAVE_PAGE_SIZE_4KB
->
->  config MMU_COLDFIRE
-> +       select HAVE_PAGE_SIZE_8KB
->         bool
->
->  config MMU_SUN3
->         bool
-> +       select HAVE_PAGE_SIZE_8KB
->         depends on MMU && !MMU_MOTOROLA && !MMU_COLDFIRE
->
->  config ARCH_SUPPORTS_KEXEC
-> diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-> index 9dcf245c9cbf..c777a129768a 100644
-> --- a/arch/m68k/Kconfig.cpu
-> +++ b/arch/m68k/Kconfig.cpu
-> @@ -30,6 +30,7 @@ config COLDFIRE
->         select GENERIC_CSUM
->         select GPIOLIB
->         select HAVE_LEGACY_CLK
-> +       select HAVE_PAGE_SIZE_8KB if !MMU
->
->  endchoice
->
-> @@ -45,6 +46,7 @@ config M68000
->         select GENERIC_CSUM
->         select CPU_NO_EFFICIENT_FFS
->         select HAVE_ARCH_HASH
-> +       select HAVE_PAGE_SIZE_4KB
->         select LEGACY_TIMER_TICK
->         help
->           The Freescale (was Motorola) 68000 CPU is the first generation =
-of
-> diff --git a/arch/m68k/include/asm/page.h b/arch/m68k/include/asm/page.h
-> index a5993ad83ed8..8cfb84b49975 100644
-> --- a/arch/m68k/include/asm/page.h
-> +++ b/arch/m68k/include/asm/page.h
-> @@ -7,11 +7,7 @@
->  #include <asm/page_offset.h>
->
->  /* PAGE_SHIFT determines the page size */
-> -#if defined(CONFIG_SUN3) || defined(CONFIG_COLDFIRE)
-> -#define PAGE_SHIFT     13
-> -#else
-> -#define PAGE_SHIFT     12
-> -#endif
-> +#define PAGE_SHIFT     CONFIG_PAGE_SHIFT
->  #define PAGE_SIZE      (_AC(1, UL) << PAGE_SHIFT)
->  #define PAGE_MASK      (~(PAGE_SIZE-1))
->  #define PAGE_OFFSET    (PAGE_OFFSET_RAW)
-> diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
-> index 211f338d6235..f18ec02ddeb2 100644
-> --- a/arch/microblaze/Kconfig
-> +++ b/arch/microblaze/Kconfig
-> @@ -31,6 +31,7 @@ config MICROBLAZE
->         select HAVE_FTRACE_MCOUNT_RECORD
->         select HAVE_FUNCTION_GRAPH_TRACER
->         select HAVE_FUNCTION_TRACER
-> +       select HAVE_PAGE_SIZE_4KB
->         select HAVE_PCI
->         select IRQ_DOMAIN
->         select XILINX_INTC
-> diff --git a/arch/microblaze/include/asm/page.h b/arch/microblaze/include=
-/asm/page.h
-> index 86a4ce07c192..8810f4f1c3b0 100644
-> --- a/arch/microblaze/include/asm/page.h
-> +++ b/arch/microblaze/include/asm/page.h
-> @@ -20,7 +20,7 @@
->  #ifdef __KERNEL__
->
->  /* PAGE_SHIFT determines the page size */
-> -#define PAGE_SHIFT             12
-> +#define PAGE_SHIFT     CONFIG_PAGE_SHIFT
->  #define PAGE_SIZE      (ASM_CONST(1) << PAGE_SHIFT)
->  #define PAGE_MASK      (~(PAGE_SIZE-1))
->
-> diff --git a/arch/nios2/Kconfig b/arch/nios2/Kconfig
-> index 58d9565dc2c7..79d3039b29f1 100644
-> --- a/arch/nios2/Kconfig
-> +++ b/arch/nios2/Kconfig
-> @@ -15,6 +15,7 @@ config NIOS2
->         select GENERIC_IRQ_SHOW
->         select HAVE_ARCH_TRACEHOOK
->         select HAVE_ARCH_KGDB
-> +       select HAVE_PAGE_SIZE_4KB
->         select IRQ_DOMAIN
->         select LOCK_MM_AND_FIND_VMA
->         select MODULES_USE_ELF_RELA
-> diff --git a/arch/nios2/include/asm/page.h b/arch/nios2/include/asm/page.=
-h
-> index 0ae7d9ce369b..0722f88e63cc 100644
-> --- a/arch/nios2/include/asm/page.h
-> +++ b/arch/nios2/include/asm/page.h
-> @@ -21,7 +21,7 @@
->  /*
->   * PAGE_SHIFT determines the page size
->   */
-> -#define PAGE_SHIFT     12
-> +#define PAGE_SHIFT     CONFIG_PAGE_SHIFT
->  #define PAGE_SIZE      (_AC(1, UL) << PAGE_SHIFT)
->  #define PAGE_MASK      (~(PAGE_SIZE - 1))
->
-> diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
-> index fd9bb76a610b..3586cda55bde 100644
-> --- a/arch/openrisc/Kconfig
-> +++ b/arch/openrisc/Kconfig
-> @@ -25,6 +25,7 @@ config OPENRISC
->         select GENERIC_CPU_DEVICES
->         select HAVE_PCI
->         select HAVE_UID16
-> +       select HAVE_PAGE_SIZE_8KB
->         select GENERIC_ATOMIC64
->         select GENERIC_CLOCKEVENTS_BROADCAST
->         select GENERIC_SMP_IDLE_THREAD
-> diff --git a/arch/openrisc/include/asm/page.h b/arch/openrisc/include/asm=
-/page.h
-> index 44fc1fd56717..7925ce09ab5a 100644
-> --- a/arch/openrisc/include/asm/page.h
-> +++ b/arch/openrisc/include/asm/page.h
-> @@ -18,7 +18,7 @@
->
->  /* PAGE_SHIFT determines the page size */
->
-> -#define PAGE_SHIFT      13
-> +#define PAGE_SHIFT      CONFIG_PAGE_SHIFT
->  #ifdef __ASSEMBLY__
->  #define PAGE_SIZE       (1 << PAGE_SHIFT)
->  #else
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index bffbd869a068..792a337548f6 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -136,6 +136,7 @@ config RISCV
->         select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if !LD_IS_LLD
->         select HAVE_MOVE_PMD
->         select HAVE_MOVE_PUD
-> +       select HAVE_PAGE_SIZE_4KB
->         select HAVE_PCI
->         select HAVE_PERF_EVENTS
->         select HAVE_PERF_REGS
-> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.=
-h
-> index 57e887bfa34c..2947423b5082 100644
-> --- a/arch/riscv/include/asm/page.h
-> +++ b/arch/riscv/include/asm/page.h
-> @@ -12,7 +12,7 @@
->  #include <linux/pfn.h>
->  #include <linux/const.h>
->
-> -#define PAGE_SHIFT     (12)
-> +#define PAGE_SHIFT     CONFIG_PAGE_SHIFT
->  #define PAGE_SIZE      (_AC(1, UL) << PAGE_SHIFT)
->  #define PAGE_MASK      (~(PAGE_SIZE - 1))
->
-> diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-> index fe565f3a3a91..b61c74c10050 100644
-> --- a/arch/s390/Kconfig
-> +++ b/arch/s390/Kconfig
-> @@ -199,6 +199,7 @@ config S390
->         select HAVE_MOD_ARCH_SPECIFIC
->         select HAVE_NMI
->         select HAVE_NOP_MCOUNT
-> +       select HAVE_PAGE_SIZE_4KB
->         select HAVE_PCI
->         select HAVE_PERF_EVENTS
->         select HAVE_PERF_REGS
-> diff --git a/arch/s390/include/asm/page.h b/arch/s390/include/asm/page.h
-> index 73b9c3bf377f..ded9548d11d9 100644
-> --- a/arch/s390/include/asm/page.h
-> +++ b/arch/s390/include/asm/page.h
-> @@ -11,7 +11,7 @@
->  #include <linux/const.h>
->  #include <asm/types.h>
->
-> -#define _PAGE_SHIFT    12
-> +#define _PAGE_SHIFT    CONFIG_PAGE_SHIFT
->  #define _PAGE_SIZE     (_AC(1, UL) << _PAGE_SHIFT)
->  #define _PAGE_MASK     (~(_PAGE_SIZE - 1))
->
-> diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-> index 204c43cb3d43..7e6bc6fff76b 100644
-> --- a/arch/sparc/Kconfig
-> +++ b/arch/sparc/Kconfig
-> @@ -58,6 +58,7 @@ config SPARC32
->         select DMA_DIRECT_REMAP
->         select GENERIC_ATOMIC64
->         select HAVE_UID16
-> +       select HAVE_PAGE_SIZE_4KB
->         select LOCK_MM_AND_FIND_VMA
->         select OLD_SIGACTION
->         select ZONE_DMA
-> @@ -75,6 +76,7 @@ config SPARC64
->         select HAVE_ARCH_TRANSPARENT_HUGEPAGE
->         select HAVE_DYNAMIC_FTRACE
->         select HAVE_FTRACE_MCOUNT_RECORD
-> +       select HAVE_PAGE_SIZE_8KB
->         select HAVE_SYSCALL_TRACEPOINTS
->         select HAVE_CONTEXT_TRACKING_USER
->         select HAVE_TIF_NOHZ
-> diff --git a/arch/sparc/include/asm/page_32.h b/arch/sparc/include/asm/pa=
-ge_32.h
-> index 6be6f683f98f..9977c77374cd 100644
-> --- a/arch/sparc/include/asm/page_32.h
-> +++ b/arch/sparc/include/asm/page_32.h
-> @@ -11,7 +11,7 @@
->
->  #include <linux/const.h>
->
-> -#define PAGE_SHIFT   12
-> +#define PAGE_SHIFT   CONFIG_PAGE_SHIFT
->  #define PAGE_SIZE    (_AC(1, UL) << PAGE_SHIFT)
->  #define PAGE_MASK    (~(PAGE_SIZE-1))
->
-> diff --git a/arch/sparc/include/asm/page_64.h b/arch/sparc/include/asm/pa=
-ge_64.h
-> index 254dffd85fb1..e9bd24821c93 100644
-> --- a/arch/sparc/include/asm/page_64.h
-> +++ b/arch/sparc/include/asm/page_64.h
-> @@ -4,8 +4,7 @@
->
->  #include <linux/const.h>
->
-> -#define PAGE_SHIFT   13
-> -
-> +#define PAGE_SHIFT   CONFIG_PAGE_SHIFT
->  #define PAGE_SIZE    (_AC(1,UL) << PAGE_SHIFT)
->  #define PAGE_MASK    (~(PAGE_SIZE-1))
->
-> diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-> index b5e179360534..93a5a8999b07 100644
-> --- a/arch/um/Kconfig
-> +++ b/arch/um/Kconfig
-> @@ -20,6 +20,7 @@ config UML
->         select HAVE_UID16
->         select HAVE_DEBUG_KMEMLEAK
->         select HAVE_DEBUG_BUGVERBOSE
-> +       select HAVE_PAGE_SIZE_4KB
->         select NO_DMA if !UML_DMA_EMULATION
->         select OF_EARLY_FLATTREE if OF
->         select GENERIC_IRQ_SHOW
-> diff --git a/arch/um/include/asm/page.h b/arch/um/include/asm/page.h
-> index 84866127d074..9ef9a8aedfa6 100644
-> --- a/arch/um/include/asm/page.h
-> +++ b/arch/um/include/asm/page.h
-> @@ -10,7 +10,7 @@
->  #include <linux/const.h>
->
->  /* PAGE_SHIFT determines the page size */
-> -#define PAGE_SHIFT     12
-> +#define PAGE_SHIFT     CONFIG_PAGE_SHIFT
->  #define PAGE_SIZE      (_AC(1, UL) << PAGE_SHIFT)
->  #define PAGE_MASK      (~(PAGE_SIZE-1))
->
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 5edec175b9bf..ba57eb362ec8 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -255,6 +255,7 @@ config X86
->         select HAVE_NOINSTR_VALIDATION          if HAVE_OBJTOOL
->         select HAVE_OBJTOOL                     if X86_64
->         select HAVE_OPTPROBES
-> +       select HAVE_PAGE_SIZE_4KB
->         select HAVE_PCSPKR_PLATFORM
->         select HAVE_PERF_EVENTS
->         select HAVE_PERF_EVENTS_NMI
-> diff --git a/arch/x86/include/asm/page_types.h b/arch/x86/include/asm/pag=
-e_types.h
-> index 86bd4311daf8..9da9c8a2f1df 100644
-> --- a/arch/x86/include/asm/page_types.h
-> +++ b/arch/x86/include/asm/page_types.h
-> @@ -7,7 +7,7 @@
->  #include <linux/mem_encrypt.h>
->
->  /* PAGE_SHIFT determines the page size */
-> -#define PAGE_SHIFT             12
-> +#define PAGE_SHIFT             CONFIG_PAGE_SHIFT
->  #define PAGE_SIZE              (_AC(1,UL) << PAGE_SHIFT)
->  #define PAGE_MASK              (~(PAGE_SIZE-1))
->
-> diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
-> index 6f248d87e496..87ec35b3363b 100644
-> --- a/arch/xtensa/Kconfig
-> +++ b/arch/xtensa/Kconfig
-> @@ -44,6 +44,7 @@ config XTENSA
->         select HAVE_GCC_PLUGINS if GCC_VERSION >=3D 120000
->         select HAVE_HW_BREAKPOINT if PERF_EVENTS
->         select HAVE_IRQ_TIME_ACCOUNTING
-> +       select HAVE_PAGE_SIZE_4KB
->         select HAVE_PCI
->         select HAVE_PERF_EVENTS
->         select HAVE_STACKPROTECTOR
-> diff --git a/arch/xtensa/include/asm/page.h b/arch/xtensa/include/asm/pag=
-e.h
-> index a77d04972eb9..4db56ef052d2 100644
-> --- a/arch/xtensa/include/asm/page.h
-> +++ b/arch/xtensa/include/asm/page.h
-> @@ -22,7 +22,7 @@
->   * PAGE_SHIFT determines the page size
->   */
->
-> -#define PAGE_SHIFT     12
-> +#define PAGE_SHIFT     CONFIG_PAGE_SHIFT
->  #define PAGE_SIZE      (__XTENSA_UL_CONST(1) << PAGE_SHIFT)
->  #define PAGE_MASK      (~(PAGE_SIZE-1))
->
-> --
-> 2.39.2
->
+As it turns out, my earlier patch in commit 86d46fdaa12a (block:
+ataflop: fix breakage introduced at blk-mq refactoring) was
+incomplete. This patch fixes any remaining issues found during
+more testing and code review.
 
+Requests exceeding 4 k are handled in 4k segments but
+__blk_mq_end_request() is never called on these (still
+sectors outstanding on the request). With redo_fd_request()
+removed, there is no provision to kick off processing of the
+next segment, causing requests exceeding 4k to hang. (By
+setting /sys/block/fd0/queue/max_sectors_k <= 4 as workaround,
+this behaviour can be avoided).
 
---=20
-Best Regards
- Guo Ren
+Instead of reintroducing redo_fd_request(), requeue the remainder
+of the request by calling blk_mq_requeue_request() on incomplete
+requests (i.e. when blk_update_request() still returns true), and
+rely on the block layer to queue the residual as new request.
+
+Both error handling and formatting needs to release the
+ST-DMA lock, so call finish_fdc() on these (this was previously
+handled by redo_fd_request()). finish_fdc() may be called
+legitimately without the ST-DMA lock held - make sure we only
+release the lock if we actually held it. In a similar way,
+early exit due to errors in ataflop_queue_rq() must release
+the lock.
+
+After minor errors, fd_error sets up to recalibrate the drive
+but never re-runs the current operation (another task handled by
+redo_fd_request() before). Call do_fd_action() to get the next
+steps (seek, retry read/write) underway.
+
+Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+Fixes: 6ec3938cff95f (ataflop: convert to blk-mq)
+Fixes: 86d46fdaa12a (block: ataflop: fix breakage introduced at blk-mq refactoring)
+CC: stable@vger.kernel.org # 5.10.x
+Link: https://lore.kernel.org/r/20211024002013.9332-1-schmitzmic@gmail.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+[MSch: v5.10 backport merge conflict fix]
+---
+ drivers/block/ataflop.c | 42 ++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 37 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
+index cd612cd04767..224450c90e45 100644
+--- a/drivers/block/ataflop.c
++++ b/drivers/block/ataflop.c
+@@ -456,10 +456,20 @@ static DEFINE_TIMER(fd_timer, check_change);
+ 	
+ static void fd_end_request_cur(blk_status_t err)
+ {
++	DPRINT(("fd_end_request_cur(), bytes %d of %d\n",
++		blk_rq_cur_bytes(fd_request),
++		blk_rq_bytes(fd_request)));
++
+ 	if (!blk_update_request(fd_request, err,
+ 				blk_rq_cur_bytes(fd_request))) {
++		DPRINT(("calling __blk_mq_end_request()\n"));
+ 		__blk_mq_end_request(fd_request, err);
+ 		fd_request = NULL;
++	} else {
++		/* requeue rest of request */
++		DPRINT(("calling blk_mq_requeue_request()\n"));
++		blk_mq_requeue_request(fd_request, true);
++		fd_request = NULL;
+ 	}
+ }
+ 
+@@ -697,12 +707,21 @@ static void fd_error( void )
+ 	if (fd_request->error_count >= MAX_ERRORS) {
+ 		printk(KERN_ERR "fd%d: too many errors.\n", SelectedDrive );
+ 		fd_end_request_cur(BLK_STS_IOERR);
++		finish_fdc();
++		return;
+ 	}
+ 	else if (fd_request->error_count == RECALIBRATE_ERRORS) {
+ 		printk(KERN_WARNING "fd%d: recalibrating\n", SelectedDrive );
+ 		if (SelectedDrive != -1)
+ 			SUD.track = -1;
+ 	}
++	/* need to re-run request to recalibrate */
++	atari_disable_irq( IRQ_MFP_FDC );
++
++	setup_req_params( SelectedDrive );
++	do_fd_action( SelectedDrive );
++
++	atari_enable_irq( IRQ_MFP_FDC );
+ }
+ 
+ 
+@@ -737,6 +756,7 @@ static int do_format(int drive, int type, struct atari_format_descr *desc)
+ 	if (type) {
+ 		if (--type >= NUM_DISK_MINORS ||
+ 		    minor2disktype[type].drive_types > DriveType) {
++			finish_fdc();
+ 			ret = -EINVAL;
+ 			goto out;
+ 		}
+@@ -745,6 +765,7 @@ static int do_format(int drive, int type, struct atari_format_descr *desc)
+ 	}
+ 
+ 	if (!UDT || desc->track >= UDT->blocks/UDT->spt/2 || desc->head >= 2) {
++		finish_fdc();
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
+@@ -785,6 +806,7 @@ static int do_format(int drive, int type, struct atari_format_descr *desc)
+ 
+ 	wait_for_completion(&format_wait);
+ 
++	finish_fdc();
+ 	ret = FormatError ? -EIO : 0;
+ out:
+ 	blk_mq_unquiesce_queue(q);
+@@ -819,6 +841,7 @@ static void do_fd_action( int drive )
+ 		    else {
+ 			/* all sectors finished */
+ 			fd_end_request_cur(BLK_STS_OK);
++			finish_fdc();
+ 			return;
+ 		    }
+ 		}
+@@ -1222,8 +1245,8 @@ static void fd_rwsec_done1(int status)
+ 	}
+ 	else {
+ 		/* all sectors finished */
+-		finish_fdc();
+ 		fd_end_request_cur(BLK_STS_OK);
++		finish_fdc();
+ 	}
+ 	return;
+   
+@@ -1345,7 +1368,7 @@ static void fd_times_out(struct timer_list *unused)
+ 
+ static void finish_fdc( void )
+ {
+-	if (!NeedSeek) {
++	if (!NeedSeek || !stdma_is_locked_by(floppy_irq)) {
+ 		finish_fdc_done( 0 );
+ 	}
+ 	else {
+@@ -1380,7 +1403,8 @@ static void finish_fdc_done( int dummy )
+ 	start_motor_off_timer();
+ 
+ 	local_irq_save(flags);
+-	stdma_release();
++	if (stdma_is_locked_by(floppy_irq))
++		stdma_release();
+ 	local_irq_restore(flags);
+ 
+ 	DPRINT(("finish_fdc() finished\n"));
+@@ -1477,7 +1501,9 @@ static blk_status_t ataflop_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 	int drive = floppy - unit;
+ 	int type = floppy->type;
+ 
+-	DPRINT(("Queue request: drive %d type %d last %d\n", drive, type, bd->last));
++	DPRINT(("Queue request: drive %d type %d sectors %d of %d last %d\n",
++		drive, type, blk_rq_cur_sectors(bd->rq),
++		blk_rq_sectors(bd->rq), bd->last));
+ 
+ 	spin_lock_irq(&ataflop_lock);
+ 	if (fd_request) {
+@@ -1499,6 +1525,7 @@ static blk_status_t ataflop_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 		/* drive not connected */
+ 		printk(KERN_ERR "Unknown Device: fd%d\n", drive );
+ 		fd_end_request_cur(BLK_STS_IOERR);
++		stdma_release();
+ 		goto out;
+ 	}
+ 		
+@@ -1515,11 +1542,13 @@ static blk_status_t ataflop_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 		if (--type >= NUM_DISK_MINORS) {
+ 			printk(KERN_WARNING "fd%d: invalid disk format", drive );
+ 			fd_end_request_cur(BLK_STS_IOERR);
++			stdma_release();
+ 			goto out;
+ 		}
+ 		if (minor2disktype[type].drive_types > DriveType)  {
+ 			printk(KERN_WARNING "fd%d: unsupported disk format", drive );
+ 			fd_end_request_cur(BLK_STS_IOERR);
++			stdma_release();
+ 			goto out;
+ 		}
+ 		type = minor2disktype[type].index;
+@@ -1620,6 +1649,7 @@ static int fd_locked_ioctl(struct block_device *bdev, fmode_t mode,
+ 		/* what if type > 0 here? Overwrite specified entry ? */
+ 		if (type) {
+ 		        /* refuse to re-set a predefined type for now */
++			finish_fdc();
+ 			return -EINVAL;
+ 		}
+ 
+@@ -1687,8 +1717,10 @@ static int fd_locked_ioctl(struct block_device *bdev, fmode_t mode,
+ 
+ 		/* sanity check */
+ 		if (setprm.track != dtp->blocks/dtp->spt/2 ||
+-		    setprm.head != 2)
++		    setprm.head != 2) {
++			finish_fdc();
+ 			return -EINVAL;
++		}
+ 
+ 		UDT = dtp;
+ 		set_capacity(floppy->disk, UDT->blocks);
+-- 
+2.17.1
+
