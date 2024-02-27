@@ -1,166 +1,165 @@
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com [66.111.4.224])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D52713DBB3
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Feb 2024 14:17:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9020878B61
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Feb 2024 14:19:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.224
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709043444; cv=none; b=nMh7CseBFMn72x3mitwtXTSxOCrIQ9GiWyd38OJE9iG+rVfZ4XYIUqNrBZ3xspc6CvYhKaZ+DY+O63Pipf9A0xu0VwEd5Tns8gWwRsuvHKUI5+x2WL3Mg6LV4RCTJjriiDEaTFWu6jfGswe6NnebZJQHdQVEQmPhMMwC/lQiMD4=
+	t=1709043543; cv=none; b=NpiEFzp5GbYrQTiDiCowNp9hdkMYody/xhmLD768WJJR2Mh/HNysg9Nr6wkyTO0jCfvYVV94TIqI0Qqz4oQjTzk/upl6HAcxzmhAv0NJoZ2qQfecYhwPDkIshK3wH7ZDN7WVwNr/ytOi5qKIGtB0X4/v6EDdN/ij7HmWh1RfWYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709043444; c=relaxed/simple;
-	bh=dq3i5pWfZkS0+3JsHg2pVYG9X0QcZK6R4hXzTpTTz60=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DBYpb4SarzW24fqMrvXtPd5Gl8PSP2tAV7yRbFsi/XrzFkwiH9O9qh/6Ls0Is7et+4QM/VJrXZbVjnuLi1iB2P5gFXOCdzZMiYsXlSipzrlnTVA0FA0Sq35Fghd7pJXaQxkpXINdCFLHtkx2+YqFWaV6xMwOZFi5uGbPvCukn4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HZUQgE57; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1709043543; c=relaxed/simple;
+	bh=A0FSY37d+vGzCQkk6DyCbgJvMDTFHRlUqhEcd+SIv+U=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=raAGq+m+fkfn7kvBxaNnDJROWdQUg4qn+vOAUqhOu6Y5oP3utHAOOo9EhhyXaah/ULbHDx5NpN8wf+WTEmFy+XG58aMFp++Y2UyoGCvyXApNbOvDhlwO3xzK90CkjS3G9AnbNzxwfO2oaBIEGYq64o2hOMyUpJb0rs190flsmyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=lPUTGKxS; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=NPNMT8iD; arc=none smtp.client-ip=66.111.4.224
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HZUQgE57"
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6de3141f041so2719215b3a.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Feb 2024 06:17:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709043442; x=1709648242; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rpqdky+ymjmxcqq01R5Avd+XHCiDpwZB+urDPB52CfQ=;
-        b=HZUQgE57Nz4J8DYJgZ8nN8K4d/CkJQHIoitkovKmCvcr/zruDlrzbtLQ2TfIg7eH0l
-         AX9HpzjJzqsLftZMEOpobRn9c7+IbN09BQ2kUKDYHHIcRt+abkEndrn9QKGqUtaDo0J0
-         4S+KKyziZIHDQprEomEqQnzKL9kY29bY8ewVqDXcjxsswH5SlwRCOj+hHercWf4Dtjb2
-         9SgLsmhCSph62S+mMr2VTlYuTx4RPxf1LkS7pXXdMaHRg518kBU9n8bM0WELDrxnKPlG
-         gAmUmQMh8S+SwcoiG9ldTynOzMu0bEZRtc14wb9p5W4ua+weuysugPwXn3iwNdSpuYmC
-         C3yA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709043442; x=1709648242;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Rpqdky+ymjmxcqq01R5Avd+XHCiDpwZB+urDPB52CfQ=;
-        b=lyDuIDDvIXWvdXDlEexZ6voU9NKTPuieRKtfoAQ1gMOzzqrgDgsUYhQMvXJsHxYv2Z
-         tuO8bXjPrIDnoJLyfmvIUbPBUVwg/43AYqO8Zh3Hc+Af4jZnSf32f+NKagV76PYiRjIu
-         rJ6cRd8TDWpTLVutqC/f0sl1IiQWX9u/hz0/fCuYD/1AI5nJhcYc7C7HeacIqosyiyHd
-         FzB30jYQQS/IpKWxxgKd+PvjxVqRS2esxI+yVYI8ahMa31qKC1nWn4TzkGSIe6RBlWHj
-         THEKwJl8Z2Dl9vmBTKN+e75K4rhoKEBMta6W+04rSQDhVto1Cl7r5OAUiaFiUkN8/rd6
-         j4Eg==
-X-Forwarded-Encrypted: i=1; AJvYcCUNuLsI9je4q+CcP/AuwXXpL0T4nHi5wdRycz5eufxLm0aBYpYd5xUZOozVn6ozOd44ygJAF91ydF3Ez4dRt7Dus8gt3jxk3dn6KAc4vs0m
-X-Gm-Message-State: AOJu0YwQpNYypxdg1FTA1ctIWjZO1ec6IyC/kSoEK+hr4uOxJyfFjRvc
-	kRGyUME8giCkaxB0B+m1JmM5oq7quDmzJ2hK629y0sA9NacBQJAq
-X-Google-Smtp-Source: AGHT+IG1v7ceazyU18i+/2jChnvhggqiuo8ODduGjqD2vinuS/E/Ez45WCZqTO4TcXVxa0gTdAyXsA==
-X-Received: by 2002:a05:6a00:99b:b0:6e5:345a:dcaf with SMTP id u27-20020a056a00099b00b006e5345adcafmr6063934pfg.14.1709043442502;
-        Tue, 27 Feb 2024 06:17:22 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id gu5-20020a056a004e4500b006e31f615af6sm6141005pfb.17.2024.02.27.06.17.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 06:17:21 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <8403d8e3-c8ac-476b-8b8e-2c8b6ed8f464@roeck-us.net>
-Date: Tue, 27 Feb 2024 06:17:20 -0800
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="lPUTGKxS";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="NPNMT8iD"
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailnew.nyi.internal (Postfix) with ESMTP id 8717758176A;
+	Tue, 27 Feb 2024 09:19:00 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 27 Feb 2024 09:19:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1709043540;
+	 x=1709050740; bh=lgwXV027qrMgBZRGGg484htOjeaxN2ck0Zcve0Dmzhs=; b=
+	lPUTGKxSZWT3KviA8nwQtQixUNSRKDoofN2NivSWKtva1+uopGcYEEr4RC46c0a4
+	vwDyryLlG3/SO1o0IgHaIAKElGDgOIftHdg/t1LowfBfp6kWJ/02DSeWOd9gO01Y
+	i2xNDAt65lcr61a9rbStiacnnPLSzVXxNfz+qirJEOwE6l4Mjsb9FPSq6beDfONs
+	IfFnZ9bxqqqY3xHHTJ0xelGfB0mkN5vK/R1PlQWSfAeazO2LUPLczof7Is+mk4YY
+	dS7xeAUB8mFbzZwvSoSrgsd+tbYj/Jm83Sm5bzumIEzMe8eZVlLb2zqJj5ACbn1Q
+	xHdhr1utw0PFFSmpN8T17A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1709043540; x=
+	1709050740; bh=lgwXV027qrMgBZRGGg484htOjeaxN2ck0Zcve0Dmzhs=; b=N
+	PNMT8iDaqBhcmripVnSD6nS3Lv42kN3UYBW99FRUWa3TpEGbwqC5etBXkzZPJQ97
+	b46+HgX1sO+sVYOqI7WWoftMMpP1d6mFgSc+COHXzownsJ7ep9c7luzipVKN/JSm
+	WvBS91t32eqhnz4okM6kGJHX7ja6nxAsDWD2f8/n1iyXi5CXN1O8cRQmzdP0MN3P
+	lXLGSaSOyRMNG2Klv5JGjNbEL+jZ99PzUXZkK0dRYXnY7Sh9tCeVVIPOdKairDq/
+	hVJllB8wVwsQCnLlNf4DWkeeaaUPJ42yyj0cK8PqRkYPiog+0wCNiowoUDAfMSZ0
+	TxOSo3YO5XIRZlykzYViQ==
+X-ME-Sender: <xms:Uu_dZWjk9CPDDtuHUq0spRBOyt_ieWSB_NQxrFGLmr24EkUFHc8YHg>
+    <xme:Uu_dZXDMUFx8ZF-9sPWppPSzjc83i6I1db9CmveKWGMIeJFPSdAeNSa88BpcqoNFB
+    jVJuLbK_PRbbcnDDkw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgeehgdefkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfg
+    jeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:Uu_dZeEDtHRL9UWe85NwoKrx0otX3SNqDfDiZ5hOf70Z6GsgUqDdIw>
+    <xmx:Uu_dZfQ4cWIo6G3rC1HFzafsQ2XymenYLV7MaNYtE0ltPhY45Lm3AA>
+    <xmx:Uu_dZTw8lPg-bwLBWej0tpp3R0mNAVRklOB_4I0L7nRbPx69459aug>
+    <xmx:VO_dZbOruGZOL_Pr3S4l_raiy6WMSNlORBuJgrWys66FFVcptlS8dQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 8FBCAB6008D; Tue, 27 Feb 2024 09:18:58 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-153-g7e3bb84806-fm-20240215.007-g7e3bb848
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Linux 6.8-rc6
-Content-Language: en-US
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Kees Cook <keescook@chromium.org>,
- linux-m68k <linux-m68k@lists.linux-m68k.org>
-References: <CAHk-=whZ=iA6DhijePcW-pJjZ8YD4T5qLpLKVSUT+4gWNm_0sA@mail.gmail.com>
- <6bb3f88b-bf57-442a-8b46-cb4784dd4cab@roeck-us.net>
- <CAMuHMdVYjw9CEBUzxuJ-10wudK_mvJZgqP3gR4kuv-FDYBZ-Aw@mail.gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <CAMuHMdVYjw9CEBUzxuJ-10wudK_mvJZgqP3gR4kuv-FDYBZ-Aw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Message-Id: <7b62e73d-d3fa-4432-807d-c2e667814b17@app.fastmail.com>
+In-Reply-To: 
+ <CAMuHMdXQYPtL0J4Phm81S1qWpi7no=1r4uStbLd8zbjn7fcWQw@mail.gmail.com>
+References: <20240226161414.2316610-1-arnd@kernel.org>
+ <20240226161414.2316610-4-arnd@kernel.org>
+ <CAMuHMdWRBQF95fJ+NkPUdvpu5VfRm2WyTnvdqB1Xe7d4vsvY2g@mail.gmail.com>
+ <164616c2-94f6-40e8-86e0-850dc8da212e@app.fastmail.com>
+ <CAMuHMdXQYPtL0J4Phm81S1qWpi7no=1r4uStbLd8zbjn7fcWQw@mail.gmail.com>
+Date: Tue, 27 Feb 2024 15:18:38 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Geert Uytterhoeven" <geert@linux-m68k.org>
+Cc: "Arnd Bergmann" <arnd@kernel.org>,
+ "Thomas Gleixner" <tglx@linutronix.de>,
+ "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
+ "Kees Cook" <keescook@chromium.org>,
+ "Anna-Maria Gleixner" <anna-maria@linutronix.de>,
+ "Matt Turner" <mattst88@gmail.com>, "Vineet Gupta" <vgupta@kernel.org>,
+ "Russell King" <linux@armlinux.org.uk>,
+ "Catalin Marinas" <catalin.marinas@arm.com>, guoren <guoren@kernel.org>,
+ "Brian Cain" <bcain@quicinc.com>, "Huacai Chen" <chenhuacai@kernel.org>,
+ "Michal Simek" <monstr@monstr.eu>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ "Helge Deller" <deller@gmx.de>, "Michael Ellerman" <mpe@ellerman.id.au>,
+ "Christophe Leroy" <christophe.leroy@csgroup.eu>,
+ "Palmer Dabbelt" <palmer@dabbelt.com>,
+ "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
+ "Andreas Larsson" <andreas@gaisler.com>,
+ "Richard Weinberger" <richard@nod.at>, x86@kernel.org,
+ "Max Filippov" <jcmvbkbc@gmail.com>, "Andy Lutomirski" <luto@kernel.org>,
+ "Jan Kiszka" <jan.kiszka@siemens.com>,
+ "Kieran Bingham" <kbingham@kernel.org>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+ linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+ "linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-um@lists.infradead.org, "Greg Ungerer" <gerg@linux-m68k.org>
+Subject: Re: [PATCH 3/4] arch: define CONFIG_PAGE_SIZE_*KB on all architectures
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 2/26/24 23:41, Geert Uytterhoeven wrote:
-> Hi Günter,
-> 
-> CC Kees
-> 
-> On Mon, Feb 26, 2024 at 6:52 PM Guenter Roeck <linux@roeck-us.net> wrote:
->> stackinit
->> ---------
+On Tue, Feb 27, 2024, at 12:12, Geert Uytterhoeven wrote:
+> On Tue, Feb 27, 2024 at 11:59=E2=80=AFAM Arnd Bergmann <arnd@arndb.de>=
+ wrote:
+>> On Tue, Feb 27, 2024, at 09:54, Geert Uytterhoeven wrote:
+>> I was a bit unsure about how to best do this since there
+>> is not really a need for a fixed page size on nommu kernels,
+>> whereas the three MMU configs clearly tie the page size to
+>> the MMU rather than the platform.
 >>
->> Seen with m68k:q800 emulation.
->>
->>      # test_char_array_zero: ASSERTION FAILED at lib/stackinit_kunit.c:333
->>      Expected stackinit_range_contains(fill_start, fill_size, target_start, target_size) to be true, but is false
->> stack fill missed target!? (fill 16 wide, target offset by -12)
->>
->>      # test_char_array_none: ASSERTION FAILED at lib/stackinit_kunit.c:343
->>      Expected stackinit_range_contains(fill_start, fill_size, target_start, target_size) to be true, but is false
->> stack fill missed target!? (fill 16 wide, target offset by -12)
->>
->> Report:
->> https://lore.kernel.org/lkml/a0d10d50-2720-4ecd-a2c6-c2c5e5aeee65@roeck-us.net/
-> 
-> I don't think these have ever succeeded before, see
-> https://lore.kernel.org/all/CAMuHMdX_g1tbiUL9PUQdqaegrEzCNN3GtbSvSBFYAL4TzvstFg@mail.gmail.com
-> 
->> I suspect this may be caused by the test assuming that stack growth is
->> downward, but I don't really understand the test well enough to be sure.
->> I'll disable this set of tests for m68k going forward, so I am not going
->> to report the problem again in the future.
-> 
-> On m68k, the stack does grow downward.
+>> There should be no reason for coldfire to have a different
+>> page size from dragonball if neither of them actually uses
+>> hardware pages, so one of them could be changed later.
+>
+> Indeed, in theory, PAGE_SIZE doesn't matter for nommu, but the concept
+> of pages is used all over the place in Linux.
+>
+> I'm mostly worried about some Coldfire code relying on the actual value
+> of PAGE_SIZE in some other context. e.g. for configuring non-cacheable
+> regions.
 
-Sorry, I meant to say upward, but apparently I was wrong.
+Right, any change here would have to be carefully tested. I would
+expect that a 4K page size would reduce memory consumption even on
+NOMMU systems that should have the same tradeoffs for representing
+files in the page cache and in mem_map[].
 
-> AFAIK only parisc has a stack that grows upward.
-> 
-... and the tests work there, so that isn't the problem.
+> And does this impact running nommu binaries on a system with MMU?
+> I.e. if nommu binaries were built with a 4 KiB PAGE_SIZE, do they
+> still run on MMU systems with an 8 KiB PAGE_SIZE (coldfire and sun3),
+> or are there some subtleties to take into account?
 
-As mentioned, I stopped running those tests on m68k.
+As far as I understand, binaries have to be built and linked for
+the largest page size they can run on, so running them on a kernel
+with smaller page size usually works.
 
-Thanks,
-Guenter
+One notable exception is sys_mmap2(), which on most architectures
+takes units of 4KiB but on m68k is actually written to take
+PAGE_SIZE units. As Al pointed out in f8b7256096a2 ("Unify
+sys_mmap*"), it has always been wrong on sun3, presumably
+because users of that predate modern glibc. Running coldfire
+nommu binaries on coldfire mmu kernels would run into the same
+bug if either of them changes PAGE_SIZE. If you can run
+coldfire nommu binaries on classic m68k, that is already
+broken in the same way.
 
+      Arnd
