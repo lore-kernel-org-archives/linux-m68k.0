@@ -1,63 +1,63 @@
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E309B130AD3
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Feb 2024 08:45:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9001E1353F9
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Feb 2024 08:55:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709023537; cv=none; b=UkpLuUpPMFwlzXdmQllEJ5JMWkh1jGRmRFgH5W8gWbqbvnw2Z4FDWos2O82eEQcqxrXd3rKb75ZKQZSjI+wJO7hPtdff+ZfLV/jO9RHLlwvTpX/dcXUtOeUQCtuMIp0ayLEfriweH2qfiqwFUnkDJrbVdvqSfUjduEoutvnjUSg=
+	t=1709024123; cv=none; b=dL8LubTO8cMd63U8eOQxiXsospegHnkPEx5Z3Ti8gKkpMMA6pGrkYgIRvawp3vYaD8uVyHKnEjq8GHZcFaL3+YLBmmSl9hJK5ZAyAYtWnpesslLfb57Ws/qOekC70H1HWWEXS8Wj9KF6Ln2GbDUzc41b6kLNe2pfqRNmEgDprvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709023537; c=relaxed/simple;
-	bh=ZH6cCYrbNG2YOChcX3vTXEnEeEOKhVq2+yJTwt6+8Uw=;
+	s=arc-20240116; t=1709024123; c=relaxed/simple;
+	bh=w0gu9IMca9J/tT97UVi+QQlbmYRnY/qPlnzkCAmcRmM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=btrqOsmYNMSyQl/BXdv2kZYGBq6H2Iz46S3flhtUjlGFsC7w0xCdCOmcPhQMGWqTJI6o5vH7UnHbXjW0BSed3rMx3EpOwLE6Tma9RbzPHp3qq5RBeZVTUbJjArHe/IhHXsoH0x4YgYBte5aimdq3RLL9bkO2SYwBqgmR9naMooc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.170
+	 To:Cc:Content-Type; b=q5tarJDMnTeN4VAwuL6tctRqYsbVmA4+h4JXZ5v6dSkcIBTOW4/Ugrnqnh3fT1aN4NPqFpythZ9pkuhIThwz5N9ZZJUJ7+hjeBuykgsYeXsq82Xu+REIFaVPdwxN7Hcjyk4eYw165qpsDZVKPN3+vZewF5735EuCOOdFt4FqhLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3c1a9b567edso493738b6e.3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Feb 2024 00:45:35 -0800 (PST)
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6e480cd18b2so1417455a34.3
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Feb 2024 00:55:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709023534; x=1709628334;
+        d=1e100.net; s=20230601; t=1709024120; x=1709628920;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=uzwNvfzqcMx0O3hVp46LgRJMNTPfRBstut9NEe744kY=;
-        b=DCEQqQR58475CaEjROXquaZmDBlQQFOiE5zV3oL18kHwQYpFpXOUIgBmqz8EwHnm+a
-         BXkVH0TUlNC+/k8dMHI0LRSlb4a14MF+2RhokoXBbhWmrSaVNrM6Zrpo0RDyLIhtthQr
-         gh9GVKY3+fJZXXpEQRI00j96k8GiauvLee4gq9boElCf/oCF8LuI5oWE9FhIycll7ZFI
-         RuvrSCjgPOgPumbttqTzcVzidwMyKVi85hbun54fv0jqa+l/eRSUbKJ5vNXOY2zjFX77
-         tzWjUaLKRHrC9raf9EL2KYbsOpV3tnEesfzvaA+nA2AqXDL6x7MIpceSeaGPyy7E8r1G
-         p6Mg==
-X-Forwarded-Encrypted: i=1; AJvYcCXgu5xIW3hdPVDWhFQ7+g7easPnXpl8uj7UwSFoTF3H/GB9fGWE7BVTJ11h9dWgtHPoOjKL25moegrHegnOsNfa3qkohS2vu0MJYOX7Xihr
-X-Gm-Message-State: AOJu0YxW8X3hY7ymltOwcnuj2lfnJLUzgLyM9pi3ZVwUXlDkeXvIhRNv
-	7X+7PdoaBLP1OKuPFc/m4B9VjHckaj/7JeSn9TzMQQzC7Xc/qc0crhOOxkq25HN5bA==
-X-Google-Smtp-Source: AGHT+IHdJa918SEwmhFNZb9Q24PsUx6pNGvVFc1dwc6WaTnzKMVFSWDS0EQ/dI9bpmIEWjSAjCuEdQ==
-X-Received: by 2002:a05:6808:4098:b0:3c1:ac81:54bf with SMTP id db24-20020a056808409800b003c1ac8154bfmr1282352oib.32.1709023534117;
-        Tue, 27 Feb 2024 00:45:34 -0800 (PST)
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com. [209.85.210.42])
-        by smtp.gmail.com with ESMTPSA id h16-20020a056808015000b003c178f6a504sm1406646oie.14.2024.02.27.00.45.33
+        bh=LF4kXg8LPe/h8pV/74EqYHGgPgOEfsUWLG6ibzoE1S0=;
+        b=aPE3auhySmtMQI2ah2zc5fZdlgZFlKSEqarE31LjSS3Kts4DY+Rs6AReZ6xmTbMkm/
+         4yAezNcV8+dBSs6W5+e2s/oyMJ0DeeIOm8DtNWZvNmPCC6jL94WtNMj/j0Cgjyte0JEc
+         VuTT3yuqYI0gAxnnGEfoWF0DfK3B2A7Jr2P9Leu6Tw2q8GmDxAZs3yURdE4stTceAa2g
+         7zkaS9YkWNhlfdmT+BOa3gmvQT+76DiE1lp/r/D2u+ELiwhTtXjPvMlSRbfnhjHa8TVD
+         RAXdQfVWvTUyYP8dERAVHm7SJXLPJJJkdMLjBetQYbHvuEPuDhXS1RV4qLNv0P31g2NO
+         g65w==
+X-Forwarded-Encrypted: i=1; AJvYcCXIBLTirRb4FuL47opRlDYBA4Bvuu2NgX/dgmrGqxMcnBhcRpe4zKQX9FoY/GoZhV63z28p/DV8bNlmFvAr64eMStV2HPC+q5rPtaqhaNQ0
+X-Gm-Message-State: AOJu0YzQfO3wFTGoj3xDXmtK9YCyaCdM5NdhIuZyimoG+jxnpLTltO7H
+	ofgqyivklzr7y1Zbtsu9f01RmTKwLjCSEvyYywH5QS2VVtRAbVGoqjgiHHdyb2Y0gg==
+X-Google-Smtp-Source: AGHT+IF1Bot/ZvSGbmNDJXZcahFfHQYlJASry8YC4mL6cl8uMdxqqhS7fhFpYxe0ngc7I5Rh9g3Y8w==
+X-Received: by 2002:a9d:7490:0:b0:6e4:7bbb:f3ae with SMTP id t16-20020a9d7490000000b006e47bbbf3aemr10205056otk.4.1709024119677;
+        Tue, 27 Feb 2024 00:55:19 -0800 (PST)
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com. [209.85.161.43])
+        by smtp.gmail.com with ESMTPSA id b23-20020a056830105700b006e49669e1f1sm1097247otp.10.2024.02.27.00.55.19
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 00:45:33 -0800 (PST)
-Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6e497a1481cso639513a34.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Feb 2024 00:45:33 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVOyIKY48YSPs1rTd3f3s/E9yl8jC0JG66TkUfQhvsdHFsKZH+q1HoMfKaZGrf5GSQo/JqDiaW5/Y4GoTrpKP+gsOD8By7rfJvpGhy7pq4/
-X-Received: by 2002:a25:84c7:0:b0:dc7:496e:42e1 with SMTP id
- x7-20020a2584c7000000b00dc7496e42e1mr1414712ybm.51.1709023513209; Tue, 27 Feb
- 2024 00:45:13 -0800 (PST)
+        Tue, 27 Feb 2024 00:55:19 -0800 (PST)
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-5a0919f2022so641625eaf.1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Feb 2024 00:55:19 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWNAHwyQFqUZt+APPFCX/N6oYGZW07I4gwvk1/KQPYo9CFxtv14l3Rjm/+VFUgYZ8TXxnsr5rnFYqyyUSfzsVfyLbWsXiE3D3bmHWPMsb1l
+X-Received: by 2002:a25:71c3:0:b0:dcf:2b44:f38d with SMTP id
+ m186-20020a2571c3000000b00dcf2b44f38dmr1589302ybc.49.1709024097788; Tue, 27
+ Feb 2024 00:54:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240226161414.2316610-1-arnd@kernel.org> <20240226161414.2316610-2-arnd@kernel.org>
-In-Reply-To: <20240226161414.2316610-2-arnd@kernel.org>
+References: <20240226161414.2316610-1-arnd@kernel.org> <20240226161414.2316610-4-arnd@kernel.org>
+In-Reply-To: <20240226161414.2316610-4-arnd@kernel.org>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 27 Feb 2024 09:45:01 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVCWF50SO1TK5F5Q8sN08THKJ+F6gt9u5pD05gJUZ+E9w@mail.gmail.com>
-Message-ID: <CAMuHMdVCWF50SO1TK5F5Q8sN08THKJ+F6gt9u5pD05gJUZ+E9w@mail.gmail.com>
-Subject: Re: [PATCH 1/4] arch: consolidate existing CONFIG_PAGE_SIZE_*KB definitions
+Date: Tue, 27 Feb 2024 09:54:46 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWRBQF95fJ+NkPUdvpu5VfRm2WyTnvdqB1Xe7d4vsvY2g@mail.gmail.com>
+Message-ID: <CAMuHMdWRBQF95fJ+NkPUdvpu5VfRm2WyTnvdqB1Xe7d4vsvY2g@mail.gmail.com>
+Subject: Re: [PATCH 3/4] arch: define CONFIG_PAGE_SIZE_*KB on all architectures
 To: Arnd Bergmann <arnd@kernel.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>, Vincenzo Frascino <vincenzo.frascino@arm.com>, 
 	Kees Cook <keescook@chromium.org>, Anna-Maria Behnsen <anna-maria@linutronix.de>, 
@@ -86,29 +86,74 @@ Content-Transfer-Encoding: quoted-printable
 
 Hi Arnd,
 
-On Mon, Feb 26, 2024 at 5:14=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wro=
+On Mon, Feb 26, 2024 at 5:15=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wro=
 te:
 > From: Arnd Bergmann <arnd@arndb.de>
 >
-> These four architectures define the same Kconfig symbols for configuring
-> the page size. Move the logic into a common place where it can be shared
-> with all other architectures.
+> Most architectures only support a single hardcoded page size. In order
+> to ensure that each one of these sets the corresponding Kconfig symbols,
+> change over the PAGE_SHIFT definition to the common one and allow
+> only the hardware page size to be selected.
 >
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
 Thanks for your patch!
 
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
+> --- a/arch/m68k/Kconfig
+> +++ b/arch/m68k/Kconfig
+> @@ -84,12 +84,15 @@ config MMU
+>
+>  config MMU_MOTOROLA
+>         bool
+> +       select HAVE_PAGE_SIZE_4KB
+>
+>  config MMU_COLDFIRE
+> +       select HAVE_PAGE_SIZE_8KB
 
-> +config PAGE_SIZE_4KB
-> +       bool "4KB pages"
+I think you can do without this...
 
-Now you got rid of the 4000-byte ("4kB") pages and friends, please
-do not replace these by Kelvin-bytes, and use the official binary
-prefixes =3D> "4 KiB".
+>         bool
+>
+>  config MMU_SUN3
+>         bool
+> +       select HAVE_PAGE_SIZE_8KB
+>         depends on MMU && !MMU_MOTOROLA && !MMU_COLDFIRE
+>
+>  config ARCH_SUPPORTS_KEXEC
+> diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+> index 9dcf245c9cbf..c777a129768a 100644
+> --- a/arch/m68k/Kconfig.cpu
+> +++ b/arch/m68k/Kconfig.cpu
+> @@ -30,6 +30,7 @@ config COLDFIRE
+>         select GENERIC_CSUM
+>         select GPIOLIB
+>         select HAVE_LEGACY_CLK
+> +       select HAVE_PAGE_SIZE_8KB if !MMU
 
-> +       depends on HAVE_PAGE_SIZE_4KB
+.... if you would drop the !MMU-dependency here.
+
+>
+>  endchoice
+>
+> @@ -45,6 +46,7 @@ config M68000
+>         select GENERIC_CSUM
+>         select CPU_NO_EFFICIENT_FFS
+>         select HAVE_ARCH_HASH
+> +       select HAVE_PAGE_SIZE_4KB
+
+Perhaps replace this by
+
+    config M68KCLASSIC
+            bool "Classic M68K CPU family support"
+            select HAVE_ARCH_PFN_VALID
+  +         select HAVE_PAGE_SIZE_4KB if !MMU
+
+so it covers all 680x0 CPUs without MMU?
+
+>         select LEGACY_TIMER_TICK
+>         help
+>           The Freescale (was Motorola) 68000 CPU is the first generation =
+of
 
 Gr{oetje,eeting}s,
 
