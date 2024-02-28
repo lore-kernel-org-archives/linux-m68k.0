@@ -1,128 +1,173 @@
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EB2A23741
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 28 Feb 2024 10:09:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1BD186241
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 28 Feb 2024 21:06:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709114964; cv=none; b=dLLhAoRmPU5qzKXA9/XYHONZz1lkpUHct4Xf4eBEMeik1hCIUsVIKemRa4zV8/Yq9hbESJvAW5/HuC6Gal7FzqBJoaNauhIuFTNI3JiYejTzlC8PpgeTB0RiZrjdryWZGnIgrujaiA36fX/b8PcMdfdUM2KQPoooo9PJuPZ+GnY=
+	t=1709154386; cv=none; b=eV9+6JzUHlfp3EZUJBqxr2Mt+bgcB73feztsdSVqtdyO4jjqwltUH/eX599D2KBF4Gu9gga0Zqj48T/RoSGVGGFXXDjDtjeDTFvFG29nmcVOYy7aZ7tyxnSg6+q1ZM87NtNtmv5xZz0papY1Nwfj14GWITN8G6fwEIqxn88AGn0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709114964; c=relaxed/simple;
-	bh=Y/N54uYuQQOGm0T/0RrXeURdYc6prMJfZOab8x8pTyQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PzuS6EkLhmbmt7YtxuveaZ8KrqgXEOK1VNUahXVHuA5Cw3tKreh8Tmwk9kEGmoAOQ2URPS9d25dWXzsJLiM3yHJeQ9dZ5uJYX0e/thY00ZpQUha23lEZeFC62VkPqVNNqCLl7r/3i+GRlElJNjCeWXfJ6B7dsvJZf0mlm1ZQzqo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	s=arc-20240116; t=1709154386; c=relaxed/simple;
+	bh=KnopYAd5eQKEby5VAzV5cjLQUuk9vdF/QgTymLF2AQs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ck1y9kVWJkORfqXAM2BzmGZfnPhPA7Gdm2EL56FeM7BxOVjR9dBY59f0fzNwXHPcXInR6Q08RyhUHmAHG+A2BaUxgDsPthExQPCVPvQFp/skexpQLMG5Xcvj+XhpNvA7nWIJFse51s33kfv8J+lbU1EC/4mxILT0P0FMXO10svc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ii2gqCxr; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-6093247d1acso12633927b3.0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 28 Feb 2024 02:09:22 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ii2gqCxr"
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-412b88e2f07so1258525e9.3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 28 Feb 2024 13:06:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709154383; x=1709759183; darn=lists.linux-m68k.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0a8qBD6vozPIAISnQHJRWdPKOWiVN4p5/6pJZQ2dXnQ=;
+        b=ii2gqCxrE1Bom+acT/HqRjg36t5lA1XyutB+h6I2hC5w9oPOMPEZxoAz45fY2D8vPI
+         RStQqamvf6ia4519+7WKQlLVsLdSWy9ARBTlhj5ZDGDflMzEorZXVr5trWY9ESqbult/
+         xQZU04iZXJq+KHUEu5aOs7pSUTU4WTHmim+cFAdmOhgO0yIr79Cvv9Zf9som5WBmirYA
+         /AvhNH37qKQ87+QNkuyzyePsX0qIZgF/ny1BxQ6ICUAkFbPiciTEqzeyrAuo62nzKK6I
+         AANH+DBUELBxUALY4OX1KA42nRgiXlKTtbur+aNDrUjmjrSmoAzic7E1TOoCJ8P6jvh/
+         AvYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709114960; x=1709719760;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1JkF52itMFctZfGHkRFOKbmrL2KHMgOrT0AHL5pYx+8=;
-        b=li0UwqG7xekpfbMDijtzLMF9UcId4jOMC9sx/t6m95SBu3/ChDPVGYYOMQgY5MFOjb
-         OUsY5k78TFs5caWK/zY1HOl8b/Jlpi9bj0Ikorg9179R8+z3mUxouC7Had4BOKqb1bez
-         eBWN6F8XHrgDQUNhtObgfQzRenO+ZmaBAuINJCxZtEzJoQU19PkeBla88aoZM0PYwA6n
-         F+ZikqtBVnwCd4CMBNldQGG9xMSSIHJGkofqG1PD4IbflKsKGCR2NNeYngfiVaOFEPMd
-         hZp7Grfq26kZOPhPB/Nzvk8K0mYYpR3ZMl55Hf5j+FsYb7s64pNPEah4heI8AzNP26TG
-         aOsg==
-X-Forwarded-Encrypted: i=1; AJvYcCVOPPevF/f4XiYMMgSMi6+ITfkiDJVvDUM2xje/ckrk8NnrXVnlOeRMtbI8TlXGJx+eOJRJGa4JT6vqTACwHgLiUT6c8nqD9hhVrQ59o4bw
-X-Gm-Message-State: AOJu0YxX1igZRUgDIJRv9zbdVEwXSHIwk5c6l+BGdlARlkDtN2KYjh2f
-	HJCV1DYcgLQUm4I3guI6J5IXVkPriOszdZYkIbjr8DHdAu1IjgvgOzbBmoMAofrb9A==
-X-Google-Smtp-Source: AGHT+IGBTyljAmoLDiqXPmeRbiIpOh2SdfXDWWEhFxv7L7hkoLcgV8aIYkyyLTXD3IxC6tJ5ys0icg==
-X-Received: by 2002:a05:690c:ec8:b0:609:15e2:1e2c with SMTP id cs8-20020a05690c0ec800b0060915e21e2cmr6195441ywb.27.1709114960484;
-        Wed, 28 Feb 2024 02:09:20 -0800 (PST)
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
-        by smtp.gmail.com with ESMTPSA id u73-20020a0deb4c000000b006088f5c314asm2305645ywe.39.2024.02.28.02.09.19
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 02:09:19 -0800 (PST)
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dcc7cdb3a98so5427583276.2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 28 Feb 2024 02:09:19 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXtENo/Ov8iOMjOtkj+eLnRZwDIif3l01UhPa6pHterudF0X4FC23NCaAaK9yWW/4D/rFyKyz/5kS9wUrlP7/9ODdtJUKD3Mzu25coN/FNt
-X-Received: by 2002:a25:e401:0:b0:dbe:4f15:b5cf with SMTP id
- b1-20020a25e401000000b00dbe4f15b5cfmr2155194ybh.15.1709114959404; Wed, 28 Feb
- 2024 02:09:19 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709154383; x=1709759183;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0a8qBD6vozPIAISnQHJRWdPKOWiVN4p5/6pJZQ2dXnQ=;
+        b=TtntmzXud0rTRO5ep5sfxL1VnHgrICAOGapwdkv5HPJCBBdOYsreekNTW0gpYvWxi/
+         Fyly8RfjwGHehbjDw8hlAKRExV2CVscqZJMQURA83KqBFfObQmMx8u0LFNsWO7RxzsOz
+         AW/oVD+Fsgpv5rP9WMtzPOaQvXaKb41Tw8ydYrjx+6C2ZfkAZ1a7SAlB+sUD4ky3eoUr
+         y+jHe8VUk7fzMn0E8XTAi7hVZgwls3+Nd5Miv8JkNiAA8HpMmwi1W0t0g1iqPNjV7yeD
+         YOvjYExxufrphuaP0nyYGB6ptXYVAWS7KKpndsIGMsU/yZ/H2ZT9OJORVVEMKOFd2FCv
+         y0JQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVS+vLCvAvhvr++4IEIaZeNcAvqjW1uGjn3zCWF4cbQMRxvbdp0gKNmd7/VQklgz7vExDJPBWoySCcqY2IK9grPyFw8pyYA/CO12fU6CEqk
+X-Gm-Message-State: AOJu0YzTdgtKjSR4X1ozT73Hb2bN8gFK37IAmsVB9lb7lsp1I4TjSDHI
+	FrqfiG9Py1sez60PGE9qlxDB2X8WFUzrrszuXiZiMPSeMSAwxmTq
+X-Google-Smtp-Source: AGHT+IHczATb7A8ZRTaH383CIQ4ejybI9MzL/yjlqycOyBbx2+IYQRI3gE2POfqlKMAC8LKmr3GeXg==
+X-Received: by 2002:a5d:618d:0:b0:33d:f51f:2da5 with SMTP id j13-20020a5d618d000000b0033df51f2da5mr46406wru.7.1709154383088;
+        Wed, 28 Feb 2024 13:06:23 -0800 (PST)
+Received: from localhost (cpc1-brnt4-2-0-cust862.4-2.cable.virginm.net. [86.9.131.95])
+        by smtp.gmail.com with ESMTPSA id m1-20020adfa3c1000000b0033d67791dc0sm15568132wrb.43.2024.02.28.13.06.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 13:06:21 -0800 (PST)
+Date: Wed, 28 Feb 2024 21:06:21 +0000
+From: Stafford Horne <shorne@gmail.com>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	Vincenzo Frascino <vincenzo.frascino@arm.com>,
+	Kees Cook <keescook@chromium.org>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Guo Ren <guoren@kernel.org>, Brian Cain <bcain@quicinc.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Michal Simek <monstr@monstr.eu>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Richard Weinberger <richard@nod.at>, x86@kernel.org,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Jan Kiszka <jan.kiszka@siemens.com>,
+	Kieran Bingham <kbingham@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org
+Subject: Re: [PATCH 3/4] arch: define CONFIG_PAGE_SIZE_*KB on all
+ architectures
+Message-ID: <Zd-gTf6mvVdPEovO@antec>
+References: <20240226161414.2316610-1-arnd@kernel.org>
+ <20240226161414.2316610-4-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228085824.74639-1-dawei.li@shingroup.cn> <754c3acb-538d-45a1-84a1-0bebd02fd945@kernel.org>
- <673EAB52C5659E99+Zd799lrOHAVIdm3S@centos8>
-In-Reply-To: <673EAB52C5659E99+Zd799lrOHAVIdm3S@centos8>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 28 Feb 2024 11:09:06 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVSK2Ek6=uRE=FwibOqbCYifYsJ5otRXBpA1vW6tBqPMg@mail.gmail.com>
-Message-ID: <CAMuHMdVSK2Ek6=uRE=FwibOqbCYifYsJ5otRXBpA1vW6tBqPMg@mail.gmail.com>
-Subject: Re: [PATCH] mk68k: Fix broken THREAD_SIZE_ORDER
-To: Dawei Li <dawei.li@shingroup.cn>
-Cc: Jiri Slaby <jirislaby@kernel.org>, gerg@snapgear.com, 
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
-	set_pte_at@outlook.com, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240226161414.2316610-4-arnd@kernel.org>
 
-Hi Dawei,
+On Mon, Feb 26, 2024 at 05:14:13PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Most architectures only support a single hardcoded page size. In order
+> to ensure that each one of these sets the corresponding Kconfig symbols,
+> change over the PAGE_SHIFT definition to the common one and allow
+> only the hardware page size to be selected.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  arch/alpha/Kconfig                 | 1 +
+>  arch/alpha/include/asm/page.h      | 2 +-
+>  arch/arm/Kconfig                   | 1 +
+>  arch/arm/include/asm/page.h        | 2 +-
+>  arch/csky/Kconfig                  | 1 +
+>  arch/csky/include/asm/page.h       | 2 +-
+>  arch/m68k/Kconfig                  | 3 +++
+>  arch/m68k/Kconfig.cpu              | 2 ++
+>  arch/m68k/include/asm/page.h       | 6 +-----
+>  arch/microblaze/Kconfig            | 1 +
+>  arch/microblaze/include/asm/page.h | 2 +-
+>  arch/nios2/Kconfig                 | 1 +
+>  arch/nios2/include/asm/page.h      | 2 +-
+>  arch/openrisc/Kconfig              | 1 +
+>  arch/openrisc/include/asm/page.h   | 2 +-
+>  arch/riscv/Kconfig                 | 1 +
+>  arch/riscv/include/asm/page.h      | 2 +-
+>  arch/s390/Kconfig                  | 1 +
+>  arch/s390/include/asm/page.h       | 2 +-
+>  arch/sparc/Kconfig                 | 2 ++
+>  arch/sparc/include/asm/page_32.h   | 2 +-
+>  arch/sparc/include/asm/page_64.h   | 3 +--
+>  arch/um/Kconfig                    | 1 +
+>  arch/um/include/asm/page.h         | 2 +-
+>  arch/x86/Kconfig                   | 1 +
+>  arch/x86/include/asm/page_types.h  | 2 +-
+>  arch/xtensa/Kconfig                | 1 +
+>  arch/xtensa/include/asm/page.h     | 2 +-
+>  28 files changed, 32 insertions(+), 19 deletions(-)
+....
+> diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
+> index fd9bb76a610b..3586cda55bde 100644
+> --- a/arch/openrisc/Kconfig
+> +++ b/arch/openrisc/Kconfig
+> @@ -25,6 +25,7 @@ config OPENRISC
+>  	select GENERIC_CPU_DEVICES
+>  	select HAVE_PCI
+>  	select HAVE_UID16
+> +	select HAVE_PAGE_SIZE_8KB
+>  	select GENERIC_ATOMIC64
+>  	select GENERIC_CLOCKEVENTS_BROADCAST
+>  	select GENERIC_SMP_IDLE_THREAD
+> diff --git a/arch/openrisc/include/asm/page.h b/arch/openrisc/include/asm/page.h
+> index 44fc1fd56717..7925ce09ab5a 100644
+> --- a/arch/openrisc/include/asm/page.h
+> +++ b/arch/openrisc/include/asm/page.h
+> @@ -18,7 +18,7 @@
+>  
+>  /* PAGE_SHIFT determines the page size */
+>  
+> -#define PAGE_SHIFT      13
+> +#define PAGE_SHIFT      CONFIG_PAGE_SHIFT
+>  #ifdef __ASSEMBLY__
+>  #define PAGE_SIZE       (1 << PAGE_SHIFT)
+>  #else
 
-On Wed, Feb 28, 2024 at 10:34=E2=80=AFAM Dawei Li <dawei.li@shingroup.cn> w=
-rote:
-> On Wed, Feb 28, 2024 at 10:11:05AM +0100, Jiri Slaby wrote:
-> > On 28. 02. 24, 9:58, Dawei Li wrote:
-> > > Current THREAD_SIZE_ORDER implementation for m68k is incorrect, fix i=
-t
-> > > by ilog2().
-> >
-> > This is not a good commit log. Incorrect in what way and why is the fix=
-ed
->
-> Agreed.
->
-> > version correct? And what is affected? Note you're referring to a chang=
-e
-> > which was done 14 years ago. It definitely must not be that incorrect (=
-for
-> > everybody).
->
-> It's 'right' just for current PAGE_SIZE & THREAD_SIZE configs:
->
-> // arch/m68k/include/asm/thread_info.h
-> #if PAGE_SHIFT < 13
-> #ifdef CONFIG_4KSTACKS
-> #define THREAD_SIZE     4096
-> #else
-> #define THREAD_SIZE     8192
-> #endif
-> #else
-> #define THREAD_SIZE     PAGE_SIZE
-> #endif
-> #define THREAD_SIZE_ORDER       ((THREAD_SIZE / PAGE_SIZE) - 1)
+For the openrisc bits,
 
-Indeed.  The only supported values for THREAD_SIZE_ORDER on m68k are
-0 and 1.
-
-> But it's incorrect in generic/mathematical way.
-
-True.  But does it matter much?
-I.e. do you plan to add support for larger values of THREAD_SIZE?
-
-What about changing the #ifdeffery to set THREAD_SIZE_ORDER to an
-explicit value, and calculating THREAD_SIZE from THREAD_SIZE_ORDER
-instead?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Acked-by: Stafford Horne <shorne@gmail.com>
