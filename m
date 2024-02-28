@@ -1,70 +1,78 @@
-Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.10])
+Received: from smtpbg154.qq.com (smtpbg154.qq.com [15.184.224.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7414355E4E
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Feb 2024 22:58:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.18.0.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7ECD2E83F
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 28 Feb 2024 08:58:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=15.184.224.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709074689; cv=none; b=I+26nOCQfo1imtNs7JfzK9SmXieZbV99P9LKBQNc6iaP2AYcfR7549Y63OsXeYXWnro6kAXpfcyKTi81z3Ctv8H/Vh0+RbXGRb6q/ZWeh6m33Qo1nyoYAsHly4yHyeUvHoqLsih7flllx7DqRAWx1vyHaasGBoF3GFvnMiL7uto=
+	t=1709110742; cv=none; b=s9neoApQuEMrKjZ4TvwyTAwvmIkF+Ylt7IqLLYF9iHKUxNDWJT8hJjJ+rkUXx3qoZmWhWUo7ysppC49j3XMjHccEE8ztrMIwV8kWD0DlgQNr4ZA2Cr/hkCr5CmEj8pWvoZFBlrlHH3Tmb41/YRgME0egBdtgLfyjgdTbWLIOh8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709074689; c=relaxed/simple;
-	bh=ck2Bpm9vcnmnA7VPiReoASiqij5RSPlXtN8btx6/xnU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=iuyTQaO/AzW58MyZFsK1LNDxBQmXWLcZ8GCPz2BohV+BLn1f/WFU+eshFqb2cVfKLi6UFFOTDlGGsZjee6wtTZRg4mo84x0mPjNe2+q/vw2xqMrgDCnseB0p+s/FsD+UL4cA25mYmv5Z6afdqFXaQ3RzoiZ+H/Or5WK6PZxVjOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=nefkom.net; arc=none smtp.client-ip=212.18.0.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nefkom.net
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-	by mail-out.m-online.net (Postfix) with ESMTP id 4Tkt6N50vpz1s94j;
-	Tue, 27 Feb 2024 23:52:28 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.68])
-	by mail.m-online.net (Postfix) with ESMTP id 4Tkt6N3fBtz1qqlW;
-	Tue, 27 Feb 2024 23:52:28 +0100 (CET)
-X-Virus-Scanned: amavis at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
- by localhost (dynscan1.mail.m-online.net [192.168.6.68]) (amavis, port 10024)
- with ESMTP id ZgYzovAitFOO; Tue, 27 Feb 2024 23:52:27 +0100 (CET)
-X-Auth-Info: GYlOfxn5ZQFEUug8eHWWxrd5sgHu2V9FIyeNiDzF3b0+1WGgO5321EFxoDg/KbX8
-Received: from igel.home (aftr-62-216-202-59.dynamic.mnet-online.de [62.216.202.59])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.mnet-online.de (Postfix) with ESMTPSA;
-	Tue, 27 Feb 2024 23:52:27 +0100 (CET)
-Received: by igel.home (Postfix, from userid 1000)
-	id 44CEE2C1A60; Tue, 27 Feb 2024 23:52:27 +0100 (CET)
-From: Andreas Schwab <schwab@linux-m68k.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,  Guenter Roeck
- <linux@roeck-us.net>,  linux-m68k@lists.linux-m68k.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: stackinit unit test failures on m68k
-In-Reply-To: <202402271423.270DBF1@keescook> (Kees Cook's message of "Tue, 27
-	Feb 2024 14:25:33 -0800")
-References: <a0d10d50-2720-4ecd-a2c6-c2c5e5aeee65@roeck-us.net>
-	<CAMuHMdXMsxRRMV8g6+9vTy_4o8HF49SUh2deNdFjgKwDLEWrxQ@mail.gmail.com>
-	<202402271401.CB43AB2E8@keescook> <202402271423.270DBF1@keescook>
-X-Yow: Is this ANYWHERE, USA?
-Date: Tue, 27 Feb 2024 23:52:27 +0100
-Message-ID: <87y1b5zfis.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1709110742; c=relaxed/simple;
+	bh=RDvcBlVuIemwLM4J03ulD1eFMdgG9/KmMg5CARU8pQI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=qajf8JX1q2OxiQvffu4EJgpNOLhDe5Pc17PSItI7sOqGpmbM+ArhTnRLUWpYbtm4K5VHeuP5QccAYPw76eYTN93jLmm3Fi5muYKUDWk6eYH9x2NP2Lhk+JfEs3WJQ0xkQ+ZXzFFIuhzknY3sIWCy+j599xf+ehKf8ilLCz98m6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=15.184.224.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
+X-QQ-mid: bizesmtp81t1709110713tb5brp7v
+X-QQ-Originating-IP: RMFuvulrkTTkIP3veOx5DZWOUzbPAQR7RNVNIZjsZAQ=
+Received: from localhost ( [112.22.30.30])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Wed, 28 Feb 2024 16:58:32 +0800 (CST)
+X-QQ-SSF: 01400000000000505000000F0000000
+X-QQ-FEAT: LE7C6P2vL8S2AsPvDMxMsvXF+uR7nFYwkxu3h1ZViKpA2gYns/FH84WdcCO1m
+	A9y5Xklv7vi7WpLi05dx2fTfkPNHUtslCmUkh8VaAlXr/Mii1L24lZiIeEU9GgBwu6ELmCG
+	Yp5eXgQrWF0h58L+WEaKuboRvZ+2LRlqIodEp8+BtmTqkafTgd/TXC3agtGlM2GfwTrERLM
+	OoIyX6cYvGPkf4DuxsRzACF2+g97DyrnC61htmVfL15IU/w8GA4ePV9H1ypPGpUnAKbdP9h
+	/Bx1Ls+WojIKWMFGG6YA+C38tNgymkK3XcUJ4pssb6XWERXJDQpD1ywHAjw15wnTcZoMrpk
+	FRvfTz+5rwdZWgxsF95DFA4zg4XfU82GpMYXCgUVZGshWi8imujDYYXN0Jwn1dIXCKOlJDt
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 16178612125370400260
+From: Dawei Li <dawei.li@shingroup.cn>
+To: geert@linux-m68k.org
+Cc: gerg@snapgear.com,
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	set_pte_at@outlook.com,
+	Dawei Li <dawei.li@shingroup.cn>,
+	stable@vger.kernel.org
+Subject: [PATCH] mk68k: Fix broken THREAD_SIZE_ORDER
+Date: Wed, 28 Feb 2024 16:58:24 +0800
+Message-Id: <20240228085824.74639-1-dawei.li@shingroup.cn>
+X-Mailer: git-send-email 2.27.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
 
-On Feb 27 2024, Kees Cook wrote:
+Current THREAD_SIZE_ORDER implementation for m68k is incorrect, fix it
+by ilog2().
 
-> Oh, no, that wasn't it. Something else is happening. The stack pointer
-> isn't moving between them. Is there anything special about character
-> arrays on m68k?
+Fixes: cddafa3500fd ("m68k/m68knommu: merge MMU and non-MMU thread_info.h")
+Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
+Cc: stable@vger.kernel.org
+---
+ arch/m68k/include/asm/thread_info.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-You mean, beyond undefined behaviour?
-
+diff --git a/arch/m68k/include/asm/thread_info.h b/arch/m68k/include/asm/thread_info.h
+index 31be2ad999ca..50faecd6fc5f 100644
+--- a/arch/m68k/include/asm/thread_info.h
++++ b/arch/m68k/include/asm/thread_info.h
+@@ -19,7 +19,8 @@
+ #else
+ #define THREAD_SIZE	PAGE_SIZE
+ #endif
+-#define THREAD_SIZE_ORDER	((THREAD_SIZE / PAGE_SIZE) - 1)
++
++#define THREAD_SIZE_ORDER	ilog2(THREAD_SIZE / PAGE_SIZE)
+ 
+ #ifndef __ASSEMBLY__
+ 
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+2.27.0
+
