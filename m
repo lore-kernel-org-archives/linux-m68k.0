@@ -1,95 +1,72 @@
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1863200D2
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 29 Feb 2024 22:34:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0FD316FF51
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 29 Feb 2024 23:07:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.18.0.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709246055; cv=none; b=MKU44TBP6isQY+wkX4qbN7S7sD+hU+f7ye5iOpc4D48UofPny0kQ4wbrBeFxWfcIyDHYX+BHqgoCCnJE1qXNdsmA4+xnCU6+Q57Wb48T9nLxPn5PEWXdhlFGR41kuRB7u86vB/zyoDvKjoyIWT/es1XqCed3bXp2RrQArl28dx4=
+	t=1709248079; cv=none; b=GDDQ6rz7CwknQTG1a39Ot3efxt3EWDbA5f9nlNs+yOoP506oQu4YU4ftVR63cNcm9BO/uGePJDbtCSJSTn/NCpY45IA9HBlYDpyxBB23SMiq3aA4fWqxUqjD6pGKqy71mgaDUWDA/LmGlKWT2FxeXuJdJpGmp0EzEifVRFolrmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709246055; c=relaxed/simple;
-	bh=7EALCz77xII392vmdVOlbHTt8w5XLaXfm92K2aKepEs=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=ElyyfbQOLVON3XquJLr0xTGYOYeAZ7C9LNNMgEvBHuRvS1hSB2FIvgPz6sJF4n9XpjQ8ymTMhlo+dl5P2yr49KuL4LlT0qYcuZa2q3j3CrHLYvClrkLvOQ4vrq/Ak5PaWRuJRHyJidmseoAX9W2lWc26VTGsUIwbWcMXdICujSQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-265-q6YXCiPdNqa3VZ3VvtiocQ-1; Thu, 29 Feb 2024 22:34:04 +0000
-X-MC-Unique: q6YXCiPdNqa3VZ3VvtiocQ-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 29 Feb
- 2024 22:34:03 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 29 Feb 2024 22:34:03 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Kees Cook' <keescook@chromium.org>, Geert Uytterhoeven
-	<geert@linux-m68k.org>
-CC: Guenter Roeck <linux@roeck-us.net>, "linux-m68k@lists.linux-m68k.org"
-	<linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: stackinit unit test failures on m68k
-Thread-Topic: stackinit unit test failures on m68k
-Thread-Index: AQHaacsEcesp84Z6QEmwBDAFOS1vdLEh6rvg
-Date: Thu, 29 Feb 2024 22:34:03 +0000
-Message-ID: <c74d249e503d490d9aea4666eb984521@AcuMS.aculab.com>
-References: <a0d10d50-2720-4ecd-a2c6-c2c5e5aeee65@roeck-us.net>
- <CAMuHMdXMsxRRMV8g6+9vTy_4o8HF49SUh2deNdFjgKwDLEWrxQ@mail.gmail.com>
- <202402271401.CB43AB2E8@keescook>
-In-Reply-To: <202402271401.CB43AB2E8@keescook>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1709248079; c=relaxed/simple;
+	bh=uwE3qinU29HK8e2RgqhGzA+W9OmNW5zKCwr4ho/GjVQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=cCHMJv0oV9kTww2pEVNoHJPio5p2KutVULtaxOdZEUIsjxorVcoLeOaS8k1E0D2sDEQPv/uxfuMhJJ3haG3Fq+bhCkZ2dPVbP9xhroHmPwhWsVb0+H5iHn2AXW3NumZXwJzXx/a2mo+Xja0D1Wu/wyotNfgfQEfcmbvVG06V1K8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=nefkom.net; arc=none smtp.client-ip=212.18.0.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nefkom.net
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+	by mail-out.m-online.net (Postfix) with ESMTP id 4Tm6M80V3fz1qsP8;
+	Fri,  1 Mar 2024 00:07:48 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.68])
+	by mail.m-online.net (Postfix) with ESMTP id 4Tm6M767qtz1qqlS;
+	Fri,  1 Mar 2024 00:07:47 +0100 (CET)
+X-Virus-Scanned: amavis at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+ by localhost (dynscan1.mail.m-online.net [192.168.6.68]) (amavis, port 10024)
+ with ESMTP id SQwoWJyaYmti; Fri,  1 Mar 2024 00:07:46 +0100 (CET)
+X-Auth-Info: 0rf1pMZMaomnnOVa7F8O7s3fTttPJcBoMnGsi6T23JBpz/xoMlnPhCvkNDopI+pr
+Received: from igel.home (aftr-62-216-202-139.dynamic.mnet-online.de [62.216.202.139])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.mnet-online.de (Postfix) with ESMTPSA;
+	Fri,  1 Mar 2024 00:07:46 +0100 (CET)
+Received: by igel.home (Postfix, from userid 1000)
+	id 904FE2C1A2A; Fri,  1 Mar 2024 00:07:46 +0100 (CET)
+From: Andreas Schwab <schwab@linux-m68k.org>
+To: David Laight <David.Laight@ACULAB.COM>
+Cc: 'Guenter Roeck' <linux@roeck-us.net>,  Geert Uytterhoeven
+ <geert@linux-m68k.org>,  Linus Torvalds <torvalds@linux-foundation.org>,
+  Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,  Kees Cook
+ <keescook@chromium.org>,  linux-m68k <linux-m68k@lists.linux-m68k.org>
+Subject: Re: Linux 6.8-rc6
+In-Reply-To: <b4fa177d6fcc42deb7db0dc0f9d36fe2@AcuMS.aculab.com> (David
+	Laight's message of "Thu, 29 Feb 2024 22:19:20 +0000")
+References: <CAHk-=whZ=iA6DhijePcW-pJjZ8YD4T5qLpLKVSUT+4gWNm_0sA@mail.gmail.com>
+	<6bb3f88b-bf57-442a-8b46-cb4784dd4cab@roeck-us.net>
+	<CAMuHMdVYjw9CEBUzxuJ-10wudK_mvJZgqP3gR4kuv-FDYBZ-Aw@mail.gmail.com>
+	<8403d8e3-c8ac-476b-8b8e-2c8b6ed8f464@roeck-us.net>
+	<b4fa177d6fcc42deb7db0dc0f9d36fe2@AcuMS.aculab.com>
+X-Yow: Yes, but will I see the EASTER BUNNY in skintight leather
+ at an IRON MAIDEN concert?
+Date: Fri, 01 Mar 2024 00:07:46 +0100
+Message-ID: <87o7byeunx.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain
 
-Li4uDQo+IEl0IGlzIGJhc2ljYWxseSBkb2luZyB0aGlzOg0KPiANCj4gc3RhdGljIHZvaWQgKmZp
-bGxfc3RhcnQsICp0YXJnZXRfc3RhcnQ7DQo+IHN0YXRpYyBzaXplX3QgZmlsbF9zaXplLCB0YXJn
-ZXRfc2l6ZTsNCj4gDQo+IHN0YXRpYyBub2lubGluZSBpbnQgbGVhZl9jaGFyX2FycmF5X25vbmUo
-dW5zaWduZWQgbG9uZyBzcCwgYm9vbCBmaWxsLA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgdW5zaWduZWQgY2hhciAqYXJnKQ0KPiB7DQo+ICAgICAgICAgY2hhciBidWZbMzJd
-Ow0KPiAgICAgICAgIHVuc2lnbmVkIGNoYXIgdmFyWzE2XTsNCj4gDQo+ICAgICAgICAgdGFyZ2V0
-X3N0YXJ0ID0gJnZhcjsNCj4gICAgICAgICB0YXJnZXRfc2l6ZSA9IHNpemVvZih2YXIpOw0KPiAg
-ICAgICAgIC8qDQo+ICAgICAgICAgICogS2VlcCB0aGlzIGJ1ZmZlciBhcm91bmQgdG8gbWFrZSBz
-dXJlIHdlJ3ZlIGdvdCBhDQo+ICAgICAgICAgICogc3RhY2sgZnJhbWUgb2YgU09NRSBraW5kLi4u
-DQo+ICAgICAgICAgICovDQo+ICAgICAgICAgbWVtc2V0KGJ1ZiwgKGNoYXIpKHNwICYgMHhmZiks
-IHNpemVvZihidWYpKTsNCj4gICAgICAgICAvKiBGaWxsIHZhcmlhYmxlIHdpdGggMHhGRi4gKi8N
-Cj4gICAgICAgICBpZiAoZmlsbCkgew0KPiAgICAgICAgICAgICAgICAgZmlsbF9zdGFydCA9ICZ2
-YXI7DQo+ICAgICAgICAgICAgICAgICBmaWxsX3NpemUgPSBzaXplb2YodmFyKTsNCj4gICAgICAg
-ICAgICAgICAgIG1lbXNldChmaWxsX3N0YXJ0LA0KPiAgICAgICAgICAgICAgICAgICAgICAgIChj
-aGFyKSgoc3AgJiAweGZmKSB8IGZvcmNlZF9tYXNrKSwNCj4gICAgICAgICAgICAgICAgICAgICAg
-ICBmaWxsX3NpemUpOw0KPiAgICAgICAgIH0NCj4gDQo+ICAgICAgICAgLyogU2lsZW5jZSAibmV2
-ZXIgaW5pdGlhbGl6ZWQiIHdhcm5pbmdzLiAqLw0KPiAJZG9fbm90aGluZ19jaGFyX2FycmF5KHZh
-cik7DQo+IA0KPiAgICAgICAgIC8qIEV4ZmlsdHJhdGUgInZhciIuICovDQo+ICAgICAgICAgbWVt
-Y3B5KGNoZWNrX2J1ZiwgdGFyZ2V0X3N0YXJ0LCB0YXJnZXRfc2l6ZSk7DQo+IA0KPiAgICAgICAg
-IHJldHVybiAoaW50KWJ1ZlswXSB8IChpbnQpYnVmW3NpemVvZihidWYpIC0gMV07DQo+IH0NCj4g
-DQo+IGFuZCBpdCdzIGNhbGxlZCBhczoNCj4gDQo+IA0KPiAgICAgICAgIGlnbm9yZWQgPSBsZWFm
-X2NoYXJfYXJyYXlfbm9uZSgodW5zaWduZWQgbG9uZykmaWdub3JlZCwgMSwgemVybyk7DQo+IAku
-Li4NCj4gICAgICAgICBpZ25vcmVkID0gbGVhZl9jaGFyX2FycmF5X25vbmUoKHVuc2lnbmVkIGxv
-bmcpJmlnbm9yZWQsIDAsIHplcm8pOw0KPiANCj4gVGhlIGZpcnN0IGNhbGwgcmVtZW1iZXJzIHdo
-ZXJlICJ2YXIiIGlzIGluIHRoZSBzdGFjayBmcmFtZSB2aWEgdGhlDQo+IGZpbGxfc3RhcnQgYXNz
-aWdubWVudCwgYW5kIHRoZSBzZWNvbmQgY2FsbCByZWNvcmRzIHdoZXJlICJ2YXIiIGlzIHZpYQ0K
-PiB0aGUgdGFyZ2V0X3N0YXJ0IGFzc2lnbm1lbnQuDQo+IA0KPiBUaGUgY29tcGxhaW50IGlzIHRo
-YXQgaXQgX2NoYW5nZXNfIGJldHdlZW4gdGhlIHR3byBjYWxscy4gLi4uIE9oLCBJDQo+IHRoaW5r
-IEkgc2VlIHdoYXQncyBoYXBwZW5lZC4gQmV0d2VlbiB0aGUgdHdvIGNhbGxzLCB0aGUgc3RhY2sg
-Z3Jvd3MgKGFuZA0KPiBpcyBmb3Igc29tZSByZWFzb24gbm90IHJlY2xhaW1lZCkgZHVlIHRvIHRo
-ZSBLVU5JVCBjaGVja3MgYmV0d2VlbiB0aGUgdHdvDQo+IGxlYWYgY2FsbHMuIFllcywgbW92aW5n
-IHRoYXQgZml4ZXMgaXQuDQoNCklzIHRoZSBub2lubGluZSBlbm91Z2ggdG8gc3RvcCBnY2MgZ2Vu
-ZXJhdGluZyB0d28gY29waWVzIG9mIHRoZQ0KZnVuY3Rpb24gZm9yIHRoZSBkaWZmZXJlbnQgdmFs
-dWVzIG9mICdmaWxsJz8NCg0KWW91IG1pZ2h0IG5lZWQgdG8gY2FsbCB0aHJvdWdoIGEgdm9sYXRp
-bGUgZ2xvYmFsIGZ1bmN0aW9uIHBvaW50ZXINCnZhcmlhYmxlPw0KDQoJRGF2aWQNCg0KLQ0KUmVn
-aXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRv
-biBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+On Feb 29 2024, David Laight wrote:
 
+> Maybe because m68k only has 2 byte alignment for 32 bit items.
+
+Nope.  Its simply undefined behavior.
+
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
