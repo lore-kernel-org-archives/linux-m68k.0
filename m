@@ -1,59 +1,61 @@
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77FBC1CAAF
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  6 Mar 2024 23:42:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3399E1B5AD
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  6 Mar 2024 23:46:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709768529; cv=none; b=G/J/EBSSXImbr71I6lZpQemBpGSTBQO6hJR+uPRjBvIYe7mipjSzjYFFrdvuLzkwtoHGoS6xiGlEii5QS/IxQulM4Y5hLobzqY6INXeDSp2IQxZRe7+dfP+29yK5KHyKiPYN/LAdQuGuTa9ZnBgmMpfDtcNiWS1GrCYKZZof3b8=
+	t=1709768790; cv=none; b=GGdbEamnSYVNdycgXff02sqR2TqIqb9ht0UChSp2jU8zLh8oB3RC5CGroOlolggknK9jrp6rmvG/ss+Wyqqjid945evd/aYoeXS/KL5Q44gNZUU2vvSkWUJGQuuk3Ff0RxWTjWRKG846lkNlVY808gOpAdceEKJR7RywDIA8DZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709768529; c=relaxed/simple;
-	bh=nB8Mjv7yApm/3U44Mh++aqMhYQcUiBnEdvPhaV9fAU4=;
+	s=arc-20240116; t=1709768790; c=relaxed/simple;
+	bh=7TDV7C5PNt1ZWQWsWBDWnLXuBpQFRK8oB/TQE+ONtrI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qk3uFHQcEQv+Jm94Z/TNZaacKwG+eL0EHoCeBzfDwVjAtO+F1wq99RtCxuKFpbYtolkLGEKWa8bNARzYPb22v3G1GgaxssI2M+opJfARBS90ylsJ2eek5o3e6Ssvx7TNhIz1Tp3WtOw6ZQiMClnyP8S259Jdrg7OKL/yYBE0wFU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XfoADKug; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	 In-Reply-To:Content-Type; b=jRLEiEoggOBc/jLPtwPTkIBYqazMKHxfCD3o0JhW0IJxF6pda9x3XAnYwtrGdehOwYxShhjhf5Nyaf9aUYu2LwgVDlwkzFlaV6HueyAyHFI1wiNYCrywFcKGcs/hAOQMt/M34MFR8t7ZEsRTxVCg5GYrlI7w3eTeUNI9Km49ctw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bcBOP2DC; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XfoADKug"
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so228603a12.1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 06 Mar 2024 15:42:07 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bcBOP2DC"
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso198126a12.3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 06 Mar 2024 15:46:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709768526; x=1710373326; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=D06RO/iB+lySEGD0vpgDb8SJP4q4lhTOPAfjOBx3FN4=;
-        b=XfoADKug1z4yXylZEXLS6x9EYDUQwhg9ivIebkfP8cmrWQu1qVsiZGHoC6ZAOv1p1W
-         hvN80pQVjOqKDMJIw4g50ezX2TcQktDWkSCE5sutb+cPyS1WNc2R/QMRS3Z6ufOLYnZ/
-         y74nh2o8Cd72erYmrDq9u7ULyTP/JvnNgWQrr8p48XIhumANjhhkO3Ff2ryFP61IO5ie
-         wvSYDzWHN73Tlr0zUh3dgof5U/QYR/GU56mu9Sm3vEmhBfitkZu1xF9FnEUYMZWR3Ppd
-         Q4Vqtpq+tEe8QPn2hQ8KZ85UWwTerlzswiNX2aCoAGZqQTAosEV/i1fyYCnXV9o88Wyr
-         GY1Q==
+        d=gmail.com; s=20230601; t=1709768788; x=1710373588; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=kqorcUr/mN5YrTuFjYVBoCO3aBXzpm1QuyE+7s5X7fQ=;
+        b=bcBOP2DCPZK3j8T6FXlKau6K1tFL/wpTZm6DMQsMcOqDt8zeXU4jNUA225cxuwOA3j
+         hERXs4gaTR33vfTrBw8nEMrgAgoncFIQyLGlXz92BfxK7AgP0qRBL9gKYNLlhSMccnYs
+         17Cshd60i1kggE9bvTNslMUbwV5o7mK8pA5Edko23zM0BhA9Sob3eWCSxDzVjyVsQZTT
+         tw8VENsX+VXtNo17UU2dwxpWFRwjYBSHzYXE86+t2MxCoC9N6fLkzVqmuTlNipl3krIG
+         rfH3GxX+5RGpM5dOQWRapp/G9RkSJgTkET03JMQKSsqMIDJYruAYfklIAfXr4rEjybLH
+         +VPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709768526; x=1710373326;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D06RO/iB+lySEGD0vpgDb8SJP4q4lhTOPAfjOBx3FN4=;
-        b=Xy5qcOQhp1ZG6jHzt8op3ojTyiIKp6emAXSeMfqiAJx2u9GyCT5gqY8erB/COwLek4
-         JuB5Ttasm9sH9CVwH1fLSoCK9JlDSnMD5Fe7bZQNMydtyMQXxcm+F0Kk5N51YEQUw1mH
-         2tqcAGCXQ1H1rNX2oEHLBR5dnBWmahoqscGKAHlstQ0JFiMOckRakhkyxHmLAI8AXWAA
-         0lcGfDnZCUKj3HerB0dAYNSnZp18K3VyLSSVi9TzIFYKblr2kK/Zvapz59HvOS6XfBKN
-         GmRXXxzF5cxFUIElSBtWRkX+FXeXW789KM080WBVlH1Fr96HOxDsGKmFfAUV/13HV4Yc
-         IfhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUVWTYRfpJoTbLlk7Q+XRdAlJ03RqxiUzRtVtJbCCUIF0qTcTFa2N3TL64bZZqbvASPCW3dajOVPL3MpYUDTxSpxHy2brXGTt2Ju6/YtApo
-X-Gm-Message-State: AOJu0YwHbgp8dSn7vq+IymXlsw6Aw9pVtSDDM1Li3r9fkOFpZ8dHvqXm
-	imhTrz7aEbzydMpGYVU3OOhS152VF1pBLM+rWQdmJgvqXCW6n8wS
-X-Google-Smtp-Source: AGHT+IHeRlLA4p7UsIMbtxwnVi81RGLvh+nSzdjjHcGGywcw/Wu8eruq6QOfxQCkFsrpTeAjHE1KjQ==
-X-Received: by 2002:a17:90a:bc8b:b0:299:699b:c5de with SMTP id x11-20020a17090abc8b00b00299699bc5demr13864991pjr.19.1709768526457;
-        Wed, 06 Mar 2024 15:42:06 -0800 (PST)
-Received: from ?IPV6:2001:df0:0:200c:adb8:c71:a09c:347f? ([2001:df0:0:200c:adb8:c71:a09c:347f])
-        by smtp.gmail.com with ESMTPSA id nk4-20020a17090b194400b0029b28e6ef26sm293735pjb.11.2024.03.06.15.42.04
+        d=1e100.net; s=20230601; t=1709768788; x=1710373588;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kqorcUr/mN5YrTuFjYVBoCO3aBXzpm1QuyE+7s5X7fQ=;
+        b=U+5QZyLXGVR7EXmaUUerHt5nQk8pI+yOOyKFcjq4mKcxP2r9AkEYQApkRUprP4YyBv
+         zJOAuUHh52L6XK/jhYn9RbnxLzLWV1drCZ5M0BkqxLqg8ltu5po4C9GcDJh6YFvZ9vE1
+         bBo1Lsz5ZCM/Xr+/cYWWO595Xh0815Y83uUpQshyjKoe/Hgqt+IYwNwNKmpSJfjRZ/EG
+         Smkl4LFQJxk+T5UFJGa9cdIaP1W8nn6AX2ysE8LZKXp5R4hnui77H6SXpHcSaM5Tllsk
+         PToNkPhqxFkigrpAmfEnII6HZ73e29CNBHKhe/RWaS3SU1hYetQc6Oum67RQHAiHy2m4
+         EXtg==
+X-Forwarded-Encrypted: i=1; AJvYcCWk4Z62sLz7qS6Czo1qhMTDD+z/zHgIixG0keYJNLTIPG1TzrIkQs57FH9wqWN6CwPmYAjGiAor7wYLgPlPZQRPcbSV7TncqunLniQatrLh
+X-Gm-Message-State: AOJu0Yy63+6TxUfalTYeG3NmBwIb5UPtPiZ/K1XQbB7xWlkbdZ0hzu4F
+	O9NmkQ4CcbIzAR3qlRgJkyRCDpyk79VLu2qQTZykkKIDQlgcSZqg
+X-Google-Smtp-Source: AGHT+IHBrb90xizMLfIruWFV9ShELL6jGDUOVm8qJiC/XAwKiW/8uwZ9m7NCzOKO7M9UPURcpV0Y0A==
+X-Received: by 2002:a17:902:cecc:b0:1db:e7a4:90a5 with SMTP id d12-20020a170902cecc00b001dbe7a490a5mr7651480plg.12.1709768788379;
+        Wed, 06 Mar 2024 15:46:28 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id a11-20020a170902eccb00b001dd08ed9eeasm7615114plh.259.2024.03.06.15.46.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Mar 2024 15:42:06 -0800 (PST)
-Message-ID: <2f4e8b3b-9980-43d1-a2d2-d62a9c9a7d6b@gmail.com>
-Date: Thu, 7 Mar 2024 12:42:01 +1300
+        Wed, 06 Mar 2024 15:46:27 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <2e1bd0cb-aaf5-4b52-a784-081dcfe65e1a@roeck-us.net>
+Date: Wed, 6 Mar 2024 15:46:26 -0800
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -63,67 +65,76 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: spinlock recursion when running q800 emulation in qemu
 Content-Language: en-US
-To: Brad Boyer <flar@allandria.com>
-Cc: Guenter Roeck <linux@roeck-us.net>,
+To: Finn Thain <fthain@linux-m68k.org>, Brad Boyer <flar@allandria.com>
+Cc: Michael Schmitz <schmitzmic@gmail.com>,
  Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
 References: <07811b26-677c-4d05-aeb4-996cd880b789@roeck-us.net>
  <0ccf5e42-63ec-a63d-9ee9-7043947637c3@gmail.com>
  <20240306083054.GA20607@allandria.com>
-From: Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <20240306083054.GA20607@allandria.com>
+ <212aa3c7-0706-f3f6-5bfd-c8146e5192e6@linux-m68k.org>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <212aa3c7-0706-f3f6-5bfd-c8146e5192e6@linux-m68k.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-Thanks Brad,
+On 3/6/24 15:13, Finn Thain wrote:
+> 
+> On Wed, 6 Mar 2024, Brad Boyer wrote:
+> 
+>> It looks like the Q800 supports switching VIA1 to IRQ6 through the
+>> alternate IRQ mapping.
+> 
+> Yes, and that's what happens in QEMU. That was easily confirmed with the
+> patch below. As a result, you get less clocksource drift during I/O but
+> you also get a lot of interrupt nesting.
+> 
 
-On 6/03/24 21:30, Brad Boyer wrote:
-> On Wed, Mar 06, 2024 at 08:14:31PM +1300, Michael Schmitz wrote:
->> Looking at the backtraces some more, I think what happens here is that the
->> swapper kernel task is stalled for long enough here that on the next
->> scheduler tick, it is still running. With no other tasks scheduled to run in
->> the meantime, it may still be the current task.
->>
->> The stalled swapper task still holds the run queue lock, hence the recursion
->> message.
->>
->> I do not think this is a bug, just a reflection of a slow system with
->> nothing much to do.
->>
->> There does not appear to be any interrupt nesting here. I cannot recall the
->> interrupt level assignment on the Q800, in particular as regards disk
->> interrupts and whether both VIAs are using the same interrupt level. I'd
->> suppose they would, as these chips date back a long time and probably cannot
-... that should have been 'would not', of course. Autovectoring can't 
-work otherwise.
->> place a vector number on the bus as part of the interrupt stack frame?
-> No, a Mac with 2 VIA chips should always have them on separate interrupt
-> levels. The exact mapping varies by model, but every model supported
-> by Linux uses at least three different hardware IRQ levels.
->
-> On most Mac models, VIA1 is IRQ1, VIA2 is IRQ2, and the SCC is IRQ4.
-> VIA1 would handle the timer and ADB while VIA2 handles NuBus and SCSI.
-> It looks like the Q800 supports switching VIA1 to IRQ6 through the
-> alternate IRQ mapping. Most models also are using various other chips
-> emulating a real VIA for VIA2 with varying levels of compatibility.
->
-> Apple always used autovectoring and the three IPL pins to determine
-> the interrupt vector. Older models just have three external IRQ
-> sources, one matching each pin (thus the 1, 2, 4 pattern). I presume
-> they had some external circuit to make sure only one line is being
-> pulled low at a time since we never get other IRQ levels by accident.
+Does that mean we just have to live with the warning, or is there a possible
+solution ?
 
-Makes sense - thanks for refreshing my memory!
+Thanks,
+Guenter
 
-Cheers,
-
-     Michael
-
-
->
-> The AV macs and the IIfx are the only models with more complex
-> interrupt controllers as separate chips (PSC or OSS).
->
-> 	Brad Boyer
-> 	flar@allandria.com
->
->
