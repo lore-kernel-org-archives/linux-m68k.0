@@ -1,109 +1,148 @@
-Received: from wfout6-smtp.messagingengine.com (wfout6-smtp.messagingengine.com [64.147.123.149])
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF22ACA4E
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  6 Mar 2024 23:12:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 277713D572
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  6 Mar 2024 23:41:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709766756; cv=none; b=QTNKr6d6DhgVQH+9pqE8fkWEqclQVrh5R62uLA6xhHdrAp5bTgA/VuJ+PnL/u0LSeNyiOKEpEf7k+ptC7BM2O+yvyQnLuIrr5d6w/opC5y4CyoZHgRVJFWXIlo88hLyNs73/qlRlgC/wxJ7WIXDWbAT4tUL3zb1fi+PN14nN0go=
+	t=1709768481; cv=none; b=ZJp/OMoPWnE4mua3bPjTwXGYHX+zt5Xfon1W2ktf109OF74cMo9mTKbBRQjE2T0z0YM5Ov7L/hptwuOVccXkblK6/wm9pKdZl9X7lSBsacq+xZKaQy4Ea/uLBkSXk1Tja5omAQAN2cxorzp/lpAUodKIuXNbtb4IwopafMOprMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709766756; c=relaxed/simple;
-	bh=lkPWaO7R8bYsYqFU2kZn8qDX6K5dpdoeNAmjAIGFAY8=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=u/BvjJeVsb5KQQjit67Y2XHncL+fuk2QSeXHnIEopp43gsufQ9oeVRn/kFZDyt1Yk0TZObc+13kf7cV4BYNwcneUlxGjYoXYofmFTOLy9IJ5+IaUlYaOlNCMSyOlkUKVSnksI7H1cly/5g4rH44MXWGr1O3+8Ls2oEOlU4ehrvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=roE8SpYH; arc=none smtp.client-ip=64.147.123.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1709768481; c=relaxed/simple;
+	bh=dZ6jOLMDzgPZpijPacAiasUg5Crtb+AP4LxE80M2xBA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=SKRwOuo6y1iup38YGgWRPxTqglurLlNcvb4NYW/xsqbSNvYOP/00e8rK58DeFSlmCW+sTntcrQ8+lbEVN3qRdz/8v6esCCpilGBjDW/WiZabXC9fKc8BU6DaEZglVtgN52yt0BrideKJNLCXy5lOdjaby1KQyx6j8urtWjTsTqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=dfxSn7ES; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="roE8SpYH"
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailfout.west.internal (Postfix) with ESMTP id 51B121C0008C;
-	Wed,  6 Mar 2024 18:12:32 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 06 Mar 2024 18:12:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1709766751; x=1709853151; bh=Qq/Ue4/GKYF8S3/pn6p3dAoLj/L3
-	yXzag9NwuDj8kug=; b=roE8SpYH92sIbj0dwUDX/Tqv5AVtzYEYDMDbTaITODTW
-	oDkyG3i8OVErZ7Wk2x2LJDcx3PqAMSYE1uPttftzwQE9q59IAmKoITM8CHXsYirW
-	kEtZ4TS4h1neIE2+wGgVZbkWScAzzlVXIM9bjg9QSEaxdu2X5nmlJU5/W3ydnUHx
-	ImLxGVPLVPIdUgJzsYBu+AHzP0r9/JLOZFt5jt3s8jWKXXRuLZQSNT/zIdSb2J/v
-	3BCpFfyHiJbGvsqQ+iILNRuQ/E6of71yv2Xmg+4hddtd9MGumYHFHsb00SLW8Q3d
-	9VUcFmBwxjTYGLNsIJHyWmLFCPcc2fQ9teOCk7CR4A==
-X-ME-Sender: <xms:X_joZQ7ljZ8TTpYiYlnngqaAUMuNXxcuFhMDtIX1FRN5czItX67SNw>
-    <xme:X_joZR43EwC0GPUWjneDsAHLWWOczWc46RbRHdWDyIJsb2YR2Uwspj_MQqR_IChQD
-    T2MCsfjS6QfEWzFgdI>
-X-ME-Received: <xmr:X_joZffDuxbb4_hV9WURIUArISFknnP5sZcmVNy5nC_4JHklkXFzbjagy6mu9LG9fD2w1-wuoBETgRzaUUI5Bm2V78DbgPuIKY4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledriedvgddtjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
-    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
-    htvghrnhepvdfgffekudeiffduffdtfeelheehvdeftdduudeggfdtvdfggeethedtveef
-    gfeknecuffhomhgrihhnpehnvghsthhinhhgrdgtrghtnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieek
-    khdrohhrgh
-X-ME-Proxy: <xmx:X_joZVLGmX4W0U3NPhaaGT85jQHe5pOHubOciI3rpIX7k3pO7sXjQQ>
-    <xmx:X_joZULhgjvJu1M5V75CAYrbrtU7iY4HAXye5Qfm1XTEInD7Mqts0Q>
-    <xmx:X_joZWzR2VIwQ-eY94h8ZVZfkDiFYkhCwst16392T4uG-B-lyhIkZw>
-    <xmx:X_joZZGhM6cE-yfotxxrulsEVglD55Vu7bLYQTDLpDiQkLhSDgm-obIYsGI>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 6 Mar 2024 18:12:29 -0500 (EST)
-Date: Thu, 7 Mar 2024 10:13:31 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Brad Boyer <flar@allandria.com>
-cc: Michael Schmitz <schmitzmic@gmail.com>, Guenter Roeck <linux@roeck-us.net>, 
-    Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
-Subject: Re: spinlock recursion when running q800 emulation in qemu
-In-Reply-To: <20240306083054.GA20607@allandria.com>
-Message-ID: <212aa3c7-0706-f3f6-5bfd-c8146e5192e6@linux-m68k.org>
-References: <07811b26-677c-4d05-aeb4-996cd880b789@roeck-us.net> <0ccf5e42-63ec-a63d-9ee9-7043947637c3@gmail.com> <20240306083054.GA20607@allandria.com>
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="dfxSn7ES"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1709768472;
+	bh=OHx3bVLlXnvaD4Lk/LqRAXihRU8d5iuk+jHowRU57+A=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=dfxSn7ESt9feXa7Ah5VgnrgsTR94t0TrfqG0PcTuTf3mOM2nYClb7KzncEO44oWvJ
+	 z177IwNoKxwaRwuRElWO9dM9vGP1BGgcQEfox5PbPq0mqdcUVphkGszRXScQ0d7mcO
+	 jW4ikoUKpq/rq3DBl50CSj6CPBHJDbwDqtBF6NxW+foiGgFyBpZYE+I728npTZNMg3
+	 1t/2+QbQypMyzr9+0O+l4J8vO9YugJeJGU6R2JxmPiIz07vqQ4qeSoMI/Ta1CVt4Pi
+	 EW9aQ8ONAeTLEZ2I6yd+B+il/wLckJElOl67KFtvN0q8NsP2LkndTztEXc4YygJJsv
+	 te7iy+1YEdhjg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tqppm50HGz4wcN;
+	Thu,  7 Mar 2024 10:41:04 +1100 (AEDT)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Arnd Bergmann <arnd@kernel.org>, Anna-Maria Behnsen
+ <anna-maria@linutronix.de>, Thomas Gleixner <tglx@linutronix.de>, Vincenzo
+ Frascino <vincenzo.frascino@arm.com>, Kees Cook <keescook@chromium.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>, Vineet
+ Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>, Catalin
+ Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>, Brian Cain
+ <bcain@quicinc.com>, Huacai Chen <chenhuacai@kernel.org>, Geert
+ Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller
+ <deller@gmx.de>, Christophe Leroy <christophe.leroy@csgroup.eu>, Palmer
+ Dabbelt <palmer@dabbelt.com>, John Paul Adrian Glaubitz
+ <glaubitz@physik.fu-berlin.de>, Andreas Larsson <andreas@gaisler.com>,
+ Richard Weinberger <richard@nod.at>, x86@kernel.org, Max Filippov
+ <jcmvbkbc@gmail.com>, Andy Lutomirski <luto@kernel.org>, Jan Kiszka
+ <jan.kiszka@siemens.com>, Kieran Bingham <kbingham@kernel.org>, Andrew
+ Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+ linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-um@lists.infradead.org
+Subject: Re: [PATCH v2 1/3] arch: consolidate existing CONFIG_PAGE_SIZE_*KB
+ definitions
+In-Reply-To: <20240306141453.3900574-2-arnd@kernel.org>
+References: <20240306141453.3900574-1-arnd@kernel.org>
+ <20240306141453.3900574-2-arnd@kernel.org>
+Date: Thu, 07 Mar 2024 10:41:02 +1100
+Message-ID: <87sf13nd2p.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
+
+Hi Arnd,
+
+Arnd Bergmann <arnd@kernel.org> writes:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> These four architectures define the same Kconfig symbols for configuring
+> the page size. Move the logic into a common place where it can be shared
+> with all other architectures.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> Changes from v1:
+>  - improve Kconfig help texts
+>  - fix Hexagon Kconfig
+>
+>  arch/Kconfig                      | 92 ++++++++++++++++++++++++++++++-
+>  arch/hexagon/Kconfig              | 24 ++------
+>  arch/hexagon/include/asm/page.h   |  6 +-
+>  arch/loongarch/Kconfig            | 21 ++-----
+>  arch/loongarch/include/asm/page.h | 10 +---
+>  arch/mips/Kconfig                 | 58 ++-----------------
+>  arch/mips/include/asm/page.h      | 16 +-----
+>  arch/sh/include/asm/page.h        | 13 +----
+>  arch/sh/mm/Kconfig                | 42 ++++----------
+>  9 files changed, 121 insertions(+), 161 deletions(-)
+
+There's a few "help" lines missing, which breaks the build:
+
+  arch/Kconfig:1134: syntax error
+  arch/Kconfig:1133: invalid statement
+  arch/Kconfig:1134: invalid statement
+  arch/Kconfig:1135:warning: ignoring unsupported character '.'
+  arch/Kconfig:1135:warning: ignoring unsupported character '.'
+  arch/Kconfig:1135: invalid statement
+  arch/Kconfig:1136: invalid statement
+  arch/Kconfig:1137:warning: ignoring unsupported character '.'
+  arch/Kconfig:1137: invalid statement
+  arch/Kconfig:1143: syntax error
+  arch/Kconfig:1142: invalid statement
+  arch/Kconfig:1143: invalid statement
+  arch/Kconfig:1144:warning: ignoring unsupported character '.'
+  arch/Kconfig:1144: invalid statement
+  arch/Kconfig:1145: invalid statement
+  arch/Kconfig:1146: invalid statement
+  arch/Kconfig:1147: invalid statement
+  arch/Kconfig:1148:warning: ignoring unsupported character '.'
+  arch/Kconfig:1148: invalid statement
+  make[4]: *** [../scripts/kconfig/Makefile:85: syncconfig] Error 1
+
+Fixup diff is:
+
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 56d45a75f625..f2295fa3b48c 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -1130,6 +1130,7 @@ config PAGE_SIZE_16KB
+ config PAGE_SIZE_32KB
+        bool "32KiB pages"
+        depends on HAVE_PAGE_SIZE_32KB
++       help
+          Using 32KiB page size will result in slightly higher performance
+          kernel at the price of higher memory consumption compared to
+          16KiB pages.  This option is available only on cnMIPS cores.
+@@ -1139,6 +1140,7 @@ config PAGE_SIZE_32KB
+ config PAGE_SIZE_64KB
+        bool "64KiB pages"
+        depends on HAVE_PAGE_SIZE_64KB
++       help
+          Using 64KiB page size will result in slightly higher performance
+          kernel at the price of much higher memory consumption compared to
+          4KiB or 16KiB pages.
 
 
-On Wed, 6 Mar 2024, Brad Boyer wrote:
-
-> It looks like the Q800 supports switching VIA1 to IRQ6 through the
-> alternate IRQ mapping. 
-
-Yes, and that's what happens in QEMU. That was easily confirmed with the 
-patch below. As a result, you get less clocksource drift during I/O but 
-you also get a lot of interrupt nesting.
-
-
-# cat /proc/interrupts
-           CPU0       
-  3:          2      auto      sonic
-  4:         45      auto      ttyS0
-  7:          0      auto      NMI
- 10:       2089       mac      ADB
- 14:        988       mac      timer
- 19:        792       mac      ESP
- 56:          0       mac      sonic
-ERR:          0
-
-
-diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
-index 01e6b0e37f8d..aa3bdbaf2ff4 100644
---- a/arch/m68k/mac/via.c
-+++ b/arch/m68k/mac/via.c
-@@ -386,6 +386,9 @@ void via1_irq(struct irq_desc *desc)
- 	int irq_num;
- 	unsigned char irq_bit, events;
- 
-+	if (irq_desc_get_irq(desc) == 6)
-+		printk_once(KERN_INFO "%s: using remapped irq\n", __func__);
-+
- 	events = via1[vIFR] & via1[vIER] & 0x7F;
- 	if (!events)
- 		return;
+cheers
