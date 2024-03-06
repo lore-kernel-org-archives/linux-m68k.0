@@ -1,80 +1,224 @@
-Received: from cynthia.allandria.com (cynthia.allandria.com [50.242.82.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F3EAD53F
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  6 Mar 2024 08:55:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.242.82.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BCF9132C19
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  6 Mar 2024 14:15:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.40.73.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709715313; cv=none; b=oqDvgDx2idx0UDlmTqKccOSn9lUmI7CooN9QVuJrUHEvdH6sMgn7Ania3hrZ25qdn9QQPCs4y7oab59rXK692JnGfVoRxzZFAgaL7NBPDQ26xx9iN83qw5bBY/nhFj1uza5uJZeZx8BOJrx8bPk0srQp4XrUEuyUcRx4glQJ6iM=
+	t=1709734522; cv=none; b=ab9OzkrA8qobxdmsmwvxMnDUbx+yJ/Y9RnobfhqMJgdtTCqj6ZMM5so9BvHGqCuVVU9NNAWrgARqrHKq9k3xB1XyTN8UCNj1HRzNXETkT1x+sRn+Mly475bVUHcyK9qzL2P+ojUjSO+XDRAflaHJB0As/LRvV/pwqGYb0ABEP+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709715313; c=relaxed/simple;
-	bh=5UIMRSPgm2tMwM5kSqUGN0TaFynBQz2/jAr13EeQv0Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DVprvmAAwnU/ncUbUBtnaicQD1NNkYSe6qtzWEOu6HVUDDtkqDFscx5iHJ0m5lekZk9imvlNKQr9AWUdeWruh8ZIqw6+yNJoe3PfH+N/ZkcDKaYQO5mPuSRqzVnuMsgmGIWHKvb7Hs0z5Q65pN7HwnNbRTNpw32j2J0jpGsKcBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=allandria.com; spf=none smtp.mailfrom=allandria.com; arc=none smtp.client-ip=50.242.82.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=allandria.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=allandria.com
-Received: from flar by cynthia.allandria.com with local (Exim 4.84_2)
-	(envelope-from <flar@allandria.com>)
-	id 1rhmfu-0005fW-PH; Wed, 06 Mar 2024 00:30:54 -0800
-Date: Wed, 6 Mar 2024 00:30:54 -0800
-From: Brad Boyer <flar@allandria.com>
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Guenter Roeck <linux@roeck-us.net>,
+	s=arc-20240116; t=1709734522; c=relaxed/simple;
+	bh=6p2hAt3DJTtWEmWkGiNmsPvIqV/lUSZTutyoSUX5wpE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=O3WFBT8u8SHGHjXXLqWpL9eDRgySImyWnW/M5VwPJu/zaU9pG54rO+lpbS+tvurTkXj5RgdNgAoUnE+hE/gSFJ0Y+68YfCGXht3gda9AeqkiPseCqWOfmeSGFqqfeDNOAobrryLgD5KVqGArkKSvs1MUd9n01EKV6jykkLyjpfM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LqIp2kZT; arc=none smtp.client-ip=145.40.73.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LqIp2kZT"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id E69E5CE21D8;
+	Wed,  6 Mar 2024 14:15:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F782C433F1;
+	Wed,  6 Mar 2024 14:15:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709734517;
+	bh=6p2hAt3DJTtWEmWkGiNmsPvIqV/lUSZTutyoSUX5wpE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=LqIp2kZTKEk6BDtlGN9YtFBVHmwGfTij/0yFkUBE5XGhta0eqXHuPZZJ3/MIusuUG
+	 1/ai7edE6AbiuxHWjDBSN5GwSx4jO1RwWivNR0PUtakQUcitU1uJh1+vHWYGSiPn+I
+	 /dBaVrtPErxMiFpuWjYe3LW95xWi64gxsDrEvpuJ8OizSORBDPypoeSsLWyXEUGdmf
+	 fJeiWqTrhJi5qxh7Jya6058wrIYZrMi99CnlK2WXNiIm+MJuSG+gSvaihlsEMOBWt5
+	 2fKuqVl7eyYLUWkzPRqLl2zDWANVIuecGX2Qr2I58K0QII0FK3WksaSXHLTuDSmpIM
+	 TYoPCbqqY5j5A==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vincenzo Frascino <vincenzo.frascino@arm.com>,
+	Kees Cook <keescook@chromium.org>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Matt Turner <mattst88@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Guo Ren <guoren@kernel.org>,
+	Brian Cain <bcain@quicinc.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
 	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-m68k@lists.linux-m68k.org
-Subject: Re: spinlock recursion when running q800 emulation in qemu
-Message-ID: <20240306083054.GA20607@allandria.com>
-References: <07811b26-677c-4d05-aeb4-996cd880b789@roeck-us.net>
- <0ccf5e42-63ec-a63d-9ee9-7043947637c3@gmail.com>
+	Michal Simek <monstr@monstr.eu>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Helge Deller <deller@gmx.de>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Richard Weinberger <richard@nod.at>,
+	x86@kernel.org,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Jan Kiszka <jan.kiszka@siemens.com>,
+	Kieran Bingham <kbingham@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org,
+	linux-alpha@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	linux-um@lists.infradead.org
+Subject: [v2 PATCH 0/3] arch: mm, vdso: consolidate PAGE_SIZE definition
+Date: Wed,  6 Mar 2024 15:14:50 +0100
+Message-Id: <20240306141453.3900574-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0ccf5e42-63ec-a63d-9ee9-7043947637c3@gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 06, 2024 at 08:14:31PM +1300, Michael Schmitz wrote:
-> Looking at the backtraces some more, I think what happens here is that the
-> swapper kernel task is stalled for long enough here that on the next
-> scheduler tick, it is still running. With no other tasks scheduled to run in
-> the meantime, it may still be the current task.
-> 
-> The stalled swapper task still holds the run queue lock, hence the recursion
-> message.
-> 
-> I do not think this is a bug, just a reflection of a slow system with
-> nothing much to do.
-> 
-> There does not appear to be any interrupt nesting here. I cannot recall the
-> interrupt level assignment on the Q800, in particular as regards disk
-> interrupts and whether both VIAs are using the same interrupt level. I'd
-> suppose they would, as these chips date back a long time and probably cannot
-> place a vector number on the bus as part of the interrupt stack frame?
+From: Arnd Bergmann <arnd@arndb.de>
 
-No, a Mac with 2 VIA chips should always have them on separate interrupt
-levels. The exact mapping varies by model, but every model supported
-by Linux uses at least three different hardware IRQ levels.
+Naresh noticed that the newly added usage of the PAGE_SIZE macro in
+include/vdso/datapage.h introduced a build regression. I had an older
+patch that I revived to have this defined through Kconfig rather than
+through including asm/page.h, which is not allowed in vdso code.
 
-On most Mac models, VIA1 is IRQ1, VIA2 is IRQ2, and the SCC is IRQ4.
-VIA1 would handle the timer and ADB while VIA2 handles NuBus and SCSI.
-It looks like the Q800 supports switching VIA1 to IRQ6 through the
-alternate IRQ mapping. Most models also are using various other chips
-emulating a real VIA for VIA2 with varying levels of compatibility.
+The vdso patch series now has a temporary workaround, but I still want to
+get this into v6.9 so we can place the hack with CONFIG_PAGE_SIZE
+in the vdso.
 
-Apple always used autovectoring and the three IPL pins to determine
-the interrupt vector. Older models just have three external IRQ
-sources, one matching each pin (thus the 1, 2, 4 pattern). I presume
-they had some external circuit to make sure only one line is being
-pulled low at a time since we never get other IRQ levels by accident.
+I've applied this to the asm-generic tree already, please let me know if
+there are still remaining issues. It's really close to the merge window
+already, so I'd probably give this a few more days before I send a pull
+request, or defer it to v6.10 if anything goes wrong.
 
-The AV macs and the IIfx are the only models with more complex
-interrupt controllers as separate chips (PSC or OSS).
+Sorry for the delay, I was still waiting to resolve the m68k question,
+but there were no further replies in the end, so I kept my original
+version.
 
-	Brad Boyer
-	flar@allandria.com
+Changes from v1:
 
+ - improve Kconfig help texts
+ - remove an extraneous line in hexagon
+
+      Arnd
+
+Link: https://lore.kernel.org/lkml/CA+G9fYtrXXm_KO9fNPz3XaRxHV7UD_yQp-TEuPQrNRHU+_0W_Q@mail.gmail.com/
+Link: https://lore.kernel.org/all/65dc6c14.170a0220.f4a3f.91dd@mx.google.com/
+Link: https://lore.kernel.org/lkml/20240226161414.2316610-1-arnd@kernel.org/
+
+Arnd Bergmann (3):
+  arch: consolidate existing CONFIG_PAGE_SIZE_*KB definitions
+  arch: simplify architecture specific page size configuration
+  arch: define CONFIG_PAGE_SIZE_*KB on all architectures
+
+ arch/Kconfig                       | 92 +++++++++++++++++++++++++++++-
+ arch/alpha/Kconfig                 |  1 +
+ arch/alpha/include/asm/page.h      |  2 +-
+ arch/arc/Kconfig                   |  3 +
+ arch/arc/include/uapi/asm/page.h   |  6 +-
+ arch/arm/Kconfig                   |  1 +
+ arch/arm/include/asm/page.h        |  2 +-
+ arch/arm64/Kconfig                 | 29 +++++-----
+ arch/arm64/include/asm/page-def.h  |  2 +-
+ arch/csky/Kconfig                  |  1 +
+ arch/csky/include/asm/page.h       |  2 +-
+ arch/hexagon/Kconfig               | 24 ++------
+ arch/hexagon/include/asm/page.h    |  6 +-
+ arch/loongarch/Kconfig             | 21 ++-----
+ arch/loongarch/include/asm/page.h  | 10 +---
+ arch/m68k/Kconfig                  |  3 +
+ arch/m68k/Kconfig.cpu              |  2 +
+ arch/m68k/include/asm/page.h       |  6 +-
+ arch/microblaze/Kconfig            |  1 +
+ arch/microblaze/include/asm/page.h |  2 +-
+ arch/mips/Kconfig                  | 58 ++-----------------
+ arch/mips/include/asm/page.h       | 16 +-----
+ arch/nios2/Kconfig                 |  1 +
+ arch/nios2/include/asm/page.h      |  2 +-
+ arch/openrisc/Kconfig              |  1 +
+ arch/openrisc/include/asm/page.h   |  2 +-
+ arch/parisc/Kconfig                |  3 +
+ arch/parisc/include/asm/page.h     | 10 +---
+ arch/powerpc/Kconfig               | 31 ++--------
+ arch/powerpc/include/asm/page.h    |  2 +-
+ arch/riscv/Kconfig                 |  1 +
+ arch/riscv/include/asm/page.h      |  2 +-
+ arch/s390/Kconfig                  |  1 +
+ arch/s390/include/asm/page.h       |  2 +-
+ arch/sh/include/asm/page.h         | 13 +----
+ arch/sh/mm/Kconfig                 | 42 ++++----------
+ arch/sparc/Kconfig                 |  2 +
+ arch/sparc/include/asm/page_32.h   |  2 +-
+ arch/sparc/include/asm/page_64.h   |  3 +-
+ arch/um/Kconfig                    |  1 +
+ arch/um/include/asm/page.h         |  2 +-
+ arch/x86/Kconfig                   |  1 +
+ arch/x86/include/asm/page_types.h  |  2 +-
+ arch/xtensa/Kconfig                |  1 +
+ arch/xtensa/include/asm/page.h     |  2 +-
+ scripts/gdb/linux/constants.py.in  |  2 +-
+ scripts/gdb/linux/mm.py            |  2 +-
+ 47 files changed, 185 insertions(+), 238 deletions(-)
+
+-- 
+2.39.2
+
+To: Thomas Gleixner <tglx@linutronix.de>
+To: Vincenzo Frascino <vincenzo.frascino@arm.com>
+To: Kees Cook <keescook@chromium.org>
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: Matt Turner <mattst88@gmail.com>
+Cc: Vineet Gupta <vgupta@kernel.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Guo Ren <guoren@kernel.org>
+Cc: Brian Cain <bcain@quicinc.com>
+Cc: Huacai Chen <chenhuacai@kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Michal Simek <monstr@monstr.eu>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Andreas Larsson <andreas@gaisler.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: x86@kernel.org
+Cc: Max Filippov <jcmvbkbc@gmail.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Jan Kiszka <jan.kiszka@siemens.com>
+Cc: Kieran Bingham <kbingham@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-alpha@vger.kernel.org
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-csky@vger.kernel.org
+Cc: linux-hexagon@vger.kernel.org
+Cc: loongarch@lists.linux.dev
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-openrisc@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-sh@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
+Cc: linux-um@lists.infradead.org
