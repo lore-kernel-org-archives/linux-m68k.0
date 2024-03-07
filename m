@@ -1,106 +1,82 @@
-Received: from smtp-out3.simply.com (smtp-out3.simply.com [94.231.106.210])
+Received: from fout7-smtp.messagingengine.com (fout7-smtp.messagingengine.com [103.168.172.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 246401E868
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Mar 2024 14:43:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.231.106.210
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 106AF1D698
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Mar 2024 23:34:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709822609; cv=none; b=Wy/8U4y9IPcS9DNVwI7eoJcl8/vBgwIYL6hBXXM/kfrsozON6GTtw/vnOL8CSBVYKi4GPPEJP4/fcbJvaT4SVRifJUWkqdGf5PjGBlwIfrTPokmXYWHcLJHLCWAmgUrErc7RJwbraCTv0mNT4MhrCJNCoeClBltUIwRUqM5Xe/s=
+	t=1709854469; cv=none; b=h1IWQ14TXbvfFWAOSsToIxyErXpb1I+yGs0L795wf2MhmV+oRALsu5KPK30QIQ0JDwpx0V6tTc/oU+gKMhb0vk8M+GoZ0hxhpEOcyA4QBYl9Ps5dNO7h0EJCzXDVF4LHZubFwekce1/CX4jRUjDtVummTiUPji/mbMlVYsb7Zng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709822609; c=relaxed/simple;
-	bh=YmLmZj77zkxuMJT0tJQG78tQTce7Gx17YscP/2PSIVQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VuI2IU3Don5LTfdTMj0zDXP7EpteXWs5V/uymevruUIC+1m6tdK9uI/igcIQbRoxCKAGB+MoEUFhBDauEqjOdRNEbX2q7KL3FRZHs2NaNGE5dcVxXUxEVx8xA2jGqWvhFYjdoxr8p4RtFXZGCFIjjPBiD/yHixy6XBJDwzLcnFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=pass (1024-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=cI0rJs/n; arc=none smtp.client-ip=94.231.106.210
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gaisler.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
+	s=arc-20240116; t=1709854469; c=relaxed/simple;
+	bh=MBLjhHRWNqreB6zIQDAcGLZa/021wRW+LCrDR65k6YA=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=SuwUh/E4ZwxmTojmPMQUicnUnEotSuK05dxzZmOkaPjrfwoUqDhW/3mGpg3c9pQwQoTNfP3++ScnIhU8VbzvQMsb/qhMcTxCCDumxBRapxk8bnTFLgMygN9vNN6HetcDQiTHAtdaRHUoXeKEYym3vz9QTDChqRjuwBWZd6kh8HY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=K8I4fc4k; arc=none smtp.client-ip=103.168.172.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="cI0rJs/n"
-Received: from localhost (localhost [127.0.0.1])
-	by smtp.simply.com (Simply.com) with ESMTP id 4TrBqw0YTHz6871;
-	Thu,  7 Mar 2024 15:43:24 +0100 (CET)
-Received: from [192.168.0.25] (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(Client did not present a certificate)
-	by smtp.simply.com (Simply.com) with ESMTPSA id 4TrBpz5w11z686W;
-	Thu,  7 Mar 2024 15:42:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
-	s=unoeuro; t=1709822603;
-	bh=9Vrev7IgmUrXRDq+27lTQvP4S7JHkTqf6RpOH6wBrY8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=cI0rJs/n2a5JovKEHh1TYmBzRxJ87Bt5Bk9Xi2ViHf6tqC5yT0pNhekjnIplLA6zG
-	 +pFOMlnBFON+gaT+yppwquMwOHjqvX6GtdSnkG7oU1AsXu0gfEswgGVp6gSOiWhYfY
-	 6DpsBN4xKX8XZflxM1403bFN0rq2D47eZSFJCk/Y=
-Message-ID: <86cf6c72-e15a-4aa1-8c4b-499ec90a9a82@gaisler.com>
-Date: Thu, 7 Mar 2024 15:42:32 +0100
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="K8I4fc4k"
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailfout.nyi.internal (Postfix) with ESMTP id DECC3138017D;
+	Thu,  7 Mar 2024 18:34:25 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 07 Mar 2024 18:34:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709854465; x=1709940865; bh=uVDF0LnPN9K4yr0AnC4KZE+XQKrd
+	WrQ3RXORTCpluIg=; b=K8I4fc4kZ0u8N6OEalICJQV3LItoMTy2tJTqdJghEqTj
+	nahnhoEy9fk37HllQawV2tVmYWXt/PEgDkttyix5dCJdm4jcOwW4Uxdu56vd/M0o
+	vOPTbcdiA5FNp3wtZ1td4FgvYqX5Fv/cC5BJqC0AJpLKYyLL91zSvEpX1Yeu+sOU
+	IVZYqplZ5q8fTEIhqSdtqY+S84OanJdVJ27U4oR7JyksyL5QciRJZ0/n2I+gfzAd
+	YsSI1JDy8/L7HsnxMS6O0RTcGzakVWZ59RX9jJwQ+9l3wGaMI1AWLwXsRM2a9jop
+	rfyw5712D6zWaaC5wPWyYZnDueRqk2z6l3dsyIuhqg==
+X-ME-Sender: <xms:AU_qZUlSCP2hSBzW_qZwqj1FWWkokOAyR2yNHfp2hujGIOEObgHlKw>
+    <xme:AU_qZT27uqd6Y-tTaOq2wPaLI2ddASdSGrLKA7RBA2W6ozypzlfBHpTgP3okEiV1u
+    puHTUNFUoyaw7lWS6c>
+X-ME-Received: <xmr:AU_qZSrfVqjt5Jgj5Z8U6Rqv1ZtCdABydQvV0kalrkujGkNj_ePzB1nbYC3aTkZ2eYlD0yM4CgXl2R9Ny5VWCL6_wbuyjc-U9Yw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrieeggdduudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
+    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
+    htvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedvueeh
+    ueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
+    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:AU_qZQktGCVJ5leBq7lHc34cg8zx8WBaiSsWiwRl5hSMcBuELTevlA>
+    <xmx:AU_qZS0HURLiIn8iqv1yrswvhHfuJLj8Mk24lUoQg5-yoB2S3NjaKA>
+    <xmx:AU_qZXsYVb0smk0GYnVqZdNV5TTyvafEqNeL19_91bSip7ZQ46O6mw>
+    <xmx:AU_qZVRGJadC14Aep7oSuAn85140FCGMK8_wOCqSXsA1WgN362IRCQ>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 7 Mar 2024 18:34:22 -0500 (EST)
+Date: Fri, 8 Mar 2024 10:35:00 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Guenter Roeck <linux@roeck-us.net>
+cc: Brad Boyer <flar@allandria.com>, Michael Schmitz <schmitzmic@gmail.com>, 
+    Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+Subject: Re: spinlock recursion when running q800 emulation in qemu
+In-Reply-To: <2e1bd0cb-aaf5-4b52-a784-081dcfe65e1a@roeck-us.net>
+Message-ID: <30955976-dd4e-be60-b5f4-87e13fe3ea20@linux-m68k.org>
+References: <07811b26-677c-4d05-aeb4-996cd880b789@roeck-us.net> <0ccf5e42-63ec-a63d-9ee9-7043947637c3@gmail.com> <20240306083054.GA20607@allandria.com> <212aa3c7-0706-f3f6-5bfd-c8146e5192e6@linux-m68k.org>
+ <2e1bd0cb-aaf5-4b52-a784-081dcfe65e1a@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] arch: define CONFIG_PAGE_SIZE_*KB on all
- architectures
-Content-Language: en-US
-To: Arnd Bergmann <arnd@kernel.org>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>,
- Thomas Gleixner <tglx@linutronix.de>,
- Vincenzo Frascino <vincenzo.frascino@arm.com>,
- Kees Cook <keescook@chromium.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>,
- Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>,
- Brian Cain <bcain@quicinc.com>, Huacai Chen <chenhuacai@kernel.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller
- <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- Palmer Dabbelt <palmer@dabbelt.com>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Richard Weinberger <richard@nod.at>, x86@kernel.org,
- Max Filippov <jcmvbkbc@gmail.com>, Andy Lutomirski <luto@kernel.org>,
- Jan Kiszka <jan.kiszka@siemens.com>, Kieran Bingham <kbingham@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
- linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
- Heiko Carstens <hca@linux.ibm.com>, Stafford Horne <shorne@gmail.com>,
- Johannes Berg <johannes@sipsolutions.net>
-References: <20240306141453.3900574-1-arnd@kernel.org>
- <20240306141453.3900574-4-arnd@kernel.org>
-From: Andreas Larsson <andreas@gaisler.com>
-In-Reply-To: <20240306141453.3900574-4-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 
-On 2024-03-06 15:14, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+
+On Wed, 6 Mar 2024, Guenter Roeck wrote:
+
 > 
-> Most architectures only support a single hardcoded page size. In order
-> to ensure that each one of these sets the corresponding Kconfig symbols,
-> change over the PAGE_SHIFT definition to the common one and allow
-> only the hardware page size to be selected.
+> Does that mean we just have to live with the warning, or is there a 
+> possible solution ?
 > 
-> Acked-by: Guo Ren <guoren@kernel.org>
-> Acked-by: Heiko Carstens <hca@linux.ibm.com>
-> Acked-by: Stafford Horne <shorne@gmail.com>
-> Acked-by: Johannes Berg <johannes@sipsolutions.net>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> No changes from v1
 
->  arch/sparc/Kconfig                 | 2 ++
->  arch/sparc/include/asm/page_32.h   | 2 +-
->  arch/sparc/include/asm/page_64.h   | 3 +--
-
-Acked-by: Andreas Larsson <andreas@gaisler.com>
-
-Thanks,
-Andreas
-
+I wasn't able to reproduce the problem and I don't know what the root 
+cause is. That cause may be unrelated to the timer interrupt.
