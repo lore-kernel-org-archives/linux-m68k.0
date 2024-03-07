@@ -1,82 +1,80 @@
-Received: from wfhigh7-smtp.messagingengine.com (wfhigh7-smtp.messagingengine.com [64.147.123.158])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [195.130.137.90])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76AFB1D529
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  6 Mar 2024 23:51:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6515A42047
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  7 Mar 2024 09:35:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.90
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709769109; cv=none; b=sYt5MlYPr0QpIk+J4f84KrS/Tz+fDmtKL9KhDSNRlOpeJ0HAfiKMMZOpKtj9UTS1Wf4bRlbml33kJSmNQu1K5E0bAifWaN0jB24nqs3d8rPbhyafRbHtQcAs8HSTQlCOcrHUyu898VX4SK1KjnSAZVgkGxIhESWEiYWKHoSlJzg=
+	t=1709804147; cv=none; b=uSYAQ3WNbsvafnysEpFsGB494Mq13CZOirlDnX7otCQCDTNFKh5fjMdqbdyz80MIEaB1ZLtPrS6nh05w1YY4YY1v/xWwVcuZrFXMzo5+2i1dCNLeZEWwzZQAjg3qUjIAk0VZcJBFtvJXvWrhquRpQQxo2sdlOmaWrTJ95bdP2sw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709769109; c=relaxed/simple;
-	bh=ykdsNxCEGUj8UipnOD3IiVCKLB73OURZIwcJ23o8H/o=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=XWp/lserORzV7/eibaJDPFAlqDnmMr3t/Na9kzrfBLuKnczR9CTSAXMUsg5bV/7HEunza2WVQgF+EbMFgZe/cm0zELXmdw0tDYmb7G07qPbfOgqc/P++jutUyJJ/c2o+RN/g30ymPbnM+3EPXYjLa14gF0ht8X+fN706uHIbWE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=jWbPoUAz; arc=none smtp.client-ip=64.147.123.158
+	s=arc-20240116; t=1709804147; c=relaxed/simple;
+	bh=OSWY6xEEDq69IrCc35Q1ZUgfQWUenoBJfmc30oiTdEc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=nKhYW/z7jDkMLwXbzgoOSj3ULYTRMCOSRpcXiEh8SjaovaIPn9qQSK39Qu2X6gQN19EjhQxcLnqF8TqEkQGReUuSPLPeiPe1s5DkLZhBOxRAbZq4xK8vgjVhIIKh/t/oOUpnAH6liXIvvF4WmiUNWxaHx0yJHtG0hAZyPBxG0jg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.90
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="jWbPoUAz"
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailfhigh.west.internal (Postfix) with ESMTP id 39721180008B;
-	Wed,  6 Mar 2024 18:51:45 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 06 Mar 2024 18:51:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1709769104; x=1709855504; bh=nFOKxiD4VU5AT1d/s35ek3APIa7y
-	UrIrq4q4ZGTvB7M=; b=jWbPoUAzPGRo9hEAV0O8hogWgrxLVsypjhbS9//+0p+h
-	M0dyTZWoj5xGDzF2ifxpfd/Eh6XTCsxcDxs79RceVIw7/bahTEgI/jk/oU86NMtx
-	Igm1co4idMvDaLG6XwPSUGU1EYZZUQl99fOW3B4ZEt5o/HFbyTy5BMVk6fWL0TYn
-	Ftk375pgTLNzh2KKhLeTaTpsG67MYfgNLw2Hfoe4oUQXPgrO41gVztVX9e9elK9d
-	61yn11SiZL5S3m1n5qY8wxncpHrQJkgotlDt9BPl5IHbPOuMT3OfKheJU84l2wre
-	VNf63Ik+ItcUZK8sHDWgru0hMI/8ZVfAT82k7JLw0Q==
-X-ME-Sender: <xms:kAHpZWuO7hubsIvlNEmAzRCG5DuSL6L4BTKCQ2puHiTGgx_b3ZV7ig>
-    <xme:kAHpZbfhIJX836gy_uLtw_FXyArkv5YBn3awFQIoVjKAs3n5hUBuONJQ6Lt7zvI0c
-    2TjKU4wtWaoVizqmek>
-X-ME-Received: <xmr:kAHpZRzd3se2UQOFzFUm57-_nU6R2TZOC44H_Zh4kGpegsdkO_czTKGqzI641QEs5cRfpVBSR3SGd-g07L2a7vs8mipEMPw9KpM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledriedvgdduhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
-    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
-    htvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedvueeh
-    ueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
-    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
-X-ME-Proxy: <xmx:kAHpZRO5PrehxzPnDz_2ZSSQGbzgqkoCdLy_-rA26-yO7JGVLPakNw>
-    <xmx:kAHpZW-jw7MQ7fys9VEnLJSEsHP_tl45VC69qoauvMFcN0cB4Bdi5w>
-    <xmx:kAHpZZXsXLwgGZH2zTMhRoVWrEyLS9V_STC8ZBkLFE8BCJP4zdkgjw>
-    <xmx:kAHpZdZvHKFhDuzCVu2F6RAPNj3UU2EcwZkVeUDScpz2WIfp1vKDv7_oC44>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 6 Mar 2024 18:51:43 -0500 (EST)
-Date: Thu, 7 Mar 2024 10:52:46 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Michael Schmitz <schmitzmic@gmail.com>
-cc: Guenter Roeck <linux@roeck-us.net>, 
-    Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
-Subject: Re: spinlock recursion when running q800 emulation in qemu
-In-Reply-To: <0ccf5e42-63ec-a63d-9ee9-7043947637c3@gmail.com>
-Message-ID: <40205038-a7cd-2568-5f8e-2540aca2f84d@linux-m68k.org>
-References: <07811b26-677c-4d05-aeb4-996cd880b789@roeck-us.net> <0ccf5e42-63ec-a63d-9ee9-7043947637c3@gmail.com>
+Received: from ramsan.of.borg ([84.195.187.55])
+	by albert.telenet-ops.be with bizsmtp
+	id vlbb2B00K1C8whw06lbbx4; Thu, 07 Mar 2024 10:35:36 +0100
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1riA9q-002dLQ-BJ;
+	Thu, 07 Mar 2024 10:35:35 +0100
+Received: from geert by rox.of.borg with local (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1riAA3-00FN5Y-Gh;
+	Thu, 07 Mar 2024 10:35:35 +0100
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Jani Nikula <jani.nikula@intel.com>
+Cc: linux-m68k@lists.linux-m68k.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: pgtable: Add missing #include <asm/page.h>
+Date: Thu,  7 Mar 2024 10:35:30 +0100
+Message-Id: <ba359be013f379ff10f3afcea13e2f78dd9717be.1709804021.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+When just including <linux/pgtable.h>:
 
-On Wed, 6 Mar 2024, Michael Schmitz wrote:
+    include/asm-generic/pgtable-nop4d.h:9:18: error: unknown type name ‘pgd_t’
+	9 | typedef struct { pgd_t pgd; } p4d_t;
+	  |                  ^~~~~
 
-> 
-> There does not appear to be any interrupt nesting here. 
-> 
+Make <asm/pgtable.h> self-contained by including <asm/page.h>.
 
-It's not in the backtrace but that doesn't mean much. It would be 
-impossible for a lock checker to place all of it's state on the stack.
-If interrupt nesting messed up its state, you won't know it by looking at 
-the stack after the fact.
+Reported-by: Jani Nikula <jani.nikula@intel.com>
+Closes: https://lore.kernel.org/r/878r2uxwha.fsf@intel.com
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+Jani: Feel free to pick this up as a dependency.
+Else I will queue this in the m68k tree for v6.10.
+
+ arch/m68k/include/asm/pgtable.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/m68k/include/asm/pgtable.h b/arch/m68k/include/asm/pgtable.h
+index 27525c6a12fd0c7f..49fcfd7348600594 100644
+--- a/arch/m68k/include/asm/pgtable.h
++++ b/arch/m68k/include/asm/pgtable.h
+@@ -2,6 +2,8 @@
+ #ifndef __M68K_PGTABLE_H
+ #define __M68K_PGTABLE_H
+ 
++#include <asm/page.h>
++
+ #ifdef __uClinux__
+ #include <asm/pgtable_no.h>
+ #else
+-- 
+2.34.1
+
