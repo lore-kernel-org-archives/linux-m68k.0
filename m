@@ -1,111 +1,103 @@
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh3-smtp.messagingengine.com (fhigh3-smtp.messagingengine.com [103.168.172.154])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E07401F608
-	for <linux-m68k@lists.linux-m68k.org>; Fri,  8 Mar 2024 00:20:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DAF921101
+	for <linux-m68k@lists.linux-m68k.org>; Fri,  8 Mar 2024 00:55:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709857211; cv=none; b=p56terCwV3sQw57W6QwQoml1GTryy6SqR+91vI5RgwjQhcUUlkZOoP9xytfJoO5w4bzb/ETZDkxQIAZwADoHAhXKXSC2y9TM8uNKtCh44imHanXiLAtHls9QWZLWZ0XYWdXoGfAmq4R6ewOV6kkM2F7DFROP6E/Z5/0/LDhqGhs=
+	t=1709859359; cv=none; b=CPtQ+3C5WYJDv1pnOKzvfeDmdtioZVlng1jJjvIsDxNcqzEe9H4iOXzXC5qK+jFyR+mAlyKMU6sz54eU3T9Z0NsXvyv0mrP41PZAyVCAt6Lqb0sKdb6LaO/JH+GXjDHp09QJyqASfCuVp4CPepV428mRWZ+vxnwrCPZmropJgfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709857211; c=relaxed/simple;
-	bh=vjQy2jUxdJqI0+btRXqPt+LftIvTYpAsbEjyqbNH2G0=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=mb0eV9C5IjLK29P2hSCELh9x9NY1Ou1QK/Co+7EV6fRp4fomGgmMrA6ryhsZ6zpkQCbcw/4ZCxyXORusRy5eAO56mntPr+4r8rxAvTC2R4WGgcsCLTiw9dA05Vqe+OKejm2UJ6b4qQPfkSt8fV/Mh//tSxLGfmxvJvV1Y+ZUgUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AFsWr/zd; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1709859359; c=relaxed/simple;
+	bh=+UzHCZaP9oil+covpwyoL0ITnfeoW1VgJAmrHu1vJ14=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=QvAXuMzU3ZPQFQZlfuGPV4JB5PI396+UFIirSi0ZO0CVRfa0vVEdoY3f4kK5DDOfFRUJ17MvbTl+LqlD8750KWtUAbBi6UB2ZN/nfjEs5pW1BaSeyPQ45t0rGuo+382zvjHYniHQf2ydvARnnfMDqQYOeUXrqPA8QB4EpOQeBlQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=OrWbPEkc; arc=none smtp.client-ip=103.168.172.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AFsWr/zd"
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e64647af39so1482634b3a.1
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 07 Mar 2024 16:20:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709857209; x=1710462009; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=svu6XFPYrJIgPaJcJPwhWWGV8FofEACs+lhuWp/kjqU=;
-        b=AFsWr/zdgl40FBRI9/spc0cfOg8umV+QEh/CrJ4sL7qkF7yIBTBumOaJQMWbkGuN3t
-         UQWKKusvGb9KCB9mNX0l3ZxfNR65pKNtINv1JEH8mhn2PfFmS15LyGDO8dsRUQzWpoX5
-         uMmfOTpQAYXMzoTwrmSJ2kI8Oj0ihBbUOSwBOg4PlXRu9VTqWfsJKe2oYAOMWwvyTb+6
-         in6qxcKnVDjPxVozH50lTz7Sa2OpQ3iizOwGS9dUPFRCiUSlj+UbS0GjwgutjePBwXby
-         X+z7coiy2hkeSXs/wiQUfAk4EXnAGIOusWeksmwLUU8/2EeauV0YuPJxRP/6b6CqoPsV
-         f6hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709857209; x=1710462009;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=svu6XFPYrJIgPaJcJPwhWWGV8FofEACs+lhuWp/kjqU=;
-        b=unPPOnAD0daMbUqKedVn647RDS0SBREANVe0EepXpe1Nyr7WYhapYmUgKNt/t0G92x
-         fCeYUHmXw4GwsIU/ad6/TAc9hZddtWfzwkeKPKg0rMmG4U71x0CbG5tLx3RZgwvZ/IvZ
-         WHRPP6sDKfc006AGHOF6DU/DbUd9gYQ+9Kgg0ivf09XcIIG1dldIPajs9WlZ/5B35kon
-         2/8QEwYGlFVvm5Xx2G8NVVKWDfJrWaE/T189Cogn2Yve0lBjukVmFVjEBIy0u2APotGG
-         VCOsybWpjd/xZLOhzVVwg4EB4aWTXdMxiODwDMxnRWcmVhXyHscpa8c8ulVGJbv55G1I
-         zU+A==
-X-Forwarded-Encrypted: i=1; AJvYcCW1zFBuUjFzgPon0AId4dWtDpgLQZItoStosoCmaXrF4rap7S55RHCX+a9m+hoJGexK3UiKbVrtDlI2Yc4TCM2cIXiVs+uyiGs2+7ikkIqA
-X-Gm-Message-State: AOJu0YzvudMDlqAJPbI5Gv67sKyowa6FQCBr5Bt2S/R5cSDm8d3HGZXr
-	gauKg5+zl3mAD6ASWZrZqPRE5f5WYdE/9k9j6ojBGnDQbisoaQSK
-X-Google-Smtp-Source: AGHT+IGmifkw4O5/WhaW0auRrUb1FwJ/QvvNpnhq/p+c2M0oynX6lPpcF1X4ZzToT6kkcW0pR4chnw==
-X-Received: by 2002:a05:6a00:2d09:b0:6e6:2947:b78d with SMTP id fa9-20020a056a002d0900b006e62947b78dmr14584727pfb.12.1709857209090;
-        Thu, 07 Mar 2024 16:20:09 -0800 (PST)
-Received: from ?IPV6:2001:df0:0:200c:adb8:c71:a09c:347f? ([2001:df0:0:200c:adb8:c71:a09c:347f])
-        by smtp.gmail.com with ESMTPSA id j12-20020a056a00234c00b006e662e41293sm1212696pfj.53.2024.03.07.16.20.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Mar 2024 16:20:08 -0800 (PST)
-Message-ID: <56f79fc8-1a62-48af-b2fb-cddace7c828f@gmail.com>
-Date: Fri, 8 Mar 2024 13:20:05 +1300
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="OrWbPEkc"
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id 1C82C11400F5;
+	Thu,  7 Mar 2024 19:55:56 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 07 Mar 2024 19:55:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709859356; x=1709945756; bh=I9Jj1xQv05D8mUePt4PJeB/PnbuP
+	+qmMRaUsI5HHeeo=; b=OrWbPEkcmE67OcOdimYZ3inVk54zcfp2dFkboBjvr5ii
+	GkY7cqFBVR2cGAj6coJ+fatU93yIDKzLmINmQPxAXnXVXZWa7iXNIDgGmH6xp0Tf
+	4Yw5bYul3kCJ8YjZ52gDfP3uZ3fCwgbRyY/O6BGVWiKdbWQkwFIaL+Q/uO3O3iTp
+	bfawxGD4I9GBlmXeW+ApbkCE+Psd+z0mXssqEcd6FND3PFkVvN1uLyS5X16K4xlX
+	OnCRMwggLGpO+Gu4S2tuZjUgxkfiMFB2n5lp7u6U/iXmiNikMrp4bhWrxV/dqOrx
+	490Xo05mvnf9W3jfdRcfA8+/p0l4HgzzhU2kIYcS3g==
+X-ME-Sender: <xms:G2LqZXzw7x7LvqonpSbe9I97_xXMvDCj8B0YLIo5E7N_wUF8a4sqTg>
+    <xme:G2LqZfTofkA7QvI2FueZc84X_sYectBISkyVupOtORtBDqWWOMREdwrSbX-mc83SE
+    abEyKGPkX6bNp9suDs>
+X-ME-Received: <xmr:G2LqZRXApMvl2skUh3EsbluGG1q3UiIYRcuy2wWtto8IBzWc-sbPtaBfEtKVXDtzPKOSQ9NdSkpgdI8f8WjVbEwICXRtCPSXvhg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrieeggddvkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
+    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
+    htvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedvueeh
+    ueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
+    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:G2LqZRgT-EdPr0ORoduGBYh7B9UILNMid6-3ey13vlip-BLDDf92Jw>
+    <xmx:G2LqZZB1KyxLvwK6LII4A3ExWqbVBdnch7jiYwqiXzxS_ZtSKbKo0g>
+    <xmx:G2LqZaIKx5sHa_mgp1sGILSyGp5H0A6u4O5Exia6mIrCoDsJBWOklw>
+    <xmx:HGLqZYNiVcFcdQtbIA5JZMDOWe_YnAFmES96m2QokGWg3VsGWWASVw>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 7 Mar 2024 19:55:52 -0500 (EST)
+Date: Fri, 8 Mar 2024 11:56:55 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Michael Schmitz <schmitzmic@gmail.com>
+cc: Guenter Roeck <linux@roeck-us.net>, 
+    Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+Subject: Re: spinlock recursion when running q800 emulation in qemu
+In-Reply-To: <56f79fc8-1a62-48af-b2fb-cddace7c828f@gmail.com>
+Message-ID: <60029130-022e-8ec7-2dc5-678b077f1d69@linux-m68k.org>
+References: <07811b26-677c-4d05-aeb4-996cd880b789@roeck-us.net> <0ccf5e42-63ec-a63d-9ee9-7043947637c3@gmail.com> <40205038-a7cd-2568-5f8e-2540aca2f84d@linux-m68k.org> <56f79fc8-1a62-48af-b2fb-cddace7c828f@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: spinlock recursion when running q800 emulation in qemu
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: Guenter Roeck <linux@roeck-us.net>,
- Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
-References: <07811b26-677c-4d05-aeb4-996cd880b789@roeck-us.net>
- <0ccf5e42-63ec-a63d-9ee9-7043947637c3@gmail.com>
- <40205038-a7cd-2568-5f8e-2540aca2f84d@linux-m68k.org>
-Content-Language: en-US
-In-Reply-To: <40205038-a7cd-2568-5f8e-2540aca2f84d@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 
-Hi Finn,
+On Fri, 8 Mar 2024, Michael Schmitz wrote:
 
-On 7/03/24 12:52, Finn Thain wrote:
-> On Wed, 6 Mar 2024, Michael Schmitz wrote:
->
->> There does not appear to be any interrupt nesting here.
->>
-> It's not in the backtrace but that doesn't mean much. It would be
-> impossible for a lock checker to place all of it's state on the stack.
-> If interrupt nesting messed up its state, you won't know it by looking at
-> the stack after the fact.
+> > If interrupt nesting messed up its state, you won't know it by looking 
+> > at the stack after the fact.
+> 
+> True, we may see the effect only on the next tick.
+> 
+> But we may not need to invoke lock checker corruption in order to 
+> explain the recursion message.
+> 
 
-True, we may see the effect only on the next tick.
+Right. We can explain it in other ways.
 
-But we may not need to invoke lock checker corruption in order to 
-explain the recursion message.
+> Reentering the VIA1 timer handler would re-run scheduler_tick(). If the 
+> prior run has not yet released the run queue lock, we'd get the 
+> recursion message.
+> 
+> I realized (belatedly) that scheduler_tick() does not run the task 
+> itself but just causes a reschedule if appropriate, so the probability 
+> for this condition is quite low. The question is - does the VIA1 timer 
+> interrupt ever get reentered?
+> 
+> Can you add a printk_once() warning when you see 
+> arch/m68k/mac/via.c:via_timer_handler() reentered, Guenter?
+> 
 
-Reentering the VIA1 timer handler would re-run scheduler_tick(). If the 
-prior run has not yet released the run queue lock, we'd get the 
-recursion message.
+It's not possible for an interrupt handler to be interrupted unless by an 
+hard interrupt at a higher priority level. Maybe QEMU could be so broken 
+(?!) but recall that I saw this BUG on a Powerbook 180 ten years ago.
 
-I realized (belatedly) that scheduler_tick() does not run the task 
-itself but just causes a reschedule if appropriate, so the probability 
-for this condition is quite low. The question is - does the VIA1 timer 
-interrupt ever get reentered?
-
-Can you add a printk_once() warning when you see 
-arch/m68k/mac/via.c:via_timer_handler() reentered, Guenter?
-
-Cheers,
-
-     Michael
-
-
-
+IMHO, Gueunter would do better to instrument the spinlock tests on the 
+assumption that the locking in arch/m68k really is correct.
