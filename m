@@ -1,91 +1,139 @@
-Received: from fout4-smtp.messagingengine.com (fout4-smtp.messagingengine.com [103.168.172.147])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 465A2249ED
-	for <linux-m68k@lists.linux-m68k.org>; Sat,  9 Mar 2024 22:17:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C37310A0A
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Mar 2024 07:06:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710022640; cv=none; b=IfW6FtVOyrCvgAG5xlheoILRwZ/bXK0X8AgNvtAMwCDb6NhvbHaUK4tuUBnyF3xrAwYcpr2ilgYIkUdLAJyHMvTJfA/a/YMwZTm919EJAvUYQPjN5AkQ4DakqD38AFa794QbFx+W2l44+WlBeRupovdouoQO86qFMr+Upmpx7T4=
+	t=1710140775; cv=none; b=aZ/DmOjJpnmsdszCstKFZVfy77+Sk0bcYCmUVB3BYoUfllGYPKfBC4rqK4o6RfZr19guPF2vYfN7jwSkCgNuja/Aes09SgokHR2E9wBhW/BefejSuraujwinVoAWTPYIAM5zYVGDZVqLiy1oWqmP45Xy1B98LaKEsMZ+SQNCJqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710022640; c=relaxed/simple;
-	bh=gv9/LkDBfI5AKxH53ofK94owW2MO5w1Y6X5bkoTV55w=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=NF7Dq/f4MFUZ5d1Wyhu63mRR16LjMbqDmeLkUMc1Q5kqDehCvEhweBkGVbubjewynW3M9zztwiynLvAJz/qNGLnokj4o4TLbVOUesjmfdoKV3ytiAhAHISd1uB7piyATFQZfLZKaa7jjgK5Cdfp9wv6YhoJwkNO0y0HpuIXcxFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=e3SBVtAY; arc=none smtp.client-ip=103.168.172.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1710140775; c=relaxed/simple;
+	bh=CBX6e4G8hMRTg6ZCBD75VIdlJlAQSYefavMx9oYWFxE=;
+	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=cNDQumfoOwgC7F3EMfFT0CwBRrHz7Ai4svEP6iaICC2IOiQ4SWaFgjqK4MfcEZMGJydPZkehr0eqzQ4M4UW3NQjvqCprD2lUejVPFdUQtB9TL/z4/CdqkQyrWuKXyhffY+oq1lV8bdDLxwIAOUCfi3AD8b3mUYU82gzpoo/CSbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hLo9Ge2E; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="e3SBVtAY"
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailfout.nyi.internal (Postfix) with ESMTP id 061AE138008C;
-	Sat,  9 Mar 2024 17:17:16 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Sat, 09 Mar 2024 17:17:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1710022636; x=1710109036; bh=imjwHXmkwFxdP18s4qIlyP1xlJsc
-	6tJsGP+viwUAvp4=; b=e3SBVtAYffXCbIpNfL+cNoXsCi1LSj6zo19FLo+RurFt
-	sZpA/AZlGHObQsgsdDAaQATZjyKNpBibtr+gTV06vBxGfXhdfFb5rISiyt4gXJeX
-	u7Lrc8qLXjEo50GYVdU0p+C8b+AO9HBbCCoRZ0a6CRqEFZo0pZK9LWwXRLtTZKEk
-	L/SnJ7YA8LP07CFJ/lojfYQ42zwU85wEpFcQHFnDBofKkISrAhLktoIcDyFw+Bpg
-	+sd+9XcysWondgg1xMGziPJEc/iENyul6YcyIljMJPeQ/nMzkyL6SWwzS04nq+Mb
-	hDzsbOjnnYVhz6W9EnjwFCuf9IPmzx8Af4OwOIykbQ==
-X-ME-Sender: <xms:69_sZb5m02mdhmeQhPsPp1ioDUsPePCccWhr359a63W0hQ3d5Wlu7g>
-    <xme:69_sZQ6Pb8DUMA-G8E9LAynWETbYIr8GJtFjJJz7wvyn_A83ZyFtnrIRLx602x0tq
-    oSFHe48O52_67hstDg>
-X-ME-Received: <xmr:69_sZSfVTiZ_d3ANqXyKFIT2DflbwUIG2cniOQ-KDfApGdEpcIHlitkwTLG-iK51Ukadnqq9kABE_cXHwiSv1pYIXSRYX830xCM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrieejgdduheehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
-    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
-    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:69_sZcI36bnAB09JJ9apIbQHjHfjBSgGAcv5VAc8GusjSdn2YC6OKA>
-    <xmx:69_sZfLNgI9KPcqLHk9fpCOn3GpgjKuRvY-nP2__HLeIhfh1SosiRg>
-    <xmx:69_sZVy43QqpEejMM8jaD27IQTGlOn_dcJBULejRzz2L9rvZqiRf1Q>
-    <xmx:7N_sZX1NCsuClm7STdTyeFhCSxE2hDcoPhSarUTqTwsU2uoURzhr-A>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 9 Mar 2024 17:17:12 -0500 (EST)
-Date: Sun, 10 Mar 2024 09:18:14 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Michael Schmitz <schmitzmic@gmail.com>
-cc: Guenter Roeck <linux@roeck-us.net>, 
-    Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hLo9Ge2E"
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e622b46f45so1944259b3a.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Mar 2024 00:06:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710140772; x=1710745572; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2utyRXg2bKlBgtgBwkAr2+mciWzSuxzTJPH1x3vlIVY=;
+        b=hLo9Ge2E3/KkFdHwl5Wi7RlcDIk4RydGxzjh2i1aQ1srMzXbQSExZeiZM8wAiDUeOv
+         lhJoowUeMt9FTVYcjNkWdSRvZIvTcyaQddB20QQ/CeFZptpR6xE2G6eh8kOj0OAyNpG7
+         K2TMkd1ooShDYa2+4lS3aN0oms0VIr34XR/uFK0v5JvSiy2dPoAPB+h/BbN5wBVgsrjL
+         D3uEsA9Kugy2V9V5dp+VGq200RHEhD4BOytmS9aWtbwwKTf18VY3DDqhC1SnfxgzzzF9
+         sTV8ccQPjpsJQ5tDrYWBKSBRAA6P47+vab2BoyLiUqShnDpENmEDgueuD+dhzghTOUz/
+         zzbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710140772; x=1710745572;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=2utyRXg2bKlBgtgBwkAr2+mciWzSuxzTJPH1x3vlIVY=;
+        b=iXPJKRbBnd7KLXIeEAR7iGv33OFgjShXBAmQikg4h8C0FxfmKA98hTvnOxJKcOtDTe
+         Kleqbd3fcC9kBULmHXNbUWK9WLiyznnsuQ2etHsHP8i4Rwspucozz9OGGvgyWpdT+cXS
+         jIXnk8Nf2LxRsD/0k1gAwbYVkRnHdNcXC0Ygre14GZ2AMzoO2ODlClna6zGvrrTIfF33
+         vMom2KFL5EOcGC05W+CxcyfkB/skPaVy5JolQ2lM9FUuW4D9j8QewzavUCt23abSNkp6
+         C2Tm2+VWyRHiXXAHL4sagfv1hsQEjsBM1V0hO+CV+k/O6hpdurDl0FDoVAbWIJXsyDjj
+         tSbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUIDUacB91FX14ZSFf9/7kBsvRJKUBnow3DOJF0JQRH3cfy1kyGyDLuSwf8xs7Ouf4b6c/v13uVEbU2D59YB6o9l4cVP2qBHxeWHqTE0wOv
+X-Gm-Message-State: AOJu0YxvaZFsoKx9/AJQIu2ViAFnWx0T9ylZ7LYp84gNT0lA3nxl6q3+
+	ORO1xEVtn4478J6tY6VWD2xSbLjtCJwgqmY83kfNcL4e923eCJYsp825O8Ab
+X-Google-Smtp-Source: AGHT+IF7/yhFxQhisHx+xWAJDy5GTYsK6PqpALK12QmvLQFdD3svexAAcNwXEcjsVpmvyVIh/i22UA==
+X-Received: by 2002:a05:6a20:e118:b0:1a1:4da9:8d76 with SMTP id kr24-20020a056a20e11800b001a14da98d76mr3572324pzb.13.1710140772471;
+        Mon, 11 Mar 2024 00:06:12 -0700 (PDT)
+Received: from [10.1.1.24] (222-152-175-63-fibre.sparkbb.co.nz. [222.152.175.63])
+        by smtp.gmail.com with ESMTPSA id c8-20020a056a00008800b006e6541de250sm3610188pfj.119.2024.03.11.00.06.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 11 Mar 2024 00:06:11 -0700 (PDT)
 Subject: Re: spinlock recursion when running q800 emulation in qemu
-In-Reply-To: <2465c81d-d2dd-320e-cb4c-1c23fd485aed@gmail.com>
-Message-ID: <9e5ce055-8af4-4cca-3505-a3186b86926d@linux-m68k.org>
-References: <07811b26-677c-4d05-aeb4-996cd880b789@roeck-us.net> <0ccf5e42-63ec-a63d-9ee9-7043947637c3@gmail.com> <40205038-a7cd-2568-5f8e-2540aca2f84d@linux-m68k.org> <56f79fc8-1a62-48af-b2fb-cddace7c828f@gmail.com> <60029130-022e-8ec7-2dc5-678b077f1d69@linux-m68k.org>
- <6eeccba7-6877-dd3c-2a67-94ea448bead6@gmail.com> <cb98b504-0669-eb91-4da0-8ee7bb7663ba@linux-m68k.org> <5076e848-9bd3-3fea-0aca-5f62a8739a73@linux-m68k.org> <bd6eb981-0dfe-a9c9-7777-0cfa0703efc0@gmail.com> <fbc5d581-dcad-8627-3a19-6e2d10614870@linux-m68k.org>
+To: Finn Thain <fthain@linux-m68k.org>
+References: <07811b26-677c-4d05-aeb4-996cd880b789@roeck-us.net>
+ <0ccf5e42-63ec-a63d-9ee9-7043947637c3@gmail.com>
+ <40205038-a7cd-2568-5f8e-2540aca2f84d@linux-m68k.org>
+ <56f79fc8-1a62-48af-b2fb-cddace7c828f@gmail.com>
+ <60029130-022e-8ec7-2dc5-678b077f1d69@linux-m68k.org>
+ <6eeccba7-6877-dd3c-2a67-94ea448bead6@gmail.com>
+ <cb98b504-0669-eb91-4da0-8ee7bb7663ba@linux-m68k.org>
+ <5076e848-9bd3-3fea-0aca-5f62a8739a73@linux-m68k.org>
+ <bd6eb981-0dfe-a9c9-7777-0cfa0703efc0@gmail.com>
+ <fbc5d581-dcad-8627-3a19-6e2d10614870@linux-m68k.org>
  <2465c81d-d2dd-320e-cb4c-1c23fd485aed@gmail.com>
+ <9e5ce055-8af4-4cca-3505-a3186b86926d@linux-m68k.org>
+Cc: Guenter Roeck <linux@roeck-us.net>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+From: Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <ad9a7be6-e2f4-f17b-04fe-393a409e523d@gmail.com>
+Date: Mon, 11 Mar 2024 20:06:02 +1300
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <9e5ce055-8af4-4cca-3505-a3186b86926d@linux-m68k.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sun, 10 Mar 2024, Michael Schmitz wrote:
+Hi Finn,
 
-> But I've now got this in ARAnyM:
-> 
-> BUG: spinlock recursion on CPU#0, pool_workqueue_/3
-> ...
+Am 10.03.2024 um 11:18 schrieb Finn Thain:
+> On Sun, 10 Mar 2024, Michael Schmitz wrote:
+>
+>> But I've now got this in ARAnyM:
+>>
+>> BUG: spinlock recursion on CPU#0, pool_workqueue_/3
+>> ...
+>
+> OK. I am unable to reproduce the BUG, unfortunately.
 
-OK. I am unable to reproduce the BUG, unfortunately.
+Looping over 178 boots (using init=/sbin/reboot), I see eight of the 
+spinlock recursion messages in ARAnyM on my old PowerBook G4:
 
-> 
-> mfp_timer_c_hander() has a local_irq_save() / local_irq_restore() pair 
-> around the legacy_timer_tick() invocation so this spinlock recursion 
-> does appear to work even without reentering the scheduling timer routine 
-> 
+BUG: spinlock recursion on CPU#0, swapper/1
+BUG: spinlock recursion on CPU#0, swapper/1
+BUG: spinlock recursion on CPU#0, pool_workqueue_/3
+BUG: spinlock recursion on CPU#0, swapper/2
+BUG: spinlock recursion on CPU#0, pool_workqueue_/3
+BUG: spinlock recursion on CPU#0, pool_workqueue_/3
+BUG: spinlock recursion on CPU#0, swapper/2
+BUG: spinlock recursion on CPU#0, pool_workqueue_/3
 
-IIUC it is not spinlock usage that's at issue. IIUC the problem is either 
-the implementation of the locking primitives or the tests to verify their 
-properties.
+Trying the same on a much faster Intel system, no messages are seen. 
+I'll try locking the PowerBook on half CPU clock rate next.
+
+>> mfp_timer_c_hander() has a local_irq_save() / local_irq_restore() pair
+>> around the legacy_timer_tick() invocation so this spinlock recursion
+>> does appear to work even without reentering the scheduling timer routine
+>>
+>
+> IIUC it is not spinlock usage that's at issue. IIUC the problem is either
+> the implementation of the locking primitives or the tests to verify their
+> properties.
+
+The tests on unlocking certainly aren't atomic, but those are not the 
+ones we see in the messages. The test on locking use READ_ONCE() so 
+ought to be safe.
+
+The locking primitives are not atomic at all, by design ('No atomicity 
+anywhere, we are on UP'. While not debugging, spinlocks are NOPs on UP.)
+
+I wonder whether CONFIG_DEBUG_SPINLOCK was ever meant to work at all on UP?
+
+Cheers,
+
+	Michael
+
+
+
+
+
+
