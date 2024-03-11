@@ -1,108 +1,101 @@
-Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.67.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [195.130.137.89])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A477B22081
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Mar 2024 10:33:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.132.67.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0BEF3C47D
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 11 Mar 2024 12:58:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.89
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710153241; cv=none; b=I9GK3JuiYV60C8Jczbq1t/qzeF4afShXSR+e0r2k2JIXH+V1cB1Ny9e3cjIZoNoRh6F5o7GGYoG/DGc+AEXlUON2tW7nS5O+EJSFPUDhBS9kzo00BQDpuYCuRvQDr2ZaiRiHJmdyQGaT7SAcpP+HE5vTgUzuayCeNNlDB75uTBE=
+	t=1710161936; cv=none; b=mL2m31CGoLAeYajS+xAukQA+RPF/TdyHyQ2JmISPzgSl3XS2KakJl7dhpMGzBiDqMsycnQdb9GaUwSnMogd0OPNqkwbQZGLHXuLnS6EYm+v2cJfPlmNMqNIVI/G37geBtTnrmyZjJxeM/237t/bXM6aJ0H5+p+y0IWek+YPRDlY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710153241; c=relaxed/simple;
-	bh=oFMEHOkWMFDCGZTROsbokvN1VVNCxaDVvm72nFgHgf8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R4+s49GdugxBkHLRcyFxGM/VccPjZhWWymeUc+JmrtqKzk1jJX19ypqosjRpunMS+BiQFIWEU86oYCk+mMI3966VzC74/DLODLbKOq3sGl+6/hmsnoqU6HYfACcfO4573gVZfBf+i6WIAVQKR+Ds4kCsV+/wLQ5AroVX0vVN/UQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=114.132.67.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp66t1710153206tvsrkqhi
-X-QQ-Originating-IP: jDdszq3cBpJ6hHvCms7l9LVCaUzQEZWphdXYf+ovwKs=
-Received: from localhost ( [112.0.147.175])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Mon, 11 Mar 2024 18:33:25 +0800 (CST)
-X-QQ-SSF: 01400000000000505000000A0000000
-X-QQ-FEAT: 3uhoZqdeMHP0xN020+GHgFDnKhe/jnLul9KSBfqte4048DuSaJQfNTK3/MPBu
-	KXyw3fhchtcLl3oOSfkTHSiX7ZOyHQFhVuzHDee9PxIgOjZfwvizbr9fk1xZlSh4HgfrIte
-	no9dEAvoKMuCer8BmizSnYeISnZEggVNoU4MjnqbKIVR4DwDLueJoChFZqDUiwU7MQhQ6lW
-	6B35Ge+hXXRZK/WEq10jrJhTejnzZ2xJYuCMrYbquwQeLTtcN5772yKMTnjzt3pFCkMd/kQ
-	IlylnuBG+XHOmIhXitmBGNystnHx3eOpH11nyABSgRiUATSuQzoVDFYSEIyu7TXMdVKiWh8
-	HNG2Ijz9DTOLimQVI5V289dDvnQOFJy4hEvGSyvAu4+/X+2uMnUrQFO2hs9iQ==
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 4919900436153969483
-Date: Mon, 11 Mar 2024 18:33:25 +0800
-From: Dawei Li <dawei.li@shingroup.cn>
-To: geert@linux-m68k.org
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] m68k: Calculate THREAD_SIZE from THREAD_SIZE_ORDER
-Message-ID: <1971996240D01975+Ze7d9TQIq9AFG2Wr@centos8>
-References: <20240304085455.125063-1-dawei.li@shingroup.cn>
+	s=arc-20240116; t=1710161936; c=relaxed/simple;
+	bh=ii49fGC3mhpaFd3v6s+iIuIloF621GLYoYUtHbdDJwY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Dlv8hz3dmeDfanjwZhOmQ0YEQO4so9jxCd9g7Kq79ZFhMiiHa0XljqDIEBhWZR1FwaAtg7nA8UIocI3WVur6Eq0vBoyzkoc5povspwdSzlNKj5lc44KJ8QT9Z3Ogy40vnYnGbuFmaOXaB1GzeCJGUTDG1I4O/OjScP8PucE938U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.89
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:76d0:2bff:fec8:549])
+	by laurent.telenet-ops.be with bizsmtp
+	id xQyl2B00W0SSLxL01Qylb1; Mon, 11 Mar 2024 13:58:46 +0100
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1rjfEc-003Kri-EN;
+	Mon, 11 Mar 2024 13:58:45 +0100
+Received: from geert by rox.of.borg with local (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1rjfEr-005R5v-NB;
+	Mon, 11 Mar 2024 13:58:45 +0100
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for v6.9
+Date: Mon, 11 Mar 2024 13:58:43 +0100
+Message-Id: <20240311125843.1295782-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240304085455.125063-1-dawei.li@shingroup.cn>
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
+Content-Transfer-Encoding: 8bit
 
-Hi Geert,
+	Hi Linus,
 
-On Mon, Mar 04, 2024 at 04:54:55PM +0800, Dawei Li wrote:
-> Current THREAD_SIZE_OERDER implementatin is not generic for common case.
-> 
-> Improve it by:
-> - Define THREAD_SIZE_ORDER by specific platform configs.
-> - Calculate THREAD_SIZE by THREAD_SIZE_ORDER.
-> 
-> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
-> ---
-> 
-> V1 -> V2:
-> - Remove ilog2().
-> - Calculate THREAD_SIZE by THREAD_SIZE_ORDER.
-> 
-> V1:
-> https://lore.kernel.org/lkml/20240228085824.74639-1-dawei.li@shingroup.cn/
-> 
->  arch/m68k/include/asm/thread_info.h | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/m68k/include/asm/thread_info.h b/arch/m68k/include/asm/thread_info.h
-> index 31be2ad999ca..3e31adbddc75 100644
-> --- a/arch/m68k/include/asm/thread_info.h
-> +++ b/arch/m68k/include/asm/thread_info.h
-> @@ -12,14 +12,15 @@
->   */
->  #if PAGE_SHIFT < 13
->  #ifdef CONFIG_4KSTACKS
-> -#define THREAD_SIZE	4096
-> +#define THREAD_SIZE_ORDER	0
->  #else
-> -#define THREAD_SIZE	8192
-> +#define THREAD_SIZE_ORDER	1
->  #endif
->  #else
-> -#define THREAD_SIZE	PAGE_SIZE
-> +#define THREAD_SIZE_ORDER	0
->  #endif
-> -#define THREAD_SIZE_ORDER	((THREAD_SIZE / PAGE_SIZE) - 1)
-> +
-> +#define THREAD_SIZE	(PAGE_SIZE << THREAD_SIZE_ORDER)
->  
->  #ifndef __ASSEMBLY__
->  
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
 
-Sorry to bother, but any comments on this version?
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
 
-I know it's awkward cuz it's in middle of merge window, sorry for that.
+are available in the Git repository at:
 
-Thanks,
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.9-tag1
 
-    Dawei
+for you to fetch changes up to e8a7824856def1c8608401b0d7d05566d6e81c95:
 
-> -- 
-> 2.27.0
-> 
+  m68k: defconfig: Update defconfigs for v6.8-rc1 (2024-02-19 11:11:01 +0100)
+
+----------------------------------------------------------------
+m68k updates for v6.9
+
+  - Make the Zorro bus type constant,
+  - Defconfig updates.
+
+----------------------------------------------------------------
+Geert Uytterhoeven (1):
+      m68k: defconfig: Update defconfigs for v6.8-rc1
+
+Ricardo B. Marliere (1):
+      zorro: Make zorro_bus_type const
+
+ arch/m68k/configs/amiga_defconfig    | 3 ---
+ arch/m68k/configs/apollo_defconfig   | 3 ---
+ arch/m68k/configs/atari_defconfig    | 3 ---
+ arch/m68k/configs/bvme6000_defconfig | 3 ---
+ arch/m68k/configs/hp300_defconfig    | 3 ---
+ arch/m68k/configs/mac_defconfig      | 3 ---
+ arch/m68k/configs/multi_defconfig    | 3 ---
+ arch/m68k/configs/mvme147_defconfig  | 3 ---
+ arch/m68k/configs/mvme16x_defconfig  | 3 ---
+ arch/m68k/configs/q40_defconfig      | 3 ---
+ arch/m68k/configs/sun3_defconfig     | 3 ---
+ arch/m68k/configs/sun3x_defconfig    | 3 ---
+ drivers/zorro/zorro-driver.c         | 2 +-
+ drivers/zorro/zorro.h                | 2 +-
+ 14 files changed, 2 insertions(+), 38 deletions(-)
+
+Thanks for pulling!
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
