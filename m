@@ -1,59 +1,59 @@
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 345F2139580
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Mar 2024 20:15:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 737A8623
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Mar 2024 00:16:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710274505; cv=none; b=WZIzJYErYzYQmhEh1tv5fDYiDXhaDHkM6iKxZvqCKZNmWbtQPe1BgQjPGUJZ+SVk75ij6hWqzbMJwTs1ot0cF8QKI+EWybYHgH3fJDIBhYRT4bsB9MHBmD68rEyPvRgR6wB7PSLC9kHN8606ls1YhKRmsWv2t9f4R6fubikI0Pc=
+	t=1710288994; cv=none; b=dmZzUesSAKmcfm1Y2KlL5eqQaj4GmU0bn+RkXRrIjm/w5OI4dqK01EoloLh0Q/FoahqgxcKmeYTV0DicWCQjWdfR2ijeVKi3E12Ts6NbavHmgY8rlP65LevL6g4U+B52hAIGJyY2ZYgMcUXeInw6jvOwUzLkhUUO48Yjmnbg/gY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710274505; c=relaxed/simple;
-	bh=N1mUp6Dd3gOa8EoAZNDUjllJW6Vt1h62T+mwL3fgquw=;
+	s=arc-20240116; t=1710288994; c=relaxed/simple;
+	bh=WXDumr1atQgSPuiOsWIFcNh2IbEgw0/YCVo2LCTB8Lw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fwlKtQvBZybeoIteJEYunHizQJfpM/Lp7VG+KtoMml2qlq+D62Naus9oSLnEvwEPRqzvaZ6EmJINOIBUUm3TNJsAiQTHCH/eb9BCRn2NHtX/mz2lPReXsIiqKb7j9DaEZjOPiAzgBDYDl/2VaRB9cUPEhbPA1x+CiPLBvfww4gI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xe3p4PN0; arc=none smtp.client-ip=209.85.214.177
+	 In-Reply-To:Content-Type; b=UP9p876wYClWm8FY3XkyYIqfpg4PSi0215/slb22xjO/M3vuPs6vzlNHj6g4c4ublN1DJvolqXEctiSW1KzRJuGJ5EG8Td2J3uJgHjJt8ydTbew5c2mFwKqTUemPZ5S0en9ScyoQqiI06FCnl8DphMKrouCHCsKXi6bGbR3P9y8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iYfCzfhS; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xe3p4PN0"
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dd6412da28so2409035ad.3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Mar 2024 13:15:03 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iYfCzfhS"
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1ddc7e45c47so3461435ad.1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Mar 2024 17:16:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710274503; x=1710879303; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20230601; t=1710288993; x=1710893793; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=/THc8p3tb2wtXAccS/2XQHGYSyjdKSJGkZ28F4c3CWQ=;
-        b=Xe3p4PN0TxZ9n0zlldQqqTOKKYYtmkoId5G7k17qkaH83Gz/biYZIu2z5344U+BL8n
-         gr/pS+dGq/XmqN8bhcR1Ruk1Uff7MPci4RswZEioqADqxfPSScykuEr8fF/drTjhBWx9
-         5aYAvoOmWJE37IgTe9xyufX3+wabLq344pM/DXrmF57dLFZYP6B4b21TYEUFEGYGk83A
-         A7Rz6Q8fAE35syVOPcPo0hsNAXRLn3EvA0pzfqeepZnwW8q9QvKzIEOwHjTlEeUjuO4c
-         qm8wiX516BN9Zbr7RDQMFAHGd3+V1C2EpQA53TJfNJHstuj2v7mBRTVl31Hx01iXMRts
-         eKZw==
+        bh=WOKBneqSWrfwIWiuvn+g4DZxlfF4PRCDZEgO/ExYUsY=;
+        b=iYfCzfhSX6aOTgm9dcNxvatsi1Xa1B+sTdrUYno1pqPE0Shg/CVy0rEJ64Ioy4PUi6
+         dqScfbA0gO1h/qqbhO/KL/mk6ZH6IaeQ2Uwj9Ekv8GWFbEsPR0WSx9XOUrJpIxG57kCS
+         VegDYk07WONFbZfa6SEX0updikdW6l3NQj5+ZS0edPi+QV3EicrOYIefK9gODurA7Y4d
+         5Z3XXKAa+1iukoZ8L29i1+kkc8qJmxjObsxJ5crJOXz4sIgeF8bb1E9/GCYjp+nXhfeD
+         AkmF1OHzxO3C0SxciP1KY8hjlQSMrsft56P1ed7thmNk19U9CZKkZ5SlAzn112CeNspr
+         Dphg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710274503; x=1710879303;
+        d=1e100.net; s=20230601; t=1710288993; x=1710893793;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/THc8p3tb2wtXAccS/2XQHGYSyjdKSJGkZ28F4c3CWQ=;
-        b=DwrwANsxWYmBb/lzWLb/C52LFkBw1IcXkRBpc74pMuKpcXW/MHs/DfOjWRPcKGTKSl
-         7YEZWR1WwLcgwMnn30uuSfA8KeMSEKS600XDuY3MF11fhvPxjsNKQwLUi06qePwM9Hem
-         lotXlDC1t3TtaMEvnMrRUhLgDBeaUMNMDN/tGff5sREw8d53rzl6unHFnYHEXGr6rO3E
-         wQEeUDJdeCMLzjcEo/JCtiQ25XzhBOPAWL2C71mKgXFqdaWXiYotM7tG1cWe0WMYbQwC
-         WKhb+SlFZI7wzWyQZJNjZML0YGRgK1F6ExKWNUe/+/O/l+duikxCq+ELi5IJYc+KYikb
-         Hvuw==
-X-Forwarded-Encrypted: i=1; AJvYcCXcQiwZvPAiCEV84ETNoSSvhwotTQac/BuFfQojw9zCDNJ9q34oepR1bAFUn+E49nhHBqgCcEQ0h5XZx1wFOMmuIdNij9raL/G1zK5A2FcR
-X-Gm-Message-State: AOJu0Yxpn6Je3QKP9N8AqWGOwPHpYIq/dK5gAVv7HCtqzUmtRLsKUb3Z
-	qT93oM0DOIpY46nU22iviX4wY5c384+Z8r/MUnMzCUdybeh2gwSW
-X-Google-Smtp-Source: AGHT+IEYI0TXlW7Y/UP9pqMU5cQ27g2akDNoFZUzGOJ3NbMhd1DZ5aK6q+XzO2tba9dXBgIJ1DBnzw==
-X-Received: by 2002:a17:902:c254:b0:1db:f811:66f7 with SMTP id 20-20020a170902c25400b001dbf81166f7mr3383332plg.60.1710274503378;
-        Tue, 12 Mar 2024 13:15:03 -0700 (PDT)
+        bh=WOKBneqSWrfwIWiuvn+g4DZxlfF4PRCDZEgO/ExYUsY=;
+        b=Bv2Tqv/vYLS+jA7Idk+jcAqxKQZ3pAhA6XCCXaZYDH+vLqcZS8IAZRUv0nMY2kXu/x
+         FylyNazO0JGpT7Hwyarzz6cuPRpGy1QGHOzO2BY70ZYKiQ0pW/zz8HEe8/jzY4OPbuKZ
+         svTVE2oB2qCkCABX85WjLygQD9Q9+iYc+7EUDoGCMATxhFx2B1UGzb7ZtOztm3cC9SON
+         lvXA+sM7J7sesnwIOaBbr3QYolw+2CmX8TvgAaqqsavKSNYhnMjDWrvsjYY3hofFDOEM
+         Dgig8ibAd+Pz3l5bu5dzGhb356/WWdFxn5jasqIInrJMqDjlm9+JMs22sT0CtCwE3BFN
+         GuIw==
+X-Forwarded-Encrypted: i=1; AJvYcCVEN7LRoslLEHajooF4AEfnc910eeAnUs+nqo0nam3lv2X+EZ7E6M9MyIMdWSToYC1B/fqUIFX+nhUUQeYSqJV3+JrQJj0xyI80EcpNmklV
+X-Gm-Message-State: AOJu0YyUkCq2Ng3/vZzgFT/fkYCxl/0PJZpIkzZGlvKns4dc79YQ1KYd
+	nr3Gnovii86xaBG5ahyMisxO5MUpzv+tUSs9T+KGW7aPpcP4Ux0u
+X-Google-Smtp-Source: AGHT+IFDG4uYBDao1zALIpolZnvQ33hrFtC4Ztzz6l10x+uAcB7Jz5n8oU+oV+AhfvxfxTD98RphJA==
+X-Received: by 2002:a17:903:2452:b0:1dc:b531:82d with SMTP id l18-20020a170903245200b001dcb531082dmr1938057pls.5.1710288992553;
+        Tue, 12 Mar 2024 17:16:32 -0700 (PDT)
 Received: from ?IPV6:2001:df0:0:200c:cce2:5e6b:f484:1b3f? ([2001:df0:0:200c:cce2:5e6b:f484:1b3f])
-        by smtp.gmail.com with ESMTPSA id q5-20020a170902dac500b001dcc158df20sm5409678plx.97.2024.03.12.13.15.00
+        by smtp.gmail.com with ESMTPSA id r12-20020a170902c60c00b001dcf7c2939csm7343951plr.105.2024.03.12.17.16.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Mar 2024 13:15:02 -0700 (PDT)
-Message-ID: <a6f12fac-7651-455a-b4b5-33a8d5f15db4@gmail.com>
-Date: Wed, 13 Mar 2024 09:14:59 +1300
+        Tue, 12 Mar 2024 17:16:32 -0700 (PDT)
+Message-ID: <0c7b96d2-1cf1-4fc1-876e-8e3bc859a1c5@gmail.com>
+Date: Wed, 13 Mar 2024 13:16:28 +1300
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -110,10 +110,33 @@ On 12/03/24 20:59, Geert Uytterhoeven wrote:
 >
 > [1] https://lore.kernel.org/all/CAMuHMdUQ72KOPw5vxNfhjoTR-SsaELeKneBmyQPYEWa_o5OZZA@mail.gmail.com
 
-Thanks for reminding me - I had forgotten that I had seen that bug report.
+NB: the Kconfig hunk no longer applies, it now should look like this:
 
-I'll give that a spin on ARAnyM - doubt it will work on my Falcon due to 
-the extra kernel size.
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 4b3e93cac723..0c4b5180df1d 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -10,7 +10,6 @@ config M68K
+         select ARCH_HAS_SYNC_DMA_FOR_DEVICE if M68K_NONCOHERENT_DMA
+         select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
+         select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
+-       select ARCH_NO_PREEMPT if !COLDFIRE
+         select ARCH_USE_MEMTEST if MMU_MOTOROLA
+         select ARCH_WANT_IPC_PARSE_VERSION
+         select BINFMT_FLAT_ARGVP_ENVP_ON_STACK
+
+(HAS_DMA -> M68K_NONCOHERENT_DMA)
+
+Runs fine on ARAnyM with a bit of VM stress testing using 
+PREEMPT_VOLUNTARY. After a bit of looping (init=/sbin/reboot), fails 
+spectacularly with not finding any root filesystem to mount when using 
+full preempt.
+
+Trying to boot a full system, I see the 'table already freed' panic on 
+the first go.
+
+Running a stack-ng stack-fill stressor triggered the panic, too. I'll 
+see how reliable that is.
 
 Cheers,
 
