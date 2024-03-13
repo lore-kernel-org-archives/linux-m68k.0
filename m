@@ -1,157 +1,159 @@
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh6-smtp.messagingengine.com (fhigh6-smtp.messagingengine.com [103.168.172.157])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 737A8623
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Mar 2024 00:16:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92F3EC122
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Mar 2024 02:55:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710288994; cv=none; b=dmZzUesSAKmcfm1Y2KlL5eqQaj4GmU0bn+RkXRrIjm/w5OI4dqK01EoloLh0Q/FoahqgxcKmeYTV0DicWCQjWdfR2ijeVKi3E12Ts6NbavHmgY8rlP65LevL6g4U+B52hAIGJyY2ZYgMcUXeInw6jvOwUzLkhUUO48Yjmnbg/gY=
+	t=1710298530; cv=none; b=CwYVwmnR/33UMnjv+rXBrqX8EflNJmih/+lz/Jh0dqmN4DPYJqVvs5vVRjBN3wQEPXlI13O9y/QaobJgYssQd1nzAmzyJj75MnVT7HBEd2D/2tJatn7oD0yZTrACRNPREjS8rEvn+snPlOCQkdm4RMOv38bbWuNpSg6PYDPMpTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710288994; c=relaxed/simple;
-	bh=WXDumr1atQgSPuiOsWIFcNh2IbEgw0/YCVo2LCTB8Lw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UP9p876wYClWm8FY3XkyYIqfpg4PSi0215/slb22xjO/M3vuPs6vzlNHj6g4c4ublN1DJvolqXEctiSW1KzRJuGJ5EG8Td2J3uJgHjJt8ydTbew5c2mFwKqTUemPZ5S0en9ScyoQqiI06FCnl8DphMKrouCHCsKXi6bGbR3P9y8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iYfCzfhS; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1710298530; c=relaxed/simple;
+	bh=kPI06sB6xWjY4Nh46oo5Dut+IQk6CE9LUEOxQjhntok=;
+	h=To:Cc:Message-Id:From:Subject:Date; b=ecRfivo/k9gaM+jYyvoa6KdA537S8+UGGrbR3DQ/6dvcRtuDyegC6o4Z11IP2WDunIrOODsW1kxeFncVmLq51ao3+kkc6mtJ1USA3CZ8CgmX1KYkPftpanVxOz7nNsHJadv3iOB0xJqs3BOQ20w6KEw8LaLVuSsqQCGohs893Aw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=VTZP6Cg5; arc=none smtp.client-ip=103.168.172.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iYfCzfhS"
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1ddc7e45c47so3461435ad.1
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Mar 2024 17:16:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710288993; x=1710893793; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WOKBneqSWrfwIWiuvn+g4DZxlfF4PRCDZEgO/ExYUsY=;
-        b=iYfCzfhSX6aOTgm9dcNxvatsi1Xa1B+sTdrUYno1pqPE0Shg/CVy0rEJ64Ioy4PUi6
-         dqScfbA0gO1h/qqbhO/KL/mk6ZH6IaeQ2Uwj9Ekv8GWFbEsPR0WSx9XOUrJpIxG57kCS
-         VegDYk07WONFbZfa6SEX0updikdW6l3NQj5+ZS0edPi+QV3EicrOYIefK9gODurA7Y4d
-         5Z3XXKAa+1iukoZ8L29i1+kkc8qJmxjObsxJ5crJOXz4sIgeF8bb1E9/GCYjp+nXhfeD
-         AkmF1OHzxO3C0SxciP1KY8hjlQSMrsft56P1ed7thmNk19U9CZKkZ5SlAzn112CeNspr
-         Dphg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710288993; x=1710893793;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WOKBneqSWrfwIWiuvn+g4DZxlfF4PRCDZEgO/ExYUsY=;
-        b=Bv2Tqv/vYLS+jA7Idk+jcAqxKQZ3pAhA6XCCXaZYDH+vLqcZS8IAZRUv0nMY2kXu/x
-         FylyNazO0JGpT7Hwyarzz6cuPRpGy1QGHOzO2BY70ZYKiQ0pW/zz8HEe8/jzY4OPbuKZ
-         svTVE2oB2qCkCABX85WjLygQD9Q9+iYc+7EUDoGCMATxhFx2B1UGzb7ZtOztm3cC9SON
-         lvXA+sM7J7sesnwIOaBbr3QYolw+2CmX8TvgAaqqsavKSNYhnMjDWrvsjYY3hofFDOEM
-         Dgig8ibAd+Pz3l5bu5dzGhb356/WWdFxn5jasqIInrJMqDjlm9+JMs22sT0CtCwE3BFN
-         GuIw==
-X-Forwarded-Encrypted: i=1; AJvYcCVEN7LRoslLEHajooF4AEfnc910eeAnUs+nqo0nam3lv2X+EZ7E6M9MyIMdWSToYC1B/fqUIFX+nhUUQeYSqJV3+JrQJj0xyI80EcpNmklV
-X-Gm-Message-State: AOJu0YyUkCq2Ng3/vZzgFT/fkYCxl/0PJZpIkzZGlvKns4dc79YQ1KYd
-	nr3Gnovii86xaBG5ahyMisxO5MUpzv+tUSs9T+KGW7aPpcP4Ux0u
-X-Google-Smtp-Source: AGHT+IFDG4uYBDao1zALIpolZnvQ33hrFtC4Ztzz6l10x+uAcB7Jz5n8oU+oV+AhfvxfxTD98RphJA==
-X-Received: by 2002:a17:903:2452:b0:1dc:b531:82d with SMTP id l18-20020a170903245200b001dcb531082dmr1938057pls.5.1710288992553;
-        Tue, 12 Mar 2024 17:16:32 -0700 (PDT)
-Received: from ?IPV6:2001:df0:0:200c:cce2:5e6b:f484:1b3f? ([2001:df0:0:200c:cce2:5e6b:f484:1b3f])
-        by smtp.gmail.com with ESMTPSA id r12-20020a170902c60c00b001dcf7c2939csm7343951plr.105.2024.03.12.17.16.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Mar 2024 17:16:32 -0700 (PDT)
-Message-ID: <0c7b96d2-1cf1-4fc1-876e-8e3bc859a1c5@gmail.com>
-Date: Wed, 13 Mar 2024 13:16:28 +1300
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="VTZP6Cg5"
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id 8E2E9114010C;
+	Tue, 12 Mar 2024 22:55:25 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Tue, 12 Mar 2024 22:55:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm1; t=1710298525; x=1710384925; bh=Wd0ecGwUYOXoc
+	0YecPtDjx0iAVO+pH45Y6w0F5eyEtA=; b=VTZP6Cg5A5Fv6v6Ad/FOdNQICO3CO
+	bMuMGo11Sfg8wrT9lb57XKaqeb/RwMGzP5RXOUezS3IaSS/tBrIK7l/E7Hfe6rxF
+	FKa9A8N/7faJUKcJz4XA/G1GogVkCLzO7e7sE/UfopmyA1ZbKNT30Kw4RXl6EZnw
+	czNggLpwZ2ZRNoNLwQYnEacqbxsqIQczhfwdcFrrKeWAz5ToIxKj7uQ628hkBn2k
+	O5t7etwfkVtCJi4mezEE6GMb4i17dan8kVOmcmlwjMHb5YyGjoVnsj2deJr8bvru
+	DRFkoOHFNO0ac9pj2OIWhMYkRUHtp0eUJ4KX+EkJ8ygN2+BaZFXT9YcSQ==
+X-ME-Sender: <xms:nBXxZRKMKlkSiV-liTa958xS0K_kf6Sv0vkDUwZBF637MCndDBE8TQ>
+    <xme:nBXxZdLrgzV7TKccaNGfXgGoBextE7k_DFFJ2C6rYzVHPiX1Q1NvhNOksf-8tvLtT
+    EirKA0UPsoJoKpZVCA>
+X-ME-Received: <xmr:nBXxZZtsAsgHXEq8ZyNzt-pRgVHotrxXWqyDd1vVclKM65dGx1qsdEIjIq9GUcHEGLEEcodam6c6GbaZ33FYuMtm4uBZSbZFEDo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeeggdehvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefvvefkhffuffestddtredttddttdenucfhrhhomhephfhinhhnucfvhhgrihhn
+    uceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrthhtvghrnh
+    epheffgfegfeevgeevtdeiffefveeutdeghfeuheeiteffjeefgfegveefuedvudelnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrih
+    hnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:nBXxZSbsYiReli2o7BlESE2qf17lZaPPdllArD5iZr5iSvCLRlOKgw>
+    <xmx:nBXxZYZ0lEFTnwq9UE9IlxMQTNg83vKt-TTkuWhomydhApK4p9tZGA>
+    <xmx:nBXxZWCdVG34u3OxETgdukIS_Qv50Z1dpiYsiOigxmB8KHoEJ6jf1Q>
+    <xmx:nBXxZWbTiFm_JxuwOxZ2go_s7ZSKerelbcVvcBlMIWs0u0hv7x8Nfg>
+    <xmx:nRXxZfUon8JRfL8JBJGEY_iZvhW3qa-VDpt9skQ31IwVHuIyAd8Ufg>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 12 Mar 2024 22:55:22 -0400 (EDT)
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Joshua Thompson <funaho@jurai.org>,
+    linux-m68k@lists.linux-m68k.org,
+    linux-kernel@vger.kernel.org
+Message-Id: <419fcc09d0e563b425c419053d02236b044d86b0.1710298421.git.fthain@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH] macintosh/via-macii: Fix "BUG: sleeping function called from
+ invalid context"
+Date: Wed, 13 Mar 2024 13:53:41 +1100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: spinlock recursion when running q800 emulation in qemu
-Content-Language: en-US
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Finn Thain <fthain@linux-m68k.org>, Guenter Roeck <linux@roeck-us.net>,
- linux-m68k@lists.linux-m68k.org
-References: <07811b26-677c-4d05-aeb4-996cd880b789@roeck-us.net>
- <0ccf5e42-63ec-a63d-9ee9-7043947637c3@gmail.com>
- <40205038-a7cd-2568-5f8e-2540aca2f84d@linux-m68k.org>
- <56f79fc8-1a62-48af-b2fb-cddace7c828f@gmail.com>
- <60029130-022e-8ec7-2dc5-678b077f1d69@linux-m68k.org>
- <6eeccba7-6877-dd3c-2a67-94ea448bead6@gmail.com>
- <cb98b504-0669-eb91-4da0-8ee7bb7663ba@linux-m68k.org>
- <5076e848-9bd3-3fea-0aca-5f62a8739a73@linux-m68k.org>
- <bd6eb981-0dfe-a9c9-7777-0cfa0703efc0@gmail.com>
- <fbc5d581-dcad-8627-3a19-6e2d10614870@linux-m68k.org>
- <2465c81d-d2dd-320e-cb4c-1c23fd485aed@gmail.com>
- <9e5ce055-8af4-4cca-3505-a3186b86926d@linux-m68k.org>
- <ad9a7be6-e2f4-f17b-04fe-393a409e523d@gmail.com>
- <745f844f-a100-5f38-99b3-97ace157b2a2@linux-m68k.org>
- <afcd0605-49e4-49c6-90a3-2d5b6a2cbf78@gmail.com>
- <CAMuHMdX-4kPgg99k7VJhnHNKp2F2w9+gStyvKnrDwB0NTm5EqA@mail.gmail.com>
-From: Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <CAMuHMdX-4kPgg99k7VJhnHNKp2F2w9+gStyvKnrDwB0NTm5EqA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
 
-Hi Geert,
+The via-macii ADB driver calls request_irq() after disabling hard
+interrupts. But disabling interrupts isn't necessary here because the
+VIA shift register interrupt was masked during VIA1 initialization.
 
-On 12/03/24 20:59, Geert Uytterhoeven wrote:
-> On Tue, Mar 12, 2024 at 1:51 AM Michael Schmitz <schmitzmic@gmail.com> wrote:
->> On 11/03/24 21:35, Finn Thain wrote:
->>> I think spin_lock() reduces to preempt_disable() on UP.
->>> In include/linux/spinlock_api_up.h it says,
->>>
->>> /*
->>>    * In the UP-nondebug case there's no real locking going on, so the
->>>    * only thing we have to do is to keep the preempt counts and irq
->>>    * flags straight, to suppress compiler warnings of unused lock
->>>    * variables, and to add the proper checker annotations:
->>>    */
->> That's only true in the debug case - there, preempt_disable() is used
->> inside the spin loop. But m68k is one of the last CONFIG_PREEMPT_NONE
->> archs AFAIR, and preempt_disable() reduces to barrier() on those.
-> M68k does have experimental preempt support. I have been running
-> that for the last 5 months. Works fine most of the time, except for
-> the one BUG[1] that happens every 10 boots or so.
->
-> [1] https://lore.kernel.org/all/CAMuHMdUQ72KOPw5vxNfhjoTR-SsaELeKneBmyQPYEWa_o5OZZA@mail.gmail.com
+Cc: Joshua Thompson <funaho@jurai.org>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 
-NB: the Kconfig hunk no longer applies, it now should look like this:
+---
 
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 4b3e93cac723..0c4b5180df1d 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -10,7 +10,6 @@ config M68K
-         select ARCH_HAS_SYNC_DMA_FOR_DEVICE if M68K_NONCOHERENT_DMA
-         select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
-         select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
--       select ARCH_NO_PREEMPT if !COLDFIRE
-         select ARCH_USE_MEMTEST if MMU_MOTOROLA
-         select ARCH_WANT_IPC_PARSE_VERSION
-         select BINFMT_FLAT_ARGVP_ENVP_ON_STACK
+This old bug was found while testing Geert's CONFIG_PREEMPT=y patch.
 
-(HAS_DMA -> M68K_NONCOHERENT_DMA)
+BUG: sleeping function called from invalid context at include/linux/sched/mm.h:306
+in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 1, name: swapper
+preempt_count: 0, expected: 0
+RCU nest depth: 0, expected: 0
+CPU: 0 PID: 1 Comm: swapper Not tainted 6.8.0-rc7-mac-00232-g88f8d9d514ed #5
+Stack from 0084be34:
+        0084be34 0054af2c 0054af2c 00000001 00000dc0 0084be54 004980b6 0054af2c
+        0084be68 0003f920 00000000 008012d0 00598ff0 0084be7c 0003f95e 00543a0d
+        00000132 00000000 0084beb0 000f44ee 00543a0d 00000132 00000000 0000000a
+        002ef380 002ef380 00038166 004897c0 005a95a0 00598ff0 00000000 0084bee0
+        000567d8 008012d0 00000dc0 00000034 00002000 00000000 0063d1e8 00002092
+        005a95a0 004c9706 00649b30 0084bf08 002ef962 0000000a 002ef380 00000000
+Call Trace: [<004980b6>] dump_stack+0x10/0x16
+ [<0003f920>] __might_resched+0x138/0x150
+ [<0003f95e>] __might_sleep+0x26/0x72
+ [<000f44ee>] kmalloc_trace+0x94/0x1ea
+ [<002ef380>] macii_interrupt+0x0/0x576
+ [<002ef380>] macii_interrupt+0x0/0x576
+ [<00038166>] parse_args+0x0/0x3a6
+ [<004897c0>] strcpy+0x0/0x1e
+ [<000567d8>] request_threaded_irq+0xa4/0x19e
+ [<00002000>] _start+0x0/0x8
+ [<00002092>] do_one_initcall+0x0/0x22a
+ [<002ef962>] macii_init+0x5a/0x94
+ [<002ef380>] macii_interrupt+0x0/0x576
+ [<002ef380>] macii_interrupt+0x0/0x576
+ [<00635bee>] adb_init+0x52/0x114
+ [<00635b9c>] adb_init+0x0/0x114
+ [<000020c6>] do_one_initcall+0x34/0x22a
+ [<00002092>] do_one_initcall+0x0/0x22a
+ [<00038166>] parse_args+0x0/0x3a6
+ [<004897c0>] strcpy+0x0/0x1e
+ [<00060006>] rcu_exp_wait_wake+0x618/0x92e
+ [<00621ace>] kernel_init_freeable+0x156/0x1ae
+ [<00621ade>] kernel_init_freeable+0x166/0x1ae
+ [<00635b9c>] adb_init+0x0/0x114
+ [<00498e4a>] kernel_init+0x0/0xfa
+ [<00498e62>] kernel_init+0x18/0xfa
+ [<00498e4a>] kernel_init+0x0/0xfa
+ [<00002700>] ret_from_kernel_thread+0xc/0x14
+---
+ drivers/macintosh/via-macii.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-Runs fine on ARAnyM with a bit of VM stress testing using 
-PREEMPT_VOLUNTARY. After a bit of looping (init=/sbin/reboot), fails 
-spectacularly with not finding any root filesystem to mount when using 
-full preempt.
+diff --git a/drivers/macintosh/via-macii.c b/drivers/macintosh/via-macii.c
+index db9270da5b8e..b6ddf1d47cb4 100644
+--- a/drivers/macintosh/via-macii.c
++++ b/drivers/macintosh/via-macii.c
+@@ -140,24 +140,19 @@ static int macii_probe(void)
+ /* Initialize the driver */
+ static int macii_init(void)
+ {
+-	unsigned long flags;
+ 	int err;
+ 
+-	local_irq_save(flags);
+-
+ 	err = macii_init_via();
+ 	if (err)
+-		goto out;
++		return err;
+ 
+ 	err = request_irq(IRQ_MAC_ADB, macii_interrupt, 0, "ADB",
+ 			  macii_interrupt);
+ 	if (err)
+-		goto out;
++		return err;
+ 
+ 	macii_state = idle;
+-out:
+-	local_irq_restore(flags);
+-	return err;
++	return 0;
+ }
+ 
+ /* initialize the hardware */
+-- 
+2.39.3
 
-Trying to boot a full system, I see the 'table already freed' panic on 
-the first go.
-
-Running a stack-ng stack-fill stressor triggered the panic, too. I'll 
-see how reliable that is.
-
-Cheers,
-
-     Michael
-
-
->
-> Gr{oetje,eeting}s,
->
->                          Geert
->
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                  -- Linus Torvalds
