@@ -1,59 +1,71 @@
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D5CF12E4E
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Mar 2024 05:34:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73DDF1A38D6
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 14 Mar 2024 00:59:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710308057; cv=none; b=SJIsdV45Do9m9hb+VdSxAOqqVlDJL2RmWAj6JlXMBlaP5+NU8ZAY2dYZQeBHOZ+z5Xad/bxmxreGci1Y2Jz9Jly2VUkCKCV3z3hhMCcVzJWZdc7Yg3m4CMwSKdAVUfE8rKH/4OlSvOENa98LcKy6fbvOCb5zJG4U2xdpJOY1U7M=
+	t=1710377971; cv=none; b=iWLX3po2C+2idYnqHp99LejlcIIq7DDzLyJsvrji6gpZgW6dN18FrOKlCj94D+Io2AA6Cmi+ZFfHgDE7CLdsebe2beHnHXG7ZQpyFtm0PIuzNPKyxNvUUQR11dGl1NmXqdqwF27P39iKNy+5V9XiPguG8sx77JZroMNakJQh/8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710308057; c=relaxed/simple;
-	bh=zL3AnRSlqI71TMRHuS/adh7XNZWGK/TMjpMPZPqQCs0=;
-	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=qmtkjiHIcR9Z5u/WhcucMLjDAfaTmpp4wjQRBUQyu6lCpba0e43TV7tvJF58NnFriBE46byJ+G4fpW7qSa/YZWKFliosm+Wshzl3xFQX+w6sEyuLMwSAKbTXmjsGDef2YegaIHuPTLp+sH0AGYgeGyC3Rr8vpGEBR3EZnAFMD3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cmSzRTze; arc=none smtp.client-ip=209.85.167.170
+	s=arc-20240116; t=1710377971; c=relaxed/simple;
+	bh=Rt6/JYH7icOxNrEDLTN8nIc867piVign3wBV+ruuwho=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qDDaGZzoyj9pFh/Ry9oe0Bepm2Iv8zkoAL8ibnegP3uD/qXJfGjEcz0xX6quamOS/eYSpgXkgFm6rQCcWnX7eqbYAqyr/RX8m8+Vs5HdY5EuwexORIoUS5DurQ4JJxNLipkqGXrQndKq3CjSPYKTBv3Cg9VAxK/zkAkDl1csrXs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JmM3w7az; arc=none smtp.client-ip=209.85.214.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cmSzRTze"
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3bbbc6b4ed1so603178b6e.2
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Mar 2024 22:34:15 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JmM3w7az"
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1dc49b00bdbso3025475ad.3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 Mar 2024 17:59:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710308054; x=1710912854; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IWyWlswNvQrWEyou/cmyum8oAxCnDGO9uo+Dl4ok3E4=;
-        b=cmSzRTzepg3AKRS0yJGPPEqBoZi8IxEbLunCRDgCC6WtPnOsdpfaE1QWWq2Zj51KU3
-         Za4XcQijZ/sIOlMw7g5JJfPqPHttkLwcH3SGJ4cta94ymDWxO8+yaRdE5NuzWkXk/XzF
-         XXbiT5hcl5MqizhZlI3zoFaQUFrSou9WoQAiIfhGCHhwFkwaudMFBr5b43Fkw1mTJf9j
-         5BPVyT97z0hb5hqqkRZ9ANgI4pT2yFufmZDSG1ZjqFPhKk3aB2C6HJ61icRVNaLde/r9
-         xpb71F3yI2U9nezqg5Xe/3lQ7hE5aMHrgO8O0E3M4398X8cjBTh2Qket3fu9VaAq1ep3
-         BTPg==
+        d=gmail.com; s=20230601; t=1710377970; x=1710982770; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9VVceorEN0SoUk6UvDCl5qelmoMph5c/rIzpzaFnE+g=;
+        b=JmM3w7azaIW9G03ISDs4h9erm4GxK7JIwNJBDGmIfolGeoRUnIQMmqcUslevRoDBDP
+         f3yGByQdEl38abIWuKhHkHtFz/Rr1w4CLzeahG0Rd2m2bdkNqU/8gXNPFKzHhggqbkyQ
+         i4vNv/s5bRrpDzz6diThoH5rIJlAFl80hp9hz211zBenocBMpsIuwlonnzLQK8SUafLg
+         /zUESdvsns/4C1ZGbmoznVBafNOk5DqzsC3gg9+ft4JFSOR1w/oY/jQTBw2PRZyr+EH7
+         9bYw9f6sEDAD1Zw3ps+4g5yV6iXilDDMzX8m8Rw+rjhrtLuiJZY2RkLXOgr5+ihW40x+
+         zE7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710308054; x=1710912854;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=IWyWlswNvQrWEyou/cmyum8oAxCnDGO9uo+Dl4ok3E4=;
-        b=TiL9UAPybSla/5ev4X0Tfj468SantaTvU221RT7JIhmhYe61t4goCQ/0bpmWRb8aVV
-         OuGA352WdgXwHJSx5CsPMdg0rZgwHY9YS2b8nKVbBIYmDSWp4UmlpH6M3ysYl0hNMUWr
-         J4dqYW2DW0xj04dFwRorZ7s3xf9wkgIk9lLhEctp4jGGbO+RRzhtjSHR30qaXw18gZQM
-         aPUSpS3TaNqAMJwBD9ECR6tuy48TPz4W0w14YhGyXxb0ym7b9GKUzt1fFXWTl3f4fW40
-         dLTc0W/M7exJURT0xMsJ2vYA2fKPbJvZDp4C737H5WrpZebxnheHEChDrQBNZaBvvApv
-         kCFA==
-X-Forwarded-Encrypted: i=1; AJvYcCUD6yDlWnmqlsHhZlep8H0o2RJqJ223UKvG9CqaHruqayTMWvjVwtePit5dBJP2GQW79xiZ39VVcZcB4N1ZKpaTMqoQo+fG83V2oszLzh16
-X-Gm-Message-State: AOJu0YwO+uwKPQD3ncMPAQf82DzpMNDXK2INvHcdiSjFq2Ejb6RscLIv
-	HTNWrSZfz+M2qEAULawnb3CYE9Ln6j+Mx0RINTkATtVVEf0gPRCxWs7wcxCC
-X-Google-Smtp-Source: AGHT+IGhZYbCiaeFbIzAo82RWd/ZvM3p5uluMP4diH+xi1fZomAXx0LUVcGR0x4q3UwygrKrw3ABlA==
-X-Received: by 2002:a05:6808:1b29:b0:3c2:71e7:572c with SMTP id bx41-20020a0568081b2900b003c271e7572cmr345166oib.28.1710308054029;
-        Tue, 12 Mar 2024 22:34:14 -0700 (PDT)
-Received: from [10.1.1.24] (222-152-175-63-fibre.sparkbb.co.nz. [222.152.175.63])
-        by smtp.gmail.com with ESMTPSA id c12-20020a62f84c000000b006e67edb113fsm6346763pfm.219.2024.03.12.22.34.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 12 Mar 2024 22:34:13 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710377970; x=1710982770;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9VVceorEN0SoUk6UvDCl5qelmoMph5c/rIzpzaFnE+g=;
+        b=cpLGEd33W5oui1+BFXD6EztomOB8uzLTdwEom+0oXA2LayoH1gYLkaMH9D/hiC98Fk
+         byJH1HWUa7FqxvttAdLk1v4qWpm9Q7qtHEC3cEcKhVeQT1vTmw0rc+LfG3Qx62pMvKLL
+         ENVeDRh8cMuJo0q+qjYpN8HlfQK2x9GQ/jLqHObOyFpNQ4nkha2gRdflSjz5uVRv0Vt9
+         fb74Ioo3Ory8pZpUUEBJAbZObYVZrBjL6gokWBCsMB9C5WynkwLm3MKKH8eEIHqc0NU1
+         VPLUBJQYAJTdTx5ohAGZL9iU+UCu/Qb8ZRvAM9+z9Q2qoWIqeT5+rLqtb9e1MmYrJXBo
+         X+Pw==
+X-Forwarded-Encrypted: i=1; AJvYcCXVKzsQqBGgiNImLBJaX2CJwtB3Wbe4eHR8p1M94HvA+OxhNcBWL+iCdYdiE2GpKKYB0hKzn/Veh8cPI3GflO7KjO/rUx+BFlqKtZ3NulDk
+X-Gm-Message-State: AOJu0YzmiQVXuRz7ZC6NVCfv0rUJANAE9r1lCFU1M3WbiqK+qmLOsV3W
+	TvfuNv0tc4jLnnrVmk65XrTqyJawLZIX/L1hII9Gbv42mi/kOAtd
+X-Google-Smtp-Source: AGHT+IHk4qA/hzeYwUiYEKE4qCZM2bxrIVUbUE3WNShYG8f5wcihR6Xo/4etGenu/OzbKEZzNoO/hQ==
+X-Received: by 2002:a17:902:cec8:b0:1dd:9819:5394 with SMTP id d8-20020a170902cec800b001dd98195394mr453728plg.49.1710377969566;
+        Wed, 13 Mar 2024 17:59:29 -0700 (PDT)
+Received: from ?IPV6:2001:df0:0:200c:cce2:5e6b:f484:1b3f? ([2001:df0:0:200c:cce2:5e6b:f484:1b3f])
+        by smtp.gmail.com with ESMTPSA id jg5-20020a17090326c500b001dd6e253f03sm244601plb.212.2024.03.13.17.59.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Mar 2024 17:59:29 -0700 (PDT)
+Message-ID: <7d28d5ee-176a-49de-a93c-76e03913cd8a@gmail.com>
+Date: Thu, 14 Mar 2024 13:59:25 +1300
+Precedence: bulk
+X-Mailing-List: linux-m68k@vger.kernel.org
+List-Id: <linux-m68k.vger.kernel.org>
+List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: spinlock recursion when running q800 emulation in qemu
+Content-Language: en-US
 To: Finn Thain <fthain@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+ Guenter Roeck <linux@roeck-us.net>, linux-m68k@lists.linux-m68k.org
 References: <07811b26-677c-4d05-aeb4-996cd880b789@roeck-us.net>
  <0ccf5e42-63ec-a63d-9ee9-7043947637c3@gmail.com>
  <40205038-a7cd-2568-5f8e-2540aca2f84d@linux-m68k.org>
@@ -72,41 +84,32 @@ References: <07811b26-677c-4d05-aeb4-996cd880b789@roeck-us.net>
  <CAMuHMdX-4kPgg99k7VJhnHNKp2F2w9+gStyvKnrDwB0NTm5EqA@mail.gmail.com>
  <0c7b96d2-1cf1-4fc1-876e-8e3bc859a1c5@gmail.com>
  <028f8edc-a08f-571a-0985-275394b60986@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
- Guenter Roeck <linux@roeck-us.net>, linux-m68k@lists.linux-m68k.org
 From: Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <6101c7dd-fa20-1d4b-13d2-8880702e960d@gmail.com>
-Date: Wed, 13 Mar 2024 18:34:08 +1300
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
-Precedence: bulk
-X-Mailing-List: linux-m68k@vger.kernel.org
-List-Id: <linux-m68k.vger.kernel.org>
-List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
 In-Reply-To: <028f8edc-a08f-571a-0985-275394b60986@linux-m68k.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 Hi Finn,
 
-Am 13.03.2024 um 17:40 schrieb Finn Thain:
+On 13/03/24 17:40, Finn Thain wrote:
 > On Wed, 13 Mar 2024, Michael Schmitz wrote:
 >
->>
 >> Running a stack-ng stack-fill stressor triggered the panic, too. I'll
 >> see how reliable that is.
 >>
->
 > I see an immediate failure with full preemption in QEMU when I run
 > stress-ng -t 60 --zombie -1
 
-Thanks - unfortunately, I don't have that available. Will see about 
-adding that in ...
+Seems to work quite well.
+
+Though what I got on the first attempt was a deadlock with full 
+preemption in ARAnyM. No panic.
+
+Time to look for a solution now we've got a nice test case.
 
 Cheers,
 
-	Michael
+     Michael
+
 
 
