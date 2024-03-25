@@ -1,56 +1,56 @@
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D1CC1A38C6
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 23 Mar 2024 06:32:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0083315FA81
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 25 Mar 2024 06:41:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711175541; cv=none; b=IVRQGn6lBRTfKIan0d7tdy564aMxonqYI50Pm1vhlch0BXTI5ivts0IMmc8OyPov6FoyXZMrY5C7In47I55eemrht+VPZzg+NDi0e/JrGRAJ3SGC+XIhxBrRaTNOAQcPTcQyiTYWG7FsnzPA7XQEbVq25++AU6e1gqRG35Ugfvc=
+	t=1711348908; cv=none; b=hYSgoJLjgFKS3JmY7dcybgeQOpAxyeRxHd/CzlOlm80+s2MK5hUgYhq+gECwtnonf1gXeXM6mcM3FKve9QS/TxFQ3Z6JfPzG49i7IPGYtsHruIevzKy7gUmMcle9kTcC0EHmPK1VmYejNSyLjvfbxeMrmLq+7jze3h+0uTVmlPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711175541; c=relaxed/simple;
-	bh=cUjbYdeCAyU3gEEOEOwpeSBtuVVVNLp9k1ZY9/u6vlU=;
+	s=arc-20240116; t=1711348908; c=relaxed/simple;
+	bh=eOjM7kNnHrDR+dHXfR5d/xX9OfStlCFFfxou6xETEc4=;
 	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=Yqu7u3fT++HO8voap3E0C80Ja7PftxYeKzUtAvqc2PVaYGhk6zbUo1DpgC4Uh7U133VwvW9eOfAsZB0HpRnRLsKuhev13YCRCcIyzhZt0IMlR5g/tQhNHYEstsU7RFyvd4VZna+JQpvH+d+BEyJsfPLFnR19o39p92xAhgXJc4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l+1J1RcH; arc=none smtp.client-ip=209.85.216.45
+	 In-Reply-To:Content-Type; b=dqcOXsTbgiCAccIdHwcjwQzTL4XqKJdUoBfsj1K8WjyCokyPjADU5gThyljVoKgvV2vB7fDeA8l4FmHYR5gnHI5NqZc0BKqfMxrA3YOl6tLB+r9q/WiuLjvcJ0m4KeH9J72pkEK3q12SOKy91cqUP48mxSSk1W54FexWVAi8bBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EGSQL7we; arc=none smtp.client-ip=209.85.210.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l+1J1RcH"
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-29df3333d30so1916685a91.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 22 Mar 2024 23:32:19 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EGSQL7we"
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6e6ce174d45so2720215b3a.3
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 24 Mar 2024 23:41:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711175538; x=1711780338; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20230601; t=1711348905; x=1711953705; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
          :message-id:from:cc:references:to:subject:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dVJID9tu9VFOTKptapxFInIveasDHplaLbqnCG8xPSA=;
-        b=l+1J1RcHdFFGb1frf2Vx39bj9eT5rj2d2nKYi13UcY0TiVlrM4QCEN9ixsGYtMFb9L
-         Y5NUc7k41Xq8OWp58T+82CkdMcm9zjj87pGk1e8BfTTCDuKQMn3AnaNwmQFuaY7/qL02
-         Bc3DOOYA9KB5/5LauPH0Ff/Gy7xjvVqyNxuBTVBMLnwm8AvclFlN01Uvar+SEA2WdDnF
-         Z7QBEHD/oNZ+v4aB7gLuVDIWX0T1IboC4a6mkmwORWN/rHp2MNWQ2jUhJdc/E/jwrmRy
-         tZmKe4ofYEr/Gjzh0CiDd7Al1jAxyEfT4JuWyii3BhH5BED3+Yj0sgrwWJM32IRpRVVd
-         YnJw==
+        bh=+HcTVgtMCEqLTDo3XxYiNb30Ti383Y6BgXcyGIkG7z8=;
+        b=EGSQL7we4oPUCWXqhCKN2FVNtg148gqmmHxTSIk6/2EuuwiTLA4hnKuDhRLIj5BbW0
+         e9ztzeZ7SB9gcu974dRuT7xOrhKOS7oPT7SrQT4FXDkvVYu6KkAe+HzRGxePyDqO4DFS
+         pkQzuBfg1I69KiuZSkY99aY2Rmn27N2bMy4+XWrInUvCpW1SceaOFr3oGB8iT8Xbezix
+         hLcFWk+ypPuxc0neMatm9gIGaWQpEUVFvUuyCAuWsoRaYFOflRbc/iKpytaYweadMM6O
+         IXLGscGTZ59bGvnPlaahpRvv5XhS1KH1P7Jq7BmHF0MVwn1RU/jshzJujGDHyI3B6eXF
+         13Yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711175538; x=1711780338;
+        d=1e100.net; s=20230601; t=1711348905; x=1711953705;
         h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
          :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=dVJID9tu9VFOTKptapxFInIveasDHplaLbqnCG8xPSA=;
-        b=Dq6ZXhtGSwwg9UrmkvAfgIFClmPi1s40aRnBlNNtVjKMRM1zs2FSM67rz9gmeLF8Of
-         +gktjBwqcamo4pZHjhdfUa6UKdMy6rzanad/B55RZjUM9Z/2m7pHgLtdUGv6I5chyOf2
-         wSY01BSUYOw7plxJJwiXpmQDmf+CquiJ4UJj6HUWuFusdE6Fq/1fNMaA4ibVEeHED4bh
-         19HcpKoQhhT3kIsoQ8Y/GHhyKem4w1v5sldMTFve3P8Oq2kqdOMbhz1V3RrqsU58EP40
-         HKYahFtZWt5nGRudX8mDtCbD186Y1YFcEY9gTzTNQk/0Aluf01QEvHwqZSZJBW5h6YUb
-         4DFw==
-X-Gm-Message-State: AOJu0Ywfilmts/+Btk9uJaNS2IFQBo2bJV6UFsk9gXBzpHLIdFfR4LJE
-	HYhGR8zxqD2PaObhqy9tTW7XOc0OOg2mThQ/1S6WwiRdARW6csCLKPqPT/2M
-X-Google-Smtp-Source: AGHT+IHuVFV9fTHkrOx1Y3cvoMuk2Tc9XqMrlx2AkOe8Xkf1Xhi0uq6XsLeeH8pFc2fl+HGQqYTdYQ==
-X-Received: by 2002:a17:90a:2c0e:b0:29e:c3d:c3fc with SMTP id m14-20020a17090a2c0e00b0029e0c3dc3fcmr1491683pjd.18.1711175538248;
-        Fri, 22 Mar 2024 23:32:18 -0700 (PDT)
+        bh=+HcTVgtMCEqLTDo3XxYiNb30Ti383Y6BgXcyGIkG7z8=;
+        b=PihnJNP9m3J8i2nOEXxQ/BM+5iI/oxju7Svcpxy62FtxlPZNQn22NXZNpNPcKQFpdS
+         YloTLmQhp96yREsy66LllAu0OvgtKwBw/QLb/GDb1dKzxE5A1NqXK/xeD1ImlwH/8g10
+         lDDK9IzMrK3BsghYcnoqO1i1rTDwMa0Se91aiJKzcHI3CDDqZUNl5Ixj9wiJpFhd/JzE
+         sMZpr0FbVBgqzhPJOiK2ZsV2iiNC8quUWEV3M9sGfdwxuiD2+sgVLzvkV73NG+FPv1B4
+         eF0yOC3dHumyEqOe39zq9mbkyCHUyoWGroPBjRO3ERvLIB2/fGOZbWAQqdGEKHVNs2F4
+         lshw==
+X-Gm-Message-State: AOJu0YxAryWGT85s5JSu8cTJSDkNzKj/d3RiKiewnrsmNfZ0eBHJFg6a
+	dvFBaSwWNn/swtiDRieOr7GxxfKym3KXmrBC1I2UL6eQocNbOOZL6YJK/DYb
+X-Google-Smtp-Source: AGHT+IE+j2TKajWv6Uky+WihQiZ/QONNLV6kXnSvzNylivUHRBSTdiTdUKdd1rbUgMO5Rd+xxRNWfw==
+X-Received: by 2002:a05:6a00:3ccc:b0:6ea:8eed:d369 with SMTP id ln12-20020a056a003ccc00b006ea8eedd369mr7448718pfb.20.1711348905126;
+        Sun, 24 Mar 2024 23:41:45 -0700 (PDT)
 Received: from [10.1.1.24] (222-152-175-63-fibre.sparkbb.co.nz. [222.152.175.63])
-        by smtp.gmail.com with ESMTPSA id fw17-20020a17090b129100b0029bc319f7c9sm6684664pjb.39.2024.03.22.23.32.15
+        by smtp.gmail.com with ESMTPSA id m190-20020a6258c7000000b006e729dd12d5sm3719481pfb.48.2024.03.24.23.41.41
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 22 Mar 2024 23:32:17 -0700 (PDT)
+        Sun, 24 Mar 2024 23:41:44 -0700 (PDT)
 Subject: Re: [PATCH RFC] m68k: skip kernel premption if interrupts were
  disabled
 To: Finn Thain <fthain@linux-m68k.org>,
@@ -60,10 +60,11 @@ References: <20240322014805.30606-1-schmitzmic@gmail.com>
  <e89bf618-2fa8-7cbd-16ed-d021a9a7f740@gmail.com>
  <948c12e4-e85f-a86c-ae95-a1eb03ca026d@gmail.com>
  <40928e38-0de7-75a6-d5f7-8c913155da03@linux-m68k.org>
+ <5e344842-0b19-1f83-dc77-51210a8880c7@gmail.com>
 Cc: linux-m68k@lists.linux-m68k.org
 From: Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <5e344842-0b19-1f83-dc77-51210a8880c7@gmail.com>
-Date: Sat, 23 Mar 2024 19:32:12 +1300
+Message-ID: <1b9ae156-9dac-b11f-5ddb-fb5878b3c9a9@gmail.com>
+Date: Mon, 25 Mar 2024 19:41:39 +1300
 User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
  Icedove/45.4.0
 Precedence: bulk
@@ -72,88 +73,83 @@ List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <40928e38-0de7-75a6-d5f7-8c913155da03@linux-m68k.org>
+In-Reply-To: <5e344842-0b19-1f83-dc77-51210a8880c7@gmail.com>
 Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 
 Hi Finn,
 
-Am 23.03.2024 um 17:35 schrieb Finn Thain:
-> On Fri, 22 Mar 2024, Michael Schmitz wrote:
->
->> Am 22.03.2024 um 17:53 schrieb Michael Schmitz:
->>> Am 22.03.2024 um 17:39 schrieb Finn Thain:
->>>
->>>> I find that patch description to be a bit confusing, since
->>>> preempt_schedule_irq() requires that interrupts were disabled:
->>>>
->>>>         BUG_ON(preempt_count() || !irqs_disabled());
->>>>
->>>> Looking more closely I see that you're testing the IPL bits from the
->>>> stack not the status register...
->>>
->>> Yes - the problem appears to be that if we enter preemption when about
->>> to return to kernel code that had interrupts disabled, bad things may
->>> happen [...]
->>> That's independent from having interrupts disabled in the currently
->>> active exception.
->>>
->
-> Is it? If interrupts were disabled by the code we're returning to, surely
-> they must be disabled still (in the Status reg, for the BUG_ON above).
+> What's more, I suspect schedule() may cause another process to exit that
+> would otherwise first take a signal, and signal delivery then repeats
+> the vma teardown on process exit. At least that is how I read those
+> 'table already freed' stack traces.
 
-They would still be disabled, but by calling preempt_schedule_irq() they 
-will be reenabled before calling schedule(). At that time, another 
-interrupt may come in, and change things from under the piece of code 
-that had interrupts disabled.
+In the backtrace below, I do actually see free_pointer_table() reentered 
+after preemption. (Ignore the 2200, 2200, 6480 in the call trace - 
+that's just the arguments to a pr_err() that prints the first line in 
+the excerpt below.)
 
-That won't happen without preemption.
+To get this snapshot of what exception context preempt_schedule_irq() 
+was last called from, I save the stack pointer, the status register in 
+the exception stack frame, and the vector number before calling 
+preempt_schedule_irq(). The saved values are printed before calling 
+panic() in free_pointer_table().
 
-What's more, I suspect schedule() may cause another process to exit that 
-would otherwise first take a signal, and signal delivery then repeats 
-the vma teardown on process exit. At least that is how I read those 
-'table already freed' stack traces.
-
->
->>>>
->>>> It's not clear to me which pre-emption opportunities remain in
->>>> effect. E.g. is full preemption (in effect) the same as voluntary
->>>> preemption?
->>>
->>> Good question - I'll have to instrument preempt_schedule_irq() and see
->>> if it gets called at all with my patch.
->>
->> Can't see preempt_schedule_irq() entered with my patch ...
->>
->
-> Neither can I: A quick "stress-ng --zombie -1 -t 100" test passed without
-> ever calling preempt_schedule_irq() in QEMU.
-
-Right. Whenever I allow preemption with IPL (in the saved frame's SR) > 
-0, I eventually get the 'table already free' panic. Trying to save the 
-whole frame for later printing in free_pointer_table() hasn't been too 
-helpful though. The saved frame's PC does not appear anywhere in the trace.
-
->
->> In general, full preemption is not the same as voluntary preemption.
->> Full preemption attempts to preempt on every return from interrupt or
->> syscall (given certain constraints are fulfilled such as we're not
->> currently in any interrupt or already preempting, and there's other work
->> that needs scheduling).
->>
->> The constraint that interrupts must not be disabled in the saved stack
->> frame apparently is one constraint too many...
->>
->
-> I dropped the mailing list from the recipients in my previous message.
-> This might a good time to follow up on the list in case Geert can shed
-> some light.
-
-Adding Geert and list back in now ...
+Unfortunately, when I add preempt_disable()/ 
+sched_preempt_enable_noresched() in free_pointer_table(), I don't get 
+that particular panic() anymore, but the bad kernel buserror with the 
+warning from set_fc() that you reported. So no real improvement ...
 
 Cheers,
 
 	Michael
 
+saved from last preempt: nr 2d sr 2200 2200 pc 6480 sp dcddc4
+Kernel panic - not syncing: table already free!
+CPU: 0 PID: 1629 Comm: udevd Not tainted 
+6.8.0-rc7-atari-fpuemu-spinlocktest+ #1759
+Stack from 00f7fd9c:
+         00f7fd9c 003e75ee 003e75ee 00000000 00000001 003354cc 003e75ee 
+0032f208
+         00000001 00000001 00e14000 004f0000 00f8b40c 0000643c 00f7ff0e 
+000064d4
+         003d9128 003d90ee 0000002d 00002200 00002200 00006480 00dcddc4 
+c0000000
+         c017c000 efd00000 c00c0000 01e14800 ee000000 00f8b184 000cdee8 
+00e14800
+         00000001 ffffffff c0000000 000d367c 0031d67e 000d9916 000d367c 
+00dc00cc
+         000cdd12 0031d67e 000d9916 c0080000 00f8b180 c017bfff c017bfff 
+edffffff
+Call Trace: [<003354cc>] dump_stack+0xc/0x10
+  [<0032f208>] panic+0xd8/0x258
+  [<0000643c>] free_pointer_table+0x0/0x160
+  [<000064d4>] free_pointer_table+0x98/0x160
+  [<00002200>] do_one_initcall+0xa4/0x188
+  [<00002200>] do_one_initcall+0xa4/0x188
+  [<00006480>] free_pointer_table+0x44/0x160
+  [<000cdee8>] free_pgd_range+0x1d6/0x1f2
+  [<000d367c>] unlink_file_vma+0x0/0x40
+  [<0031d67e>] mas_find+0x0/0x102
+  [<000d9916>] unlink_anon_vmas+0x0/0x106
+  [<000d367c>] unlink_file_vma+0x0/0x40
+  [<000cdd12>] free_pgd_range+0x0/0x1f2
+  [<0031d67e>] mas_find+0x0/0x102
+  [<000d9916>] unlink_anon_vmas+0x0/0x106
+  [<000cdfbe>] free_pgtables+0xba/0xcc
+  [<0031d67e>] mas_find+0x0/0x102
+  [<000d2950>] mas_set+0x0/0x22
+  [<00039f02>] up_read+0x0/0x64
+  [<000d41d0>] exit_mmap+0x13c/0x1de
+  [<0000efd3>] NODD+0xab/0x104
+  [<001900f9>] ext2_get_folio.constprop.11+0x1a7/0x274
+  [<0000ffff>] EXPTBL+0x3bf/0x400
+  [<00016782>] __mmput+0x16/0x94
+  [<0001a158>] do_exit+0x250/0x714
+  [<00339f12>] _raw_spin_unlock_irq+0x10/0x38
+  [<0001a79a>] sys_exit_group+0x0/0x14
+  [<0001a7ae>] pid_child_should_wake+0x0/0x52
+  [<0000269a>] syscall+0x8/0xc
+  [<0008c00b>] do_check_common+0x325/0x2946
 
->
+
