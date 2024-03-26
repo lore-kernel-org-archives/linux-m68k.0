@@ -1,423 +1,167 @@
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [195.130.137.88])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A482C85C6A
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Mar 2024 17:50:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.88
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F167713D265
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Mar 2024 19:59:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711475410; cv=none; b=ooz33HF4D5l52yMRC9UnlH7yJS6s2+i0fZkxjBiMZ5kIG77zPVRl+3aXpZlXCYho9oCFo0NWYgO0rSFHlSRyccm/5iECHeLxnS+kvdLVnJUmnc4nfI6ZkVjjWmlHP7mlUkRajQomPKS1nFwZQ6ESTKUfjhlRkXPhhu+Dxubz3kk=
+	t=1711483159; cv=none; b=tLvxGlYiUJxcfrh6Iko/WAIXdVusPlLnN4irpoXCd13XVs9n2r+yQa+lqS9ZVdnfj1EZOqNRrxdPHV1OeYrCuM7rc+q3FpfjboKNy64FlpLOCRNpL31ovKeBrTUwEu9lVp/H7F8wUB9XJBx5aqTSHBSHorfZx+M7HoPkd7ImPvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711475410; c=relaxed/simple;
-	bh=96Oq73TAe9h0gUbbbJGjMGe+U38+ep8pHePw4yAd6P0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pNLL3h6muQ/uCLZHx4wGRdAa7HNL8ds4EHSVxiDF9zlI6txRHXOX9csPuLmeK3rMlXrdLKGMbY0xvVPJbMSepesGgsS4tt/a91jMP5KMMfw/Fpe/zAgrYC7GYCuDefErq9Sgl/sDm/VjvwyegAtdSvbSxYD3RZ3B8apI9X6/YWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:76d0:2bff:fec8:549])
-	by michel.telenet-ops.be with bizsmtp
-	id 3Vpz2C00R0SSLxL06Vpzaz; Tue, 26 Mar 2024 18:49:59 +0100
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rpAvY-0053q9-RN;
-	Tue, 26 Mar 2024 18:49:59 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rpAvv-001fMV-Kb;
-	Tue, 26 Mar 2024 18:49:59 +0100
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: defconfig: Update defconfigs for v6.9-rc1
-Date: Tue, 26 Mar 2024 18:49:58 +0100
-Message-Id: <e17b3ac60832a3ff92d25d1a05bf814e8f15d0c5.1711475325.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1711483159; c=relaxed/simple;
+	bh=0sOgoYcZUpIm5+twlxqKgfGdkatDzKsQhtyVug8K5X4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hilO2ilckdXSNJ47fdKZ5o+l5QfL6oVDPlu7ob32LsTctaW0bY1BLo8pMnxP//zSxda5P17pjl0viSEtTkR/Q2Lejqj3IHUtPdAPe+F3ga1GbJswne0OMCZZ/Daur1thp9yuzSdYZVBppjM6FuCrnie8cpsPP+KOxfw+1OIElao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IS4aAyGb; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IS4aAyGb"
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6e6082eab17so4587733b3a.1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Mar 2024 12:59:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711483157; x=1712087957; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=c71PUbJrAHd/2ue83FI2zRvkq44OZurlLnrxkXokuXw=;
+        b=IS4aAyGbBa3jID8n8r5F4nppCFyXIwIsWeO4yGF58LAun8yhy3IsDIXjR5avg2d8+X
+         qYpHGKJGMnFBScxXsZLBaiyj4uiTzenENlqXGL2HuMh4ke8fvj44XproshUPJBVJTLG8
+         uGK2p5vWMZOTBMtKD6NCzQi77en3YmKAfJsUhQh7Sty9xjt5iIUQGsSd0h4PccTh3r+x
+         dVfNShSwfASUwOj7D/28H6EQmxj+eMf2KZSXrAPJYUf1v8QZaEdbFOvnX9IdUNFMeaib
+         c+voLsgV94KJH33ayoWWrUCxEJGgeg7m1Ifr2+T0Ke2C+CgIgE5zS4fWoN+9d7EIiT2D
+         5hVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711483157; x=1712087957;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=c71PUbJrAHd/2ue83FI2zRvkq44OZurlLnrxkXokuXw=;
+        b=O0LGOFPxXwxINz46vXQeZxqwgTz2eWE4uILiIm7AHrDa39wQ/0UtiaqwqY2m7AGN6M
+         5KD0aiOlmJkawdOJD62Yq2hDZtdLK7A7w4Vr4T0fqcVCSQ3tZ+XT6PKIIVR9lMbgS68k
+         0SSxDyyVNPyPwbejSyRGrRIlsyhDHFwgAGOQYSZo/34dZoCtuiBo7TpYlB5+2H9NDNRZ
+         HErT0jm7G9iazQnPTCgAlGF5VBJKNI21lRzr8j4w9RxRXWtWJHTTAew4khrvvjXrFR4w
+         B7jiYUQvA59qA6GnW7IPvrnDano98rs5oQReuA9JyXGeiwY2f4fXd2K6xjMUexp+Eotl
+         Du5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV2WsGF5K3U4yRDftO2bnuVsMOBM/XNTqIVsirHD4oQSi+W1l4dafjjp34mfsyHcpxvAhf0OCZm7BL6LckVhKUdTfe60HUA1BXs6fpfQucy
+X-Gm-Message-State: AOJu0Yzr+lbSqDaaVEWoWzcbxaCe3ZCGb8QOnZuXP3LS7TlUGXnzZ5J2
+	KQsT+QSEtaP2U1/xEjSi5LLLO2kFArxxqSGpQ7kJzoA96cRCI5Iy
+X-Google-Smtp-Source: AGHT+IHugOtJvgVgFC7el1G9nie8NO2m6EyUsZGBtI7quEO8C3uyf9r5rncFvCATtur47lVdM2GTLw==
+X-Received: by 2002:a05:6a20:43a9:b0:1a3:a7f1:78d3 with SMTP id i41-20020a056a2043a900b001a3a7f178d3mr3725205pzl.56.1711483157055;
+        Tue, 26 Mar 2024 12:59:17 -0700 (PDT)
+Received: from ?IPV6:2001:df0:0:200c:cce2:5e6b:f484:1b3f? ([2001:df0:0:200c:cce2:5e6b:f484:1b3f])
+        by smtp.gmail.com with ESMTPSA id o29-20020a637e5d000000b005dc816b2369sm7875198pgn.28.2024.03.26.12.59.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Mar 2024 12:59:16 -0700 (PDT)
+Message-ID: <546b3960-7a1d-4989-82ee-2d7d56a9d609@gmail.com>
+Date: Wed, 27 Mar 2024 08:59:14 +1300
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC] m68k: skip kernel premption if interrupts were
+ disabled
+Content-Language: en-US
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+References: <20240322014805.30606-1-schmitzmic@gmail.com>
+ <fcabda73-4b16-ee2c-e993-2bfcf392a26a@linux-m68k.org>
+ <e89bf618-2fa8-7cbd-16ed-d021a9a7f740@gmail.com>
+ <948c12e4-e85f-a86c-ae95-a1eb03ca026d@gmail.com>
+ <40928e38-0de7-75a6-d5f7-8c913155da03@linux-m68k.org>
+ <5e344842-0b19-1f83-dc77-51210a8880c7@gmail.com>
+ <1b9ae156-9dac-b11f-5ddb-fb5878b3c9a9@gmail.com>
+ <acd34add-27af-24a5-9af5-d40cab71c651@linux-m68k.org>
+ <597ab0b3-ac1d-443c-95f7-4f1bbcccae1f@gmail.com>
+ <c8a063a1-c72c-9aed-65fc-b2d87f8c7a9b@linux-m68k.org>
+From: Michael Schmitz <schmitzmic@gmail.com>
+In-Reply-To: <c8a063a1-c72c-9aed-65fc-b2d87f8c7a9b@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-  - Enable trimming of unused exported kernel symbols,
-  - Drop CONFIG_IP_NF_ARPTABLES=m (auto-enabled since commit
-    4654467dc7e111e8 ("netfilter: arptables: allow xtables-nft only
-    builds")),
-  - Drop CONFIG_STRING_SELFTEST=m (replaced by auto-modular
-    CONFIG_STRING_KUNIT_TEST in commit 29d8568849fe5937 ("string:
-    Convert selftest to KUnit")),
-  - Drop CONFIG_TEST_STRING_HELPERS=m (replaced by auto-modular
-    CONFIG_STRING_HELPERS_KUNIT_TEST in commit fb57550fcbd86839
-    ("string: Convert helpers selftest to KUnit")).
+Hi Finn,
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-To be queued in the m68k for-v6.10 branch.
+thanks - I'm pretty sure tried that early on but botched it by excessive 
+locking (i.e., keeping preemption disabled when calling 
+get_zeroed_page()!).
 
- arch/m68k/configs/amiga_defconfig    | 4 +---
- arch/m68k/configs/apollo_defconfig   | 4 +---
- arch/m68k/configs/atari_defconfig    | 4 +---
- arch/m68k/configs/bvme6000_defconfig | 4 +---
- arch/m68k/configs/hp300_defconfig    | 4 +---
- arch/m68k/configs/mac_defconfig      | 4 +---
- arch/m68k/configs/multi_defconfig    | 4 +---
- arch/m68k/configs/mvme147_defconfig  | 4 +---
- arch/m68k/configs/mvme16x_defconfig  | 4 +---
- arch/m68k/configs/q40_defconfig      | 4 +---
- arch/m68k/configs/sun3_defconfig     | 4 +---
- arch/m68k/configs/sun3x_defconfig    | 4 +---
- 12 files changed, 12 insertions(+), 36 deletions(-)
+So I don't think you do use too much locking here.
 
-diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
-index a6f6607efe79cd20..6bb202d03d340ae0 100644
---- a/arch/m68k/configs/amiga_defconfig
-+++ b/arch/m68k/configs/amiga_defconfig
-@@ -26,6 +26,7 @@ CONFIG_AMIGA_BUILTIN_SERIAL=y
- CONFIG_SERIAL_CONSOLE=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
-+CONFIG_TRIM_UNUSED_KSYMS=y
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_ATARI_PARTITION=y
- CONFIG_MAC_PARTITION=y
-@@ -217,7 +218,6 @@ CONFIG_IP_NF_MANGLE=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
--CONFIG_IP_NF_ARPTABLES=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
- CONFIG_NFT_DUP_IPV6=m
-@@ -624,8 +624,6 @@ CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
- CONFIG_ASYNC_RAID6_TEST=m
- CONFIG_TEST_HEXDUMP=m
--CONFIG_STRING_SELFTEST=m
--CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
- CONFIG_TEST_SCANF=m
-diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
-index 0ca1f9f930bc1fd3..3598e0cc66b0ee23 100644
---- a/arch/m68k/configs/apollo_defconfig
-+++ b/arch/m68k/configs/apollo_defconfig
-@@ -21,6 +21,7 @@ CONFIG_HEARTBEAT=y
- CONFIG_PROC_HARDWARE=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
-+CONFIG_TRIM_UNUSED_KSYMS=y
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_AMIGA_PARTITION=y
- CONFIG_ATARI_PARTITION=y
-@@ -213,7 +214,6 @@ CONFIG_IP_NF_MANGLE=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
--CONFIG_IP_NF_ARPTABLES=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
- CONFIG_NFT_DUP_IPV6=m
-@@ -581,8 +581,6 @@ CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
- CONFIG_ASYNC_RAID6_TEST=m
- CONFIG_TEST_HEXDUMP=m
--CONFIG_STRING_SELFTEST=m
--CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
- CONFIG_TEST_SCANF=m
-diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
-index ad0b50923d99f6f7..15ff13802a6d9b6a 100644
---- a/arch/m68k/configs/atari_defconfig
-+++ b/arch/m68k/configs/atari_defconfig
-@@ -29,6 +29,7 @@ CONFIG_ATARI_ETHERNEC=y
- CONFIG_ATARI_DSP56K=m
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
-+CONFIG_TRIM_UNUSED_KSYMS=y
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_AMIGA_PARTITION=y
- CONFIG_MAC_PARTITION=y
-@@ -220,7 +221,6 @@ CONFIG_IP_NF_MANGLE=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
--CONFIG_IP_NF_ARPTABLES=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
- CONFIG_NFT_DUP_IPV6=m
-@@ -612,8 +612,6 @@ CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
- CONFIG_ASYNC_RAID6_TEST=m
- CONFIG_TEST_HEXDUMP=m
--CONFIG_STRING_SELFTEST=m
--CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
- CONFIG_TEST_SCANF=m
-diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
-index ad8f81fbb630c2bc..9a2b0c7871cec73f 100644
---- a/arch/m68k/configs/bvme6000_defconfig
-+++ b/arch/m68k/configs/bvme6000_defconfig
-@@ -19,6 +19,7 @@ CONFIG_BVME6000=y
- CONFIG_PROC_HARDWARE=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
-+CONFIG_TRIM_UNUSED_KSYMS=y
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_AMIGA_PARTITION=y
- CONFIG_ATARI_PARTITION=y
-@@ -210,7 +211,6 @@ CONFIG_IP_NF_MANGLE=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
--CONFIG_IP_NF_ARPTABLES=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
- CONFIG_NFT_DUP_IPV6=m
-@@ -573,8 +573,6 @@ CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
- CONFIG_ASYNC_RAID6_TEST=m
- CONFIG_TEST_HEXDUMP=m
--CONFIG_STRING_SELFTEST=m
--CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
- CONFIG_TEST_SCANF=m
-diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
-index ff253b6accecbd3b..2408785e0e48909b 100644
---- a/arch/m68k/configs/hp300_defconfig
-+++ b/arch/m68k/configs/hp300_defconfig
-@@ -20,6 +20,7 @@ CONFIG_HP300=y
- CONFIG_PROC_HARDWARE=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
-+CONFIG_TRIM_UNUSED_KSYMS=y
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_AMIGA_PARTITION=y
- CONFIG_ATARI_PARTITION=y
-@@ -212,7 +213,6 @@ CONFIG_IP_NF_MANGLE=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
--CONFIG_IP_NF_ARPTABLES=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
- CONFIG_NFT_DUP_IPV6=m
-@@ -583,8 +583,6 @@ CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
- CONFIG_ASYNC_RAID6_TEST=m
- CONFIG_TEST_HEXDUMP=m
--CONFIG_STRING_SELFTEST=m
--CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
- CONFIG_TEST_SCANF=m
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index f92b866620a7de86..6789d03b7b528fa4 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -20,6 +20,7 @@ CONFIG_MAC=y
- CONFIG_PROC_HARDWARE=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
-+CONFIG_TRIM_UNUSED_KSYMS=y
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_AMIGA_PARTITION=y
- CONFIG_ATARI_PARTITION=y
-@@ -211,7 +212,6 @@ CONFIG_IP_NF_MANGLE=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
--CONFIG_IP_NF_ARPTABLES=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
- CONFIG_NFT_DUP_IPV6=m
-@@ -600,8 +600,6 @@ CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
- CONFIG_ASYNC_RAID6_TEST=m
- CONFIG_TEST_HEXDUMP=m
--CONFIG_STRING_SELFTEST=m
--CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
- CONFIG_TEST_SCANF=m
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index bd813beaa8a72553..b57af39db3b4cb89 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -44,6 +44,7 @@ CONFIG_AMIGA_BUILTIN_SERIAL=y
- CONFIG_SERIAL_CONSOLE=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
-+CONFIG_TRIM_UNUSED_KSYMS=y
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_BSD_DISKLABEL=y
- CONFIG_MINIX_SUBPARTITION=y
-@@ -231,7 +232,6 @@ CONFIG_IP_NF_MANGLE=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
--CONFIG_IP_NF_ARPTABLES=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
- CONFIG_NFT_DUP_IPV6=m
-@@ -686,8 +686,6 @@ CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
- CONFIG_ASYNC_RAID6_TEST=m
- CONFIG_TEST_HEXDUMP=m
--CONFIG_STRING_SELFTEST=m
--CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
- CONFIG_TEST_SCANF=m
-diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
-index 2237ee0fe4337607..29b70f27aedd4caa 100644
---- a/arch/m68k/configs/mvme147_defconfig
-+++ b/arch/m68k/configs/mvme147_defconfig
-@@ -18,6 +18,7 @@ CONFIG_MVME147=y
- CONFIG_PROC_HARDWARE=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
-+CONFIG_TRIM_UNUSED_KSYMS=y
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_AMIGA_PARTITION=y
- CONFIG_ATARI_PARTITION=y
-@@ -209,7 +210,6 @@ CONFIG_IP_NF_MANGLE=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
--CONFIG_IP_NF_ARPTABLES=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
- CONFIG_NFT_DUP_IPV6=m
-@@ -572,8 +572,6 @@ CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
- CONFIG_ASYNC_RAID6_TEST=m
- CONFIG_TEST_HEXDUMP=m
--CONFIG_STRING_SELFTEST=m
--CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
- CONFIG_TEST_SCANF=m
-diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
-index afb5aa9c5012c4d1..757c582ffe84fbb1 100644
---- a/arch/m68k/configs/mvme16x_defconfig
-+++ b/arch/m68k/configs/mvme16x_defconfig
-@@ -19,6 +19,7 @@ CONFIG_MVME16x=y
- CONFIG_PROC_HARDWARE=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
-+CONFIG_TRIM_UNUSED_KSYMS=y
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_AMIGA_PARTITION=y
- CONFIG_ATARI_PARTITION=y
-@@ -210,7 +211,6 @@ CONFIG_IP_NF_MANGLE=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
--CONFIG_IP_NF_ARPTABLES=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
- CONFIG_NFT_DUP_IPV6=m
-@@ -573,8 +573,6 @@ CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
- CONFIG_ASYNC_RAID6_TEST=m
- CONFIG_TEST_HEXDUMP=m
--CONFIG_STRING_SELFTEST=m
--CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
- CONFIG_TEST_SCANF=m
-diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
-index e40f7a308966e8f1..f15d1009108a3459 100644
---- a/arch/m68k/configs/q40_defconfig
-+++ b/arch/m68k/configs/q40_defconfig
-@@ -19,6 +19,7 @@ CONFIG_HEARTBEAT=y
- CONFIG_PROC_HARDWARE=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
-+CONFIG_TRIM_UNUSED_KSYMS=y
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_AMIGA_PARTITION=y
- CONFIG_ATARI_PARTITION=y
-@@ -211,7 +212,6 @@ CONFIG_IP_NF_MANGLE=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
--CONFIG_IP_NF_ARPTABLES=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
- CONFIG_NFT_DUP_IPV6=m
-@@ -590,8 +590,6 @@ CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
- CONFIG_ASYNC_RAID6_TEST=m
- CONFIG_TEST_HEXDUMP=m
--CONFIG_STRING_SELFTEST=m
--CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
- CONFIG_TEST_SCANF=m
-diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
-index 4df397c0395f4240..5218c1e614b5a51e 100644
---- a/arch/m68k/configs/sun3_defconfig
-+++ b/arch/m68k/configs/sun3_defconfig
-@@ -16,6 +16,7 @@ CONFIG_SUN3=y
- CONFIG_PROC_HARDWARE=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
-+CONFIG_TRIM_UNUSED_KSYMS=y
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_AMIGA_PARTITION=y
- CONFIG_ATARI_PARTITION=y
-@@ -206,7 +207,6 @@ CONFIG_IP_NF_MANGLE=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
--CONFIG_IP_NF_ARPTABLES=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
- CONFIG_NFT_DUP_IPV6=m
-@@ -570,8 +570,6 @@ CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
- CONFIG_ASYNC_RAID6_TEST=m
- CONFIG_TEST_HEXDUMP=m
--CONFIG_STRING_SELFTEST=m
--CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
- CONFIG_TEST_SCANF=m
-diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
-index aa7719b3947fb17b..acdf4eb7af2872e3 100644
---- a/arch/m68k/configs/sun3x_defconfig
-+++ b/arch/m68k/configs/sun3x_defconfig
-@@ -16,6 +16,7 @@ CONFIG_SUN3X=y
- CONFIG_PROC_HARDWARE=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
-+CONFIG_TRIM_UNUSED_KSYMS=y
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_AMIGA_PARTITION=y
- CONFIG_ATARI_PARTITION=y
-@@ -207,7 +208,6 @@ CONFIG_IP_NF_MANGLE=m
- CONFIG_IP_NF_TARGET_ECN=m
- CONFIG_IP_NF_TARGET_TTL=m
- CONFIG_IP_NF_RAW=m
--CONFIG_IP_NF_ARPTABLES=m
- CONFIG_IP_NF_ARPFILTER=m
- CONFIG_IP_NF_ARP_MANGLE=m
- CONFIG_NFT_DUP_IPV6=m
-@@ -571,8 +571,6 @@ CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
- CONFIG_ASYNC_RAID6_TEST=m
- CONFIG_TEST_HEXDUMP=m
--CONFIG_STRING_SELFTEST=m
--CONFIG_TEST_STRING_HELPERS=m
- CONFIG_TEST_KSTRTOX=m
- CONFIG_TEST_PRINTF=m
- CONFIG_TEST_SCANF=m
--- 
-2.34.1
+I'm running stress tests for a while now, without any trouble so far. 
+Need to add a few other stressors back in, and repeat all that on a 
+slower ARAnyM instance but I'm quite confident you found the solution.
 
+Geert: with this data race fixed, it does appear my RFC patch is no 
+longer needed. Finn or I probably ought to prepare a new RFC patch to go 
+on top of your preemption patch. There is no commit ID to use in a 
+Fixes: tag for that one, correct?
+
+Cheers,
+
+     Michael
+
+On 26/03/24 22:58, Finn Thain wrote:
+> On Tue, 26 Mar 2024, Michael Schmitz wrote:
+>
+>> see below (hopefully not whitespace-damaged).
+>>
+> Following your approach, I added mutual exclusion to the other candidate
+> in the same file, namely get_pointer_table(). Together with your patch,
+> that seems to be sufficient to make stress-ng happy. I don't know the real
+> extent of the data race here so I've probably used too much locking in
+> this experiment (?)
+>
+> diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+> index 068ad7c9bb5c..d1ad55ee1b60 100644
+> --- a/arch/m68k/mm/motorola.c
+> +++ b/arch/m68k/mm/motorola.c
+> @@ -140,10 +140,14 @@ void __init init_pointer_table(void *table, int type)
+>   
+>   void *get_pointer_table(int type)
+>   {
+> -	ptable_desc *dp = ptable_list[type].next;
+> -	unsigned int mask = list_empty(&ptable_list[type]) ? 0 : PD_MARKBITS(dp);
+> +	ptable_desc *dp;
+> +	unsigned int mask;
+>   	unsigned int tmp, off;
+>   
+> +	preempt_disable();
+> +
+> +	dp = ptable_list[type].next;
+> +	mask = list_empty(&ptable_list[type]) ? 0 : PD_MARKBITS(dp);
+>   	/*
+>   	 * For a pointer table for a user process address space, a
+>   	 * table is taken from a page allocated for the purpose.  Each
+> @@ -154,8 +158,13 @@ void *get_pointer_table(int type)
+>   		void *page;
+>   		ptable_desc *new;
+>   
+> -		if (!(page = (void *)get_zeroed_page(GFP_KERNEL)))
+> +		sched_preempt_enable_no_resched();
+> +
+> +		if (!(page = (void *)get_zeroed_page(GFP_KERNEL))) {
+>   			return NULL;
+> +		}
+> +
+> +		preempt_disable();
+>   
+>   		if (type == TABLE_PTE) {
+>   			/*
+> @@ -171,6 +180,7 @@ void *get_pointer_table(int type)
+>   		PD_MARKBITS(new) = ptable_mask(type) - 1;
+>   		list_add_tail(new, dp);
+>   
+> +		sched_preempt_enable_no_resched();
+>   		return (pmd_t *)page;
+>   	}
+>   
+> @@ -181,6 +191,7 @@ void *get_pointer_table(int type)
+>   		/* move to end of list */
+>   		list_move_tail(dp, &ptable_list[type]);
+>   	}
+> +	sched_preempt_enable_no_resched();
+>   	return page_address(PD_PAGE(dp)) + off;
+>   }
+>   
