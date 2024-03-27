@@ -1,116 +1,167 @@
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D72F1CAAE
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Mar 2024 22:36:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF0031BF31
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Mar 2024 03:49:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711492561; cv=none; b=QIm5L29Dwz89SdYwSTaVwnxnHzO4yMEulFkRWpAYAbqp50+Uu9tCyiKzhOvrifa/oY5sBvMVLCvduF4uOWebw5n1HzGi2y9vjPFR3F4WqI3sM9J5MOqNQwxeGn16AVIHPXDPHsMppT7yjFx7X8wbLlhHZO5G02TNCuESlcePIx4=
+	t=1711511377; cv=none; b=Sub5YYAXsBRrE7vyOxNb1YLi97elCkNUzRIEVx7+YHGofFcRBIoK8bFICEikdMcQAhCwx7xR6tH85GKQD997RTT+OPEEP3naaPG9/urxtKiAb5aThZB+onddjhGwXC0tiixbsPtSQo8Ovg9iBewVR+VCPd86ahgfXclY+glS6CU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711492561; c=relaxed/simple;
-	bh=hDu2vqPiAe61dRBPcBgvy08gNsbxvglr2+d1pIAa3Rg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jTphEw3KnCnliPcJOUaT3ppnnq37uehzMoVwAuvnVmXF3W8J0z7HHaMlcM4J+FrffPTr0KYkkgSd7FSjLi4Zj+K+5NMPTc4QjCaYe/tLVFj0OD3XeqghJnrJPNta1tvdkO5apEIGVdQmLauUDtxzLeT0sTxSv+EAy/ICCwFLqfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nJqbyo9Y; arc=none smtp.client-ip=209.85.215.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1711511377; c=relaxed/simple;
+	bh=ZkDc6MDywhbnS/bk2VUE9vmqR/BtGXvl2LCZ0Tqn+LM=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=PJC1Xd00ihflvmPnXnRer5K4Zmx7Xn69aSp+Cnxu9i8H030Ktu4NVR7soAbOe6ktIfIlqAh1KLE+/Gj4tdNqjG6XAaxntU20RGIqWG7TpncJS17gq+8hsuIdkP7rzi0g2yD2kHSa/CjalIq1MXeMQRayCWWbmhkrC56pK5DmH0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=gH+jrp4N; arc=none smtp.client-ip=64.147.123.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nJqbyo9Y"
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5dbcfa0eb5dso4657137a12.3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Mar 2024 15:36:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711492559; x=1712097359; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0QlfYRO2A1hVKlJ5wfpRCmc15lAV+xnbFpMVgTYGnGU=;
-        b=nJqbyo9Yf3s7RmjyYyAar7fvIW2+eovoKpNdOLwniJPKLyqHPdxINSZ/TjkSAh6l6q
-         LCGluCV3+db0v8Zne5Az9D1lo++DrVnzamRFMstF+f5b3TXduYjNKCCxWnvjznRoAfU2
-         gwpFSpSRb/jBZme25TzBoMRP8OUuVni861rZ5sJarYMZ6Ga4491sl45t8hc6ae6ToEtX
-         pAXGUuDELpyf82wiC0Q+qLP2p6nwvox0wgb1Mp35S2XaL8rSLdj1FFtUFtYsx4b4htiS
-         3dnGEBPO3CxWoxP46LDzofOhbLH6gglfbgk1b9YcfTDcE3j0GGmDl4ZanQjb6CNy+iU+
-         Wuvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711492559; x=1712097359;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0QlfYRO2A1hVKlJ5wfpRCmc15lAV+xnbFpMVgTYGnGU=;
-        b=MdJY+whtOSxGi/z1Hqavdw8h/qfxsDBPpDxyHUqtYLwXqkg1xjMkggluSAmxoSdjFb
-         hW+VvYA6jSQu4fCI3MaCK8W6VTezRNcax3w9z/LYqNrW56Yqc7e5WBTasx6nz25QDFp5
-         rKRvBU9CUSgpPV4gCsxhg10Op6modcFlt5tMo83+W37MI9biK8GkReloUKOXZjssV3z+
-         rpiy+AgCjQVv4ovBAKK1zJ+6zaJ+pQA6P5ffJh819j8/IZYTGGb0e3Fy7iatOvQK26Sb
-         yM6MxEH6L7JxB1tgd1igh+83PDAkdBSI7am0FHs22oY6gjamThwRRNzP8GWmAot3V5rN
-         pPKA==
-X-Forwarded-Encrypted: i=1; AJvYcCUXSIMxfeuSaATIvAE9eOqqMZQBOj7UAmS9HexkTf39G963gb8ZNj3V7sj3lOmcBPf0pk7bEZI/1LvatkdmCMxzpu5SZxBYOrE786AZSGe6
-X-Gm-Message-State: AOJu0Yy5vhoKxUHqHRhBfuBk417zzPPLydSwJhL8Eb5FNvhuuKCoCJOT
-	PCtCXzspwqnmwonZhDGW4WEI3pGwi3ATxv2Bxa1m4wMCwEqUTNTSHs6LDnLt
-X-Google-Smtp-Source: AGHT+IEg9uxErgJRxR3j94uLUbAfljHtdCGnf6NSvxrqaeZAQbPTt7Ztd4nPa/eHLgeHcypuA9a1VA==
-X-Received: by 2002:a17:902:7844:b0:1dd:2eed:52a5 with SMTP id e4-20020a170902784400b001dd2eed52a5mr3498739pln.37.1711492559353;
-        Tue, 26 Mar 2024 15:35:59 -0700 (PDT)
-Received: from ?IPV6:2001:df0:0:200c:cce2:5e6b:f484:1b3f? ([2001:df0:0:200c:cce2:5e6b:f484:1b3f])
-        by smtp.gmail.com with ESMTPSA id k15-20020a170902c40f00b001ddc0bc5934sm7396074plk.249.2024.03.26.15.35.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 15:35:58 -0700 (PDT)
-Message-ID: <570d4e69-e73c-4d35-8538-b5530c714c55@gmail.com>
-Date: Wed, 27 Mar 2024 11:35:57 +1300
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="gH+jrp4N"
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.west.internal (Postfix) with ESMTP id 5CAD232001FC;
+	Tue, 26 Mar 2024 23:49:32 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Tue, 26 Mar 2024 23:49:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1711511371; x=1711597771; bh=9Ii/dkj/J9bS8NVHbYUMCKS0bH8d
+	t9gXmTU+ucQdCiM=; b=gH+jrp4NGTeJjwZVNo8WV309vZbjF3S/zLOdfiZM1Zx8
+	iqWkvnDPB7ytLWZbt4owlg2XAJ5B64tI8QIiPoABJ7EfbUHAjuGI/WEXl/nkbCDJ
+	a2AJriO80OK1rkLb8g1YN1LDNQPkNq9hUPOxosh+uNlPUL4NH7k+TbIhUTa5N6mu
+	Finh5wgeSrjDYSaEh17zEtjnkXUQswcUIQQqPDqnxx2UVMtpq/qCW5857A65lATa
+	tSNC9SbyOvCgXv5+5qijlkziwIvLz/G/ILIgyz+TWTBRgDJdSRMcMFmlad9n0RlL
+	E9SKm5du9y3rsGaLlevSyv3b133OXD/s1NpbBdLOrw==
+X-ME-Sender: <xms:S5cDZqi9-7m2MxR-ypozdvFI1J26jGxVUYY_TebDInytpFTEao6oGQ>
+    <xme:S5cDZrDMaitGJI364MjjlQk0FDnYETw_FO23BIrCVOISRpBheUuMEPNFU_tTsY5zy
+    _hDdS5wWb0HIrLi2ZE>
+X-ME-Received: <xmr:S5cDZiGf_7mhCUTBtBH_GtOpcx5XtVDR3DRFZZ49bEpCL7TLKpFvNKQ9c0ySut5D8_WtiL7lwQEEO1m6SoPDIu5rdscl44OExz0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddugedgieegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
+    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
+    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
+    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:S5cDZjTTHXATMxzSYombk7ZB-3IsU9o66CN1Llw2lz0MWXMQ3Uhf9w>
+    <xmx:S5cDZnxpp5DrvXvmJv6ejC0BsARmu0j1xZiZz9xRRwmXkeTmdQdarQ>
+    <xmx:S5cDZh7uQ0c9wD0lJOOlS5w5FKEIsTc65wxE5_acTKpOkjJWfsIr0w>
+    <xmx:S5cDZkzoIFqo1eK2lNYZyREBQIWrLkcrdq_O9vKzAO_JLb_xbFvwzQ>
+    <xmx:S5cDZi-qz59hW7TEZPUwHBlZ4hpsaFViHGjEIXb9oviHwLutyBBf8Q>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 26 Mar 2024 23:49:28 -0400 (EDT)
+Date: Wed, 27 Mar 2024 14:50:56 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Michael Schmitz <schmitzmic@gmail.com>
+cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH RFC] m68k: skip kernel premption if interrupts were
+ disabled
+In-Reply-To: <570d4e69-e73c-4d35-8538-b5530c714c55@gmail.com>
+Message-ID: <14f7ba29-dc96-1f46-5b5e-aa6c5bb3de3b@linux-m68k.org>
+References: <20240322014805.30606-1-schmitzmic@gmail.com> <fcabda73-4b16-ee2c-e993-2bfcf392a26a@linux-m68k.org> <e89bf618-2fa8-7cbd-16ed-d021a9a7f740@gmail.com> <948c12e4-e85f-a86c-ae95-a1eb03ca026d@gmail.com> <40928e38-0de7-75a6-d5f7-8c913155da03@linux-m68k.org>
+ <5e344842-0b19-1f83-dc77-51210a8880c7@gmail.com> <1b9ae156-9dac-b11f-5ddb-fb5878b3c9a9@gmail.com> <acd34add-27af-24a5-9af5-d40cab71c651@linux-m68k.org> <597ab0b3-ac1d-443c-95f7-4f1bbcccae1f@gmail.com> <c8a063a1-c72c-9aed-65fc-b2d87f8c7a9b@linux-m68k.org>
+ <546b3960-7a1d-4989-82ee-2d7d56a9d609@gmail.com> <fb93b00e-6cfd-f2a8-7937-1266d7bbfc23@linux-m68k.org> <570d4e69-e73c-4d35-8538-b5530c714c55@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC] m68k: skip kernel premption if interrupts were
- disabled
-Content-Language: en-US
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
-References: <20240322014805.30606-1-schmitzmic@gmail.com>
- <fcabda73-4b16-ee2c-e993-2bfcf392a26a@linux-m68k.org>
- <e89bf618-2fa8-7cbd-16ed-d021a9a7f740@gmail.com>
- <948c12e4-e85f-a86c-ae95-a1eb03ca026d@gmail.com>
- <40928e38-0de7-75a6-d5f7-8c913155da03@linux-m68k.org>
- <5e344842-0b19-1f83-dc77-51210a8880c7@gmail.com>
- <1b9ae156-9dac-b11f-5ddb-fb5878b3c9a9@gmail.com>
- <acd34add-27af-24a5-9af5-d40cab71c651@linux-m68k.org>
- <597ab0b3-ac1d-443c-95f7-4f1bbcccae1f@gmail.com>
- <c8a063a1-c72c-9aed-65fc-b2d87f8c7a9b@linux-m68k.org>
- <546b3960-7a1d-4989-82ee-2d7d56a9d609@gmail.com>
- <fb93b00e-6cfd-f2a8-7937-1266d7bbfc23@linux-m68k.org>
-From: Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <fb93b00e-6cfd-f2a8-7937-1266d7bbfc23@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 
-Hi Finn,
 
-yes, that would be the end goal, but it might be easier for Geert to 
-merge the two patches (or a single one) on top of his preempt branch if 
-they come in the usual git format.
+On Wed, 27 Mar 2024, Michael Schmitz wrote:
 
-Cheers,
+> it might be easier for Geert to merge the two patches (or a single one) 
+> on top of his preempt branch if they come in the usual git format.
 
-     Michael
+I suppose that would be easier, assuming it doesn't need a lot of rework. 
+Anyway, here's the diff.
 
-On 27/03/24 11:03, Finn Thain wrote:
-> On Wed, 27 Mar 2024, Michael Schmitz wrote:
->
->> thanks - I'm pretty sure tried that early on but botched it by excessive
->> locking (i.e., keeping preemption disabled when calling
->> get_zeroed_page()!).
->>
->> So I don't think you do use too much locking here.
->>
->> I'm running stress tests for a while now, without any trouble so far.
->> Need to add a few other stressors back in, and repeat all that on a
->> slower ARAnyM instance but I'm quite confident you found the solution.
->>
->> Geert: with this data race fixed, it does appear my RFC patch is no
->> longer needed. Finn or I probably ought to prepare a new RFC patch to go
->> on top of your preemption patch. There is no commit ID to use in a
->> Fixes: tag for that one, correct?
->>
-> I don't think we need a formal fix. I'd be content for Geert to simply
-> roll your free_pointer_table() changes and my get_pointer_table() changes
-> into his own commit. That way, bisection won't produce an unstable build.
+diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+index c1761d309fc6..d0092a3127c0 100644
+--- a/arch/m68k/mm/motorola.c
++++ b/arch/m68k/mm/motorola.c
+@@ -15,6 +15,7 @@
+ #include <linux/mm.h>
+ #include <linux/swap.h>
+ #include <linux/kernel.h>
++#include <linux/preempt.h>
+ #include <linux/string.h>
+ #include <linux/types.h>
+ #include <linux/init.h>
+@@ -139,10 +140,14 @@ void __init init_pointer_table(void *table, int type)
+ 
+ void *get_pointer_table(int type)
+ {
+-	ptable_desc *dp = ptable_list[type].next;
+-	unsigned int mask = list_empty(&ptable_list[type]) ? 0 : PD_MARKBITS(dp);
++	ptable_desc *dp;
++	unsigned int mask;
+ 	unsigned int tmp, off;
+ 
++	preempt_disable();
++
++	dp = ptable_list[type].next;
++	mask = list_empty(&ptable_list[type]) ? 0 : PD_MARKBITS(dp);
+ 	/*
+ 	 * For a pointer table for a user process address space, a
+ 	 * table is taken from a page allocated for the purpose.  Each
+@@ -153,9 +158,13 @@ void *get_pointer_table(int type)
+ 		void *page;
+ 		ptable_desc *new;
+ 
++		sched_preempt_enable_no_resched();
++
+ 		if (!(page = (void *)get_zeroed_page(GFP_KERNEL)))
+ 			return NULL;
+ 
++		preempt_disable();
++
+ 		if (type == TABLE_PTE) {
+ 			/*
+ 			 * m68k doesn't have SPLIT_PTE_PTLOCKS for not having
+@@ -170,6 +179,7 @@ void *get_pointer_table(int type)
+ 		PD_MARKBITS(new) = ptable_mask(type) - 1;
+ 		list_add_tail(new, dp);
+ 
++		sched_preempt_enable_no_resched();
+ 		return (pmd_t *)page;
+ 	}
+ 
+@@ -180,6 +190,7 @@ void *get_pointer_table(int type)
+ 		/* move to end of list */
+ 		list_move_tail(dp, &ptable_list[type]);
+ 	}
++	sched_preempt_enable_no_resched();
+ 	return page_address(PD_PAGE(dp)) + off;
+ }
+ 
+@@ -190,6 +201,8 @@ int free_pointer_table(void *table, int type)
+ 	unsigned long page = ptable & PAGE_MASK;
+ 	unsigned int mask = 1U << ((ptable - page)/ptable_size(type));
+ 
++	preempt_disable();
++
+ 	dp = PD_PTABLE(page);
+ 	if (PD_MARKBITS (dp) & mask)
+ 		panic ("table already free!");
+@@ -203,6 +216,7 @@ int free_pointer_table(void *table, int type)
+ 		if (type == TABLE_PTE)
+ 			pagetable_pte_dtor(virt_to_ptdesc((void *)page));
+ 		free_page (page);
++		sched_preempt_enable_no_resched();
+ 		return 1;
+ 	} else if (ptable_list[type].next != dp) {
+ 		/*
+@@ -211,6 +225,7 @@ int free_pointer_table(void *table, int type)
+ 		 */
+ 		list_move(dp, &ptable_list[type]);
+ 	}
++	sched_preempt_enable_no_resched();
+ 	return 0;
+ }
+ 
