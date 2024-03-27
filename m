@@ -1,175 +1,214 @@
-Received: from fhigh2-smtp.messagingengine.com (fhigh2-smtp.messagingengine.com [103.168.172.153])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 557571A716
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Mar 2024 08:37:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22244152DFA
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Mar 2024 20:44:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711528649; cv=none; b=qjV4KQ8UUEVsIvpoL7o1Z6OMMGtnWJKJbyLNt3E+O7KCKAqPIFSsaxzU9/ajZ/S5cAZL4S0BHHdG9RlyE08Atn7pNweYKHUZO+baxEaXpbnjSbKnLK3O2a5TPpIePBlZlMShawg/AKYSJ8c+Exd1hBHeklNsxoRkXcN/zpbjmYo=
+	t=1711572300; cv=none; b=W6Nibvlhf26XX2T4hP6OyLWEC1mRfyEKbP/4kZrm7PHmlKIqINFdPmwTFU2odb3F0gDDQ2pyiT7mV6wN7zAFAewbPS0CzDbv6bEvfaUhComOiF27PBvmw7GTlW5YNvU1R/8YSK01lco2Tl5szMPWMPnz8uM9vOnT/03DtQ6Oi74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711528649; c=relaxed/simple;
-	bh=FSGroBoz5ODr9QCid6PVURNzJhnt0tb6wtrrv7/LpOY=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=NneFfCoPN1228EOW+XqUha1TkB0141oOUf9ZeB/tQSQPTVr1hIIyp8wjhFuiwuNgV4v5BGJuSojGZxJM4J+O6oTZLUxNQzSpH4RuPka2jNOgfBtAIu6M0dOOCJIaIyew4J9rNA6LyElt/BlAScfXRgJdPJZdIs0X7mHBpXCuzno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=I0ocbKOz; arc=none smtp.client-ip=103.168.172.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1711572300; c=relaxed/simple;
+	bh=OrF18IDFwI6flGgEpimPzRhp+XTrybACCnJ/SNmMJ9o=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pbNgBg+VLg/iLsBwxyKMfwl87q7q5PwmNzLRhkCVawz+kfu82TYonnG8XiFSTz8+4qzh3HaW8s8UvawXkUmS3PYAwprnph9FBGQ2fHsW/vdfsFbqfFk05dbSv2YstAqLlMgDFFyl+g6/9Q90NX5ZpoIZUmjXQczi/LZ3Bwwon2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=J5DnRALO; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=qKAtjPYe; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=J5DnRALO; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=qKAtjPYe; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="I0ocbKOz"
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 515B01140175;
-	Wed, 27 Mar 2024 04:37:26 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 27 Mar 2024 04:37:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1711528646; x=1711615046; bh=ZadPyG+nnGwVa71eC8JDf5KvRpBS
-	MNjGsD+ahNvHaiQ=; b=I0ocbKOzDZMfxMlBCaLdjZoJnfGuLKGXyOsNOuhjD6Ro
-	bX8JWjolI//nuRFBc9lKyzVZtfD0sLQALBlWDFIpAmeqmMJ1yzjSFUEA8MOsbhfZ
-	hN8V8+4LMIAZYuHJT337bPmalfbjiNLz7m8PgP9xafxZVbwuowFnuJouiCiLw1mo
-	k5PhIsX/Sm/5eh0B+WweyviuXXi2H3Ah73qMJ+TGfvF+t5ajWJbePqLqa2W22l+F
-	jHzDg2yfIFlZz/fjFi0UgmsscIcu7IXhSTL8+LXGyDM6ee0fucVOmySIWRAThMsK
-	PWXW7u6EwA1ADrisDA39pJIVRy5K7Uh3vR09v5X8+A==
-X-ME-Sender: <xms:xdoDZtDQBMjpsO1GCJ2cz0I--Do7cH8AnGXZ27in7DMeReiHBS6UDg>
-    <xme:xdoDZrjkXaWZMWrRvydBp95RFCCcccbjEKMy1NDdwDpbDNyOhZKNN3Wy_FmbcvAsX
-    diQQ3q6SWVxNiLzoGA>
-X-ME-Received: <xmr:xdoDZokKeCXY6eT-WnGABlxU5NR1c4KN6Datqn6BeACRPI5y2QakkPkkBldud8eQM3rPSDAaJzm9SevzZfzJfjDpxAexWl7gvhs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddugedguddvvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhn
-    ucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrf
-    grthhtvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedv
-    ueehueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
-X-ME-Proxy: <xmx:xdoDZnz-wpaNOaMwz69SIp_bnmAAysr_NRhURi7cJgeHIetLUavn2g>
-    <xmx:xdoDZiSHPcBLhoDuiEOsP33QGsYU_bFLxQe_FOUYcJqlXLRfKElFyA>
-    <xmx:xdoDZqZ-s28ss9pvY6r9kFjR76YKLvkh3i9npFN3M_iQwu2XcCe3cw>
-    <xmx:xdoDZjSi2_phHlz_5S0FaMgnL4KM9XvAMlN7WecD97Bk3QRDo8Wr_A>
-    <xmx:xtoDZgfTci-Hx76O1giZmfzmvRe5-rnucRdmIxyrC4b2Gg6Rz_7nWQ>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 27 Mar 2024 04:37:23 -0400 (EDT)
-Date: Wed, 27 Mar 2024 19:38:54 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Michael Schmitz <schmitzmic@gmail.com>
-cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH RFC] m68k: skip kernel premption if interrupts were
- disabled
-In-Reply-To: <14f7ba29-dc96-1f46-5b5e-aa6c5bb3de3b@linux-m68k.org>
-Message-ID: <6f264600-0118-fae7-dc7c-e3407b661d66@linux-m68k.org>
-References: <20240322014805.30606-1-schmitzmic@gmail.com> <fcabda73-4b16-ee2c-e993-2bfcf392a26a@linux-m68k.org> <e89bf618-2fa8-7cbd-16ed-d021a9a7f740@gmail.com> <948c12e4-e85f-a86c-ae95-a1eb03ca026d@gmail.com> <40928e38-0de7-75a6-d5f7-8c913155da03@linux-m68k.org>
- <5e344842-0b19-1f83-dc77-51210a8880c7@gmail.com> <1b9ae156-9dac-b11f-5ddb-fb5878b3c9a9@gmail.com> <acd34add-27af-24a5-9af5-d40cab71c651@linux-m68k.org> <597ab0b3-ac1d-443c-95f7-4f1bbcccae1f@gmail.com> <c8a063a1-c72c-9aed-65fc-b2d87f8c7a9b@linux-m68k.org>
- <546b3960-7a1d-4989-82ee-2d7d56a9d609@gmail.com> <fb93b00e-6cfd-f2a8-7937-1266d7bbfc23@linux-m68k.org> <570d4e69-e73c-4d35-8538-b5530c714c55@gmail.com> <14f7ba29-dc96-1f46-5b5e-aa6c5bb3de3b@linux-m68k.org>
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="J5DnRALO";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="qKAtjPYe";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="J5DnRALO";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="qKAtjPYe"
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 18AAC229DB;
+	Wed, 27 Mar 2024 20:44:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1711572297; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=gvNYpjPCMP3bY8u5dBMnCwR0tl6uUjrhgXbs0rKvAd0=;
+	b=J5DnRALO8oxp1paKt25KLzQ/CWLNr0nEdbAXmUacLVmFY6BetSYDsDGtJbDgzF6nh3pI11
+	bir5J0VQ5Thx0TUrKUf0lp3V6ZLwiYVhjiiZNEiGKxv5sW0Kt/jDdaBuWNiuoOGZhO7KdK
+	5JSNjhEuVdoOHCc4X9YHLcIA/wtS1FI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1711572297;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=gvNYpjPCMP3bY8u5dBMnCwR0tl6uUjrhgXbs0rKvAd0=;
+	b=qKAtjPYe0YZLjXfM54u9I6bl6MmSDiPCLddSbLHuhcjvV51ZGW/oSYV4yrQi3yrAwbUSek
+	buJJaf1BirRZUxAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1711572297; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=gvNYpjPCMP3bY8u5dBMnCwR0tl6uUjrhgXbs0rKvAd0=;
+	b=J5DnRALO8oxp1paKt25KLzQ/CWLNr0nEdbAXmUacLVmFY6BetSYDsDGtJbDgzF6nh3pI11
+	bir5J0VQ5Thx0TUrKUf0lp3V6ZLwiYVhjiiZNEiGKxv5sW0Kt/jDdaBuWNiuoOGZhO7KdK
+	5JSNjhEuVdoOHCc4X9YHLcIA/wtS1FI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1711572297;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=gvNYpjPCMP3bY8u5dBMnCwR0tl6uUjrhgXbs0rKvAd0=;
+	b=qKAtjPYe0YZLjXfM54u9I6bl6MmSDiPCLddSbLHuhcjvV51ZGW/oSYV4yrQi3yrAwbUSek
+	buJJaf1BirRZUxAQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 898E313AB3;
+	Wed, 27 Mar 2024 20:44:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id E2GmH0iFBGZ2FQAAn2gu4w
+	(envelope-from <tzimmermann@suse.de>); Wed, 27 Mar 2024 20:44:56 +0000
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: arnd@arndb.de,
+	javierm@redhat.com,
+	deller@gmx.de,
+	sui.jingfeng@linux.dev
+Cc: linux-arch@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-fbdev@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-parisc@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	loongarch@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH v2 0/3] arch: Remove fbdev dependency from video helpers
+Date: Wed, 27 Mar 2024 21:41:28 +0100
+Message-ID: <20240327204450.14914-1-tzimmermann@suse.de>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=J5DnRALO;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=qKAtjPYe
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-1.51 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FREEMAIL_TO(0.00)[arndb.de,redhat.com,gmx.de,linux.dev];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	 FREEMAIL_ENVRCPT(0.00)[gmx.de];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[18];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -1.51
+X-Rspamd-Queue-Id: 18AAC229DB
+X-Spam-Flag: NO
 
+Make architecture helpers for display functionality depend on general
+video functionality instead of fbdev. This avoids the dependency on
+fbdev and makes the functionality available for non-fbdev code.
 
-On Wed, 27 Mar 2024, Finn Thain wrote:
+Patch 1 replaces the variety of Kconfig options that control the
+Makefiles with CONFIG_VIDEO. More fine-grained control of the build
+can then be done within each video/ directory; see parisc for an
+example.
 
-> 
-> On Wed, 27 Mar 2024, Michael Schmitz wrote:
-> 
-> > it might be easier for Geert to merge the two patches (or a single one) 
-> > on top of his preempt branch if they come in the usual git format.
-> 
-> I suppose that would be easier, assuming it doesn't need a lot of rework. 
-> Anyway, here's the diff.
-> 
-> diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
-> index c1761d309fc6..d0092a3127c0 100644
-> --- a/arch/m68k/mm/motorola.c
-> +++ b/arch/m68k/mm/motorola.c
-> @@ -15,6 +15,7 @@
->  #include <linux/mm.h>
->  #include <linux/swap.h>
->  #include <linux/kernel.h>
-> +#include <linux/preempt.h>
->  #include <linux/string.h>
->  #include <linux/types.h>
->  #include <linux/init.h>
-> @@ -139,10 +140,14 @@ void __init init_pointer_table(void *table, int type)
->  
->  void *get_pointer_table(int type)
->  {
-> -	ptable_desc *dp = ptable_list[type].next;
-> -	unsigned int mask = list_empty(&ptable_list[type]) ? 0 : PD_MARKBITS(dp);
-> +	ptable_desc *dp;
-> +	unsigned int mask;
->  	unsigned int tmp, off;
->  
-> +	preempt_disable();
-> +
-> +	dp = ptable_list[type].next;
-> +	mask = list_empty(&ptable_list[type]) ? 0 : PD_MARKBITS(dp);
->  	/*
->  	 * For a pointer table for a user process address space, a
->  	 * table is taken from a page allocated for the purpose.  Each
-> @@ -153,9 +158,13 @@ void *get_pointer_table(int type)
->  		void *page;
->  		ptable_desc *new;
->  
-> +		sched_preempt_enable_no_resched();
-> +
->  		if (!(page = (void *)get_zeroed_page(GFP_KERNEL)))
->  			return NULL;
->  
-> +		preempt_disable();
-> +
->  		if (type == TABLE_PTE) {
->  			/*
->  			 * m68k doesn't have SPLIT_PTE_PTLOCKS for not having
-> @@ -170,6 +179,7 @@ void *get_pointer_table(int type)
->  		PD_MARKBITS(new) = ptable_mask(type) - 1;
->  		list_add_tail(new, dp);
->  
-> +		sched_preempt_enable_no_resched();
->  		return (pmd_t *)page;
->  	}
->  
-> @@ -180,6 +190,7 @@ void *get_pointer_table(int type)
->  		/* move to end of list */
->  		list_move_tail(dp, &ptable_list[type]);
->  	}
-> +	sched_preempt_enable_no_resched();
->  	return page_address(PD_PAGE(dp)) + off;
->  }
->  
-> @@ -190,6 +201,8 @@ int free_pointer_table(void *table, int type)
->  	unsigned long page = ptable & PAGE_MASK;
->  	unsigned int mask = 1U << ((ptable - page)/ptable_size(type));
->  
-> +	preempt_disable();
-> +
->  	dp = PD_PTABLE(page);
->  	if (PD_MARKBITS (dp) & mask)
->  		panic ("table already free!");
-> @@ -203,6 +216,7 @@ int free_pointer_table(void *table, int type)
->  		if (type == TABLE_PTE)
->  			pagetable_pte_dtor(virt_to_ptdesc((void *)page));
->  		free_page (page);
-> +		sched_preempt_enable_no_resched();
->  		return 1;
->  	} else if (ptable_list[type].next != dp) {
->  		/*
-> @@ -211,6 +225,7 @@ int free_pointer_table(void *table, int type)
->  		 */
->  		list_move(dp, &ptable_list[type]);
->  	}
-> +	sched_preempt_enable_no_resched();
->  	return 0;
->  }
->  
-> 
+Patch 2 replaces fb_is_primary_device() with video_is_primary_device(),
+which has no dependencies on fbdev. The implementation remains identical
+on all affected platforms. There's one minor change in fbcon, which is
+the only caller of fb_is_primary_device().
 
-For my part,
+Patch 3 renames the source and files from fbdev to video.
 
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+v2:
+- improve cover letter
+- rebase onto v6.9-rc1
+
+Thomas Zimmermann (3):
+  arch: Select fbdev helpers with CONFIG_VIDEO
+  arch: Remove struct fb_info from video helpers
+  arch: Rename fbdev header and source files
+
+ arch/arc/include/asm/fb.h                    |  8 ------
+ arch/arc/include/asm/video.h                 |  8 ++++++
+ arch/arm/include/asm/fb.h                    |  6 -----
+ arch/arm/include/asm/video.h                 |  6 +++++
+ arch/arm64/include/asm/fb.h                  | 10 --------
+ arch/arm64/include/asm/video.h               | 10 ++++++++
+ arch/loongarch/include/asm/{fb.h => video.h} |  8 +++---
+ arch/m68k/include/asm/{fb.h => video.h}      |  8 +++---
+ arch/mips/include/asm/{fb.h => video.h}      | 12 ++++-----
+ arch/parisc/Makefile                         |  2 +-
+ arch/parisc/include/asm/fb.h                 | 14 -----------
+ arch/parisc/include/asm/video.h              | 16 ++++++++++++
+ arch/parisc/video/Makefile                   |  2 +-
+ arch/parisc/video/{fbdev.c => video-sti.c}   |  9 ++++---
+ arch/powerpc/include/asm/{fb.h => video.h}   |  8 +++---
+ arch/powerpc/kernel/pci-common.c             |  2 +-
+ arch/sh/include/asm/fb.h                     |  7 ------
+ arch/sh/include/asm/video.h                  |  7 ++++++
+ arch/sparc/Makefile                          |  4 +--
+ arch/sparc/include/asm/{fb.h => video.h}     | 15 +++++------
+ arch/sparc/video/Makefile                    |  2 +-
+ arch/sparc/video/fbdev.c                     | 26 --------------------
+ arch/sparc/video/video.c                     | 25 +++++++++++++++++++
+ arch/x86/Makefile                            |  2 +-
+ arch/x86/include/asm/fb.h                    | 19 --------------
+ arch/x86/include/asm/video.h                 | 21 ++++++++++++++++
+ arch/x86/video/Makefile                      |  3 ++-
+ arch/x86/video/{fbdev.c => video.c}          | 21 +++++++---------
+ drivers/video/fbdev/core/fbcon.c             |  2 +-
+ include/asm-generic/Kbuild                   |  2 +-
+ include/asm-generic/{fb.h => video.h}        | 17 +++++++------
+ include/linux/fb.h                           |  2 +-
+ 32 files changed, 154 insertions(+), 150 deletions(-)
+ delete mode 100644 arch/arc/include/asm/fb.h
+ create mode 100644 arch/arc/include/asm/video.h
+ delete mode 100644 arch/arm/include/asm/fb.h
+ create mode 100644 arch/arm/include/asm/video.h
+ delete mode 100644 arch/arm64/include/asm/fb.h
+ create mode 100644 arch/arm64/include/asm/video.h
+ rename arch/loongarch/include/asm/{fb.h => video.h} (86%)
+ rename arch/m68k/include/asm/{fb.h => video.h} (86%)
+ rename arch/mips/include/asm/{fb.h => video.h} (76%)
+ delete mode 100644 arch/parisc/include/asm/fb.h
+ create mode 100644 arch/parisc/include/asm/video.h
+ rename arch/parisc/video/{fbdev.c => video-sti.c} (78%)
+ rename arch/powerpc/include/asm/{fb.h => video.h} (76%)
+ delete mode 100644 arch/sh/include/asm/fb.h
+ create mode 100644 arch/sh/include/asm/video.h
+ rename arch/sparc/include/asm/{fb.h => video.h} (75%)
+ delete mode 100644 arch/sparc/video/fbdev.c
+ create mode 100644 arch/sparc/video/video.c
+ delete mode 100644 arch/x86/include/asm/fb.h
+ create mode 100644 arch/x86/include/asm/video.h
+ rename arch/x86/video/{fbdev.c => video.c} (66%)
+ rename include/asm-generic/{fb.h => video.h} (89%)
+
+-- 
+2.44.0
+
