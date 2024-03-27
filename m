@@ -1,194 +1,157 @@
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wfout7-smtp.messagingengine.com (wfout7-smtp.messagingengine.com [64.147.123.150])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D6BA12E5B
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Mar 2024 22:59:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA76722EF4
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Mar 2024 23:27:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711580378; cv=none; b=ZJl27eFo4p5IM5ZwztCC9ePCH4OmnBumaM8JiMeYa8X+xC4VH5ACnyLfaVu0RpMoaQ+XReMeR9u1deQUDDkHj3x1OOzz1ucElF3+TKS7DDMPUAhUWdQPOsFaVaAgE+wGrmVbNGSfmC1po5WAzwwgYt/U6T9besNlHg+Zsjpih8w=
+	t=1711582077; cv=none; b=R5T+PxP1KcwBOdknTnNYHXoi963D9sEtEZO6gF0qFGBTw7C+m1e2Oaw+ucfsI8vjgz+bJCyKIako3KqNy9q95TlQI17P+edvLOtQvvc19Bo85zp3cLo5aibI032l05Jzpu6vbndfrU8XQKnaFtJcX30oOe+bDpDubExbVPfrCvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711580378; c=relaxed/simple;
-	bh=TUkxXuLfuG/3fp33vnBH20k03O36BWh25sAy9boOWIg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Rl/uJFirclcZ1ULk6rjyjPIPgFmDzp9ngQ4Mu3XU4u0BXN7Oc78iDjKbg89354lY19zM01id8F0LJoUYkWTmQsqEW6tQ7us3/epciEQzd98ug1WktIwXupCFlHzxGC0fbyE5087GqILico92hc6tG0tt2bUXrohXePp99dd0nV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KnQckXsu; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1711582077; c=relaxed/simple;
+	bh=qy4N3XryuX0LqlUEtWMbUZM6aUs3eMjfEjQ27D6W4Cg=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=su5DaGjQceQKatz2oQXNHItM8LNi62uQhowyLDV8liACjiK53r/ucUelSYS0PnR+cyZdzA1lV+k+1w2HcLVr4eOYKXP9dksOQoiNOgZQCLKJyEF7xIuEaitr7VnFZDdCdXYHe8wSvit5akSjLCWKAYhdIyyvxe6omfwDPR7PZAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=DVEYmUQ4; arc=none smtp.client-ip=64.147.123.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KnQckXsu"
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2a04ac98cf7so303482a91.0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Mar 2024 15:59:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711580377; x=1712185177; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QAnZxzdG/vCNoVj7ED9+oQTfftXtq12vgK6Eqqom98I=;
-        b=KnQckXsup2SkS/VFwaf6Y26BCkAcY3L4hQ4AXUFE09Tcl3otPOYUeyQh55+3LRzEep
-         pKedvacDxmyi2hrcVq6iIcvI68m5EXyrswd44ADDHU+Mtc9ImWEQKla5RfE81wkZl3CN
-         rMMB0Oe0PzyJwRCaf6AjJvF8K1Ptc0q7S1P7GbQMGLjkJRuKnNcqowtPcwhsIS0+qw+Q
-         NpFZ3/GlblDh/oGDD7nJCD6bfKVG5FyreEONsYtOXebq9q0NC8vNlAAvpTV5ffyDFsXD
-         feRdUAa7mmP6doBu9uiRSK/dcwfwnSbwLNLVLHpolDUpJnCMIWmIrhO07dhrQOtE/M6H
-         wYjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711580377; x=1712185177;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QAnZxzdG/vCNoVj7ED9+oQTfftXtq12vgK6Eqqom98I=;
-        b=PcmtPlNXUZBd7j8ytkfhgLasRAFepHHCRqg0qQ/Nh//5CSGuXEIhPy/yrqyDDcuT0M
-         NVgj5g6AJdm5e4K4GlzlYEZWQnGbjfqytLtg3GAX/fhDx8CeFB/YnyUV1oDvllg5yzKA
-         sCi/4ZtiaZ+8b0XYMtXb9CZC8DKGHPNOLhvD/0rg4eIO0WidBwEavNfIrrzEmM6r4RNY
-         H/mbsMUZyIbmds2KMFxcSffODuj0QdMc3ZSEH0yq6n802sYtGd4Sz0M7712jwv/vUEFa
-         yv1NJFC5Rfm8z6JuWFlR+xehkt0eR2l2WpXsaIHWDVnLv/yovfAyLwYrDLnv4ymYKm67
-         HqxQ==
-X-Gm-Message-State: AOJu0YwFrYGJuILVqX1zGbtNVPd6I331dfjPC2ZrCbmVD82qhYmfsfI8
-	ADpel8E/3MiqGNFMyKCBtDSOe7PMfyfhjD8q54c3G7RFDl3WCWlr
-X-Google-Smtp-Source: AGHT+IEK50RdJst7Zr1zh8MOg9dU/ySHofMFsk7ZbWEm+Zpy+KAGZ3czpINN7DVl/bAh2CCflaHYvA==
-X-Received: by 2002:a17:90b:1256:b0:2a0:3f0a:a863 with SMTP id gx22-20020a17090b125600b002a03f0aa863mr840037pjb.17.1711580376300;
-        Wed, 27 Mar 2024 15:59:36 -0700 (PDT)
-Received: from ?IPV6:2001:df0:0:200c:cce2:5e6b:f484:1b3f? ([2001:df0:0:200c:cce2:5e6b:f484:1b3f])
-        by smtp.gmail.com with ESMTPSA id c12-20020a17090a8d0c00b002a09c114d7esm2199055pjo.45.2024.03.27.15.59.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Mar 2024 15:59:35 -0700 (PDT)
-Message-ID: <728a40f7-c189-461f-bab1-7175388faaa6@gmail.com>
-Date: Thu, 28 Mar 2024 11:59:32 +1300
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="DVEYmUQ4"
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailfout.west.internal (Postfix) with ESMTP id 2C8E61C000A3;
+	Wed, 27 Mar 2024 19:27:53 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 27 Mar 2024 19:27:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1711582072; x=1711668472; bh=PjXC1aOZ0N+DSwhpp+A30TUun8Np
+	D4+jxmK7pnnq2TQ=; b=DVEYmUQ4uNfbZZmL8WwVmeu60ssS0ZVRoxjGar3bYGCM
+	adJ1jxJ+V0FTGJSUuVuJPfYvdcyijas+m18v/VtxEVEgvGcvKrS8bBT3YM8xlEcF
+	Ruotw90rrvn9ZsOn5HYBdd0/0NcmCeKhQ0aGCpeH5MmiVqBwCR676CIFjQLgcUiT
+	X6xnCEuA7l3mRp52RgqSjFkG3tDDJRB04voaPOi5YZ1NzZsdM3em07Kby0WAmkq0
+	HB4U6U9oNJ/6VMxFmdMF9bX0cUIybDteHXVqLOmd9xaZCKrRtbpaBsAZdGpY07gq
+	gq+myHu3Ui8ls0gHucJLybXgquY9tsdAr8zff9naLw==
+X-ME-Sender: <xms:eKsEZsTmLghTXOcJ9t8S-UpyoDFkDGP803rbEyzwuf_HFe6W3QRmOA>
+    <xme:eKsEZpx18ptRdav-uLwyKUfrWvKFw_eEcXx4WC2CGoNETsy8ywy57SNoiSp2FFwkA
+    8htsrTU7fFbTTQ8rw4>
+X-ME-Received: <xmr:eKsEZp2TFudHzfv-LiO4k7LNIHtdWhrSiPK784Bs3xWGa7LE0YIP4gKoQkkzasmHh6zAY7mnylMXzrNW526clE14J1e4_ksvGUI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddukedgtdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
+    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
+    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
+    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:eKsEZgBU2yxeoegl9SCFBx2aIqa7QODlUFZ2LWk_odKMhYEyBPGU5g>
+    <xmx:eKsEZliIHtMfmsUJfZ0LKCtuD5FUjMNFg3M16ECklN8FJDFjaPW5eQ>
+    <xmx:eKsEZsq5hdR_2GC1nqK4g-MDgrvppap-mbeOnzIivARA4RM1AGW1BQ>
+    <xmx:eKsEZogosYZx6R2E_6uwcyVCROyaNVU_W3viaOn6mbAExbtdiTc__Q>
+    <xmx:eKsEZqvOe6llHH0Yf5wRI5fZZroiSXR500DqGo-0YVIpuVXma7jXFMpUQ9I>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 27 Mar 2024 19:27:49 -0400 (EDT)
+Date: Thu, 28 Mar 2024 10:29:22 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Michael Schmitz <schmitzmic@gmail.com>
+cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+Subject: Spinlock debug, was Re: [PATCH RFC] m68k: skip kernel premption if
+ interrupts were disabled
+In-Reply-To: <3dee11c5-d0dd-b61e-c7e7-bd12841618ba@gmail.com>
+Message-ID: <e926619a-3b6b-8045-8fe1-59bff5e420db@linux-m68k.org>
+References: <20240322014805.30606-1-schmitzmic@gmail.com> <fcabda73-4b16-ee2c-e993-2bfcf392a26a@linux-m68k.org> <e89bf618-2fa8-7cbd-16ed-d021a9a7f740@gmail.com> <948c12e4-e85f-a86c-ae95-a1eb03ca026d@gmail.com> <40928e38-0de7-75a6-d5f7-8c913155da03@linux-m68k.org>
+ <5e344842-0b19-1f83-dc77-51210a8880c7@gmail.com> <1b9ae156-9dac-b11f-5ddb-fb5878b3c9a9@gmail.com> <acd34add-27af-24a5-9af5-d40cab71c651@linux-m68k.org> <597ab0b3-ac1d-443c-95f7-4f1bbcccae1f@gmail.com> <c8a063a1-c72c-9aed-65fc-b2d87f8c7a9b@linux-m68k.org>
+ <546b3960-7a1d-4989-82ee-2d7d56a9d609@gmail.com> <fb93b00e-6cfd-f2a8-7937-1266d7bbfc23@linux-m68k.org> <570d4e69-e73c-4d35-8538-b5530c714c55@gmail.com> <14f7ba29-dc96-1f46-5b5e-aa6c5bb3de3b@linux-m68k.org> <3dee11c5-d0dd-b61e-c7e7-bd12841618ba@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC] m68k: skip kernel premption if interrupts were
- disabled
-Content-Language: en-US
-To: Finn Thain <fthain@linux-m68k.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-References: <20240322014805.30606-1-schmitzmic@gmail.com>
- <fcabda73-4b16-ee2c-e993-2bfcf392a26a@linux-m68k.org>
- <e89bf618-2fa8-7cbd-16ed-d021a9a7f740@gmail.com>
- <948c12e4-e85f-a86c-ae95-a1eb03ca026d@gmail.com>
- <40928e38-0de7-75a6-d5f7-8c913155da03@linux-m68k.org>
- <5e344842-0b19-1f83-dc77-51210a8880c7@gmail.com>
- <1b9ae156-9dac-b11f-5ddb-fb5878b3c9a9@gmail.com>
- <acd34add-27af-24a5-9af5-d40cab71c651@linux-m68k.org>
- <597ab0b3-ac1d-443c-95f7-4f1bbcccae1f@gmail.com>
- <c8a063a1-c72c-9aed-65fc-b2d87f8c7a9b@linux-m68k.org>
- <546b3960-7a1d-4989-82ee-2d7d56a9d609@gmail.com>
- <fb93b00e-6cfd-f2a8-7937-1266d7bbfc23@linux-m68k.org>
- <570d4e69-e73c-4d35-8538-b5530c714c55@gmail.com>
- <14f7ba29-dc96-1f46-5b5e-aa6c5bb3de3b@linux-m68k.org>
- <6f264600-0118-fae7-dc7c-e3407b661d66@linux-m68k.org>
-From: Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <6f264600-0118-fae7-dc7c-e3407b661d66@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Hi Geert,
-
-On 27/03/24 21:38, Finn Thain wrote:
-> On Wed, 27 Mar 2024, Finn Thain wrote:
->
->> On Wed, 27 Mar 2024, Michael Schmitz wrote:
->>
->>> it might be easier for Geert to merge the two patches (or a single one)
->>> on top of his preempt branch if they come in the usual git format.
->> I suppose that would be easier, assuming it doesn't need a lot of rework.
->> Anyway, here's the diff.
->>
->> diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
->> index c1761d309fc6..d0092a3127c0 100644
->> --- a/arch/m68k/mm/motorola.c
->> +++ b/arch/m68k/mm/motorola.c
->> @@ -15,6 +15,7 @@
->>   #include <linux/mm.h>
->>   #include <linux/swap.h>
->>   #include <linux/kernel.h>
->> +#include <linux/preempt.h>
->>   #include <linux/string.h>
->>   #include <linux/types.h>
->>   #include <linux/init.h>
->> @@ -139,10 +140,14 @@ void __init init_pointer_table(void *table, int type)
->>   
->>   void *get_pointer_table(int type)
->>   {
->> -	ptable_desc *dp = ptable_list[type].next;
->> -	unsigned int mask = list_empty(&ptable_list[type]) ? 0 : PD_MARKBITS(dp);
->> +	ptable_desc *dp;
->> +	unsigned int mask;
->>   	unsigned int tmp, off;
->>   
->> +	preempt_disable();
->> +
->> +	dp = ptable_list[type].next;
->> +	mask = list_empty(&ptable_list[type]) ? 0 : PD_MARKBITS(dp);
->>   	/*
->>   	 * For a pointer table for a user process address space, a
->>   	 * table is taken from a page allocated for the purpose.  Each
->> @@ -153,9 +158,13 @@ void *get_pointer_table(int type)
->>   		void *page;
->>   		ptable_desc *new;
->>   
->> +		sched_preempt_enable_no_resched();
->> +
->>   		if (!(page = (void *)get_zeroed_page(GFP_KERNEL)))
->>   			return NULL;
->>   
->> +		preempt_disable();
->> +
->>   		if (type == TABLE_PTE) {
->>   			/*
->>   			 * m68k doesn't have SPLIT_PTE_PTLOCKS for not having
->> @@ -170,6 +179,7 @@ void *get_pointer_table(int type)
->>   		PD_MARKBITS(new) = ptable_mask(type) - 1;
->>   		list_add_tail(new, dp);
->>   
->> +		sched_preempt_enable_no_resched();
->>   		return (pmd_t *)page;
->>   	}
->>   
->> @@ -180,6 +190,7 @@ void *get_pointer_table(int type)
->>   		/* move to end of list */
->>   		list_move_tail(dp, &ptable_list[type]);
->>   	}
->> +	sched_preempt_enable_no_resched();
->>   	return page_address(PD_PAGE(dp)) + off;
->>   }
->>   
->> @@ -190,6 +201,8 @@ int free_pointer_table(void *table, int type)
->>   	unsigned long page = ptable & PAGE_MASK;
->>   	unsigned int mask = 1U << ((ptable - page)/ptable_size(type));
->>   
->> +	preempt_disable();
->> +
->>   	dp = PD_PTABLE(page);
->>   	if (PD_MARKBITS (dp) & mask)
->>   		panic ("table already free!");
->> @@ -203,6 +216,7 @@ int free_pointer_table(void *table, int type)
->>   		if (type == TABLE_PTE)
->>   			pagetable_pte_dtor(virt_to_ptdesc((void *)page));
->>   		free_page (page);
->> +		sched_preempt_enable_no_resched();
->>   		return 1;
->>   	} else if (ptable_list[type].next != dp) {
->>   		/*
->> @@ -211,6 +225,7 @@ int free_pointer_table(void *table, int type)
->>   		 */
->>   		list_move(dp, &ptable_list[type]);
->>   	}
->> +	sched_preempt_enable_no_resched();
->>   	return 0;
->>   }
->>   
->>
-> For my part,
->
-> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
-
-Same for me:
-
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
 
 
+On Wed, 27 Mar 2024, Michael Schmitz wrote:
+
+> Now none of this has got us any closer to a solution for the spinlock 
+> recursion bug...
+> 
+
+It appears that the spinlock recursion check really works: I am able to 
+reproduce the following failure every time I paste too much text into the 
+qemu console.
+
+This looks like a straight-forward driver bug, whereby the "irq flood" 
+printk() results in pmz_console_write() attempting to lock the spinlock 
+already locked by pmz_interrupt(). The spinlock at 0x62e140 is the one in 
+struct uart_port.
+
+I'll see if I can come up with a driver patch. 
+
+[   14.560000] ttyPZ0: pmz: rx irq flood !
+[   14.560000] BUG: spinlock recursion on CPU#0, swapper/0
+[   14.560000]  lock: 0x62e140, .magic: dead4ead, .owner: swapper/0, .owner_cpu: 0
+[   14.560000] CPU: 0 PID: 0 Comm: swapper Not tainted 6.8.0-mac-dbg-preempt-00004-g4143b7b9144a #1
+[   14.560000] Stack from 0059bcc4:
+[   14.560000]         0059bcc4 0056316f 0056316f 00002700 004b6444 0059bce4 004ad8c6 0056316f
+[   14.560000]         0059bd10 004a6546 00556759 0062e140 dead4ead 0059f892 00000000 00000000
+[   14.560000]         0062e140 0059bde8 005c03d0 0059bd24 0004daf6 0062e140 005567bf 0062e140
+[   14.560000]         0059bd34 004b64c2 0062e140 00000001 0059bd50 002e15ea 0062e140 00000001
+[   14.560000]         0059bde7 0059bde8 005c03d0 0059bdac 0005124e 005c03d0 005cdc00 0000002b
+[   14.560000]         005a3caa 005a3caa 00000000 0059bde8 0004ff00 0059be8b 00038200 000529ba
+[   14.560000] Call Trace: [<00002700>] ret_from_kernel_thread+0xc/0x14
+[   14.560000]  [<004b6444>] _raw_spin_lock+0x0/0x28
+[   14.560000]  [<004ad8c6>] dump_stack+0x10/0x16
+[   14.560000]  [<004a6546>] spin_dump+0x6e/0x7c
+[   14.560000]  [<0004daf6>] do_raw_spin_lock+0x9c/0xa6
+[   14.560000]  [<004b64c2>] _raw_spin_lock_irqsave+0x2a/0x34
+[   14.560000]  [<002e15ea>] pmz_console_write+0x32/0x9a
+[   14.560000]  [<0005124e>] console_flush_all+0x112/0x3a2
+[   14.560000]  [<0004ff00>] console_trylock+0x0/0x7a
+[   14.560000]  [<00038200>] parameq+0x48/0x6e
+[   14.560000]  [<000529ba>] __printk_safe_enter+0x0/0x36
+[   14.560000]  [<0005113c>] console_flush_all+0x0/0x3a2
+[   14.560000]  [<000542c4>] prb_read_valid+0x0/0x1a
+[   14.560000]  [<004b65a4>] _raw_spin_unlock+0x0/0x38
+[   14.560000]  [<0005151e>] console_unlock+0x40/0xb8
+[   14.560000]  [<00038200>] parameq+0x48/0x6e
+[   14.560000]  [<002c778c>] __tty_insert_flip_string_flags+0x0/0x14e
+[   14.560000]  [<00051798>] vprintk_emit+0x156/0x238
+[   14.560000]  [<00051894>] vprintk_default+0x1a/0x1e
+[   14.560000]  [<000529a8>] vprintk+0x74/0x86
+[   14.560000]  [<004a6596>] _printk+0x12/0x16
+[   14.560000]  [<002e23be>] pmz_receive_chars+0x1cc/0x394
+[   14.560000]  [<004b6444>] _raw_spin_lock+0x0/0x28
+[   14.560000]  [<00038226>] parse_args+0x0/0x3a6
+[   14.560000]  [<004b6466>] _raw_spin_lock+0x22/0x28
+[   14.560000]  [<002e26b4>] pmz_interrupt+0x12e/0x1e0
+[   14.560000]  [<00048680>] arch_cpu_idle_enter+0x0/0x8
+[   14.560000]  [<00054ebc>] __handle_irq_event_percpu+0x24/0x106
+[   14.560000]  [<004ae576>] default_idle_call+0x0/0x46
+[   14.560000]  [<00055020>] handle_irq_event+0x30/0x90
+[   14.560000]  [<00058320>] handle_simple_irq+0x5e/0xc0
+[   14.560000]  [<00048688>] arch_cpu_idle_exit+0x0/0x8
+[   14.560000]  [<00054800>] generic_handle_irq+0x3c/0x4a
+[   14.560000]  [<00002978>] do_IRQ+0x24/0x3a
+[   14.560000]  [<004ae508>] cpu_idle_poll.isra.0+0x0/0x6e
+[   14.560000]  [<00002874>] auto_irqhandler_fixup+0x4/0xc
+[   14.560000]  [<004ae508>] cpu_idle_poll.isra.0+0x0/0x6e
+[   14.560000]  [<004ae576>] default_idle_call+0x0/0x46
+[   14.560000]  [<004ae598>] default_idle_call+0x22/0x46
+[   14.560000]  [<00048710>] do_idle+0x6a/0xf0
+[   14.560000]  [<000486a6>] do_idle+0x0/0xf0
+[   14.560000]  [<000367d2>] find_task_by_pid_ns+0x0/0x2a
+[   14.560000]  [<0005d064>] __rcu_read_lock+0x0/0x12
+[   14.560000]  [<00048a5a>] cpu_startup_entry+0x18/0x1c
+[   14.560000]  [<00063a06>] __rcu_read_unlock+0x0/0x26
+[   14.560000]  [<004ae65a>] kernel_init+0x0/0xfa
+[   14.560000]  [<0049c5a8>] strcpy+0x0/0x1e
+[   14.560000]  [<004a6584>] _printk+0x0/0x16
+[   14.560000]  [<0049c72a>] strlen+0x0/0x22
+[   14.560000]  [<006452d4>] memblock_alloc_try_nid+0x0/0x82
+[   14.560000]  [<0063939a>] arch_post_acpi_subsys_init+0x0/0x8
+[   14.560000]  [<0063991e>] console_on_rootfs+0x0/0x60
+[   14.560000]  [<00638410>] _sinittext+0x410/0xadc
+[   14.560000] 
