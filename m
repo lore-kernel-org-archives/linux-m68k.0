@@ -1,112 +1,120 @@
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF5DE5FBA7
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Mar 2024 19:54:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 735CF36E
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 29 Mar 2024 08:39:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711655666; cv=none; b=g3SBWOAp0dJPn9Z70XyK0r8BowcI6H4YK02Qg0Aeh4uq5CdceEKcGnf8zTUVE1I77IdebaQvb83oKxoAxx4XjUgVBWsz/VNSpI+OTPWhjDfhf7GcpJrLaFZh6JYaNBOQcFmjI//Y9o3gi5GO8JKGk83EfLIL5z8oV4oaZhs2g+4=
+	t=1711701592; cv=none; b=oArNUfm+eDBXR7IB/Nb9AU4+LcEYai+A5i/qr0w6OpWW+YBHn/4nGxPzxy2MBLEvwLKX4C1gPKP7YhmwxyoIm3733lJ0p6IPQvO4DQZN5R8Crd4vG7uaA1dTPBaIWTkuRTwgvjxfr0SGXrSH67Wfdsrth1TgOQtBKj0AiHMJPTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711655666; c=relaxed/simple;
-	bh=QEks7QENO8V/HRFOm7Fp8dVOAhX+bMBe1VL7AaemCKI=;
-	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=IksAc+clGXN/vDZAJftGhXG+0q67irjgG6otsd1ntBdZYQ0Q64kB1+DkVyVu/IewmUJydA+CDtOgHUBKVEy8llk0WQhWGOrpIO3rPXE9yYuuakI+7ImhYdmDpq6d7mks61OEpjm5YYDzsWrvWHA/nwmSxTjIo08GZKTI3EK3MC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SSjZLFJq; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1711701592; c=relaxed/simple;
+	bh=GR3x12krJXOXWvG/BBTxB9091fvn1PewsYR2Rzs/mFo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SpnjhXse9LEb8QaBba028gIYbwuTWz6TpBgvoUBT+GgXuEGfUGJ8qcAg5i1bqhvmuMDy1l/TYQnzEckXcBSYEC1NcRDbAEHMsO1fM8oyneArNKKcRK5eRvtZnDqQQAVRuee0nfsIRtOZ9a3pv4qmtVELXx9NPVEQB8LE3CQ/gIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SSjZLFJq"
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2a0292c4df5so1108486a91.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Mar 2024 12:54:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711655663; x=1712260463; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8DNMw6NyNMALxWBWOc+v9XiK060gwtRxaRZmcNUuLTY=;
-        b=SSjZLFJqfKWdRnnKfm8QlWbRw5bX3j/cF+knTCI+Tm4xSxQVcy2RSQm2wsJENyUQeb
-         +kK94uOh0il62vIibAH8TKUti+RTQYbNl/6RJWz9eWJ9gL4YKIxLXnY7jqhxkoAbK8KY
-         vGsYQQAi77Mxwd5sNY/LikqMHQ0npgrmLTtsd52+6e0N2TL70wBxY7lZ2bPAp4EGiNlb
-         Vtn7RMWfHiu1y/jVkXWsYBLbyU0NI5JI1BjU2aH0SSH6jz4+KRHviPCmAeNwaDxDtZ/C
-         arcbi3DvJjx9Tj0NPin6HGbeoA0YU6r205Va0BIFiboH+cIGxvk5L7BjlmoywjRF6pNP
-         7ulA==
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-60a0579a955so19877537b3.3
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 29 Mar 2024 01:39:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711655663; x=1712260463;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=8DNMw6NyNMALxWBWOc+v9XiK060gwtRxaRZmcNUuLTY=;
-        b=XSE6vUUU6LkXDuUVc0CYUnVgon9qWHO+bTXDr+BtlJV5bay0B8W8n2aDmaevrHykKE
-         eSHiyg6Hn076fCY4iio4ygJ1xkPPWgTYTqKPWGWneDpx43oYjPl+QTguZIOMt6acEH6y
-         5g30Kbv+hFqS78+TvxGzod7Xqt3WKm4IOHAx0taIL62qfyF47jsmTEUTBsUw8zFbnldn
-         3D6UVfDkAhb75shlJ+ydGQY+hKXl2AgQJd5SCC+iW4W8KtFH+Me3XVS04v81JIuIvDre
-         U5PEtLc8H7FhN7XUSj1Kci2y9AbK4Gwl0DnBUAunJObv49wo0LUC1V0baK1QBUS5f2MD
-         DTew==
-X-Forwarded-Encrypted: i=1; AJvYcCVFS6upLQdngOsRbgTAN2T7yLo1PBUxxKnkY18Oiv2ypBgua18PTFMy32QspHXv8EHak8F9OEKV6oJkwZwawBtosDP74utxGlYdVHQh2K1t
-X-Gm-Message-State: AOJu0YyMg/Fre1ahf4l9OSMf6U+En3rRfiHzK7wJzpZbm2S/6LO76sBR
-	y2uqs/hVaUW5o1nRBcBr+glX4NspgyLDOGSBGa0L2cugJH4b/CMwdDgD/LGt
-X-Google-Smtp-Source: AGHT+IGJZv/FBUjOwy/Z+gnH18X0h/A8rVJE9Hbb5Lwl4gN9Ojb0CGGR5W4CL3KDwI/5GZRyoOmdaw==
-X-Received: by 2002:a17:90a:f0f:b0:2a1:f586:d203 with SMTP id 15-20020a17090a0f0f00b002a1f586d203mr444764pjy.41.1711655662899;
-        Thu, 28 Mar 2024 12:54:22 -0700 (PDT)
-Received: from [10.1.1.24] (222-152-175-63-fibre.sparkbb.co.nz. [222.152.175.63])
-        by smtp.gmail.com with ESMTPSA id s36-20020a17090a69a700b002a03da6286asm4210558pjj.35.2024.03.28.12.54.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 28 Mar 2024 12:54:22 -0700 (PDT)
-Subject: Re: Spinlock debug, was Re: [PATCH RFC] m68k: skip kernel premption
- if interrupts were disabled
-To: Finn Thain <fthain@linux-m68k.org>
-References: <20240322014805.30606-1-schmitzmic@gmail.com>
- <fcabda73-4b16-ee2c-e993-2bfcf392a26a@linux-m68k.org>
- <e89bf618-2fa8-7cbd-16ed-d021a9a7f740@gmail.com>
- <948c12e4-e85f-a86c-ae95-a1eb03ca026d@gmail.com>
- <40928e38-0de7-75a6-d5f7-8c913155da03@linux-m68k.org>
- <5e344842-0b19-1f83-dc77-51210a8880c7@gmail.com>
- <1b9ae156-9dac-b11f-5ddb-fb5878b3c9a9@gmail.com>
- <acd34add-27af-24a5-9af5-d40cab71c651@linux-m68k.org>
- <597ab0b3-ac1d-443c-95f7-4f1bbcccae1f@gmail.com>
- <c8a063a1-c72c-9aed-65fc-b2d87f8c7a9b@linux-m68k.org>
- <546b3960-7a1d-4989-82ee-2d7d56a9d609@gmail.com>
- <fb93b00e-6cfd-f2a8-7937-1266d7bbfc23@linux-m68k.org>
- <570d4e69-e73c-4d35-8538-b5530c714c55@gmail.com>
- <14f7ba29-dc96-1f46-5b5e-aa6c5bb3de3b@linux-m68k.org>
- <3dee11c5-d0dd-b61e-c7e7-bd12841618ba@gmail.com>
- <e926619a-3b6b-8045-8fe1-59bff5e420db@linux-m68k.org>
- <7aee9fd9-1c0e-4874-bb86-e512a7c0caa6@gmail.com>
- <d19e3768-7edb-93ac-3993-af12259b7705@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
-From: Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <63db5f0b-2a7d-a057-2cfb-fefddc15bc3f@gmail.com>
-Date: Fri, 29 Mar 2024 08:54:16 +1300
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        d=1e100.net; s=20230601; t=1711701589; x=1712306389;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8hkLfUozsxdncT8HuF2o4O/3RcsP/sGMaEklDCCLn1M=;
+        b=HY3X+lqSmPMV9V2KNsibvUt/SpJcxzO9sLR6i5GQgVK/gP7n3RJqhaj8rAHirtL6Gx
+         W96OCdk4uz9ggUYdU0Z/OCwUgFLte8voAEReA1pM/xUjUg9MNtHM3mPBh241LFyf5jIM
+         0/Y3k7IBlnGfEq+6v6Jf193UTokQaVLZo/evxBLmhKL9N+8jZLVi1vLlusqGjhnaD0wS
+         xGblaRPiKNW5KG5UaZ45ZtzO1E5Ltcr3HjJs1MoKAspJ+zqbOPxajwUQR6AmOj/YwqBa
+         zkncZPFXfswnTwDKEcZD3e6f0pATYnel/p7Y7ZWMHFDcjjj5Jw8jUOL2HXh9RjcFBOnt
+         YHQA==
+X-Forwarded-Encrypted: i=1; AJvYcCVMSRbuPrSPbOfzDcLQ3V7xxnhuFiA90SstUvo+rCVc2knLZ3eJ2duhI0CYDMfDqO26VE7cqSU5IDqWGPNWo4FoxxDmM04Xi6gEsalKaPqm
+X-Gm-Message-State: AOJu0YzRdQabNHAkkV/om2Ok/WrlVYKoJywb24yaaFw9W8ep447uriCT
+	a674vJAxqrI22Ukam8wzhD+VjuAnUibjK1hUZ5MKYcjYYLe7OWA4vl3Pf645lgc=
+X-Google-Smtp-Source: AGHT+IFewE6YdfB0CPu1DbFV6TYfr+toyrFjFbiKaABxkExF/Wo2tk2zIAeiCbNyZy1v8SXQgN6A1g==
+X-Received: by 2002:a0d:df0c:0:b0:611:a599:89a3 with SMTP id i12-20020a0ddf0c000000b00611a59989a3mr1800597ywe.2.1711701588646;
+        Fri, 29 Mar 2024 01:39:48 -0700 (PDT)
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
+        by smtp.gmail.com with ESMTPSA id z197-20020a0dd7ce000000b0060a4b02124dsm696360ywd.144.2024.03.29.01.39.48
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Mar 2024 01:39:48 -0700 (PDT)
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-ddda842c399so351246276.3
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 29 Mar 2024 01:39:48 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCX30k5lgRTeXsbI6d/OIi+Z9kzdlomD18y24fTMjw607iy/W9FpGhNhLPziGJL56Jso1gUfX0ABMMC6fUxCkPiyT2uIOk4lGppMOHlmvg1Y
+X-Received: by 2002:a25:83c5:0:b0:dcc:ae3:d8a0 with SMTP id
+ v5-20020a2583c5000000b00dcc0ae3d8a0mr1625934ybm.48.1711701588203; Fri, 29 Mar
+ 2024 01:39:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <d19e3768-7edb-93ac-3993-af12259b7705@linux-m68k.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <202403291057.uo43Mlue-lkp@intel.com>
+In-Reply-To: <202403291057.uo43Mlue-lkp@intel.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 29 Mar 2024 09:39:36 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWPyz+bZ43Nu-iq_K0GnWbtP3oiXCt22cQSyMvMhQ=A2A@mail.gmail.com>
+Message-ID: <CAMuHMdWPyz+bZ43Nu-iq_K0GnWbtP3oiXCt22cQSyMvMhQ=A2A@mail.gmail.com>
+Subject: Re: arch/m68k/include/asm/page.h:10:25: error: 'CONFIG_PAGE_SHIFT'
+ undeclared; did you mean 'CONFIG_LOG_BUF_SHIFT'?
+To: kernel test robot <lkp@intel.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, oe-kbuild-all@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, 
+	linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Finn,
-
-Am 28.03.2024 um 15:48 schrieb Finn Thain:
->> Spinlock recursion in scheduler_tick() doesn't look possible from
->> reentering scheduler_tick() through code in its call path, so the
->> mechanism there would be different.
->>
->> We did rule out the VIA timer interrupt (or MFP timer A interrupt)
->> getting reentered, right?
->>
+On Fri, Mar 29, 2024 at 3:19=E2=80=AFAM kernel test robot <lkp@intel.com> w=
+rote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t master
+> head:   8d025e2092e29bfd13e56c78e22af25fac83c8ec
+> commit: 5394f1e9b687bcf26595cabf83483e568676128d arch: define CONFIG_PAGE=
+_SIZE_*KB on all architectures
+> date:   3 weeks ago
+> config: m68k-alldefconfig (https://download.01.org/0day-ci/archive/202403=
+29/202403291057.uo43Mlue-lkp@intel.com/config)
+> compiler: m68k-linux-gcc (GCC) 13.2.0
+> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
+ve/20240329/202403291057.uo43Mlue-lkp@intel.com/reproduce)
 >
-> I never added an assertion to prove that because I don't have a way to
-> reproduce the "spinlock recursion" BUG reported by Guenter.
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202403291057.uo43Mlue-lkp=
+@intel.com/
+>
+> All error/warnings (new ones prefixed by >>):
+>
+>    In file included from arch/m68k/include/asm/thread_info.h:6,
+>                     from include/linux/thread_info.h:60,
+>                     from include/asm-generic/preempt.h:5,
+>                     from ./arch/m68k/include/generated/asm/preempt.h:1,
+>                     from include/linux/preempt.h:79,
+>                     from arch/m68k/include/asm/processor.h:11,
+>                     from include/linux/sched.h:13,
+>                     from arch/m68k/kernel/asm-offsets.c:15:
+>    arch/m68k/include/asm/page_mm.h: In function 'virt_to_pfn':
+> >> arch/m68k/include/asm/page.h:10:25: error: 'CONFIG_PAGE_SHIFT' undecla=
+red (first use in this function); did you mean 'CONFIG_LOG_BUF_SHIFT'?
 
-Right. I can reproduce the bug in ARAnyM, so I'll check that the timer 
-interrupt isn't reentered there. Doesn't quite amount to the same thing 
-though.
+This is the same issue I mentioned to Arnd in IRC before: as no
+platform is enabled, none of the MMU_* options, and thus none of
+the HAVE_PAGE_SIZE_* options, is selected.
 
-Cheers,
+Gr{oetje,eeting}s,
 
-	Michael
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
