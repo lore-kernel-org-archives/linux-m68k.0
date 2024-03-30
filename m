@@ -1,84 +1,96 @@
-Received: from fhigh5-smtp.messagingengine.com (fhigh5-smtp.messagingengine.com [103.168.172.156])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFDAC8BE7
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 30 Mar 2024 06:22:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50776374C3
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 30 Mar 2024 17:58:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711779734; cv=none; b=orN1LzHFlqRMP4jvHtaMQApvq84tDc0HBlFV8LmsdiBwMvzA2JSjzkA8I5kgbuKlSJ1vX98KnGQ6DH92en4wqVRLs4gk7Bg6HpS7+SKwcc2Ue9S+ezdIOYKwoInUgJ0YWA319krFZ60n8unNXRoJ22/ulJD38xvDcNkOc2EZ9OI=
+	t=1711821520; cv=none; b=NV4xmFujtQJGgKpqZeYjgwE2kuVnokwY4hz5wtkLu/Qh6NPPfj1FEvB17jX2eARIHBEsECHeQSGqfox4dewDh3oIhYJGE2BoCCqnroxsWW0wHUKcZ13lktYeIr7fb2oIaCUX8qYrnrtvOkOywzNwY2wDlEAilfiJ9DeE3vqaVhk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711779734; c=relaxed/simple;
-	bh=zBaHCdy3RS8uAPr5C0Q1ZncEYAvkAbRnIih89bRmEsg=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=ODaIY0sOsUls1hnuj3vTTCcd5vDAQrZGzTtLy4bVHdINq+7e7Si/YUjybNgK2nKFWjZ5Q/8nHrPGb6FOoxPFluc8Lfy81yIka8drMm0CprXgMDWaCA351mtimT8YUlqeCwpJnXf4oK99ON3C6PQCKtiuLFh4l3QtQlazAasAmhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=rd152zHl; arc=none smtp.client-ip=103.168.172.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1711821520; c=relaxed/simple;
+	bh=sUrCeSRuN1AgHGz+TliAi2YSUcHKJxlopXa8Nm66Vxk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RikabD7QrFfhnvoA6Tc2WfsHsIfeiGeoBwW35MVsGwtHvLCrU5sdJbAjbuWlD/mjz74c6X11rgWlkmEKbcw+09NzjhOyEQf4JfNWeqythnWugFb57VnuhZgrJTGU58nuF9EmNz7Ql4eCzEGhc2WAoT+iuZxUt2/VLQgTuYhVKLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=udZm/geE; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="rd152zHl"
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 6C68B11400CD;
-	Sat, 30 Mar 2024 02:22:10 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Sat, 30 Mar 2024 02:22:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1711779730; x=1711866130; bh=aPq/GfWKPG0ZtDw+BaIj3LlHp71v
-	XhRPkMgk9KWhMfc=; b=rd152zHlJ2c98X1HUKcd7h3riv68Jv6gqUtKrGXWFEsg
-	CiH0rzG8Fi8Rwtm45leOUT+56VTVr+LIfTLlS8BTEEVdPabd7sCFEVeGrkEaBniL
-	Ew8GYVuimEJf11yppj6ks4kdwUDdzeeRuACIPq5IKnTLfaUYq9V4Yhq6xXWrF0Jd
-	lGoE8Bzl0Iog3XYhoZJbA0MC27XdAyELNdSbsrA/CWMZOpM5hDdx4EaTo+2I0IqA
-	ud+jCfL8+K774QHE3+mVOgFAhH82kRm8govmUts+/n97prwtrEBanV9/nSWgoWuN
-	oHfh9aHcxVm8+D59/tYzr9s+TsGY80XxQUDo2Z8aWQ==
-X-ME-Sender: <xms:ka8HZitqt-koCDw874FSOrIF7pZIE2YFBzYadG4ZRlExVC_7QVvJng>
-    <xme:ka8HZnfyFL6N4V8KjZNV6TZffa-roP362kwmUCPCqbqYQKcha6ljLoN5GXMcyWJ2K
-    f_6jLCIvvDgFezeoHo>
-X-ME-Received: <xmr:ka8HZtx-1m9kt9i-1thiObcIcErabFMtRGdUsRSQ9e11m_l_O-hvvHThp5ujUU3yqg1YhJPk8ni0LCUGaS7pmbYXEIJAaJW5PMs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddvfedgleehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
-    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
-    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:ka8HZtMXAVTDLDL1KpDWDqlyDAD02QR892WUpVBIEE_OhPIXAdWbIA>
-    <xmx:ka8HZi97puxv6ozwY1RAoO6Nn3v6-_fqU5KioMp2tdGTdybyvvubQg>
-    <xmx:ka8HZlVJyScUlz0-JAvZnp5WLjNnG_riCddXkeuznEwFAzQXZX3D3A>
-    <xmx:ka8HZrcokItd24qqIqoH3ERRa4rEUhxmviF1_E3fc7lOvv-eAXuH2Q>
-    <xmx:kq8HZpakb2_sAcOFIgD6rj8_z84HZIbURlnTBN2seKKExO7T296drw>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 30 Mar 2024 02:22:08 -0400 (EDT)
-Date: Sat, 30 Mar 2024 17:23:38 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Michael Schmitz <schmitzmic@gmail.com>
-cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
-Subject: Re: Spinlock debug, was Re: [PATCH RFC] m68k: skip kernel premption
- if interrupts were disabled
-In-Reply-To: <fc5ba67e-3d6a-2fef-ca85-6d5039da1af7@gmail.com>
-Message-ID: <181ac173-38c9-a502-84d5-4cc1d3ed6335@linux-m68k.org>
-References: <20240322014805.30606-1-schmitzmic@gmail.com> <e89bf618-2fa8-7cbd-16ed-d021a9a7f740@gmail.com> <948c12e4-e85f-a86c-ae95-a1eb03ca026d@gmail.com> <40928e38-0de7-75a6-d5f7-8c913155da03@linux-m68k.org> <5e344842-0b19-1f83-dc77-51210a8880c7@gmail.com>
- <1b9ae156-9dac-b11f-5ddb-fb5878b3c9a9@gmail.com> <acd34add-27af-24a5-9af5-d40cab71c651@linux-m68k.org> <597ab0b3-ac1d-443c-95f7-4f1bbcccae1f@gmail.com> <c8a063a1-c72c-9aed-65fc-b2d87f8c7a9b@linux-m68k.org> <546b3960-7a1d-4989-82ee-2d7d56a9d609@gmail.com>
- <fb93b00e-6cfd-f2a8-7937-1266d7bbfc23@linux-m68k.org> <570d4e69-e73c-4d35-8538-b5530c714c55@gmail.com> <14f7ba29-dc96-1f46-5b5e-aa6c5bb3de3b@linux-m68k.org> <3dee11c5-d0dd-b61e-c7e7-bd12841618ba@gmail.com> <e926619a-3b6b-8045-8fe1-59bff5e420db@linux-m68k.org>
- <7aee9fd9-1c0e-4874-bb86-e512a7c0caa6@gmail.com> <d19e3768-7edb-93ac-3993-af12259b7705@linux-m68k.org> <63db5f0b-2a7d-a057-2cfb-fefddc15bc3f@gmail.com> <fc5ba67e-3d6a-2fef-ca85-6d5039da1af7@gmail.com>
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="udZm/geE"
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-515a68d45faso2922969e87.3
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 30 Mar 2024 10:58:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1711821517; x=1712426317; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RJ32s1BONnzC61piCM2zghhCEX6pmq6Ffv/Ga55RjGY=;
+        b=udZm/geEv9x9qeh3KMhi8ZCzTRwS8WTzGbJix0aDyUI6+EtDih0uuvJDfMPw0ztCJS
+         iSMxCgcas8Ck1qyj6L/jQC2Y6Z0V0Cr6oPl8o8wem14VPYkml/g96Lfer/+VN6lEj+wP
+         fs14t2EN1sH40WJBSXFbGrAy+Smlye9hOABR+YPLlYwRjGd2ZfLzRv8hJn/Uysmw4/9W
+         R155enIU9JOeD4psZqBylH0EiuU5v0M6odzhJPzqZfYJqJH2zak1jeV1S7qYBrAKDUss
+         SdpPRzbh5+leF+KlK8aQM6ifO8F/mCljcWuX5lqiAkUiCU25mSITl8J/6DKqdq0dUyY1
+         VW4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711821517; x=1712426317;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RJ32s1BONnzC61piCM2zghhCEX6pmq6Ffv/Ga55RjGY=;
+        b=VLBXf3Up71TxfozTEnwjcBzWFbd5XN7fWFmdxLDaSdDGJlkyy0UpcZ3OmEkrkOMM4D
+         vZ8bhhsMmxhDupjut4utilDxa5B6iJpTWxRmOcAzP9AO/70YNXHKV9LLZWNdcYSdZ2v8
+         hint5Bu1DqKAx5ZKwzHRU+1EfQ5pvp5pgvFrZYjHuCBIUf+ciAtM1eEjq6sjRltim6aZ
+         26iq0DeLLxC05+837UQAc1MU82blNCu4ZNmSxz1A10pfrdkyP4J+BfGd1WX7gpdqZhiw
+         7n9mOZjiAjfa+7kM6XElOLK6oxvL64kR5hD5K3nul3umwrhTpErRWPGHfgjVW+V9Hd6T
+         Mihg==
+X-Gm-Message-State: AOJu0Yz4mv+gtkEXb8tImJkWWx8Vripq1tnvqxjFG2MbppwthkUG/tUj
+	cYtU4rxNWpPbkD6940JgQ1u1ncS1xblwT1dtN07vpBh68souqaNzJOM7sFtNMK4=
+X-Google-Smtp-Source: AGHT+IEL8I2vsogLCMr0HEwhiqpPqjFAQ1oeM2F5ZdztpgYYmySU9i4qVMxYTBePrrza9FQjnYzdFA==
+X-Received: by 2002:ac2:4e95:0:b0:512:b0a7:2943 with SMTP id o21-20020ac24e95000000b00512b0a72943mr3187347lfr.5.1711821517403;
+        Sat, 30 Mar 2024 10:58:37 -0700 (PDT)
+Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
+        by smtp.gmail.com with ESMTPSA id fd6-20020a056402388600b0056c53ea5affsm3213368edb.77.2024.03.30.10.58.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Mar 2024 10:58:36 -0700 (PDT)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+	Javier Martinez Canillas <javierm@redhat.com>
+Cc: linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	Thorsten Blum <thorsten.blum@toblux.com>
+Subject: [PATCH] m68k: amiga: Use str_plural() to fix Coccinelle warning
+Date: Sat, 30 Mar 2024 18:57:21 +0100
+Message-ID: <20240330175720.126122-2-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 
-On Sat, 30 Mar 2024, Michael Schmitz wrote:
+Fixes the following Coccinelle/coccicheck warning reported by
+string_choices.cocci:
 
-> 
-> The MFP timer C is not reentered in 66 boots even though I've seen it 
-> appear in the stack trace of 8 recursion warnings.
-> 
+	opportunity for str_plural(zorro_num_autocon)
 
-The spinlock recursion warning gives the address of the spinlock. Did you 
-figure out which spinlock it is? Also, did you capture all 8 backtraces?
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+---
+ arch/m68k/amiga/config.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
+index 99718f3dc686..d4b170c861bf 100644
+--- a/arch/m68k/amiga/config.c
++++ b/arch/m68k/amiga/config.c
+@@ -836,7 +836,7 @@ static void amiga_get_hardware_list(struct seq_file *m)
+ 		seq_printf(m, "\tZorro II%s AutoConfig: %d Expansion "
+ 				"Device%s\n",
+ 				AMIGAHW_PRESENT(ZORRO3) ? "I" : "",
+-				zorro_num_autocon, zorro_num_autocon == 1 ? "" : "s");
++				zorro_num_autocon, str_plural(zorro_num_autocon));
+ #endif /* CONFIG_ZORRO */
+ 
+ #undef AMIGAHW_ANNOUNCE
+-- 
+2.44.0
+
