@@ -1,112 +1,118 @@
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FDFE146013;
-	Wed,  3 Apr 2024 12:29:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56235152E18
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  3 Apr 2024 18:11:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712147346; cv=none; b=n6ZvurfNCyaFvOU1KohDsrj4a6YnBwUTRCXMaQN8vvcKt8f749cxYjZY5EboNeegEkGTRTnVEU3i/nbwWdbnjUV2zodQnz/gHyinFgkCOoduW/lLXcAMReyESRAScqlu3Z9BfzpLTVi1vnd1M96LGdkHPdw6yUiltkjJVUKaPp0=
+	t=1712167907; cv=none; b=igV/u3WU9OvXGyU9APwSdElt1PSxwBG4exy3HELPstwSbvKuLDjO749NxySa9EqSC0iYYtSB2z/pn+l7S19YFUmj1lMgBNg5K24bBEd9F9i+au/PEONPmKs3WcET+V0hxvnhGYdgHtjsUsxF0Bn7OJmdTbX+IXC5Yua+y4M1y5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712147346; c=relaxed/simple;
-	bh=VYP5AfDYQp0NK8K5iNdKQhalyg3zSz4h0eFw0F5dHwk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=t7DF8oMbITU7JH+ne5i/jX8+bv3KDB/ZRrOhpVNVHSCtVg/0Fzs+d7gkM4mMgBoiTHocXVbij04fzBJNpAGaYB9LByr5HpkbcLprvF8tB2RdB8dGQNpQwpnzSTDJLP11rgZxEMZYFoonXWPXINzpOBiATErpL2Jd0jqOx/j7fHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=fdyadUTy; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+	s=arc-20240116; t=1712167907; c=relaxed/simple;
+	bh=aZ5mAysNCnvwmuu/IMWuw+Al5q2n+CRYz1OcIPZ+NAA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jLIuB2FSM9z7+MAaKcR2c5HKreFy2To6sKfaRLmcchcnsqlXH8pcSHJr8jLmKdLKUayyvnqS59rZiFcAItyo0yYRgPL87MfSc3yfnNtgQOnq3LHOQcLX+1zV8Z/ajxnhzHiCXVKqYBD+8PeffEXH9b4AyR7wR6cV5+u1s/HNF08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X2B4TN8y; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="fdyadUTy"
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 433CPCSU001136;
-	Wed, 3 Apr 2024 12:28:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=TPpX4kKUFWucYvXeHgkqlM2X+uAoSB9I5PnQiABOut0=;
- b=fdyadUTyMCPrwq+uN/jRXFNq1VpZueJkwhyqEMZrUxpzVkoMzx9vKEKsvzgRvAVVgXf+
- rx4kyYIe17fLsNUj1RP/r7mriCkutDJhnpmE5YENmNsTFiqDVP8lqfKqsJB/3+QWdFwj
- 5FQRtJ19fma0oaR0rIcqSVR066mCmKe9lwtt/SpOY2IFE1plzVeGmdm2jT7oSImE6JlY
- DXv1W2om+w/4QnKJBvRPOq7MmkrmP0Rl7QK53OyB8jBXI/BxUjU5Thk9rp+ODAKpK/D/
- vVtOltqRD5j07h8MkYcfZy9CYqgXsxLGZj7qRmn/Ce6u109GK++n2A8St2NNNkFxT2N9 hg== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x973d8090-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Apr 2024 12:28:57 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 433AiltO008425;
-	Wed, 3 Apr 2024 12:28:57 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x6w2u5ga6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Apr 2024 12:28:57 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 433CSphQ30212548
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 3 Apr 2024 12:28:53 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BA34C20043;
-	Wed,  3 Apr 2024 12:28:51 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 832F32004D;
-	Wed,  3 Apr 2024 12:28:51 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed,  3 Apr 2024 12:28:51 +0000 (GMT)
-From: Niklas Schnelle <schnelle@linux.ibm.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>, linux-kernel@vger.kernel.org,
-        Niklas Schnelle <schnelle@linux.ibm.com>
-Subject: [PATCH 1/1] m68k: Let GENERIC_IOMAP depend on HAS_IOPORT
-Date: Wed,  3 Apr 2024 14:28:51 +0200
-Message-Id: <20240403122851.38808-2-schnelle@linux.ibm.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240403122851.38808-1-schnelle@linux.ibm.com>
-References: <20240403122851.38808-1-schnelle@linux.ibm.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X2B4TN8y"
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6e6f4ad4c57so66825b3a.2
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 03 Apr 2024 11:11:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712167905; x=1712772705; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9wNqoKw8FaZxTWz4HMAlSRjVC+URzh8zm927c6ywQr4=;
+        b=X2B4TN8yb2IBHo2IAT49IYli0XDqC7g4EnJcQbyyyEnxKvvYo2oRZ/JM3EKET72Ngc
+         kZZ13BFIc/yLIp2yc5sWMbV9ZqZEgasSq7kCSXYZv0rBvhYJa2+zPCN8s2ZVmrk3ScuM
+         avarqwGs8CnjoNdGT9FAbw1/Nromj2XVOJ58Dj8fmrSd6gh+DNidG7MKRrJqI/OYq57J
+         Z3p9yszN5NJAKuuG0aTUXSnvjVLv3W79xwhsVjfS4RbwIoqlDrgdOP9iiule7dIQiEhA
+         FM/dYFIvUswYhW755b7VgIC0zmrj2oWY7fff3sY1TQWWJ/yxX5y+rocPluClFxUU77Ux
+         AruA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712167905; x=1712772705;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9wNqoKw8FaZxTWz4HMAlSRjVC+URzh8zm927c6ywQr4=;
+        b=wUysMbR+pq6GCvJSyqYAql3IbwtBNpEJUR/pmhr1a/pH65F2wV1wkfBHPnDHHdP5ZL
+         +7p5i2V1e7ZU06vWkEpiT+9D8A1Bloimbz0SF/HM5S8q1sBArK47qWCUNdj2s75kFjAY
+         CGoZ2/liHO/nAxllWV4QbcqTPIfjjyUCWLy8i5MFWtgWUxpdL70BdNcHbfH4ZONR5GR7
+         3FUY0fbiEl9wsrO74rTXtuwMTGsrPP8H4Rz/wjxFOS7sfRK3FOSxo74e4Ii5a+JlQmO9
+         fQ/i1eSf5jZ2hRnse+8Au3r2ESE/MTtmjO75PqDOPwLqXIcc4zfFXlQjCU/4yq7aRX/T
+         S/zQ==
+X-Gm-Message-State: AOJu0YzvrTcJKKzneHYQr4PX9VzeRP0U8FxTkmmY0uhq0RkbgyWb8QwR
+	VA/olE9NhsYzJ8zad7tcyiIQcMbTS4dbEjhYJsU4krO1CkScljgQ
+X-Google-Smtp-Source: AGHT+IHH8OsExZMIlURZDq/TmQnHeLrzwE5Tgu4BThsGQRIhPvZFnUOtT+RHiYmgFIJomzgYt3dfXA==
+X-Received: by 2002:a05:6a20:a123:b0:1a7:186:bec3 with SMTP id q35-20020a056a20a12300b001a70186bec3mr521873pzk.57.1712167905539;
+        Wed, 03 Apr 2024 11:11:45 -0700 (PDT)
+Received: from ?IPV6:2001:df0:0:200c:cce2:5e6b:f484:1b3f? ([2001:df0:0:200c:cce2:5e6b:f484:1b3f])
+        by smtp.gmail.com with ESMTPSA id b14-20020a170902650e00b001e2936705b4sm1914313plk.243.2024.04.03.11.11.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Apr 2024 11:11:44 -0700 (PDT)
+Message-ID: <dd55afa6-8cb6-4e25-b720-d2df62dbb5e6@gmail.com>
+Date: Thu, 4 Apr 2024 07:11:41 +1300
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/1] m68k: Handle HAS_IOPORT dependencies
+Content-Language: en-US
+To: Niklas Schnelle <schnelle@linux.ibm.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@kernel.org>,
+ Heiko Carstens <hca@linux.ibm.com>, linux-kernel@vger.kernel.org
+References: <20240403122851.38808-1-schnelle@linux.ibm.com>
+From: Michael Schmitz <schmitzmic@gmail.com>
+In-Reply-To: <20240403122851.38808-1-schnelle@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: HxqR5Wr5sTTxCpiEUZ1vFr6rDICM7dJi
-X-Proofpoint-ORIG-GUID: HxqR5Wr5sTTxCpiEUZ1vFr6rDICM7dJi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-03_10,2024-04-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=581 mlxscore=0 adultscore=0 clxscore=1011 suspectscore=0
- spamscore=0 bulkscore=0 priorityscore=1501 phishscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2404030086
 
-In a future patch HAS_IOPORT=n will disable inb()/outb() and friends at
-compile time. With that choosing dynamically between I/O port and MMIO
-access via GNERIC_IOMAP will not work. So only select GENERIC_IOMAP when
-HAS_IOPORT is selected.
+Niklas,
 
-Co-developed-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
----
- arch/m68k/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+how do you propose we handle legacy drivers that do depend on 
+inb()/outb() functions (_not_ actual ISA I/O) on architectures that map 
+inb()/outb() to MMIO functions?
 
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 6ffa29585194..6ef282f329ee 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -18,7 +18,7 @@ config M68K
- 	select DMA_DIRECT_REMAP if M68K_NONCOHERENT_DMA && !COLDFIRE
- 	select GENERIC_ATOMIC64
- 	select GENERIC_CPU_DEVICES
--	select GENERIC_IOMAP
-+	select GENERIC_IOMAP if HAS_IOPORT
- 	select GENERIC_IRQ_SHOW
- 	select GENERIC_LIB_ASHLDI3
- 	select GENERIC_LIB_ASHRDI3
--- 
-2.40.1
+(In my case, that's at least ne.c - Geert ought to have a better 
+overview what else does use inb()/outb() on m68k)
 
+Cheers,
+
+     Michael
+
+On 4/04/24 01:28, Niklas Schnelle wrote:
+> Hi Geert,
+>
+> This is a follow up in my ongoing effort of making inb()/outb() and
+> similar I/O port accessors compile-time optional. Previously I sent this
+> as a treewide series titled "treewide: Remove I/O port accessors for
+> HAS_IOPORT=n" with the latest being its 5th version[0]. With a significant
+> subset of patches merged I've changed over to per-subsystem series. These
+> series are stand alone and should be merged via the relevant tree such
+> that with all subsystems complete we can follow this up with the final
+> patch that will make the I/O port accessors compile-time optional.
+>
+> The current state of the full series with changes to the remaining
+> subsystems and the aforementioned final patch can be found for your
+> convenience on my git.kernel.org tree in the has_ioport_v6 branch[1] with
+> signed tags. As for compile-time vs runtime see Linus' reply to my first
+> attempt[2].
+>
+> Thanks,
+> Niklas
+>
+> [0] https://lore.kernel.org/all/20230522105049.1467313-1-schnelle@linux.ibm.com/
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/niks/linux.git/log/?h=has_ioport_v6
+> [2] https://lore.kernel.org/lkml/CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com/
+>
+> Niklas Schnelle (1):
+>    m68k: Let GENERIC_IOMAP depend on HAS_IOPORT
+>
+>   arch/m68k/Kconfig | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
