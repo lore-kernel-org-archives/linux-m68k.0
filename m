@@ -1,155 +1,123 @@
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8399716132B
-	for <linux-m68k@lists.linux-m68k.org>; Fri,  5 Apr 2024 11:26:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.40.73.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3C7D16F292
+	for <linux-m68k@lists.linux-m68k.org>; Fri,  5 Apr 2024 14:48:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712316373; cv=none; b=pLtcuDIHl1JPZ36TANm1VvjCiXYvR/8WKJa+RSk9IdI6s3GVgH18a3U2Z4FirdhDzxeVJWfc8//bMdEe+XYYP4FtLtvuqysMLbfchzS050Ps6RcEBjt4Ge2iZyLiJoPZGvL/4+2bZArah26K7r5WS9V4k28bHHCxsYJh4bRVq1E=
+	t=1712328491; cv=none; b=LUFsDxlIPRpMyJylD3fmQLddTD+uCdz94Vpv1Z2lMUoeV3zHV0WBNh4cQx59G4MWbCZ9ttVj72o4dJvJW6A77hVXdflkdmObv+ModvsH82kAor28cz5Mu28ODBBs7OU2ZmYm6r/PzvxJh6V897dhwLJSBEwyaH5vZ3B4jNZC9e4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712316373; c=relaxed/simple;
-	bh=AMRPVsvI5Nb+bU3i5rw5NJTnOuE7WZWcpxBq0NNIJW8=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=RhiMW/+6+0qfx6HeOmMZFi2StA+XGEOr709k7OGIBu/CgBqtEZkHume/lQRN7U0FB1r0sFWmnL5UtUv2XihkU/xnYm3ed0lD20bUhdcoZBDs6fj44gDuon5hdXtWRHW34dAWqwzLtFUfJNZYQzRA3pcCUxoAJpwY/47PpRd3kVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZCHLFEzu; arc=none smtp.client-ip=145.40.73.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1712328491; c=relaxed/simple;
+	bh=LreOfBm3nT3gJWEyzyhSzgs3L/UNn7htcugC08IxS+o=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=FhgyibBrjJJerqiN/xeELx8ulCCrttsO0ifuLkAQRilvHTt8dc17/78NwwTJnSXQEqrJQ8DisuzIHcFqbHjvPn01zf4LD/EJBHgwdOEMyr7Gr7BsIfFsUNcHoR6ig7bid8SbbcBFr9WiRyN282kf8SRPz1aT+thhXGL6mPaITkU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Dwol0GCP; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZCHLFEzu"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 19A71CE36AE;
-	Fri,  5 Apr 2024 11:26:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15543C433F1;
-	Fri,  5 Apr 2024 11:26:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712316366;
-	bh=AMRPVsvI5Nb+bU3i5rw5NJTnOuE7WZWcpxBq0NNIJW8=;
-	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-	b=ZCHLFEzu7ooQeu3JhW5gMzG4vZ3pI/Zr22X4uVkkpnHQxTbi086KWJkbCAuWzmDZu
-	 ezFa8bbN3Z44L9Krtg1jPB9gxHSxv7C1bhZhf0TlW0I6pbfGpyLtmvItzOo1byjDky
-	 CHforGBTC++H1YqaqqWu0vTuAKrqgQmg3DczMUXla+gy4kwddNB5dbTQkqpy2BUW5H
-	 wCl8zGuyKbY/lOvYljmGxOYkW/S47hXx/Qn1/6lCiBmcTGpLsX5EtL/aFPnkbBpqWm
-	 ycfIsOvpomjcd80TsS7kGtlzw6sNhMFPiKgaSpbfbwqECH/ej+SYURUftAyn73so3k
-	 uxkec+udmKhpQ==
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 1AD4F1200066;
-	Fri,  5 Apr 2024 07:26:05 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Fri, 05 Apr 2024 07:26:05 -0400
-X-ME-Sender: <xms:zN8PZtl8dBQOoFn0pPzpIk9HVbL9UPQI-O1zmnA_eHHNtqfyps_aZw>
-    <xme:zN8PZo06xuvzAZ-9kvmxg3gER3llDPRWTk6dX59ZeuCGgzSgd8vFUQa_7E_u3t2d7
-    TnQZWUIAPGSDYk39i4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudegtddggeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugeskhgvrhhnvghlrdhorhhgqeenucggtf
-    frrghtthgvrhhnpedvtddtffejfeeggefgleefgfeghfehfeefffetgffgleegudevveet
-    hfefjeevkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrrhhnugdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidquddvkeehudej
-    tddvgedqvdekjedttddvieegqdgrrhhnugeppehkvghrnhgvlhdrohhrghesrghrnhgusg
-    druggv
-X-ME-Proxy: <xmx:zN8PZjr0XbPifJ8DapHQtMO0amYb56bWiyejGHmxV5bIPMAk8IsU4w>
-    <xmx:zN8PZtmEyH6ShLFD8pXH0vpOb3mvuEqoZmXHR4Od683sO2IEOfys7A>
-    <xmx:zN8PZr1KCwVkF_wuMUx6mwWb4dGEvThXKKB5APwcv2S1H-4KRWS1rw>
-    <xmx:zN8PZss8F5hk-MMH16sN-fAbhnaVzWoxeWBAwXfKiZLZgPBmynzrvw>
-    <xmx:zd8PZsxQwM37j_3ARK_qh-hUkR-BTEpl1AClH80twVE9GHmEOZdicu-H>
-Feedback-ID: i36794607:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 6DB2EB6008D; Fri,  5 Apr 2024 07:26:04 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-333-gbfea15422e-fm-20240327.001-gbfea1542
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Dwol0GCP"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712328490; x=1743864490;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=LreOfBm3nT3gJWEyzyhSzgs3L/UNn7htcugC08IxS+o=;
+  b=Dwol0GCPWx+Us9Nc1oDUYLAbXkYQJcB5drZ+e/z/NKeBnRPKlHflWqwg
+   Yw4hfY96xZ99qi69FRx5ApTzn4s2dFblzbbBBZNmELoBZmGrLsyqtM1Tt
+   7XjrCxjQMHslh/maB2ZlqYKL/yOQMjvgJRfWGYWnGNV7Vntchhy9rR8TZ
+   Bb2dQ7D0gvEJ7yATUvatm8poVjm9GIXwUZIigfZX2E2sxkH557mmMjsO5
+   rZ7L7bNjJUz2yHE8sx+31QYnqvC2LiTeEdXaUSgSRysjyX39H+VV/136X
+   wLuzAh2SxZvbL9cXjjV9ut1CJiMFoQgDWGkSykGgExg565dSBn0UcBDyS
+   g==;
+X-CSE-ConnectionGUID: 8fKVtBnuQne4JOtBaDH9kw==
+X-CSE-MsgGUID: ZyTS9Q8rTji3wmyvPm2wTg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="11478917"
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="11478917"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 07:48:09 -0700
+X-CSE-ConnectionGUID: H55LyW5ASaqr4vhL9J0MYQ==
+X-CSE-MsgGUID: +963A5O0TASYUpMZv+tuJQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="23821308"
+Received: from dtorrice-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.41.202])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 07:47:59 -0700
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Peter Zijlstra <peterz@infradead.org>, Andrzej Hajda
+ <andrzej.hajda@intel.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, linux-ia64@vger.kernel.org,
+ linux-sh@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+ intel-gfx@lists.freedesktop.org, linux-xtensa@linux-xtensa.org, Arnd
+ Bergmann <arnd@arndb.de>, Boqun Feng <boqun.feng@gmail.com>,
+ linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org,
+ loongarch@lists.linux.dev, Rodrigo Vivi <rodrigo.vivi@intel.com>, Andy
+ Shevchenko <andriy.shevchenko@linux.intel.com>,
+ linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, Andrew Morton
+ <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [Intel-gfx] [PATCH v5 0/7] Introduce __xchg, non-atomic xchg
+In-Reply-To: <Y/y0/VoPAVCXGKp3@hirez.programming.kicks-ass.net>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20230118153529.57695-1-andrzej.hajda@intel.com>
+ <Y/ZLH5F8LA3H10aL@hirez.programming.kicks-ass.net>
+ <17f40b7c-f98d-789d-fa19-12ec077b756a@intel.com>
+ <Y/y0/VoPAVCXGKp3@hirez.programming.kicks-ass.net>
+Date: Fri, 05 Apr 2024 17:47:56 +0300
+Message-ID: <87r0fjc1cz.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <11fdef9b-413d-4f88-b3d3-e5b27a88cf6f@app.fastmail.com>
-In-Reply-To: 
- <CAMuHMdX+M1VuhDVnC9n4hCBDjHywwsByNK1w8ibazc+-8_C53A@mail.gmail.com>
-References: <20240403122851.38808-1-schnelle@linux.ibm.com>
- <dd55afa6-8cb6-4e25-b720-d2df62dbb5e6@gmail.com>
- <bf276f98-2712-4fcf-a119-f984a1aedbf2@app.fastmail.com>
- <CAMuHMdX+M1VuhDVnC9n4hCBDjHywwsByNK1w8ibazc+-8_C53A@mail.gmail.com>
-Date: Fri, 05 Apr 2024 13:24:28 +0200
-From: "Arnd Bergmann" <arnd@kernel.org>
-To: "Geert Uytterhoeven" <geert@linux-m68k.org>
-Cc: "Michael Schmitz" <schmitzmic@gmail.com>,
- "Niklas Schnelle" <schnelle@linux.ibm.com>, linux-m68k@lists.linux-m68k.org,
- "Heiko Carstens" <hca@linux.ibm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/1] m68k: Handle HAS_IOPORT dependencies
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Fri, Apr 5, 2024, at 12:16, Geert Uytterhoeven wrote:
-> On Wed, Apr 3, 2024 at 8:35=E2=80=AFPM Arnd Bergmann <arnd@kernel.org>=
- wrote:
->> On Wed, Apr 3, 2024, at 20:11, Michael Schmitz wrote:
->>
->> For the Q40, it may be better in the long run to change the
->> drivers to just use MMIO directly though.
+On Mon, 27 Feb 2023, Peter Zijlstra <peterz@infradead.org> wrote:
+> On Thu, Feb 23, 2023 at 10:24:19PM +0100, Andrzej Hajda wrote:
+>> On 22.02.2023 18:04, Peter Zijlstra wrote:
+>> > On Wed, Jan 18, 2023 at 04:35:22PM +0100, Andrzej Hajda wrote:
+>> > 
+>> > > Andrzej Hajda (7):
+>> > >    arch: rename all internal names __xchg to __arch_xchg
+>> > >    linux/include: add non-atomic version of xchg
+>> > >    arch/*/uprobes: simplify arch_uretprobe_hijack_return_addr
+>> > >    llist: simplify __llist_del_all
+>> > >    io_uring: use __xchg if possible
+>> > >    qed: use __xchg if possible
+>> > >    drm/i915/gt: use __xchg instead of internal helper
+>> > 
+>> > Nothing crazy in here I suppose, I somewhat wonder why you went through
+>> > the trouble, but meh.
+>> 
+>> If you are asking why I have proposed this patchset, then the answer is
+>> simple, 1st I've tried to find a way to move internal i915 helper to core
+>> (see patch 7).
+>> Then I was looking for possible other users of this helper. And apparently
+>> there are many of them, patches 3-7 shows some.
+>> 
+>> 
+>> > 
+>> > You want me to take this through te locking tree (for the next cycle,
+>> > not this one) where I normally take atomic things or does someone else
+>> > want this?
+>> 
+>> If you could take it I will be happy.
 >
-> Q40 uses ISA.
+> OK, I'll go queue it in tip/locking/core after -rc1. Thanks!
 
-Ah, indeed. I got confused by  the NE2000 example as that
-contains "depends on (ISA || (Q40 && m)", which would have
-indicated that it's not actually using CONFIG_ISA.
+Is this where the series fell between the cracks, or was there some
+follow-up that I missed?
 
-> Michael is worried about non-ISA drivers using inb() and friends.
-> At some point in time (i.e. eons ago), we were told it was better to
-> use in[bwl]()/read[bwl]() instead of directly dereferencing volatile
-> pointers...
+I think this would still be useful. Andrzej, would you mind rebasing and
+resending if there are no objections?
 
-It's definitely still better to use an abstraction layer for MMIO
-accesses using inline asm instructions than open-coding the
-volatile pointer dereferences. Over time we have gotten better
-at defining which of the available abstractions should be used
-for a given bus, so inb()/outb() is now only really used for
-things derived from ISA in some form, including e.g. PCI and LPC.
+BR,
+Jani.
 
-> Anyway, I don't think we have many users of inb() and friends left, and
-> I assume the bots should have detected any/most remaining users in Nik=
-las'
-> branch...
->
-> arch/m68k/include/asm/floppy.h on Sun-3x might be the only offender?
 
-Could be. I think we can leave this one to whoever tries to get
-sun3x floppy support working, it's been marked broken for a while
-(see below). If there are any others, they will cause pretty
-obvious build failures once inb()/outb() are removed from the
-build, and they should be trivial to fix then.
-
-     Arnd
-
-commit f1e0f28a85001f4faa3ea930fcf201933f42340e
-Author: akpm <akpm>
-Date:   Mon Jan 19 18:31:30 2004 +0000
-
-    [PATCH] M68k floppy selection
-   =20
-    From: Geert Uytterhoeven <geert@linux-m68k.org>
-   =20
-    Floppy: On m68k, PC-style floppies are used on Q40/Q60 and Sun-3x on=
-ly. Sun-3x
-    floppy is currently broken (needs I/O abstractions)
-   =20
-    BKrev: 400c2282G1O-TsH5FiwzPbOorftQhg
-
-diff --git a/drivers/block/Kconfig b/drivers/block/Kconfig
-index 2dce1d2699a9..32fdec34568e 100644
---- a/drivers/block/Kconfig
-+++ b/drivers/block/Kconfig
-@@ -6,7 +6,7 @@ menu "Block devices"
-=20
- config BLK_DEV_FD
-        tristate "Normal floppy disk support"
--       depends on !X86_PC9800 && !ARCH_S390
-+       depends on (!X86_PC9800 && !ARCH_S390 && !M68K) || Q40 || (SUN3X=
- && BROKEN)
-        ---help---
-          If you want to use the floppy disk drive(s) of your PC under L=
-inux,
-          say Y. Information about this driver, especially important for=
- IBM
+-- 
+Jani Nikula, Intel
