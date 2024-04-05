@@ -1,111 +1,155 @@
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B25D27447
-	for <linux-m68k@lists.linux-m68k.org>; Fri,  5 Apr 2024 10:16:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8399716132B
+	for <linux-m68k@lists.linux-m68k.org>; Fri,  5 Apr 2024 11:26:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.40.73.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712312195; cv=none; b=gUwkRAXiOCEMxpaWcs7uWL3JC2mpQbqcy0SGqYaU0wmgYfU5zGdA5/CgZDX67dKMF9AWN1WqtMsw7umqh3Nk0M25ynZTxHsiigQbNaCSM7DdGgTCVWlPvobnpwqOSiax1m0byHZsrHZTkE6Bd5jS8nh1YyOPebZ/F31gfsuNBm0=
+	t=1712316373; cv=none; b=pLtcuDIHl1JPZ36TANm1VvjCiXYvR/8WKJa+RSk9IdI6s3GVgH18a3U2Z4FirdhDzxeVJWfc8//bMdEe+XYYP4FtLtvuqysMLbfchzS050Ps6RcEBjt4Ge2iZyLiJoPZGvL/4+2bZArah26K7r5WS9V4k28bHHCxsYJh4bRVq1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712312195; c=relaxed/simple;
-	bh=JcY82/C76s0/t6n/adQHbGR8IvfyPU6uK0CJHQnDc3Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VbxrW4fGlZIw/3Cc0P8ZXKCirB95lMK58hrVccBf0bJLJWhk/cJtri3H+eT5bt2yazALxPJnnT/zYVorDTSZRJod/jPjUgJiFhMZZ2W6yj/A5aI8IOs3xjYt65HSAb765RKhgnqo0jdxrc++jG6GBkH6AsPfT5+D5pMwZGMzqZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-61545a0280dso22487877b3.0
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 05 Apr 2024 03:16:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712312192; x=1712916992;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=r+r8oBMZYIdH7mEh+EvZMzslbveSo86ivNfgm6OLNsA=;
-        b=I3qVVdX4NnAOcmLyzQXx3a0yJ3NHM/bJK8jJqbsiMZswkQ4iF12BXb8gUsAYsiuWiT
-         DfVu3SLrKfCOVvA5l2nTeK2X3F+g/VyqiKmDeXiKryDO6v1FZYP31JpS9sWtLUetw/VX
-         BRDephEvyRFV7PoMhNsusnNf9FU+YLDNAA3pf+BHKocprTWBNj8gBx650t1vUMOSM2QL
-         4PLt03Hz+PUwL6JiyaPxggB/WahxMA4hPn6xo0ig0/aTBh7KCH2UnsTSwfl8r+eNlAmX
-         xzTqPQTAJnBjhtR1kp8xPA7Ch/JkfJSFQRdM/kIn3mykIagXGm020pOwN/HzaV6XBlei
-         MZ7A==
-X-Forwarded-Encrypted: i=1; AJvYcCUS5h9augdU2rJJgyJ+MZ7XuaNoeJQFgQ9gBNtsU26eAFHbbxdwHxq82ctdP4Hft8go/aqu/qWZqc3vKe6LMSRr1iRwP61KQ3Ni+AsnW8S6
-X-Gm-Message-State: AOJu0Yx0hS5+olPksmBYhHmD6FrFW8k6qNm0p98Y6OI/5xMHWDsNDO9H
-	+Kq33aex+GTIK21O1xwSK31duC8DOcxcrfdD1S1ZoZTZmt0Qh8NZLuwDV7qtZLI=
-X-Google-Smtp-Source: AGHT+IEp3yVh3Z6Qos6IHjZzWaFO2+odOta1Oglv7KhxLM2s2vfpMLD1w1NWULHLGysNvKfT0rrq7w==
-X-Received: by 2002:a5b:5ce:0:b0:dc2:279f:f7e with SMTP id w14-20020a5b05ce000000b00dc2279f0f7emr815448ybp.10.1712312190086;
-        Fri, 05 Apr 2024 03:16:30 -0700 (PDT)
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
-        by smtp.gmail.com with ESMTPSA id r18-20020a25b612000000b00dcc70082018sm255696ybj.37.2024.04.05.03.16.29
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Apr 2024 03:16:29 -0700 (PDT)
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc742543119so1989989276.0
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 05 Apr 2024 03:16:29 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWt2E7FGm4CiEOtTUs5DhA1n0ORVNCdNtsafetb9SlPLwY/sKYg6mJoPtc9hBXTlOe/mKnXBQQDgGQiCRWBUZO7BU8PGEHLRb0vTMswE+vd
-X-Received: by 2002:a5b:2c2:0:b0:dd9:20d6:fd2 with SMTP id h2-20020a5b02c2000000b00dd920d60fd2mr741410ybp.27.1712312189491;
- Fri, 05 Apr 2024 03:16:29 -0700 (PDT)
+	s=arc-20240116; t=1712316373; c=relaxed/simple;
+	bh=AMRPVsvI5Nb+bU3i5rw5NJTnOuE7WZWcpxBq0NNIJW8=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=RhiMW/+6+0qfx6HeOmMZFi2StA+XGEOr709k7OGIBu/CgBqtEZkHume/lQRN7U0FB1r0sFWmnL5UtUv2XihkU/xnYm3ed0lD20bUhdcoZBDs6fj44gDuon5hdXtWRHW34dAWqwzLtFUfJNZYQzRA3pcCUxoAJpwY/47PpRd3kVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZCHLFEzu; arc=none smtp.client-ip=145.40.73.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZCHLFEzu"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 19A71CE36AE;
+	Fri,  5 Apr 2024 11:26:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15543C433F1;
+	Fri,  5 Apr 2024 11:26:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712316366;
+	bh=AMRPVsvI5Nb+bU3i5rw5NJTnOuE7WZWcpxBq0NNIJW8=;
+	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+	b=ZCHLFEzu7ooQeu3JhW5gMzG4vZ3pI/Zr22X4uVkkpnHQxTbi086KWJkbCAuWzmDZu
+	 ezFa8bbN3Z44L9Krtg1jPB9gxHSxv7C1bhZhf0TlW0I6pbfGpyLtmvItzOo1byjDky
+	 CHforGBTC++H1YqaqqWu0vTuAKrqgQmg3DczMUXla+gy4kwddNB5dbTQkqpy2BUW5H
+	 wCl8zGuyKbY/lOvYljmGxOYkW/S47hXx/Qn1/6lCiBmcTGpLsX5EtL/aFPnkbBpqWm
+	 ycfIsOvpomjcd80TsS7kGtlzw6sNhMFPiKgaSpbfbwqECH/ej+SYURUftAyn73so3k
+	 uxkec+udmKhpQ==
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 1AD4F1200066;
+	Fri,  5 Apr 2024 07:26:05 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Fri, 05 Apr 2024 07:26:05 -0400
+X-ME-Sender: <xms:zN8PZtl8dBQOoFn0pPzpIk9HVbL9UPQI-O1zmnA_eHHNtqfyps_aZw>
+    <xme:zN8PZo06xuvzAZ-9kvmxg3gER3llDPRWTk6dX59ZeuCGgzSgd8vFUQa_7E_u3t2d7
+    TnQZWUIAPGSDYk39i4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudegtddggeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugeskhgvrhhnvghlrdhorhhgqeenucggtf
+    frrghtthgvrhhnpedvtddtffejfeeggefgleefgfeghfehfeefffetgffgleegudevveet
+    hfefjeevkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegrrhhnugdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidquddvkeehudej
+    tddvgedqvdekjedttddvieegqdgrrhhnugeppehkvghrnhgvlhdrohhrghesrghrnhgusg
+    druggv
+X-ME-Proxy: <xmx:zN8PZjr0XbPifJ8DapHQtMO0amYb56bWiyejGHmxV5bIPMAk8IsU4w>
+    <xmx:zN8PZtmEyH6ShLFD8pXH0vpOb3mvuEqoZmXHR4Od683sO2IEOfys7A>
+    <xmx:zN8PZr1KCwVkF_wuMUx6mwWb4dGEvThXKKB5APwcv2S1H-4KRWS1rw>
+    <xmx:zN8PZss8F5hk-MMH16sN-fAbhnaVzWoxeWBAwXfKiZLZgPBmynzrvw>
+    <xmx:zd8PZsxQwM37j_3ARK_qh-hUkR-BTEpl1AClH80twVE9GHmEOZdicu-H>
+Feedback-ID: i36794607:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 6DB2EB6008D; Fri,  5 Apr 2024 07:26:04 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-333-gbfea15422e-fm-20240327.001-gbfea1542
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Message-Id: <11fdef9b-413d-4f88-b3d3-e5b27a88cf6f@app.fastmail.com>
+In-Reply-To: 
+ <CAMuHMdX+M1VuhDVnC9n4hCBDjHywwsByNK1w8ibazc+-8_C53A@mail.gmail.com>
 References: <20240403122851.38808-1-schnelle@linux.ibm.com>
- <dd55afa6-8cb6-4e25-b720-d2df62dbb5e6@gmail.com> <bf276f98-2712-4fcf-a119-f984a1aedbf2@app.fastmail.com>
-In-Reply-To: <bf276f98-2712-4fcf-a119-f984a1aedbf2@app.fastmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 5 Apr 2024 12:16:17 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdX+M1VuhDVnC9n4hCBDjHywwsByNK1w8ibazc+-8_C53A@mail.gmail.com>
-Message-ID: <CAMuHMdX+M1VuhDVnC9n4hCBDjHywwsByNK1w8ibazc+-8_C53A@mail.gmail.com>
+ <dd55afa6-8cb6-4e25-b720-d2df62dbb5e6@gmail.com>
+ <bf276f98-2712-4fcf-a119-f984a1aedbf2@app.fastmail.com>
+ <CAMuHMdX+M1VuhDVnC9n4hCBDjHywwsByNK1w8ibazc+-8_C53A@mail.gmail.com>
+Date: Fri, 05 Apr 2024 13:24:28 +0200
+From: "Arnd Bergmann" <arnd@kernel.org>
+To: "Geert Uytterhoeven" <geert@linux-m68k.org>
+Cc: "Michael Schmitz" <schmitzmic@gmail.com>,
+ "Niklas Schnelle" <schnelle@linux.ibm.com>, linux-m68k@lists.linux-m68k.org,
+ "Heiko Carstens" <hca@linux.ibm.com>, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH 0/1] m68k: Handle HAS_IOPORT dependencies
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, Niklas Schnelle <schnelle@linux.ibm.com>, 
-	linux-m68k@lists.linux-m68k.org, Heiko Carstens <hca@linux.ibm.com>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-Hi Arnd,
-
-On Wed, Apr 3, 2024 at 8:35=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wrot=
-e:
-> On Wed, Apr 3, 2024, at 20:11, Michael Schmitz wrote:
-> > how do you propose we handle legacy drivers that do depend on
-> > inb()/outb() functions (_not_ actual ISA I/O) on architectures that map
-> > inb()/outb() to MMIO functions?
-> >
-> > (In my case, that's at least ne.c - Geert ought to have a better
-> > overview what else does use inb()/outb() on m68k)
+On Fri, Apr 5, 2024, at 12:16, Geert Uytterhoeven wrote:
+> On Wed, Apr 3, 2024 at 8:35=E2=80=AFPM Arnd Bergmann <arnd@kernel.org>=
+ wrote:
+>> On Wed, Apr 3, 2024, at 20:11, Michael Schmitz wrote:
+>>
+>> For the Q40, it may be better in the long run to change the
+>> drivers to just use MMIO directly though.
 >
-> If a machine provides an inb()/outb() set of operations that
-> is actually used, it should set HAS_IOPORT.
+> Q40 uses ISA.
+
+Ah, indeed. I got confused by  the NE2000 example as that
+contains "depends on (ISA || (Q40 && m)", which would have
+indicated that it's not actually using CONFIG_ISA.
+
+> Michael is worried about non-ISA drivers using inb() and friends.
+> At some point in time (i.e. eons ago), we were told it was better to
+> use in[bwl]()/read[bwl]() instead of directly dereferencing volatile
+> pointers...
+
+It's definitely still better to use an abstraction layer for MMIO
+accesses using inline asm instructions than open-coding the
+volatile pointer dereferences. Over time we have gotten better
+at defining which of the available abstractions should be used
+for a given bus, so inb()/outb() is now only really used for
+things derived from ISA in some form, including e.g. PCI and LPC.
+
+> Anyway, I don't think we have many users of inb() and friends left, and
+> I assume the bots should have detected any/most remaining users in Nik=
+las'
+> branch...
 >
-> For the Q40, it may be better in the long run to change the
-> drivers to just use MMIO directly though.
+> arch/m68k/include/asm/floppy.h on Sun-3x might be the only offender?
 
-Q40 uses ISA.
+Could be. I think we can leave this one to whoever tries to get
+sun3x floppy support working, it's been marked broken for a while
+(see below). If there are any others, they will cause pretty
+obvious build failures once inb()/outb() are removed from the
+build, and they should be trivial to fix then.
 
-Michael is worried about non-ISA drivers using inb() and friends.
-At some point in time (i.e. eons ago), we were told it was better to
-use in[bwl]()/read[bwl]() instead of directly dereferencing volatile
-pointers...
+     Arnd
 
-Anyway, I don't think we have many users of inb() and friends left, and
-I assume the bots should have detected any/most remaining users in Niklas'
-branch...
+commit f1e0f28a85001f4faa3ea930fcf201933f42340e
+Author: akpm <akpm>
+Date:   Mon Jan 19 18:31:30 2004 +0000
 
-arch/m68k/include/asm/floppy.h on Sun-3x might be the only offender?
+    [PATCH] M68k floppy selection
+   =20
+    From: Geert Uytterhoeven <geert@linux-m68k.org>
+   =20
+    Floppy: On m68k, PC-style floppies are used on Q40/Q60 and Sun-3x on=
+ly. Sun-3x
+    floppy is currently broken (needs I/O abstractions)
+   =20
+    BKrev: 400c2282G1O-TsH5FiwzPbOorftQhg
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+diff --git a/drivers/block/Kconfig b/drivers/block/Kconfig
+index 2dce1d2699a9..32fdec34568e 100644
+--- a/drivers/block/Kconfig
++++ b/drivers/block/Kconfig
+@@ -6,7 +6,7 @@ menu "Block devices"
+=20
+ config BLK_DEV_FD
+        tristate "Normal floppy disk support"
+-       depends on !X86_PC9800 && !ARCH_S390
++       depends on (!X86_PC9800 && !ARCH_S390 && !M68K) || Q40 || (SUN3X=
+ && BROKEN)
+        ---help---
+          If you want to use the floppy disk drive(s) of your PC under L=
+inux,
+          say Y. Information about this driver, especially important for=
+ IBM
