@@ -1,302 +1,313 @@
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48015174ECF
-	for <linux-m68k@lists.linux-m68k.org>; Fri,  5 Apr 2024 20:14:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.40.73.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C76BBE58
+	for <linux-m68k@lists.linux-m68k.org>; Sat,  6 Apr 2024 01:14:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712348052; cv=none; b=OvAFSVu9PkHLVvys3mT9j6oH4McNECQYgO+z+UEkPnvRUpvyTfibvIF2LR2bAUA+SK2MBMXQuIrr89UNEDp4QxIhS3IpfhAmTiY/GG51o7Xoized35SNIM2cO4SWZ8emKXom8amKrI6WugFb//7vqVO0PG+v2eIsnywbpZDCkxo=
+	t=1712366087; cv=none; b=sZ4FCH7NKysFI4ZgYLsktjap37G9mnTHAZ2ZW8/nYFaIEhpEVoupyCS1B80H4/36H7+VMOr4fOI6fC8pPJ/oATh5CJVIEz2ZH+vQaM9CDCPXpdAuKHgYGY2AKQdhKgSt8xJ6r42Zi41suwZ+/nni3hJSGFYzvGnogW9jfsOdEkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712348052; c=relaxed/simple;
-	bh=MauAJ22yHYagcZfjpHra3lN/mo7DYJopjdnrUhrDfgE=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=IZCZoZLvHYBa7PbAL//O8TFgJxA72YavAC7xTfhEYX+oW85B7lDlaSut3B79BiFoTINZ3mlBuQoDgxi/dljR6z0hjLEpaMsOegQejVCu5vltsUEusCqIGXoMBOIFCY3xxONK5amgYyQuS7ruRkZvh+qITYXUV3nvCky+/Ap7qRE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GtatqMjR; arc=none smtp.client-ip=145.40.73.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1712366087; c=relaxed/simple;
+	bh=r/gYE/Zz9tJKKilM7m8Zai2JPeh/htkd2LIkdAiTKNc=;
+	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=BYzUyAEb5Zh00uWgw+k4/fnK4sWBTMZAd2ZN/dV//eFhTDYaWPqy9Mb6hVgOeObofpKksbZjI9EOSDB7/+4GzFgtISdku8QRmi17D+9OJ/vsPi8ZRyABkBUMTXPnuWJxxlgwaGhPsAc2hsiPaJVqtWANQOtI5JRZCCZtX7hluoE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VL0mS5XJ; arc=none smtp.client-ip=209.85.210.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GtatqMjR"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id D202FCE25D5;
-	Fri,  5 Apr 2024 20:14:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9288FC433C7;
-	Fri,  5 Apr 2024 20:14:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712348047;
-	bh=MauAJ22yHYagcZfjpHra3lN/mo7DYJopjdnrUhrDfgE=;
-	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-	b=GtatqMjRcQEjmaKQqHgse4nsmxyosMlOCd6nWUIUgH2hkjKtBMxT7qjIUSvrd3yFn
-	 bzeGadxs8zkoDpE5ulfDpzuIthuXaxb2NLu3a6J12u6DjIRQVjd3N/LiVntX042LhY
-	 7SietNtnz/LuwvGImp+busp34OP52MZqVc1J9zAVOIQATMTEaU5BDTJk/cS1Tu8Tz5
-	 fTA8BV/j8RUsG53DGI4ZpHg60Wdx+X8Kpa/+MdsbDbCt513B2DGEvo7oPshopXWNqD
-	 C44cigvG2NNz+a4L91zKIQfHJfdPzpKZO9PrkqAJWQeVnv9XMLSiS1jSfN81YiGqMn
-	 lo4YitwnWbM+Q==
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 962081200068;
-	Fri,  5 Apr 2024 16:14:05 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Fri, 05 Apr 2024 16:14:05 -0400
-X-ME-Sender: <xms:jFsQZqLwxgkPtLnQH9PVc4cqFtolkFLRDgpVlnhjwAxI02HdhSXScg>
-    <xme:jFsQZiIdNH-EBxl5WagFj8kfyjXa4KTFhHJWCTBwLEca0hmG9h3Z2qSctFpbsYHS7
-    uF1MZANqhyIlyK1vOw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudegtddgudeglecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
-    tehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusehkvghrnhgvlhdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepvddttdffjeefgeeggfelfefggefhheeffefftefggfelgeduveev
-    tefhfeejveeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homheprghrnhguodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduvdekhedu
-    jedtvdegqddvkeejtddtvdeigedqrghrnhgupeepkhgvrhhnvghlrdhorhhgsegrrhhnug
-    gsrdguvg
-X-ME-Proxy: <xmx:jFsQZqtLFUoXOlHogjlMx6x2TxwHYwbUo-nPHNpo1rEE3tTO8g3nRA>
-    <xmx:jFsQZvZFlP2f7MWdYVzarCRTCF0CN3Ft6BB8HvK0q_EpGJqPfHEySg>
-    <xmx:jFsQZhaSCD7aeRLlVgL1zEWKNcgrsIrU1HqOGwLSk1KNGJcMVjFNLw>
-    <xmx:jFsQZrCTFF4fUHqWU9h_FENsrurErAmcwlXpAXTyPY1cif2dMW5gjw>
-    <xmx:jVsQZlG_eXZBo_yzzUa2b85AFOdQ5KahgbEG5DBjxqw0Iy__tFLHWi0J>
-Feedback-ID: i36794607:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id BCC0AB6008D; Fri,  5 Apr 2024 16:14:04 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-333-gbfea15422e-fm-20240327.001-gbfea1542
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VL0mS5XJ"
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6e6d089f603so1614946a34.1
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 05 Apr 2024 18:14:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712366084; x=1712970884; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OUOCIQFB2R9168eqGn8/GvggwQbCuKvMKomVQmoNhkI=;
+        b=VL0mS5XJ4yd38xIpDpI4q3136n3fjZbMgSV7IZPZPA6vL5tEQuDNBN0PzgvfLlmhT0
+         jo9u65bUjBDBy1QuAptceHNpYp5Nqug8fww5qjsp648eQfqyHTenNcNayXBJL5GAmb+a
+         INX5cKwm2HWL2YSlCyaHgf0ucFI88gBtICW28bFKzcM0Zq2R1XHkVq53gGgC0XxE4biF
+         m1PtZi7hjQVHYKZ2RkTpJ6V78HkZfGcHBAbThqIbPCHOqw9SRLxZeMPQX2AZXx+3iAVf
+         ICesbzKpFDEGp/9Jm4HSoSWCFpk6VQif+ZN4zVw7h7/lyZXQtiu/8RcaPyl6OmG0wIEb
+         v3Kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712366084; x=1712970884;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=OUOCIQFB2R9168eqGn8/GvggwQbCuKvMKomVQmoNhkI=;
+        b=rtmS27kt4vPZtrIBu2rRdSOCr9fvtlp9FE4VSKSCv0Wc4pogRmMnJokaJ7GeyRrqxc
+         DQRtrevo3KprfTfbQ5Uf+oCe0eJsoRq7F9+mZLONES4+cmmNpuH7xN/GGsAKo9w2MUSO
+         c4fYPn6uRHM6x3GoznVwatVvUE3hjMV73vwnG1TYgtTjQRrTI+c5oS5ImsKN5vrnvkpW
+         SjsHXQhKDnt65aJgpiROaxg20ktIt8vDS45ak3vDs9M3SayTSK+FCdMibetMDd+6WRbg
+         9wvoaDPGfxqvMCv0GFYy2umRVq8SdPkC8Kq4WY7Oa/2Ss8bhaL3cp6kaeFtOh5kIo5MK
+         eMzA==
+X-Forwarded-Encrypted: i=1; AJvYcCUeBUVW/2ZJpOZBr2UslffHM2rmCItqn3r8bn/UI9uLCPJx5Hh/KxqOWDOpW0+QnyxarOdWpUpd+N6bMypRjukbOfvRLsx0PVFAyffR/DlH
+X-Gm-Message-State: AOJu0Yw11Uk44iXGjAuWKU2pWukfMVGoSy9GFLWcZzL210iEhbpUF74T
+	YMDoERUPwjGquX02fe3M0+XLiueEHAtF7UjwmRjVz8SL+ACZk06K
+X-Google-Smtp-Source: AGHT+IEe6Ulz+W731tqsz/LUln5enWgNx5JLI+x3ByqhMGEdtA74wHX/xIdqny7RQXWQMsBRDh8qVA==
+X-Received: by 2002:a05:6870:f286:b0:22e:c504:74af with SMTP id u6-20020a056870f28600b0022ec50474afmr3577208oap.20.1712366084300;
+        Fri, 05 Apr 2024 18:14:44 -0700 (PDT)
+Received: from [10.1.1.24] (222-152-175-63-fibre.sparkbb.co.nz. [222.152.175.63])
+        by smtp.gmail.com with ESMTPSA id w3-20020aa78583000000b006ecd942161fsm2119552pfn.190.2024.04.05.18.14.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 05 Apr 2024 18:14:43 -0700 (PDT)
+Subject: Re: [PATCH 0/1] m68k: Handle HAS_IOPORT dependencies
+To: Arnd Bergmann <arnd@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+References: <20240403122851.38808-1-schnelle@linux.ibm.com>
+ <dd55afa6-8cb6-4e25-b720-d2df62dbb5e6@gmail.com>
+ <bf276f98-2712-4fcf-a119-f984a1aedbf2@app.fastmail.com>
+ <CAMuHMdX+M1VuhDVnC9n4hCBDjHywwsByNK1w8ibazc+-8_C53A@mail.gmail.com>
+ <d9bdfa48-572a-caa1-229b-44565690d9e6@gmail.com>
+ <6b308ab0-dda7-4052-98b3-cb03e17e3e12@app.fastmail.com>
+Cc: Niklas Schnelle <schnelle@linux.ibm.com>,
+ linux-m68k@lists.linux-m68k.org, Heiko Carstens <hca@linux.ibm.com>,
+ linux-kernel@vger.kernel.org
+From: Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <ff54515f-3fc1-8f5f-8a15-d4ebbeb2035b@gmail.com>
+Date: Sat, 6 Apr 2024 14:14:35 +1300
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <6b308ab0-dda7-4052-98b3-cb03e17e3e12@app.fastmail.com>
-In-Reply-To: <d9bdfa48-572a-caa1-229b-44565690d9e6@gmail.com>
-References: <20240403122851.38808-1-schnelle@linux.ibm.com>
- <dd55afa6-8cb6-4e25-b720-d2df62dbb5e6@gmail.com>
- <bf276f98-2712-4fcf-a119-f984a1aedbf2@app.fastmail.com>
- <CAMuHMdX+M1VuhDVnC9n4hCBDjHywwsByNK1w8ibazc+-8_C53A@mail.gmail.com>
- <d9bdfa48-572a-caa1-229b-44565690d9e6@gmail.com>
-Date: Fri, 05 Apr 2024 22:13:43 +0200
-From: "Arnd Bergmann" <arnd@kernel.org>
-To: "Michael Schmitz" <schmitzmic@gmail.com>,
- "Geert Uytterhoeven" <geert@linux-m68k.org>
-Cc: "Niklas Schnelle" <schnelle@linux.ibm.com>,
- linux-m68k@lists.linux-m68k.org, "Heiko Carstens" <hca@linux.ibm.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/1] m68k: Handle HAS_IOPORT dependencies
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <6b308ab0-dda7-4052-98b3-cb03e17e3e12@app.fastmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 5, 2024, at 20:36, Michael Schmitz wrote:
-> Am 05.04.2024 um 23:16 schrieb Geert Uytterhoeven:
->> On Wed, Apr 3, 2024 at 8:35=E2=80=AFPM Arnd Bergmann <arnd@kernel.org=
-> wrote:
->>> On Wed, Apr 3, 2024, at 20:11, Michael Schmitz wrote:
->>>> how do you propose we handle legacy drivers that do depend on
->>>> inb()/outb() functions (_not_ actual ISA I/O) on architectures that=
- map
->>>> inb()/outb() to MMIO functions?
+Hi Arnd,
+
+thanks for your suggestions!
+
+Am 06.04.2024 um 09:13 schrieb Arnd Bergmann:
+> On Fri, Apr 5, 2024, at 20:36, Michael Schmitz wrote:
+>> Am 05.04.2024 um 23:16 schrieb Geert Uytterhoeven:
+>>> On Wed, Apr 3, 2024 at 8:35 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>>>> On Wed, Apr 3, 2024, at 20:11, Michael Schmitz wrote:
+>>>>> how do you propose we handle legacy drivers that do depend on
+>>>>> inb()/outb() functions (_not_ actual ISA I/O) on architectures that map
+>>>>> inb()/outb() to MMIO functions?
+>>>>>
+>>>>> (In my case, that's at least ne.c - Geert ought to have a better
+>>>>> overview what else does use inb()/outb() on m68k)
 >>>>
->>>> (In my case, that's at least ne.c - Geert ought to have a better
->>>> overview what else does use inb()/outb() on m68k)
+>>>> If a machine provides an inb()/outb() set of operations that
+>>>> is actually used, it should set HAS_IOPORT.
+>>>>
+>>>> For the Q40, it may be better in the long run to change the
+>>>> drivers to just use MMIO directly though.
 >>>
->>> If a machine provides an inb()/outb() set of operations that
->>> is actually used, it should set HAS_IOPORT.
+>>> Q40 uses ISA.
 >>>
->>> For the Q40, it may be better in the long run to change the
->>> drivers to just use MMIO directly though.
+>>> Michael is worried about non-ISA drivers using inb() and friends.
+>>> At some point in time (i.e. eons ago), we were told it was better to
+>>> use in[bwl]()/read[bwl]() instead of directly dereferencing volatile
+>>> pointers...
+>>>
+>>> Anyway, I don't think we have many users of inb() and friends left, and
+>>> I assume the bots should have detected any/most remaining users in Niklas'
+>>> branch...
 >>
->> Q40 uses ISA.
+>> All the 8390 based ethernet drivers still use inb() and friends.
 >>
->> Michael is worried about non-ISA drivers using inb() and friends.
->> At some point in time (i.e. eons ago), we were told it was better to
->> use in[bwl]()/read[bwl]() instead of directly dereferencing volatile
->> pointers...
+>> That is the main reason for the terrible hacks in
+>> arch/m68k/include/asm/io_mm.h ...
 >>
->> Anyway, I don't think we have many users of inb() and friends left, a=
-nd
->> I assume the bots should have detected any/most remaining users in Ni=
-klas'
->> branch...
+>> The last time I tried to add support for a different PCMCIA ethernet
+>> adapter to apne.c _without_ adding to the hacks in io_mm.h, I wasn't
+>> getting anywhere with the netdev crowd. That was ages ago, and I doubt
+>> their enthusiasm for a rewrite of the 8390 code base to avoid using
+>> inb() on MMIO architectures will be any better now.
 >
-> All the 8390 based ethernet drivers still use inb() and friends.
+> From what I can see, there is already an abstraction layer in
+> these drivers that is used by all m68k drivers except apne:
+
+As well as ne ... which uses the 8390p.c helper.
+
 >
-> That is the main reason for the terrible hacks in=20
-> arch/m68k/include/asm/io_mm.h ...
+> $ git grep -w 'define\sei_inb'
+> drivers/net/ethernet/8390/8390.h:#define ei_inb(_p)     inb(_p)
+> drivers/net/ethernet/8390/8390p.c:#define ei_inb(_p)    inb(_p)
+> drivers/net/ethernet/8390/ax88796.c:#define ei_inb(_a) readb(ax_convert_addr(_a))
+> drivers/net/ethernet/8390/etherh.c:#define ei_inb(_p)    readb((void __iomem *)_p)
+> drivers/net/ethernet/8390/hydra.c:#define ei_inb(port)   in_8(port)
+> drivers/net/ethernet/8390/mac8390.c:#define ei_inb(port)        in_8(port)
+> drivers/net/ethernet/8390/mcf8390.c:#define     ei_inb  ei_inb
+> drivers/net/ethernet/8390/xsurf100.c:#define ei_inb(_a) z_readb(ax_convert_addr(_a))
+> drivers/net/ethernet/8390/zorro8390.c:#define ei_inb(port)              in_8(port)
 >
-> The last time I tried to add support for a different PCMCIA ethernet=20
-> adapter to apne.c _without_ adding to the hacks in io_mm.h, I wasn't=20
-> getting anywhere with the netdev crowd. That was ages ago, and I doubt=20
-> their enthusiasm for a rewrite of the 8390 code base to avoid using=20
-> inb() on MMIO architectures will be any better now.
+> Can't apne.c just do the same here? The patch below didn't
+> take that long to come up with, but I may be missing something
+> here of course.
 
-From what I can see, there is already an abstraction layer in
-these drivers that is used by all m68k drivers except apne:
+The address translation from ISA IO ports to MMIO addresses needs to be 
+added as well (in_8() does not use address translation on m68k). apne.c 
+also uses inw() which does have a different address translation yet, but 
+that's only for data transfer from the ring buffers and can be handled 
+entirely inside apne.c.
 
-$ git grep -w 'define\sei_inb'
-drivers/net/ethernet/8390/8390.h:#define ei_inb(_p)     inb(_p)
-drivers/net/ethernet/8390/8390p.c:#define ei_inb(_p)    inb(_p)
-drivers/net/ethernet/8390/ax88796.c:#define ei_inb(_a) readb(ax_convert_=
-addr(_a))
-drivers/net/ethernet/8390/etherh.c:#define ei_inb(_p)    readb((void __i=
-omem *)_p)
-drivers/net/ethernet/8390/hydra.c:#define ei_inb(port)   in_8(port)
-drivers/net/ethernet/8390/mac8390.c:#define ei_inb(port)        in_8(por=
-t)
-drivers/net/ethernet/8390/mcf8390.c:#define     ei_inb  ei_inb
-drivers/net/ethernet/8390/xsurf100.c:#define ei_inb(_a) z_readb(ax_conve=
-rt_addr(_a))
-drivers/net/ethernet/8390/zorro8390.c:#define ei_inb(port)              =
-in_8(port)
+Now that is all limited to m68k. I might be able to submit a patch, but 
+I cannot test any of this.
 
-Can't apne.c just do the same here? The patch below didn't
-take that long to come up with, but I may be missing something
-here of course.
+ne.c needs the same treatment as far as I can see, and I could actually 
+test that one (on Atari, not actually on a PC ISA card). I'll see what I 
+can come up with.
 
-    Arnd
+I might well be missing something else here - as I said, it's been a few 
+years since I worked on the apne driver, and experimented with IO 
+abstractions in that context. The problem has always been making sure 
+drivers shared by different m68k platforms need only be built once and 
+still work on e.g. Q40 and Atari.
 
-8<---
-From 5dd43e612a52adf499b1ea3d33e3b2b45894d275 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Fri, 5 Apr 2024 21:47:51 +0200
-Subject: [PATCH] net: apne: convert to lib8390
+You've given me something to work with, thanks again!
 
-The apne driver still uses the ISA-style inb()/outb() wappers through the
-8390.c helper module, which won't work in the future.
+Cheers,
 
-Change it to include lib8390.c like all the other m68k variants of this
-driver do, so it can have custom MMIO abstractions.
+	Michael
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-diff --git a/drivers/net/ethernet/8390/Makefile b/drivers/net/ethernet/8=
-390/Makefile
-index 85c83c566ec6..ec1b325da4e4 100644
---- a/drivers/net/ethernet/8390/Makefile
-+++ b/drivers/net/ethernet/8390/Makefile
-@@ -4,7 +4,7 @@
- #
-=20
- obj-$(CONFIG_MAC8390) +=3D mac8390.o
--obj-$(CONFIG_APNE) +=3D apne.o 8390.o
-+obj-$(CONFIG_APNE) +=3D apne.o
- obj-$(CONFIG_ARM_ETHERH) +=3D etherh.o
- obj-$(CONFIG_AX88796) +=3D ax88796.o
- obj-$(CONFIG_HYDRA) +=3D hydra.o
-diff --git a/drivers/net/ethernet/8390/apne.c b/drivers/net/ethernet/839=
-0/apne.c
-index 828edca8d30c..ea3747723b3c 100644
---- a/drivers/net/ethernet/8390/apne.c
-+++ b/drivers/net/ethernet/8390/apne.c
-@@ -41,7 +41,15 @@
- #include <asm/amigayle.h>
- #include <asm/amipcmcia.h>
-=20
--#include "8390.h"
-+#define ei_inb(port)            in_8(port)
-+#define ei_outb(val, port)      out_8(port, val)
-+#define ei_inb_p(port)          in_8(port)
-+#define ei_outb_p(val, port)    out_8(port, val)
-+
-+static const char version[] =3D
-+    "apne.c:v1.1 7/10/98 Alain Malek (Alain.Malek@cryogen.ch)\n";
-+
-+#include "lib8390.c"
-=20
- /* ---- No user-serviceable parts below ---- */
-=20
-@@ -105,14 +113,21 @@ static int init_pcmcia(void);
- #define MANUAL_HWADDR5 0x9a
- */
-=20
--static const char version[] =3D
--    "apne.c:v1.1 7/10/98 Alain Malek (Alain.Malek@cryogen.ch)\n";
--
- static int apne_owned;	/* signal if card already owned */
-=20
--static u32 apne_msg_enable;
--module_param_named(msg_enable, apne_msg_enable, uint, 0444);
--MODULE_PARM_DESC(msg_enable, "Debug message level (see linux/netdevice.=
-h for bitmap)");
-+static const struct net_device_ops apne_netdev_ops =3D {
-+	.ndo_open		=3D __ei_open,
-+	.ndo_stop		=3D __ei_close,
-+	.ndo_start_xmit		=3D __ei_start_xmit,
-+	.ndo_tx_timeout		=3D __ei_tx_timeout,
-+	.ndo_get_stats		=3D __ei_get_stats,
-+	.ndo_set_rx_mode	=3D __ei_set_multicast_list,
-+	.ndo_validate_addr	=3D eth_validate_addr,
-+	.ndo_set_mac_address	=3D eth_mac_addr,
-+#ifdef CONFIG_NET_POLL_CONTROLLER
-+	.ndo_poll_controller	=3D __ei_poll,
-+#endif
-+};
-=20
- static struct net_device * __init apne_probe(void)
- {
-@@ -141,11 +156,11 @@ static struct net_device * __init apne_probe(void)
- 		return ERR_PTR(-ENODEV);
- 	}
-=20
--	dev =3D alloc_ei_netdev();
-+	dev =3D ____alloc_ei_netdev(0);
- 	if (!dev)
- 		return ERR_PTR(-ENOMEM);
- 	ei_local =3D netdev_priv(dev);
--	ei_local->msg_enable =3D apne_msg_enable;
-+	ei_local->msg_enable =3D msg_enable;
-=20
- 	/* disable pcmcia irq for readtuple */
- 	pcmcia_disable_irq();
-@@ -203,7 +218,7 @@ static int __init apne_probe1(struct net_device *dev=
-, int ioaddr)
- #endif
-     static unsigned version_printed;
-=20
--    if ((apne_msg_enable & NETIF_MSG_DRV) && (version_printed++ =3D=3D =
-0))
-+    if ((msg_enable & NETIF_MSG_DRV) && (version_printed++ =3D=3D 0))
- 		netdev_info(dev, version);
-=20
-     netdev_info(dev, "PCMCIA NE*000 ethercard probe");
-@@ -309,7 +324,7 @@ static int __init apne_probe1(struct net_device *dev=
-, int ioaddr)
-=20
-     dev->base_addr =3D ioaddr;
-     dev->irq =3D IRQ_AMIGA_PORTS;
--    dev->netdev_ops =3D &ei_netdev_ops;
-+    dev->netdev_ops =3D &apne_netdev_ops;
-=20
-     /* Install the Interrupt handler */
-     i =3D request_irq(dev->irq, apne_interrupt, IRQF_SHARED, DRV_NAME, =
-dev);
-@@ -333,7 +348,7 @@ static int __init apne_probe1(struct net_device *dev=
-, int ioaddr)
-     ei_status.block_output =3D &apne_block_output;
-     ei_status.get_8390_hdr =3D &apne_get_8390_hdr;
-=20
--    NS8390_init(dev, 0);
-+    __NS8390_init(dev, 0);
-=20
-     pcmcia_ack_int(pcmcia_get_intreq());		/* ack PCMCIA int req */
-     pcmcia_enable_irq();
-@@ -513,7 +528,7 @@ apne_block_output(struct net_device *dev, int count,
- 	if (time_after(jiffies, dma_start + 2*HZ/100)) {	/* 20ms */
- 		netdev_warn(dev, "timeout waiting for Tx RDC.\n");
- 		apne_reset_8390(dev);
--		NS8390_init(dev,1);
-+		__NS8390_init(dev,1);
- 		break;
- 	}
-=20
-@@ -534,10 +549,10 @@ static irqreturn_t apne_interrupt(int irq, void *d=
-ev_id)
-         pcmcia_ack_int(pcmcia_intreq);
-         return IRQ_NONE;
-     }
--    if (apne_msg_enable & NETIF_MSG_INTR)
-+    if (msg_enable & NETIF_MSG_INTR)
- 	pr_debug("pcmcia intreq =3D %x\n", pcmcia_intreq);
-     pcmcia_disable_irq();			/* to get rid of the sti() within ei_interr=
-upt */
--    ei_interrupt(irq, dev_id);
-+    __ei_interrupt(irq, dev_id);
-     pcmcia_ack_int(pcmcia_get_intreq());
-     pcmcia_enable_irq();
-     return IRQ_HANDLED;
+>
+>     Arnd
+>
+> 8<---
+> From 5dd43e612a52adf499b1ea3d33e3b2b45894d275 Mon Sep 17 00:00:00 2001
+> From: Arnd Bergmann <arnd@arndb.de>
+> Date: Fri, 5 Apr 2024 21:47:51 +0200
+> Subject: [PATCH] net: apne: convert to lib8390
+>
+> The apne driver still uses the ISA-style inb()/outb() wappers through the
+> 8390.c helper module, which won't work in the future.
+>
+> Change it to include lib8390.c like all the other m68k variants of this
+> driver do, so it can have custom MMIO abstractions.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>
+> diff --git a/drivers/net/ethernet/8390/Makefile b/drivers/net/ethernet/8390/Makefile
+> index 85c83c566ec6..ec1b325da4e4 100644
+> --- a/drivers/net/ethernet/8390/Makefile
+> +++ b/drivers/net/ethernet/8390/Makefile
+> @@ -4,7 +4,7 @@
+>  #
+>
+>  obj-$(CONFIG_MAC8390) += mac8390.o
+> -obj-$(CONFIG_APNE) += apne.o 8390.o
+> +obj-$(CONFIG_APNE) += apne.o
+>  obj-$(CONFIG_ARM_ETHERH) += etherh.o
+>  obj-$(CONFIG_AX88796) += ax88796.o
+>  obj-$(CONFIG_HYDRA) += hydra.o
+> diff --git a/drivers/net/ethernet/8390/apne.c b/drivers/net/ethernet/8390/apne.c
+> index 828edca8d30c..ea3747723b3c 100644
+> --- a/drivers/net/ethernet/8390/apne.c
+> +++ b/drivers/net/ethernet/8390/apne.c
+> @@ -41,7 +41,15 @@
+>  #include <asm/amigayle.h>
+>  #include <asm/amipcmcia.h>
+>
+> -#include "8390.h"
+> +#define ei_inb(port)            in_8(port)
+> +#define ei_outb(val, port)      out_8(port, val)
+> +#define ei_inb_p(port)          in_8(port)
+> +#define ei_outb_p(val, port)    out_8(port, val)
+> +
+> +static const char version[] =
+> +    "apne.c:v1.1 7/10/98 Alain Malek (Alain.Malek@cryogen.ch)\n";
+> +
+> +#include "lib8390.c"
+>
+>  /* ---- No user-serviceable parts below ---- */
+>
+> @@ -105,14 +113,21 @@ static int init_pcmcia(void);
+>  #define MANUAL_HWADDR5 0x9a
+>  */
+>
+> -static const char version[] =
+> -    "apne.c:v1.1 7/10/98 Alain Malek (Alain.Malek@cryogen.ch)\n";
+> -
+>  static int apne_owned;	/* signal if card already owned */
+>
+> -static u32 apne_msg_enable;
+> -module_param_named(msg_enable, apne_msg_enable, uint, 0444);
+> -MODULE_PARM_DESC(msg_enable, "Debug message level (see linux/netdevice.h for bitmap)");
+> +static const struct net_device_ops apne_netdev_ops = {
+> +	.ndo_open		= __ei_open,
+> +	.ndo_stop		= __ei_close,
+> +	.ndo_start_xmit		= __ei_start_xmit,
+> +	.ndo_tx_timeout		= __ei_tx_timeout,
+> +	.ndo_get_stats		= __ei_get_stats,
+> +	.ndo_set_rx_mode	= __ei_set_multicast_list,
+> +	.ndo_validate_addr	= eth_validate_addr,
+> +	.ndo_set_mac_address	= eth_mac_addr,
+> +#ifdef CONFIG_NET_POLL_CONTROLLER
+> +	.ndo_poll_controller	= __ei_poll,
+> +#endif
+> +};
+>
+>  static struct net_device * __init apne_probe(void)
+>  {
+> @@ -141,11 +156,11 @@ static struct net_device * __init apne_probe(void)
+>  		return ERR_PTR(-ENODEV);
+>  	}
+>
+> -	dev = alloc_ei_netdev();
+> +	dev = ____alloc_ei_netdev(0);
+>  	if (!dev)
+>  		return ERR_PTR(-ENOMEM);
+>  	ei_local = netdev_priv(dev);
+> -	ei_local->msg_enable = apne_msg_enable;
+> +	ei_local->msg_enable = msg_enable;
+>
+>  	/* disable pcmcia irq for readtuple */
+>  	pcmcia_disable_irq();
+> @@ -203,7 +218,7 @@ static int __init apne_probe1(struct net_device *dev, int ioaddr)
+>  #endif
+>      static unsigned version_printed;
+>
+> -    if ((apne_msg_enable & NETIF_MSG_DRV) && (version_printed++ == 0))
+> +    if ((msg_enable & NETIF_MSG_DRV) && (version_printed++ == 0))
+>  		netdev_info(dev, version);
+>
+>      netdev_info(dev, "PCMCIA NE*000 ethercard probe");
+> @@ -309,7 +324,7 @@ static int __init apne_probe1(struct net_device *dev, int ioaddr)
+>
+>      dev->base_addr = ioaddr;
+>      dev->irq = IRQ_AMIGA_PORTS;
+> -    dev->netdev_ops = &ei_netdev_ops;
+> +    dev->netdev_ops = &apne_netdev_ops;
+>
+>      /* Install the Interrupt handler */
+>      i = request_irq(dev->irq, apne_interrupt, IRQF_SHARED, DRV_NAME, dev);
+> @@ -333,7 +348,7 @@ static int __init apne_probe1(struct net_device *dev, int ioaddr)
+>      ei_status.block_output = &apne_block_output;
+>      ei_status.get_8390_hdr = &apne_get_8390_hdr;
+>
+> -    NS8390_init(dev, 0);
+> +    __NS8390_init(dev, 0);
+>
+>      pcmcia_ack_int(pcmcia_get_intreq());		/* ack PCMCIA int req */
+>      pcmcia_enable_irq();
+> @@ -513,7 +528,7 @@ apne_block_output(struct net_device *dev, int count,
+>  	if (time_after(jiffies, dma_start + 2*HZ/100)) {	/* 20ms */
+>  		netdev_warn(dev, "timeout waiting for Tx RDC.\n");
+>  		apne_reset_8390(dev);
+> -		NS8390_init(dev,1);
+> +		__NS8390_init(dev,1);
+>  		break;
+>  	}
+>
+> @@ -534,10 +549,10 @@ static irqreturn_t apne_interrupt(int irq, void *dev_id)
+>          pcmcia_ack_int(pcmcia_intreq);
+>          return IRQ_NONE;
+>      }
+> -    if (apne_msg_enable & NETIF_MSG_INTR)
+> +    if (msg_enable & NETIF_MSG_INTR)
+>  	pr_debug("pcmcia intreq = %x\n", pcmcia_intreq);
+>      pcmcia_disable_irq();			/* to get rid of the sti() within ei_interrupt */
+> -    ei_interrupt(irq, dev_id);
+> +    __ei_interrupt(irq, dev_id);
+>      pcmcia_ack_int(pcmcia_get_intreq());
+>      pcmcia_enable_irq();
+>      return IRQ_HANDLED;
+>
