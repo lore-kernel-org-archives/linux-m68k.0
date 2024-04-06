@@ -1,93 +1,161 @@
-Received: from fout7-smtp.messagingengine.com (fout7-smtp.messagingengine.com [103.168.172.150])
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC7A8EAD5
-	for <linux-m68k@lists.linux-m68k.org>; Sat,  6 Apr 2024 03:19:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F5E63BBCB
+	for <linux-m68k@lists.linux-m68k.org>; Sat,  6 Apr 2024 15:27:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712373591; cv=none; b=gq6Ke+h2b7kIHoyUPiSHUbtQCZmX5OGtUsWPfq8QtzxcpF7A/O+T6XZS9rr3HQ3WI/8oXxHP0fRegg5Lsrf7IRD+bVSlGfBAmAE/pPphw0F7h43zoSVI5IWHSGMgpo6nPln5V3lB1vRYafGnWO4iyQjIijkSta5RMVsI168kpSM=
+	t=1712417249; cv=none; b=EeraF7S/Kpr6sMpDfZDoYXep7YZC7Faimtc/O3oAu3NkETU0sCV/7TfTXntalO4NastEV7lc7uc9R3zuL4SAG1tgS3pKkV8xoJ/P9ZEpDA/vNOzfOsuXv0SAayEVLIQ0AX/USYBuOh+gzCjYuTVPbMy4st61OJvF9iJVqfFfjG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712373591; c=relaxed/simple;
-	bh=RuI4VwdgharvMxl9aFCQfXwEYjnfZ5btGReh837FzQY=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=nG/bVZTDU7+b7zolsMNDWMTZhrpmyOn8bHYSvrghQnq9MoR/T7ApyxoL5T0H2T7ivtQGzMspCcbzmqyXo0zGdgR5yL4S/Hdjtt1uHiIxFOgnlPeVZCiLJuB+3aGmU1nzXChP/j9NURNLkwQiCuIdH8ZzhEX8SXSK0wNCyAyuyL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ooTiwkUK; arc=none smtp.client-ip=103.168.172.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1712417249; c=relaxed/simple;
+	bh=2rySa9t9VCItK6MZJ9ubIFsysl4IsjaeTxE0EGK1V7Y=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=aVldvK7eXp3RJ0FN4gnm5az3QEHV5y1WTHIDBWdlb9TCw2wPLecS/dXr53j4pAI20FEZ2PF+71fJB8lzZqtohrk1CqznN/3zAScAQkGestBlEGQytUDD/osqi+L2BQamwSl0kZG1BU4+csqjAEfncEfd1odAIp7BP3IEXb8vs9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EpEUpiap; arc=none smtp.client-ip=139.178.84.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ooTiwkUK"
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailfout.nyi.internal (Postfix) with ESMTP id AB0F913800C6;
-	Fri,  5 Apr 2024 23:19:48 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Fri, 05 Apr 2024 23:19:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1712373588; x=1712459988; bh=9kul5wYSciMTZEU/ffUWZ8gwme9H
-	jWu3Wnb8YIqDLsk=; b=ooTiwkUKPhqW9zfzDZVT3t/TwKbGTeukyQ4L0eHI7FMv
-	fu2q2wSYhfbk2jjYyI79BJ9vJ5UB4/FWTSOjn12RWZ/kxPypStmk6egXL5gHeDok
-	Iocho1g/7BznBTiKa5E4QQVq+pXilIyNR5+Ijbxp4QN0RAqt0E8sTNM23+ZSF7Ra
-	ojM7WTN9HlJPvg01UFgme3wy3+WzWBYQXSOCuVBejHua7G9sefeUdklA9Dld3i9+
-	7x4WzRhlxgXoysfUO+r2ms3FKpTumVIOY+eYv1ZvNnAxCuXE2ofJMCZNc6fwajWj
-	CePqWoYYYT/OXE3GQI8GbkBa80qBAmFs0Hv6+M1Qfw==
-X-ME-Sender: <xms:Ur8QZuD8CT1UgC2Ds_aeWUmZvG7k3rQ_eX6fvm6SCS3sviG2kXOL1Q>
-    <xme:Ur8QZogH6Jyrkz30kjfkMt-_EmsjoqVYpN1lphw-cgCMiruvqWvzxtId2lyx6l8JU
-    rpJCQKR6aVGCqvyrQI>
-X-ME-Received: <xmr:Ur8QZhm9Tx7fRhWNb6GpVtDOu2okZdG2SZjuYn9I-NI03ZJvLu2MNDfLtmCvWzJKSlDgIoqFANhKgnoRh1rTREAmL4UVNJgj27w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudeguddgieelucetufdoteggodetrfdotf
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EpEUpiap"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 6A2F660B73
+	for <linux-m68k@lists.linux-m68k.org>; Sat,  6 Apr 2024 15:27:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B7CBC43394;
+	Sat,  6 Apr 2024 15:27:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712417245;
+	bh=2rySa9t9VCItK6MZJ9ubIFsysl4IsjaeTxE0EGK1V7Y=;
+	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+	b=EpEUpiapYMNcn35KoFQr4r+T1mq/Xd3hUqTVaf8wQNm+LyGBNgGJSk6Jq+Zr+1FtM
+	 jJChI1nJUcSosMep32XCj8ED5WtTPxzXXmSafxBDhVv0U1VZwX02xQ+19aW9xBUaUA
+	 hCg42yKaJHuVBtE/AWkKBi0y6kdUWb/YwVAZx5JC90P38+OCekI1gaFlJoDV4cNRxg
+	 8D9+0PnomvKXelAqBK8PSVmuXJt3GP3JEMm3HeUUl5762Y5c/3cV+BPeQs7c9fOsPX
+	 W5uk5ar3DohzQIgNGPmWdcryh7QKZ3c7l/sGEoygzsew9XGkNjj2dJbBS9gUxEYaCE
+	 8imEslZThxkdQ==
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 8BF731200069;
+	Sat,  6 Apr 2024 11:27:24 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Sat, 06 Apr 2024 11:27:24 -0400
+X-ME-Sender: <xms:22kRZlsFp_T1WwQn928fD_jbxXHhE4ITfSHocl2i5kAuKiGAquD8ww>
+    <xme:22kRZuclx1vQFSw5zyQdmjVPfVG1VHmDaKkWJ8EY_vL9qxzXwpXDPDyMDy-OhQoUA
+    YabVi6n3Rkx43G5QKY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudegvddgledtucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
-    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
-    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:Ur8QZsxlx9GVIg02xww6XF9wTSF1HVYFdDDg3IL3dCX74TB4rf7cfw>
-    <xmx:Ur8QZjRkr3MDJRNQqfySKoKF3SnOkXjUIMk2DyozNbelevevHUqjqQ>
-    <xmx:Ur8QZnb-is7g2j0VuIVznGeNBrxJmDGGRbQUGGw_GUDkpPlCOhysHQ>
-    <xmx:Ur8QZsTtMS3xpqUGF7dxI1A7sGSSaN1Rqs6qLMD9_kErmZGlU6GRuA>
-    <xmx:VL8QZhBxeJD7YIEcwdZTCg1evymGUe6vlmyeyGzewfTlaE1QTvbhybbU>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 5 Apr 2024 23:19:44 -0400 (EDT)
-Date: Sat, 6 Apr 2024 14:21:33 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Michael Ellerman <mpe@ellerman.id.au>
-cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-    Jiri Slaby <jirislaby@kernel.org>, Nicholas Piggin <npiggin@gmail.com>, 
-    Christophe Leroy <christophe.leroy@csgroup.eu>, 
-    "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
-    "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, linux-kernel@vger.kernel.org, 
-    linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-    linux-m68k@lists.linux-m68k.org, 
-    Benjamin Herrenschmidt <benh@kernel.crashing.org>, 
-    Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v2] serial/pmac_zilog: Remove flawed mitigation for rx
- irq flood
-In-Reply-To: <87v84w7be3.fsf@mail.lhotse>
-Message-ID: <2cb53463-897b-8f3f-7238-9fe87622b54d@linux-m68k.org>
-References: <0df45bedded1249f6c6ec2c2fb0d9879da1841b7.1712273040.git.fthain@linux-m68k.org> <87v84w7be3.fsf@mail.lhotse>
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusehkvghrnhgvlhdrohhrgheqnecuggftrf
+    grthhtvghrnhepvdeviefgtedugeevieelvdfgveeuvdfgteegfeeiieejjeffgeeghedu
+    gedtveehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghrnhguodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduvdekhedujedt
+    vdegqddvkeejtddtvdeigedqrghrnhgupeepkhgvrhhnvghlrdhorhhgsegrrhhnuggsrd
+    guvg
+X-ME-Proxy: <xmx:22kRZowFLTpjaL3u8-TU7vPcd4A3UWz6hDpT4XeZJ7yWn8bgsFRqmw>
+    <xmx:22kRZsOQGgL6Li7qRu9GsbHvSESchvaCPJXqk3ElA_lwVEYUgiWOzA>
+    <xmx:22kRZl-ZZo3cNB6G5zFTLZ1QH5RResmXcQlEu2w_VRAdyV2e2SyAKw>
+    <xmx:22kRZsVD9agyG3_Sa88JFjG_Upt46Cpu9hjwWPJjoP_ecZgeAzgMMA>
+    <xmx:3GkRZgZ91igurCppLipewiLvjADvGbRTQRgRJ6zeWcM2GvjBEFtRkqMF>
+Feedback-ID: i36794607:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id CC89EB6008D; Sat,  6 Apr 2024 11:27:23 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-333-gbfea15422e-fm-20240327.001-gbfea1542
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-Id: <a5bca6fc-1720-45cf-8cf3-3f129e699d79@app.fastmail.com>
+In-Reply-To: <ff54515f-3fc1-8f5f-8a15-d4ebbeb2035b@gmail.com>
+References: <20240403122851.38808-1-schnelle@linux.ibm.com>
+ <dd55afa6-8cb6-4e25-b720-d2df62dbb5e6@gmail.com>
+ <bf276f98-2712-4fcf-a119-f984a1aedbf2@app.fastmail.com>
+ <CAMuHMdX+M1VuhDVnC9n4hCBDjHywwsByNK1w8ibazc+-8_C53A@mail.gmail.com>
+ <d9bdfa48-572a-caa1-229b-44565690d9e6@gmail.com>
+ <6b308ab0-dda7-4052-98b3-cb03e17e3e12@app.fastmail.com>
+ <ff54515f-3fc1-8f5f-8a15-d4ebbeb2035b@gmail.com>
+Date: Sat, 06 Apr 2024 17:27:03 +0200
+From: "Arnd Bergmann" <arnd@kernel.org>
+To: "Michael Schmitz" <schmitzmic@gmail.com>,
+ "Geert Uytterhoeven" <geert@linux-m68k.org>
+Cc: "Niklas Schnelle" <schnelle@linux.ibm.com>,
+ linux-m68k@lists.linux-m68k.org, "Heiko Carstens" <hca@linux.ibm.com>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/1] m68k: Handle HAS_IOPORT dependencies
+Content-Type: text/plain
 
-On Fri, 5 Apr 2024, Michael Ellerman wrote:
+On Sat, Apr 6, 2024, at 03:14, Michael Schmitz wrote:
+> Am 06.04.2024 um 09:13 schrieb Arnd Bergmann:
+>> On Fri, Apr 5, 2024, at 20:36, Michael Schmitz wrote:
+>>> Am 05.04.2024 um 23:16 schrieb Geert Uytterhoeven:
+>>> The last time I tried to add support for a different PCMCIA ethernet
+>>> adapter to apne.c _without_ adding to the hacks in io_mm.h, I wasn't
+>>> getting anywhere with the netdev crowd. That was ages ago, and I doubt
+>>> their enthusiasm for a rewrite of the 8390 code base to avoid using
+>>> inb() on MMIO architectures will be any better now.
+>>
+>> From what I can see, there is already an abstraction layer in
+>> these drivers that is used by all m68k drivers except apne:
+>
+> As well as ne ... which uses the 8390p.c helper.
 
-> I assume you have tested this on an actual pmac, as well as qemu?
-> 
+Is there any machine using ne.c that doesn't set HAS_IOPORT though?
+Q40 and ATARI_ETHERNEC both have custom inb()/outb(), so
+those are not affected by the change.
 
-I tested the patched driver and its console functionality using Zilog SCC 
-hardware in a Mac IIci, as well as QEMU's q800 virtual machine.
+>> $ git grep -w 'define\sei_inb'
+>> drivers/net/ethernet/8390/8390.h:#define ei_inb(_p)     inb(_p)
+>> drivers/net/ethernet/8390/8390p.c:#define ei_inb(_p)    inb(_p)
+>> drivers/net/ethernet/8390/ax88796.c:#define ei_inb(_a) readb(ax_convert_addr(_a))
+>> drivers/net/ethernet/8390/etherh.c:#define ei_inb(_p)    readb((void __iomem *)_p)
+>> drivers/net/ethernet/8390/hydra.c:#define ei_inb(port)   in_8(port)
+>> drivers/net/ethernet/8390/mac8390.c:#define ei_inb(port)        in_8(port)
+>> drivers/net/ethernet/8390/mcf8390.c:#define     ei_inb  ei_inb
+>> drivers/net/ethernet/8390/xsurf100.c:#define ei_inb(_a) z_readb(ax_convert_addr(_a))
+>> drivers/net/ethernet/8390/zorro8390.c:#define ei_inb(port)              in_8(port)
+>>
+>> Can't apne.c just do the same here? The patch below didn't
+>> take that long to come up with, but I may be missing something
+>> here of course.
+>
+> The address translation from ISA IO ports to MMIO addresses needs to be 
+> added as well (in_8() does not use address translation on m68k).
 
-That should suffice from a code coverage point-of-view, since 
-pmz_receive_chars() is portable and independent of CONFIG_PPC_PMAC.
+Indeed, I totally missed that bit.
 
-Moreover, I don't know how to get my PowerMac G3 to execute the kludge 
-that's to be removed here. I can't prove it's impossible, though.
+> apne.c also uses inw() which does have a different address translation
+> yet, but that's only for data transfer from the ring buffers and can
+> be handled entirely inside apne.c.
+
+and this as well.
+
+> Now that is all limited to m68k. I might be able to submit a patch, but 
+> I cannot test any of this.
+>
+> ne.c needs the same treatment as far as I can see, and I could actually 
+> test that one (on Atari, not actually on a PC ISA card). I'll see what I 
+> can come up with.
+
+ATARI_ROM_ISA turns on HAS_IOPORT, so this one doesn't need any
+immediate changes as a result of Niklas's series. I see now that
+the apne driver doesn't actually need changes either since
+AMIGA_PCMCIA turns on ISA.
+
+I don't think there is an easy way to rework ne.c to avoid
+inb()/outb(), but you could consider splitting the atari
+support out into a separate module the same way as apne.c
+to make it use the atari operations directly.
+
+> I might well be missing something else here - as I said, it's been a few 
+> years since I worked on the apne driver, and experimented with IO 
+> abstractions in that context. The problem has always been making sure 
+> drivers shared by different m68k platforms need only be built once and 
+> still work on e.g. Q40 and Atari.
+
+Do you know of any other ISA style drivers that are used with the
+amiga pcmcia or the atari rom I/O operations, aside from the 8390
+family? If this is the only one using it, it does sound like this
+could be simplified a lot by just making those two not share the
+object code with the ISA-style ne.c.
+
+      Arnd
