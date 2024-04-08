@@ -1,86 +1,129 @@
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32ADBBE6F
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  8 Apr 2024 05:44:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.40.73.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A02EE381B9
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  8 Apr 2024 08:20:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712555058; cv=none; b=lZH+gQDlF+iSy3gaSDEx+3xICU8QNsYBFQtkG73PWD+aeXmnE38aVzCazzzb8zkXzFmVDtfKrqYR7YsSZw2hHEUkjJU1/xIymbX5xkD+wUsPs6MrGhFm/5jJnfwNQG+doUCKFSSHj19RK6wTT3J5chFEebtBrKMJbN9poLbvNoc=
+	t=1712564407; cv=none; b=p0ELTR8NZWlmJQe7MEJ49bOs7SuVdzjMZqEnQ/UbUwPe05Gl6gMcq4GM0Ke4lnAUdX3+bFErAN7Kg9rV7EyQyC3icI70jvpA80Q2HSYu3eFyUd/Rj1c/M3yewb5xbyB3ogGNmw0gnlZTwOgkPn53+72d5pxljUWNWqnOxjDvj88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712555058; c=relaxed/simple;
-	bh=vMTO+JCxJ/pC8pUOQVFfrJmUCn0gHKZBHp2mN8vrUkY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tOrGqPd0fnPzRKjpkxK0gvz9/oruEwwtn0/fZu0M3SIA/Z5vOVWM7CZNfRRlth1Xb1/6cyuJVYN52LuS3jpzUz70RBq8FvkJ9ruVjfsium3C2EPo6fyod2TTvZ/AtIOrwcZJU8D8Uk2/749bJlgFHHAGkUTF8uJyAEjmEwEqrac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=1yWZ8c3a; arc=none smtp.client-ip=145.40.73.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="1yWZ8c3a"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id CD655CE0C61;
-	Mon,  8 Apr 2024 05:44:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D56FC433F1;
-	Mon,  8 Apr 2024 05:44:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712555054;
-	bh=vMTO+JCxJ/pC8pUOQVFfrJmUCn0gHKZBHp2mN8vrUkY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=1yWZ8c3afHE2SqsjmwsiwlagPW2l0wHd6orMPdWrLRaIm4oevC51UhVuVWvEMsD78
-	 HMK8Rnmq2St49ROmoMrJe9eqkhIJClsPRUAFWerMk3yzPPSzyhGZ5mpq7FhIV13v0r
-	 NAYbYrf+vMkX3iWja7ouU1FF3yCxfW+KqwaKWPbE=
-Date: Mon, 8 Apr 2024 07:44:10 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Jiri Slaby <jirislaby@kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>,
-	Finn Thain <fthain@linux-m68k.org>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] serial/pmac_zilog: Remove flawed mitigation for rx irq
- flood
-Message-ID: <2024040843-plug-thirstily-e478@gregkh>
-References: <dda2187e128bfaaf092351812e4538e2e41c17f6.1711599093.git.fthain@linux-m68k.org>
- <Zg3YZN-QupyVaTPm@surfacebook.localdomain>
- <8f234f26-d5e3-66ed-ab0c-86d3c9852b4a@linux-m68k.org>
- <CAHp75VcxLez_Nm0N8=gpWd7SKGd9JF2QXEOOB_gvX3ZtTzj6HQ@mail.gmail.com>
- <87y19s7bk6.fsf@mail.lhotse>
- <4bddf8ec-97f1-07f6-9c0a-523c102c0a1b@linux-m68k.org>
- <87v84sbexv.fsf@mail.lhotse>
- <b1553164-18db-4f5c-b1a5-28a393d64941@kernel.org>
- <3adf561b-2d6b-47be-8fca-2a26ee738670@kernel.org>
+	s=arc-20240116; t=1712564407; c=relaxed/simple;
+	bh=FECalRfsPYMgUnHnR9uK33bW2Ie9uw1bxEOLdNNFhTM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jwteC9HUO/7sKxPhhlqZz34WlaFfmLSzdlku9xeoUsxTwyiPWKZ6STQbtpQ/VsSwG91Sm+px5icLrQ7/CvKN3yQcUTijLIC7/E9by/2PgnHaakpu+zwXQ7M8XpJTuqLLARHrusO966XtBFaByvzan6bLO1SEaqaz9VKRM/Lcb4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-6114c9b4d83so33608477b3.3
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 08 Apr 2024 01:20:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712564403; x=1713169203;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9DVx4gd97DdgVJM34xzjKUIJDxKQktsSHSSvIhLo0M4=;
+        b=UoegIGC6rOENhRgeTu5+M57z2+lHW/CNEBB6E2wDA5UfQuV3fzD9BP5Z81Yykn3OuV
+         kyGveHnRC5Es1fV66w50s2VVYKBmr3+Q3OQoQzwTGq17RWLPk4BWRcnVWi78cGxAHXl+
+         oruo0kGhdUfcedRYB+dP36otKLHY9YpaqSvWEv8tWcC82iYDWzPbme9uve03C3MAsUq4
+         Za8rl88Mehr2sdOZpAIwtDG70g8HrUFRE/pCrMJKHR89hiOLEYZ7N+yKqqJjE7Md7ImM
+         V3fSF9n3WKkDuxfJdCTJCPEY5Y7l90VA8O47nHonnjaE0gff9J567As7tNX3wGXhgIVB
+         vsDw==
+X-Forwarded-Encrypted: i=1; AJvYcCV1w5SZ9a+1k8ad+1fzA0k4XxVR35JhV9bKk5zdyfFPJ0rdieWCW7L/B6X8viPRTJU5GA+EDz2GV58ryrDxrVoFJHQ9TMBpwcYLEtrf8NjF
+X-Gm-Message-State: AOJu0YyhxyBfUGAB6O15SkpTlwk+csnGCVazAtMtQt4alNfj2/Rn8PhN
+	In+pNVZDJoKPCltBuR/3ANyC/vhkx3ylnUAmY1vQvLu7g4DnLFujUiq8h801r28=
+X-Google-Smtp-Source: AGHT+IFKxVcYD8UwSOqFGoIjauj4w/dexFtfcmndSxZLoHi5VP6I1ceKuxKKIK2mAh99tTSiwi1xaw==
+X-Received: by 2002:a0d:e855:0:b0:615:35e1:e512 with SMTP id r82-20020a0de855000000b0061535e1e512mr6033950ywe.0.1712564402988;
+        Mon, 08 Apr 2024 01:20:02 -0700 (PDT)
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
+        by smtp.gmail.com with ESMTPSA id l2-20020a81d542000000b006152af6131dsm623893ywj.119.2024.04.08.01.20.02
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Apr 2024 01:20:02 -0700 (PDT)
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc742543119so3904902276.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 08 Apr 2024 01:20:02 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCW3oKdwauuJdjpoGgWnIKuOEXvQfkkWGJkIfxuOcCTM/xYLPM142WOpFhFlYOVBfPMBrCNtz29TTZwB6vLxC7ouKe2IlK1f/1OH5pwUsESG
+X-Received: by 2002:a25:9cc3:0:b0:dc7:43fe:e124 with SMTP id
+ z3-20020a259cc3000000b00dc743fee124mr5474927ybo.11.1712564402349; Mon, 08 Apr
+ 2024 01:20:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3adf561b-2d6b-47be-8fca-2a26ee738670@kernel.org>
+References: <20240403122851.38808-1-schnelle@linux.ibm.com>
+ <dd55afa6-8cb6-4e25-b720-d2df62dbb5e6@gmail.com> <bf276f98-2712-4fcf-a119-f984a1aedbf2@app.fastmail.com>
+ <CAMuHMdX+M1VuhDVnC9n4hCBDjHywwsByNK1w8ibazc+-8_C53A@mail.gmail.com> <d9bdfa48-572a-caa1-229b-44565690d9e6@gmail.com>
+In-Reply-To: <d9bdfa48-572a-caa1-229b-44565690d9e6@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 8 Apr 2024 10:19:50 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWVRSneRLU6OpXGKZMG5azXn_81eeS8vA8pvBvQPYnexQ@mail.gmail.com>
+Message-ID: <CAMuHMdWVRSneRLU6OpXGKZMG5azXn_81eeS8vA8pvBvQPYnexQ@mail.gmail.com>
+Subject: Re: [PATCH 0/1] m68k: Handle HAS_IOPORT dependencies
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Arnd Bergmann <arnd@kernel.org>, Niklas Schnelle <schnelle@linux.ibm.com>, 
+	linux-m68k@lists.linux-m68k.org, Heiko Carstens <hca@linux.ibm.com>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 08, 2024 at 07:37:22AM +0200, Jiri Slaby wrote:
-> On 08. 04. 24, 7:32, Jiri Slaby wrote:
-> > On 08. 04. 24, 7:29, Michael Ellerman wrote:
-> > > Many maintainers won't drop Cc: tags if they are there in the submitted
-> > > patch. So I agree with Andy that we should encourage folks not to add
-> > > them in the first place.
-> > 
-> > But fix the docs first.
-> > 
-> > I am personally not biased to any variant (as in: I don't care where CCs
-> > live in a patch).
-> 
-> OTOH, as a submitter, it's a major PITA to carry CCs in notes (to have those
-> under the --- line). Esp. when I have patches in a queue for years.
+On Fri, Apr 5, 2024 at 8:36=E2=80=AFPM Michael Schmitz <schmitzmic@gmail.co=
+m> wrote:
+> Am 05.04.2024 um 23:16 schrieb Geert Uytterhoeven:
+> > On Wed, Apr 3, 2024 at 8:35=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> =
+wrote:
+> >> On Wed, Apr 3, 2024, at 20:11, Michael Schmitz wrote:
+> >>> how do you propose we handle legacy drivers that do depend on
+> >>> inb()/outb() functions (_not_ actual ISA I/O) on architectures that m=
+ap
+> >>> inb()/outb() to MMIO functions?
+> >>>
+> >>> (In my case, that's at least ne.c - Geert ought to have a better
+> >>> overview what else does use inb()/outb() on m68k)
+> >>
+> >> If a machine provides an inb()/outb() set of operations that
+> >> is actually used, it should set HAS_IOPORT.
+> >>
+> >> For the Q40, it may be better in the long run to change the
+> >> drivers to just use MMIO directly though.
+> >
+> > Q40 uses ISA.
+> >
+> > Michael is worried about non-ISA drivers using inb() and friends.
+> > At some point in time (i.e. eons ago), we were told it was better to
+> > use in[bwl]()/read[bwl]() instead of directly dereferencing volatile
+> > pointers...
+> >
+> > Anyway, I don't think we have many users of inb() and friends left, and
+> > I assume the bots should have detected any/most remaining users in Nikl=
+as'
+> > branch...
+>
+> All the 8390 based ethernet drivers still use inb() and friends.
+>
+> That is the main reason for the terrible hacks in
+> arch/m68k/include/asm/io_mm.h ...
+>
+> The last time I tried to add support for a different PCMCIA ethernet
+> adapter to apne.c _without_ adding to the hacks in io_mm.h, I wasn't
+> getting anywhere with the netdev crowd. That was ages ago, and I doubt
+> their enthusiasm for a rewrite of the 8390 code base to avoid using
+> inb() on MMIO architectures will be any better now.
 
-Agreed, let's keep them where they are in the signed-off-by area, it's
-not hurting or harming anything to have them there.
+As Arnd already discovered later in this thread, AMIGA_PCMCIA
+(sort of) selects ISA, so APNE can be considered a "real" ISA. driver,
+so it can keep on using inb() and friends.
 
-thanks,
+Gr{oetje,eeting}s,
 
-greg k-h
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
