@@ -1,116 +1,162 @@
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wfhigh1-smtp.messagingengine.com (wfhigh1-smtp.messagingengine.com [64.147.123.152])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD11C34CDE
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  8 Apr 2024 08:33:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4C194F885
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  8 Apr 2024 09:32:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712565188; cv=none; b=Mb+2fmpE2LpDDLJvqAetPBeiAL7ooAWSXr6EOZFM/eOmDYfzTqP6ctua9VcYr6klNixnSzr5BOQKe79iyqnbgquneuZEDA4DtuQhuHBu/D6a3PBB1vfPlU5bLADFfN9vfucMntJ4H6O7ZvYDV1VYuO3G62Y6KkdlS4mwtZ8KdDE=
+	t=1712568729; cv=none; b=g4lY0m+HaDFixGqbM4Js4QWinNnKhJNQ5Lp3tlIJ0fL1EbkRMOW5UXcVIfKnW4rn5IYNHElGwguzIcEy/4k5SqYRFCk7oQrX0hz9vgbYkWqOK5x8hSFEhfGrRMUkoUgXWtKj5/a8EzxpQOFRuTXaXwYX2hDIlaVJfxYw7g7d4R8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712565188; c=relaxed/simple;
-	bh=qsWHvJLZoBirAJa2z/xDxSXcE2fWSyxa1yYwt5wP1MA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fLm3pf9/Uwza6eih546paByISDIQTLv5WR/ALX1L+v6au50VrOPghTDpS75r1Y6+RMH/ILihoHKM2iPjDRBinMJxSPzE4Leb4rBmRn7y5GKqpW89t6bYUw6ZXcnCBLv4fpuCnR/TFyZGxBVJban+OwdYVj82WndM8TprHUheJGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.170
+	s=arc-20240116; t=1712568729; c=relaxed/simple;
+	bh=WmJ95J6HrrRIzY8BMbFTySQyHTK3ZcZmyo6wCARsy2E=;
+	h=To:Cc:Message-Id:From:Subject:Date; b=c77LFRzjOJJM0K9ClAIm1I15H7DAz/VOiVrk32ZiJKPehCkxg38HHYV7Da1tub/CyFcYS0bhwbdbyHNTC/NDH0K+0zjBybnqeoB035GE38yLsM7V4m5bcyaHzT+EvQuKVVKF6k4a0hcqgVkcHDCEADQiACyHWz2fIW+43XnFTCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=bfcnoJT+; arc=none smtp.client-ip=64.147.123.152
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dc6cbe1ac75so3056109276.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 08 Apr 2024 01:33:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712565183; x=1713169983;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3bnKadFFQKfZtqlQN85uKX1QN2funm0jGKmok0O/bf4=;
-        b=DKW0NwNyhvMscnfX39mx8EyagtG5tkTMt0QJKyHjkUXvz0gtA4yjd2ZTilNdXmO4GU
-         MR/OQQDHmCEMn2fjVqaXiEne0o2nTBbJoMGGv8hfz4EHSX2dWN9zWiLvXqXXkbIrsY7f
-         WjuOswZPR+N7MUSsLuXV7IW/rkCfGaYYokv1Tkl2k26o/d37q0dQSft2NSlOnXbhTvhu
-         KQuSivWIO6yhKrRi91SCLONShiDYYkWpzrVmio0k9vBjg5U6GHGN01rT2+deqk0fh4oE
-         1nh8LBaOwI0siqtC7Yt4HhUYfO4MKMopANwgUBNLCvRy4mlbIjTHTQFTiAmy+3EKLkQm
-         yvpA==
-X-Forwarded-Encrypted: i=1; AJvYcCWqcLEbMMKByGWR+8cP7pQJ0FYIwki1rHwnUa6+gSC9Uz8rce9nVqvtdYrw7SuVgKvgAKI0P68j6j5k3BYZzN2OE7JGK8/MwyPI5G96hhjG
-X-Gm-Message-State: AOJu0YzzO7wuNd+GguJZ6vHd82yorfM4pkOfzuYc4EKo6koxWz/0KKPV
-	dSbr95JsZJ6u/AYvaPyPbxUnb1lCDNtop1NQwx44Pj5JpzWX9fSKcdU+hwerWYg=
-X-Google-Smtp-Source: AGHT+IGRl2e7ydaN+kVw6WLJqW/6hOoLfO04VYSN8iViJCn5BZcld1AVz2rOnWUwol/4zQ1O1IrfAg==
-X-Received: by 2002:a25:2904:0:b0:dcf:9aeb:73af with SMTP id p4-20020a252904000000b00dcf9aeb73afmr5709257ybp.2.1712565183453;
-        Mon, 08 Apr 2024 01:33:03 -0700 (PDT)
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
-        by smtp.gmail.com with ESMTPSA id q185-20020a2575c2000000b00de0eaa10ebesm622395ybc.20.2024.04.08.01.33.02
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Apr 2024 01:33:02 -0700 (PDT)
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dbed179f0faso3725897276.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 08 Apr 2024 01:33:02 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCW+Onq40juwTo74Hu8it7LwI2yR9DH755ORQmEDXoI8/K8R35xFO00/E8rTiQ32NT2IEiRtvCFgZ+bMgUGXK0J6zYkYn6sEK6BGnqu+J8Pl
-X-Received: by 2002:a25:ab2f:0:b0:ddd:7a62:59b0 with SMTP id
- u44-20020a25ab2f000000b00ddd7a6259b0mr5993867ybi.15.1712565182435; Mon, 08
- Apr 2024 01:33:02 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="bfcnoJT+"
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailfhigh.west.internal (Postfix) with ESMTP id 982A7180011C;
+	Mon,  8 Apr 2024 05:32:05 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 08 Apr 2024 05:32:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm2; t=1712568725; x=1712655125; bh=6/G3q7w8RbEyu
+	FhhtNgh7QXuPLfMG6eTAQmhdSZyUho=; b=bfcnoJT+rIPCc9WTuyJZ90kzRHSOk
+	v+HdMhdzUdfW1efA00XCKwkQ8HE2pIley67LOhz7uDQ7Joy0ssXOTiOFJnetet8f
+	OPU1kLGvgZ4S/EMjd7drRpI/I3k8MNnzlliSGryYV7anYjGVX68bnGA5/iK5yFDw
+	ibTmWDP5r0ZS+KD84fbg17nNd0AySMMahIuQMP8ZC5b71yESF23xkODHEyJ9v0+P
+	EYy9uPmPpktdTQVI3ktZL/e4baRINJyS6uZ9qvZ9hMkE5Lx8PFsRcJZahpiiW+Jk
+	u5bGiHNN5oqi5UdpevTgCFXWaDVsQckdS0XMFbh3RNxkNzrwTD6fBkSVQ==
+X-ME-Sender: <xms:lLkTZplfTkJe9pJz1rCoJcDjpqTPcEmimm3apJ1VWnhupDQNmDWMQw>
+    <xme:lLkTZk1GRLzKPlowigYZ6m6K0UgkKGYQxDQy4ap-9DXfsAIt8JCH3oZ8k6O3gNU-G
+    1Xn662C0pCMADKLuD4>
+X-ME-Received: <xmr:lLkTZvp0lwzhZ-PmP_u5fT5_hhN5T9m851Q89IkWCcU6nqdnr7cZ-5Nw1tyLCc0s-ah0DZUY8qNKYtuKxbBm4ANiFN491DxMMVI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudegiedgudejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepvfevkffhufffsedttdertddttddtnecuhfhrohhmpefhihhnnhcuvfhhrghi
+    nhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtthgvrh
+    hnpefftdekheelvddvtdetudelhfehhfejjeeuudeileettdeuleeigeefkeehvdevffen
+    ucffohhmrghinhepghhithhhuhgsrdgtohhmpdhkvghrnhgvlhdrohhrghenucevlhhush
+    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhi
+    nhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:lLkTZpnW8FYJAYWpZVyqzrojcb1Fc33HlL8ue9PA3lQ0S-ekU02eHQ>
+    <xmx:lLkTZn2ZqCSvTAindZMKK8DPQ5LaodKoVLxppVzNl3HpAbo1qw5Kpg>
+    <xmx:lLkTZotE0nuRbO_nisM7Cgs213CsDO73U6X2vIL0rCBP0GOBg0htFA>
+    <xmx:lLkTZrWi3c7DYC81O-MygdtBybl9EhatpQ6db1b6kgucHP5TOHSkOA>
+    <xmx:lbkTZu1iukWOt7h6iHDq1vghN_guy7LnSoBqzAo8595fjpWle76hDS4o>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 8 Apr 2024 05:32:00 -0400 (EDT)
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+    Jiri Slaby <jirislaby@kernel.org>
+Cc: "Benjamin Herrenschmidt" <benh@kernel.crashing.org>,
+    "Michael Ellerman" <mpe@ellerman.id.au>,
+    "Nicholas Piggin" <npiggin@gmail.com>,
+    "Christophe Leroy" <christophe.leroy@csgroup.eu>,
+    "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+    "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+    "Andy Shevchenko" <andy.shevchenko@gmail.com>,
+    stable@kernel.org,
+    linux-m68k@lists.linux-m68k.org,
+    linux-kernel@vger.kernel.org,
+    linux-serial@vger.kernel.org,
+    linuxppc-dev@lists.ozlabs.org
+Message-Id: <e853cf2c762f23101cd2ddec0cc0c2be0e72685f.1712568223.git.fthain@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH v3] serial/pmac_zilog: Remove flawed mitigation for rx irq flood
+Date: Mon, 08 Apr 2024 19:23:43 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <dda2187e128bfaaf092351812e4538e2e41c17f6.1711599093.git.fthain@linux-m68k.org>
- <Zg3YZN-QupyVaTPm@surfacebook.localdomain> <8f234f26-d5e3-66ed-ab0c-86d3c9852b4a@linux-m68k.org>
- <CAHp75VcxLez_Nm0N8=gpWd7SKGd9JF2QXEOOB_gvX3ZtTzj6HQ@mail.gmail.com>
- <87y19s7bk6.fsf@mail.lhotse> <4bddf8ec-97f1-07f6-9c0a-523c102c0a1b@linux-m68k.org>
- <87v84sbexv.fsf@mail.lhotse> <b1553164-18db-4f5c-b1a5-28a393d64941@kernel.org>
- <3adf561b-2d6b-47be-8fca-2a26ee738670@kernel.org>
-In-Reply-To: <3adf561b-2d6b-47be-8fca-2a26ee738670@kernel.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 8 Apr 2024 10:32:50 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdX+sZCUs7a-z07y-27t7RFqRg6y8M98XqExLy0qU=aVOA@mail.gmail.com>
-Message-ID: <CAMuHMdX+sZCUs7a-z07y-27t7RFqRg6y8M98XqExLy0qU=aVOA@mail.gmail.com>
-Subject: Re: [PATCH] serial/pmac_zilog: Remove flawed mitigation for rx irq flood
-To: Jiri Slaby <jirislaby@kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>, Finn Thain <fthain@linux-m68k.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Andy Shevchenko <andy.shevchenko@gmail.com>, 
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>, Nicholas Piggin <npiggin@gmail.com>, 
-	Christophe Leroy <christophe.leroy@csgroup.eu>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, linux-m68k@lists.linux-m68k.org, 
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Jiri,
+The mitigation was intended to stop the irq completely. That may be
+better than a hard lock-up but it turns out that you get a crash anyway
+if you're using pmac_zilog as a serial console:
 
-On Mon, Apr 8, 2024 at 7:37=E2=80=AFAM Jiri Slaby <jirislaby@kernel.org> wr=
-ote:
-> On 08. 04. 24, 7:32, Jiri Slaby wrote:
-> > On 08. 04. 24, 7:29, Michael Ellerman wrote:
-> >> Many maintainers won't drop Cc: tags if they are there in the submitte=
-d
-> >> patch. So I agree with Andy that we should encourage folks not to add
-> >> them in the first place.
-> >
-> > But fix the docs first.
-> >
-> > I am personally not biased to any variant (as in: I don't care where CC=
-s
-> > live in a patch).
->
-> OTOH, as a submitter, it's a major PITA to carry CCs in notes (to have
-> those under the --- line). Esp. when I have patches in a queue for years.
+ttyPZ0: pmz: rx irq flood !
+BUG: spinlock recursion on CPU#0, swapper/0
 
-(Good to discover I'm not the only one carrying Very Old Patches ;-)
+That's because the pr_err() call in pmz_receive_chars() results in
+pmz_console_write() attempting to lock a spinlock already locked in
+pmz_interrupt(). With CONFIG_DEBUG_SPINLOCK=y, this produces a fatal
+BUG splat. The spinlock in question is the one in struct uart_port.
 
-> How do people handle that? (Like rebases on current kernel.)
+Even when it's not fatal, the serial port rx function ceases to work.
+Also, the iteration limit doesn't play nicely with QEMU, as can be
+seen in the bug report linked below.
 
-Keep them under the --- line in the actual commits, just like your
-changelog? All of that is retained when rebasing.
+A web search for other reports of the error message "pmz: rx irq flood"
+didn't produce anything. So I don't think this code is needed any more.
+Remove it.
 
-Gr{oetje,eeting}s,
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
+Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: stable@kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Link: https://github.com/vivier/qemu-m68k/issues/44
+Link: https://lore.kernel.org/all/1078874617.9746.36.camel@gaston/
+Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+---
+Changed since v1:
+ - Reworked commit log according to comments from Andy Shevchenko.
 
-                        Geert
+Changed since v2:
+ - Added Acked-by and Cc tags.
+---
+ drivers/tty/serial/pmac_zilog.c | 14 --------------
+ 1 file changed, 14 deletions(-)
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
+diff --git a/drivers/tty/serial/pmac_zilog.c b/drivers/tty/serial/pmac_zilog.c
+index c8bf08c19c64..77691fbbf779 100644
+--- a/drivers/tty/serial/pmac_zilog.c
++++ b/drivers/tty/serial/pmac_zilog.c
+@@ -210,7 +210,6 @@ static bool pmz_receive_chars(struct uart_pmac_port *uap)
+ {
+ 	struct tty_port *port;
+ 	unsigned char ch, r1, drop, flag;
+-	int loops = 0;
+ 
+ 	/* Sanity check, make sure the old bug is no longer happening */
+ 	if (uap->port.state == NULL) {
+@@ -291,24 +290,11 @@ static bool pmz_receive_chars(struct uart_pmac_port *uap)
+ 		if (r1 & Rx_OVR)
+ 			tty_insert_flip_char(port, 0, TTY_OVERRUN);
+ 	next_char:
+-		/* We can get stuck in an infinite loop getting char 0 when the
+-		 * line is in a wrong HW state, we break that here.
+-		 * When that happens, I disable the receive side of the driver.
+-		 * Note that what I've been experiencing is a real irq loop where
+-		 * I'm getting flooded regardless of the actual port speed.
+-		 * Something strange is going on with the HW
+-		 */
+-		if ((++loops) > 1000)
+-			goto flood;
+ 		ch = read_zsreg(uap, R0);
+ 		if (!(ch & Rx_CH_AV))
+ 			break;
+ 	}
+ 
+-	return true;
+- flood:
+-	pmz_interrupt_control(uap, 0);
+-	pmz_error("pmz: rx irq flood !\n");
+ 	return true;
+ }
+ 
+-- 
+2.39.3
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
