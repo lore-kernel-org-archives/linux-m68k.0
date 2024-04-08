@@ -1,50 +1,50 @@
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A02EE381B9
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  8 Apr 2024 08:20:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10E1539FC3
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  8 Apr 2024 08:23:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712564407; cv=none; b=p0ELTR8NZWlmJQe7MEJ49bOs7SuVdzjMZqEnQ/UbUwPe05Gl6gMcq4GM0Ke4lnAUdX3+bFErAN7Kg9rV7EyQyC3icI70jvpA80Q2HSYu3eFyUd/Rj1c/M3yewb5xbyB3ogGNmw0gnlZTwOgkPn53+72d5pxljUWNWqnOxjDvj88=
+	t=1712564620; cv=none; b=houAn/gts3ygUFz3alFBxX62hxMMN3ndDK8POPPmabRn3/R1yvpuiP0OzsnJW+7RtwFexVc/zn6g2uoyqkQ8JidMYUSt1WnBl8P/xinAWHUSDNrE+S2CbVXgjXlTqC/s72NrZi5pbiKLjz+6EbtbV8mZ4esidXBAsYZX9zocDYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712564407; c=relaxed/simple;
-	bh=FECalRfsPYMgUnHnR9uK33bW2Ie9uw1bxEOLdNNFhTM=;
+	s=arc-20240116; t=1712564620; c=relaxed/simple;
+	bh=9BucTodjQZA0C+PXetagehbEC3XeicZcpxm1poATaVo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jwteC9HUO/7sKxPhhlqZz34WlaFfmLSzdlku9xeoUsxTwyiPWKZ6STQbtpQ/VsSwG91Sm+px5icLrQ7/CvKN3yQcUTijLIC7/E9by/2PgnHaakpu+zwXQ7M8XpJTuqLLARHrusO966XtBFaByvzan6bLO1SEaqaz9VKRM/Lcb4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.171
+	 To:Cc:Content-Type; b=Otm+DPkRa0SIF3kxhqVASGA4JTpjKmqjPm/utH7ENS/I9Pp1ybWRlMPb3NkuJmNbAbD7jmqYwA2QPNiQLfWt+pbUdrYB0AQIco3ydNvz5T81Cew+5Bil6iDGUE+bxsUvCv0Lqb8iYpGuFiF2gPXc4TElGGUfYzixpWfiCDr3j5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-6114c9b4d83so33608477b3.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 08 Apr 2024 01:20:04 -0700 (PDT)
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcbd1d4904dso4060871276.3
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 08 Apr 2024 01:23:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712564403; x=1713169203;
+        d=1e100.net; s=20230601; t=1712564618; x=1713169418;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9DVx4gd97DdgVJM34xzjKUIJDxKQktsSHSSvIhLo0M4=;
-        b=UoegIGC6rOENhRgeTu5+M57z2+lHW/CNEBB6E2wDA5UfQuV3fzD9BP5Z81Yykn3OuV
-         kyGveHnRC5Es1fV66w50s2VVYKBmr3+Q3OQoQzwTGq17RWLPk4BWRcnVWi78cGxAHXl+
-         oruo0kGhdUfcedRYB+dP36otKLHY9YpaqSvWEv8tWcC82iYDWzPbme9uve03C3MAsUq4
-         Za8rl88Mehr2sdOZpAIwtDG70g8HrUFRE/pCrMJKHR89hiOLEYZ7N+yKqqJjE7Md7ImM
-         V3fSF9n3WKkDuxfJdCTJCPEY5Y7l90VA8O47nHonnjaE0gff9J567As7tNX3wGXhgIVB
-         vsDw==
-X-Forwarded-Encrypted: i=1; AJvYcCV1w5SZ9a+1k8ad+1fzA0k4XxVR35JhV9bKk5zdyfFPJ0rdieWCW7L/B6X8viPRTJU5GA+EDz2GV58ryrDxrVoFJHQ9TMBpwcYLEtrf8NjF
-X-Gm-Message-State: AOJu0YyhxyBfUGAB6O15SkpTlwk+csnGCVazAtMtQt4alNfj2/Rn8PhN
-	In+pNVZDJoKPCltBuR/3ANyC/vhkx3ylnUAmY1vQvLu7g4DnLFujUiq8h801r28=
-X-Google-Smtp-Source: AGHT+IFKxVcYD8UwSOqFGoIjauj4w/dexFtfcmndSxZLoHi5VP6I1ceKuxKKIK2mAh99tTSiwi1xaw==
-X-Received: by 2002:a0d:e855:0:b0:615:35e1:e512 with SMTP id r82-20020a0de855000000b0061535e1e512mr6033950ywe.0.1712564402988;
-        Mon, 08 Apr 2024 01:20:02 -0700 (PDT)
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
-        by smtp.gmail.com with ESMTPSA id l2-20020a81d542000000b006152af6131dsm623893ywj.119.2024.04.08.01.20.02
+        bh=aDWiWLcu7csgHD8oiwim7vv9Jne5blOZ8xlpqmcE10I=;
+        b=WyELCDo1Lxb9EGJwH2qaItOwIhWwCzridykGRHMsuiUbXOaNFb2fmpALZ/5zNMAZL4
+         heeSPQA1Qd9bICc2LcKocP4HMQyYcNUTR5V4Qv5+pMrbsGToshXOh8Ijg/CXHRAnKaxd
+         0WzolrNcqngl0Jfg98UnXB/J8E8phzd0/j/d5RI7VrjpdtHe3A8CNLip5sBR+lb/+mn/
+         fldKPQ5HabFO1g8V9ePkROynagoyz+dPf8v82Kggei1lyTyhU3a1pOVRNU2JGuNom7xv
+         VydxVdhMwwdu8IIjqWHEt6Bv/FdVrPKrwOHimN1pAJiLrvN0hlxAUy6Fyzds0yZhJqyP
+         tQOw==
+X-Forwarded-Encrypted: i=1; AJvYcCVwvjznNG6kC5if6UCnNRtgLa2knOAJvZAqe7ZgUWX0hOFvkCWjP1jgEnQ9qndJNCUU5XwV6YRwOYSwuVdN4GnkvstKf/+KlAhZETttjPUN
+X-Gm-Message-State: AOJu0YxDnA42ajnIFEPdOLvhIUAY9QLVg7TgKreYS7E8OBaEjWAhUe8q
+	zUrdZ7JTLj03WWYQk6LHKOGFjIDcTGnqEmBmyQiHFbhI4lu8DCp+Hxd0R3/iHnE=
+X-Google-Smtp-Source: AGHT+IECanJ+NMrJVJ+IbTcnKUiybNTsTctPN/uuJk5u++pONCs6eoqCTK+yXSOtH2MV779CrxbdXg==
+X-Received: by 2002:a25:6f89:0:b0:dcf:30d9:1d7b with SMTP id k131-20020a256f89000000b00dcf30d91d7bmr6186525ybc.45.1712564617641;
+        Mon, 08 Apr 2024 01:23:37 -0700 (PDT)
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com. [209.85.128.179])
+        by smtp.gmail.com with ESMTPSA id e128-20020a251e86000000b00dcdb0f80b69sm1347288ybe.48.2024.04.08.01.23.36
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Apr 2024 01:20:02 -0700 (PDT)
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc742543119so3904902276.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 08 Apr 2024 01:20:02 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCW3oKdwauuJdjpoGgWnIKuOEXvQfkkWGJkIfxuOcCTM/xYLPM142WOpFhFlYOVBfPMBrCNtz29TTZwB6vLxC7ouKe2IlK1f/1OH5pwUsESG
-X-Received: by 2002:a25:9cc3:0:b0:dc7:43fe:e124 with SMTP id
- z3-20020a259cc3000000b00dc743fee124mr5474927ybo.11.1712564402349; Mon, 08 Apr
- 2024 01:20:02 -0700 (PDT)
+        Mon, 08 Apr 2024 01:23:37 -0700 (PDT)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-61587aa956eso37716107b3.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 08 Apr 2024 01:23:36 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWm/Qba6gXTZc9Pw6NbHFcYyRA90T9YJwC27m1FWwAX26DUZrXyg27kEg8k54AUQMZKdXh/9Msw28yVsD7DdNgjXzNXSj4CgzuozmWm3aG4
+X-Received: by 2002:a25:2610:0:b0:dbd:553d:9d6a with SMTP id
+ m16-20020a252610000000b00dbd553d9d6amr5403540ybm.40.1712564616812; Mon, 08
+ Apr 2024 01:23:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -53,66 +53,43 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20240403122851.38808-1-schnelle@linux.ibm.com>
  <dd55afa6-8cb6-4e25-b720-d2df62dbb5e6@gmail.com> <bf276f98-2712-4fcf-a119-f984a1aedbf2@app.fastmail.com>
- <CAMuHMdX+M1VuhDVnC9n4hCBDjHywwsByNK1w8ibazc+-8_C53A@mail.gmail.com> <d9bdfa48-572a-caa1-229b-44565690d9e6@gmail.com>
-In-Reply-To: <d9bdfa48-572a-caa1-229b-44565690d9e6@gmail.com>
+ <CAMuHMdX+M1VuhDVnC9n4hCBDjHywwsByNK1w8ibazc+-8_C53A@mail.gmail.com> <11fdef9b-413d-4f88-b3d3-e5b27a88cf6f@app.fastmail.com>
+In-Reply-To: <11fdef9b-413d-4f88-b3d3-e5b27a88cf6f@app.fastmail.com>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 8 Apr 2024 10:19:50 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWVRSneRLU6OpXGKZMG5azXn_81eeS8vA8pvBvQPYnexQ@mail.gmail.com>
-Message-ID: <CAMuHMdWVRSneRLU6OpXGKZMG5azXn_81eeS8vA8pvBvQPYnexQ@mail.gmail.com>
+Date: Mon, 8 Apr 2024 10:23:25 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdX026rLnJP2K-MhBjzVnmu8EReYe3PJc595Vjp4GoBK7w@mail.gmail.com>
+Message-ID: <CAMuHMdX026rLnJP2K-MhBjzVnmu8EReYe3PJc595Vjp4GoBK7w@mail.gmail.com>
 Subject: Re: [PATCH 0/1] m68k: Handle HAS_IOPORT dependencies
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Arnd Bergmann <arnd@kernel.org>, Niklas Schnelle <schnelle@linux.ibm.com>, 
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Michael Schmitz <schmitzmic@gmail.com>, Niklas Schnelle <schnelle@linux.ibm.com>, 
 	linux-m68k@lists.linux-m68k.org, Heiko Carstens <hca@linux.ibm.com>, 
 	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 5, 2024 at 8:36=E2=80=AFPM Michael Schmitz <schmitzmic@gmail.co=
-m> wrote:
-> Am 05.04.2024 um 23:16 schrieb Geert Uytterhoeven:
+Hi Arnd,
+
+On Fri, Apr 5, 2024 at 1:26=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wrot=
+e:
+> On Fri, Apr 5, 2024, at 12:16, Geert Uytterhoeven wrote:
 > > On Wed, Apr 3, 2024 at 8:35=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> =
 wrote:
-> >> On Wed, Apr 3, 2024, at 20:11, Michael Schmitz wrote:
-> >>> how do you propose we handle legacy drivers that do depend on
-> >>> inb()/outb() functions (_not_ actual ISA I/O) on architectures that m=
-ap
-> >>> inb()/outb() to MMIO functions?
-> >>>
-> >>> (In my case, that's at least ne.c - Geert ought to have a better
-> >>> overview what else does use inb()/outb() on m68k)
-> >>
-> >> If a machine provides an inb()/outb() set of operations that
-> >> is actually used, it should set HAS_IOPORT.
-> >>
-> >> For the Q40, it may be better in the long run to change the
-> >> drivers to just use MMIO directly though.
-> >
-> > Q40 uses ISA.
-> >
 > > Michael is worried about non-ISA drivers using inb() and friends.
 > > At some point in time (i.e. eons ago), we were told it was better to
 > > use in[bwl]()/read[bwl]() instead of directly dereferencing volatile
 > > pointers...
-> >
-> > Anyway, I don't think we have many users of inb() and friends left, and
-> > I assume the bots should have detected any/most remaining users in Nikl=
-as'
-> > branch...
 >
-> All the 8390 based ethernet drivers still use inb() and friends.
->
-> That is the main reason for the terrible hacks in
-> arch/m68k/include/asm/io_mm.h ...
->
-> The last time I tried to add support for a different PCMCIA ethernet
-> adapter to apne.c _without_ adding to the hacks in io_mm.h, I wasn't
-> getting anywhere with the netdev crowd. That was ages ago, and I doubt
-> their enthusiasm for a rewrite of the 8390 code base to avoid using
-> inb() on MMIO architectures will be any better now.
+> It's definitely still better to use an abstraction layer for MMIO
+> accesses using inline asm instructions than open-coding the
+> volatile pointer dereferences. Over time we have gotten better
+> at defining which of the available abstractions should be used
+> for a given bus, so inb()/outb() is now only really used for
+> things derived from ISA in some form, including e.g. PCI and LPC.
 
-As Arnd already discovered later in this thread, AMIGA_PCMCIA
-(sort of) selects ISA, so APNE can be considered a "real" ISA. driver,
-so it can keep on using inb() and friends.
+Indeed. Nowadays the consensus is that readl() and friends should
+always perform little-endian accesses, thus implying byte-swapping on
+big-endian platforms, but most of the m68k drivers were written long
+before that enlightenment...
 
 Gr{oetje,eeting}s,
 
