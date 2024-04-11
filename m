@@ -1,209 +1,141 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 775827BAF0
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  9 Apr 2024 07:21:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BED7213BADC
+	for <linux-m68k@vger.kernel.org>; Thu, 11 Apr 2024 03:36:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712647317; cv=none; b=JL/P7xDRFBHvB71pnauK9HPrHSZLLX3jBgMvtamv64/Dm0r4GNZW2HZ/HBCY8H0uSNirHdz/A5fzBYQk6fn4ckbN0Ee3WSVipurthLbKYtJWCdjOKgDpckRPHW4EjkkRJq09UZU0Ox3+Wqs7rJovAMdd1B08tQZPqJ/0ZufAtyM=
+	t=1712806600; cv=none; b=gsnAjMxnNkNDvtAXNFzCzv6aIN6hZyuonJENR7Lfjk0DBNWjdtbKIwYHvNZ4ekA9ELVl/wOQbHPVKpXiDVn//mwmLEzbJpvizMYSBUW7G7Vm4hoDkYOFHiM6OJAuQkxuKoHYtYdR/ZwGBYls92ogn7qxBbfn98FsNByiOoe3Qm8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712647317; c=relaxed/simple;
-	bh=VlgXBU8EuHiWPmjOyQ3X27yuDRV9eQ4Qo5o0X1R5HjQ=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=ZUHi8yisR5fk4UE5Ubn/6WNWJ45LlNTsoDunjFhof8pdT+kyxWjtXKjB+s9dW9fUsyX8V1yJIt8pUSUHPGz58UiOnDA9JQtlC0+T+NOHw47PNXbDQHoKarSsdgFB2omxNKUN95C6B1hdYR4SvK5YfQb9XJ7glFhwk1AZSZLBac0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lvqnJBnC; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1712806600; c=relaxed/simple;
+	bh=a2DRbjVgBv+GT9QdhTM4FvFxyil+8AZ14CjbmFKA+4U=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=qMG2w1pySesRnvFWA0dslt0xdOU8quvGrdPyn9JKnqWSVNWK+Q7KqNVZ2WIrI2TV3myuDj64MgRAEMe1onhH1zlwI+o5NZAl/lXX4EKoGbO8QWC1klvZNElZ6IDEgVW5lXTOXQNZ8LjLr90i8RKqjtpYK6ttkjEgiRtIsbOcfxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=afWku5hH; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lvqnJBnC"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712647315; x=1744183315;
-  h=date:from:to:cc:subject:message-id;
-  bh=VlgXBU8EuHiWPmjOyQ3X27yuDRV9eQ4Qo5o0X1R5HjQ=;
-  b=lvqnJBnCSgzqlWEElDyOGVgsjdE69eonNKhCeJblCR8+vZaguF00p4La
-   3I2dsXn2sKxJrUV5ZJcZ9430crJglhHUkM0MAvD6Lg54LBl6QekN03sbD
-   ahwc2FLFawQk0L/c2D2UDyS34L59a25Ze7Louj8LcWlGtFOdRLG5dApyr
-   eJkFeYqmUgthgIjAIJ6uCqVxBmwRexJR7FYKZiQczoPmxVCPqcogVCUMX
-   Xyv+F8+YswmrU9UkPOpfzUd/VPyeAF+zpMwsYHqa8wm2KenADvJnn69fy
-   lvxfFDxpE6hsqmH+6vtRHeuWLZBQCbeTL0gKMiZXb4CPCz6IFQvVazLiZ
-   A==;
-X-CSE-ConnectionGUID: 9qihIYoATXSzNvqdgHz98Q==
-X-CSE-MsgGUID: +E+rWE42SqOG7+Twq/L8Hw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="11728093"
-X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="11728093"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 00:21:55 -0700
-X-CSE-ConnectionGUID: aR3MVkdCRPOe/hjVrGdWtA==
-X-CSE-MsgGUID: 3IcfyhF+QSiouwdkNSxvHQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,189,1708416000"; 
-   d="scan'208";a="20590519"
-Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
-  by orviesa006.jf.intel.com with ESMTP; 09 Apr 2024 00:21:54 -0700
-Received: from kbuild by e61807b1d151 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ru5nj-0005rO-0m;
-	Tue, 09 Apr 2024 07:21:51 +0000
-Date: Tue, 09 Apr 2024 15:21:10 +0800
-From: kernel test robot <lkp@intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 9c9c2b85c6b3c6d365a2344adcd5c5a4cc02d0ad
-Message-ID: <202404091509.bLQpGVws-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="afWku5hH"
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e6b22af648so314220b3a.0
+        for <linux-m68k@vger.kernel.org>; Wed, 10 Apr 2024 20:36:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712806598; x=1713411398; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e0yHxhdFARDcGj3BUAtYCNq9IbgHSRjhesHj7wIWRdo=;
+        b=afWku5hH9B08MnvZeHX3Hw4dGMEWszUlmkB5NBt204V2vWN99Ay6AuCX9R2HE51y03
+         1tzIqvQlHxJqEyftLC9uZoVUSAzH3uZVH1ssYicx5VEX0cjmC7LyDcVXJeQVafO5rd5g
+         7Y/IhYPTF73yWGDAfJ6gyHHUqrgcAUFQ9BG35J1wlOt/VPN+mkEEZKmAlSwiJUtF0toC
+         b+xlLRW3F/+aau+AtTPA7ZYTh2AN1gIE4fwv0nUZXGEJyip9bLRVxj9WhSbvOEgGcZEi
+         SLYTMECKHc/LvdADH0h80fmwZT47usj2aCckdwnlzhpMZmWMAWEg/NDF6NXhPW2yGUXJ
+         dKQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712806598; x=1713411398;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e0yHxhdFARDcGj3BUAtYCNq9IbgHSRjhesHj7wIWRdo=;
+        b=ni4nuFJzCM8kPs7KfFCVhQLTrHfATACKoxTjS2t1U10iA7lg4PDCtuPvPOx++EJ0HT
+         Q11GreQc84r8hVMsbusAICs4CRlx5GgRdNwoVLYb/i1IAHHe1CeH5WhkGANhYmHdI/FP
+         J0a2+2QFZfS+DOaitUoTharxi+QmlQdYXccjDBUnylVGNe8OUfsbRwyBF8ZKrXvIfn1W
+         2gsLl6SFONzp9XDUpheyF7X8Q6cnRT65IYR4ssdl6ZPGGTXzpt1UQLaqL5oMynqqJa5/
+         Rtb5KrO/vllsVApW5XSHFlNC6UuOJkz9skatdTHbk0I38SyD+AC3bdw1F/pITCkKKoCY
+         vfhw==
+X-Gm-Message-State: AOJu0Yz9mFAuUOXhq/DUVPQ69oLWLFTbcGDT5qVC1uaEmUC6RV67v6AR
+	DnyoCCTjCc7yOX1GWYbSIloBG7fQ7yOfHTpYSwlsFYtNHaV+WOcU
+X-Google-Smtp-Source: AGHT+IH9Oqxv8tyTyj7/VNYU545lMdeWIcSlcAWL30ijyZgou5sOr8xymBxwnom5uVTmSePdFpFtPA==
+X-Received: by 2002:a17:902:e811:b0:1e3:cb8d:e28f with SMTP id u17-20020a170902e81100b001e3cb8de28fmr1932691plg.31.1712806597913;
+        Wed, 10 Apr 2024 20:36:37 -0700 (PDT)
+Received: from xplor.waratah.dyndns.org (222-152-175-63-fibre.sparkbb.co.nz. [222.152.175.63])
+        by smtp.gmail.com with ESMTPSA id i5-20020a17090332c500b001e546a10c50sm298162plr.286.2024.04.10.20.36.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 20:36:37 -0700 (PDT)
+Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
+	id 9C17C360312; Thu, 11 Apr 2024 15:36:33 +1200 (NZST)
+From: Michael Schmitz <schmitzmic@gmail.com>
+To: linux-m68k@vger.kernel.org,
+	geert@linux-m68k.org
+Cc: schmitzmic@gmail.com,
+	Guenter Roeck <linux@roeck-us.net>,
+	Finn Thain <fthain@linux-m68k.org>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	stable@kernel.org,
+	linux-m68k@lists.linux-m68k.org
+Subject: [PATCH RFC] m68k: fix spinlock race in kernel thread creation
+Date: Thu, 11 Apr 2024 15:36:31 +1200
+Message-Id: <20240411033631.16335-1-schmitzmic@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 9c9c2b85c6b3c6d365a2344adcd5c5a4cc02d0ad  Merge tag 'v6.9-rc3'
+Context switching does take care to retain the correct lock
+owner across the switch from 'prev' to 'next' tasks. This does
+rely on interrupts remaining disabled for the entire duration
+of the switch.
 
-elapsed time: 863m
+This condition is guaranteed for normal process creation and
+context switching between already running processes, because
+both 'prev' and 'next' already have interrupts disabled in their
+saved copies of the status register.
 
-configs tested: 132
-configs skipped: 3
+The situation is different for newly created kernel threads.
+The status register is set to PS_S in copy_thread(), which does
+leave the IPL at 0. Upon restoring the 'next' thread's status
+register in switch_to() aka resume(), interrupts then become
+enabled prematurely. resume() then returns via ret_from_kernel_thread()
+and schedule_tail() where run queue lock is released (see
+finish_task_switch() and finish_lock_switch()).
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+A timer interrupt calling scheduler_tick() before the lock is
+released in finish_task_switch() will find the lock already taken,
+with the current task as lock owner. This causes a spinlock
+recursion warning as reported by Guenter Roeck.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240409   gcc  
-arc                   randconfig-002-20240409   gcc  
-arc                        vdk_hs38_defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240409   gcc  
-arm                   randconfig-004-20240409   gcc  
-arm                           sunxi_defconfig   gcc  
-arm                    vt8500_v6_v7_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240409   gcc  
-arm64                 randconfig-002-20240409   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240409   gcc  
-csky                  randconfig-002-20240409   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386                                defconfig   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240409   gcc  
-loongarch             randconfig-002-20240409   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-microblaze                      mmu_defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                       bmips_be_defconfig   gcc  
-mips                     cu1830-neo_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240409   gcc  
-nios2                 randconfig-002-20240409   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-openrisc                       virt_defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240409   gcc  
-parisc                randconfig-002-20240409   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                  iss476-smp_defconfig   gcc  
-powerpc                         ps3_defconfig   gcc  
-powerpc               randconfig-002-20240409   gcc  
-powerpc                  storcenter_defconfig   gcc  
-powerpc64             randconfig-001-20240409   gcc  
-powerpc64             randconfig-003-20240409   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-002-20240409   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240409   gcc  
-s390                  randconfig-002-20240409   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                            hp6xx_defconfig   gcc  
-sh                    randconfig-001-20240409   gcc  
-sh                    randconfig-002-20240409   gcc  
-sh                           se7705_defconfig   gcc  
-sh                           sh2007_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                       sparc32_defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240409   gcc  
-sparc64               randconfig-002-20240409   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-002-20240409   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                generic_kc705_defconfig   gcc  
-xtensa                randconfig-001-20240409   gcc  
-xtensa                randconfig-002-20240409   gcc  
+As far as I can ascertain, this race has been opened in commit
+533e6903bea0 ("m68k: split ret_from_fork(), simplify kernel_thread()")
+but I haven't done a detailed study of kernel history so it
+may well predate that commit.
 
+Interrupts cannot be disabled in the saved status register copy
+for kernel threads (init will complain about interrupts disabled
+when finally starting user space). Disable interrupts temporarily
+when switching the tasks' register sets in resume().
+
+Note that a simple oriw 0x700,%sr after restoring sr is not enough
+here - this leaves enough of a race for the 'spinlock recursion'
+warning to still be observed.
+
+Tested on ARAnyM and qemu (Quadra 800 emulation).
+
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Finn Thain <fthain@linux-m68k.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: stable@kernel.org # 3.6
+Cc: linux-m68k@lists.linux-m68k.org
+Link: https://lore.kernel.org/all/07811b26-677c-4d05-aeb4-996cd880b789@roeck-us.net
+Fixes: 533e6903bea0 ("m68k: split ret_from_fork(), simplify kernel_thread()")
+Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+---
+ arch/m68k/kernel/entry.S | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+index 9933679ea28b..681c008270dc 100644
+--- a/arch/m68k/kernel/entry.S
++++ b/arch/m68k/kernel/entry.S
+@@ -446,7 +446,9 @@ resume:
+ 	movec	%a0,%dfc
+ 
+ 	/* restore status register */
+-	movew	%a1@(TASK_THREAD+THREAD_SR),%sr
++	movew	%a1@(TASK_THREAD+THREAD_SR),%d0
++	oriw	#0x0700,%d0
++	movew	%d0,%sr
+ 
+ 	rts
+ 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.17.1
+
