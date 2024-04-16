@@ -1,49 +1,49 @@
 Received: from mx0b-00823401.pphosted.com (mx0b-00823401.pphosted.com [148.163.152.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3FBA13280C;
-	Tue, 16 Apr 2024 17:25:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA042139580;
+	Tue, 16 Apr 2024 19:19:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.152.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713288349; cv=none; b=X59rThs78HpERbrNItwbuHgWqaOiDwPKfnncCDY4UJkOEBisJGW9dPbnsddl+fT/vrmEzhkF0B05Q49ACza7v4ImcAqOZiGVx5SIRbEw6FlGnH+n0iXIKa5yaeCF1/uOdtqkhC3IJux34cAdS3hTK9bMvTPYOZeoDRlpoZOfXq0=
+	t=1713295196; cv=none; b=TQqYTOrfXZsUkPrr1vjKtfEiFi2fPArGfc1g84TCHXCK/NbQcFw4EReRm5BK/7LnTXbM2rmGaOFAN68X2aBRJOgr1Ov9pQUzaADaJBTiayqMs+ZwTbOeeLcoJMRE6/PpUQkT1wD1UkHI/+iamu35C+LHlwTMsIusC7mA8/AeJnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713288349; c=relaxed/simple;
+	s=arc-20240116; t=1713295196; c=relaxed/simple;
 	bh=skpJt66dHhajZRxQ+0OwGnjgJvZfMcLix3I7ncdjrrg=;
-	h=Message-Id:In-Reply-To:References:To:Cc:From:Date:Subject; b=tFWsdarjYEnDMD9QwZKU/fyNnbpULtP96icP8J9DNbPDfyNTNyYECoJ5Qa7ty1lCZHyMlERL1J98y6hDDTVLI6Om2TRIoxlOb80WTbsjsjmd5fMjUAce15odxzMOEYrPDW9lWWW2ycQkDg5jUgM5+VlZt8zjWIJ1jmN6YEwQig4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com; spf=pass smtp.mailfrom=motorola.com; dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b=0QtJvqAr; arc=none smtp.client-ip=148.163.152.46
+	h=Message-Id:In-Reply-To:References:To:Cc:From:Subject:Date; b=Uf+c+1rG86jkEZE5cP0sD1U0yXTGKyEEuSlXze5j6HaZhBBi7nS02cW1R08u33Q4jR9f+7d6uihLmoIINdqc5+TUXl6//I0yDzNQflvcClDLCrqgTh1mCgmaQcqtbb8EHnMyydYZGuU4jc/eMn+wgRtHvKqFLJqdZ8L1Ntl99wg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com; spf=pass smtp.mailfrom=motorola.com; dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b=Qla0/1la; arc=none smtp.client-ip=148.163.152.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=motorola.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b="0QtJvqAr"
-Received: from pps.filterd (m0355092.ppops.net [127.0.0.1])
-	by mx0b-00823401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43GFcLBT010095;
-	Tue, 16 Apr 2024 17:24:58 GMT
+	dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b="Qla0/1la"
+Received: from pps.filterd (m0355091.ppops.net [127.0.0.1])
+	by mx0b-00823401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43GGDbkO026743;
+	Tue, 16 Apr 2024 19:19:23 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=motorola.com; h=
-	message-id:in-reply-to:references:to:cc:from:date:subject; s=
-	DKIM202306; bh=9vTyU2l3t+ufezl9NM7trdVAZw+NQOYaPFZvexa2H5c=; b=0
-	QtJvqArI8oZRnth8heREoJc8AumCg45RyB1sbtTAEfW5J+L/RORkTOSJrlQ9H+fU
-	i4M8nTuI6oQI/uGnQR4cA4iXkyzsGq318AwnxFEGJr3FMtBjKwDheclHEbuiH3Ft
-	xPEB3HaUI/jctn1nM86DsICaVCePG5dXuh+wuOXlzLFXsQ2JZHxY25wob1vcxzOo
-	arSMuM1q43dNlOFqzeOEumfathsziVmDCLszeic//xV1Rc6uBGhaLbjySsaHCvrE
-	0QtBb07boX8KpawF7af1zfVeWmjbFJCn/TSk25+4NGBeOrahsbNKBoAMK/GBtlYQ
-	fuvsgDUTr3t2jkivAlRYg==
-Received: from ilclpfpp01.lenovo.com ([144.188.128.67])
-	by mx0b-00823401.pphosted.com (PPS) with ESMTPS id 3xha96c2tj-1
+	message-id:in-reply-to:references:to:cc:from:subject:date; s=
+	DKIM202306; bh=9vTyU2l3t+ufezl9NM7trdVAZw+NQOYaPFZvexa2H5c=; b=Q
+	la0/1lagQ+CRwBPmfuSMHqN/BmkLBAxYzvtE5AgErO/S0QtIQyXCkBGaZQh/o+e8
+	U1sruERg1FQY7Gxhx1ZDI55iL21Ck2ejCYnX2DFnh2/85yarjsbufcIcWAcqpsQu
+	QChNWY0l++bLFGpMgyifp69z9tpd43PzV6VWZGrbPF/BxpdxqrmwKyHobmPvQ2Xy
+	qR8+dgxqO2ZJCLu8z0+M5RxIKSr4iBso5Cy+2TZBJgpxFGxsraDqmmcN9xQxQ4XR
+	uH5BYRrkhUDg7Syx5AgOy2XBoSs7JlpQ47UYf+5hTgmf4b/1YkF5y4GxQO+ngpCS
+	sSghLiKpHLFrj734kjoNQ==
+Received: from va32lpfpp04.lenovo.com ([104.232.228.24])
+	by mx0b-00823401.pphosted.com (PPS) with ESMTPS id 3xhjbekf1q-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 17:24:58 +0000 (GMT)
-Received: from va32lmmrp01.lenovo.com (va32lmmrp01.mot.com [10.62.177.113])
+	Tue, 16 Apr 2024 19:19:22 +0000 (GMT)
+Received: from va32lmmrp02.lenovo.com (va32lmmrp02.mot.com [10.62.176.191])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ilclpfpp01.lenovo.com (Postfix) with ESMTPS id 4VJrWs2NM6zdDsy;
-	Tue, 16 Apr 2024 17:24:57 +0000 (UTC)
+	by va32lpfpp04.lenovo.com (Postfix) with ESMTPS id 4VJv3t0jJrzgK7d;
+	Tue, 16 Apr 2024 19:19:22 +0000 (UTC)
 Received: from ilclbld243.mot.com (ilclbld243.mot.com [100.64.22.29])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: mbland)
-	by va32lmmrp01.lenovo.com (Postfix) with ESMTPSA id 4VJrWs0l8Zz2VZS7;
-	Tue, 16 Apr 2024 17:24:57 +0000 (UTC)
-Message-Id: <20240416122254.868007168-4-mbland@motorola.com>
+	by va32lmmrp02.lenovo.com (Postfix) with ESMTPSA id 4VJv3t09CVz2Z11p;
+	Tue, 16 Apr 2024 19:19:22 +0000 (UTC)
+Message-ID: <20240416122254.868007168-4-mbland@motorola.com>
 In-Reply-To: <20240416122254.868007168-1-mbland@motorola.com>
 References: <20240416122254.868007168-1-mbland@motorola.com>
 To: linux-mm@kvack.org
@@ -127,25 +127,32 @@ Cc: Maxwell Bland <mbland@motorola.com>,
         linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
         linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
         linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org
+        sparclinux@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        David Hildenbrand <david@redhat.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        linux-um@lists.infradead.org
 From: Maxwell Bland <mbland@motorola.com>
-Date: Fri, 5 Apr 2024 13:37:00 -0500
-Subject: [PATCH 3/5] mm: add vaddr param to pmd_populate_kernel
-X-Proofpoint-GUID: FM6JEqnvdEu616iriwx9HZz23RgSOkSt
-X-Proofpoint-ORIG-GUID: FM6JEqnvdEu616iriwx9HZz23RgSOkSt
+Subject: [PATCH 3/5 RESEND] mm: add vaddr param to pmd_populate_kernel
+Date: Tue, 16 Apr 2024 14:18:17 -0500
+X-Proofpoint-ORIG-GUID: ums4jeNcJVpj771Dp40VIiexoS2QWl9Y
+X-Proofpoint-GUID: ums4jeNcJVpj771Dp40VIiexoS2QWl9Y
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-16_14,2024-04-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
- impostorscore=0 mlxlogscore=999 priorityscore=1501 adultscore=0
- lowpriorityscore=0 clxscore=1015 malwarescore=0 spamscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404160108
+ definitions=2024-04-16_16,2024-04-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 impostorscore=0 suspectscore=0 bulkscore=0 clxscore=1015
+ mlxscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0 adultscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404160120
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+Message-ID: <20240416191817.8y7P2GeRBdth5nyvx2vEAQkE653mqNZ-GgG1NBtxu04@z>
 
 This patch affords each architecture the ability to condition the
 population of page middle directory entries on the virtual address being
