@@ -1,81 +1,70 @@
-Received: from welho-filter1.welho.com (welho-filter1b.welho.com [83.102.41.27])
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC0CB84D21
-	for <linux-m68k@vger.kernel.org>; Wed, 17 Apr 2024 08:26:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.102.41.27
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 642F316FF4E
+	for <linux-m68k@vger.kernel.org>; Wed, 17 Apr 2024 16:33:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.18.0.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713342385; cv=none; b=m0frnllpWvyyldsXA8ql4Wj7E1i7CtP5UhDY7CPMWpSmTdrf1pqxVJS4h4XYaSNyjJXH+dyVIqUBE1XJX0w2/5Mmjsg4KDQMv8oaavgK3LL+0TOkrRavlRJHa9CyLZzwBgFMVKkKZJTsa61JRh1QMP34ZlqaT4xPmFQgOyv2FCc=
+	t=1713371590; cv=none; b=VDkc31AYXwgZmkADA2KNcTi6pdX5pIU2dEvo+QQV728KCFNEmNEw4fR3mRnteIZI1/E6av+rQ48ug9ORdt1nGWpvh9mp3YUGwrQUcIIF4SgnoMKKsGJObAErdUjSbeHgZAftnOXW+ZYgLbtsYem0t2HpzEOzpSXMtoKqsPhWyns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713342385; c=relaxed/simple;
-	bh=M9CGWwZFFJ7wZNDmuesgkNzmLoQD8nTnDJreqT8nKxM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pB6JnNCTMdNj3XUxWpz1ES/Uw2wkqpDP5LC1C+CElsT04LbDFk4LLiuTcGQvcAkYtIbSHoQoJ2nFN+w5IPwfqQEY6mHtK2Ejtjdf4AoZtEKMJqqWt69lA1r5+mEESPFul/gwqnJp/wapgaZ27MpvxmaLn/FhU4FKXYtRGw+UTWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=helsinkinet.fi; spf=pass smtp.mailfrom=helsinkinet.fi; arc=none smtp.client-ip=83.102.41.27
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=helsinkinet.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=helsinkinet.fi
-Received: from localhost (localhost [127.0.0.1])
-	by welho-filter1.welho.com (Postfix) with ESMTP id 9CF4421957;
-	Wed, 17 Apr 2024 11:17:03 +0300 (EEST)
-X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
-Received: from welho-smtp3.welho.com ([IPv6:::ffff:83.102.41.86])
-	by localhost (welho-filter1.welho.com [::ffff:83.102.41.23]) (amavisd-new, port 10024)
-	with ESMTP id PsshzysWVxiJ; Wed, 17 Apr 2024 11:17:03 +0300 (EEST)
-Received: from [192.168.101.100] (87-92-40-241.bb.dnainternet.fi [87.92.40.241])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	s=arc-20240116; t=1713371590; c=relaxed/simple;
+	bh=2q48mlrSLU3CF5HRaDmHTYXn+CUusrASxcFUvGFAB0w=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=YFR5Yau9h8OH/4D2Z4nd/XHPdo7Mn5UGfvYqG0Rth+drKcyWhXLNOnmdsyNNMtY76bJhKDz2VofSzvU85/1Xu5cqVQKUkDOVzd0JSnRzSJFLLaR+u9mRZ9nAp7GcE1e9rTd8uK/Vp6cy2MhIcn6NQ+pLowGk7mnknZ3fI9ZxLP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=nefkom.net; arc=none smtp.client-ip=212.18.0.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nefkom.net
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+	by mail-out.m-online.net (Postfix) with ESMTP id 4VKRBM1SBmz1s955;
+	Wed, 17 Apr 2024 18:26:51 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.68])
+	by mail.m-online.net (Postfix) with ESMTP id 4VKRBM0jykz1qqlS;
+	Wed, 17 Apr 2024 18:26:51 +0200 (CEST)
+X-Virus-Scanned: amavis at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+ by localhost (dynscan1.mail.m-online.net [192.168.6.68]) (amavis, port 10024)
+ with ESMTP id uKXZ_cT_E_o6; Wed, 17 Apr 2024 18:26:50 +0200 (CEST)
+X-Auth-Info: 626UZqyBFLLlbF3JIfNS1KPZOYamKum0hvU4jFn50fKKrdmRMM4dy4IZdcD0uwEQ
+Received: from igel.home (aftr-82-135-83-9.dynamic.mnet-online.de [82.135.83.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by welho-smtp3.welho.com (Postfix) with ESMTPSA id 1F7F02309;
-	Wed, 17 Apr 2024 11:16:58 +0300 (EEST)
-Message-ID: <71553982-6353-4786-9d12-fb83ea1b87a7@helsinkinet.fi>
-Date: Wed, 17 Apr 2024 11:16:57 +0300
+	by mail.mnet-online.de (Postfix) with ESMTPSA;
+	Wed, 17 Apr 2024 18:26:50 +0200 (CEST)
+Received: by igel.home (Postfix, from userid 1000)
+	id ED7892C1A84; Wed, 17 Apr 2024 18:26:49 +0200 (CEST)
+From: Andreas Schwab <schwab@linux-m68k.org>
+To: Eero Tamminen <oak@helsinkinet.fi>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,  Michael Schmitz
+ <schmitzmic@gmail.com>,  linux-m68k@vger.kernel.org,  Finn Thain
+ <fthain@linux-m68k.org>,  linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH RFC] m68k: Handle __generic_copy_to_user faults more
+ carefully
+In-Reply-To: <71553982-6353-4786-9d12-fb83ea1b87a7@helsinkinet.fi> (Eero
+	Tamminen's message of "Wed, 17 Apr 2024 11:16:57 +0300")
+References: <20240416203643.3390-1-schmitzmic@gmail.com>
+	<CAMuHMdV-ggmMVera8Ya4fDLCJzDXguKCOpg2i_+g98ZvAoctHA@mail.gmail.com>
+	<71553982-6353-4786-9d12-fb83ea1b87a7@helsinkinet.fi>
+X-Yow: ...Um...Um...
+Date: Wed, 17 Apr 2024 18:26:49 +0200
+Message-ID: <87bk68gdkm.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC] m68k: Handle __generic_copy_to_user faults more
- carefully
-To: Geert Uytterhoeven <geert@linux-m68k.org>,
- Michael Schmitz <schmitzmic@gmail.com>
-Cc: linux-m68k@vger.kernel.org, Finn Thain <fthain@linux-m68k.org>,
- linux-m68k@lists.linux-m68k.org
-References: <20240416203643.3390-1-schmitzmic@gmail.com>
- <CAMuHMdV-ggmMVera8Ya4fDLCJzDXguKCOpg2i_+g98ZvAoctHA@mail.gmail.com>
-Content-Language: en-US
-From: Eero Tamminen <oak@helsinkinet.fi>
-In-Reply-To: <CAMuHMdV-ggmMVera8Ya4fDLCJzDXguKCOpg2i_+g98ZvAoctHA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Hi,
+On Apr 17 2024, Eero Tamminen wrote:
 
-On 17.4.2024 9.59, Geert Uytterhoeven wrote:
-> On Tue, Apr 16, 2024 at 10:36 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
->> I have tested this fault scenario with a transfer beginning
->> at a single byte at the end of a mapped page only, which IMO
->> does violate m68k alignment rules. I cannot remember ever
->> seeing such faults reported from conforming software before.
-> 
-> 68020+ does support unaligned data accesses, so IMHO such transfers
-> are valid.
+> But is that valid also across page boundaries?
 
-But is that valid also across page boundaries?
+Yes, the cpu will split misaligned accesses into sequences of aligned
+accesses.
 
-I vaguely remember (from 15-20 years ago) there being ARM errata about 
-some things being undefined when doing unaligned 16/32-bit data access 
-across page boundary, so maybe it's not so clear cut on m68k either?
-
-
-> For compatibility with 68000/68008/68010/68012, data is
-> recommended to be 2-byte aligned.
-> Instructions must always be aligned to 2 bytes, though.
-
-
-	- Eero
-
-PS. Quick googling found following ARM spec comment "a watchpoint might 
-be undetected if it occurs on the second part of an unaligned access 
-that crosses a 4K page boundary", but I remember issue being not just 
-with watchpoints back then.
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
