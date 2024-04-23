@@ -1,33 +1,33 @@
 Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7464714387C
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Apr 2024 21:45:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1138514BF92
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Apr 2024 21:46:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.40.73.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713908746; cv=none; b=iKLlmVvDHfEWf17Wbccs03oLJTBFi+jiUkKSAqJQsXdvxtky1e1wU7i/ONPfyWziFk19YrbulQtsfeFaaE12csrCAYTFl69+QkEgVwFPq8Dx8P8UXRZbPYphRov92upwm0vNuNjciwQh/2Ns4RyfgpAYJgEus4ZfAh1l5lgX/KA=
+	t=1713908796; cv=none; b=gG3/Sbxqs+fnPMxvxYzsDeKQdI/IcZBCD/eyl4p6k4cykJE1v8GDGvgSF4pXCrTHPyHzwU7lg+Xkm/6M0/yh++FNqeK0E72EwINwFja+CgtQxhauQ0NgMX+za9lXmWqS4OdPe4mXyeXII9AuvLVB1YQJiygHZ+sGiyXubJhJcNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713908746; c=relaxed/simple;
-	bh=m0uAMkohJosyV30IYHPRZXip8z1DqXThWX6blJ+chTM=;
+	s=arc-20240116; t=1713908796; c=relaxed/simple;
+	bh=FK4QFDsk1g+Qzo/l0+UQPfHZlg7eLiLVhQRCS3+w110=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nUJLmQMw72AmraUSgBRxjFInSPrrCnP75dTODoigLtA/MQnoRnFtCohMPvXfWiuCS2bsEnUNTxLCBV6V3yeDSlLGR4p19rxYAiJMjb/3R2PTfcDUrXsL8aNv9o3WwalVhZeM91ZnkSs1XcY8ktl7PxiWpHBbTmxsHHzByOur/+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=xQD5Kwq+; arc=none smtp.client-ip=145.40.73.55
+	 MIME-Version; b=UCBq722YE+UcHIHKGJmFfqS5+00QYk54b4UFvnDcVciXpE5vTe/g46n/JWYt93/VlIK3nkzPjrl6gKciDKWmTbPVnWmgsf6MrrcYUb15MSxG2N+LThLhCKTIT8XHcSjsCAAUxuw+c7i3pLlN1In+ftFUMxRGGVdBNcKATeJx4gY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=FMBeTc/v; arc=none smtp.client-ip=145.40.73.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="xQD5Kwq+"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="FMBeTc/v"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 1D7B5CE1306;
-	Tue, 23 Apr 2024 21:45:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 959B8C116B1;
-	Tue, 23 Apr 2024 21:45:41 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 24EE9CE1319;
+	Tue, 23 Apr 2024 21:46:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BE54C116B1;
+	Tue, 23 Apr 2024 21:46:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713908741;
-	bh=m0uAMkohJosyV30IYHPRZXip8z1DqXThWX6blJ+chTM=;
+	s=korg; t=1713908792;
+	bh=FK4QFDsk1g+Qzo/l0+UQPfHZlg7eLiLVhQRCS3+w110=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=xQD5Kwq+hffgXfvkzczQxku1FxJatnpKXajl/mR1O1yEaSLhCyUhd2Q16lCEUm6V4
-	 yj50Dm6NdN4iRqy+IiFCmVs1dDExdYTSjeHLYtGkLNyD9pOyPQqFsoSGgMycLrD6lp
-	 GzSW3/zvPYE8BnB56idKF8E3xu2y2lvOfWFNSmu8=
+	b=FMBeTc/v81+Mzt588sesHFk2gyo7AIGpmG8n2ryFBLeLJ4McAtaYOemF6+DYzN8xi
+	 IAVNZ9nrE5nC/Wxm+0oXnendtDCJA7IwvyiDNcVJNqRotf1XN6j3dYWsS5EV1HpOjA
+	 6Uh+VkzR6NnPnYWLHTroCf7SoBt6Aur4U8OhWCcw=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -42,12 +42,12 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	stable@kernel.org,
 	linux-m68k@lists.linux-m68k.org,
 	Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH 6.1 105/141] serial/pmac_zilog: Remove flawed mitigation for rx irq flood
-Date: Tue, 23 Apr 2024 14:39:33 -0700
-Message-ID: <20240423213856.599116722@linuxfoundation.org>
+Subject: [PATCH 5.15 45/71] serial/pmac_zilog: Remove flawed mitigation for rx irq flood
+Date: Tue, 23 Apr 2024 14:39:58 -0700
+Message-ID: <20240423213845.703846652@linuxfoundation.org>
 X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240423213853.356988651@linuxfoundation.org>
-References: <20240423213853.356988651@linuxfoundation.org>
+In-Reply-To: <20240423213844.122920086@linuxfoundation.org>
+References: <20240423213844.122920086@linuxfoundation.org>
 User-Agent: quilt/0.67
 X-stable: review
 X-Patchwork-Hint: ignore
@@ -59,7 +59,7 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-6.1-stable review patch.  If anyone has any objections, please let me know.
+5.15-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
@@ -110,7 +110,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/tty/serial/pmac_zilog.c
 +++ b/drivers/tty/serial/pmac_zilog.c
-@@ -210,7 +210,6 @@ static bool pmz_receive_chars(struct uar
+@@ -217,7 +217,6 @@ static bool pmz_receive_chars(struct uar
  {
  	struct tty_port *port;
  	unsigned char ch, r1, drop, flag;
@@ -118,7 +118,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  	/* Sanity check, make sure the old bug is no longer happening */
  	if (uap->port.state == NULL) {
-@@ -291,25 +290,12 @@ static bool pmz_receive_chars(struct uar
+@@ -298,25 +297,12 @@ static bool pmz_receive_chars(struct uar
  		if (r1 & Rx_OVR)
  			tty_insert_flip_char(port, 0, TTY_OVERRUN);
  	next_char:
