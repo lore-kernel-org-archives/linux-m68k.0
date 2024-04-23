@@ -1,38 +1,38 @@
 Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE17812DDBE
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Apr 2024 13:01:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C47CE12D777
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Apr 2024 13:02:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.40.73.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713877324; cv=none; b=GTvi1k1Ey+0uAnSwPHq+Vgw+KcUgvmV6RXEkyxAA/dLlKDkuXAFHScJucGrjiIcoZD+rlfFR83eNhVxXSo/xMXmRuEXzdypYbu5jUBdumTG2ceDQyGTzOSIQMdGP/bXiVj2L8P92BGTizMUxdWea/leSkzVGIRy1YqXF9FncWuk=
+	t=1713877358; cv=none; b=VQsfKCWKZHwpkFLni6BEpFjrEoImAD/ulRPVcXdD67K1h8hGd211+8W32/fhyTB3lXl8iMSWd7UKWZPSyQMxKJYLUm/D1HaWz6hW2uBJUjKjq4LyCmnCbvJLQvFANeuuzcXv8d7pqLWml+6KJFDJxwwfb0IlAMu5tUY4cNPv1CQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713877324; c=relaxed/simple;
-	bh=CRSiGS6VMZzdqe5KuVh57COC4ESdoVwD+g9FgruLgZM=;
-	h=Subject:To:Cc:From:Date:Message-ID:MIME-Version:Content-Type; b=uW4iYBCwoU7wisxQy24ccupCqnYLRmzaRxgfxJU5YFB+t9dAm1Ohr8RNLnJAKQroFAn/z3z9t38V6Op9Oin+CZ2UKij3Q81Plqvu5W5xyhOTviQunXbcV8anvyLlaJpLv+L/NSxFL3wiO1KI8x6UMn1bl5Dq2jtQULbPwzVV4bQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=MULKdFKN; arc=none smtp.client-ip=145.40.73.55
+	s=arc-20240116; t=1713877358; c=relaxed/simple;
+	bh=W5Wy7xzG2zkB45Iw91GYi6oa9+d37LVydqSl//Qp+Cw=;
+	h=Subject:To:Cc:From:Date:Message-ID:MIME-Version:Content-Type; b=Bf4eqUt1nU9TsnTXYZJZ2b7DDN06bLOQlVlDhBTCFJzo23KBjnA4qbQZKtLfNgnwJ9mm7BvVyjRaaZqDHYqG3AwWva98+8uLQKkcxNnaT9h9q2RZIZl4M4nrQSN5sA0hdgXlNB61DMOl/7ctFZRo8F/B6EKNlipUbdCmKl4pNRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=0c+o1F8M; arc=none smtp.client-ip=145.40.73.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="MULKdFKN"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="0c+o1F8M"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 69A52CE0FFA;
-	Tue, 23 Apr 2024 13:01:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8B81C116B1;
-	Tue, 23 Apr 2024 13:01:53 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id DC82BCE0FFF;
+	Tue, 23 Apr 2024 13:02:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0259BC3277B;
+	Tue, 23 Apr 2024 13:02:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713877314;
-	bh=CRSiGS6VMZzdqe5KuVh57COC4ESdoVwD+g9FgruLgZM=;
+	s=korg; t=1713877350;
+	bh=W5Wy7xzG2zkB45Iw91GYi6oa9+d37LVydqSl//Qp+Cw=;
 	h=Subject:To:Cc:From:Date:From;
-	b=MULKdFKNkMjWvMxWNRJJIgkTVxOWccpCS8pOwDJjvJFcpfiiMHIuyK44UI33pWUCb
-	 WLaiMQdOWI/119UIgMANXD4lwyuqbkE/XH3LhablVyu+ZxfHY7P/Yfasi8iPcSEhDI
-	 fLemIqGIbhUlSp12pvAQXWeFOPcmnJJI1VvJzUt8=
-Subject: Patch "serial/pmac_zilog: Remove flawed mitigation for rx irq flood" has been added to the 5.10-stable tree
+	b=0c+o1F8MsjjeM/bwLfoRkZgULa2xqcwG8gzalNzwrLAne+qeDF09RUdS0mPlSVRyj
+	 TFlrP1fu3SkbHwFUAfFq0FLOhPnm/51jYv6qgQvkf/vkwA07P6jdvv7DoSIgdGbqZI
+	 Pu2qq5Wvk6gsHBxXnN/1bFAUGE80h3jPM7q7kCWE=
+Subject: Patch "serial/pmac_zilog: Remove flawed mitigation for rx irq flood" has been added to the 5.15-stable tree
 To: andy.shevchenko@gmail.com,aneesh.kumar@kernel.org,benh@kernel.crashing.org,christophe.leroy@csgroup.eu,fthain@linux-m68k.org,gregkh@linuxfoundation.org,linux-m68k@lists.linux-m68k.org,mpe@ellerman.id.au,naveen.n.rao@linux.ibm.com,npiggin@gmail.com,stable@kernel.org
 Cc: <stable-commits@vger.kernel.org>
 From: <gregkh@linuxfoundation.org>
-Date: Tue, 23 Apr 2024 06:01:44 -0700
-Message-ID: <2024042343-perennial-operating-7b3c@gregkh>
+Date: Tue, 23 Apr 2024 06:02:13 -0700
+Message-ID: <2024042313-defuse-despair-308b@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -49,12 +49,12 @@ This is a note to let you know that I've just added the patch titled
 
     serial/pmac_zilog: Remove flawed mitigation for rx irq flood
 
-to the 5.10-stable tree which can be found at:
+to the 5.15-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      serial-pmac_zilog-remove-flawed-mitigation-for-rx-irq-flood.patch
-and it can be found in the queue-5.10 subdirectory.
+and it can be found in the queue-5.15 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.
@@ -150,4 +150,4 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 Patches currently in stable-queue which might be from fthain@linux-m68k.org are
 
-queue-5.10/serial-pmac_zilog-remove-flawed-mitigation-for-rx-irq-flood.patch
+queue-5.15/serial-pmac_zilog-remove-flawed-mitigation-for-rx-irq-flood.patch
