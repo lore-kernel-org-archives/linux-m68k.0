@@ -1,69 +1,69 @@
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB22442A86
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 25 Apr 2024 07:43:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F2DE6E5FE
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 25 Apr 2024 07:52:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714031010; cv=none; b=bl573sd7q33rY2aHVnN76f+ZZ3Qp0YIBpzTZWT4xxa8337PSeP6+A/6fmNcoyR2RDulNUYv+M+F21mVpR5rV9+32GeE5PCnCLlhBtE/B0PdojVGJJg13MoLeRsYw/mcXZOq8apl/thN/DLomMrRMTmLa+oVwe6o923tOQw1U+BA=
+	t=1714031564; cv=none; b=fF/VyIAZ1jeJ62B4Cws9CjhayW5U4QJ7+xJhoOfe495ndJZOi9MxcHKlVuC/NZcPGJ9Y8uVM50j9M7WhjTLbFGCUQBqqwPdz5YkvZY07u2NQ4fPYtj49XQ3RNv/n8rwgrVzeY/NuhpAwndqPBIuzrmry6WplppptuBPiu0FWLyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714031010; c=relaxed/simple;
-	bh=3yz+zZvX24vQYS9uY2E3miaxtYd+PS/VuZ5+4GJiTZo=;
+	s=arc-20240116; t=1714031564; c=relaxed/simple;
+	bh=8wjhQFMCNWS4DbfL5OFO9jM6lB/E0SHg7FVpCjTrsns=;
 	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=Xpbk3CPHchT8xbIpEyBeywo5Xg1GFETtWgBkQRYVGlnwTPAqSxw0xtHgj9e0pMR4MSI6UGHh4rWI0ppDaPpcJAgdcXVigmTRxilLifIy6P4l7VjQ9W5uZSHfpnmbgd4e0RtNf9KvoMBAoqR1sNDUPggmL85BpBUsXo9jXH+oI5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C4FqoXv/; arc=none smtp.client-ip=209.85.161.47
+	 In-Reply-To:Content-Type; b=qtuG6tENsscg7ARdqmb0xGznDSW+3MMVTO0sMyzctSb5FYOYD4hDL+jyDz7tOH/m2tPoOM0z5vFgsZ8S1jc/PEBh942C3YWbL4D3WFZZbRknXooIm9F1tRMND9ilcS3ntq8y9wDCAOO9KGq8REK4nK8/sawE8sFU88GKsdZMUqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XlSsgQEg; arc=none smtp.client-ip=209.85.210.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C4FqoXv/"
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5acb737b508so306744eaf.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 25 Apr 2024 00:43:28 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XlSsgQEg"
+Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6eb77e56b20so437065a34.3
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 25 Apr 2024 00:52:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714031007; x=1714635807; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20230601; t=1714031561; x=1714636361; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
          :message-id:from:cc:references:to:subject:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bScjVubZbaFziu90vDejYkXKLLcsUrFi7PSPkxL3P/c=;
-        b=C4FqoXv/E7zmNinNYNV4MZhf7cPWgde970vYaoPJg/dVzzeL+qOnBqxDBnG1u0KU+M
-         ufVuAY/MbKPQ4aAJzPDp8DIlc7VmHLrk4R2OmswSVDQgptCEgGoelQKAHuVER3RIvqJn
-         KDJfhuvw9WcdWQZqu+GY2gSw9ZS2VQepa8yZzPrngVi1mc6Yd76yD3ehjwi5r8BFUh5e
-         BAtVBc1yH6gahq85a59vl3RSO456y9aCrN0+sL3/+FxIAxMrZkaeoQ94OoMh7imzY63I
-         mubq6TaYLh72w9q6uYH8k8N3yeoNgeCd0aku3VHTOz5aF6V0xBwuA3LuUbuJxT9Ak3e7
-         eEDQ==
+        bh=2mdOXoY+t5/Zd/IiOGnBPKKSbtYjjTJUtZQ88eztVg8=;
+        b=XlSsgQEgA4bL5swXsrk1Npw3R34EMfD8q7FftbM1IBMyO30FW7PVLnglGh1EXX6GwT
+         kE12AVmYGCehRZAWzrAv7F26fKU4gwz3xrpOqPWR7QeX0yqK1Za7SmVxSgmdSdF29XsQ
+         5IS+q/BX1EqxEfeTTEIe3t9B647Vf2Rcoh1kmZJ7iF29G7QzNSurMb/4yKoG/NUvPovQ
+         UWMUjsRSCTTKCieLkqfSmI10dYF82qVLzU5+Sv4nlCk45GbGcZZ5sXl8qMOaRZQNFVym
+         tuJ6dezLH2y0C7QG7LTZBk7J026VGdp4xx72rjvH2TsA5z/UHs8tP6ShFyxzit4TMhRZ
+         gMrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714031007; x=1714635807;
+        d=1e100.net; s=20230601; t=1714031561; x=1714636361;
         h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
          :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=bScjVubZbaFziu90vDejYkXKLLcsUrFi7PSPkxL3P/c=;
-        b=rUlnA6i8PzHfrnnphHysRWgCdJaRupUppfSBdEWl8oSCXhc4vbYvEh3MQbjEgWR/An
-         o1pEq5Vxkp2BpmONQOpuaEiBNoX2iC46kxU8ceeBs6sgzbjvgNa6h9/XfkfeYgxYYJoT
-         owVe2bmy22yUtnmSJhDPLYTG/8GzkCm+NUUFuwbYC7/Q4juyHkjBcBrw8amd0bnpoNVW
-         rFzE3T+IGCTHav27sjfLQA87t3g0V2tmVrEGofOzK+kNFNzGr9XpqUvsLOOwrMlI7VMJ
-         ff1XuDpMQzyU8kYySTYOHVK+LbgDOYovf5VDt5EJuu4TSRepiUfw3QNc85INtEg09ktL
-         E1nQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWqPiQtzOJbTxjGersm4u2cJra44v4b0/g2DjlcemUwOUFFjaDXdD/VvjwfEhs5NetCaYjsOMJhH6/ey5aeNXMRhSCHtHDbD3dIT91l+EEF
-X-Gm-Message-State: AOJu0YxU7MSc5x6cKXxiypQjIH2x4hn0FhsSCP89nIykUgf2G0umw6d2
-	HV3CVciWqW9nnagKII3kMBgxVIIg6LXbzRzU4H+jytANsKeYk67v7VFjkw==
-X-Google-Smtp-Source: AGHT+IE/GPz9J2NohkmexCKPbyt4KhIdrWUDh1ylnz7z4w3z+blHV1tSJGuHBo8E9qZ/u/GDAmv1bg==
-X-Received: by 2002:a05:6358:2183:b0:18a:d3d5:f77e with SMTP id v3-20020a056358218300b0018ad3d5f77emr5092557rwb.17.1714031006577;
-        Thu, 25 Apr 2024 00:43:26 -0700 (PDT)
+        bh=2mdOXoY+t5/Zd/IiOGnBPKKSbtYjjTJUtZQ88eztVg8=;
+        b=DM4aI2EPsdRNOxu86GJwtZc6U0akbqEOjrlvQSCGqeo+bnkHHUj1JG/CKiJS50FI4Q
+         yliLZ9WnqgQ4N0D/VDTG5sLTh1XVvkewf4Rp7gjOwffiOpxMbiHQ7BVtqkdxAE4OM/GT
+         LD+82fK/1fX3Rn//+ilO9t+HypC5TFO0xYvY1BY8QMJImVgIrpkhdKjo3PKiZnP1aVmC
+         w/F2yxDLma4ED0eZkICkA22hxV1+RxxMh1t540BSD2uZ9EV5p1/GRD++bMVbWo26Xeii
+         jXXqsYchD9YMr8kqUfO6lWcKuiWUkXwdmyaBhLkT8g9zzKAK4dxXrtTSx8iq84UbD+Mx
+         Tu1g==
+X-Forwarded-Encrypted: i=1; AJvYcCW+1DlQHJyuTUrZQjySPX7aRPfUzsFbvHqXmyi3GkJR+tPHmlyGaCoRxO8iGSD3DAAX2sA7RRPwLag+z6LX3wm/aS0qJwpPBSd5pZcxR5iU
+X-Gm-Message-State: AOJu0YwbdEfOdMeyceghG8chkfOVgMDbmGYchAiDosDDh04U3xmw9pzZ
+	uiZZ3uUiOgMfUxHpwaqFQhDhLDVbzoWBdhOXhKT44Ae6Jmd1+VaTkob51g==
+X-Google-Smtp-Source: AGHT+IGdYxt4XkH67TwgpiATycn84XfnlzrxUWISnr46cQIMME66hxzAZ7na4iva2SffHDgGKyB9Cw==
+X-Received: by 2002:a05:6870:330d:b0:22d:f83c:fb3a with SMTP id x13-20020a056870330d00b0022df83cfb3amr5826242oae.9.1714031561486;
+        Thu, 25 Apr 2024 00:52:41 -0700 (PDT)
 Received: from [10.1.1.24] (222-152-175-63-fibre.sparkbb.co.nz. [222.152.175.63])
-        by smtp.gmail.com with ESMTPSA id x71-20020a63864a000000b00606dd49d3b8sm2229901pgd.57.2024.04.25.00.43.22
+        by smtp.gmail.com with ESMTPSA id a20-20020a056a0011d400b006ecec1f4b08sm12567210pfu.118.2024.04.25.00.52.38
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 25 Apr 2024 00:43:26 -0700 (PDT)
+        Thu, 25 Apr 2024 00:52:40 -0700 (PDT)
 Subject: Re: [PATCH RFC v2 1/2] m68k: Handle __generic_copy_to_user faults
  more carefully
 To: Finn Thain <fthain@linux-m68k.org>
 References: <20240422022943.13775-1-schmitzmic@gmail.com>
  <20240422022943.13775-2-schmitzmic@gmail.com>
  <6fbf4809-dec2-84b9-3b83-86084ed19a20@linux-m68k.org>
- <989ec316-69c3-d5e6-8312-9a62e78be547@gmail.com>
- <e34c716c-8dc9-f74f-1183-03ecfb0b300d@linux-m68k.org>
+ <5d1a552e-f66d-dbbb-5630-42d22870dd15@gmail.com>
+ <36a70661-3bfc-46f1-f211-fa87f883371a@linux-m68k.org>
 Cc: geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org
 From: Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <0c2d9b59-7a91-9660-55fd-6ba1b96302a2@gmail.com>
-Date: Thu, 25 Apr 2024 19:43:20 +1200
+Message-ID: <eda396cb-9c7a-f312-0159-2d4c411798bb@gmail.com>
+Date: Thu, 25 Apr 2024 19:52:35 +1200
 User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
  Icedove/45.4.0
 Precedence: bulk
@@ -72,79 +72,58 @@ List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <e34c716c-8dc9-f74f-1183-03ecfb0b300d@linux-m68k.org>
+In-Reply-To: <36a70661-3bfc-46f1-f211-fa87f883371a@linux-m68k.org>
 Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 
 Hi Finn,
 
-Am 25.04.2024 um 18:47 schrieb Finn Thain:
-> On Thu, 25 Apr 2024, Michael Schmitz wrote:
+Am 25.04.2024 um 18:32 schrieb Finn Thain:
+>>> This oops indicates that we are going to need the final NOP that was
+>>> in the first version of your patch. My test program seems inadequate
+>>> to show that it is safe to omit that NOP -- we would need a test which
+>>> doesn't jump over the MOVES.B.
+>>
+>> We'd need a test using any number of longword moves expected to succeed,
+>> followed by a byte move which is expected to fault. The current test
+>> would attempt to do a byte move, but faults during the longword moves.
+>>
+>> This requires running the test program in a directory whose absolute
+>> path is a multiple of four characters long, and setting the start
+>> address for the getcwd test accordingly, so the newline at the end of
+>> the string is the single byte left to copy. Does that make sense?
+>>
 >
->> --- a/arch/m68k/lib/uaccess.c
->> +++ b/arch/m68k/lib/uaccess.c
->> @@ -68,23 +68,25 @@ unsigned long __generic_copy_to_user(void __user *to, const void *from,
->>  		"3:	subq.l	#1,%0\n"
->>  		"4:	jne	1b\n"
->>  		"5:	btst	#1,%5\n"
->> -		"	jeq	7f\n"
->> -		"	move.w	(%1)+,%3\n"
->> -		"6:	"MOVES".w	%3,(%2)+\n"
->> -		"7:	btst	#0,%5\n"
->> -		"8:	jeq	10f\n"
->> -		"	move.b	(%1)+,%3\n"
->> -		"9:	"MOVES".b  %3,(%2)+\n"
->> -		"10:\n"
->> +		"	jeq	8f\n"
->> +		"6:	move.w	(%1)+,%3\n"
->> +		"7:	"MOVES".w	%3,(%2)+\n"
->> +		"8:	btst	#0,%5\n"
+> Yes (I take it you meant NUL instead of LF). But my concern was that the
+
+Yes, my bad ...
+
+> test program passes a pointer like 0xc0029000 - 1. That means the final
+> byte will land on a word that already faulted. I'll need to add a new test
+> that passes a pointer like 0xc0029000 - 5.
+
+That's what I meant to say, yes.
+
+>> Incidentally - what is the path this tests is run in? Any path longer
+>> than five characters (including the newline) would have to had looped
+>> back to the first movel, and faulted there?
+>>
 >
-> I understand why you put the MOVE.W and MOVE.B into the exception table.
+> It was /tmp.
+
+Right - so if I'm right, running the test in /root would exercise the 
+movesw path, and fault on the movew. Using /var/tmp would loop back once 
+to repeat the movesl, and likely fault on the movel there.
+
+>> As you said before - we'd need to know a lot more about
+>> microarchitectural details here.
+>>
 >
->> +		"9:	jeq	13f\n"
->> +		"10:	move.b	(%1)+,%3\n"
->> +		"11:	"MOVES".b  %3,(%2)+\n"
->> +		"12:	nop\n"
->> +		"13:\n"
->>  		"	.section .fixup,\"ax\"\n"
->>  		"	.even\n"
->>  		"20:	lsl.l	#2,%0\n"
->>  		"50:	add.l	%5,%0\n"
->> -		"	jra	10b\n"
->> +		"	jra	13b\n"
->>  		"	.previous\n"
->>  		"\n"
->>  		"	.section __ex_table,\"a\"\n"
->>  		"	.align	4\n"
->> +		"	.long	1b,20b\n"
->
-> ... but I don't see why you need the MOVE.L in there (?)
+> It's hard to be certain. We just have to experiment until we find
+> something that works on the CPUs we can test.
 
-It's part of a loop - if there's enough longwords to copy, that 
-instruction may follow the fault instruction eventually.
-
-> Also, it is odd to see the third JEQ added to the table but not the second.
-> Perhaps we don't need either one in there (?)
-
-Faults on 030 appear to happen two instructions after a moves. But I may 
-be misremembering that...
-
-I'll have to verify that.
+Right - I'll try a few of these ideas on my 030.
 
 Cheers,
 
 	Michael
-
->>  		"	.long	2b,20b\n"
->>  		"	.long	3b,20b\n"
->>  		"	.long	4b,20b\n"
->> @@ -93,6 +95,8 @@ unsigned long __generic_copy_to_user(void __user *to, const void *from,
->>  		"	.long	8b,50b\n"
->>  		"	.long	9b,50b\n"
->>  		"	.long	10b,50b\n"
->> +		"	.long	11b,50b\n"
->> +		"	.long	12b,50b\n"
->>  		"	.previous"
->>  		: "=d" (res), "+a" (from), "+a" (to), "=&d" (tmp)
->>  		: "0" (n / 4), "d" (n & 3));
