@@ -1,57 +1,56 @@
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A1832B9C8
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 25 Apr 2024 05:32:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B7702940B
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 25 Apr 2024 05:45:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714023163; cv=none; b=QhhNZgD34wX8NrJqaZVtuVAImyi/LHTuFaKf6Sk69EO3qADfw3xSb3F7wx+MKXTjE3Dgco+RpFg03zkViBdiK9RdSKy1yjxfGFesjEO5a3rkZZRQKDFdMyuTaNQmPWvA28IM1kIwDdDHuo5IAr3Melbg/7l+WkkqcRfElq9fHzk=
+	t=1714023957; cv=none; b=uYxozm9ckS8QqosVmYbImtD90pGouMoW6VcFuAyMxoNUTPw8OzC1YRtmm8vzDhXk2ZN02k3t+cSfA0K98B5e2Z+m0hsLuc85iUFqnq/6sFkO4otMQjPCMfGACt90AEikco+2/N7LaZ/1Zh2p83pDaAeYx20qyjaHaaYrzwjAiDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714023163; c=relaxed/simple;
-	bh=gp9IY8j9k4OvNBRbbJGZSWbp2uQbUPeJdnq6KTg/kpg=;
+	s=arc-20240116; t=1714023957; c=relaxed/simple;
+	bh=4hgIjLAyJr0Jv9A+Lb7ymu/TTJE/qWbf+OiMC0YH5Pc=;
 	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=IAEF3qD8QrFf5wHrKOFMsXxFfNW23ZdNx4TCkf6cUNwZxc60tJ4NIjV+pBjySgX3D+DuzHu9VcUCiHSCAWu2C62EhK+vf8hvmoLhxYyWN64rYJDlpuAzwzwyQ6sovERBGaZAon12gEBxPTCEVDsZc0tLJJayzFDXPYmAidG3g90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZUd9dDsh; arc=none smtp.client-ip=209.85.210.176
+	 In-Reply-To:Content-Type; b=JqHVDY+e8VmX2Hjq/F6v23HBLRGXpcnKDEQjhA10ivYCoqgWkhSSA9Wbth7KWEZVVTervAeXCpt79TnJJYMGJJaryvo9pETXH9KqHkIjw6hQpre48L1/zT9lGU56vkIBI734nYUTxCs/gGknFU93ug/FZJp4z3iwQ4Q4pyOQzQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AZbQHIAL; arc=none smtp.client-ip=209.85.160.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZUd9dDsh"
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6ecf05fd12fso592381b3a.2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 24 Apr 2024 22:32:41 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AZbQHIAL"
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-22f746c56a2so281739fac.0
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 24 Apr 2024 22:45:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714023160; x=1714627960; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CX/Sj6vnpJtS4EzXr9zjTA1/0/HLhdhPHfBwid69/tw=;
-        b=ZUd9dDshZV5aQThTthgPSS8mFTIijIwu9VbPqmMi6aAci2Re5y6lCzs10g3m+3OJ8V
-         GTXMf8HmEvRILRIJo/UysSdnNiXa/YuWC8ZA/mdTExEJjItTjMb2eKpDXRiXZTd3xk1U
-         EDgTxn/AoI3wumOLi/wOFsA1ozXdTKeFZEGPyeSC9hBM6XkXq54CUxa2RjdVa7S6mWTP
-         AaaxK2PZ0NCXWG3BMtai2XyGPErE4bSwSGqxvaUXux0qy9MOMkSqZWt5NlSMcf4RuhY/
-         4uw1Ok9fxHdVS/Lc4n+rqr3d+OU5tJHXN7/Qa049ZtYm2AWf95XGi7Aqmgeokt9fyjEd
-         3plQ==
+        d=gmail.com; s=20230601; t=1714023954; x=1714628754; darn=lists.linux-m68k.org;
+        h=in-reply-to:mime-version:user-agent:date:message-id:from:cc
+         :references:to:subject:from:to:cc:subject:date:message-id:reply-to;
+        bh=blyna2hOWn4utJ0Oc+Cefh8iYzicKjysoLpo1EgluCU=;
+        b=AZbQHIALCxBO8OdR02N8Wq6vaCUIVT4bayT6rQKVIOjYa3kgQEvBST1E2ddSslxeFF
+         EerA42FpMQKQhhfkKPX2Zs1w0yhuOHmBhkFShAidDHn8JxgyGi3F0Sl9den4KNmtQU+m
+         NW+Gp6X8RcbOnOOJOFmQFPtjHux0OmY4ilc3F7yDtME22Tuo9HK99rIufJbwxM2WIP35
+         zGklFZf99CVHIlTgkGSDLYZsHnJ5DKexxpd+aEdxKHBgLykSzrBfFtbHQv8sQoJNc7Zb
+         s21v20jI2lAPFr6z21/t+9w3Zo+rkM9XmDoVTk0bttR8uS8Ggu8gloffYolUi/WnV4kN
+         EVqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714023160; x=1714627960;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=CX/Sj6vnpJtS4EzXr9zjTA1/0/HLhdhPHfBwid69/tw=;
-        b=bcDPDpBvaW2Bx2zkg5zMe8YMtwUA6oYeXC3tPPWbssx80i/Y16r38eKn+wh+I72byo
-         FgeigYxs5fKRn13sXs3yEi8lNiEZNXtygqYN+2z/OOu+OSwLbCSS4T8kwUR8WGpIUuRO
-         GiyJXNhYGbm8zRFKc6tOqXbcjW24stSgFwpoTq0OFNQqBHDdG/+El3fqZlgoOzGN8x6I
-         1bSy6EHuxcpFm6Ju9p/XkNpln+bB8ieLM7rs3wU7x+V+DWtgk2CxiI4ci3AI5XalbDNb
-         JZamM0MnnCyKurA7guUNS2bqnpsNJtk7aTNV/7Lct9px5WPhAiZJ4WyhqRXkzRiAKhbG
-         Bpbg==
-X-Forwarded-Encrypted: i=1; AJvYcCXVpuwN61aq3I6DUQwIFmwbyFzrAoKI6xPAWfpgZx4YsvgLu1L00VHKJYG4Hm5/nwFt2yTjXokNrQqMuFJvcsRq9EDd/0UYZdUs6XM3yq74
-X-Gm-Message-State: AOJu0Yz1RIKgEMCYoBLZmMuO11goLDcphjpPf+WnBCi3aLfKqbaKG44M
-	3rBAIR3xzr8SBod17C7JqUSVbetsLClu2G6cNpus0+uhHP1FYG6tdfAJeg==
-X-Google-Smtp-Source: AGHT+IHzX2tDbuk7mob0xHjcfJ+O7CLLmEq2fPfh5fQWeAnIm19MvaIU3C9pjJ5G13Y98FPrm12bLQ==
-X-Received: by 2002:a05:6a00:194b:b0:6ef:a0fe:c478 with SMTP id s11-20020a056a00194b00b006efa0fec478mr6456244pfk.34.1714023160480;
-        Wed, 24 Apr 2024 22:32:40 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714023954; x=1714628754;
+        h=in-reply-to:mime-version:user-agent:date:message-id:from:cc
+         :references:to:subject:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=blyna2hOWn4utJ0Oc+Cefh8iYzicKjysoLpo1EgluCU=;
+        b=jqxIpI0xQaz3Qm8tqIXfJ2VZUhzuDd5BtuXDlruiyZgRbNIIH3U+5oS08zijWrvKzz
+         bEWWYvovSuUrULxFUJJMjpLpwBRWG+Z0n1dena0anI5K8lSBe536LuHp2DkuLsRHeS7r
+         UGxu3luXiNPMsx00a5jLY+NWx9RfsGhltmtgQVykCEIs3jJZoU8D5X+jdmjY3cZrPoyE
+         zUHmcXBHCzEaTXDuHRmQVAxgflTNImMDAeraXDrMH/RYF0hs/7rL1BGbGBHuwaENpNve
+         jBPzV+wVURzx+y2eC/u0vqii0d67lRJ3VIRweJ6ebvNhIO3+TVz9mwVXYIOIKowsHURJ
+         Prkw==
+X-Forwarded-Encrypted: i=1; AJvYcCWWZtpdP7GYh5dJpDK+yqiBTLOIGuC9HOmsjEOQ39xBH43Pn1FdavmEUEKLECvE6H9Hu0D2EZr3MhGv+RUDcWP72vmID9+NuwKv57EyHxQb
+X-Gm-Message-State: AOJu0Yzh0aD2RqE7C2MMFmYI0zRpScH5z+bM2SIG6QhI0XK29L2kQeBu
+	QCWYTS1it3vpPp0q+L6Qaa+o2qsTZVMQSNkEHLAucjC5XIaYRTPtOukHBw==
+X-Google-Smtp-Source: AGHT+IEiymqUhQHtkHzBxyM25sObiw9T/GZkFlDeC5UO5H6KavIEXJxq8cqbt9ICi/VZH9tvDrML9g==
+X-Received: by 2002:a05:6870:3328:b0:21f:d2a2:7ff4 with SMTP id x40-20020a056870332800b0021fd2a27ff4mr6513729oae.17.1714023954200;
+        Wed, 24 Apr 2024 22:45:54 -0700 (PDT)
 Received: from [10.1.1.24] (222-152-175-63-fibre.sparkbb.co.nz. [222.152.175.63])
-        by smtp.gmail.com with ESMTPSA id fy11-20020a056a00828b00b006ee1e2eedf3sm12336091pfb.27.2024.04.24.22.32.37
+        by smtp.gmail.com with ESMTPSA id h3-20020a056a00218300b006ed4aa9d48esm12312264pfi.212.2024.04.24.22.45.50
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 24 Apr 2024 22:32:39 -0700 (PDT)
+        Wed, 24 Apr 2024 22:45:53 -0700 (PDT)
 Subject: Re: [PATCH RFC v2 1/2] m68k: Handle __generic_copy_to_user faults
  more carefully
 To: Finn Thain <fthain@linux-m68k.org>
@@ -60,8 +59,8 @@ References: <20240422022943.13775-1-schmitzmic@gmail.com>
  <6fbf4809-dec2-84b9-3b83-86084ed19a20@linux-m68k.org>
 Cc: geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org
 From: Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <5d1a552e-f66d-dbbb-5630-42d22870dd15@gmail.com>
-Date: Thu, 25 Apr 2024 17:32:35 +1200
+Message-ID: <989ec316-69c3-d5e6-8312-9a62e78be547@gmail.com>
+Date: Thu, 25 Apr 2024 17:45:47 +1200
 User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
  Icedove/45.4.0
 Precedence: bulk
@@ -71,12 +70,23 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 In-Reply-To: <6fbf4809-dec2-84b9-3b83-86084ed19a20@linux-m68k.org>
+Content-Type: multipart/mixed;
+ boundary="------------0483C274D033E5DAC1927AD5"
+
+This is a multi-part message in MIME format.
+--------------0483C274D033E5DAC1927AD5
 Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 
 Hi Finn,
 
-thanks for testing!
+untested patch (to go on top of my v2 patch 1/2) attached. Compiles , 
+but I haven't had a chance to test on 030 yet.
+
+Cheers,
+
+	Michael
+
 
 Am 25.04.2024 um 16:16 schrieb Finn Thain:
 >
@@ -110,48 +120,11 @@ Am 25.04.2024 um 16:16 schrieb Finn Thain:
 > I've just tested this on a Motorola 68040 and I got an oops in
 > __generic_copy_to_user(). It appears that we need more entries in the
 > exception table. (I also tested in QEMU and it did not oops.)
-
-I'm a bit puzzled about the location of the fault.
-
-The values of faddr and a0 from the exception frame indicate that the 
-transfer leading up to the fault was a longword transfer. Both ssw and 
-wbs2 suggest the same. Yet we don't take the fault on the longword 
-moves, but apparently on the word moves right after.
-
-That can't be right either - d1 is 1 so the word moves would have been 
-skipped. It appears that we only take the movesl fault the next time any 
-bus cycle is initiated on 040 (the moveb at 0x46454c).
-
-That's different from how the 030 faulted in the same situation. I 
-expect we'll have to add exception table entries on the movew and moveb 
-instructions, too. I'll do that next.
-
+>
 > This oops indicates that we are going to need the final NOP that was in
 > the first version of your patch. My test program seems inadequate to show
 > that it is safe to omit that NOP -- we would need a test which doesn't
 > jump over the MOVES.B.
-
-We'd need a test using any number of longword moves expected to succeed, 
-followed by a byte move which is expected to fault. The current test 
-would attempt to do a byte move, but faults during the longword moves.
-
-This requires running the test program in a directory whose absolute 
-path is a multiple of four characters long, and setting the start 
-address for the getcwd test accordingly, so the newline at the end of 
-the string is the single byte left to copy. Does that make sense?
-
-Incidentally - what is the path this tests is run in? Any path longer 
-than five characters (including the newline) would have to had looped 
-back to the first movel, and faulted there?
-
-As you said before - we'd need to know a lot more about 
-microarchitectural details here.
-
-Cheers,
-
-	Michael
-
-
 >
 > Unable to handle kernel access at virtual address c0029000
 > Oops: 00000000
@@ -214,3 +187,74 @@ Cheers,
 >   46455c:       4e75            rts
 >   46455e:       4e75            rts
 >
+
+--------------0483C274D033E5DAC1927AD5
+Content-Type: text/x-diff;
+ name="0001-m68k-add-more-exception-handling-to-__generic_copy_t.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-m68k-add-more-exception-handling-to-__generic_copy_t.pa";
+ filename*1="tch"
+
+From 23b973a077467818793a7aad89fde5eaf55cbd7f Mon Sep 17 00:00:00 2001
+From: Michael Schmitz <schmitzmic@gmail.com>
+Date: Thu, 25 Apr 2024 17:39:07 +1200
+Subject: [PATCH] m68k: add more exception handling to __generic_copy_to_user
+
+---
+ arch/m68k/lib/uaccess.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
+
+diff --git a/arch/m68k/lib/uaccess.c b/arch/m68k/lib/uaccess.c
+index ef761fc10981..5e27d5d3f10f 100644
+--- a/arch/m68k/lib/uaccess.c
++++ b/arch/m68k/lib/uaccess.c
+@@ -66,23 +66,25 @@ unsigned long __generic_copy_to_user(void __user *to, const void *from,
+ 		"3:	subq.l	#1,%0\n"
+ 		"4:	jne	1b\n"
+ 		"5:	btst	#1,%5\n"
+-		"	jeq	7f\n"
+-		"	move.w	(%1)+,%3\n"
+-		"6:	"MOVES".w	%3,(%2)+\n"
+-		"7:	btst	#0,%5\n"
+-		"8:	jeq	10f\n"
+-		"	move.b	(%1)+,%3\n"
+-		"9:	"MOVES".b  %3,(%2)+\n"
+-		"10:\n"
++		"	jeq	8f\n"
++		"6:	move.w	(%1)+,%3\n"
++		"7:	"MOVES".w	%3,(%2)+\n"
++		"8:	btst	#0,%5\n"
++		"9:	jeq	13f\n"
++		"10:	move.b	(%1)+,%3\n"
++		"11:	"MOVES".b  %3,(%2)+\n"
++		"12:	nop\n"
++		"13:\n"
+ 		"	.section .fixup,\"ax\"\n"
+ 		"	.even\n"
+ 		"20:	lsl.l	#2,%0\n"
+ 		"50:	add.l	%5,%0\n"
+-		"	jra	10b\n"
++		"	jra	13b\n"
+ 		"	.previous\n"
+ 		"\n"
+ 		"	.section __ex_table,\"a\"\n"
+ 		"	.align	4\n"
++		"	.long	1b,20b\n"
+ 		"	.long	2b,20b\n"
+ 		"	.long	3b,20b\n"
+ 		"	.long	4b,20b\n"
+@@ -91,6 +93,8 @@ unsigned long __generic_copy_to_user(void __user *to, const void *from,
+ 		"	.long	8b,50b\n"
+ 		"	.long	9b,50b\n"
+ 		"	.long	10b,50b\n"
++		"	.long	11b,50b\n"
++		"	.long	12b,50b\n"
+ 		"	.previous"
+ 		: "=d" (res), "+a" (from), "+a" (to), "=&d" (tmp)
+ 		: "0" (n / 4), "d" (n & 3));
+-- 
+2.17.1
+
+
+--------------0483C274D033E5DAC1927AD5--
