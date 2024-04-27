@@ -1,92 +1,119 @@
-Received: from wfhigh1-smtp.messagingengine.com (wfhigh1-smtp.messagingengine.com [64.147.123.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F76A8488
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 27 Apr 2024 01:44:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6C953FBAE
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 27 Apr 2024 04:41:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714182260; cv=none; b=R6nMdQSXZtOgpp6L1UajJVdYLwlnpMIIw6+zxRzX6faRzHgLAnZZbbAcd1Nbm5dMhSNJbYkiv4iRVCp7xWeSNQpLqTJiZLqG8zZTB3tTwdO1KUDhegCjCvn0ZfcA6TqMi4bCHQ5qy9UyX4phkywaRFSAZrnw+NRhV0pTw8hzdwA=
+	t=1714192910; cv=none; b=lBsKDp72KnC7temyDj8z+u6YIye0y3V+W7td8/RiTx137dbz2uGXGlbl5wtAMkAxjlMtnCKKFAdQy6wD1ifOhvuntpF4ZVimIr4Kjw3y3HGmvtwYi0EUyN4T7Xz2zVFtsY4lJ0hjWwxxW+9sIvPq/Ti/6nMeiU+Bzk6XBtVS+Jk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714182260; c=relaxed/simple;
-	bh=kTT9ijCcysGzPxHxLjZM9eurMMfEyNqfOD+cc/iw9FI=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=csOkhtm9Ob/u3s7aYnC2eOiwS89fWHk2hW/6Zd34Z8SjnHw5FAX0mxIakng3Fm47T4dlLBNwbCHYtvHCyJn+p/oy3BX43IFV+NWwkWl2LwjigUue7sMVKTvu6tYSaQV2hiTM1vdwgGuyfRZJPrnVFazp0Hv/31IPV0ec7uDt6Vw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Euwf04Kc; arc=none smtp.client-ip=64.147.123.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1714192910; c=relaxed/simple;
+	bh=mkrCkRcn1VBHrnOzRtenLtYFvWboqf1LwXdtSY/+31U=;
+	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=kkffvsrD4bo1mrSkxrfVNevHbOXPh/y3S3D3RKLLYicMUZ6FYBeGRgP4EsZ/NRMYSgXhzf2R9Je6g8rCMLsRKpL1J/pr3UwncVUledBiwTwJaNPjcSmLCgk53TenUuKjRa3B6OGQuqys3PH2YD+W1QOANGGzdnYzT/LzpaO6O+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kDQu/j3g; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Euwf04Kc"
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailfhigh.west.internal (Postfix) with ESMTP id 000C918000F8;
-	Fri, 26 Apr 2024 21:44:15 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Fri, 26 Apr 2024 21:44:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1714182255; x=1714268655; bh=oPOq/2RALu4brCXQZjfu4PsrBp4b
-	BE/8+zRoGejeZ00=; b=Euwf04KcnnceVl1eyuXNnkW+i5p/THtKASMPp3pbE/g+
-	hSL5qoC7dj7YjR+iuXbf1rzIfYx+GAxULUdYuuFfrYCMhEo9W6Clnh/L7nnF+d+K
-	9CpCiGW4XIIE2ZZ9VYS7OyYnHf43+HeUfSR7ECiAGbI3pLiSSU+0pj1BDNElkgHT
-	pUFosmI6A1YEqmELl8aa+upmMgGGu+YoSjhes3SAGmFG/3dK97Sqcu1+nLTGA7X/
-	KScZpbJ0QUxLuJHPsk7aR5XKRYWL3e9IgXrVaE7K2vybN8kYccHfzEfek3NLvCpq
-	rvIYmILMbDSlaldtAi0PDE+hw23P5tYnZ008ThTFRw==
-X-ME-Sender: <xms:blgsZi7nCa5DK8ZOKk7ECC5ppYXIGzLIxuJI-dcjRto8FXmjjFbcRQ>
-    <xme:blgsZr7eSErG7pAbonwVasXUE0NhtZtDKr8Jp9N6Ma61BxvXJwFYF4QjjnPRQrmKe
-    Hv5sOGVgdazABzgxZo>
-X-ME-Received: <xmr:blgsZhfjrSsK0ZPnyMqjpDmxqB8HpwBk85sgira7_SU5M5yaiM3vgvT9RKbL18CXHS0uPV6kmD2GQ0VnT0N2yjW6_nNFMC83jH8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddttddghedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
-    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
-    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:b1gsZvLGJ2MH2CfKc2GZAhV3b_9WS1oP2rMqetSpoqk38HIWfXti3g>
-    <xmx:b1gsZmLlCHSYCN5OeNlPzipoGDjj8JJVaHATZXKyzmhcwHoAbI31BQ>
-    <xmx:b1gsZgxTHlkCXbw-d1wNWmY9T67bHR-Mb5fK22Nst83agN4AdwsNHw>
-    <xmx:b1gsZqK1M5qWDLeO1tXgCXeCOIM1FxefKWPQn1Pulyz95fhcWn0qcQ>
-    <xmx:b1gsZtV8kj2sEzyMATfZAKzKjbuN__XRTjNZsfKhnr3TWvPeRdZk9ukP>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 26 Apr 2024 21:44:12 -0400 (EDT)
-Date: Sat, 27 Apr 2024 11:44:34 +1000 (AEST)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Michael Schmitz <schmitzmic@gmail.com>
-cc: geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kDQu/j3g"
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6f103b541aeso2471370b3a.3
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 26 Apr 2024 21:41:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714192907; x=1714797707; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F2hnwyl0PdDlo8QHJFha9Nkk1GZOjhLF6ZXzdu29wtM=;
+        b=kDQu/j3gHOkL7RcFw8xpXIZNRxrg1rfC4yz0EzZwRZHxreI4Dv8qFfeR1OGywzW5+Y
+         x5Al6STraramtp4VOgCYJcGgn0S17WnXh81uh0ZDzULadEI3M26iZl46lYWbOoRiykrr
+         1sGSQikK3FTSBzAMrAIU7YVuDsvspw7Wj3gj/uKOorPny/TjKuOEMD3KsCNPiqid67UV
+         SnjLntb/bbhGbvLFBGh+46Cy9CfOcNRBTYqBup7RO4xI8Rd8jUTW1fzQoloE+tcTewcO
+         X1MH5OeeK7p7nHf2wrd4BSxptkDB5K3jJLLpc3VyoS21kYCdzB3IMKqf76OBCBHhErhH
+         9cDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714192907; x=1714797707;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=F2hnwyl0PdDlo8QHJFha9Nkk1GZOjhLF6ZXzdu29wtM=;
+        b=Z0sEQcoCQaqg3+CcpIBSsii/kFSUEcOFn4fDHbc2lb2BM8CNwJqn7egtnwYb8oz2eX
+         IHF6z5MsED7wCnjRcBSot5HKndBgmmFZMDNkf6QwqvLPe5iwdksbvGCL6HGAOm2udgI8
+         RCkgXsabzPl689xmYSMWX8sCJyVef2MQkt33Im1Kn023BC8dyfTFfzuUQHlgBRpfEmei
+         vPl5RQ0XMULH17tgguTFPr7kUXwLZvbumzyL92S7pjHqH4H4+2kTH1vXIucAiPvedcaq
+         tTb8Gpgkr7KPft637EjAoOe3gwskJK2GCHymenrKbif0omALP9tBgod2Ls+/OvZtRXW8
+         T6rg==
+X-Forwarded-Encrypted: i=1; AJvYcCWS8gCv2d1GuFEpakqizW2EmbihrXzQ8U1tYT7Bkw2QsOiUBEr/8Ku9ykvor0EeO5vJptnkF/qfD8QqX1qbijpwmyc0+MURb2W+ziC48STC
+X-Gm-Message-State: AOJu0Yw6dQ/ZyVxgxZozKTkUuNSx0PE4u8MVCbP4jDz3EmbbMm7v9qoX
+	YslV4fKdNe2OmLLxPNY26r/GKaZLdQOAsN0/tCv/4Rm5zKdGeBiYBBu8xw==
+X-Google-Smtp-Source: AGHT+IHxCiJuHiL+9XOpQxpVSB/jeg6ocQE9gNlOkAROUSSiJSBErT70ylBWdl3URA9tLF78t+19/g==
+X-Received: by 2002:a05:6a20:3206:b0:1ac:e379:542b with SMTP id hl6-20020a056a20320600b001ace379542bmr4433438pzc.3.1714192907267;
+        Fri, 26 Apr 2024 21:41:47 -0700 (PDT)
+Received: from [10.1.1.24] (222-152-175-63-fibre.sparkbb.co.nz. [222.152.175.63])
+        by smtp.gmail.com with ESMTPSA id b1-20020aa78ec1000000b006ece7bb5636sm15584288pfr.134.2024.04.26.21.41.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 26 Apr 2024 21:41:46 -0700 (PDT)
 Subject: Re: [PATCH RFC v2 1/2] m68k: Handle __generic_copy_to_user faults
  more carefully
-In-Reply-To: <ef3430ab-4dbb-954b-8bc3-7abf046d134c@linux-m68k.org>
-Message-ID: <77b94911-a58c-6f44-7c92-dbfdbb403bd3@linux-m68k.org>
-References: <20240422022943.13775-1-schmitzmic@gmail.com> <20240422022943.13775-2-schmitzmic@gmail.com> <6fbf4809-dec2-84b9-3b83-86084ed19a20@linux-m68k.org> <57b70e03-2672-4f27-87f9-481208173a20@gmail.com> <b9d281db-c06e-0eb3-0f49-b95f576a9891@linux-m68k.org>
- <1b49c8a1-c753-428d-b526-06b6eb3e551c@gmail.com> <fbaaf75c-c4e9-7fee-bb8d-9fd0fd25b197@gmail.com> <ef3430ab-4dbb-954b-8bc3-7abf046d134c@linux-m68k.org>
+To: Finn Thain <fthain@linux-m68k.org>
+References: <20240422022943.13775-1-schmitzmic@gmail.com>
+ <20240422022943.13775-2-schmitzmic@gmail.com>
+ <6fbf4809-dec2-84b9-3b83-86084ed19a20@linux-m68k.org>
+ <57b70e03-2672-4f27-87f9-481208173a20@gmail.com>
+ <b9d281db-c06e-0eb3-0f49-b95f576a9891@linux-m68k.org>
+ <1b49c8a1-c753-428d-b526-06b6eb3e551c@gmail.com>
+ <fbaaf75c-c4e9-7fee-bb8d-9fd0fd25b197@gmail.com>
+ <ef3430ab-4dbb-954b-8bc3-7abf046d134c@linux-m68k.org>
+ <77b94911-a58c-6f44-7c92-dbfdbb403bd3@linux-m68k.org>
+Cc: geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org
+From: Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <7db9f286-74ea-40a9-9849-321aad954586@gmail.com>
+Date: Sat, 27 Apr 2024 16:41:40 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <77b94911-a58c-6f44-7c92-dbfdbb403bd3@linux-m68k.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Hi Finn,
+
+thanks - tests (including __clear_user) with my 030 did show one Oops in 
+the same place that __generic_copy_to_user did last fault, that is, the 
+btst after the movesl instruction. Adding that instruction to the 
+exception table avoids the Oops.
+
+A range of path lengths as well as offsets tested. Still some tests 
+pending... Couldn't find any evidence that a NOP is needed either.
+
+I'll post the final version as soon as I've completed testing.
+
+Cheers,
+
+	Michael
 
 
-On Fri, 26 Apr 2024, I wrote:
-
-> I will test it tomorrow. I expect that a NOP is needed at the end of 
-> __clear_user.
-> 
-
-Everything seems to work now.
-
-I tested this series together with my own RFC patch on a Quadra (68040) 
-and IIci (68030). My tests covered getcwd and llseek syscalls. I tried a 
-build with the extra call to __clear_user() and a build without it. And I 
-covered a range of working directory names.
-
-Tested-by: Finn Thain <fthain@linux-m68k.org>
-
-So apparently there'e no need for a NOP at the end of __clear_user() -- on 
-'040 and '030 at least.
-
+Am 27.04.2024 um 13:44 schrieb Finn Thain:
+>
+> On Fri, 26 Apr 2024, I wrote:
+>
+>> I will test it tomorrow. I expect that a NOP is needed at the end of
+>> __clear_user.
+>>
+>
+> Everything seems to work now.
+>
+> I tested this series together with my own RFC patch on a Quadra (68040)
+> and IIci (68030). My tests covered getcwd and llseek syscalls. I tried a
+> build with the extra call to __clear_user() and a build without it. And I
+> covered a range of working directory names.
+>
+> Tested-by: Finn Thain <fthain@linux-m68k.org>
+>
+> So apparently there'e no need for a NOP at the end of __clear_user() -- on
+> '040 and '030 at least.
+>
