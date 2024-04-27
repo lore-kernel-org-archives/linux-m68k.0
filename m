@@ -1,157 +1,132 @@
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wfout4-smtp.messagingengine.com (wfout4-smtp.messagingengine.com [64.147.123.147])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F88C2E639
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 27 Apr 2024 08:56:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0A473FE31
+	for <linux-m68k@vger.kernel.org>; Sat, 27 Apr 2024 09:24:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714208202; cv=none; b=gRE2RglDiWbPr46kzOaG0naSOqUjt3ZdMgHJKAZzDFbpYebKQhF+IGGl0nIiN3nkvM/rdMxbbLe3h6NYWAz/FVxBABgnZ91T7C1Bn02Li2c+XeIn1BPFad3umx5a+hT7fIRdIJXxzCTXvP9tnZv+x6qZi3wBBt1hOfCprDPquZo=
+	t=1714209884; cv=none; b=uX+ns2C8z56EUaxfeRnlrwNVxqarkqBiC4yWlg3zCzasWSTxuyMO1cxaNsBFi3fkAJwHNyNYQrFTcu1lmOUXXQc8f2Pqv92pCeg05bprMBoMzLjKNGiFWnx5VeO6IFep6PeyvqgF4MsEmjqWFgQS7jYBsP11eyiSoy328m4x4ts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714208202; c=relaxed/simple;
-	bh=cyXGXoYb/ULl3ZmvZMQHdSnrB9lG+vYnmYSVF0sO6fc=;
-	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=QPkxopRryYF8Q/zUnWjA0a3fPlz7pPCOC8P0srcxw+RD9n41ner2xxmZ1GyLhxBOL/U8dytu8xSqiPtHulQskpjkaEwJHdJtKXRK4OHC3mcwyFjqteK12Su/E5YoXTFldoLuSspmg6Z+h47zSRHN36Ez6hjtII+DsA+PODUM0I0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BMkDq/SH; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1714209884; c=relaxed/simple;
+	bh=2KSpOfsXbM9lkLxM23Zk2iPXc7kmcQLpTtuxWQi9AFk=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=T24jsBVGgQYsC3B+fig6RaBTD4RwY6qT6bH+ZTpL4kLcbmaemuNp2H8fhRcsBLip3Cq4xjdmkQCasvO49h8rqdXPjXMHBnkFanVwiLOfc8IjZZw5KOEuI6PbpmazENOe2i+zIYSTyg7mfKnPSeGoGi6iSUtXXrYNHMzAMnWXHaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=aHrEKAxz; arc=none smtp.client-ip=64.147.123.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BMkDq/SH"
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5f80aa2d4a3so2442384a12.0
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 27 Apr 2024 01:56:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714208199; x=1714812999; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4CUPIgw0HEQ4RBAhj+KI3x1dgKlttJcbHni6M8okNqU=;
-        b=BMkDq/SHVjVCFnDBN8oOFqk2XyzRhg9m3VIsYe7yK8N5TMrkVlPprHTBLUN004Ws5q
-         jQWk8e/gQ/gd+7XjQ3xM303V6T+1N4Q+mXjzYlNNm9PWvBI1/olsFEQ5+DGCLOcDAy8+
-         +n8ySD+mULKE5RLtLDxUMi07FnaUENLfiAc3I15zOGYtK9yGSyO5TrxiZfrx7vWvFpO3
-         eOdY2YuVDr+c2uykmxyh0uVf25WMkEQq+bpeA67Rp1FR5uMnoKXWHPYW+BCsRQ8ni1pY
-         bPloG3O727SBMy6mWkP6JupCbBnxgbjpPIrM2XRWlDEA0IwrEnuyd27lWDohmCn1lJJQ
-         ZshA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714208199; x=1714812999;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=4CUPIgw0HEQ4RBAhj+KI3x1dgKlttJcbHni6M8okNqU=;
-        b=NbfzkVF1y1lIRoc8Unijp3+HjZkRk0SC0i2BbQ0yqCcrB+DrR/yZOSLbt7r5Ri5UBM
-         tlEy+j59qs2Jl/brMm0Tl68p6ivIj6THJAeAQcZjdL7FE7e47w818oLuaeP8I01YvgeJ
-         5hT20EWjPnjUgsCrVnA5G3Skbu0H/hCZGvZG1AmgiYSCBn9ofqv6h+6k34uAydT5bbTE
-         nzluIBNFi9IYFs/6thjPO2xr2FMOAltd40YcIOXE40dftX3xWZDH61cGWu98H9Hh24Ho
-         WmLa8dZGis8h/pVDltobAnqyrUDhVyIdPoSNy0tNaSsLAYOHhjUGmDbgwzz6P8WiOB7A
-         C9jg==
-X-Gm-Message-State: AOJu0Yx6zsD4dqvuIaUOGjrEO2vftut0APEY/K/nuabCR6MjvNdymUwc
-	tjNr2yLAhKpVMFL/Gv10G9l+C9XGP1LnUo6Pyln0ALPLRbAymqBKsviLew==
-X-Google-Smtp-Source: AGHT+IEvB57mbqCDdcBxOUH7mIwjcN5BAuGzyjRk31trLmlPzwNaKBIA7MMMqAQeuj0EqLyKDE8duQ==
-X-Received: by 2002:a05:6a21:279e:b0:1ac:5040:2a70 with SMTP id rn30-20020a056a21279e00b001ac50402a70mr5118581pzb.35.1714208199497;
-        Sat, 27 Apr 2024 01:56:39 -0700 (PDT)
-Received: from [10.1.1.24] (222-152-175-63-fibre.sparkbb.co.nz. [222.152.175.63])
-        by smtp.gmail.com with ESMTPSA id s12-20020a17090a5d0c00b002a005778f51sm9964949pji.50.2024.04.27.01.56.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 27 Apr 2024 01:56:39 -0700 (PDT)
-Subject: Re: [RFC PATCH] m68k: Handle put_user faults more carefully
-To: Finn Thain <fthain@linux-m68k.org>
-References: <e0f23460779e6d16e2633486ac4841790ef2aca0.1713176294.git.fthain@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-From: Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <cb7b2221-6ee2-ced0-55e4-2326c695d237@gmail.com>
-Date: Sat, 27 Apr 2024 20:56:35 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="aHrEKAxz"
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailfout.west.internal (Postfix) with ESMTP id A578A1C0012D;
+	Sat, 27 Apr 2024 05:24:39 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Sat, 27 Apr 2024 05:24:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1714209879; x=1714296279; bh=XRlrMJnoqRhICycYntWUIB2+UasE
+	/Hd+jPKF1WaLHzg=; b=aHrEKAxzv3IHnJuBn21Dnv8dcJOZyCP3DvCBs0oilSBs
+	CZlmfvzC4JuuGl+iKlq+mALtuR7BoBlzzb//3nZ/y5HJJI1LcQhp2dvzb7mPeheE
+	OOpEH39MTOPCCYcKGN9Bcv14gEzX60cC2Hd53MPxMexRuqooixmguW21xxc/lxBz
+	cx+N5gIAeSh5gVr/vtr/ppoN2uVGFFxn37tDPvUAkAtD0V462IsXBMDMQOm4ZCfA
+	jlAp4FKBJRg0rLQjhmxFnyegaJdCCTS4De5vj1ko5q1tuLEmgC5QXuQ4qSaQV2NI
+	16NJr6hU2fKUogYShc52OpzoCs4/x3caVI8KcCc8FA==
+X-ME-Sender: <xms:VsQsZlTDqC5zHERwW1sNlZ6WRavlCrTBcE9kYq5JWvl4l6ACK-EfMg>
+    <xme:VsQsZuy-vq6eJpnvHSvfVip9ThOCt_IXMVJ6XSqZVNOgm6Kaj0YOhXKVgMmG75KBl
+    LCAqz9itqA2jtgVbz0>
+X-ME-Received: <xmr:VsQsZq2qr2edy1hDI1wFMrP2HEYQJuD-h5LlpITdunHiRVlB1UgwaL7FXL4OSLI2IxE0v3tNsBpoVyeNGPixTzdZ4Cc1sMO7YjA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddtuddguddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
+    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
+    htthgvrhhnpeefieehjedvtefgiedtudethfekieelhfevhefgvddtkeekvdekhefftdek
+    vedvueenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieek
+    khdrohhrgh
+X-ME-Proxy: <xmx:VsQsZtCFgpvoTUY5uoyfS6uMHkpjmFZD2jHBlYu4QWAHBZnAr2J9ug>
+    <xmx:VsQsZuidz3JMqmKQ7qgfN9NsZSLBpyNyI6gs2wgcz6sVCj7LDva0dQ>
+    <xmx:VsQsZhpIC63bjsznltT5SCPKf4KBH4ltgagklnRtuUnZ7_hM0iBJRw>
+    <xmx:VsQsZpigKkes7TcP7tXrL3veBQuns1e6AbVIVYeTomJuCtZfnKWHug>
+    <xmx:V8QsZvvWpsfaXMuG-9FrHClMsdh0G6yMnOkcWr88kRLnyqusLSbGds_8>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 27 Apr 2024 05:24:36 -0400 (EDT)
+Date: Sat, 27 Apr 2024 19:24:51 +1000 (AEST)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Michael Schmitz <schmitzmic@gmail.com>
+cc: linux-m68k@vger.kernel.org, geert@linux-m68k.org, gerg@linux-m68k.org
+Subject: Re: [PATCH v3 2/2] m68k: improve __constant_copy_to_user_asm() fault
+ handling
+In-Reply-To: <20240427084815.1449-3-schmitzmic@gmail.com>
+Message-ID: <88fd52d9-bd23-d5e5-addb-7f2a54c82eb2@linux-m68k.org>
+References: <20240427084815.1449-1-schmitzmic@gmail.com> <20240427084815.1449-3-schmitzmic@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <e0f23460779e6d16e2633486ac4841790ef2aca0.1713176294.git.fthain@linux-m68k.org>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 
-Hi Finn,
 
-Am 15.04.2024 um 22:18 schrieb Finn Thain:
-> Running 'stress-ng --sysbadaddr -1' on my MC68040 system immediately
-> produces an oops:
-[...]
->
-> The cause is a deliberately misaligned access in the 'bad_end_addr' test
-> case in the 'sysbadaddr' stressor. The location being accessed here,
-> 0xc043dfff, was contrived to span the boundary between a r/w anonymous page
-> and an unmapped page. The address was then passed to the getcwd syscall
-> which faulted in copy_to_user().
->
-> The fault for the mapped page appears to be handled okay -- up until
-> do_040writeback1() called put_user() which produced a second fault due to
-> the unmapped page.
->
-> Michael Schmitz helpfully deciphered the oops and explained the exception
-> processing leading up to it.
->
->     "regs->pc does point to the PC in the format 7 frame which is the PC
->     the fault was detected at, but not (in case of a writeback fault)
->     the PC of the faulting instruction [that is, MOVES.L].
->
->     "The writeback would still cross the page boundary, and fault if the
->     unmapped page still isn't present. We would not see the PC of the
->     movesl in that case, and fail to find the PC in the exception
->     table."
->
-> One solution is to add a NOP instruction after the MOVES.L to flush the
-> pipeline and take the fault. That way, the PC value in the exception frame
-> becomes dependable so the exception table works.
->
-> Theoretically, there seems to be another bug in the existing code. If
-> the instruction following the MOVES faulted, then after the fixup,
-> execution would resume at the instruction which caused the fault. This
-> appears to be a loop. After this patch, that cannot happen.
->
-[...]
+On Sat, 27 Apr 2024, Michael Schmitz wrote:
+
+> A problem similar to that reported for __put_user_asm and
+> __generic_copy_to_user is also present in
+> __constant_copy_to_user_asm.
+> 
+> Address the problem by extending the exception table to cover
+> two instructions past each moves instruction, and adding a
+> single NOP at the very end to catch faults on the final
+> instruction (which is not guaranteed to be a movesb!).
+> 
+> Tested on 68030 (Atari Falcon 030) with a transfer beginning
+> at a single byte at the end of a mapped page followed by
+> seven more bytes on an unmapped page (testcase derived from
+> stress-ng sysbadaddr stressor by Finn Thain and modified to
+> use the llseek syscall).
+> 
+> Cc: Finn Thain <fthain@linux-m68k.org>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Link: https://lore.kernel.org/all/e0f23460779e6d16e2633486ac4841790ef2aca0.1713176294.git.fthain@linux-m68k.org
+> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+
+Tested-by: Finn Thain <fthain@linux-m68k.org>
+
 > ---
->  arch/m68k/include/asm/uaccess.h | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
->
+>  arch/m68k/include/asm/uaccess.h | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+> 
 > diff --git a/arch/m68k/include/asm/uaccess.h b/arch/m68k/include/asm/uaccess.h
-> index 64914872a5c9..44e52d8323e5 100644
+> index 44e52d8323e5..f1f4b62d6f69 100644
 > --- a/arch/m68k/include/asm/uaccess.h
 > +++ b/arch/m68k/include/asm/uaccess.h
-> @@ -31,11 +31,12 @@
->  #define __put_user_asm(inst, res, x, ptr, bwl, reg, err) \
->  asm volatile ("\n"					\
->  	"1:	"inst"."#bwl"	%2,%1\n"		\
-> -	"2:\n"						\
-> +	"2:	nop\n"					\
-> +	"3:\n"						\
->  	"	.section .fixup,\"ax\"\n"		\
->  	"	.even\n"				\
->  	"10:	moveq.l	%3,%0\n"			\
-> -	"	jra 2b\n"				\
-> +	"	jra 3b\n"				\
->  	"	.previous\n"				\
->  	"\n"						\
->  	"	.section __ex_table,\"a\"\n"		\
-> @@ -53,11 +54,12 @@ do {								\
->  	asm volatile ("\n"					\
->  		"1:	"inst".l %2,(%1)+\n"			\
->  		"2:	"inst".l %R2,(%1)\n"			\
-> -		"3:\n"						\
-> +		"3:	nop\n"					\
-> +		"4:\n"						\
->  		"	.section .fixup,\"ax\"\n"		\
->  		"	.even\n"				\
->  		"10:	movel %3,%0\n"				\
-> -		"	jra 3b\n"				\
-> +		"	jra 4b\n"				\
->  		"	.previous\n"				\
->  		"\n"						\
->  		"	.section __ex_table,\"a\"\n"		\
->
-
-Extensively tested on 68030, too (where there isn't a writeback but 
-put_user can still fault in the same context), and after some review and 
-testing I'm satisfed adding NOPs is the only solution, so:
-
-Tested-by: Michael Schmitz <schmitzmic@gmail.com>
-Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
+> @@ -288,10 +288,11 @@ __constant_copy_from_user(void *to, const void __user *from, unsigned long n)
+>  		"21:	"MOVES"."#s2"	%3,(%1)+\n"			\
+>  		"22:\n"							\
+>  		"	.ifnc	\""#s3"\",\"\"\n"			\
+> -		"	move."#s3"	(%2)+,%3\n"			\
+> -		"31:	"MOVES"."#s3"	%3,(%1)+\n"			\
+> -		"32:\n"							\
+> +		"31:	move."#s3"	(%2)+,%3\n"			\
+> +		"32:	"MOVES"."#s3"	%3,(%1)+\n"			\
+> +		"33:\n"							\
+>  		"	.endif\n"					\
+> +		"34:	nop\n"						\
+>  		"4:\n"							\
+>  		"\n"							\
+>  		"	.section __ex_table,\"a\"\n"			\
+> @@ -303,7 +304,9 @@ __constant_copy_from_user(void *to, const void __user *from, unsigned long n)
+>  		"	.ifnc	\""#s3"\",\"\"\n"			\
+>  		"	.long	31b,5f\n"				\
+>  		"	.long	32b,5f\n"				\
+> +		"	.long	33b,5f\n"				\
+>  		"	.endif\n"					\
+> +		"	.long	34b,5f\n"				\
+>  		"	.previous\n"					\
+>  		"\n"							\
+>  		"	.section .fixup,\"ax\"\n"			\
+> 
