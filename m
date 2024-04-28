@@ -1,110 +1,145 @@
-Received: from wfhigh1-smtp.messagingengine.com (wfhigh1-smtp.messagingengine.com [64.147.123.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E67F15A4
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Apr 2024 03:28:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7EAF1876
+	for <linux-m68k@vger.kernel.org>; Sun, 28 Apr 2024 03:51:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714274911; cv=none; b=HfmjpX9isA7k7PXu1twvSDVmvjNXNkGvQrUcT/d6bxi9tcu3l+AkikG4kf+7+RPP04nMI4DHp4aY7zjyZ4/3fZnYuiuT4uM4jOQB8WHZpyGIenpJUUp+U7SviinMi+tz/1VRpD29yhwvYBrWDymtxvAbGqy4Z7s1pBLUYX/vno8=
+	t=1714276306; cv=none; b=ql0mXJy8f7E01lvyHer+sSRlA4FJf19xHoQhlrdeTp+4iK+LGJ/+nvZ4kcv49d/esWpfJ6c9IuYob540+zky9ONO8DiarSTR+KwqsFazmjI7SGCs4/5NtCsvI60eAbDyHS1nqoy7INB2eRGGQZcQ2QYQLjHs+KpsGyvCrlCnPDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714274911; c=relaxed/simple;
-	bh=A1njEgkfd6RJIYizsbp9/K6kCLxmsXxFiwy2zw9RZDw=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=cypccgpdeRBrJ0b0a4EZkO26uPCqAAySUNYvcm6TzKU/KT0z6wd9h/bLRJ7qOSlJw5mXxLWrWRtsNmN5DYHP3Xf104Jsy50rvEwctvqNJXRqeujyOzbsECt7Zo/oevyAiOzQXyu4wFGWnYxi/1JtlkCU3HEtJ/L07oWiK/Tt+i8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=UKQkYXmw; arc=none smtp.client-ip=64.147.123.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1714276306; c=relaxed/simple;
+	bh=PGMPikjHnbcANWTcG8Vrkim6qsOHWFtNY23tclMmKC8=;
+	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=gG45mfo0/XUhw9IO4tj2Hnd1ccCBcW2BN+XdamKt+hpfFuCWIHJjKRQdHKZSE320AMbQDtzXwKd3JBL7FWYrgMTV7ivWKLII4KJ1ks+S7uPIuxec1pzI5aOyXeCvFdvn1i17bLOnKm3ogslzb23EwxBjcgvBqtTL69YO/nYxgCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OPX/OVEP; arc=none smtp.client-ip=209.85.215.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="UKQkYXmw"
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailfhigh.west.internal (Postfix) with ESMTP id C482E1800139;
-	Sat, 27 Apr 2024 23:28:27 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Sat, 27 Apr 2024 23:28:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1714274907; x=1714361307; bh=H9RMGoWDbH/ZA5ZvTu1kJWSVkyE3
-	p+oKCddrGExpWHQ=; b=UKQkYXmwX+6iFNslumOzVc7wd8eczXh2rZUSgouZ0N4e
-	P6l+YceEPtoiWOwtkfGcQvNbjbQQcSYBDUZcRJ6AlOiicbXzOXlI32sdopaPuzV+
-	rheHSWuAb5tEB+6F/YOGB8ZMq/jr66dYvIL6pibg+HXoAR7RT7SAvWswtZXc4D9O
-	1fFlb99dxiyqVw8vGa6A8e4Q06ibjZn39DyuK9U0xL4Ooy0CxeIcOVWYJJwlOYtv
-	Nh9kC8Sd1369o06AdU7YqMr2m53SDceWUIWr5CT2yuXyHwQizBr+Mm9B0tTtC/33
-	SsuSe3dEjHRQBi6hgNJddUSLtyfEpQP2MyQMQJF19A==
-X-ME-Sender: <xms:WsItZhAS1AknO5KpqKbYV1LyqhkDsy56EorBhD1hpLpHUoPnDin92g>
-    <xme:WsItZvgsPIYC4_h_Ja0mvKBYuWw6DCPWHcFHI-x7H2cPYW91HwfZZXAWCy8vQurIY
-    RK4LoHQlmW_Tl9acjM>
-X-ME-Received: <xmr:WsItZslNBrQTWlSmp_WICf06Hk5R_oJHV7GOyXXTGFImhjRXIIK7FXV97mL1atTLI3ETNu_yVbB2KBFVSQAQNk0AQ73zWNTK8bI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddtvddgieekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
-    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
-    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:WsItZrwgwZhH8noUM9c3VI2jthazxWlkLwxXEw683q2VrHSYGveueg>
-    <xmx:WsItZmScN__rCJ-vltjFOC5gG5zMai9pnK1fFxNDR1kY4PAZxyA9Fg>
-    <xmx:WsItZuYKRgblOkyN0XigAqasnK-N3yPywEF8io2nL6r-hIJLJGWjMA>
-    <xmx:WsItZnTZQozeN9HfGEkQp8QCju9D29DpoZqfYBD7-GIjSb9jPaHfBw>
-    <xmx:W8ItZsOiYmgjHVr9KRsESvwGWbV5zHQr3ftZcWvUH0W3JAo5ZoctGut1>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 27 Apr 2024 23:28:25 -0400 (EDT)
-Date: Sun, 28 Apr 2024 13:28:33 +1000 (AEST)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Michael Schmitz <schmitzmic@gmail.com>
-cc: linux-m68k@vger.kernel.org, geert@linux-m68k.org, gerg@linux-m68k.org, 
-    linux-m68k@lists.linux-m68k.org
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OPX/OVEP"
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-53fa455cd94so2624563a12.2
+        for <linux-m68k@vger.kernel.org>; Sat, 27 Apr 2024 20:51:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714276304; x=1714881104; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z9HvdWFIYtWlTssNrqT255B97bQTlSI8N/9lQlcVLAg=;
+        b=OPX/OVEP0oi0V1rHEhU5PGlqk1dnGKsYg1mYeg50H2G9Vx7hgD4K8zbR2Cw0DYEcCG
+         d9KhakqQL+YaWJJoJLzuYU8JvLo5xNe+xdWm8PnyFDFohPOEs1EDyS7Kc96vY52/pnwy
+         +83uV+yDIAizLFUgvraToCX1Z9e63KvW2RzoSZRKmw2ePgoCasi1UZUMOSLK1Q1ozkCw
+         AEJvOza4dT+07rGyev+6dhdJdRB1KqmD/XvS599hqoWIkh9m1+/xHAOzrvxJUnucb4pj
+         wxCfeauI4BnsVfwOGSIu8dLOnvc7KdVfc5rs6T1sjLuY9Vk8e/RAJ5142yiAgZk5jGyy
+         26EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714276304; x=1714881104;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Z9HvdWFIYtWlTssNrqT255B97bQTlSI8N/9lQlcVLAg=;
+        b=QwydFg5/UqvOIcf6M0HkzuuLiUbhG5X5RRp08H3mzjTLH6ZkzvouQJkzriWmJTiPVv
+         RFGe2YA0r+3NYFYL2y7/Y0xRwD4BOMHLvH3B/+o84RQ95g29da0qk3M18B7IkLNZ0N+E
+         NibjMVqCJui88WQ9pO5ZetL5c2SlS55aKxYzaU5WlEP6fIqL7y3cjCJa1kMJ3fBMnJ1J
+         wU/iBfz3LXN+bUBHmNe3Zyy5G2VwBmQULKVKoIlXrJrBSsMztDR0bMyEZjAKJNWpEq8o
+         F7JWJvC4xIbj6WQYtwFEIM1isOWE2Khymp+Y/ufINMmdUBdUfd+04vchwlU+zyRjHMwA
+         r4iw==
+X-Gm-Message-State: AOJu0YyLs2a+56d4gOwR/o2ufFfWtHoGS+nrX9topnI3LeyykfI8qrIo
+	atodtMaoXw8XEePOLu/RfjmDzbkDOkfj1W0aHM52Jd5eE+m8N0eb2jXVCw==
+X-Google-Smtp-Source: AGHT+IGB/wzquuhRGup1kkGdojVjD5maZ39iuJix+hljjZ/5iR/kqbmsoIl35ydbeiCLt95vD5jQnA==
+X-Received: by 2002:a05:6a20:4e2a:b0:1a9:5a2a:7e51 with SMTP id gk42-20020a056a204e2a00b001a95a2a7e51mr6782486pzb.24.1714276304041;
+        Sat, 27 Apr 2024 20:51:44 -0700 (PDT)
+Received: from [10.1.1.24] (222-152-175-63-fibre.sparkbb.co.nz. [222.152.175.63])
+        by smtp.gmail.com with ESMTPSA id c11-20020a170902d48b00b001eb3dadacffsm2316514plg.219.2024.04.27.20.51.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 27 Apr 2024 20:51:43 -0700 (PDT)
 Subject: Re: [PATCH v3 1/2] m68k: Handle __generic_copy_to_user faults more
  carefully
-In-Reply-To: <f88ad8f7-4fd9-45b2-a52c-cee3217083bf@gmail.com>
-Message-ID: <95677826-e3cb-9c1d-7d03-253a88aff3eb@linux-m68k.org>
-References: <20240427084815.1449-1-schmitzmic@gmail.com> <20240427084815.1449-2-schmitzmic@gmail.com> <fdbe029b-1df0-3e8d-fced-64cc719397fa@linux-m68k.org> <f88ad8f7-4fd9-45b2-a52c-cee3217083bf@gmail.com>
+To: Finn Thain <fthain@linux-m68k.org>
+References: <20240427084815.1449-1-schmitzmic@gmail.com>
+ <20240427084815.1449-2-schmitzmic@gmail.com>
+ <fdbe029b-1df0-3e8d-fced-64cc719397fa@linux-m68k.org>
+ <f88ad8f7-4fd9-45b2-a52c-cee3217083bf@gmail.com>
+ <95677826-e3cb-9c1d-7d03-253a88aff3eb@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, geert@linux-m68k.org, gerg@linux-m68k.org,
+ linux-m68k@lists.linux-m68k.org
+From: Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <314aaa18-e28c-851c-d746-10ecc46eed04@gmail.com>
+Date: Sun, 28 Apr 2024 15:51:37 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <95677826-e3cb-9c1d-7d03-253a88aff3eb@linux-m68k.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sun, 28 Apr 2024, Michael Schmitz wrote:
+Hi Finn,
 
-> In my tests, the fault seen there had been caused by the movesl in the 
-> section above, hence the fixup at 20b.
-> 
+Am 28.04.2024 um 15:28 schrieb Finn Thain:
+> On Sun, 28 Apr 2024, Michael Schmitz wrote:
+>
+>> In my tests, the fault seen there had been caused by the movesl in the
+>> section above, hence the fixup at 20b.
+>>
+>
+> Well, that was my point. A fault at MOVE.W should get fixed up at 20b, not
+> 50b. So the patch is wrong, isn't it?
 
-Well, that was my point. A fault at MOVE.W should get fixed up at 20b, not 
-50b. So the patch is wrong, isn't it?
+You are correct there - the fault may have happened while there still 
+were longwords to transfer, even though the fault PC is after the loop. 
+The residual from the loop must be taken into account. I'll fix that.
 
-> >
-> > Should we put a NOP here to avoid having the unknown next instruction 
-> > (label 9) in the exception table? We can't actually fix up a fault 
-> > there unless by chance it was the MOVES that caused it.
-> 
-> ... As to the unknown instructions following the final exception label: 
-> These functions, though they contain inline assembly code are not 
-> further inlined, and the instructions following the inline assembly are 
-> simple boilerplate register restore stack saves that ought not to fault 
-> (an invalid stack pointer would have faulted on function entry, if at 
-> all).
-> 
+>>>
+>>> Should we put a NOP here to avoid having the unknown next instruction
+>>> (label 9) in the exception table? We can't actually fix up a fault
+>>> there unless by chance it was the MOVES that caused it.
+>>
+>> ... As to the unknown instructions following the final exception label:
+>> These functions, though they contain inline assembly code are not
+>> further inlined, and the instructions following the inline assembly are
+>> simple boilerplate register restore stack saves that ought not to fault
+>> (an invalid stack pointer would have faulted on function entry, if at
+>> all).
+>>
+>
+> But that's just luck. IMHO, the asm is a foot-gun even if it has not gone
+> off yet.
 
-But that's just luck. IMHO, the asm is a foot-gun even if it has not gone 
-off yet.
+If the compiler were to inline the entire function, that could happen, 
+yes. So for that reason, the NOP would be safer.
 
-> On balance, I am confident the code is correct as-is. You (and in 
-> particular, Geert) may argue though that the NOP approach follows the 
-> principle of least surprises, and can be considered safe to apply 
-> without further testing on 68060 and Coldfire.
-> 
+>
+>> On balance, I am confident the code is correct as-is. You (and in
+>> particular, Geert) may argue though that the NOP approach follows the
+>> principle of least surprises, and can be considered safe to apply
+>> without further testing on 68060 and Coldfire.
+>>
+>
+> If you're saying that your patch addresses a different bug, fair enough.
 
-If you're saying that your patch addresses a different bug, fair enough.
+Nah, I was just speculating that instead of bloating the exception table 
+(and risking to miss a bad kernel address as source of the transfer), 
+addition of NOPs might be considered the safer option.
 
-All I'm saying is that, since you're adding the NOP anyway, you could make 
-better use of it.
+>
+> All I'm saying is that, since you're adding the NOP anyway, you could make
+> better use of it.
 
-Anyway, like you, I am keen to hear from others regarding the API issue.
+I already am, in __generic_copy_to_user - there is no exception table 
+entry for the jump label at the end, so no loop.
+
+Since I have to fix patch 1 anyway, I'll add the NOP at the end of 
+__clear_user and have the exception table end with that NOP.
+
+> Anyway, like you, I am keen to hear from others regarding the API issue.
+
+Too true ...
+
+Cheers,
+
+	Michael
+
+
