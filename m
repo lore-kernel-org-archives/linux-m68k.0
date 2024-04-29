@@ -1,100 +1,88 @@
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 293D117BD5
-	for <linux-m68k@vger.kernel.org>; Mon, 29 Apr 2024 08:08:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F32517E0F6
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Apr 2024 14:37:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714378113; cv=none; b=a3egm5IpV76xdhvcWdqzY7U5rENxNY5zoWw2Kv4aV/DtkvFCkvqVCViijZ0QbsEqe+uyV6Ru3l8cBE9P/X58cxcVngLohgfPdDmmPW58GSi/Q4QT40HIKTP31LKBeSe2cfLEjm1dcMtAMDjQF3xk7rZhrWWPIRfrEH3Z5wlHV/U=
+	t=1714401456; cv=none; b=WN2O3ecRuywHDWk9ap9EXNkS8VgIxoVRNFUpFEzOoT03ScfG6kWI5f6X09eO+PqkB9at6Wa+X8foFQzd6uJsS5WS7Gi25HKx4ufoHeCR1yGeqnlK+MGEH0ThpHAnb0t1mK2yZygapfw4xi0dyU+jNMDTQApcJY6gyzyxmsOaz4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714378113; c=relaxed/simple;
-	bh=EP0pLZoQBFf6BMFiGE+aFt84nYCXhUS/QtPgZBpHZXA=;
+	s=arc-20240116; t=1714401456; c=relaxed/simple;
+	bh=o76I6uYyuIHYHMcSkzurzNhgHFDpP4E7YAUzENMyBn0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HPpoKlxUHMMUut7LORtuGt027EEAFy/FnK6Aw/T8/5UYpxQvzKxk2M3YNJEdANqlfDe0H8X8F+91KvB4n11oDfAOGA1goG1pPZCqdfbl9pWlSGfGX6p5Ovwh887WCWwWkldmxvJf8fsmBK3wjGUfW8IWoMoxHNTvgxhlhDOqstc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.180
+	 To:Cc:Content-Type; b=Wp4LlIWBA2qpA0YpdrAKGpGm6+czKmH6VzoMAY05vVZQK9ZZfhQnP8bxDLtPa8vyeTPthrxZpuuXYfFKm4OPPQCI/82q84XAS26zqqabbByNP3mKVNT9+6mhLJICMT/6vwRkLkCLBuAP3R3qSrMOjHV8c0UnkUqyhpwSlxplkJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-de60380c04aso368276.2
-        for <linux-m68k@vger.kernel.org>; Mon, 29 Apr 2024 01:08:30 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-61bb638697aso21565897b3.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Apr 2024 07:37:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714378109; x=1714982909;
+        d=1e100.net; s=20230601; t=1714401452; x=1715006252;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9Rdzjq0aSeo3rlGAPOdCyeOVU5SoYMbQbeg00ToXscs=;
-        b=lKI0hOXpJVUKNKNkMlN7L4V5Wgr3PmK3NRGhEUADPzFXHUFuvM0nA/5hrQAqsh/TQB
-         XYnD8Moa2kIL1kxhFaLoywjSmbS0x8TIQFt4Vj5fMttEPkRST8OHEVhBKOF3VkN2N5oA
-         4oBI6zsCLZlluC/ZlJZl7kxuaeuITJDrcy7vTXA4zkqgQ3zCHPQKjhx+8s/EaMnhyhoU
-         /Tmd4NzcH4frtN5el6F7qvEnjqlJF0N/qXRjSS2ZilXhX5XNLWbSCfIv/wxX8993Mvxl
-         FRQMTOqh8c8QxWMSZN3el9CcPsLXy0KZxYGwZ08OY9M78MLwFC6Wq+0vbAFFltBEdQ0m
-         r49w==
-X-Forwarded-Encrypted: i=1; AJvYcCWE7+nes4aVTyDPK+hGkGukCraCT/xJM/pdS6C55IK2b23FJ9MpY9D53alJxFzlacmez4ScqJhU5KTSX9Fdor5X+ii4J4qNGzuagg==
-X-Gm-Message-State: AOJu0Yxc1MoLiHDKlHTthMWO0t4we0X20UAQUEuboS5bhLtRKCcIl3iU
-	2P7Q6AR5G9LYf/e5nP0hUA8jWV5m6LYCOIOE+4ktK0oauq4WckyU727ClY2A
-X-Google-Smtp-Source: AGHT+IH+sE6f8pBjvUCTVL5ODRNulyuX1INKcUeyzd+ukjqxXxtHo4wk/mOxRU1l+/IxuYHeYLxStQ==
-X-Received: by 2002:a25:84c3:0:b0:dcf:6122:ccec with SMTP id x3-20020a2584c3000000b00dcf6122ccecmr10499824ybm.36.1714378109498;
-        Mon, 29 Apr 2024 01:08:29 -0700 (PDT)
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
-        by smtp.gmail.com with ESMTPSA id g19-20020a25ae53000000b00de6036e9abdsm1779ybe.38.2024.04.29.01.08.29
-        for <linux-m68k@vger.kernel.org>
+        bh=1B8TUxX3GMUuuf6X9eCvF4beZUOUbPqjMpWnhsqSxGE=;
+        b=sYzZ1FAvAELk66zMslggfd8ncGDG1lId8OgqCmoeQ5YB8tb+xXLYccPM1l1jJ0lh8e
+         CoDt+K7GiEo1MWVaLZMxAhsjjo4Kiry+7wMJ6tQyOIuHPXtc6CYOYdj/7tly5Sv49qoY
+         wzGeINbTTS1PzLYDBPfboMKLbd8EbC6bbknApFQaimWi3BdzZk4Ovk5sT5+hw7YM5Rxq
+         3qg7sf3C39eURQmTkMGSLPDnqM9epOCQ/vi6cTZ3/ysiJpDi90SV01wpczobxaPVnas9
+         a8y42DXOj0H+IHLp6FsZDS4swAlj+FBAnjviZn2iO9wpsrrujkegFWQucsBtYuLAq355
+         SfuA==
+X-Forwarded-Encrypted: i=1; AJvYcCWD5XtrsK1sTrYK0jPzD+54qL00RzJFYIcXB6ePYsovXkrkMQna3MTZJVtm1UAgVUfgTfYiZmqMxqsptGVc9ZAMYi90OPJQoamfsRguXV4+
+X-Gm-Message-State: AOJu0Yy8rOYhk7B5MQKj8tgqEYNpahCP+nVm00BJBl9SUcDEKIpSfFdb
+	KbGWM1vNBrKJoG86VIAObWKQSmKO0vCJ2LFYRhr7PnUAuiLmJ4dSCzUTfrn+
+X-Google-Smtp-Source: AGHT+IHKMZRLdC0B6cD4yc/s4+BnmKgaaAtpmR5l/UpaM28G0HzRfwv0MCgtsSIRUcYq564OXeLq6A==
+X-Received: by 2002:a05:690c:b0c:b0:611:26e0:f24b with SMTP id cj12-20020a05690c0b0c00b0061126e0f24bmr13831ywb.9.1714401452385;
+        Mon, 29 Apr 2024 07:37:32 -0700 (PDT)
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
+        by smtp.gmail.com with ESMTPSA id v6-20020a81b706000000b0061ad87eaf80sm4793857ywh.0.2024.04.29.07.37.32
+        for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Apr 2024 01:08:29 -0700 (PDT)
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-617e42a3f94so45760517b3.2
-        for <linux-m68k@vger.kernel.org>; Mon, 29 Apr 2024 01:08:29 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVQm4rsWJfmQaiSbeyrlKXyD7kvr2RaqQ7+2Eqpupa69nCoA465d37h6vixHVVM0oGzVOxGKBL27/6Cr/s3a4QPhW80uxTU9a9QWg==
-X-Received: by 2002:a05:690c:7204:b0:618:8bc1:ad9f with SMTP id
- jl4-20020a05690c720400b006188bc1ad9fmr10473622ywb.13.1714378108129; Mon, 29
- Apr 2024 01:08:28 -0700 (PDT)
+        Mon, 29 Apr 2024 07:37:32 -0700 (PDT)
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-de54cb87998so4876737276.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Apr 2024 07:37:32 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUwO/A7LLH2UXkgYL4xErXvJiZ5YHTAlWPSQnVOZHYhoSMkUtrbJUj+6GvCNVuqmGiKYGE1SpHioL+1L/Sf1r5c9nlJYEV2Q2eBhqjsZ5yw
+X-Received: by 2002:a05:6902:2187:b0:dcf:a52d:6134 with SMTP id
+ dl7-20020a056902218700b00dcfa52d6134mr13962181ybb.26.1714401451935; Mon, 29
+ Apr 2024 07:37:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240429030945.22451-1-schmitzmic@gmail.com> <5d72bdb5-a98e-4b2a-99d0-73b592fe0993@linux-m68k.org>
-In-Reply-To: <5d72bdb5-a98e-4b2a-99d0-73b592fe0993@linux-m68k.org>
+References: <419fcc09d0e563b425c419053d02236b044d86b0.1710298421.git.fthain@linux-m68k.org>
+In-Reply-To: <419fcc09d0e563b425c419053d02236b044d86b0.1710298421.git.fthain@linux-m68k.org>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 29 Apr 2024 10:08:15 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVrOnOQwCxk42YCjEkbfL-YDSvpf_xTaouv9hUs2bO+qg@mail.gmail.com>
-Message-ID: <CAMuHMdVrOnOQwCxk42YCjEkbfL-YDSvpf_xTaouv9hUs2bO+qg@mail.gmail.com>
-Subject: Re: [PATCH v4 0/2] m68k uaccess fault handling fixes
-To: Greg Ungerer <gerg@linux-m68k.org>, Angelo Dureghello <adureghello@baylibre.com>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org
+Date: Mon, 29 Apr 2024 16:37:19 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUGAAqJsget--=ZZ9CejfPt5kLPkXFJkh5hfZrzhs8hzQ@mail.gmail.com>
+Message-ID: <CAMuHMdUGAAqJsget--=ZZ9CejfPt5kLPkXFJkh5hfZrzhs8hzQ@mail.gmail.com>
+Subject: Re: [PATCH] macintosh/via-macii: Fix "BUG: sleeping function called
+ from invalid context"
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: Joshua Thompson <funaho@jurai.org>, linux-m68k@lists.linux-m68k.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 29, 2024 at 9:58=E2=80=AFAM Greg Ungerer <gerg@linux-m68k.org> =
+On Wed, Mar 13, 2024 at 3:55=E2=80=AFAM Finn Thain <fthain@linux-m68k.org> =
 wrote:
-> On 29/4/24 13:09, Michael Schmitz wrote:
-> > (Actually now) version 4 of fixes for uaccess fault handling
-> > on 68030, tested on 68030 and 68040.
-> >
-> > Patch 1 has one exception table entry fixed (residual
-> > calculated in __generic_copy_to_user did not take into
-> > account the number of longword transfers omitted due to a
-> > fault) si as well as a final NOP added in __clear_user.
-> >
-> > Patch 2 is unchanged from v3 (actually since RFC v1), now
-> > has Tested-by tag by Finn Thain added.
-> >
-> > These patches would still benefit from testing on 68060
-> > and Coldfire.
+> The via-macii ADB driver calls request_irq() after disabling hard
+> interrupts. But disabling interrupts isn't necessary here because the
+> VIA shift register interrupt was masked during VIA1 initialization.
 >
-> I would very much like to test them on ColdFire. Unfortunately my only
-> ColdFire with MMU board (a M547xEVB) failed a couple of months back.
-> I am trying to find a replacement, but so far have not been able to get
-> my hands on one.
->
-> Maybe someone else out there has one they can test with?
+> Cc: Joshua Thompson <funaho@jurai.org>
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 
-Angelo?
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k tree for v6.10.
 
 Gr{oetje,eeting}s,
 
                         Geert
 
-
---
+--=20
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
 .org
 
