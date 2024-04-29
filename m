@@ -1,93 +1,85 @@
-Received: from fhigh6-smtp.messagingengine.com (fhigh6-smtp.messagingengine.com [103.168.172.157])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28DE22F25
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Apr 2024 08:03:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE3B17490
+	for <linux-m68k@vger.kernel.org>; Mon, 29 Apr 2024 03:09:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714291410; cv=none; b=Pr+Ndc6o+ZIZ42vyVxl3+e+pqY+mEI8aX6n8JRyuiJcwxGQZWZsVkP8lVeFL2VFdua5q2EMD/mbhI7hksv1XLLl9WO8y5i1EiUePnzjOIiC411hLqHUfIW5W1R5PU5tXCQ82gpwjUbm/wiFiS9cR2REdno/QzbP7NwlF5ZfpMlM=
+	t=1714360193; cv=none; b=czgNs1XtkN9uyArdcqJj7Jgh2qX0aAE7FRdubz5XV/Tzgq7JSjScl6dpk885poPgrJfgaI5Ou4nRAD0a6/K1h8+qx2Av5G5DINAYb/yD+IGnw/9skTJb8jjB8uur3gHcs9ueJBQa1DKwAW4Jtmv8S0ZUwaAtEp7lw/Qwsx0Yi9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714291410; c=relaxed/simple;
-	bh=R/crlinGYYFpjUXVTPnNqGly92f0r/7VQ9a5oyLNI5U=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=s20YdWQici3xzdjfbTybMXOq5FmJdzWxHKkhbS6sgCp/3L/HI5AEvvO1iCbeWJPaJTgFsFRMEB5R02VXmyibhx0vUy7M4kiR2q/Bj3LYcc7RjZsJnklFxt8UnJNQeaeJIlaOdnLxajaH1kgY40Whn2wHOih6BBmxmEd+QQnUGZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=evmz511r; arc=none smtp.client-ip=103.168.172.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1714360193; c=relaxed/simple;
+	bh=KvONKiWc4/aAAPBxTTFSr+gEYjPAfrIDyRdC6nQv3MY=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=kd2QPfNdnhhaQ6UXa/GVGN68jX7Cpc2bQ5RzOvK3BlBoNxxQ9362oEgMTXizzeAx0kMa9OCHg+2tywYDzkNqqInVHPkbYpncCVi4DMlWn0beO3oKey8t6yNFWH3ceNJo99gqYvCRQ2Sbe5AU7oQ8QGWJJRkgY9Vqd6Y69sOuls4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OZB2QBFr; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="evmz511r"
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 1285A1140094;
-	Sun, 28 Apr 2024 04:03:27 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Sun, 28 Apr 2024 04:03:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1714291407; x=1714377807; bh=rgMRi+gi2a4xwlJIynM0OSRWfzQL
-	1ZpbmqXkkOoR+aI=; b=evmz511r2hIp1JJfJcuFouzXHNEPQUb5N1y5XMnPh5R9
-	AXsvDNNmWN7R7HBprDUofd4vwWEisyKjxzBTZe45L98JukzdfFsRKwUZuqSAiEiY
-	FPwGkKA0VckOWgLGtWOIiMzKGv/0KIqWHZKrXkm/MVB+9ngA74qhDWCD/L7DtRRS
-	csjSIauJPDsUwC4oqgwc8rhMDuyDDv3S+5WxnjgS7U9/4OtMS/OsqG0fUKBqWxtF
-	QNYK5s70QY/+VpAM9zngNvmEWXrDnJLyjfr/0k9i5Kt/eE7mcet/C4l6F829dKOA
-	p9YNcD5joHfLK6V/dlM2wMJ8qObWFmgYGQjcet+CvQ==
-X-ME-Sender: <xms:zgIuZhcEg-v3mU-JkMw6NOEBE3w0PYeRhij7b5vWFatWECYQU5gX7w>
-    <xme:zgIuZvODn_u0ftFzcTta6qzUNff-AEoeKXXUGnPqDVAUk_VS7dnnMxdoLTJaZZ7Gc
-    C5Ar4tNHA_dWHDZ-p4>
-X-ME-Received: <xmr:zgIuZqjY28jTghg4mOrX5uwToYaJX8O3ERIQ3GO1R4sPzc5QZy16yRpKmu_B038ezgEFUlqdH1OhIE7OL3kl6gkZY_TrrQGCMBo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddtgedgfedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
-    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
-    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
-    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:zgIuZq-bBbpoEERMsh_X-7kFTZwpgZpLGA19kzX3R2S0haIB1HB6zg>
-    <xmx:zgIuZttH2sGwNV5bm1lDpHChzc9Um1r8PXwzXjXeoEbTVvmeiSH-xA>
-    <xmx:zgIuZpH2SU9dpzPyL1ZxCc923mVjQslvHh1HW8CG_rRPVlndEzdIVQ>
-    <xmx:zgIuZkPTTbTZ08rZqrY7M_xcQAQrFHIc57D3GVK8c74ZB8EO0MX8Lg>
-    <xmx:zwIuZnJn3w6cnynJU1Co4HF268pDNLE6hn0x6sCRIAIQE5JeqGCrwqBR>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 28 Apr 2024 04:03:23 -0400 (EDT)
-Date: Sun, 28 Apr 2024 18:03:19 +1000 (AEST)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Michael Schmitz <schmitzmic@gmail.com>
-cc: linux-m68k@vger.kernel.org, geert@linux-m68k.org, gerg@linux-m68k.org, 
-    linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH v3 1/2] m68k: Handle __generic_copy_to_user faults more
- carefully
-In-Reply-To: <314aaa18-e28c-851c-d746-10ecc46eed04@gmail.com>
-Message-ID: <400c6b26-29c3-9bb5-9516-26b5752e64a3@linux-m68k.org>
-References: <20240427084815.1449-1-schmitzmic@gmail.com> <20240427084815.1449-2-schmitzmic@gmail.com> <fdbe029b-1df0-3e8d-fced-64cc719397fa@linux-m68k.org> <f88ad8f7-4fd9-45b2-a52c-cee3217083bf@gmail.com> <95677826-e3cb-9c1d-7d03-253a88aff3eb@linux-m68k.org>
- <314aaa18-e28c-851c-d746-10ecc46eed04@gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OZB2QBFr"
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5ce2aada130so2714029a12.1
+        for <linux-m68k@vger.kernel.org>; Sun, 28 Apr 2024 20:09:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714360192; x=1714964992; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6QgEdsB50CEMPvKYMLer1RUQs1kbrfm0pa1T5hxvpEY=;
+        b=OZB2QBFr6u3m2U9lhPB4x5fCt8ZeP0zW3uBHalx6ccjyYutEZqocSVG9Tnlp6OKyFK
+         dW9c0VF7n9FRYHQQE2nDZJv3ut+EVvUz+5GB93M7O87RfYWvYAZVYgzOkE1mob4Hc5nE
+         eBPKi4DB+lS30dFxH+cbV9uKNItUmOS0gNKIqV/3tJg7zcoSy6giw9g1sbo62o69+sex
+         hNzKx8EGhgWa9MPRF7uS++0TL868act/NvbpPtLtjQ1orceWSSlxDtyYZkkrgVL+cRna
+         QPx+iVdcU1DjcYcVhnebop2ZDV1uIcBUNcDi6scgx48/a3izsmiK4P5uWXgIwPfCEUlE
+         69Mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714360192; x=1714964992;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6QgEdsB50CEMPvKYMLer1RUQs1kbrfm0pa1T5hxvpEY=;
+        b=qO//xGXGRqn8LHqfadHeEaG5Z7NH3hl/XP82Hd1DefSmolrzcw+oFoq1ov4bdVtqSd
+         6zuOsmWdu5GwTxmtLlfYpw7oao97bXDuzOdGETBUT/4+NK1S8W+QJaaVQbdZLyvusQAJ
+         7wvFCMsxQDAiIwQja05o0hzLSRkVyLjXVB36cKVL6uSZtll1NKR/zF2xcdN26PFOsXUI
+         p8q4jGsJChb1JhvIunIjtQsEL30nme80oAcGAEY5lE9BarvsXzH22dorirAGvjqepAJS
+         1jJIUhBOsDdUCp+cMA7B8jg8fLsYx/m12RNV2zVvGfSXKIG4YD7+fjhlilqhZjmBWPov
+         J8Yg==
+X-Gm-Message-State: AOJu0YwMdvPwb9G7D0Ni5LEWn2qjRmgaQjQWcikV+GVO0sVZ7XZTer/T
+	3lv1wgToKZ9TH/kkPa132HYfIZ1tCioCJHm5jllkt0brrcjy3HmX0XPQhw==
+X-Google-Smtp-Source: AGHT+IF0n3rLlXC68HKcfTtiNZd50m0CKJpd62JVr9a6Oic33TI2HZGN60OformGy6dijuHhZ1TZgQ==
+X-Received: by 2002:a05:6a21:85:b0:1ad:746:3f61 with SMTP id iw5-20020a056a21008500b001ad07463f61mr4317464pzc.28.1714360191868;
+        Sun, 28 Apr 2024 20:09:51 -0700 (PDT)
+Received: from xplor.waratah.dyndns.org (222-152-175-63-fibre.sparkbb.co.nz. [222.152.175.63])
+        by smtp.gmail.com with ESMTPSA id gu27-20020a056a004e5b00b006ee25097c2csm15686825pfb.103.2024.04.28.20.09.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Apr 2024 20:09:51 -0700 (PDT)
+Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
+	id 8AEF6360314; Mon, 29 Apr 2024 15:09:47 +1200 (NZST)
+From: Michael Schmitz <schmitzmic@gmail.com>
+To: linux-m68k@vger.kernel.org,
+	geert@linux-m68k.org
+Cc: gerg@linux-m68k.org
+Subject: [PATCH v4 0/2] m68k uaccess fault handling fixes
+Date: Mon, 29 Apr 2024 15:09:43 +1200
+Message-Id: <20240429030945.22451-1-schmitzmic@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+
+(Actually now) version 4 of fixes for uaccess fault handling
+on 68030, tested on 68030 and 68040.
+
+Patch 1 has one exception table entry fixed (residual
+calculated in __generic_copy_to_user did not take into
+account the number of longword transfers omitted due to a
+fault) si as well as a final NOP added in __clear_user.
+
+Patch 2 is unchanged from v3 (actually since RFC v1), now
+has Tested-by tag by Finn Thain added.
+
+These patches would still benefit from testing on 68060
+and Coldfire. 
+
+Cheers,
+
+   Michael
 
 
-On Sun, 28 Apr 2024, Michael Schmitz wrote:
-
-> >
-> > All I'm saying is that, since you're adding the NOP anyway, you could 
-> > make better use of it.
-> 
-> I already am, in __generic_copy_to_user - there is no exception table 
-> entry for the jump label at the end, so no loop.
-> 
-
-Right you are. I did get __generic_copy_to_user and __clear_user mixed up 
-there.
-
-> Since I have to fix patch 1 anyway, I'll add the NOP at the end of 
-> __clear_user and have the exception table end with that NOP.
-> 
-
-Well, I'll leave that up to you and Geert. I'm ambivalent about that one.
