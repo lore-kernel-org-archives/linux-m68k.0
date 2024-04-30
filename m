@@ -1,33 +1,33 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06A2212D215
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 30 Apr 2024 10:44:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E80212C462
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 30 Apr 2024 11:00:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.40.73.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714473859; cv=none; b=a/+qZoCQgpcHDxFLSaspAdEcLeccwe7FdWQHUq17Z7bmYKOP+5fsCcI5afcRQ5G1xD/TbnAhOq3zGhWJMfdU+YbFGS7RPFQV1VNFHztExWaNT/JUv9ZSldDdA6YtqR/13MZVptdVwqz8wDHTMMtMeq+bnL/OGMlrhfdNIOKhyAQ=
+	t=1714474854; cv=none; b=iShyWPwlb51JBfz3oYJJS8ujZfd+tCbQVObH7/qMBo8KPw2lEfhzupDAilc+R8FNqHibtqaiahudTwQ09LarceKGEQWn6xkP183rwUOWDogl3ectJd56YhMadNuPDpBCOj4+Pga6QoqNohJGYggVUPuDjbycd6ah6y1eUNueOMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714473859; c=relaxed/simple;
-	bh=DPEftJRIg63tMEQTnCQc8pceKBGQfU8QHEXguMyphTc=;
+	s=arc-20240116; t=1714474854; c=relaxed/simple;
+	bh=yDfoGFiM6pw6A7rsJi8yDj721g770UmlL36RYXmgNwY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ulN92A8kz1q5itATCF2ILWWSNp25pjfKQcZdjhY+GdZldqPoKfqROx9ZH7Pw9K1XNxqE7BVOQ49zjhVSaSWt6slfSExyOVBJ81w3UDtEDuk+wXLbcJqW1awiam1391cBigIqEGaqWR1ABZq6jHxaBv85a8d6pZ3Nq/ZNq54i/Cc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=wba3kC0A; arc=none smtp.client-ip=139.178.84.217
+	 MIME-Version; b=cFurSrOgQAJzdmjPesvIrEVtVzQKd5CudeTXOLcoUFFydbki3UuSv0hMeuzoG9U9tRQIlrdCX1vsetGCsluStW23LdMdqYmCtjj63n37kPkOY75vRIi5l6eYTJLu6f0fKV73ZCWwinTL1dm1nxjCMSTMSMI7bGpmDvrGfqV2mgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=tHi6NiHL; arc=none smtp.client-ip=145.40.73.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="wba3kC0A"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="tHi6NiHL"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 04C70614D8;
-	Tue, 30 Apr 2024 10:44:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40247C4AF1B;
-	Tue, 30 Apr 2024 10:44:16 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 128FECE0D6B;
+	Tue, 30 Apr 2024 11:00:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9A2DC2BBFC;
+	Tue, 30 Apr 2024 11:00:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1714473856;
-	bh=DPEftJRIg63tMEQTnCQc8pceKBGQfU8QHEXguMyphTc=;
+	s=korg; t=1714474849;
+	bh=yDfoGFiM6pw6A7rsJi8yDj721g770UmlL36RYXmgNwY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=wba3kC0AEWho17nZCloKWii4FWoBt6LDawXF4ZkV+xtyr1/VaIwbLUWLLiXzfE2mI
-	 DiAkpH2aLpBpdRRO+G2bPDkrtjhL2gjkw8ApAuyFp+h4YBttp7DahR5GUfbV/a0SKY
-	 J12uaUrWD6MqmesRa0Gw4M6z8q2KFbBlw0l/oGhQ=
+	b=tHi6NiHLm14wTPX/N4EY/WXPKc9F+Tk9MCjR4SvT/JqMt1qcHBLOq66GooDoz6WOP
+	 yUWf89smBjaJtEFdXYE6ucjGVot3FfzKxOqLEoBNgYnyCe3iHcpKOJEhF0haqU8xkv
+	 AtHvCaqMhg2ztpTf53LxeLdH/IZyv75V+wrHz59s=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -42,12 +42,12 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	stable@kernel.org,
 	linux-m68k@lists.linux-m68k.org,
 	Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH 4.19 23/77] serial/pmac_zilog: Remove flawed mitigation for rx irq flood
-Date: Tue, 30 Apr 2024 12:39:02 +0200
-Message-ID: <20240430103041.812993586@linuxfoundation.org>
+Subject: [PATCH 5.10 055/138] serial/pmac_zilog: Remove flawed mitigation for rx irq flood
+Date: Tue, 30 Apr 2024 12:39:00 +0200
+Message-ID: <20240430103051.046715060@linuxfoundation.org>
 X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240430103041.111219002@linuxfoundation.org>
-References: <20240430103041.111219002@linuxfoundation.org>
+In-Reply-To: <20240430103049.422035273@linuxfoundation.org>
+References: <20240430103049.422035273@linuxfoundation.org>
 User-Agent: quilt/0.67
 X-stable: review
 X-Patchwork-Hint: ignore
@@ -59,7 +59,7 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-4.19-stable review patch.  If anyone has any objections, please let me know.
+5.10-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
@@ -110,15 +110,15 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/tty/serial/pmac_zilog.c
 +++ b/drivers/tty/serial/pmac_zilog.c
-@@ -220,7 +220,6 @@ static bool pmz_receive_chars(struct uar
+@@ -217,7 +217,6 @@ static bool pmz_receive_chars(struct uar
  {
  	struct tty_port *port;
- 	unsigned char ch, r1, drop, error, flag;
+ 	unsigned char ch, r1, drop, flag;
 -	int loops = 0;
  
  	/* Sanity check, make sure the old bug is no longer happening */
  	if (uap->port.state == NULL) {
-@@ -303,25 +302,12 @@ static bool pmz_receive_chars(struct uar
+@@ -298,25 +297,12 @@ static bool pmz_receive_chars(struct uar
  		if (r1 & Rx_OVR)
  			tty_insert_flip_char(port, 0, TTY_OVERRUN);
  	next_char:
