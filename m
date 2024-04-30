@@ -1,209 +1,272 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FB26C2ED
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 30 Apr 2024 05:56:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7697813D275
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 30 Apr 2024 10:09:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714456590; cv=none; b=fH2pmAVjb0LZY9jVuFWdZEgeV/PmqCkpnSRkxvPO/tFs5r1eOlEytwS0cgTDVmDzomI/vGtSnEsRdek6cKaZkSTtnRZ9pugFjjQv60jFL2Qrp+F88ONiOGjDaacoGe/9sOAFC6AzTdm6QJbryxGCJiWMKVZMhhIfAXZuVcgWpHk=
+	t=1714471752; cv=none; b=aNe3q4M+N1dS5umC8nPAYpjHg9IGPq21ACj3N17Ex3/71/yWY3f+Y5H9OTEhInH5Jx5wSPraD+EykhWXeDvQC+4e8xlCIEsPwbfb28+xWiV5u1J1aqsfT6r5RNAkkSdS3MhOL3PQQIXphW8Q/De/KmV5FXXfxTzC0It1HGn1Yc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714456590; c=relaxed/simple;
-	bh=rLzpC5UvtCsxcQPI6CV9kb381T4RKIVZ8t6Tf4vdOmw=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=ekIV4iJ/E7S6mmndr+jNF+cFW5mHXPHplyBR6AHPqTfOe5kxaTaLpiPpZGitRmj5nHVZTXZtI6md7DjK4tK5onKDA9qPrz2Twm7aHy5rgklUQ8jFwJAv8hTdXvnxlLVtBFB2zV3Yb7hZFfPpEgtnRg5gzXHgfWgL+R//zF1QE/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HfAJVlBC; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1714471752; c=relaxed/simple;
+	bh=Y2+hS4qRZuLrKbWWMcpktJxJo5s+UAVeM+RZTE4OeK0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NyEUzw/mFBk2UZVh+knNw/szrNCFrh/5T7obXTxBYKAGY3C/8q4UDxPfAb4e7cSJ1FKTliii+QcFf5EidZ/bXscyVD6GYstpk3tAn6JsGZ66WHeLs+jU+9LArT4wGHzclwrcndWMgdFIyPk3QScqnog0ZXFMtuCJMPu7R6XWgyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vqeIBGjX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Y4Kk2Nxd; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vqeIBGjX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Y4Kk2Nxd; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HfAJVlBC"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714456588; x=1745992588;
-  h=date:from:to:cc:subject:message-id;
-  bh=rLzpC5UvtCsxcQPI6CV9kb381T4RKIVZ8t6Tf4vdOmw=;
-  b=HfAJVlBCDDBpBPf8nRj6IIud+iEr5w5KxWicY8gkIox5Uj1vXMEUj6/f
-   3aGhnyZ8fuY7mumeu7z3j4D1K07j7bmUS6lv4r+HH77bBtquJzRFn/qY6
-   eOnthAIsoFf3nL7VeU4DeafDMjvdxYOmO5F1SsL9ZZhXHple+pKlOqUFp
-   DRTwfXjlM9FMM5OqNPG+yYYmLJ3DuIZGRd2G1o+aTuQCbZdsGL901Tsbx
-   yfJK8gmJcpjY0rRXgCbUQ1tR6SVso5UOWjDg/Ao60WEXoMBfYUq38NWud
-   aU6pA0SMo6pxpy2mcwR1+lHwbHlarSVHFG4c1JkeKzA34MqgXfEhYuhEl
-   A==;
-X-CSE-ConnectionGUID: IKMLaT7MStuqqHCTd0KFQw==
-X-CSE-MsgGUID: /NkxOsNUSq2fasm9qdfOWw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11059"; a="10020986"
-X-IronPort-AV: E=Sophos;i="6.07,241,1708416000"; 
-   d="scan'208";a="10020986"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 22:56:15 -0700
-X-CSE-ConnectionGUID: mgSi5DAYTsCZZYDuPMDm/A==
-X-CSE-MsgGUID: 2tBF//N9Qoiz5bNTlvR0DQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,241,1708416000"; 
-   d="scan'208";a="26435490"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by fmviesa006.fm.intel.com with ESMTP; 29 Apr 2024 22:56:11 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s1gTJ-0007n6-1A;
-	Tue, 30 Apr 2024 05:56:09 +0000
-Date: Tue, 30 Apr 2024 13:55:12 +0800
-From: kernel test robot <lkp@intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 3269a156e5b091ac589f3b232ffa73582df10f4f
-Message-ID: <202404301309.opaLJ5vw-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vqeIBGjX";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Y4Kk2Nxd";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vqeIBGjX";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Y4Kk2Nxd"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 90B981F7C9;
+	Tue, 30 Apr 2024 10:09:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1714471742; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PTUPyaWcpZDKUukiVIneGRzBea/lmcCk8kXRR619DJk=;
+	b=vqeIBGjXPKb0XycMvacAW428uolNoqtaN+EBo2mJHjf74TxTIQVlt1MpATsa4IuUZcKLzy
+	UJEys7GFBXXE5vubiBV2DPs1hUa/STmWvTjbv7yEWIAwLpxqDSUen9/F+c160SQUX7J9ZM
+	gWZoQjDIPJgvZSToK75KO55SPRn2Kws=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1714471742;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PTUPyaWcpZDKUukiVIneGRzBea/lmcCk8kXRR619DJk=;
+	b=Y4Kk2NxdcsJrpGpYXQLpbXlde7mZBRQhy/lhK6wfFaRvxYGJW/MWwnAVpk3q6wgGY68wCh
+	8DrbHfPc84XlzxAg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=vqeIBGjX;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Y4Kk2Nxd
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1714471742; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PTUPyaWcpZDKUukiVIneGRzBea/lmcCk8kXRR619DJk=;
+	b=vqeIBGjXPKb0XycMvacAW428uolNoqtaN+EBo2mJHjf74TxTIQVlt1MpATsa4IuUZcKLzy
+	UJEys7GFBXXE5vubiBV2DPs1hUa/STmWvTjbv7yEWIAwLpxqDSUen9/F+c160SQUX7J9ZM
+	gWZoQjDIPJgvZSToK75KO55SPRn2Kws=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1714471742;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PTUPyaWcpZDKUukiVIneGRzBea/lmcCk8kXRR619DJk=;
+	b=Y4Kk2NxdcsJrpGpYXQLpbXlde7mZBRQhy/lhK6wfFaRvxYGJW/MWwnAVpk3q6wgGY68wCh
+	8DrbHfPc84XlzxAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 80DCA136A8;
+	Tue, 30 Apr 2024 10:09:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 51BwHz7DMGa5bAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 30 Apr 2024 10:09:02 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 32814A06D4; Tue, 30 Apr 2024 12:09:02 +0200 (CEST)
+Date: Tue, 30 Apr 2024 12:09:02 +0200
+From: Jan Kara <jack@suse.cz>
+To: cgzones@googlemail.com
+Cc: x86@kernel.org, linux-alpha@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, audit@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+	linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Michal Simek <monstr@monstr.eu>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>,
+	Arnd Bergmann <arnd@arndb.de>, Jens Axboe <axboe@kernel.dk>,
+	Pavel Begunkov <asml.silence@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Sohil Mehta <sohil.mehta@intel.com>,
+	Palmer Dabbelt <palmer@sifive.com>,
+	Miklos Szeredi <mszeredi@redhat.com>, Nhat Pham <nphamcs@gmail.com>,
+	Casey Schaufler <casey@schaufler-ca.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Kees Cook <keescook@chromium.org>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Mark Rutland <mark.rutland@arm.com>, io-uring@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] fs/xattr: add *at family syscalls
+Message-ID: <20240430100902.iwmeszr2jzv4wyo7@quack3>
+References: <20240426162042.191916-1-cgoettsche@seltendoof.de>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240426162042.191916-1-cgoettsche@seltendoof.de>
+X-Spam-Flag: NO
+X-Spam-Score: -2.51
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 90B981F7C9
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_TO(0.00)[googlemail.com];
+	TO_DN_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.de];
+	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,lists.infradead.org,lists.linux-m68k.org,lists.ozlabs.org,linaro.org,jurassic.park.msu.ru,gmail.com,armlinux.org.uk,arm.com,linux-m68k.org,monstr.eu,alpha.franken.de,HansenPartnership.com,gmx.de,ellerman.id.au,csgroup.eu,linux.ibm.com,users.sourceforge.jp,libc.org,physik.fu-berlin.de,davemloft.net,gaisler.com,linutronix.de,redhat.com,alien8.de,linux.intel.com,zytor.com,zankel.net,zeniv.linux.org.uk,suse.cz,paul-moore.com,arndb.de,kernel.dk,infradead.org,intel.com,sifive.com,schaufler-ca.com,broadcom.com,chromium.org];
+	TO_MATCH_ENVRCPT_SOME(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCPT_COUNT_GT_50(0.00)[72];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	TAGGED_RCPT(0.00)[];
+	R_RATELIMIT(0.00)[to_ip_from(RLdxgs459xdbsauns6rcjztsec)];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.com:email]
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 3269a156e5b091ac589f3b232ffa73582df10f4f  m68k: amiga: Use str_plural() to fix Coccinelle warning
+On Fri 26-04-24 18:20:14, Christian Göttsche wrote:
+> From: Christian Göttsche <cgzones@googlemail.com>
+> 
+> Add the four syscalls setxattrat(), getxattrat(), listxattrat() and
+> removexattrat().  Those can be used to operate on extended attributes,
+> especially security related ones, either relative to a pinned directory
+> or on a file descriptor without read access, avoiding a
+> /proc/<pid>/fd/<fd> detour, requiring a mounted procfs.
+> 
+> One use case will be setfiles(8) setting SELinux file contexts
+> ("security.selinux") without race conditions and without a file
+> descriptor opened with read access requiring SELinux read permission.
+> 
+> Use the do_{name}at() pattern from fs/open.c.
+> 
+> Pass the value of the extended attribute, its length, and for
+> setxattrat(2) the command (XATTR_CREATE or XATTR_REPLACE) via an added
+> struct xattr_args to not exceed six syscall arguments and not
+> merging the AT_* and XATTR_* flags.
+> 
+> Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
 
-elapsed time: 882m
+The patch looks good to me. Just a few nits below:
 
-configs tested: 132
-configs skipped: 3
+> -static int path_setxattr(const char __user *pathname,
+> +static int do_setxattrat(int dfd, const char __user *pathname, unsigned int at_flags,
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Can we please stay within 80 columns (happens in multiple places in the
+patch)? I don't insist but it makes things easier to read in some setups so
+I prefer it.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240430   gcc  
-arc                   randconfig-002-20240430   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240430   clang
-arm                   randconfig-002-20240430   clang
-arm                   randconfig-003-20240430   clang
-arm                   randconfig-004-20240430   clang
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240430   clang
-arm64                 randconfig-002-20240430   gcc  
-arm64                 randconfig-003-20240430   clang
-arm64                 randconfig-004-20240430   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240430   gcc  
-csky                  randconfig-002-20240430   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240430   clang
-hexagon               randconfig-002-20240430   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240430   gcc  
-i386         buildonly-randconfig-002-20240430   clang
-i386         buildonly-randconfig-003-20240430   gcc  
-i386         buildonly-randconfig-004-20240430   clang
-i386         buildonly-randconfig-005-20240430   clang
-i386         buildonly-randconfig-006-20240430   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240430   clang
-i386                  randconfig-002-20240430   gcc  
-i386                  randconfig-003-20240430   gcc  
-i386                  randconfig-004-20240430   gcc  
-i386                  randconfig-005-20240430   gcc  
-i386                  randconfig-006-20240430   gcc  
-i386                  randconfig-011-20240430   gcc  
-i386                  randconfig-012-20240430   clang
-i386                  randconfig-013-20240430   clang
-i386                  randconfig-014-20240430   gcc  
-i386                  randconfig-015-20240430   gcc  
-i386                  randconfig-016-20240430   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240430   gcc  
-loongarch             randconfig-002-20240430   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240430   gcc  
-nios2                 randconfig-002-20240430   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240430   gcc  
-parisc                randconfig-002-20240430   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc               randconfig-001-20240430   gcc  
-powerpc               randconfig-002-20240430   gcc  
-powerpc               randconfig-003-20240430   clang
-powerpc64             randconfig-001-20240430   clang
-powerpc64             randconfig-002-20240430   clang
-powerpc64             randconfig-003-20240430   clang
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240430   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240430   gcc  
-s390                  randconfig-002-20240430   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240430   gcc  
-sh                    randconfig-002-20240430   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
+> @@ -852,13 +908,21 @@ listxattr(struct dentry *d, char __user *list, size_t size)
+>  	return error;
+>  }
+>  
+> -static ssize_t path_listxattr(const char __user *pathname, char __user *list,
+> -			      size_t size, unsigned int lookup_flags)
+> +static ssize_t do_listxattrat(int dfd, const char __user *pathname, char __user *list,
+> +			      size_t size, int flags)
 
+So I like how in previous syscalls you have 'at_flags', 'lookup_flags', and
+'xattr_flags'. That makes things much easier to digest. Can you please stay
+with that convention here as well and call this argument 'at_flags'? Also I
+think the argument ordering like "dfd, pathname, at_flags, list, size" is
+more consistent with other syscalls you define.
+
+> @@ -870,16 +934,22 @@ static ssize_t path_listxattr(const char __user *pathname, char __user *list,
+>  	return error;
+>  }
+>  
+> +SYSCALL_DEFINE5(listxattrat, int, dfd, const char __user *, pathname, char __user *, list,
+> +		size_t, size, int, flags)
+> +{
+> +	return do_listxattrat(dfd, pathname, list, size, flags);
+> +}
+> +
+
+Same comment as above - "flags" -> "at_flags" and reorder args please.
+
+> @@ -917,13 +987,21 @@ removexattr(struct mnt_idmap *idmap, struct dentry *d,
+>  	return vfs_removexattr(idmap, d, kname);
+>  }
+>  
+> -static int path_removexattr(const char __user *pathname,
+> -			    const char __user *name, unsigned int lookup_flags)
+> +static int do_removexattrat(int dfd, const char __user *pathname,
+> +			    const char __user *name, int flags)
+>  {
+
+Same comment as above - "flags" -> "at_flags" and reorder args please.
+
+> @@ -939,16 +1017,22 @@ static int path_removexattr(const char __user *pathname,
+>  	return error;
+>  }
+>  
+> +SYSCALL_DEFINE4(removexattrat, int, dfd, const char __user *, pathname,
+> +		const char __user *, name, int, flags)
+> +{
+
+Same comment as above - "flags" -> "at_flags" and reorder args please.
+
+								Honza
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
