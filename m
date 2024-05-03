@@ -1,126 +1,168 @@
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8A1815357A
-	for <linux-m68k@lists.linux-m68k.org>; Fri,  3 May 2024 15:32:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B25013B593
+	for <linux-m68k@lists.linux-m68k.org>; Fri,  3 May 2024 15:40:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714750361; cv=none; b=bJLy/RuGPJOirImGoTovRrV+bpwFVNqMr1GT3jFSKAiS3OVWD2ZUP11jhI9exksmbpLXYIy7pTwp1zEYwsZFyTWodizXX5WS9RKb84+pGJL5rflJVX2UZVzn8EIQZyPdOGQGuAWnVzkZpLbrrOq28Usg3Qg5EYy2vQWekS0VExI=
+	t=1714750830; cv=none; b=dQJqI9593ggt8Pojhx8mqp0lOG1DzGkmnSyGHCLSwn/ygUtmcOfQFrVL0QDZ/QDd4TIaY4N0ncbE9Wtm/bq8h1JtIfPndRNA7763xmZhLlFlK2HkhlpaU7B/zOh6v164p5LHmtUw3pFPQoJfGQIiIffmWuWMhDyIvVI+9b0uGic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714750361; c=relaxed/simple;
-	bh=tKoOu+7zl6984Zo1ilV+FMzyq8BU3CQhO45WpXQ6Rhw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=U9kf0uC6Msd2I2w8mDAahtlQhG4p3pRXlgW0MK7GefDPxhpCSkO/z2/y4wkoVLjBMiM/AEH4yRkscwW6wPcF7jtncgiXoj45yjIGTPNaiifzJAYzznZKGQgh2S2YMeNyTfBIduRtpO8l5fqtJOaG2Jh5O1t8X9FKhSVkCx+ZYSQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	s=arc-20240116; t=1714750830; c=relaxed/simple;
+	bh=3sRDzjBbYjIhz9cvQ8xRvpu9q9/j50uAYBSKDQAlJvg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oEGkZtF1ruO9tCqkd1aVmyoGpC0Y2jJrfm14BcVi5zIq07iI8RhQXGIkyTjdp04NT6jdTJVFb22ZxUiYYcdhMF+qytwH5GS26quXCuWr6VDFV1wq/7HbMru4Czg15kobATie4s+ENBLcs+SXFOcNF2AumXoQtbjd3vwOXV+Mn8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vKq+JmGe; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=S7qD6Y3e; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vKq+JmGe; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=S7qD6Y3e; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vKq+JmGe";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="S7qD6Y3e";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vKq+JmGe";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="S7qD6Y3e"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id AB5E833B95;
-	Fri,  3 May 2024 15:32:37 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 95FE6219BD;
+	Fri,  3 May 2024 15:40:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1714750826; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bSYWZqfAlTDCjlVRcce8EOt4fEfSz1mkavoZib3Ie7A=;
+	b=vKq+JmGeoxaR/Jfe+YvTaHgaoB5l5QECIkjtNrXOgsGiR6Mvfbps8vlQurac0pgRhUpKdu
+	NWXCpEv3KvkRkMOPxVa+Oq1QuCFM4mw52FyT+TwuVrTYpZFdEZ9CYqfgRY2pRLUkv0r+1R
+	a5ecVJasEsf9LLtQVtpZtyHrl9nTvdg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1714750826;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bSYWZqfAlTDCjlVRcce8EOt4fEfSz1mkavoZib3Ie7A=;
+	b=S7qD6Y3edMvWVwnUXuFEH3LNNhVKlQYxQM+g7G/pXut+9AABfdkLVlY31P4A6GhckilvKZ
+	RdZwrxPc1/1m4qAw==
 Authentication-Results: smtp-out1.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1714750826; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bSYWZqfAlTDCjlVRcce8EOt4fEfSz1mkavoZib3Ie7A=;
+	b=vKq+JmGeoxaR/Jfe+YvTaHgaoB5l5QECIkjtNrXOgsGiR6Mvfbps8vlQurac0pgRhUpKdu
+	NWXCpEv3KvkRkMOPxVa+Oq1QuCFM4mw52FyT+TwuVrTYpZFdEZ9CYqfgRY2pRLUkv0r+1R
+	a5ecVJasEsf9LLtQVtpZtyHrl9nTvdg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1714750826;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bSYWZqfAlTDCjlVRcce8EOt4fEfSz1mkavoZib3Ie7A=;
+	b=S7qD6Y3edMvWVwnUXuFEH3LNNhVKlQYxQM+g7G/pXut+9AABfdkLVlY31P4A6GhckilvKZ
+	RdZwrxPc1/1m4qAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2BFDA139CB;
-	Fri,  3 May 2024 15:32:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 81F1C139CB;
+	Fri,  3 May 2024 15:40:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id G/TgBZQDNWZ9LgAAD6G6ig
-	(envelope-from <tzimmermann@suse.de>); Fri, 03 May 2024 15:32:36 +0000
-Message-ID: <ec59624e-c872-4205-a45c-97163ae33301@suse.de>
-Date: Fri, 3 May 2024 17:32:35 +0200
+	id PNjMHmoFNWauMAAAD6G6ig
+	(envelope-from <chrubis@suse.cz>); Fri, 03 May 2024 15:40:26 +0000
+Date: Fri, 3 May 2024 17:39:37 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+To: Petr Vorel <pvorel@suse.cz>
+Cc: ltp@lists.linux.it, Geert Uytterhoeven <geert@linux-m68k.org>,
+	Giovanni Lostumbo <giovanni.lostumbo@gmail.com>,
+	Rob Landley <rob@landley.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/31] Remove UCLINUX (nommu support) from LTP legacy C
+ API
+Message-ID: <ZjUFORqe8TF3WNyc@yuki>
+References: <20240411143025.352507-1-pvorel@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/3] arch: Remove fbdev dependency from video helpers
-To: Arnd Bergmann <arnd@arndb.de>, Sam Ravnborg <sam@ravnborg.org>,
- Javier Martinez Canillas <javierm@redhat.com>, Helge Deller <deller@gmx.de>,
- sui.jingfeng@linux.dev
-Cc: Linux-Arch <linux-arch@vger.kernel.org>, dri-devel@lists.freedesktop.org,
- linux-fbdev@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-sh@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, loongarch@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240329203450.7824-1-tzimmermann@suse.de>
- <c281bb8e-0719-4b28-a637-56615ad16913@suse.de>
- <2f8cfd1d-a478-4666-a181-040c8d92e8fd@app.fastmail.com>
-Content-Language: en-US
-From: Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <2f8cfd1d-a478-4666-a181-040c8d92e8fd@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240411143025.352507-1-pvorel@suse.cz>
 X-Spam-Level: 
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
+X-Spamd-Result: default: False [-2.30 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	RCVD_TLS_ALL(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[lists.linux.it,linux-m68k.org,gmail.com,landley.net,physik.fu-berlin.de,lists.linux-m68k.org,vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Spam-Score: -2.30
 X-Spam-Flag: NO
-X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: AB5E833B95
 
+Hi!
+Pushed with a one patch on the top that removed the configure check for
+UCLINUX:
 
+Author: Cyril Hrubis <chrubis@suse.cz>
+Date:   Fri May 3 17:23:44 2024 +0200
 
-Am 03.05.24 um 17:29 schrieb Arnd Bergmann:
-> On Fri, Apr 5, 2024, at 11:04, Thomas Zimmermann wrote:
->> Hi,
->>
->> if there are no further comments, can this series be merged through
->> asm-generic?
-> Sorry for the delay, I've merged these for asm-generic now.
+    m4: Remove now unused ltp-nommu-linux.m4
 
-Thank you so much!
+    Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 
->
->        Arnd
->
+diff --git a/configure.ac b/configure.ac
+index 15a5847fa..638a64bc9 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -385,7 +385,6 @@ LTP_CHECK_KERNEL_DEVEL
+ LTP_CHECK_KEYUTILS_SUPPORT
+ LTP_CHECK_LIBMNL
+ LTP_CHECK_LINUXRANDOM
+-LTP_CHECK_NOMMU_LINUX
+ LTP_CHECK_SELINUX
+ LTP_CHECK_SYNC_ADD_AND_FETCH
+ LTP_CHECK_SYSCALL_EVENTFD
+diff --git a/m4/ltp-nommu-linux.m4 b/m4/ltp-nommu-linux.m4
+deleted file mode 100644
+index 7471ddd06..000000000
+--- a/m4/ltp-nommu-linux.m4
++++ /dev/null
+@@ -1,14 +0,0 @@
+-dnl SPDX-License-Identifier: GPL-2.0-or-later
+-dnl Copyright (c) Linux Test Project, 2010
+-dnl Author: Mike Frysinger <vapier@gentoo.org>
+-
+-AC_DEFUN([LTP_CHECK_NOMMU_LINUX],
+-[
+-       AC_CHECK_FUNCS([fork daemon vfork])
+-       UCLINUX=0
+-       if test "x$ac_cv_func_fork" = "xno" ; then
+-               UCLINUX=1
+-               AC_DEFINE([UCLINUX], 1, [Target is running Linux w/out an MMU])
+-       fi
+-       AC_SUBST(UCLINUX)
+-])
+
 
 -- 
---
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Frankenstrasse 146, 90461 Nuernberg, Germany
-GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
-HRB 36809 (AG Nuernberg)
-
+Cyril Hrubis
+chrubis@suse.cz
