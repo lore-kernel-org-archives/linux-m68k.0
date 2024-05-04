@@ -1,168 +1,166 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wfout2-smtp.messagingengine.com (wfout2-smtp.messagingengine.com [64.147.123.145])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B25013B593
-	for <linux-m68k@lists.linux-m68k.org>; Fri,  3 May 2024 15:40:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C75C28FD
+	for <linux-m68k@lists.linux-m68k.org>; Sat,  4 May 2024 04:43:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714750830; cv=none; b=dQJqI9593ggt8Pojhx8mqp0lOG1DzGkmnSyGHCLSwn/ygUtmcOfQFrVL0QDZ/QDd4TIaY4N0ncbE9Wtm/bq8h1JtIfPndRNA7763xmZhLlFlK2HkhlpaU7B/zOh6v164p5LHmtUw3pFPQoJfGQIiIffmWuWMhDyIvVI+9b0uGic=
+	t=1714797827; cv=none; b=dZcSQlTvjzY3lRJ1acEkUUwhLFciVcweL6/TfGfcpvnsrXWEbJPcicXYu48xJSace65dDe9RQSkdx0Y3uSVdQZfHbPq/X4Tmtkgz2omgRqyVoIt512z4c9jp3W8tKR/fqSCLSijnTXpTjPHELMIGcmwCUsBgA1VodhdKbE4kZos=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714750830; c=relaxed/simple;
-	bh=3sRDzjBbYjIhz9cvQ8xRvpu9q9/j50uAYBSKDQAlJvg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oEGkZtF1ruO9tCqkd1aVmyoGpC0Y2jJrfm14BcVi5zIq07iI8RhQXGIkyTjdp04NT6jdTJVFb22ZxUiYYcdhMF+qytwH5GS26quXCuWr6VDFV1wq/7HbMru4Czg15kobATie4s+ENBLcs+SXFOcNF2AumXoQtbjd3vwOXV+Mn8Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vKq+JmGe; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=S7qD6Y3e; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vKq+JmGe; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=S7qD6Y3e; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	s=arc-20240116; t=1714797827; c=relaxed/simple;
+	bh=tNgMtZ3ADGZP5RpLtGB0Fz3rnlP7zSiJ4KzOCNwylHY=;
+	h=To:Cc:Message-Id:From:Subject:Date; b=rYqARqlwHKcLgk65KTP1i6bLbdTSH6FIaE3pkarvRA8Rf0eoC6+eCHRd+DD3cUdya8l+wGiqXsuFAZNCIqg292DK8DLt3YrtZxkyHLAhrHgHe7hLYVsKoaN6xc+5hAiytvIwqTD81kwUD6JQvSJ96SSC/Ugfd+DeRGt6iAOJe1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=NvQ+xD6Z; arc=none smtp.client-ip=64.147.123.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vKq+JmGe";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="S7qD6Y3e";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vKq+JmGe";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="S7qD6Y3e"
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 95FE6219BD;
-	Fri,  3 May 2024 15:40:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1714750826; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bSYWZqfAlTDCjlVRcce8EOt4fEfSz1mkavoZib3Ie7A=;
-	b=vKq+JmGeoxaR/Jfe+YvTaHgaoB5l5QECIkjtNrXOgsGiR6Mvfbps8vlQurac0pgRhUpKdu
-	NWXCpEv3KvkRkMOPxVa+Oq1QuCFM4mw52FyT+TwuVrTYpZFdEZ9CYqfgRY2pRLUkv0r+1R
-	a5ecVJasEsf9LLtQVtpZtyHrl9nTvdg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1714750826;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bSYWZqfAlTDCjlVRcce8EOt4fEfSz1mkavoZib3Ie7A=;
-	b=S7qD6Y3edMvWVwnUXuFEH3LNNhVKlQYxQM+g7G/pXut+9AABfdkLVlY31P4A6GhckilvKZ
-	RdZwrxPc1/1m4qAw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1714750826; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bSYWZqfAlTDCjlVRcce8EOt4fEfSz1mkavoZib3Ie7A=;
-	b=vKq+JmGeoxaR/Jfe+YvTaHgaoB5l5QECIkjtNrXOgsGiR6Mvfbps8vlQurac0pgRhUpKdu
-	NWXCpEv3KvkRkMOPxVa+Oq1QuCFM4mw52FyT+TwuVrTYpZFdEZ9CYqfgRY2pRLUkv0r+1R
-	a5ecVJasEsf9LLtQVtpZtyHrl9nTvdg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1714750826;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bSYWZqfAlTDCjlVRcce8EOt4fEfSz1mkavoZib3Ie7A=;
-	b=S7qD6Y3edMvWVwnUXuFEH3LNNhVKlQYxQM+g7G/pXut+9AABfdkLVlY31P4A6GhckilvKZ
-	RdZwrxPc1/1m4qAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 81F1C139CB;
-	Fri,  3 May 2024 15:40:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id PNjMHmoFNWauMAAAD6G6ig
-	(envelope-from <chrubis@suse.cz>); Fri, 03 May 2024 15:40:26 +0000
-Date: Fri, 3 May 2024 17:39:37 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-To: Petr Vorel <pvorel@suse.cz>
-Cc: ltp@lists.linux.it, Geert Uytterhoeven <geert@linux-m68k.org>,
-	Giovanni Lostumbo <giovanni.lostumbo@gmail.com>,
-	Rob Landley <rob@landley.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/31] Remove UCLINUX (nommu support) from LTP legacy C
- API
-Message-ID: <ZjUFORqe8TF3WNyc@yuki>
-References: <20240411143025.352507-1-pvorel@suse.cz>
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="NvQ+xD6Z"
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailfout.west.internal (Postfix) with ESMTP id D91091C001C2;
+	Sat,  4 May 2024 00:43:43 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Sat, 04 May 2024 00:43:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm3; t=1714797823; x=1714884223; bh=wwhlErRrN82HW
+	sQSi8hrEnxWXAk60Am1hIXNc62WtW8=; b=NvQ+xD6Z/qbhe3jxc3FBnXXI6zYAT
+	ZZB+y56TwqhpWjArgOcIeFwS/JMJ3ZFjIMY7P1Gs79DodY51HHcqg1IYr3Mk4RVP
+	ue7WSPvhI9Yny07iJz1Q4HTu161V6T38ulu2DjnQvuLHFpiwdu7825arUOpq7cD/
+	t0X+sCIbNj2k5gE/O3FyppOGq7ZZ8vX206NpQjFFMZeWvXbW5uXvkWn4m9rc2HfR
+	86DttDidLhmq4bp8Lxran7ovTUF3mCU+kuI4qGP0gXY3ledKhZO2TCCP5soImUHL
+	dY7Ik2P/q0znjNvg20LcGr7XmNuilJ0Q3DUP788lxSLKIFTv4F0QC1vzA==
+X-ME-Sender: <xms:_rw1ZlcQ0uqzE-PoezxF32o7jc-E4mVKTyTxcwPEVxvQBt540AhsWA>
+    <xme:_rw1ZjM7SYBVfX3KMJ8D0MIpb891wwgOfITzVeYs_fA0L8_P10jWU0bK8d3RdDQT0
+    Ce_ubRpGVJPG0u5OJ0>
+X-ME-Received: <xmr:_rw1Zuhewi6qbI2jj1k19dZ_PC29q7RL98w1GouOGjbhfXSFnh3ZLcORYFWz9xj8nX3CMYwZrQF01odWSntE3-wxvkmd5aduirw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddvuddgjeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepvfevkffhufffsedttdertddttddtnecuhfhrohhmpefhihhnnhcuvfhhrghi
+    nhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtthgvrh
+    hnpeehfffggeefveegvedtiefffeevuedtgefhueehieetffejfefggeevfeeuvdduleen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrg
+    hinheslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:_rw1Zu9Eynzl-W1E2n09CeWEdECTuPLIp-6Rg4w7VwLaQQmGm_hxSg>
+    <xmx:_rw1ZhvYpeaepJcFpr5YPwfy6qk4Z1NacNaDffG_BsHHdsoqGkXE1g>
+    <xmx:_rw1ZtHhj1hRTtbyMOfK1Dc5GYRGY4wsLYJccjI-5uVZCfw2udbHew>
+    <xmx:_rw1ZoN9btfeS6QCuNsVo6eIxxZi7P9NH9SSAuDHvEoVZQ8plLuz7Q>
+    <xmx:_7w1ZrIZEzureBQbaTtCuiinIJKJiRiec8rf7to-yZ_-RaiJvjTVDQyl>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 4 May 2024 00:43:40 -0400 (EDT)
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Joshua Thompson <funaho@jurai.org>,
+    Stan Johnson <userm57@yahoo.com>,
+    linux-m68k@lists.linux-m68k.org,
+    linux-kernel@vger.kernel.org
+Message-Id: <480ebd1249d229c6dc1f3f1c6d599b8505483fd8.1714797072.git.fthain@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH] m68k/mac: Fix reboot hang on Mac IIci
+Date: Sat, 04 May 2024 14:31:12 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240411143025.352507-1-pvorel@suse.cz>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.30 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	RCVD_TLS_ALL(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[lists.linux.it,linux-m68k.org,gmail.com,landley.net,physik.fu-berlin.de,lists.linux-m68k.org,vger.kernel.org];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Spam-Score: -2.30
-X-Spam-Flag: NO
 
-Hi!
-Pushed with a one patch on the top that removed the configure check for
-UCLINUX:
+Calling mac_reset() on a Mac IIci does reset the system, but what
+follows is a POST failure that requires a manual reset to resolve.
+Avoid that by using the 68030 asm implementation instead of the C
+implementation.
 
-Author: Cyril Hrubis <chrubis@suse.cz>
-Date:   Fri May 3 17:23:44 2024 +0200
+Apparently the SE/30 has a similar problem as it has used the asm
+implementation since before git. This patch extends that solution to
+other systems with a similar ROM.
 
-    m4: Remove now unused ltp-nommu-linux.m4
+After this patch, the only systems still using the C implementation are
+68040 systems where adb_type is either MAC_ADB_IOP or MAC_ADB_II. This
+implies a 1 MiB Quadra ROM.
 
-    Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+This now includes the Quadra 900/950, which previously fell through to
+the "should never get here" catch-all.
 
-diff --git a/configure.ac b/configure.ac
-index 15a5847fa..638a64bc9 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -385,7 +385,6 @@ LTP_CHECK_KERNEL_DEVEL
- LTP_CHECK_KEYUTILS_SUPPORT
- LTP_CHECK_LIBMNL
- LTP_CHECK_LINUXRANDOM
--LTP_CHECK_NOMMU_LINUX
- LTP_CHECK_SELINUX
- LTP_CHECK_SYNC_ADD_AND_FETCH
- LTP_CHECK_SYSCALL_EVENTFD
-diff --git a/m4/ltp-nommu-linux.m4 b/m4/ltp-nommu-linux.m4
-deleted file mode 100644
-index 7471ddd06..000000000
---- a/m4/ltp-nommu-linux.m4
-+++ /dev/null
-@@ -1,14 +0,0 @@
--dnl SPDX-License-Identifier: GPL-2.0-or-later
--dnl Copyright (c) Linux Test Project, 2010
--dnl Author: Mike Frysinger <vapier@gentoo.org>
+Reported-and-tested-by: Stan Johnson <userm57@yahoo.com>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+---
+Tested on Mac IIci & IIfx, Quadra 630 & 650, Daystar Mac II, QEMU.
+
+Some corner cases remain problematic. For example, a stock Mac II or
+a Mac IIci with a 68040 accelerator will still use the C routine, because
+mac_reset() lacks an asm implementation for '020 and '040 systems.
+
+However, amiga_reset(), atari_reset() and mac_reset() do have a lot in
+common, which suggests that a generic asm reset function parameterized by
+final JMP location may be a useful refactoring. This would provide the
+'020 and '040 handling missing here and could potentially replace
+hp300_reset(), dn_dummy_reset() and q40_reset().
+---
+ arch/m68k/mac/misc.c | 36 ++++++++++++++++++------------------
+ 1 file changed, 18 insertions(+), 18 deletions(-)
+
+diff --git a/arch/m68k/mac/misc.c b/arch/m68k/mac/misc.c
+index 4c8f8cbfa05f..e7f0f72c1b36 100644
+--- a/arch/m68k/mac/misc.c
++++ b/arch/m68k/mac/misc.c
+@@ -453,30 +453,18 @@ void mac_poweroff(void)
+ 
+ void mac_reset(void)
+ {
+-	if (macintosh_config->adb_type == MAC_ADB_II &&
+-	    macintosh_config->ident != MAC_MODEL_SE30) {
+-		/* need ROMBASE in booter */
+-		/* indeed, plus need to MAP THE ROM !! */
 -
--AC_DEFUN([LTP_CHECK_NOMMU_LINUX],
--[
--       AC_CHECK_FUNCS([fork daemon vfork])
--       UCLINUX=0
--       if test "x$ac_cv_func_fork" = "xno" ; then
--               UCLINUX=1
--               AC_DEFINE([UCLINUX], 1, [Target is running Linux w/out an MMU])
--       fi
--       AC_SUBST(UCLINUX)
--])
-
-
+-		if (mac_bi_data.rombase == 0)
+-			mac_bi_data.rombase = 0x40800000;
+-
+-		/* works on some */
+-		rom_reset = (void *) (mac_bi_data.rombase + 0xa);
+-
+-		local_irq_disable();
+-		rom_reset();
+ #ifdef CONFIG_ADB_CUDA
+-	} else if (macintosh_config->adb_type == MAC_ADB_EGRET ||
+-	           macintosh_config->adb_type == MAC_ADB_CUDA) {
++	if (macintosh_config->adb_type == MAC_ADB_EGRET ||
++	    macintosh_config->adb_type == MAC_ADB_CUDA) {
+ 		cuda_restart();
++	} else
+ #endif
+ #ifdef CONFIG_ADB_PMU
+-	} else if (macintosh_config->adb_type == MAC_ADB_PB2) {
++	if (macintosh_config->adb_type == MAC_ADB_PB2) {
+ 		pmu_restart();
++	} else
+ #endif
+-	} else if (CPU_IS_030) {
+-
++	if (CPU_IS_030) {
+ 		/* 030-specific reset routine.  The idea is general, but the
+ 		 * specific registers to reset are '030-specific.  Until I
+ 		 * have a non-030 machine, I can't test anything else.
+@@ -524,6 +512,18 @@ void mac_reset(void)
+ 		    "jmp %/a0@\n\t" /* jump to the reset vector */
+ 		    ".chip 68k"
+ 		    : : "r" (offset), "a" (rombase) : "a0");
++	} else {
++		/* need ROMBASE in booter */
++		/* indeed, plus need to MAP THE ROM !! */
++
++		if (mac_bi_data.rombase == 0)
++			mac_bi_data.rombase = 0x40800000;
++
++		/* works on some */
++		rom_reset = (void *)(mac_bi_data.rombase + 0xa);
++
++		local_irq_disable();
++		rom_reset();
+ 	}
+ 
+ 	/* should never get here */
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.39.3
+
