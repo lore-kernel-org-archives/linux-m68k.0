@@ -1,166 +1,73 @@
-Received: from wfout2-smtp.messagingengine.com (wfout2-smtp.messagingengine.com [64.147.123.145])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [195.130.137.88])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C75C28FD
-	for <linux-m68k@lists.linux-m68k.org>; Sat,  4 May 2024 04:43:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0E4B1D53C
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  6 May 2024 08:21:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.88
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714797827; cv=none; b=dZcSQlTvjzY3lRJ1acEkUUwhLFciVcweL6/TfGfcpvnsrXWEbJPcicXYu48xJSace65dDe9RQSkdx0Y3uSVdQZfHbPq/X4Tmtkgz2omgRqyVoIt512z4c9jp3W8tKR/fqSCLSijnTXpTjPHELMIGcmwCUsBgA1VodhdKbE4kZos=
+	t=1714983718; cv=none; b=XP6DU5f8CsMKKJ146lCJ+y9Mlk4tXhPBR0HoqBehYZpfAnM3Cx1R72nZuY5QPyP3ZjiX+mPddynt3L6hIZ9JovCNacCxB5TI9GSMM713BuIT4fsC/aglBk1xFWl5pCvkIBIzqSxoUz4dHDDPfYPNYpVtDY1N+xYAej/FB+eAAA8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714797827; c=relaxed/simple;
-	bh=tNgMtZ3ADGZP5RpLtGB0Fz3rnlP7zSiJ4KzOCNwylHY=;
-	h=To:Cc:Message-Id:From:Subject:Date; b=rYqARqlwHKcLgk65KTP1i6bLbdTSH6FIaE3pkarvRA8Rf0eoC6+eCHRd+DD3cUdya8l+wGiqXsuFAZNCIqg292DK8DLt3YrtZxkyHLAhrHgHe7hLYVsKoaN6xc+5hAiytvIwqTD81kwUD6JQvSJ96SSC/Ugfd+DeRGt6iAOJe1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=NvQ+xD6Z; arc=none smtp.client-ip=64.147.123.145
+	s=arc-20240116; t=1714983718; c=relaxed/simple;
+	bh=hhwKMXUzrQ0uPvH/7RhpW1I9RGs7lrXrlwA5/jOYygE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=s3SzIRO0MxgOlLvTIKqWq1tsQl9YzSh4K4K9IQELLJjVQqSxGYBCY0R+y8zXmwrAILKoN3n9OnddVkwJqN8tIPkt+RB3lNQZJCPH2tvSjGGF0aEmBP7l3PnxfltttoULLAF8+zutgNsqiQGG+mwLf5kCxyHOzvXRpXKW6oAgGKg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.88
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="NvQ+xD6Z"
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailfout.west.internal (Postfix) with ESMTP id D91091C001C2;
-	Sat,  4 May 2024 00:43:43 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Sat, 04 May 2024 00:43:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm3; t=1714797823; x=1714884223; bh=wwhlErRrN82HW
-	sQSi8hrEnxWXAk60Am1hIXNc62WtW8=; b=NvQ+xD6Z/qbhe3jxc3FBnXXI6zYAT
-	ZZB+y56TwqhpWjArgOcIeFwS/JMJ3ZFjIMY7P1Gs79DodY51HHcqg1IYr3Mk4RVP
-	ue7WSPvhI9Yny07iJz1Q4HTu161V6T38ulu2DjnQvuLHFpiwdu7825arUOpq7cD/
-	t0X+sCIbNj2k5gE/O3FyppOGq7ZZ8vX206NpQjFFMZeWvXbW5uXvkWn4m9rc2HfR
-	86DttDidLhmq4bp8Lxran7ovTUF3mCU+kuI4qGP0gXY3ledKhZO2TCCP5soImUHL
-	dY7Ik2P/q0znjNvg20LcGr7XmNuilJ0Q3DUP788lxSLKIFTv4F0QC1vzA==
-X-ME-Sender: <xms:_rw1ZlcQ0uqzE-PoezxF32o7jc-E4mVKTyTxcwPEVxvQBt540AhsWA>
-    <xme:_rw1ZjM7SYBVfX3KMJ8D0MIpb891wwgOfITzVeYs_fA0L8_P10jWU0bK8d3RdDQT0
-    Ce_ubRpGVJPG0u5OJ0>
-X-ME-Received: <xmr:_rw1Zuhewi6qbI2jj1k19dZ_PC29q7RL98w1GouOGjbhfXSFnh3ZLcORYFWz9xj8nX3CMYwZrQF01odWSntE3-wxvkmd5aduirw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddvuddgjeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepvfevkffhufffsedttdertddttddtnecuhfhrohhmpefhihhnnhcuvfhhrghi
-    nhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtthgvrh
-    hnpeehfffggeefveegvedtiefffeevuedtgefhueehieetffejfefggeevfeeuvdduleen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrg
-    hinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:_rw1Zu9Eynzl-W1E2n09CeWEdECTuPLIp-6Rg4w7VwLaQQmGm_hxSg>
-    <xmx:_rw1ZhvYpeaepJcFpr5YPwfy6qk4Z1NacNaDffG_BsHHdsoqGkXE1g>
-    <xmx:_rw1ZtHhj1hRTtbyMOfK1Dc5GYRGY4wsLYJccjI-5uVZCfw2udbHew>
-    <xmx:_rw1ZoN9btfeS6QCuNsVo6eIxxZi7P9NH9SSAuDHvEoVZQ8plLuz7Q>
-    <xmx:_7w1ZrIZEzureBQbaTtCuiinIJKJiRiec8rf7to-yZ_-RaiJvjTVDQyl>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 4 May 2024 00:43:40 -0400 (EDT)
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Joshua Thompson <funaho@jurai.org>,
-    Stan Johnson <userm57@yahoo.com>,
-    linux-m68k@lists.linux-m68k.org,
-    linux-kernel@vger.kernel.org
-Message-Id: <480ebd1249d229c6dc1f3f1c6d599b8505483fd8.1714797072.git.fthain@linux-m68k.org>
-From: Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH] m68k/mac: Fix reboot hang on Mac IIci
-Date: Sat, 04 May 2024 14:31:12 +1000
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:e8fd:353d:bf09:e9f2])
+	by michel.telenet-ops.be with bizsmtp
+	id KkMm2C0051j6xkh06kMmeg; Mon, 06 May 2024 10:21:48 +0200
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1s3tak-009xSO-NL;
+	Mon, 06 May 2024 10:21:46 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1s3sQt-005qJJ-74;
+	Mon, 06 May 2024 09:06:43 +0200
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: Move ARCH_HAS_CPU_CACHE_ALIASING
+Date: Mon,  6 May 2024 09:06:41 +0200
+Message-Id: <4574ad6cc1117e4b5d29812c165bf7f6e5b60773.1714978406.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Calling mac_reset() on a Mac IIci does reset the system, but what
-follows is a POST failure that requires a manual reset to resolve.
-Avoid that by using the 68030 asm implementation instead of the C
-implementation.
+Move the recently added ARCH_HAS_CPU_CACHE_ALIASING to restore
+alphabetical sort order.
 
-Apparently the SE/30 has a similar problem as it has used the asm
-implementation since before git. This patch extends that solution to
-other systems with a similar ROM.
-
-After this patch, the only systems still using the C implementation are
-68040 systems where adb_type is either MAC_ADB_IOP or MAC_ADB_II. This
-implies a 1 MiB Quadra ROM.
-
-This now includes the Quadra 900/950, which previously fell through to
-the "should never get here" catch-all.
-
-Reported-and-tested-by: Stan Johnson <userm57@yahoo.com>
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+Fixes: 8690bbcf3b7010b3 ("Introduce cpu_dcache_is_aliasing() across all architectures")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
-Tested on Mac IIci & IIfx, Quadra 630 & 650, Daystar Mac II, QEMU.
+To be queued in the m68k tree for v6.10.
 
-Some corner cases remain problematic. For example, a stock Mac II or
-a Mac IIci with a 68040 accelerator will still use the C routine, because
-mac_reset() lacks an asm implementation for '020 and '040 systems.
+ arch/m68k/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-However, amiga_reset(), atari_reset() and mac_reset() do have a lot in
-common, which suggests that a generic asm reset function parameterized by
-final JMP location may be a useful refactoring. This would provide the
-'020 and '040 handling missing here and could potentially replace
-hp300_reset(), dn_dummy_reset() and q40_reset().
----
- arch/m68k/mac/misc.c | 36 ++++++++++++++++++------------------
- 1 file changed, 18 insertions(+), 18 deletions(-)
-
-diff --git a/arch/m68k/mac/misc.c b/arch/m68k/mac/misc.c
-index 4c8f8cbfa05f..e7f0f72c1b36 100644
---- a/arch/m68k/mac/misc.c
-+++ b/arch/m68k/mac/misc.c
-@@ -453,30 +453,18 @@ void mac_poweroff(void)
- 
- void mac_reset(void)
- {
--	if (macintosh_config->adb_type == MAC_ADB_II &&
--	    macintosh_config->ident != MAC_MODEL_SE30) {
--		/* need ROMBASE in booter */
--		/* indeed, plus need to MAP THE ROM !! */
--
--		if (mac_bi_data.rombase == 0)
--			mac_bi_data.rombase = 0x40800000;
--
--		/* works on some */
--		rom_reset = (void *) (mac_bi_data.rombase + 0xa);
--
--		local_irq_disable();
--		rom_reset();
- #ifdef CONFIG_ADB_CUDA
--	} else if (macintosh_config->adb_type == MAC_ADB_EGRET ||
--	           macintosh_config->adb_type == MAC_ADB_CUDA) {
-+	if (macintosh_config->adb_type == MAC_ADB_EGRET ||
-+	    macintosh_config->adb_type == MAC_ADB_CUDA) {
- 		cuda_restart();
-+	} else
- #endif
- #ifdef CONFIG_ADB_PMU
--	} else if (macintosh_config->adb_type == MAC_ADB_PB2) {
-+	if (macintosh_config->adb_type == MAC_ADB_PB2) {
- 		pmu_restart();
-+	} else
- #endif
--	} else if (CPU_IS_030) {
--
-+	if (CPU_IS_030) {
- 		/* 030-specific reset routine.  The idea is general, but the
- 		 * specific registers to reset are '030-specific.  Until I
- 		 * have a non-030 machine, I can't test anything else.
-@@ -524,6 +512,18 @@ void mac_reset(void)
- 		    "jmp %/a0@\n\t" /* jump to the reset vector */
- 		    ".chip 68k"
- 		    : : "r" (offset), "a" (rombase) : "a0");
-+	} else {
-+		/* need ROMBASE in booter */
-+		/* indeed, plus need to MAP THE ROM !! */
-+
-+		if (mac_bi_data.rombase == 0)
-+			mac_bi_data.rombase = 0x40800000;
-+
-+		/* works on some */
-+		rom_reset = (void *)(mac_bi_data.rombase + 0xa);
-+
-+		local_irq_disable();
-+		rom_reset();
- 	}
- 
- 	/* should never get here */
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index c68fbc59787ab59d..e0b4f6e9fe4ce1f4 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -3,8 +3,8 @@ config M68K
+ 	bool
+ 	default y
+ 	select ARCH_32BIT_OFF_T
+-	select ARCH_HAS_CPU_CACHE_ALIASING
+ 	select ARCH_HAS_BINFMT_FLAT
++	select ARCH_HAS_CPU_CACHE_ALIASING
+ 	select ARCH_HAS_CPU_FINALIZE_INIT if MMU
+ 	select ARCH_HAS_CURRENT_STACK_POINTER
+ 	select ARCH_HAS_DMA_PREP_COHERENT if M68K_NONCOHERENT_DMA && !COLDFIRE
 -- 
-2.39.3
+2.34.1
 
