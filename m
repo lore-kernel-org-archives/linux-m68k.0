@@ -1,520 +1,201 @@
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [195.130.132.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3127B86643
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  8 May 2024 17:19:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21BF3DDC1
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  9 May 2024 16:38:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715188798; cv=none; b=gLK32DeT5MgU9MHOjNNB2SkwehVPX8NKtA5FsJbwI9W0fkAcOHC/5wEkyFro2XGOT5Q4i5bPh6XMshBO9llTIetl6nKtC+7SXHEp5aaGwKkdQ1c7/MkLFphj3R56rOMvC9xyIj7xrgyhH2d6BluknezrVxKhLDpj/RRuWyL/9oM=
+	t=1715272696; cv=none; b=Y47y0AFXh27QrR5F+DCCeNGj6YO4FAq6sIEA6kRPrbl5rstul7FqLVwD/W0g9F5r9US+GlXYgIVD0tiT0eupH+GHMbjBEZoRLM3t2UTPfgIUTdKJY5+J83Zqes51lq1nfHbHmG2a4fyFS9EzZ3Rf9hrMiU/+oZa3nsRcud1nYOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715188798; c=relaxed/simple;
-	bh=d5/sE0MYU4BSovjEJ+Rmuzt4ZRaDdJqKmm1JL1KAQfg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=s4A8fF3bMmt0NGX0FerQrOy+DnJnEdhAzE4DufapTCnU72p8OOqR3iRSxap9AHnCeFLA4ax58BFTM6zyhj5E7jCfoQVRCKlFk4bSH85nollUibvFoMmig3voHec1jScpl3z2CmbY0Hohd1MZPZFk+VmSNKKnPvUUiq6aSKcpuaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:985a:f2a2:ae2e:5981])
-	by andre.telenet-ops.be with bizsmtp
-	id LhKp2C00J241EGo01hKpM5; Wed, 08 May 2024 19:19:52 +0200
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1s4kwX-00F6do-8V;
-	Wed, 08 May 2024 19:19:49 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1s4kxJ-0007Ld-DN;
-	Wed, 08 May 2024 19:19:49 +0200
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Greg Ungerer <gerg@linux-m68k.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Matthew Wilcox <willy@infradead.org>,
-	Finn Thain <fthain@linux-m68k.org>,
-	Michael Schmitz <schmitzmic@gmail.com>
-Cc: linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH/RFC v2] m68k: Add full preempt support
-Date: Wed,  8 May 2024 19:19:36 +0200
-Message-Id: <938326f254e686682d4726410f207579385f2ae2.1715188484.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1715272696; c=relaxed/simple;
+	bh=jlBIyGHgHFeCG03Yq5MWX274xlfLiR8lmwIZWDJLZH0=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=lOp/jITpfN5qOfB+r1Z/NX6CXk4nUdUKcNL87RZ3ZOJJFLH/T8dp7N7nubFPT0ikcdFXM1Vgvm0tf5RC7Xg8YRYljpamFvyGIfIj6BVqbrwIQYQKMyJwaTfocAEdeg5KPMdrztBfv+1FeNOE+pEaVGyjNhQwUO88qEyjG91JWyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SiBjYbCm; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SiBjYbCm"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1715272695; x=1746808695;
+  h=date:from:to:cc:subject:message-id;
+  bh=jlBIyGHgHFeCG03Yq5MWX274xlfLiR8lmwIZWDJLZH0=;
+  b=SiBjYbCmatT1Rsuju4IDhlKN4k/3UUkibFjG0lQVOcqXuk2LcvLNO0HW
+   2YJtvTPwWkEOheuqHCteft57vq1d4PfQQDrgtbXLFEnQqqYW+Uwl62do/
+   GryFqSfC6iS6DWjfWKrjArC28bCFBhmhE+OWzWzrVe78qg93kK+vWENno
+   dNU6HHLc7l90ggZm7dJE2T+dXY600crrsVOSDri5DXyowiHPuf5l8sCZT
+   s5YUMzcN9lumkAJdr+aiBjtGa6v6Vmq/FmgbVkrrwan4Q0AGDYJjD75DQ
+   FIjiAqdia8fLaaM4NcOFqliUBYphrV7JgedGJtVfsl+rhENfKSt78RXv2
+   w==;
+X-CSE-ConnectionGUID: Ylgm49D8SmKob8Ej4pX34A==
+X-CSE-MsgGUID: mVMLM9SnSoWNyADAyIzhxg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11068"; a="11450105"
+X-IronPort-AV: E=Sophos;i="6.08,148,1712646000"; 
+   d="scan'208";a="11450105"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 May 2024 09:38:14 -0700
+X-CSE-ConnectionGUID: mUtiM5gnQ2C3jBn4oUeilw==
+X-CSE-MsgGUID: QGaNW7BPRrmMRW3TUAt5UQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,148,1712646000"; 
+   d="scan'208";a="29365396"
+Received: from lkp-server01.sh.intel.com (HELO f8b243fe6e68) ([10.239.97.150])
+  by fmviesa010.fm.intel.com with ESMTP; 09 May 2024 09:38:12 -0700
+Received: from kbuild by f8b243fe6e68 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s56mY-00057x-29;
+	Thu, 09 May 2024 16:38:10 +0000
+Date: Fri, 10 May 2024 00:37:24 +0800
+From: kernel test robot <lkp@intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 45909426fcb7f3b32917671bc3409e24a22b856f
+Message-ID: <202405100023.Gq0DonPR-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Currently, a Preemptible Kernel is only supported on the Coldfire CPU
-family.  Extend preempt support to the full Classic M68K CPU family
-(68020+ with MMU, and 68000-derivatives without MMU).
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 45909426fcb7f3b32917671bc3409e24a22b856f  m68k: Move ARCH_HAS_CPU_CACHE_ALIASING
 
-Make sure preemption is disabled in loops involving cache and TLB
-flushing.
+elapsed time: 1459m
 
-Co-developed-by: Finn Thain <fthain@linux-m68k.org>
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
-Co-developed-by: Michael Schmitz <schmitzmic@gmail.com>
-Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-This patch touches Coldfire cache handling and other code paths taken on
-Coldfire.  Perhaps these parts should be spun off in a separate patch as
-bug fixes? Or are they not needed?
+configs tested: 124
+configs skipped: 3
 
-v2:
-  - Disable preemption in get_pointer_table() (Finn) and
-    free_pointer_table() (Michael),
-  - Call preempt_enable_no_resched() instead of
-    sched_preempt_enable_no_resched(), cfr. commit ba74c1448f127649
-    ("sched/rt: Document scheduler related skip-resched-check sites").
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-v1 at
-https://lore.kernel.org/all/7858a184cda66e0991fd295c711dfed7e4d1248c.1696603287.git.geert@linux-m68k.org/
----
- arch/m68k/68000/entry.S               | 15 +++++++++++++++
- arch/m68k/Kconfig                     |  1 -
- arch/m68k/coldfire/cache.c            |  6 ++++++
- arch/m68k/include/asm/cacheflush_mm.h | 23 +++++++++++++++++++++++
- arch/m68k/include/asm/tlbflush.h      | 16 ++++++++++++++++
- arch/m68k/kernel/entry.S              | 16 ++++++++++++++++
- arch/m68k/mm/cache.c                  | 15 +++++++++++++++
- arch/m68k/mm/motorola.c               | 27 ++++++++++++++++++++++++---
- 8 files changed, 115 insertions(+), 4 deletions(-)
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240509   gcc  
+arc                   randconfig-002-20240509   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                   randconfig-001-20240509   gcc  
+arm                   randconfig-002-20240509   clang
+arm                   randconfig-003-20240509   clang
+arm                   randconfig-004-20240509   clang
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240509   clang
+arm64                 randconfig-002-20240509   clang
+arm64                 randconfig-003-20240509   gcc  
+arm64                 randconfig-004-20240509   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240509   gcc  
+csky                  randconfig-002-20240509   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-002-20240509   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240509   gcc  
+i386         buildonly-randconfig-002-20240509   gcc  
+i386         buildonly-randconfig-003-20240509   clang
+i386         buildonly-randconfig-004-20240509   clang
+i386         buildonly-randconfig-005-20240509   gcc  
+i386         buildonly-randconfig-006-20240509   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240509   clang
+i386                  randconfig-002-20240509   clang
+i386                  randconfig-003-20240509   clang
+i386                  randconfig-004-20240509   gcc  
+i386                  randconfig-005-20240509   clang
+i386                  randconfig-006-20240509   gcc  
+i386                  randconfig-011-20240509   clang
+i386                  randconfig-012-20240509   gcc  
+i386                  randconfig-013-20240509   clang
+i386                  randconfig-014-20240509   gcc  
+i386                  randconfig-015-20240509   gcc  
+i386                  randconfig-016-20240509   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240509   gcc  
+loongarch             randconfig-002-20240509   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240509   gcc  
+nios2                 randconfig-002-20240509   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240509   gcc  
+parisc                randconfig-002-20240509   gcc  
+parisc64                            defconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc               randconfig-001-20240509   clang
+powerpc               randconfig-002-20240509   clang
+powerpc               randconfig-003-20240509   clang
+powerpc64             randconfig-001-20240509   clang
+powerpc64             randconfig-002-20240509   gcc  
+riscv                             allnoconfig   gcc  
+riscv                               defconfig   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240510   gcc  
+x86_64       buildonly-randconfig-002-20240510   clang
+x86_64       buildonly-randconfig-003-20240510   gcc  
+x86_64       buildonly-randconfig-004-20240510   clang
+x86_64       buildonly-randconfig-005-20240510   gcc  
+x86_64       buildonly-randconfig-006-20240510   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
 
-diff --git a/arch/m68k/68000/entry.S b/arch/m68k/68000/entry.S
-index 72e95663b62ffd54..1f79deb91da4dcbb 100644
---- a/arch/m68k/68000/entry.S
-+++ b/arch/m68k/68000/entry.S
-@@ -87,6 +87,21 @@ ret_from_exception:
- 	btst	#5,%sp@(PT_OFF_SR)	/* check if returning to kernel*/
- 	jeq	Luser_return		/* if so, skip resched, signals*/
- 
-+#ifdef CONFIG_PREEMPTION
-+	movel	%sp,%d1			/* get thread_info pointer */
-+	andl	#-THREAD_SIZE,%d1	/* at base of kernel stack */
-+	movel	%d1,%a0
-+	movel	%a0@(TINFO_FLAGS),%d1	/* get thread_info->flags */
-+	btst	#TIF_NEED_RESCHED,%d1
-+	jeq	Lkernel_return
-+
-+	movel	%a0@(TINFO_PREEMPT),%d1
-+	jne	Lkernel_return
-+
-+	pea	Lkernel_return
-+	jmp	preempt_schedule_irq	/* preempt the kernel */
-+#endif /* CONFIG_PREEMPTION */
-+
- Lkernel_return:
- 	RESTORE_ALL
- 
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 99837d4e8c977485..ef350af5a3b03853 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -11,7 +11,6 @@ config M68K
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE if M68K_NONCOHERENT_DMA
- 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
- 	select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
--	select ARCH_NO_PREEMPT if !COLDFIRE
- 	select ARCH_USE_MEMTEST if MMU_MOTOROLA
- 	select ARCH_WANT_IPC_PARSE_VERSION
- 	select BINFMT_FLAT_ARGVP_ENVP_ON_STACK
-diff --git a/arch/m68k/coldfire/cache.c b/arch/m68k/coldfire/cache.c
-index 98ee89b87439cdc4..592fd1d579bef348 100644
---- a/arch/m68k/coldfire/cache.c
-+++ b/arch/m68k/coldfire/cache.c
-@@ -10,6 +10,8 @@
- /***************************************************************************/
- 
- #include <linux/kernel.h>
-+#include <linux/preempt.h>
-+
- #include <asm/coldfire.h>
- #include <asm/mcfsim.h>
- 
-@@ -25,6 +27,8 @@
- 
- void mcf_cache_push(void)
- {
-+	preempt_disable();
-+
- 	__asm__ __volatile__ (
- 		"clrl	%%d0\n\t"
- 		"1:\n\t"
-@@ -42,6 +46,8 @@ void mcf_cache_push(void)
- 		  "i" (DCACHE_SIZE / CACHE_WAYS),
- 		  "i" (CACHE_WAYS)
- 		: "d0", "a0" );
-+
-+	preempt_enable();
- }
- 
- /***************************************************************************/
-diff --git a/arch/m68k/include/asm/cacheflush_mm.h b/arch/m68k/include/asm/cacheflush_mm.h
-index 9a71b0148461a455..b3c77d5097aeea9e 100644
---- a/arch/m68k/include/asm/cacheflush_mm.h
-+++ b/arch/m68k/include/asm/cacheflush_mm.h
-@@ -3,6 +3,8 @@
- #define _M68K_CACHEFLUSH_H
- 
- #include <linux/mm.h>
-+#include <linux/preempt.h>
-+
- #ifdef CONFIG_COLDFIRE
- #include <asm/mcfsim.h>
- #endif
-@@ -63,6 +65,8 @@ static inline void flush_cf_icache(unsigned long start, unsigned long end)
- {
- 	unsigned long set;
- 
-+	preempt_disable();
-+
- 	for (set = start; set <= end; set += (0x10 - 3)) {
- 		__asm__ __volatile__ (
- 			"cpushl %%ic,(%0)\n\t"
-@@ -75,12 +79,16 @@ static inline void flush_cf_icache(unsigned long start, unsigned long end)
- 			: "=a" (set)
- 			: "a" (set));
- 	}
-+
-+	preempt_enable();
- }
- 
- static inline void flush_cf_dcache(unsigned long start, unsigned long end)
- {
- 	unsigned long set;
- 
-+	preempt_disable();
-+
- 	for (set = start; set <= end; set += (0x10 - 3)) {
- 		__asm__ __volatile__ (
- 			"cpushl %%dc,(%0)\n\t"
-@@ -93,12 +101,16 @@ static inline void flush_cf_dcache(unsigned long start, unsigned long end)
- 			: "=a" (set)
- 			: "a" (set));
- 	}
-+
-+	preempt_enable();
- }
- 
- static inline void flush_cf_bcache(unsigned long start, unsigned long end)
- {
- 	unsigned long set;
- 
-+	preempt_disable();
-+
- 	for (set = start; set <= end; set += (0x10 - 3)) {
- 		__asm__ __volatile__ (
- 			"cpushl %%bc,(%0)\n\t"
-@@ -111,6 +123,8 @@ static inline void flush_cf_bcache(unsigned long start, unsigned long end)
- 			: "=a" (set)
- 			: "a" (set));
- 	}
-+
-+	preempt_enable();
- }
- 
- /*
-@@ -228,14 +242,21 @@ static inline void __flush_pages_to_ram(void *vaddr, unsigned int nr)
- 		addr = ((unsigned long) vaddr) & ~(PAGE_SIZE - 1);
- 		start = addr & ICACHE_SET_MASK;
- 		end = (addr + nr * PAGE_SIZE - 1) & ICACHE_SET_MASK;
-+
-+		preempt_disable();
-+
- 		if (start > end) {
- 			flush_cf_bcache(0, end);
- 			end = ICACHE_MAX_ADDR;
- 		}
- 		flush_cf_bcache(start, end);
-+
-+		preempt_enable();
- 	} else if (CPU_IS_040_OR_060) {
- 		unsigned long paddr = __pa(vaddr);
- 
-+		preempt_disable();
-+
- 		do {
- 			__asm__ __volatile__("nop\n\t"
- 					     ".chip 68040\n\t"
-@@ -244,6 +265,8 @@ static inline void __flush_pages_to_ram(void *vaddr, unsigned int nr)
- 					     : : "a" (paddr));
- 			paddr += PAGE_SIZE;
- 		} while (--nr);
-+
-+		preempt_enable();
- 	} else {
- 		unsigned long _tmp;
- 		__asm__ __volatile__("movec %%cacr,%0\n\t"
-diff --git a/arch/m68k/include/asm/tlbflush.h b/arch/m68k/include/asm/tlbflush.h
-index 6d42e2906887931b..f95a8e9c9912a3e8 100644
---- a/arch/m68k/include/asm/tlbflush.h
-+++ b/arch/m68k/include/asm/tlbflush.h
-@@ -101,6 +101,7 @@ static inline void flush_tlb_kernel_range(unsigned long start, unsigned long end
- 
- #else
- 
-+#include <linux/preempt.h>
- 
- /* Reserved PMEGs. */
- extern char sun3_reserved_pmeg[SUN3_PMEGS_NUM];
-@@ -115,6 +116,8 @@ static inline void flush_tlb_all(void)
- 	unsigned long addr;
- 	unsigned char ctx, oldctx;
- 
-+	preempt_disable();
-+
- 	oldctx = sun3_get_context();
- 	for (addr = 0x00000000; addr < TASK_SIZE; addr += SUN3_PMEG_SIZE) {
- 		for (ctx = 0; ctx < 8; ctx++) {
-@@ -133,6 +136,8 @@ static inline void flush_tlb_all(void)
- 			pmeg_vaddr[addr] = 0;
- 		}
- 	}
-+
-+	preempt_enable();
- }
- 
- /* Clear user TLB entries within the context named in mm */
-@@ -142,6 +147,8 @@ static inline void flush_tlb_mm (struct mm_struct *mm)
- 	unsigned char seg;
- 	unsigned long i;
- 
-+	preempt_disable();
-+
- 	oldctx = sun3_get_context();
- 	sun3_put_context(mm->context);
- 
-@@ -157,6 +164,8 @@ static inline void flush_tlb_mm (struct mm_struct *mm)
- 	}
- 
- 	sun3_put_context(oldctx);
-+
-+	preempt_enable();
- }
- 
- /* Flush a single TLB page. In this case, we're limited to flushing a
-@@ -167,6 +176,8 @@ static inline void flush_tlb_page (struct vm_area_struct *vma,
- 	unsigned char oldctx;
- 	unsigned char i;
- 
-+	preempt_disable();
-+
- 	oldctx = sun3_get_context();
- 	sun3_put_context(vma->vm_mm->context);
- 	addr &= ~SUN3_PMEG_MASK;
-@@ -179,6 +190,7 @@ static inline void flush_tlb_page (struct vm_area_struct *vma,
- 	}
- 	sun3_put_context(oldctx);
- 
-+	preempt_enable();
- }
- /* Flush a range of pages from TLB. */
- 
-@@ -190,6 +202,8 @@ static inline void flush_tlb_range (struct vm_area_struct *vma,
- 
- 	start &= ~SUN3_PMEG_MASK;
- 
-+	preempt_disable();
-+
- 	oldctx = sun3_get_context();
- 	sun3_put_context(mm->context);
- 
-@@ -207,6 +221,8 @@ static inline void flush_tlb_range (struct vm_area_struct *vma,
- 		start += SUN3_PMEG_SIZE;
- 	}
- 	sun3_put_context(oldctx);
-+
-+	preempt_enable();
- }
- 
- static inline void flush_tlb_kernel_range(unsigned long start, unsigned long end)
-diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
-index 3bcdd32a6b36613d..9933679ea28b44ab 100644
---- a/arch/m68k/kernel/entry.S
-+++ b/arch/m68k/kernel/entry.S
-@@ -241,7 +241,23 @@ syscall_exit_work:
- ENTRY(ret_from_exception)
- .Lret_from_exception:
- 	btst	#5,%sp@(PT_OFF_SR)	| check if returning to kernel
-+#ifdef CONFIG_PREEMPTION
-+	jeq	2f
-+
-+	movel   %curptr@(TASK_STACK),%a0
-+	tstb	%a0@(TINFO_FLAGS+3)	| check TIF_NEED_RESCHED
-+	jpl	1f
-+
-+	movel	%a0@(TINFO_PREEMPT),%d1
-+	jne	1f
-+
-+	pea	1f
-+	jmp	preempt_schedule_irq	| preempt the kernel
-+#else /* !CONFIG_PREEMPTION */
- 	bnes	1f			| if so, skip resched, signals
-+#endif /* !CONFIG_PREEMPTION */
-+
-+2:
- 	| only allow interrupts when we are really the last one on the
- 	| kernel stack, otherwise stack overflow can occur during
- 	| heavy interrupt load
-diff --git a/arch/m68k/mm/cache.c b/arch/m68k/mm/cache.c
-index dde978e66f14fb31..d23958bc2a815ea7 100644
---- a/arch/m68k/mm/cache.c
-+++ b/arch/m68k/mm/cache.c
-@@ -8,6 +8,8 @@
-  */
- 
- #include <linux/module.h>
-+#include <linux/preempt.h>
-+
- #include <asm/cacheflush.h>
- #include <asm/traps.h>
- 
-@@ -62,14 +64,21 @@ void flush_icache_user_range(unsigned long address, unsigned long endaddr)
- 		unsigned long start, end;
- 		start = address & ICACHE_SET_MASK;
- 		end = endaddr & ICACHE_SET_MASK;
-+
-+		preempt_disable();
-+
- 		if (start > end) {
- 			flush_cf_icache(0, end);
- 			end = ICACHE_MAX_ADDR;
- 		}
- 		flush_cf_icache(start, end);
-+
-+		preempt_enable();
- 	} else if (CPU_IS_040_OR_060) {
- 		address &= PAGE_MASK;
- 
-+		preempt_disable();
-+
- 		do {
- 			asm volatile ("nop\n\t"
- 				      ".chip 68040\n\t"
-@@ -78,6 +87,8 @@ void flush_icache_user_range(unsigned long address, unsigned long endaddr)
- 				      : : "a" (virt_to_phys_slow(address)));
- 			address += PAGE_SIZE;
- 		} while (address < endaddr);
-+
-+		preempt_enable();
- 	} else {
- 		unsigned long tmp;
- 		asm volatile ("movec %%cacr,%0\n\t"
-@@ -103,12 +114,16 @@ void flush_icache_user_page(struct vm_area_struct *vma, struct page *page,
- 		unsigned long start, end;
- 		start = addr & ICACHE_SET_MASK;
- 		end = (addr + len) & ICACHE_SET_MASK;
-+
-+		preempt_disable();
-+
- 		if (start > end) {
- 			flush_cf_icache(0, end);
- 			end = ICACHE_MAX_ADDR;
- 		}
- 		flush_cf_icache(start, end);
- 
-+		preempt_enable();
- 	} else if (CPU_IS_040_OR_060) {
- 		asm volatile ("nop\n\t"
- 			      ".chip 68040\n\t"
-diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
-index c1761d309fc6128c..81ce42b062e78839 100644
---- a/arch/m68k/mm/motorola.c
-+++ b/arch/m68k/mm/motorola.c
-@@ -15,6 +15,7 @@
- #include <linux/mm.h>
- #include <linux/swap.h>
- #include <linux/kernel.h>
-+#include <linux/preempt.h>
- #include <linux/string.h>
- #include <linux/types.h>
- #include <linux/init.h>
-@@ -139,10 +140,13 @@ void __init init_pointer_table(void *table, int type)
- 
- void *get_pointer_table(int type)
- {
--	ptable_desc *dp = ptable_list[type].next;
--	unsigned int mask = list_empty(&ptable_list[type]) ? 0 : PD_MARKBITS(dp);
--	unsigned int tmp, off;
-+	unsigned int mask, tmp, off;
-+	ptable_desc *dp;
-+
-+	preempt_disable();
- 
-+	dp = ptable_list[type].next;
-+	mask = list_empty(&ptable_list[type]) ? 0 : PD_MARKBITS(dp);
- 	/*
- 	 * For a pointer table for a user process address space, a
- 	 * table is taken from a page allocated for the purpose.  Each
-@@ -153,9 +157,13 @@ void *get_pointer_table(int type)
- 		void *page;
- 		ptable_desc *new;
- 
-+		preempt_enable_no_resched();
-+
- 		if (!(page = (void *)get_zeroed_page(GFP_KERNEL)))
- 			return NULL;
- 
-+		preempt_disable();
-+
- 		if (type == TABLE_PTE) {
- 			/*
- 			 * m68k doesn't have SPLIT_PTE_PTLOCKS for not having
-@@ -170,6 +178,8 @@ void *get_pointer_table(int type)
- 		PD_MARKBITS(new) = ptable_mask(type) - 1;
- 		list_add_tail(new, dp);
- 
-+		preempt_enable_no_resched();
-+
- 		return (pmd_t *)page;
- 	}
- 
-@@ -180,6 +190,9 @@ void *get_pointer_table(int type)
- 		/* move to end of list */
- 		list_move_tail(dp, &ptable_list[type]);
- 	}
-+
-+	preempt_enable_no_resched();
-+
- 	return page_address(PD_PAGE(dp)) + off;
- }
- 
-@@ -190,6 +203,8 @@ int free_pointer_table(void *table, int type)
- 	unsigned long page = ptable & PAGE_MASK;
- 	unsigned int mask = 1U << ((ptable - page)/ptable_size(type));
- 
-+	preempt_disable();
-+
- 	dp = PD_PTABLE(page);
- 	if (PD_MARKBITS (dp) & mask)
- 		panic ("table already free!");
-@@ -203,6 +218,9 @@ int free_pointer_table(void *table, int type)
- 		if (type == TABLE_PTE)
- 			pagetable_pte_dtor(virt_to_ptdesc((void *)page));
- 		free_page (page);
-+
-+		preempt_enable_no_resched();
-+
- 		return 1;
- 	} else if (ptable_list[type].next != dp) {
- 		/*
-@@ -211,6 +229,9 @@ int free_pointer_table(void *table, int type)
- 		 */
- 		list_move(dp, &ptable_list[type]);
- 	}
-+
-+	preempt_enable_no_resched();
-+
- 	return 0;
- }
- 
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
