@@ -1,245 +1,128 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+Received: from riemann.telenet-ops.be (riemann.telenet-ops.be [195.130.137.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EA4B4C70
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  9 May 2024 16:39:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43E3214D282
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 13 May 2024 11:19:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715272757; cv=none; b=qXoC0jJT9+VYTYhZsfpxH7cIlRwaT0yPunEDyifCk8B10eKP6IRWO1LWCzA37ZNdnius0khJQllLSt2gWdZBgvaDbP63k410S6N9k/W8v96zeXVeNJW2rcLtaBxO5rnEjgZMC298qmtbCCSW3ur3D35FDmRGH6IRYY1g9CyHpdk=
+	t=1715599144; cv=none; b=V1hc9tQXoZkf/GfnNGg1L7JzicGYzXpLe/3vZSf6S9BEM2Qx/wXucrHH7IdhuzC41OY1QkOYmA0y/3Vjg0MIv2fJlk79RN+bQCLQ3uepwI2wgj3Z3VWRzl1oaDJKtKiooodUV1ZhryS+ggujK95drEHJ8jT491KLI7tdQsE59iY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715272757; c=relaxed/simple;
-	bh=fdPRAgl91aTT+Oeqir70pCTdXn2g2GebFrr8tJLOCM8=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=ZetYpL6V2M3HnBuxp1PKS6HbUjM+hCnvBAquUAmaoQQHenYKE5OAk6w2QYanYdR1f30ZUtFxcRaTqgXMaIdBdE12eR1LbXLaxyfVaqWlixLjhFsEQX+Wt8am9nkYA9iRuGkpTX9xods9N+5hKIYaC9gdn2NPeODG3jafRMqm6ZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eFrVF2mi; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eFrVF2mi"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1715272755; x=1746808755;
-  h=date:from:to:cc:subject:message-id;
-  bh=fdPRAgl91aTT+Oeqir70pCTdXn2g2GebFrr8tJLOCM8=;
-  b=eFrVF2mi0kXaYHTBLy9nCN/z9O74iNw5fUJnrSsmfrUzTI9LK09bwzkA
-   QxbET3RnOKi++d/MfkLp/sV4mTZb6EAkUdxMGc3WrE070xKhntD9M4u/O
-   sCLjCUQxtvf1To2VCCqCg1pd+GWzgSiDDOmbUHwPsuaW9+P5lLYKppidV
-   Qxw8OsGv7u4DMvGMHkw3W4uKKhatkdX9qYtVTl1sguVVrla3vaUjB5omn
-   hbNFvDqCg1BxzTBDUU1d12IHe/fJpujRcRCFLiNMIbFRsbnTjntoRp2QQ
-   /tauHd5GXRyMr8ehx2gqOhXiM1QW7KaHp6QvJBYWQRXdGHZY8MCTQP1ig
-   A==;
-X-CSE-ConnectionGUID: gMe7J8WmRZ6OEd/QcEGBqg==
-X-CSE-MsgGUID: yu3w5723SA+46yMbPz6DZA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11068"; a="21776380"
-X-IronPort-AV: E=Sophos;i="6.08,148,1712646000"; 
-   d="scan'208";a="21776380"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 May 2024 09:39:14 -0700
-X-CSE-ConnectionGUID: Wylb7xFcRveYjZRmr4GQ9A==
-X-CSE-MsgGUID: 0yKiLQCQRVyqeVBZn8xfHw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,148,1712646000"; 
-   d="scan'208";a="33835648"
-Received: from lkp-server01.sh.intel.com (HELO f8b243fe6e68) ([10.239.97.150])
-  by fmviesa003.fm.intel.com with ESMTP; 09 May 2024 09:39:13 -0700
-Received: from kbuild by f8b243fe6e68 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s56nW-00058L-2f;
-	Thu, 09 May 2024 16:39:10 +0000
-Date: Fri, 10 May 2024 00:38:59 +0800
-From: kernel test robot <lkp@intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:for-v6.10] BUILD SUCCESS
- ec8c8266373f6283a3e99b036aea7b9428480625
-Message-ID: <202405100057.j8D0us7a-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1715599144; c=relaxed/simple;
+	bh=RChba25Ai+3pi3SylBL8EN8VNmPke8+6xM3Q/AA48Q8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fhSTyJF8E/JccG59afNtsnFBP9AYvB6UGb77VbXrzUg2yq6w+6lwW4mJA0d9UTVUEO37fFqGzBs/NWkPbMYyj88RpGA7kDH/+7XdLiVoa38G6oCAHiaTILCDQnzE/roHe2DEDFQfrVsjnMHA2GaY0DlXaaCHi3LCSJgnogEzunM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+	by riemann.telenet-ops.be (Postfix) with ESMTPS id 4VdH716N2Gz4wx7G
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 13 May 2024 13:18:53 +0200 (CEST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:c85e:4b6d:1f91:1410])
+	by laurent.telenet-ops.be with bizsmtp
+	id NbJm2C00K5V4kqY01bJm6W; Mon, 13 May 2024 13:18:46 +0200
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1s6Tgq-002tkG-0n;
+	Mon, 13 May 2024 13:18:46 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1s6The-008YWx-47;
+	Mon, 13 May 2024 13:18:46 +0200
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for v6.10
+Date: Mon, 13 May 2024 13:18:43 +0200
+Message-Id: <20240513111843.2039350-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-v6.10
-branch HEAD: ec8c8266373f6283a3e99b036aea7b9428480625  m68k: defconfig: Update defconfigs for v6.9-rc1
+	Hi Linus,
 
-elapsed time: 1461m
+The following changes since commit 4cece764965020c22cff7665b18a012006359095:
 
-configs tested: 168
-configs skipped: 3
+  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+are available in the Git repository at:
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                      axs103_smp_defconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240509   gcc  
-arc                   randconfig-002-20240509   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                           imxrt_defconfig   clang
-arm                          moxart_defconfig   gcc  
-arm                   randconfig-001-20240509   gcc  
-arm                   randconfig-002-20240509   clang
-arm                   randconfig-003-20240509   clang
-arm                   randconfig-004-20240509   clang
-arm                         s3c6400_defconfig   gcc  
-arm                         vf610m4_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240509   clang
-arm64                 randconfig-002-20240509   clang
-arm64                 randconfig-003-20240509   gcc  
-arm64                 randconfig-004-20240509   clang
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240509   gcc  
-csky                  randconfig-002-20240509   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240509   clang
-hexagon               randconfig-002-20240509   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240509   gcc  
-i386         buildonly-randconfig-002-20240509   gcc  
-i386         buildonly-randconfig-003-20240509   clang
-i386         buildonly-randconfig-004-20240509   clang
-i386         buildonly-randconfig-005-20240509   gcc  
-i386         buildonly-randconfig-006-20240509   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240509   clang
-i386                  randconfig-002-20240509   clang
-i386                  randconfig-003-20240509   clang
-i386                  randconfig-004-20240509   gcc  
-i386                  randconfig-005-20240509   clang
-i386                  randconfig-006-20240509   gcc  
-i386                  randconfig-011-20240509   clang
-i386                  randconfig-012-20240509   gcc  
-i386                  randconfig-013-20240509   clang
-i386                  randconfig-014-20240509   gcc  
-i386                  randconfig-015-20240509   gcc  
-i386                  randconfig-016-20240509   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240509   gcc  
-loongarch             randconfig-002-20240509   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                       m5208evb_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-microblaze                      mmu_defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                           ip27_defconfig   gcc  
-mips                           xway_defconfig   clang
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240509   gcc  
-nios2                 randconfig-002-20240509   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240509   gcc  
-parisc                randconfig-002-20240509   gcc  
-parisc64                         alldefconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc               randconfig-001-20240509   clang
-powerpc               randconfig-002-20240509   clang
-powerpc               randconfig-003-20240509   clang
-powerpc64             randconfig-001-20240509   clang
-powerpc64             randconfig-002-20240509   gcc  
-powerpc64             randconfig-003-20240509   clang
-riscv                             allnoconfig   gcc  
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240509   gcc  
-riscv                 randconfig-002-20240509   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240509   gcc  
-s390                  randconfig-002-20240509   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                        apsh4ad0a_defconfig   gcc  
-sh                                  defconfig   gcc  
-sh                        edosk7705_defconfig   gcc  
-sh                    randconfig-001-20240509   gcc  
-sh                    randconfig-002-20240509   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240509   gcc  
-sparc64               randconfig-002-20240509   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240509   clang
-um                    randconfig-002-20240509   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240509   clang
-x86_64       buildonly-randconfig-002-20240509   clang
-x86_64       buildonly-randconfig-003-20240509   gcc  
-x86_64       buildonly-randconfig-004-20240509   gcc  
-x86_64       buildonly-randconfig-005-20240509   gcc  
-x86_64       buildonly-randconfig-006-20240509   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240509   gcc  
-x86_64                randconfig-002-20240509   clang
-x86_64                randconfig-003-20240509   gcc  
-x86_64                randconfig-004-20240509   gcc  
-x86_64                randconfig-005-20240509   clang
-x86_64                randconfig-006-20240509   clang
-x86_64                randconfig-011-20240509   clang
-x86_64                randconfig-012-20240509   clang
-x86_64                randconfig-013-20240509   gcc  
-x86_64                randconfig-014-20240509   clang
-x86_64                randconfig-015-20240509   clang
-x86_64                randconfig-016-20240509   gcc  
-x86_64                randconfig-071-20240509   clang
-x86_64                randconfig-072-20240509   clang
-x86_64                randconfig-073-20240509   clang
-x86_64                randconfig-074-20240509   clang
-x86_64                randconfig-075-20240509   clang
-x86_64                randconfig-076-20240509   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20240509   gcc  
-xtensa                randconfig-002-20240509   gcc  
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.10-tag1
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+for you to fetch changes up to ec8c8266373f6283a3e99b036aea7b9428480625:
+
+  m68k: defconfig: Update defconfigs for v6.9-rc1 (2024-05-08 17:43:25 +0200)
+
+----------------------------------------------------------------
+m68k updates for v6.10
+
+  - Fix invalid context sleep and reboot hang on Mac,
+  - Fix spinlock race in kernel thread creation,
+  - Miscellaneous fixes and improvements,
+  - Defconfig updates.
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+Andy Shevchenko (1):
+      zorro: Use helpers from ioport.h
+
+Dawei Li (1):
+      m68k: Calculate THREAD_SIZE from THREAD_SIZE_ORDER
+
+Finn Thain (2):
+      macintosh/via-macii: Fix "BUG: sleeping function called from invalid context"
+      m68k: mac: Fix reboot hang on Mac IIci
+
+Geert Uytterhoeven (2):
+      m68k: Move ARCH_HAS_CPU_CACHE_ALIASING
+      m68k: defconfig: Update defconfigs for v6.9-rc1
+
+Michael Schmitz (1):
+      m68k: Fix spinlock race in kernel thread creation
+
+Niklas Schnelle (1):
+      m68k: Let GENERIC_IOMAP depend on HAS_IOPORT
+
+Thorsten Blum (1):
+      m68k: amiga: Use str_plural() to fix Coccinelle warning
+
+ arch/m68k/Kconfig                    |  4 ++--
+ arch/m68k/amiga/config.c             |  2 +-
+ arch/m68k/configs/amiga_defconfig    |  4 +---
+ arch/m68k/configs/apollo_defconfig   |  4 +---
+ arch/m68k/configs/atari_defconfig    |  4 +---
+ arch/m68k/configs/bvme6000_defconfig |  4 +---
+ arch/m68k/configs/hp300_defconfig    |  4 +---
+ arch/m68k/configs/mac_defconfig      |  4 +---
+ arch/m68k/configs/multi_defconfig    |  4 +---
+ arch/m68k/configs/mvme147_defconfig  |  4 +---
+ arch/m68k/configs/mvme16x_defconfig  |  4 +---
+ arch/m68k/configs/q40_defconfig      |  4 +---
+ arch/m68k/configs/sun3_defconfig     |  4 +---
+ arch/m68k/configs/sun3x_defconfig    |  4 +---
+ arch/m68k/include/asm/thread_info.h  |  9 +++++----
+ arch/m68k/kernel/entry.S             |  4 +++-
+ arch/m68k/mac/misc.c                 | 36 ++++++++++++++++++------------------
+ drivers/macintosh/via-macii.c        | 11 +++--------
+ drivers/zorro/zorro.c                | 14 ++++----------
+ 19 files changed, 48 insertions(+), 80 deletions(-)
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
