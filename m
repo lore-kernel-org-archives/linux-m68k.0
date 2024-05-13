@@ -1,128 +1,262 @@
-Received: from riemann.telenet-ops.be (riemann.telenet-ops.be [195.130.137.80])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43E3214D282
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 13 May 2024 11:19:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 580102D058
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 13 May 2024 18:12:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715599144; cv=none; b=V1hc9tQXoZkf/GfnNGg1L7JzicGYzXpLe/3vZSf6S9BEM2Qx/wXucrHH7IdhuzC41OY1QkOYmA0y/3Vjg0MIv2fJlk79RN+bQCLQ3uepwI2wgj3Z3VWRzl1oaDJKtKiooodUV1ZhryS+ggujK95drEHJ8jT491KLI7tdQsE59iY=
+	t=1715623960; cv=none; b=ndbm45d+1vOEd2VNNzuN8aJ5fLhs+hauUwJByEBz67rMnOERBbUJj6Ux40wCn9iPBOsFA1JvPKQvWj/MnL9J63mzjpAoASdoVMI0bjkxwIwTMxsriSjvW91rKXSVfU6SSdQlUPddw3B1L+4ZScnBl2pWO640tS+qA1YSrg7511c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715599144; c=relaxed/simple;
-	bh=RChba25Ai+3pi3SylBL8EN8VNmPke8+6xM3Q/AA48Q8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fhSTyJF8E/JccG59afNtsnFBP9AYvB6UGb77VbXrzUg2yq6w+6lwW4mJA0d9UTVUEO37fFqGzBs/NWkPbMYyj88RpGA7kDH/+7XdLiVoa38G6oCAHiaTILCDQnzE/roHe2DEDFQfrVsjnMHA2GaY0DlXaaCHi3LCSJgnogEzunM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.80
+	s=arc-20240116; t=1715623960; c=relaxed/simple;
+	bh=V8O8b/a/9SKnu8BvsqCHZuN34e3VNtVB8eSNq1AvVvI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oYMakq1Zaod+o4mHF7aH3aWoLsKw0A6BKAOVDftuAiyjfv1uRusT+ymkbNRYptpn90T7YUTjFRCgd0VYP1sKo3dz0L/Ib0Ioir7FLTm/MA4BxsJgi853VGLx72eW9CkR2CljyPXdbSCFcwW3VwUEaAelTxLnd8TZrXwG69k1vhU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-	by riemann.telenet-ops.be (Postfix) with ESMTPS id 4VdH716N2Gz4wx7G
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 13 May 2024 13:18:53 +0200 (CEST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:c85e:4b6d:1f91:1410])
-	by laurent.telenet-ops.be with bizsmtp
-	id NbJm2C00K5V4kqY01bJm6W; Mon, 13 May 2024 13:18:46 +0200
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1s6Tgq-002tkG-0n;
-	Mon, 13 May 2024 13:18:46 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1s6The-008YWx-47;
-	Mon, 13 May 2024 13:18:46 +0200
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Greg Ungerer <gerg@linux-m68k.org>,
-	linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [GIT PULL] m68k updates for v6.10
-Date: Mon, 13 May 2024 13:18:43 +0200
-Message-Id: <20240513111843.2039350-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-62027fcf9b1so40040227b3.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 13 May 2024 11:12:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715623956; x=1716228756;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qz8i2MYQZHxasbjZ1GiJBGuINHDKmK9M19imzVTEtiM=;
+        b=DqqfDYxh2wunmvSqOQIR03uLYVX7A0UEqO5Db1QRi/bIPSUfDzsDrGQfMeUVVwFuK3
+         O2GW4ztZ5NBcM5t2RxJ4FK5M2263Ff5fMWFuG8j85Kt7dkSS44DGdyOtfuUzTxzYyIu5
+         qw48jytiPIU3JM3bSlVQ1U84KR+RGnuRJSX+LX73tW+wcpnukY3w1icUlO9fxkvk1TcA
+         gQhEpLa4bLcAM78wCp5zOtFjFJGLNGENnG+Ty5uvyNYlo9oHSU/K4A4Qd2KJsYoXp++P
+         iexpb9mdj4+4h0tgZcEYDIjvkg/mqJsXFLMGVTXTfagD7zCtRxsc9FvIVGbwnYE1QFAS
+         85GA==
+X-Forwarded-Encrypted: i=1; AJvYcCXcTuLKQm0Zjm3nv3di+RjE1jpebSQgaI+L2L0AKkM412afYcvY35BPrXQ8GfWerkePcLzLjiRkHG6JybZbAA1eSSQVtxObkhfy25s+YcHB
+X-Gm-Message-State: AOJu0YylISKnRCfF/A/Xe6tugshaSYQD6JHSp+7oPgNxb8gOCfADBJlE
+	1b0oOfjvIrwRkPLpDYLpbEDFPISWncbD3KFKILJkCHxVsBh+GTH8g5wnDUOW
+X-Google-Smtp-Source: AGHT+IHBfjF8RaFk3joHjRDLaaQDiMc2/T7IeNfmzQCi2fNn+yuSjCI0f98RTgSqb7kY/a7drVEayA==
+X-Received: by 2002:a81:4518:0:b0:61a:ffe0:a1d7 with SMTP id 00721157ae682-622af7e5e27mr78902897b3.13.1715623955834;
+        Mon, 13 May 2024 11:12:35 -0700 (PDT)
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6209e346810sm22148387b3.95.2024.05.13.11.12.35
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 May 2024 11:12:35 -0700 (PDT)
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dc6cbe1ac75so3489210276.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 13 May 2024 11:12:35 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUgZfzA2LTPOC5lQy9vNg1JHneRMXClefrVemWJvV1icTOmuJ7VDgD9aZXjtMUow1Z6nZ7nvhlmyzlQ7R2nziATUXFaZYVKd7KuNiQs6Ib0
+X-Received: by 2002:a25:8503:0:b0:dc2:2f3f:2148 with SMTP id
+ 3f1490d57ef6-dee4e57066cmr7440441276.29.1715623955117; Mon, 13 May 2024
+ 11:12:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240509193517.3571694-1-Frank.Li@nxp.com>
+In-Reply-To: <20240509193517.3571694-1-Frank.Li@nxp.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 13 May 2024 20:12:25 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVB2PrkxDMoo0y1y6SLj-yuW5o+PJ+sQn2VtB2yrXzkbw@mail.gmail.com>
+Message-ID: <CAMuHMdVB2PrkxDMoo0y1y6SLj-yuW5o+PJ+sQn2VtB2yrXzkbw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] dmaengine: fsl-edma: merge mcf-edma into fsl-edma driver
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Vinod Koul <vkoul@kernel.org>, 
+	"open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM" <dmaengine@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
+	"open list:FREESCALE eDMA DRIVER" <imx@lists.linux.dev>, Greg Ungerer <gerg@linux-m68k.org>, 
+	Angelo Dureghello <angelo@kernel-space.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-	Hi Linus,
+CC coldfire
 
-The following changes since commit 4cece764965020c22cff7665b18a012006359095:
-
-  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.10-tag1
-
-for you to fetch changes up to ec8c8266373f6283a3e99b036aea7b9428480625:
-
-  m68k: defconfig: Update defconfigs for v6.9-rc1 (2024-05-08 17:43:25 +0200)
-
-----------------------------------------------------------------
-m68k updates for v6.10
-
-  - Fix invalid context sleep and reboot hang on Mac,
-  - Fix spinlock race in kernel thread creation,
-  - Miscellaneous fixes and improvements,
-  - Defconfig updates.
-
-Thanks for pulling!
-
-----------------------------------------------------------------
-Andy Shevchenko (1):
-      zorro: Use helpers from ioport.h
-
-Dawei Li (1):
-      m68k: Calculate THREAD_SIZE from THREAD_SIZE_ORDER
-
-Finn Thain (2):
-      macintosh/via-macii: Fix "BUG: sleeping function called from invalid context"
-      m68k: mac: Fix reboot hang on Mac IIci
-
-Geert Uytterhoeven (2):
-      m68k: Move ARCH_HAS_CPU_CACHE_ALIASING
-      m68k: defconfig: Update defconfigs for v6.9-rc1
-
-Michael Schmitz (1):
-      m68k: Fix spinlock race in kernel thread creation
-
-Niklas Schnelle (1):
-      m68k: Let GENERIC_IOMAP depend on HAS_IOPORT
-
-Thorsten Blum (1):
-      m68k: amiga: Use str_plural() to fix Coccinelle warning
-
- arch/m68k/Kconfig                    |  4 ++--
- arch/m68k/amiga/config.c             |  2 +-
- arch/m68k/configs/amiga_defconfig    |  4 +---
- arch/m68k/configs/apollo_defconfig   |  4 +---
- arch/m68k/configs/atari_defconfig    |  4 +---
- arch/m68k/configs/bvme6000_defconfig |  4 +---
- arch/m68k/configs/hp300_defconfig    |  4 +---
- arch/m68k/configs/mac_defconfig      |  4 +---
- arch/m68k/configs/multi_defconfig    |  4 +---
- arch/m68k/configs/mvme147_defconfig  |  4 +---
- arch/m68k/configs/mvme16x_defconfig  |  4 +---
- arch/m68k/configs/q40_defconfig      |  4 +---
- arch/m68k/configs/sun3_defconfig     |  4 +---
- arch/m68k/configs/sun3x_defconfig    |  4 +---
- arch/m68k/include/asm/thread_info.h  |  9 +++++----
- arch/m68k/kernel/entry.S             |  4 +++-
- arch/m68k/mac/misc.c                 | 36 ++++++++++++++++++------------------
- drivers/macintosh/via-macii.c        | 11 +++--------
- drivers/zorro/zorro.c                | 14 ++++----------
- 19 files changed, 48 insertions(+), 80 deletions(-)
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+On Thu, May 9, 2024 at 9:35=E2=80=AFPM Frank Li <Frank.Li@nxp.com> wrote:
+> MCF eDMA are almost the same as FSL eDMA driver. Previously link to two
+> kernel modules, fsl-edma.ko and mcf-edma.ko. These are not problem becaus=
+e
+> mcf-edma is for m68k ARCH and FSL eDMA is for arm/arm64 ARCH. But often
+> build both at PPC ARCH. It also makes sense to build two drivers at the
+> same time. It causes many build warning because share a fsl-edma-common.o=
+.
+> such as:
+>
+>    powerpc64le-linux-ld: warning: orphan section `.stubs' from `drivers/d=
+ma/fsl-edma-common.o' being placed in section `.stubs'
+>    powerpc64le-linux-ld: warning: orphan section `.stubs' from `drivers/d=
+ma/fsl-edma-trace.o' being placed in section `.stubs'
+>
+> Merge mcf-edma into fsl-edma driver. So use one driver (fsl-edma.ko) for
+> MCF and FSL eDMA.
+>
+> mcf-edma.ko should be replaced by fsl-edma.ko in modules, minimizing user
+> space impact because MCF eDMA remains confined to legacy ColdFire mcf5441=
+x
+> production and mcf5441x has been in production for at least a decade and
+> NXP has long ceased ColdFire development.
+>
+> Update Kconfig to make MCF_EDMA as feature of FSL_EDMA and change Makefil=
+e
+> to link mcl-edma-main.o to fsl-edma.o.
+>
+> Create a common module init/exit functions, which call original's
+> fsl-edma-init[exit]() and mcf-edma-init[exit]().
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202405082029.Es9umH7n-lkp@i=
+ntel.com/
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  drivers/dma/Kconfig           |  8 ++++----
+>  drivers/dma/Makefile          |  5 ++---
+>  drivers/dma/fsl-edma-common.c | 28 ++++++++++++++++++++++++++++
+>  drivers/dma/fsl-edma-common.h |  5 +++++
+>  drivers/dma/fsl-edma-main.c   |  6 ++----
+>  drivers/dma/mcf-edma-main.c   |  6 ++----
+>  6 files changed, 43 insertions(+), 15 deletions(-)
+>
+> diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
+> index 002a5ec806207..45110520f6e68 100644
+> --- a/drivers/dma/Kconfig
+> +++ b/drivers/dma/Kconfig
+> @@ -393,14 +393,14 @@ config LS2X_APB_DMA
+>           It does not support memory to memory data transfer.
+>
+>  config MCF_EDMA
+> -       tristate "Freescale eDMA engine support, ColdFire mcf5441x SoCs"
+> +       bool "Freescale eDMA engine support, ColdFire mcf5441x SoCs"
+>         depends on M5441x || COMPILE_TEST
+>         select DMA_ENGINE
+>         select DMA_VIRTUAL_CHANNELS
+>         help
+> -         Support the Freescale ColdFire eDMA engine, 64-channel
+> -         implementation that performs complex data transfers with
+> -         minimal intervention from a host processor.
+> +         Support the Freescale ColdFire eDMA engine in FSL_EDMA driver,
+> +         64-channel implementation that performs complex data transfers
+> +         with minimal intervention from a host processor.
+>           This module can be found on Freescale ColdFire mcf5441x SoCs.
+>
+>  config MILBEAUT_HDMAC
+> diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
+> index 802ca916f05f5..0000922c7cbfe 100644
+> --- a/drivers/dma/Makefile
+> +++ b/drivers/dma/Makefile
+> @@ -33,11 +33,10 @@ obj-$(CONFIG_DW_EDMA) +=3D dw-edma/
+>  obj-$(CONFIG_EP93XX_DMA) +=3D ep93xx_dma.o
+>  fsl-edma-trace-$(CONFIG_TRACING) :=3D fsl-edma-trace.o
+>  CFLAGS_fsl-edma-trace.o :=3D -I$(src)
+> +mcf-edma-main-$(CONFIG_MCF_EDMA) :=3D mcf-edma-main.o
+>  obj-$(CONFIG_FSL_DMA) +=3D fsldma.o
+> -fsl-edma-objs :=3D fsl-edma-main.o fsl-edma-common.o ${fsl-edma-trace-y}
+> +fsl-edma-objs :=3D fsl-edma-main.o fsl-edma-common.o ${fsl-edma-trace-y}=
+ ${mcf-edma-main-y}
+>  obj-$(CONFIG_FSL_EDMA) +=3D fsl-edma.o
+> -mcf-edma-objs :=3D mcf-edma-main.o fsl-edma-common.o ${fsl-edma-trace-y}
+> -obj-$(CONFIG_MCF_EDMA) +=3D mcf-edma.o
+>  obj-$(CONFIG_FSL_QDMA) +=3D fsl-qdma.o
+>  obj-$(CONFIG_FSL_RAID) +=3D fsl_raid.o
+>  obj-$(CONFIG_HISI_DMA) +=3D hisi_dma.o
+> diff --git a/drivers/dma/fsl-edma-common.c b/drivers/dma/fsl-edma-common.=
+c
+> index 3af4307873157..ac04a2ce4fa1f 100644
+> --- a/drivers/dma/fsl-edma-common.c
+> +++ b/drivers/dma/fsl-edma-common.c
+> @@ -888,4 +888,32 @@ void fsl_edma_setup_regs(struct fsl_edma_engine *edm=
+a)
+>         }
+>  }
+>
+> +static int __init fsl_edma_common_init(void)
+> +{
+> +       int ret;
+> +
+> +       ret =3D fsl_edma_init();
+> +       if (ret)
+> +               return ret;
+> +
+> +#ifdef CONFIG_MCF_EDMA
+> +       ret =3D mcf_edma_init();
+> +       if (ret)
+> +               return ret;
+> +#endif
+> +       return 0;
+> +}
+> +
+> +subsys_initcall(fsl_edma_common_init);
+> +
+> +static void __exit fsl_edma_common_exit(void)
+> +{
+> +       fsl_edma_exit();
+> +
+> +#ifdef CONFIG_MCF_EDMA
+> +       mcf_edma_exit();
+> +#endif
+> +}
+> +module_exit(fsl_edma_common_exit);
+> +
+>  MODULE_LICENSE("GPL v2");
+> diff --git a/drivers/dma/fsl-edma-common.h b/drivers/dma/fsl-edma-common.=
+h
+> index ac66222c16040..dfbdcc922ceea 100644
+> --- a/drivers/dma/fsl-edma-common.h
+> +++ b/drivers/dma/fsl-edma-common.h
+> @@ -488,4 +488,9 @@ void fsl_edma_free_chan_resources(struct dma_chan *ch=
+an);
+>  void fsl_edma_cleanup_vchan(struct dma_device *dmadev);
+>  void fsl_edma_setup_regs(struct fsl_edma_engine *edma);
+>
+> +int __init fsl_edma_init(void);
+> +void __exit fsl_edma_exit(void);
+> +int __init mcf_edma_init(void);
+> +void __exit mcf_edma_exit(void);
+> +
+>  #endif /* _FSL_EDMA_COMMON_H_ */
+> diff --git a/drivers/dma/fsl-edma-main.c b/drivers/dma/fsl-edma-main.c
+> index 391e4f13dfeb0..a1c3c4ed869c5 100644
+> --- a/drivers/dma/fsl-edma-main.c
+> +++ b/drivers/dma/fsl-edma-main.c
+> @@ -724,17 +724,15 @@ static struct platform_driver fsl_edma_driver =3D {
+>         .remove_new     =3D fsl_edma_remove,
+>  };
+>
+> -static int __init fsl_edma_init(void)
+> +int __init fsl_edma_init(void)
+>  {
+>         return platform_driver_register(&fsl_edma_driver);
+>  }
+> -subsys_initcall(fsl_edma_init);
+>
+> -static void __exit fsl_edma_exit(void)
+> +void __exit fsl_edma_exit(void)
+>  {
+>         platform_driver_unregister(&fsl_edma_driver);
+>  }
+> -module_exit(fsl_edma_exit);
+>
+>  MODULE_ALIAS("platform:fsl-edma");
+>  MODULE_DESCRIPTION("Freescale eDMA engine driver");
+> diff --git a/drivers/dma/mcf-edma-main.c b/drivers/dma/mcf-edma-main.c
+> index 78c606f6d0026..d97991a1e9518 100644
+> --- a/drivers/dma/mcf-edma-main.c
+> +++ b/drivers/dma/mcf-edma-main.c
+> @@ -284,17 +284,15 @@ bool mcf_edma_filter_fn(struct dma_chan *chan, void=
+ *param)
+>  }
+>  EXPORT_SYMBOL(mcf_edma_filter_fn);
+>
+> -static int __init mcf_edma_init(void)
+> +int __init mcf_edma_init(void)
+>  {
+>         return platform_driver_register(&mcf_edma_driver);
+>  }
+> -subsys_initcall(mcf_edma_init);
+>
+> -static void __exit mcf_edma_exit(void)
+> +void __exit mcf_edma_exit(void)
+>  {
+>         platform_driver_unregister(&mcf_edma_driver);
+>  }
+> -module_exit(mcf_edma_exit);
+>
+>  MODULE_ALIAS("platform:mcf-edma");
+>  MODULE_DESCRIPTION("Freescale eDMA engine driver, ColdFire family");
+> --
+> 2.34.1
