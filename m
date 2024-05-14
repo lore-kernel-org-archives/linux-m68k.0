@@ -1,262 +1,256 @@
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 580102D058
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 13 May 2024 18:12:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BCE5365
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 14 May 2024 00:27:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715623960; cv=none; b=ndbm45d+1vOEd2VNNzuN8aJ5fLhs+hauUwJByEBz67rMnOERBbUJj6Ux40wCn9iPBOsFA1JvPKQvWj/MnL9J63mzjpAoASdoVMI0bjkxwIwTMxsriSjvW91rKXSVfU6SSdQlUPddw3B1L+4ZScnBl2pWO640tS+qA1YSrg7511c=
+	t=1715646426; cv=none; b=J1Sc8uOU8zU+kxslhMMqjLwFrfi2zwNDr1WM+Jukn+qqYPWMQ07XslVV4N/LglCghEIKR6SnwlH6geZFvPnANFmjCGijxaK4G8OmUSad98e948VcDmM5MmI6YwVVlvPj5Ivrp904JTmAy2EIlTYlcSjESZKG+HrRm6Z5Z0kvPFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715623960; c=relaxed/simple;
-	bh=V8O8b/a/9SKnu8BvsqCHZuN34e3VNtVB8eSNq1AvVvI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oYMakq1Zaod+o4mHF7aH3aWoLsKw0A6BKAOVDftuAiyjfv1uRusT+ymkbNRYptpn90T7YUTjFRCgd0VYP1sKo3dz0L/Ib0Ioir7FLTm/MA4BxsJgi853VGLx72eW9CkR2CljyPXdbSCFcwW3VwUEaAelTxLnd8TZrXwG69k1vhU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-62027fcf9b1so40040227b3.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 13 May 2024 11:12:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715623956; x=1716228756;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qz8i2MYQZHxasbjZ1GiJBGuINHDKmK9M19imzVTEtiM=;
-        b=DqqfDYxh2wunmvSqOQIR03uLYVX7A0UEqO5Db1QRi/bIPSUfDzsDrGQfMeUVVwFuK3
-         O2GW4ztZ5NBcM5t2RxJ4FK5M2263Ff5fMWFuG8j85Kt7dkSS44DGdyOtfuUzTxzYyIu5
-         qw48jytiPIU3JM3bSlVQ1U84KR+RGnuRJSX+LX73tW+wcpnukY3w1icUlO9fxkvk1TcA
-         gQhEpLa4bLcAM78wCp5zOtFjFJGLNGENnG+Ty5uvyNYlo9oHSU/K4A4Qd2KJsYoXp++P
-         iexpb9mdj4+4h0tgZcEYDIjvkg/mqJsXFLMGVTXTfagD7zCtRxsc9FvIVGbwnYE1QFAS
-         85GA==
-X-Forwarded-Encrypted: i=1; AJvYcCXcTuLKQm0Zjm3nv3di+RjE1jpebSQgaI+L2L0AKkM412afYcvY35BPrXQ8GfWerkePcLzLjiRkHG6JybZbAA1eSSQVtxObkhfy25s+YcHB
-X-Gm-Message-State: AOJu0YylISKnRCfF/A/Xe6tugshaSYQD6JHSp+7oPgNxb8gOCfADBJlE
-	1b0oOfjvIrwRkPLpDYLpbEDFPISWncbD3KFKILJkCHxVsBh+GTH8g5wnDUOW
-X-Google-Smtp-Source: AGHT+IHBfjF8RaFk3joHjRDLaaQDiMc2/T7IeNfmzQCi2fNn+yuSjCI0f98RTgSqb7kY/a7drVEayA==
-X-Received: by 2002:a81:4518:0:b0:61a:ffe0:a1d7 with SMTP id 00721157ae682-622af7e5e27mr78902897b3.13.1715623955834;
-        Mon, 13 May 2024 11:12:35 -0700 (PDT)
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6209e346810sm22148387b3.95.2024.05.13.11.12.35
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 May 2024 11:12:35 -0700 (PDT)
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dc6cbe1ac75so3489210276.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 13 May 2024 11:12:35 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUgZfzA2LTPOC5lQy9vNg1JHneRMXClefrVemWJvV1icTOmuJ7VDgD9aZXjtMUow1Z6nZ7nvhlmyzlQ7R2nziATUXFaZYVKd7KuNiQs6Ib0
-X-Received: by 2002:a25:8503:0:b0:dc2:2f3f:2148 with SMTP id
- 3f1490d57ef6-dee4e57066cmr7440441276.29.1715623955117; Mon, 13 May 2024
- 11:12:35 -0700 (PDT)
+	s=arc-20240116; t=1715646426; c=relaxed/simple;
+	bh=6h3w2LgBEX3RYrxT9by08l67dfd1jiJBKbvSXVxf19w=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=rVi0ZUAS0gt9QUxjofnv5TIynMbGtD3dgXjLdgZ3BeAJZJwI4TkuOsLNASfTMAhoYXWGxduakpp1jMgF7PF2YHrmWVww5vQmi6D+nXFMNW2VJ4bOr0W0YTsTUjj38KuCc/WP4oxEMrRVFNB9tLFFQCp43Z4owD5XpztuoD8i3AM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cV3QDL3z; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cV3QDL3z"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1715646425; x=1747182425;
+  h=date:from:to:cc:subject:message-id;
+  bh=6h3w2LgBEX3RYrxT9by08l67dfd1jiJBKbvSXVxf19w=;
+  b=cV3QDL3zlzUaepJ603JdxEcqur86H8veT+bYITdKIvEyVl7pWeJbAZdT
+   gYTRBXTJk2f1gTXjC4usvaIbEwLJCrFRSp9RMW10+5L4yj7enlmuJyt/O
+   y1e1mLtHpnJ2kasQOwcUKZCZZRLTnv2LInRMk3WNqSzAv5DtjP8oZwzrn
+   M9GVPNlxkSJzoNnqYgBFss6TV5KtRlbIsTx0VOuplFyhI1Qz4GuLnGaZW
+   8jU2wtvsw3uMIAaMbCK9RKlFGVG2wXUk1zSyUgDOTvdExfcTHoMJLJUJQ
+   niNTqJCO0CudHHzkeIWbn3E2H4jl++dHneYv8OO4quj3cm/7bbmLO0AUY
+   Q==;
+X-CSE-ConnectionGUID: QDZmgMk3SFy59pmxQl7GpQ==
+X-CSE-MsgGUID: Z1OPEx4sTsaMyMcHglK2fw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11072"; a="22205435"
+X-IronPort-AV: E=Sophos;i="6.08,159,1712646000"; 
+   d="scan'208";a="22205435"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2024 17:27:03 -0700
+X-CSE-ConnectionGUID: mr0pFOgJQTOyh0mVryu+dg==
+X-CSE-MsgGUID: 4/5X0kYaQiGv4ceSide/Ig==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,159,1712646000"; 
+   d="scan'208";a="35379597"
+Received: from lkp-server01.sh.intel.com (HELO f8b243fe6e68) ([10.239.97.150])
+  by orviesa004.jf.intel.com with ESMTP; 13 May 2024 17:27:02 -0700
+Received: from kbuild by f8b243fe6e68 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s6g0R-000Aop-1p;
+	Tue, 14 May 2024 00:26:59 +0000
+Date: Tue, 14 May 2024 08:26:08 +0800
+From: kernel test robot <lkp@intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 0b7dbc6b625c745299add4e0b6fca353054928e9
+Message-ID: <202405140806.jlnlIUBl-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240509193517.3571694-1-Frank.Li@nxp.com>
-In-Reply-To: <20240509193517.3571694-1-Frank.Li@nxp.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 13 May 2024 20:12:25 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVB2PrkxDMoo0y1y6SLj-yuW5o+PJ+sQn2VtB2yrXzkbw@mail.gmail.com>
-Message-ID: <CAMuHMdVB2PrkxDMoo0y1y6SLj-yuW5o+PJ+sQn2VtB2yrXzkbw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] dmaengine: fsl-edma: merge mcf-edma into fsl-edma driver
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Vinod Koul <vkoul@kernel.org>, 
-	"open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM" <dmaengine@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
-	"open list:FREESCALE eDMA DRIVER" <imx@lists.linux.dev>, Greg Ungerer <gerg@linux-m68k.org>, 
-	Angelo Dureghello <angelo@kernel-space.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-CC coldfire
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 0b7dbc6b625c745299add4e0b6fca353054928e9  Merge tag 'v6.9'
 
-On Thu, May 9, 2024 at 9:35=E2=80=AFPM Frank Li <Frank.Li@nxp.com> wrote:
-> MCF eDMA are almost the same as FSL eDMA driver. Previously link to two
-> kernel modules, fsl-edma.ko and mcf-edma.ko. These are not problem becaus=
-e
-> mcf-edma is for m68k ARCH and FSL eDMA is for arm/arm64 ARCH. But often
-> build both at PPC ARCH. It also makes sense to build two drivers at the
-> same time. It causes many build warning because share a fsl-edma-common.o=
-.
-> such as:
->
->    powerpc64le-linux-ld: warning: orphan section `.stubs' from `drivers/d=
-ma/fsl-edma-common.o' being placed in section `.stubs'
->    powerpc64le-linux-ld: warning: orphan section `.stubs' from `drivers/d=
-ma/fsl-edma-trace.o' being placed in section `.stubs'
->
-> Merge mcf-edma into fsl-edma driver. So use one driver (fsl-edma.ko) for
-> MCF and FSL eDMA.
->
-> mcf-edma.ko should be replaced by fsl-edma.ko in modules, minimizing user
-> space impact because MCF eDMA remains confined to legacy ColdFire mcf5441=
-x
-> production and mcf5441x has been in production for at least a decade and
-> NXP has long ceased ColdFire development.
->
-> Update Kconfig to make MCF_EDMA as feature of FSL_EDMA and change Makefil=
-e
-> to link mcl-edma-main.o to fsl-edma.o.
->
-> Create a common module init/exit functions, which call original's
-> fsl-edma-init[exit]() and mcf-edma-init[exit]().
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202405082029.Es9umH7n-lkp@i=
-ntel.com/
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
->  drivers/dma/Kconfig           |  8 ++++----
->  drivers/dma/Makefile          |  5 ++---
->  drivers/dma/fsl-edma-common.c | 28 ++++++++++++++++++++++++++++
->  drivers/dma/fsl-edma-common.h |  5 +++++
->  drivers/dma/fsl-edma-main.c   |  6 ++----
->  drivers/dma/mcf-edma-main.c   |  6 ++----
->  6 files changed, 43 insertions(+), 15 deletions(-)
->
-> diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-> index 002a5ec806207..45110520f6e68 100644
-> --- a/drivers/dma/Kconfig
-> +++ b/drivers/dma/Kconfig
-> @@ -393,14 +393,14 @@ config LS2X_APB_DMA
->           It does not support memory to memory data transfer.
->
->  config MCF_EDMA
-> -       tristate "Freescale eDMA engine support, ColdFire mcf5441x SoCs"
-> +       bool "Freescale eDMA engine support, ColdFire mcf5441x SoCs"
->         depends on M5441x || COMPILE_TEST
->         select DMA_ENGINE
->         select DMA_VIRTUAL_CHANNELS
->         help
-> -         Support the Freescale ColdFire eDMA engine, 64-channel
-> -         implementation that performs complex data transfers with
-> -         minimal intervention from a host processor.
-> +         Support the Freescale ColdFire eDMA engine in FSL_EDMA driver,
-> +         64-channel implementation that performs complex data transfers
-> +         with minimal intervention from a host processor.
->           This module can be found on Freescale ColdFire mcf5441x SoCs.
->
->  config MILBEAUT_HDMAC
-> diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
-> index 802ca916f05f5..0000922c7cbfe 100644
-> --- a/drivers/dma/Makefile
-> +++ b/drivers/dma/Makefile
-> @@ -33,11 +33,10 @@ obj-$(CONFIG_DW_EDMA) +=3D dw-edma/
->  obj-$(CONFIG_EP93XX_DMA) +=3D ep93xx_dma.o
->  fsl-edma-trace-$(CONFIG_TRACING) :=3D fsl-edma-trace.o
->  CFLAGS_fsl-edma-trace.o :=3D -I$(src)
-> +mcf-edma-main-$(CONFIG_MCF_EDMA) :=3D mcf-edma-main.o
->  obj-$(CONFIG_FSL_DMA) +=3D fsldma.o
-> -fsl-edma-objs :=3D fsl-edma-main.o fsl-edma-common.o ${fsl-edma-trace-y}
-> +fsl-edma-objs :=3D fsl-edma-main.o fsl-edma-common.o ${fsl-edma-trace-y}=
- ${mcf-edma-main-y}
->  obj-$(CONFIG_FSL_EDMA) +=3D fsl-edma.o
-> -mcf-edma-objs :=3D mcf-edma-main.o fsl-edma-common.o ${fsl-edma-trace-y}
-> -obj-$(CONFIG_MCF_EDMA) +=3D mcf-edma.o
->  obj-$(CONFIG_FSL_QDMA) +=3D fsl-qdma.o
->  obj-$(CONFIG_FSL_RAID) +=3D fsl_raid.o
->  obj-$(CONFIG_HISI_DMA) +=3D hisi_dma.o
-> diff --git a/drivers/dma/fsl-edma-common.c b/drivers/dma/fsl-edma-common.=
-c
-> index 3af4307873157..ac04a2ce4fa1f 100644
-> --- a/drivers/dma/fsl-edma-common.c
-> +++ b/drivers/dma/fsl-edma-common.c
-> @@ -888,4 +888,32 @@ void fsl_edma_setup_regs(struct fsl_edma_engine *edm=
-a)
->         }
->  }
->
-> +static int __init fsl_edma_common_init(void)
-> +{
-> +       int ret;
-> +
-> +       ret =3D fsl_edma_init();
-> +       if (ret)
-> +               return ret;
-> +
-> +#ifdef CONFIG_MCF_EDMA
-> +       ret =3D mcf_edma_init();
-> +       if (ret)
-> +               return ret;
-> +#endif
-> +       return 0;
-> +}
-> +
-> +subsys_initcall(fsl_edma_common_init);
-> +
-> +static void __exit fsl_edma_common_exit(void)
-> +{
-> +       fsl_edma_exit();
-> +
-> +#ifdef CONFIG_MCF_EDMA
-> +       mcf_edma_exit();
-> +#endif
-> +}
-> +module_exit(fsl_edma_common_exit);
-> +
->  MODULE_LICENSE("GPL v2");
-> diff --git a/drivers/dma/fsl-edma-common.h b/drivers/dma/fsl-edma-common.=
-h
-> index ac66222c16040..dfbdcc922ceea 100644
-> --- a/drivers/dma/fsl-edma-common.h
-> +++ b/drivers/dma/fsl-edma-common.h
-> @@ -488,4 +488,9 @@ void fsl_edma_free_chan_resources(struct dma_chan *ch=
-an);
->  void fsl_edma_cleanup_vchan(struct dma_device *dmadev);
->  void fsl_edma_setup_regs(struct fsl_edma_engine *edma);
->
-> +int __init fsl_edma_init(void);
-> +void __exit fsl_edma_exit(void);
-> +int __init mcf_edma_init(void);
-> +void __exit mcf_edma_exit(void);
-> +
->  #endif /* _FSL_EDMA_COMMON_H_ */
-> diff --git a/drivers/dma/fsl-edma-main.c b/drivers/dma/fsl-edma-main.c
-> index 391e4f13dfeb0..a1c3c4ed869c5 100644
-> --- a/drivers/dma/fsl-edma-main.c
-> +++ b/drivers/dma/fsl-edma-main.c
-> @@ -724,17 +724,15 @@ static struct platform_driver fsl_edma_driver =3D {
->         .remove_new     =3D fsl_edma_remove,
->  };
->
-> -static int __init fsl_edma_init(void)
-> +int __init fsl_edma_init(void)
->  {
->         return platform_driver_register(&fsl_edma_driver);
->  }
-> -subsys_initcall(fsl_edma_init);
->
-> -static void __exit fsl_edma_exit(void)
-> +void __exit fsl_edma_exit(void)
->  {
->         platform_driver_unregister(&fsl_edma_driver);
->  }
-> -module_exit(fsl_edma_exit);
->
->  MODULE_ALIAS("platform:fsl-edma");
->  MODULE_DESCRIPTION("Freescale eDMA engine driver");
-> diff --git a/drivers/dma/mcf-edma-main.c b/drivers/dma/mcf-edma-main.c
-> index 78c606f6d0026..d97991a1e9518 100644
-> --- a/drivers/dma/mcf-edma-main.c
-> +++ b/drivers/dma/mcf-edma-main.c
-> @@ -284,17 +284,15 @@ bool mcf_edma_filter_fn(struct dma_chan *chan, void=
- *param)
->  }
->  EXPORT_SYMBOL(mcf_edma_filter_fn);
->
-> -static int __init mcf_edma_init(void)
-> +int __init mcf_edma_init(void)
->  {
->         return platform_driver_register(&mcf_edma_driver);
->  }
-> -subsys_initcall(mcf_edma_init);
->
-> -static void __exit mcf_edma_exit(void)
-> +void __exit mcf_edma_exit(void)
->  {
->         platform_driver_unregister(&mcf_edma_driver);
->  }
-> -module_exit(mcf_edma_exit);
->
->  MODULE_ALIAS("platform:mcf-edma");
->  MODULE_DESCRIPTION("Freescale eDMA engine driver, ColdFire family");
-> --
-> 2.34.1
+elapsed time: 723m
+
+configs tested: 179
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240513   gcc  
+arc                   randconfig-002-20240513   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                        multi_v5_defconfig   gcc  
+arm                        mvebu_v7_defconfig   clang
+arm                   randconfig-001-20240513   clang
+arm                   randconfig-002-20240513   gcc  
+arm                   randconfig-003-20240513   clang
+arm                   randconfig-004-20240513   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240513   gcc  
+arm64                 randconfig-002-20240513   gcc  
+arm64                 randconfig-003-20240513   clang
+arm64                 randconfig-004-20240513   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240513   gcc  
+csky                  randconfig-002-20240513   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240513   clang
+hexagon               randconfig-002-20240513   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240513   clang
+i386         buildonly-randconfig-002-20240513   clang
+i386         buildonly-randconfig-003-20240513   gcc  
+i386         buildonly-randconfig-004-20240513   clang
+i386         buildonly-randconfig-005-20240513   gcc  
+i386         buildonly-randconfig-006-20240513   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240513   gcc  
+i386                  randconfig-002-20240513   clang
+i386                  randconfig-003-20240513   gcc  
+i386                  randconfig-004-20240513   clang
+i386                  randconfig-005-20240513   gcc  
+i386                  randconfig-006-20240513   gcc  
+i386                  randconfig-011-20240513   gcc  
+i386                  randconfig-012-20240513   clang
+i386                  randconfig-013-20240513   clang
+i386                  randconfig-014-20240513   gcc  
+i386                  randconfig-015-20240513   gcc  
+i386                  randconfig-016-20240513   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240513   gcc  
+loongarch             randconfig-002-20240513   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                         amcore_defconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                          hp300_defconfig   gcc  
+m68k                       m5475evb_defconfig   gcc  
+m68k                        mvme147_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                        maltaup_defconfig   clang
+mips                          rb532_defconfig   clang
+mips                           xway_defconfig   clang
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240513   gcc  
+nios2                 randconfig-002-20240513   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240513   gcc  
+parisc                randconfig-002-20240513   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                     kilauea_defconfig   clang
+powerpc                 mpc8315_rdb_defconfig   clang
+powerpc                       ppc64_defconfig   clang
+powerpc               randconfig-001-20240513   gcc  
+powerpc               randconfig-002-20240513   gcc  
+powerpc               randconfig-003-20240513   gcc  
+powerpc                 xes_mpc85xx_defconfig   gcc  
+powerpc64             randconfig-001-20240513   gcc  
+powerpc64             randconfig-002-20240513   clang
+powerpc64             randconfig-003-20240513   clang
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240513   gcc  
+riscv                 randconfig-002-20240513   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240513   gcc  
+s390                  randconfig-002-20240513   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                         apsh4a3a_defconfig   gcc  
+sh                                  defconfig   gcc  
+sh                ecovec24-romimage_defconfig   gcc  
+sh                    randconfig-001-20240513   gcc  
+sh                    randconfig-002-20240513   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          alldefconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240513   gcc  
+sparc64               randconfig-002-20240513   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240513   clang
+um                    randconfig-002-20240513   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240513   gcc  
+x86_64       buildonly-randconfig-002-20240513   gcc  
+x86_64       buildonly-randconfig-003-20240513   gcc  
+x86_64       buildonly-randconfig-004-20240513   clang
+x86_64       buildonly-randconfig-005-20240513   clang
+x86_64       buildonly-randconfig-006-20240513   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240513   clang
+x86_64                randconfig-002-20240513   clang
+x86_64                randconfig-003-20240513   clang
+x86_64                randconfig-004-20240513   gcc  
+x86_64                randconfig-005-20240513   clang
+x86_64                randconfig-006-20240513   clang
+x86_64                randconfig-011-20240513   clang
+x86_64                randconfig-012-20240513   gcc  
+x86_64                randconfig-013-20240513   clang
+x86_64                randconfig-014-20240513   clang
+x86_64                randconfig-015-20240513   gcc  
+x86_64                randconfig-016-20240513   clang
+x86_64                randconfig-071-20240513   clang
+x86_64                randconfig-072-20240513   clang
+x86_64                randconfig-073-20240513   clang
+x86_64                randconfig-074-20240513   gcc  
+x86_64                randconfig-075-20240513   gcc  
+x86_64                randconfig-076-20240513   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240513   gcc  
+xtensa                randconfig-002-20240513   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
