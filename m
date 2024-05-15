@@ -1,37 +1,53 @@
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+Received: from mail.kernel-space.org (mail.kernel-space.org [195.201.34.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54294EDF
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 15 May 2024 07:56:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103F54D5A0
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 15 May 2024 08:18:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.201.34.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715759816; cv=none; b=rldbZlhkr/sp4oeV3O8ovsXgZcUywsx34vy4Y5kHGu76qaA3rcqZcKY6vvBzP+c4fXKTiBit8PVFl1tu84OzEeXRuLrqTe5Wimo0FzbUp8pwDblV6Y2f1JCPNNfHdtBLp3gyqlLsV0qv01GRD+oH5VoRKihlyTFu21/TsmbJhYg=
+	t=1715761113; cv=none; b=ICNYTiQA2ku/WagVHUokX24hYJBTTV0Rlh5JjIVsEQWOadb8Bjt3AmrGWLaQ8QjsjtA31qoctZyEk+EHHOhmFxXaQWXbSxgMV7ek4M+KH1jqUU/sd9LEhKp+jRY7EDK92+aS6ApjqhhakP9YGQx+Wpsm339ApEM3BBmL1D8VgYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715759816; c=relaxed/simple;
-	bh=HyBX3oqZRMchN++B28ipyI/d7OU4py9silSsIGMkkhA=;
+	s=arc-20240116; t=1715761113; c=relaxed/simple;
+	bh=DuYzdQ4ozjzwNMHsNhG1o4oV3Dk1UgDXVGvCW21lIrI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=H1LgAqYoAJn+BC7sFBwJj/HAnXBwk54jTgj8OgkVR19dtJQ6p/iPo1Nmy8w8ZGHP4nEVpID+Z2TjYfOehjH5Kkr77jW0f6SdRZf1heLjZyq6IWheCA+Adq2WHNrjnBbRVQqo2Wjc30E1fJ3QAb6yEp3x4tKGIMuuYBIFQH0HwC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=QL0mUWEa; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
+	 In-Reply-To:Content-Type; b=ZXJBmr1nVbzs987jv5ZPDR/c3FKIBdEOPbtpHzUuqYSBAsHOYl5OKoXA7KzndgN4tLgz8P2U0kNIzDqnm4GhU9VWbuCNoK/ym5MtA3VRKzRAA49KbBeTEDJOVDm+aW+He8yhwf/52Si/qw1a+/OFWMYUEqtLNQFygW8f/fWeBcI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kernel-space.org; spf=pass smtp.mailfrom=kernel-space.org; dkim=pass (1024-bit key) header.d=kernel-space.org header.i=@kernel-space.org header.b=iz4yb1kT; dkim=pass (1024-bit key) header.d=kernel-space.org header.i=@kernel-space.org header.b=gRY85KDA; arc=none smtp.client-ip=195.201.34.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kernel-space.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel-space.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="QL0mUWEa"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9A4E4240002;
-	Wed, 15 May 2024 07:56:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1715759806;
+	dkim=pass (1024-bit key) header.d=kernel-space.org header.i=@kernel-space.org header.b="iz4yb1kT";
+	dkim=pass (1024-bit key) header.d=kernel-space.org header.i=@kernel-space.org header.b="gRY85KDA"
+Received: from kernel-space.org (localhost [127.0.0.1])
+	by kernel-space.org (OpenSMTPD) with ESMTP id c3490496;
+	Wed, 15 May 2024 08:17:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=kernel-space.org; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=s1; bh=sM
+	N8lvPPVflPnoZoJveKf8Q1ADo=; b=iz4yb1kT/R5n218pcQTbTv7zNhMJhaIZF2
+	Hey1fHzjt0wJQHEfVNCHfYQHc2ZokHQYp/QFKnFRLFxlWQ9rXr3+jzoSChiNGGrJ
+	zi3x6vCHegOR/YhX1O14CBoBfVL/UWOWVbajWciUAS38GwITBA76x6dguz95Z5zq
+	26y3K8BeI=
+DomainKey-Signature: a=rsa-sha1; c=nofws; d=kernel-space.org; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; q=dns; s=s1; b=
+	gvbuRt+0x7h/mpjd8uXfXhWtqWk0nTsXE5btV7YKh6sK3otblK47/LkWxVfkFR1v
+	qfvn0/G+OrtWp+kvcWPDppR9FEYdzaYl3fwi7Ms+JLMRVNn3UpLFEnBuSOYgNrrM
+	Mu8baNBTaoXLsOw8UHhY3tao0xeLBHyuCri7WI6ldG4=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel-space.org;
+	s=s1; t=1715761023;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=xJdAAxrHUp2f3V1ekE0zUU2u8VlqZRoXwnJNdDFDhAE=;
-	b=QL0mUWEaBwIsdhLVz56DKMJ20/dUJUlNBc0Y/P4IwBkNJZraAs4voBVvlqV/P+I+7/eBmc
-	6JbGBrhz12UvYhWTx55MC4VzP60yC5lOC5We/WF4YI26tI7sHxpXuSF267pb1O0BHG5r2M
-	jlMoXXGIYXvfFoxOD8iWktQ4zG1NLwV1MRJNtFEuidnxv+0qYifqRX/IMQGy2Go5NQZ85a
-	JrwUljhvVNPmxbLImP0LRRdXlsYiBXuQr2AxBVi8c8lfMIsGKucpPAZd7PqDcrqishAL+8
-	nX1OAWVBaPc+vvZeT0D7uO21d6K7vMnhSNn0rv0Py93NVfXbcjd7tInr3wi0TA==
-Message-ID: <45745b6a-341c-4f9c-8787-6154393d1223@yoseli.org>
-Date: Wed, 15 May 2024 09:56:46 +0200
+	bh=dxVOup/aVv/MpYJYTFVG9d1ZR33d+RcbxnWYhtAFX2Y=;
+	b=gRY85KDAmNWKDoNuYm2yHHGm2JW7H3sZ7khqKkOM3xnsjYzHEjOQSps9dSCXSruOnhBkpv
+	MuytPo/DSoDMrEZUe7jSfEdIirpbwwi4INWmZ5i9B9QeNtUf5B40FSce4oaKE7tZ57P+1q
+	ChPsBvEZ0gm26ySmPs2gKJYwNKzEZCs=
+Received: from [192.168.0.2] (host-79-16-6-145.retail.telecomitalia.it [79.16.6.145])
+	by kernel-space.org (OpenSMTPD) with ESMTPSA id 8ac6b507 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Wed, 15 May 2024 08:17:03 +0000 (UTC)
+Message-ID: <04720832-afc4-44a7-be90-22fe582df45c@kernel-space.org>
+Date: Wed, 15 May 2024 10:17:41 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -39,173 +55,237 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Kernel Image Format Issue - Coldfire mcf54418 CPU Failing to Boot
-To: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@lists.linux-m68k.org
-Cc: geert@linux-m68k.org, gerg@linux-m68k.org
-References: <68ec857f-a559-4f71-87ba-425b4ee7c9c7@yoseli.org>
- <d18dab84-f6d8-4732-88cb-8b95bd4487f3@gmail.com>
+Subject: Re: [PATCH 1/1] dmaengine: fsl-edma: merge mcf-edma into fsl-edma
+ driver
+To: Frank Li <Frank.li@nxp.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Vinod Koul <vkoul@kernel.org>,
+ "open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM"
+ <dmaengine@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
+ "open list:FREESCALE eDMA DRIVER" <imx@lists.linux.dev>,
+ Greg Ungerer <gerg@linux-m68k.org>,
+ linux-m68k <linux-m68k@lists.linux-m68k.org>
+References: <20240509193517.3571694-1-Frank.Li@nxp.com>
+ <CAMuHMdVB2PrkxDMoo0y1y6SLj-yuW5o+PJ+sQn2VtB2yrXzkbw@mail.gmail.com>
+ <bd538260-2403-4912-961c-549c74aead76@kernel-space.org>
+ <ZkOOSRMxX8MAO/3W@lizhi-Precision-Tower-5810>
 Content-Language: en-US
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-In-Reply-To: <d18dab84-f6d8-4732-88cb-8b95bd4487f3@gmail.com>
+From: Angelo Dureghello <angelo@kernel-space.org>
+In-Reply-To: <ZkOOSRMxX8MAO/3W@lizhi-Precision-Tower-5810>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-Hi Michael,
+Hi,
+
+On 14/05/24 6:16 PM, Frank Li wrote:
+> On Tue, May 14, 2024 at 09:57:09AM +0200, Angelo Dureghello wrote:
+>> Hi,
+>>
+>> On 13/05/24 8:12 PM, Geert Uytterhoeven wrote:
+>>> CC coldfire
+>>>
+>>> On Thu, May 9, 2024 at 9:35 PM Frank Li <Frank.Li@nxp.com> wrote:
+>>>> MCF eDMA are almost the same as FSL eDMA driver. Previously link to two
+>>>> kernel modules, fsl-edma.ko and mcf-edma.ko. These are not problem because
+>>>> mcf-edma is for m68k ARCH and FSL eDMA is for arm/arm64 ARCH. But often
+>>>> build both at PPC ARCH. It also makes sense to build two drivers at the
+>>>> same time. It causes many build warning because share a fsl-edma-common.o.
+>>>> such as:
+>>>>
+>>>>      powerpc64le-linux-ld: warning: orphan section `.stubs' from `drivers/dma/fsl-edma-common.o' being placed in section `.stubs'
+>>>>      powerpc64le-linux-ld: warning: orphan section `.stubs' from `drivers/dma/fsl-edma-trace.o' being placed in section `.stubs'
+>>>>
+>>>> Merge mcf-edma into fsl-edma driver. So use one driver (fsl-edma.ko) for
+>>>> MCF and FSL eDMA.
+>>>>
+>>>> mcf-edma.ko should be replaced by fsl-edma.ko in modules, minimizing user
+>>>> space impact because MCF eDMA remains confined to legacy ColdFire mcf5441x
+>>>> production and mcf5441x has been in production for at least a decade and
+>>>> NXP has long ceased ColdFire development.
+>> when i developed mcf-edma, i tried to modify fsl-edma first. Modules are
+>> similar but there are various edma IP versions, and i remember minimal
+>> differences in the CF version too, some register bits and, of course,
+>> endianness.
+>>
+>> If a merge is possible, welcome, i have here mcf5441x, can give a try to
+>> this patch as soon as i can.
+> Thanks. I am not sure if recent eDMAv3 and eDMAv5 patch impact mcf5441.
+> eDMAv3 is quite big change. If you can test on mcf5441x, can I send to you
+> a futher clean up for mcf5441x?
 
 
-On 14/05/2024 22:16, Michael Schmitz wrote:
-> Jean-Michel,
-> 
-> 'BIV' is probably a bootinfo tag (Boot Info Version).
-
-Thanks, it helped me, as I read the head.S file and finally progressed :-).
-
-When dumping my vmlinux, I can see the entry point is *not* the load 
-address (it was in the old one):
-vmlinux:     file format elf32-m68k
+sure
 
 
-Disassembly of section .text:
+> This patch are just simple glue two
+> driver together to avoid a build warning.
 
-40001000 <_stext>:
-40001000:	4ef9 4000 2000 	jmp 40002000 <_start>
-	...
 
-40002000 <_start>:
-40002000:	4e71           	nop
-40002002:	46fc 2700      	movew #9984,%sr
-40002006:	203c 0104 0100 	movel #17039616,%d0
-4000200c:	4e7b 0002      	movec %d0,%cacr
-40002010:	4e71           	nop
 
-Now, when uboot starts the kernel, it is not doing anything (not sure if 
-it hangs or does not display anything on the console. And EARLY_PRINTK 
-is not valid for coldfire :-(. Not sure why, so any guidance here would 
-be appreciate too !
+>>
+>>>> Update Kconfig to make MCF_EDMA as feature of FSL_EDMA and change Makefile
+>>>> to link mcl-edma-main.o to fsl-edma.o.
+>>>>
+>>>> Create a common module init/exit functions, which call original's
+>>>> fsl-edma-init[exit]() and mcf-edma-init[exit]().
+>>>>
+>>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>> Closes: https://lore.kernel.org/oe-kbuild-all/202405082029.Es9umH7n-lkp@intel.com/
+>>>> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+>>>> ---
+>>>>    drivers/dma/Kconfig           |  8 ++++----
+>>>>    drivers/dma/Makefile          |  5 ++---
+>>>>    drivers/dma/fsl-edma-common.c | 28 ++++++++++++++++++++++++++++
+>>>>    drivers/dma/fsl-edma-common.h |  5 +++++
+>>>>    drivers/dma/fsl-edma-main.c   |  6 ++----
+>>>>    drivers/dma/mcf-edma-main.c   |  6 ++----
+>>>>    6 files changed, 43 insertions(+), 15 deletions(-)
+>>>>
+>>>> diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
+>>>> index 002a5ec806207..45110520f6e68 100644
+>>>> --- a/drivers/dma/Kconfig
+>>>> +++ b/drivers/dma/Kconfig
+>>>> @@ -393,14 +393,14 @@ config LS2X_APB_DMA
+>>>>             It does not support memory to memory data transfer.
+>>>>
+>>>>    config MCF_EDMA
+>>>> -       tristate "Freescale eDMA engine support, ColdFire mcf5441x SoCs"
+>>>> +       bool "Freescale eDMA engine support, ColdFire mcf5441x SoCs"
+>>>>           depends on M5441x || COMPILE_TEST
+>>>>           select DMA_ENGINE
+>>>>           select DMA_VIRTUAL_CHANNELS
+>>>>           help
+>>>> -         Support the Freescale ColdFire eDMA engine, 64-channel
+>>>> -         implementation that performs complex data transfers with
+>>>> -         minimal intervention from a host processor.
+>>>> +         Support the Freescale ColdFire eDMA engine in FSL_EDMA driver,
+>>>> +         64-channel implementation that performs complex data transfers
+>>>> +         with minimal intervention from a host processor.
+>>>>             This module can be found on Freescale ColdFire mcf5441x SoCs.
+>>>>
+>>>>    config MILBEAUT_HDMAC
+>>>> diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
+>>>> index 802ca916f05f5..0000922c7cbfe 100644
+>>>> --- a/drivers/dma/Makefile
+>>>> +++ b/drivers/dma/Makefile
+>>>> @@ -33,11 +33,10 @@ obj-$(CONFIG_DW_EDMA) += dw-edma/
+>>>>    obj-$(CONFIG_EP93XX_DMA) += ep93xx_dma.o
+>>>>    fsl-edma-trace-$(CONFIG_TRACING) := fsl-edma-trace.o
+>>>>    CFLAGS_fsl-edma-trace.o := -I$(src)
+>>>> +mcf-edma-main-$(CONFIG_MCF_EDMA) := mcf-edma-main.o
+>>>>    obj-$(CONFIG_FSL_DMA) += fsldma.o
+>>>> -fsl-edma-objs := fsl-edma-main.o fsl-edma-common.o ${fsl-edma-trace-y}
+>>>> +fsl-edma-objs := fsl-edma-main.o fsl-edma-common.o ${fsl-edma-trace-y} ${mcf-edma-main-y}
+>>>>    obj-$(CONFIG_FSL_EDMA) += fsl-edma.o
+>>>> -mcf-edma-objs := mcf-edma-main.o fsl-edma-common.o ${fsl-edma-trace-y}
+>>>> -obj-$(CONFIG_MCF_EDMA) += mcf-edma.o
+>>>>    obj-$(CONFIG_FSL_QDMA) += fsl-qdma.o
+>>>>    obj-$(CONFIG_FSL_RAID) += fsl_raid.o
+>>>>    obj-$(CONFIG_HISI_DMA) += hisi_dma.o
+>>>> diff --git a/drivers/dma/fsl-edma-common.c b/drivers/dma/fsl-edma-common.c
+>>>> index 3af4307873157..ac04a2ce4fa1f 100644
+>>>> --- a/drivers/dma/fsl-edma-common.c
+>>>> +++ b/drivers/dma/fsl-edma-common.c
+>>>> @@ -888,4 +888,32 @@ void fsl_edma_setup_regs(struct fsl_edma_engine *edma)
+>>>>           }
+>>>>    }
+>>>>
+>>>> +static int __init fsl_edma_common_init(void)
+>>>> +{
+>>>> +       int ret;
+>>>> +
+>>>> +       ret = fsl_edma_init();
+>>>> +       if (ret)
+>>>> +               return ret;
+>>>> +
+>>>> +#ifdef CONFIG_MCF_EDMA
+>>>> +       ret = mcf_edma_init();
+>>>> +       if (ret)
+>>>> +               return ret;
+>>>> +#endif
+>>>> +       return 0;
+>>>> +}
+>>>> +
+>>>> +subsys_initcall(fsl_edma_common_init);
+>>>> +
+>>>> +static void __exit fsl_edma_common_exit(void)
+>>>> +{
+>>>> +       fsl_edma_exit();
+>>>> +
+>>>> +#ifdef CONFIG_MCF_EDMA
+>>>> +       mcf_edma_exit();
+>>>> +#endif
+>>>> +}
+>>>> +module_exit(fsl_edma_common_exit);
+>>>> +
+>>>>    MODULE_LICENSE("GPL v2");
+>>>> diff --git a/drivers/dma/fsl-edma-common.h b/drivers/dma/fsl-edma-common.h
+>>>> index ac66222c16040..dfbdcc922ceea 100644
+>>>> --- a/drivers/dma/fsl-edma-common.h
+>>>> +++ b/drivers/dma/fsl-edma-common.h
+>>>> @@ -488,4 +488,9 @@ void fsl_edma_free_chan_resources(struct dma_chan *chan);
+>>>>    void fsl_edma_cleanup_vchan(struct dma_device *dmadev);
+>>>>    void fsl_edma_setup_regs(struct fsl_edma_engine *edma);
+>>>>
+>>>> +int __init fsl_edma_init(void);
+>>>> +void __exit fsl_edma_exit(void);
+>>>> +int __init mcf_edma_init(void);
+>>>> +void __exit mcf_edma_exit(void);
+>>>> +
+>>>>    #endif /* _FSL_EDMA_COMMON_H_ */
+>>>> diff --git a/drivers/dma/fsl-edma-main.c b/drivers/dma/fsl-edma-main.c
+>>>> index 391e4f13dfeb0..a1c3c4ed869c5 100644
+>>>> --- a/drivers/dma/fsl-edma-main.c
+>>>> +++ b/drivers/dma/fsl-edma-main.c
+>>>> @@ -724,17 +724,15 @@ static struct platform_driver fsl_edma_driver = {
+>>>>           .remove_new     = fsl_edma_remove,
+>>>>    };
+>>>>
+>>>> -static int __init fsl_edma_init(void)
+>>>> +int __init fsl_edma_init(void)
+>>>>    {
+>>>>           return platform_driver_register(&fsl_edma_driver);
+>>>>    }
+>>>> -subsys_initcall(fsl_edma_init);
+>>>>
+>>>> -static void __exit fsl_edma_exit(void)
+>>>> +void __exit fsl_edma_exit(void)
+>>>>    {
+>>>>           platform_driver_unregister(&fsl_edma_driver);
+>>>>    }
+>>>> -module_exit(fsl_edma_exit);
+>>>>
+>>>>    MODULE_ALIAS("platform:fsl-edma");
+>>>>    MODULE_DESCRIPTION("Freescale eDMA engine driver");
+>>>> diff --git a/drivers/dma/mcf-edma-main.c b/drivers/dma/mcf-edma-main.c
+>>>> index 78c606f6d0026..d97991a1e9518 100644
+>>>> --- a/drivers/dma/mcf-edma-main.c
+>>>> +++ b/drivers/dma/mcf-edma-main.c
+>>>> @@ -284,17 +284,15 @@ bool mcf_edma_filter_fn(struct dma_chan *chan, void *param)
+>>>>    }
+>>>>    EXPORT_SYMBOL(mcf_edma_filter_fn);
+>>>>
+>>>> -static int __init mcf_edma_init(void)
+>>>> +int __init mcf_edma_init(void)
+>>>>    {
+>>>>           return platform_driver_register(&mcf_edma_driver);
+>>>>    }
+>>>> -subsys_initcall(mcf_edma_init);
+>>>>
+>>>> -static void __exit mcf_edma_exit(void)
+>>>> +void __exit mcf_edma_exit(void)
+>>>>    {
+>>>>           platform_driver_unregister(&mcf_edma_driver);
+>>>>    }
+>>>> -module_exit(mcf_edma_exit);
+>>>>
+>>>>    MODULE_ALIAS("platform:mcf-edma");
+>>>>    MODULE_DESCRIPTION("Freescale eDMA engine driver, ColdFire family");
+>>>> --
+>>>> 2.34.1
+>> Regards,
+>> angelo
+>>
+Regards,
+angelo
 
-I will now check my platform file but at least I am not trying to 
-execute an instruction "0" :-).
 
-Thanks,
-JM
-
-> 
-> Cheers,
-> 
->      Michael
-> 
-> On 15/05/24 07:11, Jean-Michel Hautbois wrote:
->> Hello,
->>
->> I have been on this for a long time now, and I think it is time to ask 
->> for some help as the answer might be "easy" :-).
->>
->> I'm trying to boot an upstream Linux kernel (version 6.1.83 from CIP) 
->> on a custom board which already runs an old one (3.0.12).
->>
->> I'm encountering an issue where the CPU fails to boot with an 
->> "Unexpected exception" error when u-boot calls bootm.
->>
->> -> bootm
->> ## Booting kernel from Legacy Image at 41000000 ...
->>    Image Name:   Linux-6.1.83-cip18-rt10
->>    Created:      2024-04-17   5:42:32 UTC
->>    Image Type:   M68K Linux Kernel Image (uncompressed)
->>    Data Size:    5684872 Bytes =  5.4 MB
->>    Load Address: 40001000
->>    Entry Point:  40001000
->>    Checksum:  6bc7660a
->>    Verifying Checksum ... OK
->>    Loading Kernel Image ... OK
->> OK
->>
->>
->> *** Unexpected exception ***
->> Vector Number: 5  Format: 04  Fault Status: 0
->>
->> PC: 40001002    SR: 00002700    SP: 4fd5fcdc
->> D0: 00000000    D1: 00000003    D2: 4fdfa71c    D3: 00000000
->> D4: 00000000    D5: 00000001    D6: 00000000    D7: 00000001
->> A0: 00000000    A1: 4fd71494    A2: 40001000    A3: 4fdfa690
->> A4: 4fd91b30    A5: 4fdf3600    A6: 4fd5fd64
->>
->> *** Please Reset Board! ***
->>
->> I tried to use different Load and Entry adress but this is not having 
->> any effect.
->>
->> Sadly, I can't use the (very) old toolchain to build my kernel, and I 
->> can't build the old kernel with the toolchain I generated. It has been 
->> done with buildroot and I can provide some information if this is 
->> relevant.
->> To summarize:
->> - It has MMU enabled
->> - The cpu is passed with -mcpu=54418
->> - The architecture is passed with -march=isac
->>
->> As the u-boot version I have can't be updated (at least not easily) I 
->> need to provide a uImage, so I call mkimage for this when the vmlinux 
->> file is generated.
->>
->> I've compared the kernel image format with an older working kernel 
->> image, and it seems the issue is related to the kernel image format.
->>
->> ```
->> $> hexdump -C uImage-3.0.12 |head
->> 00000000  27 05 19 56 c6 4d 40 59  62 ac 6a be 00 2f a2 00 
->> |'..V.M@Yb.j../..|
->> 00000010  40 02 00 00 40 02 00 00  74 e8 ca f4 05 0c 02 00 
->> |@...@...t.......|
->> 00000020  4c 69 6e 75 78 2d 33 2e  30 2e 31 32 2d 72 74 33 
->> |Linux-3.0.12-rt3|
->> 00000030  33 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 
->> |3...............|
->> 00000040  60 08 42 49 56 1a 00 00  00 00 4e f9 40 30 20 00 
->> |`.BIV.....N.@0 .|
->> 00000050  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 
->> |................|
->> *
->> 00001040  4e f9 40 30 20 00 4e 56  00 00 9f fc 00 00 00 04  |N.@0 
->> .NV........|
->> 00001050  48 d7 00 01 20 2f 00 0c  4e 7b 00 03 4c d7 00 01  |H... 
->> /..N{..L...|
->> 00001060  df fc 00 00 00 04 4e 5e  4e 75 00 00 4e 75 4e 75 
->> |......N^Nu..NuNu|
->> ```
->>
->> ```
->> hexdump -C output/images/uImage |head
->> 00000000  27 05 19 56 ab 1d 06 74  66 1f 61 48 00 56 be 88 
->> |'..V...tf.aH.V..|
->> 00000010  40 00 10 00 40 00 10 00  6b c7 66 0a 05 0c 02 00 
->> |@...@...k.f.....|
->> 00000020  4c 69 6e 75 78 2d 36 2e  31 2e 38 33 2d 63 69 70 
->> |Linux-6.1.83-cip|
->> 00000030  31 38 2d 72 74 31 30 00  00 00 00 00 00 00 00 00 
->> |18-rt10.........|
->> 00000040  7f 45 4c 46 01 02 01 00  00 00 00 00 00 00 00 00 
->> |.ELF............|
->> 00000050  00 02 00 04 00 00 00 01  40 00 20 00 00 00 00 34 |........@. 
->> ....4|
->> 00000060  00 56 bb b8 00 00 00 26  00 34 00 20 00 04 00 28 
->> |.V.....&.4. ...(|
->> 00000070  00 12 00 11 00 00 00 01  00 00 00 00 40 00 00 00 
->> |............@...|
->> 00000080  40 00 00 00 00 39 d3 d0  00 39 d3 d0 00 00 00 05 
->> |@....9...9......|
->> 00000090  00 00 20 00 00 00 00 01  00 39 e0 00 40 39 e0 00  |.. 
->> ......9..@9..|
->> ```
->>
->> I am a bit surprised by the information at offset 0x40. My kernel is 
->> an ELF file, but the old one is a BIV file I don't even know what it 
->> can be -_- !
->>
->> I'm happy to provide any additional information or details that might 
->> be helpful in resolving this issue.
->>
->> Thanks in advance for any help !
->> JM
->>
->>
