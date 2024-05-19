@@ -1,97 +1,100 @@
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C083C125
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 19 May 2024 09:17:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C811745BF9
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 19 May 2024 13:26:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716110245; cv=none; b=u79wkdHF7L3U4W6+lE5oSiJuSifjYdKr1h5d9MSKzNskd7jDsawPHCBS7yOznOFfhFu/DVxCuWeBp1o88AhsIAMi5Llf2tawoJUhqVnMfOyAhif3VGJm5yVExYEjtf9QKFtoCvHwVDeX05neYklnuB6YyCeuVK0Mx+lZR3/Oil4=
+	t=1716125219; cv=none; b=attNi9h6MA9STmNCv9wM+Fp6hcwSX2q+txBEodWKSoCLoBMhRH225sZFEKiDSEivWuAP40Oxued/A/340mHyQfhDYEkhJgj1lLXIEoMqZnZeYPElSzUHDOkpvNl9Gi9C8n1sH9rTNlTMWA0I2ieV+7ILBe8DTXJOmRblRFrGu34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716110245; c=relaxed/simple;
-	bh=eIUFqfa3kuMdR5xM85dK0mgrX9p4CROEjMYh2Av5nag=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C6PEcBKglSyjv7bjQs1JGZ88EtgOwoBTKWkp7HkzAfStvu/6KRpMNQswC1BQTdCI5ba+/6makqifruGHnv428l2jfoqcV5feyHd3d6NHQlz3iOSGfn07OZw7u82GGlRYbZ4aU/w53zkrBGTEH61tTZbvvN6Cc1pi0x4UYz8iqaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	s=arc-20240116; t=1716125219; c=relaxed/simple;
+	bh=NcB7N8F+vQEIhZKvLpJfHlJYR6ecGK/zxvVcbDDYqqU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CvpKpJPS4B+OTAmWT323EFHvgWvgz/OoYa32zR0v2nr7rs2TZ/qsui33Uhk4VQFNK4d4LnQgcAVABEiGiwBlv629zTHCXwTxmaXQYyI9XHopBYpfJ/KefI8xoKtqn+Ne07jy4k/h2+hGBZ9kUdqOo7h5VNnTs1y5b8EngZaSVEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iKLALyqu; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-de59daab3f3so1358128276.3
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 19 May 2024 02:17:23 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iKLALyqu"
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a599a298990so680833966b.2
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 19 May 2024 06:26:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1716125216; x=1716730016; darn=lists.linux-m68k.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q3qQmbSq3iodjxZ2uM56jJDybuokVN8MR28N//rrs+I=;
+        b=iKLALyquz3hL6qH1WZoWErriUnYR2Io2IjqwET4cG5MYPKp7ptCZ/mnQ4ua7KSCk7J
+         D98jxuPHvLUrP3+eBM6duVp9CHAovP9D0wnw5kw6/GK1YdZ9FKsU7JvKSSsyF528Ux71
+         N3WIAdHZJfQ6eqqAyr+XOAfFcvpcGgcQeQ9VajG5VVbytZaiUtlBLst5ehYBY/sFOvnD
+         DUrT3o583FqLuRbPJunNH8yYlnLpQI7Ogq5G1ohcDPWI5pin2XpBmEgvOI2LWyDPwBP7
+         fJqGVMQ9SaTeBRnQDFAqnQR/NWYaVZcrcom1PP4jxQtqq3vG29pLxZ3IxbmoRhOvUaxY
+         lvFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716110242; x=1716715042;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=F7VPb5AirpmC4R6qUMffA+shLPSsSVeYD0/5kgbUcIQ=;
-        b=WnBGGIZyaN7ZhDgyM7pGPJT8FuIiSgCB+8IC43603nZTsksBMNVsWni+23x21xrDjh
-         c7hZv16KsWl4BqoNSRDWcMJYRu8MLd0SrVLEb9EIJT6Hld9ja+ECII/gWjQy7qCtPvLX
-         rx2wTPJ5ERB4/QilYI/HDbWKYdHRHA4MUEJi4WIorMNJ7jssDpPRvf+wsEEOLluT6DWi
-         PVkfWkVMG0mWjU8B184R7vWtAKPS5TmIRh91g4OMruO8uNc3m5pmRRzAXnZnFq5hPeu/
-         xRE0PxZcDTpgjUPTDvQkb3/oob1y8ccg4cmkzUZvHq+ONOmz1OvnKj2++qsPvAfQkvGn
-         H1Jg==
-X-Forwarded-Encrypted: i=1; AJvYcCV40Yk7mOjmElf+7ETcTH+tsDhS9jlkYIyjUDNBLCtlJ9MOlWe5PU6JG6JO56N5iENZJXcVjeH+P9NznVgBgbWlYTVvmjA9MGHD6HtsQMoC
-X-Gm-Message-State: AOJu0YyCb6ESKw2vCoJtIU5tVGX2Vmkyrlc93IOuBJ/e2CLnqlVMu4SX
-	pjf2fgwxp3tuN24ATw3eZjwZLavcSgTQwVSWiHrkh1uBGLAucwWNPFg0M6Im
-X-Google-Smtp-Source: AGHT+IF6IkX2iuFqOo/WzGnTf5V+U2d8bXXINQ5ojMiDXCn+ERUvDu9gxiPCaxTScbvRdPvwO4Imrg==
-X-Received: by 2002:a25:b201:0:b0:dc6:aeba:5aaf with SMTP id 3f1490d57ef6-dee4f343e45mr27196696276.19.1716110242090;
-        Sun, 19 May 2024 02:17:22 -0700 (PDT)
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com. [209.85.219.180])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-debd382c0f8sm4551183276.43.2024.05.19.02.17.21
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 19 May 2024 02:17:21 -0700 (PDT)
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-de607ab52f4so1513318276.2
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 19 May 2024 02:17:21 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCW6tQ9PYZ+UVNZmMdGINzJaMr6RvgwQGKiBWJ+PHLepiJCFodSDXgwNGoavolmQSIUGUr+JB93w87DeLvMT8T/hKC+sc948WfOXc/FD+PpM
-X-Received: by 2002:a25:84d1:0:b0:dc7:acb7:af14 with SMTP id
- 3f1490d57ef6-dee4f324b61mr24718552276.5.1716110241271; Sun, 19 May 2024
- 02:17:21 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1716125216; x=1716730016;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q3qQmbSq3iodjxZ2uM56jJDybuokVN8MR28N//rrs+I=;
+        b=fZG6lNs3PxcvXTW+09f+a8HVxFHX6urd7snvj+AMVzEiMuILB14e8aTZ3wvmsmqVXp
+         gJFZ0lyBgUGcRDbf8gmGOOpQ8P9P7dLX7MfOf8vb7L05Dp7eEAXSahMPVDGMqYw/896t
+         yTLnd59VfmJ8bZPHziuSa9oeBaUtf9xf72NobJ0eauz//A1sgbuGGBlPqn3dc9i8xVCj
+         Lk8zze39e8y60uh0Qd9eLFdYtd9xlrEldQGh0KbnMJxtpzPC3RYFDDwKmYJGyHpc6Bxg
+         2TKvHTBGVcp5cQKlyvQyyyFur84zy7ANmGtE1PIxH3nJH2WOQ/np8rb0BdQ/1R28oJt5
+         Ml1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVjLhIA5shjZFlnY92A3HGi1HGtz/0EiBJvFt3K8Ru5erMfSO6J/e6+vnX1K9JQZBQMzh30yydW44+SLszH8vc1sAR9bpvuiO7UT1DQKR+C
+X-Gm-Message-State: AOJu0Yy+MNSlTh5lXMX9hSI6QXCohZhZtUa1IShIFnyg+d9AIKeXYlUv
+	Qvv1S1W+WXqobVCOzDup4LQoqEUGWCKameFBjLxoLg5qgJlksMVU
+X-Google-Smtp-Source: AGHT+IGUnuqe6nNsx1C9flRncYZDiEugVz0qNHANH1ld6VeDjnwEAzPpJND6u8Vu0HmqwKyKXchWeQ==
+X-Received: by 2002:a17:906:235b:b0:a59:a532:ed58 with SMTP id a640c23a62f3a-a5a2d55ac04mr1604114166b.28.1716125215759;
+        Sun, 19 May 2024 06:26:55 -0700 (PDT)
+Received: from gmail.com ([81.56.89.175])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a5a17b0150csm1345629466b.154.2024.05.19.06.26.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 May 2024 06:26:55 -0700 (PDT)
+Date: Sun, 19 May 2024 15:24:39 +0200
+From: Paolo Pisati <p.pisati@gmail.com>
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Paolo Pisati <p.pisati@gmail.com>,
+	linux-m68k <linux-m68k@lists.linux-m68k.org>
+Subject: Re: Amiga, serial and SYSRQ
+Message-ID: <Zkn9lwawFGzSJFSF@amaterasu.local>
+References: <ZkjwzVwYeQtyAPrL@amaterasu.local>
+ <e9d97c04-73c2-e6dd-6d51-b9a4e3ef73b2@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZkjwzVwYeQtyAPrL@amaterasu.local> <e9d97c04-73c2-e6dd-6d51-b9a4e3ef73b2@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <e9d97c04-73c2-e6dd-6d51-b9a4e3ef73b2@gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Sun, 19 May 2024 11:17:09 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWL2S1OMS5ikKgQj2uohoiL6_a5FLwdCphUEBVtMOSFcA@mail.gmail.com>
-Message-ID: <CAMuHMdWL2S1OMS5ikKgQj2uohoiL6_a5FLwdCphUEBVtMOSFcA@mail.gmail.com>
-Subject: Re: Amiga, serial and SYSRQ
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Paolo Pisati <p.pisati@gmail.com>, linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Michael,
+On Sun, May 19, 2024 at 07:36:43PM +1200, Michael Schmitz wrote:
+> Paolo,
+> 
+> please try adding 'initcall_debug' to the kernel command line.
 
-On Sun, May 19, 2024 at 9:37=E2=80=AFAM Michael Schmitz <schmitzmic@gmail.c=
-om> wrote:
-> On a serial console, SysRq is BREAK:
+I'm afraid that won't work - init/main.c:
 
-s/serial console/virtual console/
+bool initcall_debug;
+core_param(initcall_debug, initcall_debug, bool, 0644);
 
-Amiga keyboards do not have a SysRq key.  We used to implement it
-using SHIFT+ALTGR+HELP in the old drivers/char/amikeyb.c, but that
-feature was lost with the transition to drivers/input/keyboard/amikbd.c.
+#ifdef TRACEPOINTS_ENABLED
+static void __init initcall_debug_enable(void);
+#else
+static inline void initcall_debug_enable(void)
+{
+}
+#endif
 
-For enabling it, you can s/KEY_HELP/KEY_SYRQ/ in
-drivers/input/keyboard/amikbd.c.
+and TRACING_SUPPORT:
+...
+depends on TRACE_IRQFLAGS_SUPPORT
+depends on STACKTRACE_SUPPORT
+...
 
-> On the serial console (PC style standard serial ports only)
-
-drivers/tty/amiserial.c does support break, so that should work, too.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+which are both missing on m68k, IIUIC.
+-- 
+bye,
+p.
