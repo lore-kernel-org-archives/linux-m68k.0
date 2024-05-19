@@ -1,133 +1,138 @@
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3987262A3
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 19 May 2024 13:31:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70741374F6
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 19 May 2024 13:57:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716125485; cv=none; b=oHU0eJcDjJJAkP7c7PwhRIaky7UrtYc5k+CbgCrdN+bPpKCodRzXjSQAXS0JJmn7BkUSM7fq0DYsHwO8hURfKtWMbB+30NYnGhSd1Bk3FT4tFho9ZHHgjFzwcSecIYlQ9dKZn898yaZ6tsayfg0X2D8MFyzMPZCL6Hjm4rAAuHo=
+	t=1716127032; cv=none; b=e8IAo9e9TqX5bWb5zwjxp8u1t7EWmPG97vvlbVpuH9BxS/LDDoGjguRsu+PkonIjgrtE0r2XAiJQJxcc6zQ1R8usoWYHg7vUGB4cxMmkd4jNzJq/x2IFs86pUkFOsCmRUGAuvoeR5Rqj+gNI7H47u2AUkRkumq+ZS04J25oVbG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716125485; c=relaxed/simple;
-	bh=1enVA43XbvPIt+NzCmxvlPWT1ezIcQDYYmtpONpf5R8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Axbj/mXnKDUCUVOR+IpexWK/WWEuhXivKGLZb98DAQwiWrOKWhiWtjXRuuHQdWFV9RLdv0RgUiD8xgwn/hBbUk51kTDHjUD4/V2FTholpdY6vV1+ma6ELfsVK3J9ziT/e5xksbwu5vuTWb0t2qGK1PuMfV3BRqILKPeJ4AmeqAI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	s=arc-20240116; t=1716127032; c=relaxed/simple;
+	bh=GAkIZbvLsy745u2ht/zLRzK8trWkJLSSICUXRCLcTRw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kob/MAM4vYjIPlQi9oOiqoNjB1KN1ngoNSzh9XaoWDG0QEUOTjxeea/M2jXmUxXF1Q4UyEugxyDQbph7tV+PI0Qw5vJ/UlsZiF5u+KQXxEaq22cIulUJwOELmbtA98BRoQHOSz5zpaAez29/WDM7f/0UvchItOkkQUsTS+wN28E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=clx4yMyV; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-61be4b9869dso16941517b3.1
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 19 May 2024 06:31:22 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="clx4yMyV"
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51f4d2676d1so2523182e87.3
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 19 May 2024 06:57:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1716127028; x=1716731828; darn=lists.linux-m68k.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=cctD+eRzdzpBuZEWDYwKtltrGQ6JgNZmlY7uozXPm3Q=;
+        b=clx4yMyVOJH/JbbNUWfi9uiQYVpcvzQgrTBm7aLpCRTWGH1+AYAc3Qkna0YYc/i1AS
+         m30bwS49CppX6daTJYLw3Oi1YFk+E268QAA+BZ6s1FgGw6MMMfrr+KmYQaluujPDdBYA
+         /12AZJNrnFq/unequrnRgK0JH4COcaq9lLjQo8AuI5M1FRy/ApKCxYPZS4TyG8rw4Oa3
+         CEOfFhO8q1pyrV8+YwrGhFvLdU8Z3aR7DmFjuAvc1nAIKy7NmagUDumypfZKHQzgLqZO
+         oYLRHgiyDVBiKyFib0O0AuyI5ZeYRhufbBLF9hxk4Gdcoat8hdNNevUIUBIyiCvB/m8R
+         KmtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716125481; x=1716730281;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Krzfz5x5lFqXM8VwEzpab6mEMZ8GG/CziPs0BAUbVXc=;
-        b=eOsdJAjEdR379dkWvmRGtoiarN04CVv9deUo8VTxw1Naprzl6OJh01mdMyn236P4CW
-         hO9cu6T/Qx9OMJdRBGYtLurOP88Cfu2HnE7656BhhGmR8DXpOlAR7w3rpudJUCIHVJsc
-         pRY4VLgG8KfHPiEW+KFJOfZedNOueKjVoVrHRifnjFgNzrD671yT+1s47R+x9t8sYfAa
-         uuBj1BU4XCi2aTJEmQibUmyEso2H3ZX3Bg9n7YSUBr6eIqI7XImEf4El1xj+eZL8ZXCf
-         iDqR/pIne8UE6sw9HXqMhfq+SfxyO8aUXjYQZbAGh4sW5f+LXIH1ydd1NHJe06cFV1O9
-         j8Dw==
-X-Forwarded-Encrypted: i=1; AJvYcCXUtSLsA8llphWRdjNVnrYtXavsmZr2L4cgp/Krl7BhbAqj9AALgMnieRbAO0FLXHQkPdBjgKWKq6KDJoohgOKXxqdPS9orx/BiXuq2mLMo
-X-Gm-Message-State: AOJu0Yyx8PL2aDH8+fc1fpzzBkD4NHWPWsqiIOcG51Jo4SGshH2Ntk7z
-	+PYC3Ox7u1TfzYmNo19ykCrKnm+SbUeVc+aG7ZubWcsfqfa1APd8LYhLxl4j
-X-Google-Smtp-Source: AGHT+IGoVHgwlxa2n0wBZ09xAN6j2EBg5wIzfTTlRJ42Vbz8uiD1ctHwd9p1fyv6W8wPoeG/qT0EiQ==
-X-Received: by 2002:a05:690c:60c1:b0:61b:92d9:f7e8 with SMTP id 00721157ae682-622affc09ebmr335995867b3.23.1716125481106;
-        Sun, 19 May 2024 06:31:21 -0700 (PDT)
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com. [209.85.128.169])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6209e379112sm45716587b3.107.2024.05.19.06.31.20
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 19 May 2024 06:31:20 -0700 (PDT)
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-61bed738438so15706237b3.2
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 19 May 2024 06:31:20 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXrufiXObWf4cqH9HAuhuX42CJzJKkls/nIaLRLeAXrpZYa9lS1N5ecO50Ys1qUXnNauxVe20bs7Udw6UNRZtoYfLoNEFEXoRrh+YvPKuUq
-X-Received: by 2002:a05:690c:6408:b0:618:8a27:6150 with SMTP id
- 00721157ae682-622affc0e4cmr292230657b3.24.1716125480463; Sun, 19 May 2024
- 06:31:20 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1716127028; x=1716731828;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cctD+eRzdzpBuZEWDYwKtltrGQ6JgNZmlY7uozXPm3Q=;
+        b=ZwtSt0MxCCOvLwrx39Hk0xzhurKF26e2C6vQS72u7kDIIQFjSU1WjQ8k8CXapL3Zcl
+         JEsXohm706CbG55ZQ363aoBf2CYHcz1AGWjykI9TLLjjOP1qNB8WcWMPIpNjcRO7JTxo
+         BKI+295BS1cLIcRcOBfVrCsprvGybVM3O3XvaugOj1eml9PhdmTnawGaAnRRdwA1rsvb
+         VcpkW4j1OIIwEkmEk/18cwgrK9mMO5cs5pb+dI5EjsyLz51bae2DNTENBrY71pG9VWv5
+         7nCW4pmwVQWZda9UHIecuMW7UxATwiYBw2M7U4KlMPa9S3PozBY/BAwCR8+5awqAmLl5
+         kxRg==
+X-Forwarded-Encrypted: i=1; AJvYcCUZGhafwtd9CvsQPy8Dkw6/H7nE7iOURbX511+6NQt6zMrJAKIMpPG3eLj7duk3Nwq1AikplHvCYWW4fI7TtHinOvs4zhagxtRu2q9N7g96
+X-Gm-Message-State: AOJu0Ywe9Yr3FL6UxMTZyvjDtBjZN5ejJV91R+Lt6dIkEUL99AD62M5+
+	e9KAVdstFrgH0yy2R2igVRPq7Ix/7XJr6l7DQmLt5lg3d8jdjKjX
+X-Google-Smtp-Source: AGHT+IGFPK+rwLegannaP9pLqTpywZZno2si7Lke4r6oRJqsuAmzKtkYAJSVnNqpty7eXAAlwo0vXQ==
+X-Received: by 2002:ac2:4c31:0:b0:523:8ada:9440 with SMTP id 2adb3069b0e04-5238ada9732mr8141714e87.57.1716127027998;
+        Sun, 19 May 2024 06:57:07 -0700 (PDT)
+Received: from gmail.com ([81.56.89.175])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-574ebdf46cesm6805171a12.37.2024.05.19.06.57.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 May 2024 06:57:07 -0700 (PDT)
+Date: Sun, 19 May 2024 15:54:51 +0200
+From: Paolo Pisati <p.pisati@gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Paolo Pisati <p.pisati@gmail.com>,
+	Michael Schmitz <schmitzmic@gmail.com>,
+	linux-m68k <linux-m68k@lists.linux-m68k.org>
+Subject: Re: Amiga, serial and SYSRQ
+Message-ID: <ZkoEq3TK//srW5D+@amaterasu.local>
+References: <ZkjwzVwYeQtyAPrL@amaterasu.local>
+ <e9d97c04-73c2-e6dd-6d51-b9a4e3ef73b2@gmail.com>
+ <Zkn9lwawFGzSJFSF@amaterasu.local>
+ <CAMuHMdXa4BFYGSAfoPHP7hntFh2rKmFXx0p44vxua1KsfuHR1w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZkjwzVwYeQtyAPrL@amaterasu.local> <e9d97c04-73c2-e6dd-6d51-b9a4e3ef73b2@gmail.com>
- <Zkn9lwawFGzSJFSF@amaterasu.local>
-In-Reply-To: <Zkn9lwawFGzSJFSF@amaterasu.local>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Sun, 19 May 2024 15:31:07 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXa4BFYGSAfoPHP7hntFh2rKmFXx0p44vxua1KsfuHR1w@mail.gmail.com>
-Message-ID: <CAMuHMdXa4BFYGSAfoPHP7hntFh2rKmFXx0p44vxua1KsfuHR1w@mail.gmail.com>
-Subject: Re: Amiga, serial and SYSRQ
-To: Paolo Pisati <p.pisati@gmail.com>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdXa4BFYGSAfoPHP7hntFh2rKmFXx0p44vxua1KsfuHR1w@mail.gmail.com>
 
-Hi Paolo,
+On Sun, May 19, 2024 at 03:31:07PM +0200, Geert Uytterhoeven wrote:
+> Without TRACEPOINTS_ENABLED, you get:
+> 
+>     #ifdef TRACEPOINTS_ENABLED
+>     ...
+>     #else
+>     static inline void do_trace_initcall_start(initcall_t fn)
+>     {
+>             if (!initcall_debug)
+>                     return;
+>             trace_initcall_start_cb(&initcall_calltime, fn);
+>     }
+>     static inline void do_trace_initcall_finish(initcall_t fn, int ret)
+>     {
+>             if (!initcall_debug)
+>                     return;
+>             trace_initcall_finish_cb(&initcall_calltime, fn, ret);
+>     }
+>     #endif /* !TRACEPOINTS_ENABLED */
+> 
+> That second part should still work fine.
 
-On Sun, May 19, 2024 at 3:27=E2=80=AFPM Paolo Pisati <p.pisati@gmail.com> w=
-rote:
-> On Sun, May 19, 2024 at 07:36:43PM +1200, Michael Schmitz wrote:
-> > Paolo,
-> >
-> > please try adding 'initcall_debug' to the kernel command line.
->
-> I'm afraid that won't work - init/main.c:
->
-> bool initcall_debug;
-> core_param(initcall_debug, initcall_debug, bool, 0644);
->
-> #ifdef TRACEPOINTS_ENABLED
-> static void __init initcall_debug_enable(void);
-> #else
-> static inline void initcall_debug_enable(void)
-> {
-> }
-> #endif
+Ok, i appended initcall_debug, but i got the same exact output, i wonder if i'm
+missing something else:
 
-That's just a forward declaration for part of the initcall_debug
-support.
+ABCDGHIJK
+Linux version 6.6.30-amiga-00006-g809aa9a54cba (flag@amaterasu.local) (m68k-linux-gcc (GCC) 13.1.0, GNU ld (GNU Binutils) 2.40) #7 Sat May 18 19:55:35 CEST 2024
+Saving 470 bytes of bootinfo
+printk: console [debug0] enabled
+printk: Too late to register bootconsole debug-1
+Amiga hardware found: [A1200] VIDEO BLITTER AUDIO FLOPPY A1200_IDE KEYBOARD MOUSE SERIAL PARALLEL A2000_CLK CHIP_RAM PAULA LISA ALICE_PAL PCMCIA ZORRO 
+Zone ranges:
+  DMA      [mem 0x0000000040000000-0x000004dfffffffff]
+  Normal   empty
+Movable zone start for each node
+Early memory node ranges
+  node   0: [mem 0x0000000040000000-0x000000004dffffff]
+Initmem setup node 0 [mem 0x0000000040000000-0x000000004dffffff]
+pcpu-alloc: s0 r0 d32768 u32768 alloc=1*32768
+pcpu-alloc: [0] 0 
+Kernel command line: root=/dev/sda4 debug=ser earlyprintk console=ttyS0,9600n8 initcall_debug
+Dentry cache hash table entries: 32768 (order: 5, 131072 bytes, linear)
+Inode-cache hash table entries: 16384 (order: 4, 65536 bytes, linear)
+Sorting __ex_table...
+Built 1 zonelists, mobility grouping on.  Total pages: 56840
+mem auto-init: stack:all(zero), heap alloc:off, heap free:off
+Memory: 221284K/229376K available (3753K kernel code, 472K rwdata, 1184K rodata, 172K init, 149K bss, 8092K reserved, 0K cma-reserved)
+SLUB: HWalign=16, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+start_kernel::941
+start_kernel::976
+NR_IRQS: 32
+clocksource: ciab: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 2694272661900 ns
+start_kernel::990
+start_kernel::994
+start_kernel::998
+start_kernel::1000
+start_kernel::1006
+start_kernel::1009
 
-> and TRACING_SUPPORT:
-> ...
-> depends on TRACE_IRQFLAGS_SUPPORT
-> depends on STACKTRACE_SUPPORT
-> ...
->
-> which are both missing on m68k, IIUIC.
-
-Without TRACEPOINTS_ENABLED, you get:
-
-    #ifdef TRACEPOINTS_ENABLED
-    ...
-    #else
-    static inline void do_trace_initcall_start(initcall_t fn)
-    {
-            if (!initcall_debug)
-                    return;
-            trace_initcall_start_cb(&initcall_calltime, fn);
-    }
-    static inline void do_trace_initcall_finish(initcall_t fn, int ret)
-    {
-            if (!initcall_debug)
-                    return;
-            trace_initcall_finish_cb(&initcall_calltime, fn, ret);
-    }
-    #endif /* !TRACEPOINTS_ENABLED */
-
-That second part should still work fine.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+I'm using amiga_defconfig FWIW.
+-- 
+bye,
+p.
