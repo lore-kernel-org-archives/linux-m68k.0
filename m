@@ -1,108 +1,91 @@
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A552C1DDF8
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 19 May 2024 20:09:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1570DDDDA
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 20 May 2024 17:08:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716149385; cv=none; b=FAOiEYxxIH/qujT3q/Aryyc92QZlSLBA58l/xUX95kSMHMq50ytzZUqJ0VbsbKH8l50lcX8H4ds9LqFzBPB0XHsNnyBsKTK67vQrAsBx4msFbqEGsY2JtnTIV0YmSrr3zsjOboh0DRpntsnAQWyWFnZyT2HdWyxgv5e1mzbyckA=
+	t=1716224901; cv=none; b=ZDqCZ/iNPAj/B2bq9caFJnVYGXhirWo2sQnl7KEGCMTancUxrn2MQg6WOtDtFliIWD6vZhjpKqSxGVNVicVZg+NA3asX0oPu9GH20vEVkyzD1RsAHCBw5baNyK6nJxAsQBzB0jfHwxuJsRSu6MwlHwYuiBcdjcr9VmpwOd+JKmM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716149385; c=relaxed/simple;
-	bh=iCiounYb2qM0frGZq6O1xMbmoLE/DaZQdZIhW6xU5is=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=T4bjLFZ+uHaYnfVeTiybFKreN9fp6fxajsy7vfHvz7aZQxcmdFKi/5VQHF5/P8/WAi+xFGrrpO9JA9VPI5kS/2axrwsroPh7fRfpQ4YmrVmEipquBFaJNVCFKX9WXJLgzYedIiVunRLplmoqn0Lz/hTMthI5hbGr/Yvwv8ZBNZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	s=arc-20240116; t=1716224901; c=relaxed/simple;
+	bh=aFDFV7c2EO9gllXp93HNqTN0qd4NN1nN+erq4Xp9/Lk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UVfpaY51KhA8UKbddnaKHp8zVVIkD43jU6lbsGGkgmpwQHjYbWuo0P0LoODKTtsdpLBFoKq/0ZAAP8ekCptMfFPzvuaeQU9X+ojUKVZbWnrh0aLc1MsjKMLCYRaVlacPbSZnPd9Uj4ABurNCsNO0OadluuJegTDBnNSVgCppegk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BuAaEtal; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-61bb219737dso19812347b3.2
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 19 May 2024 13:09:42 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BuAaEtal"
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5231efd80f2so4932379e87.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 20 May 2024 10:08:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1716224898; x=1716829698; darn=lists.linux-m68k.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RMVVKCry00yF8Lm9vKv75tYBmS2dh7fh221cHNlGcCY=;
+        b=BuAaEtalknKI1DzkbUWmiPw3KQbREm9w6tsXXOtV/At1fFcXaTdGMdm78lZUTPfkIv
+         cGa2sgw8mfhEdchoVkPwTVN56xK5nycFg+J6izl+Pr/625kckq+uptRiYapXll4Kf3dw
+         KojfcVbcfQCJ+u4lHGllnGrx0Mp/cl4neVXoU3FDWBYFG0Z0KDFwj027EXDBZeKzWjlE
+         1MyLfXMJ1uREnrOWed0WE8MFCCYPwc6pDmmhTAF+FK4w4bZUguUguYH43OgczzGgUCLQ
+         r6behEYyqyXrpuIXuY/RnuVhOvghk8QVNNk6uFJ/mvn6RdwMLl4rYuIJjz+nSjsCVVoF
+         leXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716149381; x=1716754181;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Qr08t9JmKkuXa7CNo0gms3HKY6UsdghjmyCBsfIDnbU=;
-        b=pCI8sGV+ISSZolJAQV5ySNOg2pjziYh1Zi36uy/davY0oGpMIfwsvf9JfMLAsXxkd5
-         BCIRuW+7gInOA1jQDl4ZoBv3iTnXApSuBYr95u8kBUAp6uJl5V+927jkarXe6CjDFkBA
-         6YHFsSObhXhnXSKCJ7MQ/MFE/A9DC9bwRjn1obCABi2PKjyOp010BqVtMIQm4gJsMrTF
-         /8A2wVz7qa3zYf2ZQ5vUftk7qCIz0XyuW3jz445HOSnbBwNry5rxzzOZ818R0dTCGCG5
-         vScuSFix5xMMe6fgUCucEEjtgWYSBOhI45QhWSWhk5UGZwbHYwp7f2qgFszGnp0+loO1
-         3rrw==
-X-Forwarded-Encrypted: i=1; AJvYcCX5wMh2Q8Yj2xmAPRxZ2dz/Hqbw1ERoLWaaUqT1EF41dcMLK+nR5PpTZJfM3wVlfC0lTYsATy4h8W81o7VD3Lw9JV7rUlG/oyQ7ZwNorJs+
-X-Gm-Message-State: AOJu0Yw3WXoQ7E3wU/AbOCxt54BnSy89IKlk4WHW/mnENzWEpx5n3E+m
-	vwgJMKjQ1/qmZw07K8/EfjSW2OvQ7jrMXmkGVrgHkEclBk/C2F9uTbqxQhFl
-X-Google-Smtp-Source: AGHT+IH3wkFaiH43xKZJVJtjDoIGe7IfvsUOH4SGlW6MyGh2oWHtZa073S18jUVwGyetMB1aEySAoA==
-X-Received: by 2002:a05:690c:6407:b0:61a:e947:5518 with SMTP id 00721157ae682-622aff80725mr311698317b3.27.1716149381162;
-        Sun, 19 May 2024 13:09:41 -0700 (PDT)
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6209e488e5csm46470217b3.104.2024.05.19.13.09.40
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 19 May 2024 13:09:40 -0700 (PDT)
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-61df496df01so9880047b3.3
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 19 May 2024 13:09:40 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVgfE3uh7T0HluMa+XZoRQ4mg6fl7ee0oBK2vxP4C4YuW2UF6B867O/LcJAZL5LyeVN7adYzp/+RfE0qlzhZGzri6fa68IB9FifQPZl6JU9
-X-Received: by 2002:a05:690c:4382:b0:61b:8623:3718 with SMTP id
- 00721157ae682-622affda7a7mr225137897b3.42.1716149379707; Sun, 19 May 2024
- 13:09:39 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1716224898; x=1716829698;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RMVVKCry00yF8Lm9vKv75tYBmS2dh7fh221cHNlGcCY=;
+        b=ZX1sIr6oDzfF9v8309TsfrFkTQDGRGg3XHgsPvTfsLodjevCO4zWbZhcnPldBW0UKM
+         ddrWQJi8Xfc/AcrivhSlYRReDP5b1cGnHrpZlqR18lsx0ucuacTVO8MFsI8AdYRIGXMe
+         D4Bl3fqc0Bgu09SGNbQ6ZCzNcK7cnTPSk+CrxjfRcqlNn7tNVr5M9QTorotDaj4bZlau
+         57g3fLPXxODRTuMS6A8jLUZ03uBNoNaSm9sflinPr3tzf3+pYCF8dyFsL8Ev+jEHOTcv
+         doNUSPXsuS9MhfaTldyJGvcZrVX5qHO4d1LxJZ3o+DAVILEIsANsceMnrAkF1C5veQYw
+         mAfA==
+X-Forwarded-Encrypted: i=1; AJvYcCVYwepVSztFT5jVdVB0QQD9VNTqvEPM4rru8qGUloxYmDB5A4VYrOA90PZ+SpfBAELeocJHNd6O5PVLj/XjhKRrH+qZR43nhcgJeImpS+f+
+X-Gm-Message-State: AOJu0YzQ2/GJq7xbgrM1XXW2h9/nR31pk4CXtQPPvZIXsR5ci5SSIWaL
+	GCq3Tt0N243wxpI2aOLVHRHjS4UtoD1TLi+qtZ3fJR0Sui5HUlKk
+X-Google-Smtp-Source: AGHT+IHwJbN8ztOkjJbVRaez/gUuqMnspJHUvrNkJ7m1KTXpBG/v0yoMjxSPTW/8qayrJd8lEThY0Q==
+X-Received: by 2002:a05:6512:280c:b0:51f:53e0:1bc3 with SMTP id 2adb3069b0e04-5220fc7af9amr23642073e87.25.1716224897687;
+        Mon, 20 May 2024 10:08:17 -0700 (PDT)
+Received: from gmail.com ([2a01:e11:1403:8620:7b2d:4f3c:32d9:92a8])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a5a179c7ecesm1477943166b.112.2024.05.20.10.08.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 May 2024 10:08:17 -0700 (PDT)
+Date: Mon, 20 May 2024 19:08:16 +0200
+From: Paolo Pisati <p.pisati@gmail.com>
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Paolo Pisati <p.pisati@gmail.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	linux-m68k <linux-m68k@lists.linux-m68k.org>
+Subject: Re: Amiga, serial and SYSRQ
+Message-ID: <ZkuDgC8QcwkIw85E@amaterasu.local>
+References: <ZkjwzVwYeQtyAPrL@amaterasu.local>
+ <e9d97c04-73c2-e6dd-6d51-b9a4e3ef73b2@gmail.com>
+ <Zkn9lwawFGzSJFSF@amaterasu.local>
+ <CAMuHMdXa4BFYGSAfoPHP7hntFh2rKmFXx0p44vxua1KsfuHR1w@mail.gmail.com>
+ <ZkoEq3TK//srW5D+@amaterasu.local>
+ <33ec1596-11c7-4591-95bf-74009532dd3c@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZkjwzVwYeQtyAPrL@amaterasu.local> <e9d97c04-73c2-e6dd-6d51-b9a4e3ef73b2@gmail.com>
- <CAMuHMdWL2S1OMS5ikKgQj2uohoiL6_a5FLwdCphUEBVtMOSFcA@mail.gmail.com> <6321b7d3-ee31-45eb-bb5f-28a2c74cb7fa@gmail.com>
-In-Reply-To: <6321b7d3-ee31-45eb-bb5f-28a2c74cb7fa@gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Sun, 19 May 2024 22:09:27 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWHQRGGeqVJ_DQEXP5ogRL=NqzStYQ92Tt8-TWw9ksTDA@mail.gmail.com>
-Message-ID: <CAMuHMdWHQRGGeqVJ_DQEXP5ogRL=NqzStYQ92Tt8-TWw9ksTDA@mail.gmail.com>
-Subject: Re: Amiga, serial and SYSRQ
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Paolo Pisati <p.pisati@gmail.com>, linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <33ec1596-11c7-4591-95bf-74009532dd3c@gmail.com>
 
-Hi Michael,
-
-On Sun, May 19, 2024 at 9:22=E2=80=AFPM Michael Schmitz <schmitzmic@gmail.c=
-om> wrote:
-> On 19/05/24 21:17, Geert Uytterhoeven wrote:
-> > On Sun, May 19, 2024 at 9:37=E2=80=AFAM Michael Schmitz <schmitzmic@gma=
-il.com> wrote:
-> >> On a serial console, SysRq is BREAK:
-> > s/serial console/virtual console/
-> I meant to write 'serial console' there. You will note that I carefully
-> avoided the topic of sysrq on the virtual consoles because I could find
-> no information on the key combo,
-
-Right, I got totally confused by your two lines starting with "On",
-incorrectly assuming the first was for virtual consoles, and the second for
-serial consoles...
-
-> > Amiga keyboards do not have a SysRq key.  We used to implement it
-> > using SHIFT+ALTGR+HELP in the old drivers/char/amikeyb.c, but that
-> > feature was lost with the transition to drivers/input/keyboard/amikbd.c
+On Mon, May 20, 2024 at 07:12:41AM +1200, Michael Schmitz wrote:
 >
-> Thanks - same problem in atakbd.c. What key is 'KEY_102ND'? Does it even
-> exists on our keyboards?
+> Odd - maybe ordering matters here? Ordinarily, it doesn't but I've been
+> caught out with using wrong option separators before. So, if ',' isn't the
+> correct token to split the console option, the kernel will stop parsing
+> there and won't see your initcall_debug option.
+> 
+> I use that option all the time, but I have 'console=tty' instead of serial
+> console.
 
-That is the keycode generated from raw Amiga keycode 0x30?
-According to [1] it is present on some international layouts.
-
-[1] https://wiki.amigaos.net/wiki/Keymap_Library#Keyboard_Layout
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+No dice: i've tried several combinations, and the output doesn't change.
+-- 
+bye,
+p.
