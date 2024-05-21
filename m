@@ -1,277 +1,113 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C37D55783
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 21 May 2024 13:46:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7530422EF5
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 21 May 2024 17:56:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716299196; cv=none; b=l8j4hASuanUn9JH4zjssCeFIE0NhGEkfYL37W79uVM7roT6V2kyempBz26JhogP8SIvZ5IhNyqWP4Cdle+2VR9qmkIQYww+05rRJWkDGPHnWIcSySJBQKSSEhTm2WxP8XbtuiQ6r2XaAmJoRmgR6XpTTrqUKcM570xwUAOJiGkU=
+	t=1716314174; cv=none; b=AkJamKdAwvuLfvxxqYgpXIZrNBDrLlfmqp0kzyzbrJdhHGwzhoW5apRlC95bCgFlsQyAtLtr16MMsBgqks0DJEjTBiVKU2HmFqGZZuGy67BkXyGLqXT8NwQBC2oJXL/ZoaIsgdJCM88pTf1mmtf8oPR68r6NvwdxHuXKlr+nLkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716299196; c=relaxed/simple;
-	bh=Nta5tfhd5sScHE35Bia897ys60I0HSpkxgQUjZLSlQc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uLaCINkE1KgOcBHjgoy/9O1HZWw2aq8H8vZL5UtAAbTFmFUCfacs4NB9eNP9d1OEDqXhAhZPJSSycVpVVFzNWNxcBmPkvGKIMsNlGthxbI9XfbKt7AsjAU7Bgsm0nfgTrK0GSaSmxLiKaF7PXY8OmNHhE60bMFLsV1ODXsNSew4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=139.178.84.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 4972062237;
-	Tue, 21 May 2024 13:46:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DF33C32786;
-	Tue, 21 May 2024 13:46:30 +0000 (UTC)
-Message-ID: <9cd36f99-f4d3-44bb-ab22-e1e497906048@linux-m68k.org>
-Date: Tue, 21 May 2024 23:46:28 +1000
+	s=arc-20240116; t=1716314174; c=relaxed/simple;
+	bh=XxPhAG/yUX/Nm9mPnElOYLCHns35AbOgFuFWGxjfiec=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MCiWIVV8N8UmR3C49uoGHQiGOCHdc09KuQvRS9Zy5ZRtS7EGwEYO4Gw7ADNvP62zqwlByVnpsGBaq5Lms7PCowP405Bt8ARofOZ3ihE5b30G7vYkG0UzcRKF4OehONrRGHQmVs7wFdTTNd7BD9MHUCHxJxRNG9mHJTTJbiSxubg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WfKKECQJ; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WfKKECQJ"
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51f57713684so7077625e87.1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 21 May 2024 10:56:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1716314170; x=1716918970; darn=lists.linux-m68k.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=EDsYH6HyF+sWoSVFGtSmBJpMKqFo1LKGRA9gKjomjMw=;
+        b=WfKKECQJQwnPPLPW022AqlrjsmM8sdr84KxIXWVgs8a2o/Z+XlAIo8MRML/CBFyTfT
+         k4COp86A3FfqU8fB8Z49j+lVbrf8I21iMl5UrnqZd/oVIuiwfMFt9EB4gmF663dG/cBq
+         NJtFDwbelqUsGrPQFWmUTfUYjIIlG/CW08GWFmpk3vNHQnKPS3TZw7gjSAsM8owTAe/a
+         TO1dgH3cAbampcHOzQEwXUehbauJ5uAnWSPVlBwHHac23O9IDrw//hhwducJ1lOXrxka
+         gZIviKHVZul64suG89MjtZKurkk3ha+CgyhZmVn1Mevh0eeeBPtWfAgbHHsuVhYL/9M9
+         VVLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716314170; x=1716918970;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EDsYH6HyF+sWoSVFGtSmBJpMKqFo1LKGRA9gKjomjMw=;
+        b=rO5sU6swth5keyfDDt0FPM9CI54pOl7TwgdPFfATegjDLFq+VC2SexxIH8b89eX6CD
+         vt5f6Ml6BNaXR0kR36Et9WjC5WjoVo/GLOYJeQW2xfeV5KswONJnrjGzdCYczlkCiWlH
+         NdCHuEo5PFCdTZKkNIOyDf52XGdjW8QOAglazfhm7TbtnaGknhIAmQkq0OKyrfb9YL7V
+         zOs6ODdWo/HPFHXCoeGm2P8/Xy2IvLG4YuUJ5WcuZEIFYq7nIfz+hCRI8KKeEa6M9KZR
+         0R04xKEz6N7nXaAtGxFN6Hju/ejLjh7W3Wh64w11VjkkCzj5Knf683ozZvZNunuGa2KN
+         fExA==
+X-Forwarded-Encrypted: i=1; AJvYcCWJ0ZTbOKgaZC1zyg9RJG491xmNtnKZTamwyXdZW5lXnThCwno0wSR/0puKJBmIGaf0Y78HLedFn0uHLDUPqPEhRcZsTh54AH0Nen22jdwg
+X-Gm-Message-State: AOJu0YxFq5RG5zsKsh9C6ao5f1fpvXadkFqa/Lmw8vwecq4/EkJgmC73
+	cGzqTAmjNQl5cdO7vHAMadeqL/2NaqF76Ci5QMB9gax45ReBbqGX
+X-Google-Smtp-Source: AGHT+IHhmYkBBu8dH6iINCXts2Ok4GpuOMIC1HUc/Pw8wHYrhbrn+/h3P2um5SK2dHIV9F9PV6jJuQ==
+X-Received: by 2002:ac2:41d3:0:b0:51c:fd0a:7e34 with SMTP id 2adb3069b0e04-5220fb72d61mr18620991e87.22.1716314170098;
+        Tue, 21 May 2024 10:56:10 -0700 (PDT)
+Received: from gmail.com ([2a01:e11:1403:8620:29ba:62b8:5a03:da92])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5733becfde7sm16940089a12.48.2024.05.21.10.56.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 May 2024 10:56:09 -0700 (PDT)
+Date: Tue, 21 May 2024 19:56:08 +0200
+From: Paolo Pisati <p.pisati@gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Michael Schmitz <schmitzmic@gmail.com>,
+	Paolo Pisati <p.pisati@gmail.com>,
+	linux-m68k <linux-m68k@lists.linux-m68k.org>, warp@cs-lab.eu
+Subject: Re: Amiga, serial and SYSRQ
+Message-ID: <ZkzgOAq4Wn8kw67z@amaterasu.local>
+References: <ZkjwzVwYeQtyAPrL@amaterasu.local>
+ <CAMuHMdXnsXk+MuGUCnPcQVbOdSGJAHiK6TBZE2r5_h15qs_azg@mail.gmail.com>
+ <ZkuFrTQDw6iM9Z7K@amaterasu.local>
+ <3f1fc752-52c1-4b00-aaef-b917be083718@gmail.com>
+ <CAMuHMdXAovcF8rhAeWjDVqQsnQPzMaBmNrQ+bQHe=35hcznTEA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Kernel Image Format Issue - Coldfire mcf54418 CPU Failing to Boot
-To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
- Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@lists.linux-m68k.org
-Cc: geert@linux-m68k.org
-References: <68ec857f-a559-4f71-87ba-425b4ee7c9c7@yoseli.org>
- <d18dab84-f6d8-4732-88cb-8b95bd4487f3@gmail.com>
- <45745b6a-341c-4f9c-8787-6154393d1223@yoseli.org>
- <d94c6e57-58d4-4299-a23e-013a3cb13997@linux-m68k.org>
- <f316b64e-c696-478d-8383-5d18c96e6c11@yoseli.org>
- <106876d4-a93f-433f-848d-da85ab84bd14@linux-m68k.org>
- <6376845d-e741-4117-bfd3-81860ba08399@yoseli.org>
-Content-Language: en-US
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <6376845d-e741-4117-bfd3-81860ba08399@yoseli.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdXAovcF8rhAeWjDVqQsnQPzMaBmNrQ+bQHe=35hcznTEA@mail.gmail.com>
 
-Hi Jean-Michel,
+On Tue, May 21, 2024 at 09:07:33AM +0200, Geert Uytterhoeven wrote:
+>
+> I guess the system would boot if you hack arch/m68k/amiga/amiints.c
+> to never enable IRQ_AMIGA_PORTS in amiga_custom.intena, but then you
+> would also lose the ability to use e.g. the builtin A1200 IDE.
 
-On 16/5/24 23:31, Jean-Michel Hautbois wrote:
-> On 16/05/2024 14:43, Greg Ungerer wrote:
->> On 15/5/24 21:10, Jean-Michel Hautbois wrote:
->>> On 15/05/2024 12:29, Greg Ungerer wrote:
->>>> On 15/5/24 17:56, Jean-Michel Hautbois wrote:
->>>>> On 14/05/2024 22:16, Michael Schmitz wrote:
->>>>>> 'BIV' is probably a bootinfo tag (Boot Info Version).
->>>>>
->>>>> Thanks, it helped me, as I read the head.S file and finally progressed :-).
->>>>>
->>>>> When dumping my vmlinux, I can see the entry point is *not* the load address (it was in the old one):
->>>>> vmlinux:     file format elf32-m68k
->>>>>
->>>>>
->>>>> Disassembly of section .text:
->>>>>
->>>>> 40001000 <_stext>:
->>>>> 40001000:    4ef9 4000 2000     jmp 40002000 <_start>
->>>>>      ...
->>>>>
->>>>> 40002000 <_start>:
->>>>> 40002000:    4e71               nop
->>>>> 40002002:    46fc 2700          movew #9984,%sr
->>>>> 40002006:    203c 0104 0100     movel #17039616,%d0
->>>>> 4000200c:    4e7b 0002          movec %d0,%cacr
->>>>> 40002010:    4e71               nop
->>>>>
->>>>> Now, when uboot starts the kernel, it is not doing anything (not sure if it hangs or does not display anything on the console. And EARLY_PRINTK is not valid for coldfire :-(. Not sure why, so any guidance here would be appreciate too !
->>>>>
->>>>> I will now check my platform file but at least I am not trying to execute an instruction "0" :-).
->>>>
->>>> Can you post your kernel .conig file?
->>>> Did you just start with your original 3.0.12 config and use that for 6.1.83?
->>>
->>> No, I used a very simplified one to start.
->>>
->>> CONFIG_NAMESPACES=y
->>> CONFIG_EMBEDDED=y
->>> CONFIG_COLDFIRE=y
->>> CONFIG_M5441x=y
->>> CONFIG_ADVANCED=y
->>> # CONFIG_SINGLE_MEMORY_CHUNK is not set
->>> CONFIG_CLOCK_FREQ=240000000
->>> CONFIG_STMARK2=y
->>> CONFIG_UBOOT=y
->>> CONFIG_RAMBASE=0x40000000
->>> CONFIG_RAMSIZE=0x8000000
->>> CONFIG_VECTORBASE=0x40000000
->>> CONFIG_KERNELBASE=0x40001000
->>> CONFIG_BINFMT_FLAT=y
->>> CONFIG_NET=y
->>> CONFIG_PACKET=y
->>> CONFIG_UNIX=y
->>> CONFIG_INET=y
->>> CONFIG_DEVTMPFS=y
->>> CONFIG_DEVTMPFS_MOUNT=y
->>> CONFIG_NETDEVICES=y
->>> CONFIG_SERIAL_MCF=y
->>> CONFIG_SERIAL_MCF_BAUDRATE=115200
->>> CONFIG_SERIAL_MCF_CONSOLE=y
->>> CONFIG_HID_A4TECH=y
->>> CONFIG_HID_BELKIN=y
->>> CONFIG_HID_CHERRY=y
->>> CONFIG_HID_CYPRESS=y
->>> CONFIG_HID_EZKEY=y
->>> CONFIG_HID_ITE=y
->>> CONFIG_HID_KENSINGTON=y
->>> CONFIG_HID_REDRAGON=y
->>> CONFIG_HID_MICROSOFT=y
->>> CONFIG_HID_MONTEREY=y
->>> CONFIG_VMLINUX_MAP=y
->>> CONFIG_DEBUG_MEMORY_INIT=y
->>> CONFIG_BOOTPARAM=y
->>> CONFIG_BOOTPARAM_STRING="console=ttyS1,115200"
->>>
->>> My serial console is on UART6, so I suppose I will have to modify the MCFGPIO_PAR_UART2 register in arch/m68k/coldfire/m5441x.c at the very least.
->>
->> Was the older 3.0.12 code base a mainline kernel, or is it a modified vendor version?
-> 
-> The kernel came from the Tower system module and it has been adapted to the custom board. I suppose (but it was a long time ago and not me ;-)) that it was a downstream kernel.
-> 
-> https://www.nxp.com/products/no-longer-manufactured/coldfire-mcf5441x-tower-system-module:TWR-MCF5441X
+You probably meant arch/m68k/amiga/cia.c since:
 
+diff --git a/arch/m68k/amiga/cia.c b/arch/m68k/amiga/cia.c
+index b9aee983e6f4..89dc2e8a2965 100644
+--- a/arch/m68k/amiga/cia.c
++++ b/arch/m68k/amiga/cia.c
+@@ -150,6 +150,7 @@ static void auto_irq_enable(struct irq_data *data)
+ {
+        switch (data->irq) {
+        case IRQ_AUTO_2:
++               break;
+                amiga_custom.intena = IF_SETCLR | IF_PORTS;
+                break;
+        case IRQ_AUTO_6:
 
-It is probably more likely that it used Freescales own development package
-(LTIB, or maybe something newer). It was most likely their own modified kernel
-sources, so probably not strictly a mainline kernel.
+made my system finally boot:
 
+https://dpaste.org/ZnYP5
 
-> Right now, when load addr is set to 0x40001000 and entry addr is set to 0x40002000 the 6.1 seems to start but nothing is going on my console.
-> 
-> I added a local patch for my uart to be set, but still nothing yet:
-> diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
-> index 1e5259a652d1..1bcabef82851 100644
-> --- a/arch/m68k/coldfire/m5441x.c
-> +++ b/arch/m68k/coldfire/m5441x.c
-> @@ -154,8 +154,8 @@ static struct clk * const enable_clks[] __initconst = {
->          &__clk_0_23, /* dspi.0 */
->          &__clk_0_24, /* uart0 */
->          &__clk_0_25, /* uart1 */
-> -       &__clk_0_26, /* uart2 */
->          &__clk_0_27, /* uart3 */
-> +       &__clk_1_26, /* uart 6 */
-> 
->          &__clk_0_33, /* pit.1 */
->          &__clk_0_37, /* eport */
-> @@ -171,6 +171,7 @@ static struct clk * const disable_clks[] __initconst = {
->          &__clk_0_14, /* i2c.1 */
->          &__clk_0_22, /* i2c.0 */
->          &__clk_0_23, /* dspi.0 */
-> +       &__clk_0_26, /* uart2 */
->          &__clk_0_28, /* tmr.1 */
->          &__clk_0_29, /* tmr.2 */
->          &__clk_0_30, /* tmr.2 */
-> @@ -198,7 +199,6 @@ static struct clk * const disable_clks[] __initconst = {
->          &__clk_1_7, /* i2c.5 */
->          &__clk_1_24, /* uart 4 */
->          &__clk_1_25, /* uart 5 */
-> -       &__clk_1_26, /* uart 6 */
->          &__clk_1_27, /* uart 7 */
->          &__clk_1_28, /* uart 8 */
->          &__clk_1_29, /* uart 9 */
-> @@ -234,7 +234,9 @@ static void __init m5441x_uarts_init(void)
->   {
->          __raw_writeb(0x0f, MCFGPIO_PAR_UART0);
->          __raw_writeb(0x00, MCFGPIO_PAR_UART1);
-> -       __raw_writeb(0x00, MCFGPIO_PAR_UART2);
-> +       /* TODO: Make it a dedicated file ! */
-> +       /* UART6 is our console */
-> +       __raw_writeb(0xaf, MCFGPIO_PAR_UART2);
->   }
-> 
->   static void __init m5441x_fec_init(void)
+It's definitely $something of the Warp1260 board triggering that interrupt, and we
+need a way to disable it.
+ 
+> Reverse-engineering the AmigaOS interrupt handlers for the board may
+> also help.
 
-I think you are going to need to get some raw UART trace in there to really
-see where it is getting too. It is relatively easy to push characters out
-a UART, see the drivers/tty/serial/mcf.c uart driver to see how.
-
-Regards
-Greg
-
-
-
->>>>>> On 15/05/24 07:11, Jean-Michel Hautbois wrote:
->>>>>>> Hello,
->>>>>>>
->>>>>>> I have been on this for a long time now, and I think it is time to ask for some help as the answer might be "easy" :-).
->>>>>>>
->>>>>>> I'm trying to boot an upstream Linux kernel (version 6.1.83 from CIP) on a custom board which already runs an old one (3.0.12).
->>>>>>>
->>>>>>> I'm encountering an issue where the CPU fails to boot with an "Unexpected exception" error when u-boot calls bootm.
->>>>>>>
->>>>>>> -> bootm
->>>>>>> ## Booting kernel from Legacy Image at 41000000 ...
->>>>>>>    Image Name:   Linux-6.1.83-cip18-rt10
->>>>>>>    Created:      2024-04-17   5:42:32 UTC
->>>>>>>    Image Type:   M68K Linux Kernel Image (uncompressed)
->>>>>>>    Data Size:    5684872 Bytes =  5.4 MB
->>>>>>>    Load Address: 40001000
->>>>>>>    Entry Point:  40001000
->>>>>>>    Checksum:  6bc7660a
->>>>>>>    Verifying Checksum ... OK
->>>>>>>    Loading Kernel Image ... OK
->>>>>>> OK
->>>>>>>
->>>>>>>
->>>>>>> *** Unexpected exception ***
->>>>>>> Vector Number: 5  Format: 04  Fault Status: 0
->>>>>>>
->>>>>>> PC: 40001002    SR: 00002700    SP: 4fd5fcdc
->>>>>>> D0: 00000000    D1: 00000003    D2: 4fdfa71c    D3: 00000000
->>>>>>> D4: 00000000    D5: 00000001    D6: 00000000    D7: 00000001
->>>>>>> A0: 00000000    A1: 4fd71494    A2: 40001000    A3: 4fdfa690
->>>>>>> A4: 4fd91b30    A5: 4fdf3600    A6: 4fd5fd64
->>>>>>>
->>>>>>> *** Please Reset Board! ***
->>>>>>>
->>>>>>> I tried to use different Load and Entry adress but this is not having any effect.
->>>>>>>
->>>>>>> Sadly, I can't use the (very) old toolchain to build my kernel, and I can't build the old kernel with the toolchain I generated. It has been done with buildroot and I can provide some information if this is relevant.
->>>>>>> To summarize:
->>>>>>> - It has MMU enabled
->>>>>>> - The cpu is passed with -mcpu=54418
->>>>>>> - The architecture is passed with -march=isac
->>>>>>>
->>>>>>> As the u-boot version I have can't be updated (at least not easily) I need to provide a uImage, so I call mkimage for this when the vmlinux file is generated.
->>>>>>>
->>>>>>> I've compared the kernel image format with an older working kernel image, and it seems the issue is related to the kernel image format.
->>>>>>>
->>>>>>> ```
->>>>>>> $> hexdump -C uImage-3.0.12 |head
->>>>>>> 00000000  27 05 19 56 c6 4d 40 59  62 ac 6a be 00 2f a2 00 |'..V.M@Yb.j../..|
->>>>>>> 00000010  40 02 00 00 40 02 00 00  74 e8 ca f4 05 0c 02 00 |@...@...t.......|
->>>>>>> 00000020  4c 69 6e 75 78 2d 33 2e  30 2e 31 32 2d 72 74 33 |Linux-3.0.12-rt3|
->>>>>>> 00000030  33 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 |3...............|
->>>>>>> 00000040  60 08 42 49 56 1a 00 00  00 00 4e f9 40 30 20 00 |`.BIV.....N.@0 .|
->>>>>>> 00000050  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 |................|
->>>>>>> *
->>>>>>> 00001040  4e f9 40 30 20 00 4e 56  00 00 9f fc 00 00 00 04  |N.@0 .NV........|
->>>>>>> 00001050  48 d7 00 01 20 2f 00 0c  4e 7b 00 03 4c d7 00 01  |H... /..N{..L...|
->>>>>>> 00001060  df fc 00 00 00 04 4e 5e  4e 75 00 00 4e 75 4e 75 |......N^Nu..NuNu|
->>>>>>> ```
->>>>>>>
->>>>>>> ```
->>>>>>> hexdump -C output/images/uImage |head
->>>>>>> 00000000  27 05 19 56 ab 1d 06 74  66 1f 61 48 00 56 be 88 |'..V...tf.aH.V..|
->>>>>>> 00000010  40 00 10 00 40 00 10 00  6b c7 66 0a 05 0c 02 00 |@...@...k.f.....|
->>>>>>> 00000020  4c 69 6e 75 78 2d 36 2e  31 2e 38 33 2d 63 69 70 |Linux-6.1.83-cip|
->>>>>>> 00000030  31 38 2d 72 74 31 30 00  00 00 00 00 00 00 00 00 |18-rt10.........|
->>>>>>> 00000040  7f 45 4c 46 01 02 01 00  00 00 00 00 00 00 00 00 |.ELF............|
->>>>>>> 00000050  00 02 00 04 00 00 00 01  40 00 20 00 00 00 00 34 |........@. ....4|
->>>>>>> 00000060  00 56 bb b8 00 00 00 26  00 34 00 20 00 04 00 28 |.V.....&.4. ...(|
->>>>>>> 00000070  00 12 00 11 00 00 00 01  00 00 00 00 40 00 00 00 |............@...|
->>>>>>> 00000080  40 00 00 00 00 39 d3 d0  00 39 d3 d0 00 00 00 05 |@....9...9......|
->>>>>>> 00000090  00 00 20 00 00 00 00 01  00 39 e0 00 40 39 e0 00  |.. ......9..@9..|
->>>>>>> ```
->>>>>>>
->>>>>>> I am a bit surprised by the information at offset 0x40. My kernel is an ELF file, but the old one is a BIV file I don't even know what it can be -_- !
->>>>>>>
->>>>>>> I'm happy to provide any additional information or details that might be helpful in resolving this issue.
->>>>>>>
->>>>>>> Thanks in advance for any help !
->>>>>>> JM
->>>>>>>
->>>>>>>
->>>>>
->>>>
->>
+I hope the board manufacturer is willing to help us out here (added them in cc:) - but
+just in case, i read a bit about Amiga interrupts today, and it appears
+i'll have to disassemble the handler starting from $6c($VBR).
+-- 
+bye,
+p.
