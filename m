@@ -1,124 +1,146 @@
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D441E1C0DCE
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 29 May 2024 19:26:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F7FD176AC2
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 30 May 2024 07:31:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717010818; cv=none; b=KEiy/inrta7hZuOZDGyNur6XxO0V0MJsa2TkSJQbAdlbZAjNMq5NM1AHXWn99mindsamSOEXcq7ZcsTADJP2imBPbcF0QvwsSSSINq9uH954ge6bJBzY4eflZhAbYuJpAd3/b3qLqGOg7bn/FmTc8WIeRqEYCN7byRrTvlT5R6I=
+	t=1717054263; cv=none; b=CIpDW6VL40ut90Jr0zRb4k1+vln/a0/7TCR0jiCWhwN/3aMmNF+U7pL1T2oFqXa6lSMaZASJYPmxeqQdqbelKsOLnmFNPIQs/lAeadR+3zpAtrRLsh1R/uooHQcHaq1/NN6oaH6G8K5WNHmPF0jccLgjsUnJG83aqksw+SmZ/NA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717010818; c=relaxed/simple;
-	bh=MNkzhVXp/mWMNLEsDq3RUMkw/STIM8e/vIHDobe4zvg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=c2Vzq/dW2zk9XCwnryj4vTb6aa/5ls6URj1kWezmEUo/+7bflJVed1RSkzoh8FZsXT23z/nwew2asDfIOF3aF+xUqLTcR0RWsjOQWMFmO236bWeNWrV1cCQQ6Yles5B5BZGZkUiFmFD3FvmoA3KdO2y8Jx9ndNnHDtj1/eywRP0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fNNkuhnD; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1717054263; c=relaxed/simple;
+	bh=339BrGbqs8cs9VVKdYFjXD5jEkYgF9FQ0Eldj8d2lHA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mppcQSVTs0Y5TwyI/RVZ2C3X0wRd9bgOURv2PDZwFVAu/0VGSHHJGTXpK2xf6COUR36kbgbmuEpBCttLc+5ylq4gHZ0vvw/Fe4Rqq5YFtCq4OiQDw9xlSB/K5gGLhV4FrykHxeI+w7bWVVk6bxSdSyLAeVKd3NkBtE2imGuYncE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fNNkuhnD"
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1f60a502bb2so899255ad.3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 29 May 2024 12:26:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717010816; x=1717615616; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Ms72sGy9TrTEhEBMZyo0P59UElCgovMlJOVIw+KwkDo=;
-        b=fNNkuhnDcgVN0c8+XrI0J8Krv8u1qpJ3VNnWcQTotk8onJMfGpNw+AGXNgBV5tsTs+
-         yLMe6boAGdIF2q0yAOp4qtLXRRsU3MVbvDFUqKew+Kw8RY7FJG8SQMt5+H4YtN0WS9zd
-         lSdE5kK+eGKsz4O9IKMolBLpBSWPp/96FSjIQ552+LXOOmsLkKoXu8vHiDZVaySgfYvg
-         60+JUqzLA9OBVsb628VFeKt4XknWO2rwr6kZ265p1S8QZl/D7uBmMehvFQNVLr/5OZ3T
-         EIUmXVOQ1Z6WbQySL6yG2l/grs5MyVSEq7BaNZR16UEiv3vxFi2J7Nu7iSfW2knegWqY
-         jPDQ==
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-62c6317d15cso4980497b3.2
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 30 May 2024 00:31:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717010816; x=1717615616;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ms72sGy9TrTEhEBMZyo0P59UElCgovMlJOVIw+KwkDo=;
-        b=oSs3jmm1bhdGfjwzylDMfzSjJleRA3OCERcxI6YOu2p6qKaNQnb4rLj57lGj8qMBy5
-         cW/VpmmrxaTZ1vcY+0f/t3M5bnt08I5+CVxB34Cie0NKeO9sj1HDa+qSKKgjA3n8JCsd
-         kgvFG6eiQNXb6qKpS2pSYyL+ccD+q5E9n1jJL50yC4f7fmRjaMBPy0q1zEP9OhCu5ni6
-         9kAo1vqaVmMeo3h3iXEbCoCiH04aCCJdilSQ/XDNT9a+atBC0En/tU6P09pHCgKPIz+H
-         Uqh70hUk1dn1ilnO2JngCGFNwZ9UAyXOe0tlshByPdQTOHsBHFAcFOoHyENEX6c6ydJe
-         Tj9g==
-X-Forwarded-Encrypted: i=1; AJvYcCUArnVu76JQxIa7MbCDOfaF6whnqnDHab4XmOg0Nxn9LeNYKagqXrmyTegPK1O2UXgiszzYd21IEwXOFKJF4QiWC/mbyFYuEq8Ew1VeB0Y7
-X-Gm-Message-State: AOJu0YyuYahZfPrLBe/I+pMajiLMr/Bvb9DBGANW5ObMfPMwuTT79Y7A
-	ZgS4by6z3VMiB2BIe7Epl6TEC92A/nJBxI9nc39SF9v9ZW3OzZZf
-X-Google-Smtp-Source: AGHT+IEfioGJ5QJ/mtlHaj725XIud0h2oPz31jIqmqe4q23qT77IyHcymqbQ9yAN9YRaBg69Tm1k1A==
-X-Received: by 2002:a17:902:db0d:b0:1f4:8bcb:8b01 with SMTP id d9443c01a7336-1f48bcb8ccemr113798495ad.40.1717010815913;
-        Wed, 29 May 2024 12:26:55 -0700 (PDT)
-Received: from ?IPV6:2001:df0:0:200c:38ee:ff33:e51f:95b2? ([2001:df0:0:200c:38ee:ff33:e51f:95b2])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f44c96791asm104154885ad.143.2024.05.29.12.26.54
+        d=1e100.net; s=20230601; t=1717054260; x=1717659060;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VikEmrSDILtG4l+oEpOAt/vs52B/cfHV81DqBuRih6k=;
+        b=p2WE5SYpGaBuNr6Xvv1Qy24BIJkl6KcJXZgNjx9Qug7BfSD5pnhjcOuZqX+ImhZCSW
+         AsZ1YOSbZ7axQP2U1iPJDdsiN+i9mOXV5B4K14V6kNVas2Nem5xTaUZWCiRVIxlgMIbR
+         nCDVfLIWXGFCXO3NRX2sySilk9aUAQftldssTlxqQV0Yw8x691fVRkl5yXi4S3CtZ+vQ
+         6y1bN1X9KzEqgKeHIeTXH3rTs9VHtJJm825fXWfl8K9sn+6xVxLEfS5GPQgbs/nwa8QL
+         fkdblEZQz7PbKLJucyXuyoT8COALyQ8N5fZ2+yN+C/8zyInrxRn/lealtbzLM2768qee
+         0pog==
+X-Gm-Message-State: AOJu0Yx4EIlTvBabOeamELtc8THWgysAHbp/1xQiF1lY0bvHowV6rPN2
+	hKxDDeh/nDwmr6W1odmUPe8CxS7ofmRSjFkjexBcYyffr5EuyY2TOVwnTQei
+X-Google-Smtp-Source: AGHT+IHWfMUBDwuokjUfjvfPO4wR1Lzi9C1TNppNZriB2vAS9JbH/uesJJqJ4zoUiMf5Zm99Y0WN2g==
+X-Received: by 2002:a05:6902:c0d:b0:df7:978a:73de with SMTP id 3f1490d57ef6-dfa5a5ef696mr1804983276.19.1717054260302;
+        Thu, 30 May 2024 00:31:00 -0700 (PDT)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-df774669e5bsm1710198276.10.2024.05.30.00.31.00
+        for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 May 2024 12:26:55 -0700 (PDT)
-Message-ID: <fefe8735-2449-46fb-8fe1-295690bbdfa1@gmail.com>
-Date: Thu, 30 May 2024 07:26:59 +1200
+        Thu, 30 May 2024 00:31:00 -0700 (PDT)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dfa52560cb3so528297276.0
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 30 May 2024 00:31:00 -0700 (PDT)
+X-Received: by 2002:a25:84c9:0:b0:df6:d068:76d7 with SMTP id
+ 3f1490d57ef6-dfa5a803226mr1545148276.57.1717054259826; Thu, 30 May 2024
+ 00:30:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/1] amiga: turn off all incoming interrupts from the
- Warp1260
-To: Paolo Pisati <p.pisati@gmail.com>,
- linux-m68k <linux-m68k@lists.linux-m68k.org>
-References: <20240529163118.867333-1-p.pisati@gmail.com>
-Content-Language: en-US
-From: Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <20240529163118.867333-1-p.pisati@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240529163118.867333-1-p.pisati@gmail.com> <20240529163118.867333-2-p.pisati@gmail.com>
+In-Reply-To: <20240529163118.867333-2-p.pisati@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 30 May 2024 09:30:46 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXZM4yOgJJgKz3N+Xqk16Y4++7B4F5a7RN7U7Fd_38e3w@mail.gmail.com>
+Message-ID: <CAMuHMdXZM4yOgJJgKz3N+Xqk16Y4++7B4F5a7RN7U7Fd_38e3w@mail.gmail.com>
+Subject: Re: [PATCH 1/1] m68k: amiga: config: upon boot, turn off all incoming
+ interrupts from the Warp1260
+To: Paolo Pisati <p.pisati@gmail.com>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Paolo,
+Hi Paolo,
 
-just a style comment: For a single patch, --compose is  not necessary. 
-Please place the below patch description in the commit message of your 
-patch.
+On Wed, May 29, 2024 at 6:39=E2=80=AFPM Paolo Pisati <p.pisati@gmail.com> w=
+rote:
+> Signed-off-by: Paolo Pisati <p.pisati@gmail.com>
 
-You left the commit message itself empty (aside from your 
-Signed-off-by:). As a result, your patch would go in without any message 
-(unless there's something in b4 that treats single patch submissions 
-with introductory message special).
+Thanks for your patch!
 
-The commit message usually contains a description of the bug you are 
-fixing. In your case that would be:
+> --- a/arch/m68k/amiga/config.c
+> +++ b/arch/m68k/amiga/config.c
+> @@ -180,6 +180,15 @@ int __init amiga_parse_bootinfo(const struct bi_reco=
+rd *record)
+>                         dev->slotsize =3D be16_to_cpu(cd->cd_SlotSize);
+>                         dev->boardaddr =3D be32_to_cpu(cd->cd_BoardAddr);
+>                         dev->boardsize =3D be32_to_cpu(cd->cd_BoardSize);
+> +
+> +                       /* CS-LAB Warp 1260 workaround */
+> +                       if (be16_to_cpu(dev->rom.er_Manufacturer) =3D=3D =
+ZORRO_MANUF(ZORRO_PROD_CSLAB_WARP_1260) &&
+> +                           dev->rom.er_Product =3D=3D ZORRO_PROD(ZORRO_P=
+ROD_CSLAB_WARP_1260)) {
 
-Amiga 1200 boot crashes in local_irq_enable() (or auto_irq_enable()) 
-with an interrupt storm. The Warp1260 board interrupts appear to still 
-be active at boot time.
+Probably we want a pr_info() here, so we know the workaround is applied.
+This also helps debugging if the workaround ever causes an issue.
 
-Then a description of what your patch does (which you have below).
+> +
+> +                               /* turn off all interrupts */
+> +                               uint32_t *int_reg =3D (uint32_t *)(dev->b=
+oardaddr + 0x1000);
+> +                               *int_reg =3D 0x0FFF;
 
-You also want a
+This can be combined:
 
-Link: https://lore.kernel.org/r/ZkjwzVwYeQtyAPrL@amaterasu.local
+    *(uint32_t *)(dev->boardaddr + 0x1000) =3D 0x0FFF;
 
-and
-
-Cc: stable<stable@kernel.org>
-
-above your Signed-off-by: tag
-
-Cheers,
-
-     Michael
-
-
-On 30/05/24 04:31, Paolo Pisati wrote:
-> The CS-Lab people told me where to find the interrupt ctrl register (and its
-> layout), so here is a patch that turn off all incoming interrupts during
-> config.c::amiga_parse_bootinfo().
+> +                       }
+>                 } else
+>                         pr_warn("amiga_parse_bootinfo: too many AutoConfi=
+g devices\n");
+>  #endif /* CONFIG_ZORRO */
+> diff --git a/include/uapi/linux/zorro_ids.h b/include/uapi/linux/zorro_id=
+s.h
+> index 6e574d7b7d79..393f2ee9c042 100644
+> --- a/include/uapi/linux/zorro_ids.h
+> +++ b/include/uapi/linux/zorro_ids.h
+> @@ -449,6 +449,9 @@
+>  #define  ZORRO_PROD_VMC_ISDN_BLASTER_Z2                                Z=
+ORRO_ID(VMC, 0x01, 0)
+>  #define  ZORRO_PROD_VMC_HYPERCOM_4                             ZORRO_ID(=
+VMC, 0x02, 0)
 >
-> With this patch applied, Linux finally boots on my Amiga 1200 + Warp 1260 board.
->
-> Paolo Pisati (1):
->    m68k: amiga: config: upon boot, turn off all incoming interrupts from
->      the Warp1260
->
->   arch/m68k/amiga/config.c       | 9 +++++++++
->   include/uapi/linux/zorro_ids.h | 3 +++
->   2 files changed, 12 insertions(+)
->
+> +#define ZORRO_MANUF_CSLAB                                      0x1400
+> +#define  ZORRO_PROD_CSLAB_WARP_1260                            ZORRO_ID(=
+CSLAB, 0x65, 0)
+> +
+>  #define ZORRO_MANUF_INFORMATION                                        0=
+x157C
+>  #define  ZORRO_PROD_INFORMATION_ISDN_ENGINE_I                  ZORRO_ID(=
+INFORMATION, 0x64, 0)
+
+This board does not seem to be in zorro.ids yet.
+
+Adrian: Which repo is the official one?
+    https://github.com/glaubitz/zorroutils
+    https://github.com/glaubitz/zorroutils-debian
+
+Looks like Debian no longer has a zorroutils package...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
