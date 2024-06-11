@@ -1,38 +1,38 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 612A126AF6
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 11 Jun 2024 07:21:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B8F9172799
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 11 Jun 2024 07:25:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.40.73.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718090464; cv=none; b=iqKhzNYomwqxdZkSTjvsKaaX1dnZgV3olbk+M5MLsgeGgKI8xK1w9XIJ0pLtLlC7mCqhTR02YZYf1m6dJkUhxj2IWQLSkoFduFZ4GrkYJ6ZjeNS7/9yOIDYjV294N9Hsp/k7bdC7A9/wfyDrN4e14d61yZKRoaC2q/D3AT3f3ZI=
+	t=1718090728; cv=none; b=HTdXcTOAZSPOXrXvXQfQC3+nRuYI7FIx+RXa0KtYfjt26CZ4/DVvo96BP43HsyfxwNYTUvexmpMVybw6iBH1OCXbdNDrJvTlQYbZKfOpxvC2Ji376sR6A2RPqtZH08YLMdA8/LVnmqLHD5R35560lNBPr3HpHdAtEDihXsWoESA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718090464; c=relaxed/simple;
-	bh=SxGiXC2eXjeuicvqjgmxBbbuRkQDAALVXqGltltCvpM=;
+	s=arc-20240116; t=1718090728; c=relaxed/simple;
+	bh=SKDzpdZjTAHkWp+zsEQwH6Ky8PVIUSEQggaioawXXkU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=saF1EG0zcxKrcP7aUNWQ+JDoc5Dt7Bw4fpiW6u3hZG94CsapbiCByGbBJv2n0NMKz3LimADxMRfvy6rsv+k+cFbfhFdqYOfg2grVn56oeScJG2JolCHkpTsbmOwQTWH/eFp6/nkMUUXk+yd4DcAGzLeeENWcLOOZHkY88QXBu+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J9t/JghW; arc=none smtp.client-ip=139.178.84.217
+	 In-Reply-To:Content-Type; b=q3Gwzj7uojhFTaSoBaV+7cONP4ygqdbvjmzZU18qyAgeS65mCtOUzOlcthyzykoHaosBYRad11yao7948DfVjStuCwijszDrw7dJ30e7Up6FNu0V1iJ209yBuNwc2DNR7wu1+gUpjpk0S8QOBIgabfSDmeG7Nzi2DJcBij013Ns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UCtiHiiw; arc=none smtp.client-ip=145.40.73.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J9t/JghW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UCtiHiiw"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 5EAFE60C76;
-	Tue, 11 Jun 2024 07:21:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B857C2BD10;
-	Tue, 11 Jun 2024 07:20:55 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id B2D1CCE19E4;
+	Tue, 11 Jun 2024 07:25:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80F46C2BD10;
+	Tue, 11 Jun 2024 07:25:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718090461;
-	bh=SxGiXC2eXjeuicvqjgmxBbbuRkQDAALVXqGltltCvpM=;
+	s=k20201202; t=1718090724;
+	bh=SKDzpdZjTAHkWp+zsEQwH6Ky8PVIUSEQggaioawXXkU=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=J9t/JghW0gR/ETwdzjpl7VD7KnwAlMW8rRhwZr9kxWhQ6tl8Phg9WjO76NiKxxgu8
-	 fLxeqF9M5t6BVVC5kK/sKL3zR1K2qLPoyVha6i0EJluUzp1kNJ5g2TNKh8g+EJPN33
-	 hrljcXVnUuN8Lr5KlIujiAJZzEJDuCsFcPLl3jPutPmhKf9R0GeNiPNem29bg2OBO7
-	 a1cFWzw0qNt9DSnc6yLqLEresNea8LBs8q7/++QEaUosyu+AjkSi/+C9VElPN9n7PP
-	 XlPsIxsXYvBqYod+WVUBRRvW1FiyVSTv+Mlz8E7DodnwczmTJdbU3tnt32fP5VZhAs
-	 3tDYxoJTsEL7w==
-Message-ID: <6bf90562-0ff9-46b6-8a58-7381332e3beb@kernel.org>
-Date: Tue, 11 Jun 2024 16:20:54 +0900
+	b=UCtiHiiw5QvJYmElyhHUIvI9qZN2kq7wHApTDMzEobrX5tFMllUF7QgwTYv0VDSQe
+	 4AvJZ9Xc1WQTZynkZ5eqZVN35p41xaFCgmlC7UMaLIvvCM36uO+T8E3D8B2kWkrwrw
+	 CxnQ5rfAOwcQk9F3stXF5NyYVqFnlDWOGrsxEQrWt2LCiqL+fvPkUXoNp9aPDrZKK/
+	 Jf1WpJR5Tfo8C4kN4+IDjAFgA3wv+/TYcPyqih/c85wJGX2v2SpjxCABdfzaKWUWw8
+	 mwFNFCAMG5oIrZT1WMKm7NaX1XpI2tHzzzRuvurRNs7Kd2xxeNWyHz9cxkpcbZ5fhc
+	 X7SraO1QML8XQ==
+Message-ID: <92df5033-5df7-4b2a-98ad-a27f8443ee6a@kernel.org>
+Date: Tue, 11 Jun 2024 16:25:18 +0900
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -67,34 +67,28 @@ Cc: Jens Axboe <axboe@kernel.dk>, Geert Uytterhoeven <geert@linux-m68k.org>,
 References: <20240611051929.513387-1-hch@lst.de>
  <20240611051929.513387-3-hch@lst.de>
  <40ca8052-6ac1-4c1b-8c39-b0a7948839f8@kernel.org>
- <20240611055239.GA3141@lst.de>
+ <20240611055239.GA3141@lst.de> <20240611055405.GA3256@lst.de>
 Content-Language: en-US
 From: Damien Le Moal <dlemoal@kernel.org>
 Organization: Western Digital Research
-In-Reply-To: <20240611055239.GA3141@lst.de>
+In-Reply-To: <20240611055405.GA3256@lst.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 6/11/24 2:52 PM, Christoph Hellwig wrote:
-> On Tue, Jun 11, 2024 at 02:51:24PM +0900, Damien Le Moal wrote:
->>> -	if (lim->zoned)
->>> +	if (sdkp->device->type == TYPE_ZBC)
+On 6/11/24 2:54 PM, Christoph Hellwig wrote:
+> On Tue, Jun 11, 2024 at 07:52:39AM +0200, Christoph Hellwig wrote:
+>>> Maybe we should clear the other zone related limits here ? If the drive is
+>>> reformatted/converted from SMR to CMR (FORMAT WITH PRESET), the other zone
+>>> limits may be set already, no ?
 >>
->> Nit: use sd_is_zoned() here ?
+>> blk_validate_zoned_limits already takes care of that.
 > 
-> Yes.
-> 
->>> -	if (!sd_is_zoned(sdkp))
->>> +	if (!sd_is_zoned(sdkp)) {
->>> +		lim->zoned = false;
->>
->> Maybe we should clear the other zone related limits here ? If the drive is
->> reformatted/converted from SMR to CMR (FORMAT WITH PRESET), the other zone
->> limits may be set already, no ?
-> 
-> blk_validate_zoned_limits already takes care of that.
+> Sorry, brainfart.  The integrity code does that, but not the zoned
+> code.  I suspect the core code might be a better place for it,
+> though.
 
-I do not think it does:
+Yes. Just replied to your previous email before seeing this one.
+I think that:
 
 static int blk_validate_zoned_limits(struct queue_limits *lim)
 {
@@ -108,8 +102,23 @@ static int blk_validate_zoned_limits(struct queue_limits *lim)
         }
 	...
 
-So setting lim->zoned to false without clearing the other limits potentially
-will trigger warnings...
+could be changed into:
+
+static int blk_validate_zoned_limits(struct queue_limits *lim)
+{
+	if (!lim->zoned) {
+                lim->max_open_zones = 0;
+		lim->max_active_zones = 0;
+		lim->zone_write_granularity = 0;
+		lim->max_zone_append_sectors = 0
+		return 0;
+	}
+
+But then we would not see "bad" drivers. Could have a small
+
+blk_clear_zoned_limits(struct queue_limits *lim)
+
+helper too.
 
 -- 
 Damien Le Moal
