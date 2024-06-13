@@ -1,147 +1,151 @@
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 970BA84DFF
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 12 Jun 2024 19:47:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.40.73.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD41C622
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 13 Jun 2024 07:05:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718221665; cv=none; b=o0I9TSEKOvZIHbRkBFSDYCSN1Zw3mqWJAQqXjh4bFxZU7T2gHVlIDIlnlcltra+buH9gGCvrpqTT7I2zM9szZEufVzU4RKX4OpxP7xqI4S52ifoFFmDPTGeyO+lE88Pb4M4Ff73qwdIyhLGqNI6njnOIVOszMvLMoOXHtO1dks4=
+	t=1718262329; cv=none; b=pryi36H1PX7igTBoewOvo55Z2uZnNImNRSigixlqqPgbWC+e8lLcS/15g+htq9cZwKM8I4dTO/iOpfxJPBZQRhbXWUKt4T6i7cUB4s4rmXIOTrZyy8MQNM9Og0/OvEwgJR99DFCg3yP213mlKVoDS7ER254en8jFI7nr5EMfYu0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718221665; c=relaxed/simple;
-	bh=8FQ9c7Ch3FC/45m1f2sv/N9cm5NEyghZRzqrKFkzdcc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g9Kdcd3XFj3+mZSIAlMsiOlQzKexa60wXcM/8urwPl6LVPOJqN+xymHpdGiIVLT4TSZis7RAgTR0pqs0mbGzsIpYlhD1vJxgHTWDUEgHa2SDPmmzUx92RnTvJczFUqEeESTgGzQVzeonAgnj6nvKQMuG8UNUrJZZCei01mNd270=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t3n2VsgT; arc=none smtp.client-ip=145.40.73.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1718262329; c=relaxed/simple;
+	bh=P3oNv5AxizLRzW4ucIcMlRlwou0XCogU7FarJQZ+bZ4=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=KHtv9602lmuApQyomg40DVtU0KMQaFjp6eJYkZq03aBhGmHhBQE5r+UjlANPzIzF35GFpBLMLQ7GHvRF4D1DGOWiYwo32rW0+vECZz+PW/WXtBrBkJ3U43ALm3D8auHJBzLpkMumhrIw+1tKSe2b2XcoCNs+9O5dmXiwk5u4UYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=Rxnluk4o; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t3n2VsgT"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 3AAA4CE2283;
-	Wed, 12 Jun 2024 19:47:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E0E3C32786;
-	Wed, 12 Jun 2024 19:47:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718221660;
-	bh=8FQ9c7Ch3FC/45m1f2sv/N9cm5NEyghZRzqrKFkzdcc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=t3n2VsgTo08P0X+ucMW5nAE/Jvi9bmuYntTSGWbfOVXyyUq+OavQcZ4zmCAVQnZpv
-	 +i6acaHOQFmJDaIa632xABI/nodaQrNGRsnz75tgXcuWQJJAfJ2tIpZV/bu/xhlA8p
-	 CG4jNiNFNskT1asWdp4RKIYVhwfkIcjGQxFxA1U8bG7+cwLhd/2cSAXDl8w/VGK9Cw
-	 YTRdjK5Vzg5lAtN4p1q4kPEobXuvszyijmAYOr7nMJFj+qijmGCB+sAFS9hN59DeN9
-	 g55JEtguQDdCLfgG9tqwF1AxhD2eeNBL/41lPRER0tTmJIdgbRfqyvtgy38zWi0knR
-	 5xAiZJGcQ69aA==
-Date: Wed, 12 Jun 2024 12:47:39 -0700
-From: Kees Cook <kees@kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, David Gow <davidgow@google.com>,
-	Vitor Massaru Iha <vitor@massaru.org>,
-	Ivan Orlov <ivan.orlov0322@gmail.com>,
-	Brendan Higgins <brendan.higgins@linux.dev>,
-	Rae Moar <rmoar@google.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	kunit-dev@googlegroups.com, linux-hardening@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH v2 2/2] usercopy: Convert test_user_copy to KUnit test
-Message-ID: <202406121245.D3536D45D@keescook>
-References: <20240610213055.it.075-kees@kernel.org>
- <20240610213330.1310156-2-kees@kernel.org>
- <CABVgOSmFL50_qYOBROkE9LZx__W6MLnHWahGnAVuLBDVO4k1zQ@mail.gmail.com>
- <202406120927.3C64ACD6@keescook>
- <CAMuHMdUsjy86z3=s6ipFSQrbsycPaExNv8oxrcL_8FhzabMoTg@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="Rxnluk4o"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2C16320009;
+	Thu, 13 Jun 2024 07:05:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1718262319;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=94/HQ7UFsg3zLtaBFFGaUMR4/4ICG6Lrs8af0wpASsI=;
+	b=Rxnluk4omhHGSkigsY+MaP0/dqLBlDNpcHc/n0I2xlQzToeEpPS9WJCnvXwVfnBTxT76nl
+	xPMiSlm+CjVPm5ia+VyZtUmKTJ7STyL4qu/nQjxCaG5vD4erBbOx23/xV4fwZGqNczalem
+	R3cQ8B0utWrs/6aTlEeAI23bfG8wFhaitZGx55nAXV4GkO9pbtBxpDcnuPWUkY93IQjPNo
+	A98QxlOaNOCOqMfz7NTPT4aV4Rh98sU45owukA+MQjpo3olp54mnoMT9hF4HHfjwTApW3v
+	VPA7llYeAw7Sxf63F/sdD6bKtE8i010U2/fRTQwR1c+5pIjDnwyu47EJDFZxTQ==
+Message-ID: <0b657056-3a7f-46ba-8e99-a8fe2203901f@yoseli.org>
+Date: Thu, 13 Jun 2024 09:05:17 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdUsjy86z3=s6ipFSQrbsycPaExNv8oxrcL_8FhzabMoTg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-mtd@lists.infradead.org
+Cc: willy@infradead.org, Andrew Morton <akpm@linux-foundation.org>,
+ linux-m68k@lists.linux-m68k.org
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Subject: Issue with JFFS2 and a_ops->dirty_folio
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-On Wed, Jun 12, 2024 at 09:21:52PM +0200, Geert Uytterhoeven wrote:
-> Hi Kees,
-> 
-> On Wed, Jun 12, 2024 at 6:51 PM Kees Cook <kees@kernel.org> wrote:
-> > On Wed, Jun 12, 2024 at 05:13:39PM +0800, David Gow wrote:
-> > > On Tue, 11 Jun 2024 at 05:33, Kees Cook <kees@kernel.org> wrote:
-> > > > Convert the runtime tests of hardened usercopy to standard KUnit tests.
-> > > >
-> > > > Co-developed-by: Vitor Massaru Iha <vitor@massaru.org>
-> > > > Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
-> > > > Link: https://lore.kernel.org/r/20200721174654.72132-1-vitor@massaru.org
-> > > > Tested-by: Ivan Orlov <ivan.orlov0322@gmail.com>
-> > > > Signed-off-by: Kees Cook <kees@kernel.org>
-> > > > ---
-> > >
-> > > This looks good, particularly with the x86 fix applied.
-> > >
-> > > It's still hanging on m68k -- I think at the 'illegal reversed
-> > > copy_to_user passed' test -- but I'll admit to not having tried to
-> > > debug it further.
-> > >
-> > > One other (set of) notes below about using KUNIT_EXPECT_MEMEQ_MSG(),
-> > > otherwise (assuming the m68k stuff isn't actually a regression, which
-> > > I haven't tested but I imagine is unlikely),
-> >
-> > I'm trying to debug a hang on m68k in the usercopy behavioral testing
-> > routines. It's testing for the pathological case of having inverted
-> > arguments to copy_to_user():
-> >
-> >         user_addr = kunit_vm_mmap(test, NULL, 0, priv->size,
-> >                             PROT_READ | PROT_WRITE | PROT_EXEC,
-> >                             MAP_ANONYMOUS | MAP_PRIVATE, 0);
-> >         ...
-> >         bad_usermem = (char *)user_addr;
-> >         ...
-> >         KUNIT_EXPECT_NE_MSG(test, copy_to_user((char __user *)kmem, bad_usermem,
-> >                                                PAGE_SIZE), 0,
-> >                 "illegal reversed copy_to_user passed");
-> >
-> > On other architectures, this immediate fails because the access_ok()
-> > check rejects it. On m68k with CONFIG_ALTERNATE_USER_ADDRESS_SPACE,
-> > access_ok() short-circuits to "true". I've tried reading
-> > arch/m68k/include/asm/uaccess.h but I'm not sure what's happening under
-> > CONFIG_CPU_HAS_ADDRESS_SPACES.
-> 
-> On m68k CPUs that support CPU_HAS_ADDRESS_SPACES (i.e. all traditional
-> 680x0 that can run real Linux), the CPU has separate address spaces
-> for kernel and user addresses.  Accessing userspace addresses is done
-> using the special "moves" instruction, so we can just use the MMU to
-> catch invalid accesses.
+Hi everyone !
 
-Okay, that's what I suspected. I think I'll need to just not test this
-particular case for archs with separate address spaces, since it would
-be meaningless.
+I am currently working on a Coldfire (MPC54418) and quite everything 
+goes well, except that I can only execute one command from user space 
+before getting a segmentation fault on the do_exit() syscall.
 
-> 
-> > For now I've excluded that test for m68k, but I'm not sure what's
-> > expected to happen here on m68k for this set of bad arguments. Can you
-> > advise?
-> 
-> Perhaps the kernel address is actually a valid user address, or
-> vice versa?
+I tried to debug it and it appears to be failing in folio_mark_dirty() 
+on the 'return mapping->a_ops->dirty_folio(mapping, folio);' call.
 
-Right -- I think that's what's happened.
+I added a VM_BUG_ON_FOLIO():
+diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+index c2a48592c258..122ca2253263 100644
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@ -2857,9 +2857,9 @@ bool folio_mark_dirty(struct folio *folio)
+                  */
+                 if (folio_test_reclaim(folio))
+                         folio_clear_reclaim(folio);
+-               if (mapping->a_ops->dirty_folio)
+-                       return mapping->a_ops->dirty_folio(mapping, folio);
+-               return noop_dirty_folio(mapping, folio);
++
++               VM_BUG_ON_FOLIO(!mapping->a_ops->dirty_folio, folio);
++               return mapping->a_ops->dirty_folio(mapping, folio);
+         }
 
-> 
-> Does the test work on systems that use 4G/4G for kernel/userspace
-> instead of the usual 1G/3G split?
-> 
-> /me runs the old test_user_copy.ko on ARAnyM
-> Seems to take a while? Or it hangs, too?
+         return noop_dirty_folio(mapping, folio);
 
-Sounds like the same behavior.
+And it appears that this is because if tries unconditionally to call the 
+a_ops->dirty_folio() function in JFFS2. The bug report is at the bottom 
+of this mail. We see: aops:0x41340ae0
 
-> Related reading material
-> https://lore.kernel.org/all/CAMuHMdUzHwm5_TL7TNAOF+uqheJnKgsqF+_vzqGRzB_3eufKug@mail.gmail.com/
-> https://lore.kernel.org/all/CAMuHMdVQ93ihgcxUbjptTaHdPjxXLyVAsAr-m3tWBJV0krS2vw@mail.gmail.com/
+Which, in my build, leads to jffs2_file_address_operations.
+And indeed, there is no .dirty_folio nor anything relating to folios in 
+there.
 
-Thanks!
+I don't really know how to solve this though, as I am no expert in this 
+specific part at all !
 
--Kees
+Thanks for your answers,
+BR
+JM
 
--- 
-Kees Cook
+---
+
+bash-5.2# ls
+bin       etc       lib32     mnt       root      sys       usr
+data      home [    9.730000] page: refcount:2 mapcount:1 
+mapping:42097964 index:0x97 pfn:0x27f01
+      [    9.740000] aops:0x41340ae0 ino:b6 dentry name:"libc.so.6"
+     9.740000] flags: 0x28(uptodate|lru|zone=0)
+;36ml[    9.750000] raw: 00000028 4fed39bc 4ffd9d24 42097964 00000097 
+00000000 00000000 00000002
+inux[    9.760000] raw: 4fe02000
+rc   9.760000] page dumped because: 
+VM_BUG_ON_FOLIO(!mapping->a_ops->dirty_folio)
+[m  [    9.770000] kernel BUG at mm/page-writeback.c:2861!
+  [    9.770000] *** TRAP #7 ***   FORMAT=4
+[    9.770000] Current process id is 24
+[    9.770000] BAD KERNEL TRAP: 00000000
+[    9.770000] PC: [<41058ff2>] folio_mark_dirty+0x68/0x82
+[    9.770000] SR: 2010  SP: 41dcddb4  a2: 418fb710
+[    9.770000] d0: 00000027    d1: 0000009e    d2: 4ffd9c24    d3: 60160000
+[    9.770000] d4: 4fe03419    d5: 4ffd9c24    a0: 41dcdd00    a1: 414491f0
+[    9.770000] Process ls (pid: 24, task=418fb710)
+[    9.770000] Frame format=4 eff addr=413d4c3c pc=413dbd16
+[    9.770000] Stack from 41dcddf0:
+[    9.770000]         00000b2d 413dea77 413dbce8 4fe03419 41dcdf1a 
+410750ee 4ffd9c24 00000000
+[    9.770000]         ffffffff fffffffe 41dcde9e 60164000 00000001 
+41317ea4 41074d0c 41078bb0
+[    9.770000]         00000001 41d67034 ffffffff 41dd6600 60164000 
+41dd6600 41d6e3d0 41dcc000
+[    9.770000]         41d6e3fc 00000000 00000000 00000000 00000000 
+41dcdf5c 410753f2 41dcdf1a
+[    9.770000]         41d67034 60160000 60164000 41dcde9e 41d6e3fc 
+41dcdef6 41dcdf1a 4102a940
+[    9.770000]         41d6e3d4 41d67344 41d6e3d0 41dc0000 00000100 
+00000003 4107ad24 41dcdf1a
+[    9.770000] Call Trace: [<410750ee>] unmap_page_range+0x3e2/0x672
+[    9.770000]  [<41317ea4>] mas_find+0x0/0xfa
+[    9.770000]  [<41074d0c>] unmap_page_range+0x0/0x672
+[    9.770000]  [<41078bb0>] vma_next+0x0/0x14
+[    9.770000]  [<410753f2>] unmap_vmas+0x74/0x98
+[    9.770000]  [<4102a940>] up_read+0x0/0x34
+[    9.770000]  [<4107ad24>] exit_mmap+0xd4/0x1c0
+[    9.770000]  [<410093f8>] arch_local_irq_enable+0x0/0xc
+[    9.770000]  [<410093ec>] arch_local_irq_disable+0x0/0xc
+[    9.770000]  [<41006bfa>] __mmput+0x2e/0x86
+[    9.770000]  [<4100a168>] do_exit+0x21e/0x6f2
+[    9.770000]  [<4100a7ba>] sys_exit_group+0x0/0x14
+[    9.770000]  [<4100a778>] do_group_exit+0x22/0x64
+[    9.770000]  [<4100a7ce>] pid_child_should_wake+0x0/0x56
+[    9.770000]  [<410058c8>] system_call+0x54/0xa8
+[    9.770000]
+[    9.770000] Code: bd16 4879 413d 4c3c 4eb9 4132 b30a 4e47 <2f02> 2f0b 
+4e90 508f 241f 265f 4e75 2f02 42a7 4eb9 4105 8f56 60ec 2f0b 266f 0008
+[    9.770000] Disabling lock debugging due to kernel taint
+[    9.770000] note: ls[24] exited with irqs disabled
+     9.780000] Fixing recursive fault but reboot is needed!
+
