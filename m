@@ -1,188 +1,203 @@
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56BFA142658
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 13 Jun 2024 12:57:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26D11433A4
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 13 Jun 2024 14:05:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718283481; cv=none; b=Nlm0oi/eAqwlh2ZFMFzWLwarKMo3RSYsuy84lR5b0IRWxS4cZs2w0V4SWmVXjk/Bxy9ZZr1PFaDrU+n5VpkASEpuOI+PeRyHEydDG5HSUW8t+A2Fz1OBje/Ce9AzHgL2oyWRz16l+ZovFpa/gjzjaBzrP5Qy20aDmaBQBvR5PGo=
+	t=1718287516; cv=none; b=jUA+ZVqjBB6cRhuMWZNpSAHtSbA3TEI/NGWQGWHAttwGXJn/NKoSccsJPyjGcgBjIqha9X+Z15tYGK+CLIa/G/S/KpoBwjveVnocuncqqBWGOawDPQHvLL1+L1jZI+P98SHqtawBrbL/oXtnaCbQO08xh5jpaPSyUXmJV1cit8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718283481; c=relaxed/simple;
-	bh=GaTesfPa9KfN379uX/kTNQ2N9B7b1rKEDZkn7BXqo3A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QWWXF6YSpcKrVol56wM+GhCKRKrrs7oQVt/Ha9Wov08FjlSiPB28QjIAe27PJbpbi7VW/aAS61TLVbC+oV0X/9tSGfQ/rS/UwdgSJJrUyLHXIVx5+xDYdi/cHYdlQzrQdw3RW/p2uE5tAqYe6NvNBNuuok40K3OFX9xV0D35lKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=HS2TOvkZ; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="HS2TOvkZ"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id AF49EE000F;
-	Thu, 13 Jun 2024 12:57:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1718283471;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ln17ZxRL+upVh68wnbTdi1KTA2jYfvXcMhNeLfk448s=;
-	b=HS2TOvkZeG68w8F8vNWzKEgAX22dLWuSPHlDvOdcAPBycdM7mjvCte+RRtlAbl3VFoiZj/
-	qPcNES9ddnnPHYkw/e8p/WKEf/zkC4Zxr4c8IVlFQx0SiX76phFUUJOW9DSAh1TTJsqPhx
-	I2pKDrlruxBKZn2mTt15ASOW9pmAOVatGGVjIjboWTEiG6ebFdHH5p0J5lU89Exyg05WkH
-	lbazXqjFMXfxCLx/I9Mj2kfhC0BPiYk4viK2Cqr5rzIx22blshbo71cjUkgxCfj2XlPhEq
-	gLjvufC8BxaTKgwzy0DCeiIQsmaw3NWiV8L2srBMZ/90k578XQY2eQ21MsSyxQ==
-Message-ID: <ba441a7c-28f8-49c0-95b9-71a586007e44@yoseli.org>
-Date: Thu, 13 Jun 2024 14:57:50 +0200
+	s=arc-20240116; t=1718287516; c=relaxed/simple;
+	bh=mWqCF/Q1ylazfgkNhXCkkB36nGt3iLW/vFBDPsVVQaQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Qji5v9l5257ToKXON61A11SHU8NA93ANfNICDSbEfC5Ts+H98G/ucaS9V/sDPdkmL3tbFRiXPyuTHf2NAnBcA6ea8uJvw4FHErtAggvyf0AhkkKlZhT6mKTjfAweWIMS/opsivWQkiVY4pnbCpQvGW6IX0SUEtSn+FpCg9kOuWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id C2B2968BEB; Thu, 13 Jun 2024 16:05:08 +0200 (CEST)
+Date: Thu, 13 Jun 2024 16:05:08 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Roger Pau =?iso-8859-1?Q?Monn=E9?= <roger.pau@citrix.com>
+Cc: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Richard Weinberger <richard@nod.at>,
+	Philipp Reisner <philipp.reisner@linbit.com>,
+	Lars Ellenberg <lars.ellenberg@linbit.com>,
+	Christoph =?iso-8859-1?Q?B=F6hmwalder?= <christoph.boehmwalder@linbit.com>,
+	Josef Bacik <josef@toxicpanda.com>, Ming Lei <ming.lei@redhat.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>, Alasdair Kergon <agk@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>,
+	Mikulas Patocka <mpatocka@redhat.com>, Song Liu <song@kernel.org>,
+	Yu Kuai <yukuai3@huawei.com>,
+	Vineeth Vijayan <vneethv@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org,
+	drbd-dev@lists.linbit.com, nbd@other.debian.org,
+	linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
+	virtualization@lists.linux.dev, xen-devel@lists.xenproject.org,
+	linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
+	linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
+	linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [PATCH 10/26] xen-blkfront: don't disable cache flushes when
+ they fail
+Message-ID: <20240613140508.GA16529@lst.de>
+References: <20240611051929.513387-1-hch@lst.de> <20240611051929.513387-11-hch@lst.de> <ZmlVziizbaboaBSn@macbook> <20240612150030.GA29188@lst.de> <ZmnFH17bTV2Ot_iR@macbook>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Issue with JFFS2 and a_ops->dirty_folio
-To: Christoph Hellwig <hch@infradead.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-mtd@lists.infradead.org, willy@infradead.org,
- Andrew Morton <akpm@linux-foundation.org>, linux-m68k@lists.linux-m68k.org
-References: <0b657056-3a7f-46ba-8e99-a8fe2203901f@yoseli.org>
- <ZmrV9vLwj0uFj5Dn@infradead.org>
-Content-Language: en-US
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-In-Reply-To: <ZmrV9vLwj0uFj5Dn@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZmnFH17bTV2Ot_iR@macbook>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-Hello Christoph,
-
-On 13/06/2024 13:20, Christoph Hellwig wrote:
-> On Thu, Jun 13, 2024 at 09:05:17AM +0200, Jean-Michel Hautbois wrote:
->> Hi everyone !
->>
->> I am currently working on a Coldfire (MPC54418) and quite everything goes
->> well, except that I can only execute one command from user space before
->> getting a segmentation fault on the do_exit() syscall.
+On Wed, Jun 12, 2024 at 05:56:15PM +0200, Roger Pau Monné wrote:
+> Right.  AFAICT advertising "feature-barrier" and/or
+> "feature-flush-cache" could be done based on whether blkback
+> understand those commands, not on whether the underlying storage
+> supports the equivalent of them.
 > 
-> Looks like jffs2 is simply missing a dirty_folio implementation.  The
-> simple filemap_dirty_folio should do the job, please try the patch
-> below:
+> Worst case we can print a warning message once about the underlying
+> storage failing to complete flush/barrier requests, and that data
+> integrity might not be guaranteed going forward, and not propagate the
+> error to the upper layer?
 > 
-> 
-> diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
-> index 62ea76da7fdf23..7124cbad6c35ae 100644
-> --- a/fs/jffs2/file.c
-> +++ b/fs/jffs2/file.c
-> @@ -19,6 +19,7 @@
->   #include <linux/highmem.h>
->   #include <linux/crc32.h>
->   #include <linux/jffs2.h>
-> +#include <linux/writeback.h>
->   #include "nodelist.h"
->   
->   static int jffs2_write_end(struct file *filp, struct address_space *mapping,
-> @@ -75,6 +76,7 @@ const struct address_space_operations jffs2_file_address_operations =
->   	.read_folio =	jffs2_read_folio,
->   	.write_begin =	jffs2_write_begin,
->   	.write_end =	jffs2_write_end,
-> +	.dirty_folio =	filemap_dirty_folio,
->   };
->   
->   static int jffs2_do_readpage_nolock (struct inode *inode, struct page *pg)
+> What would be the consequence of propagating a flush error to the
+> upper layers?
 
+If you propage the error to the upper layer you will generate an
+I/O error there, which usually leads to a file system shutdown.
 
-Thanks, I did implement this one, but now I have another weird issue, I 
-don't know if this can be related...
+> Given the description of the feature in the blkif header, I'm afraid
+> we cannot guarantee that seeing the feature exposed implies barrier or
+> flush support, since the request could fail at any time (or even from
+> the start of the disk attachment) and it would still sadly be a correct
+> implementation given the description of the options.
 
-When the bash command is launched (my init command is init=/bin/bash) I 
-can launch a first command (say, ls for instance) and it works fine. But 
-a second call to this same command or any other one juste returns as if 
-nothing was done... And I can't even debug, strace fails too:
+Well, then we could do something like the patch below, which keeps
+the existing behavior, but insolates the block layer from it and
+removes the only user of blk_queue_write_cache from interrupt
+context:
 
-execve("/bin/ls", ["/bin/ls"], 0xbfb31ef0 /* 5 vars */) = 0
-brk(NULL)                               = 0x2ab7c000
-atomic_barrier()                        = 0
-access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or 
-directory)
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_LARGEFILE|O_CLOEXEC) = 
--1 ENOENT (No such file or directory)
-openat(AT_FDCWD, "/lib/libresolv.so.2", O_RDONLY|O_LARGEFILE|O_CLOEXEC) = 3
-read(3, 
-"\177ELF\1\2\1\0\0\0\0\0\0\0\0\0\0\3\0\4\0\0\0\1\0\0\0\0\0\0\0004"..., 
-512) = 512
-statx(3, "", AT_STATX_SYNC_AS_STAT|AT_NO_AUTOMOUNT|AT_EMPTY_PATH, 
-STATX_BASIC_STATS, 
-{stx_mask=STATX_TYPE|STATX_MODE|STATX_NLINK|STATX_UID|STATX_GID|STATX_MTIME|STATX_CTIME|STATX_INO|STATX_SIZE|STATX_BLOCKS|STATX_
-MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0755, stx_size=43120, ...}) = 0
-mmap2(NULL, 59888, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) 
-=[   15.830000] random: crng init done
-  0x60022000
-mmap2(0x6002c000, 16384, PROT_READ|PROT_WRITE, 
-MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x8000) = 0x6002c000
-mmap2(0x60030000, 2544, PROT_READ|PROT_WRITE, 
-MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x60030000
-close(3)                                = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-openat(AT_FDCWD, "/lib/libc.so.6", O_RDONLY|O_LARGEFILE|O_CLOEXEC) = 3
-read(3, 
-"\177ELF\1\2\1\0\0\0\0\0\0\0\0\0\0\3\0\4\0\0\0\1\0\2\324\n\0\0\0004"..., 
-512) = 512
-statx(3, "", AT_STATX_SYNC_AS_STAT|AT_NO_AUTOMOUNT|AT_EMPTY_PATH, 
-STATX_BASIC_STATS, 
-{stx_mask=STATX_TYPE|STATX_MODE|STATX_NLINK|STATX_UID|STATX_GID|STATX_MTIME|STATX_CTIME|STATX_INO|STATX_SIZE|STATX_BLOCKS|STATX_
-MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0755, stx_size=1257660, ...}) = 0
-mmap2(NULL, 1290920, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 
-0) = 0x60032000
-mmap2(0x6015e000, 24576, PROT_READ|PROT_WRITE, 
-MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x12c000) = 0x6015e000
-mmap2(0x60164000, 37544, PROT_READ|PROT_WRITE, 
-MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x60164000
-close(3)                                = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-atomic_barrier()                        = 0
-mmap2(NULL, 16384, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 
-0) = 0x6016e000
-set_thread_area(0x601759c0)             = 0
-get_thread_area()                       = 0x601759c0
-atomic_barrier()                        = 0
-set_tid_address(0x6016e548)             = 28
-set_robust_list(0x6016e54c, 12)         = 0
-mprotect(0x6015e000, 8192, PROT_READ)   = 0
-mprotect(0x6002c000, 8192, PROT_READ)   = 0
-mprotect(0x2ab72000, 8192, PROT_READ)   = 0
-mprotect(0x6001e000, 8192, PROT_READ)   = 0
---- SIGSEGV {si_signo=SIGSEGV, si_code=SEGV_MAPERR, si_addr=0xc00815f4} ---
-+++ killed by SIGSEGV +++
+---
+From e6e82c769ab209a77302994c3829cf6ff7a595b8 Mon Sep 17 00:00:00 2001
+From: Christoph Hellwig <hch@lst.de>
+Date: Thu, 30 May 2024 08:58:52 +0200
+Subject: xen-blkfront: don't disable cache flushes when they fail
 
-I suppose this can be related to the ELF_DT_DYN_BASE address, but I 
-can't see what is going on yet.
+blkfront always had a robust negotiation protocol for detecting a write
+cache.  Stop simply disabling cache flushes in the block layer as the
+flags handling is moving to the atomic queue limits API that needs
+user context to freeze the queue for that.  Instead handle the case
+of the feature flags cleared inside of blkfront.  This removes old
+debug code to check for such a mismatch which was previously impossible
+to hit, including the check for passthrough requests that blkfront
+never used to start with.
 
-Thanks,
-JM
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ drivers/block/xen-blkfront.c | 44 +++++++++++++++++++-----------------
+ 1 file changed, 23 insertions(+), 21 deletions(-)
+
+diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
+index 9b4ec3e4908cce..e2c92d5095ff17 100644
+--- a/drivers/block/xen-blkfront.c
++++ b/drivers/block/xen-blkfront.c
+@@ -788,6 +788,14 @@ static int blkif_queue_rw_req(struct request *req, struct blkfront_ring_info *ri
+ 			 * A barrier request a superset of FUA, so we can
+ 			 * implement it the same way.  (It's also a FLUSH+FUA,
+ 			 * since it is guaranteed ordered WRT previous writes.)
++			 *
++			 * Note that can end up here with a FUA write and the
++			 * flags cleared.  This happens when the flag was
++			 * run-time disabled and raced with I/O submission in
++			 * the block layer.  We submit it as a normal write
++			 * here.  A pure flush should never end up here with
++			 * the flags cleared as they are completed earlier for
++			 * the !feature_flush case.
+ 			 */
+ 			if (info->feature_flush && info->feature_fua)
+ 				ring_req->operation =
+@@ -795,8 +803,6 @@ static int blkif_queue_rw_req(struct request *req, struct blkfront_ring_info *ri
+ 			else if (info->feature_flush)
+ 				ring_req->operation =
+ 					BLKIF_OP_FLUSH_DISKCACHE;
+-			else
+-				ring_req->operation = 0;
+ 		}
+ 		ring_req->u.rw.nr_segments = num_grant;
+ 		if (unlikely(require_extra_req)) {
+@@ -887,16 +893,6 @@ static inline void flush_requests(struct blkfront_ring_info *rinfo)
+ 		notify_remote_via_irq(rinfo->irq);
+ }
+ 
+-static inline bool blkif_request_flush_invalid(struct request *req,
+-					       struct blkfront_info *info)
+-{
+-	return (blk_rq_is_passthrough(req) ||
+-		((req_op(req) == REQ_OP_FLUSH) &&
+-		 !info->feature_flush) ||
+-		((req->cmd_flags & REQ_FUA) &&
+-		 !info->feature_fua));
+-}
+-
+ static blk_status_t blkif_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 			  const struct blk_mq_queue_data *qd)
+ {
+@@ -908,23 +904,30 @@ static blk_status_t blkif_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 	rinfo = get_rinfo(info, qid);
+ 	blk_mq_start_request(qd->rq);
+ 	spin_lock_irqsave(&rinfo->ring_lock, flags);
+-	if (RING_FULL(&rinfo->ring))
+-		goto out_busy;
+ 
+-	if (blkif_request_flush_invalid(qd->rq, rinfo->dev_info))
+-		goto out_err;
++	/*
++	 * Check if the backend actually supports flushes.
++	 *
++	 * While the block layer won't send us flushes if we don't claim to
++	 * support them, the Xen protocol allows the backend to revoke support
++	 * at any time.  That is of course a really bad idea and dangerous, but
++	 * has been allowed for 10+ years.  In that case we simply clear the
++	 * flags, and directly return here for an empty flush and ignore the
++	 * FUA flag later on.
++	 */
++	if (unlikely(req_op(qd->rq) == REQ_OP_FLUSH && !info->feature_flush))
++		goto out;
+ 
++	if (RING_FULL(&rinfo->ring))
++		goto out_busy;
+ 	if (blkif_queue_request(qd->rq, rinfo))
+ 		goto out_busy;
+ 
+ 	flush_requests(rinfo);
++out:
+ 	spin_unlock_irqrestore(&rinfo->ring_lock, flags);
+ 	return BLK_STS_OK;
+ 
+-out_err:
+-	spin_unlock_irqrestore(&rinfo->ring_lock, flags);
+-	return BLK_STS_IOERR;
+-
+ out_busy:
+ 	blk_mq_stop_hw_queue(hctx);
+ 	spin_unlock_irqrestore(&rinfo->ring_lock, flags);
+@@ -1627,7 +1630,6 @@ static irqreturn_t blkif_interrupt(int irq, void *dev_id)
+ 					blkif_req(req)->error = BLK_STS_OK;
+ 				info->feature_fua = 0;
+ 				info->feature_flush = 0;
+-				xlvbd_flush(info);
+ 			}
+ 			fallthrough;
+ 		case BLKIF_OP_READ:
+-- 
+2.43.0
+
