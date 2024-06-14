@@ -1,221 +1,236 @@
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E533142E80
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 14 Jun 2024 07:56:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80C0B1922FE
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 14 Jun 2024 10:21:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718351808; cv=none; b=IEKrsOP84Lxi1wUTtvlrd6zC7PO0g7dyIWwHEv3ZQrIT53B15bEyoZziSAmg6becgrOBj1JC3phUg3d8ATntJfKtH5IetuD+xUKIumwHHMThzXxYaHDL3yyBl729DM9A+VtTOl+Sf5e4V2QT9xY83MOvcAEJdT7zOP3imV790kI=
+	t=1718360496; cv=none; b=bFpuyefg9KGgQmqBE/Sf2OLxB9NaJWVzH81qYcHd8fxzWPZT68/OdH5Agtgi/b1mDQC9JuGr2GzRGtQG6TG7OvGsC3SOTIcKAMZKtclLUlYEcc/kM0IRMuORVjlLoEKNvGb4m84vACwjP5M/FnEPa9+BeKsTlpdpXEceeX6oMWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718351808; c=relaxed/simple;
-	bh=cCTHejGQxMi6RzmM8k0/qqpdwyLsfEJT+eXWS8ocifI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e8gR58dbNMsxxhZeomVnHmCwUd472dn46ptVLh/ml297pCMYCc2Dz+JiP4pJWV7b+uAoyTALPyW2HW2J/hYm3fiDQ2LzBNLnZPH00EmcA6fT+nEq77lyWbJ2ZkTIpIyinJeKD+v6NXqTLYWBmNTdM+xBdG9Xonl6TjO9zdwCGgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com; spf=pass smtp.mailfrom=cloud.com; dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b=YI7kDoUQ; arc=none smtp.client-ip=209.85.160.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloud.com
+	s=arc-20240116; t=1718360496; c=relaxed/simple;
+	bh=EZZEwE35hbC8/l4i2UPY/1M7/8tlEjrdpG/D/jypXRg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fQCfHyxaU0WuLUSWtXfmHM7DxzEPY3YIaiz1dieS1on2ppUbrQMSRFbBBv5cbBeQRRgXUyWyJVS7o8ROinYm0hbuoNF53q41s1weWK7OZw+wcm3W1l6o8ah8iQF7LKB7HbeePin+NIeLi91obv9NzX591GmU1JdGoIlyVWytFUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=SvRd4NEx; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b="YI7kDoUQ"
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-44116be80ecso11040541cf.2
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 14 Jun 2024 00:56:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1718351805; x=1718956605; darn=lists.linux-m68k.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=BedO1x12znmji4xt7UpC8XDe1FvgdzsEI86mvlWGudA=;
-        b=YI7kDoUQi5z5YiAb3Qcq0m23l1mbbnZSGkPU9Ko4am0v3lKLM9TANMiJib05Rezcfu
-         QssaNVRmtRuwyx47eHVyci2Ie8e/i6WlehN4ijqv+wsE1I1uBA5G4InJSD7H//DvvHSS
-         tGBw6xfDD38/zzfjItEjmOCGVJ825E2PBX33g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718351805; x=1718956605;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BedO1x12znmji4xt7UpC8XDe1FvgdzsEI86mvlWGudA=;
-        b=bEhUUWUAjI/+sfAABzobNDRv2f1Eiv1t5eHefFSLMgfi7vTwdYTIYFovVKIpioS3KC
-         j5rwyK56J//qndKIEjRXSgCUiiifyILqOvdTBPWX2MG5XbJlCh/IJ5RQypI/YnCJRd61
-         6zh1D4PI5z17dCTmqR3caywXpUx7bEA9KaIUr0iKALbXm8dJJ0IttZ54WR37DQJq1Old
-         +sR24EfmyiKEZTIxp9uzT1g1DKQBFqClBoILZU39GwUT7L4hCg4oyTV/1vA18bl5m4bp
-         kYPfE4IVoQrZ1nM6HA8KLipNBGC45Nsbunbc40I7fhvC+ti3sAlMm0Nv9p3mrusI75ba
-         7wQA==
-X-Forwarded-Encrypted: i=1; AJvYcCUQaatgLiR4qfHHGjbOKCMC/HwWn1k5VhaxrslgNHE8OAZA5S2aru2CRa7dHEDx2txGFf1d3WoudE0wBMEbIrPLc3kuQlsfroNvdubqgWid
-X-Gm-Message-State: AOJu0YwXSUAkqQDvWniWdaXVrWwhj3ceXXCLV45QP+tQI57LWMrUjUCT
-	d9GOXj8XOBWSBOEOnfPviKCxnQ6BKp7IwqZwv22NuQiVu9i0nn0PBsYcCz28cd4=
-X-Google-Smtp-Source: AGHT+IEDi8BhVjLu2vbVbmBxB83hP6gyIibQXt+H84ODwaVrhmTedMPZYFZeMGGsfo/+7hGiDnXdRg==
-X-Received: by 2002:a05:622a:1822:b0:43e:2639:a987 with SMTP id d75a77b69052e-44216b3a874mr27744421cf.59.1718351804940;
-        Fri, 14 Jun 2024 00:56:44 -0700 (PDT)
-Received: from localhost ([213.195.124.163])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-441f2ff9ef8sm13823221cf.89.2024.06.14.00.56.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jun 2024 00:56:44 -0700 (PDT)
-Date: Fri, 14 Jun 2024 09:56:42 +0200
-From: Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, Geert Uytterhoeven <geert@linux-m68k.org>,
-	Richard Weinberger <richard@nod.at>,
-	Philipp Reisner <philipp.reisner@linbit.com>,
-	Lars Ellenberg <lars.ellenberg@linbit.com>,
-	Christoph =?utf-8?Q?B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>,
-	Josef Bacik <josef@toxicpanda.com>, Ming Lei <ming.lei@redhat.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>, Alasdair Kergon <agk@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>,
-	Mikulas Patocka <mpatocka@redhat.com>, Song Liu <song@kernel.org>,
-	Yu Kuai <yukuai3@huawei.com>,
-	Vineeth Vijayan <vneethv@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org,
-	drbd-dev@lists.linbit.com, nbd@other.debian.org,
-	linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
-	virtualization@lists.linux.dev, xen-devel@lists.xenproject.org,
-	linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
-	linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
-	linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
-	linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: [PATCH 10/26] xen-blkfront: don't disable cache flushes when
- they fail
-Message-ID: <Zmv3usMvGGK7ZbMT@macbook>
-References: <20240611051929.513387-1-hch@lst.de>
- <20240611051929.513387-11-hch@lst.de>
- <ZmlVziizbaboaBSn@macbook>
- <20240612150030.GA29188@lst.de>
- <ZmnFH17bTV2Ot_iR@macbook>
- <20240613140508.GA16529@lst.de>
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="SvRd4NEx"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 40BE16000B;
+	Fri, 14 Jun 2024 10:21:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1718360486;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mpcjwEZIHNFU5D94FMi7pIStPsDrEGl0hbTEiz2Z9LY=;
+	b=SvRd4NExxDwA0YczYp+ajo7cwtM4pJEUU7pyyJdCf8HEJnjlZjEYUoYBFBHwb8vJF5qcXI
+	dEttT4vtdSOiKIzMqIShv6uDNEr/SSkiYLBvYit3MbVpoe/g6QY+n6t/NlF8/ERhC/IMXI
+	gKIAUqbIa3e+ENHdENLIbZ5aZt/3C1AiQ3Duj6x2RffzS7NI5XvJ1pbMd7j+rcsowrAo9G
+	G35dTC6I+7tmZEQy9uWK4XBr+muOx7jkBo35iZde9aIRLULXvypevykT3Rha4RDwe9j3B7
+	P3af2IDpfXDvpTLH8ZuH57zJu+cOCRGtKskXLVThoi7Qvvl23+gTWT0JwT8D2g==
+Message-ID: <c8814c0f-7f03-435c-ac5b-084bd0ad8fe6@yoseli.org>
+Date: Fri, 14 Jun 2024 12:21:23 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240613140508.GA16529@lst.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Issue with JFFS2 and a_ops->dirty_folio
+To: Christoph Hellwig <hch@infradead.org>
+Cc: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-mtd@lists.infradead.org, willy@infradead.org,
+ Andrew Morton <akpm@linux-foundation.org>, linux-m68k@lists.linux-m68k.org
+References: <0b657056-3a7f-46ba-8e99-a8fe2203901f@yoseli.org>
+ <ZmrV9vLwj0uFj5Dn@infradead.org>
+Content-Language: en-US
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+In-Reply-To: <ZmrV9vLwj0uFj5Dn@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-On Thu, Jun 13, 2024 at 04:05:08PM +0200, Christoph Hellwig wrote:
-> On Wed, Jun 12, 2024 at 05:56:15PM +0200, Roger Pau Monné wrote:
-> > Right.  AFAICT advertising "feature-barrier" and/or
-> > "feature-flush-cache" could be done based on whether blkback
-> > understand those commands, not on whether the underlying storage
-> > supports the equivalent of them.
-> > 
-> > Worst case we can print a warning message once about the underlying
-> > storage failing to complete flush/barrier requests, and that data
-> > integrity might not be guaranteed going forward, and not propagate the
-> > error to the upper layer?
-> > 
-> > What would be the consequence of propagating a flush error to the
-> > upper layers?
+Hi there,
+
+On 13/06/2024 13:20, Christoph Hellwig wrote:
+> On Thu, Jun 13, 2024 at 09:05:17AM +0200, Jean-Michel Hautbois wrote:
+>> Hi everyone !
+>>
+>> I am currently working on a Coldfire (MPC54418) and quite everything goes
+>> well, except that I can only execute one command from user space before
+>> getting a segmentation fault on the do_exit() syscall.
 > 
-> If you propage the error to the upper layer you will generate an
-> I/O error there, which usually leads to a file system shutdown.
+> Looks like jffs2 is simply missing a dirty_folio implementation.  The
+> simple filemap_dirty_folio should do the job, please try the patch
+> below:
 > 
-> > Given the description of the feature in the blkif header, I'm afraid
-> > we cannot guarantee that seeing the feature exposed implies barrier or
-> > flush support, since the request could fail at any time (or even from
-> > the start of the disk attachment) and it would still sadly be a correct
-> > implementation given the description of the options.
 > 
-> Well, then we could do something like the patch below, which keeps
-> the existing behavior, but insolates the block layer from it and
-> removes the only user of blk_queue_write_cache from interrupt
-> context:
+> diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
+> index 62ea76da7fdf23..7124cbad6c35ae 100644
+> --- a/fs/jffs2/file.c
+> +++ b/fs/jffs2/file.c
+> @@ -19,6 +19,7 @@
+>   #include <linux/highmem.h>
+>   #include <linux/crc32.h>
+>   #include <linux/jffs2.h>
+> +#include <linux/writeback.h>
+>   #include "nodelist.h"
+>   
+>   static int jffs2_write_end(struct file *filp, struct address_space *mapping,
+> @@ -75,6 +76,7 @@ const struct address_space_operations jffs2_file_address_operations =
+>   	.read_folio =	jffs2_read_folio,
+>   	.write_begin =	jffs2_write_begin,
+>   	.write_end =	jffs2_write_end,
+> +	.dirty_folio =	filemap_dirty_folio,
+>   };
+>   
+>   static int jffs2_do_readpage_nolock (struct inode *inode, struct page *pg)
 
-LGTM, I'm not sure there's much else we can do.
+I managed to modify my rootfs and I am using ubifs. It is far more 
+complete and indeed an error occurs in the ubifs_dirty_folio() call. I 
+don't know if there is any interest there, but the volume is mounted 
+read-only on purpose:
 
-> ---
-> From e6e82c769ab209a77302994c3829cf6ff7a595b8 Mon Sep 17 00:00:00 2001
-> From: Christoph Hellwig <hch@lst.de>
-> Date: Thu, 30 May 2024 08:58:52 +0200
-> Subject: xen-blkfront: don't disable cache flushes when they fail
-> 
-> blkfront always had a robust negotiation protocol for detecting a write
-> cache.  Stop simply disabling cache flushes in the block layer as the
-> flags handling is moving to the atomic queue limits API that needs
-> user context to freeze the queue for that.  Instead handle the case
-> of the feature flags cleared inside of blkfront.  This removes old
-> debug code to check for such a mismatch which was previously impossible
-> to hit, including the check for passthrough requests that blkfront
-> never used to start with.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  drivers/block/xen-blkfront.c | 44 +++++++++++++++++++-----------------
->  1 file changed, 23 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
-> index 9b4ec3e4908cce..e2c92d5095ff17 100644
-> --- a/drivers/block/xen-blkfront.c
-> +++ b/drivers/block/xen-blkfront.c
-> @@ -788,6 +788,14 @@ static int blkif_queue_rw_req(struct request *req, struct blkfront_ring_info *ri
->  			 * A barrier request a superset of FUA, so we can
->  			 * implement it the same way.  (It's also a FLUSH+FUA,
->  			 * since it is guaranteed ordered WRT previous writes.)
-> +			 *
-> +			 * Note that can end up here with a FUA write and the
-> +			 * flags cleared.  This happens when the flag was
-> +			 * run-time disabled and raced with I/O submission in
-> +			 * the block layer.  We submit it as a normal write
+[    4.490000] ubi0: attaching mtd5
+[    4.500000] ubi0: MTD device 5 is write-protected, attach in 
+read-only mode
+[    4.890000] ubi0: scanning is finished
+[    4.940000] ubi0 warning: autoresize: skip auto-resize because of R/O 
+mode
+[    4.950000] ubi0: attached mtd5 (name "root2", size 64 MiB)
+[    4.960000] ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 126976 
+bytes
+[    4.960000] ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+[    4.970000] ubi0: VID header offset: 2048 (aligned 2048), data 
+offset: 4096
+[    4.980000] ubi0: good PEBs: 512, bad PEBs: 0, corrupted PEBs: 0
+[    4.980000] ubi0: user volume: 1, internal volumes: 1, max. volumes 
+count: 128
+[    4.990000] ubi0: max/mean erase counter: 0/0, WL threshold: 4096, 
+image sequence number: 1619801263
+[    5.000000] ubi0: available PEBs: 215, total reserved PEBs: 297, PEBs 
+reserved for bad PEB handling: 80
+[    5.010000] ubi0: background thread "ubi_bgt0d" started, PID 25
+[    5.020000] UBIFS (ubi0:0): read-only UBI device
+[    5.030000] UBIFS (ubi0:0): Mounting in unauthenticated mode
+[    5.130000] UBIFS (ubi0:0): UBIFS: mounted UBI device 0, volume 0, 
+name "root2", R/O mode
+[    5.140000] UBIFS (ubi0:0): LEB size: 126976 bytes (124 KiB), 
+min./max. I/O unit sizes: 2048 bytes/2048 bytes
+[    5.150000] UBIFS (ubi0:0): FS size: 25649152 bytes (24 MiB, 202 
+LEBs), max 2048 LEBs, journal size 9023488 bytes (8 MiB, 72 LEBs)
+[    5.160000] UBIFS (ubi0:0): reserved for root: 0 bytes (0 KiB)
+[    5.160000] UBIFS (ubi0:0): media format: w4/r0 (latest is w5/r0), 
+UUID 43E9BD53-C843-4AEE-897E-5684A795D2C8, small LPT model
+[    5.180000] VFS: Mounted root (ubifs filesystem) readonly on device 0:13.
 
-Since blkfront no longer signals that FUA is no longer available for the
-device, getting a request with FUA is not actually a race I think?
+And when I execute a command:
 
-> +			 * here.  A pure flush should never end up here with
-> +			 * the flags cleared as they are completed earlier for
-> +			 * the !feature_flush case.
->  			 */
->  			if (info->feature_flush && info->feature_fua)
->  				ring_req->operation =
-> @@ -795,8 +803,6 @@ static int blkif_queue_rw_req(struct request *req, struct blkfront_ring_info *ri
->  			else if (info->feature_flush)
->  				ring_req->operation =
->  					BLKIF_OP_FLUSH_DISKCACHE;
-> -			else
-> -				ring_req->operation = 0;
->  		}
->  		ring_req->u.rw.nr_segments = num_grant;
->  		if (unlikely(require_extra_req)) {
-> @@ -887,16 +893,6 @@ static inline void flush_requests(struct blkfront_ring_info *rinfo)
->  		notify_remote_via_irq(rinfo->irq);
->  }
->  
-> -static inline bool blkif_request_flush_invalid(struct request *req,
-> -					       struct blkfront_info *info)
-> -{
-> -	return (blk_rq_is_passthrough(req) ||
-> -		((req_op(req) == REQ_OP_FLUSH) &&
-> -		 !info->feature_flush) ||
-> -		((req->cmd_flags & REQ_FUA) &&
-> -		 !info->feature_fua));
-> -}
-> -
->  static blk_status_t blkif_queue_rq(struct blk_mq_hw_ctx *hctx,
->  			  const struct blk_mq_queue_data *qd)
->  {
-> @@ -908,23 +904,30 @@ static blk_status_t blkif_queue_rq(struct blk_mq_hw_ctx *hctx,
->  	rinfo = get_rinfo(info, qid);
->  	blk_mq_start_request(qd->rq);
->  	spin_lock_irqsave(&rinfo->ring_lock, flags);
-> -	if (RING_FULL(&rinfo->ring))
-> -		goto out_busy;
->  
-> -	if (blkif_request_flush_invalid(qd->rq, rinfo->dev_info))
-> -		goto out_err;
-> +	/*
-> +	 * Check if the backend actually supports flushes.
-> +	 *
-> +	 * While the block layer won't send us flushes if we don't claim to
-> +	 * support them, the Xen protocol allows the backend to revoke support
-> +	 * at any time.  That is of course a really bad idea and dangerous, but
-> +	 * has been allowed for 10+ years.  In that case we simply clear the
-> +	 * flags, and directly return here for an empty flush and ignore the
-> +	 * FUA flag later on.
-> +	 */
-> +	if (unlikely(req_op(qd->rq) == REQ_OP_FLUSH && !info->feature_flush))
-> +		goto out;
+bash-5.2# ls
+bin       etc       lib32     mnt       root      sys 
+12.560000] UBIFS error (ubi0:0 pid 26): ubifs_assert_failed: UBIFS 
+assert failed: ret == false, in fs/ubifs/file.c:1477
+4mus[   12.570000] UBIFS warning (ubi0:0 pid 26): ubifs_ro_mode: 
+switched to read-only mode, error -22
+r  12.580000] CPU: 0 PID: 26 Comm: ls Not tainted 
+6.10.0-rc3stmark2-001-00024-gc73f39277b30-dirty #455
+[   12.580000] Stack from 42937dac:
+[   12.580000]         42937dac 414a3f4c 414a3f4c 4fed4a01 41dda000 
+420885cc 413e2b20 414a3f4c
+[   12.580000]         41115112 41dda000 ffffffea 414b3c43 000005c5 
+4fed4a98 6015e000 4105e058
+[   12.580000]         420885cc 4fed4a98 415ed419 42937f12 4107ae8a 
+4fed4a98 00000000 ffffffff
+[   12.580000]         fffffffe 42937e96 60162000 00000001 413c03ce 
+4107aa9e 4107ea74 00000001
+[   12.580000]         42909034 ffffffff 42940600 60162000 42940600 
+428c0450 42936000 428c048c
+[   12.580000]         00000000 00000000 00000000 00000000 42937f54 
+4107b19c 42937f12 42909034
+[   12.580000] Call Trace: [<413e2b20>] dump_stack+0xc/0x10
+[   12.580000]  [<41115112>] ubifs_dirty_folio+0x3e/0x4a
+[   12.580000]  [<4105e058>] folio_mark_dirty+0x6e/0x82
+[   12.580000]  [<4107ae8a>] unmap_page_range+0x3ec/0x68a
+[   12.580000]  [<413c03ce>] mas_find+0x0/0xfa
+[   12.580000]  [<4107aa9e>] unmap_page_range+0x0/0x68a
+[   12.580000]  [<4107ea74>] vma_next+0x0/0x14
+[   12.580000]  [<4107b19c>] unmap_vmas+0x74/0x98
+[   12.580000]  [<4102cc68>] up_read+0x0/0x2a
+[   12.580000]  [<41080c14>] exit_mmap+0xd4/0x1d2
+[   12.580000]  [<410098ff>] will_become_orphaned_pgrp+0x27/0x7c
+[   12.580000]  [<413e6eb4>] _raw_spin_unlock_irq+0x0/0x14
+[   12.580000]  [<41006db0>] __mmput+0x2e/0xa0
+[   12.580000]  [<4100a7ae>] do_exit+0x264/0x764
+[   12.580000]  [<413e6ec4>] _raw_spin_unlock_irq+0x10/0x14
+[   12.580000]  [<4100adfe>] do_group_exit+0x26/0x78
+[   12.580000]  [<4100ae50>] sys_exit_group+0x0/0x14
+[   12.580000]  [<4100ae64>] pid_child_should_wake+0x0/0x56
+[   12.580000]  [<41005918>] system_call+0x54/0xa8
+[   12.580000]
+[   17.600000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: folio->private != NULL, in fs/ubifs/file.c:1016
+[   17.610000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: !c->ro_media && !c->ro_mount, in fs/ubifs/journal.c:108
+[   17.620000] UBIFS error (ubi0:0 pid 24): make_reservation: cannot 
+reserve 4144 bytes in jhead 2, error -30
+[   17.630000] UBIFS error (ubi0:0 pid 24): do_writepage: cannot write 
+folio 150 of inode 156, error -30
+[   17.640000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: folio->private != NULL, in fs/ubifs/file.c:944
+[   17.650000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: c->bi.dd_growth >= 0, in fs/ubifs/budget.c:550
+[   26.440000] UBIFS error (ubi0:0 pid 27): ubifs_assert_failed: UBIFS 
+assert failed: ret == false, in fs/ubifs/file.c:1477
+[   26.450000] UBIFS error (ubi0:0 pid 27): ubifs_assert_failed: UBIFS 
+assert failed: ret == false, in fs/ubifs/file.c:1477
+[   26.460000] UBIFS error (ubi0:0 pid 27): ubifs_assert_failed: UBIFS 
+assert failed: ret == false, in fs/ubifs/file.c:1477
+[   31.520000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: folio->private != NULL, in fs/ubifs/file.c:1016
+[   31.530000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: !c->ro_media && !c->ro_mount, in fs/ubifs/journal.c:108
+[   31.540000] UBIFS error (ubi0:0 pid 24): make_reservation: cannot 
+reserve 4144 bytes in jhead 2, error -30
+[   31.550000] UBIFS error (ubi0:0 pid 24): do_writepage: cannot write 
+folio 101 of inode 81, error -30
+[   31.560000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: folio->private != NULL, in fs/ubifs/file.c:944
+[   31.570000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: c->bi.dd_growth >= 0, in fs/ubifs/budget.c:550
+[   36.640000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: folio->private != NULL, in fs/ubifs/file.c:1016
+[   36.650000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: !c->ro_media && !c->ro_mount, in fs/ubifs/journal.c:108
+[   36.660000] UBIFS error (ubi0:0 pid 24): make_reservation: cannot 
+reserve 4144 bytes in jhead 2, error -30
+[   36.670000] UBIFS error (ubi0:0 pid 24): do_writepage: cannot write 
+folio 102 of inode 81, error -30
+[   36.680000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: folio->private != NULL, in fs/ubifs/file.c:944
+[   36.690000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: c->bi.dd_growth >= 0, in fs/ubifs/budget.c:550
+[   36.700000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: folio->private != NULL, in fs/ubifs/file.c:1016
+[   36.710000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: !c->ro_media && !c->ro_mount, in fs/ubifs/journal.c:108
+[   36.720000] UBIFS error (ubi0:0 pid 24): make_reservation: cannot 
+reserve 4144 bytes in jhead 2, error -30
+[   36.730000] UBIFS error (ubi0:0 pid 24): do_writepage: cannot write 
+folio 150 of inode 156, error -30
+[   36.740000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: folio->private != NULL, in fs/ubifs/file.c:944
+[   36.750000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
+assert failed: c->bi.dd_growth >= 0, in fs/ubifs/budget.c:550
 
-Don't you need to complete the request here?
+ From now on, nothing happens anymore.
+What can cause this ? I see in the file.c:
+"An attempt to dirty a page without budgeting for it - should not happen."
 
-Thanks, Roger.
+So, why can it happen :-) ?
+
+Thanks a lot !
+BR,
+JM
