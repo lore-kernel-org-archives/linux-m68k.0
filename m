@@ -1,37 +1,38 @@
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80C0B1922FE
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 14 Jun 2024 10:21:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEE4310A19
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 16 Jun 2024 23:01:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.40.73.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718360496; cv=none; b=bFpuyefg9KGgQmqBE/Sf2OLxB9NaJWVzH81qYcHd8fxzWPZT68/OdH5Agtgi/b1mDQC9JuGr2GzRGtQG6TG7OvGsC3SOTIcKAMZKtclLUlYEcc/kM0IRMuORVjlLoEKNvGb4m84vACwjP5M/FnEPa9+BeKsTlpdpXEceeX6oMWg=
+	t=1718578875; cv=none; b=kHqpiB20mILCYZbtHA0ujO/pyHAvLrwHmk15A7dFAWiCKZo/rNAcTue3kWn8XidbdxpYpbEd3WMwv7QXHxwbsFGEy5NmzDR9JkowR1L1POfK5XQ6LV0WuoxcDdH+mQkhAh+FcPGBW4/nrkb9CBwQ1virhdrwGvBg7BQW1XTBSrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718360496; c=relaxed/simple;
-	bh=EZZEwE35hbC8/l4i2UPY/1M7/8tlEjrdpG/D/jypXRg=;
+	s=arc-20240116; t=1718578875; c=relaxed/simple;
+	bh=K48GiByJehCmQjwi20pmfnU+WsCyr4S6WxHNS+fcYIA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fQCfHyxaU0WuLUSWtXfmHM7DxzEPY3YIaiz1dieS1on2ppUbrQMSRFbBBv5cbBeQRRgXUyWyJVS7o8ROinYm0hbuoNF53q41s1weWK7OZw+wcm3W1l6o8ah8iQF7LKB7HbeePin+NIeLi91obv9NzX591GmU1JdGoIlyVWytFUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=SvRd4NEx; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
+	 In-Reply-To:Content-Type; b=lrwY83SMj+T57Uy3+ha9pPKOZm+4Hr4sVQcmmca/GQS1ooFmLj0CyolHLapL49r77G/+6aCHmX2LiYV/nSgnLKcJofoOeA34O+y0mElkTyBYuZAMDg9N1pHuvyJE/3cDIP7y96gWRjU1LKzuf+aFAEnJIYWXWL4J0xs2W9FVA2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gczAGXT2; arc=none smtp.client-ip=145.40.73.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="SvRd4NEx"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 40BE16000B;
-	Fri, 14 Jun 2024 10:21:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1718360486;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mpcjwEZIHNFU5D94FMi7pIStPsDrEGl0hbTEiz2Z9LY=;
-	b=SvRd4NExxDwA0YczYp+ajo7cwtM4pJEUU7pyyJdCf8HEJnjlZjEYUoYBFBHwb8vJF5qcXI
-	dEttT4vtdSOiKIzMqIShv6uDNEr/SSkiYLBvYit3MbVpoe/g6QY+n6t/NlF8/ERhC/IMXI
-	gKIAUqbIa3e+ENHdENLIbZ5aZt/3C1AiQ3Duj6x2RffzS7NI5XvJ1pbMd7j+rcsowrAo9G
-	G35dTC6I+7tmZEQy9uWK4XBr+muOx7jkBo35iZde9aIRLULXvypevykT3Rha4RDwe9j3B7
-	P3af2IDpfXDvpTLH8ZuH57zJu+cOCRGtKskXLVThoi7Qvvl23+gTWT0JwT8D2g==
-Message-ID: <c8814c0f-7f03-435c-ac5b-084bd0ad8fe6@yoseli.org>
-Date: Fri, 14 Jun 2024 12:21:23 +0200
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gczAGXT2"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 522C7CE0E5D;
+	Sun, 16 Jun 2024 23:01:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CAA0C2BD10;
+	Sun, 16 Jun 2024 23:01:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718578869;
+	bh=K48GiByJehCmQjwi20pmfnU+WsCyr4S6WxHNS+fcYIA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=gczAGXT2JgNBboue0aH6XDCajaGt0Tn9T6RNwUC8NdBoTEgjtTbwpmUfCPkjFQ9wM
+	 MM968k+DIaMHgn73yxqDo9X2C3EJ5/755Y+99nXMZx497l32DWuxyKEgkUS1Mfauzi
+	 zlSFlVj6tWpctoPTJ+wOY0xCMexSj4HtxdjXI3+rZfPjj6bie6Cukz6u7sVo5A7bEU
+	 9rKTuHOjY9Tr5Ii5b3jprMmIgspdDlLslR4qSbgMPqGu86/2ypBmGpS+m4Lh9tPaWA
+	 jbUd1obFjKTKufNm0BQAftChaDznmaK4Iq8S3q+7ZRNQrBkFu3/tvjG2xwv4gQQlB4
+	 JHm9Ls++1gm6g==
+Message-ID: <5a697233-0611-459d-b889-2e0133bbb541@kernel.org>
+Date: Mon, 17 Jun 2024 08:01:04 +0900
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -39,198 +40,64 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Issue with JFFS2 and a_ops->dirty_folio
-To: Christoph Hellwig <hch@infradead.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-mtd@lists.infradead.org, willy@infradead.org,
- Andrew Morton <akpm@linux-foundation.org>, linux-m68k@lists.linux-m68k.org
-References: <0b657056-3a7f-46ba-8e99-a8fe2203901f@yoseli.org>
- <ZmrV9vLwj0uFj5Dn@infradead.org>
+Subject: Re: [PATCH 02/26] sd: move zone limits setup out of
+ sd_read_block_characteristics
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Richard Weinberger <richard@nod.at>,
+ Philipp Reisner <philipp.reisner@linbit.com>,
+ Lars Ellenberg <lars.ellenberg@linbit.com>,
+ =?UTF-8?Q?Christoph_B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>,
+ Josef Bacik <josef@toxicpanda.com>, Ming Lei <ming.lei@redhat.com>,
+ "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+ =?UTF-8?Q?Roger_Pau_Monn=C3=A9?= <roger.pau@citrix.com>,
+ Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>,
+ Mikulas Patocka <mpatocka@redhat.com>, Song Liu <song@kernel.org>,
+ Yu Kuai <yukuai3@huawei.com>, Vineeth Vijayan <vneethv@linux.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org,
+ drbd-dev@lists.linbit.com, nbd@other.debian.org,
+ linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
+ virtualization@lists.linux.dev, xen-devel@lists.xenproject.org,
+ linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
+ linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
+ linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
+References: <20240611051929.513387-1-hch@lst.de>
+ <20240611051929.513387-3-hch@lst.de>
+ <40ca8052-6ac1-4c1b-8c39-b0a7948839f8@kernel.org>
+ <20240613093918.GA27629@lst.de>
+From: Damien Le Moal <dlemoal@kernel.org>
 Content-Language: en-US
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-In-Reply-To: <ZmrV9vLwj0uFj5Dn@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Organization: Western Digital Research
+In-Reply-To: <20240613093918.GA27629@lst.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-Hi there,
-
-On 13/06/2024 13:20, Christoph Hellwig wrote:
-> On Thu, Jun 13, 2024 at 09:05:17AM +0200, Jean-Michel Hautbois wrote:
->> Hi everyone !
+On 6/13/24 18:39, Christoph Hellwig wrote:
+> On Tue, Jun 11, 2024 at 02:51:24PM +0900, Damien Le Moal wrote:
+>>> +	if (sdkp->device->type == TYPE_ZBC)
 >>
->> I am currently working on a Coldfire (MPC54418) and quite everything goes
->> well, except that I can only execute one command from user space before
->> getting a segmentation fault on the do_exit() syscall.
+>> Nit: use sd_is_zoned() here ?
 > 
-> Looks like jffs2 is simply missing a dirty_folio implementation.  The
-> simple filemap_dirty_folio should do the job, please try the patch
-> below:
-> 
-> 
-> diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
-> index 62ea76da7fdf23..7124cbad6c35ae 100644
-> --- a/fs/jffs2/file.c
-> +++ b/fs/jffs2/file.c
-> @@ -19,6 +19,7 @@
->   #include <linux/highmem.h>
->   #include <linux/crc32.h>
->   #include <linux/jffs2.h>
-> +#include <linux/writeback.h>
->   #include "nodelist.h"
->   
->   static int jffs2_write_end(struct file *filp, struct address_space *mapping,
-> @@ -75,6 +76,7 @@ const struct address_space_operations jffs2_file_address_operations =
->   	.read_folio =	jffs2_read_folio,
->   	.write_begin =	jffs2_write_begin,
->   	.write_end =	jffs2_write_end,
-> +	.dirty_folio =	filemap_dirty_folio,
->   };
->   
->   static int jffs2_do_readpage_nolock (struct inode *inode, struct page *pg)
+> Actually - is there much in even keeping sd_is_zoned now that the
+> host aware support is removed?  Just open coding the type check isn't
+> any more code, and probably easier to follow.
 
-I managed to modify my rootfs and I am using ubifs. It is far more 
-complete and indeed an error occurs in the ubifs_dirty_folio() call. I 
-don't know if there is any interest there, but the volume is mounted 
-read-only on purpose:
+Removing this helper is fine by me. There are only 2 call sites in sd.c and the
+some of 4 calls in sd_zbc.c are not really needed:
+1) The call in sd_zbc_print_zones() is not needed at all since this function is
+called only for a zoned drive from sd_zbc_revalidate_zones().
+2) The calls in sd_zbc_report_zones() and sd_zbc_cmnd_checks() are probably
+useless as these are called only for zoned drives in the first place. The checks
+would be useful only for passthrough commands, but then we do not really care
+about these and the user will get a failure anyway if it tries to do ZBC
+commands on non-ZBC drives.
+3) That leaves only the call in sd_zbc_read_zones() but that check can probably
+be moved to sd.c to conditionally call  sd_zbc_read_zones().
 
-[    4.490000] ubi0: attaching mtd5
-[    4.500000] ubi0: MTD device 5 is write-protected, attach in 
-read-only mode
-[    4.890000] ubi0: scanning is finished
-[    4.940000] ubi0 warning: autoresize: skip auto-resize because of R/O 
-mode
-[    4.950000] ubi0: attached mtd5 (name "root2", size 64 MiB)
-[    4.960000] ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 126976 
-bytes
-[    4.960000] ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
-[    4.970000] ubi0: VID header offset: 2048 (aligned 2048), data 
-offset: 4096
-[    4.980000] ubi0: good PEBs: 512, bad PEBs: 0, corrupted PEBs: 0
-[    4.980000] ubi0: user volume: 1, internal volumes: 1, max. volumes 
-count: 128
-[    4.990000] ubi0: max/mean erase counter: 0/0, WL threshold: 4096, 
-image sequence number: 1619801263
-[    5.000000] ubi0: available PEBs: 215, total reserved PEBs: 297, PEBs 
-reserved for bad PEB handling: 80
-[    5.010000] ubi0: background thread "ubi_bgt0d" started, PID 25
-[    5.020000] UBIFS (ubi0:0): read-only UBI device
-[    5.030000] UBIFS (ubi0:0): Mounting in unauthenticated mode
-[    5.130000] UBIFS (ubi0:0): UBIFS: mounted UBI device 0, volume 0, 
-name "root2", R/O mode
-[    5.140000] UBIFS (ubi0:0): LEB size: 126976 bytes (124 KiB), 
-min./max. I/O unit sizes: 2048 bytes/2048 bytes
-[    5.150000] UBIFS (ubi0:0): FS size: 25649152 bytes (24 MiB, 202 
-LEBs), max 2048 LEBs, journal size 9023488 bytes (8 MiB, 72 LEBs)
-[    5.160000] UBIFS (ubi0:0): reserved for root: 0 bytes (0 KiB)
-[    5.160000] UBIFS (ubi0:0): media format: w4/r0 (latest is w5/r0), 
-UUID 43E9BD53-C843-4AEE-897E-5684A795D2C8, small LPT model
-[    5.180000] VFS: Mounted root (ubifs filesystem) readonly on device 0:13.
+-- 
+Damien Le Moal
+Western Digital Research
 
-And when I execute a command:
-
-bash-5.2# ls
-bin       etc       lib32     mnt       root      sys 
-12.560000] UBIFS error (ubi0:0 pid 26): ubifs_assert_failed: UBIFS 
-assert failed: ret == false, in fs/ubifs/file.c:1477
-4mus[   12.570000] UBIFS warning (ubi0:0 pid 26): ubifs_ro_mode: 
-switched to read-only mode, error -22
-r  12.580000] CPU: 0 PID: 26 Comm: ls Not tainted 
-6.10.0-rc3stmark2-001-00024-gc73f39277b30-dirty #455
-[   12.580000] Stack from 42937dac:
-[   12.580000]         42937dac 414a3f4c 414a3f4c 4fed4a01 41dda000 
-420885cc 413e2b20 414a3f4c
-[   12.580000]         41115112 41dda000 ffffffea 414b3c43 000005c5 
-4fed4a98 6015e000 4105e058
-[   12.580000]         420885cc 4fed4a98 415ed419 42937f12 4107ae8a 
-4fed4a98 00000000 ffffffff
-[   12.580000]         fffffffe 42937e96 60162000 00000001 413c03ce 
-4107aa9e 4107ea74 00000001
-[   12.580000]         42909034 ffffffff 42940600 60162000 42940600 
-428c0450 42936000 428c048c
-[   12.580000]         00000000 00000000 00000000 00000000 42937f54 
-4107b19c 42937f12 42909034
-[   12.580000] Call Trace: [<413e2b20>] dump_stack+0xc/0x10
-[   12.580000]  [<41115112>] ubifs_dirty_folio+0x3e/0x4a
-[   12.580000]  [<4105e058>] folio_mark_dirty+0x6e/0x82
-[   12.580000]  [<4107ae8a>] unmap_page_range+0x3ec/0x68a
-[   12.580000]  [<413c03ce>] mas_find+0x0/0xfa
-[   12.580000]  [<4107aa9e>] unmap_page_range+0x0/0x68a
-[   12.580000]  [<4107ea74>] vma_next+0x0/0x14
-[   12.580000]  [<4107b19c>] unmap_vmas+0x74/0x98
-[   12.580000]  [<4102cc68>] up_read+0x0/0x2a
-[   12.580000]  [<41080c14>] exit_mmap+0xd4/0x1d2
-[   12.580000]  [<410098ff>] will_become_orphaned_pgrp+0x27/0x7c
-[   12.580000]  [<413e6eb4>] _raw_spin_unlock_irq+0x0/0x14
-[   12.580000]  [<41006db0>] __mmput+0x2e/0xa0
-[   12.580000]  [<4100a7ae>] do_exit+0x264/0x764
-[   12.580000]  [<413e6ec4>] _raw_spin_unlock_irq+0x10/0x14
-[   12.580000]  [<4100adfe>] do_group_exit+0x26/0x78
-[   12.580000]  [<4100ae50>] sys_exit_group+0x0/0x14
-[   12.580000]  [<4100ae64>] pid_child_should_wake+0x0/0x56
-[   12.580000]  [<41005918>] system_call+0x54/0xa8
-[   12.580000]
-[   17.600000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
-assert failed: folio->private != NULL, in fs/ubifs/file.c:1016
-[   17.610000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
-assert failed: !c->ro_media && !c->ro_mount, in fs/ubifs/journal.c:108
-[   17.620000] UBIFS error (ubi0:0 pid 24): make_reservation: cannot 
-reserve 4144 bytes in jhead 2, error -30
-[   17.630000] UBIFS error (ubi0:0 pid 24): do_writepage: cannot write 
-folio 150 of inode 156, error -30
-[   17.640000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
-assert failed: folio->private != NULL, in fs/ubifs/file.c:944
-[   17.650000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
-assert failed: c->bi.dd_growth >= 0, in fs/ubifs/budget.c:550
-[   26.440000] UBIFS error (ubi0:0 pid 27): ubifs_assert_failed: UBIFS 
-assert failed: ret == false, in fs/ubifs/file.c:1477
-[   26.450000] UBIFS error (ubi0:0 pid 27): ubifs_assert_failed: UBIFS 
-assert failed: ret == false, in fs/ubifs/file.c:1477
-[   26.460000] UBIFS error (ubi0:0 pid 27): ubifs_assert_failed: UBIFS 
-assert failed: ret == false, in fs/ubifs/file.c:1477
-[   31.520000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
-assert failed: folio->private != NULL, in fs/ubifs/file.c:1016
-[   31.530000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
-assert failed: !c->ro_media && !c->ro_mount, in fs/ubifs/journal.c:108
-[   31.540000] UBIFS error (ubi0:0 pid 24): make_reservation: cannot 
-reserve 4144 bytes in jhead 2, error -30
-[   31.550000] UBIFS error (ubi0:0 pid 24): do_writepage: cannot write 
-folio 101 of inode 81, error -30
-[   31.560000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
-assert failed: folio->private != NULL, in fs/ubifs/file.c:944
-[   31.570000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
-assert failed: c->bi.dd_growth >= 0, in fs/ubifs/budget.c:550
-[   36.640000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
-assert failed: folio->private != NULL, in fs/ubifs/file.c:1016
-[   36.650000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
-assert failed: !c->ro_media && !c->ro_mount, in fs/ubifs/journal.c:108
-[   36.660000] UBIFS error (ubi0:0 pid 24): make_reservation: cannot 
-reserve 4144 bytes in jhead 2, error -30
-[   36.670000] UBIFS error (ubi0:0 pid 24): do_writepage: cannot write 
-folio 102 of inode 81, error -30
-[   36.680000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
-assert failed: folio->private != NULL, in fs/ubifs/file.c:944
-[   36.690000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
-assert failed: c->bi.dd_growth >= 0, in fs/ubifs/budget.c:550
-[   36.700000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
-assert failed: folio->private != NULL, in fs/ubifs/file.c:1016
-[   36.710000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
-assert failed: !c->ro_media && !c->ro_mount, in fs/ubifs/journal.c:108
-[   36.720000] UBIFS error (ubi0:0 pid 24): make_reservation: cannot 
-reserve 4144 bytes in jhead 2, error -30
-[   36.730000] UBIFS error (ubi0:0 pid 24): do_writepage: cannot write 
-folio 150 of inode 156, error -30
-[   36.740000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
-assert failed: folio->private != NULL, in fs/ubifs/file.c:944
-[   36.750000] UBIFS error (ubi0:0 pid 24): ubifs_assert_failed: UBIFS 
-assert failed: c->bi.dd_growth >= 0, in fs/ubifs/budget.c:550
-
- From now on, nothing happens anymore.
-What can cause this ? I see in the file.c:
-"An attempt to dirty a page without budgeting for it - should not happen."
-
-So, why can it happen :-) ?
-
-Thanks a lot !
-BR,
-JM
