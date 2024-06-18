@@ -1,92 +1,127 @@
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+Received: from welho-filter2.welho.com (welho-filter2b.welho.com [83.102.41.28])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2001C158A12
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 18 Jun 2024 11:44:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.102.41.28
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1718711088; cv=none; b=mcsRwZW1fje7z+mVS7+ruFL57HGfI2erTtvAmTvFoVemQR+VtMa1H8ttg+vl2CrAvMAWQk8o3J+Ciuq+SdoAsYf+vuyexFWotYPolL3XCGI8IsR/CkcSWsjHKesCUSNCADolAhfkpL2pMA05keYhUoib81xXV4bYdiwluiietMA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1718711088; c=relaxed/simple;
+	bh=5NTWzAXAMCFG5DfeKq+gXsMBuzgbAfjwKuDL9awGHoI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=I2xL/Hd1g7zc1wqQcZn+5GTAZ9p1/soK+C7A7h1eeFZyoYVS25w5upH3kFDV1Z0ocJ2+lS3wJy1izPtes0FPxuGUBXtwP47OXOb0A8s5elViNFDFIXhDmsi007um4Q0XmujXKoUawQD+I/YrseLDmp3P6TvVdL6HDPA/JvpUjqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=helsinkinet.fi; spf=pass smtp.mailfrom=helsinkinet.fi; arc=none smtp.client-ip=83.102.41.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=helsinkinet.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=helsinkinet.fi
+Received: from localhost (localhost [127.0.0.1])
+	by welho-filter2.welho.com (Postfix) with ESMTP id 9CA85444D3
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 18 Jun 2024 14:38:40 +0300 (EEST)
+X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
+Received: from welho-smtp2.welho.com ([IPv6:::ffff:83.102.41.85])
+	by localhost (welho-filter2.welho.com [::ffff:83.102.41.24]) (amavisd-new, port 10024)
+	with ESMTP id CdPRus9WU5jZ for <linux-m68k@lists.linux-m68k.org>;
+	Tue, 18 Jun 2024 14:38:40 +0300 (EEST)
+Received: from [192.168.101.100] (87-92-186-10.rev.dnainternet.fi [87.92.186.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4BE0139D0E
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 18 Jun 2024 07:39:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718696376; cv=none; b=ItzDyS94Caz2ZsKgrdTuyP+7sDzxzhiautVJqPvrVVN8k550JI+n9P79g8nOWaqhuHfchFl1CLHDWMG3KcAbMVwYdime0bQPzHEv++t3I/rwslFd0aYYeN74Vs/6X/XldZZyzX02LSNbi9aCUNFNIfTz7fFsMQaS8M+17KZaPBU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718696376; c=relaxed/simple;
-	bh=iFj1EOLNRi8OEe3awn9Vs/G2Qc1FpXOws35aK5rTw9A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qFEDrzPYKXd9VpzO6Hxvk/gBD7K7Og28uxDMmbSL5Fb5KQ9l5v+ey5yShtNzVz7aZwhkZbBB/GNOy4YTO09rCd//9cQ/uy3zvUlZW+T8AsJT76r6S35xSHqXZFPCloj8CKEA7MAUbxexzl/CNQDmjLBTKnJMomSB1wVntYWa0ZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-e02b605bca2so106175276.1
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 18 Jun 2024 00:39:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718696373; x=1719301173;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TC99j/wOMG6xkn/KBJaP1XjEqr4S+ZxXwwULNYN4qNM=;
-        b=CA8U17vQNR1Cw93TZn3/1mVePqTGZUu/sJxSqwg3Q0ZifEcxp08NH9k7uW6UjUOPOU
-         j2emrl9dqFvGo3DcpNNLOgzwP4+6vVbbq3bhjK7iwy95nbBaRr3Jpy701iGcMPfHIGZo
-         h7stugi/LmE8Apok0ydBMgfh9kb6tLwG8HbNFFeDFOP2RufwDpswe1kojn+kd/BWZO7L
-         zxoRfkMuE6XhPMdqGo4xVKgPwoyVspLjyJ+B/HLiJMOUpJm31nO2PLtuk0KH/+1vvto+
-         eq1mMyKe/DoYJAPyxg/2irwzXy6TvrMYobYuM4rs+V5ExbwJV25justZ9sQuad7eOsYI
-         YqJA==
-X-Gm-Message-State: AOJu0YwrQ4VQ5NK+m5+dNf/VF7EDLrDlhs9VTlkv7Ob9sXsmD69bMZvB
-	3UP1KTxFen/DQwj50K3VtVMarHMO+Tg4MWYaavjOUyHobZdMJlL77VWHbkpb
-X-Google-Smtp-Source: AGHT+IFCy/FxNsMJt3QxWH/mGvLNMANjd4Dh5LBZjOLlsclBKL01Xv/+Vt8ytPVy3oG02tEL9h83zA==
-X-Received: by 2002:a05:6902:521:b0:dff:1dcc:7139 with SMTP id 3f1490d57ef6-e02227591b7mr1209902276.11.1718696373072;
-        Tue, 18 Jun 2024 00:39:33 -0700 (PDT)
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-dff048c11d3sm2217860276.36.2024.06.18.00.39.32
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jun 2024 00:39:32 -0700 (PDT)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-63036fa87dbso38447737b3.1
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 18 Jun 2024 00:39:32 -0700 (PDT)
-X-Received: by 2002:a81:e30d:0:b0:61b:e61e:8988 with SMTP id
- 00721157ae682-63949fecfc4mr12300737b3.18.1718696372575; Tue, 18 Jun 2024
- 00:39:32 -0700 (PDT)
+	by welho-smtp2.welho.com (Postfix) with ESMTPSA id 6503428A
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 18 Jun 2024 14:38:39 +0300 (EEST)
+Message-ID: <a9df9249-8bbc-4a23-a12d-b88f276cd14f@helsinkinet.fi>
+Date: Tue, 18 Jun 2024 14:38:39 +0300
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240618073205.65303-1-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <20240618073205.65303-1-jiapeng.chong@linux.alibaba.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 18 Jun 2024 09:39:19 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVJ9e=HTgZA=4A_7kG4y4sDVCz4ooYHrhGHweR473ME8w@mail.gmail.com>
-Message-ID: <CAMuHMdVJ9e=HTgZA=4A_7kG4y4sDVCz4ooYHrhGHweR473ME8w@mail.gmail.com>
-Subject: Re: [PATCH] zorro: Use str_plural() in amiga_zorro_probe()
-To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
-	Abaci Robot <abaci@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] m68k: add missing MODULE_DESCRIPTION() macros
+To: linux-m68k <linux-m68k@lists.linux-m68k.org>
+References: <20240617-md-m68k-arch-m68k-v1-1-57d38beaeb13@quicinc.com>
+ <CAMuHMdWD0Je3HZ+RJyfdxKxKcBp7nt6ooP_YUpiju77Zf1QzVw@mail.gmail.com>
+Content-Language: en-US
+From: Eero Tamminen <oak@helsinkinet.fi>
+In-Reply-To: <CAMuHMdWD0Je3HZ+RJyfdxKxKcBp7nt6ooP_YUpiju77Zf1QzVw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jun 18, 2024 at 9:32=E2=80=AFAM Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com> wrote:
-> Use existing str_plural() function rather than duplicating its
-> implementation.
->
-> ./drivers/zorro/zorro.c:155:22-39: opportunity for str_plural(zorro_num_a=
-utocon).
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=3D9350
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Hi Geert,
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k tree for v6.11.
+On 18.6.2024 10.36, Geert Uytterhoeven wrote:
+> On Tue, Jun 18, 2024 at 1:47 AM Jeff Johnson <quic_jjohnson@quicinc.com> wrote:
+>> With ARCH=m68k, make allmodconfig && make W=1 C=1 reports:
+>> WARNING: modpost: missing MODULE_DESCRIPTION() in arch/m68k/emu/nfblock.o
+>> WARNING: modpost: missing MODULE_DESCRIPTION() in arch/m68k/emu/nfcon.o
+>>
+>> Add the missing invocations of the MODULE_DESCRIPTION() macro.
+>>
+>> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+> 
+> Thanks for your patch!
+> 
+>> --- a/arch/m68k/emu/nfblock.c
+>> +++ b/arch/m68k/emu/nfblock.c
+>> @@ -193,4 +193,5 @@ static void __exit nfhd_exit(void)
+>>   module_init(nfhd_init);
+>>   module_exit(nfhd_exit);
+>>
+>> +MODULE_DESCRIPTION("ARAnyM block device driver");
+> 
+> I think that should be s/ARAnyM/Atari NatFeat/, as I believe NatFeat
+> is also available on other Atari emulators. See also nfeth.c
 
-Gr{oetje,eeting}s,
+FYI:
 
-                        Geert
+Atari "Native Features" (NatFeats / NF) is an API "family", originating 
+from the Aranym emulator project.
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
+While Hatari emulator implements NF sub-APIs that can be used in 
+debugging & testing (and adds few of its own), of the device drivers, so 
+far Hatari implements only NF SCSI driver (which proxies SCSI commands 
+to the host libudev).  Rest of the NF device drivers are supported only 
+by Aranym.
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+AFAIK no other Atari emulators than these two, support NF APIs.
+
+(I.e. for now this is Aranym-only NF-API, but "Atari NatFeat" is still 
+better description.)
+
+
+>>   MODULE_LICENSE("GPL");
+>> diff --git a/arch/m68k/emu/nfcon.c b/arch/m68k/emu/nfcon.c
+>> index 17b2987c2bf5..0ab2e4d08871 100644
+>> --- a/arch/m68k/emu/nfcon.c
+>> +++ b/arch/m68k/emu/nfcon.c
+>> @@ -173,4 +173,5 @@ static void __exit nfcon_exit(void)
+>>   module_init(nfcon_init);
+>>   module_exit(nfcon_exit);
+>>
+>> +MODULE_DESCRIPTION("ARAnyM console driver");
+> 
+> Likewise.
+
+Yes, this is supported also by the Hatari emulator.
+
+
+	- Eero
+
+PS. As to other (Open Source) NF API users than Linux:
+* EmuTOS ROMs support few of the NF protocols related to booting,
+* HD Driver (hard disk driver for Atari TOS) supports NF SCSI API,
+* Atari FreeMiNT kernel modules support several NF devices, and
+* fVDI (gfx driver) & OpenGL backends (running under Atari TOS) support 
+VDI & OpenGL acceleration NF sub-APIs.
+
+Almost all of those APIs are currently supported only by Aranym.
+
+
+>>   MODULE_LICENSE("GPL");
+> 
+> If you agree, I can make these changes while queuing in the m68k tree
+> for v6.11.
+> 
+> Gr{oetje,eeting}s,
+> 
+>                          Geert
+> 
