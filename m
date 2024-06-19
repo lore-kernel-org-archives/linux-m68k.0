@@ -1,72 +1,68 @@
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from welho-filter3.welho.com (welho-filter3b.welho.com [83.102.41.29])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E58614F98
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Jun 2024 14:23:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B98836B11
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Jun 2024 14:49:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.102.41.29
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718807027; cv=none; b=W7hQgPPnWX+O+64huO6h7PVk9Zdib3DoOYyeZUEkJAmYkP2LHZtsHdPrhUGhqru+8hBx9/zsjDxmDNzVrA/b697uMhA9bCwjJuAo1GHE9B85CscarEP8L+DNg27aqY8j3ejgSOucwRR/U7+jcb0PvL2dLEMwdzVc9X6XkWMRnOM=
+	t=1718808584; cv=none; b=IF1gjMIXk4URS9S6Wf6j3iJCSSZ0arXTNySxyFpxkAkmSjkZ6L/N696r3MVOz0xT78tWbiAWeQmK4YbAr61D1peUeGZ1Lwng6AmzvZwN2fkaO+SIp3TWBAxUM1Bjp1LyoAWItqK5ApdavWJ8SKdzQuysTn04pPyrsakjW0mnPhE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718807027; c=relaxed/simple;
-	bh=m/DPhefj6Aj7VUp6cgTM8mW93C8uSqJjtVUZPbpUW8w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gwUFevPdmHJhevMMHDLZhUsS7hmmAGFHL7UfLOtMb5XIokvPvKfg+tz9Wns9FdSy7BVp1N8g6iGCIblgAmy3gQAJudMdSx6x6SGMl972oTn51QFMg26Ji3X+8FAxUyc2XeJvMFFWzexXNwvJvxhHxglOYaWv3tTecZWOaViu3N0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id D67B368AFE; Wed, 19 Jun 2024 16:23:40 +0200 (CEST)
-Date: Wed, 19 Jun 2024 16:23:40 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Christoph Hellwig <hch@lst.de>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Richard Weinberger <richard@nod.at>,
-	Philipp Reisner <philipp.reisner@linbit.com>,
-	Lars Ellenberg <lars.ellenberg@linbit.com>,
-	Christoph =?iso-8859-1?Q?B=F6hmwalder?= <christoph.boehmwalder@linbit.com>,
-	Josef Bacik <josef@toxicpanda.com>, Ming Lei <ming.lei@redhat.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Roger Pau =?iso-8859-1?Q?Monn=E9?= <roger.pau@citrix.com>,
-	Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>,
-	Mikulas Patocka <mpatocka@redhat.com>, Song Liu <song@kernel.org>,
-	Yu Kuai <yukuai3@huawei.com>,
-	Vineeth Vijayan <vneethv@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org,
-	drbd-dev@lists.linbit.com, nbd@other.debian.org,
-	linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
-	virtualization@lists.linux.dev, xen-devel@lists.xenproject.org,
-	linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
-	linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
-	linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
-	linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: move features flags into queue_limits v2
-Message-ID: <20240619142340.GA32100@lst.de>
-References: <20240617060532.127975-1-hch@lst.de> <171880672048.115609.5962725096227627176.b4-ty@kernel.dk> <e8e718ca-7d3a-4bce-b88a-3bcbe1fa32b0@kernel.dk>
+	s=arc-20240116; t=1718808584; c=relaxed/simple;
+	bh=/0bKKAjf/uBD/TwKI9lZhLz1UxKV7UDVUsRNkoO7z+U=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=Te/CnHpS4IOZYibPUj0QAae6QwR7pr55hhLjYFDB2bzvuTItCGAhZ9C8/nxjgFqXqlMqqNitPotx5b7fKLePeG4dtYgBFVgoSDYxvcr/t29LF+iWgkjgXIDRdoaFiHou3/qEdRUCCym9pJ6AEoca9oGJyXzTqyO7Xtn3o+4KDjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=helsinkinet.fi; spf=pass smtp.mailfrom=helsinkinet.fi; arc=none smtp.client-ip=83.102.41.29
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=helsinkinet.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=helsinkinet.fi
+Received: from localhost (localhost [127.0.0.1])
+	by welho-filter3.welho.com (Postfix) with ESMTP id 1A0AC1511F;
+	Wed, 19 Jun 2024 17:43:39 +0300 (EEST)
+X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
+Received: from welho-smtp3.welho.com ([IPv6:::ffff:83.102.41.86])
+	by localhost (welho-filter3.welho.com [::ffff:83.102.41.25]) (amavisd-new, port 10024)
+	with ESMTP id xLbQEF2ER6Q5; Wed, 19 Jun 2024 17:43:38 +0300 (EEST)
+Received: from [192.168.101.100] (87-92-186-10.rev.dnainternet.fi [87.92.186.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by welho-smtp3.welho.com (Postfix) with ESMTPSA id A24322309;
+	Wed, 19 Jun 2024 17:43:35 +0300 (EEST)
+Message-ID: <9aa793d7-82ed-4fbd-bce5-60810d8a9119@helsinkinet.fi>
+Date: Wed, 19 Jun 2024 17:43:35 +0300
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e8e718ca-7d3a-4bce-b88a-3bcbe1fa32b0@kernel.dk>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: linux-m68k <linux-m68k@lists.linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+ Michael Schmitz <schmitzmic@gmail.com>
+From: Eero Tamminen <oak@helsinkinet.fi>
+Subject: Regression: Atari SCU support
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jun 19, 2024 at 08:21:14AM -0600, Jens Axboe wrote:
-> Please check for-6.11/block, as I pulled in the changes to the main
-> block branch and that threw some merge conflicts mostly due to Damien's
-> changes in for-6.11/block. While fixing those up, I also came across
-> oddities like:
-> 
-> (limits->features & limits->features & BLK_FEAT_ZONED)) {
-> 
-> which don't make much sense and hence I changed them to
-> 
-> (limits->features & BLK_FEAT_ZONED)) {
+Hi,
 
-Yeah.  The above is harmless but of course completely pointless.
+During the development of Atari TT / MegaSTe SCU support for Hatari 
+emulator, it was noticed that m68k Linux does not properly initialize 
+SCU registers / IRQ handlers on boot.
+
+Currently Linux freezes at boot and spews "unexpected interrupt" 
+messages constantly on TT.
+
+Nicolas Pomarède and Christian Zietz investigated:
+* Issue to be due to VBL IRQ handler removal [1]
+* boot to succeed if either 0x00 is written to the SCU sys_mask 
+(preferred), or handler is provided for VEC_INT4 [2] when SCU is used
+
+Christian has verified the issue and its workaround on real Atari TT.
+
+
+	- Eero
+
+[1] 
+https://github.com/torvalds/linux/commit/1fa0b29f3a43f9dd8080d24cd16790b15ef963f5
+[2] 
+https://git.tuxfamily.org/hatari/hatari.git/tree/tools/linux/0004-WA-avoid-unexpected-SCU-interrupts.patch
