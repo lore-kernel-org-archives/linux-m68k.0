@@ -1,192 +1,117 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BEFC1879
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jun 2024 00:39:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5986211712
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Jun 2024 01:24:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718843945; cv=none; b=EkUipGCwYo5vkT0yPbcT95pVdkO364DxVgz5y7MJeTuVYMY11xcn7/FxWnk46XeE/B7zh7bzWib+b3Ug8DmiKGgeuKj0MRZghNjK5/R7+Xn6Kqu6npQn5APhGjhCax5o+bgi8j6V3xa2N0qSuN6yB38FBZT4ptk0D8EKOXwj2Z8=
+	t=1718846684; cv=none; b=OXS6KdW9Nhk7K03owgXDdKAR7+xD/l3I5NnUq4KVYhVmd1xEjC7xI6Okfvkf4YrQ0078JRijf/qsHOIYG9zTN26w1pBoelryMKRG1UUqycgifqOK6YZwQiVN0Ca07tXrX687FohvF2UtMSNyE9Aa25a9vPoXxUV/R36k2mKrPQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718843945; c=relaxed/simple;
-	bh=QLcopm42Dq9x62Eqba93sghsGSWqG3fbzn617xwSiDo=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=VhnSQxHU/Ga4xJMnQmzBMSgaMno7TpMRoumQqQG9YjrnCg1NCUrKJ7J6LUIrWOf2Cl9AEGxZYL1vVaYMBRxrXznDK7tnDZsFZIpfzaQ1O9ntYdg5G/mwkzbJowmKlqy6KYbjC9qSJWXk9Vn0T7SHXiqU5uDibkCskcqyQcnnoWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dELu0tIH; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1718846684; c=relaxed/simple;
+	bh=bZ8kaY+GxiPrycAxTVqtm6U7mgPDSQJFONKiph3dUzc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fBHXwuvjCRMein4IfgA0J5re1GsZZXf/H2EIFtult+WbZgaUe44oOCzWCUeSvcFny1YrCQrzqOD3NrDDZIsgysEy5F3/4OGroN3HG87BJyW+8fwWkiejATSOPD5Mdjyqkp0vnW6bG0QGkLWObsx6Hk/GPa/kibuByWAllln4B74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NcZkZdbs; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dELu0tIH"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1718843943; x=1750379943;
-  h=date:from:to:cc:subject:message-id;
-  bh=QLcopm42Dq9x62Eqba93sghsGSWqG3fbzn617xwSiDo=;
-  b=dELu0tIHUEZpUTi3DC7gbSTmUTqX0IhWv0T7D64FjY2FgnbM1ezGhTul
-   6iqrH/f84hTL7MFZqFbvV8mB/D2JVwkCaK1lo01Vz2wgU23MSlclttDVo
-   xbc8K9Woh9wHau1dlqmtiJNjakjSyXoCUGX9C2TevHYgXEQa64vq3hVUO
-   2otOUdXFC2glWLRXtNyr2sk5+2w37fWQ4CpDaRcK9Fvizms5PqGakDnx8
-   8AqYZMKPK/aWAxfdc/m+jZhvymBSqk7xMK09ZHPmeCLHyt9YW1jdexLq8
-   8wZQSnuIlwCBA/cK8ZXJQYwnCpTbCiNohg+KIakS4tPQNOP0uji2ozksG
-   g==;
-X-CSE-ConnectionGUID: jl+Ni+TdTy+vO6BTsr643g==
-X-CSE-MsgGUID: FN+mQ7LoQqi/wIfzRmKBZQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11108"; a="15675558"
-X-IronPort-AV: E=Sophos;i="6.08,251,1712646000"; 
-   d="scan'208";a="15675558"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2024 17:39:02 -0700
-X-CSE-ConnectionGUID: ddIk8czCQVC0kQXN5g7LZQ==
-X-CSE-MsgGUID: LoT1AhBZSfevABvjQvCcNw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,251,1712646000"; 
-   d="scan'208";a="42530889"
-Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
-  by orviesa006.jf.intel.com with ESMTP; 19 Jun 2024 17:39:01 -0700
-Received: from kbuild by 68891e0c336b with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sK5pK-00078a-2X;
-	Thu, 20 Jun 2024 00:38:58 +0000
-Date: Thu, 20 Jun 2024 08:38:45 +0800
-From: kernel test robot <lkp@intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 1a2a64296e177ae6ebde9ef3ff7263073c194093
-Message-ID: <202406200842.tmr4urfZ-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NcZkZdbs"
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-6e3ff7c4cc8so276706a12.3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Jun 2024 18:24:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1718846682; x=1719451482; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5EoUkbaKHpsJD6TpAHGIRGeF5DzuNGWruFeqeZaWPjc=;
+        b=NcZkZdbsPsTJRpPT+sA2tHKuip5s8Pvm3EDI1zu1dVeuLcS4zYhsF4giV6hmyM72mM
+         ps9bnjpTrpygRal4Cnh1hUzgc9sdkv193A7be0epGJCDQOxddOjP72f7lQmLrmt6N/kn
+         UZ79kA52y8UUeApPb3uOUEwbMxhBR1B9A/yIdphHMDfVNKqReuWxN1uz/wby7yAOfVYS
+         lutIvQAqeAzNiVthlVo7RexMsGHJO2j0a/2B4RvJ2WQzJ7eDyrg9QX7R0dQlFfr4HGLU
+         E57qQ/5anfeSi3SuWJj1i1p8XzfBpj4qECTQIIciuzgqlPHsldnrUdxnp+S9nTqkFfA0
+         nZjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718846682; x=1719451482;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5EoUkbaKHpsJD6TpAHGIRGeF5DzuNGWruFeqeZaWPjc=;
+        b=ksQx10XH6BfzRiz5bJnrHqIpNUsTHQjoTxN0s7fGWtGuO3GKWMWfR3f9W5JK6wiaZD
+         HmEkx43qfkMDwFapQiPP394xddAPkEyprYrVzg09ftQ/0hDKvMJofGEgbcelv1+v+s4e
+         mG01xKfA7IKbAaufisf5d3e/GGvh9AiV0LKprPeI0UpKvxuW6OLoZ2GvWF65ENuV3giR
+         8Wo0gWlBcokVoB9Ygg3scxvB5hmu3TadCMVLGvGRo2Px700iZzrvTc4zbrYYL1xUJarb
+         SfT2o4I228N6HvDrSKXYDwGJaL71u64jTjriwmHvsxiKYiPq/FRIDdhMWxf0Qwuzo2xz
+         2PTA==
+X-Forwarded-Encrypted: i=1; AJvYcCWTM9lAr1/0oEyC3edn2YSdeo5ghjechXH4Z7cuOWa3zSYcH4pVpGrDIXuqMo8yhPV//p47GKw4APZHIBzvlnarCBmW6ON0qaL06Cv76Fvu
+X-Gm-Message-State: AOJu0YyFTeUiB1SS4ToTDXFbnAFifFn6SDo+/De+JHVlSciGN/A+U0T4
+	fWlkr7yZIXslTvGE+UkYRQJUSnr6iGZ0aRU2Baz9Il8XjVCmBTZK
+X-Google-Smtp-Source: AGHT+IFyTYc4wZiyqKMm1r+kiOOiih/TZv+qe4e0Pm2t9kRbgWB3BTodGVJRlz0ySoSSFPjsnBdkGA==
+X-Received: by 2002:a05:6a20:4f8f:b0:1b1:d31d:c0c5 with SMTP id adf61e73a8af0-1bcbb5cd527mr3828024637.37.1718846682284;
+        Wed, 19 Jun 2024 18:24:42 -0700 (PDT)
+Received: from ?IPV6:2001:df0:0:200c:91b9:f8f5:b83b:e630? ([2001:df0:0:200c:91b9:f8f5:b83b:e630])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f855e55e54sm124469515ad.23.2024.06.19.18.24.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jun 2024 18:24:41 -0700 (PDT)
+Message-ID: <5ee6ef02-75ff-4d3b-b4c7-37da47a40a76@gmail.com>
+Date: Thu, 20 Jun 2024 13:24:48 +1200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Regression: Atari SCU support
+Content-Language: en-US
+To: Eero Tamminen <oak@helsinkinet.fi>,
+ linux-m68k <linux-m68k@lists.linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+References: <9aa793d7-82ed-4fbd-bce5-60810d8a9119@helsinkinet.fi>
+From: Michael Schmitz <schmitzmic@gmail.com>
+In-Reply-To: <9aa793d7-82ed-4fbd-bce5-60810d8a9119@helsinkinet.fi>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 1a2a64296e177ae6ebde9ef3ff7263073c194093  Merge tag 'v6.10-rc4'
+Hi Eero,
 
-elapsed time: 3520m
+while the workaround will shut up the unexpected interrupt messages, it 
+still does not prevent that interrupt from happening.
 
-configs tested: 115
-configs skipped: 2
+falcon_hblhandler() will not set the IPL sufficiently high for that, and 
+I do not know whether permanently setting IPL 4 will quiesce other 
+system interrupts.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Setting tt_scu.sys_mask zero is indeed the preferred option.
 
-tested configs:
-alpha                               defconfig   gcc-13.2.0
-arc                        nsim_700_defconfig   gcc-13.2.0
-arc                   randconfig-001-20240618   gcc-13.2.0
-arc                   randconfig-002-20240618   gcc-13.2.0
-arc                           tb10x_defconfig   gcc-13.2.0
-arm                         at91_dt_defconfig   clang-19
-arm                   milbeaut_m10v_defconfig   clang-16
-arm                   randconfig-001-20240618   gcc-13.2.0
-arm                   randconfig-002-20240618   gcc-13.2.0
-arm                   randconfig-003-20240618   clang-19
-arm                   randconfig-004-20240618   gcc-13.2.0
-arm                         socfpga_defconfig   gcc-13.2.0
-arm64                 randconfig-001-20240618   clang-17
-arm64                 randconfig-002-20240618   clang-19
-arm64                 randconfig-003-20240618   clang-16
-arm64                 randconfig-004-20240618   clang-19
-csky                  randconfig-001-20240618   gcc-13.2.0
-csky                  randconfig-002-20240618   gcc-13.2.0
-hexagon               randconfig-001-20240618   clang-19
-hexagon               randconfig-002-20240618   clang-19
-i386         buildonly-randconfig-001-20240618   gcc-13
-i386         buildonly-randconfig-002-20240618   gcc-12
-i386         buildonly-randconfig-003-20240618   gcc-8
-i386         buildonly-randconfig-004-20240618   gcc-10
-i386         buildonly-randconfig-005-20240618   gcc-10
-i386         buildonly-randconfig-006-20240618   gcc-10
-i386                  randconfig-001-20240618   clang-18
-i386                  randconfig-002-20240618   gcc-13
-i386                  randconfig-003-20240618   gcc-13
-i386                  randconfig-004-20240618   clang-18
-i386                  randconfig-005-20240618   clang-18
-i386                  randconfig-006-20240618   clang-18
-i386                  randconfig-011-20240618   gcc-13
-i386                  randconfig-012-20240618   gcc-11
-i386                  randconfig-013-20240618   gcc-7
-i386                  randconfig-014-20240618   gcc-11
-i386                  randconfig-015-20240618   clang-18
-i386                  randconfig-016-20240618   clang-18
-loongarch             randconfig-001-20240618   gcc-13.2.0
-loongarch             randconfig-002-20240618   gcc-13.2.0
-mips                        maltaup_defconfig   clang-19
-nios2                 randconfig-001-20240618   gcc-13.2.0
-nios2                 randconfig-002-20240618   gcc-13.2.0
-openrisc                          allnoconfig   gcc-13.2.0
-openrisc                            defconfig   gcc-13.2.0
-parisc                            allnoconfig   gcc-13.2.0
-parisc                              defconfig   gcc-13.2.0
-parisc                randconfig-001-20240618   gcc-13.2.0
-parisc                randconfig-002-20240618   gcc-13.2.0
-parisc64                            defconfig   gcc-13.2.0
-powerpc                           allnoconfig   gcc-13.2.0
-powerpc                    mvme5100_defconfig   gcc-13.2.0
-powerpc                      pmac32_defconfig   clang-19
-powerpc               randconfig-001-20240618   gcc-13.2.0
-powerpc               randconfig-002-20240618   clang-19
-powerpc               randconfig-003-20240618   clang-19
-powerpc64             randconfig-001-20240618   clang-19
-powerpc64             randconfig-002-20240618   clang-17
-powerpc64             randconfig-003-20240618   clang-19
-riscv                             allnoconfig   gcc-13.2.0
-riscv                               defconfig   clang-19
-riscv                 randconfig-001-20240618   gcc-13.2.0
-riscv                 randconfig-002-20240618   clang-14
-s390                              allnoconfig   clang-19
-s390                                defconfig   clang-19
-s390                  randconfig-001-20240618   clang-15
-s390                  randconfig-002-20240618   gcc-13.2.0
-sh                                allnoconfig   gcc-13.2.0
-sh                                  defconfig   gcc-13.2.0
-sh                    randconfig-001-20240618   gcc-13.2.0
-sh                    randconfig-002-20240618   gcc-13.2.0
-sh                           se7206_defconfig   gcc-13.2.0
-sh                           se7343_defconfig   gcc-13.2.0
-sh                           se7751_defconfig   gcc-13.2.0
-sh                             shx3_defconfig   gcc-13.2.0
-sparc                             allnoconfig   gcc-13.2.0
-sparc                               defconfig   gcc-13.2.0
-sparc                       sparc64_defconfig   gcc-13.2.0
-sparc64                             defconfig   gcc-13.2.0
-sparc64               randconfig-001-20240618   gcc-13.2.0
-sparc64               randconfig-002-20240618   gcc-13.2.0
-um                                allnoconfig   clang-17
-um                                  defconfig   clang-19
-um                             i386_defconfig   gcc-13
-um                    randconfig-001-20240618   clang-19
-um                    randconfig-002-20240618   clang-19
-um                           x86_64_defconfig   clang-15
-x86_64       buildonly-randconfig-001-20240618   clang-18
-x86_64       buildonly-randconfig-002-20240618   gcc-8
-x86_64       buildonly-randconfig-003-20240618   clang-18
-x86_64       buildonly-randconfig-004-20240618   gcc-13
-x86_64       buildonly-randconfig-005-20240618   gcc-13
-x86_64       buildonly-randconfig-006-20240618   gcc-12
-x86_64                randconfig-001-20240618   clang-18
-x86_64                randconfig-002-20240618   clang-18
-x86_64                randconfig-003-20240618   gcc-11
-x86_64                randconfig-004-20240618   clang-18
-x86_64                randconfig-005-20240618   clang-18
-x86_64                randconfig-006-20240618   clang-18
-x86_64                randconfig-011-20240618   gcc-13
-x86_64                randconfig-012-20240618   gcc-8
-x86_64                randconfig-013-20240618   clang-18
-x86_64                randconfig-014-20240618   clang-18
-x86_64                randconfig-015-20240618   gcc-13
-x86_64                randconfig-016-20240618   clang-18
-x86_64                randconfig-071-20240618   gcc-13
-x86_64                randconfig-072-20240618   clang-18
-x86_64                randconfig-073-20240618   gcc-12
-x86_64                randconfig-074-20240618   clang-18
-x86_64                randconfig-075-20240618   gcc-8
-x86_64                randconfig-076-20240618   gcc-13
-xtensa                            allnoconfig   gcc-13.2.0
-xtensa                  cadence_csp_defconfig   gcc-13.2.0
-xtensa                randconfig-001-20240618   gcc-13.2.0
-xtensa                randconfig-002-20240618   gcc-13.2.0
+If you or Christian want to submit a patch to that effect, I'll gladly 
+add my review tag.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Cheers,
+
+     Michael
+
+
+On 20/06/24 02:43, Eero Tamminen wrote:
+> Hi,
+>
+> During the development of Atari TT / MegaSTe SCU support for Hatari 
+> emulator, it was noticed that m68k Linux does not properly initialize 
+> SCU registers / IRQ handlers on boot.
+>
+> Currently Linux freezes at boot and spews "unexpected interrupt" 
+> messages constantly on TT.
+>
+> Nicolas Pomarède and Christian Zietz investigated:
+> * Issue to be due to VBL IRQ handler removal [1]
+> * boot to succeed if either 0x00 is written to the SCU sys_mask 
+> (preferred), or handler is provided for VEC_INT4 [2] when SCU is used
+>
+> Christian has verified the issue and its workaround on real Atari TT.
+>
+>
+>     - Eero
+>
+> [1] 
+> https://github.com/torvalds/linux/commit/1fa0b29f3a43f9dd8080d24cd16790b15ef963f5
+> [2] 
+> https://git.tuxfamily.org/hatari/hatari.git/tree/tools/linux/0004-WA-avoid-unexpected-SCU-interrupts.patch
