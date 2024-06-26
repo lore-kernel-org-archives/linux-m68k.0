@@ -1,37 +1,37 @@
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3002A158A06
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Jun 2024 07:01:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE91816190C
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Jun 2024 13:29:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719385322; cv=none; b=F+UUW6zkaC+6N7FFLOFd69RQ1YaKVTEEeNFhQoHX39cZI0KWdp9vNjdb/s9CM05L77tC9MzxZNacVCDhv/sVGNZAM1g1CRoTyGHzNEOYOR0tq5cfCuY7f/geHihncJdhESFM27jHOjwJqCPOAak/qZOoqv4R8ic9uNNL88BUs3w=
+	t=1719408547; cv=none; b=YVA1EkDGhnLIB1MXEptQsvHmXz29l+8KNAxV4ZmSUrO8W6D8k2rf2vGGS6ZjvBLAVHHnIkIislrwZD9A/3sDgScFoibZWe81CGt/w/Iz+xnxVTGPoFHPKZRJYQCQqchKUhf69hGdGtRNM7s4FpNOtr9I8zFfrGNh8iKmfcxc61Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719385322; c=relaxed/simple;
-	bh=Pwzdw3aKwjnUTSlL/BpSDBfHkoAZ594NvyTn+W7rr2s=;
+	s=arc-20240116; t=1719408547; c=relaxed/simple;
+	bh=wiR0EkU/WqdTVBMFyMY0qnallqaWt+LqKgaV6SpThdM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mNek5v17EdymAKhMWV6c1eVumGXUBXfQr7bHKsMr/LGwymTthHuQfa6B79gBFXDut+IW5xAEBxu8ndA9k08SpwND3ds1zh60fAvlkxGzK+ZBO2tmJOXTRjP2H387WEucAJn5BKQ5ssZ8SY7MVX5JHUpzt6edwFerQUQ4LJgaQrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=MnExD+aE; arc=none smtp.client-ip=217.70.183.200
+	 In-Reply-To:Content-Type; b=mNFR4S35IRf8sM4xWJPJLo9vMXrjsVpBRcaDVyqso9fzUeqDc1LycmeejyZwgjS5rvs0sqCkcJCob3kqxBiz65GXxySseprkd6da2S7flHuE2XNS0U7J5jC0VAmOi4M/O7jZ/IbKMsDmKM+nrsFViLnOzlNRKu1l86bZQane+LI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=YF9SH7dc; arc=none smtp.client-ip=217.70.183.198
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="MnExD+aE"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id CB1ED20005;
-	Wed, 26 Jun 2024 07:01:50 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="YF9SH7dc"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A3DA5C0008;
+	Wed, 26 Jun 2024 13:29:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1719385312;
+	t=1719408543;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=TgymRYe2dqU8fBB3otXS5Br4T7l5iIT81ij+B9BaWxI=;
-	b=MnExD+aEui4RXmO/hP+c7+nqiCCePlKTHhK0LVgd7Vtv8BvX1ivfJEwk34yKnZKhmG2ybD
-	78fpHjf7hniw+UH+fY5kLIerZOD5H1RjmG1/39G4MMG9d6Pfw1qrBQBPcDnnJKnfF8KQEH
-	GgZotyLAI9rhbPMNZofwvIdMuqEc9xbgnZDWd/6rwTHa5UcSUnyoes2lAQIBX597vLOfqO
-	2eJsCb2FsXd3BZMgS7CLg7+o57L4oQFBo8+rscIOyn4zQBKBbDgx4rmt/VHuQy2fextxuZ
-	ZyuRuQlm+LQqrTRzYC9kgldaNf+UXsDcVYiEpKKT7fFLePL1g8FwWADtc873/A==
-Message-ID: <d1536f25-6c4a-4696-974e-1119cf2a6da3@yoseli.org>
-Date: Wed, 26 Jun 2024 09:01:48 +0200
+	bh=PP9w32Smj5kF17ItJ7qIzuuKC9WIW96IhYXhKbYU93I=;
+	b=YF9SH7dcM5Eiiczp9j4yCDk7UnAhKzh45lFnp3oP7N6GRJUTQNXvT+yG8YbMuCRgmtjzQC
+	sK9qaTMcsqu8QgLbS5uElTkMVhIJcfaWSFADZXy389mqBTihQKqqAZ8ijNHLGDWMgDqRtV
+	SabjU2aTulUHz9313MaRd4c6tQ+Tqek6EuUXYWVhPFJL8H8iLhViJnd2/5enVuG+EAdFA4
+	22hxiw3isspMg1v/YiG8RNki6CffHPH0adsaPx4vhlodQiT0uabw6uIN7WnsJAdv0n3kHn
+	R/UILgt1tlH+k7Bp8jYeVhwtlw5XYCbaJzegKVYENyrtqnzNZ4Z3BlCp+ezRyQ==
+Message-ID: <a7084eac-b92a-4ddb-a079-f4a600b93f8e@yoseli.org>
+Date: Wed, 26 Jun 2024 15:28:59 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -55,7 +55,7 @@ Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-Michael,
+Hi Michael,
 
 On 26/06/2024 03:56, Michael Schmitz wrote:
 > Jean-Michel,
@@ -88,154 +88,93 @@ On 26/06/2024 03:56, Michael Schmitz wrote:
 > execve() syscall in your helloworld init replacement. That might confirm 
 > all these addresses are legit (assuming mappings survive across 
 > execve(), that is), and what they correspond to.
+> 
+>>
+>> The address corresponds to the defined zone ELF_ET_DYN_BASE as I set 
+>> it to 0x70000000.
+>>
+>> regs->pc is not the same as the address. It might be unrelevant, but 
+>> any help is appreciated to understand the process behind :-).
+>>
+>> I keep digging, and I am in the asm part which fears me a bit !
+> 
+> I don't see that you'd need to look at any asm code here.
 
-I changed the code a bit, and display an error only when error_code is 
-not 0. The result is for the bash launch:
-[    3.864000] Run /bin/bash as init process
-[    3.865000]   with arguments:
-[    3.866000]     /bin/bash
-[    3.868000]   with environment:
-[    3.869000]     HOME=/
-[    3.871000]     TERM=linux
-[    4.250000] do page fault:
-[    4.250000] regs->sr=0x2000, regs->pc=0x41366984, address=0x700b3364, 
+I add a small test in do_page_fault, and in case of an error, it panics. 
+The result follows:
+  ./scripts/decode_stacktrace.sh vmlinux < /tmp/trace.log
+[    3.857000] Run /bin/bash as init process
+[    3.858000]   with arguments:
+[    3.861000]     /bin/bash
+[    3.862000]   with environment:
+[    3.863000]     HOME=/
+[    3.864000]     TERM=linux
+[    4.242000] do page fault:
+[    4.242000] regs->sr=0x2000, regs->pc=0x41366924, address=0x700b3364, 
 2, 41fb0000
-[    4.258000] do page fault:
-[    4.258000] regs->sr=0x2000, regs->pc=0x41366984, address=0x6002140c, 
-2, 41fb0000
-[    4.273000] do page fault:
-[    4.273000] regs->sr=0x0, regs->pc=0x60011996, address=0x6001ff74, 3, 
-41fb0000
-[    4.332000] do page fault:
-[    4.332000] regs->sr=0x10, regs->pc=0x60012bf4, address=0x700adf44, 
-3, 41fb0000
-[    4.497000] do page fault:
-[    4.497000] regs->sr=0x0, regs->pc=0x60016344, address=0x600592d0, 2, 
-41fb0000
-[    4.505000] do page fault:
-[    4.505000] regs->sr=0x10, regs->pc=0x60007320, address=0x60055f54, 
-3, 41fb0000
-[    4.533000] do page fault:
-[    4.533000] regs->sr=0x0, regs->pc=0x60016344, address=0x60066244, 2, 
-41fb0000
-[    4.539000] do page fault:
-[    4.539000] regs->sr=0x10, regs->pc=0x60007320, address=0x60065f54, 
-3, 41fb0000
-[    4.635000] do page fault:
-[    4.635000] regs->sr=0x0, regs->pc=0x600098d2, address=0x60068014, 2, 
-41fb0000
-[    4.637000] do page fault:
-[    4.637000] regs->sr=0x0, regs->pc=0x60016344, address=0x600a2d1c, 2, 
-41fb0000
-[    4.647000] do page fault:
-[    4.647000] regs->sr=0x10, regs->pc=0x60007320, address=0x600a1f54, 
-3, 41fb0000
-[    5.163000] do page fault:
-[    5.163000] regs->sr=0x0, regs->pc=0x60016344, address=0x601d1d28, 2, 
-41fb0000
-[    5.175000] do page fault:
-[    5.175000] regs->sr=0x10, regs->pc=0x60007320, address=0x601cdf44, 
-3, 41fb0000
-[    5.212000] do page fault:
-[    5.212000] regs->sr=0x14, regs->pc=0x6000b04a, address=0x601ce004, 
-2, 41fb0000
-[    5.373000] do page fault:
-[    5.373000] regs->sr=0x14, regs->pc=0x6000b04a, address=0x60056004, 
-2, 41fb0000
-[    5.396000] random: crng init done
-[    5.401000] do page fault:
-[    5.401000] regs->sr=0x14, regs->pc=0x6000b04a, address=0x700ae004, 
-2, 41fb0000
-[    5.414000] do page fault:
-[    5.414000] regs->sr=0x0, regs->pc=0x6000b42a, address=0x700b0000, 2, 
-41fb0000
-[    5.487000] do page fault:
-[    5.487000] regs->sr=0x0, regs->pc=0x6019cbf0, address=0x601d5010, 2, 
-41fb0000
-[    5.488000] do page fault:
-[    5.488000] regs->sr=0x0, regs->pc=0x6019cbf6, address=0x601db288, 2, 
-41fb0000
-[    5.552000] do page fault:
-[    5.552000] regs->sr=0x0, regs->pc=0x600e1032, address=0x601d21d4, 3, 
-41fb0000
-[    5.569000] do page fault:
-[    5.569000] regs->sr=0x0, regs->pc=0x600df938, address=0x700ba8e4, 2, 
-41fb0000
-[    5.580000] do page fault:
-[    5.580000] regs->sr=0x8, regs->pc=0x70038476, address=0x700b4890, 2, 
-41fb0000
-[    5.634000] do page fault:
-[    5.634000] regs->sr=0x0, regs->pc=0x6011cbf2, address=0x700be004, 2, 
-41fb0000
-[    5.677000] do page fault:
-[    5.677000] regs->sr=0x0, regs->pc=0x6011d65a, address=0x700c71b4, 2, 
-41fb0000
-[    5.684000] do page fault:
-[    5.684000] regs->sr=0x2004, regs->pc=0x410a724a, address=0x700c0000, 
-2, 41fb0000
-[    5.686000] do page fault:
-[    5.686000] regs->sr=0x2004, regs->pc=0x410a724a, address=0x700c2000, 
-2, 41fb0000
-[    6.058000] do page fault:
-[    6.058000] regs->sr=0x10, regs->pc=0x7004b63c, address=0x700b8d2a, 
-3, 41fb0000
-[    6.206000] do page fault:
-[    6.206000] regs->sr=0x0, regs->pc=0x700365d2, address=0x6005a468, 2, 
-41fb0000
-[    6.231000] do page fault:
-[    6.231000] regs->sr=0x0, regs->pc=0x6011d65a, address=0x700c483c, 2, 
-41fb0000
-bash: cannot set terminal process group (-1): Inappropriate ioctl for device
-bash: no job control in this shell
-[    6.327000] do page fault:
-[    6.327000] regs->sr=0x4, regs->pc=0x70092344, address=0x700bc410, 3, 
-41fb0000
-[    6.349000] do page fault:
-[    6.349000] regs->sr=0x0, regs->pc=0x6011d65a, address=0x700c80f4, 2, 
-41fb0000
-[    6.438000] do page fault:
-[    6.438000] regs->sr=0x0, regs->pc=0x6011d65a, address=0x700ca114, 2, 
-41fb0000
-[    6.452000] do page fault:
-[    6.452000] regs->sr=0x8, regs->pc=0x600f28d0, address=0xbffcfd4c, 2, 
-41fb0000
-[    6.481000] do page fault:
-[    6.481000] regs->sr=0x0, regs->pc=0x6008b6a8, address=0xbffcd1a0, 2, 
-41fb0000
-[    6.493000] do page fault:
-[    6.493000] regs->sr=0x0, regs->pc=0x6011d65a, address=0x700cc474, 2, 
-41fb0000
-[    6.516000] do page fault:
-[    6.516000] regs->sr=0x0, regs->pc=0x6011d65a, address=0x700ce1bc, 2, 
-41fb0000
-[    6.517000] do page fault:
-[    6.517000] regs->sr=0x0, regs->pc=0x6011d65a, address=0x700d000c, 2, 
-41fb0000
-[    6.519000] do page fault:
-[    6.519000] regs->sr=0x0, regs->pc=0x6011d65a, address=0x700d246c, 2, 
-41fb0000
-[    6.520000] do page fault:
-[    6.520000] regs->sr=0x0, regs->pc=0x6011d65a, address=0x700d42bc, 2, 
-41fb0000
-[    6.528000] do page fault:
-[    6.528000] regs->sr=0x0, regs->pc=0x6011d65a, address=0x700d6004, 2, 
-41fb0000
-[    6.543000] do page fault:
-[    6.543000] regs->sr=0x0, regs->pc=0x6011d65a, address=0x700d8584, 2, 
-41fb0000
-[    6.544000] do page fault:
-[    6.544000] regs->sr=0x0, regs->pc=0x6011d65a, address=0x700da3d4, 2, 
-41fb0000
-[    6.546000] do page fault:
-[    6.546000] regs->sr=0x0, regs->pc=0x6011d65a, address=0x700dc224, 2, 
-41fb0000
-[    6.547000] do page fault:
-[    6.547000] regs->sr=0x0, regs->pc=0x6011d65a, address=0x700de074, 2, 
-41fb0000
-[    6.576000] do page fault:
-[    6.576000] regs->sr=0x0, regs->pc=0x6011ca12, address=0x700e02c4, 2, 
-41fb0000
-bash-5.2#
+[    4.242000] Kernel panic - not syncing: page fault error
+[    4.242000] CPU: 0 PID: 1 Comm: bash Not tainted 
+6.10.0-rc5-g927da6cf01fe-dirty #25
+[    4.242000] Stack from 4186dda8:
+[    4.242000]         4186dda8 41423aa4 41423aa4 700b3300 00000001 
+00000000 4136ee10 41423aa4
+[    4.242000]         41366d7a 700b3364 700b3364 00000000 0000000d 
+4186de60 41fb0000 41d51a60
+[    4.242000]         41005696 41416a90 41416a4d 00002000 41366924 
+700b3364 00000002 41fb0000
+[    4.242000]         0000000a 700b3364 00000000 0000000d 00000012 
+41d51a00 4186de60 41d51a60
+[    4.242000]         41fb81c0 41d51a60 410052fe 4100529a 4186de60 
+700b3364 00000002 00000000
+[    4.242000]         700bc414 00000003 00008000 700ac000 41003660 
+4186de60 00000000 00000000
+[    4.242000] Call Trace: dump_stack (lib/dump_stack.c:124)
+[    4.242000] panic (kernel/panic.c:266 kernel/panic.c:368)
+[    4.242000] do_page_fault (arch/m68k/mm/fault.c:88 (discriminator 1))
+[    4.242000] __clear_user (arch/m68k/lib/uaccess.c:108)
+[    4.242000] buserr_c (arch/m68k/kernel/traps.c:725 
+arch/m68k/kernel/traps.c:775)
+[    4.242000] buserr_c (arch/m68k/kernel/traps.c:748 
+arch/m68k/kernel/traps.c:775)
+[    4.242000] buserr (arch/m68k/kernel/entry.S:116)
+[    4.242000] ma_slots (lib/maple_tree.c:759)
+[    4.242000] __clear_user (arch/m68k/lib/uaccess.c:108)
+[    4.242000] elf_load (fs/binfmt_elf.c:125 (discriminator 1) 
+fs/binfmt_elf.c:421 (discriminator 1))
+[    4.242000] load_elf_binary (fs/binfmt_elf.c:1132)
+[    4.242000] memset (arch/m68k/lib/memset.c:11)
+[    4.242000] load_misc_binary (fs/binfmt_misc.c:97 
+fs/binfmt_misc.c:146 fs/binfmt_misc.c:213)
+[    4.242000] memset (arch/m68k/lib/memset.c:11)
+[    4.242000] bprm_execve (fs/exec.c:1797 fs/exec.c:1839 fs/exec.c:1891 
+fs/exec.c:1867)
+[    4.242000] copy_strings_kernel (fs/exec.c:669)
+[    4.242000] count_strings_kernel (fs/exec.c:473)
+[    4.242000] kernel_execve (fs/exec.c:2058)
+[    4.242000] __dynamic_pr_debug (lib/dynamic_debug.c:865)
+[    4.242000] run_init_process (init/main.c:1389)
+[    4.242000] _printk (kernel/printk/printk.c:2365)
+[    4.242000] kernel_init (init/main.c:1508)
+[    4.242000] kernel_init (init/main.c:1459)
+[    4.242000] ret_from_kernel_thread (arch/m68k/kernel/entry.S:142)
+[    4.242000]
+[    4.242000] ---[ end Kernel panic - not syncing: page fault error ]---
 
-My kernel is loaded at 0x41000000.
+Looks like a memory mapping failure, but why ?
+My JTAG at this point dumps a list of 0s at 0x41fb0000 and my SDRAM 
+starts at 0x40000000 and ends at 0x50000000 (256MB).
+
+It looks like a TLB write miss which is obscure to me :-).
+
+I tried to use the /proc but as expected it is not alive after mounting it.
+Thanks,
 JM
+
+
+> Cheers,
+> 
+>      Michael
+> 
+>>
+>> Thanks !
+>> JM
