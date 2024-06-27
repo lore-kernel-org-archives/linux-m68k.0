@@ -1,202 +1,97 @@
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1F4A198858
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Jun 2024 15:01:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14C77199381
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Jun 2024 16:05:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719500494; cv=none; b=dDJgczXc5v51ihdFKLbdzfdGksLjCuhnva/fug782C+ha1Nx2zC8sL6cu/1UsvQwWPKwdq5/N8t8SOYqj+nnvOKC/V219hopCT6AYGYaUgo57lWAO7rt8CHcr6DZN0H+/aUE7oy4j0lHesYKRLSjC9MeG2O6DQ+HBgjgV5TbG7s=
+	t=1719504343; cv=none; b=VR08PkC1ZFThpdvfdHT3P/UZruce/IkqhSuqIjoL4Gq06uJBe2EhJTooNA8IMf6V1ppMdCwEkbtXS4I6HfON38+PQrbtR1BgL8DVz+DlKmrFSVqKuYRXavav0MjmwYL0IXPwiYEh/tcj52tyXaeLNkNRVnGeVdhetelFGXNoows=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719500494; c=relaxed/simple;
-	bh=Ls8TWf7Ls4rDuQM9C/rkvoWcEbirlUYvbabBwsFNNA8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TpKT/YQpwdTHYRotyE/JH+dVe5DJDq6reC0R7Zw1B1CW5gkP+p7Ujof42F2Cj7XcA9gwKQv/AEzPfRArgK+hRIhHzbwBBa9JOpBxSkz1for5Txvs52HacFn5SrGOkvF9YBqIz+eH4j+kIRp4zDw2TbHQBuG27i63XQAiEMEbxbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-63bca8ce700so79849217b3.2
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Jun 2024 08:01:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719500491; x=1720105291;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zg4w7tXCY7d1fGix7mfUzMIgqJ5X93RyC1ZsNDKryqU=;
-        b=U9BiD4FyVqeL7WYiQjEjNsJXMwDfnKQov6oVc7298dGmsett56xkmZFT5MskKhQQdv
-         utX5dKd1xNYLt4RFu6LyZkTLZisr/4f5JUFnUgBcF/YN75TcAYLNrVwMII+bB7byxpCy
-         W/QmVmAL/XDWi8RoNusyQ3t+UhHgFf8PIhpXZnANLgcTlGM1kAdbGy7lc9wpM31oEf6g
-         ctj+V4zX8JGbg+O694Cay9wiRmSJAsWVX6oiqmZJkBQ8MuTXW158lhwGz62dyBMnsWj/
-         jVjm7LOl+5wVyJ1SjyqjXNRHbpivKlr4JvplMNn/cg7h4Q+ROx2BbRSHjQo5viUjLmSW
-         HwRw==
-X-Forwarded-Encrypted: i=1; AJvYcCXGTwdMVqhZEsrgiFHE/w7BM1VwN4OYm4IiMTPit6Rjxe0OMuGycd11xV+WZHM3YrB8jZEAwCiPAgKHlucuxBn3iSX5rTuu8D23072jUk8H
-X-Gm-Message-State: AOJu0Yyxr2F87G3ScIBJEHWaq2XuKDxBBdxbuMXvDH9wJR945CMv+AS8
-	LMY5OwocS4BWKEI9RzjBOEUiQx6okWm0oPiSbF3yJZP4VtZvwT9btOgLbrPb
-X-Google-Smtp-Source: AGHT+IHMIFgz7SvdatsnD1LA02ulboKtUDMNQYRlgmHwoU9yoqDizMCAmREH7/bsRRAMhRMbg42feg==
-X-Received: by 2002:a05:690c:ed2:b0:620:50e0:c38 with SMTP id 00721157ae682-643aad79adfmr150841727b3.24.1719500491061;
-        Thu, 27 Jun 2024 08:01:31 -0700 (PDT)
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6497ac2ee35sm2758317b3.122.2024.06.27.08.01.30
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jun 2024 08:01:30 -0700 (PDT)
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-630640c1e14so84858197b3.1
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Jun 2024 08:01:30 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWzzzitsS44BrOSrb1ZOdzcAh6ciNUmEX/Y1/wwkTH0TrLh9a3WkxZ3o/jkFf4I7EK56ZesdUtq2eOGCz/togYvqqQdNUzlcTyPSZ4Qs4xr
-X-Received: by 2002:a05:690c:f0a:b0:63b:d0df:ffe5 with SMTP id
- 00721157ae682-643ac81d7b3mr161262737b3.45.1719500490444; Thu, 27 Jun 2024
- 08:01:30 -0700 (PDT)
+	s=arc-20240116; t=1719504343; c=relaxed/simple;
+	bh=7MQUtBtmxwtqSjwHgGQHzsi6UX1cWt9yIlLizuWjabU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=msXf996My5pT3VOl4DrwBZrsrYErgW7PhFysukmfw4Se6oO1WDbItbiQ3KC0z+EzOxxvDrxb4jQ/5zO4WarChWRSo/9nPTqFnJ5LRdbbhwxLayETR6AdI4CyZng16IGoVUhd/mtW69nFiT0M0EnypSm3ero1bMa+CfXyCPxgLig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=ZVO1kRfE; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="ZVO1kRfE"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 16C8F1C000B;
+	Thu, 27 Jun 2024 16:05:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1719504337;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dtm6RuQJK7HKXMqLOw3rQerxE/QDxsxWMgh9vmm6n3k=;
+	b=ZVO1kRfEaJlPja4FjGy+YaxVv2IN7F8Z6Yo36vhnWUVJEcpQW89uhnRI2AiEd4zu6Dzkrt
+	4AOF/EonhspOx/8+7FDoPuX0AhK6z2jfAQV3vkFbHp5ZKuGYfsGcDGOtL41FV3L1Fula25
+	iQ6VE6z+ovdSuEcKmx8jkQJR8wlN9GxgVYRWZ62TLiXztV2DIpFsu85NzrnTIKq2iJFNSi
+	JydmPPqNjM6ptGPKi2eY+YZVmdareA92mFavAF5YIZwsu/DJqRhHGoXdR2cK2xjn67k2Q6
+	S8fZiaf1tJdbb9f7QYlqD5d1pQ22a+qsIIhemVKHj3B6mNbTs6dKxy/YZRGARw==
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Date: Thu, 27 Jun 2024 18:05:28 +0200
+Subject: [PATCH v2 1/2] arch: m68k: Add definitions for flash NFC support
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240620-upstream-nfc-mcf5441x-v1-1-69b64807d7a6@yoseli.org>
-In-Reply-To: <20240620-upstream-nfc-mcf5441x-v1-1-69b64807d7a6@yoseli.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 27 Jun 2024 17:01:17 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdV6z6OST=U3cvt3NRe3nj7DKCf+0O4v9s14ZV-j2v=qrA@mail.gmail.com>
-Message-ID: <CAMuHMdV6z6OST=U3cvt3NRe3nj7DKCf+0O4v9s14ZV-j2v=qrA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: Add support for M5441x NFC
-To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Stefan Agner <stefan@agner.ch>, linux-m68k@lists.linux-m68k.org, 
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240627-upstream-nfc-mcf5441x-v2-1-312929d09ee5@yoseli.org>
+References: <20240627-upstream-nfc-mcf5441x-v2-0-312929d09ee5@yoseli.org>
+In-Reply-To: <20240627-upstream-nfc-mcf5441x-v2-0-312929d09ee5@yoseli.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Stefan Agner <stefan@agner.ch>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+ linux-mtd@lists.infradead.org, 
+ Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1719504334; l=968;
+ i=jeanmichel.hautbois@yoseli.org; s=20240608; h=from:subject:message-id;
+ bh=7MQUtBtmxwtqSjwHgGQHzsi6UX1cWt9yIlLizuWjabU=;
+ b=r2PAnoXwjNQlDMjnfDZiZz4dyFqRDwOrUTG3Glt35IMJoP78EndtTyrT7IvPZX8LH2hPKhM0L
+ 9jolZSxpmurBQeDAEmH7t6FHruD54qiX1tgjkzAD70B1BvdQpnwzjdU
+X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
+ pk=oMZuYhJzT0j5MI73RlNUVYaA8VdWpFR/Sao0JKz1D2I=
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-Hi Jean-Michel,
+Add a few definitions, as the base address for the NFC for the M5441x.
 
-On Thu, Jun 20, 2024 at 6:25=E2=80=AFPM Jean-Michel Hautbois
-<jeanmichel.hautbois@yoseli.org> wrote:
-> The vf610_nfc driver is also the one which should be used for the
-> coldfire series. Sadly, these device don't support device-tree and so we
-> need to do a few modifications:
-> - Adapt the probe to use pdata if available
-> - Add a new variant as there is a small part to adapt in
->   vf610_nfc_select_target()
-> - Add the corresponding missing register definitions
->
-> Tested successfully on a 54418 custom board with a raw NAND:
-> [    2.640000] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xdc
-> [    2.650000] nand: Micron MT29F4G08ABADAWP
-> [    2.650000] nand: 512 MiB, SLC, erase size: 128 KiB, page size: 2048, =
-OOB size: 64
->
-> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+---
+ arch/m68k/include/asm/m5441xsim.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Thanks for your patch!
+diff --git a/arch/m68k/include/asm/m5441xsim.h b/arch/m68k/include/asm/m5441xsim.h
+index f48cf63bd782..d4ee1eab7c4a 100644
+--- a/arch/m68k/include/asm/m5441xsim.h
++++ b/arch/m68k/include/asm/m5441xsim.h
+@@ -99,6 +99,7 @@
+ #define MCFINT2_PIT1		14
+ #define MCFINT2_PIT2		15
+ #define MCFINT2_PIT3		16
++#define MCFINT2_NFC		25
+ #define MCFINT2_RTC		26
+ 
+ /*
+@@ -333,4 +334,10 @@
+ #define MCF_IRQ_BOFF1		(MCFINT1_VECBASE + MCFINT1_FLEXCAN1_BOFF)
+ #define MCF_IRQ_ERR1		(MCFINT1_VECBASE + MCFINT1_FLEXCAN1_ERR)
+ 
++/*
++ * Flash module
++ */
++#define MCF_NFC_BASE		0xfc0fc000
++#define MCF_NFC_SIZE		(0xfc0fff3b - 0xfc0fc000)
++#define MCF_NFC_ISR		(MCFINT2_VECBASE + MCFINT2_NFC)
+ #endif /* m5441xsim_h */
 
-> --- a/drivers/mtd/nand/raw/vf610_nfc.c
-> +++ b/drivers/mtd/nand/raw/vf610_nfc.c
-> @@ -810,6 +840,7 @@ static int vf610_nfc_probe(struct platform_device *pd=
-ev)
->         struct vf610_nfc *nfc;
->         struct mtd_info *mtd;
->         struct nand_chip *chip;
-> +       struct nand_chip *pdata;
->         struct device_node *child;
+-- 
+2.43.0
 
-As reported by the robot, this is now unused.
-
->         int err;
->         int irq;
-> @@ -820,30 +851,53 @@ static int vf610_nfc_probe(struct platform_device *=
-pdev)
->
->         nfc->dev =3D &pdev->dev;
->         chip =3D &nfc->chip;
-> +       pdata =3D dev_get_platdata(&pdev->dev);
-> +       if (pdata)
-> +               *chip =3D *pdata;
-> +
->         mtd =3D nand_to_mtd(chip);
->
->         mtd->owner =3D THIS_MODULE;
->         mtd->dev.parent =3D nfc->dev;
-> -       mtd->name =3D DRV_NAME;
-> +
-> +       /*
-> +        * We keep the MTD name unchanged to avoid breaking platforms
-> +        * where the MTD cmdline parser is used and the bootloader
-> +        * has not been updated to use the new naming scheme.
-> +        */
-> +       if (!nfc->dev->of_node)
-> +               mtd->name =3D "NAND";
-> +       else
-> +               mtd->name =3D DRV_NAME;
->
->         irq =3D platform_get_irq(pdev, 0);
->         if (irq < 0)
->                 return irq;
->
->         nfc->regs =3D devm_platform_ioremap_resource(pdev, 0);
-> -       if (IS_ERR(nfc->regs))
-> +       if (IS_ERR(nfc->regs)) {
-> +               dev_err(nfc->dev, "Unable to map registers!\n");
->                 return PTR_ERR(nfc->regs);
-> +       }
->
-> +#ifdef CONFIG_OF
-
-Do you need all the #ifdeffery?
-
->         nfc->clk =3D devm_clk_get_enabled(&pdev->dev, NULL);
-
-Perhaps replace by devm_clk_get_optional_enabled() instead?
-
->         if (IS_ERR(nfc->clk)) {
->                 dev_err(nfc->dev, "Unable to get and enable clock!\n");
->                 return PTR_ERR(nfc->clk);
->         }
->
-> -       nfc->variant =3D (enum vf610_nfc_variant)device_get_match_data(&p=
-dev->dev);
-> -       if (!nfc->variant)
-> -               return -ENODEV;
-> +       const void *data =3D device_get_match_data(&pdev->dev);
->
-> +       nfc->variant =3D (enum vf610_nfc_variant)data;
-> +       if (!nfc->variant) {
-> +               dev_err(nfc->dev, "No variant data found!\n");
-> +               return -ENODEV;
-> +       }
-> +#else
-> +       nfc->variant =3D (enum vf610_nfc_variant)platform_get_device_id(p=
-dev)->driver_data;
-> +#endif
-> +#ifdef CONFIG_OF
->         for_each_available_child_of_node(nfc->dev->of_node, child) {
-
-for_each_available_child_of_node_scoped(...), so the child variable
-no longer needs to be declared at the top.
-
->                 if (of_device_is_compatible(child, "fsl,vf610-nfc-nandcs"=
-)) {
->
-> @@ -862,6 +916,10 @@ static int vf610_nfc_probe(struct platform_device *p=
-dev)
->                 dev_err(nfc->dev, "NAND chip sub-node missing!\n");
->                 return -ENODEV;
->         }
-> +#else
-> +       nfc->clk =3D NULL;
-> +       mtd->dev.parent =3D &pdev->dev;
-> +#endif
->
->         chip->options |=3D NAND_NO_SUBPAGE_WRITE;
->
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
