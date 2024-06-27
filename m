@@ -1,294 +1,152 @@
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 218B413DBA8
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Jun 2024 12:36:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 730171957F9
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Jun 2024 14:00:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719491819; cv=none; b=QmNRpH6NrRbm/iaPmlW7Eip8tvEVrQphYyET2c+Mb3vTLwfyhoy+k5sZFjlzjD4koWL1mJIBHAXd712TO6T9r0QCdtlKqoWjCow9lmVEtH5/cxXts56M9umhqdNOAB1MR821t4grEmvxx/8EwfgwzGMwdXbselLCmbPpq/B/afU=
+	t=1719496813; cv=none; b=nuBb7svVOL45mdojrQ/HMvp3S4zRH2c07ZHJtQLwi4qlMG4+crlks41YHBT61HyM1g9gqt81I4TgPW03EzvpgvZac8kNhaVO5Ov54OFDGtjIsDAxznA4SetoIbwfkzWwma8LSUePzar5z7qqrF6SNCkwR4I5mn+eRYxx0wRJe+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719491819; c=relaxed/simple;
-	bh=NsyYY2LaHGvWdWyvrWvkcc5tvjrRkOK4TyvRpFqlvps=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=arimfrjdJ2kCQq+jhYSLp3NCqeJ7972NhCvv+hoZoTo/sHmNsmBChReZ8DR+kc9nvHsownBNVhj95eBcSV2YmafdfZGR4MjEuGRdRCQihtKeTl6Ik9JtYK3SkdJoMyk88SjYrGR+7r4L3d5Pj9MmrXE7L0ZbuidFpM/jq4rDsGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=AjKYVV4F; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
+	s=arc-20240116; t=1719496813; c=relaxed/simple;
+	bh=LgBGKtBwZfpMFDGPGG2/N4d17mEMbtxMcO4dCLtOSEE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DqlhDvxM7vKWcFn6qSo/4dfjeTmJVDog8IMGnG183HYg9f8vMn2tsMCAd7k+LW0BxP+bBMmu4ms3mYuSEZimHAhit6TCA3m1BV2InSk668+rJoglrWyGXWQ5m/32C99CWRHOaidC5nrrzq/YmBPS8RrdGCyfw1p0v+J/crxRlrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=L/Sti5T5; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="AjKYVV4F"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4F1C8FF80B;
-	Thu, 27 Jun 2024 12:36:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1719491814;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iEO4mfp2S5jW+Ioidefkinbk85g6kv5LmFOVauLOaMY=;
-	b=AjKYVV4FQWJuS0qQfYOmPEBMrD/3S0sNqURIcXLykW9Af2TiyVKeoVTExQHHKYxKFoZNjx
-	JjDMRceQYbhEPIS1coln5z5Q/yWBaG/3LeOT0LJ3zNtSHuB1sn6AEEInz2nPqhp9pmXlYi
-	iqppQW+sSQVSoWkEoUAlHx0T0uvU4k5WYElYMRfd/fZPPtX1HWVdDe0MeBoiR1/opysONz
-	62s3hj1GSJ0iB7JFxvKQeUgSjIZNk2ml2peCvhI9L89XOwIf2cWpChrh+YCEvyquTCFw6D
-	FRRWa03y9gDiU0S49Z2L/GtJvRT2ONp+nyXbnYrA88ZyHQt/nG/Mr2O70ahD9w==
-Message-ID: <57879ac8-eaf5-48f1-b4ef-6619d9108440@yoseli.org>
-Date: Thu, 27 Jun 2024 14:36:50 +0200
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="L/Sti5T5"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1719496811; x=1751032811;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=LgBGKtBwZfpMFDGPGG2/N4d17mEMbtxMcO4dCLtOSEE=;
+  b=L/Sti5T5+quB8+Qr3nbYZ2zwxG55YG/dcs661ZdIeBzC7TPwzihchty5
+   MhH2O5js0PeUJGS3m3unRJS88HFSfoMwqdgiWy8BNeFPd05eW8B7AHxk+
+   2tqgCHcXnD5bWItk59dKZRyr1CY92ianMYaOwVIrKOIpaMBgNZiVgyOFD
+   kWRD/yz/ewgyagUMT+tWxHTkeJfdalJiYAbwsKiBOpGvsndgeoUtZaikw
+   mYsNYPIXo2LLOtnDhyow1NGcvle1Q/T7tMkpDYci/cezB6zY/1e9lrlbt
+   MCDyGcvzMNprqHFaA8N2nUCv3jxn9lP8tI1gOs27QGfeQzQr0BCkyQBpp
+   A==;
+X-CSE-ConnectionGUID: SDm9GxQURjqMhcd8pSosXg==
+X-CSE-MsgGUID: 9x6TZt/iRGCG/2LLRCzGKQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11115"; a="27311577"
+X-IronPort-AV: E=Sophos;i="6.09,166,1716274800"; 
+   d="scan'208";a="27311577"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2024 07:00:10 -0700
+X-CSE-ConnectionGUID: LTr6F1fYT9yQlGDVhYBTqw==
+X-CSE-MsgGUID: /muBcJOpTIuJq4B1D1IPIg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,166,1716274800"; 
+   d="scan'208";a="48739501"
+Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
+  by fmviesa003.fm.intel.com with ESMTP; 27 Jun 2024 07:00:07 -0700
+Received: from kbuild by 68891e0c336b with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sMpfR-000GG5-1J;
+	Thu, 27 Jun 2024 14:00:05 +0000
+Date: Thu, 27 Jun 2024 21:59:05 +0800
+From: kernel test robot <lkp@intel.com>
+To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Stefan Agner <stefan@agner.ch>
+Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Subject: Re: [PATCH] mtd: nand: Add support for M5441x NFC
+Message-ID: <202406272154.v694SvQb-lkp@intel.com>
+References: <20240620-upstream-nfc-mcf5441x-v1-1-69b64807d7a6@yoseli.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: m68k 54418 fails to execute user space
-To: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@lists.linux-m68k.org,
- linux-mm@kvack.org, linux-mtd@lists.infradead.org
-Cc: Greg Ungerer <gerg@linux-m68k.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Christoph Hellwig <hch@infradead.org>, wbx@openadk.org
-References: <c252ab82-dc4a-4267-84c3-4a20471524c5@yoseli.org>
- <735e19b6-3747-417f-ba5b-1a7da137a3a3@yoseli.org>
- <7fb2988d-ab89-405f-8cf1-edcdd2196376@gmail.com>
- <a7084eac-b92a-4ddb-a079-f4a600b93f8e@yoseli.org>
- <c7235957-1f00-40dd-a78a-925b0b943ec7@gmail.com>
-Content-Language: en-US
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-In-Reply-To: <c7235957-1f00-40dd-a78a-925b0b943ec7@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240620-upstream-nfc-mcf5441x-v1-1-69b64807d7a6@yoseli.org>
 
-Michael,
+Hi Jean-Michel,
 
-On 26/06/2024 21:36, Michael Schmitz wrote:
-> Jean-Michel,
-> 
-> On 27/06/24 01:28, Jean-Michel Hautbois wrote:
->> Hi Michael,
->>
->> On 26/06/2024 03:56, Michael Schmitz wrote:
->>> Jean-Michel,
->>>
->>> On 24/06/24 20:56, Jean-Michel Hautbois wrote:
->>>>
->>>> When I printk the do_page_fault first debug, I get for the first 
->>>> call to ls:
->>>> bash-5.2# ls
->>>> [   14.700000] do page fault:
->>>> [   14.700000] regs->sr=0x0, regs->pc=0x70069ee6, 
->>>> address=0x70069ee6, 0, (ptrval)
->>>
->>> Page not present, read fault. Please disable obfuscation of kernel 
->>> pointer addresses by printk. Maybe also disable address space 
->>> randomization while debugging this.
->>>
->>>> This call works almost fine (I still have the assert failed: 
->>>> folio->private != NULL issue).
->>>>
->>>> And when I call it a second time, I get:
->>>> bash-5.2# ls
->>>> [   19.820000] do page fault:
->>>> [   19.820000] regs->sr=0x0, regs->pc=0x6011d65a, 
->>>> address=0x700e2004, 2, (ptrval)
->>>
->>> Page not present, write fault.
->>>
->>> It would be helpful if you could get a dump of /proc/1/maps before 
->>> the execve() syscall in your helloworld init replacement. That might 
->>> confirm all these addresses are legit (assuming mappings survive 
->>> across execve(), that is), and what they correspond to.
->>>
->>>>
->>>> The address corresponds to the defined zone ELF_ET_DYN_BASE as I set 
->>>> it to 0x70000000.
->>>>
->>>> regs->pc is not the same as the address. It might be unrelevant, but 
->>>> any help is appreciated to understand the process behind :-).
->>>>
->>>> I keep digging, and I am in the asm part which fears me a bit !
->>>
->>> I don't see that you'd need to look at any asm code here.
->>
->> I add a small test in do_page_fault, and in case of an error, it 
->> panics. The result follows:
-> 
-> Please take a look at the comments at the start of 
-> arch/m68k/mm/fault.c:do_page_fault(). The meaning of the bits in 
-> error_code are explained there.
-> 
-> error_code != 0 is just one possible case out of the four that are 
-> handled by do_page_fault(). It does not signify 'no error' - if there 
-> hadn't been a page fault, do_page_fault() would not have been called.
-> 
-> You just forced a panic each time a write fault and/or a protection 
-> fault happens. Write faults are absolutely expected to happen when 
-> loading a library - ld.so needs to perform relocation after loading a 
-> dynamic library, and that means writes to the GOT in the library's data 
-> segment (PIC assumed).
-> 
-> 
->>  ./scripts/decode_stacktrace.sh vmlinux < /tmp/trace.log
->> [    3.857000] Run /bin/bash as init process
->> [    3.858000]   with arguments:
->> [    3.861000]     /bin/bash
->> [    3.862000]   with environment:
->> [    3.863000]     HOME=/
->> [    3.864000]     TERM=linux
->> [    4.242000] do page fault:
->> [    4.242000] regs->sr=0x2000, regs->pc=0x41366924, 
->> address=0x700b3364, 2, 41fb0000
->> [    4.242000] Kernel panic - not syncing: page fault error
->> [    4.242000] CPU: 0 PID: 1 Comm: bash Not tainted 
->> 6.10.0-rc5-g927da6cf01fe-dirty #25
->> [    4.242000] Stack from 4186dda8:
->> [    4.242000]         4186dda8 41423aa4 41423aa4 700b3300 00000001 
->> 00000000 4136ee10 41423aa4
->> [    4.242000]         41366d7a 700b3364 700b3364 00000000 0000000d 
->> 4186de60 41fb0000 41d51a60
->> [    4.242000]         41005696 41416a90 41416a4d 00002000 41366924 
->> 700b3364 00000002 41fb0000
->> [    4.242000]         0000000a 700b3364 00000000 0000000d 00000012 
->> 41d51a00 4186de60 41d51a60
->> [    4.242000]         41fb81c0 41d51a60 410052fe 4100529a 4186de60 
->> 700b3364 00000002 00000000
->> [    4.242000]         700bc414 00000003 00008000 700ac000 41003660 
->> 4186de60 00000000 00000000
->> [    4.242000] Call Trace: dump_stack (lib/dump_stack.c:124)
->> [    4.242000] panic (kernel/panic.c:266 kernel/panic.c:368)
->> [    4.242000] do_page_fault (arch/m68k/mm/fault.c:88 (discriminator 1))
->> [    4.242000] __clear_user (arch/m68k/lib/uaccess.c:108)
->> [    4.242000] buserr_c (arch/m68k/kernel/traps.c:725 
->> arch/m68k/kernel/traps.c:775)
->> [    4.242000] buserr_c (arch/m68k/kernel/traps.c:748 
->> arch/m68k/kernel/traps.c:775)
->> [    4.242000] buserr (arch/m68k/kernel/entry.S:116)
->> [    4.242000] ma_slots (lib/maple_tree.c:759)
->> [    4.242000] __clear_user (arch/m68k/lib/uaccess.c:108)
->> [    4.242000] elf_load (fs/binfmt_elf.c:125 (discriminator 1) 
->> fs/binfmt_elf.c:421 (discriminator 1))
->> [    4.242000] load_elf_binary (fs/binfmt_elf.c:1132)
->> [    4.242000] memset (arch/m68k/lib/memset.c:11)
->> [    4.242000] load_misc_binary (fs/binfmt_misc.c:97 
->> fs/binfmt_misc.c:146 fs/binfmt_misc.c:213)
->> [    4.242000] memset (arch/m68k/lib/memset.c:11)
->> [    4.242000] bprm_execve (fs/exec.c:1797 fs/exec.c:1839 
->> fs/exec.c:1891 fs/exec.c:1867)
->> [    4.242000] copy_strings_kernel (fs/exec.c:669)
->> [    4.242000] count_strings_kernel (fs/exec.c:473)
->> [    4.242000] kernel_execve (fs/exec.c:2058)
->> [    4.242000] __dynamic_pr_debug (lib/dynamic_debug.c:865)
->> [    4.242000] run_init_process (init/main.c:1389)
->> [    4.242000] _printk (kernel/printk/printk.c:2365)
->> [    4.242000] kernel_init (init/main.c:1508)
->> [    4.242000] kernel_init (init/main.c:1459)
->> [    4.242000] ret_from_kernel_thread (arch/m68k/kernel/entry.S:142)
->> [    4.242000]
->> [    4.242000] ---[ end Kernel panic - not syncing: page fault error ]---
->>
->> Looks like a memory mapping failure, but why ?
->> My JTAG at this point dumps a list of 0s at 0x41fb0000 and my SDRAM 
->> starts at 0x40000000 and ends at 0x50000000 (256MB).
-> 0x41fb0000 seems to be init's page directory. The fault address is in 
-> the range where I'd expect dynamic libraries to reside.
->>
->> It looks like a TLB write miss which is obscure to me :-).
->>
->> I tried to use the /proc but as expected it is not alive after 
->> mounting it.
-> 
-> The memory map ought to be accessible through sysrq - an alternative 
-> would be to modify the ELF binfmt handler and dump the map once ld.so 
-> has finished with relocations.
+kernel test robot noticed the following build warnings:
 
-I added a dump in the binfmt_elf file:
-diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-index a43897b03ce9..395f556f3a90 100644
---- a/fs/binfmt_elf.c
-+++ b/fs/binfmt_elf.c
-@@ -816,6 +816,63 @@ static int parse_elf_properties(struct file *f, 
-const struct elf_phdr *phdr,
-         return ret == -ENOENT ? 0 : ret;
-  }
+[auto build test WARNING on e5b3efbe1ab1793bb49ae07d56d0973267e65112]
 
-+static int dump_memory_map(struct task_struct *task)
-+{
-+    struct mm_struct *mm = task->mm;
-+    struct vm_area_struct *vma;
-+       MA_STATE(mas, &mm->mm_mt, 0, -1);
-+    struct file *file;
-+    struct path *path;
-+    char *buf;
-+    char *pathname;
-+
-+    // Acquire the read lock for mmap_lock
-+    down_read(&mm->mmap_lock);
-+       mas_lock(&mas);
-+    for (vma = mas_find(&mas, ULONG_MAX); vma; vma = mas_find(&mas, 
-ULONG_MAX)) {
-+        if (vma->vm_file) {
-+            buf = (char *)__get_free_page(GFP_KERNEL);
-+            if (!buf) {
-+                continue; // Handle memory allocation failure
-+            }
-+
-+            file = vma->vm_file;
-+            path = &file->f_path;
-+            pathname = d_path(path, buf, PAGE_SIZE);
-+            if (IS_ERR(pathname)) {
-+                pathname = NULL;
-+            }
-+
-+            pr_info("%lx-%lx %c%c%c%c %08lx %02x:%02x %lu %s\n",
-+                vma->vm_start, vma->vm_end,
-+                vma->vm_flags & VM_READ ? 'r' : '-',
-+                vma->vm_flags & VM_WRITE ? 'w' : '-',
-+                vma->vm_flags & VM_EXEC ? 'x' : '-',
-+                vma->vm_flags & VM_MAYSHARE ? 's' : 'p',
-+                vma->vm_pgoff << PAGE_SHIFT,
-+                MAJOR(file->f_inode->i_rdev),
-+                MINOR(file->f_inode->i_rdev),
-+                file->f_inode->i_ino,
-+                pathname ? pathname : "");
-+
-+            free_page((unsigned long)buf);
-+        } else {
-+            pr_info("%lx-%lx %c%c%c%c %08lx 00:00 0\n",
-+                vma->vm_start, vma->vm_end,
-+                vma->vm_flags & VM_READ ? 'r' : '-',
-+                vma->vm_flags & VM_WRITE ? 'w' : '-',
-+                vma->vm_flags & VM_EXEC ? 'x' : '-',
-+                vma->vm_flags & VM_MAYSHARE ? 's' : 'p',
-+                vma->vm_pgoff << PAGE_SHIFT);
-+        }
-+    }
-+       mas_unlock(&mas);
-+    // Release the read lock for mmap_lock
-+    up_read(&mm->mmap_lock);
-+
-+    return 0;
-+}
-+
-  static int load_elf_binary(struct linux_binprm *bprm)
-  {
-         struct file *interpreter = NULL; /* to shut gcc up */
-@@ -1299,6 +1356,9 @@ static int load_elf_binary(struct linux_binprm *bprm)
+url:    https://github.com/intel-lab-lkp/linux/commits/Jean-Michel-Hautbois/mtd-nand-Add-support-for-M5441x-NFC/20240625-144333
+base:   e5b3efbe1ab1793bb49ae07d56d0973267e65112
+patch link:    https://lore.kernel.org/r/20240620-upstream-nfc-mcf5441x-v1-1-69b64807d7a6%40yoseli.org
+patch subject: [PATCH] mtd: nand: Add support for M5441x NFC
+config: sh-randconfig-001-20240627 (https://download.01.org/0day-ci/archive/20240627/202406272154.v694SvQb-lkp@intel.com/config)
+compiler: sh4-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240627/202406272154.v694SvQb-lkp@intel.com/reproduce)
 
-         finalize_exec(bprm);
-         START_THREAD(elf_ex, regs, elf_entry, bprm->p);
-+       if (current->pid == 1) {  // Check if this is the init process
-+            dump_memory_map(current);
-+    }
-         retval = 0;
-  out:
-         return retval;
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202406272154.v694SvQb-lkp@intel.com/
 
-I think it is quick and dirty, but seems to do the trick.
-I then get in my console:
-[    4.265000] 60000000-6001e000 r-xp 00000000 00:00 178 /lib/ld.so.1
-[    4.266000] 6001e000-60022000 rw-p 0001c000 00:00 178 /lib/ld.so.1
-[    4.267000] 70000000-700ac000 r-xp 00000000 00:00 27 /bin/bash
-[    4.268000] 700ac000-700b4000 rw-p 000ac000 00:00 27 /bin/bash
-[    4.269000] 700b4000-700be000 rwxp 700b4000 00:00 0
-[    4.270000] bfe7a000-bfe9c000 rw-p bffde000 00:00 0
+All warnings (new ones prefixed by >>):
 
-But nothing rings a bell at this level for me...
-Thanks !
+   drivers/mtd/nand/raw/vf610_nfc.c: In function 'vf610_nfc_probe':
+>> drivers/mtd/nand/raw/vf610_nfc.c:844:29: warning: unused variable 'child' [-Wunused-variable]
+     844 |         struct device_node *child;
+         |                             ^~~~~
+
+
+vim +/child +844 drivers/mtd/nand/raw/vf610_nfc.c
+
+962c35ef1e6834 drivers/mtd/nand/raw/vf610_nfc.c Miquel Raynal        2018-07-20  837  
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02  838  static int vf610_nfc_probe(struct platform_device *pdev)
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02  839  {
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02  840  	struct vf610_nfc *nfc;
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02  841  	struct mtd_info *mtd;
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02  842  	struct nand_chip *chip;
+8e5473c07a181c drivers/mtd/nand/raw/vf610_nfc.c Jean-Michel Hautbois 2024-06-20  843  	struct nand_chip *pdata;
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02 @844  	struct device_node *child;
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02  845  	int err;
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02  846  	int irq;
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02  847  
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02  848  	nfc = devm_kzalloc(&pdev->dev, sizeof(*nfc), GFP_KERNEL);
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02  849  	if (!nfc)
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02  850  		return -ENOMEM;
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02  851  
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02  852  	nfc->dev = &pdev->dev;
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02  853  	chip = &nfc->chip;
+8e5473c07a181c drivers/mtd/nand/raw/vf610_nfc.c Jean-Michel Hautbois 2024-06-20  854  	pdata = dev_get_platdata(&pdev->dev);
+8e5473c07a181c drivers/mtd/nand/raw/vf610_nfc.c Jean-Michel Hautbois 2024-06-20  855  	if (pdata)
+8e5473c07a181c drivers/mtd/nand/raw/vf610_nfc.c Jean-Michel Hautbois 2024-06-20  856  		*chip = *pdata;
+8e5473c07a181c drivers/mtd/nand/raw/vf610_nfc.c Jean-Michel Hautbois 2024-06-20  857  
+960823a226b37e drivers/mtd/nand/vf610_nfc.c     Boris Brezillon      2015-12-10  858  	mtd = nand_to_mtd(chip);
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02  859  
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02  860  	mtd->owner = THIS_MODULE;
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02  861  	mtd->dev.parent = nfc->dev;
+8e5473c07a181c drivers/mtd/nand/raw/vf610_nfc.c Jean-Michel Hautbois 2024-06-20  862  
+8e5473c07a181c drivers/mtd/nand/raw/vf610_nfc.c Jean-Michel Hautbois 2024-06-20  863  	/*
+8e5473c07a181c drivers/mtd/nand/raw/vf610_nfc.c Jean-Michel Hautbois 2024-06-20  864  	 * We keep the MTD name unchanged to avoid breaking platforms
+8e5473c07a181c drivers/mtd/nand/raw/vf610_nfc.c Jean-Michel Hautbois 2024-06-20  865  	 * where the MTD cmdline parser is used and the bootloader
+8e5473c07a181c drivers/mtd/nand/raw/vf610_nfc.c Jean-Michel Hautbois 2024-06-20  866  	 * has not been updated to use the new naming scheme.
+8e5473c07a181c drivers/mtd/nand/raw/vf610_nfc.c Jean-Michel Hautbois 2024-06-20  867  	 */
+8e5473c07a181c drivers/mtd/nand/raw/vf610_nfc.c Jean-Michel Hautbois 2024-06-20  868  	if (!nfc->dev->of_node)
+8e5473c07a181c drivers/mtd/nand/raw/vf610_nfc.c Jean-Michel Hautbois 2024-06-20  869  		mtd->name = "NAND";
+8e5473c07a181c drivers/mtd/nand/raw/vf610_nfc.c Jean-Michel Hautbois 2024-06-20  870  	else
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02  871  		mtd->name = DRV_NAME;
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02  872  
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02  873  	irq = platform_get_irq(pdev, 0);
+3549fecd10d24b drivers/mtd/nand/raw/vf610_nfc.c Zhu Wang             2023-08-03  874  	if (irq < 0)
+3549fecd10d24b drivers/mtd/nand/raw/vf610_nfc.c Zhu Wang             2023-08-03  875  		return irq;
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02  876  
+2d77b08eaf0b2f drivers/mtd/nand/raw/vf610_nfc.c Cai Huoqing          2021-09-01  877  	nfc->regs = devm_platform_ioremap_resource(pdev, 0);
+8e5473c07a181c drivers/mtd/nand/raw/vf610_nfc.c Jean-Michel Hautbois 2024-06-20  878  	if (IS_ERR(nfc->regs)) {
+8e5473c07a181c drivers/mtd/nand/raw/vf610_nfc.c Jean-Michel Hautbois 2024-06-20  879  		dev_err(nfc->dev, "Unable to map registers!\n");
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02  880  		return PTR_ERR(nfc->regs);
+8e5473c07a181c drivers/mtd/nand/raw/vf610_nfc.c Jean-Michel Hautbois 2024-06-20  881  	}
+456930d80a2da1 drivers/mtd/nand/vf610_nfc.c     Stefan Agner         2015-09-02  882  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
