@@ -1,189 +1,272 @@
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D8615336B
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Jun 2024 16:07:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C49AD13E04F
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Jun 2024 23:59:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719504456; cv=none; b=mq/KqiS/71IoAy1L0Kk/OYuokOPkdi1Z8/OLamqCecn7rErlEN3g9WXFSn0OUhf6Vk3TJF/ut1jHJwZEUO5ombJyqNSZ4UUPiJNzUkCA5vYQAI3Q1nG+9mYpEH/o00PGFHsT1ptpeMT/2RdD5PAYGdCmsWUuHI6M2sp07Fjhh2I=
+	t=1719532748; cv=none; b=QBnppE3TIy0NQgrOd9qTtHSxX+aRlTPGUntt7dEvMxIzi3Xc7XMOYmrWZLufLrAgpfLNpvUJIs6qUKY8D9jNLdk4/8h1EzjIA4gvqoqW4NVzwXyv/4EQ2EKnzxEmRnxG78OPRAxFAZ50xxD41o32BNeZF0Husn8nFlixrW+VjVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719504456; c=relaxed/simple;
-	bh=xS9G9tJDc7QMILwH4JttXbese3wNuW1FSFSedENwspQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bYO/q3E+dlo8rUKrLWNbgpC8N0oKqXs8bPVWeHNRKpyP4Z7rr3bsQocxnCSJwXRmOe4NoOKoyxpAxWvnUhV5t0dCj76QPTglbN1GB7XIEs6UHZ+CN0m9FA27FcD+GO++gUwW3cvfZ+i7SROpd9c0ILORIrt9TbWlV2/QxmZyeJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=Jc8xJC6t; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
+	s=arc-20240116; t=1719532748; c=relaxed/simple;
+	bh=oYS8hixGbcWWpxbK2++EK5LjYoikkDxhvnMSNjynZ3w=;
+	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=KVAYR+LCFOr9Nk0OB+KFM27B6SVYf01VF2ONTi6rQZiqzBUYUhLz20TliydFq9uFWSYGhQ+KDRLMe1rrxSK9dnNBJZmHTWKOFu8uu9HM0zZZOUSugZf9JEvZtcGY0IWAGHOk9EJeB+tJOruujTyhl8Zc8lwml1ahyLrPiR/yjBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fVPLcWFN; arc=none smtp.client-ip=209.85.167.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="Jc8xJC6t"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8BEE9C000B;
-	Thu, 27 Jun 2024 16:07:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1719504450;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AxlkZum+/SesrP8HyR5X9x/qLUUed+cowAzWPTkGNuc=;
-	b=Jc8xJC6tHMstMbXdEhrC9wiM6D8ygNxtYlt7LDqjQBiDY3ZM1OCtG/tc496NSAKr0r3OS9
-	iCxv270DFZnvkqWfNuQeqSA6AQxuTS1qFFhv6/j84JYVB5ocaImIVJW/pZirNtiGgjLdNs
-	9mDDldaPYbO2XYpniB5FIF5YqpiEmYpxbhH4TseSfLGi0og1pi3VwFMdiEj6D+fM3y1A4H
-	p5E151p55IgVAvNvnrbNpDWJNkFE0P8ChP65iXMygoCRoVucgDW8MoWJYHzwwdlsdWwu1d
-	xhRhYefto/GnNMCUPFVdIIGTBR7wbwfQ7HYhFSQhJa7O+JIeiVP5pQb+/G2uQg==
-Message-ID: <e7c4fade-f1c5-43bf-89fe-92349204171f@yoseli.org>
-Date: Thu, 27 Jun 2024 18:07:29 +0200
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fVPLcWFN"
+Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3d566b147ffso51919b6e.2
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Jun 2024 16:59:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1719532746; x=1720137546; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=edLNciVlxYjHtWHoJORPMhS5tPMU3FFmjofkfpAjt4w=;
+        b=fVPLcWFNtmutxpEHKl5z8s+lIPzSyznvDDRt2DcZegNUF5In3Ra1FJMx2QfF6MnkgN
+         FUwbWdlzl7cZkF+eFz59cCXpmY1LmcLuSe5Ip3OocRbr8KCBqy3oDMpLYDfe1jum9AsY
+         UOYykyqBdjtPZ9/yKu1REJcaHsCnkfgW2mKdGUT5X8Rz/MPYJFb6/+JotTibc6CoNS8j
+         zVMjVgIVY3nBQG3boY8nw92BtyAMOPIHBwwUXCibDth6xsqv0HaK/xnamGSP9vhqo+Hr
+         XEfMysISkDwk65SIx7zeHCZqKXCzEvzi609CLh/kkxUghfEOM+uHK0ALqks7nN9//ARz
+         gH1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719532746; x=1720137546;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=edLNciVlxYjHtWHoJORPMhS5tPMU3FFmjofkfpAjt4w=;
+        b=OoqxZAXjwefK4R1ALUOSwuwG2jF/nSqgEkgkZMqlz6V2MHVBKCfdHl5KudREkRTHtX
+         KRI7qY0vpHZubSrgzCVLNWW/sTccvSiIkvCn8yjQeEIW+QIQjT9e/hI69p/+3KM9iQQG
+         VSIhrJgVSxO92uN5z46sve/NJJOzIk4SO4Zn5j1S6oeMgukEyT9hO/G8+164ISXNTeAw
+         sjzFA4vcVeXL2BNaxZ79G/P36zJb6uyKCRzaI0Sf014/gKkgz5A8lx4MNTa1k4HeOZBh
+         FaVUrrpJoFMSAQIbYPhlpuKv2qIYaP2nTY92bm52pleUX9t0lnp9ullQhlk/TgEDCyX9
+         BxgA==
+X-Forwarded-Encrypted: i=1; AJvYcCVcntyD7ankFdjzJeVdnuKPjPsj1htYz2wpqc3mj9WjSUU6GdZpAIQOk23YIlRkVgnBwpDs5i+3LnBYgQHBCdx4XsQX0EvDui3wIjq7diZH
+X-Gm-Message-State: AOJu0YyxjlvMavjmmVi+dxRNR4d0cID9OEwr3dM6rQ/+wvKVQiZ6mfP+
+	7wVsy0E5NgbXqjAkn1wLZJSn+Wf6NWtZtvuyh2KG7frU25Ah2mjy
+X-Google-Smtp-Source: AGHT+IGNfpNipMHjmIc+pFIj+CRSoFrKLO8Cb8pKNRWVtjc4Z6kyX5GQAo+Gzgy471LNtik2S78wqg==
+X-Received: by 2002:a05:6808:1824:b0:3d5:2bb7:850 with SMTP id 5614622812f47-3d54594d8a6mr16698022b6e.5.1719532745552;
+        Thu, 27 Jun 2024 16:59:05 -0700 (PDT)
+Received: from [10.1.1.24] (222-152-175-63-fibre.sparkbb.co.nz. [222.152.175.63])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-708043b70a6sm291327b3a.150.2024.06.27.16.59.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 27 Jun 2024 16:59:05 -0700 (PDT)
+Subject: Re: m68k 54418 fails to execute user space
+To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
+ linux-m68k@lists.linux-m68k.org, linux-mm@kvack.org,
+ linux-mtd@lists.infradead.org
+References: <c252ab82-dc4a-4267-84c3-4a20471524c5@yoseli.org>
+ <735e19b6-3747-417f-ba5b-1a7da137a3a3@yoseli.org>
+ <7fb2988d-ab89-405f-8cf1-edcdd2196376@gmail.com>
+ <a7084eac-b92a-4ddb-a079-f4a600b93f8e@yoseli.org>
+ <c7235957-1f00-40dd-a78a-925b0b943ec7@gmail.com>
+ <57879ac8-eaf5-48f1-b4ef-6619d9108440@yoseli.org>
+Cc: Greg Ungerer <gerg@linux-m68k.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Christoph Hellwig <hch@infradead.org>, wbx@openadk.org
+From: Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <d66e2daa-8b31-727f-bd66-6976b0bc0130@gmail.com>
+Date: Fri, 28 Jun 2024 11:58:58 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mtd: nand: Add support for M5441x NFC
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Stefan Agner <stefan@agner.ch>, linux-m68k@lists.linux-m68k.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-References: <20240620-upstream-nfc-mcf5441x-v1-1-69b64807d7a6@yoseli.org>
- <CAMuHMdV6z6OST=U3cvt3NRe3nj7DKCf+0O4v9s14ZV-j2v=qrA@mail.gmail.com>
-Content-Language: en-US
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-In-Reply-To: <CAMuHMdV6z6OST=U3cvt3NRe3nj7DKCf+0O4v9s14ZV-j2v=qrA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
+In-Reply-To: <57879ac8-eaf5-48f1-b4ef-6619d9108440@yoseli.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Geert,
+Jean-Michel,
 
-On 27/06/2024 17:01, Geert Uytterhoeven wrote:
-> Hi Jean-Michel,
-> 
-> On Thu, Jun 20, 2024 at 6:25 PM Jean-Michel Hautbois
-> <jeanmichel.hautbois@yoseli.org> wrote:
->> The vf610_nfc driver is also the one which should be used for the
->> coldfire series. Sadly, these device don't support device-tree and so we
->> need to do a few modifications:
->> - Adapt the probe to use pdata if available
->> - Add a new variant as there is a small part to adapt in
->>    vf610_nfc_select_target()
->> - Add the corresponding missing register definitions
+Am 28.06.2024 um 00:36 schrieb Jean-Michel Hautbois:
+>>>  ./scripts/decode_stacktrace.sh vmlinux < /tmp/trace.log
+>>> [    3.857000] Run /bin/bash as init process
+>>> [    3.858000]   with arguments:
+>>> [    3.861000]     /bin/bash
+>>> [    3.862000]   with environment:
+>>> [    3.863000]     HOME=/
+>>> [    3.864000]     TERM=linux
+>>> [    4.242000] do page fault:
+>>> [    4.242000] regs->sr=0x2000, regs->pc=0x41366924,
+>>> address=0x700b3364, 2, 41fb0000
+>>> [    4.242000] Kernel panic - not syncing: page fault error
+>>> [    4.242000] CPU: 0 PID: 1 Comm: bash Not tainted
+>>> 6.10.0-rc5-g927da6cf01fe-dirty #25
+>>> [    4.242000] Stack from 4186dda8:
+>>> [    4.242000]         4186dda8 41423aa4 41423aa4 700b3300 00000001
+>>> 00000000 4136ee10 41423aa4
+>>> [    4.242000]         41366d7a 700b3364 700b3364 00000000 0000000d
+>>> 4186de60 41fb0000 41d51a60
+>>> [    4.242000]         41005696 41416a90 41416a4d 00002000 41366924
+>>> 700b3364 00000002 41fb0000
+>>> [    4.242000]         0000000a 700b3364 00000000 0000000d 00000012
+>>> 41d51a00 4186de60 41d51a60
+>>> [    4.242000]         41fb81c0 41d51a60 410052fe 4100529a 4186de60
+>>> 700b3364 00000002 00000000
+>>> [    4.242000]         700bc414 00000003 00008000 700ac000 41003660
+>>> 4186de60 00000000 00000000
+>>> [    4.242000] Call Trace: dump_stack (lib/dump_stack.c:124)
+>>> [    4.242000] panic (kernel/panic.c:266 kernel/panic.c:368)
+>>> [    4.242000] do_page_fault (arch/m68k/mm/fault.c:88 (discriminator 1))
+>>> [    4.242000] __clear_user (arch/m68k/lib/uaccess.c:108)
+>>> [    4.242000] buserr_c (arch/m68k/kernel/traps.c:725
+>>> arch/m68k/kernel/traps.c:775)
+>>> [    4.242000] buserr_c (arch/m68k/kernel/traps.c:748
+>>> arch/m68k/kernel/traps.c:775)
+>>> [    4.242000] buserr (arch/m68k/kernel/entry.S:116)
+>>> [    4.242000] ma_slots (lib/maple_tree.c:759)
+>>> [    4.242000] __clear_user (arch/m68k/lib/uaccess.c:108)
+>>> [    4.242000] elf_load (fs/binfmt_elf.c:125 (discriminator 1)
+>>> fs/binfmt_elf.c:421 (discriminator 1))
+>>> [    4.242000] load_elf_binary (fs/binfmt_elf.c:1132)
+>>> [    4.242000] memset (arch/m68k/lib/memset.c:11)
+>>> [    4.242000] load_misc_binary (fs/binfmt_misc.c:97
+>>> fs/binfmt_misc.c:146 fs/binfmt_misc.c:213)
+>>> [    4.242000] memset (arch/m68k/lib/memset.c:11)
+>>> [    4.242000] bprm_execve (fs/exec.c:1797 fs/exec.c:1839
+>>> fs/exec.c:1891 fs/exec.c:1867)
+>>> [    4.242000] copy_strings_kernel (fs/exec.c:669)
+>>> [    4.242000] count_strings_kernel (fs/exec.c:473)
+>>> [    4.242000] kernel_execve (fs/exec.c:2058)
+>>> [    4.242000] __dynamic_pr_debug (lib/dynamic_debug.c:865)
+>>> [    4.242000] run_init_process (init/main.c:1389)
+>>> [    4.242000] _printk (kernel/printk/printk.c:2365)
+>>> [    4.242000] kernel_init (init/main.c:1508)
+>>> [    4.242000] kernel_init (init/main.c:1459)
+>>> [    4.242000] ret_from_kernel_thread (arch/m68k/kernel/entry.S:142)
+>>> [    4.242000]
+>>> [    4.242000] ---[ end Kernel panic - not syncing: page fault error
+>>> ]---
+>>>
+>>> Looks like a memory mapping failure, but why ?
+>>> My JTAG at this point dumps a list of 0s at 0x41fb0000 and my SDRAM
+>>> starts at 0x40000000 and ends at 0x50000000 (256MB).
+>> 0x41fb0000 seems to be init's page directory. The fault address is in
+>> the range where I'd expect dynamic libraries to reside.
+>>>
+>>> It looks like a TLB write miss which is obscure to me :-).
+>>>
+>>> I tried to use the /proc but as expected it is not alive after
+>>> mounting it.
 >>
->> Tested successfully on a 54418 custom board with a raw NAND:
->> [    2.640000] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xdc
->> [    2.650000] nand: Micron MT29F4G08ABADAWP
->> [    2.650000] nand: 512 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
->>
->> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-> 
-> Thanks for your patch!
-> 
->> --- a/drivers/mtd/nand/raw/vf610_nfc.c
->> +++ b/drivers/mtd/nand/raw/vf610_nfc.c
->> @@ -810,6 +840,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
->>          struct vf610_nfc *nfc;
->>          struct mtd_info *mtd;
->>          struct nand_chip *chip;
->> +       struct nand_chip *pdata;
->>          struct device_node *child;
-> 
-> As reported by the robot, this is now unused.
-> 
->>          int err;
->>          int irq;
->> @@ -820,30 +851,53 @@ static int vf610_nfc_probe(struct platform_device *pdev)
->>
->>          nfc->dev = &pdev->dev;
->>          chip = &nfc->chip;
->> +       pdata = dev_get_platdata(&pdev->dev);
->> +       if (pdata)
->> +               *chip = *pdata;
->> +
->>          mtd = nand_to_mtd(chip);
->>
->>          mtd->owner = THIS_MODULE;
->>          mtd->dev.parent = nfc->dev;
->> -       mtd->name = DRV_NAME;
->> +
->> +       /*
->> +        * We keep the MTD name unchanged to avoid breaking platforms
->> +        * where the MTD cmdline parser is used and the bootloader
->> +        * has not been updated to use the new naming scheme.
->> +        */
->> +       if (!nfc->dev->of_node)
->> +               mtd->name = "NAND";
->> +       else
->> +               mtd->name = DRV_NAME;
->>
->>          irq = platform_get_irq(pdev, 0);
->>          if (irq < 0)
->>                  return irq;
->>
->>          nfc->regs = devm_platform_ioremap_resource(pdev, 0);
->> -       if (IS_ERR(nfc->regs))
->> +       if (IS_ERR(nfc->regs)) {
->> +               dev_err(nfc->dev, "Unable to map registers!\n");
->>                  return PTR_ERR(nfc->regs);
->> +       }
->>
->> +#ifdef CONFIG_OF
-> 
-> Do you need all the #ifdeffery?
+>> The memory map ought to be accessible through sysrq - an alternative
+>> would be to modify the ELF binfmt handler and dump the map once ld.so
+>> has finished with relocations.
+>
+> I added a dump in the binfmt_elf file:
+> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+> index a43897b03ce9..395f556f3a90 100644
+> --- a/fs/binfmt_elf.c
+> +++ b/fs/binfmt_elf.c
+> @@ -816,6 +816,63 @@ static int parse_elf_properties(struct file *f,
+> const struct elf_phdr *phdr,
+>         return ret == -ENOENT ? 0 : ret;
+>  }
+>
+> +static int dump_memory_map(struct task_struct *task)
+> +{
+> +    struct mm_struct *mm = task->mm;
+> +    struct vm_area_struct *vma;
+> +       MA_STATE(mas, &mm->mm_mt, 0, -1);
+> +    struct file *file;
+> +    struct path *path;
+> +    char *buf;
+> +    char *pathname;
+> +
+> +    // Acquire the read lock for mmap_lock
+> +    down_read(&mm->mmap_lock);
+> +       mas_lock(&mas);
+> +    for (vma = mas_find(&mas, ULONG_MAX); vma; vma = mas_find(&mas,
+> ULONG_MAX)) {
+> +        if (vma->vm_file) {
+> +            buf = (char *)__get_free_page(GFP_KERNEL);
+> +            if (!buf) {
+> +                continue; // Handle memory allocation failure
+> +            }
+> +
+> +            file = vma->vm_file;
+> +            path = &file->f_path;
+> +            pathname = d_path(path, buf, PAGE_SIZE);
+> +            if (IS_ERR(pathname)) {
+> +                pathname = NULL;
+> +            }
+> +
+> +            pr_info("%lx-%lx %c%c%c%c %08lx %02x:%02x %lu %s\n",
+> +                vma->vm_start, vma->vm_end,
+> +                vma->vm_flags & VM_READ ? 'r' : '-',
+> +                vma->vm_flags & VM_WRITE ? 'w' : '-',
+> +                vma->vm_flags & VM_EXEC ? 'x' : '-',
+> +                vma->vm_flags & VM_MAYSHARE ? 's' : 'p',
+> +                vma->vm_pgoff << PAGE_SHIFT,
+> +                MAJOR(file->f_inode->i_rdev),
+> +                MINOR(file->f_inode->i_rdev),
+> +                file->f_inode->i_ino,
+> +                pathname ? pathname : "");
+> +
+> +            free_page((unsigned long)buf);
+> +        } else {
+> +            pr_info("%lx-%lx %c%c%c%c %08lx 00:00 0\n",
+> +                vma->vm_start, vma->vm_end,
+> +                vma->vm_flags & VM_READ ? 'r' : '-',
+> +                vma->vm_flags & VM_WRITE ? 'w' : '-',
+> +                vma->vm_flags & VM_EXEC ? 'x' : '-',
+> +                vma->vm_flags & VM_MAYSHARE ? 's' : 'p',
+> +                vma->vm_pgoff << PAGE_SHIFT);
+> +        }
+> +    }
+> +       mas_unlock(&mas);
+> +    // Release the read lock for mmap_lock
+> +    up_read(&mm->mmap_lock);
+> +
+> +    return 0;
+> +}
+> +
+>  static int load_elf_binary(struct linux_binprm *bprm)
+>  {
+>         struct file *interpreter = NULL; /* to shut gcc up */
+> @@ -1299,6 +1356,9 @@ static int load_elf_binary(struct linux_binprm *bprm)
+>
+>         finalize_exec(bprm);
+>         START_THREAD(elf_ex, regs, elf_entry, bprm->p);
+> +       if (current->pid == 1) {  // Check if this is the init process
+> +            dump_memory_map(current);
+> +    }
+>         retval = 0;
+>  out:
+>         return retval;
+>
+> I think it is quick and dirty, but seems to do the trick.
+> I then get in my console:
+> [    4.265000] 60000000-6001e000 r-xp 00000000 00:00 178 /lib/ld.so.1
+> [    4.266000] 6001e000-60022000 rw-p 0001c000 00:00 178 /lib/ld.so.1
+> [    4.267000] 70000000-700ac000 r-xp 00000000 00:00 27 /bin/bash
+> [    4.268000] 700ac000-700b4000 rw-p 000ac000 00:00 27 /bin/bash
+> [    4.269000] 700b4000-700be000 rwxp 700b4000 00:00 0
+> [    4.270000] bfe7a000-bfe9c000 rw-p bffde000 00:00 0
+>
+> But nothing rings a bell at this level for me...
 
-Indeed I removed those ! Thanks.
+You are again using bash as init process, so the process of interest 
+(/bin/ls) is a child of init and does not get logged here.
 
-> 
->>          nfc->clk = devm_clk_get_enabled(&pdev->dev, NULL);
-> 
-> Perhaps replace by devm_clk_get_optional_enabled() instead?
-> 
->>          if (IS_ERR(nfc->clk)) {
->>                  dev_err(nfc->dev, "Unable to get and enable clock!\n");
->>                  return PTR_ERR(nfc->clk);
->>          }
->>
->> -       nfc->variant = (enum vf610_nfc_variant)device_get_match_data(&pdev->dev);
->> -       if (!nfc->variant)
->> -               return -ENODEV;
->> +       const void *data = device_get_match_data(&pdev->dev);
->>
->> +       nfc->variant = (enum vf610_nfc_variant)data;
->> +       if (!nfc->variant) {
->> +               dev_err(nfc->dev, "No variant data found!\n");
->> +               return -ENODEV;
->> +       }
->> +#else
->> +       nfc->variant = (enum vf610_nfc_variant)platform_get_device_id(pdev)->driver_data;
->> +#endif
->> +#ifdef CONFIG_OF
->>          for_each_available_child_of_node(nfc->dev->of_node, child) {
-> 
-> for_each_available_child_of_node_scoped(...), so the child variable
-> no longer needs to be declared at the top.
-> 
->>                  if (of_device_is_compatible(child, "fsl,vf610-nfc-nandcs")) {
->>
->> @@ -862,6 +916,10 @@ static int vf610_nfc_probe(struct platform_device *pdev)
->>                  dev_err(nfc->dev, "NAND chip sub-node missing!\n");
->>                  return -ENODEV;
->>          }
->> +#else
->> +       nfc->clk = NULL;
->> +       mtd->dev.parent = &pdev->dev;
->> +#endif
->>
->>          chip->options |= NAND_NO_SUBPAGE_WRITE;
+But we are getting some mapping information at last. No shared libraries 
+mapped as yet, but that's the same in Greg's dump.
 
-New version sent with your suggestions.
-Greg, I also created a dedicated patch for the
-arch/m68k/include/asm/m5441xsim.h file.
+Comparing with what I get from cat /proc/1/maps on a 030 system., the 
+rwxp section at 0x700b4000 is the process heap, and the rwp section at 
+0xbfe7a000 is the process stack.
 
-Thanks !
-JM
+I forgot to take into account that libraries are loaded only the binary 
+starts executing. Can you print the same map dump in the exit syscall 
+code path? That ought to show all loaded libraries at that point.
 
->>
-> 
-> Gr{oetje,eeting}s,
-> 
->                          Geert
-> 
+Cheers,
+
+	Michael
+
+
+> Thanks !
