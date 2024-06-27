@@ -1,37 +1,37 @@
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 021B8192B69
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Jun 2024 20:29:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 218B413DBA8
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Jun 2024 12:36:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719433796; cv=none; b=YkyeSyveJSB7fc5QPfw2ofjrH+/yK/6NKETShH461WOwZiqcjxJLGdKyi0fQblrYwlXL6WYFL516Q6Ro/DWxhpFaNd/19R6G5gXSbsB5yH4pci6EfX1qWGojPtv1HqTS2bM6kbypvUbBzLO8DkNk2XNjF07R88IcEJ85naC6Etw=
+	t=1719491819; cv=none; b=QmNRpH6NrRbm/iaPmlW7Eip8tvEVrQphYyET2c+Mb3vTLwfyhoy+k5sZFjlzjD4koWL1mJIBHAXd712TO6T9r0QCdtlKqoWjCow9lmVEtH5/cxXts56M9umhqdNOAB1MR821t4grEmvxx/8EwfgwzGMwdXbselLCmbPpq/B/afU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719433796; c=relaxed/simple;
-	bh=GAhgDhJdCoU1LTQVEF7exy7Mxo5SYyrtACLSFDokCgw=;
+	s=arc-20240116; t=1719491819; c=relaxed/simple;
+	bh=NsyYY2LaHGvWdWyvrWvkcc5tvjrRkOK4TyvRpFqlvps=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bR8TbfaVxWVJm2DULYlNEvXN50hP1XgPYrAqJFvidKvqCn0/smZQH06JR96edku8IzvSxAG7HWU2BWYsWP2MlsARU/0D0vZgyx6ziAlSTKlnELS1DLNLjsc/3MSoOT0rKRPsrH4AWpN0+xv09S2TZ4iWSt0MJ6vjRtur0vfKGRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=MO5BpPV8; arc=none smtp.client-ip=217.70.183.201
+	 In-Reply-To:Content-Type; b=arimfrjdJ2kCQq+jhYSLp3NCqeJ7972NhCvv+hoZoTo/sHmNsmBChReZ8DR+kc9nvHsownBNVhj95eBcSV2YmafdfZGR4MjEuGRdRCQihtKeTl6Ik9JtYK3SkdJoMyk88SjYrGR+7r4L3d5Pj9MmrXE7L0ZbuidFpM/jq4rDsGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=AjKYVV4F; arc=none smtp.client-ip=217.70.183.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="MO5BpPV8"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 33D2F1BF203;
-	Wed, 26 Jun 2024 20:29:51 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="AjKYVV4F"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4F1C8FF80B;
+	Thu, 27 Jun 2024 12:36:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1719433792;
+	t=1719491814;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YBpTCEMojCIFuv+8k7YbqxKyVs+I28NmHx1pGxkZja8=;
-	b=MO5BpPV8foQRuH8isn0BXEJ0EWCr3VNQY8hK3spb0zBTecjY3hg9ot5qnhufpQvqcWW6e7
-	gTSFnH/BeyXhyjN9Jf7h00O3JNfDxEeA6Z1pXZIqeAPEGXjS7nEkRcESnt70G9ZqCl3V+F
-	GB0MJPwXzGL6ZIPM9J17U+uqz68tq08nyjgUV8agB+T5jrygBgg1WKcY5VgEeFXJFjAIrT
-	KH7DUrBgYV8rBOzRoHKIpU3pEgYqUvOt08psOJ3b+i3PI0wQ3A1gjuZ1B1Lx7uU/VwK+ca
-	a2QklAUBxan16y49vPmkLNAz1FDKrQXC26K/dBuoXaBFY8QIdP3/waPKPRM0FA==
-Message-ID: <fa824c6e-e1d7-4a41-b734-4984cab8b4d9@yoseli.org>
-Date: Wed, 26 Jun 2024 22:29:50 +0200
+	bh=iEO4mfp2S5jW+Ioidefkinbk85g6kv5LmFOVauLOaMY=;
+	b=AjKYVV4FQWJuS0qQfYOmPEBMrD/3S0sNqURIcXLykW9Af2TiyVKeoVTExQHHKYxKFoZNjx
+	JjDMRceQYbhEPIS1coln5z5Q/yWBaG/3LeOT0LJ3zNtSHuB1sn6AEEInz2nPqhp9pmXlYi
+	iqppQW+sSQVSoWkEoUAlHx0T0uvU4k5WYElYMRfd/fZPPtX1HWVdDe0MeBoiR1/opysONz
+	62s3hj1GSJ0iB7JFxvKQeUgSjIZNk2ml2peCvhI9L89XOwIf2cWpChrh+YCEvyquTCFw6D
+	FRRWa03y9gDiU0S49Z2L/GtJvRT2ONp+nyXbnYrA88ZyHQt/nG/Mr2O70ahD9w==
+Message-ID: <57879ac8-eaf5-48f1-b4ef-6619d9108440@yoseli.org>
+Date: Thu, 27 Jun 2024 14:36:50 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -57,7 +57,7 @@ Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-Hi Michael,
+Michael,
 
 On 26/06/2024 21:36, Michael Schmitz wrote:
 > Jean-Michel,
@@ -124,11 +124,6 @@ On 26/06/2024 21:36, Michael Schmitz wrote:
 > loading a library - ld.so needs to perform relocation after loading a 
 > dynamic library, and that means writes to the GOT in the library's data 
 > segment (PIC assumed).
-
-I feel dumb -_- thanks for the explanation (I *knew* that page faults 
-are expected, but as I couldn't not see when it works or not, I kept 
-focus on this silly part).
-
 > 
 > 
 >>  ./scripts/decode_stacktrace.sh vmlinux < /tmp/trace.log
@@ -194,9 +189,6 @@ focus on this silly part).
 >> starts at 0x40000000 and ends at 0x50000000 (256MB).
 > 0x41fb0000 seems to be init's page directory. The fault address is in 
 > the range where I'd expect dynamic libraries to reside.
-
-How can I check it is init's page directory ?
-
 >>
 >> It looks like a TLB write miss which is obscure to me :-).
 >>
@@ -207,25 +199,96 @@ How can I check it is init's page directory ?
 > would be to modify the ELF binfmt handler and dump the map once ld.so 
 > has finished with relocations.
 
-I can use sysrq but AFAIK I can show the memory info, not the memory map ?
-Modifying the ELF binfmt handler might be doable...
+I added a dump in the binfmt_elf file:
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index a43897b03ce9..395f556f3a90 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -816,6 +816,63 @@ static int parse_elf_properties(struct file *f, 
+const struct elf_phdr *phdr,
+         return ret == -ENOENT ? 0 : ret;
+  }
 
-JM
++static int dump_memory_map(struct task_struct *task)
++{
++    struct mm_struct *mm = task->mm;
++    struct vm_area_struct *vma;
++       MA_STATE(mas, &mm->mm_mt, 0, -1);
++    struct file *file;
++    struct path *path;
++    char *buf;
++    char *pathname;
++
++    // Acquire the read lock for mmap_lock
++    down_read(&mm->mmap_lock);
++       mas_lock(&mas);
++    for (vma = mas_find(&mas, ULONG_MAX); vma; vma = mas_find(&mas, 
+ULONG_MAX)) {
++        if (vma->vm_file) {
++            buf = (char *)__get_free_page(GFP_KERNEL);
++            if (!buf) {
++                continue; // Handle memory allocation failure
++            }
++
++            file = vma->vm_file;
++            path = &file->f_path;
++            pathname = d_path(path, buf, PAGE_SIZE);
++            if (IS_ERR(pathname)) {
++                pathname = NULL;
++            }
++
++            pr_info("%lx-%lx %c%c%c%c %08lx %02x:%02x %lu %s\n",
++                vma->vm_start, vma->vm_end,
++                vma->vm_flags & VM_READ ? 'r' : '-',
++                vma->vm_flags & VM_WRITE ? 'w' : '-',
++                vma->vm_flags & VM_EXEC ? 'x' : '-',
++                vma->vm_flags & VM_MAYSHARE ? 's' : 'p',
++                vma->vm_pgoff << PAGE_SHIFT,
++                MAJOR(file->f_inode->i_rdev),
++                MINOR(file->f_inode->i_rdev),
++                file->f_inode->i_ino,
++                pathname ? pathname : "");
++
++            free_page((unsigned long)buf);
++        } else {
++            pr_info("%lx-%lx %c%c%c%c %08lx 00:00 0\n",
++                vma->vm_start, vma->vm_end,
++                vma->vm_flags & VM_READ ? 'r' : '-',
++                vma->vm_flags & VM_WRITE ? 'w' : '-',
++                vma->vm_flags & VM_EXEC ? 'x' : '-',
++                vma->vm_flags & VM_MAYSHARE ? 's' : 'p',
++                vma->vm_pgoff << PAGE_SHIFT);
++        }
++    }
++       mas_unlock(&mas);
++    // Release the read lock for mmap_lock
++    up_read(&mm->mmap_lock);
++
++    return 0;
++}
++
+  static int load_elf_binary(struct linux_binprm *bprm)
+  {
+         struct file *interpreter = NULL; /* to shut gcc up */
+@@ -1299,6 +1356,9 @@ static int load_elf_binary(struct linux_binprm *bprm)
 
-> 
-> Cheers,
-> 
->      Michael
-> 
-> 
->> Thanks,
->> JM
->>
->>
->>> Cheers,
->>>
->>>      Michael
->>>
->>>>
->>>> Thanks !
->>>> JM
+         finalize_exec(bprm);
+         START_THREAD(elf_ex, regs, elf_entry, bprm->p);
++       if (current->pid == 1) {  // Check if this is the init process
++            dump_memory_map(current);
++    }
+         retval = 0;
+  out:
+         return retval;
+
+I think it is quick and dirty, but seems to do the trick.
+I then get in my console:
+[    4.265000] 60000000-6001e000 r-xp 00000000 00:00 178 /lib/ld.so.1
+[    4.266000] 6001e000-60022000 rw-p 0001c000 00:00 178 /lib/ld.so.1
+[    4.267000] 70000000-700ac000 r-xp 00000000 00:00 27 /bin/bash
+[    4.268000] 700ac000-700b4000 rw-p 000ac000 00:00 27 /bin/bash
+[    4.269000] 700b4000-700be000 rwxp 700b4000 00:00 0
+[    4.270000] bfe7a000-bfe9c000 rw-p bffde000 00:00 0
+
+But nothing rings a bell at this level for me...
+Thanks !
