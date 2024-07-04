@@ -1,120 +1,130 @@
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D9A01862A8
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  3 Jul 2024 19:02:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CDA01ABC36
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  4 Jul 2024 11:11:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720033372; cv=none; b=WeJ68TX2Z7xwX2K7LZIu8EzugEupPtNb6wwmxqogtGJV56Mwoo99CdkELF9O4GC9zi7DcxxRElggcQ8uxaFP7nGv4Af4BbS+YzEMWm1n/j2x5APqFPEM2ZaEofm4aMcppEOngcRfWA935ZvADa+kaBBpNgDvkK6YX6D1pVbrbvk=
+	t=1720091482; cv=none; b=PPK7ihGsH9VXKF7ZzP7N7NNu3OEDzjt8KB5er9Jlv+2FCwz1iCVmgvkDG3CX1B8VPa1ZBDqMXEbdHA1F8GjT29pL9QGwu/0X4EXpIb0mGDkafkrFfoVE1M5vcW4ShJE4zeUv22tqVWCpIwk2PRGpjtalQhMQc2cWfQGDtJBZYfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720033372; c=relaxed/simple;
-	bh=NCK07WgmJilnpjTCGxUktyi8UNtcBim7wUs73C1Aoss=;
+	s=arc-20240116; t=1720091482; c=relaxed/simple;
+	bh=TwoVc/A5cvcKyYqBk85IeSoXm8WueZBsy4xxLnttTxM=;
 	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=cogS/VOjnY+Sz6IwTAsMsPz7UqqA/EFW5ZWEjBaaHvu7OQUiL5UF9cYWmGZT7TPAmnmfpohS1Gr1TtD3scPf/7dRHnqDPCrJK3WXc0oJYE39GBTWULsE+dDX5piXzw2ismPHwuSumwqO+zQ/PBAIhkqTx9mKXrxbVZSDlGGKQMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=CF1y2mmd; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+	 Message-Id:References:To; b=tmwlqUlopYjHTOcnxa3V9+3j8EqLLbnYgx82qagPMZLyfpFxuBeT4b/djFcZQayRN9XbAO3OIG9al09zvhY24BWYjfvlsbnk/BATtaNP8UBqgVk4wONiv1uu7h3Ylgvui80xSvJ7coyAtAs0Y1bIDclyRnYsnEG/h0YvJ6WcyxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gQJYE+Ke; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="CF1y2mmd"
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1fab03d2f23so44672275ad.0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 03 Jul 2024 12:02:51 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gQJYE+Ke"
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3626c29d3f0so329820f8f.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 04 Jul 2024 04:11:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1720033371; x=1720638171; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20230601; t=1720091479; x=1720696279; darn=lists.linux-m68k.org;
         h=to:references:message-id:content-transfer-encoding:cc:date
          :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nR2WZFpu9F/eyrknYOVvW0A0ylVQU6Yd0yqZ9Xzk2UM=;
-        b=CF1y2mmd06pAx4xpMFmSv/nB0LXfn1aUrHQsmq0G4Tmi+FElK97tZcNjOn6rFEX9fh
-         30nnepagkv9pxRniqWcH2at+RzYCaFlt8eTtGnG80ETohNnb9zWEF7AvuMFq78HDmlAp
-         D6Ba1nU1/pmGdQXt+3mg8GylRp7KyVcPjQ1N4PocOTU9f3s4J1MWckNSwbdzjbNPhabf
-         +srBM8LrI04m+c6jnZlxGQYh5QU4ZJdwEfP1xBj9XSIz6NsO0EFgJWZmcbmSUyNGzX4t
-         /Ka89Em7mDPPCLsRtHkyhTwHhhWS3cHF5yPe/LjVAZx34MD5S2cmywpPLbTFQxdYS0Eh
-         wGGw==
+        bh=qwBmB9TZGFjcG5R2+2N2tz93DvezoEGxh6PsIk8IO/w=;
+        b=gQJYE+Ke+asfsjma70ecirtwX5RmfzyjBOgqn/u988N0ndsg0osu8OfY/yRtmTgZ6q
+         rFzN5Ne41nFKp1aK05vKcfN13tqkpdII+PPONGOD/Z1TAnhOe6uDAYVKYUij1H5CrmpJ
+         B1+mCnNExz0Y+Z33R/4Qmt2hVPZXDiVhguy84AJxRea4Ttnl6yBH24YesZY9QrzIlFwr
+         GvLPVU1OpVaySvaLei08zdRCoieQ0pnaHWE7IGEc9A5j+tnL9LSqpG/Qh1mJ5XLK3Lei
+         eOLUscNfjxeuPJL+3UGANAWfZJwCBHpVV1mZrP7kZygqLIcttb9M/HA0uavPmSRrkrcx
+         4yJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720033371; x=1720638171;
+        d=1e100.net; s=20230601; t=1720091479; x=1720696279;
         h=to:references:message-id:content-transfer-encoding:cc:date
          :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nR2WZFpu9F/eyrknYOVvW0A0ylVQU6Yd0yqZ9Xzk2UM=;
-        b=B+CTCd7A+m/NhjiRPycKyKY+T8y62eEHZLfEtomnBkygzMef/Db7wyOInsLao6v4Yo
-         s8DI9ShPlI4+7M0rsLH/KggjZgTgIB8st7/DSViKRfRyrlYV3j5Brjk7Y05pXlDtDHg3
-         1oII5W9Z0+ZMPswP1tqLoC8rBaO+z/J90NqMyq+ny3f3uzHPY/8/43PlZ6fmPunsGuGA
-         v8tieDRkBVa9OYtBJkBl5DibxEXMuvfj0zQc0x0EYEYDJOQHDfTO4i1u3X0OXep4zchp
-         oB91WP+bVO2KFSWGeo1v5GQpnxzENHUYkbJx0re5sVG3nj2mT0FlKubWHzymELRR236V
-         ud3w==
-X-Forwarded-Encrypted: i=1; AJvYcCVx9iO+30fgizS8i7hP6si9cwqtDB8Ujpd7QSrvdDVzbgOpUOvG7443Ln6ZYQaXMHqCLxu0Z0aRB4KzKVQ3zQRslDehtM+yytswaq4PU6Ta
-X-Gm-Message-State: AOJu0YzcHRzfluk5bNysiPFDYeyGKgwrxJ12uLGbib9XbVy10/sZzCHm
-	CAZXACBVPkMAiyv5whjbitTS4VVC9iIFxuGWkRD0kaclE3vut3oOW4kuW6iNBuQ=
-X-Google-Smtp-Source: AGHT+IHOXF6EBNQCbpT1v/yymwkerRoZt4wfhxb5Ia/193m68mpPf++GQAxANRbGvPnXQGS+XO5Phw==
-X-Received: by 2002:a17:903:1c2:b0:1f7:2d45:2f1 with SMTP id d9443c01a7336-1fadbc7f2d8mr91782835ad.15.1720033370590;
-        Wed, 03 Jul 2024 12:02:50 -0700 (PDT)
-Received: from smtpclient.apple ([2604:3d08:8e80:cf0:34b3:a7ec:924a:312f])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fac1596d55sm107100645ad.277.2024.07.03.12.02.50
+        bh=qwBmB9TZGFjcG5R2+2N2tz93DvezoEGxh6PsIk8IO/w=;
+        b=hUqv9k0g4JKKITwCMG83ORA2nOgl/JnXL+AN/U4YKCN/R3CeEqoYoTeUp5VOfdekb4
+         D4pwICVMJvjqjwUvhjL3WdpwBUigCUYpH2fHGCWLqsMQnRafFu/hF/xJmL0FL/9IbY1l
+         zzFxMSSkAmm4EVTUYEeLahh80rexulJLZ5bBrCB2qgYEvKUzJds9qnxLi32z/eAp5DVT
+         nfrd3SWJ1p9AjwmTKWeJRrwwGb03mUE2Sd+dmVQLvoWWKfxjCHaOYdtfxNA2RqtG/Xjy
+         1/7XiSRzAL8EnNhXA/uV840nrV41pwAA6oHAU86a7/68aqBExC32IUUTBtk4geWxECIw
+         Hn8g==
+X-Forwarded-Encrypted: i=1; AJvYcCWBw1pEaV3BRi9kHL7tgOJeSvOyz8lym0g35FrxXkHMULlfIj6zVtLwKD4NAOkeOS9KShQHkhI96q933Qn99KNJgCO2RS8/vvpNo0Vjsh7V
+X-Gm-Message-State: AOJu0Yzsk1/Efx/CeqDEbpZfjfyb/6soAa0B023UD7mCNF3Br3YTFn5S
+	pBbIya/h1HLkAppScc359tIhjRZRKEOtb+EmOvvGj8bjY7Ep0Tus
+X-Google-Smtp-Source: AGHT+IFEzvL2jC2faLe/uaMvaq/UCJ26KrH1XFm9Ol6h8w0Rebt6hjx4X+gdY7pIVUfbtqQYexMuPw==
+X-Received: by 2002:a5d:5712:0:b0:367:94e7:958a with SMTP id ffacd0b85a97d-3679dd17ec1mr1153338f8f.6.1720091479417;
+        Thu, 04 Jul 2024 04:11:19 -0700 (PDT)
+Received: from [10.14.0.2] ([139.28.176.164])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-36787db4d12sm6821051f8f.110.2024.07.04.04.11.17
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Jul 2024 12:02:50 -0700 (PDT)
+        Thu, 04 Jul 2024 04:11:18 -0700 (PDT)
 Content-Type: text/plain;
-	charset=utf-8
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.600.62\))
-Subject: Re: [PATCH] m68k: cmpxchg: Fix return value for default case in
- __arch_xchg()
-From: Thorsten Blum <thorsten.blum@toblux.com>
-In-Reply-To: <CAMuHMdVTqsqrDTKGTGoLd_3FPk9S6wX-qXYzipJ+6yW0q0L11w@mail.gmail.com>
-Date: Wed, 3 Jul 2024 12:02:39 -0700
-Cc: gerg@uclinux.org,
- dhowells@redhat.com,
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.7\))
+Subject: Re: [PATCH 14/26] block: move the nonrot flag to queue_limits
+From: Simon Fernandez <fernandez.simon@gmail.com>
+In-Reply-To: <ZnmoANp0TgpxWuF-@kbusch-mbp.dhcp.thefacebook.com>
+Date: Thu, 4 Jul 2024 12:11:16 +0100
+Cc: Christoph Hellwig <hch@lst.de>,
+ Jens Axboe <axboe@kernel.dk>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Richard Weinberger <richard@nod.at>,
+ Philipp Reisner <philipp.reisner@linbit.com>,
+ Lars Ellenberg <lars.ellenberg@linbit.com>,
+ =?utf-8?Q?Christoph_B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>,
+ Josef Bacik <josef@toxicpanda.com>,
+ Ming Lei <ming.lei@redhat.com>,
+ "Michael S. Tsirkin" <mst@redhat.com>,
+ Jason Wang <jasowang@redhat.com>,
+ =?utf-8?Q?Roger_Pau_Monn=C3=A9?= <roger.pau@citrix.com>,
+ Alasdair Kergon <agk@redhat.com>,
+ Mike Snitzer <snitzer@kernel.org>,
+ Mikulas Patocka <mpatocka@redhat.com>,
+ Song Liu <song@kernel.org>,
+ Yu Kuai <yukuai3@huawei.com>,
+ Vineeth Vijayan <vneethv@linux.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
  linux-m68k@lists.linux-m68k.org,
- linux-kernel@vger.kernel.org
+ linux-um@lists.infradead.org,
+ drbd-dev@lists.linbit.com,
+ nbd@other.debian.org,
+ linuxppc-dev@lists.ozlabs.org,
+ ceph-devel@vger.kernel.org,
+ virtualization@lists.linux.dev,
+ xen-devel@lists.xenproject.org,
+ linux-bcache@vger.kernel.org,
+ dm-devel@lists.linux.dev,
+ linux-raid@vger.kernel.org,
+ linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org,
+ nvdimm@lists.linux.dev,
+ linux-nvme@lists.infradead.org,
+ linux-s390@vger.kernel.org,
+ linux-scsi@vger.kernel.org,
+ linux-block@vger.kernel.org,
+ Damien Le Moal <dlemoal@kernel.org>
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <21C8794F-EA8A-4C4C-A51D-DA7D6900CC74@toblux.com>
-References: <20240702034116.140234-2-thorsten.blum@toblux.com>
- <CAMuHMdVTqsqrDTKGTGoLd_3FPk9S6wX-qXYzipJ+6yW0q0L11w@mail.gmail.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-X-Mailer: Apple Mail (2.3774.600.62)
+Message-Id: <78BDDF6A-1FC7-4DD7-AABF-E0B055772CBF@gmail.com>
+References: <20240617060532.127975-1-hch@lst.de>
+ <20240617060532.127975-15-hch@lst.de>
+ <ZnmoANp0TgpxWuF-@kbusch-mbp.dhcp.thefacebook.com>
+To: Keith Busch <kbusch@kernel.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.7)
 
-On 2. Jul 2024, at 00:21, Geert Uytterhoeven <geert@linux-m68k.org> =
-wrote:
->=20
-> Hi Thorsten,
->=20
-> On Tue, Jul 2, 2024 at 5:42=E2=80=AFAM Thorsten Blum =
-<thorsten.blum@toblux.com> wrote:
->> The return value of __invalid_xchg_size() is assigned to tmp instead =
-of
->> the return variable x. Assign it to x instead.
->=20
-> Thanks for your patch!
->=20
->> Fixes: 803f69144f0d ("Disintegrate asm/system.h for M68K")
->=20
-> That is not the right commit.  The issue was introduced before:
-> Fixes: 2501cf768e4009a0 ("m68k: Fix xchg/cmpxchg to fail to link if
-> given an inappropriate pointer")
->=20
->> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
->=20
->> --- a/arch/m68k/include/asm/cmpxchg.h
->> +++ b/arch/m68k/include/asm/cmpxchg.h
->> @@ -32,7 +32,7 @@ static inline unsigned long __arch_xchg(unsigned =
-long x, volatile void * ptr, in
->>                x =3D tmp;
->>                break;
->>        default:
->> -               tmp =3D __invalid_xchg_size(x, ptr, size);
->> +               x =3D __invalid_xchg_size(x, ptr, size);
->>                break;
->>        }
->=20
-> Although this was not a real bug (__invalid_xchg_size() does not =
-exist,
-> but is referenced to cause a deliberate link error), it is good to
-> clean this up.
+Hi folks, how can I unsubscribe from this group.?
+Thanks in advance.
+S
 
-Thank you for explaining this. I was already wondering why I couldn't=20
-find the function definition.
+> On 24 Jun 2024, at 18:08, Keith Busch <kbusch@kernel.org> wrote:
+>=20
+> On Mon, Jun 17, 2024 at 08:04:41AM +0200, Christoph Hellwig wrote:
+>> -#define blk_queue_nonrot(q)	test_bit(QUEUE_FLAG_NONROT, =
+&(q)->queue_flags)
+>> +#define blk_queue_nonrot(q)	((q)->limits.features & =
+BLK_FEAT_ROTATIONAL)
+>=20
+> This is inverted. Should be:
+>=20
+> #define blk_queue_nonrot(q)	(!((q)->limits.features & =
+BLK_FEAT_ROTATIONAL))
+>=20
 
-Thorsten=
