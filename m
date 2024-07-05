@@ -1,157 +1,119 @@
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72F6B144D13;
-	Fri,  5 Jul 2024 08:15:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46C642BCF6
+	for <linux-m68k@lists.linux-m68k.org>; Fri,  5 Jul 2024 08:42:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720167320; cv=none; b=eDyQhWnSny4acDeCjvn0MM6eSjpTRPI993nc7oRvb+ISpA/Rm67BEC6DSlybYPeXDutzMd0mu2LtEyT/7YFgA5rNUn6qLFoO40lNAwovHnlHYGKEB3SgVWbkcwNwQV8ZCfELiZFNb+jbJWtUyzPi2FfRb9v3A5fXWcXyG7COFPY=
+	t=1720168933; cv=none; b=fgoZJxncZLvKV52n6ukUeoXBgs+c4b8kmBy3cpKfA7pDCKFQ3sa7ZnioAkddoMB0KMkgV8QV32osFnrujKR9NQ8u8XhDGhpIpa1KK/txYxV02viuZ7kTFxOvRAA7/X6Jq8cf+aG+MQ2nbAZ58qpjHfLnOcTHBV056JXbGfttso8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720167320; c=relaxed/simple;
-	bh=Puf9mX6wY7lvOS4f80LQNbWc98AgtwD7kqaYyGbIlI0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=a/H/gip/wo9u90329NuqUfOWxjCwhO32v/I3QLRCZWFxrJfGVW19nGjeyoBMdjbt2/I2fiB2RCQ1pNDooGouUxSWhFxbdeCdNyL1vT4Br0P3cPEyMWtLGzoiYchWpbAEWaKfl61v2Hg0McOHy13ZHMJgmG0831lMKgKYM1ggwRA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ckh+HCjN; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ckh+HCjN"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
-	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=66g8bdxGp7OCHG7TbaBOy1YkAOuzAROiSbU/6Ozkhq0=; b=ckh+HCjNnV2C+fNhasPncwCHAT
-	2RYofrlfaUoEHkkfK3MUHch19+5vGLfh+Yud0VxnyRT2h7vOalqMKVVCE1XmJa1LhQpd5eLfMUXWQ
-	sXut1JNljRKUOkt6nj6essR+oq/mJ5HbyLhciOomqE58VfzZLRb7lGstlPg/0MPEpnBDq6VjAxqIo
-	YwE3op0/xn6bANMPEDQ2JFr54rlm6QM4cCZ1rysvukDd9YOWJCy7wQsIkJRrL49EX3xJzpMNQdCYI
-	lTqLbIlY6ngEin8PnGtMGbmH9596pAGVluX+mGHNPL3SUdsvQfSp05yUCZAtSc+ttXEJwAiT5o3Iz
-	vkriajlw==;
-Received: from 2a02-8389-2341-5b80-7f6c-d254-a41c-2a9c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:7f6c:d254:a41c:2a9c] helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sPe69-0000000FFL9-1iZO;
-	Fri, 05 Jul 2024 08:15:17 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-m68k@lists.linux-m68k.org,
-	linux-block@vger.kernel.org
-Subject: [PATCH 2/2] block: add a bvec_phys helper
-Date: Fri,  5 Jul 2024 10:14:34 +0200
-Message-ID: <20240705081508.2110169-3-hch@lst.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240705081508.2110169-1-hch@lst.de>
-References: <20240705081508.2110169-1-hch@lst.de>
+	s=arc-20240116; t=1720168933; c=relaxed/simple;
+	bh=MdoD1uQx97BWhsq7cxMfuLw5Tx+Ae9TieFeMHspDm5s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jGqq1UpbiTw1PFyfkU/Q/ODaI7ITWN+cDijp+4u9FKY3cN9QSueCVdgUubLkcT1ZgVa8E5Wj7HDYF5bzGTASEsTmymH3hgtAT3jtFdUzaPIdjjQeKcp9kr/4zkaO1L6PhsjeFljj5P1i8pkaTT/QPTYFercMNy0vS9V/LoCHOCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-630640c1e14so13726587b3.1
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 05 Jul 2024 01:42:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720168930; x=1720773730;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Fb3nvPpoeDCMYNDscdzi/DI3phzoUDDiLMAUKJgL9UA=;
+        b=W3nmVmJfQRBCXYzEmCWl2pUbtjf2jFOJrWS78+Z0MIxY0mjUlY1qAkmtw2WXy9KGRc
+         Q9TJr8Mk6ULd7nBtRxx3PkI1FFoVeAHCBUwB2N6DrbOh1JTultGQAfu1aMHJRhE4DzQm
+         nIJOVLgxEznPR8YPzc4+pnx5rpSeedbbij4jn+sqsT+TmT3bO+5Il9v7yoGnG+qNXZun
+         fim3t2aSm6KSi/8UWOVMcqGgD078im+ZqPftaf9tNu/0P9GiMywXfv8C5vpFbZU4nJ4i
+         TWOiDFuwweVA3u6D87KUU17Z/1INbzRJDb2BIgVVnqHWRBuhxde885dYFod6z/gSi17M
+         hK0A==
+X-Forwarded-Encrypted: i=1; AJvYcCUKwEpip5q1H0R1L0ryPimh3mVTpc5XTXUPEaDZ4j4yHeZxlbR84KpN+ml/PV4XEToiwQO5loZWydkKE9m383fJEV28O4TC2u2egwOFPVdH
+X-Gm-Message-State: AOJu0YxRGOBO2oBReL6K6U/MRnhsqRu8U3k9yYRFan3bwneZ6nIXDor1
+	yWhJtrsiT6Gfl7E0J0rbVeiZ6JLQY6IuQ6V7BNMJ6W1Hfb9ufyrWlaqge+E9
+X-Google-Smtp-Source: AGHT+IFwxG5gCjlWzs1tnnY99rxeHR2P/o0Ads2GaFzkEP/mbldWS1AhW0DYUz2k38C11/c5nVN00w==
+X-Received: by 2002:a05:690c:670b:b0:64b:2017:b74c with SMTP id 00721157ae682-652d823f524mr47615037b3.49.1720168930288;
+        Fri, 05 Jul 2024 01:42:10 -0700 (PDT)
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-64a9bf32eadsm27985787b3.122.2024.07.05.01.42.10
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Jul 2024 01:42:10 -0700 (PDT)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-651da7c1531so12649867b3.0
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 05 Jul 2024 01:42:10 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVSH9vus3RzekyqScyqAvLtAkOWjRMfxyDODUWtq33EcxJy6bsff29LZR8T4pOZqMt7quxtsEDrCvPBeL58s7bDMp7zCEC3MFRRby8w5TBe
+X-Received: by 2002:a81:9253:0:b0:647:eaea:f4de with SMTP id
+ 00721157ae682-652d823ea66mr38523167b3.47.1720168929990; Fri, 05 Jul 2024
+ 01:42:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <20240705081508.2110169-1-hch@lst.de> <20240705081508.2110169-2-hch@lst.de>
+In-Reply-To: <20240705081508.2110169-2-hch@lst.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 5 Jul 2024 10:41:58 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUCHRtRVQ4Vp40OmhwVz=KXgD3pdF6jkX4-UwQrQ_XtQw@mail.gmail.com>
+Message-ID: <CAMuHMdUCHRtRVQ4Vp40OmhwVz=KXgD3pdF6jkX4-UwQrQ_XtQw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] block: pass a phys_addr_t to get_max_segment_size
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, linux-m68k@lists.linux-m68k.org, 
+	linux-block@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Get callers out of poking into bvec internals a bit more.  Not a huge win
-right now, but with the proposed new DMA mapping API we might end up with
-a lot more of this otherwise.
+Hi Christoph,
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/m68k/emu/nfblock.c |  2 +-
- block/bio.c             |  2 +-
- block/blk-merge.c       |  6 ++----
- block/blk.h             |  4 ++--
- include/linux/bvec.h    | 15 +++++++++++++++
- 5 files changed, 21 insertions(+), 8 deletions(-)
+On Fri, Jul 5, 2024 at 10:15=E2=80=AFAM Christoph Hellwig <hch@lst.de> wrot=
+e:
+> Work on a single address to simplify the logic, and prepare the callers
+> from using better helpers.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-diff --git a/arch/m68k/emu/nfblock.c b/arch/m68k/emu/nfblock.c
-index 8eea7ef9115146..874fe958877388 100644
---- a/arch/m68k/emu/nfblock.c
-+++ b/arch/m68k/emu/nfblock.c
-@@ -71,7 +71,7 @@ static void nfhd_submit_bio(struct bio *bio)
- 		len = bvec.bv_len;
- 		len >>= 9;
- 		nfhd_read_write(dev->id, 0, dir, sec >> shift, len >> shift,
--				page_to_phys(bvec.bv_page) + bvec.bv_offset);
-+				bvec_phys(&bvec));
- 		sec += len;
- 	}
- 	bio_endio(bio);
-diff --git a/block/bio.c b/block/bio.c
-index e9e809a63c5975..a3b1b2266c50be 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -953,7 +953,7 @@ bool bvec_try_merge_hw_page(struct request_queue *q, struct bio_vec *bv,
- 		bool *same_page)
- {
- 	unsigned long mask = queue_segment_boundary(q);
--	phys_addr_t addr1 = page_to_phys(bv->bv_page) + bv->bv_offset;
-+	phys_addr_t addr1 = bvec_phys(bv);
- 	phys_addr_t addr2 = page_to_phys(page) + offset + len - 1;
- 
- 	if ((addr1 | mask) != (addr2 | mask))
-diff --git a/block/blk-merge.c b/block/blk-merge.c
-index 515173342eb757..93779fc6dfb1c3 100644
---- a/block/blk-merge.c
-+++ b/block/blk-merge.c
-@@ -255,8 +255,7 @@ static bool bvec_split_segs(const struct queue_limits *lim,
- 	unsigned seg_size = 0;
- 
- 	while (len && *nsegs < max_segs) {
--		seg_size = get_max_segment_size(lim, page_to_phys(bv->bv_page) +
--						bv->bv_offset + total_len);
-+		seg_size = get_max_segment_size(lim, bvec_phys(bv) + total_len);
- 		seg_size = min(seg_size, len);
- 
- 		(*nsegs)++;
-@@ -492,8 +491,7 @@ static unsigned blk_bvec_map_sg(struct request_queue *q,
- 	while (nbytes > 0) {
- 		unsigned offset = bvec->bv_offset + total;
- 		unsigned len = min(get_max_segment_size(&q->limits,
--				   page_to_phys(bvec->bv_page) + offset),
--				   nbytes);
-+				   bvec_phys(bvec) + total), nbytes);
- 		struct page *page = bvec->bv_page;
- 
- 		/*
-diff --git a/block/blk.h b/block/blk.h
-index 47dadd2439b1ca..8e8936e97307c6 100644
---- a/block/blk.h
-+++ b/block/blk.h
-@@ -98,8 +98,8 @@ static inline bool biovec_phys_mergeable(struct request_queue *q,
- 		struct bio_vec *vec1, struct bio_vec *vec2)
- {
- 	unsigned long mask = queue_segment_boundary(q);
--	phys_addr_t addr1 = page_to_phys(vec1->bv_page) + vec1->bv_offset;
--	phys_addr_t addr2 = page_to_phys(vec2->bv_page) + vec2->bv_offset;
-+	phys_addr_t addr1 = bvec_phys(vec1);
-+	phys_addr_t addr2 = bvec_phys(vec2);
- 
- 	/*
- 	 * Merging adjacent physical pages may not work correctly under KMSAN
-diff --git a/include/linux/bvec.h b/include/linux/bvec.h
-index bd1e361b351c5a..0b9a56fc0faaf5 100644
---- a/include/linux/bvec.h
-+++ b/include/linux/bvec.h
-@@ -280,4 +280,19 @@ static inline void *bvec_virt(struct bio_vec *bvec)
- 	return page_address(bvec->bv_page) + bvec->bv_offset;
- }
- 
-+/**
-+ * bvec_phys - return the physical address for a bvec
-+ * @bvec: bvec to return the physical address for
-+ */
-+static inline phys_addr_t bvec_phys(const struct bio_vec *bvec)
-+{
-+	/*
-+	 * Note this open codes page_to_phys because page_to_phys is defined in
-+	 * <asm/io.h>, which we don't want to pull in here.  If it ever moves to
-+	 * a sensible place we should start using it.
-+	 */
-+	return ((phys_addr_t)page_to_pfn(bvec->bv_page) << PAGE_SHIFT) +
-+		bvec->bv_offset;
-+}
-+
- #endif /* __LINUX_BVEC_H */
--- 
-2.43.0
+Thanks for your patch!
 
+> --- a/block/blk-merge.c
+> +++ b/block/blk-merge.c
+> @@ -207,25 +207,22 @@ static inline unsigned get_max_io_size(struct bio *=
+bio,
+>  }
+>
+>  /**
+> - * get_max_segment_size() - maximum number of bytes to add as a single s=
+egment
+> + * get_max_segment_size() - maximum number of bytes to add to a single s=
+egment
+>   * @lim: Request queue limits.
+> - * @start_page: See below.
+> - * @offset: Offset from @start_page where to add a segment.
+> + * @paddr: address of the range to add
+>   *
+> - * Returns the maximum number of bytes that can be added as a single seg=
+ment.
+> + * Returns the maximum number of bytes of the range starting at @addr th=
+at can
+
+@paddr
+
+> + * be added to a single request.
+>   */
+
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
