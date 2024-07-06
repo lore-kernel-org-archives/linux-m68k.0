@@ -1,96 +1,73 @@
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7B1B1C286
-	for <linux-m68k@lists.linux-m68k.org>; Sat,  6 Jul 2024 06:24:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ACC520DD2;
+	Sat,  6 Jul 2024 07:52:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720247055; cv=none; b=ahcTv2D8zheuJPg8zKGKjE8BQAz9oCjlKHOMFkG6KFOiGcGhz/r3wrzJ9SwCO0qfydnGdchhL4eXWnG1c/IjA/Cg1fCaQ1wfMGsEwcZayICl+rD+MBKjE89BBCNsbdcOPqX39NkC/M8e63BLJxf5TTmYDPXktKUTd2erYA9uD80=
+	t=1720252354; cv=none; b=acq4PC4DvLzWHjz2D77t6rP8HuryXKcjU3OZdSB59FtqTnXMs3E5EEBNKWVI/AZYx/2j8/bF4CV4I/FOMGvctz1itXKgqWUW4oPUXfY6tBpFkmvqNcNeeuTpRV9OXevqtF38XELaiK9HrNPynDTyhpn3uzcB+ZBdtqPqldgFCZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720247055; c=relaxed/simple;
-	bh=JKse070+sS5qDKWVbIFCfU3xee3WglP9rsaYjbsPCGw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DoL3aWih5COYCTo8Gd0MrGtWUY0M5KXKmqw+0oC9L56iNYgVjUoV6G/HotmARuSpLd3vx+8iuxwRZEtokwI+VR5KwTt/UsFDOEsvtGLHIspBuAgIlafG5hk5E18VRQYADjSDcpGfNgD0oEyTrFSaoJf/wuNV9uVRgizXDNbxmLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=VZucIfJA; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+	s=arc-20240116; t=1720252354; c=relaxed/simple;
+	bh=XD7xvQzS/c6AU/JYvDJt1Ce7auaKvy4i5vk2fnvOKQE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=U8Zrwnod3nPnWov8r3eSUE+2fB90PxCweVuQ4CDoDlq4wDm0+WDrKgNSZf5PTuYSGyg0xVZ74pYkoiBkHCo3kLB5hAP+W5IRE9IINV43ThYZU1+AYHeYukToFv5Fm76lPBmnk2ObuTpAP6OEvB9/YZjMTlZilzj9XPeCunHRK7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=OShA6qa8; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="VZucIfJA"
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-75b77be7611so222964a12.3
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 05 Jul 2024 23:24:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1720247053; x=1720851853; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yNowAKT2Yx4bsVVhZtPKWhVqvIPgWNNxysVwRFzN78A=;
-        b=VZucIfJA1YBU4Hkr8FPERModq0M7t+IwjvZjvMhlWAYuoeOJA7UK/EoKNlFEjZwET0
-         zKAl662uESsv26LkJVPYdUpenoI7IQeovmBWTQxbXRJ1H56PqdGS8Oq/gwjeB2unAVB2
-         IeUIRc54I4BP+UWG/mDmP+5AK8BeTgknO3SYpEGdPOxx9UOeeCLvlL9NDqxVZZyjCvXc
-         WkleB4J/j1Kc/gZNy5apEwP5bn28UwObHuub7ZZfYRbAafVHUgo5KPU0afELdnEB47Fv
-         xXJ0nN/b83rVze6khr1HGY00Dabmg8wC673+4FfaTUmZCcWxgZzmWTn3BTEgaGKdxgHd
-         MvfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720247053; x=1720851853;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yNowAKT2Yx4bsVVhZtPKWhVqvIPgWNNxysVwRFzN78A=;
-        b=hIoqSxpC7jBeJ/xViwPDeOsK5pWHuF+9gTJTf3PQbIgDd8XCnAVIQijxCCHmLPjOyk
-         qMZtbwL1wrtxxaHwanqy90yXNBdR+CU2G6p9KGcjy2Hwz61dB4T/ZhVdzGEDWVk11Jmz
-         pz+KJnuEu1p55hmzDpz72uAz7Fy0sLs/0EN7BvUeWqYTvU9Dy0zdpITXtU4jq8FrZWHE
-         cuPK/XxNXJD6lefGNwHdj8P5YbBj16GkbFB/xW/oAMEBr3oMZhy115Wu07fITKiqSeNC
-         lEz4RXlI+yfOXBJg8V69H0rk0BakhiHNiZIWQjohT+lyTk6djkUI1C9221Xo+pHz0sTo
-         gweg==
-X-Forwarded-Encrypted: i=1; AJvYcCV3w0KJzO7bsCddDxEGDvG1YvXpsDintPsMP1zvvG+eXQGASZxk74JJQJjR6lZ42Bb5pQRf0XYlaQBbbagzUfmT3bfDFB77BcFg0YTJE9Wt
-X-Gm-Message-State: AOJu0Yz+vzYdyOabIPX4gUpxXenvvMqDZo3ZjP3LGqOr2jVLMxbgy+2p
-	8Y3rd0M7o2RpChFnbZ8bCa8lFcBDwj1SRU3O/xpwU4SZ0nk+oBa4zvlKnXOlMMM=
-X-Google-Smtp-Source: AGHT+IHkATLu1IOVXZo0JSeysD65rehYU+N2CceBVCaz6QV3RMSnuU+l7AFk6tgRwEv2nx+DTk2O3A==
-X-Received: by 2002:a17:902:e747:b0:1f7:1bb7:39db with SMTP id d9443c01a7336-1fb3402a38dmr74437755ad.5.1720247052790;
-        Fri, 05 Jul 2024 23:24:12 -0700 (PDT)
-Received: from ?IPV6:2620:10d:c085:21c8::1011? ([2620:10d:c090:400::5:7b2d])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fac10c8b3fsm149983025ad.5.2024.07.05.23.24.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Jul 2024 23:24:12 -0700 (PDT)
-Message-ID: <bfd407d2-64bf-4e3b-961d-adb51269170a@kernel.dk>
-Date: Sat, 6 Jul 2024 00:24:07 -0600
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="OShA6qa8"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=dsTTu515nhE3EiNHghMRN8VuppmfZeLHwdnzi/+9rcA=; b=OShA6qa8g6swWbtH1MLEVUlFqb
+	S6PyutFBlglENgIlSZQFwzDckgjpMchmdj6cd0uAHV2Mkh1Cm800DAYh+wEKkgHF8FUAjbO+DECJW
+	n8MLZYxSmg8NRKJOVEvGBntmsgfzJOOk+WYQpn+GAOXAg8Fj9M+1MU3xRWK/r52NVb8mTq5p5M8vH
+	jNzWMvMyrVFdrffCA+G7UvlBV1pyhEZdnrOcLlTLUzf0/mHx+53uiEzpwdiG+IufdZryBPMZeKiX6
+	PRiabsoxUfwYRSRpA2Z3paB1kgQyRI1HSmtusIMIiLHUsHP3L/jbfCOuyfShueVuKDtSTE7PyZeuc
+	dfe4dKyg==;
+Received: from 2a02-8389-2341-5b80-918c-9045-e0f1-f54a.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:918c:9045:e0f1:f54a] helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sQ0De-0000000HUu1-3Y4O;
+	Sat, 06 Jul 2024 07:52:31 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org,
+	linux-block@vger.kernel.org
+Subject: add a bvec_phys helper v3
+Date: Sat,  6 Jul 2024 09:52:16 +0200
+Message-ID: <20240706075228.2350978-1-hch@lst.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] block: pass a phys_addr_t to get_max_segment_size
-To: Christoph Hellwig <hch@lst.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
- linux-m68k@lists.linux-m68k.org, linux-block@vger.kernel.org
-References: <20240705123232.2165187-1-hch@lst.de>
- <20240705123232.2165187-3-hch@lst.de>
- <c2333a14-04bc-49be-8cc6-a03dcdb2eec3@kernel.dk>
- <20240706062228.GA13842@lst.de>
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20240706062228.GA13842@lst.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On 7/6/24 12:22 AM, Christoph Hellwig wrote:
-> On Sat, Jul 06, 2024 at 12:21:06AM -0600, Jens Axboe wrote:
->>>  /**
->>> - * get_max_segment_size() - maximum number of bytes to add as a single segment
->>> + * get_max_segment_size() - maximum number of bytes to add to a single segment
->>
->> v1 had this change too, not sure why? The previous description seems
->> better than the changed one.
-> 
-> Because it is used to also append data from another bio_vec to a
-> pre-existing SG segment, not just to create new ones.
+Hi Jens,
 
-Sure, but then let's make it something that makes more sense at least.
-Maximum size to consider as a single segment, or something like that.
+this series adds a bvec_phys helper to get the physical address
+of a bio_vec so that callers don't have to poke into bvec internals.
+There aren't a whole lot of user of it yet, but with the new proposed
+DMA mapping API we might grow a lot more soon.
 
--- 
-Jens Axboe
+Changes since v2:
+ - keep the existing (somewhat weird) description of get_max_segment_size
 
+Changes since v1:
+ - reorder the two patches as suggested by Geert
+ - fix a comment typo
+ - use PFN_PHYS instead of open coding it
+ - also pass a len argument to get_max_segment_size instead of open
+   coding a min in both callers
 
+Diffstat:
+ arch/m68k/emu/nfblock.c |    2 +-
+ block/bio.c             |    2 +-
+ block/blk-merge.c       |   25 +++++++++++--------------
+ block/blk.h             |    4 ++--
+ include/linux/bvec.h    |   14 ++++++++++++++
+ 5 files changed, 29 insertions(+), 18 deletions(-)
