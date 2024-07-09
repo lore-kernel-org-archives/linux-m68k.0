@@ -1,279 +1,401 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C181C158A1F
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  9 Jul 2024 11:58:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 406DC15821E
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  9 Jul 2024 12:39:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720526287; cv=none; b=CNXALsmixDEgDwwkqVcGJroPXDg5wHbEbBkgzF/eeDbZW4wklY4S4tw1UB72McWg1qIgUd1RWTSrStVQ2WeVxiWOrUwPxLJUhI0AMIlSjnAXaULa8KBP+nznvhE9pG5QQEDDBNc4srNfeDyPiiTN1K9dti3tSlYHm5RKg4B25gI=
+	t=1720528760; cv=none; b=OCAyUSj1ULHpyrbYTiLgNQxGW/gvKxGCV3R0O3TnHwEAzCDRYWNoa/GRWYAWUd7mKwF0gnbXvDCGT6k+hgOIho9WLVQ7c3DeGboEU+w7LNxcqF0LAlP5yRIDhbnOeyM0/6Lqzet40RHN4JcxJ4gOQEvpMrfBj8U9ApcHUiaaFnE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720526287; c=relaxed/simple;
-	bh=ytuKm+J68F8Du0utfZT0wy06NyswShgjN+kzFNx4WOU=;
-	h=Message-ID:Subject:From:To:Cc:Date:References:Content-Type:
-	 MIME-Version; b=ZlwP00MFkKL2n468XqfjaHMr35f3SQ66YiDNYj8FAnt56Mc+/TZt5jGl9fyBJyPLdjdrntglGQByQpxcq/izPHGozlxgKo642p0hNpBStBGnl0355+HtFhUeOqiWNJ3hK0BkvPGxd1DJsyvjHPKBS8fqaWfoSLlgmnq0u21SL/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bhm5gC6f; arc=none smtp.client-ip=139.178.84.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bhm5gC6f"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id CE4C2613F9;
-	Tue,  9 Jul 2024 11:58:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39D01C32786;
-	Tue,  9 Jul 2024 11:58:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720526284;
-	bh=ytuKm+J68F8Du0utfZT0wy06NyswShgjN+kzFNx4WOU=;
-	h=Subject:From:To:Cc:Date:References:From;
-	b=bhm5gC6f4bCaGf3KYMmeuVuQjvH0KO3dkOoFciI0MmFOsKeltmooRos9N+Ej3wLGa
-	 Js/IfZdjkVxGJFfmi2rz97ANQTTKcs37dnHtKWwurblAly5HY/TUukrgDovG+UwzIk
-	 az1K+AoMPMU1o2jJPbn127Bzr1jDCzAxPKaRUgWl9cqm3SOU93LcLtAaclUIzWUQVr
-	 HSiRg4XPbgGihsKw9yRPpAaVrbnsx140HjBVJo5GSQV91cDtlMyj+TmVYrZbqUH/yH
-	 WQxWZ/BphRO7la+J00np5BGuGmALjUjgsd7LC/z3Qlfpsb7FIaDyI8FaZ5PdqMOGzg
-	 WPe+Z+rf+9Fvg==
-Message-ID: <c1d4fcee3098a58625bb03c8461b92af02d93d15.camel@kernel.org>
-Subject: Fwd: [jlayton:mgtime 5/13] inode.c:undefined reference to
- `__invalid_cmpxchg_size'
-From: Jeff Layton <jlayton@kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org
-Date: Tue, 09 Jul 2024 07:58:03 -0400
-References: <202407091931.mztaeJHw-lkp@intel.com>
-Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
- keydata=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
- QZIQXVeAA+smfTT0tDrisj1U5x6ZB9b3nBg65kc=
-Content-Type: multipart/mixed; boundary="=-pI+W7gA8jU7BvhCoJ/+E"
-User-Agent: Evolution 3.52.2 (3.52.2-1.fc40app2) 
+	s=arc-20240116; t=1720528760; c=relaxed/simple;
+	bh=uc8f3I9FjT4ddzKf5AdW/NsGUiFiP6hsnUEvrfc7Kuc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mpC2LrRE5cVxYr7GZYqGwDnHgMDidYezlhU04BtiZeMiC5ZCT1V3LLgnisHQ82tMiraEps7TgSlRzhKJbdVpjMdHaBfknFhv4312ba+SGmzk2SxZyrETybQZrqAxfxFYFsX3mrcVaFrgIyTvPTW1CZbhxTt9syWI/90SfRWPoQM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-65465878c1fso40647327b3.2
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 09 Jul 2024 05:39:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720528756; x=1721133556;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3ENGgw6ue9S7M03KBHk+pRSFUONWY6uW3wiK1b5+M7g=;
+        b=S+MJg/l6SpDloSWZmcjLG1YXr411cQJu+IVK9x8x8yRKa8qsFIGgBjeTmk8WyNioej
+         Cm8y5zaByMgCgLh5EVM6S1QQoon/HRc/ifxeH6nd3cN5dBP9EUCyrsRHlZKLyQ6juBfY
+         7gjJBNMWqOM8rNOcJaMYTf3jbazNJ2siCp2IYhHtOfq2o2xO7140FQfKw0wpo6zQCte/
+         gUkic99gPjAmzmCkKAu4tzKT3eisQ9AfyL+JnyRK6/vebBgr91p26pjl0aiBNJlu9dNG
+         7rRApj+lSt15Xz/CWB8Et69pnTobd24SZR/e8kaZx84/cnwLyQERZx5+N/7q//F7n6OB
+         aH4g==
+X-Forwarded-Encrypted: i=1; AJvYcCXjBzozxYuP8pJ+/hiaw2QSXJUUZS+f3pNJTYu3Mha6RBCWWZ11DEBpqRXRLdha/1sZyHviKwtAaLoAF/CYXPA0xH5yS2ClOmpdNFZ3bmQM
+X-Gm-Message-State: AOJu0YznB/xEaAYukXSjAPpvjyodZSPUfZYQyvx1DgctBWE3UKVqN6Nn
+	x60Zd9UeNncv5Z5Yc0Qb7itOMtWMBmElSUzgmiwxJFVJL/3cXpYApAHSMnKB
+X-Google-Smtp-Source: AGHT+IF7S/T8RcV2Ax1tWaLuNq8JVCYZ2fuGrEdk4b+cpdlcOTJO877nvhBSlFasG/7KUFn6I7baAw==
+X-Received: by 2002:a05:690c:6b87:b0:64b:941:1d55 with SMTP id 00721157ae682-658eed5fc78mr31445617b3.13.1720528755914;
+        Tue, 09 Jul 2024 05:39:15 -0700 (PDT)
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-658e4936086sm3297397b3.4.2024.07.09.05.39.15
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Jul 2024 05:39:15 -0700 (PDT)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-64b3655297aso49349467b3.1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 09 Jul 2024 05:39:15 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVnQWW2cLnmIi0xN5FGMXdA/1GP5GX0fYoU/ybXFKR7AIccLzJ3beKKWn9AZGb9imJ/yeJYAARTcwWM/Xz220S8IcmGx9rLLml49jyoeIAW
+X-Received: by 2002:a0d:c686:0:b0:64b:7859:a92f with SMTP id
+ 00721157ae682-658ee790bf9mr26399557b3.5.1720528755101; Tue, 09 Jul 2024
+ 05:39:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-
---=-pI+W7gA8jU7BvhCoJ/+E
+References: <20240706075228.2350978-1-hch@lst.de> <20240706075228.2350978-3-hch@lst.de>
+In-Reply-To: <20240706075228.2350978-3-hch@lst.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 9 Jul 2024 14:39:02 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdV95g78=2GmLP95Kn3_0DL5zVuv2KCDYVsk8D2gNnu7SQ@mail.gmail.com>
+Message-ID: <CAMuHMdV95g78=2GmLP95Kn3_0DL5zVuv2KCDYVsk8D2gNnu7SQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] block: pass a phys_addr_t to get_max_segment_size
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, linux-m68k@lists.linux-m68k.org, 
+	linux-block@vger.kernel.org, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-I've been getting some of these warning emails from the KTR. I think
-this is in reference to this patch, which adds a 64-bit try_cmpxchg in
-the timestamp handling code:
+Hi Christoph,
 
-    https://lore.kernel.org/linux-fsdevel/20240708-mgtime-v4-0-a0f3c6fb57f3=
-@kernel.org/
+On Sat, Jul 6, 2024 at 9:52=E2=80=AFAM Christoph Hellwig <hch@lst.de> wrote=
+:
+> Work on a single address to simplify the logic, and prepare the callers
+> from using better helpers.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-On m68k, there is a prototype for __invalid_cmpxchg_size, but no actual
-function, AFAICT. Should that be defined somewhere, or is this a
-deliberate way to force a build break in this case?
+Thanks for your patch, which is now commit 09595e0c9d654743 ("block:
+pass a phys_addr_t to get_max_segment_size") in block/for-next
 
-More to the point though: do I need to do anything special for m86k
-here (or for other arches that can't do a native 64-bit cmpxchg)?
+This is causing the following crash on landisk when starting
+a Debian userspace:
 
-Thanks,
+Run /sbin/init as init process
+process '/sbin/init' started with executable stack
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 1 at block/blk-merge.c:607 __blk_rq_map_sg+0x74/0x240
+Modules linked in:
+
+CPU: 0 PID: 1 Comm: init Not tainted 6.10.0-rc3-landisk-00178-g09595e0c9d65=
+ #228
+PC is at __blk_rq_map_sg+0x74/0x240
+PR is at __blk_rq_map_sg+0x1ee/0x240
+PC  : 8c1d58f8 SP  : 8c825bec SR  : 40008100 TEA : 295ce8b0
+R0  : 00000002 R1  : 00000002 R2  : fffffffe R3  : 8c1fc2a0
+R4  : 8c825c0c R5  : 8c825c00 R6  : 00000000 R7  : 00000001
+R8  : 8cb2c040 R9  : 8c825c50 R10 : 00000000 R11 : 00000003
+R12 : 00000000 R13 : 8cb2c158 R14 : 00000000
+MACH: 0000565d MACL: 00000000 GBR : 00000000 PR  : 8c1d5a72
+
+Call trace:
+ [<8c26a1c8>] scsi_alloc_sgtables+0xb8/0x1ac
+ [<8c2736aa>] sd_init_command+0x2a2/0x70a
+ [<8c03a910>] irqd_irq_disabled.isra.0+0x0/0xc
+ [<8c26b296>] scsi_queue_rq+0x512/0x634
+ [<8c1db0d0>] blk_mq_dispatch_rq_list+0x1c8/0x358
+ [<8c1dac28>] blk_mq_get_driver_tag+0x0/0x14
+ [<8c20ef8e>] sbitmap_get+0x5a/0x78
+ [<8c1dab01>] blk_mq_dequeue_from_ctx+0xd/0x64
+ [<8c1deaf6>] __blk_mq_sched_dispatch_requests+0x24a/0x38c
+ [<8c1dec9a>] blk_mq_sched_dispatch_requests+0x22/0x50
+ [<8c1d86fa>] blk_rq_is_passthrough.isra.0+0x0/0xc
+ [<8c1dec78>] blk_mq_sched_dispatch_requests+0x0/0x50
+ [<8c1de8ac>] __blk_mq_sched_dispatch_requests+0x0/0x38c
+ [<8c1da158>] blk_mq_run_hw_queue+0xc8/0xf8
+ [<8c1db3d4>] blk_mq_flush_plug_list+0x174/0x28c
+ [<8c1d86fa>] blk_rq_is_passthrough.isra.0+0x0/0xc
+ [<8c1d1e32>] __blk_flush_plug+0x3e/0xd8
+ [<8c0025d8>] arch_local_irq_restore+0x0/0x24
+ [<8c071838>] arch_local_irq_save+0x0/0x24
+ [<8c071a0c>] readahead_folio+0x0/0x60
+ [<8c1d1ee4>] blk_finish_plug+0x18/0x30
+ [<8c0025d8>] arch_local_irq_restore+0x0/0x24
+ [<8c071838>] arch_local_irq_save+0x0/0x24
+ [<8c071a0c>] readahead_folio+0x0/0x60
+ [<8c071ada>] read_pages+0x4c/0x106
+ [<8c071c26>] page_cache_ra_unbounded+0x92/0x14c
+ [<8c06c37c>] filemap_fault+0x2c8/0x43c
+ [<8c087d30>] __do_fault+0x1c/0x6c
+ [<8c08b0cc>] handle_mm_fault+0x588/0x780
+ [<8c00cb14>] do_page_fault+0x10c/0x1a0
+ [<8c006108>] ret_from_exception+0x0/0xc
+ [<8c006108>] ret_from_exception+0x0/0xc
+ [<8c006108>] ret_from_exception+0x0/0xc
+
+---[ end trace 0000000000000000 ]---
+------------[ cut here ]------------
+kernel BUG at drivers/scsi/scsi_lib.c:1160!
+Kernel BUG: 003e [#1]
+Modules linked in:
+
+CPU: 0 PID: 1 Comm: init Tainted: G        W
+6.10.0-rc3-landisk-00178-g09595e0c9d65 #228
+PC is at scsi_alloc_sgtables+0x144/0x1ac
+PR is at scsi_alloc_sgtables+0xb8/0x1ac
+PC  : 8c26a254 SP  : 8c825c50 SR  : 40008100 TEA : 295ce8b0
+R0  : 00000003 R1  : 00000002 R2  : 8cb2c180 R3  : 000000bc
+R4  : 8c825c0c R5  : 8c825c00 R6  : 00000000 R7  : 00000000
+R8  : 8cb2c09c R9  : 8cb4cafc R10 : 8c51b12c R11 : 8cb2c118
+R12 : 8cb2c000 R13 : 00000000 R14 : 00000003
+MACH: 0000565d MACL: 00000000 GBR : 00000000 PR  : 8c26a1c8
+
+Call trace:
+ [<8c2736aa>] sd_init_command+0x2a2/0x70a
+ [<8c03a910>] irqd_irq_disabled.isra.0+0x0/0xc
+ [<8c26b296>] scsi_queue_rq+0x512/0x634
+ [<8c1db0d0>] blk_mq_dispatch_rq_list+0x1c8/0x358
+ [<8c1dac28>] blk_mq_get_driver_tag+0x0/0x14
+ [<8c20ef8e>] sbitmap_get+0x5a/0x78
+ [<8c1dab01>] blk_mq_dequeue_from_ctx+0xd/0x64
+ [<8c1deaf6>] __blk_mq_sched_dispatch_requests+0x24a/0x38c
+ [<8c1dec9a>] blk_mq_sched_dispatch_requests+0x22/0x50
+ [<8c1d86fa>] blk_rq_is_passthrough.isra.0+0x0/0xc
+ [<8c1dec78>] blk_mq_sched_dispatch_requests+0x0/0x50
+ [<8c1de8ac>] __blk_mq_sched_dispatch_requests+0x0/0x38c
+ [<8c1da158>] blk_mq_run_hw_queue+0xc8/0xf8
+ [<8c1db3d4>] blk_mq_flush_plug_list+0x174/0x28c
+ [<8c1d86fa>] blk_rq_is_passthrough.isra.0+0x0/0xc
+ [<8c1d1e32>] __blk_flush_plug+0x3e/0xd8
+ [<8c0025d8>] arch_local_irq_restore+0x0/0x24
+ [<8c071838>] arch_local_irq_save+0x0/0x24
+ [<8c071a0c>] readahead_folio+0x0/0x60
+ [<8c1d1ee4>] blk_finish_plug+0x18/0x30
+ [<8c0025d8>] arch_local_irq_restore+0x0/0x24
+ [<8c071838>] arch_local_irq_save+0x0/0x24
+ [<8c071a0c>] readahead_folio+0x0/0x60
+ [<8c071ada>] read_pages+0x4c/0x106
+ [<8c071c26>] page_cache_ra_unbounded+0x92/0x14c
+ [<8c06c37c>] filemap_fault+0x2c8/0x43c
+ [<8c087d30>] __do_fault+0x1c/0x6c
+ [<8c08b0cc>] handle_mm_fault+0x588/0x780
+ [<8c00cb14>] do_page_fault+0x10c/0x1a0
+ [<8c006108>] ret_from_exception+0x0/0xc
+ [<8c006108>] ret_from_exception+0x0/0xc
+ [<8c006108>] ret_from_exception+0x0/0xc
+
+Process: init (pid: 1, stack limit =3D (ptrval))
+Stack: (0x8c825c50 to 0x8c826000)
+5c40:                                     8cb2c180 c4b8bd37 8c2736aa 8cb2c0=
+00
+5c60: 00000001 00000000 8c93e800 00000088 0008d350 8cb2c09c 8cb25200 8c03a9=
+10
+5c80: 8c807840 8cb4c800 8cb28600 00000088 00080700 00000000 00000020 8c26b2=
+96
+5ca0: 8cb2c118 8cb2c11c 8cb4c800 8c93e800 8cb2c000 8cb4c800 8cb2c09c 8cb2c1=
+3c
+5cc0: 8c93e800 00000003 8cb28014 8cb4cafc 8cb29000 8c825d20 8cb4c8fc 8c1db0=
+d0
+5ce0: 00000000 8c1dac28 8cb2c034 8cb25100 8cb2c000 8cb25100 8c825d5c 000000=
+00
+5d00: 8c20ef8e 8c825d20 00000000 00000000 ffffffff 00000000 00000000 8cb290=
+00
+5d20: 8cb2c000 8c1dab01 c4b8bd37 8c1deaf6 00000000 00000002 8cb28c00 000000=
+00
+5d40: 00000001 8c825d5c 8cb25100 00000000 fffede60 8c825d54 8c825d54 8c825d=
+5c
+5d60: 8c825d5c 8cb2c000 8cb29000 c4b8bd37 8c1dec9a 00000000 8c1d86fa 8cb251=
+40
+5d80: 8c1dec78 00000000 8c1de8ac 8cb25100 8c1da158 8cb25100 8c93e8a0 8c1db3=
+d4
+5da0: 8c1d86fa 8cb25140 8cb2c034 8cb25100 8c825dd0 8c825e2c 00000000 8ff766=
+6c
+5dc0: 00000000 8c825dcc 8cb25100 00000000 8c825dd0 8c825dd0 c4b8bd37 8c1d1e=
+32
+5de0: 8c0025d8 8c071838 8c071a0c 00000000 8c51b12c 8c825e44 8c825e2c 000000=
+01
+5e00: 8c825e10 c4b8bd37 8c1d1ee4 8c0025d8 8c071838 8c071a0c 8c51b12c 00112c=
+ca
+5e20: 00000000 8c825eac 8c071ada 00000000 00000000 ce7eb754 00000002 000000=
+01
+5e40: 00110100 8c825e44 8c825e44 c4b8bd37 8c071c26 00000011 8c825eac 8cb95c=
+ec
+5e60: 0000002a 00112cca 8cb95ce0 8ff8cb20 0000003a 00000011 00402100 000000=
+08
+5e80: 8c06c37c 0000003a 8cb95ce0 8cb95ce0 8ca56280 8c825f18 8ca56280 8ca562=
+c0
+5ea0: 00000000 8ca56280 8cb95c0c 8ca56280 8cb95ce0 8ca562c0 0000003b 000000=
+00
+5ec0: 00000000 00000000 00000000 c4b8bd37 8c087d30 01000000 00000000 00000d=
+73
+5ee0: 295ce8b0 8cbc81f8 8c825f18 8cbc81f8 8c08b0cc 00000001 8ff8c900 8cbc81=
+f8
+5f00: ffffffff 8c931784 295ce000 00000255 8c825fa4 00000040 8cbc81f8 00100c=
+ca
+5f20: 0000003a 295ce000 295ce8b0 00000a55 8cc06294 8cc06294 00000000 8ff8c9=
+00
+5f40: 00000000 00000000 8c9317ac 00000000 c4b8bd37 8c00cb14 01000000 8c825f=
+e4
+5f60: 295ce8b0 00000255 00000001 8c825fa4 00000001 00000812 0000003a 8c9317=
+80
+5f80: 00000001 8c006108 7bb436b4 295d8de4 29581000 295ce8b0 8c006108 8c0061=
+08
+5fa0: 00000001 00000007 00000000 0000f686 000000ea 295ce8b0 00000000 000000=
+00
+5fc0: 295ce8b0 295cf000 7bb43668 29581a58 295ce8b0 29581000 295d8de4 7bb436=
+b4
+5fe0: 7bb43650 2956c3d8 2955cd1a 00008000 00000000 0000002c 00000030 ffffff=
+ff
+---[ end trace 0000000000000000 ]---
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 1 at kernel/exit.c:823 do_exit+0x68/0x704
+Modules linked in:
+
+CPU: 0 PID: 1 Comm: init Tainted: G      D W
+6.10.0-rc3-landisk-00178-g09595e0c9d65 #228
+PC is at do_exit+0x68/0x704
+PR is at do_exit+0x5c/0x704
+PC  : 8c011a2c SP  : 8c825b5c SR  : 40008100 TEA : 295ce8b0
+R0  : 00000040 R1  : 8c825e2c R2  : 40008100 R3  : 00000000
+R4  : 00000000 R5  : ffd0b128 R6  : 00000000 R7  : 00000001
+R8  : 8c822000 R9  : 8c010da4 R10 : 8c8222fc R11 : 8c010d94
+R12 : 0000000b R13 : 8c3b4d70 R14 : 00000003
+MACH: 00000244 MACL: 0000afa8 GBR : 00000000 PR  : 8c011a20
+
+Call trace:
+ [<8c035e60>] vprintk_emit+0xc0/0x13c
+ [<8c3b4d70>] _printk+0x0/0x48
+ [<8c0121a2>] make_task_dead+0xda/0x130
+ [<8c3b4d70>] _printk+0x0/0x48
+ [<8c003ede>] die+0xde/0x14c
+ [<8c1fce6c>] bust_spinlocks+0x0/0x38
+ [<8c0025d8>] arch_local_irq_restore+0x0/0x24
+ [<8c0040f8>] bug_trap_handler+0x8c/0xc8
+ [<8c26a254>] scsi_alloc_sgtables+0x144/0x1ac
+ [<8c0061be>] debug_trap+0xe/0x18
+ [<8c00406c>] bug_trap_handler+0x0/0xc8
+ [<8c26a254>] scsi_alloc_sgtables+0x144/0x1ac
+ [<8c26a1c8>] scsi_alloc_sgtables+0xb8/0x1ac
+ [<8c2736aa>] sd_init_command+0x2a2/0x70a
+ [<8c03a910>] irqd_irq_disabled.isra.0+0x0/0xc
+ [<8c26b296>] scsi_queue_rq+0x512/0x634
+ [<8c1db0d0>] blk_mq_dispatch_rq_list+0x1c8/0x358
+ [<8c1dac28>] blk_mq_get_driver_tag+0x0/0x14
+ [<8c20ef8e>] sbitmap_get+0x5a/0x78
+ [<8c1dab01>] blk_mq_dequeue_from_ctx+0xd/0x64
+ [<8c1deaf6>] __blk_mq_sched_dispatch_requests+0x24a/0x38c
+ [<8c1dec9a>] blk_mq_sched_dispatch_requests+0x22/0x50
+ [<8c1d86fa>] blk_rq_is_passthrough.isra.0+0x0/0xc
+ [<8c1dec78>] blk_mq_sched_dispatch_requests+0x0/0x50
+ [<8c1de8ac>] __blk_mq_sched_dispatch_requests+0x0/0x38c
+ [<8c1da158>] blk_mq_run_hw_queue+0xc8/0xf8
+ [<8c1db3d4>] blk_mq_flush_plug_list+0x174/0x28c
+ [<8c1d86fa>] blk_rq_is_passthrough.isra.0+0x0/0xc
+ [<8c1d1e32>] __blk_flush_plug+0x3e/0xd8
+ [<8c0025d8>] arch_local_irq_restore+0x0/0x24
+ [<8c071838>] arch_local_irq_save+0x0/0x24
+ [<8c071a0c>] readahead_folio+0x0/0x60
+ [<8c1d1ee4>] blk_finish_plug+0x18/0x30
+ [<8c0025d8>] arch_local_irq_restore+0x0/0x24
+ [<8c071838>] arch_local_irq_save+0x0/0x24
+ [<8c071a0c>] readahead_folio+0x0/0x60
+ [<8c071ada>] read_pages+0x4c/0x106
+ [<8c071c26>] page_cache_ra_unbounded+0x92/0x14c
+ [<8c06c37c>] filemap_fault+0x2c8/0x43c
+ [<8c087d30>] __do_fault+0x1c/0x6c
+ [<8c08b0cc>] handle_mm_fault+0x588/0x780
+ [<8c00cb14>] do_page_fault+0x10c/0x1a0
+ [<8c006108>] ret_from_exception+0x0/0xc
+ [<8c006108>] ret_from_exception+0x0/0xc
+ [<8c006108>] ret_from_exception+0x0/0xc
+
+---[ end trace 0000000000000000 ]---
+Kernel panic - not syncing: Attempted to kill init! exitcode=3D0x0000000b
+Rebooting in 10 seconds..
+
+Other people seem to have run into similar issues
+https://lore.kernel.org/all/58a667c3-e884-4fa0-9855-3a73a1880260@nvidia.com=
+/
+
+> --- a/block/blk-merge.c
+> +++ b/block/blk-merge.c
+> @@ -209,23 +209,22 @@ static inline unsigned get_max_io_size(struct bio *=
+bio,
+>  /**
+>   * get_max_segment_size() - maximum number of bytes to add as a single s=
+egment
+>   * @lim: Request queue limits.
+> - * @start_page: See below.
+> - * @offset: Offset from @start_page where to add a segment.
+> + * @paddr: address of the range to add
+> + * @max_len: maximum length available to add at @paddr
+>   *
+> - * Returns the maximum number of bytes that can be added as a single seg=
+ment.
+> + * Returns the maximum number of bytes of the range starting at @paddr t=
+hat can
+> + * be added to a single segment.
+>   */
+>  static inline unsigned get_max_segment_size(const struct queue_limits *l=
+im,
+> -               struct page *start_page, unsigned long offset)
+> +               phys_addr_t paddr, unsigned int len)
+>  {
+> -       unsigned long mask =3D lim->seg_boundary_mask;
+> -
+> -       offset =3D mask & (page_to_phys(start_page) + offset);
+> -
+>         /*
+>          * Prevent an overflow if mask =3D ULONG_MAX and offset =3D 0 by =
+adding 1
+>          * after having calculated the minimum.
+>          */
+> -       return min(mask - offset, (unsigned long)lim->max_segment_size - =
+1) + 1;
+> +       return min_t(unsigned long, len,
+> +               min(lim->seg_boundary_mask - (lim->seg_boundary_mask & pa=
+ddr),
+> +                   (unsigned long)lim->max_segment_size - 1) + 1);
+>  }
+>
+>  /**
+> @@ -258,9 +257,7 @@ static bool bvec_split_segs(const struct queue_limits=
+ *lim,
+>         unsigned seg_size =3D 0;
+>
+>         while (len && *nsegs < max_segs) {
+> -               seg_size =3D get_max_segment_size(lim, bv->bv_page,
+> -                                               bv->bv_offset + total_len=
+);
+> -               seg_size =3D min(seg_size, len);
+> +               seg_size =3D get_max_segment_size(lim, bvec_phys(bv) + to=
+tal_len, len);
+>
+>                 (*nsegs)++;
+>                 total_len +=3D seg_size;
+> @@ -494,8 +491,8 @@ static unsigned blk_bvec_map_sg(struct request_queue =
+*q,
+>
+>         while (nbytes > 0) {
+>                 unsigned offset =3D bvec->bv_offset + total;
+> -               unsigned len =3D min(get_max_segment_size(&q->limits,
+> -                                  bvec->bv_page, offset), nbytes);
+> +               unsigned len =3D get_max_segment_size(&q->limits, bvec_ph=
+ys(bvec),
+> +                       nbytes);
+>                 struct page *page =3D bvec->bv_page;
+>
+>                 /*
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 --=20
-Jeff Layton <jlayton@kernel.org>
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
 
---=-pI+W7gA8jU7BvhCoJ/+E
-Content-Disposition: inline
-Content-Description: Forwarded message =?UTF-8?Q?=E2=80=94?= [jlayton:mgtime
- 5/13] inode.c:undefined reference to `__invalid_cmpxchg_size'
-Content-Type: message/rfc822
-
-Delivered-To: jlayton@poochiereds.net
-Received: by 2002:a05:6840:a05a:b0:1868:30e0:1b91 with SMTP id
- s26csp2141718nlm; Tue, 9 Jul 2024 04:41:32 -0700 (PDT)
-X-Forwarded-Encrypted: i=2;
- AJvYcCVmB1k3maNpx1LDNc1A91iZlu6jOn1vFp6JYZa0a/MyZJBGCaQOsnxUCSdNL3wuTBZUfnyPVfsvIkwRFSD2AiJbZYr/J8T3gA==
-X-Google-Smtp-Source:
- AGHT+IGO4p0CRHr1++kSKxppOqzc9unXWajhJMXaYuWUPZIiFaYUeK2qVsj3NggYMRIIpbZ2bGd0
-X-Received: by 2002:a17:902:e5c2:b0:1fb:75b6:a40e with SMTP id
- d9443c01a7336-1fbb6d601dcmr18995115ad.45.1720525292732; Tue, 09 Jul 2024
- 04:41:32 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1720525292; cv=none; d=google.com;
- s=arc-20160816;
- b=OxDrk1F4jlBzkr4XEJtM25mCkyRvQXZpVI2sqE+amYspGExFlRbhZrd8mh1wQn8Pps
- c01F6WIarIgL2QrIGsuA9ThI/wk/fWQ1VgBE0YTGqBbpW13316YYQlxgOL59r1Gup9c0
- NRKfB8LAyLLRrD9V2K5xEw3kPH4fPQgDq15goajWPZaWLLDFTCJExE/Fs90jd5wHZ7dl
- ogP53L8MsPuov5YXdmNj8/PlSWLEryx2Aq+WzkOmUCoRCvGa5QkHBjYhrz7VIPzTqCpb
- Sqsi+h4UMZMc3e3sbbvz/LdFL1f/iz9993+1oDX5+XYx8JCSXMkaAigBhBZ2XZ+oi5bZ +6vQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com;
- s=arc-20160816;
- h=content-disposition:mime-version:message-id:subject:cc:to:from:date
- :dkim-signature:dmarc-filter:delivered-to;
- bh=fp4wInhpYjV2aixZjBcpP8sNJTgUz58P0dXQltVokMs=;
- fh=pVpjrWokx+suM3VInIbJAR8sYUQKzjSbDwxWk5bUObQ=;
- b=z0CLAn09s+qJcsvQojLxvCX8xMjzqPjGa1VRXn2dxZJA6BgIuuCXViSpBMZyCDHgsX
- 4d+3/luio8Y4lKwPJZfD1UplNEXWGmfgHH0zhkCMd2YQ0f4jrlpH9eEYSO8nQ1LfgpX7
- k4z3iLE4VEu8xAsQ3mXtGfMh8M0xzzulDAHhLAKEjKLZ838Inyf2r6C3Na3Z3ZX4wF6n
- AFpYMfXilw5fU7HKfrhL6qD9UnHhgtC3SlYcj/v957QnuDx/0E4iJgG8mVclmKzBhb5K
- M7KoHcHhiGscicZKDK1arJ2ks3DXoPLdHWnHF344YNmjDydIuxnXc+RJhnoYtqxxEKs/
- vWYQ==; dara=google.com
-ARC-Authentication-Results: i=1; mx.google.com; dkim=pass
- header.i=@intel.com header.s=Intel header.b=nrrnfaux; spf=pass (google.com:
- domain of srs0=yxw6=oj=intel.com=lkp@kernel.org designates 145.40.73.55 as
- permitted sender) smtp.mailfrom="SRS0=YXW6=OJ=intel.com=lkp@kernel.org";
- dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=intel.com
-Return-Path: <SRS0=YXW6=OJ=intel.com=lkp@kernel.org>
-Received: from sin.source.kernel.org (sin.source.kernel.org.
- [145.40.73.55]) by mx.google.com with ESMTPS id
- d9443c01a7336-1fbb6ad51f1si17765385ad.606.2024.07.09.04.41.32 for
- <jlayton@poochiereds.net> (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384
- bits=256/256); Tue, 09 Jul 2024 04:41:32 -0700 (PDT)
-Received-SPF: pass (google.com: domain of
- srs0=yxw6=oj=intel.com=lkp@kernel.org designates 145.40.73.55 as permitted
- sender) client-ip=145.40.73.55;
-Authentication-Results: mx.google.com; dkim=pass header.i=@intel.com
- header.s=Intel header.b=nrrnfaux; spf=pass (google.com: domain of
- srs0=yxw6=oj=intel.com=lkp@kernel.org designates 145.40.73.55 as permitted
- sender) smtp.mailfrom="SRS0=YXW6=OJ=intel.com=lkp@kernel.org"; dmarc=pass
- (p=NONE sp=NONE dis=NONE) header.from=intel.com
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org
- [100.75.92.58]) by sin.source.kernel.org (Postfix) with ESMTP id
- 5D51BCE1171 for <jlayton@poochiereds.net>; Tue,  9 Jul 2024 11:41:29 +0000
- (UTC)
-Received: by smtp.kernel.org (Postfix)
-	id 9AFAAC4AF0A; Tue,  9 Jul 2024 11:41:28 +0000 (UTC)
-Delivered-To: jlayton@kernel.org
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1CC7FC4AF0C
-	for <jlayton@kernel.org>; Tue,  9 Jul 2024 11:41:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.kernel.org 1CC7FC4AF0C
-Authentication-Results: smtp.kernel.org; dmarc=pass (p=none dis=none)
- header.from=intel.com
-Authentication-Results: smtp.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1720525287; x=1752061287;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=RP32T3RKQMQt+vShPXINsjabD/ZiGWavrgUppvPjLTA=;
-  b=nrrnfauxz2cLnLs2NivJrNRKBSaCVa1Z1JlTkvmRQx1USrk9LUT4e7h0
-   6/JBhjatas60/5PwuO1mvjjB0a/t85HH/wF42NEJp+puGQ5dBsyipd9jc
-   PdbjBK8bpRVCqOBb32dbsY+RI/Aw4Iwg619BqGBCgJJvTArLJKNYWrUTD
-   Cinqcp/ih8fOMO8iZ7aM3GOAoVtxQCCDnFW5lyFaNUAEShgV3Gx/0kn73
-   0OtNEnY3qs6QU7YYDScXtMc7YT2myUiutHmlk2XTxKQTHWf+H/LZxzxSU
-   MeEDbL7KvLIEHnRK2WmRDE7FRfTusoNXPuHK50dHqgK38U1uegud8nlTP
-   A==;
-X-CSE-ConnectionGUID: YaidnIlWRn+StATDhIXh3g==
-X-CSE-MsgGUID: 3szOpmabTzG9WoMNNg77Vw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11127"; a="17642825"
-X-IronPort-AV: E=Sophos;i="6.09,194,1716274800"; 
-   d="scan'208";a="17642825"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146]) by
- fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul
- 2024 04:41:26 -0700
-X-CSE-ConnectionGUID: GjLOCiQoSoSfgSNueGojzQ==
-X-CSE-MsgGUID: h6VGuvMzRLao1b8rIoCisQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.09,194,1716274800"; 
-   d="scan'208";a="47615286"
-Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b)
- ([10.239.97.150]) by fmviesa006.fm.intel.com with ESMTP; 09 Jul 2024
- 04:41:24 -0700
-Received: from kbuild by 68891e0c336b with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sR9Dm-000Wcp-2s;
-	Tue, 09 Jul 2024 11:41:22 +0000
-Date: Tue, 9 Jul 2024 19:40:55 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev
-Subject: [jlayton:mgtime 5/13] inode.c:undefined reference to
- `__invalid_cmpxchg_size'
-Message-ID: <202407091931.mztaeJHw-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/jlayton/linux.git mgtime
-head:   81b2439edd7c9f966afcb091f414b7f219cda8f6
-commit: 2265b64634f4af479ffb0c478409cfd56ec6dc4d [5/13] fs: add infrastructure for multigrain timestamps
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20240709/202407091931.mztaeJHw-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240709/202407091931.mztaeJHw-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202407091931.mztaeJHw-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   m68k-linux-ld: fs/inode.o: in function `inode_set_ctime_current':
->> inode.c:(.text+0x167a): undefined reference to `__invalid_cmpxchg_size'
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
---=-pI+W7gA8jU7BvhCoJ/+E--
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
