@@ -1,40 +1,40 @@
 Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2670A84D29
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 10 Jul 2024 07:47:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 716E884D02
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 10 Jul 2024 07:47:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.40.73.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720597645; cv=none; b=jmS3X8QCKOmk259gSIwWwZDPf+tLax4OMcJQE2tVdDTOLJ1e05CrE6pGsmgyF7eHvz+49/IkesJDQeXaEzH+eQ+FMPhwx8RvmCoomz4bdL7UMdPNN3YvDNGdky4Bh3HjHTlo2JouEI3B3krhAZkG4V0tDP/YRg2iZRx/CjSGf3E=
+	t=1720597680; cv=none; b=TUFXFc+nAm8oUsIlFKxJFVHjfjVg6jr0lSVmWpHGLax+FAf5V0dOJAr9jfl9DzSAmLnWIS+qGSfthb5sN68UgL+TDuoaYu1BmPXXDFiOPSOsbP+VPyhOaluaYbpSkBy9J1kLC2pOHmGNk0CeAMU1WgS1Cq40C4W9cXLjJFu5LkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720597645; c=relaxed/simple;
-	bh=IUZn6a0shpNt/0AQJ0P2+QjARg+P1D+QCf11PY3JGVI=;
+	s=arc-20240116; t=1720597680; c=relaxed/simple;
+	bh=TIvUtgmoWgcsFjzGNk+ZdKfpPrUG9ENNoElEgGE3iAA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D0CXWUSBneIdcXbnR8v3DXdx4HsPIEtbTqwTxhlTjIbeoTxqjpv1pxT6651lGwt/bBLO2I/y5kc7Vf2B14hTM6A8tUxsa/wUb2tdEggS8EFX1PZwWs+ZAlsNdfH+SaJZM2771YTVHN93qp3fIDE60WzWZr7J+vfadDjX5gpBVpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=aLnx689O; arc=none smtp.client-ip=145.40.73.55
+	 Content-Type:Content-Disposition:In-Reply-To; b=CvcRMdFhjKr08lzcHFTsFFduxNYHx+LJ1OAr53abm+hpHdcmcDnCXowEkDhrUGX9h4cZAg1iIuc7e0+A5VWz7D/l0YCErLqaXjWNVecWj+rkBHxpqduYlo9+F834qBiGUgpKbics8fW6DdHEXwFsucK/iWb0f5ij4OMql0Zgy2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=xTn0X7RS; arc=none smtp.client-ip=145.40.73.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="aLnx689O"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="xTn0X7RS"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 6BAB0CE13C7;
-	Wed, 10 Jul 2024 07:47:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A994C32781;
-	Wed, 10 Jul 2024 07:47:19 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 2520CCE13CE;
+	Wed, 10 Jul 2024 07:47:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0496AC32781;
+	Wed, 10 Jul 2024 07:47:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1720597639;
-	bh=IUZn6a0shpNt/0AQJ0P2+QjARg+P1D+QCf11PY3JGVI=;
+	s=korg; t=1720597675;
+	bh=TIvUtgmoWgcsFjzGNk+ZdKfpPrUG9ENNoElEgGE3iAA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aLnx689OpQvoiLTn5/4d7Q8qSrV5LJ58Jkab9PMs+DJ/5xSe+dH7/Zf8rSHJ+j/zB
-	 XPKkF4UzIP8GxwR0f4Fc6JlNtbCMp5pAdP53pxzgoRwu7hL14nox6BlvBnxCoBnleI
-	 U65swr1OkSspXaGrXYXxpNqOWQbWc6Iiv7UlwTqQ=
-Date: Wed, 10 Jul 2024 09:47:17 +0200
+	b=xTn0X7RSsphH5elglUjYeJkk5xJL2mvIfmaMMJP95pytlHSmFcq2eoHFTKcuQH1fj
+	 ayhxgWAIFNLs8+W5iC+1bFMPyJj42ssZQpvQ8i59WY8+RvMcaMTeCeI7b2tK5djFIF
+	 r5w+BF4m+uC2skAEDRPMchY0zO9oHPVAKBURh4fc=
+Date: Wed, 10 Jul 2024 09:47:47 +0200
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] zorro: Have zorro_bus_match() callback take a const *
-Message-ID: <2024071034-murmuring-pueblo-4b3d@gregkh>
-References: <20240710074500.2841193-1-geert@linux-m68k.org>
+Subject: Re: [PATCH] dio: Have dio_bus_match() callback take a const *
+Message-ID: <2024071031-afterglow-porridge-de26@gregkh>
+References: <20240710074452.2841173-1-geert@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -44,40 +44,37 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240710074500.2841193-1-geert@linux-m68k.org>
+In-Reply-To: <20240710074452.2841173-1-geert@linux-m68k.org>
 
-On Wed, Jul 10, 2024 at 09:45:00AM +0200, Geert Uytterhoeven wrote:
-> drivers/zorro/zorro-driver.c:157:12: error: initialization of ‘int (*)(struct device *, const struct device_driver *)’ from incompatible pointer type ‘int (*)(struct device *, struct device_driver *)’ [-Werror=incompatible-pointer-types]
->   157 |  .match  = zorro_bus_match,
->       |            ^~~~~~~~~~~~~~~
-> drivers/zorro/zorro-driver.c:157:12: note: (near initialization for ‘zorro_bus_type.match’)
+On Wed, Jul 10, 2024 at 09:44:52AM +0200, Geert Uytterhoeven wrote:
+> drivers/dio/dio-driver.c:128:11: error: initialization of ‘int (*)(struct device *, const struct device_driver *)’ from incompatible pointer type ‘int (*)(struct device *, struct device_driver *)’ [-Werror=incompatible-pointer-types]
+>   128 |  .match = dio_bus_match,
+>       |           ^~~~~~~~~~~~~
+> drivers/dio/dio-driver.c:128:11: note: (near initialization for ‘dio_bus_type.match’)
 > 
 > Reported-by: noreply@ellerman.id.au
 > Fixes: d69d804845985c29 ("driver core: have match() callback in struct bus_type take a const *")
 > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 > ---
->  drivers/zorro/zorro-driver.c | 4 ++--
+>  drivers/dio/dio-driver.c | 4 ++--
 >  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/zorro/zorro-driver.c b/drivers/zorro/zorro-driver.c
-> index f49d19977e82a718..e7d3af1a223f9abf 100644
-> --- a/drivers/zorro/zorro-driver.c
-> +++ b/drivers/zorro/zorro-driver.c
-> @@ -118,10 +118,10 @@ EXPORT_SYMBOL(zorro_unregister_driver);
->       *  supported, and 0 if there is no match.
->       */
+> diff --git a/drivers/dio/dio-driver.c b/drivers/dio/dio-driver.c
+> index 2d9fa6011945d88b..12fa2d209dab9d3c 100644
+> --- a/drivers/dio/dio-driver.c
+> +++ b/drivers/dio/dio-driver.c
+> @@ -110,10 +110,10 @@ void dio_unregister_driver(struct dio_driver *drv)
+>   *  and 0 if there is no match.
+>   */
 >  
-> -static int zorro_bus_match(struct device *dev, struct device_driver *drv)
-> +static int zorro_bus_match(struct device *dev, const struct device_driver *drv)
+> -static int dio_bus_match(struct device *dev, struct device_driver *drv)
+> +static int dio_bus_match(struct device *dev, const struct device_driver *drv)
 >  {
->  	struct zorro_dev *z = to_zorro_dev(dev);
-> -	struct zorro_driver *zorro_drv = to_zorro_driver(drv);
-> +	const struct zorro_driver *zorro_drv = to_zorro_driver(drv);
+>  	struct dio_dev *d = to_dio_dev(dev);
+> -	struct dio_driver *dio_drv = to_dio_driver(drv);
+> +	const struct dio_driver *dio_drv = to_dio_driver(drv);
 
-Patches crossed in the mail :)
-
-Look at mine, I also fixed up to_zorro_driver() to properly pass through
-the const pointer which would be good here.
+Same here, to_dio_driver() should be changed to use container_of_const()
 
 thanks,
 
