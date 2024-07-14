@@ -1,59 +1,59 @@
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E98313CFA8
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 14 Jul 2024 19:11:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.40.73.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C43B13C827
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 14 Jul 2024 19:25:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720984289; cv=none; b=oGQ2HC7w//gkCdZZhpquJHvuwOHYqrmxTM0oEfYyTJJLiSmRIEKEOfu/a+/y7SloPXYVNL4+8tCzjFztoQPK2brMJ2cMtH6Gxm6XfQSjzNSrFgwzJVWi6qQwo6ysOmZ35gG3erR0gg1zWSxEWJJWEI0AURcKVWN5uyi6vUOHBn4=
+	t=1720985138; cv=none; b=gHcBY4tZDpswtVdRP/9U4G9MYzyqzlMhh9mhNjzuyZPgcAfBWHXDewQlogplUPm9WDoT2ueA5Y17ckBDOHhx9bEyOb3Ct+gu5gGkNtkHKLAbZGgGKzNsMuXni1eXL9TzPa+4ntmRglpHU4PJBgLz3gdYaTawT5pC8ZG0NsNo30E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720984289; c=relaxed/simple;
-	bh=j1K+FHZkDrmPGCmRtv9k9UB1axm98p1I0h+AuSiKzUM=;
+	s=arc-20240116; t=1720985138; c=relaxed/simple;
+	bh=pWElLRFvLTb94HVMKGtwP+k/lzQ0EhEm/hblzKYrhEg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uPORl19LVS9MrcHIEafyyEmL4NlsUqMRJhfp1aNAMrC/t9AKI6hbUAdkwXqPSAzOFazRRhGRWkJVuMC4JJuSk5qMxVQvBb9Bi5FkSt4J3uP9v7zlrWCQWfPRR4lPs4ucwlX0kQg+JC6kSS8Of2KIUQImy/tgx1u/i5KfaqHFz1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PPQ7VRq1; arc=none smtp.client-ip=145.40.73.55
+	 To:Cc:Content-Type; b=m2rqWZ6cPyvmTEK5eq3U2G1KpfGlh6n3lRGKZwNBxx9WySjWXlAyu5lYriVEScfhlJQ7Nts7F4zWcohpuBUIpT3GLd1CpVwHTZrpdb1YGF6p/oMMXRxsJvlKj02TzyFv4CBG9qCQApMEDi4AInY/l1fMQonlGofrtM9zEjMN4U8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eX6C3Wrs; arc=none smtp.client-ip=139.178.84.217
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PPQ7VRq1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eX6C3Wrs"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 163B1CE0B7E
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 14 Jul 2024 19:11:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5827AC4AF0D
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 14 Jul 2024 19:11:22 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 6859560B93
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 14 Jul 2024 19:25:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D0C9C4AF0D
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 14 Jul 2024 19:25:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720984282;
-	bh=j1K+FHZkDrmPGCmRtv9k9UB1axm98p1I0h+AuSiKzUM=;
+	s=k20201202; t=1720985135;
+	bh=pWElLRFvLTb94HVMKGtwP+k/lzQ0EhEm/hblzKYrhEg=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=PPQ7VRq1SyJdFQ/vrIS/BwD8aDEIyNzyzyKkmv/4qMm7CIVy4260GLbB7uQDrkVis
-	 m7G5up3miZkaYpPthpdgKdRdjWAjReTDvRK1aKjd/8BtNEWHuAf+3AwhHLOGXrBwT+
-	 QKSREO9RLxDYsIHrjZrjJ0ouu/lGAQ3LE5IQHvYGgrvYJppMinfDj1v+7mZ4iQ32q3
-	 nA72XPpd7XSNgbmC12wa0KtNf/7KXQGzo3z+OD2WKZN4CxIX+YJx8s3Smq3iIk3Rhh
-	 mRcQSX3HM7txL8sIZ8dyZ7Dko0DRi66wT1Xyrhb5s3EH/+utMT2uByQVjU4w1mA0QW
-	 Oh+la7VoVTDoA==
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2eeb1ba040aso47316351fa.1
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 14 Jul 2024 12:11:22 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVM8yN8GwJLd66IN/EYT0YF89CpyDnOYvAIVSMn1PIXBdkJGCHntMNZmLu8wvgMfB8PNq3hmLHFTLpfJdHbCcwN1/X4qnW0wIf2N6IoX1u7
-X-Gm-Message-State: AOJu0YwyyZqvrAFmS/Nmdi74l12NDYogIMfBAdjbZcIcd+58f0Jssw+M
-	SBaWw+FUXsNsQUiDHMf/PW1EtI5tZX0J6gwhju7sPxdEFxFq8qxLg6AhPbC30u9/2lj50J80jFz
-	NwuRxHE/2d4IzqSmY3DmVJ3nfj3M=
-X-Google-Smtp-Source: AGHT+IHco7JMHnTGGI6P5HuxenTXttge5tcKuT+hmuXdenuS/OHkLGnMUkXSXoFgko7rH3SUNvioLnYHIzgG21hNw84=
-X-Received: by 2002:a05:6512:124d:b0:52c:8df9:2e6f with SMTP id
- 2adb3069b0e04-52eb99d4c0fmr12914869e87.42.1720984260332; Sun, 14 Jul 2024
- 12:11:00 -0700 (PDT)
+	b=eX6C3Wrsm9BCcg/uR+nBsC9Yi9uiQzgkg8uRD/Jxx6sYZ5wokC3asSl4RYiGCrCxb
+	 vGQWDmPOjWA+gvjDRT9l60XO86VesoxuhbYGiI5QU9t4vp8mBi98lbUDjsbJ5Ut/WC
+	 g92fQjnaqDgyk06toDZq7zfe+bACJyU6pBR8IFOYMwI6pJ7gbX5CCfAP8SKrifMMVP
+	 5TWxwi+PBHkfw1l6lnfoaQBMyyLcdEIZCS+ICceIENxg3b1TqSYWYqBg8yM1dbxUOs
+	 VzK1CY6n90CbPeKTPQm4bUx8TE4PKU+3fEIXAHq/o8xzTZ0qBlMFi4ToNO3ymxz52u
+	 2XLQz5drH1QjA==
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-367ab50a07aso2246344f8f.0
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 14 Jul 2024 12:25:35 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCX9onfsERo1ZrcMc+5ZH2J3KwR7TGRQ/RQ7gFoLwsq1Bx1j6cLz5tVKMofOpiEBvX7SbvgsZuYvyJLnEnAzmoqQ/yKoKB0HrONgh9k9XJse
+X-Gm-Message-State: AOJu0Yz/ImVjOHM3MbZiBE0dJyDjh7Vgl2rYNFDF2bIT/K5mLBeoq0Hf
+	zXJc42w52gVS/CZMSO8VfYapm5JypUBXdtDETxxARw0vRRdHkgnqOogzlmtmi6xNeiZ1sA2O2kz
+	Amp2xXVrZYqhUaYzcxzIbq8fTyLE=
+X-Google-Smtp-Source: AGHT+IHNi+bkhtGO/tFdAGdozXKSzwunOc9SL8x+E8ESxsKl+svJChMzCUdwALSjb4LjW8Uu8yudrhwNRE6vlxT8+cQ=
+X-Received: by 2002:a05:6512:3985:b0:52c:cc46:d59 with SMTP id
+ 2adb3069b0e04-52eb9999d90mr13194916e87.18.1720985113376; Sun, 14 Jul 2024
+ 12:25:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240714085751.176357-1-xtex@envs.net> <20240714085751.176357-2-xtex@envs.net>
-In-Reply-To: <20240714085751.176357-2-xtex@envs.net>
+References: <20240714085751.176357-1-xtex@envs.net> <20240714085751.176357-3-xtex@envs.net>
+In-Reply-To: <20240714085751.176357-3-xtex@envs.net>
 From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Mon, 15 Jul 2024 04:10:23 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAS=nK4jJA6VOsZ6+dfFRDDX88HzwDpb4ZF7vLPEkVuGzQ@mail.gmail.com>
-Message-ID: <CAK7LNAS=nK4jJA6VOsZ6+dfFRDDX88HzwDpb4ZF7vLPEkVuGzQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kbuild: Abort make on install failures
+Date: Mon, 15 Jul 2024 04:24:37 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQfe7284DrJzo5MCy_vhd+JDytKYbzSbWvRJGiyMT462A@mail.gmail.com>
+Message-ID: <CAK7LNAQfe7284DrJzo5MCy_vhd+JDytKYbzSbWvRJGiyMT462A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] kbuild: Create INSTALL_PATH directory if it does not exist
 To: Zhang Bingwu <xtex@envs.net>
 Cc: Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
 	Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
@@ -79,18 +79,37 @@ On Sun, Jul 14, 2024 at 5:58=E2=80=AFPM Zhang Bingwu <xtex@envs.net> wrote:
 >
 > From: Zhang Bingwu <xtexchooser@duck.com>
 >
-> Setting '-e' flag tells shells to exit with error exit code immediately
-> after any of commands fails, and causes make(1) to regard recipes as
-> failed.
->
-> Before this, make will still continue to succeed even after the
-> installation failed, for example, for insufficient permission or
-> directory does not exist.
+> If INSTALL_PATH is not a valid directory, create it, like what
+> modules_install and dtbs_install will do in the same situation.
 >
 > Signed-off-by: Zhang Bingwu <xtexchooser@duck.com>
+> ---
+>  scripts/install.sh | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/scripts/install.sh b/scripts/install.sh
+> index 9bb0fb44f04a..02b845e7ab33 100755
+> --- a/scripts/install.sh
+> +++ b/scripts/install.sh
+> @@ -20,6 +20,10 @@ do
+>         fi
+>  done
+>
+> +if [ "${INSTALL_PATH}" !=3D "" ] && ! [ -e "${INSTALL_PATH}" ]; then
 
-
+I changed the first check to [ -n "${INSTALL_PATH}" ]
 Applied to linux-kbuild. Thanks!
+
+
+> +       mkdir -p "${INSTALL_PATH}"
+> +fi
+> +
+>  # User/arch may have a custom install script
+>  for file in "${HOME}/bin/${INSTALLKERNEL}"             \
+>             "/sbin/${INSTALLKERNEL}"                    \
+> --
+> 2.43.0
+>
 
 
 --=20
