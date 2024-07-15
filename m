@@ -1,117 +1,119 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [195.130.137.90])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C43B13C827
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 14 Jul 2024 19:25:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE3281862A2
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Jul 2024 10:21:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.90
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720985138; cv=none; b=gHcBY4tZDpswtVdRP/9U4G9MYzyqzlMhh9mhNjzuyZPgcAfBWHXDewQlogplUPm9WDoT2ueA5Y17ckBDOHhx9bEyOb3Ct+gu5gGkNtkHKLAbZGgGKzNsMuXni1eXL9TzPa+4ntmRglpHU4PJBgLz3gdYaTawT5pC8ZG0NsNo30E=
+	t=1721038886; cv=none; b=f2SNxCmb6BzDI7WfVEF+W8+sfGcIoj99wOPWBaptKVMa+QAnuQNBCq3+KKomhRnb1kbupOEwDOwANk0D8yc2UMEM7mw4F6TEM4rGGigkg8abYRA7GXI5KY17LsLKUGB2ksvsb2gzJEtvKM9UKljFRYFkemlKla7Ak1616ub8wP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720985138; c=relaxed/simple;
-	bh=pWElLRFvLTb94HVMKGtwP+k/lzQ0EhEm/hblzKYrhEg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=m2rqWZ6cPyvmTEK5eq3U2G1KpfGlh6n3lRGKZwNBxx9WySjWXlAyu5lYriVEScfhlJQ7Nts7F4zWcohpuBUIpT3GLd1CpVwHTZrpdb1YGF6p/oMMXRxsJvlKj02TzyFv4CBG9qCQApMEDi4AInY/l1fMQonlGofrtM9zEjMN4U8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eX6C3Wrs; arc=none smtp.client-ip=139.178.84.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eX6C3Wrs"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 6859560B93
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 14 Jul 2024 19:25:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D0C9C4AF0D
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 14 Jul 2024 19:25:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720985135;
-	bh=pWElLRFvLTb94HVMKGtwP+k/lzQ0EhEm/hblzKYrhEg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=eX6C3Wrsm9BCcg/uR+nBsC9Yi9uiQzgkg8uRD/Jxx6sYZ5wokC3asSl4RYiGCrCxb
-	 vGQWDmPOjWA+gvjDRT9l60XO86VesoxuhbYGiI5QU9t4vp8mBi98lbUDjsbJ5Ut/WC
-	 g92fQjnaqDgyk06toDZq7zfe+bACJyU6pBR8IFOYMwI6pJ7gbX5CCfAP8SKrifMMVP
-	 5TWxwi+PBHkfw1l6lnfoaQBMyyLcdEIZCS+ICceIENxg3b1TqSYWYqBg8yM1dbxUOs
-	 VzK1CY6n90CbPeKTPQm4bUx8TE4PKU+3fEIXAHq/o8xzTZ0qBlMFi4ToNO3ymxz52u
-	 2XLQz5drH1QjA==
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-367ab50a07aso2246344f8f.0
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 14 Jul 2024 12:25:35 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCX9onfsERo1ZrcMc+5ZH2J3KwR7TGRQ/RQ7gFoLwsq1Bx1j6cLz5tVKMofOpiEBvX7SbvgsZuYvyJLnEnAzmoqQ/yKoKB0HrONgh9k9XJse
-X-Gm-Message-State: AOJu0Yz/ImVjOHM3MbZiBE0dJyDjh7Vgl2rYNFDF2bIT/K5mLBeoq0Hf
-	zXJc42w52gVS/CZMSO8VfYapm5JypUBXdtDETxxARw0vRRdHkgnqOogzlmtmi6xNeiZ1sA2O2kz
-	Amp2xXVrZYqhUaYzcxzIbq8fTyLE=
-X-Google-Smtp-Source: AGHT+IHNi+bkhtGO/tFdAGdozXKSzwunOc9SL8x+E8ESxsKl+svJChMzCUdwALSjb4LjW8Uu8yudrhwNRE6vlxT8+cQ=
-X-Received: by 2002:a05:6512:3985:b0:52c:cc46:d59 with SMTP id
- 2adb3069b0e04-52eb9999d90mr13194916e87.18.1720985113376; Sun, 14 Jul 2024
- 12:25:13 -0700 (PDT)
+	s=arc-20240116; t=1721038886; c=relaxed/simple;
+	bh=C1QtMWGDWxteec68T6p2bieWFdYfthvIwzc3RFXK7a4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rw0f9gJYpKVG20ldo8PQfaBPBn+w73fDIAITPrJWmJMzqEnc68vAW5JDsB5pn37C+hggKY5aRP0V+kBp6iFGCuYQ5Ucya5KpAVmVK6m87jdpkDq32RWdgVghSmYYqhKVc1nkjaucAR5xRc1fC26ii812+BImuQ57kt5szmNkiVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.90
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:dd46:82df:8d7c:6f14])
+	by albert.telenet-ops.be with bizsmtp
+	id nmME2C00D2v92cJ06mMECR; Mon, 15 Jul 2024 12:21:15 +0200
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1sTIpH-002C0h-W7;
+	Mon, 15 Jul 2024 12:21:14 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1sTIpW-007P4E-JR;
+	Mon, 15 Jul 2024 12:21:14 +0200
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for v6.11
+Date: Mon, 15 Jul 2024 12:21:10 +0200
+Message-Id: <20240715102110.1764643-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240714085751.176357-1-xtex@envs.net> <20240714085751.176357-3-xtex@envs.net>
-In-Reply-To: <20240714085751.176357-3-xtex@envs.net>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Mon, 15 Jul 2024 04:24:37 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQfe7284DrJzo5MCy_vhd+JDytKYbzSbWvRJGiyMT462A@mail.gmail.com>
-Message-ID: <CAK7LNAQfe7284DrJzo5MCy_vhd+JDytKYbzSbWvRJGiyMT462A@mail.gmail.com>
-Subject: Re: [PATCH 2/2] kbuild: Create INSTALL_PATH directory if it does not exist
-To: Zhang Bingwu <xtex@envs.net>
-Cc: Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Dinh Nguyen <dinguyen@kernel.org>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Heiko Carstens <hca@linux.ibm.com>, 
-	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
-	Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
-	"David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
-	Zhang Bingwu <xtexchooser@duck.com>, Nathan Chancellor <nathan@kernel.org>, 
-	Nicolas Schier <nicolas@fjasle.eu>, x86@kernel.org, linux-kbuild@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-parisc@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
-	sparclinux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sun, Jul 14, 2024 at 5:58=E2=80=AFPM Zhang Bingwu <xtex@envs.net> wrote:
->
-> From: Zhang Bingwu <xtexchooser@duck.com>
->
-> If INSTALL_PATH is not a valid directory, create it, like what
-> modules_install and dtbs_install will do in the same situation.
->
-> Signed-off-by: Zhang Bingwu <xtexchooser@duck.com>
-> ---
->  scripts/install.sh | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/scripts/install.sh b/scripts/install.sh
-> index 9bb0fb44f04a..02b845e7ab33 100755
-> --- a/scripts/install.sh
-> +++ b/scripts/install.sh
-> @@ -20,6 +20,10 @@ do
->         fi
->  done
->
-> +if [ "${INSTALL_PATH}" !=3D "" ] && ! [ -e "${INSTALL_PATH}" ]; then
+	Hi Linus,
 
-I changed the first check to [ -n "${INSTALL_PATH}" ]
-Applied to linux-kbuild. Thanks!
+The following changes since commit 1613e604df0cd359cf2a7fbd9be7a0bcfacfabd0:
 
+  Linux 6.10-rc1 (2024-05-26 15:20:12 -0700)
 
-> +       mkdir -p "${INSTALL_PATH}"
-> +fi
-> +
->  # User/arch may have a custom install script
->  for file in "${HOME}/bin/${INSTALLKERNEL}"             \
->             "/sbin/${INSTALLKERNEL}"                    \
-> --
-> 2.43.0
->
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.11-tag1
 
---=20
-Best Regards
-Masahiro Yamada
+for you to fetch changes up to 21b9e722ad28c19c2bc83f18f540b3dbd89bf762:
+
+  m68k: cmpxchg: Fix return value for default case in __arch_xchg() (2024-07-09 09:19:31 +0200)
+
+----------------------------------------------------------------
+m68k updates for v6.11
+
+  - Fix bootup lock-ups on Warp1260, Atari TT, and MegaSTe,
+  - Miscellaneous fixes and improvements,
+  - Defconfig updates.
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+Eero Tamminen (1):
+      m68k: atari: Fix TT bootup freeze / unexpected (SCU) interrupt messages
+
+Geert Uytterhoeven (1):
+      m68k: defconfig: Update defconfigs for v6.10-rc1
+
+Jeff Johnson (1):
+      m68k: emu: Add missing MODULE_DESCRIPTION() macros
+
+Jiapeng Chong (1):
+      zorro: Use str_plural() in amiga_zorro_probe()
+
+Paolo Pisati (1):
+      m68k: amiga: Turn off Warp1260 interrupts during boot
+
+Thorsten Blum (1):
+      m68k: cmpxchg: Fix return value for default case in __arch_xchg()
+
+ arch/m68k/amiga/config.c             | 9 +++++++++
+ arch/m68k/atari/ataints.c            | 6 +-----
+ arch/m68k/configs/amiga_defconfig    | 1 +
+ arch/m68k/configs/apollo_defconfig   | 1 +
+ arch/m68k/configs/atari_defconfig    | 1 +
+ arch/m68k/configs/bvme6000_defconfig | 1 +
+ arch/m68k/configs/hp300_defconfig    | 1 +
+ arch/m68k/configs/mac_defconfig      | 1 +
+ arch/m68k/configs/multi_defconfig    | 1 +
+ arch/m68k/configs/mvme147_defconfig  | 1 +
+ arch/m68k/configs/mvme16x_defconfig  | 1 +
+ arch/m68k/configs/q40_defconfig      | 1 +
+ arch/m68k/configs/sun3_defconfig     | 1 +
+ arch/m68k/configs/sun3x_defconfig    | 1 +
+ arch/m68k/emu/nfblock.c              | 1 +
+ arch/m68k/emu/nfcon.c                | 1 +
+ arch/m68k/include/asm/cmpxchg.h      | 2 +-
+ drivers/zorro/zorro.c                | 3 ++-
+ include/uapi/linux/zorro_ids.h       | 3 +++
+ 19 files changed, 30 insertions(+), 7 deletions(-)
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
