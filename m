@@ -1,132 +1,351 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E21E1AAE00
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 31 Jul 2024 09:34:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11F7D14F9F5
+	for <linux-m68k@lists.linux-m68k.org>; Sat,  3 Aug 2024 14:01:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.40.73.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722418479; cv=none; b=FTQPv3gfwCzo8hvXtTDS0nBqlvMMvwlgaKRNP3K4CYyvQ/YZP3EWHbWqkGfWha+b1UIr6hXbJ6Yx0czM8ayXWwh/0ya8eLKGHj65EbUxneTBTjF02rvbmLwOP1v4fs+tAhpnPNupJVvf6k4JHMz+r8W/GardOlzSVsXU9jeO/4w=
+	t=1722693688; cv=none; b=O92DG3Xvwn/tF6vOCEaVAapPA9jr5FAimpzwhUjMfac7cgVBuvSBOcDKb1/emzB9EEez58DZgy0fOl1Vrkigh/JgfHWgOyzUf+kSivdWyfdavL5PouDtK4iEyBHaAUQ+9GXUdA2JujYYSmv8QPC1RKOHS9OmMpRIGjGSlG6ly28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722418479; c=relaxed/simple;
-	bh=AjeYFEGtVigmaDRhzf12TODu3xbOpI1Hs8dnu9Nr93s=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=L/yST8xFB2Rbqyjeatv4FOqL3m1IwJ1BkZAHJmIBpm1BGx68BcB5h+lcshLlSGsg4IzMMYWcwZUoMHHDYc1oguYTfCAp6Sp9ave2+FcUGt0eDYp+c/qjkGisnjpqtOiSvmkVAqR+D96o5w5JNsj2XZaVWHXRxqtzbLn/IS2uh4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aJ22cI9u; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1722693688; c=relaxed/simple;
+	bh=rP2UZRpPcr32Vo1X6UBkLA30Rc1YQdFaV5IlXUUTwf8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=W4BNDGd1sr6QMg0aftbqtqORbHLz1p8QPs+hcDN8eN4CYwj1veJMPB9HUwIdKbEIVrVbqBR1IiT01PxKrstC4MOzrl5SdsuDCDIDSOzNbCSnkqlQbFSGBnQKQ2NokB3Jcoi+PpkEqmX503gcw7VIcIf8LJNQqCJDjSAvC47mqVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eMr7CzzY; arc=none smtp.client-ip=145.40.73.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aJ22cI9u"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1722418477; x=1753954477;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=AjeYFEGtVigmaDRhzf12TODu3xbOpI1Hs8dnu9Nr93s=;
-  b=aJ22cI9uIsRsVe4AlwxHnfPgl/4GdRRuNZ/4UZUy5KpFm/HdrXkBnzF6
-   E019+dp+mYkebdsY9kn9kYgPn7CW5z7zxTLbmsA4TCA+r4vRU77ti6pR/
-   u1DTbOxC7IkV7ML/ZXBQJTm7J9US1ypuAn1TYA4VgWoQXhuQSWm/qSbBz
-   7khev+gVQzCPQ593FkXXtuIcRgWdiJXJOdIGgMmRuHoVnO4QKSy1Ipb6G
-   nH7C/bodUDHmOjHj11676hk+3C+qrOJy2kZ/XRIaQy7FK6ui5uLnM+4a7
-   O9iLuUI5lprAJWRdLoB4PsKe4xTkdWnrpXuSYClDkI+t4XypXYSu4FBOZ
-   Q==;
-X-CSE-ConnectionGUID: ViVsIgyZRySo/Oa6CkyfFQ==
-X-CSE-MsgGUID: XGBPlXL6RlydJt2gRPHBNQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11149"; a="12803291"
-X-IronPort-AV: E=Sophos;i="6.09,251,1716274800"; 
-   d="scan'208";a="12803291"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2024 02:34:31 -0700
-X-CSE-ConnectionGUID: lVIKjsPWRrCvjeKGi1MHFg==
-X-CSE-MsgGUID: rX7Gfi8vQ3ChE3OxHP3fVw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.09,251,1716274800"; 
-   d="scan'208";a="54871125"
-Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
-  by orviesa006.jf.intel.com with ESMTP; 31 Jul 2024 02:34:30 -0700
-Received: from kbuild by 68891e0c336b with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sZ5j1-000u5o-0n;
-	Wed, 31 Jul 2024 09:34:27 +0000
-Date: Wed, 31 Jul 2024 17:34:22 +0800
-From: kernel test robot <lkp@intel.com>
-To: Greg Ungerer <gerg@uclinux.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-	uclinux-dev@uclinux.org
-Subject: [gerg-m68knommu:armnommu 3/3] arch/arm/mm/alignment.c:775:25:
- sparse: sparse: incorrect type in argument 1 (different address spaces)
-Message-ID: <202407311725.iQ5sIAIR-lkp@intel.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eMr7CzzY"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 50C81CE013A;
+	Sat,  3 Aug 2024 14:01:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D1CAC116B1;
+	Sat,  3 Aug 2024 14:01:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722693682;
+	bh=rP2UZRpPcr32Vo1X6UBkLA30Rc1YQdFaV5IlXUUTwf8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=eMr7CzzYS/boccNWjj7LAkxNZxWxuC+/hz8ERh/JB5rE+eD9RWlDKFa6ngKl7XMhv
+	 tjfrDu4IMcMahQLXvBdu7N777912Sc4OseeqMcYZNq8zISfZMxzyo5MLaC9Sza0RPV
+	 UbTgdYr/3cd6cLpNtbSFI2iI8fhnLa0jBxJ+PTU9QNSRVzn+FXM1W0fFstn4238w+l
+	 BWtOlKSKgj18pMeEwBd4v4SIVLilFDNJ5NPN58xMFJdKl7gLOW/wGQ4SNDLDaUa8Ky
+	 8E/ec7A1f+anccrD191y42F720qqVR+RHc7SBJPPm5Bt4Qr6XyCe8c4p9XTfUCMdpX
+	 vkV5+qaaqNdfg==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	kernel test robot <lkp@intel.com>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] m68k: move sun3 into a top-level platform option
+Date: Sat,  3 Aug 2024 16:00:57 +0200
+Message-Id: <20240803140115.3305547-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Hi Greg,
+From: Arnd Bergmann <arnd@arndb.de>
 
-First bad commit (maybe != root cause):
+It is possible to select an m68k MMU build but not actually
+enable any of the three MMU options, which then results in a
+build failure:
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git armnommu
-head:   ed5fa52b95e3fa1433687bfe643b2846858a8d92
-commit: ed5fa52b95e3fa1433687bfe643b2846858a8d92 [3/3] ARM: versatile: support configuring versatile machine for no-MMU
-config: arm-randconfig-r111-20240731 (https://download.01.org/0day-ci/archive/20240731/202407311725.iQ5sIAIR-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 14.1.0
-reproduce: (https://download.01.org/0day-ci/archive/20240731/202407311725.iQ5sIAIR-lkp@intel.com/reproduce)
+ arch/m68k/include/asm/page.h:10:25: error: 'CONFIG_PAGE_SHIFT' undeclared here (not in a function); did you mean 'CONFIG_LOG_BUF_SHIFT'?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202407311725.iQ5sIAIR-lkp@intel.com/
+Change the Kconfig selection to ensure that exactly one of the
+three options is always enabled whenever an MMU-enabled kernel
+is built, but moving CONFIG_SUN3 into a top-level option next
+to M68KCLASSIC and COLDFIRE.
 
-sparse warnings: (new ones prefixed by >>)
->> arch/arm/mm/alignment.c:775:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned int [usertype] *ip @@
-   arch/arm/mm/alignment.c:775:25: sparse:     expected void const volatile [noderef] __user *ptr
-   arch/arm/mm/alignment.c:775:25: sparse:     got unsigned int [usertype] *ip
->> arch/arm/mm/alignment.c:790:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned short [usertype] *ip @@
-   arch/arm/mm/alignment.c:790:25: sparse:     expected void const volatile [noderef] __user *ptr
-   arch/arm/mm/alignment.c:790:25: sparse:     got unsigned short [usertype] *ip
+All defconfig files should keep working without changes,
+but alldefconfig now builds support for the classic MMU.
 
-vim +775 arch/arm/mm/alignment.c
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202408032138.P7sBvIns-lkp@intel.com/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+I saw another copy of the bug report today.
 
-c2860d43f5dfab George G. Davis   2009-06-04  768  
-1bb9fb0a147f9d Russell King      2019-09-06  769  static int alignment_get_arm(struct pt_regs *regs, u32 *ip, u32 *inst)
-67e15fa5b487ad Russell King      2019-08-31  770  {
-67e15fa5b487ad Russell King      2019-08-31  771  	u32 instr = 0;
-67e15fa5b487ad Russell King      2019-08-31  772  	int fault;
-67e15fa5b487ad Russell King      2019-08-31  773  
-67e15fa5b487ad Russell King      2019-08-31  774  	if (user_mode(regs))
-67e15fa5b487ad Russell King      2019-08-31 @775  		fault = get_user(instr, ip);
-67e15fa5b487ad Russell King      2019-08-31  776  	else
-25f12ae45fc193 Christoph Hellwig 2020-06-17  777  		fault = get_kernel_nofault(instr, ip);
-67e15fa5b487ad Russell King      2019-08-31  778  
-67e15fa5b487ad Russell King      2019-08-31  779  	*inst = __mem_to_opcode_arm(instr);
-67e15fa5b487ad Russell King      2019-08-31  780  
-67e15fa5b487ad Russell King      2019-08-31  781  	return fault;
-67e15fa5b487ad Russell King      2019-08-31  782  }
-67e15fa5b487ad Russell King      2019-08-31  783  
-67e15fa5b487ad Russell King      2019-08-31  784  static int alignment_get_thumb(struct pt_regs *regs, u16 *ip, u16 *inst)
-67e15fa5b487ad Russell King      2019-08-31  785  {
-67e15fa5b487ad Russell King      2019-08-31  786  	u16 instr = 0;
-67e15fa5b487ad Russell King      2019-08-31  787  	int fault;
-67e15fa5b487ad Russell King      2019-08-31  788  
-67e15fa5b487ad Russell King      2019-08-31  789  	if (user_mode(regs))
-67e15fa5b487ad Russell King      2019-08-31 @790  		fault = get_user(instr, ip);
-67e15fa5b487ad Russell King      2019-08-31  791  	else
-25f12ae45fc193 Christoph Hellwig 2020-06-17  792  		fault = get_kernel_nofault(instr, ip);
-67e15fa5b487ad Russell King      2019-08-31  793  
-67e15fa5b487ad Russell King      2019-08-31  794  	*inst = __mem_to_opcode_thumb16(instr);
-67e15fa5b487ad Russell King      2019-08-31  795  
-67e15fa5b487ad Russell King      2019-08-31  796  	return fault;
-67e15fa5b487ad Russell King      2019-08-31  797  }
-67e15fa5b487ad Russell King      2019-08-31  798  
+Geert, any opinions on this approach? I posted this before but
+it looks like you missed it.
+---
+ arch/m68k/Kconfig         | 11 +++++------
+ arch/m68k/Kconfig.cpu     | 30 ++++++++++++++++++++----------
+ arch/m68k/Kconfig.machine | 25 -------------------------
+ arch/m68k/kernel/Makefile | 12 ++----------
+ arch/m68k/kernel/time.c   |  4 ++--
+ 5 files changed, 29 insertions(+), 53 deletions(-)
 
-:::::: The code at line 775 was first introduced by commit
-:::::: 67e15fa5b487adb9b78a92789eeff2d6ec8f5cee ARM: mm: fix alignment handler faults under memory pressure
-
-:::::: TO: Russell King <rmk+kernel@armlinux.org.uk>
-:::::: CC: Russell King <rmk+kernel@armlinux.org.uk>
-
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index cc26df907bfe..7c4f7bcc89d7 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -84,24 +84,23 @@ config MMU
+ 	  support by paged memory management. If unsure, say 'Y'.
+ 
+ config MMU_MOTOROLA
+-	bool
++	def_bool MMU && M68KCLASSIC
+ 	select HAVE_PAGE_SIZE_4KB
+ 
+ config MMU_COLDFIRE
++	def_bool MMU && COLDFIRE
+ 	select HAVE_PAGE_SIZE_8KB
+-	bool
+ 
+ config MMU_SUN3
+-	bool
++	def_bool MMU && SUN3
+ 	select HAVE_PAGE_SIZE_8KB
+-	depends on MMU && !MMU_MOTOROLA && !MMU_COLDFIRE
+ 
+ config ARCH_SUPPORTS_KEXEC
+-	def_bool M68KCLASSIC && MMU
++	def_bool (M68KCLASSIC || SUN3) && MMU
+ 
+ config BOOTINFO_PROC
+ 	bool "Export bootinfo in procfs"
+-	depends on KEXEC && M68KCLASSIC
++	depends on KEXEC && (M68KCLASSIC || SUN3)
+ 	help
+ 	  Say Y to export the bootinfo used to boot the kernel in a
+ 	  "bootinfo" file in procfs.  This is useful with kexec.
+diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+index c777a129768a..a1b9e5f09e18 100644
+--- a/arch/m68k/Kconfig.cpu
++++ b/arch/m68k/Kconfig.cpu
+@@ -32,13 +32,23 @@ config COLDFIRE
+ 	select HAVE_LEGACY_CLK
+ 	select HAVE_PAGE_SIZE_8KB if !MMU
+ 
+-endchoice
++config SUN3
++	bool "Sun3 support"
++	depends on MMU
++	select HAVE_ARCH_PFN_VALID
++	select LEGACY_TIMER_TICK
++	select NO_DMA
++	select M68020
++	help
++	  This option enables support for the Sun 3 series of workstations
++	  (3/50, 3/60, 3/1xx, 3/2xx systems). These use a classic 68020 CPU
++	  but the custom memory management unit makes them incompatible with
++	  all other classic m68k machines, including Sun 3x.
+ 
+-if M68KCLASSIC
++endchoice
+ 
+ config M68000
+-	def_bool y
+-	depends on !MMU
++	def_bool M68KCLASSIC && !MMU
+ 	select CPU_HAS_NO_BITFIELDS
+ 	select CPU_HAS_NO_CAS
+ 	select CPU_HAS_NO_MULDIV64
+@@ -56,7 +66,8 @@ config M68000
+ 	  a paging MMU.
+ 
+ config M68020
+-	bool "68020 support"
++	bool "68020 support" if M68KCLASSIC
++	default !(M68030 || M68040 || M68060)
+ 	depends on MMU
+ 	select FPU
+ 	select CPU_HAS_ADDRESS_SPACES
+@@ -66,9 +77,10 @@ config M68020
+ 	  68851 MMU (Memory Management Unit) to run Linux/m68k, except on the
+ 	  Sun 3, which provides its own version.
+ 
++if M68KCLASSIC && MMU
++
+ config M68030
+ 	bool "68030 support"
+-	depends on MMU && !MMU_SUN3
+ 	select FPU
+ 	select CPU_HAS_ADDRESS_SPACES
+ 	help
+@@ -78,7 +90,6 @@ config M68030
+ 
+ config M68040
+ 	bool "68040 support"
+-	depends on MMU && !MMU_SUN3
+ 	select FPU
+ 	select CPU_HAS_ADDRESS_SPACES
+ 	help
+@@ -89,13 +100,14 @@ config M68040
+ 
+ config M68060
+ 	bool "68060 support"
+-	depends on MMU && !MMU_SUN3
+ 	select FPU
+ 	select CPU_HAS_ADDRESS_SPACES
+ 	help
+ 	  If you anticipate running this kernel on a computer with a MC68060
+ 	  processor, say Y. Otherwise, say N.
+ 
++endif # M68KCLASSIC
++
+ config M68328
+ 	bool
+ 	depends on !MMU
+@@ -117,8 +129,6 @@ config M68VZ328
+ 	help
+ 	  Motorola 68VZ328 processor support.
+ 
+-endif # M68KCLASSIC
+-
+ if COLDFIRE
+ 
+ choice
+diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
+index d06b1c5d9b0c..de39f23b180e 100644
+--- a/arch/m68k/Kconfig.machine
++++ b/arch/m68k/Kconfig.machine
+@@ -6,7 +6,6 @@ if M68KCLASSIC
+ config AMIGA
+ 	bool "Amiga support"
+ 	depends on MMU
+-	select MMU_MOTOROLA if MMU
+ 	select LEGACY_TIMER_TICK
+ 	help
+ 	  This option enables support for the Amiga series of computers. If
+@@ -16,7 +15,6 @@ config AMIGA
+ config ATARI
+ 	bool "Atari support"
+ 	depends on MMU
+-	select MMU_MOTOROLA if MMU
+ 	select HAVE_ARCH_NVRAM_OPS
+ 	select LEGACY_TIMER_TICK
+ 	help
+@@ -31,7 +29,6 @@ config ATARI_KBD_CORE
+ config MAC
+ 	bool "Macintosh support"
+ 	depends on MMU
+-	select MMU_MOTOROLA if MMU
+ 	select HAVE_ARCH_NVRAM_OPS
+ 	select HAVE_PATA_PLATFORM
+ 	select LEGACY_TIMER_TICK
+@@ -44,7 +41,6 @@ config MAC
+ config APOLLO
+ 	bool "Apollo support"
+ 	depends on MMU
+-	select MMU_MOTOROLA if MMU
+ 	select LEGACY_TIMER_TICK
+ 	help
+ 	  Say Y here if you want to run Linux on an MC680x0-based Apollo
+@@ -53,7 +49,6 @@ config APOLLO
+ config VME
+ 	bool "VME (Motorola and BVM) support"
+ 	depends on MMU
+-	select MMU_MOTOROLA if MMU
+ 	help
+ 	  Say Y here if you want to build a kernel for a 680x0 based VME
+ 	  board.  Boards currently supported include Motorola boards MVME147,
+@@ -97,7 +92,6 @@ config BVME6000
+ config HP300
+ 	bool "HP9000/300 and HP9000/400 support"
+ 	depends on MMU
+-	select MMU_MOTOROLA if MMU
+ 	select LEGACY_TIMER_TICK
+ 	help
+ 	  This option enables support for the HP9000/300 and HP9000/400 series
+@@ -110,7 +104,6 @@ config SUN3X
+ 	bool "Sun3x support"
+ 	depends on MMU
+ 	select LEGACY_TIMER_TICK
+-	select MMU_MOTOROLA if MMU
+ 	select M68030
+ 	help
+ 	  This option enables support for the Sun 3x series of workstations.
+@@ -124,7 +117,6 @@ config SUN3X
+ config Q40
+ 	bool "Q40/Q60 support"
+ 	depends on MMU
+-	select MMU_MOTOROLA if MMU
+ 	select LEGACY_TIMER_TICK
+ 	help
+ 	  The Q40 is a Motorola 68040-based successor to the Sinclair QL
+@@ -133,22 +125,6 @@ config Q40
+ 	  Q60. Select your CPU below.  For 68LC060 don't forget to enable FPU
+ 	  emulation.
+ 
+-config SUN3
+-	bool "Sun3 support"
+-	depends on MMU
+-	depends on !MMU_MOTOROLA
+-	select MMU_SUN3 if MMU
+-	select LEGACY_TIMER_TICK
+-	select NO_DMA
+-	select M68020
+-	help
+-	  This option enables support for the Sun 3 series of workstations
+-	  (3/50, 3/60, 3/1xx, 3/2xx systems). Enabling this option requires
+-	  that all other hardware types must be disabled, as Sun 3 kernels
+-	  are incompatible with all other m68k targets (including Sun 3x!).
+-
+-	  If you don't want to compile a kernel exclusively for a Sun 3, say N.
+-
+ config VIRT
+ 	bool "Virtual M68k Machine support"
+ 	depends on MMU
+@@ -157,7 +133,6 @@ config VIRT
+ 	select GOLDFISH_TIMER
+ 	select GOLDFISH_TTY
+ 	select M68040
+-	select MMU_MOTOROLA if MMU
+ 	select RTC_CLASS
+ 	select RTC_DRV_GOLDFISH
+ 	select TTY
+diff --git a/arch/m68k/kernel/Makefile b/arch/m68k/kernel/Makefile
+index f335bf3268a1..5d1af676b508 100644
+--- a/arch/m68k/kernel/Makefile
++++ b/arch/m68k/kernel/Makefile
+@@ -5,16 +5,8 @@
+ 
+ extra-y			+= vmlinux.lds
+ 
+-obj-$(CONFIG_AMIGA)	:= head.o
+-obj-$(CONFIG_ATARI)	:= head.o
+-obj-$(CONFIG_MAC)	:= head.o
+-obj-$(CONFIG_APOLLO)	:= head.o
+-obj-$(CONFIG_VME)	:= head.o
+-obj-$(CONFIG_HP300)	:= head.o
+-obj-$(CONFIG_Q40)	:= head.o
+-obj-$(CONFIG_SUN3X)	:= head.o
+-obj-$(CONFIG_VIRT)	:= head.o
+-obj-$(CONFIG_SUN3)	:= sun3-head.o
++obj-$(CONFIG_M68KCLASSIC)	:= head.o
++obj-$(CONFIG_SUN3)		:= sun3-head.o
+ 
+ obj-y	+= entry.o irq.o module.o process.o ptrace.o
+ obj-y	+= setup.o signal.o sys_m68k.o syscalltable.o time.o traps.o
+diff --git a/arch/m68k/kernel/time.c b/arch/m68k/kernel/time.c
+index a97600b2af50..108debb87cfb 100644
+--- a/arch/m68k/kernel/time.c
++++ b/arch/m68k/kernel/time.c
+@@ -62,7 +62,7 @@ void timer_heartbeat(void)
+ }
+ #endif /* CONFIG_HEARTBEAT */
+ 
+-#ifdef CONFIG_M68KCLASSIC
++#if defined(CONFIG_M68KCLASSIC) || defined(CONFIG_SUN3)
+ /* machine dependent timer functions */
+ int (*mach_hwclk) (int, struct rtc_time*);
+ EXPORT_SYMBOL(mach_hwclk);
+@@ -149,7 +149,7 @@ static int __init rtc_init(void)
+ 
+ module_init(rtc_init);
+ #endif /* CONFIG_RTC_DRV_GENERIC */
+-#endif /* CONFIG M68KCLASSIC */
++#endif /* CONFIG M68KCLASSIC || SUN3 */
+ 
+ void __init time_init(void)
+ {
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.2
+
