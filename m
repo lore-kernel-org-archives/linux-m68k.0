@@ -1,351 +1,250 @@
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11F7D14F9F5
-	for <linux-m68k@lists.linux-m68k.org>; Sat,  3 Aug 2024 14:01:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.40.73.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FA843218B
+	for <linux-m68k@lists.linux-m68k.org>; Sun,  4 Aug 2024 12:35:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722693688; cv=none; b=O92DG3Xvwn/tF6vOCEaVAapPA9jr5FAimpzwhUjMfac7cgVBuvSBOcDKb1/emzB9EEez58DZgy0fOl1Vrkigh/JgfHWgOyzUf+kSivdWyfdavL5PouDtK4iEyBHaAUQ+9GXUdA2JujYYSmv8QPC1RKOHS9OmMpRIGjGSlG6ly28=
+	t=1722774939; cv=none; b=CnWz2CGF7XHEe5SQcYQnkNqPtgwvgaJ4rLDm8DPsfa2f4PBtcnZPzIU3PPUQByM/NIsMBnP1M6mydplynBSuqs/9M9Oxepkl/1IaVLu6ZiXv+QqyvG4FzhMNdcMWp9La12LnAFU2U3z2n+P+ZPlChWXTBdoBLxHwcEt4nK+mSuM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722693688; c=relaxed/simple;
-	bh=rP2UZRpPcr32Vo1X6UBkLA30Rc1YQdFaV5IlXUUTwf8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=W4BNDGd1sr6QMg0aftbqtqORbHLz1p8QPs+hcDN8eN4CYwj1veJMPB9HUwIdKbEIVrVbqBR1IiT01PxKrstC4MOzrl5SdsuDCDIDSOzNbCSnkqlQbFSGBnQKQ2NokB3Jcoi+PpkEqmX503gcw7VIcIf8LJNQqCJDjSAvC47mqVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eMr7CzzY; arc=none smtp.client-ip=145.40.73.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1722774939; c=relaxed/simple;
+	bh=jjKV0xLuptdposzI9dpa1FGLCMj36AteT2gwHbav3fY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WJxJKnignmeZc7cO3+g6FaWs1of5OYMIwR2rTF7/W/3M7U+BVcm3OHfp2CqAp12dOCn4chAvIbca7ogMwXAtAWEs505gvbyTgH7fWZFAB3FY2e+P1pyZkyyLOFW28X+l/xtlReAA6bctzpbi2jwJaBcZtm8/Qom7Nuua2bPK740=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mMSSMg8l; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eMr7CzzY"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 50C81CE013A;
-	Sat,  3 Aug 2024 14:01:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D1CAC116B1;
-	Sat,  3 Aug 2024 14:01:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722693682;
-	bh=rP2UZRpPcr32Vo1X6UBkLA30Rc1YQdFaV5IlXUUTwf8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=eMr7CzzYS/boccNWjj7LAkxNZxWxuC+/hz8ERh/JB5rE+eD9RWlDKFa6ngKl7XMhv
-	 tjfrDu4IMcMahQLXvBdu7N777912Sc4OseeqMcYZNq8zISfZMxzyo5MLaC9Sza0RPV
-	 UbTgdYr/3cd6cLpNtbSFI2iI8fhnLa0jBxJ+PTU9QNSRVzn+FXM1W0fFstn4238w+l
-	 BWtOlKSKgj18pMeEwBd4v4SIVLilFDNJ5NPN58xMFJdKl7gLOW/wGQ4SNDLDaUa8Ky
-	 8E/ec7A1f+anccrD191y42F720qqVR+RHc7SBJPPm5Bt4Qr6XyCe8c4p9XTfUCMdpX
-	 vkV5+qaaqNdfg==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Arnd Bergmann <arnd@arndb.de>,
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mMSSMg8l"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1722774938; x=1754310938;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jjKV0xLuptdposzI9dpa1FGLCMj36AteT2gwHbav3fY=;
+  b=mMSSMg8lfYG199qZSrED5tI7xMHpTDgo39IlfMtCC6deyVW4n4m2EIT7
+   6ysaOMbYD/kdeRKI3H3/RFf0lOlRnTYI9Yzra3cGj8tF+cjfnffgznlsr
+   4AoJveO2mQE7WenpUVxoPusq2pxewVBSYU4ZpuJgxoOe+5LZu+G4EXdSq
+   ko7TFa2bRxyCrLreo91wuIesmUGkZiHQ9Z/SjslX1dBcgMOg3ZUiPY7Mj
+   5emKO+clSI/FHZgEASnJoEXZj6p0YbIxv+id1o4lzzy3V7Fah62k8zTQM
+   zXe4f9mY6I2lRD4E8dFKk+uqu4sc8MTgco9132iHMR2sVD5T3oNk3KKXw
+   A==;
+X-CSE-ConnectionGUID: W5DyKKoRToWLwg8xfGQi1w==
+X-CSE-MsgGUID: pZch9vLNTUmSceLGMk4xiw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11154"; a="31893931"
+X-IronPort-AV: E=Sophos;i="6.09,262,1716274800"; 
+   d="scan'208";a="31893931"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2024 05:35:36 -0700
+X-CSE-ConnectionGUID: hjv/Q4J5TVuFOf+Wd6GovQ==
+X-CSE-MsgGUID: QMhMauHCSNWfhFi3dBH+ww==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,262,1716274800"; 
+   d="scan'208";a="86465817"
+Received: from unknown (HELO b6bf6c95bbab) ([10.239.97.151])
+  by orviesa002.jf.intel.com with ESMTP; 04 Aug 2024 05:35:33 -0700
+Received: from kbuild by b6bf6c95bbab with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1saaSR-0001RA-0w;
+	Sun, 04 Aug 2024 12:35:31 +0000
+Date: Sun, 4 Aug 2024 20:35:06 +0800
+From: kernel test robot <lkp@intel.com>
+To: Arnd Bergmann <arnd@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: oe-kbuild-all@lists.linux.dev, Arnd Bergmann <arnd@arndb.de>,
 	kernel test robot <lkp@intel.com>,
-	Greg Ungerer <gerg@linux-m68k.org>,
-	linux-m68k@lists.linux-m68k.org,
+	Greg Ungerer <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] m68k: move sun3 into a top-level platform option
-Date: Sat,  3 Aug 2024 16:00:57 +0200
-Message-Id: <20240803140115.3305547-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+Subject: Re: [PATCH] m68k: move sun3 into a top-level platform option
+Message-ID: <202408041920.ZhM3RsXp-lkp@intel.com>
+References: <20240803140115.3305547-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240803140115.3305547-1-arnd@kernel.org>
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hi Arnd,
 
-It is possible to select an m68k MMU build but not actually
-enable any of the three MMU options, which then results in a
-build failure:
+kernel test robot noticed the following build errors:
 
- arch/m68k/include/asm/page.h:10:25: error: 'CONFIG_PAGE_SHIFT' undeclared here (not in a function); did you mean 'CONFIG_LOG_BUF_SHIFT'?
+[auto build test ERROR on geert-m68k/for-next]
+[also build test ERROR on geert-m68k/for-linus soc/for-next gerg-m68knommu/for-next linus/master v6.11-rc1 next-20240802]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Change the Kconfig selection to ensure that exactly one of the
-three options is always enabled whenever an MMU-enabled kernel
-is built, but moving CONFIG_SUN3 into a top-level option next
-to M68KCLASSIC and COLDFIRE.
+url:    https://github.com/intel-lab-lkp/linux/commits/Arnd-Bergmann/m68k-move-sun3-into-a-top-level-platform-option/20240804-001711
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-next
+patch link:    https://lore.kernel.org/r/20240803140115.3305547-1-arnd%40kernel.org
+patch subject: [PATCH] m68k: move sun3 into a top-level platform option
+config: m68k-randconfig-r121-20240804 (https://download.01.org/0day-ci/archive/20240804/202408041920.ZhM3RsXp-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 14.1.0
+reproduce: (https://download.01.org/0day-ci/archive/20240804/202408041920.ZhM3RsXp-lkp@intel.com/reproduce)
 
-All defconfig files should keep working without changes,
-but alldefconfig now builds support for the classic MMU.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202408041920.ZhM3RsXp-lkp@intel.com/
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202408032138.P7sBvIns-lkp@intel.com/
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-I saw another copy of the bug report today.
+All errors (new ones prefixed by >>):
 
-Geert, any opinions on this approach? I posted this before but
-it looks like you missed it.
----
- arch/m68k/Kconfig         | 11 +++++------
- arch/m68k/Kconfig.cpu     | 30 ++++++++++++++++++++----------
- arch/m68k/Kconfig.machine | 25 -------------------------
- arch/m68k/kernel/Makefile | 12 ++----------
- arch/m68k/kernel/time.c   |  4 ++--
- 5 files changed, 29 insertions(+), 53 deletions(-)
+   In file included from include/linux/kernel.h:15,
+                    from include/linux/cpumask.h:11,
+                    from include/linux/alloc_tag.h:13,
+                    from include/linux/percpu.h:5,
+                    from include/linux/arch_topology.h:9,
+                    from include/linux/topology.h:30,
+                    from include/linux/gfp.h:8,
+                    from include/linux/slab.h:16,
+                    from arch/m68k/include/asm/pgtable_no.h:11,
+                    from arch/m68k/include/asm/pgtable.h:8,
+                    from include/linux/pgtable.h:6,
+                    from arch/m68k/kernel/head.S:254:
+   include/linux/align.h:8:9: warning: "ALIGN" redefined
+       8 | #define ALIGN(x, a)             __ALIGN_KERNEL((x), (a))
+         |         ^~~~~
+   In file included from arch/m68k/kernel/head.S:252:
+   include/linux/linkage.h:103:9: note: this is the location of the previous definition
+     103 | #define ALIGN __ALIGN
+         |         ^~~~~
+   In file included from include/linux/panic.h:5,
+                    from include/linux/kernel.h:30:
+   include/linux/compiler_attributes.h:55:9: warning: "__always_inline" redefined
+      55 | #define __always_inline                 inline __attribute__((__always_inline__))
+         |         ^~~~~~~~~~~~~~~
+   In file included from include/linux/stddef.h:5,
+                    from include/linux/container_of.h:6,
+                    from include/linux/alloc_tag.h:10:
+   include/uapi/linux/stddef.h:8:9: note: this is the location of the previous definition
+       8 | #define __always_inline inline
+         |         ^~~~~~~~~~~~~~~
+   include/linux/compiler_attributes.h:91:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
+      91 | #if __has_attribute(__copy__)
+         |     ^~~~~~~~~~~~~~~
+>> include/linux/compiler_attributes.h:91:20: error: missing binary operator before token "("
+      91 | #if __has_attribute(__copy__)
+         |                    ^
+   include/linux/compiler_attributes.h:104:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
+     104 | #if __has_attribute(__counted_by__)
+         |     ^~~~~~~~~~~~~~~
+   include/linux/compiler_attributes.h:104:20: error: missing binary operator before token "("
+     104 | #if __has_attribute(__counted_by__)
+         |                    ^
+   include/linux/compiler_attributes.h:107:10: warning: "__counted_by" redefined
+     107 | # define __counted_by(member)
+         |          ^~~~~~~~~~~~
+   include/uapi/linux/stddef.h:55:9: note: this is the location of the previous definition
+      55 | #define __counted_by(m)
+         |         ^~~~~~~~~~~~
+   include/linux/compiler_attributes.h:116:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
+     116 | #if __has_attribute(__diagnose_as_builtin__)
+         |     ^~~~~~~~~~~~~~~
+   include/linux/compiler_attributes.h:116:20: error: missing binary operator before token "("
+     116 | #if __has_attribute(__diagnose_as_builtin__)
+         |                    ^
+   include/linux/compiler_attributes.h:139:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
+     139 | #if __has_attribute(__designated_init__)
+         |     ^~~~~~~~~~~~~~~
+   include/linux/compiler_attributes.h:139:20: error: missing binary operator before token "("
+     139 | #if __has_attribute(__designated_init__)
+         |                    ^
+   include/linux/compiler_attributes.h:150:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
+     150 | #if __has_attribute(__error__)
+         |     ^~~~~~~~~~~~~~~
+   include/linux/compiler_attributes.h:150:20: error: missing binary operator before token "("
+     150 | #if __has_attribute(__error__)
+         |                    ^
+   include/linux/compiler_attributes.h:161:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
+     161 | #if __has_attribute(__externally_visible__)
+         |     ^~~~~~~~~~~~~~~
+   include/linux/compiler_attributes.h:161:20: error: missing binary operator before token "("
+     161 | #if __has_attribute(__externally_visible__)
+         |                    ^
+   include/linux/compiler_attributes.h:198:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
+     198 | #if __has_attribute(__no_caller_saved_registers__)
+         |     ^~~~~~~~~~~~~~~
+   include/linux/compiler_attributes.h:198:20: error: missing binary operator before token "("
+     198 | #if __has_attribute(__no_caller_saved_registers__)
+         |                    ^
+   include/linux/compiler_attributes.h:209:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
+     209 | #if __has_attribute(__noclone__)
+         |     ^~~~~~~~~~~~~~~
+   include/linux/compiler_attributes.h:209:20: error: missing binary operator before token "("
+     209 | #if __has_attribute(__noclone__)
+         |                    ^
+   include/linux/compiler_attributes.h:226:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
+     226 | #if __has_attribute(__fallthrough__)
+         |     ^~~~~~~~~~~~~~~
+   include/linux/compiler_attributes.h:226:20: error: missing binary operator before token "("
+     226 | #if __has_attribute(__fallthrough__)
+         |                    ^
+   include/linux/compiler_attributes.h:252:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
+     252 | #if __has_attribute(__nonstring__)
+         |     ^~~~~~~~~~~~~~~
+   include/linux/compiler_attributes.h:252:20: error: missing binary operator before token "("
+     252 | #if __has_attribute(__nonstring__)
+         |                    ^
+   include/linux/compiler_attributes.h:264:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
+     264 | #if __has_attribute(__no_profile_instrument_function__)
+         |     ^~~~~~~~~~~~~~~
+   include/linux/compiler_attributes.h:264:20: error: missing binary operator before token "("
+     264 | #if __has_attribute(__no_profile_instrument_function__)
+         |                    ^
+   include/linux/compiler_attributes.h:283:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
+     283 | #if __has_attribute(__no_stack_protector__)
+         |     ^~~~~~~~~~~~~~~
+   include/linux/compiler_attributes.h:283:20: error: missing binary operator before token "("
+     283 | #if __has_attribute(__no_stack_protector__)
+         |                    ^
+   include/linux/compiler_attributes.h:294:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
+     294 | #if __has_attribute(__overloadable__)
+         |     ^~~~~~~~~~~~~~~
+   include/linux/compiler_attributes.h:294:20: error: missing binary operator before token "("
+     294 | #if __has_attribute(__overloadable__)
+         |                    ^
+   include/linux/compiler_attributes.h:313:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
+     313 | #if __has_attribute(__pass_dynamic_object_size__)
+         |     ^~~~~~~~~~~~~~~
+   include/linux/compiler_attributes.h:313:20: error: missing binary operator before token "("
+     313 | #if __has_attribute(__pass_dynamic_object_size__)
+         |                    ^
+   include/linux/compiler_attributes.h:318:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
+     318 | #if __has_attribute(__pass_object_size__)
+         |     ^~~~~~~~~~~~~~~
+   include/linux/compiler_attributes.h:318:20: error: missing binary operator before token "("
+     318 | #if __has_attribute(__pass_object_size__)
+         |                    ^
+   include/linux/compiler_attributes.h:342:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
+     342 | #if __has_attribute(__uninitialized__)
+         |     ^~~~~~~~~~~~~~~
+   include/linux/compiler_attributes.h:342:20: error: missing binary operator before token "("
+     342 | #if __has_attribute(__uninitialized__)
+         |                    ^
+   include/linux/compiler_attributes.h:388:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
+     388 | #if __has_attribute(__warning__)
 
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index cc26df907bfe..7c4f7bcc89d7 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -84,24 +84,23 @@ config MMU
- 	  support by paged memory management. If unsure, say 'Y'.
- 
- config MMU_MOTOROLA
--	bool
-+	def_bool MMU && M68KCLASSIC
- 	select HAVE_PAGE_SIZE_4KB
- 
- config MMU_COLDFIRE
-+	def_bool MMU && COLDFIRE
- 	select HAVE_PAGE_SIZE_8KB
--	bool
- 
- config MMU_SUN3
--	bool
-+	def_bool MMU && SUN3
- 	select HAVE_PAGE_SIZE_8KB
--	depends on MMU && !MMU_MOTOROLA && !MMU_COLDFIRE
- 
- config ARCH_SUPPORTS_KEXEC
--	def_bool M68KCLASSIC && MMU
-+	def_bool (M68KCLASSIC || SUN3) && MMU
- 
- config BOOTINFO_PROC
- 	bool "Export bootinfo in procfs"
--	depends on KEXEC && M68KCLASSIC
-+	depends on KEXEC && (M68KCLASSIC || SUN3)
- 	help
- 	  Say Y to export the bootinfo used to boot the kernel in a
- 	  "bootinfo" file in procfs.  This is useful with kexec.
-diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-index c777a129768a..a1b9e5f09e18 100644
---- a/arch/m68k/Kconfig.cpu
-+++ b/arch/m68k/Kconfig.cpu
-@@ -32,13 +32,23 @@ config COLDFIRE
- 	select HAVE_LEGACY_CLK
- 	select HAVE_PAGE_SIZE_8KB if !MMU
- 
--endchoice
-+config SUN3
-+	bool "Sun3 support"
-+	depends on MMU
-+	select HAVE_ARCH_PFN_VALID
-+	select LEGACY_TIMER_TICK
-+	select NO_DMA
-+	select M68020
-+	help
-+	  This option enables support for the Sun 3 series of workstations
-+	  (3/50, 3/60, 3/1xx, 3/2xx systems). These use a classic 68020 CPU
-+	  but the custom memory management unit makes them incompatible with
-+	  all other classic m68k machines, including Sun 3x.
- 
--if M68KCLASSIC
-+endchoice
- 
- config M68000
--	def_bool y
--	depends on !MMU
-+	def_bool M68KCLASSIC && !MMU
- 	select CPU_HAS_NO_BITFIELDS
- 	select CPU_HAS_NO_CAS
- 	select CPU_HAS_NO_MULDIV64
-@@ -56,7 +66,8 @@ config M68000
- 	  a paging MMU.
- 
- config M68020
--	bool "68020 support"
-+	bool "68020 support" if M68KCLASSIC
-+	default !(M68030 || M68040 || M68060)
- 	depends on MMU
- 	select FPU
- 	select CPU_HAS_ADDRESS_SPACES
-@@ -66,9 +77,10 @@ config M68020
- 	  68851 MMU (Memory Management Unit) to run Linux/m68k, except on the
- 	  Sun 3, which provides its own version.
- 
-+if M68KCLASSIC && MMU
-+
- config M68030
- 	bool "68030 support"
--	depends on MMU && !MMU_SUN3
- 	select FPU
- 	select CPU_HAS_ADDRESS_SPACES
- 	help
-@@ -78,7 +90,6 @@ config M68030
- 
- config M68040
- 	bool "68040 support"
--	depends on MMU && !MMU_SUN3
- 	select FPU
- 	select CPU_HAS_ADDRESS_SPACES
- 	help
-@@ -89,13 +100,14 @@ config M68040
- 
- config M68060
- 	bool "68060 support"
--	depends on MMU && !MMU_SUN3
- 	select FPU
- 	select CPU_HAS_ADDRESS_SPACES
- 	help
- 	  If you anticipate running this kernel on a computer with a MC68060
- 	  processor, say Y. Otherwise, say N.
- 
-+endif # M68KCLASSIC
-+
- config M68328
- 	bool
- 	depends on !MMU
-@@ -117,8 +129,6 @@ config M68VZ328
- 	help
- 	  Motorola 68VZ328 processor support.
- 
--endif # M68KCLASSIC
--
- if COLDFIRE
- 
- choice
-diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
-index d06b1c5d9b0c..de39f23b180e 100644
---- a/arch/m68k/Kconfig.machine
-+++ b/arch/m68k/Kconfig.machine
-@@ -6,7 +6,6 @@ if M68KCLASSIC
- config AMIGA
- 	bool "Amiga support"
- 	depends on MMU
--	select MMU_MOTOROLA if MMU
- 	select LEGACY_TIMER_TICK
- 	help
- 	  This option enables support for the Amiga series of computers. If
-@@ -16,7 +15,6 @@ config AMIGA
- config ATARI
- 	bool "Atari support"
- 	depends on MMU
--	select MMU_MOTOROLA if MMU
- 	select HAVE_ARCH_NVRAM_OPS
- 	select LEGACY_TIMER_TICK
- 	help
-@@ -31,7 +29,6 @@ config ATARI_KBD_CORE
- config MAC
- 	bool "Macintosh support"
- 	depends on MMU
--	select MMU_MOTOROLA if MMU
- 	select HAVE_ARCH_NVRAM_OPS
- 	select HAVE_PATA_PLATFORM
- 	select LEGACY_TIMER_TICK
-@@ -44,7 +41,6 @@ config MAC
- config APOLLO
- 	bool "Apollo support"
- 	depends on MMU
--	select MMU_MOTOROLA if MMU
- 	select LEGACY_TIMER_TICK
- 	help
- 	  Say Y here if you want to run Linux on an MC680x0-based Apollo
-@@ -53,7 +49,6 @@ config APOLLO
- config VME
- 	bool "VME (Motorola and BVM) support"
- 	depends on MMU
--	select MMU_MOTOROLA if MMU
- 	help
- 	  Say Y here if you want to build a kernel for a 680x0 based VME
- 	  board.  Boards currently supported include Motorola boards MVME147,
-@@ -97,7 +92,6 @@ config BVME6000
- config HP300
- 	bool "HP9000/300 and HP9000/400 support"
- 	depends on MMU
--	select MMU_MOTOROLA if MMU
- 	select LEGACY_TIMER_TICK
- 	help
- 	  This option enables support for the HP9000/300 and HP9000/400 series
-@@ -110,7 +104,6 @@ config SUN3X
- 	bool "Sun3x support"
- 	depends on MMU
- 	select LEGACY_TIMER_TICK
--	select MMU_MOTOROLA if MMU
- 	select M68030
- 	help
- 	  This option enables support for the Sun 3x series of workstations.
-@@ -124,7 +117,6 @@ config SUN3X
- config Q40
- 	bool "Q40/Q60 support"
- 	depends on MMU
--	select MMU_MOTOROLA if MMU
- 	select LEGACY_TIMER_TICK
- 	help
- 	  The Q40 is a Motorola 68040-based successor to the Sinclair QL
-@@ -133,22 +125,6 @@ config Q40
- 	  Q60. Select your CPU below.  For 68LC060 don't forget to enable FPU
- 	  emulation.
- 
--config SUN3
--	bool "Sun3 support"
--	depends on MMU
--	depends on !MMU_MOTOROLA
--	select MMU_SUN3 if MMU
--	select LEGACY_TIMER_TICK
--	select NO_DMA
--	select M68020
--	help
--	  This option enables support for the Sun 3 series of workstations
--	  (3/50, 3/60, 3/1xx, 3/2xx systems). Enabling this option requires
--	  that all other hardware types must be disabled, as Sun 3 kernels
--	  are incompatible with all other m68k targets (including Sun 3x!).
--
--	  If you don't want to compile a kernel exclusively for a Sun 3, say N.
--
- config VIRT
- 	bool "Virtual M68k Machine support"
- 	depends on MMU
-@@ -157,7 +133,6 @@ config VIRT
- 	select GOLDFISH_TIMER
- 	select GOLDFISH_TTY
- 	select M68040
--	select MMU_MOTOROLA if MMU
- 	select RTC_CLASS
- 	select RTC_DRV_GOLDFISH
- 	select TTY
-diff --git a/arch/m68k/kernel/Makefile b/arch/m68k/kernel/Makefile
-index f335bf3268a1..5d1af676b508 100644
---- a/arch/m68k/kernel/Makefile
-+++ b/arch/m68k/kernel/Makefile
-@@ -5,16 +5,8 @@
- 
- extra-y			+= vmlinux.lds
- 
--obj-$(CONFIG_AMIGA)	:= head.o
--obj-$(CONFIG_ATARI)	:= head.o
--obj-$(CONFIG_MAC)	:= head.o
--obj-$(CONFIG_APOLLO)	:= head.o
--obj-$(CONFIG_VME)	:= head.o
--obj-$(CONFIG_HP300)	:= head.o
--obj-$(CONFIG_Q40)	:= head.o
--obj-$(CONFIG_SUN3X)	:= head.o
--obj-$(CONFIG_VIRT)	:= head.o
--obj-$(CONFIG_SUN3)	:= sun3-head.o
-+obj-$(CONFIG_M68KCLASSIC)	:= head.o
-+obj-$(CONFIG_SUN3)		:= sun3-head.o
- 
- obj-y	+= entry.o irq.o module.o process.o ptrace.o
- obj-y	+= setup.o signal.o sys_m68k.o syscalltable.o time.o traps.o
-diff --git a/arch/m68k/kernel/time.c b/arch/m68k/kernel/time.c
-index a97600b2af50..108debb87cfb 100644
---- a/arch/m68k/kernel/time.c
-+++ b/arch/m68k/kernel/time.c
-@@ -62,7 +62,7 @@ void timer_heartbeat(void)
- }
- #endif /* CONFIG_HEARTBEAT */
- 
--#ifdef CONFIG_M68KCLASSIC
-+#if defined(CONFIG_M68KCLASSIC) || defined(CONFIG_SUN3)
- /* machine dependent timer functions */
- int (*mach_hwclk) (int, struct rtc_time*);
- EXPORT_SYMBOL(mach_hwclk);
-@@ -149,7 +149,7 @@ static int __init rtc_init(void)
- 
- module_init(rtc_init);
- #endif /* CONFIG_RTC_DRV_GENERIC */
--#endif /* CONFIG M68KCLASSIC */
-+#endif /* CONFIG M68KCLASSIC || SUN3 */
- 
- void __init time_init(void)
- {
+
+vim +91 include/linux/compiler_attributes.h
+
+a3f8a30f3f0079 Miguel Ojeda 2018-08-30  84  
+c0d9782f5b6d71 Miguel Ojeda 2019-02-08  85  /*
+c0d9782f5b6d71 Miguel Ojeda 2019-02-08  86   * Optional: only supported since gcc >= 9
+c0d9782f5b6d71 Miguel Ojeda 2019-02-08  87   * Optional: not supported by clang
+c0d9782f5b6d71 Miguel Ojeda 2019-02-08  88   *
+c0d9782f5b6d71 Miguel Ojeda 2019-02-08  89   *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-copy-function-attribute
+c0d9782f5b6d71 Miguel Ojeda 2019-02-08  90   */
+c0d9782f5b6d71 Miguel Ojeda 2019-02-08 @91  #if __has_attribute(__copy__)
+c0d9782f5b6d71 Miguel Ojeda 2019-02-08  92  # define __copy(symbol)                 __attribute__((__copy__(symbol)))
+c0d9782f5b6d71 Miguel Ojeda 2019-02-08  93  #else
+c0d9782f5b6d71 Miguel Ojeda 2019-02-08  94  # define __copy(symbol)
+c0d9782f5b6d71 Miguel Ojeda 2019-02-08  95  #endif
+c0d9782f5b6d71 Miguel Ojeda 2019-02-08  96  
+
 -- 
-2.39.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
