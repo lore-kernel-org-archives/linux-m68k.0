@@ -1,118 +1,164 @@
-Received: from fhigh8-smtp.messagingengine.com (fhigh8-smtp.messagingengine.com [103.168.172.159])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDE33186289
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  8 Aug 2024 06:56:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1C27186289
+	for <linux-m68k@vger.kernel.org>; Thu,  8 Aug 2024 06:58:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723100213; cv=none; b=ZClM/z8gcWbVZqHvAPmvEr//buLcvnMPDtsv0aVxVifAsn+g05v6GXu1pg+/Mn9v3uZweFJo62CLuB0YWfjBvMPoSwy3rHOmP8+MBo5FKTfQtxy9pXqzIaBK8KjQ1gW8Eee0N27qFfahhihu+shtG97EzY9V8YDYbKN/y9vbwVI=
+	t=1723100294; cv=none; b=ENjoJu3UNKbINj+q2pCz9agic5h4k9MyIXdHxD2p3wscbTSkrIto0dCBaJ/Z9VnQXigDygOf+wOpCkDB6TsRC89xnCLXSjaCf0bd8+bbiae8LV4fPErRw0LqbvTnybiUWhDa2qIdcXnO/Z/Pyp72PST7/dtmjIdGykMfcbcyQtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723100213; c=relaxed/simple;
-	bh=TBOUydefTc7/1q+sGWLWs5GazLiAfc0EDpwUWe5w2b4=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=b+eZFMRGw4kC7qWIDf8LzQFYvhsUY1TpwyqOGUjhvM0ldjP8s9sijMnWaPWzg5iKBWauDCzQp9KeCE1WeCxXCy8TwCsL+96z0ZSZCgvUIv9aY+o622dxcZ3ZENW/jCgTUfo2QJicV9aQV/gtg0y4p38KOqpSmfPOfVHwRJAVgHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=EqtmtO2A; arc=none smtp.client-ip=103.168.172.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1723100294; c=relaxed/simple;
+	bh=sQz5N9zv1ux2ZDE3pCs52XXHhFEfb5s4mHk61I2BhcM=;
+	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=IugKnUNnDWhWhE+es4KPMMHrwG4v0AlDKiBToLIXn2NlYz42Ty5PfvQfRYuppYuW+XCifOi78upKYB8C6rhbCKnlU2DfzPvvNThTjPpR0qgBypHgtYtMKfe98m3PlQgw5chMkq795/OUuKz4PgUpf40XjTYCf6N4F65FlqD2Xk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZYLV8Ie9; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="EqtmtO2A"
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id EA6371151B82;
-	Thu,  8 Aug 2024 02:56:50 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Thu, 08 Aug 2024 02:56:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1723100210; x=1723186610; bh=AJlcxjSc/XscpqviHn/IgfWcdbYq
-	kqdfgda8u8pZ2Jc=; b=EqtmtO2ASzE+XbTSf5bw4UGwKoW5Hnrkrm7B5LsvyhWt
-	MIJF7LxVzEYzjNi+F/pSlZKF8ySociIzABdh5GhVwAWYE5gnDac32OOFM5I9+xkw
-	bFuC9oG0TG3A3zIU7eFgViHNq4eDTRm0eTZMErA7h7cf7Uda0vd9uCKvUIOII+ET
-	UUVttjZVRzoPAtuiubOhJXG+8VJIH8pKt/1xTdUZ0ebAi5Bzd0B2WVpRSdzD0+OH
-	TBedhFDC0bxkYphHYyHBQurL8mgcGj/2dC1dZ2Sf84kPi+YRC5QhcSWGoi1Ru+Xl
-	RB1STzyDsyhPsxJzXUFZftht4v7IZLMwyHMLqBeVFQ==
-X-ME-Sender: <xms:Mmy0Zip9DvlFAtl_M5L-yB29Nbpofhhxe-6J26MPKkTq3KQJ2cO9rg>
-    <xme:Mmy0ZgojTSaysxZZc5AmbSfHPcgez1sTMCIlV47Heas3gghp_15r8YFI6nTmJbvJy
-    s2vC58KApVmitIhnrg>
-X-ME-Received: <xmr:Mmy0ZnM_64ws7g9SNKeyYfmXoByCsr6jUs3vKMy-zevHm06AfxkA-g9Xpbdh3NQKaNB_VDacyR39_DSJ-MN4YqxyskIze6xGdd8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrledugdduudefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecu
-    hfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrd
-    horhhgqeenucggtffrrghtthgvrhhnpeefieehjedvtefgiedtudethfekieelhfevhefg
-    vddtkeekvdekhefftdekvedvueenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuve
-    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhn
-    sehlihhnuhigqdhmieekkhdrohhrghdpnhgspghrtghpthhtohephedpmhhouggvpehsmh
-    htphhouhhtpdhrtghpthhtohepghgvrhhgsehlihhnuhigqdhmieekkhdrohhrghdprhgt
-    phhtthhopehstghhmhhithiimhhitgesghhmrghilhdrtghomhdprhgtphhtthhopehlih
-    hnuhigqdhmieekkhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehgvggv
-    rhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmieekkh
-    eslhhishhtshdrlhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:Mmy0Zh7CEtj5tYV45DLpDHlqZGDKLxNeaCp4Dd4T_WXfdAKJn1dddQ>
-    <xmx:Mmy0Zh5fTw4zNG8XFn_XDBX8EIpRAsFJdJnMx-6AX3cv_m22IWiXXA>
-    <xmx:Mmy0ZhgQz5tgeEw1aT8NTGOCJPqrhW2fiVo4dWMdeD8GF7F_NOepUQ>
-    <xmx:Mmy0Zr77XHgTG1eHlKz5Kf63clHDNVGS1k2XzCYPDtcLjA4gXRKTHQ>
-    <xmx:Mmy0Zk0Ev_0rHws7vDAud4ieuAMnB2kWkg-ygfbg1o7xjdr95oep57cR>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 8 Aug 2024 02:56:47 -0400 (EDT)
-Date: Thu, 8 Aug 2024 16:56:51 +1000 (AEST)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Greg Ungerer <gerg@linux-m68k.org>
-cc: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, 
-    geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZYLV8Ie9"
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-70d333d5890so635477b3a.0
+        for <linux-m68k@vger.kernel.org>; Wed, 07 Aug 2024 23:58:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723100292; x=1723705092; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8HhTYnOYlFjDfuFRlLkZRiAezVFLlxS2aYphzRZcpbo=;
+        b=ZYLV8Ie9tWeR0sx4bKjYVbSw9Qe6lq+hLU47wA9zAVZnprNRXU+Xws2rHVh9h/5bSz
+         CqF8yZU0RCdb9lkTZK+EFo2OHunQ4+hS5TUXg1KC7uTw9tj/WUmUHf+49C+T7otsqo5l
+         hFT50CM484ecdHslYHG1UtuzF0pVCPlIyZiVqSFsTGL9sHdG/PwnC6KVWIIfSQNfGePC
+         u4vtY1kphtvKhv3PVdQ/b6Oc00DqbA/qB1ev+NHAZrlVZlMlH1123PEcOQh8OqxzSLiP
+         5MZxwj+F478ZGuWxzLK3UAcqj/pP9P7M9AElrruplMc89WPOgQQ70+9xLVMnZ6i2jQgR
+         oAUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723100292; x=1723705092;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=8HhTYnOYlFjDfuFRlLkZRiAezVFLlxS2aYphzRZcpbo=;
+        b=Y9VpwSBwKLWGmI0/jgryWWtgZyG9F2fTN2yM82ON+wKG+cjaZ5tgApydKbfmzPFEpJ
+         Men3Nz7QIG3PdVD8L4/lghD1Y6HBtdq9cSxQebHf4+Zc6mGUX4Z5eEPbHU8SUwYY1k6v
+         5CSxy3pqcUy77HMDsAMT9UprgnTW2ridFFhylrDI7MPk7wQYKK1NpLhat/ZnFBZl5rgm
+         IPiwTh+RY53IzKZixFzLEOOGntAzonoXJGoasfdWKK9bYPDiUbf9FSO7+C44C+PJsuEt
+         fZSgOs0yOhun2E8M7vAIDjublb1M2nN8+VR+DDRBMMzFb61u+zr1OmffvsRBSiVOPOh6
+         x0/A==
+X-Gm-Message-State: AOJu0YxnjyAg4QGOZwPK1L/EK0uA2u4ES3RVfOQxal5ybGGhiY/ChcYX
+	i/daOrencCs5W17YOJQ4lQQ3Xw1Hlj6C368g+jTWoVyDqqgKye8T
+X-Google-Smtp-Source: AGHT+IEoQWEdPv2o5z/l6hT+2L608Ls+RgjSMm2XYLmJ6RMiPXy7LZYkC36NYXrEaLbKaLDZVssE2w==
+X-Received: by 2002:a05:6a00:1393:b0:70d:1e0a:e609 with SMTP id d2e1a72fcca58-710cae890damr1116252b3a.30.1723100291775;
+        Wed, 07 Aug 2024 23:58:11 -0700 (PDT)
+Received: from [10.1.1.24] (222-152-175-63-fibre.sparkbb.co.nz. [222.152.175.63])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-710cb2fd4c5sm533424b3a.212.2024.08.07.23.58.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 07 Aug 2024 23:58:11 -0700 (PDT)
 Subject: Re: [PATCH v4 1/2] m68k: Handle __generic_copy_to_user faults more
  carefully
-In-Reply-To: <ae5facc5-4b10-481b-9f76-f9b007309d8f@linux-m68k.org>
-Message-ID: <727be0d7-a3ed-d3eb-2a13-c6ac316cd25d@linux-m68k.org>
-References: <20240429030945.22451-1-schmitzmic@gmail.com> <20240429030945.22451-2-schmitzmic@gmail.com> <e0d53477-1646-9504-2382-f8793d078704@linux-m68k.org> <42dfdef0-88d1-4c15-b04b-174f12bd8f3f@gmail.com> <de7c9ac4-cb6f-e2a4-59e4-26fd7e260d4e@linux-m68k.org>
+To: Greg Ungerer <gerg@linux-m68k.org>, Finn Thain <fthain@linux-m68k.org>
+References: <20240429030945.22451-1-schmitzmic@gmail.com>
+ <20240429030945.22451-2-schmitzmic@gmail.com>
+ <e0d53477-1646-9504-2382-f8793d078704@linux-m68k.org>
+ <42dfdef0-88d1-4c15-b04b-174f12bd8f3f@gmail.com>
+ <de7c9ac4-cb6f-e2a4-59e4-26fd7e260d4e@linux-m68k.org>
  <ae5facc5-4b10-481b-9f76-f9b007309d8f@linux-m68k.org>
+Cc: linux-m68k@vger.kernel.org, geert@linux-m68k.org,
+ linux-m68k@lists.linux-m68k.org
+From: Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <05cd1710-4422-aef5-5bed-8b5968069a4d@gmail.com>
+Date: Thu, 8 Aug 2024 18:58:05 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <ae5facc5-4b10-481b-9f76-f9b007309d8f@linux-m68k.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+Hi Greg,
 
-On Thu, 8 Aug 2024, Greg Ungerer wrote:
-
+Am 08.08.2024 um 18:05 schrieb Greg Ungerer:
+> Hi Michael, Finn,
+>
 > On 8/8/24 11:57, Finn Thain wrote:
-> > 
-> > >
-> > > I'm afraid I've lost track of where we're at with this patch series. 
-> > > Does it need more work, or more bug reports such as the one below?
-> > 
-> > Apparently the series is waiting for some testing on a Coldfire system 
-> > with MMU.
-> 
-> Ok, I am in a state that I can do that now (I managed to fix my M5475EVB 
-> board). 
-
-Thanks, Greg.
-
+>>
+>> Hello Michael
+>>
+>> On Thu, 8 Aug 2024, Michael Schmitz wrote:
+>>
+>>>> Well, that __clear_user() bug is no longer theoretical. I accidentally
+>>>> bumped into it when I sent a ^C to a shell script I wrote to test some
+>>>> mac_scsi driver patches...
+>>
+>> ...
+>>
+>>>
+>>> I'm afraid I've lost track of where we're at with this patch series.
+>>> Does it need more work, or more bug reports such as the one below?
+>>
+>> Apparently the series is waiting for some testing on a Coldfire system
+>> with MMU.
+>
+> Ok, I am in a state that I can do that now (I managed to fix my M5475EVB
+> board).
 > If I test the v4 versions of this patch set that should do the job?
-> 
 
-There are 3 patches that need some more testing, one from me and two from 
-Michael:
+Yes, v4 is the one to test.
 
-[PATCH] m68k: Handle put_user() faults more carefully
-[PATCH v4 1/2] m68k: Handle __generic_copy_to_user faults more carefully
-[PATCH v4 2/2] m68k: improve __constant_copy_to_user_asm() fault handling
+I'll see that I can dig out my test code to reproduce the bug.
 
-They were posted in two threads:
+Thanks,
 
-https://lore.kernel.org/linux-m68k/1ed9c4c753395510c1a8df9c35e2ad4c31c90f95.1714265926.git.fthain@linux-m68k.org/T/
-https://lore.kernel.org/linux-m68k/CAMuHMdVrOnOQwCxk42YCjEkbfL-YDSvpf_xTaouv9hUs2bO+qg@mail.gmail.com/T/
+	Michael
 
-On 680x0, one of the bugs was brought to light with 'stress-ng 
---sysbadaddr -1'. The others required special test programs.
-
-I've no idea whether Coldfire silicon is susceptable at all, and if it is, 
-whether the same reproducers would work. But that's neither here nor there 
-from a regression testing standpoint.
+>
+> Regards
+> Greg
+>
+>
+>
+>>> The previous bug reports might be considered somewhat contrived but this
+>>> one's from 'real' user space code, and none too complex at that?
+>>>
+>>
+>> Right. That code was as follows. There's nothing here aimed at
+>> arch/m68k/lib/uaccess.c in particular, just IO to a block device and a
+>> tmpfs filesystem.
+>>
+>>
+>> #!/bin/bash
+>>
+>> set -e -u
+>>
+>> filename=$1
+>>
+>> rand=/tmp/rand_test_data
+>> zero=/tmp/zero_test_data
+>> len=512K
+>>
+>> dd if=/dev/urandom of=$rand bs=$len count=1 2>/dev/null
+>> dd if=/dev/zero of=$zero bs=$len count=1 2>/dev/null
+>>
+>> write() {
+>>          dd $args if=$orig of=$filename # oflag=direct
+>> }
+>>
+>> compare() {
+>>          echo 3 > /proc/sys/vm/drop_caches
+>>          if ! cmp -n $len $orig $filename ; then
+>>                  diff -u <(hexdump -C < $orig) <(hexdump -C < $filename)
+>>          fi
+>> }
+>>
+>> while true; do
+>>          for args in "bs=512k count=1" "bs=64k count=8" "bs=4k
+>> count=128" "bs=512 count=1k" ; do
+>>                  echo $args
+>>                  orig=$rand ; write ; compare
+>>                  orig=$zero ; write ; compare
+>>                  sync
+>>                  echo
+>>          done
+>> done
