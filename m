@@ -1,164 +1,120 @@
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1C27186289
-	for <linux-m68k@vger.kernel.org>; Thu,  8 Aug 2024 06:58:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB14C148307
+	for <linux-m68k@vger.kernel.org>; Thu,  8 Aug 2024 14:52:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723100294; cv=none; b=ENjoJu3UNKbINj+q2pCz9agic5h4k9MyIXdHxD2p3wscbTSkrIto0dCBaJ/Z9VnQXigDygOf+wOpCkDB6TsRC89xnCLXSjaCf0bd8+bbiae8LV4fPErRw0LqbvTnybiUWhDa2qIdcXnO/Z/Pyp72PST7/dtmjIdGykMfcbcyQtY=
+	t=1723128730; cv=none; b=amGffHpdqDaq8OZ597W/xCgjNdcgmVOm4IEkJzMQjSUwTMHFsUAuvxIfQqURwJVZRfDPNK0/5rjEXunNMYNLQF+oGTK7Fm/dZxk4qGub1/s/M96uieAZp+QRtd5/aui689JXfXcnyvNyCp1MlEPwb1CTh9VsF70wWx8ENpsWoSY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723100294; c=relaxed/simple;
-	bh=sQz5N9zv1ux2ZDE3pCs52XXHhFEfb5s4mHk61I2BhcM=;
-	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=IugKnUNnDWhWhE+es4KPMMHrwG4v0AlDKiBToLIXn2NlYz42Ty5PfvQfRYuppYuW+XCifOi78upKYB8C6rhbCKnlU2DfzPvvNThTjPpR0qgBypHgtYtMKfe98m3PlQgw5chMkq795/OUuKz4PgUpf40XjTYCf6N4F65FlqD2Xk0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZYLV8Ie9; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZYLV8Ie9"
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-70d333d5890so635477b3a.0
-        for <linux-m68k@vger.kernel.org>; Wed, 07 Aug 2024 23:58:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723100292; x=1723705092; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8HhTYnOYlFjDfuFRlLkZRiAezVFLlxS2aYphzRZcpbo=;
-        b=ZYLV8Ie9tWeR0sx4bKjYVbSw9Qe6lq+hLU47wA9zAVZnprNRXU+Xws2rHVh9h/5bSz
-         CqF8yZU0RCdb9lkTZK+EFo2OHunQ4+hS5TUXg1KC7uTw9tj/WUmUHf+49C+T7otsqo5l
-         hFT50CM484ecdHslYHG1UtuzF0pVCPlIyZiVqSFsTGL9sHdG/PwnC6KVWIIfSQNfGePC
-         u4vtY1kphtvKhv3PVdQ/b6Oc00DqbA/qB1ev+NHAZrlVZlMlH1123PEcOQh8OqxzSLiP
-         5MZxwj+F478ZGuWxzLK3UAcqj/pP9P7M9AElrruplMc89WPOgQQ70+9xLVMnZ6i2jQgR
-         oAUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723100292; x=1723705092;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=8HhTYnOYlFjDfuFRlLkZRiAezVFLlxS2aYphzRZcpbo=;
-        b=Y9VpwSBwKLWGmI0/jgryWWtgZyG9F2fTN2yM82ON+wKG+cjaZ5tgApydKbfmzPFEpJ
-         Men3Nz7QIG3PdVD8L4/lghD1Y6HBtdq9cSxQebHf4+Zc6mGUX4Z5eEPbHU8SUwYY1k6v
-         5CSxy3pqcUy77HMDsAMT9UprgnTW2ridFFhylrDI7MPk7wQYKK1NpLhat/ZnFBZl5rgm
-         IPiwTh+RY53IzKZixFzLEOOGntAzonoXJGoasfdWKK9bYPDiUbf9FSO7+C44C+PJsuEt
-         fZSgOs0yOhun2E8M7vAIDjublb1M2nN8+VR+DDRBMMzFb61u+zr1OmffvsRBSiVOPOh6
-         x0/A==
-X-Gm-Message-State: AOJu0YxnjyAg4QGOZwPK1L/EK0uA2u4ES3RVfOQxal5ybGGhiY/ChcYX
-	i/daOrencCs5W17YOJQ4lQQ3Xw1Hlj6C368g+jTWoVyDqqgKye8T
-X-Google-Smtp-Source: AGHT+IEoQWEdPv2o5z/l6hT+2L608Ls+RgjSMm2XYLmJ6RMiPXy7LZYkC36NYXrEaLbKaLDZVssE2w==
-X-Received: by 2002:a05:6a00:1393:b0:70d:1e0a:e609 with SMTP id d2e1a72fcca58-710cae890damr1116252b3a.30.1723100291775;
-        Wed, 07 Aug 2024 23:58:11 -0700 (PDT)
-Received: from [10.1.1.24] (222-152-175-63-fibre.sparkbb.co.nz. [222.152.175.63])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-710cb2fd4c5sm533424b3a.212.2024.08.07.23.58.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 07 Aug 2024 23:58:11 -0700 (PDT)
-Subject: Re: [PATCH v4 1/2] m68k: Handle __generic_copy_to_user faults more
- carefully
-To: Greg Ungerer <gerg@linux-m68k.org>, Finn Thain <fthain@linux-m68k.org>
-References: <20240429030945.22451-1-schmitzmic@gmail.com>
- <20240429030945.22451-2-schmitzmic@gmail.com>
- <e0d53477-1646-9504-2382-f8793d078704@linux-m68k.org>
- <42dfdef0-88d1-4c15-b04b-174f12bd8f3f@gmail.com>
- <de7c9ac4-cb6f-e2a4-59e4-26fd7e260d4e@linux-m68k.org>
- <ae5facc5-4b10-481b-9f76-f9b007309d8f@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, geert@linux-m68k.org,
- linux-m68k@lists.linux-m68k.org
-From: Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <05cd1710-4422-aef5-5bed-8b5968069a4d@gmail.com>
-Date: Thu, 8 Aug 2024 18:58:05 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+	s=arc-20240116; t=1723128730; c=relaxed/simple;
+	bh=tdshl2aK5un2AP1/Q2s/F7pGRaNDyLxVwymesEdqQQA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZKgPkcfe7qAJeLA9H2NBMhY+IJOWSO7p3tCgONXZ1RdpsJ8WbunhSY8GlePo60JsP/6v3Hyo0TQFXdVq7hCzUA9QFsubLq6uYVvKPN3Bujokp9E5sM8yC7y2ABMBjqx55ZG77SlkKg+kqef6Z9coDkxVCasvg4L5wjpQzyy2PpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36983C32782;
+	Thu,  8 Aug 2024 14:52:09 +0000 (UTC)
+Message-ID: <00ccfc03-9032-435b-8082-905e225c7a0f@linux-m68k.org>
+Date: Fri, 9 Aug 2024 00:52:06 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ae5facc5-4b10-481b-9f76-f9b007309d8f@linux-m68k.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/2] m68k: Handle __generic_copy_to_user faults more
+ carefully
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org,
+ geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org
+References: <20240429030945.22451-1-schmitzmic@gmail.com>
+ <20240429030945.22451-2-schmitzmic@gmail.com>
+ <e0d53477-1646-9504-2382-f8793d078704@linux-m68k.org>
+ <42dfdef0-88d1-4c15-b04b-174f12bd8f3f@gmail.com>
+ <de7c9ac4-cb6f-e2a4-59e4-26fd7e260d4e@linux-m68k.org>
+ <ae5facc5-4b10-481b-9f76-f9b007309d8f@linux-m68k.org>
+ <727be0d7-a3ed-d3eb-2a13-c6ac316cd25d@linux-m68k.org>
+Content-Language: en-US
+From: Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <727be0d7-a3ed-d3eb-2a13-c6ac316cd25d@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hi Greg,
+Hi Finn,
 
-Am 08.08.2024 um 18:05 schrieb Greg Ungerer:
-> Hi Michael, Finn,
->
-> On 8/8/24 11:57, Finn Thain wrote:
->>
->> Hello Michael
->>
->> On Thu, 8 Aug 2024, Michael Schmitz wrote:
->>
->>>> Well, that __clear_user() bug is no longer theoretical. I accidentally
->>>> bumped into it when I sent a ^C to a shell script I wrote to test some
->>>> mac_scsi driver patches...
->>
->> ...
->>
+On 8/8/24 16:56, Finn Thain wrote:
+> On Thu, 8 Aug 2024, Greg Ungerer wrote:
+>> On 8/8/24 11:57, Finn Thain wrote:
+>>>> I'm afraid I've lost track of where we're at with this patch series.
+>>>> Does it need more work, or more bug reports such as the one below?
 >>>
->>> I'm afraid I've lost track of where we're at with this patch series.
->>> Does it need more work, or more bug reports such as the one below?
+>>> Apparently the series is waiting for some testing on a Coldfire system
+>>> with MMU.
 >>
->> Apparently the series is waiting for some testing on a Coldfire system
->> with MMU.
->
-> Ok, I am in a state that I can do that now (I managed to fix my M5475EVB
-> board).
-> If I test the v4 versions of this patch set that should do the job?
+>> Ok, I am in a state that I can do that now (I managed to fix my M5475EVB
+>> board).
+> 
+> Thanks, Greg.
+> 
+>> If I test the v4 versions of this patch set that should do the job?
+>>
+> 
+> There are 3 patches that need some more testing, one from me and two from
+> Michael:
+> 
+> [PATCH] m68k: Handle put_user() faults more carefully
+> [PATCH v4 1/2] m68k: Handle __generic_copy_to_user faults more carefully
+> [PATCH v4 2/2] m68k: improve __constant_copy_to_user_asm() fault handling
+> 
+> They were posted in two threads:
+> 
+> https://lore.kernel.org/linux-m68k/1ed9c4c753395510c1a8df9c35e2ad4c31c90f95.1714265926.git.fthain@linux-m68k.org/T/
+> https://lore.kernel.org/linux-m68k/CAMuHMdVrOnOQwCxk42YCjEkbfL-YDSvpf_xTaouv9hUs2bO+qg@mail.gmail.com/T/
+> 
+> On 680x0, one of the bugs was brought to light with 'stress-ng
+> --sysbadaddr -1'. The others required special test programs.
+> 
+> I've no idea whether Coldfire silicon is susceptable at all, and if it is,
+> whether the same reproducers would work. But that's neither here nor there
+> from a regression testing standpoint.
 
-Yes, v4 is the one to test.
+Ok, thanks for the links. I have applied and tested those, no obvious regressions.
+So for all of these patches:
 
-I'll see that I can dig out my test code to reproduce the bug.
+Tested-by: Greg Ungerer <gerg@linux-m68k.org>
 
-Thanks,
+I tried out the "stress-ng --sysbadaddr -1" test, and that didn't go so well for me:
 
-	Michael
+# stress-ng --sysbadaddr -1
+stress-ng: info:  [37] defaulting to a 86400 second (1 day, 0.00 secs) run per stressor
+stress-ng: info:  [37] dispatching hogs: 1 sysbadaddr
+*** ILLEGAL INSTRUCTION ***   FORMAT=4
+Current process id is 39
+BAD KERNEL TRAP: 00000000
+Modules linked in:
+PC: [<00000000>] 0x0
+SR: 2004  SP: 6504e563  a2: 008ee380
+d0: 000000f7    d1: 00000000    d2: 00000000    d3: 00000000
+d4: 00a87b80    d5: bfbf3814    a0: 00000000    a1: bfbf3814
+Process stress-ng-sysba (pid: 39, task=4dbb2ec5)
+Frame format=4 eff addr=480a2004 pc=0002b154
+Stack from 00adff20:
+         00ade000 00000000 00000000 000000f7 00000000 00000004 00a87b80 00000000
+         00000000 00000000 00000000 008ee380 0002ab5c 00000100 00000122 fffffff6
+         bfbf376c 0002b29e 000000f7 bfbf3814 00000000 00000000 00ade000 0002b222
+         00ae0800 80118988 00000000 00000005 bfbf37a0 00000005 bfbf3814 00adffcc
+         00023d2c 00adffcc 00000000 00000000 00000000 00000000 000000f7 00000000
+         80118b46 00021850 00024b00 000000f7 bfbf3814 00000000 00000000 bfbf3814
+Call Trace: [<0002ab5c>] child_wait_callback+0x0/0x24
+  [<0002b29e>] sys_wait4+0x7c/0x8e
+  [<0002b222>] sys_wait4+0x0/0x8e
+  [<00023d2c>] buserr_c+0xb0/0x152
+  [<00021850>] buserr+0x28/0x30
+  [<00024b00>] system_call+0x54/0xa8
 
->
-> Regards
-> Greg
->
->
->
->>> The previous bug reports might be considered somewhat contrived but this
->>> one's from 'real' user space code, and none too complex at that?
->>>
->>
->> Right. That code was as follows. There's nothing here aimed at
->> arch/m68k/lib/uaccess.c in particular, just IO to a block device and a
->> tmpfs filesystem.
->>
->>
->> #!/bin/bash
->>
->> set -e -u
->>
->> filename=$1
->>
->> rand=/tmp/rand_test_data
->> zero=/tmp/zero_test_data
->> len=512K
->>
->> dd if=/dev/urandom of=$rand bs=$len count=1 2>/dev/null
->> dd if=/dev/zero of=$zero bs=$len count=1 2>/dev/null
->>
->> write() {
->>          dd $args if=$orig of=$filename # oflag=direct
->> }
->>
->> compare() {
->>          echo 3 > /proc/sys/vm/drop_caches
->>          if ! cmp -n $len $orig $filename ; then
->>                  diff -u <(hexdump -C < $orig) <(hexdump -C < $filename)
->>          fi
->> }
->>
->> while true; do
->>          for args in "bs=512k count=1" "bs=64k count=8" "bs=4k
->> count=128" "bs=512 count=1k" ; do
->>                  echo $args
->>                  orig=$rand ; write ; compare
->>                  orig=$zero ; write ; compare
->>                  sync
->>                  echo
->>          done
->> done
+But that is the same with and without these patches.
+
+Regards
+Greg
+
