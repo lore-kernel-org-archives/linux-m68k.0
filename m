@@ -1,134 +1,204 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fhigh2-smtp.messagingengine.com (fhigh2-smtp.messagingengine.com [103.168.172.153])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 592E4146586
-	for <linux-m68k@vger.kernel.org>; Fri,  9 Aug 2024 12:58:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A41F1B960
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 10 Aug 2024 00:42:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723208294; cv=none; b=ptTRhf01VbUMkQUuzh/kLprwG/z+XQZa/0Znf5+BUEZd/LCadfQ4RHRPjnrR98+40pfbxpzIApsHh0PywjhbnFsgRz9BgnBXbJWtFW0BPBGZD0GtZz8FnaisU2alWn9d4Oaay+KnzuEEtR4HmiKo1S3RiY0AHDzipzAf1YW3SRw=
+	t=1723250568; cv=none; b=iv2VO89J/gvA2i34+OnE9s1oBs89/xRZzuDAGUFg/qAjFX+Ze8/Ix5xQcMMRGpQbnyf8odNG1K9z9WJ2IqTuysBNnWC4Yb+Md15pU2aX4s4ZOxmDu4QuGL41pJ4ccdRC7lLR8gcD/9pYmvg/Zbf6Zp1mZqOWXfWMx88db8CnszI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723208294; c=relaxed/simple;
-	bh=WyJcN/XkP5VI01szEQx4+eNER/N6tUMsBs5O44z3hYk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RIIuY/P/tr16zTbVV24Zn36vXh9C7/TqmNsI40Mm3/yJrRenZ8AYLE7MFnLwUWdzzbPRS27rxEdegU2ZrQhajcEZd6T1XLJMJm7XotdYsTky+SuGiEKpvZaDHAhpAHklt/5hrel966Yqts0TczZw/LdgiIy+oWqjPjNri754K7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEF26C32782;
-	Fri,  9 Aug 2024 12:58:12 +0000 (UTC)
-Message-ID: <64ae53d5-57fb-4b72-997c-c5158bea04fa@linux-m68k.org>
-Date: Fri, 9 Aug 2024 22:58:09 +1000
+	s=arc-20240116; t=1723250568; c=relaxed/simple;
+	bh=f05FXFP6ZEHnDzdnVrVllbZhx1pZ7ExZmvJQlMuocZQ=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=gf3Z9CcLmimcWPwpko4lB5sgalg/ZQLpTlZPD7pPcQWS+8Fu9d5nQGai3o/zzNZAZAQ/q3DVELobTmDfanKGNS4pGzQUU7DNI9QhrOU3Cjw10puvojSs6ATXpD6y2h46rx6L7hXLDNcKrrbOQ/wBZ3I5hivHggRY6ZA4Cs7qYxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Va7oR+Q2; arc=none smtp.client-ip=103.168.172.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Va7oR+Q2"
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id EF90C114AB96;
+	Fri,  9 Aug 2024 20:42:43 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Fri, 09 Aug 2024 20:42:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1723250563; x=1723336963; bh=30OVoDQciVj1kfHLky4awdyO77Qj
+	2+kK7ncbxoDwX/E=; b=Va7oR+Q2QuBbi6JD8aF6ZUt2tQnfhtv+cQfmqpIGXVbe
+	pE2K2FplYaDepeV9sk3gTzGhV8zQ711r/0kPBKYyMuivu6+HtfJasgrw9v1BSB+X
+	kxHyU8fUUKoEDatct7qdCTnPi/b38X3XrDuFvFFDqmhvMnxRGY6ARdh4NOqYcQ1Q
+	weiNEpyVsv6vbS4gSUdVndCfPC4EAu5jFwbCKCzX1j67anvHSk4elA80Qn0M3L/z
+	Fqr/Na+wgetK3JYuQyFkBYus7HN67kJ3WyNlHztXwRAWIsju6eVquKwf1vTzApxt
+	jKpebvnMldkLRRojfh+CcXaYRv+mCURTFqAi/CE/2Q==
+X-ME-Sender: <xms:g7e2ZqpO0QqQ5DJSgfObUToO-6-P18_rIHy5ALJAW7b8__XIqSfbAg>
+    <xme:g7e2ZopWeeBAqqM6legB4IdhdxipermBph3cgIXyEv9yZqQt5w1GBHm0CUORv1bYg
+    68BipWtnFXouXBuiLk>
+X-ME-Received: <xmr:g7e2ZvMsAgK2jx4oXSNsfQ9vbrsiqbKOafFAluFWP6IWqP0nx3vhVRVfIXoE7csGKJggws42sxYgY6LmTx_LN1hyWur5k8jgSZo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrleehgdefjecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdpuffr
+    tefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvfevuf
+    gjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhh
+    rghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtthgvrhhnpeelueehle
+    ehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeuheeuleenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinh
+    hugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopeefpdhmohguvgepshhmthhpohhu
+    thdprhgtphhtthhopehlihhnuhigqdhmieekkheslhhishhtshdrlhhinhhugidqmheike
+    hkrdhorhhgpdhrtghpthhtohepuggvsghirghnqdeikehksehlihhsthhsrdguvggsihgr
+    nhdrohhrghdprhgtphhtthhopehushgvrhhmheejseihrghhohhordgtohhm
+X-ME-Proxy: <xmx:g7e2Zp7hNj7Oww_XM_vGGk5y7Um5OHcj18POa8qoYre4ktbuz2OhwA>
+    <xmx:g7e2Zp7I_Qn9r7psUMg9gK9s2dmOq379R6OM6jdS7iLxII4yDN1tXA>
+    <xmx:g7e2Zpj72rkvv2Va3aM8pilF9-LDNThxKh4MlbecC0sogZMi4aFcHg>
+    <xmx:g7e2Zj5BBRNHyH7PxYpIdDJ0dIl7HhaFdWvCOm-ReqgweAuqRoJ3xQ>
+    <xmx:g7e2ZpEL8safhCvFPGbq7ckmHRT79Fus-3_vNHDOyrNX6TtGTnQgEbqV>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 9 Aug 2024 20:42:41 -0400 (EDT)
+Date: Sat, 10 Aug 2024 10:42:47 +1000 (AEST)
+From: Finn Thain <fthain@linux-m68k.org>
+To: linux-m68k@lists.linux-m68k.org
+cc: debian-68k@lists.debian.org, Stan Johnson <userm57@yahoo.com>
+Subject: Re: dump, restore
+In-Reply-To: <be039a4b-639d-3b15-58e0-e7f2ff104240@linux-m68k.org>
+Message-ID: <43997c51-ef4e-9071-f9eb-087be2586490@linux-m68k.org>
+References: <6d0e0caf-6d32-c7d0-c02c-42830d9636d0.ref@yahoo.com> <6d0e0caf-6d32-c7d0-c02c-42830d9636d0@yahoo.com> <ebf3c8dd-9c1d-602d-2f7a-9adb99950264@linux-m68k.org> <b18c5784-6f21-9a2c-422d-b6fd4c4811dc@yahoo.com>
+ <be039a4b-639d-3b15-58e0-e7f2ff104240@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/2] m68k: Handle __generic_copy_to_user faults more
- carefully
-To: Michael Schmitz <schmitzmic@gmail.com>, Finn Thain <fthain@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, geert@linux-m68k.org,
- linux-m68k@lists.linux-m68k.org
-References: <20240429030945.22451-1-schmitzmic@gmail.com>
- <20240429030945.22451-2-schmitzmic@gmail.com>
- <e0d53477-1646-9504-2382-f8793d078704@linux-m68k.org>
- <42dfdef0-88d1-4c15-b04b-174f12bd8f3f@gmail.com>
- <de7c9ac4-cb6f-e2a4-59e4-26fd7e260d4e@linux-m68k.org>
- <ae5facc5-4b10-481b-9f76-f9b007309d8f@linux-m68k.org>
- <727be0d7-a3ed-d3eb-2a13-c6ac316cd25d@linux-m68k.org>
- <00ccfc03-9032-435b-8082-905e225c7a0f@linux-m68k.org>
- <17d1fcdd-3b25-4401-a98d-3c676abb903d@gmail.com>
- <b2c65af6-1aa4-4e4f-fdf5-600e1d48ef72@linux-m68k.org>
- <5c737af5-4ba6-a6f4-c468-7d7b291c6781@gmail.com>
-Content-Language: en-US
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <5c737af5-4ba6-a6f4-c468-7d7b291c6781@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 
 
-Hi Michael, Finn,
+On Fri, 9 Aug 2024, I wrote:
 
-On 9/8/24 18:03, Michael Schmitz wrote:
-> Hi Finn,
 > 
-> Am 09.08.2024 um 15:34 schrieb Finn Thain:
->>
->> On Fri, 9 Aug 2024, Michael Schmitz wrote:
->>
->>>>
->>>> I tried out the "stress-ng --sysbadaddr -1" test, and that didn't go
->>>> so well for me:
->>>>
->>>> # stress-ng --sysbadaddr -1
->>>> stress-ng: info:  [37] defaulting to a 86400 second (1 day, 0.00 
->>>> secs) run
->>>> per stressor
->>>> stress-ng: info:  [37] dispatching hogs: 1 sysbadaddr
->>>> *** ILLEGAL INSTRUCTION ***   FORMAT=4
->>>> Current process id is 39
->>>> BAD KERNEL TRAP: 00000000
->>>> Modules linked in:
->>>> PC: [<00000000>] 0x0
->>>> SR: 2004  SP: 6504e563  a2: 008ee380
->>>> d0: 000000f7    d1: 00000000    d2: 00000000    d3: 00000000
->>>> d4: 00a87b80    d5: bfbf3814    a0: 00000000    a1: bfbf3814
->>>> Process stress-ng-sysba (pid: 39, task=4dbb2ec5)
->>>> Frame format=4 eff addr=480a2004 pc=0002b154
->>>> Stack from 00adff20:
->>>>         00ade000 00000000 00000000 000000f7 00000000 00000004 00a87b80
->>>> 00000000
->>>>         00000000 00000000 00000000 008ee380 0002ab5c 00000100 00000122
->>>> fffffff6
->>>>         bfbf376c 0002b29e 000000f7 bfbf3814 00000000 00000000 00ade000
->>>> 0002b222
->>>>         00ae0800 80118988 00000000 00000005 bfbf37a0 00000005 bfbf3814
->>>> 00adffcc
->>>>         00023d2c 00adffcc 00000000 00000000 00000000 00000000 000000f7
->>>> 00000000
->>>>         80118b46 00021850 00024b00 000000f7 bfbf3814 00000000 00000000
->>>> bfbf3814
->>>> Call Trace: [<0002ab5c>] child_wait_callback+0x0/0x24
->>>>  [<0002b29e>] sys_wait4+0x7c/0x8e
->>>>  [<0002b222>] sys_wait4+0x0/0x8e
->>>>  [<00023d2c>] buserr_c+0xb0/0x152
->>>>  [<00021850>] buserr+0x28/0x30
->>>>  [<00024b00>] system_call+0x54/0xa8
->>>>
->>>> But that is the same with and without these patches.
->>>
->>> I wonder if recent signal handling changes (e.g. commit
->>> 0d4276cfbe6fd4c4a21acdee803b05a3a6192082) have rare unexpected side 
->>> effects on
->>> Coldfire here ... OTOH, signal handling as such works just fine, right?
->>>
->>
->> That would be commit b845b574f86d ("m68k: Move signal frame following
->> exception on 68020/030") on mainline. If it caused a regression, that
->> would have first appeared in v6.4. I can't imagine how that commit could
->> affect Coldfire but that's no reason not to test an older kernel.
+> On Sat, 3 Aug 2024, Stan Johnson wrote:
 > 
-> Yes, testing older kernels is certainly the fastest way to rule out 
-> involvement of that commit.
-
-I will go back a few revisions and see if I can shed some light on it.
-
-Regards
-Greg
-
-
-> On a closer look, there is no possible way in that this commit can be 
-> responsible for the bug unless Coldfire does use frame format B for 
-> access errors. I don't think that's likely?
+> > 
+> > Using "-a" appears to be a better option than just specifying a really 
+> > long tape size. Unfortunately, it also doesn't work. The problem seems 
+> > to affect only m68k; ppc-32, ppc-64, x86-32 and x86-64 all work as 
+> > expected...
 > 
->> FWIW, my hunch is that the other stressors which call wait4() will
->> probably crash too (regardless of kernel version).
+> I reproduced the problem in QEMU and found it went away when I ran dump 
+> under Linux v5.6. So I went through a lot of "git bisect" steps and the 
+> culprit appears to be commit ef2c41cf38a7 ("clone3: allow spawning 
+> processes into cgroups"). That seems plausible, since we are seeing an 
+> error from fork_clone_io() below...
 > 
-> Quite likely ...
+> #ifdef __linux__
+> #if defined(SYS_clone) && defined(CLONE_IO)
+> pid_t
+> fork_clone_io(void)
+> {
+>         return syscall(SYS_clone, CLONE_ARGS);
+> }
+> #endif
+> #endif
 > 
-> Cheers,
+> That code bypasses the C library so I suppose it's not too surprising 
+> that different architectures give different results...
 > 
->      Michael
+> Anyway, if I run dump under strace I see no CLONE_INTO_CGROUP flag:
 > 
+> clone(child_stack=NULL, flags=CLONE_IO|SIGCHLD) = -1 EBADF (Bad file 
+> descriptor)
 > 
+> The -EBADF result was introduced into cgroup_css_set_fork() by the 
+> commit above. That should not happen unless CLONE_INTO_CGROUP was set, 
+> but strace says its not. So I don't know what's going on here.
 > 
 
+Here's what gdb says, FWIW...
+
+# gdb
+GNU gdb (Debian 13.1-3) 13.1
+...
+(gdb) file /usr/sbin/dump
+Reading symbols from /usr/sbin/dump...
+Reading symbols from /usr/lib/debug/.build-id/24/071a827207bee9c025d364137514447279302b.debug...
+(gdb) run -0f /dev/null /dev/sda
+Starting program: /usr/sbin/dump -0f /dev/null /dev/sda
+  DUMP: Date of this level 0 dump: Fri Aug  9 23:37:15 2024
+  DUMP: Dumping /dev/sda (an unlisted file system) to /dev/null
+  DUMP: Label: none
+  DUMP: Writing 10 Kilobyte records
+  DUMP: mapping (Pass I) [regular files]
+  DUMP: mapping (Pass II) [directories]
+  DUMP: estimated 3595695 blocks.
+  DUMP: Context save fork fails in parent 671
+[Inferior 1 (process 671) exited with code 03]
+(gdb) b fork_clone_io
+Breakpoint 1 at 0x80009dbc: file tape.c, line 740.
+(gdb) run -0f /dev/null /dev/sda
+Starting program: /usr/sbin/dump -0f /dev/null /dev/sda
+  DUMP: Date of this level 0 dump: Fri Aug  9 23:38:17 2024
+  DUMP: Dumping /dev/sda (an unlisted file system) to /dev/null
+  DUMP: Label: none
+  DUMP: Writing 10 Kilobyte records
+  DUMP: mapping (Pass I) [regular files]
+  DUMP: mapping (Pass II) [directories]
+  DUMP: estimated 3595695 blocks.
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00000001 in ?? ()
+(gdb) l fork_clone_io
+warning: Source file is more recent than executable.
+735
+736     #ifdef __linux__
+737     #if defined(SYS_clone) && defined(CLONE_IO)
+738     pid_t
+739     fork_clone_io(void)
+740     {
+741        pid_t res,parent;
+742        parent=getppid();            /* az hackety hack... */
+743
+744        res=syscall(SYS_clone, CLONE_ARGS);
+745        getppid();
+746        /* as per clone call manpage: caching! */
+747        getpid();
+748     #ifdef __alpha__
+749        syscall(SYS_getxpid);
+750     #else
+751         syscall(SYS_getpid);
+752     #endif
+753
+754        /* az: clone manpage doesn't say jack about what the
+(gdb) disas fork_clone_io 
+Dump of assembler code for function fork_clone_io:
+   0x80009dbc <+0>:     movel %d3,%sp@-
+   0x80009dbe <+2>:     movel %d2,%sp@-
+   0x80009dc0 <+4>:     bsrl 0x80004200 <getppid@plt>
+   0x80009dc6 <+10>:    movel %d0,%d3
+   0x80009dc8 <+12>:    clrl %sp@-
+   0x80009dca <+14>:    clrl %sp@-
+   0x80009dcc <+16>:    clrl %sp@-
+   0x80009dce <+18>:    movel #-2147483631,%sp@-
+   0x80009dd4 <+24>:    pea 0x78
+   0x80009dd8 <+28>:    bsrl 0x80003fd0 <syscall@plt>
+   0x80009dde <+34>:    movel %d0,%d2
+   0x80009de0 <+36>:    bsrl 0x80004200 <getppid@plt>
+   0x80009de6 <+42>:    bsrl 0x80003c9c <getpid@plt>
+   0x80009dec <+48>:    pea 0x14
+   0x80009df0 <+52>:    bsrl 0x80003fd0 <syscall@plt>
+   0x80009df6 <+58>:    bsrl 0x80004200 <getppid@plt>
+   0x80009dfc <+64>:    lea %sp@(24),%sp
+   0x80009e00 <+68>:    cmpl %d0,%d3
+   0x80009e02 <+70>:    beqs 0x80009e06 <fork_clone_io+74>
+   0x80009e04 <+72>:    clrl %d2
+   0x80009e06 <+74>:    movel %d2,%d0
+   0x80009e08 <+76>:    movel %sp@+,%d2
+   0x80009e0a <+78>:    movel %sp@+,%d3
+   0x80009e0c <+80>:    rts
+End of assembler dump.
+(gdb) 
+
+Is this clone syscall (0x78) really executing sys_clone3()? Also,
+-2147483631 == CLONE_IO|SIGCHLD like strace said.
+
+And why does it crash when I set a break point?
