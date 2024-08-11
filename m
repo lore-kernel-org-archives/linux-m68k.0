@@ -1,95 +1,121 @@
-Received: from fout7-smtp.messagingengine.com (fout7-smtp.messagingengine.com [103.168.172.150])
+Received: from fhigh2-smtp.messagingengine.com (fhigh2-smtp.messagingengine.com [103.168.172.153])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B80C144309
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 10 Aug 2024 23:54:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CE064A18
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 11 Aug 2024 00:05:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723334080; cv=none; b=fYSpiBd0IEubdRiW3k0aNgDk5T9GqyixyHI7NycVqS4hL10Y9EwGuFW80NPjZ9XSinu7Ek58BVt3vzm1bqDQ6aCQyuJ4FIinBkXZrsMzN5LHUzNjgZyPau3sRVuVMRMTetSW/U6yNUBSjw+5KDhismdBtSI3WmGmNcszn1uADdo=
+	t=1723334708; cv=none; b=eJFGkFE6JecUIa7e5gg0+v3DPoke4GlNh0VVFA6YiQW2RFjcNicROvnuo+T6TsCwXK9r7LoefPLTpKNQmJcbhAMawCAUsfoJM5vzqV6Cnezmj7ZO5anMqjuQ7UWO1KFtNwAjchhGxen6Dnz5BEu/QsgwLBDh23fJgO/C0Ckh7i4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723334080; c=relaxed/simple;
-	bh=6P0A7FpSLHTGitN9MQjoscGYq7XoUHY7xMizbSAh+k0=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=OLcEablW7hUuuCQcDZE0N+CAeA76bOav0lhZkNVPL3Dz6yHSBXWyE7fvbq6L4sO5t231noecnk1Cvd8kHpMD5WIZ41HWNOwVAxfgMGXvRp+t/RYQV1x65vYloP0Ep6yjXygLLYdBHjZnHIQoQY7/hKGjfm43fD/c43oXH9ViGN8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Le7wwKbQ; arc=none smtp.client-ip=103.168.172.150
+	s=arc-20240116; t=1723334708; c=relaxed/simple;
+	bh=+WKdIuC+p530GHPOQlXZIux1ngHdwRNECGfQ0w2ExHg=;
+	h=To:Cc:Message-Id:From:Subject:Date; b=oWigUqBZYcfxeoNyef+MYXNlv+HeLMvPLyV6WcymjbobgZBlQ8GUcMNfXRmfdUdxtfjcPRker1p002VovwS4hxflx898vvi/9249oAsKpseptFPsdw9azxqgAaQjjZCOWcXQb2DrTXoHt++sHhoUuzOC0nKP0xBmlZHLuGNVV5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=cu2R13ZT; arc=none smtp.client-ip=103.168.172.153
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Le7wwKbQ"
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailfout.nyi.internal (Postfix) with ESMTP id 4ED91138FE11;
-	Sat, 10 Aug 2024 19:54:37 -0400 (EDT)
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cu2R13ZT"
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id 41B121151B81;
+	Sat, 10 Aug 2024 20:05:06 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Sat, 10 Aug 2024 19:54:37 -0400
+  by compute5.internal (MEProxy); Sat, 10 Aug 2024 20:05:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1723334077; x=1723420477; bh=m354HSntUIw53mWwYckb3QrVoIhw
-	BudqJw1LrOjJosM=; b=Le7wwKbQi7oYt9UzKSLW7e0kkZWkCc9y6i03i0VRNg55
-	+dFc9KriAe53A/rlOSpO03ImDGmYiza0qRH6ZpEx2Tpu43/RNp6bBZZS/YoTraNX
-	3rYub5D2h5JJWQaSxbM6/Z3XYlr1827kFxqtLReMB7Sg+6ZoXH9i4LxrUXctWHsK
-	iC1KJQ+8Xxu1xLiZkj1b6eqAZmYSYSuILs5sZHLkuzOvqOHRdRB3i61UqyEQy79m
-	XdIE3A/+yRikAXSYrDKtHYma6j8uQztLJgz17L1V7LNtYnzPeecDofihXDVOs1nq
-	pQVNM8r/8fRW/k7XKxZqo5FW8tQq128Fjhe/XIonIw==
-X-ME-Sender: <xms:vP23ZgCqEC1IIzBVDH_rD-E5madC9V6RkzRNCdBQrxC6NaKhvDACjg>
-    <xme:vP23Zih-yijOubFJdzFZnGIdkdkuSbrm7uaZpYcWgZO1WNT4quVcvQJsuhW39c1m9
-    MOYKT96VtOkBKz46FY>
-X-ME-Received: <xmr:vP23Zjn_zz9zr7w7mx_GqFYZ4FvIKk5FirIK0oYG81_QnGjp0x5Bk1ELjYu1URg-o_BGvhUjQbWnBN3cxR6ClZ-7N-_K56pOUtE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrleejgddvlecutefuodetggdotefrodftvf
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm3; t=1723334706; x=1723421106; bh=9vmpys9j51EiE
+	NEz8IFCUMk8fjEsJF6w5WceFyF82OM=; b=cu2R13ZTI7LDu7lqIwdX0gF1Tw2dP
+	5M+xIFq8gDQx8mkwjF+vS58RNYI7Qp3rBKJBiosNWOIUbSlTJI38iGbXCNCt5Ri1
+	5AtmWnfhuL/X+4jypMy7OunQGvTBjwWOvg/sbZZW1VMNU5rupriBAWPo68IfqhxH
+	ZQtel1A1ZJtETsXzzcucIeFeAlXSdrGj1J7acU1faAtZBch9AkERvU1zwT6a4iAK
+	9LhsPRhjac9ZV5LMEf9usoOjKfYKm8uAWjdOWCOKAvpKGUgnzd6Q+/vGMKTu/tWY
+	vWMKtgLr2wTTy3ZxUbSY/XRht25K8iQwngP8xOoYCzZDbUpZq6NkoQiXg==
+X-ME-Sender: <xms:MgC4ZlbROzMe4cNdFWtbIw4xyG8h8idhjiq3hllSwtkc2aZYgHgMHw>
+    <xme:MgC4ZsaByWV8_OnucDTuC5reWL5guqfSOBiMB2x04IYXS9c0CbQp-m-QyzFaZ01aF
+    5InmHJs8F8k2wVDT84>
+X-ME-Received: <xmr:MgC4Zn99TK8ARKcpj-PfJEgJeiijBEnnk5qrpHgrJVH8dpx3JqiTpzoBRVzuQkgTAnYoxjy16xZ7Zi0ZiwPhjS5GYEiCIrEeIpE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrleejgdefudcutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdpuffr
     tefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnth
-    hsucdlqddutddtmdenucfjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfh
-    rhhomhephfhinhhnucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdroh
-    hrgheqnecuggftrfgrthhtvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeefffff
-    tdfgjeevkeegfedvueehueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrghdpnhgspghr
-    tghpthhtohepiedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepghgvvghrtheslh
-    hinhhugidqmheikehkrdhorhhgpdhrtghpthhtohepsghrrghunhgvrheskhgvrhhnvghl
-    rdhorhhgpdhrtghpthhtohepghgvrhhgsehlihhnuhigqdhmieekkhdrohhrghdprhgtph
-    htthhopehushgvrhhmheejseihrghhohhordgtohhmpdhrtghpthhtoheplhhinhhugidq
-    mheikehksehlihhsthhsrdhlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlih
-    hnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:vP23ZmxNTAaDTsqfSZHpDiKpSqOulMP9-X-_8m6wRfWvEqbsHWectA>
-    <xmx:vP23ZlTD3394Xfipf3g3H2mOloVHS5_aXrVDE8Z69tMGwKw5zhLw6Q>
-    <xmx:vP23ZhY_GuYjj5qA8rrV4bNGih4Emfr_tfeHaJzQPEd4-SurHhiIow>
-    <xmx:vP23ZuQxwDw0Yv7JBMO0SMJmohq5sfLECx6xl9xoX7JAgsOoQTPQVw>
-    <xmx:vf23ZuICurxguAF7gShVSGunD0D1xPW2IddGUvd6QNQ1h_uLDEeUhyix>
+    hsucdlqddutddtmdenucfjughrpefvvefkhffuffestddtredttddttdenucfhrhhomhep
+    hfhinhhnucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqne
+    cuggftrfgrthhtvghrnhepffeuieelgeffgedtheevfeekffevffeiudegfeevuedvtedt
+    feeiffelgfetgeeunecuffhomhgrihhnpeguvggsihgrnhdrohhrghenucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhu
+    gidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopeeipdhmohguvgepshhmthhpohhuth
+    dprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthho
+    pegsrhgruhhnvghrsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehgvghrgheslhhinh
+    hugidqmheikehkrdhorhhgpdhrtghpthhtohepuhhsvghrmhehjeeshigrhhhoohdrtgho
+    mhdprhgtphhtthhopehlihhnuhigqdhmieekkheslhhishhtshdrlhhinhhugidqmheike
+    hkrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhn
+    vghlrdhorhhg
+X-ME-Proxy: <xmx:MgC4Zjr1SHSu_WWv4GSvBCsid7Lnz_glVPl4Ejs5nv-YGpPnAcWN9w>
+    <xmx:MgC4ZgpKHqmeYFfxccAXVFGj3IpdkaFN84JSCSqfaAvzgyviESaheQ>
+    <xmx:MgC4ZpQeiabalLZ0WziK0N-m0UzftWuvBfiI3RA3bZ3XNwezth0W2Q>
+    <xmx:MgC4ZoqO6BQ1i2XgiA_8HlBM2sX-Jf8oJiARMx1_uCJHGwbErLE-bQ>
+    <xmx:MgC4ZlCBfde6AxC2LisduDfcHOckbscnfa7RsPUhta080cqB9Phx4nlS>
 Feedback-ID: i58a146ae:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 10 Aug 2024 19:54:34 -0400 (EDT)
-Date: Sun, 11 Aug 2024 09:54:42 +1000 (AEST)
-From: Finn Thain <fthain@linux-m68k.org>
+ 10 Aug 2024 20:05:03 -0400 (EDT)
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-cc: Christian Brauner <brauner@kernel.org>, Greg Ungerer <gerg@linux-m68k.org>, 
-    Stan Johnson <userm57@yahoo.com>, linux-m68k@lists.linux-m68k.org, 
+Cc: Christian Brauner <brauner@kernel.org>,
+    Greg Ungerer <gerg@linux-m68k.org>,
+    Stan Johnson <userm57@yahoo.com>,
+    linux-m68k@lists.linux-m68k.org,
     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] m68k: Fix kernel_clone_args.flags in m68k_clone()
-In-Reply-To: <CAMuHMdURykHCL1KEvgK=yC5sW-DAkEo+C+bbOBMUsbhD8aPSMw@mail.gmail.com>
-Message-ID: <1f7aadab-29f2-b8fa-4d5f-090fc49cf0b2@linux-m68k.org>
-References: <ac8100050f448caa1dc46c131079e615e73021a4.1723273396.git.fthain@linux-m68k.org> <CAMuHMdURykHCL1KEvgK=yC5sW-DAkEo+C+bbOBMUsbhD8aPSMw@mail.gmail.com>
+Message-Id: <0a3abf529ab9e47a136c2216af1c9d33b2b7dae3.1723334660.git.fthain@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH v2] m68k: Fix kernel_clone_args.flags in m68k_clone()
+Date: Sun, 11 Aug 2024 10:04:20 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 
+Stan Johnson recently reported a failure from the 'dump' command:
 
-On Sat, 10 Aug 2024, Geert Uytterhoeven wrote:
+  DUMP: Date of this level 0 dump: Fri Aug  9 23:37:15 2024
+  DUMP: Dumping /dev/sda (an unlisted file system) to /dev/null
+  DUMP: Label: none
+  DUMP: Writing 10 Kilobyte records
+  DUMP: mapping (Pass I) [regular files]
+  DUMP: mapping (Pass II) [directories]
+  DUMP: estimated 3595695 blocks.
+  DUMP: Context save fork fails in parent 671
 
-> >         /* regs will be equal to current_pt_regs() */
-> >         struct kernel_clone_args args = {
-> > -               .flags          = regs->d1 & ~CSIGNAL,
-> > +               .flags          = (lower_32_bits(regs->d1) & ~CSIGNAL),
-> 
-> While other architectures (nios2, sparc, generic code) do use
-> lower_32_bits() in similar code[*], IMHO this is misleading here, as
-> regs->d1 is never 64-bit.  What you really want is to avoid the sign
-> extension in the promotion from signed 32-bit to unsigned 64-bit.
-> So I think a cast to u32 makes more sense?
-> 
+The dump program uses the clone syscall with the CLONE_IO flag, that is,
+flags == 0x80000000. When that value is promoted from long int to u64 by
+m68k_clone(), it undergoes sign-extension. The new value includes
+CLONE_INTO_CGROUP so the validation in cgroup_css_set_fork() fails and
+the syscall returns -EBADFD. Avoid sign-extension by casting to u32.
 
-Yes, I think your solution is better.
+Cc: Stan Johnson <userm57@yahoo.com>
+Reported-by: Stan Johnson <userm57@yahoo.com>
+Closes: https://lists.debian.org/debian-68k/2024/08/msg00000.html
+Fixes: 6aabc1facdb2 ("m68k: Implement copy_thread_tls()")
+Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+---
+Changed since v1:
+ - Cast to u32 instead of using lower_32_bits() as suggested by Geert.
+---
+ arch/m68k/kernel/process.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
+index 2584e94e2134..fda7eac23f87 100644
+--- a/arch/m68k/kernel/process.c
++++ b/arch/m68k/kernel/process.c
+@@ -117,7 +117,7 @@ asmlinkage int m68k_clone(struct pt_regs *regs)
+ {
+ 	/* regs will be equal to current_pt_regs() */
+ 	struct kernel_clone_args args = {
+-		.flags		= regs->d1 & ~CSIGNAL,
++		.flags		= (u32)(regs->d1) & ~CSIGNAL,
+ 		.pidfd		= (int __user *)regs->d3,
+ 		.child_tid	= (int __user *)regs->d4,
+ 		.parent_tid	= (int __user *)regs->d3,
+-- 
+2.39.5
+
