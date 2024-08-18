@@ -1,130 +1,199 @@
-Received: from fhigh2-smtp.messagingengine.com (fhigh2-smtp.messagingengine.com [103.168.172.153])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37AD71494D9
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 17 Aug 2024 23:56:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBCC51CA84
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 18 Aug 2024 11:08:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723938998; cv=none; b=NNSV97f842yk0K3qG+KWSeCrsvUK7RXIAdiaO+5i32gRhcPerHvPENSJRI6G2DAk8N4RsESXbqtTh5D/o9c3rl3wVPWVXczvwV6UfP5mGfncLqxaAYWxs6SV8MCOSn5Ck7+rMej3rcoe/rMaC7Hild6PJbMeRzWHSQKW6xtcclU=
+	t=1723979314; cv=none; b=jV3tovmnhydfieKRezjQVcarjVIPtt40r1eudC354elTCwPb1mzQ2wFkbRgQ2oNl+7iAUhOJtXKuIgYrAGOezvz4Y8cr3KWoDMmTsA/Mht9HDWfZWCTmBeKD+Xsw6bx0LooNLmTFAuh/98pEHFnZ98Db39unQW831M62prWqZyY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723938998; c=relaxed/simple;
-	bh=HPeYGQj8KBfSSGdgx1xSLRs6X3tjsozpGe+pyT6X05w=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=GTwnnCJqHWR8IcxMn/emJyD9cwy6QbiHqx6TuB66PF/I5KPIH1NJg83c/434uIdq2rSTCUxxsxq1KE99ZSiZydIDPbXHg0wkEqNKOW/fuOB4PYdYaX5jiyGBBBQZUz2zMvkCtmQX6+/P/fNDOr2PSPN5LfzJgg6YohELU04rPwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ZctFRYC9; arc=none smtp.client-ip=103.168.172.153
+	s=arc-20240116; t=1723979314; c=relaxed/simple;
+	bh=Vk7FsvELc0bmhWbFnVgZpeh0BC2wwY6ZVQbR0gwu45g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ESOOsIvhWz6r6McS7q704y11tg4B9wdNbhn5+amRmuRhYvG0u0IvSmYc666pcnzO0RsZw7jxHgRo/rvz2d70XOROoGEkz03lFa2mgiydrDkb5JGfF1EbVJNc+3t6Eapq0yBwUeVvO9gnZrq4jE0BEQYslnk16/dXHb+Cc++2tGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ZctFRYC9"
-Received: from phl-compute-02.internal (phl-compute-02.nyi.internal [10.202.2.42])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 2588F114BBAB;
-	Sat, 17 Aug 2024 19:56:35 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-02.internal (MEProxy); Sat, 17 Aug 2024 19:56:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1723938995; x=1724025395; bh=6a9TGoLD+oTDFnVv1MDv/D2dHc/B
-	JH70iFj/8O7Fpy0=; b=ZctFRYC9RY1n6KoRyCwMYofxVl1Ye0qHGDd1MJicAPuA
-	LaRVAnfo2UvRW9YjC9Xh5VKYWhOVA4sbKeq5D30UZuKCi0aWhonxYdIVuhy+Z/MQ
-	DCNgVItf99RBICVeHV7mDoUQBKRugyNVgaTvqMTle7yLj/qG7PMse6TracTegRVu
-	yvqthzGmThAq9lY1exLkTXLFbIeL9cCccveR40wgtP9cA95L6GL6be2/lR/G1alJ
-	56NBah3T2IzSRHvpOf2wfjorhWWWOa9WQQyaxA1+dULRDRe4GgDtRDvlnRlKtHHZ
-	if5Lx1/iQOMHxLJmffHCyaR+J4iqTXWZAKBcLCThlw==
-X-ME-Sender: <xms:sjjBZkgqpyUx4t8wEyVb5zCUdRXL5DOEY8mRKvBx9i-h4wleloEaeQ>
-    <xme:sjjBZtDMf-rML_MYnvXDMuz5P3eu2fSN3QdjtEa1gnS141_sPnyOg9Dq8GpRR-7Yo
-    zsnF-xiEW6ru9_7MAs>
-X-ME-Received: <xmr:sjjBZsFsjdFslxMJimuWpnDDEXpHRY8w1JjQzh70kS0JCnD3w-M2qE17D6HusXoMLayr7_P2aG8w2P1Q-Un30CCPxF1RcMfipig>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudduuddgvdejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepfffhvfevufgjkfhfgggtsehmtderredttdejnecu
-    hfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrd
-    horhhgqeenucggtffrrghtthgvrhhnpeffvdegjefgvedvfefghfffvdegfefhgeeliefg
-    hfevkeekveeitedtfeduteefieenucffohhmrghinhepuggvsghirghnrdhorhhgnecuve
-    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhn
-    sehlihhnuhigqdhmieekkhdrohhrghdpnhgspghrtghpthhtohepiedpmhhouggvpehsmh
-    htphhouhhtpdhrtghpthhtohepghgvvghrtheslhhinhhugidqmheikehkrdhorhhgpdhr
-    tghpthhtohepfhhunhgrhhhosehjuhhrrghirdhorhhgpdhrtghpthhtohepuhhsvghrmh
-    ehjeeshigrhhhoohdrtghomhdprhgtphhtthhopehstghhmhhithiimhhitgesghhmrghi
-    lhdrtghomhdprhgtphhtthhopehlihhnuhigqdhmieekkheslhhishhtshdrlhhinhhugi
-    dqmheikehkrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdr
-    khgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:sjjBZlQgvC0UAL1WpT_hjK98vQZ1PS8BZpJNTvT5zVQnvjD2KigTfw>
-    <xmx:sjjBZhwA2V-8-W9SNFEE8qgxfWFj8bhya21E8GPbziPwj0HucUBJnw>
-    <xmx:sjjBZj7QNKh43mtmMU0zmyg1O6z5MUJPotgy-h9GUBwWFpjt5oQO_w>
-    <xmx:sjjBZuzvWUHy1SL0i8IQMR9_8RQ8YAjl7Bd0ieCiz9izdCk_y1odTg>
-    <xmx:szjBZkrhPQdBSSrVJErZS9o9M1uTC2OYhUh-HEAuYXi-xWWTFpmvek8I>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 17 Aug 2024 19:56:32 -0400 (EDT)
-Date: Sun, 18 Aug 2024 09:56:50 +1000 (AEST)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-cc: Joshua Thompson <funaho@jurai.org>, Stan Johnson <userm57@yahoo.com>, 
-    Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@lists.linux-m68k.org, 
-    linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] m68k/mac: Revise PowerBook 500 series model name
-In-Reply-To: <CAMuHMdVx8XL5qPE0fWM3p6hWyUUH5FxSp-wCF5Q1ekXCSemmXA@mail.gmail.com>
-Message-ID: <9da54e36-682f-aba1-a5fb-4e41665b9873@linux-m68k.org>
-References: <3633d85c51d2133622708e5b0e07cfea96fc295b.1723445731.git.fthain@linux-m68k.org> <CAMuHMdVx8XL5qPE0fWM3p6hWyUUH5FxSp-wCF5Q1ekXCSemmXA@mail.gmail.com>
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-e026a2238d8so3445214276.0
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 18 Aug 2024 04:08:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723979310; x=1724584110;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7LMS5uQbz0tMfNGBhJ57pvNdfv3GrBQOuF18D6qiaXE=;
+        b=nYriyYeQ5DAB37FJQ4dc+45+83CXt/eGUeJGncZtFRPowfYEvn7YrJjvpeSjL9SF/l
+         8J8NmAhcOjbXONw1QKbK1+KgE5B5/R6yDQlx8c1dSBNzkAoUG/qVAH7+r0TNVGrIkXdv
+         9owV+vLe3gfVde2pBkeXCJD+9CwYlLdPdpC2UY3OxzXbErISDU9OIG5dYSSJyInO3Ny6
+         ryFfSmPTY3y/zPz8uVu9OM41qAk4RanN/qSRRAafOmUv1Zk8WnHYLJSuhjEE0WtMP9bO
+         UI8aB2J0Oq6pZ5UPOfvYMGNvukIZ8l9LaJGWGm8fhiRm4dglUdbH0rzrJMKwQ0VFA1Y7
+         CptA==
+X-Forwarded-Encrypted: i=1; AJvYcCUZOXpPCPeFZCvIHSgBfpxQuNP97/FrPYosge7DmIcPzsn+av+jyoql1ch7/LPSPtUCgp3fjpdGje9A+u77Y/fzqg3d5JD7e6d2ZH93IV5+
+X-Gm-Message-State: AOJu0YyC3dpevOjGcdJFd2ebnA9mTX2ie3Om3L/FcCDujpr/Eg7RmqsP
+	ZOMMNnYZC1bfuNMTL6N7zNTGaLJoqh+nte4wolVRKbfup50v1QOck7fKf8tp
+X-Google-Smtp-Source: AGHT+IHFBo/gsTJq/mUFEuUUzIwZLSfFO+kMz1jg6gg1wvxOo8sMGNgZo2+h/ujlDN2hTPx9Llyidw==
+X-Received: by 2002:a05:6902:2b13:b0:e0b:db06:18cc with SMTP id 3f1490d57ef6-e1180e84fe2mr9605403276.12.1723979309953;
+        Sun, 18 Aug 2024 04:08:29 -0700 (PDT)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e13ca5b894bsm953242276.21.2024.08.18.04.08.29
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 18 Aug 2024 04:08:29 -0700 (PDT)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-e05f25fb96eso3501739276.1
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 18 Aug 2024 04:08:29 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVfj3F+s+GnW9jTOSvoxCATb26Dyx+t7H84ApsmyhJThvZ9H8W3fBEySiRBuMa1YRqI28pJVyB8qpcAh8IkusQdloxrAcNzlJUWk7cFquvf
+X-Received: by 2002:a05:690c:288c:b0:665:b351:25e7 with SMTP id
+ 00721157ae682-6b1ba7e6036mr70081327b3.14.1723979308616; Sun, 18 Aug 2024
+ 04:08:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="-1463811774-536073561-1723939010=:25075"
+References: <20240803140115.3305547-1-arnd@kernel.org>
+In-Reply-To: <20240803140115.3305547-1-arnd@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Sun, 18 Aug 2024 13:08:16 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVC-FUSA5C9aNrvP3=RaRWrchhUEC5UYcSGMz_ep1PEhg@mail.gmail.com>
+Message-ID: <CAMuHMdVC-FUSA5C9aNrvP3=RaRWrchhUEC5UYcSGMz_ep1PEhg@mail.gmail.com>
+Subject: Re: [PATCH] m68k: move sun3 into a top-level platform option
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>, Greg Ungerer <gerg@linux-m68k.org>, 
+	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hi Arnd,
 
----1463811774-536073561-1723939010=:25075
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+On Sat, Aug 3, 2024 at 4:01=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wrot=
+e:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> It is possible to select an m68k MMU build but not actually
+> enable any of the three MMU options, which then results in a
+> build failure:
+>
+>  arch/m68k/include/asm/page.h:10:25: error: 'CONFIG_PAGE_SHIFT' undeclare=
+d here (not in a function); did you mean 'CONFIG_LOG_BUF_SHIFT'?
+>
+> Change the Kconfig selection to ensure that exactly one of the
+> three options is always enabled whenever an MMU-enabled kernel
+> is built, but moving CONFIG_SUN3 into a top-level option next
+> to M68KCLASSIC and COLDFIRE.
+>
+> All defconfig files should keep working without changes,
+> but alldefconfig now builds support for the classic MMU.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202408032138.P7sBvIns-lkp@i=
+ntel.com/
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> I saw another copy of the bug report today.
+>
+> Geert, any opinions on this approach? I posted this before but
+> it looks like you missed it.
 
+I was still thinking about it, and then holidays kicked in...
 
-On Sat, 17 Aug 2024, Geert Uytterhoeven wrote:
+> --- a/arch/m68k/Kconfig.cpu
+> +++ b/arch/m68k/Kconfig.cpu
+> @@ -32,13 +32,23 @@ config COLDFIRE
+>         select HAVE_LEGACY_CLK
+>         select HAVE_PAGE_SIZE_8KB if !MMU
+>
+> -endchoice
+> +config SUN3
+> +       bool "Sun3 support"
+> +       depends on MMU
+> +       select HAVE_ARCH_PFN_VALID
+> +       select LEGACY_TIMER_TICK
+> +       select NO_DMA
+> +       select M68020
+> +       help
+> +         This option enables support for the Sun 3 series of workstation=
+s
+> +         (3/50, 3/60, 3/1xx, 3/2xx systems). These use a classic 68020 C=
+PU
+> +         but the custom memory management unit makes them incompatible w=
+ith
+> +         all other classic m68k machines, including Sun 3x.
 
-> On Mon, Aug 12, 2024 at 8:56=E2=80=AFAM Finn Thain <fthain@linux-m68k.org=
-> wrote:
-> > The PowerBook 520, 540 and 550 all have macintosh_config->ident =3D=3D =
-72
-> > because that's their gestalt ID in MacOS. Hence, Linux describes them a=
-ll
-> > as "Powerbook 520". Change that to "Powerbook 500 series", which is mor=
-e
-> > accurate.
-> >
-> > Cc: Joshua Thompson <funaho@jurai.org>
-> > Cc: Stan Johnson <userm57@yahoo.com>
-> > Reported-by: Stan Johnson <userm57@yahoo.com>
-> > Signed-off-by: Finn Thain <fthain@linux-m68k.org>
->=20
-> Thanks for your patch!
->=20
-> > --- a/arch/m68k/mac/config.c
-> > +++ b/arch/m68k/mac/config.c
-> > @@ -677,7 +677,7 @@ static struct mac_model mac_data_table[] =3D {
-> >                 .floppy_type    =3D MAC_FLOPPY_OLD, /* SWIM 2 */
-> >         }, {
-> >                 .ident          =3D MAC_MODEL_PB520,
-> > -               .name           =3D "PowerBook 520",
-> > +               .name           =3D "PowerBook 500 series",
-> >                 .adb_type       =3D MAC_ADB_PB2,
-> >                 .via_type       =3D MAC_VIA_QUADRA,
-> >                 .scsi_type      =3D MAC_SCSI_OLD,
->=20
-> This is a user-visible change, through /proc/hardware.
-> Do you know if any userspace relies on the old string value?
->=20
+Yes, it's a good idea to factor out at the top level machines that
+need special handling.
 
-I did a search on sources.debian.org and didn't find anything. OTOH, a=20
-search for "powerbook" doesn't actually return Michael's packages that=20
-used to be available for powerbooks...
+However, the name of the choice now sounds a bit odd. Perhaps it should
+be changed to "CPU/machine family support"?
+Likewise for M68KCLASSIC.
 
-Anyway, I agree that /proc/hardware should remain stable, so please=20
-disregard this patch.
----1463811774-536073561-1723939010=:25075--
+>
+> -if M68KCLASSIC
+> +endchoice
+>
+>  config M68000
+> -       def_bool y
+> -       depends on !MMU
+> +       def_bool M68KCLASSIC && !MMU
+
+I think this is unrelated, and should be spun-off into a separate patch
+to fix the "no CPU type selected" issue?
+
+>         select CPU_HAS_NO_BITFIELDS
+>         select CPU_HAS_NO_CAS
+>         select CPU_HAS_NO_MULDIV64
+> @@ -56,7 +66,8 @@ config M68000
+>           a paging MMU.
+>
+>  config M68020
+> -       bool "68020 support"
+> +       bool "68020 support" if M68KCLASSIC
+> +       default !(M68030 || M68040 || M68060)
+
+Part of the "no CPU type selected" fix?
+
+>         depends on MMU
+>         select FPU
+>         select CPU_HAS_ADDRESS_SPACES
+
+You also need:
+
+    config M68KFPU_EMU
+            bool "Math emulation support"
+   -        depends on M68KCLASSIC && FPU
+   +        depends on (M68KCLASSIC || SUN3) && FPU
+
+> --- a/arch/m68k/kernel/Makefile
+> +++ b/arch/m68k/kernel/Makefile
+> @@ -5,16 +5,8 @@
+>
+>  extra-y                        +=3D vmlinux.lds
+>
+> -obj-$(CONFIG_AMIGA)    :=3D head.o
+> -obj-$(CONFIG_ATARI)    :=3D head.o
+> -obj-$(CONFIG_MAC)      :=3D head.o
+> -obj-$(CONFIG_APOLLO)   :=3D head.o
+> -obj-$(CONFIG_VME)      :=3D head.o
+> -obj-$(CONFIG_HP300)    :=3D head.o
+> -obj-$(CONFIG_Q40)      :=3D head.o
+> -obj-$(CONFIG_SUN3X)    :=3D head.o
+> -obj-$(CONFIG_VIRT)     :=3D head.o
+> -obj-$(CONFIG_SUN3)     :=3D sun3-head.o
+> +obj-$(CONFIG_M68KCLASSIC)      :=3D head.o
+> +obj-$(CONFIG_SUN3)             :=3D sun3-head.o
+
+Nice cleanup ;-)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
