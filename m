@@ -1,36 +1,36 @@
-Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DA2A3FE4
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Aug 2024 07:02:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7D1578C98
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Aug 2024 07:02:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.40.73.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724655741; cv=none; b=nejF0h5HN2pqw1D/+XBvwwop9SzkTB/h35gd655fn9L2d4TRSrOqA4RMZA/DMP6qIbUEMo0ksqCMRoAlnEwJOKXzQXTEe4RTECH/cKN8k6IqdL6fVeK8H3gXypsRol4wILx6780broYEdV9uk2Cy7bgn7AMCQ1FAeEhx1ES3dbk=
+	t=1724655742; cv=none; b=H613+h2z/Bo9bcxQH4voR5dz6NRetkt3ghsvT57PbjXSjjciH06JBQMxekOZB1B98rlx3SFs9dPVcFICbI8zf4mRrMLOPcysUgpHZ7MrT4yKoaOnAWHEht23XrbYMJRMpnpocjX3xVxEO4Z3xDbk436YHWMP0KpfR4e/c7vKMyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724655741; c=relaxed/simple;
-	bh=diG+Fv3wDftGRjrnWBdO8lGUovRExvU5pHk1HsKnyW0=;
+	s=arc-20240116; t=1724655742; c=relaxed/simple;
+	bh=r822LaZRSo48kh1hH5WoG20uCbxKP6lu+ngNzNWB1aE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lk14j9gb2XRoinKS2pOb1uCkUbSEQ7r0aONHoLfqNePAMxZS2PVzdNtwy6/LQBSY5Y0kcjL/y3YMCp6tf1LWDT2pT+lAhN79acGCO9y+nP1T5auMECWF3h9HICRmqSbx5KAXpCMK9sLzC2r5SNi0wXlD7nl5i1rlpOE1Gy4Xp7I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fnaG1q6R; arc=none smtp.client-ip=147.75.193.91
+	 MIME-Version; b=aLyBYsZFiIYKtp2aPzM+wuJFjY9daBDEjVI1n73mCqe5G1I0tud6xHo8VDaNvn8AE2DcIKhOF3EyPTOxcUF8tcSCORDapmwyM8ZoGaodQfdq58ul8FDl/LsioxGdMw7EevVdN23CHBy/y4cdg1twTmj2PfbwA5ucUaETdpOM2is=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DYK9oNeM; arc=none smtp.client-ip=145.40.73.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fnaG1q6R"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DYK9oNeM"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 85AD6A41349;
-	Mon, 26 Aug 2024 07:02:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E492C51CA1;
-	Mon, 26 Aug 2024 06:56:12 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 4AD9ACE0B9F;
+	Mon, 26 Aug 2024 07:02:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E073C521E0;
+	Mon, 26 Aug 2024 06:56:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724655386;
-	bh=diG+Fv3wDftGRjrnWBdO8lGUovRExvU5pHk1HsKnyW0=;
+	s=k20201202; t=1724655416;
+	bh=r822LaZRSo48kh1hH5WoG20uCbxKP6lu+ngNzNWB1aE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fnaG1q6R4qlIaSK/fWkGnB06BhXbyowHMLkXN+Wa/EmI8MXCHyCRZspeqUfjxlFn8
-	 I5lAr0mBOGk6Pt3c7iaZXbNbgEWcTB2h0HEGHe4mQWtVg4kIYBz60y4INpqUCOObQh
-	 snsW+ukoJgEDrqZbxOJXvgYwpT1mdmaXAK0KgEiHeSDv0S/jdqlA7izDk1dLlRr7T2
-	 JvFAUL1avz8KDvpXtlCDFgtgmsVTawfWmOS9mj/Sm91+tuowTK8XuuK95GWPjy8VKl
-	 t+6xvbWV5dUVQztjsq3xx57LLL9mOi//qHDE6IYxAExuUD3vx++wbsh6uwKeNHOBbT
-	 TnTRQT6DCjzuA==
+	b=DYK9oNeMv3/VMADQKPjCojtZBfz9RuwZwds9R0avsETK/hiJ48/NmAdPUuLyylz7w
+	 6+d1+Viqdarxcw2qygDqcIzxOB89mv22pkZ7jmQeRBIjFdFL+sPkAcsK75SA7Cl68K
+	 LWspJaAQiUlCQCTId5Fm/c9iHwvxY2+F69No7D2KvwHQOERk0yaCx8qDPsl+9qvsAk
+	 iILGxprzy+kNT7Efacq4WICC1ssWjOLPoCc+l6nwAV+IC0eH4bzt2soEhB5CaZIXke
+	 5y9fZ7a+Ox2xqigNBk/V7YAZFdsD4Othq+DHAQY8jfW1gNwY201ZJT08FIZQRS56Vp
+	 gUFbTLvgCXNcA==
 From: Mike Rapoport <rppt@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Andreas Larsson <andreas@gaisler.com>,
@@ -95,9 +95,9 @@ Cc: Andreas Larsson <andreas@gaisler.com>,
 	loongarch@lists.linux.dev,
 	sparclinux@vger.kernel.org,
 	x86@kernel.org
-Subject: [PATCH v2 2/8] mm: vmalloc: don't account for number of nodes for HUGE_VMAP allocations
-Date: Mon, 26 Aug 2024 09:55:26 +0300
-Message-ID: <20240826065532.2618273-3-rppt@kernel.org>
+Subject: [PATCH v2 4/8] module: prepare to handle ROX allocations for text
+Date: Mon, 26 Aug 2024 09:55:28 +0300
+Message-ID: <20240826065532.2618273-5-rppt@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240826065532.2618273-1-rppt@kernel.org>
 References: <20240826065532.2618273-1-rppt@kernel.org>
@@ -111,52 +111,313 @@ Content-Transfer-Encoding: 8bit
 
 From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 
-vmalloc allocations with VM_ALLOW_HUGE_VMAP that do not explicitly
-specify node ID will use huge pages only if size_per_node is larger than
-a huge page.
-Still the actual allocated memory is not distributed between nodes and
-there is no advantage in such approach.
-On the contrary, BPF allocates SZ_2M * num_possible_nodes() for each
-new bpf_prog_pack, while it could do with a single huge page per pack.
+In order to support ROX allocations for module text, it is necessary to
+handle modifications to the code, such as relocations and alternatives
+patching, without write access to that memory.
 
-Don't account for number of nodes for VM_ALLOW_HUGE_VMAP with
-NUMA_NO_NODE and use huge pages whenever the requested allocation size
-is larger than a huge page.
+One option is to use text patching, but this would make module loading
+extremely slow and will expose executable code that is not finally formed.
+
+A better way is to have memory allocated with ROX permissions contain
+invalid instructions and keep a writable, but not executable copy of the
+module text. The relocations and alternative patches would be done on the
+writable copy using the addresses of the ROX memory.
+Once the module is completely ready, the updated text will be copied to ROX
+memory using text patching in one go and the writable copy will be freed.
+
+Add support for that to module initialization code and provide necessary
+interfaces in execmem.
 
 Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 ---
- mm/vmalloc.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ include/linux/execmem.h      | 23 +++++++++++
+ include/linux/module.h       | 11 ++++++
+ include/linux/moduleloader.h |  4 ++
+ kernel/module/main.c         | 77 ++++++++++++++++++++++++++++++++----
+ kernel/module/strict_rwx.c   |  3 ++
+ mm/execmem.c                 | 11 ++++++
+ 6 files changed, 122 insertions(+), 7 deletions(-)
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index af2de36549d6..d0fbe6b2b73c 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -3769,8 +3769,6 @@ void *__vmalloc_node_range_noprof(unsigned long size, unsigned long align,
- 	}
+diff --git a/include/linux/execmem.h b/include/linux/execmem.h
+index 32cef1144117..dfdf19f8a5e8 100644
+--- a/include/linux/execmem.h
++++ b/include/linux/execmem.h
+@@ -46,9 +46,11 @@ enum execmem_type {
+ /**
+  * enum execmem_range_flags - options for executable memory allocations
+  * @EXECMEM_KASAN_SHADOW:	allocate kasan shadow
++ * @EXECMEM_ROX_CACHE:		allocations should use ROX cache of huge pages
+  */
+ enum execmem_range_flags {
+ 	EXECMEM_KASAN_SHADOW	= (1 << 0),
++	EXECMEM_ROX_CACHE	= (1 << 1),
+ };
  
- 	if (vmap_allow_huge && (vm_flags & VM_ALLOW_HUGE_VMAP)) {
--		unsigned long size_per_node;
+ /**
+@@ -123,6 +125,27 @@ void *execmem_alloc(enum execmem_type type, size_t size);
+  */
+ void execmem_free(void *ptr);
+ 
++/**
++ * execmem_update_copy - copy an update to executable memory
++ * @dst:  destination address to update
++ * @src:  source address containing the data
++ * @size: how many bytes of memory shold be copied
++ *
++ * Copy @size bytes from @src to @dst using text poking if the memory at
++ * @dst is read-only.
++ *
++ * Return: a pointer to @dst or NULL on error
++ */
++void *execmem_update_copy(void *dst, const void *src, size_t size);
++
++/**
++ * execmem_is_rox - check if execmem is read-only
++ * @type - the execmem type to check
++ *
++ * Return: %true if the @type is read-only, %false if it's writable
++ */
++bool execmem_is_rox(enum execmem_type type);
++
+ #if defined(CONFIG_EXECMEM) && !defined(CONFIG_ARCH_WANTS_EXECMEM_LATE)
+ void execmem_init(void);
+ #else
+diff --git a/include/linux/module.h b/include/linux/module.h
+index 88ecc5e9f523..7039f609c6ef 100644
+--- a/include/linux/module.h
++++ b/include/linux/module.h
+@@ -367,6 +367,8 @@ enum mod_mem_type {
+ 
+ struct module_memory {
+ 	void *base;
++	void *rw_copy;
++	bool is_rox;
+ 	unsigned int size;
+ 
+ #ifdef CONFIG_MODULES_TREE_LOOKUP
+@@ -374,6 +376,15 @@ struct module_memory {
+ #endif
+ };
+ 
++#ifdef CONFIG_MODULES
++void *module_writable_address(struct module *mod, void *loc);
++#else
++static inline void *module_writable_address(struct module *mod, void *loc)
++{
++	return loc;
++}
++#endif
++
+ #ifdef CONFIG_MODULES_TREE_LOOKUP
+ /* Only touch one cacheline for common rbtree-for-core-layout case. */
+ #define __module_memory_align ____cacheline_aligned
+diff --git a/include/linux/moduleloader.h b/include/linux/moduleloader.h
+index e395461d59e5..1f5507ba5a12 100644
+--- a/include/linux/moduleloader.h
++++ b/include/linux/moduleloader.h
+@@ -108,6 +108,10 @@ int module_finalize(const Elf_Ehdr *hdr,
+ 		    const Elf_Shdr *sechdrs,
+ 		    struct module *mod);
+ 
++int module_post_finalize(const Elf_Ehdr *hdr,
++			 const Elf_Shdr *sechdrs,
++			 struct module *mod);
++
+ #ifdef CONFIG_MODULES
+ void flush_module_init_free_work(void);
+ #else
+diff --git a/kernel/module/main.c b/kernel/module/main.c
+index 71396e297499..55f53f0095d4 100644
+--- a/kernel/module/main.c
++++ b/kernel/module/main.c
+@@ -1189,6 +1189,21 @@ void __weak module_arch_freeing_init(struct module *mod)
+ {
+ }
+ 
++void *module_writable_address(struct module *mod, void *loc)
++{
++	if (!mod)
++		return loc;
++
++	for_class_mod_mem_type(type, text) {
++		struct module_memory *mem = &mod->mem[type];
++
++		if (loc >= mem->base && loc < mem->base + mem->size)
++			return loc + (mem->rw_copy - mem->base);
++	}
++
++	return loc;
++}
++
+ static int module_memory_alloc(struct module *mod, enum mod_mem_type type)
+ {
+ 	unsigned int size = PAGE_ALIGN(mod->mem[type].size);
+@@ -1206,6 +1221,23 @@ static int module_memory_alloc(struct module *mod, enum mod_mem_type type)
+ 	if (!ptr)
+ 		return -ENOMEM;
+ 
++	mod->mem[type].base = ptr;
++
++	if (execmem_is_rox(execmem_type)) {
++		ptr = vzalloc(size);
++
++		if (!ptr) {
++			execmem_free(mod->mem[type].base);
++			return -ENOMEM;
++		}
++
++		mod->mem[type].rw_copy = ptr;
++		mod->mem[type].is_rox = true;
++	} else {
++		mod->mem[type].rw_copy = mod->mem[type].base;
++		memset(mod->mem[type].base, 0, size);
++	}
++
+ 	/*
+ 	 * The pointer to these blocks of memory are stored on the module
+ 	 * structure and we keep that around so long as the module is
+@@ -1219,16 +1251,17 @@ static int module_memory_alloc(struct module *mod, enum mod_mem_type type)
+ 	 */
+ 	kmemleak_not_leak(ptr);
+ 
+-	memset(ptr, 0, size);
+-	mod->mem[type].base = ptr;
 -
- 		/*
- 		 * Try huge pages. Only try for PAGE_KERNEL allocations,
- 		 * others like modules don't yet expect huge pages in
-@@ -3778,13 +3776,10 @@ void *__vmalloc_node_range_noprof(unsigned long size, unsigned long align,
- 		 * supporting them.
+ 	return 0;
+ }
+ 
+ static void module_memory_free(struct module *mod, enum mod_mem_type type,
+ 			       bool unload_codetags)
+ {
+-	void *ptr = mod->mem[type].base;
++	struct module_memory *mem = &mod->mem[type];
++	void *ptr = mem->base;
++
++	if (mem->is_rox)
++		vfree(mem->rw_copy);
+ 
+ 	if (!unload_codetags && mod_mem_type_is_core_data(type))
+ 		return;
+@@ -2251,6 +2284,7 @@ static int move_module(struct module *mod, struct load_info *info)
+ 	for_each_mod_mem_type(type) {
+ 		if (!mod->mem[type].size) {
+ 			mod->mem[type].base = NULL;
++			mod->mem[type].rw_copy = NULL;
+ 			continue;
+ 		}
+ 
+@@ -2267,11 +2301,14 @@ static int move_module(struct module *mod, struct load_info *info)
+ 		void *dest;
+ 		Elf_Shdr *shdr = &info->sechdrs[i];
+ 		enum mod_mem_type type = shdr->sh_entsize >> SH_ENTSIZE_TYPE_SHIFT;
++		unsigned long offset = shdr->sh_entsize & SH_ENTSIZE_OFFSET_MASK;
++		unsigned long addr;
+ 
+ 		if (!(shdr->sh_flags & SHF_ALLOC))
+ 			continue;
+ 
+-		dest = mod->mem[type].base + (shdr->sh_entsize & SH_ENTSIZE_OFFSET_MASK);
++		addr = (unsigned long)mod->mem[type].base + offset;
++		dest = mod->mem[type].rw_copy + offset;
+ 
+ 		if (shdr->sh_type != SHT_NOBITS) {
+ 			/*
+@@ -2293,7 +2330,7 @@ static int move_module(struct module *mod, struct load_info *info)
+ 		 * users of info can keep taking advantage and using the newly
+ 		 * minted official memory area.
  		 */
+-		shdr->sh_addr = (unsigned long)dest;
++		shdr->sh_addr = addr;
+ 		pr_debug("\t0x%lx 0x%.8lx %s\n", (long)shdr->sh_addr,
+ 			 (long)shdr->sh_size, info->secstrings + shdr->sh_name);
+ 	}
+@@ -2441,8 +2478,17 @@ int __weak module_finalize(const Elf_Ehdr *hdr,
+ 	return 0;
+ }
  
--		size_per_node = size;
--		if (node == NUMA_NO_NODE)
--			size_per_node /= num_online_nodes();
--		if (arch_vmap_pmd_supported(prot) && size_per_node >= PMD_SIZE)
-+		if (arch_vmap_pmd_supported(prot) && size >= PMD_SIZE)
- 			shift = PMD_SHIFT;
++int __weak module_post_finalize(const Elf_Ehdr *hdr,
++				const Elf_Shdr *sechdrs,
++				struct module *me)
++{
++	return 0;
++}
++
+ static int post_relocation(struct module *mod, const struct load_info *info)
+ {
++	int ret;
++
+ 	/* Sort exception table now relocations are done. */
+ 	sort_extable(mod->extable, mod->extable + mod->num_exentries);
+ 
+@@ -2454,7 +2500,24 @@ static int post_relocation(struct module *mod, const struct load_info *info)
+ 	add_kallsyms(mod, info);
+ 
+ 	/* Arch-specific module finalizing. */
+-	return module_finalize(info->hdr, info->sechdrs, mod);
++	ret = module_finalize(info->hdr, info->sechdrs, mod);
++	if (ret)
++		return ret;
++
++	for_each_mod_mem_type(type) {
++		struct module_memory *mem = &mod->mem[type];
++
++		if (mem->is_rox) {
++			if (!execmem_update_copy(mem->base, mem->rw_copy,
++						 mem->size))
++				return -ENOMEM;
++
++			vfree(mem->rw_copy);
++			mem->rw_copy = NULL;
++		}
++	}
++
++	return module_post_finalize(info->hdr, info->sechdrs, mod);
+ }
+ 
+ /* Call module constructors. */
+diff --git a/kernel/module/strict_rwx.c b/kernel/module/strict_rwx.c
+index c45caa4690e5..239e5013359d 100644
+--- a/kernel/module/strict_rwx.c
++++ b/kernel/module/strict_rwx.c
+@@ -34,6 +34,9 @@ int module_enable_text_rox(const struct module *mod)
+ 	for_class_mod_mem_type(type, text) {
+ 		int ret;
+ 
++		if (mod->mem[type].is_rox)
++			continue;
++
+ 		if (IS_ENABLED(CONFIG_STRICT_MODULE_RWX))
+ 			ret = module_set_memory(mod, type, set_memory_rox);
  		else
--			shift = arch_vmap_pte_supported_shift(size_per_node);
-+			shift = arch_vmap_pte_supported_shift(size);
+diff --git a/mm/execmem.c b/mm/execmem.c
+index 0c4b36bc6d10..0f6691e9ffe6 100644
+--- a/mm/execmem.c
++++ b/mm/execmem.c
+@@ -10,6 +10,7 @@
+ #include <linux/vmalloc.h>
+ #include <linux/execmem.h>
+ #include <linux/moduleloader.h>
++#include <linux/text-patching.h>
  
- 		align = max(real_align, 1UL << shift);
- 		size = ALIGN(real_size, 1UL << shift);
+ static struct execmem_info *execmem_info __ro_after_init;
+ static struct execmem_info default_execmem_info __ro_after_init;
+@@ -69,6 +70,16 @@ void execmem_free(void *ptr)
+ 	vfree(ptr);
+ }
+ 
++void *execmem_update_copy(void *dst, const void *src, size_t size)
++{
++	return text_poke_copy(dst, src, size);
++}
++
++bool execmem_is_rox(enum execmem_type type)
++{
++	return !!(execmem_info->ranges[type].flags & EXECMEM_ROX_CACHE);
++}
++
+ static bool execmem_validate(struct execmem_info *info)
+ {
+ 	struct execmem_range *r = &info->ranges[EXECMEM_DEFAULT];
 -- 
 2.43.0
 
