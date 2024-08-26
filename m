@@ -1,36 +1,36 @@
 Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 305127641E
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Aug 2024 07:02:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2362D13777F
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Aug 2024 07:07:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724655746; cv=none; b=pEAFj9e/eS/5vMEPmgCKEeGefyFIlidrx9lDl/V6ympnG4cyS/toaI80GiRpStnRhns12ZSLigxLoLW5cRk0wgebpHq2SQnd15w89i14lqieytlIEPIdYVXz1WUxFsVw0fZlHNpUrIZXUZHTZ08+/VPRY04zjhB9M7EkxDKVcFA=
+	t=1724656040; cv=none; b=Abf98w5kT9Z3jxT9rjz76dj6M8b+73Kf+zQ70XJq9o9OQZgVhDqn1O+NQoS7302RPy/XoDujz+Ei/Fplu2MtIcL7HjlFggQjDJtIcAwCp5xKNMZmH+KDHnSWvkc7tboQcKDr+dT2ggroYtJ5dxa4glibVy6fV1nAS9T9nz1OHsc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724655746; c=relaxed/simple;
-	bh=q+53PiBfV7KWc5zMTRPH+qwlooVMOQhmzzmNh3VtVAA=;
+	s=arc-20240116; t=1724656040; c=relaxed/simple;
+	bh=eegQhIgk/sL/1GOJrTqC/b1XxgPEj6Y/jFdDZ0nJTYE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dfETpIXsntZkrRxMqdzGv2jWFEEFLra5IaI0SCZznWrC0DtjLahQ3/L01+VqfOMBMg/2r2HzLiXwiUivf3jADznJuRo3Dapmy6z3V2zQf+scZOKhEMY5Pbkn7ObLT29+AhD5mxwESHjZa1nin5TXDQEDq8rs1glb0Hrat433LfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U7UFIrY1; arc=none smtp.client-ip=147.75.193.91
+	 MIME-Version; b=kK7JoUgmaEWCwCxq+7t1kY6sp/+gqqK6pfSNSmAiGSZvfblle+q3V4CHkicM+j572MsPVj8c4P578+UJgJmGwb26zslExF8U2r+xTNWt3kd5bDbzijAPTaoTmNW2hvUYHdAqwm232nqfeQq0h+EN9iYuZLPb6VIs2/DSwaf5x6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=li+at+1m; arc=none smtp.client-ip=147.75.193.91
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U7UFIrY1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="li+at+1m"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 64788A4137F;
-	Mon, 26 Aug 2024 07:02:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B82BC51CD7;
-	Mon, 26 Aug 2024 06:56:26 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id 90B30A41390;
+	Mon, 26 Aug 2024 07:07:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E943FC5279E;
+	Mon, 26 Aug 2024 06:57:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724655401;
-	bh=q+53PiBfV7KWc5zMTRPH+qwlooVMOQhmzzmNh3VtVAA=;
+	s=k20201202; t=1724655446;
+	bh=eegQhIgk/sL/1GOJrTqC/b1XxgPEj6Y/jFdDZ0nJTYE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=U7UFIrY1Wki4CIAtxKsDH9Ethyh2pioqUUKCJ2LrnbXE/MHXSYNuNHBNxj/kGcug9
-	 2oLlfp9vNII/iB216rpp/vH6wZDgAX7qSWUcEGtPgVTQOwSrGYFw2gjTonp8qfiKEo
-	 s4sKCQcpj2m3jdY5D04jSA5GkndMq4MSemPQ2kwYmbqk1h+zhhkzmqjPm1qgS8dRnV
-	 pHtg+GOMsjArNPxxclYONqbpUYOvqnbipCqKYLWJgWh3cQaCJD45GOlEi2YFEsWjul
-	 xYOg6r1bLP2jrM1WkogIxDZveGnwW4QCAC73Rc0MtKMJTLXfzh27f//lArm9WNAAzC
-	 jCgfBUaXR4/TQ==
+	b=li+at+1myBRDRxsRQ7XZj0EDLMeuIhbLZR+7anT0MGBtUoX/L/sxXH6PIJjsak+y8
+	 xa4K9qD0ZOTVVnayQsNBa7hcNzDBbbmZO43oYbaw4cmoXm5c/+OKBLWezk3GmoFIHd
+	 IvChTtwQCA42cVhatUjAN9whQrsFZjlvsGUtb8AUkPbwIWUAZrjinGNEo+kD4cyd5r
+	 fxLEiw99xsow7a64mNJV6rd3SRkY3/YVVPVDx6EfWvEJ4jNLkt+YDUjQQTGd/rz5SX
+	 0iICsSps7VzPeQG/KVWx2N7KsKOwZrlWzLXysivEXZTIjQWUIRVlsQ9i2l35ZY2YL+
+	 x4as3sk3USrxA==
 From: Mike Rapoport <rppt@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Andreas Larsson <andreas@gaisler.com>,
@@ -95,9 +95,9 @@ Cc: Andreas Larsson <andreas@gaisler.com>,
 	loongarch@lists.linux.dev,
 	sparclinux@vger.kernel.org,
 	x86@kernel.org
-Subject: [PATCH v2 3/8] asm-generic: introduce text-patching.h
-Date: Mon, 26 Aug 2024 09:55:27 +0300
-Message-ID: <20240826065532.2618273-4-rppt@kernel.org>
+Subject: [PATCH v2 6/8] x86/module: perpare module loading for ROX allocations of text
+Date: Mon, 26 Aug 2024 09:55:30 +0300
+Message-ID: <20240826065532.2618273-7-rppt@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240826065532.2618273-1-rppt@kernel.org>
 References: <20240826065532.2618273-1-rppt@kernel.org>
@@ -111,1209 +111,914 @@ Content-Transfer-Encoding: 8bit
 
 From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 
-Several architectures support text patching, but they name the header
-files that declare patching functions differently.
+When module text memory will be allocated with ROX permissions, the
+memory at the actual address where the module will live will contain
+invalid instructions and there will be a writable copy that contains the
+actual module code.
 
-Make all such headers consistently named text-patching.h and add an empty
-header in asm-generic for architectures that do not support text patching.
+Update relocations and alternatives patching to deal with it.
 
 Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 ---
- arch/alpha/include/asm/Kbuild                     |  1 +
- arch/arc/include/asm/Kbuild                       |  1 +
- arch/arm/include/asm/{patch.h => text-patching.h} |  0
- arch/arm/kernel/ftrace.c                          |  2 +-
- arch/arm/kernel/jump_label.c                      |  2 +-
- arch/arm/kernel/kgdb.c                            |  2 +-
- arch/arm/kernel/patch.c                           |  2 +-
- arch/arm/probes/kprobes/core.c                    |  2 +-
- arch/arm/probes/kprobes/opt-arm.c                 |  2 +-
- .../include/asm/{patching.h => text-patching.h}   |  0
- arch/arm64/kernel/ftrace.c                        |  2 +-
- arch/arm64/kernel/jump_label.c                    |  2 +-
- arch/arm64/kernel/kgdb.c                          |  2 +-
- arch/arm64/kernel/patching.c                      |  2 +-
- arch/arm64/kernel/probes/kprobes.c                |  2 +-
- arch/arm64/kernel/traps.c                         |  2 +-
- arch/arm64/net/bpf_jit_comp.c                     |  2 +-
- arch/csky/include/asm/Kbuild                      |  1 +
- arch/hexagon/include/asm/Kbuild                   |  1 +
- arch/loongarch/include/asm/Kbuild                 |  1 +
- arch/m68k/include/asm/Kbuild                      |  1 +
- arch/microblaze/include/asm/Kbuild                |  1 +
- arch/mips/include/asm/Kbuild                      |  1 +
- arch/nios2/include/asm/Kbuild                     |  1 +
- arch/openrisc/include/asm/Kbuild                  |  1 +
- .../include/asm/{patch.h => text-patching.h}      |  0
- arch/parisc/kernel/ftrace.c                       |  2 +-
- arch/parisc/kernel/jump_label.c                   |  2 +-
- arch/parisc/kernel/kgdb.c                         |  2 +-
- arch/parisc/kernel/kprobes.c                      |  2 +-
- arch/parisc/kernel/patch.c                        |  2 +-
- arch/powerpc/include/asm/kprobes.h                |  2 +-
- .../asm/{code-patching.h => text-patching.h}      |  0
- arch/powerpc/kernel/crash_dump.c                  |  2 +-
- arch/powerpc/kernel/epapr_paravirt.c              |  2 +-
- arch/powerpc/kernel/jump_label.c                  |  2 +-
- arch/powerpc/kernel/kgdb.c                        |  2 +-
- arch/powerpc/kernel/kprobes.c                     |  2 +-
- arch/powerpc/kernel/module_32.c                   |  2 +-
- arch/powerpc/kernel/module_64.c                   |  2 +-
- arch/powerpc/kernel/optprobes.c                   |  2 +-
- arch/powerpc/kernel/process.c                     |  2 +-
- arch/powerpc/kernel/security.c                    |  2 +-
- arch/powerpc/kernel/setup_32.c                    |  2 +-
- arch/powerpc/kernel/setup_64.c                    |  2 +-
- arch/powerpc/kernel/static_call.c                 |  2 +-
- arch/powerpc/kernel/trace/ftrace.c                |  2 +-
- arch/powerpc/kernel/trace/ftrace_64_pg.c          |  2 +-
- arch/powerpc/lib/code-patching.c                  |  2 +-
- arch/powerpc/lib/feature-fixups.c                 |  2 +-
- arch/powerpc/lib/test-code-patching.c             |  2 +-
- arch/powerpc/lib/test_emulate_step.c              |  2 +-
- arch/powerpc/mm/book3s32/mmu.c                    |  2 +-
- arch/powerpc/mm/book3s64/hash_utils.c             |  2 +-
- arch/powerpc/mm/book3s64/slb.c                    |  2 +-
- arch/powerpc/mm/kasan/init_32.c                   |  2 +-
- arch/powerpc/mm/mem.c                             |  2 +-
- arch/powerpc/mm/nohash/44x.c                      |  2 +-
- arch/powerpc/mm/nohash/book3e_pgtable.c           |  2 +-
- arch/powerpc/mm/nohash/tlb.c                      |  2 +-
- arch/powerpc/net/bpf_jit_comp.c                   |  2 +-
- arch/powerpc/perf/8xx-pmu.c                       |  2 +-
- arch/powerpc/perf/core-book3s.c                   |  2 +-
- arch/powerpc/platforms/85xx/smp.c                 |  2 +-
- arch/powerpc/platforms/86xx/mpc86xx_smp.c         |  2 +-
- arch/powerpc/platforms/cell/smp.c                 |  2 +-
- arch/powerpc/platforms/powermac/smp.c             |  2 +-
- arch/powerpc/platforms/powernv/idle.c             |  2 +-
- arch/powerpc/platforms/powernv/smp.c              |  2 +-
- arch/powerpc/platforms/pseries/smp.c              |  2 +-
- arch/powerpc/xmon/xmon.c                          |  2 +-
- arch/riscv/errata/andes/errata.c                  |  2 +-
- arch/riscv/errata/sifive/errata.c                 |  2 +-
- arch/riscv/errata/thead/errata.c                  |  2 +-
- .../include/asm/{patch.h => text-patching.h}      |  0
- arch/riscv/include/asm/uprobes.h                  |  2 +-
- arch/riscv/kernel/alternative.c                   |  2 +-
- arch/riscv/kernel/cpufeature.c                    |  3 ++-
- arch/riscv/kernel/ftrace.c                        |  2 +-
- arch/riscv/kernel/jump_label.c                    |  2 +-
- arch/riscv/kernel/patch.c                         |  2 +-
- arch/riscv/kernel/probes/kprobes.c                |  2 +-
- arch/riscv/net/bpf_jit_comp64.c                   |  2 +-
- arch/riscv/net/bpf_jit_core.c                     |  2 +-
- arch/sh/include/asm/Kbuild                        |  1 +
- arch/sparc/include/asm/Kbuild                     |  1 +
- arch/um/kernel/um_arch.c                          |  5 +++++
- arch/x86/include/asm/text-patching.h              |  1 +
- arch/xtensa/include/asm/Kbuild                    |  1 +
- include/asm-generic/text-patching.h               |  5 +++++
- include/linux/text-patching.h                     | 15 +++++++++++++++
- 91 files changed, 109 insertions(+), 69 deletions(-)
- rename arch/arm/include/asm/{patch.h => text-patching.h} (100%)
- rename arch/arm64/include/asm/{patching.h => text-patching.h} (100%)
- rename arch/parisc/include/asm/{patch.h => text-patching.h} (100%)
- rename arch/powerpc/include/asm/{code-patching.h => text-patching.h} (100%)
- rename arch/riscv/include/asm/{patch.h => text-patching.h} (100%)
- create mode 100644 include/asm-generic/text-patching.h
- create mode 100644 include/linux/text-patching.h
+ arch/um/kernel/um_arch.c           |  11 +-
+ arch/x86/entry/vdso/vma.c          |   3 +-
+ arch/x86/include/asm/alternative.h |  14 +--
+ arch/x86/kernel/alternative.c      | 160 +++++++++++++++++------------
+ arch/x86/kernel/ftrace.c           |  41 +++++---
+ arch/x86/kernel/module.c           |  45 +++++---
+ include/linux/module.h             |  16 ++-
+ 7 files changed, 172 insertions(+), 118 deletions(-)
 
-diff --git a/arch/alpha/include/asm/Kbuild b/arch/alpha/include/asm/Kbuild
-index 396caece6d6d..483965c5a4de 100644
---- a/arch/alpha/include/asm/Kbuild
-+++ b/arch/alpha/include/asm/Kbuild
-@@ -5,3 +5,4 @@ generic-y += agp.h
- generic-y += asm-offsets.h
- generic-y += kvm_para.h
- generic-y += mcs_spinlock.h
-+generic-y += text-patching.h
-diff --git a/arch/arc/include/asm/Kbuild b/arch/arc/include/asm/Kbuild
-index 49285a3ce239..4c69522e0328 100644
---- a/arch/arc/include/asm/Kbuild
-+++ b/arch/arc/include/asm/Kbuild
-@@ -6,3 +6,4 @@ generic-y += kvm_para.h
- generic-y += mcs_spinlock.h
- generic-y += parport.h
- generic-y += user.h
-+generic-y += text-patching.h
-diff --git a/arch/arm/include/asm/patch.h b/arch/arm/include/asm/text-patching.h
-similarity index 100%
-rename from arch/arm/include/asm/patch.h
-rename to arch/arm/include/asm/text-patching.h
-diff --git a/arch/arm/kernel/ftrace.c b/arch/arm/kernel/ftrace.c
-index e61591f33a6c..845acf9ce21e 100644
---- a/arch/arm/kernel/ftrace.c
-+++ b/arch/arm/kernel/ftrace.c
-@@ -23,7 +23,7 @@
- #include <asm/insn.h>
- #include <asm/set_memory.h>
- #include <asm/stacktrace.h>
--#include <asm/patch.h>
-+#include <asm/text-patching.h>
- 
- /*
-  * The compiler emitted profiling hook consists of
-diff --git a/arch/arm/kernel/jump_label.c b/arch/arm/kernel/jump_label.c
-index eb9c24b6e8e2..a06a92d0f550 100644
---- a/arch/arm/kernel/jump_label.c
-+++ b/arch/arm/kernel/jump_label.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <linux/kernel.h>
- #include <linux/jump_label.h>
--#include <asm/patch.h>
-+#include <asm/text-patching.h>
- #include <asm/insn.h>
- 
- static void __arch_jump_label_transform(struct jump_entry *entry,
-diff --git a/arch/arm/kernel/kgdb.c b/arch/arm/kernel/kgdb.c
-index 22f937e6f3ff..ab76c55fd610 100644
---- a/arch/arm/kernel/kgdb.c
-+++ b/arch/arm/kernel/kgdb.c
-@@ -15,7 +15,7 @@
- #include <linux/kgdb.h>
- #include <linux/uaccess.h>
- 
--#include <asm/patch.h>
-+#include <asm/text-patching.h>
- #include <asm/traps.h>
- 
- struct dbg_reg_def_t dbg_reg_def[DBG_MAX_REG_NUM] =
-diff --git a/arch/arm/kernel/patch.c b/arch/arm/kernel/patch.c
-index e9e828b6bb30..4d45e60cd46d 100644
---- a/arch/arm/kernel/patch.c
-+++ b/arch/arm/kernel/patch.c
-@@ -9,7 +9,7 @@
- #include <asm/fixmap.h>
- #include <asm/smp_plat.h>
- #include <asm/opcodes.h>
--#include <asm/patch.h>
-+#include <asm/text-patching.h>
- 
- struct patch {
- 	void *addr;
-diff --git a/arch/arm/probes/kprobes/core.c b/arch/arm/probes/kprobes/core.c
-index d8238da095df..9fd877c87a38 100644
---- a/arch/arm/probes/kprobes/core.c
-+++ b/arch/arm/probes/kprobes/core.c
-@@ -25,7 +25,7 @@
- #include <asm/cacheflush.h>
- #include <linux/percpu.h>
- #include <linux/bug.h>
--#include <asm/patch.h>
-+#include <asm/text-patching.h>
- #include <asm/sections.h>
- 
- #include "../decode-arm.h"
-diff --git a/arch/arm/probes/kprobes/opt-arm.c b/arch/arm/probes/kprobes/opt-arm.c
-index 7f65048380ca..966c6042c5ad 100644
---- a/arch/arm/probes/kprobes/opt-arm.c
-+++ b/arch/arm/probes/kprobes/opt-arm.c
-@@ -14,7 +14,7 @@
- /* for arm_gen_branch */
- #include <asm/insn.h>
- /* for patch_text */
--#include <asm/patch.h>
-+#include <asm/text-patching.h>
- 
- #include "core.h"
- 
-diff --git a/arch/arm64/include/asm/patching.h b/arch/arm64/include/asm/text-patching.h
-similarity index 100%
-rename from arch/arm64/include/asm/patching.h
-rename to arch/arm64/include/asm/text-patching.h
-diff --git a/arch/arm64/kernel/ftrace.c b/arch/arm64/kernel/ftrace.c
-index a650f5e11fc5..3575d03d60af 100644
---- a/arch/arm64/kernel/ftrace.c
-+++ b/arch/arm64/kernel/ftrace.c
-@@ -15,7 +15,7 @@
- #include <asm/debug-monitors.h>
- #include <asm/ftrace.h>
- #include <asm/insn.h>
--#include <asm/patching.h>
-+#include <asm/text-patching.h>
- 
- #ifdef CONFIG_DYNAMIC_FTRACE_WITH_ARGS
- struct fregs_offset {
-diff --git a/arch/arm64/kernel/jump_label.c b/arch/arm64/kernel/jump_label.c
-index f63ea915d6ad..b345425193d2 100644
---- a/arch/arm64/kernel/jump_label.c
-+++ b/arch/arm64/kernel/jump_label.c
-@@ -9,7 +9,7 @@
- #include <linux/jump_label.h>
- #include <linux/smp.h>
- #include <asm/insn.h>
--#include <asm/patching.h>
-+#include <asm/text-patching.h>
- 
- bool arch_jump_label_transform_queue(struct jump_entry *entry,
- 				     enum jump_label_type type)
-diff --git a/arch/arm64/kernel/kgdb.c b/arch/arm64/kernel/kgdb.c
-index 4e1f983df3d1..f3c4d3a8a20f 100644
---- a/arch/arm64/kernel/kgdb.c
-+++ b/arch/arm64/kernel/kgdb.c
-@@ -17,7 +17,7 @@
- 
- #include <asm/debug-monitors.h>
- #include <asm/insn.h>
--#include <asm/patching.h>
-+#include <asm/text-patching.h>
- #include <asm/traps.h>
- 
- struct dbg_reg_def_t dbg_reg_def[DBG_MAX_REG_NUM] = {
-diff --git a/arch/arm64/kernel/patching.c b/arch/arm64/kernel/patching.c
-index 945df74005c7..7f99723fbb8c 100644
---- a/arch/arm64/kernel/patching.c
-+++ b/arch/arm64/kernel/patching.c
-@@ -10,7 +10,7 @@
- #include <asm/fixmap.h>
- #include <asm/insn.h>
- #include <asm/kprobes.h>
--#include <asm/patching.h>
-+#include <asm/text-patching.h>
- #include <asm/sections.h>
- 
- static DEFINE_RAW_SPINLOCK(patch_lock);
-diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
-index 4268678d0e86..01dbe9a56956 100644
---- a/arch/arm64/kernel/probes/kprobes.c
-+++ b/arch/arm64/kernel/probes/kprobes.c
-@@ -27,7 +27,7 @@
- #include <asm/debug-monitors.h>
- #include <asm/insn.h>
- #include <asm/irq.h>
--#include <asm/patching.h>
-+#include <asm/text-patching.h>
- #include <asm/ptrace.h>
- #include <asm/sections.h>
- #include <asm/system_misc.h>
-diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
-index 9e22683aa921..3086c45f6eed 100644
---- a/arch/arm64/kernel/traps.c
-+++ b/arch/arm64/kernel/traps.c
-@@ -41,7 +41,7 @@
- #include <asm/extable.h>
- #include <asm/insn.h>
- #include <asm/kprobes.h>
--#include <asm/patching.h>
-+#include <asm/text-patching.h>
- #include <asm/traps.h>
- #include <asm/smp.h>
- #include <asm/stack_pointer.h>
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index dd0bb069df4b..f7f3715eb745 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -19,7 +19,7 @@
- #include <asm/cacheflush.h>
- #include <asm/debug-monitors.h>
- #include <asm/insn.h>
--#include <asm/patching.h>
-+#include <asm/text-patching.h>
- #include <asm/set_memory.h>
- 
- #include "bpf_jit.h"
-diff --git a/arch/csky/include/asm/Kbuild b/arch/csky/include/asm/Kbuild
-index 9a9bc65b57a9..3a5c7f6e5aac 100644
---- a/arch/csky/include/asm/Kbuild
-+++ b/arch/csky/include/asm/Kbuild
-@@ -11,3 +11,4 @@ generic-y += qspinlock.h
- generic-y += parport.h
- generic-y += user.h
- generic-y += vmlinux.lds.h
-+generic-y += text-patching.h
-diff --git a/arch/hexagon/include/asm/Kbuild b/arch/hexagon/include/asm/Kbuild
-index 8c1a78c8f527..1efa1e993d4b 100644
---- a/arch/hexagon/include/asm/Kbuild
-+++ b/arch/hexagon/include/asm/Kbuild
-@@ -5,3 +5,4 @@ generic-y += extable.h
- generic-y += iomap.h
- generic-y += kvm_para.h
- generic-y += mcs_spinlock.h
-+generic-y += text-patching.h
-diff --git a/arch/loongarch/include/asm/Kbuild b/arch/loongarch/include/asm/Kbuild
-index 2bb3676429c0..c60d21b7ebc3 100644
---- a/arch/loongarch/include/asm/Kbuild
-+++ b/arch/loongarch/include/asm/Kbuild
-@@ -11,3 +11,4 @@ generic-y += user.h
- generic-y += ioctl.h
- generic-y += statfs.h
- generic-y += param.h
-+generic-y += text-patching.h
-diff --git a/arch/m68k/include/asm/Kbuild b/arch/m68k/include/asm/Kbuild
-index 0dbf9c5c6fae..b282e0dd8dc1 100644
---- a/arch/m68k/include/asm/Kbuild
-+++ b/arch/m68k/include/asm/Kbuild
-@@ -4,3 +4,4 @@ generic-y += extable.h
- generic-y += kvm_para.h
- generic-y += mcs_spinlock.h
- generic-y += spinlock.h
-+generic-y += text-patching.h
-diff --git a/arch/microblaze/include/asm/Kbuild b/arch/microblaze/include/asm/Kbuild
-index a055f5dbe00a..7178f990e8b3 100644
---- a/arch/microblaze/include/asm/Kbuild
-+++ b/arch/microblaze/include/asm/Kbuild
-@@ -8,3 +8,4 @@ generic-y += parport.h
- generic-y += syscalls.h
- generic-y += tlb.h
- generic-y += user.h
-+generic-y += text-patching.h
-diff --git a/arch/mips/include/asm/Kbuild b/arch/mips/include/asm/Kbuild
-index 7ba67a0d6c97..684569b2ecd6 100644
---- a/arch/mips/include/asm/Kbuild
-+++ b/arch/mips/include/asm/Kbuild
-@@ -13,3 +13,4 @@ generic-y += parport.h
- generic-y += qrwlock.h
- generic-y += qspinlock.h
- generic-y += user.h
-+generic-y += text-patching.h
-diff --git a/arch/nios2/include/asm/Kbuild b/arch/nios2/include/asm/Kbuild
-index 0d09829ed144..28004301c236 100644
---- a/arch/nios2/include/asm/Kbuild
-+++ b/arch/nios2/include/asm/Kbuild
-@@ -7,3 +7,4 @@ generic-y += kvm_para.h
- generic-y += mcs_spinlock.h
- generic-y += spinlock.h
- generic-y += user.h
-+generic-y += text-patching.h
-diff --git a/arch/openrisc/include/asm/Kbuild b/arch/openrisc/include/asm/Kbuild
-index cef49d60d74c..2b1a6b00cdac 100644
---- a/arch/openrisc/include/asm/Kbuild
-+++ b/arch/openrisc/include/asm/Kbuild
-@@ -9,3 +9,4 @@ generic-y += spinlock.h
- generic-y += qrwlock_types.h
- generic-y += qrwlock.h
- generic-y += user.h
-+generic-y += text-patching.h
-diff --git a/arch/parisc/include/asm/patch.h b/arch/parisc/include/asm/text-patching.h
-similarity index 100%
-rename from arch/parisc/include/asm/patch.h
-rename to arch/parisc/include/asm/text-patching.h
-diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
-index c91f9c2e61ed..3e34b4473d3a 100644
---- a/arch/parisc/kernel/ftrace.c
-+++ b/arch/parisc/kernel/ftrace.c
-@@ -20,7 +20,7 @@
- #include <asm/assembly.h>
- #include <asm/sections.h>
- #include <asm/ftrace.h>
--#include <asm/patch.h>
-+#include <asm/text-patching.h>
- 
- #define __hot __section(".text.hot")
- 
-diff --git a/arch/parisc/kernel/jump_label.c b/arch/parisc/kernel/jump_label.c
-index e253b134500d..ea51f15bf0e6 100644
---- a/arch/parisc/kernel/jump_label.c
-+++ b/arch/parisc/kernel/jump_label.c
-@@ -8,7 +8,7 @@
- #include <linux/jump_label.h>
- #include <linux/bug.h>
- #include <asm/alternative.h>
--#include <asm/patch.h>
-+#include <asm/text-patching.h>
- 
- static inline int reassemble_17(int as17)
- {
-diff --git a/arch/parisc/kernel/kgdb.c b/arch/parisc/kernel/kgdb.c
-index b16fa9bac5f4..fee81f877525 100644
---- a/arch/parisc/kernel/kgdb.c
-+++ b/arch/parisc/kernel/kgdb.c
-@@ -16,7 +16,7 @@
- #include <asm/ptrace.h>
- #include <asm/traps.h>
- #include <asm/processor.h>
--#include <asm/patch.h>
-+#include <asm/text-patching.h>
- #include <asm/cacheflush.h>
- 
- const struct kgdb_arch arch_kgdb_ops = {
-diff --git a/arch/parisc/kernel/kprobes.c b/arch/parisc/kernel/kprobes.c
-index 6e0b86652f30..9255adba67a3 100644
---- a/arch/parisc/kernel/kprobes.c
-+++ b/arch/parisc/kernel/kprobes.c
-@@ -12,7 +12,7 @@
- #include <linux/kprobes.h>
- #include <linux/slab.h>
- #include <asm/cacheflush.h>
--#include <asm/patch.h>
-+#include <asm/text-patching.h>
- 
- DEFINE_PER_CPU(struct kprobe *, current_kprobe) = NULL;
- DEFINE_PER_CPU(struct kprobe_ctlblk, kprobe_ctlblk);
-diff --git a/arch/parisc/kernel/patch.c b/arch/parisc/kernel/patch.c
-index e59574f65e64..35dd764b871e 100644
---- a/arch/parisc/kernel/patch.c
-+++ b/arch/parisc/kernel/patch.c
-@@ -13,7 +13,7 @@
- 
- #include <asm/cacheflush.h>
- #include <asm/fixmap.h>
--#include <asm/patch.h>
-+#include <asm/text-patching.h>
- 
- struct patch {
- 	void *addr;
-diff --git a/arch/powerpc/include/asm/kprobes.h b/arch/powerpc/include/asm/kprobes.h
-index 4525a9c68260..dfe2e5ad3b21 100644
---- a/arch/powerpc/include/asm/kprobes.h
-+++ b/arch/powerpc/include/asm/kprobes.h
-@@ -21,7 +21,7 @@
- #include <linux/percpu.h>
- #include <linux/module.h>
- #include <asm/probes.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- 
- #ifdef CONFIG_KPROBES
- #define  __ARCH_WANT_KPROBES_INSN_SLOT
-diff --git a/arch/powerpc/include/asm/code-patching.h b/arch/powerpc/include/asm/text-patching.h
-similarity index 100%
-rename from arch/powerpc/include/asm/code-patching.h
-rename to arch/powerpc/include/asm/text-patching.h
-diff --git a/arch/powerpc/kernel/crash_dump.c b/arch/powerpc/kernel/crash_dump.c
-index 2086fa6cdc25..103b6605dd68 100644
---- a/arch/powerpc/kernel/crash_dump.c
-+++ b/arch/powerpc/kernel/crash_dump.c
-@@ -13,7 +13,7 @@
- #include <linux/io.h>
- #include <linux/memblock.h>
- #include <linux/of.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/kdump.h>
- #include <asm/firmware.h>
- #include <linux/uio.h>
-diff --git a/arch/powerpc/kernel/epapr_paravirt.c b/arch/powerpc/kernel/epapr_paravirt.c
-index d4b8aff20815..247ab2acaccc 100644
---- a/arch/powerpc/kernel/epapr_paravirt.c
-+++ b/arch/powerpc/kernel/epapr_paravirt.c
-@@ -9,7 +9,7 @@
- #include <linux/of_fdt.h>
- #include <asm/epapr_hcalls.h>
- #include <asm/cacheflush.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/machdep.h>
- #include <asm/inst.h>
- 
-diff --git a/arch/powerpc/kernel/jump_label.c b/arch/powerpc/kernel/jump_label.c
-index 5277cf582c16..2659e1ac8604 100644
---- a/arch/powerpc/kernel/jump_label.c
-+++ b/arch/powerpc/kernel/jump_label.c
-@@ -5,7 +5,7 @@
- 
- #include <linux/kernel.h>
- #include <linux/jump_label.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/inst.h>
- 
- void arch_jump_label_transform(struct jump_entry *entry,
-diff --git a/arch/powerpc/kernel/kgdb.c b/arch/powerpc/kernel/kgdb.c
-index 7a8bc03a00af..5081334b7bd2 100644
---- a/arch/powerpc/kernel/kgdb.c
-+++ b/arch/powerpc/kernel/kgdb.c
-@@ -21,7 +21,7 @@
- #include <asm/processor.h>
- #include <asm/machdep.h>
- #include <asm/debug.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <linux/slab.h>
- #include <asm/inst.h>
- 
-diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.c
-index 14c5ddec3056..9dff58143720 100644
---- a/arch/powerpc/kernel/kprobes.c
-+++ b/arch/powerpc/kernel/kprobes.c
-@@ -21,7 +21,7 @@
- #include <linux/slab.h>
- #include <linux/set_memory.h>
- #include <linux/execmem.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/cacheflush.h>
- #include <asm/sstep.h>
- #include <asm/sections.h>
-diff --git a/arch/powerpc/kernel/module_32.c b/arch/powerpc/kernel/module_32.c
-index 816a63fd71fb..f930e3395a7f 100644
---- a/arch/powerpc/kernel/module_32.c
-+++ b/arch/powerpc/kernel/module_32.c
-@@ -18,7 +18,7 @@
- #include <linux/bug.h>
- #include <linux/sort.h>
- #include <asm/setup.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- 
- /* Count how many different relocations (different symbol, different
-    addend) */
-diff --git a/arch/powerpc/kernel/module_64.c b/arch/powerpc/kernel/module_64.c
-index 7112adc597a8..2f07071229a3 100644
---- a/arch/powerpc/kernel/module_64.c
-+++ b/arch/powerpc/kernel/module_64.c
-@@ -17,7 +17,7 @@
- #include <linux/kernel.h>
- #include <asm/module.h>
- #include <asm/firmware.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <linux/sort.h>
- #include <asm/setup.h>
- #include <asm/sections.h>
-diff --git a/arch/powerpc/kernel/optprobes.c b/arch/powerpc/kernel/optprobes.c
-index 004fae2044a3..a540f13210fb 100644
---- a/arch/powerpc/kernel/optprobes.c
-+++ b/arch/powerpc/kernel/optprobes.c
-@@ -13,7 +13,7 @@
- #include <asm/kprobes.h>
- #include <asm/ptrace.h>
- #include <asm/cacheflush.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/sstep.h>
- #include <asm/ppc-opcode.h>
- #include <asm/inst.h>
-diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
-index 3b506d4c55f3..8596c8793285 100644
---- a/arch/powerpc/kernel/process.c
-+++ b/arch/powerpc/kernel/process.c
-@@ -54,7 +54,7 @@
- #include <asm/firmware.h>
- #include <asm/hw_irq.h>
- #endif
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/exec.h>
- #include <asm/livepatch.h>
- #include <asm/cpu_has_feature.h>
-diff --git a/arch/powerpc/kernel/security.c b/arch/powerpc/kernel/security.c
-index 4856e1a5161c..fbb7ebd8aa08 100644
---- a/arch/powerpc/kernel/security.c
-+++ b/arch/powerpc/kernel/security.c
-@@ -14,7 +14,7 @@
- #include <linux/debugfs.h>
- 
- #include <asm/asm-prototypes.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/security_features.h>
- #include <asm/sections.h>
- #include <asm/setup.h>
-diff --git a/arch/powerpc/kernel/setup_32.c b/arch/powerpc/kernel/setup_32.c
-index e515c1f7d8d3..75dbf3e0d9c4 100644
---- a/arch/powerpc/kernel/setup_32.c
-+++ b/arch/powerpc/kernel/setup_32.c
-@@ -40,7 +40,7 @@
- #include <asm/time.h>
- #include <asm/serial.h>
- #include <asm/udbg.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/cpu_has_feature.h>
- #include <asm/asm-prototypes.h>
- #include <asm/kdump.h>
-diff --git a/arch/powerpc/kernel/setup_64.c b/arch/powerpc/kernel/setup_64.c
-index 22f83fbbc762..3ebf5b9fbe98 100644
---- a/arch/powerpc/kernel/setup_64.c
-+++ b/arch/powerpc/kernel/setup_64.c
-@@ -60,7 +60,7 @@
- #include <asm/xmon.h>
- #include <asm/udbg.h>
- #include <asm/kexec.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/ftrace.h>
- #include <asm/opal.h>
- #include <asm/cputhreads.h>
-diff --git a/arch/powerpc/kernel/static_call.c b/arch/powerpc/kernel/static_call.c
-index 863a7aa24650..f1875b55f0a6 100644
---- a/arch/powerpc/kernel/static_call.c
-+++ b/arch/powerpc/kernel/static_call.c
-@@ -2,7 +2,7 @@
- #include <linux/memory.h>
- #include <linux/static_call.h>
- 
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- 
- void arch_static_call_transform(void *site, void *tramp, void *func, bool tail)
- {
-diff --git a/arch/powerpc/kernel/trace/ftrace.c b/arch/powerpc/kernel/trace/ftrace.c
-index d8d6b4fd9a14..be1a245241b3 100644
---- a/arch/powerpc/kernel/trace/ftrace.c
-+++ b/arch/powerpc/kernel/trace/ftrace.c
-@@ -23,7 +23,7 @@
- #include <linux/list.h>
- 
- #include <asm/cacheflush.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/ftrace.h>
- #include <asm/syscall.h>
- #include <asm/inst.h>
-diff --git a/arch/powerpc/kernel/trace/ftrace_64_pg.c b/arch/powerpc/kernel/trace/ftrace_64_pg.c
-index 12fab1803bcf..9e862ba55263 100644
---- a/arch/powerpc/kernel/trace/ftrace_64_pg.c
-+++ b/arch/powerpc/kernel/trace/ftrace_64_pg.c
-@@ -23,7 +23,7 @@
- #include <linux/list.h>
- 
- #include <asm/cacheflush.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/ftrace.h>
- #include <asm/syscall.h>
- #include <asm/inst.h>
-diff --git a/arch/powerpc/lib/code-patching.c b/arch/powerpc/lib/code-patching.c
-index 0d1f3ee91115..d750c631ccb0 100644
---- a/arch/powerpc/lib/code-patching.c
-+++ b/arch/powerpc/lib/code-patching.c
-@@ -17,7 +17,7 @@
- #include <asm/tlb.h>
- #include <asm/tlbflush.h>
- #include <asm/page.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/inst.h>
- 
- static int __patch_instruction(u32 *exec_addr, ppc_inst_t instr, u32 *patch_addr)
-diff --git a/arch/powerpc/lib/feature-fixups.c b/arch/powerpc/lib/feature-fixups.c
-index b7201ba50b2e..587c8cf1230f 100644
---- a/arch/powerpc/lib/feature-fixups.c
-+++ b/arch/powerpc/lib/feature-fixups.c
-@@ -16,7 +16,7 @@
- #include <linux/sched/mm.h>
- #include <linux/stop_machine.h>
- #include <asm/cputable.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/interrupt.h>
- #include <asm/page.h>
- #include <asm/sections.h>
-diff --git a/arch/powerpc/lib/test-code-patching.c b/arch/powerpc/lib/test-code-patching.c
-index f76030087f98..64cc4cceb22c 100644
---- a/arch/powerpc/lib/test-code-patching.c
-+++ b/arch/powerpc/lib/test-code-patching.c
-@@ -6,7 +6,7 @@
- #include <linux/vmalloc.h>
- #include <linux/init.h>
- 
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- 
- static int __init instr_is_branch_to_addr(const u32 *instr, unsigned long addr)
- {
-diff --git a/arch/powerpc/lib/test_emulate_step.c b/arch/powerpc/lib/test_emulate_step.c
-index 23c7805fb7b3..66b5b4fa1686 100644
---- a/arch/powerpc/lib/test_emulate_step.c
-+++ b/arch/powerpc/lib/test_emulate_step.c
-@@ -11,7 +11,7 @@
- #include <asm/cpu_has_feature.h>
- #include <asm/sstep.h>
- #include <asm/ppc-opcode.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/inst.h>
- 
- #define MAX_SUBTESTS	16
-diff --git a/arch/powerpc/mm/book3s32/mmu.c b/arch/powerpc/mm/book3s32/mmu.c
-index 625fe7d08e06..bc44066ec9f8 100644
---- a/arch/powerpc/mm/book3s32/mmu.c
-+++ b/arch/powerpc/mm/book3s32/mmu.c
-@@ -25,7 +25,7 @@
- 
- #include <asm/mmu.h>
- #include <asm/machdep.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/sections.h>
- 
- #include <mm/mmu_decl.h>
-diff --git a/arch/powerpc/mm/book3s64/hash_utils.c b/arch/powerpc/mm/book3s64/hash_utils.c
-index 6727a15ab94f..2abd64dd3f24 100644
---- a/arch/powerpc/mm/book3s64/hash_utils.c
-+++ b/arch/powerpc/mm/book3s64/hash_utils.c
-@@ -57,7 +57,7 @@
- #include <asm/sections.h>
- #include <asm/copro.h>
- #include <asm/udbg.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/fadump.h>
- #include <asm/firmware.h>
- #include <asm/tm.h>
-diff --git a/arch/powerpc/mm/book3s64/slb.c b/arch/powerpc/mm/book3s64/slb.c
-index f2708c8629a5..6b783552403c 100644
---- a/arch/powerpc/mm/book3s64/slb.c
-+++ b/arch/powerpc/mm/book3s64/slb.c
-@@ -24,7 +24,7 @@
- #include <linux/pgtable.h>
- 
- #include <asm/udbg.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- 
- #include "internal.h"
- 
-diff --git a/arch/powerpc/mm/kasan/init_32.c b/arch/powerpc/mm/kasan/init_32.c
-index aa9aa11927b2..03666d790a53 100644
---- a/arch/powerpc/mm/kasan/init_32.c
-+++ b/arch/powerpc/mm/kasan/init_32.c
-@@ -7,7 +7,7 @@
- #include <linux/memblock.h>
- #include <linux/sched/task.h>
- #include <asm/pgalloc.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <mm/mmu_decl.h>
- 
- static pgprot_t __init kasan_prot_ro(void)
-diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
-index da21cb018984..991878ec948b 100644
---- a/arch/powerpc/mm/mem.c
-+++ b/arch/powerpc/mm/mem.c
-@@ -26,7 +26,7 @@
- #include <asm/svm.h>
- #include <asm/mmzone.h>
- #include <asm/ftrace.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/setup.h>
- #include <asm/fixmap.h>
- 
-diff --git a/arch/powerpc/mm/nohash/44x.c b/arch/powerpc/mm/nohash/44x.c
-index 1beae802bb1c..6d10c6d8be71 100644
---- a/arch/powerpc/mm/nohash/44x.c
-+++ b/arch/powerpc/mm/nohash/44x.c
-@@ -24,7 +24,7 @@
- #include <asm/mmu.h>
- #include <asm/page.h>
- #include <asm/cacheflush.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/smp.h>
- 
- #include <mm/mmu_decl.h>
-diff --git a/arch/powerpc/mm/nohash/book3e_pgtable.c b/arch/powerpc/mm/nohash/book3e_pgtable.c
-index ad2a7c26f2a0..062e8785c1bb 100644
---- a/arch/powerpc/mm/nohash/book3e_pgtable.c
-+++ b/arch/powerpc/mm/nohash/book3e_pgtable.c
-@@ -10,7 +10,7 @@
- #include <asm/pgalloc.h>
- #include <asm/tlb.h>
- #include <asm/dma.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- 
- #include <mm/mmu_decl.h>
- 
-diff --git a/arch/powerpc/mm/nohash/tlb.c b/arch/powerpc/mm/nohash/tlb.c
-index b653a7be4cb1..0a650742f3a0 100644
---- a/arch/powerpc/mm/nohash/tlb.c
-+++ b/arch/powerpc/mm/nohash/tlb.c
-@@ -37,7 +37,7 @@
- #include <asm/pgalloc.h>
- #include <asm/tlbflush.h>
- #include <asm/tlb.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/cputhreads.h>
- #include <asm/hugetlb.h>
- #include <asm/paca.h>
-diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
-index 2a36cc2e7e9e..68c6a13e6acb 100644
---- a/arch/powerpc/net/bpf_jit_comp.c
-+++ b/arch/powerpc/net/bpf_jit_comp.c
-@@ -18,7 +18,7 @@
- #include <linux/bpf.h>
- 
- #include <asm/kprobes.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- 
- #include "bpf_jit.h"
- 
-diff --git a/arch/powerpc/perf/8xx-pmu.c b/arch/powerpc/perf/8xx-pmu.c
-index 308a2e40d7be..1d2972229e3a 100644
---- a/arch/powerpc/perf/8xx-pmu.c
-+++ b/arch/powerpc/perf/8xx-pmu.c
-@@ -14,7 +14,7 @@
- #include <asm/machdep.h>
- #include <asm/firmware.h>
- #include <asm/ptrace.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/inst.h>
- 
- #define PERF_8xx_ID_CPU_CYCLES		1
-diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-book3s.c
-index 42867469752d..a727cd111cac 100644
---- a/arch/powerpc/perf/core-book3s.c
-+++ b/arch/powerpc/perf/core-book3s.c
-@@ -16,7 +16,7 @@
- #include <asm/machdep.h>
- #include <asm/firmware.h>
- #include <asm/ptrace.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/hw_irq.h>
- #include <asm/interrupt.h>
- 
-diff --git a/arch/powerpc/platforms/85xx/smp.c b/arch/powerpc/platforms/85xx/smp.c
-index e52b848b64b7..32fa5fb557c0 100644
---- a/arch/powerpc/platforms/85xx/smp.c
-+++ b/arch/powerpc/platforms/85xx/smp.c
-@@ -23,7 +23,7 @@
- #include <asm/mpic.h>
- #include <asm/cacheflush.h>
- #include <asm/dbell.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/cputhreads.h>
- #include <asm/fsl_pm.h>
- 
-diff --git a/arch/powerpc/platforms/86xx/mpc86xx_smp.c b/arch/powerpc/platforms/86xx/mpc86xx_smp.c
-index 8a7e55acf090..9be33e41af6d 100644
---- a/arch/powerpc/platforms/86xx/mpc86xx_smp.c
-+++ b/arch/powerpc/platforms/86xx/mpc86xx_smp.c
-@@ -12,7 +12,7 @@
- #include <linux/delay.h>
- #include <linux/pgtable.h>
- 
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/page.h>
- #include <asm/pci-bridge.h>
- #include <asm/mpic.h>
-diff --git a/arch/powerpc/platforms/cell/smp.c b/arch/powerpc/platforms/cell/smp.c
-index fee638fd8970..0e8f20ecca08 100644
---- a/arch/powerpc/platforms/cell/smp.c
-+++ b/arch/powerpc/platforms/cell/smp.c
-@@ -35,7 +35,7 @@
- #include <asm/firmware.h>
- #include <asm/rtas.h>
- #include <asm/cputhreads.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- 
- #include "interrupt.h"
- #include <asm/udbg.h>
-diff --git a/arch/powerpc/platforms/powermac/smp.c b/arch/powerpc/platforms/powermac/smp.c
-index 15644be31990..6a50f6c408d1 100644
---- a/arch/powerpc/platforms/powermac/smp.c
-+++ b/arch/powerpc/platforms/powermac/smp.c
-@@ -35,7 +35,7 @@
- 
- #include <asm/ptrace.h>
- #include <linux/atomic.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/irq.h>
- #include <asm/page.h>
- #include <asm/sections.h>
-diff --git a/arch/powerpc/platforms/powernv/idle.c b/arch/powerpc/platforms/powernv/idle.c
-index ad41dffe4d92..d98b933e4984 100644
---- a/arch/powerpc/platforms/powernv/idle.c
-+++ b/arch/powerpc/platforms/powernv/idle.c
-@@ -18,7 +18,7 @@
- #include <asm/opal.h>
- #include <asm/cputhreads.h>
- #include <asm/cpuidle.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/smp.h>
- #include <asm/runlatch.h>
- #include <asm/dbell.h>
-diff --git a/arch/powerpc/platforms/powernv/smp.c b/arch/powerpc/platforms/powernv/smp.c
-index 8f14f0581a21..6b746feeabe4 100644
---- a/arch/powerpc/platforms/powernv/smp.c
-+++ b/arch/powerpc/platforms/powernv/smp.c
-@@ -28,7 +28,7 @@
- #include <asm/xive.h>
- #include <asm/opal.h>
- #include <asm/runlatch.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/dbell.h>
- #include <asm/kvm_ppc.h>
- #include <asm/ppc-opcode.h>
-diff --git a/arch/powerpc/platforms/pseries/smp.c b/arch/powerpc/platforms/pseries/smp.c
-index c597711ef20a..db99725e752b 100644
---- a/arch/powerpc/platforms/pseries/smp.c
-+++ b/arch/powerpc/platforms/pseries/smp.c
-@@ -39,7 +39,7 @@
- #include <asm/xive.h>
- #include <asm/dbell.h>
- #include <asm/plpar_wrappers.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/svm.h>
- #include <asm/kvm_guest.h>
- 
-diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
-index bd4813bad317..228af77283ca 100644
---- a/arch/powerpc/xmon/xmon.c
-+++ b/arch/powerpc/xmon/xmon.c
-@@ -50,7 +50,7 @@
- #include <asm/xive.h>
- #include <asm/opal.h>
- #include <asm/firmware.h>
--#include <asm/code-patching.h>
-+#include <asm/text-patching.h>
- #include <asm/sections.h>
- #include <asm/inst.h>
- #include <asm/interrupt.h>
-diff --git a/arch/riscv/errata/andes/errata.c b/arch/riscv/errata/andes/errata.c
-index fc1a34faa5f3..dcc9d1ee5ffd 100644
---- a/arch/riscv/errata/andes/errata.c
-+++ b/arch/riscv/errata/andes/errata.c
-@@ -13,7 +13,7 @@
- #include <asm/alternative.h>
- #include <asm/cacheflush.h>
- #include <asm/errata_list.h>
--#include <asm/patch.h>
-+#include <asm/text-patching.h>
- #include <asm/processor.h>
- #include <asm/sbi.h>
- #include <asm/vendorid_list.h>
-diff --git a/arch/riscv/errata/sifive/errata.c b/arch/riscv/errata/sifive/errata.c
-index cea3b96ade11..38aac2c47845 100644
---- a/arch/riscv/errata/sifive/errata.c
-+++ b/arch/riscv/errata/sifive/errata.c
-@@ -8,7 +8,7 @@
- #include <linux/module.h>
- #include <linux/string.h>
- #include <linux/bug.h>
--#include <asm/patch.h>
-+#include <asm/text-patching.h>
- #include <asm/alternative.h>
- #include <asm/vendorid_list.h>
- #include <asm/errata_list.h>
-diff --git a/arch/riscv/errata/thead/errata.c b/arch/riscv/errata/thead/errata.c
-index f5120e07c318..e24770a77932 100644
---- a/arch/riscv/errata/thead/errata.c
-+++ b/arch/riscv/errata/thead/errata.c
-@@ -16,7 +16,7 @@
- #include <asm/errata_list.h>
- #include <asm/hwprobe.h>
- #include <asm/io.h>
--#include <asm/patch.h>
-+#include <asm/text-patching.h>
- #include <asm/vendorid_list.h>
- #include <asm/vendor_extensions.h>
- 
-diff --git a/arch/riscv/include/asm/patch.h b/arch/riscv/include/asm/text-patching.h
-similarity index 100%
-rename from arch/riscv/include/asm/patch.h
-rename to arch/riscv/include/asm/text-patching.h
-diff --git a/arch/riscv/include/asm/uprobes.h b/arch/riscv/include/asm/uprobes.h
-index 3fc7deda9190..5008f76cdc27 100644
---- a/arch/riscv/include/asm/uprobes.h
-+++ b/arch/riscv/include/asm/uprobes.h
-@@ -4,7 +4,7 @@
- #define _ASM_RISCV_UPROBES_H
- 
- #include <asm/probes.h>
--#include <asm/patch.h>
-+#include <asm/text-patching.h>
- #include <asm/bug.h>
- 
- #define MAX_UINSN_BYTES		8
-diff --git a/arch/riscv/kernel/alternative.c b/arch/riscv/kernel/alternative.c
-index 0128b161bfda..7eb3cb1215c6 100644
---- a/arch/riscv/kernel/alternative.c
-+++ b/arch/riscv/kernel/alternative.c
-@@ -18,7 +18,7 @@
- #include <asm/sbi.h>
- #include <asm/csr.h>
- #include <asm/insn.h>
--#include <asm/patch.h>
-+#include <asm/text-patching.h>
- 
- struct cpu_manufacturer_info_t {
- 	unsigned long vendor_id;
-diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-index b427188b28fc..de1e88328c36 100644
---- a/arch/riscv/kernel/cpufeature.c
-+++ b/arch/riscv/kernel/cpufeature.c
-@@ -20,7 +20,8 @@
- #include <asm/cacheflush.h>
- #include <asm/cpufeature.h>
- #include <asm/hwcap.h>
--#include <asm/patch.h>
-+#include <asm/text-patching.h>
-+#include <asm/hwprobe.h>
- #include <asm/processor.h>
- #include <asm/sbi.h>
- #include <asm/vector.h>
-diff --git a/arch/riscv/kernel/ftrace.c b/arch/riscv/kernel/ftrace.c
-index 4b95c574fd04..a7620ef93b6c 100644
---- a/arch/riscv/kernel/ftrace.c
-+++ b/arch/riscv/kernel/ftrace.c
-@@ -10,7 +10,7 @@
- #include <linux/memory.h>
- #include <linux/stop_machine.h>
- #include <asm/cacheflush.h>
--#include <asm/patch.h>
-+#include <asm/text-patching.h>
- 
- #ifdef CONFIG_DYNAMIC_FTRACE
- void ftrace_arch_code_modify_prepare(void) __acquires(&text_mutex)
-diff --git a/arch/riscv/kernel/jump_label.c b/arch/riscv/kernel/jump_label.c
-index 11ad789c60c6..6eee6f736f68 100644
---- a/arch/riscv/kernel/jump_label.c
-+++ b/arch/riscv/kernel/jump_label.c
-@@ -10,7 +10,7 @@
- #include <linux/mutex.h>
- #include <asm/bug.h>
- #include <asm/cacheflush.h>
--#include <asm/patch.h>
-+#include <asm/text-patching.h>
- 
- #define RISCV_INSN_NOP 0x00000013U
- #define RISCV_INSN_JAL 0x0000006fU
-diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
-index 34ef522f07a8..db13c9ddf9e3 100644
---- a/arch/riscv/kernel/patch.c
-+++ b/arch/riscv/kernel/patch.c
-@@ -13,7 +13,7 @@
- #include <asm/cacheflush.h>
- #include <asm/fixmap.h>
- #include <asm/ftrace.h>
--#include <asm/patch.h>
-+#include <asm/text-patching.h>
- #include <asm/sections.h>
- 
- struct patch_insn {
-diff --git a/arch/riscv/kernel/probes/kprobes.c b/arch/riscv/kernel/probes/kprobes.c
-index 474a65213657..380a0e8cecc0 100644
---- a/arch/riscv/kernel/probes/kprobes.c
-+++ b/arch/riscv/kernel/probes/kprobes.c
-@@ -12,7 +12,7 @@
- #include <asm/sections.h>
- #include <asm/cacheflush.h>
- #include <asm/bug.h>
--#include <asm/patch.h>
-+#include <asm/text-patching.h>
- 
- #include "decode-insn.h"
- 
-diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index 99f34409fb60..c9f6c4d56012 100644
---- a/arch/riscv/net/bpf_jit_comp64.c
-+++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -10,7 +10,7 @@
- #include <linux/filter.h>
- #include <linux/memory.h>
- #include <linux/stop_machine.h>
--#include <asm/patch.h>
-+#include <asm/text-patching.h>
- #include <asm/cfi.h>
- #include <asm/percpu.h>
- #include "bpf_jit.h"
-diff --git a/arch/riscv/net/bpf_jit_core.c b/arch/riscv/net/bpf_jit_core.c
-index 6de753c667f4..f8cd2f70a7fb 100644
---- a/arch/riscv/net/bpf_jit_core.c
-+++ b/arch/riscv/net/bpf_jit_core.c
-@@ -9,7 +9,7 @@
- #include <linux/bpf.h>
- #include <linux/filter.h>
- #include <linux/memory.h>
--#include <asm/patch.h>
-+#include <asm/text-patching.h>
- #include <asm/cfi.h>
- #include "bpf_jit.h"
- 
-diff --git a/arch/sh/include/asm/Kbuild b/arch/sh/include/asm/Kbuild
-index fc44d9c88b41..4d3f10ed8275 100644
---- a/arch/sh/include/asm/Kbuild
-+++ b/arch/sh/include/asm/Kbuild
-@@ -3,3 +3,4 @@ generated-y += syscall_table.h
- generic-y += kvm_para.h
- generic-y += mcs_spinlock.h
- generic-y += parport.h
-+generic-y += text-patching.h
-diff --git a/arch/sparc/include/asm/Kbuild b/arch/sparc/include/asm/Kbuild
-index 43b0ae4c2c21..17ee8a273aa6 100644
---- a/arch/sparc/include/asm/Kbuild
-+++ b/arch/sparc/include/asm/Kbuild
-@@ -4,3 +4,4 @@ generated-y += syscall_table_64.h
- generic-y += agp.h
- generic-y += kvm_para.h
- generic-y += mcs_spinlock.h
-+generic-y += text-patching.h
 diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 8e594cda6d77..f8de31a0c5d1 100644
+index f8de31a0c5d1..e8e8b54b3037 100644
 --- a/arch/um/kernel/um_arch.c
 +++ b/arch/um/kernel/um_arch.c
-@@ -468,6 +468,11 @@ void *text_poke(void *addr, const void *opcode, size_t len)
- 	return memcpy(addr, opcode, len);
+@@ -435,24 +435,25 @@ void __init arch_cpu_finalize_init(void)
+ 	os_check_bugs();
  }
  
-+void *text_poke_copy(void *addr, const void *opcode, size_t len)
-+{
-+	return text_poke(addr, opcode, len);
-+}
-+
- void text_poke_sync(void)
+-void apply_seal_endbr(s32 *start, s32 *end)
++void apply_seal_endbr(s32 *start, s32 *end, struct module *mod)
  {
  }
-diff --git a/arch/x86/include/asm/text-patching.h b/arch/x86/include/asm/text-patching.h
-index 6259f1937fe7..ab9e143ec9fe 100644
---- a/arch/x86/include/asm/text-patching.h
-+++ b/arch/x86/include/asm/text-patching.h
-@@ -35,6 +35,7 @@ extern void *text_poke(void *addr, const void *opcode, size_t len);
- extern void text_poke_sync(void);
- extern void *text_poke_kgdb(void *addr, const void *opcode, size_t len);
- extern void *text_poke_copy(void *addr, const void *opcode, size_t len);
-+#define text_poke_copy text_poke_copy
- extern void *text_poke_copy_locked(void *addr, const void *opcode, size_t len, bool core_ok);
- extern void *text_poke_set(void *addr, int c, size_t len);
- extern int poke_int3_handler(struct pt_regs *regs);
-diff --git a/arch/xtensa/include/asm/Kbuild b/arch/xtensa/include/asm/Kbuild
-index fa07c686cbcc..cc5dba738389 100644
---- a/arch/xtensa/include/asm/Kbuild
-+++ b/arch/xtensa/include/asm/Kbuild
-@@ -8,3 +8,4 @@ generic-y += parport.h
- generic-y += qrwlock.h
- generic-y += qspinlock.h
- generic-y += user.h
-+generic-y += text-patching.h
-diff --git a/include/asm-generic/text-patching.h b/include/asm-generic/text-patching.h
-new file mode 100644
-index 000000000000..2245c641b741
---- /dev/null
-+++ b/include/asm-generic/text-patching.h
-@@ -0,0 +1,5 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_GENERIC_TEXT_PATCHING_H
-+#define _ASM_GENERIC_TEXT_PATCHING_H
+ 
+-void apply_retpolines(s32 *start, s32 *end)
++void apply_retpolines(s32 *start, s32 *end, struct module *mod)
+ {
+ }
+ 
+-void apply_returns(s32 *start, s32 *end)
++void apply_returns(s32 *start, s32 *end, struct module *mod)
+ {
+ }
+ 
+ void apply_fineibt(s32 *start_retpoline, s32 *end_retpoline,
+-		   s32 *start_cfi, s32 *end_cfi)
++		   s32 *start_cfi, s32 *end_cfi, struct module *mod)
+ {
+ }
+ 
+-void apply_alternatives(struct alt_instr *start, struct alt_instr *end)
++void apply_alternatives(struct alt_instr *start, struct alt_instr *end,
++			struct module *mod)
+ {
+ }
+ 
+diff --git a/arch/x86/entry/vdso/vma.c b/arch/x86/entry/vdso/vma.c
+index 6d83ceb7f1ba..31412adef5d2 100644
+--- a/arch/x86/entry/vdso/vma.c
++++ b/arch/x86/entry/vdso/vma.c
+@@ -51,7 +51,8 @@ int __init init_vdso_image(const struct vdso_image *image)
+ 
+ 	apply_alternatives((struct alt_instr *)(image->data + image->alt),
+ 			   (struct alt_instr *)(image->data + image->alt +
+-						image->alt_len));
++						image->alt_len),
++			   NULL);
+ 
+ 	return 0;
+ }
+diff --git a/arch/x86/include/asm/alternative.h b/arch/x86/include/asm/alternative.h
+index ca9ae606aab9..dc03a647776d 100644
+--- a/arch/x86/include/asm/alternative.h
++++ b/arch/x86/include/asm/alternative.h
+@@ -96,16 +96,16 @@ extern struct alt_instr __alt_instructions[], __alt_instructions_end[];
+  * instructions were patched in already:
+  */
+ extern int alternatives_patched;
++struct module;
+ 
+ extern void alternative_instructions(void);
+-extern void apply_alternatives(struct alt_instr *start, struct alt_instr *end);
+-extern void apply_retpolines(s32 *start, s32 *end);
+-extern void apply_returns(s32 *start, s32 *end);
+-extern void apply_seal_endbr(s32 *start, s32 *end);
++extern void apply_alternatives(struct alt_instr *start, struct alt_instr *end,
++			       struct module *mod);
++extern void apply_retpolines(s32 *start, s32 *end, struct module *mod);
++extern void apply_returns(s32 *start, s32 *end, struct module *mod);
++extern void apply_seal_endbr(s32 *start, s32 *end, struct module *mod);
+ extern void apply_fineibt(s32 *start_retpoline, s32 *end_retpoine,
+-			  s32 *start_cfi, s32 *end_cfi);
+-
+-struct module;
++			  s32 *start_cfi, s32 *end_cfi, struct module *mod);
+ 
+ struct callthunk_sites {
+ 	s32				*call_start, *call_end;
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index d17518ca19b8..3b3fa93af3b1 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -392,8 +392,10 @@ EXPORT_SYMBOL(BUG_func);
+  * Rewrite the "call BUG_func" replacement to point to the target of the
+  * indirect pv_ops call "call *disp(%ip)".
+  */
+-static int alt_replace_call(u8 *instr, u8 *insn_buff, struct alt_instr *a)
++static int alt_replace_call(u8 *instr, u8 *insn_buff, struct alt_instr *a,
++			    struct module *mod)
+ {
++	u8 *wr_instr = module_writable_address(mod, instr);
+ 	void *target, *bug = &BUG_func;
+ 	s32 disp;
+ 
+@@ -403,14 +405,14 @@ static int alt_replace_call(u8 *instr, u8 *insn_buff, struct alt_instr *a)
+ 	}
+ 
+ 	if (a->instrlen != 6 ||
+-	    instr[0] != CALL_RIP_REL_OPCODE ||
+-	    instr[1] != CALL_RIP_REL_MODRM) {
++	    wr_instr[0] != CALL_RIP_REL_OPCODE ||
++	    wr_instr[1] != CALL_RIP_REL_MODRM) {
+ 		pr_err("ALT_FLAG_DIRECT_CALL set for unrecognized indirect call\n");
+ 		BUG();
+ 	}
+ 
+ 	/* Skip CALL_RIP_REL_OPCODE and CALL_RIP_REL_MODRM */
+-	disp = *(s32 *)(instr + 2);
++	disp = *(s32 *)(wr_instr + 2);
+ #ifdef CONFIG_X86_64
+ 	/* ff 15 00 00 00 00   call   *0x0(%rip) */
+ 	/* target address is stored at "next instruction + disp". */
+@@ -448,7 +450,8 @@ static inline u8 * instr_va(struct alt_instr *i)
+  * to refetch changed I$ lines.
+  */
+ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
+-						  struct alt_instr *end)
++						  struct alt_instr *end,
++						  struct module *mod)
+ {
+ 	u8 insn_buff[MAX_PATCH_LEN];
+ 	u8 *instr, *replacement;
+@@ -477,6 +480,7 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
+ 	 */
+ 	for (a = start; a < end; a++) {
+ 		int insn_buff_sz = 0;
++		u8 *wr_instr, *wr_replacement;
+ 
+ 		/*
+ 		 * In case of nested ALTERNATIVE()s the outer alternative might
+@@ -490,7 +494,11 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
+ 		}
+ 
+ 		instr = instr_va(a);
++		wr_instr = module_writable_address(mod, instr);
 +
-+#endif /* _ASM_GENERIC_TEXT_PATCHING_H */
-diff --git a/include/linux/text-patching.h b/include/linux/text-patching.h
-new file mode 100644
-index 000000000000..ad5877ab0855
---- /dev/null
-+++ b/include/linux/text-patching.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_TEXT_PATCHING_H
-+#define _LINUX_TEXT_PATCHING_H
+ 		replacement = (u8 *)&a->repl_offset + a->repl_offset;
++		wr_replacement = module_writable_address(mod, replacement);
 +
-+#include <asm/text-patching.h>
-+
-+#ifndef text_poke_copy
-+static inline void *text_poke_copy(void *dst, const void *src, size_t len)
+ 		BUG_ON(a->instrlen > sizeof(insn_buff));
+ 		BUG_ON(a->cpuid >= (NCAPINTS + NBUGINTS) * 32);
+ 
+@@ -501,9 +509,9 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
+ 		 *   patch if feature is *NOT* present.
+ 		 */
+ 		if (!boot_cpu_has(a->cpuid) == !(a->flags & ALT_FLAG_NOT)) {
+-			memcpy(insn_buff, instr, a->instrlen);
++			memcpy(insn_buff, wr_instr, a->instrlen);
+ 			optimize_nops(instr, insn_buff, a->instrlen);
+-			text_poke_early(instr, insn_buff, a->instrlen);
++			text_poke_early(wr_instr, insn_buff, a->instrlen);
+ 			continue;
+ 		}
+ 
+@@ -513,11 +521,12 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
+ 			instr, instr, a->instrlen,
+ 			replacement, a->replacementlen, a->flags);
+ 
+-		memcpy(insn_buff, replacement, a->replacementlen);
++		memcpy(insn_buff, wr_replacement, a->replacementlen);
+ 		insn_buff_sz = a->replacementlen;
+ 
+ 		if (a->flags & ALT_FLAG_DIRECT_CALL) {
+-			insn_buff_sz = alt_replace_call(instr, insn_buff, a);
++			insn_buff_sz = alt_replace_call(instr, insn_buff, a,
++							mod);
+ 			if (insn_buff_sz < 0)
+ 				continue;
+ 		}
+@@ -527,11 +536,11 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
+ 
+ 		apply_relocation(insn_buff, instr, a->instrlen, replacement, a->replacementlen);
+ 
+-		DUMP_BYTES(ALT, instr, a->instrlen, "%px:   old_insn: ", instr);
++		DUMP_BYTES(ALT, wr_instr, a->instrlen, "%px:   old_insn: ", instr);
+ 		DUMP_BYTES(ALT, replacement, a->replacementlen, "%px:   rpl_insn: ", replacement);
+ 		DUMP_BYTES(ALT, insn_buff, insn_buff_sz, "%px: final_insn: ", instr);
+ 
+-		text_poke_early(instr, insn_buff, insn_buff_sz);
++		text_poke_early(wr_instr, insn_buff, insn_buff_sz);
+ 	}
+ 
+ 	kasan_enable_current();
+@@ -722,18 +731,20 @@ static int patch_retpoline(void *addr, struct insn *insn, u8 *bytes)
+ /*
+  * Generated by 'objtool --retpoline'.
+  */
+-void __init_or_module noinline apply_retpolines(s32 *start, s32 *end)
++void __init_or_module noinline apply_retpolines(s32 *start, s32 *end,
++						struct module *mod)
+ {
+ 	s32 *s;
+ 
+ 	for (s = start; s < end; s++) {
+ 		void *addr = (void *)s + *s;
++		void *wr_addr = module_writable_address(mod, addr);
+ 		struct insn insn;
+ 		int len, ret;
+ 		u8 bytes[16];
+ 		u8 op1, op2;
+ 
+-		ret = insn_decode_kernel(&insn, addr);
++		ret = insn_decode_kernel(&insn, wr_addr);
+ 		if (WARN_ON_ONCE(ret < 0))
+ 			continue;
+ 
+@@ -761,9 +772,9 @@ void __init_or_module noinline apply_retpolines(s32 *start, s32 *end)
+ 		len = patch_retpoline(addr, &insn, bytes);
+ 		if (len == insn.length) {
+ 			optimize_nops(addr, bytes, len);
+-			DUMP_BYTES(RETPOLINE, ((u8*)addr),  len, "%px: orig: ", addr);
++			DUMP_BYTES(RETPOLINE, ((u8*)wr_addr),  len, "%px: orig: ", addr);
+ 			DUMP_BYTES(RETPOLINE, ((u8*)bytes), len, "%px: repl: ", addr);
+-			text_poke_early(addr, bytes, len);
++			text_poke_early(wr_addr, bytes, len);
+ 		}
+ 	}
+ }
+@@ -799,7 +810,8 @@ static int patch_return(void *addr, struct insn *insn, u8 *bytes)
+ 	return i;
+ }
+ 
+-void __init_or_module noinline apply_returns(s32 *start, s32 *end)
++void __init_or_module noinline apply_returns(s32 *start, s32 *end,
++					     struct module *mod)
+ {
+ 	s32 *s;
+ 
+@@ -808,12 +820,13 @@ void __init_or_module noinline apply_returns(s32 *start, s32 *end)
+ 
+ 	for (s = start; s < end; s++) {
+ 		void *dest = NULL, *addr = (void *)s + *s;
++		void *wr_addr = module_writable_address(mod, addr);
+ 		struct insn insn;
+ 		int len, ret;
+ 		u8 bytes[16];
+ 		u8 op;
+ 
+-		ret = insn_decode_kernel(&insn, addr);
++		ret = insn_decode_kernel(&insn, wr_addr);
+ 		if (WARN_ON_ONCE(ret < 0))
+ 			continue;
+ 
+@@ -833,32 +846,35 @@ void __init_or_module noinline apply_returns(s32 *start, s32 *end)
+ 
+ 		len = patch_return(addr, &insn, bytes);
+ 		if (len == insn.length) {
+-			DUMP_BYTES(RET, ((u8*)addr),  len, "%px: orig: ", addr);
++			DUMP_BYTES(RET, ((u8*)wr_addr),  len, "%px: orig: ", addr);
+ 			DUMP_BYTES(RET, ((u8*)bytes), len, "%px: repl: ", addr);
+-			text_poke_early(addr, bytes, len);
++			text_poke_early(wr_addr, bytes, len);
+ 		}
+ 	}
+ }
+ #else
+-void __init_or_module noinline apply_returns(s32 *start, s32 *end) { }
++void __init_or_module noinline apply_returns(s32 *start, s32 *end,
++					     struct module *mod) { }
+ #endif /* CONFIG_MITIGATION_RETHUNK */
+ 
+ #else /* !CONFIG_MITIGATION_RETPOLINE || !CONFIG_OBJTOOL */
+ 
+-void __init_or_module noinline apply_retpolines(s32 *start, s32 *end) { }
+-void __init_or_module noinline apply_returns(s32 *start, s32 *end) { }
++void __init_or_module noinline apply_retpolines(s32 *start, s32 *end,
++						struct module *mod) { }
++void __init_or_module noinline apply_returns(s32 *start, s32 *end,
++					     struct module *mod) { }
+ 
+ #endif /* CONFIG_MITIGATION_RETPOLINE && CONFIG_OBJTOOL */
+ 
+ #ifdef CONFIG_X86_KERNEL_IBT
+ 
+-static void poison_cfi(void *addr);
++static void poison_cfi(void *addr, void *wr_addr);
+ 
+-static void __init_or_module poison_endbr(void *addr, bool warn)
++static void __init_or_module poison_endbr(void *addr, void *wr_addr, bool warn)
+ {
+ 	u32 endbr, poison = gen_endbr_poison();
+ 
+-	if (WARN_ON_ONCE(get_kernel_nofault(endbr, addr)))
++	if (WARN_ON_ONCE(get_kernel_nofault(endbr, wr_addr)))
+ 		return;
+ 
+ 	if (!is_endbr(endbr)) {
+@@ -873,7 +889,7 @@ static void __init_or_module poison_endbr(void *addr, bool warn)
+ 	 */
+ 	DUMP_BYTES(ENDBR, ((u8*)addr), 4, "%px: orig: ", addr);
+ 	DUMP_BYTES(ENDBR, ((u8*)&poison), 4, "%px: repl: ", addr);
+-	text_poke_early(addr, &poison, 4);
++	text_poke_early(wr_addr, &poison, 4);
+ }
+ 
+ /*
+@@ -882,22 +898,23 @@ static void __init_or_module poison_endbr(void *addr, bool warn)
+  * Seal the functions for indirect calls by clobbering the ENDBR instructions
+  * and the kCFI hash value.
+  */
+-void __init_or_module noinline apply_seal_endbr(s32 *start, s32 *end)
++void __init_or_module noinline apply_seal_endbr(s32 *start, s32 *end, struct module *mod)
+ {
+ 	s32 *s;
+ 
+ 	for (s = start; s < end; s++) {
+ 		void *addr = (void *)s + *s;
++		void *wr_addr = module_writable_address(mod, addr);
+ 
+-		poison_endbr(addr, true);
++		poison_endbr(addr, wr_addr, true);
+ 		if (IS_ENABLED(CONFIG_FINEIBT))
+-			poison_cfi(addr - 16);
++			poison_cfi(addr - 16, wr_addr - 16);
+ 	}
+ }
+ 
+ #else
+ 
+-void __init_or_module apply_seal_endbr(s32 *start, s32 *end) { }
++void __init_or_module apply_seal_endbr(s32 *start, s32 *end, struct module *mod) { }
+ 
+ #endif /* CONFIG_X86_KERNEL_IBT */
+ 
+@@ -1119,7 +1136,7 @@ static u32 decode_caller_hash(void *addr)
+ }
+ 
+ /* .retpoline_sites */
+-static int cfi_disable_callers(s32 *start, s32 *end)
++static int cfi_disable_callers(s32 *start, s32 *end, struct module *mod)
+ {
+ 	/*
+ 	 * Disable kCFI by patching in a JMP.d8, this leaves the hash immediate
+@@ -1131,6 +1148,7 @@ static int cfi_disable_callers(s32 *start, s32 *end)
+ 
+ 	for (s = start; s < end; s++) {
+ 		void *addr = (void *)s + *s;
++		void *wr_addr = module_writable_address(mod, addr);
+ 		u32 hash;
+ 
+ 		addr -= fineibt_caller_size;
+@@ -1138,13 +1156,13 @@ static int cfi_disable_callers(s32 *start, s32 *end)
+ 		if (!hash) /* nocfi callers */
+ 			continue;
+ 
+-		text_poke_early(addr, jmp, 2);
++		text_poke_early(wr_addr, jmp, 2);
+ 	}
+ 
+ 	return 0;
+ }
+ 
+-static int cfi_enable_callers(s32 *start, s32 *end)
++static int cfi_enable_callers(s32 *start, s32 *end, struct module *mod)
+ {
+ 	/*
+ 	 * Re-enable kCFI, undo what cfi_disable_callers() did.
+@@ -1154,6 +1172,7 @@ static int cfi_enable_callers(s32 *start, s32 *end)
+ 
+ 	for (s = start; s < end; s++) {
+ 		void *addr = (void *)s + *s;
++		void *wr_addr = module_writable_address(mod, addr);
+ 		u32 hash;
+ 
+ 		addr -= fineibt_caller_size;
+@@ -1161,19 +1180,20 @@ static int cfi_enable_callers(s32 *start, s32 *end)
+ 		if (!hash) /* nocfi callers */
+ 			continue;
+ 
+-		text_poke_early(addr, mov, 2);
++		text_poke_early(wr_addr, mov, 2);
+ 	}
+ 
+ 	return 0;
+ }
+ 
+ /* .cfi_sites */
+-static int cfi_rand_preamble(s32 *start, s32 *end)
++static int cfi_rand_preamble(s32 *start, s32 *end, struct module *mod)
+ {
+ 	s32 *s;
+ 
+ 	for (s = start; s < end; s++) {
+ 		void *addr = (void *)s + *s;
++		void *wr_addr = module_writable_address(mod, addr);
+ 		u32 hash;
+ 
+ 		hash = decode_preamble_hash(addr);
+@@ -1182,18 +1202,19 @@ static int cfi_rand_preamble(s32 *start, s32 *end)
+ 			return -EINVAL;
+ 
+ 		hash = cfi_rehash(hash);
+-		text_poke_early(addr + 1, &hash, 4);
++		text_poke_early(wr_addr + 1, &hash, 4);
+ 	}
+ 
+ 	return 0;
+ }
+ 
+-static int cfi_rewrite_preamble(s32 *start, s32 *end)
++static int cfi_rewrite_preamble(s32 *start, s32 *end, struct module *mod)
+ {
+ 	s32 *s;
+ 
+ 	for (s = start; s < end; s++) {
+ 		void *addr = (void *)s + *s;
++		void *wr_addr = module_writable_address(mod, addr);
+ 		u32 hash;
+ 
+ 		hash = decode_preamble_hash(addr);
+@@ -1201,59 +1222,62 @@ static int cfi_rewrite_preamble(s32 *start, s32 *end)
+ 			 addr, addr, 5, addr))
+ 			return -EINVAL;
+ 
+-		text_poke_early(addr, fineibt_preamble_start, fineibt_preamble_size);
++		text_poke_early(wr_addr, fineibt_preamble_start, fineibt_preamble_size);
+ 		WARN_ON(*(u32 *)(addr + fineibt_preamble_hash) != 0x12345678);
+-		text_poke_early(addr + fineibt_preamble_hash, &hash, 4);
++		text_poke_early(wr_addr + fineibt_preamble_hash, &hash, 4);
+ 	}
+ 
+ 	return 0;
+ }
+ 
+-static void cfi_rewrite_endbr(s32 *start, s32 *end)
++static void cfi_rewrite_endbr(s32 *start, s32 *end, struct module *mod)
+ {
+ 	s32 *s;
+ 
+ 	for (s = start; s < end; s++) {
+ 		void *addr = (void *)s + *s;
++		void *wr_addr = module_writable_address(mod, addr);
+ 
+-		poison_endbr(addr+16, false);
++		poison_endbr(addr+16, wr_addr, false);
+ 	}
+ }
+ 
+ /* .retpoline_sites */
+-static int cfi_rand_callers(s32 *start, s32 *end)
++static int cfi_rand_callers(s32 *start, s32 *end, struct module *mod)
+ {
+ 	s32 *s;
+ 
+ 	for (s = start; s < end; s++) {
+ 		void *addr = (void *)s + *s;
++		void *wr_addr = module_writable_address(mod, addr);
+ 		u32 hash;
+ 
+ 		addr -= fineibt_caller_size;
+ 		hash = decode_caller_hash(addr);
+ 		if (hash) {
+ 			hash = -cfi_rehash(hash);
+-			text_poke_early(addr + 2, &hash, 4);
++			text_poke_early(wr_addr + 2, &hash, 4);
+ 		}
+ 	}
+ 
+ 	return 0;
+ }
+ 
+-static int cfi_rewrite_callers(s32 *start, s32 *end)
++static int cfi_rewrite_callers(s32 *start, s32 *end, struct module *mod)
+ {
+ 	s32 *s;
+ 
+ 	for (s = start; s < end; s++) {
+ 		void *addr = (void *)s + *s;
++		void *wr_addr = module_writable_address(mod, addr);
+ 		u32 hash;
+ 
+ 		addr -= fineibt_caller_size;
+ 		hash = decode_caller_hash(addr);
+ 		if (hash) {
+-			text_poke_early(addr, fineibt_caller_start, fineibt_caller_size);
++			text_poke_early(wr_addr, fineibt_caller_start, fineibt_caller_size);
+ 			WARN_ON(*(u32 *)(addr + fineibt_caller_hash) != 0x12345678);
+-			text_poke_early(addr + fineibt_caller_hash, &hash, 4);
++			text_poke_early(wr_addr + fineibt_caller_hash, &hash, 4);
+ 		}
+ 		/* rely on apply_retpolines() */
+ 	}
+@@ -1262,8 +1286,9 @@ static int cfi_rewrite_callers(s32 *start, s32 *end)
+ }
+ 
+ static void __apply_fineibt(s32 *start_retpoline, s32 *end_retpoline,
+-			    s32 *start_cfi, s32 *end_cfi, bool builtin)
++			    s32 *start_cfi, s32 *end_cfi, struct module *mod)
+ {
++	bool builtin = mod ? false : true;
+ 	int ret;
+ 
+ 	if (WARN_ONCE(fineibt_preamble_size != 16,
+@@ -1281,7 +1306,7 @@ static void __apply_fineibt(s32 *start_retpoline, s32 *end_retpoline,
+ 	 * rewrite them. This disables all CFI. If this succeeds but any of the
+ 	 * later stages fails, we're without CFI.
+ 	 */
+-	ret = cfi_disable_callers(start_retpoline, end_retpoline);
++	ret = cfi_disable_callers(start_retpoline, end_retpoline, mod);
+ 	if (ret)
+ 		goto err;
+ 
+@@ -1292,11 +1317,11 @@ static void __apply_fineibt(s32 *start_retpoline, s32 *end_retpoline,
+ 			cfi_bpf_subprog_hash = cfi_rehash(cfi_bpf_subprog_hash);
+ 		}
+ 
+-		ret = cfi_rand_preamble(start_cfi, end_cfi);
++		ret = cfi_rand_preamble(start_cfi, end_cfi, mod);
+ 		if (ret)
+ 			goto err;
+ 
+-		ret = cfi_rand_callers(start_retpoline, end_retpoline);
++		ret = cfi_rand_callers(start_retpoline, end_retpoline, mod);
+ 		if (ret)
+ 			goto err;
+ 	}
+@@ -1308,7 +1333,7 @@ static void __apply_fineibt(s32 *start_retpoline, s32 *end_retpoline,
+ 		return;
+ 
+ 	case CFI_KCFI:
+-		ret = cfi_enable_callers(start_retpoline, end_retpoline);
++		ret = cfi_enable_callers(start_retpoline, end_retpoline, mod);
+ 		if (ret)
+ 			goto err;
+ 
+@@ -1318,17 +1343,17 @@ static void __apply_fineibt(s32 *start_retpoline, s32 *end_retpoline,
+ 
+ 	case CFI_FINEIBT:
+ 		/* place the FineIBT preamble at func()-16 */
+-		ret = cfi_rewrite_preamble(start_cfi, end_cfi);
++		ret = cfi_rewrite_preamble(start_cfi, end_cfi, mod);
+ 		if (ret)
+ 			goto err;
+ 
+ 		/* rewrite the callers to target func()-16 */
+-		ret = cfi_rewrite_callers(start_retpoline, end_retpoline);
++		ret = cfi_rewrite_callers(start_retpoline, end_retpoline, mod);
+ 		if (ret)
+ 			goto err;
+ 
+ 		/* now that nobody targets func()+0, remove ENDBR there */
+-		cfi_rewrite_endbr(start_cfi, end_cfi);
++		cfi_rewrite_endbr(start_cfi, end_cfi, mod);
+ 
+ 		if (builtin)
+ 			pr_info("Using FineIBT CFI\n");
+@@ -1347,7 +1372,7 @@ static inline void poison_hash(void *addr)
+ 	*(u32 *)addr = 0;
+ }
+ 
+-static void poison_cfi(void *addr)
++static void poison_cfi(void *addr, void *wr_addr)
+ {
+ 	switch (cfi_mode) {
+ 	case CFI_FINEIBT:
+@@ -1359,8 +1384,8 @@ static void poison_cfi(void *addr)
+ 		 *	ud2
+ 		 * 1:	nop
+ 		 */
+-		poison_endbr(addr, false);
+-		poison_hash(addr + fineibt_preamble_hash);
++		poison_endbr(addr, wr_addr, false);
++		poison_hash(wr_addr + fineibt_preamble_hash);
+ 		break;
+ 
+ 	case CFI_KCFI:
+@@ -1369,7 +1394,7 @@ static void poison_cfi(void *addr)
+ 		 *	movl	$0, %eax
+ 		 *	.skip	11, 0x90
+ 		 */
+-		poison_hash(addr + 1);
++		poison_hash(wr_addr + 1);
+ 		break;
+ 
+ 	default:
+@@ -1380,22 +1405,21 @@ static void poison_cfi(void *addr)
+ #else
+ 
+ static void __apply_fineibt(s32 *start_retpoline, s32 *end_retpoline,
+-			    s32 *start_cfi, s32 *end_cfi, bool builtin)
++			    s32 *start_cfi, s32 *end_cfi, struct module *mod)
+ {
+ }
+ 
+ #ifdef CONFIG_X86_KERNEL_IBT
+-static void poison_cfi(void *addr) { }
++static void poison_cfi(void *addr, void *wr_addr) { }
+ #endif
+ 
+ #endif
+ 
+ void apply_fineibt(s32 *start_retpoline, s32 *end_retpoline,
+-		   s32 *start_cfi, s32 *end_cfi)
++		   s32 *start_cfi, s32 *end_cfi, struct module *mod)
+ {
+ 	return __apply_fineibt(start_retpoline, end_retpoline,
+-			       start_cfi, end_cfi,
+-			       /* .builtin = */ false);
++			       start_cfi, end_cfi, mod);
+ }
+ 
+ #ifdef CONFIG_SMP
+@@ -1692,16 +1716,16 @@ void __init alternative_instructions(void)
+ 	paravirt_set_cap();
+ 
+ 	__apply_fineibt(__retpoline_sites, __retpoline_sites_end,
+-			__cfi_sites, __cfi_sites_end, true);
++			__cfi_sites, __cfi_sites_end, NULL);
+ 
+ 	/*
+ 	 * Rewrite the retpolines, must be done before alternatives since
+ 	 * those can rewrite the retpoline thunks.
+ 	 */
+-	apply_retpolines(__retpoline_sites, __retpoline_sites_end);
+-	apply_returns(__return_sites, __return_sites_end);
++	apply_retpolines(__retpoline_sites, __retpoline_sites_end, NULL);
++	apply_returns(__return_sites, __return_sites_end, NULL);
+ 
+-	apply_alternatives(__alt_instructions, __alt_instructions_end);
++	apply_alternatives(__alt_instructions, __alt_instructions_end, NULL);
+ 
+ 	/*
+ 	 * Now all calls are established. Apply the call thunks if
+@@ -1712,7 +1736,7 @@ void __init alternative_instructions(void)
+ 	/*
+ 	 * Seal all functions that do not have their address taken.
+ 	 */
+-	apply_seal_endbr(__ibt_endbr_seal, __ibt_endbr_seal_end);
++	apply_seal_endbr(__ibt_endbr_seal, __ibt_endbr_seal_end, NULL);
+ 
+ #ifdef CONFIG_SMP
+ 	/* Patch to UP if other cpus not imminent. */
+diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
+index 8da0e66ca22d..563d9a890ce2 100644
+--- a/arch/x86/kernel/ftrace.c
++++ b/arch/x86/kernel/ftrace.c
+@@ -118,10 +118,13 @@ ftrace_modify_code_direct(unsigned long ip, const char *old_code,
+ 		return ret;
+ 
+ 	/* replace the text with the new text */
+-	if (ftrace_poke_late)
++	if (ftrace_poke_late) {
+ 		text_poke_queue((void *)ip, new_code, MCOUNT_INSN_SIZE, NULL);
+-	else
+-		text_poke_early((void *)ip, new_code, MCOUNT_INSN_SIZE);
++	} else {
++		mutex_lock(&text_mutex);
++		text_poke((void *)ip, new_code, MCOUNT_INSN_SIZE);
++		mutex_unlock(&text_mutex);
++	}
+ 	return 0;
+ }
+ 
+@@ -318,7 +321,7 @@ create_trampoline(struct ftrace_ops *ops, unsigned int *tramp_size)
+ 	unsigned const char op_ref[] = { 0x48, 0x8b, 0x15 };
+ 	unsigned const char retq[] = { RET_INSN_OPCODE, INT3_INSN_OPCODE };
+ 	union ftrace_op_code_union op_ptr;
+-	int ret;
++	void *ret;
+ 
+ 	if (ops->flags & FTRACE_OPS_FL_SAVE_REGS) {
+ 		start_offset = (unsigned long)ftrace_regs_caller;
+@@ -349,15 +352,15 @@ create_trampoline(struct ftrace_ops *ops, unsigned int *tramp_size)
+ 	npages = DIV_ROUND_UP(*tramp_size, PAGE_SIZE);
+ 
+ 	/* Copy ftrace_caller onto the trampoline memory */
+-	ret = copy_from_kernel_nofault(trampoline, (void *)start_offset, size);
+-	if (WARN_ON(ret < 0))
++	ret = text_poke_copy(trampoline, (void *)start_offset, size);
++	if (WARN_ON(!ret))
+ 		goto fail;
+ 
+ 	ip = trampoline + size;
+ 	if (cpu_feature_enabled(X86_FEATURE_RETHUNK))
+ 		__text_gen_insn(ip, JMP32_INSN_OPCODE, ip, x86_return_thunk, JMP32_INSN_SIZE);
+ 	else
+-		memcpy(ip, retq, sizeof(retq));
++		text_poke_copy(ip, retq, sizeof(retq));
+ 
+ 	/* No need to test direct calls on created trampolines */
+ 	if (ops->flags & FTRACE_OPS_FL_SAVE_REGS) {
+@@ -365,8 +368,7 @@ create_trampoline(struct ftrace_ops *ops, unsigned int *tramp_size)
+ 		ip = trampoline + (jmp_offset - start_offset);
+ 		if (WARN_ON(*(char *)ip != 0x75))
+ 			goto fail;
+-		ret = copy_from_kernel_nofault(ip, x86_nops[2], 2);
+-		if (ret < 0)
++		if (!text_poke_copy(ip, x86_nops[2], 2))
+ 			goto fail;
+ 	}
+ 
+@@ -379,7 +381,7 @@ create_trampoline(struct ftrace_ops *ops, unsigned int *tramp_size)
+ 	 */
+ 
+ 	ptr = (unsigned long *)(trampoline + size + RET_SIZE);
+-	*ptr = (unsigned long)ops;
++	text_poke_copy(ptr, &ops, sizeof(unsigned long));
+ 
+ 	op_offset -= start_offset;
+ 	memcpy(&op_ptr, trampoline + op_offset, OP_REF_SIZE);
+@@ -395,7 +397,7 @@ create_trampoline(struct ftrace_ops *ops, unsigned int *tramp_size)
+ 	op_ptr.offset = offset;
+ 
+ 	/* put in the new offset to the ftrace_ops */
+-	memcpy(trampoline + op_offset, &op_ptr, OP_REF_SIZE);
++	text_poke_copy(trampoline + op_offset, &op_ptr, OP_REF_SIZE);
+ 
+ 	/* put in the call to the function */
+ 	mutex_lock(&text_mutex);
+@@ -405,9 +407,9 @@ create_trampoline(struct ftrace_ops *ops, unsigned int *tramp_size)
+ 	 * the depth accounting before the call already.
+ 	 */
+ 	dest = ftrace_ops_get_func(ops);
+-	memcpy(trampoline + call_offset,
+-	       text_gen_insn(CALL_INSN_OPCODE, trampoline + call_offset, dest),
+-	       CALL_INSN_SIZE);
++	text_poke_copy_locked(trampoline + call_offset,
++	      text_gen_insn(CALL_INSN_OPCODE, trampoline + call_offset, dest),
++	      CALL_INSN_SIZE, false);
+ 	mutex_unlock(&text_mutex);
+ 
+ 	/* ALLOC_TRAMP flags lets us know we created it */
+@@ -654,4 +656,15 @@ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
+ }
+ #endif
+ 
++void ftrace_swap_func(void *a, void *b, int n)
 +{
-+	return memcpy(dst, src, len);
-+}
-+#define text_poke_copy text_poke_copy
-+#endif
++	unsigned long t;
 +
-+#endif /* _LINUX_TEXT_PATCHING_H */
++	WARN_ON_ONCE(n != sizeof(t));
++
++	t = *((unsigned long *)a);
++	text_poke_copy(a, b, sizeof(t));
++	text_poke_copy(b, &t, sizeof(t));
++}
++
+ #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
+diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
+index 837450b6e882..8984abd91c00 100644
+--- a/arch/x86/kernel/module.c
++++ b/arch/x86/kernel/module.c
+@@ -146,18 +146,21 @@ static int __write_relocate_add(Elf64_Shdr *sechdrs,
+ 		}
+ 
+ 		if (apply) {
+-			if (memcmp(loc, &zero, size)) {
++			void *wr_loc = module_writable_address(me, loc);
++
++			if (memcmp(wr_loc, &zero, size)) {
+ 				pr_err("x86/modules: Invalid relocation target, existing value is nonzero for type %d, loc %p, val %Lx\n",
+ 				       (int)ELF64_R_TYPE(rel[i].r_info), loc, val);
+ 				return -ENOEXEC;
+ 			}
+-			write(loc, &val, size);
++			write(wr_loc, &val, size);
+ 		} else {
+ 			if (memcmp(loc, &val, size)) {
+ 				pr_warn("x86/modules: Invalid relocation target, existing value does not match expected value for type %d, loc %p, val %Lx\n",
+ 					(int)ELF64_R_TYPE(rel[i].r_info), loc, val);
+ 				return -ENOEXEC;
+ 			}
++			/* FIXME: needs care for ROX module allocations */
+ 			write(loc, &zero, size);
+ 		}
+ 	}
+@@ -224,7 +227,7 @@ int module_finalize(const Elf_Ehdr *hdr,
+ 		    const Elf_Shdr *sechdrs,
+ 		    struct module *me)
+ {
+-	const Elf_Shdr *s, *alt = NULL, *locks = NULL,
++	const Elf_Shdr *s, *alt = NULL,
+ 		*orc = NULL, *orc_ip = NULL,
+ 		*retpolines = NULL, *returns = NULL, *ibt_endbr = NULL,
+ 		*calls = NULL, *cfi = NULL;
+@@ -233,8 +236,6 @@ int module_finalize(const Elf_Ehdr *hdr,
+ 	for (s = sechdrs; s < sechdrs + hdr->e_shnum; s++) {
+ 		if (!strcmp(".altinstructions", secstrings + s->sh_name))
+ 			alt = s;
+-		if (!strcmp(".smp_locks", secstrings + s->sh_name))
+-			locks = s;
+ 		if (!strcmp(".orc_unwind", secstrings + s->sh_name))
+ 			orc = s;
+ 		if (!strcmp(".orc_unwind_ip", secstrings + s->sh_name))
+@@ -265,20 +266,20 @@ int module_finalize(const Elf_Ehdr *hdr,
+ 			csize = cfi->sh_size;
+ 		}
+ 
+-		apply_fineibt(rseg, rseg + rsize, cseg, cseg + csize);
++		apply_fineibt(rseg, rseg + rsize, cseg, cseg + csize, me);
+ 	}
+ 	if (retpolines) {
+ 		void *rseg = (void *)retpolines->sh_addr;
+-		apply_retpolines(rseg, rseg + retpolines->sh_size);
++		apply_retpolines(rseg, rseg + retpolines->sh_size, me);
+ 	}
+ 	if (returns) {
+ 		void *rseg = (void *)returns->sh_addr;
+-		apply_returns(rseg, rseg + returns->sh_size);
++		apply_returns(rseg, rseg + returns->sh_size, me);
+ 	}
+ 	if (alt) {
+ 		/* patch .altinstructions */
+ 		void *aseg = (void *)alt->sh_addr;
+-		apply_alternatives(aseg, aseg + alt->sh_size);
++		apply_alternatives(aseg, aseg + alt->sh_size, me);
+ 	}
+ 	if (calls || alt) {
+ 		struct callthunk_sites cs = {};
+@@ -297,8 +298,28 @@ int module_finalize(const Elf_Ehdr *hdr,
+ 	}
+ 	if (ibt_endbr) {
+ 		void *iseg = (void *)ibt_endbr->sh_addr;
+-		apply_seal_endbr(iseg, iseg + ibt_endbr->sh_size);
++		apply_seal_endbr(iseg, iseg + ibt_endbr->sh_size, me);
+ 	}
++
++	if (orc && orc_ip)
++		unwind_module_init(me, (void *)orc_ip->sh_addr, orc_ip->sh_size,
++				   (void *)orc->sh_addr, orc->sh_size);
++
++	return 0;
++}
++
++int module_post_finalize(const Elf_Ehdr *hdr,
++			 const Elf_Shdr *sechdrs,
++			 struct module *me)
++{
++	const Elf_Shdr *s, *locks = NULL;
++	char *secstrings = (void *)hdr + sechdrs[hdr->e_shstrndx].sh_offset;
++
++	for (s = sechdrs; s < sechdrs + hdr->e_shnum; s++) {
++		if (!strcmp(".smp_locks", secstrings + s->sh_name))
++			locks = s;
++	}
++
+ 	if (locks) {
+ 		void *lseg = (void *)locks->sh_addr;
+ 		void *text = me->mem[MOD_TEXT].base;
+@@ -308,10 +329,6 @@ int module_finalize(const Elf_Ehdr *hdr,
+ 					    text, text_end);
+ 	}
+ 
+-	if (orc && orc_ip)
+-		unwind_module_init(me, (void *)orc_ip->sh_addr, orc_ip->sh_size,
+-				   (void *)orc->sh_addr, orc->sh_size);
+-
+ 	return 0;
+ }
+ 
+diff --git a/include/linux/module.h b/include/linux/module.h
+index 7039f609c6ef..2c1a24ba99a3 100644
+--- a/include/linux/module.h
++++ b/include/linux/module.h
+@@ -376,15 +376,6 @@ struct module_memory {
+ #endif
+ };
+ 
+-#ifdef CONFIG_MODULES
+-void *module_writable_address(struct module *mod, void *loc);
+-#else
+-static inline void *module_writable_address(struct module *mod, void *loc)
+-{
+-	return loc;
+-}
+-#endif
+-
+ #ifdef CONFIG_MODULES_TREE_LOOKUP
+ /* Only touch one cacheline for common rbtree-for-core-layout case. */
+ #define __module_memory_align ____cacheline_aligned
+@@ -778,6 +769,8 @@ static inline bool is_livepatch_module(struct module *mod)
+ 
+ void set_module_sig_enforced(void);
+ 
++void *module_writable_address(struct module *mod, void *loc);
++
+ #else /* !CONFIG_MODULES... */
+ 
+ static inline struct module *__module_address(unsigned long addr)
+@@ -885,6 +878,11 @@ static inline bool module_is_coming(struct module *mod)
+ {
+ 	return false;
+ }
++
++static inline void *module_writable_address(struct module *mod, void *loc)
++{
++	return loc;
++}
+ #endif /* CONFIG_MODULES */
+ 
+ #ifdef CONFIG_SYSFS
 -- 
 2.43.0
 
