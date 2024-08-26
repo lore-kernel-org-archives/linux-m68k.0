@@ -1,88 +1,137 @@
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C396139CE9
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Aug 2024 07:42:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07BAC1990AF
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Aug 2024 17:28:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724658166; cv=none; b=DOF0NP935PXa7H1nVzKX2y8rnPm5VNaN+aDlEkyPne2185C4I1Ga0XBusIpVUYkpuNSi0pnD/ezBE+NXLbqKfg41K9QB0ohHO1Bdfq1Ft0VprvuBjrWDR1QyzgbXEptV/7TtDU8aTTdUiABfBGdFjUcJwwBoBYLpvFCC8ngMH4M=
+	t=1724693321; cv=none; b=I2zxXP8UzcRe0nkSzZhENtzhStq31PVWrbKvqk676JR+N9u+xczt5z60seCI90dNLwLdLJ44uCYhLVAPjeEyVv5uNdpToY80iOok/dqws4XXXF3rrSchYqiE/52JqDw2uOkUqpMkkLLQAKX1y38/GrAhxlC4Hd5t+gN90JSLiHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724658166; c=relaxed/simple;
-	bh=gJEOeUJLJeIzTSq4wguNGslEJFWw+xJaOZTfQrdfuDg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mQQqf/NdpijMTjG0Nm06DFkdRqlS4iYWCwWhKqYfvgaiDQFhwmNoMdi6zf+eYP98gGbaTAj0P1WAPq4n4RrkrVOIbzls6D3XZvHqP+W13e3CC82X7yV6e6Jli32ME0TLfA2/ENZ+TSRRAQN9KBmmK6CrYYmIHAj8IDZz6iwpNGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-690aabe2600so35688037b3.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Aug 2024 00:42:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724658164; x=1725262964;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q8r11L3gA7W1DQC1zgQUSI+mUJHSNIyLCjbXmmaIRvc=;
-        b=q159qOIfsqM1SsYGgtVzGwzaqzfSqwt8aBpi/wHJJMeEyVTc+fxWz/5ZkyOp06D2s5
-         0jo91duILrywUjfKYZRDAExhnwVHSYYS5q6AVZq+gEc/iOUUOSev+hIdcUCPtKcJMe9v
-         3Q04+F15paEdIEw5KBLBOSgU+764KginovUD9y1LJXaOfVE06OdirjRYHUm407M8E48o
-         LIfL4aPG3Yh4rK4sMSfIFuD5rxmZbCyAXuJb418Z19NP5+jOYkJETmE7mtWKewS1lTXQ
-         Uq0l5WCXhnt6qpsOYlNt8bNj2H4xSpUytevo21+um0HpQRNCOObPVoeLautWFvcuikjl
-         ke6w==
-X-Forwarded-Encrypted: i=1; AJvYcCV+xTYa9Do3KeipvSar1IzBFxeX9QJ2YbFaD2osT3jFkGj5vWUkk+NiXAPcndt0XsDnLx6SGu6WqMjE@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yxj/Sx310DiQvrDPG53wiMfpFrsfu+k8dTr3OGLgGtOFryIVB7s
-	Qo52l3CR18CQWSVIJBC0qPnvlQg7tP8R5iCxi/JoaXIWiN2q4IfsBr+g80Ud
-X-Google-Smtp-Source: AGHT+IGNyjcdrtI0oTYFMrFXdUYEhZIy1bmr+ukS2s7U1QmZAYdZkBSFTJ+81G774O7tojYkpniReQ==
-X-Received: by 2002:a05:690c:288f:b0:6b0:e813:753b with SMTP id 00721157ae682-6c6288aa364mr77670337b3.38.1724658164239;
-        Mon, 26 Aug 2024 00:42:44 -0700 (PDT)
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6c39a84ec6bsm14347857b3.58.2024.08.26.00.42.44
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Aug 2024 00:42:44 -0700 (PDT)
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-6b47ff8a59aso32988877b3.2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Aug 2024 00:42:44 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXpc6ddtIxhZmwiPcc4kmIDrB6DLgW5ckS8UYqJuhz/KIAuiyGkzCgQU6QWuqyzAyuI9Cy9XuJi0M6Y@lists.linux-m68k.org
-X-Received: by 2002:a05:690c:605:b0:62c:c684:b1e1 with SMTP id
- 00721157ae682-6ce868cb3b2mr15209867b3.29.1724658163749; Mon, 26 Aug 2024
- 00:42:43 -0700 (PDT)
+	s=arc-20240116; t=1724693321; c=relaxed/simple;
+	bh=Ah1MYcJfpVaPDZCj/MgYPfBVJo43ln+VDcKQfM/BWW0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=MjJb8CIpZLa4R+C1Fb552ygZLjvyh+2fah1Dx2yeAjzlxR/RGN3sJdcZNeN4oH6n8Xai/YXkwTNslPUkcvt2snmJ2eQHI/d2+uaxa720q7VtVh7JsK6RM62jiZ5aCCfezenpEuTgUnKORsVHPzOkZE7h9YKGVld+5DCdkuEOq8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=147.75.193.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id B3469A40480;
+	Mon, 26 Aug 2024 17:28:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0E6AC8B7B5;
+	Mon, 26 Aug 2024 17:28:29 +0000 (UTC)
+Date: Mon, 26 Aug 2024 13:29:09 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Andreas Larsson
+ <andreas@gaisler.com>, Andy Lutomirski <luto@kernel.org>, Arnd Bergmann
+ <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>, Brian Cain
+ <bcain@quicinc.com>, Catalin Marinas <catalin.marinas@arm.com>, Christoph
+ Hellwig <hch@infradead.org>, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, Dave Hansen <dave.hansen@linux.intel.com>,
+ Dinh Nguyen <dinguyen@kernel.org>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Guo Ren <guoren@kernel.org>, Helge Deller
+ <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar
+ <mingo@redhat.com>, Johannes Berg <johannes@sipsolutions.net>, John Paul
+ Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Kent Overstreet
+ <kent.overstreet@linux.dev>, "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Luis Chamberlain <mcgrof@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Matt Turner <mattst88@gmail.com>,
+ Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
+ Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>, Palmer
+ Dabbelt <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>,
+ Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
+ Song Liu <song@kernel.org>, Stafford Horne <shorne@gmail.com>, Thomas
+ Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner
+ <tglx@linutronix.de>, Uladzislau Rezki <urezki@gmail.com>, Vineet Gupta
+ <vgupta@kernel.org>, Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
+ linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+ linux-mm@kvack.org, linux-modules@vger.kernel.org,
+ linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
+ linux-um@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+ loongarch@lists.linux.dev, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v2 5/8] ftrace: Add swap_func to ftrace_process_locs()
+Message-ID: <20240826132909.306b08fc@gandalf.local.home>
+In-Reply-To: <20240826065532.2618273-6-rppt@kernel.org>
+References: <20240826065532.2618273-1-rppt@kernel.org>
+	<20240826065532.2618273-6-rppt@kernel.org>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240821082101.877438-1-mpe@ellerman.id.au>
-In-Reply-To: <20240821082101.877438-1-mpe@ellerman.id.au>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 26 Aug 2024 09:42:31 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWRmEewx3XrwJT=5yPRskJpup5Qxu0U7336r_6pJYsMvA@mail.gmail.com>
-Message-ID: <CAMuHMdWRmEewx3XrwJT=5yPRskJpup5Qxu0U7336r_6pJYsMvA@mail.gmail.com>
-Subject: Re: [PATCH] macintosh/via-pmu: register_pmu_pm_ops() can be __init
-To: Michael Ellerman <mpe@ellerman.id.au>
-Cc: linuxppc-dev@lists.ozlabs.org, linux-m68k@lists.linux-m68k.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Aug 21, 2024 at 10:21=E2=80=AFAM Michael Ellerman <mpe@ellerman.id.=
-au> wrote:
-> register_pmu_pm_ops() is only called at init time, via
-> device_initcall(), so can be marked __init. The driver can't be built as
-> a module.
->
-> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+On Mon, 26 Aug 2024 09:55:29 +0300
+Mike Rapoport <rppt@kernel.org> wrote:
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> From: Song Liu <song@kernel.org>
+> 
+> ftrace_process_locs sorts module mcount, which is inside RO memory. Add a
+> ftrace_swap_func so that archs can use RO-memory-poke function to do the
+> sorting.
 
-Gr{oetje,eeting}s,
+Can you add the above as a comment above the ftrace_swap_func() function?
 
-                        Geert
+Thanks,
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
+-- Steve
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+> 
+> Signed-off-by: Song Liu <song@kernel.org>
+> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+> ---
+>  include/linux/ftrace.h |  2 ++
+>  kernel/trace/ftrace.c  | 13 ++++++++++++-
+>  2 files changed, 14 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+> index fd5e84d0ec47..b794dcb7cae8 100644
+> --- a/include/linux/ftrace.h
+> +++ b/include/linux/ftrace.h
+> @@ -1188,4 +1188,6 @@ unsigned long arch_syscall_addr(int nr);
+>  
+>  #endif /* CONFIG_FTRACE_SYSCALLS */
+>  
+> +void ftrace_swap_func(void *a, void *b, int n);
+> +
+>  #endif /* _LINUX_FTRACE_H */
+> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> index 4c28dd177ca6..9829979f3a46 100644
+> --- a/kernel/trace/ftrace.c
+> +++ b/kernel/trace/ftrace.c
+> @@ -6989,6 +6989,17 @@ static void test_is_sorted(unsigned long *start,
+> unsigned long count) }
+>  #endif
+>  
+> +void __weak ftrace_swap_func(void *a, void *b, int n)
+> +{
+> +	unsigned long t;
+> +
+> +	WARN_ON_ONCE(n != sizeof(t));
+> +
+> +	t = *((unsigned long *)a);
+> +	*(unsigned long *)a = *(unsigned long *)b;
+> +	*(unsigned long *)b = t;
+> +}
+> +
+>  static int ftrace_process_locs(struct module *mod,
+>  			       unsigned long *start,
+>  			       unsigned long *end)
+> @@ -7016,7 +7027,7 @@ static int ftrace_process_locs(struct module *mod,
+>  	 */
+>  	if (!IS_ENABLED(CONFIG_BUILDTIME_MCOUNT_SORT) || mod) {
+>  		sort(start, count, sizeof(*start),
+> -		     ftrace_cmp_ips, NULL);
+> +		     ftrace_cmp_ips, ftrace_swap_func);
+>  	} else {
+>  		test_is_sorted(start, count);
+>  	}
+
