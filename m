@@ -1,206 +1,174 @@
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2091.outbound.protection.outlook.com [40.107.241.91])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C92CF149013
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Sep 2024 05:09:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725512999; cv=none; b=DmIRihJqc69U4GAt0Hx6sdVa5mQBPA3gZNrUOBPyeMwdCC9m6nUpSo56WKoC/+fDcnfMP24qQfP6jr7zg39ggYXqTykbd9QSNmqloDwgaM0Mb7bd6lAsmiWdIxWbliPNApIiuNOCxBolKastvqc1WKhAdya2jrXVjo3zKABiOsc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725512999; c=relaxed/simple;
-	bh=0E7y7yRBCfjhFsNeMplfwL3x9L+02DL8n1LnASTAExw=;
-	h=From:Subject:To:References:Cc:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=ep3BQBkkOAzkmTdSmqzQ2AQvLsbJYPoEv/K1npYQbAoMV0ZSSMuZgoiCl7TxMi9J74NIDMikokaTiXrkAJpO0bKxPEcvj00suNsfXWaekxTwX5HlFmIa4g7YP7Mn3mlYfCgwrUnf4hd56/gMtchaZavW116etSbrWkbvywOLWbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mYq2G0oz; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 767791925A4
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Sep 2024 06:58:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.241.91
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1725519540; cv=fail; b=TpWbd9vMfn54l5DMAF1ibqUqLpQ1xUBS0l5uAENDqCjMJF5YUI+bmhFJgDN6h28v6EL/drivFWi71RIkaBrfYf07dfAxCLsVXLZoXFE30ztYoXTLKNrlaMAkRHwuS29fcWhHxkY6RwKFeOOXkly7QAFnnVJ909M+MMPsgN+oig0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1725519540; c=relaxed/simple;
+	bh=5JenCCk0yEw2/RpxgAM7ABG8x97pdA1XOPszH9qTZS8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q0xP/4yQmU27HsXm0AFq2emSJGKWY7jgSJPFuZ5nMTsUXZIq8Mr+nEbiTFpMmmOMW5OqYxalgFrKSCIJcU3aZw2FAlaw+z8BUkRRctRjVc0MvipI0HxaarEtrqiVYUUXPW2EwVNGZjtSzb8hkDcN3od4GIaWe6iBmFqQIl22JyU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=macq.eu; spf=pass smtp.mailfrom=macq.eu; dkim=pass (2048-bit key) header.d=macq.eu header.i=@macq.eu header.b=Nf2AYDGr; arc=fail smtp.client-ip=40.107.241.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=macq.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=macq.eu
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mYq2G0oz"
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-7179069d029so106824b3a.2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 04 Sep 2024 22:09:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725512997; x=1726117797; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:cc:references:to:subject:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=e5w5fzqj3apt6oK40ro9gvcJ+sZus76fcJwX+XM/ais=;
-        b=mYq2G0ozHh7JHDZaGfFsuSzqyqvJUUcs0XmziFJbeBH9TraSQv8iMCIDM+zBmRrdI2
-         jumttJScfTmVoypQ2wpzG76dqKpZVo9na3OPlKc05DM2dkjSZbEopWWJ8ZetGmhnUZXu
-         n/wUdK4tPMbNUZExekJwfVBIbm7uWforYaW1rt25fxG2NjBiFtTgfGNx7mAM9blE7h6E
-         c0yOd8LqoTWUAlBpsSamuSkgaY2SYLV2f7PaeeaIHabfR36cmYtnJQrlW05DDRr7dEQt
-         fk7ET+v1hENbZNOb6J/4hbsjsushc1Bf0YKtENkLOId6GwjLJdDfjHqbZYst9DWPk4zs
-         5oVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725512997; x=1726117797;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:cc:references:to:subject:from:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=e5w5fzqj3apt6oK40ro9gvcJ+sZus76fcJwX+XM/ais=;
-        b=C/fWXjuUzUqhaxWxDUhPuOXfVR+fYUd7yhzvYSv89T96+qAYsTc8F9g6qDdlAyS8Hv
-         O47bzzIUaq4T5mbBFpWR19ZI0Rhhj5Emw/TJpcA2ciUXigvp2ZEYUNnS+uaZYmPvUosm
-         IXOe2oJTztKGDOJGorsEbWUw8/Z+iRayJrWOZPjnKfZWRpHrMt/8Jv4H+vdfbBQwCz2x
-         MB1y0J9r+2cRu3nPMhWTKYBRIAmOynKEhYekrSpcpJkgw/k0LCdJfgj96o16qIn3Q82T
-         RMUaYM0rAi0eAohzbBhIxbV5LDkhYT/jnHYcVfoN1r/Euokqp2gNIdkj1JNNMuL/4QWp
-         i30Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUczrj4ol6nkXyFwYib6qqaQQ3hMTmZmsBeSm9uAPxTMH2pc2Xnl10aYmekeGYG2RJqfM65byVEj+1j@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YxdMvNaeXnDSflt70xGyYCewkrinDlAKamYt5+VEqlPzQefRqR+
-	B4oEbQRBr2mfJK8Ee6njI0B3ji1rME3LwB3fULgNPWTqA0ZZn0cN
-X-Google-Smtp-Source: AGHT+IF1WeK1FJndZi048NN00WRTFcbVCMHyuUOGUVM99/YVPNqOKbPytba6E9tNxIEL+udApTouvA==
-X-Received: by 2002:a05:6a00:9462:b0:714:1bd8:35f7 with SMTP id d2e1a72fcca58-7173fa85e0dmr14942531b3a.15.1725512996783;
-        Wed, 04 Sep 2024 22:09:56 -0700 (PDT)
-Received: from [10.1.1.24] (125-238-248-82-fibre.sparkbb.co.nz. [125.238.248.82])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7177859968csm2506459b3a.146.2024.09.04.22.09.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 04 Sep 2024 22:09:56 -0700 (PDT)
-From: Michael Schmitz <schmitzmic@gmail.com>
-Subject: Re: [PATCH 2/2] scsi: wd33c93: Avoid deferencing null pointer in
- interrupt handler
-To: Daniel Palmer <daniel@0x0f.com>, linux-m68k@lists.linux-m68k.org,
- linux-scsi@vger.kernel.org, geert@linux-m68k.org,
- James.Bottomley@HansenPartnership.com, martin.petersen@oracle.com
-References: <20240903135857.455818-1-daniel@0x0f.com>
- <20240903135857.455818-2-daniel@0x0f.com>
-Cc: linux-kernel@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>
-Message-ID: <ce330ac7-c759-f7b9-71a8-448b05f65b24@gmail.com>
-Date: Thu, 5 Sep 2024 17:09:48 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+	dkim=pass (2048-bit key) header.d=macq.eu header.i=@macq.eu header.b="Nf2AYDGr"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=QzxEiMxXx4wKehTtc6RN9Ig/21GlfaSFkctRqvHi7jqHZXZCQD/gehar+qxl08mSxOx4JqwjFveWmEOw3AcDg9Y8xBPkExBxf2qZbOuNFGSlxDf3iUvEHyPFV6prCWxC3eMI7ISQtXluliFIuo38JoIu+2F06xuifS67AQdrYbAGzwL8aUVvrUMFCdDCotbnLJ/yfYBI7LW/qW5O69Xzpjf7E3u5SQS7toEa49oui8msXmutMSiKJ2eBN6+lGlKzkctSR6t2iqs6iT7yDtmAWlbnCy3c9XT93t6cglr0nzbcGfR5pzO1F66IPY5Dla1ScR9Kl4TRvMNXBbfDpfyzQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vbTJUxOUF4B7LmPGweKZgdUVoHb+zFAfXNZx0wZy5CA=;
+ b=Ow4ezs/lSozMXOMOypEb2XMgv6WjUf1KQzupBi4EJ48RGTDQJAjKpWs/znyp3aFP67mTVktCUHCAn6PjMDAH6+QxSz5HUUnS8yuN4WWPRdTO8hH2IUxtJ4SAkZVXQ4YD9NEnIr6ARbENmqMxLG9v1pSZHRJrRuyp0s6DDP9yXonrMpBOcaxzcvsxi10eYVyOJ78XS5xFJplp7VbzMk0S4yzX6AE9eWMGimmFWZo6Z3v64Tv53aMl+PBfsHk6ka5Xjri6QiveJBSMuRUAQddybIiPc20L3c1/va6jhqWyrEyIFsjo+28uI0nVKX7DRdXmax1vMuD3mEmNlPIgeinOSw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
+ is 91.183.173.212) smtp.rcpttodomain=linux-m68k.org smtp.mailfrom=macqel.be;
+ dmarc=fail (p=none sp=none pct=100) action=none header.from=macq.eu;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=macq.eu; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vbTJUxOUF4B7LmPGweKZgdUVoHb+zFAfXNZx0wZy5CA=;
+ b=Nf2AYDGriIiTS9cb7/v8itTa+5pQ3TjDk2IUykyx+nFq5jGYWBVCx23PuJ5PjyV5vBPpECRyoqoNJAerzMfoKzLGNHK62Zv6UbW3WnVTDog8TMsOQ2Z9i3IzQ3/R1SbvEgwpSJ8zLb/XNSNluBtBlqKcmqMEND5ijwj+1LtY+AhbIlSl6sRwYJLeNKIi8hpKPyoVD0VY7aP7snP2Ke2+pR2gfKKHn79Iaf6lif1tA4XuDQBuYCeu2zuqZzO6MMlVvH+wbBelm9Y4i87ggxyQ/MSPs9a4NPhFgKc26p4NYa3LGJRJJDJmtYERi4G1RRqpHYeia7x84pceAEmfOkWW0A==
+Received: from AM5PR0301CA0031.eurprd03.prod.outlook.com
+ (2603:10a6:206:14::44) by DB3PR0502MB9969.eurprd05.prod.outlook.com
+ (2603:10a6:10:43a::5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7918.28; Thu, 5 Sep
+ 2024 06:58:49 +0000
+Received: from AM2PEPF0001C711.eurprd05.prod.outlook.com
+ (2603:10a6:206:14:cafe::a4) by AM5PR0301CA0031.outlook.office365.com
+ (2603:10a6:206:14::44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7918.27 via Frontend
+ Transport; Thu, 5 Sep 2024 06:58:48 +0000
+X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
+ 91.183.173.212) smtp.mailfrom=macqel.be; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=none header.from=macq.eu;
+Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
+ macqel.be discourages use of 91.183.173.212 as permitted sender)
+Received: from frolo.macqel.be (91.183.173.212) by
+ AM2PEPF0001C711.mail.protection.outlook.com (10.167.16.181) with Microsoft
+ SMTP Server id 15.20.7918.13 via Frontend Transport; Thu, 5 Sep 2024 06:58:48
+ +0000
+Received: by frolo.macqel.be (Postfix, from userid 1000)
+	id 080DCBEC0C8; Thu,  5 Sep 2024 08:58:47 +0200 (CEST)
+Date: Thu, 5 Sep 2024 08:58:47 +0200
+From: Philippe De Muyter <philippe.demuyter@macq.eu>
+To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Cc: Greg Ungerer <gerg@linux-m68k.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] m68k: disable SRAM at startup
+Message-ID: <20240905065847.GA5215@frolo.corp.macq.eu>
+References: <20240904-fix-cf-virt-mem-sram-v1-1-fb007028d717@yoseli.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240903135857.455818-2-daniel@0x0f.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240904-fix-cf-virt-mem-sram-v1-1-fb007028d717@yoseli.org>
+User-Agent: Mutt/1.5.16 (2007-06-09)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM2PEPF0001C711:EE_|DB3PR0502MB9969:EE_
+X-MS-Office365-Filtering-Correlation-Id: d938f304-8861-4b67-813c-08dccd783118
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|36860700013|376014|82310400026|1800799024|14776008|75936004;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?Yqp63OxDYy8Na4LSZJYvcEQC0heRjqI3XTv7ORYS3/kthgL39uumMxzXFyyn?=
+ =?us-ascii?Q?oiE5rBTpJYySjWmb2CeVYIp9gB8cUj+sNbug4IPJRLsIWd3oQlzkavh+6xGe?=
+ =?us-ascii?Q?0Ts3ABXPCaZT327Syc34YTWeAriSxY2pNv8YVBA5Oq+wmnJb01S3YoTET+XF?=
+ =?us-ascii?Q?PRPVKjZYAO95zZuPYvxO48w8C8Es5z0lw6olQ6lD7ObS97p6+UqV6QJa08r+?=
+ =?us-ascii?Q?XRlO1l7P+OobDZeJd8TKF0gr0PzsQ1gx8ab714K0Axh7HvwnC4tqh0EW8F4a?=
+ =?us-ascii?Q?reZ1OyPwnmnTJctVWsx9vJms8ID1LV7adZ1TEw2k6k+FpaUMXEpJ0WBlYlcQ?=
+ =?us-ascii?Q?OkO7U3F+gCeYDvfqsV5X9JG7d0uGqvSnswpJe01I75kceuorpO9PKX0Ppd/s?=
+ =?us-ascii?Q?zw40Y7mPc0KM9HzX1NoILNHKkjOvXBMB9fErxHnVD0L5HgDbYjdSTFs6JSHu?=
+ =?us-ascii?Q?Q5DuSw1xHKDZnZdYW5uHQhk0t3VKW3SRF12V/nsxWJlshmWS7tqgRlES97cx?=
+ =?us-ascii?Q?NBam6vfQ1Ty7NBH8+rNimBFK/LmGUYJOcyUrCXD5+C4fAZfUPghGRiDWkVQf?=
+ =?us-ascii?Q?ECXoK0Z6myE0I03kxYFdtWN46f3Lj408xVSi1efCiZ9QnKSaiA5pOMJ/3v6T?=
+ =?us-ascii?Q?sP+HKGAEt9ZKBCLbDmr2DkiRn1bfXI2eqFgs6yfBZhszJ+X36SpXjmwI596M?=
+ =?us-ascii?Q?Yo3Mtt6Ag0Cw2EbfkNF8XyscbojHuuLPq6b+80xIo3LNVG2lvCAAt4CWASUU?=
+ =?us-ascii?Q?wgEiVJsKx6YiiIjIS+XPCNd7u+zcJ27GkBDNP34ipb/CEodKZhHjJHiQboP+?=
+ =?us-ascii?Q?lo2Z7G+jjd4ASLkJRNut78YntJQ4/V5g++mRdflGCIAuh6Vx0RbM16jHH7F2?=
+ =?us-ascii?Q?n9Y5FJ9BIftsQrcrkqu2FOLWOfmS2ypk303kOS3M4Mx3IIK8n+gRLevbcz3A?=
+ =?us-ascii?Q?ZmUlcHqYtWgsHYZUEMUdzeJOpF0UzBTeH/dMfV9i3t3D/OUxwAaMVJ1P1ZOq?=
+ =?us-ascii?Q?kiUP1OnYubw6AUVzkrcMgVtQpOgXn11KpOOed5EcQGGlfWMEkXVU0O+gFSo5?=
+ =?us-ascii?Q?ttbACySWSNMUzdNH4CoNaLHHPKvOaDE63PmZZ/W61nrVvEAu5b7SGW5HBFoT?=
+ =?us-ascii?Q?x3J5f9B8hA2XE+KYNWgRpfXlWkJ0W0YvGDoscJsAWmW28/C/ZAzIbUD/7nG/?=
+ =?us-ascii?Q?jfFgftqEIqwtf97rguOpyclYIdCNBKp7eqmOiUs2JZwKBdQVmT4ULy+fNykZ?=
+ =?us-ascii?Q?m02CLyHKxvxiowVpOrXdRNCs8syNiBmuIiRfjkJccwfqNfnzHrGvxBWH24rX?=
+ =?us-ascii?Q?nDmF/zvgsYvRLtqAe0NEjBENNDjRzG/lLG+RL72aibYuEB2JzOMdj3z36hxx?=
+ =?us-ascii?Q?9kA0O62kEpU8g35Oj6R0nb186PLYjSqAw42sye/HCgJWKQ6CBmqnIANWJwH7?=
+ =?us-ascii?Q?I6QEe1cPOeLd7Mxbblc3ZWDIg0mbrukBZFWHOMbInpD7wREDlOj/7MaXQOJ4?=
+ =?us-ascii?Q?AT37arNBTgoZkHQ=3D?=
+X-Forefront-Antispam-Report:
+	CIP:91.183.173.212;CTRY:BE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:frolo.macqel.be;PTR:212.173-183-91.adsl-static.isp.belgacom.be;CAT:NONE;SFS:(13230040)(36860700013)(376014)(82310400026)(1800799024)(14776008)(75936004);DIR:OUT;SFP:1102;
+X-OriginatorOrg: macq.eu
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2024 06:58:48.2601
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d938f304-8861-4b67-813c-08dccd783118
+X-MS-Exchange-CrossTenant-Id: 5541087b-384c-4066-992a-42aa5fe171eb
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5541087b-384c-4066-992a-42aa5fe171eb;Ip=[91.183.173.212];Helo=[frolo.macqel.be]
+X-MS-Exchange-CrossTenant-AuthSource:
+	AM2PEPF0001C711.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB3PR0502MB9969
 
-Hi Daniel.
+Hello Jean-Michel and Greg,
 
-[resent in plain text format, sorry...]
+Please add "coldfire' in the title and the explanation of this patch.
 
-On 4/09/24 01:58, Daniel Palmer wrote:
-> I have no idea if this fix is appropriate, the code in this driver
-> makes my brain hurt just looking at it, but sometimes when getting
-> scsi_pointer from cmd cmd itself is actually null and we get a weird
-> garbage pointer for scsi_pointer.
+Best regards
 
-I am not sure I read that code right (you are correct in saying all that 
-state machine code inside the interrupt handler makes for headaches, but 
-that's a different matter).
+Philippe
 
-To me, this looks like the driver takes an interrupt without a connected 
-command (that is why cmd ends up NULL). The interrupt turns out to be a 
-selection interrupt, and the attempt to read the current bus phase from 
-the command private data fails.
-
-The driver does use scsi_pointer elsewhere without ever checking it's 
-valid, so it would seem this case is not meant to happen. On the other 
-hand, we do not expect to have a connected command while selecting, so 
-this case is pretty much _guaranteed_ to happen!
-
-It would appear that when Bart worked on this driver to move 
-scsi_pointer to command private data (commit 
-dbb2da557a6a87c88bbb4b1fef037091b57f701b in my tree), he overlooked the 
-fact that 'cmd' is reloaded inside the interrupt handler from host 
-queues, in response to interrupt conditions or phases. The copy of 
-scsi_pointer initially obtained (from the connected command, without 
-checking that there is in fact a command connected) is never reloaded 
-though. Even if there had been a connected command, scsi_pointer would 
-be stale at the point where the phase information is needed to construct 
-the IDENTIFY message.
-
-The old code used phase information from the just reloaded selecting 
-command, so reloading scsi_pointer at this time (as you do) is the 
-correct behaviour.
-
-I am not certain that the test for NULL cmd at the start of the 
-interrupt handler is actually required. Any part of the driver that 
-changes cmd and makes use of scsi_pointer must reload scsi_pointer 
-afterwards. The selection interrupt part seems the only part using 
-scsi_pointer, so your fix is sufficient.
-
-Please respin and set the appropriate Fixes: tag.
-
-Cheers,
-
-     Michael
-
-> When this is accessed later on bad things happen. For my machine
-> this happens when the SCSI bus is initially scanned.
->
-> With this "fix" SCSI on my MVME147 is happy again.
->
-> [   84.330000] wd33c93-0: chip=WD33c93B/13 no_sync=0xff no_dma=0
-> [   84.330000]  debug_flags=0x00
-> [   84.350000]            setup_args=
-> <snip>
-> [   84.490000]
-> [   84.510000]            Version 1.26++ - 10/Feb/2007
-> [   84.520000] scsi host0: MVME147 built-in SCSI
-> [   85.480000]  sending SDTR 0103015e00
-> [   85.480000] 01
-> [   85.490000] 03
-> [   85.500000] 01
-> [   85.510000] 00
-> [   85.520000] 00
-> [   85.520000]  sync_xfer=30
-> [   85.530000] scsi 0:0:5:0: Direct-Access     BlueSCSI HARDDRIVE        2.0  PQ: 0 ANSI: 2
-> [   85.820000] st: Version 20160209, fixed bufsize 32768, s/g segs 256
-> [   85.900000] sd 0:0:5:0: Attached scsi generic sg0 type 0
->
-> Signed-off-by: Daniel Palmer<daniel@0x0f.com>
+On Wed, Sep 04, 2024 at 04:26:14PM +0200, Jean-Michel Hautbois wrote:
+> Some of the internal SoC registers have a higher priority over the MMU
+> virtual mappings. The SRAM bank is one of them. If the bootloader
+> enables the internal SRAM at address 0x80000000, virtual memory access
+> at this address will not hit the MMU - so no TLB data misses would
+> occurr.
+> 
+> Since 0x80000000 is the virtual start address of all applications that
+> bit of memory is getting stomped over with inconsistent code and data
+> access.
+> 
+> Fix it by disabling the internal SRAM at startup.
+> 
+> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+> Tested-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 > ---
->   drivers/scsi/wd33c93.c | 10 +++++++---
->   drivers/scsi/wd33c93.h |  2 ++
->   2 files changed, 9 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/scsi/wd33c93.c b/drivers/scsi/wd33c93.c
-> index a44b60c9004a..9789d852d541 100644
-> --- a/drivers/scsi/wd33c93.c
-> +++ b/drivers/scsi/wd33c93.c
-> @@ -733,7 +733,7 @@ transfer_bytes(const wd33c93_regs regs, struct scsi_cmnd *cmd,
->   void
->   wd33c93_intr(struct Scsi_Host *instance)
->   {
-> -	struct scsi_pointer *scsi_pointer;
-> +	struct scsi_pointer *scsi_pointer = NULL;
->   	struct WD33C93_hostdata *hostdata =
->   	    (struct WD33C93_hostdata *) instance->hostdata;
->   	const wd33c93_regs regs = hostdata->regs;
-> @@ -752,7 +752,9 @@ wd33c93_intr(struct Scsi_Host *instance)
->   #endif
->   
->   	cmd = (struct scsi_cmnd *) hostdata->connected;	/* assume we're connected */
-> -	scsi_pointer = WD33C93_scsi_pointer(cmd);
-> +	/* cmd could be null */
-> +	if (cmd)
-> +		scsi_pointer = WD33C93_scsi_pointer(cmd);
->   	sr = read_wd33c93(regs, WD_SCSI_STATUS);	/* clear the interrupt */
->   	phs = read_wd33c93(regs, WD_COMMAND_PHASE);
->   
-> @@ -828,8 +830,10 @@ wd33c93_intr(struct Scsi_Host *instance)
->   		    (struct scsi_cmnd *) hostdata->selecting;
->   		hostdata->selecting = NULL;
->   
-> -		/* construct an IDENTIFY message with correct disconnect bit */
-> +		/* cmd should now be valid and we can get scsi_pointer */
-> +		scsi_pointer = WD33C93_scsi_pointer(cmd);
->   
-> +		/* construct an IDENTIFY message with correct disconnect bit */
->   		hostdata->outgoing_msg[0] = IDENTIFY(0, cmd->device->lun);
->   		if (scsi_pointer->phase)
->   			hostdata->outgoing_msg[0] |= 0x40;
-> diff --git a/drivers/scsi/wd33c93.h b/drivers/scsi/wd33c93.h
-> index e5e4254b1477..898c1c7d024d 100644
-> --- a/drivers/scsi/wd33c93.h
-> +++ b/drivers/scsi/wd33c93.h
-> @@ -259,6 +259,8 @@ struct WD33C93_hostdata {
->   
->   static inline struct scsi_pointer *WD33C93_scsi_pointer(struct scsi_cmnd *cmd)
->   {
-> +	WARN_ON_ONCE(!cmd);
+>  arch/m68k/coldfire/head.S | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/arch/m68k/coldfire/head.S b/arch/m68k/coldfire/head.S
+> index c6d7fd28c6023..3901a49c47c89 100644
+> --- a/arch/m68k/coldfire/head.S
+> +++ b/arch/m68k/coldfire/head.S
+> @@ -207,6 +207,10 @@ _start:
+>  	movec	%d0,%CACR
+>  	nop
+>  
+> +	movel   #0,%d0
+> +	movec   %d0,%rambar
+> +	nop
 > +
->   	return scsi_cmd_priv(cmd);
->   }
->   
+>  #ifdef CONFIG_MMU
+>  	/*
+>  	 *	Identity mapping for the kernel region.
+> 
+> ---
+> base-commit: 431c1646e1f86b949fa3685efc50b660a364c2b6
+> change-id: 20240904-fix-cf-virt-mem-sram-abadb27fff2f
+> 
+> Best regards,
+> -- 
+> Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+> 
