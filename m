@@ -1,123 +1,64 @@
-Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
+Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14D55158866
-	for <linux-m68k@lists.linux-m68k.org>; Fri,  6 Sep 2024 09:37:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.235.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E00411CCB30
+	for <linux-m68k@lists.linux-m68k.org>; Fri,  6 Sep 2024 11:55:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725615461; cv=none; b=WoqqFGvw49jwiIBI0+X5j/A7J/hIvimqZOh+Zo/rjUK9XJX8IdUwTM+oRGcnQt3TLLP2bHV0CVSkCIdX5QVfjfxaDkjyzFcS+5xA/0mfOw0tqOsgRbRxiPGwjGYbb1r4BQ76X8D9oF49Q6ruJjBgxbR3p1fC9W2AL2WAXT1qtE0=
+	t=1725623738; cv=none; b=gn4o7vcARcd/sW6YernIs9YU8soXRjK03Ptm/KgY5faffmZ7a8Tx+jFSYaJ7FLbjQG4VbRsQovPY2pggqF78aY2DwrtBEQf6gFiBOwfJ1msgXkMfuZ3jtfKlhAdz/3Jf9ufIHc9SERlu4PviWS3etSj4jqq3IFywjrZjNJdy8Ts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725615461; c=relaxed/simple;
-	bh=A27GPoNCqeEblNkD35Q5FEOM7mXI18FF4Q+F+Be5xBs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tgyZ6gwF8jQLNa0YIIKIui3WcCM5qO5OCc5f+9vroDLcpWuV0piAGj1r+3FfzqwQQUgYtn26aruZhmzL/kUi5alqTXwh6ohBXbVY4gGWE70cZ5YPWb2/wHFJdHu9BP68nXIy92cMKv2D4z+00BF2MMiQIbOhVvQck/osWDZ/wtg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.235.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-	by localhost (Postfix) with ESMTP id 4X0WNf1FhNz9sRs;
-	Fri,  6 Sep 2024 11:37:38 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id fKy3LdL3k-CP; Fri,  6 Sep 2024 11:37:38 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase2.c-s.fr (Postfix) with ESMTP id 4X0WNc6RQfz9sRy;
-	Fri,  6 Sep 2024 11:37:36 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id C3BE58B77C;
-	Fri,  6 Sep 2024 11:37:36 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id of0oryN1Xdlh; Fri,  6 Sep 2024 11:37:36 +0200 (CEST)
-Received: from [192.168.235.70] (unknown [192.168.235.70])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 65D348B764;
-	Fri,  6 Sep 2024 11:37:34 +0200 (CEST)
-Message-ID: <7c3720ff-b763-44b0-9b57-a2fbff3c7f56@csgroup.eu>
-Date: Fri, 6 Sep 2024 11:37:34 +0200
+	s=arc-20240116; t=1725623738; c=relaxed/simple;
+	bh=QxE9RESXTw7Upog4YCOJxO1cUpVKX5Nr5z6/QmmSvFY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=lk+PA+HHf2CGNoIBQ4XoCo+gozjf86Mm4hBWJZ3/oy3GOKlWnURNa64P6KbdTd26YWAzwReVdcgvjO0IVN09ymRgzvrVnsRQkl6euRpNQjOrXNwFZvv5oTEvf5DPo5uQPjp8lLcdWHuIT3WIX2u1paY41+LRfVBcRv15cPNc3dY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=noRXCCC7; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="noRXCCC7"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1725623735;
+	bh=VFMQjyITsX575+mngCN1LQxxTs5zaxCvJY1k340CyPo=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=noRXCCC73wYP1jQqw3g7gJIZ5PIKZCP8hZkHK15ro6irx0+zaLF7r7L5culUu0/k3
+	 B+sCZjEAj5SkKioEN5pe+I5f+Kb0HpsILCp2SQEUx2FwXzO+PYFivR2zXa5ffba9QW
+	 A/K7GMpRKkqU7IWPpadcaIsgVJWs9oLhDB9YCI0X8Ya4A3p5WOlehJ/Iq2imbLAG+M
+	 Fv3wWfXBRHfrjly5NwG5JCnHnLuFHwkBpHts/koPycTgokacV49jif1slYtAYYGLQy
+	 vqC/2tUu5qIa5TjspZtam7Aal6X67oFRin9xxBnV/JA7ICoyFE/Uhh5rf8KNBTSurN
+	 5daAJm7wTsaiA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4X0ZRq0cw4z4x8f;
+	Fri,  6 Sep 2024 21:55:35 +1000 (AEST)
+From: Michael Ellerman <patch-notifications@ellerman.id.au>
+To: linuxppc-dev@lists.ozlabs.org, Michael Ellerman <mpe@ellerman.id.au>
+Cc: linux-m68k@lists.linux-m68k.org, geert@linux-m68k.org
+In-Reply-To: <20240821082101.877438-1-mpe@ellerman.id.au>
+References: <20240821082101.877438-1-mpe@ellerman.id.au>
+Subject: Re: [PATCH] macintosh/via-pmu: register_pmu_pm_ops() can be __init
+Message-Id: <172562357221.467568.5690027128630498625.b4-ty@ellerman.id.au>
+Date: Fri, 06 Sep 2024 21:52:52 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 7/8] execmem: add support for cache of large ROX pages
-To: Mike Rapoport <rppt@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Andreas Larsson <andreas@gaisler.com>, Andy Lutomirski <luto@kernel.org>,
- Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
- Brian Cain <bcain@quicinc.com>, Catalin Marinas <catalin.marinas@arm.com>,
- Christoph Hellwig <hch@infradead.org>,
- Dave Hansen <dave.hansen@linux.intel.com>, Dinh Nguyen
- <dinguyen@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
- Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
- Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Kent Overstreet <kent.overstreet@linux.dev>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- Luis Chamberlain <mcgrof@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Masami Hiramatsu <mhiramat@kernel.org>, Matt Turner <mattst88@gmail.com>,
- Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
- Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>,
- Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
- Song Liu <song@kernel.org>, Stafford Horne <shorne@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Thomas Gleixner <tglx@linutronix.de>, Uladzislau Rezki <urezki@gmail.com>,
- Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
- bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
- linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
- sparclinux@vger.kernel.org, x86@kernel.org
-References: <20240826065532.2618273-1-rppt@kernel.org>
- <20240826065532.2618273-8-rppt@kernel.org>
-Content-Language: fr-FR
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-In-Reply-To: <20240826065532.2618273-8-rppt@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-
-
-Le 26/08/2024 à 08:55, Mike Rapoport a écrit :
-> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+On Wed, 21 Aug 2024 18:21:01 +1000, Michael Ellerman wrote:
+> register_pmu_pm_ops() is only called at init time, via
+> device_initcall(), so can be marked __init. The driver can't be built as
+> a module.
 > 
-> Using large pages to map text areas reduces iTLB pressure and improves
-> performance.
-> 
-> Extend execmem_alloc() with an ability to use PMD_SIZE'ed pages with ROX
-> permissions as a cache for smaller allocations.
-
-Why only PMD_SIZE ?
-
-On power 8xx, PMD_SIZE is 4M and the 8xx doesn't have such a page size. 
-When you call vmalloc() with VM_ALLOW_HUGE_VMAP you get 16k pages or 
-512k pages depending on the size you ask for, see function 
-arch_vmap_pte_supported_shift()
-
-> 
-> To populate the cache, a writable large page is allocated from vmalloc with
-> VM_ALLOW_HUGE_VMAP, filled with invalid instructions and then remapped as
-> ROX.
-> 
-> Portions of that large page are handed out to execmem_alloc() callers
-> without any changes to the permissions.
-> 
-> When the memory is freed with execmem_free() it is invalidated again so
-> that it won't contain stale instructions.
-> 
-> The cache is enabled when an architecture sets EXECMEM_ROX_CACHE flag in
-> definition of an execmem_range.
 > 
 
-Christophe
+Applied to powerpc/next.
+
+[1/1] macintosh/via-pmu: register_pmu_pm_ops() can be __init
+      https://git.kernel.org/powerpc/c/a5a670df1db79f4bb462601aa4cc03caffa761a2
+
+cheers
