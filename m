@@ -1,40 +1,39 @@
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D23CD1B372C;
-	Mon,  9 Sep 2024 09:30:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC9B21BB682
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  9 Sep 2024 14:37:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725874208; cv=none; b=p3M8vy1NnkgDvZk43AxAU8zpOz1DemVzfz5/986LrqBiDir/WOChEuDxWG2KuUKIu4wPwNaeiqt9vZjH89ZO/m/CrvG5LtlFM+ZeOaoL3Iqs+gGToeUG/Rs2nUyzffUj2BwTLFQJB4mJj7IWVPmAGXSsKKkVXP+8BbYz+hyHdiM=
+	t=1725892680; cv=none; b=DMpmud2I2TZrL6gSK32H2fWr6mthxtSgQuZ7fPH19OTcBhtaA5treigDMIUfct+/f863kJ0KI+Qz0/kgSkwtkwu2yTE/0Upda1VYBjR4vCUoDCvA2RCin0KYgBoyO/0nr944bCwwCklm4j8X316ghbZGvSGWQFKopGa5ZnmYZkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725874208; c=relaxed/simple;
-	bh=o/hjh/Sq8hcMxZEgqMKb/vs7eiHDdZcNb8ZaB2phBzU=;
+	s=arc-20240116; t=1725892680; c=relaxed/simple;
+	bh=MghDFbPAU9zqqkhW3Xw5vWmg1dmDiUK7SCkrMyPD7PA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fj6ge70W9ULCsNSaEKMy/UdaQO6PdZXGysYem0R5jX70Hjg3L+nXrsmNJzZbUurC5MiqsW12DqL92DBtekgUulfRioFNDE2OTQS1sW6QfwYs6YyA/CvBc0O1vae4lcdDf1T7blRWeBWfIQyeAp2VYFRRmU6nPJnk7rzyzDp+OvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=PHcK1SUW; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=mw+FNAWhWUJxG0wa2cMVRMdXMHnV7TNb50PGDV1BP/4l3SrbEB7pftQeNEfGsNh8yz5ZZ5kUq9udT/kcYOhrDndyJAU9wkcNWbiUMUSaJVoJwonnnrsBv4kkX7Sj5Pat333dfJRrlkdArNXklztE6RhQtwi9mKDBEICOoCL9S8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fs6Al/RP; arc=none smtp.client-ip=139.178.84.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="PHcK1SUW"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=f16Hum48X2/PRv+OYRnrqWvXhbLKUUXP4MBg4DPZdlQ=; b=PHcK1SUWaNK+mGL/l3LU81VEdD
-	D9nBb1lF9fC+k5KduxINliKCuQNtwOV9r3VV7JhDFojWrMZqtjtzwsWQR7ymjqHMdZK4/Tzo1krQG
-	l72L0TWbRaFKsNxIJEvL02K4akN/vihdxELVqTsQPMZh102jhI0PE6Yrqkpm+R5bTxUWvCjPykmtq
-	WlbddJH0odsLTU/9pMOdxn+PkTNa49n7N5ZvM4UD0maObK3Zd9qj9kNJXbjqHQeNmT1JTuolvrtNi
-	Vpta2pPXprvf8lrp/xLulCdRHeE9tzU/AQ/jRdr1yi09xwhjfkgynp4ly+k7LQoKGQqGefX9PFflQ
-	rxIuTYAw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1snai3-0000000AlXL-0vBQ;
-	Mon, 09 Sep 2024 09:29:24 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 80F5330047C; Mon,  9 Sep 2024 11:29:23 +0200 (CEST)
-Date: Mon, 9 Sep 2024 11:29:23 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Mike Rapoport <rppt@kernel.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fs6Al/RP"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id A79975C01BF;
+	Mon,  9 Sep 2024 14:37:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BA38C4CEC5;
+	Mon,  9 Sep 2024 14:37:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725892676;
+	bh=MghDFbPAU9zqqkhW3Xw5vWmg1dmDiUK7SCkrMyPD7PA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Fs6Al/RPqqDYAd+lPeXebcBiEsV8ZcvYqHnhgbekPtDgt19OlBHjiP9gQSdGe9afm
+	 E6dAjll1IYePf87BqvuUHZojSOISa9K5xqnGdYsjKjKAxmrH58TOhb7yDaJfDepFBa
+	 KmFe19pfYgaP0P6SOasN93vKsvEqQdqzY5UZFrT5OYDRUwY9bZOJ0yO3EIutfG5ADs
+	 9/aQXVlZzbQSnDoIg63nYDc2lsJ+5/3DsjcdPHAdeypnZ/+PEaSwQCoG2ocV6cZ8IN
+	 5SSH1gwzGe/PyYVHsa/teqwYFCWwEBH8MNluTcSCH96QK9eENqGcAFK+i9m860tlOX
+	 EjTv1+plHkaMQ==
+Date: Mon, 9 Sep 2024 17:34:48 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Peter Zijlstra <peterz@infradead.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Andreas Larsson <andreas@gaisler.com>,
 	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
@@ -79,9 +78,10 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	sparclinux@vger.kernel.org, x86@kernel.org
 Subject: Re: [PATCH v3 6/8] x86/module: perpare module loading for ROX
  allocations of text
-Message-ID: <20240909092923.GB4723@noisy.programming.kicks-ass.net>
+Message-ID: <Zt8HiAzcaZS8lHT-@kernel.org>
 References: <20240909064730.3290724-1-rppt@kernel.org>
  <20240909064730.3290724-7-rppt@kernel.org>
+ <20240909092923.GB4723@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -90,27 +90,38 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240909064730.3290724-7-rppt@kernel.org>
+In-Reply-To: <20240909092923.GB4723@noisy.programming.kicks-ass.net>
 
-On Mon, Sep 09, 2024 at 09:47:28AM +0300, Mike Rapoport wrote:
-> diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
-> index 8da0e66ca22d..563d9a890ce2 100644
-> --- a/arch/x86/kernel/ftrace.c
-> +++ b/arch/x86/kernel/ftrace.c
+On Mon, Sep 09, 2024 at 11:29:23AM +0200, Peter Zijlstra wrote:
+> On Mon, Sep 09, 2024 at 09:47:28AM +0300, Mike Rapoport wrote:
+> > diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
+> > index 8da0e66ca22d..563d9a890ce2 100644
+> > --- a/arch/x86/kernel/ftrace.c
+> > +++ b/arch/x86/kernel/ftrace.c
+> 
+> > @@ -654,4 +656,15 @@ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
+> >  }
+> >  #endif
+> >  
+> > +void ftrace_swap_func(void *a, void *b, int n)
+> > +{
+> > +	unsigned long t;
+> > +
+> > +	WARN_ON_ONCE(n != sizeof(t));
+> > +
+> > +	t = *((unsigned long *)a);
+> > +	text_poke_copy(a, b, sizeof(t));
+> > +	text_poke_copy(b, &t, sizeof(t));
+> > +}
+> 
+> This is insane, just force BUILDTIME_MCOUNT_SORT
 
-> @@ -654,4 +656,15 @@ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
->  }
->  #endif
->  
-> +void ftrace_swap_func(void *a, void *b, int n)
-> +{
-> +	unsigned long t;
-> +
-> +	WARN_ON_ONCE(n != sizeof(t));
-> +
-> +	t = *((unsigned long *)a);
-> +	text_poke_copy(a, b, sizeof(t));
-> +	text_poke_copy(b, &t, sizeof(t));
-> +}
+The comment in ftrace.c says "... while mcount loc in modules can not be
+sorted at build time"
+ 
+I don't know enough about objtool, but I'd presume it's because the sorting
+should happen after relocations, no?
 
-This is insane, just force BUILDTIME_MCOUNT_SORT
+-- 
+Sincerely yours,
+Mike.
