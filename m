@@ -1,122 +1,120 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D67B5165EFC
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 11 Sep 2024 10:22:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 501C91D6C4A
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 13 Sep 2024 08:44:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726050143; cv=none; b=TSAAHmxMGmUZgQb1bAEm0PFfTZAF89OdyLpN25eOShXD4Ux2YlQ6SbgZ34krpsAjdMRaWfZbQ3kvATZ3VoI6dMRkNi0rW9K4XXTANwrVc2QcuQOdiHzVtPDBnO3Ur24zYLeFo9VO1AtqR7lEvfKtQiDwkKIemQbpdrtKZdp+Ovs=
+	t=1726217087; cv=none; b=eXGObxpZfJFTQX3JH1qZRAkCJH52mTvgCKSUMchNmLgZU/tCmNeAHhLAG+RbDLukzL2PH0HadrzX7rIfAR+aMai9N9vydiiy3vpvMxHj5tdjLdcukX9+KwWA222sCveZWzl0Ree8bfXwBnpC3GoGoVTjpLjDN6jqhRmq3JgUIvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726050143; c=relaxed/simple;
-	bh=8dWUooDoOxWC7Oca2MrJGx9YGMSeHFyGIMo9brZfk4E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SX+IXK1Iwszc9PX01XjFnFC+PVakIRemcathrpPRDIihC812MroDRyxIGlzuc8+mLkXJRV0nr61q30yUt39DPTyQphwcJlsG/YNgdpdpKQilO9Cf8wdNmvG9tLRcqqo+cb0qSndWOQoO27oxz1ypwxKxWOQbazHhAkRv6A7S8dU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MbotaJ9v; arc=none smtp.client-ip=139.178.84.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MbotaJ9v"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 4C9715C0235;
-	Wed, 11 Sep 2024 10:22:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6640EC4CEC5;
-	Wed, 11 Sep 2024 10:22:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726050140;
-	bh=8dWUooDoOxWC7Oca2MrJGx9YGMSeHFyGIMo9brZfk4E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MbotaJ9vmctcoaZuCwWhMhi9fy5FIYS+b/HAYEruiQzbymZobfKvo47gbwbW+fy1t
-	 kmLvVspCoENf4YJ7MG6qyNvTNAzqVaH95FS48N7vxf5HH4w5x9HqfrCJhhZOz0qSYT
-	 FD4o6UXDBrwti0gG104xpdNn7cPukgyiIL3B2k9CSxzBbiHil9QxdJScuV7IplHt5W
-	 o1J96IBLlfPsULekNIV4gsIz3YvGb3R5Lz6mZ8XITZx+iA0s8RnjfUTf8lq+EpquOb
-	 tNbpjbzeeIR2Bev+q9SOEtahsme33D5y9Lo7KW1fhsL38m9Zfs1kaXRBBkfiBGmn1+
-	 HGqEyFiCasPYg==
-Date: Wed, 11 Sep 2024 13:19:07 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Peter Zijlstra <peterz@infradead.org>,
+	s=arc-20240116; t=1726217087; c=relaxed/simple;
+	bh=QFa203OC2WhTCdihVHC5Wc82zSwZEYBkVei0/jDI/m0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FM/fyLcJ7YL/bGyTU/27uNWJCYe1kh2ScmNB6aCda9f875/D4G05hmDeXUMij9UeWJhuIbZp9cxdIoZ+DZx2PynlsEApS0ftZhWIAkk4R5grzUtjIYolu3sUnavWP9cd5A3kNfkcZlwzZVG2IeexL86ZtxIC3Njg72vwwRoDO5g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B45C813D5;
+	Fri, 13 Sep 2024 01:45:13 -0700 (PDT)
+Received: from a077893.blr.arm.com (a077893.blr.arm.com [10.162.16.84])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7F3B23F73B;
+	Fri, 13 Sep 2024 01:44:40 -0700 (PDT)
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+To: linux-mm@kvack.org
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v3 6/8] x86/module: perpare module loading for ROX
- allocations of text
-Message-ID: <ZuFumwtGQGOPMDo3@kernel.org>
-References: <20240909064730.3290724-1-rppt@kernel.org>
- <20240909064730.3290724-7-rppt@kernel.org>
- <20240909092923.GB4723@noisy.programming.kicks-ass.net>
- <Zt8HiAzcaZS8lHT-@kernel.org>
- <20240909104940.71d8464c@gandalf.local.home>
+	David Hildenbrand <david@redhat.com>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	"Mike Rapoport (IBM)" <rppt@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	x86@kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-fsdevel@vger.kernel.org,
+	kasan-dev@googlegroups.com,
+	linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org
+Subject: [PATCH 0/7] mm: Use pxdp_get() for accessing page table entries
+Date: Fri, 13 Sep 2024 14:14:26 +0530
+Message-Id: <20240913084433.1016256-1-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240909104940.71d8464c@gandalf.local.home>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Sep 09, 2024 at 10:49:40AM -0400, Steven Rostedt wrote:
-> On Mon, 9 Sep 2024 17:34:48 +0300
-> Mike Rapoport <rppt@kernel.org> wrote:
-> 
-> > > This is insane, just force BUILDTIME_MCOUNT_SORT  
-> > 
-> > The comment in ftrace.c says "... while mcount loc in modules can not be
-> > sorted at build time"
-> >  
-> > I don't know enough about objtool, but I'd presume it's because the sorting
-> > should happen after relocations, no?
-> > 
-> 
-> IIRC, the sorting at build time uses scripts/sorttable.c, which from what I
-> can tell, only gets called on vmlinux.
+This series converts all generic page table entries direct derefences via
+pxdp_get() based helpers extending the changes brought in via the commit
+c33c794828f2 ("mm: ptep_get() conversion"). First it does some platform
+specific changes for m68k and x86 architecture.
 
-Regardless of the tool, the sorting should be done after relocation, no?
+This series has been build tested on multiple architecture such as x86,
+arm64, powerpc, powerpc64le, riscv, and m68k etc.
 
-But isn't mcount loc is in data section? Then there should be no problem
-just drop this patch
- 
-> -- Steve
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Ryan Roberts <ryan.roberts@arm.com>
+Cc: "Mike Rapoport (IBM)" <rppt@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: x86@kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mm@kvack.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: kasan-dev@googlegroups.com
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-perf-users@vger.kernel.org
+Cc: kasan-dev@googlegroups.com
+
+Anshuman Khandual (7):
+  m68k/mm: Change pmd_val()
+  x86/mm: Drop page table entry address output from pxd_ERROR()
+  mm: Use ptep_get() for accessing PTE entries
+  mm: Use pmdp_get() for accessing PMD entries
+  mm: Use pudp_get() for accessing PUD entries
+  mm: Use p4dp_get() for accessing P4D entries
+  mm: Use pgdp_get() for accessing PGD entries
+
+ arch/m68k/include/asm/page.h          |  2 +-
+ arch/x86/include/asm/pgtable-3level.h | 12 ++---
+ arch/x86/include/asm/pgtable_64.h     | 20 +++----
+ drivers/misc/sgi-gru/grufault.c       | 10 ++--
+ fs/proc/task_mmu.c                    | 26 ++++-----
+ fs/userfaultfd.c                      |  6 +--
+ include/linux/huge_mm.h               |  5 +-
+ include/linux/mm.h                    |  6 +--
+ include/linux/pgtable.h               | 38 +++++++-------
+ kernel/events/core.c                  |  6 +--
+ mm/gup.c                              | 40 +++++++-------
+ mm/hmm.c                              |  2 +-
+ mm/huge_memory.c                      | 76 +++++++++++++--------------
+ mm/hugetlb.c                          | 10 ++--
+ mm/hugetlb_vmemmap.c                  |  4 +-
+ mm/kasan/init.c                       | 38 +++++++-------
+ mm/kasan/shadow.c                     | 12 ++---
+ mm/khugepaged.c                       |  4 +-
+ mm/madvise.c                          |  6 +--
+ mm/mapping_dirty_helpers.c            |  2 +-
+ mm/memory-failure.c                   | 14 ++---
+ mm/memory.c                           | 59 +++++++++++----------
+ mm/mempolicy.c                        |  4 +-
+ mm/migrate.c                          |  4 +-
+ mm/migrate_device.c                   | 10 ++--
+ mm/mlock.c                            |  6 +--
+ mm/mprotect.c                         |  2 +-
+ mm/mremap.c                           |  4 +-
+ mm/page_table_check.c                 |  4 +-
+ mm/page_vma_mapped.c                  |  6 +--
+ mm/pagewalk.c                         | 10 ++--
+ mm/percpu.c                           |  8 +--
+ mm/pgalloc-track.h                    |  6 +--
+ mm/pgtable-generic.c                  | 24 ++++-----
+ mm/ptdump.c                           |  8 +--
+ mm/rmap.c                             |  8 +--
+ mm/sparse-vmemmap.c                   | 10 ++--
+ mm/vmalloc.c                          | 46 ++++++++--------
+ mm/vmscan.c                           |  6 +--
+ 39 files changed, 283 insertions(+), 281 deletions(-)
 
 -- 
-Sincerely yours,
-Mike.
+2.25.1
+
