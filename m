@@ -1,141 +1,132 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B58480BEC
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 13 Sep 2024 17:21:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE67940BF2
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 15 Sep 2024 08:37:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726248109; cv=none; b=jsbwmriMj00Pwh+Pv+qBtLWibDyd64ZisnjTvRuasvWB3xWgj8Ab99OoauqiS1dLpA10boFv0dEiBT9scKAVT9McZs+7XHfez9X21aAQmcm5t8QHteaHEPb1py51B0FQKfJ+ie3vXFTWrsIL/v0LFsb2qYg70w/m6Qj/ijSjon4=
+	t=1726389462; cv=none; b=dQjOQagVLP54UHHc5nuX1GBnjNQJDgwlvFYDv5iS0VkTWQIonfK6exJjBGuL8mxF1TPeaiJac2XfHHT1OVmorMPP+ObMnhG1Pj2IjfHKwnxxAbfhi191iUFRPmiTq+2Yq7+qwjAy4dYRrgBr8Q+4IRvpWV6gxBe+SotblfMwo0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726248109; c=relaxed/simple;
-	bh=vdnM+CZTeCR9vtc54KCM3CD6QuawVpzxQ5fBCGrQFYI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kwwRIzBXgaPbQefIaPI8CIne1b79eUpoSMBPQLhPD69I5Wgv74c8W5wOXHHQQaJs3JVGXLZFQh1SIxuE2uSDVKi8tr+ra3AOfPoHC7kjf6dw33vAaaI7qlbSZ32Lh9079wr1dUj417F8aTQDQiGRlaCBhvXtYiNFrh3EsaI5iwM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AHIukaGe; arc=none smtp.client-ip=192.198.163.16
+	s=arc-20240116; t=1726389462; c=relaxed/simple;
+	bh=FthG0Sk1hY2hbKD/1wblTWyxSHYnMENGGPBLfDbEyzo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=MyIY5DPQEqrwp6ohhUxanWygcrg/0gGn3LFJVsO4QANfQ854fakXb+kPboiguWUDA6q5nX18vEW6k/bM9Ff/U1naRrW6+66RFE3Z/1c1zIRMX3Ufsm8ScTAs2cZtpsxpMD2gxh0UvFBDgufPkvTX3af2x5Gs4jL712TWP0E6y54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HAod3/v6; arc=none smtp.client-ip=198.175.65.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AHIukaGe"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HAod3/v6"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1726248108; x=1757784108;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=vdnM+CZTeCR9vtc54KCM3CD6QuawVpzxQ5fBCGrQFYI=;
-  b=AHIukaGeYfxsI2fbqHsTCZWI3I8zu7bVbXP8pfmIH/YcP4Bk9GLWADkN
-   XKmRppM4yHxAFLc1yhxcxWF3SWbxrWTYWF9+qy9aigmnc1x6ULDFQ0M/b
-   RySYMZ+Xyn0CLMg1hJHkpo9CWJymX2SwuqXq4e3mWIMskHvLBLCDaAROm
-   sgGQ2a1SSC21gZ5LtaGV4wrsP8HzbDJ7pwFNRgeCNZg7ucnIiqQtQlLt9
-   zf5CcjmVc5aAGkW43s/dreioCZJi7ykAKz3JvM0YRo31Ugq+tDm53jGUv
-   jpv0vNOcsIR9LE+n2qGlJPV6DorqBxZlRJ9JVOqkrHzFTX1x8LUmK2LMl
-   Q==;
-X-CSE-ConnectionGUID: qIsmySYVQouHs/EzOVV9dw==
-X-CSE-MsgGUID: a3Os0eaLRmeaZ/GFYMTvDQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11194"; a="13515760"
-X-IronPort-AV: E=Sophos;i="6.10,226,1719903600"; 
-   d="scan'208";a="13515760"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2024 10:21:46 -0700
-X-CSE-ConnectionGUID: pZq42LnVSmarDZKTdgSiuA==
-X-CSE-MsgGUID: 8DBsX0MoQL+CuXku25so0g==
+  t=1726389460; x=1757925460;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=FthG0Sk1hY2hbKD/1wblTWyxSHYnMENGGPBLfDbEyzo=;
+  b=HAod3/v6ZeWuArsT1njxUlSTAOwRQGrZOezzuN6gR+lNs+i+OfHEB89o
+   Rxfqf91JcMmwiCkWuwpnetc/ISSUrGsfz7sNJWgSwQEPvtMprBJdOBT0P
+   UsDWfYQDXi+HMl808ziibQATgROY39nXl/Ojg2BZrw2gvnu2lnqHe7n7t
+   UeKyLsm2TWvUlJHJrfzpc1jhry0qj8pMkAka/y+QIbVqwbotDu1H8tsj6
+   DxHd2ZU1wlBaFF4gNv/n20ihD+Nz0lZHD80allVKazTilfmlmoNvGTMG6
+   2+zrt70wTGydZNl+LwWYTtsjHAkeiun6z1dOpiNpwGx4DRVwNl1RwLFiU
+   A==;
+X-CSE-ConnectionGUID: YIs/fdQdSHKZQzXZmAPSIg==
+X-CSE-MsgGUID: ccDDY323QLWa+OsAUjgvaQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11195"; a="47757487"
+X-IronPort-AV: E=Sophos;i="6.10,230,1719903600"; 
+   d="scan'208";a="47757487"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2024 01:37:39 -0700
+X-CSE-ConnectionGUID: SNuNZdr3Siyhnlvj+Bgx2w==
+X-CSE-MsgGUID: xt5oEU7/RGu02eYY0RUnQg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,226,1719903600"; 
-   d="scan'208";a="98978570"
-Received: from ccbilbre-mobl3.amr.corp.intel.com (HELO [10.124.220.219]) ([10.124.220.219])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2024 10:21:45 -0700
-Message-ID: <8e8a94d4-39fe-4c34-9f5d-5b347ca8fe9a@intel.com>
-Date: Fri, 13 Sep 2024 10:21:24 -0700
+X-IronPort-AV: E=Sophos;i="6.10,230,1719903600"; 
+   d="scan'208";a="69348278"
+Received: from lkp-server01.sh.intel.com (HELO 53e96f405c61) ([10.239.97.150])
+  by orviesa008.jf.intel.com with ESMTP; 15 Sep 2024 01:37:37 -0700
+Received: from kbuild by 53e96f405c61 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1spklC-0008X4-30;
+	Sun, 15 Sep 2024 08:37:34 +0000
+Date: Sun, 15 Sep 2024 16:36:39 +0800
+From: kernel test robot <lkp@intel.com>
+To: Greg Ungerer <gerg@uclinux.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+	uclinux-dev@uclinux.org
+Subject: [gerg-m68knommu:armnommu 3/3] include/linux/compiler_types.h:510:45:
+ error: call to '__compiletime_assert_311' declared with attribute error:
+ BUILD_BUG_ON failed: sizeof(priv_tbl->probs) % 16
+Message-ID: <202409151608.3NlECWXO-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/7] x86/mm: Drop page table entry address output from
- pxd_ERROR()
-To: Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
- "Mike Rapoport (IBM)" <rppt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- x86@kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-fsdevel@vger.kernel.org, kasan-dev@googlegroups.com,
- linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>
-References: <20240913084433.1016256-1-anshuman.khandual@arm.com>
- <20240913084433.1016256-3-anshuman.khandual@arm.com>
-From: Dave Hansen <dave.hansen@intel.com>
-Content-Language: en-US
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <20240913084433.1016256-3-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 9/13/24 01:44, Anshuman Khandual wrote:
-> This drops page table entry address output from all pxd_ERROR() definitions
-> which now matches with other architectures. This also prevents build issues
-> while transitioning into pxdp_get() based page table entry accesses.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git armnommu
+head:   efa144551cae4460d9824939792ec9d8e88c25ff
+commit: efa144551cae4460d9824939792ec9d8e88c25ff [3/3] ARM: versatile: support configuring versatile machine for no-MMU
+config: arm-randconfig-r112-20240915 (https://download.01.org/0day-ci/archive/20240915/202409151608.3NlECWXO-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 14.1.0
+reproduce: (https://download.01.org/0day-ci/archive/20240915/202409151608.3NlECWXO-lkp@intel.com/reproduce)
 
-Could you be a _little_ more specific than "build issues"?  Is it that
-you want to do:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202409151608.3NlECWXO-lkp@intel.com/
 
- void pmd_clear_bad(pmd_t *pmd)
- {
--        pmd_ERROR(*pmd);
-+        pmd_ERROR(pmdp_get(pmd));
-         pmd_clear(pmd);
- }
+All errors (new ones prefixed by >>):
 
-But the pmd_ERROR() macro would expand that to:
+   In file included from <command-line>:
+   drivers/staging/media/rkvdec/rkvdec-vp9.c: In function 'rkvdec_vp9_start':
+>> include/linux/compiler_types.h:510:45: error: call to '__compiletime_assert_311' declared with attribute error: BUILD_BUG_ON failed: sizeof(priv_tbl->probs) % 16
+     510 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                                             ^
+   include/linux/compiler_types.h:491:25: note: in definition of macro '__compiletime_assert'
+     491 |                         prefix ## suffix();                             \
+         |                         ^~~~~~
+   include/linux/compiler_types.h:510:9: note: in expansion of macro '_compiletime_assert'
+     510 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+         |         ^~~~~~~~~~~~~~~~
+   drivers/staging/media/rkvdec/rkvdec-vp9.c:1010:9: note: in expansion of macro 'BUILD_BUG_ON'
+    1010 |         BUILD_BUG_ON(sizeof(priv_tbl->probs) % 16); /* ensure probs size is 128-bit aligned */
+         |         ^~~~~~~~~~~~
 
-	&pmdp_get(pmd)
+sparse warnings: (new ones prefixed by >>)
+>> arch/arm/mach-versatile/versatile.c:89:23: sparse: sparse: symbol 'versatile_auxdata_lookup' was not declared. Should it be static?
 
-which is nonsense?
+vim +/__compiletime_assert_311 +510 include/linux/compiler_types.h
 
-Having the PTEs' kernel addresses _is_ handy, but I guess they're
-scrambled on most end users' systems now and anybody that's actively
-debugging can just use a kprobe or something to dump the pmd_clear_bad()
-argument directly.
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  496  
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  497  #define _compiletime_assert(condition, msg, prefix, suffix) \
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  498  	__compiletime_assert(condition, msg, prefix, suffix)
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  499  
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  500  /**
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  501   * compiletime_assert - break build and emit msg if condition is false
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  502   * @condition: a compile-time constant condition to check
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  503   * @msg:       a message to emit if condition is false
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  504   *
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  505   * In tradition of POSIX assert, this macro will break the build if the
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  506   * supplied condition is *false*, emitting the supplied error message if the
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  507   * compiler has support to do so.
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  508   */
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  509  #define compiletime_assert(condition, msg) \
+eb5c2d4b45e3d2 Will Deacon 2020-07-21 @510  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  511  
+
+:::::: The code at line 510 was first introduced by commit
+:::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move compiletime_assert() macros into compiler_types.h
+
+:::::: TO: Will Deacon <will@kernel.org>
+:::::: CC: Will Deacon <will@kernel.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
