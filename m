@@ -1,151 +1,108 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BBE84AECE
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Sep 2024 06:15:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from weierstrass.telenet-ops.be (weierstrass.telenet-ops.be [195.130.137.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00BCF146588
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Sep 2024 14:41:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726467314; cv=none; b=W7QO56dI/BH9DEPf7/L64ijh5onFvFr1uOniuqRUSEMLsapR6h67gPNT1IWoYFCmYiraAgICnmJjGFD8n8IcxmOAQ72Iemb1aOfcrAJXiaCP1sTzFW35bk1sx31FuncWZ7Tq/UDg1dBFO0e0S2w4ibIm/l7XCBP9blH+ddP3cNI=
+	t=1726497681; cv=none; b=g57e2znqEbVuo0AnHSoJ31iu6ZNDWp1IKKpNdLBnBgdkNxayFUcXsSFSxDiA08fnEx7esEavc/qYd4p5ZjfO4Z+VP2+4VMiGIArti++W2/fMYVaHtvizNciUc4nnaNNhhFbABwMd5kV2OE32MBX9kndEAcQ1g7tDZ/HSVCFN8sw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726467314; c=relaxed/simple;
-	bh=D8j5Hk0CkaLEX7dXTn/2QhcETJs4MStq2/5OBrQQL24=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PZakAZl+pkhcFGDmFc9QLxiRczWYo6KQAmNojDT4lXwOUaBdKyy4kw/pS5TKMXcAK3n+GahdbhOlam35oRKaAM30sjQTaYpaNjYDC56bKfHFvucspUZZ7tiqffhOSm26c2a6hyQyM65VnrDmSl7j/fPtIt0LD/T7DztvNdpAqoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7DF0D11FB;
-	Sun, 15 Sep 2024 23:15:40 -0700 (PDT)
-Received: from [10.162.16.84] (a077893.blr.arm.com [10.162.16.84])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B7AD03F66E;
-	Sun, 15 Sep 2024 23:15:04 -0700 (PDT)
-Message-ID: <61dafb6a-6212-40a6-8382-0d1b0dae57ac@arm.com>
-Date: Mon, 16 Sep 2024 11:45:00 +0530
+	s=arc-20240116; t=1726497681; c=relaxed/simple;
+	bh=WecJ+gPUvfHGO3Qy4Ku+UYIn7R2CZrths0VNdnV0hcs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=u5zGs13MbcONOgRt9G+tTqRxmerw4Xvb8PNaMgbBVwMLRSyT8O67qPIX88Q5BbTkR2pYUPc80kH8xzj5thCH4/rF4CxqfemI+1Jlg0c0xNSyr+pDtkNgvHLGRV9HKl98waNge2lnJNMtNudC3IXKoz97FA5B4X2fyfoQ44qfcxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+	by weierstrass.telenet-ops.be (Postfix) with ESMTPS id 4X6nS51xbNz4x9M8
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Sep 2024 16:32:21 +0200 (CEST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:681c:31c3:1eaf:1b7])
+	by laurent.telenet-ops.be with cmsmtp
+	id D2YD2D00Q0hmunZ012YDCH; Mon, 16 Sep 2024 16:32:14 +0200
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1sqClr-006Tv0-Gi;
+	Mon, 16 Sep 2024 16:32:13 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1sqClx-004Avv-CA;
+	Mon, 16 Sep 2024 16:32:13 +0200
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for v6.12
+Date: Mon, 16 Sep 2024 16:32:07 +0200
+Message-Id: <20240916143207.995330-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/7] mm: Use pmdp_get() for accessing PMD entries
-To: Ryan Roberts <ryan.roberts@arm.com>, linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@redhat.com>, "Mike Rapoport (IBM)"
- <rppt@kernel.org>, Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
- linux-m68k@lists.linux-m68k.org, linux-fsdevel@vger.kernel.org,
- kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
- linux-perf-users@vger.kernel.org, Dimitri Sivanich
- <dimitri.sivanich@hpe.com>, Muchun Song <muchun.song@linux.dev>,
- Andrey Ryabinin <ryabinin.a.a@gmail.com>, Miaohe Lin <linmiaohe@huawei.com>,
- Naoya Horiguchi <nao.horiguchi@gmail.com>,
- Pasha Tatashin <pasha.tatashin@soleen.com>, Dennis Zhou <dennis@kernel.org>,
- Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
- Uladzislau Rezki <urezki@gmail.com>, Christoph Hellwig <hch@infradead.org>
-References: <20240913084433.1016256-1-anshuman.khandual@arm.com>
- <20240913084433.1016256-5-anshuman.khandual@arm.com>
- <f918bd00-c6a4-498a-bd17-9f5b32f7d6a7@arm.com>
-Content-Language: en-US
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <f918bd00-c6a4-498a-bd17-9f5b32f7d6a7@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+	Hi Linus,
 
+The following changes since commit 8400291e289ee6b2bf9779ff1c83a291501f017b:
 
-On 9/13/24 16:08, Ryan Roberts wrote:
-> On 13/09/2024 09:44, Anshuman Khandual wrote:
->> Convert PMD accesses via pmdp_get() helper that defaults as READ_ONCE() but
->> also provides the platform an opportunity to override when required.
->>
->> Cc: Dimitri Sivanich <dimitri.sivanich@hpe.com>
->> Cc: Muchun Song <muchun.song@linux.dev>
->> Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
->> Cc: Miaohe Lin <linmiaohe@huawei.com>
->> Cc: Naoya Horiguchi <nao.horiguchi@gmail.com>
->> Cc: Pasha Tatashin <pasha.tatashin@soleen.com>
->> Cc: Dennis Zhou <dennis@kernel.org>
->> Cc: Tejun Heo <tj@kernel.org>
->> Cc: Christoph Lameter <cl@linux.com>
->> Cc: Uladzislau Rezki <urezki@gmail.com>
->> Cc: Christoph Hellwig <hch@infradead.org>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: David Hildenbrand <david@redhat.com>
->> Cc: Ryan Roberts <ryan.roberts@arm.com>
->> Cc: "Mike Rapoport (IBM)" <rppt@kernel.org>
->> Cc: linux-kernel@vger.kernel.org
->> Cc: linux-fsdevel@vger.kernel.org
->> Cc: linux-mm@kvack.org
->> Cc: kasan-dev@googlegroups.com
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>  drivers/misc/sgi-gru/grufault.c |  4 +--
->>  fs/proc/task_mmu.c              | 26 +++++++-------
->>  include/linux/huge_mm.h         |  3 +-
->>  include/linux/mm.h              |  2 +-
->>  include/linux/pgtable.h         | 14 ++++----
->>  mm/gup.c                        | 14 ++++----
->>  mm/huge_memory.c                | 60 ++++++++++++++++-----------------
->>  mm/hugetlb_vmemmap.c            |  4 +--
->>  mm/kasan/init.c                 | 10 +++---
->>  mm/kasan/shadow.c               |  4 +--
->>  mm/khugepaged.c                 |  4 +--
->>  mm/madvise.c                    |  6 ++--
->>  mm/memory-failure.c             |  6 ++--
->>  mm/memory.c                     | 25 +++++++-------
->>  mm/mempolicy.c                  |  4 +--
->>  mm/migrate.c                    |  4 +--
->>  mm/migrate_device.c             | 10 +++---
->>  mm/mlock.c                      |  6 ++--
->>  mm/mprotect.c                   |  2 +-
->>  mm/mremap.c                     |  4 +--
->>  mm/page_table_check.c           |  2 +-
->>  mm/pagewalk.c                   |  4 +--
->>  mm/percpu.c                     |  2 +-
->>  mm/pgtable-generic.c            | 16 ++++-----
->>  mm/ptdump.c                     |  2 +-
->>  mm/rmap.c                       |  2 +-
->>  mm/sparse-vmemmap.c             |  4 +--
->>  mm/vmalloc.c                    | 12 +++----
->>  28 files changed, 129 insertions(+), 127 deletions(-)
->>
->> diff --git a/drivers/misc/sgi-gru/grufault.c b/drivers/misc/sgi-gru/grufault.c
->> index 3557d78ee47a..f3d6249b7dfb 100644
->> --- a/drivers/misc/sgi-gru/grufault.c
->> +++ b/drivers/misc/sgi-gru/grufault.c
->> @@ -224,10 +224,10 @@ static int atomic_pte_lookup(struct vm_area_struct *vma, unsigned long vaddr,
->>  		goto err;
->>  
->>  	pmdp = pmd_offset(pudp, vaddr);
->> -	if (unlikely(pmd_none(*pmdp)))
->> +	if (unlikely(pmd_none(pmdp_get(pmdp))))
->>  		goto err;
->>  #ifdef CONFIG_X86_64
->> -	if (unlikely(pmd_leaf(*pmdp)))
->> +	if (unlikely(pmd_leaf(pmdp_get(pmdp))))
-> Just a general comment about multiple gets; before, the compiler most likely
-> turned multiple '*pmdp' dereferences into a single actual load. But READ_ONCE()
-> inside pmdp_get() ensures you get a load for every call to pmdp_get(). This has
-> 2 potential problems:
-> 
->  - More loads could potentially regress speed in some hot paths
-> 
->  - In paths that don't hold an appropriate PTL the multiple loads could race
-> with a writer, meaning each load gets a different value. The intent of the code
-> is usually that each check is operating on the same value.
+  Linux 6.11-rc1 (2024-07-28 14:19:55 -0700)
 
-Makes sense, above two concerns are potential problems I guess.
+are available in the Git repository at:
 
-> 
-> For the ptep_get() conversion, I solved this by reading into a temporary once
-> then using the temporary for the comparisons.
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.12-tag1
 
-Alright.
+for you to fetch changes up to b90fae5df91744e45e683c17bb1a38e466770df3:
 
-> 
-> I'm not sure if these are real problems in practice, but seems safest to
-> continue to follow this established pattern?
+  m68k: defconfig: Update defconfigs for v6.11-rc1 (2024-08-26 10:25:02 +0200)
 
-Yes, will make the necessary changes across the series which might create some
-amount of code churn but seems like it would be worth. Planning to add old_pxd
-local variables when required and load them from the address, as soon as 'pxd'
-pointer becomes valid.
+----------------------------------------------------------------
+m68k updates for v6.12
+
+  - Use swap() helper for __arch_xchg(),
+  - Fix kernel_clone_args.flags in m68k_clone(),
+  - Defconfig updates.
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+Finn Thain (1):
+      m68k: Fix kernel_clone_args.flags in m68k_clone()
+
+Geert Uytterhoeven (1):
+      m68k: defconfig: Update defconfigs for v6.11-rc1
+
+Thorsten Blum (1):
+      m68k: cmpxchg: Use swap() to improve code
+
+ arch/m68k/configs/amiga_defconfig    |  2 --
+ arch/m68k/configs/apollo_defconfig   |  2 --
+ arch/m68k/configs/atari_defconfig    |  2 --
+ arch/m68k/configs/bvme6000_defconfig |  2 --
+ arch/m68k/configs/hp300_defconfig    |  2 --
+ arch/m68k/configs/mac_defconfig      |  2 --
+ arch/m68k/configs/multi_defconfig    |  2 --
+ arch/m68k/configs/mvme147_defconfig  |  2 --
+ arch/m68k/configs/mvme16x_defconfig  |  2 --
+ arch/m68k/configs/q40_defconfig      |  2 --
+ arch/m68k/configs/sun3_defconfig     |  2 --
+ arch/m68k/configs/sun3x_defconfig    |  2 --
+ arch/m68k/include/asm/cmpxchg.h      | 15 +++++----------
+ arch/m68k/kernel/process.c           |  2 +-
+ 14 files changed, 6 insertions(+), 35 deletions(-)
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
