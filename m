@@ -1,124 +1,86 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B56C61C7B64
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 15 Sep 2024 13:51:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A61B912B8B
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Sep 2024 02:54:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726408310; cv=none; b=IHMF4wYtb9JdaEAn03OF64xrkg5SuAStjq3SrPO8IYwYWKF2dsILRX6GeA2abgJ9ZUeY8NuncNcpRaroHfojA2yLm0B5kJ6peSvXoKNsUJ6Cb7AauB2TN6tq5K58igA5G3qWlQSMNH6/mzA5LdHFcpGJiZwsPAEzkl1q3ZRyGHo=
+	t=1726455273; cv=none; b=cgT+on6wiEsbvmgsqryeF8GXarCWICaiLWLlqdAs297zGvZgHlJJ9FxbzTNDqsy+ghXsVFwD/KkhCK2F37IX2IU+e3FnY+WEZaV5JJl1VDw/xEPaoKhi/cR4MlcAXVqY9fXutiRXt721j45VzIAPVDFQ4B6mQGHzVXBAno34uS0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726408310; c=relaxed/simple;
-	bh=q7WJquAI08+CAD5lP6bdNehob9Dq1wPKxQPjeFRtiiI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EHcUORTHKIRFeLTDd+t/HdQFtYRhcSf+ztoAVkAZQowwVl+bo1mET9F1XikVqziBPsbxyYxYrWUmWhMSM67OZgr+fFEfYJae9moRA2NUSPjmNJtZnfCXh0v00D5Qxikdqw9afh/UKkjoPkZwi5Z9KGeXCXTXnsQx3rPietBrb/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DRkIar9R; arc=none smtp.client-ip=139.178.84.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DRkIar9R"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 45A6A5C54F3;
-	Sun, 15 Sep 2024 13:51:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 666C4C4CEC3;
-	Sun, 15 Sep 2024 13:51:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726408306;
-	bh=q7WJquAI08+CAD5lP6bdNehob9Dq1wPKxQPjeFRtiiI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DRkIar9RFkBNG39Lg4VF36+C0l1NwYSaEE09Z1SxGxc6M4S+jx9O3QiS3XE0iEOXa
-	 dugg4+gux8cHvhMy415EwhG2oqeI29OZXErerIPWPPLxGdjDxioHvmSB5SFgMR8cmZ
-	 GF890/YHKLL0YWKx3z2y3nIavnufDvUSXph8DwoVC1aciO37Nuj9Dl/4U3xgMBW1Vr
-	 QqbWqbJwbZ+B8JLq+POjgebhgVzaYSVrG+oX+aypioA+ScnFYEAUCNxQIIMCRKMIR8
-	 1d75vfMvgyrvMLYGrv0O59GREHzSdXP1f5IYJf2XBPq1KtNNCfQ4hdGzn/h6TRc0iB
-	 7g69hrbWPmj5g==
-Date: Sun, 15 Sep 2024 16:48:27 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v3 7/8] execmem: add support for cache of large ROX pages
-Message-ID: <Zublq4tR0q7lvicK@kernel.org>
-References: <20240909064730.3290724-1-rppt@kernel.org>
- <20240909064730.3290724-8-rppt@kernel.org>
- <CAMj1kXG_Z=7B_eDAk3vhtDjfcnka3AoSKNzvFQDzpvYY2EyVfg@mail.gmail.com>
+	s=arc-20240116; t=1726455273; c=relaxed/simple;
+	bh=4SY9/3+US2zm+crDDfzr5lKhaNSjQwLU5DcGcU1LpiA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GFPXl3/ZhYPLtIeVK6FRS+0QjFB4jwUZ4X0+nUyvejZtoCfYVP6CoblrJ1X1kbwpdBZJmKPBshhVHvuHUuVUoevps0cK2EgkO0z+VD8B+G819Rh6YpJtRmYr0BeqmMYEwUeZCftRm0WwuVm4QFyUPawJwQd+9A3stWrV7Bm2d9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 85C611476;
+	Sun, 15 Sep 2024 19:54:54 -0700 (PDT)
+Received: from [10.162.16.84] (a077893.blr.arm.com [10.162.16.84])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5DAB73F64C;
+	Sun, 15 Sep 2024 19:54:20 -0700 (PDT)
+Message-ID: <9d3286bd-7ad4-4472-aa26-2fb7d166fceb@arm.com>
+Date: Mon, 16 Sep 2024 08:24:17 +0530
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXG_Z=7B_eDAk3vhtDjfcnka3AoSKNzvFQDzpvYY2EyVfg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/7] x86/mm: Drop page table entry address output from
+ pxd_ERROR()
+To: Dave Hansen <dave.hansen@intel.com>, linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
+ "Mike Rapoport (IBM)" <rppt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ x86@kernel.org, linux-m68k@lists.linux-m68k.org,
+ linux-fsdevel@vger.kernel.org, kasan-dev@googlegroups.com,
+ linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>
+References: <20240913084433.1016256-1-anshuman.khandual@arm.com>
+ <20240913084433.1016256-3-anshuman.khandual@arm.com>
+ <8e8a94d4-39fe-4c34-9f5d-5b347ca8fe9a@intel.com>
+Content-Language: en-US
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <8e8a94d4-39fe-4c34-9f5d-5b347ca8fe9a@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Ard,
 
-On Fri, Sep 13, 2024 at 05:00:42PM +0200, Ard Biesheuvel wrote:
-> Hi Mike,
+
+On 9/13/24 22:51, Dave Hansen wrote:
+> On 9/13/24 01:44, Anshuman Khandual wrote:
+>> This drops page table entry address output from all pxd_ERROR() definitions
+>> which now matches with other architectures. This also prevents build issues
+>> while transitioning into pxdp_get() based page table entry accesses.
 > 
-> On Mon, 9 Sept 2024 at 08:51, Mike Rapoport <rppt@kernel.org> wrote:
-
-...
-
-> > +static void execmem_fill_trapping_insns(void *ptr, size_t size, bool writable)
-> > +{
-> > +       if (execmem_info->fill_trapping_insns)
-> > +               execmem_info->fill_trapping_insns(ptr, size, writable);
-> > +       else
-> > +               memset(ptr, 0, size);
+> Could you be a _little_ more specific than "build issues"?  Is it that
+> you want to do:
 > 
-> Does this really have to be a function pointer with a runtime check?
+>  void pmd_clear_bad(pmd_t *pmd)
+>  {
+> -        pmd_ERROR(*pmd);
+> +        pmd_ERROR(pmdp_get(pmd));
+>          pmd_clear(pmd);
+>  }
 > 
-> This could just be a __weak definition, with the arch providing an
-> override if the memset() is not appropriate.
+> But the pmd_ERROR() macro would expand that to:
+> 
+> 	&pmdp_get(pmd)
+> 
+> which is nonsense?
 
-I prefer to keep this a method in execmem_info rather that have a __weak
-definition that architectures can override.
+Yes, that's the one which fails the build with the following warning.
 
-This is not on the hot path, so I don't think a runtime check here would
-matter. Still, I can fill in a default with memset at init time.
+error: lvalue required as unary '&' operand
 
--- 
-Sincerely yours,
-Mike.
+Will update the commit message with these details about the build problem.
+
+> 
+> Having the PTEs' kernel addresses _is_ handy, but I guess they're
+> scrambled on most end users' systems now and anybody that's actively
+> debugging can just use a kprobe or something to dump the pmd_clear_bad()
+> argument directly.
+
+Right.
