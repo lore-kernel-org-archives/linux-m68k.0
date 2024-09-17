@@ -1,66 +1,66 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C205116132F
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 17 Sep 2024 10:20:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9A0615C13E
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 17 Sep 2024 10:23:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726568433; cv=none; b=haoOltE6SC21O0AEsM3/mf3+inF4VhvX7DUos9/sibOysfcWTdqE7OE4OrB0Cjtwgx/Pb5FkM/FROsKD0xcvDUtfU3GMbvEa/UeOUP5jwYboK9gchc0nR57lWjJLMYwrmtHGk2L/RJrTo1KEzdccuEw6JTjoSX8xBWC1c/7wJGI=
+	t=1726568587; cv=none; b=RvQas40dKdyrwVkwHNG4sfCCk5l+i11OY4ob/ZELlFsLftEn8QNxbIZJOLCJBpefFFY/sGrj39AG+HX4Y8M5hL3IZIye7wbP1Dlr2wUnuAgStIKkSwVh1yumdpXcf5bkdIudvQ4GUIMWwEFQR0IciobF5wBQKUJeILx1h6H2LNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726568433; c=relaxed/simple;
-	bh=qe4jWrZe8Skbk/Q/ZNbiXKEoBv6Z8lAP9Ny5GlSyazg=;
+	s=arc-20240116; t=1726568587; c=relaxed/simple;
+	bh=hGi8YXModPaINEUs9neWzaD8fA7G6jKoaUEAHbv6Ne4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FLK7hCTkcfmgswKanWKmE9YBBGvaeZ/+VuNulxpMFS5Aopptt3eS1DGIijCFuzPfQsqqAtJ+QVpX4cSSc5rrNgblvTR0oFOjxFTGLvdAl+VAxWX4OmAN0accDm9XVz4daPDym/UQoyb/mwtmHLnPCkVb/4sDG/WYJsTQAS/q7LA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BDI9ENpt; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:Content-Type; b=oAO6hEsTrR0OP85bIWFPeyxh+H2HkSqo9R/Y09weOYNW0G3k7kEkOGO7ANhORDxJxj4b2UFi4b5NKNlLUBdN+/CGkwjtb+WrYymoHJHGibaK/+gI3tOJV1rGjqwxS79ce1Lz6D1+Bm1c/wty5fPSguovOrs2Ej+Lk8Gv9l8t3Z8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ADeXggRK; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BDI9ENpt"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ADeXggRK"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1726568430;
+	s=mimecast20190719; t=1726568584;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=6ZCJTmJx2xNT3osb0wa+deaEyFcFSSWyiY3NZGLuGe4=;
-	b=BDI9ENptnDLZ7ErI7F5UX3XggASKwDm1TiTR6k6enPEr9R+s3zyYdn8UXptFb8t/W8ER7W
-	24PXj+jMk6tsJgve9nNuTD7xeIptSUAb9m/4c6k+otYXa5krqT1gpsUe3N4YB7wUvjyqWH
-	ZOm4A5CDphZD8UTqzA52FNYzSBgr6M0=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=Ydd/x8z/rWdB1y1aNRkIvJ800tcht5bmAGltsT132Qk=;
+	b=ADeXggRKgQoFbnmu9QmpqRUDvAaoj9NdH3euG9zVXQG3aaa0YcrQ3jWc3/NoktCqCe+Vlt
+	7fvjJsQxsC7bg3jIRItUsuVbKASSFE1jc71zyMDYuXJWEuCI+y4D9CY80PW1nYq2M2ibBS
+	wF/1P5lF1DHh0jHhqJkSJOL8Bx6G2os=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-403-wM8AjTWXM_Wa2b-eX002NQ-1; Tue, 17 Sep 2024 06:20:27 -0400
-X-MC-Unique: wM8AjTWXM_Wa2b-eX002NQ-1
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-5c3c205df73so3371384a12.1
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 17 Sep 2024 03:20:27 -0700 (PDT)
+ us-mta-128-JbjOkMUNMfWQtTpZ9nlMyA-1; Tue, 17 Sep 2024 06:23:02 -0400
+X-MC-Unique: JbjOkMUNMfWQtTpZ9nlMyA-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-5c40e8678bfso4332684a12.0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 17 Sep 2024 03:23:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726568426; x=1727173226;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6ZCJTmJx2xNT3osb0wa+deaEyFcFSSWyiY3NZGLuGe4=;
-        b=iakVpOQ6mba6UNbAFOgLvaeHB0I0kkWRUHG2g6/+8pWLXVGM6nrt01aZD0lzNQeDu8
-         2L4IJFpyD7WVSOlJ6ocqObDso2SDh0LbpgIqKOS2dgFPnX2VpqAtM/91G2MveoPMfAc9
-         h9PIN4HQ5BZUMCCaPkPEN7XWrdVvLdLWgkYkIcZBqA5boZBK9djGJxNe6ZjFxRhQdmH6
-         2Zi4hGKa6j0YQcsgjrXmxWn0Xarmo0zHIE89C+I48ejqEXSW6FLOZQM5KcFe9Oxk6pAV
-         HUa/Mf968/+boNdnmJBfhQFGfQ54iGilOSEKgls4CRA+lOkmSAQdXWmPepP1mslOxIdr
-         /AWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX2V6qpAeRu0LHFM7yVCSPkPQ+RNU4zd3Ey5zzq3WD/WMXqVrIuMvLSPX7FykxplDijt8TuZkehowBK@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yw1lTaFQVKjgTIRKz9Vm0WGj0t41cbN/UBsYGBGFTX50P+EToz3
-	gehaYbwxPYIAlggBFCVHMdEWxMulsRA6mDHeUTsBudaZI6ToOpdp9RdIT+TXnL7rGcsH7XkfDxX
-	z5hy0ckYDx1CY2QD+bUPvtMMamyAD/4W6MRRYzhWK9zRxKt23YLNASaBeopOizmix2A==
-X-Received: by 2002:a05:6402:280a:b0:5c2:8249:b2d3 with SMTP id 4fb4d7f45d1cf-5c413e4c51fmr15560396a12.26.1726568426141;
-        Tue, 17 Sep 2024 03:20:26 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHKO0hNuKYYyiVpmnAX1arSFAg5yVO4DtVE3xUZpqnqvalCbFtGjpIfHmfyO2kH806kqBFSKw==
-X-Received: by 2002:a05:6402:280a:b0:5c2:8249:b2d3 with SMTP id 4fb4d7f45d1cf-5c413e4c51fmr15560373a12.26.1726568425483;
-        Tue, 17 Sep 2024 03:20:25 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1726568581; x=1727173381;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Ydd/x8z/rWdB1y1aNRkIvJ800tcht5bmAGltsT132Qk=;
+        b=K8w2C6d4YU7ppOue4xau8iz3B553+LPRPrVVC8YRsaxGprPBKOGN8LFDvjkm9WhNyN
+         U6QLqN2KT60N0gHbh918ZkAJVH8mMeeLgAqHEJvv+KLL5jpgRls5fGBfCrx8oNvuA47Z
+         A6OzUcJn/MvICqH1+PHEjtzPph7HYSxr7adD65QltpOS0zLBbVcG961HwJFBZSPBkTUM
+         izW/7qEZrPLm/tyPcut3su9DTH5sLBDgCuLALaxxWmdegKVxIZ+jfQewoeMIN/V1PNkH
+         HoMDmr9JWMBLrcgcuPQzdH9I4gPTX2uVHmBS++mvDL119lvmDesKBCdJutz0P1VG1GrR
+         gP3g==
+X-Forwarded-Encrypted: i=1; AJvYcCXkEqwFfMMOC6NpJuOJdNpKszTZoBRVNqXz0LHv+vIVMJ1QoRl0VHb7YbFgRhaE+PSAR0YRWJ6N/ZPm@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yz+eC9BkR+EJjTdLn9B2/TrrgHx+cAIuKrt2Gl4/tXD8q0rf8MU
+	kNPA5Oy9auRMiXxCWUCL5BsBnmw6eCQBX5SUBWz4RDqDFirr2DVmCA9k77YobFtL5Zcval+jhXD
+	j4AaUlOj5AuVLZdNFzFsZmVEPDwZaUxvUmjdYDVMeDu33KcE5kjSO2gfhKHUCxI/R1w==
+X-Received: by 2002:a05:6402:354a:b0:5c2:439e:d6d6 with SMTP id 4fb4d7f45d1cf-5c413e117ebmr17061220a12.11.1726568581566;
+        Tue, 17 Sep 2024 03:23:01 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGn7gFPHvRH97LwaZjArKPHMj9F8rHYoTdOrw0TXFOFbnMeRWzKUCJY3AXZKV+B4Vp9xSUVxQ==
+X-Received: by 2002:a05:6402:354a:b0:5c2:439e:d6d6 with SMTP id 4fb4d7f45d1cf-5c413e117ebmr17061190a12.11.1726568581014;
+        Tue, 17 Sep 2024 03:23:01 -0700 (PDT)
 Received: from [192.168.55.136] (tmo-067-108.customers.d1-online.com. [80.187.67.108])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c42bc8a51dsm3510875a12.97.2024.09.17.03.20.24
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c42bb5fce9sm3504885a12.56.2024.09.17.03.22.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Sep 2024 03:20:25 -0700 (PDT)
-Message-ID: <4ced9211-2bd7-4257-a9fc-32c775ceffef@redhat.com>
-Date: Tue, 17 Sep 2024 12:20:22 +0200
+        Tue, 17 Sep 2024 03:23:00 -0700 (PDT)
+Message-ID: <c4fe25e3-9b03-483f-8322-3a17d1a6644a@redhat.com>
+Date: Tue, 17 Sep 2024 12:22:57 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -68,17 +68,19 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 1/7] m68k/mm: Change pmd_val()
+Subject: Re: [PATCH V2 2/7] x86/mm: Drop page table entry address output from
+ pxd_ERROR()
 To: Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
 Cc: Andrew Morton <akpm@linux-foundation.org>,
  Ryan Roberts <ryan.roberts@arm.com>, "Mike Rapoport (IBM)"
  <rppt@kernel.org>, Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
  linux-m68k@lists.linux-m68k.org, linux-fsdevel@vger.kernel.org,
  kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
- linux-perf-users@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
- Guo Ren <guoren@kernel.org>, Peter Zijlstra <peterz@infradead.org>
+ linux-perf-users@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>
 References: <20240917073117.1531207-1-anshuman.khandual@arm.com>
- <20240917073117.1531207-2-anshuman.khandual@arm.com>
+ <20240917073117.1531207-3-anshuman.khandual@arm.com>
 From: David Hildenbrand <david@redhat.com>
 Autocrypt: addr=david@redhat.com; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -125,7 +127,7 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <20240917073117.1531207-2-anshuman.khandual@arm.com>
+In-Reply-To: <20240917073117.1531207-3-anshuman.khandual@arm.com>
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
 Content-Language: en-US
@@ -133,67 +135,24 @@ Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 17.09.24 09:31, Anshuman Khandual wrote:
-> This changes platform's pmd_val() to access the pmd_t element directly like
-> other architectures rather than current pointer address based dereferencing
-> that prevents transition into pmdp_get().
+> This drops page table entry address output from all pxd_ERROR() definitions
+> which now matches with other architectures. This also prevents build issues
+> while transitioning into pxdp_get() based page table entry accesses.
 > 
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Guo Ren <guoren@kernel.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: linux-m68k@lists.linux-m68k.org
+> The mentioned build error is caused with changed macros pxd_ERROR() ends up
+> doing &pxdp_get(pxd) which does not make sense and generates "error: lvalue
+> required as unary '&' operand" warning.
+> 
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: x86@kernel.org
 > Cc: linux-kernel@vger.kernel.org
 > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 > ---
->   arch/m68k/include/asm/page.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/m68k/include/asm/page.h b/arch/m68k/include/asm/page.h
-> index 8cfb84b49975..be3f2c2a656c 100644
-> --- a/arch/m68k/include/asm/page.h
-> +++ b/arch/m68k/include/asm/page.h
-> @@ -19,7 +19,7 @@
->    */
->   #if !defined(CONFIG_MMU) || CONFIG_PGTABLE_LEVELS == 3
->   typedef struct { unsigned long pmd; } pmd_t;
-> -#define pmd_val(x)	((&x)->pmd)
-> +#define pmd_val(x)	((x).pmd)
->   #define __pmd(x)	((pmd_t) { (x) } )
->   #endif
->   
 
-Trying to understand what's happening here, I stumbled over
-
-commit ef22d8abd876e805b604e8f655127de2beee2869
-Author: Peter Zijlstra <peterz@infradead.org>
-Date:   Fri Jan 31 13:45:36 2020 +0100
-
-     m68k: mm: Restructure Motorola MMU page-table layout
-     
-     The Motorola 68xxx MMUs, 040 (and later) have a fixed 7,7,{5,6}
-     page-table setup, where the last depends on the page-size selected (8k
-     vs 4k resp.), and head.S selects 4K pages. For 030 (and earlier) we
-     explicitly program 7,7,6 and 4K pages in %tc.
-     
-     However, the current code implements this mightily weird. What it does
-     is group 16 of those (6 bit) pte tables into one 4k page to not waste
-     space. The down-side is that that forces pmd_t to be a 16-tuple
-     pointing to consecutive pte tables.
-     
-     This breaks the generic code which assumes READ_ONCE(*pmd) will be
-     word sized.
-
-Where we did
-
-  #if !defined(CONFIG_MMU) || CONFIG_PGTABLE_LEVELS == 3
--typedef struct { unsigned long pmd[16]; } pmd_t;
--#define pmd_val(x)     ((&x)->pmd[0])
--#define __pmd(x)       ((pmd_t) { { (x) }, })
-+typedef struct { unsigned long pmd; } pmd_t;
-+#define pmd_val(x)     ((&x)->pmd)
-+#define __pmd(x)       ((pmd_t) { (x) } )
-  #endif
-
-So I assume this should be fine
+Not a big fan of all these "bad PTE" thingies ...
 
 Acked-by: David Hildenbrand <david@redhat.com>
 
