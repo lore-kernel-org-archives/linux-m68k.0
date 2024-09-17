@@ -1,44 +1,40 @@
-Received: from weierstrass.telenet-ops.be (weierstrass.telenet-ops.be [195.130.137.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00BCF146588
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Sep 2024 14:41:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.81
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B40F4D8D1
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 17 Sep 2024 07:31:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726497681; cv=none; b=g57e2znqEbVuo0AnHSoJ31iu6ZNDWp1IKKpNdLBnBgdkNxayFUcXsSFSxDiA08fnEx7esEavc/qYd4p5ZjfO4Z+VP2+4VMiGIArti++W2/fMYVaHtvizNciUc4nnaNNhhFbABwMd5kV2OE32MBX9kndEAcQ1g7tDZ/HSVCFN8sw=
+	t=1726558291; cv=none; b=c3NI6F2B9ATcyVYIfeOW41rC/XO+1l0Xd+x++7sIk+stKvrBrEvNcT6hnTdeIfVtgaDf4nV9TaS2lcWXaEb8i4Z7xqguSQ4oG4Gcj8jN6dyOpUZ11hL7BX0CQYTSfvali7m7R52sHmjLL0nM/96vRPl4mcMsvlj1EOVsKrRAW1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726497681; c=relaxed/simple;
-	bh=WecJ+gPUvfHGO3Qy4Ku+UYIn7R2CZrths0VNdnV0hcs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=u5zGs13MbcONOgRt9G+tTqRxmerw4Xvb8PNaMgbBVwMLRSyT8O67qPIX88Q5BbTkR2pYUPc80kH8xzj5thCH4/rF4CxqfemI+1Jlg0c0xNSyr+pDtkNgvHLGRV9HKl98waNge2lnJNMtNudC3IXKoz97FA5B4X2fyfoQ44qfcxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-	by weierstrass.telenet-ops.be (Postfix) with ESMTPS id 4X6nS51xbNz4x9M8
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Sep 2024 16:32:21 +0200 (CEST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:681c:31c3:1eaf:1b7])
-	by laurent.telenet-ops.be with cmsmtp
-	id D2YD2D00Q0hmunZ012YDCH; Mon, 16 Sep 2024 16:32:14 +0200
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1sqClr-006Tv0-Gi;
-	Mon, 16 Sep 2024 16:32:13 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1sqClx-004Avv-CA;
-	Mon, 16 Sep 2024 16:32:13 +0200
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Greg Ungerer <gerg@linux-m68k.org>,
+	s=arc-20240116; t=1726558291; c=relaxed/simple;
+	bh=YtVtHuoqABW83akAZdZj/UkU/MTxSwj/EJVNpnVEej4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=uyPxa/9uVWVsS7L+TiSE1Ndn/cPGKGu1zDJHP8Zzpwujlc4bECWE+jAMP8BzSJDN6nAybuW/zICzRzdN3BlaLVT5QNO4GPMDbcL15HG9+aDchBxT2zaIxPM5tJhWdjgoKv2NfrOr+BgrkBWpQ12CikgIoIOtdsg+I5x+xNyDCZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AF4CF1063;
+	Tue, 17 Sep 2024 00:31:57 -0700 (PDT)
+Received: from a077893.arm.com (unknown [10.163.61.158])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 904823F64C;
+	Tue, 17 Sep 2024 00:31:23 -0700 (PDT)
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+To: linux-mm@kvack.org
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@redhat.com>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	"Mike Rapoport (IBM)" <rppt@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	x86@kernel.org,
 	linux-m68k@lists.linux-m68k.org,
+	linux-fsdevel@vger.kernel.org,
+	kasan-dev@googlegroups.com,
 	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [GIT PULL] m68k updates for v6.12
-Date: Mon, 16 Sep 2024 16:32:07 +0200
-Message-Id: <20240916143207.995330-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
+	linux-perf-users@vger.kernel.org
+Subject: [PATCH V2 0/7] mm: Use pxdp_get() for accessing page table entries
+Date: Tue, 17 Sep 2024 13:01:10 +0530
+Message-Id: <20240917073117.1531207-1-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -47,62 +43,89 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-	Hi Linus,
+This series converts all generic page table entries direct derefences via
+pxdp_get() based helpers extending the changes brought in via the commit
+c33c794828f2 ("mm: ptep_get() conversion"). First it does some platform
+specific changes for m68k and x86 architecture.
 
-The following changes since commit 8400291e289ee6b2bf9779ff1c83a291501f017b:
+This series has been build tested on multiple architecture such as x86,
+arm64, powerpc, powerpc64le, riscv, and m68k etc.
 
-  Linux 6.11-rc1 (2024-07-28 14:19:55 -0700)
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Ryan Roberts <ryan.roberts@arm.com>
+Cc: "Mike Rapoport (IBM)" <rppt@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: x86@kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mm@kvack.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: kasan-dev@googlegroups.com
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-perf-users@vger.kernel.org
+Cc: kasan-dev@googlegroups.com
 
-are available in the Git repository at:
+Changes in V2:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.12-tag1
+- Separated out PUD changes from P4D changes
+- Updated the commit message for x86 patch per Dave
+- Implemented local variable page table value caching when applicable
+- Updated all commit messages regarding local variable caching
 
-for you to fetch changes up to b90fae5df91744e45e683c17bb1a38e466770df3:
+Changes in V1:
 
-  m68k: defconfig: Update defconfigs for v6.11-rc1 (2024-08-26 10:25:02 +0200)
+https://lore.kernel.org/all/20240913084433.1016256-1-anshuman.khandual@arm.com/
 
-----------------------------------------------------------------
-m68k updates for v6.12
+Anshuman Khandual (7):
+  m68k/mm: Change pmd_val()
+  x86/mm: Drop page table entry address output from pxd_ERROR()
+  mm: Use ptep_get() for accessing PTE entries
+  mm: Use pmdp_get() for accessing PMD entries
+  mm: Use pudp_get() for accessing PUD entries
+  mm: Use p4dp_get() for accessing P4D entries
+  mm: Use pgdp_get() for accessing PGD entries
 
-  - Use swap() helper for __arch_xchg(),
-  - Fix kernel_clone_args.flags in m68k_clone(),
-  - Defconfig updates.
+ arch/m68k/include/asm/page.h          |  2 +-
+ arch/x86/include/asm/pgtable-3level.h | 12 ++--
+ arch/x86/include/asm/pgtable_64.h     | 20 +++---
+ drivers/misc/sgi-gru/grufault.c       | 13 ++--
+ fs/proc/task_mmu.c                    | 28 +++++----
+ fs/userfaultfd.c                      |  6 +-
+ include/linux/huge_mm.h               |  6 +-
+ include/linux/mm.h                    |  6 +-
+ include/linux/pgtable.h               | 49 +++++++++------
+ kernel/events/core.c                  |  6 +-
+ mm/gup.c                              | 43 ++++++-------
+ mm/hmm.c                              |  2 +-
+ mm/huge_memory.c                      | 90 +++++++++++++++------------
+ mm/hugetlb.c                          | 10 +--
+ mm/hugetlb_vmemmap.c                  |  4 +-
+ mm/kasan/init.c                       | 38 +++++------
+ mm/kasan/shadow.c                     | 12 ++--
+ mm/khugepaged.c                       |  4 +-
+ mm/madvise.c                          |  6 +-
+ mm/mapping_dirty_helpers.c            |  2 +-
+ mm/memory-failure.c                   | 14 ++---
+ mm/memory.c                           | 71 +++++++++++----------
+ mm/mempolicy.c                        |  4 +-
+ mm/migrate.c                          |  4 +-
+ mm/migrate_device.c                   | 10 +--
+ mm/mlock.c                            |  6 +-
+ mm/mprotect.c                         |  2 +-
+ mm/mremap.c                           |  4 +-
+ mm/page_table_check.c                 |  4 +-
+ mm/page_vma_mapped.c                  |  6 +-
+ mm/pagewalk.c                         | 10 +--
+ mm/percpu.c                           |  8 +--
+ mm/pgalloc-track.h                    |  6 +-
+ mm/pgtable-generic.c                  | 30 ++++-----
+ mm/ptdump.c                           |  8 +--
+ mm/rmap.c                             | 10 +--
+ mm/sparse-vmemmap.c                   | 10 +--
+ mm/vmalloc.c                          | 58 +++++++++--------
+ mm/vmscan.c                           |  6 +-
+ 39 files changed, 333 insertions(+), 297 deletions(-)
 
-Thanks for pulling!
+-- 
+2.25.1
 
-----------------------------------------------------------------
-Finn Thain (1):
-      m68k: Fix kernel_clone_args.flags in m68k_clone()
-
-Geert Uytterhoeven (1):
-      m68k: defconfig: Update defconfigs for v6.11-rc1
-
-Thorsten Blum (1):
-      m68k: cmpxchg: Use swap() to improve code
-
- arch/m68k/configs/amiga_defconfig    |  2 --
- arch/m68k/configs/apollo_defconfig   |  2 --
- arch/m68k/configs/atari_defconfig    |  2 --
- arch/m68k/configs/bvme6000_defconfig |  2 --
- arch/m68k/configs/hp300_defconfig    |  2 --
- arch/m68k/configs/mac_defconfig      |  2 --
- arch/m68k/configs/multi_defconfig    |  2 --
- arch/m68k/configs/mvme147_defconfig  |  2 --
- arch/m68k/configs/mvme16x_defconfig  |  2 --
- arch/m68k/configs/q40_defconfig      |  2 --
- arch/m68k/configs/sun3_defconfig     |  2 --
- arch/m68k/configs/sun3x_defconfig    |  2 --
- arch/m68k/include/asm/cmpxchg.h      | 15 +++++----------
- arch/m68k/kernel/process.c           |  2 +-
- 14 files changed, 6 insertions(+), 35 deletions(-)
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
