@@ -1,57 +1,57 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD77E17A591
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 17 Sep 2024 21:09:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B5331891BB
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 17 Sep 2024 21:10:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726607380; cv=none; b=iIsn9HxUU+KX/iY2+aD/LSmuZnGXHI6Bt3XNODPGfBrIJszK6jekhjTnaXo9sWD1nRiKf1P9at/sS0b6Gtn1My7WdqURoy41uG6EXkASgi+CKBisvyuNz+bkNY347TydIGaf5yrely2EdjQ5qew8wbf8YBffDBdVFsnkCrNhY/Y=
+	t=1726607440; cv=none; b=rRAcA9OfwKNT2yoFONxD7OvZe8RNTaSiSyLTv05+uyZIRd4JcrZA7Sg1q0qNz8JAM8rvWuLTDW+YJr7Rr3Yo50xkbOGyFKPl3sfDs6js06TyAM2KV+soPejv4SHofOdKsq2EVhjb/9wlG5AtSv/S3mdMUcFwzUftoy77w1On3dg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726607380; c=relaxed/simple;
-	bh=aaId1CXTkSTjT13+8JZBxHGYTy+DsaTbya/Iwmt8xyc=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=hiWZr5FAVPHV8f0qaBrW1t6iTrKBP8j0jNAdcSfTOXC9GfFjV/nL2iB2R3N0KV23wPWINCP1BgqT6sWk3OzMKcrCtjJViCr0O5pFXKCpz/EHiURR+HhmNjhUmgROISHrQU/4D4KApXfNoxQ/Ujrq26uljs2XGJHfZny2N+xKaLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gbYiHKEb; arc=none smtp.client-ip=192.198.163.12
+	s=arc-20240116; t=1726607440; c=relaxed/simple;
+	bh=JBZ9RoXdRULq8SxnJBIb+pjeftOkXhxQHeX5sy3XZHg=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=XAQ4xivU7pBotRkW1ECYD9SL/BNmP8MxzqWD1nR3ATEuecvWNfPT1c0hm+OBwEHfqhzEaOMnZnkztzoRVU8B4EYTOoLkCO9+mcSXR9suphd+G0TpFbClYYG+6eCRRnOkHBlZLUvJe1N2wa4NJnZFYNxY39EzKdOi7SDA4CgnhQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XxE2a9sx; arc=none smtp.client-ip=198.175.65.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gbYiHKEb"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XxE2a9sx"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1726607378; x=1758143378;
+  t=1726607439; x=1758143439;
   h=date:from:to:cc:subject:message-id;
-  bh=aaId1CXTkSTjT13+8JZBxHGYTy+DsaTbya/Iwmt8xyc=;
-  b=gbYiHKEbp72LxzIlX3rS6l46bcqx7bhTZK3KM4WoL1twS6b/kw1hlTmq
-   N70+5py1fXcszN8ajW4V+U/Q/vQ+f5B1a2G0SFYPLpjnHUYWh05Q0WfpW
-   a/+Z9clUyu2ZsRsBUnhPzoK/b/XSWH24JdB7MDQPvNlop6xaFfuqi93g+
-   9CWcnF1mkspsXsJcLe+Wu/KGJ+6vF/mPBerk6iePSPsMSpdcTydv0/LQS
-   c4Lq7fwS5Xc4oV2HiwRGUcIU7D7loYKqOt85pzYZfmtC3VQQZB9f/XTJ5
-   TPUY1mz5Wh9WOM1UdJ200pjDj8JL4QtBmf49jU4rVexJVCHuCpQBiE/pS
+  bh=JBZ9RoXdRULq8SxnJBIb+pjeftOkXhxQHeX5sy3XZHg=;
+  b=XxE2a9sxZUIA2LMsfk8OnUrSA739wIZrSlVZNP7C/xZTwyGhvO24ozue
+   LeJIzFIjlie+G1rO5k+hsucTcX2NDlA0+qdTMGws3Jk6ATMYvWjknLJ4x
+   s/w8vus7tQSqdmmNPUEphoHdyneALiKDZQtKqfxPxNHwEFOY3WXIZwH7S
+   J+P/Xk7Wiyr4+jeOoM3RIp1pk24NsMjMeFFY4yiPsDapsPcZbGdSiuggc
+   ag+lcNuCtkKxlTiW3eiThLaRj3VphUgiThCCxf9k13x8m7bl/z1bsdwdX
+   u4+107hvlTR+6RZ6sKNN7giiqtD16oCuoKu4sZffBe9VbIcf3iCgB6r4C
    w==;
-X-CSE-ConnectionGUID: ZZidR3j5QjOeZpiJH2PPuA==
-X-CSE-MsgGUID: +G0eDT9AQai+Y3h4m/5J9Q==
-X-IronPort-AV: E=McAfee;i="6700,10204,11198"; a="29386815"
+X-CSE-ConnectionGUID: 2rK26nUDQe6IFZW4OuN8cw==
+X-CSE-MsgGUID: gh30BEM1QKmk6SIff6txhA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11198"; a="36063319"
 X-IronPort-AV: E=Sophos;i="6.10,235,1719903600"; 
-   d="scan'208";a="29386815"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2024 14:09:37 -0700
-X-CSE-ConnectionGUID: Kv5JL6c1Tm+pbM+ptBGckg==
-X-CSE-MsgGUID: 7XFNN60mQZC6vHtUVfMnYw==
+   d="scan'208";a="36063319"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2024 14:10:38 -0700
+X-CSE-ConnectionGUID: VI2ma9XrQDOMR/UOcs1YjQ==
+X-CSE-MsgGUID: xjkiyb6/Qhufe81ZHS+MVw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.10,235,1719903600"; 
-   d="scan'208";a="73884679"
+   d="scan'208";a="69423711"
 Received: from lkp-server01.sh.intel.com (HELO 53e96f405c61) ([10.239.97.150])
-  by fmviesa004.fm.intel.com with ESMTP; 17 Sep 2024 14:09:36 -0700
+  by fmviesa008.fm.intel.com with ESMTP; 17 Sep 2024 14:10:37 -0700
 Received: from kbuild by 53e96f405c61 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1sqfS2-000BXg-11;
-	Tue, 17 Sep 2024 21:09:34 +0000
-Date: Wed, 18 Sep 2024 05:08:47 +0800
+	id 1sqfT0-000BXm-19;
+	Tue, 17 Sep 2024 21:10:34 +0000
+Date: Wed, 18 Sep 2024 05:10:22 +0800
 From: kernel test robot <lkp@intel.com>
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 5c8d618072705e3043c69077b9328aaef6888037
-Message-ID: <202409180539.npP0R6wU-lkp@intel.com>
+Subject: [geert-m68k:m68k-v6.11] BUILD SUCCESS
+ 4db74a187382ab35b65b5af67193aa23242ff1ff
+Message-ID: <202409180514.L9oWMtW0-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -59,12 +59,12 @@ List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 5c8d618072705e3043c69077b9328aaef6888037  Merge tag 'v6.11'
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git m68k-v6.11
+branch HEAD: 4db74a187382ab35b65b5af67193aa23242ff1ff  m68k: defconfig: Enable Atari EtherNAT and NetUSBee USB support
 
-elapsed time: 1797m
+elapsed time: 1799m
 
-configs tested: 127
+configs tested: 123
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -72,6 +72,7 @@ More configs may be tested in the coming days.
 
 tested configs:
 alpha                             allnoconfig    gcc-14.1.0
+alpha                            allyesconfig    clang-20
 alpha                               defconfig    gcc-14.1.0
 arc                              allmodconfig    clang-20
 arc                               allnoconfig    gcc-14.1.0
@@ -91,7 +92,9 @@ arm64                             allnoconfig    gcc-14.1.0
 arm64                               defconfig    gcc-14.1.0
 csky                              allnoconfig    gcc-14.1.0
 csky                                defconfig    gcc-14.1.0
+hexagon                          allmodconfig    clang-20
 hexagon                           allnoconfig    gcc-14.1.0
+hexagon                          allyesconfig    clang-20
 hexagon                             defconfig    gcc-14.1.0
 i386                             allmodconfig    clang-18
 i386                             allmodconfig    gcc-12
@@ -100,32 +103,23 @@ i386                              allnoconfig    gcc-12
 i386                             allyesconfig    clang-18
 i386                             allyesconfig    gcc-12
 i386        buildonly-randconfig-001-20240917    clang-18
-i386        buildonly-randconfig-002-20240917    clang-18
 i386        buildonly-randconfig-002-20240917    gcc-12
 i386        buildonly-randconfig-003-20240917    clang-18
 i386        buildonly-randconfig-004-20240917    clang-18
 i386        buildonly-randconfig-005-20240917    clang-18
-i386        buildonly-randconfig-006-20240917    clang-18
 i386        buildonly-randconfig-006-20240917    gcc-12
 i386                                defconfig    clang-18
-i386                  randconfig-001-20240917    clang-18
 i386                  randconfig-001-20240917    gcc-12
-i386                  randconfig-002-20240917    clang-18
 i386                  randconfig-002-20240917    gcc-12
 i386                  randconfig-003-20240917    clang-18
-i386                  randconfig-004-20240917    clang-18
 i386                  randconfig-004-20240917    gcc-12
-i386                  randconfig-005-20240917    clang-18
 i386                  randconfig-005-20240917    gcc-12
 i386                  randconfig-006-20240917    clang-18
-i386                  randconfig-011-20240917    clang-18
 i386                  randconfig-011-20240917    gcc-12
 i386                  randconfig-012-20240917    clang-18
 i386                  randconfig-013-20240917    clang-18
 i386                  randconfig-014-20240917    clang-18
-i386                  randconfig-015-20240917    clang-18
 i386                  randconfig-015-20240917    gcc-12
-i386                  randconfig-016-20240917    clang-18
 i386                  randconfig-016-20240917    gcc-12
 loongarch                        allmodconfig    gcc-14.1.0
 loongarch                         allnoconfig    gcc-14.1.0
@@ -181,8 +175,10 @@ sh                           se7206_defconfig    gcc-14.1.0
 sh                  sh7785lcr_32bit_defconfig    gcc-14.1.0
 sparc                            allmodconfig    gcc-14.1.0
 sparc64                             defconfig    gcc-12
+um                               allmodconfig    clang-20
 um                                allnoconfig    clang-17
 um                                allnoconfig    clang-20
+um                               allyesconfig    clang-20
 um                                  defconfig    gcc-12
 um                             i386_defconfig    gcc-12
 um                           x86_64_defconfig    gcc-12
