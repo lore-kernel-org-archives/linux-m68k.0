@@ -1,228 +1,91 @@
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+Received: from welho-filter2.welho.com (welho-filter2b.welho.com [83.102.41.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 160262231C
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 20 Sep 2024 09:48:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B04EEEC5
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 22 Sep 2024 21:55:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.102.41.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726825716; cv=none; b=p4wJJmE6nCaiumnvpA/MdNsS9SiJOo/tcn3wNRuEMsmiSY+brjrgzDDGvcbjATNXVqBEVqJV6RRs8+z+P+HCwSA1OSzB8iSkvHBZ54St7l/35YHkUEbCGGLBKHsjQf+wTToWIz71pSvHgerWT1uOS91yWop0TE42KBoa2s4ILrU=
+	t=1727042142; cv=none; b=UCDC3XmqMri3fuob5N322EoIg43NqgNgBzbWsb+9eWSS4Fn3e47AAndbUQmbMTWt78OhWNT/+STftgiJkPg16SRc0M+VgbPwTQsYMpMKnkFUbyj4FZnd1bTceufNCSAb+2Ww3MpDBpQw69+qSY6EEJATXVvh+LLeJeHzGjTv9oQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726825716; c=relaxed/simple;
-	bh=FyxXb8akrb6773SzHwSGzE+XY53OJaKmSY0ZkfUJSqU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j3PsT0lg9wNp5u3gTCgaU0V4z4/+ZGLuMuDlfF6jq33Lg3fWVxkil3Rso+t+Oz5I8sCgeTD0/2PTybYo7hQc88W0CAaN1DFYzFjPOtVbVzSAXfEWDx/IxJHQA7t/vY0EXcBEahUxvBK7htqR++gDNopV4VdCJcFHTJovUkeazW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=FCaBAyrk; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="FCaBAyrk"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=lqLyI3VFGw/HAwz/TUdgSpSC7qmKkHxnZTuEYK+TROA=; b=FCaBAyrkr2GhMgqDOcDSm15x44
-	nBBZNKK4o9GTMPjz2ia1eI3kls0oviUY0lhgsfF078MVJ95hghGLUWqxjj7IQJmhvgpLIPV/yzCoi
-	UwCVkT0y2oAqMAnQ7V4iCoNNGeAaXGZoVmnKe+e4D8PVlQrF+WlpvAQT5N3EzL52CV2AbsyillS/E
-	G7kqNOAMyp5VI22eqWfpdik8O6y0z3/ezk72CoHzgDI7/QfbfayfpKTVZe42RhbO6Kyg63huHbJyD
-	lrcsuFtw8ntkZDjFpG/+BpKsPH4eBNbbt48coqkUgq60sBcdvKdIMvsGIaTRuXyBxkKozH6oFjq34
-	HASJesyQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33476)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1sraF3-0001NG-1b;
-	Fri, 20 Sep 2024 10:47:57 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.96)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1sraEr-0002Qp-2B;
-	Fri, 20 Sep 2024 10:47:45 +0100
-Date: Fri, 20 Sep 2024 10:47:45 +0100
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
-	kernel test robot <lkp@intel.com>, linux-mm@kvack.org,
-	llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@redhat.com>,
-	"Mike Rapoport (IBM)" <rppt@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
-	linux-m68k@lists.linux-m68k.org, linux-fsdevel@vger.kernel.org,
-	kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org,
-	Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Miaohe Lin <linmiaohe@huawei.com>, Dennis Zhou <dennis@kernel.org>,
-	Tejun Heo <tj@kernel.org>,
-	Christoph Lameter <cl@linux-foundation.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH V2 7/7] mm: Use pgdp_get() for accessing PGD entries
-Message-ID: <Zu1EwTItDrnkTVTB@shell.armlinux.org.uk>
-References: <20240917073117.1531207-8-anshuman.khandual@arm.com>
- <202409190310.ViHBRe12-lkp@intel.com>
- <8f43251a-5418-4c54-a9b0-29a6e9edd879@arm.com>
- <ZuvqpvJ6ht4LCuB+@shell.armlinux.org.uk>
- <82fa108e-5b15-435a-8b61-6253766c7d88@arm.com>
- <ZuxZ/QeSdqTHtfmw@shell.armlinux.org.uk>
- <5bd51798-cb47-4a7b-be40-554b5a821fe7@arm.com>
- <ZuyIwdnbYcm3ZkkB@shell.armlinux.org.uk>
- <9e68ffad-8a7e-40d7-a6f3-fa989a834068@arm.com>
+	s=arc-20240116; t=1727042142; c=relaxed/simple;
+	bh=Si/gJ2RqZYcsuDsKSjodJb+zBgzWE0pbgJ3mZq6Qju8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=t0BzjpPa/k1KznCSiCK1TPRasw87glsp4Sn9Sw+BS/UEQ+tgEtTZPNZPrmFNiAkybuAx0FttO7UICCD+SClqw0eo3s1xnF7P5PVgJhLsObr68lvbJexVQALr9sKfE+sg6xh4lN8n6QQCdLyuNgNCrFAs9R2PnEy4ycxsLzUy2Xc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=helsinkinet.fi; spf=pass smtp.mailfrom=helsinkinet.fi; arc=none smtp.client-ip=83.102.41.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=helsinkinet.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=helsinkinet.fi
+Received: from localhost (localhost [127.0.0.1])
+	by welho-filter2.welho.com (Postfix) with ESMTP id 4D81D3FE68;
+	Mon, 23 Sep 2024 00:49:18 +0300 (EEST)
+X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
+Received: from welho-smtp3.welho.com ([IPv6:::ffff:83.102.41.86])
+	by localhost (welho-filter2.welho.com [::ffff:83.102.41.24]) (amavisd-new, port 10024)
+	with ESMTP id DoSyUUnDCtiB; Mon, 23 Sep 2024 00:49:18 +0300 (EEST)
+Received: from localhost.localdomain (87-92-110-153.bb.dnainternet.fi [87.92.110.153])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by welho-smtp3.welho.com (Postfix) with ESMTPSA id B8F4C2309;
+	Mon, 23 Sep 2024 00:49:13 +0300 (EEST)
+From: Eero Tamminen <oak@helsinkinet.fi>
+To: linux-m68k <linux-m68k@lists.linux-m68k.org>
+Cc: Michael Schmitz <schmitzmic@gmail.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Eero Tamminen <oak@helsinkinet.fi>
+Subject: [PATCH 1/2] m68k: Drop Atari EtherNAT support when it's not configured in
+Date: Mon, 23 Sep 2024 00:48:20 +0300
+Message-Id: <20240922214821.16818-1-oak@helsinkinet.fi>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9e68ffad-8a7e-40d7-a6f3-fa989a834068@arm.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Sep 20, 2024 at 08:57:23AM +0200, Ryan Roberts wrote:
-> On 19/09/2024 21:25, Russell King (Oracle) wrote:
-> > On Thu, Sep 19, 2024 at 07:49:09PM +0200, Ryan Roberts wrote:
-> >> On 19/09/2024 18:06, Russell King (Oracle) wrote:
-> >>> On Thu, Sep 19, 2024 at 05:48:58PM +0200, Ryan Roberts wrote:
-> >>>>> 32-bit arm uses, in some circumstances, an array because each level 1
-> >>>>> page table entry is actually two descriptors. It needs to be this way
-> >>>>> because each level 2 table pointed to by each level 1 entry has 256
-> >>>>> entries, meaning it only occupies 1024 bytes in a 4096 byte page.
-> >>>>>
-> >>>>> In order to cut down on the wastage, treat the level 1 page table as
-> >>>>> groups of two entries, which point to two consecutive 1024 byte tables
-> >>>>> in the level 2 page.
-> >>>>>
-> >>>>> The level 2 entry isn't suitable for the kernel's use cases (there are
-> >>>>> no bits to represent accessed/dirty and other important stuff that the
-> >>>>> Linux MM wants) so we maintain the hardware page tables and a separate
-> >>>>> set that Linux uses in the same page. Again, the software tables are
-> >>>>> consecutive, so from Linux's perspective, the level 2 page tables
-> >>>>> have 512 entries in them and occupy one full page.
-> >>>>>
-> >>>>> This is documented in arch/arm/include/asm/pgtable-2level.h
-> >>>>>
-> >>>>> However, what this means is that from the software perspective, the
-> >>>>> level 1 page table descriptors are an array of two entries, both of
-> >>>>> which need to be setup when creating a level 2 page table, but only
-> >>>>> the first one should ever be dereferenced when walking the tables,
-> >>>>> otherwise the code that walks the second level of page table entries
-> >>>>> will walk off the end of the software table into the actual hardware
-> >>>>> descriptors.
-> >>>>>
-> >>>>> I've no idea what the idea is behind introducing pgd_get() and what
-> >>>>> it's semantics are, so I can't comment further.
-> >>>>
-> >>>> The helper is intended to read the value of the entry pointed to by the passed
-> >>>> in pointer. And it shoiuld be read in a "single copy atomic" manner, meaning no
-> >>>> tearing. Further, the PTL is expected to be held when calling the getter. If the
-> >>>> HW can write to the entry such that its racing with the lock holder (i.e. HW
-> >>>> update of access/dirty) then READ_ONCE() should be suitable for most
-> >>>> architectures. If there is no possibility of racing (because HW doesn't write to
-> >>>> the entry), then a simple dereference would be sufficient, I think (which is
-> >>>> what the core code was already doing in most cases).
-> >>>
-> >>> The core code should be making no access to the PGD entries on 32-bit
-> >>> ARM since the PGD level does not exist. Writes are done at PMD level
-> >>> in arch code. Reads are done by core code at PMD level.
-> >>>
-> >>> It feels to me like pgd_get() just doesn't fit the model to which 32-bit
-> >>> ARM was designed to use decades ago, so I want full details about what
-> >>> pgd_get() is going to be used for and how it is going to be used,
-> >>> because I feel completely in the dark over this new development. I fear
-> >>> that someone hasn't understood the Linux page table model if they're
-> >>> wanting to access stuff at levels that effectively "aren't implemented"
-> >>> in the architecture specific kernel model of the page tables.
-> >>
-> >> This change isn't as big and scary as I think you fear.
-> > 
-> > The situation is as I state above. Core code must _not_ dereference pgd
-> > pointers on 32-bit ARM.
-> 
-> Let's just rewind a bit. This thread exists because the kernel test robot failed
-> to compile pgd_none_or_clear_bad() (a core-mm function) for the arm architecture
-> after Anshuman changed the direct pgd dereference to pgdp_get(). The reason
-> compilation failed is because arm defines its own pgdp_get() override, but it is
-> broken (there is a typo).
+Not having it configured, but crash backtraces going through its IRQ
+handling code, is confusing (found while debugging issues in Atari
+emulation).
 
-Let's not rewind, because had you fully read and digested my reply, you
-would have seen why this isn't a problem... but let me spell it out.
+Signed-off-by: Eero Tamminen <oak@helsinkinet.fi>
+---
+ arch/m68k/atari/ataints.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-> 
-> Code before Anshuman's change:
-> 
-> static inline int pgd_none_or_clear_bad(pgd_t *pgd)
-> {
-> 	if (pgd_none(*pgd))
-> 		return 1;
-> 	if (unlikely(pgd_bad(*pgd))) {
-> 		pgd_clear_bad(pgd);
-> 		return 1;
-> 	}
-> 	return 0;
-> }
-
-This isn't a problem as the code stands. While there is a dereference
-in C, that dereference is a simple struct copy, something that we use
-everywhere in the kernel. However, that is as far as it goes, because
-neither pgd_none() and pgd_bad() make use of their argument, and thus
-the compiler will optimise it away, resulting in no actual access to
-the page tables - _as_ _intended_.
-
-If these are going to be converted to pgd_get(), then we need pgd_get()
-to _also_ be optimised away, and if e.g. this is the only place that
-pgd_get() is going to be used, the suggestion I made in my previous
-email is entirely reasonable, since we know that the result of pgd_get()
-will not actually be used.
-
-> As an aside, the kernel also dereferences p4d, pud, pmd and pte pointers in
-> various circumstances.
-
-I already covered these in my previous reply.
-
-> And other changes in this series are also replacing those
-> direct dereferences with calls to similar helpers. The fact that these are all
-> folded (by a custom arm implementation if I've understood the below correctly)
-> just means that each dereference is returning what you would call the pmd from
-> the HW perspective, I think?
-
-It'll "return" the first of each pair of level-1 page table entries,
-which is pgd[0] or *p4d, *pud, *pmd - but all of these except *pmd
-need to be optimised away, so throwing lots of READ_ONCE() around
-this code without considering this is certainly the wrong approach.
-
-> >> The core-mm today
-> >> dereferences pgd pointers (and p4d, pud, pmd pointers) directly in its code. See
-> >> follow_pfnmap_start(),
-> > 
-> > Doesn't seem to exist at least not in 6.11.
-> 
-> Appologies, I'm on mm-unstable and that isn't upstream yet. See follow_pte() in
-> v6.11 or __apply_to_page_range(), or pgd_none_or_clear_bad() as per above.
-
-Looking at follow_pte(), it's not a problem.
-
-I think we wouldn't be having this conversation before:
-
-commit a32618d28dbe6e9bf8ec508ccbc3561a7d7d32f0
-Author: Russell King <rmk+kernel@arm.linux.org.uk>
-Date:   Tue Nov 22 17:30:28 2011 +0000
-
-    ARM: pgtable: switch to use pgtable-nopud.h
-
-where:
--#define pgd_none(pgd)          (0)
--#define pgd_bad(pgd)           (0)
-
-existed before this commit - and thus the dereference in things like:
-
-	pgd_none(*pgd)
-
-wouldn't even be visible to beyond the preprocessor step.
-
+diff --git a/arch/m68k/atari/ataints.c b/arch/m68k/atari/ataints.c
+index 0465444ce..fa189eeb7 100644
+--- a/arch/m68k/atari/ataints.c
++++ b/arch/m68k/atari/ataints.c
+@@ -179,6 +179,7 @@ static struct irq_chip atari_mfptimer_chip = {
+ };
+ 
+ 
++#ifdef CONFIG_ATARI_ETHERNAT
+ /*
+  * EtherNAT CPLD interrupt handling
+  * CPLD interrupt register is at phys. 0x80000023
+@@ -251,6 +252,7 @@ static struct irq_chip atari_ethernat_chip = {
+ 	.irq_enable	= atari_ethernat_enable,
+ 	.irq_disable	= atari_ethernat_disable,
+ };
++#endif
+ 
+ /*
+  * void atari_init_IRQ (void)
+@@ -343,12 +345,13 @@ void __init atari_init_IRQ(void)
+ 			stmfp_base.name, &stmfp_base))
+ 		pr_err("Couldn't register %s interrupt\n", stmfp_base.name);
+ 
++#ifdef CONFIG_ATARI_ETHERNAT
+ 	/*
+ 	 * EtherNAT ethernet / USB interrupt handlers
+ 	 */
+-
+ 	m68k_setup_irq_controller(&atari_ethernat_chip, handle_simple_irq,
+ 				  139, 2);
++#endif
+ }
+ 
+ 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.39.5
+
