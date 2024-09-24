@@ -1,63 +1,62 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFA601AD419;
-	Tue, 24 Sep 2024 18:04:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CAD7137776
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Sep 2024 19:31:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727201048; cv=none; b=fHonjb61+Gjci3kSu+h96qLKgqsBX7bwkIWVJzPD6REMv9iKXTA2SMVS+onHNBGQ+lTukoN6YJ8rPlEYwrDXlhxjLRkmAJw9PnxMwwed9mGEpk54XidnRYY00iQVCHnkBPHDoUedqirrhAq6l3At6CdeWZHYAUtx3sjhbRANouY=
+	t=1727206274; cv=none; b=qamNQLHHK3Wuew63iAYIiDbCYoIYlHK2O0LPqzOwMy+udDQzQwDPp9jez4Hq3vT0/UriResSZmjNESrGny8VxX4v0dgpA2WYAeCASuJu7cVe5r8rCf5xkuyODwSQxns6fLQRYKcFcpr0GeDI4OIgWrWwx1nJGPv0hyrAPTHDR/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727201048; c=relaxed/simple;
-	bh=md4Q1YC8JN2kS7T8FzUnJ2LFDZEJMiHbqPIU6eg6CaA=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=N6YCOymizts+Y4/AdAdnylwRjxAdPQlCnnom6vw0Xwv1FdAUHt+UO/wp9/7kniPqOGrXu1RonZivQvBsqNtAucjqEnkx563hbLlTzWe6vweq+nEWyWyooYeD/MEBBNx83gEBS7nAwVh99s2HCMOEjdsg66IpY0JErkRVknSQHP0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xxm43OZG; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xxm43OZG"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51C46C4CECF;
-	Tue, 24 Sep 2024 18:04:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727201048;
-	bh=md4Q1YC8JN2kS7T8FzUnJ2LFDZEJMiHbqPIU6eg6CaA=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=Xxm43OZGzeMUB6mZ8fuy9R0ADrC1CRR4+xP4Ml4X/xI8SN5qmZS0EDuE0lDc2pLV9
-	 ueebEitRzBiMJLotZgJ9QedqQcfnUpt88TUWgPNjeVq68cqrPcTgPCHXFoMEcXuiZN
-	 asr0MrJlQUN+b3w9PV2tAYY/GyPvj5w6DmWgj6PQtjkKGRd+JMyzF4fHfP1/bf26e4
-	 nOCW1ZipQxSFPicL5YSwz5L518FTl9vaYKgrk0R+TEnWNBL8TLCbGdW5P3+49105FH
-	 DVs3ufFhZqVvQ5EUM6Qm1p3pJQ4Hx5F6coYbZjScV0EWJUAtKa7Ugc/ECyBJ1AHQSP
-	 qWm/YrZJXR72Q==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EADBD3806656;
-	Tue, 24 Sep 2024 18:04:11 +0000 (UTC)
-Subject: Re: [git pull] m68knommu changes for v6.12
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <f9dfef64-a4fe-406c-9daf-1bf46cd23d65@linux-m68k.org>
-References: <f9dfef64-a4fe-406c-9daf-1bf46cd23d65@linux-m68k.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <f9dfef64-a4fe-406c-9daf-1bf46cd23d65@linux-m68k.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v6.12
-X-PR-Tracked-Commit-Id: aa99969ef591ca44cbafb320ceceb106792baee3
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 7108fff8848bc3bd958789f4db6beff94bdae521
-Message-Id: <172720105069.4145686.16699549352438342361.pr-tracker-bot@kernel.org>
-Date: Tue, 24 Sep 2024 18:04:10 +0000
-To: Greg Ungerer <gerg@linux-m68k.org>
-Cc: torvalds@linux-foundation.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
+	s=arc-20240116; t=1727206274; c=relaxed/simple;
+	bh=uuVl6MBaXlHZbPcy1TEcgr1GjBMcSriG1UXSxHvSc/Y=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=exWcI5N3PimotaxFQk2dMg/GseAEN0UgayApOTN16QK2zYBLS/jePoZxBggng8a/9HYW9/YfUh9dEKfcro3IXtCHriDkgUDDJA/uu3kbeJtTOa4uPU/9uW8/YRNv5YfmwGV3l7cDc3XGV8mH02pHGrTt/10gJrOC3ftHaGUKYVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+	id 2EEB292009C; Tue, 24 Sep 2024 21:23:21 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by angie.orcam.me.uk (Postfix) with ESMTP id 2083292009B;
+	Tue, 24 Sep 2024 20:23:21 +0100 (BST)
+Date: Tue, 24 Sep 2024 20:23:21 +0100 (BST)
+From: "Maciej W. Rozycki" <macro@orcam.me.uk>
+To: David Hildenbrand <david@redhat.com>
+cc: Guenter Roeck <linux@roeck-us.net>, 
+    Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, 
+    linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2] m68k: Define NR_CPUS
+In-Reply-To: <65959acc-c59b-4aca-8ab4-5d0603d22110@redhat.com>
+Message-ID: <alpine.DEB.2.21.2409242018160.3358@angie.orcam.me.uk>
+References: <20240923235617.1584056-1-linux@roeck-us.net> <aa23abe3-7236-4b9e-b237-3b822ac9d186@redhat.com> <CAMuHMdVEfPtwps0A29WvHcwgo3f+3nTBiGn1PFxoYy1dxPsUMA@mail.gmail.com> <bf98fa37-461f-47ce-8d4c-bcb69f225a9c@roeck-us.net>
+ <65959acc-c59b-4aca-8ab4-5d0603d22110@redhat.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 
-The pull request you sent on Tue, 24 Sep 2024 14:44:18 +1000:
+On Tue, 24 Sep 2024, David Hildenbrand wrote:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v6.12
+> diff --git a/mm/Kconfig b/mm/Kconfig
+> index 09aebca1cae3..4c9f5ea13271 100644
+> --- a/mm/Kconfig
+> +++ b/mm/Kconfig
+> @@ -595,6 +595,7 @@ config ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
+>  config SPLIT_PTE_PTLOCKS
+>         def_bool y
+>         depends on MMU
+> +       depends on SMP
+>         depends on NR_CPUS >= 4
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/7108fff8848bc3bd958789f4db6beff94bdae521
+ I think it might be more intuitive if written as:
 
-Thank you!
+	depends on SMP && NR_CPUS >= 4
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+(with a note in the change description to the effect that NR_CPUS will 
+have been unset and the condition won't work as expected unless SMP).
+
+ FWIW,
+
+  Maciej
