@@ -1,60 +1,60 @@
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 000D11A4E88
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Sep 2024 14:04:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38A058C06
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Sep 2024 14:09:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727186660; cv=none; b=Q0k2AQbXwWpO1v8MoC1zUpDXB6H2sZ/vbrURVjTMRSBtH6sXiL/DTzHWWk6522STxnIzwKHlLJg/EkvNcTE9/5RdN3VtsC+SXwQDgrTAlv/S1IiMjIw7gbK0eycY726s+u+XS7vsLWDmaFquyPsKGvynrgRsfESdZxAyWEkEYpA=
+	t=1727186981; cv=none; b=PMcR7fUgNcas6+DDTkryWLLuxPaJci1d5uT98M9lodl1a7wHjN28fXmO5pL1a1bbuvMa9C46g76l8Ont8j1C3zv6jk064ht/T0qzhVRC6+C1UurYgulIbZAYQJAAUfcZAVkHjvevrBYLVgvTvmupQMfZoV8jkTB+tbi+MaU6ykM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727186660; c=relaxed/simple;
-	bh=qFCR3UxfpkNGo19hPCP9KZ136KYB9fHiHMEy8QlD7g8=;
+	s=arc-20240116; t=1727186981; c=relaxed/simple;
+	bh=OBLErykB3NOifdAG6kiHF8mypDg+/GNYUE+gK2oxT6w=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qR8p7Snd4ucSW1oqYfeGzbGblMIMbLHQPTIjot4GNDp3PmTLZfESTb6TqF4mPHLZTp0vqwDY4DcLAaNape7o4arg3xV9toPyqmZ+tl+5OgfF8IjhP3fJCFuj42JE5HxS+qphlh3VSjgSAQNpzro+clkqP/4jreBTt4DCXXg7EcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gAaSCvb/; arc=none smtp.client-ip=209.85.210.180
+	 In-Reply-To:Content-Type; b=dVc5YDofmueHLdVGKWENo6fH7yMXVdMBWQkUnh9r/AocoIZo04c5IcgplsRRr/WZEC5Mjr3pNW2aIGrj3JVI2FTSmViEgksMn+q1sU/DL8RNzl2/H8tbQsGtbZiws+CIKwcVyBwWl9uxaCi/PolCryVk/JLIOEA9DVnW7Va1ptg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JFR7gGrL; arc=none smtp.client-ip=209.85.210.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gAaSCvb/"
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-71970655611so4958131b3a.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Sep 2024 07:04:17 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JFR7gGrL"
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-71979bf5e7aso3902347b3a.1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Sep 2024 07:09:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727186657; x=1727791457; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20230601; t=1727186979; x=1727791779; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=HQUIrBee375DCFxMj2GyEDRKC5Ol49rT6e3wSpKAzjE=;
-        b=gAaSCvb/DAdGMEVCsVC47CEgX08mG9uTLfpIqGZwKcKoYNKoQnxmfHIM78UJuRF9CV
-         swQkEkItxMKFaFMIbyHFRWfcOIQygkclGwBoP+TwMZIRS7TRR9KLdGC1hbs4Ido899GM
-         ZKLr76PLvV+PPqCCB91AudGS3OZmE6sYxTD1zesYzo/dwhumtABCdjmFr5D0lU8WRdJe
-         Cm+gf2Hk3MVDK3UAyKz/WeazsFCukR6PKxSW4zydGHlR0m+NUFGsMEpWd9P5zgn3afhs
-         FjPSBla7kwbQwgUHu93HrkaMjzX8yHOjBZokNqGgUzoFrhcZKOHM6u4Bi5iFyRX2Sp6b
-         a9lQ==
+        bh=DWPPsseQZtFXVrMTipU0htzgSzrx3BRYWs4uJMipp8A=;
+        b=JFR7gGrL56NhhqY+lVx3FnwzXOLfEgNTW24Tlkyz5y+T61VvQICx0VGFPl81U25Koj
+         Tuy85ZUJQu/XnE8pB6mLr9JJMGSajWaOIJ5OSyKkiPLUqZLJ5hTIrsQ8AP0AKnPClZIc
+         mZNjaBxz1xsM5jxLSJ9/mNUd/zhQnrNxsek1Zl32U10OZ+Yk++U4U6B6gxWLgEdThkZB
+         SCEdW7ttVtM7yIxtppC/qhwVrr0t+IqAnv2Fi2pwr6dDlWTYAg0t8XYIaOiCx+igbo+q
+         yvy48ngSQm6G0lbIBDKy1pooXd/DHPRmndhxrGoVcegzYlaM+5hUjoBA/rdptXXQ+gLD
+         Zpfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727186657; x=1727791457;
+        d=1e100.net; s=20230601; t=1727186979; x=1727791779;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:sender:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HQUIrBee375DCFxMj2GyEDRKC5Ol49rT6e3wSpKAzjE=;
-        b=ATh9uiq+5s1HbMPbxhjW8Yx4wRVp6N5Mvdv1K1qsxSbOipVZkAXGKeRocQuMaLs+uE
-         /aQkC+pTNW8rrZej9jYCIOmi7fTnjqPxuV0xGhQz6py4Jj+5CgNRXOzwFCmMPi3fdNmq
-         /5AHqO0daOA3Kok5FyjyaHfGBdpGDtknjPoZ/Z0VjRkaFH81viNhz0YVE+rGCGgVSZP1
-         K1iUfWiHGJROosnddXTsKHW6FV0E7VHGJGFRiaNyJXMjcL85i94OW7gUYfQ0QZfccNMY
-         FF70LUtlD8tLJxrvMwLS+ckhB1PBLj0DgnWiQGvh4p2rUdzMsiDIhiMQbstcrpcOZ3iR
-         PW5Q==
-X-Gm-Message-State: AOJu0YxAzuPKRnSpy6RpA9gCjCoYAltQN7OKsx/QvwEfJGOilRn+6D63
-	Gdkx/7LMhnD4mBFD/QYQB9q1n2WHMhMWIO3IdRp9hnFQ9n1p3jP4
-X-Google-Smtp-Source: AGHT+IGLNlpaoT+0CNXmx72HCBqed7ch4wexyZM6bv3QwaNd9deNPTwYdnzOslG8UIMYSoRBjMG41w==
-X-Received: by 2002:a05:6a00:2314:b0:70b:176e:b3bc with SMTP id d2e1a72fcca58-7199ce48b01mr22234716b3a.28.1727186657200;
-        Tue, 24 Sep 2024 07:04:17 -0700 (PDT)
+        bh=DWPPsseQZtFXVrMTipU0htzgSzrx3BRYWs4uJMipp8A=;
+        b=j8fGLgJKGP2CajY4H9ngmM+LjPvq8UtzdiKTCxnybUzpy4CmetTl1qFuHRX7HPDFar
+         2DzIT3Zhy4ZVMSceGTPGFKxRpIY+y2mp3J+x4NUqQAsz4iqJUpbwBRdBYUwi3FqnjTxU
+         fgByLai1niNhCSZYxT9AP5IFlPqZS2fFltNUUcBmK/CJgz/IzUmET48N8VmLsoUsPOKG
+         J/rqAAqC5K1oV5gWn13aIogfxui28R+tDcMr+uMkdzmw2EQz4iH41YDU64/zGuow00bR
+         dM6e7VukyHUp//Eo0sRMx8fJxlNspPIXt7YW6StqefH3rMbUKAyWGWPd0xAe7jDJmV2Y
+         c2Xw==
+X-Gm-Message-State: AOJu0YxMrL7YxHUv+lSC3ztJ9+nBVEIiZTqKbbLY3G8Gu6JAcxWDBrbM
+	QaxwRzU5bVEMDbIOXMB7OTB/Kwn95KdzAStEo+jRX8deqRE2nsa2
+X-Google-Smtp-Source: AGHT+IGF+wfnHvrOK3/zlRD1zZC8yPevZNLcT0wZYNnlg/JsZuxLWplkxeRUKnvuukxbi8U/uV0oDw==
+X-Received: by 2002:a05:6a20:c908:b0:1d2:e888:386f with SMTP id adf61e73a8af0-1d30cb4f76cmr21255493637.42.1727186979412;
+        Tue, 24 Sep 2024 07:09:39 -0700 (PDT)
 Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71afc9c6f26sm1233572b3a.193.2024.09.24.07.04.15
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7e6b7c4e33bsm1224442a12.40.2024.09.24.07.09.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Sep 2024 07:04:16 -0700 (PDT)
+        Tue, 24 Sep 2024 07:09:38 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <bf98fa37-461f-47ce-8d4c-bcb69f225a9c@roeck-us.net>
-Date: Tue, 24 Sep 2024 07:04:14 -0700
+Message-ID: <2ffaf46e-2ed4-49c1-ba0d-82e69b54773a@roeck-us.net>
+Date: Tue, 24 Sep 2024 07:09:37 -0700
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -63,13 +63,12 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v2] m68k: Define NR_CPUS
-To: Geert Uytterhoeven <geert@linux-m68k.org>,
- David Hildenbrand <david@redhat.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+ David Hildenbrand <david@redhat.com>,
  Andrew Morton <akpm@linux-foundation.org>
 References: <20240923235617.1584056-1-linux@roeck-us.net>
- <aa23abe3-7236-4b9e-b237-3b822ac9d186@redhat.com>
- <CAMuHMdVEfPtwps0A29WvHcwgo3f+3nTBiGn1PFxoYy1dxPsUMA@mail.gmail.com>
+ <CAMuHMdUkMWjzT_vT3E7yLgopPWWP=BS_G8Ui22M_b8sZaCWSxQ@mail.gmail.com>
 Content-Language: en-US
 From: Guenter Roeck <linux@roeck-us.net>
 Autocrypt: addr=linux@roeck-us.net; keydata=
@@ -115,44 +114,49 @@ Autocrypt: addr=linux@roeck-us.net; keydata=
  WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
  HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
  mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <CAMuHMdVEfPtwps0A29WvHcwgo3f+3nTBiGn1PFxoYy1dxPsUMA@mail.gmail.com>
+In-Reply-To: <CAMuHMdUkMWjzT_vT3E7yLgopPWWP=BS_G8Ui22M_b8sZaCWSxQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 9/24/24 00:48, Geert Uytterhoeven wrote:
-> Hi David,
+On 9/24/24 00:47, Geert Uytterhoeven wrote:
+> Hi Günter,
 > 
-> On Tue, Sep 24, 2024 at 9:34 AM David Hildenbrand <david@redhat.com> wrote:
->> On 24.09.24 01:56, Guenter Roeck wrote:
->>> v2: Instead of trying to make SPLIT_PTE_PTLOCKS depend on the
->>>       existence of NR_CPUS, define NR_CPUS for m68k.
->>
->> Okay, looks like we're cleaning up CONFIG_NR_CPUS for good.
->>
->> I'm back from conference travel tomorrow; I'll then throw in the following
->> into cross compilers and fixup any other arch that needs attention:
->>
->>
->> diff --git a/include/linux/threads.h b/include/linux/threads.h
->> index 1674a471b0b4..e31715e6746b 100644
->> --- a/include/linux/threads.h
->> +++ b/include/linux/threads.h
->> @@ -13,8 +13,7 @@
->>     * bit of memory.  Use nr_cpu_ids instead of this except for static bitmaps.
->>     */
->>    #ifndef CONFIG_NR_CPUS
->> -/* FIXME: This should be fixed in the arch's Kconfig */
->> -#define CONFIG_NR_CPUS 1
->> +#error "CONFIG_NR_CPUS not defined"
->>    #endif
->>
->>    /* Places which use this should consider cpumask_var_t. */
+> Thanks for your patch!
 > 
-> This is gonna trigger on almost all architectures if CONFIG_SMP=n.
+> On Tue, Sep 24, 2024 at 1:56 AM Guenter Roeck <linux@roeck-us.net> wrote:
+>> SPLIT_PTE_PTLOCKS depends on "NR_CPUS >= 4". Unfortunately, that evaluates
+>> to true if there is no NR_CPUS configuration option. This results in
+>> CONFIG_SPLIT_PTE_PTLOCKS=y for mac_defconfig. This in turn causes the m68k
+>> "q800" and "virt" machines to crash in qemu if debugging options are
+>> enabled.
+>>
+>> Making CONFIG_SPLIT_PTE_PTLOCKS dependent on the existence of NR_CPUS
+>> does not work since a dependency on the existence of a numeric Kconfig
+>> entry always evaluates to false. Example:
+>>
+>> config HAVE_NO_NR_CPUS
+>>         def_bool y
+>>         depends on !NR_CPUS
+>>
+>> After adding this to a Kconfig file, "make defconfig" includes:
+>> $ grep NR_CPUS .config
+>> CONFIG_NR_CPUS=64
+>> CONFIG_HAVE_NO_NR_CPUS=y
+>>
+>> Define NR_CPUS for m68k instead to solve the problem.
+>>
+>> Fixes: 394290cba966 ("mm: turn USE_SPLIT_PTE_PTLOCKS / USE_SPLIT_PTE_PTLOCKS into Kconfig options")
+>> Cc: David Hildenbrand <david@redhat.com>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+>> Acked-by: David Hildenbrand <david@redhat.com>
+> 
+> I think it's a bit premature to add David's tag, as v2 is completely
+> different from v1.
 > 
 
-Guess that means that my patch won't work either. Any better ideas ?
+Ups, sorry, that was an unintentional carryover. Anyway, looks like it
+may need v3 anyway.
 
 Guenter
-
 
