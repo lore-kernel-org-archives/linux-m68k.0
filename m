@@ -1,81 +1,101 @@
-Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
+Received: from welho-filter2.welho.com (welho-filter2b.welho.com [83.102.41.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBA2F13BAEE
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Sep 2024 21:09:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.18.0.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 508C21862BD
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Sep 2024 23:11:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.102.41.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727212163; cv=none; b=FUGWcJtYkbfu0DecmEbrniPidGfGiqo76CLEbDaDTrI7wPImFvdr8q0c/fqk/jMg4PbIVZpDFMp3UuazYTG1XGPC5h/Lry7le5LMPh6R8oSewDrmSUDg8xBOeGwAgAtbxiqX5VENk6VMDEpzIBETBerDwy+BHZanEe2dgGcHd1Y=
+	t=1727219521; cv=none; b=mZDJcqhL5XUMNrcQfY00UGwApEaSnWDxjdQloprAJB11g4WnbfeONd41N74loa4iNdrP31aBPMQSc1fnr13GB8CLBsndubOovhg45lqLqvCyeaAQepKOKxsdw7u0ecWuRHKCtrXXRvCbuutARq4BH2vm0qPm2gMXjiOEOWDyb1g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727212163; c=relaxed/simple;
-	bh=jrM+tXUMIEk7tV6M7P+T/eCGvQ/ed0Y3/amZepD+vgk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=f86MbfJn0vQl40yRHB+gMV2uqeB2Bpq78XUPGacWyfUMEWHQkTjmARSXpoTID3telIiWGHLgIfAjzoFkAhgT2rMlGZ+JdY+FKkKsfROKPxweKKdh5ExTw0eyOUXzJuZRCeedLj2o7GbQ+hGXQKHyd7FIAvb3Wwci8EOKRVG7pLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=nefkom.net; arc=none smtp.client-ip=212.18.0.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nefkom.net
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-	by mail-out.m-online.net (Postfix) with ESMTP id 4XCstG6PDBz1qtr4;
-	Tue, 24 Sep 2024 23:09:10 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.68])
-	by mail.m-online.net (Postfix) with ESMTP id 4XCstG6411z1qqlS;
-	Tue, 24 Sep 2024 23:09:10 +0200 (CEST)
-X-Virus-Scanned: amavis at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
- by localhost (dynscan1.mail.m-online.net [192.168.6.68]) (amavis, port 10024)
- with ESMTP id YAiDTB5aKZ6J; Tue, 24 Sep 2024 23:09:10 +0200 (CEST)
-X-Auth-Info: ZwtpsqghtX7IRrf8R6N+ewpVJEYMPnPKU24v16LKuHR73xM70psY99Nvk0g6/wTZ
-Received: from igel.home (aftr-62-216-205-79.dynamic.mnet-online.de [62.216.205.79])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	s=arc-20240116; t=1727219521; c=relaxed/simple;
+	bh=4S2FgCVGZBSvug9/jMIHjA8+tk1HsICTcPiRKAUNZ2k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MORjdmSSZH3C1PmCD80CjADJBcPl7V8sPMpbkOxbqSKn/dqx87OmXuflzptCNGCXTGYEHYb7sMHdEJkJ5J2kXSW0V79wXUuwMfFJFFJ+ahgCqw0j3rbyQ4LpnGum0TppZFDsq2DqXmGYdEAjieBC1YmXd8UwAmfvnh4iFoSPDiU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=helsinkinet.fi; spf=pass smtp.mailfrom=helsinkinet.fi; arc=none smtp.client-ip=83.102.41.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=helsinkinet.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=helsinkinet.fi
+Received: from localhost (localhost [127.0.0.1])
+	by welho-filter2.welho.com (Postfix) with ESMTP id D2FA943D2D;
+	Wed, 25 Sep 2024 02:11:48 +0300 (EEST)
+X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
+Received: from welho-smtp1.welho.com ([IPv6:::ffff:83.102.41.84])
+	by localhost (welho-filter2.welho.com [::ffff:83.102.41.24]) (amavisd-new, port 10024)
+	with ESMTP id DLmFt58FdZaT; Wed, 25 Sep 2024 02:11:47 +0300 (EEST)
+Received: from [192.168.101.100] (87-92-120-123.bb.dnainternet.fi [87.92.120.123])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.mnet-online.de (Postfix) with ESMTPSA;
-	Tue, 24 Sep 2024 23:09:10 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-	id C4FE82C19CD; Tue, 24 Sep 2024 23:09:09 +0200 (CEST)
-From: Andreas Schwab <schwab@linux-m68k.org>
-To: Eero Tamminen <oak@helsinkinet.fi>
-Cc: Michael Schmitz <schmitzmic@gmail.com>,  linux-m68k
- <linux-m68k@lists.linux-m68k.org>
-Subject: Re: [PATCH 1/2] m68k: Drop Atari EtherNAT support when it's not
- configured in
-In-Reply-To: <eed880a2-8c02-40d7-813b-c6e8f1b8c197@helsinkinet.fi> (Eero
-	Tamminen's message of "Tue, 24 Sep 2024 23:58:33 +0300")
-References: <20240922214821.16818-1-oak@helsinkinet.fi>
-	<4540348c-84f6-4993-97b5-f007771be444@gmail.com>
-	<eed880a2-8c02-40d7-813b-c6e8f1b8c197@helsinkinet.fi>
-X-Yow: Quick, sing me the BUDAPEST NATIONAL ANTHEM!!
-Date: Tue, 24 Sep 2024 23:09:09 +0200
-Message-ID: <877cb03gju.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by welho-smtp1.welho.com (Postfix) with ESMTPSA id 64A0828B;
+	Wed, 25 Sep 2024 02:11:45 +0300 (EEST)
+Message-ID: <fff20dd3-d82b-4095-b367-1aaf118ef8a0@helsinkinet.fi>
+Date: Wed, 25 Sep 2024 02:11:45 +0300
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] m68k: Drop Atari EtherNAT support when it's not
+ configured in
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>
+References: <20240922214821.16818-1-oak@helsinkinet.fi>
+ <4540348c-84f6-4993-97b5-f007771be444@gmail.com>
+ <eed880a2-8c02-40d7-813b-c6e8f1b8c197@helsinkinet.fi>
+ <877cb03gju.fsf@igel.home>
+Content-Language: en-US
+From: Eero Tamminen <oak@helsinkinet.fi>
+In-Reply-To: <877cb03gju.fsf@igel.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sep 24 2024, Eero Tamminen wrote:
+Hi,
 
-> Hi,
->
-> On 24.9.2024 4.03, Michael Schmitz wrote:
->> On 23/09/24 09:48, Eero Tamminen wrote:
->>> Not having it configured, but crash backtraces going through its IRQ
->>> handling code, is confusing (found while debugging issues in Atari
->> I don't see how backtraces could go through the EtherNAT interrupt code
->> - the interrupt only gets enabled if the hardware has been detected.
->> Maybe you meant you see the generic IRQ handling code called for the
->> EtherNAT's interrupt controller?
->
-> It was many years ago, but I _did_ see one of these functions in Hatari
-> debugger's backtrace, although I had explicitly disabled EtherNAT support.
+On 25.9.2024 0.09, Andreas Schwab wrote:
+> On Sep 24 2024, Eero Tamminen wrote:
+>> On 24.9.2024 4.03, Michael Schmitz wrote:
+>>> On 23/09/24 09:48, Eero Tamminen wrote:
+>>>> Not having it configured, but crash backtraces going through its IRQ
+>>>> handling code, is confusing (found while debugging issues in Atari
+>>> I don't see how backtraces could go through the EtherNAT interrupt code
+>>> - the interrupt only gets enabled if the hardware has been detected.
+>>> Maybe you meant you see the generic IRQ handling code called for the
+>>> EtherNAT's interrupt controller?
+>>
+>> It was many years ago, but I _did_ see one of these functions in Hatari
+>> debugger's backtrace, although I had explicitly disabled EtherNAT support.
+> 
+> That can easily happen if a word on the stack happens to match the
+> address range of an unrelated function.
 
-That can easily happen if a word on the stack happens to match the
-address range of an unrelated function.
+Hatari debugger backtrace does not rely on frame pointers or stack 
+content unwinding, i.e. it's immune to stack corruption.
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+Backtrace is a by-product of Hatari profiler, which tracks every 
+emulated (CPU & DSP) instruction and constructs call-graph while the 
+code runs, by comparing PC register values against function addresses.
+
+---
+
+LILO functionality in Hatari reads function addresses from the 
+(specified) "Symbol.map" file (in addition to starting kernel). After 
+typing "profile on" in debugger, one sees backtrace every time debugger 
+is invoked.
+
+(To trace all kernel function calls, one can use Hatari "--trace 
+cpu_symbols" option, which can be toggled in the debugger, either 
+manually, or automatically by a breakpoint.  To trace a subset of the 
+function calls, one can remove others from the "Symbols.map" file.)
+
+
+	- Eero
+
+PS. To do similar instruction tracking for PCs would need special data 
+collection HW and offline data processing (ARM ETM [1] & Intel PTI [2]), 
+but when emulating old/slow m68k machines, it can all be done in SW at 
+real-time.
+
+[1] 
+https://developer.arm.com/documentation/ddi0488/h/embedded-trace-macrocell/about-etm
+[2] https://lldb.llvm.org/use/intel_pt.html
