@@ -1,125 +1,146 @@
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85B7212C499
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Sep 2024 23:56:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7ECF4C83
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Sep 2024 01:02:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727135782; cv=none; b=RqPHOCThUcYQZL37s55zBqaN2WdP7qtoE2jj4T6b5d6f5gGgHyc2KBy8QraUzO1JVf+6r2Zs+tZGzUhgfAO5bLR5HNgr1JIpo0oWo59MBWqESeYxjSwDygXYLWGr52q+sjoG/G7wafP1fThzUemDcfT+9/V1g4Fwvt1Lo/kRJbo=
+	t=1727139767; cv=none; b=CzobS0WFjvweDHFdHxOXxpJjDS+W1O/MuX0wNE4fP1dpgFhZkqcbNQL4D+OUfeuDj2q3dEjhrmoXk4PAcSMkG5liIMxObV37RpJqyohGgspCpZ+qYRmAR8rzgj3s6+J5BHrHgVBrcL+aOU0A5AqLYoLQMLu4vI33zLMwLaoxWWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727135782; c=relaxed/simple;
-	bh=GubX7HNiNPGqZwTFgnbAHBHpyKU0GeQ7/76qRjIJnlk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Z7CCMXGnCT300DpgrBsrWi6ylcwGJ/p0MC3cQjLMwOaHe4IEQMh3/eW1Bza8UNjSSph5mq6TSjGsCiYT7EGOva0wXDYEe5Wf1vBNCTFSFMpjptdJ/2MFQgeWOcJilCvLzhTaYO6CYeUzLkTb/jZ5/Y3IEtd3l3R9yMS1SpuqOdY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bby/8uvX; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+	s=arc-20240116; t=1727139767; c=relaxed/simple;
+	bh=Kq+VmnEeqvl7biV9vbaDWGtyKSNSACjriF5EG+LPhxI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JA64F4OVl+R1wnyhzggqScXPByAzcyMAPKHh6hckke1T0P0NySDPzN0zp1rLYQUGRwvDI+vf1u88kXSQr1tv1lMY0k6y3mUsusBrdPq+SI3gIsopzV4FmoeNe8yKwZCM7RxOvFWOzW8zbL7KMNfhS145NkdbI8ICCBie+yZheQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FpPNxnkM; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bby/8uvX"
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-719ba0654f9so1375305b3a.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Sep 2024 16:56:21 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FpPNxnkM"
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2053616fa36so59799055ad.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Sep 2024 18:02:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727135780; x=1727740580; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lsiix1AZouLwNVfdcdY6F4P4euU9juLa/FjJUtcM2Y0=;
-        b=bby/8uvXlvBkVxiuUGgIHhIqyuE30Jyby7UILfKcZKtNTBpM1m66M7sOt6pIKhvuiO
-         JZoIuBKxmMu5e75w1ZYq9bY/llQNF4wEjq+pW4gJRzw4DhX88lp16FmVZ77HAOasZxU3
-         1t6q6C32PlotTodL+eCGfL7Mc/ZNyYkBXNW3LvAxmV43IDUh5zvDtK3/damL/yum46DO
-         26N230eBpx/9DwCw0SS6b0RBq6PByknpL7Bt0JfrKlc3VulGX+7CeYm9c18kaEP/o3+V
-         1fN39VskCbEyOg74wvxCiZFerN6Ze3vadmEr3EXkGgEQ7sxxQMhJWsyjU+HWLn5ZRTNO
-         MVpA==
+        d=gmail.com; s=20230601; t=1727139765; x=1727744565; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=c08FS4U7FYHr2DFhFogjZetrIN9aBXfvq2eAQUAVOjw=;
+        b=FpPNxnkMiv7bA3BsiNzDlmtOgVxC1PNNbrhvOJBfbfQZG4ik0lp56YxDHhSzSd2zyA
+         s208nNJk5BV+lXIURjnp+VcX+4yNMn6TOrrz6/bbcbsUizmqCIvgZtc2WWELfgooNBHl
+         0S2fwP14BY2kMTDfEIIuy9CRHoGj2mLIDsEkkJ2EPGgzSuxtScxEepk97dATehYYf9Yz
+         QU2LaDlex97GuW/JJ7+kqlVYbqyTaRiMUPbUGo8/x5Jg0xcLkBsxbRLKvkBotI+eoc+S
+         xM/jRIdHu5oh5LRmDc9LCSONXXVKyPrztWfDC4nDKP1A8s1K034UXK9uVNkwDStbkLIv
+         l/hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727135780; x=1727740580;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Lsiix1AZouLwNVfdcdY6F4P4euU9juLa/FjJUtcM2Y0=;
-        b=p9sEIr+uP1bbIc7kqkTnexl0rVYy2FDfNBzzzFUD01olDRRqqW4NQTurF8+EcPfOHs
-         Ss9HseS+CCkSZ0OhTCD9KsCY3TuMp29JQSZR9xlI1krRWqz82RcOpqgOQ3aYa3Xizh0s
-         ZmBkfx7LhU1oEbw4N4p+rta8UwxxPB3162quolNkUt7rVppt43D3egXF61NF1ZjcfAmm
-         oK295+eYjKc5hlZePkzn473dN54dtjvySqfwt7hfVudMRJXagFaQsUapFMvMXo70tZez
-         xi4oYFELaT0HMO6jqyLHLjptMbI6srVPJIKDAla4My2CsuIOJrAK/nVl8W6R34VfNUD0
-         zRVw==
-X-Gm-Message-State: AOJu0Yx5FsCv+AaZN8x8w7EAwGG/qxAY918o9+OneYTHDYoWv3La2r9X
-	g1g8SXAsCMZzSxXTCyxC2pvsC1JUUe2nJVPWtWAlr8arHONTLqVjqTbrGA==
-X-Google-Smtp-Source: AGHT+IHLfQ5xUTK61QHlkYP+KcDvKOKkE0Gu12DmjoUm7AROJH61aTOqurK/aSnyCwW/TSTdUl761w==
-X-Received: by 2002:a05:6a00:c81:b0:70d:2cf6:5e6 with SMTP id d2e1a72fcca58-7199c9765bfmr16943619b3a.15.1727135780251;
-        Mon, 23 Sep 2024 16:56:20 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71afc9390adsm156191b3a.134.2024.09.23.16.56.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Sep 2024 16:56:19 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-To: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org,
-	Guenter Roeck <linux@roeck-us.net>,
-	David Hildenbrand <david@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2] m68k: Define NR_CPUS
-Date: Mon, 23 Sep 2024 16:56:17 -0700
-Message-ID: <20240923235617.1584056-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.45.2
+        d=1e100.net; s=20230601; t=1727139765; x=1727744565;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=c08FS4U7FYHr2DFhFogjZetrIN9aBXfvq2eAQUAVOjw=;
+        b=Pu1y87FQSQAmUlqLlioX12J1VxekFA/UVCDS99+CaCA/6Qza0GV7oT73Bmv9lSa0V4
+         HJBFRvWS/lB9fQgfVR6y6qhFygyPUbMrZNQegmJ/jsOSqvkdUTRYq6lp7+5BoYf+Besg
+         V+LRHVSpKd4v9tdl++KwTDGRiYdIT1HrZo/R3b7Ug5pVp20fC61X0rYpf/5jftkx9cQS
+         D9XYTOxpLB/O/bcU9T8HaS6Fsc+ZVkRa1qGicOYn11dsdn0BZxeM4aiubeL9bnzJVu7Y
+         RLR2Eu5VyG3kV1jbYc5+mA8CIRCHkETG4Y4hrBMLXRFNeDgDa9x8yFoQHBNW6DW7pRab
+         rfpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXgv2YLGMKgmXf8/R3278QE+qWu5mKbap7to8mnduFtBGif1NlNBcTzC5GBv2e6Rv5/1r92A7y5FkyS@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yzg6cdbaODexcl2VSa9M98ZSrXJljrjOCFocp5+Xe6DBsUHmQuk
+	h9jVArUzoByWuSBhBDajbzC5uokcds5DPQcsqILjhrKxIXg4A+1iLjNm7w==
+X-Google-Smtp-Source: AGHT+IGsbHaPQz3WFZHPurmU28AHrv5JP5IwI4Jj4Ww2Ct4+PxY+NbKIEUMo4Yo9oXxwI1Pdo/X4Jw==
+X-Received: by 2002:a17:902:d503:b0:206:8c4a:7b73 with SMTP id d9443c01a7336-208d8423a80mr172702245ad.50.1727139764916;
+        Mon, 23 Sep 2024 18:02:44 -0700 (PDT)
+Received: from ?IPV6:2001:df0:0:200c:95aa:de8c:5e49:8d4c? ([2001:df0:0:200c:95aa:de8c:5e49:8d4c])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20af1857caesm1365715ad.275.2024.09.23.18.02.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Sep 2024 18:02:44 -0700 (PDT)
+Message-ID: <4540348c-84f6-4993-97b5-f007771be444@gmail.com>
+Date: Tue, 24 Sep 2024 13:03:05 +1200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] m68k: Drop Atari EtherNAT support when it's not
+ configured in
+To: Eero Tamminen <oak@helsinkinet.fi>,
+ linux-m68k <linux-m68k@lists.linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+References: <20240922214821.16818-1-oak@helsinkinet.fi>
+Content-Language: en-US
+From: Michael Schmitz <schmitzmic@gmail.com>
+In-Reply-To: <20240922214821.16818-1-oak@helsinkinet.fi>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-SPLIT_PTE_PTLOCKS depends on "NR_CPUS >= 4". Unfortunately, that evaluates
-to true if there is no NR_CPUS configuration option. This results in
-CONFIG_SPLIT_PTE_PTLOCKS=y for mac_defconfig. This in turn causes the m68k
-"q800" and "virt" machines to crash in qemu if debugging options are
-enabled.
+Eero,
 
-Making CONFIG_SPLIT_PTE_PTLOCKS dependent on the existence of NR_CPUS
-does not work since a dependency on the existence of a numeric Kconfig
-entry always evaluates to false. Example:
+thanks for your patch!
 
-config HAVE_NO_NR_CPUS
-       def_bool y
-       depends on !NR_CPUS
+On 23/09/24 09:48, Eero Tamminen wrote:
+> Not having it configured, but crash backtraces going through its IRQ
+> handling code, is confusing (found while debugging issues in Atari
 
-After adding this to a Kconfig file, "make defconfig" includes:
-$ grep NR_CPUS .config
-CONFIG_NR_CPUS=64
-CONFIG_HAVE_NO_NR_CPUS=y
+I don't see how backtraces could go through the EtherNAT interrupt code 
+- the interrupt only gets enabled if the hardware has been detected.
 
-Define NR_CPUS for m68k instead to solve the problem.
+Maybe you meant you see the generic IRQ handling code called for the 
+EtherNAT's interrupt controller?
 
-Fixes: 394290cba966 ("mm: turn USE_SPLIT_PTE_PTLOCKS / USE_SPLIT_PTE_PTLOCKS into Kconfig options")
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: David Hildenbrand <david@redhat.com>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
-v2: Instead of trying to make SPLIT_PTE_PTLOCKS depend on the 
-    existence of NR_CPUS, define NR_CPUS for m68k.
+> emulation).
+>
+> Signed-off-by: Eero Tamminen <oak@helsinkinet.fi>
+> ---
+>   arch/m68k/atari/ataints.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/m68k/atari/ataints.c b/arch/m68k/atari/ataints.c
+> index 0465444ce..fa189eeb7 100644
+> --- a/arch/m68k/atari/ataints.c
+> +++ b/arch/m68k/atari/ataints.c
+> @@ -179,6 +179,7 @@ static struct irq_chip atari_mfptimer_chip = {
+>   };
+>   
+>   
+> +#ifdef CONFIG_ATARI_ETHERNAT
 
-v1: https://lore.kernel.org/lkml/202409240546.SJwj9tUj-lkp@intel.com/T/#t
+I believe we now use
 
- arch/m68k/Kconfig | 4 ++++
- 1 file changed, 4 insertions(+)
+#if IS_ENABLED(CONFIG_ATARI_ETHERNAT)
 
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index cc26df907bfe..53e4058d2e3c 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -76,6 +76,10 @@ config PGTABLE_LEVELS
- 	default 2 if SUN3 || COLDFIRE
- 	default 3
- 
-+config NR_CPUS
-+	int
-+	default "1"
-+
- config MMU
- 	bool "MMU-based Paged Memory Management Support"
- 	default y
--- 
-2.45.2
+but that's perhaps a matter of taste (CONFIG_ATARI_ETHERNAT can't take 
+the value 'm').
 
+OK by me if it helps with your debugging ...
+
+Cheers,
+
+     Michael
+
+
+>   /*
+>    * EtherNAT CPLD interrupt handling
+>    * CPLD interrupt register is at phys. 0x80000023
+> @@ -251,6 +252,7 @@ static struct irq_chip atari_ethernat_chip = {
+>   	.irq_enable	= atari_ethernat_enable,
+>   	.irq_disable	= atari_ethernat_disable,
+>   };
+> +#endif
+>   
+>   /*
+>    * void atari_init_IRQ (void)
+> @@ -343,12 +345,13 @@ void __init atari_init_IRQ(void)
+>   			stmfp_base.name, &stmfp_base))
+>   		pr_err("Couldn't register %s interrupt\n", stmfp_base.name);
+>   
+> +#ifdef CONFIG_ATARI_ETHERNAT
+>   	/*
+>   	 * EtherNAT ethernet / USB interrupt handlers
+>   	 */
+> -
+>   	m68k_setup_irq_controller(&atari_ethernat_chip, handle_simple_irq,
+>   				  139, 2);
+> +#endif
+>   }
+>   
+>   
