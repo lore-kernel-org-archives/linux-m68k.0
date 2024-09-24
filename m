@@ -1,62 +1,107 @@
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CAD7137776
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Sep 2024 19:31:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
+Received: from welho-filter3.welho.com (welho-filter3b.welho.com [83.102.41.29])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37EDB6E614
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Sep 2024 20:58:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.102.41.29
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727206274; cv=none; b=qamNQLHHK3Wuew63iAYIiDbCYoIYlHK2O0LPqzOwMy+udDQzQwDPp9jez4Hq3vT0/UriResSZmjNESrGny8VxX4v0dgpA2WYAeCASuJu7cVe5r8rCf5xkuyODwSQxns6fLQRYKcFcpr0GeDI4OIgWrWwx1nJGPv0hyrAPTHDR/o=
+	t=1727211528; cv=none; b=BtE0ZW003ui/J5R6HGypWVirHCdyIkpoMCk8xP3C4ZiLVeggekYHrg4dS4UnobQ9uZwHKc/xi7g9p/mHNse1Pa6w9nAnMPD3PTLBksxeJNygBVMWyIZP02CMTg8bcx0fc0TnVpabxtKsJK7rfvQIHeRIyepmGfbtg2FHtw4WaWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727206274; c=relaxed/simple;
-	bh=uuVl6MBaXlHZbPcy1TEcgr1GjBMcSriG1UXSxHvSc/Y=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=exWcI5N3PimotaxFQk2dMg/GseAEN0UgayApOTN16QK2zYBLS/jePoZxBggng8a/9HYW9/YfUh9dEKfcro3IXtCHriDkgUDDJA/uu3kbeJtTOa4uPU/9uW8/YRNv5YfmwGV3l7cDc3XGV8mH02pHGrTt/10gJrOC3ftHaGUKYVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id 2EEB292009C; Tue, 24 Sep 2024 21:23:21 +0200 (CEST)
+	s=arc-20240116; t=1727211528; c=relaxed/simple;
+	bh=gIa4Vvtn8V81MrwE7/e8oi+hlGCgveY2iKpuaBOECXM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=L+PZ7m5IoFOeyh+bBqJOPLaQ4JP+GwelBbQwu3IQU6ATCNTBsoowQG5mHsrRPiVbhICwYdHnUTwB1ebZDh4HvAe9aggz0yiIVs6YDDDFVSWtsKZqRz2dqG9UCXGv/+ks2T87yE+AQ72FPkfKdZRs6+58FXD39rwhCjweJVGTEaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=helsinkinet.fi; spf=pass smtp.mailfrom=helsinkinet.fi; arc=none smtp.client-ip=83.102.41.29
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=helsinkinet.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=helsinkinet.fi
 Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id 2083292009B;
-	Tue, 24 Sep 2024 20:23:21 +0100 (BST)
-Date: Tue, 24 Sep 2024 20:23:21 +0100 (BST)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: David Hildenbrand <david@redhat.com>
-cc: Guenter Roeck <linux@roeck-us.net>, 
-    Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, 
-    linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2] m68k: Define NR_CPUS
-In-Reply-To: <65959acc-c59b-4aca-8ab4-5d0603d22110@redhat.com>
-Message-ID: <alpine.DEB.2.21.2409242018160.3358@angie.orcam.me.uk>
-References: <20240923235617.1584056-1-linux@roeck-us.net> <aa23abe3-7236-4b9e-b237-3b822ac9d186@redhat.com> <CAMuHMdVEfPtwps0A29WvHcwgo3f+3nTBiGn1PFxoYy1dxPsUMA@mail.gmail.com> <bf98fa37-461f-47ce-8d4c-bcb69f225a9c@roeck-us.net>
- <65959acc-c59b-4aca-8ab4-5d0603d22110@redhat.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	by welho-filter3.welho.com (Postfix) with ESMTP id 44B011487F;
+	Tue, 24 Sep 2024 23:58:36 +0300 (EEST)
+X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
+Received: from welho-smtp3.welho.com ([IPv6:::ffff:83.102.41.86])
+	by localhost (welho-filter3.welho.com [::ffff:83.102.41.25]) (amavisd-new, port 10024)
+	with ESMTP id nl99pXjZTXQa; Tue, 24 Sep 2024 23:58:36 +0300 (EEST)
+Received: from [192.168.101.100] (87-92-120-123.bb.dnainternet.fi [87.92.120.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by welho-smtp3.welho.com (Postfix) with ESMTPSA id 026F12309;
+	Tue, 24 Sep 2024 23:58:33 +0300 (EEST)
+Message-ID: <eed880a2-8c02-40d7-813b-c6e8f1b8c197@helsinkinet.fi>
+Date: Tue, 24 Sep 2024 23:58:33 +0300
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] m68k: Drop Atari EtherNAT support when it's not
+ configured in
+To: Michael Schmitz <schmitzmic@gmail.com>,
+ linux-m68k <linux-m68k@lists.linux-m68k.org>
+References: <20240922214821.16818-1-oak@helsinkinet.fi>
+ <4540348c-84f6-4993-97b5-f007771be444@gmail.com>
+Content-Language: en-US
+From: Eero Tamminen <oak@helsinkinet.fi>
+In-Reply-To: <4540348c-84f6-4993-97b5-f007771be444@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, 24 Sep 2024, David Hildenbrand wrote:
+Hi,
 
-> diff --git a/mm/Kconfig b/mm/Kconfig
-> index 09aebca1cae3..4c9f5ea13271 100644
-> --- a/mm/Kconfig
-> +++ b/mm/Kconfig
-> @@ -595,6 +595,7 @@ config ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
->  config SPLIT_PTE_PTLOCKS
->         def_bool y
->         depends on MMU
-> +       depends on SMP
->         depends on NR_CPUS >= 4
+On 24.9.2024 4.03, Michael Schmitz wrote:
+> On 23/09/24 09:48, Eero Tamminen wrote:
+>> Not having it configured, but crash backtraces going through its IRQ
+>> handling code, is confusing (found while debugging issues in Atari
+> 
+> I don't see how backtraces could go through the EtherNAT interrupt code 
+> - the interrupt only gets enabled if the hardware has been detected.
+> 
+> Maybe you meant you see the generic IRQ handling code called for the 
+> EtherNAT's interrupt controller?
 
- I think it might be more intuitive if written as:
+It was many years ago, but I _did_ see one of these functions in Hatari 
+debugger's backtrace, although I had explicitly disabled EtherNAT support.
 
-	depends on SMP && NR_CPUS >= 4
+I don't any more remember what I was debugging, but I think it's 
+something already fixed / supported in Hatari.
 
-(with a note in the change description to the effect that NR_CPUS will 
-have been unset and the condition won't work as expected unless SMP).
+=> Better just to drop that comment?
 
- FWIW,
 
-  Maciej
+>> +#ifdef CONFIG_ATARI_ETHERNAT
+> 
+> I believe we now use
+> 
+> #if IS_ENABLED(CONFIG_ATARI_ETHERNAT)
+
+OK.
+
+
+> but that's perhaps a matter of taste (CONFIG_ATARI_ETHERNAT can't take 
+> the value 'm').
+ >
+> OK by me if it helps with your debugging ...
+
+The issue triggering it is unlikely to appear again, so it's not that 
+important.  But I think those if(def)s are still the correct thing to do.
+
+
+	- Eero
+
+PS. As m68k Linux support is rather old, most of code appears to be 
+still using ifdefs:
+
+$ git grep "ifdef *CONFIG_" arch/m68k/ | wc -l
+336
+
+$ git grep IS_ENABLED arch/m68k/ | wc -l
+62
+
+$ git grep -c "ifdef CONFIG_" arch/m68k/atari/
+arch/m68k/atari/ataints.c:2
+arch/m68k/atari/config.c:7
+arch/m68k/atari/nvram.c:1
+
+$ git grep -c IS_ENABLED arch/m68k/atari/
+arch/m68k/atari/config.c:3
