@@ -1,59 +1,20 @@
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7ECF4C83
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Sep 2024 01:02:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2EEF347C7;
+	Tue, 24 Sep 2024 04:44:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727139767; cv=none; b=CzobS0WFjvweDHFdHxOXxpJjDS+W1O/MuX0wNE4fP1dpgFhZkqcbNQL4D+OUfeuDj2q3dEjhrmoXk4PAcSMkG5liIMxObV37RpJqyohGgspCpZ+qYRmAR8rzgj3s6+J5BHrHgVBrcL+aOU0A5AqLYoLQMLu4vI33zLMwLaoxWWM=
+	t=1727153062; cv=none; b=oZQ/y3ckQEyOcaIaarOZumRBNVHGetNkCJuJqOMUJv/trUqP92eZ2wB7rDNSbaDkM5wtxhLinooS5mcBB4mJCn2M/PKniOmRc89rX/HyRLYkAFki9vY7BF2/w3yu4sY9gEyTrc5brLThymAZ9/JQM30moWGd1SoqnjueBZODljk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727139767; c=relaxed/simple;
-	bh=Kq+VmnEeqvl7biV9vbaDWGtyKSNSACjriF5EG+LPhxI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JA64F4OVl+R1wnyhzggqScXPByAzcyMAPKHh6hckke1T0P0NySDPzN0zp1rLYQUGRwvDI+vf1u88kXSQr1tv1lMY0k6y3mUsusBrdPq+SI3gIsopzV4FmoeNe8yKwZCM7RxOvFWOzW8zbL7KMNfhS145NkdbI8ICCBie+yZheQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FpPNxnkM; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FpPNxnkM"
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2053616fa36so59799055ad.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Sep 2024 18:02:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727139765; x=1727744565; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=c08FS4U7FYHr2DFhFogjZetrIN9aBXfvq2eAQUAVOjw=;
-        b=FpPNxnkMiv7bA3BsiNzDlmtOgVxC1PNNbrhvOJBfbfQZG4ik0lp56YxDHhSzSd2zyA
-         s208nNJk5BV+lXIURjnp+VcX+4yNMn6TOrrz6/bbcbsUizmqCIvgZtc2WWELfgooNBHl
-         0S2fwP14BY2kMTDfEIIuy9CRHoGj2mLIDsEkkJ2EPGgzSuxtScxEepk97dATehYYf9Yz
-         QU2LaDlex97GuW/JJ7+kqlVYbqyTaRiMUPbUGo8/x5Jg0xcLkBsxbRLKvkBotI+eoc+S
-         xM/jRIdHu5oh5LRmDc9LCSONXXVKyPrztWfDC4nDKP1A8s1K034UXK9uVNkwDStbkLIv
-         l/hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727139765; x=1727744565;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=c08FS4U7FYHr2DFhFogjZetrIN9aBXfvq2eAQUAVOjw=;
-        b=Pu1y87FQSQAmUlqLlioX12J1VxekFA/UVCDS99+CaCA/6Qza0GV7oT73Bmv9lSa0V4
-         HJBFRvWS/lB9fQgfVR6y6qhFygyPUbMrZNQegmJ/jsOSqvkdUTRYq6lp7+5BoYf+Besg
-         V+LRHVSpKd4v9tdl++KwTDGRiYdIT1HrZo/R3b7Ug5pVp20fC61X0rYpf/5jftkx9cQS
-         D9XYTOxpLB/O/bcU9T8HaS6Fsc+ZVkRa1qGicOYn11dsdn0BZxeM4aiubeL9bnzJVu7Y
-         RLR2Eu5VyG3kV1jbYc5+mA8CIRCHkETG4Y4hrBMLXRFNeDgDa9x8yFoQHBNW6DW7pRab
-         rfpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXgv2YLGMKgmXf8/R3278QE+qWu5mKbap7to8mnduFtBGif1NlNBcTzC5GBv2e6Rv5/1r92A7y5FkyS@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yzg6cdbaODexcl2VSa9M98ZSrXJljrjOCFocp5+Xe6DBsUHmQuk
-	h9jVArUzoByWuSBhBDajbzC5uokcds5DPQcsqILjhrKxIXg4A+1iLjNm7w==
-X-Google-Smtp-Source: AGHT+IGsbHaPQz3WFZHPurmU28AHrv5JP5IwI4Jj4Ww2Ct4+PxY+NbKIEUMo4Yo9oXxwI1Pdo/X4Jw==
-X-Received: by 2002:a17:902:d503:b0:206:8c4a:7b73 with SMTP id d9443c01a7336-208d8423a80mr172702245ad.50.1727139764916;
-        Mon, 23 Sep 2024 18:02:44 -0700 (PDT)
-Received: from ?IPV6:2001:df0:0:200c:95aa:de8c:5e49:8d4c? ([2001:df0:0:200c:95aa:de8c:5e49:8d4c])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20af1857caesm1365715ad.275.2024.09.23.18.02.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Sep 2024 18:02:44 -0700 (PDT)
-Message-ID: <4540348c-84f6-4993-97b5-f007771be444@gmail.com>
-Date: Tue, 24 Sep 2024 13:03:05 +1200
+	s=arc-20240116; t=1727153062; c=relaxed/simple;
+	bh=g2mPIipiJlH4tYYn+yl6Vjn4Dkwd+g5d/jiNPSYfRDU=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=pi+39PKBoeMnBpB3xGWgZFSZs92+JrVQsYeQ9pHXYrWbIKf9X8L6D1QhkRH4Q1PoIocclK1Tc5H6sdc6W7xVt9IETSSptBhVmy2eepMN8qkP06UoUeGJWpy9RBFe6T+6Dt3gHOekVGcZGxlV82tzxYFUJNGaTiznUYoUR1WNTrY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E45CC4CEC6;
+	Tue, 24 Sep 2024 04:44:20 +0000 (UTC)
+Message-ID: <f9dfef64-a4fe-406c-9daf-1bf46cd23d65@linux-m68k.org>
+Date: Tue, 24 Sep 2024 14:44:18 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -61,86 +22,49 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] m68k: Drop Atari EtherNAT support when it's not
- configured in
-To: Eero Tamminen <oak@helsinkinet.fi>,
- linux-m68k <linux-m68k@lists.linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-References: <20240922214821.16818-1-oak@helsinkinet.fi>
+From: Greg Ungerer <gerg@linux-m68k.org>
+Subject: [git pull] m68knommu changes for v6.12
+To: torvalds@linux-foundation.org
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Linux/m68k <linux-m68k@vger.kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
 Content-Language: en-US
-From: Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <20240922214821.16818-1-oak@helsinkinet.fi>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-Eero,
+Hi Linus,
 
-thanks for your patch!
+Please pull the m68knommu git tree changes for v6.12.
 
-On 23/09/24 09:48, Eero Tamminen wrote:
-> Not having it configured, but crash backtraces going through its IRQ
-> handling code, is confusing (found while debugging issues in Atari
+Only a single change, cleaning up white space in debug message.
 
-I don't see how backtraces could go through the EtherNAT interrupt code 
-- the interrupt only gets enabled if the hardware has been detected.
-
-Maybe you meant you see the generic IRQ handling code called for the 
-EtherNAT's interrupt controller?
-
-> emulation).
->
-> Signed-off-by: Eero Tamminen <oak@helsinkinet.fi>
-> ---
->   arch/m68k/atari/ataints.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/m68k/atari/ataints.c b/arch/m68k/atari/ataints.c
-> index 0465444ce..fa189eeb7 100644
-> --- a/arch/m68k/atari/ataints.c
-> +++ b/arch/m68k/atari/ataints.c
-> @@ -179,6 +179,7 @@ static struct irq_chip atari_mfptimer_chip = {
->   };
->   
->   
-> +#ifdef CONFIG_ATARI_ETHERNAT
-
-I believe we now use
-
-#if IS_ENABLED(CONFIG_ATARI_ETHERNAT)
-
-but that's perhaps a matter of taste (CONFIG_ATARI_ETHERNAT can't take 
-the value 'm').
-
-OK by me if it helps with your debugging ...
-
-Cheers,
-
-     Michael
+Regards
+Greg
 
 
->   /*
->    * EtherNAT CPLD interrupt handling
->    * CPLD interrupt register is at phys. 0x80000023
-> @@ -251,6 +252,7 @@ static struct irq_chip atari_ethernat_chip = {
->   	.irq_enable	= atari_ethernat_enable,
->   	.irq_disable	= atari_ethernat_disable,
->   };
-> +#endif
->   
->   /*
->    * void atari_init_IRQ (void)
-> @@ -343,12 +345,13 @@ void __init atari_init_IRQ(void)
->   			stmfp_base.name, &stmfp_base))
->   		pr_err("Couldn't register %s interrupt\n", stmfp_base.name);
->   
-> +#ifdef CONFIG_ATARI_ETHERNAT
->   	/*
->   	 * EtherNAT ethernet / USB interrupt handlers
->   	 */
-> -
->   	m68k_setup_irq_controller(&atari_ethernat_chip, handle_simple_irq,
->   				  139, 2);
-> +#endif
->   }
->   
->   
+
+
+The following changes since commit da3ea35007d0af457a0afc87e84fddaebc4e0b63:
+
+   Linux 6.11-rc7 (2024-09-08 14:50:28 -0700)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v6.12
+
+for you to fetch changes up to aa99969ef591ca44cbafb320ceceb106792baee3:
+
+   m68k: remove trailing space after \n newline (2024-09-09 08:33:35 +1000)
+
+----------------------------------------------------------------
+m68knommu: updates and fixes for v6.12
+
+Fixes include:
+. remove trailing space in pr_debug message
+
+----------------------------------------------------------------
+Colin Ian King (1):
+       m68k: remove trailing space after \n newline
+
+  arch/m68k/kernel/setup_no.c | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
