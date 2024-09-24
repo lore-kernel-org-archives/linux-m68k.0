@@ -1,66 +1,60 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD4F628370
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Sep 2024 09:32:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 000D11A4E88
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Sep 2024 14:04:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727170371; cv=none; b=pK5DTS8ycPXnhCIoRIKsuRZPCPcW3L24heuqe1rmfqw+ryUjhO6WMakEVD0JnYvt4a93me3RUjuJEvtef23ZdwfJ6MYwBff2VyTWZkwHkO3kQRrNcDuiqMi2xtlD0atz8j9PAtIQlNOcVZLGQ4lTzlHsJSOv/Jnp83CBH8PbwmQ=
+	t=1727186660; cv=none; b=Q0k2AQbXwWpO1v8MoC1zUpDXB6H2sZ/vbrURVjTMRSBtH6sXiL/DTzHWWk6522STxnIzwKHlLJg/EkvNcTE9/5RdN3VtsC+SXwQDgrTAlv/S1IiMjIw7gbK0eycY726s+u+XS7vsLWDmaFquyPsKGvynrgRsfESdZxAyWEkEYpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727170371; c=relaxed/simple;
-	bh=2tZJQFkGkTXBsTyXnq/PcsKbXo0w3VLcb4AtoKgV/Y4=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=CtFiFeAFQej941JPTAQ++PkKTGmn9A0XD4EuwbEjMjgfuEKbxNR3urk7hbU5i5uUe0K3Dh59HYZ3kAhfcqBL1QcXoRIfNLrBYKAXiaRczkiU/2+AnwKgmIJ3EHpoHNLnpbzi64srTrW6TA/7CSj0dYBK8u1jse8l9TbtRxomP0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EDXU56iz; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1727186660; c=relaxed/simple;
+	bh=qFCR3UxfpkNGo19hPCP9KZ136KYB9fHiHMEy8QlD7g8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qR8p7Snd4ucSW1oqYfeGzbGblMIMbLHQPTIjot4GNDp3PmTLZfESTb6TqF4mPHLZTp0vqwDY4DcLAaNape7o4arg3xV9toPyqmZ+tl+5OgfF8IjhP3fJCFuj42JE5HxS+qphlh3VSjgSAQNpzro+clkqP/4jreBTt4DCXXg7EcI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gAaSCvb/; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EDXU56iz"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1727170368;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=SJcOrndr2Q8kdTiLbvvnMMlyzTqrUkUtM9lZEdhJEqo=;
-	b=EDXU56izzSyKBQ0cSncNtgJeacwBXvhSJPcOqrNWyba2jo7/ZLFi9yQPNpfKHm2UJez+Tv
-	uZBeepC+9wd6wrVcxZIF5lsXeDJ6BCRokGAkpXhkUl+3mCQ7A2mmS7UHzrmizJJlKfzUbp
-	bU5+A24ClmL38PWJ8emsJ/HebX7p4pQ=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-63-MVKiHKiwOYC_fBu9YLMREA-1; Tue, 24 Sep 2024 05:32:47 -0400
-X-MC-Unique: MVKiHKiwOYC_fBu9YLMREA-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-374c3402d93so3006603f8f.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Sep 2024 02:32:46 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gAaSCvb/"
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-71970655611so4958131b3a.0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Sep 2024 07:04:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727186657; x=1727791457; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=HQUIrBee375DCFxMj2GyEDRKC5Ol49rT6e3wSpKAzjE=;
+        b=gAaSCvb/DAdGMEVCsVC47CEgX08mG9uTLfpIqGZwKcKoYNKoQnxmfHIM78UJuRF9CV
+         swQkEkItxMKFaFMIbyHFRWfcOIQygkclGwBoP+TwMZIRS7TRR9KLdGC1hbs4Ido899GM
+         ZKLr76PLvV+PPqCCB91AudGS3OZmE6sYxTD1zesYzo/dwhumtABCdjmFr5D0lU8WRdJe
+         Cm+gf2Hk3MVDK3UAyKz/WeazsFCukR6PKxSW4zydGHlR0m+NUFGsMEpWd9P5zgn3afhs
+         FjPSBla7kwbQwgUHu93HrkaMjzX8yHOjBZokNqGgUzoFrhcZKOHM6u4Bi5iFyRX2Sp6b
+         a9lQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727170366; x=1727775166;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:from:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=SJcOrndr2Q8kdTiLbvvnMMlyzTqrUkUtM9lZEdhJEqo=;
-        b=lD62tLEr+g0EDpffhpvzkrn1cLu1fmTVXH0C1RC96SPK1LnHi4VP4ZHrag9quGqrnl
-         TBWFH7gKM/lUWBuZF83VFKwZ7PjHKuhDAxg0yKn26r1D6+H0/nSt08Jtg3wWaqW2/H5v
-         GSmEZpHklugEKtN7sfo26hEbqmUffIC14Xks4uqNUIp57SXwpECmxvRPovpO78LeTXaB
-         evjtyv7RvmS/15UluB5y+Lmv4xQQq/MjcFe+GwllUvOnjMTRj5SR+hKPkkMWvqgDYpYJ
-         UlZnCIZg/ayyiHkjerj3B/6TzaeExF1wMWcJkew0AojBtM/PGI0WBvu7yfMz/5CvUCRz
-         mgAw==
-X-Forwarded-Encrypted: i=1; AJvYcCUsNJlIp8RE6Tts97BS04EsfPCcHlgAOU6W1jpVnLZKnLWQrSc6kczj6SIyBRVyFEXWO/sV+Zh8M6cI@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yx0XZJN5a4hnaPDkvIQwvc6qVpIMSYpP6iiQBJMhzA921kQSGvP
-	/RWmw3CVpWPSEBVWqeXBxt/K+4MNSGe7e29VC+4ONZ0ZR9zGGHMZr8ncund83vxvJWWJLQPBYz3
-	4KEUW+Jux0jWpoSVgjapVzGgEW+qPzsNNnJUKloPgmFljdqM5SYiC4dUD4zNmBLALGA==
-X-Received: by 2002:a05:6000:88a:b0:374:c8e0:d76b with SMTP id ffacd0b85a97d-37a43147c09mr8011120f8f.6.1727170365814;
-        Tue, 24 Sep 2024 02:32:45 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEDigGYORRKpsBhGsyLJBhWYL7Lww57gawSioYf+/xms9HoOPaT27ejHpSOx2colrco15ssXw==
-X-Received: by 2002:a05:6000:88a:b0:374:c8e0:d76b with SMTP id ffacd0b85a97d-37a43147c09mr8011106f8f.6.1727170365401;
-        Tue, 24 Sep 2024 02:32:45 -0700 (PDT)
-Received: from [10.202.151.204] (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37cbc2cf138sm1092835f8f.58.2024.09.24.02.32.44
+        d=1e100.net; s=20230601; t=1727186657; x=1727791457;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HQUIrBee375DCFxMj2GyEDRKC5Ol49rT6e3wSpKAzjE=;
+        b=ATh9uiq+5s1HbMPbxhjW8Yx4wRVp6N5Mvdv1K1qsxSbOipVZkAXGKeRocQuMaLs+uE
+         /aQkC+pTNW8rrZej9jYCIOmi7fTnjqPxuV0xGhQz6py4Jj+5CgNRXOzwFCmMPi3fdNmq
+         /5AHqO0daOA3Kok5FyjyaHfGBdpGDtknjPoZ/Z0VjRkaFH81viNhz0YVE+rGCGgVSZP1
+         K1iUfWiHGJROosnddXTsKHW6FV0E7VHGJGFRiaNyJXMjcL85i94OW7gUYfQ0QZfccNMY
+         FF70LUtlD8tLJxrvMwLS+ckhB1PBLj0DgnWiQGvh4p2rUdzMsiDIhiMQbstcrpcOZ3iR
+         PW5Q==
+X-Gm-Message-State: AOJu0YxAzuPKRnSpy6RpA9gCjCoYAltQN7OKsx/QvwEfJGOilRn+6D63
+	Gdkx/7LMhnD4mBFD/QYQB9q1n2WHMhMWIO3IdRp9hnFQ9n1p3jP4
+X-Google-Smtp-Source: AGHT+IGLNlpaoT+0CNXmx72HCBqed7ch4wexyZM6bv3QwaNd9deNPTwYdnzOslG8UIMYSoRBjMG41w==
+X-Received: by 2002:a05:6a00:2314:b0:70b:176e:b3bc with SMTP id d2e1a72fcca58-7199ce48b01mr22234716b3a.28.1727186657200;
+        Tue, 24 Sep 2024 07:04:17 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71afc9c6f26sm1233572b3a.193.2024.09.24.07.04.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Sep 2024 02:32:44 -0700 (PDT)
-Message-ID: <50912944-296b-4a15-9da5-a257e4c8801e@redhat.com>
-Date: Tue, 24 Sep 2024 11:32:43 +0200
+        Tue, 24 Sep 2024 07:04:16 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <bf98fa37-461f-47ce-8d4c-bcb69f225a9c@roeck-us.net>
+Date: Tue, 24 Sep 2024 07:04:14 -0700
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -69,106 +63,96 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v2] m68k: Define NR_CPUS
-From: David Hildenbrand <david@redhat.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Guenter Roeck <linux@roeck-us.net>, linux-m68k@lists.linux-m68k.org,
- linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>,
+ David Hildenbrand <david@redhat.com>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>
 References: <20240923235617.1584056-1-linux@roeck-us.net>
  <aa23abe3-7236-4b9e-b237-3b822ac9d186@redhat.com>
  <CAMuHMdVEfPtwps0A29WvHcwgo3f+3nTBiGn1PFxoYy1dxPsUMA@mail.gmail.com>
- <66d5e0c1-a6f2-47fd-9a5b-7651457beb43@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <66d5e0c1-a6f2-47fd-9a5b-7651457beb43@redhat.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
 Content-Language: en-US
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <CAMuHMdVEfPtwps0A29WvHcwgo3f+3nTBiGn1PFxoYy1dxPsUMA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 24.09.24 10:07, David Hildenbrand wrote:
-> On 24.09.24 09:48, Geert Uytterhoeven wrote:
->> Hi David,
->>
->> On Tue, Sep 24, 2024 at 9:34 AM David Hildenbrand <david@redhat.com> wrote:
->>> On 24.09.24 01:56, Guenter Roeck wrote:
->>>> v2: Instead of trying to make SPLIT_PTE_PTLOCKS depend on the
->>>>        existence of NR_CPUS, define NR_CPUS for m68k.
->>>
->>> Okay, looks like we're cleaning up CONFIG_NR_CPUS for good.
->>>
->>> I'm back from conference travel tomorrow; I'll then throw in the following
->>> into cross compilers and fixup any other arch that needs attention:
->>>
->>>
->>> diff --git a/include/linux/threads.h b/include/linux/threads.h
->>> index 1674a471b0b4..e31715e6746b 100644
->>> --- a/include/linux/threads.h
->>> +++ b/include/linux/threads.h
->>> @@ -13,8 +13,7 @@
->>>      * bit of memory.  Use nr_cpu_ids instead of this except for static bitmaps.
->>>      */
->>>     #ifndef CONFIG_NR_CPUS
->>> -/* FIXME: This should be fixed in the arch's Kconfig */
->>> -#define CONFIG_NR_CPUS 1
->>> +#error "CONFIG_NR_CPUS not defined"
->>>     #endif
->>>
->>>     /* Places which use this should consider cpumask_var_t. */
->>
->> This is gonna trigger on almost all architectures if CONFIG_SMP=n.
+On 9/24/24 00:48, Geert Uytterhoeven wrote:
+> Hi David,
 > 
-> Right, probably it's not as easy as:
+> On Tue, Sep 24, 2024 at 9:34 AM David Hildenbrand <david@redhat.com> wrote:
+>> On 24.09.24 01:56, Guenter Roeck wrote:
+>>> v2: Instead of trying to make SPLIT_PTE_PTLOCKS depend on the
+>>>       existence of NR_CPUS, define NR_CPUS for m68k.
+>>
+>> Okay, looks like we're cleaning up CONFIG_NR_CPUS for good.
+>>
+>> I'm back from conference travel tomorrow; I'll then throw in the following
+>> into cross compilers and fixup any other arch that needs attention:
+>>
+>>
+>> diff --git a/include/linux/threads.h b/include/linux/threads.h
+>> index 1674a471b0b4..e31715e6746b 100644
+>> --- a/include/linux/threads.h
+>> +++ b/include/linux/threads.h
+>> @@ -13,8 +13,7 @@
+>>     * bit of memory.  Use nr_cpu_ids instead of this except for static bitmaps.
+>>     */
+>>    #ifndef CONFIG_NR_CPUS
+>> -/* FIXME: This should be fixed in the arch's Kconfig */
+>> -#define CONFIG_NR_CPUS 1
+>> +#error "CONFIG_NR_CPUS not defined"
+>>    #endif
+>>
+>>    /* Places which use this should consider cpumask_var_t. */
+> 
+> This is gonna trigger on almost all architectures if CONFIG_SMP=n.
+> 
 
-Yeah, as assumed, Kconfig behaves weird if a symbol is not around. Let 
-me think about this the upcoming weeks. Making split locks depend on SMP 
-should make it work for now.
+Guess that means that my patch won't work either. Any better ideas ?
 
--- 
-Cheers,
+Guenter
 
-David / dhildenb
 
