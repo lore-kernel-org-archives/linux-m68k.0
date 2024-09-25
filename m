@@ -1,34 +1,41 @@
-Received: from welho-filter2.welho.com (welho-filter2b.welho.com [83.102.41.28])
+Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 508C21862BD
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Sep 2024 23:11:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.102.41.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 579E7139563
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 25 Sep 2024 10:05:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.235.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727219521; cv=none; b=mZDJcqhL5XUMNrcQfY00UGwApEaSnWDxjdQloprAJB11g4WnbfeONd41N74loa4iNdrP31aBPMQSc1fnr13GB8CLBsndubOovhg45lqLqvCyeaAQepKOKxsdw7u0ecWuRHKCtrXXRvCbuutARq4BH2vm0qPm2gMXjiOEOWDyb1g=
+	t=1727258738; cv=none; b=GV+wh+lXihvi/Qi+kR/xd0v/Jkf3IMMXddkBsJGci5n+uecigo29P1hGEO+b/TkNZgAqNyeMMWQ7IIECv2+rASpgyorZNxVv4QaleQUcYUUH0yf5wf30GE9AtfZ8qbfbpmAO1YX+RUz/eYFuCD8pedqPPEZQh6RE3lcOA9bshCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727219521; c=relaxed/simple;
-	bh=4S2FgCVGZBSvug9/jMIHjA8+tk1HsICTcPiRKAUNZ2k=;
+	s=arc-20240116; t=1727258738; c=relaxed/simple;
+	bh=qGQI1uV9gNC0+wFAUvqgZd/1D5PbfUTEFlfPnBq4z74=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MORjdmSSZH3C1PmCD80CjADJBcPl7V8sPMpbkOxbqSKn/dqx87OmXuflzptCNGCXTGYEHYb7sMHdEJkJ5J2kXSW0V79wXUuwMfFJFFJ+ahgCqw0j3rbyQ4LpnGum0TppZFDsq2DqXmGYdEAjieBC1YmXd8UwAmfvnh4iFoSPDiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=helsinkinet.fi; spf=pass smtp.mailfrom=helsinkinet.fi; arc=none smtp.client-ip=83.102.41.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=helsinkinet.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=helsinkinet.fi
+	 In-Reply-To:Content-Type; b=K3CqNewdwzYmZOrjtjj0eMBG/5PwdrY1ehWrMcLkM3YEhl7VDkIjspmNbyNjSSbuyvDk2Vda22Gfj6siCZUu6Kbpdkyx/EB9t1IphrEiRJPWijw6n51uTj4LXpm1EbUD+d9Oga4nfCtVFWq/Dk5TdDvJn1Dsb+fZrvg65+KyOu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.235.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+	by localhost (Postfix) with ESMTP id 4XDC664Lgnz9sSK;
+	Wed, 25 Sep 2024 12:05:34 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id tdRuDw19ZA5l; Wed, 25 Sep 2024 12:05:34 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+	by pegase2.c-s.fr (Postfix) with ESMTP id 4XDC663XQwz9sRr;
+	Wed, 25 Sep 2024 12:05:34 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-	by welho-filter2.welho.com (Postfix) with ESMTP id D2FA943D2D;
-	Wed, 25 Sep 2024 02:11:48 +0300 (EEST)
-X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
-Received: from welho-smtp1.welho.com ([IPv6:::ffff:83.102.41.84])
-	by localhost (welho-filter2.welho.com [::ffff:83.102.41.24]) (amavisd-new, port 10024)
-	with ESMTP id DLmFt58FdZaT; Wed, 25 Sep 2024 02:11:47 +0300 (EEST)
-Received: from [192.168.101.100] (87-92-120-123.bb.dnainternet.fi [87.92.120.123])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by welho-smtp1.welho.com (Postfix) with ESMTPSA id 64A0828B;
-	Wed, 25 Sep 2024 02:11:45 +0300 (EEST)
-Message-ID: <fff20dd3-d82b-4095-b367-1aaf118ef8a0@helsinkinet.fi>
-Date: Wed, 25 Sep 2024 02:11:45 +0300
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 66F1B8B76E;
+	Wed, 25 Sep 2024 12:05:34 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+	with ESMTP id PJHxtpbIOOEt; Wed, 25 Sep 2024 12:05:34 +0200 (CEST)
+Received: from [192.168.232.90] (PO27091.IDSI0.si.c-s.fr [192.168.232.90])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id CBE218B763;
+	Wed, 25 Sep 2024 12:05:33 +0200 (CEST)
+Message-ID: <f40ea8bf-0862-41a7-af19-70bfbd838568@csgroup.eu>
+Date: Wed, 25 Sep 2024 12:05:33 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -36,66 +43,68 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] m68k: Drop Atari EtherNAT support when it's not
- configured in
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>
-References: <20240922214821.16818-1-oak@helsinkinet.fi>
- <4540348c-84f6-4993-97b5-f007771be444@gmail.com>
- <eed880a2-8c02-40d7-813b-c6e8f1b8c197@helsinkinet.fi>
- <877cb03gju.fsf@igel.home>
-Content-Language: en-US
-From: Eero Tamminen <oak@helsinkinet.fi>
-In-Reply-To: <877cb03gju.fsf@igel.home>
+Subject: Re: [PATCH V2 0/7] mm: Use pxdp_get() for accessing page table
+ entries
+To: Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
+ "Mike Rapoport (IBM)" <rppt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ x86@kernel.org, linux-m68k@lists.linux-m68k.org,
+ linux-fsdevel@vger.kernel.org, kasan-dev@googlegroups.com,
+ linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+References: <20240917073117.1531207-1-anshuman.khandual@arm.com>
+Content-Language: fr-FR
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+In-Reply-To: <20240917073117.1531207-1-anshuman.khandual@arm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi,
 
-On 25.9.2024 0.09, Andreas Schwab wrote:
-> On Sep 24 2024, Eero Tamminen wrote:
->> On 24.9.2024 4.03, Michael Schmitz wrote:
->>> On 23/09/24 09:48, Eero Tamminen wrote:
->>>> Not having it configured, but crash backtraces going through its IRQ
->>>> handling code, is confusing (found while debugging issues in Atari
->>> I don't see how backtraces could go through the EtherNAT interrupt code
->>> - the interrupt only gets enabled if the hardware has been detected.
->>> Maybe you meant you see the generic IRQ handling code called for the
->>> EtherNAT's interrupt controller?
->>
->> It was many years ago, but I _did_ see one of these functions in Hatari
->> debugger's backtrace, although I had explicitly disabled EtherNAT support.
+
+Le 17/09/2024 à 09:31, Anshuman Khandual a écrit :
+> This series converts all generic page table entries direct derefences via
+> pxdp_get() based helpers extending the changes brought in via the commit
+> c33c794828f2 ("mm: ptep_get() conversion"). First it does some platform
+> specific changes for m68k and x86 architecture.
 > 
-> That can easily happen if a word on the stack happens to match the
-> address range of an unrelated function.
+> This series has been build tested on multiple architecture such as x86,
+> arm64, powerpc, powerpc64le, riscv, and m68k etc.
 
-Hatari debugger backtrace does not rely on frame pointers or stack 
-content unwinding, i.e. it's immune to stack corruption.
+Seems like this series imply sub-optimal code with unnecessary reads.
 
-Backtrace is a by-product of Hatari profiler, which tracks every 
-emulated (CPU & DSP) instruction and constructs call-graph while the 
-code runs, by comparing PC register values against function addresses.
+Lets take a simple exemple : function mm_find_pmd() in mm/rmap.c
 
----
+On a PPC32 platform (2 level pagetables):
 
-LILO functionality in Hatari reads function addresses from the 
-(specified) "Symbol.map" file (in addition to starting kernel). After 
-typing "profile on" in debugger, one sees backtrace every time debugger 
-is invoked.
+Before the patch:
 
-(To trace all kernel function calls, one can use Hatari "--trace 
-cpu_symbols" option, which can be toggled in the debugger, either 
-manually, or automatically by a breakpoint.  To trace a subset of the 
-function calls, one can remove others from the "Symbols.map" file.)
+00001b54 <mm_find_pmd>:
+     1b54:	80 63 00 18 	lwz     r3,24(r3)
+     1b58:	54 84 65 3a 	rlwinm  r4,r4,12,20,29
+     1b5c:	7c 63 22 14 	add     r3,r3,r4
+     1b60:	4e 80 00 20 	blr
 
+Here, the function reads mm->pgd, then calculates and returns a pointer 
+to the PMD entry corresponding to the address.
 
-	- Eero
+After the patch:
 
-PS. To do similar instruction tracking for PCs would need special data 
-collection HW and offline data processing (ARM ETM [1] & Intel PTI [2]), 
-but when emulating old/slow m68k machines, it can all be done in SW at 
-real-time.
+00001b54 <mm_find_pmd>:
+     1b54:	81 23 00 18 	lwz     r9,24(r3)
+     1b58:	54 84 65 3a 	rlwinm  r4,r4,12,20,29
+     1b5c:	7d 49 20 2e 	lwzx    r10,r9,r4	<= useless read
+     1b60:	7c 69 22 14 	add     r3,r9,r4
+     1b64:	7d 49 20 2e 	lwzx    r10,r9,r4	<= useless read
+     1b68:	7d 29 20 2e 	lwzx    r9,r9,r4	<= useless read
+     1b6c:	4e 80 00 20 	blr
 
-[1] 
-https://developer.arm.com/documentation/ddi0488/h/embedded-trace-macrocell/about-etm
-[2] https://lldb.llvm.org/use/intel_pt.html
+Here, the function also reads mm->pgd and still calculates and returns a 
+pointer to the PMD entry corresponding to the address. But in addition 
+to that it reads three times that entry while doing nothing at all with 
+the value read.
+
+On PPC32, PMD/PUD/P4D are single entry tables folded into the 
+corresponding PGD entry, it is therefore pointless to read the 
+intermediate entries.
+
+Christophe
