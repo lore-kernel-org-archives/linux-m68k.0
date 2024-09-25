@@ -1,110 +1,73 @@
-Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 579E7139563
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 25 Sep 2024 10:05:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.235.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69E49481CE
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 25 Sep 2024 17:13:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.18.0.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727258738; cv=none; b=GV+wh+lXihvi/Qi+kR/xd0v/Jkf3IMMXddkBsJGci5n+uecigo29P1hGEO+b/TkNZgAqNyeMMWQ7IIECv2+rASpgyorZNxVv4QaleQUcYUUH0yf5wf30GE9AtfZ8qbfbpmAO1YX+RUz/eYFuCD8pedqPPEZQh6RE3lcOA9bshCE=
+	t=1727284430; cv=none; b=qQZa+dbiLSmrSiQBoZgbAyLAbwAFqfaoKx43f52VAWcEhl9NPJbG/fjaeR4t4FqB+ctjyt1y5oOnZgt9HzDTBohUxEd0PzxkcJquJ3C4g4/hahNXKygZY0d5lNNhADc5PoFVVrttKrUwy0/uq2qxhlhxTxOMQeERE3NP1k6xilM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727258738; c=relaxed/simple;
-	bh=qGQI1uV9gNC0+wFAUvqgZd/1D5PbfUTEFlfPnBq4z74=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=K3CqNewdwzYmZOrjtjj0eMBG/5PwdrY1ehWrMcLkM3YEhl7VDkIjspmNbyNjSSbuyvDk2Vda22Gfj6siCZUu6Kbpdkyx/EB9t1IphrEiRJPWijw6n51uTj4LXpm1EbUD+d9Oga4nfCtVFWq/Dk5TdDvJn1Dsb+fZrvg65+KyOu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.235.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-	by localhost (Postfix) with ESMTP id 4XDC664Lgnz9sSK;
-	Wed, 25 Sep 2024 12:05:34 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id tdRuDw19ZA5l; Wed, 25 Sep 2024 12:05:34 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase2.c-s.fr (Postfix) with ESMTP id 4XDC663XQwz9sRr;
-	Wed, 25 Sep 2024 12:05:34 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 66F1B8B76E;
-	Wed, 25 Sep 2024 12:05:34 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id PJHxtpbIOOEt; Wed, 25 Sep 2024 12:05:34 +0200 (CEST)
-Received: from [192.168.232.90] (PO27091.IDSI0.si.c-s.fr [192.168.232.90])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id CBE218B763;
-	Wed, 25 Sep 2024 12:05:33 +0200 (CEST)
-Message-ID: <f40ea8bf-0862-41a7-af19-70bfbd838568@csgroup.eu>
-Date: Wed, 25 Sep 2024 12:05:33 +0200
+	s=arc-20240116; t=1727284430; c=relaxed/simple;
+	bh=gTVOO+x9Y7oPgLbbH7bzS8lNXQibWxzPAKJ0EEcSiwg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=jp8Qh216VCYPn/jYV2mhRNlH23fl+j+CoH4btuC5thA/CnV1MNVAGBAz8fAmcuoQ8IrRPfWHEp1uprs/Tq51P330h+9Qf+DuPKrhHhAuhWLJdztN94Nhe6YXct1gcbOoG6hCZ7BrtFTpM0PN7WlJYGuZ/Z3OmmAw47uIWOyt+zY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=nefkom.net; arc=none smtp.client-ip=212.18.0.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nefkom.net
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+	by mail-out.m-online.net (Postfix) with ESMTP id 4XDNc61JdYz1s95F;
+	Wed, 25 Sep 2024 19:13:42 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.68])
+	by mail.m-online.net (Postfix) with ESMTP id 4XDNc56wFgz1qqlS;
+	Wed, 25 Sep 2024 19:13:41 +0200 (CEST)
+X-Virus-Scanned: amavis at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+ by localhost (dynscan1.mail.m-online.net [192.168.6.68]) (amavis, port 10024)
+ with ESMTP id g8u3XRVxkJPz; Wed, 25 Sep 2024 19:13:40 +0200 (CEST)
+X-Auth-Info: jeleWnYl8mNkHCNbhRIJtw4BZCyDDwd0ahalZr0dm9vmXvMJ3Gbb5LopOhy+mFSF
+Received: from igel.home (aftr-62-216-205-55.dynamic.mnet-online.de [62.216.205.55])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.mnet-online.de (Postfix) with ESMTPSA;
+	Wed, 25 Sep 2024 19:13:40 +0200 (CEST)
+Received: by igel.home (Postfix, from userid 1000)
+	id 622052C1A09; Wed, 25 Sep 2024 19:13:18 +0200 (CEST)
+From: Andreas Schwab <schwab@linux-m68k.org>
+To: Eero Tamminen <oak@helsinkinet.fi>
+Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>
+Subject: Re: [PATCH 1/2] m68k: Drop Atari EtherNAT support when it's not
+ configured in
+In-Reply-To: <fff20dd3-d82b-4095-b367-1aaf118ef8a0@helsinkinet.fi> (Eero
+	Tamminen's message of "Wed, 25 Sep 2024 02:11:45 +0300")
+References: <20240922214821.16818-1-oak@helsinkinet.fi>
+	<4540348c-84f6-4993-97b5-f007771be444@gmail.com>
+	<eed880a2-8c02-40d7-813b-c6e8f1b8c197@helsinkinet.fi>
+	<877cb03gju.fsf@igel.home>
+	<fff20dd3-d82b-4095-b367-1aaf118ef8a0@helsinkinet.fi>
+X-Yow: I want to dress you up as TALLULAH BANKHEAD and cover you with
+ VASELINE and WHEAT THINS..
+Date: Wed, 25 Sep 2024 19:13:18 +0200
+Message-ID: <87y13f3bdd.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 0/7] mm: Use pxdp_get() for accessing page table
- entries
-To: Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
- "Mike Rapoport (IBM)" <rppt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- x86@kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-fsdevel@vger.kernel.org, kasan-dev@googlegroups.com,
- linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-References: <20240917073117.1531207-1-anshuman.khandual@arm.com>
-Content-Language: fr-FR
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-In-Reply-To: <20240917073117.1531207-1-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
+On Sep 25 2024, Eero Tamminen wrote:
 
+> Hatari debugger backtrace does not rely on frame pointers or stack content
+> unwinding, i.e. it's immune to stack corruption.
 
-Le 17/09/2024 à 09:31, Anshuman Khandual a écrit :
-> This series converts all generic page table entries direct derefences via
-> pxdp_get() based helpers extending the changes brought in via the commit
-> c33c794828f2 ("mm: ptep_get() conversion"). First it does some platform
-> specific changes for m68k and x86 architecture.
-> 
-> This series has been build tested on multiple architecture such as x86,
-> arm64, powerpc, powerpc64le, riscv, and m68k etc.
+That has nothing to do with stack corruption.  Valid user-space
+addresses can very well happen to match kernel adresses, since the
+address spaces overlap.
 
-Seems like this series imply sub-optimal code with unnecessary reads.
-
-Lets take a simple exemple : function mm_find_pmd() in mm/rmap.c
-
-On a PPC32 platform (2 level pagetables):
-
-Before the patch:
-
-00001b54 <mm_find_pmd>:
-     1b54:	80 63 00 18 	lwz     r3,24(r3)
-     1b58:	54 84 65 3a 	rlwinm  r4,r4,12,20,29
-     1b5c:	7c 63 22 14 	add     r3,r3,r4
-     1b60:	4e 80 00 20 	blr
-
-Here, the function reads mm->pgd, then calculates and returns a pointer 
-to the PMD entry corresponding to the address.
-
-After the patch:
-
-00001b54 <mm_find_pmd>:
-     1b54:	81 23 00 18 	lwz     r9,24(r3)
-     1b58:	54 84 65 3a 	rlwinm  r4,r4,12,20,29
-     1b5c:	7d 49 20 2e 	lwzx    r10,r9,r4	<= useless read
-     1b60:	7c 69 22 14 	add     r3,r9,r4
-     1b64:	7d 49 20 2e 	lwzx    r10,r9,r4	<= useless read
-     1b68:	7d 29 20 2e 	lwzx    r9,r9,r4	<= useless read
-     1b6c:	4e 80 00 20 	blr
-
-Here, the function also reads mm->pgd and still calculates and returns a 
-pointer to the PMD entry corresponding to the address. But in addition 
-to that it reads three times that entry while doing nothing at all with 
-the value read.
-
-On PPC32, PMD/PUD/P4D are single entry tables folded into the 
-corresponding PGD entry, it is therefore pointless to read the 
-intermediate entries.
-
-Christophe
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
