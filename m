@@ -1,86 +1,114 @@
-Received: from welho-filter1.welho.com (welho-filter1b.welho.com [83.102.41.27])
+Received: from fhigh-a1-smtp.messagingengine.com (fhigh-a1-smtp.messagingengine.com [103.168.172.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57E321531C3
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Sep 2024 15:41:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.102.41.27
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C37D616A940
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 27 Sep 2024 03:44:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727365306; cv=none; b=ipHrmjo7OIkKR/sa9dyJraO7wMpHiiYDESeP0I1Uk9UzHxYq+HRgK/GfPDYcd9yq6t73P+VEok5O8sgIDKBxClLG7pKZ4XwuW6D3WGiY2ItEUhbwCFni8AgdSTJRNdfSQUZen6OVIhoUeCxEc7cLzo7UI5C+YpsICR7kvanJXjA=
+	t=1727408691; cv=none; b=sHvILOV3D35H7I98o3m7pV14297ugheXUhCVejzBksQfjSbltW4jxfccIeYBoJGd9ikRQSbaIoMYuTtwJ8NxNCPkLyIoC2kSmK79CaTdS4Bb97TMd8DKwwCh8C4FVIFJjkUkqAwy1eO8EwGl+6i7Bq+1Se+OkqzceKWIQue/Wc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727365306; c=relaxed/simple;
-	bh=aEyxJFVU4le/9fytLYCX69m6JEBzYttgPehO4MOBEdw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eXGYtz/vmkGODyv4zDaQs1PP/cFcyIUow0zAjW3AvBCKSGKE5Cz0ItWJIUuV5O6wR/jGWpqrdimtRFhJgXlfxEY8WnS5AWw9rGSz6VkuZXPe/pw3IiEgECEF5VOzl/FpgQJkqkDwvvlt5oD0Wh7Ss7JaM3B82QayMVSvb/Zgm+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=helsinkinet.fi; spf=pass smtp.mailfrom=helsinkinet.fi; arc=none smtp.client-ip=83.102.41.27
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=helsinkinet.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=helsinkinet.fi
-Received: from localhost (localhost [127.0.0.1])
-	by welho-filter1.welho.com (Postfix) with ESMTP id 726FE1E347;
-	Thu, 26 Sep 2024 18:41:34 +0300 (EEST)
-X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
-Received: from welho-smtp1.welho.com ([IPv6:::ffff:83.102.41.84])
-	by localhost (welho-filter1.welho.com [::ffff:83.102.41.23]) (amavisd-new, port 10024)
-	with ESMTP id XCCo6QGZjfjG; Thu, 26 Sep 2024 18:41:34 +0300 (EEST)
-Received: from [192.168.101.100] (87-94-156-238.rev.dnainternet.fi [87.94.156.238])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by welho-smtp1.welho.com (Postfix) with ESMTPSA id 39A2B28B;
-	Thu, 26 Sep 2024 18:41:32 +0300 (EEST)
-Message-ID: <87652f3d-34c0-40f6-89a2-87dd37c8d3bf@helsinkinet.fi>
-Date: Thu, 26 Sep 2024 18:41:31 +0300
+	s=arc-20240116; t=1727408691; c=relaxed/simple;
+	bh=BFTMXjsJUXj5NPaF62A/JFf9/pqXbvdo6o2yyb0p+h0=;
+	h=To:Cc:Message-Id:From:Subject:Date; b=GPtlxP1PEXI+8SZuj3UEqZFYDmU7QCWm7dk8mwTAKSkbA3F2m+Hiz+BHZCZSzzH/TZyFP4fNXOe/6uS5CMbn5VozfPmRHkGER8eRCgs4s82xyEY9rrTQDzZr9bxO5ssIMsMblELb9toGINTGLwJLo0uZVWdcd1XOccHPi37XLaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=mb6ACb2m; arc=none smtp.client-ip=103.168.172.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="mb6ACb2m"
+Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id D88D011402E2;
+	Thu, 26 Sep 2024 23:44:48 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-11.internal (MEProxy); Thu, 26 Sep 2024 23:44:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm2; t=1727408688; x=1727495088; bh=oGZSHCAHh7Zro
+	bVvoT/9SGQPes/DFGJyyldyVI2O+8Y=; b=mb6ACb2mcis/q9hdsxBZ9FV9Dj016
+	NEbQFwZzU2vPNUPsoKWsaEnj2srveAzDFeyLZZUiswubuDIJmw5KepFDkOemyKhM
+	PU9S09E5Z6pBYUdo+Xld8QrfZmVweweJCH0pEIWJtdOf7p5iprSDRKLFFwo9Ml6V
+	FYo3JtGO2QW7ZfRbD5KrGLoBRaFeagqJPh1BSENXMDorLrQ9sQx+dZ88/gfRhVI/
+	otVb5X38wAmOHMdUKJSnoUKwrpiDrEC0+RSWfbTsrshwG6egqwmQOjcWBoJLqlfd
+	wL6WT2m79xV7ebGQqNyET+5x8LZ2XyVstg4p2f8OQV1NlQdK+KxSz6GfA==
+X-ME-Sender: <xms:MCr2Zr-RzJ_ZmUorZ5-t7WWY_WMK_fSPgBaSJEHqPxv5KSyCxDpjiQ>
+    <xme:MCr2ZnvEFRslWHXr05z0SFNFKM4u_Qgx74-uArQKWW5fzbPP_WUMQ6xgV2NGQRV_A
+    ooX0tJ-jFvOeRF5bQ4>
+X-ME-Received: <xmr:MCr2ZpCCj9lTLE6t5D8fxapjP_6emxDX5RGoM6cL_xJTBYOl7FYS68bE7KP_OGHrkWzYie5jA_4QKovKbXcUvO0Lcr9ai7kBLYU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddtkedgjeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepvfevkffhufffsedttdertddttddtnecuhfhrohhm
+    pefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqe
+    enucggtffrrghtthgvrhhnpefhieduudefheetheffgeetgeffvdduleelgeejgeeigfdv
+    gfefjedvvddtueduteenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdgvnhhtrhihrd
+    hssgenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehf
+    thhhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopeehpdhmoh
+    guvgepshhmthhpohhuthdprhgtphhtthhopehsthgrsghlvgeskhgvrhhnvghlrdhorhhg
+    pdhrtghpthhtohepghgvvghrtheslhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtoh
+    epvhhirhhoseiivghnihhvrdhlihhnuhigrdhorhhgrdhukhdprhgtphhtthhopehlihhn
+    uhigqdhmieekkheslhhishhtshdrlhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtoh
+    eplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:MCr2ZndjCxMcXSdYc3PN6zZFoBLzQx4jnv4Tza-CEkm9w-XJrFvBdA>
+    <xmx:MCr2ZgMILndxCqS59B3jRj24D0mjMEQn0VskwUjzEsJJzufeq5ds3w>
+    <xmx:MCr2Zpm3dpfcebHasyMGmZ5Ax9xiFj_1SacrrS7xhxKg_l7hnDlHHg>
+    <xmx:MCr2ZqszKYgKBCGZlWdeZVbNdPLMl_aU5IeQ9JgS52nDZiYw_jBMrQ>
+    <xmx:MCr2ZtpsDyZx1p2I_BbqNnsD9A8q999dHGHmXbLCeo1cibpG0lRt9KWh>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 26 Sep 2024 23:44:45 -0400 (EDT)
+To: stable@kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+    Al Viro <viro@zeniv.linux.org.uk>,
+    linux-m68k@lists.linux-m68k.org,
+    linux-kernel@vger.kernel.org
+Message-Id: <6f3e4ce6abf8b4b1f451f94ea2213a2977986bda.1727408466.git.fthain@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH] m68k: Update ->thread.esp0 before calling syscall_trace() in
+ ret_from_signal
+Date: Fri, 27 Sep 2024 13:41:06 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] m68k: Drop Atari EtherNAT support when it's not
- configured in
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>
-References: <20240922214821.16818-1-oak@helsinkinet.fi>
- <4540348c-84f6-4993-97b5-f007771be444@gmail.com>
- <eed880a2-8c02-40d7-813b-c6e8f1b8c197@helsinkinet.fi>
- <877cb03gju.fsf@igel.home>
- <fff20dd3-d82b-4095-b367-1aaf118ef8a0@helsinkinet.fi>
- <87y13f3bdd.fsf@igel.home>
-Content-Language: en-US
-From: Eero Tamminen <oak@helsinkinet.fi>
-In-Reply-To: <87y13f3bdd.fsf@igel.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hi,
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-On 25.9.2024 20.13, Andreas Schwab wrote:
-> On Sep 25 2024, Eero Tamminen wrote:
-> 
->> Hatari debugger backtrace does not rely on frame pointers or stack content
->> unwinding, i.e. it's immune to stack corruption.
-> 
-> That has nothing to do with stack corruption.  Valid user-space
-> addresses can very well happen to match kernel adresses, since the
-> address spaces overlap.
+[ Upstream commit 50e43a57334400668952f8e551c9d87d3ed2dfef ]
 
-Hatari profiler & debugger (currently) support only physical addresses, 
-so that's not the case.
+We get there when sigreturn has performed obscene acts on kernel stack;
+in particular, the location of pt_regs has shifted.  We are about to call
+syscall_trace(), which might stop for tracer.  If that happens, we'd better
+have task_pt_regs() returning correct result...
 
-
-	- Eero
-
-Lack of MMU / address translation support in them is not a problem for 
-what they're normally used [1], as neither TOS, nor 99.9% of the stuff 
-run under it, use/need that.
-
-However, with Linux, it means them being mainly useful for debugging 
-what happens on kernel side.  I do not think that to be too much of a 
-problem though, as kernel side is the hard part and there are good 
-alternatives for debugging user-space.
-
+Cc: stable@kernel.org # <= 5.14.y
+Fucked-up-by: Al Viro <viro@zeniv.linux.org.uk>
+Fixes: bd6f56a75bb2 ("m68k: Missing syscall_trace() on sigreturn")
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Tested-by: Michael Schmitz <schmitzmic@gmail.com>
+Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
+Tested-by: Finn Thain <fthain@linux-m68k.org>
+Link: https://lore.kernel.org/r/YP2dMWeV1LkHiOpr@zeniv-ca.linux.org.uk
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 ---
+ arch/m68k/kernel/entry.S | 2 ++
+ 1 file changed, 2 insertions(+)
 
-[1] E.g. optimizations in latest ScummVM upstream releases that make it 
-work OK on original Atari TT & Falcon HW, and (enhanced) Doom I version 
-that runs OK on original Atari Falcon.
+diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
+index 417d8f0e8962..0d03b4f2077b 100644
+--- a/arch/m68k/kernel/entry.S
++++ b/arch/m68k/kernel/entry.S
+@@ -182,6 +182,8 @@ ENTRY(ret_from_signal)
+ 	movel	%curptr@(TASK_STACK),%a1
+ 	tstb	%a1@(TINFO_FLAGS+2)
+ 	jge	1f
++	lea	%sp@(SWITCH_STACK_SIZE),%a1
++	movel	%a1,%curptr@(TASK_THREAD+THREAD_ESP0)
+ 	jbsr	syscall_trace
+ 1:	RESTORE_SWITCH_STACK
+ 	addql	#4,%sp
+-- 
+2.39.5
+
