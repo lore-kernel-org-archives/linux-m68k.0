@@ -1,139 +1,101 @@
-Received: from fout-a2-smtp.messagingengine.com (fout-a2-smtp.messagingengine.com [103.168.172.145])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A355916DC36
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 27 Sep 2024 03:45:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C12AFAD2F
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 29 Sep 2024 02:55:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727408714; cv=none; b=hAPqCcU9MFNZ3ZATiFfVriQmq94yFgbrxU62sgvb9a4nc/GE378p9VKpaUd4wQPUUKkH6XAOqN3LHHPoE4xAY5/mXyizBMvBxrBLpc0nHsu5/7s4EkUUSPmGTt5uhsmp+qOpY92EzVw/0F/8HASAgWd7fbrp+MWee3kQoiJghoQ=
+	t=1727578516; cv=none; b=EJlGT5CkeckBV81M/sBNHtE7VqAYto9B6n+UJbsH1WWQ44RY9kndOwo8tlq2vloyimx87iu4p7aVnH7EVK3MDIEgDyRs5SDZhdd9ZmEaJUWPOxwYq8JfTjchSCPv26Xe3FiF72VRzNMYr0R9Lq9W4tmXmR64dIWwm4Lh1RGg7R4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727408714; c=relaxed/simple;
-	bh=laR3GaIYP/1dQsPUb4S2tQL7Wh+ZvTi97dSqvdSAVks=;
-	h=To:Cc:Message-Id:From:Subject:Date; b=mwqSyIEDbr0yAffIFD5Bj7ZGa/yr0EaUPsjLU8hD2AnPyIB+ybWnm4jwzHyMcWYTzNoyXYM5wD8vBvSf3y7TTotuG3v9oon+vzD8KFhsMiqp5WpmIaPqZaGjq3LF0wruD7BDRuhLEdQatyDruGmW6owAspYiRS1zDozwLp8E9DU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ajWu+0M3; arc=none smtp.client-ip=103.168.172.145
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1727578516; c=relaxed/simple;
+	bh=4B+kpENM2KamWunn1VtNumHTJypu13muex8nBDOgblQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=X1bEKLMFHwcuPWg9yEiUX/s2rIRyzIb55zZbhqyyB18gNYla534aN9IHEOdNbx7OcyJtO/gZNCJCJDfk5LtQLryruA5wj5jNPq1Ry1Q1bhl9hUcNB+aFAVIb5m2Y2Ykxrtl1616mPn3K76IiwbXAuZItGtqG3TPSxdofDCnZLkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=ZTCaJOSl; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ajWu+0M3"
-Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
-	by mailfout.phl.internal (Postfix) with ESMTP id D564C13806CE;
-	Thu, 26 Sep 2024 23:45:09 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-06.internal (MEProxy); Thu, 26 Sep 2024 23:45:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm2; t=1727408709; x=1727495109; bh=xvIOoVNdCIUN2
-	sDi7Y458trd8VLcKgk2LPdONTFFCOo=; b=ajWu+0M3zxRvDztNz2i8ZjTuofqcw
-	Gp5hAwP3ohvpDf8yz9Uf5pC55O19lJuAveBQBKuB27prfJ5OA5z2MQl+Dcm/um4r
-	or5NLNZ/de1a3bpHM+SqkUVD1jJxQfEkLNW7GPFzQTXlrCIoIm1jaZrVJdBeOKYx
-	AlLgMLlV1j9HdeYy9ZlkBV3kmUBCrLnXF5wN8D6Q4o228zO1ZsZvtt19n5UGeYmT
-	Afnf75n+oHG8g99mL/QrkbhqEnL6Ac7ypDDQndTzelPevRC8KkPNHLAN8Y4rsWJG
-	Q9z+QplTGPOitOUkNJ2Ak/niTHqyv+VWA1aqw2TuuKTQQL5MoQgNXLB1Q==
-X-ME-Sender: <xms:RSr2ZrZf-1XFmDgy5H7y3RxuOQyNmDrp5fv9LbAhOxHbNlEozuxGmA>
-    <xme:RSr2ZqZgw8uvqOIQWzRiFHafuag6fUn5_T7xu7DBB0rkmiz7XwqzBNud8CFu1aALU
-    h9zskWy9QroqdSd760>
-X-ME-Received: <xmr:RSr2Zt-ibU_-niP3yN67HFyElrk4CnBuawMiOxkKB0oDIjSmGJFBSUYECFzySfUOz_W4a_DPsPLCWddHEKS7BcM9nXjz0gM3SBs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddtkedgjeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepvfevkffhufffsedttdertddttddtnecuhfhrohhm
-    pefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqe
-    enucggtffrrghtthgvrhhnpeehvdfhheduvddvvdelhfelhfefvefhjedvhedtvdeiieei
-    gfekhefhgfeugeffveenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdhskhgvlhgvth
-    honhdrshgsnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhho
-    mhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrghdpnhgspghrtghpthhtohephe
-    dpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepshhtrggslhgvsehkvghrnhgvlhdr
-    ohhrghdprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgtph
-    htthhopegvsghivgguvghrmhesgihmihhsshhiohhnrdgtohhmpdhrtghpthhtoheplhhi
-    nhhugidqmheikehksehlihhsthhsrdhlihhnuhigqdhmieekkhdrohhrghdprhgtphhtth
-    hopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:RSr2Zhofeh50k06Qnb8RpdqZKsMKjfcYOT9wf-ci-UCa_vJ3xOGBzg>
-    <xmx:RSr2ZmpeLCZxh--J5asGjUhuei0Fo032YmCO3Y5HMHKlcjSJnzv6wQ>
-    <xmx:RSr2ZnQLVpRVvO-wjmKrzaGhXMKAcdvb98egaStfVQiiyefM_TKAkQ>
-    <xmx:RSr2ZuqpehAdWBZSTgKYcc9i3uWKVhrHfBn_qy7fQRT5DRIjV8XwGw>
-    <xmx:RSr2ZvnLG4lXHNNgqIsnbOoGMCAjxUpmqB4sGWfF--Byh-kqO4x3QDgM>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 26 Sep 2024 23:45:06 -0400 (EDT)
-To: stable@kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
-    Eric W. Biederman <ebiederm@xmission.com>,
-    linux-m68k@lists.linux-m68k.org,
-    linux-kernel@vger.kernel.org
-Message-Id: <c724e2559cd26dc1e5e629b03ec8e3005e99251f.1727408413.git.fthain@linux-m68k.org>
-From: Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH] signal/m68k: Use force_sigsegv(SIGSEGV) in fpsp040_die
-Date: Fri, 27 Sep 2024 13:40:13 +1000
+	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="ZTCaJOSl"
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-6e7b121be30so2226396a12.1
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 28 Sep 2024 19:55:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google; t=1727578513; x=1728183313; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GnPgRh7QFS/ZB4mm9ibjD9Mb0Rxz3mufuNvInEFJ1j0=;
+        b=ZTCaJOSlE8o3y3xHnpVh3gv9BUDBCNE7p/nXF/p9mwGa8m/Aq7ro0JuIpm7XzEkFHP
+         x3ArXFxxFiIzH6bpOmwrkKbrOr+joiG9XiCWO77Jyezqyjo8FcAjaByseSyijnPQNCak
+         GAGyO/oCF1yJ23TrHXqYS7ccA590YQterT4GA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727578513; x=1728183313;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GnPgRh7QFS/ZB4mm9ibjD9Mb0Rxz3mufuNvInEFJ1j0=;
+        b=K3dnl8zfvDKJJIgiB0tbAMXUJU8lembbu7apPB0yOO6JRllhUIoQg5H9MLpZZxmeWQ
+         ugSGcay/FuCot0V8xbdDU3imLDGPbK81x1/ccsh7py8vuH+d5Sbgn3lFQg8RFhewe1Av
+         AGg69YvOE0rVsrX6IOHQIoUoeHzDEuGefvu02RsCo6pKQgdtJP1wZTS484ZeHHkgbARC
+         FAyk+9rl71HQB73qonC4ww/MD6sj/UCGFjaKfeZN8xSV4+Qzq2Ew31gdfPlomQp+a50v
+         ktWV9oNUEGMgeakzemhZ4b/C3VA7/NM2a9SBJrRl6xWnc4/7GeQ6qsIT7II59fHVoCan
+         AVAw==
+X-Forwarded-Encrypted: i=1; AJvYcCULElFjAtwFGkVliM/CFxu6ifULZnT54zsAJPfwX88Kj8iFXqzF/OZtNDe8hvc+6sgltURoNPsD1lVY@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YyqQ8hZhgRhKX+jiMJJlQlncCq2sd/L9r6bUs3aFXAOjF24IiT1
+	GnNfFsE99Vvol6bYGqJJC9Z4DbJmig7BO5LBsD6Fj8rnt9Os6uVcixwCXxAUWm4=
+X-Google-Smtp-Source: AGHT+IGMBewkv5Tr2rkT9P0ANjIRY4VbuoQf93g8wX6wDvbVycvUQkG3zPgRoumtVZxN7/2BlPKkvg==
+X-Received: by 2002:a17:90a:fc85:b0:2e0:8dbc:3ead with SMTP id 98e67ed59e1d1-2e0b8ed3968mr9574605a91.33.1727578512948;
+        Sat, 28 Sep 2024 19:55:12 -0700 (PDT)
+Received: from shiro.work.home.arpa ([2400:4162:2428:2ffe:355d:54b6:cddd:c153])
+        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-2e0b6e1479esm4876326a91.45.2024.09.28.19.55.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 28 Sep 2024 19:55:12 -0700 (PDT)
+From: Daniel Palmer <daniel@0x0f.com>
+To: geert@linux-m68k.org
+Cc: gerg@linux-m68k.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	fthain@linux-m68k.org,
+	Daniel Palmer <daniel@0x0f.com>
+Subject: [PATCH] m68k: mvme147: Make mvme147_sched_init() __init
+Date: Sun, 29 Sep 2024 11:55:06 +0900
+Message-ID: <20240929025506.1212237-1-daniel@0x0f.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-From: Eric W. Biederman <ebiederm@xmission.com>
+mvme147_sched_init() is only used once at init time
+so it can be made __init and save a few bytes of memory.
 
-[ Upstream commit a3616a3c02722d1edb95acc7fceade242f6553ba ]
-
-In the fpsp040 code when copyin or copyout fails call
-force_sigsegv(SIGSEGV) instead of do_exit(SIGSEGV).
-
-This solves a couple of problems.  Because do_exit embeds the ptrace
-stop PTRACE_EVENT_EXIT a complete stack frame needs to be present for
-that to work correctly.  There is always the information needed for a
-ptrace stop where get_signal is called.  So exiting with a signal
-solves the ptrace issue.
-
-Further exiting with a signal ensures that all of the threads in a
-process are killed not just the thread that malfunctioned.  Which
-avoids confusing userspace.
-
-To make force_sigsegv(SIGSEGV) work in fpsp040_die modify the code to
-save all of the registers and jump to ret_from_exception (which
-ultimately calls get_signal) after fpsp040_die returns.
-
-v2: Updated the branches to use gas's pseudo ops that automatically
-    calculate the best branch instruction to use for the purpose.
-
-Cc: stable@kernel.org # <= 5.14.y
-v1: https://lkml.kernel.org/r/87a6m8kgtx.fsf_-_@disp2133
-Link: https://lkml.kernel.org/r/87tukghjfs.fsf_-_@disp2133
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+Signed-off-by: Daniel Palmer <daniel@0x0f.com>
 ---
- arch/m68k/fpsp040/skeleton.S | 3 ++-
- arch/m68k/kernel/traps.c     | 2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ arch/m68k/mvme147/config.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/m68k/fpsp040/skeleton.S b/arch/m68k/fpsp040/skeleton.S
-index 31a9c634c81e..081922c72daa 100644
---- a/arch/m68k/fpsp040/skeleton.S
-+++ b/arch/m68k/fpsp040/skeleton.S
-@@ -502,7 +502,8 @@ in_ea:
- 	.section .fixup,"ax"
- 	.even
- 1:
--	jbra	fpsp040_die
-+	jbsr	fpsp040_die
-+	jbra	.Lnotkern
+diff --git a/arch/m68k/mvme147/config.c b/arch/m68k/mvme147/config.c
+index 8b5dc07f0811..4279069fbb6e 100644
+--- a/arch/m68k/mvme147/config.c
++++ b/arch/m68k/mvme147/config.c
+@@ -34,7 +34,7 @@
  
- 	.section __ex_table,"a"
- 	.align	4
-diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
-index 35f706d836c5..c6f18dc5884b 100644
---- a/arch/m68k/kernel/traps.c
-+++ b/arch/m68k/kernel/traps.c
-@@ -1155,7 +1155,7 @@ asmlinkage void set_esp0(unsigned long ssp)
-  */
- asmlinkage void fpsp040_die(void)
- {
--	do_exit(SIGSEGV);
-+	force_sigsegv(SIGSEGV, current);
+ 
+ static void mvme147_get_model(char *model);
+-extern void mvme147_sched_init(void);
++static void __init mvme147_sched_init(void);
+ extern int mvme147_hwclk (int, struct rtc_time *);
+ extern void mvme147_reset (void);
+ 
+@@ -123,7 +123,7 @@ static irqreturn_t mvme147_timer_int (int irq, void *dev_id)
  }
  
- #ifdef CONFIG_M68KFPU_EMU
+ 
+-void mvme147_sched_init (void)
++static void __init mvme147_sched_init(void)
+ {
+ 	if (request_irq(PCC_IRQ_TIMER1, mvme147_timer_int, IRQF_TIMER,
+ 			"timer 1", NULL))
 -- 
-2.39.5
+2.43.0
 
