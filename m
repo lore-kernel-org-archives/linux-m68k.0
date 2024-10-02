@@ -1,255 +1,108 @@
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B3771D07A5
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  2 Oct 2024 13:28:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D86B88F40
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  2 Oct 2024 22:18:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727875723; cv=none; b=f5TQiu2hjpkVE9AZfxrmHrrp7zUBeGAB4rNYjOVo40a8qwyqVpW2I1YnpsOx8t769TCx71sEudXd0KPoWBCCMdxSV6AmDTgAEjhJ2caz8yOuXURW9WGCDgwf37aj6NY5F5kOvHc9gTiVXWIn8vpxsKBT5BOXhlK6Ht89fObxE9U=
+	t=1727907503; cv=none; b=m7vAXM91j2xBSfjUZ+wKF0KIEheoQAwf0o1sKn4+1ofl3Zq5B99sHF7kf0ioHmsCucd35VB+A0v7JW98xZiZ14XpAGPnvH1WetH75ZQz557ygnhb5kMSWPO8qWqJa29hFddomqTpgnYj/Hl2FOnm3orrrPO7eAfG7Q2a8k4jNJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727875723; c=relaxed/simple;
-	bh=mhnKnU8rdMj0sW3SFgbHHVxiisiwu2M/aDnvEBSgBjs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CPxDcLllh2OBR9hQylVkOQFyQ2VCvTngs7gOhg8Gp/A4WCqNJynAexTpUVtG+GZ4n59EBSt8Ldn/nTXnLquOMMV8Hjt4xvUxJrKOG7isuo0JmgXUG07x8i/JCf6ZBWj/pLLraZ0W0P3Ahnv9SvyQbw4iaENy/tnZVqMoq9LHSZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XOD4QW/q; arc=none smtp.client-ip=209.85.215.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1727907503; c=relaxed/simple;
+	bh=8uPfWG19yF3aqQFsnZan4s+bbE6R/wlH9vxN4ljOZHI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Pb9dTnd3QlW3ZuU3aY9mZto0OQZw0krTOizZpDnd3NOjdIGYc5Fynq9ixBHiYV/U7iRLov3VzrK3C0np0xWbGfrlxzswX7WNDhwQu88K4jax9OTDNoM+nz+JHgnoFC5XUy8kCQ/j67a2Q4UOteb3MeER5xekk98diovFmSLH8co=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=OoCNpiMw; arc=none smtp.client-ip=209.85.166.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XOD4QW/q"
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-7c1324be8easo606843a12.1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 02 Oct 2024 06:28:41 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="OoCNpiMw"
+Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-3a2761f1227so1103085ab.0
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 02 Oct 2024 15:18:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727875721; x=1728480521; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7kqV0hhMV4XU1vtj9qv793+75v5wEJntzm0L0TlA+3k=;
-        b=XOD4QW/qot9ORZFzJ3N2eVkj44JJmQWZU4MM4m8xexEl6kNqcajtJQ1hVDN5vkvTc0
-         +uGAsbvwJjIcGmS00egpasuyhwJn9Q8P5n/J4+GpxgtKin/RSI13OSfj2+YMXVeQ8cgB
-         d8AVONmU1a3EWTIWH/eRU9KM6D14hOgiFwi2RFPntRGCt8OuHMpvdMxEOqxSVFz04LbO
-         btE41Nfegw0RXb+zVayAy6d2hJDuJoCbTS/2BgpagioSnINed/eHWUAxWRMzTebl63yA
-         6Fn35n2fcscgSj1RT4l5FjsPCZKalVmbEPYKhq2mBFgyJTPE0TuPabkkfIomppFLv44S
-         b6TQ==
+        d=linuxfoundation.org; s=google; t=1727907501; x=1728512301; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8TBiC3q4b6RD/UIruMuT+TcjVgJIbtpp7M65coVbxT4=;
+        b=OoCNpiMwTfwa+9251XrQxCjwBJGRV8Axr/5HXXVZAfoAVLlDgeaBIOpJztA1p0PyIE
+         bBhqcRAgA9Xq4QS2GBAPJ+Pgw83czH8qknckxCo//OWxW/9ijQ8T5Dea37QzCsHkjxEj
+         5VPQjhOveLGSUYhJVbx1grMp2tbmm9jkD6IME=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727875721; x=1728480521;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7kqV0hhMV4XU1vtj9qv793+75v5wEJntzm0L0TlA+3k=;
-        b=ZGcm9z+xnX7b2obl63+Wtwn67EFEuZZ4Hp6XR/Rd/Yjw2nTypVthYDB5ZCTQXUsaYH
-         3b0D18Zg2VvZwEvqedUJyxjOMWxwGAUHhkKRzYe/Xx48Rr6UeXgdMA2RpvHqfPB3NTaQ
-         gX45JGM5oOIJzjHJL4JOpHyKLsUoZPaxFERN8S/zSee4DcJtFkg2fNZNFnHMxRwoasmL
-         +Ocj34ZgpSwON9pBfFiEqZXQUaNnMGx9qHKsaZ9Mz0HcnfGx8bsUll2YBqnob1ugjLkw
-         XAmb+s0g49zqTEf02wLfZl0q8XGFwfCTRLJLNZFO3jWatrOnsqJL7crjWyY5iycNNMKW
-         EZtg==
-X-Gm-Message-State: AOJu0YzwWUccg2EzVkSgYFKQoYglbAy0fhQ6XFG6+HwraEU57TMNIcCl
-	PC9X+NTyw2VHCbUPXdShgCxOG9yeVwWi+IUniNDabTzfkCRblbd6HT1zzrj8
-X-Google-Smtp-Source: AGHT+IFk4CEfvducnh8DZ0alqr9jF7CHoxMZVrq7RrbLuA9DZBmGQqJoVex34/Xgof2lBJR7fADQFA==
-X-Received: by 2002:a17:90b:1643:b0:2e0:89f2:f60c with SMTP id 98e67ed59e1d1-2e18522076bmr4844410a91.11.1727875720516;
-        Wed, 02 Oct 2024 06:28:40 -0700 (PDT)
-Received: from debian.tail629bbc.ts.net ([103.57.173.123])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e18f7734basm1528740a91.19.2024.10.02.06.28.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Oct 2024 06:28:40 -0700 (PDT)
-From: Sayyad Abid <sayyad.abid16@gmail.com>
-To: linux-m68k@lists.linux-m68k.org
-Cc: fthain@linux-m68k.org,
-	linux-kernel@vger.kernel.org,
-	skhan@linuxfoundation.org,
-	sayyad.abid16@gmail.com
-Subject: [PATCH 3/3] drivers: nubus: Fix use of * in comment block in nubus.c
-Date: Wed,  2 Oct 2024 18:58:20 +0530
-Message-Id: <20241002132820.402583-4-sayyad.abid16@gmail.com>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20241002132820.402583-1-sayyad.abid16@gmail.com>
-References: <20241002132820.402583-1-sayyad.abid16@gmail.com>
+        d=1e100.net; s=20230601; t=1727907501; x=1728512301;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8TBiC3q4b6RD/UIruMuT+TcjVgJIbtpp7M65coVbxT4=;
+        b=tVSWK1EjIgGg70ynbel/5KiKbuZeDgs2v6unhvHrNgGeAKKbLohcnNezIl8QkLVjJY
+         c/PAVh81lMkP+cr1mjQW1cODIHeUbyHr63XOlzhq2EojhUgRNeX5BsdZ0CGhLmwOMqnc
+         Xiop3FcfIDTAjqXkksOezPHplHg72ctZ02drjXPUjeLzm94XO1ORRG2xflfSpjNsvKuV
+         pvcZcMchHTxD3rsfTcay6YOcNDTy+2RIEqjcQCJu8oKLNZk+jfrLCQNIVlZxZ5kN+c7w
+         NrdFnay1gS6d+84rfERhwt81P/ioGSKv2noWTAB8eeEY5GZNBnZJCJkWeh3aLocDjDh+
+         BUUg==
+X-Forwarded-Encrypted: i=1; AJvYcCXPASQpOsb63ryRQhqJ1XME84UnaITYTgLQcPE1EDqL9XACOXGW2Q3K4PK6g3GgjygyCocFpiEVGszD@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YyCqQRtQRyRt3mxzecgdFQ9DebRVeLqqCV7wvVZIdb1yWKvRjGY
+	cxGSckgiLL6kDNDptZsCNrB9OCgtKXMqjFqyopqAL7wA5ltwKCYgNxEJfx7Ml9Y=
+X-Google-Smtp-Source: AGHT+IEi4wRMzDqdGUEXEyTO3MQ7pCS5rfjx+lNwgmbv85uzhSg1zpHPPXkArmrG0qOpWYWAo83a8w==
+X-Received: by 2002:a05:6e02:1386:b0:3a0:92e5:af68 with SMTP id e9e14a558f8ab-3a36594a26emr43209945ab.15.1727907500818;
+        Wed, 02 Oct 2024 15:18:20 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id e9e14a558f8ab-3a370901108sm10395ab.31.2024.10.02.15.18.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Oct 2024 15:18:20 -0700 (PDT)
+Message-ID: <2d4550f1-7097-4b97-94c4-b1c8a50e6946@linuxfoundation.org>
+Date: Wed, 2 Oct 2024 16:18:19 -0600
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] drivers: nubus: Fix use of assignment in if condition
+ in nubus_add_board() in nubus.c
+To: Sayyad Abid <sayyad.abid16@gmail.com>, linux-m68k@lists.linux-m68k.org
+Cc: fthain@linux-m68k.org, linux-kernel@vger.kernel.org,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20241002132820.402583-1-sayyad.abid16@gmail.com>
+ <20241002132820.402583-3-sayyad.abid16@gmail.com>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20241002132820.402583-3-sayyad.abid16@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-This change help make the comment blocks reader friendly
-by adding * on each comment line indicating a continuous
-block of comment
+On 10/2/24 07:28, Sayyad Abid wrote:
+> This change help improve code readabaility by
+> shifting the assignment statement just above the if statment,
+> which was earlier inside the condition.
+> This makes the code clear and easy to read.
+> 
+> Signed-off-by: Sayyad Abid <sayyad.abid16@gmail.com>
+> ---
+>   drivers/nubus/nubus.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
+> index 08cf585cb471..77da1d14a1db 100644
+> --- a/drivers/nubus/nubus.c
+> +++ b/drivers/nubus/nubus.c
+> @@ -735,7 +735,8 @@ static void __init nubus_add_board(int slot, int bytelanes)
+>   	nubus_rewind(&rp, FORMAT_BLOCK_SIZE, bytelanes);
+> 
+>   	/* Actually we should probably panic if this fails */
+> -	if ((board = kzalloc(sizeof(*board), GFP_ATOMIC)) == NULL)
+> +	board = kzalloc(sizeof(*board), GFP_ATOMIC)
+> +	if (board == NULL)
+>   		return;
 
-Signed-off-by: Sayyad Abid <sayyad.abid16@gmail.com>
----
- drivers/nubus/nubus.c | 87 ++++++++++++++++++++++++-------------------
- 1 file changed, 49 insertions(+), 38 deletions(-)
+The code is consistent with coding guidelines. There is no
+need to change it.
 
-diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
-index 77da1d14a1db..501c830c3c40 100644
---- a/drivers/nubus/nubus.c
-+++ b/drivers/nubus/nubus.c
-@@ -24,7 +24,8 @@
- /* Constants */
+>   	board->fblock = rp;
+> 
+> --
+> 2.39.5
+> 
 
- /* This is, of course, the size in bytelanes, rather than the size in
--   actual bytes */
-+ * actual bytes
-+ */
- #define FORMAT_BLOCK_SIZE 20
- #define ROM_DIR_OFFSET 0x24
-
-@@ -42,27 +43,27 @@ module_param_named(populate_procfs, nubus_populate_procfs, bool, 0);
- LIST_HEAD(nubus_func_rsrcs);
-
- /* Meaning of "bytelanes":
--
--   The card ROM may appear on any or all bytes of each long word in
--   NuBus memory.  The low 4 bits of the "map" value found in the
--   format block (at the top of the slot address space, as well as at
--   the top of the MacOS ROM) tells us which bytelanes, i.e. which byte
--   offsets within each longword, are valid.  Thus:
--
--   A map of 0x0f, as found in the MacOS ROM, means that all bytelanes
--   are valid.
--
--   A map of 0xf0 means that no bytelanes are valid (We pray that we
--   will never encounter this, but stranger things have happened)
--
--   A map of 0xe1 means that only the MSB of each long word is actually
--   part of the card ROM.  (We hope to never encounter NuBus on a
--   little-endian machine.  Again, stranger things have happened)
--
--   A map of 0x78 means that only the LSB of each long word is valid.
--
--   Etcetera, etcetera.  Hopefully this clears up some confusion over
--   what the following code actually does.  */
-+ *
-+ * The card ROM may appear on any or all bytes of each long word in
-+ * NuBus memory.  The low 4 bits of the "map" value found in the
-+ *format block (at the top of the slot address space, as well as at
-+ *the top of the MacOS ROM) tells us which bytelanes, i.e. which byte
-+ * offsets within each longword, are valid.  Thus:
-+ *
-+ * A map of 0x0f, as found in the MacOS ROM, means that all bytelanes
-+ * are valid.
-+ *
-+ * A map of 0xf0 means that no bytelanes are valid (We pray that we
-+ * will never encounter this, but stranger things have happened)
-+ *
-+ * A map of 0xe1 means that only the MSB of each long word is actually
-+ * part of the card ROM.  (We hope to never encounter NuBus on a
-+ * little-endian machine.  Again, stranger things have happened)
-+ * A map of 0x78 means that only the LSB of each long word is valid.
-+ *
-+ * Etcetera, etcetera.  Hopefully this clears up some confusion over
-+ * what the following code actually does.
-+ */
-
- static inline int not_useful(void *p, int map)
- {
-@@ -133,9 +134,10 @@ static void nubus_move(unsigned char **ptr, int len, int map)
- /* Now, functions to read the sResource tree */
-
- /* Each sResource entry consists of a 1-byte ID and a 3-byte data
--   field.  If that data field contains an offset, then obviously we
--   have to expand it from a 24-bit signed number to a 32-bit signed
--   number. */
-+ * field.  If that data field contains an offset, then obviously we
-+ * have to expand it from a 24-bit signed number to a 32-bit signed
-+ * number.
-+ */
-
- static inline long nubus_expand32(long foo)
- {
-@@ -158,14 +160,16 @@ unsigned char *nubus_dirptr(const struct nubus_dirent *nd)
- 	unsigned char *p = nd->base;
-
- 	/* Essentially, just step over the bytelanes using whatever
--	   offset we might have found */
-+	 * offset we might have found
-+	 */
- 	nubus_move(&p, nubus_expand32(nd->data), nd->mask);
- 	/* And return the value */
- 	return p;
- }
-
- /* These two are for pulling resource data blocks (i.e. stuff that's
--   pointed to with offsets) out of the card ROM. */
-+ * pointed to with offsets) out of the card ROM.
-+ */
-
- void nubus_get_rsrc_mem(void *dest, const struct nubus_dirent *dirent,
- 			unsigned int len)
-@@ -253,7 +257,8 @@ int nubus_get_board_dir(const struct nubus_board *board,
- 	dir->mask = board->lanes;
-
- 	/* Now dereference it (the first directory is always the board
--	   directory) */
-+	 * directory)
-+	 */
- 	if (nubus_readdir(dir, &ent) == -1)
- 		return -1;
- 	if (nubus_get_subdir(&ent, dir) == -1)
-@@ -339,8 +344,9 @@ nubus_find_rsrc(struct nubus_dir *dir, unsigned char rsrc_type,
- EXPORT_SYMBOL(nubus_find_rsrc);
-
- /* Initialization functions - decide which slots contain stuff worth
--   looking at, and print out lots and lots of information from the
--   resource blocks. */
-+ * looking at, and print out lots and lots of information from the
-+ * resource blocks.
-+ */
-
- static int __init nubus_get_block_rsrc_dir(struct nubus_board *board,
- 					   struct proc_dir_entry *procdir,
-@@ -542,7 +548,8 @@ nubus_get_functional_resource(struct nubus_board *board, int slot,
- 		case NUBUS_RESID_DRVRDIR:
- 		{
- 			/* MacOS driver.  If we were NetBSD we might
--			   use this :-) */
-+			 *  use this :-)
-+			 */
- 			pr_debug("    driver directory offset: 0x%06x\n",
- 				ent.data);
- 			nubus_get_block_rsrc_dir(board, dir.procdir, &ent);
-@@ -551,8 +558,9 @@ nubus_get_functional_resource(struct nubus_board *board, int slot,
- 		case NUBUS_RESID_MINOR_BASEOS:
- 		{
- 			/* We will need this in order to support
--			   multiple framebuffers.  It might be handy
--			   for Ethernet as well */
-+			 * multiple framebuffers.  It might be handy
-+			 * for Ethernet as well
-+			 */
- 			u32 base_offset;
-
- 			nubus_get_rsrc_mem(&base_offset, &ent, 4);
-@@ -651,8 +659,9 @@ static int __init nubus_get_board_resource(struct nubus_board *board, int slot,
- 		{
- 			unsigned short nbtdata[4];
- 			/* This type is always the same, and is not
--			   useful except insofar as it tells us that
--			   we really are looking at a board resource. */
-+			 * useful except insofar as it tells us that
-+			 * we really are looking at a board resource.
-+			 */
- 			nubus_get_rsrc_mem(nbtdata, &ent, 8);
- 			pr_debug("    type: [cat 0x%x type 0x%x sw 0x%x hw 0x%x]\n",
- 				nbtdata[0], nbtdata[1], nbtdata[2], nbtdata[3]);
-@@ -849,12 +858,14 @@ static void __init nubus_probe_slot(int slot)
- 		dp = *rp;
-
- 		/* The last byte of the format block consists of two
--		   nybbles which are "mirror images" of each other.
--		   These show us the valid bytelanes */
-+		 * nybbles which are "mirror images" of each other.
-+		 * These show us the valid bytelanes
-+		 */
- 		if ((((dp >> 4) ^ dp) & 0x0F) != 0x0F)
- 			continue;
- 		/* Check that this value is actually *on* one of the
--		   bytelanes it claims are valid! */
-+		 * bytelanes it claims are valid!
-+		 */
- 		if (not_useful(rp, dp))
- 			continue;
-
---
-2.39.5
-
+thanks,
+-- Shuah
