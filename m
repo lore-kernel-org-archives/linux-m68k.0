@@ -1,65 +1,65 @@
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71B451D049E
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  2 Oct 2024 13:28:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 734491D0487
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  2 Oct 2024 13:28:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727875716; cv=none; b=mur4IMhMeVvklRjRFA6RwIHvuUcrzs9yTOft7XNq/iunkI9iIkt2HohUEVWwSH4xn3X+kCXW/rdTUYkQgUoJQijuBW6f/gR5tjHFeUYpvGiNkv4HtKcZsX8GqsAn/nBKrLk1KUwxFBvttBTSbdflqsuU6qqTgcnoSbJNkLpdR/k=
+	t=1727875719; cv=none; b=EryK1YASscXtQue1Mf1XMY0G/Vgq6zxBxWQv2eH7/uCN4yP/eaxKWf/JC/BJuYq2xsAB/DewBopJdbfVtH46ITXmrR5gaZCq9W5aENMvQHqZ03DaYPtpaOKMDrrarDeWI7QKzAjxhz8cKgODlbXRjv6UZ298nvCX6ws9WuRsC9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727875716; c=relaxed/simple;
-	bh=5TU1SW8qHIohE1BHdZzxN64tdjxnxFrqA9ZfQdbi42A=;
+	s=arc-20240116; t=1727875719; c=relaxed/simple;
+	bh=CP+LjX5Ha1RSIaKYk38UX/wez45MJy9R7FnyyIWbaNo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jjL2CUcc4W9ps9qYqGG5VHsIuXrShXpMgamCDPPu4TEtdXaCofjN5qOh7r32yLFRhyCZLbIfBfs6R12MNemQNkHM4cT0xGPv39NBhQyrYh98KOqRTry87mWe5ZCuO2l5vWBmXSrUQb4uduRqL7vcvpdYk3WX3M6agrFxmUgYfWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QJtuOnuI; arc=none smtp.client-ip=209.85.216.43
+	 MIME-Version; b=UB0Xba8z5b3UaO0Z7TvYPeGlukpjR0VcdbwcjISkFlgWyTh7XL+psSVGiVBZPfkXSFKDEBxZGPbT75n47xuwOS6A81v2Hl6OdnUfcbwiZ/SLkmnxUMuPvIHk5asmGOrivhtflOL+dtHnE52MlMe1u5ObBB23jkikCSRs+1LbsII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HhTHLVlr; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QJtuOnuI"
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2e109539aedso3149207a91.0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 02 Oct 2024 06:28:35 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HhTHLVlr"
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-20ba6b39a78so19850035ad.3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 02 Oct 2024 06:28:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727875715; x=1728480515; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20230601; t=1727875718; x=1728480518; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=P2KUdZPsxrxfYclDZ4cMZEFGNcVJaWq3B2wNfqyElyQ=;
-        b=QJtuOnuIHA0IIUsiCSQZOkZ9PJw51p7TRah3vv6HVwEjHeNXApZS4CkPuHv+zsEqMW
-         qqRjqvZ8Hp59tKAJyW9+E0HwEBSiqt9y7raXILfwlXWW7sbLB4uKV76qX7drv8ASWA2x
-         +KetgFNhycsC9i5PhfxuCu4+8pQn/Y4kRAxrfAfWynzAdrlyWr6S74Wg/pxxFn4dYp6l
-         d8F1OPeCfcBeycmrNzQkWA60pYSpbKJ/RpBvwA8wfNuUTHlEaFY0/H2S475f+e6VISMl
-         VzDYv86soGRi6YCybX5FjEqHT+DtbcTiOPQuJprTJFx4QNYNtmcxw2lEq4kECfXhIsEI
-         Rx3A==
+        bh=KGEsc1vLwVoQWt+H2cqF3P6yuJ7Om9q/TgHm7xbL028=;
+        b=HhTHLVlrgZ07sagH0JpykNMLogKm78SNMcYTsXxB1vknCoQoqKfY16TFiA9fjXcWoG
+         XQ60B2bcmvazGPafZBtZDUGUtcQZQVDl1JTz7NmjCyi7z7CYG2IhZNV1PCqiuVPQ1E90
+         chXsoDcjyfbmTLBnh8hFe0fa1C5GTOOlCN1aQ/jM611uXRTNQLZmNPyI7fnLGgmTZI2S
+         R6sGE/5npIxOSWcnHc2JNXcEatKETICIUFHp63ztdl8//z5PGIAQrMF0JjjzRWKLM+J0
+         APLCOXzUTVbZCUUO/Q+u+2oQMxzFwYCH+rxF4lK4rUws46oWpZn0AE9Ln6Zv5zFJOI5A
+         07mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727875715; x=1728480515;
+        d=1e100.net; s=20230601; t=1727875718; x=1728480518;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=P2KUdZPsxrxfYclDZ4cMZEFGNcVJaWq3B2wNfqyElyQ=;
-        b=TigYsdWbMPfK2Pik0Eex6vOr82vLQKtTHaKqzi1gzPQi/0FM3xqV+ifqbMk4SzJSeI
-         wjWWY/hLvESg8VCFU2Ps9P6lkqTZSfUxzucylDmmgrDzXbUG3iyPJVAehdqVsrhf3tN3
-         xoozJxCYIWdzFLcZrtl7aF5tU+lwUo7YY6jmO8b8UWiB48GX7/DVjWkDKmDuU9r0n4k0
-         6Dzp3lb7iPfoIDix5l3ztuPChmmaGETi0s6vQcAsp6Tow/UcV/HpyP0N7IG6Yh6kV7vl
-         aPLTH4gHL1utl2nJNCuDaKGS3HwBHVMSlcehAzM1rEdverAYI5FRowkk99YyWUvmO8xD
-         tasg==
-X-Gm-Message-State: AOJu0YyKP8cCfftDnT+ppZ1piV6h5SMOpxYrS7zDpCiaehMd/29yBVEr
-	vcxF4KuHPLhadIOu+PrVS2UawHp0EaktS9XEgFL9/MMe6OCVUpR8rIC/dC2j
-X-Google-Smtp-Source: AGHT+IEK5Ju6McLDb52scMYJjRIvfLxCIblhg4hiIlR/DRXCuiHOHjza5McL7RCgEWXhSriDM7Bi9A==
-X-Received: by 2002:a17:90a:ead6:b0:2e0:a067:4208 with SMTP id 98e67ed59e1d1-2e1846e773amr4307123a91.23.1727875714597;
-        Wed, 02 Oct 2024 06:28:34 -0700 (PDT)
+        bh=KGEsc1vLwVoQWt+H2cqF3P6yuJ7Om9q/TgHm7xbL028=;
+        b=JtkIuKggIan8g7eZt/Uh8XJRqt6MQjRTnN5EbCkqV8YV9FOR4V320QEkfInhn0OrR/
+         r7LLcIe9zcKoqYcS/9K8qHZwizb0LRyOXFSuj4ATx5PugBlF1i8KKAPiKvxIM59bdMMV
+         5cm3h/S9oKC32BERlTqPZrb1dnF74o0UsTI5NxOhDgfRns5dqEi264g9UNvM+WqVNKLo
+         v/IyQZmTk/+RGVc2eBXaIttTxR/5+w69AAQPCCQsDHUSOSbPiP1/0QwnxBKFLHPT3ZmP
+         KtLXs9RcVAfSsUdYvGqeVHEIELP4HEEJVRem69Mq5osY/1P3dAMnr6cx+4bnHpQ3GFnY
+         p5pw==
+X-Gm-Message-State: AOJu0YyOIvndPTnJaaeRQ36jdiz6p0ZX7aniL6tOeByH/JKumDRyAq1o
+	NvGWlnBYtAv1Yfkrgl6uDWWJWFQq6HhlHHoqYPNAef+p5hTuIeATgmCjAQiK
+X-Google-Smtp-Source: AGHT+IFsKpNwqXE5x3dxm3/kt7gMGUNFQTOdgX0GXLjKfy1tHTtuqHZ2VTYuUx2B6kMnq7kj08Rt9w==
+X-Received: by 2002:a17:902:c94e:b0:20b:6a57:bf3a with SMTP id d9443c01a7336-20bc599f0e7mr41246075ad.1.1727875717546;
+        Wed, 02 Oct 2024 06:28:37 -0700 (PDT)
 Received: from debian.tail629bbc.ts.net ([103.57.173.123])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e18f7734basm1528740a91.19.2024.10.02.06.28.32
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e18f7734basm1528740a91.19.2024.10.02.06.28.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Oct 2024 06:28:34 -0700 (PDT)
+        Wed, 02 Oct 2024 06:28:37 -0700 (PDT)
 From: Sayyad Abid <sayyad.abid16@gmail.com>
 To: linux-m68k@lists.linux-m68k.org
 Cc: fthain@linux-m68k.org,
 	linux-kernel@vger.kernel.org,
 	skhan@linuxfoundation.org,
 	sayyad.abid16@gmail.com
-Subject: [PATCH 1/3] drivers: nubus: Fix use of tabs in nubus_get_vendorinfo and nubus_add_board in nubus.c
-Date: Wed,  2 Oct 2024 18:58:18 +0530
-Message-Id: <20241002132820.402583-2-sayyad.abid16@gmail.com>
+Subject: [PATCH 2/3] drivers: nubus: Fix use of assignment in if condition in nubus_add_board() in nubus.c
+Date: Wed,  2 Oct 2024 18:58:19 +0530
+Message-Id: <20241002132820.402583-3-sayyad.abid16@gmail.com>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20241002132820.402583-1-sayyad.abid16@gmail.com>
 References: <20241002132820.402583-1-sayyad.abid16@gmail.com>
@@ -71,36 +71,29 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This change maintinas code consistency and compliance with
-rest of the kernel codebase by implementing use of tabs for
-indent where possible
+This change help improve code readabaility by
+shifting the assignment statement just above the if statment,
+which was earlier inside the condition.
+This makes the code clear and easy to read.
 
 Signed-off-by: Sayyad Abid <sayyad.abid16@gmail.com>
 ---
- drivers/nubus/nubus.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/nubus/nubus.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
-index ab0f32b901c8..08cf585cb471 100644
+index 08cf585cb471..77da1d14a1db 100644
 --- a/drivers/nubus/nubus.c
 +++ b/drivers/nubus/nubus.c
-@@ -615,7 +615,7 @@ static int __init nubus_get_vendorinfo(struct nubus_board *board,
- 	struct nubus_dir dir;
- 	struct nubus_dirent ent;
- 	static char *vendor_fields[6] = { "ID", "serial", "revision",
--	                                  "part", "date", "unknown field" };
-+					  "part", "date", "unknown field" };
+@@ -735,7 +735,8 @@ static void __init nubus_add_board(int slot, int bytelanes)
+ 	nubus_rewind(&rp, FORMAT_BLOCK_SIZE, bytelanes);
 
- 	pr_debug("    vendor info:\n");
- 	nubus_get_subdir(parent, &dir);
-@@ -783,7 +783,7 @@ static void __init nubus_add_board(int slot, int bytelanes)
- 	/* Set up the directory pointer */
- 	board->directory = board->fblock;
- 	nubus_move(&board->directory, nubus_expand32(board->doffset),
--	           board->lanes);
-+		   board->lanes);
-
- 	nubus_get_root_dir(board, &dir);
+ 	/* Actually we should probably panic if this fails */
+-	if ((board = kzalloc(sizeof(*board), GFP_ATOMIC)) == NULL)
++	board = kzalloc(sizeof(*board), GFP_ATOMIC)
++	if (board == NULL)
+ 		return;
+ 	board->fblock = rp;
 
 --
 2.39.5
