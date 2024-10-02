@@ -1,91 +1,95 @@
-Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E9C719D88D;
-	Tue,  1 Oct 2024 12:53:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C1251D0425
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  2 Oct 2024 13:28:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727787234; cv=none; b=N6xVzAm8DmmhzwTPdjyJGV/C61stmSY0Aa4AWy8TK9fVqConscwGF5V6FojrOcnG4Wi+G0wprLxgUtyeDQrrA+I+h0v/7Gww+8GKxnjwBzrDKeMiqr/p9QrhOqFYlCbpqtyakJexmNFlEhJ0pOWBE1BhZjDMUEIiQ9HfF9V8rzQ=
+	t=1727875713; cv=none; b=Ya86RJIs2+YfxRsfpe8ofM/1IJlPhUpEOJPc96gamABuH3e6l1A3r6qpUxICofO3tZL/4h3wBvdN/ehVyzPLRzxsvdRGbtmTIyxc9Owp8qrohI6ysZRxbXyyXR/SX2cx6wQGkZZAZ5daTFaZnKjg1cUt7nx42AnvKTOKX0yOMs4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727787234; c=relaxed/simple;
-	bh=wVmIzLHrlB9vbqZZ4IHk4yXT9OkBR1Nuo7JXvIjOmAQ=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=fZiYatGgHUFBgktib31jQFARudtbm4DgqL7jyDS0YUqpF5U2jKm9Hh5l2mmp4o4cRYeWO4wQYHxBC2zGTMVNCpJOmLA5LZ+CCBqmipClU3nKIZWdA3d5VuOOnrhTIRwyWgsBmi3JGpIHDkSLn9FkK/nbrtSLh+7cCD2S+BxqM6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=ntJCOUuK; arc=none smtp.client-ip=168.119.38.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
+	s=arc-20240116; t=1727875713; c=relaxed/simple;
+	bh=jT055+MFltjtTxzItHRvNrTX2GMARXmC7A3pvndse3M=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Dc1qxOGAaHG5gf1aKzR6P/HWWPu7TdHna/p33dbaW/SwDwWhc4PwW7+4X2CFne61lzvunTQRFlY/JxHqd+oZ6ThebSyO0rwO5l1P3gvwYHxfOlInNaFQm0EklFR3/lvCWQQ6XTndQgDENvH1qomPoVG/it9JtMqsmEBsWKCM5uQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mXxdm78+; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="ntJCOUuK"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=wVmIzLHrlB9vbqZZ4IHk4yXT9OkBR1Nuo7JXvIjOmAQ=;
-	t=1727787232; x=1728996832; b=ntJCOUuK3sDdtk53DJ4WarNW5pHlX5uKG+pdjf+EajFeF9I
-	u2W/S4tYfNcwDYrV5sd5BTB9Y1CswC/V4PTq2aChKbJZGgoqVHvsdfzj453Ri7vD5zXsDSy5DBP2h
-	Mb432pJleTOxhScrcvMc6sXwq+oqbsw3VdOBtO0o7aLA82FDip44DrHAoTJukCGRJP873el8drwB1
-	292xlW/jyd66G2/xq7piPEXnPYv3h2/HnLreNuez8SUuY8JPke2Q5W/9lCcJz08QXJ+uDEcNzQCwA
-	BkgIfWdJdaC4BC3/GTRjBcxuDWKNSvPMV/D1Y9ZHOXqiB5cRS0hweGU0kf6M6TUw==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1svcNg-0000000Elbd-23z1;
-	Tue, 01 Oct 2024 14:53:32 +0200
-Message-ID: <168acf1cc03e2a7f4a918210ab2a05ee845ce247.camel@sipsolutions.net>
-Subject: Re: [PATCH v7 09/10] um: Add dummy implementation for IO
- memcpy/memset
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Julian Vetter <jvetter@kalrayinc.com>, Arnd Bergmann <arnd@arndb.de>, 
- Russell King <linux@armlinux.org.uk>, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,  Guo Ren
- <guoren@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui
- <kernel@xen0n.name>,  Andrew Morton <akpm@linux-foundation.org>, Geert
- Uytterhoeven <geert@linux-m68k.org>, Richard Henderson
- <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-  Matt Turner <mattst88@gmail.com>, "James E . J . Bottomley"
- <James.Bottomley@hansenpartnership.com>,  Helge Deller <deller@gmx.de>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,  Richard
- Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-csky@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org, 
-	linux-um@lists.infradead.org, linux-arch@vger.kernel.org, Yann Sionneau
-	 <ysionneau@kalrayinc.com>
-Date: Tue, 01 Oct 2024 14:53:31 +0200
-In-Reply-To: <20240930132321.2785718-10-jvetter@kalrayinc.com>
-References: <20240930132321.2785718-1-jvetter@kalrayinc.com>
-	 <20240930132321.2785718-10-jvetter@kalrayinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mXxdm78+"
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2e137183587so2603380a91.3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 02 Oct 2024 06:28:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727875712; x=1728480512; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QUdM77Xpa2KVFNEptPxhIDNx7G4UEev4geS+PHi3oYY=;
+        b=mXxdm78+qsDztTYAsrPXCRD8HQfpj4tiw2fZdyDf7fNCV7McYISwEFqOzqhwHxJanJ
+         7xJ/NjoHNHTb94SAKTruPRcVOhYL6+tXdyGxt1bGfgQB2U0Do3HKwdFx7G+7aLfwXWZW
+         xBi2eqXP2RmAFZgYE7OZDY2Oiyb/7z71F85c9d2AiTwt3dx+WvdWZG5fTbcH/uqUZcvx
+         gKQf1bAq6ru5VNSGn/3ItU/gHf6GN24kCegI/cAqHp9DioyTpZdinhQiTJ54KNTFSrk7
+         Fb7UlcSeLCkMfEqiu5/34Z6VwSlDXCXOdVkN4hXNOIaFoEIEQD0gdEX/K/3J0tVVXRvl
+         g7CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727875712; x=1728480512;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QUdM77Xpa2KVFNEptPxhIDNx7G4UEev4geS+PHi3oYY=;
+        b=SOtyVdhaiITNyOJ/TGlMYcvKxLlElEAA+UHHwZBi1pp0h4tJmHKnadGrX+PIx4Gzt1
+         UcEZZ8NXIUZEHO4bHRo+JUP7zZpZ5Jai9/WMSdIb44Pg3E56xCJ2KwJpD1aJOGWxdOFB
+         Scv4MPtAKDTi35HFJ3oiEHsWq4dmR22JnuE/SwL/Ab9jKt4rfCiTEFM/1A1E1mNYeZtT
+         Pg8X0BQ4/yVInSMZf19bCTfWOk99WeEJEeyAdZCqkF6d0uPlu57gUdGuhi4GAJCoJpv4
+         iwbSeMqRu2uOrZqKSALwsruEtHznp+fpkBDkge/BNo1ugE2eJmWAqOOZ/WFKTZKk7nHb
+         GKlQ==
+X-Gm-Message-State: AOJu0YzOIf3JApYw6xK+fSXtkUD9MlgTTCG+v4i4vvwkmwGV3GpyO/LB
+	vWfCApnEuu/9EqtZszutNOQHY/X/pvl8HEYrou+FzmZy3VUoVPnJ/w9qFAcw
+X-Google-Smtp-Source: AGHT+IF6zkvy6+eQJNc3Tih+OJqmD5b+H5QGpVA61mwNsdipu5U9oGYiQdmnB+iyPMEh3Ga54cZLqA==
+X-Received: by 2002:a17:90a:bf15:b0:2e0:9d3e:bc2a with SMTP id 98e67ed59e1d1-2e18496a9f9mr3903265a91.32.1727875711591;
+        Wed, 02 Oct 2024 06:28:31 -0700 (PDT)
+Received: from debian.tail629bbc.ts.net ([103.57.173.123])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e18f7734basm1528740a91.19.2024.10.02.06.28.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Oct 2024 06:28:31 -0700 (PDT)
+From: Sayyad Abid <sayyad.abid16@gmail.com>
+To: linux-m68k@lists.linux-m68k.org
+Cc: fthain@linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	skhan@linuxfoundation.org,
+	sayyad.abid16@gmail.com
+Subject: [PATCH 0/3] drivers: nubus: Fix coding style issues in nubus.c
+Date: Wed,  2 Oct 2024 18:58:17 +0530
+Message-Id: <20241002132820.402583-1-sayyad.abid16@gmail.com>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Transfer-Encoding: 8bit
 
-On Mon, 2024-09-30 at 15:23 +0200, Julian Vetter wrote:
-> The um arch is the only architecture that sets the config 'NO_IOMEM',
-> yet drivers that use IO memory can be selected. In order to make these
-> drivers happy we add a dummy implementation for memcpy_{from,to}io and
-> memset_io functions.
+This patch series addresses coding style improvements in
+the Nubus subsystem, specifically in `nubus.c`. These changes
+aim to enhance readability and maintainability of the code.
 
-Maybe I'm just not understanding this series, but how does this work
-with lib/logic_iomem.c?
+These coding style inconsistencies were found using checkpatch.pl
 
-You're adding these inlines unconditionally, so if this included
-logic_io.h, you should get symbol conflicts?
+Changes include:
+ 1. Improved comment block formatting by aligning `*` in
+    multi-line comments.
+ 2. Fixing assignments inside conditional statements to improve clarity.
+ 3. Correcting the use of tabs for indentation in specific functions.
 
-Also not sure these functions should/need to do anything at all, there's
-no IO memory on ARCH=3Dum in case of not having logic_io.h. Maybe even
-BUG_ON() or something? It can't be reachable (under correct drivers)
-since ioremap() always returns NULL (without logic_iomem).
+Each commit focuses on a specific aspect, as detailed below.
 
-I think Arnd also said that other architectures might want to use
-logic_iomem, though I don't see any now.
 
-johannes
+Sayyad Abid (3):
+  Fix use of tabs in nubus_get_vendorinfo and nubus_add_board
+  Fix use of assignment in if condition in nubus_add_board()
+  Fix use of * in comment block in nubus.c
+
+ drivers/nubus/nubus.c | 94 ++++++++++++++++++++++++-------------------
+ 1 file changed, 53 insertions(+), 41 deletions(-)
+
+--
+2.39.5
+
