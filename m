@@ -1,132 +1,110 @@
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-a1-smtp.messagingengine.com (fhigh-a1-smtp.messagingengine.com [103.168.172.152])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC202208A0
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  3 Oct 2024 03:32:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B32445028
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  3 Oct 2024 03:32:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727926329; cv=none; b=HGlPS3DC1/OBOoNmuvYAoulXot9iRqn8tYLJFtXyqz0OgaCFGzVmFwqcx4ZGPgWFmDvDY81c7nrGuimziNdPcia8td5sGlc4lo/wKBV+HWQ+B4V61h9FB4ZB5gEc/mdjunFHZThUZYdlWcYtOJUeOh8Yy1tedPSBw9Bv1pZWGew=
+	t=1727926341; cv=none; b=rKLGpRN5NhwkU7k6ORaZZQ/cfXFA+3FbeBkODzKVfnr53ZZvHYjZ+kc/HCHNTwJ3fmT6jg2dv5ur5gwRlpRlWiewCDKnjOFRBqcQTNSpJFsBHABayxvE/lPM0wxDmGG70zvPaY9f9dpMhqANjYugiAYnQSmGxF0PjCZaXHFuCcg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727926329; c=relaxed/simple;
-	bh=sPqYsxGw4UKWZVGhmn3EmQz2XgH0EJItdTfQ4iscmkc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bb7ULWMcdQcNNE08iFemk9CjkM+aCuYB7yMiCkRKiTnoQygfoAXS/6wQm8+Jr7i4113XIk2F7epCNzrs+bX0KPHmdsAStSXuSTvQXG8mcgDi3IgS5lHK1aZ3qqeYkq7uq1l1cTOFBdylSiCx44sshyknPWs1pCS7GQv1VLtQsnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FeDmjy0t; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1727926341; c=relaxed/simple;
+	bh=pps4CowKC2g1MPGAUyiNHB63/+34fcZ1kliBVZTSOIQ=;
+	h=To:Cc:Message-Id:From:Subject:Date; b=Z2OFKKefJxcolvzVDsvc1bad0Pfv96+HwydFmEU4+zGzLWUS5iW6IQe9FzFEfKVEyoBblMYhsL7us2CMi9ZchQ1sD4PzUtXDowpSlwDqfXWloiNWGyAOiz1+S+e4GT2tQPK+S7fz6dijhs8XwpsOtFTu7LPOkF25gRh5lrLx/G0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=jBlnyif7; arc=none smtp.client-ip=103.168.172.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FeDmjy0t"
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-71971d2099cso451285b3a.2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 02 Oct 2024 20:32:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727926327; x=1728531127; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BGpCecy1PgHkxzgOvGnovEBjk6UmIsmI1Dv+w1TXrew=;
-        b=FeDmjy0trDA49hmOp5TpcJszmsBo1iczDPRk0d/Aj3bqzBBdlgwdQRRoTEA9SH/eHQ
-         /m2k9xsMp55SGFMtAOZHs8iSG5/oWAxciEq31njUzelY7W5KTlucdQwarNG/4xwaOCof
-         vydCzwZuNpeBAKPQbu29K+rtZxXeV6mGTTtQYqsjqlDBZryu3BAjZUvuZOMx0rMGDEWX
-         OrWdcNZNBstCXOP9++JeyfEMV00IQSIPUoLMj0w34MnLmHSaUzm6qHRltBmMo2r+M6Q1
-         BxBddKCifSR2JGbKGl6bLIFq5zzwyS2OF2nUkuqnZ4BnCe7zypjfzIEuEPaxPGo/IM+d
-         z4ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727926327; x=1728531127;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BGpCecy1PgHkxzgOvGnovEBjk6UmIsmI1Dv+w1TXrew=;
-        b=rqp5ZUMhJ4OP9hiP1irVZaRgf0EcMea16JTWQR9CRH1ATynGwK1S93oZXmaNQKvsn6
-         CG1gexPE4y2Sn8ntd4yeooeKehlX+XOYh4xYqQEvWodW8qvobW54uIZEnQ2TuCzZ3zP5
-         FZJCiKJc8ob5E/du6GLfifR3XWu4vBSBfp7bsLFa2bJx68Hws6GXSVIZ/I/gWhrm3P37
-         ynXA9pChqSqaLLuZHCzJb1tWAj0tSaGU+fSg0yy2E5rLsaH094jeyvxGMYGU32HCrBpV
-         QGpknihOk6JXdvFiHMJzj0J8UAn8NEH/5Qo6555x9/iDQ9FqJjWzljpQZ4FQpZcWo87e
-         cnjA==
-X-Gm-Message-State: AOJu0YxIEGp4xUyG68183taisQ8otJb7yn+276wDEUTantqFsdmeVYA0
-	MW0P/4m2SI/RF1+yfn2KVzNQzrn9zfGBZnPSjEeGL5fu6kU5aQimsvHiCVUrbYm5KAgOPyHyZFJ
-	eK8onjuqoaUvhv7qWHsmSqkOffAU=
-X-Google-Smtp-Source: AGHT+IGxU23MVhIzmikqUZ1ChMRkDvxsLqd3I0IYnv2mo71SHn/bUXBPNSL0ZoDwXDXOZ0TQSVxxghjWoD2jNK+gVmI=
-X-Received: by 2002:a05:6a00:cc2:b0:70d:2796:bce8 with SMTP id
- d2e1a72fcca58-71dc5d5bf5fmr6871110b3a.20.1727926326883; Wed, 02 Oct 2024
- 20:32:06 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="jBlnyif7"
+Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 403E61140254;
+	Wed,  2 Oct 2024 23:32:19 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-02.internal (MEProxy); Wed, 02 Oct 2024 23:32:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm2; t=1727926339; x=1728012739; bh=rgBThvFYSnV95
+	n8aLUXaWQHtLFexqo7ujOupDPef5Go=; b=jBlnyif7r7W3RAzeWQ5Mr0ZXmxDkB
+	YiD8L/N2IWnWKbq6VVNSQKwYyvYIfOPgrIlU9acZxgEWN9BJuetrDgkqdBH+VuOH
+	aw/SstzldyRZs4h8Thcgicylxv0j1+74B1o9rrhR0lR4XDwm0vQQ1g6x+t7S7ncg
+	73wCkKTDvOSSDPMLy02c27S5e9ap+/NGO++EH8ASAkEZjQvnE8mM6xdtUySlFHtk
+	noxlcUobjfPWX1AjU2v5rTUcQ0n9SO4iQ8I9y0zJKVnO1qscPl56JGABC9GspTuY
+	TwODOy0ISt3NIOkufL0CUjXCXUfvxb7vxEBpxpxHyEYTSTjgJwoLSTSuA==
+X-ME-Sender: <xms:QxD-ZnED4ksTnfZ00AFIFuwwgeZOyc8JH3VqsTjihMD2QE35_aXnKg>
+    <xme:QxD-ZkUZddANV9vypZ9Hgzu_rSVWDq09s5rshDH84DllSGkiAsZhijuDniTWvQlKD
+    zfzpMAE3NUql0xTm_k>
+X-ME-Received: <xmr:QxD-ZpIYjA9yWlVIY7NAACH4aoWIZmPpKhVp0pGzgs7wK3xvGUHA1u9sGBGvYtoRO1iy0Phf68YPw02KnrHoeJBG0hmGIvQczgU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddvtddgjeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepvfevkffhufffsedttdertddttddtnecuhfhrohhm
+    pefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqe
+    enucggtffrrghtthgvrhhnpeehfffggeefveegvedtiefffeevuedtgefhueehieetffej
+    fefggeevfeeuvdduleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphht
+    thhopeehpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehgvggvrhhtsehlihhnuh
+    igqdhmieekkhdrohhrghdprhgtphhtthhopegurghnihgvlhestdigtdhfrdgtohhmpdhr
+    tghpthhtohepshhtrggslhgvsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuh
+    igqdhmieekkheslhhishhtshdrlhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtohep
+    lhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:QxD-ZlEONQR0LSTCa3kBcRlUaUeVyAl7YQKkSi2XgKcTd1jmBoh6ig>
+    <xmx:QxD-ZtWiYyJLLTztrtXrPGwVLiSc_8v1oLZLzsurFnO06g_lK-GvhA>
+    <xmx:QxD-ZgNP-nswSpZuoUvMGsyeQuxC4tMS9y52xDgv9R5JZrDFdAiETA>
+    <xmx:QxD-Zs3n8Y-wtiRLI5UuBvSUkXcI_Gzic0SK7l-z5deZYLkWZfNQIA>
+    <xmx:QxD-ZjzDufUMSu7XiiPikBq-12SCfZGsRUvyMHrIujGOt7lYwcZT_KVU>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 2 Oct 2024 23:32:17 -0400 (EDT)
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: "Daniel Palmer" <daniel@0x0f.com>,
+    stable@kernel.org,
+    linux-m68k@lists.linux-m68k.org,
+    linux-kernel@vger.kernel.org
+Message-Id: <0e7636a21a0274eea35bfd5d874459d5078e97cc.1727926187.git.fthain@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH] m68k: mvme147: Fix SCSI controller IRQ numbers
+Date: Thu, 03 Oct 2024 13:29:47 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20241002132820.402583-1-sayyad.abid16@gmail.com> <06ffa5a2-f73d-198c-3e7b-178e4fcec1ed@linux-m68k.org>
-In-Reply-To: <06ffa5a2-f73d-198c-3e7b-178e4fcec1ed@linux-m68k.org>
-From: Sayyad Abid <sayyad.abid16@gmail.com>
-Date: Thu, 3 Oct 2024 09:01:32 +0530
-Message-ID: <CACVUEBnohcsyiPpCF3QNdQeXXaU6pvVOY-5X8CHmRSvEJxXoyA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] drivers: nubus: Fix coding style issues in nubus.c
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
-	skhan@linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 3, 2024 at 4:25=E2=80=AFAM Finn Thain <fthain@linux-m68k.org> w=
-rote:
->
->
-> Hello sayyad.abid16@gmail.com
->
-> Thanks for taking the trouble to send e-mail messages to so many people b=
-y
-> use of a free e-mail account.
->
-> With regards to kernel patches, can I request that you --
->
-> 1. Don't run checkpatch on existing code
-> 2. Don't send patches that break the build
-> 3. Don't claim to be improving code style by sending patches that violate
->    code style rules
-> 4. Read the mailing lists and study the development process before trying
->    to contribute
->
-> Thanks for your consideration.
->
-> Regards
-> Finn
->
-> On Wed, 2 Oct 2024, Sayyad Abid wrote:
->
-> > This patch series addresses coding style improvements in
-> > the Nubus subsystem, specifically in `nubus.c`. These changes
-> > aim to enhance readability and maintainability of the code.
-> >
-> > These coding style inconsistencies were found using checkpatch.pl
-> >
-> > Changes include:
-> >  1. Improved comment block formatting by aligning `*` in
-> >     multi-line comments.
-> >  2. Fixing assignments inside conditional statements to improve clarity=
-.
-> >  3. Correcting the use of tabs for indentation in specific functions.
-> >
-> > Each commit focuses on a specific aspect, as detailed below.
-> >
-> >
-> > Sayyad Abid (3):
-> >   Fix use of tabs in nubus_get_vendorinfo and nubus_add_board
-> >   Fix use of assignment in if condition in nubus_add_board()
-> >   Fix use of * in comment block in nubus.c
-> >
-> >  drivers/nubus/nubus.c | 94 ++++++++++++++++++++++++-------------------
-> >  1 file changed, 53 insertions(+), 41 deletions(-)
-> >
-> > --
-> > 2.39.5
-> >
-> >
-My sincere apologies for causing the trouble,
-I overlooked a few things there,
-I will keep a note of your points and make sure
-that it is not repeated again.
+From: Daniel Palmer <daniel@0x0f.com>
 
-Thank You!
+Sometime long ago the m68k IRQ code was refactored and the interrupt
+numbers for SCSI controller on this board ended up wrong, and it hasn't
+worked since.
 
---=20
-Abid
+The PCC adds 0x40 to the vector for its interrupts so they end up in
+the user interrupt range. Hence, the kernel number should be the kernel
+offset for user interrupt range + the PCC interrupt number.
+
+Cc: Daniel Palmer <daniel@0x0f.com>
+Cc: stable@kernel.org
+Fixes: 200a3d352cd5 ("[PATCH] m68k: convert VME irq code")
+Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+Reviewed-by: Finn Thain <fthain@linux-m68k.org>
+---
+ arch/m68k/include/asm/mvme147hw.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/m68k/include/asm/mvme147hw.h b/arch/m68k/include/asm/mvme147hw.h
+index 2b147ab1d189..6ad93bac06f9 100644
+--- a/arch/m68k/include/asm/mvme147hw.h
++++ b/arch/m68k/include/asm/mvme147hw.h
+@@ -76,8 +76,8 @@ struct pcc_regs {
+ #define M147_SCC_B_ADDR		0xfffe3000
+ #define M147_SCC_PCLK		5000000
+ 
+-#define MVME147_IRQ_SCSI_PORT	(IRQ_USER+0x45)
+-#define MVME147_IRQ_SCSI_DMA	(IRQ_USER+0x46)
++#define MVME147_IRQ_SCSI_PORT	(IRQ_USER + 5)
++#define MVME147_IRQ_SCSI_DMA	(IRQ_USER + 6)
+ 
+ /* SCC interrupts, for MVME147 */
+ 
+-- 
+2.39.5
+
