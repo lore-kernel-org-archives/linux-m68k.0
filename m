@@ -1,126 +1,106 @@
-Received: from fhigh-a6-smtp.messagingengine.com (fhigh-a6-smtp.messagingengine.com [103.168.172.157])
+Received: from fout-a3-smtp.messagingengine.com (fout-a3-smtp.messagingengine.com [103.168.172.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D838F84A36
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  2 Oct 2024 22:55:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3B268F40
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  3 Oct 2024 03:27:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.146
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727909744; cv=none; b=uXmTboLiVqCyazr6tIy2EOyL6vsIuYIFCcZOXNsaa4nlrRjBPjAHbOKhjj6P5E/chVNi59qyfWLC9ibrEqZ4iHiBpIIZDI5o/dBLacWCd5HLeFbdsM7XK8PXd1AEnohZL7Z9HRAHB56pIXjXo5tiQH6wbp5EYuwqzGynSXr5RP4=
+	t=1727926063; cv=none; b=UOWss8dKCzPGSoBxwPsW64pzhV1/EMGXuGSWsKjzcsMRmjvjtghWx9UizuPKUpEcBu/92Zi3JlsKVoh0AoSYHwgPTv/Ta7QfTU+6ESaDQFyk/rmTmGZU0n79IqJdXthtTdbQHCEsWxhZXX2KqVxfEWCtxaTg0wKAU7qSSnNEAvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727909744; c=relaxed/simple;
-	bh=OT8vUKCWjczcFOuZn4PPrmZ9GWvhs9YmkuaPsre8b0w=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=nKCaC9JV05OQn78rxDS/GfrDin+WL3gVg2i0/efnhGzwbcBobrBa64L+sy3VksdTOJvpSpJ2ralJeuhPSIHlbKk81O1nw1NeDeWYnQBnHb/PHjUHTYCs7rSGrE3vfeQEfAF/3BnbOzXa+pMw0BfUEIIWdBYNu5otHLl92jUbDno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=a/NNsuFQ; arc=none smtp.client-ip=103.168.172.157
+	s=arc-20240116; t=1727926063; c=relaxed/simple;
+	bh=o+3jrKW7b7kFBJRKWePVxzV/UhWLYrB9mPeX8rVWu+g=;
+	h=Message-Id:From:Subject:Date:To:Cc; b=pyy4w1rEPK2hGZcn+8q1w9s23iFVfvbZSTFbKAc9+OgrxPT5C/ctEvlXcoExhgYAFDiqt9J/XF8GBrU4IhBZSfq7LZbBlT1TIXv9cgHr+wvoa2EGOKQ2P7YtJhMtBfHN1GH22mKqD3cqhwO2j1y1uszGo/jyuZEzA49lKON5PUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=dRFUVKnE; arc=none smtp.client-ip=103.168.172.146
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="a/NNsuFQ"
-Received: from phl-compute-08.internal (phl-compute-08.phl.internal [10.202.2.48])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id DF87C11401D1;
-	Wed,  2 Oct 2024 18:55:40 -0400 (EDT)
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="dRFUVKnE"
+Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
+	by mailfout.phl.internal (Postfix) with ESMTP id AA20B13804B7;
+	Wed,  2 Oct 2024 23:27:39 -0400 (EDT)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-08.internal (MEProxy); Wed, 02 Oct 2024 18:55:40 -0400
+  by phl-compute-02.internal (MEProxy); Wed, 02 Oct 2024 23:27:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1727909740; x=1727996140; bh=jrXYY+Za4EOM/dW2KzkWNeifL9zg
-	t+DHBBMyVk28hcc=; b=a/NNsuFQ2CULd90JQPvjzF/Wu2oW57n8IbPWfT0dHoub
-	xr1tTAoG/FRcg5GwqkTk0WJcIAzzHwQPhWDyKUo8e5qr5BL5fiNyqltwddm32WKL
-	RZKUmGMgVZuZ6ENQO2JkryiMvQk28WbX9LC4euIgjbL1QlNSML47PwtR+AOKFZGx
-	DsdAJe2r/JObRIU8dCWi3KlTrmpKPjVJMwIy7kalXh9zuM/snZPcwghcKm17gBAb
-	8ziMY4rsjSs9crGUZbZgvKEn1wKFl5FR8QYZjw6ykyc0RRAh2OboHF6JIMAVAvOy
-	yHpeIByfo19tDuk7oSidPQACCA5+ha4kgRBOZJBCCg==
-X-ME-Sender: <xms:bM_9Zq5MLqLrru7sUve6bX9Nvt4MhtNigfiYWkcq7BtPVUuUQxmpVw>
-    <xme:bM_9Zj4W-YKgV3zBbCfT5e-jZr3hUVSrPyq_R39TaxbkwDK6pGA0TIgggx4Sg7E8m
-    q1G23YG1Ff_F0-6MzI>
-X-ME-Received: <xmr:bM_9ZpeEkspnP7BE0aFmmA0wgwBeDeVn7_C3arPe64B4Jq6olsyETU2phgjzeyHWk5wGperbEHr14I5w1RStxVTwhv4IvZvhdnk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddvtddgudeiucetufdoteggodetrfdotf
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm2; t=1727926059; x=1728012459; bh=JxvPYPBns9YkU
+	mhU8vnRGYX0kJFFoS3PbWqDIlFrT5Q=; b=dRFUVKnEQOmDWF0lTtzX+fZRgxh4x
+	LibkEdnyf+rDtEuNiiUB0xZjdlTRfoWD3/ppVH6fUjYqwxCKN7GmBlUNTDJK6I2f
+	iPrp3B4UqpWfl/1NFP6iuE62COdfx/6Y1NUgRSgiKPuKTibO3ka7OkqQegZdkQGb
+	CNbWM8VOhvLsHS+W8YsttkMpQOYdPBCjsuDgzcequGUmIuFyNGjVU6QXpNwF6Qk2
+	PCpcBtTROSv2Dhphq/VjFJ4nHJosJ57Iem2s86sp5PEsvu21XIHdBIXI38Z0bQX4
+	FsPKhWOi7g0K0bGNlH1U7Qie5h1a5dxOWXGS0IpheGUCuRCmoPv4zgVJA==
+X-ME-Sender: <xms:Kg_-ZoIsxZoquFVOFDu06PJYqjiA_r-BelkmrEw37DJUzxzV87-hZQ>
+    <xme:Kg_-ZoLbvhfgPCNpymRKtYvigEfV4NIrnUKHmjnQatauYhZHCfIL0Mc0CTTd-x6n-
+    plVOpWB7S1L2Mkn-jQ>
+X-ME-Received: <xmr:Kg_-ZouasqQhQaHQ6kDn0AH_oUC9ec36dIkMCJ9CjpDG_-2ZMJa9jdg4gwhAiE6aIN7uhnLRQCN0LPqFBP69yn4UWhm4-IKVEYo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddvtddgjedvucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
     rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecu
-    hfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrd
-    horhhgqeenucggtffrrghtthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeff
-    ffdtgfejveekgeefvdeuheeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggp
-    rhgtphhtthhopeegpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehsrgihhigrug
-    drrggsihguudeisehgmhgrihhlrdgtohhmpdhrtghpthhtoheplhhinhhugidqmheikehk
-    sehlihhsthhsrdhlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlihhnuhigqd
-    hkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehskhhhrghn
-    sehlihhnuhigfhhouhhnuggrthhiohhnrdhorhhg
-X-ME-Proxy: <xmx:bM_9ZnKKmVVvwwcN-AyeglFKs25dtUR4lPGgqQwsc2CZyiF9bB3IFQ>
-    <xmx:bM_9ZuIiHh58I8My8deVSvqt8xV2XOgg5M_BW7YBL3RGK2SSwtcQkA>
-    <xmx:bM_9ZoyCaosEmqj46PqLCw8TZZzXWzUjjs2H9UMA0aqf65ee8VRffA>
-    <xmx:bM_9ZiLvUEG5G-KPphevVR9B8UD4IaObe64soSYq9HVr8jwTYsGl3w>
-    <xmx:bM_9Zq0ttNdKaoOEeb5FyTyMEcLZWFJS8gImlIWWWP8uBpknKL9WgOzz>
+    htshculddquddttddmnecujfgurhepkffhufffvfevsedttdertddttddtnecuhfhrohhm
+    pefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqe
+    enucggtffrrghtthgvrhhnpeehffdukeetffdutedvffffheegtdetkeekfeevgfeitefh
+    vedvtdelhfduudettdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphht
+    thhopeejpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopegrlhgvgigrnhgurhgvrd
+    gsvghllhhonhhisegsohhothhlihhnrdgtohhmpdhrtghpthhtohepghgvvghrtheslhhi
+    nhhugidqmheikehkrdhorhhgpdhrtghpthhtohepuggrnhhivghlsedtgidtfhdrtghomh
+    dprhgtphhtthhopehprghvohhnvgesrhgvthhrohguvghvrdgtohhmpdhrtghpthhtohep
+    lhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoh
+    eplhhinhhugidqmheikehksehlihhsthhsrdhlihhnuhigqdhmieekkhdrohhrghdprhgt
+    phhtthhopehlihhnuhigqdhrthgtsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:Kg_-ZlYb7N13r24bkQPRwOSqd18zLoXBztkdnIPoHM-A8KFifZpLaQ>
+    <xmx:Kg_-ZvaroqHXpAAMu1RvrOo7rAajhiuNYkqdsl4Qd58mlVqsiRqLkA>
+    <xmx:Kg_-ZhDYcFSoLLjLJqbEeS3eKCmGXsKLCcSmxJvQ5TgiNs4ePoiwNQ>
+    <xmx:Kg_-Zlbwh9c_s0YY1jWc49wFuc0chuM-9HfVzKhSPGi1H8hPy3xKcQ>
+    <xmx:Kw_-ZkO2vmwKI7WDf4SsTMKIj7mGd69ZSWPYf1PcH_BgKhXFnQbD2zNZ>
 Feedback-ID: i58a146ae:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 2 Oct 2024 18:55:37 -0400 (EDT)
-Date: Thu, 3 Oct 2024 08:55:43 +1000 (AEST)
+ 2 Oct 2024 23:27:35 -0400 (EDT)
+Message-Id: <cover.1727925802.git.fthain@linux-m68k.org>
 From: Finn Thain <fthain@linux-m68k.org>
-To: Sayyad Abid <sayyad.abid16@gmail.com>
-cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
-    skhan@linuxfoundation.org
-Subject: Re: [PATCH 0/3] drivers: nubus: Fix coding style issues in nubus.c
-In-Reply-To: <20241002132820.402583-1-sayyad.abid16@gmail.com>
-Message-ID: <06ffa5a2-f73d-198c-3e7b-178e4fcec1ed@linux-m68k.org>
-References: <20241002132820.402583-1-sayyad.abid16@gmail.com>
+Subject: [PATCH 0/2] 
+Date: Thu, 03 Oct 2024 13:23:22 +1000
+To: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+    Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Daniel Palmer <daniel@0x0f.com>,
+    Michael Pavone <pavone@retrodev.com>,
+    linux-kernel@vger.kernel.org,
+    linux-m68k@lists.linux-m68k.org,
+    linux-rtc@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+
+This series removes some duplicate RTC driver code. rtc-m48t59 is tweaked
+to bring it into equivalence with the RTC drivers in arch/m68k/mvme*.
+Then the latter drivers are removed and platform devices added to make use
+of the former.
+
+The second patch depends upon the first, which will require some
+coordination between the maintainers of the RTC and m68k subsystems.
 
 
-Hello sayyad.abid16@gmail.com
+Finn Thain (2):
+  rtc: m48t59: Accommodate chips that lack a century bit
+  m68k: mvme147, mvme16x: Adopt rtc-m48t59 platform driver
 
-Thanks for taking the trouble to send e-mail messages to so many people by 
-use of a free e-mail account.
+ arch/m68k/configs/multi_defconfig   |   1 +
+ arch/m68k/configs/mvme147_defconfig |   1 +
+ arch/m68k/configs/mvme16x_defconfig |   1 +
+ arch/m68k/include/asm/mvme147hw.h   |  19 +---
+ arch/m68k/include/asm/mvme16xhw.h   |  18 +--
+ arch/m68k/mvme147/config.c          |  54 ++++-----
+ arch/m68k/mvme16x/Makefile          |   2 +-
+ arch/m68k/mvme16x/config.c          |  56 ++++------
+ arch/m68k/mvme16x/rtc.c             | 165 ----------------------------
+ drivers/rtc/rtc-m48t59.c            |  31 +++---
+ 10 files changed, 67 insertions(+), 281 deletions(-)
+ delete mode 100644 arch/m68k/mvme16x/rtc.c
 
-With regards to kernel patches, can I request that you --
+-- 
+2.39.5
 
-1. Don't run checkpatch on existing code
-2. Don't send patches that break the build
-3. Don't claim to be improving code style by sending patches that violate 
-   code style rules
-4. Read the mailing lists and study the development process before trying 
-   to contribute
-
-Thanks for your consideration.
-
-Regards
-Finn
-
-On Wed, 2 Oct 2024, Sayyad Abid wrote:
-
-> This patch series addresses coding style improvements in
-> the Nubus subsystem, specifically in `nubus.c`. These changes
-> aim to enhance readability and maintainability of the code.
-> 
-> These coding style inconsistencies were found using checkpatch.pl
-> 
-> Changes include:
->  1. Improved comment block formatting by aligning `*` in
->     multi-line comments.
->  2. Fixing assignments inside conditional statements to improve clarity.
->  3. Correcting the use of tabs for indentation in specific functions.
-> 
-> Each commit focuses on a specific aspect, as detailed below.
-> 
-> 
-> Sayyad Abid (3):
->   Fix use of tabs in nubus_get_vendorinfo and nubus_add_board
->   Fix use of assignment in if condition in nubus_add_board()
->   Fix use of * in comment block in nubus.c
-> 
->  drivers/nubus/nubus.c | 94 ++++++++++++++++++++++++-------------------
->  1 file changed, 53 insertions(+), 41 deletions(-)
-> 
-> --
-> 2.39.5
-> 
-> 
