@@ -1,59 +1,59 @@
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B55F19F114
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  3 Oct 2024 14:49:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B7E81A08C1
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  3 Oct 2024 16:46:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727966995; cv=none; b=PLKuR6rmqn8rA+B0dVXX1L3y6BmjMXdzJSu9y9KoyyY4vLzjsW6dR8S95lOw/TdDi7srFCmisyxJh9Unmh7uwQJL72HoCiFKPZalj3TUxQbJvceb0SGESxSnNUx0zY6v00VcqA5bY9z1D7xiOFphXBv/+JybCHYJCZm/LDRE2Wg=
+	t=1727974017; cv=none; b=ssWcCV+4eBvh5vOVFkjrLNEno0e0cltYZYBkh/WawXUu6YFfdvzGruule01H4OdoGq32Dad34BgR529dfIAYGbKBTCI2v6tU5Z/loMMc14/TyR2gQ78eowEe+5+dIdYk9qN18ypczDTfthbsvSLayQju0bKJoy2mtdwX9e5i+tc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727966995; c=relaxed/simple;
-	bh=YSJKGbAVsaG9FB5YYybhcFMUlGKkb5YfLZFQUI0JNHM=;
+	s=arc-20240116; t=1727974017; c=relaxed/simple;
+	bh=EwT3q9EsnCa7yrZWUCyRNUjVCTNH45yR8vvcQYT/i1Y=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ErN1fUJSgBCljlOh/R+Y4AkQ0XsVH3emuczPYUD7m6reSZgo6w37bH8ZgmZNtabp/eyfXhrE7zLwtjFnjauErINp/g25vqpqYTMbL/7bpkGYsFWBovY7P9b5iqBOe8mDZuDri9keE2/S0VighYz9+YIVzYQiwUt+sc7l1P03FRE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yPoWZQJL; arc=none smtp.client-ip=209.85.214.174
+	 In-Reply-To:Content-Type; b=WacdB9RxNDrI5s8bxd7ZCO8fMk3AmmB93a27x1z7Ni3Wm8zOXzlL0SA85i7+KkDc2aBoghn1+opdjFLAzfrTIlbZJdvMeldQWo2wigyvr88zNNbLb+dShhvggR+HJwOIiVVgu4w0gmzg4sE2dL7FDqdyy+KLjaWeb8xG3VxYR8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Ns1d8h3X; arc=none smtp.client-ip=209.85.215.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yPoWZQJL"
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-20ba8d92af9so7693935ad.3
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 03 Oct 2024 07:49:54 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ns1d8h3X"
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-7e6afa8baeaso976944a12.3
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 03 Oct 2024 09:46:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1727966993; x=1728571793; darn=lists.linux-m68k.org;
+        d=linaro.org; s=google; t=1727974015; x=1728578815; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=WdndKVp/SXRSmiqlbx9yFx2IrKrWcsly5j+I0V4+Xpc=;
-        b=yPoWZQJLm5riqhV25VT5LcAdSlh3k6Lt6zKCPDelqxpDD4xfkE1mZUNnTIOKxO2bbp
-         y32B7jpWan7w+DLM3IWRo0fPJ+6ejJhVRwWxz22+XikZEsCb3URQitRJcEJHSas9ZxuW
-         AxiyvO/z8vCQll7D+pqoVAiVw+fxXTIsOvBqZTi+XXrDJkiq6JJfMLI8qJKJIMimEl3P
-         DiCQ1S0Jt++9FZU7va94EVf8DfZzn/hWfos98XMm7YHHGFUUNa6qdsglgPAzAP+LiLEA
-         HcpyOQIYFhyrw08zJxat3+KFg3miba6PYpRsjwA04d8wv9ZtcgxGgCzAr7S3ARszQJ6K
-         R8sw==
+        bh=RW5P1Arx8XPYT/NPFqMkITFeiGycXbJcANO3qtPPvbA=;
+        b=Ns1d8h3XGKh+fuo0lS9eUUgG7LMCA00SmNdPo2bb0y1q5KNBu7u/74R3W+rKijjTy2
+         H4A+6B8VbRF5xLxRZDkd8Jt5hOlU8oDdD++w5Zw9VCaMi6UmQe3r0bPFuE6U1FZimA0s
+         07e4SEDci8xHsiE5hHowPmRL3XhsQoK5Z7N7qsdvaSYBLuPdbAX/Nyi2YHzO70uXlQIg
+         inRUWLOxcwRA0H+vHUR/6zQz9SNLLINoM5KAGgWqNAoVUqXVEPZSdb5MW/YfIUfOvGU1
+         D0n2QpoBDOucG9n0qROh7WKE2pkO6xvGnmONH/s1b584BqRs8VQbRg8ixP0z/lvlyOVk
+         LqgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727966993; x=1728571793;
+        d=1e100.net; s=20230601; t=1727974015; x=1728578815;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WdndKVp/SXRSmiqlbx9yFx2IrKrWcsly5j+I0V4+Xpc=;
-        b=f2bFqw3jP0IbiKnPS4Gr2JsiwAbqLTI+q8Zyh6kx/QNILKJnq9Y//X7zeDAmKzq+lG
-         hf0aqb9enuVD/QZOQYp0w7EaHdY6isNtVW/4zLrx/2Vx09VfiDhEBe/UjEzQdJmxUC7/
-         knApf6Fh0lSm0+q2tbfUI10oLDq/M21PNiwI0c0rJVaVWhowoVPMQIqo2qkyfHIo92Oh
-         R4MsRDV0z1kwSvYkMOnqJGe1LXgcelqx7TZWLDvs+kF6UimZCcPSe5H3OJHwtbJIzY2+
-         Sp4i1NgclhgY110tYsv0uzhOUjv3HhMjvtxkFQZ0enQSg+xW0qiP/Q4imSSgD8T1CWMV
-         xzsA==
-X-Forwarded-Encrypted: i=1; AJvYcCUpFYAQiISEgoHSnFTAdPxOrsUYwe0ZWbBKhRkJlrPS5m8/6o1uwVUZ8i+4M4bPAslXSP/CVOCcMFFT@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YxwELM04mo0+eSBVZWnLaM39+pap/POq2eFSXZCghK6WeL1frPK
-	rYID5rQrB3jiRnD+gIu4HnWNOHr9OIyD2K458zMFeEp2dBJSg8EAsyLbcA6jf98=
-X-Google-Smtp-Source: AGHT+IGo1/5wmvT+S3lgxo2dZaET0mITukuMWSSrKrQoA9kwkNrpn/E6uNgdsnyYgFqETska12PKbQ==
-X-Received: by 2002:a17:903:1105:b0:20b:b455:eb72 with SMTP id d9443c01a7336-20bc59f0768mr101644085ad.8.1727966993424;
-        Thu, 03 Oct 2024 07:49:53 -0700 (PDT)
+        bh=RW5P1Arx8XPYT/NPFqMkITFeiGycXbJcANO3qtPPvbA=;
+        b=TU8oZtdaNT6KPiusBvm/zu6fhXEtN5ecg8c9q+C7DgEtUZuKsKmWCr4NVYNXA2FHJs
+         S8l1C/obrApP7PDJove4jYgDsaDrnxlRmDEv07oiSWZnRSRHqd4nWDYM8yA6G/wSw6D7
+         mQ2As20pio/WtBpu3VziJJ55jkaxiZ0LrNn6hH69qlG5kI8nJzsRi0CSfKDv3Jocz57o
+         mfM4VNgZjaUflF9PQHl8w2GaoNrDtdwyGhXTrDQjSnkZ5g+zaFnGamtgBOsJbWczgx8k
+         oa6jtPz93cBX6HoshAe5YytD1Jph7xOqmGs3a4BW4Mri/N8m80NPgJBbytvNZoG3cWqa
+         zjsw==
+X-Forwarded-Encrypted: i=1; AJvYcCXbLmlhOc0dzBqUMEg/BOO2cGigy3NJ6gw5Kl9Rgxa5BaM+VBDGcLsrplHgHDQ8w9kv/n74t7rGkFSp@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwIsFSJKOlE5GrW6JHJQWhq/J41KJX3oKKq/MpZMFmTdxEmq/pJ
+	MvmLgaeqlFCStV3uSsi1KOH8/RtWQwiEKxp1cSGmfy4T98sxsNXxA8gjea1/xHI=
+X-Google-Smtp-Source: AGHT+IHrNLnq312K7GVWKGT1Vo9Ff69i9ensfXAZGMY12ruPSu/BXqZiVZ26a2jiItIAw0CUa22nFw==
+X-Received: by 2002:a05:6a20:cf84:b0:1d2:e8f6:81e with SMTP id adf61e73a8af0-1d5db1bf932mr10105522637.24.1727974014772;
+        Thu, 03 Oct 2024 09:46:54 -0700 (PDT)
 Received: from [192.168.0.4] (174-21-81-121.tukw.qwest.net. [174.21.81.121])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20beeee42f6sm9722015ad.123.2024.10.03.07.49.52
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7e9dbcf13b6sm1055380a12.8.2024.10.03.09.46.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Oct 2024 07:49:52 -0700 (PDT)
-Message-ID: <238ace80-c5b4-4c8c-bcd9-8a06f99a3aa7@linaro.org>
-Date: Thu, 3 Oct 2024 07:49:50 -0700
+        Thu, 03 Oct 2024 09:46:54 -0700 (PDT)
+Message-ID: <a4f85184-73d4-44e4-bddd-0c1775ed9f50@linaro.org>
+Date: Thu, 3 Oct 2024 09:46:50 -0700
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -61,7 +61,7 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 07/10] parisc: Align prototypes of IO memcpy/memset
+Subject: Re: [PATCH v7 01/10] Consolidate IO memcpy/memset into iomap_copy.c
 To: Julian Vetter <jvetter@kalrayinc.com>, Arnd Bergmann <arnd@arndb.de>,
  Russell King <linux@armlinux.org.uk>,
  Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
@@ -84,20 +84,29 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
  Yann Sionneau <ysionneau@kalrayinc.com>
 References: <20240930132321.2785718-1-jvetter@kalrayinc.com>
- <20240930132321.2785718-8-jvetter@kalrayinc.com>
+ <20240930132321.2785718-2-jvetter@kalrayinc.com>
 Content-Language: en-US
 From: Richard Henderson <richard.henderson@linaro.org>
-In-Reply-To: <20240930132321.2785718-8-jvetter@kalrayinc.com>
+In-Reply-To: <20240930132321.2785718-2-jvetter@kalrayinc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 9/30/24 06:23, Julian Vetter wrote:
-> -void memset_io(volatile void __iomem *addr, unsigned char val, int count)
-> +void memset_io(volatile void __iomem *addr, int val, size_t count)
->   {
->   	u32 val32 = (val << 24) | (val << 16) | (val << 8) | val;
+> +void memset_io(volatile void __iomem *dst, int c, size_t count)
+> +{
+> +	uintptr_t qc = (u8)c;
 
-Mask of val now required.
+Missed one change to 'long'
+
+> +
+> +	qc |= qc << 8;
+> +	qc |= qc << 16;
+> +
+> +#ifdef CONFIG_64BIT
+> +	qc |= qc << 32;
+> +#endif
+
+Could be 'qc *= -1ul / 0xff;'
 
 
 r~
