@@ -1,123 +1,116 @@
-Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+Received: from fhigh-a7-smtp.messagingengine.com (fhigh-a7-smtp.messagingengine.com [103.168.172.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 748AB17BB1A;
-	Mon,  7 Oct 2024 08:06:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B55B18C333
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  7 Oct 2024 22:43:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728288406; cv=none; b=CxTApTlrYEA2DPqR/1xnz88Zv2VMRkJrHDCeay7f2OgIS2uq5xF1bw1iTGBijxl8S4hUM//+87jih74EVwPKaVx/whcWleia36QVL8XfJtzsYuMj1LJCwfx1NU2+Hj2BWj8lGIroCYDepp9gLprv9IskJfetQ8wQMA8gL/prDuI=
+	t=1728341000; cv=none; b=iQXpnrv7UNBnlwvNSONdFBqz4u8U6sTFxIKfGiXtx79qOQXVy9gqthV3zxmvP4EZHlHRgraOCmpDpM5DhWzlDu5+c2zf+HD8i0sMQNsCBeWFy9z6b5LnQ+K3kxxEOePk86mvi+JDoAmEa1Z94qP0ADgw2/zGBgIC+l3PxwmfLZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728288406; c=relaxed/simple;
-	bh=VxsmENQliA0ha+9UHH8CUYn0b71VDQoYtn36QSYVOrQ=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=kfJUB328XAIQU4NJnjPMdp9s1RnqjgNJ8BZKkler8EpC+fh31WdzD9br0TTZ6oZKHBZfI6ilynK1ON142BOnOwWFoKhNhf7AMjxA1aadm1fs/8OeD8A4Amk7RM+GtA39Dkj7sHeOOKUTJPeXCdFMsY9KXERlHrlDnGcI9YjgjQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=sFkqfEpy; arc=none smtp.client-ip=168.119.38.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
+	s=arc-20240116; t=1728341000; c=relaxed/simple;
+	bh=ULJNkUi3nWPA/nIXK1IrKcjvPDnqlFUo5yXcBFj4uAQ=;
+	h=Message-Id:From:Subject:Date:To:Cc; b=uGahLYLD617M25k+m8tjM1kVNyhL7Jw/BChaW8ZdqH/EaJIGqqNWeyFKBLgvnLJ0EjebY+fi9VzyrBg7oW89EVMSbfPyt0Y6Uq7eAfIBGtUx24m2UWm5jIOvEwEsvSIyIao55CVVKo0PQs/LB7GZL39woEHUcHPSE7R0tnN2I64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=eWPIclJ7; arc=none smtp.client-ip=103.168.172.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="sFkqfEpy"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=VxsmENQliA0ha+9UHH8CUYn0b71VDQoYtn36QSYVOrQ=;
-	t=1728288404; x=1729498004; b=sFkqfEpyYAdlDk/DhaKUjZOXOw429nuvBW0nP2YCYecxZIQ
-	V7NCA4NEUNty7YgVqFnK3xlm8EUDjFjX+/m4Q1gdZ4EkMJ19HCxD0fY0cL8p6UQRprkUyMtofEOsS
-	TXj5YPd/1ibsl7rgwTTw30eWKLYUPS3y/VGbQdEgPfBy9VeoOnqCaDIgzHl92O8+jgSXZRbPQy6dT
-	0npHOXyJVlMvvIl1wMDzeFDD+yjz3923G8TTFW9xhPp2zWs46u2RU1lPqwdJksFeC5M9Go/X/g3UG
-	fgxUj5QZEUJuVFw+e8PBiOrBwLwGHltPakBognnv8mBS71ziJvTOvel6fd+0QK0g==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1sxikz-00000003EXo-1qzg;
-	Mon, 07 Oct 2024 10:06:17 +0200
-Message-ID: <529f8d49b048af53b6b7e82197fe487b687241b3.camel@sipsolutions.net>
-Subject: Re: [PATCH v7 09/10] um: Add dummy implementation for IO
- memcpy/memset
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Julian Vetter <jvetter@kalrayinc.com>, Arnd Bergmann <arnd@arndb.de>, 
- Russell King <linux@armlinux.org.uk>, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,  Guo Ren
- <guoren@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui
- <kernel@xen0n.name>,  Andrew Morton <akpm@linux-foundation.org>, Geert
- Uytterhoeven <geert@linux-m68k.org>, Richard Henderson
- <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-  Matt Turner <mattst88@gmail.com>, "James E . J . Bottomley"
- <James.Bottomley@hansenpartnership.com>,  Helge Deller <deller@gmx.de>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,  Richard
- Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-csky@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org, 
-	linux-um@lists.infradead.org, linux-arch@vger.kernel.org, Yann Sionneau
-	 <ysionneau@kalrayinc.com>
-Date: Mon, 07 Oct 2024 10:06:15 +0200
-In-Reply-To: <54985915-be13-46ee-ad42-7dd5d9d245ac@kalrayinc.com>
-References: <20240930132321.2785718-1-jvetter@kalrayinc.com>
-	 <20240930132321.2785718-10-jvetter@kalrayinc.com>
-	 <168acf1cc03e2a7f4a918210ab2a05ee845ce247.camel@sipsolutions.net>
-	 <54985915-be13-46ee-ad42-7dd5d9d245ac@kalrayinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="eWPIclJ7"
+Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 4E4101140155;
+	Mon,  7 Oct 2024 18:43:17 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-02.internal (MEProxy); Mon, 07 Oct 2024 18:43:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm2; t=1728340997; x=1728427397; bh=PSbighUzhdllJ
+	PAPWW22AFgW90piD0NXx5zzmIwwePY=; b=eWPIclJ7vq+6uXi9K7peN0wrGAxgh
+	O5m/lE7mtm6yMe1oUpOnF6CA3g9acrcJVyRyC/NgmnMbZlISRXyEZvBVzqipP9MA
+	Iic5K3jLaMsJXmAhWVAm42Q5gLJR5hKx9Wpm7CZtxoJYlc7/S7hHPx6EVuyMcMBG
+	iJh8oWLpH6fiD9bgsfRNvDHUleIECChAHjNj2b4Qg4VxNa3mLnp+Yzy6judtxY7D
+	grYc3w3wzgyXkEzLzMRLkRm4sZqTcZ7tOsrXfwjtT7gzC2947DReOpk5exk2HA/x
+	PXApqm1AIaYsooTj8cZ/X8B/aZQP9C7w6yYahOI9IppDVG3RbDEXgHlWQ==
+X-ME-Sender: <xms:BGQEZ3DvCztAM_Winef_PRp8riKn1UvE15cL8nWOuMckpv4VbTyVsw>
+    <xme:BGQEZ9iuaQD1FTDX1KnSRAKHcLSCWCjysKUXqjVr2YeHNtsVLZKQQqZn3iAIjb0VE
+    KJGXvHTbUBDAaqCswo>
+X-ME-Received: <xmr:BGQEZynalZZ8Rv6_SmyHF0gGKKD0R3baHk7UyaEedeljQ_aKGCRtJme5EqfwYTo2z9Bb58k2v8peNUKrVAqmv8py9RdOIqxHqPU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdeftddgudefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepkffhufffvfevsedttdertddttddtnecuhfhrohhm
+    pefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqe
+    enucggtffrrghtthgvrhhnpeehffdukeetffdutedvffffheegtdetkeekfeevgfeitefh
+    vedvtdelhfduudettdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphht
+    thhopedutddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheprghlvgigrghnughrvg
+    drsggvlhhlohhnihessghoohhtlhhinhdrtghomhdprhgtphhtthhopegrnhgurhgvrghs
+    sehgrghishhlvghrrdgtohhmpdhrtghpthhtohepuggrvhgvmhesuggrvhgvmhhlohhfth
+    drnhgvthdprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgt
+    phhtthhopegurghnihgvlhestdigtdhfrdgtohhmpdhrtghpthhtohepphgrvhhonhgvse
+    hrvghtrhhouggvvhdrtghomhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhg
+    vghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmieekkheslhhish
+    htshdrlhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtoheplhhinhhugidqrhhttges
+    vhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:BGQEZ5wlfrA9yetGxYaygMmOiLsmjnRKywrptNSZquqnSMC41RmF9A>
+    <xmx:BGQEZ8Tvk6s1Z_kWuCLVCyoAZcNlVyf6V3LW2kGw7V6DaWq-v7JCpw>
+    <xmx:BGQEZ8bK_Xgx9lCEzr5NLMYfl2rKsYaH5xChjw5XH0pk3K_BoRICvg>
+    <xmx:BGQEZ9TLYp38ZENRM59shdG6lSkyBcD0m8bn3ppbVhwZkodRlQswqA>
+    <xmx:BWQEZ1_lF3QKNqDAYPy6NVEh-n451HIxisdgDAD4rukNHSX8bMYCE6bf>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 7 Oct 2024 18:43:13 -0400 (EDT)
+Message-Id: <cover.1728340717.git.fthain@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH v2 0/2] MVME: Adopt standard RTC driver
+Date: Tue, 08 Oct 2024 09:38:37 +1100
+To: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+    Andreas Larsson <andreas@gaisler.com>,
+    "David S. Miller" <davem@davemloft.net>,
+    Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Daniel Palmer <daniel@0x0f.com>,
+    Michael Pavone <pavone@retrodev.com>,
+    linux-kernel@vger.kernel.org,
+    linux-m68k@lists.linux-m68k.org,
+    linux-rtc@vger.kernel.org,
+    sparclinux@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-malware-bazaar: not-scanned
 
-On Mon, 2024-10-07 at 09:49 +0200, Julian Vetter wrote:
->=20
-> > > The um arch is the only architecture that sets the config 'NO_IOMEM',
+This series removes some duplicated RTC driver code.
+First rtc-m48t59 is tweaked to bring it into equivalence with the RTC
+drivers in arch/m68k/mvme*. Then platform devices are added for the
+former driver and the latter drivers are removed.
 
-(you did note this, for the comment below)
-
-> No, I think you're understanding the series correctly. It doesn't work.=
-=20
-> I will revert this.
-
-OK.
-
-> > You're adding these inlines unconditionally, so if this included
-> > logic_io.h, you should get symbol conflicts?
-> >=20
-> > Also not sure these functions should/need to do anything at all, there'=
-s
-> > no IO memory on ARCH=3Dum in case of not having logic_io.h. Maybe even
-> > BUG_ON() or something? It can't be reachable (under correct drivers)
-> > since ioremap() always returns NULL (without logic_iomem).
-
-> Thanks. You're right. I added this patch because there was a build robot=
-=20
-> on some mailinglist building a random config with 'ARCH=3Dum' and with=
-=20
-> some MTD drivers that actually use memcpy_fromio or memcpy_toio. These=
-=20
-> drivers are not guarded by a 'depends on HAS_IOMEM'. I thought I could=
-=20
-> simply fix it by adding stub functions to the um arch. Because I saw=20
-> there are A LOT of drivers that use IO functions without being guarded=
-=20
-> by 'depends on HAS_IOMEM'. Not sure though, how to handle this case.
-
-Right, well, as you noted above ARCH=3Dum is the only architecture that
-has NO_IOMEM, so I suppose drivers are just broken. But e.g.
-kernel/iomem.c is also only ever built if you have HAS_IOMEM, so devm_*
-functions related to this are not available.
-
-So I don't know. On the one hand, it feels correct to have NO_IOMEM and
-HAS_IOMEM, on the other hand that's a bit of a fight against windmills?
+---
+Changed since v1:
+ - Instead of adding ifdefs to the portable driver, store the year offset
+   in struct m48t59_plat_data.
 
 
-What happens now though? Seems it should _already_ not build with
-ARCH=3Dum and memcpy_*io() being used? No, I guess it picked up the asm-
-generic version?
+Finn Thain (2):
+  rtc: m48t59: Use platform_data struct for year offset value
+  m68k: mvme147, mvme16x: Adopt rtc-m48t59 platform driver
 
-Hm. I'm almost thinking we should let such drivers not build, and then
-see that they add appropriate HAS_IOMEM dependencies, but ... windmills?
+ arch/m68k/configs/multi_defconfig   |   1 +
+ arch/m68k/configs/mvme147_defconfig |   1 +
+ arch/m68k/configs/mvme16x_defconfig |   1 +
+ arch/m68k/include/asm/mvme147hw.h   |  19 +---
+ arch/m68k/include/asm/mvme16xhw.h   |  18 +--
+ arch/m68k/mvme147/config.c          |  55 ++++------
+ arch/m68k/mvme16x/Makefile          |   2 +-
+ arch/m68k/mvme16x/config.c          |  57 ++++------
+ arch/m68k/mvme16x/rtc.c             | 165 ----------------------------
+ arch/sparc/kernel/time_32.c         |   1 +
+ arch/sparc/kernel/time_64.c         |   1 +
+ drivers/rtc/rtc-m48t59.c            |  26 +----
+ include/linux/rtc/m48t59.h          |   3 +
+ 13 files changed, 63 insertions(+), 287 deletions(-)
+ delete mode 100644 arch/m68k/mvme16x/rtc.c
 
-johannes
+-- 
+2.39.5
+
