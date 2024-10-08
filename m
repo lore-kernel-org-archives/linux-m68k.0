@@ -1,99 +1,167 @@
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from flow-a6-smtp.messagingengine.com (flow-a6-smtp.messagingengine.com [103.168.172.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34F03152532
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Oct 2024 09:19:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 696F617D341
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Oct 2024 09:27:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728379174; cv=none; b=rSSSYOd9cbDbHyfdUke2ISw2nMkX8V0bPkAiGUKEU2TEMlouT+ntxrkSaWjcFVBBbMfk8yT2lSTHm9dvNI4KBFulM8pENTyp7s64JdX8TncNOS/N4+dKoaP/jOphoM/uzXIPk867/6LjpXMBTxUGMRi+V/tihPduWuadijyDOCI=
+	t=1728379677; cv=none; b=Zw46MjjkLTaegkpU8O9JGbqDARAiS/Pk/OynoeEdVDy1nOO5Zau7QODiMUyBm9GkvaP6M5+vCMajfjYTXor+Vf3Wkt1AxeH2kRkP6FqAg9P6r4pPvYbMaEG20EqEknEztp94Tb4H5ClpTN/XeCGO49y0ZFbOu/Epsn+vtOdN4dI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728379174; c=relaxed/simple;
-	bh=mniWzRf/z6PzV05XjmEwI0uQV6qrURP9GRSSBTFcSHA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AQgyiegdafaOnMCtrUNUQC5sdN/t8kj3xBc0czlXyoePn9s8bCMm7TA3uwGDOObYt5XnfmqG75pkXCHj7a8xjSJWeDfx/4Ay0XucFD3Z5Xal9X2mDaE71AX+8+24fspYWt7Jfiu4QBcg9fgDC2CurzZc73Ynv/TYQ/diKW6FoGo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-6dbc9a60480so45502527b3.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 08 Oct 2024 02:19:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728379171; x=1728983971;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=McrFJhWoFLthcX2r06lwIZtP2OwgtLED+X1B93Ic3E0=;
-        b=mrSkB/hcqnUprBYQGvMlocYwdW1gFspP0nnQBqfeEWE6ZJ1XKyj5v/pl6+ENNScGl9
-         kPESHxXrTE+XhGDqfLvtvvhwGajyEZm+Bv8FPmhtV+PI4K4FGdAHa0TJPR27okhSGp6i
-         xhs/3Pp92pMo7lelMI2+9XrACItenHhDHOj8WJx4FxDtUUOk8iad8JflP/xyWpep5avj
-         mCrFvZ2ZIU+3OTuFJ3u3j6CIiJyzibNFWn2tHMZRX51mxnZ2lvPhWArclivZqOd9jyIK
-         LeP91otEcNBPtPSr0oyW1lhqGeiRnalaSvSc1Ds1E1eYj0teuJwmf9A9J99Wk3ijUqgo
-         pGQw==
-X-Forwarded-Encrypted: i=1; AJvYcCVe2X7gIVfHSMB3qTl/Jf5RUIFm2c7wn/SVP0gyiOhtBAVUfgWoTA24W3BiJ5caIkJTPvEffj3/TPJD@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YxhFlP7LszwwDL8BeAYhhfLdKH70Y+6p1H9sJGcmyu1tVKvXWPw
-	+Y/edJjKfCdyfO5Z48wcclctzjZhQrK6otX1JHq9udBQB3JgaHgMrUAxiSfP
-X-Google-Smtp-Source: AGHT+IEMW33trkUCtfKqFwSCLf9jiAM2FcSWi9V97QMN+aODiY/4DVhtg9gHrwxfdlYtSQisRubWyQ==
-X-Received: by 2002:a05:690c:6f83:b0:6dd:d5b7:f35d with SMTP id 00721157ae682-6e2c728a287mr128474827b3.30.1728379171211;
-        Tue, 08 Oct 2024 02:19:31 -0700 (PDT)
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6e2d9401f6asm13464137b3.146.2024.10.08.02.19.29
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Oct 2024 02:19:29 -0700 (PDT)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-6dbc9a60480so45501997b3.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 08 Oct 2024 02:19:29 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVzHd5hBfWyr3XGbTlNTBlOYlOsfDDReBgYL68ZvAQ/ob7G81sXLZiidt4zWUU3uU2zTGaxUTjw3QiH@lists.linux-m68k.org
-X-Received: by 2002:a05:690c:6084:b0:6dd:fb48:118c with SMTP id
- 00721157ae682-6e2c7289faemr131719637b3.31.1728379168050; Tue, 08 Oct 2024
- 02:19:28 -0700 (PDT)
+	s=arc-20240116; t=1728379677; c=relaxed/simple;
+	bh=VKY9AlnrM9YiRfo50NjYcLDV1DcMPrKJfBa2b9+eWDU=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=lkrPp8YyCVYYbVEaCq/QpIHAw3u16rQes/9DhZDH7ionO4oxwi72EeQkPy1dlMJSId08JNrFKULv7x6NEW0uYzMh1D0rmJereeLbNcEzQDUaQ0uPYlgNG/vXhXTQCPhcGROoG1ChxmyyHtAwbSoXOf0g5OvJDhgoVOEVWqg6AEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=bjNgc0cU; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=psOjcXwi; arc=none smtp.client-ip=103.168.172.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="bjNgc0cU";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="psOjcXwi"
+Received: from phl-compute-10.internal (phl-compute-10.phl.internal [10.202.2.50])
+	by mailflow.phl.internal (Postfix) with ESMTP id 51CC0200791;
+	Tue,  8 Oct 2024 05:27:54 -0400 (EDT)
+Received: from phl-imap-11 ([10.202.2.101])
+  by phl-compute-10.internal (MEProxy); Tue, 08 Oct 2024 05:27:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1728379674;
+	 x=1728386874; bh=vXVXlSmeQt3lDbjU6nzfzfDoQAW9RRomvBadp2xogcw=; b=
+	bjNgc0cUBA4uZdH1q47ixH6gx6ApEG2i+6J6MPi8YvLMk08HDLdfZy8hT8Zg6yKe
+	2NNW+K4vM+BLpVDgWKXQdLIKSYik0I3IB7tJont13em6PzKvSbkr1B06qXFqKd2M
+	d0ejs6pFeYw/YXyhY+Lcf2huo4OyJRBX1xHiNcSNQmv5p+6ZX+wr7Pd1lBixTgNN
+	hy3ySSe4YK4xve31mXcvCM9P9Iw3LCUZGsP9K1m9N7p5Xb7ubYL9XZcAEES2eqKH
+	q4Bj/X1CPUurJVbo5pIPpwwN0hbRGOj6w0V/7h1MK76aEfaffRgEVf3txqnhVsaH
+	NQLl8GS7yuUNX9Q5G2TmCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1728379674; x=
+	1728386874; bh=vXVXlSmeQt3lDbjU6nzfzfDoQAW9RRomvBadp2xogcw=; b=p
+	sOjcXwit6BXpazNlyHcp7RQtet3ms/ShGIHVtIXjHH7z2u/WnegtOxGTuiQ548AQ
+	+QeNCeOEnTuopzDdr6d1WJbi0tqer+OAMlHpYNMA4rKYXQSYp8xhdFdowZELsMYk
+	mPiA+7k1yhl45NYwlOZiplxm5RqztnqU39N1c1aWbEv2VrChje997BHNId6Fidh8
+	f/66rTIRr/Rf8m4bRDMcg+3Et00AosDHyah9nBj+ZrujjgTGAUXfWePzzlS94iIY
+	R0idMtIh3pgHEw8KwMyxu5rrZ+cNSTvxzSNz15dfdF6tlWKdZbu29sjFAq+ca8xW
+	Sb+T7NjbiudHSJhRasvgA==
+X-ME-Sender: <xms:FvsEZxj4OSOJO5R_iNsz2YcNkoHn0yLCSkYK6NBW46UzHpbVeaOylw>
+    <xme:FvsEZ2BOquKh3Ly6rs2-r88YflJwtYbElvZlqzUDwQxS0vX2aRowkRAfJok_DDP9J
+    pVcVjM_bJaqf2Jtc-M>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdefuddgudeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddt
+    necuhfhrohhmpedftehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrd
+    guvgeqnecuggftrfgrthhtvghrnhephfdthfdvtdefhedukeetgefggffhjeeggeetfefg
+    gfevudegudevledvkefhvdeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvgdpnhgspghrtghpthhtohephedt
+    pdhmohguvgepshhmthhpohhuthdprhgtphhtthhopegtrghtrghlihhnrdhmrghrihhnrg
+    hssegrrhhmrdgtohhmpdhrtghpthhtoheplhhinhhugiesrghrmhhlihhnuhigrdhorhhg
+    rdhukhdprhgtphhtthhopehmihhquhgvlhdrrhgrhihnrghlsegsohhothhlihhnrdgtoh
+    hmpdhrtghpthhtoheprghnthhonhdrihhvrghnohhvsegtrghmsghrihgughgvghhrvgih
+    shdrtghomhdprhgtphhtthhopegthhhrihhsthhophhhvgdrlhgvrhhohiestghsghhroh
+    huphdrvghupdhrtghpthhtohepmhhpvgesvghllhgvrhhmrghnrdhiugdrrghupdhrtghp
+    thhtohepmhgrthhtshhtkeeksehgmhgrihhlrdgtohhmpdhrtghpthhtohepnhhpihhggh
+    hinhesghhmrghilhdrtghomhdprhgtphhtthhopeguvghllhgvrhesghhmgidruggv
+X-ME-Proxy: <xmx:FvsEZxH3zfzkJa8RVVsQJZoKvnwBlHYLBK33c0RZVMnXZVlSu1AFqQ>
+    <xmx:FvsEZ2TkOnb2xmY6R_aU2VmL8HDxOWOBk8tgzBsUripCRCPzrK9zmw>
+    <xmx:FvsEZ-zauMDlD6bC6qkUsSUnHXG1P0xy_37njpHP8yhxpPZjQln2mQ>
+    <xmx:FvsEZ87a2x1N0-w1vvIsh6Lf1hOcJGqvGuZ7q-fy_-iHchmecU6CvA>
+    <xmx:GvsEZ3DPdeCYlhTq-fZUHLeUnTw2J7FWdf8IfVzPa0rAh4jeq3MQ4aNK>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id C545D2220071; Tue,  8 Oct 2024 05:27:50 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1728377511.git.fthain@linux-m68k.org> <41e9f3f320a70b4d0946f7e0c3622f1dd1e8791c.1728377511.git.fthain@linux-m68k.org>
-In-Reply-To: <41e9f3f320a70b4d0946f7e0c3622f1dd1e8791c.1728377511.git.fthain@linux-m68k.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 8 Oct 2024 11:19:15 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdW7kyLQHc8e6sL7jfQSJJWjkH29M8T7SWCgnKuJyh1xtQ@mail.gmail.com>
-Message-ID: <CAMuHMdW7kyLQHc8e6sL7jfQSJJWjkH29M8T7SWCgnKuJyh1xtQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] rtc: m48t59: Use platform_data struct for year
- offset value
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: "David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
-	Alexandre Belloni <alexandre.belloni@bootlin.com>, Daniel Palmer <daniel@0x0f.com>, 
-	Michael Pavone <pavone@retrodev.com>, linux-m68k@lists.linux-m68k.org, 
-	linux-rtc@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Date: Tue, 08 Oct 2024 09:27:20 +0000
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Julian Vetter" <jvetter@kalrayinc.com>,
+ "Russell King" <linux@armlinux.org.uk>,
+ "Catalin Marinas" <catalin.marinas@arm.com>,
+ "Will Deacon" <will@kernel.org>, guoren <guoren@kernel.org>,
+ "Huacai Chen" <chenhuacai@kernel.org>, "WANG Xuerui" <kernel@xen0n.name>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Geert Uytterhoeven" <geert@linux-m68k.org>,
+ "Richard Henderson" <richard.henderson@linaro.org>,
+ "Ivan Kokshaysky" <ink@jurassic.park.msu.ru>,
+ "Matt Turner" <mattst88@gmail.com>,
+ "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+ "Helge Deller" <deller@gmx.de>,
+ "Yoshinori Sato" <ysato@users.sourceforge.jp>,
+ "Rich Felker" <dalias@libc.org>,
+ "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
+ "Richard Weinberger" <richard@nod.at>,
+ "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
+ "Johannes Berg" <johannes@sipsolutions.net>,
+ "Michael Ellerman" <mpe@ellerman.id.au>,
+ "Nicholas Piggin" <npiggin@gmail.com>,
+ "Christophe Leroy" <christophe.leroy@csgroup.eu>,
+ "Naveen N Rao" <naveen@kernel.org>,
+ "Madhavan Srinivasan" <maddy@linux.ibm.com>,
+ "Heiko Carstens" <hca@linux.ibm.com>,
+ "Vasily Gorbik" <gor@linux.ibm.com>,
+ "Alexander Gordeev" <agordeev@linux.ibm.com>,
+ "Christian Borntraeger" <borntraeger@linux.ibm.com>,
+ "Sven Schnelle" <svens@linux.ibm.com>,
+ "Niklas Schnelle" <schnelle@linux.ibm.com>,
+ "Manivannan Sadhasivam" <manivannan.sadhasivam@linaro.org>,
+ "Miquel Raynal" <miquel.raynal@bootlin.com>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>,
+ "Jaroslav Kysela" <perex@perex.cz>, "Takashi Iwai" <tiwai@suse.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+ loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ linux-alpha@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
+ Linux-Arch <linux-arch@vger.kernel.org>, linuxppc-dev@lists.ozlabs.org,
+ linux-s390@vger.kernel.org, mhi@lists.linux.dev,
+ linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-sound@vger.kernel.org, "Yann Sionneau" <ysionneau@kalrayinc.com>
+Message-Id: <a9fa56b4-b00c-4941-8c8c-1d3b58b573e2@app.fastmail.com>
+In-Reply-To: <20241008075023.3052370-2-jvetter@kalrayinc.com>
+References: <20241008075023.3052370-1-jvetter@kalrayinc.com>
+ <20241008075023.3052370-2-jvetter@kalrayinc.com>
+Subject: Re: [PATCH v8 01/14] Consolidate IO memcpy/memset into iomap_copy.c
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-On Tue, Oct 8, 2024 at 11:01=E2=80=AFAM Finn Thain <fthain@linux-m68k.org> =
-wrote:
-> Instead of hard-coded values and ifdefs, store the year offset in the
-> platform_data struct.
->
-> Tested-by: Daniel Palmer <daniel@0x0f.com>
-> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
-> ---
-> I tested this for regressions using qemu-system-sparc64.
-> Also, Daniel tested the RTC functionality on his MVME147 system.
->
-> Changed since v2:
->  - Use an int for the year offset in struct m48t59_plat_data.
+On Tue, Oct 8, 2024, at 07:50, Julian Vetter wrote:
+> diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
+> index 80de699bf6af..f14655ed4d9d 100644
+> --- a/include/asm-generic/io.h
+> +++ b/include/asm-generic/io.h
+> @@ -102,6 +102,12 @@ static inline void log_post_read_mmio(u64 val, u8 
+> width, const volatile void __i
+> 
+>  #endif /* CONFIG_TRACE_MMIO_ACCESS */
+> 
+> +extern void memcpy_fromio(void *to, const volatile void __iomem *from,
+> +			  size_t count);
+> +extern void memcpy_toio(volatile void __iomem *to, const void *from,
+> +			size_t count);
+> +extern void memset_io(volatile void __iomem *dst, int c, size_t count);
+> +
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+I think having this globally visible is the reason you are running
+into the mismatched prototypes. The patches to change the architecture
+specific implementations are all good, but I would instead add
+#ifdef checks around the prototypes the same way you do for the
+implementation, to make the series bisectible and shorter.
 
-Gr{oetje,eeting}s,
+ include/asm-generic/io.h |  58 ++----------------
+ lib/iomap_copy.c         | 127 +++++++++++++++++++++++++++++++++++++++
 
-                        Geert
+Along the same lines, I would change lib/Makefile to build
+this file unconditionally even on architectures that don't
+set CONFIG_HAS_IOMEM. Again, strengthening the driver dependencies
+is good, but it feels like a distraction here when we just need the
+common implementation to be available.
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+       Arnd
