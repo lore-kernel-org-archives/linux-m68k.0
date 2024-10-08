@@ -1,162 +1,115 @@
-Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0E951CEEAD
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Oct 2024 06:23:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E98251EF0B7
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Oct 2024 06:57:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728368584; cv=none; b=bbDpN+bHu4DxNNFXHvhfBOoVXigkHxFkbzT8qlAlrdDPlK9MqO3fAJANVepAebfP+37abxIuThPhVjCxAeBocoyc1GRjhGDvgk149OmntSQBKYqesjzl/JqLiZg4WOAVSKjfpfycQN8d8h7BB8WfftHXf8CNrA4VYQO2PKLTWxQ=
+	t=1728370671; cv=none; b=Y7GlYZHgY9zfELIwlzITH8JAUNxuCSu3SxOLUWjz8O6eNBE3hySiB6EE62fQnJal8ly20BAMR3Wze7Fm80PURXC6WMmmkGOfim3ZqBJA10fjb71tT07N60+BUlNxmWFoXbZlcjmZ6NvYFclaHNv9lyukgZb7zJKCoYy0yTxH7kg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728368584; c=relaxed/simple;
-	bh=7+OOlYDwjjrmYkugp0zG3rCIOBJXVhabkZlBvijiN0Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XFlPm8FIxwXo8USamaOCFpa4luA/8rulxUpbFhXCoIlJIQEfMs+WzM5dOzzgr8HBQaZf8pcWBogZVlNLr+ci0K1+HbhC8gM07Bc/xGN3KueDFkYKGRzPR2/SN3ytimZCH1X8c6My0OQVIgszFXYKMCdqnrnHevL4Ak3hy2kWtYA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HLZ7O/Hp; arc=none smtp.client-ip=147.75.193.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HLZ7O/Hp"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id F05D1A43229;
-	Tue,  8 Oct 2024 06:22:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C076C4CEC7;
-	Tue,  8 Oct 2024 06:22:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728368581;
-	bh=7+OOlYDwjjrmYkugp0zG3rCIOBJXVhabkZlBvijiN0Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HLZ7O/HpKqwZhtBX1cNCiAk8EV6vD0WzAl1dR/RILMS7jSHhGDnYDNH2Dzn6ECEly
-	 M0+GSr/JGL8nAopaejPjKSQKa6Jmnx6kHabKvo9FyggKvIK/+rwoLnO5mphSBOrVi8
-	 U9wdgL7Nl7zM0jbSh9FiGcxw5b5J+su+JR+7Gf4XG9wvT3v6GVYlXJH8m3l11OFKZ1
-	 9jEHuFYuJh2kBStvb3JCpXCoRR3L/JiHNjMlM70jCbMyIiQEwYJp2wijiSZ4G1su3J
-	 9j8W/sm+G2yCx41UsRZ1DC/eNueJYqT+Lq5WzrcGaGCVNkuw9bP/AltQfceSnkaSt6
-	 lK+siW3UD/EyQ==
-Date: Tue, 8 Oct 2024 09:19:13 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Huacai Chen <chenhuacai@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-	Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v4 5/8] arch: introduce set_direct_map_valid_noflush()
-Message-ID: <ZwTO4S_smfPbP06x@kernel.org>
-References: <20241007062858.44248-1-rppt@kernel.org>
- <20241007062858.44248-6-rppt@kernel.org>
- <CAAhV-H4u5qk-Zd8ctiooCv_hGKbDpXRAtTZMMsUab9bbLAnd5A@mail.gmail.com>
+	s=arc-20240116; t=1728370671; c=relaxed/simple;
+	bh=SyU94rkfKoXJiBl0fN8X11JbU7QWwLK7QcH2b+/qBfM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JAs4exZPLnWpZUZ17QC32zgiTdqHiahCg3S5y7yzLeScBhblM4/qcjiATcVnMeplq1jHOXQd7m1AsmdI62j5q8nbrw9SYVNAkhdP/SE42Ouw2WJRDIaZDAe65ESOLgQzmc49dBG7YJ1S8nLnxa7Yu46IxOQtMnqzkOMvAXsopRU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-6e2b9e945b9so43824287b3.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 07 Oct 2024 23:57:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728370667; x=1728975467;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AHYT7MBmSOZv+u8sV5s5vdJ0rOWyrq6tZ659w5YChk8=;
+        b=KsT2Fqi1SzhtgGRAwePqXVslJbjDGyLbiQiPWm0i0707p96QsUU4ZJ/Umx+3RnKAQy
+         ge6oU86hjt5EUKvEav+Lt4FvzLdUUUZcj+QORtfYCRf3sCX6U9iwqkVwdmCTwuxOdHEa
+         uXnqw46BOn64xDZV+iSj+kqoGp2Jfv5F4Youh5qmf34+Ksr8zkGSagIfcC2HkmdsNKpI
+         8+KJmqffZbnOD7+ZA7TXEyCbLIuEMpGVHgou769T31nsI5kIlJNThX6ExhYg6hC3ZyBE
+         IsK2bAqHJ4HqFuuMHu/kXDQMjVxy1E58Bnn0dJrX+eoJMtHoyQxPdhq1bNyptZ7NpR/C
+         J/Ag==
+X-Forwarded-Encrypted: i=1; AJvYcCW+AYSk7xfol874IZ2M5/1WpsU9EPJz663qVf6vJ7RFGX4mH8Y5+7rJCfxfhXKD+3TILJfCWDin1Mfh@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YymnAYEo48Pi2kSlxcHxJw6oQOaP1R/ubR7trOEArau35yzqYnC
+	xThr0Wv/Fi0MeGFS843IN96kuJSInnbzGEP0pqBK9L5Lpnppbdx8T8mhu3sE
+X-Google-Smtp-Source: AGHT+IFJCl4VAQcjY3HC3eGnCPjmMSgDFaLFwpIqOIVqjxLif8UYSuU9SdSfpH5G9QpNtFXlsN75mQ==
+X-Received: by 2002:a05:690c:d88:b0:6af:a6aa:2b3a with SMTP id 00721157ae682-6e2c6fcb2a6mr119017567b3.1.1728370667052;
+        Mon, 07 Oct 2024 23:57:47 -0700 (PDT)
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com. [209.85.128.181])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6e30c0ffc47sm3253457b3.142.2024.10.07.23.57.46
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Oct 2024 23:57:46 -0700 (PDT)
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-6dde476d3dfso41327267b3.3
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 07 Oct 2024 23:57:46 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXNZQoxtrUyzn9+tQxuhoIHVSM7fERUeEYf7IWtvVjVZqacfLx2e2aGSYEUUEX/QphDAD9Vb/WC1Pgq@lists.linux-m68k.org
+X-Received: by 2002:a05:690c:2a93:b0:6af:eaaf:2527 with SMTP id
+ 00721157ae682-6e2c7024d93mr81351197b3.18.1728370665811; Mon, 07 Oct 2024
+ 23:57:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAhV-H4u5qk-Zd8ctiooCv_hGKbDpXRAtTZMMsUab9bbLAnd5A@mail.gmail.com>
+References: <cover.1728340717.git.fthain@linux-m68k.org> <fb25eb97521363ab8a18d2fd499cb4c76209cebf.1728340717.git.fthain@linux-m68k.org>
+In-Reply-To: <fb25eb97521363ab8a18d2fd499cb4c76209cebf.1728340717.git.fthain@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 8 Oct 2024 08:57:32 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXsekSXJOEf6chaMBHiRt_4nNvKYOOmQVC=ODg0qccKKA@mail.gmail.com>
+Message-ID: <CAMuHMdXsekSXJOEf6chaMBHiRt_4nNvKYOOmQVC=ODg0qccKKA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] rtc: m48t59: Use platform_data struct for year
+ offset value
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: "David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
+	Alexandre Belloni <alexandre.belloni@bootlin.com>, Daniel Palmer <daniel@0x0f.com>, 
+	Michael Pavone <pavone@retrodev.com>, linux-m68k@lists.linux-m68k.org, 
+	linux-rtc@vger.kernel.org, sparclinux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Huacai,
+Hi Finn,
 
-On Tue, Oct 08, 2024 at 10:11:25AM +0800, Huacai Chen wrote:
-> Hi, Mike,
-> 
-> On Mon, Oct 7, 2024 at 2:30 PM Mike Rapoport <rppt@kernel.org> wrote:
-> >
-> > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
-> >
-> > Add an API that will allow updates of the direct/linear map for a set of
-> > physically contiguous pages.
-> >
-> > It will be used in the following patches.
-> >
-> > Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
-> > ---
-> >  arch/arm64/include/asm/set_memory.h     |  1 +
-> >  arch/arm64/mm/pageattr.c                | 10 ++++++++++
-> >  arch/loongarch/include/asm/set_memory.h |  1 +
-> >  arch/loongarch/mm/pageattr.c            | 21 +++++++++++++++++++++
-> >  arch/riscv/include/asm/set_memory.h     |  1 +
-> >  arch/riscv/mm/pageattr.c                | 15 +++++++++++++++
-> >  arch/s390/include/asm/set_memory.h      |  1 +
-> >  arch/s390/mm/pageattr.c                 | 11 +++++++++++
-> >  arch/x86/include/asm/set_memory.h       |  1 +
-> >  arch/x86/mm/pat/set_memory.c            |  8 ++++++++
-> >  include/linux/set_memory.h              |  6 ++++++
-> >  11 files changed, 76 insertions(+)
-> >
-> > diff --git a/arch/loongarch/include/asm/set_memory.h b/arch/loongarch/include/asm/set_memory.h
-> > index d70505b6676c..55dfaefd02c8 100644
-> > --- a/arch/loongarch/include/asm/set_memory.h
-> > +++ b/arch/loongarch/include/asm/set_memory.h
-> > @@ -17,5 +17,6 @@ int set_memory_rw(unsigned long addr, int numpages);
-> >  bool kernel_page_present(struct page *page);
-> >  int set_direct_map_default_noflush(struct page *page);
-> >  int set_direct_map_invalid_noflush(struct page *page);
-> > +int set_direct_map_valid_noflush(struct page *page, unsigned nr, bool valid);
-> >
-> >  #endif /* _ASM_LOONGARCH_SET_MEMORY_H */
-> > diff --git a/arch/loongarch/mm/pageattr.c b/arch/loongarch/mm/pageattr.c
-> > index ffd8d76021d4..f14b40c968b4 100644
-> > --- a/arch/loongarch/mm/pageattr.c
-> > +++ b/arch/loongarch/mm/pageattr.c
-> > @@ -216,3 +216,24 @@ int set_direct_map_invalid_noflush(struct page *page)
-> >
-> >         return __set_memory(addr, 1, __pgprot(0), __pgprot(_PAGE_PRESENT | _PAGE_VALID));
-> >  }
-> > +
-> > +int set_direct_map_valid_noflush(struct page *page, unsigned nr, bool valid)
-> > +{
-> > +       unsigned long addr = (unsigned long)page_address(page);
-> > +       pgprot_t set, clear;
-> > +
-> > +       return __set_memory((unsigned long)page_address(page), nr, set, clear);
-> This line should be removed.
+On Tue, Oct 8, 2024 at 12:43=E2=80=AFAM Finn Thain <fthain@linux-m68k.org> =
+wrote:
+> Instead of hard-coded values and ifdefs, store the year offset in the
+> platform_data struct.
+>
+> Tested-by: Daniel Palmer <daniel@0x0f.com>
+> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 
-Argh, copy/paste is so hard...
+Thanks for your patch!
 
-Thanks, will do.
- 
-> Huacai
+> --- a/include/linux/rtc/m48t59.h
+> +++ b/include/linux/rtc/m48t59.h
+> @@ -56,6 +56,9 @@ struct m48t59_plat_data {
+>         void __iomem *ioaddr;
+>         /* offset to RTC registers, automatically set according to the ty=
+pe */
+>         unsigned int offset;
+> +
+> +       /* YY digits (in RTC) are offset, i.e. year is 1900 + yy_offset +=
+ YY */
+> +       time64_t yy_offset;
 
--- 
-Sincerely yours,
-Mike.
+time64_t sounds like overkill to me...
+
+>  };
+>
+>  #endif /* _LINUX_RTC_M48T59_H_ */
+
+The rest LGTM.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
