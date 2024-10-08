@@ -1,170 +1,119 @@
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+Received: from fout-a8-smtp.messagingengine.com (fout-a8-smtp.messagingengine.com [103.168.172.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37AF41E1C0D
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Oct 2024 08:33:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D7431DEFEB
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Oct 2024 08:54:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728376396; cv=none; b=JJyN7bUKW6XyKl0okiL3C9L5Hlxk5Sjt3tj25C3mWwpPwvm9/6q+/PO9kCEvEOL0LDryx/A8rAUYh1ugpa+JLaCpkFLlCKQND3AdrIGP2eYRUBdx6Xdf1cU2Y5pEp4TMGj1gdKihrWiTZbjiND2FuHSs3xAbvGRNaWA85QJDwjk=
+	t=1728377691; cv=none; b=VUfI/1H5sbcoPu2CWaDcz+qwp+udFI+poIaR5Jkl4nhPS8P50tqyJOhv37SZNrekZ+q+PW3v4mJIze7/PlEwutsQjYtsmq82yvgUrUMloL06uMPupNqt64jEh99KGG9ahz7/lHWdN/yGDJPBXWxsc26PqOwRCdzf1IIG3WqWPR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728376396; c=relaxed/simple;
-	bh=Wi/Ne+shDHOFqw+Lugm22uvGCgtt/bIev0jwFPOvR2k=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jscnU9xDhp0Rj8mrRlmBmWu048LpHKZTykHLM2vVRR583VAekXNEeCj6l+xb4fcgE/uf3poGV6mny81rVBYJ9rTicCmyWoy1rZxtga6kiDoum8InjCLFIm1/PcMrtwwBk+Jfs8aL6EZQE9r6416OBgJtrFfKnf76kGDX/fF5TMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=POSKCKOp; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+	s=arc-20240116; t=1728377691; c=relaxed/simple;
+	bh=JQkIN8TayZbr/lTiOwQgXiZiNKYnpSMdNAPtyLcRj8M=;
+	h=Message-Id:From:Subject:Date:To:Cc; b=Ims+oWLxfkrIlhHbV5dfTb9ivEKKqnYfCHfBUIDb1k5Sor30SUvB80P8OHeh8dpsfSfpQY6+MljXWBcNx5daMYVkYmexSq2JpZ4+pHZFodoupPyDJrOJxYM+4W7/LAR5bcGuuffLADGGetgjKHKpg7qfGfUZw8/XCe4lv6oX4Qc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=DcKNumer; arc=none smtp.client-ip=103.168.172.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="POSKCKOp"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9EFBD1C000A;
-	Tue,  8 Oct 2024 08:33:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1728376392;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TmLP/WI1VtrRBkIucS2941CxDdB37ieasR6WFFSWafs=;
-	b=POSKCKOpM0S5Rro9I7JX/yFDGVQEbxnQfOlbhvDuVflBTc9b0oQzIQp7fKtzf6mJwdOQ+0
-	Ea9yaFhepRPa3MqaYNcDO/VEW6QLHJqANEHtweXO5D876vZq8tICxDlfjrmrbTDnklWsBz
-	0pAYroBCDAgXQON2fmL69ED1dgdlzDy5jho/yQO5tqH0EdwHwUBc86MuNxTZZ0aBcTJr+T
-	UHYVDWD5LAAELveRyE4v2cHZeoPtNyyU8w7VYOZiIGEcGGrpmUancBz/ZYPglMSFDCCVy6
-	Izc1kwXhCGbPtsztfFaqEyh0UYZq966m3DrL4DrW+CqDmsEUQlcF0xSAXpcASQ==
-Date: Tue, 8 Oct 2024 10:33:06 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Julian Vetter <jvetter@kalrayinc.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Guo Ren <guoren@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG
- Xuerui <kernel@xen0n.name>, Andrew Morton <akpm@linux-foundation.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Richard Henderson
- <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
- Matt Turner <mattst88@gmail.com>, "James E . J . Bottomley"
- <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Richard
- Weinberger <richard@nod.at>, Anton Ivanov
- <anton.ivanov@cambridgegreys.com>, Johannes Berg
- <johannes@sipsolutions.net>, Michael Ellerman <mpe@ellerman.id.au>,
- Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy
- <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, Madhavan
- Srinivasan <maddy@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev
- <agordeev@linux.ibm.com>, Christian Borntraeger
- <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Niklas
- Schnelle <schnelle@linux.ibm.com>, Manivannan Sadhasivam
- <manivannan.sadhasivam@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-csky@vger.kernel.org, loongarch@lists.linux.dev,
- linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org,
- linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org,
- linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
- mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-sound@vger.kernel.org, Yann Sionneau
- <ysionneau@kalrayinc.com>
-Subject: Re: [PATCH v8 13/14] mtd: Add HAS_IOMEM || INDIRECT_IOMEM
- dependency
-Message-ID: <20241008103306.44123824@xps-13>
-In-Reply-To: <20241008075023.3052370-14-jvetter@kalrayinc.com>
-References: <20241008075023.3052370-1-jvetter@kalrayinc.com>
-	<20241008075023.3052370-14-jvetter@kalrayinc.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="DcKNumer"
+Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
+	by mailfout.phl.internal (Postfix) with ESMTP id 7097013806CF;
+	Tue,  8 Oct 2024 04:54:48 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-04.internal (MEProxy); Tue, 08 Oct 2024 04:54:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm2; t=1728377688; x=1728464088; bh=9medauMNxWIqa
+	8/HpyM1TF3FAfSfmRLq9EEaFHlyElY=; b=DcKNumerhTMp4ogxe4CqjwCXdirnK
+	+4UxPquS+FeVN7gyZaWLjidvjOUfPepJsusOPfzY/ocnMs1whEJN1kHAs/VXcQRu
+	YutxXdT7D0/u9W7V0gNJJaIWiZa5W3ppVgMiV7LBOf+qUhPHnqA+/lk8v1WUZNpB
+	gbSJxEvj/6k8z/zHv4iYn2QF7HsyUCJBw/6D+FxJQpZqDyMW61iezdEFGMWh+83i
+	XOJX549piFvHksTDUOgSLzApYOTrm6gLFSbXH7b4/ViT8qPWQ0qbh8H41vbX/EpI
+	ZHVYpPGB85Wo4TwbuZv0NIhT7Zepumr0nvwwysVEFuCNS8uCLbzmzIvXA==
+X-ME-Sender: <xms:VvMEZ7GiWtMdrrYENwe2nazaZBVxKMfse5gLvEhv0dQWRVsjZ-gCNA>
+    <xme:VvMEZ4Vn5Cy5Kai57rcDYiSfdOwtASuMMv8oMYC2FIQKeGQIVshqeBqlNvRwCOdfq
+    D6ma6aWkg4ESsz3Mg8>
+X-ME-Received: <xmr:VvMEZ9LpPQ5JQJ6YoxZjpCQLkdUMVe3vcV1O4LUD4usGgFq9hsww6YpOB0aLBkPOA7ZK--n5s2dx1NM8FNNj7fExKI2Yshw9W7Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdefuddgtdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepkffhufffvfevsedttdertddttddtnecuhfhrohhm
+    pefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqe
+    enucggtffrrghtthgvrhhnpeehffdukeetffdutedvffffheegtdetkeekfeevgfeitefh
+    vedvtdelhfduudettdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphht
+    thhopedutddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheprghlvgigrghnughrvg
+    drsggvlhhlohhnihessghoohhtlhhinhdrtghomhdprhgtphhtthhopegrnhgurhgvrghs
+    sehgrghishhlvghrrdgtohhmpdhrtghpthhtohepuggrvhgvmhesuggrvhgvmhhlohhfth
+    drnhgvthdprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgt
+    phhtthhopegurghnihgvlhestdigtdhfrdgtohhmpdhrtghpthhtohepphgrvhhonhgvse
+    hrvghtrhhouggvvhdrtghomhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhg
+    vghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmieekkheslhhish
+    htshdrlhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtoheplhhinhhugidqrhhttges
+    vhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:VvMEZ5Gm6p5ezwuiNO0YjKJ1SLEkW1jzlzPM3utlM8eq-CNOrFR19w>
+    <xmx:VvMEZxX2fgPafSDJgue4LMV3_SW6Da1n429UHWk2oelxNJGHUF8BqA>
+    <xmx:VvMEZ0NBaCACObNjAZhQ7V3isUsSFj6FAbQmktjFWBTpvHpyQF43PA>
+    <xmx:VvMEZw2NZy2EUla199aaqIwUmAswo15HaI1vo_oXKDQ13SygBBQ8kQ>
+    <xmx:WPMEZ5SNqiUqMwmgxDejKy1TotN_aWGqm33_3k9oOzbnQoWRJ6_pL9Mo>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 8 Oct 2024 04:54:44 -0400 (EDT)
+Message-Id: <cover.1728377511.git.fthain@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH v3 0/2] MVME: Adopt standard RTC driver
+Date: Tue, 08 Oct 2024 19:51:51 +1100
+To: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+    Andreas Larsson <andreas@gaisler.com>,
+    "David S. Miller" <davem@davemloft.net>,
+    Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Daniel Palmer <daniel@0x0f.com>,
+    Michael Pavone <pavone@retrodev.com>,
+    linux-kernel@vger.kernel.org,
+    linux-m68k@lists.linux-m68k.org,
+    linux-rtc@vger.kernel.org,
+    sparclinux@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
 
-Hi Julian,
+This series removes some duplicated RTC driver code.
+First rtc-m48t59 is tweaked to bring it into equivalence with the RTC
+drivers in arch/m68k/mvme*. Then platform devices are added for the
+former driver and the latter drivers are removed.
 
-jvetter@kalrayinc.com wrote on Tue,  8 Oct 2024 09:50:21 +0200:
+---
+Changed since v1:
+ - Instead of adding ifdefs to the portable driver, store the year offset
+   in struct m48t59_plat_data.
 
-> The UM arch doesn't have HAS_IOMEM=3Dy, so the build fails because the
-> functions memcpy_fromio and memcpy_toio are not defined anymore. These
-> functions are only build for targets which have HAS_IOMEM=3Dy or
-> INDIRECT_IOMEM=3Dy. So, depend on either of the two.
-
-There are many mtd drivers using memcpy_fromio and memcpy_toio, I'm not
-sure I get why only this subset of drivers would be impacted?
-
-Also, from a general standpoint, I don't see with a good eye the
-proliferation of the use of || INDIRECT_IOMEM just for the um
-architecture:
-
-$ git grep HAS_IOMEM | wc -l
-611
-$ git grep INDIRECT_IOMEM | wc -l
-15
-
-I believe the Kconfig symbol should adapt to reflect the fact that IO
-operations are fine, regardless of their type ("direct" or "indirect")
-rather than move the load on the individual drivers.
-
-> Reviewed-by: Yann Sionneau <ysionneau@kalrayinc.com>
-> Signed-off-by: Julian Vetter <jvetter@kalrayinc.com>
-> ---
-> Changes for v8:
-> - New patch
-> ---
->  drivers/mtd/chips/Kconfig | 4 ++++
->  drivers/mtd/lpddr/Kconfig | 1 +
->  2 files changed, 5 insertions(+)
->=20
-> diff --git a/drivers/mtd/chips/Kconfig b/drivers/mtd/chips/Kconfig
-> index 19726ebd973d..78afe7ccf005 100644
-> --- a/drivers/mtd/chips/Kconfig
-> +++ b/drivers/mtd/chips/Kconfig
-> @@ -4,6 +4,7 @@ menu "RAM/ROM/Flash chip drivers"
-> =20
->  config MTD_CFI
->  	tristate "Detect flash chips by Common Flash Interface (CFI) probe"
-> +	depends on HAS_IOMEM || INDIRECT_IOMEM
->  	select MTD_GEN_PROBE
->  	select MTD_CFI_UTIL
->  	help
-> @@ -16,6 +17,7 @@ config MTD_CFI
-> =20
->  config MTD_JEDECPROBE
->  	tristate "Detect non-CFI AMD/JEDEC-compatible flash chips"
-> +	depends on HAS_IOMEM || INDIRECT_IOMEM
->  	select MTD_GEN_PROBE
->  	select MTD_CFI_UTIL
->  	help
-> @@ -211,12 +213,14 @@ config MTD_CFI_UTIL
-> =20
->  config MTD_RAM
->  	tristate "Support for RAM chips in bus mapping"
-> +	depends on HAS_IOMEM || INDIRECT_IOMEM
->  	help
->  	  This option enables basic support for RAM chips accessed through
->  	  a bus mapping driver.
-> =20
->  config MTD_ROM
->  	tristate "Support for ROM chips in bus mapping"
-> +	depends on HAS_IOMEM || INDIRECT_IOMEM
->  	help
->  	  This option enables basic support for ROM chips accessed through
->  	  a bus mapping driver.
-> diff --git a/drivers/mtd/lpddr/Kconfig b/drivers/mtd/lpddr/Kconfig
-> index 0395aa6b68f1..f35dd8052abc 100644
-> --- a/drivers/mtd/lpddr/Kconfig
-> +++ b/drivers/mtd/lpddr/Kconfig
-> @@ -4,6 +4,7 @@ menu "LPDDR & LPDDR2 PCM memory drivers"
-> =20
->  config MTD_LPDDR
->  	tristate "Support for LPDDR flash chips"
-> +	depends on HAS_IOMEM || INDIRECT_IOMEM
->  	select MTD_QINFO_PROBE
->  	help
->  	  This option enables support of LPDDR (Low power double data rate)
+Changed since v2:
+ - Use an int for the year offset in struct m48t59_plat_data.
 
 
-Thanks,
-Miqu=C3=A8l
+Finn Thain (2):
+  rtc: m48t59: Use platform_data struct for year offset value
+  m68k: mvme147, mvme16x: Adopt rtc-m48t59 platform driver
+
+ arch/m68k/configs/multi_defconfig   |   1 +
+ arch/m68k/configs/mvme147_defconfig |   1 +
+ arch/m68k/configs/mvme16x_defconfig |   1 +
+ arch/m68k/include/asm/mvme147hw.h   |  19 +---
+ arch/m68k/include/asm/mvme16xhw.h   |  18 +--
+ arch/m68k/mvme147/config.c          |  55 ++++------
+ arch/m68k/mvme16x/Makefile          |   2 +-
+ arch/m68k/mvme16x/config.c          |  57 ++++------
+ arch/m68k/mvme16x/rtc.c             | 165 ----------------------------
+ arch/sparc/kernel/time_32.c         |   1 +
+ arch/sparc/kernel/time_64.c         |   1 +
+ drivers/rtc/rtc-m48t59.c            |  26 +----
+ include/linux/rtc/m48t59.h          |   3 +
+ 13 files changed, 63 insertions(+), 287 deletions(-)
+ delete mode 100644 arch/m68k/mvme16x/rtc.c
+
+-- 
+2.39.5
+
