@@ -1,243 +1,93 @@
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B7FC20C020
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Oct 2024 14:41:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B26DD1C878B
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Oct 2024 16:19:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729089673; cv=none; b=Ln5ymD7E81hrPYb7e8NyELW/D5P8qDVjqcmWebnKY/MdYT64tylR/iqR+11jrs9kJ6s0hcE28fQyAFN/nmFmdJRKgzCoL76Q/IWpopx3qNw2dYeYRGvbbilXuZrIGL+D+ttvORfWIQJAfTir/wFo8Hjq0m3PP+fZC7W3XFiSNr4=
+	t=1729095546; cv=none; b=gBmyRMNqyTbiQPlFxuqjZ444CM+SJ+ewbSTH7RQ/vyFtd+pROWY8qWoHJ6cetICSXWmeFxKnzJPUUmrUFuIOYPDCSBKDWxFx3Gbbta0MPLsKOXN8gxcUyC/v/1/FTCHM/HrUoJqriHuCME+gorOspzK9HTg2+hXXTWVBULl6l1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729089673; c=relaxed/simple;
-	bh=cFm6C9yHF4d5EJsvTt2L486kzgO4ydnk8peQ4k2qH0U=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g/4BegeEvNWQ4kxPwHn8xuTV8hTgfanu8rM6VfK5CBKHWJL44Vf2eULPjg7eYGOKbgz1NsJk0y/rHUe65d2T3R/LU9bJhzZ20qHsRx2pADQlByf8t3fb9GkSwAXqYoWl3Byz+50TZZYfvkGfpfXI3DuLl2n7JbJycFQ4oSDpOEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iyRyOd7I; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1729095546; c=relaxed/simple;
+	bh=DU3xxf8OS0wf5uz6rRlojBdb8lFaqFGZboU2hsawZGU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=pNQ8fgqR34X3nIIGiCszOrg092y/oa8UxOV9eF/MOnBHeA5WgtsLoWZiOV04tY+/iGdkQHkwhMZBsDreO/Q7nhbvaq0yPt6yiWZXPHa9/jxOiPof9a/Rw3mYcOXH28LV4Z86SFGlnGOumfn7mPp5oPYMvGqwrrBZTurz8mR/nS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=WJ/QF4nL; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iyRyOd7I"
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2fb5be4381dso23916941fa.2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Oct 2024 07:41:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729089669; x=1729694469; darn=lists.linux-m68k.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xNOEBHIW89c1j/jhsHn9BJm63iz+XQaKnsI8oRx93vU=;
-        b=iyRyOd7I5zrcFFYA1pijw+7IzRsxAUMwH40Ch04oh9BiEvTgK+mF8zCzg7HSAEz6Dx
-         l2T4fr9xB302aPxt0NBKUAPEx3c2x2Z5+udHrw9CwF7cPAOyn2B4Hl3rsF2SYZRhgWsZ
-         f2fl0XLDJjzqLyBMoJGRgygu4EBKAzCMauofovYGv6RqO9wrzMrJwpWmA4mIh3+dyZEH
-         RL6dwJwu+lEob/e8GPTu6c2iiLOlSSkLaE3yJrbZOXLrVNHFj0K7z1ty54EMJ7FQ3Mht
-         lBPIuuMR0XCrSSNdf4I2wkNyqhvcHyhhkDEWD6u4CqX6HU735AQtm2Fu15iBlJ3l8/FB
-         y6BA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729089669; x=1729694469;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xNOEBHIW89c1j/jhsHn9BJm63iz+XQaKnsI8oRx93vU=;
-        b=kL3VoGqN07LXtPQ/aqHFyoHmiStbCpRWWS0pWsam1YaOKR0baymy8boDk4JuReUX9b
-         pWgMS+5e1TCw/wOnKG2Bqa3uJCs6GRQBq0D35yNsw0cVm259/mHDu5w139Xe2etWSqBl
-         8IfXJB+cvUjyLZuwhG831cg7BS2vWLX7X+ezRigBlQNElLTPV6GmbcVEilueZ6sRuKlH
-         fih47DkKAJskbX/PhFUtu6c7ZrmcRATW2a7tKWAUcIoiXhhU5qAv51KJ72QDe+9paIgE
-         jYRvEqKkalq7T1HEymLEmM+B//7/ZQJgZHrxzsM1pOS5kjjJMEwfISYY16G5IOTh8JaZ
-         531w==
-X-Forwarded-Encrypted: i=1; AJvYcCXOin2fSC4SpZud+JEbuj/VQNb15QUaea9zgLj+ozEAU5Gu6JFu4EvUHjsdR9TA4Jte2x1CMKPgYHyN@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzCYkeBRowjMSA6CoSv5oBzBd4xxE4zc71vHSXdrma0C3SUMFYN
-	Rna0jmAStYd2HAKYlAf37a+YLiMhPOWaHtjQYb1w9O7rxgi7xNvp
-X-Google-Smtp-Source: AGHT+IEQ2b77do+Ei5H+uRLYrEtNQq0NK3oK0wCc+2cFtuWRuK/aQBOOdJJvL1LeKTNOBzUMcJr/yQ==
-X-Received: by 2002:a05:651c:1989:b0:2fb:6181:8ca1 with SMTP id 38308e7fff4ca-2fb61b37a76mr33036831fa.6.1729089669341;
-        Wed, 16 Oct 2024 07:41:09 -0700 (PDT)
-Received: from pc636 (host-95-203-1-67.mobileonline.telia.com. [95.203.1.67])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-2fb5d1d0244sm4327361fa.139.2024.10.16.07.41.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Oct 2024 07:41:08 -0700 (PDT)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Wed, 16 Oct 2024 16:41:03 +0200
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-	Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org,
-	Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v6 1/8] mm: vmalloc: group declarations depending on
- CONFIG_MMU together
-Message-ID: <Zw_QfzopOv7pCZc_@pc636>
-References: <20241016122424.1655560-1-rppt@kernel.org>
- <20241016122424.1655560-2-rppt@kernel.org>
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="WJ/QF4nL"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 93B8920005;
+	Wed, 16 Oct 2024 16:18:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1729095535;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=mr7Gdw7WuWDfM1YLaYtR0LiWnWmLO3/eoqes+Yrm7II=;
+	b=WJ/QF4nLydyMTO7Fjhyy6DYaUrnG1JJWlCM/DoIcKrmcecaq6H6f6tcHYXXhrQHWRMCvSI
+	2FC8QlkFI/dSEbZ0Y2YyJUuxLfqx4PwFjoRZ2H0xbZbsSGFLJMN2CZClBpaYV1nXyf+h6V
+	jfe+/YB+lrDS9Mb+EoHIozOpyjYgdBtbCc+yyF5xsuqzqs4JKzyy8U41yXXmpzSMfeJm+k
+	XfpfK6JhNXty3x9ywAdhxbpKR+2GVau4aXY/VKo7JefKmYLcOZehK81o3Eicc4+RC2esd+
+	7JYMB+pRIxiR78Ww/ORyKVcydFOZMg/fnWxHygIjYrk0XvZ55tot0UhBO+n2gA==
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Date: Wed, 16 Oct 2024 18:18:55 +0200
+Subject: [PATCH] m68k: Initialize jump labels early during setup_arch()
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241016122424.1655560-2-rppt@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20241016-fix-jump-label-v1-1-eb74c5f68405@yoseli.org>
+X-B4-Tracking: v=1; b=H4sIAG7nD2cC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxNDA0Mz3bTMCt2s0twC3ZzEpNQc3WQDC+NUS4PklJRkMyWgpoKiVKAKsIH
+ RsbW1ABiFqOZgAAAA
+X-Change-ID: 20241016-fix-jump-label-c083e90cddc6
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+ Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1729095535; l=1129;
+ i=jeanmichel.hautbois@yoseli.org; s=20240925; h=from:subject:message-id;
+ bh=DU3xxf8OS0wf5uz6rRlojBdb8lFaqFGZboU2hsawZGU=;
+ b=N6bEtSVo1NMnwHa/0M7mhDieNTCxlI+cwDRWBmtQf1ANSRvGtmNodTI3pgbh5orM9zmqRzLAW
+ Z0SU07AN2ldDEkCXUqfTe0Ug7miK49r8SH5OFHx/nCLouzSvz0a7uN3
+X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
+ pk=MsMTVmoV69wLIlSkHlFoACIMVNQFyvJzvsJSQsn/kq4=
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-On Wed, Oct 16, 2024 at 03:24:17PM +0300, Mike Rapoport wrote:
-> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
-> 
-> There are a couple of declarations that depend on CONFIG_MMU in
-> include/linux/vmalloc.h spread all over the file.
-> 
-> Group them all together to improve code readability.
-> 
-> No functional changes.
-> 
-> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> ---
->  include/linux/vmalloc.h | 60 +++++++++++++++++------------------------
->  1 file changed, 24 insertions(+), 36 deletions(-)
-> 
-> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-> index ad2ce7a6ab7a..27408f21e501 100644
-> --- a/include/linux/vmalloc.h
-> +++ b/include/linux/vmalloc.h
-> @@ -134,12 +134,6 @@ extern void vm_unmap_ram(const void *mem, unsigned int count);
->  extern void *vm_map_ram(struct page **pages, unsigned int count, int node);
->  extern void vm_unmap_aliases(void);
->  
-> -#ifdef CONFIG_MMU
-> -extern unsigned long vmalloc_nr_pages(void);
-> -#else
-> -static inline unsigned long vmalloc_nr_pages(void) { return 0; }
-> -#endif
-> -
->  extern void *vmalloc_noprof(unsigned long size) __alloc_size(1);
->  #define vmalloc(...)		alloc_hooks(vmalloc_noprof(__VA_ARGS__))
->  
-> @@ -266,12 +260,29 @@ static inline bool is_vm_area_hugepages(const void *addr)
->  #endif
->  }
->  
-> +/* for /proc/kcore */
-> +long vread_iter(struct iov_iter *iter, const char *addr, size_t count);
-> +
-> +/*
-> + *	Internals.  Don't use..
-> + */
-> +__init void vm_area_add_early(struct vm_struct *vm);
-> +__init void vm_area_register_early(struct vm_struct *vm, size_t align);
-> +
-> +int register_vmap_purge_notifier(struct notifier_block *nb);
-> +int unregister_vmap_purge_notifier(struct notifier_block *nb);
-> +
->  #ifdef CONFIG_MMU
-> +#define VMALLOC_TOTAL (VMALLOC_END - VMALLOC_START)
-> +
-> +unsigned long vmalloc_nr_pages(void);
-> +
->  int vm_area_map_pages(struct vm_struct *area, unsigned long start,
->  		      unsigned long end, struct page **pages);
->  void vm_area_unmap_pages(struct vm_struct *area, unsigned long start,
->  			 unsigned long end);
->  void vunmap_range(unsigned long addr, unsigned long end);
-> +
->  static inline void set_vm_flush_reset_perms(void *addr)
->  {
->  	struct vm_struct *vm = find_vm_area(addr);
-> @@ -279,24 +290,14 @@ static inline void set_vm_flush_reset_perms(void *addr)
->  	if (vm)
->  		vm->flags |= VM_FLUSH_RESET_PERMS;
->  }
-> +#else  /* !CONFIG_MMU */
-> +#define VMALLOC_TOTAL 0UL
->  
-> -#else
-> -static inline void set_vm_flush_reset_perms(void *addr)
-> -{
-> -}
-> -#endif
-> -
-> -/* for /proc/kcore */
-> -extern long vread_iter(struct iov_iter *iter, const char *addr, size_t count);
-> -
-> -/*
-> - *	Internals.  Don't use..
-> - */
-> -extern __init void vm_area_add_early(struct vm_struct *vm);
-> -extern __init void vm_area_register_early(struct vm_struct *vm, size_t align);
-> +static inline unsigned long vmalloc_nr_pages(void) { return 0; }
-> +static inline void set_vm_flush_reset_perms(void *addr) {}
-> +#endif /* CONFIG_MMU */
->  
-> -#ifdef CONFIG_SMP
-> -# ifdef CONFIG_MMU
-> +#if defined(CONFIG_MMU) && defined(CONFIG_SMP)
->  struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
->  				     const size_t *sizes, int nr_vms,
->  				     size_t align);
-> @@ -311,22 +312,9 @@ pcpu_get_vm_areas(const unsigned long *offsets,
->  	return NULL;
->  }
->  
-> -static inline void
-> -pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
-> -{
-> -}
-> -# endif
-> -#endif
-> -
-> -#ifdef CONFIG_MMU
-> -#define VMALLOC_TOTAL (VMALLOC_END - VMALLOC_START)
-> -#else
-> -#define VMALLOC_TOTAL 0UL
-> +static inline void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms) {}
->  #endif
->  
-> -int register_vmap_purge_notifier(struct notifier_block *nb);
-> -int unregister_vmap_purge_notifier(struct notifier_block *nb);
-> -
->  #if defined(CONFIG_MMU) && defined(CONFIG_PRINTK)
->  bool vmalloc_dump_obj(void *object);
->  #else
-> -- 
-> 2.43.0
-> 
-Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+The jump_label_init() should be called from setup_arch() very
+early for proper functioning of jump label support.
 
---
-Uladzislau Rezki
+Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+---
+ arch/m68k/kernel/setup_mm.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+index 10310b04f77d8d79bec858c6989c2cf21d0af557..15c1a595a1de0bef7e6565b7a6e02d773c23bb8c 100644
+--- a/arch/m68k/kernel/setup_mm.c
++++ b/arch/m68k/kernel/setup_mm.c
+@@ -249,7 +249,11 @@ void __init setup_arch(char **cmdline_p)
+ 	process_uboot_commandline(&m68k_command_line[0], CL_SIZE);
+ 	*cmdline_p = m68k_command_line;
+ 	memcpy(boot_command_line, *cmdline_p, CL_SIZE);
+-
++	/*
++	 * Initialise the static keys early as they may be enabled by the
++	 * cpufeature code and early parameters.
++	 */
++	jump_label_init();
+ 	parse_early_param();
+ 
+ 	switch (m68k_machtype) {
+
+---
+base-commit: 8e929cb546ee42c9a61d24fae60605e9e3192354
+change-id: 20241016-fix-jump-label-c083e90cddc6
+
+Best regards,
+-- 
+Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+
