@@ -1,133 +1,92 @@
-Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68AA91F819D
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Oct 2024 20:12:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB6AE18C01F
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Oct 2024 06:45:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729023122; cv=none; b=VJQo4H+YpuVSlshC7Qe3mSpq6k1lrtrC8yKRWWpwoR0N2fjnEJK3sH7tCSemggTONMRMS4vwUTjs/3g62ZS19yd244y7eAcknvYVym9poZnnQxhWpx01pVGuRXf3vKSrYRzDf+RXLZqCPEwQziGJR2yoXBuodhYygRZ91gyq3MI=
+	t=1729061115; cv=none; b=uTIPJptPgwaAALXEqXWH+o8yIUiYYqhcw9Z6bsh7PchyKsMZXvuf6GFoEM5IkP9BIJVQiTfZiOhFJDpU9yyri0RaI+FTq//VlMZ13EK79k/cxou3xhg5JcF0fXUmtbZyl2tFLovMHEErLj8Akk2pypu/D53EWxBzq+o1qlkMt5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729023122; c=relaxed/simple;
-	bh=Y6PhmBa/nN+iDUxTFqcR/Mb33RbOlJl9A4RsS6bV0b4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C54+mS1JbN05lHV976daOw+apYwZ50llDZuHsb8CoLucmwop40GVRCOgIC+jgvPIBNZgneXe8xzmO+R/8/acRD+ozUkg06fGhgDTsIJHxNFIGXTMBMsF61SHL5zDxWZyWOTV6UVDUNVqmkcFw/8i0LNzlHd0CcfW+CS+Iulmqag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NeA6yj5h; arc=none smtp.client-ip=147.75.193.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1729061115; c=relaxed/simple;
+	bh=pI2cwbTmRfpP/2kuGFcWYOozmbN2/ZbeZzfUKQP7Pw8=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=pVnHYtHNa3EC7rycD2tbfg18w/z40Hpg6Roc3AyaKQaCBk/6hVHgbJI5smPf3NB+E/i9E737VG48cd4dyIEM4qFr3SBLSgsdGeHwpa+tUj/Sy8IAkbft539YPjxp/DA3/yDW87H169wwmEnFw4o4cERVaAVTWT4es2h3KRHT/VM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=DPi8Upt4; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NeA6yj5h"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 99C9DA435A9;
-	Tue, 15 Oct 2024 20:11:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAB4EC4CEC6;
-	Tue, 15 Oct 2024 20:11:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729023118;
-	bh=Y6PhmBa/nN+iDUxTFqcR/Mb33RbOlJl9A4RsS6bV0b4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NeA6yj5hajfLYEdkGLWG8XB5N4aid73nUjDZb/ugsyZ3AQoALVnXt8x2U69teh7bp
-	 +Jxn6eME2rpnC6+5s7BU9sn0TueSyVekqQmYatz9jkvCTO794aSB0wivMugKOyBQcF
-	 f12fUI4D7cG8AqwuNBz90ooW8BLJGSzfYerkziVJS4gVWwzpr6llRoBCSoxKz8d+Fs
-	 0rPGTZgvQEw9IByGG03TdQUKWcviEE7gexwsotoi1Pu3fbgseCJrzYVZZZHzQHsDOS
-	 xg878mky4sIBNDtU8Y7CZD0UtD4jLkQQWx+cO7Oq3WKQ8DmXAZc3hC28g+NG7SbCgU
-	 uBbk2RUOwLABQ==
-Date: Tue, 15 Oct 2024 13:11:54 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>, Petr Pavlu <petr.pavlu@suse.com>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-	Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org, kdevops@lists.linux.dev
-Subject: Re: [PATCH v5 7/8] execmem: add support for cache of large ROX pages
-Message-ID: <Zw7MirnsHnhRveBB@bombadil.infradead.org>
-References: <20241009180816.83591-1-rppt@kernel.org>
- <20241009180816.83591-8-rppt@kernel.org>
- <Zwd7GRyBtCwiAv1v@infradead.org>
- <ZwfPPZrxHzQgYfx7@kernel.org>
- <ZwjXz0dz-RldVNx0@infradead.org>
- <ZwuIPZkjX0CfzhjS@kernel.org>
- <20241013202626.81f430a16750af0d2f40d683@linux-foundation.org>
- <Zw1uBBcG-jAgxF_t@bombadil.infradead.org>
- <Zw3rDS3GRWZe4CBu@bombadil.infradead.org>
- <Zw4DlTTbz4QwhOvU@kernel.org>
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="DPi8Upt4"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A9B2DE0008;
+	Wed, 16 Oct 2024 06:45:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1729061106;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=OhuifQIKCMDz8+AMVYlt8A9jGfC1V2l3F57S4G62J2c=;
+	b=DPi8Upt4elbNkNRQ7zOLVNTop+1iZKTQd8kjyQGoEmu4oGUlhYcdrQ0iok7FfglZQXOp3w
+	o4mfpayJhM5VnwS9YBt4FB0rHkw+krpgKqi0b66MfWuQW4KSMczievD/Wu2/DddiGb3ilj
+	fX3ElO1ORtx75bhWbVs1THHPl2nTFaXT9c4aIFugF6GlJFBTNCtsmxPvRXP7DqqfqAFQna
+	wzpFjYdqnphVugvfi9uV4FdkRm7siZKQIXddIW/qGJ5kQrprzMjkZDWcs7352dAMPkAYyo
+	TiQ76zjtI4w1iu6J/JeI/5u1hmFAiIIz9kfrLOc0SBPmippdXtT59bADnNv6VA==
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Date: Wed, 16 Oct 2024 08:45:00 +0200
+Subject: [PATCH] m68k: mcfgpio: Fix incorrect register offset for
+ CONFIG_M5441x
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zw4DlTTbz4QwhOvU@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20241016-fix-m5441x-gpio-v1-1-0a29befd4b8d@yoseli.org>
+X-B4-Tracking: v=1; b=H4sIAOtgD2cC/x3NQQqDQAyF4atI1gaMjmPrVUoXMzZqFo6SSBHEu
+ 3fs8ufx8U4wVmGDvjhB+Ssma8pBZQHDHNLEKJ/cUFe1o4o8jnLg0jpHB06brMi+o0fTtP4ZHWQ
+ VgzFGDWmYb7cE21nvYVPO9n/1el/XD0/MBAp6AAAA
+To: Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Greg Ungerer <gerg@uclinux.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+ Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1729061105; l=1170;
+ i=jeanmichel.hautbois@yoseli.org; s=20240925; h=from:subject:message-id;
+ bh=pI2cwbTmRfpP/2kuGFcWYOozmbN2/ZbeZzfUKQP7Pw8=;
+ b=BiKSfKRLZ5/zMqw5X49f1imNfIOkYDX1NWSlAV6eC2i5d1qW/gmA50+oPjCBGoU9mJWeiXaU+
+ yVYv55sbVY/ArFI1Gs173THou+CBsZbFeLMWuyWsbETjmQTYYMkH2XF
+X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
+ pk=MsMTVmoV69wLIlSkHlFoACIMVNQFyvJzvsJSQsn/kq4=
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-On Tue, Oct 15, 2024 at 08:54:29AM +0300, Mike Rapoport wrote:
-> On Mon, Oct 14, 2024 at 09:09:49PM -0700, Luis Chamberlain wrote:
-> > Mike, please run this with kmemleak enabled and running, and also try to get
-> > tools/testing/selftests/kmod/kmod.sh to pass.
-> 
-> There was an issue with kmemleak, I fixed it here:
-> 
-> https://lore.kernel.org/linux-mm/20241009180816.83591-1-rppt@kernel.org/T/#m020884c1795218cc2be245e8091fead1cda3f3e4
+Fix a typo in the CONFIG_M5441x preprocessor condition, where the GPIO
+register offset was incorrectly set to 8 instead of 0. This prevented
+proper GPIO configuration for m5441x targets.
 
-Ah, so this was a side fix, not part of this series, thanks.
+Fixes: 83c6bdb827c9 ("m68knommu: Implement gpio support for m54xx.")
+Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+---
+ arch/m68k/include/asm/mcfgpio.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > I run into silly boot issues with just a guest.
-> 
-> Was it kmemleak or something else?
+diff --git a/arch/m68k/include/asm/mcfgpio.h b/arch/m68k/include/asm/mcfgpio.h
+index 019f24439546..9c91ecdafc45 100644
+--- a/arch/m68k/include/asm/mcfgpio.h
++++ b/arch/m68k/include/asm/mcfgpio.h
+@@ -136,7 +136,7 @@ static inline void gpio_free(unsigned gpio)
+  * read-modify-write as well as those controlled by the EPORT and GPIO modules.
+  */
+ #define MCFGPIO_SCR_START		40
+-#elif defined(CONFIGM5441x)
++#elif defined(CONFIG_M5441x)
+ /* The m5441x EPORT doesn't have its own GPIO port, uses PORT C */
+ #define MCFGPIO_SCR_START		0
+ #else
 
-Both kmemleak and the kmod selftest failed, here is a run of the test
-with this patch series:
+---
+base-commit: 8e929cb546ee42c9a61d24fae60605e9e3192354
+change-id: 20241016-fix-m5441x-gpio-e671833569b4
 
-https://github.com/linux-kdevops/linux-modules-kpd/actions/runs/11352286624/job/31574722735
+Best regards,
+-- 
+Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 
-We now have automated tests generated when people post patches to
-linux-modules, but if you give me your github username you can push
-onto the linux-kdevops/linux-modules-kpd [0] repo a random branch once you
-have it ready, just cp -a the linux-ci-modules/.github [1] directory onto
-your branch before a push and that'll trigger a test run (you need to
-git add -f .github on your Linux branch) with our self-hosted runners.
-
-[0] https://github.com/linux-kdevops/linux-modules-kpd
-[1] https://github.com/linux-kdevops/kdevops-ci-modules
-
-  Luis
