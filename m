@@ -1,97 +1,130 @@
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0127165EF8
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Oct 2024 07:25:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3FF6207207
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Oct 2024 10:44:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729063507; cv=none; b=tu54Y8mkBE7ZdcGudAG8N8Tli+HvDLLSMgqHkqcwHap5JrkMHfxwm6nEIQ1F111+xnbBU5UveuWOaEX5v6Wu0mY5rhtW/NArXdbCRchiw3/dIcj8wLnCJ0xrqcCEKX9EmG5kyars6K4no7uStn2H+e/PMMQis3u5MuJckefyxGA=
+	t=1729075494; cv=none; b=kH5JtCsUEuQmuaJ30LxlMLY1cnVn5hOzLIv2hhbQ751+nxw2QGy8hXTmWYJxqew1AgPEzBpdZS5E1gidSAbVdXRVBCE17I3pm4Fj1t7QgDvoY+zV+jHgRG6nG+SxaAzxijIIUwPUNI814rm4yPk99svIK+1brkatvJxHBGWUEEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729063507; c=relaxed/simple;
-	bh=sQtppI46jofVYXJMLskwbpEoElbEeD/xky33S8tLjVU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=SF2ClZqFM7PFw8n7l2WxQCKWqBud4zFDv9m02GvufOCMqKveJpBvKXCtKxiPxsDue1ouXWTtUsRt+KSzbfZKMx/rGhdyL8DagTQ7jEpfoJo+RhjBzusKPDRfQ/wnvWDpJ2B4BPz8Elhz3UlUlH6T8qjUOEzCMadhoD6oz2TLP2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=hYiFKKJ2; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
+	s=arc-20240116; t=1729075494; c=relaxed/simple;
+	bh=REY0yUs/eb8jGqS7iPmNLu0O7M3zjCPm2K1uOQnlIfY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pDSjCUx7qRw84K++JqeHo00gpZW4TAMwmdqudsQXaT1GmvTxEReIyjXJxUEeXVWQnQMAmDJue8uWpGJy9MwN1YlXtIYzg5BSR5ujVzAlzPyLh0TtF9L3teBSSzDJAkNQC2XP/SXKFdQ6z3n9aVA6VxU37q8vJmw5jKvb5ajKe1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tu7R+TE5; arc=none smtp.client-ip=139.178.84.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="hYiFKKJ2"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id B470A20003;
-	Wed, 16 Oct 2024 07:25:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1729063504;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=JtlodXS/oAXgkasT5Pwo3ru1/a/PoSkgKb7TEH8Zw4I=;
-	b=hYiFKKJ2rAg2XqkCFzdnubpTolhz0EbgecrMepRbAvKfBsvAQmXgAwKvHHWd3me4bvzTPs
-	Xqbl5Iwj+I0s4QgJZgBySyFvI5LxjWVtDf19QTWF81KD/yARSJv80wj9jmP6p8Oxua0OXT
-	Xn8Q8A3tgCGtVP3zDixWq9aTD/yanCej6GHYf9ArZYPJ3JrpG8x9q9257hAxyouOc0u5UD
-	sCe63Bco0AyHGMDLG3wlwYNyjS2KqBlF6Ad4CxHTj7qHzDVhFTWJr+kMPaJ18u0HR4imFV
-	EJewDZ0QcrKsEjG5TKcTp36rXlzwJQeh5VuDtkJHbN+8LaF4hFy2rvx5GB2RcA==
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Date: Wed, 16 Oct 2024 09:24:35 +0200
-Subject: [PATCH v2] m68k: mcfgpio: Fix incorrect register offset for
- CONFIG_M5441x
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tu7R+TE5"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id D240E5C5FDD;
+	Wed, 16 Oct 2024 10:44:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A439EC4CEC5;
+	Wed, 16 Oct 2024 10:44:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729075491;
+	bh=REY0yUs/eb8jGqS7iPmNLu0O7M3zjCPm2K1uOQnlIfY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tu7R+TE5l4rMjxEyzDDIH6fpt5ZNmC1c7xJx7SQDlI9CzDxMt5yOQnVYNAW9hdV8J
+	 OeaDo9Hr12xvhUKQgId1tm4/CewmMpWCLOk3wgiUJwXyvWq4QlFB+Uh/pOgd95q0F1
+	 zyNekZpzro5oJZ2JEUpyorUNUZLep/wgUFWwzFdkGHL+BF7JNIRifDS33KF/5qGC2v
+	 jYrUvBLfr/xZZ4LfL7bWflm1YPeuIUzgGbLP+eWNj7AbuOUcsPGdhrgXCl4uUGrO38
+	 j9PqqivnqqmoYQsjfU9edkgWUJ3Ic8/MVLUiY8xlv+pKvbZQmwKQdokHEcp8hCdCUB
+	 nLnfE4mx3UK6g==
+Date: Wed, 16 Oct 2024 13:40:55 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Christoph Hellwig <hch@infradead.org>, Petr Pavlu <petr.pavlu@suse.com>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+	Brian Cain <bcain@quicinc.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Stafford Horne <shorne@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	sparclinux@vger.kernel.org, x86@kernel.org, kdevops@lists.linux.dev
+Subject: Re: [PATCH v5 7/8] execmem: add support for cache of large ROX pages
+Message-ID: <Zw-YN4JIltntY52Y@kernel.org>
+References: <20241009180816.83591-8-rppt@kernel.org>
+ <Zwd7GRyBtCwiAv1v@infradead.org>
+ <ZwfPPZrxHzQgYfx7@kernel.org>
+ <ZwjXz0dz-RldVNx0@infradead.org>
+ <ZwuIPZkjX0CfzhjS@kernel.org>
+ <20241013202626.81f430a16750af0d2f40d683@linux-foundation.org>
+ <Zw1uBBcG-jAgxF_t@bombadil.infradead.org>
+ <Zw3rDS3GRWZe4CBu@bombadil.infradead.org>
+ <Zw4DlTTbz4QwhOvU@kernel.org>
+ <Zw7MirnsHnhRveBB@bombadil.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20241016-fix-m5441x-gpio-v2-1-f419777bc90d@yoseli.org>
-X-B4-Tracking: v=1; b=H4sIADJqD2cC/3WNQQqDMBBFr1Ky7hQTo9Wueo/iItFRB6qRGRFFv
- Huj+y7f/zzergSZUNTrtivGhYTCGMHcb6ru3dghUBNZmcRYnegcWlphyKzVK3QTBcD8qYs0zfL
- SWxUt7wTBsxvr/vQGJzPyeUyM0b1SnypyTzIH3q7yos/1f2TRoCFxpvTYNtYXzXsLgl96BO5Ud
- RzHD54BLCTIAAAA
-To: Geert Uytterhoeven <geert@linux-m68k.org>, 
- Greg Ungerer <gerg@uclinux.org>, Steven King <sfking@fdwdc.com>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
- Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1729063503; l=1330;
- i=jeanmichel.hautbois@yoseli.org; s=20240925; h=from:subject:message-id;
- bh=sQtppI46jofVYXJMLskwbpEoElbEeD/xky33S8tLjVU=;
- b=nErw8hBszYoZVMNgR3jA4KRGpb3OnUepNNvAWg10/rzM3OfamRR9Ddn9SOyHaGMt/yJWWu5ch
- O7XPafuwn2mBDSri7vwFyueHsKwx2FJa2DCGtMgYIZF9wYh9ql5QKQR
-X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
- pk=MsMTVmoV69wLIlSkHlFoACIMVNQFyvJzvsJSQsn/kq4=
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zw7MirnsHnhRveBB@bombadil.infradead.org>
 
-Fix a typo in the CONFIG_M5441x preprocessor condition, where the GPIO
-register offset was incorrectly set to 8 instead of 0. This prevented
-proper GPIO configuration for m5441x targets.
+On Tue, Oct 15, 2024 at 01:11:54PM -0700, Luis Chamberlain wrote:
+> On Tue, Oct 15, 2024 at 08:54:29AM +0300, Mike Rapoport wrote:
+> > On Mon, Oct 14, 2024 at 09:09:49PM -0700, Luis Chamberlain wrote:
+> > > Mike, please run this with kmemleak enabled and running, and also try to get
+> > > tools/testing/selftests/kmod/kmod.sh to pass.
+> > 
+> > There was an issue with kmemleak, I fixed it here:
+> > 
+> > https://lore.kernel.org/linux-mm/20241009180816.83591-1-rppt@kernel.org/T/#m020884c1795218cc2be245e8091fead1cda3f3e4
+> 
+> Ah, so this was a side fix, not part of this series, thanks.
+> 
+> > > I run into silly boot issues with just a guest.
+> > 
+> > Was it kmemleak or something else?
+> 
+> Both kmemleak and the kmod selftest failed, here is a run of the test
+> with this patch series:
+> 
+> https://github.com/linux-kdevops/linux-modules-kpd/actions/runs/11352286624/job/31574722735
 
-Fixes: bea8bcb12da0 ("m68knommu: Add support for the Coldfire m5441x.")
-Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
----
-Changes in v2:
-- The commit fixed is not the one in v1
-- Link to v1: https://lore.kernel.org/r/20241016-fix-m5441x-gpio-v1-1-0a29befd4b8d@yoseli.org
----
- arch/m68k/include/asm/mcfgpio.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Is there a kernel log to look at? Could not find it in the run report
+ 
+>   Luis
 
-diff --git a/arch/m68k/include/asm/mcfgpio.h b/arch/m68k/include/asm/mcfgpio.h
-index 019f24439546..9c91ecdafc45 100644
---- a/arch/m68k/include/asm/mcfgpio.h
-+++ b/arch/m68k/include/asm/mcfgpio.h
-@@ -136,7 +136,7 @@ static inline void gpio_free(unsigned gpio)
-  * read-modify-write as well as those controlled by the EPORT and GPIO modules.
-  */
- #define MCFGPIO_SCR_START		40
--#elif defined(CONFIGM5441x)
-+#elif defined(CONFIG_M5441x)
- /* The m5441x EPORT doesn't have its own GPIO port, uses PORT C */
- #define MCFGPIO_SCR_START		0
- #else
-
----
-base-commit: 8e929cb546ee42c9a61d24fae60605e9e3192354
-change-id: 20241016-fix-m5441x-gpio-e671833569b4
-
-Best regards,
 -- 
-Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-
+Sincerely yours,
+Mike.
