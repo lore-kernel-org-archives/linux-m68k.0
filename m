@@ -1,198 +1,86 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E399F208D82
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Oct 2024 12:27:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 116B9208D99
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Oct 2024 13:05:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729081627; cv=none; b=bq0VpAREIgP1y4MZ69qFsMZ7qlZf6q0hOM8r+TzG80sI2EsLnNA/saGPNoRz5kdi6KUUDRrAnL3yWFDKC2P28sgV2ugidX5Sn0d0m3eUf0hiu6AgTjUQxXRMOslUiIOa2PWWdg5egUVBYl+AzVdzYQ+GJzYux2IGBcS4BsnuQaw=
+	t=1729083956; cv=none; b=Yx7+rqgwWA54UJZ4dv1lsLxLmwuHyRHOdTBqppRWstfZSWmlrUzi/JOgzJoLDAmvu0VYWwi4oDcGVHQhKAbkodz1MzPoWFVKDhDZHCYNHjwWZLn9g2DbrG4oxcf7omBEpMaG9m1ByX+zhD9V1be6hfWAXJobvswSQqO/dH1LcQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729081627; c=relaxed/simple;
-	bh=eY6kLN8OlN+AhPSjfqE9l5XEI+8YBmb961qfGDylvwo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KZh5QSYUNakVTI38OcHlg4dBSeD3A0cAAZJoWYEZj/BJSE5oQ33U9kiFJ6h2G4rBXsHSAX/d4LzfoNsDFXN0YlxG5Bf+1GwV+7p5LGQMqqxj/H5pLHIbi9kyZMXemYvjp5IF1cXYaft78Xiaor9KSXIKonUKACEBVnWrgECXOMM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ewgSS7JQ; arc=none smtp.client-ip=139.178.84.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+	s=arc-20240116; t=1729083956; c=relaxed/simple;
+	bh=FbR3gg6JVCrfH92imBLO6smtkMM1oMDMyVjwGG9rvgQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NVEV65mAZun/eNXkmd/d65s6Xj+SKCBQEQxUXHNcjaCtUew4mqPbHnomyKdT/ufZ4JO/f6GMaAFoHXD21USS/lroHTAVGSo8C5dwDsXN9BkoRUGi6XHMbIOQWKdNhSLb166wpHTSdTJ0V1Zptd3nljYnHmxqJO+0LSxZ+st5WfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=147.75.193.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ewgSS7JQ"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id B8A1F5C4ADF;
-	Wed, 16 Oct 2024 12:27:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4677BC4CECF;
-	Wed, 16 Oct 2024 12:26:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729081624;
-	bh=eY6kLN8OlN+AhPSjfqE9l5XEI+8YBmb961qfGDylvwo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ewgSS7JQnctq7Hgrv3uuVnVef5NJ6/W1nB36pkS9n4SMtyIyVrElKtKyFF1q0jkpP
-	 EsFcTPX0SKB8iugJZ8fG/3GbaKQ9JTTxiSf0x8Je0VGHSki/f8KCPFSVhlw3IAbCgq
-	 dHZxxLb3XDQt5YWY63oWKwfSJfIRrZ4ETnxR7W4suuZEwzrS9kg5Y5qEjXIsmjEAIc
-	 d+qNLfS/dkDTekE3774d/xn4huY0MjrfXRLRM5fT0pICnGA4BMmSBqBpOwDvhxDH7h
-	 lEAtUAvDJvuqN4dGETbbq15U4XHTm20JcFbizm6eRWYoC4wDxNk9mafVHZRkNrpKww
-	 GhffryNbJ3RBQ==
-From: Mike Rapoport <rppt@kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Luis Chamberlain <mcgrof@kernel.org>
-Cc: Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Borislav Petkov <bp@alien8.de>,
-	Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>,
-	Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>,
-	Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>,
-	Mike Rapoport <rppt@kernel.org>,
-	Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>,
-	Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>,
-	Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org,
-	linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-modules@vger.kernel.org,
-	linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org,
-	linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org,
-	loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org,
-	x86@kernel.org
-Subject: [PATCH v6 8/8] x86/module: enable ROX caches for module text on 64 bit
-Date: Wed, 16 Oct 2024 15:24:24 +0300
-Message-ID: <20241016122424.1655560-9-rppt@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241016122424.1655560-1-rppt@kernel.org>
-References: <20241016122424.1655560-1-rppt@kernel.org>
+	by nyc.source.kernel.org (Postfix) with ESMTP id 2E481A43C2F;
+	Wed, 16 Oct 2024 13:05:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6B75C4CEC5;
+	Wed, 16 Oct 2024 13:05:51 +0000 (UTC)
+Message-ID: <5f56441c-6ba4-4ef4-9f4b-84496c3414de@linux-m68k.org>
+Date: Wed, 16 Oct 2024 23:05:48 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] m68k: mcfgpio: Fix incorrect register offset for
+ CONFIG_M5441x
+To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Steven King <sfking@fdwdc.com>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+References: <20241016-fix-m5441x-gpio-v2-1-f419777bc90d@yoseli.org>
+Content-Language: en-US
+From: Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <20241016-fix-m5441x-gpio-v2-1-f419777bc90d@yoseli.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+Hi JM,
 
-Enable execmem's cache of PMD_SIZE'ed pages mapped as ROX for module
-text allocations on 64 bit.
+On 16/10/24 17:24, Jean-Michel Hautbois wrote:
+> Fix a typo in the CONFIG_M5441x preprocessor condition, where the GPIO
+> register offset was incorrectly set to 8 instead of 0. This prevented
+> proper GPIO configuration for m5441x targets.
+> 
+> Fixes: bea8bcb12da0 ("m68knommu: Add support for the Coldfire m5441x.")
+> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 
-Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
----
- arch/x86/Kconfig   |  1 +
- arch/x86/mm/init.c | 37 ++++++++++++++++++++++++++++++++++++-
- 2 files changed, 37 insertions(+), 1 deletion(-)
+Looks good, thanks for the v2.
+Applied to the m68knommu git tree, for-next branch.
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 2852fcd82cbd..ff71d18253ba 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -83,6 +83,7 @@ config X86
- 	select ARCH_HAS_DMA_OPS			if GART_IOMMU || XEN
- 	select ARCH_HAS_EARLY_DEBUG		if KGDB
- 	select ARCH_HAS_ELF_RANDOMIZE
-+	select ARCH_HAS_EXECMEM_ROX		if X86_64
- 	select ARCH_HAS_FAST_MULTIPLIER
- 	select ARCH_HAS_FORTIFY_SOURCE
- 	select ARCH_HAS_GCOV_PROFILE_ALL
-diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
-index eb503f53c319..c2e4f389f47f 100644
---- a/arch/x86/mm/init.c
-+++ b/arch/x86/mm/init.c
-@@ -1053,18 +1053,53 @@ unsigned long arch_max_swapfile_size(void)
- #ifdef CONFIG_EXECMEM
- static struct execmem_info execmem_info __ro_after_init;
- 
-+#ifdef CONFIG_ARCH_HAS_EXECMEM_ROX
-+void execmem_fill_trapping_insns(void *ptr, size_t size, bool writeable)
-+{
-+	/* fill memory with INT3 instructions */
-+	if (writeable)
-+		memset(ptr, INT3_INSN_OPCODE, size);
-+	else
-+		text_poke_set(ptr, INT3_INSN_OPCODE, size);
-+}
-+#endif
-+
- struct execmem_info __init *execmem_arch_setup(void)
- {
- 	unsigned long start, offset = 0;
-+	enum execmem_range_flags flags;
-+	pgprot_t pgprot;
- 
- 	if (kaslr_enabled())
- 		offset = get_random_u32_inclusive(1, 1024) * PAGE_SIZE;
- 
- 	start = MODULES_VADDR + offset;
- 
-+	if (IS_ENABLED(CONFIG_ARCH_HAS_EXECMEM_ROX)) {
-+		pgprot = PAGE_KERNEL_ROX;
-+		flags = EXECMEM_KASAN_SHADOW | EXECMEM_ROX_CACHE;
-+	} else {
-+		pgprot = PAGE_KERNEL;
-+		flags = EXECMEM_KASAN_SHADOW;
-+	}
-+
- 	execmem_info = (struct execmem_info){
- 		.ranges = {
--			[EXECMEM_DEFAULT] = {
-+			[EXECMEM_MODULE_TEXT] = {
-+				.flags	= flags,
-+				.start	= start,
-+				.end	= MODULES_END,
-+				.pgprot	= pgprot,
-+				.alignment = MODULE_ALIGN,
-+			},
-+			[EXECMEM_KPROBES ... EXECMEM_BPF] = {
-+				.flags	= EXECMEM_KASAN_SHADOW,
-+				.start	= start,
-+				.end	= MODULES_END,
-+				.pgprot	= PAGE_KERNEL,
-+				.alignment = MODULE_ALIGN,
-+			},
-+			[EXECMEM_MODULE_DATA] = {
- 				.flags	= EXECMEM_KASAN_SHADOW,
- 				.start	= start,
- 				.end	= MODULES_END,
--- 
-2.43.0
+Regards
+Greg
 
+
+> ---
+> Changes in v2:
+> - The commit fixed is not the one in v1
+> - Link to v1: https://lore.kernel.org/r/20241016-fix-m5441x-gpio-v1-1-0a29befd4b8d@yoseli.org
+> ---
+>   arch/m68k/include/asm/mcfgpio.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/m68k/include/asm/mcfgpio.h b/arch/m68k/include/asm/mcfgpio.h
+> index 019f24439546..9c91ecdafc45 100644
+> --- a/arch/m68k/include/asm/mcfgpio.h
+> +++ b/arch/m68k/include/asm/mcfgpio.h
+> @@ -136,7 +136,7 @@ static inline void gpio_free(unsigned gpio)
+>    * read-modify-write as well as those controlled by the EPORT and GPIO modules.
+>    */
+>   #define MCFGPIO_SCR_START		40
+> -#elif defined(CONFIGM5441x)
+> +#elif defined(CONFIG_M5441x)
+>   /* The m5441x EPORT doesn't have its own GPIO port, uses PORT C */
+>   #define MCFGPIO_SCR_START		0
+>   #else
+> 
+> ---
+> base-commit: 8e929cb546ee42c9a61d24fae60605e9e3192354
+> change-id: 20241016-fix-m5441x-gpio-e671833569b4
+> 
+> Best regards,
