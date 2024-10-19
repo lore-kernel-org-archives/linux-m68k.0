@@ -1,37 +1,37 @@
-Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BD1B193091
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 19 Oct 2024 22:32:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1AF2192B6B
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 19 Oct 2024 22:46:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729377172; cv=none; b=Sz7t0TvSR+ueMnQ+m6OhitC6KSOCo8C6SclXYU3rqYaMxs4tnrcYv5W9KObo7Q2lpLJajbRplefFL5zfC2bixMVFcfPVN/kWmPsfz4vq8u/NysxhPwTCHZsvLF7zID6SNLc454sifCLVFE1DyG9k8fuqNR0nVxaJko10f66Tq2s=
+	t=1729377976; cv=none; b=TSyCR/Nkg5EWktVmBghjXuR83hnMUskBB4AK1UchPbb+DQg4cXCKFpzdfnNcXhuGetVtmXg8AoAQXoZBpqKViZZ1Jt0B6aTcZLYxtGitMeHY4yCHGtEEGIsmyUsVwmzegdmxhU6mdmd8jD6hK02Zdz+9mUn6JUqhT+X8EIZq7Wo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729377172; c=relaxed/simple;
-	bh=tXAHb3/33MongE4AilsDsGXF/gFBIt2F2QSYX1Ig+Ds=;
+	s=arc-20240116; t=1729377976; c=relaxed/simple;
+	bh=cD5eaMzUFo7t+XYDnFM25WIUwCFcdwXaz1SfpP4a6SE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kpg2sD0NGaW0AW2qC5+V4qoECbzhPWQz8DBQuxTbrDqNtu1yVwVXtwPuCkDGYbAIrkKjyXYDzIWGqgyBlcEXU0G7xOiuvaL9cafZe+/nyzbzDuOW33R5U/LwtpwnLy6iMM7GrwxS4wKouRkt+umiv2EiWm1fiF4LkpTBogaJNAw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tFrPQGZG; arc=none smtp.client-ip=147.75.193.91
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ajs4GtvJ70ypQkenxUl1Vu9a21MWEshKHSi58afQEdcxioA/oS92ENWMqW1gQvXRWV2vgo1X6eCkTXYtR0y9POV438uGH5B/OnEZ9MNQvkSViCVuT1XoSX2K8qoZXDj1MBqmPUx5JFki6YgT+E5gRhp/AxveWBTa/wyK4Br0Sds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=raBET/eq; arc=none smtp.client-ip=139.178.84.217
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tFrPQGZG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="raBET/eq"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id F1013A403C4;
-	Sat, 19 Oct 2024 22:32:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08CB8C4CEC5;
-	Sat, 19 Oct 2024 22:32:46 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id BF9575C5444;
+	Sat, 19 Oct 2024 22:46:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A187C4CEC5;
+	Sat, 19 Oct 2024 22:46:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729377168;
-	bh=tXAHb3/33MongE4AilsDsGXF/gFBIt2F2QSYX1Ig+Ds=;
+	s=k20201202; t=1729377972;
+	bh=cD5eaMzUFo7t+XYDnFM25WIUwCFcdwXaz1SfpP4a6SE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tFrPQGZG5ks5EiB9Mnc/4AmJdwPhHC/bJiwRWWIfX818gCaPcWQh1XlbBHiE/H5xN
-	 F0xn4R9NyrCX5rbT4E/r2bI3eWePDaxoGl02Glr8IDOcawqbsqwcHEy31pJkVKsHd1
-	 R80j5rV7rbUbChGdgHidqCABQhZUdpYtq1OU/j70YJ0eKHQEKfqrNrOXLJ6Lhywvvk
-	 lEeXyrtVkQ3cXx2b3vA47dSohi5i4ZoSOIVgfvjj1oOSBCAm7WZjXI5kAP0Q/IpH9F
-	 aRnwWgNhVNQVUt/uiOOxM+3soGdJDEHOHKUHGach+M7x6L3jzPDjXMTepSfZKjSd31
-	 DPfJEVpKd5tKQ==
-Date: Sat, 19 Oct 2024 15:32:45 -0700
+	b=raBET/eqnMHymvQ7ghoiJNJzhJfHKuWETI4KcodqrLn6OQ/Y9CKtRyA2t4EAlqgdL
+	 hZ8GXfGOFi/KBP9oOEyOznfd0G9uHgQFOCCAyoXDyjtw5nXygFTG2CrK0T0RFUBMS3
+	 dw6lBjU8rrQg3O+nhowKfheReV2QdNr7rWdr90u1jL/xItyfqX/Q3Me8KZXxc+SLgs
+	 Bgsl1ciX2BowyzgKq/taZpeBj4IacVWutv5wVHimbHiaNsgZE0UEMAbBKocO0BFYoV
+	 nD2awtEWshprtgJwrLo1F7dN4Asn2HkQ91l7gW0Dv7NafPgx9Qm2IawXuSLgLc1IAt
+	 hvIMZRfR3Mm9A==
+Date: Sat, 19 Oct 2024 15:46:09 -0700
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: Mike Rapoport <rppt@kernel.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -77,12 +77,11 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
 	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
 	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org,
-	Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v6 5/8] arch: introduce set_direct_map_valid_noflush()
-Message-ID: <ZxQzjWVTi1lvOQnT@bombadil.infradead.org>
+	sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v6 7/8] execmem: add support for cache of large ROX pages
+Message-ID: <ZxQ2saulzeSkUsEh@bombadil.infradead.org>
 References: <20241016122424.1655560-1-rppt@kernel.org>
- <20241016122424.1655560-6-rppt@kernel.org>
+ <20241016122424.1655560-8-rppt@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -91,18 +90,37 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241016122424.1655560-6-rppt@kernel.org>
+In-Reply-To: <20241016122424.1655560-8-rppt@kernel.org>
 
-On Wed, Oct 16, 2024 at 03:24:21PM +0300, Mike Rapoport wrote:
+On Wed, Oct 16, 2024 at 03:24:23PM +0300, Mike Rapoport wrote:
 > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 > 
-> Add an API that will allow updates of the direct/linear map for a set of
-> physically contiguous pages.
+> Using large pages to map text areas reduces iTLB pressure and improves
+> performance.
 > 
-> It will be used in the following patches.
+> Extend execmem_alloc() with an ability to use huge pages with ROX
+> permissions as a cache for smaller allocations.
+> 
+> To populate the cache, a writable large page is allocated from vmalloc with
+> VM_ALLOW_HUGE_VMAP, filled with invalid instructions and then remapped as
+> ROX.
+> 
+> The direct map alias of that large page is exculded from the direct map.
+> 
+> Portions of that large page are handed out to execmem_alloc() callers
+> without any changes to the permissions.
+> 
+> When the memory is freed with execmem_free() it is invalidated again so
+> that it won't contain stale instructions.
+> 
+> An architecture has to implement execmem_fill_trapping_insns() callback
+> and select ARCH_HAS_EXECMEM_ROX configuration option to be able to use
+> the ROX cache.
+> 
+> The cache is enabled on per-range basis when an architecture sets
+> EXECMEM_ROX_CACHE flag in definition of an execmem_range.
 > 
 > Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
 Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
 
