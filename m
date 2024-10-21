@@ -1,133 +1,113 @@
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AA3361FFE
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 20 Oct 2024 20:58:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E6C61E32A4
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 21 Oct 2024 09:44:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729457892; cv=none; b=ekJ/8d+uF6md9UP4SlGynj2P5ZggzHgdk8MhjqmIZzBzpXvlAnJZ9Cv3RvEFRX7baVeeNCptSI07i2LYud1C20EAX5ONfMiHUs9GvpbLT3jW3tjARZ07nikym/FiNjtUYsj+n7JfQ+T4zL2lgbkoKQKG/3V047237GfSh3L5z+U=
+	t=1729503893; cv=none; b=BTI/3TetdW/oLrVS+WdbxdBqT1VoQQ3HYBzCAaae9ksUiCKFZUk8p7qzkz2/TiuQHQ8qYSQDYUa+GwlX+KRzETkhjgkrdTNhR3dqRLqx0fq/1jrsbvbZBzRt0KoDm+1fRkG9FXwXZujFCk5S0LidCDIrkLkEnQgOuJNQ8S6WdAc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729457892; c=relaxed/simple;
-	bh=EfxVEeGNDmujOulPWqcn08TjTzZJIo/THqWXncENQ90=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sX4TkYhRTIZ0bRMMcl74IJPlpOO6Z21ZL4HE7RdlZFOier0brR7zuelo16ZWjpH56H6vyMkLi094oy5NJkw5WEb+HjcAYMgLykl8eAT91VEaBLMKXNg7gG4iqGWuflmoZl0ViecN+xtt26lQJTsjD52qxRtlN2/rRKl1nJgPDsI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Od33U5rZ; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1729503893; c=relaxed/simple;
+	bh=4hhyyXoiB5pb01jeMMh9kHegq0/iQPW7gU2ES1fF2ro=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=bi/Vbh9g4cvUh48GJXh7sWApGLwO4sCNA//NsKNR4jPygQuxCJHe5wARD3TTSkFj1ekbHS/OvJ+1TrdGx+M7NwLAZvPLfAcRDVJXGO2VoMfqBCguNTzoKp2Kp0omX80rt+YdfAyq5szya4WJvYPNv9eDKldtYrBzooO4DK4Eykw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=D5rn6Eae; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Od33U5rZ"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729457887;
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="D5rn6Eae"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E43361C0007;
+	Mon, 21 Oct 2024 09:44:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1729503883;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding;
-	bh=jjJQZzYA3O4L685OlUDWu67kmoWLZnGrBNA2Vrqz3DY=;
-	b=Od33U5rZb/Kt50GksqZizafa3dtZ8oXJjAoQk//oSfEu/Qg9cHhM/82cT0cggHHvOdBCr0
-	Q1NMzGS6WHMot4SXCLbRzpwlg2BWLh6tzn8rCRy8OG7XKfiYiapLCQLs/pmNTcFFY9MrzX
-	/iFDt2YCImqvWV+fpfdTU/6PeJ25S/M=
-From: Thorsten Blum <thorsten.blum@linux.dev>
-To: Geert Uytterhoeven <geert@linux-m68k.org>,
-	Thorsten Blum <thorsten.blum@linux.dev>
-Cc: linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] m68k: kernel: Use str_read_write() helper function
-Date: Sun, 20 Oct 2024 22:57:55 +0200
-Message-ID: <20241020205758.332095-1-thorsten.blum@linux.dev>
+	bh=NZEgQgSIER4U+57OAed9+YasME4GNodja+ZxrnB9kC8=;
+	b=D5rn6Eaen6Ua1EPzxZTBRrtlnYpYoyLdJd8hmBgOFEb4UlKRJwwW2wnBWP5zYiFBUML0GH
+	2twz6bWXSyCtJms8TsATfi7J7DjFFM6jey0t5bQokUXxkaDmWQ1rg5mQF7loWJ/rF8R64c
+	DIS/BpSDaKjanHb8ublu4FHpiEq3KCGCebdENBWcOfCsXwSKk0nRWoUgwBTFdKmLlzJBYy
+	PXRvRNOjYnzYLnbd3ogkYa/+oZet2Sx9E0A7MJaVjrzWSom4v8iMw2nOPNnVuiu8EUIYnI
+	qGoRNV7lFqXHgCkok1/7jpLhNmpQZ5DSoAbXPXxs3JANN4b5X6/DrGdcfVRdoA==
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Subject: [PATCH RFC 0/2] Add basic tracing support for m68k
+Date: Mon, 21 Oct 2024 11:44:41 +0200
+Message-Id: <20241021-add-m68k-tracing-support-v1-0-0883d704525b@yoseli.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAIkiFmcC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxNDAyND3cSUFN1cM4ts3ZKixOTMvHTd4tKCgvyiEl1js2RDixQjI2PjFAs
+ loPaCotS0zAqw0dFKQW7OSrG1tQAMFvKdbwAAAA==
+X-Change-ID: 20241021-add-m68k-tracing-support-36c18d2233d8
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+ linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org, 
+ Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1729503882; l=2478;
+ i=jeanmichel.hautbois@yoseli.org; s=20240925; h=from:subject:message-id;
+ bh=4hhyyXoiB5pb01jeMMh9kHegq0/iQPW7gU2ES1fF2ro=;
+ b=1JKFddvpN6dr45qJtYHNMvSGtjmGr3vem/1uEBLLfIhlP3hOzYg45ePNZS6/3y25bxP07OhZW
+ 4hXmwkXXNDkCPeiBiRf53qL03hk2O2Ok86RRiG49Km9XYnU5Vh8SdWB
+X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
+ pk=MsMTVmoV69wLIlSkHlFoACIMVNQFyvJzvsJSQsn/kq4=
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-Remove hard-coded strings by using the str_read_write() helper function
-and remove some unnecessary negations.
+In order to debug latency issues, I wanted to use ftrace on my M54418
+coldfire. Sadly, it is not supported yet.
+Thanks to Steven [1] it does not sound too difficult.
 
-Compile-tested only.
+This small series adds basic functions to make it work, and for the few
+tests I could do, it seems to be working well.
 
-Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+Here is a simple output I get:
+
+```
+
+            bash-232     [000] d..3.   947.629000: thread_noise:     bash:232 start 947.629000000 duration 0 ns
+      timerlat/0-274     [000] .....   947.629000: #51598 context thread timer_latency    409280 ns
+            bash-232     [000] d.h..   947.630000: #51599 context    irq timer_latency    110720 ns
+            bash-232     [000] dnh1.   947.630000: irq_noise: timer:206 start 947.629000000 duration 1000000 ns
+            bash-232     [000] d..3.   947.630000: thread_noise:     bash:232 start 947.630000000 duration 0 ns
+      timerlat/0-274     [000] .....   947.630000: #51599 context thread timer_latency    407168 ns
+            bash-232     [000] d.h..   947.631000: #51600 context    irq timer_latency    108608 ns
+            bash-232     [000] dnh1.   947.631000: irq_noise: timer:206 start 947.630000000 duration 1000000 ns
+            bash-232     [000] d..3.   947.631000: thread_noise:     bash:232 start 947.631000000 duration 0 ns
+      timerlat/0-274     [000] .....   947.631000: #51600 context thread timer_latency    401472 ns
+```
+
+I am very interested by any relevant test to do (switch events ?
+Anything else ?) to improve the series (and the platform :-)).
+
+I am quite sure I missed a *lot* of things, but it seems to do what I
+need :-). I post it as RFC for now, in particular because I added a new
+file, and I am not sure if it is the proper way.
+
+Thanks for your remarks and improvements !
+
+[1]: https://lore.kernel.org/linux-m68k/20241018124511.70d29198@gandalf.local.home
+
+Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 ---
- arch/m68k/kernel/traps.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+Jean-Michel Hautbois (2):
+      m68k: Add tracirqs
+      arch: m68k: Add STACKTRACE support
 
-diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
-index 53d0cf343d90..d2f25e8895e5 100644
---- a/arch/m68k/kernel/traps.c
-+++ b/arch/m68k/kernel/traps.c
-@@ -383,7 +383,7 @@ static inline void bus_error030 (struct frame *fp)
- 			fp->ptregs.format == 0xa ? fp->ptregs.pc + 4 : fp->un.fmtb.baddr);
- 	if (ssw & DF)
- 		pr_debug("Data %s fault at %#010lx in %s (pc=%#lx)\n",
--			ssw & RW ? "read" : "write",
-+			str_read_write(ssw & RW),
- 			fp->un.fmtb.daddr,
- 			space_names[ssw & DFC], fp->ptregs.pc);
- 
-@@ -419,7 +419,7 @@ static inline void bus_error030 (struct frame *fp)
- 				}
- 
- 				pr_err("Data %s fault at %#010lx in %s (pc=%#lx)\n",
--					ssw & RW ? "read" : "write",
-+					str_read_write(ssw & RW),
- 					fp->un.fmtb.daddr,
- 					space_names[ssw & DFC], fp->ptregs.pc);
- 			}
-@@ -455,7 +455,7 @@ static inline void bus_error030 (struct frame *fp)
- 			pr_debug("*** unexpected busfault type=%#04x\n",
- 				 buserr_type);
- 			pr_debug("invalid %s access at %#lx from pc %#lx\n",
--				 !(ssw & RW) ? "write" : "read", addr,
-+				 str_read_write(ssw & RW), addr,
- 				 fp->ptregs.pc);
- 			die_if_kernel ("Oops", &fp->ptregs, buserr_type);
- 			force_sig (SIGBUS);
-@@ -514,7 +514,7 @@ static inline void bus_error030 (struct frame *fp)
- 			fp->ptregs.format == 0xa ? fp->ptregs.pc + 4 : fp->un.fmtb.baddr);
- 	if (ssw & DF)
- 		pr_debug("Data %s fault at %#010lx in %s (pc=%#lx)\n",
--			ssw & RW ? "read" : "write",
-+			str_read_write(ssw & RW),
- 			fp->un.fmtb.daddr,
- 			space_names[ssw & DFC], fp->ptregs.pc);
- 
-@@ -548,7 +548,7 @@ static inline void bus_error030 (struct frame *fp)
- 			/* We might have an exception table for this PC */
- 			if (ssw & 4 && !search_exception_tables(fp->ptregs.pc)) {
- 				pr_err("Data %s fault at %#010lx in %s (pc=%#lx)\n",
--				       ssw & RW ? "read" : "write",
-+				       str_read_write(ssw & RW),
- 				       fp->un.fmtb.daddr,
- 				       space_names[ssw & DFC], fp->ptregs.pc);
- 				goto buserr;
-@@ -564,7 +564,7 @@ static inline void bus_error030 (struct frame *fp)
- 				       mmusr);
- 		} else if (mmusr & (MMU_B|MMU_L|MMU_S)) {
- 			pr_err("invalid %s access at %#lx from pc %#lx\n",
--			       !(ssw & RW) ? "write" : "read", addr,
-+			       str_read_write(ssw & RW), addr,
- 			       fp->ptregs.pc);
- 			die_if_kernel("Oops",&fp->ptregs,mmusr);
- 			force_sig(SIGSEGV);
-@@ -575,7 +575,7 @@ static inline void bus_error030 (struct frame *fp)
- #endif
- 
- 			pr_err("weird %s access at %#lx from pc %#lx (ssw is %#x)\n",
--			       !(ssw & RW) ? "write" : "read", addr,
-+			       str_read_write(ssw & RW), addr,
- 			       fp->ptregs.pc, ssw);
- 			asm volatile ("ptestr #1,%1@,#0\n\t"
- 				      "pmove %%psr,%0"
-@@ -991,7 +991,7 @@ static void bad_super_trap(struct frame *fp)
- 				fp->ptregs.pc + 4 : fp->un.fmtb.baddr);
- 		if (ssw & DF)
- 			pr_err("Data %s fault at %#010lx in %s (pc=%#lx)\n",
--				ssw & RW ? "read" : "write",
-+				str_read_write(ssw & RW),
- 				fp->un.fmtb.daddr, space_names[ssw & DFC],
- 				fp->ptregs.pc);
- 	}
+ arch/m68k/Kconfig             |  6 ++++
+ arch/m68k/kernel/Makefile     |  1 +
+ arch/m68k/kernel/irq.c        |  2 ++
+ arch/m68k/kernel/stacktrace.c | 70 +++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 79 insertions(+)
+---
+base-commit: 42f7652d3eb527d03665b09edac47f85fb600924
+change-id: 20241021-add-m68k-tracing-support-36c18d2233d8
+
+Best regards,
 -- 
-2.47.0
+Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 
