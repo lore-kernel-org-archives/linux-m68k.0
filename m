@@ -1,33 +1,37 @@
-Received: from welho-filter4.welho.com (welho-filter4b.welho.com [83.102.41.30])
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59A4615B0E2
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Oct 2024 09:00:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.102.41.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C7DD168488
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Oct 2024 09:07:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729674041; cv=none; b=DBIkINmRFQ7z+MbJwfWfTcrtmKb4BvvVNsjlQP8QdcMWBtpUjkImb0+xmq+OsvNPplPo5/Gzkk3EntW4JE4qoR4KcC9vB99o1bfySQt6rIbgAoiBjfTNhmsG2p1B1xX57a4OrJfNvIxJuCV+yegBq71o14CS6PbJujhMaOOoAcc=
+	t=1729674481; cv=none; b=nVc0ONnxhUVcEbO6bkU6H5UsZWVUqKB2yG1/hKy+Py64EjRZJKNdGNPFzDgq5EM2zNc7KKU4wInH8jTS2xr9Acx/wr0Pt3ItCOZD+3W7w1sl8ZSQf5qoxsUHCgt6RFEgPYgDIuYBMe4M4bGN8axs5mYUv9Z5cbAxbxaGgJZwNDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729674041; c=relaxed/simple;
-	bh=707harTW5tzCIIcuiFXWMKBFAXzppTNwi+XJz+v3URY=;
+	s=arc-20240116; t=1729674481; c=relaxed/simple;
+	bh=tbDydY/g0gP9i/qHvzsa6DB2Vdww1QZr+ZuT0zDljw4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aa6PerZWI2efCNcrlDDqHA94HDa4GGp4rktJP73ob0j8w4S5stz9Xsnf5fQTKguDQ/gqktjbEgm602DgtEpUCQzXyzOKv06njyC0GXb1Q5kSlr6+Obu0W+8iD4sEemkyq9Z9ASdCXIBNPk6C24//AQLf4kCmUfVKbHbRawkUtBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=helsinkinet.fi; spf=pass smtp.mailfrom=helsinkinet.fi; arc=none smtp.client-ip=83.102.41.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=helsinkinet.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=helsinkinet.fi
-Received: from localhost (localhost [127.0.0.1])
-	by welho-filter4.welho.com (Postfix) with ESMTP id 5EC4467BBB;
-	Wed, 23 Oct 2024 11:52:00 +0300 (EEST)
-X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
-Received: from welho-smtp2.welho.com ([IPv6:::ffff:83.102.41.85])
-	by localhost (welho-filter4.welho.com [::ffff:83.102.41.26]) (amavisd-new, port 10024)
-	with ESMTP id 7Nu6OtO3kx19; Wed, 23 Oct 2024 11:52:00 +0300 (EEST)
-Received: from [192.168.101.100] (87-92-101-239.bb.dnainternet.fi [87.92.101.239])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by welho-smtp2.welho.com (Postfix) with ESMTPSA id BCD7472;
-	Wed, 23 Oct 2024 11:51:54 +0300 (EEST)
-Message-ID: <36c3bd1a-f025-449d-9b17-8436987f4639@helsinkinet.fi>
-Date: Wed, 23 Oct 2024 11:51:54 +0300
+	 In-Reply-To:Content-Type; b=g2tvhm9YMP4BvtwTuVch/awLMez2oXwxqjUtjDkKahbEXWohgWURN3Bz4KqRZftf9oCzqCfgD5pcgSkmFG3YMGtZZQij340O7ghzDfpTHlJoD3QvQcvsAP4rKoSbisidJr+ecm1Uz2zH7THq4OitVZY3YOM1kcJ4rmCKNmkCrdA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=BqAUoxVE; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="BqAUoxVE"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0D120FF805;
+	Wed, 23 Oct 2024 09:07:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1729674478;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=duGBblZySXHjNbKpCsyaY0S9onpbOMK+ADpEkjW/JZM=;
+	b=BqAUoxVED0LIxgKeWcHgf7n1XLzvkg1oy+PjoAWgpY2rUUMVm8TE/CzS4r0mPiR48HoHxl
+	QuOdhKl4+36K0eMHOGa+HJMIqMRrtTbRf4OirwQbNDWllU43pr6bht0HzvoAE2w4CTL5/q
+	1AZ7nEBA2My9w8GFKlwYzA/sI6u9lh3ttN/Jd6WnsoJkOyFPuVDkdNxSy2ZstpKI5ZzgEz
+	wP2Oc2xgXuPfbCf76TzH34cLIU8OZOfDofRpHCaZUdRPwSA+P8xXzMhHc2R51PR0AhnEao
+	Jc61cHneZzrUrz20Ar4fzzhicKfpmO/RA/UT9kIKYzFeYHmbic67H+RwDHH4Pw==
+Message-ID: <262d7758-c752-49f6-87ef-4f75d681a919@yoseli.org>
+Date: Wed, 23 Oct 2024 11:07:57 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -36,55 +40,96 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH RFC 1/2] m68k: Add tracirqs
-To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+ linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
 References: <20241021-add-m68k-tracing-support-v1-0-0883d704525b@yoseli.org>
  <20241021-add-m68k-tracing-support-v1-1-0883d704525b@yoseli.org>
- <4ab85330-5a50-bde1-f014-99a8e7cb28cc@gmail.com>
- <86eea4de-2696-4485-9c16-cd3fbbd1aae6@yoseli.org>
+ <20241022012809.1ef083cd@rorschach.local.home>
+ <075d6720-a690-437c-a10f-e2746651e2a8@yoseli.org>
+ <20241022043037.13efb239@rorschach.local.home>
+ <2c79be22-1157-41e4-9f3a-53443112ca9a@yoseli.org>
+ <20241023044711.3eb838fe@rorschach.local.home>
 Content-Language: en-US
-From: Eero Tamminen <oak@helsinkinet.fi>
-In-Reply-To: <86eea4de-2696-4485-9c16-cd3fbbd1aae6@yoseli.org>
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+In-Reply-To: <20241023044711.3eb838fe@rorschach.local.home>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-Hi,
+Hi Steve,
 
-On 23.10.2024 8.53, Jean-Michel Hautbois wrote:
-...
->> There's one similar site in arch/m68k/kernel/head.S 
->> (ret_from_exception) where interrupts are enabled that would need a 
->> similar change, if you want to enable this for all m68k.
+On 23/10/2024 10:47, Steven Rostedt wrote:
+> On Tue, 22 Oct 2024 11:21:34 +0200
+> Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org> wrote:
 > 
-> I won't be able to test it though ;-).
-> I see there are a few interrupts disabling in 
-> arch/m68k/include/asm/entry.h too ?
+>>
+>> I was not really expecting you to review the m68k one no :-).
+>> I think I have other issues which might have impact on ftrace too.
+>> For instance, when I launch cyclictest I have a warning about HRTIMERS:
+>> # cyclictest -p 99
+>> WARN: stat /dev/cpu_dma_latency failed: No such file or directory
+>> WARN: High resolution timers not available
+>> policy: fifo: loadavg: 1.21 0.40 0.14 1/122 245
+>>
+>> T: 0 (  245) P:99 I:1000 C:  11203 Min:     92 Act:  623 Avg:  775 Max:
+>>     3516
+>>
+>> The latencies are quite high...
+> 
+> Yes, if you don't have high resolution timers, the latency will be high.
+> 
 
-I would suggest using Hatari for testing it, as that emulates real HW 
-more accurately than Aranym, and provides better debugging & profiling 
-utilities than either Aranym or real HW [1], especially for kernel side.
+According to my config, I should have those:
+CONFIG_HIGH_RES_TIMERS=y
 
-(Because ColdFire is close to m68k, Hatari can help in debugging also 
-issues that are in Linux code they share.)
+>>
+>> But regarding ftrace it seems that the trace is not able to give me more
+>> than a microsecond precision. I addded a few trace_printk() in a driver
+>> of mine and I get:
+>>    irq/182-dspi-sl-112     [000] D....   277.160000: dspi_interrupt:
+>> Received 2 bytes
+>>    irq/182-dspi-sl-112     [000] D....   277.160000: dspi_interrupt:
+>> Received 2 bytes
+>>    irq/182-dspi-sl-112     [000] D....   277.163000: dspi_interrupt:
+>> dspi_interrupt
+>>    irq/182-dspi-sl-112     [000] D....   277.163000: dspi_interrupt: TX
+>> FIFO overflow
+>>    irq/182-dspi-sl-112     [000] D....   277.163000: dspi_interrupt:
+>> Restart FIFO
+>>
+>> Do you have any clue ?
+> 
+> Yes. The ring buffer clock is dependent on the architecture's clock. By
+> default, it uses whatever the scheduler clock uses. If the scheduler
+> clock is 1ms resolution, so will the tracing data be.
 
-Here are detailed and IMHO easy instructions on how to do that:
-https://hatari.tuxfamily.org/doc/m68k-linux.txt
+By default. So, I could change it to mono_raw for instance :-). It seems 
+that timerlat is ok with it !
 
+     irq/178-UART-99      [000] D.h1.    95.766649: #27138 context 
+irq timer_latency    525376 ns
+       timerlat/0-235     [000] .....    95.766826: #27138 context 
+thread timer_latency    697920 ns
+           <idle>-0       [000] dnh1.    95.767682: #27139 context 
+irq timer_latency    559616 ns
+       timerlat/0-235     [000] .....    95.767839: #27139 context 
+thread timer_latency    713216 ns
+           <idle>-0       [000] dnh1.    95.768701: #27140 context 
+irq timer_latency    577984 ns
+       timerlat/0-235     [000] .....    95.768861: #27140 context 
+thread timer_latency    734656 ns
+     irq/178-UART-99      [000] d.h1.    95.769671: #27141 context 
+irq timer_latency    548736 ns
+       timerlat/0-235     [000] .....    95.769838: #27141 context 
+thread timer_latency    711552 ns
+     irq/178-UART-99      [000] D.h1.    95.770664: #27142 context 
+irq timer_latency    540992 ns
+       timerlat/0-235     [000] .....    95.770841: #27142 context 
+thread timer_latency    713024 ns
 
-I'd recommend using Git HEAD of Hatari [2] for testing though, because 
-there was a recent fix to handling prefetch during bus errors, when 030 
-MMU is enabled, and without that fix, prefetch + cache emulation would 
-need to to be disabled for user-space to work correctly.  If you disable 
-those (--compatible off --cycle-exact off), you can start with Hatari 
-version from Linux distros though...
+> 
+> -- Steve
+> 
 
-(You can mail me directly if you have problems with Hatari.  Getting 
-ftrace working on m68k would be interesting.)
-
-
-	- Eero
-
-[1] https://hatari.tuxfamily.org/doc/debugger.html
-[2] Upstream: https://git.tuxfamily.org/hatari/hatari.git/
-     or mirror: https://github.com/hatari/hatari/
