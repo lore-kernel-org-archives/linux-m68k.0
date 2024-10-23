@@ -1,117 +1,242 @@
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17A4319995E
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Oct 2024 09:13:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E80B119CC20
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Oct 2024 09:27:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729674815; cv=none; b=gndlcjncQIm/Q56N5y38rmNAJ6ubhThZvZUo0rPYFzrLd+mLyzYMk/WrSivdQj9lq+cO5Ow0rSVsd1hB66eZRwe9g7g6NDGcQvzWDYDkftt/eGekI+iyjhX/OC13NL+Ugnf/TZCu6jYFxEk8Bj1NGhlmEbBxhZX5D3+kF5iHlSw=
+	t=1729675647; cv=none; b=sS7uG0vcvE9fnTs6o4jSi9LAEltR3oNNkzXrMJe79E/tNsJglOuMhXt6DXh5zorczD64KY0+fn1sGOTqYLlbvhaA62g7Qg7fS2MdyHAP59CItt5to2DgCYhnZ70/xBxpxZxFNWaTppZ0Lm9o1bpyKCjiNpNmzcnrkDVz6ywJPeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729674815; c=relaxed/simple;
-	bh=imUayfZ6FdcexhoYxLlSs1KViSlJqRC9UqM6NkcTej8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Wo1oOnj2AAxP8mygn+8wFeonEklP7LCYFIlLA+hro/DfjAQ0934svCMhHk9tSnmoZf6raapNA2E5k4nM6AhLGnFd5KzBfp6XBJe18IoPLJm1lIduAZc+HttQtG1D4FXa2RwAe5xYkAFzQ0PqzybRvgCBsIbC8glB9l15/6UY6X0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-6e3cdbc25a0so71584117b3.2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Oct 2024 02:13:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729674812; x=1730279612;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=L+oDcqb1QYvL5id/iCpKgV/nPQYafdkBvaUvh/k83pY=;
-        b=diZzvaaSFWhORyi42W39g3v6RGIXlyBLUTy1hfVT1ZSWSS9h3oP2wlZekLmxxM0MUz
-         YAZ7V4lkcHAKt5ij72PFPzQnyUooMy+JWV68oTFgmTAW0GDKSnqnLVjIwxzLSWYw4gAv
-         9JUQF/h6H512ofr1V0BNUktddO/gPu1LVey1iADKnslvGhrnC5j4X7nBv0I/Rd5P/WEu
-         Pr1WgK+LNR+Lgs6P6O9QKI8aXIEWeRh5AFsqcGQ3FoWpeYl2wvkLRMhazTgODJY35DNU
-         iT78JgKs0TQyU8dd0rUl3CFPm5kRY3Zj1kfq5PLZ0jtd6vQdz67m6MSBWtlTRK0NszDH
-         Flqg==
-X-Forwarded-Encrypted: i=1; AJvYcCVN4ju7nrhVQRAcuIikWc/8LGMTlzyIKb5EKs0CN/JjI2auAR2NigJ0FO9wRJafqFCzB55GHfhwE4uN@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YxQik6tUEOchgyUhW+cz8XwJwsJXA6/CQPh0Jub5CqDHmoxI6Wb
-	tUncIZAfW5QY4WCmBe13LBdgRp50/PSHXZXvr7o4jatg6AA+87D83xIAN/N/
-X-Google-Smtp-Source: AGHT+IHJZOr4d2p3OJpKQ3K0tb1a1wcuVyxknJPrFHRCs8JH746TWerXaBdLYClxHZZzbG7vCnlthg==
-X-Received: by 2002:a05:690c:6d0c:b0:66a:ba89:d671 with SMTP id 00721157ae682-6e7f0fa6ee9mr21596367b3.35.1729674812489;
-        Wed, 23 Oct 2024 02:13:32 -0700 (PDT)
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6e5f5d085dfsm14407487b3.123.2024.10.23.02.13.31
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Oct 2024 02:13:31 -0700 (PDT)
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-6e3881042dcso58750977b3.0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Oct 2024 02:13:31 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWlG+s0K5eCL58KlgI1xQ94YehmG7a+btvL3SjStOlJa5yzKLn1ZrDXvSODQLYpu0ZiaSzAKcdHnq/J@lists.linux-m68k.org
-X-Received: by 2002:a05:690c:fd5:b0:6e3:4436:56ba with SMTP id
- 00721157ae682-6e7f0df6312mr22676227b3.8.1729674811120; Wed, 23 Oct 2024
- 02:13:31 -0700 (PDT)
+	s=arc-20240116; t=1729675647; c=relaxed/simple;
+	bh=NRKFTqcKkOyFgqi22cM2rjhSz13skaSGpnm2/JRTwAM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cMRDAlZfKe9Sf1f8oJBD5VTWTSf9tNZLerk3nFzUxB5mDZLym20NvV6F2Ex2F3Vbft/hgSvP1JPoD0OoL76A5ybMpD9wZyBxtTLtOUgH/uYux+aHPe8/rTBJ/iQV/+TB5WhRCLtZ19LBb3nzz9G/DK5CRGY6mYojMua3AtmMc4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=139.178.84.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 787EA5C5C55;
+	Wed, 23 Oct 2024 09:27:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 080BDC4CECD;
+	Wed, 23 Oct 2024 09:27:22 +0000 (UTC)
+Date: Wed, 23 Oct 2024 05:27:19 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Cc: Michael Schmitz <schmitzmic@gmail.com>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC 1/2] m68k: Add tracirqs
+Message-ID: <20241023052719.4c43b7af@rorschach.local.home>
+In-Reply-To: <57719b35-5e7a-4c9e-b9a3-5017dec73803@yoseli.org>
+References: <20241021-add-m68k-tracing-support-v1-0-0883d704525b@yoseli.org>
+	<20241021-add-m68k-tracing-support-v1-1-0883d704525b@yoseli.org>
+	<4ab85330-5a50-bde1-f014-99a8e7cb28cc@gmail.com>
+	<86eea4de-2696-4485-9c16-cd3fbbd1aae6@yoseli.org>
+	<4e93964e-bafb-0474-743f-8280c46898f4@gmail.com>
+	<57719b35-5e7a-4c9e-b9a3-5017dec73803@yoseli.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241021-add-m68k-tracing-support-v1-0-0883d704525b@yoseli.org>
- <20241021-add-m68k-tracing-support-v1-1-0883d704525b@yoseli.org>
- <20241022012809.1ef083cd@rorschach.local.home> <075d6720-a690-437c-a10f-e2746651e2a8@yoseli.org>
- <20241022043037.13efb239@rorschach.local.home> <2c79be22-1157-41e4-9f3a-53443112ca9a@yoseli.org>
- <20241023044711.3eb838fe@rorschach.local.home> <262d7758-c752-49f6-87ef-4f75d681a919@yoseli.org>
-In-Reply-To: <262d7758-c752-49f6-87ef-4f75d681a919@yoseli.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 23 Oct 2024 11:13:19 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXKCWnFuyOzQyAWdEV4EhqXYXJFn4vCw5ptZ5=sbOCbxg@mail.gmail.com>
-Message-ID: <CAMuHMdXKCWnFuyOzQyAWdEV4EhqXYXJFn4vCw5ptZ5=sbOCbxg@mail.gmail.com>
-Subject: Re: [PATCH RFC 1/2] m68k: Add tracirqs
-To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, linux-m68k@lists.linux-m68k.org, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-Hi Jean-Michel,
+On Wed, 23 Oct 2024 10:59:42 +0200
+Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org> wrote:
 
-On Wed, Oct 23, 2024 at 11:07=E2=80=AFAM Jean-Michel Hautbois
-<jeanmichel.hautbois@yoseli.org> wrote:
-> On 23/10/2024 10:47, Steven Rostedt wrote:
-> > On Tue, 22 Oct 2024 11:21:34 +0200
-> > Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org> wrote:
-> >> I was not really expecting you to review the m68k one no :-).
-> >> I think I have other issues which might have impact on ftrace too.
-> >> For instance, when I launch cyclictest I have a warning about HRTIMERS=
-:
-> >> # cyclictest -p 99
-> >> WARN: stat /dev/cpu_dma_latency failed: No such file or directory
-> >> WARN: High resolution timers not available
-> >> policy: fifo: loadavg: 1.21 0.40 0.14 1/122 245
+>=20
+> Sadly, not that straightforward.
+> I have this patch right now:
+> diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+> index b2a3093af677..fc4a2d124514 100644
+> --- a/arch/m68k/Kconfig
+> +++ b/arch/m68k/Kconfig
+> @@ -41,6 +41,7 @@ config M68K
+>          select ZONE_DMA
+>          select ARCH_SUPPORTS_RT
+>          select IRQ_FORCED_THREADING
+> +       select TRACE_IRQFLAGS_SUPPORT
+>=20
+>   config CPU_BIG_ENDIAN
+>          def_bool y
+> diff --git a/arch/m68k/coldfire/entry.S b/arch/m68k/coldfire/entry.S
+> index 4ea08336e2fb..fbdc4404f29e 100644
+> --- a/arch/m68k/coldfire/entry.S
+> +++ b/arch/m68k/coldfire/entry.S
+> @@ -57,6 +57,9 @@ enosys:
+>   ENTRY(system_call)
+>          SAVE_ALL_SYS
+>          move    #0x2000,%sr             /* enable intrs again */
+> +#ifdef CONFIG_TRACE_IRQFLAGS
+> +       jbsr    trace_hardirqs_on
+> +#endif
+
+Note, the trace_hardirqs_on/off() needs to be done when interrupts are
+disabled. That is:
+
+	__local_irq_disable();
+	trace_hardirqs_off();
+
+	[..]
+
+	trace_hardirqs_on();
+	__local_irq_enable();
+
+I don't know the m68k assembly, but from the comments it looks like you
+are calling these with interrupts enabled.
+
+-- Steve
+
+
+>          GET_CURRENT(%d2)
+>=20
+>          cmpl    #NR_syscalls,%d0
+> @@ -99,6 +102,9 @@ ENTRY(system_call)
+>          addql   #4,%sp
+>=20
+>   ret_from_exception:
+> +#ifdef CONFIG_TRACE_IRQFLAGS
+> +       jbsr    trace_hardirqs_off
+> +#endif
+>          move    #0x2700,%sr             /* disable intrs */
+>          btst    #5,%sp@(PT_OFF_SR)      /* check if returning to kernel =
+*/
+>          jeq     Luser_return            /* if so, skip resched, signals =
+*/
+> @@ -140,6 +146,9 @@ Lreturn:
+>   Lwork_to_do:
+>          movel   %a0@(TINFO_FLAGS),%d1   /* get thread_info->flags */
+>          move    #0x2000,%sr             /* enable intrs again */
+> +#ifdef CONFIG_TRACE_IRQFLAGS
+> +       jbsr    trace_hardirqs_on
+> +#endif
+>          btst    #TIF_NEED_RESCHED,%d1
+>          jne     reschedule
+>=20
+> But it fails when init is called:
+> [    5.313000] Run /bin/bash as init process
+> [    5.314000]   with arguments:
+> [    5.315000]     /bin/bash
+> [    5.316000]   with environment:
+> [    5.317000]     HOME=3D/
+> [    5.318000]     TERM=3Dlinux
+> [    5.684000] Kernel panic - not syncing: Attempted to kill init!=20
+> exitcode=3D0x0000000b
+> [    5.684000] CPU: 0 UID: 0 PID: 1 Comm: bash Not tainted=20
+> 6.12.0-rc4-00049-g4393ca34ead3 #364
+> [    5.684000] Stack from 41a03e18:
+> [    5.684000]         41a03e18 41540187 41540187 0000000a ffffffff=20
+> 415a8fb4 4140dd90 41416588
+> [    5.684000]         41540187 4140d5de 4102ba84 4100b19c 4100b1a8=20
+> 00000000 41a38000 4102ba3a
+> [    5.684000]         41a03ea0 4100c34a 4150e87e 0000000b 0000000b=20
+> 41a03f80 0000000a 41a3c0d4
+> [    5.684000]         41a02000 400004d8 41a08000 4102ba3a 4102ba84=20
+> 00000000 00000000 000000ff
+> [    5.684000]         00000000 00000000 41a03ef4 4100cb82 0000000b=20
+> 0000000b 41a03f80 41a03f6c
+> [    5.684000]         41016cd2 0000000b 41a03f6c 0000001d 00000026=20
+> 0000048c ffffffff 00000006
+> [    5.684000] Call Trace: [<4140dd90>] _printk+0x0/0x18
+> [    5.684000]  [<41416588>] dump_stack+0xc/0x10
+> [    5.684000]  [<4140d5de>] panic+0xf2/0x2d4
+> [    5.684000]  [<4102ba84>] preempt_count_sub+0x0/0x2e
+> [    5.684000]  [<4100b19c>] arch_local_irq_enable+0x0/0xc
+> [    5.684000]  [<4100b1a8>] arch_irqs_disabled+0x0/0x10
+> [    5.684000]  [<4102ba3a>] preempt_count_add+0x0/0x1e
+> [    5.684000]  [<4100c34a>] do_exit+0x266/0x930
+> [    5.684000]  [<4102ba3a>] preempt_count_add+0x0/0x1e
+> [    5.684000]  [<4102ba84>] preempt_count_sub+0x0/0x2e
+> [    5.684000]  [<4100cb82>] do_group_exit+0x26/0xba
+> [    5.684000]  [<41016cd2>] get_signal+0x60e/0x76c
+> [    5.684000]  [<410044e8>] test_ti_thread_flag+0x0/0x14
+> [    5.684000]  [<4102ba94>] preempt_count_sub+0x10/0x2e
+> [    5.684000]  [<41004b68>] do_notify_resume+0x3a/0x4c6
+> [    5.684000]  [<41015d52>] force_sig_fault_to_task+0x32/0x3e
+> [    5.684000]  [<41015d72>] force_sig_fault+0x14/0x1a
+> [    5.684000]  [<41005606>] buserr_c+0x9a/0x188
+> [    5.684000]  [<410065fc>] Lsignal_return+0x14/0x24
+> [    5.684000]  [<410065de>] Lwork_to_do+0xe/0x18
+> [    5.684000]
+> [    5.684000] ---[ end Kernel panic - not syncing: Attempted to kill=20
+> init! exitcode=3D0x0000000b ]---
+>=20
+>=20
+> JM
+>=20
+> >> =20
+> >>>
+> >>> Registers %d0-%d5 and %a0-%a2 are saved on the stack at this point and
+> >>> can be clobbered if need be. =20
 > >>
-> >> T: 0 (  245) P:99 I:1000 C:  11203 Min:     92 Act:  623 Avg:  775 Max=
-:
-> >>     3516
+> >> I don't know if they need to be clobbered... =20
+> >=20
+> > I meant to say that if you need registers to prepare function arguments=
+=20
+> > for trace_irqs_on/off() on the stack, these can be used. But that may=20
+> > not be necessary in this case.
+> >=20
+> > Cheers,
+> >=20
+> >  =C2=A0=C2=A0=C2=A0=C2=A0Michael
+> >=20
+> >  =20
 > >>
-> >> The latencies are quite high...
-> >
-> > Yes, if you don't have high resolution timers, the latency will be high=
-.
->
-> According to my config, I should have those:
-> CONFIG_HIGH_RES_TIMERS=3Dy
+> >> Thanks,
+> >> JM
+> >> =20
+> >>>
+> >>> Cheers,
+> >>>
+> >>> =C2=A0=C2=A0=C2=A0=C2=A0 Michael
+> >>>
+> >>> =20
+> >>>>
+> >>>> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+> >>>> ---
+> >>>> =C2=A0arch/m68k/Kconfig=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 1 +
+> >>>> =C2=A0arch/m68k/kernel/irq.c | 2 ++
+> >>>> =C2=A02 files changed, 3 insertions(+)
+> >>>>
+> >>>> diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+> >>>> index
+> >>>> cc26df907bfe3c8143a931d259eceabb16af7411..ab3375475721fa63418c40d4ba=
+6ac76679ebc77d
+> >>>> 100644
+> >>>> --- a/arch/m68k/Kconfig
+> >>>> +++ b/arch/m68k/Kconfig
+> >>>> @@ -39,6 +39,7 @@ config M68K
+> >>>> =C2=A0=C2=A0=C2=A0=C2=A0 select OLD_SIGSUSPEND3
+> >>>> =C2=A0=C2=A0=C2=A0=C2=A0 select UACCESS_MEMCPY if !MMU
+> >>>> =C2=A0=C2=A0=C2=A0=C2=A0 select ZONE_DMA
+> >>>> +=C2=A0=C2=A0=C2=A0 select TRACE_IRQFLAGS_SUPPORT
+> >>>>
+> >>>> =C2=A0config CPU_BIG_ENDIAN
+> >>>> =C2=A0=C2=A0=C2=A0=C2=A0 def_bool y
+> >>>> diff --git a/arch/m68k/kernel/irq.c b/arch/m68k/kernel/irq.c
+> >>>> index
+> >>>> 9ab4f550342e5de11c528f55781432675ffd66bf..74cf60ebbc4bca51f3caa4046d=
+bd2bdb02355711
+> >>>> 100644
+> >>>> --- a/arch/m68k/kernel/irq.c
+> >>>> +++ b/arch/m68k/kernel/irq.c
+> >>>> @@ -21,9 +21,11 @@ asmlinkage void do_IRQ(int irq, struct pt_regs=20
+> >>>> *regs)
+> >>>> =C2=A0{
+> >>>> =C2=A0=C2=A0=C2=A0=C2=A0 struct pt_regs *oldregs =3D set_irq_regs(re=
+gs);
+> >>>>
+> >>>> +=C2=A0=C2=A0=C2=A0 trace_hardirqs_off();
+> >>>> =C2=A0=C2=A0=C2=A0=C2=A0 irq_enter();
+> >>>> =C2=A0=C2=A0=C2=A0=C2=A0 generic_handle_irq(irq);
+> >>>> =C2=A0=C2=A0=C2=A0=C2=A0 irq_exit();
+> >>>> +=C2=A0=C2=A0=C2=A0 trace_hardirqs_on();
+> >>>>
+> >>>> =C2=A0=C2=A0=C2=A0=C2=A0 set_irq_regs(oldregs);
+> >>>> =C2=A0}
+> >>>> =20
+> >> =20
 
-Does your hardware have a high resolution timer, and do you have
-a driver for it?
-
-$ git grep hrtimer -- arch/m68k/
-$
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
