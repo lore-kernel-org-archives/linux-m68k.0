@@ -1,104 +1,160 @@
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FB90149E09;
-	Wed, 23 Oct 2024 05:36:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 258061448C1
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Oct 2024 05:53:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729661815; cv=none; b=s2jJsoSCCXOIdBRyZi0SzBxFY7o1GpYnJPrkTU4IjgVEFXlklssW+3egxYsSlCX1VMHO62Y5qr+muyemV5ID1H+XuHDgOBfzuKG6MuEG6EATM65bepdR1ndQjGto1P/2MiXeMA8DAeMlNX9cq4lHdS061k0YCjSn3MwRONRnjDE=
+	t=1729662825; cv=none; b=l1lzGxPnNYEfJrCKm+TAFHK68HLs7PxswjfxtvBy7Ek39+uRnYNEtSRMUw59vOQ5i5cYpI9AhARQA8jlyK/fmFp7o6+y8PBdI1zXItstvQS2bx78BuILz9cswf+G4hVJW6J6XvXD2vSMiAppJxcHzu9Ht2wMKKZXfEZrA8NFms4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729661815; c=relaxed/simple;
-	bh=ClvX9P0YomXUmyBHowrG7BxBjln1Yzy53NGFXrXeMOE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VL0XVyjSTLguf4px08v6b6Q9AwEMdTAUzEKqBtojs1y9z6E1nBqkpZfP7VIri7ckmRi3zE08yqN5/gY5DQ8g9J01fivOZHQNPa4FaFndTdDTPkhbry6euOoPgc0K5dd0NlQC58wwmoPBqshG0jiibRofRPpVq0LOcGWw2dCz1MY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=h3p8AkRX; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+	s=arc-20240116; t=1729662825; c=relaxed/simple;
+	bh=JG8xIFkVAmkAMbNlf9OjQcCN99iuWEAbJwPtuIirpD0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TfKgk47jh9Roty88uqGhnM5fCfBN5uFBHMrgUj+0MTyZETMRxfHftKOt1kwsC1Qm8DVwDM2r3w7AcvyiagENJsHx1dlAbcB0kmP1HmSx4Q6vD/9oyun3AxmemY2hqPEWSmCXZfK5+iIbbWcttMvQQGX8H5JPvQ2ZtPH8LtSbzTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=e6h6HoH4; arc=none smtp.client-ip=217.70.183.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="h3p8AkRX"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
-	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=pMVglSrzfw659uFTl63Kmjtp2oxz/obCT3ExoMvUsd0=; b=h3p8AkRXGihxrDLi0oq5AhmjrT
-	sTISKsZ7wx8jV9O21Ahj8jdqo90qdhmRBhAZz6XhMrq1rXwehioiPD6gl5siWuIOERts7rl0d6BoC
-	3RXx6Ufopbo8/Ijiz2CMgtPiWHqU9iDJBhboPe53eyEGZezeZeQr+LrYePax3DOdL5SmXQOPwk7tK
-	4JCXJSs0b2T4XEPEy9UvFFL59NVLAw9aBC9j8arBo/tX4fX+Qev54AaYCEE2jWENLGxtGguKSu9Cd
-	uqSZBqpqJY7atLAmszcql9T2iUE9VUXqWmY35nWH5Ppdmsc8z7fVK9ofvS2xayhi0AEqU/zp51pos
-	/x8WzO4A==;
-Received: from 2a02-8389-2341-5b80-8c6c-e123-fc47-94a5.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:8c6c:e123:fc47:94a5] helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1t3U3A-0000000D4L4-25Zx;
-	Wed, 23 Oct 2024 05:36:53 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-alpha@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-snps-arc@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	linux-arch@vger.kernel.org
-Subject: [PATCH 2/2] asm-generic: add an optional pfn_valid check to page_to_phys
-Date: Wed, 23 Oct 2024 07:36:37 +0200
-Message-ID: <20241023053644.311692-3-hch@lst.de>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20241023053644.311692-1-hch@lst.de>
-References: <20241023053644.311692-1-hch@lst.de>
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="e6h6HoH4"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 96488C0007;
+	Wed, 23 Oct 2024 05:53:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1729662820;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0Uru5ypYoR9iINvGXem77EGS2R3KpFyiiw3GqJeT5ns=;
+	b=e6h6HoH4SunlVcIMGlzoWAjkXy1L6U3033COQLWdveRAKv3QkreuRDx7IAX2GINBNM0xeR
+	o15qviHtZmVSyb3wyjOjKWTqfQmN+L9SCBTAoYMJ9zVJMMmRMwm7XZwAexMxeKxT46sqPa
+	Kc98CsLobsVYfDZiH+1u4wEk3jhAztbGihWxBCN8KXTwh3/BKbVJ94gWzq69k0HcNzVCLd
+	0tYjPQd1e1q66JuTm/V9sB+Kwt4YNJL36nFl5NJjhvA5CDneAWXAotljw6HWqtDCDXvdrT
+	m/mXFweAxEbmFLN2QLGgfFnsHSauUVAEFDIH622DCtAqN/1fJINS5UuL8Lcc0g==
+Message-ID: <86eea4de-2696-4485-9c16-cd3fbbd1aae6@yoseli.org>
+Date: Wed, 23 Oct 2024 07:53:39 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 1/2] m68k: Add tracirqs
+To: Michael Schmitz <schmitzmic@gmail.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org
+References: <20241021-add-m68k-tracing-support-v1-0-0883d704525b@yoseli.org>
+ <20241021-add-m68k-tracing-support-v1-1-0883d704525b@yoseli.org>
+ <4ab85330-5a50-bde1-f014-99a8e7cb28cc@gmail.com>
+Content-Language: en-US
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+In-Reply-To: <4ab85330-5a50-bde1-f014-99a8e7cb28cc@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-page_to_pfn is usually implemented by pointer arithmetics on the memory
-map, which means that bogus input can lead to even more bogus output.
+Hi Michael,
 
-Powerpc had a pfn_valid check on the intermediate pfn in the page_to_phys
-implementation when CONFIG_DEBUG_VIRTUAL is defined, which seems
-generally useful, so add that to the generic version.
+On 23/10/2024 05:53, Michael Schmitz wrote:
+> Jean-Michel,
+> 
+> thanks for your patches!
+> 
+> Am 21.10.2024 um 22:44 schrieb Jean-Michel Hautbois:
+>> The TRACE_IRQFLAGS_SUPPORT requires the architecture to call
+>> trace_hardirqs_off() when interrupts are disabled and
+>> trace_hardirqs_on() when they are enabled.
+>> Add those calls to do_IRQ function.
+> 
+> You will also have to add these calls to the three sites in arch/m68k/ 
+> coldfire/head.S where interrupts are enabled or disabled.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- include/asm-generic/memory_model.h | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Thanks for this ! I prepared a v2 with those calls added. I am wondering 
+if my second patch is ok, I think it is not, could you please review it 
+? There may already be something related to the stack in the assembly 
+part useful to implement arch_stack_walk() in a different way ?
+> 
+> Here:
+>> ENTRY(system_call)
+>>         SAVE_ALL_SYS
+>>         move    #0x2000,%sr             /* enable intrs again */
+>>         GET_CURRENT(%d2)
+> 
+> and here:
+>> ret_from_exception:
+>>         move    #0x2700,%sr             /* disable intrs */
+>>         btst    #5,%sp@(PT_OFF_SR)      /* check if returning to 
+>> kernel */
+>>         jeq     Luser_return            /* if so, skip resched, 
+>> signals */
+> 
+> and here:
+>> Lwork_to_do:
+>>         movel   %a0@(TINFO_FLAGS),%d1   /* get thread_info->flags */
+>>         move    #0x2000,%sr             /* enable intrs again */
+>>         btst    #TIF_NEED_RESCHED,%d1
+>>         jne     reschedule
+> 
+> There's one similar site in arch/m68k/kernel/head.S (ret_from_exception) 
+> where interrupts are enabled that would need a similar change, if you 
+> want to enable this for all m68k.
 
-diff --git a/include/asm-generic/memory_model.h b/include/asm-generic/memory_model.h
-index a73a140cbecd..6d1fb6162ac1 100644
---- a/include/asm-generic/memory_model.h
-+++ b/include/asm-generic/memory_model.h
-@@ -64,7 +64,17 @@ static inline int pfn_valid(unsigned long pfn)
- #define page_to_pfn __page_to_pfn
- #define pfn_to_page __pfn_to_page
- 
-+#ifdef CONFIG_DEBUG_VIRTUAL
-+#define page_to_phys(page)						\
-+({									\
-+	unsigned long __pfn = page_to_pfn(page);			\
-+									\
-+	WARN_ON_ONCE(!pfn_valid(__pfn));				\
-+	PFN_PHYS(__pfn);						\
-+})
-+#else
- #define page_to_phys(page)	PFN_PHYS(page_to_pfn(page))
-+#endif /* CONFIG_DEBUG_VIRTUAL */
- #define phys_to_page(phys)	pfn_to_page(PHYS_PFN(phys))
- 
- #endif /* __ASSEMBLY__ */
--- 
-2.45.2
+I won't be able to test it though ;-).
+I see there are a few interrupts disabling in 
+arch/m68k/include/asm/entry.h too ?
+
+> 
+> Registers %d0-%d5 and %a0-%a2 are saved on the stack at this point and 
+> can be clobbered if need be.
+
+I don't know if they need to be clobbered...
+
+Thanks,
+JM
+
+> 
+> Cheers,
+> 
+>      Michael
+> 
+> 
+>>
+>> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+>> ---
+>>  arch/m68k/Kconfig      | 1 +
+>>  arch/m68k/kernel/irq.c | 2 ++
+>>  2 files changed, 3 insertions(+)
+>>
+>> diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+>> index 
+>> cc26df907bfe3c8143a931d259eceabb16af7411..ab3375475721fa63418c40d4ba6ac76679ebc77d 100644
+>> --- a/arch/m68k/Kconfig
+>> +++ b/arch/m68k/Kconfig
+>> @@ -39,6 +39,7 @@ config M68K
+>>      select OLD_SIGSUSPEND3
+>>      select UACCESS_MEMCPY if !MMU
+>>      select ZONE_DMA
+>> +    select TRACE_IRQFLAGS_SUPPORT
+>>
+>>  config CPU_BIG_ENDIAN
+>>      def_bool y
+>> diff --git a/arch/m68k/kernel/irq.c b/arch/m68k/kernel/irq.c
+>> index 
+>> 9ab4f550342e5de11c528f55781432675ffd66bf..74cf60ebbc4bca51f3caa4046dbd2bdb02355711 100644
+>> --- a/arch/m68k/kernel/irq.c
+>> +++ b/arch/m68k/kernel/irq.c
+>> @@ -21,9 +21,11 @@ asmlinkage void do_IRQ(int irq, struct pt_regs *regs)
+>>  {
+>>      struct pt_regs *oldregs = set_irq_regs(regs);
+>>
+>> +    trace_hardirqs_off();
+>>      irq_enter();
+>>      generic_handle_irq(irq);
+>>      irq_exit();
+>> +    trace_hardirqs_on();
+>>
+>>      set_irq_regs(oldregs);
+>>  }
+>>
 
