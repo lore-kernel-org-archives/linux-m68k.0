@@ -1,218 +1,331 @@
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D900E56A
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Oct 2024 14:24:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 162451CCEFD
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Oct 2024 16:27:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729693455; cv=none; b=GW2Ln8PRmd/GEAfQEgVPXfSknFWvfBkfBrYhQ7VL4RKmxGyfhFgObA0xLZpl2j45/a2WoYknm0kDfLqzxKFpfF8anofPPrXI5q1UOjwrZZUEsliLwd22USSeXVaPFJXWrqrQUCZhBoTgvRdAO4IRIXyEiX6EyE1SxE9niKjBKcY=
+	t=1729700859; cv=none; b=gv3Ia7FwY0SALm6PkImLP8DUKGq9YXDoDzTlqaV3jsE+fLvcjcLBxJF49pyDOTAZ2aEBP/iKkBsiY7/Rvi+m45DJztyiGjgTUzEul16Vla2/mYH8lYXU3AadCrrbQPAkRaAfd+1VtW+KHjp0Izx3t1WIhc0ztWnhyvpUQkIssqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729693455; c=relaxed/simple;
-	bh=1v7sVqBzrNoj9xYwEa6etrISNUcXjjJZhJ8KkWCVaqQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=huG9ChxM3LNa6e9nOO9JFkeyZVvClBGIZO442INB8dawgo+8pPToo67jZRVaIlNhYDR23N2fyCqsst2boB14RwKu8fedVhsSvSiZjUyXBgOtC4lskSwWHefprGhkOSGAbkb/h7QghfgawSOIeVYCwm+dxIZMDBMoNvVQr7cap44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=IrbZQf0D; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
+	s=arc-20240116; t=1729700859; c=relaxed/simple;
+	bh=CAUHbpciOyKyDsHwZh+qoyCOqycSY3L+pQS4jF5xUzU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CuIM3QA3iejAbjxKVk4koMAHNoO/eTo1K+R1nrJyV+XhkvVDZzr/eiLKGXocrdJMB80/lvGGF4gWq/5z8oCgoWrkMclZgoLXtKlZpFLmSncuT3SBZvEgkX9rrwSi4lBdMYqWs0U3Ks3zDu7rMcLydxZ8A1fuEEFwX87yNuXpoow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GyRbmLCU; arc=none smtp.client-ip=139.178.84.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="IrbZQf0D"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D5273240008;
-	Wed, 23 Oct 2024 14:24:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1729693444;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=pobBfVHQuhQp9iPhrHMIYtYyXnZXUXpAqAVOpIsuqJQ=;
-	b=IrbZQf0D2KTNV4ONn6ymWvmtty1k18XkkFKdYDBtEx+MPDmckHHQNGvVGmoCsPx+SVFkuz
-	Ub2cw0tzOdJMA+c+iho+Ix583FbabJG4fZC+hQpB3rKX3sFnG4kZFC4Txm/WuPKxM8BCpe
-	UnZtvOKFrw3iNM7KfufT7IuHVGyjfhML2vb8MMDfu0w6JaxA9iMuzhxGDomNZy0lseec9d
-	TD9OkuKq2bGoHkBF6/7ow6bR4zEBPPvuEtIYUqVEqvZpezOqRVZXmXuFcKv6FHB9x3qSYC
-	1TJzeFB/JkurcJwfgPmsBEUoKO+OaqdUPqnMEHi4IPiBCX310SeMBs/MPIkWAQ==
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Date: Wed, 23 Oct 2024 16:24:02 +0200
-Subject: [PATCH] m68k: coldfire: Enable DMA timer 0 support for M5441x
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GyRbmLCU"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 528A55C5B42;
+	Wed, 23 Oct 2024 16:27:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F44EC4CEC6;
+	Wed, 23 Oct 2024 16:27:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729700856;
+	bh=CAUHbpciOyKyDsHwZh+qoyCOqycSY3L+pQS4jF5xUzU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=GyRbmLCUG9JQB3z6KOucL0zaqdZJ/z+C+hR9jVOBdBVOVN/cw4qzM9u3MGS35Y8YD
+	 dnM3cuw69OA44h4UALWLfrAtvfPlmhK05b940iXW5N7BM1bWTs+pwp1SUfgaq9q44a
+	 2cm/u+eFE//qMgYmTjg8EyRhmgFa/JqhE6H1exzvXMS7vaPYCnHTI2amWa4VfUpKst
+	 IbDgtUU+y/WOcER10iuY4ta05P2VPLnzJhhKcicOcNlAueU033Ls3BTyu8sqvTM9pa
+	 nvsX9jSxLzIxdsSSviOh0QFGpx0rw93qMfgT2GTbnxqoAs6gxUiU5I23CuQ540ki4r
+	 tF94t/qKGqNcg==
+From: Mike Rapoport <rppt@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Luis Chamberlain <mcgrof@kernel.org>
+Cc: Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Borislav Petkov <bp@alien8.de>,
+	Brian Cain <bcain@quicinc.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Guo Ren <guoren@kernel.org>,
+	Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>,
+	Mike Rapoport <rppt@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>,
+	Song Liu <song@kernel.org>,
+	Stafford Horne <shorne@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>,
+	Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-alpha@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-modules@vger.kernel.org,
+	linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-sh@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org,
+	loongarch@lists.linux.dev,
+	sparclinux@vger.kernel.org,
+	x86@kernel.org
+Subject: [PATCH v7 0/8] x86/module: use large ROX pages for text allocations
+Date: Wed, 23 Oct 2024 19:27:03 +0300
+Message-ID: <20241023162711.2579610-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20241023-m5441x-dma-hrtimer-v1-1-d476ecb0f027@yoseli.org>
-X-B4-Tracking: v=1; b=H4sIAAEHGWcC/x3MQQqAIBBA0avErBtQ04quEi2kxpyFFWNEEN09a
- fkW/z+QSZgyDNUDQhdn3rcCXVcwR7+thLwUg1HGamUaTM5afeOSPEY5OZFgCCb0zqq+az2U8BA
- KfP/TcXrfD2RQtJ9kAAAA
-X-Change-ID: 20241023-m5441x-dma-hrtimer-ff2f8540876a
-To: Greg Ungerer <gerg@linux-m68k.org>, 
- Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
- Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1729693443; l=5682;
- i=jeanmichel.hautbois@yoseli.org; s=20240925; h=from:subject:message-id;
- bh=1v7sVqBzrNoj9xYwEa6etrISNUcXjjJZhJ8KkWCVaqQ=;
- b=4j2shDuTo1LFJRVAH7sUGG0oL2lnvD+bA+jt9n6lHsp4g8LhSdiahHAloOkaJ+iWDI6nLjHZW
- 3T/2T4Z1l4lDBFvSWvtSs26XgwTQrqE0PXxsbVyF8uUxr8D9uIG5P+5
-X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
- pk=MsMTVmoV69wLIlSkHlFoACIMVNQFyvJzvsJSQsn/kq4=
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
+Content-Transfer-Encoding: 8bit
 
-In order to use high resolution timers, the M5441x can use the DMA
-timers. It has four of it, but let's use the first one only, as it is
-based on the existing driver for the MCF523x.
+From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 
-While enabling the clock, fix a small typo in the comments too (timers
-where starting at 1 and not 0).
+Hi,
 
-With this commit, it is now possible to use high resolution timers, and
-have sub-ms resolution in the kernel timestamps.
+This is an updated version of execmem ROX caches.
 
-Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
----
- arch/m68k/coldfire/Makefile       |  2 +-
- arch/m68k/coldfire/dma_timer.c    | 34 ++++++++++++++++++++++------------
- arch/m68k/coldfire/m5441x.c       |  4 ++--
- arch/m68k/include/asm/m5441xsim.h |  8 ++++++++
- 4 files changed, 33 insertions(+), 15 deletions(-)
+v6: https://lore.kernel.org/all/20241016122424.1655560-1-rppt@kernel.org
+* Fixed handling of alternatives for fineibt (kbuild bot)
+* Restored usage of text_poke_early for ftrace boot time initialization (Steve)
+* Made !module path in module_writable_address inline
 
-diff --git a/arch/m68k/coldfire/Makefile b/arch/m68k/coldfire/Makefile
-index c56bc0dc7f2e338c8275cfd15656f80e78825254..e6bd32a489155a567d63468ff9eff8a344fd7764 100644
---- a/arch/m68k/coldfire/Makefile
-+++ b/arch/m68k/coldfire/Makefile
-@@ -29,7 +29,7 @@ obj-$(CONFIG_M5307)	+= m5307.o intc.o reset.o
- obj-$(CONFIG_M53xx)	+= m53xx.o intc-simr.o reset.o
- obj-$(CONFIG_M5407)	+= m5407.o intc.o reset.o
- obj-$(CONFIG_M54xx)	+= m54xx.o intc-2.o
--obj-$(CONFIG_M5441x)	+= m5441x.o intc-simr.o reset.o
-+obj-$(CONFIG_M5441x)	+= m5441x.o intc-simr.o reset.o dma_timer.o
- 
- obj-$(CONFIG_COLDFIRE_PIT_TIMER) += pit.o
- obj-$(CONFIG_COLDFIRE_TIMERS)	 += timers.o
-diff --git a/arch/m68k/coldfire/dma_timer.c b/arch/m68k/coldfire/dma_timer.c
-index 91e6728f51ed650f24c6ad4dd7d4d7d7bc6e5adc..184075c5164db84dde985420600649bc1d72b8e8 100644
---- a/arch/m68k/coldfire/dma_timer.c
-+++ b/arch/m68k/coldfire/dma_timer.c
-@@ -9,23 +9,33 @@
- 
- #include <linux/clocksource.h>
- #include <linux/io.h>
-+#include <linux/sched/clock.h>
- 
- #include <asm/machdep.h>
- #include <asm/coldfire.h>
- #include <asm/mcfpit.h>
- #include <asm/mcfsim.h>
- 
-+#ifndef CONFIG_M5441x
- #define DMA_TIMER_0	(0x00)
- #define DMA_TIMER_1	(0x40)
- #define DMA_TIMER_2	(0x80)
- #define DMA_TIMER_3	(0xc0)
- 
--#define DTMR0	(MCF_IPSBAR + DMA_TIMER_0 + 0x400)
--#define DTXMR0	(MCF_IPSBAR + DMA_TIMER_0 + 0x402)
--#define DTER0	(MCF_IPSBAR + DMA_TIMER_0 + 0x403)
--#define DTRR0	(MCF_IPSBAR + DMA_TIMER_0 + 0x404)
--#define DTCR0	(MCF_IPSBAR + DMA_TIMER_0 + 0x408)
--#define DTCN0	(MCF_IPSBAR + DMA_TIMER_0 + 0x40c)
-+#define DTMR	(MCF_IPSBAR + DMA_TIMER_0 + 0x400)
-+#define DTXMR	(MCF_IPSBAR + DMA_TIMER_0 + 0x402)
-+#define DTER	(MCF_IPSBAR + DMA_TIMER_0 + 0x403)
-+#define DTRR	(MCF_IPSBAR + DMA_TIMER_0 + 0x404)
-+#define DTCR	(MCF_IPSBAR + DMA_TIMER_0 + 0x408)
-+#define DTCN	(MCF_IPSBAR + DMA_TIMER_0 + 0x40c)
-+#else
-+#define DTMR	(MCFDMATIMER_BASE0 + 0x0)
-+#define DTXMR	(MCFDMATIMER_BASE0 + 0x2)
-+#define DTER	(MCFDMATIMER_BASE0 + 0x3)
-+#define DTRR	(MCFDMATIMER_BASE0 + 0x4)
-+#define DTCR	(MCFDMATIMER_BASE0 + 0x8)
-+#define DTCN	(MCFDMATIMER_BASE0 + 0xc)
-+#endif
- 
- #define DMA_FREQ    ((MCF_CLK / 2) / 16)
- 
-@@ -37,7 +47,7 @@
- 
- static u64 cf_dt_get_cycles(struct clocksource *cs)
- {
--	return __raw_readl(DTCN0);
-+	return __raw_readl(DTCN);
- }
- 
- static struct clocksource clocksource_cf_dt = {
-@@ -56,10 +66,10 @@ static int __init init_cf_dt_clocksource(void)
- 	 * get a ~213 ns resolution and the 32bit register will overflow almost
- 	 * every 15 minutes.
- 	 */
--	__raw_writeb(0x00, DTXMR0);
--	__raw_writeb(0x00, DTER0);
--	__raw_writel(0x00000000, DTRR0);
--	__raw_writew(DMA_DTMR_CLK_DIV_16 | DMA_DTMR_ENABLE, DTMR0);
-+	__raw_writeb(0x00, DTXMR);
-+	__raw_writeb(0x00, DTER);
-+	__raw_writel(0x00000000, DTRR);
-+	__raw_writew(DMA_DTMR_CLK_DIV_16 | DMA_DTMR_ENABLE, DTMR);
- 	return clocksource_register_hz(&clocksource_cf_dt, DMA_FREQ);
- }
- 
-@@ -76,7 +86,7 @@ static unsigned long long cycles2ns(unsigned long cycl)
- 
- unsigned long long sched_clock(void)
- {
--	unsigned long cycl = __raw_readl(DTCN0);
-+	unsigned long cycl = __raw_readl(DTCN);
- 
- 	return cycles2ns(cycl);
- }
-diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
-index 405e9d5c832c0d41978615a646de21f2fce61afb..feba222b99a813999b087501c3ff677f38366657 100644
---- a/arch/m68k/coldfire/m5441x.c
-+++ b/arch/m68k/coldfire/m5441x.c
-@@ -154,6 +154,7 @@ static struct clk * const enable_clks[] __initconst = {
- 	&__clk_0_25, /* uart1 */
- 	&__clk_0_26, /* uart2 */
- 	&__clk_0_27, /* uart3 */
-+	&__clk_0_28, /* tmr.0 */
- 
- 	&__clk_0_33, /* pit.1 */
- 	&__clk_0_37, /* eport */
-@@ -167,8 +168,7 @@ static struct clk * const disable_clks[] __initconst = {
- 	&__clk_0_14, /* i2c.1 */
- 	&__clk_0_22, /* i2c.0 */
- 	&__clk_0_23, /* dspi.0 */
--	&__clk_0_28, /* tmr.1 */
--	&__clk_0_29, /* tmr.2 */
-+	&__clk_0_29, /* tmr.1 */
- 	&__clk_0_30, /* tmr.2 */
- 	&__clk_0_31, /* tmr.3 */
- 	&__clk_0_32, /* pit.0 */
-diff --git a/arch/m68k/include/asm/m5441xsim.h b/arch/m68k/include/asm/m5441xsim.h
-index f48cf63bd7822fd53c33788128f984585c0c421a..e49f1d83a787f51c3666d595a7b753b2a93f64c9 100644
---- a/arch/m68k/include/asm/m5441xsim.h
-+++ b/arch/m68k/include/asm/m5441xsim.h
-@@ -101,6 +101,14 @@
- #define MCFINT2_PIT3		16
- #define MCFINT2_RTC		26
- 
-+/*
-+ * DMA timer module.
-+ */
-+#define MCFDMATIMER_BASE0	0xFC070000	/* Base address of DMA timer 0 */
-+#define MCFDMATIMER_BASE1	0xFC074000	/* Base address of DMA timer 1 */
-+#define MCFDMATIMER_BASE2	0xFC078000	/* Base address of DMA timer 2 */
-+#define MCFDMATIMER_BASE3	0xFC07C000	/* Base address of DMA timer 3 */
-+
- /*
-  *  PIT timer module.
-  */
+v5: https://lore.kernel.org/all/20241009180816.83591-1-rppt@kernel.org 
+* Droped check for !area in mas_for_each() loop (Kees Bakker)
+* Droped externs in include/linux/vmalloc.h (Christoph)
+* Fixed handling of alternatives for CFI-enabled configs (Nathan)
+* Fixed interaction with kmemleak (Sergey).
+  It looks like execmem and kmemleak interaction should be improved
+  further, but it's out of scope of this series.
+* Added ARCH_HAS_EXECMEM_ROX configuration option to arch/Kconfig. The
+  option serves two purposes:
+  - make sure architecture that uses ROX caches implements
+    execmem_fill_trapping_insns() callback (Christoph)
+  - make sure entire physical memory is mapped in the direct map (Dave) 
 
----
-base-commit: c2ee9f594da826bea183ed14f2cc029c719bf4da
-change-id: 20241023-m5441x-dma-hrtimer-ff2f8540876a
+v4: https://lore.kernel.org/all/20241007062858.44248-1-rppt@kernel.org
+* Fix copy/paste error in looongarch (Huacai)
 
-Best regards,
+v3: https://lore.kernel.org/all/20240909064730.3290724-1-rppt@kernel.org
+* Drop ftrace_swap_func(). It is not needed because mcount array lives
+  in a data section (Peter)
+* Update maple_tree usage (Liam)
+* Set ->fill_trapping_insns pointer on init (Ard)
+* Instead of using VM_FLUSH_RESET_PERMS for execmem cache, completely
+  remove it from the direct map
+
+v2: https://lore.kernel.org/all/20240826065532.2618273-1-rppt@kernel.org
+* add comment why ftrace_swap_func() is needed (Steve)
+
+Since RFC: https://lore.kernel.org/all/20240411160526.2093408-1-rppt@kernel.org
+* update changelog about HUGE_VMAP allocations (Christophe) 
+* move module_writable_address() from x86 to modules core (Ingo)
+* rename execmem_invalidate() to execmem_fill_trapping_insns() (Peter)
+* call alternatives_smp_unlock() after module text in-place is up to
+  date (Nadav)
+
+= Original cover letter =
+
+These patches add support for using large ROX pages for allocations of
+executable memory on x86.
+
+They address Andy's comments [1] about having executable mappings for code
+that was not completely formed.
+
+The approach taken is to allocate ROX memory along with writable but not
+executable memory and use the writable copy to perform relocations and
+alternatives patching. After the module text gets into its final shape, the
+contents of the writable memory is copied into the actual ROX location
+using text poking.
+
+The allocations of the ROX memory use vmalloc(VMAP_ALLOW_HUGE_MAP) to
+allocate PMD aligned memory, fill that memory with invalid instructions and
+in the end remap it as ROX. Portions of these large pages are handed out to
+execmem_alloc() callers without any changes to the permissions. When the
+memory is freed with execmem_free() it is invalidated again so that it
+won't contain stale instructions.
+
+The module memory allocation, x86 code dealing with relocations and
+alternatives patching take into account the existence of the two copies,
+the writable memory and the ROX memory at the actual allocated virtual
+address.
+
+The patches are available at git:
+https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/log/?h=execmem/x86-rox/v6
+
+[1] https://lore.kernel.org/all/a17c65c6-863f-4026-9c6f-a04b659e9ab4@app.fastmail.com
+
+Mike Rapoport (Microsoft) (8):
+  mm: vmalloc: group declarations depending on CONFIG_MMU together
+  mm: vmalloc: don't account for number of nodes for HUGE_VMAP allocations
+  asm-generic: introduce text-patching.h
+  module: prepare to handle ROX allocations for text
+  arch: introduce set_direct_map_valid_noflush()
+  x86/module: prepare module loading for ROX allocations of text
+  execmem: add support for cache of large ROX pages
+  x86/module: enable ROX caches for module text on 64 bit
+
+ arch/Kconfig                                  |   8 +
+ arch/alpha/include/asm/Kbuild                 |   1 +
+ arch/arc/include/asm/Kbuild                   |   1 +
+ .../include/asm/{patch.h => text-patching.h}  |   0
+ arch/arm/kernel/ftrace.c                      |   2 +-
+ arch/arm/kernel/jump_label.c                  |   2 +-
+ arch/arm/kernel/kgdb.c                        |   2 +-
+ arch/arm/kernel/patch.c                       |   2 +-
+ arch/arm/probes/kprobes/core.c                |   2 +-
+ arch/arm/probes/kprobes/opt-arm.c             |   2 +-
+ arch/arm64/include/asm/set_memory.h           |   1 +
+ .../asm/{patching.h => text-patching.h}       |   0
+ arch/arm64/kernel/ftrace.c                    |   2 +-
+ arch/arm64/kernel/jump_label.c                |   2 +-
+ arch/arm64/kernel/kgdb.c                      |   2 +-
+ arch/arm64/kernel/patching.c                  |   2 +-
+ arch/arm64/kernel/probes/kprobes.c            |   2 +-
+ arch/arm64/kernel/traps.c                     |   2 +-
+ arch/arm64/mm/pageattr.c                      |  10 +
+ arch/arm64/net/bpf_jit_comp.c                 |   2 +-
+ arch/csky/include/asm/Kbuild                  |   1 +
+ arch/hexagon/include/asm/Kbuild               |   1 +
+ arch/loongarch/include/asm/Kbuild             |   1 +
+ arch/loongarch/include/asm/set_memory.h       |   1 +
+ arch/loongarch/mm/pageattr.c                  |  19 +
+ arch/m68k/include/asm/Kbuild                  |   1 +
+ arch/microblaze/include/asm/Kbuild            |   1 +
+ arch/mips/include/asm/Kbuild                  |   1 +
+ arch/nios2/include/asm/Kbuild                 |   1 +
+ arch/openrisc/include/asm/Kbuild              |   1 +
+ .../include/asm/{patch.h => text-patching.h}  |   0
+ arch/parisc/kernel/ftrace.c                   |   2 +-
+ arch/parisc/kernel/jump_label.c               |   2 +-
+ arch/parisc/kernel/kgdb.c                     |   2 +-
+ arch/parisc/kernel/kprobes.c                  |   2 +-
+ arch/parisc/kernel/patch.c                    |   2 +-
+ arch/powerpc/include/asm/kprobes.h            |   2 +-
+ .../asm/{code-patching.h => text-patching.h}  |   0
+ arch/powerpc/kernel/crash_dump.c              |   2 +-
+ arch/powerpc/kernel/epapr_paravirt.c          |   2 +-
+ arch/powerpc/kernel/jump_label.c              |   2 +-
+ arch/powerpc/kernel/kgdb.c                    |   2 +-
+ arch/powerpc/kernel/kprobes.c                 |   2 +-
+ arch/powerpc/kernel/module_32.c               |   2 +-
+ arch/powerpc/kernel/module_64.c               |   2 +-
+ arch/powerpc/kernel/optprobes.c               |   2 +-
+ arch/powerpc/kernel/process.c                 |   2 +-
+ arch/powerpc/kernel/security.c                |   2 +-
+ arch/powerpc/kernel/setup_32.c                |   2 +-
+ arch/powerpc/kernel/setup_64.c                |   2 +-
+ arch/powerpc/kernel/static_call.c             |   2 +-
+ arch/powerpc/kernel/trace/ftrace.c            |   2 +-
+ arch/powerpc/kernel/trace/ftrace_64_pg.c      |   2 +-
+ arch/powerpc/lib/code-patching.c              |   2 +-
+ arch/powerpc/lib/feature-fixups.c             |   2 +-
+ arch/powerpc/lib/test-code-patching.c         |   2 +-
+ arch/powerpc/lib/test_emulate_step.c          |   2 +-
+ arch/powerpc/mm/book3s32/mmu.c                |   2 +-
+ arch/powerpc/mm/book3s64/hash_utils.c         |   2 +-
+ arch/powerpc/mm/book3s64/slb.c                |   2 +-
+ arch/powerpc/mm/kasan/init_32.c               |   2 +-
+ arch/powerpc/mm/mem.c                         |   2 +-
+ arch/powerpc/mm/nohash/44x.c                  |   2 +-
+ arch/powerpc/mm/nohash/book3e_pgtable.c       |   2 +-
+ arch/powerpc/mm/nohash/tlb.c                  |   2 +-
+ arch/powerpc/mm/nohash/tlb_64e.c              |   2 +-
+ arch/powerpc/net/bpf_jit_comp.c               |   2 +-
+ arch/powerpc/perf/8xx-pmu.c                   |   2 +-
+ arch/powerpc/perf/core-book3s.c               |   2 +-
+ arch/powerpc/platforms/85xx/smp.c             |   2 +-
+ arch/powerpc/platforms/86xx/mpc86xx_smp.c     |   2 +-
+ arch/powerpc/platforms/cell/smp.c             |   2 +-
+ arch/powerpc/platforms/powermac/smp.c         |   2 +-
+ arch/powerpc/platforms/powernv/idle.c         |   2 +-
+ arch/powerpc/platforms/powernv/smp.c          |   2 +-
+ arch/powerpc/platforms/pseries/smp.c          |   2 +-
+ arch/powerpc/xmon/xmon.c                      |   2 +-
+ arch/riscv/errata/andes/errata.c              |   2 +-
+ arch/riscv/errata/sifive/errata.c             |   2 +-
+ arch/riscv/errata/thead/errata.c              |   2 +-
+ arch/riscv/include/asm/set_memory.h           |   1 +
+ .../include/asm/{patch.h => text-patching.h}  |   0
+ arch/riscv/include/asm/uprobes.h              |   2 +-
+ arch/riscv/kernel/alternative.c               |   2 +-
+ arch/riscv/kernel/cpufeature.c                |   3 +-
+ arch/riscv/kernel/ftrace.c                    |   2 +-
+ arch/riscv/kernel/jump_label.c                |   2 +-
+ arch/riscv/kernel/patch.c                     |   2 +-
+ arch/riscv/kernel/probes/kprobes.c            |   2 +-
+ arch/riscv/mm/pageattr.c                      |  15 +
+ arch/riscv/net/bpf_jit_comp64.c               |   2 +-
+ arch/riscv/net/bpf_jit_core.c                 |   2 +-
+ arch/s390/include/asm/set_memory.h            |   1 +
+ arch/s390/mm/pageattr.c                       |  11 +
+ arch/sh/include/asm/Kbuild                    |   1 +
+ arch/sparc/include/asm/Kbuild                 |   1 +
+ arch/um/kernel/um_arch.c                      |  16 +-
+ arch/x86/Kconfig                              |   1 +
+ arch/x86/entry/vdso/vma.c                     |   3 +-
+ arch/x86/include/asm/alternative.h            |  14 +-
+ arch/x86/include/asm/set_memory.h             |   1 +
+ arch/x86/include/asm/text-patching.h          |   1 +
+ arch/x86/kernel/alternative.c                 | 181 ++++++----
+ arch/x86/kernel/ftrace.c                      |  30 +-
+ arch/x86/kernel/module.c                      |  45 ++-
+ arch/x86/mm/init.c                            |  37 +-
+ arch/x86/mm/pat/set_memory.c                  |   8 +
+ arch/xtensa/include/asm/Kbuild                |   1 +
+ include/asm-generic/text-patching.h           |   5 +
+ include/linux/execmem.h                       |  37 ++
+ include/linux/module.h                        |  16 +
+ include/linux/moduleloader.h                  |   4 +
+ include/linux/set_memory.h                    |   6 +
+ include/linux/text-patching.h                 |  15 +
+ include/linux/vmalloc.h                       |  60 ++--
+ kernel/module/debug_kmemleak.c                |   3 +-
+ kernel/module/main.c                          |  74 +++-
+ kernel/module/strict_rwx.c                    |   3 +
+ mm/execmem.c                                  | 336 +++++++++++++++++-
+ mm/internal.h                                 |   1 +
+ mm/vmalloc.c                                  |  14 +-
+ 121 files changed, 885 insertions(+), 247 deletions(-)
+ rename arch/arm/include/asm/{patch.h => text-patching.h} (100%)
+ rename arch/arm64/include/asm/{patching.h => text-patching.h} (100%)
+ rename arch/parisc/include/asm/{patch.h => text-patching.h} (100%)
+ rename arch/powerpc/include/asm/{code-patching.h => text-patching.h} (100%)
+ rename arch/riscv/include/asm/{patch.h => text-patching.h} (100%)
+ create mode 100644 include/asm-generic/text-patching.h
+ create mode 100644 include/linux/text-patching.h
+
+
+base-commit: 9852d85ec9d492ebef56dc5f229416c925758edc
 -- 
-Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+2.43.0
 
