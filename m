@@ -1,78 +1,80 @@
-Received: from fout-b2-smtp.messagingengine.com (fout-b2-smtp.messagingengine.com [202.12.124.145])
+Received: from fhigh-b7-smtp.messagingengine.com (fhigh-b7-smtp.messagingengine.com [202.12.124.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0564A1F818C
-	for <linux-m68k@vger.kernel.org>; Fri, 25 Oct 2024 10:53:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D93221632E2
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Oct 2024 13:37:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729853611; cv=none; b=VOnGwsaax/viSk8WI0/iwvqqqVfDR1Rw7OiSoEEAijEENyHAi/MaUL6WK33v75qlksSffyIHKHCL3lhG0qR+7g8L1MRJ9Y3J3uU6IdEvy91dtXBL+F4WDzaqMSRLJEfA4TadnRY9/o0x14O/lrjE2d6RTt2kxp1aiR7CH+Yod8Y=
+	t=1729863461; cv=none; b=hKnmYldDJ3SBTW80ZEuX7EhMIYOD5vlPVYJNUN/a9q5Mp1BXcZ3W0OpKyOr2fslE/RZXqpHKUrHE0cd7cQ5Zjm/BfElMLVjeYOKtl9XJVXGHnzxxBCF2uSDbdjiB7r0Gx38pW7dAqk64Nu9x65tVFcPOWXPqJW3bQ/7VWqjAdRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729853611; c=relaxed/simple;
-	bh=tB6OI9pvroGUhGgu4HPWz2TqSuLkLFdmfH/Eylxhi3c=;
+	s=arc-20240116; t=1729863461; c=relaxed/simple;
+	bh=IO5JRAi5QVuzB3nZMKM6uhv+seJAQIBK2VjWW9MTLG0=;
 	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=FCirYPjAFW8psMEky6M8FFFuHPQbUvEwzvNjGHBmMLnyAcAzMGhxRwo1IS4HcHyDgu8dw4aGBoXYDuyh8Hbf2GDAua0QSoC+S7W5LmUwZz9+ydSfa6/Hn9KLQlJdfi1tFlR6rrGjZE72cWe5PH1ecZXQ4fbcvwG2Tj2SGAiNDgU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=O2Ee/W4B; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=cgEKN3JG; arc=none smtp.client-ip=202.12.124.145
+	 Subject:Content-Type; b=pO/WSeOhnV4TRJ57ZlTrvjstVsnX9Aew079uu6wd3sLpHpyTJLIZxB3UkYYmGJIn/i6s3jm7kvHwgkwQ31C9mflou6MPdSBoQM4mBTH7c95fOztk9qBw6uC+eSiYfr0crWrVSBKG4giA9AQv6SSy9nPFSx4objkSXvh8maNrWMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=nTq77u+Y; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=YYd+CaNQ; arc=none smtp.client-ip=202.12.124.158
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="O2Ee/W4B";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cgEKN3JG"
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="nTq77u+Y";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="YYd+CaNQ"
 Received: from phl-compute-10.internal (phl-compute-10.phl.internal [10.202.2.50])
-	by mailfout.stl.internal (Postfix) with ESMTP id D936F114005F;
-	Fri, 25 Oct 2024 06:53:27 -0400 (EDT)
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 54D1325400C4;
+	Fri, 25 Oct 2024 09:37:37 -0400 (EDT)
 Received: from phl-imap-11 ([10.202.2.101])
-  by phl-compute-10.internal (MEProxy); Fri, 25 Oct 2024 06:53:28 -0400
+  by phl-compute-10.internal (MEProxy); Fri, 25 Oct 2024 09:37:37 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
 	:cc:content-transfer-encoding:content-type:content-type:date
 	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1729853607;
-	 x=1729940007; bh=AkDMpYhqR8XdlQTWY8VMxMmkOQgYFVJ0Z8jjxiMnpG8=; b=
-	O2Ee/W4BhTVWdYHOZFfUopBCfGe180qzxQtVubpGfdShgZ104JZpoHQOIEKmMMX5
-	97Ih/lMRq6Y0R+4muiDYIvj5tY6eackJ7e633HJubVKrD9IjBroMjnvktx/xzJ/r
-	Nfez4XU1lfYf//H4zFjyokWP7AdFTVtlBKUy091lcr+fATOkKC4EwXJUmUuX7FRa
-	dVV23nNavFnMkXvsVghcVDpdpfvG4ORj+w5GN5k87R9qJ92CjRws7nmbB7ed9ZFy
-	neHA5bRu49uL1PXYfCLwSpXYzxMyCLiQKZPx2lHf4wU8o3ZFN6j53vWVgjKfNW34
-	FZrxP4nwRdtQu6iahLKl4w==
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1729863457;
+	 x=1729949857; bh=mTD/E8mUSNoNp+vtjeW8NYfb5u7ndnKHIytXzDhahwE=; b=
+	nTq77u+YbjEK1oOGqWOEMss4pavBeea5xmfNB5v8n1RQ22NxJIlmfp2TzT4IKpOx
+	caApVTp1/TP1+2AFsH+6DaC7B1jXPpi59lVd0QmK1g4cyigLCbwCjjCU5UZejO28
+	8c3d8AGT1CdV1FpUSe8Ohc2JPaB0EAv7X1aw4eGMMqsDN9QNF4MBCkY7XT7NWXhL
+	O/OEAgSYzhCEctYt3/dxus3LsMgxjvtStf4TUCEi3KDe+iRqYuAwvWG/ws/9TCTb
+	91Febe33d87M4u4RsAc2PSDoS2l7TEXW3ZHH0N9mqk4H/wIO2sYqmM++nNVpXfOu
+	l8mVjbE2Y3ckzB0U2VTGjA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:content-type:date:date:feedback-id:feedback-id
 	:from:from:in-reply-to:in-reply-to:message-id:mime-version
 	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1729853607; x=
-	1729940007; bh=AkDMpYhqR8XdlQTWY8VMxMmkOQgYFVJ0Z8jjxiMnpG8=; b=c
-	gEKN3JGaTKzl0eZQACjMFacWmuzzlbF6dv3MZeHl1QTOg3nkB8NrJ0xIGv6uBDbF
-	cRTYrnHWzq4DYEmqPX2zuJpBE6Xyf13fEmpSTr8tqzHVpu6uTNj+dsiQuJIDuEIK
-	qr8ZCJhyBlqe+xJWAq8O1Xj4hEO7v0NTnQKEcLcr4M5id5kn2gMXsCDPp++T+j3c
-	DBsk141L+nqJrd6a/LP/86yOB/FE3yM5apxgL//iBYMaPj4n1Uug6rJhvkX4QecH
-	DNKSaEldnsD8hA3wTuoSEW/tjjJJTi0mgRepuZ/BLQPhxBcsQi/kL+gFq2gjyAzS
-	DQ9BwFb6+JIigkm+olCdQ==
-X-ME-Sender: <xms:p3gbZ2kd0sLjXZP5lSqC02X9_xkiaky77zOG7bY4LqTp4nkGebW7yg>
-    <xme:p3gbZ933pCxo5SKV_lZ_4WNYXLNbcunXZp601uXQmSJ9nAFDJo1zsEFBiJcueG7ac
-    2dsTXij-pITW0P8kIw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdejvddgfeefucetufdoteggodetrfdotf
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1729863457; x=
+	1729949857; bh=mTD/E8mUSNoNp+vtjeW8NYfb5u7ndnKHIytXzDhahwE=; b=Y
+	Yd+CaNQUnHw9YsFM/xsr4EEUnyKUrgtD2vti8QGZood/Hu9648OKjYo4bH7A6Neg
+	jnJDKNvwBYkFvlybTuqF2bH/KaZKDCsMPx9nvXzHCWTKjsCUnllyUHCbFyKAeDhX
+	YNkya00Lwsz0+acBTk9P7pZOFNJx3BvJUubdQClXQQcfFmAJOHzcSMDEsFGYeUz+
+	Jg9HE+6A7ymczxjo7UpkNZEyk9ue5mso6y8MDn4M5ldn8ZNSI/lsZrOwKW2qGN95
+	SK1C5a5uk//QbB1mqxfMZZhPvCEMy7uIU9Opdu0mHCbXfdkyJRO6uRsr50PfJcTO
+	dO3S1hvvUj92Ys457iJAw==
+X-ME-Sender: <xms:IJ8bZxsuj29dJ1vr5lHn5cEFvY6c8AEcCMtZGM1az7Jp64ZRgbF05Q>
+    <xme:IJ8bZ6f_PFYR1VPWQ6NunpU9GXYmb8uTFHK2WzhvwLuyhGpOciB1CBT9pvUeu8GH4
+    UYBuOr6HJ-I4-vOr1Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdejvddgieeiucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
     rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
     htshculddquddttddmnecujfgurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddt
     necuhfhrohhmpedftehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrd
     guvgeqnecuggftrfgrthhtvghrnhephfdthfdvtdefhedukeetgefggffhjeeggeetfefg
     gfevudegudevledvkefhvdeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvgdpnhgspghrtghpthhtohepkedp
-    mhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheptghhvgifihesrghurhgrqdhonhhlih
-    hnvgdrtghordhukhdprhgtphhtthhopehsrghmsehgvghnthhoohdrohhrghdprhgtphht
-    thhopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehstghhfi
-    grsgeslhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtohepuggvsghirghnqdeikehk
-    sehlihhsthhsrdguvggsihgrnhdrohhrghdprhgtphhtthhopehtghesmhhirhgsshgurd
-    guvgdprhgtphhtthhopehglhgruhgsihhtiiesphhhhihsihhkrdhfuhdqsggvrhhlihhn
-    rdguvgdprhgtphhtthhopehlihhnuhigqdhmieekkhesvhhgvghrrdhkvghrnhgvlhdroh
-    hrgh
-X-ME-Proxy: <xmx:p3gbZ0pvClb_h69RGygQiCOFa0tdWRiiJhadHMtNq9aTQ8EBUlSILg>
-    <xmx:p3gbZ6lKiQs5Aa7gTOzG2AKLqnwhpsB34bwz8vKCg3idmWkBx_Ocyw>
-    <xmx:p3gbZ01kmOCz3rv8ogRtf4gt1t0JdMpGEU5L3stWisTJOCAUzyE88Q>
-    <xmx:p3gbZxt_4kiqScB6_1hrqI2Zd8dS49IqW9kSBCWFjuHM2j7Nfb8fTw>
-    <xmx:p3gbZ1kzYMKLFPoJ35vNrkeKCxWycdN7pf6ZTqZNkqcvRESKGNuwP4MS>
+    hmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvgdpnhgspghrtghpthhtohepudel
+    pdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehlihhnuhigqdgrrhhmqdhkvghrnh
+    gvlheslhhishhtshdrihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehlihhnuhig
+    qdhrihhstghvsehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdhrtghpthhtoheplh
+    hinhhugidqshhnphhsqdgrrhgtsehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdhr
+    tghpthhtoheplhhinhhugidquhhmsehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpd
+    hrtghpthhtoheplhhinhhugidqmheikehksehlihhsthhsrdhlihhnuhigqdhmieekkhdr
+    ohhrghdprhgtphhtthhopehlohhonhhgrghrtghhsehlihhsthhsrdhlihhnuhigrdguvg
+    hvpdhrtghpthhtoheplhhinhhugihpphgtqdguvghvsehlihhsthhsrdhoiihlrggsshdr
+    ohhrghdprhgtphhtthhopehhtghhsehlshhtrdguvgdprhgtphhtthhopehlihhnuhigqd
+    grlhhphhgrsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:IJ8bZ0w8_fyzDu0Dhxg43egcOQd9fPmeL9IF1HbPQzAPODUmdkywqg>
+    <xmx:IJ8bZ4Ng8v61LIOz9Z6hcNW7TrkYDvZ9-QsNLZ7fNM7Okgrh7sPTiA>
+    <xmx:IJ8bZx-O8B7MlF4JofybzIynmnGJvvLwnq8RLzH_1fknLv9ZsqMu1w>
+    <xmx:IJ8bZ4X5lrN7iDkKbGm85k7BOBq5kmsTovQZ6V9cVszatdT146tmOA>
+    <xmx:IZ8bZ02QO2wzbQXTtXh5NJPoq2r5QyMwBKYu4QPUoTFRk_k35DiZGUWq>
 Feedback-ID: i56a14606:Fastmail
 Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id DA4F32220071; Fri, 25 Oct 2024 06:53:26 -0400 (EDT)
+	id 3B9352220071; Fri, 25 Oct 2024 09:37:36 -0400 (EDT)
 X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -80,89 +82,39 @@ List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Fri, 25 Oct 2024 10:50:07 +0000
+Date: Fri, 25 Oct 2024 13:37:15 +0000
 From: "Arnd Bergmann" <arnd@arndb.de>
-To: "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
- linux-m68k <linux-m68k@vger.kernel.org>
-Cc: debian-68k <debian-68k@lists.debian.org>,
- "James Le Cuirot" <chewi@aura-online.co.uk>, "Sam James" <sam@gentoo.org>,
- "Geert Uytterhoeven" <geert@linux-m68k.org>,
- "Andreas Schwab" <schwab@linux-m68k.org>, "Thorsten Glaser" <tg@mirbsd.de>
-Message-Id: <136f0492-fad7-4c75-b3c8-91ac7dc91570@app.fastmail.com>
-In-Reply-To: 
- <bfc235822cf8f773689abfefe1a75abfcf860c93.camel@physik.fu-berlin.de>
-References: 
- <3a5e171bf42e5273eb8235cba04e8328b19c2ca4.camel@physik.fu-berlin.de>
- <383faec7-8987-4680-920d-8f802e1bea34@app.fastmail.com>
- <bfc235822cf8f773689abfefe1a75abfcf860c93.camel@physik.fu-berlin.de>
-Subject: Re: Plan needed for switching m68k to 32-bit alignment
+To: "Christoph Hellwig" <hch@lst.de>
+Cc: linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+ linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+ "linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-um@lists.infradead.org, Linux-Arch <linux-arch@vger.kernel.org>
+Message-Id: <c9f10ee9-697f-4f45-8c82-a6dc61e5a74e@app.fastmail.com>
+In-Reply-To: <20241023053644.311692-1-hch@lst.de>
+References: <20241023053644.311692-1-hch@lst.de>
+Subject: Re: provide generic page_to_phys and phys_to_page implementations v3
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-On Fri, Oct 25, 2024, at 10:10, John Paul Adrian Glaubitz wrote:
-> On Fri, 2024-10-25 at 09:55 +0000, Arnd Bergmann wrote:
->> I think the idea of using the generic syscall ABI (in particular
->> the time64-only variant) makes sense if there is going to be a
->> new ABI, and I can help figure out what needs to be done in the
->> kernel for that.
+On Wed, Oct 23, 2024, at 05:36, Christoph Hellwig wrote:
+> page_to_phys is duplicated by all architectures, and from some strange
+> reason placed in <asm/io.h> where it doesn't fit at all.  
 >
-> I don't actually know whether this would be a completely new ABI
-> as m68k has supported 32-bit alignment through the "-malign-int"
-> switch for a long time.
-
-Changing all system call numbers and a lot of the ioctl
-structures definitely makes it a new ABI, regardless of
-how much it affects general userspace, and does require a
-complete bootstrap of the distro.
-
->> The question is really if it's already too late to do it now,
->> given the scope of the project and the limited developer
->> resources. Maintaining two ABIs in the kernel and toolchain
->> longterm is likely going to make things harder, and phasing
->> out the existing ABI completely will likely take more than
->> a decade. I expect that this is the same timeframe (mid-2030s)
->> by which we will be debating the removal of any 32-bit
->> targets from the kernel, in particular if we also want to
->> add 128-bit targets.
+> phys_to_page is only provided by a few architectures despite having a lot 
+> of open coded users.
 >
-> I was not talking about maintaining two separate ABIs and I don't
-> think it makes much sense to keep the old ABI around.
-
-Doing it without a migration path seems worse to me,
-as this would mean breaking every single existing
-installation between two kernels, and making it impossible
-to bisect other issues, and breaking the rule #1.
-
-It's probably not necessary to support both user ABIs
-in a single kernel image, but a kernel compile-time switch
-would seem appropriate.
-
->> Based on those experiences, I think there is a significant
->> chance that adding a new ABI is going to make things harder
->> to maintain for both distro and kernel maintainers rather
->> than easier, regardless of how much better the new ABI is.
+> Provide generic versions in <asm-generic/memory_model.h> to make these
+> helpers more easily usable.
 >
-> The m68k port is already half broken because of the 16-bit
-> alignment and I have to admit I starting to get tired of
-> people telling me that switching the default alignment is a
-> bad idea.
 
-Understood.
+I've applied this to the asm-generic tree now.
 
-> A current example is Python 3.13 which just crashes with the
-> default alignment but builds just fine with "-malign-int".
->
-> I really don't understand why there is such a big resistance of
-> switching a port over to a different alignment which allegedly
-> no one is using or maintaining.
->
-> Someone made a bad design decision 40 years ago and we're not
-> allowed to fix that because someone might run an old binary
-> from the 80ies on a current version of the Linux kernel.
+Thanks for the cleanup!
 
-I'm not worried about ancient binaries, and I think a 10 year
-transition period like in ARM-EABI or PPC64/ELFv2 would be
-fine, but breaking all users from one release to the next
-is a clear show-stopper.
-
-      Arnd
+     Arnd
