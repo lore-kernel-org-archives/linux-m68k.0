@@ -1,217 +1,91 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 718991C4A32
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 24 Oct 2024 08:17:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 143F8175D5D
+	for <linux-m68k@vger.kernel.org>; Fri, 25 Oct 2024 06:51:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729757854; cv=none; b=d/C9QomoyneJPC7JTy8F7rKiHdisQyNVk2iX95YkNiHgK0uyC1jjlQCB+sOfdZvxMdZDccaAyktj1OjCKk2QrZblwsM5LzQptjI/tNW/1cS28i3sdso+41tf0ojrcjETO4oai9lmiKoUOMjzLj/MlFGSwBEDFrKjrTmPSIS1OXA=
+	t=1729839114; cv=none; b=cGQBkJKOGS96sCiMqVB3pFbNwT8mQn2q8b37xPrLL213VVEMTxFzM/LIbQoulvPibbWYIfbyKUqspsz5F2WFNYeWAOueXrGHKThlwm30a4Iu2s5mfnWx5zrn43tjTlheCQIK6KK7IYjiy6FzxjnKIgiqKb5OR8nb9U0ZrEK3S4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729757854; c=relaxed/simple;
-	bh=Ox/ZYsBrrmbPK3A2QSUcQ8QfXoa69FGJYXDNNRcdBnE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SKisgGl8fo0mUDIz7bQOnBLS42WPVV0DKjWHuotAV1dUOmj8sTSU1tJsPDJuucDOGVC13wLVS/VKoo6PrPPNNQVtNl+hk8/AIHzLQPX9Ui+30CR5gkiIwHtI2FHd97BKl1zhPSV7c+EYVLTSY1Mq54LXujAt54pvKQrEFlUXkd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kUYTT8Tx; arc=none smtp.client-ip=139.178.84.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1729839114; c=relaxed/simple;
+	bh=YQh4/f65l75A155xplMfJcvtw4A7nt3XcTGv9Hn2GR8=;
+	h=Message-ID:Subject:From:To:Cc:Date:Content-Type:MIME-Version; b=BsjVHQ4LhxTFTz6JKDYPzqatvPil2IOmvaZEl+P47b5HnvFmQCU+ux8LMJfzbsMPjGuN2dDxvs80ty1CI6JWMnbJ/D3D5dlYSKWlyC2EOD0uPLVZ/jwwTOyNtJf5h8n8uAmdPa7Ybh7S1cBbVYNJts2GCvjTxeoZcemmtbsXZHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=CdsOLZLn; arc=none smtp.client-ip=130.133.4.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kUYTT8Tx"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 5129A5C53EF;
-	Thu, 24 Oct 2024 08:17:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 612D5C4CEC7;
-	Thu, 24 Oct 2024 08:16:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729757849;
-	bh=Ox/ZYsBrrmbPK3A2QSUcQ8QfXoa69FGJYXDNNRcdBnE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kUYTT8Tx/x5v0ueXFlaIbTgM/tC1LFzcQH/Bk/9E/G27ofyIbDJ7VnB94NYJst0cv
-	 rwM3dJS8U0ddWOUUXyYJ5U2DbjwqikH39DsU8Z9vNeIPIaGV5iltmAX+1Y07CtyHuu
-	 qjH8xAIYsTm3k2jYsPE3Yg78rgh4kjznfSO7VPR6GqKUwnNvv6GGqa5UsKhK6x1lWv
-	 w5QasDDvCUMmBgmW/lX8F5rn9hH0iBupLlusSquog8hp4ocLfovmnzNHmy5eiFqmmK
-	 d1E2Of3Az/DoYE4MNq3gGFDCWEofW+6fRLAOpgssfQgrtruzoRtxJno9OxgV2pJlkI
-	 Cl6tQ0r75+5yg==
-Date: Thu, 24 Oct 2024 11:13:11 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-	Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v6 6/8] x86/module: prepare module loading for ROX
- allocations of text
-Message-ID: <ZxoBlwkh528r-vef@kernel.org>
-References: <20241016122424.1655560-1-rppt@kernel.org>
- <20241016122424.1655560-7-rppt@kernel.org>
- <20241021221519.GA3567210@thelio-3990X>
+	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="CdsOLZLn"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=GlCxbkHbUTVFmNsTnG3DYbTQLnPbRQ3CHvEtet1HMl8=; t=1729839110; x=1730443910; 
+	b=CdsOLZLnSPWwvnvyzKgFP1BxWBkFpd790O7ZI4zBePcqptVbpfbSr4PSJU5YU4SZa2wg9hliZex
+	FrAG828XKqV8HDedlIh56nmA4I10Hzo+E+ykowCtk4K7DewyfNMOkWz5Di6qtxPCnR7bD4rxlrUXX
+	Ukfi1msUao1VRirNITAUNMnjs4XBTkkWAONnnzZGbEVRXTOQVnL3y69YNjIaFOvVPaIR/83TLQK0D
+	hDtr/lPIUxJIHIhh1qig78e97diC4MvNjYX4TpGNUi47KLtikLF1TfqOcxcOjGNQWc5FPMDv8thZC
+	OuvUEA+VLcidSc5JIrCyq49YhmhUtL6NWEiQ==;
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.98)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1t4E7F-00000001XwX-1HLG; Fri, 25 Oct 2024 08:48:09 +0200
+Received: from p57bd904e.dip0.t-ipconnect.de ([87.189.144.78] helo=suse-laptop.fritz.box)
+          by inpost2.zedat.fu-berlin.de (Exim 4.98)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1t4E7F-00000003CYi-0LOe; Fri, 25 Oct 2024 08:48:09 +0200
+Message-ID: <3a5e171bf42e5273eb8235cba04e8328b19c2ca4.camel@physik.fu-berlin.de>
+Subject: Plan needed for switching m68k to 32-bit alignment
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: linux-m68k <linux-m68k@vger.kernel.org>
+Cc: debian-68k <debian-68k@lists.debian.org>, James Le Cuirot	
+ <chewi@aura-online.co.uk>, Sam James <sam@gentoo.org>, Geert Uytterhoeven	
+ <geert@linux-m68k.org>, Andreas Schwab <schwab@linux-m68k.org>, Arnd
+ Bergmann	 <arnd@arndb.de>, Thorsten Glaser <tg@mirbsd.de>
+Date: Fri, 25 Oct 2024 08:48:08 +0200
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.1 
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241021221519.GA3567210@thelio-3990X>
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-ZEDAT-Hint: PO
 
-Hi Nathan,
+Hello,
 
-On Mon, Oct 21, 2024 at 03:15:19PM -0700, Nathan Chancellor wrote:
-> Hi Mike,
-> 
-> On Wed, Oct 16, 2024 at 03:24:22PM +0300, Mike Rapoport wrote:
-> > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
-> > 
-> > When module text memory will be allocated with ROX permissions, the
-> > memory at the actual address where the module will live will contain
-> > invalid instructions and there will be a writable copy that contains the
-> > actual module code.
-> > 
-> > Update relocations and alternatives patching to deal with it.
-> > 
-> > Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
-> 
-> Sorry that you have to hear from me again :) It seems that module
-> loading is still broken with this version of the patch, which is
-> something that I missed in my earlier testing since I only test a
-> monolithic kernel with my regular virtual machine testing. If I build
-> and install the kernel and modules in the VM via a distribution package,
-> I get the following splat at boot:
->
->   Starting systemd-udevd version 256.7-1-arch
->   [    0.882312] SMP alternatives: Something went horribly wrong trying to rewrite the CFI implementation.
->   [    0.883526] CFI failure at do_one_initcall+0x128/0x380 (target: init_module+0x0/0xff0 [crc32c_intel]; expected type: 0x0c7a3a22)
->   [    0.884802] Oops: invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
->   [    0.885434] CPU: 3 UID: 0 PID: 157 Comm: modprobe Tainted: G        W          6.12.0-rc3-debug-next-20241021-06324-g63b3ff03d91a #1 291f0fd70f293827edec681d3c5304f5807a3c7b
->   [    0.887084] Tainted: [W]=WARN
->   [    0.887409] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS unknown 2/2/2022
->   [    0.888241] RIP: 0010:do_one_initcall+0x128/0x380
->   [    0.888720] Code: f3 0f 1e fa 41 be ff ff ff ff e9 0f 01 00 00 0f 1f 44 00 00 41 81 e7 ff ff ff 7f 49 89 db 41 ba de c5 85 f3 45 03 53 f1 74 02 <0f> 0b 41 ff d3 0f 1f 00 41 89 c6 0f 1f 44 00 00 c6 04 24 00 65 8b
->   [    0.890598] RSP: 0018:ff3f93e5c052f970 EFLAGS: 00010217
->   [    0.891129] RAX: ffffffffb4c105b8 RBX: ffffffffc0602010 RCX: 0000000000000000
->   [    0.891850] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffffc0602010
->   [    0.892588] RBP: ff3f93e5c052fc88 R08: 0000000000000020 R09: 0000000000000000
->   [    0.893305] R10: 000000002a378b84 R11: ffffffffc0602010 R12: 00000000000069c6
->   [    0.894003] R13: ff1f0090c5596900 R14: ff1f0090c15a55c0 R15: 0000000000000000
->   [    0.894693] FS:  00007ffb712c0740(0000) GS:ff1f00942fb80000(0000) knlGS:0000000000000000
->   [    0.895453] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->   [    0.896020] CR2: 00007ffffc4424c8 CR3: 0000000100af4002 CR4: 0000000000771ef0
->   [    0.896698] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->   [    0.897391] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->   [    0.898077] PKRU: 55555554
->   [    0.898337] Call Trace:
->   [    0.898577]  <TASK>
->   [    0.898784]  ? __die_body+0x6a/0xb0
->   [    0.899132]  ? die+0xa4/0xd0
->   [    0.899413]  ? do_trap+0xa6/0x180
->   [    0.899740]  ? do_one_initcall+0x128/0x380
->   [    0.900130]  ? do_one_initcall+0x128/0x380
->   [    0.900523]  ? handle_invalid_op+0x6a/0x90
->   [    0.900917]  ? do_one_initcall+0x128/0x380
->   [    0.901311]  ? exc_invalid_op+0x38/0x60
->   [    0.901679]  ? asm_exc_invalid_op+0x1a/0x20
->   [    0.902081]  ? __cfi_init_module+0x10/0x10 [crc32c_intel 5331566c5540f82df397056699bc4ddac8be1306]
->   [    0.902933]  ? __cfi_init_module+0x10/0x10 [crc32c_intel 5331566c5540f82df397056699bc4ddac8be1306]
->   [    0.903781]  ? __cfi_init_module+0x10/0x10 [crc32c_intel 5331566c5540f82df397056699bc4ddac8be1306]
->   [    0.904634]  ? do_one_initcall+0x128/0x380
->   [    0.905028]  ? idr_alloc_cyclic+0x139/0x1d0
->   [    0.905437]  ? security_kernfs_init_security+0x54/0x190
->   [    0.905958]  ? __kernfs_new_node+0x1ba/0x240
->   [    0.906377]  ? sysfs_create_dir_ns+0x8f/0x140
->   [    0.906795]  ? kernfs_link_sibling+0xf2/0x110
->   [    0.907211]  ? kernfs_activate+0x2c/0x110
->   [    0.907599]  ? kernfs_add_one+0x108/0x150
->   [    0.907981]  ? __kernfs_create_file+0x75/0xa0
->   [    0.908407]  ? sysfs_create_bin_file+0xc6/0x120
->   [    0.908853]  ? __vunmap_range_noflush+0x347/0x420
->   [    0.909313]  ? _raw_spin_unlock+0xe/0x30
->   [    0.909692]  ? free_unref_page+0x22c/0x4c0
->   [    0.910097]  ? __kmalloc_cache_noprof+0x1a8/0x360
->   [    0.910546]  do_init_module+0x60/0x250
->   [    0.910910]  __se_sys_finit_module+0x316/0x420
->   [    0.911351]  do_syscall_64+0x88/0x170
->   [    0.911699]  ? __x64_sys_lseek+0x68/0xb0
->   [    0.912077]  ? syscall_exit_to_user_mode+0x97/0xc0
->   [    0.912538]  ? do_syscall_64+0x94/0x170
->   [    0.912902]  ? syscall_exit_to_user_mode+0x97/0xc0
->   [    0.913353]  ? do_syscall_64+0x94/0x170
->   [    0.913709]  ? clear_bhb_loop+0x45/0xa0
->   [    0.914071]  ? clear_bhb_loop+0x45/0xa0
->   [    0.914428]  ? clear_bhb_loop+0x45/0xa0
->   [    0.914767]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
->   [    0.915089] RIP: 0033:0x7ffb713dc1fd
->   [    0.915316] Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e3 fa 0c 00 f7 d8 64 89 01 48
->   [    0.916491] RSP: 002b:00007ffffc4454a8 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
->   [    0.916964] RAX: ffffffffffffffda RBX: 000055f28c6a5420 RCX: 00007ffb713dc1fd
->   [    0.917413] RDX: 0000000000000000 RSI: 000055f26c40cc03 RDI: 0000000000000003
->   [    0.917858] RBP: 00007ffffc445560 R08: 0000000000000001 R09: 00007ffffc4454f0
->   [    0.918302] R10: 0000000000000040 R11: 0000000000000246 R12: 000055f26c40cc03
->   [    0.918748] R13: 0000000000060000 R14: 000055f28c6a4b50 R15: 000055f28c6ac5b0
->   [    0.919211]  </TASK>
->   [    0.919356] Modules linked in: crc32c_intel(+)
->   [    0.919661] ---[ end trace 0000000000000000 ]---
-> 
-> I also see some other WARNs interleaved along the lines of
-> 
->   [    0.982759] no CFI hash found at: 0xffffffffc0608000 ffffffffc0608000 cc cc cc cc cc
->   [    0.982767] WARNING: CPU: 5 PID: 170 at arch/x86/kernel/alternative.c:1204 __apply_fineibt+0xa6d/0xab0
-> 
-> The console appears to be a bit of a mess after that initial message.
-> 
-> If there is any more information I can provide or patches I can test, I
-> am more than happy to do so.
- 
-I've got similar report from kbuild bot a few days ago:
-https://lore.kernel.org/all/202410202257.b7edc376-lkp@intel.com
+the m68k port has reached the point where switching the default alignment
+from 16-bit to 32-bit is inevitable as the number of packages affected by
+alignment issues have become too large. It even includes Python 3.13 these
+days.
 
-I fixed fineibt handling in v7:
-https://lore.kernel.org/linux-mm/20241023162711.2579610-1-rppt@kernel.org
+Since I don't think the situation is getting better by postponing action he=
+re
+in the future, I suggest that we have a virtual meetup soonish to discuss a
+strategy for switching the port over.
 
-> Cheers,
-> Nathan
-> 
+Maybe a page could be created either on the Debian or Gentoo Wiki to draft =
+a design
+for switching over. Geert also mentioned that we should use this transition=
+ to clean
+up the kernel ABI by removing old syscalls and switch the kernel to asm-gen=
+eric which
+is why I have included Arnd Bergmann in the CC list.
 
--- 
-Sincerely yours,
-Mike.
+Please join #gentoo-m68k on Libera if you want to discuss this issue.
+
+Adrian
+
+--=20
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
