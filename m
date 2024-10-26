@@ -1,96 +1,110 @@
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 672971632D1
-	for <linux-m68k@vger.kernel.org>; Sat, 26 Oct 2024 10:46:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 529892AD0C
+	for <linux-m68k@vger.kernel.org>; Sat, 26 Oct 2024 15:42:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729939590; cv=none; b=M3cWiGQwhAzpn03rmzvnsTK/CKmrNSfHZv/oSYSqAZ4o86pZSZlw+/jXzaovqbkVP0+V7syoqWm1EHoc6BsPt5y98C/j3YzynC8oGcdEHRR1SkUSAb4u8kWlnQc6D97fzXpFYu2zOt+11G/96ANrteVTyKCLD9/fbPVn3WUSTt4=
+	t=1729957362; cv=none; b=iJykFBnirdB/yFDpwCWHYV+hY0RxWPZsYkOUIRcMX5Sywm0/ZzrsBuakL5y66qZl87bQqRVt69FO3DjowT5AaTuP10Pnh4zcL2zC5ajtN9wUSRu37WcjiXFCsVu/AevGhm2S0SFJy4Z/XIZqb51gkvQBcJVehloaBzp6JiXGWTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729939590; c=relaxed/simple;
-	bh=dloEx77QzWDvLN20c6Zk7nOFt/KB46v4mdREn+XfYnk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=E2QP6LB3Eigp3Qw5CvPt/VXqxFuTii7bEwDotYaYOJ+jSCMQvdQGCLmINRiPwyTYsUilQgX+wHdv1lAqHMsyGbKDZydnsaweKxiTvmlicI1OOiQKYnklXIOx9NZwqf8JPHOTxloWVMO2VJ3AbwPfDGJjLIRefg75MzCW8IToqHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	s=arc-20240116; t=1729957362; c=relaxed/simple;
+	bh=D04PMvOE3mDoeSJtzdrIJ1CY/PXtYyYc5M+dBT4nKzE=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=ux8/XqTuf3QZHqUDXeImnUNc9SZaiwWsjE5Q8FY3xplG7iJz5KI0LPebinIYixbY2V5XoZnl9Zz0xFqdmdmY2UbatjNQhcBxHEw/sZh38ytvNHGN1QWJWtzW7iG54GzX6tuKSz03vwN/QH55eehJcu2/a42jmkFMAIoCTBBD5QM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tqn3TRND; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-6e35bf59cf6so38186507b3.0
-        for <linux-m68k@vger.kernel.org>; Sat, 26 Oct 2024 03:46:27 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tqn3TRND"
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a99f629a7aaso475471766b.1
+        for <linux-m68k@vger.kernel.org>; Sat, 26 Oct 2024 08:42:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729957358; x=1730562158; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3uRK/egINE72ZsJZb3+P6JG9YhGV5Rq0ygMTeMbIUdY=;
+        b=Tqn3TRNDIl4+MeYVQO6jajq0SWRuss6j8+Z5D8anxGWOrFc8nPBii4IKviKuXCOVJ6
+         1DeRJRSke4QBLMrYz4LKTCNjVys6p+M0oki+yxAeOJXN357eLnoLvEibAQCAqkqyWZLJ
+         2tNeHvL4cHoaOAKe6KsTQ4/kCUH4XOv3rMJMyF4cFZ+tAPm+t0e1wzlcJRY69XuV5z0v
+         IcDNEbheRyTmTVHo+NfuLI2G8D76tZWKGMZXsxItkefkSme7Z7sEly3n4iYpb8L3Aztj
+         zHd+QREkfoXItaEPFyqahtu1hVkHV06Pa6GnJPu4T2dLjnMMw/8WwiKd95sso4jKEz4K
+         U2Ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729939585; x=1730544385;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=db/67dZAtffr2fqu1c2Lrf8ne3KOQ+6X28MROv/bERo=;
-        b=gMlfc2kpTzbb9YZuIMKbf9c8+zzYN5QyF3qpD5lwLU4Z1w+4MXMqDo+rjScpS0m0hJ
-         wQ0yGBSC2cDmNu2lt+9tSMqN0PoC0sm2WyCpFmgV0z6587OFxUeW7so3+eNz7cREqQjU
-         Sw+SrRY3zyq2pHe3D56+rAnAbAyTpktDmKJPZc88D8yKEPrWgGMUMZS2hFnNju0cfoGB
-         W88ulq9B/mcLu2I2YKo/wVteHyJPy/FER86TJ27NrPf7tE0U7N+BSreWJcxHezjb1XtC
-         0hQZ3kdhHjeKDIEa3DzGc7ynnWDTK1KQWmZ9pMSaZlG66Vr4iXSjCdLsVR3Dy2ml5zjd
-         35uw==
-X-Forwarded-Encrypted: i=1; AJvYcCV6qIjFNeb7r9+Kyf7+O7SnAp14q7ieKMMFYMA7cM8ODhDvSvaPU0Q3pCXvyFwe8eZF68Aif4hIVMIG@vger.kernel.org
-X-Gm-Message-State: AOJu0YzLwXsiMaDeiQtHVieiIkcy87RyjPoxqVlhUydOAqKaJ1rNdGrK
-	lhj/d9BSpD2WsxP6rAWzyKJKB9J1gaiPUwaxnv2uzZ0TFq7ofkEHW76VWV4P
-X-Google-Smtp-Source: AGHT+IGjUqsbPP4qmdZ3j6ABB8teROd6WFMsbM/iAW75cOznpsg6XDZsbfHaiJBmMiyEsDaysgi5kA==
-X-Received: by 2002:a05:690c:74c5:b0:6e2:1eaa:1c90 with SMTP id 00721157ae682-6e857fe6e2cmr70985827b3.18.1729939585070;
-        Sat, 26 Oct 2024 03:46:25 -0700 (PDT)
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6e9c6cae7f4sm6077977b3.143.2024.10.26.03.46.24
+        d=1e100.net; s=20230601; t=1729957358; x=1730562158;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3uRK/egINE72ZsJZb3+P6JG9YhGV5Rq0ygMTeMbIUdY=;
+        b=hmaNBt5VqzwMLjlMHTBlUWwQDfR3//qYgWRMJCIxpCT9OhjTk2ciqBmlWcIqrWU6GY
+         9XdRooa7a1BrKRr3Du3iAOEIWqJTP2JC9l5ai0y4YYLAJTmjYXlXCEOoqAcbtISSnSee
+         1fSgAdDuvHCnjIgihw8e188cv/FCxMlEFFEmuwlNEekLl7K5SpbXWLfFoTUajpRpsPH9
+         NSlb+0qKp2ABjBCpjleR8/DS1qdfwU+cLIM+NcOcE4qYxPaepEglv5tZHyUl88y8wRj4
+         lujRM1NCha180PIHn2BImy4s/shxk8n2gWjs2cZTTNf/Te44sYUCO8jjIdb7SXB2marq
+         2QZQ==
+X-Gm-Message-State: AOJu0YxOA+dHa3HletOmWImKGIRwhQ2/pKcRMPIC6sBmMw1PKVoDGU13
+	rUeBxQEXAOJgz3DK/orjKJQB7z1Nxh7lhGY/4qUH4f+WOWSr+WpzAnnuew==
+X-Google-Smtp-Source: AGHT+IEvDfxJpREfma3l+p1uhntTRg8XDDW1JxKLXwWwn6OphMb5OUUw+rYsmBrvzVWJi0TR3uEJlA==
+X-Received: by 2002:a17:907:60cb:b0:a9a:a666:4c7 with SMTP id a640c23a62f3a-a9de38e3fd7mr244844666b.24.1729957357789;
+        Sat, 26 Oct 2024 08:42:37 -0700 (PDT)
+Received: from gmail.com ([2a01:e11:1403:8620:e191:6b6d:340e:d5c5])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9b1f2971ddsm184567466b.100.2024.10.26.08.42.34
         for <linux-m68k@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Oct 2024 03:46:24 -0700 (PDT)
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-e29218d34f8so2223854276.1
-        for <linux-m68k@vger.kernel.org>; Sat, 26 Oct 2024 03:46:24 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWqhvph56zZJWGGWR0poM15c6my7a5+fFfbf5NZhBN8MUdCNNjcUsVRykPegoav96A355cnZ34mqWnQ@vger.kernel.org
-X-Received: by 2002:a25:ae59:0:b0:e29:3bc:9a89 with SMTP id
- 3f1490d57ef6-e2ec73d8daemr7098714276.27.1729939584112; Sat, 26 Oct 2024
- 03:46:24 -0700 (PDT)
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Oct 2024 08:42:36 -0700 (PDT)
+From: Paolo Pisati <p.pisati@gmail.com>
+To: linux-m68k <linux-m68k@vger.kernel.org>
+Subject: [PATCH 0/1] [RFC][NOT WORKING] amiga: pcmcia: inb()/inw() on GAYLE_IO space
+Date: Sat, 26 Oct 2024 17:42:32 +0200
+Message-Id: <20241026154233.351261-1-p.pisati@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <3a5e171bf42e5273eb8235cba04e8328b19c2ca4.camel@physik.fu-berlin.de>
- <383faec7-8987-4680-920d-8f802e1bea34@app.fastmail.com> <bfc235822cf8f773689abfefe1a75abfcf860c93.camel@physik.fu-berlin.de>
- <97b0a5de-885f-ffde-3739-f7f29b16d3bd@mirbsd.de>
-In-Reply-To: <97b0a5de-885f-ffde-3739-f7f29b16d3bd@mirbsd.de>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Sat, 26 Oct 2024 12:46:11 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUL3YEW=UNtb4NNstejFFkguZd0LQ9V9xkgwAg74EQ=-Q@mail.gmail.com>
-Message-ID: <CAMuHMdUL3YEW=UNtb4NNstejFFkguZd0LQ9V9xkgwAg74EQ=-Q@mail.gmail.com>
-Subject: Re: Plan needed for switching m68k to 32-bit alignment
-To: Thorsten Glaser <tg@debian.org>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Arnd Bergmann <arnd@arndb.de>, 
-	linux-m68k <linux-m68k@vger.kernel.org>, debian-68k <debian-68k@lists.debian.org>, 
-	James Le Cuirot <chewi@aura-online.co.uk>, Sam James <sam@gentoo.org>, 
-	Andreas Schwab <schwab@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Thorsten,
+Hi there,
 
-On Fri, Oct 25, 2024 at 11:38=E2=80=AFPM Thorsten Glaser <tg@debian.org> wr=
-ote:
-> Additionally=E2=80=A6 has anyone done the simple =E2=80=9Cenable -malign-=
-int
-> in GCC, begin rebuilding stuff, first glibc, then others,
-> see what breaks=E2=80=9D? Is there sufficient effect that we cannot
-> incrementally change over?
+attached is a driver for the pcmcia side of C='s gayle - it's a WIP, as such
+there are many dev_dbg()/pr_err()/pr_dbg() scattered around, you've been warned.
 
-I guess there is code out there that checks for e.g. __mc68000__
-and will start doing the wrong thing...
+It recognize all pcmcia cards i tried (IOW gayle's attribute space is read and
+parsed correctly), socket's interrupt work (IOW you can plug & unplug cards),
+but *it seems* any I/O read operation return bogus data (e.g. 0xff or 0xfff).
 
-Gr{oetje,eeting}s,
+Here's a dmesg dealing with with a 3Com 3c589 ethernet card:
+http://dpaste.com//84TPTPLNV - notice the "hw_addr ff:ff:ff:ff:ff:ff" or
+"exiting interrupt, status ffff".
 
-                        Geert
+AFAIK inb()/inw() already add the GAYLE_IO offset (
+AG_ISA_IO_B and AG_ISA_IO_W in arch/m68k/include/asm/io_mm.h), and i didn't know
+if i could read directly (without an ioremap() first), so i tried both cases:
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
+1) ioreamp() sock->phys_io, and subtract the GAYLE_IO offset (see
+sock->socket.io_offset).
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+or 
+
+2) set Amiga base IO port to 0x0 and patch
+drivers/pcmcia/rsrc_mgr.c::static_find_io() (see https://dpaste.com//B75LTFF3V)
+
+In both case the 3c589_cs driver request an I/O aperture at 0x0300, large
+0x0010, receives it, but all read operations return 0xff or 0xffff.
+
+Any idea? Any guess is welcome since i'm running out of ideas ATM.
+
+Paolo Pisati (1):
+  pcmcia: gayle: initial support
+
+ arch/m68k/amiga/pcmcia.c          |   5 +
+ arch/m68k/amiga/platform.c        |  29 +++
+ arch/m68k/include/asm/amipcmcia.h |  11 ++
+ drivers/pcmcia/Kconfig            |   8 +
+ drivers/pcmcia/Makefile           |   1 +
+ drivers/pcmcia/gayle.c            | 307 ++++++++++++++++++++++++++++++
+ 6 files changed, 361 insertions(+)
+ create mode 100644 drivers/pcmcia/gayle.c
+
+-- 
+2.34.1
+
