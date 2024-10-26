@@ -1,153 +1,96 @@
-Received: from fhigh-a6-smtp.messagingengine.com (fhigh-a6-smtp.messagingengine.com [103.168.172.157])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EA806A009
-	for <linux-m68k@vger.kernel.org>; Sat, 26 Oct 2024 07:31:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 672971632D1
+	for <linux-m68k@vger.kernel.org>; Sat, 26 Oct 2024 10:46:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729927918; cv=none; b=EBTG2G1fZo3uhGZGgg3hoAWdzUGLPgt4pY5PRB5kCydcfYbYITCa5zF1NPfLaxQGhRuF//dLCS1B1Sk8m0iStAa4jg2Ou8tqWPBH2SqKO/zFE1OY9wYlx5bgVOjhIH3VHZMSmB7mke/L4ibE7pEnGVw04kQS/vfL5dMTMtjV0QE=
+	t=1729939590; cv=none; b=M3cWiGQwhAzpn03rmzvnsTK/CKmrNSfHZv/oSYSqAZ4o86pZSZlw+/jXzaovqbkVP0+V7syoqWm1EHoc6BsPt5y98C/j3YzynC8oGcdEHRR1SkUSAb4u8kWlnQc6D97fzXpFYu2zOt+11G/96ANrteVTyKCLD9/fbPVn3WUSTt4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729927918; c=relaxed/simple;
-	bh=QjJpNEDN8z90cBI3rA1UUVYzlD2gSYmIQAfIhifneLg=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=mKLMc8arUvE4Onz/vE07eXp5iCqq9doz7BBMndoq1pLbK307y64lGFPXEsQPDA5OKHNQICJqjFZnoLbDnO5hqmr4qTvGzmhzllQ+92IrxzDoHnVgH6SkVhQJui5rMd4iJGb5OLu7b9IkGovLKOST/Nkvnv/Fg/YmE+XVXj+8rH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=W9EJqy4d; arc=none smtp.client-ip=103.168.172.157
+	s=arc-20240116; t=1729939590; c=relaxed/simple;
+	bh=dloEx77QzWDvLN20c6Zk7nOFt/KB46v4mdREn+XfYnk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=E2QP6LB3Eigp3Qw5CvPt/VXqxFuTii7bEwDotYaYOJ+jSCMQvdQGCLmINRiPwyTYsUilQgX+wHdv1lAqHMsyGbKDZydnsaweKxiTvmlicI1OOiQKYnklXIOx9NZwqf8JPHOTxloWVMO2VJ3AbwPfDGJjLIRefg75MzCW8IToqHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="W9EJqy4d"
-Received: from phl-compute-07.internal (phl-compute-07.phl.internal [10.202.2.47])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 40008114009F;
-	Sat, 26 Oct 2024 03:31:53 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-07.internal (MEProxy); Sat, 26 Oct 2024 03:31:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1729927913; x=1730014313; bh=aaMtqztG11tMv48u7qCnyUqdW3nh
-	/exmpI9zT38MnaQ=; b=W9EJqy4dAG/T49ttSq2CkVswI6EhoDG+K+ecBvbV/AU2
-	lx122ZTW1cHDmwwLKEKt6hqaqkKhL3wkVXjMH8SNlZyA/g1GucFmuotQbr3o/klV
-	FeQG9jVXfp7S1CcuJD68XeW+bRVj1Nmsd7alm10L0z36BcsQFFCcznh+ET7HMGax
-	L/gqSuLgftcsZmXZlOL5JyTkK4234j0x3Vp6aT406p1eAIl4vhkPOwDc+aJpAf4o
-	6BZUsylOHOlC1Mk4N1WgPrxw8pvp63B3G1tJBD3vijjcH3XODn3xGDM/e44zWmOU
-	Dl/7QYAoMpAE0zuQv517zgEROwZUiEDnJEb3noJX3A==
-X-ME-Sender: <xms:55ocZ2wNgQgTVZ1TCwx0sWUCmpeloi11gHLCCJ4NFLe63n2jMQqiUg>
-    <xme:55ocZyTbh-DmB4x1ZD3LnP7RmwpVCbruMzOV51yLd5tWebuwxDtG1ltOhVWGfygat
-    GiYQ1HpJ9hS7PRQPU4>
-X-ME-Received: <xmr:55ocZ4X-St1vHV1_DW_nk1AGc08STt0fiJRvhQIzygtHVa4eGr-jDGO_ZIGr9vhiV6FYOcfqW_Czgb2vHY5FFyViecSlmt80wfQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdejfedguddukecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefujgfkfhggtgesthdtredttddtvden
-    ucfhrhhomhephfhinhhnucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkh
-    drohhrgheqnecuggftrfgrthhtvghrnhepgffhiefhgedvffeukeffteettdejudduledu
-    keduuefhfefhjeeivdeggfdutdevnecuffhomhgrihhnpeguvggsihgrnhdrohhrghenuc
-    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghi
-    nheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopeelpdhmohguvgepsh
-    hmthhpohhuthdprhgtphhtthhopehglhgruhgsihhtiiesphhhhihsihhkrdhfuhdqsggv
-    rhhlihhnrdguvgdprhgtphhtthhopehlihhnuhigqdhmieekkhesvhhgvghrrdhkvghrnh
-    gvlhdrohhrghdprhgtphhtthhopeguvggsihgrnhdqieekkheslhhishhtshdruggvsghi
-    rghnrdhorhhgpdhrtghpthhtoheptghhvgifihesrghurhgrqdhonhhlihhnvgdrtghord
-    hukhdprhgtphhtthhopehsrghmsehgvghnthhoohdrohhrghdprhgtphhtthhopehgvggv
-    rhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehstghhfigrsgeslhhinh
-    hugidqmheikehkrdhorhhgpdhrtghpthhtoheprghrnhgusegrrhhnuggsrdguvgdprhgt
-    phhtthhopehtghesmhhirhgsshgurdguvg
-X-ME-Proxy: <xmx:55ocZ8hIGddUiTJKEfcunoZlRP4AAIoj7S_DBzIrWHbKnpygbDr46g>
-    <xmx:55ocZ4BxyxGdrQ1n75rGhh6vsl_6UanYZ07TQVvdNmWqPWLyT-HrWw>
-    <xmx:55ocZ9Lvfn7OXi-s0SN0j4uDeGqNXkGUcLLyvKJFs4e1rx-gbAeRhQ>
-    <xmx:55ocZ_BZuIuCXTZ9EZ9WiTcY1KNZPvtaN-MCUPUeNgtutWSF274E1A>
-    <xmx:6ZocZ02S-jH57ccqfW5DjhXRd0_1skIvwj0YwpoyrDmWKxA4zy8sDFh8>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 26 Oct 2024 03:31:49 -0400 (EDT)
-Date: Sat, 26 Oct 2024 18:31:42 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-cc: linux-m68k <linux-m68k@vger.kernel.org>, 
-    debian-68k <debian-68k@lists.debian.org>, 
-    James Le Cuirot <chewi@aura-online.co.uk>, Sam James <sam@gentoo.org>, 
-    Geert Uytterhoeven <geert@linux-m68k.org>, 
-    Andreas Schwab <schwab@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>, 
-    Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: Plan needed for switching m68k to 32-bit alignment
-In-Reply-To: <fe7eaef152b4a245c6bab76ae02946a0746bdf65.camel@physik.fu-berlin.de>
-Message-ID: <eb26c030-5bc9-0e2e-1222-64306bfa7553@linux-m68k.org>
-References: <3a5e171bf42e5273eb8235cba04e8328b19c2ca4.camel@physik.fu-berlin.de>  <d95cbe0f-696e-813a-3655-f982531dfb41@linux-m68k.org> <fe7eaef152b4a245c6bab76ae02946a0746bdf65.camel@physik.fu-berlin.de>
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-6e35bf59cf6so38186507b3.0
+        for <linux-m68k@vger.kernel.org>; Sat, 26 Oct 2024 03:46:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729939585; x=1730544385;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=db/67dZAtffr2fqu1c2Lrf8ne3KOQ+6X28MROv/bERo=;
+        b=gMlfc2kpTzbb9YZuIMKbf9c8+zzYN5QyF3qpD5lwLU4Z1w+4MXMqDo+rjScpS0m0hJ
+         wQ0yGBSC2cDmNu2lt+9tSMqN0PoC0sm2WyCpFmgV0z6587OFxUeW7so3+eNz7cREqQjU
+         Sw+SrRY3zyq2pHe3D56+rAnAbAyTpktDmKJPZc88D8yKEPrWgGMUMZS2hFnNju0cfoGB
+         W88ulq9B/mcLu2I2YKo/wVteHyJPy/FER86TJ27NrPf7tE0U7N+BSreWJcxHezjb1XtC
+         0hQZ3kdhHjeKDIEa3DzGc7ynnWDTK1KQWmZ9pMSaZlG66Vr4iXSjCdLsVR3Dy2ml5zjd
+         35uw==
+X-Forwarded-Encrypted: i=1; AJvYcCV6qIjFNeb7r9+Kyf7+O7SnAp14q7ieKMMFYMA7cM8ODhDvSvaPU0Q3pCXvyFwe8eZF68Aif4hIVMIG@vger.kernel.org
+X-Gm-Message-State: AOJu0YzLwXsiMaDeiQtHVieiIkcy87RyjPoxqVlhUydOAqKaJ1rNdGrK
+	lhj/d9BSpD2WsxP6rAWzyKJKB9J1gaiPUwaxnv2uzZ0TFq7ofkEHW76VWV4P
+X-Google-Smtp-Source: AGHT+IGjUqsbPP4qmdZ3j6ABB8teROd6WFMsbM/iAW75cOznpsg6XDZsbfHaiJBmMiyEsDaysgi5kA==
+X-Received: by 2002:a05:690c:74c5:b0:6e2:1eaa:1c90 with SMTP id 00721157ae682-6e857fe6e2cmr70985827b3.18.1729939585070;
+        Sat, 26 Oct 2024 03:46:25 -0700 (PDT)
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6e9c6cae7f4sm6077977b3.143.2024.10.26.03.46.24
+        for <linux-m68k@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 26 Oct 2024 03:46:24 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-e29218d34f8so2223854276.1
+        for <linux-m68k@vger.kernel.org>; Sat, 26 Oct 2024 03:46:24 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWqhvph56zZJWGGWR0poM15c6my7a5+fFfbf5NZhBN8MUdCNNjcUsVRykPegoav96A355cnZ34mqWnQ@vger.kernel.org
+X-Received: by 2002:a25:ae59:0:b0:e29:3bc:9a89 with SMTP id
+ 3f1490d57ef6-e2ec73d8daemr7098714276.27.1729939584112; Sat, 26 Oct 2024
+ 03:46:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <3a5e171bf42e5273eb8235cba04e8328b19c2ca4.camel@physik.fu-berlin.de>
+ <383faec7-8987-4680-920d-8f802e1bea34@app.fastmail.com> <bfc235822cf8f773689abfefe1a75abfcf860c93.camel@physik.fu-berlin.de>
+ <97b0a5de-885f-ffde-3739-f7f29b16d3bd@mirbsd.de>
+In-Reply-To: <97b0a5de-885f-ffde-3739-f7f29b16d3bd@mirbsd.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Sat, 26 Oct 2024 12:46:11 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUL3YEW=UNtb4NNstejFFkguZd0LQ9V9xkgwAg74EQ=-Q@mail.gmail.com>
+Message-ID: <CAMuHMdUL3YEW=UNtb4NNstejFFkguZd0LQ9V9xkgwAg74EQ=-Q@mail.gmail.com>
+Subject: Re: Plan needed for switching m68k to 32-bit alignment
+To: Thorsten Glaser <tg@debian.org>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Arnd Bergmann <arnd@arndb.de>, 
+	linux-m68k <linux-m68k@vger.kernel.org>, debian-68k <debian-68k@lists.debian.org>, 
+	James Le Cuirot <chewi@aura-online.co.uk>, Sam James <sam@gentoo.org>, 
+	Andreas Schwab <schwab@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi Thorsten,
 
-On Fri, 25 Oct 2024, John Paul Adrian Glaubitz wrote:
+On Fri, Oct 25, 2024 at 11:38=E2=80=AFPM Thorsten Glaser <tg@debian.org> wr=
+ote:
+> Additionally=E2=80=A6 has anyone done the simple =E2=80=9Cenable -malign-=
+int
+> in GCC, begin rebuilding stuff, first glibc, then others,
+> see what breaks=E2=80=9D? Is there sufficient effect that we cannot
+> incrementally change over?
 
-> On Fri, 2024-10-25 at 20:06 +1100, Finn Thain wrote:
-> > On Fri, 25 Oct 2024, John Paul Adrian Glaubitz wrote:
-> > 
-> > > the m68k port has reached the point where switching the default 
-> > > alignment from 16-bit to 32-bit is inevitable as the number of 
-> > > packages affected by alignment issues have become too large. It even 
-> > > includes Python 3.13 these days.
-> > > 
-> > 
-> > Are there any bug reports you could link to, in support of the "too 
-> > large" claim?
-> 
-> The following packages require 32-bit alignment:
-> 
-> - mold
-> - LLVM
-> - gccgo
-> - Qt5 (several packages affected)
-> - Qt6 (several packages affected)
-> - OpenJDK (all versions)
-> - Python >= 3.13
-> - Rust
-> 
+I guess there is code out there that checks for e.g. __mc68000__
+and will start doing the wrong thing...
 
-That seems to imply that someone requires that those packages are ported. 
-But without a bug report from such a user, to say the package is broken or 
-missing, one must question the real requirement.
+Gr{oetje,eeting}s,
 
-> Those are the most important projects from the tip of my head, but they 
-> are already the biggest blockers. There is no chance that the upstream 
-> maintainers will adjust their packages for 16-bit alignment, so these 
-> will be forever broken on m68k if we don't switch.
-> 
+                        Geert
 
-I'm curious to see such a refusal in context, presumably as a result of 
-patch review, in an upstream project bug tracker.
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
 
-I'm not actually expecting to see good patches refused by core projects 
-like Python. (Note that MicroPython is available for commercially active 
-CPUs like the PIC16 family, which are 8-bit processors with 16-bit address 
-bus.)
-
-If upstream QT or Java developers decide that their software is "not for 
-us", they may well have a point. Those packages are not installed on my 
-m68k systems, FWIW.
-
-OTOH, as I've said before, if upstream developers (like Arnd) are looking 
-ahead to 128-bit platforms then they will be paying attention to alignment 
-rules. They should be inclined to favour explicit struct definitions over 
-implicit alignment, don't you think?
-
-> I understand that this might be a painful transition, but I don't see 
-> any other way to keep the m68k port alive in the foreseeable future 
-> unless we fix this problem which keeps blocking the port.
-> 
-> You can see how the Debian m68k port has been falling behind because of 
-> the alignment issues in these statistics: 
-> https://buildd.debian.org/stats/graph-ports-big.png
-> 
-
-I could imagine a viable transition to a new ABI driven by widespread user 
-demand or involvement. But not by distro stats or maintainer preference.
-
-Absent the right conditions, perhaps it is best focus limited porter and 
-developer effort on patching only those packages that are really required.
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
