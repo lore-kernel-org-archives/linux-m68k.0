@@ -1,167 +1,110 @@
-Received: from fout-b3-smtp.messagingengine.com (fout-b3-smtp.messagingengine.com [202.12.124.146])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from herc.mirbsd.org (bonn.mirbsd.org [217.91.129.195])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E86564C97
-	for <linux-m68k@vger.kernel.org>; Sun, 27 Oct 2024 02:49:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.146
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39648C2E0
+	for <linux-m68k@vger.kernel.org>; Sun, 27 Oct 2024 03:22:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.91.129.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729997365; cv=none; b=AVl5cpI7Mx19YDAlzcJLkf3/zaF0F+OgsjkGDRbh+wj2r3rXlKeKsuFweYdd7SiIJpbqD2/GOeaiUBd7qpNyKSaBrx7a4P6PBTyzfimzf9Y7Q4ZVUsoU2Vp48IcWms+SbhiI5Nlxf3cECWn5Lq6GYihedWpSgQueQn8ThFiMvHY=
+	t=1729999345; cv=none; b=udMJCEa1cnArHoFIlGoVp7mX5lFiQY4woaqDKP2YvAMgjEw4Z6E0qWvg8nHfh2Ceta53uBmYjvRrwPmLLsILelBuwhRzth7p/+Q8TVj4VoKiX736dYEg/afXl28A8qTrtqm3OxuXdlxrGt+9XgATCI6AjVLADt5uSnMD9HX83os=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729997365; c=relaxed/simple;
-	bh=POyw5WqLDMGGY9Benf3ZvDNkZhXff4wclHPBbE3c5mc=;
+	s=arc-20240116; t=1729999345; c=relaxed/simple;
+	bh=7Rv/nlr1jOjZ7avSSPyngyHHdon+rE5HhbVYNx67wMk=;
 	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=U89yynWzjk7gCEnU17q6SJzCpatmO9CasDPaZV8/IVFxzB8puxV1euucWLn6hSjjpNz7ZUilyd+OR0LyPWhxRgM8l65T+NU9033jV10aII/g2y+8T/xWLPnFIY8GIcE5ZgqDcReZovkqkvLtdfCs1OYxiEe4hPQL2nuN5wToKAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=R/HfCvnP; arc=none smtp.client-ip=202.12.124.146
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="R/HfCvnP"
-Received: from phl-compute-12.internal (phl-compute-12.phl.internal [10.202.2.52])
-	by mailfout.stl.internal (Postfix) with ESMTP id 8A1E8114009C;
-	Sat, 26 Oct 2024 22:49:19 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-12.internal (MEProxy); Sat, 26 Oct 2024 22:49:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-id:content-type
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1729997359; x=
-	1730083759; bh=f1gfuVhsV7kquAlrOl2WdvMo9eEyCDdND/5fSXWB66o=; b=R
-	/HfCvnPJVfG8MNLb4XVHrBH9LjJmUsQUNDWHrW6PCRcqFpmLcX0zdhkf5AlKAQfW
-	xWcZ4EHapqtV2we/J9UGTZ5xwYryZDTJ6RQh3I4kKNhgiBknMAkFC6rZWvE9P1fK
-	onZAJUYzATVZv3aTAlgKse4zoHqCAOjLrP/uNk22lTPY9kSh/ZSzL2Jut6Bu95+D
-	55bbhz/6QjqrZAF8EX12xa7galYDlPM8P5KtFR4yr3myaoRSfdWXVl1WGdwvuJwy
-	BuDObetJZODuIPQTeb3p+tGnv7FevRbOENZnpXbA38t/ZsDx0Tksi7//OQhOwY5+
-	6O9FoGyfGjBgQfC0hz7kQ==
-X-ME-Sender: <xms:LqodZwbNahBz2TGRQC47SWhP6s8XJ3Wk1GHLiL9-h6etT56j93Xj_A>
-    <xme:LqodZ7bLKm_IptoaxYf6kctUSQgdcnjcUbY-xB7tWOA6R-DmXftzuOv_m_Ige7pdR
-    AS8UvGFEcRJDwpIqOI>
-X-ME-Received: <xmr:LqodZ6-YZl-6lawSpaaz5dCpkBxu7w0SeCK9BzYEapv9aNp7dI2c4RMF2ivvYlueAOCOTqUrS6gEifpLIbPZWrwsRG0dIIRU2pI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdejhedgieefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepfffhvfevufgjkfhfgggtsehmtderredttdejnecu
-    hfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrd
-    horhhgqeenucggtffrrghtthgvrhhnpeejvdevleduveekheefhfehkeevvdelveeutedu
-    udfhvefffeefjefhhedvvdevhfenucffohhmrghinhepshgrfhgvtghpphdrohhrghdpgh
-    hnuhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhr
-    ohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhope
-    elpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehtghesuggvsghirghnrdhorhhg
-    pdhrtghpthhtohepghhlrghusghithiisehphhihshhikhdrfhhuqdgsvghrlhhinhdrug
-    gvpdhrtghpthhtoheplhhinhhugidqmheikehksehvghgvrhdrkhgvrhhnvghlrdhorhhg
-    pdhrtghpthhtohepuggvsghirghnqdeikehksehlihhsthhsrdguvggsihgrnhdrohhrgh
-    dprhgtphhtthhopegthhgvfihisegruhhrrgdqohhnlhhinhgvrdgtohdruhhkpdhrtghp
-    thhtohepshgrmhesghgvnhhtohhordhorhhgpdhrtghpthhtohepghgvvghrtheslhhinh
-    hugidqmheikehkrdhorhhgpdhrtghpthhtohepshgthhifrggssehlihhnuhigqdhmieek
-    khdrohhrghdprhgtphhtthhopegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:LqodZ6qoE5RANezF1GshAEN4q2hF7fL9f8V1yiof61f6FAGbhU4d-A>
-    <xmx:LqodZ7pQ49q22QFQ8_dYNrB3SoZOkZCejXrl_pBL5U_6kxHbEuugJw>
-    <xmx:LqodZ4QXr6WVTYYpw5KySchuP8vSb7qHHEaoJ4cFyKKnZdrRF3V2kw>
-    <xmx:LqodZ7os-3L_IZgkICMTaNvSc3TcobZd1ohPcamnAhvb68r7d1hPyQ>
-    <xmx:L6odZ_cKOQ3Pjud2-Mb5riFZXIEA1jKY-QfhAeaJu9M4VeOEM0p4LWV_>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 26 Oct 2024 22:49:15 -0400 (EDT)
-Date: Sun, 27 Oct 2024 13:49:09 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Thorsten Glaser <tg@debian.org>
-cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-    linux-m68k <linux-m68k@vger.kernel.org>, 
-    debian-68k <debian-68k@lists.debian.org>, 
-    James Le Cuirot <chewi@aura-online.co.uk>, Sam James <sam@gentoo.org>, 
-    Geert Uytterhoeven <geert@linux-m68k.org>, 
-    Andreas Schwab <schwab@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>
+	 MIME-Version:Content-Type; b=SbvNeu2jlE7V6yaz8RH1pMDYAIXSyMhHQSEPSA75h/REZyge+lguV1WDU/PQVwQ/qV1D5Z9seL7EDo3gv2q/rDVTk/neTODShjMjt18qiq2YHtJoP+5OWn8bytl7WZUwi5bgbUGapiBfWdNkHI/jFkZOC8J5XSMD9mMncEffCzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=none smtp.mailfrom=debian.org; arc=none smtp.client-ip=217.91.129.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=debian.org
+Received: from herc.mirbsd.org (tg@herc.mirbsd.org [192.168.0.82])
+	by herc.mirbsd.org (8.14.9/8.14.5) with ESMTP id 49R38ESr023413
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+	Sun, 27 Oct 2024 03:08:20 GMT
+Date: Sun, 27 Oct 2024 03:08:14 +0000 (UTC)
+From: Thorsten Glaser <tg@debian.org>
+X-X-Sender: tg@herc.mirbsd.org
+To: Finn Thain <fthain@linux-m68k.org>
+cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        linux-m68k <linux-m68k@vger.kernel.org>,
+        debian-68k <debian-68k@lists.debian.org>,
+        James Le Cuirot <chewi@aura-online.co.uk>, Sam James <sam@gentoo.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andreas Schwab <schwab@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>
 Subject: Re: Plan needed for switching m68k to 32-bit alignment
-In-Reply-To: <5e8917a2-b7c4-6c06-e63f-1f05eea32120@mirbsd.de>
-Message-ID: <a07af4eb-efba-d8f1-ace1-06da7a7067c0@linux-m68k.org>
-References: <3a5e171bf42e5273eb8235cba04e8328b19c2ca4.camel@physik.fu-berlin.de>  <d95cbe0f-696e-813a-3655-f982531dfb41@linux-m68k.org> <fe7eaef152b4a245c6bab76ae02946a0746bdf65.camel@physik.fu-berlin.de> <eb26c030-5bc9-0e2e-1222-64306bfa7553@linux-m68k.org>
+In-Reply-To: <a07af4eb-efba-d8f1-ace1-06da7a7067c0@linux-m68k.org>
+Message-ID: <Pine.BSM.4.64L.2410270301550.3007@herc.mirbsd.org>
+References: <3a5e171bf42e5273eb8235cba04e8328b19c2ca4.camel@physik.fu-berlin.de>
+  <d95cbe0f-696e-813a-3655-f982531dfb41@linux-m68k.org>
+ <fe7eaef152b4a245c6bab76ae02946a0746bdf65.camel@physik.fu-berlin.de>
+ <eb26c030-5bc9-0e2e-1222-64306bfa7553@linux-m68k.org>
  <5e8917a2-b7c4-6c06-e63f-1f05eea32120@mirbsd.de>
+ <a07af4eb-efba-d8f1-ace1-06da7a7067c0@linux-m68k.org>
+Content-Language: de-Zsym-DE-1901-u-em-text-rg-denw-tz-utc, en-Zsym-GB-u-cu-eur-em-text-fw-mon-hc-h23-ms-metric-mu-celsius-rg-denw-tz-utc-va-posix
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="-1463811774-875482578-1729990302=:29"
-Content-ID: <ddf4ffe5-a7c2-d286-f7d3-8231b1da8185@nippy.intranet>
-
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
----1463811774-875482578-1729990302=:29
-Content-Type: text/plain; CHARSET=UTF-8
+Content-Type: TEXT/PLAIN; charset=utf-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <816fd454-6f5d-adf5-3f47-8a144b23b129@nippy.intranet>
 
+Finn Thain dixit:
 
-On Sun, 27 Oct 2024, Thorsten Glaser wrote:
+>> >That seems to imply that someone requires that those packages are=20
+>> >ported.
+>>=20
+>> Yes, we do. Rust especially is killing the entire FOSS ecosystem.
+>>=20
+>> These all are conditio sine qua n=C5=8Dn when it comes to continuing
+>> Linux/m68k, as a whole.
+>
+>I think that's overstating the case. Alternatives to rust are available=20
+>and will be for the foreseeable future. Most notably,=20
 
-> >
-> >That seems to imply that someone requires that those packages are=20
-> >ported.
->=20
-> Yes, we do. Rust especially is killing the entire FOSS ecosystem.
->=20
-> These all are conditio sine qua n=C5=8Dn when it comes to continuing
-> Linux/m68k, as a whole.
->=20
+That=E2=80=99s not the point. Google, for example, are aggressively funding
+people to throw away perfectly working code and rewrite it in rust,
+or to at least add rust to projects. librsvg has been such a case for
+some time already, python-cryptography is, but now we=E2=80=99re losing eve=
+n
+freetype (!!!) and, possibly, even the Linux kernel.
 
-I think that's overstating the case. Alternatives to rust are available=20
-and will be for the foreseeable future. Most notably,=20
-https://safecpp.org/draft.html
+>https://gcc.gnu.org/wiki/RustFrontEnd
 
-I agree with your sentiment though, in that rust generally gets a lot of=20
-funding and hype. Even if the Rust Foundation doesn't care about=20
-supporting the backend for m68k, there is still a way for non-commercially=
-=20
-viable platforms to collaborate. In particular,=20
-https://gcc.gnu.org/wiki/RustFrontEnd
+That=E2=80=99s assuming it can build the same stuff the same way so it can
+be used in packaging.
 
-> >Absent the right conditions, perhaps it is best focus limited porter and
-> >developer effort on patching only those packages that are really require=
-d.
->=20
-> I tried my hand at Qt5. About 20 man-hours in I essentially gave up,
-> and that was without even getting to something I could put to a
-> compile and runtime test.
->=20
+>I expect alignment assumptions like that will end up putting more=20
+>platforms in the same predicament in future.
 
-I take your point about the amount of effort required (and the lack of=20
-resources). The answer may be to share the work better by enabling more=20
-collaboration.
+No, all the other platforms use natural alignment.
 
-It appears that NetBSD/m68k has naturally aligned ints. Perhaps you could=
-=20
-look at adding kernel support for their ABI, and get access to Qt and LLVM=
-=20
-that way, without impacting the existing ABI and its ecosystem.
+>"Natural" alignment is meaningless in the context of portable data
+>structures, as they exist without reference to any particular integer
 
-BTW, it has long annoyed me that two different 68k Mac bootloaders exist,=
-=20
-one each for Linux and NetBSD, which are duplicated effort, and have=20
-different sets of bugs. To my mind, this is another good opportunity to=20
-collaborate and avoid wasted developer effort (perhaps by dual licensing).
+Yeah, but in practice, all we have is ILP32 and LP64; the Windows=C2=AE
+world has LLP64 in addition. And natural alignment just means that
+all the data types=E2=80=99 alignment is their size. (Which kind of makes
+sense, so you can read them without getting an unalignment trap on
+SPARC or so.)
 
-> =E2=80=9CNatural=E2=80=9D alignment of data types has essentially become =
-a requirement=20
-> these days, and m68k is the only true outlyer (i386 could in theory, but=
-=20
-> the Unix psABI designers were sensible enough to not do it).
->=20
+>Q. What is the size of this struct, assuming baa.b is naturally aligned?
+>
+>struct baa {
+>        int a;
+>        long long b;
+>};
 
-I expect alignment assumptions like that will end up putting more=20
-platforms in the same predicament in future. "Natural" alignment is=20
-meaningless in the context of portable data structures, as they exist=20
-without reference to any particular integer unit. It is because your=20
-struct patches improve portability that I'd expect those patches to remain=
-=20
-acceptable upstream.
+For ILP32, LP64 and LLP64, it=E2=80=99s 4 (a) + 4 (padding) + 8 (b) =3D 16 =
+chars.
+More importantly, and relevant for Qt, struct baa is also 8-byte
+aligned, and malloc(3) results are usually 8=E2=80=91 or even 16-byte align=
+ed.
 
-Q. What is the size of this struct, assuming baa.b is naturally aligned?
-
-struct baa {
-        int a;
-        long long b;
-};
----1463811774-875482578-1729990302=:29--
+bye,
+//mirabilos
+--=20
+Gestern Nacht ist mein IRC-Netzwerk explodiert. Ich hatte nicht damit
+gerechnet, darum bin ich blutverschmiert=E2=80=A6 wer konnte ahnen, da=C3=
+=9F SIE so
+reagier=E2=80=99n=E2=80=A6 gestern Nacht ist mein IRC-Netzwerk explodiert~~=
+~
+=09(as of 2021-06-15 The MirOS Project temporarily reconvenes on OFTC)
