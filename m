@@ -1,130 +1,92 @@
-Received: from fhigh-b6-smtp.messagingengine.com (fhigh-b6-smtp.messagingengine.com [202.12.124.157])
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5504CA47
-	for <linux-m68k@vger.kernel.org>; Mon, 28 Oct 2024 04:51:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E67C7154444
+	for <linux-m68k@vger.kernel.org>; Mon, 28 Oct 2024 07:24:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730091084; cv=none; b=ADmzo1D6C9CCk+aHd2xoZ5qqfdM+K3xJhUeZZXVbBm9iEDKVry5Coww6o1XDIgiQNhYiXrnLXgHANLW+79TEmFSqjSez/mP5Hzb2oFGyIeMkbeX9Sn2dlvtA4jFHx3s2lr7/ZG/KUk/C+00QyLM0BMqbchpZQhOxGTFtxYYY6bI=
+	t=1730100290; cv=none; b=sBRkje7o2O2rdx23RYPmqlPFcSApwEWI7Dhlg2KekkYduv63JQD0j2SSF7noktP44y96I1gsvC38YBXqese5nsCzQZVI+BI0DvEDf5PmEwajLCQr9AzQFCM7cI+OcK3HdKYdTFDHC/lFmGUBlxvcAFDnDIf+b0xrwfPl5y/hneg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730091084; c=relaxed/simple;
-	bh=eqRnTelZ2saN6Z3B3i5gqHvcbaGOMcT7uFyAw5BvQjc=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=P5ocqVPkVZK8xlxS8/OTJH7aNwBxhga2OvSxnxfPsEzu6G8eSQ/eW+iKQ3vO/pPZrBLfqvWDo3Gr49vVVHUPlmQj/P+vpEUvWGiHEfpJIrXdFOQ7gORX4/Vw17+vFZ0dqdILaey2OARam4yZA6J59z/ibSGBH+p3Cx2X59B99Tw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=OwmGPkRS; arc=none smtp.client-ip=202.12.124.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1730100290; c=relaxed/simple;
+	bh=bBX0OGp2gHE5Epzp8cfSfZcYFnLBlQtanozMnrosPhU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=hW8pmW/1uehRYvH+bcYRiqG5zxLr/eq1Bdgzxo41OX7lEWWWpiRfRHbL7xmCqqZjuf+S/1daBlbeQ0C63d+J+8miIgWLeqO8oO2pGqShk28lyvA4cfsRx7IBsM7OSkHV60kdqmHrSr0ckmBjKs+ias12hQvGxlqRm8uWNXtVZyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=CbzX5bTV; arc=none smtp.client-ip=130.133.4.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="OwmGPkRS"
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id F0C1225400F2;
-	Mon, 28 Oct 2024 00:51:18 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-04.internal (MEProxy); Mon, 28 Oct 2024 00:51:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1730091078; x=1730177478; bh=KNQO25W6eqWCggEEbgzF2M6tSGEH
-	L54U23Juv5ViAxQ=; b=OwmGPkRS5pJtpUIPEgBkCYpqVdUYsldp9ykyIEB88iHD
-	lZSZkiUbVlJUU9xZVEdgsDIcgAnzWM/wg+AaT3iYIdPEx8ZphpA7ivUo+D5kggbB
-	3ig9eQd3DSuteCPieOANkIJsv7VSO7orKgK/4jFMxwdKazLeUi7Z28Ee9S4fIMae
-	UPlrSXvIHS+TbTZrvDaidH7M1qCwLIBaRHVPVudZ4GERhTGIC3xvrpGXKKcST8iY
-	/TYxYU2lFR1nsftgxxN2kHiK7746+7yCJ+S4ga3QXeFFe02Rs63Xj60zCmV7I+vS
-	DU5PAO1pCH4B28lYmB4CS0vWeY/fvl5EBJ5igae0lA==
-X-ME-Sender: <xms:RRgfZzqXZvrzUwmgoKHQSa436RnBXrmlmd0rpDwdOMa0h7N-qUJl0Q>
-    <xme:RRgfZ9qb-sYMD6q1O6usraA6sORGqWfBF0G8Sw9xwOMdvfLouvQ4jKL6g5KsREwEb
-    8VJ4ItKiKSL1FvoPQM>
-X-ME-Received: <xmr:RRgfZwOQEpGxl3r_y7ESie-jVW9vo73Y_gmEcaY3Z2mVNsm-ioDLuZwNSFdlt8zrn2GCJQQXtVezI9a2prLxlYb4ge631Z4M3eM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdejjedgjeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepfffhvfevufgjkfhfgggtsehmtderredttdejnecu
-    hfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrd
-    horhhgqeenucggtffrrghtthgvrhhnpeelfeeklefggfetkedukeevfffgvdeuheetffek
-    ledtfeejteelieejteehgeelieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggp
-    rhgtphhtthhopeelpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehtghesuggvsg
-    hirghnrdhorhhgpdhrtghpthhtoheprghrnhgusegrrhhnuggsrdguvgdprhgtphhtthho
-    pehglhgruhgsihhtiiesphhhhihsihhkrdhfuhdqsggvrhhlihhnrdguvgdprhgtphhtth
-    hopehlihhnuhigqdhmieekkhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthho
-    peguvggsihgrnhdqieekkheslhhishhtshdruggvsghirghnrdhorhhgpdhrtghpthhtoh
-    eptghhvgifihesrghurhgrqdhonhhlihhnvgdrtghordhukhdprhgtphhtthhopehsrghm
-    sehgvghnthhoohdrohhrghdprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkh
-    drohhrghdprhgtphhtthhopehstghhfigrsgeslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:RRgfZ25v8RNbON4yTQG8S1yiV5ejNnMH05jLBNoOa5IIH8pvDxJy7A>
-    <xmx:RRgfZy4KlcG2UYxP7hh8fRWYUqECyeQ8QiWk81mufuGHKdSGo2hZQw>
-    <xmx:RRgfZ-hF6RqCNfesReaVsb6-S_agUeS7VjyX4iJ71tjFRXUDfPFa6g>
-    <xmx:RRgfZ07Fnh57ObZukAAJqOEc_Q6oFVliIHhWsH6jw4sI3eosBXmBxg>
-    <xmx:RhgfZ0t_4ZOyFo6f_bnjt0G81HfnsbDE3GN8dZ5gLDuVr-9CpXIlj7XT>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 28 Oct 2024 00:51:14 -0400 (EDT)
-Date: Mon, 28 Oct 2024 15:51:10 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Thorsten Glaser <tg@debian.org>
-cc: Arnd Bergmann <arnd@arndb.de>, 
-    John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-    linux-m68k <linux-m68k@vger.kernel.org>, 
-    debian-68k <debian-68k@lists.debian.org>, 
-    James Le Cuirot <chewi@aura-online.co.uk>, Sam James <sam@gentoo.org>, 
-    Geert Uytterhoeven <geert@linux-m68k.org>, 
-    Andreas Schwab <schwab@linux-m68k.org>
+	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="CbzX5bTV"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=/daUyFduRGaHVK9lh3yvyD3wJwGuPrZqOJ1CUF2gFbU=; t=1730100286; x=1730705086; 
+	b=CbzX5bTV4EvsKF12aj+bEqndy+4cIIF99dUhRISut4HBL6+H+x6bctx81NlS9yebpaETti1EXik
+	2GJzbWJ2QPlPzoaGI6bq5WDYoCBY1UwI70eaZdCrdmHyKYFvDDZ8ke1P0UFHTbK836524PounHqjr
+	e4azwNZzBPcawQiPSpCLECtkosz0klNqydFXVB8vroWRDDL3Re0rhXaN658ggMUGYk+J4QMmn+e28
+	HLNKA1KOAkk1k1BjfzHLd0arJ6ztv8Ih3z4rP3kwoHNKKjp8AamvVUTryk0R8UfYB6Sk8j0OyWPOZ
+	xOEPyrTkOGhypc3R1v5MWgqJ6Y4yKa5NzRLQ==;
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.98)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1t5K79-00000003o28-3jyV; Mon, 28 Oct 2024 08:24:35 +0100
+Received: from p57bd904e.dip0.t-ipconnect.de ([87.189.144.78] helo=[192.168.178.20])
+          by inpost2.zedat.fu-berlin.de (Exim 4.98)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1t5K79-000000025GZ-2oO6; Mon, 28 Oct 2024 08:24:35 +0100
+Message-ID: <0b5d499339cf866451dfae76718ad516f440169b.camel@physik.fu-berlin.de>
 Subject: Re: Plan needed for switching m68k to 32-bit alignment
-In-Reply-To: <0c34ba23-5256-0140-59b1-6a5283f6b763@debian.org>
-Message-ID: <f2377db5-2b39-0e58-4d22-1caee7e8e6a3@linux-m68k.org>
-References: <3a5e171bf42e5273eb8235cba04e8328b19c2ca4.camel@physik.fu-berlin.de> <d95cbe0f-696e-813a-3655-f982531dfb41@linux-m68k.org> <fe7eaef152b4a245c6bab76ae02946a0746bdf65.camel@physik.fu-berlin.de> <eb26c030-5bc9-0e2e-1222-64306bfa7553@linux-m68k.org>
- <5e8917a2-b7c4-6c06-e63f-1f05eea32120@mirbsd.de> <a07af4eb-efba-d8f1-ace1-06da7a7067c0@linux-m68k.org> <Pine.BSM.4.64L.2410270301550.3007@herc.mirbsd.org> <a6ef54f6-7a3d-78d5-47d1-d4f7fc1e04e2@linux-m68k.org> <Pine.BSM.4.64L.2410270420080.3007@herc.mirbsd.org>
- <b9ef3e70-6ee0-3e4f-185c-afaa8f512792@linux-m68k.org> <b25dbb5f-6336-4f2d-9d1e-4d5da13a1636@app.fastmail.com> <0c34ba23-5256-0140-59b1-6a5283f6b763@debian.org>
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: Andreas Schwab <schwab@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>
+Cc: linux-m68k <linux-m68k@vger.kernel.org>, debian-68k	
+ <debian-68k@lists.debian.org>, James Le Cuirot <chewi@aura-online.co.uk>, 
+ Sam James <sam@gentoo.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Thorsten Glaser <tg@mirbsd.de>
+Date: Mon, 28 Oct 2024 08:24:35 +0100
+In-Reply-To: <87ed441arb.fsf@igel.home>
+References: 
+	<3a5e171bf42e5273eb8235cba04e8328b19c2ca4.camel@physik.fu-berlin.de>
+		<383faec7-8987-4680-920d-8f802e1bea34@app.fastmail.com>
+		<bfc235822cf8f773689abfefe1a75abfcf860c93.camel@physik.fu-berlin.de>
+		<136f0492-fad7-4c75-b3c8-91ac7dc91570@app.fastmail.com>
+	 <87ed441arb.fsf@igel.home>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.1 
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="-1463811774-179033891-1730091070=:29"
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-ZEDAT-Hint: PO
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
----1463811774-179033891-1730091070=:29
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-
-
-On Mon, 28 Oct 2024, Thorsten Glaser wrote:
-
-> ... You don=E2=80=99t understand the problem: applications are being writ=
-ten=20
-> that require natural alignment for at least 32-bit and smaller=20
-> quantities, some possibly for all quantities even. We need these=20
-> applications to work, and we cannot redesign them (it=E2=80=99s common fo=
-r them=20
-> to store flags in the lowest pointer bits and do other awful things).
+On Fri, 2024-10-25 at 17:07 +0200, Andreas Schwab wrote:
+> On Okt 25 2024, Arnd Bergmann wrote:
 >=20
-> Could you please, if you cannot believe it yourself, accept the word of=
-=20
-> those actually doing the porting that it is direly needed in the current=
-=20
-> Linux ecosystem. Thank you.
+> > Doing it without a migration path seems worse to me,
+> > as this would mean breaking every single existing
+> > installation between two kernels, and making it impossible
+> > to bisect other issues, and breaking the rule #1.
 >=20
+> That's why I didn't change the alignment when I implemented ELF.  It
+> would have made it impossible to mix an a.out kernel with ELF user
+> space, and vice versa.
 
-Do I misunderstand or disbelieve? Or have you forgotten what I wrote two=20
-days ago?
+Thanks for explaining the background. However, it doesn't change the
+fact that this is blocking a lot of software now, unfortunately.
 
-You talk about "applications ... being written". Well, two days ago I=20
-mentioned several groups of applications: (1) core packages that accept=20
-alignment patches, (2) packages whose developers shouldn't worry about=20
-small systems anyway, and (3) packags I am concerned about i.e. the ones=20
-actually required by Debian/m68k users (which will presumably lead to=20
-disto bug reports, if they didn't already -- hence my question about bug=20
-reports which remains unanswered).
+Adrian
 
-> For Debian, we have superh and i386, out of these.
-
-Is your concern merely for Debian's package archive stats?
-
-What interests me is portability and code reuse in general. That is the=20
-basis on which I would send alignment patches to upstream projects.
----1463811774-179033891-1730091070=:29--
+--=20
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
