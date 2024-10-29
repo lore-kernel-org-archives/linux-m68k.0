@@ -1,132 +1,232 @@
-Received: from fout-a4-smtp.messagingengine.com (fout-a4-smtp.messagingengine.com [103.168.172.147])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 470F9376
-	for <linux-m68k@vger.kernel.org>; Tue, 29 Oct 2024 03:39:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD3C91DE4CB
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 29 Oct 2024 07:30:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730173169; cv=none; b=q+r3xhfbwN+F9F/eC50VZHA1udediVX0o0VVBEFejmLbCxUGlXw6HqcgLrGSv5+2IB8ccWmJLtPXu8qqbma1u0pumAcsqERSJR7jLP5Cp9XOet0Kxoed7GKSwWR0AAQiVLYah4GhpHvVgCIRLLEtW3FQswKHJo8k9c0mnVaeA6U=
+	t=1730187052; cv=none; b=N5T0ihpJ9efB8nUKJq8vaYmbO3AHvh0J0HPnvLCnOR8cLnknIsd7eqkAduyXpXADXGfvRT+npKcphM8rAhRk8OfU98Qvm2nV9yGfr7ZYvJEK3+UoN4pCzejMqoXdJK+Xj/F30TEY5/HKwJwOetYc7Vsb5JIAJxYlzdbyyiCIXJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730173169; c=relaxed/simple;
-	bh=PxJnXsS30yREuyGY9NUhseQgALD1UV5RbWU/yv2AXcQ=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=MGZT042MA1CgIXZJTFSu2SKjgA6wDD1nfNk3yx5hFtT8kz2yjfccM/SY5aWNSJsMa28ZL/2KtnnR/oDtPP6t2Jw4+v3QODe19JKcDpjbnk2PFNTxtRociid9U0emCg416VxHpTZ5CIWEW2APKdQXN9cbkxTmL2pOs+V1dWSBSe4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=U4T+daZG; arc=none smtp.client-ip=103.168.172.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1730187052; c=relaxed/simple;
+	bh=h6CHnqH5YvD1ZqO0J5H09wzyyQd5gc9Sg3tFXqdthPY=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=bO7QW9281MG53C7mn58sckWTpGPDZhYBxX49V+vOFw+JKBJOp4JGiSzCRJHrTQ8LIu4yZ5qLA5Zw7gv7yd5MT/Iv8CfRHIt3bhNFbaAGh+k4RW3m90/4Qoi9CvNi7nAK7ngSmSWLPaRA4Fq1M9yj2sz2t3c4O7v2qQsF0e/ZP08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XTlTMNEw; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="U4T+daZG"
-Received: from phl-compute-10.internal (phl-compute-10.phl.internal [10.202.2.50])
-	by mailfout.phl.internal (Postfix) with ESMTP id 2B9B7138009A;
-	Mon, 28 Oct 2024 23:39:25 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-10.internal (MEProxy); Mon, 28 Oct 2024 23:39:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1730173165; x=1730259565; bh=KsWrKEpLT2eZgoUW+W/VDSORqnl54/cjCW6
-	QvyD+KKY=; b=U4T+daZGtDuh3nu38kfNCGlR/IGx2ftiryzzytqp7ZSTzfehQAU
-	UzllC6UYLVOQTDnW1Sw7KaOFpMH/7mtvdxFlOwt0B+n6olBXchr1G3xYW5Bovu0z
-	aVHeavmCSvdipy6XaW1irAlqundvu0NyNizp0pyEE/RCbjR1Mo/L5eAFFbslSFGJ
-	K/XZogfzyRgIUUNcOgOvBF3kDBRZa3bc1pOyNnhRgVmJvTX+6dJVkLW8K5d9/RSZ
-	lV/Wt2+AzeaF9yjw+XWJHyYZmMJb00XoFT13rJzYnTxq7cGAPZ9BkLIqUjP1Qp9O
-	2jdGRMg7RJijj4Rx6sWbrM+46kMukFg0Yiw==
-X-ME-Sender: <xms:6lggZ8Ch4G2x3d9ADV7v2Sj_C21QZ8PcynYhG6ExZCkR11yevBfn0g>
-    <xme:6lggZ-h67X7lAPnjhmJaREAcn45_6QIUTKqXLMbi8Dxj7fUcosQut99p8D74lCsXE
-    DAnI9tYjVadn9i0RaU>
-X-ME-Received: <xmr:6lggZ_kcytyo10ezYBrsSEN7EgpSteBt59XcfZkmAyf_EK903NEC8e-jrvn9Ht7Rod6uw-Ma5ShE66lOJOS8CtIpWSnHrKAn2G0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdektddgiedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecu
-    hfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrd
-    horhhgqeenucggtffrrghtthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeff
-    ffdtgfejveekgeefvdeuheeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggp
-    rhgtphhtthhopedutddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepshgthhhmih
-    htiihmihgtsehgmhgrihhlrdgtohhmpdhrtghpthhtoheprghrnhgusegrrhhnuggsrdgu
-    vgdprhgtphhtthhopehglhgruhgsihhtiiesphhhhihsihhkrdhfuhdqsggvrhhlihhnrd
-    guvgdprhgtphhtthhopehlihhnuhigqdhmieekkhesvhhgvghrrdhkvghrnhgvlhdrohhr
-    ghdprhgtphhtthhopeguvggsihgrnhdqieekkheslhhishhtshdruggvsghirghnrdhorh
-    hgpdhrtghpthhtoheptghhvgifihesrghurhgrqdhonhhlihhnvgdrtghordhukhdprhgt
-    phhtthhopehsrghmsehgvghnthhoohdrohhrghdprhgtphhtthhopehgvggvrhhtsehlih
-    hnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehstghhfigrsgeslhhinhhugidqmhei
-    kehkrdhorhhg
-X-ME-Proxy: <xmx:6lggZyx4hYBkrui0kUtoU8Xtt7TCWnR2zCtoJ6eIZyenHnxk_vyAKA>
-    <xmx:6lggZxR3n8_0dRAvQQ-8v46vTlGfm52_xkgqTLgu7xyjDYGrogbYGA>
-    <xmx:6lggZ9ZHOEuOROAIVLY-tvqetWWMO5FN3ZNAdu36A6GE4UGUnxqH1g>
-    <xmx:6lggZ6RrZtfX_RZ38-Y_lEFg7efWEfWLPcTa7LwJmCJwISY067modA>
-    <xmx:7VggZ-_72L1NpTNElXU05FgHTf7XTc2bGOZzjKcG4wPrkfXMNOmSMNl3>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 28 Oct 2024 23:39:19 -0400 (EDT)
-Date: Tue, 29 Oct 2024 14:39:15 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Michael Schmitz <schmitzmic@gmail.com>
-cc: Arnd Bergmann <arnd@arndb.de>, 
-    John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-    linux-m68k <linux-m68k@vger.kernel.org>, 
-    debian-68k <debian-68k@lists.debian.org>, 
-    James Le Cuirot <chewi@aura-online.co.uk>, Sam James <sam@gentoo.org>, 
-    Geert Uytterhoeven <geert@linux-m68k.org>, 
-    Andreas Schwab <schwab@linux-m68k.org>, Thorsten Glaser <tg@mirbsd.de>
-Subject: Re: Plan needed for switching m68k to 32-bit alignment
-In-Reply-To: <832d65f2-1796-4ac1-b49b-380bf64700f4@gmail.com>
-Message-ID: <de1adc92-f1e9-81fd-9406-7148e8213e4c@linux-m68k.org>
-References: <3a5e171bf42e5273eb8235cba04e8328b19c2ca4.camel@physik.fu-berlin.de> <383faec7-8987-4680-920d-8f802e1bea34@app.fastmail.com> <832d65f2-1796-4ac1-b49b-380bf64700f4@gmail.com>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XTlTMNEw"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1730187051; x=1761723051;
+  h=date:from:to:cc:subject:message-id;
+  bh=h6CHnqH5YvD1ZqO0J5H09wzyyQd5gc9Sg3tFXqdthPY=;
+  b=XTlTMNEwqxmB7eo5tl3YghSISKiSHIhkyQ8fFefpUZQj61peitLgDWVZ
+   aiZ2JjkHgrr/XI1QSQUd4xywx2XKBL5itERFTd/5zkwcTJ/huRKBjhusd
+   v5iw4E1vhSWoXZjO7nUAdaNDW3MH2zvssnGhs9hUKM0iFbVY6hsjzjpwZ
+   WyoWJdBsNvRGlJS0uZc/u/UHduVqFO4Y5P1hBYw9hVaRQybAl/o5QZyj8
+   ZJ+Z7hocv/YKnzwa1EhopE9/FawJ+G08U7O55QrMNHCsa48eFZF6NSGlj
+   xRpb/xeixvBitFDXzqQfmTxbuofVd6d/+sD3L7+uNOdfgTNG2Q3mPFPHI
+   g==;
+X-CSE-ConnectionGUID: gLxiypmpTByuaOXfiagN7Q==
+X-CSE-MsgGUID: ODHfOy57R8qWIKAl7PJsgw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="29951645"
+X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
+   d="scan'208";a="29951645"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2024 00:30:49 -0700
+X-CSE-ConnectionGUID: EIBUw+6tToC8c90BhJbRsw==
+X-CSE-MsgGUID: RCQ7s0SmQGmGSVmoX2fakg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.11,241,1725346800"; 
+   d="scan'208";a="81958216"
+Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
+  by fmviesa008.fm.intel.com with ESMTP; 29 Oct 2024 00:30:48 -0700
+Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1t5ggf-000dNu-2o;
+	Tue, 29 Oct 2024 07:30:45 +0000
+Date: Tue, 29 Oct 2024 15:30:07 +0800
+From: kernel test robot <lkp@intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 9fce3672402616746dcc6007838c87bfe4c4f391
+Message-ID: <202410291500.oyRMC0aC-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 9fce3672402616746dcc6007838c87bfe4c4f391  Merge tag 'v6.12-rc5'
 
-On Tue, 29 Oct 2024, Michael Schmitz wrote:
+elapsed time: 989m
 
-> On 25/10/24 22:55, Arnd Bergmann wrote:
-> 
-> > I also expect that a lot of users (of m68k kernels) are never going to 
-> > get the benefits as they are already stuck on older userspace because 
-> > of added bloat in new software releases. I assume you have better 
-> > understanding than me of what m68k hardware is commonly used these 
-> > days, and how constrained that is in practice.
-> 
-> I second that - currently bisecting to find out what makes my extremely 
-> RAM constrained m68k system fail to boot or run anything past 6.9-rc4 
-> (sysvinit, not systemd).
-> 
+configs tested: 155
+configs skipped: 10
 
-As cloud instances multiply, that small quantity of lost RAM gets 
-multiplied. So it appears that small systems aren't so strange, even after 
-they become unprofitable...
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> Much as I appreciate Adrian's efforts to keep up with user space 
-> development, I won't be in a position to help with an ABI change.
-> 
+tested configs:
+alpha                             allnoconfig    gcc-14.1.0
+alpha                            allyesconfig    clang-20
+alpha                            allyesconfig    gcc-13.3.0
+alpha                               defconfig    gcc-14.1.0
+arc                              allmodconfig    clang-20
+arc                               allnoconfig    gcc-14.1.0
+arc                              allyesconfig    clang-20
+arc                                 defconfig    gcc-14.1.0
+arc                         haps_hs_defconfig    gcc-14.1.0
+arm                              allmodconfig    clang-20
+arm                               allnoconfig    gcc-14.1.0
+arm                              allyesconfig    clang-20
+arm                         assabet_defconfig    gcc-14.1.0
+arm                                 defconfig    gcc-14.1.0
+arm                            hisi_defconfig    gcc-14.1.0
+arm                          moxart_defconfig    clang-14
+arm                       netwinder_defconfig    gcc-14.1.0
+arm                           omap1_defconfig    clang-14
+arm                         vf610m4_defconfig    gcc-14.1.0
+arm64                            allmodconfig    clang-20
+arm64                             allnoconfig    gcc-14.1.0
+arm64                               defconfig    gcc-14.1.0
+csky                              allnoconfig    gcc-14.1.0
+csky                                defconfig    gcc-14.1.0
+hexagon                          allmodconfig    clang-20
+hexagon                           allnoconfig    gcc-14.1.0
+hexagon                          allyesconfig    clang-20
+hexagon                             defconfig    gcc-14.1.0
+i386                             allmodconfig    clang-19
+i386                             allmodconfig    gcc-12
+i386                              allnoconfig    clang-19
+i386                              allnoconfig    gcc-12
+i386                             allyesconfig    clang-19
+i386                             allyesconfig    gcc-12
+i386        buildonly-randconfig-001-20241029    clang-19
+i386        buildonly-randconfig-002-20241029    clang-19
+i386        buildonly-randconfig-003-20241029    clang-19
+i386        buildonly-randconfig-004-20241029    clang-19
+i386        buildonly-randconfig-005-20241029    clang-19
+i386        buildonly-randconfig-006-20241029    clang-19
+i386                                defconfig    clang-19
+i386                  randconfig-001-20241029    clang-19
+i386                  randconfig-002-20241029    clang-19
+i386                  randconfig-003-20241029    clang-19
+i386                  randconfig-004-20241029    clang-19
+i386                  randconfig-005-20241029    clang-19
+i386                  randconfig-006-20241029    clang-19
+i386                  randconfig-011-20241029    clang-19
+i386                  randconfig-012-20241029    clang-19
+i386                  randconfig-013-20241029    clang-19
+i386                  randconfig-014-20241029    clang-19
+i386                  randconfig-015-20241029    clang-19
+i386                  randconfig-016-20241029    clang-19
+loongarch                        allmodconfig    gcc-14.1.0
+loongarch                         allnoconfig    gcc-14.1.0
+loongarch                           defconfig    gcc-14.1.0
+m68k                             allmodconfig    gcc-14.1.0
+m68k                              allnoconfig    gcc-14.1.0
+m68k                             allyesconfig    gcc-14.1.0
+m68k                                defconfig    gcc-14.1.0
+microblaze                       allmodconfig    gcc-14.1.0
+microblaze                        allnoconfig    gcc-14.1.0
+microblaze                       allyesconfig    gcc-14.1.0
+microblaze                          defconfig    gcc-14.1.0
+mips                              allnoconfig    gcc-14.1.0
+mips                      maltaaprp_defconfig    clang-14
+mips                        omega2p_defconfig    gcc-14.1.0
+nios2                             allnoconfig    gcc-14.1.0
+nios2                               defconfig    gcc-14.1.0
+openrisc                          allnoconfig    clang-20
+openrisc                         allyesconfig    gcc-14.1.0
+openrisc                            defconfig    gcc-12
+openrisc                  or1klitex_defconfig    gcc-14.1.0
+parisc                           allmodconfig    gcc-14.1.0
+parisc                            allnoconfig    clang-20
+parisc                           allyesconfig    gcc-14.1.0
+parisc                              defconfig    gcc-12
+parisc64                            defconfig    gcc-14.1.0
+powerpc                    adder875_defconfig    gcc-14.1.0
+powerpc                          allmodconfig    gcc-14.1.0
+powerpc                           allnoconfig    clang-20
+powerpc                          allyesconfig    gcc-14.1.0
+powerpc                        cell_defconfig    gcc-14.1.0
+powerpc                       holly_defconfig    clang-14
+powerpc                       maple_defconfig    clang-14
+powerpc                  mpc866_ads_defconfig    gcc-14.1.0
+powerpc                  mpc885_ads_defconfig    clang-14
+powerpc                       ppc64_defconfig    gcc-14.1.0
+riscv                            allmodconfig    gcc-14.1.0
+riscv                             allnoconfig    clang-20
+riscv                            allyesconfig    gcc-14.1.0
+riscv                               defconfig    gcc-12
+s390                             allmodconfig    clang-20
+s390                             allmodconfig    gcc-14.1.0
+s390                              allnoconfig    clang-20
+s390                             allyesconfig    gcc-14.1.0
+s390                          debug_defconfig    clang-14
+s390                                defconfig    gcc-12
+s390                                defconfig    gcc-14.1.0
+s390                       zfcpdump_defconfig    clang-14
+sh                               allmodconfig    gcc-14.1.0
+sh                                allnoconfig    gcc-14.1.0
+sh                               allyesconfig    gcc-14.1.0
+sh                                  defconfig    gcc-12
+sh                 kfr2r09-romimage_defconfig    clang-14
+sh                             sh03_defconfig    clang-14
+sparc                            allmodconfig    gcc-14.1.0
+sparc64                             defconfig    gcc-12
+um                               alldefconfig    clang-14
+um                               allmodconfig    clang-20
+um                                allnoconfig    clang-20
+um                               allyesconfig    clang-20
+um                               allyesconfig    gcc-12
+um                                  defconfig    gcc-12
+um                             i386_defconfig    gcc-12
+um                           x86_64_defconfig    gcc-12
+x86_64                            allnoconfig    clang-19
+x86_64                           allyesconfig    clang-19
+x86_64      buildonly-randconfig-001-20241029    clang-19
+x86_64      buildonly-randconfig-002-20241029    clang-19
+x86_64      buildonly-randconfig-003-20241029    clang-19
+x86_64      buildonly-randconfig-004-20241029    clang-19
+x86_64      buildonly-randconfig-005-20241029    clang-19
+x86_64      buildonly-randconfig-006-20241029    clang-19
+x86_64                              defconfig    clang-19
+x86_64                              defconfig    gcc-11
+x86_64                                  kexec    clang-19
+x86_64                                  kexec    gcc-12
+x86_64                randconfig-001-20241029    clang-19
+x86_64                randconfig-002-20241029    clang-19
+x86_64                randconfig-003-20241029    clang-19
+x86_64                randconfig-004-20241029    clang-19
+x86_64                randconfig-005-20241029    clang-19
+x86_64                randconfig-006-20241029    clang-19
+x86_64                randconfig-011-20241029    clang-19
+x86_64                randconfig-012-20241029    clang-19
+x86_64                randconfig-013-20241029    clang-19
+x86_64                randconfig-014-20241029    clang-19
+x86_64                randconfig-015-20241029    clang-19
+x86_64                randconfig-016-20241029    clang-19
+x86_64                randconfig-071-20241029    clang-19
+x86_64                randconfig-072-20241029    clang-19
+x86_64                randconfig-073-20241029    clang-19
+x86_64                randconfig-074-20241029    clang-19
+x86_64                randconfig-075-20241029    clang-19
+x86_64                randconfig-076-20241029    clang-19
+x86_64                               rhel-8.3    gcc-12
+x86_64                           rhel-8.3-bpf    clang-19
+x86_64                         rhel-8.3-kunit    clang-19
+x86_64                           rhel-8.3-ltp    clang-19
+x86_64                          rhel-8.3-rust    clang-19
+xtensa                            allnoconfig    gcc-14.1.0
+xtensa                  audio_kc705_defconfig    gcc-14.1.0
+xtensa                       common_defconfig    clang-14
+xtensa                    xip_kc705_defconfig    clang-14
 
-Bloated m68k packages will continue to work -- given emulators that run 
-faster with every hardware upgrade. But how would such a distro add value?
-
-I don't mind if Gentoo ships a separate profile for (downstream) ABI 
-experimentation, leaving the default m68k profile on the standard ABI.
-
-And if Debian wants to switch ABI entirely, I won't object further, I've 
-said enough about the associated risks.
-
-So I'll just reiterate that I'd rather see more collaboration instead -
-
-1) among all small systems ports, to try to alleviate Debian's package 
-   dependency problem
-
-2) among all developers working on non-commercial architectures, to 
-   improve the GCC Rust frontend
-
-3) among all 680x0 developers interested in the NetBSD ABI
-
-4) among all users of EOL'd hardware, so that value may continue to be 
-   extracted from it (thanks to the efforts of Debian and Gentoo devs, 
-   among others).
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
