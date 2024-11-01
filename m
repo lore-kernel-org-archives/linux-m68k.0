@@ -1,80 +1,93 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 965211D0DF6
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 30 Oct 2024 19:56:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9519618453C
+	for <linux-m68k@lists.linux-m68k.org>; Fri,  1 Nov 2024 23:35:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730318220; cv=none; b=Z+rIu38grblR33096ublnlZBg5BS3JWQJf/iX3PGUO+UXFompOAVZMwFlqfRQjYMPAQgK1fyyGkLL1gL5QrI8qNx+2Gttjxe/J6hvwwYifb/V0Bly+vyad3TUKUjZM4ryc4+ts4NgMZtIvtPhxB/09jSvihx/evNqTpkhm45DBA=
+	t=1730504153; cv=none; b=Ki7EdMlQ8i4Ly1XRc28Lbly3UB33lcXht4FTtBcrxmxC7E2BxlJSISI8x6mhA/SrJzBqxlto5dHv9j5BOVIX3UPn3zkQtbtP9NnfnR2ELWsD/1/Jsu5xfcfJp6V0R8Dqx+4ZOS/i1I9FdpwN9rOJE4ae9AZ98YSP/xjGTD7MkSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730318220; c=relaxed/simple;
-	bh=ycBA5rQ633qHtrgsH/1UuH4lcA9FLFSnQ1HGmzbyy/8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=D26Y0kmvSpEhw2rtJP63UTLjkCxBFPmqRnQaWhxYi0Sh+BOzdXnJwzARicSxovJVlP92fIp8iGGIsgozDG2linphNaGZgfxP0lZR+vFMxnXzHyG7IQ+OMB8Zz8T3Ki7c+7LozFZ2sUwcwiGINzyBCguz82eJxYhvrdQl4g8W/90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PxAjStk3; arc=none smtp.client-ip=139.178.84.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1730504153; c=relaxed/simple;
+	bh=Ue885HcxmPf0L8ARa1j6S9W4nBVkiVf0INutQUO3kS4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KJlcFTx/jeiO8V+8hTmUi9YbEJbvTXwtKp51t3KaRTh4QesHrxYIZYsBINAr1yVZtbY3rgTK3hl2mUkyfq1ThKleK3C4lK6DCZBgWDXnodkL3ZQbPl/LXvsMxEExWevLbYiixquiuHVq7PFLhYBj3sHsCmjnnIDJPtPtDxxAlLI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=uWkSI24/; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PxAjStk3"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id F00205C5C81;
-	Wed, 30 Oct 2024 19:56:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C23BC4CECE;
-	Wed, 30 Oct 2024 19:56:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730318217;
-	bh=ycBA5rQ633qHtrgsH/1UuH4lcA9FLFSnQ1HGmzbyy/8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PxAjStk3NRHbwgxtP4Xu9QCLn1WSKnikydeH/as344Dy+uAUjbiDlK1OjCjuRhNR4
-	 H+fVqzpmPoJHtYm+7Adjhe9wFk1gVTh7brSffpzqG2J+6sXRlnDuz5saaROzPybqQQ
-	 1zRu466XcdAHGY+anFQDZbmY+A/PZzEJe5m4iAZ7XJjnWB2WAM7jQg1pn4ljIXhI+a
-	 GEmB/BhdK87ApE7dc+AxtJCR2vlmHj8escxses/b1Mf/hiYtj8MMQ1A2NR3/fsSjDU
-	 M2Tw8Px/oGVD852DFa5H9KTwma0rO/M/B6pPc1mrvupa0vV34/IgwVeUYWhPkVG2LQ
-	 SipedeRmhh23g==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] m68k: select 68020 as fallback for classic
-Date: Wed, 30 Oct 2024 20:56:14 +0100
-Message-Id: <20241030195638.22542-2-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20241030195638.22542-1-arnd@kernel.org>
-References: <20241030195638.22542-1-arnd@kernel.org>
+	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="uWkSI24/"
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-7ee4c57b037so1442431a12.0
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 01 Nov 2024 16:35:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google; t=1730504150; x=1731108950; darn=lists.linux-m68k.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ue885HcxmPf0L8ARa1j6S9W4nBVkiVf0INutQUO3kS4=;
+        b=uWkSI24//DP48tR5S7f/0O5vlXNTVynAEYiBwKBdlstFCKPu6HEX1gsg+XbRhxg5MK
+         XtCL2+rGaJJ9T87jX9++XK8GiiTnNRRjsOBploHRU5SMMjymfZY20j9d0ak9UzQSOucK
+         IhHFFGRo1WHddOna0Bt4Rs5WpvUDQvXGLZEtU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730504150; x=1731108950;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ue885HcxmPf0L8ARa1j6S9W4nBVkiVf0INutQUO3kS4=;
+        b=Qm8srRtilrn+PbInqwKoO9VaCYXaRV9Ii1iZQgAF3d+tk/HDjUa1rG9CZFp7iwXyTz
+         8XJFpt1X8HdAR2SRTHz4i122mgm06YkCVMDm8IFZ3gmQjocmhxpN1+E4BsJ9wGeaFcYe
+         iCajqLot+5QYbHcD7p2huUFS+GxXOBZEcKnUfZns6XNxWADUeRQaFukTPAxITRcOZbtT
+         OwHCjBH+F8BpWtup/Bmz+qWsNomaTS/TgTUx+ZEnp7I46it22TQj5HiRsVzSy6rB19aj
+         JIY918kli7Hcklj1NQe7rJsdFuzNB7m51G3vEf+lvtCW5WoEUzbARQsE9yQYrWuYqR8r
+         wZCA==
+X-Forwarded-Encrypted: i=1; AJvYcCV5uGHLJ2alqC1Z0+sO4RME5x87Bohe6TYlXej0LYvC05ES8TsLdaSSXg+v3/35Uz2/Fbam2cJG72+K@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YzftDAsTfaEBp8CveId2vzvJeai6Mz3aRcKYaqk9FPtR0/TfwvO
+	6UdSkb2GPjukKQBewYgDJ7MYs67vAFjidMxM77S2RY0gNaoXHS1pU4C9j8s0fVsRcO0sJAD9Jt3
+	mAsn0OzwJx2VLMZLfWb/uevd0vjxC/7+HP13DGg==
+X-Google-Smtp-Source: AGHT+IGSCCGc2XOfqTuOFo5khzBYSCD3q/i/ZhvzprTRm0qV62b3/sKYvu1Q2BKXYbheXAm5J0pQa/GsCtf+WDDJFOU=
+X-Received: by 2002:a17:90b:5306:b0:2e2:c15f:1ffe with SMTP id
+ 98e67ed59e1d1-2e94bdf49acmr7314138a91.0.1730504150505; Fri, 01 Nov 2024
+ 16:35:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <0e7636a21a0274eea35bfd5d874459d5078e97cc.1727926187.git.fthain@linux-m68k.org>
+In-Reply-To: <0e7636a21a0274eea35bfd5d874459d5078e97cc.1727926187.git.fthain@linux-m68k.org>
+From: Daniel Palmer <daniel@0x0f.com>
+Date: Sat, 2 Nov 2024 08:35:39 +0900
+Message-ID: <CAFr9PXn8Wi8btubVXKTNNQQyQRtvWaYV5aHyvvQLypJYp5i=9A@mail.gmail.com>
+Subject: Re: [PATCH] m68k: mvme147: Fix SCSI controller IRQ numbers
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, stable@kernel.org, 
+	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hi all,
 
-Building without a CPU selected does not work.
+On Thu, 3 Oct 2024 at 12:32, Finn Thain <fthain@linux-m68k.org> wrote:
+>
+> From: Daniel Palmer <daniel@0x0f.com>
+>
+> Sometime long ago the m68k IRQ code was refactored and the interrupt
+> numbers for SCSI controller on this board ended up wrong, and it hasn't
+> worked since.
+>
+> The PCC adds 0x40 to the vector for its interrupts so they end up in
+> the user interrupt range. Hence, the kernel number should be the kernel
+> offset for user interrupt range + the PCC interrupt number.
+>
+> Cc: Daniel Palmer <daniel@0x0f.com>
+> Cc: stable@kernel.org
+> Fixes: 200a3d352cd5 ("[PATCH] m68k: convert VME irq code")
+> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+> Reviewed-by: Finn Thain <fthain@linux-m68k.org>
+> ---
 
-Change the Kconfig logic slightly to make sure we always pick
-68020 if nothing else is enabled. There are still some
-intentional warnings for builds with all platforms disabled.
+The other part of this that fixes the SCSI driver itself is now merged
+and backported to stable branches so it'd be nice to get this merged
+too.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/m68k/Kconfig.cpu | 1 +
- 1 file changed, 1 insertion(+)
+Thanks,
 
-diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-index e7b5f6b55947..c9a7e602d8a4 100644
---- a/arch/m68k/Kconfig.cpu
-+++ b/arch/m68k/Kconfig.cpu
-@@ -21,6 +21,7 @@ choice
- config M68KCLASSIC
- 	bool "Classic M68K CPU/machine family support"
- 	select HAVE_ARCH_PFN_VALID
-+	select M68020 if MMU && !(M68030 || M68040 || M68060)
- 
- config COLDFIRE
- 	bool "Coldfire CPU family support"
--- 
-2.39.5
-
+Daniel
