@@ -1,107 +1,115 @@
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A23A16F0EB
-	for <linux-m68k@vger.kernel.org>; Sat,  2 Nov 2024 10:12:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E293870816
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Nov 2024 13:39:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730542365; cv=none; b=mcp1Ohw1p21wtjusaFG99oX6lDpbI9MNX46Qhzc/ga9A3KCFaAnWnoEhim93BQHHZ313T7WL5gZyczGgZVrJ3J415hWbpphENgLTxCSkTLqSu4JptCa4q8aEPtTvifgkYQVz5i6lw6CmQOKfJ4XfEzKuhwRl+zK/8XfuR8WQJME=
+	t=1730727554; cv=none; b=koCfsfX/VuxfsqG3e0Lbmg2YmSfklFvgmOstZKXj3HugylCfw0jbvOsHZfiHIEh42pICk4mYTXwmGM5pdDJd9nqnO1Uh0S43iescXZ37CYSqSMTVPVUYhM6rkhfEwb1Wpbsm0iwU/KNflyw3nJEDqBIEbeAfS70Q7q1p7myNUJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730542365; c=relaxed/simple;
-	bh=b1nVI/M1XinPIEKSyADD7nlrvSyMLPbS8dCI/6HBiHk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h6k+oBygM3pPK+KmxEjDAq1/72OzYU7xzeUX/4meYuA3wPnqbhPvFh74q31UcnwnoPg8318cRLziSvwkJFfmjEvDCQwba2GSc+THygtivGGm6j0brdYu0vv/926M4kkmX6juNN47U/yidO6YAgTM7pjRIYd+HeRRQXXOgEZagRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BOiiP6w+; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BOiiP6w+"
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4315eac969aso15588195e9.1
-        for <linux-m68k@vger.kernel.org>; Sat, 02 Nov 2024 03:12:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730542362; x=1731147162; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=64Uhhx4uBIFprGIPvoh/AHrI/pCRugaZUsAAABKPaq4=;
-        b=BOiiP6w+C6ui6l5Os6AttQQZzIMfKXyBRaa+sBZvIMchx2/4XI2ialrm6Z1IY1hPik
-         Xy/tf5fRwAorMe7PYBuYCyZQ0ZrLtMEhJ+4vtdRg374/NAAghdeZq9vMImejRXHdNH+g
-         7i8zQICR0cRAoHr8Ej51yZl7HWP2Ew/aqDomLz8dHLy1ryh8Fc81k9+IxcjM/mW71THO
-         SnYabgxglfa2XpyY/83/EVs1VffWsJ3iYuR7d/U9dq3KH+ouOpCoPYJnrzN6u6Zl0pD2
-         aiayx89mYcNtftqD14aB8WFvrEIzsu5P99JRDnMca+dpjSVCdulEKEGR1ARNITwo9WyJ
-         q+Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730542362; x=1731147162;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=64Uhhx4uBIFprGIPvoh/AHrI/pCRugaZUsAAABKPaq4=;
-        b=VfqK3kBoTAc5EXLtYD20CUwqbPuRXLQTho8GTh2atI9CzQwDGtqWK7tMj3EBMe8E5Y
-         tPATqu7cfgzpypu3/pr2H1Mm0iUATtgOokz0UeN2ZoL6U4HVLkxTrRlaawyVLuT1AyF4
-         vSuNxhosUcMDKqgfWUadmUAaOmcovCBDcLSoc8FPq1N9czmKShzyYSbDe4ygFJYvq792
-         KhsBnlDN9ANidQvVAUDedNPthsvWIqpzWeAMeL3lQLrUwR0x3fZiTvs3sgngpdJ5XoGv
-         VIMpQIg8lOop0vC9Xe3j5Dvg6R01l87FOY9pXJs1/g8fhr3p4a5ngByWISHJ6k9uhFaU
-         SQog==
-X-Forwarded-Encrypted: i=1; AJvYcCXayYANII6xx+xZeWDUM7cF8rMqIfv1CUSM+sU4pKysKvdSk7gXf1GMGNdcBrcUKBKbMqrejZl7qSXW@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxpv5kG5dTONGc49qpjL0iDUuYnG0Jzu/Cn0WDk6dqZ2SPelnHm
-	365Ojq50b0jxBovZJ/ppXr+5swzN8mRo+wtvJO+iNJsVGoqZJ7Y2YLzOWw==
-X-Google-Smtp-Source: AGHT+IHKD9IoSR7lAYZhXJKHHVMCynhpBT3PxANCt+UJC4cbDfKrW9NZd52ktNcoSNd1aWa2hBC4Mg==
-X-Received: by 2002:a05:600c:512a:b0:431:5226:1633 with SMTP id 5b1f17b1804b1-4327daa349emr75494775e9.6.1730542362136;
-        Sat, 02 Nov 2024 03:12:42 -0700 (PDT)
-Received: from gmail.com ([2a01:e11:1403:8620:404b:db39:5ac6:5b20])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4327d5ac002sm89477175e9.5.2024.11.02.03.12.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Nov 2024 03:12:40 -0700 (PDT)
-Date: Sat, 2 Nov 2024 11:12:39 +0100
-From: Paolo Pisati <p.pisati@gmail.com>
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Paolo Pisati <p.pisati@gmail.com>,
-	linux-m68k <linux-m68k@vger.kernel.org>
-Subject: Re: [PATCH 0/1] [RFC][NOT WORKING] amiga: pcmcia: inb()/inw() on
- GAYLE_IO space
-Message-ID: <ZyX7FwacwYrOn1kz@amaterasu.local>
-References: <20241026154233.351261-1-p.pisati@gmail.com>
- <062d8287-60aa-f1ac-0133-02a8ac4a9a60@gmail.com>
+	s=arc-20240116; t=1730727554; c=relaxed/simple;
+	bh=WlxLRHsEKt5E0xzrDqmgFT1xoYLbcZ9Baly/pFKaHvc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AM0KDZS+HaDHfdefEuJwULdx3eiUQljClltll1c+vkAcTn8hjh95T28Xcyv3JZzYNgrt5saBSaxecMF9GuD0zSVVzSwO75KOfPagbtNKbnypLikUCuTqE6DyDXPx+w/fj4/Zm1glRjl3legyzKeuAiRASMta0H2CN/0ZRj4nKP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=147.75.193.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id E28DCA420DE;
+	Mon,  4 Nov 2024 13:37:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD259C4CED1;
+	Mon,  4 Nov 2024 13:39:10 +0000 (UTC)
+Message-ID: <c767306e-e248-4395-b4ec-2bdfec56ef49@linux-m68k.org>
+Date: Mon, 4 Nov 2024 23:39:08 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <062d8287-60aa-f1ac-0133-02a8ac4a9a60@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] m68k: coldfire/device.c: only build FEC when HW macros
+ are defined
+To: Antonio Quartulli <antonio@mandelbit.com>
+Cc: geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org,
+ linux-kernel@vger.kernel.org
+References: <20241029214315.26710-1-antonio@mandelbit.com>
+Content-Language: en-US
+From: Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <20241029214315.26710-1-antonio@mandelbit.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sat, Nov 02, 2024 at 03:02:16PM +1300, Michael Schmitz wrote:
-> AFAIK the Gayle MMIO region is already mapped in head.S, and
-> does not need ioremap() at all.
+Hi Antonio,
 
-Uhm, ok.
- 
-> > 1) ioreamp() sock->phys_io, and subtract the GAYLE_IO offset (see
-> > sock->socket.io_offset).
-> > 
-> > or
-> > 
-> > 2) set Amiga base IO port to 0x0 and patch
-> > drivers/pcmcia/rsrc_mgr.c::static_find_io() (see https://dpaste.com//B75LTFF3V)
-> > 
-> > In both case the 3c589_cs driver request an I/O aperture at 0x0300, large
-> > 0x0010, receives it, but all read operations return 0xff or 0xffff.
+On 30/10/24 07:43, Antonio Quartulli wrote:
+> When CONFIG_FEC is set (due to COMPILE_TEST) along with
+> CONFIG_M54xx, coldfire/device.c has compile errors due to
+> missing MCFEC_* and MCF_IRQ_FEC_* symbols.
 > 
-> Can you post your .config? I wonder whether the
-> CONFIG_ATARI_ROM_ISA option is set, because that would mess
-> up inb()/outb() for ports < 0x400.
+> Make the whole FEC blocks dependent on having the HW macros
+> defined, rather than on CONFIG_FEC itself.
+> 
+> This fix is very similar to commit e6e1e7b19fa1 ("m68k: coldfire/device.c: only build for MCF_EDMA when h/w macros are defined")
+> 
+> Fixes: b7ce7f0d0efc ("m68knommu: merge common ColdFire FEC platform setup code")
+> To: Greg Ungerer <gerg@linux-m68k.org>
+> To: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: linux-m68k@lists.linux-m68k.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Antonio Quartulli <antonio@mandelbit.com>
 
-I cleaned up and made some progress, and now the first network card works: a
-Corega ethernet PCMCIA supported by pcnet_cs - the same card is already
-supported in the apne driver, though with the PCMCIA bridge, you get hot
-plugging too.
+Thanks, looks good. Applied to the m68knommu git tree, for-next branch.
 
-Unfortunately, other PCMCIA cards I tested still don't work (an Etherlink
-ethernet card, a CF adapter, a Ratoc serial card, and an 802.11 wifi card - all
-of them with varying degrees of "not working").
+Regards
+Greg
 
-I should probably repost the cleaned up driver.
--- 
-bye,
-p.
+
+> ---
+>   arch/m68k/coldfire/device.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
+> index 7dab46728aed..b6958ec2a220 100644
+> --- a/arch/m68k/coldfire/device.c
+> +++ b/arch/m68k/coldfire/device.c
+> @@ -93,7 +93,7 @@ static struct platform_device mcf_uart = {
+>   	.dev.platform_data	= mcf_uart_platform_data,
+>   };
+>   
+> -#if IS_ENABLED(CONFIG_FEC)
+> +#ifdef MCFFEC_BASE0
+>   
+>   #ifdef CONFIG_M5441x
+>   #define FEC_NAME	"enet-fec"
+> @@ -145,6 +145,7 @@ static struct platform_device mcf_fec0 = {
+>   		.platform_data		= FEC_PDATA,
+>   	}
+>   };
+> +#endif /* MCFFEC_BASE0 */
+>   
+>   #ifdef MCFFEC_BASE1
+>   static struct resource mcf_fec1_resources[] = {
+> @@ -182,7 +183,6 @@ static struct platform_device mcf_fec1 = {
+>   	}
+>   };
+>   #endif /* MCFFEC_BASE1 */
+> -#endif /* CONFIG_FEC */
+>   
+>   #if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+>   /*
+> @@ -624,12 +624,12 @@ static struct platform_device mcf_flexcan0 = {
+>   
+>   static struct platform_device *mcf_devices[] __initdata = {
+>   	&mcf_uart,
+> -#if IS_ENABLED(CONFIG_FEC)
+> +#ifdef MCFFEC_BASE0
+>   	&mcf_fec0,
+> +#endif
+>   #ifdef MCFFEC_BASE1
+>   	&mcf_fec1,
+>   #endif
+> -#endif
+>   #if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+>   	&mcf_qspi,
+>   #endif
