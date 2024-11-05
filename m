@@ -1,122 +1,90 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F5CC1EBFF8
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  5 Nov 2024 19:04:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 853EE21642B
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  5 Nov 2024 22:04:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730833476; cv=none; b=KrEW8uQqOBr8bKPFNdaPuGGxgTR68E2el4W6tZelsDp8RqEaJIebdKL+qCZ1dsDPDaXmxWU0/3bmKDDnzZjyJe1z2VGzTre6ZO7m9p5LINcuUpLkemswP2IR2jdEx6uv6PzEUJRv7mGn0p8/pwYTjjVrI+1ksdk8L9tYLNAtljA=
+	t=1730844296; cv=none; b=FW2IiW3NENMY5ezzBrOyGe/L18QWm+Reu9cauMW88yo8KG/qaOLMYaKu195pyccabEl8355IVFbEI5p1Dy3iaWDbzgvaHryzuZMP8bQvZUuLBMvTTFNLq0l4u9z7ZyUqyoQadiCQVZGf1unxXB91PBS2p7W7s1XqBRV4ZneUgPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730833476; c=relaxed/simple;
-	bh=uoF4ZbISUkj3LBJVbm7mjK2pNt272UgYSEG9wAikNJE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sM8U9GYfIEyt4dUdPede3LsF9issopE3oLazLa6h461obA2VghbhACZ0wmEbzeWqyQR2Aw6JjwQ9iyZuRWh+vI2DZL5jWm08cQhNkIR4lLrmvGwKVPdP+aHd4S9gVm6LXB8baArWv8AfkS0YItj6uqtIJs5Dsm7QHO08KyVXLRw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ndFUDxiZ; arc=none smtp.client-ip=139.178.84.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+	s=arc-20240116; t=1730844296; c=relaxed/simple;
+	bh=HrrOJ1WXEnxZCWPt0G7AtZPZHKTNdlqZy0JiF25Ri44=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hhAbsKVuM/fbjpWmPWHKsj57cgD0+kqj6ngoUo0YNXnCSaVcsuzTXKjU1bqz7n/DmwsrriLdR7z4/UpFuT2jvFHXvAj/NOMjlOCB/EHMdbofBqSfVObC2Gva2HOJymI97u4k4FH31+S+z7t4+KwPMDjlX+gdNvUVMw0hd75oRXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=147.75.193.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ndFUDxiZ"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 09E375C4357;
-	Tue,  5 Nov 2024 19:03:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14183C4CECF;
-	Tue,  5 Nov 2024 19:04:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730833472;
-	bh=uoF4ZbISUkj3LBJVbm7mjK2pNt272UgYSEG9wAikNJE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ndFUDxiZpHd3P71EA4Dtdpamj3S+pD0a2NSCYEIkT703any4R0lrK0H/JhQd4Hv2S
-	 hAfH0p9N7ObDyDDis1fM3KZKbcT6xDBcyV1iwhCKpgr5eJTjsn996Jr680vAO44Otj
-	 drCVf6YoRKOceIQN9knu/aAssyHKuocecyBZr/vNKZiP9PdCl8g8D3PbpLRYGfT7S3
-	 8Jxa1hlnrGJeQdCliPqKl36JEkEIgDaJdtPl3tXojvE85kFpWmMnDAcr4PjH7oX62l
-	 V8Za49Z9doiMVqhjlWd7GWzNdgnAXYy87njYhKhjV/rXdMfHzibVSbsFtDSY64+oSA
-	 zKXctAOfMY/4A==
-Date: Tue, 5 Nov 2024 12:04:27 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-	Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v7 6/8] x86/module: prepare module loading for ROX
- allocations of text
-Message-ID: <20241105190427.GA2903209@thelio-3990X>
-References: <20241023162711.2579610-1-rppt@kernel.org>
- <20241023162711.2579610-7-rppt@kernel.org>
- <20241104232741.GA3843610@thelio-3990X>
- <ZynDAhW0lKCfOqZl@kernel.org>
+	by nyc.source.kernel.org (Postfix) with ESMTP id 92EC6A42AD0;
+	Tue,  5 Nov 2024 22:02:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D98DC4CECF;
+	Tue,  5 Nov 2024 22:04:47 +0000 (UTC)
+Message-ID: <1dd8be4b-d5c3-4074-a91e-3ce998ce3050@linux-m68k.org>
+Date: Wed, 6 Nov 2024 08:04:44 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZynDAhW0lKCfOqZl@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] m68k: use kernel's generic muldi3 libgcc function
+To: Geert Uytterhoeven <geert@linux-m68k.org>, arnd@arndb.de
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+References: <20231113133209.1367286-1-gerg@linux-m68k.org>
+ <CAMuHMdVZh6-64hfx1jgOijBEG6cTftinqf+4fZvqjJtV1hO95g@mail.gmail.com>
+Content-Language: en-US
+From: Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <CAMuHMdVZh6-64hfx1jgOijBEG6cTftinqf+4fZvqjJtV1hO95g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Nov 05, 2024 at 09:02:26AM +0200, Mike Rapoport wrote:
-> There's a silly mistake in cfi_rewrite_endbr() in that commit, the patch
-> below should fix it. Can you please test?
+Hi Geert,
 
-Yup, that was it! All my machines boot with this diff applied on top of
-next-20241105, so with that fixed, I think we are all good here.
+On 5/11/24 21:46, Geert Uytterhoeven wrote:
+> Hi Greg, Arnd,
+> 
+> On Mon, Nov 13, 2023 at 2:32 PM Greg Ungerer <gerg@linux-m68k.org> wrote:
+>> Use the kernels own generic lib/muldi3.c implementation of muldi3 for
+>> 68K machines. Some 68K CPUs support 64bit multiplies so move the arch
+>> specific umul_ppmm() macro into a header file that is included by
+>> lib/muldi3.c. That way it can take advantage of the single instruction
+>> when available.
+>>
+>> There does not appear to be any existing mechanism for the generic
+>> lib/muldi3.c code to pick up an external arch definition of umul_ppmm().
+>> Create an arch specific libgcc.h that can optionally be included by
+>> the system include/linux/libgcc.h to allow for this.
+>>
+>> Somewhat oddly there is also a similar definition of umul_ppmm() in
+>> the non-architecture code in lib/crypto/mpi/longlong.h for a wide range
+>> or machines. Its presence ends up complicating the include setup and
+>> means not being able to use something like compiler.h instead. Actually
+>> there is a few other defines of umul_ppmm() macros spread around in
+>> various architectures, but not directly usable for the m68k case.
+>>
+>> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+> 
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> 
+>>   arch/Kconfig                   |  8 +++
+>>   arch/m68k/Kconfig              |  2 +
+>>   arch/m68k/include/asm/libgcc.h | 20 +++++++
+>>   arch/m68k/lib/Makefile         |  2 +-
+>>   arch/m68k/lib/muldi3.c         | 97 ----------------------------------
+>>   include/linux/libgcc.h         |  4 ++
+>>   6 files changed, 35 insertions(+), 98 deletions(-)
+>>   create mode 100644 arch/m68k/include/asm/libgcc.h
+>>   delete mode 100644 arch/m68k/lib/muldi3.c
+> 
+> I had this in my local tree for about a year.
+> Is it fine to queue this in the m68k tree, or does this need a broader
+> coverage?
 
-Tested-by: Nathan Chancellor <nathan@kernel.org>
+I am still in favor of it :-)
+Would be good to get some feedback on the common code changes, like the change
+to libgcc.h.
 
-> diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-> index 3407efc26528..243843e44e89 100644
-> --- a/arch/x86/kernel/alternative.c
-> +++ b/arch/x86/kernel/alternative.c
-> @@ -1241,7 +1241,7 @@ static void cfi_rewrite_endbr(s32 *start, s32 *end, struct module *mod)
->  		void *addr = (void *)s + *s;
->  		void *wr_addr = module_writable_address(mod, addr);
->  
-> -		poison_endbr(addr+16, wr_addr, false);
-> +		poison_endbr(addr + 16, wr_addr + 16, false);
->  	}
->  }
+Regards
+Greg
 
-Cheers,
-Nathan
