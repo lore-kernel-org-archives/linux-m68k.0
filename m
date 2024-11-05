@@ -1,85 +1,122 @@
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [195.130.132.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D6581E8826
-	for <linux-m68k@vger.kernel.org>; Tue,  5 Nov 2024 18:36:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F5CC1EBFF8
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  5 Nov 2024 19:04:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730831807; cv=none; b=irdFTTbipvpBjEa4Tw7+cR8PQUO9ygAKD1Fhkq/IUOBDyaB1FSjhXextRydyFtztgUpvWt1My1YFwKEOqejhs/QUd6zVLEQU8DbpKO+yqQ+lOoNtrAc7DncidziCu5o+QZstlZecihKKvqHb6YsmLoQMLH69abv3+VsBNViSykw=
+	t=1730833476; cv=none; b=KrEW8uQqOBr8bKPFNdaPuGGxgTR68E2el4W6tZelsDp8RqEaJIebdKL+qCZ1dsDPDaXmxWU0/3bmKDDnzZjyJe1z2VGzTre6ZO7m9p5LINcuUpLkemswP2IR2jdEx6uv6PzEUJRv7mGn0p8/pwYTjjVrI+1ksdk8L9tYLNAtljA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730831807; c=relaxed/simple;
-	bh=SNGgsZjvncAALUZ3SwuYQPe6vIKIexPik4mF1WjbGtk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=XWx8ji7L9aKpmtywNV0KHIvivNK1QGvtCTeQA3PbPOOj+0WmW4olW4zhfidPJ9AQfNREWcnrBmLLDtdU03KT0XldkdM9k/xaMRXLoh/merlFw6E9HDHkSqvr5Ppwd+Xshk0r+hQZQ3jTKfuZisKzWTI1v4nikHXaGRGHXAWNsdg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:aed7:437f:20a9:d72d])
-	by xavier.telenet-ops.be with cmsmtp
-	id Z6cb2D00f3NwldE016cbVi; Tue, 05 Nov 2024 19:36:36 +0100
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1t8OPX-006Jro-Ui;
-	Tue, 05 Nov 2024 19:36:35 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1t8OPr-005bEX-Km;
-	Tue, 05 Nov 2024 19:36:35 +0100
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Finn Thain <fthain@linux-m68k.org>,
-	Michael Schmitz <schmitzmic@gmail.com>,
-	"James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
-	Sam Creasey <sammy@sammy.net>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <ukleinek@kernel.org>
-Cc: linux-scsi@vger.kernel.org,
-	linux-m68k@vger.kernel.org,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] scsi: sun3: Mark driver struct with __refdata to prevent section mismatch
-Date: Tue,  5 Nov 2024 19:36:31 +0100
-Message-Id: <b2c56fa3556505befe9b4cb9a830d9e2a962e72c.1730831769.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1730833476; c=relaxed/simple;
+	bh=uoF4ZbISUkj3LBJVbm7mjK2pNt272UgYSEG9wAikNJE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sM8U9GYfIEyt4dUdPede3LsF9issopE3oLazLa6h461obA2VghbhACZ0wmEbzeWqyQR2Aw6JjwQ9iyZuRWh+vI2DZL5jWm08cQhNkIR4lLrmvGwKVPdP+aHd4S9gVm6LXB8baArWv8AfkS0YItj6uqtIJs5Dsm7QHO08KyVXLRw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ndFUDxiZ; arc=none smtp.client-ip=139.178.84.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ndFUDxiZ"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 09E375C4357;
+	Tue,  5 Nov 2024 19:03:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14183C4CECF;
+	Tue,  5 Nov 2024 19:04:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730833472;
+	bh=uoF4ZbISUkj3LBJVbm7mjK2pNt272UgYSEG9wAikNJE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ndFUDxiZpHd3P71EA4Dtdpamj3S+pD0a2NSCYEIkT703any4R0lrK0H/JhQd4Hv2S
+	 hAfH0p9N7ObDyDDis1fM3KZKbcT6xDBcyV1iwhCKpgr5eJTjsn996Jr680vAO44Otj
+	 drCVf6YoRKOceIQN9knu/aAssyHKuocecyBZr/vNKZiP9PdCl8g8D3PbpLRYGfT7S3
+	 8Jxa1hlnrGJeQdCliPqKl36JEkEIgDaJdtPl3tXojvE85kFpWmMnDAcr4PjH7oX62l
+	 V8Za49Z9doiMVqhjlWd7GWzNdgnAXYy87njYhKhjV/rXdMfHzibVSbsFtDSY64+oSA
+	 zKXctAOfMY/4A==
+Date: Tue, 5 Nov 2024 12:04:27 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+	Brian Cain <bcain@quicinc.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Stafford Horne <shorne@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v7 6/8] x86/module: prepare module loading for ROX
+ allocations of text
+Message-ID: <20241105190427.GA2903209@thelio-3990X>
+References: <20241023162711.2579610-1-rppt@kernel.org>
+ <20241023162711.2579610-7-rppt@kernel.org>
+ <20241104232741.GA3843610@thelio-3990X>
+ <ZynDAhW0lKCfOqZl@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZynDAhW0lKCfOqZl@kernel.org>
 
-As described in the added code comment, a reference to .exit.text is ok
-for drivers registered via module_platform_driver_probe().  Make this
-explicit to prevent the following section mismatch warnings
+On Tue, Nov 05, 2024 at 09:02:26AM +0200, Mike Rapoport wrote:
+> There's a silly mistake in cfi_rewrite_endbr() in that commit, the patch
+> below should fix it. Can you please test?
 
-    WARNING: modpost: drivers/scsi/sun3_scsi: section mismatch in reference: sun3_scsi_driver+0x4 (section: .data) -> sun3_scsi_remove (section: .exit.text)
-    WARNING: modpost: drivers/scsi/sun3_scsi_vme: section mismatch in reference: sun3_scsi_driver+0x4 (section: .data) -> sun3_scsi_remove (section: .exit.text)
+Yup, that was it! All my machines boot with this diff applied on top of
+next-20241105, so with that fixed, I think we are all good here.
 
-that trigger on a Sun 3 allmodconfig build.
+Tested-by: Nathan Chancellor <nathan@kernel.org>
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/scsi/sun3_scsi.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+> diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+> index 3407efc26528..243843e44e89 100644
+> --- a/arch/x86/kernel/alternative.c
+> +++ b/arch/x86/kernel/alternative.c
+> @@ -1241,7 +1241,7 @@ static void cfi_rewrite_endbr(s32 *start, s32 *end, struct module *mod)
+>  		void *addr = (void *)s + *s;
+>  		void *wr_addr = module_writable_address(mod, addr);
+>  
+> -		poison_endbr(addr+16, wr_addr, false);
+> +		poison_endbr(addr + 16, wr_addr + 16, false);
+>  	}
+>  }
 
-diff --git a/drivers/scsi/sun3_scsi.c b/drivers/scsi/sun3_scsi.c
-index fffc0fa525940cee..1bd1c3f87ff7dd42 100644
---- a/drivers/scsi/sun3_scsi.c
-+++ b/drivers/scsi/sun3_scsi.c
-@@ -656,7 +656,13 @@ static void __exit sun3_scsi_remove(struct platform_device *pdev)
- 	iounmap(ioaddr);
- }
- 
--static struct platform_driver sun3_scsi_driver = {
-+/*
-+ * sun3_scsi_remove() lives in .exit.text. For drivers registered via
-+ * module_platform_driver_probe() this is ok because they cannot get unbound at
-+ * runtime. So mark the driver struct with __refdata to prevent modpost
-+ * triggering a section mismatch warning.
-+ */
-+static struct platform_driver sun3_scsi_driver __refdata = {
- 	.remove_new = __exit_p(sun3_scsi_remove),
- 	.driver = {
- 		.name	= DRV_MODULE_NAME,
--- 
-2.34.1
-
+Cheers,
+Nathan
