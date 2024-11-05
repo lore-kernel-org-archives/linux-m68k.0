@@ -1,107 +1,109 @@
-Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 527B23C6BA
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  5 Nov 2024 09:56:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.235.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DB291D358D
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  5 Nov 2024 11:12:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730800608; cv=none; b=lIVVINvcuBJFGoychovxq1nNL3lWfeVqFgbl+3WaZWJOCidOSP0BxcFyggI11CCGYsuqAZpua1AGwiSESVTwGRJq6PcKTfsVrMl4u0gFl3I5Hh5D6geidKcTAqIYy4xd8vHl3xI0I0nENUm92sP5tpTjMuogFuA0+qSdZSLSVWQ=
+	t=1730805179; cv=none; b=aQeV3whBq/2dV2P0bKgWknX5DRhRCrm4VqlH6xILoo0v9IBQyNkEMG3rvFBrZaCRteBU6nZNUIl2RjfTX3oo3ejJQrNTqEW8SxIdaRoXPoSA+uaFi3Bc4LibZkzKH1a9Gtgzq7M0461c0oO5x/3EvHTMW2s4pygmMJAdnUA1rOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730800608; c=relaxed/simple;
-	bh=R7fYE1ho6RL0rqvfjF3EYrY/xOTC+OyPnNaWsD9XQcY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=reWaub2pGGU2FhSvFIlpaxeQVVjKBsjJd9i3nKXrHZU7hsiaztZgpQ0Ni0ytn/pcmwurdh10L++OMlf2ROK0QWSqHkJkqy4v+hzbhOCBMM1xQsp2kirbxJgwg+9ilEUdGoZXMQ4fZ5utSim2luZXyGph4YDyhS/ouYQTTb6dEAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.235.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-	by localhost (Postfix) with ESMTP id 4XjNyz319Qz9sPd;
-	Tue,  5 Nov 2024 10:56:43 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id CpEO93zW8bQ7; Tue,  5 Nov 2024 10:56:43 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase2.c-s.fr (Postfix) with ESMTP id 4XjNyz27jdz9rvV;
-	Tue,  5 Nov 2024 10:56:43 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 346688B770;
-	Tue,  5 Nov 2024 10:56:43 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id BXNslob-hZDZ; Tue,  5 Nov 2024 10:56:43 +0100 (CET)
-Received: from [192.168.232.44] (unknown [192.168.232.44])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 9E0918B763;
-	Tue,  5 Nov 2024 10:56:42 +0100 (CET)
-Message-ID: <9ee9c21b-179f-49aa-8c65-304c8ef2c9a7@csgroup.eu>
-Date: Tue, 5 Nov 2024 10:56:42 +0100
+	s=arc-20240116; t=1730805179; c=relaxed/simple;
+	bh=joG4P4jYyblotj9+AuYdZ9+B473TN45NIpAJQxIZkWQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nleYV7IuOMFzEEyWVo8kzDdrwlH0xZUdf2tJsxrRxZ9PCUWEvJiwqLT8QIjTcxwGlzKCJkcIVaQ0ngB9DQ0tBAvCP/D19n6Y3uxBknujojjTaIK0wrvU2MxARLcrwUiwR7nzxpNPaz9iJyM+mO11u4bF7R8Sch3WGQ5yoizlQ7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-6ea339a41f1so45521397b3.2
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 05 Nov 2024 03:12:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730805176; x=1731409976;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7u7cesrN6fwiNOOUz+RnFnfBh4Cv9POsXdrOPXkwZn8=;
+        b=Ved0asKFFwFgg4KSNYIp8cOZv5qwdspEZ3ht/E6lMRxhLmscXu0DaniQG3gmN773ya
+         wzKLmrDJrMHW4naN6gjHLZip5gvPNIT8hct3ICvItx5Js9XsaUTwB5CCMuQoh7yR17cr
+         /B70RdU7QdZfbb4nNSLDBotdn7bUhFfV9XsQfm23imZyLJka+01Z6tV8IyazCaaVMv+x
+         +AmD6deogTWdBoPuoskQfJz6Obv4Bq5U5bPWOnQUvK+q1KOcVSmFmJX3wnwIeDAtzNBY
+         qJm9IYBqQqhyYJz/8x0xUVVIZ7SB/hjGs4RdPbacd8PudBhubGKBo7DRtGIewmJI+5yV
+         bkYw==
+X-Forwarded-Encrypted: i=1; AJvYcCUKh8kUz6SIHYXJfrr5NCUg1zJrxivYOKKGf+3G3QcJtxWd5eVMgMj/ULT71p1zIvpvmThWHSxXRDJY@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwsDtjpD+vpLXauBpQ+9MQCyCtb9GF2re/t1kYcEiivlv0KjHM0
+	sA58uOW+HPI7A1b3avIT8jll6PW23Lqy1kxlI+fv0yOssGVSBRHXrU6twQC/
+X-Google-Smtp-Source: AGHT+IHQUKjp/ad3ZCbROyadcVDN2aUvIaLcFtv9Koc1EHGRxmvHcPdyLrtTtSnCEVSav1tkY7TQPA==
+X-Received: by 2002:a0d:d203:0:b0:6ea:6f5b:cd5e with SMTP id 00721157ae682-6ea6f5bce2cmr110308557b3.26.1730805175559;
+        Tue, 05 Nov 2024 03:12:55 -0800 (PST)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6ea55aca025sm21909187b3.4.2024.11.05.03.12.54
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Nov 2024 03:12:54 -0800 (PST)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-6ea339a41f1so45521127b3.2
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 05 Nov 2024 03:12:54 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVK1RLfqEPcDsuIWBbpHwJuenCyYOCyc2q/RkwH0uVs6ccgvYw+3+8S1Q/GmMhnJEa+joiFBJTQsVr9@lists.linux-m68k.org
+X-Received: by 2002:a05:690c:9a03:b0:6e2:985:f4df with SMTP id
+ 00721157ae682-6ea52546b5cmr206450377b3.44.1730805173824; Tue, 05 Nov 2024
+ 03:12:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] asm-generic: add an optional pfn_valid check to
- page_to_phys
-To: Christoph Hellwig <hch@lst.de>, Arnd Bergmann <arnd@arndb.de>
-Cc: linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-um@lists.infradead.org, linux-arch@vger.kernel.org
-References: <20241023053644.311692-1-hch@lst.de>
- <20241023053644.311692-3-hch@lst.de>
-Content-Language: fr-FR
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-In-Reply-To: <20241023053644.311692-3-hch@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20241030195638.22542-1-arnd@kernel.org>
+In-Reply-To: <20241030195638.22542-1-arnd@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 5 Nov 2024 12:12:40 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXivFLfonRACeQC-VXQDg7Bnj+QYuW+8UH+ht8Bij=g_Q@mail.gmail.com>
+Message-ID: <CAMuHMdXivFLfonRACeQC-VXQDg7Bnj+QYuW+8UH+ht8Bij=g_Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] [v3] m68k: move sun3 into a top-level platform option
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>, linux-m68k@lists.linux-m68k.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-Le 23/10/2024 à 07:36, Christoph Hellwig a écrit :
-> page_to_pfn is usually implemented by pointer arithmetics on the memory
-> map, which means that bogus input can lead to even more bogus output.
-> 
-> Powerpc had a pfn_valid check on the intermediate pfn in the page_to_phys
-> implementation when CONFIG_DEBUG_VIRTUAL is defined, which seems
-> generally useful, so add that to the generic version.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+On Wed, Oct 30, 2024 at 8:56=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wro=
+te:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> It is possible to select an m68k MMU build but not actually
+> enable any of the three MMU options, which then results in a
+> build failure:
+>
+>  arch/m68k/include/asm/page.h:10:25: error: 'CONFIG_PAGE_SHIFT' undeclare=
+d here (not in a function); did you mean 'CONFIG_LOG_BUF_SHIFT'?
+>
+> Change the Kconfig selection to ensure that exactly one of the
+> three options is always enabled whenever an MMU-enabled kernel
+> is built, but moving CONFIG_SUN3 into a top-level option next
+> to M68KCLASSIC and COLDFIRE.
+>
+> All defconfig files should keep working without changes,
+> but alldefconfig now builds support for the classic MMU.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202408032138.P7sBvIns-lkp@i=
+ntel.com/
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->   include/asm-generic/memory_model.h | 10 ++++++++++
->   1 file changed, 10 insertions(+)
-> 
-> diff --git a/include/asm-generic/memory_model.h b/include/asm-generic/memory_model.h
-> index a73a140cbecd..6d1fb6162ac1 100644
-> --- a/include/asm-generic/memory_model.h
-> +++ b/include/asm-generic/memory_model.h
-> @@ -64,7 +64,17 @@ static inline int pfn_valid(unsigned long pfn)
->   #define page_to_pfn __page_to_pfn
->   #define pfn_to_page __pfn_to_page
->   
-> +#ifdef CONFIG_DEBUG_VIRTUAL
-> +#define page_to_phys(page)						\
-> +({									\
-> +	unsigned long __pfn = page_to_pfn(page);			\
-> +									\
-> +	WARN_ON_ONCE(!pfn_valid(__pfn));				\
+> v3:
+>  - fix coldfire+mmu build failure, by taking out the m68020 default
 
-On powerpc I think it was a WARN_ON().
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k tree for v6.13.
 
-Will a WARN_ON_ONCE() be enough ?
+Gr{oetje,eeting}s,
 
-> +	PFN_PHYS(__pfn);						\
-> +})
-> +#else
->   #define page_to_phys(page)	PFN_PHYS(page_to_pfn(page))
-> +#endif /* CONFIG_DEBUG_VIRTUAL */
->   #define phys_to_page(phys)	pfn_to_page(PHYS_PFN(phys))
->   
->   #endif /* __ASSEMBLY__ */
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
