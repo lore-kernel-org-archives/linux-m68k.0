@@ -1,178 +1,89 @@
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FD111509AF
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  5 Nov 2024 16:07:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D63343BBC9
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  5 Nov 2024 17:45:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730822839; cv=none; b=WoExemerJHc3pVEo3Ax+iJWL7/HPzNTMtMW2tMIw9HC9P6utGTavjVLVO2UBaavAsYEGOzIq8zIEUW65FssIrTe3nFFJ6xvRSUBP/xtF+TkvmV6XS6Xl2hSTEQc4gaAYBPaJeafpKX1rBjq7G5wUNhVGKzHGzTHiqb0fakRdDuM=
+	t=1730828714; cv=none; b=ZiwWDyOTDfv2Y0ANsIvkPjIZuzINT4HNwaSVgt1HIiO/lfWnC7boXLutmO/waoAysUjK/aNWg5+EcScItZ89ewX+eUtdwtD0Ip9/4hPztaXge5+NKx5eqRB449gC30RWTr7JM156cmd0BeBH6IlS6B9g67Oxw+Zc2Z9wiNEldQQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730822839; c=relaxed/simple;
-	bh=VH1r4tp0wlXRUl7tT3hgyqFtHRjHf6kl1GsN1Iq7udU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=W1E7q5xl687otJVbU4lrPcmfwEJcS2DkrtEJUn14M9od5W5NBPk7qNeVnSPV/DVVAJZe1sUFVup4b48+fmQLbNZ7Cyb86zVQPe72mwWDJn0TTuavBRa7wzUJ7Vt0gCFU+9kIghQa/CHdo1gUvu3v4mlZClz2j/gUHlVpbdwopU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=SE8ncYxW; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="SE8ncYxW"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D5AB6FF80B;
-	Tue,  5 Nov 2024 16:07:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1730822835;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ShBL4rae52nwdlUNSSt2YAy/Zfp87HFRvmZTPlGPJf8=;
-	b=SE8ncYxWCkpREZvlAVF4Ze3C8spPMFmlBOwvk7cBa/pNgnJEOqjUUFJCkvATT42YTUMHM6
-	i3yjnZoUvT7HnjLA1n5fShjofsjBVt0LifFFLCMeEGyB3F1M+F/DlsfB5UT+4m+ClzApk1
-	+NKMLsifpjYtybbv9Pa5Z8QT4jEyOKSnUSVAwhbcuFPrT0pwrs5bgRNmFTD9HF5mnMkrDu
-	zMisK6DvcFYEe5RkErEg6lKjZg0On0jN3qNzrbzlKLvWJF0TK4XqkfaCbxmY4e9+D5swSr
-	2qA3Mb1fRattCISNRLtm4EeMyua2knTEuzejrkpP4CNCMgZdrmuG18OZdygHVQ==
-Message-ID: <5a4f485b-51e7-47de-abe9-ede18e1e6643@yoseli.org>
-Date: Tue, 5 Nov 2024 17:07:14 +0100
+	s=arc-20240116; t=1730828714; c=relaxed/simple;
+	bh=ecjxMWdhVaLLUuMcptw4/tjpiyom5/R0aaKpCuOg+uE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qiFZNiTqkM5OrDn+AEuIivDTclbgo4j0w1vhnjnflMml9RO2ggT77PxfJrECcjBVXEJVQutyOnkUNlNEGmLaqztRfA+XliXK9AdVYKfjTIRVw62GLjvu3atYI/MPp7X7Y/Q3JS/nSTkP8M8C0zysYUWr7FI/eVK3hOkVnIy0DF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-e29218d34f8so24628276.1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 05 Nov 2024 09:45:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730828710; x=1731433510;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u+3xEu/L4gA3mcrTWrHcuue6i3EHWLMLRjsPz9s2Jcs=;
+        b=DDwstXX4A+Usuom10pOQ6gBDANb97igvHEnpIIicdpHuTCFNzdSyTsqmUVtyfnD2WP
+         qGpIZ7IvBafDHu9nvsyiot5/tf6hr8XgIQHHg+ZAS7E9coVTo+TVWXukMs/0LwELa7WO
+         LS75pYyd/xXcZBumzX3CWVOhBGoGERSXZfAJa+m+sPlj5InFRFxrIRvRv8SrM6cGImeU
+         TuXDN/3qzmWIkfxOUyUQWQdo0fPymbeeAYM/+O0xbrp5XeK5GcicTs0bfN4+rTp+OTdt
+         gSTaDaQqKGPqBF7yP3QFGj+tSfpPeS2TwRCQ6+p04zNmD6OtEQhPrB03QThqqryR2KdV
+         FI+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCX4toKMQ9qKu0I/IlOBLPmYHxL4nMeQWsU6eoIi7bY7mMKO0iDd1RudSH0AtwrDNvGlpJpdHjJwFarT@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YzudttmKg7cyOoUM/rGELus1IjAKWK3uNmbgwsDiA0O0usTud8U
+	Ir4r5OAzS8Bs8iRFcKgYfKl+kYNZmzEqhkjMnj/7LTM11d4WH1yy5pH/32x/
+X-Google-Smtp-Source: AGHT+IHyXqyBIxANabPUeOnpvsEgTM1EDwNBKex2q86DN0w5fxTc0pTbZXzERPKCvfrFTn6al9/CRA==
+X-Received: by 2002:a05:6902:4aa:b0:e2e:447b:7048 with SMTP id 3f1490d57ef6-e30e8bd3256mr12728191276.12.1730828710451;
+        Tue, 05 Nov 2024 09:45:10 -0800 (PST)
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e30e8a61035sm2520499276.1.2024.11.05.09.45.09
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Nov 2024 09:45:09 -0800 (PST)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-6e35bf59cf6so477517b3.0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 05 Nov 2024 09:45:09 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXOJdxnQbvdJ0kOZmYETaY/oXidb4gVMOSVDMtnC3Lu3aI33uJFxrNCoQp2h0TUF+YlbnScdzFT/7GZ@lists.linux-m68k.org
+X-Received: by 2002:a05:690c:740a:b0:6db:da0e:d166 with SMTP id
+ 00721157ae682-6ea55893852mr166474847b3.12.1730828709297; Tue, 05 Nov 2024
+ 09:45:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] m68k: Initialize jump labels early during setup_arch()
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-References: <20241016-fix-jump-label-v1-1-eb74c5f68405@yoseli.org>
- <CAMuHMdULfk-_VGXBsnD+Gc7h4c5PRAYDdgx1zEeW=4+1fA0N_Q@mail.gmail.com>
- <d8d99f60-7a51-4b5f-b281-11fe6322a01e@yoseli.org>
- <CAMuHMdWV9aAV89gB-57e9cmFYax=BUbg0k2m7R1+t9E5YSySvw@mail.gmail.com>
-Content-Language: en-US, fr
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-In-Reply-To: <CAMuHMdWV9aAV89gB-57e9cmFYax=BUbg0k2m7R1+t9E5YSySvw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
+References: <20240929025506.1212237-1-daniel@0x0f.com>
+In-Reply-To: <20240929025506.1212237-1-daniel@0x0f.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 5 Nov 2024 18:44:56 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWz9euGczd0pdEH8=yvK48-TfiQjqDO_RaGsbuuEDHDww@mail.gmail.com>
+Message-ID: <CAMuHMdWz9euGczd0pdEH8=yvK48-TfiQjqDO_RaGsbuuEDHDww@mail.gmail.com>
+Subject: Re: [PATCH] m68k: mvme147: Make mvme147_sched_init() __init
+To: Daniel Palmer <daniel@0x0f.com>
+Cc: gerg@linux-m68k.org, linux-m68k@lists.linux-m68k.org, 
+	linux-kernel@vger.kernel.org, fthain@linux-m68k.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Geert,
+On Sun, Sep 29, 2024 at 4:55=E2=80=AFAM Daniel Palmer <daniel@0x0f.com> wro=
+te:
+> mvme147_sched_init() is only used once at init time
+> so it can be made __init and save a few bytes of memory.
+>
+> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
 
-On 11/5/24 17:04, Geert Uytterhoeven wrote:
-> Hi Jean-Michel,
-> 
-> On Tue, Nov 5, 2024 at 3:56 PM Jean-Michel Hautbois
-> <jeanmichel.hautbois@yoseli.org> wrote:
->> On 11/5/24 15:03, Geert Uytterhoeven wrote:
->>> On Wed, Oct 16, 2024 at 6:18 PM Jean-Michel Hautbois
->>> <jeanmichel.hautbois@yoseli.org> wrote:
->>>> The jump_label_init() should be called from setup_arch() very
->>>> early for proper functioning of jump label support.
->>>>
->>>> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
->>>
->>> Thanks for your patch!
->>>
->>>> --- a/arch/m68k/kernel/setup_mm.c
->>>> +++ b/arch/m68k/kernel/setup_mm.c
->>>> @@ -249,7 +249,11 @@ void __init setup_arch(char **cmdline_p)
->>>>           process_uboot_commandline(&m68k_command_line[0], CL_SIZE);
->>>>           *cmdline_p = m68k_command_line;
->>>>           memcpy(boot_command_line, *cmdline_p, CL_SIZE);
->>>> -
->>>> +       /*
->>>> +        * Initialise the static keys early as they may be enabled by the
->>>> +        * cpufeature code and early parameters.
->>>> +        */
->>>> +       jump_label_init();
->>>>           parse_early_param();
->>>>
->>>>           switch (m68k_machtype) {
->>>
->>> This is indeed what some (but not all) other architectures are doing, so
->>> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
->>>
->>> I assume you saw some "static key used before call to jump_label_init()"
->>> warning[1]? Since I never saw such a message, can you please elaborate
->>> and explain your use case, so I can add that to the patch description
->>> when applying?
->>
->> Indeed ! I saw this when I was passing the "threadirqs" parameter to the
->> kernel commandline and the "select IRQ_FORCED_THREADING" line to the
->> Kconfig.
-> 
-> Thanks, I can reproduce it using that method.
-> 
->> I suspect this might be true for other keys.
-> 
-> Indeed. But m68k and its configs don't enable much code that uses keys.
-> The only one I found was "thread_backlog_napi". Adding that to the
-> kernel command line gives:
-> 
->      WARNING: CPU: 0 PID: 0 at include/linux/jump_label.h:322
-> setup_backlog_napi_threads+0x40/0xa0
->      static_key_enable(): static key '0x5ceec0' used before call to
-> jump_label_init()
-> 
-> so I'll add that to the patch description.
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k tree for v6.13.
 
-Great news !
+Gr{oetje,eeting}s,
 
-> 
->> BTW, threaded IRQs work fine ;-).
-> 
-> On Atari (ARAnyM), they blow up spectacularly:
-> 
->      Unable to handle kernel NULL pointer dereference at virtual address 00000000
->      Oops: 00000000
->      Modules linked in:
->      PC: [<00040baa>] try_to_wake_up+0x90/0x1b8
->      SR: 2701  SP: (ptrval)  a2: 0055b660
->      d0: 00000003    d1: 00000003    d2: 00000000    d3: 00002700
->      d4: 00000008    d5: 00000000    a0: 00558000    a1: 00558000
->      Process swapper (pid: 0, task=(ptrval))
->      Frame format=7 eff addr=00000000 ssw=0505 faddr=00000000
->      wb 1 stat/addr/data: 0000 00000000 00000000
->      wb 2 stat/addr/data: 0000 00000000 00000000
->      wb 3 stat/addr/data: 0000 00000000 00000000
->      push data: 00000000 00000000 00000000 00000000
->      Stack from 00559ea8:
->      00000000 0000000f 00007874 01006140 00559ef0 00050ec6 0000000f 00559ed8
->      00040ce6 00000000 00000003 00000000 00559f14 0003b9b6 00000000 00000000
->      00592710 010040c0 00000000 00559ef4 00559ef4 0003ba26 00051cd2 010040c0
->      ffffffff 004fc9a1 00559f2c 00559ff8 00050ef8 00051cd2 010040c0 ffffffff
->      004fc9a1 0000000f 004f9268 00000000 00592710 010040c0 00051566 010040c0
->      0000000f 00000000 00000000 0000000f 00007874 00000000 010040c0 00592710
->      Call Trace: [<00007874>] stdma_int+0x0/0x1c
->       [<00050ec6>] setup_irq_thread+0x0/0x98
->       [<00040ce6>] wake_up_process+0x14/0x18
->       [<0003b9b6>] __kthread_create_on_node+0xca/0x11e
->       [<0003ba26>] kthread_create_on_node+0x1c/0x26
->       [<00051cd2>] irq_thread+0x0/0x184
->       [<00050ef8>] setup_irq_thread+0x32/0x98
->       [<00051cd2>] irq_thread+0x0/0x184
->       [<00051566>] __setup_irq+0x172/0x582
->       [<00007874>] stdma_int+0x0/0x1c
->       [<00051a34>] request_threaded_irq+0xbe/0x14e
->       [<0003ab86>] parse_args+0x0/0x202
->       [<0000556e>] m68k_setup_irq_controller+0x0/0x48
->       [<00255bda>] __is_suppressed_warning+0x0/0x42
->       [<005da080>] stdma_init+0x2a/0x42
->       [<00007874>] stdma_int+0x0/0x1c
->       [<00200080>] ksys_shmctl+0x420/0x5f8
->       [<00007874>] stdma_int+0x0/0x1c
->       [<005d9f82>] atari_init_IRQ+0xc0/0x194
->       [<00412cc8>] _printk+0x0/0x18
->       [<00255bda>] __is_suppressed_warning+0x0/0x42
->       [<005d62b0>] start_kernel+0x40e/0x618
->       [<005d5344>] _sinittext+0x344/0x9e8
-> 
->      Code: 0008 5281 2341 0008 b6fc fc3c 6700 011e <2213> c280 6700
-> 0108 202b 0018 4bf9 0004 05a6 6700 0096 486e fffc 2f0b 4eb9 0004
->      Disabling lock debugging due to kernel taint
->      Kernel panic - not syncing: Attempted to kill the idle task!
->      ---[ end Kernel panic - not syncing: Attempted to kill the idle task! ]---
+                        Geert
 
-I needed to make my nfc driver (vf610_nfc) be hardirq though using 
-IRQF_NO_THREAD but ethernet and all work fine on coldfire.
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
 
-Thanks !
-JM
-
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
