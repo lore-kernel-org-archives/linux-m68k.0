@@ -1,144 +1,117 @@
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B009EAD2
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  5 Nov 2024 14:48:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009891D9A66
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  5 Nov 2024 14:56:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730818136; cv=none; b=RtR6BmilA63tf+4QcIypGSEECx7bQAfQhchOZg4l0WEnbNWk3NSHg6tK94V7C0W6qmV9Yf1kg5or4OaIfPOJRk3IOunhx05T1t8sn1531CQ3Yh+npiVfApN+nhI3XqdEB4Bxq9z2MMbrpyHCx5qQo404TEqRBxmfaF9/Fq6+wJ4=
+	t=1730818622; cv=none; b=VpP9Hnoc05pBqfqYhUdObUB+UvypJJeTC7ansiKYUsIccEiEtIwNLQDtdXVnWE8SIMOIrPflSE+G18yAJQTG6YYh8SCTZtjF3p+5gGWIyXwlZffB5d/kuXpDgoNb4e3Te6laW38IES1NDBMvNCxDeREFBD9zKfMmfeDpHTqt78I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730818136; c=relaxed/simple;
-	bh=f4xXPtr/rczFDWSCXCnLBmqWV3vrsWDra9h8vOvQoLk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Hx3u9G2z1HYVPnpSuBSa8DIHlsZqTiutxyPMMjg4vpO8zVJhYXu08eBt4RGjjUIfl1H83epKkwPsJoT3HwT1+rCDrBIpSsHWRoBMA8LJxJgGthutUmD2q3/RE+2n8zu10tY6AotYZy9NmlL55EmKlYmeFQEANDwtuJ4ig20ttCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-6ea7c9227bfso9322717b3.2
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 05 Nov 2024 06:48:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730818133; x=1731422933;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=062wwg7reCXnZ2jiwUr0t2popBMcfyNM3miSTWB1lmU=;
-        b=TPGNNY/GcwoQrl3ywsh0hZzJE5T96h/d10xsTnTKul3V1+sVP/j9nyj8/DupT4LrQ2
-         UXNXhxgHGUWMYVphQcQnQ3HLSXTUQMgs86FQelY/lUaOOs7DByKw1sLWJ2mrq2uxbmcs
-         jHJuhYGw4DVMfZDR9+abVVHJfPcpZ5Fp5eQ0VSxfqUUOxOWcI/ek9635ei36okbfFnOj
-         rLEJjnBbo64YOekzamkLhRA8uRAnc3zL3gbqjqsx8h1U9ZKpzpkWr41g9zQDDK5a31q/
-         JZfYE2+Lu1+va+TS62R95HGsRBFp/IDwnD/VtYHUY5lKCJBun9ZTcbz/HxsChql/LfUJ
-         BTXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX7sSP6Q9S3FkHxGDXV0pyibvERDvGj2/QEOCoqoCUZYsiqLR5asoKWB+nNtqo932bFmwuSqIkVl2yN@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yyk9JFbqYs2GtMl8Q+oDQIK4i36kG+0tOMG2sA80sFUZbp4EUIv
-	+EfBG0BwonhRbMrbpDZEwTTpOSH5msGmyamQ2IEHdQcnRphKAgO66XxU1E67
-X-Google-Smtp-Source: AGHT+IGe3nBe+kljHvhegbPjyXYeuXAyBJcG2REMmyXUkp8xOZpDQFWDZk00DHaxmteWJwYBJ3xXZA==
-X-Received: by 2002:a05:690c:f06:b0:6e9:e097:718c with SMTP id 00721157ae682-6e9e09774ecmr337216407b3.6.1730818132857;
-        Tue, 05 Nov 2024 06:48:52 -0800 (PST)
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6ea7434f73fsm16743907b3.23.2024.11.05.06.48.52
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Nov 2024 06:48:52 -0800 (PST)
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-e30d0d84d23so4512320276.3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 05 Nov 2024 06:48:52 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVVSJGI1iDM5ui8O4C7TM3dUOcSwtsoPTH0AOXB7p5hRKawtC4HZ158h9ipTnWuJL10I1DcV9Wd/9xt@lists.linux-m68k.org
-X-Received: by 2002:a05:690c:ed3:b0:6e2:1527:446b with SMTP id
- 00721157ae682-6e9d896200bmr337335377b3.3.1730818131998; Tue, 05 Nov 2024
- 06:48:51 -0800 (PST)
+	s=arc-20240116; t=1730818622; c=relaxed/simple;
+	bh=kz2PwHpWkB6b89mlNrslPR1CQGh2syGsUe1HBwmlb3k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hZE3UtVMBXor/axWCPhPQ5Vy6Wo933TmkRMZhU7CjD7T8nEch2GYUgYy/p5oH4If+R/iWoKKmtl1/rhf1vkKIecRLEuWWt/PbDspTNROW7lcCxbD5Jet8ABUFB3App21lHkExGssE0bpPKwxffhDXqV2AQfyS1zHzMsmIyc7QgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=VeGZ3hqp; arc=none smtp.client-ip=217.70.183.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="VeGZ3hqp"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D95DEC000B;
+	Tue,  5 Nov 2024 14:56:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1730818617;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Jt05KO7QehHNanvDPk93Fbe7ao3Un8Fn9Np859KAxfA=;
+	b=VeGZ3hqpj6zp3/dEY+bUdrT3apkXsrjXDpfUoIZ9AEwZKCudE0Z8jp9xbTdRUbXZNLHgfq
+	lQVd7xWmJ5Gnxb9ifE4W9U7WQg2vG2eF0bCrZ43zveDUtJk/I2IJlBMkh49zR59Vx5rZe/
+	5jHmRgxnTF+JP0eNq+T1cZyqnsu4e9L60vAovc1WMGBo/AsVNj2G9lizCFRP3mf7Ful9+6
+	mxORNYEsW2VKmV644PQMRrNnz2fZkA/zDJoTaZiJfI4ZIAj4vh49tYXRGmtreklP7uDLLH
+	CKdfkVer5Yj+uly41SmSGYatcQBzk5nvpC15e20bNd1XsZ+mak0qO4BzBQtRNQ==
+Message-ID: <d8d99f60-7a51-4b5f-b281-11fe6322a01e@yoseli.org>
+Date: Tue, 5 Nov 2024 15:56:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <b6112556472c657762f064ec5328f153e3ed03cd.1727926187.git.fthain@linux-m68k.org>
-In-Reply-To: <b6112556472c657762f064ec5328f153e3ed03cd.1727926187.git.fthain@linux-m68k.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 5 Nov 2024 15:48:39 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXR6gN44MiE3Nc-bU6u92_RA2PWx37ndBKA7AD+gKErTQ@mail.gmail.com>
-Message-ID: <CAMuHMdXR6gN44MiE3Nc-bU6u92_RA2PWx37ndBKA7AD+gKErTQ@mail.gmail.com>
-Subject: Re: [PATCH] m68k: mvme147: Reinstate early console
-To: Finn Thain <fthain@linux-m68k.org>, Daniel Palmer <daniel@0x0f.com>
-Cc: stable@kernel.org, linux-m68k@lists.linux-m68k.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] m68k: Initialize jump labels early during setup_arch()
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+References: <20241016-fix-jump-label-v1-1-eb74c5f68405@yoseli.org>
+ <CAMuHMdULfk-_VGXBsnD+Gc7h4c5PRAYDdgx1zEeW=4+1fA0N_Q@mail.gmail.com>
+Content-Language: en-US, fr
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+In-Reply-To: <CAMuHMdULfk-_VGXBsnD+Gc7h4c5PRAYDdgx1zEeW=4+1fA0N_Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-Hi Finn, Daniel,
+Hi Geert !
 
-On Thu, Oct 3, 2024 at 5:32=E2=80=AFAM Finn Thain <fthain@linux-m68k.org> w=
-rote:
-> From: Daniel Palmer <daniel@0x0f.com>
->
-> Commit a38eaa07a0ce ("m68k/mvme147: config.c - Remove unused functions"),
-> removed the console functionality for the mvme147 instead of wiring it
-> up to an early console. Put the console write function back and wire it u=
-p
-> like mvme16x does so it's possible to see Linux boot on this fine hardwar=
-e
-> once more.
+On 11/5/24 15:03, Geert Uytterhoeven wrote:
+> Hi Jean-Michel,
+> 
+> On Wed, Oct 16, 2024 at 6:18 PM Jean-Michel Hautbois
+> <jeanmichel.hautbois@yoseli.org> wrote:
+>> The jump_label_init() should be called from setup_arch() very
+>> early for proper functioning of jump label support.
+>>
+>> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+> 
+> Thanks for your patch!
+> 
+>> --- a/arch/m68k/kernel/setup_mm.c
+>> +++ b/arch/m68k/kernel/setup_mm.c
+>> @@ -249,7 +249,11 @@ void __init setup_arch(char **cmdline_p)
+>>          process_uboot_commandline(&m68k_command_line[0], CL_SIZE);
+>>          *cmdline_p = m68k_command_line;
+>>          memcpy(boot_command_line, *cmdline_p, CL_SIZE);
+>> -
+>> +       /*
+>> +        * Initialise the static keys early as they may be enabled by the
+>> +        * cpufeature code and early parameters.
+>> +        */
+>> +       jump_label_init();
+>>          parse_early_param();
+>>
+>>          switch (m68k_machtype) {
+> 
+> This is indeed what some (but not all) other architectures are doing, so
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> 
+> I assume you saw some "static key used before call to jump_label_init()"
+> warning[1]? Since I never saw such a message, can you please elaborate
+> and explain your use case, so I can add that to the patch description
+> when applying?
 
-Thanks for your patch!
+Indeed ! I saw this when I was passing the "threadirqs" parameter to the 
+kernel commandline and the "select IRQ_FORCED_THREADING" line to the 
+Kconfig.
+I suspect this might be true for other keys.
 
-> Cc: Daniel Palmer <daniel@0x0f.com>
-> Cc: stable@kernel.org
-> Fixes: a38eaa07a0ce ("m68k/mvme147: config.c - Remove unused functions")
-> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
-> Reviewed-by: Finn Thain <fthain@linux-m68k.org>
+BTW, threaded IRQs work fine ;-).
 
-As this patch differs from Daniel's original, I guess you want
+Thanks,
+JM
 
-    Co-deloped-by: Daniel Palmer <daniel@0x0f.com>
-    Signed-off-by: Daniel Palmer <daniel@0x0f.com>
-    Co-deloped-by: Finn Thain <fthain@linux-m68k.org>
-    Signed-off-by: Finn Thain <fthain@linux-m68k.org>
-
-instead?
-
-> --- a/arch/m68k/mvme147/config.c
-> +++ b/arch/m68k/mvme147/config.c
-> @@ -33,6 +33,7 @@
->  #include <asm/mvme147hw.h>
->  #include <asm/config.h>
->
-> +#include "mvme147.h"
->
->  static void mvme147_get_model(char *model);
->  extern void mvme147_sched_init(void);
-> @@ -177,3 +178,29 @@ static u64 mvme147_read_clk(struct clocksource *cs)
->
->         return ticks;
->  }
-> +
-> +#define SCC_DELAY do { __asm__ __volatile__ ("nop; nop;"); } while (0)
-
-Please keep on using a static (inline) function instead of a macro.
-
-> +
-> +static void scc_write(char ch)
-> +{
-> +       do {
-> +               SCC_DELAY;
-> +       } while (!(in_8(M147_SCC_A_ADDR) & BIT(2)));
-> +       SCC_DELAY;
-> +       out_8(M147_SCC_A_ADDR, 8);
-> +       SCC_DELAY;
-> +       out_8(M147_SCC_A_ADDR, ch);
-> +}
-
-The rest LGTM, so
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+> 
+> Thanks!
+> 
+> [1] https://elixir.bootlin.com/linux/v6.11.6/source/include/linux/jump_label.h#L81
+> 
+> Gr{oetje,eeting}s,
+> 
+>                          Geert
+> 
+> 
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                  -- Linus Torvalds
