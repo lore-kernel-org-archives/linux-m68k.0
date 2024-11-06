@@ -1,125 +1,120 @@
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC0041D432C
-	for <linux-m68k@vger.kernel.org>; Wed,  6 Nov 2024 08:50:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A591E1DA63D;
+	Wed,  6 Nov 2024 09:59:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730883029; cv=none; b=sic+orL9Jlj5jwKiExKj0dweC7Zh959VZoJlX6d6D+3gQ+IAbOBF+opCAoRH44mtpD4tPY15rSLPvK7qGUpBhgjPFCa71GeRtBjGrCBKzLSGvO5lVtmJUXfoh7eQGgGuS4U+1KKEnt4eOXQKeiUhxZqqoG/ocEWYAE5GPXTDYBo=
+	t=1730887185; cv=none; b=onWB42JejNY6D97hOuei2uzpnLfDsp+iur9rbFfW06cJSbaosusF5VOVUJSwmS3YTufNJiY+X7brrqPAcsAbA4lLUJam1IEEaoSCHViaVUSWDk5xBr3MozADSso4/CYsPksEHHrT3pT5mAyyJsPsf5+sT6HAgjCF6E646/zf5B0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730883029; c=relaxed/simple;
-	bh=Qw/O+ise3frqlKTZUnBXTla7mdjrxDVQvyMdAvWwzxw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dzU7sMcAgM9vpWhqmiCQ+hRRWXxDMMvDh82rM9X+L+2e/QgkLxC/9ZT0x46GxzRcu6mHWjc6VYCrulXJz0aVyR7XgC0psX+jJpfhfJdfX8IcaU0ROwM4Wocx3PG9NGI9U+vXfD28S8N9Us8fxdLpwNx1aLm2tSUlFlMLGpWT2Ws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=sRKC7qle; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="sRKC7qle"
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4314b316495so55210725e9.2
-        for <linux-m68k@vger.kernel.org>; Wed, 06 Nov 2024 00:50:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1730883025; x=1731487825; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2y5HxipShLescLFWcD8ARWRAPkNr3UxFiV+SpqkG9SE=;
-        b=sRKC7qle/sgz+AaqfA2ejKQSLcU7F4tmlDwwEq7b/Vm+PTNw1rFtLzGQg8p/JHgYxX
-         BU93jiXoUIryvgpsyJVNokfOYYCyPWao+cQoVUNuLziag/dKJ9Izdf7HX77gBayNsmXi
-         IPMgKcXGU+eaDc4D/WyW8k/Vg9KHlWpL9ax6tGO5yLEHWL5qvXwmmyEk4U6SaJHSyVJ2
-         J6opQU+bYPEgkLKTkew8eIYV+FDJ7pCnm3OwDLhX6JKQbxEJfZ5HKcdQVjarvHYgPGLj
-         YX6+BHwYiGcgSta9/A7y78CQJH41Pz4d19mMLqeDhMYIkQQwxfbFv7DPB+DyPDy4ApQM
-         EiPA==
+	s=arc-20240116; t=1730887185; c=relaxed/simple;
+	bh=7l6K2Oe+7Ocw7CjKpQQAhOKiVxUpVshv33jRpchU9+0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=R4U6TNsDGRhGalg1a9MMcW3E+JcQy9L7a14SDHxZ1EkAYJvzTCrBH2vItE9n/BQ2T4W4I03b8DPHxtTj7cswB+scirV3VNi2nUrCaOy1oLLdIfD1Th43z0K8pjjA8FD438Bcvd7glSeSSfkrZUNVOFi99wW6a1ufdhelXRYezU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-6ea1407e978so60855247b3.1;
+        Wed, 06 Nov 2024 01:59:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730883025; x=1731487825;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2y5HxipShLescLFWcD8ARWRAPkNr3UxFiV+SpqkG9SE=;
-        b=S+vDWaUokqOMPXBf5daPB8EGjM5QfntrX8e+gt+fRMPkHXzfgLcwE6Rf4MltLLLaP/
-         QJKUgEStkK7rCfMfXpvc7G15PhQu9YMim1fcMwW/PeU+Ic5d2qivRsxizajgLBJtmze3
-         DSzVRvQtTkdXTD/pzLdg0A5OFMgWv58ZONjGnfNaLROS3UNssFE8R36PXa5m+gZgQZyg
-         IvR50LWOZRu58BwnYIDTSJ1vAUWPYDZAx/vb6zc2dDTKO25a6JEEOLxa63F/suL9XwMl
-         zXlmFWbS9WSSr+mMdmYvQhhlGtSDmSaKz2froxzcKT0hbG2c8r++ic/31s1kR8q+Nu6S
-         OBgg==
-X-Forwarded-Encrypted: i=1; AJvYcCVQpp5zNYDJOsb8BDBNCyEzFH0zpFelYGPepYKJkNLQH30CREwEHR0/dHfuVurWSQGf0BX3NCOfepvY@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywhd6MCScUeRes5QwTleAwPbERj3cLq9hkNKpjTGF+xVuM5iVyx
-	jxevIp0I2WPiEzE8qmRAuBNzeGRBSK8WIqEvTwuHQM/XhQLRZfg7P0lxp/4EAL0=
-X-Google-Smtp-Source: AGHT+IHqUrdPcg/Yqkh+cAwPSW88HT6c3UnrMwecsenner/5sbGIznYrPuCUBPy436J+5v+BMebExA==
-X-Received: by 2002:a05:600c:1ca7:b0:42c:bb96:340e with SMTP id 5b1f17b1804b1-4327b8011aamr220555575e9.31.1730883025080;
-        Wed, 06 Nov 2024 00:50:25 -0800 (PST)
-Received: from localhost (p509159f1.dip0.t-ipconnect.de. [80.145.89.241])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-381c113dd8asm18618953f8f.73.2024.11.06.00.50.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Nov 2024 00:50:24 -0800 (PST)
-Date: Wed, 6 Nov 2024 09:50:22 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Finn Thain <fthain@linux-m68k.org>, 
-	Michael Schmitz <schmitzmic@gmail.com>, 
-	"James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>, "Martin K . Petersen" <martin.petersen@oracle.com>, 
-	Sam Creasey <sammy@sammy.net>, linux-scsi@vger.kernel.org, linux-m68k@vger.kernel.org
-Subject: Re: [PATCH] scsi: sun3: Mark driver struct with __refdata to prevent
- section mismatch
-Message-ID: <h7x2iksfw7vguvqvjg5axl67mpejodbimwhxluew6cfobotb4t@fewz7knes7au>
-References: <b2c56fa3556505befe9b4cb9a830d9e2a962e72c.1730831769.git.geert@linux-m68k.org>
+        d=1e100.net; s=20230601; t=1730887182; x=1731491982;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rC39RasH+GE4mvzpE5BKxCeRZzvkxv3B98iDAPKyxhM=;
+        b=BCVS8wd0vRzgCvN9y4rju3gKKcwDESzC7HzdgowTz1wHtbymuzDFeYBJHCLjIWvcvi
+         YSfLSIK2eddsZukKbZ7ZCM5Px8kzYqZ/SXw4TiKG/Ptjh3HJz5k6l+qZkk5gds+tr5HO
+         PzdsFpaTPydjoYmHtDCXvKXlpWSZMwzjcOzhom4Tv0crWeCtnpLrdUtETc6Aw5Q2Gzuq
+         szqqw4gzd13gVUWDX4h4c5ieiLfGf6DzR6CoeBcM06JxYUIAesv4WtjJq6K1ApzB0Jfo
+         f80nWOvH9ayiqVhTpy3yIi5AqTnFOf9DglfUUG9tvC4yCnOrfOM7npxg7ROmygoZCDcx
+         QZ0g==
+X-Forwarded-Encrypted: i=1; AJvYcCVgS58J8YjnTMdpC66ZDbtiyQYi2C+pZlWaxUSsu44StkmNSjIxDoIKYduPND2s/gk2zBz8vlRUhoUe9A==@vger.kernel.org, AJvYcCVwIZJJV7OoNHmRfntCVD5F3V0tFFyOPTE93uQqfMXwxQ4xQW7ZEt9XCZL0KFwofk6ndWyZK/HN9Joh@vger.kernel.org
+X-Gm-Message-State: AOJu0YzmjTxtHhPMDmWFkegz/YAKS5vapsXnwk9vA7I3cYGBnc+IZyCk
+	xoA8ud5S3r1V1p5fZP0vzAThxpLHiY065GaqrVnA/dKTgVadUFvzSj7LL8Jd
+X-Google-Smtp-Source: AGHT+IGyJbXT1PJOhJsPdjlo6jsGfOHWMdFvqXWneXG6AUxmv5ynX/hDBViKftfjgDO+OF+sa+j0HA==
+X-Received: by 2002:a05:690c:4809:b0:6de:2ae:8138 with SMTP id 00721157ae682-6ea64a8cc02mr194814297b3.5.1730887182153;
+        Wed, 06 Nov 2024 01:59:42 -0800 (PST)
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6ea55b10748sm26874227b3.32.2024.11.06.01.59.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Nov 2024 01:59:41 -0800 (PST)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-6e38fc62b9fso55585377b3.2;
+        Wed, 06 Nov 2024 01:59:41 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUpd9vYDJNrnENQYRzJ/nn2gPriVW6BxN8iElsR1YhF3a77Y0GtLAq7FhXcnhEvpfO3MrkladKkgjsx0Q==@vger.kernel.org, AJvYcCWQUntKnziaLUUx77mTqwcV31EX2XotmLtrRr5TtiF1g0Ut/9stksaYE9VYCIzN5ql+tBclMzC8QzR5@vger.kernel.org
+X-Received: by 2002:a05:690c:9b10:b0:6db:e280:a3ae with SMTP id
+ 00721157ae682-6ea64b10af2mr200323037b3.23.1730887181333; Wed, 06 Nov 2024
+ 01:59:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ixj22fbotanodxri"
-Content-Disposition: inline
-In-Reply-To: <b2c56fa3556505befe9b4cb9a830d9e2a962e72c.1730831769.git.geert@linux-m68k.org>
-
-
---ixj22fbotanodxri
-Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+References: <b2c56fa3556505befe9b4cb9a830d9e2a962e72c.1730831769.git.geert@linux-m68k.org>
+ <h7x2iksfw7vguvqvjg5axl67mpejodbimwhxluew6cfobotb4t@fewz7knes7au>
+In-Reply-To: <h7x2iksfw7vguvqvjg5axl67mpejodbimwhxluew6cfobotb4t@fewz7knes7au>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 6 Nov 2024 10:59:29 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVemwQkmb-+SWQ2Rsr-E=gMQ5jUNMDX-QmZS+s5CY1zcQ@mail.gmail.com>
+Message-ID: <CAMuHMdVemwQkmb-+SWQ2Rsr-E=gMQ5jUNMDX-QmZS+s5CY1zcQ@mail.gmail.com>
 Subject: Re: [PATCH] scsi: sun3: Mark driver struct with __refdata to prevent
  section mismatch
-MIME-Version: 1.0
+To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@baylibre.com>
+Cc: Finn Thain <fthain@linux-m68k.org>, Michael Schmitz <schmitzmic@gmail.com>, 
+	"James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>, 
+	"Martin K . Petersen" <martin.petersen@oracle.com>, Sam Creasey <sammy@sammy.net>, linux-scsi@vger.kernel.org, 
+	linux-m68k@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 05, 2024 at 07:36:31PM +0100, Geert Uytterhoeven wrote:
-> As described in the added code comment, a reference to .exit.text is ok
-> for drivers registered via module_platform_driver_probe().  Make this
-> explicit to prevent the following section mismatch warnings
->=20
->     WARNING: modpost: drivers/scsi/sun3_scsi: section mismatch in referen=
-ce: sun3_scsi_driver+0x4 (section: .data) -> sun3_scsi_remove (section: .ex=
-it.text)
->     WARNING: modpost: drivers/scsi/sun3_scsi_vme: section mismatch in ref=
-erence: sun3_scsi_driver+0x4 (section: .data) -> sun3_scsi_remove (section:=
- .exit.text)
->=20
-> that trigger on a Sun 3 allmodconfig build.
->=20
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Hi Uwe,
 
-Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@baylibre.com>
+On Wed, Nov 6, 2024 at 9:50=E2=80=AFAM Uwe Kleine-K=C3=B6nig
+<u.kleine-koenig@baylibre.com> wrote:
+> On Tue, Nov 05, 2024 at 07:36:31PM +0100, Geert Uytterhoeven wrote:
+> > As described in the added code comment, a reference to .exit.text is ok
+> > for drivers registered via module_platform_driver_probe().  Make this
+> > explicit to prevent the following section mismatch warnings
+> >
+> >     WARNING: modpost: drivers/scsi/sun3_scsi: section mismatch in refer=
+ence: sun3_scsi_driver+0x4 (section: .data) -> sun3_scsi_remove (section: .=
+exit.text)
+> >     WARNING: modpost: drivers/scsi/sun3_scsi_vme: section mismatch in r=
+eference: sun3_scsi_driver+0x4 (section: .data) -> sun3_scsi_remove (sectio=
+n: .exit.text)
+> >
+> > that trigger on a Sun 3 allmodconfig build.
+> >
+> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>
+> Reviewed-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@baylibre.com>
 
-Seems I missed that one before posting 7308bf8a2c3d ("modpost: Enable
-section warning from *driver to .exit.text"). My excuse is that this
-driver isn't enabled for an ARCH=3Dm68k allmodconfig build.
+Thanks!
 
-Thanks
-Uwe
+> Seems I missed that one before posting 7308bf8a2c3d ("modpost: Enable
+> section warning from *driver to .exit.text"). My excuse is that this
+> driver isn't enabled for an ARCH=3Dm68k allmodconfig build.
 
---ixj22fbotanodxri
-Content-Type: application/pgp-signature; name="signature.asc"
+Understandable, as there are basically 5 classes of m68k kernels:
+  - Classic with MMU,
+  - Coldfire with MMU,
+  - Sun-3,
+  - Classic without MMU,
+  - Coldire without MMU.
 
------BEGIN PGP SIGNATURE-----
+As the last two consist of multiple single-platform kernels, they're
+harder to do allmodconfig for.
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmcrLcwACgkQj4D7WH0S
-/k7W4Af+ON8yyjSHOMZpG4vkGoh7a4mj83XDANNPRTDeLQFWUpDoB6wvjKQBUe22
-Mi3uHdZPUTdBfwNu6fLEJ+4BMOAlM0G+kPB+TKijQ81ngwQfAIi1scZz7UzCC2Ft
-HE+G4K+oK+Z/se3JmenLo5blTeMXH3JC0WtVQpaxkeXm5Gpb/59yLhRXha+R5O7g
-tGWKhCcjiZz3dkMLCp2pI9nVJi9ZZjtEACOYWsVeYGdsfd5N+DGiIag9GTWyyWuB
-wmhM+0t1W6GJfnUt7cUtiR6jbLc/xBWFHYJSQZVghudLf+kswWeavAk3sW37JdGe
-7+yRpUn5NrH1mmVn1mKbcDeMusFRGg==
-=MbOg
------END PGP SIGNATURE-----
+Gr{oetje,eeting}s,
 
---ixj22fbotanodxri--
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
