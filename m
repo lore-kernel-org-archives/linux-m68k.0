@@ -1,97 +1,124 @@
-Received: from fout-a5-smtp.messagingengine.com (fout-a5-smtp.messagingengine.com [103.168.172.148])
+Received: from fhigh-a1-smtp.messagingengine.com (fhigh-a1-smtp.messagingengine.com [103.168.172.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD48617BB1A
-	for <linux-m68k@vger.kernel.org>; Wed, 13 Nov 2024 23:12:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8A2D18C021
+	for <linux-m68k@vger.kernel.org>; Wed, 13 Nov 2024 23:34:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731539534; cv=none; b=fqyEETdm1bnEWpH0OhfgjPrCojFSVS6CYmEQBINzDLBlB2FN0sftrH+D002mHdxVSqldpRiZcsL5t+KqYPk9aupHAtVCjdvKLIevIrtfxQHL22qGKBmUZDg7wuh27Dpe09UIPa0kQ3NThVlG+YRENi8TYbtST6BXyKMZAAzNc+g=
+	t=1731540843; cv=none; b=r9wrLF/JNIR6+C/31U/wDNBcbmvP80HUIBvDX+Z/KaeJWnzFbpQ53icRORRIC0/IXlTMgM8NNPn63hEBhyAPuk7DzkdArlLTUXfgdhsGZMJQ0prqAX2wKnHDp3SitmFFfSJKZJHY5x7r2HbA6ixCBRrXWKvGeNcYbcxfbGZUtZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731539534; c=relaxed/simple;
-	bh=EE0y6PtYq4LX9M8j6/xKMS5dPPrDx5LhCzDOlBqrLco=;
+	s=arc-20240116; t=1731540843; c=relaxed/simple;
+	bh=sSUB4TRo0wBEawgtvCEgB4OYwes3gDhuvqcQFzEW4/o=;
 	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=KRJQBFm2gOqDH/olyY4UnGB09OpnFtwsI0Xbbn64k1eqFHIVeTYFSGYk4c3yrHn7gTURYWZ5KERf0kGQOc+AQS4ba0dl9y25XAtlOtjR8V8K2dvT8cWMUCrnGhIhYUhW0FrLOa/buCq/U0UKjo9dC46mwsrIT2q/dwFxlSQYH+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=MfAMItFG; arc=none smtp.client-ip=103.168.172.148
+	 MIME-Version:Content-Type; b=rnEA2iglMN9ob6Ix5WLYPwqu14duPKUSgZDhVOtPKwuTH7+h3NQRB6ZITva7vNp3Y7uhMTe/ZmZ7TvbyuIEvk8AEqGoHg7LF/TaU+zTZLQbir2dy7uAjYZVeYLHNSY+A2mO91sEog6L2qzwe3KGaGi3i+hSsmV+07IfBazAEu/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=CR6ESlxZ; arc=none smtp.client-ip=103.168.172.152
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="MfAMItFG"
-Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
-	by mailfout.phl.internal (Postfix) with ESMTP id A308713800F3;
-	Wed, 13 Nov 2024 18:12:10 -0500 (EST)
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="CR6ESlxZ"
+Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id EBA701140195;
+	Wed, 13 Nov 2024 18:33:59 -0500 (EST)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-01.internal (MEProxy); Wed, 13 Nov 2024 18:12:10 -0500
+  by phl-compute-04.internal (MEProxy); Wed, 13 Nov 2024 18:33:59 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1731539530; x=1731625930; bh=Rw5/Nz8JKRo3eIqvVH5Uwg18CemnpP8YabS
-	+h6KoSu8=; b=MfAMItFGw+xWTNcTWi3fTZ3n3MRSWwYO/oGjyUi05PCM4QzJ/AG
-	VCnmwY5x5jscZ6RfsUAJXqSywPHpJ7W4R4Ew/HOgcP5AXTMSk2pJw++kLQ1AXk47
-	0FRMcv/2BppOvJdGKWMajxV9k2LcZq67W6rXpJt98eKiTMqzvh+6674TEA9XDKI8
-	MiC6XQCW4EPJfTOv0FWhzpGTS7oUFtNP1rylbKepNW/ho3RaVtQ3FBoyKlwQWlkr
-	gcmt07xkhUmoXamGQ2Oyc98JcnkHsVfBZYNQlIegyOdyZrSzJuiVYjt0gOZHH2ax
-	RWFYkEd0jpqqM1RAXlQkmIun6fJVyLqmNUw==
-X-ME-Sender: <xms:STI1Z2fwq7qGPoiQzeEEj6xvXE1W8AGk4OX8fGFKmLtK-y27vf934A>
-    <xme:STI1ZwMCHC7XsuBHNWf8HasM-Q9FmdO5XxLeDiI7-eO9tyZUbpsCyqqFM-DAziCKP
-    3QpfSlS81rpBwIGo40>
-X-ME-Received: <xmr:STI1Z3jl3zf0ur1XVD9AqcaG7D71qlP0E2SkifiSCuhHEObYOvR00hBsL4tjill7KgEOU8P8bHJkv4JTmX8Y2cNoNuPI7IzKroo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrvddugddtjecutefuodetggdotefrodftvf
+	1731540839; x=1731627239; bh=0t4kB+lDyc90hbofoj/7nly9/44P/llp2hC
+	6nN3QEgY=; b=CR6ESlxZVSK4oBb6LdIThC4N4vUljbTkyyZHRR2DzBunGtFNWB5
+	kc2Z+euy3A9CfH1tvYhAEo8WkeOhwW8GGOXQOy3dvvF/jomPM5UTZ4VoenXShW+t
+	sNfvZLF1p3grVDk4GAmza0wdcZRkkgV0U/voMNC1cSl1KbWFW2nWbeZ/rvdY+JAZ
+	T0t+84+Eg+ls7fQxoY2EmkIJ7Mve3bkryhIwh+ILAM6v/e+DpHeX8qd2D3L/rf+Y
+	gi3L/IG2AySGFjN8drYc5mhEjAMRIJVwvDl33/y9d95HDSUxMQ4TOHGud+C2SDcW
+	RFq3KB1WY7jWj5N2olbl5WZGXOHemcVocQg==
+X-ME-Sender: <xms:Zzc1Z2sfkeIK_PpMKJMeThJ03tRyW9a7nuSu5jcx7YBtqvctMZtJCg>
+    <xme:Zzc1Z7eenuJ90ABvsAi4wlvtRT26I9kW-TzfMSgubZCWdHXD599q5K5Fe-oGv3IcM
+    vCgqZtuLbzcdf0PGqM>
+X-ME-Received: <xmr:Zzc1ZxxWNvo9MFcorvHue2xnrMl-iYphQrs66YXbxasT0AMTeYiCw30dzv4yhBFgqVYtxNT-ITIoHk1SX1a_uqfoTdNsmGfyfH8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrvddugdduvdcutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdpuffr
     tefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnth
-    hsucdlqddutddtmdenucfjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfh
+    hsucdlqddutddtmdenucfjughrpeffhffvvefujgfkfhggtgesmhdtreertddtjeenucfh
     rhhomhephfhinhhnucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdroh
-    hrgheqnecuggftrfgrthhtvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeefffff
-    tdfgjeevkeegfedvueehueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrghdpnhgspghr
-    tghpthhtohepuddtpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehglhgruhgsih
-    htiiesphhhhihsihhkrdhfuhdqsggvrhhlihhnrdguvgdprhgtphhtthhopehstghhmhhi
-    thiimhhitgesghhmrghilhdrtghomhdprhgtphhtthhopegrrhhnugesrghrnhgusgdrug
-    gvpdhrtghpthhtoheplhhinhhugidqmheikehksehvghgvrhdrkhgvrhhnvghlrdhorhhg
-    pdhrtghpthhtohepuggvsghirghnqdeikehksehlihhsthhsrdguvggsihgrnhdrohhrgh
-    dprhgtphhtthhopegthhgvfihisegruhhrrgdqohhnlhhinhgvrdgtohdruhhkpdhrtghp
-    thhtohepshgrmhesghgvnhhtohhordhorhhgpdhrtghpthhtohepghgvvghrtheslhhinh
-    hugidqmheikehkrdhorhhgpdhrtghpthhtohepshgthhifrggssehlihhnuhigqdhmieek
-    khdrohhrgh
-X-ME-Proxy: <xmx:STI1Zz_wAdJp0qmcRmqSqwRz7s0GhVpX_fShz7xG5udHzJWoXUOjoA>
-    <xmx:STI1ZyupA4HlkmZ7J8632syB1kz24GofkFcpJWQ3KhtZSoqkfY7l9A>
-    <xmx:STI1Z6FFFvdqRbU_XDOVJ2v84P9GNIYAvHpFQy0aRvnJ7ATrLyKpnQ>
-    <xmx:STI1ZxPdE3inIl4VTfrAtBniCz2E-GfhIaJSwIO64W7aT9pUWFmHFA>
-    <xmx:SjI1Z8Ke_--MOHhNvtvDKebdDSNCvcN-AESHMCLCwvZiKwsGO09irWGD>
+    hrgheqnecuggftrfgrthhtvghrnhepffdvgeejgfevvdefgffhffdvgeefhfegleeigffh
+    veekkeevieettdefudetfeeinecuffhomhgrihhnpeguvggsihgrnhdrohhrghenucevlh
+    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinhes
+    lhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopedutddpmhhouggvpehsmh
+    htphhouhhtpdhrtghpthhtohepthhgseguvggsihgrnhdrohhrghdprhgtphhtthhopehg
+    lhgruhgsihhtiiesphhhhihsihhkrdhfuhdqsggvrhhlihhnrdguvgdprhgtphhtthhope
+    hstghhmhhithiimhhitgesghhmrghilhdrtghomhdprhgtphhtthhopegrrhhnugesrghr
+    nhgusgdruggvpdhrtghpthhtoheplhhinhhugidqmheikehksehvghgvrhdrkhgvrhhnvg
+    hlrdhorhhgpdhrtghpthhtohepuggvsghirghnqdeikehksehlihhsthhsrdguvggsihgr
+    nhdrohhrghdprhgtphhtthhopegthhgvfihisegruhhrrgdqohhnlhhinhgvrdgtohdruh
+    hkpdhrtghpthhtohepshgrmhesghgvnhhtohhordhorhhgpdhrtghpthhtohepghgvvghr
+    theslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:Zzc1ZxM-M0mUsYPtTyjhq15rjnYSz4wguJj90FYAa4u-dYHlIBIrXg>
+    <xmx:Zzc1Z29EXiStgQexR_wetrh5MlDBdMnvL2YbUFvPXyaaRbedFizeeQ>
+    <xmx:Zzc1Z5V52QYbyZkgEH-3T4vsammlEZdcMQaP6plNINkmsyLh424RUQ>
+    <xmx:Zzc1Z_czzguX-Oq9YdOrVoV6Tum--DBy8xnv2-04ud4LafEriRtJkg>
+    <xmx:Zzc1Z5YJMFp8riOQeDdLdGMJz8Hp8YBgibdx73wZG78ANeFCmoMDmbFd>
 Feedback-ID: i58a146ae:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 13 Nov 2024 18:12:08 -0500 (EST)
-Date: Thu, 14 Nov 2024 10:12:28 +1100 (AEDT)
+ 13 Nov 2024 18:33:57 -0500 (EST)
+Date: Thu, 14 Nov 2024 10:34:20 +1100 (AEDT)
 From: Finn Thain <fthain@linux-m68k.org>
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-cc: Michael Schmitz <schmitzmic@gmail.com>, Arnd Bergmann <arnd@arndb.de>, 
+To: Thorsten Glaser <tg@debian.org>
+cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+    Michael Schmitz <schmitzmic@gmail.com>, Arnd Bergmann <arnd@arndb.de>, 
     linux-m68k <linux-m68k@vger.kernel.org>, 
     debian-68k <debian-68k@lists.debian.org>, 
     James Le Cuirot <chewi@aura-online.co.uk>, Sam James <sam@gentoo.org>, 
     Geert Uytterhoeven <geert@linux-m68k.org>, 
-    Andreas Schwab <schwab@linux-m68k.org>, Thorsten Glaser <tg@mirbsd.de>
+    Andreas Schwab <schwab@linux-m68k.org>
 Subject: Re: Plan needed for switching m68k to 32-bit alignment
-In-Reply-To: <50be1cf2bf065fbfd20d5b8c27cad4b9be9469fc.camel@physik.fu-berlin.de>
-Message-ID: <5b674409-07a0-8d57-4ca1-5efb37c83a2a@linux-m68k.org>
-References: <3a5e171bf42e5273eb8235cba04e8328b19c2ca4.camel@physik.fu-berlin.de>  <383faec7-8987-4680-920d-8f802e1bea34@app.fastmail.com>  <832d65f2-1796-4ac1-b49b-380bf64700f4@gmail.com>  <de1adc92-f1e9-81fd-9406-7148e8213e4c@linux-m68k.org>
- <50be1cf2bf065fbfd20d5b8c27cad4b9be9469fc.camel@physik.fu-berlin.de>
+In-Reply-To: <a600d9a7-f068-2d5e-8e81-116127e61dc4@mirbsd.de>
+Message-ID: <8b6f9e17-2897-7187-5f56-e751314b7755@linux-m68k.org>
+References: <3a5e171bf42e5273eb8235cba04e8328b19c2ca4.camel@physik.fu-berlin.de>  <383faec7-8987-4680-920d-8f802e1bea34@app.fastmail.com>  <832d65f2-1796-4ac1-b49b-380bf64700f4@gmail.com>  <8ca13b4b1a3c2d8d2e6d99c29b901659bb4108e1.camel@physik.fu-berlin.de>
+  <f87a85b2-809a-44dc-9a61-24698d7888eb@gmail.com> <31a04ef1ca569580d29ed09097766e385a23044b.camel@physik.fu-berlin.de> <a600d9a7-f068-2d5e-8e81-116127e61dc4@mirbsd.de>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: multipart/mixed; boundary="-1463811774-973963082-1731540860=:29"
+
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+---1463811774-973963082-1731540860=:29
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
 
-On Wed, 13 Nov 2024, John Paul Adrian Glaubitz wrote:
+On Wed, 13 Nov 2024, Thorsten Glaser wrote:
 
-> 
-> > 3) among all 680x0 developers interested in the NetBSD ABI
-> 
-> The alignment issue affects NetBSD as well.
-> 
+>=20
+> But, as has been pointed out, if we make the current alignment explicit=
+=20
+> everywhere, the kernel ABI does not have to change=C2=B9. And new syscall=
+s,=20
+> ioctls, structs, etc. can just be made with natural alignment in mind (I=
+=20
+> bet most are already anyway) and with padding assumptions made expli=E2=
+=80=90=20
+> cit (which again probably is done already anyway).
+>=20
 
-My experiments showed that my NetBSD/mac68k system aligns int struct 
-members like my i686 system does.
+Yes, upstream developers can be expected accept patches that make explicit=
+=20
+the alignment of struct members. That's what I've been saying for years.=20
+
+Luckily, that doesn't require a new ABI. It does require volunteers who=20
+are willing to write and submit patches for those packages that matter to=
+=20
+users.
+
+And that is the real problem: the manpower shortage. The only solution I=20
+proposed for that problem was better collaboration and better allocation=20
+of resources. But his straight-forward request for assistance was an=20
+excellent idea of Adrian's:
+https://lists.debian.org/debian-68k/2024/11/msg00007.html
+---1463811774-973963082-1731540860=:29--
