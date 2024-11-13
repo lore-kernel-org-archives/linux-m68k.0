@@ -1,65 +1,71 @@
 Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8EFE200B91
-	for <linux-m68k@vger.kernel.org>; Wed, 13 Nov 2024 12:50:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E44BD18562F
+	for <linux-m68k@vger.kernel.org>; Wed, 13 Nov 2024 12:51:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731502221; cv=none; b=q2tgCVhYFmgLe6cS4OzNlXa9pdz+cBZGBy0Wz/dbGc1Dddw3TQbiS2m/RowtcibMeiO13sCiVWfKw1afbgYQRsMx55uNrrLyyJiHD5bDkanK+dMDBYQRM9B8q3g28AALsj5zeVl/xN1jO6Uogp9U9BQ5A9cuBXFymfTD4LFgaWQ=
+	t=1731502317; cv=none; b=FhHNhN98STebsx1H1U0+37eYDn0ar3bL+H2Lsgur+AiQX0ESPoddFnMrBSxtlsBSO8nRH1iVkKhZcDCP32DEnT9irYhdACYvBxCIuLD9JjzWmwDutD3/1+M3SrpN2DkHe610m7FNCQXd8S3L2ci90PEOdBCWjxaBPW70lFkYJQQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731502221; c=relaxed/simple;
-	bh=tWcL8F8+IW3Occ/j5dFrsBXDzC1L0WFmaLTNHOznh+A=;
+	s=arc-20240116; t=1731502317; c=relaxed/simple;
+	bh=97MyUyGDKI4IJq+iws7d3XKuc1CTqlrlMV4dYqtsUes=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=LyhZTBvLbeLAfSILAJWuG2oS+fcl5zwp5iQn9y3f/ZYDwqh6EIZ4iOg221qqVp2lbZTpCD+2UAvnrsc35Eb+2KcHI+K4GQoBcq33TYvgUiDuf+wnn/Dlf2FrWYNWe9oS38bLrSWZ0k86Q0gYKsiiC6PRxu8tDjHs7lg5WsjE3vk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=baMvSDnj; arc=none smtp.client-ip=130.133.4.66
+	 Content-Type:MIME-Version; b=qWwQ1gBihCqTUghclqeEaVgKWtdELlk9KbbQd8/g8AX+OlDvZKGPpUzqZvUlCtGmi/J/wK5RuewmpKiKYVlWF1FQvkhHGrTHzAk8OcB5huxjg1mJWNJPUTqjSXKmQCNJIMCnAeywD9eYjYQERzy3Y9/KyAFTR1j3fGX+TWCFUTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=cBYLVTeT; arc=none smtp.client-ip=130.133.4.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="baMvSDnj"
+	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="cBYLVTeT"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
 	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
 	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=Tdwa96WlfRLbsMq/yKKnm4okLkHqYHvgKqKMeXkrirI=; t=1731502218; x=1732107018; 
-	b=baMvSDnjl1oYXuZ4PO6FSODYSvcSIbnqrwOtt56xwr3+4geYtmAleuoHumDBGJLVGg8W/Xc/Cg6
-	VyHwYR7gDqwQahMKbtUxoRydcoAdyu64/ind/SToTWKKnZMRKodbKBwEJJLtwnnNB+AF7g9Ut0Cu1
-	jixr/U3K1zBwYmCzIDf6GVlavF16/KMTEPY8Vf7WCb+nVMvX5ydRqQqFGGBpwKbpZjqmqj0+IYXJh
-	RV5FYI6tOtdNHm1oDgMjSwI4cUJImXNsJKMfHdCfdH7AeqxoYM42VvxMc8jDeJ5pums6HYy6Tkht1
-	LRw57rxVDHxIMPBrrKMj9NcTxTv5rju1AgzQ==;
+	bh=asxA2lC8UTet6bSp5Y/rucFZ+3H1Yupvye+Jq5aMk48=; t=1731502315; x=1732107115; 
+	b=cBYLVTeT7mgd9aJcDNHx0rwxgaL4xmJ6/s/QreDpmDSDXUXzetQevNLLwrlcJQE0OAgU+UxXPS0
+	MOdoMDBml7ysYmGy4uLrLH0H7V91wb20T7frWcNJa9crt5pPDnWEX/4f+lXBLY6KpAYqOMKk9aYCR
+	EODy1mL+CK/hYI9XZHeQ5Ubv3bqUDk/DsBtDsLjTsPRZzV3UKeuBYT1CGTQY8hEWxarZn0PJ+Y1Gk
+	V8HRX+rUtPQ/TIT3teQb74D/K4X3BVHFJciNCtpTvoT6fHz6eFwhraIbkVfYxfyCpn/cIVt55h4Ss
+	Aa5puSgd9MgvlCvK5piUsBbnJhYoURXiItwg==;
 Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
           by outpost.zedat.fu-berlin.de (Exim 4.98)
           with esmtps (TLS1.3)
           tls TLS_AES_256_GCM_SHA384
           (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1tBCp5-00000003XCc-3f50; Wed, 13 Nov 2024 13:50:15 +0100
+          id 1tBCqe-00000003YAy-43Lb; Wed, 13 Nov 2024 13:51:52 +0100
 Received: from p57bd904e.dip0.t-ipconnect.de ([87.189.144.78] helo=[192.168.178.61])
           by inpost2.zedat.fu-berlin.de (Exim 4.98)
           with esmtpsa (TLS1.3)
           tls TLS_AES_256_GCM_SHA384
           (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1tBCp5-00000000AZG-2blS; Wed, 13 Nov 2024 13:50:15 +0100
-Message-ID: <9a8839fafacc0e89816626b40a4167ad6f0fb47f.camel@physik.fu-berlin.de>
+          id 1tBCqe-00000000BC0-2z1M; Wed, 13 Nov 2024 13:51:52 +0100
+Message-ID: <5c964099caf2798c64d9b8219df8237a02e497cd.camel@physik.fu-berlin.de>
 Subject: Re: Plan needed for switching m68k to 32-bit alignment
 From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 To: Finn Thain <fthain@linux-m68k.org>
-Cc: Thorsten Glaser <tg@debian.org>, linux-m68k
- <linux-m68k@vger.kernel.org>,  debian-68k <debian-68k@lists.debian.org>,
- James Le Cuirot <chewi@aura-online.co.uk>, Sam James	 <sam@gentoo.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Andreas Schwab	
- <schwab@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>
-Date: Wed, 13 Nov 2024 13:50:14 +0100
-In-Reply-To: <7c59a9b6-4867-5191-fa72-8b3664aed970@linux-m68k.org>
+Cc: Thorsten Glaser <tg@debian.org>, Arnd Bergmann <arnd@arndb.de>,
+ linux-m68k	 <linux-m68k@vger.kernel.org>, debian-68k
+ <debian-68k@lists.debian.org>,  James Le Cuirot <chewi@aura-online.co.uk>,
+ Sam James <sam@gentoo.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Andreas Schwab <schwab@linux-m68k.org>
+Date: Wed, 13 Nov 2024 13:51:52 +0100
+In-Reply-To: <d195e1a1-94d0-6aa7-2193-5f7212829b8e@linux-m68k.org>
 References: 
 	<3a5e171bf42e5273eb8235cba04e8328b19c2ca4.camel@physik.fu-berlin.de>
-	   <d95cbe0f-696e-813a-3655-f982531dfb41@linux-m68k.org>
+	  <d95cbe0f-696e-813a-3655-f982531dfb41@linux-m68k.org>
 	  <fe7eaef152b4a245c6bab76ae02946a0746bdf65.camel@physik.fu-berlin.de>
 	  <eb26c030-5bc9-0e2e-1222-64306bfa7553@linux-m68k.org>
 	  <5e8917a2-b7c4-6c06-e63f-1f05eea32120@mirbsd.de>
 	  <a07af4eb-efba-d8f1-ace1-06da7a7067c0@linux-m68k.org>
-	 <90616d852357d7489e1404dcf4a9a04f881b4007.camel@physik.fu-berlin.de>
-	 <7c59a9b6-4867-5191-fa72-8b3664aed970@linux-m68k.org>
+	  <Pine.BSM.4.64L.2410270301550.3007@herc.mirbsd.org>
+	  <a6ef54f6-7a3d-78d5-47d1-d4f7fc1e04e2@linux-m68k.org>
+	  <Pine.BSM.4.64L.2410270420080.3007@herc.mirbsd.org>
+	  <b9ef3e70-6ee0-3e4f-185c-afaa8f512792@linux-m68k.org>
+	  <b25dbb5f-6336-4f2d-9d1e-4d5da13a1636@app.fastmail.com>
+	  <0c34ba23-5256-0140-59b1-6a5283f6b763@debian.org>
+	 <aba54d2b46a1e08f578e008d084463c7257aaba3.camel@physik.fu-berlin.de>
+	 <d195e1a1-94d0-6aa7-2193-5f7212829b8e@linux-m68k.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.54.1 
@@ -72,24 +78,30 @@ MIME-Version: 1.0
 X-Original-Sender: glaubitz@physik.fu-berlin.de
 X-ZEDAT-Hint: PO
 
-On Mon, 2024-10-28 at 19:40 +1100, Finn Thain wrote:
+On Mon, 2024-10-28 at 19:44 +1100, Finn Thain wrote:
 > On Mon, 28 Oct 2024, John Paul Adrian Glaubitz wrote:
 >=20
-> > What ecosystem? Do you honestly care that any hobbyist cares about=20
-> > having to reinstall their retro computers?
+> > > For Debian, we have superh and i386, out of these. It is entirely=20
+> > > possible that Qt et al. can work with this, but these all have natura=
+l=20
+> > > alignment for quantities =E2=89=A4 32 bits.
+> >=20
+> > I'm not aware of any serious issues with alignment on i386.
+> >=20
+> > i386 was the original target for 90% of the software in Debian, so if=
+=20
+> > there are issues, developers have already addressed them.
 > >=20
 >=20
-> The issue is not just old binaries. You made the same mistake in your=20
-> message to Arnd when you said "we're not allowed to fix that [ABI] becaus=
-e=20
-> someone might run an old binary". For some reason you're choosing to=20
-> ignore numerous objections that have been covered on the mailing lists to=
-=20
-> date.
+> And they did so without needing a new ABI...
 
-I have only seen real objections from your side. Everyone else agrees that
-future development of the platform is not feasible without making the switc=
-h.
+Because on i386, the original ABI designers didn't make the mistake to enfo=
+rce
+an unnatural alignment.
+
+Honestly, what exactly do you expect to achieve with messages like this?
+
+If you want me to just drop the port, then just say it.
 
 Adrian
 
