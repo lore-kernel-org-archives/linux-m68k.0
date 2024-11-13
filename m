@@ -1,118 +1,108 @@
-Received: from evolvis.org (evolvis.org [217.144.135.11])
+Received: from fout-a4-smtp.messagingengine.com (fout-a4-smtp.messagingengine.com [103.168.172.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AC5342AA9
-	for <linux-m68k@vger.kernel.org>; Wed, 13 Nov 2024 21:42:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.144.135.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3987D15AAC1
+	for <linux-m68k@vger.kernel.org>; Wed, 13 Nov 2024 22:01:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731534170; cv=none; b=GEyRGazw1Culi6zVp3028x+HQx8cWbxNYVoAQIHlGWbq86FiS+jgRVbbW9aEu6CEjX2JAZFvSrIXC6vN3kTwaHY9aaq6voIYZfx5QwALwODaJmtoeHkn2luQ8OjMRHtjqlZrNCWLZyOYhxk5pdFu3ccGbFOzD5GwjVZBQHfn6to=
+	t=1731535303; cv=none; b=cf2hTJeQUcbxLiEj710eZQuVxN5hQX4lfO7YAhJcz4vmpF6/IeuBypRC3IbV2/83pkbrz0q2+wPs06N5BgZqGee/rey6s7QQyTTxR75k/mBs6DxvZtvQNOLdeXo1rSnWY4PwXYD31UG9NqsMq76vPLWdvvzzcZRBGvravk/yFSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731534170; c=relaxed/simple;
-	bh=b6kl68pWHkCuogwXp5saQDTShAmdNatlHgN4jN5qzMs=;
+	s=arc-20240116; t=1731535303; c=relaxed/simple;
+	bh=TxYqS2p7DE9+lChIwf67W24ma4Ufzv18iMUPrSRxK5c=;
 	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=meGilgADqUYYn5/SzDnyX7Qq20KZbf83D1p7ZhBn9ByzWl4SMJnxDpG2jnSTb0gcYSvyrBJpKoO/rz6ieSOEi8jHkaO+ZWDgI2HfcA2JOQpHfpRtiOYWKw7GpJhTRUbRk+pkGmXv8gisuK0QzOLDZQBvHC+YzRMRXaRdJ35YyBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=none smtp.mailfrom=debian.org; arc=none smtp.client-ip=217.144.135.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=debian.org
-Received: from x61p.mirbsd.org (xdsl-212-8-144-112.nc.de [212.8.144.112])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X448 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: x61p@relay.evolvis.org)
-	by evolvis.org (Postfix) with ESMTPSA id C28CA100195;
-	Wed, 13 Nov 2024 21:33:06 +0000 (UTC)
-Received: by x61p.mirbsd.org (Postfix, from userid 1000)
-	id 8EB24142956; Wed, 13 Nov 2024 22:33:05 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by x61p.mirbsd.org (Postfix) with ESMTP id 89027141D48;
-	Wed, 13 Nov 2024 22:33:05 +0100 (CET)
-Date: Wed, 13 Nov 2024 22:33:05 +0100 (CET)
-From: Thorsten Glaser <tg@debian.org>
+	 MIME-Version:Content-Type; b=PSRqCkKtV+kXBbL6vEoK5AKn2irBm3Cumx2aPwQHn64f6CmbUKB+Bzdma5L3KcpHeah85anGl1tdEpDTwXi3hKIc3U+J7IR0s1nZj5dlj4yX6OR7NLS+2G9C6Nwab6x4oDx1Es+wz8P0JLjAwzpKnwUCPY3k4Fzi/pnjlm46HKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=LrAi6Hgf; arc=none smtp.client-ip=103.168.172.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="LrAi6Hgf"
+Received: from phl-compute-12.internal (phl-compute-12.phl.internal [10.202.2.52])
+	by mailfout.phl.internal (Postfix) with ESMTP id 1CEF813801F8;
+	Wed, 13 Nov 2024 17:01:39 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-12.internal (MEProxy); Wed, 13 Nov 2024 17:01:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1731535299; x=1731621699; bh=+x7S+sxWJy6jUiajYBJutoRAiea2bUawPPm
+	IwkZjZZE=; b=LrAi6HgfpygNvGMS6p8CtxNXkdbtsD89zAxguvHIuWkHd6qw6nF
+	wTj3pOov1UcdvgaLHB56Kkan6u65WEOFl/LEbfResEiAvPIEQldAe4F4jsDOrlSs
+	OSZ0rULVZcIJbKvaTnXl8C1jJYDk6cgavojc94xvX/VgUaqY6HDwTdv9xuI49iM3
+	5xVyJz0ARZ9XYN/e57QH84W6dsqohzUcEG+qpK/R5gm8dPpH/RntIhqio+DioSqv
+	R/paWxKJuDMAw5qe1WNyut7GGdJ5TEXAShApxszkXZoOzggFQLUUM3bfjcwXW1z1
+	Eni40tBXb6xIrVUDbPsi8R6Q2qNjNaGjosQ==
+X-ME-Sender: <xms:wSE1Z6xL-0L_LE7ZM2ykeoL_QkZwnfK8qWl2aFQGenYuVxk1taB5fg>
+    <xme:wSE1Z2TcgX1TOOT6FKxsZXM5TuLW_L6SaYxD5DXlGI-oiSU4JspTAUbdnZ1xWz1Oy
+    rsx-zy55Q4yb-H2_Yg>
+X-ME-Received: <xmr:wSE1Z8UG3fc6Neky4Hypr9tmietHjHK0A_BiKtq0PSLwz32c76b8JFnEOaHADB46oZkt7l3q5yg54xx5heKiLEvzYYT1O5il9P4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrvddtgdduheehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecu
+    hfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrd
+    horhhgqeenucggtffrrghtthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeff
+    ffdtgfejveekgeefvdeuheeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggp
+    rhgtphhtthhopeelpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehglhgruhgsih
+    htiiesphhhhihsihhkrdhfuhdqsggvrhhlihhnrdguvgdprhgtphhtthhopehtghesuggv
+    sghirghnrdhorhhgpdhrtghpthhtoheplhhinhhugidqmheikehksehvghgvrhdrkhgvrh
+    hnvghlrdhorhhgpdhrtghpthhtohepuggvsghirghnqdeikehksehlihhsthhsrdguvggs
+    ihgrnhdrohhrghdprhgtphhtthhopegthhgvfihisegruhhrrgdqohhnlhhinhgvrdgtoh
+    druhhkpdhrtghpthhtohepshgrmhesghgvnhhtohhordhorhhgpdhrtghpthhtohepghgv
+    vghrtheslhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtohepshgthhifrggssehlih
+    hnuhigqdhmieekkhdrohhrghdprhgtphhtthhopegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:wSE1ZwhMsHXVA5u5NbOPGFcnZKBySJzFq6J2tiaO9m3Sgy2f_2qXtw>
+    <xmx:wSE1Z8BTA8QsshMpJMooZntzfKdCQnHJiH3ORp_FuOIANydBrhdY6Q>
+    <xmx:wSE1ZxLFj6i9LAikCD_0i6nGJ5oTakwSQSQylvRLjro272gGpNVHgg>
+    <xmx:wSE1ZzCmeqvarrXpcMpNt0rVYX5u2DrTHsQeILR9GUl-QwfjGBdcFw>
+    <xmx:wyE1Z40qH9JUpMwxWCpcVMK-Xy3sCTR9fft9J7o1FscJOTT7YnjeRqiA>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 13 Nov 2024 17:01:34 -0500 (EST)
+Date: Thu, 14 Nov 2024 09:01:58 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
 To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-cc: Michael Schmitz <schmitzmic@gmail.com>, Arnd Bergmann <arnd@arndb.de>, 
-    linux-m68k <linux-m68k@vger.kernel.org>, 
+cc: Thorsten Glaser <tg@debian.org>, linux-m68k <linux-m68k@vger.kernel.org>, 
     debian-68k <debian-68k@lists.debian.org>, 
     James Le Cuirot <chewi@aura-online.co.uk>, Sam James <sam@gentoo.org>, 
     Geert Uytterhoeven <geert@linux-m68k.org>, 
-    Andreas Schwab <schwab@linux-m68k.org>
+    Andreas Schwab <schwab@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>
 Subject: Re: Plan needed for switching m68k to 32-bit alignment
-In-Reply-To: <31a04ef1ca569580d29ed09097766e385a23044b.camel@physik.fu-berlin.de>
-Message-ID: <a600d9a7-f068-2d5e-8e81-116127e61dc4@mirbsd.de>
-References: <3a5e171bf42e5273eb8235cba04e8328b19c2ca4.camel@physik.fu-berlin.de>  <383faec7-8987-4680-920d-8f802e1bea34@app.fastmail.com>  <832d65f2-1796-4ac1-b49b-380bf64700f4@gmail.com>  <8ca13b4b1a3c2d8d2e6d99c29b901659bb4108e1.camel@physik.fu-berlin.de>
-  <f87a85b2-809a-44dc-9a61-24698d7888eb@gmail.com> <31a04ef1ca569580d29ed09097766e385a23044b.camel@physik.fu-berlin.de>
-Content-Language: de-Zsym-DE-1901-u-em-text-rg-denw-tz-utc, en-Zsym-GB-u-cu-eur-em-text-fw-mon-hc-h23-ms-metric-mu-celsius-rg-denw-tz-utc-va-posix
+In-Reply-To: <9a8839fafacc0e89816626b40a4167ad6f0fb47f.camel@physik.fu-berlin.de>
+Message-ID: <905d0935-7b74-9eb9-04e6-553ccb538930@linux-m68k.org>
+References: <3a5e171bf42e5273eb8235cba04e8328b19c2ca4.camel@physik.fu-berlin.de>    <d95cbe0f-696e-813a-3655-f982531dfb41@linux-m68k.org>   <fe7eaef152b4a245c6bab76ae02946a0746bdf65.camel@physik.fu-berlin.de>   <eb26c030-5bc9-0e2e-1222-64306bfa7553@linux-m68k.org>
+   <5e8917a2-b7c4-6c06-e63f-1f05eea32120@mirbsd.de>   <a07af4eb-efba-d8f1-ace1-06da7a7067c0@linux-m68k.org>  <90616d852357d7489e1404dcf4a9a04f881b4007.camel@physik.fu-berlin.de>  <7c59a9b6-4867-5191-fa72-8b3664aed970@linux-m68k.org>
+ <9a8839fafacc0e89816626b40a4167ad6f0fb47f.camel@physik.fu-berlin.de>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=US-ASCII
 
-(please keep my debian.org address in the distribution list,
-not the mirbsd one, as it has better chance to interact with
-other mail providers out there for this=E2=80=A6 except Googlemail,
-which, of course, is no proper mail provider and actively
-disrecommended because it fails to collaborate for FOSS work)
 
 On Wed, 13 Nov 2024, John Paul Adrian Glaubitz wrote:
 
->On Thu, 2024-11-14 at 07:36 +1300, Michael Schmitz wrote:
->> I didn't say that - just supporting Arnd's point that much of the RAM
->> constrained old m68k software won't benefit from today's user space.
->
->We're talking about an open source stack here. No one is going to run an
->old binary from the 80s on a current system. And if you want to run old
->software, you're certainly also not running the latest kernel.
+> On Mon, 2024-10-28 at 19:40 +1100, Finn Thain wrote:
+> > On Mon, 28 Oct 2024, John Paul Adrian Glaubitz wrote:
+> > 
+> > > What ecosystem? Do you honestly care that any hobbyist cares about 
+> > > having to reinstall their retro computers?
+> > > 
+> > 
+> > The issue is not just old binaries. You made the same mistake in your 
+> > message to Arnd when you said "we're not allowed to fix that [ABI] because 
+> > someone might run an old binary". For some reason you're choosing to 
+> > ignore numerous objections that have been covered on the mailing lists to 
+> > date.
+> 
+> I have only seen real objections from your side. Everyone else agrees 
+> that future development of the platform is not feasible without making 
+> the switch.
+> 
 
-Indeed.
-
-We should consider something with 256 MiB RAM the =E2=80=9Cdefault=E2=80=9D
-(which also matches the usual =E2=80=9Csmallest VM=E2=80=9D; there are VMs
-with just 128 MiB RAM, but even just running apt-get update
-can stretch them to swap) and, perhaps, try to keep systems
-with 64 MiB working, perhaps with custom kernels. But 256 MiB
-is plenty for a normal OSS stack (i.e. no dbus/systemd, proper
-classical init), without X11 anyway, but perhaps even with it.
-
->SysVInit uses a huge set of bash scripts where every action involves spawn=
-ing
-
-sh scripts, mksh=E2=80=99s /bin/lksh gives a 3=C3=97 speedup, compared to
-GNU bash, here, probably even more, as it=E2=80=99s statically linked.
-
-[ low memory ]
->Again, the problem is not Debian-specific. Heck, it's not even Linux-speci=
-fic.
-
-ACK.
-
->> If this involves changes at kernel level (syscall parameter alignment?)
->> however, my recommendation would be to rather drop the port than end up
->> with new kernels no longer backwards compatible with old user space.
-
-I don=E2=80=99t buy this.
-
-But, as has been pointed out, if we make the current alignment explicit
-everywhere, the kernel ABI does not have to change=C2=B9. And new syscalls,
-ioctls, structs, etc. can just be made with natural alignment in mind
-(I bet most are already anyway) and with padding assumptions made expli=E2=
-=80=90
-cit (which again probably is done already anyway).
-
-=E2=91=A0 not for the userspace ABI to change, anyway; that can be decouple=
-d
-  is the point here
-
-bye,
-//mirabilos
---=20
-11:56=E2=8E=9C=C2=ABliwakura:#!/bin/mksh=C2=BB also, i wanted to add mksh t=
-o my own distro =E2=94=82
-i was disappointed that there is no makefile =E2=94=82 but somehow the Buil=
-d.sh is
-the least painful built system i've ever seen =E2=94=82 honours CC, {CPP,C,=
-LD}FLAGS
-properly =E2=94=82 looks cleary like done by someone who knows what they ar=
-e doing
+I'm interested in what people have to say. I'm not interested in who says 
+it. Hence, your concept of "everyone else" is irrelevant to me.
