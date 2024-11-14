@@ -1,575 +1,117 @@
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [195.130.137.89])
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A59F14287
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 14 Nov 2024 14:02:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.89
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51A351DFE8
+	for <linux-m68k@vger.kernel.org>; Thu, 14 Nov 2024 16:30:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731592980; cv=none; b=GM+oVmdUjby3IS7osvd4FNStmba5xjNTX5Tof1DfThN/WuK5wFS41PH5IbHy5Hu2vZayXxi8gCpAQvNAc/+blI+g76ZUJ02FdmhwaIJz1cSVbWCLLluXYiqhsRwNJ1fdfRGhUqzUWnvogLo88usTsRU0Ufgooi9QEcWGsXeZnE0=
+	t=1731601813; cv=none; b=axRNVGpUkvlVlDnLGb1VJfyJb2ciPx4LD+qBZGGkHhlO9p89d0obixD/vcdIJGzrUV6ZDjSj/KuAE0o+jgU7K0vooQbACs5vnxDfNgC35/DYBKa5iTscqTdlLVX4Qse5x6D7Ytu45FUJieHkHxhs6XXOkUS9/Hj+JIyLRx4Mzmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731592980; c=relaxed/simple;
-	bh=0wAeApnUKyCVKM5MRZVBPy3utx/mIrOVvNj7LIKkZ4o=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pZKUBVWcd4wrmLMV12SkraRV0v5SurekI8dtM1g0hYFNuD1riBe072AXGTQ5bZG2zrYSzhgCOmwsY//1vCfWTVHj87K9p4VrUOe+DbV4sPM9jMHW5Hlez/QIv8qsUcbZvptKvxxDQpZ58gq++/2ByLVDBilLkVHkKQsQD/tKmYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.89
+	s=arc-20240116; t=1731601813; c=relaxed/simple;
+	bh=hE+NcsecyAGWc3I8WmNJELnR26MgyMj4iqMYlgtSDMc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hxO+aF0+ZsIcJUQEECdg7zH+x5Hta867fXvp/xxE0XSjpWA+GrbTEZ7ehWF2+fa6Orvt0sZeWIOiq67AjsnHw1Bei+Z+WWlldEN8CZORwLqqvZbs0UZ319K41SQNhO/6U8v08C4wT6ZnGmv0E+yCe/1BIhzL15CaeYIANqM3gZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:ab77:b6e5:88e8:df20])
-	by laurent.telenet-ops.be with cmsmtp
-	id ce2u2D0020Ss59E01e2uFY; Thu, 14 Nov 2024 15:02:54 +0100
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1tBaQZ-0070p0-Ka;
-	Thu, 14 Nov 2024 15:02:53 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1tBaQv-004tBU-RJ;
-	Thu, 14 Nov 2024 15:02:53 +0100
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: linux-m68k@lists.linux-m68k.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH/RFC] m68k: defconfig: Enable options needed for systemd
-Date: Thu, 14 Nov 2024 15:02:48 +0100
-Message-Id: <e93e50b85422cdb04e800f5008abf92babf6d509.1731591904.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-6e9ba45d67fso8973237b3.1
+        for <linux-m68k@vger.kernel.org>; Thu, 14 Nov 2024 08:30:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731601809; x=1732206609;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9xJI0w1gKIx5aH4r0+X7zIq8kBSVmYbK0kIPJ6ZIgac=;
+        b=h92qF8kikk9Ib6+JC7pPMA9nD4TyN5A6O1Oq/tR0BJY9cGd4Zw18qQ/sprlD+oh+gB
+         G/VEUw/rFCS6/NmlXXIidckoSUgWb6VPYLj4/moJefW5oIqzK8aVVfYrAxQu+Moa5cxA
+         il4dj5UuxZ6pJj3skuVKrpGAZpGKBWyOJTUXDCIlOCclDYrNrhuqKgBqPNSpzKHmdTZV
+         iQA6beTqrkeG6QbCu5bO5IV367aKMWOBiHnVnCI4DW1/4jthTHPpfvnHbDGIAPzyEJCn
+         9bKkeNzoDSYQqEeXVzQITWB1g+gQOp8WkC+3uTqSPQ5K4Xu/cHbbQ/bfRgIhUUFYyZ1R
+         5mUA==
+X-Forwarded-Encrypted: i=1; AJvYcCW6/rSIxx4XfsirXOa3BduvTiNgUnm76B9pXT5ZGItfKEvtXhK9duToGhFOjcyInmFb9vC1ijg18usS@vger.kernel.org
+X-Gm-Message-State: AOJu0YxXY4WlvhlK3AxpYI/iwG9NDZHxVArCux3KzeJ7RFw2yb68h5bl
+	PhoH+U6SHcLTLabis7YVKQJTqzqIjdB0wrvA3JWxEOtflbQ+Czzy7ZB56pYg
+X-Google-Smtp-Source: AGHT+IFADCwqXhabPvdmcKYXk8AOBFsrOBeRKuheSUIIeQ9tOigFmS0FJdlpjoh0dNZB8uZ/gn5kjw==
+X-Received: by 2002:a05:690c:4d01:b0:6e5:9bc2:53a0 with SMTP id 00721157ae682-6eca4c2d15fmr131727527b3.41.1731601809593;
+        Thu, 14 Nov 2024 08:30:09 -0800 (PST)
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6ee44494fdfsm3036757b3.125.2024.11.14.08.30.08
+        for <linux-m68k@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Nov 2024 08:30:08 -0800 (PST)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-6ea7c9226bbso9277487b3.3
+        for <linux-m68k@vger.kernel.org>; Thu, 14 Nov 2024 08:30:08 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVGD34fer7rGzMmZN3LZvtewZjY1fdEWl4LdkId+MCGELVyX3SKDvdE7UT9W/yWSuSTmfD/ZDDsUjuN@vger.kernel.org
+X-Received: by 2002:a05:690c:23c4:b0:6b0:70fc:f6e4 with SMTP id
+ 00721157ae682-6eca4660545mr125829467b3.15.1731601808302; Thu, 14 Nov 2024
+ 08:30:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <3a5e171bf42e5273eb8235cba04e8328b19c2ca4.camel@physik.fu-berlin.de>
+ <d95cbe0f-696e-813a-3655-f982531dfb41@linux-m68k.org> <fe7eaef152b4a245c6bab76ae02946a0746bdf65.camel@physik.fu-berlin.de>
+ <eb26c030-5bc9-0e2e-1222-64306bfa7553@linux-m68k.org> <5e8917a2-b7c4-6c06-e63f-1f05eea32120@mirbsd.de>
+ <a07af4eb-efba-d8f1-ace1-06da7a7067c0@linux-m68k.org> <Pine.BSM.4.64L.2410270301550.3007@herc.mirbsd.org>
+ <a6ef54f6-7a3d-78d5-47d1-d4f7fc1e04e2@linux-m68k.org> <Pine.BSM.4.64L.2410270420080.3007@herc.mirbsd.org>
+ <b9ef3e70-6ee0-3e4f-185c-afaa8f512792@linux-m68k.org>
+In-Reply-To: <b9ef3e70-6ee0-3e4f-185c-afaa8f512792@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 14 Nov 2024 17:29:56 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdV4T1jELrZJbyxkYDo4MSfm=2CGCz2tJ6DqOqjjiN5_AQ@mail.gmail.com>
+Message-ID: <CAMuHMdV4T1jELrZJbyxkYDo4MSfm=2CGCz2tJ6DqOqjjiN5_AQ@mail.gmail.com>
+Subject: Re: Plan needed for switching m68k to 32-bit alignment
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: Thorsten Glaser <tg@debian.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+	linux-m68k <linux-m68k@vger.kernel.org>, debian-68k <debian-68k@lists.debian.org>, 
+	James Le Cuirot <chewi@aura-online.co.uk>, Sam James <sam@gentoo.org>, 
+	Andreas Schwab <schwab@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Enable CONFIG_CGROUPS, CONFIG_DEBUG_FS, and CONFIG_USER_NS, which are
-needed for systemd 257~rc1-4.
+On Sun, Oct 27, 2024 at 7:16=E2=80=AFAM Finn Thain <fthain@linux-m68k.org> =
+wrote:
+> On Sun, 27 Oct 2024, Thorsten Glaser wrote:
+> > Finn Thain dixit:
+> >
+> > >That would mean __alignof__(foo.b) =3D=3D sizeof(foo.b) but that's not=
+ the
+> > >case on my Linux/i686 system. 4 !=3D 8:
+> > >
+> > >struct baa {
+> > >        int a;
+> > >        long long b;
+> > >} foo;
+> >
+> > That struct is just 12 bytes for you then?
+>
+> Right. i686 and m68k agree on that.
 
-Reduce kernel size by disabling CONFIG_BLK_DEBUG_FS and
-CONFIG_OCFS2_FS_STATS, which default to enabled if CONFIG_DEBUG_FS is
-enabled, but are not really needed.
+On i686 (i.e. gcc -m32 on amd64):
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-Tested with Debian sid and atari_defconfig on ARAnyM.  This increases
-kernel size for atari_defconfig by ca. 76 KiB, according to
-bloat-o-meter.
+    __alignof__(long long) =3D 8
 
-With CONFIG_CGROUPS disabled:
+but
 
-    systemd[1]: Failed to mount tmpfs (type tmpfs) on /sys/fs/cgroup (MS_NOSUID|MS_NODEV|MS_NOEXEC|MS_STRICTATIME "mode=0755,size=4m,nr_inodes=1k"): No such file or directory
-    [!!!!!!] Failed to mount cgroup v1 hierarchy.
-    systemd[1]: Freezing execution.
+    sizeof(struct baa) =3D 12
+    __alignof__(struct baa) =3D 4
 
-With CONFIG_DEBUG_FS disabled:
+???
+Isn't the alignment of a struct the largest alignment of any of its members=
+?
 
-    systemd[1]: sys-kernel-debug.mount: Failed to create mount point '/sys/kernel/debug', ignoring: Operation not permitted
-    systemd[1]: sys-kernel-debug.mount: Failed to check directory /sys/kernel/debug: No such file or directory
-    systemd[1]: sys-kernel-debug.mount: Mount process exited, code=exited, status=32/n/a
-    systemd[1]: sys-kernel-debug.mount: Failed with result 'exit-code'.
-    systemd[1]: Failed to mount sys-kernel-debug.mount - /sys/kernel/debug.
-    systemd[1]: Dependency failed for local-fs.target - Local File Systems.
-    systemd[1]: local-fs.target: Job local-fs.target/start failed with result 'dependency'.
-    systemd[1]: local-fs.target: Triggering OnFailure= dependencies.
+Gr{oetje,eeting}s,
 
-and the system asks for the root password, to drop into an emergency
-shell.
+                        Geert
 
-With CONFIG_USER_NS disabled:
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
 
-    (journald)[59]: systemd-journald.service: Failed to set up special execution directory in /run: Invalid argument
-    (journald)[59]: systemd-journald.service: Failed at step RUNTIME_DIRECTORY spawning /usr/lib/systemd/systemd-journald: Invalid argument
-    systemd[1]: systemd-journald.service: Main process exited, code=exited, status=233/RUNTIME_DIRECTORY
-    systemd[1]: systemd-journald.service: Failed with result 'exit-code'.
-    systemd[1]: Failed to start systemd-journald.service - Journal Service.
-    systemd[1]: systemd-journald.service: Scheduled restart job, restart counter is at 1.
-    ...
-
-The systemd docs[1] say CONFIG_NET_NS is also needed, but it seems to
-work fine without.
-
-[1] https://github.com/systemd/systemd/blob/main/README
----
- arch/m68k/configs/amiga_defconfig    | 5 +++++
- arch/m68k/configs/apollo_defconfig   | 5 +++++
- arch/m68k/configs/atari_defconfig    | 5 +++++
- arch/m68k/configs/bvme6000_defconfig | 5 +++++
- arch/m68k/configs/hp300_defconfig    | 5 +++++
- arch/m68k/configs/mac_defconfig      | 5 +++++
- arch/m68k/configs/multi_defconfig    | 5 +++++
- arch/m68k/configs/mvme147_defconfig  | 5 +++++
- arch/m68k/configs/mvme16x_defconfig  | 5 +++++
- arch/m68k/configs/q40_defconfig      | 5 +++++
- arch/m68k/configs/sun3_defconfig     | 5 +++++
- arch/m68k/configs/sun3x_defconfig    | 5 +++++
- 12 files changed, 60 insertions(+)
-
-diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
-index d01dc47d52ea2ffd..e19a44a3c0a0bcb7 100644
---- a/arch/m68k/configs/amiga_defconfig
-+++ b/arch/m68k/configs/amiga_defconfig
-@@ -4,8 +4,10 @@ CONFIG_POSIX_MQUEUE=y
- CONFIG_BSD_PROCESS_ACCT=y
- CONFIG_BSD_PROCESS_ACCT_V3=y
- CONFIG_LOG_BUF_SHIFT=16
-+CONFIG_CGROUPS=y
- # CONFIG_UTS_NS is not set
- # CONFIG_IPC_NS is not set
-+CONFIG_USER_NS=y
- # CONFIG_PID_NS is not set
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
-@@ -27,6 +29,7 @@ CONFIG_SERIAL_CONSOLE=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
- CONFIG_TRIM_UNUSED_KSYMS=y
-+# CONFIG_BLK_DEBUG_FS is not set
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_ATARI_PARTITION=y
- CONFIG_MAC_PARTITION=y
-@@ -452,6 +455,7 @@ CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
- CONFIG_OCFS2_FS=m
-+# CONFIG_OCFS2_FS_STATS is not set
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_BCACHEFS_FS=m
- CONFIG_FANOTIFY=y
-@@ -612,6 +616,7 @@ CONFIG_XZ_DEC_TEST=m
- CONFIG_GLOB_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_DEBUG_FS=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
-diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
-index 46808e581d7b4709..32bede8511a34f3b 100644
---- a/arch/m68k/configs/apollo_defconfig
-+++ b/arch/m68k/configs/apollo_defconfig
-@@ -4,8 +4,10 @@ CONFIG_POSIX_MQUEUE=y
- CONFIG_BSD_PROCESS_ACCT=y
- CONFIG_BSD_PROCESS_ACCT_V3=y
- CONFIG_LOG_BUF_SHIFT=16
-+CONFIG_CGROUPS=y
- # CONFIG_UTS_NS is not set
- # CONFIG_IPC_NS is not set
-+CONFIG_USER_NS=y
- # CONFIG_PID_NS is not set
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
-@@ -22,6 +24,7 @@ CONFIG_PROC_HARDWARE=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
- CONFIG_TRIM_UNUSED_KSYMS=y
-+# CONFIG_BLK_DEBUG_FS is not set
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_AMIGA_PARTITION=y
- CONFIG_ATARI_PARTITION=y
-@@ -409,6 +412,7 @@ CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
- CONFIG_OCFS2_FS=m
-+# CONFIG_OCFS2_FS_STATS is not set
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_BCACHEFS_FS=m
- CONFIG_FANOTIFY=y
-@@ -569,6 +573,7 @@ CONFIG_XZ_DEC_TEST=m
- CONFIG_GLOB_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_DEBUG_FS=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
-diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
-index d113ef760835a2f7..65a0fd8cf8462e9d 100644
---- a/arch/m68k/configs/atari_defconfig
-+++ b/arch/m68k/configs/atari_defconfig
-@@ -4,8 +4,10 @@ CONFIG_POSIX_MQUEUE=y
- CONFIG_BSD_PROCESS_ACCT=y
- CONFIG_BSD_PROCESS_ACCT_V3=y
- CONFIG_LOG_BUF_SHIFT=16
-+CONFIG_CGROUPS=y
- # CONFIG_UTS_NS is not set
- # CONFIG_IPC_NS is not set
-+CONFIG_USER_NS=y
- # CONFIG_PID_NS is not set
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
-@@ -30,6 +32,7 @@ CONFIG_ATARI_DSP56K=m
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
- CONFIG_TRIM_UNUSED_KSYMS=y
-+# CONFIG_BLK_DEBUG_FS is not set
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_AMIGA_PARTITION=y
- CONFIG_MAC_PARTITION=y
-@@ -436,6 +439,7 @@ CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
- CONFIG_OCFS2_FS=m
-+# CONFIG_OCFS2_FS_STATS is not set
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_BCACHEFS_FS=m
- CONFIG_FANOTIFY=y
-@@ -596,6 +600,7 @@ CONFIG_XZ_DEC_TEST=m
- CONFIG_GLOB_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_DEBUG_FS=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
-diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
-index c0719322c0283751..69bdabd71d762c71 100644
---- a/arch/m68k/configs/bvme6000_defconfig
-+++ b/arch/m68k/configs/bvme6000_defconfig
-@@ -4,8 +4,10 @@ CONFIG_POSIX_MQUEUE=y
- CONFIG_BSD_PROCESS_ACCT=y
- CONFIG_BSD_PROCESS_ACCT_V3=y
- CONFIG_LOG_BUF_SHIFT=16
-+CONFIG_CGROUPS=y
- # CONFIG_UTS_NS is not set
- # CONFIG_IPC_NS is not set
-+CONFIG_USER_NS=y
- # CONFIG_PID_NS is not set
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
-@@ -20,6 +22,7 @@ CONFIG_PROC_HARDWARE=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
- CONFIG_TRIM_UNUSED_KSYMS=y
-+# CONFIG_BLK_DEBUG_FS is not set
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_AMIGA_PARTITION=y
- CONFIG_ATARI_PARTITION=y
-@@ -401,6 +404,7 @@ CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
- CONFIG_OCFS2_FS=m
-+# CONFIG_OCFS2_FS_STATS is not set
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_BCACHEFS_FS=m
- CONFIG_FANOTIFY=y
-@@ -561,6 +565,7 @@ CONFIG_XZ_DEC_TEST=m
- CONFIG_GLOB_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_DEBUG_FS=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
-diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
-index 8d429e63f8f21471..4f09fc4c67fba3b5 100644
---- a/arch/m68k/configs/hp300_defconfig
-+++ b/arch/m68k/configs/hp300_defconfig
-@@ -4,8 +4,10 @@ CONFIG_POSIX_MQUEUE=y
- CONFIG_BSD_PROCESS_ACCT=y
- CONFIG_BSD_PROCESS_ACCT_V3=y
- CONFIG_LOG_BUF_SHIFT=16
-+CONFIG_CGROUPS=y
- # CONFIG_UTS_NS is not set
- # CONFIG_IPC_NS is not set
-+CONFIG_USER_NS=y
- # CONFIG_PID_NS is not set
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
-@@ -21,6 +23,7 @@ CONFIG_PROC_HARDWARE=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
- CONFIG_TRIM_UNUSED_KSYMS=y
-+# CONFIG_BLK_DEBUG_FS is not set
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_AMIGA_PARTITION=y
- CONFIG_ATARI_PARTITION=y
-@@ -411,6 +414,7 @@ CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
- CONFIG_OCFS2_FS=m
-+# CONFIG_OCFS2_FS_STATS is not set
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_BCACHEFS_FS=m
- CONFIG_FANOTIFY=y
-@@ -571,6 +575,7 @@ CONFIG_XZ_DEC_TEST=m
- CONFIG_GLOB_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_DEBUG_FS=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index bafd33da27c1101a..998c088666d3f401 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -4,8 +4,10 @@ CONFIG_POSIX_MQUEUE=y
- CONFIG_BSD_PROCESS_ACCT=y
- CONFIG_BSD_PROCESS_ACCT_V3=y
- CONFIG_LOG_BUF_SHIFT=16
-+CONFIG_CGROUPS=y
- # CONFIG_UTS_NS is not set
- # CONFIG_IPC_NS is not set
-+CONFIG_USER_NS=y
- # CONFIG_PID_NS is not set
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
-@@ -21,6 +23,7 @@ CONFIG_PROC_HARDWARE=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
- CONFIG_TRIM_UNUSED_KSYMS=y
-+# CONFIG_BLK_DEBUG_FS is not set
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_AMIGA_PARTITION=y
- CONFIG_ATARI_PARTITION=y
-@@ -428,6 +431,7 @@ CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
- CONFIG_OCFS2_FS=m
-+# CONFIG_OCFS2_FS_STATS is not set
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_BCACHEFS_FS=m
- CONFIG_FANOTIFY=y
-@@ -588,6 +592,7 @@ CONFIG_XZ_DEC_TEST=m
- CONFIG_GLOB_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_DEBUG_FS=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index 6f5ca3f85ea16028..1540e04c223e2b90 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -4,8 +4,10 @@ CONFIG_POSIX_MQUEUE=y
- CONFIG_BSD_PROCESS_ACCT=y
- CONFIG_BSD_PROCESS_ACCT_V3=y
- CONFIG_LOG_BUF_SHIFT=16
-+CONFIG_CGROUPS=y
- # CONFIG_UTS_NS is not set
- # CONFIG_IPC_NS is not set
-+CONFIG_USER_NS=y
- # CONFIG_PID_NS is not set
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
-@@ -45,6 +47,7 @@ CONFIG_SERIAL_CONSOLE=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
- CONFIG_TRIM_UNUSED_KSYMS=y
-+# CONFIG_BLK_DEBUG_FS is not set
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_BSD_DISKLABEL=y
- CONFIG_MINIX_SUBPARTITION=y
-@@ -514,6 +517,7 @@ CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
- CONFIG_OCFS2_FS=m
-+# CONFIG_OCFS2_FS_STATS is not set
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_BCACHEFS_FS=m
- CONFIG_FANOTIFY=y
-@@ -674,6 +678,7 @@ CONFIG_XZ_DEC_TEST=m
- CONFIG_GLOB_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_DEBUG_FS=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
-diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
-index d16b328c71363f51..c6063a6dd4f6e8e9 100644
---- a/arch/m68k/configs/mvme147_defconfig
-+++ b/arch/m68k/configs/mvme147_defconfig
-@@ -4,8 +4,10 @@ CONFIG_POSIX_MQUEUE=y
- CONFIG_BSD_PROCESS_ACCT=y
- CONFIG_BSD_PROCESS_ACCT_V3=y
- CONFIG_LOG_BUF_SHIFT=16
-+CONFIG_CGROUPS=y
- # CONFIG_UTS_NS is not set
- # CONFIG_IPC_NS is not set
-+CONFIG_USER_NS=y
- # CONFIG_PID_NS is not set
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
-@@ -19,6 +21,7 @@ CONFIG_PROC_HARDWARE=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
- CONFIG_TRIM_UNUSED_KSYMS=y
-+# CONFIG_BLK_DEBUG_FS is not set
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_AMIGA_PARTITION=y
- CONFIG_ATARI_PARTITION=y
-@@ -400,6 +403,7 @@ CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
- CONFIG_OCFS2_FS=m
-+# CONFIG_OCFS2_FS_STATS is not set
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_BCACHEFS_FS=m
- CONFIG_FANOTIFY=y
-@@ -560,6 +564,7 @@ CONFIG_XZ_DEC_TEST=m
- CONFIG_GLOB_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_DEBUG_FS=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
-diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
-index 80f6c15a5ed5c8f8..857bfce4a67e9b4c 100644
---- a/arch/m68k/configs/mvme16x_defconfig
-+++ b/arch/m68k/configs/mvme16x_defconfig
-@@ -4,8 +4,10 @@ CONFIG_POSIX_MQUEUE=y
- CONFIG_BSD_PROCESS_ACCT=y
- CONFIG_BSD_PROCESS_ACCT_V3=y
- CONFIG_LOG_BUF_SHIFT=16
-+CONFIG_CGROUPS=y
- # CONFIG_UTS_NS is not set
- # CONFIG_IPC_NS is not set
-+CONFIG_USER_NS=y
- # CONFIG_PID_NS is not set
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
-@@ -20,6 +22,7 @@ CONFIG_PROC_HARDWARE=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
- CONFIG_TRIM_UNUSED_KSYMS=y
-+# CONFIG_BLK_DEBUG_FS is not set
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_AMIGA_PARTITION=y
- CONFIG_ATARI_PARTITION=y
-@@ -401,6 +404,7 @@ CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
- CONFIG_OCFS2_FS=m
-+# CONFIG_OCFS2_FS_STATS is not set
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_BCACHEFS_FS=m
- CONFIG_FANOTIFY=y
-@@ -561,6 +565,7 @@ CONFIG_XZ_DEC_TEST=m
- CONFIG_GLOB_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_DEBUG_FS=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
-diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
-index 0e81589f0ee26d76..ee4e65f7f6aeb6fe 100644
---- a/arch/m68k/configs/q40_defconfig
-+++ b/arch/m68k/configs/q40_defconfig
-@@ -4,8 +4,10 @@ CONFIG_POSIX_MQUEUE=y
- CONFIG_BSD_PROCESS_ACCT=y
- CONFIG_BSD_PROCESS_ACCT_V3=y
- CONFIG_LOG_BUF_SHIFT=16
-+CONFIG_CGROUPS=y
- # CONFIG_UTS_NS is not set
- # CONFIG_IPC_NS is not set
-+CONFIG_USER_NS=y
- # CONFIG_PID_NS is not set
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
-@@ -20,6 +22,7 @@ CONFIG_PROC_HARDWARE=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
- CONFIG_TRIM_UNUSED_KSYMS=y
-+# CONFIG_BLK_DEBUG_FS is not set
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_AMIGA_PARTITION=y
- CONFIG_ATARI_PARTITION=y
-@@ -418,6 +421,7 @@ CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
- CONFIG_OCFS2_FS=m
-+# CONFIG_OCFS2_FS_STATS is not set
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_BCACHEFS_FS=m
- CONFIG_FANOTIFY=y
-@@ -578,6 +582,7 @@ CONFIG_XZ_DEC_TEST=m
- CONFIG_GLOB_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_DEBUG_FS=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
-diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
-index 8cd785290339db25..63449665f924ccf1 100644
---- a/arch/m68k/configs/sun3_defconfig
-+++ b/arch/m68k/configs/sun3_defconfig
-@@ -4,8 +4,10 @@ CONFIG_POSIX_MQUEUE=y
- CONFIG_BSD_PROCESS_ACCT=y
- CONFIG_BSD_PROCESS_ACCT_V3=y
- CONFIG_LOG_BUF_SHIFT=16
-+CONFIG_CGROUPS=y
- # CONFIG_UTS_NS is not set
- # CONFIG_IPC_NS is not set
-+CONFIG_USER_NS=y
- # CONFIG_PID_NS is not set
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
-@@ -17,6 +19,7 @@ CONFIG_PROC_HARDWARE=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
- CONFIG_TRIM_UNUSED_KSYMS=y
-+# CONFIG_BLK_DEBUG_FS is not set
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_AMIGA_PARTITION=y
- CONFIG_ATARI_PARTITION=y
-@@ -399,6 +402,7 @@ CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
- CONFIG_OCFS2_FS=m
-+# CONFIG_OCFS2_FS_STATS is not set
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_BCACHEFS_FS=m
- CONFIG_FANOTIFY=y
-@@ -559,6 +563,7 @@ CONFIG_XZ_DEC_TEST=m
- CONFIG_GLOB_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_DEBUG_FS=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_KUNIT=m
-diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
-index 78035369f60f1b4b..00b553490b82f767 100644
---- a/arch/m68k/configs/sun3x_defconfig
-+++ b/arch/m68k/configs/sun3x_defconfig
-@@ -4,8 +4,10 @@ CONFIG_POSIX_MQUEUE=y
- CONFIG_BSD_PROCESS_ACCT=y
- CONFIG_BSD_PROCESS_ACCT_V3=y
- CONFIG_LOG_BUF_SHIFT=16
-+CONFIG_CGROUPS=y
- # CONFIG_UTS_NS is not set
- # CONFIG_IPC_NS is not set
-+CONFIG_USER_NS=y
- # CONFIG_PID_NS is not set
- # CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
-@@ -17,6 +19,7 @@ CONFIG_PROC_HARDWARE=y
- CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
- CONFIG_TRIM_UNUSED_KSYMS=y
-+# CONFIG_BLK_DEBUG_FS is not set
- CONFIG_PARTITION_ADVANCED=y
- CONFIG_AMIGA_PARTITION=y
- CONFIG_ATARI_PARTITION=y
-@@ -399,6 +402,7 @@ CONFIG_EXT4_FS=y
- CONFIG_REISERFS_FS=m
- CONFIG_JFS_FS=m
- CONFIG_OCFS2_FS=m
-+# CONFIG_OCFS2_FS_STATS is not set
- # CONFIG_OCFS2_DEBUG_MASKLOG is not set
- CONFIG_BCACHEFS_FS=m
- CONFIG_FANOTIFY=y
-@@ -559,6 +563,7 @@ CONFIG_XZ_DEC_TEST=m
- CONFIG_GLOB_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_DEBUG_FS=y
- CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
--- 
-2.34.1
-
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
