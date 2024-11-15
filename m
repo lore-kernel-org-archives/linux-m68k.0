@@ -1,86 +1,151 @@
-Received: from evolvis.org (evolvis.org [217.144.135.11])
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0122251016
-	for <linux-m68k@vger.kernel.org>; Fri, 15 Nov 2024 01:31:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.144.135.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74B41187862
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 15 Nov 2024 08:26:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731634283; cv=none; b=EwHiEyOynZAw/VRtcV5OyU8AzCyuR1/NDfQileo5hhhy65Vv1RRFcGbN28j9FHkzlvmd/UidNal5Kyc6K4jxbNnRKll8POej6iarnYFM/m00wxQdg2DGAVXsHqUv+Tm9szSfk4xAsRn1gM/Skx+Z/vcB7dh75JebWc97TSITgLk=
+	t=1731659173; cv=none; b=NKZ+LbANVQmSgQM0JYuQMrDbgzLL4HeTAoXb0+AfkQZZi3g/y7bkABjjzQoDgcdD0E4EyA0DDBHrZX2m3QKs9K4LerbDFJfeK1Q0fP7NmKjCyAmNnqdnwA0xRzpszmDDbmOpH9RHu5PUwZEvUSkuQgrjdaPb+iiAulejBILBK2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731634283; c=relaxed/simple;
-	bh=je2oCUsHK+WFpY8Y+0FBvG5Nsx4CziQvvVbdzs6VvmU=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=cQyLv1tHAJQ9DLKkniCIB8Nntjb3NDz70kPOgL0KlITVxFXWcJ3NzPGZUWzl603ihVb1VRpFurntdKs8zifsGculo2D/6Xmu4FGdkZydq9U6wT3lstqsX5SoqRKVE7kXN1jXL7NQe1S24gybrK0lOrk7mmPuZavuMT5mJjIYH3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=evolvis.org; spf=pass smtp.mailfrom=evolvis.org; arc=none smtp.client-ip=217.144.135.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=evolvis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=evolvis.org
-Received: from x61p.mirbsd.org (xdsl-212-8-144-112.nc.de [212.8.144.112])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X448 server-signature RSA-PSS (2048 bits))
-	(Client did not present a certificate)
-	(Authenticated sender: x61p@relay.evolvis.org)
-	by evolvis.org (Postfix) with ESMTPSA id D18061002A4;
-	Fri, 15 Nov 2024 01:31:15 +0000 (UTC)
-Received: by x61p.mirbsd.org (Postfix, from userid 1000)
-	id 0E7E6142956; Fri, 15 Nov 2024 02:31:15 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by x61p.mirbsd.org (Postfix) with ESMTP id 0965F142955;
-	Fri, 15 Nov 2024 02:31:15 +0100 (CET)
-Date: Fri, 15 Nov 2024 02:31:14 +0100 (CET)
-From: Thorsten Glaser <tg@evolvis.org>
-To: Finn Thain <fthain@linux-m68k.org>
-cc: Geert Uytterhoeven <geert@linux-m68k.org>, 
-    John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-    linux-m68k <linux-m68k@vger.kernel.org>, 
-    debian-68k <debian-68k@lists.debian.org>, 
-    James Le Cuirot <chewi@aura-online.co.uk>, Sam James <sam@gentoo.org>, 
-    Andreas Schwab <schwab@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: Plan needed for switching m68k to 32-bit alignment
-In-Reply-To: <c0b6613c-22c7-674b-f6ff-9a5c36f09732@debian.org>
-Message-ID: <dd438a1b-43fe-38d8-b3c6-68e8791f4350@evolvis.org>
-References: <3a5e171bf42e5273eb8235cba04e8328b19c2ca4.camel@physik.fu-berlin.de> <d95cbe0f-696e-813a-3655-f982531dfb41@linux-m68k.org> <fe7eaef152b4a245c6bab76ae02946a0746bdf65.camel@physik.fu-berlin.de> <eb26c030-5bc9-0e2e-1222-64306bfa7553@linux-m68k.org>
- <5e8917a2-b7c4-6c06-e63f-1f05eea32120@mirbsd.de> <a07af4eb-efba-d8f1-ace1-06da7a7067c0@linux-m68k.org> <Pine.BSM.4.64L.2410270301550.3007@herc.mirbsd.org> <a6ef54f6-7a3d-78d5-47d1-d4f7fc1e04e2@linux-m68k.org> <Pine.BSM.4.64L.2410270420080.3007@herc.mirbsd.org>
- <b9ef3e70-6ee0-3e4f-185c-afaa8f512792@linux-m68k.org> <CAMuHMdV4T1jELrZJbyxkYDo4MSfm=2CGCz2tJ6DqOqjjiN5_AQ@mail.gmail.com> <d4e59a96-9d1e-94ca-313a-b577338d9d6f@linux-m68k.org> <c0b6613c-22c7-674b-f6ff-9a5c36f09732@debian.org>
-Content-Language: de-Zsym-DE-1901-u-em-text-rg-denw-tz-utc, en-Zsym-GB-u-cu-eur-em-text-fw-mon-hc-h23-ms-metric-mu-celsius-rg-denw-tz-utc-va-posix
+	s=arc-20240116; t=1731659173; c=relaxed/simple;
+	bh=DwAAWgK7n9NOu50kZzQE0PvinQnYmcgpCjZERziVJLc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DGTOzcoeqXuK1pgGv5pwmA2tf7CYJBMeNxsHpQYO0XlrGZArFWhpbdNnQtm0TVZ060SJ5M7u5LYjfPaLriykpLMnRo+e9iu9iMspWhnHc1vwfVGqwXzIqwebrTRSXQ3Impmu55yaHbUMbvlg1PhulHtB2Ru6TUnYn0+WNHRCaS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=KzeOzvwc; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="KzeOzvwc"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1885820005;
+	Fri, 15 Nov 2024 08:26:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1731659168;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oMmSMqKmaxOLfX4G/eur8U70AbvSkihlxFiHAAOgjJs=;
+	b=KzeOzvwcZ2Bv6VFZVdO15Vcs767TW4NJgFzYG2plmyTsnEjGMLeYzdfLhp3DBFKzIvek/T
+	AcxNgCfXQ91QW2vWSjvSc+PyW0mmQOz4NtO6XrnhPiotFbBabH2VCBK/jDu/mhtXYPXb56
+	sMu9tH5Tv25lqgqnw6GFlJ1vcySNgu+8ftFSIaE9B4xe1MaVJIGZ4iRnoO17zN2AEiSL+u
+	c4kwAiQ+c3uzvbbQ0EtSNlRvKpZWB7oDBU5nbSe+XBEcapJVZO7fMvoPZ6oJ+7iL7kmIwp
+	TZnTg261Bq0ghtc748Vm7MUr/C82iS5P6mjetZT0QmYfnFhibLvUEWo59qzM5w==
+Message-ID: <3a8f6faa-62c6-4d32-b544-3fb7c00730d7@yoseli.org>
+Date: Fri, 15 Nov 2024 09:26:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 0/2] Add basic tracing support for m68k
+To: linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ rostedt@goodmis.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Greg Ungerer <gerg@linux-m68k.org>
+References: <20241021-add-m68k-tracing-support-v1-0-0883d704525b@yoseli.org>
+Content-Language: en-US
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+In-Reply-To: <20241021-add-m68k-tracing-support-v1-0-0883d704525b@yoseli.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-Forgot=E2=80=A6
+Hi all,
 
->tg@fish:~ $ ./a.out
+On 21/10/2024 11:44, Jean-Michel Hautbois wrote:
+> In order to debug latency issues, I wanted to use ftrace on my M54418
+> coldfire. Sadly, it is not supported yet.
+> Thanks to Steven [1] it does not sound too difficult.
+> 
+> This small series adds basic functions to make it work, and for the few
+> tests I could do, it seems to be working well.
 
-struct baa {
-=09int a;
-=09long long b;
-};
+I did a few tests (well, a *lot* to be honest :-)) after adding HR 
+timers support on my m68k coldfire kernel.
 
-#include <stddef.h>
-#include <stdio.h>
+Now, I think ftrace shows a nice issue, but I think my stack_trace is 
+not correct ?
 
-int main(void) {
-=09struct baa stct;
+# wakeup_rt latency trace v1.1.5 on 6.12.0-rc4-00116-g2f00ff61fd82-dirty
+# --------------------------------------------------------------------
+# latency: 451 us, #6/6, CPU#0 | (M:preempt VP:0, KP:0, SP:0 HP:0)
+#    -----------------
+#    | task: irq/104-enet-fe-109 (uid:0 nice:0 policy:1 rt_prio:50)
+#    -----------------
+#
+#                    _------=> CPU#
+#                   / _-----=> irqs-off/BH-disabled
+#                  | / _----=> need-resched
+#                  || / _---=> hardirq/softirq
+#                  ||| / _--=> preempt-depth
+#                  |||| / _-=> migrate-disable
+#                  ||||| /     delay
+#  cmd     pid     |||||| time  |   caller
+#     \   /        ||||||  \    |    /
+  telnetd-224       0dnh4.   14us+:      224:120:R   + [000]     109: 
+49:R irq/104-enet-fe
+  telnetd-224       0dnh4.   50us+: <stack trace>
+  telnetd-224       0dnh4.   65us!: 0
+  telnetd-224       0d..3.  396us+: __traceiter_sched_switch
+  telnetd-224       0d..3.  418us+:      224:120:R ==> [000]     109: 
+49:R irq/104-enet-fe
+  telnetd-224       0d..3.  440us : <stack trace>
 
-#define t(w,s) printf("%s\ts=3D%u\ta=3D%u\n", #w, \
-=09    (unsigned)sizeof(s), (unsigned)__alignof__(s))
-#define o(w,m) printf("%s\ts=3D%u\ta=3D%u\to=3D%u\n", #w, \
-=09    (unsigned)sizeof(stct.m), (unsigned)__alignof__(stct.m), \
-=09    (unsigned)offsetof(struct baa, m))
-=09t(int, int);
-=09t(llong, long long);
-=09t(baa, struct baa);
-=09o(baa.a, a);
-=09o(baa.b, b);
-=09return (0);
-}
 
-bye,
-//mirabilos
---=20
-[16:04:33] bkix: "veni vidi violini"
-[16:04:45] bkix: "ich kam, sah und vergeigte"...
+Nevertheless it sounds like a really high latency for wake_up().
+
+I have a custom driver which basically gets an IRQ, and calls wake_up on 
+a read() call. This wake_up() on a high cpu usage can be more than 1ms ! 
+Even with a fifo/99 priority for my kernel thread !
+
+I don't know if it rings any bell ?
+I can obviously do more tests if it can help getting down to the issue :-).
+
+Thanks !
+
+> Here is a simple output I get:
+> 
+> ```
+> 
+>              bash-232     [000] d..3.   947.629000: thread_noise:     bash:232 start 947.629000000 duration 0 ns
+>        timerlat/0-274     [000] .....   947.629000: #51598 context thread timer_latency    409280 ns
+>              bash-232     [000] d.h..   947.630000: #51599 context    irq timer_latency    110720 ns
+>              bash-232     [000] dnh1.   947.630000: irq_noise: timer:206 start 947.629000000 duration 1000000 ns
+>              bash-232     [000] d..3.   947.630000: thread_noise:     bash:232 start 947.630000000 duration 0 ns
+>        timerlat/0-274     [000] .....   947.630000: #51599 context thread timer_latency    407168 ns
+>              bash-232     [000] d.h..   947.631000: #51600 context    irq timer_latency    108608 ns
+>              bash-232     [000] dnh1.   947.631000: irq_noise: timer:206 start 947.630000000 duration 1000000 ns
+>              bash-232     [000] d..3.   947.631000: thread_noise:     bash:232 start 947.631000000 duration 0 ns
+>        timerlat/0-274     [000] .....   947.631000: #51600 context thread timer_latency    401472 ns
+> ```
+> 
+> I am very interested by any relevant test to do (switch events ?
+> Anything else ?) to improve the series (and the platform :-)).
+> 
+> I am quite sure I missed a *lot* of things, but it seems to do what I
+> need :-). I post it as RFC for now, in particular because I added a new
+> file, and I am not sure if it is the proper way.
+> 
+> Thanks for your remarks and improvements !
+> 
+> [1]: https://lore.kernel.org/linux-m68k/20241018124511.70d29198@gandalf.local.home
+> 
+> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+> ---
+> Jean-Michel Hautbois (2):
+>        m68k: Add tracirqs
+>        arch: m68k: Add STACKTRACE support
+> 
+>   arch/m68k/Kconfig             |  6 ++++
+>   arch/m68k/kernel/Makefile     |  1 +
+>   arch/m68k/kernel/irq.c        |  2 ++
+>   arch/m68k/kernel/stacktrace.c | 70 +++++++++++++++++++++++++++++++++++++++++++
+>   4 files changed, 79 insertions(+)
+> ---
+> base-commit: 42f7652d3eb527d03665b09edac47f85fb600924
+> change-id: 20241021-add-m68k-tracing-support-36c18d2233d8
+> 
+> Best regards,
+
