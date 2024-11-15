@@ -1,37 +1,39 @@
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+Received: from smtp-out3.simply.com (smtp-out3.simply.com [94.231.106.210])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A9441D63C0
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 15 Nov 2024 15:33:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCDE51C07EE
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 15 Nov 2024 15:57:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.231.106.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731684792; cv=none; b=KI685f+a0ll2xGrRir8oDC5EAeC/Djh9azQANVGgJanZSmxNcxex+mJfQx5xCcnB5ca1nfUckpbq97Aj2WCOTO9WqMDyWgcyIn7MTQi8Ij/kBzaRln8egfb87Z1PTWUJqq2HcZASHwsGjNjnUE9O5biZtzy93FL+VgA900k99z4=
+	t=1731686274; cv=none; b=HngSU8h+V82KSwTIIDdR0l//M12k1L97OdnB29NChFi8Hd2PfMmDUeCUGn6R7Y52GAuIQRIfU/zY3pSKDS/3/9tMtLKLhJYzujPXkVWM0PvtprcfpPgjr7Ym6z76m0dYl/Ym/B6iKIXRB0dJAygqny7nc8/jXREiZ9obURjGQXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731684792; c=relaxed/simple;
-	bh=jJdQO+/RBgdX9OymC9mo4MCwdFL0za3L3NE4QMlzS+Y=;
+	s=arc-20240116; t=1731686274; c=relaxed/simple;
+	bh=bC9OQuPLQMk1gIbZuIE/DqOWr39Rr1QVXW9/MFiVnWk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fUo9JjXIMBUCRhzVEgoDSWUsRM4Ps2gBNDba8+9Gf+91eirrszf6C5nPG1UsbjUCVuDQGsHwENC8GejasatuJjbJ3n1MY2BIvVqqgw3qOMm53jxO2j2alH3lPWMCbcWmAYO/t+06Lt9TlEmQtYooT0tEbg+te1eP0lir3tQW8s0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=Z1K8KCuB; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
+	 In-Reply-To:Content-Type; b=rst0CbURkNnoLyLkSrHfwhMvm3vMOHb4TDV8KOoCr5YkEAmnjY3eQOxKZBuFkGSyX/M1kK/anzw3WWFN4T/u82UAopHCWOZ3VFFPz5g+LyREHkYlAhKpSvKFgINOANae5ZUK+yjbLCQkbOkXGysv3HkRm12Z9uLLMZqYAmHD8kc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=pass (1024-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=V8+oP+VH; arc=none smtp.client-ip=94.231.106.210
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="Z1K8KCuB"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C31D6E0005;
-	Fri, 15 Nov 2024 15:33:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1731684788;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OrA8wkbxY2YPLcSn7WT4J5s54iW03KbWLpGqQs4TrZY=;
-	b=Z1K8KCuBUG2ml/9k2jKo1QgVBkl+qYZLeMtMiv1Hnx7OCBXD/eq4rRIuOyyFw7gYYTASl6
-	nacZnD+bg6MSrkUQ7U+OoRtsgLlwZ1dJ3cqom1Lt2OstTa0xd7Gq6UsAwj+UuUhQlXLRjX
-	MGNnF8DUS9tHK8HGu4iNuYOVUBbzg+FVsB8Tf7Mqg+HMkzqie4aBJgUttE6xx0B1FXX0sU
-	zM1gznyFLmhRFtS963SgAMbOB0gxTLDiYb9bp1bl7jcmBudaFEXcPHCCB6IS8oNNpCYvVN
-	As8485jNqCfmx5z3TwTqmQFzH8EPb9ItISiVqsxfZ8152YCX7Ywul0i5JfjbyA==
-Message-ID: <cbb67ee2-8b37-4a4d-b542-f89ddae90e94@yoseli.org>
-Date: Fri, 15 Nov 2024 16:33:06 +0100
+	dkim=pass (1024-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="V8+oP+VH"
+Received: from localhost (localhost [127.0.0.1])
+	by smtp.simply.com (Simply.com) with ESMTP id 4XqhKl38Ghz1DHcY;
+	Fri, 15 Nov 2024 16:49:47 +0100 (CET)
+Received: from [10.10.15.5] (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by smtp.simply.com (Simply.com) with ESMTPSA id 4XqhKl03B9z1DHcP;
+	Fri, 15 Nov 2024 16:49:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
+	s=unoeuro; t=1731685787;
+	bh=+oe+1Y+oedK0yNmPXnrFAWVKA99UOD5aNJqyCiyD4hY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=V8+oP+VHUOJju1WZZPolsoEPf4afKh6NhpG/CFU5I0Td0l3V/j9+Fwj8VKSHlH4U2
+	 YVL9PsiuxzaxyQi9Bxw+EJlwpOJW3w8nkaTwZX/XfYcizsLep5inHo588jiJMBLVLi
+	 k5EHIrjyolp9JM7YtlaV3Q3PIi+wdOlgpYsNiKnc=
+Message-ID: <13fdfef9-4187-43d8-a8b9-ab091d6f952f@gaisler.com>
+Date: Fri, 15 Nov 2024 16:49:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -39,64 +41,153 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 0/2] Add basic tracing support for m68k
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, Geert Uytterhoeven
- <geert@linux-m68k.org>, Greg Ungerer <gerg@linux-m68k.org>
-References: <20241021-add-m68k-tracing-support-v1-0-0883d704525b@yoseli.org>
- <3a8f6faa-62c6-4d32-b544-3fb7c00730d7@yoseli.org>
- <20241115102554.29232d34@gandalf.local.home>
+Subject: Re: [PATCH v4 1/2] rtc: m48t59: Use platform_data struct for year
+ offset value
+To: Finn Thain <fthain@linux-m68k.org>, "David S. Miller"
+ <davem@davemloft.net>, Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Daniel Palmer <daniel@0x0f.com>, Michael Pavone <pavone@retrodev.com>,
+ linux-m68k@lists.linux-m68k.org, linux-rtc@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1731450735.git.fthain@linux-m68k.org>
+ <665c3526184a8d0c4a6373297d8e7d9a12591d8b.1731450735.git.fthain@linux-m68k.org>
 Content-Language: en-US
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-In-Reply-To: <20241115102554.29232d34@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Andreas Larsson <andreas@gaisler.com>
+In-Reply-To: <665c3526184a8d0c4a6373297d8e7d9a12591d8b.1731450735.git.fthain@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-Hi Steve,
-
-On 15/11/2024 16:25, Steven Rostedt wrote:
-> On Fri, 15 Nov 2024 09:26:07 +0100
-> Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org> wrote:
+On 2024-11-12 23:32, Finn Thain wrote:
+> Instead of hard-coded values and ifdefs, store the year offset in the
+> platform_data struct.
 > 
->> Nevertheless it sounds like a really high latency for wake_up().
->>
->> I have a custom driver which basically gets an IRQ, and calls wake_up on
->> a read() call. This wake_up() on a high cpu usage can be more than 1ms !
->> Even with a fifo/99 priority for my kernel thread !
->>
->> I don't know if it rings any bell ?
->> I can obviously do more tests if it can help getting down to the issue :-).
+> Tested-by: Daniel Palmer <daniel@0x0f.com>
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+> ---
+> David, Andreas - with your acknowledgement, I will ask Alexandre to merge
+> this.
+> ---
+> I tested this for regressions using qemu-system-sparc64.
+> Also, Daniel tested the RTC functionality on his MVME147 system.
 > 
-> Try running timerlat.
+> Changed since v2:
+>  - Use an int for the year offset in struct m48t59_plat_data.
+> 
+> Changed since v3:
+>  - Added reviewed-by tag from Geert.
+> ---
+>  arch/sparc/kernel/time_32.c |  1 +
+>  arch/sparc/kernel/time_64.c |  1 +
+>  drivers/rtc/rtc-m48t59.c    | 26 ++++----------------------
+>  include/linux/rtc/m48t59.h  |  3 +++
+>  4 files changed, 9 insertions(+), 22 deletions(-)
+> 
+> diff --git a/arch/sparc/kernel/time_32.c b/arch/sparc/kernel/time_32.c
+> index 08bbdc458596..578fd0d49f30 100644
+> --- a/arch/sparc/kernel/time_32.c
+> +++ b/arch/sparc/kernel/time_32.c
+> @@ -255,6 +255,7 @@ static void mostek_write_byte(struct device *dev, u32 ofs, u8 val)
+>  static struct m48t59_plat_data m48t59_data = {
+>  	.read_byte = mostek_read_byte,
+>  	.write_byte = mostek_write_byte,
+> +	.yy_offset = 68,
+>  };
+>  
+>  /* resource is set at runtime */
+> diff --git a/arch/sparc/kernel/time_64.c b/arch/sparc/kernel/time_64.c
+> index 60f1c8cc5363..b32f27f929d1 100644
+> --- a/arch/sparc/kernel/time_64.c
+> +++ b/arch/sparc/kernel/time_64.c
+> @@ -544,6 +544,7 @@ static void mostek_write_byte(struct device *dev, u32 ofs, u8 val)
+>  static struct m48t59_plat_data m48t59_data = {
+>  	.read_byte	= mostek_read_byte,
+>  	.write_byte	= mostek_write_byte,
+> +	.yy_offset	= 68,
+>  };
+>  
+>  static struct platform_device m48t59_rtc = {
+> diff --git a/drivers/rtc/rtc-m48t59.c b/drivers/rtc/rtc-m48t59.c
+> index 5d30ce8e13ca..4e608bc8bbd3 100644
+> --- a/drivers/rtc/rtc-m48t59.c
+> +++ b/drivers/rtc/rtc-m48t59.c
+> @@ -71,7 +71,7 @@ static int m48t59_rtc_read_time(struct device *dev, struct rtc_time *tm)
+>  	/* Issue the READ command */
+>  	M48T59_SET_BITS(M48T59_CNTL_READ, M48T59_CNTL);
+>  
+> -	tm->tm_year	= bcd2bin(M48T59_READ(M48T59_YEAR));
+> +	tm->tm_year	= bcd2bin(M48T59_READ(M48T59_YEAR)) + pdata->yy_offset;
+>  	/* tm_mon is 0-11 */
+>  	tm->tm_mon	= bcd2bin(M48T59_READ(M48T59_MONTH)) - 1;
+>  	tm->tm_mday	= bcd2bin(M48T59_READ(M48T59_MDAY));
+> @@ -82,10 +82,6 @@ static int m48t59_rtc_read_time(struct device *dev, struct rtc_time *tm)
+>  		dev_dbg(dev, "Century bit is enabled\n");
+>  		tm->tm_year += 100;	/* one century */
+>  	}
+> -#ifdef CONFIG_SPARC
+> -	/* Sun SPARC machines count years since 1968 */
+> -	tm->tm_year += 68;
+> -#endif
+>  
+>  	tm->tm_wday	= bcd2bin(val & 0x07);
+>  	tm->tm_hour	= bcd2bin(M48T59_READ(M48T59_HOUR) & 0x3F);
+> @@ -106,12 +102,7 @@ static int m48t59_rtc_set_time(struct device *dev, struct rtc_time *tm)
+>  	struct m48t59_private *m48t59 = dev_get_drvdata(dev);
+>  	unsigned long flags;
+>  	u8 val = 0;
+> -	int year = tm->tm_year;
+> -
+> -#ifdef CONFIG_SPARC
+> -	/* Sun SPARC machines count years since 1968 */
+> -	year -= 68;
+> -#endif
+> +	int year = tm->tm_year - pdata->yy_offset;
+>  
+>  	dev_dbg(dev, "RTC set time %04d-%02d-%02d %02d/%02d/%02d\n",
+>  		year + 1900, tm->tm_mon, tm->tm_mday,
+> @@ -162,11 +153,7 @@ static int m48t59_rtc_readalarm(struct device *dev, struct rtc_wkalrm *alrm)
+>  	/* Issue the READ command */
+>  	M48T59_SET_BITS(M48T59_CNTL_READ, M48T59_CNTL);
+>  
+> -	tm->tm_year = bcd2bin(M48T59_READ(M48T59_YEAR));
+> -#ifdef CONFIG_SPARC
+> -	/* Sun SPARC machines count years since 1968 */
+> -	tm->tm_year += 68;
+> -#endif
+> +	tm->tm_year = bcd2bin(M48T59_READ(M48T59_YEAR)) + pdata->yy_offset;
+>  	/* tm_mon is 0-11 */
+>  	tm->tm_mon = bcd2bin(M48T59_READ(M48T59_MONTH)) - 1;
+>  
+> @@ -197,12 +184,7 @@ static int m48t59_rtc_setalarm(struct device *dev, struct rtc_wkalrm *alrm)
+>  	struct rtc_time *tm = &alrm->time;
+>  	u8 mday, hour, min, sec;
+>  	unsigned long flags;
+> -	int year = tm->tm_year;
+> -
+> -#ifdef CONFIG_SPARC
+> -	/* Sun SPARC machines count years since 1968 */
+> -	year -= 68;
+> -#endif
+> +	int year = tm->tm_year - pdata->yy_offset;
+>  
+>  	/* If no irq, we don't support ALARM */
+>  	if (m48t59->irq == NO_IRQ)
+> diff --git a/include/linux/rtc/m48t59.h b/include/linux/rtc/m48t59.h
+> index 9465d5405fe2..373ba77071c6 100644
+> --- a/include/linux/rtc/m48t59.h
+> +++ b/include/linux/rtc/m48t59.h
+> @@ -56,6 +56,9 @@ struct m48t59_plat_data {
+>  	void __iomem *ioaddr;
+>  	/* offset to RTC registers, automatically set according to the type */
+>  	unsigned int offset;
+> +
+> +	/* YY digits (in RTC) are offset, i.e. year is 1900 + yy_offset + YY */
+> +	int yy_offset;
+>  };
+>  
+>  #endif /* _LINUX_RTC_M48T59_H_ */
 
-Thanks !
-Here is what I get:
-# echo timerlat > current_tracer
-# echo 1 > events/osnoise/enable
-# echo 25 > osnoise/stop_tracing_total_us
-# tail -10 trace
-             bash-224     [000] d.h..   153.268917: #77645 context 
-irq timer_latency     45056 ns
-             bash-224     [000] dnh..   153.268987: irq_noise: timer:206 
-start 153.268879083 duration 93957 ns
-             bash-224     [000] d....   153.269056: thread_noise: 
-bash:224 start 153.268905324 duration 71045 ns
-       timerlat/0-271     [000] .....   153.269103: #77645 context 
-thread timer_latency    230656 ns
-             bash-224     [000] d.h..   153.269735: irq_noise: timer:206 
-start 153.269613847 duration 103558 ns
-             bash-224     [000] d.h..   153.269911: #77646 context 
-irq timer_latency     40640 ns
-             bash-224     [000] dnh..   153.269982: irq_noise: timer:206 
-start 153.269875367 duration 93190 ns
-             bash-224     [000] d....   153.270053: thread_noise: 
-bash:224 start 153.269900969 duration 72709 ns
-       timerlat/0-271     [000] .....   153.270100: #77646 context 
-thread timer_latency    227008 ns
-       timerlat/0-271     [000] .....   153.270155: timerlat_main: stop 
-tracing hit on cpu 0
+Tested-by: Andreas Larsson <andreas@gaisler.com>
+Acked-by: Andreas Larsson <andreas@gaisler.com>
 
-It looks awful, right ?
-JM
+Thanks,
+Andreas
