@@ -1,125 +1,75 @@
-Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09F621E1C32
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 15 Nov 2024 19:54:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE341144D1A
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 16 Nov 2024 15:40:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731700482; cv=none; b=AkJfiFHOSs8yOWJ7hb5kaEwCWZWBN6AJv+CODlXsGYVy/LRKits/KduxmOYssEUNXoPHeFh8tNIA2okZ2D3Wohe5zETsiS9D9o6T6138ozT5C/aHO1iky2CyQM1QkVhsQP/bVc/+XZ77UPC/cd+J/OpGAox91bdXtBwdhNL6bXs=
+	t=1731771644; cv=none; b=C0zwS/itF97U0jEvzsGtjXFmpQ0HvFYYont3ErPg5hDKPDfw7vjRmEuIuACkLvpfaU1D82V/skezPE37VO71/mEpeLWRAWgLwdiSFi8ndbGDJSCDXjVyFKGxNwbDSCmbBOf0jDXIw+aQM9/NbZPHmcfeG3UPlUFmkox2Y4ticK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731700482; c=relaxed/simple;
-	bh=fupS4Vyrgv6gZJfN1UagwtFJMoUw5Oo/wpHPWIT+8tA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kePfO/aI6dRkwzQTSXw1OmfDcIC74r1AdItWmp8Dzqzz4LAEbUmus7bsOQ3VMdW6gGVtUKAjxBTttqm0PsvUvwnsVGWlA4KawsnC+AUL7GztT5FDMvx3PxrhCB6AQelW8PRKDi67bjSeVjJ63jiPrVCMzhUfVHXiqJXH/KIvAGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=147.75.193.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 0E871A40118;
-	Fri, 15 Nov 2024 19:52:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD266C4CECF;
-	Fri, 15 Nov 2024 19:54:37 +0000 (UTC)
-Date: Fri, 15 Nov 2024 14:55:02 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, Geert Uytterhoeven
- <geert@linux-m68k.org>, Greg Ungerer <gerg@linux-m68k.org>
-Subject: Re: [PATCH RFC 0/2] Add basic tracing support for m68k
-Message-ID: <20241115145502.631c9a2c@gandalf.local.home>
-In-Reply-To: <cbb67ee2-8b37-4a4d-b542-f89ddae90e94@yoseli.org>
-References: <20241021-add-m68k-tracing-support-v1-0-0883d704525b@yoseli.org>
-	<3a8f6faa-62c6-4d32-b544-3fb7c00730d7@yoseli.org>
-	<20241115102554.29232d34@gandalf.local.home>
-	<cbb67ee2-8b37-4a4d-b542-f89ddae90e94@yoseli.org>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1731771644; c=relaxed/simple;
+	bh=Wd+7kLQISUZlzyPvYmSUTVOb8NV4Vyd3OpsFXw6X7a0=;
+	h=From:Message-ID:To:Subject:Date:MIME-Version:Content-Type; b=DwqLJahWqb4epln+vGj/cPawAns2mopVcnCK1rR9fuxhlmG3OPL9TXmFQBdRubV0H6nLo/KUt3TzQcHVZqC2iwcI91Uivrgr49o9HOFJye18NM/x9/RFMiRfuOnjEMO28TLvgMfE9Hcoxv3oEjoPpSJdVUnYlS9lnJfRv5D+MI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XfGj/vaw; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XfGj/vaw"
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-20c803787abso23095525ad.0
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 16 Nov 2024 07:40:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731771642; x=1732376442; darn=lists.linux-m68k.org;
+        h=mime-version:date:subject:to:reply-to:message-id:from:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XHEOkgJ64rwJ+cv0sVIqPUmbc8l+iTifR7HzGzNced0=;
+        b=XfGj/vaw8OVQxHlu/8M9vribgLsdU2a5T72p3MUHPRg9dgmnK4REAZw//4qj0Cg9wH
+         apLVAxW59uH7FmOWNZWroHXn2Z8qkutPDIdLS7+WX+H7cdoq80hd2LQf7mjQMGCxJ/D7
+         0eV0OiwZeCNIP+3k+4yADazH4XgqHrKSB1Ebta42u3sw3CvWns98VT545o2K7I42UDK4
+         SIoz7zwGN6SLlJoeVHZA/x1D8q+UPuHyG+DeSGl/tsfnLV7fr2S2tlbfXAtYvm+99aVy
+         GUgKYVSrQWnDHWor+w8IppvMKM3m8teEpLrQZYa81s/xUF1wq8LsVCLf+TQEVu5xQl7x
+         kA3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731771642; x=1732376442;
+        h=mime-version:date:subject:to:reply-to:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XHEOkgJ64rwJ+cv0sVIqPUmbc8l+iTifR7HzGzNced0=;
+        b=Q2Pv7OExBXwBAM8uUfdfAY99zcpq05xQEgIA2KPWANHPvmm88f2knxlgOBHsSbp239
+         82fd0pmhO2b+9b/04EjE6SF/8w1QJa1rUzJK0/Y33/C3CeG+exyATJTuVCADesOJAtuE
+         L7OhsIBqc0uYVa7Oa7j3+poLXUaiv0gLng1r0Z7fpaT1xerUn8t/qMvwwGiJn0ZW1Rhs
+         RbWFlplMlpt7hwe17iXoPNPnelhUxsltAKE+3v6leEYMqw2x3hRqVUwzQPhZnTgVLq9y
+         NaJGazjsesqtYDcRgJtKyOoSWHT/E7Tp6x4L+9wZfp6rgQb3M7X2UtsAPvYWTovAuJFf
+         aoCA==
+X-Gm-Message-State: AOJu0Yw8wiciGU4GMJyr/hmulS+XPeY3eOBjyp3q8e5HZXbd74K8qzB6
+	Ak9q8T1SSCF7GAiN/FG9XW+Io8Xjq3PTG5vfQOcxkMpiFKjs3/KWAi6f5A==
+X-Google-Smtp-Source: AGHT+IHoT3XP//ZzEh5t3YMzZ1WxBP9TlZTTARcXMQvujORhoftwp6gJELH+iKJKq2A+sWKZE+VIfg==
+X-Received: by 2002:a17:902:ec8a:b0:211:6e93:9e5f with SMTP id d9443c01a7336-211c0faae72mr179043235ad.22.1731771641575;
+        Sat, 16 Nov 2024 07:40:41 -0800 (PST)
+Received: from [103.67.163.162] ([103.67.163.162])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-211ff135582sm6182075ad.48.2024.11.16.07.40.40
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 16 Nov 2024 07:40:41 -0800 (PST)
+From: "Van. HR" <tladitshepiso06@gmail.com>
+X-Google-Original-From: "Van. HR" <infodesk@information.com>
+Message-ID: <6c0274ba672044502a3e237cee6ab9940258d48cae2ec2803f1dfaf54a32ca76@mx.google.com>
+Reply-To: dirofdptvancollin@gmail.com
+To: linux-m68k@lists.linux-m68k.org
+Subject: Nov:16:24
+Date: Sat, 16 Nov 2024 10:40:38 -0500
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 
-On Fri, 15 Nov 2024 16:33:06 +0100
-Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org> wrote:
+Hello,
+I am a private investment consultant representing the interest of a multinational  conglomerate that wishes to place funds into a trust management portfolio.
 
-> Hi Steve,
-> 
-> On 15/11/2024 16:25, Steven Rostedt wrote:
-> > On Fri, 15 Nov 2024 09:26:07 +0100
-> > Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org> wrote:
-> >   
-> >> Nevertheless it sounds like a really high latency for wake_up().
-> >>
-> >> I have a custom driver which basically gets an IRQ, and calls wake_up on
-> >> a read() call. This wake_up() on a high cpu usage can be more than 1ms !
-> >> Even with a fifo/99 priority for my kernel thread !
-> >>
-> >> I don't know if it rings any bell ?
-> >> I can obviously do more tests if it can help getting down to the issue :-).  
-> > 
-> > Try running timerlat.  
-> 
-> Thanks !
-> Here is what I get:
-> # echo timerlat > current_tracer
-> # echo 1 > events/osnoise/enable
-> # echo 25 > osnoise/stop_tracing_total_us
-> # tail -10 trace
->              bash-224     [000] d.h..   153.268917: #77645 context  irq timer_latency     45056 ns
->              bash-224     [000] dnh..   153.268987: irq_noise: timer:206  start 153.268879083 duration 93957 ns
->              bash-224     [000] d....   153.269056: thread_noise:  bash:224 start 153.268905324 duration 71045 ns
->        timerlat/0-271     [000] .....   153.269103: #77645 context thread timer_latency    230656 ns
->              bash-224     [000] d.h..   153.269735: irq_noise: timer:206 start 153.269613847 duration 103558 ns
->              bash-224     [000] d.h..   153.269911: #77646 context irq timer_latency     40640 ns
->              bash-224     [000] dnh..   153.269982: irq_noise: timer:206 start 153.269875367 duration 93190 ns
->              bash-224     [000] d....   153.270053: thread_noise: bash:224 start 153.269900969 duration 72709 ns
->        timerlat/0-271     [000] .....   153.270100: #77646 context thread timer_latency    227008 ns
->        timerlat/0-271     [000] .....   153.270155: timerlat_main: stop tracing hit on cpu 0
-> 
-> It looks awful, right ?
+Please indicate your interest for additional information.
 
-awful is relative ;-) If that was on x86, I would say it was bad.
+Regards,
 
-Also check out rtla (in tools/trace/rtla).
+Van Collin.
 
- # rtla timerlat top
-
-                                     Timer Latency                                                                                       
-  0 00:00:23   |          IRQ Timer Latency (us)        |         Thread Timer Latency (us)      |    Ret user Timer Latency (us)
-CPU COUNT      |      cur       min       avg       max |      cur       min       avg       max |      cur       min       avg       max
-  0 #21515     |      580       573       599       827 |      598       585       641       860 |      606       589       659       889
-  1 #21513     |      461       452       477       506 |      480       315       521       561 |      488       384       539       575
-  2 #10827     |      962       961       988      1016 |      983       805      1026      1075 |      989       940      1045      1081
-  3 #21512     |       68        61        86       313 |       87        73       128       190 |       95        79       146       338
-  4 #21510     |      254       246       271       464 |      273        70       315       473 |      281       183       333       477
-  5 #21509     |      397       388       414       441 |      416       215       457       649 |      424       338       475       655
-  6 #21508     |      496       496       522       566 |      509       322       563       605 |      515       424       579       611
-  7 #21507     |      658       648       675       702 |      676       471       717       757 |      684       627       735       763
----------------|----------------------------------------|----------------------------------------|---------------------------------------
-ALL #161401 e0 |                 61       472      1016 |                 70       514      1075 |                 79       532      1081
-
-
-Or on a virtual machine running on my x86 server:
-
- # rtla timerlat top
-
-                                     Timer Latency                                                                                       
-  0 00:00:19   |          IRQ Timer Latency (us)        |         Thread Timer Latency (us)      |    Ret user Timer Latency (us)
-CPU COUNT      |      cur       min       avg       max |      cur       min       avg       max |      cur       min       avg       max
-  0 #4600      |        4         3      3104      3223 |       41        41      3131      3262 |       46        46      3143      3304
-  1 #4589      |     3678         3      3675      3742 |     3705        15      3703      3814 |     3718        22      3716      3828
-  2 #4571      |     3118        56      3135      3233 |     3145        79      3162      3260 |     3157        91      3175      3275
-  3 #4579      |     3509         3      3514      3625 |     3535         7      3540      3665 |     3547         9      3553      3702
-  4 #4676      |        2         1      2912      4016 |       10         5      2940      4044 |       15         7      2952      4060
-  5 #4572      |     3446         9      3458      3517 |     3475        32      3486      3562 |     3488        41      3499      3576
-  6 #4692      |     3948         0      3767      4002 |     3984         5      3794      4079 |     4000         7      3806      4108
-  7 #4580      |     3141         2      3144      3269 |     3168        20      3171      3296 |     3180        30      3184      3332
----------------|----------------------------------------|----------------------------------------|---------------------------------------
-ALL #36859  e0 |                  0      3339      4016 |                  5      3366      4079 |                  7      3379      4108
-
-That has some really poor numbers.
-
--- Steve
