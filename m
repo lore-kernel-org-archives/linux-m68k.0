@@ -1,40 +1,40 @@
-Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
+Received: from fhigh-b3-smtp.messagingengine.com (fhigh-b3-smtp.messagingengine.com [202.12.124.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D68AA13B2B4
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Nov 2024 05:39:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC30313CA95
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Nov 2024 05:40:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731908397; cv=none; b=m9VeV9u5N5FOA0fGNdPPa00q9PGpqgckOxpuyBxUNls1ElkN3+9cQSP98bPbyXRk5swGeOFf9DjOklZeb0uZ3s9fx839zYaEQLFckL5JijeZhbb+Et22IUaHbJACVQgZDQ7UUJNirI6IwJLuZ1HkltQ8MAB/13NZoKOHYD+G3Wk=
+	t=1731908417; cv=none; b=WNYIls1C7JsOO5t2VgSKHXZIxVLfVPmegRj0JTCiCdFkbVQZeGhnipkwIDf3+TZVMZnP6z9Xp9qY3mrUcVEitzAc0CqiFDjItyecF5Jko/sdtMJAPh8Kc85z//7B5rB+XjcXS5HRXlEibRNVBo1ngh7HHb1yodQe+8mPxXcyxEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731908397; c=relaxed/simple;
+	s=arc-20240116; t=1731908417; c=relaxed/simple;
 	bh=xrG9LIF/fHfeOPNdl6wGssMUkqv/ZQNpmH3fhzp0TT0=;
-	h=Date:Message-ID:From:To:Cc:Subject; b=H3pCrWMXtwLTz5by6+r34vBj/A+D5IM31y3rA08M4cbdF0QUdsKAwCWYfPREzuLQlMzo+zMTmoZlUb+HYYdEB4m5cE1QahxbcEq26FyFvORC3S9TrukpDijGvgYoxiu1Kl9WFF83AHF6jGGixv9GQeGkkCqESXZJxwVcI9I8EcU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=X06QFUt1; arc=none smtp.client-ip=202.12.124.144
+	h=Date:Message-ID:From:To:Cc:Subject; b=H/FLAtZC2P5jeqRWunf68+SRYDmvaxnlkpR9cbLo1qI2dVci1HQGv1C8pvhAwcOdkfxSe2qa8D+ZMd2h6vTn2od3Ty5Wx6E1gkSxsWmpzVkMEFKlqKX4ce/DC4RMYYkKWszAMX5Pi6Xu0AiZHfeGN7kaWInG8LC3IBclCkZnsLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=O1BUZdTa; arc=none smtp.client-ip=202.12.124.154
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="X06QFUt1"
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="O1BUZdTa"
 Received: from phl-compute-12.internal (phl-compute-12.phl.internal [10.202.2.52])
-	by mailfout.stl.internal (Postfix) with ESMTP id 0B7FC11400F5;
-	Mon, 18 Nov 2024 00:39:54 -0500 (EST)
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 180712540108;
+	Mon, 18 Nov 2024 00:40:15 -0500 (EST)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-12.internal (MEProxy); Mon, 18 Nov 2024 00:39:54 -0500
+  by phl-compute-12.internal (MEProxy); Mon, 18 Nov 2024 00:40:15 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
 	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
 	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1731908393; x=1731994793; bh=8lLsJIqL/6PoxS2ijobyqT6bj4Vf
-	imlESCZI8eca0q0=; b=X06QFUt14LpL+qOR14S0+2iHhkGjQd3bDcMQVZnXJN4E
-	Tfa8TdPybkUPlm5gaoRrnyVLH+9jLtIf1bIE0V9DZV8f60zVh1UI7B8XAc/mF3je
-	KGwi2ZDu5hB5yCQaaUyn6dnNyo52o5jFANdSYu/yTTud4N4lcW2lSgL9Q8VwcTHB
-	c+WD8Wj0d8N0gglnyzIkL+Ld0Kc1NnsyKAMThnzy9WIaeyNAIjJAFvKxbMeqvArj
-	g65AIMTU0YnKZgXEfAyadT12lpetaC2RBGnaWos6LYk1Xl00iSYa5WRHbsHEgf4f
-	BQ36M9UkC3KLX2zCzUUj4z8xbIGuro/ndChWs7T2Hg==
-X-ME-Sender: <xms:KdM6Z-uf6Q1XSkQCb49g0p1pfu7aa_Or-02drSgsH6ZBHse5txutmA>
-    <xme:KdM6ZzdVwFCUcgAFjWUMmLBNHv3XyccAknNNauaf-b_tGskxS9Q44xCv--zyw4rNH
-    qz1xR2Gdo6jOtzKvbQ>
-X-ME-Received: <xmr:KdM6Z5wKiGYc2gbsGO4L8wQGXbuhMu4nfGXWpXxofyi9JgrfhHTa1eddRuiHPAeKRfvbcLrCrZuE0Ax_5BogJri4mu0mTX_vNrM>
+	fm3; t=1731908414; x=1731994814; bh=8lLsJIqL/6PoxS2ijobyqT6bj4Vf
+	imlESCZI8eca0q0=; b=O1BUZdTaFbQQy0+W7WVrSbVLEGCblmxWJmjSXLAFK89C
+	qxdB/PIVOVzNeL5cwbCcvd7aRUCZ9e8znSscDm8GhjieHZlhOmHn9l5kNPlslscS
+	Sw5Z6BAeCD+r010w9P/F1jyXdLPYc0wEkoVzACMZkk6AMIyg/eRsf/7+YYw44sz5
+	Kl1G0fj79G27MOI33rP1a0A3dV3T4Eby/bJjxvE2yG28X7Suro0a0dQnme6IE/ps
+	nfmb+/LcsI4QIVWvQ1+y9uYlK/65dfOGmCjqBzy6KCb7CXpNmv1LsDQuy7bUbQWt
+	X1XaXTJkkM5F3UKrJcrvHeohN/C4ACmT2HUjAghqSg==
+X-ME-Sender: <xms:PtM6Z6PPQRb1nlNPs8ZZwbRQ6PT3UEYahNZGMs4PlJ3c_c2c_KRyqw>
+    <xme:PtM6Z4_2y6YDWvaNi2LJr9Tl0WhJ89U4bRA24-Azc6LHm2b3mhUxTyvOhYz57K46m
+    AYIz34UawSB_vKZZ9Q>
+X-ME-Received: <xmr:PtM6ZxTNkImUHz2rbuCq7IB3_HZgZAZkpVlMXp2NOFeAMMutDKm5T1iB80qviAN4L9MWdtzcTMqgkBZmXvJSUMWNTbUzz7EVGmE>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrvdelgdekiecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdpuffr
     tefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnth
@@ -42,27 +42,27 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrvdelgdekiecutefuodetggdote
     hfhinhhnucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqne
     cuggftrfgrthhtvghrnheptdfhleduudejjefgvdetfeeijedtfeeukeduteeuffeuveej
     ieevhefgleeuffffnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpshhkvghlvghtoh
-    hnrdhssgenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
+    hnrdhssgenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhm
     pehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopeehpd
     hmohguvgepshhmthhpohhuthdprhgtphhtthhopehsthgrsghlvgeskhgvrhhnvghlrdho
     rhhgpdhrtghpthhtohepghgvvghrtheslhhinhhugidqmheikehkrdhorhhgpdhrtghpth
     htohepvggsihgvuggvrhhmseigmhhishhsihhonhdrtghomhdprhgtphhtthhopehlihhn
     uhigqdhmieekkheslhhishhtshdrlhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtoh
     eplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:KdM6Z5MYKDY4bj-IP_yP12zpH91AiBIiefna5wicRRw4jGxgiZ-UCg>
-    <xmx:KdM6Z-9M7nIeExbSWlTVVpoSGLTLvBUowLGw7Wu1bV6KTpQx6Iyk1Q>
-    <xmx:KdM6ZxUY0Ldf6bJr4zFBpPzNG2TTLajjgBAeknm5nc1_8pSEl4IbdA>
-    <xmx:KdM6Z3ewNhVAcZBRL2wGlbWTsqFV7ZgIdpNZ8vr2a9hZ6SB9KzjtbQ>
-    <xmx:KdM6ZyY3y3LLO3GiFam18fXZTdno1aXz50dWymtsG6L0CsSPLj_eGNno>
+X-ME-Proxy: <xmx:PtM6Z6u1OlYOtWDCL0WiZz2k-LvZvItcD3HOZ11JEcVKHeYV5PERCg>
+    <xmx:PtM6ZyfAHnbBi9znwTz9_LujCjRlMAPRbLj5tLmup6rwhe7HTx5u1Q>
+    <xmx:PtM6Z-12lWJjwXmiV_gs5t_jdtwnpr5r6VG7OWGi8j-_Ps4T05JDsA>
+    <xmx:PtM6Z28ilt1Uvrl5DIwXaDF7Y6NuOTnYiFDL9wKYSGBWv1sA7xBVUQ>
+    <xmx:PtM6Zx7wuQ-lZEVCzdQDCwjkZeUR3a7uv4E0XL_u9R5CFrbqLSw-JyHz>
 Feedback-ID: i58a146ae:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 18 Nov 2024 00:39:51 -0500 (EST)
-Date: Mon, 18 Nov 2024 16:40:20 +1100
-Message-ID: <a154b51c4bff7aa15bf26e4404605e7a@linux-m68k.org>
+ 18 Nov 2024 00:40:12 -0500 (EST)
+Date: Mon, 18 Nov 2024 16:40:41 +1100
+Message-ID: <256fabf7d7f3712896bafc0deac0303e@linux-m68k.org>
 From: Finn Thain <fthain@linux-m68k.org>
 To: stable@kernel.org
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Eric W. Biederman <ebiederm@xmission.com>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5.4.y] signal/m68k: Use force_sigsegv(SIGSEGV) in fpsp040_die
+Subject: [PATCH 5.10.y] signal/m68k: Use force_sigsegv(SIGSEGV) in fpsp040_die
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
