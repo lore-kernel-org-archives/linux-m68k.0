@@ -1,75 +1,103 @@
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE341144D1A
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 16 Nov 2024 15:40:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C8C713C677
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Nov 2024 05:22:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731771644; cv=none; b=C0zwS/itF97U0jEvzsGtjXFmpQ0HvFYYont3ErPg5hDKPDfw7vjRmEuIuACkLvpfaU1D82V/skezPE37VO71/mEpeLWRAWgLwdiSFi8ndbGDJSCDXjVyFKGxNwbDSCmbBOf0jDXIw+aQM9/NbZPHmcfeG3UPlUFmkox2Y4ticK4=
+	t=1731907349; cv=none; b=pH3rIGeW/WO/FEUewC9PRIz3oBc4+RmSfzZJFzD5ni/eod1dcoIC5dFNrLp4DR/swpz+JG1UKf4k2yWCtNXj2LuhPhlYRC7R9hlD3P5L0Ncrmeqt2VIbCpchaBELCgdhy7h83tn52CRH9SowTlNdo5yyxgYZKgqmSw2BR8Fb7sQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731771644; c=relaxed/simple;
-	bh=Wd+7kLQISUZlzyPvYmSUTVOb8NV4Vyd3OpsFXw6X7a0=;
-	h=From:Message-ID:To:Subject:Date:MIME-Version:Content-Type; b=DwqLJahWqb4epln+vGj/cPawAns2mopVcnCK1rR9fuxhlmG3OPL9TXmFQBdRubV0H6nLo/KUt3TzQcHVZqC2iwcI91Uivrgr49o9HOFJye18NM/x9/RFMiRfuOnjEMO28TLvgMfE9Hcoxv3oEjoPpSJdVUnYlS9lnJfRv5D+MI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XfGj/vaw; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1731907349; c=relaxed/simple;
+	bh=KelfrUEDKn1STr/uyl6Wn/gXFShtj7LS2NXx40teaXU=;
+	h=Date:Message-ID:From:To:Cc:Subject; b=ApM+6zxn3wu0oYax2m7TVgOhcOtCweJkDrlPTfyzADKdy3nFwHOzn5Jt4dzX0sUQ9/5lRdyQLoHqShYbWy0kGotAqOGTJjgVGs1UODngYV8BMDeGTeByErvxhIh9bec6u4AHaS33LaOKGXMuMOnDiJ97Wef6MJjsg/t4R6kGu4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=A+o/nVSK; arc=none smtp.client-ip=202.12.124.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XfGj/vaw"
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-20c803787abso23095525ad.0
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 16 Nov 2024 07:40:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731771642; x=1732376442; darn=lists.linux-m68k.org;
-        h=mime-version:date:subject:to:reply-to:message-id:from:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XHEOkgJ64rwJ+cv0sVIqPUmbc8l+iTifR7HzGzNced0=;
-        b=XfGj/vaw8OVQxHlu/8M9vribgLsdU2a5T72p3MUHPRg9dgmnK4REAZw//4qj0Cg9wH
-         apLVAxW59uH7FmOWNZWroHXn2Z8qkutPDIdLS7+WX+H7cdoq80hd2LQf7mjQMGCxJ/D7
-         0eV0OiwZeCNIP+3k+4yADazH4XgqHrKSB1Ebta42u3sw3CvWns98VT545o2K7I42UDK4
-         SIoz7zwGN6SLlJoeVHZA/x1D8q+UPuHyG+DeSGl/tsfnLV7fr2S2tlbfXAtYvm+99aVy
-         GUgKYVSrQWnDHWor+w8IppvMKM3m8teEpLrQZYa81s/xUF1wq8LsVCLf+TQEVu5xQl7x
-         kA3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731771642; x=1732376442;
-        h=mime-version:date:subject:to:reply-to:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XHEOkgJ64rwJ+cv0sVIqPUmbc8l+iTifR7HzGzNced0=;
-        b=Q2Pv7OExBXwBAM8uUfdfAY99zcpq05xQEgIA2KPWANHPvmm88f2knxlgOBHsSbp239
-         82fd0pmhO2b+9b/04EjE6SF/8w1QJa1rUzJK0/Y33/C3CeG+exyATJTuVCADesOJAtuE
-         L7OhsIBqc0uYVa7Oa7j3+poLXUaiv0gLng1r0Z7fpaT1xerUn8t/qMvwwGiJn0ZW1Rhs
-         RbWFlplMlpt7hwe17iXoPNPnelhUxsltAKE+3v6leEYMqw2x3hRqVUwzQPhZnTgVLq9y
-         NaJGazjsesqtYDcRgJtKyOoSWHT/E7Tp6x4L+9wZfp6rgQb3M7X2UtsAPvYWTovAuJFf
-         aoCA==
-X-Gm-Message-State: AOJu0Yw8wiciGU4GMJyr/hmulS+XPeY3eOBjyp3q8e5HZXbd74K8qzB6
-	Ak9q8T1SSCF7GAiN/FG9XW+Io8Xjq3PTG5vfQOcxkMpiFKjs3/KWAi6f5A==
-X-Google-Smtp-Source: AGHT+IHoT3XP//ZzEh5t3YMzZ1WxBP9TlZTTARcXMQvujORhoftwp6gJELH+iKJKq2A+sWKZE+VIfg==
-X-Received: by 2002:a17:902:ec8a:b0:211:6e93:9e5f with SMTP id d9443c01a7336-211c0faae72mr179043235ad.22.1731771641575;
-        Sat, 16 Nov 2024 07:40:41 -0800 (PST)
-Received: from [103.67.163.162] ([103.67.163.162])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-211ff135582sm6182075ad.48.2024.11.16.07.40.40
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 16 Nov 2024 07:40:41 -0800 (PST)
-From: "Van. HR" <tladitshepiso06@gmail.com>
-X-Google-Original-From: "Van. HR" <infodesk@information.com>
-Message-ID: <6c0274ba672044502a3e237cee6ab9940258d48cae2ec2803f1dfaf54a32ca76@mx.google.com>
-Reply-To: dirofdptvancollin@gmail.com
-To: linux-m68k@lists.linux-m68k.org
-Subject: Nov:16:24
-Date: Sat, 16 Nov 2024 10:40:38 -0500
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="A+o/nVSK"
+Received: from phl-compute-07.internal (phl-compute-07.phl.internal [10.202.2.47])
+	by mailfout.stl.internal (Postfix) with ESMTP id 41E36114011A;
+	Mon, 18 Nov 2024 00:22:24 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-07.internal (MEProxy); Mon, 18 Nov 2024 00:22:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1731907344; x=1731993744; bh=2pmDU7e3MlYtu8haZn4roILPX83I
+	3ITd6BRmfCF1ljE=; b=A+o/nVSKft+oQl4p8ZmqM2nqTN6LmPGK1W38jyBqf4Lb
+	nrZwrPmZijynn6bxGXUx4ydfauROzXY3Dyc/yC94qc/mdwaM/n4bvfClc3mFShlW
+	YA46HfnKqk/8h8mU+fzzcbdZ1EOFrIx/+jUx0RqErRVGujLrwiDrRn1NiUJhqFOm
+	/NjD4q8FE/CxH5udU2nYOavPbtukSwrF6TSdIr5JDm0DVMr5d0j+4AMRaUXofAEY
+	0e66ckHdJNfKwFNkgPYf9Of0Q93mvSVnPwCyW9ECcRa46Uf9w+1jMZwMF3NoFKlm
+	2RbXEsp3bugGwLuGjdg3Ja0ZFACFlDyp9RibDCKgDQ==
+X-ME-Sender: <xms:D886Z1LXpOVMGCcmXJXVI2uUI-Z61LWuhId_IsOnYMPErhkDb7YS0g>
+    <xme:D886ZxJ2McTo7OHsXhExheATiNmO0IzMn-BhyqwXXa7-_nc7w-IdVUcYk7gDdSQWH
+    usPaUjzUOLhy64m-tE>
+X-ME-Received: <xmr:D886Z9vJG2W5El1aAWU1QBG2HgKHdOZ5TfI2wwCeb5cd5tatwUeZGccc1x_TBcH2qvkpY8gsu-3oXoh60FG5hb7eN6qJ_GwpjQk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrvdelgdekfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdpuffr
+    tefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnth
+    hsucdlqddutddtmdenucfjughrpeffkffhvfevufestddtjhdttddttdenucfhrhhomhep
+    hfhinhhnucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqne
+    cuggftrfgrthhtvghrnhepiedugfduhffgheekjeekffduueejudevffehiedtledttdek
+    veekuefhvdfftedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhu
+    gidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopeehpdhmohguvgepshhmthhpohhuth
+    dprhgtphhtthhopehsthgrsghlvgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepghgv
+    vghrtheslhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtoheplhhirghmrdhhohiflh
+    gvthhtsehorhgrtghlvgdrtghomhdprhgtphhtthhopehlihhnuhigqdhmieekkheslhhi
+    shhtshdrlhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrh
+    hnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:D886Z2Yg90hQI7A72eYRWUlkShFX116TTvbvDdOM452QJKZlbRzxaQ>
+    <xmx:D886Z8YzoKa5Q81hXu7kc_mSRe-ouQcuIg023A0kVt_Z9bveshIJQA>
+    <xmx:D886Z6CLKNDdhkh7zy9lfqzzJCBWxAc4BGvpxDFExGqEa_jAipfDLg>
+    <xmx:D886Z6bE0vhPKgaKjUiitkIkIw487FdWm1mQlgycmjImaTyYj3c7eA>
+    <xmx:EM86ZzUCPtYL1OaWOA1mXZegawyEglrA_twogqISp6i-Be3E1QQ4FeWS>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 18 Nov 2024 00:22:20 -0500 (EST)
+Date: Mon, 18 Nov 2024 16:22:48 +1100
+Message-ID: <e8cb101ae6428a7af540d571bbb76804@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+To: stable@kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Liam Howlett <liam.howlett@oracle.com>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 4.19.y] m68k: Add missing mmap_read_lock() to sys_cacheflush()
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
 
-Hello,
-I am a private investment consultant representing the interest of a multinational  conglomerate that wishes to place funds into a trust management portfolio.
+From: Liam Howlett <liam.howlett@oracle.com>
 
-Please indicate your interest for additional information.
+[ Upstream commit f829b4b212a315b912cb23fd10aaf30534bb5ce9 ]
 
-Regards,
+When the superuser flushes the entire cache, the mmap_read_lock() is not
+taken, but mmap_read_unlock() is called.  Add the missing
+mmap_read_lock() call.
 
-Van Collin.
+Fixes: cd2567b6850b1648 ("m68k: call find_vma with the mmap_sem held in sys_cacheflush()")
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Link: https://lore.kernel.org/r/20210407200032.764445-1-Liam.Howlett@Oracle.com
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+[ mmap_read_lock() open-coded using down_read() as was done prior to v5.8 ]
+Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+---
+ arch/m68k/kernel/sys_m68k.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/arch/m68k/kernel/sys_m68k.c b/arch/m68k/kernel/sys_m68k.c
+index 6363ec83a290..38dcc1a2097d 100644
+--- a/arch/m68k/kernel/sys_m68k.c
++++ b/arch/m68k/kernel/sys_m68k.c
+@@ -388,6 +388,8 @@ sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
+ 		ret = -EPERM;
+ 		if (!capable(CAP_SYS_ADMIN))
+ 			goto out;
++
++		down_read(&current->mm->mmap_sem);
+ 	} else {
+ 		struct vm_area_struct *vma;
+ 
