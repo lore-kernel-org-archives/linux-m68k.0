@@ -1,188 +1,170 @@
-Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E5291E2827
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Nov 2024 18:40:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 681191E6DE1
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Nov 2024 20:20:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731955233; cv=none; b=aTfgXGyutqrfiRz7Kqa6wUPRkbxisrcV0ExxJ/CzyiKoRIvs1b0w5B/QvY0QlC5p13AVWkzZ71JGWZ+n3mxEnVgIir/dWITDJW5ERdSwoJAOflSSJZfgChJYFCt1DRSTtD4DtrmWIF6iR8SIbVsw2iXYqGQy2tl3PogDt03gO/g=
+	t=1731961230; cv=none; b=OrnY51wOxjIblIfjbrsT1gvwPfStK2XZE596MSqnNVJA5gCyLNYNdn9QnyDn+RvwqAUKBRF1dTb/RxHirmSASdcsReoI7SYgN+UWVN9k7TfbUV5reDLQxzzcZX5K7Gv8tXkL4+O0XHijQ1I6VtthCynN2fb5yVGxf0PXdXBMxLw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731955233; c=relaxed/simple;
-	bh=PgWfk6zhBX25rXxPAwmwUJeghk+GajLkQHlk+OfGUQc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kuzKbBNkAftyQo4jWLZJtcbabaRgyhR3dMK79KlLH4HtyK4m6p2zzrF//HR6G9vsDUpEg3N5iHyHenaxIjfeXyUeEMeDP03w8AWIUP/dRQVM1s4Hq6YW4vKK4xtbaa2OkCVyQlkisWnN+RNkq3abtf52a81quMFcBbkQEUaRKJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GeOY29sz; arc=none smtp.client-ip=147.75.193.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+	s=arc-20240116; t=1731961230; c=relaxed/simple;
+	bh=XAfcwv6tJTP3ilOXYBQsGFZRgAcjv5jPb3cjsgh8QZY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jdnnkRYuZdGN5+8sw3j967Td0X2U2s035TNdg7pvd+AF9EYEApfl4u1zctCWRwsDRGJZAGt4vpjeY9FuODPjZNi9iPol+I9bT0XflEP4cKCCdcAgC8mBWRJ+1qrWUPpmwR5ecdxeNZv4o3zzq0dGmNgUggZY8d+T8YobTBTBtBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=139.178.84.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GeOY29sz"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 11F02A419F2;
-	Mon, 18 Nov 2024 18:38:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A5AEC4CECC;
-	Mon, 18 Nov 2024 18:40:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731955229;
-	bh=PgWfk6zhBX25rXxPAwmwUJeghk+GajLkQHlk+OfGUQc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GeOY29szPjdxa0xm+vV9DTg2e5TPlxk7huuBMuJbtT+hTn5kPCdRWZ2oKgkC8UpSt
-	 VKEpF1/SK1ceIDW9rYbK4e2lrKnmmaewrajrem/5hOE+eL2aJiJwe2Mq1uUh3lhZ50
-	 bF8KJonZOhyM89MpbuLHVivYouTUSuZbDmGNuIIUU6Sz4PBRF7AffgUgRIMQ22WWof
-	 8/hSFdkboAANibLeqfLmV82IhRXIdNitXrU+lzbag6jN3GbbRMHw4voatyzJmOaEVn
-	 LYCc2cjDCBvkB/fCKjeR1Y3G/eBzyCxZ8foJEVKOfJ+JG689X8AaWtSJSKfiAkucWY
-	 LfgB8UgFNVmrQ==
-Date: Mon, 18 Nov 2024 10:40:26 -0800
-From: Mike Rapoport <rppt@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-	Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v7 0/8] x86/module: use large ROX pages for text
- allocations
-Message-ID: <ZzuKGoj99rIuMaBE@kernel.org>
-References: <20241023162711.2579610-1-rppt@kernel.org>
- <20241118132501.4eddb46c@gandalf.local.home>
+	by dfw.source.kernel.org (Postfix) with ESMTP id 6E0175C476D;
+	Mon, 18 Nov 2024 20:19:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5608CC4CECC;
+	Mon, 18 Nov 2024 20:20:26 +0000 (UTC)
+Date: Mon, 18 Nov 2024 15:20:57 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Greg Ungerer <gerg@linux-m68k.org>, Tomas Glozar
+ <tglozar@redhat.com>
+Subject: Re: [PATCH RFC 0/2] Add basic tracing support for m68k
+Message-ID: <20241118152057.13042840@gandalf.local.home>
+In-Reply-To: <2c43288a-517d-4220-ad31-f84dda8c1805@yoseli.org>
+References: <20241021-add-m68k-tracing-support-v1-0-0883d704525b@yoseli.org>
+	<3a8f6faa-62c6-4d32-b544-3fb7c00730d7@yoseli.org>
+	<20241115102554.29232d34@gandalf.local.home>
+	<cbb67ee2-8b37-4a4d-b542-f89ddae90e94@yoseli.org>
+	<20241115145502.631c9a2c@gandalf.local.home>
+	<2c43288a-517d-4220-ad31-f84dda8c1805@yoseli.org>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241118132501.4eddb46c@gandalf.local.home>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Nov 18, 2024 at 01:25:01PM -0500, Steven Rostedt wrote:
-> On Wed, 23 Oct 2024 19:27:03 +0300
-> Mike Rapoport <rppt@kernel.org> wrote:
+
+[ Added Tomas as he knows this code better than I do ]
+
+On Mon, 18 Nov 2024 11:11:48 +0100
+Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org> wrote:
+
+> Hi Steve,
 > 
-> > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+> On 15/11/2024 20:55, Steven Rostedt wrote:
+> > On Fri, 15 Nov 2024 16:33:06 +0100
+> > Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org> wrote:
+> >   
+> >> Hi Steve,
+> >>
+> >> On 15/11/2024 16:25, Steven Rostedt wrote:  
+> >>> On Fri, 15 Nov 2024 09:26:07 +0100
+> >>> Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org> wrote:
+> >>>      
+> >>>> Nevertheless it sounds like a really high latency for wake_up().
+> >>>>
+> >>>> I have a custom driver which basically gets an IRQ, and calls wake_up on
+> >>>> a read() call. This wake_up() on a high cpu usage can be more than 1ms !
+> >>>> Even with a fifo/99 priority for my kernel thread !
+> >>>>
+> >>>> I don't know if it rings any bell ?
+> >>>> I can obviously do more tests if it can help getting down to the issue :-).  
+> >>>
+> >>> Try running timerlat.  
+> >>
+> >> Thanks !
+> >> Here is what I get:
+> >> # echo timerlat > current_tracer
+> >> # echo 1 > events/osnoise/enable
+> >> # echo 25 > osnoise/stop_tracing_total_us
+> >> # tail -10 trace
+> >>               bash-224     [000] d.h..   153.268917: #77645 context  irq timer_latency     45056 ns
+> >>               bash-224     [000] dnh..   153.268987: irq_noise: timer:206  start 153.268879083 duration 93957 ns
+> >>               bash-224     [000] d....   153.269056: thread_noise:  bash:224 start 153.268905324 duration 71045 ns
+> >>         timerlat/0-271     [000] .....   153.269103: #77645 context thread timer_latency    230656 ns
+> >>               bash-224     [000] d.h..   153.269735: irq_noise: timer:206 start 153.269613847 duration 103558 ns
+> >>               bash-224     [000] d.h..   153.269911: #77646 context irq timer_latency     40640 ns
+> >>               bash-224     [000] dnh..   153.269982: irq_noise: timer:206 start 153.269875367 duration 93190 ns
+> >>               bash-224     [000] d....   153.270053: thread_noise: bash:224 start 153.269900969 duration 72709 ns
+> >>         timerlat/0-271     [000] .....   153.270100: #77646 context thread timer_latency    227008 ns
+> >>         timerlat/0-271     [000] .....   153.270155: timerlat_main: stop tracing hit on cpu 0
+> >>
+> >> It looks awful, right ?  
 > > 
-> > Hi,
+> > awful is relative ;-) If that was on x86, I would say it was bad.
 > > 
-> > This is an updated version of execmem ROX caches.
-> > 
+> > Also check out rtla (in tools/trace/rtla).  
 > 
-> FYI, I booted a kernel before and after applying these patches with my
-> change:
+> Thanks ! I knew it only by name, so I watched a presentation recorded 
+> during OSS summit given by Daniel Bristot de Oliveira who wrote it and 
+> it is really impressive !
 > 
->   https://lore.kernel.org/20241017113105.1edfa943@gandalf.local.home
+> I had to modify the source code a bit, as it does not compile with my 
+> uclibc toolchain:
+> diff --git a/tools/tracing/rtla/Makefile.rtla 
+> b/tools/tracing/rtla/Makefile.rtla
+> index cc1d6b615475..b22016a88d09 100644
+> --- a/tools/tracing/rtla/Makefile.rtla
+> +++ b/tools/tracing/rtla/Makefile.rtla
+> @@ -15,7 +15,7 @@ $(call allow-override,LD_SO_CONF_PATH,/etc/ld.so.conf.d/)
+>   $(call allow-override,LDCONFIG,ldconfig)
+>   export CC AR STRIP PKG_CONFIG LD_SO_CONF_PATH LDCONFIG
 > 
-> Before these patches:
-> 
->  # cat /sys/kernel/tracing/dyn_ftrace_total_info
-> 57695 pages:231 groups: 9
-> ftrace boot update time = 14733459 (ns)
-> ftrace module total update time = 449016 (ns)
-> 
-> After:
-> 
->  # cat /sys/kernel/tracing/dyn_ftrace_total_info
-> 57708 pages:231 groups: 9
-> ftrace boot update time = 47195374 (ns)
-> ftrace module total update time = 592080 (ns)
-> 
-> Which caused boot time to slowdown by over 30ms. That may not seem like
-> much, but we are very concerned about boot time and are fighting every ms
-> we can get.
+> -FOPTS          := -flto=auto -ffat-lto-objects -fexceptions 
+> -fstack-protector-strong   \
+> +FOPTS          := -flto=auto -ffat-lto-objects -fexceptions \
+>                  -fasynchronous-unwind-tables -fstack-clash-protection
+>   WOPTS          := -O -Wall -Werror=format-security 
+> -Wp,-D_FORTIFY_SOURCE=2             \
+>                  -Wp,-D_GLIBCXX_ASSERTIONS -Wno-maybe-uninitialized
 
-Hmm, looks like this change was lost in rebase :/
+I'm not sure what the consequence of the above would be. Perhaps Daniel
+just copied this from other code?
 
-@Andrew, should I send it as a patch on top of mm-stable?
+> diff --git a/tools/tracing/rtla/src/timerlat_u.c 
+> b/tools/tracing/rtla/src/timerlat_u.c
+> index 01dbf9a6b5a5..92ad2388b123 100644
+> --- a/tools/tracing/rtla/src/timerlat_u.c
+> +++ b/tools/tracing/rtla/src/timerlat_u.c
+> @@ -15,10 +15,16 @@
+>   #include <pthread.h>
+>   #include <sys/wait.h>
+>   #include <sys/prctl.h>
+> +#include <sys/syscall.h>
+> 
+>   #include "utils.h"
+>   #include "timerlat_u.h"
+> 
+> +static inline pid_t gettid(void)
+> +{
+> +       return syscall(SYS_gettid);
+> +}
+> +
+>   /*
+>    * This is the user-space main for the tool timerlatu/ threads.
+>    *
+> diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
+> index 9ac71a66840c..b754dc1016a4 100644
+> --- a/tools/tracing/rtla/src/utils.c
+> +++ b/tools/tracing/rtla/src/utils.c
+> @@ -229,6 +229,9 @@ long parse_ns_duration(char *val)
+>   #elif __s390x__
+>   # define __NR_sched_setattr    345
+>   # define __NR_sched_getattr    346
+> +#elif __m68k__
+> +# define __NR_sched_setattr    349
+> +# define __NR_sched_getattr    350
+>   #endif
+> 
+>   #define SCHED_DEADLINE         6
+> 
+> But it is not enough, as executing rtla fails with a segfault.
+> I can dump a core, but I could not manage to build gdb for my board so I 
+> can't debug it (I don't know how to debug a coredump without gdb !).
 
-diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
-index 8da0e66ca22d..859902dd06fc 100644
---- a/arch/x86/kernel/ftrace.c
-+++ b/arch/x86/kernel/ftrace.c
-@@ -111,17 +111,22 @@ static int ftrace_verify_code(unsigned long ip, const char *old_code)
-  */
- static int __ref
- ftrace_modify_code_direct(unsigned long ip, const char *old_code,
--			  const char *new_code)
-+			  const char *new_code, struct module *mod)
- {
- 	int ret = ftrace_verify_code(ip, old_code);
- 	if (ret)
- 		return ret;
- 
- 	/* replace the text with the new text */
--	if (ftrace_poke_late)
-+	if (ftrace_poke_late) {
- 		text_poke_queue((void *)ip, new_code, MCOUNT_INSN_SIZE, NULL);
--	else
-+	} else if (!mod) {
- 		text_poke_early((void *)ip, new_code, MCOUNT_INSN_SIZE);
-+	} else {
-+		mutex_lock(&text_mutex);
-+		text_poke((void *)ip, new_code, MCOUNT_INSN_SIZE);
-+		mutex_unlock(&text_mutex);
-+	}
- 	return 0;
- }
- 
-@@ -142,7 +147,7 @@ int ftrace_make_nop(struct module *mod, struct dyn_ftrace *rec, unsigned long ad
- 	 * just modify the code directly.
- 	 */
- 	if (addr == MCOUNT_ADDR)
--		return ftrace_modify_code_direct(ip, old, new);
-+		return ftrace_modify_code_direct(ip, old, new, mod);
- 
- 	/*
- 	 * x86 overrides ftrace_replace_code -- this function will never be used
-@@ -161,7 +166,7 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
- 	new = ftrace_call_replace(ip, addr);
- 
- 	/* Should only be called when module is loaded */
--	return ftrace_modify_code_direct(rec->ip, old, new);
-+	return ftrace_modify_code_direct(rec->ip, old, new, NULL);
- }
- 
- /*
+printf()!  That's how I debug things without gdb ;-)
 
+-- Steve
 
-> -- Steve
-
--- 
-Sincerely yours,
-Mike.
