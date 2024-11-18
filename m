@@ -1,129 +1,72 @@
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [195.130.137.90])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2986726AD0
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Nov 2024 12:47:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.90
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B396B19ABB6
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Nov 2024 13:32:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731934052; cv=none; b=ZU2bw9GuuXbIWl19ub1u0sKoXlnAbgMDR53gFE0iyHXR2tgCf0oJOkPAkfFfdGo4T2YgGjWEYDhi1M/pxwvaPm+A3p64rBVU0+5PZuOu2IDhzobB6nhEetqAnSN+YQxiTKfY0m5fwMDUChOaXfVpkXcU6tYsKezOPsgrWDf5S5I=
+	t=1731936755; cv=none; b=aeY2EGfTxorQD0P+1CsbcIpF9stJjj9RgF7dYTr7Hg1qFhiZo2NtzyesE7qRrpNCX1YoXdqOR/QXVX8a58u3n6YL8PUKi4GXdT+qcDDEXzRwSBf+UJxPVjG65J8/I1XGS/d3GeWkVN7PD31e9Ie+PtuTJTVpueEV6xDiudeOJPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731934052; c=relaxed/simple;
-	bh=7aZsjxaVStHdLdFrr1YMq6ZzlzYrk8LLz29hzjmM+hQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IeJhVFqJZfqwvB1sumWRfZLGWNMLu2ND6Fvpa74Vnn9gticGJKw56OTP1/KbaJCml/MCQt2ByIgAHAXV1CeEk/eeUiamw8SrL5jW0HQ5Ryos+vudwVBxiw2s/9PnXXzYtwwMy+0QXG1BC5Q8v6B8v2BzIzWfbAR83hOT/VbQbJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.90
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:5694:511b:a530:b0e])
-	by albert.telenet-ops.be with cmsmtp
-	id eCnM2D00H56PXV606CnMnA; Mon, 18 Nov 2024 13:47:21 +0100
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1tD19f-007SfA-6e;
-	Mon, 18 Nov 2024 13:47:21 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1tD1A1-00E19l-CP;
-	Mon, 18 Nov 2024 13:47:21 +0100
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Greg Ungerer <gerg@linux-m68k.org>,
-	linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [GIT PULL] m68k updates for v6.13
-Date: Mon, 18 Nov 2024 13:47:20 +0100
-Message-Id: <20241118124720.3341025-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1731936755; c=relaxed/simple;
+	bh=C42YKE7jZahESTSJ5tD6AEtOflxAnn+VErruvV9Zsqg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eynPlTqrxqXTY4k/zKCBm7IDb8UyCe3ip11GpEnpI/MjeknooyG+nmd2pQ49F79wgQdQ5GjtpzlcsLAMWNPKULq2anbt5jEhsY8LEFL8LQRRfDxKT558yWs1mOO+nK3FND339Rp2sGWWl9BfbY3T9H8xIpBF/yExWZa6q4xJQdc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=eTNRq3PV; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="eTNRq3PV"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 43F7B40006;
+	Mon, 18 Nov 2024 13:32:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1731936750;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cu1ZpBnBIa3rUTwNq4XU3fAcyXszxvoc+KpdBTQ6I4M=;
+	b=eTNRq3PVhFrW3t3LNfqp6uEL4rq1pVsh5cP5qMDByhu4PgW9OGDZTddGjlOk3gqHg22OIW
+	cF13AsJF2E9e7jC+fnPRWE9ujGgru+gEz4ePRCJUFj1KKtvMW2uptFjueTDzWFr5Ozf5/M
+	hQlnF67gVu2EX4GRnf3yWIIAfZmz5oMgsv+K1u0uLdprTWhrI0D/F/si8bR6cyeJi2z2LS
+	KwRcRdzd1QIQNBbVaYwLBqGu5gFuEbRqsootDeQQsK2npHDGGfRaSCFt7pan8yoBKewKP+
+	jdESmdKmJMWVEI+B4WyWJNwtfzY13Nuri43ZzW+r+MyyPpkRHHdgX0u4J4lyCg==
+Date: Mon, 18 Nov 2024 14:32:29 +0100
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Finn Thain <fthain@linux-m68k.org>
+Cc: Daniel Palmer <daniel@0x0f.com>, Michael Pavone <pavone@retrodev.com>,
+	linux-m68k@lists.linux-m68k.org, linux-rtc@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: (subset) [PATCH v4 1/2] rtc: m48t59: Use platform_data struct
+ for year offset value
+Message-ID: <173193673970.37302.12055966881506116157.b4-ty@bootlin.com>
+References: <cover.1731450735.git.fthain@linux-m68k.org>
+ <665c3526184a8d0c4a6373297d8e7d9a12591d8b.1731450735.git.fthain@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <665c3526184a8d0c4a6373297d8e7d9a12591d8b.1731450735.git.fthain@linux-m68k.org>
+X-GND-Sasl: alexandre.belloni@bootlin.com
 
-	Hi Linus,
+On Wed, 13 Nov 2024 09:32:15 +1100, Finn Thain wrote:
+> Instead of hard-coded values and ifdefs, store the year offset in the
+> platform_data struct.
+> 
+> 
 
-The following changes since commit 8cf0b93919e13d1e8d4466eb4080a4c4d9d66d7b:
+Applied, thanks!
 
-  Linux 6.12-rc2 (2024-10-06 15:32:27 -0700)
+[1/2] rtc: m48t59: Use platform_data struct for year offset value
+      https://git.kernel.org/abelloni/c/a06e4a93067c
 
-are available in the Git repository at:
+Best regards,
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.13-tag1
-
-for you to fetch changes up to 647619b6bd27d2b7c3c6055f3f0d996e61884202:
-
-  m68k: defconfig: Update defconfigs for v6.12-rc1 (2024-11-11 13:53:58 +0100)
-
-----------------------------------------------------------------
-m68k updates for v6.13
-
-  - Revive SCSI and early console support on MVME147,
-  - Fix early kernel parameters using static keys,
-  - Prevent and improve handling of kernel configurations that lack
-    specific platform, CPU, or MMU support, to avoid build failures,
-  - Miscellaneous fixes and improvements,
-  - Defconfig updates.
-
-Thanks for pulling!
-
-----------------------------------------------------------------
-Arnd Bergmann (2):
-      m68k: Move Sun 3 into a top-level platform option
-      m68k: Select M68020 as fallback for classic
-
-Daniel Palmer (3):
-      m68k: mvme147: Make mvme147_sched_init() __init
-      m68k: mvme147: Fix SCSI controller IRQ numbers
-      m68k: mvme147: Reinstate early console
-
-Geert Uytterhoeven (2):
-      m68k: Make sure NR_IRQS is never zero
-      m68k: defconfig: Update defconfigs for v6.12-rc1
-
-Jean-Michel Hautbois (1):
-      m68k: Initialize jump labels early during setup_arch()
-
-Thorsten Blum (1):
-      m68k: kernel: Use str_read_write() helper function
-
- arch/m68k/Kconfig                    | 11 +++++------
- arch/m68k/Kconfig.cpu                | 36 +++++++++++++++++++++++-------------
- arch/m68k/Kconfig.machine            | 25 -------------------------
- arch/m68k/configs/amiga_defconfig    |  1 +
- arch/m68k/configs/apollo_defconfig   |  1 +
- arch/m68k/configs/atari_defconfig    |  1 +
- arch/m68k/configs/bvme6000_defconfig |  1 +
- arch/m68k/configs/hp300_defconfig    |  1 +
- arch/m68k/configs/mac_defconfig      |  1 +
- arch/m68k/configs/multi_defconfig    |  1 +
- arch/m68k/configs/mvme147_defconfig  |  1 +
- arch/m68k/configs/mvme16x_defconfig  |  1 +
- arch/m68k/configs/q40_defconfig      |  1 +
- arch/m68k/configs/sun3_defconfig     |  1 +
- arch/m68k/configs/sun3x_defconfig    |  1 +
- arch/m68k/include/asm/irq.h          |  4 +---
- arch/m68k/include/asm/mvme147hw.h    |  4 ++--
- arch/m68k/kernel/Makefile            | 12 ++----------
- arch/m68k/kernel/early_printk.c      |  5 ++++-
- arch/m68k/kernel/setup_mm.c          |  6 +++++-
- arch/m68k/kernel/time.c              |  4 ++--
- arch/m68k/kernel/traps.c             | 16 ++++++++--------
- arch/m68k/mvme147/config.c           | 34 ++++++++++++++++++++++++++++++++--
- arch/m68k/mvme147/mvme147.h          |  6 ++++++
- 24 files changed, 102 insertions(+), 73 deletions(-)
- create mode 100644 arch/m68k/mvme147/mvme147.h
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
