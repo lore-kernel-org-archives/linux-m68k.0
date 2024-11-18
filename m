@@ -1,132 +1,168 @@
-Received: from fhigh-b3-smtp.messagingengine.com (fhigh-b3-smtp.messagingengine.com [202.12.124.154])
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC30313CA95
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Nov 2024 05:40:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D86D91925B3
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Nov 2024 10:11:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731908417; cv=none; b=WNYIls1C7JsOO5t2VgSKHXZIxVLfVPmegRj0JTCiCdFkbVQZeGhnipkwIDf3+TZVMZnP6z9Xp9qY3mrUcVEitzAc0CqiFDjItyecF5Jko/sdtMJAPh8Kc85z//7B5rB+XjcXS5HRXlEibRNVBo1ngh7HHb1yodQe+8mPxXcyxEE=
+	t=1731924720; cv=none; b=T8EM/rSVKR+L1YmFZ/opk4j3Y5xJv+I0lUCxCFDs9P6mVqwJUbCLKyAw3xj15OiIezd+fRYI8PNlW7chOiCVsZNtUeKEHVWoD8bm20+2uHgmspdZavDpDwP4+OPzAHppJGd78oSGCQyYfBMmIo7NiAezxw4yTiF2ZQtqh/KQdHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731908417; c=relaxed/simple;
-	bh=xrG9LIF/fHfeOPNdl6wGssMUkqv/ZQNpmH3fhzp0TT0=;
-	h=Date:Message-ID:From:To:Cc:Subject; b=H/FLAtZC2P5jeqRWunf68+SRYDmvaxnlkpR9cbLo1qI2dVci1HQGv1C8pvhAwcOdkfxSe2qa8D+ZMd2h6vTn2od3Ty5Wx6E1gkSxsWmpzVkMEFKlqKX4ce/DC4RMYYkKWszAMX5Pi6Xu0AiZHfeGN7kaWInG8LC3IBclCkZnsLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=O1BUZdTa; arc=none smtp.client-ip=202.12.124.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1731924720; c=relaxed/simple;
+	bh=U8nw4h3WxjfIRfM1kXzgmn15xmJ6v3U/YsCQKiWW/Es=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=aiuCIseHGzLtFcv1nHR9THL2Sn7jQnTVP9uuOwQ52jnIDJLhk80hp+mZj3ISvUpcRg6HwEO1eJmoqEnviD+ZVhdyRU0sV56HbLyjHxg0eSL9Z2tFbvcDpS0zpOh++d1J2AWhQjYPcoZ8EoaJ1xTqZYKv5Jc7e7tKFE1LZln9g+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=hDPSgR28; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="O1BUZdTa"
-Received: from phl-compute-12.internal (phl-compute-12.phl.internal [10.202.2.52])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 180712540108;
-	Mon, 18 Nov 2024 00:40:15 -0500 (EST)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-12.internal (MEProxy); Mon, 18 Nov 2024 00:40:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
-	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1731908414; x=1731994814; bh=8lLsJIqL/6PoxS2ijobyqT6bj4Vf
-	imlESCZI8eca0q0=; b=O1BUZdTaFbQQy0+W7WVrSbVLEGCblmxWJmjSXLAFK89C
-	qxdB/PIVOVzNeL5cwbCcvd7aRUCZ9e8znSscDm8GhjieHZlhOmHn9l5kNPlslscS
-	Sw5Z6BAeCD+r010w9P/F1jyXdLPYc0wEkoVzACMZkk6AMIyg/eRsf/7+YYw44sz5
-	Kl1G0fj79G27MOI33rP1a0A3dV3T4Eby/bJjxvE2yG28X7Suro0a0dQnme6IE/ps
-	nfmb+/LcsI4QIVWvQ1+y9uYlK/65dfOGmCjqBzy6KCb7CXpNmv1LsDQuy7bUbQWt
-	X1XaXTJkkM5F3UKrJcrvHeohN/C4ACmT2HUjAghqSg==
-X-ME-Sender: <xms:PtM6Z6PPQRb1nlNPs8ZZwbRQ6PT3UEYahNZGMs4PlJ3c_c2c_KRyqw>
-    <xme:PtM6Z4_2y6YDWvaNi2LJr9Tl0WhJ89U4bRA24-Azc6LHm2b3mhUxTyvOhYz57K46m
-    AYIz34UawSB_vKZZ9Q>
-X-ME-Received: <xmr:PtM6ZxTNkImUHz2rbuCq7IB3_HZgZAZkpVlMXp2NOFeAMMutDKm5T1iB80qviAN4L9MWdtzcTMqgkBZmXvJSUMWNTbUzz7EVGmE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrvdelgdekiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdpuffr
-    tefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnth
-    hsucdlqddutddtmdenucfjughrpeffkffhvfevufestddtjhdttddttdenucfhrhhomhep
-    hfhinhhnucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqne
-    cuggftrfgrthhtvghrnheptdfhleduudejjefgvdetfeeijedtfeeukeduteeuffeuveej
-    ieevhefgleeuffffnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpshhkvghlvghtoh
-    hnrdhssgenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhm
-    pehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopeehpd
-    hmohguvgepshhmthhpohhuthdprhgtphhtthhopehsthgrsghlvgeskhgvrhhnvghlrdho
-    rhhgpdhrtghpthhtohepghgvvghrtheslhhinhhugidqmheikehkrdhorhhgpdhrtghpth
-    htohepvggsihgvuggvrhhmseigmhhishhsihhonhdrtghomhdprhgtphhtthhopehlihhn
-    uhigqdhmieekkheslhhishhtshdrlhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtoh
-    eplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:PtM6Z6u1OlYOtWDCL0WiZz2k-LvZvItcD3HOZ11JEcVKHeYV5PERCg>
-    <xmx:PtM6ZyfAHnbBi9znwTz9_LujCjRlMAPRbLj5tLmup6rwhe7HTx5u1Q>
-    <xmx:PtM6Z-12lWJjwXmiV_gs5t_jdtwnpr5r6VG7OWGi8j-_Ps4T05JDsA>
-    <xmx:PtM6Z28ilt1Uvrl5DIwXaDF7Y6NuOTnYiFDL9wKYSGBWv1sA7xBVUQ>
-    <xmx:PtM6Zx7wuQ-lZEVCzdQDCwjkZeUR3a7uv4E0XL_u9R5CFrbqLSw-JyHz>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 18 Nov 2024 00:40:12 -0500 (EST)
-Date: Mon, 18 Nov 2024 16:40:41 +1100
-Message-ID: <256fabf7d7f3712896bafc0deac0303e@linux-m68k.org>
-From: Finn Thain <fthain@linux-m68k.org>
-To: stable@kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Eric W. Biederman <ebiederm@xmission.com>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5.10.y] signal/m68k: Use force_sigsegv(SIGSEGV) in fpsp040_die
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="hDPSgR28"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 969E31C0006;
+	Mon, 18 Nov 2024 10:11:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1731924710;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RufrWCtbGANzxJBJmt6VNTP2weS/VbTSAKxO/0eHr1c=;
+	b=hDPSgR28mEPNZXrlklYcO4wnOBbV11x6GnWy5ZUpqHm2Zb8RtRW7sSqIRDNxK32GNaPAxr
+	8R1BJ7S4X1Xdo/53+NAL5NuiWmq4v9hIsau96uwP6pjhwPAp9mEwhsUHkhU97eqtc0L7Lo
+	7C24lVSqFtdlOziOsk4MYBw1meeyQYevNI1Zw3dKNiA58Tn4v8Bl9NK4nH9X6cIfQ4unuY
+	y5buvDrPSYQaKDLkDS8AHnMKEL7lFqg3qrlCpcha9NnUhU4P25DeYgwDJU65hjo5BN+Jkm
+	Qu5jiBepDHVjWuNUxljzfO1BcVpMWXnB5BzhXzRLOl/IPuL2yiEmpOr1T128iA==
+Message-ID: <2c43288a-517d-4220-ad31-f84dda8c1805@yoseli.org>
+Date: Mon, 18 Nov 2024 11:11:48 +0100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Subject: Re: [PATCH RFC 0/2] Add basic tracing support for m68k
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Greg Ungerer <gerg@linux-m68k.org>
+References: <20241021-add-m68k-tracing-support-v1-0-0883d704525b@yoseli.org>
+ <3a8f6faa-62c6-4d32-b544-3fb7c00730d7@yoseli.org>
+ <20241115102554.29232d34@gandalf.local.home>
+ <cbb67ee2-8b37-4a4d-b542-f89ddae90e94@yoseli.org>
+ <20241115145502.631c9a2c@gandalf.local.home>
+Content-Language: en-US
+In-Reply-To: <20241115145502.631c9a2c@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-From: "Eric W. Biederman" <ebiederm@xmission.com>
+Hi Steve,
 
-[ Upstream commit a3616a3c02722d1edb95acc7fceade242f6553ba ]
+On 15/11/2024 20:55, Steven Rostedt wrote:
+> On Fri, 15 Nov 2024 16:33:06 +0100
+> Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org> wrote:
+> 
+>> Hi Steve,
+>>
+>> On 15/11/2024 16:25, Steven Rostedt wrote:
+>>> On Fri, 15 Nov 2024 09:26:07 +0100
+>>> Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org> wrote:
+>>>    
+>>>> Nevertheless it sounds like a really high latency for wake_up().
+>>>>
+>>>> I have a custom driver which basically gets an IRQ, and calls wake_up on
+>>>> a read() call. This wake_up() on a high cpu usage can be more than 1ms !
+>>>> Even with a fifo/99 priority for my kernel thread !
+>>>>
+>>>> I don't know if it rings any bell ?
+>>>> I can obviously do more tests if it can help getting down to the issue :-).
+>>>
+>>> Try running timerlat.
+>>
+>> Thanks !
+>> Here is what I get:
+>> # echo timerlat > current_tracer
+>> # echo 1 > events/osnoise/enable
+>> # echo 25 > osnoise/stop_tracing_total_us
+>> # tail -10 trace
+>>               bash-224     [000] d.h..   153.268917: #77645 context  irq timer_latency     45056 ns
+>>               bash-224     [000] dnh..   153.268987: irq_noise: timer:206  start 153.268879083 duration 93957 ns
+>>               bash-224     [000] d....   153.269056: thread_noise:  bash:224 start 153.268905324 duration 71045 ns
+>>         timerlat/0-271     [000] .....   153.269103: #77645 context thread timer_latency    230656 ns
+>>               bash-224     [000] d.h..   153.269735: irq_noise: timer:206 start 153.269613847 duration 103558 ns
+>>               bash-224     [000] d.h..   153.269911: #77646 context irq timer_latency     40640 ns
+>>               bash-224     [000] dnh..   153.269982: irq_noise: timer:206 start 153.269875367 duration 93190 ns
+>>               bash-224     [000] d....   153.270053: thread_noise: bash:224 start 153.269900969 duration 72709 ns
+>>         timerlat/0-271     [000] .....   153.270100: #77646 context thread timer_latency    227008 ns
+>>         timerlat/0-271     [000] .....   153.270155: timerlat_main: stop tracing hit on cpu 0
+>>
+>> It looks awful, right ?
+> 
+> awful is relative ;-) If that was on x86, I would say it was bad.
+> 
+> Also check out rtla (in tools/trace/rtla).
 
-In the fpsp040 code when copyin or copyout fails call
-force_sigsegv(SIGSEGV) instead of do_exit(SIGSEGV).
+Thanks ! I knew it only by name, so I watched a presentation recorded 
+during OSS summit given by Daniel Bristot de Oliveira who wrote it and 
+it is really impressive !
 
-This solves a couple of problems.  Because do_exit embeds the ptrace
-stop PTRACE_EVENT_EXIT a complete stack frame needs to be present for
-that to work correctly.  There is always the information needed for a
-ptrace stop where get_signal is called.  So exiting with a signal
-solves the ptrace issue.
+I had to modify the source code a bit, as it does not compile with my 
+uclibc toolchain:
+diff --git a/tools/tracing/rtla/Makefile.rtla 
+b/tools/tracing/rtla/Makefile.rtla
+index cc1d6b615475..b22016a88d09 100644
+--- a/tools/tracing/rtla/Makefile.rtla
++++ b/tools/tracing/rtla/Makefile.rtla
+@@ -15,7 +15,7 @@ $(call allow-override,LD_SO_CONF_PATH,/etc/ld.so.conf.d/)
+  $(call allow-override,LDCONFIG,ldconfig)
+  export CC AR STRIP PKG_CONFIG LD_SO_CONF_PATH LDCONFIG
 
-Further exiting with a signal ensures that all of the threads in a
-process are killed not just the thread that malfunctioned.  Which
-avoids confusing userspace.
+-FOPTS          := -flto=auto -ffat-lto-objects -fexceptions 
+-fstack-protector-strong   \
++FOPTS          := -flto=auto -ffat-lto-objects -fexceptions \
+                 -fasynchronous-unwind-tables -fstack-clash-protection
+  WOPTS          := -O -Wall -Werror=format-security 
+-Wp,-D_FORTIFY_SOURCE=2             \
+                 -Wp,-D_GLIBCXX_ASSERTIONS -Wno-maybe-uninitialized
+diff --git a/tools/tracing/rtla/src/timerlat_u.c 
+b/tools/tracing/rtla/src/timerlat_u.c
+index 01dbf9a6b5a5..92ad2388b123 100644
+--- a/tools/tracing/rtla/src/timerlat_u.c
++++ b/tools/tracing/rtla/src/timerlat_u.c
+@@ -15,10 +15,16 @@
+  #include <pthread.h>
+  #include <sys/wait.h>
+  #include <sys/prctl.h>
++#include <sys/syscall.h>
 
-To make force_sigsegv(SIGSEGV) work in fpsp040_die modify the code to
-save all of the registers and jump to ret_from_exception (which
-ultimately calls get_signal) after fpsp040_die returns.
+  #include "utils.h"
+  #include "timerlat_u.h"
 
-v2: Updated the branches to use gas's pseudo ops that automatically
-    calculate the best branch instruction to use for the purpose.
++static inline pid_t gettid(void)
++{
++       return syscall(SYS_gettid);
++}
++
+  /*
+   * This is the user-space main for the tool timerlatu/ threads.
+   *
+diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
+index 9ac71a66840c..b754dc1016a4 100644
+--- a/tools/tracing/rtla/src/utils.c
++++ b/tools/tracing/rtla/src/utils.c
+@@ -229,6 +229,9 @@ long parse_ns_duration(char *val)
+  #elif __s390x__
+  # define __NR_sched_setattr    345
+  # define __NR_sched_getattr    346
++#elif __m68k__
++# define __NR_sched_setattr    349
++# define __NR_sched_getattr    350
+  #endif
 
-v1: https://lkml.kernel.org/r/87a6m8kgtx.fsf_-_@disp2133
-Link: https://lkml.kernel.org/r/87tukghjfs.fsf_-_@disp2133
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
----
- arch/m68k/fpsp040/skeleton.S | 3 ++-
- arch/m68k/kernel/traps.c     | 2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+  #define SCHED_DEADLINE         6
 
-diff --git a/arch/m68k/fpsp040/skeleton.S b/arch/m68k/fpsp040/skeleton.S
-index 31a9c634c81e..081922c72daa 100644
---- a/arch/m68k/fpsp040/skeleton.S
-+++ b/arch/m68k/fpsp040/skeleton.S
-@@ -502,7 +502,8 @@ in_ea:
- 	.section .fixup,"ax"
- 	.even
- 1:
--	jbra	fpsp040_die
-+	jbsr	fpsp040_die
-+	jbra	.Lnotkern
- 
- 	.section __ex_table,"a"
- 	.align	4
-diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
-index 35f706d836c5..c6f18dc5884b 100644
---- a/arch/m68k/kernel/traps.c
-+++ b/arch/m68k/kernel/traps.c
-@@ -1155,7 +1155,7 @@ asmlinkage void set_esp0(unsigned long ssp)
-  */
- asmlinkage void fpsp040_die(void)
- {
--	do_exit(SIGSEGV);
-+	force_sigsegv(SIGSEGV);
- }
- 
- #ifdef CONFIG_M68KFPU_EMU
+But it is not enough, as executing rtla fails with a segfault.
+I can dump a core, but I could not manage to build gdb for my board so I 
+can't debug it (I don't know how to debug a coredump without gdb !).
+
+JM
