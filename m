@@ -1,106 +1,133 @@
-Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
+Received: from fhigh-b3-smtp.messagingengine.com (fhigh-b3-smtp.messagingengine.com [202.12.124.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9130140E4D
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Nov 2024 05:26:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C8F44DA03
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Nov 2024 05:39:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731907612; cv=none; b=fm/bfpZnpTqJuwGrGOluXMRMM/lZ/pybnR5DJ5w5d6MpngOZk5pIebI2uIAwBfKKxCrKDiMrcn0wMiIpZmMNKauoqOsRLZKCTRRftenud+BglNhviuH1JMt0ciM4EpydrsK6rbVvDnqI3BxmThMM1ZXkYgcVGTmjIw75Xso78oI=
+	t=1731908382; cv=none; b=iQ4pabt9PuvSZqViaK1OGN5OsMRd6Unjfi0nmCUchPqbR5mFCbO2+UxvXhDyKkMp4YhXy1S6D7O5v3Fwxiv2sK4xJClDtT82T8CnFowup5W1h5Bo1+7upQIgMgL4m162R6eArcqdyaosQoOWEn/yycXU5HAtrni0M3upPXPIODg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731907612; c=relaxed/simple;
-	bh=PBw+2l4k/U/8zjU5cemT5owgK8Rdjbs+7eB+L9/Ycbc=;
-	h=Date:Message-ID:From:To:Cc:Subject; b=YLWsvJhInSiYUv7IoXtToHpyNnrnrN6NvPitwj1VM6q26pUF3ccP/gy8ASlKT6/WRHf2sKLx2EE9h2ceVqgSc1KPAhunDuuiCdlXfjyXj3ZlmlefUtxg1DLFb+7FTBDjZ26UedfMwEhKLqAg1G4F8Qf3tNWo8vfAirbGjs7wObA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=X/78JwZe; arc=none smtp.client-ip=202.12.124.144
+	s=arc-20240116; t=1731908382; c=relaxed/simple;
+	bh=z/X55CJ4Amiz0wZbkHt0gq98rMad9RgnWcfw7QI1kL4=;
+	h=Date:Message-ID:From:To:Cc:Subject; b=Qv92VPfYJDT4OD3fz1Jfg3Q5+ToavLTDR/lJpq8Gkzs0cHSgvjxpnm8KidIiANXZjPcM2WwmROo2Gn2MCohs3ItgfD6X0XpO80LzcRBKaiXva/iNp91cwP/Sdb4CF9bIg1nVelTT8VnVrWPFNAESSJveBv3EWWKwc4p8Dk4ENJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=GMaQ+UtW; arc=none smtp.client-ip=202.12.124.154
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="X/78JwZe"
-Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
-	by mailfout.stl.internal (Postfix) with ESMTP id C57421140108;
-	Mon, 18 Nov 2024 00:26:49 -0500 (EST)
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="GMaQ+UtW"
+Received: from phl-compute-10.internal (phl-compute-10.phl.internal [10.202.2.50])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id B2F852540099;
+	Mon, 18 Nov 2024 00:39:39 -0500 (EST)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-02.internal (MEProxy); Mon, 18 Nov 2024 00:26:49 -0500
+  by phl-compute-10.internal (MEProxy); Mon, 18 Nov 2024 00:39:39 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
 	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
 	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1731907609; x=1731994009; bh=r29dMPQRv+Gn3SilhPT9HklbBYac
-	hEKIULVz8FVwt98=; b=X/78JwZeD2SJfi1qUtKfQXBGPt5jy7gAu69wk2BoKPEz
-	IIfQ62mKx0NagwKkC8n75f6HU6O63NF71Jm4SxUNwEt1xKytubbhc945jhzFCCbq
-	xUdlQKd2LuhVZDF2cjVa2iP7THjYr582gw6F+d62mS1PEhCO85GkC0ASoKEblD6F
-	GCD4KcZxYtWgX1Q1arSN77qaxpq2PWKbmMltIUbxtQLdGzROT1S+2yln4WHtU8z9
-	F6qSK5d7WyCMlM4oPUSDls0m2X3P52XjxGBr4WjlFZecVySQ2+ftUrrpZlVABMyH
-	2eP+UcwI8cBKMYtLsNyTrax57fkFPrjuD80G3f72iQ==
-X-ME-Sender: <xms:GdA6Z-gFyvmxUHZxxeHtVE91VLuyJzCdoUd3VUWCSqlkHlBpgS3icQ>
-    <xme:GdA6Z_APKcYLg5CPB9632RM32C6x6_0ER4rvH6K3crAyZTa5kMi21hnZduhJWYUPl
-    QbWh7Lx2qGTFhaT-k8>
-X-ME-Received: <xmr:GdA6Z2HBbQwRFM9n2Y7aXIwYXwyU8SvSUQxTcyTY-KHAi2fk9riiejhTyDLXkvQdPJJZrJeukRlqW2e1pXfPXMROEUZYkU6uBO8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrvdelgdekgecutefuodetggdotefrodftvf
+	fm3; t=1731908379; x=1731994779; bh=Kpjd1dlpYPRSKTDwyzlMgPlazmO2
+	anW6vzHpGHs+Oh4=; b=GMaQ+UtWu3EumEAvQ0CoHB6QMIELv2EPRb8uoWQq5PG+
+	+dMqAkJN3tsJQQ4evmD3/jDWbHyeVuZK8PPqgM34qcoEmZTRbxD5fCfWB76tCf1d
+	jqabBNmOtrNh9Mv1IRN+loBdkWlqry6thWJXfR9oGk66H8pE0m0hoi7QRcA5k2Eb
+	sYkj4ICnGO+rKbLzn+PYTYxFRYDcHg+xQ+RmLar7FXrlqu+ujH+U8OZw0Jgk4I1W
+	Yb9V8+n4NVroKbsafsDqvN/IhjOLEGmtaETBbOwrE5IDWmFRDP80Ykq5fp/9/w9s
+	nsoD4AYQVIbiwTFbi33o6rmmzFUJX4iDtUjkY+qdTw==
+X-ME-Sender: <xms:G9M6ZyaWynhx7vCZTAehhKGHaPRcSdMrF9QoRvECRqC_kwnxKRzlqg>
+    <xme:G9M6Z1YuJhioltcH27kj6PR2gz_7pWh0x-l3iflNOj_eSyc7o_kXYRvoIVC6-ZRNg
+    U9kRAdSFEIvwCUEb7s>
+X-ME-Received: <xmr:G9M6Z89Wi9ipoRMauFLiPJxROb5zHu33cjVlgYrWMRs-X5c2Dc5JhwDaSaiYLpPn3uR_6GS9Vqpm4EHSGPalFVexMqseqAfe13Y>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrvdelgdekiecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdpuffr
     tefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnth
     hsucdlqddutddtmdenucfjughrpeffkffhvfevufestddtjhdttddttdenucfhrhhomhep
     hfhinhhnucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqne
-    cuggftrfgrthhtvghrnhepheetuddufffgfeekkeejudeivdfgfedtleetkeduleekueef
-    hfevueekkeeftdeinecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpvghnthhrhidrsh
-    gsnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfhht
-    hhgrihhnsehlihhnuhigqdhmieekkhdrohhrghdpnhgspghrtghpthhtohephedpmhhoug
-    gvpehsmhhtphhouhhtpdhrtghpthhtohepshhtrggslhgvsehkvghrnhgvlhdrohhrghdp
-    rhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhope
-    hvihhrohesiigvnhhivhdrlhhinhhugidrohhrghdruhhkpdhrtghpthhtoheplhhinhhu
-    gidqmheikehksehlihhsthhsrdhlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhope
-    hlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:GdA6Z3Tox476_PvVHqJAwIbe4PFe6NyrokN1LalWPkYsk652tc7Ikg>
-    <xmx:GdA6Z7z1KYWCoJZcriL_0ZGl1CrZussotL4aNtrKRQMTwS1Z2KW9fw>
-    <xmx:GdA6Z14l23fJfT6bTwQYFWJipGzw61TxwMUuMVGBGroDlhoJfKU_XQ>
-    <xmx:GdA6Z4zuJlX3gz1OBSOPNC9Dp69w5lM7C5AMrfTpwpWeqc7I4_ZXcA>
-    <xmx:GdA6Z9tCW-trumHpJRtiiSjYgOdVjZPnpwkp35WsURfhW7UY3jabFBI8>
+    cuggftrfgrthhtvghrnheptdfhleduudejjefgvdetfeeijedtfeeukeduteeuffeuveej
+    ieevhefgleeuffffnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpshhkvghlvghtoh
+    hnrdhssgenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
+    pehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopeehpd
+    hmohguvgepshhmthhpohhuthdprhgtphhtthhopehsthgrsghlvgeskhgvrhhnvghlrdho
+    rhhgpdhrtghpthhtohepghgvvghrtheslhhinhhugidqmheikehkrdhorhhgpdhrtghpth
+    htohepvggsihgvuggvrhhmseigmhhishhsihhonhdrtghomhdprhgtphhtthhopehlihhn
+    uhigqdhmieekkheslhhishhtshdrlhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtoh
+    eplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:G9M6Z0pcCTFGgbcJdnzMMAP68nXoLUp7TFmDgP-_CZrTXCTa6-YYgQ>
+    <xmx:G9M6Z9qLYsb6P5Zn-T1jabTr9avbGuTzpS29xCoSen8RHh7M6X3obg>
+    <xmx:G9M6ZyQEenu2ZMVBFejBMU1pOhiAXvty2JAQQh7Wv-_9ln9c2S_yjg>
+    <xmx:G9M6Z9qsea4PdHfmvU706ossuLmNsvQ71SvtVn_ircz4Fpvk1IHjAQ>
+    <xmx:G9M6Z2A7jlcnbJODSYzmZatx80jR5QM57Ex42HkfiZuo0sgUFRPKOQjX>
 Feedback-ID: i58a146ae:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 18 Nov 2024 00:26:47 -0500 (EST)
-Date: Mon, 18 Nov 2024 16:27:18 +1100
-Message-ID: <b2d405a9b410211f27e87f8a0de4b10a@linux-m68k.org>
+ 18 Nov 2024 00:39:36 -0500 (EST)
+Date: Mon, 18 Nov 2024 16:40:05 +1100
+Message-ID: <5ebf14205f64602dad0af8a80428398c@linux-m68k.org>
 From: Finn Thain <fthain@linux-m68k.org>
 To: stable@kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Al Viro <viro@zeniv.linux.org.uk>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5.10.y] m68k: Update ->thread.esp0 before calling syscall_trace() in ret_from_signal
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Eric W. Biederman <ebiederm@xmission.com>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 4.19.y] signal/m68k: Use force_sigsegv(SIGSEGV) in fpsp040_die
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: "Eric W. Biederman" <ebiederm@xmission.com>
 
-[ Upstream commit 50e43a57334400668952f8e551c9d87d3ed2dfef ]
+[ Upstream commit a3616a3c02722d1edb95acc7fceade242f6553ba ]
 
-We get there when sigreturn has performed obscene acts on kernel stack;
-in particular, the location of pt_regs has shifted.  We are about to call
-syscall_trace(), which might stop for tracer.  If that happens, we'd better
-have task_pt_regs() returning correct result...
+In the fpsp040 code when copyin or copyout fails call
+force_sigsegv(SIGSEGV) instead of do_exit(SIGSEGV).
 
-Fucked-up-by: Al Viro <viro@zeniv.linux.org.uk>
-Fixes: bd6f56a75bb2 ("m68k: Missing syscall_trace() on sigreturn")
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-Tested-by: Michael Schmitz <schmitzmic@gmail.com>
-Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
-Tested-by: Finn Thain <fthain@linux-m68k.org>
-Link: https://lore.kernel.org/r/YP2dMWeV1LkHiOpr@zeniv-ca.linux.org.uk
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+This solves a couple of problems.  Because do_exit embeds the ptrace
+stop PTRACE_EVENT_EXIT a complete stack frame needs to be present for
+that to work correctly.  There is always the information needed for a
+ptrace stop where get_signal is called.  So exiting with a signal
+solves the ptrace issue.
+
+Further exiting with a signal ensures that all of the threads in a
+process are killed not just the thread that malfunctioned.  Which
+avoids confusing userspace.
+
+To make force_sigsegv(SIGSEGV) work in fpsp040_die modify the code to
+save all of the registers and jump to ret_from_exception (which
+ultimately calls get_signal) after fpsp040_die returns.
+
+v2: Updated the branches to use gas's pseudo ops that automatically
+    calculate the best branch instruction to use for the purpose.
+
+v1: https://lkml.kernel.org/r/87a6m8kgtx.fsf_-_@disp2133
+Link: https://lkml.kernel.org/r/87tukghjfs.fsf_-_@disp2133
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+[ Pass 'current' to force_sigsegv() as was done prior to v5.3 ]
 Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 ---
- arch/m68k/kernel/entry.S | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/m68k/fpsp040/skeleton.S | 3 ++-
+ arch/m68k/kernel/traps.c     | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/m68k/kernel/entry.S b/arch/m68k/kernel/entry.S
-index 417d8f0e8962..0d03b4f2077b 100644
---- a/arch/m68k/kernel/entry.S
-+++ b/arch/m68k/kernel/entry.S
-@@ -182,6 +182,8 @@ ENTRY(ret_from_signal)
- 	movel	%curptr@(TASK_STACK),%a1
- 	tstb	%a1@(TINFO_FLAGS+2)
- 	jge	1f
-+	lea	%sp@(SWITCH_STACK_SIZE),%a1
-+	movel	%a1,%curptr@(TASK_THREAD+THREAD_ESP0)
- 	jbsr	syscall_trace
- 1:	RESTORE_SWITCH_STACK
- 	addql	#4,%sp
+diff --git a/arch/m68k/fpsp040/skeleton.S b/arch/m68k/fpsp040/skeleton.S
+index 31a9c634c81e..081922c72daa 100644
+--- a/arch/m68k/fpsp040/skeleton.S
++++ b/arch/m68k/fpsp040/skeleton.S
+@@ -502,7 +502,8 @@ in_ea:
+ 	.section .fixup,"ax"
+ 	.even
+ 1:
+-	jbra	fpsp040_die
++	jbsr	fpsp040_die
++	jbra	.Lnotkern
+ 
+ 	.section __ex_table,"a"
+ 	.align	4
+diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
+index 35f706d836c5..c6f18dc5884b 100644
+--- a/arch/m68k/kernel/traps.c
++++ b/arch/m68k/kernel/traps.c
+@@ -1155,7 +1155,7 @@ asmlinkage void set_esp0(unsigned long ssp)
+  */
+ asmlinkage void fpsp040_die(void)
+ {
+-	do_exit(SIGSEGV);
++	force_sigsegv(SIGSEGV, current);
+ }
+ 
+ #ifdef CONFIG_M68KFPU_EMU
