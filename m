@@ -1,168 +1,129 @@
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [195.130.137.90])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D86D91925B3
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Nov 2024 10:11:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2986726AD0
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Nov 2024 12:47:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.90
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731924720; cv=none; b=T8EM/rSVKR+L1YmFZ/opk4j3Y5xJv+I0lUCxCFDs9P6mVqwJUbCLKyAw3xj15OiIezd+fRYI8PNlW7chOiCVsZNtUeKEHVWoD8bm20+2uHgmspdZavDpDwP4+OPzAHppJGd78oSGCQyYfBMmIo7NiAezxw4yTiF2ZQtqh/KQdHA=
+	t=1731934052; cv=none; b=ZU2bw9GuuXbIWl19ub1u0sKoXlnAbgMDR53gFE0iyHXR2tgCf0oJOkPAkfFfdGo4T2YgGjWEYDhi1M/pxwvaPm+A3p64rBVU0+5PZuOu2IDhzobB6nhEetqAnSN+YQxiTKfY0m5fwMDUChOaXfVpkXcU6tYsKezOPsgrWDf5S5I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731924720; c=relaxed/simple;
-	bh=U8nw4h3WxjfIRfM1kXzgmn15xmJ6v3U/YsCQKiWW/Es=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=aiuCIseHGzLtFcv1nHR9THL2Sn7jQnTVP9uuOwQ52jnIDJLhk80hp+mZj3ISvUpcRg6HwEO1eJmoqEnviD+ZVhdyRU0sV56HbLyjHxg0eSL9Z2tFbvcDpS0zpOh++d1J2AWhQjYPcoZ8EoaJ1xTqZYKv5Jc7e7tKFE1LZln9g+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=hDPSgR28; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="hDPSgR28"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 969E31C0006;
-	Mon, 18 Nov 2024 10:11:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1731924710;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RufrWCtbGANzxJBJmt6VNTP2weS/VbTSAKxO/0eHr1c=;
-	b=hDPSgR28mEPNZXrlklYcO4wnOBbV11x6GnWy5ZUpqHm2Zb8RtRW7sSqIRDNxK32GNaPAxr
-	8R1BJ7S4X1Xdo/53+NAL5NuiWmq4v9hIsau96uwP6pjhwPAp9mEwhsUHkhU97eqtc0L7Lo
-	7C24lVSqFtdlOziOsk4MYBw1meeyQYevNI1Zw3dKNiA58Tn4v8Bl9NK4nH9X6cIfQ4unuY
-	y5buvDrPSYQaKDLkDS8AHnMKEL7lFqg3qrlCpcha9NnUhU4P25DeYgwDJU65hjo5BN+Jkm
-	Qu5jiBepDHVjWuNUxljzfO1BcVpMWXnB5BzhXzRLOl/IPuL2yiEmpOr1T128iA==
-Message-ID: <2c43288a-517d-4220-ad31-f84dda8c1805@yoseli.org>
-Date: Mon, 18 Nov 2024 11:11:48 +0100
+	s=arc-20240116; t=1731934052; c=relaxed/simple;
+	bh=7aZsjxaVStHdLdFrr1YMq6ZzlzYrk8LLz29hzjmM+hQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IeJhVFqJZfqwvB1sumWRfZLGWNMLu2ND6Fvpa74Vnn9gticGJKw56OTP1/KbaJCml/MCQt2ByIgAHAXV1CeEk/eeUiamw8SrL5jW0HQ5Ryos+vudwVBxiw2s/9PnXXzYtwwMy+0QXG1BC5Q8v6B8v2BzIzWfbAR83hOT/VbQbJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.90
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:5694:511b:a530:b0e])
+	by albert.telenet-ops.be with cmsmtp
+	id eCnM2D00H56PXV606CnMnA; Mon, 18 Nov 2024 13:47:21 +0100
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1tD19f-007SfA-6e;
+	Mon, 18 Nov 2024 13:47:21 +0100
+Received: from geert by rox.of.borg with local (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1tD1A1-00E19l-CP;
+	Mon, 18 Nov 2024 13:47:21 +0100
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for v6.13
+Date: Mon, 18 Nov 2024 13:47:20 +0100
+Message-Id: <20241118124720.3341025-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Subject: Re: [PATCH RFC 0/2] Add basic tracing support for m68k
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, Geert Uytterhoeven
- <geert@linux-m68k.org>, Greg Ungerer <gerg@linux-m68k.org>
-References: <20241021-add-m68k-tracing-support-v1-0-0883d704525b@yoseli.org>
- <3a8f6faa-62c6-4d32-b544-3fb7c00730d7@yoseli.org>
- <20241115102554.29232d34@gandalf.local.home>
- <cbb67ee2-8b37-4a4d-b542-f89ddae90e94@yoseli.org>
- <20241115145502.631c9a2c@gandalf.local.home>
-Content-Language: en-US
-In-Reply-To: <20241115145502.631c9a2c@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
+Content-Transfer-Encoding: 8bit
 
-Hi Steve,
+	Hi Linus,
 
-On 15/11/2024 20:55, Steven Rostedt wrote:
-> On Fri, 15 Nov 2024 16:33:06 +0100
-> Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org> wrote:
-> 
->> Hi Steve,
->>
->> On 15/11/2024 16:25, Steven Rostedt wrote:
->>> On Fri, 15 Nov 2024 09:26:07 +0100
->>> Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org> wrote:
->>>    
->>>> Nevertheless it sounds like a really high latency for wake_up().
->>>>
->>>> I have a custom driver which basically gets an IRQ, and calls wake_up on
->>>> a read() call. This wake_up() on a high cpu usage can be more than 1ms !
->>>> Even with a fifo/99 priority for my kernel thread !
->>>>
->>>> I don't know if it rings any bell ?
->>>> I can obviously do more tests if it can help getting down to the issue :-).
->>>
->>> Try running timerlat.
->>
->> Thanks !
->> Here is what I get:
->> # echo timerlat > current_tracer
->> # echo 1 > events/osnoise/enable
->> # echo 25 > osnoise/stop_tracing_total_us
->> # tail -10 trace
->>               bash-224     [000] d.h..   153.268917: #77645 context  irq timer_latency     45056 ns
->>               bash-224     [000] dnh..   153.268987: irq_noise: timer:206  start 153.268879083 duration 93957 ns
->>               bash-224     [000] d....   153.269056: thread_noise:  bash:224 start 153.268905324 duration 71045 ns
->>         timerlat/0-271     [000] .....   153.269103: #77645 context thread timer_latency    230656 ns
->>               bash-224     [000] d.h..   153.269735: irq_noise: timer:206 start 153.269613847 duration 103558 ns
->>               bash-224     [000] d.h..   153.269911: #77646 context irq timer_latency     40640 ns
->>               bash-224     [000] dnh..   153.269982: irq_noise: timer:206 start 153.269875367 duration 93190 ns
->>               bash-224     [000] d....   153.270053: thread_noise: bash:224 start 153.269900969 duration 72709 ns
->>         timerlat/0-271     [000] .....   153.270100: #77646 context thread timer_latency    227008 ns
->>         timerlat/0-271     [000] .....   153.270155: timerlat_main: stop tracing hit on cpu 0
->>
->> It looks awful, right ?
-> 
-> awful is relative ;-) If that was on x86, I would say it was bad.
-> 
-> Also check out rtla (in tools/trace/rtla).
+The following changes since commit 8cf0b93919e13d1e8d4466eb4080a4c4d9d66d7b:
 
-Thanks ! I knew it only by name, so I watched a presentation recorded 
-during OSS summit given by Daniel Bristot de Oliveira who wrote it and 
-it is really impressive !
+  Linux 6.12-rc2 (2024-10-06 15:32:27 -0700)
 
-I had to modify the source code a bit, as it does not compile with my 
-uclibc toolchain:
-diff --git a/tools/tracing/rtla/Makefile.rtla 
-b/tools/tracing/rtla/Makefile.rtla
-index cc1d6b615475..b22016a88d09 100644
---- a/tools/tracing/rtla/Makefile.rtla
-+++ b/tools/tracing/rtla/Makefile.rtla
-@@ -15,7 +15,7 @@ $(call allow-override,LD_SO_CONF_PATH,/etc/ld.so.conf.d/)
-  $(call allow-override,LDCONFIG,ldconfig)
-  export CC AR STRIP PKG_CONFIG LD_SO_CONF_PATH LDCONFIG
+are available in the Git repository at:
 
--FOPTS          := -flto=auto -ffat-lto-objects -fexceptions 
--fstack-protector-strong   \
-+FOPTS          := -flto=auto -ffat-lto-objects -fexceptions \
-                 -fasynchronous-unwind-tables -fstack-clash-protection
-  WOPTS          := -O -Wall -Werror=format-security 
--Wp,-D_FORTIFY_SOURCE=2             \
-                 -Wp,-D_GLIBCXX_ASSERTIONS -Wno-maybe-uninitialized
-diff --git a/tools/tracing/rtla/src/timerlat_u.c 
-b/tools/tracing/rtla/src/timerlat_u.c
-index 01dbf9a6b5a5..92ad2388b123 100644
---- a/tools/tracing/rtla/src/timerlat_u.c
-+++ b/tools/tracing/rtla/src/timerlat_u.c
-@@ -15,10 +15,16 @@
-  #include <pthread.h>
-  #include <sys/wait.h>
-  #include <sys/prctl.h>
-+#include <sys/syscall.h>
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.13-tag1
 
-  #include "utils.h"
-  #include "timerlat_u.h"
+for you to fetch changes up to 647619b6bd27d2b7c3c6055f3f0d996e61884202:
 
-+static inline pid_t gettid(void)
-+{
-+       return syscall(SYS_gettid);
-+}
-+
-  /*
-   * This is the user-space main for the tool timerlatu/ threads.
-   *
-diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
-index 9ac71a66840c..b754dc1016a4 100644
---- a/tools/tracing/rtla/src/utils.c
-+++ b/tools/tracing/rtla/src/utils.c
-@@ -229,6 +229,9 @@ long parse_ns_duration(char *val)
-  #elif __s390x__
-  # define __NR_sched_setattr    345
-  # define __NR_sched_getattr    346
-+#elif __m68k__
-+# define __NR_sched_setattr    349
-+# define __NR_sched_getattr    350
-  #endif
+  m68k: defconfig: Update defconfigs for v6.12-rc1 (2024-11-11 13:53:58 +0100)
 
-  #define SCHED_DEADLINE         6
+----------------------------------------------------------------
+m68k updates for v6.13
 
-But it is not enough, as executing rtla fails with a segfault.
-I can dump a core, but I could not manage to build gdb for my board so I 
-can't debug it (I don't know how to debug a coredump without gdb !).
+  - Revive SCSI and early console support on MVME147,
+  - Fix early kernel parameters using static keys,
+  - Prevent and improve handling of kernel configurations that lack
+    specific platform, CPU, or MMU support, to avoid build failures,
+  - Miscellaneous fixes and improvements,
+  - Defconfig updates.
 
-JM
+Thanks for pulling!
+
+----------------------------------------------------------------
+Arnd Bergmann (2):
+      m68k: Move Sun 3 into a top-level platform option
+      m68k: Select M68020 as fallback for classic
+
+Daniel Palmer (3):
+      m68k: mvme147: Make mvme147_sched_init() __init
+      m68k: mvme147: Fix SCSI controller IRQ numbers
+      m68k: mvme147: Reinstate early console
+
+Geert Uytterhoeven (2):
+      m68k: Make sure NR_IRQS is never zero
+      m68k: defconfig: Update defconfigs for v6.12-rc1
+
+Jean-Michel Hautbois (1):
+      m68k: Initialize jump labels early during setup_arch()
+
+Thorsten Blum (1):
+      m68k: kernel: Use str_read_write() helper function
+
+ arch/m68k/Kconfig                    | 11 +++++------
+ arch/m68k/Kconfig.cpu                | 36 +++++++++++++++++++++++-------------
+ arch/m68k/Kconfig.machine            | 25 -------------------------
+ arch/m68k/configs/amiga_defconfig    |  1 +
+ arch/m68k/configs/apollo_defconfig   |  1 +
+ arch/m68k/configs/atari_defconfig    |  1 +
+ arch/m68k/configs/bvme6000_defconfig |  1 +
+ arch/m68k/configs/hp300_defconfig    |  1 +
+ arch/m68k/configs/mac_defconfig      |  1 +
+ arch/m68k/configs/multi_defconfig    |  1 +
+ arch/m68k/configs/mvme147_defconfig  |  1 +
+ arch/m68k/configs/mvme16x_defconfig  |  1 +
+ arch/m68k/configs/q40_defconfig      |  1 +
+ arch/m68k/configs/sun3_defconfig     |  1 +
+ arch/m68k/configs/sun3x_defconfig    |  1 +
+ arch/m68k/include/asm/irq.h          |  4 +---
+ arch/m68k/include/asm/mvme147hw.h    |  4 ++--
+ arch/m68k/kernel/Makefile            | 12 ++----------
+ arch/m68k/kernel/early_printk.c      |  5 ++++-
+ arch/m68k/kernel/setup_mm.c          |  6 +++++-
+ arch/m68k/kernel/time.c              |  4 ++--
+ arch/m68k/kernel/traps.c             | 16 ++++++++--------
+ arch/m68k/mvme147/config.c           | 34 ++++++++++++++++++++++++++++++++--
+ arch/m68k/mvme147/mvme147.h          |  6 ++++++
+ 24 files changed, 102 insertions(+), 73 deletions(-)
+ create mode 100644 arch/m68k/mvme147/mvme147.h
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
